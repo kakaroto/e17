@@ -29,6 +29,7 @@ Ecore_Hash* layout_ewl_simple_parse_config(entropy_gui_component_instance* insta
 void __destroy_main_window(Ewl_Widget *main_win, void *ev_data, void *user_data);
 void contract_cb(Ewl_Widget *main_win, void *ev_data, void *user_data);
 void layout_ewl_simple_local_view_cb (Ewl_Widget *main_win, void *ev_data, void *user_data);
+void layout_ewl_simple_structure_view_cb (Ewl_Widget *main_win, void *ev_data, void *user_data);
 void entropy_plugin_layout_main();
 void entropy_plugin_destroy(entropy_gui_component_instance* comp);
 void entropy_plugin_init(entropy_core* core);
@@ -50,6 +51,7 @@ typedef struct entropy_layout_gui entropy_layout_gui;
 struct entropy_layout_gui {
 	entropy_gui_component_instance* iconbox_viewer;
 	entropy_gui_component_instance* structure_viewer;
+
 	Ewl_Widget* tree;
 	Ewl_Widget* paned;
 	Ewl_Widget* local_container;
@@ -60,9 +62,6 @@ struct entropy_layout_gui {
 	Ecore_Hash* headers;
 
 	entropy_ewl_layout_header_uri* active_header;
-
-	
-
 
 	/*Tmp*/
 	Ewl_Widget* samba_radio;
@@ -510,6 +509,32 @@ void contract_cb(Ewl_Widget *main_win, void *ev_data, void *user_data)
 }
 
 
+void layout_ewl_simple_structure_view_cb (Ewl_Widget *main_win, void *ev_data, void *user_data) 
+{
+	
+	entropy_gui_component_instance* instance = user_data;
+	entropy_layout_gui* layout = instance->data;
+
+	/*entropy_gui_component_instance_disable(layout->structure_viewer);
+	ewl_widget_hide(EWL_WIDGET(layout->structure_viewer->gui_object));*/
+
+	ewl_widget_hide(layout->tree);
+}
+
+void layout_ewl_simple_structure_view_show_cb (Ewl_Widget *main_win, void *ev_data, void *user_data) 
+{
+	
+	entropy_gui_component_instance* instance = user_data;
+	entropy_layout_gui* layout = instance->data;
+
+	/*entropy_gui_component_instance_disable(layout->structure_viewer);
+	ewl_widget_hide(EWL_WIDGET(layout->structure_viewer->gui_object));*/
+	ewl_widget_show(layout->tree);
+	ewl_container_child_prepend(EWL_CONTAINER(layout->paned), layout->tree);
+	
+}
+
+
 void layout_ewl_simple_local_view_cb (Ewl_Widget *main_win, void *ev_data, void *user_data) 
 {
 	
@@ -745,6 +770,19 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 		ewl_callback_append(EWL_WIDGET(item), EWL_CALLBACK_CLICKED, layout_ewl_simple_local_view_cb, instance);
 		ewl_widget_show(item);
 	}
+
+	item = ewl_menu_item_new();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "Hide Tree View");
+	ewl_container_child_append(EWL_CONTAINER(menu), item);
+	ewl_callback_append(EWL_WIDGET(item), EWL_CALLBACK_CLICKED, layout_ewl_simple_structure_view_cb, layout);
+	ewl_widget_show(item);
+
+	item = ewl_menu_item_new();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "Show Tree View");
+	ewl_container_child_append(EWL_CONTAINER(menu), item);
+	ewl_callback_append(EWL_WIDGET(item), EWL_CALLBACK_CLICKED, layout_ewl_simple_structure_view_show_cb, layout);
+	ewl_widget_show(item);
+
 	
 	
 	
@@ -792,14 +830,12 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 	ewl_widget_show(gui->context_menu);
 
 	/*--------------------------*/
-	
-
 	ewl_container_child_append(EWL_CONTAINER(hbox), expand_button);
 	ewl_container_child_append(EWL_CONTAINER(hbox), contract_button);
-
 	ewl_container_child_append(EWL_CONTAINER(box), menubar);
 	ewl_container_child_append(EWL_CONTAINER(box),gui->paned);
-	ewl_container_child_append(EWL_CONTAINER(gui->paned), tree);
+
+	ewl_container_child_append(EWL_CONTAINER(gui->paned), gui->tree);
 
 	ewl_container_child_append(EWL_CONTAINER(gui->paned), gui->local_container);
 	ewl_container_child_append(EWL_CONTAINER(gui->local_container), iconbox);
