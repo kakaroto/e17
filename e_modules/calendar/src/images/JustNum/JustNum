@@ -1,0 +1,5 @@
+#!/bin/bash
+edje_cc today.edc
+edje_cc weekend.edc
+edje_cc weekday.edc
+cp -f *.edj ~/.e/e/modules/calendar/

@@ -1,0 +1,115 @@
+images {
+}
+collections {
+	group {
+	    	name, "default";
+		min, 10 8;
+		max, 90 120;
+		parts{		
+			part {
+				name, "weekend-back";
+				type, RECT;
+			   	mouse_events, 1;
+	
+				description
+				{
+					state, "default" 0.0;
+					color_class: "day_colors";
+
+					rel1 {
+						relative, 0.0 0.0;
+						offset, 2 2; 
+						}
+					rel2 {
+						relative, 1.0 1.0;
+						offset, -2 -2;
+						}
+					color, 0 100 0 200;
+				}
+			}
+			part {
+				name, "date-text";
+				type, TEXT;
+				mouse_events, 1;
+
+				description
+				{
+					state, "default" 0.0;
+					color_class: "text_colors";
+				         rel1 {
+        	               	        	 relative, 0.0 0.0; 
+              		        	          offset, 0 0;
+						to, "weekend-back";
+        	            			    }
+                	       		 rel2 {
+                      			          relative, 1.0 1.0;  
+                              			  offset, 0 0;
+						to, "weekend-back";
+                			        }
+                	  	   	 text {
+                      		        	text, " ";
+                             			font, "VeraMono";
+						size, 10;
+             		               		align, 0.5 0.5;
+						text_class: "text_class";
+						}
+				}
+			}
+		}
+	}
+	group {
+	    	name, "user";
+		min, 10 8;
+		max, 90 120;
+		parts{		
+			part {
+				name, "weekend-back";
+				type, RECT;
+			   	mouse_events, 1;
+	
+				description
+				{
+					state, "default" 0.0;
+					color_class: "day_colors";
+
+					rel1 {
+						relative, 0.0 0.0;
+						offset, 2 2; 
+						}
+					rel2 {
+						relative, 1.0 1.0;
+						offset, -2 -2;
+						}
+				}
+			}
+			part {
+				name, "date-text";
+				type, TEXT;
+				mouse_events, 1;
+
+				description
+				{
+					state, "default" 0.0;
+					color_class: "text_colors";
+				         rel1 {
+        	               	        	 relative, 0.0 0.0; 
+              		        	          offset, 0 0;
+						to, "weekend-back";
+        	            			    }
+                	       		 rel2 {
+                      			          relative, 1.0 1.0;  
+                              			  offset, 0 0;
+						to, "weekend-back";
+                			        }
+                	  	   	 text {
+                      		        	text, " ";
+                             			font, "VeraMono";
+						size, 10;
+             		               		align, 0.5 0.5;
+						text_class: "text_class";
+						}
+				}
+			}
+		}
+	}
+}
