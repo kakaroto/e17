@@ -89,10 +89,10 @@ ewl_overlay_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		 * fill policy. Don't add the TOP and LEFT insets since
 		 * they've already been accounted for.
 		 */
-		width = CURRENT_W(w) + CURRENT_X(w);
-	       	width -= ewl_object_current_x_get(child);
-		height = CURRENT_H(w) + CURRENT_Y(w);
-		height -= ewl_object_current_y_get(child);
+		width = ewl_object_current_x_get(child) + CURRENT_W(w);
+	       	width -= CURRENT_X(w);
+		height = ewl_object_current_y_get(child) + CURRENT_H(w);
+		height -= CURRENT_Y(w);
 		ewl_object_size_request(child, width, height);
 	}
 
@@ -116,8 +116,9 @@ ewl_overlay_child_show_cb(Ewl_Container *o, Ewl_Widget *child)
 	if (size > PREFERRED_W(o))
 		ewl_object_preferred_inner_w_set(EWL_OBJECT(o), size);
 
-	size = ewl_object_current_y_get(EWL_OBJECT(child)) +
-		ewl_object_preferred_h_get(EWL_OBJECT(child)) - CURRENT_Y(o);
+	size = ewl_object_current_y_get(EWL_OBJECT(child));
+       	size += ewl_object_preferred_h_get(EWL_OBJECT(child));
+       	size -= CURRENT_Y(o);
 	if (size > PREFERRED_H(o))
 		ewl_object_preferred_inner_h_set(EWL_OBJECT(o), size);
 
