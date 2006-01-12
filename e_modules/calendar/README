@@ -100,5 +100,9 @@ the "user" group just copy the "default" group add the colorclass and textclass
 lines from the edj's I provided and remove any lines with colors defined.  Otherwise,
 these are standard edj's.
 
-
+For those who want the date boxes to just show the date (and have no spaces for things
+that maybe added in the future) go to src/images/JustNum and run the JustNum script.  This
+script will install new .edc files in ~/.e/e/modules/calendar/  (which should be the 
+location of your calendar module) -- if this is not correct, edit the JustNum script to your
+system (it's really simple).  The script requires bash.
 
