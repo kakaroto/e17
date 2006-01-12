@@ -117,7 +117,7 @@ ewl_overlay_child_show_cb(Ewl_Container *o, Ewl_Widget *child)
 		ewl_object_preferred_inner_w_set(EWL_OBJECT(o), size);
 
 	size = ewl_object_current_y_get(EWL_OBJECT(child));
-       	size += ewl_object_preferred_h_get(EWL_OBJECT(child));
+	size += ewl_object_preferred_h_get(EWL_OBJECT(child));
        	size -= CURRENT_Y(o);
 	if (size > PREFERRED_H(o))
 		ewl_object_preferred_inner_h_set(EWL_OBJECT(o), size);
