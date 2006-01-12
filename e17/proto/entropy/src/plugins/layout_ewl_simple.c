@@ -546,7 +546,6 @@ void layout_ewl_simple_local_view_cb (Ewl_Widget *main_win, void *ev_data, void 
 
 void entropy_plugin_layout_main() 
 {	
-	ewl_widget_show(win);
 	ewl_main();
 }
 
@@ -837,5 +836,6 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 	
 
 	layout->gui_object = win;
+	ewl_widget_show(win);
 	return layout;
 }

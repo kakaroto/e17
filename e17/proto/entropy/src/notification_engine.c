@@ -141,7 +141,7 @@ void* entropy_notify_loop(void* data) {
 			pthread_mutex_lock(&notify->exe_queue_mutex);
 			ecore_list_append(notify->exe_queue, next);
 			
-			ecore_ipc_server_send(notify->server, 1, 6, 0, 0, 0, NULL, 0);
+			ecore_ipc_server_send(notify->server, ENTROPY_IPC_EVENT_CORE, 6, 0, 0, 0, NULL, 0);
 			pthread_mutex_unlock(&notify->exe_queue_mutex);
 
 			

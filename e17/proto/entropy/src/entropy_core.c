@@ -42,7 +42,7 @@ int ecore_timer_enterer(void* data) {
 int
 ipc_client_data(void *data, int type, void *event)
 {
-	
+	Ecore_Ipc_Event_Client_Data *e = (Ecore_Ipc_Event_Client_Data*) event;
 	entropy_core* core = data;
 	entropy_notify_event_cb_data* cb_data;
 	int destroy_struct =0;
@@ -50,57 +50,56 @@ ipc_client_data(void *data, int type, void *event)
 	
 	/*printf ("Received message\n");*/
 
-	pthread_mutex_lock(&core->notify->exe_queue_mutex);
+	if (e->major == ENTROPY_IPC_EVENT_CORE) {
+		pthread_mutex_lock(&core->notify->exe_queue_mutex);
+		entropy_notify_event* eevent;
 
-	entropy_notify_event* eevent;
-	
-
-	ecore_list_goto_first(core->notify->exe_queue);
-	if ( (eevent = ecore_list_next(core->notify->exe_queue)) ) {
-		ecore_list_remove_first(core->notify->exe_queue);
-		
-		
-		/*If the return struct is null, don't call the callbacks.  The requester has taken responsibility
-		 * for calling the requesters of this type when the data is available, which is obviously not now*/
-		
-		if (eevent->return_struct) {
-			ecore_list_goto_first(eevent->cb_list);
-			while ( (cb_data = ecore_list_next(eevent->cb_list)) ) {
-				(*cb_data->cb)(eevent, eevent->requestor_data, eevent->return_struct, cb_data->data);
-			}
-			destroy_struct = 1;
-		} else {
-			entropy_log ("ipc_client_data: RETURN was NULL.  Caller will notify when data ready\n", ENTROPY_LOG_WARN);
-			destroy_struct = 0;
-		}
-
-		/*TODO move this to a dedicated cleanup function*/
-		if (destroy_struct) {
-				switch (eevent->event_type) {
-					case ENTROPY_NOTIFY_FILELIST_REQUEST:
-					/*It's a filelist request - return is an ecore list - destroy*/
-					ecore_list_destroy(eevent->return_struct);
-					break;
-
-					case ENTROPY_NOTIFY_THUMBNAIL_REQUEST:
-					/*A thumbnail - we want to keep this, don't destroy anything*/
-					break;
-
-					case ENTROPY_NOTIFY_FILE_STAT_AVAILABLE:
-					//entropy_file_stat* stat = eevent->return_struct;
+		ecore_list_goto_first(core->notify->exe_queue);
+		if ( (eevent = ecore_list_next(core->notify->exe_queue)) ) {
+			ecore_list_remove_first(core->notify->exe_queue);
 				
-					break;
+			/*If the return struct is null, don't call the callbacks.  The requester has taken responsibility
+			 * for calling the requesters of this type when the data is available, which is obviously not now*/
 			
+			if (eevent->return_struct) {
+				ecore_list_goto_first(eevent->cb_list);
+				while ( (cb_data = ecore_list_next(eevent->cb_list)) ) {
+					(*cb_data->cb)(eevent, eevent->requestor_data, eevent->return_struct, cb_data->data);
 				}
+				destroy_struct = 1;
+			} else {
+				entropy_log ("ipc_client_data: RETURN was NULL.  Caller will notify when data ready\n", ENTROPY_LOG_WARN);
+				destroy_struct = 0;
+			}
+
+			/*TODO move this to a dedicated cleanup function*/
+			if (destroy_struct) {
+					switch (eevent->event_type) {
+						case ENTROPY_NOTIFY_FILELIST_REQUEST:
+						/*It's a filelist request - return is an ecore list - destroy*/
+						ecore_list_destroy(eevent->return_struct);
+						break;
+	
+						case ENTROPY_NOTIFY_THUMBNAIL_REQUEST:
+						/*A thumbnail - we want to keep this, don't destroy anything*/
+						break;
+
+						case ENTROPY_NOTIFY_FILE_STAT_AVAILABLE:
+						//entropy_file_stat* stat = eevent->return_struct;			
+						break;			
+					}
+			}
+			
+			entropy_notify_event_destroy(eevent);		
 		}
-		
-		entropy_notify_event_destroy(eevent);
+		pthread_mutex_unlock(&core->notify->exe_queue_mutex);
+	} else if (e->major == ENTROPY_IPC_EVENT_LAYOUT_NEW) {
+		entropy_gui_component_instance* (*entropy_plugin_layout_create)(entropy_core*);
 
-
-		
+		printf("New layout requested!\n");
+		entropy_plugin_layout_create = dlsym(core->layout_plugin->dl_ref, "entropy_plugin_layout_create");
+		(*entropy_plugin_layout_create)(core);
 	}
-	pthread_mutex_unlock(&core->notify->exe_queue_mutex);
-
 
 	return 1;
 
@@ -141,8 +140,14 @@ entropy_core* entropy_core_init() {
 	core->server = ecore_ipc_server_add(ECORE_IPC_LOCAL_USER, IPC_TITLE, 0, NULL);
 
 	if (core->server == NULL) {
+		Ecore_Ipc_Server* server = ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER, IPC_TITLE,0 ,NULL);
+		if (server) {
+			printf("Sending message to server!\n");
+			ecore_ipc_server_send(server, ENTROPY_IPC_EVENT_LAYOUT_NEW, 0, 0, 0, 0, NULL,0); 
+		}
 		printf("creating the IPC server failed! Entropy already running? FIXME we should launch another layout here\n");
-		exit(1);
+		ecore_main_loop_iterate();
+		exit(0);
 	}
 
 	//printf ("Adding client data hander...\n");

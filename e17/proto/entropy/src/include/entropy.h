@@ -1,6 +1,8 @@
 #ifndef __ENTROPY_H_
 #define __ENTROPY_H_
 
+
+
 typedef struct entropy_config entropy_config;
 
 #include <Ecore.h>
@@ -28,6 +30,8 @@ typedef struct entropy_config entropy_config;
 #include "entropy_config.h"
 
 #define IPC_TITLE "entropy"
+#define ENTROPY_IPC_EVENT_CORE 1
+#define ENTROPY_IPC_EVENT_LAYOUT_NEW 2
 #define THUMBNAILER_DISTRIBUTION 0
 #define THUMBNAILER_CHILD 1
 

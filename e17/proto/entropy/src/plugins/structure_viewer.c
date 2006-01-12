@@ -79,7 +79,13 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor,
 	
 	Ewl_Row* row = ecore_hash_get(viewer->row_folder_hash, event_file);
 
-	if (row) viewer->current_row = row;
+	if (row) {
+		viewer->current_row = row;
+	} else {
+		/*If we don't know about this row, assume it's another structure viewer,
+		 * i.e. set to null, so we can reload the dir later */
+		viewer->current_row = NULL;
+	}
 	
 	/*If we don't own this row, forget about doing something 
 	 * - we don't know about this*/
