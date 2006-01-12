@@ -134,15 +134,11 @@ static struct
    struct
    {
       int                 mode;
+      int                 offset_x, offset_y;
       struct
       {
 	 int                 radius;
-	 int                 offset_x, offset_y;
       } blur;
-      struct
-      {
-	 int                 offset_x, offset_y;
-      } sharp;
    } shadows;
    struct
    {
@@ -916,18 +912,18 @@ win_extents(EObj * eo)
 
 	if (Conf_compmgr.shadows.mode == ECM_SHADOWS_SHARP)
 	  {
-	     cw->shadow_dx = Conf_compmgr.shadows.sharp.offset_x;
-	     cw->shadow_dy = Conf_compmgr.shadows.sharp.offset_y;
+	     cw->shadow_dx = Conf_compmgr.shadows.offset_x;
+	     cw->shadow_dy = Conf_compmgr.shadows.offset_y;
 	     cw->shadow_width = cw->rcw;
 	     cw->shadow_height = cw->rch;
 	  }
 	else
 	  {
 	     cw->shadow_dx =
-		Conf_compmgr.shadows.blur.offset_x -
+		Conf_compmgr.shadows.offset_x -
 		Conf_compmgr.shadows.blur.radius * 5 / 4;
 	     cw->shadow_dy =
-		Conf_compmgr.shadows.blur.offset_y -
+		Conf_compmgr.shadows.offset_y -
 		Conf_compmgr.shadows.blur.radius * 5 / 4;
 	     if (!cw->shadow)
 	       {
@@ -2582,11 +2578,9 @@ static const CfgItem CompMgrCfgItems[] = {
    CFG_ITEM_BOOL(Conf_compmgr, enable, 0),
    CFG_ITEM_INT(Conf_compmgr, mode, 1),
    CFG_ITEM_INT(Conf_compmgr, shadows.mode, 0),
-   CFG_ITEM_INT(Conf_compmgr, shadows.blur.radius, 8),
-   CFG_ITEM_INT(Conf_compmgr, shadows.blur.offset_x, 2),
-   CFG_ITEM_INT(Conf_compmgr, shadows.blur.offset_y, 2),
-   CFG_ITEM_INT(Conf_compmgr, shadows.sharp.offset_x, 2),
-   CFG_ITEM_INT(Conf_compmgr, shadows.sharp.offset_y, 7),
+   CFG_ITEM_INT(Conf_compmgr, shadows.offset_x, 3),
+   CFG_ITEM_INT(Conf_compmgr, shadows.offset_y, 5),
+   CFG_ITEM_INT(Conf_compmgr, shadows.blur.radius, 5),
    CFG_ITEM_BOOL(Conf_compmgr, resize_fix_enable, 0),
    CFG_ITEM_BOOL(Conf_compmgr, use_name_pixmap, 0),
    CFG_ITEM_BOOL(Conf_compmgr, fading.enable, 1),
