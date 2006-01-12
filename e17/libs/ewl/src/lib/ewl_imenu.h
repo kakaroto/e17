@@ -15,6 +15,8 @@
  * @themekey /imenu/group
  */
 
+#define EWL_IMENU_TYPE "imenu"
+
 /**
  * A simple internal menu, it is limited to drawing within the current evas.
  */

@@ -66,7 +66,7 @@ ewl_filedialog_init(Ewl_Filedialog *fd)
  	if (!ewl_dialog_init(EWL_DIALOG(fd)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_widget_inherit(w, "filedialog");
+	ewl_widget_inherit(w, EWL_FILEDIALOG_TYPE);
 
 	ewl_window_title_set(EWL_WINDOW(fd), "Ewl Filedialog");
 	ewl_window_name_set(EWL_WINDOW(fd), "Ewl Filedialog");
@@ -119,7 +119,7 @@ ewl_filedialog_type_get(Ewl_Filedialog *fd)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fd", fd, EWL_FILEDIALOG_TYPE_OPEN);
-	DCHECK_TYPE_RET("fd", fd, "filedialog", EWL_FILEDIALOG_TYPE_OPEN);
+	DCHECK_TYPE_RET("fd", fd, EWL_FILEDIALOG_TYPE, EWL_FILEDIALOG_TYPE_OPEN);
 
 	DRETURN_INT(fd->type, DLEVEL_STABLE);
 }
@@ -134,7 +134,7 @@ ewl_filedialog_type_set(Ewl_Filedialog *fd, Ewl_Filedialog_Type t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fd", fd);
-	DCHECK_TYPE("fd", fd, "filedialog");
+	DCHECK_TYPE("fd", fd, EWL_FILEDIALOG_TYPE);
 
 	if (t == EWL_FILEDIALOG_TYPE_OPEN) 
 		ewl_button_stock_type_set(EWL_BUTTON(fd->type_btn), EWL_STOCK_OPEN);
@@ -157,7 +157,7 @@ ewl_filedialog_path_get(Ewl_Filedialog *fd)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fd", fd, NULL);
-	DCHECK_TYPE("fd", fd, "filedialog");
+	DCHECK_TYPE("fd", fd, EWL_FILEDIALOG_TYPE);
 
 	s = ewl_fileselector_path_get(EWL_FILESELECTOR(fd->fs)); 
 
@@ -176,7 +176,7 @@ ewl_filedialog_file_get(Ewl_Filedialog *fd)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fd", fd, NULL);
-	DCHECK_TYPE_RET("fd", fd, "filedialog", NULL);
+	DCHECK_TYPE_RET("fd", fd, EWL_FILEDIALOG_TYPE, NULL);
 	
 	s = ewl_fileselector_file_get(EWL_FILESELECTOR(fd->fs));
 
@@ -195,7 +195,7 @@ ewl_filedialog_path_set(Ewl_Filedialog *fd, char *path)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fd", fd);
 	DCHECK_PARAM_PTR("path", path);
-	DCHECK_TYPE("fd", fd, "filedialog");
+	DCHECK_TYPE("fd", fd, EWL_FILEDIALOG_TYPE);
 
 	ewl_fileselector_path_set(EWL_FILESELECTOR(fd->fs), path);
 
@@ -213,7 +213,7 @@ ewl_filedialog_multiselect_set(Ewl_Filedialog *fd, unsigned int val)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fd", fd);
-	DCHECK_TYPE("fd", fd, "filedialog");
+	DCHECK_TYPE("fd", fd, EWL_FILEDIALOG_TYPE);
 
 	ewl_fileselector_multiselect_set(EWL_FILESELECTOR(fd->fs), val);
 
@@ -232,7 +232,7 @@ ewl_filedialog_multiselect_get(Ewl_Filedialog *fd)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fd", fd, 0);
-	DCHECK_TYPE_RET("fd", fd, "filedialog", 0);
+	DCHECK_TYPE_RET("fd", fd, EWL_FILEDIALOG_TYPE, 0);
 
 	val = ewl_fileselector_multiselect_get(EWL_FILESELECTOR(fd->fs));
 
@@ -251,7 +251,7 @@ ewl_filedialog_select_list_get(Ewl_Filedialog *fd)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fd", fd, NULL);
-	DCHECK_TYPE_RET("fd", fd, "filedialog", NULL);
+	DCHECK_TYPE_RET("fd", fd, EWL_FILEDIALOG_TYPE, NULL);
 
 	list = ewl_fileselector_select_list_get(EWL_FILESELECTOR(fd->fs));
 
@@ -269,7 +269,7 @@ ewl_filedialog_click_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *data)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	fd = EWL_FILEDIALOG(data);
 	resp = ewl_button_stock_type_get(EWL_BUTTON(w));
@@ -286,7 +286,7 @@ ewl_filedialog_delete_window_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	fd = EWL_FILEDIALOG(w);
 	ewl_filedialog_respond(fd, EWL_STOCK_CANCEL);

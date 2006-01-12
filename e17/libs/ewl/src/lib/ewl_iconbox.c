@@ -35,7 +35,7 @@ ewl_iconbox_icon_label_height_calculate(Ewl_Iconbox_Icon* icon)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("icon", icon, FALSE);
-	DCHECK_TYPE_RET("icon", icon, "icon", FALSE);
+	DCHECK_TYPE_RET("icon", icon, EWL_ICON_TYPE, FALSE);
 
 	if (EWL_TEXT(icon->w_label)->textblock) {
 		evas_object_textblock_size_native_get(EWL_TEXT(icon->w_label)->textblock, &ww, &hh);
@@ -56,8 +56,8 @@ ewl_iconbox_overlay_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("w", w, "overlay");
-	DCHECK_TYPE("user_data", user_data, "iconbox");
+	DCHECK_TYPE("w", w, EWL_OVERLAY_TYPE);
+	DCHECK_TYPE("user_data", user_data, EWL_ICONBOX_TYPE);
 
 
 
@@ -66,7 +66,7 @@ ewl_iconbox_overlay_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *
 
 	ewl_container_child_iterate_begin(EWL_CONTAINER(w));
 	while ((ib = ewl_container_child_next(EWL_CONTAINER(w)))) {
-		if (ewl_widget_type_is(ib,"icon")) {
+		if (ewl_widget_type_is(ib,EWL_ICON_TYPE)) {
 			int cx, cy;
 			cx = ewl_object_current_x_get(EWL_OBJECT(ib));
 			cy = ewl_object_current_y_get(EWL_OBJECT(ib));
@@ -176,7 +176,7 @@ ewl_iconbox_inner_pane_calculate(Ewl_Iconbox *ib)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ib", ib);
-	DCHECK_TYPE("ib", ib, "iconbox");
+	DCHECK_TYPE("ib", ib, EWL_ICONBOX_TYPE);
 
 	/*printf ("%d:%d\n", ev->w, ev->h);*/
 	
@@ -224,8 +224,8 @@ ewl_iconbox_icon_init(Ewl_Iconbox_Icon *icon)
 
 
 	/* Init ewl setup */
-	ewl_widget_appearance_set(EWL_WIDGET(icon), "icon");
-	ewl_widget_inherit(EWL_WIDGET(w), "icon");
+	ewl_widget_appearance_set(EWL_WIDGET(icon), EWL_ICON_TYPE);
+	ewl_widget_inherit(EWL_WIDGET(w), EWL_ICON_TYPE);
 
 	ewl_container_child_append(EWL_CONTAINER(icon), icon->image);
 	ewl_container_child_append(EWL_CONTAINER(icon), icon->w_label);
@@ -255,8 +255,8 @@ ewl_iconbox_init(Ewl_Iconbox *ib)
 
 	/* Init ewl setup */
 	ewl_box_orientation_set(EWL_BOX(ib), EWL_ORIENTATION_HORIZONTAL);
-	ewl_widget_appearance_set(EWL_WIDGET(ib), "iconbox");
-	ewl_widget_inherit(EWL_WIDGET(w), "iconbox");
+	ewl_widget_appearance_set(EWL_WIDGET(ib), EWL_ICONBOX_TYPE);
+	ewl_widget_inherit(EWL_WIDGET(w), EWL_ICONBOX_TYPE);
 
 	ib->drag_icon = NULL;
 
@@ -301,7 +301,8 @@ ewl_iconbox_init(Ewl_Iconbox *ib)
 	ib->ewl_iconbox_view_menu = ewl_menu_new();
 	ewl_menu_item_text_set(EWL_MENU_ITEM(ib->ewl_iconbox_view_menu),
 			       "View");
-	ewl_widget_appearance_set(EWL_WIDGET(ib->ewl_iconbox_view_menu), "menu_item");
+	ewl_widget_appearance_set(EWL_WIDGET(ib->ewl_iconbox_view_menu), 
+							EWL_MENU_ITEM_TYPE);
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_context_menu), ib->ewl_iconbox_view_menu);
 	
 	ib->ewl_iconbox_context_menu_item = ewl_menu_item_new();
@@ -460,7 +461,7 @@ ewl_iconbox_icon_size_custom_set(Ewl_Iconbox* ib, int w, int h)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ib", ib);
-	DCHECK_TYPE("ib", ib, "iconbox");
+	DCHECK_TYPE("ib", ib, EWL_ICONBOX_TYPE);
 
 	ib->iw = w;
 	ib->ih = h;
@@ -481,8 +482,8 @@ ewl_iconbox_context_menu_item_add(Ewl_Iconbox *ib, Ewl_Widget *item)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ib", ib);
 	DCHECK_PARAM_PTR("item", item);
-	DCHECK_TYPE("ib", ib, "iconbox");
-	DCHECK_TYPE("item", item, "widget");
+	DCHECK_TYPE("ib", ib, EWL_ICONBOX_TYPE);
+	DCHECK_TYPE("item", item, EWL_WIDGET_TYPE);
 
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_context_menu), item);
 
@@ -503,8 +504,8 @@ ewl_iconbox_icon_menu_item_add(Ewl_Iconbox *ib, Ewl_Widget *item)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ib", ib);
 	DCHECK_PARAM_PTR("item", item);
-	DCHECK_TYPE("ib", ib, "iconbox");
-	DCHECK_TYPE("item", item, "widget");
+	DCHECK_TYPE("ib", ib, EWL_ICONBOX_TYPE);
+	DCHECK_TYPE("item", item, EWL_WIDGET_TYPE);
 
 	ewl_object_minimum_size_set(EWL_OBJECT(item), 100, 15);
 	ewl_container_child_append(EWL_CONTAINER(ib->icon_menu), item);
@@ -521,7 +522,7 @@ ewl_iconbox_get_selection(Ewl_Iconbox *ib)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("ib", ib, NULL);
-	DCHECK_TYPE_RET("ib", ib, "iconbox", NULL);
+	DCHECK_TYPE_RET("ib", ib, EWL_ICONBOX_TYPE, NULL);
 
 	selected = ecore_list_new();	
 	ecore_list_goto_first(ib->ewl_iconbox_icon_list);
@@ -546,7 +547,7 @@ ewl_iconbox_scrollpane_goto_root(Ewl_Iconbox *ib)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ib", ib);
-	DCHECK_TYPE("ib", ib, "iconbox");
+	DCHECK_TYPE("ib", ib, EWL_ICONBOX_TYPE);
 
         ewl_scrollpane_hscrollbar_value_set(EWL_SCROLLPANE(ib->ewl_iconbox_scrollpane),0);
         ewl_scrollpane_vscrollbar_value_set(EWL_SCROLLPANE(ib->ewl_iconbox_scrollpane),0);
@@ -562,7 +563,7 @@ ewl_iconbox_background_set(Ewl_Iconbox *ib, const char *file)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ib", ib);
-	DCHECK_TYPE("ib", ib, "iconbox");
+	DCHECK_TYPE("ib", ib, EWL_ICONBOX_TYPE);
 
 	if (!file) {
 		if (ib->background) {
@@ -616,7 +617,7 @@ ewl_iconbox_icon_label_setup(Ewl_Iconbox_Icon *icon, const char *text)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("icon", icon);
 	DCHECK_PARAM_PTR("text", text);
-	DCHECK_TYPE("icon", icon, "icon");
+	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
 	
 	/* If we have a current label, nuke it */
 	if (icon->label) {
@@ -653,7 +654,7 @@ ewl_iconbox_icon_label_set(Ewl_Iconbox_Icon *icon, const char *text)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("icon", icon);
-	DCHECK_TYPE("icon", icon, "icon");
+	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
 
 	
 	//if (REALIZED(EWL_WIDGET(icon))) { 
@@ -726,7 +727,7 @@ ewl_iconbox_editable_set(Ewl_Iconbox *ib, int edit)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ib", ib);
-	DCHECK_TYPE("ib", ib, "iconbox");
+	DCHECK_TYPE("ib", ib, EWL_ICONBOX_TYPE);
 
 	ib->editable = edit;
 
@@ -741,7 +742,7 @@ ewl_iconbox_scrollpane_recalculate(Ewl_Iconbox *ib)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ib", ib);
-	DCHECK_TYPE("ib", ib, "iconbox");
+	DCHECK_TYPE("ib", ib, EWL_ICONBOX_TYPE);
 
 	ewl_object_current_size_get(EWL_OBJECT(ib->ewl_iconbox_scrollpane), &pw, &ph);	
 	ewl_object_custom_size_set(EWL_OBJECT(ib->ewl_iconbox_pane_inner), 
@@ -766,7 +767,7 @@ ewl_iconbox_icon_arrange(Ewl_Iconbox *ib)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ib", ib);
-	DCHECK_TYPE("ib", ib, "iconbox");
+	DCHECK_TYPE("ib", ib, EWL_ICONBOX_TYPE);
 
 	/*printf ("Entering the arrange..\n");*/
 
@@ -853,7 +854,7 @@ ewl_iconbox_icon_select(Ewl_Iconbox_Icon *ib, int loc, int deselect) /* Loc 0= i
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ib", ib);
-	DCHECK_TYPE("ib", ib, "icon");
+	DCHECK_TYPE("ib", ib, EWL_ICON_TYPE);
 
 	sel = ib->selected;
 	ib->icon_box_parent->select_icon = ib;
@@ -918,7 +919,7 @@ ewl_iconbox_icon_deselect(Ewl_Iconbox_Icon *ib)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ib", ib);
-	DCHECK_TYPE("ib", ib, "icon");
+	DCHECK_TYPE("ib", ib, EWL_ICON_TYPE);
 
 	if (ib->selected) {
 		ib->selected = 0;
@@ -943,7 +944,7 @@ ewl_iconbox_deselect_all(Ewl_Iconbox *ib)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ib", ib);
-	DCHECK_TYPE("ib", ib, "iconbox");
+	DCHECK_TYPE("ib", ib, EWL_ICONBOX_TYPE);
 
 	ecore_list_goto_first(ib->ewl_iconbox_icon_list);
 	while((list_item = ecore_list_next(ib->ewl_iconbox_icon_list))) {
@@ -961,8 +962,8 @@ ewl_iconbox_icon_remove(Ewl_Iconbox *ib, Ewl_Iconbox_Icon *icon)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ib", ib);
 	DCHECK_PARAM_PTR("icon", icon);
-	DCHECK_TYPE("ib", ib, "iconbox");
-	DCHECK_TYPE("icon", icon, "icon");
+	DCHECK_TYPE("ib", ib, EWL_ICONBOX_TYPE);
+	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
 
 	if (ib->ewl_iconbox_icon_list) {
 		Ecore_List *new_icon_list;
@@ -1004,10 +1005,10 @@ ewl_iconbox_icon_add(Ewl_Iconbox *iconbox, const char *name, const char *icon_fi
 	int px, py;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("iconbox", iconbox, NULL);
+	DCHECK_PARAM_PTR_RET(EWL_ICONBOX_TYPE, iconbox, NULL);
 	DCHECK_PARAM_PTR_RET("name", name, NULL);
 	DCHECK_PARAM_PTR_RET("icon_file", icon_file, NULL);
-	DCHECK_TYPE_RET("iconbox", iconbox, "iconbox", NULL);
+	DCHECK_TYPE_RET(EWL_ICONBOX_TYPE, iconbox, EWL_ICONBOX_TYPE, NULL);
 
 	/*Make a brand new icon*/
 	ib = ewl_iconbox_icon_new();
@@ -1093,7 +1094,7 @@ ewl_iconbox_icon_image_set(Ewl_Iconbox_Icon *icon, const char *filename)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("icon", icon);
 	DCHECK_PARAM_PTR("filename", filename);
-	DCHECK_TYPE("icon", icon, "icon");
+	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
 
 	ewl_image_file_set(EWL_IMAGE(icon->image), filename, NULL);
 	ewl_image_constrain_set(EWL_IMAGE(icon->image), 64);	
@@ -1108,7 +1109,7 @@ ewl_iconbox_clear(Ewl_Iconbox *ib)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ib", ib);
-	DCHECK_TYPE("ib", ib, "iconbox");
+	DCHECK_TYPE("ib", ib, EWL_ICONBOX_TYPE);
 
 	/*printf("*** Deleting all icons...\n");*/
 
@@ -1146,7 +1147,7 @@ ewl_iconbox_dnd_drop_cb(Ewl_Widget *item __UNUSED__,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("user_data", user_data);
 	DCHECK_PARAM_PTR("ev_data", ev_data);
-	DCHECK_TYPE("user_data", user_data, "iconbox");
+	DCHECK_TYPE("user_data", user_data, EWL_ICONBOX_TYPE);
 
 	ib = EWL_ICONBOX(user_data);
 	list_item = ib->select_icon;
@@ -1190,7 +1191,7 @@ ewl_iconbox_dnd_position_cb(Ewl_Widget *item __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("user_data", user_data, "iconbox");
+	DCHECK_TYPE("user_data", user_data, EWL_ICONBOX_TYPE);
 
 	ib = EWL_ICONBOX(user_data);
 	list_item = ib->select_icon;
@@ -1225,7 +1226,7 @@ ewl_iconbox_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_data 
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ib = EWL_ICONBOX(w);
 
@@ -1241,7 +1242,7 @@ void ewl_iconbox_icon_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "icon");
+	DCHECK_TYPE("w", w, EWL_ICON_TYPE);
 
 	icon = EWL_ICONBOX_ICON(w);
 	if (icon->label) {
@@ -1263,7 +1264,7 @@ ewl_iconbox_arrange_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, void 
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("user_data", user_data, "iconbox");
+	DCHECK_TYPE("user_data", user_data, EWL_ICONBOX_TYPE);
 
 	ib = EWL_ICONBOX(user_data);
 	ewl_iconbox_icon_arrange(ib);
@@ -1279,7 +1280,7 @@ ewl_iconbox_expansion_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("user_data", user_data, "iconbox");
+	DCHECK_TYPE("user_data", user_data, EWL_ICONBOX_TYPE);
 
 	ib = EWL_ICONBOX(user_data);
 	ewl_object_custom_size_set(EWL_OBJECT(ib->ewl_iconbox_pane_inner), 
@@ -1300,7 +1301,7 @@ ewl_iconbox_mouse_move_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_da
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("user_data", user_data);
 	DCHECK_PARAM_PTR("ev_data", ev_data);
-	DCHECK_TYPE("user_data", user_data, "iconbox");
+	DCHECK_TYPE("user_data", user_data, EWL_ICONBOX_TYPE);
 
 	ib = EWL_ICONBOX(user_data);
 	ev = ev_data;
@@ -1421,7 +1422,7 @@ ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *us
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("user_data", user_data);
 	DCHECK_PARAM_PTR("ev_data", ev_data);
-	DCHECK_TYPE("user_data", user_data, "iconbox");
+	DCHECK_TYPE("user_data", user_data, EWL_ICONBOX_TYPE);
 
 	ib = EWL_ICONBOX(user_data);	
 	ev = ev_data;
@@ -1473,7 +1474,7 @@ ewl_iconbox_icon_mouse_down(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("user_data", user_data);
 	DCHECK_PARAM_PTR("ev_data", ev_data);
-	DCHECK_TYPE("user_data", user_data, "icon");
+	DCHECK_TYPE("user_data", user_data, EWL_ICON_TYPE);
 
 	ib = user_data;
 	ev = ev_data;
@@ -1521,7 +1522,7 @@ ewl_iconbox_icon_mouse_up(Ewl_Widget *w __UNUSED__, void *ev_data , void *user_d
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("user_data", user_data);
 	DCHECK_PARAM_PTR("ev_data", ev_data);
-	DCHECK_TYPE("user_data", user_data, "icon");
+	DCHECK_TYPE("user_data", user_data, EWL_ICON_TYPE);
 
 	ib = user_data;
 	ev = ev_data;
@@ -1549,7 +1550,7 @@ ewl_iconbox_mouse_up(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("user_data", user_data);
 	DCHECK_PARAM_PTR("ev_data", ev_data);
-	DCHECK_TYPE("user_data", user_data, "iconbox");
+	DCHECK_TYPE("user_data", user_data, EWL_ICONBOX_TYPE);
 
 	ib = user_data;
 	ev = ev_data;
@@ -1573,7 +1574,7 @@ ewl_iconbox_icon_label_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data __U
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("user_data", user_data, "icon");
+	DCHECK_TYPE("user_data", user_data, EWL_ICON_TYPE);
 
 	ib = user_data;
 
@@ -1595,7 +1596,7 @@ ewl_iconbox_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_dat
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "iconbox");
+	DCHECK_TYPE("w", w, EWL_ICONBOX_TYPE);
 
 	ib = EWL_ICONBOX(w);
 
@@ -1632,8 +1633,8 @@ ewl_iconbox_icon_distance(Ewl_Iconbox_Icon *i1, Ewl_Iconbox_Icon *i2)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("i1", i1, FALSE);
 	DCHECK_PARAM_PTR_RET("i2", i2, FALSE);
-	DCHECK_TYPE_RET("i1", i1, "icon", FALSE);
-	DCHECK_TYPE_RET("i2", i2, "icon", FALSE);
+	DCHECK_TYPE_RET("i1", i1, EWL_ICON_TYPE, FALSE);
+	DCHECK_TYPE_RET("i2", i2, EWL_ICON_TYPE, FALSE);
 
 	DRETURN_FLOAT(sqrt(pow(CURRENT_X(i1) - CURRENT_X(i2), 2) 
 				+ pow(CURRENT_Y(i1) - CURRENT_Y(i2), 2)), DLEVEL_STABLE);
@@ -1653,7 +1654,7 @@ ewl_iconbox_key_press_cb (Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, vo
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("user_data", user_data);
 	DCHECK_PARAM_PTR("ev_data", ev_data);
-	DCHECK_TYPE("user_data", user_data, "iconbox");
+	DCHECK_TYPE("user_data", user_data, EWL_ICONBOX_TYPE);
 
 	ib = user_data;
 	current = ib->select_icon;
@@ -1774,7 +1775,7 @@ ewl_iconbox_controlled_key_callback_register(Ewl_Iconbox *ib, void (*cb)(Ewl_Ico
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ib", ib);
 	DCHECK_PARAM_PTR("cb", cb);
-	DCHECK_TYPE("ib", ib, "iconbox");
+	DCHECK_TYPE("ib", ib, EWL_ICONBOX_TYPE);
 
 	ib->key_event_cb = cb;
 	ib->key_event_data = data;

@@ -32,7 +32,7 @@ ewl_container_init(Ewl_Container *c)
 	if (!ewl_widget_init(w))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_widget_inherit(w, "container");
+	ewl_widget_inherit(w, EWL_CONTAINER_TYPE);
 	ewl_object_recursive_set(EWL_OBJECT(w), TRUE);
 
 	/*
@@ -75,7 +75,7 @@ ewl_container_add_notify_set(Ewl_Container *container, Ewl_Child_Add add)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("container", container);
-	DCHECK_TYPE("container", container, "container");
+	DCHECK_TYPE("container", container, EWL_CONTAINER_TYPE);
 
 	container->child_add = add;
 
@@ -95,7 +95,7 @@ ewl_container_remove_notify_set(Ewl_Container *container, Ewl_Child_Remove remov
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("container", container);
-	DCHECK_TYPE("container", container, "container");
+	DCHECK_TYPE("container", container, EWL_CONTAINER_TYPE);
 
 	container->child_remove = remove;
 
@@ -115,7 +115,7 @@ ewl_container_resize_notify_set(Ewl_Container *container, Ewl_Child_Resize resiz
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("container", container);
-	DCHECK_TYPE("container", container, "container");
+	DCHECK_TYPE("container", container, EWL_CONTAINER_TYPE);
 
 	container->child_resize = resize;
 
@@ -135,7 +135,7 @@ ewl_container_show_notify_set(Ewl_Container *container, Ewl_Child_Show show)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("container", container);
-	DCHECK_TYPE("container", container, "container");
+	DCHECK_TYPE("container", container, EWL_CONTAINER_TYPE);
 
 	container->child_show = show;
 
@@ -155,7 +155,7 @@ ewl_container_hide_notify_set(Ewl_Container *container, Ewl_Child_Hide hide)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("container", container);
-	DCHECK_TYPE("container", container, "container");
+	DCHECK_TYPE("container", container, EWL_CONTAINER_TYPE);
 
 	container->child_hide = hide;
 
@@ -176,8 +176,8 @@ ewl_container_child_append(Ewl_Container *pc, Ewl_Widget *child)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
-	DCHECK_TYPE("pc", pc, "container");
-	DCHECK_TYPE("child", child, "widget");
+	DCHECK_TYPE("pc", pc, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("child", child, EWL_WIDGET_TYPE);
 
 	if (pc == EWL_CONTAINER(child->parent))
 		DRETURN(DLEVEL_STABLE);
@@ -211,8 +211,8 @@ ewl_container_child_prepend(Ewl_Container *pc, Ewl_Widget *child)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
-	DCHECK_TYPE("pc", pc, "container");
-	DCHECK_TYPE("child", child, "widget");
+	DCHECK_TYPE("pc", pc, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("child", child, EWL_WIDGET_TYPE);
 
 	if (pc == EWL_CONTAINER(child->parent))
 		DRETURN(DLEVEL_STABLE);
@@ -242,8 +242,8 @@ ewl_container_child_insert_helper(Ewl_Container *pc, Ewl_Widget *child,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
-	DCHECK_TYPE("pc", pc, "container");
-	DCHECK_TYPE("child", child, "widget");
+	DCHECK_TYPE("pc", pc, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("child", child, EWL_WIDGET_TYPE);
 
 	if (pc == EWL_CONTAINER(child->parent))
 		DRETURN(DLEVEL_STABLE);
@@ -288,8 +288,8 @@ ewl_container_child_insert(Ewl_Container *pc, Ewl_Widget *child, int index)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
-	DCHECK_TYPE("pc", pc, "container");
-	DCHECK_TYPE("child", child, "widget");
+	DCHECK_TYPE("pc", pc, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("child", child, EWL_WIDGET_TYPE);
 
 	ewl_container_child_insert_helper(pc, child, index, TRUE);
 
@@ -313,8 +313,8 @@ ewl_container_child_insert_internal(Ewl_Container *pc,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
-	DCHECK_TYPE("pc", pc, "container");
-	DCHECK_TYPE("child", child, "widget");
+	DCHECK_TYPE("pc", pc, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("child", child, EWL_WIDGET_TYPE);
 
 	ewl_container_child_insert_helper(pc, child, index, FALSE);
 
@@ -337,8 +337,8 @@ ewl_container_child_remove(Ewl_Container *pc, Ewl_Widget *child)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
-	DCHECK_TYPE("pc", pc, "container");
-	DCHECK_TYPE("child", child, "widget");
+	DCHECK_TYPE("pc", pc, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("child", child, EWL_WIDGET_TYPE);
 
 	if (child == EWL_WIDGET(pc->redirect))
 		pc->redirect = NULL;
@@ -396,7 +396,7 @@ ewl_container_child_count_get(Ewl_Container *c)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("c", c, 0);
-	DCHECK_TYPE_RET("c", c, "container", 0);
+	DCHECK_TYPE_RET("c", c, EWL_CONTAINER_TYPE, 0);
 
 	/*
 	 * Find the container where children are actually added.
@@ -428,7 +428,7 @@ ewl_container_child_get(Ewl_Container *parent, int index)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("parent", parent, NULL);
-	DCHECK_TYPE_RET("parent", parent, "container", NULL);
+	DCHECK_TYPE_RET("parent", parent, EWL_CONTAINER_TYPE, NULL);
 
 	container = parent;
 	while (container->redirect) container = container->redirect;
@@ -459,8 +459,8 @@ ewl_container_child_index_get(Ewl_Container *parent, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("parent", parent, idx);
 	DCHECK_PARAM_PTR_RET("w", w, idx);
-	DCHECK_TYPE_RET("parent", parent, "container", idx);
-	DCHECK_TYPE_RET("w", w, "widget", idx);
+	DCHECK_TYPE_RET("parent", parent, EWL_CONTAINER_TYPE, idx);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, idx);
 
 	container = parent;
 	while (container->redirect) container = container->redirect;
@@ -491,7 +491,7 @@ ewl_container_child_resize(Ewl_Widget *w, int size, Ewl_Orientation o)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	if (!size || !REALIZED(w) || ewl_object_queued_has(EWL_OBJECT(w),
 						EWL_FLAG_QUEUED_RSCHEDULED))
@@ -555,7 +555,7 @@ ewl_container_child_at_get(Ewl_Container *widget, int x, int y)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("widget", widget, NULL);
-	DCHECK_TYPE("widget", widget, "widget");
+	DCHECK_TYPE("widget", widget, EWL_WIDGET_TYPE);
 
 	if (!widget->children || ecore_list_is_empty(widget->children))
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
@@ -599,7 +599,7 @@ ewl_container_child_at_recursive_get(Ewl_Container *widget, int x, int y)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("widget", widget, NULL);
-	DCHECK_TYPE_RET("widget", widget, "widget", NULL);
+	DCHECK_TYPE_RET("widget", widget, EWL_WIDGET_TYPE, NULL);
 
 	if (!widget->children || ecore_list_is_empty(widget->children))
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
@@ -646,7 +646,7 @@ ewl_container_reset(Ewl_Container *c)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, "container");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 
 	while (c->redirect)
 		c = c->redirect;
@@ -692,7 +692,7 @@ ewl_container_child_iterate_begin(Ewl_Container *c)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, "container");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 
 	while (c->redirect)
 		c = c->redirect;
@@ -714,7 +714,7 @@ ewl_container_child_next(Ewl_Container *c)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("c", c, NULL);
-	DCHECK_TYPE_RET("c", c, "container", NULL);
+	DCHECK_TYPE_RET("c", c, EWL_CONTAINER_TYPE, NULL);
 
 	while (c->redirect)
 		c = c->redirect;
@@ -743,7 +743,7 @@ ewl_container_child_iterator_set(Ewl_Container *c, Ewl_Container_Iterator i)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, "container");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 
 	c->iterator = i;
 
@@ -764,7 +764,7 @@ ewl_container_callback_intercept(Ewl_Container *c, Ewl_Callback_Type t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, "container");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 
 	EWL_CALLBACK_FLAG_INTERCEPT(EWL_WIDGET(c), t);
 
@@ -785,7 +785,7 @@ ewl_container_callback_nointercept(Ewl_Container *c, Ewl_Callback_Type t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, "container");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 
 	EWL_CALLBACK_FLAG_NOINTERCEPT(EWL_WIDGET(c), t);
 
@@ -806,7 +806,7 @@ ewl_container_callback_notify(Ewl_Container *c, Ewl_Callback_Type t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, "container");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 
 	EWL_CALLBACK_FLAG_NOTIFY(EWL_WIDGET(c), t);
 
@@ -833,7 +833,7 @@ ewl_container_largest_prefer(Ewl_Container *c, Ewl_Orientation o)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, "container");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 
 	if (o == EWL_ORIENTATION_HORIZONTAL) {
 		get_size = ewl_object_preferred_w_get;
@@ -872,7 +872,7 @@ ewl_container_sum_prefer(Ewl_Container *c, Ewl_Orientation o)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, "container");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 
 	if (o == EWL_ORIENTATION_HORIZONTAL) {
 		get_size = ewl_object_preferred_w_get;
@@ -905,7 +905,7 @@ ewl_container_child_add_call(Ewl_Container *c, Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, "container");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 
 	if (c->child_add)
 		c->child_add(c, w);
@@ -926,8 +926,8 @@ ewl_container_child_remove_call(Ewl_Container *c, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, "container");
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	if (c->child_remove)
 		c->child_remove(c, w);
@@ -948,8 +948,8 @@ ewl_container_child_show_call(Ewl_Container *c, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, "container");
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	if (c->child_show)
 		c->child_show(c, w);
@@ -977,8 +977,8 @@ ewl_container_child_hide_call(Ewl_Container *c, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, "container");
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	if (c->child_hide)
 		c->child_hide(c, w);
@@ -1007,7 +1007,7 @@ ewl_container_destroy(Ewl_Container *c)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, "container");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 
 	c->redirect = NULL;
 	if (c->children) {
@@ -1041,7 +1041,7 @@ ewl_container_end_redirect_get(Ewl_Container *c)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("c", c, NULL);
-	DCHECK_TYPE_RET("c", c, "container", NULL);
+	DCHECK_TYPE_RET("c", c, EWL_CONTAINER_TYPE, NULL);
 
 	if (!c->redirect)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
@@ -1064,7 +1064,7 @@ ewl_container_redirect_get(Ewl_Container *c)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("c", c, NULL);
-	DCHECK_TYPE_RET("c", c, "container", NULL);
+	DCHECK_TYPE_RET("c", c, EWL_CONTAINER_TYPE, NULL);
 
 	DRETURN_PTR(c->redirect, DLEVEL_STABLE);
 }
@@ -1080,7 +1080,7 @@ ewl_container_redirect_set(Ewl_Container *c, Ewl_Container *rc)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, "container");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 
 	c->redirect = rc;
 
@@ -1099,7 +1099,7 @@ ewl_container_reparent_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	if (!EWL_CONTAINER(w)->children)
 		DRETURN(DLEVEL_STABLE);
@@ -1212,7 +1212,7 @@ ewl_container_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	c = EWL_CONTAINER(w);
 
@@ -1242,7 +1242,7 @@ ewl_container_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	if (EWL_CONTAINER(w)->clip_box) {
 		/*
@@ -1267,7 +1267,7 @@ ewl_container_unrealize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	c = EWL_CONTAINER(w);
 

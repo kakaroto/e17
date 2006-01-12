@@ -15,6 +15,8 @@
  * @themekey /embed/group
  */
 
+#define EWL_EMBED_TYPE "embed"
+
 /**
  * The embed structure is mostly a container for holding widgets and a
  * wrapper evas smart object.

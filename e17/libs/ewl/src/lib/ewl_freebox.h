@@ -1,6 +1,8 @@
 #ifndef EWL_FREEBOX_H
 #define EWL_FREEBOX_H
 
+#define EWL_FREEBOX_TYPE "freebox"
+
 /**
  * @brief Callback to compare two widgets to determin which is first. If the
  * return is < 0 then a is first. If the return is > 0 then b is first. If

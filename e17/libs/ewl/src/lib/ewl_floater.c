@@ -53,8 +53,8 @@ ewl_floater_init(Ewl_Floater *f)
 
 	ewl_box_orientation_set(EWL_BOX(w), EWL_ORIENTATION_VERTICAL);
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NORMAL);
-	ewl_widget_appearance_set(w, "floater");
-	ewl_widget_inherit(w, "floater");
+	ewl_widget_appearance_set(w, EWL_FLOATER_TYPE);
+	ewl_widget_inherit(w, EWL_FLOATER_TYPE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -69,7 +69,7 @@ ewl_floater_follow_set(Ewl_Floater *f, Ewl_Widget *p)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("f", f);
-	DCHECK_TYPE("f", f, "floater");
+	DCHECK_TYPE("f", f, EWL_FLOATER_TYPE);
 
 	/*
 	 * Don't follow the old parent.
@@ -108,7 +108,7 @@ ewl_floater_follow_get(Ewl_Floater *f)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("f", f, NULL);
-	DCHECK_TYPE_RET("f", f, "floater", NULL);
+	DCHECK_TYPE_RET("f", f, EWL_FLOATER_TYPE, NULL);
 
 	DRETURN_PTR(f->follows, DLEVEL_STABLE);
 }
@@ -125,7 +125,7 @@ ewl_floater_position_set(Ewl_Floater *f, int x, int y)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("f", f);
-	DCHECK_TYPE("f", f, "floater");
+	DCHECK_TYPE("f", f, EWL_FLOATER_TYPE);
 
 	if (x == f->x && y == f->y)
 		DRETURN(DLEVEL_STABLE);
@@ -159,7 +159,7 @@ ewl_floater_relative_set(Ewl_Floater *f, Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("f", f);
-	DCHECK_TYPE("f", f, "floater");
+	DCHECK_TYPE("f", f, EWL_FLOATER_TYPE);
 
 	if (f->follows == w)
 		return;
@@ -195,7 +195,7 @@ ewl_floater_follow_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	w = user_data;
 	f = EWL_FLOATER(w);
@@ -250,7 +250,7 @@ ewl_floater_follow_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	EWL_FLOATER(w)->follows = NULL;
 

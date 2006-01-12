@@ -93,8 +93,8 @@ ewl_paned_init(Ewl_Paned *p)
 	if (!ewl_container_init(EWL_CONTAINER(p))) 
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_widget_appearance_set(w, "paned");
-	ewl_widget_inherit(w, "paned");
+	ewl_widget_appearance_set(w, EWL_PANED_TYPE);
+	ewl_widget_inherit(w, EWL_PANED_TYPE);
 	
 	p->orientation = EWL_ORIENTATION_HORIZONTAL;
 
@@ -132,7 +132,7 @@ ewl_paned_orientation_set(Ewl_Paned *p, Ewl_Orientation o)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
-	DCHECK_TYPE("p", p, "paned");
+	DCHECK_TYPE("p", p, EWL_PANED_TYPE);
 
 	if (p->orientation == o)
 		DRETURN(DLEVEL_STABLE);
@@ -172,7 +172,7 @@ ewl_paned_orientation_get(Ewl_Paned *p)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("p", p, EWL_ORIENTATION_HORIZONTAL);
-	DCHECK_TYPE_RET("p", p, "paned", EWL_ORIENTATION_HORIZONTAL);
+	DCHECK_TYPE_RET("p", p, EWL_PANED_TYPE, EWL_ORIENTATION_HORIZONTAL);
 
 	DRETURN_INT(p->orientation, DLEVEL_STABLE);
 }
@@ -186,8 +186,8 @@ ewl_paned_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, "container");
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	/* if this is an internal widget then we skip it as I'm assuming
 	 * that everything internal is a grabber. Or, if there is only one
@@ -242,8 +242,8 @@ ewl_paned_cb_child_remove(Ewl_Container *c, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, "container");
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	/* check first widget */
 	child = ecore_list_goto_first(c->children);
@@ -293,8 +293,8 @@ ewl_paned_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, "container");
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ewl_object_preferred_size_get(EWL_OBJECT(w), &ww, &wh);
 	ewl_object_preferred_inner_size_get(EWL_OBJECT(c), &cw, &ch);
@@ -351,8 +351,8 @@ ewl_paned_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, "container");
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ewl_object_preferred_size_get(EWL_OBJECT(w), &ww, &wh);
 	ewl_object_preferred_inner_size_get(EWL_OBJECT(c), &cw, &ch);
@@ -404,7 +404,7 @@ ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	p = EWL_PANED(w);
 
@@ -438,7 +438,7 @@ ewl_paned_configure_horizontal(Ewl_Paned *p)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
-	DCHECK_TYPE("p", p, "paned");
+	DCHECK_TYPE("p", p, EWL_PANED_TYPE);
 
 	cur_pos = CURRENT_X(p);
 	size = CURRENT_W(p);
@@ -587,7 +587,7 @@ ewl_paned_configure_vertical(Ewl_Paned *p)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
-	DCHECK_TYPE("p", p, "paned");
+	DCHECK_TYPE("p", p, EWL_PANED_TYPE);
 
 	cur_pos = CURRENT_Y(p);
 	size = CURRENT_H(p);
@@ -733,7 +733,7 @@ ewl_paned_grabber_cb_mouse_down(Ewl_Widget *w, void *ev __UNUSED__,
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
 				ewl_paned_grabber_cb_mouse_move, data);
@@ -748,7 +748,7 @@ ewl_paned_grabber_cb_mouse_up(Ewl_Widget *w, void *ev __UNUSED__,
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE,
 				ewl_paned_grabber_cb_mouse_move);
@@ -765,7 +765,7 @@ ewl_paned_grabber_cb_mouse_move(Ewl_Widget *w, void *ev, void *data)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	p = data;
 	e = ev;
@@ -792,7 +792,7 @@ ewl_paned_grabber_cb_mouse_in(Ewl_Widget *w, void *ev __UNUSED__,
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	/* XXX change cursor */
 
@@ -805,7 +805,7 @@ ewl_paned_grabber_cb_mouse_out(Ewl_Widget *w, void *ev __UNUSED__,
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	/* XXX change cursor */
 
@@ -822,8 +822,8 @@ ewl_paned_grabber_horizontal_shift(Ewl_Paned *p, Ewl_Widget *w, int to)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("p", p, "paned");
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("p", p, EWL_PANED_TYPE);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	bx = CURRENT_X(p);
 	ax = CURRENT_X(p) + CURRENT_W(p);
@@ -899,8 +899,8 @@ ewl_paned_grabber_vertical_shift(Ewl_Paned *p, Ewl_Widget *w, int to)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("p", p, "paned");
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("p", p, EWL_PANED_TYPE);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	by = CURRENT_Y(p);
 	ay = CURRENT_Y(p) + CURRENT_H(p);

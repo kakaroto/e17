@@ -52,8 +52,8 @@ ewl_combo_init(Ewl_Combo *combo, char *title)
 	ewl_object_fill_policy_set(EWL_OBJECT(combo), EWL_FLAG_FILL_HFILL |
 			EWL_FLAG_FILL_HSHRINK);
 
-	ewl_widget_appearance_set( EWL_WIDGET(combo), "combo" );
-	ewl_widget_inherit(EWL_WIDGET(combo), "combo");
+	ewl_widget_appearance_set( EWL_WIDGET(combo), EWL_COMBO_TYPE );
+	ewl_widget_inherit(EWL_WIDGET(combo), EWL_COMBO_TYPE);
 
 	if (EWL_MENU_ITEM(combo)->icon)
 		ewl_widget_destroy(EWL_MENU_ITEM(combo)->icon);
@@ -115,7 +115,8 @@ ewl_combo_init(Ewl_Combo *combo, char *title)
 				EWL_WIDGET(combo));
 	ewl_widget_internal_set(combo->base.popup, TRUE);
 	ewl_widget_layer_set(combo->base.popup, 1000);
-	ewl_widget_appearance_set(EWL_WIDGET(combo->base.popup), "imenu");
+	ewl_widget_appearance_set(EWL_WIDGET(combo->base.popup),
+						EWL_IMENU_TYPE);
 	ewl_box_orientation_set(EWL_BOX(combo->base.popup),
 				EWL_ORIENTATION_VERTICAL);
 	ewl_object_fill_policy_set(EWL_OBJECT(combo->base.popup),
@@ -138,8 +139,8 @@ ewl_combo_selected_set(Ewl_Combo *combo, Ewl_Widget *item)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("combo", combo);
 	DCHECK_PARAM_PTR("item", item);
-	DCHECK_TYPE("combo", combo, "combo");
-	DCHECK_TYPE("item", item, "widget");
+	DCHECK_TYPE("combo", combo, EWL_COMBO_TYPE);
+	DCHECK_TYPE("item", item, EWL_WIDGET_TYPE);
 
 	combo->selected = item;
 	ewl_callback_call_with_event_data(EWL_WIDGET(combo),
@@ -157,7 +158,7 @@ ewl_combo_selected_get(Ewl_Combo *combo)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("combo", combo, NULL);
-	DCHECK_TYPE_RET("combo", combo, "combo", NULL);
+	DCHECK_TYPE_RET("combo", combo, EWL_COMBO_TYPE, NULL);
 
 	DRETURN_PTR(combo->selected, DLEVEL_STABLE);
 }
@@ -171,7 +172,7 @@ ewl_combo_item_focus_in_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	combo = EWL_COMBO(user_data);
 
@@ -197,7 +198,7 @@ ewl_combo_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	combo = EWL_COMBO(w);
 	/*
@@ -245,7 +246,7 @@ ewl_combo_expand_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 	
 	combo = EWL_COMBO(user_data);
 	ewl_widget_appearance_set(combo->button, "increment");

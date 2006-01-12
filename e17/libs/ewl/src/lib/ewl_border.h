@@ -16,6 +16,8 @@
  * @themekey /border/group
  */
 
+#define EWL_BORDER_TYPE "border"
+
 /**
  * Provides an Ewl_Widget to simply act as a separator between other
  * Ewl_Widget's.

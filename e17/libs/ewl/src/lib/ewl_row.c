@@ -42,8 +42,8 @@ ewl_row_init(Ewl_Row *row)
 	if (!ewl_container_init(EWL_CONTAINER(row)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_widget_appearance_set(EWL_WIDGET(row), "row");
-	ewl_widget_inherit(EWL_WIDGET(row), "row");
+	ewl_widget_appearance_set(EWL_WIDGET(row), EWL_ROW_TYPE);
+	ewl_widget_inherit(EWL_WIDGET(row), EWL_ROW_TYPE);
 
 	ewl_container_show_notify_set(EWL_CONTAINER(row), ewl_row_child_show_cb);
 	ewl_container_hide_notify_set(EWL_CONTAINER(row), ewl_row_child_hide_cb);
@@ -73,7 +73,7 @@ ewl_row_header_set(Ewl_Row *row, Ewl_Row *header)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("row", row);
-	DCHECK_TYPE("row", row, "row");
+	DCHECK_TYPE("row", row, EWL_ROW_TYPE);
 
 	if (row->header == header)
 		DRETURN(DLEVEL_STABLE);
@@ -122,7 +122,7 @@ ewl_row_column_get(Ewl_Row *row, short n)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("row", row, NULL);
-	DCHECK_TYPE_RET("row", row, "row", NULL);
+	DCHECK_TYPE_RET("row", row, EWL_ROW_TYPE, NULL);
 
 	found = ecore_list_goto_index(EWL_CONTAINER(row)->children, n + 1);
 
@@ -142,7 +142,7 @@ ewl_row_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	row = EWL_ROW(w);
 	c = EWL_CONTAINER(w);
@@ -287,8 +287,8 @@ ewl_row_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, "container");
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	row = EWL_ROW(c);
 	ewl_container_largest_prefer(c, EWL_ORIENTATION_VERTICAL);
@@ -306,8 +306,8 @@ ewl_row_child_hide_cb(Ewl_Container *c, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, "container");
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	row = EWL_ROW(c);
 	ewl_container_largest_prefer(c, EWL_ORIENTATION_VERTICAL);
@@ -325,7 +325,7 @@ ewl_row_resize_cb(Ewl_Container *c, Ewl_Widget *w __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, "container");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 
 	row = EWL_ROW(c);
 	if (o == EWL_ORIENTATION_VERTICAL)

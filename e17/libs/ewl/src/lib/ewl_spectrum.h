@@ -8,6 +8,8 @@
  * @{
  */
 
+#define EWL_SPECTRUM_TYPE "spectrum"
+
 /**
  * @def EWL_SPECTRUM(sp)
  * Typecasts a pointer to an Ewl_Spectrum pointer.

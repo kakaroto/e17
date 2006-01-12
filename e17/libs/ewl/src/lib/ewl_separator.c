@@ -84,7 +84,7 @@ ewl_separator_init(Ewl_Separator *s)
 	if (!ewl_widget_init(w))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_widget_inherit(w, "separator");
+	ewl_widget_inherit(w, EWL_SEPARATOR_TYPE);
 	ewl_widget_appearance_set(EWL_WIDGET(s), "hseparator");
 	ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_HFILL |
 						  EWL_FLAG_FILL_SHRINK);
@@ -103,7 +103,7 @@ ewl_separator_orientation_set(Ewl_Separator *s, Ewl_Orientation o)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
-	DCHECK_TYPE("s", s, "separator");
+	DCHECK_TYPE("s", s, EWL_SEPARATOR_TYPE);
 
 	if (s->orientation == o)
 		DRETURN(DLEVEL_STABLE);
@@ -133,7 +133,7 @@ ewl_separator_orientation_get(Ewl_Separator *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, EWL_ORIENTATION_HORIZONTAL);
-	DCHECK_TYPE_RET("s", s, "separator", EWL_ORIENTATION_HORIZONTAL);
+	DCHECK_TYPE_RET("s", s, EWL_SEPARATOR_TYPE, EWL_ORIENTATION_HORIZONTAL);
 
 	DRETURN_INT(s->orientation, DLEVEL_STABLE);
 }

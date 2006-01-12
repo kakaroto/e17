@@ -95,7 +95,7 @@ ewl_seeker_init(Ewl_Seeker *s)
 	 * Initialize the widget fields and set default orientation and type
 	 */
 	ewl_widget_appearance_set(w, "hseeker");
-	ewl_widget_inherit(w, "seeker");
+	ewl_widget_inherit(w, EWL_SEEKER_TYPE);
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_HFILL |
 				EWL_FLAG_FILL_HSHRINK);
 
@@ -162,7 +162,7 @@ ewl_seeker_orientation_set(Ewl_Seeker *s, Ewl_Orientation o)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
-	DCHECK_TYPE("s", s, "seeker");
+	DCHECK_TYPE("s", s, EWL_SEEKER_TYPE);
 
 	if (o == s->orientation)
 		DRETURN(DLEVEL_STABLE);
@@ -196,7 +196,7 @@ ewl_seeker_value_set(Ewl_Seeker *s, double v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
-	DCHECK_TYPE("s", s, "seeker");
+	DCHECK_TYPE("s", s, EWL_SEEKER_TYPE);
 
 	if (v == s->value)
 		DRETURN(DLEVEL_STABLE);
@@ -223,7 +223,7 @@ ewl_seeker_value_get(Ewl_Seeker *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, -1);
-	DCHECK_TYPE_RET("s", s, "seeker", -1);
+	DCHECK_TYPE_RET("s", s, EWL_SEEKER_TYPE, -1);
 
 	DRETURN_FLOAT(s->value, DLEVEL_STABLE);
 }
@@ -241,7 +241,7 @@ ewl_seeker_range_set(Ewl_Seeker *s, double r)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
-	DCHECK_TYPE("s", s, "seeker");
+	DCHECK_TYPE("s", s, EWL_SEEKER_TYPE);
 
 	new_val = r * (s->value / s->range);
 
@@ -263,7 +263,7 @@ ewl_seeker_range_get(Ewl_Seeker *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, -1);
-	DCHECK_TYPE_RET("s", s, "seeker", -1);
+	DCHECK_TYPE_RET("s", s, EWL_SEEKER_TYPE, -1);
 
 	DRETURN_FLOAT(s->range, DLEVEL_STABLE);
 }
@@ -282,7 +282,7 @@ ewl_seeker_step_set(Ewl_Seeker *s, double step)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
-	DCHECK_TYPE("s", s, "seeker");
+	DCHECK_TYPE("s", s, EWL_SEEKER_TYPE);
 
 	if (step > s->range)
 		step = s->range;
@@ -302,7 +302,7 @@ ewl_seeker_step_get(Ewl_Seeker *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, -1);
-	DCHECK_TYPE_RET("s", s, "seeker", -1);
+	DCHECK_TYPE_RET("s", s, EWL_SEEKER_TYPE, -1);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 	DRETURN_FLOAT(s->step, DLEVEL_STABLE);
@@ -323,7 +323,7 @@ ewl_seeker_autohide_set(Ewl_Seeker *s, int v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
-	DCHECK_TYPE("s", s, "seeker");
+	DCHECK_TYPE("s", s, EWL_SEEKER_TYPE);
 
 	if (s->autohide == v || s->autohide == -v)
 		DRETURN(DLEVEL_STABLE);
@@ -351,7 +351,7 @@ ewl_seeker_autohide_get(Ewl_Seeker *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, 0);
-	DCHECK_TYPE_RET("s", s, "seeker", 0);
+	DCHECK_TYPE_RET("s", s, EWL_SEEKER_TYPE, 0);
 
 	DRETURN_INT(abs(s->autohide), DLEVEL_STABLE);
 }
@@ -367,7 +367,7 @@ ewl_seeker_invert_set(Ewl_Seeker *s, int invert)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
-	DCHECK_TYPE("s", s, "seeker");
+	DCHECK_TYPE("s", s, EWL_SEEKER_TYPE);
 
 	if (s->invert != invert) {
 		s->invert = invert;
@@ -387,7 +387,7 @@ ewl_seeker_invert_get(Ewl_Seeker *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, FALSE);
-	DCHECK_TYPE_RET("s", s, "seeker", FALSE);
+	DCHECK_TYPE_RET("s", s, EWL_SEEKER_TYPE, FALSE);
 
 	DRETURN_INT(s->invert, DLEVEL_STABLE);
 }
@@ -404,7 +404,7 @@ ewl_seeker_increase(Ewl_Seeker *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
-	DCHECK_TYPE("s", s, "seeker");
+	DCHECK_TYPE("s", s, EWL_SEEKER_TYPE);
 
 	s->value += s->step;
 
@@ -432,7 +432,7 @@ ewl_seeker_decrease(Ewl_Seeker *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
-	DCHECK_TYPE("s", s, "seeker");
+	DCHECK_TYPE("s", s, EWL_SEEKER_TYPE);
 
 	s->value -= s->step;
 
@@ -464,7 +464,7 @@ ewl_seeker_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	s = EWL_SEEKER(w);
 	if (!s->button)
@@ -516,7 +516,7 @@ ewl_seeker_button_mouse_down_cb(Ewl_Widget *w, void *ev_data,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("ev_data", ev_data);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ev = ev_data;
 	s = EWL_SEEKER(w->parent);
@@ -537,7 +537,7 @@ ewl_seeker_button_mouse_up_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	EWL_SEEKER(w->parent)->dragstart = 0;
 
@@ -558,7 +558,7 @@ ewl_seeker_mouse_move_cb(Ewl_Widget *w, void *ev_data,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("ev_data", ev_data);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	s = EWL_SEEKER(w);
 
@@ -607,7 +607,7 @@ ewl_seeker_mouse_down_cb(Ewl_Widget *w, void *ev_data,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("ev_data", ev_data);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ev = ev_data;
 	s = EWL_SEEKER(w);
@@ -661,7 +661,7 @@ ewl_seeker_mouse_up_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "seeker");
+	DCHECK_TYPE("w", w, EWL_SEEKER_TYPE);
 
 	if (s->timer)
 		ecore_timer_del(s->timer);
@@ -682,8 +682,8 @@ ewl_seeker_child_show_cb(Ewl_Container *p, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("p", p, "container");
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("p", p, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	s = EWL_SEEKER(p);
 
@@ -710,7 +710,7 @@ ewl_seeker_mouse_value_map(Ewl_Seeker *s, int mx, int my)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, 0.0);
-	DCHECK_TYPE("s", s, "seeker");
+	DCHECK_TYPE("s", s, EWL_SEEKER_TYPE);
 
 	if (s->orientation == EWL_ORIENTATION_HORIZONTAL) {
 		m = mx;
@@ -758,7 +758,7 @@ ewl_seeker_timer(void *data)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("data", data, FALSE);
-	DCHECK_TYPE("data", data, "seeker");
+	DCHECK_TYPE("data", data, EWL_SEEKER_TYPE);
 
 	s = EWL_SEEKER(data);
 

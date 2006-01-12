@@ -15,6 +15,8 @@
  * @themekey /spinner/group
  */
 
+#define EWL_SPINNER_TYPE "spinner"
+
 /**
  * A combination of entry and increment/decrement buttons for adjusting
  * numerical values.

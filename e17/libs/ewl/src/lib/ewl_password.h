@@ -14,6 +14,8 @@
  * @themekey /password/group
  */
 
+#define EWL_PASSWORD_TYPE "password"
+
 /**
  * Inherits from the Ewl_Widget and provides single line editable text.
  */

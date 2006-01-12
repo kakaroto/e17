@@ -26,6 +26,8 @@
  * @themekey /vscrollbar/seeker/button/group
  */
 
+#define EWL_SCROLLBAR_TYPE "scrollbar"
+
 /**
  * Provides a seeker with increment and decrement buttons arranged in a
  * specified order.

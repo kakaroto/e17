@@ -14,6 +14,8 @@
  * @{
  */
 
+#define EWL_WIDGET_TYPE "widget"
+
 typedef struct Ewl_Attach_List Ewl_Attach_List;
 struct Ewl_Attach_List
 {

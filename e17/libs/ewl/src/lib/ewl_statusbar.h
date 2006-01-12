@@ -14,6 +14,8 @@
  * @themekey /statusbar/group
  */
 
+#define EWL_STATUSBAR_TYPE "statusbar"
+
 /**
  */
 typedef struct Ewl_Statusbar Ewl_Statusbar;

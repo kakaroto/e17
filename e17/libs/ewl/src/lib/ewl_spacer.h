@@ -15,6 +15,8 @@
  * @themekey /spacer/group
  */
 
+#define EWL_SPACER_TYPE "spacer"
+
 /**
  * The Ewl_Spacer is a simple widget that is used to tweak spacing in an app.
  */

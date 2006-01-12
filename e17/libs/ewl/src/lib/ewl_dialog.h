@@ -17,6 +17,8 @@
  * @themekey /dialog/group
  */
 
+#define EWL_DIALOG_TYPE "dialog"
+
 /**
  * The dialog structure is a window with two area: a box (vbox) to hold
  * messages and another box (action_area) to put buttons

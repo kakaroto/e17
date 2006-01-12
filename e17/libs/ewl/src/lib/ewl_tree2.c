@@ -43,8 +43,8 @@ ewl_tree2_init(Ewl_Tree2 *tree)
 	if (!ewl_container_init(EWL_CONTAINER(tree)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_widget_appearance_set(EWL_WIDGET(tree), "tree2");
-	ewl_widget_inherit(EWL_WIDGET(tree), "tree2");
+	ewl_widget_appearance_set(EWL_WIDGET(tree), EWL_TREE2_TYPE);
+	ewl_widget_inherit(EWL_WIDGET(tree), EWL_TREE2_TYPE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }

@@ -47,8 +47,8 @@ ewl_datepicker_init(Ewl_Datepicker *dp)
 	ewl_text_text_set(EWL_TEXT(dp), "Date Test");
 
 	/* Init ewl setup */
-	ewl_widget_appearance_set(EWL_WIDGET(dp), "datepicker");
-	ewl_widget_inherit(EWL_WIDGET(dp), "datepicker");
+	ewl_widget_appearance_set(EWL_WIDGET(dp), EWL_DATEPICKER_TYPE);
+	ewl_widget_inherit(EWL_WIDGET(dp), EWL_DATEPICKER_TYPE);
 
 	dp->calendar_window = ewl_window_new();
 	ewl_object_custom_size_set(EWL_OBJECT(dp->calendar_window), 159, 170);
@@ -87,7 +87,7 @@ ewl_datepicker_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	dp = EWL_DATEPICKER(w);
 	ewl_widget_destroy(dp->calendar_window);
@@ -102,7 +102,7 @@ ewl_datepicker_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ewl_datepicker_calendar_position_set(EWL_DATEPICKER(w));
 
@@ -135,7 +135,7 @@ ewl_datepicker_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ewl_datepicker_calendar_position_set(EWL_DATEPICKER(w));
 
@@ -151,7 +151,7 @@ ewl_datepicker_calendar_position_set(Ewl_Datepicker *dp)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("dp", dp);
-	DCHECK_TYPE("dp", dp, "datepicker");
+	DCHECK_TYPE("dp", dp, EWL_DATEPICKER_TYPE);
 
 	/* Get the position of the parent */
 	emb = ewl_embed_widget_find(EWL_WIDGET(dp));
@@ -173,7 +173,7 @@ ewl_datepicker_dropdown_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	dp = EWL_DATEPICKER(w);
 	ewl_widget_show(dp->calendar_window);

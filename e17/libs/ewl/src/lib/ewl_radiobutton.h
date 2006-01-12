@@ -15,6 +15,8 @@
  * @themekey /radiobutton/group
  */
 
+#define EWL_RADIOBUTTON_TYPE "radiobutton"
+
 /**
  * The radio button provides a means for selecting a single item from a group
  * of options.

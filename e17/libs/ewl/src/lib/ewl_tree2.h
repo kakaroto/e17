@@ -60,6 +60,8 @@
  * @themekey /tree/group
  */
 
+#define EWL_TREE2_TYPE "tree2"
+
 typedef void *(*Ewl_Model_Fetch)(void *data, int row, int column);
 
 #define EWL_MODEL_DATA_GET(f) ((Ewl_Model_Fetch *)f)

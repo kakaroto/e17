@@ -16,6 +16,8 @@
  * @themekey /vseparator/group
  */
 
+#define EWL_SEPARATOR_TYPE "separator"
+
 /**
  * Provides an Ewl_Widget to simply act as a separator between other
  * Ewl_Widget's.

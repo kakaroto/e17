@@ -21,6 +21,8 @@
  * @themekey /fileselector/group
  */
 
+#define EWL_FILESELECTOR_TYPE "fileselector"
+
 /**
  * The Ewl_Fileselector provides a fileselector
  */

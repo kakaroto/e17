@@ -15,6 +15,8 @@
  * @themekey /scrollpane/group
  */
 
+#define EWL_SCROLLPANE_TYPE "scrollpane"
+
 /**
  * The scrollpane provides a way to pan around large collections of images.
  */

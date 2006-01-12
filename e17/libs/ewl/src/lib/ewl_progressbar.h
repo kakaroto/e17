@@ -15,6 +15,8 @@
  * @themekey /bar/group
  */
 
+#define EWL_PROGRESSBAR_TYPE "progressbar"
+
 /**
  * The Ewl_Progressbar provides a statusbar from a given value
  */

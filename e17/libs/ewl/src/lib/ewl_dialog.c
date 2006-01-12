@@ -46,8 +46,8 @@ ewl_dialog_init(Ewl_Dialog *dialog)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
-	ewl_widget_appearance_set(w, "window");
-	ewl_widget_inherit(w, "dialog");
+	ewl_widget_appearance_set(w, EWL_WINDOW_TYPE);
+	ewl_widget_inherit(w, EWL_DIALOG_TYPE);
 
 	dialog->position = EWL_POSITION_BOTTOM;
 
@@ -116,7 +116,7 @@ ewl_dialog_action_position_set(Ewl_Dialog *d, Ewl_Position pos)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("d", d);
-	DCHECK_TYPE("d", d, "dialog");
+	DCHECK_TYPE("d", d, EWL_DIALOG_TYPE);
 
 	if (pos == d->position) {
 		DRETURN(DLEVEL_STABLE);
@@ -176,7 +176,7 @@ ewl_dialog_action_position_get(Ewl_Dialog *d)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("d", d, EWL_POSITION_BOTTOM);
-	DCHECK_TYPE_RET("d", d, "dialog", EWL_POSITION_BOTTOM);
+	DCHECK_TYPE_RET("d", d, EWL_DIALOG_TYPE, EWL_POSITION_BOTTOM);
 
 	DRETURN_INT(d->position, DLEVEL_STABLE);
 }
@@ -191,7 +191,7 @@ ewl_dialog_has_separator_get(Ewl_Dialog *dialog)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("dialog", dialog, 0);
-	DCHECK_TYPE_RET("dialog", dialog, "dialog", 0);
+	DCHECK_TYPE_RET("dialog", dialog, EWL_DIALOG_TYPE, 0);
 
 	if (!dialog) {
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -214,7 +214,7 @@ ewl_dialog_has_separator_set(Ewl_Dialog *dialog, unsigned int has_sep)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("dialog", dialog);
-	DCHECK_TYPE("dialog", dialog, "dialog");
+	DCHECK_TYPE("dialog", dialog, EWL_DIALOG_TYPE);
 
 	if (!dialog) {
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -248,7 +248,7 @@ ewl_dialog_active_area_set(Ewl_Dialog *d, Ewl_Position pos)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("d", d);
-	DCHECK_TYPE("d", d, "dialog");
+	DCHECK_TYPE("d", d, EWL_DIALOG_TYPE);
 
 	d->active_area = pos;
 
@@ -267,7 +267,7 @@ ewl_dialog_active_area_get(Ewl_Dialog *d)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("d", d, EWL_POSITION_TOP);
-	DCHECK_TYPE_RET("d", d, "dialog", EWL_POSITION_TOP);
+	DCHECK_TYPE_RET("d", d, EWL_DIALOG_TYPE, EWL_POSITION_TOP);
 
 	DRETURN_INT(d->active_area, DLEVEL_STABLE);
 }

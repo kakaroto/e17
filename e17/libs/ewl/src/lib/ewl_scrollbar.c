@@ -93,7 +93,7 @@ ewl_scrollbar_init(Ewl_Scrollbar *s)
 
 	ewl_box_orientation_set(EWL_BOX(w), EWL_ORIENTATION_HORIZONTAL);
 	ewl_widget_appearance_set(w, "hscrollbar");
-	ewl_widget_inherit(w, "scrollbar");
+	ewl_widget_inherit(w, EWL_SCROLLBAR_TYPE);
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_HFILL |
 						  EWL_FLAG_FILL_HSHRINK);
 
@@ -226,7 +226,7 @@ ewl_scrollbar_orientation_set(Ewl_Scrollbar *s, Ewl_Orientation o)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
-	DCHECK_TYPE("s", s, "scrollbar");
+	DCHECK_TYPE("s", s, EWL_SCROLLBAR_TYPE);
 
 	if (o == ewl_box_orientation_get(EWL_BOX(s)))
 		DRETURN(DLEVEL_STABLE);
@@ -347,7 +347,7 @@ ewl_scrollbar_orientation_get(Ewl_Scrollbar *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, EWL_ORIENTATION_HORIZONTAL);
-	DCHECK_TYPE_RET("s", s, "scrollbar", EWL_ORIENTATION_HORIZONTAL);
+	DCHECK_TYPE_RET("s", s, EWL_SCROLLBAR_TYPE, EWL_ORIENTATION_HORIZONTAL);
 
 	DRETURN_INT(ewl_box_orientation_get(EWL_BOX(s)), DLEVEL_STABLE);
 }
@@ -363,7 +363,7 @@ ewl_scrollbar_inverse_scroll_set(Ewl_Scrollbar *s, char i)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
-	DCHECK_TYPE("s", s, "scrollbar");
+	DCHECK_TYPE("s", s, EWL_SCROLLBAR_TYPE);
 
 	if (i >= 0) i = 1;
 	else i = -1;
@@ -383,7 +383,7 @@ ewl_scrollbar_inverse_scroll_get(Ewl_Scrollbar *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, 1);
-	DCHECK_TYPE_RET("s", s, "scrollbar", 1);
+	DCHECK_TYPE_RET("s", s, EWL_SCROLLBAR_TYPE, 1);
 
 	DRETURN_INT(s->invert, DLEVEL_STABLE);
 }
@@ -400,7 +400,7 @@ ewl_scrollbar_value_get(Ewl_Scrollbar *s)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, -1);
-	DCHECK_TYPE_RET("s", s, "scrollbar", -1);
+	DCHECK_TYPE_RET("s", s, EWL_SCROLLBAR_TYPE, -1);
 
 	v = ewl_seeker_value_get(EWL_SEEKER(s->seeker));
 
@@ -425,7 +425,7 @@ ewl_scrollbar_value_set(Ewl_Scrollbar *s, double v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
-	DCHECK_TYPE("s", s, "scrollbar");
+	DCHECK_TYPE("s", s, EWL_SCROLLBAR_TYPE);
 
 	ewl_seeker_value_set(EWL_SEEKER(s->seeker), v);
 
@@ -442,7 +442,7 @@ ewl_scrollbar_step_get(Ewl_Scrollbar *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, 0);
-	DCHECK_TYPE_RET("s", s, "scrollbar", 0);
+	DCHECK_TYPE_RET("s", s, EWL_SCROLLBAR_TYPE, 0);
 
 	DRETURN_INT(ewl_seeker_step_get(EWL_SEEKER(s->seeker)), DLEVEL_STABLE);
 }
@@ -460,7 +460,7 @@ ewl_scrollbar_step_set(Ewl_Scrollbar *s, double v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
-	DCHECK_TYPE("s", s, "scrollbar");
+	DCHECK_TYPE("s", s, EWL_SCROLLBAR_TYPE);
 
 	ewl_seeker_step_set(EWL_SEEKER(s->seeker), v);
 
@@ -479,7 +479,7 @@ ewl_scrollbar_scroll_start_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	s = EWL_SCROLLBAR(user_data);
 	if (w == s->increment)

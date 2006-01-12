@@ -20,6 +20,10 @@
  * @themekey /text/color/a
  */
 
+#define EWL_TEXT_TYPE "text"
+#define EWL_TEXT_TRIGGER_TYPE "trigger"
+#define EWL_TEXT_SELECTION_TYPE "selection"
+
 /**
  * @def EWL_TEXT(text)
  * Typecasts a pointer to an Ewl_Text pointer.

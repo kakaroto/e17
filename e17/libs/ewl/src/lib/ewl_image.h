@@ -14,6 +14,8 @@
  * @themekey /image/group
  */
 
+#define EWL_IMAGE_TYPE "image"
+
 enum Ewl_Image_Type
 {
 	EWL_IMAGE_TYPE_NORMAL, /**< Standard image type */

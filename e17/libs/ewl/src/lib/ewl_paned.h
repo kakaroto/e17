@@ -18,6 +18,8 @@
  * @themekey /grabber/horizontal/group
  */
 
+#define EWL_PANED_TYPE "paned"
+
 /**
  */
 typedef struct Ewl_Paned Ewl_Paned;

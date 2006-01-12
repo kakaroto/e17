@@ -188,7 +188,7 @@ ewl_callback_insert(Ewl_Widget *w, Ewl_Callback_Type t,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, 0);
 	DCHECK_PARAM_PTR_RET("cb", cb, 0);
-	DCHECK_TYPE_RET("w", w, "widget", 0);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, 0);
 
 	if (EWL_CALLBACK_LEN(w, t) == 65535) {
 		DERROR("Maximum number of callbacks of one type exceeded on a widget\n");
@@ -267,7 +267,7 @@ ewl_callback_append(Ewl_Widget *w, Ewl_Callback_Type t,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, 0);
 	DCHECK_PARAM_PTR_RET("f", f, 0);
-	DCHECK_TYPE_RET("w", w, "widget", 0);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, 0);
 
 	cb.func = f;
 	cb.user_data = user_data;
@@ -302,7 +302,7 @@ ewl_callback_prepend(Ewl_Widget *w, Ewl_Callback_Type t,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, 0);
 	DCHECK_PARAM_PTR_RET("f", f, 0);
-	DCHECK_TYPE_RET("w", w, "widget", 0);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, 0);
 
 	cb.func = f;
 	cb.user_data = user_data;
@@ -341,7 +341,7 @@ ewl_callback_insert_after(Ewl_Widget *w, Ewl_Callback_Type t,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, 0);
 	DCHECK_PARAM_PTR_RET("f", f, 0);
-	DCHECK_TYPE_RET("w", w, "widget", 0);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, 0);
 
 	cb.func = f;
 	cb.user_data = user_data;
@@ -380,7 +380,7 @@ ewl_callback_call(Ewl_Widget *w, Ewl_Callback_Type t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ewl_callback_call_with_event_data(w, t, NULL);
 
@@ -406,7 +406,7 @@ ewl_callback_call_with_event_data(Ewl_Widget *w, Ewl_Callback_Type t,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	/*
 	 * First search up the tree to find the topmost intercepting widget.
@@ -503,7 +503,7 @@ ewl_callback_del_cb_id(Ewl_Widget *w, Ewl_Callback_Type t, int cb_id)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	if (!EWL_CALLBACK_LEN(w, t) || cb_id > callback_id)
 		DRETURN(DLEVEL_STABLE);
@@ -535,7 +535,7 @@ ewl_callback_clear(Ewl_Widget *w)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	for (i = 0; i < EWL_CALLBACK_MAX; i++) 
 		ewl_callback_del_type(w, i);
@@ -561,7 +561,7 @@ ewl_callback_del(Ewl_Widget *w, Ewl_Callback_Type t, Ewl_Callback_Function f)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	if (!EWL_CALLBACK_LEN(w, t))
 		DRETURN(DLEVEL_STABLE);
@@ -598,7 +598,7 @@ ewl_callback_del_with_data(Ewl_Widget *w, Ewl_Callback_Type t,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	if (!EWL_CALLBACK_LEN(w, t))
 		DRETURN(DLEVEL_STABLE);

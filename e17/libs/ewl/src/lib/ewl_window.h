@@ -15,6 +15,8 @@
  * @themekey /window/group
  */
 
+#define EWL_WINDOW_TYPE "window"
+
 /**
  * The window structure is mostly a container for holding widgets and a
  * wrapper around the xlib window.

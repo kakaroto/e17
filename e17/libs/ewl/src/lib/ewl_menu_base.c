@@ -23,8 +23,8 @@ ewl_menu_base_init(Ewl_Menu_Base *menu)
 	if (!ewl_menu_item_init(EWL_MENU_ITEM(menu)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_widget_appearance_set(EWL_WIDGET(menu), "menu_base");
-	ewl_widget_inherit(EWL_WIDGET(menu), "menu_base");
+	ewl_widget_appearance_set(EWL_WIDGET(menu), EWL_MENU_BASE_TYPE);
+	ewl_widget_inherit(EWL_WIDGET(menu), EWL_MENU_BASE_TYPE);
 
 	ewl_callback_del(EWL_WIDGET(menu), EWL_CALLBACK_CLICKED,
 					ewl_menu_item_clicked_cb);
@@ -71,7 +71,7 @@ ewl_menu_base_expand_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	if (!menu->popup)
 		DRETURN(DLEVEL_STABLE);
@@ -121,7 +121,7 @@ ewl_menu_base_collapse_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	menu = EWL_MENU_BASE(w);
 
@@ -196,7 +196,7 @@ ewl_menu_base_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "menu_base");
+	DCHECK_TYPE("w", w, EWL_MENU_BASE_TYPE);
 
 	menu = EWL_MENU_BASE(w);
 	if (menu->popup)

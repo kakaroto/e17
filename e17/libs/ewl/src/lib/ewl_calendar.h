@@ -14,6 +14,8 @@
  * @themekey /calendar/group
  */
 
+#define EWL_CALENDAR_TYPE "calendar"
+
 typedef struct Ewl_Calendar Ewl_Calendar;
 
 /**

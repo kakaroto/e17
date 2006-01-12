@@ -15,6 +15,8 @@
  * @themekey /menu_base/group
  */
 
+#define EWL_MENU_BASE_TYPE "menu_base"
+
 /**
  * Provides the basic functionality common to the various menu classes.
  */

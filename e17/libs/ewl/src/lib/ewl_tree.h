@@ -15,6 +15,9 @@
  * @themekey /tree/group
  */
 
+#define EWL_TREE_TYPE "tree"
+#define EWL_TREE_NODE_TYPE "node"
+
 typedef struct Ewl_Tree Ewl_Tree;
 
 /**

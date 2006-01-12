@@ -44,8 +44,8 @@ ewl_cell_init(Ewl_Cell *cell)
 
 	ewl_object_fill_policy_set(EWL_OBJECT(cell), EWL_FLAG_FILL_FILL |
 				   EWL_FLAG_FILL_HSHRINK);
-	ewl_widget_appearance_set(EWL_WIDGET(cell), "cell");
-	ewl_widget_inherit(EWL_WIDGET(cell), "cell");
+	ewl_widget_appearance_set(EWL_WIDGET(cell), EWL_CELL_TYPE);
+	ewl_widget_inherit(EWL_WIDGET(cell), EWL_CELL_TYPE);
 
 	ewl_container_show_notify_set(EWL_CONTAINER(cell), ewl_cell_child_show_cb);
 	ewl_container_resize_notify_set(EWL_CONTAINER(cell),
@@ -68,7 +68,7 @@ ewl_cell_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	c = EWL_CONTAINER(w);
 
@@ -88,8 +88,8 @@ ewl_cell_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, "container");
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	/*
 	 * Cell's only allow one child, so remove the rest, this may cause a
@@ -115,8 +115,8 @@ ewl_cell_child_resize_cb(Ewl_Container *c, Ewl_Widget *w,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, "container");
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(c),
 			ewl_object_preferred_w_get(EWL_OBJECT(w)),

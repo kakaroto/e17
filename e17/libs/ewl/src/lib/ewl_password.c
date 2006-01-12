@@ -49,7 +49,7 @@ ewl_password_init(Ewl_Password *e)
 	if (!ewl_entry_init(EWL_ENTRY(w)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_widget_inherit(w, "password");
+	ewl_widget_inherit(w, EWL_PASSWORD_TYPE);
 	e->obscure = '*';
 
 	/* text is not selectable */
@@ -84,7 +84,7 @@ ewl_password_text_set(Ewl_Password *e, const char *t)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
-	DCHECK_TYPE("e", e, "password");
+	DCHECK_TYPE("e", e, EWL_PASSWORD_TYPE);
 
 	/*
 	 * Zero this out just in case a segv occurs (by the end
@@ -120,7 +120,7 @@ ewl_password_text_get(Ewl_Password *e)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("e", e, NULL);
-	DCHECK_TYPE_RET("e", e, "password", NULL);
+	DCHECK_TYPE_RET("e", e, EWL_PASSWORD_TYPE, NULL);
 
 	w = EWL_WIDGET(e);
 
@@ -138,7 +138,7 @@ ewl_password_obscure_get(Ewl_Password *e)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("e", e, 0);
-	DCHECK_TYPE_RET("e", e, "password", 0);
+	DCHECK_TYPE_RET("e", e, EWL_PASSWORD_TYPE, 0);
 
 	DRETURN_INT(e->obscure, DLEVEL_STABLE);
 }
@@ -154,7 +154,7 @@ ewl_password_obscure_set(Ewl_Password *e, char o)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
-	DCHECK_TYPE("e", e, "password");
+	DCHECK_TYPE("e", e, EWL_PASSWORD_TYPE);
 
 	e->obscure = o;
 
@@ -169,7 +169,7 @@ ewl_password_text_insert(Ewl_Password *e, const char *s)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
-	DCHECK_TYPE("e", e, "password");
+	DCHECK_TYPE("e", e, EWL_PASSWORD_TYPE);
 
 	s2 = ewl_password_text_get(e);
 	if (s) l = strlen(s);
@@ -216,7 +216,7 @@ ewl_password_key_down_cb(Ewl_Widget *w, void *ev_data,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	e = EWL_PASSWORD(w);
 	ev = ev_data;
@@ -255,7 +255,7 @@ ewl_password_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	p = EWL_PASSWORD(w);
 	if (p->real_text) {

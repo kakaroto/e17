@@ -49,8 +49,8 @@ ewl_checkbutton_init(Ewl_CheckButton *cb)
 	if (!ewl_button_init(b))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_widget_appearance_set(w, "checkbutton");
-	ewl_widget_inherit(w, "checkbutton");
+	ewl_widget_appearance_set(w, EWL_CHECKBUTTON_TYPE);
+	ewl_widget_inherit(w, EWL_CHECKBUTTON_TYPE);
 
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 	ewl_callback_append(w, EWL_CALLBACK_CLICKED,
@@ -78,7 +78,7 @@ void ewl_checkbutton_checked_set(Ewl_CheckButton *cb, int c)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("cb", cb);
-	DCHECK_TYPE("cb", cb, "checkbutton");
+	DCHECK_TYPE("cb", cb, EWL_CHECKBUTTON_TYPE);
 
 	ewl_check_checked_set(EWL_CHECK(EWL_CHECKBUTTON(cb)->check), c);
 
@@ -92,7 +92,7 @@ int ewl_checkbutton_is_checked(Ewl_CheckButton *cb)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("cb", cb, FALSE);
-	DCHECK_TYPE_RET("cb", cb, "checkbutton", FALSE);
+	DCHECK_TYPE_RET("cb", cb, EWL_CHECKBUTTON_TYPE, FALSE);
 
 	DRETURN_INT(ewl_check_is_checked(EWL_CHECK(EWL_CHECKBUTTON(cb)->check)),
 			DLEVEL_STABLE);
@@ -113,7 +113,7 @@ ewl_checkbutton_label_position_set(Ewl_CheckButton *cb, Ewl_Position p)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("cb", cb);
-	DCHECK_TYPE("cb", cb, "checkbutton");
+	DCHECK_TYPE("cb", cb, EWL_CHECKBUTTON_TYPE);
 
 	b = EWL_BUTTON(cb);
 
@@ -152,7 +152,7 @@ ewl_checkbutton_clicked_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	cb = EWL_CHECKBUTTON(w);
 

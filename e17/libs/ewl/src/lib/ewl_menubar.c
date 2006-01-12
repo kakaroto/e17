@@ -82,8 +82,8 @@ ewl_menubar_init(Ewl_Menubar *mb)
 	if (!ewl_box_init(EWL_BOX(mb))) {
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
-	ewl_widget_appearance_set(EWL_WIDGET(mb), "menubar");
-	ewl_widget_inherit(EWL_WIDGET(mb), "menubar");
+	ewl_widget_appearance_set(EWL_WIDGET(mb), EWL_MENUBAR_TYPE);
+	ewl_widget_inherit(EWL_WIDGET(mb), EWL_MENUBAR_TYPE);
 
 	mb->inner_box = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(mb),
@@ -112,7 +112,7 @@ ewl_menubar_orientation_set(Ewl_Menubar *mb, Ewl_Orientation o)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("mb", mb);
-	DCHECK_TYPE("mb", mb, "menubar");
+	DCHECK_TYPE("mb", mb, EWL_MENUBAR_TYPE);
 
 	ewl_box_orientation_set(EWL_BOX(mb), o);
 	if (o == EWL_ORIENTATION_HORIZONTAL) {
@@ -144,7 +144,7 @@ ewl_menubar_orientation_get(Ewl_Menubar *mb)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("mb", mb, EWL_ORIENTATION_HORIZONTAL);
-	DCHECK_TYPE_RET("mb", mb, "menubar", EWL_ORIENTATION_HORIZONTAL);
+	DCHECK_TYPE_RET("mb", mb, EWL_MENUBAR_TYPE, EWL_ORIENTATION_HORIZONTAL);
 
 	DRETURN_INT(ewl_box_orientation_get(EWL_BOX(mb)), DLEVEL_STABLE);
 }
@@ -158,8 +158,8 @@ ewl_menubar_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, "container");
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	mb = EWL_MENUBAR(c);
 	if (ewl_widget_type_is(w, "menu")) 

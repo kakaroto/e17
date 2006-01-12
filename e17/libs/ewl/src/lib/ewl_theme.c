@@ -247,7 +247,7 @@ ewl_theme_widget_init(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, FALSE);
-	DCHECK_TYPE_RET("w", w, "widget", FALSE);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, FALSE);
 
 	w->theme = NULL;
 	/* w->theme = def_theme_data; */
@@ -267,7 +267,7 @@ ewl_theme_widget_shutdown(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	/*
 	 * We only want to destroy the hash if its not def_theme_data
@@ -372,7 +372,7 @@ ewl_theme_image_get(Ewl_Widget *w, char *k)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
 	DCHECK_PARAM_PTR_RET("k", k, NULL);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	data = ewl_theme_data_str_get(w, k);
 	if (!data)

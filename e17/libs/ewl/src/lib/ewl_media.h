@@ -16,6 +16,8 @@
  * @themekey /media/group
  */
 
+#define EWL_MEDIA_TYPE "media"
+
 /**
  */
 typedef struct Ewl_Media Ewl_Media;

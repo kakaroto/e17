@@ -25,6 +25,8 @@
  * @themekey /filedialog/group
  */
 
+#define EWL_FILEDIALOG_TYPE "filedialog"
+
 /**
  * The Ewl_Filedialog provides a filedialog
  */

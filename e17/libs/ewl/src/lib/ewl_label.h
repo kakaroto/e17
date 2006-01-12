@@ -13,6 +13,8 @@
  * @themekey /label
  */
 
+#define EWL_LABEL_TYPE "label"
+
 typedef struct Ewl_Label Ewl_Label;
 
 /**

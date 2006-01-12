@@ -617,7 +617,7 @@ ewl_configure_request(Ewl_Widget * w)
 
 	DENTER_FUNCTION(DLEVEL_TESTING);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	if (!VISIBLE(w))
 		DRETURN(DLEVEL_STABLE);
@@ -752,7 +752,7 @@ ewl_realize_request(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED))
 		DRETURN(DLEVEL_STABLE);
@@ -786,7 +786,7 @@ ewl_realize_cancel_request(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_TESTING);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ecore_list_goto(realize_list, w);
 	if (ecore_list_current(realize_list) == w)

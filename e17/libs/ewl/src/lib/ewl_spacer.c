@@ -40,8 +40,8 @@ ewl_spacer_init(Ewl_Spacer *s)
 	DCHECK_PARAM_PTR_RET("s", s, FALSE);
 
 	ewl_widget_init(EWL_WIDGET(s));
-	ewl_widget_appearance_set(EWL_WIDGET(s), "spacer");
-	ewl_widget_inherit(EWL_WIDGET(s), "spacer");
+	ewl_widget_appearance_set(EWL_WIDGET(s), EWL_SPACER_TYPE);
+	ewl_widget_inherit(EWL_WIDGET(s), EWL_SPACER_TYPE);
 	ewl_widget_focusable_set(EWL_WIDGET(s), FALSE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);

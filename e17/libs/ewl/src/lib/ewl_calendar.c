@@ -71,8 +71,8 @@ ewl_calendar_init(Ewl_Calendar* ib)
 	}
 
 	ewl_box_orientation_set(EWL_BOX(ib), EWL_ORIENTATION_HORIZONTAL);
-	ewl_widget_appearance_set(EWL_WIDGET(ib), "calendar");
-	ewl_widget_inherit(EWL_WIDGET(w), "calendar");
+	ewl_widget_appearance_set(EWL_WIDGET(ib), EWL_CALENDAR_TYPE);
+	ewl_widget_inherit(EWL_WIDGET(w), EWL_CALENDAR_TYPE);
 	ewl_object_fill_policy_set(EWL_OBJECT(ib), EWL_FLAG_FILL_FILL);
 
 	vbox = ewl_vbox_new();
@@ -139,7 +139,7 @@ ewl_calendar_ascii_time_get(Ewl_Calendar *cal)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("cal", cal, NULL);
-	DCHECK_TYPE_RET("cal", cal, "calendar", NULL);
+	DCHECK_TYPE_RET("cal", cal, EWL_CALENDAR_TYPE, NULL);
 
 	tm = time(NULL);
 	month_start = localtime(&tm);
@@ -162,7 +162,7 @@ ewl_calendar_day_get(Ewl_Calendar *c)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("c", c, FALSE);
-	DCHECK_TYPE_RET("c", c, "calendar", FALSE);
+	DCHECK_TYPE_RET("c", c, EWL_CALENDAR_TYPE, FALSE);
 
 	DRETURN_INT(c->cur_day, DLEVEL_STABLE);
 }
@@ -176,7 +176,7 @@ ewl_calendar_month_get(Ewl_Calendar *c)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("c", c, FALSE);
-	DCHECK_TYPE_RET("c", c, "calendar", FALSE);
+	DCHECK_TYPE_RET("c", c, EWL_CALENDAR_TYPE, FALSE);
 
 	DRETURN_INT(c->cur_month, DLEVEL_STABLE);
 }
@@ -190,7 +190,7 @@ ewl_calendar_year_get(Ewl_Calendar *c)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("c", c, FALSE);
-	DCHECK_TYPE_RET("c", c, "calendar", FALSE);
+	DCHECK_TYPE_RET("c", c, EWL_CALENDAR_TYPE, FALSE);
 
 	DRETURN_INT(c->cur_year, DLEVEL_STABLE);
 }
@@ -209,7 +209,7 @@ ewl_calendar_grid_setup(Ewl_Calendar *cal)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("cal", cal);
-	DCHECK_TYPE("cal", cal, "calendar");
+	DCHECK_TYPE("cal", cal, EWL_CALENDAR_TYPE);
 
 	ewl_grid_reset(EWL_GRID(cal->grid), 7, 7);
 	ewl_calendar_add_day_labels(cal);
@@ -301,8 +301,8 @@ ewl_calendar_highlight_today(struct tm *now, Ewl_Label *day,
 	DCHECK_PARAM_PTR("now", now);
 	DCHECK_PARAM_PTR("day", day);
 	DCHECK_PARAM_PTR("cal", cal);
-	DCHECK_TYPE("day", day, "label");
-	DCHECK_TYPE("cal", cal, "calendar");
+	DCHECK_TYPE("day", day, EWL_LABEL_TYPE);
+	DCHECK_TYPE("cal", cal, EWL_CALENDAR_TYPE);
 
 	/* Get the day */
 	i = atoi(ewl_label_text_get(EWL_LABEL(day)));
@@ -326,7 +326,7 @@ ewl_calendar_day_select(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	now_tm = time(NULL);
 	now = localtime(&now_tm);
@@ -408,7 +408,7 @@ ewl_calendar_add_day_labels(Ewl_Calendar *ib)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ib", ib);
-	DCHECK_TYPE("ib", ib, "calendar");
+	DCHECK_TYPE("ib", ib, EWL_CALENDAR_TYPE);
 
 	/* Add the days*/
 	day_label = ewl_label_new();

@@ -22,6 +22,8 @@
  * @themekey /iconbox/group
  */
 
+#define EWL_ICONBOX_TYPE "iconbox"
+
 typedef struct Ewl_Iconbox Ewl_Iconbox;
 
 typedef struct Ewl_Iconbox_Icon Ewl_Iconbox_Icon;

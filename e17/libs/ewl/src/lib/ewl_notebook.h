@@ -13,6 +13,8 @@
  * @themekey /notebook/group
  */
 
+#define EWL_NOTEBOOK_TYPE "notebook"
+
 typedef struct Ewl_Notebook_Page Ewl_Notebook_Page;
 
 #define EWL_NOTEBOOK_PAGE(page) ((Ewl_Notebook_Page *)page)

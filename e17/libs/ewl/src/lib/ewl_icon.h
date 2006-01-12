@@ -7,6 +7,8 @@
  * @{
  */
 
+#define EWL_ICON_TYPE "icon"
+
 #define EWL_ICON(icon) ((Ewl_Icon *)icon)
 
 typedef struct Ewl_Icon Ewl_Icon;

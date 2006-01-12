@@ -70,7 +70,7 @@ ewl_dnd_position_windows_set(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ecore_hash_set(ewl_dnd_position_hash, w, (void *)1);
 
@@ -88,7 +88,7 @@ ewl_dnd_types_for_widget_get(Ewl_Widget *widget)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("widget", widget, NULL);
-	DCHECK_TYPE_RET("widget", widget, "widget", NULL);
+	DCHECK_TYPE_RET("widget", widget, EWL_WIDGET_TYPE, NULL);
 	
 	/* We need to get the top-level window widget.  Note
 	 * that we assume here that a widget is
@@ -116,7 +116,7 @@ ewl_drag_start(Ewl_Widget *w)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	if (!ewl_dnd_status || ewl_dragging_current) 
 		DRETURN(DLEVEL_STABLE);

@@ -49,7 +49,7 @@ ewl_colordialog_init(Ewl_Colordialog *cd)
 	if (!ewl_dialog_init(EWL_DIALOG(cd))) {
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
-	ewl_widget_inherit(EWL_WIDGET(cd), "colordialog");
+	ewl_widget_inherit(EWL_WIDGET(cd), EWL_COLORDIALOG_TYPE);
 
 	ewl_dialog_action_position_set(EWL_DIALOG(cd), EWL_POSITION_BOTTOM);
 	ewl_window_title_set(EWL_WINDOW(cd), "Ewl Colordialog");
@@ -92,7 +92,7 @@ ewl_colordialog_has_alpha_set(Ewl_Colordialog *cd, unsigned int alpha)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("cd", cd);
-	DCHECK_TYPE("cd", cd, "colordialog");
+	DCHECK_TYPE("cd", cd, EWL_COLORDIALOG_TYPE);
 
 	ewl_colorpicker_has_alpha_set(EWL_COLORPICKER(cd->picker), alpha);
 
@@ -106,7 +106,7 @@ ewl_colordialog_has_alpha_get(Ewl_Colordialog *cd)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("cd", cd, FALSE);
-	DCHECK_TYPE_RET("cd", cd, "colordialog", FALSE);
+	DCHECK_TYPE_RET("cd", cd, EWL_COLORDIALOG_TYPE, FALSE);
 
 	alpha = ewl_colorpicker_has_alpha_get(EWL_COLORPICKER(cd->picker));
 
@@ -118,7 +118,7 @@ ewl_colordialog_alpha_set(Ewl_Colordialog *cd, unsigned int alpha)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("cd", cd);
-	DCHECK_TYPE("cd", cd, "colordialog");
+	DCHECK_TYPE("cd", cd, EWL_COLORDIALOG_TYPE);
 		 
 	ewl_colorpicker_alpha_set(EWL_COLORPICKER(cd->picker), alpha);
 
@@ -132,7 +132,7 @@ ewl_colordialog_alpha_get(Ewl_Colordialog *cd)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("cd", cd, 255);
-	DCHECK_TYPE_RET("cd", cd, "colordialog", 255);
+	DCHECK_TYPE_RET("cd", cd, EWL_COLORDIALOG_TYPE, 255);
 
 	alpha = ewl_colorpicker_alpha_get(EWL_COLORPICKER(cd->picker));
 
@@ -145,7 +145,7 @@ ewl_colordialog_current_rgb_set(Ewl_Colordialog *cd, unsigned int r,
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("cd", cd);
-	DCHECK_TYPE("cd", cd, "colordialog");
+	DCHECK_TYPE("cd", cd, EWL_COLORDIALOG_TYPE);
 	 
 	ewl_colorpicker_current_rgb_set(EWL_COLORPICKER(cd->picker), r, g, b);
 	 
@@ -158,7 +158,7 @@ ewl_colordialog_current_rgb_get(Ewl_Colordialog *cd, unsigned int *r,
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("cd", cd);
-	DCHECK_TYPE("cd", cd, "colordialog");
+	DCHECK_TYPE("cd", cd, EWL_COLORDIALOG_TYPE);
 
 	ewl_colorpicker_current_rgb_get(EWL_COLORPICKER(cd->picker), r, g, b);
 
@@ -171,7 +171,7 @@ ewl_colordialog_previous_rgb_set(Ewl_Colordialog *cd, unsigned int r,
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("cd", cd);
-	DCHECK_TYPE("cd", cd, "colordialog");
+	DCHECK_TYPE("cd", cd, EWL_COLORDIALOG_TYPE);
 
 	ewl_colorpicker_previous_rgb_set(EWL_COLORPICKER(cd->picker), r, g, b);
 	 
@@ -184,7 +184,7 @@ ewl_colordialog_previous_rgb_get(Ewl_Colordialog *cd, unsigned int *r,
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("cd", cd);
-	DCHECK_TYPE("cd", cd, "colordialog");
+	DCHECK_TYPE("cd", cd, EWL_COLORDIALOG_TYPE);
 
 	ewl_colorpicker_previous_rgb_get(EWL_COLORPICKER(cd->picker), r, g, b);
 
@@ -196,7 +196,7 @@ ewl_colordialog_color_mode_set(Ewl_Colordialog *cd, Ewl_Color_Mode type)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("cd", cd);
-	DCHECK_TYPE("cd", cd, "colordialog");
+	DCHECK_TYPE("cd", cd, EWL_COLORDIALOG_TYPE);
 
 	ewl_colorpicker_color_mode_set(EWL_COLORPICKER(cd->picker), type);
 
@@ -210,7 +210,7 @@ ewl_colordialog_color_mode_get(Ewl_Colordialog *cd)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("cd", cd, EWL_COLOR_MODE_HSV_HUE);
-	DCHECK_TYPE_RET("cd", cd, "colordialog", EWL_COLOR_MODE_HSV_HUE);
+	DCHECK_TYPE_RET("cd", cd, EWL_COLORDIALOG_TYPE, EWL_COLOR_MODE_HSV_HUE);
 
 	mode = ewl_colorpicker_color_mode_get(EWL_COLORPICKER(cd->picker));
 
@@ -224,7 +224,7 @@ ewl_colordialog_cb_button_click(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	type = ewl_button_stock_type_get(EWL_BUTTON(w));
 	ewl_colordialog_respond(EWL_COLORDIALOG(data), type);
@@ -238,7 +238,7 @@ ewl_colordialog_cb_delete_window(Ewl_Widget *w, void *ev __UNUSED__,
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ewl_colordialog_respond(EWL_COLORDIALOG(w), EWL_STOCK_CANCEL);
 
@@ -252,7 +252,7 @@ ewl_colordialog_respond(Ewl_Colordialog *cd, unsigned int response)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("cd", cd);
-	DCHECK_TYPE("cd", cd, "colordialog");
+	DCHECK_TYPE("cd", cd, EWL_COLORDIALOG_TYPE);
 
 	cd_ev.response = response;
 	ewl_callback_call_with_event_data(EWL_WIDGET(cd), 

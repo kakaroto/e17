@@ -73,7 +73,7 @@ ewl_button_init(Ewl_Button *b)
 	if (!ewl_box_init(EWL_BOX(b))) {
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
-	ewl_widget_inherit(w, "button");
+	ewl_widget_inherit(w, EWL_BUTTON_TYPE);
 
 	ewl_button_stock_type_set(b, EWL_STOCK_NONE);
 
@@ -90,7 +90,7 @@ ewl_button_init(Ewl_Button *b)
 	ewl_widget_show(b->body);
 
 	ewl_container_redirect_set(EWL_CONTAINER(b), EWL_CONTAINER(b->body));
-	ewl_widget_appearance_set(w, "button");
+	ewl_widget_appearance_set(w, EWL_BUTTON_TYPE);
 
 	ewl_widget_focusable_set(w, TRUE);
 
@@ -111,7 +111,7 @@ ewl_button_label_set(Ewl_Button *b, const char *l)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
-	DCHECK_TYPE("b", b, "button");
+	DCHECK_TYPE("b", b, EWL_BUTTON_TYPE);
 
 	if ((!l) && (b->label_object)) {
 		ewl_widget_destroy(b->label_object);
@@ -142,7 +142,7 @@ ewl_button_label_get(Ewl_Button *b)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("b", b, NULL);
-	DCHECK_TYPE_RET("b", b, "button", NULL);
+	DCHECK_TYPE_RET("b", b, EWL_BUTTON_TYPE, NULL);
 
 	if (b->label_object)
 		DRETURN_PTR(ewl_label_text_get(EWL_LABEL(b->label_object)), 
@@ -163,7 +163,7 @@ ewl_button_stock_type_set(Ewl_Button *b, Ewl_Stock_Type stock)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
-	DCHECK_TYPE("b", b, "button");
+	DCHECK_TYPE("b", b, EWL_BUTTON_TYPE);
 
 	if (stock == b->stock_type) {
 		DRETURN(DLEVEL_STABLE);
@@ -201,7 +201,7 @@ ewl_button_stock_type_get(Ewl_Button *b)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("b", b, EWL_STOCK_NONE);
-	DCHECK_TYPE_RET("b", b, "button", EWL_STOCK_NONE);
+	DCHECK_TYPE_RET("b", b, EWL_BUTTON_TYPE, EWL_STOCK_NONE);
 
 	DRETURN_INT(b->stock_type, DLEVEL_STABLE);
 }
@@ -218,7 +218,7 @@ ewl_button_image_set(Ewl_Button *b, const char *file, const char *key)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
 	DCHECK_PARAM_PTR("file", file);
-	DCHECK_TYPE("b", b, "button");
+	DCHECK_TYPE("b", b, EWL_BUTTON_TYPE);
 
 	if (b->image_object)
 		ewl_widget_destroy(b->image_object);
@@ -243,7 +243,7 @@ ewl_button_image_get(Ewl_Button *b)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("b", b, NULL);
-	DCHECK_TYPE_RET("b", b, "button", NULL);
+	DCHECK_TYPE_RET("b", b, EWL_BUTTON_TYPE, NULL);
 
 	if (!b->image_object)
 		file = NULL;

@@ -15,6 +15,8 @@
  * @themekey /menu/group
  */
 
+#define EWL_MENU_TYPE "menu"
+
 /**
  * A simple internal menu, it is limited to drawing within the current evas.
  */

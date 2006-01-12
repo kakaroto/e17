@@ -16,6 +16,8 @@
  * @themekey /check/group
  */
 
+#define EWL_CHECK_TYPE "check"
+
 /**
  * A single purpose extension of Ewl_Widget to provide a checked state.
  */

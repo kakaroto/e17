@@ -13,6 +13,8 @@
  * @themekey /row/group
  */
 
+#define EWL_ROW_TYPE "row"
+
 typedef struct Ewl_Row Ewl_Row;
 #define EWL_ROW(t) ((Ewl_Row *)t)
 

@@ -50,8 +50,8 @@ ewl_media_init(Ewl_Media *m)
 	if (!ewl_widget_init(EWL_WIDGET(w)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_widget_appearance_set(w, "media");
-	ewl_widget_inherit(EWL_WIDGET(w), "media");
+	ewl_widget_appearance_set(w, EWL_MEDIA_TYPE);
+	ewl_widget_inherit(EWL_WIDGET(w), EWL_MEDIA_TYPE);
 
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE, ewl_media_realize_cb,
 									NULL);
@@ -78,7 +78,7 @@ ewl_media_module_set(Ewl_Media *m, Ewl_Media_Module_Type module)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("m", m, FALSE);
-	DCHECK_TYPE_RET("m", m, "media", FALSE);
+	DCHECK_TYPE_RET("m", m, EWL_MEDIA_TYPE, FALSE);
 
 	m->module = module;
 
@@ -115,7 +115,7 @@ ewl_media_module_get(Ewl_Media *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("m", m, EWL_MEDIA_MODULE_XINE);
-	DCHECK_TYPE_RET("m", m, "media", EWL_MEDIA_MODULE_XINE);
+	DCHECK_TYPE_RET("m", m, EWL_MEDIA_TYPE, EWL_MEDIA_MODULE_XINE);
 
 	DRETURN_INT(m->module, DLEVEL_STABLE);
 }
@@ -134,7 +134,7 @@ ewl_media_media_set(Ewl_Media *m, const char *media)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("m", m);
 	DCHECK_PARAM_PTR("media", media);
-	DCHECK_TYPE("m", m, "media");
+	DCHECK_TYPE("m", m, EWL_MEDIA_TYPE);
 
 	IF_FREE(m->media);
 	m->media = strdup(media);
@@ -160,7 +160,7 @@ ewl_media_media_get(Ewl_Media *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("m", m, NULL);
-	DCHECK_TYPE_RET("m", m, "media", NULL);
+	DCHECK_TYPE_RET("m", m, EWL_MEDIA_TYPE, NULL);
 
 	DRETURN_PTR(m->media, DLEVEL_STABLE);
 }
@@ -177,7 +177,7 @@ ewl_media_length_get(Ewl_Media *m)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("m", m, 0);
-	DCHECK_TYPE_RET("m", m, "media", 0);
+	DCHECK_TYPE_RET("m", m, EWL_MEDIA_TYPE, 0);
 
 	if (m->video)
 		length = emotion_object_play_length_get(m->video); 
@@ -201,7 +201,7 @@ ewl_media_length_time_get(Ewl_Media *m, int *h, int *min, double *s)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("m", m);
-	DCHECK_TYPE("m", m, "media");
+	DCHECK_TYPE("m", m, EWL_MEDIA_TYPE);
 
 	pos = ewl_media_length_get(m);
 
@@ -228,7 +228,7 @@ ewl_media_play_set(Ewl_Media *m, int p)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE)
 		DCHECK_PARAM_PTR("m", m);
-	DCHECK_TYPE("m", m, "media");
+	DCHECK_TYPE("m", m, EWL_MEDIA_TYPE);
 
 	if (m->video)
 		emotion_object_play_set(m->video, p);
@@ -248,7 +248,7 @@ ewl_media_seekable_get(Ewl_Media *m)
 
 	DENTER_FUNCTION(DLEVEL_STABLE)
 		DCHECK_PARAM_PTR_RET("m", m, 0);
-	DCHECK_TYPE_RET("m", m, "media", 0);
+	DCHECK_TYPE_RET("m", m, EWL_MEDIA_TYPE, 0);
 
 	if (m->video && !m->block_seek)
 		seekable = emotion_object_seekable_get(m->video);
@@ -268,7 +268,7 @@ ewl_media_position_get(Ewl_Media *m)
 
 	DENTER_FUNCTION(DLEVEL_STABLE)
 		DCHECK_PARAM_PTR_RET("m", m, 0);
-	DCHECK_TYPE_RET("m", m, "media", 0);
+	DCHECK_TYPE_RET("m", m, EWL_MEDIA_TYPE, 0);
 
 	if (m->video)
 		p = emotion_object_position_get(m->video);
@@ -292,7 +292,7 @@ ewl_media_position_time_get(Ewl_Media *m, int *h, int *min, double *s)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("m", m);
-	DCHECK_TYPE("m", m, "media");
+	DCHECK_TYPE("m", m, EWL_MEDIA_TYPE);
  
 	pos = ewl_media_position_get(m);
 	/* stolen from envision by benr */
@@ -318,7 +318,7 @@ ewl_media_position_set(Ewl_Media *m, double p)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE)
 		DCHECK_PARAM_PTR("m", m);
-	DCHECK_TYPE("m", m, "media");
+	DCHECK_TYPE("m", m, EWL_MEDIA_TYPE);
 
 	if (m->video && ewl_media_seekable_get(m)) {
 		m->block_seek = 1;
@@ -341,7 +341,7 @@ ewl_media_audio_mute_get(Ewl_Media *m)
 
 	DENTER_FUNCTION(DLEVEL_STABLE)
 		DCHECK_PARAM_PTR_RET("m", m, 0);
-	DCHECK_TYPE("m", m, "media");
+	DCHECK_TYPE("m", m, EWL_MEDIA_TYPE);
 
 	if (m->video)
 		mute = emotion_object_audio_mute_get(m->video);
@@ -360,7 +360,7 @@ ewl_media_audio_mute_set(Ewl_Media *m, int mute)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE)
 		DCHECK_PARAM_PTR("m", m);
-	DCHECK_TYPE("m", m, "media");
+	DCHECK_TYPE("m", m, EWL_MEDIA_TYPE);
 
 	if (m->video)
 		emotion_object_audio_mute_set(m->video, mute);
@@ -380,7 +380,7 @@ ewl_media_audio_volume_get(Ewl_Media *m)
 
 	DENTER_FUNCTION(DLEVEL_STABLE)
 		DCHECK_PARAM_PTR_RET("m", m, 0);
-	DCHECK_TYPE_RET("m", m, "media", 0.0);
+	DCHECK_TYPE_RET("m", m, EWL_MEDIA_TYPE, 0.0);
 
 	if (m->video)
 		emotion_object_audio_volume_get(m->video);
@@ -399,7 +399,7 @@ ewl_media_audio_volume_set(Ewl_Media *m, double v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE)
 		DCHECK_PARAM_PTR("m", m);
-	DCHECK_TYPE("m", m, "media");
+	DCHECK_TYPE("m", m, EWL_MEDIA_TYPE);
 
 	if (m->video)
 		emotion_object_audio_volume_set(m->video, v);
@@ -416,7 +416,7 @@ ewl_media_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	m = EWL_MEDIA(w);
 
@@ -453,7 +453,7 @@ ewl_media_unrealize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	m = EWL_MEDIA(w);
 
@@ -471,7 +471,7 @@ ewl_media_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	m = EWL_MEDIA(w);
 
@@ -496,7 +496,7 @@ ewl_media_size_update(Ewl_Media *m)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("m", m);
-	DCHECK_TYPE("m", m, "media");
+	DCHECK_TYPE("m", m, EWL_MEDIA_TYPE);
 
 	emotion_object_size_get(m->video, &width, &height);
 	if (width && height)

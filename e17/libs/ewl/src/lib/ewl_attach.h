@@ -9,6 +9,8 @@
  * @{
  */
 
+#define EWL_ATTACH_TOOLTIP_TYPE "tooltip"
+
 #define EWL_ATTACH(attach) ((Ewl_Attach *) attach)
 
 typedef struct Ewl_Attach Ewl_Attach;

@@ -14,6 +14,8 @@
  * @themekey /grid/group
  */
 
+#define EWL_GRID_TYPE "grid"
+
 typedef struct Ewl_Grid_Info Ewl_Grid_Info;
 
 struct Ewl_Grid_Info

@@ -8,6 +8,8 @@
  * @{
  */
 
+#define EWL_COLORDIALOG_TYPE "colordialog"
+
 /**
  * @def EWL_COLORDIALOG(cd)
  * Typecast a pointer to an Ewl_Colordialog pointer.

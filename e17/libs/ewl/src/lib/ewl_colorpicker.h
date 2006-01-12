@@ -8,6 +8,8 @@
  * @{
  */
 
+#define EWL_COLORPICKER_TYPE "colorpicker"
+
 /**
  * @def EWL_COLORPICKER(cp)
  * Typecast a pointer to an Ewl_Colorpicker pointer.

@@ -49,8 +49,8 @@ ewl_statusbar_init(Ewl_Statusbar *sb)
 			EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
 
 	ewl_box_orientation_set(EWL_BOX(sb), EWL_ORIENTATION_HORIZONTAL);
-	ewl_widget_appearance_set(w, "statusbar");
-	ewl_widget_inherit(w, "statusbar");
+	ewl_widget_appearance_set(w, EWL_STATUSBAR_TYPE);
+	ewl_widget_inherit(w, EWL_STATUSBAR_TYPE);
 
 	sb->left = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(sb), sb->left);
@@ -89,7 +89,7 @@ ewl_statusbar_left_hide(Ewl_Statusbar *sb)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sb", sb);
-	DCHECK_TYPE("sb", sb, "statusbar");
+	DCHECK_TYPE("sb", sb, EWL_STATUSBAR_TYPE);
 
 	ewl_container_child_remove(EWL_CONTAINER(sb), sb->left);
 	ewl_widget_hide(sb->left);
@@ -107,7 +107,7 @@ ewl_statusbar_left_show(Ewl_Statusbar *sb)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sb", sb);
-	DCHECK_TYPE("sb", sb, "statusbar");
+	DCHECK_TYPE("sb", sb, EWL_STATUSBAR_TYPE);
 
 	ewl_container_child_prepend(EWL_CONTAINER(sb), sb->left);
 	ewl_widget_show(sb->left);
@@ -125,7 +125,7 @@ ewl_statusbar_right_hide(Ewl_Statusbar *sb)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sb", sb);
-	DCHECK_TYPE("sb", sb, "statusbar");
+	DCHECK_TYPE("sb", sb, EWL_STATUSBAR_TYPE);
 
 	ewl_container_child_remove(EWL_CONTAINER(sb), sb->right);
 	ewl_widget_hide(sb->right);
@@ -143,7 +143,7 @@ ewl_statusbar_right_show(Ewl_Statusbar *sb)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sb", sb);
-	DCHECK_TYPE("sb", sb, "statusbar");
+	DCHECK_TYPE("sb", sb, EWL_STATUSBAR_TYPE);
 
 	ewl_container_child_append(EWL_CONTAINER(sb), sb->right);
 	ewl_widget_show(sb->right);
@@ -163,7 +163,7 @@ ewl_statusbar_active_set(Ewl_Statusbar *sb, Ewl_Position pos)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sb", sb);
-	DCHECK_TYPE("sb", sb, "statusbar");
+	DCHECK_TYPE("sb", sb, EWL_STATUSBAR_TYPE);
 
 	if ((pos == EWL_POSITION_LEFT) || (pos == EWL_POSITION_TOP))
 		ewl_container_redirect_set(EWL_CONTAINER(sb), EWL_CONTAINER(sb->left));
@@ -186,8 +186,8 @@ ewl_statusbar_left_append(Ewl_Statusbar *sb, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sb", sb);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("sb", sb, "statusbar");
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("sb", sb, EWL_STATUSBAR_TYPE);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ewl_container_child_append(EWL_CONTAINER(sb->left), w);
 
@@ -207,8 +207,8 @@ ewl_statusbar_left_prepend(Ewl_Statusbar *sb, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sb", sb);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("sb", sb, "statusbar");
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("sb", sb, EWL_STATUSBAR_TYPE);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ewl_container_child_prepend(EWL_CONTAINER(sb->left), w);
 
@@ -228,8 +228,8 @@ ewl_statusbar_right_append(Ewl_Statusbar *sb, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sb", sb);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("sb", sb, "statusbar");
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("sb", sb, EWL_STATUSBAR_TYPE);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ewl_container_child_append(EWL_CONTAINER(sb->right), w);
 
@@ -249,8 +249,8 @@ ewl_statusbar_right_prepend(Ewl_Statusbar *sb, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sb", sb);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("sb", sb, "statusbar");
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("sb", sb, EWL_STATUSBAR_TYPE);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ewl_container_child_prepend(EWL_CONTAINER(sb->right), w);
 
@@ -269,7 +269,7 @@ ewl_statusbar_push(Ewl_Statusbar *sb, char *txt)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sb", sb);
 	DCHECK_PARAM_PTR("txt", txt);
-	DCHECK_TYPE("sb", sb, "statusbar");
+	DCHECK_TYPE("sb", sb, EWL_STATUSBAR_TYPE);
 
 	if (sb->current) {
 		ewl_widget_hide(sb->current);
@@ -299,7 +299,7 @@ ewl_statusbar_pop(Ewl_Statusbar *sb)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sb", sb);
-	DCHECK_TYPE("sb", sb, "statusbar");
+	DCHECK_TYPE("sb", sb, EWL_STATUSBAR_TYPE);
 
 	current = ecore_list_remove_first(sb->stack);
 	if (current) 

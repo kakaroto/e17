@@ -14,6 +14,8 @@
  * @themekey /menubar/group
  */
 
+#define EWL_MENUBAR_TYPE "menubar"
+
 /**
  */
 typedef struct Ewl_Menubar Ewl_Menubar;

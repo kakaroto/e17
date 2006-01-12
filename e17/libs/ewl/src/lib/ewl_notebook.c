@@ -53,8 +53,8 @@ ewl_notebook_init(Ewl_Notebook * n)
 	ewl_box_orientation_set(EWL_BOX(n), EWL_ORIENTATION_VERTICAL);
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_ALL);
 
-	ewl_widget_appearance_set(w, "notebook");
-	ewl_widget_inherit(w, "notebook");
+	ewl_widget_appearance_set(w, EWL_NOTEBOOK_TYPE);
+	ewl_widget_inherit(w, EWL_NOTEBOOK_TYPE);
 
 	/*
 	 * these boxes will be appended when we call
@@ -118,8 +118,8 @@ ewl_notebook_page_append(Ewl_Notebook *n, Ewl_Widget *t, Ewl_Widget *p)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("n", n);
 	DCHECK_PARAM_PTR("p", p);
-	DCHECK_TYPE("n", n, "notebook");
-	DCHECK_TYPE("p", p, "widget");
+	DCHECK_TYPE("n", n, EWL_NOTEBOOK_TYPE);
+	DCHECK_TYPE("p", p, EWL_WIDGET_TYPE);
 
 	ewl_notebook_page_insert(n, t, p, ecore_list_nodes(n->pages));
 
@@ -141,8 +141,8 @@ ewl_notebook_page_prepend(Ewl_Notebook *n, Ewl_Widget *t, Ewl_Widget *p)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("n", n);
 	DCHECK_PARAM_PTR("p", p);
-	DCHECK_TYPE("n", n, "notebook");
-	DCHECK_TYPE("p", p, "widget");
+	DCHECK_TYPE("n", n, EWL_NOTEBOOK_TYPE);
+	DCHECK_TYPE("p", p, EWL_WIDGET_TYPE);
 
 	ewl_notebook_page_insert(n, t, p, 0);
 
@@ -168,8 +168,8 @@ ewl_notebook_page_insert(Ewl_Notebook *n, Ewl_Widget *t,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("n", n);
 	DCHECK_PARAM_PTR("p", p);
-	DCHECK_TYPE("n", n, "notebook");
-	DCHECK_TYPE("p", p, "widget");
+	DCHECK_TYPE("n", n, EWL_NOTEBOOK_TYPE);
+	DCHECK_TYPE("p", p, EWL_WIDGET_TYPE);
 
 	page = NEW(Ewl_Notebook_Page, 1);
 	if (!page) {
@@ -222,7 +222,7 @@ ewl_notebook_first_page_remove(Ewl_Notebook *n)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("n", n);
-	DCHECK_TYPE("n", n, "notebook");
+	DCHECK_TYPE("n", n, EWL_NOTEBOOK_TYPE);
 
 	ewl_notebook_page_remove(n, 0);
 
@@ -240,7 +240,7 @@ ewl_notebook_last_page_remove(Ewl_Notebook *n)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("n", n);
-	DCHECK_TYPE("n", n, "notebook");
+	DCHECK_TYPE("n", n, EWL_NOTEBOOK_TYPE);
 
 	ewl_notebook_page_remove(n, ecore_list_nodes(n->pages));
 
@@ -261,7 +261,7 @@ ewl_notebook_page_remove(Ewl_Notebook *n, int i)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("n", n);
-	DCHECK_TYPE("n", n, "notebook");
+	DCHECK_TYPE("n", n, EWL_NOTEBOOK_TYPE);
 
 	if (!ecore_list_nodes(n->pages)) {
 		DRETURN(DLEVEL_STABLE);
@@ -301,7 +301,7 @@ ewl_notebook_visible_page_remove(Ewl_Notebook *n)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("n", n);
-	DCHECK_TYPE("n", n, "notebook");
+	DCHECK_TYPE("n", n, EWL_NOTEBOOK_TYPE);
 
 	if (!n->visible_page) {
 		DRETURN(DLEVEL_STABLE);
@@ -329,7 +329,7 @@ ewl_notebook_tabs_alignment_set(Ewl_Notebook *n, unsigned int a)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("n", n);
-	DCHECK_TYPE("n", n, "notebook");
+	DCHECK_TYPE("n", n, EWL_NOTEBOOK_TYPE);
 
 	ewl_object_alignment_set(EWL_OBJECT(n->tab_box), a);
 
@@ -349,7 +349,7 @@ ewl_notebook_tabs_alignment_get(Ewl_Notebook *n)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("n", n, 0);
-	DCHECK_TYPE_RET("n", n, "notebook", 0);
+	DCHECK_TYPE_RET("n", n, EWL_NOTEBOOK_TYPE, 0);
 
 	align = ewl_object_alignment_get(EWL_OBJECT(n->tab_box));
 
@@ -369,7 +369,7 @@ ewl_notebook_tabs_position_set(Ewl_Notebook *n, Ewl_Position p)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("n", n);
-	DCHECK_TYPE("n", n, "notebook");
+	DCHECK_TYPE("n", n, EWL_NOTEBOOK_TYPE);
 
 	if (n->tab_position == p) {
 		DRETURN(DLEVEL_STABLE);
@@ -429,7 +429,7 @@ ewl_notebook_tabs_position_get(Ewl_Notebook *n)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("n", n, 0);
-	DCHECK_TYPE_RET("n", n, "notebook", 0);
+	DCHECK_TYPE_RET("n", n, EWL_NOTEBOOK_TYPE, 0);
 
 	DRETURN_INT(n->tab_position, DLEVEL_STABLE);
 }
@@ -446,7 +446,7 @@ ewl_notebook_tabs_visible_set(Ewl_Notebook *n, int show)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("n", n);
-	DCHECK_TYPE("n", n, "notebook");
+	DCHECK_TYPE("n", n, EWL_NOTEBOOK_TYPE);
 
 	if (show) 
 		ewl_widget_show(n->tab_box);
@@ -472,7 +472,7 @@ ewl_notebook_visible_page_set(Ewl_Notebook *n, int t)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("n", n);
-	DCHECK_TYPE("n", n, "notebook");
+	DCHECK_TYPE("n", n, EWL_NOTEBOOK_TYPE);
 
 	if (!ecore_list_nodes(n->pages)) {
 		DRETURN(DLEVEL_STABLE);
@@ -514,7 +514,7 @@ ewl_notebook_visible_page_get(Ewl_Notebook *n)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("n", n, index);
-	DCHECK_TYPE_RET("n", n, "notebook", index);
+	DCHECK_TYPE_RET("n", n, EWL_NOTEBOOK_TYPE, index);
 
 	index = ewl_notebook_page_index_get(n, n->visible_page);
 
@@ -550,7 +550,7 @@ ewl_notebook_tab_click_cb(Ewl_Widget *widget, void *ev_data __UNUSED__,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("widget", widget);
 	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("widget", widget, "widget");
+	DCHECK_TYPE("widget", widget, EWL_WIDGET_TYPE);
 
 	page = EWL_NOTEBOOK_PAGE(user_data);
 
@@ -576,7 +576,7 @@ ewl_notebook_page_reparent_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	n = EWL_NOTEBOOK(user_data);
 
@@ -609,7 +609,7 @@ ewl_notebook_page_show_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	n = EWL_NOTEBOOK(user_data);
 	p = ewl_widget_data_get(w, n);
@@ -634,7 +634,7 @@ ewl_notebook_page_hide_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	n = EWL_NOTEBOOK(user_data);
 	p = ewl_widget_data_get(w, n);
@@ -659,7 +659,7 @@ ewl_notebook_page_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	n = EWL_NOTEBOOK(user_data);
 	p = ewl_widget_data_get(w, n);
@@ -682,7 +682,7 @@ ewl_notebook_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	n = EWL_NOTEBOOK(w);
 
@@ -698,7 +698,7 @@ ewl_notebook_page_index_get(Ewl_Notebook *n, Ewl_Notebook_Page *p)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("n", n, -1);
 	DCHECK_PARAM_PTR_RET("p", p, -1);
-	DCHECK_TYPE_RET("n", n, "notebook", -1);
+	DCHECK_TYPE_RET("n", n, EWL_NOTEBOOK_TYPE, -1);
 
 	if (!ecore_list_goto(n->pages, p))
 		DRETURN_INT(-1, DLEVEL_STABLE);

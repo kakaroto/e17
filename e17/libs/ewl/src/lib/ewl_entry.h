@@ -1,6 +1,9 @@
 #ifndef __EWL_ENTRY_H__
 #define __EWL_ENTRY_H__
 
+#define EWL_ENTRY_TYPE "entry"
+#define EWL_CURSOR_TYPE "cursor"
+
 #define EWL_ENTRY(entry) ((Ewl_Entry *) entry)
 
 typedef struct Ewl_Entry Ewl_Entry;

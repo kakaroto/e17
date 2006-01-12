@@ -15,6 +15,8 @@
  * @themekey /overlay/group
  */
 
+#define EWL_OVERLAY_TYPE "overlay"
+
 /**
  * The overlay structure is mostly a container for holding widgets and a
  * wrapper evas smart object.

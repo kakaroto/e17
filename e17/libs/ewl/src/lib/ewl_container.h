@@ -10,6 +10,8 @@
  * @{
  */
 
+#define EWL_CONTAINER_TYPE "container"
+
 /**
  * This class inherits from Ewl_Widget and provides the capabilities necessary
  * for nesting other widgets inside.

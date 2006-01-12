@@ -46,8 +46,8 @@ ewl_scrollpane_init(Ewl_ScrollPane *s)
 	if (!ewl_container_init(EWL_CONTAINER(s)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_widget_appearance_set(w, "scrollpane");
-	ewl_widget_inherit(w, "scrollpane");
+	ewl_widget_appearance_set(w, EWL_SCROLLPANE_TYPE);
+	ewl_widget_inherit(w, EWL_SCROLLPANE_TYPE);
 	ewl_widget_focusable_set(EWL_WIDGET(s), TRUE);
 	ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_ALL);
 
@@ -136,7 +136,7 @@ ewl_scrollpane_hscrollbar_flag_set(Ewl_ScrollPane *s, Ewl_ScrollPane_Flags f)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
-	DCHECK_TYPE("s", s, "scrollpane");
+	DCHECK_TYPE("s", s, EWL_SCROLLPANE_TYPE);
 
 	s->hflag = f;
 	ewl_widget_configure(EWL_WIDGET(s));
@@ -157,7 +157,7 @@ ewl_scrollpane_vscrollbar_flag_set(Ewl_ScrollPane *s, Ewl_ScrollPane_Flags f)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
-	DCHECK_TYPE("s", s, "scrollpane");
+	DCHECK_TYPE("s", s, EWL_SCROLLPANE_TYPE);
 
 	s->vflag = f;
 	ewl_widget_configure(EWL_WIDGET(s));
@@ -175,7 +175,7 @@ ewl_scrollpane_hscrollbar_flag_get(Ewl_ScrollPane *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, 0);
-	DCHECK_TYPE_RET("s", s, "scrollpane", 0);
+	DCHECK_TYPE_RET("s", s, EWL_SCROLLPANE_TYPE, 0);
 
 	DRETURN_INT(s->hflag, DLEVEL_STABLE);
 }
@@ -190,7 +190,7 @@ ewl_scrollpane_vscrollbar_flag_get(Ewl_ScrollPane *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, 0);
-	DCHECK_TYPE_RET("s", s, "scrollpane", 0);
+	DCHECK_TYPE_RET("s", s, EWL_SCROLLPANE_TYPE, 0);
 
 	DRETURN_INT(s->vflag, DLEVEL_STABLE);
 }
@@ -205,7 +205,7 @@ ewl_scrollpane_hscrollbar_value_get(Ewl_ScrollPane *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, 0.0);
-	DCHECK_TYPE_RET("s", s, "scrollpane", 0.0);
+	DCHECK_TYPE_RET("s", s, EWL_SCROLLPANE_TYPE, 0.0);
 
 	DRETURN_FLOAT(ewl_scrollbar_value_get(EWL_SCROLLBAR(s->hscrollbar)),
 								DLEVEL_STABLE);
@@ -221,7 +221,7 @@ ewl_scrollpane_vscrollbar_value_get(Ewl_ScrollPane *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, 0.0);
-	DCHECK_TYPE_RET("s", s, "scrollpane", 0.0);
+	DCHECK_TYPE_RET("s", s, EWL_SCROLLPANE_TYPE, 0.0);
 
 	DRETURN_FLOAT(ewl_scrollbar_value_get(EWL_SCROLLBAR(s->vscrollbar)),
 								DLEVEL_STABLE);
@@ -238,7 +238,7 @@ ewl_scrollpane_hscrollbar_value_set(Ewl_ScrollPane *s, double val)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
-	DCHECK_TYPE("s", s, "scrollpane");
+	DCHECK_TYPE("s", s, EWL_SCROLLPANE_TYPE);
 
 	ewl_scrollbar_value_set(EWL_SCROLLBAR(s->hscrollbar), val);
 
@@ -256,7 +256,7 @@ ewl_scrollpane_vscrollbar_value_set(Ewl_ScrollPane *s, double val)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
-	DCHECK_TYPE("s", s, "scrollpane");
+	DCHECK_TYPE("s", s, EWL_SCROLLPANE_TYPE);
 
 	ewl_scrollbar_value_set(EWL_SCROLLBAR(s->vscrollbar), val);
 
@@ -274,7 +274,7 @@ ewl_scrollpane_hscrollbar_step_get(Ewl_ScrollPane *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, 0.0);
-	DCHECK_TYPE_RET("s", s, "scrollpane", 0.0);
+	DCHECK_TYPE_RET("s", s, EWL_SCROLLPANE_TYPE, 0.0);
 
 	DRETURN_FLOAT(ewl_scrollbar_step_get(EWL_SCROLLBAR(s->hscrollbar)),
 								DLEVEL_STABLE);
@@ -291,7 +291,7 @@ ewl_scrollpane_vscrollbar_step_get(Ewl_ScrollPane *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, 0.0);
-	DCHECK_TYPE_RET("s", s, "scrollpane", 0.0);
+	DCHECK_TYPE_RET("s", s, EWL_SCROLLPANE_TYPE, 0.0);
 
 	DRETURN_FLOAT(ewl_scrollbar_step_get(EWL_SCROLLBAR(s->vscrollbar)),
 								DLEVEL_STABLE);
@@ -314,7 +314,7 @@ ewl_scrollpane_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	s = EWL_SCROLLPANE(w);
 
@@ -469,7 +469,7 @@ ewl_scrollpane_focus_jump_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "scrollpane");
+	DCHECK_TYPE("w", w, EWL_SCROLLPANE_TYPE);
 
 	emb = ewl_embed_widget_find(w);
 	if (!emb)
@@ -540,7 +540,7 @@ ewl_scrollpane_hscroll_cb(Ewl_Widget *w __UNUSED__,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ewl_callback_call(user_data, EWL_CALLBACK_VALUE_CHANGED);
 	ewl_widget_configure(user_data);
@@ -559,7 +559,7 @@ ewl_scrollpane_vscroll_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ewl_callback_call(user_data, EWL_CALLBACK_VALUE_CHANGED);
 	ewl_widget_configure(user_data);
@@ -576,7 +576,7 @@ ewl_scrollpane_wheel_scroll_cb(Ewl_Widget *cb, void *ev_data,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("cb", cb);
-	DCHECK_TYPE("cb", cb, "widget");
+	DCHECK_TYPE("cb", cb, EWL_WIDGET_TYPE);
 
 	s = EWL_SCROLLPANE(cb);
 	ev = ev_data;
@@ -598,8 +598,8 @@ ewl_scrollpane_child_resize_cb(Ewl_Container *parent, Ewl_Widget *child)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("parent", parent);
 	DCHECK_PARAM_PTR("child", child);
-	DCHECK_TYPE("parent", parent, "container");
-	DCHECK_TYPE("child", child, "widget");
+	DCHECK_TYPE("parent", parent, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("child", child, EWL_WIDGET_TYPE);
 
 	s = EWL_SCROLLPANE(parent);
 

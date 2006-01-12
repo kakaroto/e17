@@ -13,6 +13,8 @@
  * @themekey /menu_item/group
  */
 
+#define EWL_MENU_ITEM_TYPE "menu_item"
+
 /**
  * This serves as a basis for all menu related entries. It provides the most
  * basic layout facilities for items in a menu.

@@ -15,6 +15,8 @@
  * @themekey /checkbutton/group
  */
 
+#define EWL_CHECKBUTTON_TYPE "checkbutton"
+
 /**
  * The button class is a basic button with a label. This class is inherited by
  * the check button and radio button classes.

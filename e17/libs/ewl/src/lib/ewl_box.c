@@ -150,7 +150,7 @@ ewl_box_init(Ewl_Box * b)
 		ewl_widget_destroy(EWL_WIDGET(b));
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
-	ewl_widget_inherit(w, "box");
+	ewl_widget_inherit(w, EWL_BOX_TYPE);
 
 	/*
 	 * Set the appearance based on default orientation.
@@ -202,7 +202,7 @@ ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
-	DCHECK_TYPE("b", b, "box");
+	DCHECK_TYPE("b", b, EWL_BOX_TYPE);
 
         char *appearance;
 
@@ -243,7 +243,7 @@ ewl_box_orientation_get(Ewl_Box *b)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("b", b, 0);
-	DCHECK_TYPE_RET("b", b, "box", 0);
+	DCHECK_TYPE_RET("b", b, EWL_BOX_TYPE, 0);
 
 	DRETURN_INT(b->orientation, DLEVEL_STABLE);
 }
@@ -262,7 +262,7 @@ ewl_box_homogeneous_set(Ewl_Box *b, unsigned int h)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
-	DCHECK_TYPE("b", b, "box");
+	DCHECK_TYPE("b", b, EWL_BOX_TYPE);
 
 	if (b->homogeneous == h)
 		DRETURN(DLEVEL_STABLE);
@@ -310,7 +310,7 @@ ewl_box_spacing_set(Ewl_Box * b, int s)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
-	DCHECK_TYPE("b", b, "box");
+	DCHECK_TYPE("b", b, EWL_BOX_TYPE);
 
 	w = EWL_WIDGET(b);
 
@@ -360,7 +360,7 @@ ewl_box_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	b = EWL_BOX(w);
 
@@ -434,7 +434,7 @@ ewl_box_configure_homogeneous_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	if (ecore_list_is_empty(EWL_CONTAINER(w)->children))
 		DRETURN(DLEVEL_STABLE);
@@ -501,7 +501,7 @@ ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
-	DCHECK_TYPE("b", b, "box");
+	DCHECK_TYPE("b", b, EWL_BOX_TYPE);
 
 	initial = *fill_size / ecore_list_nodes(EWL_CONTAINER(b)->children);
 
@@ -676,7 +676,7 @@ ewl_box_configure_layout(Ewl_Box * b, int *x, int *y, int *fill,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
-	DCHECK_TYPE("b", b, "box");
+	DCHECK_TYPE("b", b, EWL_BOX_TYPE);
 
 	/*
 	 * Configure the widgets on the first list.
@@ -753,8 +753,8 @@ ewl_box_child_show_cb(Ewl_Container * c, Ewl_Widget * w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, "container");
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	if (ecore_list_nodes(c->children) > 1)
 		space = EWL_BOX(c)->spacing;
@@ -798,7 +798,7 @@ ewl_box_child_homogeneous_show_cb(Ewl_Container * c,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, "container");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 
 	numc = ecore_list_nodes(c->children);
 	numc--;
@@ -828,8 +828,8 @@ ewl_box_child_hide_cb(Ewl_Container * c, Ewl_Widget * w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, "container");
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	if (ecore_list_nodes(c->children) > 1)
 		space = b->spacing;
@@ -867,7 +867,7 @@ ewl_box_child_resize_cb(Ewl_Container * c, Ewl_Widget * w __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, "container");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 
 	/*
 	 * Get the appropriate dimension setting functions based on the

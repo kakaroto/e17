@@ -18,6 +18,8 @@
  * @themekey /vseeker/group
  */
 
+#define EWL_SEEKER_TYPE "seeker"
+
 /**
  * The Ewl_Seeker provides a means to select a value from a range using a
  * draggable button.

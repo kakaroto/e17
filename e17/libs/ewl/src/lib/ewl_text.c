@@ -105,8 +105,8 @@ ewl_text_init(Ewl_Text *t)
 	{
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
-	ewl_widget_appearance_set(EWL_WIDGET(t), "text");
-	ewl_widget_inherit(EWL_WIDGET(t), "text");
+	ewl_widget_appearance_set(EWL_WIDGET(t), EWL_TEXT_TYPE);
+	ewl_widget_inherit(EWL_WIDGET(t), EWL_TEXT_TYPE);
 
 	ewl_object_fill_policy_set(EWL_OBJECT(t), EWL_FLAG_FILL_NONE);
 
@@ -156,7 +156,7 @@ ewl_text_length_get(Ewl_Text *t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, 0);
-	DCHECK_TYPE_RET("t", t, "text", 0);
+	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, 0);
 
 	DRETURN_INT(t->length, DLEVEL_STABLE);
 }
@@ -179,7 +179,7 @@ ewl_text_index_geometry_map(Ewl_Text *t, unsigned int idx, int *x, int *y,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	/* can't do this if we don't have an evas object */
 	if ((!REALIZED(t)) || (!t->textblock) || (!t->text))
@@ -233,7 +233,7 @@ ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, 0);
-	DCHECK_TYPE_RET("t", t, "text", 0);
+	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, 0);
 
 	if ((!REALIZED(t)) || (!t->textblock) || (!t->text))
 	{
@@ -307,7 +307,7 @@ ewl_text_text_get(Ewl_Text *t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, NULL);
-	DCHECK_TYPE_RET("t", t, "text", NULL);
+	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, NULL);
 
 	DRETURN_PTR(((t->text) ? strdup(t->text) : NULL), DLEVEL_STABLE);
 }
@@ -321,7 +321,7 @@ ewl_text_clear(Ewl_Text *t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	if (t->length > 0)
 	{
@@ -364,7 +364,7 @@ ewl_text_text_set(Ewl_Text *t, const char *text)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	ewl_text_clear(t);
 	ewl_text_text_insert(t, text, t->cursor_position);
@@ -398,7 +398,7 @@ ewl_text_text_append(Ewl_Text *t, const char *text)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	ewl_text_text_insert(t, text, t->length);
 
@@ -418,7 +418,7 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int idx)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	if (text) len = strlen(text);
 
@@ -492,7 +492,7 @@ ewl_text_text_delete(Ewl_Text *t, unsigned int length)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	if ((!t->text) || (length == 0) || (t->cursor_position >= t->length))
 		DRETURN(DLEVEL_STABLE);
@@ -547,7 +547,7 @@ ewl_text_selectable_set(Ewl_Text *t, unsigned int selectable)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	if (t->selectable == selectable)
 		DRETURN(DLEVEL_STABLE);
@@ -581,7 +581,7 @@ ewl_text_selectable_get(Ewl_Text *t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, 0);
-	DCHECK_TYPE_RET("t", t, "text", 0);
+	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, 0);
 
 	DRETURN_INT(t->selectable, DLEVEL_STABLE);
 }
@@ -598,7 +598,7 @@ ewl_text_selection_text_get(Ewl_Text *t)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, NULL);
-	DCHECK_TYPE_RET("t", t, "text", NULL);
+	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, NULL);
 
 	if ((!t->selection) || t->selection->len == 0)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
@@ -622,7 +622,7 @@ ewl_text_selection_get(Ewl_Text *t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, NULL);
-	DCHECK_TYPE_RET("t", t, "text", NULL);
+	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, NULL);
 
 	if (t->selection && ewl_text_trigger_length_get(t->selection) > 0)
 	{
@@ -641,7 +641,7 @@ ewl_text_has_selection(Ewl_Text *t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, FALSE);
-	DCHECK_TYPE_RET("t", t, "text", FALSE);
+	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, FALSE);
 
 	if (ewl_text_selection_get(t))
 	{
@@ -661,7 +661,7 @@ ewl_text_cursor_position_set(Ewl_Text *t, unsigned int pos)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	/* it's the same position, do nothing */
 	if (pos == t->cursor_position)
@@ -687,7 +687,7 @@ ewl_text_cursor_position_get(Ewl_Text *t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, 0);
-	DCHECK_TYPE_RET("t", t, "text", 0);
+	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, 0);
 
 	DRETURN_INT(t->cursor_position, DLEVEL_STABLE);
 }
@@ -707,7 +707,7 @@ ewl_text_cursor_position_line_up_get(Ewl_Text *t)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, t->cursor_position);
-	DCHECK_TYPE_RET("t", t, "text", t->cursor_position);
+	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, t->cursor_position);
 
 	cur_idx = ewl_text_cursor_position_get(t);
 	cursor = ewl_text_textblock_cursor_position(t, cur_idx);
@@ -750,7 +750,7 @@ ewl_text_cursor_position_line_down_get(Ewl_Text *t)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, t->cursor_position);
-	DCHECK_TYPE_RET("t", t, "text", t->cursor_position);
+	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, t->cursor_position);
 
 	cur_idx = ewl_text_cursor_position_get(t);
 	cursor = ewl_text_textblock_cursor_position(t, cur_idx);
@@ -791,7 +791,7 @@ ewl_text_font_set(Ewl_Text *t, const char *font)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	change = ewl_text_context_new();
 
@@ -820,7 +820,7 @@ ewl_text_font_apply(Ewl_Text *t, const char *font, unsigned int length)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	/* if length is 0 we have nothing to do */
 	if (length == 0) 
@@ -858,7 +858,7 @@ ewl_text_font_get(Ewl_Text *t, unsigned int idx)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, NULL);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
 	if (tx && tx->font)
@@ -878,7 +878,7 @@ ewl_text_font_size_set(Ewl_Text *t, unsigned int size)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	change = ewl_text_context_new();
 	change->size = size;
@@ -904,7 +904,7 @@ ewl_text_font_size_apply(Ewl_Text *t, unsigned int size, unsigned int length)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	if (length == 0)
 	{
@@ -934,7 +934,7 @@ ewl_text_font_size_get(Ewl_Text *t, unsigned int idx)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, 0);
-	DCHECK_TYPE_RET("t", t, "text", 0);
+	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, 0);
 
 	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
 
@@ -956,7 +956,7 @@ ewl_text_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	change = ewl_text_context_new();
 	change->color.r = r;
@@ -990,7 +990,7 @@ ewl_text_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	/* set this into the b-tree if we have length */
 	if (length == 0)
@@ -1031,7 +1031,7 @@ ewl_text_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
 	if (tx)
@@ -1056,7 +1056,7 @@ ewl_text_align_set(Ewl_Text *t, unsigned int align)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	change = ewl_text_context_new();
 	change->align = align;
@@ -1082,7 +1082,7 @@ ewl_text_align_apply(Ewl_Text *t, unsigned int align, unsigned int length)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	if (length == 0)
 	{
@@ -1112,7 +1112,7 @@ ewl_text_align_get(Ewl_Text *t, unsigned int idx)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, 0);
-	DCHECK_TYPE_RET("t", t, "text", 0);
+	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, 0);
 
 	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
 
@@ -1130,7 +1130,7 @@ ewl_text_styles_set(Ewl_Text *t, unsigned int styles)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	change = ewl_text_context_new();
 	change->styles = styles;
@@ -1156,7 +1156,7 @@ ewl_text_styles_apply(Ewl_Text *t, unsigned int styles, unsigned int length)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	if (length == 0)
 	{
@@ -1188,7 +1188,7 @@ ewl_text_styles_apply(Ewl_Text *t, unsigned int styles, unsigned int length)
  {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
  
 	ewl_text_tree_context_style_apply(t, style, t->cursor_position, length, FALSE);
  
@@ -1208,7 +1208,7 @@ ewl_text_style_del(Ewl_Text *t, Ewl_Text_Style style, unsigned int length)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
  
 	ewl_text_tree_context_style_remove(t, style, t->cursor_position, length);
 	t->dirty = TRUE;
@@ -1232,7 +1232,7 @@ ewl_text_style_invert(Ewl_Text *t, Ewl_Text_Style style, unsigned int length)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
  
 	ewl_text_tree_context_style_apply(t, style, t->cursor_position, length, TRUE);
 	t->dirty = TRUE;
@@ -1254,7 +1254,7 @@ ewl_text_style_has(Ewl_Text *t, Ewl_Text_Style style, unsigned int idx)
  
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, FALSE);
-	DCHECK_TYPE_RET("t", t, "text", FALSE);
+	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, FALSE);
  
 	child = ewl_text_tree_node_get(t->formatting.tree, idx, TRUE);
 	if ((!child) || (!child->tx))
@@ -1274,7 +1274,7 @@ ewl_text_styles_get(Ewl_Text *t, unsigned int idx)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, 0);
-	DCHECK_TYPE_RET("t", t, "text", 0);
+	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, 0);
 
 	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
 
@@ -1292,7 +1292,7 @@ ewl_text_wrap_set(Ewl_Text *t, unsigned int wrap)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	change = ewl_text_context_new();
 	change->wrap = wrap;
@@ -1318,7 +1318,7 @@ ewl_text_wrap_apply(Ewl_Text *t, unsigned int wrap, unsigned int length)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	if (length == 0)
 	{
@@ -1348,7 +1348,7 @@ ewl_text_wrap_get(Ewl_Text *t, unsigned int idx)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, 0);
-	DCHECK_TYPE_RET("t", t, "text", 0);
+	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, 0);
 
 	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
 
@@ -1370,7 +1370,7 @@ ewl_text_bg_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	change = ewl_text_context_new();
 	change->style_colors.bg.r = r;
@@ -1404,7 +1404,7 @@ ewl_text_bg_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	/* set this into the b-tree if we have length */
 	if (length == 0)
@@ -1445,7 +1445,7 @@ ewl_text_bg_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
 	if (tx)
@@ -1474,7 +1474,7 @@ ewl_text_glow_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	change = ewl_text_context_new();
 	change->style_colors.glow.r = r;
@@ -1508,7 +1508,7 @@ ewl_text_glow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	/* set this into the b-tree if we have length */
 	if (length == 0)
@@ -1549,7 +1549,7 @@ ewl_text_glow_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
 	if (tx)
@@ -1578,7 +1578,7 @@ ewl_text_outline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	change = ewl_text_context_new();
 	change->style_colors.outline.r = r;
@@ -1612,7 +1612,7 @@ ewl_text_outline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	/* set this into the b-tree if we have length */
 	if (length == 0)
@@ -1653,7 +1653,7 @@ ewl_text_outline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
 	if (tx)
@@ -1682,7 +1682,7 @@ ewl_text_shadow_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	change = ewl_text_context_new();
 	change->style_colors.shadow.r = r;
@@ -1716,7 +1716,7 @@ ewl_text_shadow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	/* set this into the b-tree if we have length */
 	if (length == 0)
@@ -1757,7 +1757,7 @@ ewl_text_shadow_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
 	if (tx)
@@ -1786,7 +1786,7 @@ ewl_text_strikethrough_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	change = ewl_text_context_new();
 	change->style_colors.strikethrough.r = r;
@@ -1820,7 +1820,7 @@ ewl_text_strikethrough_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	/* set this into the b-tree if we have length */
 	if (length == 0)
@@ -1861,7 +1861,7 @@ ewl_text_strikethrough_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
 	if (tx)
@@ -1890,7 +1890,7 @@ ewl_text_underline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	change = ewl_text_context_new();
 	change->style_colors.underline.r = r;
@@ -1924,7 +1924,7 @@ ewl_text_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	/* set this into the b-tree if we have length */
 	if (length == 0)
@@ -1965,7 +1965,7 @@ ewl_text_underline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
 	if (tx)
@@ -1994,7 +1994,7 @@ ewl_text_double_underline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	change = ewl_text_context_new();
 	change->style_colors.double_underline.r = r;
@@ -2028,7 +2028,7 @@ ewl_text_double_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int 
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	/* set this into the b-tree if we have length */
 	if (length == 0)
@@ -2069,7 +2069,7 @@ ewl_text_double_underline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
 	if (tx)
@@ -2091,7 +2091,7 @@ ewl_text_display(Ewl_Text *t)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	evas_object_textblock_clear(t->textblock);
 
@@ -2327,7 +2327,7 @@ ewl_text_textblock_cursor_position(Ewl_Text *t, unsigned int idx)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, NULL);
-	DCHECK_TYPE_RET("t", t, "text", NULL);
+	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, NULL);
 
 	/* place the cursor at the first node in the textblock */
 	cursor = evas_object_textblock_cursor_new(t->textblock);
@@ -2428,7 +2428,7 @@ ewl_text_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	/* don't do anything if we're obscured */
 	if (OBSCURED(w)) DRETURN(DLEVEL_STABLE);
@@ -2473,7 +2473,7 @@ ewl_text_cb_reveal(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	t = EWL_TEXT(w);
 
@@ -2531,7 +2531,7 @@ ewl_text_cb_obscure(Ewl_Widget *w, void *ev __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	t = EWL_TEXT(w);
 
@@ -2556,7 +2556,7 @@ ewl_text_cb_show(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	t = EWL_TEXT(w);
 	if (t->textblock)
@@ -2575,7 +2575,7 @@ ewl_text_cb_hide(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	t = EWL_TEXT(w);
 	evas_object_hide(t->textblock);
@@ -2591,7 +2591,7 @@ ewl_text_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	t = EWL_TEXT(w);
 
@@ -2624,7 +2624,7 @@ ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	event = ev;
 	t = EWL_TEXT(w);
@@ -2684,7 +2684,7 @@ ewl_text_cb_mouse_up(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	event = ev;
 	t = EWL_TEXT(w);
@@ -2715,7 +2715,7 @@ ewl_text_cb_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	event = ev;
 	t = EWL_TEXT(w);
@@ -2740,14 +2740,14 @@ ewl_text_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, "container");
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	if (!(appearance = ewl_widget_appearance_get(w))) 
 		DRETURN(DLEVEL_STABLE);
 
 	/* if this is a trigger then add it as such */
-	if (!strcmp(appearance, "trigger"))
+	if (!strcmp(appearance, EWL_TEXT_TRIGGER_TYPE))
 		ewl_text_trigger_add(EWL_TEXT(c), EWL_TEXT_TRIGGER(w));
 
 	FREE(appearance);
@@ -2763,14 +2763,14 @@ ewl_text_cb_child_del(Ewl_Container *c, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, "container");
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	if (!(appearance = ewl_widget_appearance_get(w)))
 		DRETURN(DLEVEL_STABLE);
 
 	/* if this is a trigger, remove it as such */
-	if (!strcmp(appearance, "trigger"))
+	if (!strcmp(appearance, EWL_TEXT_TRIGGER_TYPE))
 		ewl_text_trigger_del(EWL_TEXT(c), EWL_TEXT_TRIGGER(w));
 
 	FREE(appearance);
@@ -2810,9 +2810,9 @@ ewl_text_trigger_init(Ewl_Text_Trigger *trigger, Ewl_Text_Trigger_Type type)
 	DCHECK_PARAM_PTR_RET("trigger", trigger, FALSE);
 
 	if (type == EWL_TEXT_TRIGGER_TYPE_TRIGGER)
-		type_str = "trigger";
+		type_str = EWL_TEXT_TRIGGER_TYPE;
 	else if (type == EWL_TEXT_TRIGGER_TYPE_SELECTION)
-		type_str = "selection";
+		type_str = EWL_TEXT_SELECTION_TYPE;
 	else
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
@@ -2820,7 +2820,7 @@ ewl_text_trigger_init(Ewl_Text_Trigger *trigger, Ewl_Text_Trigger_Type type)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	ewl_widget_appearance_set(EWL_WIDGET(trigger), type_str);
-	ewl_widget_inherit(EWL_WIDGET(trigger), "trigger");
+	ewl_widget_inherit(EWL_WIDGET(trigger), EWL_TEXT_TRIGGER_TYPE);
 
 	ewl_callback_prepend(EWL_WIDGET(trigger), EWL_CALLBACK_DESTROY,
 			ewl_text_trigger_cb_destroy, NULL);
@@ -2841,7 +2841,7 @@ ewl_text_trigger_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "trigger");
+	DCHECK_TYPE("w", w, EWL_TEXT_TRIGGER_TYPE);
 
 	t = EWL_TEXT_TRIGGER(w);
 
@@ -2871,7 +2871,7 @@ ewl_text_trigger_type_get(Ewl_Text_Trigger *t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, EWL_TEXT_TRIGGER_TYPE_NONE);
-	DCHECK_TYPE_RET("t", t, "trigger", EWL_TEXT_TRIGGER_TYPE_NONE);
+	DCHECK_TYPE_RET("t", t, EWL_TEXT_TRIGGER_TYPE, EWL_TEXT_TRIGGER_TYPE_NONE);
 
 	DRETURN_INT(t->type, DLEVEL_STABLE);
 }
@@ -2881,7 +2881,7 @@ ewl_text_trigger_start_pos_set(Ewl_Text_Trigger *t, unsigned int pos)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "trigger");
+	DCHECK_TYPE("t", t, EWL_TEXT_TRIGGER_TYPE);
 
 	t->pos = pos;
 
@@ -2893,7 +2893,7 @@ ewl_text_trigger_start_pos_get(Ewl_Text_Trigger *t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, 0);
-	DCHECK_TYPE_RET("t", t, "trigger", 0);
+	DCHECK_TYPE_RET("t", t, EWL_TEXT_TRIGGER_TYPE, 0);
 
 	DRETURN_INT(t->pos, DLEVEL_STABLE);
 }
@@ -2903,7 +2903,7 @@ ewl_text_trigger_length_set(Ewl_Text_Trigger *t, unsigned int len)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "trigger");
+	DCHECK_TYPE("t", t, EWL_TEXT_TRIGGER_TYPE);
 
 	t->len = len;
 
@@ -2926,7 +2926,7 @@ ewl_text_trigger_length_get(Ewl_Text_Trigger *t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, 0);
-	DCHECK_TYPE_RET("t", t, "trigger", 0);
+	DCHECK_TYPE_RET("t", t, EWL_TEXT_TRIGGER_TYPE, 0);
 
 	DRETURN_INT(t->len, DLEVEL_STABLE);
 }
@@ -2936,7 +2936,7 @@ ewl_text_trigger_base_set(Ewl_Text_Trigger *t, unsigned int pos)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "trigger");
+	DCHECK_TYPE("t", t, EWL_TEXT_TRIGGER_TYPE);
 
 	t->base = pos;
 
@@ -2948,7 +2948,7 @@ ewl_text_trigger_base_get(Ewl_Text_Trigger *t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, 0);
-	DCHECK_TYPE_RET("t", t, "trigger", 0);
+	DCHECK_TYPE_RET("t", t, EWL_TEXT_TRIGGER_TYPE, 0);
 
 	DRETURN_INT(t->base, DLEVEL_STABLE);
 }
@@ -2961,7 +2961,7 @@ ewl_text_triggers_configure(Ewl_Text *t)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	if (t->triggers)
 	{
@@ -2996,8 +2996,8 @@ ewl_text_trigger_area_add(Ewl_Text *t, Ewl_Text_Trigger *cur,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_PARAM_PTR("cur", cur);
-	DCHECK_TYPE("t", t, "text");
-	DCHECK_TYPE("cur", cur, "trigger");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
+	DCHECK_TYPE("cur", cur, EWL_TEXT_TRIGGER_TYPE);
 
 	area = ewl_text_trigger_area_new(cur->type);
 	ewl_container_child_append(EWL_CONTAINER(t), area);
@@ -3028,8 +3028,8 @@ ewl_text_trigger_position(Ewl_Text *t, Ewl_Text_Trigger *trig)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_PARAM_PTR("trig", trig);
-	DCHECK_TYPE("t", t, "text");
-	DCHECK_TYPE("trig", trig, "trigger");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
+	DCHECK_TYPE("trig", trig, EWL_TEXT_TRIGGER_TYPE);
 
 	if (trig->len == 0) 
 		DRETURN(DLEVEL_STABLE);
@@ -3075,7 +3075,7 @@ ewl_text_triggers_remove(Ewl_Text *t)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	if (!t->triggers) 
 		DRETURN(DLEVEL_STABLE);
@@ -3099,7 +3099,7 @@ ewl_text_triggers_shift(Ewl_Text *t, unsigned int pos, unsigned int len,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	if (!t->triggers)
 		DRETURN(DLEVEL_STABLE);
@@ -3183,7 +3183,7 @@ ewl_text_triggers_realize(Ewl_Text *t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	if (t->triggers)
 	{
@@ -3208,7 +3208,7 @@ ewl_text_triggers_unrealize(Ewl_Text *t)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	if (t->triggers)
 	{
@@ -3237,7 +3237,7 @@ ewl_text_triggers_show(Ewl_Text *t)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	if (t->triggers)
 	{
@@ -3270,7 +3270,7 @@ ewl_text_triggers_hide(Ewl_Text *t)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	/* hide the triggers */
 	if (t->triggers)
@@ -3305,8 +3305,8 @@ ewl_text_trigger_add(Ewl_Text *t, Ewl_Text_Trigger *trigger)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_PARAM_PTR("trigger", trigger);
-	DCHECK_TYPE("t", t, "text");
-	DCHECK_TYPE("trigger", trigger, "trigger");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
+	DCHECK_TYPE("trigger", trigger, EWL_TEXT_TRIGGER_TYPE);
 
 	/* create the trigger list if needed */
 	if (!t->triggers)
@@ -3369,8 +3369,8 @@ ewl_text_trigger_del(Ewl_Text *t, Ewl_Text_Trigger *trigger)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_PARAM_PTR("trigger", trigger);
-	DCHECK_TYPE("t", t, "text");
-	DCHECK_TYPE("trigger", trigger, "trigger");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
+	DCHECK_TYPE("trigger", trigger, EWL_TEXT_TRIGGER_TYPE);
 
 	/* nothign to do if we have no triggers */
 	if (!t->triggers)
@@ -3503,7 +3503,7 @@ ewl_text_selection_select_to(Ewl_Text_Trigger *s, unsigned int idx)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
-	DCHECK_TYPE("s", s, "trigger");
+	DCHECK_TYPE("s", s, EWL_TEXT_TRIGGER_TYPE);
 
 	base = ewl_text_trigger_base_get(s);
 	start_pos = ewl_text_trigger_start_pos_get(s);
@@ -3604,7 +3604,7 @@ ewl_text_context_default_create(Ewl_Text *t)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, NULL);
-	DCHECK_TYPE_RET("t", t, "text", NULL);
+	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, NULL);
 
 	if (ewl_text_default_context)
 	{
@@ -4123,7 +4123,7 @@ ewl_text_tree_current_node_set(Ewl_Text *t, Ewl_Text_Tree *current)
 {
  	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 	 
 	if (t->formatting.current == current)
  		DRETURN(DLEVEL_STABLE);
@@ -4165,7 +4165,7 @@ ewl_text_tree_insert(Ewl_Text *t, unsigned int idx, unsigned int len)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 	
 	/* if we have a current node, we just insert there as this is where
 	 * the formatting has been setup. If the cursor was moved then
@@ -4196,7 +4196,7 @@ ewl_text_tree_delete(Ewl_Text *t, unsigned int idx, unsigned int len)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	child = ewl_text_tree_node_get(t->formatting.tree, idx, FALSE);
 	if (!child) DRETURN(DLEVEL_STABLE) 
@@ -4323,7 +4323,7 @@ ewl_text_tree_context_set(Ewl_Text *t, unsigned int context_mask,
   	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_PARAM_PTR("tx", tx);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 		
 	/* just update current if possible */
 	if (t->formatting.current)
@@ -4387,7 +4387,7 @@ ewl_text_tree_context_apply(Ewl_Text *t, unsigned int context_mask,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_PARAM_PTR("tx", tx);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 			 
 	/* remove the current node as it isnt' valid after this */
 	ewl_text_tree_current_node_set(t, NULL);
@@ -4430,7 +4430,7 @@ ewl_text_tree_context_style_apply(Ewl_Text *t, Ewl_Text_Style style,
 	  
   	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 		 
 	/* remove the current node as it isnt' valid after this */
 	ewl_text_tree_current_node_set(t, NULL);
@@ -4478,7 +4478,7 @@ ewl_text_tree_context_style_remove(Ewl_Text *t, Ewl_Text_Style style,
 	  
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 	  
 	/* remove the current node as it isnt' valid after this */
 	ewl_text_tree_current_node_set(t, NULL);
@@ -4704,7 +4704,7 @@ ewl_text_tree_walk(Ewl_Text *t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	if (!t->text) 
 		DRETURN(DLEVEL_STABLE);
@@ -4720,7 +4720,7 @@ ewl_text_tree_node_walk(Ewl_Text *t, Ewl_Text_Tree *tree, unsigned int pos)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tree", tree);
 	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	/* if we have a context we have something to say */
 	if (tree->tx)

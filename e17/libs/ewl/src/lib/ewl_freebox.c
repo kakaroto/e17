@@ -63,8 +63,8 @@ ewl_freebox_init(Ewl_Freebox *fb)
 	if (!ewl_container_init(EWL_CONTAINER(fb)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_widget_appearance_set(EWL_WIDGET(fb), "freebox");
-	ewl_widget_inherit(EWL_WIDGET(fb), "freebox");
+	ewl_widget_appearance_set(EWL_WIDGET(fb), EWL_FREEBOX_TYPE);
+	ewl_widget_inherit(EWL_WIDGET(fb), EWL_FREEBOX_TYPE);
 
 	ewl_callback_append(EWL_WIDGET(fb), EWL_CALLBACK_CONFIGURE,
 				ewl_freebox_cb_configure, NULL);
@@ -89,7 +89,7 @@ ewl_freebox_layout_type_set(Ewl_Freebox *fb, Ewl_Freebox_Layout_Type type)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fb", fb);
-	DCHECK_TYPE("fb", fb, "freebox");
+	DCHECK_TYPE("fb", fb, EWL_FREEBOX_TYPE);
 
 	if (fb->layout == type)
 		DRETURN(DLEVEL_STABLE);
@@ -109,7 +109,7 @@ ewl_freebox_layout_type_get(Ewl_Freebox *fb)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fb", fb, EWL_FREEBOX_LAYOUT_AUTO);
-	DCHECK_TYPE_RET("fb", fb, "freebox", EWL_FREEBOX_LAYOUT_AUTO);
+	DCHECK_TYPE_RET("fb", fb, EWL_FREEBOX_TYPE, EWL_FREEBOX_LAYOUT_AUTO);
 
 	DRETURN_INT(fb->layout, DLEVEL_STABLE);
 }
@@ -125,7 +125,7 @@ ewl_freebox_comparator_set(Ewl_Freebox *fb, Ewl_Freebox_Comparator cmp)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fb", fb);
 	DCHECK_PARAM_PTR("cmp", cmp);
-	DCHECK_TYPE("fb", fb, "freebox");
+	DCHECK_TYPE("fb", fb, EWL_FREEBOX_TYPE);
 
 	if (fb->comparator == cmp)
 		DRETURN(DLEVEL_STABLE);
@@ -147,7 +147,7 @@ ewl_freebox_comparator_get(Ewl_Freebox *fb)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fb", fb, NULL);
-	DCHECK_TYPE_RET("fb", fb, "freebox", NULL);
+	DCHECK_TYPE_RET("fb", fb, EWL_FREEBOX_TYPE, NULL);
 
 	DRETURN_PTR(fb->comparator, DLEVEL_STABLE);
 }
@@ -164,7 +164,7 @@ ewl_freebox_resort(Ewl_Freebox *fb)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fb", fb);
-	DCHECK_TYPE("fb", fb, "freebox");
+	DCHECK_TYPE("fb", fb, EWL_FREEBOX_TYPE);
 
 	fb->sorted = FALSE;
 	ewl_widget_configure(EWL_WIDGET(fb));
@@ -180,7 +180,7 @@ ewl_freebox_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "freebox");
+	DCHECK_TYPE("w", w, EWL_FREEBOX_TYPE);
 
 	fb = EWL_FREEBOX(w);
 	if (fb->layout == EWL_FREEBOX_LAYOUT_AUTO)
@@ -203,8 +203,8 @@ ewl_freebox_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, "container");
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	/* This only does a sorted = FALSE because in the COMPARATOR layout
 	 * it will remove all of the widgets from the container and
@@ -225,8 +225,8 @@ ewl_freebox_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, "container");
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	fb = EWL_FREEBOX(c);
 	fb->sorted = FALSE;
@@ -245,7 +245,7 @@ ewl_freebox_layout_auto(Ewl_Freebox *fb)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fb", fb);
-	DCHECK_TYPE("fb", fb, "freebox");
+	DCHECK_TYPE("fb", fb, EWL_FREEBOX_TYPE);
 
 	pad = ewl_theme_data_int_get(EWL_WIDGET(fb),
 					"/freebox/auto/padding");
@@ -294,7 +294,7 @@ ewl_freebox_layout_manual(Ewl_Freebox *fb)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fb", fb);
-	DCHECK_TYPE("fb", fb, "freebox");
+	DCHECK_TYPE("fb", fb, EWL_FREEBOX_TYPE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -311,7 +311,7 @@ ewl_freebox_layout_comparator(Ewl_Freebox *fb)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fb", fb);
-	DCHECK_TYPE("fb", fb, "freebox");
+	DCHECK_TYPE("fb", fb, EWL_FREEBOX_TYPE);
 
 	/* we're boned if we don't have a comparator */
 	if (!fb->comparator)

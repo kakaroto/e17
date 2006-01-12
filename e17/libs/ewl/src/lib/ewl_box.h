@@ -15,6 +15,8 @@
  * @themekey /box/group
  */
 
+#define EWL_BOX_TYPE "box"
+
 /**
  * The box widget is an Ewl_Container and lays out Ewl_Widget's either
  * horizontally or vertically.

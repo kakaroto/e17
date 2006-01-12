@@ -15,6 +15,8 @@
  * @themekey /combo/group
  */
 
+#define EWL_COMBO_TYPE "combo"
+
 /**
  * A simple internal combo box, it is limited to drawing within the current
  * evas.

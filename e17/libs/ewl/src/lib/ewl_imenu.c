@@ -43,7 +43,7 @@ ewl_imenu_init(Ewl_Imenu *menu)
 	if (!ewl_menu_base_init(EWL_MENU_BASE(menu)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_widget_inherit(EWL_WIDGET(menu), "imenu");
+	ewl_widget_inherit(EWL_WIDGET(menu), EWL_IMENU_TYPE);
 
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_FOCUS_IN,
 			    ewl_imenu_expand_cb, NULL);
@@ -57,7 +57,7 @@ ewl_imenu_init(Ewl_Imenu *menu)
 	ewl_floater_follow_set(EWL_FLOATER(menu->base.popup), EWL_WIDGET(menu));
 	ewl_widget_internal_set(menu->base.popup, TRUE);
 	ewl_widget_layer_set(menu->base.popup, 1000);
-	ewl_widget_appearance_set(EWL_WIDGET(menu->base.popup), "imenu");
+	ewl_widget_appearance_set(EWL_WIDGET(menu->base.popup), EWL_IMENU_TYPE);
 	ewl_box_orientation_set(EWL_BOX(menu->base.popup),
 				EWL_ORIENTATION_VERTICAL);
 	ewl_object_fill_policy_set(EWL_OBJECT(menu->base.popup),
@@ -78,7 +78,7 @@ ewl_imenu_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	menu = EWL_IMENU(w);
 	/*
@@ -105,7 +105,7 @@ ewl_imenu_expand_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	menu = EWL_IMENU(w);
 	if (!REALIZED(menu->base.popup)) {

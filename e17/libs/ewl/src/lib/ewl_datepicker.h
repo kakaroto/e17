@@ -13,6 +13,8 @@
  * @themekey /datepicker/group
  */
 
+#define EWL_DATEPICKER_TYPE "datepicker"
+
 typedef struct Ewl_Datepicker Ewl_Datepicker;
 
 /**

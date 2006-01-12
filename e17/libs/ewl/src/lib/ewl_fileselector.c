@@ -75,8 +75,8 @@ ewl_fileselector_init(Ewl_Fileselector *fs)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	ewl_box_orientation_set(EWL_BOX(w), EWL_ORIENTATION_VERTICAL);
-	ewl_widget_appearance_set(w, "fileselector");
-	ewl_widget_inherit(w, "fileselector");
+	ewl_widget_appearance_set(w, EWL_FILESELECTOR_TYPE);
+	ewl_widget_inherit(w, EWL_FILESELECTOR_TYPE);
 	ewl_object_fill_policy_set(EWL_OBJECT(w),
 				   EWL_FLAG_FILL_SHRINK | EWL_FLAG_FILL_FILL);
 	ewl_object_minimum_size_set(EWL_OBJECT(w), EWL_FS_TREE_WIDTH,
@@ -188,7 +188,7 @@ ewl_fileselector_path_get(Ewl_Fileselector *fs)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fs", fs, NULL);
-	DCHECK_TYPE_RET("fs", fs, "fileselector", NULL);
+	DCHECK_TYPE_RET("fs", fs, EWL_FILESELECTOR_TYPE, NULL);
 
 	s = strdup(fs->path);
 
@@ -205,7 +205,7 @@ ewl_fileselector_file_get(Ewl_Fileselector *fs)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fs", fs, NULL);
-	DCHECK_TYPE_RET("fs", fs, "fileselector", NULL);
+	DCHECK_TYPE_RET("fs", fs, EWL_FILESELECTOR_TYPE, NULL);
 
 	if (ecore_list_is_empty(fs->files)) {
 		char *entry_file;
@@ -239,7 +239,7 @@ ewl_fileselector_path_set(Ewl_Fileselector *fs, const char *path)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fs", fs);
 	DCHECK_PARAM_PTR("path", path);
-	DCHECK_TYPE("fs", fs, "fileselector");
+	DCHECK_TYPE("fs", fs, EWL_FILESELECTOR_TYPE);
 
 	if (REALIZED(fs))
 		ewl_fileselector_path_setup(fs, path);
@@ -260,7 +260,7 @@ ewl_fileselector_multiselect_set(Ewl_Fileselector *fs, unsigned int val)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fs", fs);
-	DCHECK_TYPE("fs", fs, "fileselector");
+	DCHECK_TYPE("fs", fs, EWL_FILESELECTOR_TYPE);
 
 	if (val > 1) val = 1;
 	fs->multi_select = val;
@@ -278,7 +278,7 @@ ewl_fileselector_multiselect_get(Ewl_Fileselector *fs)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fs", fs, 0);
-	DCHECK_TYPE_RET("fs", fs, "fileselector", 0);
+	DCHECK_TYPE_RET("fs", fs, EWL_FILESELECTOR_TYPE, 0);
 
 	DRETURN_INT(fs->multi_select, DLEVEL_STABLE);
 }
@@ -293,7 +293,7 @@ ewl_fileselector_select_list_get(Ewl_Fileselector *fs)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fs", fs, NULL);
-	DCHECK_TYPE_RET("fs", fs, "fileselector", NULL);
+	DCHECK_TYPE_RET("fs", fs, EWL_FILESELECTOR_TYPE, NULL);
 
 	DRETURN_PTR(fs->files, DLEVEL_STABLE);
 }
@@ -563,7 +563,7 @@ ewl_fileselector_set_filter(Ewl_Fileselector *fs,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fs", fs);
 	DCHECK_PARAM_PTR("filter", filter);
-	DCHECK_TYPE("fs", fs, "fileselector");
+	DCHECK_TYPE("fs", fs, EWL_FILESELECTOR_TYPE);
 
 	fs->dfilter = filter;
 	ewl_fileselector_path_setup(fs, ewl_fileselector_path_get(fs));
@@ -582,7 +582,7 @@ ewl_fileselector_show_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	fs = EWL_FILESELECTOR(w);
 	ewl_fileselector_path_setup(fs, fs->path);
@@ -598,7 +598,7 @@ ewl_fileselector_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	fs = EWL_FILESELECTOR(w);
 	IF_FREE(fs->path);
@@ -622,7 +622,7 @@ void ewl_fileselector_select_file_cb(Ewl_Widget *w,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("data", data);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	row = EWL_CONTAINER(w);
 	ev = ev_data;
@@ -684,7 +684,7 @@ ewl_fileselector_select_dir_cb(Ewl_Widget *w, void *ev_data, void *data)
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ev = ev_data;
 	if (ev->clicks < 2)
@@ -764,7 +764,7 @@ ewl_fileselector_path_setup(Ewl_Fileselector *fs, const char *path)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fs", fs);
 	DCHECK_PARAM_PTR("path", path);
-	DCHECK_TYPE("fs", fs, "fileselector");
+	DCHECK_TYPE("fs", fs, EWL_FILESELECTOR_TYPE);
 
 	/* FIXME: clearing the lists is maybe not sufficient/correct */
         ewl_tree_selected_clear(EWL_TREE(fs->list_dirs));
@@ -923,7 +923,7 @@ ewl_fileselector_tooltip_add(Ewl_Widget *w, Ewl_Fileselector_Data *d)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("d", d);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	name = d->name;
 	size = ewl_fileselector_size_string_get(d->size);

@@ -15,6 +15,8 @@
  * @themekey /table/group
  */
 
+#define EWL_TABLE_TYPE "table"
+
 /**
  * The table widget is an Ewl_Container used to lay out widgets in a grid like
  * pattern with headers and alignment.

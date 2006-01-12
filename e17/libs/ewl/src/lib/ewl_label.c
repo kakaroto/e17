@@ -46,8 +46,8 @@ ewl_label_init(Ewl_Label *la)
 	if (!ewl_widget_init(w))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_widget_appearance_set(w, "label");
-	ewl_widget_inherit(w, "label");
+	ewl_widget_appearance_set(w, EWL_LABEL_TYPE);
+	ewl_widget_inherit(w, EWL_LABEL_TYPE);
 	ewl_object_fill_policy_set(EWL_OBJECT(la), EWL_FLAG_FILL_FILL);
 	ewl_widget_focusable_set(w, FALSE);
 
@@ -67,7 +67,7 @@ ewl_label_text_set(Ewl_Label *la, const char *text)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("la", la);
-	DCHECK_TYPE("la", la, "label");
+	DCHECK_TYPE("la", la, EWL_LABEL_TYPE);
 
 	IF_FREE(la->text);
 	if (text) la->text = strdup(text);
@@ -88,7 +88,7 @@ ewl_label_text_get(Ewl_Label *la)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("la", la, NULL);
-	DCHECK_TYPE_RET("la", la, "label", NULL);
+	DCHECK_TYPE_RET("la", la, EWL_LABEL_TYPE, NULL);
 
 	DRETURN_PTR(la->text, DLEVEL_STABLE);
 }
@@ -98,7 +98,7 @@ ewl_label_realize_cb(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ewl_label_apply(EWL_LABEL(w));
 
@@ -112,7 +112,7 @@ ewl_label_destroy_cb(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	label = EWL_LABEL(w);
 	IF_FREE(label->text);
@@ -125,7 +125,7 @@ ewl_label_apply(Ewl_Label *la)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("la", la);
-	DCHECK_TYPE("la", la, "label");
+	DCHECK_TYPE("la", la, EWL_LABEL_TYPE);
 
 	ewl_widget_appearance_text_set(EWL_WIDGET(la), la->text);
 

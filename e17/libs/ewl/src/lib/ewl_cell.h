@@ -15,6 +15,8 @@
  * @themekey /cell/group
  */
 
+#define EWL_CELL_TYPE "cell"
+
 typedef struct Ewl_Cell Ewl_Cell;
 
 /**
