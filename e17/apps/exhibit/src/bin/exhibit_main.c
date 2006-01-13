@@ -927,7 +927,7 @@ main(int argc, char *argv[])
      };
 
    event_handlers = evas_list_append(event_handlers,
-				     ecore_event_handler_add(ECORE_EVENT_EXE_EXIT,
+				     ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
 							     _ex_thumb_exe_exit,
 							     NULL));
    

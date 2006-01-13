@@ -1033,7 +1033,7 @@ _mount_icon_cb_edje_mouse_down(void *data, Evas_Object *o, const char *emission,
    ic = data;
    if (!strcmp(emission, "mouse,down,1"))
      {
-	_mount_exe_exit_handler = ecore_event_handler_add(ECORE_EVENT_EXE_EXIT,_mount_exe_cb_exit, NULL);
+	_mount_exe_exit_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL,_mount_exe_cb_exit, NULL);
 	if (ic->mntpoint->mounted == 0)
 	  {
 	     /* Mount */

@@ -257,7 +257,7 @@ Entranced_Filter_Loop(void *data, void *loop_data, int type, void *event)
 {
 
    /* Filter out redundant exit events */
-   if (type == ECORE_EVENT_EXE_EXIT)
+   if (type == ECORE_EXE_EVENT_DEL)
    {
       if (exev)
          return 0;
@@ -525,7 +525,7 @@ main(int argc, char **argv)
 
    /* Set up event handlers */
    _e_handler =
-      ecore_event_handler_add(ECORE_EVENT_EXE_EXIT, Entranced_Exe_Exited, d);
+      ecore_event_handler_add(ECORE_EXE_EVENT_DEL, Entranced_Exe_Exited, d);
    _d_handler =
       ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, Entranced_Signal_Exit,
                               NULL);

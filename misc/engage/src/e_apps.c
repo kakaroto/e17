@@ -57,7 +57,7 @@ e_app_init(void)
    snprintf(buf, sizeof(buf), "%s/.e/e/applications/all", home);
    free(home);
    _e_apps_repositories = evas_list_append(_e_apps_repositories, strdup(buf));
-   _e_apps_exit_handler = ecore_event_handler_add(ECORE_EVENT_EXE_EXIT, _e_apps_cb_exit, NULL);
+   _e_apps_exit_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _e_apps_cb_exit, NULL);
    _e_apps_all = e_app_new(buf, 1);
    return 1;
 }

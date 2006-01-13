@@ -452,7 +452,7 @@ _screen_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,void *event_inf
 		  free(msg);
 	       }
 	     
-	     _screen_exe_exit_handler = ecore_event_handler_add(ECORE_EVENT_EXE_EXIT, _screen_exe_cb_exit, NULL);
+	     _screen_exe_exit_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _screen_exe_cb_exit, NULL);
 	     x = ecore_exe_run(buff, ef);
 	  }
 	else if (ef->screen->conf->use_scrot == 1)
@@ -479,7 +479,7 @@ _screen_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,void *event_inf
 		  free(msg);
 	       }
 	     
-	     _screen_exe_exit_handler = ecore_event_handler_add(ECORE_EVENT_EXE_EXIT, _screen_exe_cb_exit, NULL);
+	     _screen_exe_exit_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _screen_exe_cb_exit, NULL);
 	     x = ecore_exe_run(buff, ef);
 	  }
 	else
