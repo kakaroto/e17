@@ -722,13 +722,14 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 	
 	/*Main menu setup*/
 	menubar = ewl_menubar_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(menubar), EWL_FLAG_FILL_HFILL);
 	ewl_widget_show(menubar);
 
 
 	menu = ewl_menu_new();
 	ewl_menu_item_text_set(EWL_MENU_ITEM(menu), "File");
 	ewl_container_child_append(EWL_CONTAINER(menubar), menu);
-	ewl_object_fill_policy_set(EWL_OBJECT(menubar), EWL_FLAG_FILL_SHRINK);
+	ewl_object_fill_policy_set(EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
 	ewl_widget_show(menu);
 
 	item = ewl_menu_item_new();
@@ -741,6 +742,7 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 	menu = ewl_menu_new();
 	ewl_menu_item_text_set(EWL_MENU_ITEM(menu), "Tools");
 	ewl_container_child_append(EWL_CONTAINER(menubar), menu);
+	ewl_object_fill_policy_set(EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
 	ewl_widget_show(menu);
 
 	item = ewl_menu_item_new();
@@ -758,6 +760,7 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 	menu = ewl_menu_new();
 	ewl_menu_item_text_set(EWL_MENU_ITEM(menu), "View");
 	ewl_container_child_append(EWL_CONTAINER(menubar), menu);
+	ewl_object_fill_policy_set(EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
 	ewl_widget_show(menu);
 
 	ecore_list_goto_first(gui->local_components);
@@ -785,11 +788,15 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 
 	
 	
+	menu = ewl_spacer_new();
+	ewl_container_child_append(EWL_CONTAINER(menubar), menu);
+	ewl_widget_show(menu);
 	
 
 	menu = ewl_menu_new();
 	ewl_menu_item_text_set(EWL_MENU_ITEM(menu), "Help");
 	ewl_container_child_append(EWL_CONTAINER(menubar), menu);
+	ewl_object_fill_policy_set(EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
 	ewl_widget_show(menu);
 
 	item = ewl_menu_item_new();
