@@ -736,14 +736,19 @@ __imlib_GrabDrawableToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
      }
    else if (xatt.depth <= 8)
      {
-        if ((!is_pixmap) && (!cm))
+        if (!cm)
           {
-             cm = xatt.colormap;
-             if (cm == None)
-                cm = ratt.colormap;
+             if (is_pixmap)
+               {
+                  cm = DefaultColormap(d, DefaultScreen(d));
+               }
+             else
+               {
+                  cm = xatt.colormap;
+                  if (cm == None)
+                     cm = ratt.colormap;
+               }
           }
-        else
-           cm = ratt.colormap;
 
         for (i = 0; i < (1 << xatt.depth); i++)
           {
