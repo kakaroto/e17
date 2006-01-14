@@ -45,4 +45,5 @@ eclair_LDADD = \
 @esmart_libs@ -lesmart_draggies \
 @taglib_libs@ -ltag_c \
 @XML2_LIBS@ \
-@SQLITE_LIBS@
+@SQLITE_LIBS@ \
+-lphtread
