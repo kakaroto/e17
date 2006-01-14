@@ -258,7 +258,7 @@ _tclock_face_new(E_Container *con)
 
    snprintf(buff, sizeof(buff), PACKAGE_DATA_DIR"/tclock.edj");
    if (!e_theme_edje_object_set(o, "base/theme/modules/tclock", "modules/tclock/main"))
-     edje_object_file_set(o, strdup(buff), "modules/tclock/main");
+     edje_object_file_set(o, buff, "modules/tclock/main");
    evas_object_show(o);
 
    o = evas_object_rectangle_add(con->bg_evas);

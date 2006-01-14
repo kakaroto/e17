@@ -294,7 +294,7 @@ _slide_face_init(Slide_Face *sf)
 
    snprintf(buff, sizeof(buff), PACKAGE_DATA_DIR"/slideshow.edj");
    if (!e_theme_edje_object_set(o, "base/theme/modules/slideshow", "modules/slideshow/main"))
-     edje_object_file_set(o, strdup(buff), "modules/slideshow/main");
+     edje_object_file_set(o, buff, "modules/slideshow/main");
    evas_object_show(o);
 
    o = evas_object_rectangle_add(sf->evas);

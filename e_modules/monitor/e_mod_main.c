@@ -355,7 +355,7 @@ _monitor_face_new(E_Container *con, Config *config)
    o = edje_object_add(con->bg_evas);
    face->monitor_object = o;
    if (!e_theme_edje_object_set(o, "base/theme/modules/monitor", "modules/monitor/main"))
-     edje_object_file_set(o, strdup(buff), "monitor/main");
+     edje_object_file_set(o, buff, "monitor/main");
    evas_object_show(o);
    /* setup res table */
    o = e_table_add(con->bg_evas);
@@ -369,7 +369,7 @@ _monitor_face_new(E_Container *con, Config *config)
    {
   	face->hostname = edje_object_add(con->bg_evas);
       if (!e_theme_edje_object_set(face->hostname, "base/theme/modules/monitor", "modules/monitor/host"))
-	edje_object_file_set(face->hostname, strdup(buff), "modules/monitor/host");
+	edje_object_file_set(face->hostname, buff, "modules/monitor/host");
 	_add_sensor(face,face->hostname,config->Horz);
 	edje_object_part_text_set(face->hostname,"sysname",u_buf.sysname);
 	edje_object_part_text_set(face->hostname,"release",u_buf.release);
@@ -384,7 +384,7 @@ _monitor_face_new(E_Container *con, Config *config)
       o = edje_object_add(con->bg_evas);
       face->cpu = o;
       if (!e_theme_edje_object_set(o, "base/theme/modules/monitor", "modules/monitor/cpu"))
-      edje_object_file_set(o, strdup(buff), "modules/monitor/cpu");
+      edje_object_file_set(o, buff, "modules/monitor/cpu");
       _add_sensor(face, face->cpu,config->Horz);
       /* add cpu chart */
       chart_con = chart_container_new(con->bg_evas,0,0,0,0);
@@ -403,7 +403,7 @@ _monitor_face_new(E_Container *con, Config *config)
       o = edje_object_add(con->bg_evas);
       face->mem = o;
       if (!e_theme_edje_object_set(o, "base/theme/modules/monitor", "modules/monitor/mem"))
-	edje_object_file_set(o, strdup(buff), "modules/monitor/mem");
+	edje_object_file_set(o, buff, "modules/monitor/mem");
       _add_sensor(face, face->mem,config->Horz);
       /* add mem charts */
       chart_con = chart_container_new(con->bg_evas,0,0,0,0);
@@ -429,7 +429,7 @@ _monitor_face_new(E_Container *con, Config *config)
       o = edje_object_add(con->bg_evas);
       face->net = o;
       if (!e_theme_edje_object_set(o, "base/theme/modules/monitor", "modules/monitor/net"))
-	edje_object_file_set(o, strdup(buff), "modules/monitor/net");
+	edje_object_file_set(o, buff, "modules/monitor/net");
       _add_sensor(face, face->net, config->Horz);
       /* add net charts */
       chart_con = chart_container_new(con->bg_evas,0,0,0,0);
@@ -456,7 +456,7 @@ _monitor_face_new(E_Container *con, Config *config)
       o = edje_object_add(con->bg_evas);
       face->wlan = o;
       if (!e_theme_edje_object_set(o, "base/theme/modules/monitor", "modules/monitor/wlan"))
-	edje_object_file_set(o, strdup(buff), "modules/monitor/wlan");
+	edje_object_file_set(o, buff, "modules/monitor/wlan");
       _add_sensor(face, face->wlan,config->Horz);
       /* add wlan charts */
       chart_con = chart_container_new(con->bg_evas,0,0,0,0);
@@ -472,7 +472,7 @@ _monitor_face_new(E_Container *con, Config *config)
    {
       face->uptime = edje_object_add(con->bg_evas);
       if (!e_theme_edje_object_set(face->uptime, "base/theme/modules/monitor", "modules/monitor/uptime"))
-     edje_object_file_set(face->uptime, strdup(buff), "modules/monitor/uptime");	
+     edje_object_file_set(face->uptime, buff, "modules/monitor/uptime");	
       _add_sensor(face, face->uptime,config->Horz);
       sprintf (u_date_time,"uptime: %ld days, %ld:%02ld:%02ld", 
            s_info.uptime / day, (s_info.uptime % day) / hour, 
@@ -490,7 +490,7 @@ _monitor_face_new(E_Container *con, Config *config)
       date = *localtime(&now);
       face->time = edje_object_add(con->bg_evas);
       if (!e_theme_edje_object_set(face->time, "base/theme/modules/monitor", "modules/monitor/time"))
-	edje_object_file_set(face->time, strdup(buff), "modules/monitor/time");	
+	edje_object_file_set(face->time, buff, "modules/monitor/time");	
       _add_sensor(face, face->time,config->Horz);
       sprintf (curr_time,"%02d:%02d:%02d",date.tm_hour,date.tm_min,date.tm_sec);
       edje_object_part_text_set(face->time,"time",curr_time);

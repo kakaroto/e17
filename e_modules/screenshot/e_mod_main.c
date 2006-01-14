@@ -292,7 +292,7 @@ _screen_face_init(Screen_Face *sf)
 
    snprintf(buff, sizeof(buff), PACKAGE_DATA_DIR"/screenshot.edj");
    if (!e_theme_edje_object_set(o, "base/theme/modules/screenshot","modules/screenshot/main"))
-     edje_object_file_set(o, strdup(buff), "modules/screenshot/main");
+     edje_object_file_set(o, buff, "modules/screenshot/main");
    edje_object_signal_emit(o, "passive", "");
    evas_object_show(o);
 
