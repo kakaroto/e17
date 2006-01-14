@@ -35,7 +35,7 @@ char *get_options(char **opt);
 char *get_filename(Config *conf);
 
 /* public module routines. all modules must have these */
-E_Module_Api e_modapi =
+EAPI E_Module_Api e_modapi =
 {
    E_MODULE_API_VERSION,
      "Screenshot"
