@@ -104,8 +104,8 @@ e_modapi_config(E_Module *m)
 }
 
 /* module private routines */
-static Rain 
-*_rain_init(E_Module *m)
+static Rain *
+_rain_init(E_Module *m)
 {
    Rain *rain;
    Evas_List *managers, *l, *l2;
@@ -209,8 +209,8 @@ _rain_shutdown(Rain *rain)
    free(rain);
 }
 
-static E_Menu 
-*_rain_config_menu_new(Rain *rain)
+static E_Menu *
+_rain_config_menu_new(Rain *rain)
 {
    E_Menu *mn;
    E_Menu_Item *mi;
