@@ -164,7 +164,7 @@ calendar_face_new(E_Container *con,Calendar *calendar)
 
    //Make day objects
    i = 0;
-   for (i;i<35;i++)
+   for (;i<35;i++)
    {
     //make weekend objects
       	face->weekend_object[i] = E_NEW(weekend_face,1);
@@ -218,7 +218,7 @@ calendar_face_new(E_Container *con,Calendar *calendar)
    int row = 0;
    while (x<35)
    {
-     for (i; i<7;i++)
+     for (; i<7;i++)
      {
 	e_table_pack(face->o_calendar_table,face->weekend_object[x]->obj, i, row, 1, 1);
 	e_table_pack_options_set(face->weekend_object[x]->obj,1, 1, 1, 1, 0.5, 0.5, 0, 0, -1, -1);
@@ -482,7 +482,7 @@ void calendar_face_menu_day(day_face *face, Calendar *calendar)
 void calendar_face_free(Calendar_Face *face)
 {
    int i = 0;
-    for (i;i<35;i++)
+    for (;i<35;i++)
    {
    	evas_object_del(face->weekend_object[i]->obj);
 	evas_object_del(face->weekday_object[i]->obj); 

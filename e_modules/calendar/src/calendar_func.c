@@ -15,7 +15,7 @@ void fill_in_caltable(int FirstDay, Calendar_Face *face, int StartUp)
    int row = 0;
    while (x<35)
    {
-     for (i; i<7;i++)
+     for (; i<7;i++)
      {
 	   switch (FirstDay)
 	   {
@@ -280,7 +280,7 @@ void calendar_add_dates(Calendar_Face *face, Calendar *calendar, int skew)
 
    //blank out blocks before day 1
    int i=0;
-   for (i;i<skew;i++)
+   for (;i<skew;i++)
    {
 	evas_object_hide(face->weekday_object[i]->obj);
 	evas_object_hide(face->weekend_object[i]->obj);
