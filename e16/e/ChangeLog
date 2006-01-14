@@ -3679,3 +3679,43 @@ Fix destruction of desk background window and composite update on desk switch.
 Drop obsolete man page until somebody bothers to update it.
 Fix pointer focus on desk switch.
 
+
+-------------------------------------------------------------------------------
+
+Sat Jan 14 17:26:16 CET 2006
+(Kim)
+
+--- 0.16.8 pre2 ---
+Fix size indication when moving shaded window.
+Fix potential segv when reloading menus.
+Fix setting focusclick window attribute.
+Set focusclick attribute on desktop type windows.
+Make click-raises and click-to-focus independent options.
+Make click-raises default.
+Fix focusing focusclick windows in certain situations.
+Fix button slideouts on desks other than first.
+Fix desk button bindings when passed through by app.
+Fix scaled backgrounds with overlay image and overlay images with alpha.
+Run menu generation on startup only if menus subdir doesn't exist.
+Simplify pseudotrans code, fix iconbox transparency.
+Better parsing of Exec line in .desktop files (http://bugs.debian.org/345021).
+Show root tooltips only after move.
+Always set name on EObj's (debug).
+Fix scaling of fixed aspect ratio backgrounds.
+Fix bug with initially maximized/fullscreen windows.
+Fix slow logout with gnome-session.
+Fix timer event starvation by X events.
+- Thanks to Mark Bowyer for help to sort this out.
+Change timers to use absolute time.
+Go back to using single unredirected root background window (speeds up
+ composite considerably).
+Composite manager - Window shape must be clipped by window size.
+Combine some shadow parameters, change defaults.
+Change default ARGB client mode to borderless.
+Avoid setting shape to default (unshaped) on ShapeNotify when already set.
+ This fixes an event looping problem on Xsun where doing so generates
+ Shape (and Visibility) Notify events (Xsun bug?).
+- Thanks again to Mark Bowyer for help to track this down.
+Do full composite repaint on VT switch.
+Fix pseudotransparent iconbox on desk with no background.
+
