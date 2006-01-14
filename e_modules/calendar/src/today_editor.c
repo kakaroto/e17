@@ -83,7 +83,7 @@ static Evas_Object *
 _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data)
 {
    /* generate the core widget layout for a basic dialog */
-   Evas_Object *o, *of, *today;
+   Evas_Object *o, *today;
    Evas_Object *slider_red, *slider_green, *slider_alpha, *slider_blue;
    Evas_Object *s_r_tf, *s_g_tf, *s_a_tf, *s_b_tf, *today_f; 
 
