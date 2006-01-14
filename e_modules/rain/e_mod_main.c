@@ -19,8 +19,8 @@ EAPI E_Module_Api e_modapi =
      "Rain"
 };
 
-EAPI void 
-*e_modapi_init(E_Module *m)
+EAPI void *
+e_modapi_init(E_Module *m)
 {
    Rain *rain;
 
