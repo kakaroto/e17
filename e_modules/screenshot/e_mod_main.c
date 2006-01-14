@@ -1,7 +1,4 @@
 #include <e.h>
-#include "e_mod_main.h"
-#include "e_mod_config.h"
-#include "config.h"
 #include <Ecore.h>
 #if TIME_WITH_SYS_TIME
 # include <sys/time.h>
@@ -13,6 +10,9 @@
 #  include <time.h>
 # endif
 #endif
+#include "e_mod_main.h"
+#include "e_mod_config.h"
+#include "config.h"
 
 static int screen_count;
 static Ecore_Event_Handler *_screen_exe_exit_handler = NULL;
@@ -41,8 +41,8 @@ E_Module_Api e_modapi =
      "Screenshot"
 };
 
-void 
-*e_modapi_init(E_Module *m)
+EAPI void *
+e_modapi_init(E_Module *m)
 {
    Screen *e;
 
@@ -53,7 +53,7 @@ void
    return e;
 }
 
-int 
+EAPI int 
 e_modapi_shutdown(E_Module *m)
 {
    Screen *s;
@@ -77,7 +77,7 @@ e_modapi_shutdown(E_Module *m)
    return 1;
 }
 
-int 
+EAPI int 
 e_modapi_save(E_Module *m)
 {
    Screen *e;
@@ -89,14 +89,14 @@ e_modapi_save(E_Module *m)
    return 1;
 }
 
-int 
+EAPI int 
 e_modapi_info(E_Module *m)
 {
    m->icon_file = strdup(PACKAGE_DATA_DIR"/module_icon.png");
    return 1;
 }
 
-int 
+EAPI int 
 e_modapi_about(E_Module *m)
 {
    e_module_dialog_show(_("Enlightenment Screenshot Module"),
@@ -104,7 +104,7 @@ e_modapi_about(E_Module *m)
    return 1;
 }
 
-int
+EAPI int
 e_modapi_config(E_Module *m) 
 {
    Screen *s;
@@ -119,8 +119,8 @@ e_modapi_config(E_Module *m)
    return 1;
 }
 
-static Screen 
-*_screen_init(E_Module *m)
+static Screen *
+_screen_init(E_Module *m)
 {
    Screen *e;
    E_Menu_Item *mi;
@@ -284,12 +284,15 @@ static int
 _screen_face_init(Screen_Face *sf)
 {
    Evas_Object *o;
-
+   char buff[4096];
+   
    evas_event_freeze(sf->evas);
    o = edje_object_add(sf->evas);
    sf->screen_object = o;
 
-   edje_object_file_set(o, PACKAGE_DATA_DIR"/screenshot.edj", "modules/screenshot/main");
+   snprintf(buff, sizeof(buff), PACKAGE_DATA_DIR"/screenshot.edj");
+   if (!e_theme_edje_object_set(o, "base/theme/modules/screenshot","modules/screenshot/main"))
+     edje_object_file_set(o, strdup(buff), "modules/screenshot/main");
    edje_object_signal_emit(o, "passive", "");
    evas_object_show(o);
 
@@ -469,7 +472,6 @@ _screen_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,void *event_inf
 	     opt = get_options(opts);
 	     f = get_filename(ef->screen->conf);
 	     snprintf(buff, sizeof(buff), "scrot %s %s", opt, f);
-	     printf("Delay Time: %d\n", ef->screen->conf->delay_time);
 	     if (ef->screen->conf->delay_time > 0) 
 	       {
 		  msg = malloc(sizeof(Edje_Message_Int_Set) + 1 * sizeof(int));
@@ -500,8 +502,8 @@ _screen_face_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi)
    e_gadman_mode_set(face->gmc->gadman, E_GADMAN_MODE_EDIT);
 }
 
-char 
-*get_options(char **opt)
+char *
+get_options(char **opt)
 {
    int i, j;
    char buff[1024];
@@ -525,8 +527,8 @@ char
    return strdup(buff);
 }
 
-char 
-*get_filename(Config *conf)
+char  *
+get_filename(Config *conf)
 {
    char buff[256];
    time_t t;
