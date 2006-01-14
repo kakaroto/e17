@@ -429,7 +429,7 @@ ewl_widget_configure(Ewl_Widget * w)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	if (!VISIBLE(w))
+	if ( (!VISIBLE(w)) || (w->parent && OBSCURED(w->parent)) )
 		DRETURN(DLEVEL_STABLE);
 
 	ewl_configure_request(w);
