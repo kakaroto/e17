@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-10 20:11+0100\n"
+"POT-Creation-Date: 2006-01-14 15:17+0100\n"
 "PO-Revision-Date: 2000-03-02 16:23+0100\n"
 "Last-Translator: Birger Langkjer <birger.langkjer@image.dk>\n"
 "Language-Team: Dansk/Danish <sslug-locale@sslug.dk>\n"
@@ -214,7 +214,7 @@ msgstr "Ignorér dette"
 msgid "Restart Enlightenment"
 msgstr "Genstart Enlightenment"
 
-#: src/alert.c:594 src/alert.c:618 src/events.c:90 src/setup.c:283
+#: src/alert.c:594 src/alert.c:618 src/events.c:90 src/setup.c:281
 msgid "Quit Enlightenment"
 msgstr "Afslut Enlightenment"
 
@@ -1940,15 +1940,15 @@ msgid ""
 "startx manual pages before proceeding.\n"
 msgstr ""
 
-#: src/setup.c:282
+#: src/setup.c:280
 msgid "X server version error"
 msgstr "X-tjener versionsfejl"
 
-#: src/setup.c:282
+#: src/setup.c:280
 msgid "Ignore this error"
 msgstr "Ignorér denne fejl"
 
-#: src/setup.c:284
+#: src/setup.c:282
 #, c-format
 msgid ""
 "WARNING:\n"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-10 20:11+0100\n"
+"POT-Creation-Date: 2006-01-14 15:17+0100\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Šanjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -232,7 +232,7 @@ msgstr "Ignoriŷi ovo"
 msgid "Restart Enlightenment"
 msgstr "Ponovo pokreni Enlightenment"
 
-#: src/alert.c:594 src/alert.c:618 src/events.c:90 src/setup.c:283
+#: src/alert.c:594 src/alert.c:618 src/events.c:90 src/setup.c:281
 msgid "Quit Enlightenment"
 msgstr "Iza�i iz Enlightenment-a"
 
@@ -2178,15 +2178,15 @@ msgstr ""
 "administrator, or Xserver vendor, or read the X, xdm and\n"
 "startx manual pages before proceeding.\n"
 
-#: src/setup.c:282
+#: src/setup.c:280
 msgid "X server version error"
 msgstr "X server greŷka verzije"
 
-#: src/setup.c:282
+#: src/setup.c:280
 msgid "Ignore this error"
 msgstr "Ignoriŷi ovu greŷku"
 
-#: src/setup.c:284
+#: src/setup.c:282
 #, c-format
 msgid ""
 "WARNING:\n"

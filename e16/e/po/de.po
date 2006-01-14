@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-10 20:11+0100\n"
+"POT-Creation-Date: 2006-01-14 15:17+0100\n"
 "PO-Revision-Date: 2000-03-29 21:12+0200\n"
 "Last-Translator: Matthias Warkus <mawa@iname.com>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -253,7 +253,7 @@ msgstr "Enlightenment neu starten"
 # src/main.c:92 src/memory.c:197 src/memory.c:278 src/memory.c:298
 # src/memory.c:379 src/memory.c:396 src/setup.c:295 src/setup.c:329
 # src/setup.c:341 src/setup.c:403
-#: src/alert.c:594 src/alert.c:618 src/events.c:90 src/setup.c:283
+#: src/alert.c:594 src/alert.c:618 src/events.c:90 src/setup.c:281
 msgid "Quit Enlightenment"
 msgstr "Enlightenment verlassen"
 
@@ -2517,17 +2517,17 @@ msgstr ""
 "oder startx, bevor Sie weitermachen.\n"
 
 # src/setup.c:402
-#: src/setup.c:282
+#: src/setup.c:280
 msgid "X server version error"
 msgstr "X-Server-Versionsfehler"
 
 # src/setup.c:403
-#: src/setup.c:282
+#: src/setup.c:280
 msgid "Ignore this error"
 msgstr "Ignorieren Sie diesen Fehler"
 
 # src/setup.c:404
-#: src/setup.c:284
+#: src/setup.c:282
 #, c-format
 msgid ""
 "WARNING:\n"

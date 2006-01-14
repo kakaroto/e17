@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-10 20:11+0100\n"
+"POT-Creation-Date: 2006-01-14 15:17+0100\n"
 "PO-Revision-Date: 2000-01-14 20:43-0300\n"
 "Last-Translator: Vladimir STEPANOV <stepanov@bird.iki.rssi.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -215,7 +215,7 @@ msgstr "Игнорировать"
 msgid "Restart Enlightenment"
 msgstr "Перезапустить Enlightenment"
 
-#: src/alert.c:594 src/alert.c:618 src/events.c:90 src/setup.c:283
+#: src/alert.c:594 src/alert.c:618 src/events.c:90 src/setup.c:281
 msgid "Quit Enlightenment"
 msgstr "Выйти из Enlightenment"
 
@@ -2135,15 +2135,15 @@ msgstr ""
 "администратором, с разработчиком X-сервера, или же изучите\n"
 "man-страницы (описания) команд X, xdm  и startx.\n"
 
-#: src/setup.c:282
+#: src/setup.c:280
 msgid "X server version error"
 msgstr "Ошибка версии X-сервера"
 
-#: src/setup.c:282
+#: src/setup.c:280
 msgid "Ignore this error"
 msgstr "Игнорировать эту ошибку"
 
-#: src/setup.c:284
+#: src/setup.c:282
 #, c-format
 msgid ""
 "WARNING:\n"

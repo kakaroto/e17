@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-10 20:11+0100\n"
+"POT-Creation-Date: 2006-01-14 15:17+0100\n"
 "PO-Revision-Date: 2000-07-30 22:39+0200\n"
 "Last-Translator: Fatih Demir <kabalak@gmx.net>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -215,7 +215,7 @@ msgstr "Bunu geç"
 msgid "Restart Enlightenment"
 msgstr "Enlightenment'i yeniden baþlat"
 
-#: src/alert.c:594 src/alert.c:618 src/events.c:90 src/setup.c:283
+#: src/alert.c:594 src/alert.c:618 src/events.c:90 src/setup.c:281
 msgid "Quit Enlightenment"
 msgstr "Enlightenment'ten çýk"
 
@@ -2177,15 +2177,15 @@ msgstr ""
 "ya da ruh doktorunla görüþ , veya X , xdm ve startx kýlavuzlarýný\n"
 "yeniden denemeden önce bi' oku .\n"
 
-#: src/setup.c:282
+#: src/setup.c:280
 msgid "X server version error"
 msgstr "X sunucu nesil hatasý"
 
-#: src/setup.c:282
+#: src/setup.c:280
 msgid "Ignore this error"
 msgstr "Bu hatayý gözardý et"
 
-#: src/setup.c:284
+#: src/setup.c:282
 #, c-format
 msgid ""
 "WARNING:\n"
