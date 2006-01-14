@@ -209,7 +209,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data)
 	ecore_list_goto_first(wlan_interfaces);
 	while ((tmp = ecore_list_next(wlan_interfaces)) != NULL) 
 	  {
-	     ob = e_widget_radio_add(evas, strdup(tmp), i, rg);
+	     ob = e_widget_radio_add(evas, tmp, i, rg);
 	     e_widget_table_object_append(ot, ob, 0, i, 1, 1, 1, 0, 1, 0);
 	     i = i + 1;
 	  }
@@ -232,7 +232,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data)
 	ecore_list_goto_first(net_interfaces);
 	while ((tmp = ecore_list_next(net_interfaces)) != NULL) 
 	  {
-	     ob = e_widget_radio_add(evas, strdup(tmp), i, rg);
+	     ob = e_widget_radio_add(evas, tmp, i, rg);
 	     e_widget_table_object_append(ot, ob, 0, i, 1, 1, 1, 0, 1, 0);
 	     i = i + 1;
 	  }
