@@ -47,7 +47,10 @@
 #include <X11/extensions/Xdamage.h>
 #include <X11/extensions/Xrender.h>
 
-#define ENABLE_SHADOWS 1
+#define ENABLE_SHADOWS      1
+
+#define USE_DESK_EXPOSE     0
+#define USE_DESK_VISIBILITY 1
 
 #define ENABLE_DEBUG   1
 #if ENABLE_DEBUG
@@ -245,7 +248,7 @@ ERegionCreateRect(int x, int y, int w, int h)
    return rgn;
 }
 
-#if USE_EXPOSE			/* FIXME - Need this? */
+#if USE_DESK_EXPOSE
 static              XserverRegion
 ERegionCreateFromRects(XRectangle * rectangles, int nrectangles)
 {
@@ -539,6 +542,42 @@ ECompMgrDeskConfigure(Desk * dsk)
        dsk->num, pmap, cw->picture);
 
    return 1;
+}
+#endif
+
+#if USE_DESK_VISIBILITY
+static void
+ECompMgrDeskVisibility(EObj * eo, XEvent * ev)
+{
+   Desk               *dsk;
+   int                 visible;
+
+   switch (eo->type)
+     {
+     default:
+	return;
+     case EOBJ_TYPE_DESK:
+	dsk = (Desk *) eo;
+	break;
+     case EOBJ_TYPE_ROOT_BG:
+	dsk = DeskGet(0);
+	break;
+     }
+
+   visible = dsk->viewable && ev->xvisibility.state != VisibilityFullyObscured;
+   if (dsk->visible == visible)
+      return;
+   dsk->visible = visible;
+   if (!visible)
+      return;
+
+   /*
+    * A viewable desk is no longer fully obscured. Assume this happened due
+    * to a VT switch to our display and repaint all. This may happen in other
+    * situations as well, but most likely when we must repaint everything
+    * anyway.
+    */
+   ECompMgrDamageAll();
 }
 #endif
 
@@ -1392,6 +1431,11 @@ ECompMgrWinNew(EObj * eo)
    if (eo->opacity == 0)
       eo->opacity = 0xFFFFFFFF;
 
+   if (eo->type == EOBJ_TYPE_DESK || eo->type == EOBJ_TYPE_ROOT_BG)
+     {
+	ESelectInputAdd(eo->win, VisibilityChangeMask);
+     }
+
    cw->picture = None;
    cw->pixmap = None;
 
@@ -2038,7 +2082,7 @@ ECompMgrRootConfigure(void *prm __UNUSED__, XEvent * ev)
    return;
 }
 
-#if USE_EXPOSE			/* FIXME - Need this? */
+#if USE_DESK_EXPOSE		/* FIXME - Remove? */
 static void
 ECompMgrRootExpose(void *prm __UNUSED__, XEvent * ev)
 {
@@ -2154,14 +2198,14 @@ ECompMgrStart(void)
      {
      case ECM_MODE_ROOT:
 	XCompositeRedirectSubwindows(disp, VRoot.win, CompositeRedirectManual);
-	ESelectInputAdd(VRoot.win,
-			SubstructureNotifyMask |
-			ExposureMask | StructureNotifyMask);
+#if USE_DESK_EXPOSE		/* FIXME - Remove? */
+	ESelectInputAdd(VRoot.win, ExposureMask);
+#endif
 	break;
      case ECM_MODE_WINDOW:
-	ESelectInputAdd(VRoot.win,
-			SubstructureNotifyMask |
-			ExposureMask | StructureNotifyMask);
+#if USE_DESK_EXPOSE		/* FIXME - Remove? */
+	ESelectInputAdd(VRoot.win, ExposureMask);
+#endif
 	break;
      case ECM_MODE_AUTO:
 	XCompositeRedirectSubwindows(disp, VRoot.win,
@@ -2335,6 +2379,12 @@ ECompMgrHandleWindowEvent(XEvent * ev, void *prm)
 	break;
 #endif
 
+#if USE_DESK_VISIBILITY
+     case VisibilityNotify:
+	ECompMgrDeskVisibility(eo, ev);
+	break;
+#endif
+
      case EX_EVENT_DAMAGE_NOTIFY:
 	ECompMgrWinDamage(eo, ev);
 	break;
@@ -2437,7 +2487,7 @@ ECompMgrHandleRootEvent(XEvent * ev, void *prm)
 	   ECompMgrWinCirculate(eo, ev);
 	break;
 
-#if USE_EXPOSE			/* FIXME - Need this? */
+#if USE_DESK_EXPOSE		/* FIXME - Remove? */
      case Expose:
 	if (Conf_compmgr.shadows.mode != ECM_SHADOWS_OFF)
 	   ECompMgrRootExpose(prm, ev);

@@ -165,6 +165,7 @@ EobjInit(EObj * eo, int type, Window win, int x, int y, int w, int h,
    switch (type)
      {
      case EOBJ_TYPE_MISC_NR:
+     case EOBJ_TYPE_ROOT_BG:
 	eo->noredir = 1;
 	break;
      }

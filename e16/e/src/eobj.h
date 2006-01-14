@@ -57,9 +57,10 @@ struct _eobj
 #define EOBJ_TYPE_BUTTON    1
 #define EOBJ_TYPE_DESK      2
 #define EOBJ_TYPE_MISC      3
-#define EOBJ_TYPE_MISC_NR   4	/* Unredirected */
-#define EOBJ_TYPE_EVENT     5
-#define EOBJ_TYPE_EXT       6
+#define EOBJ_TYPE_EVENT     4	/* Unredirected */
+#define EOBJ_TYPE_EXT       5
+#define EOBJ_TYPE_MISC_NR   6	/* Unredirected */
+#define EOBJ_TYPE_ROOT_BG   7
 
 #define EobjGetWin(eo)          ((eo)->win)
 #define EobjGetDesk(eo)         ((eo)->desk)

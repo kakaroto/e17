@@ -38,6 +38,7 @@ struct _desk
    EObj                o;
    unsigned int        num;
    char                viewable;
+   char                visible;
    struct _button     *tag;
    int                 current_area_x;
    int                 current_area_y;

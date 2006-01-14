@@ -268,9 +268,7 @@ SetupX(const char *dstr)
    mask =
       ButtonPressMask | ButtonReleaseMask | EnterWindowMask | LeaveWindowMask |
       ButtonMotionMask | PropertyChangeMask | SubstructureRedirectMask |
-      PointerMotionMask | SubstructureNotifyMask;
-   if (Mode.wm.window)
-      mask |= StructureNotifyMask;
+      PointerMotionMask | StructureNotifyMask | SubstructureNotifyMask;
    XSelectInput(disp, VRoot.win, mask);
 
    ESync();

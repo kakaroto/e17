@@ -451,7 +451,7 @@ DeskCreate(int desk, int configure)
 	desks.current = dsk;
 #if !USE_BG_WIN_ON_ALL_DESKS	/* TBD - Use per virtual root bg window? */
 	/* Add background window */
-	eo = EobjWindowCreate(EOBJ_TYPE_MISC_NR, 0, 0, VRoot.w, VRoot.h,
+	eo = EobjWindowCreate(EOBJ_TYPE_ROOT_BG, 0, 0, VRoot.w, VRoot.h,
 			      0, "Root-bg");
 	eo->floating = 0;
 	eo->fade = eo->shadow = 0;
