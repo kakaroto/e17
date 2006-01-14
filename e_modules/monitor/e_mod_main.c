@@ -4,8 +4,6 @@
 #include <linux/unistd.h>     /* for _syscallX macros/related stuff */
 #include <linux/kernel.h>     /* for struct sysinfo */
 
-
-
 /* module private routines */
 
 static Monitor  *_monitor_new();
@@ -45,13 +43,13 @@ static Flow_Chart *flow_chart_mem_swap;
 static Flow_Chart *flow_chart_wlan_link;
 
 /* public module routines. all modules must have these */
-E_Module_Api e_modapi =
+EAPI E_Module_Api e_modapi =
 {
    E_MODULE_API_VERSION,
    "Monitor"
 };
 
-void *
+EAPI void *
 e_modapi_init(E_Module *module)
 {
    Monitor *monitor;
@@ -62,7 +60,7 @@ e_modapi_init(E_Module *module)
    return monitor;
 }
 
-int
+EAPI int
 e_modapi_shutdown(E_Module *module)
 {
    Monitor *monitor;
@@ -77,7 +75,7 @@ e_modapi_shutdown(E_Module *module)
    return 1;
 }
 
-int
+EAPI int
 e_modapi_save(E_Module *module)
 {
    Monitor *monitor;
@@ -87,14 +85,14 @@ e_modapi_save(E_Module *module)
    return 1;
 }
 
-int
+EAPI int
 e_modapi_info(E_Module *module)
 {
    module->icon_file = strdup(PACKAGE_DATA_DIR "/module_icon.png");
    return 1;
 }
 
-int
+EAPI int
 e_modapi_about(E_Module *module)
 {
    e_module_dialog_show(_("Enlightenment Monitor Module"),
@@ -102,7 +100,7 @@ e_modapi_about(E_Module *module)
    return 1;
 }
 
-int
+EAPI int
 e_modapi_config(E_Module *module) 
 {
    Monitor *mon;
@@ -324,7 +322,8 @@ _monitor_face_new(E_Container *con, Config *config)
    char u_date_time[256];
    struct sysinfo s_info;
    sysinfo (&s_info);
-
+   char buff[4096];
+   
    long minute = 60;
    long hour = minute * 60;
    long day = hour * 24;
@@ -351,10 +350,12 @@ _monitor_face_new(E_Container *con, Config *config)
    
    evas_event_freeze(con->bg_evas);
 
+   snprintf(buff, sizeof(buff), PACKAGE_DATA_DIR"/monitor.edj");
    /* setup monitor object */
    o = edje_object_add(con->bg_evas);
    face->monitor_object = o;
-   edje_object_file_set(o, PACKAGE_DATA_DIR"/monitor.edj", "monitor/main");
+   if (!e_theme_edje_object_set(o, "base/theme/modules/monitor", "modules/monitor/main"))
+     edje_object_file_set(o, strdup(buff), "monitor/main");
    evas_object_show(o);
    /* setup res table */
    o = e_table_add(con->bg_evas);
@@ -367,7 +368,8 @@ _monitor_face_new(E_Container *con, Config *config)
    if (config->hostname)
    {
   	face->hostname = edje_object_add(con->bg_evas);
-	edje_object_file_set(face->hostname, PACKAGE_DATA_DIR"/monitor.edj", "monitor/host");
+      if (!e_theme_edje_object_set(face->hostname, "base/theme/modules/monitor", "modules/monitor/host"))
+	edje_object_file_set(face->hostname, strdup(buff), "modules/monitor/host");
 	_add_sensor(face,face->hostname,config->Horz);
 	edje_object_part_text_set(face->hostname,"sysname",u_buf.sysname);
 	edje_object_part_text_set(face->hostname,"release",u_buf.release);
@@ -381,7 +383,8 @@ _monitor_face_new(E_Container *con, Config *config)
    {
       o = edje_object_add(con->bg_evas);
       face->cpu = o;
-      edje_object_file_set(o, PACKAGE_DATA_DIR"/monitor.edj", "monitor/cpu");
+      if (!e_theme_edje_object_set(o, "base/theme/modules/monitor", "modules/monitor/cpu"))
+      edje_object_file_set(o, strdup(buff), "modules/monitor/cpu");
       _add_sensor(face, face->cpu,config->Horz);
       /* add cpu chart */
       chart_con = chart_container_new(con->bg_evas,0,0,0,0);
@@ -399,7 +402,8 @@ _monitor_face_new(E_Container *con, Config *config)
       /* setup mem */
       o = edje_object_add(con->bg_evas);
       face->mem = o;
-      edje_object_file_set(o, PACKAGE_DATA_DIR"/monitor.edj", "monitor/mem");
+      if (!e_theme_edje_object_set(o, "base/theme/modules/monitor", "modules/monitor/mem"))
+	edje_object_file_set(o, strdup(buff), "modules/monitor/mem");
       _add_sensor(face, face->mem,config->Horz);
       /* add mem charts */
       chart_con = chart_container_new(con->bg_evas,0,0,0,0);
@@ -424,7 +428,8 @@ _monitor_face_new(E_Container *con, Config *config)
       /* setup net */
       o = edje_object_add(con->bg_evas);
       face->net = o;
-      edje_object_file_set(o, PACKAGE_DATA_DIR"/monitor.edj", "monitor/net");
+      if (!e_theme_edje_object_set(o, "base/theme/modules/monitor", "modules/monitor/net"))
+	edje_object_file_set(o, strdup(buff), "modules/monitor/net");
       _add_sensor(face, face->net, config->Horz);
       /* add net charts */
       chart_con = chart_container_new(con->bg_evas,0,0,0,0);
@@ -450,7 +455,8 @@ _monitor_face_new(E_Container *con, Config *config)
       /* setup wlan */
       o = edje_object_add(con->bg_evas);
       face->wlan = o;
-      edje_object_file_set(o, PACKAGE_DATA_DIR"/monitor.edj", "monitor/wlan");
+      if (!e_theme_edje_object_set(o, "base/theme/modules/monitor", "modules/monitor/wlan"))
+	edje_object_file_set(o, strdup(buff), "modules/monitor/wlan");
       _add_sensor(face, face->wlan,config->Horz);
       /* add wlan charts */
       chart_con = chart_container_new(con->bg_evas,0,0,0,0);
@@ -465,7 +471,8 @@ _monitor_face_new(E_Container *con, Config *config)
    if (config->uptime)
    {
       face->uptime = edje_object_add(con->bg_evas);
-      edje_object_file_set(face->uptime, PACKAGE_DATA_DIR"/monitor.edj", "monitor/uptime");	
+      if (!e_theme_edje_object_set(face->uptime, "base/theme/modules/monitor", "modules/monitor/uptime"))
+     edje_object_file_set(face->uptime, strdup(buff), "modules/monitor/uptime");	
       _add_sensor(face, face->uptime,config->Horz);
       sprintf (u_date_time,"uptime: %ld days, %ld:%02ld:%02ld", 
            s_info.uptime / day, (s_info.uptime % day) / hour, 
@@ -482,7 +489,8 @@ _monitor_face_new(E_Container *con, Config *config)
 
       date = *localtime(&now);
       face->time = edje_object_add(con->bg_evas);
-      edje_object_file_set(face->time, PACKAGE_DATA_DIR"/monitor.edj", "monitor/time");	
+      if (!e_theme_edje_object_set(face->time, "base/theme/modules/monitor", "modules/monitor/time"))
+	edje_object_file_set(face->time, strdup(buff), "modules/monitor/time");	
       _add_sensor(face, face->time,config->Horz);
       sprintf (curr_time,"%02d:%02d:%02d",date.tm_hour,date.tm_min,date.tm_sec);
       edje_object_part_text_set(face->time,"time",curr_time);
@@ -624,13 +632,13 @@ _monitor_face_free(Monitor_Face *face)
    e_object_del(E_OBJECT(face->gmc));
    if (face->date_check_timer) ecore_timer_del(face->date_check_timer);
 
-   evas_object_del(face->cpu);
-   evas_object_del(face->mem);
-   evas_object_del(face->net);
-   evas_object_del(face->wlan);
-   evas_object_del(face->hostname);
-   evas_object_del(face->uptime);
-   evas_object_del(face->time);
+   if (face->cpu) evas_object_del(face->cpu);
+   if (face->mem) evas_object_del(face->mem);
+   if (face->net) evas_object_del(face->net);
+   if (face->wlan) evas_object_del(face->wlan);
+   if (face->hostname) evas_object_del(face->hostname);
+   if (face->uptime) evas_object_del(face->uptime);
+   if (face->time) evas_object_del(face->time);
 
    chart_container_del(face->chart_cpu);
    chart_container_del(face->chart_mem);
@@ -704,7 +712,7 @@ _monitor_face_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi)
    e_gadman_mode_set(face->gmc->gadman, E_GADMAN_MODE_EDIT);
 }
 
-void
+static void
 _monitor_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Monitor_Face *face;
@@ -764,29 +772,36 @@ _monitor_face_menu_new(Monitor_Face *face)
    e_menu_item_callback_set(mi, _monitor_face_cb_menu_edit, face);	
 }
 
-void _monitor_cb_config_updated(void *data)
+static void 
+_monitor_cb_config_updated(void *data)
 {
    Monitor_Face *face;
    
    face = data;
-   if (face->cpu) flow_chart_update_rate_set(flow_chart_cpu, face->conf->cpu_interval);
+   
+   if (face->cpu) 
+     flow_chart_update_rate_set(flow_chart_cpu, face->conf->cpu_interval);
 
-   if (face->mem) mem_real_ignore_cached_set(face->conf->mem_real_ignore_cached);
-   {
+   if (face->mem) 
+     {
+	mem_real_ignore_cached_set(face->conf->mem_real_ignore_cached);
    	mem_real_ignore_buffers_set(face->conf->mem_real_ignore_buffers);
    	flow_chart_update_rate_set(flow_chart_mem_real, face->conf->mem_interval);
    	flow_chart_update_rate_set(flow_chart_mem_swap, face->conf->mem_interval);
-   }
+     }
 
-   if (face->wlan) wlan_interface_set(face->conf->wlan_interface);
-   if (face->wlan) flow_chart_update_rate_set(flow_chart_wlan_link, face->conf->wlan_interval);
-
+   if (face->wlan) 
+     { 
+	wlan_interface_set(face->conf->wlan_interface);
+	flow_chart_update_rate_set(flow_chart_wlan_link, face->conf->wlan_interval);
+     }
+   
    if (face->net) 
-   {    
+     {    
 	net_interface_set(face->conf->net_interface);
    	flow_chart_update_rate_set(flow_chart_net_in, face->conf->net_interval);
    	flow_chart_update_rate_set(flow_chart_net_out, face->conf->net_interval);   
-   }
+     }
 }
 
 static void 
@@ -798,6 +813,7 @@ _monitor_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
    if (!f) return;
    _config_monitor_module(f->con, f);	
 }
+
 static void
 _add_sensor(Monitor_Face *face, Evas_Object *o, int VerHor)
 {
@@ -811,7 +827,8 @@ _add_sensor(Monitor_Face *face, Evas_Object *o, int VerHor)
    num_sensors++;
 }
 
-void rebuild_monitor(Monitor_Face *face)
+static void 
+rebuild_monitor(Monitor_Face *face)
 {
    struct utsname u_buf;
    uname (&u_buf);
@@ -868,7 +885,8 @@ void rebuild_monitor(Monitor_Face *face)
    /* setup monitor object */
    o = edje_object_add(face->con->bg_evas);
    face->monitor_object = o;
-   edje_object_file_set(o, PACKAGE_DATA_DIR"/monitor.edj", "monitor/main");
+   if (!e_theme_edje_object_set(o, "base/theme/modules/monitor", "modules/monitor/main"))
+     edje_object_file_set(o, PACKAGE_DATA_DIR"/monitor.edj", "modules/monitor/main");
    evas_object_show(o);
    /* setup res table */
    o = e_table_add(face->con->bg_evas);
@@ -880,7 +898,8 @@ void rebuild_monitor(Monitor_Face *face)
    if (face->mon->conf->hostname)
    {
   	face->hostname = edje_object_add(face->con->bg_evas);
-	edje_object_file_set(face->hostname, PACKAGE_DATA_DIR"/monitor.edj", "monitor/host");
+      if (!e_theme_edje_object_set(face->hostname, "base/theme/modules/monitor", "modules/monitor/host"))
+      edje_object_file_set(face->hostname, PACKAGE_DATA_DIR"/monitor.edj", "modules/monitor/host");
 	_add_sensor(face,face->hostname,face->mon->conf->Horz);
 	edje_object_part_text_set(face->hostname,"sysname",u_buf.sysname);
 	edje_object_part_text_set(face->hostname,"release",u_buf.release);
@@ -894,7 +913,8 @@ void rebuild_monitor(Monitor_Face *face)
    {
       o = edje_object_add(face->con->bg_evas);
       face->cpu = o;
-      edje_object_file_set(o, PACKAGE_DATA_DIR"/monitor.edj", "monitor/cpu");
+      if (!e_theme_edje_object_set(o, "base/theme/modules/monitor", "modules/monitor/cpu"))
+	edje_object_file_set(o, PACKAGE_DATA_DIR"/monitor.edj", "modules/monitor/cpu");
       _add_sensor(face, face->cpu,face->mon->conf->Horz);
       /* add cpu chart */
       chart_con = chart_container_new(face->con->bg_evas,0,0,0,0);
@@ -912,7 +932,8 @@ void rebuild_monitor(Monitor_Face *face)
       /* setup mem */
       o = edje_object_add(face->con->bg_evas);
       face->mem = o;
-      edje_object_file_set(o, PACKAGE_DATA_DIR"/monitor.edj", "monitor/mem");
+      if (!e_theme_edje_object_set(o, "base/theme/modules/monitor", "modules/monitor/mem"))
+	edje_object_file_set(o, PACKAGE_DATA_DIR"/monitor.edj", "modules/monitor/mem");
       _add_sensor(face, face->mem,face->mon->conf->Horz);
       /* add mem charts */
       chart_con = chart_container_new(face->con->bg_evas,0,0,0,0);
@@ -937,7 +958,8 @@ void rebuild_monitor(Monitor_Face *face)
       /* setup net */
       o = edje_object_add(face->con->bg_evas);
       face->net = o;
-      edje_object_file_set(o, PACKAGE_DATA_DIR"/monitor.edj", "monitor/net");
+      if (!e_theme_edje_object_set(o, "base/theme/modules/monitor", "modules/monitor/net"))
+	edje_object_file_set(o, PACKAGE_DATA_DIR"/monitor.edj", "modules/monitor/net");
       _add_sensor(face, face->net, face->mon->conf->Horz);
       /* add net charts */
       chart_con = chart_container_new(face->con->bg_evas,0,0,0,0);
@@ -963,7 +985,8 @@ void rebuild_monitor(Monitor_Face *face)
       /* setup wlan */
       o = edje_object_add(face->con->bg_evas);
       face->wlan = o;
-      edje_object_file_set(o, PACKAGE_DATA_DIR"/monitor.edj", "monitor/wlan");
+      if (!e_theme_edje_object_set(o, "base/theme/modules/monitor", "modules/monitor/wlan"))
+	edje_object_file_set(o, PACKAGE_DATA_DIR"/monitor.edj", "modules/monitor/wlan");
       _add_sensor(face, face->wlan,face->mon->conf->Horz);
       /* add wlan charts */
       chart_con = chart_container_new(face->con->bg_evas,0,0,0,0);
@@ -980,7 +1003,8 @@ void rebuild_monitor(Monitor_Face *face)
       int num_days, num_hours, num_min;
       char u_date_time[256];
       face->uptime = edje_object_add(face->con->bg_evas);
-      edje_object_file_set(face->uptime, PACKAGE_DATA_DIR"/monitor.edj", "monitor/uptime");
+      if (!e_theme_edje_object_set(face->uptime, "base/theme/modules/monitor", "modules/monitor/uptime"))
+	edje_object_file_set(face->uptime, PACKAGE_DATA_DIR"/monitor.edj", "modules/monitor/uptime");
       sprintf (u_date_time,"uptime: %ld days, %ld:%02ld:%02ld", 
                s_info.uptime / day, (s_info.uptime % day) / hour, 
               (s_info.uptime % hour) / minute, s_info.uptime % minute);
@@ -997,7 +1021,8 @@ void rebuild_monitor(Monitor_Face *face)
 
       date = *localtime(&now);
       face->time = edje_object_add(face->con->bg_evas);
-      edje_object_file_set(face->time, PACKAGE_DATA_DIR"/monitor.edj", "monitor/time");	
+      if (!e_theme_edje_object_set(face->time, "base/theme/modules/monitor", "modules/monitor/time"))
+	edje_object_file_set(face->time, PACKAGE_DATA_DIR"/monitor.edj", "modules/monitor/time");	
       _add_sensor(face, face->time,face->mon->conf->Horz);
       sprintf (curr_time,"%02d:%02d:%02d",date.tm_hour,date.tm_min,date.tm_sec);
       edje_object_part_text_set(face->time,"time",curr_time);
@@ -1025,14 +1050,15 @@ void rebuild_monitor(Monitor_Face *face)
    e_gadman_client_load(face->gmc);
 
    evas_event_thaw(face->con->bg_evas);
-
 }
-static int _date_cb_check(void *data)
+
+static int 
+_date_cb_check(void *data)
 {
   Monitor_Face *face;
   face = data;
 
-//Update uptime
+   //Update uptime
   char u_date_time[256];
   struct sysinfo s_info;
   sysinfo (&s_info);
@@ -1047,7 +1073,7 @@ static int _date_cb_check(void *data)
            (s_info.uptime % hour) / minute, s_info.uptime % minute);
   edje_object_part_text_set(face->uptime,"uptime",u_date_time);
 
-//Update time
+   //Update time
   time_t now;
   struct tm date;
   time(&now);

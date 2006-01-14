@@ -78,8 +78,8 @@ EAPI int   e_modapi_info     (E_Module *m);
 EAPI int   e_modapi_about    (E_Module *m);
 EAPI int   e_modapi_config   (E_Module *m);
 
-void _monitor_cb_config_updated(void *data);
-void _monitor_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
-void rebuild_monitor(Monitor_Face *face);
+static void _monitor_cb_config_updated(void *data);
+static void _monitor_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void rebuild_monitor(Monitor_Face *face);
 
 #endif

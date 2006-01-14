@@ -19,7 +19,7 @@ collections
 {
 
   group {
-    name, "monitor/menu/cpu";
+    name, "modules/monitor/menu/cpu";
     parts {
       part {
         name,          "background";
@@ -33,7 +33,7 @@ collections
     }
   }//close group menu/cpu
   group {
-    name, "monitor/menu/mem";
+    name, "modules/monitor/menu/mem";
     parts {
       part {
         name,          "background";
@@ -47,7 +47,7 @@ collections
     }
   }//close group mem
   group {
-    name, "monitor/menu/net";
+    name, "modules/monitor/menu/net";
     parts {
       part {
         name,          "background";
@@ -62,7 +62,7 @@ collections
   }//close group net
 
   group {
-    name, "monitor/menu/wlan";
+    name, "modules/monitor/menu/wlan";
     parts {
       part {
         name,          "background";
@@ -77,7 +77,7 @@ collections
   }//close group wlan
   
   group {
-    name, "monitor/main";
+    name, "modules/monitor/main";
     parts {
 
       part {
@@ -125,10 +125,8 @@ collections
 
   group
     {
-      name, "monitor/cpu";
-      
+      name, "modules/monitor/cpu";
       parts{
-
 	part {
 	  name,          "overlay";
 	  mouse_events,  0;
@@ -149,7 +147,6 @@ collections
 	    color, 255 255 255 255;
 	  }
 	}
-
 
       part {
 	 name,          "cpu";
@@ -184,20 +181,14 @@ collections
 		align, 1.0 0.0;
 	      }
 	    }
-	  }
-	
-
+	  }	
       }
- 
     }//close group cpu
-
 
 group
     {
-      name, "monitor/mem";
-      
+      name, "modules/monitor/mem";
       parts{
-
 	part {
 	  name,          "overlay";
 	  mouse_events,  0;
@@ -284,10 +275,8 @@ group
 
 group
     {
-      name, "monitor/net";
-      
+      name, "modules/monitor/net";
       parts{
-
 	part {
 	  name,          "overlay";
 	  mouse_events,  0;
@@ -373,7 +362,7 @@ group
     }//close group net
 
 group {
-	name, "monitor/wlan";
+	name, "modules/monitor/wlan";
 	parts {
 		part {
 			name,			"overlay";
@@ -433,7 +422,7 @@ group {
 }//close group wlan
 
 group {
-	name, "monitor/host";
+	name, "modules/monitor/host";
 	parts {
 		part {
 			name,			"overlay";
@@ -516,7 +505,7 @@ group {
 	}
 }//close group hostname
 group {
-	name, "monitor/uptime";
+	name, "modules/monitor/uptime";
 	parts {
 		part {
 			name,			"overlay";
@@ -562,7 +551,7 @@ group {
 }//close group uptime
 
 group {
-	name, "monitor/time";
+	name, "modules/monitor/time";
 	parts {
 		part {
 			name,			"overlay";
