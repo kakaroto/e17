@@ -15,7 +15,7 @@ int _container_scroll_timer(void *data);
 
 /*** external API ***/
 
-static int (*_sort_func)(void*,void*) = NULL;
+static int (*_sort_func)(Evas_Object *, Evas_Object *) = NULL;
 
 static int
 _sort_cb(void *d1, void *d2)
