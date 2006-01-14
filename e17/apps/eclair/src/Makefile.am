@@ -46,4 +46,4 @@ eclair_LDADD = \
 @taglib_libs@ -ltag_c \
 @XML2_LIBS@ \
 @SQLITE_LIBS@ \
--lphtread
+-lpthread
