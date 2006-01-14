@@ -4,7 +4,7 @@ images {
 }
 collections {
     group {
-	name, "tclock/main";
+	name, "modules/tclock/main";
 	min, 32 32;
 	max, 1024 768;
 	

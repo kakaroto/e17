@@ -31,8 +31,8 @@ EAPI E_Module_Api e_modapi =
      "TClock"
 };
 
-EAPI void
-*e_modapi_init(E_Module *module)
+EAPI void *
+e_modapi_init(E_Module *module)
 {
    TClock *tclock;
    tclock = _tclock_new();
@@ -76,7 +76,8 @@ e_modapi_save(E_Module *module)
 EAPI int
 e_modapi_about(E_Module *module)
 {
-   e_module_dialog_show("Simple Digital Clock", "Displays a digital clock on the desktop");
+   e_module_dialog_show(_("Simple Digital Clock"), 
+			_("Displays a digital clock on the desktop"));
    return 1;
 }
 
@@ -107,8 +108,8 @@ e_modapi_config(E_Module *module)
 /******************************************************************
  * private functions
  ****************************************************************/
-static TClock
-*_tclock_new()
+static TClock *
+_tclock_new()
 {
    TClock *tclock;
    Evas_List *managers, *l, *l2, *cl;
@@ -204,7 +205,6 @@ static TClock
 		  mi = e_menu_item_new(tclock->config_menu);
 		  e_menu_item_label_set(mi, con->name);
 		  e_menu_item_submenu_set(mi, face->menu);
-
 	       }
 	  }
      }
@@ -238,13 +238,14 @@ _tclock_config_menu_new(TClock *tclock)
    tclock->config_menu = e_menu_new();
 }
 
-static TClock_Face
-*_tclock_face_new(E_Container *con)
+static TClock_Face *
+_tclock_face_new(E_Container *con)
 {
    TClock_Face *face;
    Evas_Object *o;
    Evas_Coord x, y, w, h;
-
+   char buff[4096];
+   
    face = E_NEW(TClock_Face, 1);
    if (!face) return NULL;
 
@@ -255,7 +256,9 @@ static TClock_Face
    o = edje_object_add(con->bg_evas);
    face->tclock_object = o;
 
-   edje_object_file_set(o, PACKAGE_DATA_DIR"/tclock.edj", "tclock/main");
+   snprintf(buff, sizeof(buff), PACKAGE_DATA_DIR"/tclock.edj");
+   if (!e_theme_edje_object_set(o, "base/theme/modules/tclock", "modules/tclock/main"))
+     edje_object_file_set(o, strdup(buff), "modules/tclock/main");
    evas_object_show(o);
 
    o = evas_object_rectangle_add(con->bg_evas);
@@ -332,8 +335,6 @@ _tclock_cb_check(void *data)
    memset(buf, 0, sizeof(buf));
    current_time=time(NULL);
    local_time = localtime(&current_time);
-
-   //strftime (buf,TIME_BUF, "%a %d,%b %H:%M", local_time);
 
    tclock = data;
    for (l = tclock->faces; l; l = l->next)
