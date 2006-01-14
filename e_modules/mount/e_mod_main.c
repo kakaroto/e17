@@ -322,7 +322,17 @@ _mount_free(Mount *mnt)
    if (mnt->config_menu_size) e_object_del(E_OBJECT(mnt->config_menu_size));
    if (mnt->config_menu) e_object_del(E_OBJECT(mnt->config_menu));
 
-   evas_list_free(mnt->mntpoints);
+   while (mnt->mntpoints)
+     {
+	Mount_Point *point;
+
+	point = mnt->mntpoints->data;
+	if (point->device) free(point->device);
+	if (point->path) free(point->path);
+	if (point->part) free(point->part);
+
+	mnt->mntpoints = evas_list_remove_list(mnt->mntpoints, mnt->mntpoints);
+     }
 
    free(mnt->conf);
    E_CONFIG_DD_FREE(mnt->conf_edd);
