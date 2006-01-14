@@ -963,6 +963,7 @@ EImageBlendPT(Imlib_Image * im, Window win, int w, int h, int image_type)
 {
    Imlib_Image        *bg;
    int                 flags;
+   int                 ww, hh;
 
    if (!im)
       return NULL;
@@ -972,21 +973,21 @@ EImageBlendPT(Imlib_Image * im, Window win, int w, int h, int image_type)
    if (flags != ICLASS_ATTR_OPAQUE)
      {
 	bg = pt_get_bg_image(win, w, h, flags & ICLASS_ATTR_GLASS);
-	pt_blend(bg, im, flags & ICLASS_ATTR_USE_CM);
+	if (bg)
+	  {
+	     pt_blend(bg, im, flags & ICLASS_ATTR_USE_CM);
+	     return bg;
+	  }
      }
-   else
 #else
    flags = image_type;
    win = None;
 #endif
-   {
-      int                 ww, hh;
 
-      imlib_context_set_image(im);
-      ww = imlib_image_get_width();
-      hh = imlib_image_get_height();
-      bg = imlib_create_cropped_scaled_image(0, 0, ww, hh, w, h);
-   }
+   imlib_context_set_image(im);
+   ww = imlib_image_get_width();
+   hh = imlib_image_get_height();
+   bg = imlib_create_cropped_scaled_image(0, 0, ww, hh, w, h);
 
    return bg;
 }
