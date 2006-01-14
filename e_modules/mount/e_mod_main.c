@@ -489,7 +489,7 @@ _mount_box_init(Mount_Box *mntbox)
 
    o = edje_object_add(mntbox->evas);
    mntbox->bar_object = o;
-   if (!e_theme_edje_object_set(o, "base/theme/modules/mount", "module/mount/main"))
+   if (!e_theme_edje_object_set(o, "base/theme/modules/mount", "modules/mount/main"))
      edje_object_file_set(o, strdup(buffer), "modules/mount/main");
    evas_object_show(o);
 
@@ -534,7 +534,7 @@ _mount_box_init(Mount_Box *mntbox)
    edje_object_part_geometry_get(mntbox->bar_object, "items", &x, &y, &w, &h);
 
    o = edje_object_add(mntbox->evas);
-   if (!e_theme_edje_object_set(o, "base/theme/modules/mount", "module/mount/icon"))
+   if (!e_theme_edje_object_set(o, "base/theme/modules/mount", "modules/mount/icon"))
      edje_object_file_set(o, strdup(buffer), "modules/mount/icon");
    evas_object_resize(o, mntbox->mnt->conf->icon_size, mntbox->mnt->conf->icon_size);
    edje_object_calc_force(o);
@@ -670,7 +670,7 @@ _mount_icon_new(Mount_Box *mntbox, Mount_Point *point)
    mnticon->bg_object = o;
    evas_object_intercept_move_callback_add(o, _mount_icon_cb_intercept_move, mnticon);
    evas_object_intercept_resize_callback_add(o, _mount_icon_cb_intercept_resize, mnticon);
-   if (!e_theme_edje_object_set(o, "base/theme/modules/mount", "module/mount/icon"))
+   if (!e_theme_edje_object_set(o, "base/theme/modules/mount", "modules/mount/icon"))
      edje_object_file_set(o, strdup(buffer), "modules/mount/icon");
    evas_object_show(o);
 
@@ -678,7 +678,7 @@ _mount_icon_new(Mount_Box *mntbox, Mount_Point *point)
    mnticon->icon_object = o;
    edje_extern_object_min_size_set(o, mntbox->mnt->conf->icon_size, mntbox->mnt->conf->icon_size);
    evas_object_resize(o, mntbox->mnt->conf->icon_size, mntbox->mnt->conf->icon_size);
-   if (!e_theme_edje_object_set(o, "base/theme/modules/mount", "module/mount/icon"))   
+   if (!e_theme_edje_object_set(o, "base/theme/modules/mount", "modules/mount/icon"))   
      edje_object_file_set(o, strdup(buffer), "modules/mount/icon");
    edje_object_signal_callback_add(o, "mouse,down,1", "icon", _mount_icon_cb_edje_mouse_down, mnticon);
    edje_object_part_swallow(mnticon->bg_object, "item", o);
@@ -693,7 +693,7 @@ _mount_icon_new(Mount_Box *mntbox, Mount_Point *point)
 
    o = edje_object_add(mntbox->evas);
    mnticon->txt_object = o;
-   if (!e_theme_edje_object_set(o, "base/theme/modules/mount", "module/mount/icon"))   
+   if (!e_theme_edje_object_set(o, "base/theme/modules/mount", "modules/mount/icon"))   
      edje_object_file_set(o, strdup(buffer), "modules/mount/icon");
    evas_object_show(o);
    
@@ -718,7 +718,7 @@ _mount_icon_new(Mount_Box *mntbox, Mount_Point *point)
    edje_object_message_signal_process(o);
 
    o = edje_object_add(mntbox->evas);
-   if (!e_theme_edje_object_set(o, "base/theme/modules/mount", "module/mount/icon"))   
+   if (!e_theme_edje_object_set(o, "base/theme/modules/mount", "modules/mount/icon"))   
      edje_object_file_set(o, strdup(buffer), "modules/mount/icon");
    evas_object_resize(o, mntbox->mnt->conf->icon_size, mntbox->mnt->conf->icon_size);
    edje_object_calc_force(o);
@@ -818,7 +818,7 @@ _mount_box_iconsize_change(Mount_Box *mntbox)
 	evas_object_resize(o, mntbox->mnt->conf->icon_size, mntbox->mnt->conf->icon_size);
 
 	o = edje_object_add(mntbox->evas);
-	if (!e_theme_edje_object_set(o, "base/theme/modules/mount", "module/mount/icon"))	
+	if (!e_theme_edje_object_set(o, "base/theme/modules/mount", "modules/mount/icon"))	
 	  edje_object_file_set(o, strdup(buffer), "modules/mount/icon");
 	evas_object_resize(o, mntbox->mnt->conf->icon_size, mntbox->mnt->conf->icon_size);
 	edje_object_calc_force(o);
