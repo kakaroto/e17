@@ -39,8 +39,8 @@ EAPI E_Module_Api e_modapi =
      "Slideshow"
 };
 
-EAPI void 
-*e_modapi_init(E_Module * m)
+EAPI void *
+e_modapi_init(E_Module * m)
 {
    Slide *e;
 
@@ -158,8 +158,8 @@ e_modapi_config(E_Module *m)
 
 /* Begin Private Routines */
 
-static Slide 
-*_slide_init(E_Module *m)
+static Slide *
+_slide_init(E_Module *m)
 {
    Slide *e;
    E_Menu_Item *mi;
@@ -286,12 +286,15 @@ static int
 _slide_face_init(Slide_Face *sf)
 {
    Evas_Object *o;
-
+   char buff[4096];
+   
    evas_event_freeze(sf->evas);
    o = edje_object_add(sf->evas);
    sf->slide_object = o;
 
-   edje_object_file_set(o, PACKAGE_DATA_DIR"/slideshow.edj", "modules/slideshow/main");
+   snprintf(buff, sizeof(buff), PACKAGE_DATA_DIR"/slideshow.edj");
+   if (!e_theme_edje_object_set(o, "base/theme/modules/slideshow", "modules/slideshow/main"))
+     edje_object_file_set(o, strdup(buff), "modules/slideshow/main");
    evas_object_show(o);
 
    o = evas_object_rectangle_add(sf->evas);
