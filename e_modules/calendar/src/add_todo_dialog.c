@@ -21,8 +21,6 @@ static void           _add_todo_free_data(E_Config_Dialog *cfd, void *data);
 static int            _add_todo_basic_apply_data(E_Config_Dialog *cfd, void *data);
 static Evas_Object   *_add_todo_basic_create_widgets(E_Config_Dialog *cfd,Evas *evas,void *data);
     
-#define IFDUP(src, dst) if(src) dst = strdup(src); else dst = NULL
-
 /* externally accessible functions */
 /***************************************************
 / Function: 

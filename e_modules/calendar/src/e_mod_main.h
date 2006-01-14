@@ -113,15 +113,18 @@ struct _day_face
 };
 
 
-EAPI void  redraw_calendar(Calendar *calendar, int SwitchImage);
+EAPI extern E_Module_Api e_modapi;
+
 EAPI void *e_modapi_init     (E_Module *m);
 EAPI int   e_modapi_shutdown (E_Module *m);
 EAPI int   e_modapi_save     (E_Module *m);
 EAPI int   e_modapi_info     (E_Module *m);
 EAPI int   e_modapi_about    (E_Module *m);
-EAPI void  read_conf_files(void *data, E_Menu *m, E_Menu_Item *mi);
-EAPI void  calendar_config_menu_new(Calendar *calendar);
-EAPI int   increment_cal_count();
+
+void  redraw_calendar(Calendar *calendar, int SwitchImage);
+void  read_conf_files(void *data, E_Menu *m, E_Menu_Item *mi);
+void  calendar_config_menu_new(Calendar *calendar);
+int   increment_cal_count();
 
 #include "calendar_color_func.h"
 #include "calendar_text_fun.h"

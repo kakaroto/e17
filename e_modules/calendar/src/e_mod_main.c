@@ -14,7 +14,7 @@ static E_Config_DD *conf_edd;
 static E_Config_DD *conf_font_edd;
 static E_Config_DD *conf_color_edd;
 
-E_Module_Api e_modapi =
+EAPI E_Module_Api e_modapi =
 {
    E_MODULE_API_VERSION,
    "Calendar"
@@ -33,7 +33,7 @@ int increment_cal_count()
 /
 /
 ******************************************************/
-void *
+EAPI void *
 e_modapi_init(E_Module *module)
 {
    Calendar *calendar;
@@ -60,7 +60,7 @@ e_modapi_init(E_Module *module)
 /
 ******************************************************/
 /*    * int e_modapi_shutdown(E_Module*) - Cleanup */
-int
+EAPI int
 e_modapi_shutdown(E_Module *module)
 {
    Calendar *calendar;
@@ -85,7 +85,7 @@ e_modapi_shutdown(E_Module *module)
 ******************************************************/
 /*    * int e_modapi_save(E_Module*) - Save persistent data */
 /*    ie: the calendar->conf stuff                          */
-int
+EAPI int
 e_modapi_save(E_Module *module)
 {
    Calendar *calendar;
@@ -100,7 +100,7 @@ e_modapi_save(E_Module *module)
 /
 ******************************************************/
 /* * int e_modapi_info(E_Module*) - Setup module specific infomation */
-int
+EAPI int
 e_modapi_info(E_Module *module)
 {
    module->icon_file = strdup(PACKAGE_DATA_DIR"/module_icon.png");
@@ -113,7 +113,7 @@ e_modapi_info(E_Module *module)
 /
 ******************************************************/
 /* * int e_modapi_about(E_Module*). - Called when Modules' About Menu is invoked. */
-int
+EAPI int
 e_modapi_about(E_Module *module)
 {
    e_error_dialog_show(_("Enlightenment calendar Module"),

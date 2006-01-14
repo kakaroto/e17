@@ -283,3 +283,4 @@ _color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data
 
    return o;
 }
+

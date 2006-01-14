@@ -21,7 +21,6 @@ static Evas_Object  	 *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, v
 static int 	     	_basic_apply_data(E_Config_Dialog *cfd, void *data);
 static Evas_Object   *_color_edit_advanced_create_widgets(E_Config_Dialog *cfd,Evas *evas,void *data);
 static int            _color_edit_advanced_apply_data(E_Config_Dialog *cfd, void *data);
-#define IFDUP(src, dst) if(src) dst = strdup(src); else dst = NULL
 
 /***************************************************
 / Function: 
