@@ -15,13 +15,6 @@ static Evas_Smart *_esmart_dragable_object_smart_get ();
 static Evas_Object *esmart_dragable_object_new (Evas * evas);
 static void _esmart_dragable_object_add (Evas_Object * o);
 static void _esmart_dragable_object_del (Evas_Object * o);
-static void _esmart_dragable_object_layer_set (Evas_Object * o, int l);
-static void _esmart_dragable_object_raise (Evas_Object * o);
-static void _esmart_dragable_object_lower (Evas_Object * o);
-static void _esmart_dragable_object_stack_above (Evas_Object * o,
-						 Evas_Object * above);
-static void _esmart_dragable_object_stack_below (Evas_Object * o,
-						 Evas_Object * below);
 static void _esmart_dragable_object_move (Evas_Object * o, Evas_Coord x,
 					  Evas_Coord y);
 static void _esmart_dragable_object_resize (Evas_Object * o, Evas_Coord w,
@@ -223,61 +216,6 @@ _esmart_dragable_object_del (Evas_Object * o)
       if (data->obj)
 	evas_object_del (data->obj);
       free (data);
-    }
-}
-
-static void
-_esmart_dragable_object_layer_set (Evas_Object * o, int l)
-{
-  Esmart_Draggies *data;
-
-  if ((data = evas_object_smart_data_get (o)))
-    {
-      evas_object_layer_set (data->obj, l);
-    }
-}
-
-static void
-_esmart_dragable_object_raise (Evas_Object * o)
-{
-  Esmart_Draggies *data;
-
-  if ((data = evas_object_smart_data_get (o)))
-    {
-      evas_object_raise (data->obj);
-    }
-}
-
-static void
-_esmart_dragable_object_lower (Evas_Object * o)
-{
-  Esmart_Draggies *data;
-
-  if ((data = evas_object_smart_data_get (o)))
-    {
-      evas_object_lower (data->obj);
-    }
-}
-
-static void
-_esmart_dragable_object_stack_above (Evas_Object * o, Evas_Object * above)
-{
-  Esmart_Draggies *data;
-
-  if ((data = evas_object_smart_data_get (o)))
-    {
-      evas_object_stack_above (data->obj, above);
-    }
-}
-
-static void
-_esmart_dragable_object_stack_below (Evas_Object * o, Evas_Object * below)
-{
-  Esmart_Draggies *data;
-
-  if ((data = evas_object_smart_data_get (o)))
-    {
-      evas_object_stack_below (data->obj, below);
     }
 }
 
