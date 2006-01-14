@@ -267,6 +267,7 @@ _slide_shutdown(Slide *e)
 	e->cycle_timer = ecore_timer_del(e->cycle_timer);
 	e->cycle_timer = NULL;
      }
+   if (e->display) free(e->display);
 
    free(e->conf);
    E_CONFIG_DD_FREE(e->conf_edd);
@@ -535,7 +536,7 @@ get_bg_count(char *name)
    snprintf(buffer, sizeof(buffer), "%s/.e/e/backgrounds", home);
 #endif
    bg_count = 0;
-   list = ecore_file_ls(strdup(buffer));
+   list = ecore_file_ls(buffer);
    ecore_list_goto_first(list);
    while ((list_item = (char *) ecore_list_next(list)) != NULL)
      bg_count++;
@@ -564,7 +565,7 @@ _set_bg(char *bg, Slide_Face *sf)
    snprintf(buffer, sizeof(buffer), "%s/.e/e/backgrounds/%s", home, bg);
 #endif
 
-   if (buffer) e_lib_background_set(strdup(buffer));
+   if (buffer) e_lib_background_set(buffer);
 }
 
 static void 
