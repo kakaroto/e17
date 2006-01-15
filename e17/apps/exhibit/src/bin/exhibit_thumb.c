@@ -7,7 +7,7 @@ Evas_List *thumb_list;
 int
 _ex_thumb_exe_exit(void *data, int type, void *event)
 {
-   Ecore_Event_Exe_Exit *ev;
+   Ecore_Exe_Event_Del *ev;
    Ex_Thumb              *thumb;
    char                 *ext;
 

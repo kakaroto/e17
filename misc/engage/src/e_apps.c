@@ -797,7 +797,7 @@ _e_app_check_each(Evas_Hash *hash, const char *key, void *data, void *fdata)
 static int
 _e_apps_cb_exit(void *data, int type, void *event)
 {
-   Ecore_Event_Exe_Exit *ev;
+   Ecore_Exe_Event_Del *ev;
    E_App *a;
    
    ev = event;

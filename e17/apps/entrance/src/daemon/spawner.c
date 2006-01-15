@@ -293,10 +293,10 @@ _Entranced_SIGUSR(int sig)
 int
 Entranced_Exe_Exited(void *data, int type, void *event)
 {
-   Ecore_Event_Exe_Exit *e = (Ecore_Event_Exe_Exit *) event;
+   Ecore_Exe_Event_Del *e = (Ecore_Exe_Event_Del *) event;
    Entranced_Display *d = (Entranced_Display *) data;
 
-   entranced_debug("Ecore_Event_Exe_Exit triggered.\n");
+   entranced_debug("Ecore_Exe_Event_Del triggered.\n");
 
    if (is_respawning)
    {

@@ -599,7 +599,7 @@ get_filename(Config *conf)
 static int 
 _screen_exe_cb_exit(void *data, int type, void *event)
 {
-   Ecore_Event_Exe_Exit *ev;
+   Ecore_Exe_Event_Del *ev;
    Ecore_Exe *x;
    Screen_Face *ef;
 

@@ -1076,7 +1076,7 @@ _mount_icon_cb_edje_mouse_down(void *data, Evas_Object *o, const char *emission,
 static int
 _mount_exe_cb_exit(void *data, int type, void *event)
 {
-   Ecore_Event_Exe_Exit *ev;
+   Ecore_Exe_Event_Del *ev;
    Ecore_Exe *x;
    Mount_Icon *ic;
    Mount_Point *point;
