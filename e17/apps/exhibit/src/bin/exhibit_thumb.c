@@ -29,7 +29,7 @@ _ex_thumb_exe_exit(void *data, int type, void *event)
 	if(thumb->selected)
 	  {
 	     etk_tree_row_select(row);
-	     etk_tree_row_scroll_to(row, TRUE);	     
+	     etk_tree_row_scroll_to(row, ETK_TRUE);	     
 	  }
 	free(thumb->image);
 	free(thumb->name);

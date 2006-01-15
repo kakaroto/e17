@@ -42,17 +42,17 @@ _ex_image_mouse_wheel(Etk_Object *object, void *event, void *data)
 	  {
 	     row = etk_tree_next_row_get(
 		       etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree)),
-		       FALSE, FALSE);
+		       ETK_FALSE, ETK_FALSE);
 	     etk_tree_row_select(row);
-	     etk_tree_row_scroll_to(row, FALSE);
+	     etk_tree_row_scroll_to(row, ETK_FALSE);
 	  }
 	else
 	  {
 	     row = etk_tree_prev_row_get(
 		       etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree)),
-		       FALSE, FALSE);
+		       ETK_FALSE, ETK_FALSE);
 	     etk_tree_row_select(row);	     
-	     etk_tree_row_scroll_to(row, FALSE);	     
+	     etk_tree_row_scroll_to(row, ETK_FALSE);	     
 	  }
      }
 }
@@ -169,7 +169,7 @@ _ex_image_flip_horizontal(Etk_Image *im)
      return;
    
    etk_image_size_get(im, &w, &h);
-   data = evas_object_image_data_get(im->image_object, TRUE);
+   data = evas_object_image_data_get(im->image_object, ETK_TRUE);
    
    for (y = 0; y < h; y++)
      {
@@ -201,7 +201,7 @@ _ex_image_flip_vertical(Etk_Image *im)
      return;
    
    etk_image_size_get(im, &w, &h);
-   data = evas_object_image_data_get(im->image_object, TRUE);
+   data = evas_object_image_data_get(im->image_object, ETK_TRUE);
    
    for (y = 0; y < (h >> 1); y++)
      {
@@ -237,7 +237,7 @@ _ex_image_flip_diagonal(Etk_Image *im, int direction)
      return;
    
    etk_image_size_get(im, &iw, &ih);
-   data2 = evas_object_image_data_get(im->image_object, FALSE);
+   data2 = evas_object_image_data_get(im->image_object, ETK_FALSE);
       
    data = malloc(iw * ih * sizeof(unsigned int));
    from = data2;
@@ -300,7 +300,7 @@ _ex_image_blur(Etk_Image *im)
      return;
    
    etk_image_size_get(im, &w, &h);
-   data2 = evas_object_image_data_get(im->image_object, TRUE);
+   data2 = evas_object_image_data_get(im->image_object, ETK_TRUE);
    
    if (rad < 1)
      return;
@@ -400,7 +400,7 @@ _ex_image_sharpen(Etk_Image *im)
      return;
 
    etk_image_size_get(im, &w, &h);
-   data2 = evas_object_image_data_get(im->image_object, TRUE);
+   data2 = evas_object_image_data_get(im->image_object, ETK_TRUE);
       
    data = malloc(w * h * sizeof(unsigned int));
    if (rad == 0)
@@ -526,7 +526,7 @@ _ex_image_brightness(Etk_Image *im, int brightness)
      }
       
    etk_image_size_get(im, &w, &h);
-   data = evas_object_image_data_get(im->image_object, TRUE);
+   data = evas_object_image_data_get(im->image_object, ETK_TRUE);
    
    for (i = 0; i < 256; i++)
      {
@@ -598,7 +598,7 @@ _ex_image_brightness2(Etk_Image *im, int brightness)
    }   
    
    etk_image_size_get(im, &w, &h);
-   data = evas_object_image_data_get(im->image_object, TRUE);
+   data = evas_object_image_data_get(im->image_object, ETK_TRUE);
    data2 = malloc(w * h * sizeof(DATA32));
    memcpy(data2, data, w * h * sizeof(DATA32));
    
@@ -788,11 +788,11 @@ _ex_image_is_favorite(Exhibit *e)
    char          path[PATH_MAX];
       
    r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
-   if(!r) return FALSE;
+   if(!r) return ETK_FALSE;
    
    etk_tree_row_fields_get(r, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 0), NULL, &icol_string, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 1),NULL);
    snprintf(path, sizeof(path), "%s/%s", e->fav_path, icol_string);
    if(ecore_file_exists(path))     
-     return TRUE;
-   return FALSE;
+     return ETK_TRUE;
+   return ETK_FALSE;
 }

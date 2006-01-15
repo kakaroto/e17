@@ -13,7 +13,7 @@ _ex_tab_new(Exhibit *e, char *dir)
    tab->dirs = NULL;
    tab->images = NULL;
    tab->e = e;
-   tab->fit_window = FALSE;
+   tab->fit_window = ETK_FALSE;
    
    tab->dtree = etk_tree_new();
    etk_widget_size_request_set(tab->dtree, 180, 120);
@@ -24,7 +24,7 @@ _ex_tab_new(Exhibit *e, char *dir)
 
    tab->itree = etk_tree_new();
    etk_widget_size_request_set(tab->itree, 180, 120);
-   etk_tree_multiple_select_set(ETK_TREE(tab->itree), TRUE);
+   etk_tree_multiple_select_set(ETK_TREE(tab->itree), ETK_TRUE);
    etk_signal_connect("row_selected", ETK_OBJECT(tab->itree), ETK_CALLBACK(_ex_main_itree_item_clicked_cb), e);
    etk_signal_connect("key_down", ETK_OBJECT(tab->itree), ETK_CALLBACK(_ex_main_itree_key_down_cb), e);
    imodel = etk_tree_model_icon_text_new(ETK_TREE(tab->itree), ETK_TREE_FROM_FILE);
@@ -47,7 +47,7 @@ _ex_tab_new(Exhibit *e, char *dir)
    etk_signal_connect("mouse_up", ETK_OBJECT(tab->image), ETK_CALLBACK(_ex_image_mouse_up), e);
    etk_signal_connect("mouse_move", ETK_OBJECT(tab->image), ETK_CALLBACK(_ex_image_mouse_move), e);
    etk_signal_connect("mouse_wheel", ETK_OBJECT(tab->image), ETK_CALLBACK(_ex_image_mouse_wheel), e);
-   etk_image_keep_aspect_set(ETK_IMAGE(tab->image), TRUE);
+   etk_image_keep_aspect_set(ETK_IMAGE(tab->image), ETK_TRUE);
    etk_container_add(ETK_CONTAINER(tab->alignment), tab->image);   
       
    tab->scrolled_view = etk_scrolled_view_new();
@@ -81,7 +81,7 @@ _ex_tab_select(Ex_Tab *tab)
 		    0, 0, ETK_FILL_POLICY_VEXPAND|ETK_FILL_POLICY_VFILL|ETK_FILL_POLICY_HFILL);
    etk_widget_show(tab->dtree);
    
-   etk_paned_add2(ETK_PANED(tab->e->vpaned), tab->itree, TRUE);
+   etk_paned_add2(ETK_PANED(tab->e->vpaned), tab->itree, ETK_TRUE);
    etk_widget_show(tab->itree);
       
    etk_widget_show(tab->image);

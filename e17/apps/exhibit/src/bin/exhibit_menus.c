@@ -39,7 +39,7 @@ _ex_menu_item_new(Ex_Menu_Item_Type item_type, const char *label,
      {
 	Etk_Widget *image;
 
-	image = etk_image_new_from_stock(stock_id);
+	image = etk_image_new_from_stock(stock_id, ETK_STOCK_SMALL);
 	etk_menu_item_image_set(ETK_MENU_ITEM(menu_item), ETK_IMAGE(image));
      }
    else if (stock_id < ETK_STOCK_NO_STOCK)

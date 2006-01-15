@@ -52,5 +52,5 @@ _ex_options_window_show(Exhibit *e)
 Etk_Bool 
 _ex_options_window_delete_cb(void *data)
 {
-   return TRUE;
+   return ETK_TRUE;
 }
