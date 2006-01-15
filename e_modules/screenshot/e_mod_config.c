@@ -1,4 +1,4 @@
-#include "e.h"
+#include <e.h>
 #include "e_mod_main.h"
 #include "e_mod_config.h"
 #include "config.h"
@@ -6,10 +6,9 @@
 #define S_METHOD_IMPORT 0
 #define S_METHOD_SCROT 1
 
-typedef struct _cfdata CFData;
 typedef struct _Cfg_File_Data Cfg_File_Data;
 
-struct _cfdata
+struct _E_Config_Dialog_Data
 {
    Screen *screen;
 
@@ -52,11 +51,11 @@ struct _Cfg_File_Data
 
 /* Protos */
 static void 	     *_create_data(E_Config_Dialog *cfd);
-static void 	     _free_data(E_Config_Dialog *cfd, CFData *cfdata);
-static Evas_Object   *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata);
-static int 	     _basic_apply_data(E_Config_Dialog *cfd, CFData *cfdata);
-static Evas_Object   *_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata);
-static int 	     _advanced_apply_data(E_Config_Dialog *cfd, CFData *cfdata);
+static void 	     _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static Evas_Object   *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
+static int 	     _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static Evas_Object   *_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
+static int 	     _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 
 /* Config Calls */
 void 
@@ -79,7 +78,7 @@ _config_screenshot_module(E_Container *con, Screen *s)
 }
 
 static void
-_fill_data(Screen *sc, CFData *cfdata)
+_fill_data(Screen *sc, E_Config_Dialog_Data *cfdata)
 {
    if (sc->conf->use_import == 1)
      {
@@ -129,18 +128,16 @@ _fill_data(Screen *sc, CFData *cfdata)
 static void *
 _create_data(E_Config_Dialog *cfd)
 {
-   CFData *cfdata;
+   E_Config_Dialog_Data *cfdata;
    Screen *s;
    
    s = cfd->data;
-   cfdata = E_NEW(CFData, 1);
-   _fill_data(s, cfdata);
-
+   cfdata = E_NEW(E_Config_Dialog_Data, 1);
    return cfdata;
 }
 
 static void
-_free_data(E_Config_Dialog *cfd, CFData *cfdata)
+_free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    Screen *s;
    
@@ -151,7 +148,7 @@ _free_data(E_Config_Dialog *cfd, CFData *cfdata)
 }
 
 static Evas_Object *
-_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata)
+_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
    Evas_Object *o, *of, *ob, *ot;
    E_Radio_Group *rg;
@@ -210,7 +207,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata)
 }
 
 static int
-_basic_apply_data(E_Config_Dialog *cfd, CFData *cfdata)
+_basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    char tmp[4096];
    int length;
@@ -271,7 +268,7 @@ _basic_apply_data(E_Config_Dialog *cfd, CFData *cfdata)
 }
 
 static Evas_Object *
-_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata)
+_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
    Evas_Object *o, *ob, *of, *ot;
    E_Radio_Group *rg;
@@ -357,7 +354,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata)
 }
 
 static int
-_advanced_apply_data(E_Config_Dialog *cfd, CFData *cfdata)
+_advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    Screen *sc;
    

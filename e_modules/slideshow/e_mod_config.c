@@ -1,12 +1,11 @@
-#include "e.h"
+#include <e.h>
 #include "e_mod_main.h"
 #include "e_mod_config.h"
 #include "config.h"
 
-typedef struct _cfdata CFData;
 typedef struct _Cfg_File_Data Cfg_File_Data;
 
-struct _cfdata
+struct _E_Config_Dialog_Data
 {
    int disable_timer;
    double cycle_time;
@@ -23,9 +22,9 @@ struct _Cfg_File_Data
 
 /* Protos */
 static void 	     *_create_data(E_Config_Dialog *cfd);
-static void 	     _free_data(E_Config_Dialog *cfd, CFData *cfdata);
-static Evas_Object   *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata);
-static int 	     _basic_apply_data(E_Config_Dialog *cfd, CFData *cfdata);
+static void 	     _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static Evas_Object   *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
+static int 	     _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 
 /* Config Calls */
 void 
@@ -48,7 +47,7 @@ _config_slideshow_module(E_Container *con, Slide *s)
 }
 
 static void
-_fill_data(Slide *s, CFData *cfdata)
+_fill_data(Slide *s, E_Config_Dialog_Data *cfdata)
 {
    cfdata->cycle_time = s->conf->cycle_time;
    cfdata->disable_timer = s->conf->disable_timer;
@@ -60,14 +59,14 @@ _fill_data(Slide *s, CFData *cfdata)
 static void *
 _create_data(E_Config_Dialog *cfd)
 {
-   CFData *cfdata;
+   E_Config_Dialog_Data *cfdata;
 	
-   cfdata = E_NEW(CFData, 1);
+   cfdata = E_NEW(E_Config_Dialog_Data, 1);
    return cfdata;
 }
 
 static void
-_free_data(E_Config_Dialog *cfd, CFData *cfdata)
+_free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    Slide *s;
    
@@ -78,7 +77,7 @@ _free_data(E_Config_Dialog *cfd, CFData *cfdata)
 }
 
 static Evas_Object *
-_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata)
+_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
    Evas_Object *o, *ob, *of;
    Slide *s;
@@ -110,7 +109,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata)
 }
 
 static int
-_basic_apply_data(E_Config_Dialog *cfd, CFData *cfdata)
+_basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    Slide *s;
    
