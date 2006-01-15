@@ -13,8 +13,7 @@ static void    _monitor_config_menu_new(Monitor *monitor);
 static Monitor_Face *_monitor_face_new(E_Container *con, Config *config);
 static void    _monitor_face_free(Monitor_Face *face);
 static void    _monitor_face_menu_new(Monitor_Face *face);
-static void    _monitor_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, 
-					   E_Gadman_Change change);
+static void    _monitor_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change);
 Config_Face *  _monitor_face_config_init(Config_Face *conf);
 static int     _monitor_face_config_cb_timer(void *data);
 
@@ -28,6 +27,8 @@ static void _monitor_wlan_link_text_update_callcack(Flow_Chart *chart, void *dat
 static void _monitor_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _add_sensor(Monitor_Face *face, Evas_Object *o, int VerHor);
 static int _date_cb_check(void *data);
+
+static void _monitor_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
 static int _monitor_count;
 static int  num_sensors;
@@ -224,7 +225,7 @@ _monitor_new()
 	     face = _monitor_face_new(con,monitor->conf);
 	     if (face)
 	       {
-	       face->mon = monitor;
+		  face->mon = monitor;
 		  monitor->faces = evas_list_append(monitor->faces, face);
 		  /* Config */
 		  if (!cl)
@@ -282,6 +283,8 @@ _monitor_new()
 		  	flow_chart_update_rate_set(flow_chart_net_out, face->conf->net_interval);
 		  if (monitor->conf->wlan)
 		  	flow_chart_update_rate_set(flow_chart_wlan_link, face->conf->wlan_interval);
+		  
+		  rebuild_monitor(face);
 	       }
 	  }
      }
@@ -322,7 +325,6 @@ _monitor_face_new(E_Container *con, Config *config)
    char u_date_time[256];
    struct sysinfo s_info;
    sysinfo (&s_info);
-   char buff[4096];
    
    long minute = 60;
    long hour = minute * 60;
@@ -350,13 +352,13 @@ _monitor_face_new(E_Container *con, Config *config)
    
    evas_event_freeze(con->bg_evas);
 
-   snprintf(buff, sizeof(buff), PACKAGE_DATA_DIR"/monitor.edj");
    /* setup monitor object */
    o = edje_object_add(con->bg_evas);
    face->monitor_object = o;
    if (!e_theme_edje_object_set(o, "base/theme/modules/monitor", "modules/monitor/main"))
-     edje_object_file_set(o, buff, "monitor/main");
+     edje_object_file_set(o, PACKAGE_DATA_DIR"/monitor.edj", "monitor/main");
    evas_object_show(o);
+
    /* setup res table */
    o = e_table_add(con->bg_evas);
    face->table_object = o;
@@ -369,7 +371,7 @@ _monitor_face_new(E_Container *con, Config *config)
    {
   	face->hostname = edje_object_add(con->bg_evas);
       if (!e_theme_edje_object_set(face->hostname, "base/theme/modules/monitor", "modules/monitor/host"))
-	edje_object_file_set(face->hostname, buff, "modules/monitor/host");
+	edje_object_file_set(face->hostname, PACKAGE_DATA_DIR"/monitor.edj", "modules/monitor/host");
 	_add_sensor(face,face->hostname,config->Horz);
 	edje_object_part_text_set(face->hostname,"sysname",u_buf.sysname);
 	edje_object_part_text_set(face->hostname,"release",u_buf.release);
@@ -384,8 +386,9 @@ _monitor_face_new(E_Container *con, Config *config)
       o = edje_object_add(con->bg_evas);
       face->cpu = o;
       if (!e_theme_edje_object_set(o, "base/theme/modules/monitor", "modules/monitor/cpu"))
-      edje_object_file_set(o, buff, "modules/monitor/cpu");
+      edje_object_file_set(o, PACKAGE_DATA_DIR"/monitor.edj", "modules/monitor/cpu");
       _add_sensor(face, face->cpu,config->Horz);
+
       /* add cpu chart */
       chart_con = chart_container_new(con->bg_evas,0,0,0,0);
       flow_chart_cpu = flow_chart_new();
@@ -395,16 +398,17 @@ _monitor_face_new(E_Container *con, Config *config)
       chart_container_chart_add(chart_con, flow_chart_cpu);
       face->chart_cpu = chart_con;   
       flow_chart_callback_set(flow_chart_cpu, _monitor_cpu_text_update_callcack, face);
-
    }
+   
    if (config->mem)
    {
       /* setup mem */
       o = edje_object_add(con->bg_evas);
       face->mem = o;
       if (!e_theme_edje_object_set(o, "base/theme/modules/monitor", "modules/monitor/mem"))
-	edje_object_file_set(o, buff, "modules/monitor/mem");
+	edje_object_file_set(o, PACKAGE_DATA_DIR"/monitor.edj", "modules/monitor/mem");
       _add_sensor(face, face->mem,config->Horz);
+
       /* add mem charts */
       chart_con = chart_container_new(con->bg_evas,0,0,0,0);
       flow_chart_mem_real = flow_chart_new();
@@ -423,14 +427,16 @@ _monitor_face_new(E_Container *con, Config *config)
       chart_container_chart_add(chart_con, flow_chart_mem_swap);
       flow_chart_callback_set(flow_chart_mem_swap, _monitor_mem_swap_text_update_callback, face);
     }
+   
    if (config->net)
    {
       /* setup net */
       o = edje_object_add(con->bg_evas);
       face->net = o;
       if (!e_theme_edje_object_set(o, "base/theme/modules/monitor", "modules/monitor/net"))
-	edje_object_file_set(o, buff, "modules/monitor/net");
+	edje_object_file_set(o, PACKAGE_DATA_DIR"/monitor.edj", "modules/monitor/net");
       _add_sensor(face, face->net, config->Horz);
+
       /* add net charts */
       chart_con = chart_container_new(con->bg_evas,0,0,0,0);
       flow_chart_net_in = flow_chart_new();
@@ -456,8 +462,9 @@ _monitor_face_new(E_Container *con, Config *config)
       o = edje_object_add(con->bg_evas);
       face->wlan = o;
       if (!e_theme_edje_object_set(o, "base/theme/modules/monitor", "modules/monitor/wlan"))
-	edje_object_file_set(o, buff, "modules/monitor/wlan");
+	edje_object_file_set(o, PACKAGE_DATA_DIR"/monitor.edj", "modules/monitor/wlan");
       _add_sensor(face, face->wlan,config->Horz);
+
       /* add wlan charts */
       chart_con = chart_container_new(con->bg_evas,0,0,0,0);
       flow_chart_wlan_link = flow_chart_new();
@@ -468,11 +475,12 @@ _monitor_face_new(E_Container *con, Config *config)
       face->chart_wlan = chart_con;
       flow_chart_callback_set(flow_chart_wlan_link, _monitor_wlan_link_text_update_callcack, face);
    }
+   
    if (config->uptime)
    {
       face->uptime = edje_object_add(con->bg_evas);
       if (!e_theme_edje_object_set(face->uptime, "base/theme/modules/monitor", "modules/monitor/uptime"))
-     edje_object_file_set(face->uptime, buff, "modules/monitor/uptime");	
+	edje_object_file_set(face->uptime, PACKAGE_DATA_DIR"/monitor.edj", "modules/monitor/uptime");	
       _add_sensor(face, face->uptime,config->Horz);
       sprintf (u_date_time,"uptime: %ld days, %ld:%02ld:%02ld", 
            s_info.uptime / day, (s_info.uptime % day) / hour, 
@@ -480,6 +488,7 @@ _monitor_face_new(E_Container *con, Config *config)
       edje_object_part_text_set(face->uptime,"uptime",u_date_time);
       face->date_check_timer = ecore_timer_add(1, _date_cb_check,face);
    }
+   
    if (config->time)
    {
       time_t now;
@@ -490,7 +499,7 @@ _monitor_face_new(E_Container *con, Config *config)
       date = *localtime(&now);
       face->time = edje_object_add(con->bg_evas);
       if (!e_theme_edje_object_set(face->time, "base/theme/modules/monitor", "modules/monitor/time"))
-	edje_object_file_set(face->time, buff, "modules/monitor/time");	
+	edje_object_file_set(face->time, PACKAGE_DATA_DIR"/monitor.edj", "modules/monitor/time");	
       _add_sensor(face, face->time,config->Horz);
       sprintf (curr_time,"%02d:%02d:%02d",date.tm_hour,date.tm_min,date.tm_sec);
       edje_object_part_text_set(face->time,"time",curr_time);
@@ -772,7 +781,7 @@ _monitor_face_menu_new(Monitor_Face *face)
    e_menu_item_callback_set(mi, _monitor_face_cb_menu_edit, face);	
 }
 
-static void 
+void 
 _monitor_cb_config_updated(void *data)
 {
    Monitor_Face *face;
@@ -827,7 +836,7 @@ _add_sensor(Monitor_Face *face, Evas_Object *o, int VerHor)
    num_sensors++;
 }
 
-static void 
+void 
 rebuild_monitor(Monitor_Face *face)
 {
    struct utsname u_buf;

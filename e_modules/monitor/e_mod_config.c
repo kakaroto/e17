@@ -1,9 +1,8 @@
-#include "e.h"
+#include <e.h>
 #include "e_mod_main.h"
 #include "e_mod_config.h"
 #include "config.h"
 
-typedef struct _cfdata CFData;
 typedef struct _Cfg_File_Data Cfg_File_Data;
 
 int net_interface_count;
@@ -14,7 +13,7 @@ int wlan_interface_count;
 int wlan_interface_number;
 Ecore_List *wlan_interfaces = NULL;
 
-struct _cfdata 
+struct _E_Config_Dialog_Data
 {
    double cpu_interval;
    double mem_interval;
@@ -36,11 +35,11 @@ struct _Cfg_File_Data
 
 /* Protos */
 static void 		*_create_data(E_Config_Dialog *cfd);
-static void 		_free_data(E_Config_Dialog *cfd, void *data);
-static Evas_Object 	*_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data);
-static int 		_basic_apply_data(E_Config_Dialog *cfd, void *data);
-static Evas_Object 	*_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data);
-static int 		_advanced_apply_data(E_Config_Dialog *cfd, void *data);
+static void 		_free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static Evas_Object 	*_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
+static int 		_basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static Evas_Object 	*_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
+static int 		_advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 
 void
 _config_monitor_module(E_Container *con, Monitor_Face *f) 
@@ -59,7 +58,7 @@ _config_monitor_module(E_Container *con, Monitor_Face *f)
 }
 
 static void 
-_fill_data(Monitor_Face *f, CFData *cfdata) 
+_fill_data(Monitor_Face *f, E_Config_Dialog_Data *cfdata) 
 {
    char *tmp;
    int i = 0;
@@ -94,39 +93,34 @@ _fill_data(Monitor_Face *f, CFData *cfdata)
      }
 }
 
-static void
-*_create_data(E_Config_Dialog *cfd) 
+static void *
+_create_data(E_Config_Dialog *cfd) 
 {
-   CFData *cfdata;
+   E_Config_Dialog_Data *cfdata;
    Monitor_Face *f;
    
    f = cfd->data;
-   cfdata = E_NEW(CFData, 1);
+   cfdata = E_NEW(E_Config_Dialog_Data, 1);
    _fill_data(f, cfdata);
    return cfdata;
 }
 
 static void
-_free_data(E_Config_Dialog *cfd, void *data) 
+_free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
 {
-   CFData *cfdata;
-   cfdata = data;
    free(cfdata);
 }
 
-static Evas_Object
-*_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data) 
+static Evas_Object *
+_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata) 
 {
    Evas_Object *o, *of, *ob, *ob1, *ob2, *ob3, *ob4, *ob5, *ob6, *ob7,*ot;
    E_Radio_Group *rg;
-   CFData *cfdata;
-   cfdata = data;
    char *tmp;
    int i;
    Monitor_Face *f;
    Monitor *mon;
 
-   
    f = cfd->data;
    mon = f->mon;
    
@@ -157,22 +151,20 @@ static Evas_Object
 }
 
 static int 
-_basic_apply_data(E_Config_Dialog *cfd, void *data) 
+_basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
 {
-   CFData *cfdata;
-   cfdata = data;
    Monitor_Face *face;
+
    face = cfd->data;
    rebuild_monitor(face);
    return 1;
 }
+
 static Evas_Object *
-_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data)
+_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
    Evas_Object *o, *of, *ob, *ot;
    E_Radio_Group *rg;
-   CFData *cfdata;
-   cfdata = data;
    char *tmp;
    int i;
    Monitor_Face *f;
@@ -248,15 +240,14 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data)
    
    return o;
 }
+
 static int
-_advanced_apply_data(E_Config_Dialog *cfd, void *data) 
+_advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
 {
    Monitor_Face *f;
-   CFData *cfdata;
    char *tmp;
    int i;
    
-   cfdata = data;
    f = cfd->data;
    e_border_button_bindings_ungrab_all();
    
