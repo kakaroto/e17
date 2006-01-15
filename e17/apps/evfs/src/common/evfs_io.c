@@ -2,11 +2,14 @@
 #include <Eet.h>
 #include <Evas.h>
 
-
-
 static int io_init=0;
 static Eet_Data_Descriptor *_evfs_filereference_edd;
 static Eet_Data_Descriptor *_evfs_progress_event_edd;
+
+
+Eet_Data_Descriptor* evfs_io_filereference_edd_get() {
+	return _evfs_filereference_edd;
+}
 
 
 int evfs_io_initialise() {

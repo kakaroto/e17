@@ -115,6 +115,7 @@ evfs_connection* evfs_connect(void (*callback_func)(evfs_event*)) {
 	connection->callback_func = callback_func;
 
 	evfs_io_initialise();
+	evfs_vfolder_initialise();
 
         if (!libevfs_registered_callback) {
 		libevfs_registered_callback = 1;
@@ -498,3 +499,4 @@ char* evfs_filereference_to_string(evfs_filereference* ref) {
 	return uri;
 	
 }
+

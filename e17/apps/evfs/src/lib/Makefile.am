@@ -19,7 +19,8 @@ libevfs_la_SOURCES   =                          \
 	libevfs.c				\
 	evfs_commands.c				\
 	$(top_srcdir)/src/common/evfs_io.c			\
-	$(top_srcdir)/src/common/evfs_cleanup.c
+	$(top_srcdir)/src/common/evfs_cleanup.c \
+	$(top_srcdir)/src/common/evfs_vfolder.c
 
 libevfs_la_LIBADD = \
 	@ecore_libs@ \
