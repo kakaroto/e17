@@ -85,57 +85,95 @@ fi
 #AC_SUBST(dlopen_libs)
 
 AC_PATH_GENERIC(evas, 0.9.9,
-  [ ],
-  [ ]
+  [have_evas="yes"],
+  [have_evas="no"]
 )
 
 AC_PATH_GENERIC(ecore, 0.9.9,
-  [ ],
-  [ ]
+  [have_ecore="yes"],
+  [have_ecore="no"]
 )
 
 AC_PATH_GENERIC(esmart, 0.9.0,
-  [ ],
-  [ ]
+  [have_esmart="yes"],
+  [have_esmart="no"]
 )
 
 AC_PATH_GENERIC(edje, 0.5.0,
-  [ ],
-  [ ]
+  [have_edje="yes"],
+  [have_edje="no"]
 )
 
 AC_PATH_GENERIC(eet, 0.9.10,
-  [ ],
-  [ ]
+  [have_eet="yes"],
+  [have_eet="no"]
 )
 
 AC_PATH_GENERIC(ewl, 0.0.4,
-  [ ],
-  [ ]
+  [have_ewl="yes"],
+  [have_ewl="no"]
 )
 
 AC_PATH_GENERIC(engrave, 0.1.0,
-  [ ],
-  [ ]
+  [have_engrave="yes"],
+  [have_engrave="no"]
 )
 
 AC_PATH_GENERIC(imlib2, 1.0.0,
-  [ ],
-  [ ]
+  [have_imlib2="yes"],
+  [have_imlib2="no"]
 )
 
 AC_PATH_GENERIC(enlightenment, 0.16.999,
-  [ ],
-  [ ]
+  [have_enlightenment="yes"],
+  [have_enlightenment="no"]
 )
 
 e_config_apps_dir=`$ENLIGHTENMENT_CONFIG --config-apps-dir`
 AC_SUBST(e_config_apps_dir)
 	
 AC_PATH_GENERIC(epsilon, 0.3.0,
-  [ ],
-  [ ]
+  [have_epsilon="yes"],
+  [have_epsilon="no"]
 )
+
+build_eapp_edit="no"
+build_e17setroot="no"
+build_entangle="no"
+build_emblem="no"
+build_exige="no"
+build_ethemes="no"
+
+if test "x$have_ewl" = "xyes" -a "x$have_engrave" = "xyes"; then
+  build_eapp_edit="yes"
+fi
+
+if test "x$have_imlib2" = "xyes" -a "x$have_ecore" = "xyes" -a "x$have_engrave" = "xyes" -a "x$have_enlightenment" = "xyes"; then
+  build_e17setroot="yes"
+fi
+
+if test "x$have_eet" = "xyes" -a "x$have_evas" = "xyes" -a "x$have_ecore" = "xyes" -a "x$have_edje" = "xyes" -a "x$have_esmart" = "xyes"; then
+  build_entangle="yes"
+fi
+
+if test "x$have_evas" = "xyes" -a "x$have_ecore" = "xyes" -a "x$have_edje" = "xyes" -a "x$have_esmart" = "xyes" -a "x$have_epsilon" = "xyes" -a "x$have_enlightenment" = "xyes"; then
+  build_emblem="yes"
+fi
+
+if test "x$have_eet" = "xyes" -a "x$have_evas" = "xyes" -a "x$have_ecore" = "xyes" -a "x$have_edje" = "xyes" -a "x$have_esmart" = "xyes"; then
+  build_exige="yes"
+fi
+
+if test "x$have_evas" = "xyes" -a "x$have_ecore" = "xyes" -a "x$have_edje" = "xyes" -a "x$have_esmart" = "xyes" -a "x$have_enlightenment" = "xyes"; then
+  build_ethemes="yes"
+fi
+
+AM_CONDITIONAL(BUILD_EAPP_EDIT, test $build_eapp_edit = "yes")
+AM_CONDITIONAL(BUILD_E17SETROOT, test "x$build_e17setroot" = "xyes")
+AM_CONDITIONAL(BUILD_ENTANGLE, test "x$build_entangle" = "xyes")
+AM_CONDITIONAL(BUILD_EMBLEM, test "x$build_emblem" = "xyes")
+AM_CONDITIONAL(BUILD_EXIGE, test "x$build_exige" = "xyes")
+AM_CONDITIONAL(BUILD_ETHEMES, test "x$build_ethemes" = "xyes")
 
 AC_OUTPUT([
 Makefile
@@ -161,4 +199,47 @@ src/bin/ethemes/Makefile
 debian/changelog
 ],[
 ])
+
+#####################################################################
+## Info
+
+echo
+echo
+echo
+echo "------------------------------------------------------------------------"
+echo "$PACKAGE $VERSION"
+echo "------------------------------------------------------------------------"
+echo
+echo "Configuration Options Summary:"
+echo
+echo "  Imlib2..........: "$have_imlib2
+echo "  eet.............: "$have_eet
+echo "  Evas............: "$have_evas
+echo "  Ecore...........: "$have_ecore
+echo "  Edje............: "$have_edje
+echo "  Esmart..........: "$have_esmart
+echo "  Engrave.........: "$have_engrave
+echo "  Epsilon.........: "$have_epsilon
+echo "  Ewl.............: "$have_ewl
+echo "  Enlightenment...: "$have_enlightenment
+echo
+echo "Utilities that will be built:"
+echo
+echo "  Eapp_Edit.......: "$build_eapp_edit
+echo "  E17 Setroot.....: "$build_e17setroot
+echo "  Entangle........: "$build_entangle
+echo "  Emblem..........: "$build_emblem
+echo "  Exige...........: "$build_exige
+echo "  Ethemes.........: "$build_ethemes
+echo
+echo "  Compilation..........: make"
+echo
+echo "  Installation.........: make install"
+echo
+echo "    prefix.........: $prefix"
+echo "    binaries.......: $bindir"
+echo
+
+
+
 
