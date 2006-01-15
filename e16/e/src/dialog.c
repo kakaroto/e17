@@ -2064,6 +2064,8 @@ DialogOKstr(const char *title, const char *txt)
    DialogSetText(d, txt);
 
    DialogAddButton(d, _("OK"), NULL, 1, DLG_BUTTON_OK);
+   DialogBindKey(d, "Return", DialogCallbackClose, 0);
+   DialogBindKey(d, "Escape", DialogCallbackClose, 0);
    ShowDialog(d);
 }
 
