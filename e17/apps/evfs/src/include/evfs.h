@@ -56,6 +56,7 @@ EfsdFsOps;
 #include "evfs_event_helper.h"
 #include "evfs_server_handle.h"
 #include "evfs_common.h"
+#include "evfs_vfolder.h"
 
 #if HAVE___ATTRIBUTE__
 #define __UNUSED__ __attribute__((unused))

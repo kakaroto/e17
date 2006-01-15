@@ -186,7 +186,8 @@ void evfs_write_event(evfs_client* client, evfs_command* command, evfs_event* ev
 		case EVFS_EV_FILE_PROGRESS: evfs_write_progress_event(client,command, event);
 					    break;
 
-		case EVFS_EV_FILE_OPEN: printf ("Open event send\n"); break; /*File open has no additional info - fd is in filereference */
+		case EVFS_EV_FILE_OPEN: printf ("Open event send\n"); 
+					break; /*File open has no additional info - fd is in filereference */
 
 		case EVFS_EV_FILE_READ: evfs_write_file_read_event(client,event);
 					break;
@@ -319,6 +320,7 @@ void evfs_write_command(evfs_connection* conn, evfs_command* command) {
 		case EVFS_CMD_FILE_COPY:
 		case EVFS_CMD_FILE_OPEN:
 		case EVFS_CMD_FILE_READ:
+		case EVFS_CMD_PING:
 			evfs_write_file_command(conn, command);
 			break;
 		default:
@@ -340,7 +342,7 @@ void evfs_write_command_client(evfs_client* client, evfs_command* command) {
 		case EVFS_CMD_FILE_COPY:
 		case EVFS_CMD_FILE_OPEN:
 		case EVFS_CMD_FILE_READ:
-
+		case EVFS_CMD_PING:
 			evfs_write_file_command_client(client, command);
 			break;
 		default:

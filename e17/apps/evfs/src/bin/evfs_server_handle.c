@@ -295,10 +295,13 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command, evfs_comm
 			while (count < file_stat.st_size) {
 				//(*plugin->functions->evfs_file_seek)(command->file_command.files[0], count, SEEK_SET);
 
-				read_write_bytes = (file_stat.st_size > count + COPY_BLOCKSIZE) ? COPY_BLOCKSIZE : (file_stat.st_size - count);
+				read_write_bytes = 
+				(file_stat.st_size > count + COPY_BLOCKSIZE) ? COPY_BLOCKSIZE : (file_stat.st_size - count);
+				
 				//printf("Reading/writing %d bytes\n", read_write_bytes);
 			
-				b_read = (*plugin->functions->evfs_file_read)(client,command->file_command.files[0], bytes, read_write_bytes );
+				b_read = 
+				(*plugin->functions->evfs_file_read)(client,command->file_command.files[0], bytes, read_write_bytes );
 				if (b_read > 0) {
 					b_write = (*dst_plugin->functions->evfs_file_write)(command->file_command.files[1], bytes, b_read );
 					//printf("%d  -> %d\n", b_read, b_write);
@@ -309,7 +312,8 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command, evfs_comm
 				progress = (double)((double)count / (double)file_stat.st_size * 100);
 				if (progress % 1 == 0 && last_notify_progress < progress) {
 					/*printf ("Percent complete: %d\n", progress);*/
-					evfs_file_progress_event_create(client,command, root_command,progress, EVFS_PROGRESS_TYPE_CONTINUE);
+					evfs_file_progress_event_create(client,command, 
+						root_command,progress, EVFS_PROGRESS_TYPE_CONTINUE);
 					last_notify_progress = progress;
 				}
 			
@@ -385,7 +389,12 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command, evfs_comm
 
 		
 	} else {
-		printf("Could not get plugins for both source and dest: (%s:%s)\n",command->file_command.files[0]->plugin_uri, command->file_command.files[1]->plugin_uri );
+		printf("Could not get plugins for both source and dest: (%s:%s)\n",
+			command->file_command.files[0]->plugin_uri, command->file_command.files[1]->plugin_uri );
 	}
 
+}
+
+void evfs_handle_ping_command(evfs_client* client, evfs_command* command) {
+	printf("Ping!\n");
 }
