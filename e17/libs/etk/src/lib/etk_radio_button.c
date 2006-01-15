@@ -49,8 +49,8 @@ Etk_Type *etk_radio_button_type_get()
  */
 Etk_Widget *etk_radio_button_new(Evas_List **group)
 {
-   return etk_widget_new(ETK_RADIO_BUTTON_TYPE, "theme_group", "radio_button", "group", group, "focusable", TRUE,
-      "focusable", TRUE, "xalign", 0.0, NULL);
+   return etk_widget_new(ETK_RADIO_BUTTON_TYPE, "theme_group", "radio_button", "group", group, "focusable", ETK_TRUE,
+      "focusable", ETK_TRUE, "xalign", 0.0, NULL);
 }
 
 /**
@@ -61,7 +61,7 @@ Etk_Widget *etk_radio_button_new(Evas_List **group)
 Etk_Widget *etk_radio_button_new_from_widget(Etk_Radio_Button *radio_button)
 {
    return etk_widget_new(ETK_RADIO_BUTTON_TYPE, "theme_group", "radio_button", "group", etk_radio_button_group_get(radio_button),
-      "focusable", TRUE, "xalign", 0.0, NULL);
+      "focusable", ETK_TRUE, "xalign", 0.0, NULL);
 }
 
 /**
@@ -73,7 +73,7 @@ Etk_Widget *etk_radio_button_new_from_widget(Etk_Radio_Button *radio_button)
 Etk_Widget *etk_radio_button_new_with_label(const char *label, Evas_List **group)
 {
    return etk_widget_new(ETK_RADIO_BUTTON_TYPE, "theme_group", "radio_button", "label", label, "group", group,
-      "focusable", TRUE, "xalign", 0.0, NULL);
+      "focusable", ETK_TRUE, "xalign", 0.0, NULL);
 }
 
 /**
@@ -85,7 +85,7 @@ Etk_Widget *etk_radio_button_new_with_label(const char *label, Evas_List **group
 Etk_Widget *etk_radio_button_new_with_label_from_widget(const char *label, Etk_Radio_Button *radio_button)
 {
    return etk_widget_new(ETK_RADIO_BUTTON_TYPE, "theme_group", "radio_button", "label", label, "group", etk_radio_button_group_get(radio_button),
-      "focusable", TRUE, "xalign", 0.0, NULL);
+      "focusable", ETK_TRUE, "xalign", 0.0, NULL);
 }
 
 /**
@@ -115,18 +115,18 @@ void etk_radio_button_group_set(Etk_Radio_Button *radio_button, Evas_List **grou
    {
       group = malloc(sizeof(Evas_List *));
       *group = NULL;
-      active = TRUE;
+      active = ETK_TRUE;
    }
    else
-      active = FALSE;
+      active = ETK_FALSE;
 
    *group = evas_list_append(*group, radio_button);
    radio_button->group = group;
    etk_object_notify(ETK_OBJECT(radio_button), "group");
 
-   radio_button->can_uncheck = TRUE;
+   radio_button->can_uncheck = ETK_TRUE;
    etk_toggle_button_active_set(toggle_button, active);
-   radio_button->can_uncheck = FALSE;
+   radio_button->can_uncheck = ETK_FALSE;
 }
 
 /**
@@ -154,7 +154,7 @@ static void _etk_radio_button_constructor(Etk_Radio_Button *radio_button)
       return;
 
    radio_button->group = NULL;
-   radio_button->can_uncheck = FALSE;
+   radio_button->can_uncheck = ETK_FALSE;
    ETK_BUTTON(radio_button)->clicked = _etk_radio_button_clicked_handler;
 }
 
@@ -168,7 +168,7 @@ static void _etk_radio_button_destructor(Etk_Radio_Button *radio_button)
    if (!(*radio_button->group))
       free(radio_button->group);
    else if (ETK_TOGGLE_BUTTON(radio_button)->active)
-      etk_toggle_button_active_set(ETK_TOGGLE_BUTTON((*radio_button->group)->data), TRUE);
+      etk_toggle_button_active_set(ETK_TOGGLE_BUTTON((*radio_button->group)->data), ETK_TRUE);
 }
 
 
@@ -241,9 +241,9 @@ static void _etk_radio_button_clicked_handler(Etk_Button *button)
             tb = ETK_TOGGLE_BUTTON(l->data);
             if (tb != toggle_button && tb->active)
             {
-               ETK_RADIO_BUTTON(tb)->can_uncheck = TRUE;
-               etk_toggle_button_active_set(tb, FALSE);
-               ETK_RADIO_BUTTON(tb)->can_uncheck = FALSE;
+               ETK_RADIO_BUTTON(tb)->can_uncheck = ETK_TRUE;
+               etk_toggle_button_active_set(tb, ETK_FALSE);
+               ETK_RADIO_BUTTON(tb)->can_uncheck = ETK_FALSE;
             }
          }
       }

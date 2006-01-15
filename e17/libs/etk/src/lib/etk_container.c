@@ -129,7 +129,7 @@ Evas_List *etk_container_children_get(Etk_Container *container)
 Etk_Bool etk_container_is_child(Etk_Container *container, Etk_Widget *widget)
 {
    if (!container || !widget)
-      return FALSE;
+      return ETK_FALSE;
    return (evas_list_find(container->children, widget) != NULL);
 }
 
@@ -170,8 +170,8 @@ void etk_container_for_each_data(Etk_Container *container, void (*for_each_cb)(E
  * @brief Resizes the allocated child space acoording to the fill policy (mainly for container implementations)
  * @param child a child
  * @param child_space the allocated space for the child
- * @param hfill if hfill == TRUE, the child should fill the space horizontally
- * @param vfill if vfill == TRUE, the child should fill the space vertically
+ * @param hfill if hfill == ETK_TRUE, the child should fill the space horizontally
+ * @param vfill if vfill == ETK_TRUE, the child should fill the space vertically
  */
 void etk_container_child_space_fill(Etk_Widget *child, Etk_Geometry *child_space, Etk_Bool hfill, Etk_Bool vfill)
 {
@@ -222,6 +222,7 @@ static void _etk_container_destructor(Etk_Container *container)
    while (container->children)
    {
       child = ETK_WIDGET(container->children->data);
+      etk_widget_parent_set(child, NULL);
       etk_object_destroy(ETK_OBJECT(child));
    }
 }

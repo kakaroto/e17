@@ -54,16 +54,16 @@ void etk_test_table_window_create(void *data)
    
    widget[19] = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/test.png");
 
-   vbox = etk_vbox_new(FALSE, 0);
-   hbox = etk_hbox_new(FALSE, 0);
-   table = etk_table_new(2, 10, FALSE);
+   vbox = etk_vbox_new(ETK_FALSE, 0);
+   hbox = etk_hbox_new(ETK_FALSE, 0);
+   table = etk_table_new(2, 10, ETK_FALSE);
 
    etk_container_add(ETK_CONTAINER(win), vbox);
 
-   etk_box_pack_start(ETK_BOX(vbox), table, FALSE, FALSE, 0);
-   etk_box_pack_end(ETK_BOX(vbox), hbox, FALSE, FALSE, 0);
-   etk_box_pack_end(ETK_BOX(hbox), widget[18], FALSE, FALSE, 0);
-   etk_box_pack_end(ETK_BOX(hbox), widget[17], FALSE, FALSE, 0);
+   etk_box_pack_start(ETK_BOX(vbox), table, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_pack_end(ETK_BOX(vbox), hbox, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_pack_end(ETK_BOX(hbox), widget[18], ETK_FALSE, ETK_FALSE, 0);
+   etk_box_pack_end(ETK_BOX(hbox), widget[17], ETK_FALSE, ETK_FALSE, 0);
 
    etk_table_attach(ETK_TABLE(table), widget[19], 0, 0, 0, 0, 0, 0, ETK_FILL_POLICY_NONE);
    etk_table_attach(ETK_TABLE(table), widget[20], 1, 1, 0, 0, 0, 0, ETK_FILL_POLICY_HEXPAND | ETK_FILL_POLICY_HFILL);

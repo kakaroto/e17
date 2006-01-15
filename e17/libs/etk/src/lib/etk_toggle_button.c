@@ -64,7 +64,7 @@ Etk_Type *etk_toggle_button_type_get()
  */
 Etk_Widget *etk_toggle_button_new()
 {
-   return etk_widget_new(ETK_TOGGLE_BUTTON_TYPE, "theme_group", "toggle_button", "focusable", TRUE, NULL);
+   return etk_widget_new(ETK_TOGGLE_BUTTON_TYPE, "theme_group", "toggle_button", "focusable", ETK_TRUE, NULL);
 }
 
 /**
@@ -74,7 +74,7 @@ Etk_Widget *etk_toggle_button_new()
  */
 Etk_Widget *etk_toggle_button_new_with_label(const char *label)
 {
-   return etk_widget_new(ETK_TOGGLE_BUTTON_TYPE, "theme_group", "toggle_button", "label", label, "focusable", TRUE, NULL);
+   return etk_widget_new(ETK_TOGGLE_BUTTON_TYPE, "theme_group", "toggle_button", "label", label, "focusable", ETK_TRUE, NULL);
 }
 
 /**
@@ -102,12 +102,12 @@ void etk_toggle_button_active_set(Etk_Toggle_Button *toggle_button, Etk_Bool act
 /**
  * @brief Gets the state of the toggle button
  * @param toggle_button a toggle button
- * @return Returns TRUE if the button is activated, FALSE otherwise
+ * @return Returns ETK_TRUE if the button is activated, ETK_FALSE otherwise
  */
 Etk_Bool etk_toggle_button_active_get(Etk_Toggle_Button *toggle_button)
 {
    if (!toggle_button)
-      return FALSE;
+      return ETK_FALSE;
    return toggle_button->active;
 }
 

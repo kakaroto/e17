@@ -258,7 +258,7 @@ void etk_window_unfocus(Etk_Window *window)
 /**
  * @brief Sets wheter the window is decorated
  * @param window a window
- * @param decorated if @a decorated is FALSE, the border of the window will be hidden
+ * @param decorated if @a decorated is ETK_FALSE, the border of the window will be hidden
  */
 void etk_window_decorated_set(Etk_Window *window, Etk_Bool decorated)
 {
@@ -270,12 +270,12 @@ void etk_window_decorated_set(Etk_Window *window, Etk_Bool decorated)
 /**
  * @brief Gets whether the window is decorated (i.e. whether the border of the window is shown)
  * @param window a window
- * @return Returns TRUE if the window is decorated
+ * @return Returns ETK_TRUE if the window is decorated
  */
 Etk_Bool etk_window_decorated_get(Etk_Window *window)
 {
    if (!window)
-      return TRUE;
+      return ETK_TRUE;
    return !ecore_evas_borderless_get(window->ecore_evas);
 }
 
@@ -294,19 +294,19 @@ void etk_window_shaped_set(Etk_Window *window, Etk_Bool shaped)
 /**
  * @brief Gets whether the window is shaped
  * @param window a window
- * @return Returns TRUE if the window is shaped
+ * @return Returns ETK_TRUE if the window is shaped
  */
 Etk_Bool etk_window_shaped_get(Etk_Window *window)
 {
    if (!window)
-      return TRUE;
+      return ETK_TRUE;
    return ecore_evas_shaped_get(window->ecore_evas);
 }
 
 /**
  * @brief Sets whether the window should not be shown in the taskbar
  * @param window a window
- * @param skip_taskbar_hint if @a skip_taskbar_hint == TRUE, the window should not be shown in the taskbar
+ * @param skip_taskbar_hint if @a skip_taskbar_hint == ETK_TRUE, the window should not be shown in the taskbar
  */
 void etk_window_skip_taskbar_hint_set(Etk_Window *window, Etk_Bool skip_taskbar_hint)
 {
@@ -345,7 +345,7 @@ void etk_window_skip_taskbar_hint_set(Etk_Window *window, Etk_Bool skip_taskbar_
 /**
  * @brief Gets whether the window should not be shown in the taskbar
  * @param window a window
- * @return Returns FALSE if the window is shown in the taskbar
+ * @return Returns ETK_FALSE if the window is shown in the taskbar
  */
 Etk_Bool etk_window_skip_taskbar_hint_get(Etk_Window *window)
 {
@@ -353,7 +353,7 @@ Etk_Bool etk_window_skip_taskbar_hint_get(Etk_Window *window)
    Ecore_X_Window_State *states;
    
    if (!window)
-      return FALSE;
+      return ETK_FALSE;
    
    ecore_x_netwm_window_state_get(window->x_window, &states, &num_states);
    for (i = 0; i < num_states; i++)
@@ -361,18 +361,18 @@ Etk_Bool etk_window_skip_taskbar_hint_get(Etk_Window *window)
       if (states[i] == ECORE_X_WINDOW_STATE_SKIP_TASKBAR)
       {
          free(states);
-         return TRUE;
+         return ETK_TRUE;
       }
    }
    if (num_states > 0)
       free(states);
-   return FALSE;
+   return ETK_FALSE;
 }
 
 /**
  * @brief Sets whether the window should not be shown in the pager
  * @param window a window
- * @param skip_pager_hint if @a skip_pager_hint == TRUE, the window should not be shown in the pager
+ * @param skip_pager_hint if @a skip_pager_hint == ETK_TRUE, the window should not be shown in the pager
  */
 void etk_window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_hint)
 {
@@ -411,7 +411,7 @@ void etk_window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_hint
 /**
  * @brief Gets whether the window should not be shown in the pager
  * @param window a window
- * @return Returns TRUE if the window should not be shown in the pager
+ * @return Returns ETK_TRUE if the window should not be shown in the pager
  */
 Etk_Bool etk_window_skip_pager_hint_get(Etk_Window *window)
 {
@@ -419,7 +419,7 @@ Etk_Bool etk_window_skip_pager_hint_get(Etk_Window *window)
    Ecore_X_Window_State *states;
    
    if (!window)
-      return FALSE;
+      return ETK_FALSE;
    
    ecore_x_netwm_window_state_get(window->x_window, &states, &num_states);
    for (i = 0; i < num_states; i++)
@@ -427,24 +427,24 @@ Etk_Bool etk_window_skip_pager_hint_get(Etk_Window *window)
       if (states[i] == ECORE_X_WINDOW_STATE_SKIP_PAGER)
       {
          free(states);
-         return TRUE;
+         return ETK_TRUE;
       }
    }
    if (num_states > 0)
       free(states);
-   return FALSE;
+   return ETK_FALSE;
 }
 
 /**
- * @brief A utility function to use as a callback for the "delete_event" signal. It will hide the window and return TRUE to prevent the program to quit
+ * @brief A utility function to use as a callback for the "delete_event" signal. It will hide the window and return ETK_TRUE to prevent the program to quit
  * @param window the window to hide
  * @param data the data passed when the signal is emitted - unused
- * @return Return TRUE so the the program won't quit
+ * @return Return ETK_TRUE so the the program won't quit
  */
 Etk_Bool etk_window_hide_on_delete(Etk_Object *window, void *data)
 {
    etk_widget_hide(ETK_WIDGET(window));
-   return TRUE;
+   return ETK_TRUE;
 }
 
 /**************************
@@ -569,7 +569,7 @@ static void _etk_window_size_request_cb(Etk_Window *window, Etk_Size *requisitio
 /* Default handler for the "delete_event" signal */
 static Etk_Bool _etk_window_delete_event_handler(Etk_Window *window)
 {
-   return FALSE;
+   return ETK_FALSE;
 }
 
 /* Gets the geometry of the window toplevel widget */

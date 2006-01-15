@@ -96,7 +96,7 @@ void etk_editable_text_object_text_set(Evas_Object *object, const char *text)
  * @brief Inserts text at the cursor position of the object
  * @param object an editable text object
  * @param text the text to insert
- * @return Returns TRUE if the text has been changed
+ * @return Returns ETK_TRUE if the text has been changed
  */
 Etk_Bool etk_editable_text_object_insert(Evas_Object *object, const char *text)
 {
@@ -104,9 +104,9 @@ Etk_Bool etk_editable_text_object_insert(Evas_Object *object, const char *text)
    Evas_Textblock_Cursor *cursor;
 
    if (!object || !(editable_text_sd = evas_object_smart_data_get(object)))
-      return FALSE;
+      return ETK_FALSE;
    if (!text || (strlen(text) <= 1 && *text < 0x20))
-      return FALSE;
+      return ETK_FALSE;
    
    cursor = (Evas_Textblock_Cursor *)evas_object_textblock_cursor_get(editable_text_sd->text_object);
 
@@ -117,7 +117,7 @@ Etk_Bool etk_editable_text_object_insert(Evas_Object *object, const char *text)
    _etk_editable_text_size_update(object);
    _etk_editable_text_cursor_position_update(object, NULL);
 
-   return TRUE;
+   return ETK_TRUE;
 }
 
 /**
@@ -140,23 +140,23 @@ const char *etk_editable_text_object_text_get(Evas_Object *object)
 /**
  * @brief Deletes the char placed before the cursor
  * @param object an editable text object
- * @return Returns TRUE if the text has been changed
+ * @return Returns ETK_TRUE if the text has been changed
  */
 Etk_Bool etk_editable_text_object_delete_char_before(Evas_Object *object)
 {
    Etk_Editable_Text_Smart_Data *editable_text_sd;
    Evas_Textblock_Cursor *cursor;
-   Etk_Bool text_changed = FALSE;
+   Etk_Bool text_changed = ETK_FALSE;
 
    if (!object || !(editable_text_sd = evas_object_smart_data_get(object)) || _etk_editable_text_is_empty(object))
-      return FALSE;
+      return ETK_FALSE;
 
    cursor = (Evas_Textblock_Cursor *)evas_object_textblock_cursor_get(editable_text_sd->text_object);
 
    if (editable_text_sd->cursor_at_the_end || evas_textblock_cursor_char_prev(cursor))
    {
       evas_textblock_cursor_char_delete(cursor);
-      text_changed = TRUE;
+      text_changed = ETK_TRUE;
    }
    
    _etk_editable_text_size_update(object);
@@ -167,27 +167,27 @@ Etk_Bool etk_editable_text_object_delete_char_before(Evas_Object *object)
 /**
  * @brief Deletes the char placed after the cursor
  * @param object an editable text object
- * @return Returns TRUE if the text has been changed
+ * @return Returns ETK_TRUE if the text has been changed
  */
 Etk_Bool etk_editable_text_object_delete_char_after(Evas_Object *object)
 {
    Etk_Editable_Text_Smart_Data *editable_text_sd;
    Evas_Textblock_Cursor *cursor;
-   Etk_Bool text_changed = FALSE;
+   Etk_Bool text_changed = ETK_FALSE;
 
    if (!object || !(editable_text_sd = evas_object_smart_data_get(object)) || _etk_editable_text_is_empty(object))
-      return FALSE;
+      return ETK_FALSE;
 
    cursor = (Evas_Textblock_Cursor *)evas_object_textblock_cursor_get(editable_text_sd->text_object);
    
    if (!editable_text_sd->cursor_at_the_end)
    {
       if (!evas_textblock_cursor_char_next(cursor))
-         editable_text_sd->cursor_at_the_end = TRUE;
+         editable_text_sd->cursor_at_the_end = ETK_TRUE;
       else
          evas_textblock_cursor_char_prev(cursor);
       evas_textblock_cursor_char_delete(cursor);
-      text_changed = TRUE;
+      text_changed = ETK_TRUE;
    }
 
    _etk_editable_text_size_update(object);
@@ -208,7 +208,7 @@ void etk_editable_text_object_cursor_move_at_start(Evas_Object *object)
       return;
 
    cursor = (Evas_Textblock_Cursor *)evas_object_textblock_cursor_get(editable_text_sd->text_object);
-   editable_text_sd->cursor_at_the_end = FALSE;
+   editable_text_sd->cursor_at_the_end = ETK_FALSE;
    evas_textblock_cursor_char_first(cursor);
 
    _etk_editable_text_cursor_position_update(object, NULL);
@@ -227,7 +227,7 @@ void etk_editable_text_object_cursor_move_at_end(Evas_Object *object)
       return;
 
    cursor = (Evas_Textblock_Cursor *)evas_object_textblock_cursor_get(editable_text_sd->text_object);
-   editable_text_sd->cursor_at_the_end = TRUE;
+   editable_text_sd->cursor_at_the_end = ETK_TRUE;
    evas_textblock_cursor_char_last(cursor);
 
    _etk_editable_text_cursor_position_update(object, NULL);
@@ -247,7 +247,7 @@ void etk_editable_text_object_cursor_move_left(Evas_Object *object)
 
    cursor = (Evas_Textblock_Cursor *)evas_object_textblock_cursor_get(editable_text_sd->text_object);
    if (editable_text_sd->cursor_at_the_end)
-      editable_text_sd->cursor_at_the_end = FALSE;
+      editable_text_sd->cursor_at_the_end = ETK_FALSE;
    else
       evas_textblock_cursor_char_prev(cursor);
    
@@ -269,7 +269,7 @@ void etk_editable_text_object_cursor_move_right(Evas_Object *object)
 
    cursor = (Evas_Textblock_Cursor *)evas_object_textblock_cursor_get(editable_text_sd->text_object);
    if (!evas_textblock_cursor_char_next(cursor))
-      editable_text_sd->cursor_at_the_end = TRUE;
+      editable_text_sd->cursor_at_the_end = ETK_TRUE;
 
    _etk_editable_text_size_update(object);
    _etk_editable_text_cursor_position_update(object, NULL);
@@ -286,7 +286,7 @@ void etk_editable_text_object_cursor_show(Evas_Object *object)
    if (!object || !(editable_text_sd = evas_object_smart_data_get(object)))
       return;
 
-   editable_text_sd->show_cursor = TRUE;
+   editable_text_sd->show_cursor = ETK_TRUE;
    _etk_editable_text_cursor_visibility_update(object);
 }
 
@@ -301,7 +301,7 @@ void etk_editable_text_object_cursor_hide(Evas_Object *object)
    if (!object || !(editable_text_sd = evas_object_smart_data_get(object)))
       return;
 
-   editable_text_sd->show_cursor = FALSE;
+   editable_text_sd->show_cursor = ETK_FALSE;
    _etk_editable_text_cursor_visibility_update(object);
 }
 
@@ -311,14 +311,14 @@ void etk_editable_text_object_cursor_hide(Evas_Object *object)
  *
  **************************/
 
-/* Returns TRUE if the text of the editable object is empty */
+/* Returns ETK_TRUE if the text of the editable object is empty */
 static Etk_Bool _etk_editable_text_is_empty(Evas_Object *object)
 {
    Etk_Editable_Text_Smart_Data *editable_text_sd;
    Evas_Textblock_Cursor *cursor;
 
    if (!object || !(editable_text_sd = evas_object_smart_data_get(object)))
-      return TRUE;
+      return ETK_TRUE;
 
    cursor = (Evas_Textblock_Cursor *)evas_object_textblock_cursor_get(editable_text_sd->text_object);
    return (evas_textblock_cursor_node_text_length_get(cursor) <= 0);
@@ -472,8 +472,8 @@ static void _etk_editable_text_smart_add(Evas_Object *object)
    }
 
    editable_text_sd = malloc(sizeof(Etk_Editable_Text_Smart_Data));
-   editable_text_sd->show_cursor = FALSE;
-   editable_text_sd->cursor_at_the_end = TRUE;
+   editable_text_sd->show_cursor = ETK_FALSE;
+   editable_text_sd->cursor_at_the_end = ETK_TRUE;
    editable_text_sd->cursor_timer = NULL;
 
    editable_text_sd->text_object = evas_object_textblock_add(evas);

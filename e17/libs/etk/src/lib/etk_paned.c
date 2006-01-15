@@ -227,7 +227,7 @@ static void _etk_paned_constructor(Etk_Paned *paned)
    if (!paned)
       return;
 
-   paned->drag = FALSE;
+   paned->drag = ETK_FALSE;
    paned->position = 0;
 
    paned->separator = NULL;
@@ -442,7 +442,7 @@ static void _etk_paned_child_add(Etk_Container *container, Etk_Widget *widget)
 {
    if (!container || !widget)
       return;
-   etk_paned_add1(ETK_PANED(container), widget, FALSE);
+   etk_paned_add1(ETK_PANED(container), widget, ETK_FALSE);
 }
 
 /* Removes the child from the paned */
@@ -501,7 +501,7 @@ static void _etk_paned_separator_mouse_down_cb(Etk_Object *object, Etk_Event_Mou
    if (!(paned = ETK_PANED(data)))
       return;
 
-   paned->drag = TRUE;
+   paned->drag = ETK_TRUE;
    if (ETK_IS_HPANED(paned))
       paned->drag_delta = event->canvas.x - paned->position;
    else
@@ -515,7 +515,7 @@ static void _etk_paned_separator_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse
 
    if (!(paned = ETK_PANED(data)))
       return;
-   paned->drag = FALSE;
+   paned->drag = ETK_FALSE;
 }
 
 

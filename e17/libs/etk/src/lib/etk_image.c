@@ -7,7 +7,7 @@
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
-#include "config.h"
+#include "etk_theme.h"
 
 /**
  * @addtogroup Etk_Image
@@ -21,7 +21,8 @@ enum _Etk_Image_Property_Id
    ETK_IMAGE_EDJE_GROUP_PROPERTY,
    ETK_IMAGE_KEEP_ASPECT_PROPERTY,
    ETK_IMAGE_USE_EDJE_PROPERTY,
-   ETK_IMAGE_STOCK_ID_PROPERTY
+   ETK_IMAGE_STOCK_ID_PROPERTY,
+   ETK_IMAGE_STOCK_SIZE_PROPERTY
 };
 
 static void _etk_image_constructor(Etk_Image *image);
@@ -55,9 +56,10 @@ Etk_Type *etk_image_type_get()
       etk_type_property_add(image_type, "image_file", ETK_IMAGE_FILE_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(image_type, "edje_file", ETK_IMAGE_EDJE_FILE_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(image_type, "edje_group", ETK_IMAGE_EDJE_GROUP_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
-      etk_type_property_add(image_type, "keep_aspect", ETK_IMAGE_KEEP_ASPECT_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(TRUE));
-      etk_type_property_add(image_type, "use_edje", ETK_IMAGE_USE_EDJE_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE, etk_property_value_bool(FALSE));
+      etk_type_property_add(image_type, "keep_aspect", ETK_IMAGE_KEEP_ASPECT_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
+      etk_type_property_add(image_type, "use_edje", ETK_IMAGE_USE_EDJE_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE, etk_property_value_bool(ETK_FALSE));
       etk_type_property_add(image_type, "stock_id", ETK_IMAGE_STOCK_ID_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_STOCK_NO_STOCK));
+      etk_type_property_add(image_type, "stock_size", ETK_IMAGE_STOCK_SIZE_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_STOCK_SMALL));
 
       image_type->property_set = _etk_image_property_set;
       image_type->property_get = _etk_image_property_get;
@@ -101,9 +103,13 @@ Etk_Widget *etk_image_new_from_edje(const char *edje_filename, const char *edje_
  * @param stock_id the stock id corresponding to the image
  * @return Returns the new image widget
  */
-Etk_Widget *etk_image_new_from_stock(Etk_Stock_Id stock_id)
+Etk_Widget *etk_image_new_from_stock(Etk_Stock_Id stock_id, Etk_Stock_Size size)
 {
-   return etk_widget_new(ETK_IMAGE_TYPE, "stock_id", stock_id, NULL);
+   Etk_Widget *new_image;
+   
+   new_image = etk_image_new();
+   etk_image_set_from_stock(ETK_IMAGE(new_image), stock_id, size);
+   return new_image;
 }
 
 /**
@@ -136,8 +142,8 @@ void etk_image_set_from_file(Etk_Image *image, const char *filename)
    }
    if (image->use_edje)
    {
-      image->use_edje = FALSE;
-      image->object_type_changed = TRUE;
+      image->use_edje = ETK_FALSE;
+      image->object_type_changed = ETK_TRUE;
       etk_object_notify(ETK_OBJECT(image), "use_edje");
    }
    if (image->stock_id != ETK_STOCK_NO_STOCK)
@@ -195,8 +201,8 @@ void etk_image_set_from_edje(Etk_Image *image, const char *edje_filename, const 
    }
    if (!image->use_edje)
    {
-      image->use_edje = TRUE;
-      image->object_type_changed = TRUE;
+      image->use_edje = ETK_TRUE;
+      image->object_type_changed = ETK_TRUE;
       etk_object_notify(ETK_OBJECT(image), "use_edje");
    }
    if (image->stock_id != ETK_STOCK_NO_STOCK)
@@ -235,30 +241,35 @@ void etk_image_edje_get(Etk_Image *image, char **edje_filename, char **edje_grou
  * @brief Loads the image corresponding to the stock id
  * @param image an image
  * @param stock_id the stock id corresponding to the image
+ * @param size the size of the stock icon
  */
-void etk_image_set_from_stock(Etk_Image *image, Etk_Stock_Id stock_id)
+void etk_image_set_from_stock(Etk_Image *image, Etk_Stock_Id stock_id, Etk_Stock_Size size)
 {
    char *key;
 
-   if (!image || (image->stock_id == stock_id))
+   if (!image || ((image->stock_id == stock_id) && (image->stock_size == size)))
       return;
    
-   if ((key = etk_stock_key_get(stock_id)))
-      etk_image_set_from_edje(image, PACKAGE_DATA_DIR "/stock_icons/default.edj", key);
+   if ((key = etk_stock_key_get(stock_id, size)))
+      etk_image_set_from_edje(image, etk_theme_icon_theme_get(), key);
    image->stock_id = stock_id;
+   image->stock_size = size;
    etk_object_notify(ETK_OBJECT(image), "stock_id");
+   etk_object_notify(ETK_OBJECT(image), "stock_size");
 }
 
 /**
  * @brief Gets the stock id used for the image
  * @param image an image
- * @return Returns the stock id used for the image, or ETK_STOCK_NO_STOCK if the image doesn't use a stock id
+ * @param stock_id the location where to store the stock id used by the image
+ * @param stock_id the location where to store the stock size used by the image
  */
-Etk_Stock_Id etk_image_stock_get(Etk_Image *image)
+void etk_image_stock_get(Etk_Image *image, Etk_Stock_Id *stock_id, Etk_Stock_Size *stock_size)
 {
-   if (!image)
-      return ETK_STOCK_NO_STOCK;
-   return image->stock_id;
+   if (stock_id)
+      *stock_id = image ? image->stock_id : ETK_STOCK_NO_STOCK;
+   if (stock_size)
+      *stock_size = image ? image->stock_size : ETK_STOCK_SMALL;
 }
 
 /**
@@ -291,7 +302,7 @@ void etk_image_size_get(Etk_Image *image, int *width, int *height)
 /**
  * @brief Sets if the image should keep its aspect ratio when it's resized
  * @param image an image
- * @param keep_aspect if keep_aspect == TRUE, the image will keep its aspect ratio when it's resized
+ * @param keep_aspect if keep_aspect == ETK_TRUE, the image will keep its aspect ratio when it's resized
  */
 void etk_image_keep_aspect_set(Etk_Image *image, Etk_Bool keep_aspect)
 {
@@ -306,12 +317,12 @@ void etk_image_keep_aspect_set(Etk_Image *image, Etk_Bool keep_aspect)
 /**
  * @brief Checks if the image keeps its aspect ratio when it's resized
  * @param image an image
- * @return Returns TRUE if the image keeps its aspect ratio when it's resized
+ * @return Returns ETK_TRUE if the image keeps its aspect ratio when it's resized
  */
 Etk_Bool etk_image_keep_aspect_get(Etk_Image *image)
 {
    if (!image)
-      return TRUE;
+      return ETK_TRUE;
 
    return image->keep_aspect;
 }
@@ -335,9 +346,10 @@ static void _etk_image_constructor(Etk_Image *image)
    image->edje_filename = NULL;
    image->edje_group = NULL;
    image->stock_id = ETK_STOCK_NO_STOCK;
-   image->keep_aspect = TRUE;
-   image->use_edje = FALSE;
-   image->object_type_changed = FALSE;
+   image->stock_size = ETK_STOCK_SMALL;
+   image->keep_aspect = ETK_TRUE;
+   image->use_edje = ETK_FALSE;
+   image->object_type_changed = ETK_FALSE;
 
    widget->size_request = _etk_image_size_request;
    widget->size_allocate = _etk_image_size_allocate;
@@ -380,7 +392,10 @@ static void _etk_image_property_set(Etk_Object *object, int property_id, Etk_Pro
          etk_image_keep_aspect_set(image, etk_property_value_bool_get(value));
          break;
       case ETK_IMAGE_STOCK_ID_PROPERTY:
-         etk_image_set_from_stock(image, etk_property_value_int_get(value));
+         etk_image_set_from_stock(image, etk_property_value_int_get(value), image->stock_size);
+         break;
+      case ETK_IMAGE_STOCK_SIZE_PROPERTY:
+         etk_image_set_from_stock(image, image->stock_id, etk_property_value_int_get(value));
          break;
       default:
          break;
@@ -414,6 +429,9 @@ static void _etk_image_property_get(Etk_Object *object, int property_id, Etk_Pro
          break;
       case ETK_IMAGE_STOCK_ID_PROPERTY:
          etk_property_value_int_set(value, image->stock_id);
+         break;
+      case ETK_IMAGE_STOCK_SIZE_PROPERTY:
+         etk_property_value_int_set(value, image->stock_size);
          break;
       default:
          break;
@@ -537,7 +555,7 @@ static void _etk_image_load(Etk_Image *image)
       etk_widget_member_object_del(widget, image->image_object);
       evas_object_del(image->image_object);
       image->image_object = NULL;
-      image->object_type_changed = FALSE;
+      image->object_type_changed = ETK_FALSE;
    }
    if (image->filename)
    {

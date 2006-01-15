@@ -127,9 +127,9 @@ static void _etk_scrollbar_constructor(Etk_Scrollbar *scrollbar)
       return;
 
    scrollbar->scrolling_timer = NULL;
-   scrollbar->first_scroll = FALSE;
+   scrollbar->first_scroll = ETK_FALSE;
 
-   scrollbar->dragging = FALSE;
+   scrollbar->dragging = ETK_FALSE;
    ETK_RANGE(scrollbar)->value_changed = _etk_scrollbar_value_changed_handler;
    etk_signal_connect("realize", ETK_OBJECT(scrollbar), ETK_CALLBACK(_etk_scrollbar_realize_cb), NULL);
    etk_signal_connect("mouse_wheel", ETK_OBJECT(scrollbar), ETK_CALLBACK(_etk_scrollbar_mouse_wheel), NULL);
@@ -168,9 +168,9 @@ static void _etk_scrollbar_drag_dragged_cb(void *data, Evas_Object *obj, const c
       return;
 
    if (strcmp(emission, "drag,start") == 0)
-      ETK_SCROLLBAR(range)->dragging = TRUE;
+      ETK_SCROLLBAR(range)->dragging = ETK_TRUE;
    else if (strcmp(emission, "drag,stop") == 0)
-      ETK_SCROLLBAR(range)->dragging = FALSE;
+      ETK_SCROLLBAR(range)->dragging = ETK_FALSE;
    
    if (ETK_IS_HSCROLLBAR(range))
       edje_object_part_drag_value_get(obj, "drag", &percent, NULL);
@@ -276,12 +276,12 @@ static void _etk_scrollbar_scroll_start_cb(void *data, Evas_Object *obj, const c
    if (strcmp(emission, "scroll_left_start") == 0 || strcmp(emission, "scroll_up_start") == 0)
    {
       scrollbar->scrolling_timer = ecore_timer_add(0.0, _etk_scrollbar_step_decrement_cb, scrollbar);
-      scrollbar->first_scroll = TRUE;
+      scrollbar->first_scroll = ETK_TRUE;
    }
    else if (strcmp(emission, "scroll_right_start") == 0 || strcmp(emission, "scroll_down_start") == 0)
    {
       scrollbar->scrolling_timer = ecore_timer_add(0.0, _etk_scrollbar_step_increment_cb, scrollbar);
-      scrollbar->first_scroll = TRUE;
+      scrollbar->first_scroll = ETK_TRUE;
    }
 }
 
@@ -309,7 +309,7 @@ static int _etk_scrollbar_step_decrement_cb(void *data)
    if (scrollbar->first_scroll)
    {
       ecore_timer_interval_set(scrollbar->scrolling_timer, ETK_SCROLLBAR_FIRST_DELAY);
-      scrollbar->first_scroll = FALSE;
+      scrollbar->first_scroll = ETK_FALSE;
    }
    else
       ecore_timer_interval_set(scrollbar->scrolling_timer, ETK_SCROLLBAR_REPEAT_DELAY);
@@ -328,7 +328,7 @@ static int _etk_scrollbar_step_increment_cb(void *data)
    if (scrollbar->first_scroll)
    {
       ecore_timer_interval_set(scrollbar->scrolling_timer, ETK_SCROLLBAR_FIRST_DELAY);
-      scrollbar->first_scroll = FALSE;
+      scrollbar->first_scroll = ETK_FALSE;
    }
    else
       ecore_timer_interval_set(scrollbar->scrolling_timer, ETK_SCROLLBAR_REPEAT_DELAY);

@@ -42,7 +42,7 @@ Etk_Type *etk_box_type_get()
       box_type = etk_type_new("Etk_Box", ETK_CONTAINER_TYPE, sizeof(Etk_Box), ETK_CONSTRUCTOR(_etk_box_constructor), ETK_DESTRUCTOR(_etk_box_destructor));
    
       etk_type_property_add(box_type, "spacing", ETK_BOX_SPACING_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(0));
-      etk_type_property_add(box_type, "homogeneous", ETK_BOX_HOMOGENEOUS_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_bool(FALSE));
+      etk_type_property_add(box_type, "homogeneous", ETK_BOX_HOMOGENEOUS_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_bool(ETK_FALSE));
       
       box_type->property_set = _etk_box_property_set;
       box_type->property_get = _etk_box_property_get;
@@ -55,8 +55,8 @@ Etk_Type *etk_box_type_get()
  * @brief Adds the child to the start of the box
  * @param box a box
  * @param child the child to add
- * @param expand if @a expand == TRUE, the cell where the child will be will take all the available space
- * @param fill if @a fill == TRUE, the child will take all the available space in its cell
+ * @param expand if @a expand == ETK_TRUE, the cell where the child will be will take all the available space
+ * @param fill if @a fill == ETK_TRUE, the child will take all the available space in its cell
  * @param padding the size of the space on the sides of the child
  */
 void etk_box_pack_start(Etk_Box *box, Etk_Widget *child, Etk_Bool expand, Etk_Bool fill, int padding)
@@ -68,8 +68,8 @@ void etk_box_pack_start(Etk_Box *box, Etk_Widget *child, Etk_Bool expand, Etk_Bo
  * @brief Adds the child to the end of the box
  * @param box a box
  * @param child the child to add
- * @param expand if @a expand == TRUE, the cell where the child will be will take all the available space
- * @param fill if @a fill == TRUE, the child will take all the available space in its cell
+ * @param expand if @a expand == ETK_TRUE, the cell where the child will be will take all the available space
+ * @param fill if @a fill == ETK_TRUE, the child will take all the available space in its cell
  * @param padding the size of the space on the sides of the child
  */
 void etk_box_pack_end(Etk_Box *box, Etk_Widget *child, Etk_Bool expand, Etk_Bool fill, int padding)
@@ -145,7 +145,7 @@ int etk_box_spacing_get(Etk_Box *box)
 /**
  * @brief Changes the homogenous property of the box
  * @param box a box
- * @param homogeneous if homogeneous == TRUE, all the cells will have the same size
+ * @param homogeneous if homogeneous == ETK_TRUE, all the cells will have the same size
  */
 void etk_box_homogeneous_set(Etk_Box *box, Etk_Bool homogeneous)
 {
@@ -160,12 +160,12 @@ void etk_box_homogeneous_set(Etk_Box *box, Etk_Bool homogeneous)
 /**
  * @brief Checks if the box is homogenous
  * @param box a box
- * @return Returns TRUE if the box is homogeneous, FALSE otherwise
+ * @return Returns ETK_TRUE if the box is homogeneous, ETK_FALSE otherwise
  */
 Etk_Bool etk_box_homogeneous_get(Etk_Box *box)
 {
    if (!box)
-      return FALSE;
+      return ETK_FALSE;
    return box->homogeneous;
 }
 
@@ -182,7 +182,7 @@ static void _etk_box_constructor(Etk_Box *box)
       return;
 
    box->spacing = 0;
-   box->homogeneous = FALSE;
+   box->homogeneous = ETK_FALSE;
 
    ETK_CONTAINER(box)->child_add = _etk_box_child_add;
    ETK_CONTAINER(box)->child_remove = _etk_box_child_remove;
@@ -257,7 +257,7 @@ static void _etk_box_property_get(Etk_Object *object, int property_id, Etk_Prope
 /* Adds a child to the box */
 static void _etk_box_child_add(Etk_Container *container, Etk_Widget *widget)
 {
-   etk_box_pack_start(ETK_BOX(container), widget, TRUE, TRUE, 0);
+   etk_box_pack_start(ETK_BOX(container), widget, ETK_TRUE, ETK_TRUE, 0);
 }
 
 /* Removes the child from the box */
@@ -285,7 +285,7 @@ static void _etk_box_child_remove(Etk_Container *container, Etk_Widget *widget)
  **************************/
 
 /* Adds the "child" to the "box" : "expand" and "fill" describe its fill policy, "padding" is the size of the space
- * on the sides of the child and if "pack_end" == TRUE, the child will be packed at the end of the box */
+ * on the sides of the child and if "pack_end" == ETK_TRUE, the child will be packed at the end of the box */
 static void _etk_box_pack_full(Etk_Box *box, Etk_Widget *child, Etk_Bool expand, Etk_Bool fill, int padding, Etk_Bool pack_end)
 {
    Etk_Container *container;

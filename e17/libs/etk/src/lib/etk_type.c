@@ -173,25 +173,25 @@ void etk_type_destructors_call(Etk_Type *type, Etk_Object *object)
  * @brief Checks if the type inherits from the parent type
  * @param type the type we check on
  * @param parent the parent type we check on
- * @return Returns TRUE if @a type inerits from @a parent, FALSE otherwise
+ * @return Returns ETK_TRUE if @a type inerits from @a parent, ETK_FALSE otherwise
  */
 Etk_Bool etk_type_inherits_from(Etk_Type *type, Etk_Type *parent)
 {
    int i;
 
    if (!type || !parent)
-      return FALSE;
+      return ETK_FALSE;
 
    if (type == parent)
-      return TRUE;
+      return ETK_TRUE;
 
    for (i = 0; i < type->hierarchy_depth; i++)
    {
       if (type->hierarchy[i] == parent)
-         return TRUE;
+         return ETK_TRUE;
    }
 
-   return FALSE;
+   return ETK_FALSE;
 }
 
 /**
@@ -289,14 +289,14 @@ Etk_Property *etk_type_property_add(Etk_Type *type, const char *name, int proper
  * @param name the name of the property to find
  * @param property_owner the location where the type that has the property should be return (it can be a child type of @a type)
  * @param property the location where the property should be return
- * @return Returns TRUE if the property has been found, FALSE on failure (if the type doesn't have a property of that name)
+ * @return Returns ETK_TRUE if the property has been found, ETK_FALSE on failure (if the type doesn't have a property of that name)
  */
 Etk_Bool etk_type_property_find(Etk_Type *type, const char *name, Etk_Type **property_owner, Etk_Property **property)
 {
    Etk_Type *t;
 
    if (!type || !name || !property)
-      return FALSE;
+      return ETK_FALSE;
 
    for (t = type; t; t = etk_type_parent_type_get(t))
    {
@@ -304,10 +304,10 @@ Etk_Bool etk_type_property_find(Etk_Type *type, const char *name, Etk_Type **pro
       {
          if (property_owner)
             *property_owner = t;
-         return TRUE;
+         return ETK_TRUE;
       }
    }
-   return FALSE;
+   return ETK_FALSE;
 }
 
 /**

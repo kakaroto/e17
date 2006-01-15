@@ -4,6 +4,7 @@
 #include <string.h>
 #include <Ecore_Data.h>
 #include <Ecore_File.h>
+#include "etk_theme.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
@@ -15,10 +16,6 @@
 #include "etk_hbox.h"
 #include "etk_vbox.h"
 #include "etk_entry.h"
-#include "config.h"
-
-/* TODO: Etk_Theme */
-#define ETK_DEFAULT_ICON_SET_FILE PACKAGE_DATA_DIR "/stock_icons/default.edj"
 
 /**
  * @addtogroup Etk_Filechooser_Widget
@@ -49,23 +46,23 @@ static void _etk_filechooser_widget_dir_row_selected_cb(Etk_Object *object, Etk_
 
 static Etk_Filechooser_Widget_Icons _etk_file_chooser_icons[] =
 {
-   { "jpg", "mimetypes/image-x-generic" },
-   { "jpeg", "mimetypes/image-x-generic" },
-   { "png", "mimetypes/image-x-generic" },
-   { "bmp", "mimetypes/image-x-generic" },
-   { "gif", "mimetypes/image-x-generic" },
-   { "mp3", "mimetypes/audio-x-generic" },
-   { "ogg", "mimetypes/audio-x-generic" },
-   { "wav", "mimetypes/audio-x-generic" },
-   { "avi", "mimetypes/video-x-generic" },
-   { "mpg", "mimetypes/video-x-generic" },
-   { "mpeg", "mimetypes/video-x-generic" },
-   { "gz", "mimetypes/package-x-generic" },
-   { "tgz", "mimetypes/package-x-generic" },
-   { "bz2", "mimetypes/package-x-generic" },
-   { "tbz2", "mimetypes/package-x-generic" },
-   { "zip", "mimetypes/package-x-generic" },
-   { "rar", "mimetypes/package-x-generic" },
+   { "jpg", "mimetypes/image-x-generic_16" },
+   { "jpeg", "mimetypes/image-x-generic_16" },
+   { "png", "mimetypes/image-x-generic_16" },
+   { "bmp", "mimetypes/image-x-generic_16" },
+   { "gif", "mimetypes/image-x-generic_16" },
+   { "mp3", "mimetypes/audio-x-generic_16" },
+   { "ogg", "mimetypes/audio-x-generic_16" },
+   { "wav", "mimetypes/audio-x-generic_16" },
+   { "avi", "mimetypes/video-x-generic_16" },
+   { "mpg", "mimetypes/video-x-generic_16" },
+   { "mpeg", "mimetypes/video-x-generic_16" },
+   { "gz", "mimetypes/package-x-generic_16" },
+   { "tgz", "mimetypes/package-x-generic_16" },
+   { "bz2", "mimetypes/package-x-generic_16" },
+   { "tbz2", "mimetypes/package-x-generic_16" },
+   { "zip", "mimetypes/package-x-generic_16" },
+   { "rar", "mimetypes/package-x-generic_16" },
 };
 static int _etk_file_chooser_num_icons = sizeof(_etk_file_chooser_icons) / sizeof (_etk_file_chooser_icons[0]);
 static Etk_Signal *_etk_filechooser_widget_signals[ETK_FILECHOOSER_WIDGET_NUM_SIGNALS];
@@ -131,7 +128,7 @@ void etk_filechooser_widget_current_folder_set(Etk_Filechooser_Widget *filechoos
    etk_tree_clear(ETK_TREE(filechooser_widget->files_tree));
    /* TODO: fix */
    etk_tree_append(ETK_TREE(filechooser_widget->dir_tree),
-      filechooser_widget->dir_col, ETK_DEFAULT_ICON_SET_FILE, "actions/go-up", "..", NULL);
+      filechooser_widget->dir_col, etk_theme_icon_theme_get(), "actions/go-up_16", "..", NULL);
    
    ecore_list_goto_first(files);
    while ((file_name = ecore_list_next(files)))
@@ -151,9 +148,9 @@ void etk_filechooser_widget_current_folder_set(Etk_Filechooser_Widget *filechoos
       strftime(mod_time_string, 128, "%x", mod_time2);
       
       etk_tree_append(ETK_TREE(filechooser_widget->dir_tree),
-         filechooser_widget->dir_col, ETK_DEFAULT_ICON_SET_FILE, "mimetypes/x-directory-normal", file_name, NULL);
+         filechooser_widget->dir_col, etk_theme_icon_theme_get(), "places/folder_16", file_name, NULL);
       etk_tree_append(ETK_TREE(filechooser_widget->files_tree),
-         filechooser_widget->files_name_col, ETK_DEFAULT_ICON_SET_FILE, "mimetypes/x-directory-normal", file_name,
+         filechooser_widget->files_name_col, etk_theme_icon_theme_get(), "places/folder_16", file_name,
          filechooser_widget->files_date_col, mod_time_string, NULL);
    }
    
@@ -190,7 +187,7 @@ void etk_filechooser_widget_current_folder_set(Etk_Filechooser_Widget *filechoos
       strftime(mod_time_string, 128, "%x", mod_time2);
       
       etk_tree_append(ETK_TREE(filechooser_widget->files_tree),
-         filechooser_widget->files_name_col, ETK_DEFAULT_ICON_SET_FILE, icon ? icon : "mimetypes/text-x-generic", file_name,
+         filechooser_widget->files_name_col, etk_theme_icon_theme_get(), icon ? icon : "mimetypes/text-x-generic_16", file_name,
          filechooser_widget->files_date_col, mod_time_string, NULL);
    }
    
@@ -213,44 +210,44 @@ static void _etk_filechooser_widget_constructor(Etk_Filechooser_Widget *fcw)
       return;
    
    hpaned = etk_hpaned_new();
-   etk_widget_visibility_locked_set(hpaned, TRUE);
+   etk_widget_visibility_locked_set(hpaned, ETK_TRUE);
    etk_container_add(ETK_CONTAINER(fcw), hpaned);
    etk_widget_show(hpaned);
    
    vpaned = etk_vpaned_new();
-   etk_widget_visibility_locked_set(vpaned, TRUE);
-   etk_paned_add1(ETK_PANED(hpaned), vpaned, FALSE);
+   etk_widget_visibility_locked_set(vpaned, ETK_TRUE);
+   etk_paned_add1(ETK_PANED(hpaned), vpaned, ETK_FALSE);
    etk_widget_show(vpaned);
    
    fcw->dir_tree = etk_tree_new();
-   etk_widget_visibility_locked_set(fcw->dir_tree, TRUE);
+   etk_widget_visibility_locked_set(fcw->dir_tree, ETK_TRUE);
    etk_widget_size_request_set(fcw->dir_tree, 180, 240);
-   etk_paned_add1(ETK_PANED(vpaned), fcw->dir_tree, TRUE);
+   etk_paned_add1(ETK_PANED(vpaned), fcw->dir_tree, ETK_TRUE);
    fcw->dir_col = etk_tree_col_new(ETK_TREE(fcw->dir_tree), "Directories", etk_tree_model_icon_text_new(ETK_TREE(fcw->dir_tree), ETK_TREE_FROM_EDJE), 120);
    etk_tree_build(ETK_TREE(fcw->dir_tree));
    etk_widget_show(fcw->dir_tree);
    etk_signal_connect("row_selected", ETK_OBJECT(fcw->dir_tree), ETK_CALLBACK(_etk_filechooser_widget_dir_row_selected_cb), fcw);
    
    fcw->fav_tree = etk_tree_new();
-   etk_widget_visibility_locked_set(fcw->fav_tree, TRUE);
+   etk_widget_visibility_locked_set(fcw->fav_tree, ETK_TRUE);
    etk_widget_size_request_set(fcw->fav_tree, 180, 120);
-   etk_paned_add2(ETK_PANED(vpaned), fcw->fav_tree, FALSE);
+   etk_paned_add2(ETK_PANED(vpaned), fcw->fav_tree, ETK_FALSE);
    fcw->fav_col = etk_tree_col_new(ETK_TREE(fcw->fav_tree), "Favorites", etk_tree_model_icon_text_new(ETK_TREE(fcw->fav_tree), ETK_TREE_FROM_EDJE), 120);
    etk_tree_build(ETK_TREE(fcw->fav_tree));
    etk_widget_show(fcw->fav_tree);
    
-   etk_tree_append(ETK_TREE(fcw->fav_tree), fcw->fav_col, ETK_DEFAULT_ICON_SET_FILE, "devices/drive-harddisk", "Root", NULL);
-   etk_tree_append(ETK_TREE(fcw->fav_tree), fcw->fav_col, ETK_DEFAULT_ICON_SET_FILE, "mimetypes/x-directory-normal-home", "Home", NULL);
-   etk_tree_append(ETK_TREE(fcw->fav_tree), fcw->fav_col, ETK_DEFAULT_ICON_SET_FILE, "mimetypes/x-directory-normal", "Musics", NULL);
-   etk_tree_append(ETK_TREE(fcw->fav_tree), fcw->fav_col, ETK_DEFAULT_ICON_SET_FILE, "mimetypes/x-directory-normal", "Videos", NULL);
-   etk_tree_append(ETK_TREE(fcw->fav_tree), fcw->fav_col, ETK_DEFAULT_ICON_SET_FILE, "mimetypes/x-directory-normal", "Images", NULL);
+   etk_tree_append(ETK_TREE(fcw->fav_tree), fcw->fav_col, etk_theme_icon_theme_get(), "devices/drive-harddisk_16", "Root", NULL);
+   etk_tree_append(ETK_TREE(fcw->fav_tree), fcw->fav_col, etk_theme_icon_theme_get(), "places/user-home_16", "Home", NULL);
+   etk_tree_append(ETK_TREE(fcw->fav_tree), fcw->fav_col, etk_theme_icon_theme_get(), "places/folder_16", "Musics", NULL);
+   etk_tree_append(ETK_TREE(fcw->fav_tree), fcw->fav_col, etk_theme_icon_theme_get(), "places/folder_16", "Videos", NULL);
+   etk_tree_append(ETK_TREE(fcw->fav_tree), fcw->fav_col, etk_theme_icon_theme_get(), "places/folder_16", "Images", NULL);
    
    fcw->files_tree = etk_tree_new();
-   etk_widget_visibility_locked_set(fcw->files_tree, TRUE);
+   etk_widget_visibility_locked_set(fcw->files_tree, ETK_TRUE);
    etk_widget_size_request_set(fcw->files_tree, 400, 120);
-   etk_paned_add2(ETK_PANED(hpaned), fcw->files_tree, TRUE);
+   etk_paned_add2(ETK_PANED(hpaned), fcw->files_tree, ETK_TRUE);
    fcw->files_name_col = etk_tree_col_new(ETK_TREE(fcw->files_tree), "Filename", etk_tree_model_icon_text_new(ETK_TREE(fcw->files_tree), ETK_TREE_FROM_EDJE), 100);
-   etk_tree_col_expand_set(fcw->files_name_col, TRUE);
+   etk_tree_col_expand_set(fcw->files_name_col, ETK_TRUE);
    fcw->files_date_col = etk_tree_col_new(ETK_TREE(fcw->files_tree), "Date", etk_tree_model_text_new(ETK_TREE(fcw->files_tree)), 60);
    etk_tree_build(ETK_TREE(fcw->files_tree));
    etk_widget_show(fcw->files_tree);

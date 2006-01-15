@@ -77,7 +77,7 @@ static void _etk_menu_bar_constructor(Etk_Menu_Bar *menu_bar)
    if (!menu_bar)
       return;
    
-   menu_bar->item_selected = FALSE;
+   menu_bar->item_selected = ETK_FALSE;
    ETK_WIDGET(menu_bar)->size_request = _etk_menu_bar_size_request;
    ETK_WIDGET(menu_bar)->size_allocate = _etk_menu_bar_size_allocate;
    
@@ -234,7 +234,7 @@ static void _etk_menu_bar_item_selected_cb(Etk_Object *object, void *data)
    
    if (!_etk_menu_bar_mouse_move_handler)
       _etk_menu_bar_mouse_move_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE, _etk_menu_bar_mouse_move_cb, menu_bar);
-   menu_bar->item_selected = TRUE;
+   menu_bar->item_selected = ETK_TRUE;
 }
 
 /* Called when the item is deselected */
@@ -254,7 +254,7 @@ static void _etk_menu_bar_item_deselected_cb(Etk_Object *object, void *data)
       ecore_event_handler_del(_etk_menu_bar_mouse_move_handler);
       _etk_menu_bar_mouse_move_handler = NULL;
    }
-   menu_bar->item_selected = FALSE;
+   menu_bar->item_selected = ETK_FALSE;
 }
 
 /* Called when the user has clicked on the item */

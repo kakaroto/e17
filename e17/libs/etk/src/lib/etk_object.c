@@ -164,7 +164,7 @@ Etk_Type *etk_object_object_type_get(Etk_Object *object)
  * @brief Adds @a signal_callback to the list of signal callbacks of the object
  * @param object the object to add the signal callback to
  * @param signal_callback the signal callback to add
- * @param after if @a after == TRUE, the callback will be called after the default handler, otherwise, it will be called before
+ * @param after if @a after == ETK_TRUE, the callback will be called after the default handler, otherwise, it will be called before
  */
 void etk_object_signal_callback_add(Etk_Object *object, Etk_Signal_Callback *signal_callback, Etk_Bool after)
 {
@@ -230,7 +230,7 @@ void etk_object_weak_pointer_remove(Etk_Object *object, void **pointer_location)
  * @param object the object associated to the signal
  * @param signal the signal which we want the callbacks
  * @param callbacks the location of the list where the callbacks will be appended
- * @param after if @a after == TRUE, it appends the callbacks to call after the default handler. @n
+ * @param after if @a after == ETK_TRUE, it appends the callbacks to call after the default handler. @n
  * Otherwise, it appends the callbacks called before the default handler
  */
 void etk_object_signal_callbacks_get(Etk_Object *object, Etk_Signal *signal, Evas_List **callbacks, Etk_Bool after)

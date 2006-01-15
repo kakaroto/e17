@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include <Edje.h>
+#include "etk_theme.h"
 #include "etk_main.h"
 #include "etk_toplevel_widget.h"
 #include "etk_container.h"
@@ -12,10 +13,6 @@
 #include "etk_marshallers.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
-#include "config.h"
-
-/* TODO: Etk_Theme */
-#define ETK_DEFAULT_THEME_FILE PACKAGE_DATA_DIR "/themes/default.edj"
 
 /**
  * @addtogroup Etk_Widget
@@ -130,7 +127,7 @@ static void _etk_widget_swallowed_object_free(void *data);
 
 static Etk_Signal *_etk_widget_signals[ETK_WIDGET_NUM_SIGNALS];
 static Evas_Smart *_etk_widget_smart_object_smart = NULL;
-static Etk_Bool _etk_widget_propagate_event = TRUE;
+static Etk_Bool _etk_widget_propagate_event = ETK_TRUE;
 
 /**************************
  *
@@ -173,17 +170,17 @@ Etk_Type *etk_widget_type_get()
       
       etk_type_property_add(widget_type, "name",              ETK_WIDGET_NAME_PROPERTY,              ETK_PROPERTY_STRING,  ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(widget_type, "parent",            ETK_WIDGET_PARENT_PROPERTY,            ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_pointer(NULL));
-      etk_type_property_add(widget_type, "theme_file",        ETK_WIDGET_THEME_FILE_PROPERTY,        ETK_PROPERTY_STRING,  ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(ETK_DEFAULT_THEME_FILE));
+      etk_type_property_add(widget_type, "theme_file",        ETK_WIDGET_THEME_FILE_PROPERTY,        ETK_PROPERTY_STRING,  ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(etk_theme_widget_theme_get()));
       etk_type_property_add(widget_type, "theme_group",       ETK_WIDGET_THEME_GROUP_PROPERTY,       ETK_PROPERTY_STRING,  ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(widget_type, "width_request",     ETK_WIDGET_WIDTH_REQUEST_PROPERTY,     ETK_PROPERTY_INT,     ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(-1));
       etk_type_property_add(widget_type, "height_request",    ETK_WIDGET_HEIGHT_REQUEST_PROPERTY,    ETK_PROPERTY_INT,     ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(-1));
-      etk_type_property_add(widget_type, "visible",           ETK_WIDGET_VISIBLE_PROPERTY,           ETK_PROPERTY_BOOL,    ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(FALSE));
-      etk_type_property_add(widget_type, "visibility_locked", ETK_WIDGET_VISIBILITY_LOCKED_PROPERTY, ETK_PROPERTY_BOOL,    ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(FALSE));
-      etk_type_property_add(widget_type, "repeat_events",     ETK_WIDGET_REPEAT_EVENTS_PROPERTY,     ETK_PROPERTY_BOOL,    ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(FALSE));
-      etk_type_property_add(widget_type, "pass_events",       ETK_WIDGET_PASS_EVENTS_PROPERTY,       ETK_PROPERTY_BOOL,    ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(FALSE));
-      etk_type_property_add(widget_type, "focusable",         ETK_WIDGET_FOCUSABLE_PROPERTY,         ETK_PROPERTY_BOOL,    ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(FALSE));
-      etk_type_property_add(widget_type, "focus_on_press",    ETK_WIDGET_FOCUS_ON_PRESS_PROPERTY,    ETK_PROPERTY_BOOL,    ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(FALSE));
-      etk_type_property_add(widget_type, "can_pass_focus",    ETK_WIDGET_CAN_PASS_FOCUS_PROPERTY,    ETK_PROPERTY_BOOL,    ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(TRUE));
+      etk_type_property_add(widget_type, "visible",           ETK_WIDGET_VISIBLE_PROPERTY,           ETK_PROPERTY_BOOL,    ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
+      etk_type_property_add(widget_type, "visibility_locked", ETK_WIDGET_VISIBILITY_LOCKED_PROPERTY, ETK_PROPERTY_BOOL,    ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
+      etk_type_property_add(widget_type, "repeat_events",     ETK_WIDGET_REPEAT_EVENTS_PROPERTY,     ETK_PROPERTY_BOOL,    ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
+      etk_type_property_add(widget_type, "pass_events",       ETK_WIDGET_PASS_EVENTS_PROPERTY,       ETK_PROPERTY_BOOL,    ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
+      etk_type_property_add(widget_type, "focusable",         ETK_WIDGET_FOCUSABLE_PROPERTY,         ETK_PROPERTY_BOOL,    ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
+      etk_type_property_add(widget_type, "focus_on_press",    ETK_WIDGET_FOCUS_ON_PRESS_PROPERTY,    ETK_PROPERTY_BOOL,    ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
+      etk_type_property_add(widget_type, "can_pass_focus",    ETK_WIDGET_CAN_PASS_FOCUS_PROPERTY,    ETK_PROPERTY_BOOL,    ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
 
       widget_type->property_set = _etk_widget_property_set;
       widget_type->property_get = _etk_widget_property_get;
@@ -437,8 +434,8 @@ void etk_widget_realize(Etk_Widget *widget)
    evas_object_repeat_events_set(widget->smart_object, widget->repeat_events);
    evas_object_pass_events_set(widget->smart_object, widget->pass_events);
 
-   widget->need_theme_min_size_recalc = TRUE;
-   widget->realized = TRUE;
+   widget->need_theme_min_size_recalc = ETK_TRUE;
+   widget->realized = ETK_TRUE;
 
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_REALIZE_SIGNAL], ETK_OBJECT(widget), NULL);
    etk_widget_size_recalc_queue(widget);
@@ -486,7 +483,7 @@ void etk_widget_unrealize(Etk_Widget *widget)
    widget->top_inset = 0;
    widget->bottom_inset = 0;
    
-   widget->realized = FALSE;
+   widget->realized = ETK_FALSE;
 
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_UNREALIZE_SIGNAL], ETK_OBJECT(widget), NULL);
 }
@@ -584,7 +581,7 @@ void *etk_widget_child_properties_get(Etk_Widget *widget)
 /**
  * @brief Sets if the widget should repeat the events it receives
  * @param widget a widget
- * @param repeat_events if @a repeat_events == TRUE, the widget below @a widget will receive also the mouse events
+ * @param repeat_events if @a repeat_events == ETK_TRUE, the widget below @a widget will receive also the mouse events
  */
 void etk_widget_repeat_events_set(Etk_Widget *widget, Etk_Bool repeat_events)
 {
@@ -600,19 +597,19 @@ void etk_widget_repeat_events_set(Etk_Widget *widget, Etk_Bool repeat_events)
 /**
  * @brief Checks if the widget repeats the events it receives
  * @param widget a widget
- * @return Returns TRUE if the widget repeats the events it receives
+ * @return Returns ETK_TRUE if the widget repeats the events it receives
  */
 Etk_Bool etk_widget_repeat_events_get(Etk_Widget *widget)
 {
    if (!widget)
-      return FALSE;
+      return ETK_FALSE;
    return widget->repeat_events;
 }
 
 /**
  * @brief Sets if the widget should pass the events it receives
  * @param widget a widget
- * @param pass_events if @a pass_events == TRUE, the widget below @a widget will receive the mouse events and @a widget will no longer receive mouse events
+ * @param pass_events if @a pass_events == ETK_TRUE, the widget below @a widget will receive the mouse events and @a widget will no longer receive mouse events
  */
 void etk_widget_pass_events_set(Etk_Widget *widget, Etk_Bool pass_events)
 {
@@ -628,12 +625,12 @@ void etk_widget_pass_events_set(Etk_Widget *widget, Etk_Bool pass_events)
 /**
  * @brief Checks if the widget passes the events it receives
  * @param widget a widget
- * @return Returns TRUE if the widget passes the events it receives
+ * @return Returns ETK_TRUE if the widget passes the events it receives
  */
 Etk_Bool etk_widget_pass_events_get(Etk_Widget *widget)
 {
    if (!widget)
-      return FALSE;
+      return ETK_FALSE;
    return widget->pass_events;
 }
 
@@ -642,7 +639,7 @@ Etk_Bool etk_widget_pass_events_get(Etk_Widget *widget)
  */
 void etk_widget_event_propagation_stop()
 {
-   _etk_widget_propagate_event = FALSE;
+   _etk_widget_propagate_event = ETK_FALSE;
 }
 
 /**
@@ -654,7 +651,7 @@ void etk_widget_show(Etk_Widget *widget)
    if (!widget || widget->visible)
       return;
 
-   widget->visible = TRUE;
+   widget->visible = ETK_TRUE;
    if (widget->smart_object)
       evas_object_show(widget->smart_object);
    etk_widget_size_recalc_queue(widget);
@@ -687,7 +684,7 @@ void etk_widget_hide(Etk_Widget *widget)
    if (!widget || !widget->visible)
       return;
 
-   widget->visible = FALSE;
+   widget->visible = ETK_FALSE;
    if (widget->smart_object)
       evas_object_hide(widget->smart_object);
    etk_widget_size_recalc_queue(widget);
@@ -714,19 +711,19 @@ void etk_widget_hide_all(Etk_Widget *widget)
 /**
  * @brief Checks if the object is visible
  * @param widget a widget
- * @return Returns TRUE if the widget is visible, FALSE otherwise
+ * @return Returns ETK_TRUE if the widget is visible, ETK_FALSE otherwise
  */
 Etk_Bool etk_widget_is_visible(Etk_Widget *widget)
 {
    if (!widget)
-      return FALSE;
+      return ETK_FALSE;
    return widget->visible;
 }
 
 /**
  * @brief Sets whether the widget is affected by etk_widget_show_all() and etk_widget_hide_all(). It's mainly used for implementation of widgets
  * @param widget a widget
- * @param visibility_locked TRUE if etk_widget_show_all() and etk_widget_hide_all() should not affect the visibility of the widget
+ * @param visibility_locked ETK_TRUE if etk_widget_show_all() and etk_widget_hide_all() should not affect the visibility of the widget
  */
 void etk_widget_visibility_locked_set(Etk_Widget *widget, Etk_Bool visibility_locked)
 {
@@ -739,12 +736,12 @@ void etk_widget_visibility_locked_set(Etk_Widget *widget, Etk_Bool visibility_lo
 /**
  * @brief Gets whether the widget is affected by etk_widget_show_all() and etk_widget_hide_all()
  * @param widget a widget
- * @return Returns TRUE if etk_widget_show_all() and etk_widget_hide_all() does not affect the visibility of the widget
+ * @return Returns ETK_TRUE if etk_widget_show_all() and etk_widget_hide_all() does not affect the visibility of the widget
  */
 Etk_Bool etk_widget_visibility_locked_get(Etk_Widget *widget)
 {
    if (!widget)
-      return FALSE;
+      return ETK_FALSE;
    return widget->visibility_locked;
 }
 
@@ -767,10 +764,10 @@ void etk_widget_size_recalc_queue(Etk_Widget *widget)
          Etk_Widget_Smart_Data *smart_data;
 
          if ((smart_data = evas_object_smart_data_get(w->smart_object)) && smart_data->swallowing_widget)
-            smart_data->swallowing_widget->need_theme_min_size_recalc = TRUE;
+            smart_data->swallowing_widget->need_theme_min_size_recalc = ETK_TRUE;
       }
-      w->need_size_recalc = TRUE;
-      w->need_redraw = TRUE;
+      w->need_size_recalc = ETK_TRUE;
+      w->need_redraw = ETK_TRUE;
    }
 
    if (widget->toplevel_parent)
@@ -818,14 +815,14 @@ void etk_widget_size_request_set(Etk_Widget *widget, int w, int h)
  */
 void etk_widget_size_request(Etk_Widget *widget, Etk_Size *size_requisition)
 {
-   etk_widget_size_request_full(widget, size_requisition, TRUE);
+   etk_widget_size_request_full(widget, size_requisition, ETK_TRUE);
 }
 
 /**
  * @brief Calculates the ideal size of the widget. Used mainly for container implementation
  * @param widget a widget
  * @param size_requisition the location where to set the result
- * @param hidden_has_no_size if hidden_has_no_size is TRUE, then if the widget is hidden, the size requisition will be 0x0
+ * @param hidden_has_no_size if hidden_has_no_size is ETK_TRUE, then if the widget is hidden, the size requisition will be 0x0
  */
 void etk_widget_size_request_full(Etk_Widget *widget, Etk_Size *size_requisition, Etk_Bool hidden_has_no_size)
 {
@@ -875,7 +872,7 @@ void etk_widget_size_request_full(Etk_Widget *widget, Etk_Size *size_requisition
 
    if (widget->visible)
       widget->last_size_requisition = *size_requisition;
-   widget->need_size_recalc = FALSE;
+   widget->need_size_recalc = ETK_FALSE;
 
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_SIZE_REQUEST_SIGNAL], ETK_OBJECT(widget), NULL, size_requisition);
 }
@@ -966,8 +963,8 @@ void etk_widget_unfocus(Etk_Widget *widget)
  * @param swallowing_widget the widget that will swallow @a widget_to_swallow
  * @param part the name of the part of the theme object that will swallow @a widget_to_swallow
  * @param widget_to_swallow the widget to swallow
- * @return Returns TRUE on success, FALSE on failure (generally because the part doesn't exists, or because @a swallowing_widget isn't realized)
- * @note The swallowed widget has to be a child of the swallowing widget. Otherwise, it won't be swallowed and it will return FALSE
+ * @return Returns ETK_TRUE on success, ETK_FALSE on failure (generally because the part doesn't exists, or because @a swallowing_widget isn't realized)
+ * @note The swallowed widget has to be a child of the swallowing widget. Otherwise, it won't be swallowed and it will return ETK_FALSE
  */
 Etk_Bool etk_widget_swallow_widget(Etk_Widget *swallowing_widget, const char *part, Etk_Widget *widget_to_swallow)
 {
@@ -975,26 +972,26 @@ Etk_Bool etk_widget_swallow_widget(Etk_Widget *swallowing_widget, const char *pa
    Etk_Widget_Smart_Data *smart_data;
 
    if (!swallowing_widget || !part || !widget_to_swallow || !swallowing_widget->theme_object || !widget_to_swallow->smart_object)
-      return FALSE;
+      return ETK_FALSE;
    if (!(evas = etk_widget_toplevel_evas_get(swallowing_widget)) || (evas != etk_widget_toplevel_evas_get(widget_to_swallow)))
-      return FALSE;
+      return ETK_FALSE;
    if (!edje_object_part_exists(swallowing_widget->theme_object, part))
-      return FALSE;
+      return ETK_FALSE;
    if (!ETK_IS_CONTAINER(swallowing_widget) || !etk_container_is_child(ETK_CONTAINER(swallowing_widget), widget_to_swallow))
    {
       ETK_WARNING("Unable to \"swallow\" the widget %p by the widget %p because the widget "
          "to swallow was not a child of the \"swallowing\" widget\n", widget_to_swallow, swallowing_widget);
-      return FALSE;
+      return ETK_FALSE;
    }
 
    if ((smart_data = evas_object_smart_data_get(widget_to_swallow->smart_object)) && smart_data->swallowing_widget)
       etk_widget_unswallow_widget(smart_data->swallowing_widget, widget_to_swallow);
 
-   widget_to_swallow->swallowed = TRUE;
-   if (!_etk_widget_theme_object_swallow_full(swallowing_widget, part, widget_to_swallow->smart_object, TRUE))
-      widget_to_swallow->swallowed = FALSE;
+   widget_to_swallow->swallowed = ETK_TRUE;
+   if (!_etk_widget_theme_object_swallow_full(swallowing_widget, part, widget_to_swallow->smart_object, ETK_TRUE))
+      widget_to_swallow->swallowed = ETK_FALSE;
 
-   return FALSE;
+   return ETK_FALSE;
 }
 
 /**
@@ -1014,12 +1011,12 @@ void etk_widget_unswallow_widget(Etk_Widget *swallowing_widget, Etk_Widget *widg
  * @brief Checks if the widget swallows the other widget
  * @param widget a widget
  * @param swallowed_widget the widget which we are checking if it is swallowed by @a widget
- * @return Returns TRUE if @a widget is swallowing @a swallowed_widget
+ * @return Returns ETK_TRUE if @a widget is swallowing @a swallowed_widget
  */
 Etk_Bool etk_widget_widget_is_swallowed(Etk_Widget *widget, Etk_Widget *swallowed_widget)
 {
    if (!widget || !swallowed_widget || !swallowed_widget->smart_object)
-      return FALSE;
+      return ETK_FALSE;
    return etk_widget_object_is_swallowed(widget, swallowed_widget->smart_object);
 }
 
@@ -1028,11 +1025,11 @@ Etk_Bool etk_widget_widget_is_swallowed(Etk_Widget *widget, Etk_Widget *swallowe
  * @param swallowing_widget the widget that will swallow the object
  * @param part the name of the part
  * @param object the object to swallow
- * @return Returns TRUE on success, FALSE on failure (generally because the part doesn't exists, or because @a swallowing_widget isn't realized)
+ * @return Returns ETK_TRUE on success, ETK_FALSE on failure (generally because the part doesn't exists, or because @a swallowing_widget isn't realized)
  */
 Etk_Bool etk_widget_theme_object_swallow(Etk_Widget *swallowing_widget, const char *part, Evas_Object *object)
 {
-   return _etk_widget_theme_object_swallow_full(swallowing_widget, part, object, FALSE);
+   return _etk_widget_theme_object_swallow_full(swallowing_widget, part, object, ETK_FALSE);
 }
 
 /**
@@ -1061,7 +1058,7 @@ void etk_widget_theme_object_unswallow(Etk_Widget *swallowing_widget, Evas_Objec
       return;
 
    if (swallowed_object->is_widget_theme_object && (smart_data = evas_object_smart_data_get(swallowed_object->object)) && smart_data->widget)
-      smart_data->widget->swallowed = FALSE;
+      smart_data->widget->swallowed = ETK_FALSE;
 
    _etk_widget_swallowed_object_free(swallowed_object);
    swallowing_widget->swallowed_objects = evas_list_remove_list(swallowing_widget->swallowed_objects, l);
@@ -1075,7 +1072,7 @@ void etk_widget_theme_object_unswallow(Etk_Widget *swallowing_widget, Evas_Objec
  * @brief Checks if the widget swallows the object
  * @param widget a widget
  * @param object an evas object
- * @return Returns TRUE if @a widget is swallowing @a object
+ * @return Returns ETK_TRUE if @a widget is swallowing @a object
  */
 Etk_Bool etk_widget_object_is_swallowed(Etk_Widget *widget, Evas_Object *object)
 {
@@ -1083,15 +1080,15 @@ Etk_Bool etk_widget_object_is_swallowed(Etk_Widget *widget, Evas_Object *object)
    Etk_Widget_Swallowed_Object *swallowed_object;
 
    if (!widget || !object)
-      return FALSE;
+      return ETK_FALSE;
 
    for (l = widget->swallowed_objects; l; l = l->next)
    {
       swallowed_object = l->data;
       if (swallowed_object->object == object)
-         return TRUE;
+         return ETK_TRUE;
    }
-   return FALSE;
+   return ETK_FALSE;
 }
 
 /**
@@ -1159,7 +1156,7 @@ void etk_widget_theme_object_min_size_calc(Etk_Widget *widget, int *w, int *h)
       
       widget->theme_min_width = ETK_MAX(widget->theme_min_width, widget->left_inset + widget->right_inset);
       widget->theme_min_height = ETK_MAX(widget->theme_min_height, widget->top_inset + widget->bottom_inset);
-      widget->need_theme_min_size_recalc = FALSE;
+      widget->need_theme_min_size_recalc = ETK_FALSE;
    }
 
    if (w)
@@ -1179,7 +1176,7 @@ void etk_widget_theme_object_signal_emit(Etk_Widget *widget, const char *signal_
       return;
 
    edje_object_signal_emit(widget->theme_object, signal_name, "");
-   widget->need_theme_min_size_recalc = TRUE;
+   widget->need_theme_min_size_recalc = ETK_TRUE;
 }
 
 /**
@@ -1194,7 +1191,7 @@ void etk_widget_theme_object_part_text_set(Etk_Widget *widget, const char *part_
       return;
 
    edje_object_part_text_set(widget->theme_object, part_name, text);
-   widget->need_theme_min_size_recalc = TRUE;
+   widget->need_theme_min_size_recalc = ETK_TRUE;
 }
 
 /**
@@ -1228,18 +1225,18 @@ int etk_widget_theme_object_data_get(Etk_Widget *widget, const char *data_name, 
  * The object will be automatically deleted when the object will be unrealized. Used for widget implementations mainly
  * @param widget a widget
  * @param object the evas object to add
- * @return Returns TRUE on success. FALSE on failure, probably because the widget and the object do not belong to the same evas
+ * @return Returns ETK_TRUE on success. ETK_FALSE on failure, probably because the widget and the object do not belong to the same evas
  */
 Etk_Bool etk_widget_member_object_add(Etk_Widget *widget, Evas_Object *object)
 {
    Etk_Widget_Member_Object *member_object;
    
    if (!widget || !object || !widget->smart_object || (evas_object_evas_get(object) != etk_widget_toplevel_evas_get(widget)))
-      return FALSE;
+      return ETK_FALSE;
    if (etk_widget_object_is_swallowed(widget, object))
-      return FALSE;
+      return ETK_FALSE;
    if (_etk_widget_member_object_find(widget, object))
-      return TRUE;
+      return ETK_TRUE;
    
    member_object = malloc(sizeof(Etk_Widget_Member_Object));
    member_object->object = object;
@@ -1257,7 +1254,7 @@ Etk_Bool etk_widget_member_object_add(Etk_Widget *widget, Evas_Object *object)
    
    widget->member_objects = evas_list_append(widget->member_objects, member_object);
 
-   return TRUE;
+   return ETK_TRUE;
 }
 
 /**
@@ -1419,7 +1416,7 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->theme_object = NULL;
    widget->theme_min_width = 0;
    widget->theme_min_height = 0;
-   widget->theme_file = strdup(ETK_DEFAULT_THEME_FILE);
+   widget->theme_file = strdup(etk_theme_widget_theme_get());
    widget->theme_group = NULL;
 
    widget->smart_object = NULL;
@@ -1451,23 +1448,23 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->scroll_margins_get = NULL;
    widget->scroll = NULL;
 
-   widget->realized = FALSE;
-   widget->visible = FALSE;
-   widget->visibility_locked = FALSE;
-   widget->focusable = FALSE;
-   widget->focus_on_press = FALSE;
-   widget->can_pass_focus = TRUE;
-   widget->repeat_events = FALSE;
-   widget->pass_events = FALSE;
-   widget->need_size_recalc = FALSE;
-   widget->need_redraw = FALSE;
-   widget->need_theme_min_size_recalc = FALSE;
-   widget->swallowed = FALSE;
+   widget->realized = ETK_FALSE;
+   widget->visible = ETK_FALSE;
+   widget->visibility_locked = ETK_FALSE;
+   widget->focusable = ETK_FALSE;
+   widget->focus_on_press = ETK_FALSE;
+   widget->can_pass_focus = ETK_TRUE;
+   widget->repeat_events = ETK_FALSE;
+   widget->pass_events = ETK_FALSE;
+   widget->need_size_recalc = ETK_FALSE;
+   widget->need_redraw = ETK_FALSE;
+   widget->need_theme_min_size_recalc = ETK_FALSE;
+   widget->swallowed = ETK_FALSE;
 
-   etk_signal_connect_full(_etk_widget_signals[ETK_WIDGET_MOUSE_IN_SIGNAL], ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_mouse_in_cb), NULL, FALSE, FALSE);
-   etk_signal_connect_full(_etk_widget_signals[ETK_WIDGET_MOUSE_OUT_SIGNAL], ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_mouse_out_cb), NULL, FALSE, FALSE);
-   etk_signal_connect_full(_etk_widget_signals[ETK_WIDGET_MOUSE_DOWN_SIGNAL], ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_mouse_down_cb), NULL, FALSE, FALSE);
-   etk_signal_connect_full(_etk_widget_signals[ETK_WIDGET_KEY_DOWN_SIGNAL], ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_key_down_cb), NULL, FALSE, FALSE);
+   etk_signal_connect_full(_etk_widget_signals[ETK_WIDGET_MOUSE_IN_SIGNAL], ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_mouse_in_cb), NULL, ETK_FALSE, ETK_FALSE);
+   etk_signal_connect_full(_etk_widget_signals[ETK_WIDGET_MOUSE_OUT_SIGNAL], ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_mouse_out_cb), NULL, ETK_FALSE, ETK_FALSE);
+   etk_signal_connect_full(_etk_widget_signals[ETK_WIDGET_MOUSE_DOWN_SIGNAL], ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_mouse_down_cb), NULL, ETK_FALSE, ETK_FALSE);
+   etk_signal_connect_full(_etk_widget_signals[ETK_WIDGET_KEY_DOWN_SIGNAL], ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_key_down_cb), NULL, ETK_FALSE, ETK_FALSE);
 }
 
 /* Destroys the widget */
@@ -1655,7 +1652,7 @@ static void _etk_widget_mouse_in_cb(void *data, Evas *evas, Evas_Object *object,
       return;
    
    if (object)
-      _etk_widget_propagate_event = TRUE;
+      _etk_widget_propagate_event = ETK_TRUE;
    
    event.buttons = evas_event->buttons;
    event.canvas.x = evas_event->canvas.x;
@@ -1691,7 +1688,7 @@ static void _etk_widget_mouse_out_cb(void *data, Evas *evas, Evas_Object *object
       return;
 
    if (object)
-      _etk_widget_propagate_event = TRUE;
+      _etk_widget_propagate_event = ETK_TRUE;
    
    event.buttons = evas_event->buttons;
    event.canvas.x = evas_event->canvas.x;
@@ -1727,7 +1724,7 @@ static void _etk_widget_mouse_move_cb(void *data, Evas *evas, Evas_Object *objec
       return;
 
    if (object)
-      _etk_widget_propagate_event = TRUE;
+      _etk_widget_propagate_event = ETK_TRUE;
    
    event.buttons = evas_event->buttons;
    event.cur.canvas.x = evas_event->cur.canvas.x;
@@ -1759,7 +1756,7 @@ static void _etk_widget_mouse_down_cb(void *data, Evas *evas, Evas_Object *objec
       return;
    
    if (object)
-      _etk_widget_propagate_event = TRUE;
+      _etk_widget_propagate_event = ETK_TRUE;
    
    event.button = evas_event->button;
    event.canvas.x = evas_event->canvas.x;
@@ -1798,7 +1795,7 @@ static void _etk_widget_mouse_up_cb(void *data, Evas *evas, Evas_Object *object,
       return;
 
    if (object)
-      _etk_widget_propagate_event = TRUE;
+      _etk_widget_propagate_event = ETK_TRUE;
    
    event.button = evas_event->button;
    event.canvas.x = evas_event->canvas.x;
@@ -1831,7 +1828,7 @@ static void _etk_widget_mouse_wheel_cb(void *data, Evas *evas, Evas_Object *obje
       return;
    
    if (object)
-      _etk_widget_propagate_event = TRUE;
+      _etk_widget_propagate_event = ETK_TRUE;
    
    event.direction = evas_event->direction;
    event.z = evas_event->z;
@@ -1860,7 +1857,7 @@ static void _etk_widget_key_down_cb(void *data, Evas *evas, Evas_Object *object,
       return;
 
    if (object)
-      _etk_widget_propagate_event = TRUE;
+      _etk_widget_propagate_event = ETK_TRUE;
    
    event.keyname = evas_event->keyname;
    event.modifiers = evas_event->modifiers;
@@ -1886,7 +1883,7 @@ static void _etk_widget_signal_key_down_cb(Etk_Object *object, Etk_Event_Key_Up_
       return;
 
    if (object)
-      _etk_widget_propagate_event = TRUE;
+      _etk_widget_propagate_event = ETK_TRUE;
 
    if (strcmp(event->key, "Tab") == 0)
    {
@@ -1913,7 +1910,7 @@ static void _etk_widget_key_up_cb(void *data, Evas *evas, Evas_Object *object, v
       return;
 
    if (object)
-      _etk_widget_propagate_event = TRUE;
+      _etk_widget_propagate_event = ETK_TRUE;
    
    event.keyname = evas_event->keyname;
    event.modifiers = evas_event->modifiers;
@@ -1974,7 +1971,7 @@ static void _etk_widget_redraw_queue_recursive(Etk_Widget *widget)
    if (!widget)
       return;
 
-   widget->need_redraw = TRUE;
+   widget->need_redraw = ETK_TRUE;
    if (ETK_IS_CONTAINER(widget))
       etk_container_for_each(ETK_CONTAINER(widget), _etk_widget_redraw_queue_recursive);
 }
@@ -1987,11 +1984,11 @@ Etk_Bool _etk_widget_theme_object_swallow_full(Etk_Widget *swallowing_widget, co
    Etk_Widget_Swallowed_Object *swallowed_object;
 
    if (!swallowing_widget || !part || !object || !swallowing_widget->theme_object)
-      return FALSE;
+      return ETK_FALSE;
    if (!(evas = etk_widget_toplevel_evas_get(swallowing_widget)) || (evas != evas_object_evas_get(object)))
-      return FALSE;
+      return ETK_FALSE;
    if (!edje_object_part_exists(swallowing_widget->theme_object, part))
-      return FALSE;
+      return ETK_FALSE;
 
    if ((previously_swallowed = edje_object_part_swallow_get(swallowing_widget->theme_object, part)))
       etk_widget_theme_object_unswallow(swallowing_widget, previously_swallowed);
@@ -2005,7 +2002,7 @@ Etk_Bool _etk_widget_theme_object_swallow_full(Etk_Widget *swallowing_widget, co
    edje_object_part_swallow(swallowing_widget->theme_object, part, object);
    etk_widget_size_recalc_queue(swallowing_widget);
 
-   return TRUE;
+   return ETK_TRUE;
 }
 
 /* Finds if an evas object is a member object of the widget */
@@ -2040,7 +2037,7 @@ static void _etk_widget_member_object_intercept_show_cb(void *data, Evas_Object 
    if ((l = _etk_widget_member_object_find(last_visible_parent, obj)))
    {
       member_object = l->data;
-      member_object->visible = TRUE;
+      member_object->visible = ETK_TRUE;
    }
    
    while (last_visible_parent->parent && ETK_WIDGET(last_visible_parent->parent)->visible)
@@ -2064,7 +2061,7 @@ static void _etk_widget_member_object_intercept_hide_cb(void *data, Evas_Object 
    if ((l = _etk_widget_member_object_find(widget, obj)))
    {
       member_object = l->data;
-      member_object->visible = FALSE;
+      member_object->visible = ETK_FALSE;
    }
    evas_object_hide(obj);
 }
@@ -2170,7 +2167,7 @@ static void _etk_widget_smart_object_resize(Evas_Object *object, Evas_Coord w, E
       if (widget->size_allocate)
          widget->size_allocate(widget, widget->inner_geometry);
       
-      widget->need_redraw = FALSE;
+      widget->need_redraw = ETK_FALSE;
    }
 }
 

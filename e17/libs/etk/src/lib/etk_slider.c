@@ -64,8 +64,8 @@ Etk_Type *etk_hslider_type_get()
  */
 Etk_Widget *etk_hslider_new(double lower, double upper, double value, double step_increment, double page_increment)
 {
-   return etk_widget_new(ETK_HSLIDER_TYPE, "theme_group", "hslider", "focusable", TRUE, "lower", lower, "upper", upper,
-      "value", value, "step_increment", step_increment, "page_increment", page_increment, "focus_on_press", TRUE, NULL);
+   return etk_widget_new(ETK_HSLIDER_TYPE, "theme_group", "hslider", "focusable", ETK_TRUE, "lower", lower, "upper", upper,
+      "value", value, "step_increment", step_increment, "page_increment", page_increment, "focus_on_press", ETK_TRUE, NULL);
 }
 
 /**
@@ -90,7 +90,7 @@ Etk_Type *etk_vslider_type_get()
  */
 Etk_Widget *etk_vslider_new(double lower, double upper, double value, double step_increment, double page_increment)
 {
-   return etk_widget_new(ETK_VSLIDER_TYPE, "theme_group", "vslider", "focusable", TRUE, "lower", lower, "upper", upper,
+   return etk_widget_new(ETK_VSLIDER_TYPE, "theme_group", "vslider", "focusable", ETK_TRUE, "lower", lower, "upper", upper,
       "value", value, "step_increment", step_increment, "page_increment", page_increment, NULL);
 }
 
@@ -106,7 +106,7 @@ static void _etk_slider_constructor(Etk_Slider *slider)
    if (!slider)
       return;
 
-   slider->dragging = FALSE;
+   slider->dragging = ETK_FALSE;
    ETK_RANGE(slider)->value_changed = _etk_slider_value_changed_handler;
    etk_signal_connect("realize", ETK_OBJECT(slider), ETK_CALLBACK(_etk_slider_realize_cb), NULL);
    etk_signal_connect("key_down", ETK_OBJECT(slider), ETK_CALLBACK(_etk_slider_key_down_cb), NULL);
@@ -138,7 +138,7 @@ static void _etk_slider_key_down_cb(Etk_Object *object, void *event, void *data)
 {
    Etk_Event_Key_Up_Down *key_event = event;
    Etk_Range *range;
-   Etk_Bool propagate = FALSE;
+   Etk_Bool propagate = ETK_FALSE;
 
    if (!(range = ETK_RANGE(object)))
       return;
@@ -156,7 +156,7 @@ static void _etk_slider_key_down_cb(Etk_Object *object, void *event, void *data)
    else if (strcmp(key_event->key, "Prior") == 0)
       etk_range_value_set(range, range->value - range->page_increment);
    else
-      propagate = TRUE;
+      propagate = ETK_TRUE;
    
    if (!propagate)
       etk_widget_event_propagation_stop();
@@ -185,9 +185,9 @@ static void _etk_slider_cursor_dragged_cb(void *data, Evas_Object *obj, const ch
       return;
 
    if (strcmp(emission, "drag,start") == 0)
-      ETK_SLIDER(range)->dragging = TRUE;
+      ETK_SLIDER(range)->dragging = ETK_TRUE;
    else if (strcmp(emission, "drag,stop") == 0)
-      ETK_SLIDER(range)->dragging = FALSE;
+      ETK_SLIDER(range)->dragging = ETK_FALSE;
    
    if (ETK_IS_HSLIDER(range))
       edje_object_part_drag_value_get(obj, "drag", &v, NULL);

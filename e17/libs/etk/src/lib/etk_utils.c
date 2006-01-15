@@ -39,7 +39,7 @@ void etk_accumulator_bool_and(void *return_value, const void *value_to_accum, vo
 
 /**
  * @brief Combine boolean returned values together by performing an "OR" operation. @n
- * The accumulator will stop the propagation of the signal when a TRUE value is returned
+ * The accumulator will stop the propagation of the signal when a ETK_TRUE value is returned
  * @param return_value the location where to store the result
  * @param value_to_accum the new value to combine
  * @param data unused
@@ -59,7 +59,7 @@ void etk_accumulator_stopping_bool_or(void *return_value, const void *value_to_a
 
 /**
  * @brief Combine boolean returned values together by performing an "AND" operation. @n
- * The accumulator will stop the propagation of the signal when a FALSE value is returned
+ * The accumulator will stop the propagation of the signal when a ETK_FALSE value is returned
  * @param return_value the location where to store the result
  * @param value_to_accum the new value to combine
  * @param data unused

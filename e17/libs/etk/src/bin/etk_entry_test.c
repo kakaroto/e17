@@ -22,7 +22,7 @@ void etk_test_entry_window_create(void *data)
    etk_window_title_set(ETK_WINDOW(win), _("Etk Entry Test"));
    etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);	
    
-   table = etk_table_new(2, 2, FALSE);
+   table = etk_table_new(2, 2, ETK_FALSE);
    etk_container_add(ETK_CONTAINER(win), table);
 
    entry = etk_entry_new();

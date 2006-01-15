@@ -88,7 +88,7 @@ Etk_Type *etk_button_type_get()
  */
 Etk_Widget *etk_button_new()
 {
-   return etk_widget_new(ETK_BUTTON_TYPE, "theme_group", "button", "focusable", TRUE, "focus_on_press", TRUE, NULL);
+   return etk_widget_new(ETK_BUTTON_TYPE, "theme_group", "button", "focusable", ETK_TRUE, "focus_on_press", ETK_TRUE, NULL);
 }
 
 /**
@@ -97,7 +97,7 @@ Etk_Widget *etk_button_new()
  */
 Etk_Widget *etk_button_new_with_label(const char *label)
 {
-   return etk_widget_new(ETK_BUTTON_TYPE, "theme_group", "button", "label", label, "focusable", TRUE, "focus_on_press", TRUE, NULL);
+   return etk_widget_new(ETK_BUTTON_TYPE, "theme_group", "button", "label", label, "focusable", ETK_TRUE, "focus_on_press", ETK_TRUE, NULL);
 }
 
 /**
@@ -113,8 +113,8 @@ Etk_Widget *etk_button_new_from_stock(Etk_Stock_Id stock_id)
    Etk_Widget *image;
    char *label;
    
-   image = etk_image_new_from_stock(stock_id);
-   etk_widget_visibility_locked_set(image, TRUE);
+   image = etk_image_new_from_stock(stock_id, ETK_STOCK_SMALL);
+   etk_widget_visibility_locked_set(image, ETK_TRUE);
    label = etk_stock_label_get(stock_id);
    button = etk_button_new_with_label(_(label));
    etk_button_image_set(ETK_BUTTON(button), ETK_IMAGE(image));
@@ -283,9 +283,9 @@ static void _etk_button_constructor(Etk_Button *button)
    button->alignment = NULL;
 
    button->label = etk_label_new(NULL);
-   etk_widget_visibility_locked_set(button->label, TRUE);
+   etk_widget_visibility_locked_set(button->label, ETK_TRUE);
    etk_label_alignment_set(ETK_LABEL(button->label), 0.5, 0.5);
-   etk_widget_pass_events_set(button->label, TRUE);
+   etk_widget_pass_events_set(button->label, ETK_TRUE);
    etk_container_add(ETK_CONTAINER(button), button->label);
 
    button->pressed = _etk_button_pressed_handler;
@@ -487,22 +487,22 @@ static void _etk_button_child_create(Etk_Button *button)
       if (!button->alignment)
       {
          button->alignment = etk_alignment_new(button->xalign, button->yalign, 0.0, 0.0);
-         etk_widget_visibility_locked_set(button->alignment, TRUE);
-         etk_widget_pass_events_set(button->alignment, TRUE);
+         etk_widget_visibility_locked_set(button->alignment, ETK_TRUE);
+         etk_widget_pass_events_set(button->alignment, ETK_TRUE);
       }
       etk_container_add(ETK_CONTAINER(button), button->alignment);
       etk_widget_show(button->alignment);
 
       if (button->hbox)
          etk_object_destroy(ETK_OBJECT(button->hbox));
-      button->hbox = etk_hbox_new(FALSE, 8);
-      etk_widget_visibility_locked_set(button->hbox, TRUE);
-      etk_widget_pass_events_set(button->hbox, TRUE);
+      button->hbox = etk_hbox_new(ETK_FALSE, 8);
+      etk_widget_visibility_locked_set(button->hbox, ETK_TRUE);
+      etk_widget_pass_events_set(button->hbox, ETK_TRUE);
       etk_container_add(ETK_CONTAINER(button->alignment), button->hbox);
       etk_widget_show(button->hbox);
 
-      etk_box_pack_start(ETK_BOX(button->hbox), ETK_WIDGET(button->image), FALSE, FALSE, 0);
-      etk_widget_pass_events_set(ETK_WIDGET(button->image), TRUE);
+      etk_box_pack_start(ETK_BOX(button->hbox), ETK_WIDGET(button->image), ETK_FALSE, ETK_FALSE, 0);
+      etk_widget_pass_events_set(ETK_WIDGET(button->image), ETK_TRUE);
       etk_widget_size_request_set(ETK_WIDGET(button->image), 16, 16);
       /* TODO: destroy the image of the button ?
       etk_signal_connect("remove", ETK_OBJECT(button->hbox), ETK_CALLBACK(_etk_button_image_removed_cb), button); */
@@ -510,7 +510,7 @@ static void _etk_button_child_create(Etk_Button *button)
 
       if (button->label)
       {
-         etk_box_pack_end(ETK_BOX(button->hbox), button->label, FALSE, FALSE, 0);
+         etk_box_pack_end(ETK_BOX(button->hbox), button->label, ETK_FALSE, ETK_FALSE, 0);
          etk_widget_show(button->label);
       }
    }

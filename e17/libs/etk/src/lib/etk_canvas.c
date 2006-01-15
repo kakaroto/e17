@@ -48,7 +48,7 @@ Etk_Widget *etk_canvas_new()
  * @brief Adds an evas object to the canvas
  * @param canvas a canvas
  * @param object the object to add
- * @return Returns TRUE on success. FALSE on failure, probably because the canvas and the object do not belong to the same evas
+ * @return Returns ETK_TRUE on success. ETK_FALSE on failure, probably because the canvas and the object do not belong to the same evas
  * @note The object will be automatically deleted when the canvas will be destroyed
  */
 Etk_Bool etk_canvas_object_add(Etk_Canvas *canvas, Evas_Object *object)
@@ -58,7 +58,7 @@ Etk_Bool etk_canvas_object_add(Etk_Canvas *canvas, Evas_Object *object)
    int cx, cy;
 
    if (!canvas || !object || (evas_object_evas_get(object) != etk_widget_toplevel_evas_get(ETK_WIDGET(canvas))))
-      return FALSE;
+      return ETK_FALSE;
 
    etk_widget_geometry_get(ETK_WIDGET(canvas), &cx, &cy, NULL, NULL);
    evas_object_geometry_get(object, &x, &y, NULL, NULL);

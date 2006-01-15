@@ -115,7 +115,7 @@ const char *etk_label_get(Etk_Label *label)
  */
 void etk_label_alignment_set(Etk_Label *label, float xalign, float yalign)
 {
-   Etk_Bool need_redraw = FALSE;
+   Etk_Bool need_redraw = ETK_FALSE;
 
    if (!label)
       return;
@@ -127,13 +127,13 @@ void etk_label_alignment_set(Etk_Label *label, float xalign, float yalign)
    {
       label->xalign = xalign;
       etk_object_notify(ETK_OBJECT(label), "xalign");
-      need_redraw = TRUE;
+      need_redraw = ETK_TRUE;
    }
    if (label->yalign != yalign)
    {
       label->yalign = yalign;
       etk_object_notify(ETK_OBJECT(label), "yalign");
-      need_redraw = TRUE;
+      need_redraw = ETK_TRUE;
    }
 
    if (need_redraw)

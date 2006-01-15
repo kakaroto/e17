@@ -37,7 +37,7 @@ Etk_Type *etk_hbox_type_get()
 
 /**
  * @brief Creates a new hbox
- * @param homogeneous if homogeneous == TRUE, all the cells will have the same size
+ * @param homogeneous if homogeneous == ETK_TRUE, all the cells will have the same size
  * @param spacing the size of the space between two cells
  */
 Etk_Widget *etk_hbox_new(Etk_Bool homogeneous, int spacing)

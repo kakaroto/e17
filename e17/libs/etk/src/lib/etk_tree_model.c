@@ -522,7 +522,7 @@ static void etk_tree_model_image_render(Etk_Tree_Model *model, Etk_Geometry geom
    Etk_Tree_Model_Image_Data *image_data;
    int image_width = 0, image_height = 0;
    Etk_Geometry image_geometry;
-   Etk_Bool show_image = FALSE;
+   Etk_Bool show_image = ETK_FALSE;
    
    if (!(image_data = cell_data) || !model)
       return;
@@ -534,14 +534,14 @@ static void etk_tree_model_image_render(Etk_Tree_Model *model, Etk_Geometry geom
          if (!evas_object_image_load_error_get(cell_objects[0]))
          {
             evas_object_image_size_get(cell_objects[0], &image_width, &image_height);
-            show_image = TRUE;
+            show_image = ETK_TRUE;
          }
          break;
       case ETK_TREE_FROM_EDJE:
          if (edje_object_file_set(cell_objects[0], image_data->filename, image_data->edje_group))
          {
             edje_object_size_min_get(cell_objects[0], &image_width, &image_height);
-            show_image = TRUE;
+            show_image = ETK_TRUE;
          }
          break;
       default:
@@ -699,7 +699,7 @@ static void etk_tree_model_icon_text_render(Etk_Tree_Model *model, Etk_Geometry 
    int icon_max_width, icon_max_height;
    int icon_width = 0, icon_height = 0;
    Etk_Geometry icon_geometry;
-   Etk_Bool show_icon = FALSE;
+   Etk_Bool show_icon = ETK_FALSE;
    Evas_Coord tw, th;
    int icon_offset = 0;
    
@@ -713,14 +713,14 @@ static void etk_tree_model_icon_text_render(Etk_Tree_Model *model, Etk_Geometry 
          if (!evas_object_image_load_error_get(cell_objects[0]))
          {
             evas_object_image_size_get(cell_objects[0], &icon_width, &icon_height);
-            show_icon = TRUE;
+            show_icon = ETK_TRUE;
          }
          break;
       case ETK_TREE_FROM_EDJE:
          if (edje_object_file_set(cell_objects[0], icon_text_data->filename, icon_text_data->edje_group))
          {
             edje_object_size_min_get(cell_objects[0], &icon_width, &icon_height);
-            show_icon = TRUE;
+            show_icon = ETK_TRUE;
          }
          break;
       default:

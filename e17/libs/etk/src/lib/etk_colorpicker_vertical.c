@@ -104,7 +104,7 @@ Etk_Widget *etk_colorpicker_vertical_new(int map_width, int map_height)
  */
 void etk_colorpicker_vertical_map_size_set(Etk_Colorpicker_Vertical *cpv, int map_width, int map_height)
 {
-   Etk_Bool need_resize = FALSE;
+   Etk_Bool need_resize = ETK_FALSE;
 
    if (!cpv)
       return;
@@ -113,13 +113,13 @@ void etk_colorpicker_vertical_map_size_set(Etk_Colorpicker_Vertical *cpv, int ma
    {
       cpv->map_width = map_width;
       etk_object_notify(ETK_OBJECT(cpv), "map_width");
-      need_resize = TRUE;
+      need_resize = ETK_TRUE;
    }
    if (cpv->map_height != map_height)
    {
       cpv->map_height = map_height;
       etk_object_notify(ETK_OBJECT(cpv), "map_height");
-      need_resize = TRUE;
+      need_resize = ETK_TRUE;
    }
 
    if (need_resize)
@@ -285,7 +285,7 @@ static void _etk_colorpicker_vertical_constructor(Etk_Colorpicker_Vertical *cpv)
 
    cpv->color_mode = ETK_COLOR_MODE_H;
    cpv->cursor_pos = 0;
-   cpv->drag = FALSE;
+   cpv->drag = ETK_FALSE;
 
    widget->size_allocate = _etk_colorpicker_vertical_size_allocate;
 
@@ -430,7 +430,7 @@ static void _etk_colorpicker_vertical_down_cb(Etk_Object *w, void *ev_data, void
    if (!(cpv = ETK_COLORPICKER_VERTICAL(w)))
       return;
 
-   cpv->drag = TRUE;
+   cpv->drag = ETK_TRUE;
    etk_colorpicker_vertical_pos_set(cpv, (ev->widget.y * 255) / ETK_WIDGET(cpv)->geometry.h);
 }
 
@@ -442,7 +442,7 @@ static void _etk_colorpicker_vertical_up_cb (Etk_Object *w, void *ev_data, void 
    if (!(cpv = ETK_COLORPICKER_VERTICAL(w)))
       return;
   
-   cpv->drag = FALSE;
+   cpv->drag = ETK_FALSE;
 }
 
 /**************************

@@ -59,7 +59,7 @@ Etk_Type *etk_entry_type_get()
  */
 Etk_Widget *etk_entry_new()
 {
-   return etk_widget_new(ETK_ENTRY_TYPE, "theme_group", "entry", "focusable", TRUE, "focus_on_press", TRUE, NULL);
+   return etk_widget_new(ETK_ENTRY_TYPE, "theme_group", "entry", "focusable", ETK_TRUE, "focus_on_press", ETK_TRUE, NULL);
 }
 
 /**
@@ -148,7 +148,7 @@ static void _etk_entry_key_down_cb(Etk_Object *object, void *event, void *data)
 {
    Etk_Event_Key_Up_Down *key_event = event;
    Etk_Entry *entry;
-   Etk_Bool text_changed = FALSE;
+   Etk_Bool text_changed = ETK_FALSE;
 
    if (!(entry = ETK_ENTRY(object)) || !entry->editable_object)
       return;

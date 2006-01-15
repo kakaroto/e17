@@ -16,7 +16,7 @@
 static void _etk_signal_free(Etk_Signal *signal);
 
 static Evas_List *_etk_signal_signals_list = NULL;
-static Etk_Bool _etk_signal_stop_emission = FALSE;
+static Etk_Bool _etk_signal_stop_emission = ETK_FALSE;
 
 /**************************
  *
@@ -126,8 +126,8 @@ const char *etk_signal_name_get(Etk_Signal *signal)
  * @param object the object that will connect the signal
  * @param callback the callback to call when the signal is emitted
  * @param data the data to pass to the callback
- * @param swapped if @a swapped == TRUE, the callback will be swapped (called with @a data as the only argument)
- * @param after if @a after == TRUE, the callback will be called after the default handler, otherwise, it will be called before
+ * @param swapped if @a swapped == ETK_TRUE, the callback will be swapped (called with @a data as the only argument)
+ * @param after if @a after == ETK_TRUE, the callback will be called after the default handler, otherwise, it will be called before
  */
 void etk_signal_connect_full(Etk_Signal *signal, Etk_Object *object, Etk_Signal_Callback_Function callback, void *data, Etk_Bool swapped, Etk_Bool after)
 {
@@ -160,7 +160,7 @@ void etk_signal_connect(const char *signal_name, Etk_Object *object, Etk_Signal_
       return;
    }
 
-   etk_signal_connect_full(signal, object, callback, data, FALSE, FALSE);
+   etk_signal_connect_full(signal, object, callback, data, ETK_FALSE, ETK_FALSE);
 }
 
 /**
@@ -183,7 +183,7 @@ void etk_signal_connect_after(const char *signal_name, Etk_Object *object, Etk_S
       return;
    }
 
-   etk_signal_connect_full(signal, object, callback, data, FALSE, TRUE);
+   etk_signal_connect_full(signal, object, callback, data, ETK_FALSE, ETK_TRUE);
 }
 
 /**
@@ -206,7 +206,7 @@ void etk_signal_connect_swapped(const char *signal_name, Etk_Object *object, Etk
       return;
    }
 
-   etk_signal_connect_full(signal, object, callback, data, TRUE, FALSE);
+   etk_signal_connect_full(signal, object, callback, data, ETK_TRUE, ETK_FALSE);
 }
 
 /**
@@ -231,7 +231,7 @@ void etk_signal_disconnect(const char *signal_name, Etk_Object *object, Etk_Sign
    }
    
    callbacks = NULL;
-   etk_object_signal_callbacks_get(object, signal, &callbacks, FALSE);
+   etk_object_signal_callbacks_get(object, signal, &callbacks, ETK_FALSE);
    while (callbacks)
    {
       signal_callback = callbacks->data;
@@ -240,7 +240,7 @@ void etk_signal_disconnect(const char *signal_name, Etk_Object *object, Etk_Sign
       callbacks = evas_list_remove_list(callbacks, callbacks);
    }
    
-   etk_object_signal_callbacks_get(object, signal, &callbacks, TRUE);
+   etk_object_signal_callbacks_get(object, signal, &callbacks, ETK_TRUE);
    while (callbacks)
    {
       signal_callback = callbacks->data;
@@ -306,26 +306,26 @@ void etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return
 {
    Evas_List *callbacks;
    Etk_Signal_Callback *callback;
-   Etk_Bool return_value_set = FALSE;
+   Etk_Bool return_value_set = ETK_FALSE;
    void *result = NULL;
    va_list args2;
 
    if (!object || !signal)
       return;
 
-   _etk_signal_stop_emission = FALSE;
+   _etk_signal_stop_emission = ETK_FALSE;
    va_copy(args2, args);
 
    /* We call the callbacks to call before the default handler */
    callbacks = NULL;
-   etk_object_signal_callbacks_get(object, signal, &callbacks, FALSE);
+   etk_object_signal_callbacks_get(object, signal, &callbacks, ETK_FALSE);
    while (!_etk_signal_stop_emission && callbacks)
    {
       callback = callbacks->data;
       if (!return_value_set || !signal->accumulator)
       {
          etk_signal_callback_call_valist(callback, object, return_value, args2);
-         return_value_set = TRUE;
+         return_value_set = ETK_TRUE;
       }
       else
       {
@@ -349,7 +349,7 @@ void etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return
          if (!return_value_set || !signal->accumulator)
          {
             signal->marshaller(*default_handler, object, NULL, return_value, args2);
-            return_value_set = TRUE;
+            return_value_set = ETK_TRUE;
          }
          else
          {
@@ -363,14 +363,14 @@ void etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return
       return;
 
    /* We call the callbacks to call after the default handler */callbacks = NULL;
-   etk_object_signal_callbacks_get(object, signal, &callbacks, TRUE);
+   etk_object_signal_callbacks_get(object, signal, &callbacks, ETK_TRUE);
    while (!_etk_signal_stop_emission && callbacks)
    {
       callback = callbacks->data;
       if (!return_value_set || !signal->accumulator)
       {
          etk_signal_callback_call_valist(callback, object, return_value, args2);
-         return_value_set = TRUE;
+         return_value_set = ETK_TRUE;
       }
       else
       {
@@ -403,7 +403,7 @@ Etk_Marshaller etk_signal_marshaller_get(Etk_Signal *signal)
  */ 
 void etk_signal_stop()
 {
-   _etk_signal_stop_emission = TRUE;
+   _etk_signal_stop_emission = ETK_TRUE;
 }
 
 /**************************

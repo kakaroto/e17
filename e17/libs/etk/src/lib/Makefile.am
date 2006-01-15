@@ -19,6 +19,7 @@ ETKHEADERS = \
 Etk.h etk_types.h etk_main.h etk_utils.h \
 etk_type.h etk_object.h etk_property.h \
 etk_signal.h etk_signal_callback.h etk_marshallers.h \
+etk_theme.h \
 etk_widget.h etk_toplevel_widget.h \
 etk_container.h etk_bin.h etk_table.h etk_alignment.h \
 etk_box.h etk_hbox.h etk_vbox.h \
@@ -44,6 +45,7 @@ libetk_la_SOURCES = \
 etk_main.c etk_utils.c \
 etk_type.c etk_object.c etk_property.c \
 etk_signal.c etk_signal_callback.c etk_marshallers.c \
+etk_theme.c \
 etk_widget.c etk_toplevel_widget.c \
 etk_container.c etk_bin.c etk_table.c etk_alignment.c \
 etk_box.c etk_hbox.c etk_vbox.c \

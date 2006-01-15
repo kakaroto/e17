@@ -572,7 +572,7 @@ int etk_property_value_int_get(Etk_Property_Value *value)
 Etk_Bool etk_property_value_bool_get(Etk_Property_Value *value)
 {
    if (!value || value->type != ETK_PROPERTY_BOOL)
-      return FALSE;
+      return ETK_FALSE;
    return value->value.bool_value;
 }
 

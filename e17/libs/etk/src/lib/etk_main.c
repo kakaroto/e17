@@ -11,6 +11,7 @@
 #include "etk_object.h"
 #include "etk_toplevel_widget.h"
 #include "etk_utils.h"
+#include "etk_theme.h"
 #include "config.h"
 
 /**
@@ -23,8 +24,8 @@ static void _etk_main_size_request_recursive(Etk_Widget *widget);
 static void _etk_main_size_allocate_recursive(Etk_Widget *widget, Etk_Bool is_top_level);
 
 static Evas_List *_etk_main_toplevel_widgets = NULL;
-static Etk_Bool _etk_main_running = FALSE;
-static Etk_Bool _etk_main_initialized = FALSE;
+static Etk_Bool _etk_main_running = ETK_FALSE;
+static Etk_Bool _etk_main_initialized = ETK_FALSE;
 static Ecore_Job *_etk_main_iterate_job = NULL;
 
 /**************************
@@ -35,41 +36,42 @@ static Ecore_Job *_etk_main_iterate_job = NULL;
 
 /**
  * @brief Initializes etk
- * @return Returns TRUE on success, FALSE on failure
+ * @return Returns ETK_TRUE on success, ETK_FALSE on failure
  */
 Etk_Bool etk_init()
 {
    if (_etk_main_initialized)
-      return TRUE;
+      return ETK_TRUE;
    
    if (!evas_init())
    {
       ETK_WARNING("Evas initialization failed!");
-      return FALSE;
+      return ETK_FALSE;
    }
    if (!ecore_init())
    {
       ETK_WARNING("Ecore initialization failed!");
-      return FALSE;
+      return ETK_FALSE;
    }
    if (!ecore_evas_init())
    {
       ETK_WARNING("Ecore_Evas initialization failed!");
-      return FALSE;
+      return ETK_FALSE;
    }
    if (!edje_init())
    {
       ETK_WARNING("Edje initialization failed!");
-      return FALSE;
+      return ETK_FALSE;
    }
+   etk_theme_init();
 
    /* Gettext */
    setlocale(LC_ALL, "");
    bindtextdomain(PACKAGE, LOCALEDIR);
    textdomain(PACKAGE);
 
-   _etk_main_initialized = TRUE;
-   return TRUE;
+   _etk_main_initialized = ETK_TRUE;
+   return ETK_TRUE;
 }
 
 /** @brief Shutdowns etk and frees the memory */
@@ -81,13 +83,14 @@ void etk_shutdown()
    etk_object_destroy_all_objects();
    etk_signal_shutdown();
    etk_type_shutdown();
+   etk_theme_shutdown();
    edje_shutdown();
    ecore_evas_shutdown();
    ecore_shutdown();
    evas_shutdown();
    _etk_main_toplevel_widgets = evas_list_free(_etk_main_toplevel_widgets);
 
-   _etk_main_initialized = FALSE;
+   _etk_main_initialized = ETK_FALSE;
 }
 
 /** @brief Enters the main loop */
@@ -96,7 +99,7 @@ void etk_main()
    if (!_etk_main_initialized || _etk_main_running)
       return;
    
-   _etk_main_running = TRUE;
+   _etk_main_running = ETK_TRUE;
    ecore_main_loop_begin();
 }
 
@@ -107,7 +110,7 @@ void etk_main_quit()
       return;
 
    ecore_main_loop_quit();
-   _etk_main_running = FALSE;
+   _etk_main_running = ETK_FALSE;
    if (_etk_main_iterate_job)
       ecore_job_del(_etk_main_iterate_job);
    _etk_main_iterate_job = NULL;
@@ -126,7 +129,7 @@ void etk_main_iterate()
    {
       widget = ETK_WIDGET(l->data);
       _etk_main_size_request_recursive(widget);
-      _etk_main_size_allocate_recursive(widget, TRUE);
+      _etk_main_size_allocate_recursive(widget, ETK_TRUE);
    }
 }
 
@@ -173,6 +176,7 @@ static void _etk_main_iterate_job_cb(void *data)
    etk_main_iterate();
 }
 
+/* Recusively requests the size of all the widgets */
 static void _etk_main_size_request_recursive(Etk_Widget *widget)
 {
    Evas_List *l;
@@ -187,6 +191,7 @@ static void _etk_main_size_request_recursive(Etk_Widget *widget)
    }
 }
 
+/* Recusively allocates the size of all the widgets */
 static void _etk_main_size_allocate_recursive(Etk_Widget *widget, Etk_Bool is_top_level)
 {
    Evas_List *l;
@@ -205,7 +210,7 @@ static void _etk_main_size_allocate_recursive(Etk_Widget *widget, Etk_Bool is_to
    if (ETK_IS_CONTAINER(widget))
    {
       for (l = ETK_CONTAINER(widget)->children; l; l = l->next)
-         _etk_main_size_allocate_recursive(ETK_WIDGET(l->data), FALSE);
+         _etk_main_size_allocate_recursive(ETK_WIDGET(l->data), ETK_FALSE);
    }
 }
 

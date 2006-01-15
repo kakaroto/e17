@@ -76,14 +76,14 @@ static Etk_Widget *_etk_test_notebook_page1_widget_create()
    
    widget[19] = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/test.png");
 
-   vbox = etk_vbox_new(FALSE, 0);
-   hbox = etk_hbox_new(FALSE, 0);
-   table = etk_table_new(2, 10, FALSE);
+   vbox = etk_vbox_new(ETK_FALSE, 0);
+   hbox = etk_hbox_new(ETK_FALSE, 0);
+   table = etk_table_new(2, 10, ETK_FALSE);
 
-   etk_box_pack_start(ETK_BOX(vbox), table, FALSE, FALSE, 0);
-   etk_box_pack_end(ETK_BOX(vbox), hbox, FALSE, FALSE, 0);
-   etk_box_pack_end(ETK_BOX(hbox), widget[18], FALSE, FALSE, 0);
-   etk_box_pack_end(ETK_BOX(hbox), widget[17], FALSE, FALSE, 0);
+   etk_box_pack_start(ETK_BOX(vbox), table, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_pack_end(ETK_BOX(vbox), hbox, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_pack_end(ETK_BOX(hbox), widget[18], ETK_FALSE, ETK_FALSE, 0);
+   etk_box_pack_end(ETK_BOX(hbox), widget[17], ETK_FALSE, ETK_FALSE, 0);
 
    etk_table_attach(ETK_TABLE(table), widget[19], 0, 0, 0, 0, 0, 0, ETK_FILL_POLICY_NONE);
    etk_table_attach(ETK_TABLE(table), widget[20], 1, 1, 0, 0, 0, 0, ETK_FILL_POLICY_HEXPAND | ETK_FILL_POLICY_HFILL);
@@ -120,37 +120,37 @@ static Etk_Widget *_etk_test_notebook_page2_widget_create()
    
    alignment = etk_alignment_new(0.5, 0.5, 0.5, 0.0);
    
-   vbox = etk_vbox_new(FALSE, 3);
+   vbox = etk_vbox_new(ETK_FALSE, 3);
    etk_container_add(ETK_CONTAINER(alignment), vbox);
 
    button_normal = etk_button_new_with_label(_("Normal button"));
-   etk_box_pack_start(ETK_BOX(vbox), button_normal, FALSE, FALSE, 0);
+   etk_box_pack_start(ETK_BOX(vbox), button_normal, ETK_FALSE, ETK_FALSE, 0);
 
    image = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/e_icon.png");
    button_normal = etk_button_new_with_label(_("Button with an image"));
    etk_button_image_set(ETK_BUTTON(button_normal), ETK_IMAGE(image));
-   etk_box_pack_start(ETK_BOX(vbox), button_normal, FALSE, FALSE, 0);
+   etk_box_pack_start(ETK_BOX(vbox), button_normal, ETK_FALSE, ETK_FALSE, 0);
    
    button_normal = etk_button_new();
-   etk_box_pack_start(ETK_BOX(vbox), button_normal, FALSE, FALSE, 0);
+   etk_box_pack_start(ETK_BOX(vbox), button_normal, ETK_FALSE, ETK_FALSE, 0);
    
    button_check = etk_check_button_new_with_label(_("Check button"));
-   etk_box_pack_start(ETK_BOX(vbox), button_check, FALSE, FALSE, 0);
+   etk_box_pack_start(ETK_BOX(vbox), button_check, ETK_FALSE, ETK_FALSE, 0);
    
    button_check = etk_check_button_new();
-   etk_box_pack_start(ETK_BOX(vbox), button_check, FALSE, FALSE, 0);
+   etk_box_pack_start(ETK_BOX(vbox), button_check, ETK_FALSE, ETK_FALSE, 0);
 
    button_radio = etk_radio_button_new_with_label(_("Radio button"), NULL);
-   etk_box_pack_start(ETK_BOX(vbox), button_radio, FALSE, FALSE, 0);
+   etk_box_pack_start(ETK_BOX(vbox), button_radio, ETK_FALSE, ETK_FALSE, 0);
    
    button_radio = etk_radio_button_new_from_widget(ETK_RADIO_BUTTON(button_radio));
-   etk_box_pack_start(ETK_BOX(vbox), button_radio, FALSE, FALSE, 0);
+   etk_box_pack_start(ETK_BOX(vbox), button_radio, ETK_FALSE, ETK_FALSE, 0);
    
    button_toggle = etk_toggle_button_new_with_label(_("Toggle button"));
-   etk_box_pack_start(ETK_BOX(vbox), button_toggle, FALSE, FALSE, 0);
+   etk_box_pack_start(ETK_BOX(vbox), button_toggle, ETK_FALSE, ETK_FALSE, 0);
    
    button_toggle = etk_toggle_button_new();
-   etk_box_pack_start(ETK_BOX(vbox), button_toggle, FALSE, FALSE, 0);
+   etk_box_pack_start(ETK_BOX(vbox), button_toggle, ETK_FALSE, ETK_FALSE, 0);
    
    return alignment;
 }
@@ -161,15 +161,15 @@ static Etk_Widget *_etk_test_notebook_page3_widget_create()
    Etk_Widget *hbox;
    Etk_Widget *slider;
    
-   hbox = etk_hbox_new(TRUE, 0);
+   hbox = etk_hbox_new(ETK_TRUE, 0);
    
    slider = etk_hslider_new(0.0, 255.0, 128.0, 1.0, 10.0);
    etk_widget_size_request_set(slider, 130, 130);
-   etk_box_pack_start(ETK_BOX(hbox), slider, TRUE, TRUE, 0);
+   etk_box_pack_start(ETK_BOX(hbox), slider, ETK_TRUE, ETK_TRUE, 0);
    
    slider = etk_vslider_new(0.0, 255.0, 128.0, 1.0, 10.0);
    etk_widget_size_request_set(slider, 130, 130);
-   etk_box_pack_end(ETK_BOX(hbox), slider, TRUE, TRUE, 0);
+   etk_box_pack_end(ETK_BOX(hbox), slider, ETK_TRUE, ETK_TRUE, 0);
 
    return hbox;
 }

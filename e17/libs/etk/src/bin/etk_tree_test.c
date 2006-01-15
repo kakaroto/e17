@@ -3,9 +3,6 @@
 #include <stdlib.h>
 #include "config.h"
 
-/* TODO: Etk_Theme */
-#define ETK_DEFAULT_ICON_SET_FILE PACKAGE_DATA_DIR "/stock_icons/default.edj"
-
 static void _etk_test_tree_add_items(Etk_Tree *tree, int n);
 static void _etk_test_tree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data);
 static void _etk_test_tree_row_unselected(Etk_Object *object, Etk_Tree_Row *row, void *data);
@@ -17,7 +14,7 @@ static void _etk_test_tree_add_5000_cb(Etk_Object *object, void *data);
 static void _etk_test_tree_sort_cb(Etk_Object *object, void *data);
 static int _etk_test_tree_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data);
 
-static Etk_Bool ascendant = TRUE;
+static Etk_Bool ascendant = ETK_TRUE;
 
 /* Creates the window for the tree test */
 void etk_test_tree_window_create(void *data)
@@ -43,7 +40,7 @@ void etk_test_tree_window_create(void *data)
    etk_window_title_set(ETK_WINDOW(win), _("Etk Tree Test"));
    etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
 	
-   table = etk_table_new(2, 3, FALSE);
+   table = etk_table_new(2, 3, ETK_FALSE);
    etk_container_add(ETK_CONTAINER(win), table);
 
    /* The tree: */
@@ -55,9 +52,9 @@ void etk_test_tree_window_create(void *data)
    etk_table_attach_defaults(ETK_TABLE(table), tree, 0, 0, 1, 1);
 
    etk_tree_mode_set(ETK_TREE(tree), ETK_TREE_MODE_TREE);
-   etk_tree_multiple_select_set(ETK_TREE(tree), TRUE);
+   etk_tree_multiple_select_set(ETK_TREE(tree), ETK_TRUE);
    col1 = etk_tree_col_new(ETK_TREE(tree), _("Column 1"), etk_tree_model_icon_text_new(ETK_TREE(tree), ETK_TREE_FROM_EDJE), 60);
-   etk_tree_col_expand_set(col1, TRUE);
+   etk_tree_col_expand_set(col1, ETK_TRUE);
    col2 = etk_tree_col_new(ETK_TREE(tree), _("Column 2"), etk_tree_model_double_new(ETK_TREE(tree)), 60);
    col3 = etk_tree_col_new(ETK_TREE(tree), _("Column 3"), etk_tree_model_image_new(ETK_TREE(tree), ETK_TREE_FROM_FILE), 60);
    etk_tree_build(ETK_TREE(tree));
@@ -65,11 +62,11 @@ void etk_test_tree_window_create(void *data)
    etk_tree_freeze(ETK_TREE(tree));
    for (i = 0; i < 1000; i++)
    {
-      row = etk_tree_append(ETK_TREE(tree), col1, ETK_DEFAULT_ICON_SET_FILE, "mimetypes/x-directory-normal-home", _("Row1"),
+      row = etk_tree_append(ETK_TREE(tree), col1, etk_theme_icon_theme_get(), "places/user-home_16", _("Row1"),
          col2, 10.0, col3, PACKAGE_DATA_DIR "/images/1star.png", NULL);
-      row = etk_tree_append_to_row(row, col1, ETK_DEFAULT_ICON_SET_FILE, "mimetypes/x-directory-normal", _("Row2"),
+      row = etk_tree_append_to_row(row, col1, etk_theme_icon_theme_get(), "places/folder_16", _("Row2"),
          col2, 20.0, col3, PACKAGE_DATA_DIR "/images/2stars.png", NULL);
-      etk_tree_append_to_row(row, col1, ETK_DEFAULT_ICON_SET_FILE, "mimetypes/text-x-generic", _("Row3"),
+      etk_tree_append_to_row(row, col1, etk_theme_icon_theme_get(), "mimetypes/text-x-generic_16", _("Row3"),
          col2, 30.0, col3, PACKAGE_DATA_DIR "/images/3stars.png", NULL);
    }
    etk_tree_thaw(ETK_TREE(tree));
@@ -83,7 +80,7 @@ void etk_test_tree_window_create(void *data)
    etk_table_attach_defaults(ETK_TABLE(table), tree, 1, 1, 1, 1);
 
    etk_tree_mode_set(ETK_TREE(tree), ETK_TREE_MODE_LIST);
-   etk_tree_multiple_select_set(ETK_TREE(tree), TRUE);
+   etk_tree_multiple_select_set(ETK_TREE(tree), ETK_TRUE);
    col1 = etk_tree_col_new(ETK_TREE(tree), _("Column 1"), etk_tree_model_icon_text_new(ETK_TREE(tree), ETK_TREE_FROM_FILE), 90);
    col2 = etk_tree_col_new(ETK_TREE(tree), _("Column 2"), etk_tree_model_int_new(ETK_TREE(tree)), 90);
    col3 = etk_tree_col_new(ETK_TREE(tree), _("Column 3"), etk_tree_model_image_new(ETK_TREE(tree), ETK_TREE_FROM_FILE), 90);
@@ -96,32 +93,32 @@ void etk_test_tree_window_create(void *data)
    /* Frame */
    frame = etk_frame_new(_("List Actions"));
    etk_table_attach(ETK_TABLE(table), frame, 0, 1, 2, 2, 0, 0, ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL);
-   hbox = etk_hbox_new(TRUE, 10);
+   hbox = etk_hbox_new(ETK_TRUE, 10);
    etk_container_add(ETK_CONTAINER(frame), hbox);
 
    button = etk_button_new_with_label(_("Clear"));
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_tree_clear_list_cb), tree);
-   etk_box_pack_start(ETK_BOX(hbox), button, TRUE, TRUE, 0);
+   etk_box_pack_start(ETK_BOX(hbox), button, ETK_TRUE, ETK_TRUE, 0);
 
    button = etk_button_new_with_label(_("Add 5 rows"));
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_tree_add_5_cb), tree);
-   etk_box_pack_start(ETK_BOX(hbox), button, TRUE, TRUE, 0);
+   etk_box_pack_start(ETK_BOX(hbox), button, ETK_TRUE, ETK_TRUE, 0);
 
    button = etk_button_new_with_label(_("Add 50 rows"));
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_tree_add_50_cb), tree);
-   etk_box_pack_start(ETK_BOX(hbox), button, TRUE, TRUE, 0);
+   etk_box_pack_start(ETK_BOX(hbox), button, ETK_TRUE, ETK_TRUE, 0);
 
    button = etk_button_new_with_label(_("Add 500 rows"));
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_tree_add_500_cb), tree);
-   etk_box_pack_start(ETK_BOX(hbox), button, TRUE, TRUE, 0);
+   etk_box_pack_start(ETK_BOX(hbox), button, ETK_TRUE, ETK_TRUE, 0);
 
    button = etk_button_new_with_label(_("Add 5000 rows"));
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_tree_add_5000_cb), tree);
-   etk_box_pack_start(ETK_BOX(hbox), button, TRUE, TRUE, 0);
+   etk_box_pack_start(ETK_BOX(hbox), button, ETK_TRUE, ETK_TRUE, 0);
    
    button = etk_button_new_with_label(_("Sort"));
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_tree_sort_cb), tree);
-   etk_box_pack_start(ETK_BOX(hbox), button, TRUE, TRUE, 0);
+   etk_box_pack_start(ETK_BOX(hbox), button, ETK_TRUE, ETK_TRUE, 0);
 
    etk_widget_show_all(win);
 }

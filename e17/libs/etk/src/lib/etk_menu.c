@@ -196,9 +196,9 @@ static void _etk_menu_constructor(Etk_Menu *menu)
       return;
       
    menu->window = ETK_WINDOW(etk_widget_new(ETK_WINDOW_TYPE, NULL));
-   etk_window_decorated_set(menu->window, FALSE);
-   etk_window_skip_taskbar_hint_set(menu->window, TRUE);
-   etk_window_skip_pager_hint_set(menu->window, TRUE);
+   etk_window_decorated_set(menu->window, ETK_FALSE);
+   etk_window_skip_taskbar_hint_set(menu->window, ETK_TRUE);
+   etk_window_skip_pager_hint_set(menu->window, ETK_TRUE);
    
    etk_container_add(ETK_CONTAINER(menu->window), ETK_WIDGET(menu));
    ETK_WIDGET(menu)->size_request = _etk_menu_size_request;
@@ -271,8 +271,8 @@ static void _etk_menu_items_update(Etk_Menu_Shell *menu_shell)
 {
    Etk_Menu *menu;
    Evas_List *l;
-   Etk_Bool items_has_image = FALSE;
-   Etk_Bool items_has_right_element = FALSE;
+   Etk_Bool items_has_image = ETK_FALSE;
+   Etk_Bool items_has_right_element = ETK_FALSE;
    Etk_Menu_Item *i;
    
    if (!(menu = ETK_MENU(menu_shell)))
@@ -283,9 +283,9 @@ static void _etk_menu_items_update(Etk_Menu_Shell *menu_shell)
       i = ETK_MENU_ITEM(l->data);
       
       if (i->image)
-         items_has_image = TRUE;
+         items_has_image = ETK_TRUE;
       if (i->submenu)
-         items_has_right_element = TRUE;
+         items_has_right_element = ETK_TRUE;
    }
    
    for (l = ETK_CONTAINER(menu_shell)->children; l; l = l->next)
@@ -341,7 +341,7 @@ static int _etk_menu_mouse_up_cb(void *data, int type, void *event)
    Etk_Menu *menu, *m;
    Evas_List *l;
    Ecore_X_Event_Mouse_Button_Up *mouse_event;
-   Etk_Bool pointer_over_menu = FALSE;
+   Etk_Bool pointer_over_menu = ETK_FALSE;
    
    if (!(menu = ETK_MENU(data)) || !(mouse_event = event) || mouse_event->win != _etk_menu_input_window)
       return 1;
@@ -355,7 +355,7 @@ static int _etk_menu_mouse_up_cb(void *data, int type, void *event)
       etk_window_geometry_get(m->window, &mx, &my, &mw, &mh);
       if (_etk_menu_mouse_x >= mx && _etk_menu_mouse_x <= mx + mw && _etk_menu_mouse_y >= my && _etk_menu_mouse_y <= my + mh)
       {
-         pointer_over_menu = TRUE;
+         pointer_over_menu = ETK_TRUE;
          evas_event_feed_mouse_up(ETK_TOPLEVEL_WIDGET(m->window)->evas, mouse_event->button, EVAS_BUTTON_NONE, mouse_event->time, NULL);
          if (!_etk_menu_popped_menus)
             break;

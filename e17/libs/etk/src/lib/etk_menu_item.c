@@ -81,7 +81,7 @@ Etk_Type *etk_menu_item_type_get()
  */
 Etk_Widget *etk_menu_item_new()
 {
-   return etk_widget_new(ETK_MENU_ITEM_TYPE, "theme_group", "menu_item", "visible", TRUE, NULL);
+   return etk_widget_new(ETK_MENU_ITEM_TYPE, "theme_group", "menu_item", "visible", ETK_TRUE, NULL);
 }
 
 /**
@@ -91,7 +91,7 @@ Etk_Widget *etk_menu_item_new()
  */
 Etk_Widget *etk_menu_item_new_with_label(const char *label)
 {
-   return etk_widget_new(ETK_MENU_ITEM_TYPE, "theme_group", "menu_item", "visible", TRUE, "label", label, NULL);
+   return etk_widget_new(ETK_MENU_ITEM_TYPE, "theme_group", "menu_item", "visible", ETK_TRUE, "label", label, NULL);
 }
 
 /**
@@ -140,7 +140,7 @@ void etk_menu_item_select(Etk_Menu_Item *menu_item)
    if (!menu_item || menu_item->is_selected)
       return;
    
-   menu_item->is_selected = TRUE;
+   menu_item->is_selected = ETK_TRUE;
    etk_signal_emit(_etk_menu_item_signals[ETK_MENU_ITEM_SELECTED_SIGNAL], ETK_OBJECT(menu_item), NULL);
 }
 
@@ -153,7 +153,7 @@ void etk_menu_item_deselect(Etk_Menu_Item *menu_item)
    if (!menu_item || !menu_item->is_selected)
       return;
    
-   menu_item->is_selected = FALSE;
+   menu_item->is_selected = ETK_FALSE;
    etk_signal_emit(_etk_menu_item_signals[ETK_MENU_ITEM_DESELECTED_SIGNAL], ETK_OBJECT(menu_item), NULL);
 }
 
@@ -187,14 +187,14 @@ void etk_menu_item_submenu_set(Etk_Menu_Item *menu_item, Etk_Menu *submenu)
       /* TODO: disconnect */
       etk_signal_connect("realize", ETK_OBJECT(menu_item->right_widget), ETK_CALLBACK(_etk_menu_item_right_widget_realize_cb), menu_item);
       etk_widget_parent_set(menu_item->right_widget, ETK_CONTAINER(menu_item));
-      etk_widget_pass_events_set(menu_item->right_widget, TRUE);
-      menu_item->right_widget_is_arrow = TRUE;
+      etk_widget_pass_events_set(menu_item->right_widget, ETK_TRUE);
+      menu_item->right_widget_is_arrow = ETK_TRUE;
    }
    else if (!menu_item->submenu && menu_item->right_widget && menu_item->right_widget_is_arrow)
    {
       etk_object_destroy(ETK_OBJECT(menu_item->right_widget));
       menu_item->right_widget = NULL;
-      menu_item->right_widget_is_arrow = FALSE;
+      menu_item->right_widget_is_arrow = ETK_FALSE;
    }
    
    etk_menu_item_right_swallow_show(menu_item, menu_item->submenu != NULL);
@@ -228,7 +228,7 @@ void etk_menu_item_image_set(Etk_Menu_Item *menu_item, Etk_Image *image)
       /* TODO: disconnect */
       etk_signal_connect("realize", ETK_OBJECT(image_widget), ETK_CALLBACK(_etk_menu_item_image_realize_cb), menu_item);
       etk_widget_parent_set(image_widget, ETK_CONTAINER(menu_item));
-      etk_widget_pass_events_set(image_widget, TRUE);
+      etk_widget_pass_events_set(image_widget, ETK_TRUE);
       menu_item->image = image;
    }
    
@@ -240,7 +240,7 @@ void etk_menu_item_image_set(Etk_Menu_Item *menu_item, Etk_Image *image)
 /**
  * @brief Show the image swallow area of the menu item. It's a function used by etk_menu, do not use it manually!
  * @param menu_item a menu item
- * @param show TRUE whether the image swallow area should be show or not
+ * @param show ETK_TRUE whether the image swallow area should be show or not
  */
 void etk_menu_item_image_show(Etk_Menu_Item *menu_item, Etk_Bool show)
 {
@@ -257,7 +257,7 @@ void etk_menu_item_image_show(Etk_Menu_Item *menu_item, Etk_Bool show)
 /**
  * @brief Show the right swallow area of the menu item. It's a function used by Etk_Menu, do not use it manually!
  * @param menu_item a menu item
- * @param show TRUE whether the right swallow area should be show or not
+ * @param show ETK_TRUE whether the right swallow area should be show or not
  */
 void etk_menu_item_right_swallow_show(Etk_Menu_Item *menu_item, Etk_Bool show)
 {
@@ -298,7 +298,7 @@ Etk_Type *etk_menu_separator_type_get()
  */
 Etk_Widget *etk_menu_separator_new()
 {
-   return etk_widget_new(ETK_MENU_SEPARATOR_TYPE, "theme_group", "menu_separator", "visible", TRUE, NULL);
+   return etk_widget_new(ETK_MENU_SEPARATOR_TYPE, "theme_group", "menu_separator", "visible", ETK_TRUE, NULL);
 }
 
 /**************************
@@ -323,9 +323,9 @@ static void _etk_menu_item_constructor(Etk_Menu_Item *menu_item)
    menu_item->image = NULL;
    menu_item->right_widget = NULL;
    
-   menu_item->is_selected = FALSE;
-   menu_item->show_image = FALSE;
-   menu_item->show_right_swallow = FALSE;
+   menu_item->is_selected = ETK_FALSE;
+   menu_item->show_image = ETK_FALSE;
+   menu_item->show_right_swallow = ETK_FALSE;
    
    etk_signal_connect("realize", ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_menu_item_realize_cb), NULL);
 }

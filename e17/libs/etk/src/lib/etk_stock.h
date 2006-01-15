@@ -9,6 +9,13 @@
  * @{
  */
 
+enum _Etk_Stock_Size
+{
+   ETK_STOCK_SMALL,     /* 16x16 */
+   ETK_STOCK_MEDIUM,    /* 22x22 */
+   ETK_STOCK_BIG,       /* 48x48 */
+};
+
 /* TODO: doc */
 enum _Etk_Stock_Id
 {
@@ -26,7 +33,7 @@ enum _Etk_Stock_Id
    ETK_NUM_STOCK_IDS
 };
 
-char *etk_stock_key_get(Etk_Stock_Id stock_id);
+char *etk_stock_key_get(Etk_Stock_Id stock_id, Etk_Stock_Size size);
 char *etk_stock_label_get(Etk_Stock_Id stock_id);
 
 /** @} */

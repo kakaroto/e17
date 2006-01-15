@@ -106,7 +106,7 @@ Etk_Widget *etk_colorpicker_square_new(int map_width, int map_height)
  */
 void etk_colorpicker_square_map_size_set(Etk_Colorpicker_Square *cps, int map_width, int map_height)
 {
-   Etk_Bool need_resize = FALSE;
+   Etk_Bool need_resize = ETK_FALSE;
 
    if (!cps)
       return;
@@ -115,13 +115,13 @@ void etk_colorpicker_square_map_size_set(Etk_Colorpicker_Square *cps, int map_wi
    {
       cps->map_width = map_width;
       etk_object_notify(ETK_OBJECT(cps), "map_width");
-      need_resize = TRUE;
+      need_resize = ETK_TRUE;
    }
    if (cps->map_height != map_height)
    {
       cps->map_height = map_height;
       etk_object_notify(ETK_OBJECT(cps), "map_height");
-      need_resize = TRUE;
+      need_resize = ETK_TRUE;
    }
 
    if (need_resize)
@@ -323,7 +323,7 @@ static void _etk_colorpicker_square_constructor(Etk_Colorpicker_Square *cps)
    cps->color_mode = ETK_COLOR_MODE_H;
    cps->cursor_x = 0;
    cps->cursor_y = 0;
-   cps->drag = FALSE;
+   cps->drag = ETK_FALSE;
    cps->current_color.r = 255;
    cps->current_color.g = 0;
    cps->current_color.b = 0;
@@ -496,7 +496,7 @@ static void _etk_colorpicker_square_down_cb(Etk_Object *w, void *ev_data, void *
 
    etk_colorpicker_square_cursor_xy_set(cps, ETK_CLAMP((ev->widget.x * 255) / ETK_WIDGET(cps)->geometry.w, 0, 255),
       ETK_CLAMP((ev->widget.y * 255) / ETK_WIDGET(cps)->geometry.h, 0, 255));
-   cps->drag = TRUE;
+   cps->drag = ETK_TRUE;
 }
 
 /* Called when a mouse button is released */
@@ -507,7 +507,7 @@ static void _etk_colorpicker_square_up_cb(Etk_Object *w, void *ev_data, void *us
    if (!(cps = ETK_COLORPICKER_SQUARE(w)))
       return;
   
-   cps->drag = FALSE;
+   cps->drag = ETK_FALSE;
 }
 
 

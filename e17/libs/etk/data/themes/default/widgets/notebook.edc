@@ -75,7 +75,7 @@ group {
          description {
             state: "inactive" 0.0;
             inherit: "default" 0.0;
-            color: 255 255 255 160;
+            color: 255 255 255 100;
          }
       }
       part {
@@ -207,6 +207,7 @@ group {
             image {
                normal: "notebook_frame.png";
                border: 3 3 8 3;
+               middle: 0;
             }
             fill {
                smooth: 0;

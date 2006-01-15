@@ -38,19 +38,19 @@ void etk_test_menu_window_create(void *data)
    /****************
     * The window
     ****************/
-   vbox = etk_vbox_new(FALSE, 0);
+   vbox = etk_vbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(win), vbox);
    
    menu_bar = etk_menu_bar_new();
-   etk_box_pack_start(ETK_BOX(vbox), menu_bar, FALSE, FALSE, 0);
+   etk_box_pack_start(ETK_BOX(vbox), menu_bar, ETK_FALSE, ETK_FALSE, 0);
    
    label = etk_label_new(_("Click me :)"));
    etk_label_alignment_set(ETK_LABEL(label), 0.5, 0.5);
-   etk_widget_pass_events_set(label, TRUE);
-   etk_box_pack_start(ETK_BOX(vbox), label, TRUE, TRUE, 0);
+   etk_widget_pass_events_set(label, ETK_TRUE);
+   etk_box_pack_start(ETK_BOX(vbox), label, ETK_TRUE, ETK_TRUE, 0);
    
    statusbar = etk_statusbar_new();
-   etk_box_pack_end(ETK_BOX(vbox), statusbar, FALSE, FALSE, 0);
+   etk_box_pack_end(ETK_BOX(vbox), statusbar, ETK_FALSE, ETK_FALSE, 0);
    
    /****************
     * Menu Bar
@@ -133,7 +133,7 @@ static Etk_Widget *_etk_test_menu_item_new(Etk_Test_Menu_Item_Type item_type, co
    {
       Etk_Widget *image;
       
-      image = etk_image_new_from_stock(stock_id);
+      image = etk_image_new_from_stock(stock_id, ETK_STOCK_SMALL);
       etk_menu_item_image_set(ETK_MENU_ITEM(menu_item), ETK_IMAGE(image));
    }
    etk_menu_shell_append(menu_shell, ETK_MENU_ITEM(menu_item));

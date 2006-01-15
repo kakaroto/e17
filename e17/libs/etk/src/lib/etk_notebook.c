@@ -62,7 +62,13 @@ Etk_Widget *etk_notebook_new()
    return etk_widget_new(ETK_NOTEBOOK_TYPE, NULL);
 }
 
-/* TODO */
+/**
+ * @brief Creates a new page and appends it to the notebook
+ * @param notebook a notebook
+ * @param tab_label the text to display in the tab
+ * @param page_widget the widget to display when the tab of the page is activated
+ * @return Returns the place of the new page (starting from 0), or -1 if it failed
+ */
 int etk_notebook_page_append(Etk_Notebook *notebook, const char *tab_label, Etk_Widget *page_widget)
 {
    Etk_Notebook_Page *new_page;
@@ -76,7 +82,13 @@ int etk_notebook_page_append(Etk_Notebook *notebook, const char *tab_label, Etk_
    return evas_list_count(notebook->pages) - 1;
 }
 
-/* TODO */
+/**
+ * @brief Creates a new page and prepends it to the notebook
+ * @param notebook a notebook
+ * @param tab_label the text to display in the tab
+ * @param page_widget the widget to display when the tab of the page is activated
+ * @return Returns the place of the new page (will be always 0 since the page is prepended), or -1 if it failed
+ */
 int etk_notebook_page_prepend(Etk_Notebook *notebook, const char *tab_label, Etk_Widget *page_widget)
 {
    Etk_Notebook_Page *new_page;
@@ -90,7 +102,12 @@ int etk_notebook_page_prepend(Etk_Notebook *notebook, const char *tab_label, Etk
    return 0;
 }
 
-/* TODO */
+/**
+ * @brief Sets the label of the tab of a page of the notebook
+ * @param notebook a notebook
+ * @param page_num the number of the page to set the tab label to
+ * @param tab_label the new label of the tab
+ */
 void etk_notebook_page_tab_label_set(Etk_Notebook *notebook, int page_num, const char *tab_label)
 {
    Etk_Notebook_Page *page;
@@ -100,7 +117,13 @@ void etk_notebook_page_tab_label_set(Etk_Notebook *notebook, int page_num, const
    etk_button_label_set(ETK_BUTTON(page->tab), tab_label);
 }
 
-/* TODO */
+/**
+ * @brief Sets the widget to use as child of a tab of the notebook. @n
+ * You can for example set a hbox containing an icon, a text label and a close button
+ * @param notebook a notebook
+ * @param page_num the number of the page to set the tab widget to
+ * @param tab_widget the new widget to use as child of the tab
+ */
 void etk_notebook_page_tab_widget_set(Etk_Notebook *notebook, int page_num, Etk_Widget *tab_widget)
 {
    Etk_Notebook_Page *page;
@@ -110,6 +133,12 @@ void etk_notebook_page_tab_widget_set(Etk_Notebook *notebook, int page_num, Etk_
    etk_bin_child_set(ETK_BIN(page->tab), tab_widget);
 }
 
+/**
+ * @brief Sets the widget to display when the corresponding tab is activated
+ * @param notebook a notebook
+ * @param page_num the number of the page to set the page widget to
+ * @param child the new widget to display when the corresponding tab is activated
+ */
 void etk_notebook_page_child_set(Etk_Notebook *notebook, int page_num, Etk_Widget *child)
 {
    Etk_Notebook_Page *page;
@@ -119,7 +148,11 @@ void etk_notebook_page_child_set(Etk_Notebook *notebook, int page_num, Etk_Widge
    etk_bin_child_set(ETK_BIN(page->page_frame), child);
 }
 
-/* TODO */
+/**
+ * @brief Sets the current page of the notebook
+ * @param notebook a notebook
+ * @param page_num the number of the page to set as current
+ */
 void etk_notebook_current_page_set(Etk_Notebook *notebook, int page_num)
 {
    Etk_Notebook_Page *page;
@@ -129,7 +162,11 @@ void etk_notebook_current_page_set(Etk_Notebook *notebook, int page_num)
    etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(page->tab), 1);
 }
 
-/* TODO */
+/**
+ * @brief Gets the current page of the notebook
+ * @param notebook a notebook
+ * @return Returns the number of the current page of the notebook
+ */
 int etk_notebook_current_page_get(Etk_Notebook *notebook)
 {
    int i;
@@ -250,8 +287,6 @@ static void _etk_notebook_size_allocate(Etk_Widget *widget, Etk_Geometry geometr
          max_tab_height = tab_requisition.h;
    }
    
-   /* TODO */
-   //tab_offset = (geometry.w - tabs_width) * 0.5;
    tab_offset = 0;
    tab_geometry.y = geometry.y;
    tab_geometry.h = max_tab_height;
@@ -283,17 +318,25 @@ static void _etk_notebook_child_add(Etk_Container *container, Etk_Widget *widget
 /* Removes the child from the notebook */
 static void _etk_notebook_child_remove(Etk_Container *container, Etk_Widget *widget)
 {
-   /*Etk_Notebook *notebook;
+   Etk_Notebook *notebook;
+   Evas_List *l;
+   Etk_Notebook_Page *page;
 
    if (!(notebook = ETK_NOTEBOOK(container)) || !widget)
       return;
 
-   if (notebook->child != widget)
-      return;
-
-   etk_widget_parent_set(widget, NULL);
-   notebook->child = NULL;
-   etk_widget_size_recalc_queue(ETK_WIDGET(notebook));*/
+   for (l = notebook->pages; l; l = l->next)
+   {
+      page = l->data;
+      if (widget == etk_bin_child_get(ETK_BIN(page->page_frame)))
+      {
+         etk_widget_parent_set(widget, NULL);
+         free(page);
+         notebook->pages = evas_list_remove_list(notebook->pages, l);
+         return;
+      }
+   }
+   etk_widget_size_recalc_queue(ETK_WIDGET(notebook));
 }
 
 /**************************
@@ -345,13 +388,13 @@ static Etk_Notebook_Page *_etk_notebook_page_create(Etk_Notebook *notebook, cons
       "group", prev_page ? etk_radio_button_group_get(ETK_RADIO_BUTTON(prev_page->tab)) : NULL, NULL);
    etk_object_data_set(ETK_OBJECT(new_page->tab), "_Etk_Notebook::Page", new_page);
    etk_widget_parent_set(new_page->tab, ETK_CONTAINER(notebook));
-   etk_widget_visibility_locked_set(new_page->tab, TRUE);
+   etk_widget_visibility_locked_set(new_page->tab, ETK_TRUE);
    etk_widget_show(new_page->tab);
    etk_signal_connect("toggled", ETK_OBJECT(new_page->tab), ETK_CALLBACK(_etk_notebook_tab_toggled_cb), notebook);
    
    new_page->page_frame = etk_widget_new(ETK_BIN_TYPE, "theme_group", "notebook_frame", NULL);
    etk_widget_parent_set(new_page->page_frame, ETK_CONTAINER(notebook));
-   etk_widget_visibility_locked_set(new_page->page_frame, TRUE);
+   etk_widget_visibility_locked_set(new_page->page_frame, ETK_TRUE);
    etk_widget_hide(new_page->page_frame);
    
    etk_bin_child_set(ETK_BIN(new_page->page_frame), page_widget);

@@ -178,11 +178,11 @@ static void _etk_scrolled_view_constructor(Etk_Scrolled_View *scrolled_view)
    scrolled_view->vpolicy = ETK_POLICY_AUTO;
 
    scrolled_view->hscrollbar = etk_hscrollbar_new(0.0, 0.0, 0.0, 6.0, 40.0, 0.0);
-   etk_widget_visibility_locked_set(scrolled_view->hscrollbar, TRUE);
+   etk_widget_visibility_locked_set(scrolled_view->hscrollbar, ETK_TRUE);
    etk_widget_parent_set(scrolled_view->hscrollbar, ETK_CONTAINER(scrolled_view));
    etk_widget_show(scrolled_view->hscrollbar);
    scrolled_view->vscrollbar = etk_vscrollbar_new(0.0, 0.0, 0.0, 6.0, 40.0, 0.0);
-   etk_widget_visibility_locked_set(scrolled_view->vscrollbar, TRUE);
+   etk_widget_visibility_locked_set(scrolled_view->vscrollbar, ETK_TRUE);
    etk_widget_parent_set(scrolled_view->vscrollbar, ETK_CONTAINER(scrolled_view));
    etk_widget_show(scrolled_view->vscrollbar);
 
@@ -250,8 +250,8 @@ static void _etk_scrolled_view_size_request(Etk_Widget *widget, Etk_Size *size_r
 
    if (ETK_BIN(scrolled_view)->child)
    {
-      etk_widget_size_request_full(scrolled_view->hscrollbar, &hscrollbar_requisition, FALSE);
-      etk_widget_size_request_full(scrolled_view->vscrollbar, &vscrollbar_requisition, FALSE);
+      etk_widget_size_request_full(scrolled_view->hscrollbar, &hscrollbar_requisition, ETK_FALSE);
+      etk_widget_size_request_full(scrolled_view->vscrollbar, &vscrollbar_requisition, ETK_FALSE);
       etk_widget_size_request(ETK_BIN(scrolled_view)->child, &child_requisition);
 
       size_requisition->w = ETK_MAX(child_requisition.w, hscrollbar_requisition.w + vscrollbar_requisition.w);
@@ -272,7 +272,7 @@ static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry ge
    Etk_Size scroll_size;
    Etk_Geometry child_geometry;
    Etk_Widget *child;
-   Etk_Bool show_vscrollbar = FALSE, show_hscrollbar = FALSE;
+   Etk_Bool show_vscrollbar = ETK_FALSE, show_hscrollbar = ETK_FALSE;
    int visible_width, visible_height;
    
    if (!(scrolled_view = ETK_SCROLLED_VIEW(widget)))
@@ -288,9 +288,9 @@ static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry ge
    }
 
    if (scrolled_view->hpolicy == ETK_POLICY_AUTO || scrolled_view->hpolicy == ETK_POLICY_SHOW)
-      etk_widget_size_request_full(scrolled_view->hscrollbar, &hscrollbar_requisition, FALSE);
+      etk_widget_size_request_full(scrolled_view->hscrollbar, &hscrollbar_requisition, ETK_FALSE);
    if (scrolled_view->vpolicy == ETK_POLICY_AUTO || scrolled_view->vpolicy == ETK_POLICY_SHOW)
-      etk_widget_size_request_full(scrolled_view->vscrollbar, &vscrollbar_requisition, FALSE);
+      etk_widget_size_request_full(scrolled_view->vscrollbar, &vscrollbar_requisition, ETK_FALSE);
    child->scroll_size_get(child, &scroll_size);
    
    visible_width = geometry.w;
@@ -305,13 +305,13 @@ static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry ge
    }
    
    if ((scrolled_view->hpolicy == ETK_POLICY_AUTO && scroll_size.w > visible_width) || scrolled_view->hpolicy == ETK_POLICY_SHOW)
-      show_hscrollbar = TRUE;
+      show_hscrollbar = ETK_TRUE;
    if ((scrolled_view->vpolicy == ETK_POLICY_AUTO && scroll_size.h > (visible_height - (show_hscrollbar ? hscrollbar_requisition.h : 0))) ||
       scrolled_view->vpolicy == ETK_POLICY_SHOW)
    {
-      show_vscrollbar = TRUE;
+      show_vscrollbar = ETK_TRUE;
       if (scrolled_view->hpolicy == ETK_POLICY_AUTO && scroll_size.w > (visible_width - vscrollbar_requisition.w))
-         show_hscrollbar = TRUE;
+         show_hscrollbar = ETK_TRUE;
    }
 
    if (show_hscrollbar)
@@ -367,7 +367,7 @@ static void _etk_scrolled_view_key_down_cb(Etk_Object *object, void *event, void
    Etk_Event_Key_Up_Down *key_event = event;
    Etk_Range *hscrollbar_range;
    Etk_Range *vscrollbar_range;
-   Etk_Bool propagate = FALSE;
+   Etk_Bool propagate = ETK_FALSE;
 
    if (!(scrolled_view = ETK_SCROLLED_VIEW(object)))
       return;
@@ -391,7 +391,7 @@ static void _etk_scrolled_view_key_down_cb(Etk_Object *object, void *event, void
    else if (strcmp(key_event->key, "Prior") == 0)
       etk_range_value_set(vscrollbar_range, vscrollbar_range->value - vscrollbar_range->page_increment);
    else
-      propagate = TRUE;
+      propagate = ETK_TRUE;
    
    if (!propagate)
       etk_widget_event_propagation_stop();

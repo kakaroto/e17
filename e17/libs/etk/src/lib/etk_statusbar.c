@@ -65,7 +65,7 @@ Etk_Type *etk_statusbar_type_get()
       _etk_statusbar_signals[ETK_STATUSBAR_TEXT_POPPED_SIGNAL] = etk_signal_new("text_popped", statusbar_type, -1, etk_marshaller_VOID__INT_POINTER, NULL, NULL);
       _etk_statusbar_signals[ETK_STATUSBAR_TEXT_PUSHED_SIGNAL] = etk_signal_new("text_pushed", statusbar_type, -1, etk_marshaller_VOID__INT_POINTER, NULL, NULL);
       
-      etk_type_property_add(statusbar_type, "has_resize_grip", ETK_STATUSBAR_HAS_RESIZE_GRIP_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(TRUE));
+      etk_type_property_add(statusbar_type, "has_resize_grip", ETK_STATUSBAR_HAS_RESIZE_GRIP_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
       
       statusbar_type->property_set = _etk_statusbar_property_set;
       statusbar_type->property_get = _etk_statusbar_property_get;
@@ -198,7 +198,7 @@ void etk_statusbar_remove(Etk_Statusbar *statusbar, int message_id)
 /**
  * @brief Sets whether the status bar has a resize grip
  * @param status bar a status bar
- * @param has_resize_grip @a has_resize_grip == TRUE if the statusbar should have a resize grip
+ * @param has_resize_grip @a has_resize_grip == ETK_TRUE if the statusbar should have a resize grip
  */
 void etk_statusbar_has_resize_grip_set(Etk_Statusbar *statusbar, Etk_Bool has_resize_grip)
 {
@@ -213,12 +213,12 @@ void etk_statusbar_has_resize_grip_set(Etk_Statusbar *statusbar, Etk_Bool has_re
 /**
  * @brief Gets whether the status bar has a resize grip
  * @param status bar a status bar
- * @return Returns TRUE if the statusbar has a resize grip
+ * @return Returns ETK_TRUE if the statusbar has a resize grip
  */
 Etk_Bool etk_statusbar_has_resize_grip_get(Etk_Statusbar *statusbar)
 {
    if (!statusbar)
-      return FALSE;
+      return ETK_FALSE;
    return statusbar->has_resize_grip;
 }
 
@@ -234,7 +234,7 @@ static void _etk_statusbar_constructor(Etk_Statusbar *statusbar)
    if (!statusbar)
       return;
 
-   statusbar->has_resize_grip = TRUE;
+   statusbar->has_resize_grip = ETK_TRUE;
    statusbar->msg_stack = NULL;
    statusbar->next_message_id = 0;
    statusbar->next_context_id = 0;

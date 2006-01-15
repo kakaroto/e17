@@ -51,7 +51,7 @@ Etk_Type *etk_table_type_get()
    
       etk_type_property_add(table_type, "num_cols", ETK_TABLE_NUM_COLS_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(0));
       etk_type_property_add(table_type, "num_rows", ETK_TABLE_NUM_ROWS_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(0));
-      etk_type_property_add(table_type, "homogeneous", ETK_TABLE_HOMOGENEOUS_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_bool(FALSE));
+      etk_type_property_add(table_type, "homogeneous", ETK_TABLE_HOMOGENEOUS_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_bool(ETK_FALSE));
       
       table_type->property_set = _etk_table_property_set;
       table_type->property_get = _etk_table_property_get;
@@ -285,12 +285,12 @@ void etk_table_homogeneous_set(Etk_Table *table, Etk_Bool homogeneous)
 /**
  * @brief Checks if the table is homogenous
  * @param table a table
- * @return Returns TRUE if the table is homogeneous, FALSE otherwise
+ * @return Returns ETK_TRUE if the table is homogeneous, ETK_FALSE otherwise
  */
 Etk_Bool etk_table_homogeneous_get(Etk_Table *table)
 {
    if (!table)
-      return FALSE;
+      return ETK_FALSE;
    return table->homogeneous;
 }
 
@@ -311,7 +311,7 @@ static void _etk_table_constructor(Etk_Table *table)
    table->rows = NULL;
    table->num_cols = 0;
    table->num_rows = 0;
-   table->homogeneous = FALSE;
+   table->homogeneous = ETK_FALSE;
 
    ETK_CONTAINER(table)->child_add = _etk_table_child_add;
    ETK_CONTAINER(table)->child_remove = _etk_table_child_remove;
@@ -403,7 +403,7 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
       {
          int max_col_width = ETK_TABLE_CELL_MIN_SIZE, max_row_height = ETK_TABLE_CELL_MIN_SIZE;
          int cell_size;
-         Etk_Bool hexpand = FALSE, vexpand = FALSE;
+         Etk_Bool hexpand = ETK_FALSE, vexpand = ETK_FALSE;
    
          /* We calculate the maximum size of a cell */
          for (l = container->children; l; l = l->next)
@@ -443,12 +443,12 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
          for (i = 0; i < table->num_cols; i++)
          {
             table->cols[i].requested_size = ETK_TABLE_CELL_MIN_SIZE;
-            table->cols[i].expand = FALSE;
+            table->cols[i].expand = ETK_FALSE;
          }
          for (i = 0; i < table->num_rows; i++)
          {
             table->rows[i].requested_size = ETK_TABLE_CELL_MIN_SIZE;
-            table->rows[i].expand = FALSE;
+            table->rows[i].expand = ETK_FALSE;
          }
 
          /* We first treat the children that span only one column or one row */
@@ -492,20 +492,20 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
             {
                cells_size = 0;
                num_expandable_cells = 0;
-               a_cell_already_expands = FALSE;
+               a_cell_already_expands = ETK_FALSE;
                
                for (i = child_properties->left_attach; i <= child_properties->right_attach; i++)
                {
                   if (table->cols[i].expand)
                   {
-                     a_cell_already_expands = TRUE;
+                     a_cell_already_expands = ETK_TRUE;
                      break;
                   }
                }
                if (!a_cell_already_expands)
                {
                   for (i = child_properties->left_attach; i <= child_properties->right_attach; i++)
-                     table->cols[i].expand = TRUE;
+                     table->cols[i].expand = ETK_TRUE;
                }
                   
                for (i = child_properties->left_attach; i <= child_properties->right_attach; i++)
@@ -544,20 +544,20 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
             {
                cells_size = 0;
                num_expandable_cells = 0;
-               a_cell_already_expands = FALSE;
+               a_cell_already_expands = ETK_FALSE;
                
                for (i = child_properties->top_attach; i <= child_properties->bottom_attach; i++)
                {
                   if (table->rows[i].expand)
                   {
-                     a_cell_already_expands = TRUE;
+                     a_cell_already_expands = ETK_TRUE;
                      break;
                   }
                }
                if (!a_cell_already_expands)
                {
                   for (i = child_properties->top_attach; i <= child_properties->bottom_attach; i++)
-                     table->rows[i].expand = TRUE;
+                     table->rows[i].expand = ETK_TRUE;
                }
                
                for (i = child_properties->top_attach; i <= child_properties->bottom_attach; i++)
