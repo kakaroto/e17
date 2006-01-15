@@ -86,7 +86,7 @@ struct Ewl_Container
 	Ewl_Child_Add    child_add; /**< Function called on child add */
 	Ewl_Child_Remove child_remove; /**< Function called on child remove */
 	Ewl_Child_Resize child_resize; /**< Function called on child resize */
-	Ewl_Child_Show   child_show; /**< Function called on child hide */
+	Ewl_Child_Show   child_show; /**< Function called on child show */
 	Ewl_Child_Hide   child_hide; /**< Function called on child hide */
 
 	Ewl_Container_Iterator iterator; /**< Function to find next child */
