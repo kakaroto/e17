@@ -15,7 +15,6 @@ dist-hook:
 	    cp -pR $$file $(distdir)/data; \
 	  done \
 	fi
-							  
 
 EXTRA_DIST = AUTHORS COPYING COPYING-PLAIN INSTALL NEWS README e_utils.spec \
 	     debian/control debian/copyright debian/changelog.in \

@@ -152,7 +152,7 @@ if test "x$have_imlib2" = "xyes" -a "x$have_ecore" = "xyes" -a "x$have_engrave" 
   build_e17setroot="yes"
 fi
 
-if test "x$have_eet" = "xyes" -a "x$have_evas" = "xyes" -a "x$have_ecore" = "xyes" -a "x$have_edje" = "xyes" -a "x$have_esmart" = "xyes"; then
+if test "x$have_eet" = "xyes" -a "x$have_evas" = "xyes" -a "x$have_ecore" = "xyes" -a "x$have_edje" = "xyes" -a "x$have_esmart" = "xyes" -a "x$have_enlightenment" = "xyes"; then
   build_entangle="yes"
 fi
 
