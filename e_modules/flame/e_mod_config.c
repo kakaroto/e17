@@ -1,12 +1,11 @@
-#include "e.h"
+#include <e.h>
 #include "e_mod_main.h"
 #include "e_mod_config.h"
 #include "config.h"
 
-typedef struct _cfdata CFData;
 typedef struct _Cfg_File_Data Cfg_File_Data;
 
-struct _cfdata 
+struct _E_Config_Dialog_Data 
 {
    int palette;
    int r,g,b;
@@ -19,12 +18,12 @@ struct _Cfg_File_Data
 };
 
 /* Protos */
-static void *_create_data(E_Config_Dialog *cfd);
-static void _free_data(E_Config_Dialog *cfd, CFData *cfdata);
-static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata);
-static int _basic_apply_data(E_Config_Dialog *cfd, CFData *cfdata);
-static Evas_Object *_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata);
-static int _advanced_apply_data(E_Config_Dialog *cfd, CFData *cfdata);
+static void        *_create_data(E_Config_Dialog *cfd);
+static void        _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
+static int         _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static Evas_Object *_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
+static int         _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 
 void
 _config_flame_module(E_Container *con, Flame *fl) 
@@ -43,8 +42,16 @@ _config_flame_module(E_Container *con, Flame *fl)
    fl->config_dialog = cfd;
 }
 
+static void *
+_create_data(E_Config_Dialog *cfd) 
+{
+   E_Config_Dialog_Data *cfdata;
+   cfdata = E_NEW(E_Config_Dialog_Data, 1);
+   return cfdata;
+}
+
 static void 
-_fill_data(Flame *f, CFData *cfdata) 
+_fill_data(Flame *f, E_Config_Dialog_Data *cfdata) 
 {
    cfdata->palette = f->conf->palette_type;
    cfdata->r = f->conf->r;
@@ -52,20 +59,8 @@ _fill_data(Flame *f, CFData *cfdata)
    cfdata->b = f->conf->b;
 }
 
-static void *
-_create_data(E_Config_Dialog *cfd) 
-{
-   CFData *cfdata;
-   Flame *f;
-   
-   f = cfd->data;
-   cfdata = E_NEW(CFData, 1);
-   //_fill_data(f, cfdata);
-   return cfdata;
-}
-
 static void
-_free_data(E_Config_Dialog *cfd, CFData *cfdata) 
+_free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
 {
    Flame *f;
    
@@ -75,7 +70,7 @@ _free_data(E_Config_Dialog *cfd, CFData *cfdata)
 }
 
 static Evas_Object *
-_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata) 
+_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata) 
 {
    Evas_Object *o, *of, *ob;
    E_Radio_Group *rg;
@@ -104,7 +99,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata)
 }
 
 static int
-_basic_apply_data(E_Config_Dialog *cfd, CFData *cfdata) 
+_basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
 {
    Flame *f;
    
@@ -153,7 +148,7 @@ _basic_apply_data(E_Config_Dialog *cfd, CFData *cfdata)
 }
 
 static Evas_Object *
-_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata) 
+_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata) 
 {
    Evas_Object *o, *of, *ob;
    Flame *f;
@@ -184,7 +179,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata)
 }
 
 static int
-_advanced_apply_data(E_Config_Dialog *cfd, CFData *cfdata) 
+_advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
 {
    Flame *f;
    
