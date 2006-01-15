@@ -120,6 +120,11 @@ ewl_init(int *argc, char **argv)
 
 	ewl_init_parse_options(argc, argv);
 
+	if (!evas_init()) {
+		DERROR("Could not init evas....\n");
+		DRETURN_INT(--_ewl_init_count, DLEVEL_STABLE);
+	}
+
 	if (!ecore_init()) {
 		DERROR("Could not init ecore....\n");
 		DRETURN_INT(--_ewl_init_count, DLEVEL_STABLE);
@@ -137,6 +142,8 @@ ewl_init(int *argc, char **argv)
 		ecore_shutdown();
 		DRETURN_INT(--_ewl_init_count, DLEVEL_STABLE);
 	}
+
+
 
 	reveal_list = ecore_list_new();
 	obscure_list = ecore_list_new();
@@ -314,6 +321,7 @@ ewl_shutdown(void)
 	child_add_list = NULL;
 
 	edje_shutdown();
+	evas_shutdown();
 
 #ifdef ENABLE_EWL_SOFTWARE_X11
 	if (use_engine & EWL_ENGINE_X11) 
@@ -710,11 +718,11 @@ ewl_configure_queue(void)
 			}
 
 			ewl_object_queued_add(EWL_OBJECT(w),
-					EWL_FLAG_QUEUED_CPROCESS);
+				EWL_FLAG_QUEUED_CPROCESS);
 			if (REALIZED(w) && VISIBLE(w) && !OBSCURED(w))
 				ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
 			ewl_object_queued_remove(EWL_OBJECT(w),
-						 EWL_FLAG_QUEUED_CPROCESS);
+				EWL_FLAG_QUEUED_CPROCESS);
 		}
 	}
 
