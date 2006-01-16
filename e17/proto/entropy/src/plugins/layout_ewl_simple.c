@@ -817,6 +817,21 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 	ewl_callback_append(EWL_WIDGET(item), EWL_CALLBACK_CLICKED, layout_ewl_simple_structure_view_show_cb, layout);
 	ewl_widget_show(item);
 
+
+	menu = ewl_menu_new();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(menu), "Debug");
+	ewl_container_child_append(EWL_CONTAINER(menubar), menu);
+	ewl_object_fill_policy_set(EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
+	ewl_widget_show(menu);
+
+	item = ewl_menu_item_new();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "File Cache");
+	ewl_container_child_append(EWL_CONTAINER(menu), item);
+	ewl_widget_show(item);
+
+
+	
+
 	
 	
 	menu = ewl_spacer_new();

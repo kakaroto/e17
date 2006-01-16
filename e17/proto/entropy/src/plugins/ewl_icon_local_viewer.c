@@ -4,6 +4,7 @@
 #include "entropy_config.h"
 #include "ewl_properties_dialog.h"
 #include "ewl_progress_dialog.h"
+#include "ewl_rename_dialog.h"
 #include <dlfcn.h>
 #include <time.h>
 
@@ -31,13 +32,6 @@ typedef struct event_idle_processor {
 	int terminate;
 } event_idle_processor;
 
-
-
-void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret, void* user_data);
-void ewl_icon_local_viewer_delete_selected(entropy_gui_component_instance* instance);
-
-
-
 typedef struct entropy_icon_viewer entropy_icon_viewer;
 struct entropy_icon_viewer {
 	Ewl_Widget* iconbox;
@@ -61,7 +55,41 @@ struct entropy_icon_viewer {
 };
 
 
-void entropy_file_wait_list_add(entropy_icon_viewer* viewer, Ecore_List* list) {
+int entropy_plugin_type_get();
+int entropy_plugin_sub_type_get();
+char* entropy_plugin_identify();
+
+void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret, void* user_data);
+void ewl_icon_local_viewer_delete_selected(entropy_gui_component_instance* instance);
+void ewl_iconbox_background_remove_cb(Ewl_Widget *w , void *ev, void *user_data );
+void ewl_iconbox_background_set_file_cb(Ewl_Widget *w , void *ev, void *user_data );
+void entropy_file_wait_list_add(entropy_icon_viewer* viewer, Ecore_List* list);
+void ewl_iconbox_background_set_cb(Ewl_Widget *w , void *ev_data , void *user_data );
+void hover_icon_mouse_move_cb(Ewl_Widget *w , void *ev_data , void *user_data );
+void icon_hover_properties_show_cb(Ewl_Widget *w , void *ev_data , void *user_data );
+void ewl_iconbox_file_paste_cb(Ewl_Widget *w , void *ev_data , void *user_data );
+void ewl_iconbox_file_copy_cb(Ewl_Widget *w , void *ev_data , void *user_data ) ;
+void icon_properties_cb(Ewl_Widget *w , void *ev_data , void *user_data ) ;
+void icon_click_cb(Ewl_Widget *w , void *ev_data , void *user_data );
+void ewl_icon_local_viewer_delete_cb(Ewl_Widget *w , void *ev_data , void *user_data );
+void ewl_icon_local_viewer_menu_rename_cb(Ewl_Widget *w , void *ev_data , void *user_data );
+
+
+int entropy_plugin_type_get() {
+        return ENTROPY_PLUGIN_GUI_COMPONENT;
+}
+
+int entropy_plugin_sub_type_get() {
+	return ENTROPY_PLUGIN_GUI_COMPONENT_LOCAL_VIEW;
+}
+
+char* entropy_plugin_identify() {
+	        return (char*)"Icon View";
+}
+
+
+void entropy_file_wait_list_add(entropy_icon_viewer* viewer, Ecore_List* list)
+{
 	ecore_hash_set(viewer->file_wait_list, list, list);
 }
 
@@ -69,7 +97,8 @@ void entropy_file_wait_list_add(entropy_icon_viewer* viewer, Ecore_List* list) {
 
 /*---------------------------*/
 /*Functions to handle custom background setting*/
-void ewl_iconbox_background_remove_cb(Ewl_Widget *w , void *ev, void *user_data ) {
+void ewl_iconbox_background_remove_cb(Ewl_Widget *w , void *ev, void *user_data ) 
+{
 	entropy_gui_component_instance* instance = user_data;
 	entropy_icon_viewer* viewer = instance->data;
 
@@ -77,7 +106,8 @@ void ewl_iconbox_background_remove_cb(Ewl_Widget *w , void *ev, void *user_data 
 }
 
 
-void ewl_iconbox_background_set_file_cb(Ewl_Widget *w , void *ev, void *user_data ) {
+void ewl_iconbox_background_set_file_cb(Ewl_Widget *w , void *ev, void *user_data ) 
+{
         Ewl_Dialog_Event *e;
 	entropy_gui_component_instance* instance = user_data;
 	entropy_icon_viewer* viewer = instance->data;
@@ -96,7 +126,8 @@ void ewl_iconbox_background_set_file_cb(Ewl_Widget *w , void *ev, void *user_dat
 
 }
 
-void ewl_iconbox_background_set_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
+void ewl_iconbox_background_set_cb(Ewl_Widget *w , void *ev_data , void *user_data ) 
+{
 	entropy_gui_component_instance* instance = user_data;
 	entropy_icon_viewer* viewer = instance->data;
 	
@@ -111,7 +142,8 @@ void ewl_iconbox_background_set_cb(Ewl_Widget *w , void *ev_data , void *user_da
 
 
 /*------------------------------*/
-void hover_icon_mouse_move_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
+void hover_icon_mouse_move_cb(Ewl_Widget *w , void *ev_data , void *user_data ) 
+{
 	entropy_gui_component_instance* instance = user_data;
 	entropy_icon_viewer* viewer = instance->data;
 	gui_file* local_file = ecore_hash_get( viewer->icon_hash, w);
@@ -126,14 +158,16 @@ void hover_icon_mouse_move_cb(Ewl_Widget *w , void *ev_data , void *user_data ) 
 	
 }
 
-void icon_hover_properties_show_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
+void icon_hover_properties_show_cb(Ewl_Widget *w , void *ev_data , void *user_data )
+{
 	entropy_gui_component_instance* instance = user_data;
 	entropy_icon_viewer* viewer = instance->data;
 }
 /*-----------------------------*/
 
 
-void ewl_iconbox_file_paste_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
+void ewl_iconbox_file_paste_cb(Ewl_Widget *w , void *ev_data , void *user_data )
+{
 	Ecore_List* selected;
 	entropy_generic_file* file;
 	entropy_gui_component_instance* instance = ((entropy_gui_component_instance*)user_data);
@@ -155,7 +189,8 @@ void ewl_iconbox_file_paste_cb(Ewl_Widget *w , void *ev_data , void *user_data )
 	}
 }
 
-void ewl_iconbox_file_copy_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
+void ewl_iconbox_file_copy_cb(Ewl_Widget *w , void *ev_data , void *user_data ) 
+{
 	Ecore_List* icon_list;
 	gui_file* file;
 	Ewl_Iconbox_Icon* list_item;
@@ -178,7 +213,8 @@ void ewl_iconbox_file_copy_cb(Ewl_Widget *w , void *ev_data , void *user_data ) 
 }
 
 
-void icon_properties_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
+void icon_properties_cb(Ewl_Widget *w , void *ev_data , void *user_data ) 
+{
 	entropy_gui_component_instance* instance = (entropy_gui_component_instance*)user_data;
 	entropy_icon_viewer* viewer = instance->data;
 	entropy_gui_event* gui_event;
@@ -198,7 +234,8 @@ void icon_properties_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
 	}
 }
 
-void icon_click_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
+void icon_click_cb(Ewl_Widget *w , void *ev_data , void *user_data ) 
+{
 	Ewl_Event_Mouse_Down *ev = ev_data;
 	entropy_gui_event* gui_event;
 	gui_file* local_file = ecore_hash_get( ((entropy_icon_viewer*)user_data)->icon_hash, w);
@@ -233,18 +270,6 @@ void gui_file_destroy(gui_file* file) {
 	allocated_gui_file--;
 	entropy_free(file);
 
-}
-
-int entropy_plugin_type_get() {
-        return ENTROPY_PLUGIN_GUI_COMPONENT;
-}
-
-int entropy_plugin_sub_type_get() {
-	return ENTROPY_PLUGIN_GUI_COMPONENT_LOCAL_VIEW;
-}
-
-char* entropy_plugin_identify() {
-	        return (char*)"Icon View";
 }
 
 void gui_object_destroy_and_free(entropy_gui_component_instance* comp, Ecore_Hash* gui_hash) {
@@ -289,7 +314,8 @@ void entropy_plugin_destroy(entropy_gui_component_instance* comp) {
 
 
 
-void ewl_icon_local_viewer_delete_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
+void ewl_icon_local_viewer_delete_cb(Ewl_Widget *w , void *ev_data , void *user_data ) 
+{
 	Ecore_List* file_list = user_data;
 	const char* text = ewl_button_label_get(EWL_BUTTON(w));
 	entropy_generic_file* file;
@@ -401,6 +427,31 @@ void ewl_icon_local_viewer_delete_selected(entropy_gui_component_instance* insta
 }
 
 
+
+void ewl_icon_local_viewer_menu_rename_cb(Ewl_Widget *w , void *ev_data , void *user_data ) 
+{
+	entropy_gui_component_instance* instance = user_data;
+	entropy_icon_viewer* viewer = instance->data;
+
+	Ecore_List* sel = ewl_iconbox_get_selection(EWL_ICONBOX(viewer->iconbox));
+
+	if (ecore_list_nodes(sel) == 1) {
+		Ewl_Iconbox_Icon* icon = ecore_list_remove_first(sel);
+		gui_file* local_file = ecore_hash_get( viewer->icon_hash, icon);
+
+		if (icon) {
+			printf("Rename dialog..\n");
+			entropy_core_file_cache_remove_reference(local_file->file->md5);
+			entropy_ewl_rename_dialog_new(entropy_file_gui_component_new_with_data(local_file->file,instance));
+		}
+	} else {
+		printf("Can't rename more than 1 file\n");
+	}
+
+	ecore_list_destroy(sel);
+}
+
+
 void ewl_icon_local_viewer_key_event_cb(Ewl_Iconbox* ib, void* data, char* key)  {
 	entropy_icon_viewer* viewer = ((entropy_gui_component_instance*)data)->data;
 	
@@ -502,7 +553,8 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	/*Icon menu*/
 	context = ewl_menu_item_new();
 	ewl_menu_item_text_set(EWL_MENU_ITEM(context), "Rename");
-	ewl_menu_item_image_set(EWL_MENU_ITEM(context), PACKAGE_DATA_DIR "/icons/e17_button_detail_delete.png");
+	ewl_menu_item_image_set(EWL_MENU_ITEM(context), PACKAGE_DATA_DIR "/icons/e17_button_detail_rename.png");
+	ewl_callback_append(context, EWL_CALLBACK_CLICKED, ewl_icon_local_viewer_menu_rename_cb, instance);
 	ewl_widget_show(context);
 	ewl_iconbox_icon_menu_item_add(EWL_ICONBOX(viewer->iconbox), context);
 
@@ -517,7 +569,7 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	/*Icon menu*/
 	context = ewl_menu_item_new();
 	ewl_menu_item_text_set(EWL_MENU_ITEM(context), "Properties");
-	ewl_menu_item_image_set(EWL_MENU_ITEM(context), PACKAGE_DATA_DIR "/icons/e17_button_detail_delete.png");
+	ewl_menu_item_image_set(EWL_MENU_ITEM(context), PACKAGE_DATA_DIR "/icons/e17_button_detail_properties.png");
 	ewl_widget_show(context);
 	ewl_iconbox_icon_menu_item_add(EWL_ICONBOX(viewer->iconbox), context);
 	ewl_callback_append(context, EWL_CALLBACK_CLICKED, icon_properties_cb, instance);

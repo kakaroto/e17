@@ -19,5 +19,17 @@
 void entropy_gui_component_instance_disable(entropy_gui_component_instance*);
 void entropy_gui_component_instance_enable(entropy_gui_component_instance*);
 
+/*A structure for dual-referencing a file, and a gui component instance*/
+typedef struct entropy_file_gui_component entropy_file_gui_component;
+struct entropy_file_gui_component {
+	entropy_generic_file* file;
+	entropy_gui_component_instance* instance;
+};
+
+entropy_file_gui_component* entropy_file_gui_component_new();
+void entropy_file_gui_component_destroy(entropy_file_gui_component*);
+entropy_file_gui_component* entropy_file_gui_component_new_with_data(entropy_generic_file* file, 
+					entropy_gui_component_instance* instance);
+
 #endif
 
