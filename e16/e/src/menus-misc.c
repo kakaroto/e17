@@ -291,6 +291,8 @@ FillFlatFileMenu(Menu * m, const char *name, const char *file)
 	return;
      }
 
+   MenuSetIconSize(m, 0);	/* Scale to default */
+
    count = 0;
    while (fgets(s, 4096, f))
      {

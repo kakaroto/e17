@@ -94,6 +94,7 @@ struct _menu
    MenuItem          **items;
    Window              win;
    PmapMask            pmm;
+   int                 icon_size;
    char                internal;	/* Don't destroy when reloading */
    char                dynamic;	/* May be emptied on close */
    char                shown;
@@ -448,6 +449,14 @@ MenuSetTitle(Menu * m, const char *title)
 }
 
 void
+MenuSetIconSize(Menu * m, int size)
+{
+   if (size > 48)
+      size = 48;
+   m->icon_size = size;
+}
+
+void
 MenuSetData(Menu * m, char *data)
 {
    if (m->data)
@@ -512,6 +521,7 @@ MenuCreate(const char *name, const char *title, Menu * parent, MenuStyle * ms)
    MenuSetName(m, name);
    MenuSetTitle(m, title);
    MenuSetStyle(m, ms);
+   m->icon_size = -1;		/* Use image size */
 
    return m;
 }
@@ -667,19 +677,27 @@ MenuRealize(Menu * m)
 	     im = ImageclassGetImage(m->items[i]->icon_iclass, 0, 0, 0);
 	     if (im)
 	       {
-		  imlib_context_set_image(im);
+		  w = h = 0;
+		  if (m->icon_size > 0)
+		     w = h = m->icon_size;
+		  else if (m->icon_size == 0)
+		     w = h = Conf.menus.icon_size;
+		  if (w <= 0 || h <= 0)
+		    {
+		       imlib_context_set_image(im);
+		       w = imlib_image_get_width();
+		       h = imlib_image_get_height();
+		       imlib_free_image();
+		    }
+		  m->items[i]->icon_w = w;
+		  m->items[i]->icon_h = h;
 		  m->items[i]->icon_win =
-		     ECreateWindow(m->items[i]->win, 0, 0,
-				   imlib_image_get_width(),
-				   imlib_image_get_height(), 0);
+		     ECreateWindow(m->items[i]->win, 0, 0, w, h, 0);
 		  EMapWindow(m->items[i]->icon_win);
-		  m->items[i]->icon_w = imlib_image_get_width();
-		  m->items[i]->icon_h = imlib_image_get_height();
-		  if (imlib_image_get_height() > maxh)
-		     maxh = imlib_image_get_height();
-		  if (imlib_image_get_width() > maxx2)
-		     maxx2 = imlib_image_get_width();
-		  imlib_free_image();
+		  if (h > maxh)
+		     maxh = h;
+		  if (w > maxx2)
+		     maxx2 = w;
 	       }
 	     else
 		m->items[i]->icon_iclass = NULL;
@@ -2096,6 +2114,7 @@ static const CfgItem MenusCfgItems[] = {
    CFG_ITEM_BOOL(Conf.menus, onscreen, 1),
    CFG_ITEM_BOOL(Conf.menus, warp, 1),
    CFG_ITEM_BOOL(Conf.menus, show_icons, 1),
+   CFG_ITEM_INT(Conf.menus, icon_size, 16),
    CFG_ITEM_INT(Conf.menus, opacity, 220),
    CFG_ITEM_INT(Conf.menus, key.left, XK_Left),
    CFG_ITEM_INT(Conf.menus, key.right, XK_Right),

@@ -310,31 +310,14 @@ sub ProcessOldStyle {
 	}
 }
 
-# Create scaled 18x18 pixel icon
-sub ScaleIcon {
-	local $f = shift;
-	local $g = $f;
-
-	return $f unless $DoConvert;
-
-	$g =~ s/^.*\///;
-	$g =~ s/\..*$//;
-	$g = "$EdirIcons/$g.png";
-	system("convert -geometry 16x16 $f $g");
-
-	return $g;
-}
-
 # Find that $#@! thing
 sub FindIcon {
 	local $f = shift;
+	local $x = "x";
 
 	return $f if (! $f);
 
-	if (-f $f) {
-		$i = ScaleIcon($f);
-		return $i;
-	}
+	return $f if (-f $f);
 
 	foreach $d (split(':', $IconDirs)) {
 		$i = "$d/$f";
@@ -343,31 +326,22 @@ sub FindIcon {
 			$i = "$i.png";
 			next unless -f $i;
 		}
-		$i = ScaleIcon($i);
 		return $i;
 	}
 
 	foreach $d (split(':', $IconDirs2)) {
+		next unless (-d "$d");
 		foreach $t (split(':', $Themes)) {
-			foreach $u (split(':', "apps:filesystems:actions:devices")) {
-				$i = "$d/$t/16x16/$u/$f";
-				$i = "$i.png" unless ($f =~ /\.png$/);
-				print "Testing $i\n" if $dbg >= 2;
-				next unless -f $i;
-				return $i;
-			}
-		}
-	}
-
-	foreach $d (split(':', $IconDirs2)) {
-		foreach $t (split(':', $Themes)) {
-			foreach $u (split(':', "apps:filesystems:actions:devices")) {
-				$i = "$d/$t/48x48/$u/$f";
-				$i = "$i.png" unless ($f =~ /\.png$/);
-				print "Testing $i\n" if $dbg >= 2;
-				next unless -f $i;
-				$i = ScaleIcon($i);
-				return $i;
+			next unless (-d "$d/$t");
+			foreach $s (split(':', "16:24:32:48")) {
+				next unless (-d "$d/$t/$s$x$s");
+				foreach $u (split(':', "apps:filesystems:actions:devices")) {
+					next unless (-d "$d/$t/$s$x$s/$u");
+					$i = "$d/$t/$s$x$s/$u/$f";
+					$i = "$i.png" unless ($f =~ /\.png$/);
+					print "Testing $i\n" if $dbg >= 2;
+					return $i if (-f $i);
+				}
 			}
 		}
 	}
@@ -391,7 +365,6 @@ sub MakeEppsMenu {
 		foreach $e (@el) {
 			$e =~ s/\.epplet$//;
 			$i = "$EdirRoot/epplet_icons/$e.icon";
-			$i = ScaleIcon("$i") if -f "$i";
 			print FD "\"$e\" \"$i\" exec \"$d/$e.epplet\"\n";
 		}
 	}

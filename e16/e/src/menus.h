@@ -49,6 +49,7 @@ void                MenuSetName(Menu * m, const char *name);
 void                MenuSetAlias(Menu * m, const char *alias);
 void                MenuSetStyle(Menu * m, MenuStyle * ms);
 void                MenuSetTitle(Menu * m, const char *title);
+void                MenuSetIconSize(Menu * m, int size);
 void                MenuSetData(Menu * m, char *data);
 void                MenuSetLoader(Menu * m, MenuLoader * loader);
 void                MenuSetTimestamp(Menu * m, time_t t);
