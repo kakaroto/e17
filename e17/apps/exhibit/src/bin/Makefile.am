@@ -32,6 +32,6 @@ exhibit_tab.c \
 exhibit_slideshow.c \
 exhibit_favorites.c \
 exhibit_options.c \
-$(exhibit_includes)
+$(exhibit_INCLUDES)
 
 exhibit_LDADD = @my_libs@
