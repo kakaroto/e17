@@ -683,11 +683,9 @@ DeskBackgroundSet(Desk * dsk, Background * bg)
 
    if (dsk->bg.bg != bg)
      {
+	DeskBackgroundFree(dsk, 1);
 	if (dsk->bg.bg)
-	  {
-	     DeskBackgroundFree(dsk, 1);
-	     BackgroundDecRefcount(dsk->bg.bg);
-	  }
+	   BackgroundDecRefcount(dsk->bg.bg);
 	if (bg)
 	   BackgroundIncRefcount(bg);
      }
