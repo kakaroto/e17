@@ -482,12 +482,12 @@ static void _etk_image_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    {
       if (image->keep_aspect)
       {
-         float aspect_ratio;
+         double aspect_ratio;
          int image_w, image_h;
          int new_size;
 
          evas_object_image_size_get(image->image_object, &image_w, &image_h);
-         aspect_ratio = (float)image_w / image_h;
+         aspect_ratio = (double)image_w / image_h;
 
          if (geometry.h * aspect_ratio > geometry.w)
          {
