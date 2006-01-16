@@ -97,6 +97,31 @@ void ewl_layout_simple_about_dialog_cb(Ewl_Widget *item, void *ev_data, void *us
 }
 
 
+void structure_configure_cb(Ewl_Widget *item, void *ev_data, void *user_data) 
+{
+	Ewl_Widget* parent = item;
+	entropy_gui_component_instance* instance = user_data;
+	entropy_layout_gui* layout = instance->data;
+
+	/*printf("Structure configutre..%p\nHierarchy: ", item);
+	while (parent->parent) {
+		printf("'%s' : ", parent->inheritance);
+		if (VISIBLE(parent)) 
+			printf("VISIBLE ");
+		else
+			printf("INVISIBLE ");
+
+		if (OBSCURED(parent)) 
+			printf("OBSCURED \n");
+		else
+			printf("UNOBSC \n");
+
+		
+		parent = parent->parent;
+	}
+	printf("\n");
+	printf("\n\n");*/
+}
 
 /*TODO/FIXME - This needs a rewrite, to be dynamic, and wizard-based*/
 void location_add_execute_cb(Ewl_Widget *item, void *ev_data, void *user_data) 
@@ -432,6 +457,9 @@ void layout_ewl_simple_add_header(entropy_gui_component_instance* instance, char
 				;// printf("Visual component found\n");
 			ewl_container_child_append(EWL_CONTAINER(hbox), visual);
 			ewl_object_fill_policy_set(EWL_OBJECT(visual), EWL_FLAG_FILL_HFILL);
+
+			ewl_callback_append(visual, EWL_CALLBACK_CONFIGURE, structure_configure_cb, instance);
+			
 			ewl_widget_show(visual);
 		}
 	}
@@ -517,6 +545,8 @@ void layout_ewl_simple_structure_view_cb (Ewl_Widget *main_win, void *ev_data, v
 
 	/*entropy_gui_component_instance_disable(layout->structure_viewer);
 	ewl_widget_hide(EWL_WIDGET(layout->structure_viewer->gui_object));*/
+
+	printf("Hiding tree...\n");
 
 	ewl_widget_hide(layout->tree);
 }
@@ -715,6 +745,7 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 	ewl_window_title_set(EWL_WINDOW(win), "Entropy");
 	ewl_window_name_set(EWL_WINDOW(win), "Entropy");
 	ewl_window_class_set(EWL_WINDOW(win), "Entropy");
+	
 	ewl_object_size_request(EWL_OBJECT(win), 800,600);
 
 	ewl_object_maximum_size_set(EWL_OBJECT(contract_button), 20, 10);
@@ -876,7 +907,6 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 
 	/*Tooltip display function*/
 	entropy_ewl_layout_simple_tooltip_window();
-	
 
 	layout->gui_object = win;
 	ewl_widget_show(win);

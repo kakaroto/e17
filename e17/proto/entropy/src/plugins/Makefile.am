@@ -27,15 +27,17 @@ LAYOUT_ETK_L =
 pkg_LTLIBRARIES		= $(MIME_L) $(THUMBNAILER_L) $(POSIX_L) $(LAYOUT_L) $(EWL_LOCAL_ICON_L) $(STRUCTURE_VIEWER_L) $(SYSTEM_THUMBNAILER_L) $(ACTION_SIMPLE_L) $(LAYOUT_ETK_L) $(EWL_LIST_L) $(REMOTE_THUMBNAILER_L) $(DISTRIB_THUMBNAILER_L)
 
 ewl_local_icon_la_SOURCES      = 	$(top_srcdir)/src/entropy_gui.c \
-					ewl_progress_dialog.c \
-					ewl_icon_local_viewer.c ewl_properties_dialog.c $(top_srcdir)/src/entropy_debug.c
+					$(top_srcdir)/src/dialogs/ewl_progress_dialog.c \
+					ewl_icon_local_viewer.c $(top_srcdir)/src/dialogs/ewl_properties_dialog.c \
+					$(top_srcdir)/src/entropy_debug.c
 ewl_local_icon_la_CFLAGS       = @EWL_CFLAGS@
 ewl_local_icon_la_LDFLAGS      = -module -avoid-version
 ewl_local_icon_la_LIBADD       = @EWL_LIBS@
 
 ewl_list_la_SOURCES      =        $(top_srcdir)/src/entropy_gui.c \
-                                        ewl_progress_dialog.c \
-                                        ewl_list_viewer.c ewl_properties_dialog.c $(top_srcdir)/src/entropy_debug.c
+                                        $(top_srcdir)/src/dialogs/ewl_progress_dialog.c \
+                                        ewl_list_viewer.c $(top_srcdir)/src/dialogs/ewl_properties_dialog.c \
+					$(top_srcdir)/src/entropy_debug.c
 ewl_list_la_CFLAGS       = @EWL_CFLAGS@
 ewl_list_la_LDFLAGS      = -module -avoid-version
 ewl_list_la_LIBADD       = @EWL_LIBS@
@@ -55,8 +57,9 @@ action_simple_la_LIBADD        = @EWL_LIBS@
 
 
 layout_ewl_simple_la_SOURCES   = $(top_srcdir)/src/entropy_gui.c \
-				ewl_mime_dialog.c layout_ewl_simple.c $(top_srcdir)/src/entropy_debug.c \
-				 ewl_tip.c ewl_about_dialog.c
+				$(top_srcdir)/src/dialogs/ewl_mime_dialog.c layout_ewl_simple.c $(top_srcdir)/src/entropy_debug.c \
+				 $(top_srcdir)/src/dialogs/ewl_tip.c \
+				 $(top_srcdir)/src/dialogs/ewl_about_dialog.c
 layout_ewl_simple_la_CFLAGS    = @EWL_CFLAGS@
 layout_ewl_simple_la_LDFLAGS   = -module -avoid-version
 layout_ewl_simple_la_LIBADD    = @EWL_LIBS@
