@@ -714,24 +714,32 @@ int main(int argc, char **argv)
    TEST(pix_blend_mmx_sparse ,"pix_blend_mmx_sparse_destalpha", alpha_dst, 1);
    TEST(pix_blend_sse_sparse ,"pix_blend_sse_sparse_destalpha", alpha_dst, 1);
    TEST(pix_blend_sse2_sparse ,"pix_blend_sse2_sparse_destalpha", alpha_dst, 1);
-/*
+/*   
+   printf(" ---- \n");
    TH_TEST(2, pix_copy_memcpy, "pix_copy_memcpy th", solid_dst, 0);
    TH_TEST(2, pix_copy_c, "pix_copy_c th", solid_dst, 0);
    TH_TEST(2, pix_copy_mmx, "pix_copy_mmx th", solid_dst, 0);
    TH_TEST(2, pix_copy_sse, "pix_copy_sse th", solid_dst, 0);
-   
+   TH_TEST(2, pix_copy_sse2, "pix_copy_sse2 th", solid_dst, 0);
+   printf(" -- \n");
    TH_TEST(2, pix_blend_c, "pix_blend_c th", solid_dst, 0);
+   TH_TEST(2, pix_blend_c2, "pix_blend_c2 th", solid_dst, 0);
    TH_TEST(2, pix_blend_mmx, "pix_blend_mmx th", solid_dst, 0);
    TH_TEST(2, pix_blend_sse, "pix_blend_sse th", solid_dst, 0);
+   TH_TEST(2, pix_blend_sse2, "pix_blend_sse2 th", solid_dst, 0);
    TH_TEST(2, pix_blend_c_sparse, "pix_blend_c_sparse th", solid_dst, 0);
+   TH_TEST(2, pix_blend_c2_sparse, "pix_blend_c2_sparse th", solid_dst, 0);
    TH_TEST(2, pix_blend_mmx_sparse, "pix_blend_mmx_sparse th", solid_dst, 0);
    TH_TEST(2, pix_blend_sse_sparse, "pix_blend_sse_sparse th", solid_dst, 0);
-
+   TH_TEST(2, pix_blend_sse2_sparse, "pix_blend_sse2_sparse th", solid_dst, 0);
+   printf(" -- \n");
    TH_TEST(2, pix_blend_c_destalpha ,"pix_blend_c_destalpha th", alpha_dst, 1);
    TH_TEST(2, pix_blend_mmx ,"pix_blend_mmx_destalpha th", alpha_dst, 1);
    TH_TEST(2, pix_blend_sse ,"pix_blend_sse_destalpha th", alpha_dst, 1);
+   TH_TEST(2, pix_blend_sse2 ,"pix_blend_sse2_destalpha th", alpha_dst, 1);
    TH_TEST(2, pix_blend_c_sparse_destalpha ,"pix_blend_c_sparse_destalpha th", alpha_dst, 1);
    TH_TEST(2, pix_blend_mmx_sparse ,"pix_blend_mmx_sparse_destalpha th", alpha_dst, 1);
    TH_TEST(2, pix_blend_sse_sparse ,"pix_blend_sse_sparse_destalpha th", alpha_dst, 1);
+   TH_TEST(2, pix_blend_sse2_sparse ,"pix_blend_sse2_sparse_destalpha th", alpha_dst, 1);
  */
 }
