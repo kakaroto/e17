@@ -707,10 +707,12 @@ int main(int argc, char **argv)
    TEST(pix_blend_sse2_sparse, "pix_blend_sse2_sparse", solid_dst, 0);
    printf(" -- \n");
    TEST(pix_blend_c_destalpha ,"pix_blend_c_destalpha", alpha_dst, 1);
+   TEST(pix_blend_c2 ,"pix_blend_c2_destalpha", alpha_dst, 1);
    TEST(pix_blend_mmx ,"pix_blend_mmx_destalpha", alpha_dst, 1);
    TEST(pix_blend_sse ,"pix_blend_sse_destalpha", alpha_dst, 1);
    TEST(pix_blend_sse2 ,"pix_blend_sse2_destalpha", alpha_dst, 1);
    TEST(pix_blend_c_sparse_destalpha ,"pix_blend_c_sparse_destalpha", alpha_dst, 1);
+   TEST(pix_blend_c2_sparse, "pix_blend_c2_sparse_destalpha", alpha_dst, 1);
    TEST(pix_blend_mmx_sparse ,"pix_blend_mmx_sparse_destalpha", alpha_dst, 1);
    TEST(pix_blend_sse_sparse ,"pix_blend_sse_sparse_destalpha", alpha_dst, 1);
    TEST(pix_blend_sse2_sparse ,"pix_blend_sse2_sparse_destalpha", alpha_dst, 1);
