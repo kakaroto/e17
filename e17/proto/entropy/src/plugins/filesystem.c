@@ -691,3 +691,25 @@ void entropy_filesystem_file_remove(entropy_generic_file* file) {
 	
 }
 
+
+void entropy_filesystem_file_rename(entropy_generic_file* file_from, entropy_generic_file* file_to) {
+	evfs_file_uri_path* uri_path_from;
+	evfs_file_uri_path* uri_path_to;
+
+	char* uri_from = entropy_core_generic_file_uri_create(file_from,0);
+	char* uri_to = entropy_core_generic_file_uri_create(file_to,0);
+
+	uri_path_from = evfs_parse_uri(uri_from);
+	uri_path_to = evfs_parse_uri(uri_to);
+
+	
+	evfs_client_file_remove(con, uri_path_from->files[0]);
+
+
+	free(uri_from);
+	free(uri_to);
+	free(uri_path_from);
+	free(uri_path_to);
+	
+}
+
