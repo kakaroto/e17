@@ -42,7 +42,9 @@ static void _etk_filechooser_widget_constructor(Etk_Filechooser_Widget *filechoo
 static void _etk_filechooser_widget_destructor(Etk_Filechooser_Widget *filechooser_widget);
 static void _etk_filechooser_widget_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_filechooser_widget_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
+static void _etk_filechooser_widget_favs_get(Etk_Filechooser_Widget *filechooser_widget);
 static void _etk_filechooser_widget_dir_row_selected_cb(Etk_Object *object, Etk_Tree_Row *row, void *data);
+static void _etk_filechooser_widget_fav_row_selected_cb(Etk_Object *object, Etk_Tree_Row *row, void *data);
 
 static Etk_Filechooser_Widget_Icons _etk_file_chooser_icons[] =
 {
@@ -97,8 +99,8 @@ Etk_Type *etk_filechooser_widget_type_get()
 }
 
 /**
- * @brief Creates a new status bar
- * @return Returns the new status bar widget
+ * @brief Creates a new file chooser widget
+ * @return Returns the new file chooser widget
  */
 Etk_Widget *etk_filechooser_widget_new()
 {
@@ -236,11 +238,7 @@ static void _etk_filechooser_widget_constructor(Etk_Filechooser_Widget *fcw)
    etk_tree_build(ETK_TREE(fcw->fav_tree));
    etk_widget_show(fcw->fav_tree);
    
-   etk_tree_append(ETK_TREE(fcw->fav_tree), fcw->fav_col, etk_theme_icon_theme_get(), "devices/drive-harddisk_16", "Root", NULL);
-   etk_tree_append(ETK_TREE(fcw->fav_tree), fcw->fav_col, etk_theme_icon_theme_get(), "places/user-home_16", "Home", NULL);
-   etk_tree_append(ETK_TREE(fcw->fav_tree), fcw->fav_col, etk_theme_icon_theme_get(), "places/folder_16", "Musics", NULL);
-   etk_tree_append(ETK_TREE(fcw->fav_tree), fcw->fav_col, etk_theme_icon_theme_get(), "places/folder_16", "Videos", NULL);
-   etk_tree_append(ETK_TREE(fcw->fav_tree), fcw->fav_col, etk_theme_icon_theme_get(), "places/folder_16", "Images", NULL);
+   etk_signal_connect("row_selected", ETK_OBJECT(fcw->fav_tree), ETK_CALLBACK(_etk_filechooser_widget_fav_row_selected_cb), fcw);
    
    fcw->files_tree = etk_tree_new();
    etk_widget_visibility_locked_set(fcw->files_tree, ETK_TRUE);
@@ -251,7 +249,8 @@ static void _etk_filechooser_widget_constructor(Etk_Filechooser_Widget *fcw)
    fcw->files_date_col = etk_tree_col_new(ETK_TREE(fcw->files_tree), "Date", etk_tree_model_text_new(ETK_TREE(fcw->files_tree)), 60);
    etk_tree_build(ETK_TREE(fcw->files_tree));
    etk_widget_show(fcw->files_tree);
-   
+
+   _etk_filechooser_widget_favs_get(ETK_FILECHOOSER_WIDGET(fcw));   
    
    fcw->current_folder = NULL;
    /* Go to home */
@@ -302,6 +301,41 @@ static void _etk_filechooser_widget_property_get(Etk_Object *object, int propert
    }
 }
 
+/* Get favorites from file in ~/ETK_FILECHOOSER_FAVS */
+static void _etk_filechooser_widget_favs_get(Etk_Filechooser_Widget *filechooser_widget)
+{
+   char *folder;
+   char file_path[PATH_MAX];
+   char fav[PATH_MAX];
+   char line[PATH_MAX];
+   FILE *f;
+   
+   if (!filechooser_widget)
+     return;
+   if (!(folder = getenv("HOME")))
+     return;
+   
+   snprintf(file_path, sizeof(file_path), "%s/%s", folder, ETK_FILECHOOSER_FAVS);
+     
+   if((f = fopen (file_path, "r")) == NULL)
+     return;
+   
+   etk_tree_freeze(ETK_TREE(filechooser_widget->fav_tree));
+   etk_tree_clear(ETK_TREE(filechooser_widget->fav_tree));
+   
+   while(fgets(line, PATH_MAX, f) != NULL)
+     {
+	Etk_Tree_Row *row;
+	sscanf(line,"file://%s",fav);
+	row = etk_tree_append(ETK_TREE(filechooser_widget->fav_tree),
+			      filechooser_widget->fav_col, etk_theme_icon_theme_get(), "places/folder_16", ecore_file_get_file(fav), NULL);
+	etk_tree_row_data_set(row, (void*)strdup(fav)); /* any special things to do here to free? */
+     }
+   
+   fclose (f);
+   etk_tree_thaw(ETK_TREE(filechooser_widget->fav_tree));
+}
+
 /**************************
  *
  * Callbacks and handlers
@@ -324,6 +358,19 @@ static void _etk_filechooser_widget_dir_row_selected_cb(Etk_Object *object, Etk_
    etk_filechooser_widget_current_folder_set(filechooser_widget, new_dir);
    free(new_dir);
 }
+
+static void _etk_filechooser_widget_fav_row_selected_cb(Etk_Object *object, Etk_Tree_Row *row, void *data)
+{
+   Etk_Filechooser_Widget *filechooser_widget;
+   char *selected_dir;
+   
+   if (!(filechooser_widget = ETK_FILECHOOSER_WIDGET(data)))
+     return;
+      
+   selected_dir = etk_tree_row_data_get(row);
+   etk_filechooser_widget_current_folder_set(filechooser_widget, selected_dir);
+   
+}    
 
 /**************************
  *

@@ -5,6 +5,8 @@
 #include <Evas.h>
 #include "etk_bin.h"
 #include "etk_types.h"
+#include <limits.h>
+
 
 /**
  * @defgroup Etk_Filechooser_Widget Etk_Filechooser_Widget
@@ -17,6 +19,8 @@
 #define ETK_FILECHOOSER_WIDGET(obj)       (ETK_OBJECT_CAST((obj), ETK_FILECHOOSER_WIDGET_TYPE, Etk_Filechooser_Widget))
 /** @brief Checks if the object is an Etk_Filechooser_Widget */
 #define ETK_IS_FILECHOOSER_WIDGET(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_FILECHOOSER_WIDGET_TYPE))
+/** @brief Default path for bookmarks */
+#define ETK_FILECHOOSER_FAVS ".gtk-bookmarks"
 
 /**
  * @struct Etk_Filechooser_Widget
@@ -36,7 +40,7 @@ struct _Etk_Filechooser_Widget
    
    Etk_Widget *files_tree;
    Etk_Tree_Col *files_name_col;
-   Etk_Tree_Col *files_date_col;
+   Etk_Tree_Col *files_date_col;   
    
    char *current_folder;
 };
@@ -45,6 +49,7 @@ Etk_Type *etk_filechooser_widget_type_get();
 Etk_Widget *etk_filechooser_widget_new();
 
 void etk_filechooser_widget_current_folder_set(Etk_Filechooser_Widget *filechooser_widget, const char *folder);
+
 
 /** @} */
 
