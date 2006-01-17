@@ -1,7 +1,10 @@
 #include "Epsilon.h"
+#include "../config.h"
 #define X_DISPLAY_MISSING 1
 #include <Imlib2.h>
+#ifdef HAVE_PNG_H
 #include <png.h>
+#endif
 #include <limits.h>
 #include <string.h>
 #include <sys/types.h>
@@ -10,7 +13,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "md5.h"
-#include "../config.h"
 #ifndef PATH_MAX
 #define PATH_MAX 4096
 #endif
@@ -40,10 +42,12 @@ static int _epsilon_png_mtime_get (const char *file);
 #ifdef HAVE_EPEG_H
 static int _epsilon_jpg_mtime_get (const char *file);
 #endif
+#ifdef HAVE_PNG_H
 static FILE *_epsilon_open_png_file_reading (const char *filename);
 static int _epsilon_png_write (const char *file, DATA32 * ptr,
 			       int tw, int th, int sw, int sh, char *imformat,
 			       int mtime, char *uri);
+#endif
 
 Epsilon *
 epsilon_new (const char *file)
@@ -159,6 +163,7 @@ epsilon_thumb_file_get (Epsilon * e)
 	  break;
 	}
 #endif
+#ifdef HAVE_PNG_H
       snprintf (buf, sizeof(buf), "%s/%s/%s.png", getenv ("HOME"), dirs[i],
 		e->hash);
       if (stat (buf, &status) == 0)
@@ -168,6 +173,7 @@ epsilon_thumb_file_get (Epsilon * e)
 	  e->thumb = strdup (buf);
 	  break;
 	}
+#endif
     }
   return (e->thumb);
 }
@@ -256,8 +262,11 @@ epsilon_info_get (Epsilon * e)
     }
   else
 #endif
+#ifdef HAVE_PNG_H
   if ((fp = _epsilon_open_png_file_reading (e->thumb)))
+#endif
     {
+#ifdef HAVE_PNG_H
       png_structp png_ptr = NULL;
       png_infop info_ptr = NULL;
       png_textp text_ptr;
@@ -301,6 +310,7 @@ epsilon_info_get (Epsilon * e)
       /* png_read_end(png_ptr,info_ptr); */
       png_destroy_read_struct (&png_ptr, &info_ptr, (png_infopp) NULL);
       fclose (fp);
+#endif
     }
   if ((p->eei = epsilon_exif_info_get (e)))
     {
@@ -389,6 +399,7 @@ epsilon_exists (Epsilon * e)
 	  break;
 	}
 #endif
+#ifdef HAVE_PNG_H
       snprintf (buf, sizeof(buf), "%s/.thumbnails/%s/%s.png", home,
 		dirs[i], e->hash);
       if (!stat (buf, &filestatus) && 
@@ -399,6 +410,7 @@ epsilon_exists (Epsilon * e)
 	  ok = 2;
 	  break;
 	}
+#endif
     }
   if (!ok)
     return (EPSILON_FAIL);
@@ -410,7 +422,11 @@ epsilon_exists (Epsilon * e)
 	epsilonmtime = _epsilon_jpg_mtime_get (buf);
       else
 #endif
+        {
+#ifdef HAVE_PNG_H
 	epsilonmtime = _epsilon_png_mtime_get (buf);
+#endif
+        }
       if (filemtime == epsilonmtime)
 	return (EPSILON_OK);
     }
@@ -552,6 +568,7 @@ epsilon_generate (Epsilon * e)
 	snprintf (format, sizeof(format), "image/%s", imlib_image_format ());
       }
 
+#ifdef HAVE_PNG_H
     if (tmp)
       {
 	iw = imlib_image_get_width ();
@@ -592,6 +609,7 @@ epsilon_generate (Epsilon * e)
 	  }
 
       }
+#endif
     if (ee) ecore_evas_free(ee);
   }
   return (EPSILON_FAIL);
@@ -635,6 +653,7 @@ _epsilon_jpg_mtime_get (const char *file)
 }
 #endif
 
+#ifdef HAVE_PNG_H
 static FILE *
 _epsilon_open_png_file_reading (const char *filename)
 {
@@ -865,3 +884,4 @@ _epsilon_png_write (const char *file, DATA32 * ptr, int tw, int th, int sw,
 
   return (ret);
 }
+#endif

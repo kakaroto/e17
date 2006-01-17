@@ -6,7 +6,7 @@ AUTOMAKE_OPTIONS     = 1.4 foreign
 MAINTAINERCLEANFILES = Makefile.in
 SUBDIRS              = exiftags
 
-INCLUDES	     = @IMLIB2_CFLAGS@ @EPEG_CFLAGS@ @ECORE_CFLAGS@ @EVAS_CFLAGS@ @EDJE_CFLAGS@
+INCLUDES	     = @IMLIB2_CFLAGS@ @EPEG_CFLAGS@ @PNG_CFLAGS@ @ECORE_CFLAGS@ @EVAS_CFLAGS@ @EDJE_CFLAGS@
 
 lib_LTLIBRARIES      = libepsilon.la
 include_HEADERS      = Epsilon.h
@@ -15,6 +15,6 @@ Epsilon.c \
 Epsilon_Exif.c \
 md5.c md5.h
 
-libepsilon_la_LIBADD	= exiftags/libepsilon_exiftags.la @IMLIB2_LIBS@ @EPEG_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ @EDJE_LIBS@
+libepsilon_la_LIBADD	= exiftags/libepsilon_exiftags.la @IMLIB2_LIBS@ @EPEG_LIBS@ @PNG_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ @EDJE_LIBS@
 libepsilon_la_DEPENDENCIES = ../config.h 
 libepsilon_la_LDFLAGS      = $(LDFLAGS) -version-info 0:1:0

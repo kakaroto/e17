@@ -38,15 +38,21 @@ AC_PATH_GENERIC(epeg, 0.9.0,
     have_epeg="yes"
   ],
   [
-    have_epeg="yes"
+    have_epeg="no"
     AC_MSG_WARN(Cannot find Epeg on your system: jpeg thumbnail suckage!)
   ]
 )
 
 dnl Make sure the png header/lib is available
 PKG_CHECK_MODULES(PNG, libpng12 >= 1.2.0,
-  [ have_png="yes" ],
-  [ have_png="no" ]
+  [
+    have_png="yes"
+    AC_DEFINE(HAVE_PNG_H, 1, [png.h is available])
+  ],
+  [
+    have_png="no"
+    AC_MSG_WARN(Cannot find libpng on your system: png thumbnail suckage!)
+  ]
 )
 
 AC_PATH_PROG(PERL, perl, 0)
