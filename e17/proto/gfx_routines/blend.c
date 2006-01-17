@@ -89,6 +89,17 @@ FN_ARGB32_DONE();
 FN_ARGB32_END();
 
 /****************************************************************************/
+FN_ARGB32_START(pix_blend_c2);
+FN_ARGB32_DO();
+DATA32 a;
+a = 256 - (*src_ptr >> 24);
+*dst_ptr = *src_ptr + 
+  ((((*dst_ptr >> 8) & 0x00ff00ff) * a) & 0xff00ff00) +
+  ((((*dst_ptr & 0x00ff00ff) * a) >> 8) & 0x00ff00ff);
+FN_ARGB32_DONE();
+FN_ARGB32_END();
+
+/****************************************************************************/
 FN_ARGB32_START(pix_blend_mmx);
 pxor_r2r(mm4, mm4); // mm4 = 0
 pxor_r2r(mm5, mm5); // mm5 = 0
@@ -232,6 +243,28 @@ switch (a)
    R_VAL(dst_ptr) = BLEND(R_VAL(dst_ptr), R_VAL(src_ptr), a, tmp);
    G_VAL(dst_ptr) = BLEND(G_VAL(dst_ptr), G_VAL(src_ptr), a, tmp);
    B_VAL(dst_ptr) = BLEND(B_VAL(dst_ptr), B_VAL(src_ptr), a, tmp);
+   break;
+}
+FN_ARGB32_DONE();
+FN_ARGB32_END();
+
+/****************************************************************************/
+FN_ARGB32_START(pix_blend_c2_sparse);
+FN_ARGB32_DO();
+DATA32 a;
+a = A_VAL(src_ptr);
+switch (a)
+{
+ case 0:
+   break;
+ case 255:
+   *dst_ptr = *src_ptr;
+   break;
+ default:
+   a = 256 - a;
+   *dst_ptr = *src_ptr + 
+     ((((*dst_ptr >> 8) & 0x00ff00ff) * a) & 0xff00ff00) +
+     ((((*dst_ptr & 0x00ff00ff) * a) >> 8) & 0x00ff00ff);
    break;
 }
 FN_ARGB32_DONE();
@@ -383,6 +416,29 @@ FN_ARGB32_END();
 
 /****************************************************************************/
 FN_ARGB32_START(pix_blend_c_sparse_destalpha);
+FN_ARGB32_DO();
+DATA32 tmp, a;
+a = A_VAL(src_ptr);
+switch (a)
+{
+ case 0:
+   break;
+ case 255:
+   *dst_ptr = *src_ptr;
+   break;
+ default:
+   a++;
+   R_VAL(dst_ptr) = BLEND(R_VAL(dst_ptr), R_VAL(src_ptr), a, tmp);
+   G_VAL(dst_ptr) = BLEND(G_VAL(dst_ptr), G_VAL(src_ptr), a, tmp);
+   B_VAL(dst_ptr) = BLEND(B_VAL(dst_ptr), B_VAL(src_ptr), a, tmp);
+   A_VAL(dst_ptr) = A_VAL(dst_ptr) + a - 1 - MUL(a, A_VAL(dst_ptr), tmp);
+   break;
+}
+FN_ARGB32_DONE();
+FN_ARGB32_END();
+
+/****************************************************************************/
+FN_ARGB32_START(pix_blend_c2_sparse_destalpha);
 FN_ARGB32_DO();
 DATA32 tmp, a;
 a = A_VAL(src_ptr);
@@ -640,10 +696,12 @@ int main(int argc, char **argv)
    TEST(pix_copy_sse2, "pix_copy_sse2", solid_dst, 0);
    printf(" -- \n");
    TEST(pix_blend_c, "pix_blend_c", solid_dst, 0);
+   TEST(pix_blend_c2 ,"pix_blend_c2", solid_dst, 0);
    TEST(pix_blend_mmx, "pix_blend_mmx", solid_dst, 0);
    TEST(pix_blend_sse, "pix_blend_sse", solid_dst, 0);
    TEST(pix_blend_sse2, "pix_blend_sse2", solid_dst, 0);
    TEST(pix_blend_c_sparse, "pix_blend_c_sparse", solid_dst, 0);
+   TEST(pix_blend_c2_sparse, "pix_blend_c2_sparse", solid_dst, 0);
    TEST(pix_blend_mmx_sparse, "pix_blend_mmx_sparse", solid_dst, 0);
    TEST(pix_blend_sse_sparse, "pix_blend_sse_sparse", solid_dst, 0);
    TEST(pix_blend_sse2_sparse, "pix_blend_sse2_sparse", solid_dst, 0);
