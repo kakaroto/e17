@@ -54,11 +54,16 @@ theme_listener(const char *key, const Ecore_Config_Type type, const int tag,
 }
 
 unsigned
-od_argb_to_colour(char *argb)
+od_argb_get(const char *key)
 {
   unsigned        tmp;
+  int             a, r, g, b;
 
-  tmp=strtoul((char *)argb+1, NULL, 16);
+  ecore_config_argb_get(key, &a, &r, &g, &b);
+  tmp=((a << 24) & 0xff000000 )
+      | ((r << 16) &   0xff0000 )
+      | ((g <<  8) &     0xff00 )
+      | ( b        &       0xff );
   return tmp;
 }
 
@@ -68,7 +73,7 @@ colour_listener(const char *key, const Ecore_Config_Type type, const int tag,
 {
   unsigned        colour;
 
-  colour = od_argb_to_colour(ecore_config_argbstr_get(key));
+  colour = od_argb_get(key);
 
   switch (tag) {
     case BG_FORE:
@@ -176,11 +181,11 @@ od_config_init(void)
     ecore_config_float_get("engage.options.zoom_duration");
 
   options.bg_fore =
-    od_argb_to_colour(ecore_config_argbstr_get("engage.options.bg_fore"));
+    od_argb_get("engage.options.bg_fore");
   ecore_config_listen("colour", "engage.options.bg_fore", 
                       colour_listener, BG_FORE, NULL);
   options.bg_back = 
-    od_argb_to_colour(ecore_config_argbstr_get("engage.options.bg_back"));
+    od_argb_get("engage.options.bg_back");
   ecore_config_listen("colour", "engage.options.bg_back", 
                       colour_listener, BG_BACK, NULL);
 
@@ -254,7 +259,7 @@ od_config_menu_init(void)
 
   embed =
     ewl_embed_evas_set(EWL_EMBED(menu_win), evas,
-                       ecore_evas_software_x11_window_get(ee));
+                       EWL_EMBED_EVAS_WINDOW(ecore_evas_software_x11_window_get(ee)));
   evas_object_layer_set(embed, 999);
 
   /* FIXME: this should not be needed */
