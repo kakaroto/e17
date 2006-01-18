@@ -43,7 +43,7 @@
 
 	/*Main file wrappers*/
 	int evfs_file_remove(char* src);
-	int evfs_file_rename(char* src, char* dst);
+	int evfs_file_rename(evfs_client* client, evfs_command* command);
 
 	int evfs_client_disconnect(evfs_client* client);
 	int evfs_monitor_start(evfs_client* client, evfs_command* command);
@@ -106,6 +106,7 @@
 		functions->evfs_file_write = &evfs_file_write;
 		functions->evfs_file_create = &evfs_file_create;
 		functions->evfs_file_mkdir = &evfs_file_mkdir;
+		functions->evfs_file_rename = &evfs_file_rename;
 		return functions;
 
 		
@@ -335,9 +336,12 @@ int evfs_file_remove(char* src) {
 }
 
 
-int evfs_file_rename(char* src, char* dst) {
-	printf("Renaming %s to %s\n", src,dst);
-	return evfs_misc_rename(src,dst);	
+int evfs_file_rename(evfs_client* client, evfs_command* command) {
+	evfs_filereference* from = command->file_command.files[0];
+	evfs_filereference* to = command->file_command.files[1];
+	
+	printf("Renaming %s to %s\n", from->path,to->path);
+	return evfs_misc_rename(from->path,to->path);	
 }
 
 

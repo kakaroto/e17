@@ -54,7 +54,7 @@ void evfs_client_file_rename(evfs_connection* conn, evfs_filereference* from, ev
 
 	printf("Renaming a file..\n");
 
-	command->type = EVFS_CMD_REMOVE_FILE;
+	command->type = EVFS_CMD_RENAME_FILE;
 	command->file_command.num_files = 2;
 	command->file_command.files = malloc(sizeof(evfs_filereference*)*2);
 	command->file_command.files[0] = from;

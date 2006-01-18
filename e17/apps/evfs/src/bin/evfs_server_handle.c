@@ -165,7 +165,14 @@ void evfs_handle_file_rename_command(evfs_client* client, evfs_command* command)
 	evfs_plugin* plugin = evfs_get_plugin_for_uri(client->server, command->file_command.files[0]->plugin_uri);
 	if (plugin) {
 		printf("Pointer here: %p\n", plugin->functions->evfs_file_rename);
-		(*plugin->functions->evfs_file_rename)(client,command);
+		
+		if (plugin->functions->evfs_file_rename)  {
+			if (command->file_command.num_files == 2) 
+				(*plugin->functions->evfs_file_rename)(client,command);
+			else
+				printf("ERR: Wrong number of files to rename\n");
+		} else
+			printf("Rename not supported\n");
 	}
 }
 
@@ -251,6 +258,13 @@ void evfs_handle_dir_list_command(evfs_client* client, evfs_command* command) {
 
 }
 
+
+/* TODO:
+ * 1. check if file exists before open/write.  if so, wait-and-lock for user
+ *    choice
+ * 2. in main loop, if file read bytes < expected, delete file, and retry a 
+ *    preset number of times, before error.
+ */ 
 void evfs_handle_file_copy(evfs_client* client, evfs_command* command, evfs_command* root_command) {
 	evfs_plugin* plugin;
 	evfs_plugin* dst_plugin;
@@ -299,7 +313,8 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command, evfs_comm
 				(file_stat.st_size > count + COPY_BLOCKSIZE) ? COPY_BLOCKSIZE : (file_stat.st_size - count);
 				
 				//printf("Reading/writing %d bytes\n", read_write_bytes);
-			
+		
+				//TODO: Implement error checking here
 				b_read = 
 				(*plugin->functions->evfs_file_read)(client,command->file_command.files[0], bytes, read_write_bytes );
 				if (b_read > 0) {
