@@ -461,6 +461,7 @@ ewl_seeker_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	double s1, s2;
 	int dx, dy;
 	int dw, dh;
+	int nw, nh;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -493,14 +494,27 @@ ewl_seeker_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	if (s->orientation == EWL_ORIENTATION_VERTICAL) {
 		dh *= s1;
-		dy += (CURRENT_H(s) - dh) * s2;
 	}
 	else {
 		dw *= s1;
-		dx += (CURRENT_W(s) - dw) * s2;
 	}
 
-	ewl_object_geometry_request(EWL_OBJECT(s->button), dx, dy, dw, dh);
+	ewl_object_size_request(EWL_OBJECT(s->button), dw, dh);
+
+	/*
+	 * Get the resulting geometry to reposition the button appropriately.
+	 */
+	nw = ewl_object_current_w_get(EWL_OBJECT(s->button));
+	nh = ewl_object_current_h_get(EWL_OBJECT(s->button));
+
+	if (s->orientation == EWL_ORIENTATION_VERTICAL) {
+		dy += (CURRENT_H(s) - nh) * s2;
+	}
+	else {
+		dx += (CURRENT_W(s) - nw) * s2;
+	}
+
+	ewl_object_place(EWL_OBJECT(s->button), dx, dy, nw, nh);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
