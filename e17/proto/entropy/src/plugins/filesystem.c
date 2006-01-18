@@ -703,7 +703,7 @@ void entropy_filesystem_file_rename(entropy_generic_file* file_from, entropy_gen
 	uri_path_to = evfs_parse_uri(uri_to);
 
 	
-	evfs_client_file_remove(con, uri_path_from->files[0]);
+	evfs_client_file_rename(con, uri_path_from->files[0], uri_path_to->files[0]);
 
 
 	free(uri_from);

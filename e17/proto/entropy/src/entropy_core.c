@@ -731,8 +731,25 @@ void entropy_plugin_thumbnailer_register(entropy_core* core, entropy_plugin* plu
 
 entropy_generic_file* entropy_generic_file_clone(entropy_generic_file* file) {
 	entropy_generic_file* clone = entropy_malloc(sizeof(entropy_generic_file));
+
+	strncpy(clone->filename, file->filename, FILENAME_LENGTH);
+	strncpy(clone->path, file->path, 255);
+	strncpy(clone->mime_type, file->mime_type, MIME_LENGTH);
+	strncpy(clone->uri_base, file->uri_base, 15);
+
+	if (file->username) 
+		clone->username = strdup(file->username);
+	else
+		clone->username = NULL;
+
+	if (file->password) 
+		clone->password = strdup(file->password);
+	else
+		clone->password = NULL;
+
+	clone->thumbnail = file->thumbnail;
+	clone->md5 = strdup(file->md5);
 	
-	memcpy(clone, file, sizeof(entropy_generic_file));
 	return clone;
 }
 
