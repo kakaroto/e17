@@ -104,6 +104,7 @@ typedef struct _Etk_Statusbar Etk_Statusbar;
 typedef struct _Etk_Filechooser_Widget Etk_Filechooser_Widget;
 typedef struct _Etk_Notebook Etk_Notebook;
 typedef struct _Etk_Progress_Bar Etk_Progress_Bar;
+typedef enum _Etk_Progress_Bar_Orientation Etk_Progress_Bar_Orientation;
 
 /**
  * @enum Etk_Fill_Policy_Flags

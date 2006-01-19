@@ -210,6 +210,27 @@ double etk_progress_bar_pulse_step_get(Etk_Progress_Bar *progress_bar)
    return progress_bar->pulse_step;
 }
 
+#if 0
+/* TODO: we cant allow this until we have vertical labels */
+/**
+ * @brief Set the orientation of the progress bar.
+ * @param progress_bar a progess bar
+ * @param orientation the new orientation
+ */
+void etk_progress_bar_pulse_step_set(Etk_Progress_Bar *progress_bar, Etk_Progress_Bar_Orientation orientation)
+{
+   Etk_Widget *widget;
+   
+   if (!(widget = ETK_WIDGET(progress_bar)))
+     return;
+ 
+   if(progress_bar->orientation == orientation)
+     return;
+   
+   progress_bar->orientation = orientation;
+}
+#endif 
+
 /**************************
  *
  * Etk specific functions
@@ -224,6 +245,7 @@ static void _etk_progress_bar_constructor(Etk_Progress_Bar *progress_bar)
 
    progress_bar->activity_dir = ETK_PROGRESS_BAR_ACTIVITY_DIR_LEFT;
    progress_bar->pulse_step = 0.1;
+   progress_bar->orientation = ETK_PROGRESS_BAR_LEFT_TO_RIGHT;
    
    progress_bar->label = etk_label_new(NULL);
    etk_widget_visibility_locked_set(progress_bar->label, ETK_TRUE);

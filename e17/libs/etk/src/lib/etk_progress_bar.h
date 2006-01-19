@@ -18,6 +18,12 @@
 /** @brief Checks if the object is an Etk_Progress_Bar */
 #define ETK_IS_PROGRESS_BAR(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_PROGRESS_BAR_TYPE))
 
+enum _Etk_Progress_Bar_Orientation
+{
+   ETK_PROGRESS_BAR_LEFT_TO_RIGHT,
+   ETK_PROGRESS_BAR_BOTTOM_TO_TOP
+};   
+
 struct _Etk_Progress_Bar
 {
    /* private: */
@@ -28,6 +34,7 @@ struct _Etk_Progress_Bar
    
    unsigned char activity_dir : 1;
    double pulse_step;
+   Etk_Progress_Bar_Orientation orientation;
 };
 
 Etk_Type *etk_progress_bar_type_get();
