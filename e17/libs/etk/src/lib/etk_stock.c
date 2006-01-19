@@ -18,18 +18,6 @@ typedef struct _Etk_Stock_Item
 
 static const Etk_Stock_Item _etk_stock_items[] =
 {
-/*   
-   { "actions/process-stop_16", "actions/process-stop_22", "actions/process-stop_48", "Stop" },
-   { "actions/document-open_16", "actions/document-open_22", "actions/document-open_48", "Open" },
-   { "actions/document-save_16", "actions/document-save_22", "actions/document-save_48", "Save" },
-   { "actions/document-save-as_16", "actions/document-save-as_22", "actions/document-save-as_48", "Save As" },
-   { "actions/edit-cut_16", "actions/edit-cut_22", "actions/edit-cut_48", "Cut" },
-   { "actions/edit-copy_16", "actions/edit-copy_22", "actions/edit-copy_48", "Copy" },
-   { "actions/edit-paste_16", "actions/edit-paste_22", "actions/edit-paste_48", "Paste" },
-   { "actions/process-stop_16", "actions/process-stop_22", "actions/process-stop_48", "Cancel" },
-   { "actions/go-up_16", "actions/go-up_22", "actions/go-up_48", "Go Up" },
-   { "actions/go-down_16", "actions/go-down_22", "actions/go-down_48", "Go Down" },
-*/   
    { NULL, NULL },
    { "actions/address-book-new_16", "actions/address-book-new_22", "actions/address-book-new_48", "" },
    { "actions/appointment-new_16", "actions/appointment-new_22", "actions/appointment-new_48", "" },
