@@ -26,7 +26,8 @@ struct _Etk_Progress_Bar
 
    Etk_Widget *label;   
    
-   unsigned char activity_dir : 1;   
+   unsigned char activity_dir : 1;
+   int pulse_step;
 };
 
 Etk_Type *etk_progress_bar_type_get();
@@ -35,10 +36,14 @@ Etk_Widget *etk_progress_bar_new_with_text(const char *label);
 
 void etk_progress_bar_text_set(Etk_Progress_Bar *progress_bar, const char *label);
 const char *etk_progress_bar_text_get(Etk_Progress_Bar *progress_bar);
+
 void etk_progress_bar_fraction_set(Etk_Progress_Bar *progress_bar, double fraction);
 double etk_progress_bar_fraction_get(Etk_Progress_Bar *progress_bar);
-void etk_progress_bar_pulse(Etk_Progress_Bar *progress_bar);
 
+void etk_progress_bar_pulse(Etk_Progress_Bar *progress_bar);
+void etk_progress_bar_pulse_step_set(Etk_Progress_Bar *progress_bar, double pulse_step);
+double etk_progress_bar_pulse_step_get(Etk_Progress_Bar *progress_bar);
+  
 /** @} */
 
 #endif

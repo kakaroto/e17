@@ -142,7 +142,6 @@ double etk_progress_bar_fraction_get(Etk_Progress_Bar *progress_bar)
 /**
  * @brief Causes the progress bar to enter pulse mode, subsequent calls simple move the bar around
  * @param progress_bar a progess bar
- * @param fraction the fraction (percentage) to set
  */
 void etk_progress_bar_pulse(Etk_Progress_Bar *progress_bar)
 {
@@ -161,14 +160,14 @@ void etk_progress_bar_pulse(Etk_Progress_Bar *progress_bar)
    
    if(progress_bar->activity_dir == ETK_PROGRESS_BAR_ACTIVITY_DIR_LEFT)
    {   
-      new_drag_value += 0.1; /* TODO: make this changable */
+      new_drag_value += progress_bar->pulse_step;
       if(new_drag_value > 1.0)
       {
 	 progress_bar->activity_dir = ETK_PROGRESS_BAR_ACTIVITY_DIR_RIGHT;
       }   
    } else {
       
-      new_drag_value -= 0.1; /* TODO: make this changable */
+      new_drag_value -= progress_bar->pulse_step;
       if(new_drag_value < 0.0)
       {
          progress_bar->activity_dir = ETK_PROGRESS_BAR_ACTIVITY_DIR_LEFT;
@@ -176,6 +175,39 @@ void etk_progress_bar_pulse(Etk_Progress_Bar *progress_bar)
    }   
    
    edje_object_part_drag_value_set(widget->theme_object, "filler", new_drag_value, 0.0);
+}
+
+/**
+ * @brief Set the step size for the activity mode.
+ * @param progress_bar a progess bar
+ * @param pulse_step the step size
+ */
+void etk_progress_bar_pulse_step_set(Etk_Progress_Bar *progress_bar, double pulse_step)
+{
+   Etk_Widget *widget;
+   
+   if (!(widget = ETK_WIDGET(progress_bar)))
+     return;
+ 
+   if(pulse_step > 0.5 || pulse_step < 0.1)
+     return;
+   
+   progress_bar->pulse_step = pulse_step;
+}
+
+/**
+ * @brief Get the step size for the activity mode.
+ * @param progress_bar a progess bar
+ * @return Returns the step size
+ */
+double etk_progress_bar_pulse_step_get(Etk_Progress_Bar *progress_bar)
+{
+   Etk_Widget *widget;
+   
+   if (!(widget = ETK_WIDGET(progress_bar)))
+     return;
+ 
+   return progress_bar->pulse_step;
 }
 
 /**************************
@@ -191,6 +223,7 @@ static void _etk_progress_bar_constructor(Etk_Progress_Bar *progress_bar)
       return;
 
    progress_bar->activity_dir = ETK_PROGRESS_BAR_ACTIVITY_DIR_LEFT;
+   progress_bar->pulse_step = 0.1;
    
    progress_bar->label = etk_label_new(NULL);
    etk_widget_visibility_locked_set(progress_bar->label, ETK_TRUE);
