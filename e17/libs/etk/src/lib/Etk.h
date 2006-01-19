@@ -56,5 +56,6 @@
 #include "etk_statusbar.h"
 #include "etk_filechooser_widget.h"
 #include "etk_notebook.h"
+#include "etk_progress_bar.h"
 
 #endif

@@ -103,6 +103,7 @@ typedef struct _Etk_Menu_Radio_Item Etk_Menu_Radio_Item;
 typedef struct _Etk_Statusbar Etk_Statusbar;
 typedef struct _Etk_Filechooser_Widget Etk_Filechooser_Widget;
 typedef struct _Etk_Notebook Etk_Notebook;
+typedef struct _Etk_Progress_Bar Etk_Progress_Bar;
 
 /**
  * @enum Etk_Fill_Policy_Flags

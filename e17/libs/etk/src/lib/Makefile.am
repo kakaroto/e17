@@ -39,7 +39,8 @@ etk_separator.h \
 etk_menu_shell.h etk_menu.h etk_menu_bar.h etk_menu_item.h \
 etk_statusbar.h \
 etk_filechooser_widget.h \
-etk_notebook.h
+etk_notebook.h \
+etk_progress_bar.h
 
 libetk_la_SOURCES = \
 etk_main.c etk_utils.c \
@@ -66,6 +67,7 @@ etk_menu_shell.c etk_menu.c etk_menu_bar.c etk_menu_item.c \
 etk_statusbar.c \
 etk_filechooser_widget.c \
 etk_notebook.c \
+etk_progress_bar.c \
 $(ETKHEADERS)
 
 installed_headersdir = $(prefix)/include/etk

@@ -1,0 +1,126 @@
+group {
+   name: "progress_bar";
+   min: 120 18;
+   parts {
+      part {
+         name: "progress_bar";
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.5;
+               offset: 0 -9;
+            }
+            rel2 {
+               relative: 1.0 0.5;
+               offset: -1 8;
+            }
+            image {
+               normal: "entry.png";
+               border: 8 8 8 8;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+      }
+      part {
+         name: "clip";
+	 type: RECT;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.5;
+               offset: 0 -9;
+            }
+            rel2 {
+               relative: 1.0 0.5;
+               offset: -1 8;
+            }
+         }
+      }
+      part { 
+	 name: "filler";
+	 mouse_events: 0;
+	 dragable { 
+	    confine: "progress_bar"; 
+	    x: 1 1 1; 
+	    y: 0 0 0;
+	 } 
+	 description { 
+	    state: "default" 0.0; 
+	    min: 1 18;
+	    fixed: 1 1; 
+	    rel1 { 
+	       relative: 0.5 0.5; 
+	       offset: 0 0; 
+	       to: "progress_bar"; 
+	    } 
+	    rel2 { 
+	       relative: 0.5 0.5; 
+	       offset: 0 0; 
+	       to: "progress_bar"; 
+	    } 
+	    image { 
+	       normal: "button_up.png";
+	       border: 8 8 8 8; 
+	    } 
+	    fill { 
+	       smooth: 0; 
+	    } 
+	 } 
+      }
+/*
+      part {
+	 name: "filler";
+	 clip_to: "clip";
+	 description {	 
+	    state: "default" 0.0;
+	    rel1 {
+	       to_x: "clip";
+	       to_y: "clip";
+	    }
+	    rel2 {
+	       to_x: "clip";
+	       to_y: "clip";
+	    }
+	    image {
+	       normal: "button_up.png";
+	       border: 8 8 8 8;
+	    }
+	    fill {
+	       smooth: 0;
+	    }
+	 }	 
+      }   
+*/ 
+      part {      
+	 name: "text_area";
+	 //type: TEXT;
+	 type: SWALLOW;
+	 clip_to: "clip";
+	 mouse_events: 0;
+	 description {
+	    state: "default" 0.0;
+	    color: 0 0 0 255;
+            rel1 {
+	       relative: 0.0 0.0;
+	       offset: 4 3;
+	       to: "progress_bar";
+	    }
+	    rel2 {
+	       relative: 1.0 1.0;
+	       offset: -5 -3;
+	       to: "progress_bar";
+	    }	    
+//	    text {
+//	       text: "Text";
+//	       font: "Vera";
+//	       size:  10;
+//	       align: 0.5 0.5;
+//	    }
+	 }
+      }
+   }
+   programs {
+   }
+}

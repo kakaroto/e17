@@ -32,7 +32,8 @@ etk_paned_test.c \
 etk_scrolled_view_test.c \
 etk_menu_test.c \
 etk_filechooser_test.c \
-etk_notebook_test.c
+etk_notebook_test.c \
+etk_progress_bar_test.c
 
 etk_test_LDADD = $(top_builddir)/src/lib/libetk.la \
 		 @ecore_libs@ @evas_libs@ @edje_libs@
