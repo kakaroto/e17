@@ -27,7 +27,7 @@ struct _Etk_Progress_Bar
    Etk_Widget *label;   
    
    unsigned char activity_dir : 1;
-   int pulse_step;
+   double pulse_step;
 };
 
 Etk_Type *etk_progress_bar_type_get();
