@@ -554,7 +554,7 @@ int exml_mem_read(EXML *xml, void *s_mem, size_t len)
 static int _exml_read(EXML *xml, xmlTextReader *reader)
 {
 	int ret, empty;
-	char *name, *value;
+	xmlChar *name, *value;
 
 	if( !reader )
 		return -1;
@@ -569,17 +569,17 @@ static int _exml_read(EXML *xml, xmlTextReader *reader)
 		switch( xmlTextReaderNodeType( reader ) ) {
 			case XML_READER_TYPE_ELEMENT:
 				exml_start(xml);
-				exml_tag_set(xml, name);
+				exml_tag_set(xml, (char *) name);
 		
 				if( xmlTextReaderHasAttributes( reader ) ) {
 					xmlTextReaderMoveToFirstAttribute( reader );
 					do {
-						char *attr_name, *attr_value;
+						xmlChar *attr_name, *attr_value;
 
 						attr_name = xmlTextReaderName( reader );
 						attr_value = xmlTextReaderValue( reader );
 
-						exml_attribute_set(xml, attr_name, attr_value);
+						exml_attribute_set(xml, (char *) attr_name, (char *) attr_value);
 					} while( xmlTextReaderMoveToNextAttribute( reader ) == 1 );
 				}
 
@@ -591,7 +591,7 @@ static int _exml_read(EXML *xml, xmlTextReader *reader)
 			case XML_READER_TYPE_WHITESPACE:
 				break;
 			case XML_READER_TYPE_TEXT:
-				exml_value_set(xml, value);
+				exml_value_set(xml, (char *) value);
 				break;
 		}
 	}
@@ -698,21 +698,22 @@ static void _exml_write_element(EXML_Node *node,
 {
 	EXML_Node *child;
 	Ecore_List *keys;
-	char *name;
+	xmlChar *name;
 
-	xmlTextWriterStartElement( writer, node->tag );
+	xmlTextWriterStartElement( writer, (xmlChar *) node->tag );
 
 	keys = ecore_hash_keys( node->attributes );
 	ecore_list_goto_first( keys );
 
-	while( (name = ecore_list_next( keys )) )
-		xmlTextWriterWriteAttribute( writer, name,
-																 ecore_hash_get( node->attributes, name ) );
+	while( (name = ecore_list_next( keys )) ) {
+		xmlChar *value = ecore_hash_get( node->attributes, name );
+		xmlTextWriterWriteAttribute( writer, name, value );
+	}
 
 	ecore_list_destroy( keys );
 
 	if( node->value )
-		xmlTextWriterWriteString( writer, node->value );
+		xmlTextWriterWriteString( writer, (xmlChar *) node->value );
 
 	ecore_list_goto_first( node->children );
 	
@@ -725,7 +726,7 @@ static void _exml_write_element(EXML_Node *node,
 static int _exml_write(EXML *xml, xmlTextWriter *writer)
 {
 	xmlTextWriterSetIndent( writer, 1 );
-	xmlTextWriterSetIndentString( writer, "\t" );
+	xmlTextWriterSetIndentString( writer, (xmlChar *) "\t" );
 	xmlTextWriterStartDocument( writer, NULL, NULL, NULL );
 	/* as of now, we do not write a DTD.  This will be in effect with a new
 	 * set of functions designed to manipulate the DTD, as well as added
