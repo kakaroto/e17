@@ -264,17 +264,13 @@ ewl_embed_active_set(Ewl_Embed *embed, unsigned int act)
 	}
 	else
 	{
-	
 		e = ewl_embed_active_embed;	
 		ewl_embed_active_embed = embed;
-
-		
-
 	}
 
 	if (e && e->last.clicked)
 	{
-		Ewl_Widget *temp = e->last.clicked;
+		Ewl_Widget *temp;
 
 		ewl_object_state_remove(EWL_OBJECT(e->last.clicked),
 						EWL_FLAG_STATE_FOCUSED);
