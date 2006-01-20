@@ -354,7 +354,7 @@ pxor_r2r(xmm5, xmm5); // xmm5 = 0
 pcmpeqd_r2r(xmm5, xmm5); // xmm5 = [FFFF][FFFF][FFFF][FFFF][FFFF][FFFF][FFFF][FFFF]
 psrlw_i2r(15, xmm5); // xmm5 = xmm5 >> 15; [0001][0001][0001][0001][0001][0001][0001][0001]
 FN_ARGB32_DO();
-switch ((A_VAL(src_ptr) << 16) | A_VAL(src_ptr + 1))
+switch ((A_VAL(src_ptr) << 8) | A_VAL(src_ptr + 1))
 {
  case 0:
    break;
