@@ -264,15 +264,18 @@ ewl_embed_active_set(Ewl_Embed *embed, unsigned int act)
 	}
 	else
 	{
-		e = ewl_embed_active_embed;
+	
+		e = ewl_embed_active_embed;	
 		ewl_embed_active_embed = embed;
+
+		
+
 	}
 
 	if (e && e->last.clicked)
 	{
-		Ewl_Widget *temp;
-	
-	
+		Ewl_Widget *temp = e->last.clicked;
+
 		ewl_object_state_remove(EWL_OBJECT(e->last.clicked),
 						EWL_FLAG_STATE_FOCUSED);
 		ewl_object_state_remove(EWL_OBJECT(e->last.clicked),
@@ -1625,6 +1628,9 @@ void ewl_embed_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	ecore_dlist_destroy(emb->tab_order);
 	emb->tab_order = NULL;
+
+	if (emb == ewl_embed_active_embed)
+		ewl_embed_active_embed = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
