@@ -121,7 +121,7 @@ static const Etk_Stock_Item _etk_stock_items[] =
    { "devices/printer_16", "devices/printer_22", "devices/printer_48", "" },
    { "devices/printer-remote_16", "devices/printer-remote_22", "devices/printer-remote_48", "" },
    { "devices/video-display_16", "devices/video-display_22", "devices/video-display_48", "" },
-   { "emblems/emblem-favorites_16", "emblems/emblem-favorites_22", "emblems/emblem-favorites_48", "" },
+   { "emblems/emblem-favorite_16", "emblems/emblem-favorite_22", "emblems/emblem-favorite_48", "" },
    { "emblems/emblem-important_16", "emblems/emblem-important_22", "emblems/emblem-important_48", "" },
    { "emblems/emblem-photos_16", "emblems/emblem-photos_22", "emblems/emblem-photos_48", "" },
    { "emblems/emblem-symbolic-link_16", "emblems/emblem-symbolic-link_22", "emblems/emblem-symbolic-link_48", "" },
