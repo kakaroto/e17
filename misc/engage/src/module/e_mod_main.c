@@ -2201,8 +2201,9 @@ _engage_bar_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
      multiplier = eb->conf->zoom_factor + ((eb->conf->zoom_factor)
         * sqrt(2) / 2);
    else
-     multiplier = 1;
+     multiplier = 1.0;
 
+   evas_event_freeze(eb->evas);
    if (edge == E_GADMAN_EDGE_LEFT)
      {
 	evas_object_resize(eb->event_object, w * multiplier, h );
@@ -2210,7 +2211,7 @@ _engage_bar_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
    else if (edge == E_GADMAN_EDGE_RIGHT)
      {
 	evas_object_resize(eb->event_object, w * multiplier, h );
-	evas_object_move(eb->event_object, x - (w * (multiplier - 1)), y);
+	evas_object_move(eb->event_object, x - (w * (multiplier - 1)) + 1, y);
      }
    else if (edge == E_GADMAN_EDGE_TOP)
      {
@@ -2219,8 +2220,9 @@ _engage_bar_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
    else
      {
 	evas_object_resize(eb->event_object, w , h * multiplier);
-	evas_object_move(eb->event_object, x, y - (h * (multiplier - 1)));
+	evas_object_move(eb->event_object, x, y - (h * (multiplier - 1)) + 1);
      }
+   evas_event_thaw(eb->evas);
    _engage_bar_motion_handle(eb, ev->canvas.x, ev->canvas.y);
 }
 
@@ -2315,8 +2317,10 @@ _engage_zoom_out_slave(void *data)
      {
 	eb->zoom = 1.0;
 	evas_object_geometry_get(eb->box_object, &bx, &by, &bw, &bh);
+	evas_event_freeze(eb->evas);
 	evas_object_move(eb->event_object, bx, by);
 	evas_object_resize(eb->event_object, bw, bh);
+	evas_event_thaw(eb->evas);
 
 	eb->state = ENGAGE_NORMAL;
 	_engage_bar_motion_handle(eb, x, y);
