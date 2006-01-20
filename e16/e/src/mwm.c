@@ -172,6 +172,9 @@ MWM_GetHints(EWin * ewin, Atom atom_change)
 	   ewin->mwm.func_close = 1;
      }
 
+   if (!ewin->mwm.decor_title && !ewin->mwm.decor_border)
+      ewin->props.no_border = 1;
+
  done:
    if (mwmhints)
       XFree(mwmhints);

@@ -185,6 +185,9 @@ EwinManage(EWin * ewin)
    if (ewin->client.h <= 0)
       ewin->client.h = 100;
 
+   if (ewin->state.docked)
+      ewin->inh_wm.b.border = 1;
+
    if (ewin->client.argb && Conf.argb_client_mode > 0)
      {
 	if (!XGetWindowAttributes(disp, _EwinGetClientXwin(ewin), &win_attr))
@@ -197,7 +200,7 @@ EwinManage(EWin * ewin)
 			       ewin->client.w, ewin->client.h, 0, &win_attr);
 
 	if (Conf.argb_client_mode == 1)
-	   ewin->props.no_border = 1;
+	   ewin->inh_wm.b.border = 1;
      }
    else
      {
@@ -648,9 +651,6 @@ EwinStateUpdate(EWin * ewin)
    ewin->state.inhibit_actions = ewin->props.no_actions;
    ewin->state.inhibit_focus = !ewin->icccm.need_input ||
       EwinInhGetWM(ewin, focus) || ewin->state.iconified;
-
-   ewin->state.no_border = ewin->props.no_border || ewin->state.docked ||
-      (ewin->mwm.valid && !ewin->mwm.decor_title && !ewin->mwm.decor_border);
 
    ewin->state.inhibit_move =
       EwinInhGetUser(ewin, move) || ewin->state.fullscreen;

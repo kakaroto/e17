@@ -422,24 +422,24 @@ EwinBorderSelect(EWin * ewin)
 {
    const Border       *b;
 
-#if 0				/* Handled in iclass.c */
-   /* Imlib2 will not render pixmaps with dimensions > 8192 */
-   if (ewin->client.w > 8000 || ewin->client.h > 8000)
-      ewin->state.no_border = 1;
-#endif
-
-   if (ewin->state.no_border)
+   if (ewin->inh_wm.b.border)
      {
 	b = FindItem("BORDERLESS", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+	goto done;
      }
-   else
-     {
-	/* Quit if we already have a border that isn't an internal one */
-	b = ewin->border;
-	if (b && strncmp(b->name, "__", 2))
-	   goto done;
-	b = WindowMatchEwinBorder(ewin);
-     }
+
+   /* Quit if we already have a border that isn't an internal one */
+   b = ewin->border;
+   if (b && strncmp(b->name, "__", 2))
+      goto done;
+
+   b = NULL;
+
+   if (ewin->props.no_border)
+      b = FindItem("BORDERLESS", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+
+   if (!b)
+      b = WindowMatchEwinBorder(ewin);
 
    if (!b)
       b = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
@@ -499,6 +499,8 @@ EwinBorderSetTo(EWin * ewin, const Border * b)
    ewin->border = b;
    BorderIncRefcount(b);
    HintsSetWindowBorder(ewin);
+
+   ewin->state.no_border = b->num_winparts <= 0;
 
    EventCallbackRegister(EoGetWin(ewin), 0, BorderFrameHandleEvents, ewin);
 
@@ -572,6 +574,7 @@ EwinBorderSetTo(EWin * ewin, const Border * b)
 
    ewin->update.shape = 1;
    EwinBorderCalcSizes(ewin, 0);
+   EwinStateUpdate(ewin);
 
    SnapshotEwinUpdate(ewin, SNAP_USE_BORDER);
 }
@@ -579,7 +582,7 @@ EwinBorderSetTo(EWin * ewin, const Border * b)
 void
 EwinSetBorder(EWin * ewin, const Border * b, int apply)
 {
-   if (!b || ewin->border == b || ewin->state.no_border)
+   if (!b || ewin->border == b || ewin->inh_wm.b.border)
       return;
 
    if (apply)

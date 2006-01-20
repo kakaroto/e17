@@ -48,7 +48,8 @@ typedef union
    unsigned char       all:8;
    struct
    {
-      unsigned char       rsvd:3;
+      unsigned char       rsvd:2;
+      unsigned char       border:1;	/* W   */
       unsigned char       close:1;	/*  AU */
       unsigned char       focus:1;	/* WA  */
       unsigned char       iconify:1;	/* W U */
