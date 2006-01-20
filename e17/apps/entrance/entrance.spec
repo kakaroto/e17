@@ -1,6 +1,6 @@
 Summary: enlightened display manager
 Name: entrance
-Version: 0.9.0.004
+Version: 0.9.0.005
 Release: 0.%(date '+%Y%m%d')
 License: BSD
 Group: System Environment/Libraries
