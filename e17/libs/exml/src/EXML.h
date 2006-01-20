@@ -1,6 +1,9 @@
 #ifndef _EXML_H
 # define _EXML_H
 
+#include <Ecore.h>
+#include <Ecore_Data.h>
+
 /**
  * @file EXML.h
  * @brief Contains XML reading/writing functions
@@ -116,6 +119,7 @@ inline char *exml_value_get(EXML *xml);
  * the hierarchy (down returns NULL if there are no children)
  */
 inline char *exml_goto_top(EXML *xml);
+inline char *exml_goto_node(EXML *xml, EXML_Node *node);
 inline char *exml_goto(EXML *xml, char *tag, char *value);
 inline char *exml_next(EXML *xml);
 inline char *exml_next_nomove(EXML *xml);

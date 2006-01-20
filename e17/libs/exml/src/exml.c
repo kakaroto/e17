@@ -1,7 +1,5 @@
 #include <string.h>
 
-#include <Ecore.h>
-#include <Ecore_Data.h>
 #include <EXML.h>
 #include <libxml/xmlreader.h>
 #include <libxml/xmlwriter.h>
@@ -284,6 +282,45 @@ char *exml_goto_top(EXML *xml)
 	CHECK_PARAM_POINTER_RETURN("xml", xml, NULL);
 
 	xml->current = xml->top;
+
+	return xml->current ? xml->current->tag : NULL;
+}
+
+/**
+ * Move the current xml document pointer to the indicated node
+ * @param   xml The xml document
+ * @param   node The position within the document to move to
+ * @return  The current xml tag name
+ * @ingroup EXML_Traversal_Group
+ */
+char *exml_goto_node(EXML *xml, EXML_Node *node)
+{
+	Ecore_List *stack;
+	EXML_Node *n, *l;
+
+	CHECK_PARAM_POINTER_RETURN("xml", xml, NULL);
+
+	stack = ecore_list_new();
+	n = node;
+
+	while( n->parent != NULL ) {
+		ecore_list_prepend(stack, n);
+		n = n->parent;
+	}
+
+	l = xml->top;
+
+	if( n != l )
+		return NULL;
+
+	while( (n = ecore_list_remove_first(stack)) ) {
+		l = ecore_list_goto(l->children, n);
+
+		if( !l )
+			return NULL;
+	}
+
+	xml->current = node;
 
 	return xml->current ? xml->current->tag : NULL;
 }
