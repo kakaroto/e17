@@ -282,6 +282,7 @@ static int ethemes_init(void *data, int type, void *ev) {
 int main(int argc, char **argv) {
 
 	ecore_init();
+	ecore_evas_init();
 	edje_init();
 	 
 	char * display = getenv("DISPLAY");
