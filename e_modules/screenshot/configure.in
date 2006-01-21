@@ -212,5 +212,6 @@ fi
 
 AC_OUTPUT([
 Makefile
+e_modules-screenshot.spec
 ],[
 ])

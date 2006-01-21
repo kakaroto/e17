@@ -189,6 +189,7 @@ AC_SUBST(modules)
 
 AC_OUTPUT([
 Makefile
+e_modules-calendar.spec
 src/Makefile
 src/images/Makefile
 ],[

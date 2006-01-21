@@ -201,6 +201,7 @@ AC_SUBST(e_modules)
 
 AC_OUTPUT([
 Makefile
+e_modules-mount.spec
 data/Makefile
 data/themes/Makefile
 ],[

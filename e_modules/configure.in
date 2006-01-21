@@ -1,11 +1,10 @@
 #!/bin/sh
 
 for d in * ; do
-	[ ! -x "${d}"/configure ] && continue
-	echo "./$d/configure $*"
-	cd $d
-	./configure "$@" || exit 1
-	cd ..
+	test -d "$d" || continue
+	test -x "${d}/configure" || continue
+	echo "CONFIGURE:  $d"
+	(cd $d && ./configure "$@") || exit 1
 done
 
-cp Makefile.in Makefile
+cp -p Makefile.in Makefile

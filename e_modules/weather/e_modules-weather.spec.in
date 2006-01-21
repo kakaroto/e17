@@ -1,8 +1,8 @@
-%define module_name tclock
+%define module_name weather
 
 Summary: %{module_name} module for the Enlightenment window manager
 Name: e_modules-%{module_name}
-Version: 0.0.2
+Version: @VERSION@
 Release: 0.%(date '+%Y%m%d')
 License: BSD
 Group: User Interface/Desktops

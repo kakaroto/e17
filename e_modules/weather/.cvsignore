@@ -20,3 +20,5 @@ stamp-h1
 *.lo
 *.la
 *.edj
+*.spec
+*.tar.gz

@@ -1,7 +1,5 @@
-all check clean install:
+%::
 	for d in * ; do \
-		[ ! -e "$$d/Makefile" ] && continue ; \
+		test -d "$$d" -a -e "$$d/Makefile" || continue ; \
 		$(MAKE) -C $$d $@ || exit 1 ; \
 	done
-
-.PHONY: all check clean install
