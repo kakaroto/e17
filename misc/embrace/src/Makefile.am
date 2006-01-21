@@ -35,7 +35,7 @@ pkg_LTLIBRARIES        = module.la
 module_la_SOURCES      = e_mod_main.c e_mod_main.h
 module_la_LIBADD       = @ENLIGHTENMENT_LIBS@ -lm @DL_LIBS@ \
                          $(top_builddir)/src/lib/libembrace.la \
-                         @ESMART_LIBS@ \
+                         @ESMART_LIBS@ @EDB_LIBS@ \
                          -lesmart_container -lesmart_draggies -lesmart_trans_x11
 module_la_LDFLAGS      = -module -avoid-version
 module_la_DEPENDENCIES = $(top_builddir)/src/lib/libembrace.la

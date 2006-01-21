@@ -1,5 +1,8 @@
 $Id$
 
+2006-01-21 Tilman Sauerbeck (tilman at code-monkey de)
+        * src/Makefile.am: link the module to EDB
+
 2006-01-07 Sebastian Dransfeld (sebastid at tango flipp net)
       * src/e_mod_main.{h,c}: Fix prototypes and function
         declarations.
