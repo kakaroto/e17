@@ -7,14 +7,14 @@ EDJE_FLAGS = -v
 filesdir = $(datadir)
 
 files_DATA = \
-topimage.edj  \
-backimage.edj \
-today.edj \
-weekend.edj \
-weekday.edj \
-label.edj \
-calendar.edj \
-arrow.edj
+topimage.edc  \
+backimage.edc \
+today.edc \
+weekend.edc \
+weekday.edc \
+label.edc \
+calendar.edc \
+arrow.edc
 
 EXTRA_DIST = $(files_DATA)
 
