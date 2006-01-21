@@ -973,7 +973,7 @@ rebuild_monitor(Monitor_Face *face)
       /* add net charts */
       chart_con = chart_container_new(face->con->bg_evas,0,0,0,0);
       flow_chart_net_in = flow_chart_new();
-      flow_chart_color_set(flow_chart_net_in, 213, 91, 91, 255);
+      flow_chart_color_set(flow_chart_net_in, 213, 91, 91, 125);
       flow_chart_get_value_function_set(flow_chart_net_in, net_in_usage_get);
       flow_chart_update_rate_set(flow_chart_net_in, face->conf->net_interval);
       chart_container_chart_add(chart_con, flow_chart_net_in);
