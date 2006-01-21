@@ -7,7 +7,7 @@ Release: 0.%(date '+%Y%m%d')
 License: BSD
 Group: User Interface/Desktops
 URL: http://www.enlightenment.org/
-Source: ftp://ftp.enlightenment.org/pub/enlightenment/%{name}-%{version}.tar.gz
+Source: ftp://ftp.enlightenment.org/pub/enlightenment/%{module_name}-%{version}.tar.gz
 Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
 Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
@@ -20,7 +20,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-root
 %{module_name} module for the Enlightenment window manager.
 
 %prep
-%setup -q
+%setup -q -n %{module_name}-%{version}
 
 %build
 %{configure}
@@ -40,8 +40,7 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-, root, root)
-%doc AUTHORS ChangeLog COPYING COPYING-PLAIN INSTALL NEWS README
-%{_libdir}/e_modules/%{module_name}/*
-%{_libdir}/enlightenment/modules_extra/%{module_name}
+%doc AUTHORS ChangeLog COPYING* INSTALL NEWS README
+%{_libdir}/enlightenment/modules/%{module_name}
 
 %changelog

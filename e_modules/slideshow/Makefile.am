@@ -10,7 +10,8 @@ files_DATA = \
 module_icon.png \
 slideshow.edj \
 slideshow.edc \
-VeraMono.ttf
+VeraMono.ttf \
+slideshow.png
 
 EXTRA_DIST = $(files_DATA)
 
