@@ -50,11 +50,12 @@ void etk_test_progress_bar_window_create(void *data)
    etk_box_pack_start(ETK_BOX(vbox), pbar, ETK_TRUE, ETK_TRUE, 0);
    
    pbar2 = etk_progress_bar_new_with_text(_("Loading..."));
+   etk_progress_bar_pulse_step_set(ETK_PROGRESS_BAR(pbar2), 0.05);
    etk_box_pack_start(ETK_BOX(vbox), pbar2, ETK_TRUE, ETK_TRUE, 0);   
    
    etk_window_title_set(ETK_WINDOW(win), _("Etk Progress Bar Test"));
    etk_widget_show_all(win);
    
    ecore_timer_add(0.05, _etk_test_progress_bar_update, pbar);
-   ecore_timer_add(0.1, _etk_test_progress_bar_update2, pbar2);
+   ecore_timer_add(0.05, _etk_test_progress_bar_update2, pbar2);
 }

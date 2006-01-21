@@ -189,7 +189,7 @@ void etk_progress_bar_pulse_step_set(Etk_Progress_Bar *progress_bar, double puls
    if (!(widget = ETK_WIDGET(progress_bar)))
      return;
  
-   if(pulse_step > 0.5 || pulse_step < 0.1)
+   if(pulse_step > 1.0 || pulse_step < 0.0)
      return;
    
    progress_bar->pulse_step = pulse_step;
