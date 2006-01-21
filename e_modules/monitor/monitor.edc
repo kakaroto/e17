@@ -262,7 +262,7 @@ group
 	      color3, 0 0 0 100;
 	      text {
 		text, "memory-swap"; font, "VeraMono";
-		size,  8;     min,     1 1;
+		size,  10;     min,     1 1;
 		align, 1.0 0.0;
 	      }
 	    }
