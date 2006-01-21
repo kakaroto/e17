@@ -379,8 +379,8 @@ _date_cb_check(void *data)
 
    calendar = data;
    
-   if ((calendar->conf->Today == date.tm_mday) || (calendar->conf->view_month != date.tm_mon) || 
-						  (calendar->conf->view_year != date.tm_year) )
+   if ((calendar->conf->Today == date.tm_mday) && (calendar->conf->view_month == date.tm_mon) && 
+						  (calendar->conf->view_year == date.tm_year) )
       return 1;
    else
    {
