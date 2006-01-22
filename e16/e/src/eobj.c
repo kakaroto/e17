@@ -451,7 +451,9 @@ EobjLower(EObj * eo)
 void
 EobjShapeUpdate(EObj * eo, int propagate)
 {
+#if USE_COMPOSITE
    int                 was_shaped = eo->shaped;
+#endif
 
    if (propagate)
       eo->shaped = EShapePropagate(eo->win) != 0;
