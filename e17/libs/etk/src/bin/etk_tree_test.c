@@ -6,6 +6,7 @@
 static void _etk_test_tree_add_items(Etk_Tree *tree, int n);
 static void _etk_test_tree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data);
 static void _etk_test_tree_row_unselected(Etk_Object *object, Etk_Tree_Row *row, void *data);
+static void _etk_test_tree_checkbox_toggled_cb(Etk_Object *object, Etk_Tree_Row *row, void *data);
 static void _etk_test_tree_clear_list_cb(Etk_Object *object, void *data);
 static void _etk_test_tree_add_5_cb(Etk_Object *object, void *data);
 static void _etk_test_tree_add_50_cb(Etk_Object *object, void *data);
@@ -22,7 +23,7 @@ void etk_test_tree_window_create(void *data)
    static Etk_Widget *win = NULL;
    Etk_Widget *tree;
    Etk_Tree_Row *row;
-   Etk_Tree_Col *col1, *col2, *col3;
+   Etk_Tree_Col *col1, *col2, *col3, *col4;
    Etk_Widget *table;
    Etk_Widget *label;
    Etk_Widget *frame;
@@ -57,17 +58,19 @@ void etk_test_tree_window_create(void *data)
    etk_tree_col_expand_set(col1, ETK_TRUE);
    col2 = etk_tree_col_new(ETK_TREE(tree), _("Column 2"), etk_tree_model_double_new(ETK_TREE(tree)), 60);
    col3 = etk_tree_col_new(ETK_TREE(tree), _("Column 3"), etk_tree_model_image_new(ETK_TREE(tree), ETK_TREE_FROM_FILE), 60);
+   col4 = etk_tree_col_new(ETK_TREE(tree), _("Column 4"), etk_tree_model_checkbox_new(ETK_TREE(tree)), 40);
    etk_tree_build(ETK_TREE(tree));
+   etk_signal_connect("cell_value_changed", ETK_OBJECT(col4), ETK_CALLBACK(_etk_test_tree_checkbox_toggled_cb), NULL);
 
    etk_tree_freeze(ETK_TREE(tree));
    for (i = 0; i < 1000; i++)
    {
       row = etk_tree_append(ETK_TREE(tree), col1, etk_theme_icon_theme_get(), "places/user-home_16", _("Row1"),
-         col2, 10.0, col3, PACKAGE_DATA_DIR "/images/1star.png", NULL);
+         col2, 10.0, col3, PACKAGE_DATA_DIR "/images/1star.png", col4, ETK_FALSE, NULL);
       row = etk_tree_append_to_row(row, col1, etk_theme_icon_theme_get(), "places/folder_16", _("Row2"),
-         col2, 20.0, col3, PACKAGE_DATA_DIR "/images/2stars.png", NULL);
+         col2, 20.0, col3, PACKAGE_DATA_DIR "/images/2stars.png", col4, ETK_FALSE, NULL);
       etk_tree_append_to_row(row, col1, etk_theme_icon_theme_get(), "mimetypes/text-x-generic_16", _("Row3"),
-         col2, 30.0, col3, PACKAGE_DATA_DIR "/images/3stars.png", NULL);
+         col2, 30.0, col3, PACKAGE_DATA_DIR "/images/3stars.png", col4, ETK_TRUE, NULL);
    }
    etk_tree_thaw(ETK_TREE(tree));
 
@@ -172,6 +175,22 @@ static void _etk_test_tree_row_selected(Etk_Object *object, Etk_Tree_Row *row, v
 static void _etk_test_tree_row_unselected(Etk_Object *object, Etk_Tree_Row *row, void *data)
 {
    printf(_("Row unselected %p %p\n"), object, row);
+}
+
+/* Called when a checkbox of the tree is toggled */
+static void _etk_test_tree_checkbox_toggled_cb(Etk_Object *object, Etk_Tree_Row *row, void *data)
+{
+   Etk_Bool checked;
+   Etk_Tree_Col *col;
+   
+   if (!(col = ETK_TREE_COL(object)) || !row)
+      return;
+   
+   etk_tree_row_fields_get(row, col, &checked, NULL);
+   if (checked)
+      printf(_("Checkbox activated\n"));
+   else
+      printf(_("Checkbox deactivated\n"));
 }
 
 /* Called when the "Clear" button is clicked */

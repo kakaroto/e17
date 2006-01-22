@@ -37,27 +37,33 @@ static void etk_tree_model_text_cell_data_free(Etk_Tree_Model *model, void *cell
 static void etk_tree_model_text_cell_data_set(Etk_Tree_Model *model, void *cell_data, va_list *args);
 static void etk_tree_model_text_cell_data_get(Etk_Tree_Model *model, void *cell_data, va_list *args);
 static void etk_tree_model_text_objects_create(Etk_Tree_Model *model, Evas_Object **cell_objects, Evas *evas);
-static void etk_tree_model_text_render(Etk_Tree_Model *model, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects);
+static void etk_tree_model_text_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects);
 /* Int model */
 static void etk_tree_model_int_cell_data_set(Etk_Tree_Model *model, void *cell_data, va_list *args);
 static void etk_tree_model_int_cell_data_get(Etk_Tree_Model *model, void *cell_data, va_list *args);
-static void etk_tree_model_int_render(Etk_Tree_Model *model, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects);
+static void etk_tree_model_int_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects);
 /* Double model */
 static void etk_tree_model_double_cell_data_set(Etk_Tree_Model *model, void *cell_data, va_list *args);
 static void etk_tree_model_double_cell_data_get(Etk_Tree_Model *model, void *cell_data, va_list *args);
-static void etk_tree_model_double_render(Etk_Tree_Model *model, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects);
+static void etk_tree_model_double_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects);
 /* Image model */
 static void etk_tree_model_image_cell_data_free(Etk_Tree_Model *model, void *cell_data);
 static void etk_tree_model_image_cell_data_set(Etk_Tree_Model *model, void *cell_data, va_list *args);
 static void etk_tree_model_image_cell_data_get(Etk_Tree_Model *model, void *cell_data, va_list *args);
 static void etk_tree_model_image_objects_create(Etk_Tree_Model *model, Evas_Object **cell_objects, Evas *evas);
-static void etk_tree_model_image_render(Etk_Tree_Model *model, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects);
+static void etk_tree_model_image_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects);
 /* Icon Text model */
 static void etk_tree_model_icon_text_cell_data_free(Etk_Tree_Model *model, void *cell_data);
 static void etk_tree_model_icon_text_cell_data_set(Etk_Tree_Model *model, void *cell_data, va_list *args);
 static void etk_tree_model_icon_text_cell_data_get(Etk_Tree_Model *model, void *cell_data, va_list *args);
 static void etk_tree_model_icon_text_objects_create(Etk_Tree_Model *model, Evas_Object **cell_objects, Evas *evas);
-static void etk_tree_model_icon_text_render(Etk_Tree_Model *model, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects);
+static void etk_tree_model_icon_text_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects);
+/* Checkbox model */
+static void etk_tree_model_checkbox_cell_data_set(Etk_Tree_Model *model, void *cell_data, va_list *args);
+static void etk_tree_model_checkbox_cell_data_get(Etk_Tree_Model *model, void *cell_data, va_list *args);
+static void etk_tree_model_checkbox_objects_create(Etk_Tree_Model *model, Evas_Object **cell_objects, Evas *evas);
+static void etk_tree_model_checkbox_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects);
+static void etk_tree_model_checkbox_clicked_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
 /**
  * @brief Creates a model of column whose cells contain a text
@@ -186,6 +192,30 @@ Etk_Tree_Model *etk_tree_model_icon_text_new(Etk_Tree *tree, Etk_Tree_Model_Imag
    tree_model->render = etk_tree_model_icon_text_render;
    ((Etk_Tree_Model_Icon_Text *)tree_model)->icon_type = icon_type;
    ((Etk_Tree_Model_Icon_Text *)tree_model)->icon_width = -1;
+   
+   return tree_model;
+}
+
+/**
+ * @brief Creates a model of column whose cells contain a checkbox
+ * @param tree a tree
+ * @return Returns the new model
+ * @note You don't need to free it with etk_tree_model_free() if you use it in a tree. It will be freed when the tree is destroyed
+ */
+Etk_Tree_Model *etk_tree_model_checkbox_new(Etk_Tree *tree)
+{
+   Etk_Tree_Model *tree_model;
+   
+   tree_model = calloc(1, sizeof(Etk_Tree_Model));
+   
+   tree_model->tree = tree;
+   tree_model->xalign = 0.5;
+   tree_model->yalign = 0.5;
+   tree_model->cell_data_size = sizeof(Etk_Bool);
+   tree_model->cell_data_set = etk_tree_model_checkbox_cell_data_set;
+   tree_model->cell_data_get = etk_tree_model_checkbox_cell_data_get;
+   tree_model->objects_create = etk_tree_model_checkbox_objects_create;
+   tree_model->render = etk_tree_model_checkbox_render;
    
    return tree_model;
 }
@@ -320,7 +350,7 @@ static void etk_tree_model_text_objects_create(Etk_Tree_Model *model, Evas_Objec
 }
 
 /* Text: Render */
-static void etk_tree_model_text_render(Etk_Tree_Model *model, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects)
+static void etk_tree_model_text_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects)
 {
    char **text_data;
    Evas_Coord tw, th;
@@ -362,7 +392,7 @@ static void etk_tree_model_int_cell_data_get(Etk_Tree_Model *model, void *cell_d
 }
 
 /* Int: render */
-static void etk_tree_model_int_render(Etk_Tree_Model *model, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects)
+static void etk_tree_model_int_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects)
 {
    int *int_data;
    char string[256];
@@ -406,7 +436,7 @@ static void etk_tree_model_double_cell_data_get(Etk_Tree_Model *model, void *cel
 }
 
 /* Double: render */
-static void etk_tree_model_double_render(Etk_Tree_Model *model, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects)
+static void etk_tree_model_double_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects)
 {
    double *double_data;
    char string[256];
@@ -517,7 +547,7 @@ static void etk_tree_model_image_objects_create(Etk_Tree_Model *model, Evas_Obje
 }
 
 /* Image: render */
-static void etk_tree_model_image_render(Etk_Tree_Model *model, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects)
+static void etk_tree_model_image_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects)
 {
    Etk_Tree_Model_Image_Data *image_data;
    int image_width = 0, image_height = 0;
@@ -692,7 +722,7 @@ static void etk_tree_model_icon_text_objects_create(Etk_Tree_Model *model, Evas_
 }
 
 /* Icon Text: render */
-static void etk_tree_model_icon_text_render(Etk_Tree_Model *model, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects)
+static void etk_tree_model_icon_text_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects)
 {
    Etk_Tree_Model_Icon_Text_Data *icon_text_data;
    int model_icon_width;
@@ -779,4 +809,88 @@ static void etk_tree_model_icon_text_render(Etk_Tree_Model *model, Etk_Geometry 
 
    evas_object_move(cell_objects[1], geometry.x + icon_offset + (geometry.w - icon_offset - tw) * model->xalign, geometry.y + (geometry.h - th) * model->yalign);
    evas_object_show(cell_objects[1]);
+}
+
+/*---------------------
+ * Checkbox Model
+ *-------------------*/
+
+/* Checkbox: cell_data_set */
+static void etk_tree_model_checkbox_cell_data_set(Etk_Tree_Model *model, void *cell_data, va_list *args)
+{
+   Etk_Bool *checked;
+   
+   if (!(checked = cell_data) || !args)
+      return;
+   *checked = va_arg(*args, int);
+}
+
+/* Checkbox: cell_data_get */
+static void etk_tree_model_checkbox_cell_data_get(Etk_Tree_Model *model, void *cell_data, va_list *args)
+{
+   Etk_Bool *checked;
+   Etk_Bool *return_location;
+   
+   if (!(checked = cell_data) || !args)
+      return;
+   
+   return_location = va_arg(*args, Etk_Bool *);
+   if (return_location)
+      *return_location = *checked;
+}
+
+/* TODO */
+#include "etk_theme.h"
+
+/* Checkbox: objects_create */
+static void etk_tree_model_checkbox_objects_create(Etk_Tree_Model *model, Evas_Object **cell_objects, Evas *evas)
+{
+   if (!cell_objects || !evas)
+      return;
+   
+   /* TODO */
+   cell_objects[0] = edje_object_add(evas);
+   edje_object_file_set(cell_objects[0], etk_theme_widget_theme_get(), "tree_checkbox");
+   evas_object_event_callback_add(cell_objects[0], EVAS_CALLBACK_MOUSE_UP, etk_tree_model_checkbox_clicked_cb, model);
+}
+
+/* Checkbox: Render */
+static void etk_tree_model_checkbox_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects)
+{
+   Etk_Bool *checked;
+   Evas_Coord w, h;
+   
+   if (!(checked = cell_data))
+      return;
+   
+   if (*checked)
+      edje_object_signal_emit(cell_objects[0], "activated", "");
+   else
+      edje_object_signal_emit(cell_objects[0], "deactivated", "");
+   
+   evas_object_data_set(cell_objects[0], "_Etk_Tree_Model_Checkbox::Row", row);
+   edje_object_size_min_get(cell_objects[0], &w, &h);
+   evas_object_move(cell_objects[0], geometry.x + (geometry.w - w) * model->xalign, geometry.y + (geometry.h - h) * model->yalign);
+   evas_object_resize(cell_objects[0], w, h);
+   evas_object_show(cell_objects[0]);
+}
+
+/* Called when the checkbox is released by the mouse */
+static void etk_tree_model_checkbox_clicked_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Etk_Tree_Model *model;
+   Etk_Tree_Row *row;
+   Evas_Event_Mouse_Up *event;
+   Evas_Coord ox, oy, ow, oh;
+   Etk_Bool checked;
+   
+   if (!(model = data) || !model->col || !(event = event_info) || !(row = evas_object_data_get(obj, "_Etk_Tree_Model_Checkbox::Row")))
+      return;
+   
+   evas_object_geometry_get(obj, &ox, &oy, &ow, &oh);
+   if (event->canvas.x >= ox && event->canvas.x <= ox + ow && event->canvas.y >= oy && event->canvas.y <= oy + oh)
+   {
+      etk_tree_row_fields_get(row, model->col, &checked, NULL);
+      etk_tree_row_fields_set(row, model->col, !checked, NULL);
+   }
 }

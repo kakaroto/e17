@@ -66,6 +66,12 @@ enum _Etk_Tree_Property_Id
    ETK_TREE_ROW_HEIGHT_PROPERTY
 };
 
+enum _Etk_Tree_Col_Signal_Id
+{
+   ETK_TREE_COL_CELL_VALUE_CHANGED,
+   ETK_TREE_COL_NUM_SIGNALS
+};
+
 enum _Etk_Tree_Col_Property_Id
 {
    ETK_TREE_COL_TITLE_PROPERTY,
@@ -114,6 +120,7 @@ static void _etk_tree_update(Etk_Tree *tree);
 static int _etk_tree_rows_draw(Etk_Tree *tree, Etk_Tree_Row *first_row, Evas_List **items_objects,
    int x, int w, int h, int xoffset, int yoffset, int first_row_id, int first_row_color);
 static Etk_Tree_Row *_etk_tree_row_new_valist(Etk_Tree *tree, Etk_Tree_Row *row, va_list args);
+static void _etk_tree_row_fields_set_valist_full(Etk_Tree_Row *row, va_list args, Etk_Bool emit_value_changed_signal);
 static Etk_Tree_Row_Objects *_etk_tree_row_objects_new(Etk_Tree *tree);
 static void _etk_tree_row_objects_free(Etk_Tree_Row_Objects *row_objects, Etk_Tree *tree);
 static void _etk_tree_row_free(Etk_Tree_Row *row);
@@ -127,6 +134,7 @@ static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Evas_Modifie
 static void _etk_tree_heapify(Etk_Tree *tree, Etk_Tree_Row **heap, int root, int size, int (*compare_cb)(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data), int asc, Etk_Tree_Col *col, void *data);
 
 static Etk_Signal *_etk_tree_signals[ETK_TREE_NUM_SIGNALS];
+static Etk_Signal *_etk_tree_col_signals[ETK_TREE_COL_NUM_SIGNALS];
 
 /**************************
  *
@@ -186,6 +194,8 @@ Etk_Type *etk_tree_col_type_get()
    {
       tree_col_type = etk_type_new("Etk_Tree_Col", ETK_OBJECT_TYPE, sizeof(Etk_Tree_Col), ETK_CONSTRUCTOR(_etk_tree_col_constructor), ETK_DESTRUCTOR(_etk_tree_col_destructor));
 
+      _etk_tree_col_signals[ETK_TREE_COL_CELL_VALUE_CHANGED] = etk_signal_new("cell_value_changed", tree_col_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
+      
       etk_type_property_add(tree_col_type, "title",         ETK_TREE_COL_TITLE_PROPERTY,           ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_string(NULL));
       etk_type_property_add(tree_col_type, "width",         ETK_TREE_COL_WIDTH_PROPERTY,           ETK_PROPERTY_INT,    ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(ETK_TREE_MIN_HEADER_WIDTH));
       etk_type_property_add(tree_col_type, "min_width",     ETK_TREE_COL_MIN_WIDTH_PROPERTY,       ETK_PROPERTY_INT,    ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(-1));
@@ -215,8 +225,13 @@ Etk_Tree_Col *etk_tree_col_new(Etk_Tree *tree, const char *title, Etk_Tree_Model
    Etk_Tree_Col *new_col;
    Etk_Widget *new_header;
 
-   if (!tree)
+   if (!tree || !model)
       return NULL;
+   if (model->col)
+   {
+      ETK_WARNING("The tree model to use for that column is already used for another column");
+      return NULL;
+   }
 
    tree->columns = realloc(tree->columns, sizeof(Etk_Tree_Col *) * (tree->num_cols + 1));
    new_col = ETK_TREE_COL(etk_object_new(ETK_TREE_COL_TYPE, "title", title, "width", width, "visible", ETK_TRUE, "resizable", ETK_TRUE, NULL));
@@ -227,6 +242,7 @@ Etk_Tree_Col *etk_tree_col_new(Etk_Tree *tree, const char *title, Etk_Tree_Model
    etk_object_notify(ETK_OBJECT(new_col), "place");
    new_col->tree = tree;
    new_col->model = model;
+   new_col->model->col = new_col;
 
    /* Creates the header widget */
    new_header = etk_widget_new(ETK_BUTTON_TYPE, "theme_group", "tree_header", "label", title, "xalign", 0.0, "repeat_events", ETK_TRUE, "visibility_locked", ETK_TRUE, NULL);
@@ -987,24 +1003,9 @@ void etk_tree_row_fields_set(Etk_Tree_Row *row, ...)
  */
 void etk_tree_row_fields_set_valist(Etk_Tree_Row *row, va_list args)
 {
-   Etk_Tree_Col *col;
-   va_list args2;
-   
-   if (!row)
-      return;
-
-   va_copy(args2, args);
-   while ((col = va_arg(args2, Etk_Tree_Col *)))
-   {
-      if (col->model->cell_data_set)
-         col->model->cell_data_set(col->model, row->cells_data[col->id], &args2);
-   }
-   va_end(args2);
-
-   if (!row->tree->frozen)
-      etk_widget_redraw_queue(ETK_WIDGET(row->tree->grid));
+   _etk_tree_row_fields_set_valist_full(row, args, ETK_TRUE);
 }
-
+   
 /**
  * @brief Gets the different values of the cells of the row
  * @param row a row
@@ -2235,7 +2236,7 @@ static int _etk_tree_rows_draw(Etk_Tree *tree, Etk_Tree_Row *parent_row, Evas_Li
             geometry.y = item_y + tree->cell_margins[2];
             geometry.w = tree->columns[j]->visible_width - tree->cell_margins[0] - tree->cell_margins[1];
             geometry.h = tree->row_height - tree->cell_margins[2] - tree->cell_margins[3];
-            tree->columns[j]->model->render(tree->columns[j]->model, geometry, row->cells_data[j], row_objects->cells_objects[j].objects);
+            tree->columns[j]->model->render(tree->columns[j]->model, row, geometry, row->cells_data[j], row_objects->cells_objects[j].objects);
          }
          i++;
       }
@@ -2279,7 +2280,7 @@ static Etk_Tree_Row *_etk_tree_row_new_valist(Etk_Tree *tree, Etk_Tree_Row *row,
       if (tree->columns[i]->model->cell_data_init)
          tree->columns[i]->model->cell_data_init(tree->columns[i]->model, new_row->cells_data[i]);
    }
-   etk_tree_row_fields_set_valist(new_row, args);
+   _etk_tree_row_fields_set_valist_full(new_row, args, ETK_FALSE);
 
    for (r = new_row->parent; r; r = r->parent)
    {
@@ -2304,6 +2305,31 @@ static Etk_Tree_Row *_etk_tree_row_new_valist(Etk_Tree *tree, Etk_Tree_Row *row,
       etk_widget_redraw_queue(ETK_WIDGET(tree->grid));
    }
    return new_row;
+}
+
+/* Sets the different values of the cells of the row */
+static void _etk_tree_row_fields_set_valist_full(Etk_Tree_Row *row, va_list args, Etk_Bool emit_value_changed_signal)
+{
+   Etk_Tree_Col *col;
+   va_list args2;
+   
+   if (!row)
+      return;
+
+   va_copy(args2, args);
+   while ((col = va_arg(args2, Etk_Tree_Col *)))
+   {
+      if (col->model->cell_data_set)
+      {
+         col->model->cell_data_set(col->model, row->cells_data[col->id], &args2);
+         if (emit_value_changed_signal)
+            etk_signal_emit(_etk_tree_col_signals[ETK_TREE_COL_CELL_VALUE_CHANGED], ETK_OBJECT(col), NULL, row);
+      }
+   }
+   va_end(args2);
+
+   if (!row->tree->frozen)
+      etk_widget_redraw_queue(ETK_WIDGET(row->tree->grid));
 }
 
 /* Creates the evas objects needed by a row */ 

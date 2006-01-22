@@ -239,3 +239,93 @@ group {
       }
    }
 }
+group {
+   name: "tree_checkbox";
+   min: 20 20;
+   parts {
+      part {
+         name: "checkbox";
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.5;
+               offset: 2 -8;
+            }
+            rel2 {
+               relative: 0.0 0.5;
+               offset: 17 7;
+            }
+            image {
+               normal: "checkbox_off.png";
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+         description {
+            state: "on" 0.0;
+            inherit: "default" 0.0;
+            image {
+               normal: "checkbox_on.png";
+            }
+         }
+      }
+      part {
+         name: "checkbox_down";
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            rel1 {
+               relative: 0.0 0.5;
+               offset: 2 -8;
+            }
+            rel2 {
+               relative: 0.0 0.5;
+               offset: 17 7;
+            }
+            image {
+               normal: "checkbox_down.png";
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+         description {
+            state: "down" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
+   }
+   programs {
+      program {
+         name: "tree_checkbox_activated";
+         signal: "activated";
+         source: "";
+         action: STATE_SET "on" 0.0;
+         target: "checkbox";
+      }
+      program {
+         name: "tree_checkbox_desactivated";
+         signal: "deactivated";
+         source: "";
+         action: STATE_SET "default" 0.0;
+         target: "checkbox";
+      }
+      program {
+         name: "tree_checkbox_down";
+         signal: "mouse,down,1";
+         source: "checkbox";
+         action: STATE_SET "down" 0.0;
+         target: "checkbox_down";
+      }
+      program {
+         name: "tree_checkbox_up";
+         signal: "mouse,up,1";
+         source: "checkbox";
+         action: STATE_SET "default" 0.0;
+         target: "checkbox_down";
+      }
+   }
+}
+
