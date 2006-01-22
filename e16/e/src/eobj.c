@@ -455,10 +455,10 @@ EobjShapeUpdate(EObj * eo, int propagate)
 
    if (propagate)
       eo->shaped = EShapePropagate(eo->win) != 0;
-#if USE_COMPOSITE
    else
       eo->shaped = EShapeCheck(eo->win) != 0;
 
+#if USE_COMPOSITE
    if (was_shaped <= 0 && eo->shaped <= 0)
       return;
 
