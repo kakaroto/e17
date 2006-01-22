@@ -40,8 +40,6 @@ _config_slideshow_module(E_Container *con, Slide *s)
    v->free_cfdata             = _free_data;
    v->basic.apply_cfdata      = _basic_apply_data;
    v->basic.create_widgets    = _basic_create_widgets;
-   v->advanced.apply_cfdata   = NULL;
-   v->advanced.create_widgets = NULL;
 
    /* create config diaolg */
    cfd = e_config_dialog_new(con, _("Slideshow Configuration"), NULL, 0, v, s);

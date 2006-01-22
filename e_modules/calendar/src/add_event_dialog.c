@@ -33,17 +33,19 @@ void
 add_event_show(void *con,void *DayToFix)
 {
    E_Config_Dialog *cfd;
-   E_Config_Dialog_View v;   
+   E_Config_Dialog_View *v;   
 
-   /* methods */
-   v.create_cfdata           = _add_event_create_data;
-   v.free_cfdata             = _add_event_free_data;
-   v.basic.apply_cfdata      = _add_event_basic_apply_data;
-   v.basic.create_widgets    = _add_event_basic_create_widgets;
-   v.advanced.apply_cfdata   = NULL;
-   v.advanced.create_widgets = NULL;
-   /* create config diaolg */
-   cfd = e_config_dialog_new(con, _("Font Editor"), NULL, 0, &v, DayToFix);
+   v = E_NEW(E_Config_Dialog_View, 1);
+   if (v)
+      {
+         /* methods */
+         v->create_cfdata           = _add_event_create_data;
+         v->free_cfdata             = _add_event_free_data;
+         v->basic.apply_cfdata      = _add_event_basic_apply_data;
+         v->basic.create_widgets    = _add_event_basic_create_widgets;
+         /* create config diaolg */
+         cfd = e_config_dialog_new(con, _("Font Editor"), NULL, 0, v, DayToFix);
+      }
 }
 
 /* local subsystem functions */

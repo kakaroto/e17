@@ -31,17 +31,19 @@ void
 _config_rain_module(E_Container *con, Rain *r)
 {
    E_Config_Dialog *cfd;
-   E_Config_Dialog_View v;
+   E_Config_Dialog_View *v;
 
-   v.create_cfdata = _create_data;
-   v.free_cfdata = _free_data;
-   v.basic.apply_cfdata = _basic_apply_data;
-   v.basic.create_widgets = _basic_create_widgets;
-   v.advanced.apply_cfdata = NULL;
-   v.advanced.create_widgets = NULL;
+   v = E_NEW(E_Config_Dialog_View, 1);
+   if (v)
+      {
+         v->create_cfdata = _create_data;
+         v->free_cfdata = _free_data;
+         v->basic.apply_cfdata = _basic_apply_data;
+         v->basic.create_widgets = _basic_create_widgets;
 
-   cfd = e_config_dialog_new(con, _("Rain Module"), NULL, 0, &v, r);
-   r->config_dialog = cfd;
+         cfd = e_config_dialog_new(con, _("Rain Module"), NULL, 0, v, r);
+         r->config_dialog = cfd;
+      }
 }
 
 static void

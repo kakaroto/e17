@@ -35,17 +35,22 @@ void
 e_int_config_calendar_weekday(void *con, void *calendar)
 {
    E_Config_Dialog *cfd;
-   E_Config_Dialog_View v;
-   /* methods */
-   v.create_cfdata           = _create_data;
-   v.free_cfdata             = _free_data;
-   v.basic.apply_cfdata      = _basic_apply_data;
-   v.basic.create_widgets    = _basic_create_widgets;
-   v.advanced.apply_cfdata   = _color_edit_advanced_apply_data;
-   v.advanced.create_widgets = _color_edit_advanced_create_widgets;
+   E_Config_Dialog_View *v;
 
-   /* create config diaolg for NULL object/data */
-   cfd = e_config_dialog_new(con, _("Calendar Settings"), NULL, 0, &v, calendar);
+   v = E_NEW(E_Config_Dialog_View, 1);
+   if (v)
+      {
+         /* methods */
+         v->create_cfdata           = _create_data;
+         v->free_cfdata             = _free_data;
+         v->basic.apply_cfdata      = _basic_apply_data;
+         v->basic.create_widgets    = _basic_create_widgets;
+         v->advanced.apply_cfdata   = _color_edit_advanced_apply_data;
+         v->advanced.create_widgets = _color_edit_advanced_create_widgets;
+
+         /* create config diaolg for NULL object/data */
+         cfd = e_config_dialog_new(con, _("Calendar Settings"), NULL, 0, v, calendar);
+      }
 }
 /***************************************************
 / Function: 
