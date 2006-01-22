@@ -1025,6 +1025,9 @@ EwinWithdraw(EWin * ewin)
 
    EGrabServer();
 
+   ESelectInput(_EwinGetClientXwin(ewin), NoEventMask);
+   XShapeSelectInput(disp, _EwinGetClientXwin(ewin), NoEventMask);
+
    /* Park the client window on the root */
    x = ewin->client.x;
    y = ewin->client.y;
