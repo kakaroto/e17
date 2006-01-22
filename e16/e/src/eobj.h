@@ -37,6 +37,7 @@ struct _eobj
    int                 x, y;
    int                 w, h;
    signed char         stacked;
+   signed char         shaped;
    char                sticky;
    char                floating;
    unsigned            external:1;
@@ -119,7 +120,7 @@ struct _eobj
 #define EoReparent(eo, d, x, y)         EobjReparent(EoObj(eo), d, x, y)
 #define EoRaise(eo)                     EobjRaise(EoObj(eo))
 #define EoLower(eo)                     EobjLower(EoObj(eo))
-#define EoChangeShape(eo)               EobjChangeShape(EoObj(eo))
+#define EoShapeUpdate(eo, p)            EobjShapeUpdate(EoObj(eo), p)
 
 /* eobj.c */
 void                EobjInit(EObj * eo, int type, Window win, int x, int y,
@@ -143,7 +144,7 @@ void                EobjMoveResize(EObj * eo, int x, int y, int w, int h);
 void                EobjReparent(EObj * eo, EObj * dst, int x, int y);
 int                 EobjRaise(EObj * eo);
 int                 EobjLower(EObj * eo);
-void                EobjChangeShape(EObj * eo);
+void                EobjShapeUpdate(EObj * eo, int propagate);
 void                EobjsRepaint(void);
 Pixmap              EobjGetPixmap(const EObj * eo);
 void                EobjChangeOpacity(EObj * eo, unsigned int opacity);

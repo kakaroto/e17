@@ -1147,7 +1147,7 @@ ExShapeCopy(EXID * xdst, EXID * xsrc)
    return rn != 0;
 }
 
-static void
+static int
 ExShapePropagate(EXID * xid)
 {
    EXID               *xch;
@@ -1159,7 +1159,7 @@ ExShapePropagate(EXID * xid)
    XWindowAttributes   att;
 
    if (!xid || xid->w <= 0 || xid->h <= 0)
-      return;
+      return 0;
 
 #if DEBUG_SHAPE_PROPAGATE
    Eprintf("ExShapePropagate %#lx %d,%d %dx%d\n", win, xid->x, xid->y, xid->w,
@@ -1168,7 +1168,7 @@ ExShapePropagate(EXID * xid)
 
    XQueryTree(disp, xid->win, &rt, &par, &list, &num);
    if (!list)
-      return;
+      return 0;
 
    num_rects = 0;
    rects = NULL;
@@ -1251,6 +1251,8 @@ ExShapePropagate(EXID * xid)
 	ExShapeCombineRectangles(xid, ShapeBounding, 0, 0, NULL, 0, ShapeSet,
 				 Unsorted);
      }
+
+   return xid->num_rect;
 }
 
 void
@@ -1304,13 +1306,24 @@ EShapeCopy(Window dst, Window src)
    return ExShapeCopy(xdst, xsrc);
 }
 
-void
+int
 EShapePropagate(Window win)
 {
    EXID               *xid;
 
    xid = EXidFind(win);
-   ExShapePropagate(xid);
+
+   return ExShapePropagate(xid);
+}
+
+int
+EShapeCheck(Window win)
+{
+   EXID               *xid;
+
+   xid = EXidFind(win);
+
+   return xid->num_rect;
 }
 
 Pixmap

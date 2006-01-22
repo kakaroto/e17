@@ -104,7 +104,8 @@ void                EShapeCombineShape(Window win, int dest, int x, int y,
 XRectangle         *EShapeGetRectangles(Window win, int dest, int *rn,
 					int *ord);
 int                 EShapeCopy(Window dst, Window src);
-void                EShapePropagate(Window win);
+int                 EShapePropagate(Window win);
+int                 EShapeCheck(Window win);
 Pixmap              EWindowGetShapePixmap(Window win);
 
 #define ECreatePixmap(draw, w, h, depth) XCreatePixmap(disp, draw, w, h, depth)

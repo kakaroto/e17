@@ -242,8 +242,7 @@ WarpFocusWinPaint(WarpFocusWin * fw)
      }
 
    /* FIXME - Check shape */
-   EShapePropagate(EoGetWin(fw));
-   EoChangeShape(fw);
+   EoShapeUpdate(fw, 1);
 }
 
 static void

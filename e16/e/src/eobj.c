@@ -112,6 +112,7 @@ EobjSetFloating(EObj * eo, int floating)
    EobjSetLayer(eo, eo->layer);
 }
 
+#if 1				/* FIXME - Remove */
 int
 EobjIsShaped(const EObj * eo)
 {
@@ -123,6 +124,7 @@ EobjIsShaped(const EObj * eo)
 	return ((EWin *) eo)->state.shaped;
      }
 }
+#endif
 
 void
 EobjInit(EObj * eo, int type, Window win, int x, int y, int w, int h,
@@ -148,6 +150,7 @@ EobjInit(EObj * eo, int type, Window win, int x, int y, int w, int h,
    eo->y = y;
    eo->w = w;
    eo->h = h;
+   eo->shaped = -1;
 
    if (type == EOBJ_TYPE_EXT)
       eo->name = ecore_x_icccm_title_get(win);
@@ -277,6 +280,7 @@ EobjRegister(Window win, int type)
 #if 1				/* FIXME - TBD */
    if (type == EOBJ_TYPE_EXT)
      {
+	eo->shaped = 0;		/* FIXME - Assume unshaped for now */
 	EobjSetFloating(eo, 1);
 	EobjSetLayer(eo, 4);
      }
@@ -310,6 +314,9 @@ EobjMap(EObj * eo, int raise)
 
    if (eo->stacked <= 0 || raise > 1)
       DeskRestack(eo->desk);
+
+   if (eo->shaped < 0)
+      EobjShapeUpdate(eo, 0);
 
    EMapWindow(eo->win);
 #if USE_COMPOSITE
@@ -442,13 +449,22 @@ EobjLower(EObj * eo)
 }
 
 void
-EobjChangeShape(EObj * eo)
+EobjShapeUpdate(EObj * eo, int propagate)
 {
+   int                 was_shaped = eo->shaped;
+
+   if (propagate)
+      eo->shaped = EShapePropagate(eo->win) != 0;
 #if USE_COMPOSITE
+   else
+      eo->shaped = EShapeCheck(eo->win) != 0;
+
+   if (was_shaped <= 0 && eo->shaped <= 0)
+      return;
+
+   /* Shape may still be unchanged. Well ... */
    if (eo->shown && eo->cmhook)
       ECompMgrWinChangeShape(eo);
-#else
-   eo = NULL;
 #endif
 }
 

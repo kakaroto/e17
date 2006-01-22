@@ -640,8 +640,7 @@ EwinPropagateShapes(EWin * ewin)
       Eprintf("EwinPropagateShapes %#lx frame=%#lx shaped=%d\n",
 	      _EwinGetClientXwin(ewin), EoGetWin(ewin), ewin->state.shaped);
 
-   EShapePropagate(EoGetWin(ewin));
-   EoChangeShape(ewin);
+   EoShapeUpdate(ewin, 1);
    ewin->update.shape = 0;
 }
 
