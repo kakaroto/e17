@@ -690,7 +690,7 @@ AddToFamily(EWin * ewin, Window win)
    else
       ewin = EwinCreate(win, EWIN_TYPE_NORMAL);
    if (!ewin)
-      return;
+      goto done;
 
    if (EwinGetAttributes(ewin))
      {
