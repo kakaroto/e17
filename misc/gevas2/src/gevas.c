@@ -352,6 +352,18 @@ void
 __gevas_mouse_move(void *_data, Evas* _e, Evas_Object* _o, void *event_info )
 {
     Evas_Event_Mouse_Move* ev = (Evas_Event_Mouse_Move*)event_info;
+    if( !ev )
+        return;
+    
+    if( !_e )
+    {
+        if( !_o )
+            return;
+        
+        GtkObject* gobj = EVASO_TO_GTKO( _o );
+        GtkgEvas* gevas = gevasobj_get_gevas( gobj );
+        _e = EVAS( gevas );
+    }
     int _b = ev->buttons;
     int _x = ev->cur.output.x;
     int _y = ev->cur.output.y;
@@ -594,6 +606,8 @@ static void gevas_init(GtkgEvas * ev)
 	GTK_WIDGET_SET_FLAGS(GTK_WIDGET(ev), GTK_CAN_FOCUS);
 /*     printf("gevas_init() 1\n"); */
 
+    evas_init();
+    
 	ev->current_idle = 0;
     ev->evas_render_call_count = 0;
     ev->ecore_timer_id  = 0;
