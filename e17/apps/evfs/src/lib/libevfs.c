@@ -68,7 +68,7 @@ int evfs_server_data (void* data, int type, void* event) {
 				   if (conn->callback_func) {
 					   
 					   evfs_event* ev = conn->prog_event;
-					   (*conn->callback_func)(ev);
+					   (*conn->callback_func)(ev, conn->obj);
 				   } else {
 					   printf("EVFS: Alert - no callback registered for event\n");
 				   }
@@ -104,7 +104,7 @@ int evfs_server_spawn() {
 	return 0;
 }
 
-evfs_connection* evfs_connect(void (*callback_func)(evfs_event*)) {
+evfs_connection* evfs_connect(void (*callback_func)(evfs_event*, void*), void *obj) {
 	ecore_init();
 	ecore_ipc_init();
 	int connect_attempts = 0;
@@ -113,6 +113,7 @@ evfs_connection* evfs_connect(void (*callback_func)(evfs_event*)) {
 	connection->id = MAX_CLIENT;
 	connection->prog_event = NULL;
 	connection->callback_func = callback_func;
+	connection->obj = obj;
 
 	evfs_io_initialise();
 	evfs_vfolder_initialise();

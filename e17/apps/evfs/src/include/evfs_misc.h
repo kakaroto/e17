@@ -31,7 +31,7 @@ Ecore_List* evfs_file_list_sort(Ecore_List* file_list);
 
 void evfs_cleanup_client(evfs_client* client);
 void evfs_disconnect(evfs_connection* connection);
-evfs_connection* evfs_connect(void (*callback_func)(evfs_event*));
+evfs_connection* evfs_connect(void (*callback_func)(evfs_event*, void*), void *obj);
 evfs_file_uri_path* evfs_parse_uri(char* uri);
 void evfs_handle_command(evfs_client* client, evfs_command* command);
 void evfs_handle_monitor_start_command(evfs_client* client, evfs_command* command);

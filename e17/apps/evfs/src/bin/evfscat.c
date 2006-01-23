@@ -3,7 +3,7 @@
 
 evfs_connection* con;
 
-void callback(evfs_event* data) {
+void callback(evfs_event* data, void* obj) {
 
 
 	switch (data->type) {
@@ -36,7 +36,11 @@ int main(int argc, char** argv) {
 	evfs_file_uri_path* path;
 	char pathi[1024];
 
-	if ( (con = evfs_connect(&callback))) {
+	if (argc < 2) {
+		return 0;
+	}
+
+	if ( (con = evfs_connect(&callback, NULL))) {
 		path = evfs_parse_uri(argv[1]);
 	
 		evfs_client_file_open(con, path->files[0]);

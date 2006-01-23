@@ -5,7 +5,7 @@ static int mon_current =0; /*A demo of stopping monitoring, after 10 events*/
 evfs_file_uri_path* dir_path;
 evfs_connection* con;
 
-void callback(evfs_event* data) {
+void callback(evfs_event* data, void* obj) {
 	if (data->type == EVFS_EV_FILE_MONITOR) {
 				printf("DEMO: Received a file monitor notification\n");
 				printf("DEMO: For file: '%s'\n", data->file_monitor.filename);
@@ -92,7 +92,7 @@ int main(int argc, char** argv) {
 		snprintf(pathi,1024,"%s", patharg);
 	}
 
-	con = evfs_connect(&callback);
+	con = evfs_connect(&callback, NULL);
 
 	//path = evfs_parse_uri("posix:///dev/ttyS0");
 	
