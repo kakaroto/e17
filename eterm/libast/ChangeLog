@@ -758,3 +758,9 @@ Thu Dec 22 18:29:54 2005                        Michael Jennings (mej)
 
 Fixed auto-detection of Imlib2.  :-(
 ----------------------------------------------------------------------
+Mon Jan 23 14:29:26 2006                        Michael Jennings (mej)
+
+0.7 final release.  Includes fix for CVE-2006-0224 buffer overflow
+discovered by Rosiello Security.  Details can be found at
+http://www.rosiello.org/en/read_bugs.php?id=25
+----------------------------------------------------------------------

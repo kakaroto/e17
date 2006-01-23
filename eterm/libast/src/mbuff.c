@@ -495,7 +495,7 @@ spif_mbuff_reverse(spif_mbuff_t self)
     REQUIRE_RVAL(self->buff != SPIF_NULL_TYPE(byteptr), FALSE);
 
     for (j = 0, i = self->len - 1; i > j; i--, j++) {
-        (void) BINSWAP(tmp[j], tmp[i]);
+        SWAP(tmp[j], tmp[i]);
     }
     return TRUE;
 }

@@ -71,7 +71,7 @@ AC_ARG_WITH(pedantry,
     [  --with-pedantry         add -Werror -std=c99 -pedantic to CFLAGS],
     [
         if test "$withval" != "no"; then
-            CFLAGS="$CFLAGS -Wall -Werror -std=c99 -pedantic"
+            CFLAGS="$CFLAGS -Wall -Werror -std=c99"
             AC_DEFINE(STRICT_ISO_C99, 1, [Defined if strict ISO C99 (9899:1999) is requested or required.])
         fi
     ]

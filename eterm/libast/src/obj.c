@@ -390,7 +390,7 @@ spif_bool_t
 spif_obj_set_class(spif_obj_t self, spif_class_t cls)
 {
     ASSERT_RVAL(!SPIF_OBJ_ISNULL(self), FALSE);
-    SPIF_OBJ(self)->cls = cls;
+    self->cls = cls;
     return TRUE;
 }
 

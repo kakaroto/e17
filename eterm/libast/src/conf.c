@@ -721,14 +721,12 @@ spifconf_shell_expand(spif_charptr_t s)
 
 /* The config file reader.  This looks for the config file by searching CONFIG_SEARCH_PATH.
    If it can't find a config file, it displays a warning but continues. -- mej */
-
 spif_charptr_t 
 spifconf_find_file(const spif_charptr_t file, const spif_charptr_t dir, const spif_charptr_t pathlist)
 {
     static spif_char_t name[PATH_MAX], full_path[PATH_MAX];
     spif_charptr_t path, p;
-    short maxpathlen;
-    unsigned short len;
+    spif_int32_t len, maxpathlen;
     struct stat fst;
 
     REQUIRE_RVAL(file != NULL, NULL);
@@ -736,6 +734,13 @@ spifconf_find_file(const spif_charptr_t file, const spif_charptr_t dir, const sp
     getcwd(SPIF_CAST_C(char *) name, PATH_MAX);
     D_CONF(("spifconf_find_file(\"%s\", \"%s\", \"%s\") called from directory \"%s\".\n",
             file, NONULL(dir), NONULL(pathlist), name));
+
+    /* Make sure our supplied settings don't overflow. */
+    len = strlen(SPIF_CAST_C(char *) file) + ((dir) ? (strlen(SPIF_CAST_C(char *) dir)) : (0)) + 2;
+    if ((len > SPIF_CAST(int32) sizeof(name)) || (len <= 0)) {
+        D_CONF(("Too big.  I lose. :(\n"));
+        return ((spif_charptr_t) NULL);
+    }
 
     if (dir) {
         strcpy(SPIF_CAST_C(char *) name, SPIF_CAST_C(char *) dir);
@@ -756,7 +761,7 @@ spifconf_find_file(const spif_charptr_t file, const spif_charptr_t dir, const sp
     /* maxpathlen is the longest possible path we can stuff into name[].  The - 2 saves room for
        an additional / and the trailing null. */
     if ((maxpathlen = sizeof(name) - len - 2) <= 0) {
-        D_CONF(("Too big.  I lose. :(\n", name));
+        D_CONF(("Too big.  I lose. :(\n"));
         return ((spif_charptr_t) NULL);
     }
 
