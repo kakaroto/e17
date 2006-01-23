@@ -29,7 +29,7 @@ entropy_core* filesystem_core; /*A reference to the core*/
 
 evfs_connection* con;
 
-void callback(evfs_event* data) {
+void callback(evfs_event* data, void* obj) {
 	
 	//printf("Callback hit..%d\n", data->type);
 
@@ -402,7 +402,7 @@ void entropy_plugin_init(entropy_core* core) {
 	evfs_dir_requests = ecore_hash_new(ecore_str_hash, ecore_str_compare);	
 	file_copy_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 
-	con = evfs_connect(&callback);
+	con = evfs_connect(&callback, NULL);
 
 	filesystem_core = core;
 }
