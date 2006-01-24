@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-14 15:17+0100\n"
+"POT-Creation-Date: 2006-01-22 20:06+0100\n"
 "PO-Revision-Date: 2000-03-29 21:12+0200\n"
 "Last-Translator: Matthias Warkus <mawa@iname.com>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 msgid "ActionClass Error!"
 msgstr "TextClass-Fehler!"
 
-#: src/aclass.c:190 src/backgrounds.c:255 src/borders.c:639 src/buttons.c:182
+#: src/aclass.c:190 src/backgrounds.c:255 src/borders.c:642 src/buttons.c:182
 #: src/cmclass.c:84 src/cursors.c:113 src/iclass.c:356 src/tclass.c:96
 #: src/tooltips.c:123
 #, c-format
@@ -32,10 +32,10 @@ msgstr "%u Referenzen verbleiben\n"
 # src/config.c:1649 src/config.c:1896 src/config.c:1965 src/config.c:2060
 # src/config.c:2316 src/config.c:2532 src/config.c:2795 src/config.c:2887
 # src/config.c:2964 src/config.c:3065 src/config.c:3387
-#: src/aclass.c:246 src/backgrounds.c:1171 src/borders.c:1060
-#: src/borders.c:1184 src/buttons.c:721 src/cmclass.c:201 src/config.c:273
-#: src/cursors.c:153 src/iclass.c:538 src/iconify.c:2417 src/menus.c:1679
-#: src/menus.c:1791 src/slideout.c:418 src/tclass.c:247 src/tooltips.c:157
+#: src/aclass.c:246 src/backgrounds.c:1171 src/borders.c:1063
+#: src/borders.c:1187 src/buttons.c:721 src/cmclass.c:201 src/config.c:273
+#: src/cursors.c:153 src/iclass.c:538 src/iconify.c:2417 src/menus.c:1697
+#: src/menus.c:1809 src/slideout.c:418 src/tclass.c:247 src/tooltips.c:157
 #: src/windowmatch.c:153
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
@@ -46,9 +46,9 @@ msgstr "KONFIG: ignoriere überflüssige Daten in \"%s\"\n"
 # src/config.c:1657 src/config.c:1902 src/config.c:1971 src/config.c:2068
 # src/config.c:2322 src/config.c:2540 src/config.c:2801 src/config.c:3071
 # src/config.c:3395
-#: src/aclass.c:254 src/backgrounds.c:1179 src/borders.c:1066
-#: src/borders.c:1190 src/buttons.c:729 src/cmclass.c:209 src/config.c:281
-#: src/cursors.c:159 src/iclass.c:543 src/menus.c:1684 src/menus.c:1797
+#: src/aclass.c:254 src/backgrounds.c:1179 src/borders.c:1069
+#: src/borders.c:1193 src/buttons.c:729 src/cmclass.c:209 src/config.c:281
+#: src/cursors.c:159 src/iclass.c:543 src/menus.c:1702 src/menus.c:1815
 #: src/slideout.c:424 src/tclass.c:253 src/tooltips.c:163
 #: src/windowmatch.c:158
 #, c-format
@@ -208,7 +208,7 @@ msgstr ""
 # src/settings.c:1460 src/settings.c:1522 src/settings.c:1610
 # src/settings.c:2012 src/settings.c:3405 src/settings.c:3750
 # src/settings.c:4048 src/settings.c:4186 src/snaps.c:547 src/sound.c:262
-#: src/actions.c:319 src/dialog.c:839 src/dialog.c:2066 src/dialog.c:2091
+#: src/actions.c:319 src/dialog.c:839 src/dialog.c:2066 src/dialog.c:2093
 #: src/handlers.c:188 src/sound.c:283
 msgid "OK"
 msgstr "OK"
@@ -410,7 +410,7 @@ msgid "Sort by Image"
 msgstr "Nach Bild sortieren"
 
 # src/settings.c:2526 src/settings.c:2528
-#: src/borders.c:639
+#: src/borders.c:642
 msgid "Border Error!"
 msgstr "Rahmen-Fehler!"
 
@@ -697,24 +697,24 @@ msgstr ""
 "ganz nach unten zu bringen.\n"
 
 # src/settings.c:830 src/settings.c:889
-#: src/desktops.c:2341 src/desktops.c:2392
+#: src/desktops.c:2339 src/desktops.c:2390
 #, c-format
 msgid "%i Desktops"
 msgstr "%i Desktops"
 
 # src/settings.c:832 src/settings.c:891
-#: src/desktops.c:2343 src/desktops.c:2394
+#: src/desktops.c:2341 src/desktops.c:2392
 #, c-format
 msgid "%i Desktop"
 msgstr "%i Desktop"
 
 # src/settings.c:856
-#: src/desktops.c:2375
+#: src/desktops.c:2373
 msgid "Multiple Desktop Settings"
 msgstr "Mehrfach-Desktop-Einstellungen"
 
 # src/main.c:89
-#: src/desktops.c:2382
+#: src/desktops.c:2380
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -723,61 +723,61 @@ msgstr ""
 "Einstellungsdialog\n"
 
 # src/settings.c:882
-#: src/desktops.c:2387
+#: src/desktops.c:2385
 msgid "Number of virtual desktops:\n"
 msgstr "Anzahl virtueller Desktops:\n"
 
 # src/settings.c:1750
-#: src/desktops.c:2413
+#: src/desktops.c:2411
 msgid "Slide desktops around when changing"
 msgstr "Desktops gleiten beim Wechseln herum"
 
 # src/settings.c:1922
-#: src/desktops.c:2419
+#: src/desktops.c:2417
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Desktop-Gleitgeschwindigkeit (langsam)\n"
 
 # src/settings.c:1120
-#: src/desktops.c:2433
+#: src/desktops.c:2431
 #, fuzzy
 msgid "Wrap desktops around"
 msgstr "Virtuelle Desktops zyklisch durchlaufen"
 
 # src/settings.c:1858
-#: src/desktops.c:2441
+#: src/desktops.c:2439
 msgid "Display desktop dragbar"
 msgstr "Desktop-Ziehbalken anzeigen"
 
 # src/settings.c:1867
-#: src/desktops.c:2447
+#: src/desktops.c:2445
 msgid "Drag bar position:"
 msgstr "Position des Ziehbalkens:"
 
 # src/settings.c:1878
-#: src/desktops.c:2451
+#: src/desktops.c:2449
 msgid "Top"
 msgstr "Oben"
 
 # src/settings.c:1885
-#: src/desktops.c:2457
+#: src/desktops.c:2455
 msgid "Bottom"
 msgstr "Unten"
 
 # src/settings.c:218 src/settings.c:250 src/settings.c:282
 # src/settings.c:1896
-#: src/desktops.c:2463 src/pager.c:1819 src/pager.c:1844 src/pager.c:1869
+#: src/desktops.c:2461 src/pager.c:1819 src/pager.c:1844 src/pager.c:1869
 msgid "Left"
 msgstr "Links"
 
 # src/settings.c:234 src/settings.c:266 src/settings.c:298
 # src/settings.c:1903
-#: src/desktops.c:2469 src/pager.c:1831 src/pager.c:1856 src/pager.c:1881
+#: src/desktops.c:2467 src/pager.c:1831 src/pager.c:1856 src/pager.c:1881
 msgid "Right"
 msgstr "Rechts"
 
 # src/settings.c:1007 src/settings.c:1072
-#: src/desktops.c:2561 src/desktops.c:2609
+#: src/desktops.c:2559 src/desktops.c:2607
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -787,7 +787,7 @@ msgstr ""
 "Bildschirme groß"
 
 # src/settings.c:1010 src/settings.c:1075
-#: src/desktops.c:2564 src/desktops.c:2612
+#: src/desktops.c:2562 src/desktops.c:2610
 msgid ""
 "1\n"
 "Screen in size"
@@ -796,12 +796,12 @@ msgstr ""
 "Bildschirm groß"
 
 # src/settings.c:1040
-#: src/desktops.c:2595
+#: src/desktops.c:2593
 msgid "Virtual Desktop Settings"
 msgstr "Einstellungen zu virtuellen Desktops"
 
 # src/settings.c:1040
-#: src/desktops.c:2602
+#: src/desktops.c:2600
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -810,22 +810,22 @@ msgstr ""
 "für virtuelle Desktops\n"
 
 # src/settings.c:1066
-#: src/desktops.c:2605
+#: src/desktops.c:2603
 msgid "Virtual Desktop size:\n"
 msgstr "Virtuelle Desktopgröße:\n"
 
 # src/settings.c:1120
-#: src/desktops.c:2645
+#: src/desktops.c:2643
 msgid "Wrap virtual desktops around"
 msgstr "Virtuelle Desktops zyklisch durchlaufen"
 
 # src/settings.c:1127
-#: src/desktops.c:2649
+#: src/desktops.c:2647
 msgid "Enable edge flip"
 msgstr "Magische Kanten verwenden"
 
 # src/settings.c:1134
-#: src/desktops.c:2653
+#: src/desktops.c:2651
 msgid "Resistance at edge of screen:\n"
 msgstr "Widerstand der Bildschirmkante:\n"
 
@@ -849,7 +849,7 @@ msgid "Close"
 msgstr "Schließen"
 
 # src/dialog.c:304
-#: src/dialog.c:2091
+#: src/dialog.c:2093
 msgid "Attention !!!"
 msgstr "Achtung!"
 
@@ -1688,13 +1688,13 @@ msgstr ""
 "Code aktuell bis     : %s\n"
 
 # src/ipc.c:4737
-#: src/ipc.c:1472
+#: src/ipc.c:1474
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Hilfe zu Enlightenment-IPC-Befehlen"
 
 # src/ipc.c:4743
-#: src/ipc.c:1476
+#: src/ipc.c:1478
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1706,25 +1706,25 @@ msgstr ""
 "\n"
 
 # src/ipc.c:4741 src/ipc.c:4780
-#: src/ipc.c:1478 src/ipc.c:1498 src/ipc.c:1510
+#: src/ipc.c:1480 src/ipc.c:1500 src/ipc.c:1512
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "Momentan verfügbare Befehle:\n"
 
-#: src/ipc.c:1496
+#: src/ipc.c:1498
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
 # src/ipc.c:4781
-#: src/ipc.c:1497
+#: src/ipc.c:1499
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "\"help <befehl>\" gibt eine nähere Beschreibung\n"
 
 # src/ipc.c:4783
-#: src/ipc.c:1499 src/ipc.c:1511
+#: src/ipc.c:1501 src/ipc.c:1513
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "<befehl> : <beschreibung>\n"
@@ -1835,18 +1835,18 @@ msgstr ""
 "Bitte beheben Sie dieses Problem und sorgen Sie dafür, dass dox\n"
 "korrekt installiert ist.\n"
 
-#: src/menus.c:1904
+#: src/menus.c:1922
 msgid "Menu"
 msgstr ""
 
 # src/settings.c:393
-#: src/menus.c:2003
+#: src/menus.c:2021
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Verschiedene Einstellungen"
 
 # src/main.c:89
-#: src/menus.c:2010
+#: src/menus.c:2028
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
@@ -1856,68 +1856,68 @@ msgstr ""
 "Einstellungsdialog\n"
 
 # src/settings.c:1795
-#: src/menus.c:2014
+#: src/menus.c:2032
 msgid "Animated display of menus"
 msgstr "Animierte Menüdarstellung"
 
 # src/settings.c:1810
-#: src/menus.c:2019
+#: src/menus.c:2037
 msgid "Always pop up menus on screen"
 msgstr "Menüs immer auf dem Bildschirm erscheinen lassen"
 
 # src/settings.c:1826
-#: src/menus.c:2024
+#: src/menus.c:2042
 msgid "Warp pointer after moving menus"
 msgstr "Zeiger verschieben, wenn Menüs bewegt werden"
 
 # src/theme.c:354
-#: src/menus-misc.c:569
+#: src/menus-misc.c:571
 #, fuzzy
 msgid "Themes"
 msgstr "Unbrauchbares Thema"
 
 # src/snaps.c:485
-#: src/menus-misc.c:657
+#: src/menus-misc.c:659
 #, fuzzy
 msgid "Window List"
 msgstr "In Fensterliste überspringen"
 
 # src/menus.c:1947
-#: src/menus-misc.c:679
+#: src/menus-misc.c:681
 #, fuzzy
 msgid "Go to this Desktop"
 msgstr "Zu diesem Desktop gehen"
 
 # src/menus.c:1964
-#: src/menus-misc.c:683 src/menus-misc.c:779
+#: src/menus-misc.c:685 src/menus-misc.c:781
 #, c-format
 msgid "Desktop %i"
 msgstr "Desktop %i"
 
 # src/snaps.c:453
-#: src/menus-misc.c:697
+#: src/menus-misc.c:699
 #, fuzzy
 msgid "Desks"
 msgstr "Desktop"
 
 # src/menus.c:2027
-#: src/menus-misc.c:726
+#: src/menus-misc.c:728
 msgid "Show/Hide this group"
 msgstr "Diese Gruppe zeigen/verbergen"
 
 # src/menus.c:2031
-#: src/menus-misc.c:731
+#: src/menus-misc.c:733
 msgid "Iconify this group"
 msgstr "Diese Gruppe minimieren"
 
 # src/menus.c:2044
-#: src/menus-misc.c:742
+#: src/menus-misc.c:744
 #, c-format
 msgid "Group %i"
 msgstr "Gruppe %i"
 
 # src/menus.c:2044
-#: src/menus-misc.c:757
+#: src/menus-misc.c:759
 #, fuzzy
 msgid "Groups"
 msgstr "Gruppe %i"

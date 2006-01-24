@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-14 15:17+0100\n"
+"POT-Creation-Date: 2006-01-22 20:06+0100\n"
 "PO-Revision-Date: 2005-12-20 10:26+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -24,25 +24,25 @@ msgstr ""
 msgid "ActionClass Error!"
 msgstr "actionclass エラー"
 
-#: src/aclass.c:190 src/backgrounds.c:255 src/borders.c:639 src/buttons.c:182
+#: src/aclass.c:190 src/backgrounds.c:255 src/borders.c:642 src/buttons.c:182
 #: src/cmclass.c:84 src/cursors.c:113 src/iclass.c:356 src/tclass.c:96
 #: src/tooltips.c:123
 #, c-format
 msgid "%u references remain\n"
 msgstr "%u 参照残っています。\n"
 
-#: src/aclass.c:246 src/backgrounds.c:1171 src/borders.c:1060
-#: src/borders.c:1184 src/buttons.c:721 src/cmclass.c:201 src/config.c:273
-#: src/cursors.c:153 src/iclass.c:538 src/iconify.c:2417 src/menus.c:1679
-#: src/menus.c:1791 src/slideout.c:418 src/tclass.c:247 src/tooltips.c:157
+#: src/aclass.c:246 src/backgrounds.c:1171 src/borders.c:1063
+#: src/borders.c:1187 src/buttons.c:721 src/cmclass.c:201 src/config.c:273
+#: src/cursors.c:153 src/iclass.c:538 src/iconify.c:2417 src/menus.c:1697
+#: src/menus.c:1809 src/slideout.c:418 src/tclass.c:247 src/tooltips.c:157
 #: src/windowmatch.c:153
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIG: \"%s\" にある余分なデータは無視します。\n"
 
-#: src/aclass.c:254 src/backgrounds.c:1179 src/borders.c:1066
-#: src/borders.c:1190 src/buttons.c:729 src/cmclass.c:209 src/config.c:281
-#: src/cursors.c:159 src/iclass.c:543 src/menus.c:1684 src/menus.c:1797
+#: src/aclass.c:254 src/backgrounds.c:1179 src/borders.c:1069
+#: src/borders.c:1193 src/buttons.c:729 src/cmclass.c:209 src/config.c:281
+#: src/cursors.c:159 src/iclass.c:543 src/menus.c:1702 src/menus.c:1815
 #: src/slideout.c:424 src/tclass.c:253 src/tooltips.c:163
 #: src/windowmatch.c:158
 #, c-format
@@ -188,7 +188,7 @@ msgid ""
 "Kim Woelders - kim@woelders.dk\n"
 msgstr ""
 
-#: src/actions.c:319 src/dialog.c:839 src/dialog.c:2066 src/dialog.c:2091
+#: src/actions.c:319 src/dialog.c:839 src/dialog.c:2066 src/dialog.c:2093
 #: src/handlers.c:188 src/sound.c:283
 msgid "OK"
 msgstr "了解"
@@ -351,7 +351,7 @@ msgstr "属性でソート"
 msgid "Sort by Image"
 msgstr "画像名でソート"
 
-#: src/borders.c:639
+#: src/borders.c:642
 msgid "Border Error!"
 msgstr "border エラー"
 
@@ -601,21 +601,21 @@ msgstr ""
 "ここをクリックするとこのデスクトップが\n"
 "下に移ります。\n"
 
-#: src/desktops.c:2341 src/desktops.c:2392
+#: src/desktops.c:2339 src/desktops.c:2390
 #, c-format
 msgid "%i Desktops"
 msgstr "デスクトップ %i 枚"
 
-#: src/desktops.c:2343 src/desktops.c:2394
+#: src/desktops.c:2341 src/desktops.c:2392
 #, c-format
 msgid "%i Desktop"
 msgstr "デスクトップ %i 枚"
 
-#: src/desktops.c:2375
+#: src/desktops.c:2373
 msgid "Multiple Desktop Settings"
 msgstr "マルチデスクトップ設定"
 
-#: src/desktops.c:2382
+#: src/desktops.c:2380
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -623,49 +623,49 @@ msgstr ""
 "Enlightenment マルチデスクトップ\n"
 "設定ダイアログ\n"
 
-#: src/desktops.c:2387
+#: src/desktops.c:2385
 msgid "Number of virtual desktops:\n"
 msgstr "仮想デスクトップの枚数:\n"
 
-#: src/desktops.c:2413
+#: src/desktops.c:2411
 msgid "Slide desktops around when changing"
 msgstr "デスクトップ間を移動する時にスライドする"
 
 #
-#: src/desktops.c:2419
+#: src/desktops.c:2417
 msgid "Desktop Slide speed:\n"
 msgstr "デスクトップのスライド速度\n"
 
 #
-#: src/desktops.c:2433
+#: src/desktops.c:2431
 msgid "Wrap desktops around"
 msgstr "仮想デスクトップの上下左右をつなげる"
 
-#: src/desktops.c:2441
+#: src/desktops.c:2439
 msgid "Display desktop dragbar"
 msgstr "デスクトップにドラッグバーを表示する"
 
-#: src/desktops.c:2447
+#: src/desktops.c:2445
 msgid "Drag bar position:"
 msgstr "ドラッグバーの位置"
 
-#: src/desktops.c:2451
+#: src/desktops.c:2449
 msgid "Top"
 msgstr "上"
 
-#: src/desktops.c:2457
+#: src/desktops.c:2455
 msgid "Bottom"
 msgstr "下"
 
-#: src/desktops.c:2463 src/pager.c:1819 src/pager.c:1844 src/pager.c:1869
+#: src/desktops.c:2461 src/pager.c:1819 src/pager.c:1844 src/pager.c:1869
 msgid "Left"
 msgstr "左"
 
-#: src/desktops.c:2469 src/pager.c:1831 src/pager.c:1856 src/pager.c:1881
+#: src/desktops.c:2467 src/pager.c:1831 src/pager.c:1856 src/pager.c:1881
 msgid "Right"
 msgstr "右"
 
-#: src/desktops.c:2561 src/desktops.c:2609
+#: src/desktops.c:2559 src/desktops.c:2607
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -674,7 +674,7 @@ msgstr ""
 "%i x %i\n"
 "の大きさの仮想デスクトップ"
 
-#: src/desktops.c:2564 src/desktops.c:2612
+#: src/desktops.c:2562 src/desktops.c:2610
 msgid ""
 "1\n"
 "Screen in size"
@@ -682,11 +682,11 @@ msgstr ""
 "1\n"
 "の大きさの仮想デスクトップ"
 
-#: src/desktops.c:2595
+#: src/desktops.c:2593
 msgid "Virtual Desktop Settings"
 msgstr "仮想デスクトップ設定"
 
-#: src/desktops.c:2602
+#: src/desktops.c:2600
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -694,19 +694,19 @@ msgstr ""
 "Enlightenment 仮想デスクトップ\n"
 "設定ダイアログ\n"
 
-#: src/desktops.c:2605
+#: src/desktops.c:2603
 msgid "Virtual Desktop size:\n"
 msgstr "仮想デスクトップの大きさ\n"
 
-#: src/desktops.c:2645
+#: src/desktops.c:2643
 msgid "Wrap virtual desktops around"
 msgstr "仮想デスクトップの上下左右をつなげる"
 
-#: src/desktops.c:2649
+#: src/desktops.c:2647
 msgid "Enable edge flip"
 msgstr "マウスでデスクトップが移動できる"
 
-#: src/desktops.c:2653
+#: src/desktops.c:2651
 msgid "Resistance at edge of screen:\n"
 msgstr "画面の端に達した時の移動抵抗値\n"
 
@@ -718,7 +718,7 @@ msgstr "適用"
 msgid "Close"
 msgstr "閉じる"
 
-#: src/dialog.c:2091
+#: src/dialog.c:2093
 msgid "Attention !!!"
 msgstr "注意 !!!"
 
@@ -1451,12 +1451,12 @@ msgstr ""
 "コードバージョン        : %s\n"
 
 #
-#: src/ipc.c:1472
+#: src/ipc.c:1474
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment IPC コマンド ヘルプ\n"
 
 #
-#: src/ipc.c:1476
+#: src/ipc.c:1478
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1467,22 +1467,22 @@ msgstr ""
 "\n"
 
 #
-#: src/ipc.c:1478 src/ipc.c:1498 src/ipc.c:1510
+#: src/ipc.c:1480 src/ipc.c:1500 src/ipc.c:1512
 msgid "Commands currently available:\n"
 msgstr "現在利用可能なコマンド:\n"
 
-#: src/ipc.c:1496
+#: src/ipc.c:1498
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 "\"help full\" ですべてのコマンドについて各々詳しい説明が表示されます。\n"
 
 #
-#: src/ipc.c:1497
+#: src/ipc.c:1499
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "\"help <コマンド>\" で指定されたコマンドの説明が表示されます。\n"
 
 #
-#: src/ipc.c:1499 src/ipc.c:1511
+#: src/ipc.c:1501 src/ipc.c:1513
 msgid "         <command>     : <description>\n"
 msgstr "<コマンド> : <説明>\n"
 
@@ -1586,17 +1586,17 @@ msgstr ""
 "致命的なエラーです。Enlightenment の実行を中止します。\n"
 "この状況を修正し、正しくインストールされていることを確認して下さい。\n"
 
-#: src/menus.c:1904
+#: src/menus.c:1922
 msgid "Menu"
 msgstr "メニュー"
 
 #
-#: src/menus.c:2003
+#: src/menus.c:2021
 msgid "Menu Settings"
 msgstr "メニューの設定"
 
 #
-#: src/menus.c:2010
+#: src/menus.c:2028
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog\n"
@@ -1604,58 +1604,58 @@ msgstr ""
 "Enlightenment メニュー\n"
 "設定ダイアログ\n"
 
-#: src/menus.c:2014
+#: src/menus.c:2032
 msgid "Animated display of menus"
 msgstr "メニューをアニメーション表示する"
 
-#: src/menus.c:2019
+#: src/menus.c:2037
 msgid "Always pop up menus on screen"
 msgstr "メニューが画面からはみ出る場合は必ず収まるようにメニューを動かす"
 
-#: src/menus.c:2024
+#: src/menus.c:2042
 msgid "Warp pointer after moving menus"
 msgstr "マウスポインタはメニューの移動に追随する"
 
 #
-#: src/menus-misc.c:569
+#: src/menus-misc.c:571
 msgid "Themes"
 msgstr "テーマ"
 
 #
-#: src/menus-misc.c:657
+#: src/menus-misc.c:659
 msgid "Window List"
 msgstr "ウィンドウリスト"
 
 #
-#: src/menus-misc.c:679
+#: src/menus-misc.c:681
 msgid "Go to this Desktop"
 msgstr "このデスクトップに移動"
 
-#: src/menus-misc.c:683 src/menus-misc.c:779
+#: src/menus-misc.c:685 src/menus-misc.c:781
 #, c-format
 msgid "Desktop %i"
 msgstr "デスクトップ %i"
 
 #
-#: src/menus-misc.c:697
+#: src/menus-misc.c:699
 msgid "Desks"
 msgstr "デスク"
 
-#: src/menus-misc.c:726
+#: src/menus-misc.c:728
 msgid "Show/Hide this group"
 msgstr "このグループを表示する／隠す"
 
-#: src/menus-misc.c:731
+#: src/menus-misc.c:733
 msgid "Iconify this group"
 msgstr "このグループをアイコン化する"
 
-#: src/menus-misc.c:742
+#: src/menus-misc.c:744
 #, c-format
 msgid "Group %i"
 msgstr "グループ %i"
 
 #
-#: src/menus-misc.c:757
+#: src/menus-misc.c:759
 msgid "Groups"
 msgstr "グループ"
 

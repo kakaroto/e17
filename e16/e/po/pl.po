@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-14 15:17+0100\n"
+"POT-Creation-Date: 2006-01-22 20:06+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Adam Kisiel <kisiel@if.pw.edu.pl>\n"
 "Language-Team: Polshi <pl@li.org>\n"
@@ -19,25 +19,25 @@ msgstr ""
 msgid "ActionClass Error!"
 msgstr "B³±d sekcji TextClass"
 
-#: src/aclass.c:190 src/backgrounds.c:255 src/borders.c:639 src/buttons.c:182
+#: src/aclass.c:190 src/backgrounds.c:255 src/borders.c:642 src/buttons.c:182
 #: src/cmclass.c:84 src/cursors.c:113 src/iclass.c:356 src/tclass.c:96
 #: src/tooltips.c:123
 #, c-format
 msgid "%u references remain\n"
 msgstr "pozostaje %u odwo³añ\n"
 
-#: src/aclass.c:246 src/backgrounds.c:1171 src/borders.c:1060
-#: src/borders.c:1184 src/buttons.c:721 src/cmclass.c:201 src/config.c:273
-#: src/cursors.c:153 src/iclass.c:538 src/iconify.c:2417 src/menus.c:1679
-#: src/menus.c:1791 src/slideout.c:418 src/tclass.c:247 src/tooltips.c:157
+#: src/aclass.c:246 src/backgrounds.c:1171 src/borders.c:1063
+#: src/borders.c:1187 src/buttons.c:721 src/cmclass.c:201 src/config.c:273
+#: src/cursors.c:153 src/iclass.c:538 src/iconify.c:2417 src/menus.c:1697
+#: src/menus.c:1809 src/slideout.c:418 src/tclass.c:247 src/tooltips.c:157
 #: src/windowmatch.c:153
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "Konfiguracja : pomijam nadmiarowe dane w \"%s\"\n"
 
-#: src/aclass.c:254 src/backgrounds.c:1179 src/borders.c:1066
-#: src/borders.c:1190 src/buttons.c:729 src/cmclass.c:209 src/config.c:281
-#: src/cursors.c:159 src/iclass.c:543 src/menus.c:1684 src/menus.c:1797
+#: src/aclass.c:254 src/backgrounds.c:1179 src/borders.c:1069
+#: src/borders.c:1193 src/buttons.c:729 src/cmclass.c:209 src/config.c:281
+#: src/cursors.c:159 src/iclass.c:543 src/menus.c:1702 src/menus.c:1815
 #: src/slideout.c:424 src/tclass.c:253 src/tooltips.c:163
 #: src/windowmatch.c:158
 #, c-format
@@ -180,7 +180,7 @@ msgid ""
 "Kim Woelders - kim@woelders.dk\n"
 msgstr ""
 
-#: src/actions.c:319 src/dialog.c:839 src/dialog.c:2066 src/dialog.c:2091
+#: src/actions.c:319 src/dialog.c:839 src/dialog.c:2066 src/dialog.c:2093
 #: src/handlers.c:188 src/sound.c:283
 msgid "OK"
 msgstr "OK"
@@ -343,7 +343,7 @@ msgstr "Sortuj wed³ug atrybutów"
 msgid "Sort by Image"
 msgstr "Sortuj wed³ug obrazka"
 
-#: src/borders.c:639
+#: src/borders.c:642
 msgid "Border Error!"
 msgstr "B³±d sekcji Border"
 
@@ -601,21 +601,21 @@ msgstr ""
 "Aby schowaæ ten Pulpit na dno,\n"
 "kliknij tutaj\n"
 
-#: src/desktops.c:2341 src/desktops.c:2392
+#: src/desktops.c:2339 src/desktops.c:2390
 #, c-format
 msgid "%i Desktops"
 msgstr "%i Puplpitów"
 
-#: src/desktops.c:2343 src/desktops.c:2394
+#: src/desktops.c:2341 src/desktops.c:2392
 #, c-format
 msgid "%i Desktop"
 msgstr "Pulpit %i"
 
-#: src/desktops.c:2375
+#: src/desktops.c:2373
 msgid "Multiple Desktop Settings"
 msgstr "Ustawienia Wielu Pulpitów"
 
-#: src/desktops.c:2382
+#: src/desktops.c:2380
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -623,49 +623,49 @@ msgstr ""
 "Okno ustawieñ Wielu Pulpitów\n"
 "Enlightenment\n"
 
-#: src/desktops.c:2387
+#: src/desktops.c:2385
 msgid "Number of virtual desktops:\n"
 msgstr "Ilo¶æ Pulpitów wirtualnych:\n"
 
-#: src/desktops.c:2413
+#: src/desktops.c:2411
 msgid "Slide desktops around when changing"
 msgstr "Pulpity ¶lizgaj± siê podczas ich zmiany"
 
-#: src/desktops.c:2419
+#: src/desktops.c:2417
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Szybko¶æ ¶lizgania siê Pulpitów: (wolno)\n"
 
-#: src/desktops.c:2433
+#: src/desktops.c:2431
 #, fuzzy
 msgid "Wrap desktops around"
 msgstr "Zawijaj Wirtulane Pulpity"
 
-#: src/desktops.c:2441
+#: src/desktops.c:2439
 msgid "Display desktop dragbar"
 msgstr "Wy¶wietlaj Pasek Przeci±gania Pulpitu"
 
-#: src/desktops.c:2447
+#: src/desktops.c:2445
 msgid "Drag bar position:"
 msgstr "Pozycja Paska Przeci±gania"
 
-#: src/desktops.c:2451
+#: src/desktops.c:2449
 msgid "Top"
 msgstr "Góra"
 
-#: src/desktops.c:2457
+#: src/desktops.c:2455
 msgid "Bottom"
 msgstr "Dó³"
 
-#: src/desktops.c:2463 src/pager.c:1819 src/pager.c:1844 src/pager.c:1869
+#: src/desktops.c:2461 src/pager.c:1819 src/pager.c:1844 src/pager.c:1869
 msgid "Left"
 msgstr "Lewo"
 
-#: src/desktops.c:2469 src/pager.c:1831 src/pager.c:1856 src/pager.c:1881
+#: src/desktops.c:2467 src/pager.c:1831 src/pager.c:1856 src/pager.c:1881
 msgid "Right"
 msgstr "Prawo"
 
-#: src/desktops.c:2561 src/desktops.c:2609
+#: src/desktops.c:2559 src/desktops.c:2607
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -674,7 +674,7 @@ msgstr ""
 "%i x %i\n"
 "Pulpitów"
 
-#: src/desktops.c:2564 src/desktops.c:2612
+#: src/desktops.c:2562 src/desktops.c:2610
 msgid ""
 "1\n"
 "Screen in size"
@@ -682,11 +682,11 @@ msgstr ""
 "1\n"
 "Pulpitu"
 
-#: src/desktops.c:2595
+#: src/desktops.c:2593
 msgid "Virtual Desktop Settings"
 msgstr "Ustawienia Wirtualnego Biurka"
 
-#: src/desktops.c:2602
+#: src/desktops.c:2600
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -694,19 +694,19 @@ msgstr ""
 "Okno ustawieñ Wirtualnego Biurka\n"
 "Enlightenment\n"
 
-#: src/desktops.c:2605
+#: src/desktops.c:2603
 msgid "Virtual Desktop size:\n"
 msgstr "Rozmiar Wirtualnego Pulpitu :\n"
 
-#: src/desktops.c:2645
+#: src/desktops.c:2643
 msgid "Wrap virtual desktops around"
 msgstr "Zawijaj Wirtulane Pulpity"
 
-#: src/desktops.c:2649
+#: src/desktops.c:2647
 msgid "Enable edge flip"
 msgstr "W³±cz prze³±czanie przy brzegach ekranu"
 
-#: src/desktops.c:2653
+#: src/desktops.c:2651
 msgid "Resistance at edge of screen:\n"
 msgstr "Czu³o¶æ na prze³±czanie przy brzegach ekranu:\n"
 
@@ -718,7 +718,7 @@ msgstr "Zastosuj"
 msgid "Close"
 msgstr "Zamknij"
 
-#: src/dialog.c:2091
+#: src/dialog.c:2093
 msgid "Attention !!!"
 msgstr "Uwaga !"
 
@@ -1447,12 +1447,12 @@ msgstr ""
 "Wersja Enlightenment : %s\n"
 "kod jest aktualny na : %s\n"
 
-#: src/ipc.c:1472
+#: src/ipc.c:1474
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Pomoc dla komend Enlightenmnet IPC"
 
-#: src/ipc.c:1476
+#: src/ipc.c:1478
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1463,23 +1463,23 @@ msgstr ""
 "wpisz \"help <komenda>\" aby uzyskaæ opis pojedynczej komendy\n"
 "\n"
 
-#: src/ipc.c:1478 src/ipc.c:1498 src/ipc.c:1510
+#: src/ipc.c:1480 src/ipc.c:1500 src/ipc.c:1512
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "Aktualnie dostêpne komendy :\n"
 
-#: src/ipc.c:1496
+#: src/ipc.c:1498
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1497
+#: src/ipc.c:1499
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "wpisz \"help <komenda>\" aby uzyskaæ opis pojedynczej komendy\n"
 
-#: src/ipc.c:1499 src/ipc.c:1511
+#: src/ipc.c:1501 src/ipc.c:1513
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "<komenda> : <opis>\n"
@@ -1585,16 +1585,16 @@ msgstr ""
 "zaistalowany poprawnie.\n"
 "\n"
 
-#: src/menus.c:1904
+#: src/menus.c:1922
 msgid "Menu"
 msgstr ""
 
-#: src/menus.c:2003
+#: src/menus.c:2021
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Ustawienia ró¿ne"
 
-#: src/menus.c:2010
+#: src/menus.c:2028
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
@@ -1603,57 +1603,57 @@ msgstr ""
 "Aktywacja Enlightenment\n"
 "Okno ustawieñ\n"
 
-#: src/menus.c:2014
+#: src/menus.c:2032
 msgid "Animated display of menus"
 msgstr "Animowane wy¶wietlanie menu"
 
-#: src/menus.c:2019
+#: src/menus.c:2037
 msgid "Always pop up menus on screen"
 msgstr "Zawsze pokazuj menu w ca³o¶ci na ekranie"
 
-#: src/menus.c:2024
+#: src/menus.c:2042
 msgid "Warp pointer after moving menus"
 msgstr "Przeno¶ wska¼nik myszy razem z menu"
 
-#: src/menus-misc.c:569
+#: src/menus-misc.c:571
 #, fuzzy
 msgid "Themes"
 msgstr "Z³y wystrój"
 
-#: src/menus-misc.c:657
+#: src/menus-misc.c:659
 #, fuzzy
 msgid "Window List"
 msgstr "Pomijanie w Li¶cie Okien"
 
-#: src/menus-misc.c:679
+#: src/menus-misc.c:681
 #, fuzzy
 msgid "Go to this Desktop"
 msgstr "Przejd¼ do tego Pulpitu"
 
-#: src/menus-misc.c:683 src/menus-misc.c:779
+#: src/menus-misc.c:685 src/menus-misc.c:781
 #, c-format
 msgid "Desktop %i"
 msgstr "Pulpit %i"
 
-#: src/menus-misc.c:697
+#: src/menus-misc.c:699
 #, fuzzy
 msgid "Desks"
 msgstr "Pulpit"
 
-#: src/menus-misc.c:726
+#: src/menus-misc.c:728
 msgid "Show/Hide this group"
 msgstr "Poka¿/Ukryj t± grupê"
 
-#: src/menus-misc.c:731
+#: src/menus-misc.c:733
 msgid "Iconify this group"
 msgstr "Zwiñ t± grupê do ikony"
 
-#: src/menus-misc.c:742
+#: src/menus-misc.c:744
 #, c-format
 msgid "Group %i"
 msgstr "Grupa %i"
 
-#: src/menus-misc.c:757
+#: src/menus-misc.c:759
 #, fuzzy
 msgid "Groups"
 msgstr "Grupa %i"
