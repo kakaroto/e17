@@ -3719,3 +3719,21 @@ Avoid setting shape to default (unshaped) on ShapeNotify when already set.
 Do full composite repaint on VT switch.
 Fix pseudotransparent iconbox on desk with no background.
 
+
+-------------------------------------------------------------------------------
+
+Tue Jan 24 20:34:43 CET 2006
+(Kim)
+
+--- 0.16.8 pre3 ---
+Set some keybindings on "OK" dialog.
+Fix changing no background to background.
+No longer use convert (ImageMagick) to create scaled icons in menu generation,
+but scale internally according to configuration setting.
+Allow setting border on windows with borderless hint.
+Fix potential missing server ungrab.
+Track top-level window shapedness.
+Unselect client window events on withdraw. This fixes trouble with certain
+kde(?) systray apps when not using the e16 systray. Thanks to Peter Hyman
+for going on about this :)
+
