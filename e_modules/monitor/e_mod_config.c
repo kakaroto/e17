@@ -63,8 +63,9 @@ static void
 _fill_data(Monitor_Face *f, E_Config_Dialog_Data *cfdata) 
 {
    char *tmp;
-   int i = 0;
+   int i;
 
+   i = 0;
    cfdata->net_interface = f->conf->net_interface;
    cfdata->wlan_interface = f->conf->wlan_interface;
    
