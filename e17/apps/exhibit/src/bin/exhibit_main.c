@@ -940,5 +940,5 @@ main(int argc, char *argv[])
    etk_main();
    etk_shutdown();
 
-   return 1;
+   return 0;
 }
