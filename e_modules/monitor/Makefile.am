@@ -19,7 +19,7 @@ over_res.png \
 wireless.png \
 VeraMono.ttf
 
-EXTRA_DIST = $(files_DATA)
+EXTRA_DIST = $(files_DATA) e_modules-monitor.spec
 
 # the module .so file
 INCLUDES = -I. \

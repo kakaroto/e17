@@ -5,7 +5,7 @@ filesdir = $(datadir)
 files_DATA = \
 module_icon.png
 
-EXTRA_DIST = $(files_DATA)
+EXTRA_DIST = $(files_DATA) e_modules-flame.spec
 
 # the module .so file
 INCLUDES               = -I. \

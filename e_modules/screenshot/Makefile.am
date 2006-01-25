@@ -12,7 +12,7 @@ screenshot.edj \
 screenshot.edc \
 VeraBd.ttf
 
-EXTRA_DIST = $(files_DATA)
+EXTRA_DIST = $(files_DATA) e_modules-screenshot.spec
 
 # the module .so file
 INCLUDES = -I. \
