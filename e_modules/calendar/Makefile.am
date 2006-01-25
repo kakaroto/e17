@@ -8,4 +8,4 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 		       stamp-h.in
 
 
-EXTRA_DIST = README AUTHORS COPYING COPYING-PLAIN 
+EXTRA_DIST = README AUTHORS COPYING COPYING-PLAIN e_modules-calendar.spec e_modules-calendar.spec.in
