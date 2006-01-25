@@ -16,7 +16,7 @@ dir.xml \
 fonts/VeraBd.ttf \
 fonts/vera.ttf
 
-EXTRA_DIST = $(files_DATA)
+EXTRA_DIST = $(files_DATA) e_modules-weather.spec
 
 # the module .so file
 INCLUDES = -I. \
