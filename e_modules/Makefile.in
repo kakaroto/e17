@@ -1,4 +1,4 @@
-%::
+all %::
 	for d in * ; do \
 		test -d "$$d" -a -e "$$d/Makefile" || continue ; \
 		$(MAKE) -C $$d $@ || exit 1 ; \
