@@ -40,5 +40,5 @@ int main(int argc, const char **argv)
     ecore_config_shutdown();
     ecore_shutdown();
 
-    return 1;
+    return 0;
 }
