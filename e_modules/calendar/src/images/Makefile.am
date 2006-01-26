@@ -7,16 +7,17 @@ EDJE_FLAGS = -v
 filesdir = $(datadir)
 
 files_DATA = \
-topimage.edc  \
-backimage.edc \
-today.edc \
-weekend.edc \
-weekday.edc \
-label.edc \
-calendar.edc \
-arrow.edc
+topimage.edj  \
+backimage.edj \
+today.edj \
+weekend.edj \
+weekday.edj \
+label.edj \
+calendar.edj \
+arrow.edj
 
-EXTRA_DIST = $(files_DATA)
+EXTRA_DIST = $(files_DATA) $(files_DATA:%.edj=%.edc) background.png bubbles2.png \
+    nm.png ny.png other.png pm.png py.png top.png
 
 topimage.edj: Makefile topimage.edc
 	 $(EDJE_CC) $(EDJE_FLAGS) \
