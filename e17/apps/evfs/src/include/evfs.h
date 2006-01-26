@@ -36,8 +36,15 @@
 #define EVFS_FUNCTION_FILE_STAT_GET "evfs_file_stat_get"
 
 
+
+
 #include "evfs_plugin.h"
 
+typedef enum
+{
+  EVFS_SUCCESS,
+  EVFS_ERROR
+} evfs_status;
 
 typedef enum
 {

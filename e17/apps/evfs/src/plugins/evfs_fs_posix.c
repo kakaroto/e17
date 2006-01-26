@@ -50,8 +50,8 @@
 	int evfs_monitor_stop(evfs_client* client, evfs_command* command);
 	int evfs_file_open(evfs_client* client, evfs_filereference* file);
 	int evfs_file_close(evfs_filereference* file);
-	int evfs_file_stat(evfs_command* command, struct stat* file_stat);
-	int evfs_file_lstat(evfs_command* command, struct stat* file_stat);
+	int evfs_file_stat(evfs_command* command, struct stat* file_stat, int);
+	int evfs_file_lstat(evfs_command* command, struct stat* file_stat, int);
 	int evfs_file_seek(evfs_filereference* file, long offset, int whence);
 	int evfs_file_read(evfs_client* client, evfs_filereference* file, char* bytes, long size);
 	int evfs_file_write(evfs_filereference* file, char* bytes, long size);
@@ -345,17 +345,26 @@ int evfs_file_rename(evfs_client* client, evfs_command* command) {
 }
 
 
-int evfs_file_stat(evfs_command* command, struct stat* file_stat) {
+int evfs_file_stat(evfs_command* command, struct stat* file_stat, int file_number) {
 	//printf("Getting file stat...\n");
-	stat(command->file_command.files[0]->path, file_stat);
-	//printf("File size: %d\n", file_stat->st_size);
+	int res = stat(command->file_command.files[file_number]->path, file_stat);
+	if (!res) 
+		return EVFS_SUCCESS;
+	else
+		return EVFS_ERROR;
 }
 
 
-int evfs_file_lstat(evfs_command* command, struct stat* file_stat) {
+int evfs_file_lstat(evfs_command* command, struct stat* file_stat, int file_number) {
 	//printf("Getting file stat...\n");
-	lstat(command->file_command.files[0]->path, file_stat);
+	int res = lstat(command->file_command.files[file_number]->path, file_stat);
 	//printf("File size: %d\n", file_stat->st_size);
+	//
+	if (!res) 
+		return EVFS_SUCCESS;
+	else
+		return EVFS_ERROR;
+
 }
 
 

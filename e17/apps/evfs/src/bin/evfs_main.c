@@ -311,6 +311,7 @@ int main(int argc, char** argv) {
 	evfs_load_plugins();
 	evfs_io_initialise();
 	evfs_vfolder_initialise();
+	evfs_operation_initialise();
 
 
 

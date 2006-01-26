@@ -16,6 +16,7 @@ evfs_SOURCES = \
 	$(top_srcdir)/src/common/evfs_event_helper.c \
 	$(top_srcdir)/src/common/evfs_common.c \
 	evfs_server_handle.c \ 
+	evfs_operation.c \
 	$(top_srcdir)/src/common/evfs_vfolder.c
 
 evfscat_SOURCES = \

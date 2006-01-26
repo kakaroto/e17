@@ -82,7 +82,7 @@ int evfs_monitor_start(evfs_client* client, evfs_command* command);
 int evfs_monitor_stop(evfs_client* client, evfs_command* command);
 int evfs_file_open(evfs_client* client, evfs_filereference* file);
 int evfs_file_close(evfs_filereference* file);
-int evfs_file_stat(evfs_command* command, struct stat* file_stat);
+int evfs_file_stat(evfs_command* command, struct stat* file_stat, int);
 int evfs_file_seek(evfs_filereference* file, long offset, int whence);
 int evfs_file_read(evfs_filereference* file, char* bytes, long size);
 int evfs_file_write(evfs_filereference* file, char* bytes, long size);
@@ -472,24 +472,24 @@ Ecore_List** directory_list
 }
 
 
-int evfs_file_stat(evfs_command* command, struct stat* file_stat) {
+int evfs_file_stat(evfs_command* command, struct stat* file_stat, int number) {
 	struct tar_file* file;
 	struct tar_element* ele;
 
-	printf("Looking for file '%s'\n", evfs_file_top_level_find(command->file_command.files[0])->path);
-	if (!(file = ecore_hash_get(tar_cache, evfs_file_top_level_find(command->file_command.files[0])->path))) {
+	printf("Looking for file '%s'\n", evfs_file_top_level_find(command->file_command.files[number])->path);
+	if (!(file = ecore_hash_get(tar_cache, evfs_file_top_level_find(command->file_command.files[number])->path))) {
 		printf("Could not find file in lookup ref\n");
 		
 		
 	} else {
 		printf("located tar file in cache");
-		ele = ecore_hash_get(file->link_in, command->file_command.files[0]->path );
+		ele = ecore_hash_get(file->link_in, command->file_command.files[number]->path );
 
 		if (ele) {
 			memcpy(file_stat, &ele->file_prop, sizeof(struct stat));
 			
 		} else {
-			printf("Couldn't locate file '%s' in tar file\n", command->file_command.files[0]->path);
+			printf("Couldn't locate file '%s' in tar file\n", command->file_command.files[number]->path);
 		}
 	}
 		

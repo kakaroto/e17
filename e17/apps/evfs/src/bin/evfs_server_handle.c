@@ -107,7 +107,7 @@ void evfs_handle_file_remove_command(evfs_client* client, evfs_command* command)
 
 	evfs_plugin* plugin = evfs_get_plugin_for_uri(client->server, command->file_command.files[0]->plugin_uri);
 	if (plugin) {
-		(*plugin->functions->evfs_file_lstat)(command, &file_stat);
+		(*plugin->functions->evfs_file_lstat)(command, &file_stat, 0);
 		//printf("ST_MODE: %d\n", file_stat.st_mode);
 		
 		//printf("Pointer here: %p\n", plugin->functions->evfs_file_remove);
@@ -184,7 +184,7 @@ void evfs_handle_file_stat_command(evfs_client* client, evfs_command* command) {
 	evfs_plugin* plugin = evfs_get_plugin_for_uri(client->server, command->file_command.files[0]->plugin_uri);
 	if (plugin) {
 		printf("Pointer here: %p\n", plugin->functions->evfs_file_stat);
-		(*(plugin->functions->evfs_file_stat))(command, &file_stat);
+		(*(plugin->functions->evfs_file_stat))(command, &file_stat, 0);
 
 		
 
@@ -273,10 +273,19 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command, evfs_comm
 	long count;
 	char destination_file[PATH_MAX];
 	long read_write_bytes = 0;
+	
 	struct stat file_stat;
+	struct stat dest_stat;
+	
 	int progress = 0;
 	int last_notify_progress = 0;
 	int b_read = 0, b_write= 0;
+	int res;
+	evfs_operation* op;
+
+	/*Make a new evfs_operation, for client communication*/
+	op = evfs_operation_new();
+	
 
  	plugin = evfs_get_plugin_for_uri(client->server, command->file_command.files[0]->plugin_uri);
 	dst_plugin = evfs_get_plugin_for_uri(client->server, command->file_command.files[1]->plugin_uri);
@@ -291,15 +300,27 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command, evfs_comm
 	  	        plugin->functions->evfs_file_open &&
 		        dst_plugin->functions->evfs_file_create 
 		      )) {
-			printf("AHH! Not supported!\n");
+			printf("AHH! Copy Not supported!\n");
+			evfs_operation_destroy(op);
 			return;
 		}
 
 
 		/*Get the source file size*/
-		(*plugin->functions->evfs_file_lstat)(command, &file_stat);
-		printf("Source file size: %d bytes\n", (int)file_stat.st_size);
-		
+		(*plugin->functions->evfs_file_lstat)(command, &file_stat, 0);
+		res = (*dst_plugin->functions->evfs_file_lstat)(command, &dest_stat, 1);
+		//printf("Source file size: %d bytes\n", (int)file_stat.st_size);
+		//
+		if (res != EVFS_ERROR) {
+			printf("File overwrite\n");
+			evfs_operation_status_set(op, EVFS_OPERATION_STATUS_USER_WAIT);
+
+			evfs_operation_user_dispatch(client,op);
+			while (op->status == EVFS_OPERATION_STATUS_USER_WAIT) {
+				ecore_main_loop_iterate();
+				usleep(10);
+			}
+		}
 		
 		if (!S_ISDIR(file_stat.st_mode)) {
 			(*dst_plugin->functions->evfs_file_create)(command->file_command.files[1]);
@@ -321,6 +342,7 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command, evfs_comm
 					b_write = (*dst_plugin->functions->evfs_file_write)(command->file_command.files[1], bytes, b_read );
 					//printf("%d  -> %d\n", b_read, b_write);
 				}
+				count+= b_read;
 
 
 		
@@ -331,9 +353,6 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command, evfs_comm
 						root_command,progress, EVFS_PROGRESS_TYPE_CONTINUE);
 					last_notify_progress = progress;
 				}
-			
-
-				count+= b_read;
 
 				//printf("Bytes to go: %d\n", file_stat.st_size - count);
 
@@ -407,6 +426,8 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command, evfs_comm
 		printf("Could not get plugins for both source and dest: (%s:%s)\n",
 			command->file_command.files[0]->plugin_uri, command->file_command.files[1]->plugin_uri );
 	}
+
+	evfs_operation_destroy(op);
 
 }
 

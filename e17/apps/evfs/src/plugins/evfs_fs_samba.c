@@ -52,7 +52,7 @@ Ecore_Hash* smb_fd_hash;
 
 
 static void smb_evfs_dir_list(evfs_client* client, evfs_command* command, Ecore_List** directory_list);
-int smb_evfs_file_stat(evfs_command* command, struct stat* file_stat);
+int smb_evfs_file_stat(evfs_command* command, struct stat* file_stat, int);
 int evfs_file_open(evfs_client* client, evfs_filereference* file);
 int evfs_file_close(evfs_filereference* file);
 int evfs_file_seek(evfs_filereference* file, long offset, int whence);
@@ -218,7 +218,7 @@ char* evfs_plugin_uri_get() {
 	return "smb";
 }
 
-int smb_evfs_file_stat(evfs_command* command, struct stat* file_stat) {
+int smb_evfs_file_stat(evfs_command* command, struct stat* file_stat, int number) {
 	
 	int err = 0;
 	int fd = 0;
@@ -230,19 +230,19 @@ int smb_evfs_file_stat(evfs_command* command, struct stat* file_stat) {
 	/*Does this command have an attached authentication object?*/
 	if (command->file_command.files[0]->username) {
 		printf("We have a username, adding to hash..\n");
-		evfs_auth_structure_add(auth_cache,  command->file_command.files[0]->username, 
-				command->file_command.files[0]->password, command->file_command.files[0]->path);
+		evfs_auth_structure_add(auth_cache,  command->file_command.files[number]->username, 
+				command->file_command.files[number]->password, command->file_command.files[number]->path);
 	}
 	
 	
-	sprintf(dir,"smb:/%s", command->file_command.files[0]->path);
-	printf("Getting stat on file '%s'\n", dir);
+	sprintf(dir,"smb:/%s", command->file_command.files[number]->path);
+	//printf("Getting stat on file '%s'\n", dir);
 
 	err = smb_context->stat(smb_context, (const char*)dir, &smb_stat);
-	printf("Returned error code: %d\n", err);
-	printf("File size: %ld\n", file_stat->st_size);
+	//printf("Returned error code: %d\n", err);
+	//printf("File size: %ld\n", file_stat->st_size);
 	
-	printf("Returning to caller..\n");
+	//printf("Returning to caller..\n");
 
 	/*Ugly as shit - but if libsmbclient is compiled
 	 * with a different mem packing regime, then
@@ -262,9 +262,10 @@ int smb_evfs_file_stat(evfs_command* command, struct stat* file_stat) {
 	file_stat->st_mtime = smb_stat.st_mtime;
 	file_stat->st_ctime = smb_stat.st_ctime;
 
-
-	return 0;
-
+	if (!err) 
+		return EVFS_SUCCESS;
+	else
+		return EVFS_ERROR;
 }
 
 static void smb_evfs_dir_list(evfs_client* client, evfs_command* command,
