@@ -488,6 +488,7 @@ PagerUpdateBg(Pager * p)
    Pixmap              pmap;
    GC                  gc;
    Background         *bg;
+   ImageClass         *ic;
 
    p->x1 = p->y1 = 0;
    p->x2 = p->y2 = 99999;
@@ -497,19 +498,8 @@ PagerUpdateBg(Pager * p)
       EFreePixmap(pmap);
    pmap = p->bgpmap = ECreatePixmap(p->win, p->dw, p->dh, VRoot.depth);
 
-   if (!Conf_pagers.snap)
-     {
-	ImageClass         *ic;
-
-	ic = ImageclassFind("PAGER_BACKGROUND", 0);
-	if (ic)
-	   ImageclassApplySimple(ic, p->win, pmap, STATE_NORMAL,
-				 0, 0, p->dw, p->dh);
-	return;
-     }
-
    bg = DeskBackgroundGet(p->dsk);
-   if (bg)
+   if (bg && Conf_pagers.snap)
      {
 	char                s[4096];
 	char               *uniq;
@@ -538,6 +528,14 @@ PagerUpdateBg(Pager * p)
 	     imlib_save_image(s);
 	     imlib_free_image_and_decache();
 	  }
+	return;
+     }
+
+   ic = ImageclassFind("PAGER_BACKGROUND", 0);
+   if (ic)
+     {
+	ImageclassApplySimple(ic, p->win, pmap, STATE_NORMAL,
+			      0, 0, p->dw, p->dh);
 	return;
      }
 
