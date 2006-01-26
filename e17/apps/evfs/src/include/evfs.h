@@ -59,8 +59,18 @@ EfsdFsOps;
 #include "evfs_vfolder.h"
 #include "evfs_operation.h"
 
-#if HAVE___ATTRIBUTE__
+/**
+ * ATTRIBUTE_UNUSED:
+ *
+ * This macro is used to flag unused function parameters to GCC
+ */
+#ifdef __GNUC__
+#ifdef HAVE_ANSIDECL_H
+#include <ansidecl.h>
+#endif
+#ifndef __UNUSED__
 #define __UNUSED__ __attribute__((unused))
+#endif
 #else
 #define __UNUSED__
 #endif

@@ -118,7 +118,7 @@ ipc_client_del(void *data __UNUSED__, int type __UNUSED__, void *event)
 
 
 int
-ipc_client_data(void *data, int type, void *event)
+ipc_client_data(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
 	
    Ecore_Ipc_Event_Client_Data *e = (Ecore_Ipc_Event_Client_Data*) event;
@@ -268,12 +268,12 @@ void evfs_load_plugins() {
 
 }
 
-int ecore_timer_enterer(void* data) {
+int ecore_timer_enterer(__UNUSED__ void* data) {
 	return 1;
 }
 
 
-int incoming_command_cb(void* data) {
+int incoming_command_cb(__UNUSED__ void* data) {
 	evfs_command_client* com_cli = ecore_list_remove_first(server->incoming_command_list);
 	
 	if (com_cli) {
