@@ -31,6 +31,8 @@ pkgdir                 = $(libdir)/enlightenment/modules/$(MODULE)/$(MODULE_ARCH
 pkg_LTLIBRARIES        = module.la
 module_la_SOURCES      = e_mod_main.c \
                          e_mod_main.h \
+			 easy_menu.c \
+			 easy_menu.h \
                          e_mod_config.c \
                          e_mod_config.h
 module_la_LIBADD       = @e_libs@

@@ -1,3 +1,8 @@
+#include "e.h"
+#include "easy_menu.h"
+#include "e_mod_config.h"
+#include "config.h"
+
 #ifndef E_MOD_MAIN_H
 #define E_MOD_MAIN_H
 
@@ -23,38 +28,6 @@ struct _Config
 struct _Config_Emu
 {
    unsigned char enabled;
-};
-
-struct _Menu_Item_Data
-{
-   E_Menu_Item *item;
-   char *name;
-   char *action;
-   char *edje;   /* FIXME: make this similar to the e_modapi_info() shit. */
-   Ecore_Exe *exe;
-   struct _Menu_Item_Data *next;
-};
-
-struct _Menu_Data
-{
-   E_Menu *menu;
-   int level;
-   char *name;
-   struct _Menu_Data *next;
-   struct _Menu_Item_Data *items;
-};
-
-typedef struct _Emu_Menu_Data Emu_Menu_Data;
-struct _Emu_Menu_Data
-{
-   struct _Menu_Data *menu;
-   E_Menu_Category_Callback *category_cb;
-   char *buffer;
-
-   char *name;
-   char *category;
-   E_Menu_Item *item;
-   int valid; /* Probably just being paranoid.  This prevents this structure from being used when it isn't complete. */
 };
 
 
