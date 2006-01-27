@@ -821,7 +821,9 @@ ewl_realize_queue(void)
 	ecore_list_goto_first(realize_list);
 	while ((w = ecore_list_remove_first(realize_list))) {
 		if (VISIBLE(w) && !REALIZED(w)) {
+			ewl_object_queued_add(w, EWL_FLAG_QUEUED_RPROCESS);
 			ewl_widget_realize(EWL_WIDGET(w));
+			ewl_object_queued_remove(w, EWL_FLAG_QUEUED_RPROCESS);
 			ecore_list_prepend(child_add_list, w);
 		}
 	}
