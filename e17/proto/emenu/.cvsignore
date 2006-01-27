@@ -21,3 +21,5 @@ stamp-h1
 *.la
 *.spec
 *.tar.gz
+INSTALL
+compile
