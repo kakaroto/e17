@@ -23,10 +23,7 @@ EAPI void *
 e_modapi_init(E_Module *m) 
 {
    EMenu *em;
-   
-   /* Init Ecore_File */
-   if (!ecore_file_init()) return NULL;
-
+  
    /* Init the module */
    em = _emenu_init(m); 
    
@@ -43,7 +40,6 @@ e_modapi_shutdown(E_Module *m)
       
    _emenu_shutdown(em);
    
-   ecore_file_shutdown();
    return 1;
 }
 
@@ -114,7 +110,8 @@ static void
 _emenu_shutdown(EMenu *em) 
 {
    E_CONFIG_DD_FREE(em->conf_edd);
-   e_int_menus_menu_augmentation_del("config", em->augment);
+   if (em->augment) 
+     e_int_menus_menu_augmentation_del("config", em->augment);
    free(em->conf);
    free(em);
 }
@@ -135,14 +132,7 @@ _emenu_menu_add(void *data, E_Menu *m)
 static void
 _emenu_menu_del(void *data, E_Menu *m) 
 {
-   EMenu *em;
-   
-   em = data;
-   if (em->augment) 
-     {
-	e_object_del(E_OBJECT(em->augment));
-	em->augment = NULL;
-     }
+   return;
 }
 
 static void
