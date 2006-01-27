@@ -367,7 +367,6 @@ char *
 ewl_theme_image_get(Ewl_Widget *w, char *k)
 {
 	char *data;
-	struct stat st;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
@@ -392,9 +391,6 @@ ewl_theme_image_get(Ewl_Widget *w, char *k)
 		FREE(data);
 		data = strdup(path);
 	}
-
-	if (((stat(data, &st)) == -1) || !S_ISREG(st.st_mode))
-		DWARNING("Couldn't stat image\n");
 
 	DRETURN_PTR(data, DLEVEL_STABLE);
 }
