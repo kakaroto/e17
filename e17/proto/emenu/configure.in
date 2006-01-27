@@ -170,6 +170,20 @@ eet_libs=`$EET_CONFIG --libs`
 AC_SUBST(eet_cflags)
 AC_SUBST(eet_libs)
 
+AC_ARG_WITH(exml-config,
+[  --with-exml-config=EXML_CONFIG      use exml-config specified ],
+[
+  EXML_CONFIG=$withval;
+  echo "using "$EXML_CONFIG" for exml-config";
+],[
+  PROG="exml-config";
+  AC_PATH_PROG(EXML_CONFIG, $PROG, "", $PATH)
+])
+exml_cflags=`$EXML_CONFIG --cflags`
+exml_libs=`$EXML_CONFIG --libs`
+AC_SUBST(exml_cflags)
+AC_SUBST(exml_libs)
+
 AC_ARG_WITH(enlightenment-config,
 [  --with-enlightenment-config=E_CONFIG    use enlightenment-config specified ],
 [
