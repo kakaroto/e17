@@ -25,7 +25,6 @@ static const char cvs_ident[] = "$Id$";
 #include <signal.h>
 #include <errno.h>
 #include <gtk/gtk.h>
-#include <gdk_imlib.h>
 
 #include "debug.h"
 #include "conf.h"
@@ -64,7 +63,7 @@ main(int argc, char **argv) {
   signal(SIGPIPE, fatal_handler);
   gtk_init(&argc, &argv);
   gdk_init(&argc, &argv);
-  gdk_imlib_init();
+  /*gdk_imlib_init();*/
   ng_init();
   gtk_main();
   exit(0);

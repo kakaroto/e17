@@ -83,8 +83,8 @@ AC_HEADER_TIME
 dnl# Checks for library functions.
 AC_CHECK_FUNCS(strerror)
 
-CFLAGS="`imlib-config --cflags-gdk` $CFLAGS"
-LDFLAGS="`imlib-config --libs-gdk`"
+CFLAGS="`imlib-config --cflags-gdk` `gtk-config --cflags` $CFLAGS"
+LDFLAGS="`imlib-config --libs-gdk` `gtk-config --libs`"
 
 dnl# Did they want debugging?
 AC_MSG_CHECKING(for debugging level)
