@@ -406,10 +406,14 @@ ewl_widget_destroy(Ewl_Widget * w)
 	if (w == ewl_widget_drag_candidate_get())
 		ewl_widget_dnd_reset();
 
-	ewl_widget_hide(w);
+	/*
+	 * Request prior to hiding so we can skip resizing for child widgets
+	 * being hidden.
+	 */
+	ewl_destroy_request(w);
+
 	if (w->parent)
 		ewl_container_child_remove(EWL_CONTAINER(w->parent), w);
-	ewl_destroy_request(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
