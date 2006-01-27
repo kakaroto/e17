@@ -80,7 +80,6 @@ ewl_grid_init(Ewl_Grid *g, int cols, int rows)
 	g->cols = cols;
 	g->rows = rows;
 
-	g->rchildren = NULL;
 	g->homogeneous_h = FALSE;
 	g->homogeneous_v = FALSE;
 
@@ -117,9 +116,7 @@ ewl_grid_reset(Ewl_Grid *g, int cols, int rows)
 
 	w = EWL_WIDGET(g);
 
-	g->rchildren = EWL_CONTAINER(w)->children;
-	EWL_CONTAINER(w)->children = NULL;
-	EWL_CONTAINER(w)->children = ecore_list_new();
+	ewl_container_reset(EWL_CONTAINER(w));
 
 	IF_FREE(g->col_size);
 	IF_FREE(g->row_size);
@@ -484,16 +481,6 @@ ewl_grid_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	g = EWL_GRID(w);
 
-	/*
-	 * first check if the grid has been reset
-	 * if so, we need to destroy the old children
-	 */
-	if (g->rchildren) {
-		while ((child = ecore_list_remove_first(g->rchildren)) != NULL)
-			ewl_widget_destroy(child);
-		g->rchildren = NULL;
-	}
-
 	ewl_grid_resize(g);
 
 	c_x = CURRENT_X(EWL_OBJECT(w));
@@ -539,7 +526,7 @@ ewl_grid_resize(Ewl_Grid *g)
 {
 	int             w_flag = 0, h_flag = 0;
 	int             i, new_w = 0, new_h = 0;
-	int             left_over;
+	int             left_over, left_over2;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("g", g);
@@ -588,9 +575,15 @@ ewl_grid_resize(Ewl_Grid *g)
 		left_over -= g->col_size[i].size;
 	if (g->cols == 0)
 		g->cols = 1;
-	while (left_over > 0) {
-		g->col_size[left_over % g->cols].size += 1;
-		left_over--;
+	while (left_over != 0) {
+		if (left_over > 0) {
+			g->col_size[left_over % g->cols].size += 1;
+			left_over--;
+		} else if (left_over < 0) {
+			left_over2 = 0 - left_over;
+			g->col_size[left_over2 % g->cols].size -= 1;
+			left_over++;
+		}
 	}
 
 	left_over = g->grid_h;
@@ -598,9 +591,15 @@ ewl_grid_resize(Ewl_Grid *g)
 		left_over -= g->row_size[i].size;
 	if (g->rows == 0)
 		g->rows = 1;
-	while (left_over > 0) {
-		g->row_size[left_over % g->rows].size += 1;
-		left_over--;
+	while (left_over != 0) {
+		if (left_over > 0) {
+			g->row_size[left_over % g->rows].size += 1;
+			left_over--;
+		} else if (left_over < 0) {
+			left_over2 = 0 - left_over;
+			g->row_size[left_over2 % g->rows].size -= 1;
+			left_over++;
+		}
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -726,6 +725,8 @@ ewl_grid_child_show_cb(Ewl_Container *p, Ewl_Widget *c)
 	g->grid_w = g_w; 
 	g->grid_h = g_h;
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(g), g_w, g_h);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /*
