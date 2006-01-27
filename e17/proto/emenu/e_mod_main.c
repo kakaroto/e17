@@ -1,10 +1,14 @@
 #include <e.h>
+#include <EXML.h>
+#include <Ecore_File.h>
+#include <stdio.h> /* printf */
+#include <limits.h> /* PATH_MAX */
+#include <string.h> /* String Functions */
 #include "config.h"
 #include "e_mod_main.h"
 
 static EMenu *_emenu_init             (E_Module *m);
 static void   _emenu_shutdown         (EMenu *em);
-static void   _emenu_config_menu_new  (EMenu *em); 
 static void   _emenu_menu_add         (void *data, E_Menu *m);
 static void   _emenu_menu_del         (void *data, E_Menu *m);
 static void   _emenu_menu_cb_generate (void *data, E_Menu *m, E_Menu_Item *mi);
@@ -20,7 +24,12 @@ e_modapi_init(E_Module *m)
 {
    EMenu *em;
    
-   em = _emenu_init(m);   
+   /* Init Ecore_File */
+   if (!ecore_file_init()) return NULL;
+
+   /* Init the module */
+   em = _emenu_init(m); 
+   
    return em;
 }
 
@@ -32,7 +41,9 @@ e_modapi_shutdown(E_Module *m)
    em = m->data;
    if (!m) return 0;
       
-   _emenu_shutdown(em);   
+   _emenu_shutdown(em);
+   
+   ecore_file_shutdown();
    return 1;
 }
 
