@@ -1,4 +1,5 @@
 SRCS = \
+pixel_op.c \
 blend.c
 
 FLGS = \

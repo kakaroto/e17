@@ -8,6 +8,7 @@
 #include <sys/time.h>
 #include <time.h>
 #include "mmx.h"
+#include "pixel_op.h"
 
 /* convert this to whatever your favorite "universal safe typing" scheme is */
 #ifndef DATA32
@@ -614,7 +615,76 @@ th_launch(void *data)
    return NULL;
 }
 
-int main(int argc, char **argv)
+int
+test_p32_p32(DATA32 *src, DATA32 *dst, DATA32 *dstsrc, int w, int h,
+	     Pixel_Op pop, int srcalpha, int dstalpha, int sparse,
+	     int loops, char *name, int tnum)
+{
+   char buf[4096];
+   int i, j, c;
+   double t1, t2;
+   Pixel_Op_Func fn;
+   Pixel_Op_Params pp;
+   char *cpu;
+   
+   PO_INIT(&pp);
+   pp.l = w;
+   pp.op = pop;
+   pp.src.p = src;
+   pp.dst.p = dst;
+   pp.src.alpha = srcalpha;
+   pp.dst.alpha = dstalpha;
+   pp.src.sparse = sparse;
+   for (c = 0; c < 5; c++)
+     {
+	fn = pixel_op_get(&pp, c);
+	if (!fn)
+	  {
+	     printf("[%02i] %38s            : NO FUNCTION\n", tnum, name);
+	  }
+	else
+	  {
+	     pp.l = w;
+	     memcpy(dst, dstsrc, w * h * sizeof(DATA32));
+	     t1 = get_time();
+	     for (i = 0; i < loops; i++)
+	       {
+		  for (j = 0; j < h; j++)
+		    {
+		       pp.src.p = src + (w * j);
+		       pp.dst.p = dst + (w * j);
+		       fn(&pp);
+		    }
+	       }
+	     pixel_op_end();
+	     t2 = get_time();
+	     if      (c == 0) cpu = "C";
+	     else if (c == 1) cpu = "OS";
+	     else if (c == 2) cpu = "MMX/ALTIVEC";
+	     else if (c == 3) cpu = "SSE";
+	     else if (c == 4) cpu = "SSE2";
+	     printf("[%02i] %38s %11s: %3.3f mpix/sec\n", tnum, name, cpu,
+		    (double)((w * h * loops) / 1000000.0) / (t2 - t1));
+	     memcpy(dst, dstsrc, w * h * sizeof(DATA32));
+	     PO_INIT(&pp);
+	     pp.l = w * h;
+	     pp.src.p = src;
+	     pp.dst.p = dst;
+	     pp.src.alpha = srcalpha;
+	     pp.dst.alpha = dstalpha;
+	     pp.src.sparse = sparse;
+	     fn(&pp);
+	     pixel_op_end();
+	     snprintf(buf, sizeof(buf), "out_%02i.png", tnum);
+	     save_image_premul(dst, w, h, buf, 0);
+	  }
+	tnum++;
+     }
+   return tnum;
+}
+
+int
+main(int argc, char **argv)
 {
    int w, h;
    int loops;
@@ -628,7 +698,7 @@ int main(int argc, char **argv)
    char buf[4096];
    pthread_t tid[16];
    Thparam tpa[16];
-   
+
    if (argc < 2)
      {
 	printf("blend   test_image.png width height loops\n");
@@ -643,8 +713,52 @@ int main(int argc, char **argv)
    alpha_dst = load_image_premul("backa.png", w, h);
    src = load_image_premul(file, w, h);
    dst = malloc(w * h * sizeof(DATA32));
+
+   pixel_op_init();
    
    test = 0;
+   test = test_p32_p32(src, dst, solid_dst, w, h, PIXEL_OP_COPY, 0, 0, 0, loops,
+		       "copy", test);
+   /* FIXME: remember all ops could have an alpha mask as a destination */
+   /* FIXME: test solid alpha mask fills */
+   /* FIXME: test solid color fills */
+   
+   test = test_p32_p32(src, dst, solid_dst, w, h, PIXEL_OP_BLEND, 1, 0, 0, loops,
+		       "blend_srcalpha", test);
+   test = test_p32_p32(src, dst, solid_dst, w, h, PIXEL_OP_BLEND, 1, 0, 1, loops,
+		       "blend_srcalpha_sparse", test);
+   test = test_p32_p32(src, dst, solid_dst, w, h, PIXEL_OP_BLEND, 1, 1, 0, loops,
+		       "blend_srcalpha_dstalpha", test);
+   test = test_p32_p32(src, dst, solid_dst, w, h, PIXEL_OP_BLEND, 1, 1, 1, loops,
+		       "blend_srcalpha_sparse_dstalpha", test);
+   /* FIXME: test blend with color multiplier */
+   /* FIXME: test blend with alpha mask */
+   /* FIXME: test blend with alpha mask and color multiplier */
+   /* FIXME: test blend with color only */
+   /* FIXME: test blend with color and alpha mask only */
+   
+   /* FIXME: test add & sub modes too */
+   
+   return 0;
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    
    /* now do the speed tests */
 #define TEST(fn, name, dest, alpha) \
