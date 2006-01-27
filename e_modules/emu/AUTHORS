@@ -1,0 +1,20 @@
+Some of this code was stolen from elsewhere in the E17 project.  In the
+case of anything stolen from raster, it was stolen with permission.
+
+The actual person to blame for emu is -
+
+onefang (David Seikel) <onefang@gmail.com>
+
+kingrayray (Ray MIller) created the blue emu image specifically to
+donate to this module.  Thanks kingrayray.
+
+Some of the original emu code was stolen from the start module, one or 
+more of the following people wrote the start module -
+
+The Rasterman (Carsten Haitzler) <raster@rasterman.com>
+Ibukun Olumuyiwa <ibukun@computer.org>
+Sebastian Dransfeld <sebastid@tango.flipp.net>
+HandyAndE (Andrew Williams) <andy@handyande.co.uk>
+CodeWarrior (Hisham Mardam Bey) <hisham@hisham.cc>
+dj2 (dan sinclair) <dj2@everburning.com>
+Tilman Sauerbeck <tilman@code-monkey.de>

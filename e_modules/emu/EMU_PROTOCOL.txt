@@ -1,0 +1,68 @@
+It's quick, dirty, and brain dead.  Real protocols come later.
+
+The emu protocol is made up of lines of text.  Everything is ignored
+until a line starting with a valid command is found.  The following
+lines are the data for that command.  "end" marks the end of that
+commands data.  Rinse, repeat.  Commands can be sent anytime.  Each
+command has two names, one of which will be the name of an Australian
+animal.  The other is more descriptive of the command itself.
+
+Command		Animal		Description
+-------		------		-----------
+menu		emu		Menu
+dropzone	dropbear	DND drop zone
+icon		mug		Icon
+dialog		jumpspider	Basic dialogs
+text		redback		Text
+graph		taipan		Graph
+
+
+    menu or emu command
+
+emu name|category
+Item0|action0
+Item1
+ Item1 Sub0|action1|enlightenment/desktops
+ -
+ Item1 Sub1|action2
+Item2
+ Item2 Sub0|action3
+ Item2 Sub1
+  Item2 Sub1 Sub0|action4
+  Item2 Sub1 Sub1|action5
+end
+
+"emu" means this is a menu definition.  "menu" can also be used.  For
+the emu command there are two optional arguments, separated by |. The
+first one is the text used for the menu item if this is a sub menu type
+category.  The second one is a menu category, something defined by E17. 
+Menu categories are not documented yet, they currently are -
+
+  border                  - window/border menu
+  border/maximize         - window/border maximize menu
+  border/stacking         - window/border stacking menu
+  fileman/action          - efm action menu
+  fileman/unknown         - efm unknown menu
+  fileman/unknown/arrange - efm unknown arrange menu
+  fileman/unknown/new     - efm unknown new menu
+  fileman/unknown/view    - efm unknown view menu
+  main                    - e's main menu
+
+The category selects which menu to add a sub menu to the end of.  If no
+category is given, the default is to create a left click menu, in which
+case the first argument is ignored.  Each category is allowed only one
+menu, subsequent emu commands for a category replace that menu. 
+
+    The emu data - text|action|edje
+
+Spaces are used at the beginning of lines for determining sub menus. 
+The part before the first | separator is the text used for the menu
+item.  The part after the first | separator is the action string
+returned to you when the user selects that menu item.  The part after
+the second | separator is an edge specification.  The "-" is a menu
+separator.
+
+For border and fileman menus it would probably be useful to have
+something passed back to you as part of your action that identifies the
+window, file, or files.  I'll add something to do that later, probably
+in the form of replacable %x parameters.

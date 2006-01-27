@@ -1,0 +1,14 @@
+Emu is an exercise in Zen programming.
+
+First of all, I have written it not by learning anything about how E17
+works, but by cutting and pasting from pre existing code.  Thus I have
+kept my mind free.
+
+Second, the purpose of the emu module is ta allow others to write E17
+modules without any knowledge of the internal workings of E17 modules,
+or even any knowledge of the C programming language.
+
+Emu is an E17 module front end that runs arbitrary back ends written in
+any language.  Emu provides a high level interface to some of the things
+that modules typically do.  The backends can be written by anybody in
+any language.

@@ -1,0 +1,4 @@
+#!/bin/sh
+
+enlightenment_remote -module-unload emu
+make && sudo make install && sudo /sbin/ldconfig && enlightenment_remote -module-load emu 

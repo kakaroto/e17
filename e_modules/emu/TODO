@@ -1,0 +1,42 @@
+FIXME: Once in a blue moon, the menus don't show up.
+
+Add internal actions, same things that can be bound to keys can be 
+requested by the client to be done instead of a string being sent back.
+Also new command to do these internal actions on request.
+
+For window events that trigger actions, use the same hooks that pager does.
+
+For the category callback stuff -
+  make some way to pass some info from the category data to the exe
+    window id for the window menu
+    full path to the file for the efm menu
+
+There will always be one face, with at least the default drop zone for 
+adding more exes.
+
+Use directories with .order files to specify the executables.
+
+One directory per face.
+
+One emu icon (or eap icon) on face per exe, in order.
+
+Use an image of an emu egg (or directory eap) as a drop zone for adding
+new exes.
+
+Use an image of a cluster of emu eggs (or directory eap) as a button
+that opens a drawer, which are further sub directories.  NOTE no drawers
+on default face, cause  directories there mean "other face".
+
+Each place that allows an icon should also allow an edje.
+
+Each emu (exe) can have -
+    changable icon / edje
+    text
+    OK dialogs
+    yes/no dialogs
+    drop zone
+    graphling
+    Stuff added to the config menu (for main menu and right click menu)
+
+
+ghurning.c = facial gymnastics.

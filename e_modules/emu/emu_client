@@ -1,0 +1,39 @@
+#!/bin/sh
+
+while true; do
+  # Just for testing purposes.  Normally you would only resend the commands if something in them changed.
+  echo "emu Emu client|main"
+  echo "Lock the screen|xscreensaver-command -lock|enlightenment/desktops"
+  echo "Go beep|/usr/bin/play /opt/kde3/share/sounds/KDE_Beep_ShortBeep.wav"
+  echo "Item0|action0"
+  echo "Item1"
+  echo " Item1 Sub0|action1"
+  echo " -"
+  echo " Item1 Sub1|action2"
+  echo "Item2"
+  echo " Item2 Sub0|action3"
+  echo " Item2 Sub1"
+  echo "  Item2 Sub1 Sub0|action4"
+  echo "  Item2 Sub1 Sub1|action5"
+  echo "==@--&"
+  echo "end"
+  echo " //This is a comment"
+  echo "emu"
+  echo "Lock the screen|xscreensaver-command -lock|enlightenment/desktops"
+  echo "Go beep|/usr/bin/play /opt/kde3/share/sounds/KDE_Beep_ShortBeep.wav"
+  echo "Item0|action0"
+  echo "Item1"
+  echo " Item1 Sub0|action1"
+  echo " -"
+  echo " Item1 Sub1|action2"
+  echo "Item2"
+  echo " Item2 Sub0|action3"
+  echo " Item2 Sub1"
+  echo "  Item2 Sub1 Sub0|action4"
+  echo "  Item2 Sub1 Sub1|action5"
+  echo "=*"
+  echo "end"
+
+  read -s command >/dev/null 2>&1
+  ( $command ) >/dev/null 2>&1
+done
