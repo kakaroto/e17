@@ -10,7 +10,7 @@ struct _Config
 typedef struct _EMenu EMenu;
 struct _EMenu 
 {
-   E_Menu *config_menu;
+   E_Int_Menu_Augmentation *augment;
    
    E_Config_DD *conf_edd;
    Config *conf;
@@ -23,6 +23,8 @@ EAPI int   e_modapi_shutdown (E_Module *m);
 EAPI int   e_modapi_save     (E_Module *m);
 EAPI int   e_modapi_info     (E_Module *m);
 EAPI int   e_modapi_about    (E_Module *m);
+
+/* Disabled for now */
 EAPI int   e_modapi_config   (E_Module *m);
 
 #endif

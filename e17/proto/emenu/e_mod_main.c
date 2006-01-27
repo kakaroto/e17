@@ -2,7 +2,12 @@
 #include "config.h"
 #include "e_mod_main.h"
 
-static EMenu *_emenu_init (E_Module *m);
+static EMenu *_emenu_init             (E_Module *m);
+static void   _emenu_shutdown         (EMenu *em);
+static void   _emenu_config_menu_new  (EMenu *em); 
+static void   _emenu_menu_add         (void *data, E_Menu *m);
+static void   _emenu_menu_del         (void *data, E_Menu *m);
+static void   _emenu_menu_cb_generate (void *data, E_Menu *m, E_Menu_Item *mi);
 
 EAPI E_Module_Api e_modapi = 
 {
@@ -15,10 +20,7 @@ e_modapi_init(E_Module *m)
 {
    EMenu *em;
    
-   /* Call the module init here
-   em = _emenu_init(m); */
-   
-   m->config_menu = NULL;
+   em = _emenu_init(m);   
    return em;
 }
 
@@ -29,15 +31,8 @@ e_modapi_shutdown(E_Module *m)
    
    em = m->data;
    if (!m) return 0;
-   
-   if (m->config_menu) 
-     {
-	e_menu_deactivate(m->config_menu);
-	e_object_del(E_OBJECT(m->config_menu));
-	m->config_menu = NULL;
-     }
-   
-   /* Call the module shutdown here */
+      
+   _emenu_shutdown(em);   
    return 1;
 }
 
@@ -67,8 +62,84 @@ e_modapi_about(E_Module *m)
    return 1;
 }
 
+/* Disabled for now
 EAPI int
 e_modapi_config(E_Module *m) 
 {
    return 0;
+}
+*/
+
+static EMenu *
+_emenu_init(E_Module *m) 
+{
+   EMenu *em;
+   
+   em = E_NEW(EMenu, 1);
+   if (!em) return NULL;
+   
+   em->conf_edd = E_CONFIG_DD_NEW("EMenu_Config", Config);
+   #undef T
+   #undef D
+   #define T Config
+   #define D em->conf_edd
+   
+   em->conf = e_config_domain_load("module.emenu", em->conf_edd);
+   if (!em->conf) 
+     {
+	em->conf = E_NEW(Config, 1);
+     }
+   else 
+     {
+	/* Handle Whatever config loading we need */
+     }
+   
+   em->augment = e_int_menus_menu_augmentation_add("config", _emenu_menu_add, em, _emenu_menu_del, em);
+   
+   return em;
+}
+
+static void
+_emenu_shutdown(EMenu *em) 
+{
+   E_CONFIG_DD_FREE(em->conf_edd);
+   e_int_menus_menu_augmentation_del("config", em->augment);
+   free(em->conf);
+   free(em);
+}
+
+static void
+_emenu_menu_add(void *data, E_Menu *m) 
+{
+   EMenu *em;
+   E_Menu_Item *mi;
+   
+   em = data;
+
+   mi = e_menu_item_new(m);
+   e_menu_item_label_set(mi, _("Generate Menus"));
+   e_menu_item_callback_set(mi, _emenu_menu_cb_generate, em);
+}
+
+static void
+_emenu_menu_del(void *data, E_Menu *m) 
+{
+   EMenu *em;
+   
+   em = data;
+   if (em->augment) 
+     {
+	e_object_del(E_OBJECT(em->augment));
+	em->augment = NULL;
+     }
+}
+
+static void
+_emenu_menu_cb_generate(void *data, E_Menu *m, E_Menu_Item *mi) 
+{
+   EMenu *em;
+   
+   em = data;
+   e_module_dialog_show(_("Enlightenment Menu Module"),
+			_("Generate Menus."));
 }
