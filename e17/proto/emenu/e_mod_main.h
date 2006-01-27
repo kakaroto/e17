@@ -24,7 +24,7 @@ EAPI int   e_modapi_save     (E_Module *m);
 EAPI int   e_modapi_info     (E_Module *m);
 EAPI int   e_modapi_about    (E_Module *m);
 
-/* Disabled for now */
-EAPI int   e_modapi_config   (E_Module *m);
+/* Disabled for now
+EAPI int   e_modapi_config   (E_Module *m); */
 
 #endif
