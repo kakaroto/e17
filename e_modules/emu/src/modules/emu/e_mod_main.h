@@ -2,6 +2,29 @@
 #define E_MOD_MAIN_H
 
 
+typedef struct _Config      Config;
+typedef struct _Config_Emu  Config_Emu;
+
+#define EMU_WIDTH_AUTO -1
+#define EMU_WIDTH_FIXED -2
+
+struct _Config
+{
+   char         *appdir;
+   int           follower;
+   double        follow_speed;
+   double        autoscroll_speed;
+   int           iconsize;
+   int           width;
+   int		 allow_overlap;
+   Evas_List    *emus;
+};
+
+struct _Config_Emu
+{
+   unsigned char enabled;
+};
+
 struct _Menu_Item_Data
 {
    E_Menu_Item *item;
@@ -42,6 +65,12 @@ struct _Emu
    E_Gadget *gad;
 
    Ecore_Event_Handler *del;
+
+//   Evas_List   *bars;
+   E_Menu      *config_menu;
+
+   Config      *conf;
+   E_Config_Dialog *config_dialog;   
 };
 
 typedef struct _Emu_Face Emu_Face;
@@ -70,5 +99,7 @@ EAPI int   e_modapi_shutdown (E_Module *m);
 EAPI int   e_modapi_save     (E_Module *m);
 EAPI int   e_modapi_info     (E_Module *m);
 EAPI int   e_modapi_about    (E_Module *m);
+
+void _emu_cb_config_updated(void *data);
 
 #endif

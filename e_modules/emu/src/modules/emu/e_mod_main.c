@@ -65,6 +65,7 @@ static void _emu_menu_cb_action(void *data, E_Menu *m, E_Menu_Item *mi);
 static Evas_Bool _emu_menus_hash_cb_free(Evas_Hash *hash, const char *key, void *data, void *fdata);
 static void _emu_menu_cb_free(void *obj);
 
+static void _emu_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 
 /* This is temporary until there is support in E_Gadget for third party modules. */
 void
@@ -664,15 +665,16 @@ _emu_add_face_menu(E_Gadget_Face *face, E_Menu *menu)
    E_Menu_Item *mi;
 
    mi = e_menu_item_new(menu);
+   e_menu_item_label_set(mi, _("Configuration"));
+   e_menu_item_callback_set(mi, _emu_cb_menu_configure, face);
+
+   mi = e_menu_item_new(menu);
    e_menu_item_separator_set(mi, 1);
 
    mi = e_menu_item_new(menu);
    e_menu_item_label_set(mi, _("Add face"));
    mi = e_menu_item_new(menu);
    e_menu_item_label_set(mi, _("Remove face"));
-
-   mi = e_menu_item_new(menu);
-   e_menu_item_separator_set(mi, 1);
 
    mi = e_menu_item_new(menu);
    e_menu_item_label_set(mi, _("Add row"));
@@ -712,6 +714,17 @@ _emu_add_face_menu(E_Gadget_Face *face, E_Menu *menu)
    if (0) e_menu_item_toggle_set(mi, 1);
 }
 
+static void
+_emu_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   E_Gadget_Face *face;
+   Emu_Face *emu_face;
+
+   face = data;
+   if (!face) return;
+   emu_face = face->data;
+   _config_ibar_module(face->con, emu_face->emu);
+}
 
 /**
  * Construct a menu.
@@ -1256,3 +1269,14 @@ _emu_menu_cb_free(void *obj)
           E_FREE(menu);
       }
 }
+
+
+void 
+_emu_cb_config_updated(void *data) 
+{   
+   /* Call Any Needed Funcs To Let Module Handle Config Changes */
+//   _ibar_bar_cb_follower(data);
+//   _ibar_bar_cb_width_auto(data);
+//   _ibar_bar_cb_iconsize_change(data);
+}
+

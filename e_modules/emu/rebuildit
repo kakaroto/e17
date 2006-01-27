@@ -1,4 +1,5 @@
 #!/bin/sh
 
 enlightenment_remote -module-unload emu
+#./autogen.sh --prefix=/opt/e17
 make && sudo make install && sudo /sbin/ldconfig && enlightenment_remote -module-load emu 
