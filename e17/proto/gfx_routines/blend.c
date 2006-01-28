@@ -805,10 +805,21 @@ main(int argc, char **argv)
 		       "blend_dstalpha", test);
    test = test_p32_p32(src, dst, solid_dst, w, h, PIXEL_OP_BLEND, 0, 0, 0, loops,
 		       "blend", test);
+   test = test_c_p32(0xffffffff, dst, solid_dst, w, h, PIXEL_OP_BLEND, 0, loops,
+		     "blend_white", test);
+   test = test_c_p32(0x00000000, dst, solid_dst, w, h, PIXEL_OP_BLEND, 0, loops,
+		     "blend_black", test);
+   test = test_c_p32(0x12345678, dst, solid_dst, w, h, PIXEL_OP_BLEND, 0, loops,
+		     "blend_color", test);
+   test = test_c_p32(0xffffffff, dst, solid_dst, w, h, PIXEL_OP_BLEND, 1, loops,
+		     "blend_white_dstalpha", test);
+   test = test_c_p32(0x00000000, dst, solid_dst, w, h, PIXEL_OP_BLEND, 1, loops,
+		     "blend_black_dstalpha", test);
+   test = test_c_p32(0x12345678, dst, solid_dst, w, h, PIXEL_OP_BLEND, 1, loops,
+		     "blend_color_dstalpha", test);
    /* FIXME: test blend with color multiplier */
    /* FIXME: test blend with alpha mask */
    /* FIXME: test blend with alpha mask and color multiplier */
-   /* FIXME: test blend with color only */
    /* FIXME: test blend with color and alpha mask only */
    
    /* FIXME: test add & sub modes too */
