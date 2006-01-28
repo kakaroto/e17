@@ -668,11 +668,76 @@ test_p32_p32(DATA32 *src, DATA32 *dst, DATA32 *dstsrc, int w, int h,
 	     memcpy(dst, dstsrc, w * h * sizeof(DATA32));
 	     PO_INIT(&pp);
 	     pp.l = w * h;
+	     pp.op = pop;
 	     pp.src.p = src;
 	     pp.dst.p = dst;
 	     pp.src.alpha = srcalpha;
 	     pp.dst.alpha = dstalpha;
 	     pp.src.sparse = sparse;
+	     fn(&pp);
+	     pixel_op_end();
+	     snprintf(buf, sizeof(buf), "out_%02i.png", tnum);
+	     save_image_premul(dst, w, h, buf, 0);
+	  }
+	tnum++;
+     }
+   return tnum;
+}
+
+int
+test_c_p32(DATA32 col, DATA32 *dst, DATA32 *dstsrc, int w, int h,
+	   Pixel_Op pop, int dstalpha,
+	   int loops, char *name, int tnum)
+{
+   char buf[4096];
+   int i, j, c;
+   double t1, t2;
+   Pixel_Op_Func fn;
+   Pixel_Op_Params pp;
+   char *cpu;
+   
+   PO_INIT(&pp);
+   pp.l = w;
+   pp.op = pop;
+   pp.src.c = col;
+   pp.dst.p = dst;
+   pp.dst.alpha = dstalpha;
+   for (c = 0; c < 5; c++)
+     {
+	fn = pixel_op_get(&pp, c);
+	if (!fn)
+	  {
+	     printf("[%02i] %38s            : NO FUNCTION\n", tnum, name);
+	  }
+	else
+	  {
+	     pp.l = w;
+	     memcpy(dst, dstsrc, w * h * sizeof(DATA32));
+	     t1 = get_time();
+	     for (i = 0; i < loops; i++)
+	       {
+		  for (j = 0; j < h; j++)
+		    {
+		       pp.dst.p = dst + (w * j);
+		       fn(&pp);
+		    }
+	       }
+	     pixel_op_end();
+	     t2 = get_time();
+	     if      (c == 0) cpu = "C";
+	     else if (c == 1) cpu = "OS";
+	     else if (c == 2) cpu = "MMX/ALTIVEC";
+	     else if (c == 3) cpu = "SSE";
+	     else if (c == 4) cpu = "SSE2";
+	     printf("[%02i] %38s %11s: %3.3f mpix/sec\n", tnum, name, cpu,
+		    (double)((w * h * loops) / 1000000.0) / (t2 - t1));
+	     memcpy(dst, dstsrc, w * h * sizeof(DATA32));
+	     PO_INIT(&pp);
+	     pp.l = w * h;
+	     pp.op = pop;
+	     pp.src.c = col;
+	     pp.dst.p = dst;
+	     pp.dst.alpha = dstalpha;
 	     fn(&pp);
 	     pixel_op_end();
 	     snprintf(buf, sizeof(buf), "out_%02i.png", tnum);
@@ -719,6 +784,12 @@ main(int argc, char **argv)
    test = 0;
    test = test_p32_p32(src, dst, solid_dst, w, h, PIXEL_OP_COPY, 0, 0, 0, loops,
 		       "copy", test);
+   test = test_c_p32(0xffffffff, dst, solid_dst, w, h, PIXEL_OP_COPY, 0, loops,
+		     "set_white", test);
+   test = test_c_p32(0x00000000, dst, solid_dst, w, h, PIXEL_OP_COPY, 0, loops,
+		     "set_black", test);
+   test = test_c_p32(0x12345678, dst, solid_dst, w, h, PIXEL_OP_COPY, 0, loops,
+		     "set_color", test);
    /* FIXME: remember all ops could have an alpha mask as a destination */
    /* FIXME: test solid alpha mask fills */
    /* FIXME: test solid color fills */

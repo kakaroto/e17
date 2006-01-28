@@ -648,6 +648,10 @@ typedef	union {
 	__asm__ __volatile__ ( \
 				 "pshuflw $" #imm ", %" #r1 ", %" #r2 " \n" \
 				 );
+#define pshufd(r1, r2, imm) \
+	__asm__ __volatile__ ( \
+				 "pshufd $" #imm ", %" #r1 ", %" #r2 " \n" \
+				 );
 
 /*	1x238 MOVE Doouble Quadword
 	(this is both a load and a store...

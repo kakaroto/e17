@@ -31,6 +31,26 @@ static Pixel_Op_Func op_table
 #define OPFN(n) static void n(Pixel_Op_Params *p)
 #define OPREG(n, op, sp, sm, sc, sa, dpm, da, cpu) op_table[op][sp][sm][sc][sa][dpm][da][cpu] = n
 
+/* this is only here instead of autfoo checks - not perfect */
+#if defined(__POWERPC__) || defined(__powerpc__) || defined(__sparc__) || defined(sparc) ||  defined(__sparc64__) || defined(__mips__) || defined(m68k)
+# define WORDS_BIGENDIAN
+#else
+# undef WORDS_BIGENDIAN
+#endif
+
+#ifndef WORDS_BIGENDIAN
+# define A_VAL(p) ((DATA8 *)(p))[3]
+# define R_VAL(p) ((DATA8 *)(p))[2]
+# define G_VAL(p) ((DATA8 *)(p))[1]
+# define B_VAL(p) ((DATA8 *)(p))[0]
+#else
+# define A_VAL(p) ((DATA8 *)(p))[0]
+# define R_VAL(p) ((DATA8 *)(p))[1]
+# define G_VAL(p) ((DATA8 *)(p))[2]
+# define B_VAL(p) ((DATA8 *)(p))[3]
+#endif
+
+/* this is only here instead of autfoo checks - not perfect */
 #if defined(i386) || defined(__x86__) || defined(__x86_64__) || defined(__i386__) || defined(__386__) || defined(__i386)
 # define ARCH_X86
 
@@ -44,11 +64,14 @@ static int did_mmx = 0;
 
 # define OP_FN
 # include "pixel_op_copy.c"
+# include "pixel_op_fill.c"
 # include "pixel_op_copy_i386.c"
+# include "pixel_op_fill_i386.c"
 # undef OP_FN
 
 #endif
 
+/* this is only here instead of autfoo checks - not perfect */
 #if (defined(__POWERPC__) || defined(__powerpc__)) && defined(__VEC__)
 # define ARCH_PPC
 
@@ -58,7 +81,9 @@ static int did_mmx = 0;
 
 # define OP_FN
 # include "pixel_op_copy.c"
+# include "pixel_op_fill.c"
 # include "pixel_op_copy_ppc.c"
+# include "pixel_op_fill_ppc.c"
 # undef OP_FN
 
 #endif
@@ -163,11 +188,14 @@ pixel_op_init(void)
    
 # define OP_REG
 # include "pixel_op_copy.c"
+# include "pixel_op_fill.c"
 # ifdef ARCH_X86
 #  include "pixel_op_copy_i386.c"
+#  include "pixel_op_fill_i386.c"
 # endif   
 # ifdef ARCH_PPC
 #  include "pixel_op_copy_ppc.c"
+#  include "pixel_op_fill_ppc.c"
 # endif   
 # undef OP_REG
 
@@ -198,8 +226,9 @@ pixel_op_get(Pixel_Op_Params *params, int cpumode)
    DATA8 dpm = D_P, da = D_AN;
    
    if (params->src.c == 0xffffffff) sc = S_CN;
-   else if ((params->src.c & 0xff000000) == 0x00000000) return NULL;
-   else if ((params->src.c & 0x00ffffff) == 0x00ffffff) src = S_CA;
+   else if (((params->src.c & 0xff000000) == 0x00000000) &&
+	    (params->op != PIXEL_OP_COPY)) return NULL;
+   else if ((params->src.c & 0x00ffffff) == 0x00ffffff) sc = S_CA;
    if (params->src.p) sp = S_P1;
    if (params->src.m) sm = S_M1;
    sa += params->src.alpha;
