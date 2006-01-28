@@ -7,8 +7,6 @@ static void   _emenu_shutdown         (EMenu *em);
 static void   _emenu_menu_add         (void *data, E_Menu *m);
 static void   _emenu_menu_cb_generate (void *data, E_Menu *m, E_Menu_Item *mi);
 
-static  Easy_Menu *menu = NULL;
-
 EAPI E_Module_Api e_modapi = 
 {
    E_MODULE_API_VERSION,
