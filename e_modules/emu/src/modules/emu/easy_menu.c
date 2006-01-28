@@ -1,9 +1,9 @@
 #include "easy_menu.h"
 
-static struct _Menu_Data *_emu_add_menus_real(char *input, char *end, int *i, int level, void (*func) (void *data, E_Menu *m, E_Menu_Item *mi), void *data);
-static void _emu_menu_cb_create(E_Menu *m, void *category_data, void *data);
-static void _emu_menu_cb_destroy(void *data);
-static void _emu_menu_cb_free(void *obj);
+static struct _Menu_Data *_easy_menu_add_menus_real(char *input, char *end, int *i, int level, void (*func) (void *data, E_Menu *m, E_Menu_Item *mi), void *data);
+static void _easy_menu_menu_cb_create(E_Menu *m, void *category_data, void *data);
+static void _easy_menu_menu_cb_destroy(void *data);
+static void _easy_menu_menu_cb_free(void *obj);
 
 /**
  * Construct a menu.
@@ -18,7 +18,7 @@ static void _emu_menu_cb_free(void *obj);
  * @param   data the pointer to your face.
  */
 EAPI Easy_Menu *
-easy_add_menus(char *name, char *category, char *input, int length, void (*func) (void *data, E_Menu *m, E_Menu_Item *mi), void *data)
+easy_menu_add_menus(char *name, char *category, char *input, int length, void (*func) (void *data, E_Menu *m, E_Menu_Item *mi), void *data)
 {
    Easy_Menu *menu = NULL;
 
@@ -36,16 +36,16 @@ easy_add_menus(char *name, char *category, char *input, int length, void (*func)
                if (category == NULL)
                   category = "";
                menu->category = strdup(category);
-               menu->menu = _emu_add_menus_real(menu->buffer, menu->buffer + length, &i, 0, func, data);
+               menu->menu = _easy_menu_add_menus_real(menu->buffer, menu->buffer + length, &i, 0, func, data);
 
                if (menu->menu)
                   {
                      e_object_data_set(E_OBJECT(menu->menu->menu), menu);
-                     e_object_del_attach_func_set(E_OBJECT(menu->menu->menu), _emu_menu_cb_free);
+                     e_object_del_attach_func_set(E_OBJECT(menu->menu->menu), _easy_menu_menu_cb_free);
 
                      /* A category that is an empty string, is handled by the caller. */
                      if (strlen(menu->category) != 0)
-                        menu->category_cb = e_menu_category_callback_add(menu->category, _emu_menu_cb_create, _emu_menu_cb_destroy, menu);
+                        menu->category_cb = e_menu_category_callback_add(menu->category, _easy_menu_menu_cb_create, _easy_menu_menu_cb_destroy, menu);
 
                      menu->valid = 1;
                   }
@@ -58,7 +58,7 @@ easy_add_menus(char *name, char *category, char *input, int length, void (*func)
 }
 
 static struct _Menu_Data *
-_emu_add_menus_real(char *input, char *end, int *i, int level, void (*func) (void *data, E_Menu *m, E_Menu_Item *mi), void *data)
+_easy_menu_add_menus_real(char *input, char *end, int *i, int level, void (*func) (void *data, E_Menu *m, E_Menu_Item *mi), void *data)
 {
    char *oldInput = input;
    struct _Menu_Data *menu = calloc(1, sizeof(struct _Menu_Data));
@@ -138,7 +138,7 @@ _emu_add_menus_real(char *input, char *end, int *i, int level, void (*func) (voi
 	    last_menu = last_menu->next;
 
          /* A recursing we will go. */
-         last_menu->next = _emu_add_menus_real(input, end, i, level + 1, func, data);
+         last_menu->next = _easy_menu_add_menus_real(input, end, i, level + 1, func, data);
          e_menu_item_submenu_set(item->item , last_menu->next->menu);
 	 /* The recursion completed this much parsing for us, catch up. */
 	 input = input + (*i);
@@ -159,10 +159,10 @@ _emu_add_menus_real(char *input, char *end, int *i, int level, void (*func) (voi
  * @param   m the menu.
  * @param   category_data unused.
  * @param   data the pointer you passed to e_menu_category_callback_add().
- * @ingroup Emu_Module_Menu_Group
+ * @ingroup Easy_Menu_Module_Menu_Group
  */
 void
-_emu_menu_cb_create(E_Menu *m, void *category_data, void *data)
+_easy_menu_menu_cb_create(E_Menu *m, void *category_data, void *data)
 {
    Easy_Menu *menu;
 
@@ -184,10 +184,10 @@ _emu_menu_cb_create(E_Menu *m, void *category_data, void *data)
  * Handle sub menu destruction for a menu category.
  *
  * @param   data the pointer you passed to e_menu_category_callback_add().
- * @ingroup Emu_Module_Menu_Group
+ * @ingroup Easy_Menu_Module_Menu_Group
  */
 static void
-_emu_menu_cb_destroy(void *data)
+_easy_menu_menu_cb_destroy(void *data)
 {
    Easy_Menu *menu;
 
@@ -206,10 +206,10 @@ _emu_menu_cb_destroy(void *data)
  * Handle menu freeing.
  *
  * @param   obj the pointer you passed to e_object_data_set().
- * @ingroup Emu_Module_Menu_Group
+ * @ingroup Easy_Menu_Module_Menu_Group
  */
 static void
-_emu_menu_cb_free(void *obj)
+_easy_menu_menu_cb_free(void *obj)
 {
    Easy_Menu *menu;
 

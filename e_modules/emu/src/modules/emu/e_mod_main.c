@@ -584,7 +584,7 @@ _emu_parse_menu(Emu_Face *emu_face, char *name, int start, int end)
             }
 
          /* Turn the command data into a menu. */
-         menu = easy_add_menus(name, category, emu_face->lines[start].line, length, _emu_menu_cb_action, emu_face->exe);
+         menu = easy_menu_add_menus(name, category, emu_face->lines[start].line, length, _emu_menu_cb_action, emu_face->exe);
 	 if (menu)
 	    {
                 Easy_Menu *old_menu;
