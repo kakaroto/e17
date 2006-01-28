@@ -56,11 +56,21 @@ sub x() {
     $t = "$1";
     print "_($t),\n";
   }
-  elsif (/ADD_MENU_TEXT_ITEM\s*\(\s*(\".*\"),/) {
+  elsif (/ADD_.*MENU_TEXT_ITEM\s*\(\s*(\".*\"),/) {
     $t = "$1";
     print "_($t),\n";
   }
 }
+
+# From e_gen_menu
+@sl = (
+  "User Menus",
+  "User Application List",
+  "Other",
+  "Enlightenment Epplets",
+  "Restart Enlightenment",
+  "Log Out"
+);
 
 #
 # Start
@@ -76,6 +86,12 @@ for ($i=0; $i <= $#ARGV; $i++) {
      x();
   }
   close $f;
+}
+
+# Other strings.
+print "\n";
+foreach $s (@sl) {
+  print "_(\"$s\"),\n";
 }
 
 print "};\n";

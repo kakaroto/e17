@@ -82,7 +82,7 @@ $DoIconv = `which iconv`;
 
 @MainMenu = (
 	"t:User Menus",
-	"m:User Application list:menus/user_apps.menu",
+	"m:User Application List:menus/user_apps.menu",
 	"m:GNOME:menus/menus_GNOME/index.menu",
 	"m:KDE:menus/menus_KDE/index.menu",
 	"m:Other:menus/menus_Other/index.menu",
