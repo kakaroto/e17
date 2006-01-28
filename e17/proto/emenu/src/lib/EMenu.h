@@ -22,7 +22,17 @@
 typedef struct _EMenu_Eap EMenu_Eap;
 struct _EMenu_Eap 
 {
-  char *name; 
+   char *name;
+   char *generic;
+   char *comment;
+   char *exec;
+   char *icon;
+   char *window_class;
+   int startup;
+   
+   char *type;
+   char *category;
+   int generated;
 };
 
 #define EMENU_EAP_DIR "/.e/e/applications/all"
