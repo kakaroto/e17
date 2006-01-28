@@ -1074,6 +1074,22 @@ MenusHide(void)
    TooltipsEnable(1);
 }
 
+static void
+MenusTouch(void)
+{
+   Menu               *m, **lst;
+   int                 i, num;
+
+   lst = (Menu **) ListItemType(&num, LIST_TYPE_MENU);
+   for (i = 0; i < num; i++)
+     {
+	m = lst[i];
+	m->redraw = 1;
+     }
+   if (lst)
+      Efree(lst);
+}
+
 /*
  * Menu event handlers
  */
@@ -1974,6 +1990,10 @@ MenusSighan(int sig, void *prm __UNUSED__)
      case ESIGNAL_EWIN_UNMAP:
 	if ((EWin *) prm == Mode_menus.context_ewin)
 	   MenusHide();
+	break;
+
+     case ESIGNAL_THEME_TRANS_CHANGE:
+	MenusTouch();
 	break;
      }
 }
