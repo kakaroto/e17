@@ -9,7 +9,7 @@
 
 static Pixel_Op_Func op_table
   [PIXEL_OP_LAST]
-  [2]/*src p*/ [2]/*src m*/ [2]/*src c*/ [3]/*src alpha or sparse alpha*/
+  [2]/*src p*/ [2]/*src m*/ [3]/*src c*/ [3]/*src alpha or sparse alpha*/
   [2]/*dst p or m*/[2]/*dst alpha */
   [5]/*CPU*/
   ;
@@ -19,7 +19,8 @@ static Pixel_Op_Func op_table
 #define S_MN 0
 #define S_M1 1
 #define S_CN 0
-#define S_C1 1
+#define S_CA 1
+#define S_C1 2
 #define S_AN 0
 #define S_A1 1
 #define S_AS 2
@@ -197,7 +198,8 @@ pixel_op_get(Pixel_Op_Params *params, int cpumode)
    DATA8 dpm = D_P, da = D_AN;
    
    if (params->src.c == 0xffffffff) sc = S_CN;
-   else if ((params->src.c & 0xff) == 0) return NULL;
+   else if ((params->src.c & 0xff000000) == 0x00000000) return NULL;
+   else if ((params->src.c & 0x00ffffff) == 0x00ffffff) src = S_CA;
    if (params->src.p) sp = S_P1;
    if (params->src.m) sm = S_M1;
    sa += params->src.alpha;
