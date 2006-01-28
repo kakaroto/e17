@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-22 20:06+0100\n"
+"POT-Creation-Date: 2006-01-28 15:49+0100\n"
 "PO-Revision-Date: 2000-03-07 12:08+0100\n"
 "Last-Translator: Terje Røsten <terjeros@phys.ntnu.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -28,8 +28,8 @@ msgstr "%u referanser er igjen\n"
 
 #: src/aclass.c:246 src/backgrounds.c:1171 src/borders.c:1063
 #: src/borders.c:1187 src/buttons.c:721 src/cmclass.c:201 src/config.c:273
-#: src/cursors.c:153 src/iclass.c:538 src/iconify.c:2417 src/menus.c:1697
-#: src/menus.c:1809 src/slideout.c:418 src/tclass.c:247 src/tooltips.c:157
+#: src/cursors.c:153 src/iclass.c:538 src/iconify.c:2417 src/menus.c:1713
+#: src/menus.c:1825 src/slideout.c:418 src/tclass.c:247 src/tooltips.c:157
 #: src/windowmatch.c:153
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
@@ -37,7 +37,7 @@ msgstr "CONFIG: overser ekstra informasjon i \"%s\"\n"
 
 #: src/aclass.c:254 src/backgrounds.c:1179 src/borders.c:1069
 #: src/borders.c:1193 src/buttons.c:729 src/cmclass.c:209 src/config.c:281
-#: src/cursors.c:159 src/iclass.c:543 src/menus.c:1702 src/menus.c:1815
+#: src/cursors.c:159 src/iclass.c:543 src/menus.c:1718 src/menus.c:1831
 #: src/slideout.c:424 src/tclass.c:253 src/tooltips.c:163
 #: src/windowmatch.c:158
 #, c-format
@@ -210,7 +210,7 @@ msgstr "Enlightment dialog"
 msgid "Ignore this"
 msgstr "Overse dette"
 
-#: src/alert.c:593 src/alert.c:617 config/strings.c:117
+#: src/alert.c:593 src/alert.c:617 config/strings.c:123 config/strings.c:183
 msgid "Restart Enlightenment"
 msgstr "Start Enlightenment på nytt"
 
@@ -654,11 +654,11 @@ msgstr "Topp"
 msgid "Bottom"
 msgstr "Bunn"
 
-#: src/desktops.c:2461 src/pager.c:1819 src/pager.c:1844 src/pager.c:1869
+#: src/desktops.c:2461 src/pager.c:1817 src/pager.c:1842 src/pager.c:1867
 msgid "Left"
 msgstr "Venstre"
 
-#: src/desktops.c:2467 src/pager.c:1831 src/pager.c:1856 src/pager.c:1881
+#: src/desktops.c:2467 src/pager.c:1829 src/pager.c:1854 src/pager.c:1879
 msgid "Right"
 msgstr "Høyre"
 
@@ -711,7 +711,7 @@ msgstr "Motstand ved kanten av skjermen:\n"
 msgid "Apply"
 msgstr "Bruk"
 
-#: src/dialog.c:848 src/pager.c:893 config/strings.c:30 config/strings.c:154
+#: src/dialog.c:848 src/pager.c:891 config/strings.c:30 config/strings.c:163
 msgid "Close"
 msgstr "Avbryt"
 
@@ -1288,7 +1288,7 @@ msgstr "Valg for denne ikonboksen"
 msgid "Close Iconbox"
 msgstr "Fjern denne ikonboksen"
 
-#: src/iconify.c:1778 config/strings.c:82
+#: src/iconify.c:1778 config/strings.c:83
 msgid "Create New Iconbox"
 msgstr "Lag en ny ikonboks"
 
@@ -1576,16 +1576,16 @@ msgstr ""
 "Dette er en fatal feil og Enlightenment vil nekte og starte opp.\n"
 "Vær vennlig og sjekk at dox er til stede og på rett plass.\n"
 
-#: src/menus.c:1922
+#: src/menus.c:1938
 msgid "Menu"
 msgstr ""
 
-#: src/menus.c:2021
+#: src/menus.c:2041
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Forskjellige innstillinger"
 
-#: src/menus.c:2028
+#: src/menus.c:2048
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
@@ -1594,19 +1594,19 @@ msgstr ""
 "Dialog for innstilling \n"
 "av fokus i Enlightenment\n"
 
-#: src/menus.c:2032
+#: src/menus.c:2052
 msgid "Animated display of menus"
 msgstr "La menyer være animerte"
 
-#: src/menus.c:2037
+#: src/menus.c:2057
 msgid "Always pop up menus on screen"
 msgstr "La menyer alltid opptre innenfor skjermen"
 
-#: src/menus.c:2042
+#: src/menus.c:2062
 msgid "Warp pointer after moving menus"
 msgstr "Send muspeker tilbake etter flytting av meny"
 
-#: src/menus-misc.c:571
+#: src/menus-misc.c:571 config/strings.c:118
 #, fuzzy
 msgid "Themes"
 msgstr "Det er en feil ved temaet"
@@ -1710,67 +1710,67 @@ msgstr "Med ramme"
 msgid "Glass"
 msgstr "Klasse"
 
-#: src/pager.c:886 config/strings.c:51
+#: src/pager.c:884 config/strings.c:51
 msgid "Window Options"
 msgstr "Valg for vinduer"
 
-#: src/pager.c:889 config/strings.c:53 config/strings.c:156
+#: src/pager.c:887 config/strings.c:53 config/strings.c:165
 msgid "Iconify"
 msgstr "Ikonifiser"
 
-#: src/pager.c:897 config/strings.c:155
+#: src/pager.c:895 config/strings.c:164
 msgid "Annihilate"
 msgstr "Fjern"
 
-#: src/pager.c:901
+#: src/pager.c:899
 msgid "Stick / Unstick"
 msgstr "Stødig / ustødig"
 
-#: src/pager.c:910
+#: src/pager.c:908
 msgid "Desktop Options"
 msgstr "Valg for skrivebordet"
 
-#: src/pager.c:912
+#: src/pager.c:910
 msgid "Pager Settings..."
 msgstr "Innstillinger for skrivebordsoversikt"
 
-#: src/pager.c:917
+#: src/pager.c:915
 msgid "Snapshotting Off"
 msgstr "Ikke ta bilder av skjerm"
 
-#: src/pager.c:921
+#: src/pager.c:919
 msgid "High Quality Off"
 msgstr "Høy kvalitet av"
 
-#: src/pager.c:923
+#: src/pager.c:921
 msgid "High Quality On"
 msgstr "Høy kvalitet på"
 
-#: src/pager.c:928
+#: src/pager.c:926
 msgid "Snapshotting On"
 msgstr "Ta bilder av skjerm"
 
-#: src/pager.c:932
+#: src/pager.c:930
 msgid "Zoom Off"
 msgstr ""
 
-#: src/pager.c:934
+#: src/pager.c:932
 msgid "Zoom On"
 msgstr ""
 
-#: src/pager.c:1716 src/pager.c:1799
+#: src/pager.c:1714 src/pager.c:1797
 msgid "Pager scanning speed:"
 msgstr "Oppfriskningshastighet for skrivebordsoversikt:"
 
-#: src/pager.c:1717 src/pager.c:1800
+#: src/pager.c:1715 src/pager.c:1798
 msgid "lines per second"
 msgstr "linjer pr. sekund"
 
-#: src/pager.c:1754
+#: src/pager.c:1752
 msgid "Pager Settings"
 msgstr "Skrivebordsoversikt"
 
-#: src/pager.c:1761
+#: src/pager.c:1759
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
@@ -1778,43 +1778,43 @@ msgstr ""
 "Dialog for innstilling av \n"
 "skrivebordsoversikt i Enlightenment \n"
 
-#: src/pager.c:1766
+#: src/pager.c:1764
 msgid "Enable pager display"
 msgstr "Bruk skrivebordsoversikt"
 
-#: src/pager.c:1771
+#: src/pager.c:1769
 msgid "Make miniature snapshots of the screen"
 msgstr "Lag miniatyrbilder av skjermen"
 
-#: src/pager.c:1776
+#: src/pager.c:1774
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Lag miniatyrbilder av skjerm med høy kvalitet"
 
-#: src/pager.c:1781
+#: src/pager.c:1779
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Zoom inn vinduer på skrivebordsoversikt når musa er over dem"
 
-#: src/pager.c:1787
+#: src/pager.c:1785
 msgid "Pop up window title when mouse is over the window"
 msgstr "Framhev vindustittel når musa er over vinudet"
 
-#: src/pager.c:1792
+#: src/pager.c:1790
 msgid "Continuously scan screen to update pager"
 msgstr "Oppdater skrivebordsoversikt kontinurlig "
 
-#: src/pager.c:1815
+#: src/pager.c:1813
 msgid "Mouse button to select and drag windows:"
 msgstr "Musknapp som velger og drar vinduer:"
 
-#: src/pager.c:1825 src/pager.c:1850 src/pager.c:1875
+#: src/pager.c:1823 src/pager.c:1848 src/pager.c:1873
 msgid "Middle"
 msgstr "Midtre"
 
-#: src/pager.c:1840
+#: src/pager.c:1838
 msgid "Mouse button to select desktops:"
 msgstr "Musknapp som velger skrivebord:"
 
-#: src/pager.c:1865
+#: src/pager.c:1863
 msgid "Mouse button to display pager menu:"
 msgstr "Musknapp som bringer opp menyen til skrivebordsoversikten:"
 
@@ -2244,11 +2244,11 @@ msgstr "Plassering"
 msgid "Border style"
 msgstr "Rammestil"
 
-#: src/snaps.c:850
+#: src/snaps.c:850 config/strings.c:136
 msgid "Size"
 msgstr "Størrelse"
 
-#: src/snaps.c:855
+#: src/snaps.c:855 config/strings.c:116
 msgid "Desktop"
 msgstr "Skrivebord"
 
@@ -2268,7 +2268,7 @@ msgstr "Nivå"
 msgid "Window List Skip"
 msgstr "Overse i vinduslista"
 
-#: src/snaps.c:881
+#: src/snaps.c:881 config/strings.c:175
 msgid "Opacity"
 msgstr ""
 
@@ -2674,7 +2674,7 @@ msgstr "Bunn"
 msgid "Show more buttons."
 msgstr ""
 
-#: config/strings.c:58 config/strings.c:157
+#: config/strings.c:58 config/strings.c:166
 msgid "Raise"
 msgstr ""
 
@@ -2685,7 +2685,7 @@ msgstr ""
 "Trykk her for heve dette skrivebordet\n"
 "til toppen.\n"
 
-#: config/strings.c:60 config/strings.c:158
+#: config/strings.c:60 config/strings.c:167
 msgid "Lower"
 msgstr ""
 
@@ -2693,7 +2693,7 @@ msgstr ""
 msgid "Lower this window."
 msgstr ""
 
-#: config/strings.c:62 config/strings.c:160
+#: config/strings.c:62 config/strings.c:169
 #, fuzzy
 msgid "Stick/Unstick"
 msgstr "Stødig / ustødig"
@@ -2745,7 +2745,7 @@ msgstr "Skift fokus til dette skrivebordet"
 msgid "Go Forward a Desktop"
 msgstr "Skift fokus til dette skrivebordet"
 
-#: config/strings.c:77
+#: config/strings.c:77 config/strings.c:79
 #, fuzzy
 msgid "Backgrounds"
 msgstr ""
@@ -2757,344 +2757,402 @@ msgstr ""
 msgid "Desktop Operations"
 msgstr "Valg for skrivebordet"
 
-#: config/strings.c:79
+#: config/strings.c:80
 #, fuzzy
 msgid "Cleanup Desktop"
 msgstr "%i skrivebord"
 
-#: config/strings.c:80
+#: config/strings.c:81
 #, fuzzy
 msgid "Goto Next Desktop"
 msgstr "Skift fokus til dette skrivebordet"
 
-#: config/strings.c:81
+#: config/strings.c:82
 #, fuzzy
 msgid "Goto Previous Desktop"
 msgstr "Skift fokus til dette skrivebordet"
 
-#: config/strings.c:83
+#: config/strings.c:84
 msgid "Create Systray"
 msgstr ""
 
-#: config/strings.c:84
+#: config/strings.c:85 config/strings.c:119
 msgid "Maintenance"
 msgstr ""
 
-#: config/strings.c:85
+#: config/strings.c:86
 msgid "Purge config file cache"
 msgstr ""
 
-#: config/strings.c:86
+#: config/strings.c:87
 #, fuzzy
 msgid "Purge pager background cache"
 msgstr "Bruk bakgrunnsbilde"
 
-#: config/strings.c:87
+#: config/strings.c:88
 msgid "Purge background selector cache"
 msgstr ""
 
-#: config/strings.c:88
+#: config/strings.c:89
 msgid "Purge all caches"
 msgstr ""
 
-#: config/strings.c:89
+#: config/strings.c:90
 msgid "Query config file cache usage"
 msgstr ""
 
-#: config/strings.c:90
+#: config/strings.c:91
 msgid "Query pager background cache usage"
 msgstr ""
 
-#: config/strings.c:91
+#: config/strings.c:92
 msgid "Query background selector cache usage"
 msgstr ""
 
-#: config/strings.c:92
+#: config/strings.c:93
 msgid "Query all cache usage"
 msgstr ""
 
-#: config/strings.c:93
+#: config/strings.c:94
 msgid "Regenerate Menus"
 msgstr ""
 
-#: config/strings.c:94
+#: config/strings.c:95 config/strings.c:117
 #, fuzzy
 msgid "Settings"
 msgstr "Innstillinger for fokus"
 
-#: config/strings.c:95
+#: config/strings.c:96
 #, fuzzy
 msgid "Focus Settings ..."
 msgstr "Innstillinger for fokus"
 
-#: config/strings.c:96
+#: config/strings.c:97
 #, fuzzy
 msgid "Move & Resize Settings ..."
 msgstr "Flytting & størrelse"
 
-#: config/strings.c:97
+#: config/strings.c:98
 #, fuzzy
 msgid "Window Placement Settings ..."
 msgstr "Plassering av vinduer"
 
-#: config/strings.c:98
+#: config/strings.c:99
 #, fuzzy
 msgid "Multiple Desktop Settings ..."
 msgstr "Antall skrivebord"
 
-#: config/strings.c:99
+#: config/strings.c:100
 #, fuzzy
 msgid "Virtual Desktop Settings ..."
 msgstr "Innstillinger for virtuelle skrivebord"
 
-#: config/strings.c:100
+#: config/strings.c:101
 #, fuzzy
 msgid "Pager Settings ..."
 msgstr "Innstillinger for skrivebordsoversikt"
 
-#: config/strings.c:101
+#: config/strings.c:102
 #, fuzzy
 msgid "Menu Settings ..."
 msgstr "Forskjellige innstillinger"
 
-#: config/strings.c:102
+#: config/strings.c:103
 #, fuzzy
 msgid "Autoraise Settings ..."
 msgstr "Automatisk heving"
 
-#: config/strings.c:103
+#: config/strings.c:104
 #, fuzzy
 msgid "Tooltip Settings ..."
 msgstr "Verktøytips"
 
-#: config/strings.c:104
+#: config/strings.c:105
 #, fuzzy
 msgid "Audio Settings ..."
 msgstr "Lyd"
 
-#: config/strings.c:105
+#: config/strings.c:106
 #, fuzzy
 msgid "Group Settings ..."
 msgstr "Innstillinger for skrivebordsoversikt"
 
-#: config/strings.c:106
+#: config/strings.c:107
 #, fuzzy
 msgid "Remember Settings ..."
 msgstr "Innstillinger for hukommelse"
 
-#: config/strings.c:107
+#: config/strings.c:108
 #, fuzzy
 msgid "Special FX Settings ..."
 msgstr "Spesiell effekter"
 
-#: config/strings.c:108
+#: config/strings.c:109
 #, fuzzy
 msgid "Desktop Background Settings ..."
 msgstr "Innstillinger for skrivebordsbakgrunn"
 
-#: config/strings.c:109
+#: config/strings.c:110
 #, fuzzy
 msgid "Theme Transparency Settings ..."
 msgstr ""
 "Dialog for innstilling av\n"
 "Enlightenments verktøytips\n"
 
-#: config/strings.c:110
+#: config/strings.c:111
 #, fuzzy
 msgid "Composite Settings ..."
 msgstr "Verktøytips"
 
-#: config/strings.c:111
+#: config/strings.c:112
 #, fuzzy
 msgid "Session Settings ..."
 msgstr "Lyd"
 
-#: config/strings.c:112
+#: config/strings.c:113
 #, fuzzy
 msgid "Miscellaneous Settings ..."
 msgstr "Forskjellige innstillinger"
 
-#: config/strings.c:113
+#: config/strings.c:114
 #, fuzzy
 msgid "Enlightenment"
 msgstr "Avslutt Enlightenment"
 
-#: config/strings.c:114
+#: config/strings.c:115 config/strings.c:179
+#, fuzzy
+msgid "User Menus"
+msgstr "Rammestil"
+
+#: config/strings.c:120
 msgid "Help"
 msgstr ""
 
-#: config/strings.c:115
+#: config/strings.c:121
 #, fuzzy
 msgid "About Enlightenment"
 msgstr "Om Enlightenment %s"
 
-#: config/strings.c:116
+#: config/strings.c:122
 msgid "About this theme"
 msgstr ""
 
-#: config/strings.c:118
+#: config/strings.c:124 config/strings.c:184
 #, fuzzy
 msgid "Log Out"
 msgstr "  Ja, avslutt  "
 
-#: config/strings.c:119
+#: config/strings.c:125
 msgid "Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:120
+#: config/strings.c:126
 msgid "Available Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:121
+#: config/strings.c:127
 msgid "Absolute Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:122
+#: config/strings.c:128
 msgid "Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:123
+#: config/strings.c:129
 msgid "Available Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:124
+#: config/strings.c:130
 msgid "Absolute Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:125
+#: config/strings.c:131
 msgid "Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:126
+#: config/strings.c:132
 msgid "Available Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:127
+#: config/strings.c:133
 msgid "Absolute Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:128
+#: config/strings.c:134
+#, fuzzy
+msgid "Height"
+msgstr "Høyre"
+
+#: config/strings.c:135
+msgid "Width"
+msgstr ""
+
+#: config/strings.c:137
 msgid "Fullscreen/Normal"
 msgstr ""
 
-#: config/strings.c:129
+#: config/strings.c:138
 msgid "Zoom/Unzoom"
 msgstr ""
 
-#: config/strings.c:130
+#: config/strings.c:139
 msgid "Below"
 msgstr ""
 
-#: config/strings.c:131
+#: config/strings.c:140
 msgid "Normal"
 msgstr ""
 
-#: config/strings.c:132
+#: config/strings.c:141
 msgid "Above"
 msgstr ""
 
-#: config/strings.c:133
+#: config/strings.c:142
 #, fuzzy
 msgid "On Top"
 msgstr "Topp"
 
-#: config/strings.c:134
+#: config/strings.c:143
 msgid "20%"
 msgstr ""
 
-#: config/strings.c:135
+#: config/strings.c:144
 msgid "40%"
 msgstr ""
 
-#: config/strings.c:136
+#: config/strings.c:145
 msgid "60%"
 msgstr ""
 
-#: config/strings.c:137
+#: config/strings.c:146
 msgid "80%"
 msgstr ""
 
-#: config/strings.c:138
+#: config/strings.c:147
 msgid "100%"
 msgstr ""
 
-#: config/strings.c:139
+#: config/strings.c:148
 msgid "Toggle Shadows"
 msgstr ""
 
-#: config/strings.c:140
+#: config/strings.c:149
 msgid "Toggle Skip Window Lists"
 msgstr ""
 
-#: config/strings.c:141
+#: config/strings.c:150
 msgid "Toggle Fixed Position"
 msgstr ""
 
-#: config/strings.c:142
+#: config/strings.c:151
 msgid "Toggle Fixed Size"
 msgstr ""
 
-#: config/strings.c:143
+#: config/strings.c:152
 #, fuzzy
 msgid "Toggle Never Focus"
 msgstr "Aldri fokus"
 
-#: config/strings.c:144
+#: config/strings.c:153
 msgid "Toggle Click to Focus"
 msgstr ""
 
-#: config/strings.c:145
+#: config/strings.c:154
 #, fuzzy
 msgid "Toggle Never Use Area"
 msgstr "Aldri fokus"
 
-#: config/strings.c:146
+#: config/strings.c:155
 #, fuzzy
 msgid "Toggle Button Grabs"
 msgstr "Bunn"
 
-#: config/strings.c:147
+#: config/strings.c:156
 #, fuzzy
 msgid "Configure this window's group(s)"
 msgstr "Husk dette vindus gruppe(r)"
 
-#: config/strings.c:148
+#: config/strings.c:157
 msgid "Start a new group"
 msgstr ""
 
-#: config/strings.c:149
+#: config/strings.c:158
 #, fuzzy
 msgid "Select group to add this window to"
 msgstr "  Velg gruppa som vinduet skal fjernes fra.  "
 
-#: config/strings.c:150
+#: config/strings.c:159
 msgid "Add this window to the current group"
 msgstr ""
 
-#: config/strings.c:151
+#: config/strings.c:160
 #, fuzzy
 msgid "Remove this window from a group"
 msgstr "Husk dette vindus gruppe(r)"
 
-#: config/strings.c:152
+#: config/strings.c:161
 #, fuzzy
 msgid "Destroy a group this window belongs to"
 msgstr " Velg den gruppa som vinduet skal tilhøre: \n"
 
-#: config/strings.c:153
+#: config/strings.c:162
 #, fuzzy
 msgid "Show/Hide this window's group(s)"
 msgstr "Vis/Skjul denne gruppa"
 
-#: config/strings.c:159
+#: config/strings.c:168
 #, fuzzy
 msgid "Shade/Unshade"
 msgstr "Skyggetilstand"
 
-#: config/strings.c:161
+#: config/strings.c:170
 #, fuzzy
 msgid "Remember..."
 msgstr "Innstillinger for hukommelse"
+
+#: config/strings.c:171
+#, fuzzy
+msgid "Window Size"
+msgstr "Overse i vinduslista"
+
+#: config/strings.c:172
+#, fuzzy
+msgid "Set Stacking"
+msgstr "Innstillinger for fokus"
+
+#: config/strings.c:173
+#, fuzzy
+msgid "Set Border Style"
+msgstr "Rammestil"
+
+#: config/strings.c:174
+#, fuzzy
+msgid "Window Groups"
+msgstr "Feil ved vindusgruppe"
+
+#: config/strings.c:176
+#, fuzzy
+msgid "Miscellaneous"
+msgstr "Forskjellige innstillinger"
+
+#: config/strings.c:177
+#, fuzzy
+msgid "Remember State"
+msgstr "Innstillinger for hukommelse"
+
+#: config/strings.c:180
+#, fuzzy
+msgid "User Application List"
+msgstr "Lagrede egenskaper for dette programmet"
+
+#: config/strings.c:181
+msgid "Other"
+msgstr ""
+
+#: config/strings.c:182
+#, fuzzy
+msgid "Enlightenment Epplets"
+msgstr "Avslutt Enlightenment"
 
 #~ msgid "Never Focus"
 #~ msgstr "Aldri fokus"
