@@ -1,12 +1,12 @@
 TODO:
 
-- sorting
++ sorting
 - click on image to change
-- wheel changing / zooming
++ wheel changing / zooming
 - dnd
 - options
-- fix .spec file
-- make argv work with /path/to/image.png and not only /path/to/dir
++ fix .spec file
++ make argv work with /path/to/image.png and not only /path/to/dir
 - wallpaper setting - center, stretch, tile
 - andy's comments feature
 
