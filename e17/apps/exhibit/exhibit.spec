@@ -1,79 +1,56 @@
-# Note that this is NOT a relocatable package
-%define ver      0.0.1
-%define rel      1
-%define prefix   /usr
-
-Summary: exhibit
 Name: exhibit
-Version: %ver
-Release: %rel
-Copyright: BSD
-Group: System Environment/Libraries
-Source: ftp://ftp.enlightenment.org/pub/exhibit/exhibit-%{ver}.tar.gz
-BuildRoot: /var/tmp/exhibit-root
-Packager: The Rasterman <raster@rasterman.com>
-URL: http://www.enlightenment.org/
-BuildRequires: libjpeg-devel
-BuildRequires: zlib-devel
-Requires: libjpeg
-Requires: zlib
+Summary: Yet another image viewer that uses Etk as its toolkit
+Version: 0.0.1
+Release: 0.%(date '+%Y%m%d')cvs%{?dist}
+License: BSD
+Group: Applications/Multimedia
+URL: http://www.enlightenment.org
+Source0: %{name}-%{version}-%(date '+%Y%m%d').tar.gz
+Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildRequires: ecore-devel, evas-devel, edje-devel, etk-devel, epsilon-devel
+BuildRequires: enlightenment-devel, engrave-devel
 
-Docdir: %{prefix}/doc
+%description 
+Exhibit is an image viewer that uses Etk as its toolkit. Exhibit supports
+image previews for image types supported by Evas and allows for
+directory changing using a point and click interface or a text input box with
+tab autocompletion support. Exhibit also has image effect, tabs, and favorites
+support.
 
-%description
-
-exhibit is a Canvas Server
-
-%package devel
-Summary: exhibit headers, static libraries, documentation and test programs
-Group: System Environment/Libraries
-Requires: %{name} = %{version}
-
-%description devel
-Headers, static libraries, test programs and documentation for Eet
-
-%prep
-rm -rf $RPM_BUILD_ROOT
-
+%prep 
 %setup -q
 
-%build
-./configure --prefix=%prefix
+%build 
+rm -rf missing
+touch README
+aclocal -I m4
+autoheader
+autoconf
+libtoolize --copy --automake
+automake --add-missing --copy --gnu
 
-if [ "$SMP" != "" ]; then
-  (make "MAKE=make -k -j $SMP"; exit 0)
-  make
-else
-  make
-fi
-###########################################################################
+%configure
+%{__make} %{?_smp_mflags}
 
-%install
-make DESTDIR=$RPM_BUILD_ROOT install
+%install 
+rm -fr %{buildroot}
+%{__make} %{?mflags_install} DESTDIR=%{buildroot} install
 
-%clean
-rm -rf $RPM_BUILD_ROOT
+%clean 
+rm -fr %{buildroot}
 
-%post
-/sbin/ldconfig
+%post -p /sbin/ldconfig
 
-%postun
-/sbin/ldconfig
+%postun -p /sbin/ldconfig 
 
-%files
+%files 
 %defattr(-,root,root)
-%attr(755,root,root) %{prefix}/lib/libexhibit.so*
-%attr(755,root,root) %{prefix}/lib/libexhibit.la
-
-%files devel
-%attr(755,root,root) %{prefix}/lib/libexhibit.a
-%attr(755,root,root) %{prefix}/bin/exhibit*
-%{prefix}/include/exhibit*
-%doc AUTHORS
-%doc COPYING
-%doc README
-%doc exhibit_docs.tar.gz
+%{_bindir}/exhibit*
+%{_datadir}/exhibit*
+%doc AUTHORS ChangeLog COPYING* INSTALL NEWS README TODO
 
 %changelog
-* Sat Jun 23 2001 The Rasterman <raster@rasterman.com>
-- Created spec file
+* Fri Jan 27 2006 Didier F. B. Casse <didier[AT]microtronyx.com> - 0.0.1-20060127
+- Initial RPM release
+
+
