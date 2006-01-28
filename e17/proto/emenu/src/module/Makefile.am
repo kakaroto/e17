@@ -18,7 +18,9 @@ pkgdir                 = $(datadir)/$(MODULE_ARCH)
 
 pkg_LTLIBRARIES        = module.la
 module_la_SOURCES      = e_mod_main.c \
-		         e_mod_main.h
+		         e_mod_main.h \
+			 easy_menu.c \
+			 easy_menu.h
 			 
 module_la_LIBADD       = @exml_libs@ @e_libs@ ../lib/libemenu.la
 module_la_LDFLAGS      = -module -avoid-version

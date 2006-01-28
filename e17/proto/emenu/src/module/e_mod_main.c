@@ -1,11 +1,33 @@
 #include <e.h>
 #include "config.h"
 #include "e_mod_main.h"
+#include "easy_menu.h"
+
+static char *_test_menu =
+{
+   "Lock the screen|xscreensaver-command -lock|enlightenment/desktops\n"
+   "Go beep|/usr/bin/play /opt/kde3/share/sounds/KDE_Beep_ShortBeep.wav\n"
+   "Item0|action0\n"
+   "Item1\n"
+   " Item1 Sub0|action1\n"
+   " -\n"
+   " Item1 Sub1|action2\n"
+   "Item2\n"
+   " Item2 Sub0|action3\n"
+   " Item2 Sub1\n"
+   "  Item2 Sub1 Sub0|action4\n"
+   "  Item2 Sub1 Sub1|action5\n"
+   "Item3\n"
+};
+
 
 static EMenu *_emenu_init             (E_Module *m);
 static void   _emenu_shutdown         (EMenu *em);
 static void   _emenu_menu_add         (void *data, E_Menu *m);
 static void   _emenu_menu_cb_generate (void *data, E_Menu *m, E_Menu_Item *mi);
+static void _emenu_menu_cb_action(void *data, E_Menu *m, E_Menu_Item *mi);
+
+static  Easy_Menu *menu = NULL;
 
 EAPI E_Module_Api e_modapi = 
 {
@@ -128,4 +150,25 @@ _emenu_menu_cb_generate(void *data, E_Menu *m, E_Menu_Item *mi)
    em = data;
    e_module_dialog_show(_("Enlightenment Menu Module"),
 			_("Generate Menus."));
+
+   if (menu)
+      e_object_del(E_OBJECT(menu->menu->menu));
+   menu = easy_menu_add_menus("Generated Menus", "main", _test_menu, strlen(_test_menu), _emenu_menu_cb_action, em);
+}
+
+/**
+ * Handle menu item activation.
+ *
+ * @param   data the pointer you passed to e_menu_item_callback_set().
+ * @param   m the menu.
+ * @param   mi the menu item.
+ * @ingroup Emu_Module_Menu_Group
+ */
+static void
+_emenu_menu_cb_action(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   struct _Menu_Item_Data *item;
+   
+   item = data;
+   printf("Selected %s\n", item->action);
 }
