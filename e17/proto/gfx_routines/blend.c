@@ -792,7 +792,6 @@ main(int argc, char **argv)
 		     "set_color", test);
    /* FIXME: remember all ops could have an alpha mask as a destination */
    /* FIXME: test solid alpha mask fills */
-   /* FIXME: test solid color fills */
    
    test = test_p32_p32(src, dst, solid_dst, w, h, PIXEL_OP_BLEND, 1, 0, 0, loops,
 		       "blend_srcalpha", test);
@@ -802,6 +801,10 @@ main(int argc, char **argv)
 		       "blend_srcalpha_dstalpha", test);
    test = test_p32_p32(src, dst, solid_dst, w, h, PIXEL_OP_BLEND, 1, 1, 1, loops,
 		       "blend_srcalpha_sparse_dstalpha", test);
+   test = test_p32_p32(src, dst, solid_dst, w, h, PIXEL_OP_BLEND, 0, 1, 0, loops,
+		       "blend_dstalpha", test);
+   test = test_p32_p32(src, dst, solid_dst, w, h, PIXEL_OP_BLEND, 0, 0, 0, loops,
+		       "blend", test);
    /* FIXME: test blend with color multiplier */
    /* FIXME: test blend with alpha mask */
    /* FIXME: test blend with alpha mask and color multiplier */
