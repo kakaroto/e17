@@ -460,6 +460,8 @@ EwinBorderDetach(EWin * ewin)
    if (!b)
       return;
 
+   TooltipsSetPending(0, NULL, NULL);
+
    EventCallbackUnregister(EoGetWin(ewin), 0, BorderFrameHandleEvents, ewin);
    for (i = 0; i < b->num_winparts; i++)
      {
