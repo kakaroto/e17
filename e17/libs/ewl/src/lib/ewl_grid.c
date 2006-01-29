@@ -90,6 +90,8 @@ ewl_grid_init(Ewl_Grid *g, int cols, int rows)
 			    ewl_grid_realize_cb, NULL);
 	ewl_callback_append(EWL_WIDGET(g), EWL_CALLBACK_CONFIGURE,
 			    ewl_grid_configure_cb, NULL);
+	ewl_callback_prepend(EWL_WIDGET(g), EWL_CALLBACK_DESTROY, 
+                             ewl_grid_destroy_cb, NULL);
 
 	ewl_widget_focusable_set(EWL_WIDGET(g), FALSE);
 
@@ -517,6 +519,26 @@ ewl_grid_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		c_w = 0;
 		c_h = 0;
 	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_grid_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+		void *user_data __UNUSED__)
+{
+	Ewl_Grid *g;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	g = EWL_GRID(w);
+
+	IF_FREE(g->col_size)
+	IF_FREE(g->row_size)
+	g->col_size = NULL;
+	g->row_size = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

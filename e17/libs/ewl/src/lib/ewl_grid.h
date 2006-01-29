@@ -95,6 +95,7 @@ unsigned int 	ewl_grid_vhomogeneous_get(Ewl_Grid *g);
  */
 void ewl_grid_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_grid_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_grid_destroy_cb(Ewl_Widget *w, void *ev_data , void *user_data);
 void ewl_grid_child_show_cb(Ewl_Container *p, Ewl_Widget *c);
 void ewl_grid_child_resize_cb(Ewl_Container *p, Ewl_Widget *child,
 			     int size, Ewl_Orientation o);
