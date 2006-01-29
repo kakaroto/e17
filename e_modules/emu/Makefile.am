@@ -25,4 +25,4 @@ dist-hook:
 	popd;
 							  
 
-EXTRA_DIST = m4 AUTHORS COPYING COPYING-PLAIN EMU_PROTOCOL.txt INSTALL NEWS README autogen.sh emu_client gdb.txt rebuildit xnest.sh
+EXTRA_DIST = m4 AUTHORS COPYING COPYING-PLAIN EMU_PROTOCOL.txt INSTALL NEWS README autogen.sh emu_client rebuildit
