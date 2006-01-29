@@ -14,7 +14,9 @@
 
 enum _Etk_Progress_Bar_Property_Id
 {
-   ETK_PROGRESS_BAR_LABEL_PROPERTY
+   ETK_PROGRESS_BAR_LABEL_PROPERTY,
+   ETK_PROGRESS_BAR_FRACTION_PROPERTY,
+   ETK_PROGRESS_BAR_PULSE_STEP_PROPERTY
 };
 
 enum _Etk_Progress_Bar_Activity_Dir
@@ -48,7 +50,9 @@ Etk_Type *etk_progress_bar_type_get()
       progress_bar_type = etk_type_new("Etk_Progress_Bar", ETK_BIN_TYPE, sizeof(Etk_Progress_Bar), ETK_CONSTRUCTOR(_etk_progress_bar_constructor), NULL);
 
       etk_type_property_add(progress_bar_type, "label", ETK_PROGRESS_BAR_LABEL_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_string(NULL));
-
+      etk_type_property_add(progress_bar_type, "fraction", ETK_PROGRESS_BAR_FRACTION_PROPERTY, ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_double(0.0));
+      etk_type_property_add(progress_bar_type, "pulse_step", ETK_PROGRESS_BAR_PULSE_STEP_PROPERTY, ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_double(0.1));
+      
       progress_bar_type->property_set = _etk_progress_bar_property_set;
       progress_bar_type->property_get = _etk_progress_bar_property_get;
    }
@@ -217,7 +221,7 @@ double etk_progress_bar_pulse_step_get(Etk_Progress_Bar *progress_bar)
  * @param progress_bar a progess bar
  * @param orientation the new orientation
  */
-void etk_progress_bar_pulse_step_set(Etk_Progress_Bar *progress_bar, Etk_Progress_Bar_Orientation orientation)
+void etk_progress_bar_pulse_orientation_set(Etk_Progress_Bar *progress_bar, Etk_Progress_Bar_Orientation orientation)
 {
    Etk_Widget *widget;
    
@@ -267,6 +271,12 @@ static void _etk_progress_bar_property_set(Etk_Object *object, int property_id, 
       case ETK_PROGRESS_BAR_LABEL_PROPERTY:
          etk_progress_bar_text_set(progress_bar, etk_property_value_string_get(value));
          break;
+      case ETK_PROGRESS_BAR_FRACTION_PROPERTY:
+         etk_progress_bar_fraction_set(progress_bar, etk_property_value_double_get(value));
+         break;
+      case ETK_PROGRESS_BAR_PULSE_STEP_PROPERTY:
+         etk_progress_bar_pulse_step_set(progress_bar, etk_property_value_double_get(value));
+         break;
       default:
          break;
    }
@@ -285,6 +295,12 @@ static void _etk_progress_bar_property_get(Etk_Object *object, int property_id, 
       case ETK_PROGRESS_BAR_LABEL_PROPERTY:
          etk_property_value_string_set(value, etk_progress_bar_text_get(progress_bar));
          break;
+      case ETK_PROGRESS_BAR_FRACTION_PROPERTY:
+         etk_property_value_double_set(value, etk_progress_bar_fraction_get(progress_bar));
+         break;
+      case ETK_PROGRESS_BAR_PULSE_STEP_PROPERTY:
+         etk_property_value_double_set(value, etk_progress_bar_pulse_step_get(progress_bar));
+         break;      
       default:
          break;
    }
