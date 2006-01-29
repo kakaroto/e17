@@ -503,7 +503,7 @@ msgstr "actionclass"
 
 #: src/config.c:373
 msgid "Slideout"
-msgstr ""
+msgstr "slideout"
 
 #: src/config.c:587
 msgid "Enlightenment Starting..."
@@ -1675,7 +1675,7 @@ msgid ""
 "Enlightenment Selective Transparency\n"
 "Settings Dialog\n"
 msgstr ""
-"Enlightenment 透明化対象選択\n"
+"Enlightenment 透明化対象\n"
 "設定ダイアログ\n"
 
 #: src/mod-trans.c:149
@@ -2102,7 +2102,7 @@ msgstr "ボタン画像を有効にする"
 
 #: src/settings.c:544
 msgid "Enable sliding startup windows"
-msgstr ""
+msgstr "ログイン後、上下にスライドする初期画面を出す"
 
 #: src/settings.c:552
 msgid "Use saveunders to reduce window exposures"
@@ -2110,37 +2110,39 @@ msgstr "セーブアンダー機能を使いウィンドウ再描画時の処理を減らす"
 
 #: src/settings.c:598
 msgid "Composite Settings"
-msgstr ""
+msgstr "コンポジットの設定"
 
 #: src/settings.c:609
 msgid ""
 "Enlightenment Composite\n"
 "Settings Dialog\n"
 msgstr ""
+"Enlightenment コンポジットの\n"
+"設定ダイアログ\n"
 
 #: src/settings.c:613
 msgid "Enable Composite"
-msgstr ""
+msgstr "コンポジットを有効にする"
 
 #: src/settings.c:621
 msgid "Enable Fading"
-msgstr ""
+msgstr "フェーディングを有効にする"
 
 #: src/settings.c:629
 msgid "Shadows Off"
-msgstr ""
+msgstr "影を付けない"
 
 #: src/settings.c:635
 msgid "Shadows Sharp"
-msgstr ""
+msgstr "影を明瞭にする"
 
 #: src/settings.c:641
 msgid "Shadows Blurred"
-msgstr ""
+msgstr "影をぼかす"
 
 #: src/settings.c:649
 msgid "Fading Speed:"
-msgstr ""
+msgstr "フェーディング速度"
 
 #: src/setup.c:128
 msgid ""
@@ -2276,13 +2278,12 @@ msgid "Window List Skip"
 msgstr "ウィンドウリストのスキップ"
 
 #: src/snaps.c:881 config/strings.c:175
-#, fuzzy
 msgid "Opacity"
 msgstr "不透明度"
 
 #: src/snaps.c:886
 msgid "Shadowing"
-msgstr ""
+msgstr "影を付ける"
 
 #: src/snaps.c:892
 msgid "Flags"
@@ -2907,7 +2908,7 @@ msgstr "テーマ透明化の設定 ..."
 #
 #: config/strings.c:111
 msgid "Composite Settings ..."
-msgstr ""
+msgstr "コンポジットの設定 ..."
 
 #
 #: config/strings.c:112
@@ -2925,9 +2926,8 @@ msgid "Enlightenment"
 msgstr "Enlightenment"
 
 #: config/strings.c:115 config/strings.c:179
-#, fuzzy
 msgid "User Menus"
-msgstr "ユーザーメニューを表示する"
+msgstr "ユーザーメニュー"
 
 #: config/strings.c:120
 msgid "Help"
@@ -2984,13 +2984,12 @@ msgid "Absolute Max Size Toggle"
 msgstr "絶対最大サイズで切替え"
 
 #: config/strings.c:134
-#, fuzzy
 msgid "Height"
-msgstr "右"
+msgstr "高さ"
 
 #: config/strings.c:135
 msgid "Width"
-msgstr ""
+msgstr "幅"
 
 #: config/strings.c:137
 msgid "Fullscreen/Normal"
@@ -3001,22 +3000,18 @@ msgid "Zoom/Unzoom"
 msgstr "拡大／縮小"
 
 #: config/strings.c:139
-#, fuzzy
 msgid "Below"
 msgstr "下に"
 
 #: config/strings.c:140
-#, fuzzy
 msgid "Normal"
 msgstr "普通"
 
 #: config/strings.c:141
-#, fuzzy
 msgid "Above"
 msgstr "上に"
 
 #: config/strings.c:142
-#, fuzzy
 msgid "On Top"
 msgstr "常に上に"
 
@@ -3041,7 +3036,6 @@ msgid "100%"
 msgstr ""
 
 #: config/strings.c:148
-#, fuzzy
 msgid "Toggle Shadows"
 msgstr "シャドー切替え"
 
@@ -3063,12 +3057,10 @@ msgid "Toggle Never Focus"
 msgstr "フォーカスを受けない／受ける"
 
 #: config/strings.c:153
-#, fuzzy
 msgid "Toggle Click to Focus"
 msgstr "クリックでフォーカス／解除"
 
 #: config/strings.c:154
-#, fuzzy
 msgid "Toggle Never Use Area"
 msgstr "エリアを使わない／使う"
 
@@ -3122,51 +3114,43 @@ msgstr "記憶する..."
 
 #
 #: config/strings.c:171
-#, fuzzy
 msgid "Window Size"
-msgstr "ウィンドウリスト"
+msgstr "ウィンドウサイズ"
 
 #
 #: config/strings.c:172
-#, fuzzy
 msgid "Set Stacking"
-msgstr "設定"
+msgstr "積み重ね順"
 
 #: config/strings.c:173
-#, fuzzy
 msgid "Set Border Style"
-msgstr "ボーダースタイル"
+msgstr "ボーダースタイルの設定"
 
 #: config/strings.c:174
-#, fuzzy
 msgid "Window Groups"
-msgstr "ウィンドウグループエラー"
+msgstr "ウィンドウグループ"
 
 #: config/strings.c:176
-#, fuzzy
 msgid "Miscellaneous"
-msgstr "その他の設定"
+msgstr "その他"
 
 #
 #: config/strings.c:177
-#, fuzzy
 msgid "Remember State"
-msgstr "記憶の設定 ..."
+msgstr "記憶の状態"
 
 #: config/strings.c:180
-#, fuzzy
 msgid "User Application List"
-msgstr "記憶されているアプリケショーン属性"
+msgstr "ユーザーアプリケーション"
 
 #: config/strings.c:181
 msgid "Other"
-msgstr ""
+msgstr "その他"
 
 #
 #: config/strings.c:182
-#, fuzzy
 msgid "Enlightenment Epplets"
-msgstr "Enlightenment"
+msgstr "Enlightenment Epplets"
 
 #~ msgid "Never Focus"
 #~ msgstr "フォーカスしない"
