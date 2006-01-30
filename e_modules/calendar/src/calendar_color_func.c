@@ -9,31 +9,31 @@
 /           to Calendar Config variables.  Working...
 /
 *****************************************************/ 
-void               
+void 
 calendar_face_set_colors(Calendar * calendar) 
 {
    
-char               read_line[120];
+char read_line[120];
    
-int                r, g, b, a, r1, g1, b1, a1, r2, g2, b2, a2;
+int r, g, b, a, r1, g1, b1, a1, r2, g2, b2, a2;
    
-int                UseDefault = 0;
+int UseDefault = 0;
    
-char               ValidName1[] = { "Today_s_back_colors" };
+char ValidName1[] = { "Today_s_back_colors" };
    
-char               ValidName2[] = { "Weekend_back_colors" };
+char ValidName2[] = { "Weekend_back_colors" };
    
-char               ValidName3[] = { "WeekDay_back_colors" };
+char ValidName3[] = { "WeekDay_back_colors" };
    
-char               ValidName4[] = { "Today_s_text_colors" };
+char ValidName4[] = { "Today_s_text_colors" };
    
-char               ValidName5[] = { "Weekend_text_colors" };
+char ValidName5[] = { "Weekend_text_colors" };
    
-char               ValidName6[] = { "WeekDay_text_colors" };
+char ValidName6[] = { "WeekDay_text_colors" };
    
-char               ValidName7[] = { "YearMon_numb_colors" };
+char ValidName7[] = { "YearMon_numb_colors" };
    
-char               ValidName8[] = { "DayWeek_text_colors" };
+char ValidName8[] = { "DayWeek_text_colors" };
    
 
 c_array * TBC_Ptr = calendar->conf->Today_s_back_colors->data;
@@ -53,7 +53,7 @@ c_array * YNC_Ptr = calendar->conf->YearMon_numb_colors->data;
 c_array * DTC_Ptr = calendar->conf->DayWeek_text_colors->data;
    
 
-char              buff[20];
+char buff[20];
 
    
 FILE * fp;
@@ -586,11 +586,11 @@ DTC_Ptr->alpha_s = 0;
 /           appropriate colorclass in edje.  
 /
 *****************************************************/ 
-    void
+   void
 update_colors(Calendar * calendar, Calendar_Face * face) 
 {
    
-int                x;
+int x;
 
    
 
@@ -611,7 +611,7 @@ c_array * YNC_Ptr = calendar->conf->YearMon_numb_colors->data;
 c_array * DTC_Ptr = calendar->conf->DayWeek_text_colors->data;
    
 //set weekday colors
-       for (x = 0; x < 35; x++)
+      for (x = 0; x < 35; x++)
       
      {
         
@@ -643,7 +643,7 @@ WdTC_Ptr->green_s, WdTC_Ptr->blue_s,
 }
    
 //Set weekend colors
-       for (x = 0; x < 35; x++)
+      for (x = 0; x < 35; x++)
       
      {
         
@@ -675,7 +675,7 @@ WeBC_Ptr->green_s, WeBC_Ptr->blue_s,
 }
    
 //Set Today colors
-       for (x = 0; x < 35; x++)
+      for (x = 0; x < 35; x++)
       
      {
         
@@ -705,16 +705,16 @@ TBC_Ptr->green_s,
 }
    
 //Set Label colors
-       edje_object_color_class_set(face->label_object, "YearMonth_colors",
-                                   
+      edje_object_color_class_set(face->label_object, "YearMonth_colors",
+                                  
 YNC_Ptr->red, YNC_Ptr->green, YNC_Ptr->blue,
-                                   YNC_Ptr->alpha, 
+                                  YNC_Ptr->alpha, 
 YNC_Ptr->red_o,
-                                   YNC_Ptr->green_o, YNC_Ptr->blue_o,
-                                   YNC_Ptr->alpha_o, 
+                                  YNC_Ptr->green_o, YNC_Ptr->blue_o,
+                                  YNC_Ptr->alpha_o, 
 YNC_Ptr->red_s,
-                                   YNC_Ptr->green_s, YNC_Ptr->blue_s,
-                                   YNC_Ptr->alpha_s);
+                                  YNC_Ptr->green_s, YNC_Ptr->blue_s,
+                                  YNC_Ptr->alpha_s);
    
 
 edje_object_color_class_set(face->label_object, "Day_colors", DTC_Ptr->red,

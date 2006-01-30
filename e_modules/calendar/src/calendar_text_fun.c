@@ -7,7 +7,7 @@
 /           Font classes in edje
 /
 *****************************************************/ 
-void               
+void 
 calendar_update_text_fonts(Calendar * calendar, Calendar_Face * face) 
 {
    
@@ -17,7 +17,7 @@ CalFonts * DTCs_Ptr = calendar->conf->Day_text_class->data;
    
 CalFonts * TC_Ptr = calendar->conf->text_class->data;
    
-int                x;
+int x;
 
    
 
@@ -60,17 +60,17 @@ DTCs_Ptr->font, DTCs_Ptr->size);
 /           Calendar Config Variables -- working
 /
 *****************************************************/ 
-void               
+void 
 calendar_face_set_text(Calendar * calendar) 
 {
    
-char               read_line[120];
+char read_line[120];
    
-char               ValidName1[] = { "YM_text_class" };
+char ValidName1[] = { "YM_text_class" };
    
-char               ValidName2[] = { "Day_text_class" };
+char ValidName2[] = { "Day_text_class" };
    
-char               ValidName3[] = { "text_class" };
+char ValidName3[] = { "text_class" };
    
 CalFonts * YTC_Ptr = calendar->conf->YM_text_class->data;
    
@@ -78,11 +78,11 @@ CalFonts * DTCs_Ptr = calendar->conf->Day_text_class->data;
    
 CalFonts * TC_Ptr = calendar->conf->text_class->data;
    
-char               buff[20];
+char buff[20];
    
-char               buff2[20];
+char buff2[20];
    
-int                fs;
+int fs;
 
    
 FILE * fp;
@@ -174,146 +174,146 @@ TC_Ptr->font = "VeraMono";
 /           Still needs to be tested.
 /
 *****************************************************/ 
-void               
-set_day_label(Evas_Object * label, int FirstDay, int month, int year) 
+void 
+set_day_label(Evas_Object *label, int FirstDay, int month, int year) 
 {
    
-char               PYear[5];
+char PYear[5];
 
    
 switch (FirstDay)
       
      {
-       
+     
 case 0:
-          
+        
 edje_object_part_text_set(label, "Sunday", _("Su"));
-          
+        
 edje_object_part_text_set(label, "Monday", _("Mo"));
-          
+        
 edje_object_part_text_set(label, "Tuesday", _("Tu"));
-          
+        
 edje_object_part_text_set(label, "Wednesday", _("We"));
-          
+        
 edje_object_part_text_set(label, "Thursday", _("Th"));
-          
+        
 edje_object_part_text_set(label, "Friday", _("Fr"));
-          
+        
 edje_object_part_text_set(label, "Saturday", _("Sa"));
-          
+        
 break;
-       
+     
 case 1:
-          
+        
 edje_object_part_text_set(label, "Sunday", _("Mo"));
-          
+        
 edje_object_part_text_set(label, "Monday", _("Tu"));
-          
+        
 edje_object_part_text_set(label, "Tuesday", _("We"));
-          
+        
 edje_object_part_text_set(label, "Wednesday", _("Th"));
-          
+        
 edje_object_part_text_set(label, "Thursday", _("Fr"));
-          
+        
 edje_object_part_text_set(label, "Friday", _("Sa"));
-          
+        
 edje_object_part_text_set(label, "Saturday", _("Su"));
-          
+        
 break;
-       
+     
 
 case 2:
-          
+        
 edje_object_part_text_set(label, "Sunday", _("Tu"));
-          
+        
 edje_object_part_text_set(label, "Monday", _("We"));
-          
+        
 edje_object_part_text_set(label, "Tuesday", _("Th"));
-          
+        
 edje_object_part_text_set(label, "Wednesday", _("Fr"));
-          
+        
 edje_object_part_text_set(label, "Thursday", _("Sa"));
-          
+        
 edje_object_part_text_set(label, "Friday", _("Su"));
-          
+        
 edje_object_part_text_set(label, "Saturday", _("Mo"));
-          
+        
 break;
-       
+     
 case 3:
-          
+        
 edje_object_part_text_set(label, "Sunday", _("We"));
-          
+        
 edje_object_part_text_set(label, "Monday", _("Th"));
-          
+        
 edje_object_part_text_set(label, "Tuesday", _("Fr"));
-          
+        
 edje_object_part_text_set(label, "Wednesday", _("Sa"));
-          
+        
 edje_object_part_text_set(label, "Thursday", _("Su"));
-          
+        
 edje_object_part_text_set(label, "Friday", _("Mo"));
-          
+        
 edje_object_part_text_set(label, "Saturday", _("Tu"));
-          
+        
 break;
-       
+     
 case 4:
-          
+        
 edje_object_part_text_set(label, "Sunday", _("Th"));
-          
+        
 edje_object_part_text_set(label, "Monday", _("Fr"));
-          
+        
 edje_object_part_text_set(label, "Tuesday", _("Sa"));
-          
+        
 edje_object_part_text_set(label, "Wednesday", _("Su"));
-          
+        
 edje_object_part_text_set(label, "Thursday", _("Mo"));
-          
+        
 edje_object_part_text_set(label, "Friday", _("Tu"));
-          
+        
 edje_object_part_text_set(label, "Saturday", _("We"));
-          
+        
 break;
-       
+     
 case 5:
-          
+        
 edje_object_part_text_set(label, "Sunday", _("Fr"));
-          
+        
 edje_object_part_text_set(label, "Monday", _("Sa"));
-          
+        
 edje_object_part_text_set(label, "Tuesday", _("Su"));
-          
+        
 edje_object_part_text_set(label, "Wednesday", _("Mo"));
-          
+        
 edje_object_part_text_set(label, "Thursday", _("Tu"));
-          
+        
 edje_object_part_text_set(label, "Friday", _("We"));
-          
+        
 edje_object_part_text_set(label, "Saturday", _("Th"));
-          
+        
 break;
-       
+     
 case 6:
-          
+        
 edje_object_part_text_set(label, "Sunday", _("Sa"));
-          
+        
 edje_object_part_text_set(label, "Monday", _("Su"));
-          
+        
 edje_object_part_text_set(label, "Tuesday", _("Mo"));
-          
+        
 edje_object_part_text_set(label, "Wednesday", _("Tu"));
-          
+        
 edje_object_part_text_set(label, "Thursday", _("We"));
-          
+        
 edje_object_part_text_set(label, "Friday", _("Th"));
-          
+        
 edje_object_part_text_set(label, "Saturday", _("Fr"));
-          
+        
 break;
-       
+     
 default:
-          
+        
 break;
      
 }
@@ -327,81 +327,81 @@ edje_object_part_text_set(label, "Year2", PYear);
 switch (month)
       
      {
-       
+     
 case 0:
-          
+        
 edje_object_part_text_set(label, "Month", _("JANUARY"));
-          
+        
 break;
-       
+     
 case 1:
-          
+        
 edje_object_part_text_set(label, "Month", _("FEBRUARY"));
-          
+        
 break;
-       
+     
 case 2:
-          
+        
 edje_object_part_text_set(label, "Month", _("MARCH"));
-          
+        
 break;
-       
+     
 case 3:
-          
+        
 edje_object_part_text_set(label, "Month", _("APRIL"));
-          
+        
 break;
-       
+     
 case 4:
-          
+        
 edje_object_part_text_set(label, "Month", _("MAY"));
-          
+        
 break;
-       
+     
 case 5:
-          
+        
 edje_object_part_text_set(label, "Month", _("JUNE"));
-          
+        
 break;
-       
+     
 case 6:
-          
+        
 edje_object_part_text_set(label, "Month", _("JULY"));
-          
+        
 break;
-       
+     
 case 7:
-          
+        
 edje_object_part_text_set(label, "Month", _("AUGUST"));
-          
+        
 break;
-       
+     
 case 8:
-          
+        
 edje_object_part_text_set(label, "Month", _("SEPTEMBER"));
-          
+        
 break;
-       
+     
 case 9:
-          
+        
 edje_object_part_text_set(label, "Month", _("OCTOBER"));
-          
+        
 break;
-       
+     
 case 10:
-          
+        
 edje_object_part_text_set(label, "Month", _("NOVEMBER"));
-          
+        
 break;
-       
+     
 case 11:
-          
+        
 edje_object_part_text_set(label, "Month", _("DECEMBER"));
-          
+        
 break;
-       
+     
 default:
-          
+        
 break;
      
 }
@@ -414,15 +414,16 @@ break;
 / Purpose:  free text classes
 /
 *****************************************************/ 
-    void
+   void
 free_Calfonts(Calendar * calendar) 
 {
    
-Evas_List * list;
+Evas_List *list;
+
    
 
-       //need to free Calfonts & colorarray (calendar & *char)
-       for (list = calendar->conf->YM_text_class; list; list = list->next)
+      //need to free Calfonts & colorarray (calendar & *char)
+      for (list = calendar->conf->YM_text_class; list; list = list->next)
       
      {
         

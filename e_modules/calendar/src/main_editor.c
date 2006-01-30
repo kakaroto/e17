@@ -3,27 +3,26 @@
 
 typedef struct _calendar_cfdata CFData;
 
-struct _calendar_cfdata {
-   char               *size;
-   char               *size1;
-   char               *size2;
-   int                 temp_ImageYes;
-   int                 temp_UserCS;
+struct _calendar_cfdata
+{
+   char *size;
+   char *size1;
+   char *size2;
+   int temp_ImageYes;
+   int temp_UserCS;
 
-   Calendar           *calendar;
+   Calendar *calendar;
 };
 
 //static Evas_Object      *_create_widgets(E_Config_Dialog *cfd, Evas *evas, Config *cfdata);
-static void        *_create_data(E_Config_Dialog * cfd);
-static void         _free_data(E_Config_Dialog * cfd, void *data);
-static Evas_Object *_basic_create_widgets(E_Config_Dialog * cfd, Evas * evas,
+static void *_create_data(E_Config_Dialog *cfd);
+static void _free_data(E_Config_Dialog *cfd, void *data);
+static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas,
                                           void *data);
-static int          _basic_apply_data(E_Config_Dialog * cfd, void *data);
-static Evas_Object *_color_edit_advanced_create_widgets(E_Config_Dialog * cfd,
-                                                        Evas * evas,
-                                                        void *data);
-static int          _color_edit_advanced_apply_data(E_Config_Dialog * cfd,
-                                                    void *data);
+static int _basic_apply_data(E_Config_Dialog *cfd, void *data);
+static Evas_Object *_color_edit_advanced_create_widgets(E_Config_Dialog *cfd,
+                                                        Evas *evas, void *data);
+static int _color_edit_advanced_apply_data(E_Config_Dialog *cfd, void *data);
 
 /***************************************************
 / Function: 
@@ -37,10 +36,11 @@ static int          _color_edit_advanced_apply_data(E_Config_Dialog * cfd,
 void
 e_int_config_calendar(void *con, void *calendar)
 {
-   E_Config_Dialog    *cfd;
+   E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
 
    v = E_NEW(E_Config_Dialog_View, 1);
+
    if (v)
      {
         /* methods */
@@ -53,8 +53,8 @@ e_int_config_calendar(void *con, void *calendar)
 
         /* create config diaolg for NULL object/data */
         cfd =
-            e_config_dialog_new(con, _("Calendar Settings"), NULL, 0, v,
-                                calendar);
+           e_config_dialog_new(con, _("Calendar Settings"), NULL, 0, v,
+                               calendar);
      }
 }
 /***************************************************
@@ -66,10 +66,10 @@ e_int_config_calendar(void *con, void *calendar)
 /
 /
 *****************************************************/
-static void        *
-_create_data(E_Config_Dialog * cfd)
+static void *
+_create_data(E_Config_Dialog *cfd)
 {
-   CFData             *cfdata;
+   CFData *cfdata;
 
    cfdata = E_NEW(CFData, 1);
    cfdata->calendar = cfd->data;
@@ -88,7 +88,7 @@ _create_data(E_Config_Dialog * cfd)
 /
 *****************************************************/
 static void
-_free_data(E_Config_Dialog * cfd, void *data)
+_free_data(E_Config_Dialog *cfd, void *data)
 {
    /* Free the cfdata */
    free(data);
@@ -103,13 +103,13 @@ _free_data(E_Config_Dialog * cfd, void *data)
 /
 *****************************************************/
 static Evas_Object *
-_basic_create_widgets(E_Config_Dialog * cfd, Evas * evas, void *data)
+_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data)
 {
    /* generate the core widget layout for a basic dialog */
-   Evas_Object        *o, *of, *ob, *of2, *of1, *check;
-   E_Radio_Group      *rg;
+   Evas_Object *o, *of, *ob, *of2, *of1, *check;
+   E_Radio_Group *rg;
 
-   CFData             *cfdata;
+   CFData *cfdata;
 
    cfdata = data;
 
@@ -157,17 +157,17 @@ _basic_create_widgets(E_Config_Dialog * cfd, Evas * evas, void *data)
 *****************************************************/
 /**--APPLY--**/
 static int
-_basic_apply_data(E_Config_Dialog * cfd, void *data)
+_basic_apply_data(E_Config_Dialog *cfd, void *data)
 {
-   CFData             *cfdata;
+   CFData *cfdata;
 
    cfdata = data;
    /* Actually take our cfdata settings and apply them in real life */
    e_border_button_bindings_ungrab_all();
-   Calendar           *calendar;
+   Calendar *calendar;
 
    calendar = cfd->data;
-   int                 SwitchImage = 0;
+   int SwitchImage = 0;
 
    if ((calendar->conf->ImageYes != cfdata->temp_ImageYes)
        || (calendar->conf->UserCS != cfdata->temp_UserCS))
@@ -204,17 +204,17 @@ _basic_apply_data(E_Config_Dialog * cfd, void *data)
 /
 *****************************************************/
 static int
-_color_edit_advanced_apply_data(E_Config_Dialog * cfd, void *data)
+_color_edit_advanced_apply_data(E_Config_Dialog *cfd, void *data)
 {
-   CFData             *cfdata;
+   CFData *cfdata;
 
    cfdata = data;
    /* Actually take our cfdata settings and apply them in real life */
    e_border_button_bindings_ungrab_all();
-   Calendar           *calendar;
+   Calendar *calendar;
 
    calendar = cfd->data;
-   int                 SwitchImage = 0;
+   int SwitchImage = 0;
 
    if ((calendar->conf->ImageYes != cfdata->temp_ImageYes)
        || (calendar->conf->UserCS != cfdata->temp_UserCS))
@@ -250,30 +250,30 @@ _color_edit_advanced_apply_data(E_Config_Dialog * cfd, void *data)
 /
 *****************************************************/
 static Evas_Object *
-_color_edit_advanced_create_widgets(E_Config_Dialog * cfd, Evas * evas,
+_color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas,
                                     void *data)
 {
    /* generate the core widget layout for a basic dialog */
-   Evas_Object        *o, *of, *ob, *of2, *of_y;
-   Evas_Object        *font_title;
-   Evas_Object        *start_table;
-   Evas_Object        *start_tableB, *ofB;
-   Evas_Object        *entry;
-   E_Radio_Group      *rg;
-   E_Manager          *man;
-   E_Container        *con;
-   Config             *conf;
-   Calendar           *calendar;
+   Evas_Object *o, *of, *ob, *of2, *of_y;
+   Evas_Object *font_title;
+   Evas_Object *start_table;
+   Evas_Object *start_tableB, *ofB;
+   Evas_Object *entry;
+   E_Radio_Group *rg;
+   E_Manager *man;
+   E_Container *con;
+   Config *conf;
+   Calendar *calendar;
 
-   CFData             *cfdata;
+   CFData *cfdata;
 
    cfdata = data;
    conf = cfdata->calendar->conf;
    calendar = cfdata->calendar;
 
-   CalFonts           *YTC_Ptr = cfdata->calendar->conf->YM_text_class->data;
-   CalFonts           *DTCs_Ptr = cfdata->calendar->conf->Day_text_class->data;
-   CalFonts           *TC_Ptr = cfdata->calendar->conf->text_class->data;
+   CalFonts *YTC_Ptr = cfdata->calendar->conf->YM_text_class->data;
+   CalFonts *DTCs_Ptr = cfdata->calendar->conf->Day_text_class->data;
+   CalFonts *TC_Ptr = cfdata->calendar->conf->text_class->data;
 
    man = e_manager_current_get();
    if (!man)

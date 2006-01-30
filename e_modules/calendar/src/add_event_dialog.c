@@ -5,36 +5,35 @@
 
 
 struct _day_CFData 
- {
+{
    
    /*- BASIC -*/ 
-   char                event[50][256];
-                      
+   char event[50][256];
+   
 char todo[50][256];
-                      
+   
 char holiday[10][256];
-                      
- /*- common -*/     
-                       day_face * DayToFix;
-                   
+   
+ /*- common -*/ 
+    day_face * DayToFix;
+
 };
 
 
 
 /* local subsystem functions */ 
-static void         _add_event_free_data(E_Config_Dialog * cfd, void *data);
+static void _add_event_free_data(E_Config_Dialog *cfd, void *data);
 
-static void        _add_event_fill_data(CFData * f_cfdata);
+static void _add_event_fill_data(CFData * f_cfdata);
 
-static void       *_add_event_create_data(E_Config_Dialog * cfd);
+static void *_add_event_create_data(E_Config_Dialog *cfd);
 
-static void        _add_event_free_data(E_Config_Dialog * cfd, void *data);
+static void _add_event_free_data(E_Config_Dialog *cfd, void *data);
 
-static int         _add_event_basic_apply_data(E_Config_Dialog * cfd,
-                                                void *data);
+static int _add_event_basic_apply_data(E_Config_Dialog *cfd, void *data);
 
-static Evas_Object *_add_event_basic_create_widgets(E_Config_Dialog * cfd,
-                                                     Evas * evas, void *data);
+static Evas_Object *_add_event_basic_create_widgets(E_Config_Dialog *cfd,
+                                                     Evas *evas, void *data);
 
 
 /* externally accessible functions */ 
@@ -45,23 +44,24 @@ static Evas_Object *_add_event_basic_create_widgets(E_Config_Dialog * cfd,
 / Takes: 
 /
 *****************************************************/ 
-void               
+void 
 add_event_show(void *con, void *DayToFix) 
 {
    
-E_Config_Dialog * cfd;
+E_Config_Dialog *cfd;
    
-E_Config_Dialog_View * v;
+E_Config_Dialog_View *v;
    
 
 v = E_NEW(E_Config_Dialog_View, 1);
+
    
 if (v)
       
      {
         
-            /* methods */ 
-            v->create_cfdata = _add_event_create_data;
+           /* methods */ 
+           v->create_cfdata = _add_event_create_data;
         
 v->free_cfdata = _add_event_free_data;
         
@@ -69,9 +69,9 @@ v->basic.apply_cfdata = _add_event_basic_apply_data;
         
 v->basic.create_widgets = _add_event_basic_create_widgets;
         
-            /* create config diaolg */ 
-            cfd =
-            e_config_dialog_new(con, _("Font Editor"), NULL, 0, v, DayToFix);
+           /* create config diaolg */ 
+           cfd =
+           e_config_dialog_new(con, _("Font Editor"), NULL, 0, v, DayToFix);
      
 }
 
@@ -86,7 +86,7 @@ v->basic.create_widgets = _add_event_basic_create_widgets;
 / Takes: 
 /
 *****************************************************/ 
-static void        
+static void 
 _add_event_fill_data(CFData * cfdata) 
 {
 
@@ -100,8 +100,8 @@ _add_event_fill_data(CFData * cfdata)
 / Takes: 
 /
 ****************************************************/ 
-static void        *
-_add_event_create_data(E_Config_Dialog * cfd) 
+static void *
+_add_event_create_data(E_Config_Dialog *cfd) 
 {
    
 CFData * cfdata;
@@ -117,8 +117,8 @@ if (!cfdata)
 
 cfdata->DayToFix = cfd->data;
    
-       // _add_event_fill_data(cfdata);
-       return cfdata;
+      // _add_event_fill_data(cfdata);
+      return cfdata;
 
 }
 
@@ -129,8 +129,8 @@ cfdata->DayToFix = cfd->data;
 / Takes: 
 /
 *****************************************************/ 
-static void        
-_add_event_free_data(E_Config_Dialog * cfd, void *data) 
+static void 
+_add_event_free_data(E_Config_Dialog *cfd, void *data) 
 {
    
 free(data);
@@ -143,8 +143,8 @@ free(data);
 / Takes: 
 /
 ****************************************************/ 
-static int         
-_add_event_basic_apply_data(E_Config_Dialog * cfd, void *data) 
+static int 
+_add_event_basic_apply_data(E_Config_Dialog *cfd, void *data) 
 {
    
 CFData * cfdata;
@@ -154,8 +154,8 @@ cfdata = data;
 
 e_config_save_queue();
    
-       //redraw_calendar(f_cfdata->FontsToModify_L->calendar,0);
-       
+      //redraw_calendar(f_cfdata->FontsToModify_L->calendar,0);
+      
 return 1;
 
 }
@@ -169,14 +169,14 @@ return 1;
 /
 *****************************************************/ 
 static Evas_Object *
-_add_event_basic_create_widgets(E_Config_Dialog * cfd, Evas * evas,
-                                void *data) 
+_add_event_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data) 
 {
    
-       /* generate the core widget layout for a basic dialog */ 
-       Evas_Object * o, *of, *ob, *of1;
+      /* generate the core widget layout for a basic dialog */ 
+   Evas_Object *o, *of, *ob, *of1;
    
-E_Radio_Group * rg;
+E_Radio_Group *rg;
+
    
 CFData * cfdata;
    
@@ -207,7 +207,8 @@ e_widget_list_object_append(o, of, 1, 1, 0.5);
 
 of1 = e_widget_framelist_add(evas, _("Event"), 0);
    
-Evas_Object * entry;
+Evas_Object *entry;
+
    
 entry = e_widget_entry_add(evas, &cfdata->event[0]);
    

@@ -33,4 +33,8 @@
 -T Flow_Chart
 -T Monitor
 -T Monitor_Face
+-T Mount
+-T Mount_Box
+-T Mount_Icon
+-T Mount_Point
 -T Snow

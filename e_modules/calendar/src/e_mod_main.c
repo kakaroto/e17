@@ -5,15 +5,15 @@
 #include <libintl.h>
 
 /* module private routines */ 
-static Calendar    *_calendar_new();
+static Calendar *_calendar_new();
 
-static void        _calendar_shutdown(Calendar * calendar);
+static void _calendar_shutdown(Calendar * calendar);
 
-static int         _date_cb_check(void *calendar);
+static int _date_cb_check(void *calendar);
 
-static void        _clear_dates(Calendar_Face * face);
+static void _clear_dates(Calendar_Face * face);
 
-static int         _calendar_count;
+static int _calendar_count;
 
 static E_Config_DD *conf_edd;
 
@@ -25,13 +25,13 @@ static E_Config_DD *conf_color_edd;
 
 EAPI E_Module_Api e_modapi = 
 {
-
+   
 E_MODULE_API_VERSION, 
 "Calendar" 
 };
 
 /**  Public function ***/ 
-    int
+   int
 increment_cal_count() 
 {
    
@@ -49,31 +49,31 @@ return _calendar_count;
 /
 /
 ******************************************************/ 
-EAPI void          *
-e_modapi_init(E_Module * module) 
+EAPI void *
+e_modapi_init(E_Module *module) 
 {
    
 Calendar * calendar;
    
-       /* check module api version */ 
-       if (module->api->version < E_MODULE_API_VERSION)
+      /* check module api version */ 
+      if (module->api->version < E_MODULE_API_VERSION)
       
      {
         
 e_error_dialog_show 
-            ("Module API Error", 
+           ("Module API Error", 
 "Error initializing Module: calendar\n" 
-             "It requires a minimum module API version of: %i.\n" 
-             "The module API advertized by Enlightenment is: %i.\n" 
-             "Aborting module.", 
+            "It requires a minimum module API version of: %i.\n" 
+            "The module API advertized by Enlightenment is: %i.\n" 
+            "Aborting module.", 
 E_MODULE_API_VERSION, module->api->version);
         
 return NULL;
      
 }
    
-       /* actually init buttons */ 
-       calendar = _calendar_new();
+      /* actually init buttons */ 
+      calendar = _calendar_new();
    
 module->config_menu = calendar->config_menu;
    
@@ -87,8 +87,8 @@ return calendar;
 /
 ******************************************************/ 
 /*    * int e_modapi_shutdown(E_Module*) - Cleanup */ 
-EAPI int           
-e_modapi_shutdown(E_Module * module) 
+EAPI int 
+e_modapi_shutdown(E_Module *module) 
 {
    
 Calendar * calendar;
@@ -125,8 +125,8 @@ return 1;
 ******************************************************/ 
 /*    * int e_modapi_save(E_Module*) - Save persistent data */ 
 /*    ie: the calendar->conf stuff                          */ 
-EAPI int           
-e_modapi_save(E_Module * module) 
+EAPI int 
+e_modapi_save(E_Module *module) 
 {
    
 Calendar * calendar;
@@ -146,8 +146,8 @@ return 1;
 /
 ******************************************************/ 
 /* * int e_modapi_info(E_Module*) - Setup module specific infomation */ 
-EAPI int           
-e_modapi_info(E_Module * module) 
+EAPI int 
+e_modapi_info(E_Module *module) 
 {
    
 module->icon_file = strdup(PACKAGE_DATA_DIR "/module_icon.png");
@@ -163,8 +163,8 @@ return 1;
 /
 ******************************************************/ 
 /* * int e_modapi_about(E_Module*). - Called when Modules' About Menu is invoked. */ 
-EAPI int           
-e_modapi_about(E_Module * module) 
+EAPI int 
+e_modapi_about(E_Module *module) 
 {
    
 e_error_dialog_show(_("Enlightenment calendar Module"),
@@ -181,8 +181,8 @@ return 1;
 /
 /
 ******************************************************/ 
-    int
-e_modapi_config(E_Module * m) 
+   int
+e_modapi_config(E_Module *m) 
 {
    
 Calendar * calendar;
@@ -199,7 +199,7 @@ return 1;
 
 
 /************************ End of the required routines ******************************************/ 
-    
+   
 /* module private routines */ 
 /***************************************************
 / Function: _calendar_new()
@@ -207,7 +207,7 @@ return 1;
 /
 /
 ******************************************************/ 
-static Calendar    *
+static Calendar *
 _calendar_new() 
 {
    
@@ -215,7 +215,7 @@ Calendar * calendar;
    
 time_t now;
    
-struct tm          date;
+struct tm date;
 
    
 time(&now);
@@ -237,7 +237,7 @@ conf_font_edd = E_CONFIG_DD_NEW("CalFonts", CalFonts);
 #undef D
 #define T CalFonts
 #define D conf_font_edd
-       E_CONFIG_VAL(D, T, font, STR);
+      E_CONFIG_VAL(D, T, font, STR);
    
 E_CONFIG_VAL(D, T, size, INT);
    
@@ -248,7 +248,7 @@ conf_color_edd = E_CONFIG_DD_NEW("c_array", c_array);
 #undef D
 #define T c_array
 #define D conf_color_edd
-       E_CONFIG_VAL(D, T, red, INT);
+      E_CONFIG_VAL(D, T, red, INT);
    
 E_CONFIG_VAL(D, T, green, INT);
    
@@ -279,7 +279,7 @@ conf_edd = E_CONFIG_DD_NEW("calendar_Config", Config);
 #undef D
 #define T Config
 #define D conf_edd
-       E_CONFIG_VAL(D, T, ImageYes, INT);
+      E_CONFIG_VAL(D, T, ImageYes, INT);
    
 E_CONFIG_VAL(D, T, config_version, INT);
    
@@ -304,7 +304,7 @@ E_CONFIG_VAL(D, T, arrow_path, STR);
 E_CONFIG_VAL(D, T, UserCS, INT);
    
 //Store colors
-       E_CONFIG_LIST(D, T, Today_s_text_colors, conf_color_edd);
+      E_CONFIG_LIST(D, T, Today_s_text_colors, conf_color_edd);
    
 E_CONFIG_LIST(D, T, Today_s_back_colors, conf_color_edd);
    
@@ -321,7 +321,7 @@ E_CONFIG_LIST(D, T, YearMon_numb_colors, conf_color_edd);
 E_CONFIG_LIST(D, T, DayWeek_text_colors, conf_color_edd);
    
 //Store fonts
-       E_CONFIG_LIST(D, T, YM_text_class, conf_font_edd);
+      E_CONFIG_LIST(D, T, YM_text_class, conf_font_edd);
    
 E_CONFIG_LIST(D, T, Day_text_class, conf_font_edd);
    
@@ -394,66 +394,67 @@ Temp_ClassPtr2->font = "";
 
 
 calendar->conf = E_NEW(Config, 1);
+
         
 calendar->conf->ImageYes = 0;
         
 calendar->conf->TopImage_path =
-            (char *)evas_stringshare_add(PACKAGE_DATA_DIR "/topimage.edj");
+           (char *)evas_stringshare_add(PACKAGE_DATA_DIR "/topimage.edj");
         
 calendar->conf->Background_path =
-            (char *)evas_stringshare_add(PACKAGE_DATA_DIR "/backimage.edj");
+           (char *)evas_stringshare_add(PACKAGE_DATA_DIR "/backimage.edj");
         
 calendar->conf->today_path =
-            (char *)evas_stringshare_add(PACKAGE_DATA_DIR "/today.edj");
+           (char *)evas_stringshare_add(PACKAGE_DATA_DIR "/today.edj");
         
 calendar->conf->weekend_path =
-            (char *)evas_stringshare_add(PACKAGE_DATA_DIR "/weekend.edj");
+           (char *)evas_stringshare_add(PACKAGE_DATA_DIR "/weekend.edj");
         
 calendar->conf->weekday_path =
-            (char *)evas_stringshare_add(PACKAGE_DATA_DIR "/weekday.edj");
+           (char *)evas_stringshare_add(PACKAGE_DATA_DIR "/weekday.edj");
         
 calendar->conf->label_path =
-            (char *)evas_stringshare_add(PACKAGE_DATA_DIR "/label.edj");
+           (char *)evas_stringshare_add(PACKAGE_DATA_DIR "/label.edj");
         
 calendar->conf->arrow_path =
-            (char *)evas_stringshare_add(PACKAGE_DATA_DIR "/arrow.edj");
+           (char *)evas_stringshare_add(PACKAGE_DATA_DIR "/arrow.edj");
         
 calendar->conf->ConfigFile_path = "";
         
 
 calendar->conf->Today_s_text_colors =
-            evas_list_append(calendar->conf->Today_s_text_colors, Temp_Ptr);
+           evas_list_append(calendar->conf->Today_s_text_colors, Temp_Ptr);
         
 calendar->conf->Today_s_back_colors =
-            evas_list_append(calendar->conf->Today_s_back_colors, Temp_Ptr1);
+           evas_list_append(calendar->conf->Today_s_back_colors, Temp_Ptr1);
         
 calendar->conf->Weekend_text_colors =
-            evas_list_append(calendar->conf->Weekend_text_colors, Temp_Ptr2);
+           evas_list_append(calendar->conf->Weekend_text_colors, Temp_Ptr2);
         
 calendar->conf->Weekend_back_colors =
-            evas_list_append(calendar->conf->Weekend_back_colors, Temp_Ptr3);
+           evas_list_append(calendar->conf->Weekend_back_colors, Temp_Ptr3);
         
 calendar->conf->WeekDay_text_colors =
-            evas_list_append(calendar->conf->WeekDay_text_colors, Temp_Ptr4);
+           evas_list_append(calendar->conf->WeekDay_text_colors, Temp_Ptr4);
         
 calendar->conf->WeekDay_back_colors =
-            evas_list_append(calendar->conf->WeekDay_back_colors, Temp_Ptr5);
+           evas_list_append(calendar->conf->WeekDay_back_colors, Temp_Ptr5);
         
 calendar->conf->YearMon_numb_colors =
-            evas_list_append(calendar->conf->YearMon_numb_colors, Temp_Ptr6);
+           evas_list_append(calendar->conf->YearMon_numb_colors, Temp_Ptr6);
         
 calendar->conf->DayWeek_text_colors =
-            evas_list_append(calendar->conf->DayWeek_text_colors, Temp_Ptr7);
+           evas_list_append(calendar->conf->DayWeek_text_colors, Temp_Ptr7);
         
 
 calendar->conf->YM_text_class =
-            evas_list_append(calendar->conf->YM_text_class, Temp_ClassPtr);
+           evas_list_append(calendar->conf->YM_text_class, Temp_ClassPtr);
         
 calendar->conf->Day_text_class =
-            evas_list_append(calendar->conf->Day_text_class, Temp_ClassPtr1);
+           evas_list_append(calendar->conf->Day_text_class, Temp_ClassPtr1);
         
 calendar->conf->text_class =
-            evas_list_append(calendar->conf->text_class, Temp_ClassPtr2);
+           evas_list_append(calendar->conf->text_class, Temp_ClassPtr2);
         
 
 calendar->conf->DayofWeek_Start = 0;
@@ -476,26 +477,25 @@ if (strncmp(calendar->conf->TopImage_path, " ", 2) == 0)
           {
              
 calendar->conf->TopImage_path =
-                 (char *)evas_stringshare_add(PACKAGE_DATA_DIR "/topimage.edj");
+                (char *)evas_stringshare_add(PACKAGE_DATA_DIR "/topimage.edj");
              
 calendar->conf->Background_path =
-                 (char *)evas_stringshare_add(PACKAGE_DATA_DIR
-                                              "/backimage.edj");
+                (char *)evas_stringshare_add(PACKAGE_DATA_DIR "/backimage.edj");
              
 calendar->conf->today_path =
-                 (char *)evas_stringshare_add(PACKAGE_DATA_DIR "/today.edj");
+                (char *)evas_stringshare_add(PACKAGE_DATA_DIR "/today.edj");
              
 calendar->conf->weekend_path =
-                 (char *)evas_stringshare_add(PACKAGE_DATA_DIR "/weekend.edj");
+                (char *)evas_stringshare_add(PACKAGE_DATA_DIR "/weekend.edj");
              
 calendar->conf->weekday_path =
-                 (char *)evas_stringshare_add(PACKAGE_DATA_DIR "/weekday.edj");
+                (char *)evas_stringshare_add(PACKAGE_DATA_DIR "/weekday.edj");
              
 calendar->conf->label_path =
-                 (char *)evas_stringshare_add(PACKAGE_DATA_DIR "/label.edj");
+                (char *)evas_stringshare_add(PACKAGE_DATA_DIR "/label.edj");
              
 calendar->conf->arrow_path =
-                 (char *)evas_stringshare_add(PACKAGE_DATA_DIR "/arrow.edj");
+                (char *)evas_stringshare_add(PACKAGE_DATA_DIR "/arrow.edj");
           
 }
      
@@ -508,11 +508,11 @@ calendar->conf->view_year = date.tm_year + 1900;
 calendar->conf->Today = date.tm_mday;
    
 //Start up Face
-       calendar_face_start(calendar);
+      calendar_face_start(calendar);
    
 //Add Timer
-       calendar->date_check_timer =
-       ecore_timer_add(60, _date_cb_check, calendar);
+      calendar->date_check_timer =
+      ecore_timer_add(60, _date_cb_check, calendar);
    
 return calendar;
 
@@ -524,11 +524,12 @@ return calendar;
 /
 /
 ******************************************************/ 
-static void        
+static void 
 _calendar_shutdown(Calendar * calendar) 
 {
    
-Evas_List * list;
+Evas_List *list;
+
    
 
 E_CONFIG_DD_FREE(conf_edd);
@@ -558,8 +559,8 @@ e_object_del(E_OBJECT(calendar->config_menu));
 free_Calfonts(calendar);
    
 
-       // need to free color list
-       evas_list_free(calendar->conf->Today_s_text_colors);
+      // need to free color list
+      evas_list_free(calendar->conf->Today_s_text_colors);
    
 evas_list_free(calendar->conf->Today_s_back_colors);
    
@@ -604,7 +605,7 @@ free(calendar);
 /
 /
 ******************************************************/ 
-    void
+   void
 calendar_config_menu_new(Calendar * calendar) 
 {
    
@@ -617,7 +618,7 @@ calendar->config_menu = e_menu_new();
 /
 /
 ******************************************************/ 
-static int         
+static int 
 _date_cb_check(void *data) 
 {
    
@@ -625,7 +626,7 @@ time_t now;
    
 Calendar * calendar;
    
-struct tm          date;
+struct tm date;
 
    
 
@@ -648,7 +649,8 @@ return 1;
       
      {
         
-Evas_List * l;
+Evas_List *l;
+
         
 for (l = calendar->faces; l; l = l->next)
            
@@ -670,7 +672,7 @@ update_colors(calendar, face);
                
 }
              
-int                skew = calculate_skew(calendar);
+int skew = calculate_skew(calendar);
 
              
 calendar_add_dates(face, calendar, skew);
@@ -692,11 +694,11 @@ return 1;
 /
 /
 ******************************************************/ 
-static void        
+static void 
 _clear_dates(Calendar_Face * face) 
 {
    
-int                x;
+int x;
 
    
 
@@ -726,8 +728,8 @@ edje_object_part_text_set(face->today_object[x]->obj, "date-text", " ");
 /
 /
 ******************************************************/ 
-    void
-read_conf_files(void *data, E_Menu * m, E_Menu_Item * mi) 
+   void
+read_conf_files(void *data, E_Menu *m, E_Menu_Item *mi) 
 {
    
 Calendar * calendar;
@@ -747,20 +749,21 @@ redraw_calendar(calendar, 0);
 /
 /
 ******************************************************/ 
-void               
+void 
 redraw_calendar(Calendar * calendar, int SwitchImage) 
 {
    
-Evas_List * l;
+Evas_List *l;
+
    
 Calendar_Face * face;
    
-int                skew;
+int skew;
 
    
 time_t now;
    
-struct tm          date;
+struct tm date;
 
    
 time(&now);

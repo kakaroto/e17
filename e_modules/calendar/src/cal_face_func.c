@@ -11,20 +11,20 @@
 void
 calendar_face_start(Calendar * calendar)
 {
-   Evas_List          *managers, *l2, *l;
-   E_Menu_Item        *mi;
+   Evas_List *managers, *l2, *l;
+   E_Menu_Item *mi;
 
    calendar_config_menu_new(calendar);
    managers = e_manager_list();
    for (l = managers; l; l = l->next)
      {
-        E_Manager          *man;
+        E_Manager *man;
 
         man = l->data;
         for (l2 = man->containers; l2; l2 = l2->next)
           {
-             E_Container        *con;
-             Calendar_Face      *face;
+             E_Container *con;
+             Calendar_Face *face;
 
              con = l2->data;
              face = calendar_face_new(con, calendar);
@@ -47,18 +47,18 @@ calendar_face_start(Calendar * calendar)
 / Purpose: 
 /
 *****************************************************/
-Calendar_Face      *
-calendar_face_new(E_Container * con, Calendar * calendar)
+Calendar_Face *
+calendar_face_new(E_Container *con, Calendar * calendar)
 {
    // Setup date finding stuff
-   time_t              now;
-   struct tm           date;
+   time_t now;
+   struct tm date;
 
    time(&now);
    date = *localtime(&now);
-   int                 check, i;
+   int check, i;
 
-   Calendar_Face      *face;
+   Calendar_Face *face;
 
    face = E_NEW(Calendar_Face, 1);
    if (!face)
@@ -71,35 +71,35 @@ calendar_face_new(E_Container * con, Calendar * calendar)
    // Make calendar object
    face->calendar_object = edje_object_add(con->bg_evas);
    check =
-       edje_object_file_set(face->calendar_object,
-                            PACKAGE_DATA_DIR "/calendar.edj", "default");
+      edje_object_file_set(face->calendar_object,
+                           PACKAGE_DATA_DIR "/calendar.edj", "default");
    evas_object_show(face->calendar_object);
 
    //Make prev_year object
    face->prev_year = edje_object_add(con->bg_evas);
    check =
-       edje_object_file_set(face->prev_year, calendar->conf->arrow_path, "PY");
+      edje_object_file_set(face->prev_year, calendar->conf->arrow_path, "PY");
    evas_object_event_callback_add(face->prev_year, EVAS_CALLBACK_MOUSE_DOWN,
                                   calendar_face_prev_year, calendar);
 
    //Make next_year object
    face->next_year = edje_object_add(con->bg_evas);
    check =
-       edje_object_file_set(face->next_year, calendar->conf->arrow_path, "NY");
+      edje_object_file_set(face->next_year, calendar->conf->arrow_path, "NY");
    evas_object_event_callback_add(face->next_year, EVAS_CALLBACK_MOUSE_DOWN,
                                   calendar_face_next_year, calendar);
 
    //Make prev_month object
    face->prev_month = edje_object_add(con->bg_evas);
    check =
-       edje_object_file_set(face->prev_month, calendar->conf->arrow_path, "PM");
+      edje_object_file_set(face->prev_month, calendar->conf->arrow_path, "PM");
    evas_object_event_callback_add(face->prev_month, EVAS_CALLBACK_MOUSE_DOWN,
                                   calendar_face_prev_month, calendar);
 
    //Make next_month object
    face->next_month = edje_object_add(con->bg_evas);
    check =
-       edje_object_file_set(face->next_month, calendar->conf->arrow_path, "NM");
+      edje_object_file_set(face->next_month, calendar->conf->arrow_path, "NM");
    evas_object_event_callback_add(face->next_month, EVAS_CALLBACK_MOUSE_DOWN,
                                   calendar_face_next_month, calendar);
 
@@ -123,24 +123,24 @@ calendar_face_new(E_Container * con, Calendar * calendar)
    //Make topimage object
    face->topimage_object = edje_object_add(con->bg_evas);
    check =
-       edje_object_file_set(face->topimage_object,
-                            calendar->conf->TopImage_path, "default");
+      edje_object_file_set(face->topimage_object,
+                           calendar->conf->TopImage_path, "default");
    //Make background object
    face->background_object = edje_object_add(con->bg_evas);
    check =
-       edje_object_file_set(face->background_object,
-                            calendar->conf->Background_path, "back");
+      edje_object_file_set(face->background_object,
+                           calendar->conf->Background_path, "back");
 
    //Make label object
    face->label_object = edje_object_add(con->bg_evas);
    if (!calendar->conf->UserCS)
       check =
-          edje_object_file_set(face->label_object, calendar->conf->label_path,
-                               "default");
+         edje_object_file_set(face->label_object, calendar->conf->label_path,
+                              "default");
    else
       check =
-          edje_object_file_set(face->label_object, calendar->conf->label_path,
-                               "user");
+         edje_object_file_set(face->label_object, calendar->conf->label_path,
+                              "user");
    set_day_label(face->label_object, calendar->conf->DayofWeek_Start,
                  calendar->conf->view_month, calendar->conf->view_year);
 
@@ -238,10 +238,10 @@ calendar_face_new(E_Container * con, Calendar * calendar)
                             face->o_calendar_table);
    evas_object_show(face->o_calendar_table);
    //Time to do some packing....
-   int                 x = 0;
+   int x = 0;
 
    i = 0;
-   int                 row = 0;
+   int row = 0;
 
    while (x < 35)
      {
@@ -286,7 +286,7 @@ calendar_face_new(E_Container * con, Calendar * calendar)
 
    evas_event_thaw(con->bg_evas);
 
-   int                 skew = calculate_skew(calendar);
+   int skew = calculate_skew(calendar);
 
    calendar_add_dates(face, calendar, skew);
    calendar_face_set_text(calendar);
@@ -306,13 +306,13 @@ calendar_face_new(E_Container * con, Calendar * calendar)
 /
 *****************************************************/
 void
-calendar_face_cb_mouse_down(void *data, Evas * e, Evas_Object * obj,
+calendar_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
                             void *event_info)
 {
-   day_face           *face;
+   day_face *face;
    Evas_Event_Mouse_Down *ev;
-   E_Manager          *man;
-   E_Container        *con;
+   E_Manager *man;
+   E_Container *con;
 
    face = data;
    ev = event_info;
@@ -342,10 +342,10 @@ calendar_face_cb_mouse_down(void *data, Evas * e, Evas_Object * obj,
 /
 *****************************************************/
 void
-calendar_face_prev_month(void *data, Evas * e, Evas_Object * obj,
+calendar_face_prev_month(void *data, Evas *e, Evas_Object *obj,
                          void *event_info)
 {
-   Calendar           *calendar;
+   Calendar *calendar;
 
    calendar = data;
    calendar->conf->view_month--;
@@ -363,10 +363,9 @@ calendar_face_prev_month(void *data, Evas * e, Evas_Object * obj,
 /
 *****************************************************/
 void
-calendar_face_prev_year(void *data, Evas * e, Evas_Object * obj,
-                        void *event_info)
+calendar_face_prev_year(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
-   Calendar           *calendar;
+   Calendar *calendar;
 
    calendar = data;
    calendar->conf->view_year--;
@@ -379,10 +378,9 @@ calendar_face_prev_year(void *data, Evas * e, Evas_Object * obj,
 /
 *****************************************************/
 void
-calendar_face_next_year(void *data, Evas * e, Evas_Object * obj,
-                        void *event_info)
+calendar_face_next_year(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
-   Calendar           *calendar;
+   Calendar *calendar;
 
    calendar = data;
    calendar->conf->view_year++;
@@ -395,10 +393,10 @@ calendar_face_next_year(void *data, Evas * e, Evas_Object * obj,
 /
 *****************************************************/
 void
-calendar_face_next_month(void *data, Evas * e, Evas_Object * obj,
+calendar_face_next_month(void *data, Evas *e, Evas_Object *obj,
                          void *event_info)
 {
-   Calendar           *calendar;
+   Calendar *calendar;
 
    calendar = data;
    calendar->conf->view_month++;
@@ -419,9 +417,9 @@ calendar_face_next_month(void *data, Evas * e, Evas_Object * obj,
 /
 *****************************************************/
 void
-calendar_face_cb_menu_edit(void *data, E_Menu * m, E_Menu_Item * mi)
+calendar_face_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi)
 {
-   Calendar_Face      *face;
+   Calendar_Face *face;
 
    face = data;
    e_gadman_mode_set(face->gmc->gadman, E_GADMAN_MODE_EDIT);
@@ -433,30 +431,30 @@ calendar_face_cb_menu_edit(void *data, E_Menu * m, E_Menu_Item * mi)
 /
 *****************************************************/
 void
-calendar_face_cb_gmc_change(void *data, E_Gadman_Client * gmc,
+calendar_face_cb_gmc_change(void *data, E_Gadman_Client *gmc,
                             E_Gadman_Change change)
 {
-   Calendar_Face      *face;
-   Evas_Coord          x, y, w, h;
+   Calendar_Face *face;
+   Evas_Coord x, y, w, h;
 
    face = data;
    switch (change)
      {
-       case E_GADMAN_CHANGE_MOVE_RESIZE:
-          e_gadman_client_geometry_get(face->gmc, &x, &y, &w, &h);
-          evas_object_move(face->calendar_object, x, y);
-          evas_object_resize(face->calendar_object, w, h);
-          break;
-       case E_GADMAN_CHANGE_RAISE:
-          evas_object_raise(face->calendar_object);
-          evas_object_raise(face->topimage_object);
-          break;
-       case E_GADMAN_CHANGE_EDGE:
-       case E_GADMAN_CHANGE_ZONE:
-          /* FIXME
-           * Must we do something here?
-           */
-          break;
+     case E_GADMAN_CHANGE_MOVE_RESIZE:
+        e_gadman_client_geometry_get(face->gmc, &x, &y, &w, &h);
+        evas_object_move(face->calendar_object, x, y);
+        evas_object_resize(face->calendar_object, w, h);
+        break;
+     case E_GADMAN_CHANGE_RAISE:
+        evas_object_raise(face->calendar_object);
+        evas_object_raise(face->topimage_object);
+        break;
+     case E_GADMAN_CHANGE_EDGE:
+     case E_GADMAN_CHANGE_ZONE:
+        /* FIXME
+         * Must we do something here?
+         */
+        break;
      }
 }
 
@@ -471,7 +469,7 @@ calendar_face_cb_gmc_change(void *data, E_Gadman_Client * gmc,
 void
 calendar_face_menu_new(Calendar_Face * face, Calendar * calendar)
 {
-   E_Menu_Item        *mi;
+   E_Menu_Item *mi;
 
    /* Setup Menus */
    face->menu = e_menu_new();
@@ -495,7 +493,7 @@ calendar_face_menu_new(Calendar_Face * face, Calendar * calendar)
 void
 calendar_face_menu_day(day_face * face, Calendar * calendar)
 {
-   E_Menu_Item        *mi;
+   E_Menu_Item *mi;
 
    face->menu1 = e_menu_new();
    /* Main Menu Items */
@@ -533,7 +531,7 @@ calendar_face_menu_day(day_face * face, Calendar * calendar)
 void
 calendar_face_free(Calendar_Face * face)
 {
-   int                 i = 0;
+   int i = 0;
 
    for (; i < 35; i++)
      {

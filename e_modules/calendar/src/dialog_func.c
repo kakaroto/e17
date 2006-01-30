@@ -8,11 +8,12 @@
 / Purpose:  
 /
 *****************************************************/ 
-    void
-file_select_bk_dialog(void *data, E_Menu * m, E_Menu_Item * mi) 
+   void
+file_select_bk_dialog(void *data, E_Menu *m, E_Menu_Item *mi) 
 {
    
-Config * config;
+Config *config;
+
    
 config = data;
    
@@ -38,16 +39,17 @@ e_file_dialog_show(dia);
 / Purpose:  
 /
 *****************************************************/ 
-    void
+   void
 e_file_bk_select_cb(E_File_Dialog * dia, char *file, void *data) 
 {
    
-char              *ext;
+char *ext;
 
    
-Config * config;
+Config *config;
    
-Evas_Object * o;
+Evas_Object *o;
+
    
 
 ext = strrchr(file, '.');
@@ -67,9 +69,9 @@ return;
 }
    
 
-int               check = edje_object_file_set(o, PACKAGE_LIB_DIR 
-                                                    "/calendar/calendar.edj",
-                                                    
+int check = edje_object_file_set(o, PACKAGE_LIB_DIR 
+                                      "/calendar/calendar.edj",
+                                      
 "back");
 
    
@@ -78,7 +80,7 @@ if (check == 0)
      {
         
 e_error_dialog_show 
-            ("error", "This .edj doesn't meet the requirements \
+           ("error", "This .edj doesn't meet the requirements \
             for use with calendar -- please see the README \
 	     for more info.");
         
@@ -98,11 +100,12 @@ e_object_del(E_OBJECT(dia));
 / Purpose:  
 /
 *****************************************************/ 
-    void
-file_select_ti_dialog(void *data, E_Menu * m, E_Menu_Item * mi) 
+   void
+file_select_ti_dialog(void *data, E_Menu *m, E_Menu_Item *mi) 
 {
    
-Config * config;
+Config *config;
+
    
 config = data;
    
@@ -128,16 +131,17 @@ e_file_dialog_show(dia);
 / Purpose:  
 /
 *****************************************************/ 
-    void
+   void
 e_file_ti_select_cb(E_File_Dialog * dia, char *file, void *data) 
 {
    
-char              *ext;
+char *ext;
 
    
-Config * config;
+Config *config;
    
-Evas_Object * o;
+Evas_Object *o;
+
    
 
 ext = strrchr(file, '.');
@@ -157,9 +161,9 @@ return;
 }
    
 
-int               check = edje_object_file_set(o, PACKAGE_LIB_DIR 
-                                                    "/calendar/calendar.edj",
-                                                    
+int check = edje_object_file_set(o, PACKAGE_LIB_DIR 
+                                      "/calendar/calendar.edj",
+                                      
 "Jan");
 
    
@@ -168,7 +172,7 @@ if (check == 0)
      {
         
 e_error_dialog_show 
-            ("error!", "This .edj doesn't meet the requirements \
+           ("error!", "This .edj doesn't meet the requirements \
             for use with calendar -- please see the README \
 	     for more info.");
         
@@ -187,11 +191,12 @@ e_object_del(E_OBJECT(dia));
 / Purpose:  
 /
 *****************************************************/ 
-    void
-file_select_cf_dialog(void *data, E_Menu * m, E_Menu_Item * mi) 
+   void
+file_select_cf_dialog(void *data, E_Menu *m, E_Menu_Item *mi) 
 {
    
-Config * config;
+Config *config;
+
    
 config = data;
    
@@ -216,11 +221,12 @@ e_file_dialog_show(dia);
 / Purpose:  
 /
 *****************************************************/ 
-    void
+   void
 e_file_cf_select_cb(E_File_Dialog * dia, char *file, void *data) 
 {
    
-Config * config;
+Config *config;
+
    
 
 config->ConfigFile_path = (char *)evas_stringshare_add(file);
@@ -233,8 +239,8 @@ e_object_del(E_OBJECT(dia));
 / Purpose:  
 /
 *****************************************************/ 
-    void
-config_dialog(void *data, E_Menu * m, E_Menu_Item * mi) 
+   void
+config_dialog(void *data, E_Menu *m, E_Menu_Item *mi) 
 {
    
 Calendar * calendar;
@@ -249,8 +255,8 @@ e_int_config_calendar(m->zone->container, calendar);
 / Purpose:  
 /
 *****************************************************/ 
-    void
-add_event_dialog(void *data, E_Menu * m, E_Menu_Item * mi) 
+   void
+add_event_dialog(void *data, E_Menu *m, E_Menu_Item *mi) 
 {
    
 day_face * DayToFix;
@@ -265,73 +271,73 @@ add_event_show(m->zone->container, DayToFix);
 / Purpose:  
 /
 *****************************************************/ 
-    void
-add_todo_dialog(void *data, E_Menu * m, E_Menu_Item * mi) 
+   void
+add_todo_dialog(void *data, E_Menu *m, E_Menu_Item *mi) 
 {
    
 day_face * DayToFix;
    
 DayToFix = data;
    
-       //add_todo_show(m->zone->container,DayToFix); 
+      //add_todo_show(m->zone->container,DayToFix); 
 } 
 /***************************************************
 / Function: 
 / Purpose:  
 /
 *****************************************************/ 
-    void
-remove_event_dialog(void *data, E_Menu * m, E_Menu_Item * mi) 
+   void
+remove_event_dialog(void *data, E_Menu *m, E_Menu_Item *mi) 
 {
    
 day_face * DayToFix;
    
 DayToFix = data;
    
-       //font_edit_show(m->zone->container,FontToFix); 
+      //font_edit_show(m->zone->container,FontToFix); 
 } 
 /***************************************************
 / Function: 
 / Purpose:  
 /
 *****************************************************/ 
-    void
-remove_todo_dialog(void *data, E_Menu * m, E_Menu_Item * mi) 
+   void
+remove_todo_dialog(void *data, E_Menu *m, E_Menu_Item *mi) 
 {
    
 day_face * DayToFix;
    
 DayToFix = data;
    
-       //font_edit_show(m->zone->container,FontToFix); 
+      //font_edit_show(m->zone->container,FontToFix); 
 } 
 /***************************************************
 / Function: 
 / Purpose:  
 /
 *****************************************************/ 
-    void
-view_event_dialog(void *data, E_Menu * m, E_Menu_Item * mi) 
+   void
+view_event_dialog(void *data, E_Menu *m, E_Menu_Item *mi) 
 {
    
 day_face * DayToFix;
    
 DayToFix = data;
    
-       //font_edit_show(m->zone->container,FontToFix); 
+      //font_edit_show(m->zone->container,FontToFix); 
 } 
 /***************************************************
 / Function: 
 / Purpose:  
 /
 *****************************************************/ 
-    void
-view_todo_dialog(void *data, E_Menu * m, E_Menu_Item * mi) 
+   void
+view_todo_dialog(void *data, E_Menu *m, E_Menu_Item *mi) 
 {
    
 day_face * DayToFix;
    
 DayToFix = data;
    
-       //font_edit_show(m->zone->container,FontToFix); 
+      //font_edit_show(m->zone->container,FontToFix); 
 } 
