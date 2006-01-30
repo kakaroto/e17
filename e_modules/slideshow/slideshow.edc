@@ -1,0 +1,20 @@
+images {
+   image: "slideshow.png" COMP;
+}
+collections {
+group {
+   name: "modules/slideshow/main";
+   parts {
+      part {
+	 name: "eslide";
+	 description {
+	    state: "default" 0.0;
+	    image {
+	       normal: "slideshow.png";
+	    }
+
+	 }
+      }
+}
+}
+}
