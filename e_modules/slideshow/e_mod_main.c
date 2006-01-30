@@ -8,45 +8,43 @@
 #include "e_mod_config.h"
 #include "config.h"
 
-int                 idx, bg_id, bg_count;
-static int          slide_count;
-Ecore_List         *list;
+int idx, bg_id, bg_count;
+static int slide_count;
+Ecore_List *list;
 
-static Slide       *_slide_init(E_Module * m);
-static void         _slide_config_menu_new(Slide * e);
-static void         _slide_shutdown(Slide * e);
+static Slide *_slide_init(E_Module *m);
+static void _slide_config_menu_new(Slide *e);
+static void _slide_shutdown(Slide *e);
 
-static int          _slide_face_init(Slide_Face * sf);
-static void         _slide_face_free(Slide_Face * ef);
-static void         _slide_face_menu_new(Slide_Face * face);
-static void         _slide_face_enable(Slide_Face * face);
-static void         _slide_face_disable(Slide_Face * face);
-static void         _slide_face_cb_menu_edit(void *data, E_Menu * m,
-                                             E_Menu_Item * mi);
-static void         _slide_face_cb_menu_configure(void *data, E_Menu * m,
-                                                  E_Menu_Item * mi);
+static int _slide_face_init(Slide_Face *sf);
+static void _slide_face_free(Slide_Face *ef);
+static void _slide_face_menu_new(Slide_Face *face);
+static void _slide_face_enable(Slide_Face *face);
+static void _slide_face_disable(Slide_Face *face);
+static void _slide_face_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi);
+static void _slide_face_cb_menu_configure(void *data, E_Menu *m,
+                                          E_Menu_Item *mi);
 
-static void         _slide_face_cb_mouse_down(void *data, Evas * e,
-                                              Evas_Object * obj,
-                                              void *event_info);
-static void         _slide_face_cb_gmc_change(void *data, E_Gadman_Client * gmc,
-                                              E_Gadman_Change change);
+static void _slide_face_cb_mouse_down(void *data, Evas *e,
+                                      Evas_Object *obj, void *event_info);
+static void _slide_face_cb_gmc_change(void *data, E_Gadman_Client *gmc,
+                                      E_Gadman_Change change);
 
-static int          _slide_cb_check(void *data);
+static int _slide_cb_check(void *data);
 
-static void         get_bg_count();
-static void         _set_bg(char *bg, Slide_Face * sf);
+static void get_bg_count();
+static void _set_bg(char *bg, Slide_Face *sf);
 
 /* public module routines. all modules must have these */
-EAPI E_Module_Api   e_modapi = {
+EAPI E_Module_Api e_modapi = {
    E_MODULE_API_VERSION,
    "Slideshow"
 };
 
-EAPI void          *
-e_modapi_init(E_Module * m)
+EAPI void *
+e_modapi_init(E_Module *m)
 {
-   Slide              *e;
+   Slide *e;
 
    /* actually init slide */
    e = _slide_init(m);
@@ -54,7 +52,7 @@ e_modapi_init(E_Module * m)
 
    if (!e->display)
      {
-        char               *tmp = getenv("DISPLAY");
+        char *tmp = getenv("DISPLAY");
 
         if (tmp)
            e->display = strdup(tmp);
@@ -63,8 +61,8 @@ e_modapi_init(E_Module * m)
    /* make sure the display var is of the form name:0.0 or :0.0 */
    if (e->display)
      {
-        char               *p;
-        char                buf[1024];
+        char *p;
+        char buf[1024];
 
         p = strrchr(e->display, ':');
         if (!p)
@@ -97,9 +95,9 @@ e_modapi_init(E_Module * m)
 }
 
 EAPI int
-e_modapi_shutdown(E_Module * m)
+e_modapi_shutdown(E_Module *m)
 {
-   Slide              *s;
+   Slide *s;
 
    s = m->data;
    if (s)
@@ -123,9 +121,9 @@ e_modapi_shutdown(E_Module * m)
 }
 
 EAPI int
-e_modapi_save(E_Module * m)
+e_modapi_save(E_Module *m)
 {
-   Slide              *e;
+   Slide *e;
 
    e = m->data;
    if (e)
@@ -134,14 +132,14 @@ e_modapi_save(E_Module * m)
 }
 
 EAPI int
-e_modapi_info(E_Module * m)
+e_modapi_info(E_Module *m)
 {
    m->icon_file = strdup(PACKAGE_DATA_DIR "/module_icon.png");
    return 1;
 }
 
 EAPI int
-e_modapi_about(E_Module * m)
+e_modapi_about(E_Module *m)
 {
    e_module_dialog_show(_("Enlightenment Slide Show Module"),
                         ("This module is VERY simple and is used to cycle desktop backgrounds"));
@@ -149,10 +147,10 @@ e_modapi_about(E_Module * m)
 }
 
 EAPI int
-e_modapi_config(E_Module * m)
+e_modapi_config(E_Module *m)
 {
-   Slide              *s;
-   E_Container        *con;
+   Slide *s;
+   E_Container *con;
 
    s = m->data;
    if (!s)
@@ -168,14 +166,15 @@ e_modapi_config(E_Module * m)
 
 /* Begin Private Routines */
 
-static Slide       *
-_slide_init(E_Module * m)
+static Slide *
+_slide_init(E_Module *m)
 {
-   Slide              *e;
-   E_Menu_Item        *mi;
-   Evas_List          *managers, *l, *l2;
+   Slide *e;
+   E_Menu_Item *mi;
+   Evas_List *managers, *l, *l2;
 
    e = E_NEW(Slide, 1);
+
    if (!e)
       return NULL;
 
@@ -194,6 +193,7 @@ _slide_init(E_Module * m)
    if (!e->conf)
      {
         e->conf = E_NEW(Config, 1);
+
 #ifdef WANT_OSIRIS
         e->conf->theme = (char *)evas_stringshare_add("");
 #endif
@@ -209,20 +209,21 @@ _slide_init(E_Module * m)
    managers = e_manager_list();
    for (l = managers; l; l = l->next)
      {
-        E_Manager          *man;
+        E_Manager *man;
 
         man = l->data;
         for (l2 = man->containers; l2; l2 = l2->next)
           {
-             E_Container        *con;
-             Slide_Face         *ef;
+             E_Container *con;
+             Slide_Face *ef;
 
              con = l2->data;
              ef = E_NEW(Slide_Face, 1);
+
              if (ef)
                {
                   ef->conf_face_edd =
-                      E_CONFIG_DD_NEW("Slide_Config_Face", Config_Face);
+                     E_CONFIG_DD_NEW("Slide_Config_Face", Config_Face);
 #undef T
 #undef D
 #define T Config_Face
@@ -235,6 +236,7 @@ _slide_init(E_Module * m)
                   ef->evas = con->bg_evas;
 
                   ef->conf = E_NEW(Config_Face, 1);
+
                   ef->conf->enabled = 1;
 
                   if (!_slide_face_init(ef))
@@ -270,7 +272,7 @@ _slide_init(E_Module * m)
 }
 
 static void
-_slide_shutdown(Slide * e)
+_slide_shutdown(Slide *e)
 {
    if (list)
       ecore_list_destroy(list);
@@ -291,19 +293,19 @@ _slide_shutdown(Slide * e)
 }
 
 static void
-_slide_config_menu_new(Slide * e)
+_slide_config_menu_new(Slide *e)
 {
-   E_Menu             *mn;
+   E_Menu *mn;
 
    mn = e_menu_new();
    e->config_menu = mn;
 }
 
 static int
-_slide_face_init(Slide_Face * sf)
+_slide_face_init(Slide_Face *sf)
 {
-   Evas_Object        *o;
-   char                buff[4096];
+   Evas_Object *o;
+   char buff[4096];
 
    evas_event_freeze(sf->evas);
    o = edje_object_add(sf->evas);
@@ -343,7 +345,7 @@ _slide_face_init(Slide_Face * sf)
 }
 
 static void
-_slide_face_free(Slide_Face * ef)
+_slide_face_free(Slide_Face *ef)
 {
    if (ef->menu)
       e_object_del(E_OBJECT(ef->menu));
@@ -362,10 +364,10 @@ _slide_face_free(Slide_Face * ef)
 }
 
 static void
-_slide_face_menu_new(Slide_Face * face)
+_slide_face_menu_new(Slide_Face *face)
 {
-   E_Menu             *mn;
-   E_Menu_Item        *mi;
+   E_Menu *mn;
+   E_Menu_Item *mi;
 
    mn = e_menu_new();
    face->menu = mn;
@@ -380,7 +382,7 @@ _slide_face_menu_new(Slide_Face * face)
 }
 
 static void
-_slide_face_enable(Slide_Face * face)
+_slide_face_enable(Slide_Face *face)
 {
    face->conf->enabled = 1;
    e_config_save_queue();
@@ -398,15 +400,15 @@ _slide_face_enable(Slide_Face * face)
              else
                {
                   face->slide->cycle_timer =
-                      ecore_timer_del(face->slide->cycle_timer);
+                     ecore_timer_del(face->slide->cycle_timer);
                   face->slide->cycle_timer = NULL;
                }
           }
         else
           {
              face->slide->cycle_timer =
-                 ecore_timer_add(face->slide->conf->cycle_time, _slide_cb_check,
-                                 face);
+                ecore_timer_add(face->slide->conf->cycle_time, _slide_cb_check,
+                                face);
           }
      }
    else
@@ -414,14 +416,14 @@ _slide_face_enable(Slide_Face * face)
         if (face->slide->cycle_timer)
           {
              face->slide->cycle_timer =
-                 ecore_timer_del(face->slide->cycle_timer);
+                ecore_timer_del(face->slide->cycle_timer);
              face->slide->cycle_timer = NULL;
           }
      }
 }
 
 static void
-_slide_face_disable(Slide_Face * face)
+_slide_face_disable(Slide_Face *face)
 {
    face->conf->enabled = 0;
    e_config_save_queue();
@@ -435,40 +437,40 @@ _slide_face_disable(Slide_Face * face)
 }
 
 static void
-_slide_face_cb_gmc_change(void *data, E_Gadman_Client * gmc,
+_slide_face_cb_gmc_change(void *data, E_Gadman_Client *gmc,
                           E_Gadman_Change change)
 {
-   Slide_Face         *ef;
-   Evas_Coord          x, y, w, h;
+   Slide_Face *ef;
+   Evas_Coord x, y, w, h;
 
    ef = data;
    switch (change)
      {
-       case E_GADMAN_CHANGE_MOVE_RESIZE:
-          e_gadman_client_geometry_get(ef->gmc, &x, &y, &w, &h);
-          evas_object_move(ef->slide_object, x, y);
-          evas_object_move(ef->event_object, x, y);
-          evas_object_resize(ef->slide_object, w, h);
-          evas_object_resize(ef->event_object, w, h);
-          break;
-       case E_GADMAN_CHANGE_RAISE:
-          evas_object_raise(ef->slide_object);
-          evas_object_raise(ef->event_object);
-          break;
-       case E_GADMAN_CHANGE_ZONE:
-          break;
-       case E_GADMAN_CHANGE_EDGE:
-          break;
+     case E_GADMAN_CHANGE_MOVE_RESIZE:
+        e_gadman_client_geometry_get(ef->gmc, &x, &y, &w, &h);
+        evas_object_move(ef->slide_object, x, y);
+        evas_object_move(ef->event_object, x, y);
+        evas_object_resize(ef->slide_object, w, h);
+        evas_object_resize(ef->event_object, w, h);
+        break;
+     case E_GADMAN_CHANGE_RAISE:
+        evas_object_raise(ef->slide_object);
+        evas_object_raise(ef->event_object);
+        break;
+     case E_GADMAN_CHANGE_ZONE:
+        break;
+     case E_GADMAN_CHANGE_EDGE:
+        break;
      }
 }
 
 static void
-_slide_face_cb_mouse_down(void *data, Evas * e, Evas_Object * obj,
+_slide_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
                           void *event_info)
 {
    Evas_Event_Mouse_Down *ev;
-   Slide_Face         *ef;
-   Slide              *es;
+   Slide_Face *ef;
+   Slide *es;
 
    ev = event_info;
    ef = data;
@@ -476,7 +478,7 @@ _slide_face_cb_mouse_down(void *data, Evas * e, Evas_Object * obj,
 
    if (ev->button == 3)
      {
-        E_Zone             *zone;
+        E_Zone *zone;
 
         zone = e_zone_current_get(ef->con);
         e_menu_activate_mouse(ef->menu, zone, ev->output.x, ev->output.y, 1, 1,
@@ -495,7 +497,7 @@ _slide_face_cb_mouse_down(void *data, Evas * e, Evas_Object * obj,
         else
           {
              es->cycle_timer =
-                 ecore_timer_add(es->conf->cycle_time, _slide_cb_check, ef);
+                ecore_timer_add(es->conf->cycle_time, _slide_cb_check, ef);
           }
      }
    else if (ev->button == 1)
@@ -507,11 +509,11 @@ _slide_face_cb_mouse_down(void *data, Evas * e, Evas_Object * obj,
 static int
 _slide_cb_check(void *data)
 {
-   char               *bg;
-   Slide_Face         *ef = data;
+   char *bg;
+   Slide_Face *ef = data;
 
 #ifdef WANT_OSIRIS
-   Slide              *e;
+   Slide *e;
 
    e = ef->slide;
    get_bg_count(e->conf->theme);
@@ -548,9 +550,9 @@ _slide_cb_check(void *data)
 }
 
 static void
-_slide_face_cb_menu_edit(void *data, E_Menu * m, E_Menu_Item * mi)
+_slide_face_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi)
 {
-   Slide_Face         *face;
+   Slide_Face *face;
 
    face = data;
    e_gadman_mode_set(face->gmc->gadman, E_GADMAN_MODE_EDIT);
@@ -559,9 +561,9 @@ _slide_face_cb_menu_edit(void *data, E_Menu * m, E_Menu_Item * mi)
 static void
 get_bg_count(char *name)
 {
-   char               *list_item;
-   char               *home;
-   char                buffer[PATH_MAX];
+   char *list_item;
+   char *home;
+   char buffer[PATH_MAX];
 
    home = e_user_homedir_get();
 #ifdef WANT_OSIRIS
@@ -584,15 +586,15 @@ get_bg_count(char *name)
 }
 
 static void
-_set_bg(char *bg, Slide_Face * sf)
+_set_bg(char *bg, Slide_Face *sf)
 {
-   char                buffer[4096];
-   char               *home;
+   char buffer[4096];
+   char *home;
 
    home = e_user_homedir_get();
 
 #ifdef WANT_OSIRIS
-   Slide              *e;
+   Slide *e;
 
    e = sf->slide;
    if (e->conf->theme == NULL)
@@ -613,9 +615,9 @@ _set_bg(char *bg, Slide_Face * sf)
 }
 
 static void
-_slide_face_cb_menu_configure(void *data, E_Menu * m, E_Menu_Item * mi)
+_slide_face_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi)
 {
-   Slide_Face         *sf;
+   Slide_Face *sf;
 
    sf = data;
    if (!sf)
@@ -626,7 +628,7 @@ _slide_face_cb_menu_configure(void *data, E_Menu * m, E_Menu_Item * mi)
 void
 _slide_cb_config_updated(void *data)
 {
-   Slide              *s;
+   Slide *s;
 
    s = data;
    if (s->conf->disable_timer == 1)
@@ -656,7 +658,7 @@ _slide_cb_config_updated(void *data)
         else
           {
              s->cycle_timer =
-                 ecore_timer_add(s->conf->cycle_time, _slide_cb_check, s->face);
+                ecore_timer_add(s->conf->cycle_time, _slide_cb_check, s->face);
           }
      }
 }

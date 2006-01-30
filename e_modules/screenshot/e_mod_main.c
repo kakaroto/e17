@@ -14,42 +14,39 @@
 #include "e_mod_config.h"
 #include "config.h"
 
-static int          screen_count;
+static int screen_count;
 static Ecore_Event_Handler *_screen_exe_exit_handler = NULL;
 
-static Screen      *_screen_init(E_Module * m);
-static void         _screen_config_menu_new(Screen * e);
-static void         _screen_shutdown(Screen * e);
-static int          _screen_exe_cb_exit(void *data, int type, void *event);
-static int          _screen_face_init(Screen_Face * sf);
-static void         _screen_face_free(Screen_Face * ef);
-static void         _screen_face_menu_new(Screen_Face * face);
-static void         _screen_face_enable(Screen_Face * face);
-static void         _screen_face_disable(Screen_Face * face);
-static void         _screen_face_cb_menu_edit(void *data, E_Menu * m,
-                                              E_Menu_Item * mi);
-static void         _screen_face_cb_mouse_down(void *data, Evas * e,
-                                               Evas_Object * obj,
-                                               void *event_info);
-static void         _screen_face_cb_gmc_change(void *data,
-                                               E_Gadman_Client * gmc,
-                                               E_Gadman_Change change);
-static void         _screen_menu_cb_configure(void *data, E_Menu * m,
-                                              E_Menu_Item * mi);
+static Screen *_screen_init(E_Module *m);
+static void _screen_config_menu_new(Screen *e);
+static void _screen_shutdown(Screen *e);
+static int _screen_exe_cb_exit(void *data, int type, void *event);
+static int _screen_face_init(Screen_Face *sf);
+static void _screen_face_free(Screen_Face *ef);
+static void _screen_face_menu_new(Screen_Face *face);
+static void _screen_face_enable(Screen_Face *face);
+static void _screen_face_disable(Screen_Face *face);
+static void _screen_face_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi);
+static void _screen_face_cb_mouse_down(void *data, Evas *e,
+                                       Evas_Object *obj, void *event_info);
+static void _screen_face_cb_gmc_change(void *data,
+                                       E_Gadman_Client *gmc,
+                                       E_Gadman_Change change);
+static void _screen_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 
-char               *get_options(char **opt);
-char               *get_filename(Config * conf);
+char *get_options(char **opt);
+char *get_filename(Config *conf);
 
 /* public module routines. all modules must have these */
-EAPI E_Module_Api   e_modapi = {
+EAPI E_Module_Api e_modapi = {
    E_MODULE_API_VERSION,
    "Screenshot"
 };
 
-EAPI void          *
-e_modapi_init(E_Module * m)
+EAPI void *
+e_modapi_init(E_Module *m)
 {
-   Screen             *e;
+   Screen *e;
 
    /* actually init screen */
    e = _screen_init(m);
@@ -59,9 +56,9 @@ e_modapi_init(E_Module * m)
 }
 
 EAPI int
-e_modapi_shutdown(E_Module * m)
+e_modapi_shutdown(E_Module *m)
 {
-   Screen             *s;
+   Screen *s;
 
    s = m->data;
    if (s)
@@ -83,9 +80,9 @@ e_modapi_shutdown(E_Module * m)
 }
 
 EAPI int
-e_modapi_save(E_Module * m)
+e_modapi_save(E_Module *m)
 {
-   Screen             *e;
+   Screen *e;
 
    e = m->data;
    if (e)
@@ -95,14 +92,14 @@ e_modapi_save(E_Module * m)
 }
 
 EAPI int
-e_modapi_info(E_Module * m)
+e_modapi_info(E_Module *m)
 {
    m->icon_file = strdup(PACKAGE_DATA_DIR "/module_icon.png");
    return 1;
 }
 
 EAPI int
-e_modapi_about(E_Module * m)
+e_modapi_about(E_Module *m)
 {
    e_module_dialog_show(_("Enlightenment Screenshot Module"),
                         ("This module is used to take screenshots"));
@@ -110,10 +107,10 @@ e_modapi_about(E_Module * m)
 }
 
 EAPI int
-e_modapi_config(E_Module * m)
+e_modapi_config(E_Module *m)
 {
-   Screen             *s;
-   E_Container        *con;
+   Screen *s;
+   E_Container *con;
 
    s = m->data;
    if (!s)
@@ -126,14 +123,15 @@ e_modapi_config(E_Module * m)
    return 1;
 }
 
-static Screen      *
-_screen_init(E_Module * m)
+static Screen *
+_screen_init(E_Module *m)
 {
-   Screen             *e;
-   E_Menu_Item        *mi;
-   Evas_List          *managers, *l, *l2;
+   Screen *e;
+   E_Menu_Item *mi;
+   Evas_List *managers, *l, *l2;
 
    e = E_NEW(Screen, 1);
+
    if (!e)
       return NULL;
 
@@ -166,6 +164,7 @@ _screen_init(E_Module * m)
    if (!e->conf)
      {
         e->conf = E_NEW(Config, 1);
+
         e->conf->delay_time = 60;
 #ifdef HAVE_IMPORT
 # ifdef HAVE_SCROT
@@ -210,20 +209,21 @@ _screen_init(E_Module * m)
    managers = e_manager_list();
    for (l = managers; l; l = l->next)
      {
-        E_Manager          *man;
+        E_Manager *man;
 
         man = l->data;
         for (l2 = man->containers; l2; l2 = l2->next)
           {
-             E_Container        *con;
-             Screen_Face        *ef;
+             E_Container *con;
+             Screen_Face *ef;
 
              con = l2->data;
              ef = E_NEW(Screen_Face, 1);
+
              if (ef)
                {
                   ef->conf_face_edd =
-                      E_CONFIG_DD_NEW("Screen_Config_Face", Config_Face);
+                     E_CONFIG_DD_NEW("Screen_Config_Face", Config_Face);
 #undef T
 #undef D
 #define T Config_Face
@@ -236,6 +236,7 @@ _screen_init(E_Module * m)
                   ef->evas = con->bg_evas;
 
                   ef->conf = E_NEW(Config_Face, 1);
+
                   ef->conf->enabled = 1;
 
                   if (!_screen_face_init(ef))
@@ -269,7 +270,7 @@ _screen_init(E_Module * m)
 }
 
 static void
-_screen_shutdown(Screen * e)
+_screen_shutdown(Screen *e)
 {
    _screen_face_free(e->face);
 
@@ -284,19 +285,19 @@ _screen_shutdown(Screen * e)
 }
 
 static void
-_screen_config_menu_new(Screen * e)
+_screen_config_menu_new(Screen *e)
 {
-   E_Menu             *mn;
+   E_Menu *mn;
 
    mn = e_menu_new();
    e->config_menu = mn;
 }
 
 static int
-_screen_face_init(Screen_Face * sf)
+_screen_face_init(Screen_Face *sf)
 {
-   Evas_Object        *o;
-   char                buff[4096];
+   Evas_Object *o;
+   char buff[4096];
 
    evas_event_freeze(sf->evas);
    o = edje_object_add(sf->evas);
@@ -338,7 +339,7 @@ _screen_face_init(Screen_Face * sf)
 }
 
 static void
-_screen_face_free(Screen_Face * ef)
+_screen_face_free(Screen_Face *ef)
 {
    if (ef->menu)
       e_object_del(E_OBJECT(ef->menu));
@@ -357,10 +358,10 @@ _screen_face_free(Screen_Face * ef)
 }
 
 static void
-_screen_face_menu_new(Screen_Face * face)
+_screen_face_menu_new(Screen_Face *face)
 {
-   E_Menu             *mn;
-   E_Menu_Item        *mi;
+   E_Menu *mn;
+   E_Menu_Item *mi;
 
    mn = e_menu_new();
    face->menu = mn;
@@ -376,7 +377,7 @@ _screen_face_menu_new(Screen_Face * face)
 }
 
 static void
-_screen_face_enable(Screen_Face * face)
+_screen_face_enable(Screen_Face *face)
 {
    face->conf->enabled = 1;
    e_config_save_queue();
@@ -385,7 +386,7 @@ _screen_face_enable(Screen_Face * face)
 }
 
 static void
-_screen_face_disable(Screen_Face * face)
+_screen_face_disable(Screen_Face *face)
 {
    face->conf->enabled = 0;
    e_config_save_queue();
@@ -394,46 +395,45 @@ _screen_face_disable(Screen_Face * face)
 }
 
 static void
-_screen_face_cb_gmc_change(void *data, E_Gadman_Client * gmc,
+_screen_face_cb_gmc_change(void *data, E_Gadman_Client *gmc,
                            E_Gadman_Change change)
 {
-   Screen_Face        *ef;
-   Evas_Coord          x, y, w, h;
+   Screen_Face *ef;
+   Evas_Coord x, y, w, h;
 
    ef = data;
    switch (change)
      {
-       case E_GADMAN_CHANGE_MOVE_RESIZE:
-          e_gadman_client_geometry_get(ef->gmc, &x, &y, &w, &h);
-          evas_object_move(ef->screen_object, x, y);
-          evas_object_move(ef->event_object, x, y);
-          evas_object_resize(ef->screen_object, w, h);
-          evas_object_resize(ef->event_object, w, h);
-          break;
-       case E_GADMAN_CHANGE_RAISE:
-          evas_object_raise(ef->screen_object);
-          evas_object_raise(ef->event_object);
-          break;
-       case E_GADMAN_CHANGE_EDGE:
-          break;
-       case E_GADMAN_CHANGE_ZONE:
-          break;
+     case E_GADMAN_CHANGE_MOVE_RESIZE:
+        e_gadman_client_geometry_get(ef->gmc, &x, &y, &w, &h);
+        evas_object_move(ef->screen_object, x, y);
+        evas_object_move(ef->event_object, x, y);
+        evas_object_resize(ef->screen_object, w, h);
+        evas_object_resize(ef->event_object, w, h);
+        break;
+     case E_GADMAN_CHANGE_RAISE:
+        evas_object_raise(ef->screen_object);
+        evas_object_raise(ef->event_object);
+        break;
+     case E_GADMAN_CHANGE_EDGE:
+        break;
+     case E_GADMAN_CHANGE_ZONE:
+        break;
      }
 }
 
 static void
-_screen_face_cb_mouse_down(void *data, Evas * e, Evas_Object * obj,
+_screen_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
                            void *event_info)
 {
-   Ecore_Exe          *x;
+   Ecore_Exe *x;
    Evas_Event_Mouse_Down *ev;
    Edje_Message_Int_Set *msg;
-   Screen_Face        *ef;
-   char                buff[1024];
-   char               *opts[8] =
-       { '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0' };
-   char               *opt;
-   char               *f;
+   Screen_Face *ef;
+   char buff[1024];
+   char *opts[8] = { '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0' };
+   char *opt;
+   char *f;
 
    ev = event_info;
    ef = data;
@@ -484,8 +484,8 @@ _screen_face_cb_mouse_down(void *data, Evas * e, Evas_Object * obj,
                }
 
              _screen_exe_exit_handler =
-                 ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
-                                         _screen_exe_cb_exit, NULL);
+                ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
+                                        _screen_exe_cb_exit, NULL);
              x = ecore_exe_run(buff, ef);
           }
         else if (ef->screen->conf->use_scrot == 1)
@@ -514,8 +514,8 @@ _screen_face_cb_mouse_down(void *data, Evas * e, Evas_Object * obj,
                }
 
              _screen_exe_exit_handler =
-                 ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
-                                         _screen_exe_cb_exit, NULL);
+                ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
+                                        _screen_exe_cb_exit, NULL);
              x = ecore_exe_run(buff, ef);
           }
         else
@@ -529,19 +529,19 @@ _screen_face_cb_mouse_down(void *data, Evas * e, Evas_Object * obj,
 }
 
 static void
-_screen_face_cb_menu_edit(void *data, E_Menu * m, E_Menu_Item * mi)
+_screen_face_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi)
 {
-   Screen_Face        *face;
+   Screen_Face *face;
 
    face = data;
    e_gadman_mode_set(face->gmc->gadman, E_GADMAN_MODE_EDIT);
 }
 
-char               *
+char *
 get_options(char **opt)
 {
-   int                 i, j;
-   char                buff[1024];
+   int i, j;
+   char buff[1024];
 
    j = 0;
    for (i = 0; i <= 7; i++)
@@ -562,15 +562,15 @@ get_options(char **opt)
    return strdup(buff);
 }
 
-char               *
-get_filename(Config * conf)
+char *
+get_filename(Config *conf)
 {
-   char                buff[256];
-   time_t              t;
-   struct tm          *loctime;
-   Ecore_List         *fl = NULL;
-   int                 c = 0;
-   char               *file, *x;
+   char buff[256];
+   time_t t;
+   struct tm *loctime;
+   Ecore_List *fl = NULL;
+   int c = 0;
+   char *file, *x;
 
    /* Get Location */
    if (!conf->location)
@@ -640,8 +640,8 @@ static int
 _screen_exe_cb_exit(void *data, int type, void *event)
 {
    Ecore_Exe_Event_Del *ev;
-   Ecore_Exe          *x;
-   Screen_Face        *ef;
+   Ecore_Exe *x;
+   Screen_Face *ef;
 
    ev = event;
    if (!ev->exe)
@@ -657,13 +657,13 @@ _screen_exe_cb_exit(void *data, int type, void *event)
    ecore_event_handler_del(_screen_exe_exit_handler);
 
 #ifdef WANT_OSIRIS
-   char                buff[256], tmp[1024];
-   time_t              t;
-   struct tm          *loctime;
-   Ecore_List         *fl = NULL;
-   int                 c = 0;
-   char               *file, *z;
-   Config             *conf;
+   char buff[256], tmp[1024];
+   time_t t;
+   struct tm *loctime;
+   Ecore_List *fl = NULL;
+   int c = 0;
+   char *file, *z;
+   Config *conf;
 
    conf = ef->screen->conf;
 
@@ -719,9 +719,9 @@ _screen_exe_cb_exit(void *data, int type, void *event)
 }
 
 static void
-_screen_menu_cb_configure(void *data, E_Menu * m, E_Menu_Item * mi)
+_screen_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
 {
-   Screen_Face        *sf;
+   Screen_Face *sf;
 
    sf = data;
    if (!sf)

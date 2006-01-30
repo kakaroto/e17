@@ -37,4 +37,9 @@
 -T Mount_Box
 -T Mount_Icon
 -T Mount_Point
+-T Rain
+-T Screen
+-T Screen_Face
+-T Slide
+-T Slide_Face
 -T Snow

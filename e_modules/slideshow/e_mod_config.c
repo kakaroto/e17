@@ -5,33 +5,34 @@
 
 typedef struct _Cfg_File_Data Cfg_File_Data;
 
-struct _E_Config_Dialog_Data {
-   int                 disable_timer;
-   double              cycle_time;
+struct _E_Config_Dialog_Data
+{
+   int disable_timer;
+   double cycle_time;
 #ifdef WANT_OSIRIS
-   char               *theme;
+   char *theme;
 #endif
 };
 
-struct _Cfg_File_Data {
-   E_Config_Dialog    *cfd;
-   char               *file;
+struct _Cfg_File_Data
+{
+   E_Config_Dialog *cfd;
+   char *file;
 };
 
 /* Protos */
-static void        *_create_data(E_Config_Dialog * cfd);
-static void         _free_data(E_Config_Dialog * cfd,
-                               E_Config_Dialog_Data * cfdata);
-static Evas_Object *_basic_create_widgets(E_Config_Dialog * cfd, Evas * evas,
-                                          E_Config_Dialog_Data * cfdata);
-static int          _basic_apply_data(E_Config_Dialog * cfd,
-                                      E_Config_Dialog_Data * cfdata);
+static void *_create_data(E_Config_Dialog *cfd);
+static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas,
+                                          E_Config_Dialog_Data *cfdata);
+static int _basic_apply_data(E_Config_Dialog *cfd,
+                             E_Config_Dialog_Data *cfdata);
 
 /* Config Calls */
 void
-_config_slideshow_module(E_Container * con, Slide * s)
+_config_slideshow_module(E_Container *con, Slide *s)
 {
-   E_Config_Dialog    *cfd;
+   E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
 
    v = E_NEW(E_Config_Dialog_View, 1);
@@ -48,7 +49,7 @@ _config_slideshow_module(E_Container * con, Slide * s)
 }
 
 static void
-_fill_data(Slide * s, E_Config_Dialog_Data * cfdata)
+_fill_data(Slide *s, E_Config_Dialog_Data *cfdata)
 {
    cfdata->cycle_time = s->conf->cycle_time;
    cfdata->disable_timer = s->conf->disable_timer;
@@ -57,19 +58,20 @@ _fill_data(Slide * s, E_Config_Dialog_Data * cfdata)
 #endif
 }
 
-static void        *
-_create_data(E_Config_Dialog * cfd)
+static void *
+_create_data(E_Config_Dialog *cfd)
 {
    E_Config_Dialog_Data *cfdata;
 
    cfdata = E_NEW(E_Config_Dialog_Data, 1);
+
    return cfdata;
 }
 
 static void
-_free_data(E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
+_free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-   Slide              *s;
+   Slide *s;
 
    s = cfd->data;
    s->config_dialog = NULL;
@@ -78,11 +80,11 @@ _free_data(E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
 }
 
 static Evas_Object *
-_basic_create_widgets(E_Config_Dialog * cfd, Evas * evas,
-                      E_Config_Dialog_Data * cfdata)
+_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas,
+                      E_Config_Dialog_Data *cfdata)
 {
-   Evas_Object        *o, *ob, *of;
-   Slide              *s;
+   Evas_Object *o, *ob, *of;
+   Slide *s;
 
    s = cfd->data;
    _fill_data(s, cfdata);
@@ -112,9 +114,9 @@ _basic_create_widgets(E_Config_Dialog * cfd, Evas * evas,
 }
 
 static int
-_basic_apply_data(E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
+_basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-   Slide              *s;
+   Slide *s;
 
    s = cfd->data;
    /* Actually take our cfdata settings and apply them in real life */
