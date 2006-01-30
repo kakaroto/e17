@@ -909,7 +909,6 @@ ewl_container_child_add_call(Ewl_Container *c, Ewl_Widget *w)
 
 	if (c->child_add)
 		c->child_add(c, w);
-	ewl_widget_configure(EWL_WIDGET(c));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -931,7 +930,6 @@ ewl_container_child_remove_call(Ewl_Container *c, Ewl_Widget *w)
 
 	if (c->child_remove)
 		c->child_remove(c, w);
-	ewl_widget_configure(EWL_WIDGET(c));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
