@@ -55,7 +55,8 @@ ewl_tree2_init(Ewl_Tree2 *tree)
 
 /**
  */
-Ewl_Model *ewl_model_new(void)
+Ewl_Model *
+ewl_model_new(void)
 {
 	Ewl_Model *model;
 
@@ -70,7 +71,8 @@ Ewl_Model *ewl_model_new(void)
 
 /**
  */
-int ewl_model_init(Ewl_Model *model)
+int
+ewl_model_init(Ewl_Model *model)
 {
 	DENTER_FUNCTION(DLEVEL_UNSTABLE);
 	DCHECK_PARAM_PTR_RET("model", model, FALSE);
