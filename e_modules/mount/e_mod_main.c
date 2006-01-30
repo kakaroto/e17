@@ -56,6 +56,10 @@ e_modapi_init(E_Module *m)
 {
    Mount *mnt;
 
+   /* Set up module's message catalogue */
+   bindtextdomain(PACKAGE, LOCALEDIR);
+   bind_textdomain_codeset(PACKAGE, "UTF-8");
+
    mnt = _mount_new(m);
    m->config_menu = mnt->config_menu;
    return mnt;
@@ -107,8 +111,8 @@ e_modapi_info(E_Module *m)
 EAPI int
 e_modapi_about(E_Module *m)
 {
-   e_module_dialog_show(_("Enlightenment Mount Module"),
-			_("This is a mount module to mount/unmount devices."));
+   e_module_dialog_show(D_("Enlightenment Mount Module"),
+			D_("This is a mount module to mount/unmount devices."));
    return 1;
 }
 
@@ -144,7 +148,7 @@ _parse_fstab(Mount *mnt)
 
    if ((f = fopen(FSTAB, "r")) == NULL)
      {
-	e_module_dialog_show(_("Mount Module"), _("Cannot Parse fstab"));
+	e_module_dialog_show(D_("Mount Module"), D_("Cannot Parse fstab"));
 	return;
      }
 
@@ -1103,23 +1107,23 @@ _mount_exe_cb_exit(void *data, int type, void *event)
      {
 	if (mounted)
 	  {
-	     e_module_dialog_show(_("Mount Module"),
-				  _("Unmount Failed !!<br>Perhaps this device is in use or is not mounted."));
+	     e_module_dialog_show(D_("Mount Module"),
+				  D_("Unmount Failed !!<br>Perhaps this device is in use or is not mounted."));
 	  }
      }
    else if (!strcmp(tag, "Mount"))
      {
 	if (!mounted)
 	  {
-	     e_module_dialog_show(_("Mount Module"),
-				  _("Mount Failed !!<br>Please check that media is inserted"));
+	     e_module_dialog_show(D_("Mount Module"),
+				  D_("Mount Failed !!<br>Please check that media is inserted"));
 	  }
      }
    else if (!strcmp(tag, "Eject"))
      {
 	if (mounted)
 	  {
-	     e_module_dialog_show(_("Mount Module"), _("Eject Failed !!"));
+	     e_module_dialog_show(D_("Mount Module"), D_("Eject Failed !!"));
 	  }
      }
    return 0;   

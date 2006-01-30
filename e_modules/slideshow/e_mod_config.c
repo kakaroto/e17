@@ -42,7 +42,7 @@ _config_slideshow_module(E_Container *con, Slide *s)
    v->basic.create_widgets    = _basic_create_widgets;
 
    /* create config diaolg */
-   cfd = e_config_dialog_new(con, _("Slideshow Configuration"), NULL, 0, v, s);
+   cfd = e_config_dialog_new(con, D_("Slideshow Configuration"), NULL, 0, v, s);
    s->config_dialog = cfd;
 }
 
@@ -86,19 +86,19 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    _fill_data(s, cfdata);
    
    o = e_widget_list_add(evas, 0, 0);
-   of = e_widget_framelist_add(evas, _("Cycle Time"), 0);
-   ob = e_widget_check_add(evas, _("Disable Timer"), &(cfdata->disable_timer));
+   of = e_widget_framelist_add(evas, D_("Cycle Time"), 0);
+   ob = e_widget_check_add(evas, D_("Disable Timer"), &(cfdata->disable_timer));
    e_widget_framelist_object_append(of, ob);   
-   ob = e_widget_slider_add(evas, 1, 0, _("%3.0f seconds"), 5.0, 600.0, 1.0, 0, &(cfdata->cycle_time), NULL, 200);
+   ob = e_widget_slider_add(evas, 1, 0, D_("%3.0f seconds"), 5.0, 600.0, 1.0, 0, &(cfdata->cycle_time), NULL, 200);
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
    
    #ifdef WANT_OSIRIS
-   of = e_widget_framelist_add(evas, _("Theme"), 0);
+   of = e_widget_framelist_add(evas, D_("Theme"), 0);
    ot = e_widget_table_add(evas, 1);
-   ob = e_widget_label_add(evas, _("Sub-directory to use for backgrounds"));
+   ob = e_widget_label_add(evas, D_("Sub-directory to use for backgrounds"));
    e_widget_table_object_append(ot, ob, 0, 0, 1, 1, 0, 0, 1, 0);
-   ob = e_widget_label_add(evas, _("Leave blank for none"));
+   ob = e_widget_label_add(evas, D_("Leave blank for none"));
    e_widget_table_object_append(ot, ob, 0, 1, 1, 1, 0, 0, 1, 0);
    ob = e_widget_entry_add(evas, &cfdata->theme);
    e_widget_table_object_append(ot, ob, 0, 2, 1, 1, 1, 0, 1, 0);

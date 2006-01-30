@@ -54,6 +54,10 @@ EAPI void *
 e_modapi_init(E_Module *module)
 {
    Monitor *monitor;
+
+   /* Set up module's message catalogue */
+   bindtextdomain(PACKAGE, LOCALEDIR);
+   bind_textdomain_codeset(PACKAGE, "UTF-8");
    
    /* actually init buttons */
    monitor = _monitor_new();
@@ -96,8 +100,8 @@ e_modapi_info(E_Module *module)
 EAPI int
 e_modapi_about(E_Module *module)
 {
-   e_module_dialog_show(_("Enlightenment Monitor Module"),
-		       _("A simple module to give E17 a usage monitor for some resources."));
+   e_module_dialog_show(D_("Enlightenment Monitor Module"),
+		       D_("A simple module to give E17 a usage monitor for some resources."));
    return 1;
 }
 

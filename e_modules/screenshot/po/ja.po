@@ -1,0 +1,97 @@
+# SOME DESCRIPTIVE TITLE.
+# This file is put in the public domain.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-01-27 00:40+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: e_mod_config.c:78
+msgid "Screenshot Configuration"
+msgstr "スクリーンショット設定"
+
+#: e_mod_config.c:169 e_mod_config.c:289
+msgid "Use Import"
+msgstr ""
+
+#: e_mod_config.c:171 e_mod_config.c:291
+msgid "Use Scrot"
+msgstr ""
+
+#: e_mod_config.c:178 e_mod_config.c:299
+msgid "Delay Time:"
+msgstr ""
+
+#: e_mod_config.c:187 e_mod_config.c:308
+msgid "File Settings"
+msgstr ""
+
+#: e_mod_config.c:190 e_mod_config.c:311
+msgid "Save Directory:"
+msgstr ""
+
+#: e_mod_config.c:196 e_mod_config.c:317
+msgid "Filename (minus extension):"
+msgstr ""
+
+#: e_mod_config.c:202 e_mod_config.c:323
+#, c-format
+msgid "Example: screenshot%d = screenshot1, screenshot2, etc..."
+msgstr ""
+
+#: e_mod_config.c:330
+msgid "Import Options"
+msgstr ""
+
+#: e_mod_config.c:331 e_mod_config.c:347
+msgid "Include Image Border"
+msgstr ""
+
+#: e_mod_config.c:333
+msgid "Use Image Dithering"
+msgstr ""
+
+#: e_mod_config.c:335
+msgid "Include Window Manager Frame"
+msgstr ""
+
+#: e_mod_config.c:337
+msgid "Choose Window To Grab"
+msgstr ""
+
+#: e_mod_config.c:339
+msgid "Silent"
+msgstr ""
+
+#: e_mod_config.c:341
+msgid "Trim Edges"
+msgstr ""
+
+#: e_mod_config.c:346
+msgid "Scrot Options"
+msgstr ""
+
+#: e_mod_config.c:349
+msgid "Generate Thumbnail"
+msgstr ""
+
+#: e_mod_main.c:106 e_mod_main.c:493
+msgid "Enlightenment Screenshot Module"
+msgstr ""
+
+#: e_mod_main.c:107
+msgid "This module is used to take screenshots"
+msgstr ""
+
+#: e_mod_main.c:494
+msgid "Please Choose A Program To Use For Taking Screenshots."
+msgstr ""

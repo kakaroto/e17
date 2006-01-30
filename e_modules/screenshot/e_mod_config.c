@@ -75,7 +75,7 @@ _config_screenshot_module(E_Container *con, Screen *s)
    v->advanced.create_widgets = _advanced_create_widgets;
 
    /* create config diaolg */
-   cfd = e_config_dialog_new(con, _("Screenshot Configuration"), NULL, 0, v, s);
+   cfd = e_config_dialog_new(con, D_("Screenshot Configuration"), NULL, 0, v, s);
    s->config_dialog = cfd;
 }
 
@@ -166,16 +166,16 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 #ifdef HAVE_IMPORT
 # ifdef HAVE_SCROT
    rg = e_widget_radio_group_new(&(cfdata->method));
-   ob = e_widget_radio_add(evas, _("Use Import"), S_METHOD_IMPORT, rg);
+   ob = e_widget_radio_add(evas, D_("Use Import"), S_METHOD_IMPORT, rg);
    e_widget_table_object_append(ot, ob, 0, 0, 1, 1, 1, 0, 1, 0);
-   ob = e_widget_radio_add(evas, _("Use Scrot"), S_METHOD_SCROT, rg);
+   ob = e_widget_radio_add(evas, D_("Use Scrot"), S_METHOD_SCROT, rg);
    e_widget_table_object_append(ot, ob, 0, 1, 1, 1, 1, 0, 1, 0);
 # endif
 #else
    /* Dont need to add an option as we only have one to use */
 #endif
 
-   ob = e_widget_label_add(evas, _("Delay Time:"));
+   ob = e_widget_label_add(evas, D_("Delay Time:"));
    e_widget_table_object_append(ot, ob, 0, 2, 1, 1, 0, 0, 1, 0);
 
    ob = e_widget_slider_add(evas, 1, 0, _("%1.0f seconds"), 0.0, 60.0, 1.0, 0, &(cfdata->delay_time), NULL, 200);
@@ -184,22 +184,22 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    e_widget_framelist_object_append(of, ot);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-   of = e_widget_framelist_add(evas, _("File Settings"), 0);
+   of = e_widget_framelist_add(evas, D_("File Settings"), 0);
    ot = e_widget_table_add(evas, 1);
 
-   ob = e_widget_label_add(evas, _("Save Directory:"));
+   ob = e_widget_label_add(evas, D_("Save Directory:"));
    e_widget_table_object_append(ot, ob, 0, 0, 1, 1, 0, 0, 1, 0);
 
    ob = e_widget_entry_add(evas, &cfdata->location);
    e_widget_table_object_append(ot, ob, 1, 0, 1, 1, 1, 0, 1, 0);
 
-   ob = e_widget_label_add(evas, _("Filename (minus extension):"));
+   ob = e_widget_label_add(evas, D_("Filename (minus extension):"));
    e_widget_table_object_append(ot, ob, 0, 1, 1, 1, 0, 0, 1, 0);
 
    ob = e_widget_entry_add(evas, &cfdata->filename);
    e_widget_table_object_append(ot, ob, 1, 1, 1, 1, 1, 0, 1, 0);
 
-   ob = e_widget_label_add(evas, _("Example: screenshot%d = screenshot1, screenshot2, etc..."));
+   ob = e_widget_label_add(evas, D_("Example: screenshot%d = screenshot1, screenshot2, etc..."));
    e_widget_table_object_append(ot, ob, 0, 2, 2, 1, 0, 0, 1, 0);
 
    e_widget_framelist_object_append(of, ot);
@@ -286,9 +286,9 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 #ifdef HAVE_IMPORT
 # ifdef HAVE_SCROT
    rg = e_widget_radio_group_new(&(cfdata->method));
-   ob = e_widget_radio_add(evas, _("Use Import"), S_METHOD_IMPORT, rg);
+   ob = e_widget_radio_add(evas, D_("Use Import"), S_METHOD_IMPORT, rg);
    e_widget_table_object_append(ot, ob, 0, 0, 1, 1, 1, 0, 1, 0);
-   ob = e_widget_radio_add(evas, _("Use Scrot"), S_METHOD_SCROT, rg);
+   ob = e_widget_radio_add(evas, D_("Use Scrot"), S_METHOD_SCROT, rg);
    e_widget_table_object_append(ot, ob, 0, 1, 1, 1, 1, 0, 1, 0);
 
 # endif
@@ -296,7 +296,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    /* Dont need to add an option as we only have one to use */
 #endif
 
-   ob = e_widget_label_add(evas, _("Delay Time:"));
+   ob = e_widget_label_add(evas, D_("Delay Time:"));
    e_widget_table_object_append(ot, ob, 0, 2, 1, 1, 0, 0, 1, 0);
 
    ob = e_widget_slider_add(evas, 1, 0, _("%1.0f seconds"), 0.0, 60.0, 1.0, 0, &(cfdata->delay_time), NULL, 200);
@@ -305,48 +305,48 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    e_widget_framelist_object_append(of, ot);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-   of = e_widget_framelist_add(evas, _("File Settings"), 0);
+   of = e_widget_framelist_add(evas, D_("File Settings"), 0);
    ot = e_widget_table_add(evas, 1);
 
-   ob = e_widget_label_add(evas, _("Save Directory:"));
+   ob = e_widget_label_add(evas, D_("Save Directory:"));
    e_widget_table_object_append(ot, ob, 0, 0, 1, 1, 0, 0, 1, 0);
 
    ob = e_widget_entry_add(evas, &cfdata->location);
    e_widget_table_object_append(ot, ob, 1, 0, 1, 1, 1, 0, 1, 0);
 
-   ob = e_widget_label_add(evas, _("Filename (minus extension):"));
+   ob = e_widget_label_add(evas, D_("Filename (minus extension):"));
    e_widget_table_object_append(ot, ob, 0, 1, 1, 1, 0, 0, 1, 0);
 
    ob = e_widget_entry_add(evas, &cfdata->filename);
    e_widget_table_object_append(ot, ob, 1, 1, 1, 1, 1, 0, 1, 0);
 
-   ob = e_widget_label_add(evas, _("Example: screenshot%d = screenshot1, screenshot2, etc..."));
+   ob = e_widget_label_add(evas, D_("Example: screenshot%d = screenshot1, screenshot2, etc..."));
    e_widget_table_object_append(ot, ob, 0, 2, 2, 1, 0, 0, 1, 0);
 
    e_widget_framelist_object_append(of, ot);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
 #ifdef HAVE_IMPORT
-   of = e_widget_framelist_add(evas, _("Import Options"), 0);
-   ob = e_widget_check_add(evas, _("Include Image Border"), &(cfdata->import.use_img_border));
+   of = e_widget_framelist_add(evas, D_("Import Options"), 0);
+   ob = e_widget_check_add(evas, D_("Include Image Border"), &(cfdata->import.use_img_border));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_check_add(evas, _("Use Image Dithering"), &(cfdata->import.use_dither));
+   ob = e_widget_check_add(evas, D_("Use Image Dithering"), &(cfdata->import.use_dither));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_check_add(evas, _("Include Window Manager Frame"), &(cfdata->import.use_frame));
+   ob = e_widget_check_add(evas, D_("Include Window Manager Frame"), &(cfdata->import.use_frame));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_check_add(evas, _("Choose Window To Grab"), &(cfdata->import.use_window));
+   ob = e_widget_check_add(evas, D_("Choose Window To Grab"), &(cfdata->import.use_window));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_check_add(evas, _("Silent"), &(cfdata->import.use_silent));
+   ob = e_widget_check_add(evas, D_("Silent"), &(cfdata->import.use_silent));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_check_add(evas, _("Trim Edges"), &(cfdata->import.use_trim));
+   ob = e_widget_check_add(evas, D_("Trim Edges"), &(cfdata->import.use_trim));
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 #endif
 #ifdef HAVE_SCROT
-   of = e_widget_framelist_add(evas, _("Scrot Options"), 0);
-   ob = e_widget_check_add(evas, _("Include Image Border"), &(cfdata->scrot.use_img_border));
+   of = e_widget_framelist_add(evas, D_("Scrot Options"), 0);
+   ob = e_widget_check_add(evas, D_("Include Image Border"), &(cfdata->scrot.use_img_border));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_check_add(evas, _("Generate Thumbnail"), &(cfdata->scrot.use_thumb));
+   ob = e_widget_check_add(evas, D_("Generate Thumbnail"), &(cfdata->scrot.use_thumb));
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 #endif

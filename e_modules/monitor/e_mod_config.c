@@ -56,7 +56,7 @@ _config_monitor_module(E_Container *con, Monitor_Face *f)
    v->advanced.apply_cfdata   = _advanced_apply_data;
    v->advanced.create_widgets = _advanced_create_widgets;
    
-   cfd = e_config_dialog_new(con, _("Monitor Configuration"), NULL, 0, v, f);
+   cfd = e_config_dialog_new(con, D_("Monitor Configuration"), NULL, 0, v, f);
 }
 
 static void 
@@ -128,25 +128,25 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    mon = f->mon;
    
    o = e_widget_list_add(evas, 0, 0);
-   of = e_widget_framelist_add(evas, _("Select Sensors"), 0);
-   ob1 = e_widget_check_add(evas, _("CPU"), &(mon->conf->cpu));
+   of = e_widget_framelist_add(evas, D_("Select Sensors"), 0);
+   ob1 = e_widget_check_add(evas, D_("CPU"), &(mon->conf->cpu));
    e_widget_framelist_object_append(of, ob1);
-   ob2 = e_widget_check_add(evas, _("Memory"), &(mon->conf->mem));
+   ob2 = e_widget_check_add(evas, D_("Memory"), &(mon->conf->mem));
    e_widget_framelist_object_append(of, ob2);
-   ob3 = e_widget_check_add(evas, _("Network"), &(mon->conf->net));
+   ob3 = e_widget_check_add(evas, D_("Network"), &(mon->conf->net));
    e_widget_framelist_object_append(of, ob3);
-   ob4 = e_widget_check_add(evas, _("WLAN"), &(mon->conf->wlan));
+   ob4 = e_widget_check_add(evas, D_("WLAN"), &(mon->conf->wlan));
    e_widget_framelist_object_append(of, ob4);
-   ob5 = e_widget_check_add(evas, _("Hostname"), &(mon->conf->hostname));
+   ob5 = e_widget_check_add(evas, D_("Hostname"), &(mon->conf->hostname));
    e_widget_framelist_object_append(of, ob5);
-   ob6 = e_widget_check_add(evas, _("Uptime"), &(mon->conf->uptime));
+   ob6 = e_widget_check_add(evas, D_("Uptime"), &(mon->conf->uptime));
    e_widget_framelist_object_append(of, ob6);
-   ob7 = e_widget_check_add(evas, _("time"), &(mon->conf->time));
+   ob7 = e_widget_check_add(evas, D_("time"), &(mon->conf->time));
    e_widget_framelist_object_append(of, ob7);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-   of = e_widget_framelist_add(evas, _("Monitor"), 0);
-   ob = e_widget_check_add(evas, _("Horizontal"), &(mon->conf->Horz));
+   of = e_widget_framelist_add(evas, D_("Monitor"), 0);
+   ob = e_widget_check_add(evas, D_("Horizontal"), &(mon->conf->Horz));
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
@@ -175,18 +175,18 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    f = cfd->data;
  
    o = e_widget_list_add(evas, 0, 0);
-   of = e_widget_framelist_add(evas, _("Cpu"), 0);
+   of = e_widget_framelist_add(evas, D_("CPU"), 0);
    ob = e_widget_label_add(evas, _("Check Interval"));
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_slider_add(evas, 1, 0, _("%1.0f seconds"), 1.0, 60.0, 1.0, 0, &(f->conf->cpu_interval), NULL, 150);
    e_widget_framelist_object_append(of, ob);   
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-   of = e_widget_framelist_add(evas, _("Memory"), 0);
+   of = e_widget_framelist_add(evas, D_("Memory"), 0);
    ot = e_widget_table_add(evas, 0);
-   ob = e_widget_check_add(evas, _("Ignore Cached"), &(f->conf->mem_real_ignore_cached));
+   ob = e_widget_check_add(evas, D_("Ignore Cached"), &(f->conf->mem_real_ignore_cached));
    e_widget_table_object_append(ot, ob, 0, 0, 1, 1, 1, 0, 1, 0);
-   ob = e_widget_check_add(evas, _("Ignore Buffers"), &(f->conf->mem_real_ignore_buffers));
+   ob = e_widget_check_add(evas, D_("Ignore Buffers"), &(f->conf->mem_real_ignore_buffers));
    e_widget_table_object_append(ot, ob, 0, 1, 1, 1, 1, 0, 1, 0);
    ob = e_widget_label_add(evas, _("Check Interval"));
    e_widget_table_object_append(ot, ob, 0, 2, 1, 1, 1, 0, 1, 0);
@@ -198,7 +198,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    i = 0;
    if (wlan_interface_count > 0) 
      {
-	of = e_widget_framelist_add(evas, _("Wireless"), 0);
+	of = e_widget_framelist_add(evas, D_("Wireless"), 0);
 	ot = e_widget_table_add(evas, 0);
 	rg = e_widget_radio_group_new(&(wlan_interface_number));
 	ecore_list_goto_first(wlan_interfaces);
@@ -221,7 +221,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    i = 0;   
    if (net_interface_count > 0) 
      {	
-	of = e_widget_framelist_add(evas, _("Network"), 0);
+	of = e_widget_framelist_add(evas, D_("Network"), 0);
 	ot = e_widget_table_add(evas, 0);	
 	rg = e_widget_radio_group_new(&(net_interface_number));
 	ecore_list_goto_first(net_interfaces);

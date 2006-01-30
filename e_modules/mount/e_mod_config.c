@@ -41,7 +41,7 @@ _config_mount_module(E_Container *con, Mount *m)
    v->advanced.apply_cfdata = _advanced_apply_data;
    v->advanced.create_widgets = _advanced_create_widgets;
    
-   cfd = e_config_dialog_new(con, _("Mount Configuration"), NULL, 0, v, m);
+   cfd = e_config_dialog_new(con, D_("Mount Configuration"), NULL, 0, v, m);
    m->config_dialog = cfd;
 }
 
@@ -86,15 +86,15 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    
    o = e_widget_list_add(evas, 0, 0);
    of = e_widget_framelist_add(evas, _("General Settings"), 0);
-   ob = e_widget_check_add(evas, _("Show Labels"), &(cfdata->show_labels));
+   ob = e_widget_check_add(evas, D_("Show Labels"), &(cfdata->show_labels));
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-   of = e_widget_framelist_add(evas, _("Layout Settings"), 0);   
+   of = e_widget_framelist_add(evas, D_("Layout Settings"), 0);   
    rg = e_widget_radio_group_new(&(cfdata->orientation));
-   ob = e_widget_radio_add(evas, _("Use Vertical Layout"), MOUNT_ORIENT_VERT, rg);
+   ob = e_widget_radio_add(evas, D_("Use Vertical Layout"), MOUNT_ORIENT_VERT, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, _("Use Horizontal Layout"), MOUNT_ORIENT_HORIZ, rg);
+   ob = e_widget_radio_add(evas, D_("Use Horizontal Layout"), MOUNT_ORIENT_HORIZ, rg);
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
    
@@ -129,19 +129,19 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    
    o = e_widget_list_add(evas, 0, 0);
    of = e_widget_framelist_add(evas, _("General Settings"), 0);
-   ob = e_widget_check_add(evas, _("Show Labels"), &(cfdata->show_labels));
+   ob = e_widget_check_add(evas, D_("Show Labels"), &(cfdata->show_labels));
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-   of = e_widget_framelist_add(evas, _("Layout Settings"), 0);   
+   of = e_widget_framelist_add(evas, D_("Layout Settings"), 0);   
    rg = e_widget_radio_group_new(&(cfdata->orientation));
-   ob = e_widget_radio_add(evas, _("Use Vertical Layout"), MOUNT_ORIENT_VERT, rg);
+   ob = e_widget_radio_add(evas, D_("Use Vertical Layout"), MOUNT_ORIENT_VERT, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, _("Use Horizontal Layout"), MOUNT_ORIENT_HORIZ, rg);
+   ob = e_widget_radio_add(evas, D_("Use Horizontal Layout"), MOUNT_ORIENT_HORIZ, rg);
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
    
-   of = e_widget_framelist_add(evas, _("Icon Size"), 0);   
+   of = e_widget_framelist_add(evas, D_("Icon Size"), 0);   
    ob = e_widget_slider_add(evas, 1, 0, _("%3.0f pixels"), 8.0, 128.0, 1.0, 0, NULL, &(cfdata->iconsize), 200);
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);   

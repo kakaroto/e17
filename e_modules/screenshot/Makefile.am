@@ -1,4 +1,6 @@
-MAINTAINERCLEANFILES = Makefile.in
+SUBDIRS = po
+
+MAINTAINERCLEANFILES = Makefile.in mkinstalldirs
 
 EDJE_CC = @edje_cc@
 EDJE_FLAGS = -v
