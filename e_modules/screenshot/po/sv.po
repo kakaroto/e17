@@ -1,0 +1,99 @@
+# Swedish translation of Screenshot module for E17.
+# This file is put in the public domain.
+# Anders Trobäck <enlightenment@troback.com>, 2006.
+# , fuzzy
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Screenshot module for E17 N/A\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-01-27 00:40+0900\n"
+"PO-Revision-Date: 2006-01-30 09:28+0100\n"
+"Last-Translator: Anders Trobäck <enlightenment@troback.com>\n"
+"Language-Team: Swedish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: e_mod_config.c:78
+msgid "Screenshot Configuration"
+msgstr "Konfiguration av skärmdump"
+
+#: e_mod_config.c:169 e_mod_config.c:289
+msgid "Use Import"
+msgstr "Använd import"
+
+#: e_mod_config.c:171 e_mod_config.c:291
+msgid "Use Scrot"
+msgstr "Använd Scrot"
+
+#: e_mod_config.c:178 e_mod_config.c:299
+msgid "Delay Time:"
+msgstr "Fördröjning:"
+
+#: e_mod_config.c:187 e_mod_config.c:308
+msgid "File Settings"
+msgstr "Filinställningar"
+
+#: e_mod_config.c:190 e_mod_config.c:311
+msgid "Save Directory:"
+msgstr "Spara i katalog:"
+
+#: e_mod_config.c:196 e_mod_config.c:317
+msgid "Filename (minus extension):"
+msgstr "Filnamn (utan filändelse):"
+
+#: e_mod_config.c:202 e_mod_config.c:323
+#, c-format
+msgid "Example: screenshot%d = screenshot1, screenshot2, etc..."
+msgstr "Exempel: screenshot%d = screenshot1, screenshot2, etc..."
+
+#: e_mod_config.c:330
+msgid "Import Options"
+msgstr "Importinställningar"
+
+#: e_mod_config.c:331 e_mod_config.c:347
+msgid "Include Image Border"
+msgstr "Inkludera bildramar"
+
+#: e_mod_config.c:333
+msgid "Use Image Dithering"
+msgstr "Använd bilddithering"
+
+#: e_mod_config.c:335
+msgid "Include Window Manager Frame"
+msgstr "Inkludera fönsterhanterarens ramar"
+
+#: e_mod_config.c:337
+msgid "Choose Window To Grab"
+msgstr "Välj fönster som ska fångas"
+
+#: e_mod_config.c:339
+msgid "Silent"
+msgstr "Tyst"
+
+#: e_mod_config.c:341
+msgid "Trim Edges"
+msgstr "Trimma kanterna"
+
+#: e_mod_config.c:346
+msgid "Scrot Options"
+msgstr "Scrotinställningar"
+
+#: e_mod_config.c:349
+msgid "Generate Thumbnail"
+msgstr "Generera miniatyrbild"
+
+#: e_mod_main.c:106 e_mod_main.c:493
+msgid "Enlightenment Screenshot Module"
+msgstr "Enlightenment skärmdumpsmodul"
+
+#: e_mod_main.c:107
+msgid "This module is used to take screenshots"
+msgstr "Denna modulen används för att ta skärmdumpar"
+
+#: e_mod_main.c:494
+msgid "Please Choose A Program To Use For Taking Screenshots."
+msgstr "Ange ett program som ska användas för att ta en skärmdump"
+

@@ -1,0 +1,75 @@
+# Swedish translation of Mount module for E17.
+# This file is put in the public domain.
+# Anders Trobäck <enlightenment@troback.com>, 2006.
+# , fuzzy
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Mount module for E17 N/A\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-01-29 20:28+0900\n"
+"PO-Revision-Date: 2006-01-30 08:37+0100\n"
+"Last-Translator: Anders Trobäck <enlightenment@troback.com>\n"
+"Language-Team: Swedish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: e_mod_config.c:44
+msgid "Mount Configuration"
+msgstr "Monteringskonfiguration"
+
+#: e_mod_config.c:89 e_mod_config.c:132
+msgid "Show Labels"
+msgstr "Visa etiketter"
+
+#: e_mod_config.c:93 e_mod_config.c:136
+msgid "Layout Settings"
+msgstr "Layoutinställningar"
+
+#: e_mod_config.c:95 e_mod_config.c:138
+msgid "Use Vertical Layout"
+msgstr "Använd vertikal layout"
+
+#: e_mod_config.c:97 e_mod_config.c:140
+msgid "Use Horizontal Layout"
+msgstr "Använd horisontal layout"
+
+#: e_mod_config.c:144
+msgid "Icon Size"
+msgstr "Storlek på ikoner"
+
+#: e_mod_config.c:145
+#, c-format
+msgid "%3.0f pixels"
+msgstr "%3.0f pixlar"
+
+#: e_mod_main.c:110
+msgid "Enlightenment Mount Module"
+msgstr "Enlightenment monteringsmodul"
+
+#: e_mod_main.c:111
+msgid "This is a mount module to mount/unmount devices."
+msgstr "Detta är en monteringsmodul för att montera/avmontera enheter."
+
+#: e_mod_main.c:147
+msgid "Cannot Parse fstab"
+msgstr "Kan inte analysera fstab"
+
+#: e_mod_main.c:147 e_mod_main.c:1106 e_mod_main.c:1114 e_mod_main.c:1122
+msgid "Mount Module"
+msgstr "Monteringsmodul"
+
+#: e_mod_main.c:1107
+msgid "Unmount Failed !!<br>Perhaps this device is in use or is not mounted."
+msgstr "Avmontering misslyckades!! <br>Enheten kanske används eller så är den inte monterad."
+
+#: e_mod_main.c:1115
+msgid "Mount Failed !!<br>Please check that media is inserted"
+msgstr "Montering misslyckades!!<br>Kontrollera det media som sattes i"
+
+#: e_mod_main.c:1122
+msgid "Eject Failed !!"
+msgstr "Eject misslyckades!!"
+
