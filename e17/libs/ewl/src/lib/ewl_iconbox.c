@@ -174,6 +174,8 @@ ewl_iconbox_inner_pane_calculate(Ewl_Iconbox *ib)
 	int sw,sh;
 	int nw=0,nh=0;
 
+	return;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ib", ib);
 	DCHECK_TYPE("ib", ib, EWL_ICONBOX_TYPE);
@@ -312,12 +314,6 @@ ewl_iconbox_init(Ewl_Iconbox *ib)
 	ewl_callback_append(ib->ewl_iconbox_context_menu_item, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_arrange_cb, ib);
 	ewl_widget_show(ib->ewl_iconbox_context_menu_item);
 
-	ib->ewl_iconbox_context_menu_item = ewl_menu_item_new();
-	ewl_menu_item_text_set(EWL_MENU_ITEM(ib->ewl_iconbox_context_menu_item), "Expansion Test");
-	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_view_menu), ib->ewl_iconbox_context_menu_item);
-	ewl_callback_append(ib->ewl_iconbox_context_menu_item, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_expansion_cb, ib);
-	ewl_widget_show(ib->ewl_iconbox_context_menu_item);
-
 	ewl_widget_show(ib->ewl_iconbox_view_menu);
 		
 	/* Add the menu floater to the pane inner */
@@ -421,6 +417,14 @@ ewl_iconbox_init(Ewl_Iconbox *ib)
 	ewl_callback_append(ib->entry, EWL_CALLBACK_KEY_DOWN, ewl_iconbox_label_edit_key_down, ib);
 	
 	/* ----------------------------- */
+
+	/*Mark widgets internal*/
+	ewl_widget_internal_set(EWL_WIDGET(ib->entry_floater), TRUE);
+	ewl_widget_internal_set(EWL_WIDGET(ib->ewl_iconbox_menu_floater), TRUE);
+	ewl_widget_internal_set(EWL_WIDGET(ib->icon_menu_floater), TRUE);
+	ewl_widget_internal_set(EWL_WIDGET(ib->select_floater), TRUE);
+
+	
 
 
 	/** Internal Callbacks */
@@ -739,17 +743,18 @@ void
 ewl_iconbox_scrollpane_recalculate(Ewl_Iconbox *ib)
 {
 	int pw, ph;
+	int w,h;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ib", ib);
 	DCHECK_TYPE("ib", ib, EWL_ICONBOX_TYPE);
 
 	ewl_object_current_size_get(EWL_OBJECT(ib->ewl_iconbox_scrollpane), &pw, &ph);	
-	ewl_object_custom_size_set(EWL_OBJECT(ib->ewl_iconbox_pane_inner), 
-			pw > ib->lx ? pw : ib->lx, 
-			ph > ib->ly + ib->ih ? ph + ib->ih : 
-				ib->ly + (ib->ih * 2) + (EWL_ICONBOX_ICON_PADDING * 2));
 
+	w = pw > ib->lx ? pw : ib->lx;
+	h = ph > ib->ly + ib->ih ? ph + ib->ih : 
+				ib->ly + (ib->ih * 2) + (EWL_ICONBOX_ICON_PADDING * 2);
+	ewl_object_custom_size_set(EWL_OBJECT(ib->ewl_iconbox_pane_inner), w,h );
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -1117,7 +1122,7 @@ ewl_iconbox_clear(Ewl_Iconbox *ib)
 		while((list_item = ecore_list_remove_first(ib->ewl_iconbox_icon_list))) {
 			/*printf("Deleting icon..\n");*/
 
-			//ewl_widget_hide(list_item);
+			ewl_widget_hide(EWL_WIDGET(list_item));
 			//ewl_container_child_remove(EWL_CONTAINER(ib->ewl_iconbox_pane_inner), EWL_WIDGET(list_item));
 			//
 			ewl_widget_destroy(EWL_WIDGET(list_item));		
@@ -1129,6 +1134,7 @@ ewl_iconbox_clear(Ewl_Iconbox *ib)
 	ib->lx = 0;
 	ib->ly = 0;
 
+	//ewl_container_reset(EWL_CONTAINER(EWL_ICONBOX(ib)->ewl_iconbox_pane_inner));
 	ewl_iconbox_scrollpane_recalculate(ib);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1268,23 +1274,6 @@ ewl_iconbox_arrange_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, void 
 
 	ib = EWL_ICONBOX(user_data);
 	ewl_iconbox_icon_arrange(ib);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-ewl_iconbox_expansion_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, 
-							void *user_data)
-{
-	Ewl_Iconbox *ib;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("user_data", user_data, EWL_ICONBOX_TYPE);
-
-	ib = EWL_ICONBOX(user_data);
-	ewl_object_custom_size_set(EWL_OBJECT(ib->ewl_iconbox_pane_inner), 
-								680, 700);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
