@@ -10,11 +10,11 @@
 
 /* module private routines */
 static Snow *_snow_init(E_Module *m);
-static void _snow_shutdown(Snow * snow);
-static E_Menu *_snow_config_menu_new(Snow * snow);
+static void _snow_shutdown(Snow *snow);
+static E_Menu *_snow_config_menu_new(Snow *snow);
 static int _snow_cb_animator(void *data);
-static void _snow_trees_load(Snow * snow);
-static void _snow_flakes_load(char type, Snow * snow);
+static void _snow_trees_load(Snow *snow);
+static void _snow_flakes_load(char type, Snow *snow);
 static void _snow_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 
 /* public module routines. all modules must have these */
@@ -175,7 +175,7 @@ _snow_init(E_Module *m)
 }
 
 static void
-_snow_trees_free(Snow * snow)
+_snow_trees_free(Snow *snow)
 {
    while (snow->trees)
      {
@@ -188,7 +188,7 @@ _snow_trees_free(Snow * snow)
 }
 
 static void
-_snow_flakes_free(Snow * snow)
+_snow_flakes_free(Snow *snow)
 {
    while (snow->flakes)
      {
@@ -202,7 +202,7 @@ _snow_flakes_free(Snow * snow)
 }
 
 static void
-_snow_shutdown(Snow * snow)
+_snow_shutdown(Snow *snow)
 {
    free(snow->conf);
    E_CONFIG_DD_FREE(snow->conf_edd);
@@ -221,7 +221,7 @@ _snow_shutdown(Snow * snow)
 }
 
 static E_Menu *
-_snow_config_menu_new(Snow * snow)
+_snow_config_menu_new(Snow *snow)
 {
    E_Menu *mn;
    E_Menu_Item *mi;
@@ -235,7 +235,7 @@ _snow_config_menu_new(Snow * snow)
 }
 
 static void
-_snow_canvas_reset(Snow * snow)
+_snow_canvas_reset(Snow *snow)
 {
    _snow_trees_free(snow);
    _snow_flakes_free(snow);
@@ -248,7 +248,7 @@ _snow_canvas_reset(Snow * snow)
 }
 
 static void
-_snow_trees_load(Snow * snow)
+_snow_trees_load(Snow *snow)
 {
    Evas_Object *o;
    int tw, th, i;
@@ -280,7 +280,7 @@ _snow_trees_load(Snow * snow)
 }
 
 static void
-_snow_flakes_load(char type, Snow * snow)
+_snow_flakes_load(char type, Snow *snow)
 {
    Evas_Object *o;
    Evas_Coord xx, yy, ww, hh;
@@ -367,7 +367,7 @@ _snow_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
    Snow *s;
    E_Container *con;
 
-   s = (Snow *) data;
+   s = (Snow *)data;
    if (!s)
       return;
    con = e_container_current_get(e_manager_current_get());
@@ -379,7 +379,7 @@ _snow_cb_config_updated(void *data)
 {
    Snow *s;
 
-   s = (Snow *) data;
+   s = (Snow *)data;
    if (!s)
       return;
    _snow_canvas_reset(s);

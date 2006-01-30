@@ -30,7 +30,7 @@ static int _basic_apply_data(E_Config_Dialog *cfd,
                              E_Config_Dialog_Data *cfdata);
 
 void
-_config_snow_module(E_Container *con, Snow * s)
+_config_snow_module(E_Container *con, Snow *s)
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
@@ -49,7 +49,7 @@ _config_snow_module(E_Container *con, Snow * s)
 }
 
 static void
-_fill_data(Snow * sn, E_Config_Dialog_Data *cfdata)
+_fill_data(Snow *sn, E_Config_Dialog_Data *cfdata)
 {
    cfdata->show_trees = sn->conf->show_trees;
    switch (sn->conf->flake_count)

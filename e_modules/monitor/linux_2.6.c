@@ -1,14 +1,14 @@
 
 #include "linux_2.6.h"
 
-static int          __monitor_cpu_count = -1;
+static int __monitor_cpu_count = -1;
 
 int
 count_cpus(void)
 {
-   char                tmp[4];
-   FILE               *stat;
-   int                 cpu = -1;
+   char tmp[4];
+   FILE *stat;
+   int cpu = -1;
 
    if (!(stat = fopen("/proc/stat", "r")))
       return -1;
@@ -28,10 +28,10 @@ int
 four_cpu_numbers(int *uret, int *nret, int *sret, int *iret)
 {
    static unsigned long old_u, old_n, old_s, old_i, old_wa, old_hi, old_si;
-   unsigned long       new_u, new_n, new_s, new_i, new_wa = 0, new_hi = 0, new_si = 0, ticks_past;      /* avoid div 0 */
-   int                 tmp_u, tmp_n, tmp_s, tmp_i;
-   char                dummy[16];
-   FILE               *stat;
+   unsigned long new_u, new_n, new_s, new_i, new_wa = 0, new_hi = 0, new_si = 0, ticks_past;    /* avoid div 0 */
+   int tmp_u, tmp_n, tmp_s, tmp_i;
+   char dummy[16];
+   FILE *stat;
 
    if (!(stat = fopen("/proc/stat", "r")))
      {
@@ -89,7 +89,7 @@ four_cpu_numbers(int *uret, int *nret, int *sret, int *iret)
 int
 cpu_usage_get(void)
 {
-   int                 u, n, s, i, load;
+   int u, n, s, i, load;
 
    if (four_cpu_numbers(&u, &n, &s, &i) == -1)
       return -1;
@@ -100,24 +100,24 @@ cpu_usage_get(void)
    return load / __monitor_cpu_count;
 }
 
-char               *net_dev = "eth0";
-long                max_in_bytes = 171008;
-long                max_out_bytes = 28672;
-long                bytes_in = 0;
-long                bytes_out = 0;
-int                 in_usage = 0;
-int                 out_usage = 0;
-int                 interface_changed = 1;
+char *net_dev = "eth0";
+long max_in_bytes = 171008;
+long max_out_bytes = 28672;
+long bytes_in = 0;
+long bytes_out = 0;
+int in_usage = 0;
+int out_usage = 0;
+int interface_changed = 1;
 
 int
 get_net_input_output(unsigned long *in, unsigned long *out, const char *dev)
 {
-   unsigned long       new_in, new_out;
-   unsigned long       dummy;
-   char                iface[64];
-   char                buf[256];
-   FILE               *stat;
-   int                 found_dev = 0;
+   unsigned long new_in, new_out;
+   unsigned long dummy;
+   char iface[64];
+   char buf[256];
+   FILE *stat;
+   int found_dev = 0;
 
    stat = fopen("/proc/net/dev", "r");
    if (!stat)
@@ -125,7 +125,7 @@ get_net_input_output(unsigned long *in, unsigned long *out, const char *dev)
 
    while (fgets(buf, 256, stat))
      {
-        int                 i = 0;
+        int i = 0;
 
         /* remove : */
         for (; buf[i] != 0; i++)
@@ -165,7 +165,7 @@ net_usage_get(void)
    static unsigned long old_r_total = 0;
    static unsigned long old_t_total = 0;
 
-   unsigned long       r_total = 0, t_total = 0;
+   unsigned long r_total = 0, t_total = 0;
 
    if (interface_changed)
      {
@@ -245,15 +245,15 @@ net_interface_set(char *interface_name)
 }
 
 int
-net_interfaces_get(Ecore_List * ifaces)
+net_interfaces_get(Ecore_List *ifaces)
 {
-   unsigned long int   dummy;
+   unsigned long int dummy;
 
-   char               *iface;
-   char                buf[256];
-   FILE               *stat;
-   int                 iface_count = 0;
-   int                 x = 0;
+   char *iface;
+   char buf[256];
+   FILE *stat;
+   int iface_count = 0;
+   int x = 0;
 
    stat = fopen("/proc/net/dev", "r");
    if (!stat)
@@ -261,7 +261,7 @@ net_interfaces_get(Ecore_List * ifaces)
 
    while (fgets(buf, 256, stat))
      {
-        int                 i = 0;
+        int i = 0;
 
         /* remove : */
         for (; buf[i] != 0; i++)
@@ -288,21 +288,21 @@ net_interfaces_get(Ecore_List * ifaces)
 }
 
 /* Wireless code */
-char               *wlan_dev = "wlan0";
-int                 wlan_status = 0;
-int                 wlan_link = 0;
-int                 wlan_level = 0;
-int                 wlan_noise = 0;
+char *wlan_dev = "wlan0";
+int wlan_status = 0;
+int wlan_link = 0;
+int wlan_level = 0;
+int wlan_noise = 0;
 
 void
 wlan_update(void)
 {
-   int                 new_status, new_link, new_level, new_noise;
-   unsigned int        dummy;
-   char                iface[64];
-   char                buf[256];
-   FILE               *stat;
-   int                 found_dev = 0;
+   int new_status, new_link, new_level, new_noise;
+   unsigned int dummy;
+   char iface[64];
+   char buf[256];
+   FILE *stat;
+   int found_dev = 0;
 
    stat = fopen("/proc/net/wireless", "r");
    if (!stat)
@@ -310,7 +310,7 @@ wlan_update(void)
 
    while (fgets(buf, 256, stat))
      {
-        int                 i = 0;
+        int i = 0;
 
         /* remove : */
         for (; buf[i] != 0; i++)
@@ -377,15 +377,15 @@ wlan_interface_set(char *interface_name)
 }
 
 int
-wlan_interfaces_get(Ecore_List * ifaces)
+wlan_interfaces_get(Ecore_List *ifaces)
 {
-   unsigned long int   dummy;
+   unsigned long int dummy;
 
-   char               *iface;
-   char                buf[256];
-   FILE               *stat;
-   int                 iface_count = 0;
-   int                 x = 0;
+   char *iface;
+   char buf[256];
+   FILE *stat;
+   int iface_count = 0;
+   int x = 0;
 
    stat = fopen("/proc/net/wireless", "r");
    if (!stat)
@@ -396,7 +396,7 @@ wlan_interfaces_get(Ecore_List * ifaces)
 
    while (fgets(buf, 256, stat))
      {
-        int                 i = 0;
+        int i = 0;
 
         /* remove : and . */
         for (; buf[i] != 0; i++)
@@ -419,12 +419,12 @@ wlan_interfaces_get(Ecore_List * ifaces)
    return iface_count;
 }
 
-long                mem_real = 0;
-long                mem_swap = 0;
-int                 mem_real_usage = 0;
-int                 mem_swap_usage = 0;
-int                 mem_real_ignore_buffers = 0;
-int                 mem_real_ignore_cached = 0;
+long mem_real = 0;
+long mem_swap = 0;
+int mem_real_usage = 0;
+int mem_swap_usage = 0;
+int mem_real_ignore_buffers = 0;
+int mem_real_ignore_cached = 0;
 
 /* Begin memory monitor code */
 
@@ -443,13 +443,13 @@ mem_real_ignore_cached_set(int ignore_cached)
 void
 memory_check(void)
 {
-   FILE               *pmeminfo = NULL;
-   int                 cursor = 0;
-   char               *line, *field;
-   unsigned char       c;
-   long int            value = 0, mtotal = 0, stotal = 0, mfree = 0, sfree = 0;
-   ldiv_t              ldresult;
-   long int            liresult;
+   FILE *pmeminfo = NULL;
+   int cursor = 0;
+   char *line, *field;
+   unsigned char c;
+   long int value = 0, mtotal = 0, stotal = 0, mfree = 0, sfree = 0;
+   ldiv_t ldresult;
+   long int liresult;
 
    /* open /proc/meminfo */
    if (!(pmeminfo = fopen("/proc/meminfo", "r")))

@@ -6,66 +6,60 @@
 
 /* module private routines */
 
-static Monitor     *_monitor_new();
-static void         _monitor_shutdown(Monitor * monitor);
-static void         _monitor_config_menu_new(Monitor * monitor);
+static Monitor *_monitor_new();
+static void _monitor_shutdown(Monitor *monitor);
+static void _monitor_config_menu_new(Monitor *monitor);
 
-static Monitor_Face *_monitor_face_new(E_Container * con, Config * config);
-static void         _monitor_face_free(Monitor_Face * face);
-static void         _monitor_face_menu_new(Monitor_Face * face);
-static void         _monitor_face_cb_gmc_change(void *data,
-                                                E_Gadman_Client * gmc,
-                                                E_Gadman_Change change);
-Config_Face        *_monitor_face_config_init(Config_Face * conf);
-static int          _monitor_face_config_cb_timer(void *data);
+static Monitor_Face *_monitor_face_new(E_Container *con, Config *config);
+static void _monitor_face_free(Monitor_Face *face);
+static void _monitor_face_menu_new(Monitor_Face *face);
+static void _monitor_face_cb_gmc_change(void *data,
+                                        E_Gadman_Client *gmc,
+                                        E_Gadman_Change change);
+Config_Face *_monitor_face_config_init(Config_Face *conf);
+static int _monitor_face_config_cb_timer(void *data);
 
-static void         _monitor_face_cb_menu_edit(void *data, E_Menu * m,
-                                               E_Menu_Item * mi);
-static void         _monitor_cpu_text_update_callcack(Flow_Chart * chart,
-                                                      void *data);
-static void         _monitor_mem_real_text_update_callback(Flow_Chart * chart,
-                                                           void *data);
-static void         _monitor_mem_swap_text_update_callback(Flow_Chart * chart,
-                                                           void *data);
-static void         _monitor_net_in_text_update_callcack(Flow_Chart * chart,
-                                                         void *data);
-static void         _monitor_net_out_text_update_callcack(Flow_Chart * chart,
-                                                          void *data);
-static void         _monitor_wlan_link_text_update_callcack(Flow_Chart * chart,
-                                                            void *data);
-static void         _monitor_menu_cb_configure(void *data, E_Menu * m,
-                                               E_Menu_Item * mi);
-static void         _add_sensor(Monitor_Face * face, Evas_Object * o,
-                                int VerHor);
-static int          _date_cb_check(void *data);
+static void _monitor_face_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi);
+static void _monitor_cpu_text_update_callcack(Flow_Chart *chart, void *data);
+static void _monitor_mem_real_text_update_callback(Flow_Chart *chart,
+                                                   void *data);
+static void _monitor_mem_swap_text_update_callback(Flow_Chart *chart,
+                                                   void *data);
+static void _monitor_net_in_text_update_callcack(Flow_Chart *chart, void *data);
+static void _monitor_net_out_text_update_callcack(Flow_Chart *chart,
+                                                  void *data);
+static void _monitor_wlan_link_text_update_callcack(Flow_Chart *chart,
+                                                    void *data);
+static void _monitor_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi);
+static void _add_sensor(Monitor_Face *face, Evas_Object *o, int VerHor);
+static int _date_cb_check(void *data);
 
-static void         _monitor_face_cb_mouse_down(void *data, Evas * e,
-                                                Evas_Object * obj,
-                                                void *event_info);
+static void _monitor_face_cb_mouse_down(void *data, Evas *e,
+                                        Evas_Object *obj, void *event_info);
 
-static int          _monitor_count;
-static int          num_sensors;
+static int _monitor_count;
+static int num_sensors;
 
 static E_Config_DD *conf_edd;
 static E_Config_DD *conf_face_edd;
 
-static Flow_Chart  *flow_chart_cpu;
-static Flow_Chart  *flow_chart_net_in;
-static Flow_Chart  *flow_chart_net_out;
-static Flow_Chart  *flow_chart_mem_real;
-static Flow_Chart  *flow_chart_mem_swap;
-static Flow_Chart  *flow_chart_wlan_link;
+static Flow_Chart *flow_chart_cpu;
+static Flow_Chart *flow_chart_net_in;
+static Flow_Chart *flow_chart_net_out;
+static Flow_Chart *flow_chart_mem_real;
+static Flow_Chart *flow_chart_mem_swap;
+static Flow_Chart *flow_chart_wlan_link;
 
 /* public module routines. all modules must have these */
-EAPI E_Module_Api   e_modapi = {
+EAPI E_Module_Api e_modapi = {
    E_MODULE_API_VERSION,
    "Monitor"
 };
 
-EAPI void          *
-e_modapi_init(E_Module * module)
+EAPI void *
+e_modapi_init(E_Module *module)
 {
-   Monitor            *monitor;
+   Monitor *monitor;
 
    /* actually init buttons */
    monitor = _monitor_new();
@@ -74,9 +68,9 @@ e_modapi_init(E_Module * module)
 }
 
 EAPI int
-e_modapi_shutdown(E_Module * module)
+e_modapi_shutdown(E_Module *module)
 {
-   Monitor            *monitor;
+   Monitor *monitor;
 
    if (module->config_menu)
       module->config_menu = NULL;
@@ -89,9 +83,9 @@ e_modapi_shutdown(E_Module * module)
 }
 
 EAPI int
-e_modapi_save(E_Module * module)
+e_modapi_save(E_Module *module)
 {
-   Monitor            *monitor;
+   Monitor *monitor;
 
    monitor = module->data;
    e_config_domain_save("module.monitor", conf_edd, monitor->conf);
@@ -99,14 +93,14 @@ e_modapi_save(E_Module * module)
 }
 
 EAPI int
-e_modapi_info(E_Module * module)
+e_modapi_info(E_Module *module)
 {
    module->icon_file = strdup(PACKAGE_DATA_DIR "/module_icon.png");
    return 1;
 }
 
 EAPI int
-e_modapi_about(E_Module * module)
+e_modapi_about(E_Module *module)
 {
    e_module_dialog_show(_("Enlightenment Monitor Module"),
                         _
@@ -115,17 +109,17 @@ e_modapi_about(E_Module * module)
 }
 
 EAPI int
-e_modapi_config(E_Module * module)
+e_modapi_config(E_Module *module)
 {
-   Monitor            *mon;
-   Evas_List          *l;
+   Monitor *mon;
+   Evas_List *l;
 
    mon = module->data;
    if (!mon)
       return 0;
    for (l = mon->faces; l; l = l->next)
      {
-        Monitor_Face       *f;
+        Monitor_Face *f;
 
         f = l->data;
         if (!f)
@@ -146,8 +140,8 @@ _monitor_face_config_cb_timer(void *data)
    return 0;
 }
 
-Config_Face        *
-_monitor_face_config_init(Config_Face * conf)
+Config_Face *
+_monitor_face_config_init(Config_Face *conf)
 {
    if (!conf)
       return NULL;
@@ -166,15 +160,16 @@ _monitor_face_config_init(Config_Face * conf)
 }
 
 /* module private routines */
-static Monitor     *
+static Monitor *
 _monitor_new()
 {
-   Monitor            *monitor;
-   Evas_List          *managers, *l, *l2, *cl;
-   E_Menu_Item        *mi;
+   Monitor *monitor;
+   Evas_List *managers, *l, *l2, *cl;
+   E_Menu_Item *mi;
 
    _monitor_count = 0;
    monitor = E_NEW(Monitor, 1);
+
    if (!monitor)
       return NULL;
 
@@ -195,6 +190,7 @@ _monitor_new()
    E_CONFIG_VAL(D, T, mem_real_ignore_buffers, INT);
 
    conf_edd = E_CONFIG_DD_NEW("Monitor_Config", Config);
+
 #undef T
 #undef D
 #define T Config
@@ -213,6 +209,7 @@ _monitor_new()
    if (!monitor->conf)
      {
         monitor->conf = E_NEW(Config, 1);
+
         monitor->conf->cpu = 0;
         monitor->conf->mem = 0;
         monitor->conf->net = 0;
@@ -229,13 +226,13 @@ _monitor_new()
    cl = monitor->conf->faces;
    for (l = managers; l; l = l->next)
      {
-        E_Manager          *man;
+        E_Manager *man;
 
         man = l->data;
         for (l2 = man->containers; l2; l2 = l2->next)
           {
-             E_Container        *con;
-             Monitor_Face       *face;
+             E_Container *con;
+             Monitor_Face *face;
 
              con = l2->data;
              num_sensors = 0;
@@ -248,9 +245,10 @@ _monitor_new()
                   if (!cl)
                     {
                        face->conf = E_NEW(Config_Face, 1);
+
                        face->conf = _monitor_face_config_init(face->conf);
                        monitor->conf->faces =
-                           evas_list_append(monitor->conf->faces, face->conf);
+                          evas_list_append(monitor->conf->faces, face->conf);
                     }
                   else
                     {
@@ -319,9 +317,9 @@ _monitor_new()
 }
 
 static void
-_monitor_shutdown(Monitor * monitor)
+_monitor_shutdown(Monitor *monitor)
 {
-   Evas_List          *list;
+   Evas_List *list;
 
    E_CONFIG_DD_FREE(conf_edd);
    E_CONFIG_DD_FREE(conf_face_edd);
@@ -338,26 +336,26 @@ _monitor_shutdown(Monitor * monitor)
 }
 
 static void
-_monitor_config_menu_new(Monitor * monitor)
+_monitor_config_menu_new(Monitor *monitor)
 {
    monitor->config_menu = e_menu_new();
 }
 
 static Monitor_Face *
-_monitor_face_new(E_Container * con, Config * config)
+_monitor_face_new(E_Container *con, Config *config)
 {
-   Monitor_Face       *face;
-   Evas_Object        *o;
-   struct utsname      u_buf;
-   char                u_date_time[256];
-   struct sysinfo      s_info;
+   Monitor_Face *face;
+   Evas_Object *o;
+   struct utsname u_buf;
+   char u_date_time[256];
+   struct sysinfo s_info;
 
    sysinfo(&s_info);
 
-   long                minute = 60;
-   long                hour = minute * 60;
-   long                day = hour * 24;
-   double              megabyte = 1024 * 1024;
+   long minute = 60;
+   long hour = minute * 60;
+   long day = hour * 24;
+   double megabyte = 1024 * 1024;
 
    uname(&u_buf);
    /* 
@@ -365,14 +363,15 @@ _monitor_face_new(E_Container * con, Config * config)
     * is not initialized. Everything will be updated after 
     * the init is complete.
     */
-   double              tmp_cpu_interval = 1.0;
-   double              tmp_mem_interval = 1.0;
-   double              tmp_net_interval = 1.0;
-   double              tmp_wlan_interval = 1.0;
+   double tmp_cpu_interval = 1.0;
+   double tmp_mem_interval = 1.0;
+   double tmp_net_interval = 1.0;
+   double tmp_wlan_interval = 1.0;
 
-   Chart_Container    *chart_con;
+   Chart_Container *chart_con;
 
    face = E_NEW(Monitor_Face, 1);
+
    if (!face)
       return NULL;
 
@@ -544,11 +543,11 @@ _monitor_face_new(E_Container * con, Config * config)
 
    if (config->time)
      {
-        time_t              now;
-        struct tm           date;
+        time_t now;
+        struct tm date;
 
         time(&now);
-        char                curr_time[12];
+        char curr_time[12];
 
         date = *localtime(&now);
         face->time = edje_object_add(con->bg_evas);
@@ -589,10 +588,10 @@ _monitor_face_new(E_Container * con, Config * config)
 }
 
 static void
-_monitor_cpu_text_update_callcack(Flow_Chart * chart, void *data)
+_monitor_cpu_text_update_callcack(Flow_Chart *chart, void *data)
 {
-   Monitor_Face       *face;
-   char                buf[64];
+   Monitor_Face *face;
+   char buf[64];
 
    face = data;
 
@@ -601,12 +600,12 @@ _monitor_cpu_text_update_callcack(Flow_Chart * chart, void *data)
 }
 
 static void
-_monitor_mem_real_text_update_callback(Flow_Chart * chart, void *data)
+_monitor_mem_real_text_update_callback(Flow_Chart *chart, void *data)
 {
-   Monitor_Face       *face;
-   char                buf[64];
+   Monitor_Face *face;
+   char buf[64];
 
-   long                kbytes = mem_real_get();
+   long kbytes = mem_real_get();
 
    face = data;
 
@@ -621,12 +620,12 @@ _monitor_mem_real_text_update_callback(Flow_Chart * chart, void *data)
 }
 
 static void
-_monitor_mem_swap_text_update_callback(Flow_Chart * chart, void *data)
+_monitor_mem_swap_text_update_callback(Flow_Chart *chart, void *data)
 {
-   Monitor_Face       *face;
-   char                buf[64];
+   Monitor_Face *face;
+   char buf[64];
 
-   long                kbytes = mem_swap_get();
+   long kbytes = mem_swap_get();
 
    face = data;
 
@@ -641,12 +640,12 @@ _monitor_mem_swap_text_update_callback(Flow_Chart * chart, void *data)
 }
 
 static void
-_monitor_net_in_text_update_callcack(Flow_Chart * chart, void *data)
+_monitor_net_in_text_update_callcack(Flow_Chart *chart, void *data)
 {
-   Monitor_Face       *face;
-   char                buf[64];
+   Monitor_Face *face;
+   char buf[64];
 
-   long                bytes = net_bytes_in_get();
+   long bytes = net_bytes_in_get();
 
    face = data;
 
@@ -661,12 +660,12 @@ _monitor_net_in_text_update_callcack(Flow_Chart * chart, void *data)
 }
 
 static void
-_monitor_net_out_text_update_callcack(Flow_Chart * chart, void *data)
+_monitor_net_out_text_update_callcack(Flow_Chart *chart, void *data)
 {
-   Monitor_Face       *face;
-   char                buf[64];
+   Monitor_Face *face;
+   char buf[64];
 
-   long                bytes = net_bytes_out_get();
+   long bytes = net_bytes_out_get();
 
    face = data;
 
@@ -681,11 +680,11 @@ _monitor_net_out_text_update_callcack(Flow_Chart * chart, void *data)
 }
 
 static void
-_monitor_wlan_link_text_update_callcack(Flow_Chart * chart, void *data)
+_monitor_wlan_link_text_update_callcack(Flow_Chart *chart, void *data)
 {
-   Monitor_Face       *face;
-   char                buf[64];
-   long                link = wlan_link_get();
+   Monitor_Face *face;
+   char buf[64];
+   long link = wlan_link_get();
 
    face = data;
    snprintf(buf, 64, "LNK: %ld", link);
@@ -693,7 +692,7 @@ _monitor_wlan_link_text_update_callcack(Flow_Chart * chart, void *data)
 }
 
 static void
-_monitor_face_free(Monitor_Face * face)
+_monitor_face_free(Monitor_Face *face)
 {
    e_object_unref(E_OBJECT(face->con));
    e_object_del(E_OBJECT(face->gmc));
@@ -737,83 +736,83 @@ _monitor_face_free(Monitor_Face * face)
 }
 
 static void
-_monitor_face_cb_gmc_change(void *data, E_Gadman_Client * gmc,
+_monitor_face_cb_gmc_change(void *data, E_Gadman_Client *gmc,
                             E_Gadman_Change change)
 {
-   Monitor_Face       *face;
-   Evas_Coord          x, y, w, h;
+   Monitor_Face *face;
+   Evas_Coord x, y, w, h;
 
    face = data;
    switch (change)
      {
-       case E_GADMAN_CHANGE_MOVE_RESIZE:
-          e_gadman_client_geometry_get(face->gmc, &x, &y, &w, &h);
+     case E_GADMAN_CHANGE_MOVE_RESIZE:
+        e_gadman_client_geometry_get(face->gmc, &x, &y, &w, &h);
 
-          evas_object_move(face->monitor_object, x, y);
-          evas_object_resize(face->monitor_object, w, h);
+        evas_object_move(face->monitor_object, x, y);
+        evas_object_resize(face->monitor_object, w, h);
 
-          evas_object_move(face->table_object, x, y);
-          evas_object_resize(face->table_object, w, h);
+        evas_object_move(face->table_object, x, y);
+        evas_object_resize(face->table_object, w, h);
 
-          evas_object_move(face->monitor_cover_obj, x, y);
-          evas_object_resize(face->monitor_cover_obj, w, h);
+        evas_object_move(face->monitor_cover_obj, x, y);
+        evas_object_resize(face->monitor_cover_obj, w, h);
 
-          if (face->cpu)
-             evas_object_geometry_get(face->cpu, &x, &y, &w, &h);
-          if (face->cpu)
-             chart_container_move(face->chart_cpu, x + 2, y + 2);
-          if (face->cpu)
-             chart_container_resize(face->chart_cpu, w - 4, h - 4);
+        if (face->cpu)
+           evas_object_geometry_get(face->cpu, &x, &y, &w, &h);
+        if (face->cpu)
+           chart_container_move(face->chart_cpu, x + 2, y + 2);
+        if (face->cpu)
+           chart_container_resize(face->chart_cpu, w - 4, h - 4);
 
-          if (face->mem)
-             evas_object_geometry_get(face->mem, &x, &y, &w, &h);
-          if (face->mem)
-             chart_container_move(face->chart_mem, x + 2, y + 2);
-          if (face->mem)
-             chart_container_resize(face->chart_mem, w - 4, h - 4);
+        if (face->mem)
+           evas_object_geometry_get(face->mem, &x, &y, &w, &h);
+        if (face->mem)
+           chart_container_move(face->chart_mem, x + 2, y + 2);
+        if (face->mem)
+           chart_container_resize(face->chart_mem, w - 4, h - 4);
 
-          if (face->net)
-             evas_object_geometry_get(face->net, &x, &y, &w, &h);
-          if (face->net)
-             chart_container_move(face->chart_net, x + 2, y + 2);
-          if (face->net)
-             chart_container_resize(face->chart_net, w - 4, h - 4);
+        if (face->net)
+           evas_object_geometry_get(face->net, &x, &y, &w, &h);
+        if (face->net)
+           chart_container_move(face->chart_net, x + 2, y + 2);
+        if (face->net)
+           chart_container_resize(face->chart_net, w - 4, h - 4);
 
-          if (face->wlan)
-             evas_object_geometry_get(face->wlan, &x, &y, &w, &h);
-          if (face->wlan)
-             chart_container_move(face->chart_wlan, x + 2, y + 2);
-          if (face->wlan)
-             chart_container_resize(face->chart_wlan, w - 4, h - 4);
+        if (face->wlan)
+           evas_object_geometry_get(face->wlan, &x, &y, &w, &h);
+        if (face->wlan)
+           chart_container_move(face->chart_wlan, x + 2, y + 2);
+        if (face->wlan)
+           chart_container_resize(face->chart_wlan, w - 4, h - 4);
 
-          break;
-       case E_GADMAN_CHANGE_RAISE:
-          //evas_object_raise(face->exit_event_object);
-          break;
-       case E_GADMAN_CHANGE_EDGE:
-       case E_GADMAN_CHANGE_ZONE:
-          /* FIXME
-           * Must we do something here?
-           */
-          break;
+        break;
+     case E_GADMAN_CHANGE_RAISE:
+        //evas_object_raise(face->exit_event_object);
+        break;
+     case E_GADMAN_CHANGE_EDGE:
+     case E_GADMAN_CHANGE_ZONE:
+        /* FIXME
+         * Must we do something here?
+         */
+        break;
      }
    e_gadman_client_save(face->gmc);
 }
 
 static void
-_monitor_face_cb_menu_edit(void *data, E_Menu * m, E_Menu_Item * mi)
+_monitor_face_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi)
 {
-   Monitor_Face       *face;
+   Monitor_Face *face;
 
    face = data;
    e_gadman_mode_set(face->gmc->gadman, E_GADMAN_MODE_EDIT);
 }
 
 static void
-_monitor_face_cb_mouse_down(void *data, Evas * e, Evas_Object * obj,
+_monitor_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
                             void *event_info)
 {
-   Monitor_Face       *face;
+   Monitor_Face *face;
    Evas_Event_Mouse_Down *ev;
 
    face = data;
@@ -853,10 +852,10 @@ _monitor_face_cb_mouse_out(void *data, Evas *e, Evas_Object *obj,
 */
 
 static void
-_monitor_face_menu_new(Monitor_Face * face)
+_monitor_face_menu_new(Monitor_Face *face)
 {
-   E_Menu             *mn;
-   E_Menu_Item        *mi;
+   E_Menu *mn;
+   E_Menu_Item *mi;
 
    mn = e_menu_new();
    face->menu = mn;
@@ -873,7 +872,7 @@ _monitor_face_menu_new(Monitor_Face * face)
 void
 _monitor_cb_config_updated(void *data)
 {
-   Monitor_Face       *face;
+   Monitor_Face *face;
 
    face = data;
 
@@ -907,9 +906,9 @@ _monitor_cb_config_updated(void *data)
 }
 
 static void
-_monitor_menu_cb_configure(void *data, E_Menu * m, E_Menu_Item * mi)
+_monitor_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
 {
-   Monitor_Face       *f;
+   Monitor_Face *f;
 
    f = data;
    if (!f)
@@ -918,7 +917,7 @@ _monitor_menu_cb_configure(void *data, E_Menu * m, E_Menu_Item * mi)
 }
 
 static void
-_add_sensor(Monitor_Face * face, Evas_Object * o, int VerHor)
+_add_sensor(Monitor_Face *face, Evas_Object *o, int VerHor)
 {
    if (VerHor)
       e_table_pack(face->table_object, o, num_sensors, 0, 1, 1);
@@ -931,30 +930,30 @@ _add_sensor(Monitor_Face * face, Evas_Object * o, int VerHor)
 }
 
 void
-rebuild_monitor(Monitor_Face * face)
+rebuild_monitor(Monitor_Face *face)
 {
-   struct utsname      u_buf;
+   struct utsname u_buf;
 
    uname(&u_buf);
 
-   struct sysinfo      s_info;
+   struct sysinfo s_info;
 
    sysinfo(&s_info);
 
-   long                minute = 60;
-   long                hour = minute * 60;
-   long                day = hour * 24;
-   double              megabyte = 1024 * 1024;
+   long minute = 60;
+   long hour = minute * 60;
+   long day = hour * 24;
+   double megabyte = 1024 * 1024;
 
-   Chart_Container    *chart_con;
-   Monitor            *mon;
-   Monitor_Face       *f;
+   Chart_Container *chart_con;
+   Monitor *mon;
+   Monitor_Face *f;
 
    num_sensors = 0;
 
    e_object_del(E_OBJECT(face->menu));
 
-   Evas_Object        *o;
+   Evas_Object *o;
 
    evas_event_freeze(face->con->bg_evas);
 
@@ -1175,8 +1174,8 @@ rebuild_monitor(Monitor_Face * face)
         if (face->uptime)
            evas_object_del(face->uptime);
 
-        int                 num_days, num_hours, num_min;
-        char                u_date_time[256];
+        int num_days, num_hours, num_min;
+        char u_date_time[256];
 
         face->uptime = edje_object_add(face->con->bg_evas);
         if (!e_theme_edje_object_set
@@ -1202,11 +1201,11 @@ rebuild_monitor(Monitor_Face * face)
         if (face->uptime)
            evas_object_del(face->uptime);
 
-        time_t              now;
-        struct tm           date;
+        time_t now;
+        struct tm date;
 
         time(&now);
-        char                curr_time[12];
+        char curr_time[12];
 
         date = *localtime(&now);
         face->time = edje_object_add(face->con->bg_evas);
@@ -1235,7 +1234,7 @@ rebuild_monitor(Monitor_Face * face)
                                   _monitor_face_cb_mouse_down, face);
    evas_object_show(face->monitor_cover_obj);
 
-   int                 x, y, w, h;
+   int x, y, w, h;
 
    e_gadman_client_geometry_get(face->gmc, &x, &y, &w, &h);
 
@@ -1297,20 +1296,20 @@ rebuild_monitor(Monitor_Face * face)
 static int
 _date_cb_check(void *data)
 {
-   Monitor_Face       *face;
+   Monitor_Face *face;
 
    face = data;
 
    //Update uptime
-   char                u_date_time[256];
-   struct sysinfo      s_info;
+   char u_date_time[256];
+   struct sysinfo s_info;
 
    sysinfo(&s_info);
 
-   long                minute = 60;
-   long                hour = minute * 60;
-   long                day = hour * 24;
-   double              megabyte = 1024 * 1024;
+   long minute = 60;
+   long hour = minute * 60;
+   long day = hour * 24;
+   double megabyte = 1024 * 1024;
 
    sprintf(u_date_time, "uptime: %ld days, %ld:%02ld:%02ld",
            s_info.uptime / day, (s_info.uptime % day) / hour,
@@ -1318,11 +1317,11 @@ _date_cb_check(void *data)
    edje_object_part_text_set(face->uptime, "uptime", u_date_time);
 
    //Update time
-   time_t              now;
-   struct tm           date;
+   time_t now;
+   struct tm date;
 
    time(&now);
-   char                curr_time[12];
+   char curr_time[12];
 
    date = *localtime(&now);
    sprintf(curr_time, "%02d:%02d:%02d", date.tm_hour, date.tm_min, date.tm_sec);

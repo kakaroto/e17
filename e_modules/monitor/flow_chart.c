@@ -4,25 +4,25 @@
 static int
 flow_chart_timer(void *data)
 {
-   Flow_Chart         *chart = (Flow_Chart *) data;
+   Flow_Chart *chart = (Flow_Chart *)data;
 
-   Evas_Object        *o;
-   Evas_Object        *last = NULL;
-   Evas_List          *l;
-   int                 i, j = 0;
-   int                 value = 0, text_value = 0;
-   double              factor = 0.0;
+   Evas_Object *o;
+   Evas_Object *last = NULL;
+   Evas_List *l;
+   int i, j = 0;
+   int value = 0, text_value = 0;
+   double factor = 0.0;
 
-   double              start_rel = chart->start_rel;
-   double              end_rel = chart->end_rel;
+   double start_rel = chart->start_rel;
+   double end_rel = chart->end_rel;
 
-   int                 x = chart->x;
-   int                 y = chart->y;
-   int                 w = chart->w;
-   int                 h = chart->h;
+   int x = chart->x;
+   int y = chart->y;
+   int w = chart->w;
+   int h = chart->h;
 
-   int                 dist_right = (int)((double)w * start_rel);
-   int                 dist_left = (int)((double)w * (1.0 - end_rel));
+   int dist_right = (int)((double)w * start_rel);
+   int dist_left = (int)((double)w * (1.0 - end_rel));
 
    x = x - dist_right;
 
@@ -65,10 +65,10 @@ flow_chart_timer(void *data)
 
    for (i = x + w; l && j - 2 < w - dist_right - dist_left; l = l->next, j++)
      {
-        Evas_Coord          y;
-        Evas_Object        *lo;
+        Evas_Coord y;
+        Evas_Object *lo;
 
-        lo = (Evas_Object *) evas_list_data(l);
+        lo = (Evas_Object *)evas_list_data(l);
 
         evas_object_geometry_get(lo, NULL, &y, NULL, NULL);
 
@@ -91,12 +91,12 @@ flow_chart_timer(void *data)
    return 1;
 }
 
-Flow_Chart         *
+Flow_Chart *
 flow_chart_new(void)
 {
-   Flow_Chart         *chart = NULL;
+   Flow_Chart *chart = NULL;
 
-   chart = (Flow_Chart *) calloc(1, sizeof(Flow_Chart));
+   chart = (Flow_Chart *)calloc(1, sizeof(Flow_Chart));
    if (!chart)
       return NULL;
 
@@ -128,9 +128,9 @@ flow_chart_new(void)
 }
 
 void
-flow_chart_color_set(Flow_Chart * chart, int r, int g, int b, int a)
+flow_chart_color_set(Flow_Chart *chart, int r, int g, int b, int a)
 {
-   unsigned char       was_running = 0;
+   unsigned char was_running = 0;
 
    if (chart->is_running)
      {
@@ -148,30 +148,30 @@ flow_chart_color_set(Flow_Chart * chart, int r, int g, int b, int a)
 }
 
 void
-flow_chart_layer_set(Flow_Chart * chart, int layer)
+flow_chart_layer_set(Flow_Chart *chart, int layer)
 {
    chart->layer = layer;
 }
 
 void
-flow_chart_alignment_set(Flow_Chart * chart, int align)
+flow_chart_alignment_set(Flow_Chart *chart, int align)
 {
    chart->alignment_bottom = align;
 }
 
 void
-flow_chart_callback_set(Flow_Chart * chart,
-                        void (*cb) (Flow_Chart * chart, void *data), void *data)
+flow_chart_callback_set(Flow_Chart *chart,
+                        void (*cb) (Flow_Chart *chart, void *data), void *data)
 {
    chart->chart_callback = cb;
    chart->callback_data = data;
 }
 
 void
-flow_chart_get_value_function_set(Flow_Chart * chart, int (*func) (void))
+flow_chart_get_value_function_set(Flow_Chart *chart, int (*func) (void))
 {
-   unsigned char       was_running = 0;
-   int                 test = -1;
+   unsigned char was_running = 0;
+   int test = -1;
 
    if (chart->is_running)
      {
@@ -197,9 +197,9 @@ flow_chart_get_value_function_set(Flow_Chart * chart, int (*func) (void))
 }
 
 void
-flow_chart_update_rate_set(Flow_Chart * chart, double rate)
+flow_chart_update_rate_set(Flow_Chart *chart, double rate)
 {
-   unsigned char       was_running = 0;
+   unsigned char was_running = 0;
 
    if (chart->is_running)
      {
@@ -217,7 +217,7 @@ flow_chart_update_rate_set(Flow_Chart * chart, double rate)
 }
 
 void
-flow_chart_set_usage_text_to_edje_part(Flow_Chart * chart, Evas_Object * edje,
+flow_chart_set_usage_text_to_edje_part(Flow_Chart *chart, Evas_Object *edje,
                                        const char *text_part)
 {
    chart->edje = edje;
@@ -225,7 +225,7 @@ flow_chart_set_usage_text_to_edje_part(Flow_Chart * chart, Evas_Object * edje,
 }
 
 void
-flow_chart_run(Flow_Chart * chart)
+flow_chart_run(Flow_Chart *chart)
 {
    if (!chart->is_runable || chart->is_running)
       return;
@@ -237,9 +237,9 @@ flow_chart_run(Flow_Chart * chart)
 }
 
 void
-flow_chart_stop(Flow_Chart * chart)
+flow_chart_stop(Flow_Chart *chart)
 {
-   Evas_List          *l;
+   Evas_List *l;
 
    if (!chart->is_running)
       return;
@@ -250,7 +250,7 @@ flow_chart_stop(Flow_Chart * chart)
 
    for (l = chart->old_values; l; l = l->next)
      {
-        Evas_Object        *o;
+        Evas_Object *o;
 
         o = evas_list_data(l);
 
@@ -264,7 +264,7 @@ flow_chart_stop(Flow_Chart * chart)
 }
 
 void
-flow_chart_del(Flow_Chart * chart)
+flow_chart_del(Flow_Chart *chart)
 {
    if (chart->is_running)
       flow_chart_stop(chart);
@@ -274,14 +274,14 @@ flow_chart_del(Flow_Chart * chart)
 
 /* Chart Container */
 
-Chart_Container    *
-chart_container_new(Evas * evas, int x, int y, int w, int h)
+Chart_Container *
+chart_container_new(Evas *evas, int x, int y, int w, int h)
 {
-   Chart_Container    *chart_con = NULL;
-   Evas_Object        *o = NULL;
+   Chart_Container *chart_con = NULL;
+   Evas_Object *o = NULL;
 
    /* allocat memory return NULL on false */
-   chart_con = (Chart_Container *) calloc(1, sizeof(Chart_Container));
+   chart_con = (Chart_Container *)calloc(1, sizeof(Chart_Container));
    if (!chart_con)
       return NULL;
 
@@ -308,9 +308,9 @@ chart_container_new(Evas * evas, int x, int y, int w, int h)
 }
 
 void
-chart_container_del(Chart_Container * chart_con)
+chart_container_del(Chart_Container *chart_con)
 {
-   Evas_List          *l = NULL;
+   Evas_List *l = NULL;
 
    if (!chart_con)
       return;
@@ -319,7 +319,7 @@ chart_container_del(Chart_Container * chart_con)
 
    if (l)
       for (; l; l = l->next)
-         flow_chart_del((Flow_Chart *) evas_list_data(l));
+         flow_chart_del((Flow_Chart *)evas_list_data(l));
 
    evas_list_free(chart_con->charts);
 
@@ -329,7 +329,7 @@ chart_container_del(Chart_Container * chart_con)
 }
 
 void
-chart_container_chart_remove(Chart_Container * chart_con, Flow_Chart * chart)
+chart_container_chart_remove(Chart_Container *chart_con, Flow_Chart *chart)
 {
    if (!chart_con || !chart)
       return;
@@ -349,7 +349,7 @@ chart_container_chart_remove(Chart_Container * chart_con, Flow_Chart * chart)
 }
 
 void
-chart_container_move(Chart_Container * chart_con, int x, int y)
+chart_container_move(Chart_Container *chart_con, int x, int y)
 {
    if (!chart_con)
       return;
@@ -360,14 +360,14 @@ chart_container_move(Chart_Container * chart_con, int x, int y)
    evas_object_move(chart_con->clip, x, y);
 
    {
-      Evas_List          *l = chart_con->charts;
+      Evas_List *l = chart_con->charts;
 
       if (!l)
          return;
 
       for (; l; l = l->next)
         {
-           Flow_Chart         *chart = (Flow_Chart *) evas_list_data(l);
+           Flow_Chart *chart = (Flow_Chart *)evas_list_data(l);
 
            flow_chart_stop(chart);
            chart->x = x;
@@ -379,7 +379,7 @@ chart_container_move(Chart_Container * chart_con, int x, int y)
 }
 
 void
-chart_container_resize(Chart_Container * chart_con, int w, int h)
+chart_container_resize(Chart_Container *chart_con, int w, int h)
 {
    if (!chart_con)
       return;
@@ -390,14 +390,14 @@ chart_container_resize(Chart_Container * chart_con, int w, int h)
    evas_object_resize(chart_con->clip, w, h);
 
    {
-      Evas_List          *l = chart_con->charts;
+      Evas_List *l = chart_con->charts;
 
       if (!l)
          return;
 
       for (; l; l = l->next)
         {
-           Flow_Chart         *chart = (Flow_Chart *) evas_list_data(l);
+           Flow_Chart *chart = (Flow_Chart *)evas_list_data(l);
 
            flow_chart_stop(chart);
            chart->w = w;
@@ -409,7 +409,7 @@ chart_container_resize(Chart_Container * chart_con, int w, int h)
 }
 
 void
-chart_container_chart_add(Chart_Container * chart_con, Flow_Chart * chart)
+chart_container_chart_add(Chart_Container *chart_con, Flow_Chart *chart)
 {
    chart_con->charts = evas_list_append(chart_con->charts, chart);
 
@@ -426,21 +426,21 @@ chart_container_chart_add(Chart_Container * chart_con, Flow_Chart * chart)
 }
 
 void
-chart_container_stop_charts(Chart_Container * chart_con)
+chart_container_stop_charts(Chart_Container *chart_con)
 {
-   Evas_List          *l = chart_con->charts;
+   Evas_List *l = chart_con->charts;
 
    if (l)
       for (; l; l = l->next)
-         flow_chart_stop((Flow_Chart *) evas_list_data(l));
+         flow_chart_stop((Flow_Chart *)evas_list_data(l));
 }
 
 void
-chart_container_run_charts(Chart_Container * chart_con)
+chart_container_run_charts(Chart_Container *chart_con)
 {
-   Evas_List          *l = chart_con->charts;
+   Evas_List *l = chart_con->charts;
 
    if (l)
       for (; l; l = l->next)
-         flow_chart_run((Flow_Chart *) evas_list_data(l));
+         flow_chart_run((Flow_Chart *)evas_list_data(l));
 }
