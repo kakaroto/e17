@@ -1,5 +1,5 @@
 #ifdef E_TYPEDEFS
-#else   /* 
+#else /* 
  */
 #ifndef DIALOG_FUNC_H
 #define DIALOG_FUNC_H
@@ -44,9 +44,9 @@ void               e_file_ti_select_cb(E_File_Dialog * dia, char *file,
 void               e_file_bk_select_cb(E_File_Dialog * dia, char *file,
                                         void *data);
 
-#endif  /* 
+#endif /* 
  */
-#endif  /* 
+#endif /* 
  */
     
 

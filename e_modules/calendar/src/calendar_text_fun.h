@@ -1,5 +1,5 @@
 #ifdef E_TYPEDEFS
-#else   /* 
+#else /* 
  */
 #ifndef CALENDAR_TEXT_FUNC_H
 #define CALENDAR_TEXT_FUNC_H
@@ -15,9 +15,9 @@ void               set_day_label(Evas_Object * label, int FirstDay, int month,
 void               free_Calfonts(Calendar * calendar);
 
 
-#endif  /* 
+#endif /* 
  */
-#endif  /* 
+#endif /* 
  */
     
 

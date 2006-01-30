@@ -71,6 +71,7 @@ int               check = edje_object_file_set(o, PACKAGE_LIB_DIR
                                                     "/calendar/calendar.edj",
                                                     
 "back");
+
    
 if (check == 0)
       
@@ -160,6 +161,7 @@ int               check = edje_object_file_set(o, PACKAGE_LIB_DIR
                                                     "/calendar/calendar.edj",
                                                     
 "Jan");
+
    
 if (check == 0)
       

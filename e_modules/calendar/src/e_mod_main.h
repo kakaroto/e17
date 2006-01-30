@@ -237,5 +237,5 @@ int                increment_cal_count();
 #include "otherfonts_editor.h"
 #include "main_editor.h"
     
-#endif  /* 
+#endif /* 
  */
