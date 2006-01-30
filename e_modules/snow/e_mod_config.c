@@ -9,29 +9,30 @@ typedef struct _Cfg_File_Data Cfg_File_Data;
 #define DENSITY_MEDIUM 1
 #define DENSITY_DENSE 2
 
-struct _E_Config_Dialog_Data {
-   int                 show_trees;
-   int                 density;
+struct _E_Config_Dialog_Data
+{
+   int show_trees;
+   int density;
 };
 
-struct _Cfg_File_Data {
-   E_Config_Dialog    *cfd;
-   char               *file;
+struct _Cfg_File_Data
+{
+   E_Config_Dialog *cfd;
+   char *file;
 };
 
 /* Protos */
-static void        *_create_data(E_Config_Dialog * cfd);
-static void         _free_data(E_Config_Dialog * cfd,
-                               E_Config_Dialog_Data * cfdata);
-static Evas_Object *_basic_create_widgets(E_Config_Dialog * cfd, Evas * evas,
-                                          E_Config_Dialog_Data * cfdata);
-static int          _basic_apply_data(E_Config_Dialog * cfd,
-                                      E_Config_Dialog_Data * cfdata);
+static void *_create_data(E_Config_Dialog *cfd);
+static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas,
+                                          E_Config_Dialog_Data *cfdata);
+static int _basic_apply_data(E_Config_Dialog *cfd,
+                             E_Config_Dialog_Data *cfdata);
 
 void
-_config_snow_module(E_Container * con, Snow * s)
+_config_snow_module(E_Container *con, Snow * s)
 {
-   E_Config_Dialog    *cfd;
+   E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
 
    v = E_NEW(E_Config_Dialog_View, 1);
@@ -48,41 +49,42 @@ _config_snow_module(E_Container * con, Snow * s)
 }
 
 static void
-_fill_data(Snow * sn, E_Config_Dialog_Data * cfdata)
+_fill_data(Snow * sn, E_Config_Dialog_Data *cfdata)
 {
    cfdata->show_trees = sn->conf->show_trees;
    switch (sn->conf->flake_count)
      {
-       case 5:
-          cfdata->density = DENSITY_SPARSE;
-          break;
-       case 10:
-          cfdata->density = DENSITY_MEDIUM;
-          break;
-       case 20:
-          cfdata->density = DENSITY_DENSE;
-          break;
-       default:
-          break;
+     case 5:
+        cfdata->density = DENSITY_SPARSE;
+        break;
+     case 10:
+        cfdata->density = DENSITY_MEDIUM;
+        break;
+     case 20:
+        cfdata->density = DENSITY_DENSE;
+        break;
+     default:
+        break;
      }
 }
 
-static void        *
-_create_data(E_Config_Dialog * cfd)
+static void *
+_create_data(E_Config_Dialog *cfd)
 {
    E_Config_Dialog_Data *cfdata;
-   Snow               *s;
+   Snow *s;
 
    s = cfd->data;
    cfdata = E_NEW(E_Config_Dialog_Data, 1);
+
    _fill_data(s, cfdata);
    return cfdata;
 }
 
 static void
-_free_data(E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
+_free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-   Snow               *sn;
+   Snow *sn;
 
    sn = cfd->data;
    sn->config_dialog = NULL;
@@ -90,11 +92,11 @@ _free_data(E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
 }
 
 static Evas_Object *
-_basic_create_widgets(E_Config_Dialog * cfd, Evas * evas,
-                      E_Config_Dialog_Data * cfdata)
+_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas,
+                      E_Config_Dialog_Data *cfdata)
 {
-   Evas_Object        *o, *of, *ob;
-   E_Radio_Group      *rg;
+   Evas_Object *o, *of, *ob;
+   E_Radio_Group *rg;
 
    o = e_widget_list_add(evas, 0, 0);
 
@@ -117,28 +119,28 @@ _basic_create_widgets(E_Config_Dialog * cfd, Evas * evas,
 }
 
 static int
-_basic_apply_data(E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
+_basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-   Snow               *sn;
+   Snow *sn;
 
    sn = cfd->data;
    e_border_button_bindings_ungrab_all();
    switch (cfdata->density)
      {
-       case 0:
-          sn->conf->tree_count = 5;
-          sn->conf->flake_count = 20;
-          break;
-       case 1:
-          sn->conf->tree_count = 10;
-          sn->conf->flake_count = 60;
-          break;
-       case 2:
-          sn->conf->tree_count = 20;
-          sn->conf->flake_count = 150;
-          break;
-       default:
-          break;
+     case 0:
+        sn->conf->tree_count = 5;
+        sn->conf->flake_count = 20;
+        break;
+     case 1:
+        sn->conf->tree_count = 10;
+        sn->conf->flake_count = 60;
+        break;
+     case 2:
+        sn->conf->tree_count = 20;
+        sn->conf->flake_count = 150;
+        break;
+     default:
+        break;
      }
    sn->conf->show_trees = cfdata->show_trees;
 

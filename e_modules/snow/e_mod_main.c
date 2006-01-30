@@ -9,25 +9,24 @@
  */
 
 /* module private routines */
-static Snow        *_snow_init(E_Module * m);
-static void         _snow_shutdown(Snow * snow);
-static E_Menu      *_snow_config_menu_new(Snow * snow);
-static int          _snow_cb_animator(void *data);
-static void         _snow_trees_load(Snow * snow);
-static void         _snow_flakes_load(char type, Snow * snow);
-static void         _snow_menu_cb_configure(void *data, E_Menu * m,
-                                            E_Menu_Item * mi);
+static Snow *_snow_init(E_Module *m);
+static void _snow_shutdown(Snow * snow);
+static E_Menu *_snow_config_menu_new(Snow * snow);
+static int _snow_cb_animator(void *data);
+static void _snow_trees_load(Snow * snow);
+static void _snow_flakes_load(char type, Snow * snow);
+static void _snow_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 
 /* public module routines. all modules must have these */
-EAPI E_Module_Api   e_modapi = {
+EAPI E_Module_Api e_modapi = {
    E_MODULE_API_VERSION,
    "Snow"
 };
 
-EAPI void          *
-e_modapi_init(E_Module * m)
+EAPI void *
+e_modapi_init(E_Module *m)
 {
-   Snow               *snow;
+   Snow *snow;
 
    snow = _snow_init(m);
    m->config_menu = _snow_config_menu_new(snow);
@@ -35,9 +34,9 @@ e_modapi_init(E_Module * m)
 }
 
 EAPI int
-e_modapi_shutdown(E_Module * m)
+e_modapi_shutdown(E_Module *m)
 {
-   Snow               *snow;
+   Snow *snow;
 
    snow = m->data;
    if (snow)
@@ -59,9 +58,9 @@ e_modapi_shutdown(E_Module * m)
 }
 
 EAPI int
-e_modapi_save(E_Module * m)
+e_modapi_save(E_Module *m)
 {
-   Snow               *snow;
+   Snow *snow;
 
    snow = m->data;
    if (!snow)
@@ -71,14 +70,14 @@ e_modapi_save(E_Module * m)
 }
 
 EAPI int
-e_modapi_info(E_Module * m)
+e_modapi_info(E_Module *m)
 {
    m->icon_file = strdup(PACKAGE_DATA_DIR "/module_icon.png");
    return 1;
 }
 
 EAPI int
-e_modapi_about(E_Module * m)
+e_modapi_about(E_Module *m)
 {
    e_module_dialog_show(_("Enlightenment Snow Module"),
                         _("This is a snow module that may replace xsnow."));
@@ -86,11 +85,11 @@ e_modapi_about(E_Module * m)
 }
 
 EAPI int
-e_modapi_config(E_Module * m)
+e_modapi_config(E_Module *m)
 {
-   Snow               *s;
-   Evas_List          *l;
-   E_Container        *con;
+   Snow *s;
+   Evas_List *l;
+   E_Container *con;
 
    s = m->data;
    if (!s)
@@ -100,7 +99,7 @@ e_modapi_config(E_Module * m)
    con = e_container_current_get(e_manager_current_get());
    for (l = s->cons; l; l = l->next)
      {
-        E_Container        *c;
+        E_Container *c;
 
         c = l->data;
         if (c == con)
@@ -113,11 +112,11 @@ e_modapi_config(E_Module * m)
 }
 
 /* module private routines */
-static Snow        *
-_snow_init(E_Module * m)
+static Snow *
+_snow_init(E_Module *m)
 {
-   Snow               *snow;
-   Evas_List          *managers, *l, *l2;
+   Snow *snow;
+   Evas_List *managers, *l, *l2;
 
    snow = calloc(1, sizeof(Snow));
    if (!snow)
@@ -137,6 +136,7 @@ _snow_init(E_Module * m)
    if (!snow->conf)
      {
         snow->conf = E_NEW(Config, 1);
+
         snow->conf->tree_count = 10;
         snow->conf->flake_count = 60;
         snow->conf->show_trees = 1;
@@ -147,12 +147,12 @@ _snow_init(E_Module * m)
    managers = e_manager_list();
    for (l = managers; l; l = l->next)
      {
-        E_Manager          *man;
+        E_Manager *man;
 
         man = l->data;
         for (l2 = man->containers; l2; l2 = l2->next)
           {
-             E_Container        *con;
+             E_Container *con;
 
              con = l2->data;
              snow->cons = evas_list_append(snow->cons, con);
@@ -179,7 +179,7 @@ _snow_trees_free(Snow * snow)
 {
    while (snow->trees)
      {
-        Evas_Object        *tree;
+        Evas_Object *tree;
 
         tree = snow->trees->data;
         evas_object_del(tree);
@@ -192,7 +192,7 @@ _snow_flakes_free(Snow * snow)
 {
    while (snow->flakes)
      {
-        Snow_Flake         *flake;
+        Snow_Flake *flake;
 
         flake = snow->flakes->data;
         evas_object_del(flake->flake);
@@ -208,7 +208,7 @@ _snow_shutdown(Snow * snow)
    E_CONFIG_DD_FREE(snow->conf_edd);
    while (snow->cons)
      {
-        E_Container        *con;
+        E_Container *con;
 
         con = snow->cons->data;
         snow->cons = evas_list_remove_list(snow->cons, snow->cons);
@@ -220,11 +220,11 @@ _snow_shutdown(Snow * snow)
    free(snow);
 }
 
-static E_Menu      *
+static E_Menu *
 _snow_config_menu_new(Snow * snow)
 {
-   E_Menu             *mn;
-   E_Menu_Item        *mi;
+   E_Menu *mn;
+   E_Menu_Item *mi;
 
    mn = e_menu_new();
 
@@ -250,8 +250,8 @@ _snow_canvas_reset(Snow * snow)
 static void
 _snow_trees_load(Snow * snow)
 {
-   Evas_Object        *o;
-   int                 tw, th, i;
+   Evas_Object *o;
+   int tw, th, i;
 
    o = evas_object_image_add(snow->canvas);
    evas_object_image_file_set(o, PACKAGE_DATA_DIR "/tree.png", "");
@@ -259,7 +259,7 @@ _snow_trees_load(Snow * snow)
 
    for (i = 0; i < snow->conf->tree_count; i++)
      {
-        Evas_Coord          tx, ty;
+        Evas_Coord tx, ty;
 
         if (i != 0)
           {
@@ -282,11 +282,11 @@ _snow_trees_load(Snow * snow)
 static void
 _snow_flakes_load(char type, Snow * snow)
 {
-   Evas_Object        *o;
-   Evas_Coord          xx, yy, ww, hh;
-   char                buf[4096];
-   int                 tw, th, i;
-   Snow_Flake         *flake;
+   Evas_Object *o;
+   Evas_Coord xx, yy, ww, hh;
+   char buf[4096];
+   int tw, th, i;
+   Snow_Flake *flake;
 
    evas_output_viewport_get(snow->canvas, &xx, &yy, &ww, &hh);
    snprintf(buf, sizeof(buf), PACKAGE_DATA_DIR "/flake-%c.png", type);
@@ -297,7 +297,7 @@ _snow_flakes_load(char type, Snow * snow)
 
    for (i = 0; i < snow->conf->flake_count / 3; i++)
      {
-        Evas_Coord          tx, ty;
+        Evas_Coord tx, ty;
 
         flake = malloc(sizeof(Snow_Flake));
         if (i != 0)
@@ -315,18 +315,18 @@ _snow_flakes_load(char type, Snow * snow)
         evas_object_show(o);
         flake->flake = o;
         flake->start_time =
-            ecore_time_get() + (double)(random() % (th * 10)) / (double)th;
+           ecore_time_get() + (double)(random() % (th * 10)) / (double)th;
         switch (type)
           {
-            case 's':
-               flake->speed = 1;
-               break;
-            case 'm':
-               flake->speed = 2;
-               break;
-            case 'l':
-               flake->speed = 3;
-               break;
+          case 's':
+             flake->speed = 1;
+             break;
+          case 'm':
+             flake->speed = 2;
+             break;
+          case 'l':
+             flake->speed = 3;
+             break;
           }
         snow->flakes = evas_list_append(snow->flakes, flake);
      }
@@ -336,16 +336,16 @@ _snow_flakes_load(char type, Snow * snow)
 static int
 _snow_cb_animator(void *data)
 {
-   Snow               *snow;
-   Evas_List          *next;
-   double              d;
+   Snow *snow;
+   Evas_List *next;
+   double d;
 
    snow = data;
    next = snow->flakes;
    while (next)
      {
-        Snow_Flake         *flake;
-        Evas_Coord          x, y;
+        Snow_Flake *flake;
+        Evas_Coord x, y;
 
         flake = next->data;
         d = ecore_time_get() - flake->start_time;
@@ -353,7 +353,7 @@ _snow_cb_animator(void *data)
         evas_object_geometry_get(flake->flake, &x, NULL, NULL, NULL);
         if (y > snow->height)
            flake->start_time =
-               ecore_time_get() + (double)(random() % 100) / (double)100;
+              ecore_time_get() + (double)(random() % 100) / (double)100;
         evas_object_move(flake->flake, x, y);
 
         next = evas_list_next(next);
@@ -362,10 +362,10 @@ _snow_cb_animator(void *data)
 }
 
 static void
-_snow_menu_cb_configure(void *data, E_Menu * m, E_Menu_Item * mi)
+_snow_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
 {
-   Snow               *s;
-   E_Container        *con;
+   Snow *s;
+   E_Container *con;
 
    s = (Snow *) data;
    if (!s)
@@ -377,7 +377,7 @@ _snow_menu_cb_configure(void *data, E_Menu * m, E_Menu_Item * mi)
 void
 _snow_cb_config_updated(void *data)
 {
-   Snow               *s;
+   Snow *s;
 
    s = (Snow *) data;
    if (!s)
