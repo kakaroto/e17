@@ -9,6 +9,7 @@
 -T E_Config_Dialog_View
 -T E_Container
 -T E_Container
+-T E_Gadget_Face
 -T E_Gadman_Client
 -T E_Manager
 -T E_Menu
@@ -19,8 +20,11 @@
 -T Ecore_Animator
 -T Ecore_Event_Handler
 -T Ecore_List
+-T Emu
+-T Emu_Face
 -T Evas
 -T Evas_Coord
+-T Evas_Hash
 -T Evas_List
 -T Evas_Object
 -T Flame
