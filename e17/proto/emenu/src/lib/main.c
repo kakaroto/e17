@@ -3,6 +3,6 @@
 EMENUAPI int
 emenu_generate()
 {
-   printf("Generate Menus\n");
+   printf("Generate Menus from Library call\n");
    return 1;
 }

@@ -1,4 +1,5 @@
 #include <e.h>
+#include <EMenu.h>
 #include "config.h"
 #include "e_mod_main.h"
 
@@ -128,5 +129,7 @@ _emenu_menu_cb_generate(void *data, E_Menu *m, E_Menu_Item *mi)
    em = data;
    e_module_dialog_show(_("Enlightenment Menu Module"),
 			_("Generate Menus."));
+   
+   emenu_generate();
 }
 
