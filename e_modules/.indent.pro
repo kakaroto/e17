@@ -1,0 +1,24 @@
+-i3 -bl -bad -nbap -sob -ncdb -di1 -nbc -lp -nce -npcs -sc -ncs -l80 -nut
+-T Cfg_File_Data
+-T E_Config_Dialog
+-T E_Config_Dialog_Data
+-T E_Container
+-T Flame
+-T E_Config_Dialog_View
+-T Evas_Object
+-T E_Radio_Group
+-T Evas
+-T E_Container
+-T E_Module
+-T Flame_Palette_Type
+-T E_Menu
+-T E_Menu_Item
+-T Flame_Face
+-T E_Module_Api
+-T Evas_List
+-T E_Manager
+-T Evas_Coord
+-T Config
+-T E_Config_DD
+-T Ecore_Animator
+-T Ecore_Event_Handler

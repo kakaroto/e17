@@ -13,44 +13,41 @@
  */
 
 /* module private routines */
-static Flame       *_flame_init(E_Module * m);
-static void         _flame_shutdown(Flame * f);
-static E_Menu      *_flame_config_menu_new(Flame * f);
-static void         _flame_config_palette_set(Flame * f,
-                                              Flame_Palette_Type type);
-static void         _flame_menu_cb_configure(void *data, E_Menu * m,
-                                             E_Menu_Item * mi);
+static Flame *_flame_init(E_Module *m);
+static void _flame_shutdown(Flame *f);
+static E_Menu *_flame_config_menu_new(Flame *f);
+static void _flame_config_palette_set(Flame *f, Flame_Palette_Type type);
+static void _flame_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 
-static int          _flame_face_init(Flame_Face * ff);
-static void         _flame_face_free(Flame_Face * ff);
-static void         _flame_face_anim_handle(Flame_Face * ff);
+static int _flame_face_init(Flame_Face *ff);
+static void _flame_face_free(Flame_Face *ff);
+static void _flame_face_anim_handle(Flame_Face *ff);
 
-static void         _flame_palette_gold_set(Flame_Face * ff);
-static void         _flame_palette_fire_set(Flame_Face * ff);
-static void         _flame_palette_plasma_set(Flame_Face * ff);
-static void         _flame_palette_matrix_set(Flame_Face * ff);
-static void         _flame_palette_ice_set(Flame_Face * ff);
-static void         _flame_palette_custom_set(Flame_Face * ff);
-static void         _flame_zero_set(Flame_Face * ff);
-static void         _flame_base_random_set(Flame_Face * ff);
-static void         _flame_base_random_modify(Flame_Face * ff);
-static void         _flame_process(Flame_Face * ff);
-static int          _flame_cb_draw(void *data);
-static int          _flame_cb_event_container_resize(void *data, int type,
-                                                     void *event);
+static void _flame_palette_gold_set(Flame_Face *ff);
+static void _flame_palette_fire_set(Flame_Face *ff);
+static void _flame_palette_plasma_set(Flame_Face *ff);
+static void _flame_palette_matrix_set(Flame_Face *ff);
+static void _flame_palette_ice_set(Flame_Face *ff);
+static void _flame_palette_custom_set(Flame_Face *ff);
+static void _flame_zero_set(Flame_Face *ff);
+static void _flame_base_random_set(Flame_Face *ff);
+static void _flame_base_random_modify(Flame_Face *ff);
+static void _flame_process(Flame_Face *ff);
+static int _flame_cb_draw(void *data);
+static int _flame_cb_event_container_resize(void *data, int type, void *event);
 
-static int          powerof(unsigned int n);
+static int powerof(unsigned int n);
 
 /* public module routines. all modules must have these */
-EAPI E_Module_Api   e_modapi = {
+EAPI E_Module_Api e_modapi = {
    E_MODULE_API_VERSION,
    "Flame"
 };
 
-EAPI void          *
-e_modapi_init(E_Module * m)
+EAPI void *
+e_modapi_init(E_Module *m)
 {
-   Flame              *f;
+   Flame *f;
 
    f = _flame_init(m);
    m->config_menu = _flame_config_menu_new(f);
@@ -58,9 +55,9 @@ e_modapi_init(E_Module * m)
 }
 
 EAPI int
-e_modapi_shutdown(E_Module * m)
+e_modapi_shutdown(E_Module *m)
 {
-   Flame              *f;
+   Flame *f;
 
    f = m->data;
    if (f)
@@ -82,9 +79,9 @@ e_modapi_shutdown(E_Module * m)
 }
 
 EAPI int
-e_modapi_save(E_Module * m)
+e_modapi_save(E_Module *m)
 {
-   Flame              *f;
+   Flame *f;
 
    f = m->data;
    if (f)
@@ -93,14 +90,14 @@ e_modapi_save(E_Module * m)
 }
 
 EAPI int
-e_modapi_info(E_Module * m)
+e_modapi_info(E_Module *m)
 {
    m->icon_file = strdup(PACKAGE_DATA_DIR "/module_icon.png");
    return 1;
 }
 
 EAPI int
-e_modapi_about(E_Module * m)
+e_modapi_about(E_Module *m)
 {
    e_module_dialog_show(_("Enlightenment Flame Module"),
                         _("A simple module to display flames."));
@@ -108,10 +105,10 @@ e_modapi_about(E_Module * m)
 }
 
 EAPI int
-e_modapi_config(E_Module * m)
+e_modapi_config(E_Module *m)
 {
-   Flame              *f;
-   E_Container        *con;
+   Flame *f;
+   E_Container *con;
 
    f = m->data;
    if (!f)
@@ -123,11 +120,11 @@ e_modapi_config(E_Module * m)
 }
 
 /* module private routines */
-static Flame       *
-_flame_init(E_Module * m)
+static Flame *
+_flame_init(E_Module *m)
 {
-   Flame              *f;
-   Evas_List          *managers, *l, *l2;
+   Flame *f;
+   Evas_List *managers, *l, *l2;
 
    f = calloc(1, sizeof(Flame));
    if (!f)
@@ -155,6 +152,7 @@ _flame_init(E_Module * m)
    if (!f->conf)
      {
         f->conf = E_NEW(Config, 1);
+
         f->conf->height = 128;
         f->conf->hspread = 26;
         f->conf->vspread = 76;
@@ -180,13 +178,13 @@ _flame_init(E_Module * m)
    managers = e_manager_list();
    for (l = managers; l; l = l->next)
      {
-        E_Manager          *man;
+        E_Manager *man;
 
         man = l->data;
         for (l2 = man->containers; l2; l2 = l2->next)
           {
-             E_Container        *con;
-             Flame_Face         *ff;
+             E_Container *con;
+             Flame_Face *ff;
 
              con = l2->data;
              ff = calloc(1, sizeof(Flame_Face));
@@ -205,7 +203,7 @@ _flame_init(E_Module * m)
 }
 
 static void
-_flame_shutdown(Flame * f)
+_flame_shutdown(Flame *f)
 {
    free(f->conf);
    E_CONFIG_DD_FREE(f->conf_edd);
@@ -213,11 +211,11 @@ _flame_shutdown(Flame * f)
    free(f);
 }
 
-static E_Menu      *
-_flame_config_menu_new(Flame * f)
+static E_Menu *
+_flame_config_menu_new(Flame *f)
 {
-   E_Menu             *mn;
-   E_Menu_Item        *mi;
+   E_Menu *mn;
+   E_Menu_Item *mi;
 
    mn = e_menu_new();
    mi = e_menu_item_new(mn);
@@ -228,44 +226,44 @@ _flame_config_menu_new(Flame * f)
 }
 
 static void
-_flame_config_palette_set(Flame * f, Flame_Palette_Type type)
+_flame_config_palette_set(Flame *f, Flame_Palette_Type type)
 {
    switch (type)
      {
-       case GOLD_PALETTE:
-          _flame_palette_gold_set(f->face);
-          break;
-       case FIRE_PALETTE:
-          _flame_palette_fire_set(f->face);
-          break;
-       case PLASMA_PALETTE:
-          _flame_palette_plasma_set(f->face);
-          break;
-       case MATRIX_PALETTE:
-          _flame_palette_matrix_set(f->face);
-          break;
-       case ICE_PALETTE:
-          _flame_palette_ice_set(f->face);
-          break;
-       case CUSTOM_PALETTE:
-          _flame_palette_custom_set(f->face);
-          break;
-       default:
-          break;
+     case GOLD_PALETTE:
+        _flame_palette_gold_set(f->face);
+        break;
+     case FIRE_PALETTE:
+        _flame_palette_fire_set(f->face);
+        break;
+     case PLASMA_PALETTE:
+        _flame_palette_plasma_set(f->face);
+        break;
+     case MATRIX_PALETTE:
+        _flame_palette_matrix_set(f->face);
+        break;
+     case ICE_PALETTE:
+        _flame_palette_ice_set(f->face);
+        break;
+     case CUSTOM_PALETTE:
+        _flame_palette_custom_set(f->face);
+        break;
+     default:
+        break;
      }
 }
 
 static int
-_flame_face_init(Flame_Face * ff)
+_flame_face_init(Flame_Face *ff)
 {
-   Evas_Object        *o;
-   Evas_Coord          ww, hh;
-   int                 size;
-   int                 flame_width, flame_height;
+   Evas_Object *o;
+   Evas_Coord ww, hh;
+   int size;
+   int flame_width, flame_height;
 
    ff->ev_handler_container_resize =
-       ecore_event_handler_add(E_EVENT_CONTAINER_RESIZE,
-                               _flame_cb_event_container_resize, ff);
+      ecore_event_handler_add(E_EVENT_CONTAINER_RESIZE,
+                              _flame_cb_event_container_resize, ff);
    /* set up the flame object */
    o = evas_object_image_add(ff->evas);
    evas_output_viewport_get(ff->evas, NULL, NULL, &ww, &hh);
@@ -320,7 +318,7 @@ _flame_face_init(Flame_Face * ff)
 }
 
 static void
-_flame_face_free(Flame_Face * ff)
+_flame_face_free(Flame_Face *ff)
 {
    ecore_event_handler_del(ff->ev_handler_container_resize);
    evas_object_del(ff->flame_object);
@@ -336,92 +334,92 @@ _flame_face_free(Flame_Face * ff)
 }
 
 static void
-_flame_face_anim_handle(Flame_Face * ff)
+_flame_face_anim_handle(Flame_Face *ff)
 {
    if (!ff->anim)
       ff->anim = ecore_animator_add(_flame_cb_draw, ff);
 }
 
 static void
-_flame_palette_gold_set(Flame_Face * ff)
+_flame_palette_gold_set(Flame_Face *ff)
 {
    const unsigned char gold_cmap[300 * 4] =
-       "\256\256\0\1\254i\24\3\312\2165\5"
-       "\330\212<\7\340\244I\10\344\235R\12\332\236P\15\334\247P\17\340\242U\20\343"
-       "\253X\22\340\253V\25\335\245U\27\344\254X\31\353\250[\32\352\254Y\34\346"
-       "\251X\37\347\251Z!\351\255\\\"\351\253[$\345\253Z'\346\252\\)\347\253]+\347"
-       "\256\\,\346\253\\/\344\253\\1\346\256]3\347\254\\4\351\256]6\351\253\\9\351"
-       "\254^;\352\256\\=\352\255^>\350\255]A\350\254^C\350\255\\E\351\256^F\350"
-       "\255^I\347\255^K\347\255]M\350\256]O\352\257^Q\351\255_S\352\256^U\352\255"
-       "]W\352\255_X\351\256_[\351\255]]\351\256^_\351\256^a\351\256_c\350\256_e"
-       "\350\256^g\351\256^i\351\256_k\350\255_m\352\256^o\352\256_q\353\257_s\352"
-       "\257_u\351\255^w\351\256_y\352\256_{\352\256`}\350\256^\177\351\255_\201"
-       "\351\257_\203\351\256_\205\351\256_\207\351\256_\211\352\256_\213\353\257"
-       "_\215\352\256_\217\351\256_\221\352\257_\223\352\256_\225\352\257_\227\351"
-       "\256_\231\351\256_\233\351\257_\235\352\256`\237\351\256_\241\351\257_\243"
-       "\352\256_\245\353\257`\247\353\257`\251\352\256_\253\352\257_\255\352\256"
-       "`\257\352\257`\261\351\257_\263\351\256_\265\352\257`\267\352\257`\271\352"
-       "\257`\273\351\257_\275\352\256`\277\352\257`\301\352\256`\303\352\257_\305"
-       "\352\257`\307\352\257`\311\352\257`\313\352\257_\315\352\256`\317\352\257"
-       "`\321\352\257`\324\352\260a\326\352\261`\330\353\262b\332\353\262c\335\353"
-       "\264c\337\353\265d\342\353\265e\344\354\266f\346\354\267f\350\354\270g\352"
-       "\354\271g\354\354\272g\356\354\273i\360\355\274i\362\355\275j\364\355\275"
-       "k\365\355\276k\367\355\277l\371\356\300l\372\356\301m\373\356\301m\375\356"
-       "\301n\376\356\303o\376\357\304p\376\357\304p\377\357\305q\377\357\306q\377"
-       "\357\307r\377\360\310s\377\360\311s\377\360\311t\377\360\312u\377\361\313"
-       "v\377\361\314v\377\361\315w\377\361\316w\377\362\317x\377\362\320y\377\362"
-       "\320y\377\362\321z\377\362\322{\377\363\323|\377\363\324|\377\363\325}\377"
-       "\363\326~\377\364\327~\377\364\327\177\377\364\330\200\377\364\331\200\377"
-       "\365\332\201\377\365\333\202\377\365\334\202\377\365\335\203\377\365\336"
-       "\204\377\366\337\204\377\366\337\205\377\366\340\206\377\366\341\206\377"
-       "\367\342\207\377\367\343\210\377\367\344\210\377\367\345\211\377\367\346"
-       "\212\377\370\347\212\377\370\347\213\377\370\350\214\377\370\351\214\377"
-       "\371\352\215\377\371\353\216\377\371\354\216\377\371\355\217\377\372\356"
-       "\220\377\372\357\220\377\372\357\221\377\372\360\222\377\372\361\223\377"
-       "\373\362\224\377\373\363\226\377\373\363\230\377\373\364\232\377\374\365"
-       "\235\377\374\366\237\377\374\367\241\377\374\370\244\377\375\371\246\377"
-       "\375\372\250\377\375\373\252\377\375\373\254\377\375\373\256\377\376\373"
-       "\260\377\376\374\262\377\376\374\262\377\376\374\264\377\376\374\266\377"
-       "\376\374\270\377\376\374\272\377\376\374\273\377\376\374\274\377\376\374"
-       "\276\377\376\374\300\377\376\374\301\377\376\374\303\377\376\374\305\377"
-       "\376\374\306\377\376\374\310\377\376\374\311\377\376\374\313\377\376\374"
-       "\315\377\376\374\317\377\376\374\320\377\376\375\321\377\376\375\323\377"
-       "\376\375\325\377\376\375\327\377\376\375\330\377\376\375\332\377\376\375"
-       "\333\377\376\375\335\377\376\375\336\377\376\375\340\377\376\375\342\377"
-       "\376\375\343\377\376\375\345\377\376\375\346\377\376\375\350\377\376\375"
-       "\352\377\376\375\354\377\376\375\355\377\376\375\356\377\376\375\360\377"
-       "\376\375\362\377\376\375\364\377\376\375\365\377\376\375\367\377\376\375"
-       "\370\377\376\375\372\377\376\375\373\377\376\375\374\377\376\375\375\377"
-       "\376\375\375\377\376\376\375\377\376\376\375\377\376\376\375\377\376\376"
-       "\375\377\376\376\375\377"
-       "\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377"
-       "\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377"
-       "\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377"
-       "\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377"
-       "\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377"
-       "\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377"
-       "\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377"
-       "\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377"
-       "\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377"
-       "\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377"
-       "\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377"
-       "\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377"
-       "\377\377\377\377";
-   int                 i;
+      "\256\256\0\1\254i\24\3\312\2165\5"
+      "\330\212<\7\340\244I\10\344\235R\12\332\236P\15\334\247P\17\340\242U\20\343"
+      "\253X\22\340\253V\25\335\245U\27\344\254X\31\353\250[\32\352\254Y\34\346"
+      "\251X\37\347\251Z!\351\255\\\"\351\253[$\345\253Z'\346\252\\)\347\253]+\347"
+      "\256\\,\346\253\\/\344\253\\1\346\256]3\347\254\\4\351\256]6\351\253\\9\351"
+      "\254^;\352\256\\=\352\255^>\350\255]A\350\254^C\350\255\\E\351\256^F\350"
+      "\255^I\347\255^K\347\255]M\350\256]O\352\257^Q\351\255_S\352\256^U\352\255"
+      "]W\352\255_X\351\256_[\351\255]]\351\256^_\351\256^a\351\256_c\350\256_e"
+      "\350\256^g\351\256^i\351\256_k\350\255_m\352\256^o\352\256_q\353\257_s\352"
+      "\257_u\351\255^w\351\256_y\352\256_{\352\256`}\350\256^\177\351\255_\201"
+      "\351\257_\203\351\256_\205\351\256_\207\351\256_\211\352\256_\213\353\257"
+      "_\215\352\256_\217\351\256_\221\352\257_\223\352\256_\225\352\257_\227\351"
+      "\256_\231\351\256_\233\351\257_\235\352\256`\237\351\256_\241\351\257_\243"
+      "\352\256_\245\353\257`\247\353\257`\251\352\256_\253\352\257_\255\352\256"
+      "`\257\352\257`\261\351\257_\263\351\256_\265\352\257`\267\352\257`\271\352"
+      "\257`\273\351\257_\275\352\256`\277\352\257`\301\352\256`\303\352\257_\305"
+      "\352\257`\307\352\257`\311\352\257`\313\352\257_\315\352\256`\317\352\257"
+      "`\321\352\257`\324\352\260a\326\352\261`\330\353\262b\332\353\262c\335\353"
+      "\264c\337\353\265d\342\353\265e\344\354\266f\346\354\267f\350\354\270g\352"
+      "\354\271g\354\354\272g\356\354\273i\360\355\274i\362\355\275j\364\355\275"
+      "k\365\355\276k\367\355\277l\371\356\300l\372\356\301m\373\356\301m\375\356"
+      "\301n\376\356\303o\376\357\304p\376\357\304p\377\357\305q\377\357\306q\377"
+      "\357\307r\377\360\310s\377\360\311s\377\360\311t\377\360\312u\377\361\313"
+      "v\377\361\314v\377\361\315w\377\361\316w\377\362\317x\377\362\320y\377\362"
+      "\320y\377\362\321z\377\362\322{\377\363\323|\377\363\324|\377\363\325}\377"
+      "\363\326~\377\364\327~\377\364\327\177\377\364\330\200\377\364\331\200\377"
+      "\365\332\201\377\365\333\202\377\365\334\202\377\365\335\203\377\365\336"
+      "\204\377\366\337\204\377\366\337\205\377\366\340\206\377\366\341\206\377"
+      "\367\342\207\377\367\343\210\377\367\344\210\377\367\345\211\377\367\346"
+      "\212\377\370\347\212\377\370\347\213\377\370\350\214\377\370\351\214\377"
+      "\371\352\215\377\371\353\216\377\371\354\216\377\371\355\217\377\372\356"
+      "\220\377\372\357\220\377\372\357\221\377\372\360\222\377\372\361\223\377"
+      "\373\362\224\377\373\363\226\377\373\363\230\377\373\364\232\377\374\365"
+      "\235\377\374\366\237\377\374\367\241\377\374\370\244\377\375\371\246\377"
+      "\375\372\250\377\375\373\252\377\375\373\254\377\375\373\256\377\376\373"
+      "\260\377\376\374\262\377\376\374\262\377\376\374\264\377\376\374\266\377"
+      "\376\374\270\377\376\374\272\377\376\374\273\377\376\374\274\377\376\374"
+      "\276\377\376\374\300\377\376\374\301\377\376\374\303\377\376\374\305\377"
+      "\376\374\306\377\376\374\310\377\376\374\311\377\376\374\313\377\376\374"
+      "\315\377\376\374\317\377\376\374\320\377\376\375\321\377\376\375\323\377"
+      "\376\375\325\377\376\375\327\377\376\375\330\377\376\375\332\377\376\375"
+      "\333\377\376\375\335\377\376\375\336\377\376\375\340\377\376\375\342\377"
+      "\376\375\343\377\376\375\345\377\376\375\346\377\376\375\350\377\376\375"
+      "\352\377\376\375\354\377\376\375\355\377\376\375\356\377\376\375\360\377"
+      "\376\375\362\377\376\375\364\377\376\375\365\377\376\375\367\377\376\375"
+      "\370\377\376\375\372\377\376\375\373\377\376\375\374\377\376\375\375\377"
+      "\376\375\375\377\376\376\375\377\376\376\375\377\376\376\375\377\376\376"
+      "\375\377\376\376\375\377"
+      "\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377"
+      "\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377"
+      "\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377"
+      "\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377"
+      "\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377"
+      "\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377"
+      "\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377"
+      "\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377"
+      "\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377"
+      "\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377"
+      "\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377"
+      "\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377"
+      "\377\377\377\377";
+   int i;
 
    for (i = 0; i < 300; i++)
      {
         ff->palette[i] =
-            (gold_cmap[(i * 4) + 3] << 24) |
-            (gold_cmap[(i * 4) + 0] << 16) |
-            (gold_cmap[(i * 4) + 1] << 8) | (gold_cmap[(i * 4) + 2]);
+           (gold_cmap[(i * 4) + 3] << 24) |
+           (gold_cmap[(i * 4) + 0] << 16) |
+           (gold_cmap[(i * 4) + 1] << 8) | (gold_cmap[(i * 4) + 2]);
      }
 }
 
 static void
-_flame_palette_fire_set(Flame_Face * ff)
+_flame_palette_fire_set(Flame_Face *ff)
 {
-   int                 i, r, g, b, a;
+   int i, r, g, b, a;
 
    for (i = 0; i < 300; i++)
      {
@@ -450,9 +448,9 @@ _flame_palette_fire_set(Flame_Face * ff)
 
 /* set the plasma flame palette */
 static void
-_flame_palette_plasma_set(Flame_Face * ff)
+_flame_palette_plasma_set(Flame_Face *ff)
 {
-   int                 i, r, g, b, a;
+   int i, r, g, b, a;
 
    for (i = 0; i < 80; i++)
      {
@@ -497,9 +495,9 @@ _flame_palette_plasma_set(Flame_Face * ff)
 }
 
 static void
-_flame_palette_matrix_set(Flame_Face * ff)
+_flame_palette_matrix_set(Flame_Face *ff)
 {
-   int                 i, r, g, b, a;
+   int i, r, g, b, a;
 
    for (i = 0; i < 300; i++)
      {
@@ -527,9 +525,9 @@ _flame_palette_matrix_set(Flame_Face * ff)
 }
 
 static void
-_flame_palette_ice_set(Flame_Face * ff)
+_flame_palette_ice_set(Flame_Face *ff)
 {
-   int                 i, r, g, b, a;
+   int i, r, g, b, a;
 
    for (i = 0; i < 300; i++)
      {
@@ -557,10 +555,10 @@ _flame_palette_ice_set(Flame_Face * ff)
 }
 
 static void
-_flame_palette_custom_set(Flame_Face * ff)
+_flame_palette_custom_set(Flame_Face *ff)
 {
-   int                 i, r, g, b, a;
-   Flame              *f;
+   int i, r, g, b, a;
+   Flame *f;
 
    f = ff->flame;
    for (i = 0; i < 300; i++)
@@ -590,10 +588,10 @@ _flame_palette_custom_set(Flame_Face * ff)
 
 /* set the flame array to zero */
 static void
-_flame_zero_set(Flame_Face * ff)
+_flame_zero_set(Flame_Face *ff)
 {
-   int                 x, y;
-   unsigned int       *ptr;
+   int x, y;
+   unsigned int *ptr;
 
    for (y = 0; y < (ff->flame->conf->height >> 1); y++)
      {
@@ -616,10 +614,10 @@ _flame_zero_set(Flame_Face * ff)
 
 /* set the base of the flame */
 static void
-_flame_base_random_set(Flame_Face * ff)
+_flame_base_random_set(Flame_Face *ff)
 {
-   int                 x, y;
-   unsigned int       *ptr;
+   int x, y;
+   unsigned int *ptr;
 
    /* initialize a random number seed from the time, so we get random */
    /* numbers each time */
@@ -634,17 +632,17 @@ _flame_base_random_set(Flame_Face * ff)
 
 /* modify the base of the flame with random values */
 static void
-_flame_base_random_modify(Flame_Face * ff)
+_flame_base_random_modify(Flame_Face *ff)
 {
-   int                 x, y;
-   unsigned int       *ptr, val;
+   int x, y;
+   unsigned int *ptr, val;
 
    y = (ff->flame->conf->height >> 1) - 1;
    for (x = 0; x < (ff->ww >> 1); x++)
      {
         ptr = ff->f_array1 + (y << ff->ws) + x;
         *ptr +=
-            ((rand() % ff->flame->conf->variance) - ff->flame->conf->vartrend);
+           ((rand() % ff->flame->conf->variance) - ff->flame->conf->vartrend);
         val = *ptr;
         if (val > 300)
            *ptr = 0;
@@ -653,10 +651,10 @@ _flame_base_random_modify(Flame_Face * ff)
 
 /* process entire flame array */
 static void
-_flame_process(Flame_Face * ff)
+_flame_process(Flame_Face *ff)
 {
-   int                 x, y;
-   unsigned int       *ptr, *p, tmp, val;
+   int x, y;
+   unsigned int *ptr, *p, tmp, val;
 
    for (y = ((ff->flame->conf->height >> 1) - 1); y >= 2; y--)
      {
@@ -696,13 +694,13 @@ _flame_process(Flame_Face * ff)
 static int
 _flame_cb_draw(void *data)
 {
-   Flame_Face         *ff;
-   unsigned int       *ptr;
-   int                 x, y, xx, yy;
-   unsigned int        cl, cl1, cl2, cl3, cl4;
-   unsigned int       *cptr;
+   Flame_Face *ff;
+   unsigned int *ptr;
+   int x, y, xx, yy;
+   unsigned int cl, cl1, cl2, cl3, cl4;
+   unsigned int *cptr;
 
-   ff = (Flame_Face *) data;
+   ff = (Flame_Face *)data;
 
    /* modify the base of the flame */
    _flame_base_random_modify(ff);
@@ -744,11 +742,11 @@ _flame_cb_draw(void *data)
 static int
 _flame_cb_event_container_resize(void *data, int type, void *event)
 {
-   Flame_Face         *ff;
-   Evas_Object        *o;
-   Evas_Coord          ww, hh;
-   int                 size;
-   int                 flame_width, flame_height;
+   Flame_Face *ff;
+   Evas_Object *o;
+   Evas_Coord ww, hh;
+   int size;
+   int flame_width, flame_height;
 
    ff = data;
    evas_output_viewport_get(ff->evas, NULL, NULL, &ww, &hh);
@@ -788,7 +786,7 @@ _flame_cb_event_container_resize(void *data, int type, void *event)
 static int
 powerof(unsigned int n)
 {
-   int                 p = 32;
+   int p = 32;
 
    if (n <= 0x80000000)
       p = 31;
@@ -860,9 +858,9 @@ powerof(unsigned int n)
 void
 _flame_cb_config_updated(void *data)
 {
-   Flame              *f;
+   Flame *f;
 
-   f = (Flame *) data;
+   f = (Flame *)data;
    if (!f)
       return;
    /* Update The Palette */
@@ -870,11 +868,11 @@ _flame_cb_config_updated(void *data)
 }
 
 static void
-_flame_menu_cb_configure(void *data, E_Menu * m, E_Menu_Item * mi)
+_flame_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
 {
-   Flame              *f;
+   Flame *f;
 
-   f = (Flame *) data;
+   f = (Flame *)data;
    if (!f)
       return;
    /* Call The Config Dialog */
