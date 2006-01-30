@@ -723,6 +723,10 @@ ewl_widget_parent_set(Ewl_Widget * w, Ewl_Widget * p)
 	op = EWL_CONTAINER(w->parent);
 	if (op == EWL_CONTAINER(p))
 		DRETURN(DLEVEL_STABLE);
+	
+
+	if (!p)
+		ewl_widget_obscure(w);
 
 	/*
 	 * Verify this will not result in recursively nested widgets.
@@ -2188,7 +2192,7 @@ ewl_widget_unrealize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 		ewl_object_padding_set(EWL_OBJECT(w), p_l, p_r, p_t, p_b);
 	}
 
-	ewl_widget_obscure(w);
+	
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
