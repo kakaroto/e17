@@ -133,8 +133,11 @@ EWL BUGS
 
 EWL TODO
 ========
-- Ability to attach arbitrary cursors to each widget. Attachment portion done,
-  need to add cursor code.
+- Ability to attach custom cursors to each widget. We can currently attach
+  predefined cursors. Need to add a ewl_attach_widget_cursor_custom_set that
+  uses the buffer engine to create the cursor. We then attach it with an
+  EWL_ATTACH_TYPE_MOUSE_CURSOR_CUSTOM so on free we can free the cursor that
+  is attached.
 
 - In ewl_init should options be parsed after loading config values from
   ecore_config. ewl_init_parse_options() vs. ewl_config_init()
@@ -176,3 +179,5 @@ EWL TODO
   - Invert on mouse click (behavior depends upon select mode).
   - determination of whether a row is selected or not (ewl_[tree_]row_selected).
 
+- Need to split the evas engine code out then use function pointers to do
+  the engine functions instead of the current #ifdef method.
