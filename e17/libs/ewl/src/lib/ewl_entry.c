@@ -64,6 +64,9 @@ ewl_entry_init(Ewl_Entry *e)
 	ewl_widget_internal_set(e->cursor, TRUE);
 	ewl_object_fill_policy_set(EWL_OBJECT(e->cursor), EWL_FLAG_FILL_SHRINK);
 
+	/* Set the pointer */
+	ewl_attach_mouse_cursor_set(EWL_WIDGET(e), EWL_MOUSE_CURSOR_XTERM);
+
 	/* this has to be called after the cursor is created as it will try
 	 * to show the cursor */
 	ewl_entry_editable_set(e, TRUE);

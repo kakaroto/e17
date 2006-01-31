@@ -201,11 +201,15 @@ ewl_paned_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 	{
 		o = ewl_vseparator_new();
 		ewl_widget_appearance_set(o, "grabber/vertical");
+		ewl_attach_mouse_cursor_set(o, 
+				EWL_MOUSE_CURSOR_SB_H_DOUBLE_ARROW);
 	}
 	else
 	{
 		o = ewl_hseparator_new();
 		ewl_widget_appearance_set(o, "grabber/horizontal");
+		ewl_attach_mouse_cursor_set(o,
+				EWL_MOUSE_CURSOR_SB_V_DOUBLE_ARROW);
 	}
 	ewl_widget_internal_set(o, TRUE);
 

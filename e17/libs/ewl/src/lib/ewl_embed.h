@@ -130,6 +130,8 @@ void		ewl_embed_info_widgets_cleanup(Ewl_Embed *e, Ewl_Widget *w);
 void            ewl_embed_coord_to_screen(Ewl_Embed *e, int xx, int yy,
 					  int *x, int *y);
 
+void		ewl_embed_mouse_cursor_set(Ewl_Widget *w);
+
 /*
  * Internally used callbacks, override at your own risk.
  */

@@ -37,6 +37,15 @@ struct Ewl_Attach
 #define ewl_attach_tooltip_widget_set(w, data) \
 	ewl_attach_widget_set(w, EWL_ATTACH_TYPE_TOOLTIP, data)
 
+
+/**
+ * @def ewl_attach_pointer_set(w, data)
+ * Convience method to set a pointer widget attachment
+ */
+#define ewl_attach_mouse_cursor_set(w, data) \
+	ewl_attach_other_set(w, EWL_ATTACH_TYPE_MOUSE_CURSOR, \
+			(int *)ecore_x_cursor_shape_get(data))
+
 /**
  * @def ewl_attach_color_set(w, data)
  * Convience method to set a colour widget attachment

@@ -662,13 +662,12 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 		 */
 		while (embed->last.mouse_in && (widget != embed->last.mouse_in) 
 				&& !ewl_widget_parent_of(embed->last.mouse_in, widget)) {
+			ewl_embed_mouse_cursor_set(embed->last.mouse_in);
+			
 			ewl_object_state_remove(EWL_OBJECT(embed->last.mouse_in),
 					EWL_FLAG_STATE_MOUSE_IN);
 			ewl_callback_call(embed->last.mouse_in, EWL_CALLBACK_MOUSE_OUT);
 
-			/*It's possible that the call to MOUSE_IN caused the 'embed->last.mouse_in'
-			 * to have become null.  Make sure this pointer is still here
-			 * An example of this behaviour is FOCUS_OUT in ewl_menu */
 			if (embed->last.mouse_in)
 				embed->last.mouse_in = embed->last.mouse_in->parent;
 		}
@@ -690,6 +689,8 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 			 */
 			if (!(ewl_object_state_has(EWL_OBJECT(embed->last.mouse_in),
 						EWL_FLAG_STATE_MOUSE_IN))) {
+				ewl_embed_mouse_cursor_set(embed->last.mouse_in);
+				
 				ewl_object_state_add(EWL_OBJECT(embed->last.mouse_in),
 						EWL_FLAG_STATE_MOUSE_IN);
 				ewl_callback_call_with_event_data(embed->last.mouse_in,
@@ -1454,6 +1455,29 @@ ewl_embed_coord_to_screen(Ewl_Embed *e, int xx, int yy, int *x, int *y)
 			*y = (int)(evas_coord_world_y_to_screen(e->evas,
 							(Evas_Coord)(yy)));
 	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_embed_mouse_cursor_set(Ewl_Widget *w)
+{
+	Ecore_X_Cursor pointer;
+	Ewl_Embed *embed;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	embed = ewl_embed_widget_find(w);
+	if (!embed) DRETURN(DLEVEL_STABLE);
+
+	if ((pointer = (Ecore_X_Cursor)ewl_attach_get(w,
+					EWL_ATTACH_TYPE_MOUSE_CURSOR)))
+		ecore_x_window_cursor_set((Ecore_X_Window)embed->evas_window, pointer);
+	else
+		ecore_x_window_cursor_set((Ecore_X_Window)embed->evas_window,
+					ecore_x_cursor_shape_get(EWL_MOUSE_CURSOR_LEFT_PTR));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
