@@ -49,7 +49,7 @@ static Ecore_Hash *cb_registration = NULL;
  * So using an array for the callbacks saves us about 2MB of memory in this
  * case.
  */
-void
+int
 ewl_callbacks_init(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -57,7 +57,7 @@ ewl_callbacks_init(void)
 	cb_registration = ecore_hash_new(ewl_callback_hash,
 				       ewl_callback_compare);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**
@@ -72,7 +72,8 @@ ewl_callbacks_shutdown(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ecore_hash_destroy(cb_registration);
+	if (cb_registration)
+		ecore_hash_destroy(cb_registration);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

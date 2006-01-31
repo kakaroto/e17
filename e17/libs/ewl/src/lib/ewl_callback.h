@@ -114,7 +114,7 @@ struct Ewl_Callback
 		w->callbacks[t].mask &= ~EWL_CALLBACK_TYPE_DIRECT
 
 
-void            ewl_callbacks_init(void);
+int             ewl_callbacks_init(void);
 void            ewl_callbacks_shutdown(void);
 int             ewl_callback_append(Ewl_Widget * widget, Ewl_Callback_Type type,
 				    Ewl_Callback_Function func,

@@ -3533,7 +3533,7 @@ ewl_text_selection_select_to(Ewl_Text_Trigger *s, unsigned int idx)
 /*
  * Ewl_Text_Context Stuff
  */
-void
+int
 ewl_text_context_init(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -3545,7 +3545,7 @@ ewl_text_context_init(void)
 		ecore_hash_set_free_value(context_hash, ewl_text_context_cb_free);
 	}
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 void

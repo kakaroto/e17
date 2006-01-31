@@ -17,10 +17,15 @@ struct _ewl_config
 		int             enable;
 		int             level;
 		int 		indent_lvl;
+
+		int		segv;
+		int		backtrace;
+		int		gc_reap;
 	} debug;
 	struct {
 		int             font_cache;
 		int             image_cache;
+		int		engine;
 		char           *render_method;
 	} evas;
 	struct {
@@ -30,6 +35,7 @@ struct _ewl_config
 		int             print_keys;
 		int             print_signals;
 	} theme;
+
 };
 
 extern Ewl_Config ewl_config;

@@ -299,7 +299,7 @@ struct Ewl_Text_Context
 	unsigned int ref_count;
 };
 
-void ewl_text_context_init(void);
+int  ewl_text_context_init(void);
 void ewl_text_context_shutdown(void);
 
 Ewl_Text_Context *ewl_text_context_new(void);

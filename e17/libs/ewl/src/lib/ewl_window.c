@@ -676,10 +676,10 @@ ewl_window_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 */
 #ifdef ENABLE_EWL_SOFTWARE_X11
 	if (strstr(render, "x11") &&
-			(ewl_engine_mask_get() & (EWL_ENGINE_SOFTWARE_X11 |
-						  EWL_ENGINE_GL_X11))) {
+			(ewl_engine_mask_get() & EWL_ENGINE_X11)) {
 		int width, height;
 		Ecore_X_Window xwin;
+
 		if (window->flags & EWL_WINDOW_OVERRIDE) {
 			xwin = ecore_x_window_override_new(0, window->x,
 						  window->y,

@@ -13,14 +13,7 @@ extern Ecore_List *ewl_window_list;
 /*
  * Configuration and option related flags.
  */
-static unsigned int debug_segv = 0;
-static unsigned int debug_bt = 0;
-static unsigned int use_engine = EWL_ENGINE_ALL;
 static unsigned int phase_status = 0;
-static unsigned int print_theme_keys = 0;
-static unsigned int print_theme_signals = 0;
-static unsigned int print_gc_reap = 0;
-static unsigned int debug_level = 0;
 
 static Ecore_Idle_Enterer *idle_enterer = NULL;
 static Ecore_Idler *ewl_garbage_collect = NULL;
@@ -69,7 +62,7 @@ ewl_print_warning(void)
 inline void
 ewl_segv(void)
 {
-	if (debug_segv) {
+	if (ewl_config.debug.segv) {
 		char *null = NULL;
 		*null = '\0';
 	}
@@ -88,7 +81,7 @@ ewl_backtrace(void)
 	char **strings;
 	size_t i;
 		
-	if (!debug_bt) return;
+	if (!ewl_config.debug.backtrace) return;
 
 	fprintf(stderr, "\n***** Backtrace *****\n");
 	size = backtrace(array, 128);
@@ -118,8 +111,6 @@ ewl_init(int *argc, char **argv)
 	if (++ewl_init_count > 1)
 		DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
 
-	ewl_init_parse_options(argc, argv);
-
 	if (!evas_init()) {
 		DERROR("Could not init evas....\n");
 		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
@@ -127,23 +118,36 @@ ewl_init(int *argc, char **argv)
 
 	if (!ecore_init()) {
 		DERROR("Could not init ecore....\n");
+		evas_shutdown();
 		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
 	}
 
 	if (!ecore_string_init()) {
 		DERROR("Could not init ecore strings....\n");
+		evas_shutdown();
 		ecore_shutdown();
 		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
 	}
 
+	if (!ewl_config_init()) {
+		DERROR("Could not init config data.\n");
+		ewl_shutdown();
+		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
+	}
+
+	/* make sure we have an engine set by default */
+	ewl_config.evas.engine = EWL_ENGINE_ALL;
+	ewl_config.evas.render_method = strdup("software_x11");
+
+	ewl_init_parse_options(argc, argv);
+
 	if (!edje_init()) {
 		DERROR("Could not init edje....\n");
+		evas_shutdown();
 		ecore_string_shutdown();
 		ecore_shutdown();
 		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
 	}
-
-
 
 	reveal_list = ecore_list_new();
 	obscure_list = ecore_list_new();
@@ -153,105 +157,96 @@ ewl_init(int *argc, char **argv)
 	free_evas_list = ecore_list_new();
 	free_evas_object_list = ecore_list_new();
 	child_add_list = ecore_list_new();
+	if ((!reveal_list) || (!obscure_list) || (!configure_list)
+			|| (!realize_list) || (!destroy_list)
+			|| (!free_evas_list) || (!free_evas_object_list)
+			|| (!child_add_list)) {
+		DERROR("Unable to create internal configuration, out of memory?\n");
+		evas_shutdown();
+		ecore_string_shutdown();
+		ecore_shutdown();
+		edje_shutdown();
+		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
+	}
 
 #ifdef ENABLE_EWL_SOFTWARE_X11
 	/*
 	 * Attempt to pick the correct engine by adjusting the bitmask
 	 * relative to the success of each engines init routine.
 	 */
-	if (use_engine & EWL_ENGINE_X11) {
+	if (ewl_config.evas.engine & EWL_ENGINE_X11) {
 		if (!ecore_x_init(NULL))
-			use_engine &= ~EWL_ENGINE_X11;
+			ewl_config.evas.engine &= ~EWL_ENGINE_X11;
 		else
-			use_engine &= EWL_ENGINE_X11;
+			ewl_config.evas.engine &= EWL_ENGINE_X11;
 	}
 #endif
-
 #ifdef ENABLE_EWL_FB
 	/*
 	 * Maybe the X11 engines arent' available or they failed, so see if
 	 * we should load up the FB.
 	 */
-	if (use_engine & EWL_ENGINE_FB) {
+	if (ewl_config.evas.engine & EWL_ENGINE_FB) {
 		if (!ecore_fb_init(NULL))
-			use_engine &= ~EWL_ENGINE_FB;
+			ewl_config.evas.engine &= ~EWL_ENGINE_FB;
 		else
-			use_engine &= EWL_ENGINE_FB;
+			ewl_config.evas.engine &= EWL_ENGINE_FB;
 	}
 #endif
 
-	if (!use_engine) {
-		fprintf(stderr, "Cannot open display!\n");
+	if (!ewl_config.evas.engine) {
+		DERROR("Cannot open display!\n");
 		ewl_shutdown();
-		DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
-	}
-
-	if (!ewl_config_init()) {
-		DERROR("Could not init config data.\n");
-		ewl_shutdown();
-		DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
+		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
 	}
 
 	if (!ewl_dnd_init()) {
 		DERROR("Count not init dnd.\n");
 		ewl_shutdown();
-		DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
-	}
-
-
-#ifdef ENABLE_EWL_SOFTWARE_X11
-	if (use_engine == EWL_ENGINE_SOFTWARE_X11) {
-		IF_FREE(ewl_config.evas.render_method);
-		ewl_config.evas.render_method = strdup("software_x11");
-	}
-	else
-#endif
-#ifdef ENABLE_EWL_GL_X11
-	if (use_engine == EWL_ENGINE_GL_X11) {
-		IF_FREE(ewl_config.evas.render_method);
-		ewl_config.evas.render_method = strdup("gl_x11");
-	}
-	else
-#endif
-#ifdef ENABLE_EWL_FB
-	if (use_engine == EWL_ENGINE_FB) {
-		IF_FREE(ewl_config.evas.render_method);
-		ewl_config.evas.render_method = strdup("fb");
-	}
-	else
-#endif
-	if (!ewl_config.evas.render_method)
-		ewl_config.evas.render_method = strdup("software_x11");
-
-	if (print_theme_keys)
-		ewl_config.theme.print_keys = print_theme_keys;
-
-	if (print_theme_signals)
-		ewl_config.theme.print_signals = print_theme_signals;
-
-	if (debug_level) {
-		ewl_config.debug.enable = 1;
-		ewl_config.debug.level = debug_level;
+		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
 	}
 
 	if (!ewl_ev_init()) {
 		DERROR("Could not init event data.\n");
 		ewl_shutdown();
-		DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
+		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
 	}
 
-	ewl_callbacks_init();
+	if (!ewl_callbacks_init()) {
+		DERROR("Could not init callback system.\n");
+		ewl_shutdown();
+		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
+	}
 
 	if (!ewl_theme_init()) {
+		DERROR("Could not setup theme system.\n");
 		ewl_shutdown();
-		DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
+		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
 	}
 
-	ewl_embed_list = ecore_list_new();
-	ewl_window_list = ecore_list_new();
-	idle_enterer = ecore_idle_enterer_add(ewl_idle_render, NULL);
+	if (!(ewl_embed_list = ecore_list_new())) {
+		DERROR("Could not allocate embed list, out of memory?\n");
+		ewl_shutdown();
+		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
+	}
 
-	ewl_text_context_init();
+	if (!(ewl_window_list = ecore_list_new())) {
+		DERROR("Could not allocate window list, out of memory?\n");
+		ewl_shutdown();
+		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
+	}
+
+	if (!(idle_enterer = ecore_idle_enterer_add(ewl_idle_render, NULL))) {
+		DERROR("Could not create idle enterer.\n");
+		ewl_shutdown();
+		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
+	}
+
+	if (!ewl_text_context_init()) {
+		DERROR("Could not init text context system.\n");
+		ewl_shutdown();
+		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
+	}
 
 	DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
 }
@@ -284,8 +279,10 @@ ewl_shutdown(void)
 
 	ewl_text_context_shutdown();
 
-	ecore_idle_enterer_del(idle_enterer);
-	idle_enterer = NULL;
+	if (idle_enterer) {
+		ecore_idle_enterer_del(idle_enterer);
+		idle_enterer = NULL;
+	}
 
 	/*
 	 * Shut down the various EWL subsystems cleanly.
@@ -324,17 +321,16 @@ ewl_shutdown(void)
 	evas_shutdown();
 
 #ifdef ENABLE_EWL_SOFTWARE_X11
-	if (use_engine & EWL_ENGINE_X11) 
+	if (ewl_config.evas.engine & EWL_ENGINE_X11) 
 		ecore_x_shutdown();
 #endif
 
 #ifdef ENABLE_EWL_FB
-	if (use_engine & EWL_ENGINE_FB)
+	if (ewl_config.evas.engine & EWL_ENGINE_FB)
 		ecore_fb_shutdown();
 #endif
 
 	ecore_string_shutdown();
-
 	ecore_shutdown();
 
 	DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
@@ -511,11 +507,11 @@ ewl_init_parse_options(int *argc, char **argv)
 	i = 0;
 	while (i < *argc) {
 		if (!strcmp(argv[i], "--ewl-segv")) {
-			debug_segv = 1;
+			ewl_config.debug.segv = 1;
 			matched++;
 		}
 		else if (!strcmp(argv[i], "--ewl-backtrace")) {
-			debug_bt = 1;
+			ewl_config.debug.backtrace = 1;
 			matched++;
 		}
 		else if (!strcmp(argv[i], "--ewl-theme")) {
@@ -526,36 +522,52 @@ ewl_init_parse_options(int *argc, char **argv)
 			matched++;
 		}
 		else if (!strcmp(argv[i], "--ewl-print-theme-keys")) {
-			print_theme_keys = 1;
+			ewl_config.theme.print_keys = 1;
 			matched++;
 		}
 		else if (!strcmp(argv[i], "--ewl-print-theme-signals")) {
-			print_theme_signals = 1;
+			ewl_config.theme.print_signals = 1;
 			matched++;
 		}
 		else if (!strcmp(argv[i], "--ewl-print-gc-reap")) {
-			print_gc_reap = 1;
+			ewl_config.debug.gc_reap = 1;
 			matched++;
 		}
+#ifdef ENABLE_EWL_SOFTWARE_X11
 		else if (!strcmp(argv[i], "--ewl-software-x11")) {
-			use_engine = EWL_ENGINE_SOFTWARE_X11;
+			IF_FREE(ewl_config.evas.render_method);
+			ewl_config.evas.render_method = strdup("software_x11");
+			ewl_config.evas.engine = EWL_ENGINE_SOFTWARE_X11;
+
 			matched++;
 		}
+#endif
+#ifdef ENABLE_EWL_GL_X11
 		else if (!strcmp(argv[i], "--ewl-gl-x11")) {
-			use_engine = EWL_ENGINE_GL_X11;
+			IF_FREE(ewl_config.evas.render_method);
+			ewl_config.evas.render_method = strdup("gl_x11");
+			ewl_config.evas.engine = EWL_ENGINE_GL_X11;
+
 			matched++;
 		}
+#endif
+#ifdef ENABLE_EWL_FB
 		else if (!strcmp(argv[i], "--ewl-fb")) {
-			use_engine = EWL_ENGINE_FB;
+			IF_FREE(ewl_config.evas.render_method);
+			ewl_config.evas.render_method = strdup("fb");
+			ewl_conifg.evas.engine = EWL_ENGINE_FB;
+
 			matched++;
 		}
+#endif
 		else if (!strcmp(argv[i], "--ewl-debug")) {
 			if (i + i < *argc) {
-				debug_level = atoi(argv[i + 1]);
+				ewl_config.debug.level = atoi(argv[i + 1]);
 				matched++;
 			} else {
-				debug_level = 1;
+				ewl_config.debug.level = 1;
 			}
+			ewl_config.debug.enable = 1;
 			matched ++;
 		}
 		else if (!strcmp(argv[i], "--ewl-help")) {
@@ -908,7 +920,7 @@ ewl_engine_mask_get(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	DRETURN_INT(use_engine, DLEVEL_STABLE);
+	DRETURN_INT(ewl_config.evas.engine, DLEVEL_STABLE);
 }
 
 void
@@ -989,7 +1001,7 @@ ewl_garbage_collect_idler(void *data __UNUSED__)
 
 	cleanup = 0;
 
-	if (print_gc_reap)
+	if (ewl_config.debug.gc_reap)
 		printf("---\n");
 
 	while ((cleanup < EWL_GC_LIMIT) &&
@@ -1003,7 +1015,7 @@ ewl_garbage_collect_idler(void *data __UNUSED__)
 		FREE(w);
 		cleanup++;
 	}
-	if (print_gc_reap)
+	if (ewl_config.debug.gc_reap)
 		printf("Destroyed %d EWL objects\n", cleanup);
 
 	cleanup = 0;
@@ -1012,7 +1024,7 @@ ewl_garbage_collect_idler(void *data __UNUSED__)
 		evas_object_del(obj);
 		cleanup++;
 	}
-	if (print_gc_reap)
+	if (ewl_config.debug.gc_reap)
 		printf("Destroyed %d Evas Objects\n", cleanup);
 
 	cleanup = 0;
@@ -1021,10 +1033,10 @@ ewl_garbage_collect_idler(void *data __UNUSED__)
 		evas_free(evas);
 		cleanup++;
 	}
-	if (print_gc_reap)
+	if (ewl_config.debug.gc_reap)
 		printf("Destroyed %d Evas\n", cleanup);
 
-	if (print_gc_reap)
+	if (ewl_config.debug.gc_reap)
 		printf("---\n");
 
 	if (!ecore_list_nodes(destroy_list))
