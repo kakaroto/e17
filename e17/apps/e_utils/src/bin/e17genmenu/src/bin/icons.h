@@ -1,6 +1,11 @@
 #ifndef ICONS_H
 #define ICONS_H
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include "config.h"
+
 #define PIXMAPDIR "/usr/share/pixmaps"
 #define ICONDIR "/usr/share/icons"
 #define CRYSTALSVGDIR "/usr/share/icons/crystalsvg"

@@ -1,6 +1,10 @@
 #ifndef PARSE_H
 #define PARSE_H
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
 /* Function Prototypes */
 char *get_t(char *icon);
 char *parse_exec(char *exec);

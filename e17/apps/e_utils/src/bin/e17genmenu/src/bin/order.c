@@ -1,33 +1,54 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <limits.h>
+/* Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
+
+/*
+ * order.c
+ * Copyright (C) Christopher Michael 2005 <devilhorns@comcast.net>
+ *
+ * e17genmenu is free software copyrighted by Christopher Michael.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. Neither the name ``Christopher Michael'' nor the name of any other
+ *    contributor may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * e17genmenu IS PROVIDED BY Christopher Michael ``AS IS'' AND ANY EXPRESS
+ * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL Christopher Michael OR ANY OTHER CONTRIBUTORS
+ * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+ * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
 #include "config.h"
 #include "global.h"
 #include "eaps.h"
 #include "order.h"
 
-int
-search_list(Ecore_List *list, char *search)
+int search_list(Ecore_List *list, char *search)
 {
    char *tmp;
-
-   if (!search)
-      return 0;
-   if (search == NULL)
-      return 0;
 
    ecore_list_goto_first(list);
    while ((tmp = (char *)ecore_list_next(list)) != NULL)
      {
-        if (!strcmp(tmp, search))
-           return 1;
+	if (!strcmp(tmp, search)) return 1;
      }
    return 0;
 }
 
-void
-create_order(char *path)
+void create_order(char *path)
 {
    FILE *f;
 
@@ -38,39 +59,33 @@ create_order(char *path)
    f = fopen(path, "w");
    if (!f)
      {
-        fprintf(stderr, "ERROR: Cannot Create Order File %s\n", path);
-        exit(-1);
+	fprintf(stderr, "ERROR: Cannot Create Order File %s\n", path);
+	exit(-1);
      }
    fclose(f);
 }
 
-void
-modify_order(char *path, char *entry)
+void modify_order(char *path, char *entry)
 {
    int length, i;
    char *buff, *cat;
-   char buffer[PATH_MAX], path2[PATH_MAX], t[PATH_MAX];
+   char buffer[MAX_PATH], path2[MAX_PATH], t[MAX_PATH];
    FILE *f;
    Ecore_List *list = NULL;
 
-   if (!entry)
-      return;
-   if (entry == NULL)
-      return;
-
    if (!ecore_file_exists(path))
      {
-        ecore_file_mkpath(path);
-        cat = strrchr(path, '/');
-        snprintf(t, sizeof(t), "%s", cat);
-        if (t[0] == '/')
-          {
-             for (i = 0; i < strlen(t); i++)
-               {
-                  t[i] = t[i + 1];
-               }
-          }
-        create_dir_eap(path, t);
+	ecore_file_mkpath(path);
+	cat = strrchr(path, '/');
+	snprintf(t, sizeof(t), "%s", cat);
+	if (t[0] == '/')
+	  {
+	     for (i = 0; i < strlen(t); i++)
+	       {
+		  t[i] = t[i+1];
+	       }
+	  }
+	create_dir_eap(path, t);
      }
 
    snprintf(path2, sizeof(path2), "%s/.order", path);
@@ -79,57 +94,56 @@ modify_order(char *path, char *entry)
    fprintf(stderr, "Modifying Order File %s\n", path2);
 #endif
 
-   entry = (char *)ecore_file_get_file(entry);
+   entry = ecore_file_get_file(entry);
    list = ecore_list_new();
 
-   /* Stat .order; Create If Not Found */
+    /* Stat .order; Create If Not Found */
    if (!ecore_file_exists(path2))
      {
-        create_order(path2);
-        /* If We Had To Create This Order Then Just Add The Entry */
-        if (!ecore_list_append(list, entry))
-          {
-             fprintf(stderr, "ERROR: Ecore List Append Failed !!\n");
-             return;
-          }
+	create_order(path2);
+	/* If We Had To Create This Order Then Just Add The Entry */
+	if (!ecore_list_append(list, entry))
+	  {
+	     fprintf(stderr, "ERROR: Ecore List Append Failed !!\n");
+	     return;
+	  }
      }
    else
      {
-        /* Open .order File For Parsing */
-        f = fopen(path2, "r");
-        if (!f)
-          {
-             fprintf(stderr, "ERROR: Cannot Open Order File %s \n", path2);
-             exit(-1);
-          }
+	/* Open .order File For Parsing */
+	f=fopen(path2, "r");
+	if (!f)
+	  {
+	     fprintf(stderr, "ERROR: Cannot Open Order File %s \n", path2);
+	     exit(-1);
+	  }
 
-        /* Read All Entries From Existing Order File, Store In List For Sorting */
-        while (fgets(buffer, sizeof(buffer), f) != NULL)
-          {
-             /* Strip New Line Char */
-             if (buffer[(length = strlen(buffer) - 1)] == '\n')
-                buffer[length] = '\0';
-             if (!search_list(list, strdup(buffer)))
-               {
-                  if (!ecore_list_append(list, strdup(buffer)))
-                    {
-                       fprintf(stderr, "ERROR: Ecore List Append Failed !!\n");
-                       return;
-                    }
-               }
-          }
-        fclose(f);
-        buffer[0] = (char)0;
+	/* Read All Entries From Existing Order File, Store In List For Sorting*/
+	while (fgets(buffer, sizeof(buffer), f) != NULL)
+	  {
+	     /* Strip New Line Char */
+	     if (buffer[(length = strlen(buffer) - 1)] == '\n') buffer[length] = '\0';
+	     if (!search_list(list, strdup(buffer)))
+	       {
+		  if (!ecore_list_append(list, strdup(buffer)))
+		    {
+		       fprintf(stderr, "ERROR: Ecore List Append Failed !!\n");
+		       return;
+		    }
+	       }
+	  }
+	fclose(f);
+	buffer[0] = (char) 0;
 
-        /* Add This Entry To List Of Existing ? */
-        if (!search_list(list, entry))
-          {
-             if (!ecore_list_append(list, entry))
-               {
-                  fprintf(stderr, "ERROR: Ecore List Append Failed !!\n");
-                  return;
-               }
-          }
+	/* Add This Entry To List Of Existing ? */
+	if (!search_list(list, entry))
+	  {
+	     if (!ecore_list_append(list, entry))
+	       {
+		  fprintf(stderr, "ERROR: Ecore List Append Failed !!\n");
+		  return;
+	       }
+	  }
      }
 
 #ifdef DEBUG
@@ -139,22 +153,19 @@ modify_order(char *path, char *entry)
    f = fopen(path2, "w");
    if (!f)
      {
-        fprintf(stderr, "ERROR: Cannot Open Order File %s \n", path2);
-        if (list)
-           ecore_list_destroy(list);
-        return;
+	fprintf(stderr, "ERROR: Cannot Open Order File %s \n", path2);
+	if (list) ecore_list_destroy(list);
+	return;
      }
 
    ecore_list_goto_first(list);
    while ((buff = ecore_list_next(list)) != NULL)
      {
-        snprintf(buffer, sizeof(buffer), "%s\n", buff);
-        if (buffer != NULL)
-           fwrite(buffer, sizeof(char), strlen(buffer), f);
+	snprintf(buffer, sizeof(buffer), "%s\n", buff);
+	if (buffer != NULL) fwrite(buffer, sizeof(char), strlen(buffer), f);
      }
    fclose(f);
 
-   if (list)
-      ecore_list_destroy(list);
+   if (list) ecore_list_destroy(list);
    return;
 }

@@ -1,6 +1,14 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <Ecore.h>
+#include <Ecore_File.h>
+
+#define MAX_PATH 4096
 #define EFAVDIR "/.e/e/applications/favorite"
 #define EAPPDIR "/.e/e/applications/all"
 #define DEFAULTICON PACKAGE_DATA_DIR"/icons/e.png"
@@ -8,16 +16,16 @@
 typedef struct _G_Eap G_Eap;
 struct _G_Eap
 {
-   char *eap_name;
-   char *name;
-   char *generic;
-   char *comment;
-   char *categories;
-   char *exec;
-   char *icon;
-   char *startup;
-   char *type;
-   char *window_class;
+    char *eap_name;
+    char *name;
+    char *generic;
+    char *comment;
+    char *categories;
+    char *exec;
+    char *icon;
+    char *startup;
+    char *type;
+	char *window_class;
 };
 
 /* Function Prototypes */
