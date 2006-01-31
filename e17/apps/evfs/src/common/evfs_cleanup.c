@@ -78,6 +78,12 @@ void evfs_cleanup_progress_event(evfs_event* event) {
 	
 }
 
+void evfs_cleanup_operation_event(evfs_event* event) {
+	/*We don't want to free the operation - the command owns this,
+	 * unless we're a client*/
+	/*FIXME identify if we're the client, and free*/
+}
+
 void evfs_cleanup_event(evfs_event* event) {
 	evfs_cleanup_command(&event->resp_command, EVFS_CLEANUP_PRESERVE_COMMAND);
 
@@ -93,6 +99,9 @@ void evfs_cleanup_event(evfs_event* event) {
 			break;
 		case EVFS_EV_FILE_PROGRESS:
 			evfs_cleanup_progress_event(event);
+			break;
+		case EVFS_EV_OPERATION:
+			evfs_cleanup_operation_event(event);
 			break;
 	}
 

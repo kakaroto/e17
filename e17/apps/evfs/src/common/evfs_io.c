@@ -5,6 +5,7 @@
 static int io_init=0;
 static Eet_Data_Descriptor *_evfs_filereference_edd;
 static Eet_Data_Descriptor *_evfs_progress_event_edd;
+static Eet_Data_Descriptor *_evfs_operation_edd;
 
 
 Eet_Data_Descriptor* evfs_io_filereference_edd_get() {
@@ -48,6 +49,21 @@ int evfs_io_initialise() {
 	EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_progress_event_edd, evfs_event_progress, "file_from",file_from, EET_T_STRING);
 	EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_progress_event_edd, evfs_event_progress, "file_to",file_to, EET_T_STRING);
 	EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_progress_event_edd, evfs_event_progress, "type", type, EET_T_INT);
+
+	/*Evfs_operation eet*/
+	_evfs_operation_edd = eet_data_descriptor_new("evfs_operation", sizeof(evfs_operation),
+			      (void *(*) (void *))evas_list_next, 
+			      (void *(*) (void *, void *))evas_list_append, 
+			      (void *(*) (void *))evas_list_data, 
+			      (void *(*) (void *))evas_list_free, 
+			      (void  (*) (void *, int (*) (void *, const char *, void *, void *), void *))evas_hash_foreach, 
+			      (void *(*) (void *, const char *, void *))evas_hash_add, 
+			      (void  (*) (void *))evas_hash_free);
+
+	EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_operation_edd, evfs_operation, "id", id, EET_T_INT);
+	EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_operation_edd, evfs_operation, "status", status, EET_T_INT);
+	EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_operation_edd, evfs_operation, "response", response, EET_T_INT);
+	
 
 
 	return 0;
@@ -162,8 +178,18 @@ void evfs_write_progress_event(evfs_client* client, evfs_command* command, evfs_
 		client->id,0,0,data, size_ret  ));
 
 	free(data);
-	
-	
+}
+
+void evfs_write_operation_event(evfs_client* client, evfs_event* event) {
+	int size_ret = 0;
+
+	char* data = eet_data_descriptor_encode(_evfs_operation_edd, event->op, &size_ret);
+
+	evfs_write_ecore_ipc_client_message(client->client, 
+		ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_OPERATION,
+		client->id,0,0,data, size_ret  ));
+
+	free(data);
 }
 
 
@@ -193,6 +219,9 @@ void evfs_write_event(evfs_client* client, evfs_command* command, evfs_event* ev
 					break; /*File open has no additional info - fd is in filereference */
 
 		case EVFS_EV_FILE_READ: evfs_write_file_read_event(client,event);
+					break;
+
+		case EVFS_EV_OPERATION: evfs_write_operation_event(client, event);
 					break;
 					   
 		default:		   printf("Event type not handled in switch\n");
@@ -232,6 +261,13 @@ int evfs_read_event(evfs_event* event, ecore_ipc_message* msg) {
 		case EVFS_EV_PART_PROGRESS: {
 			evfs_event_progress* pg = eet_data_descriptor_decode(_evfs_progress_event_edd, msg->data, msg->len);
 			event->progress = pg;
+
+		}
+		break;
+
+		case EVFS_EV_PART_OPERATION: {
+			evfs_operation* op = eet_data_descriptor_decode(_evfs_operation_edd, msg->data, msg->len);
+			event->op = op;
 
 		}
 		break;

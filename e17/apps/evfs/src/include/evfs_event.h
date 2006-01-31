@@ -42,7 +42,9 @@ typedef enum evfs_eventpart {
 	EVFS_FILE_REFERENCE_PASSWORD = 15,
 	EVFS_FILE_REFERENCE_USERNAME = 16,
 	EVFS_FILE_REFERENCE_FD = 17,
-        EVFS_COMMAND_END = 18,
+
+	EVFS_EV_PART_OPERATION = 18,
+        EVFS_COMMAND_END = 19,
 
 	
 	EVFS_EV_PART_END = 1000
@@ -110,6 +112,10 @@ typedef struct evfs_event_data {
 	char* bytes;
 } evfs_event_data;
 
+/*typedef struct evfs_event_operation {
+	evfs_operation* op;
+} evfs_event_operation;*/
+
 //Would be good if this could be a union -> but evfs_command changes size :( */
 typedef struct evfs_event {
 	evfs_eventtype type;
@@ -120,6 +126,7 @@ typedef struct evfs_event {
 	evfs_event_file_monitor file_monitor;
 	evfs_event_stat stat;	
 	evfs_event_progress* progress;
+	evfs_operation* op;
 
 	evfs_event_data data;
 }

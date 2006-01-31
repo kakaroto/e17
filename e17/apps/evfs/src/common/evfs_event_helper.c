@@ -107,6 +107,7 @@ void evfs_read_event_create(evfs_client* client, evfs_command* command, char* by
 void evfs_operation_event_create(evfs_client* client, evfs_command* command, evfs_operation* op) {
 	evfs_event* event = NEW(evfs_event);
 	event->type = EVFS_EV_OPERATION;
+	event->op = op;
 	evfs_write_event(client, command, event);
 
 

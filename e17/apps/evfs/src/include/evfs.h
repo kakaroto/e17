@@ -53,6 +53,7 @@ typedef enum
 }
 EfsdFsOps;
 
+#include "evfs_operation.h"
 #include "evfs_event.h"
 #include "evfs_server.h"
 #include "evfs_misc.h"
@@ -60,7 +61,6 @@ EfsdFsOps;
 #include "evfs_cleanup.h"
 #include "evfs_io.h"
 #include "evfs_new.h"
-#include "evfs_operation.h"
 #include "evfs_event_helper.h"
 #include "evfs_server_handle.h"
 #include "evfs_common.h"
