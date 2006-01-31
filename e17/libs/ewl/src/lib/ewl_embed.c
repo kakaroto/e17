@@ -1459,6 +1459,14 @@ ewl_embed_coord_to_screen(Ewl_Embed *e, int xx, int yy, int *x, int *y)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param w: The Ewl_Widget to get the pointer from
+ * @return Returns no value.
+ *
+ * @brief This will retrieve the attached cursor off of the given widget and
+ * display it. If there is no widget on the widget it will use the default
+ * cursor.
+ */
 void
 ewl_embed_mouse_cursor_set(Ewl_Widget *w)
 {

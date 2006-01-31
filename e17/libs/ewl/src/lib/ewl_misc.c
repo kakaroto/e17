@@ -24,7 +24,7 @@ static unsigned int debug_level = 0;
 
 static Ecore_Idle_Enterer *idle_enterer = NULL;
 static Ecore_Idler *ewl_garbage_collect = NULL;
-static int _ewl_init_count = 0;
+static int ewl_init_count = 0;
 
 /*
  * Queues for scheduling various actions.
@@ -115,32 +115,32 @@ ewl_init(int *argc, char **argv)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	/* check if we are already initialized */
-	if (++_ewl_init_count > 1)
-		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
+	if (++ewl_init_count > 1)
+		DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
 
 	ewl_init_parse_options(argc, argv);
 
 	if (!evas_init()) {
 		DERROR("Could not init evas....\n");
-		DRETURN_INT(--_ewl_init_count, DLEVEL_STABLE);
+		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
 	}
 
 	if (!ecore_init()) {
 		DERROR("Could not init ecore....\n");
-		DRETURN_INT(--_ewl_init_count, DLEVEL_STABLE);
+		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
 	}
 
 	if (!ecore_string_init()) {
 		DERROR("Could not init ecore strings....\n");
 		ecore_shutdown();
-		DRETURN_INT(--_ewl_init_count, DLEVEL_STABLE);
+		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
 	}
 
 	if (!edje_init()) {
 		DERROR("Could not init edje....\n");
 		ecore_string_shutdown();
 		ecore_shutdown();
-		DRETURN_INT(--_ewl_init_count, DLEVEL_STABLE);
+		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
 	}
 
 
@@ -183,19 +183,19 @@ ewl_init(int *argc, char **argv)
 	if (!use_engine) {
 		fprintf(stderr, "Cannot open display!\n");
 		ewl_shutdown();
-		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
+		DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
 	}
 
 	if (!ewl_config_init()) {
 		DERROR("Could not init config data.\n");
 		ewl_shutdown();
-		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
+		DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
 	}
 
 	if (!ewl_dnd_init()) {
 		DERROR("Count not init dnd.\n");
 		ewl_shutdown();
-		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
+		DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
 	}
 
 
@@ -237,14 +237,14 @@ ewl_init(int *argc, char **argv)
 	if (!ewl_ev_init()) {
 		DERROR("Could not init event data.\n");
 		ewl_shutdown();
-		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
+		DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
 	}
 
 	ewl_callbacks_init();
 
 	if (!ewl_theme_init()) {
 		ewl_shutdown();
-		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
+		DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
 	}
 
 	ewl_embed_list = ecore_list_new();
@@ -253,7 +253,7 @@ ewl_init(int *argc, char **argv)
 
 	ewl_text_context_init();
 
-	DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
+	DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
 }
 
 /**
@@ -267,8 +267,8 @@ ewl_shutdown(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (--_ewl_init_count)
-		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
+	if (--ewl_init_count)
+		DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
 	/*
 	 * Destroy all existing widgets.
 	 */
@@ -337,7 +337,7 @@ ewl_shutdown(void)
 
 	ecore_shutdown();
 
-	DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
+	DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
 }
 
 /**
