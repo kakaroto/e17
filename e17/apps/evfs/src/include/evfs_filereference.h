@@ -6,7 +6,14 @@
 typedef enum evfs_file_type evfs_file_type;
 enum evfs_file_type {
 	EVFS_FILE_NORMAL = 1,
-	EVFS_FILE_DIRECTORY = 2
+	EVFS_FILE_DIRECTORY = 2,
+	EVFS_FILE_LINK = 3,
+	EVFS_FILE_SMB_WORKGROUP = 4,
+	EVFS_FILE_SMB_SERVER = 5,
+	EVFS_FILE_SMB_FILE_SHARE = 6,
+	EVFS_FILE_SMB_PRINTER_SHARE = 7,
+	EVFS_FILE_SMB_COMMS_SHARE = 8,
+	EVFS_FILE_SMB_IPC_SHARE = 9,
 };
 
 typedef enum evfs_uri_token_type {
