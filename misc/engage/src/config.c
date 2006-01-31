@@ -53,27 +53,13 @@ theme_listener(const char *key, const Ecore_Config_Type type, const int tag,
   return 1;
 }
 
-unsigned
-od_argb_get(const char *key)
-{
-  unsigned        tmp;
-  int             a, r, g, b;
-
-  ecore_config_argb_get(key, &a, &r, &g, &b);
-  tmp=((a << 24) & 0xff000000 )
-      | ((r << 16) &   0xff0000 )
-      | ((g <<  8) &     0xff00 )
-      | ( b        &       0xff );
-  return tmp;
-}
-
 int
 colour_listener(const char *key, const Ecore_Config_Type type, const int tag, 
                 void *data)
 {
-  unsigned        colour;
+  long colour;
 
-  colour = od_argb_get(key);
+  colour = ecore_config_argbint_get(key);
 
   switch (tag) {
     case BG_FORE:
@@ -180,12 +166,10 @@ od_config_init(void)
   options.dock_zoom_duration =
     ecore_config_float_get("engage.options.zoom_duration");
 
-  options.bg_fore =
-    od_argb_get("engage.options.bg_fore");
+  options.bg_fore = ecore_config_argbint_get("engage.options.bg_fore");
   ecore_config_listen("colour", "engage.options.bg_fore", 
                       colour_listener, BG_FORE, NULL);
-  options.bg_back = 
-    od_argb_get("engage.options.bg_back");
+  options.bg_back = ecore_config_argbint_get("engage.options.bg_back");
   ecore_config_listen("colour", "engage.options.bg_back", 
                       colour_listener, BG_BACK, NULL);
 
