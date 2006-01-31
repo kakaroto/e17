@@ -1,0 +1,142 @@
+dnl Process this file with autoconf to produce a configure script.
+
+# get rid of that stupid cache mechanism
+rm -f config.cache
+
+AC_INIT(configure.in)
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
+
+AM_INIT_AUTOMAKE(e17genmenu, 4.2.0)
+AM_CONFIG_HEADER(config.h)
+AM_MAINTAINER_MODE
+
+AC_ISC_POSIX
+AC_PROG_CC
+AM_PROG_CC_STDC
+AC_HEADER_STDC
+AC_C_CONST
+AM_ENABLE_SHARED
+AM_PROG_LIBTOOL
+
+if test "x${bindir}" = 'x${exec_prefix}/bin'; then
+  if test "x${exec_prefix}" = "xNONE"; then
+    if test "x${prefix}" = "xNONE"; then
+      bindir="${ac_default_prefix}/bin";
+    else
+      bindir="${prefix}/bin";
+    fi
+  else
+    if test "x${prefix}" = "xNONE"; then
+      bindir="${ac_default_prefix}/bin";
+    else
+      bindir="${prefix}/bin";
+    fi
+  fi
+fi
+
+if test "x${libdir}" = 'x${exec_prefix}/lib'; then
+  if test "x${exec_prefix}" = "xNONE"; then
+    if test "x${prefix}" = "xNONE"; then
+      libdir="${ac_default_prefix}/lib";
+    else
+      libdir="${prefix}/lib";
+    fi
+  else
+    if test "x${prefix}" = "xNONE"; then
+      libdir="${ac_default_prefix}/lib";
+    else
+      libdir="${prefix}/lib";
+    fi
+  fi
+fi
+
+dnl Set PACKAGE_BIN_DIR in config.h.
+if test "x${bindir}" = 'xNONE'; then
+  if test "x${prefix}" = "xNONE"; then
+    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${ac_default_prefix}/bin", "Package installed binaries destination")
+  else
+    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${prefix}/bin", "Package installed binaries destination")
+  fi
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${bindir}", "Package installed binaries destination")
+fi
+
+dnl Set PACKAGE_LIB_DIR in config.h.
+if test "x${libdir}" = 'xNONE'; then
+  if test "x${prefix}" = "xNONE"; then
+    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${ac_default_prefix}/lib", "Package installed libraries destination")
+  else
+    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${prefix}/lib", "Package installed libraries destination")
+  fi
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${libdir}", "Package installed libraries destination")
+fi
+
+dnl Set PACKAGE_DATA_DIR in config.h.
+if test "x${datadir}" = 'x${prefix}/share'; then
+  if test "x${prefix}" = "xNONE"; then
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}", "Package installed data destination")
+  else
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}", "Package installed data destination")
+  fi
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}", "Package installed data destination")
+fi
+
+AC_PATH_GENERIC(ecore, 0.9.9,
+  [ ],
+  [ ]
+)
+
+AC_PATH_GENERIC(eet, 0.9.10,
+  [ ],
+  [ ]
+)
+
+AC_PATH_GENERIC(engrave, 0.1.0,
+  [ ],
+  [ ]
+)
+
+AC_ARG_ENABLE(debug, 
+[  --enable-debug              enable debug code], [
+  if [ test "$enableval" = "yes" ]; then  
+  AC_MSG_RESULT(Enabled Debug Code)
+    want_debug="yes"
+  else
+	AC_MSG_RESULT(Disabled Debug Code)
+    want_debug="no"
+  fi
+], [
+  AC_MSG_RESULT(Disabled Debug Code)
+  want_debug="no"
+]
+)
+
+if test "x$want_debug" = "xyes"; then
+	AC_DEFINE(DEBUG, 1, [Define to 1 to enable debug code])
+   AM_CONDITIONAL(DEBUG, true)
+else
+    AM_CONDITIONAL(DEBUG, false)
+fi
+
+AC_OUTPUT([
+Makefile
+src/Makefile
+src/bin/Makefile
+icons/Makefile
+])
+
+echo
+echo "NOTE:"
+echo "**********************************************************"
+echo "This version from cvs is going to undergo a rewrite"
+echo "and will more than likely break often."
+echo
+echo "If your looking for a stable version to generate menus for E17, "
+echo "then I'd suggest getting the 4.2.0 version from:"
+echo
+echo "https://sourceforge.net/projects/e17genmenu/ ."
+echo "**********************************************************"
+echo

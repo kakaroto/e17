@@ -1,0 +1,9 @@
+e17genmenu
+----------------------------------------------------------------
+e17genmenu is an application to automatically generate menu entries for the Enlightenment Window Manager (DR17) on Linux based on Gnome/Kde menus. It is written in C, utilizing the Enlightenment Foundation Libraries including Ecore, Engrave, and Eet.
+
+Note:
+----------------------------------------------------------------
+This version from cvs is going to undergo a rewrite and will more than likely break often.
+If your looking for a stable version to generate menus for E17, then I'd suggest getting the 4.2.0 version from
+https://sourceforge.net/projects/e17genmenu/ .

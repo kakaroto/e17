@@ -1,0 +1,38 @@
+2005-11-20  Christopher Michael	<devilhorns@comcast.net>
+	* General Code Cleanups
+
+2005-11-19  Christopher Michael	<devilhorns@comcast.net>
+	* Fix Debian menu generation
+
+2005-11-16  Christopher Michael	<devilhorns@comcast.net>
+	* parse.c: Removed hardcoded path for generating eap cache
+	* parse.c: Better trapping for debian menus
+
+2005-11-15  Christopher Michael	<devilhorns@comcast.net>
+	* e.png: Replaced e.png with smaller image. Thanks Raster for pointing that one out !
+	* main.c: Made LOSSY compression default and set correctoptions. Thanks again Raster !!
+
+2005-10-11  Christopher Michael	<devilhorns@comcast.net>
+	* eap.c: Changed to reflect Engrave API changes
+	* main.c: Now updates E Eap Cache
+
+2005-09-23  Christopher Michael	<devilhorns@comcast.net>
+	* global.c: Added option to use LOSSY compression for Larger Icons
+	* eap.c: Added option to use LOSSY compression for Larger Icons
+	* parse.c: Added Setting of Icon Class. This will currently set icon class to the exec string
+
+2005-09-15  Christopher Michael	<devilhorns@comcast.net>
+	* sort.c, order.c: Fixes for Entries being added twice (Thanks wishie)
+
+2005-09-14  Christopher Michael	<devilhorns@comcast.net>
+	* parse.c: Fixes to menus not being created (Thanks Drune)
+	* parse.c: Fix for list being NULL (Thanks Again Drune)
+	* parse.c: Fix for the eap_name not being set when doing Debian Menus (Thanks thewonderllama)
+
+2005-09-14  Christopher Michael	<devilhorns@comcast.net>
+	* parse.c: Forgot to add Debian Menu Code...Oops
+
+2005-09-03  Christopher Michael	<devilhorns@comcast.net>
+	* main.c: Added Backup Feature
+	* eaps.c: Fixed Window Class Feature
+	* sort.c: Fixed Incorrect Function Name
