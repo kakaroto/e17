@@ -4,7 +4,7 @@
  * wait for a response, and then continue based on the response*/
 
 #ifndef __EVFS_OPERATION_H_
-#define __EVDS_OPERATION_H_
+#define __EVFS_OPERATION_H_
 
 typedef enum evfs_operation_status {
 	EVFS_OPERATION_STATUS_USER_WAIT,
@@ -30,6 +30,6 @@ evfs_operation* evfs_operation_new();
 void evfs_operation_destroy(evfs_operation* op);
 evfs_operation* evfs_operation_get_by_id(long id);
 void evfs_operation_status_set(evfs_operation* op, int status);
-void evfs_operation_user_dispatch(evfs_client* client, evfs_operation* op);
+void evfs_operation_user_dispatch(evfs_client* client, evfs_command* command, evfs_operation* op);
 
 #endif

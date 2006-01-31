@@ -74,15 +74,10 @@ void evfs_file_progress_event_create(evfs_client* client, evfs_command* event_co
 	event->progress->file_from = strdup(event_command->file_command.files[0]->path);
 	event->progress->file_to = strdup(event_command->file_command.files[1]->path);
 
-	
-	
-	
 	evfs_write_event(client, root_command, event);
-
 
 	/*Now destroy*/
 	evfs_cleanup_event(event);
-
 }
 
 
@@ -102,6 +97,16 @@ void evfs_read_event_create(evfs_client* client, evfs_command* command, char* by
 	event->type = EVFS_EV_FILE_READ;
 	event->data.size = size;
 	event->data.bytes = bytes;
+	evfs_write_event(client, command, event);
+
+
+	/*Destroy*/
+	evfs_cleanup_event(event);
+}
+
+void evfs_operation_event_create(evfs_client* client, evfs_command* command, evfs_operation* op) {
+	evfs_event* event = NEW(evfs_event);
+	event->type = EVFS_EV_OPERATION;
 	evfs_write_event(client, command, event);
 
 

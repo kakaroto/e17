@@ -12,5 +12,6 @@ void evfs_list_dir_event_create(evfs_client* client, evfs_command* command, Ecor
 void evfs_file_progress_event_create(evfs_client* client, evfs_command* event_command, evfs_command* root_command, double progress,evfs_progress_type type);
 void evfs_open_event_create(evfs_client* client, evfs_command* command);
 void evfs_read_event_create(evfs_client* client, evfs_command* command, char* bytes, long size);
+void evfs_operation_event_create(evfs_client* client, evfs_command* command, evfs_operation* op);
 
 #endif

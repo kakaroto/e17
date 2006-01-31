@@ -12,6 +12,7 @@ typedef enum evfs_eventtype {
 	EVFS_EV_FILE_OPEN= 6,
 	EVFS_EV_FILE_READ = 7,
 	EVFS_EV_PONG	= 8,
+	EVFS_EV_OPERATION = 9,
 
 	EVFS_EV_ERROR = 100,
 	EVFS_EV_NOT_SUPPORTED = 101
