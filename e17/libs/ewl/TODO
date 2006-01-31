@@ -28,12 +28,7 @@ EWL BUGS
 - The ewl_password entry needs to correctly deal with selections and
   mouse clicks.
 
-- Buttons don't correctly react to a keypress. Currently just a
-  printf, should actually trigger the button pressed callback
-
 - Widgets need a focused state in the edje so we can know where the focus is
-
-- Radio and check buttons should react to key presses and toggle as needed
 
 - How to deal with the scrollpane with the focus? Currently widgets
   marked INTERNAL are ignored on the inital add. Should the scrollpane 
@@ -139,16 +134,11 @@ EWL TODO
   EWL_ATTACH_TYPE_MOUSE_CURSOR_CUSTOM so on free we can free the cursor that
   is attached.
 
-- In ewl_init should options be parsed after loading config values from
-  ecore_config. ewl_init_parse_options() vs. ewl_config_init()
-
-- fix mismatch between use_engine in ewl_init() and ewl_config.evas.render_method 
-
 - Ewl_Entry 
     - Need to make the text scroll over as you type past the end of the entry box.
 
 - ColorChooser needs a slider for choosing alpha too, and an int a parameter for
-  get / set to match [I'm handling this -- dj2]
+  get / set to match 
 
 - Enabled/Disabled status for ALL applicable widgets.
 
@@ -181,3 +171,4 @@ EWL TODO
 
 - Need to split the evas engine code out then use function pointers to do
   the engine functions instead of the current #ifdef method.
+
