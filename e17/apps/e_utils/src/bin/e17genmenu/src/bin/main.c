@@ -1,41 +1,7 @@
-/* Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
-
-/*
- * main.c
- * Copyright (C) Christopher Michael 2005 <devilhorns@comcast.net>
- *
- * e17genmenu is free software copyrighted by Christopher Michael.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name ``Christopher Michael'' nor the name of any other
- *    contributor may be used to endorse or promote products derived
- *    from this software without specific prior written permission.
- *
- * e17genmenu IS PROVIDED BY Christopher Michael ``AS IS'' AND ANY EXPRESS
- * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL Christopher Michael OR ANY OTHER CONTRIBUTORS
- * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
- * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-
 #include "global.h"
 #include "config.h"
 #include "menus.h"
 #include "sort.h"
-#include "E_Menu.h"
 
 /* Function Prototypes */
 void _e17genmenu_backup(void);
@@ -145,14 +111,7 @@ int main(int argc, char **argv)
    char path[MAX_PATH];
 
    char *tmp;
-   int ret;
-   
-   //tmp = e_gen_menu_category_get("System");
-   //fprintf(stderr, "Tmp: %s\n", tmp);
-   ret = e_menu_generate("/usr/share/applications");
-   fprintf(stderr, "Ret: %d\n", ret);
-   exit(0);
-      
+   int ret;      
    
    /* Init E Stuff */
    _e17genmenu_init();
