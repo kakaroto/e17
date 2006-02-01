@@ -978,6 +978,7 @@ ewl_iconbox_icon_remove(Ewl_Iconbox *ib, Ewl_Iconbox_Icon *icon)
 		while((list_item = ecore_list_next(ib->ewl_iconbox_icon_list))) {
 			
 			if (list_item == icon) {
+				ewl_widget_hide(EWL_WIDGET(list_item));
 				ewl_widget_destroy(EWL_WIDGET(list_item));		
 
 				if (ib->drag_icon == icon) {
