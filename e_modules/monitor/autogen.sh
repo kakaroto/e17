@@ -17,7 +17,6 @@ xgettext \
 --language=C \
 --add-location \
 --keyword=D_ \
---indent \
 --sort-by-file \
 --copyright-holder="TODO" \
 --foreign-user \
