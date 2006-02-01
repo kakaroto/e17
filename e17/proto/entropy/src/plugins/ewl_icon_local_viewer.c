@@ -5,6 +5,7 @@
 #include "ewl_properties_dialog.h"
 #include "ewl_progress_dialog.h"
 #include "ewl_rename_dialog.h"
+#include "ewl_user_interaction_dialog.h"
 #include <dlfcn.h>
 #include <time.h>
 
@@ -1106,6 +1107,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *ret,
 
   case ENTROPY_NOTIFY_USER_INTERACTION_YES_NO_ABORT: {
 	printf("Yes/No/Abort to file copy?\n");
+	entropy_ewl_user_interaction_dialog_new((long)ret);
   }
   break;
 

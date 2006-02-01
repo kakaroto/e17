@@ -29,6 +29,7 @@ pkg_LTLIBRARIES		= $(MIME_L) $(THUMBNAILER_L) $(POSIX_L) $(LAYOUT_L) $(EWL_LOCAL
 ewl_local_icon_la_SOURCES      = 	$(top_srcdir)/src/entropy_gui.c \
 					$(top_srcdir)/src/dialogs/ewl_progress_dialog.c \
 					$(top_srcdir)/src/dialogs/ewl_rename_dialog.c \
+					$(top_srcdir)/src/dialogs/ewl_interaction_dialog.c \
 					ewl_icon_local_viewer.c $(top_srcdir)/src/dialogs/ewl_properties_dialog.c \
 					$(top_srcdir)/src/entropy_debug.c
 ewl_local_icon_la_CFLAGS       = @EWL_CFLAGS@

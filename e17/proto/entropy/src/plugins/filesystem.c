@@ -407,7 +407,7 @@ callback (evfs_event * data, void *obj)
          gui_event = entropy_malloc (sizeof (entropy_gui_event));
          gui_event->event_type =
 	 entropy_core_gui_event_get (ENTROPY_GUI_EVENT_USER_INTERACTION_YES_NO_ABORT);
-	 gui_event->data = NULL;
+	 gui_event->data = (long*)data->op->id;
 	
 	      
 	entropy_core_layout_notify_event (instance, gui_event,
