@@ -43,7 +43,7 @@ _e17genmenu_test_fdo_paths()
      printf("FDO icon path = %s\n", fdo_paths_icons->list[i]);
 
    /* First, find the main menu file. */
-   path = fdo_paths_search_for_file(FDO_PATHS_TYPE_MENU, menu);
+   path = fdo_paths_search_for_file(FDO_PATHS_TYPE_MENU, menu, NULL, NULL);
    if (path)
       {
          char *directory = "Applications.directory";
@@ -56,21 +56,21 @@ _e17genmenu_test_fdo_paths()
          /* During the processing of the menu file, you will need to search for 
 	  * .directory files, .desktop files, and icons.
 	  */
-         path = fdo_paths_search_for_file(FDO_PATHS_TYPE_DIRECTORY, directory);
+         path = fdo_paths_search_for_file(FDO_PATHS_TYPE_DIRECTORY, directory, NULL, NULL);
          if (path)
 	    {
                printf("Path to %s is %s\n", directory, path);
 	       free(path);
 	    }
 
-         path = fdo_paths_search_for_file(FDO_PATHS_TYPE_DESKTOP, desktop);
+         path = fdo_paths_search_for_file(FDO_PATHS_TYPE_DESKTOP, desktop, NULL, NULL);
          if (path)
 	    {
                printf("Path to %s is %s\n", desktop, path);
 	       free(path);
 	    }
 
-         path = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, icon);
+         path = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, icon, NULL, NULL);
          if (path)
 	    {
                printf("Path to %s is %s\n", icon, path);

@@ -31,7 +31,7 @@ extern "C"
 # endif
 
    void fdo_paths_init();
-   char *fdo_paths_search_for_file(Fdo_Paths_Type type, char *file);
+   char *fdo_paths_search_for_file(Fdo_Paths_Type type, char *file, int (*func) (const void *data, char *path), const void *data);
    void fdo_paths_shutdown();
 
 # ifdef __cplusplus

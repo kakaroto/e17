@@ -28,7 +28,7 @@ static void _fdo_paths_massage_path(char *path, char *home, char *first,
 static void _fdo_paths_check_and_add(Fdo_Path_List * paths, char *path);
 static Fdo_Path_List *_fdo_paths_get(char *env, char *type, char *gnome_extra,
                                      char *kde);
-static char *_fdo_paths_recursive_search(char *path, char *d);
+static char *_fdo_paths_recursive_search(char *path, char *d, int (*func) (const void *data, char *path), const void *data);
 
 /*  We need -
 config file full of paths
@@ -314,7 +314,7 @@ fdo_paths_shutdown()
 }
 
 char *
-fdo_paths_search_for_file(Fdo_Paths_Type type, char *file)
+fdo_paths_search_for_file(Fdo_Paths_Type type, char *file, int (*func) (const void *data, char *path), const void *data)
 {
    int i;
    char *path = NULL;
@@ -342,10 +342,15 @@ fdo_paths_search_for_file(Fdo_Paths_Type type, char *file)
      {
         sprintf(temp, "%s%s", paths->list[i], file);
         if (stat(temp, &path_stat) == 0)
-           path = strdup(temp);
+	   {
+              path = strdup(temp);
+	      if (func)
+	         if (func(data, path))
+		    break;
+	   }
         else
-           path = _fdo_paths_recursive_search(paths->list[i], file);
-        if (path)
+           path = _fdo_paths_recursive_search(paths->list[i], file, func, data);
+        if (path && (!func))
            break;
      }
 
@@ -353,7 +358,7 @@ fdo_paths_search_for_file(Fdo_Paths_Type type, char *file)
 }
 
 static char *
-_fdo_paths_recursive_search(char *path, char *file)
+_fdo_paths_recursive_search(char *path, char *file, int (*func) (const void *data, char *path), const void *data)
 {
    char *fpath = NULL;
    DIR *dir = NULL;
@@ -380,15 +385,20 @@ _fdo_paths_recursive_search(char *path, char *file)
                          {
                             sprintf(info_text, "%s%s/", path, script->d_name);
                             fpath =
-                               _fdo_paths_recursive_search(info_text, file);
+                               _fdo_paths_recursive_search(info_text, file, func, data);
                          }
                     }
                   else
                     {
                        if (strcmp(basename(info_text), file) == 0)
-                          fpath = strdup(info_text);
+		          {
+                             fpath = strdup(info_text);
+	                     if (func)
+	                        if (func(data, path))
+				   break;
+			  }
                     }
-                  if (fpath)
+                  if (fpath && (!func))
                      break;
                }
           }
