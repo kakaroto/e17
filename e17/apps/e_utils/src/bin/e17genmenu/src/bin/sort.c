@@ -3,41 +3,49 @@
 #include "order.h"
 #include "sort.h"
 
-Ecore_List *add_list(Ecore_List *list, char *tmp)
+Ecore_List *
+add_list(Ecore_List *list, char *tmp)
 {
    int i, r;
    char *name;
 
    i = 0;
    r = 0;
-   if (!ecore_list_nodes(list)) ecore_list_prepend(list, tmp);
+   if (!ecore_list_nodes(list))
+      ecore_list_prepend(list, tmp);
    ecore_list_goto_first(list);
    if (ecore_list_nodes(list) >= 1)
      {
-	for (i = 0; i < ecore_list_nodes(list); i++)
-	  {
-	     name = ecore_list_goto_index(list, i);
-	     r = strcmp(tmp, name);
-	     if (r < 0) break;
-	     if (r == 0) return list;
-	  }
-	if (r < 0) ecore_list_insert(list, tmp);
-	if (r >= 0) ecore_list_append(list, tmp);
+        for (i = 0; i < ecore_list_nodes(list); i++)
+          {
+             name = ecore_list_goto_index(list, i);
+             r = strcmp(tmp, name);
+             if (r < 0)
+                break;
+             if (r == 0)
+                return list;
+          }
+        if (r < 0)
+           ecore_list_insert(list, tmp);
+        if (r >= 0)
+           ecore_list_append(list, tmp);
      }
    return list;
 }
 
-char *get_name(char *path)
+char *
+get_name(char *path)
 {
    int ret;
    char *n, *nbuff, *name;
    Eet_File *ef;
 
    ef = eet_open(path, EET_FILE_MODE_READ);
-   if (!ef) return NULL;
+   if (!ef)
+      return NULL;
 
-   n = (char *) eet_read(ef, "app/info/name", &ret);
-   nbuff = (char *) malloc(ret + 1);
+   n = (char *)eet_read(ef, "app/info/name", &ret);
+   nbuff = (char *)malloc(ret + 1);
    snprintf(nbuff, ret + 1, "%s", n);
    name = strdup(nbuff);
 
@@ -45,7 +53,8 @@ char *get_name(char *path)
    return strdup(name);
 }
 
-void sort_menu(char *path)
+void
+sort_menu(char *path)
 {
    char *home, *name, *v, *token;
    char path2[MAX_PATH], buffer[MAX_PATH];
@@ -59,55 +68,66 @@ void sort_menu(char *path)
 
    home = get_home();
    snprintf(path2, sizeof(path2), "%s/.order", path);
-   if (!ecore_file_exists(path2)) create_order(path2);
+   if (!ecore_file_exists(path2))
+      create_order(path2);
 
    f = fopen(path2, "r");
-   if (!f) return;
+   if (!f)
+      return;
 
-    /* Sort Names */
+   /* Sort Names */
    eaps = ecore_list_new();
    *buffer = 0;
    while (fgets(buffer, MAX_PATH, f) != NULL)
      {
-	if (!(*buffer) || (*buffer == '\n')) continue;
-	if (buffer[(length = strlen(buffer) -1)] == '\n') buffer[length] = '\0';
-	snprintf(path2, sizeof(path2), "%s"EAPPDIR"/%s", home, buffer);
-	name = get_name(strdup(path2));
-	if (name != NULL)
-	  {
-	     snprintf(path2, sizeof(path2), "%s:%s", strdup(name), strdup(buffer));
-	     if (!search_list(eaps, strdup(path2))) eaps = add_list(eaps, strdup(path2));
-	  }
+        if (!(*buffer) || (*buffer == '\n'))
+           continue;
+        if (buffer[(length = strlen(buffer) - 1)] == '\n')
+           buffer[length] = '\0';
+        snprintf(path2, sizeof(path2), "%s" EAPPDIR "/%s", home, buffer);
+        name = get_name(strdup(path2));
+        if (name != NULL)
+          {
+             snprintf(path2, sizeof(path2), "%s:%s", strdup(name),
+                      strdup(buffer));
+             if (!search_list(eaps, strdup(path2)))
+                eaps = add_list(eaps, strdup(path2));
+          }
      }
    fclose(f);
 
-    /* Order File Empty */
-   if (!ecore_list_nodes(eaps)) return;
+   /* Order File Empty */
+   if (!ecore_list_nodes(eaps))
+      return;
 
    ecore_list_goto_first(eaps);
 
-    /* Rewrite Order File */
+   /* Rewrite Order File */
    snprintf(path2, sizeof(path2), "%s/.order", path);
    f = fopen(path2, "w");
-   if (!f) return;
+   if (!f)
+      return;
 
    for (j = 0; j < ecore_list_nodes(eaps); j++)
      {
-	v = ecore_list_goto_index(eaps, j);
-	/* Split eaps */
-	token = strstr(v, ":");
-	token = strtok(token, ":");
-	snprintf(buffer, sizeof(buffer), "%s\n", token);
-	if (buffer != NULL) fwrite(buffer, sizeof(char), strlen(buffer), f);
+        v = ecore_list_goto_index(eaps, j);
+        /* Split eaps */
+        token = strstr(v, ":");
+        token = strtok(token, ":");
+        snprintf(buffer, sizeof(buffer), "%s\n", token);
+        if (buffer != NULL)
+           fwrite(buffer, sizeof(char), strlen(buffer), f);
      }
 
    fclose(f);
 
-   if (eaps) ecore_list_destroy(eaps);
+   if (eaps)
+      ecore_list_destroy(eaps);
    return;
 }
 
-void sort_menus()
+void
+sort_menus()
 {
    char *home, *file;
    char path[MAX_PATH];
@@ -118,22 +138,27 @@ void sort_menus()
 #endif
 
    home = get_home();
-   snprintf(path, sizeof(path), "%s"EFAVDIR, home);
+   snprintf(path, sizeof(path), "%s" EFAVDIR, home);
    list = (Ecore_List *)ecore_file_ls(path);
-   if (!list) return;
+   if (!list)
+      return;
 
    ecore_list_goto_first(list);
    while ((file = ecore_list_next(list)) != NULL)
      {
-	if (!strcmp(file, ".") || !strcmp(file, "..")) continue;
-	snprintf(path, sizeof(path), "%s"EFAVDIR"/%s", home, file);
-	if (ecore_file_is_dir(path)) sort_menu(path);
+        if (!strcmp(file, ".") || !strcmp(file, ".."))
+           continue;
+        snprintf(path, sizeof(path), "%s" EFAVDIR "/%s", home, file);
+        if (ecore_file_is_dir(path))
+           sort_menu(path);
      }
 
-   if (list) ecore_list_destroy(list);
+   if (list)
+      ecore_list_destroy(list);
 }
 
-void sort_favorites()
+void
+sort_favorites()
 {
    int length;
    char *home, *file;
@@ -147,51 +172,62 @@ void sort_favorites()
 
    home = get_home();
 
-   snprintf(path, sizeof(path), "%s"EFAVDIR"/.order", home);
-   if (!ecore_file_exists(path)) create_order(path);
+   snprintf(path, sizeof(path), "%s" EFAVDIR "/.order", home);
+   if (!ecore_file_exists(path))
+      create_order(path);
 
    f = fopen(path, "r");
-   if (!f) return;
+   if (!f)
+      return;
 
    list = ecore_list_new();
    *buffer = 0;
    while (fgets(buffer, sizeof(buffer), f) != NULL)
      {
-	if (!(*buffer) || (*buffer == '\n')) continue;
-	/* Strip New Line Char */
-	if (buffer[(length = strlen(buffer) - 1)] == '\n') buffer[length] = '\0';
-	if (!search_list(list, strdup(buffer)))
-	  {
-	     if (!ecore_list_append(list, strdup(buffer)))
-	       {
+        if (!(*buffer) || (*buffer == '\n'))
+           continue;
+        /* Strip New Line Char */
+        if (buffer[(length = strlen(buffer) - 1)] == '\n')
+           buffer[length] = '\0';
+        if (!search_list(list, strdup(buffer)))
+          {
+             if (!ecore_list_append(list, strdup(buffer)))
+               {
 #ifdef DEBUG
-		  fprintf(stderr, "ERROR: Ecore List Append Failed !!\n");
+                  fprintf(stderr, "ERROR: Ecore List Append Failed !!\n");
 #endif
-		  return;
-	       }
-	  }
+                  return;
+               }
+          }
      }
    fclose(f);
 
    f = fopen(path, "w");
-   if (!f) return;
+   if (!f)
+      return;
 
-   snprintf(path, sizeof(path), "%s"EFAVDIR, home);
+   snprintf(path, sizeof(path), "%s" EFAVDIR, home);
    dir = (Ecore_List *)ecore_file_ls(path);
-   if (dir) ecore_list_goto_first(dir);
+   if (dir)
+      ecore_list_goto_first(dir);
    while ((file = ecore_list_next(dir)) != NULL)
      {
-	if (!strcmp(file, ".") || !strcmp(file, "..")) continue;
-	if (!strcmp(file, ".order")) continue;
-	if (!search_list(list, file))
-	  {
-	     snprintf(path, sizeof(path), "%s"EFAVDIR"/%s", home, file);
-	     snprintf(buffer, sizeof(buffer), "%s\n", file);
-	     if (buffer != NULL) fwrite(buffer, sizeof(char), strlen(buffer), f);
-	  }
+        if (!strcmp(file, ".") || !strcmp(file, ".."))
+           continue;
+        if (!strcmp(file, ".order"))
+           continue;
+        if (!search_list(list, file))
+          {
+             snprintf(path, sizeof(path), "%s" EFAVDIR "/%s", home, file);
+             snprintf(buffer, sizeof(buffer), "%s\n", file);
+             if (buffer != NULL)
+                fwrite(buffer, sizeof(char), strlen(buffer), f);
+          }
      }
 
    fclose(f);
-   if (list) ecore_list_destroy(list);
-   if (dir) ecore_list_destroy(dir);
+   if (list)
+      ecore_list_destroy(list);
+   if (dir)
+      ecore_list_destroy(dir);
 }
