@@ -13,7 +13,7 @@ Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project 
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 #BuildSuggests: xorg-x11-devel
 BuildRequires: libjpeg-devel XFree86-devel
-BuildRequires: embryo-devel eet-devel ecore-devel
+BuildRequires: edb-devel embryo-devel eet-devel ecore-devel
 BuildRequires: evas-devel edje-devel emotion-devel
 Requires: ecore evas edje embryo eet
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
