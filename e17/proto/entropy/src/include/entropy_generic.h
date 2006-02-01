@@ -59,8 +59,8 @@ struct entropy_file_request {
 #define TYPE_END 1 
 /*A temporary structure until I find a better way to do this*/
 typedef struct entropy_file_progress {
-	char* file_from;
-	char* file_to;
+	entropy_generic_file* file_from;
+	entropy_generic_file* file_to;
 
 	float progress;
 	int type;

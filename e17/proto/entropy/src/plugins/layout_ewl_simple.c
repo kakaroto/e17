@@ -12,6 +12,7 @@
 #define HEADER_CONFIG_MAX 2048
 
 static Ewl_Widget *win;
+static ewl_layout_count = 0;
 
 int entropy_plugin_type_get ();
 char *entropy_plugin_identify ();

@@ -1125,9 +1125,9 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *ret,
 
       if (view->progress->progress_window) {
 	ewl_text_text_set (EWL_TEXT (view->progress->file_from),
-			   progress->file_from);
+			   progress->file_from->filename);
 	ewl_text_text_set (EWL_TEXT (view->progress->file_to),
-			   progress->file_to);
+			   progress->file_to->filename);
 	ewl_progressbar_value_set (EWL_PROGRESSBAR
 				   (view->progress->progressbar),
 				   progress->progress);

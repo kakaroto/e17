@@ -113,10 +113,8 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *obj,
       entropy_file_progress *progress = obj;
 
       if (progress->type == TYPE_END) {
-	char *copy = strdup (progress->file_from);
 	entropy_file_listener *listener;
 	char new_path[PATH_MAX];
-	char *pos = strrchr (copy, '/');
 	entropy_thumbnail *thumb;
 	entropy_gui_event *gui_event;
 	char *md5 = NULL;
@@ -124,18 +122,15 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *obj,
 
 	entropy_gui_component_instance *instance = NULL;
 
-	*pos = '\0';
-	pos++;
-
-	printf("From: %s\n", progress->file_from);
+	//printf("From: %s/%s\n", progress->file_from->path, progress->file_from->filename);
 	
-	md5 = md5_entropy_path_file ("smb", copy, pos);
+	md5 = md5_entropy_path_file (progress->file_from->uri_base, progress->file_from->path, progress->file_from->filename);
 	instance = ecore_hash_get (file_instance_hash, md5);
 	//printf("Remote thumbnailer file copy finish! - %p\n", instance);      
 
 	/*Actually make the thumbnail */
 	if (instance && (listener = entropy_core_file_cache_retrieve (md5))) {
-	  snprintf (new_path, PATH_MAX, "/tmp/%s", pos);
+	  snprintf (new_path, PATH_MAX, "/tmp/%s", progress->file_from->filename);
 
 	  strncpy (tmp_file->filename, listener->file->filename,
 		   FILENAME_LENGTH);
@@ -180,7 +175,6 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *obj,
 	ecore_hash_remove (file_instance_hash, md5);
 
 	free (md5);
-	free (copy);
       }
     }
     break;
