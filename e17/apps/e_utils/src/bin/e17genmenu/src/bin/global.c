@@ -20,8 +20,6 @@ get_home()
                 home[length] = '\0';
           }
      }
-   if (d)
-      free(d);
    return strdup(home);
 }
 

@@ -2,6 +2,7 @@
 #include "config.h"
 #include "menus.h"
 #include "sort.h"
+#include "fdo_paths.h"
 
 /* Function Prototypes */
 void _e17genmenu_backup(void);
@@ -18,6 +19,70 @@ _e17genmenu_backup()
    fprintf(stderr, "Backing up Existing Eaps...\n");
 #endif
    backup_eaps();
+}
+
+void
+_e17genmenu_test_fdo_paths()
+{
+   int i;
+   char *path;
+   char *menu = "applications.menu";
+
+   printf("Testing FDO paths\n");
+
+   fdo_paths_init();
+
+   /* You can iterate through the various path lists as needed. */
+   for (i = 0; i < fdo_paths_menus->size; i++)
+     printf("FDO menu path = %s\n", fdo_paths_menus->list[i]);
+   for (i = 0; i < fdo_paths_directories->size; i++)
+     printf("FDO directory path = %s\n", fdo_paths_directories->list[i]);
+   for (i = 0; i < fdo_paths_desktops->size; i++)
+     printf("FDO desktop path = %s\n", fdo_paths_desktops->list[i]);
+   for (i = 0; i < fdo_paths_icons->size; i++)
+     printf("FDO icon path = %s\n", fdo_paths_icons->list[i]);
+
+   /* First, find the main menu file. */
+   path = fdo_paths_search_for_file(FDO_PATHS_TYPE_MENU, menu);
+   if (path)
+      {
+         char *directory = "Applications.directory";
+         char *desktop = "xterm.desktop";
+         char *icon = "tux.png";
+
+         printf("Path to %s is %s\n", menu, path);
+         free(path);
+
+         /* During the processing of the menu file, you will need to search for 
+	  * .directory files, .desktop files, and icons.
+	  */
+         path = fdo_paths_search_for_file(FDO_PATHS_TYPE_DIRECTORY, directory);
+         if (path)
+	    {
+               printf("Path to %s is %s\n", directory, path);
+	       free(path);
+	    }
+
+         path = fdo_paths_search_for_file(FDO_PATHS_TYPE_DESKTOP, desktop);
+         if (path)
+	    {
+               printf("Path to %s is %s\n", desktop, path);
+	       free(path);
+	    }
+
+         path = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, icon);
+         if (path)
+	    {
+               printf("Path to %s is %s\n", icon, path);
+	       free(path);
+	    }
+      }
+
+   fdo_paths_shutdown();
+
+   _e17genmenu_shutdown();
+
+   exit(0);
 }
 
 void
@@ -55,6 +120,8 @@ _e17genmenu_parseargs(int argc, char **argv)
                 _e17genmenu_help();
              if ((strstr(argv[i], "--backup")) || (strstr(argv[i], "-b")))
                 _e17genmenu_backup();
+             if ((strstr(argv[i], "--fdo")) || (strstr(argv[i], "-f")))
+                _e17genmenu_test_fdo_paths();
           }
      }
 }
