@@ -60,7 +60,7 @@ callback (evfs_event * data, void *obj)
 	    (((evfs_file_uri_path *)
 	      ecore_hash_get (folder_monitor_hash, key))->files[0]->path,
 	     folder)) {
-	  char *md5 = md5_entropy_path_file (folder, pos + 1);
+	  char *md5 = md5_entropy_path_file (data->file_monitor.plugin, folder, pos + 1);
 	  entropy_file_listener *listener;
 
 
@@ -148,7 +148,7 @@ callback (evfs_event * data, void *obj)
       *pos = '\0';
 
       //printf("Folder: '%s'\nFilename: '%s'\n", folder, pos+1);
-      md5 = md5_entropy_path_file (folder, pos + 1);
+      md5 = md5_entropy_path_file (data->resp_command.file_command.files[0]->plugin_uri, folder, pos + 1);
       instance = ecore_hash_get (stat_request_hash, md5);
 
       //printf("Got an instance for this stat request: '%p'\n", instance);
@@ -225,8 +225,6 @@ callback (evfs_event * data, void *obj)
 
       ecore_list_goto_first (data->file_list.list);
       while ((ref = ecore_list_next (data->file_list.list))) {
-
-
 	/*printf("(%s) Received file type for file: %d\n", ref->path, ref->file_type); */
 
 	folder = strdup ((char *) ref->path);
@@ -260,7 +258,7 @@ callback (evfs_event * data, void *obj)
 	//printf("Folder name: '%s', filename '%s'\n", folder, pos+1);
 
 	/*Look for an existing file we have cached */
-	char *md5 = md5_entropy_path_file (folder, filename);
+	char *md5 = md5_entropy_path_file (ref->plugin_uri, folder, filename);
 
 	/*Now create, or grab, a file */
 	if (!(listener = entropy_core_file_cache_retrieve (md5))) {
@@ -348,8 +346,10 @@ callback (evfs_event * data, void *obj)
       //printf("Progress for file '%s' is %f percent\n", 
       //              (char*)data->resp_command.file_command.files[0]->path, data->progress.file_progress);
 
-      request->file_from = strdup (data->progress->file_from);
-      request->file_to = strdup (data->progress->file_to);
+      ecore_list_goto_first(data->file_list.list);
+      request->file_from = strdup (  ((evfs_filereference*)ecore_list_current(data->file_list.list))->path );
+      ecore_list_next(data->file_list.list);
+      request->file_to = strdup (    ((evfs_filereference*)ecore_list_current(data->file_list.list))->path);
       request->progress = data->progress->file_progress;
 
       if (data->progress->type == EVFS_PROGRESS_TYPE_CONTINUE)
@@ -509,7 +509,7 @@ filestat_get (entropy_file_request * request)
 
   path = evfs_parse_uri (uri);
   char *md5 =
-    md5_entropy_path_file (request->file->path, request->file->filename);
+    md5_entropy_path_file (request->file->uri_base, request->file->path, request->file->filename);
   ecore_hash_set (stat_request_hash, md5, request->requester);
   evfs_client_file_stat (con, path->files[0]);
 
@@ -592,7 +592,7 @@ filelist_get (entropy_file_request * request)
 	if (request->file_type == FILE_ALL || filetype == request->file_type) {
 	  /*printf ("Adding..\n"); */
 
-	  md5 = md5_entropy_path_file (dire, de->d_name);
+	  md5 = md5_entropy_path_file ("posix", dire, de->d_name);
 
 	  /*printf("Looking for key %s\n", md5);  */
 	  if (!(listener = entropy_core_file_cache_retrieve (md5))) {

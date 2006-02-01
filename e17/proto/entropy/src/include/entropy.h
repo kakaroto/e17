@@ -63,12 +63,13 @@ void entropy_core_file_cache_remove_reference(char* md5);
 entropy_file_listener* entropy_core_file_cache_retrieve(char* md5);
 void generic_file_print(entropy_generic_file* file);
 entropy_generic_file* entropy_generic_file_clone(entropy_generic_file* file);
-char* md5_entropy_path_file(char* path, char* filename);
+char* md5_entropy_path_file(char* plugin, char* folder, char* filename);
 
 
 /*FS Interaction/EVFS functions*/
 entropy_generic_file* entropy_core_parse_uri(char* uri);
 char* entropy_core_generic_file_uri_create (entropy_generic_file* file, int drill_down);
+entropy_generic_file* evfs_filereference_to_entropy_generic_file(void* ref);
 
 
 /*Selection engine functions*/

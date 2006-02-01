@@ -127,7 +127,9 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *obj,
 	*pos = '\0';
 	pos++;
 
-	md5 = md5_entropy_path_file (copy, pos);
+	printf("From: %s\n", progress->file_from);
+	
+	md5 = md5_entropy_path_file ("smb", copy, pos);
 	instance = ecore_hash_get (file_instance_hash, md5);
 	//printf("Remote thumbnailer file copy finish! - %p\n", instance);      
 

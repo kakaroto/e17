@@ -1162,9 +1162,9 @@ void entropy_core_string_lowcase(char *lc) {
 }
 
 
-char* md5_entropy_path_file(char* path, char* filename) {
+char* md5_entropy_path_file(char* plugin, char* folder, char* filename) {
         char* md5;
-	char full_name[1024];
+	char full_name[PATH_MAX];
         md5_state_t state;
         md5_byte_t digest[16];
         static const char hex[]="0123456789abcdef";
@@ -1174,7 +1174,7 @@ char* md5_entropy_path_file(char* path, char* filename) {
 
 	/*printf("MD5'ing %s %s\n", path, filename);*/
 
-	snprintf(full_name, 1024, "%s%s", path, filename);
+	snprintf(full_name, 1024, "%s%s%s", plugin, folder, filename);
 	
        md5_init(&state);
        md5_append(&state, (const md5_byte_t*)full_name, strlen(full_name));
@@ -1340,7 +1340,6 @@ char* entropy_core_generic_file_uri_create (entropy_generic_file* file, int dril
 
 
 	/*Do we have login information*/
-	/*TODO - wrap this up in some kind of entropy_generic_file_to_evfs_uri function*/
 	if (!source_file->username) {
 		snprintf(uri, 512, "%s://%s/%s",  source_file->uri_base, source_file->path, source_file->filename);
 	} else {
@@ -1378,6 +1377,27 @@ char* entropy_core_generic_file_uri_create (entropy_generic_file* file, int dril
 
 	return uri;
 }
+
+
+entropy_generic_file* evfs_filereference_to_entropy_generic_file(void* ref) 
+{
+	evfs_filereference* file_ref = (evfs_filereference*)ref;
+	char *copy = strdup (file_ref->path);
+	char *pos = strrchr (copy, '/');
+	entropy_generic_file* file = entropy_generic_file_new();
+	
+	*pos = '\0';
+	pos++;
+
+	strncpy(file->path, copy, 255);
+	strncpy(file->filename, pos, FILENAME_LENGTH);
+	strncpy(file->uri_base, file_ref->plugin_uri, 15);
+
+	free(copy);
+	return file;
+	
+}
+
 
 /* Associate an object with an entropy_generic_file - e.g. an ewl_widget with a file - 
  * Mostly used for transparent DND between objects */
