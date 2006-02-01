@@ -1,0 +1,96 @@
+# Italian translation for E17 screenshot module.
+# This file is put in the public domain.
+# Massimo Maiurana <maiurana@inwind.it>, 2005.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Screenshot\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-02-01 19:17+0100\n"
+"PO-Revision-Date: 2006-02-01 19:32+0100\n"
+"Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8-bit\n"
+
+#: e_mod_config.c:80
+msgid "Screenshot Configuration"
+msgstr "Configurazione modulo Screenshot"
+
+#: e_mod_config.c:173 e_mod_config.c:297
+msgid "Use Import"
+msgstr "Usa import"
+
+#: e_mod_config.c:175 e_mod_config.c:299
+msgid "Use Scrot"
+msgstr "Usa scrot"
+
+#: e_mod_config.c:182 e_mod_config.c:307
+msgid "Delay Time:"
+msgstr "Tempo di ritardo:"
+
+#: e_mod_config.c:192 e_mod_config.c:317
+msgid "File Settings"
+msgstr "Impostazioni del file"
+
+#: e_mod_config.c:195 e_mod_config.c:320
+msgid "Save Directory:"
+msgstr "Directory di salvataggio:"
+
+#: e_mod_config.c:201 e_mod_config.c:326
+msgid "Filename (minus extension):"
+msgstr "Nome file (senza estensione):"
+
+#: e_mod_config.c:208 e_mod_config.c:333
+#, c-format
+msgid "Example: screenshot%d = screenshot1, screenshot2, etc..."
+msgstr "Esempio: screenshot%d = screenshot1, screenshot2, ecc..."
+
+#: e_mod_config.c:340
+msgid "Import Options"
+msgstr "Opzioni per import"
+
+#: e_mod_config.c:341 e_mod_config.c:361
+msgid "Include Image Border"
+msgstr "Includi bordo immagine"
+
+#: e_mod_config.c:344
+msgid "Use Image Dithering"
+msgstr "Usa dithering (sfumatura)"
+
+#: e_mod_config.c:347
+msgid "Include Window Manager Frame"
+msgstr "Includi cornice del window manager"
+
+#: e_mod_config.c:350
+msgid "Choose Window To Grab"
+msgstr "Scegli finestra da catturare"
+
+#: e_mod_config.c:353
+msgid "Silent"
+msgstr "Silenzioso"
+
+#: e_mod_config.c:355
+msgid "Trim Edges"
+msgstr "Ritaglia bordi"
+
+#: e_mod_config.c:360
+msgid "Scrot Options"
+msgstr "Opzioni per scrot"
+
+#: e_mod_config.c:364
+msgid "Generate Thumbnail"
+msgstr "Genera miniatiura"
+
+#: e_mod_main.c:108 e_mod_main.c:527
+msgid "Enlightenment Screenshot Module"
+msgstr "Modulo Screenshot di Enlightenment"
+
+#: e_mod_main.c:109
+msgid "This module is used to take screenshots"
+msgstr "Questo modulo serve per generare immagini dallo schermo"
+
+#: e_mod_main.c:528
+msgid "Please Choose A Program To Use For Taking Screenshots."
+msgstr "Scegliere un programma da usare per la cattura delle immagini."

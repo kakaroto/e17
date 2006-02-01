@@ -1,0 +1,67 @@
+# Italian translation for E17 mount module.
+# This file is put in the public domain.
+# Massimo Maiurana <maiurana@inwind.it>, 2005.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Mount\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-02-01 19:17+0100\n"
+"PO-Revision-Date: 2006-02-01 19:33+0100\n"
+"Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8-bit\n"
+
+#: e_mod_config.c:48
+msgid "Mount Configuration"
+msgstr "Configurazione modulo Mount"
+
+#: e_mod_config.c:95 e_mod_config.c:141
+msgid "Show Labels"
+msgstr "Mostra etichette"
+
+#: e_mod_config.c:99 e_mod_config.c:145
+msgid "Layout Settings"
+msgstr "Impostazioni del layout"
+
+#: e_mod_config.c:101 e_mod_config.c:147
+msgid "Use Vertical Layout"
+msgstr "Rappresentazione verticale"
+
+#: e_mod_config.c:104 e_mod_config.c:150
+msgid "Use Horizontal Layout"
+msgstr "Rappresentazione orizzontale"
+
+#: e_mod_config.c:155
+msgid "Icon Size"
+msgstr "Dimensione delle icone"
+
+#: e_mod_main.c:122
+msgid "Enlightenment Mount Module"
+msgstr "Modulo Mount di Enlightenment"
+
+#: e_mod_main.c:123
+msgid "This is a mount module to mount/unmount devices."
+msgstr "Questo è un modulo per il montaggio/smontaggio di dispositivi."
+
+#: e_mod_main.c:160
+msgid "Cannot Parse fstab"
+msgstr "Impossibile leggere fstab"
+
+#: e_mod_main.c:160 e_mod_main.c:1232 e_mod_main.c:1240 e_mod_main.c:1248
+msgid "Mount Module"
+msgstr "Modulo Mount"
+
+#: e_mod_main.c:1233
+msgid "Unmount Failed !!<br>Perhaps this device is in use or is not mounted."
+msgstr "Smontaggio fallito!!<br>Forse il dispositivo è in uso o non è montato."
+
+#: e_mod_main.c:1241
+msgid "Mount Failed !!<br>Please check that media is inserted"
+msgstr "Montaggio fallito!!<br>Controllare che il supporto sia inserito."
+
+#: e_mod_main.c:1248
+msgid "Eject Failed !!"
+msgstr "Espulsione fallita!!"
