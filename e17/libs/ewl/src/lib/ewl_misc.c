@@ -555,7 +555,7 @@ ewl_init_parse_options(int *argc, char **argv)
 		else if (!strcmp(argv[i], "--ewl-fb")) {
 			IF_FREE(ewl_config.evas.render_method);
 			ewl_config.evas.render_method = strdup("fb");
-			ewl_conifg.evas.engine = EWL_ENGINE_FB;
+			ewl_config.evas.engine = EWL_ENGINE_FB;
 
 			matched++;
 		}
