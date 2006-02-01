@@ -28,6 +28,7 @@ static Evas_Object *_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas,
                                              E_Config_Dialog_Data *cfdata);
 static int _advanced_apply_data(E_Config_Dialog *cfd,
                                 E_Config_Dialog_Data *cfdata);
+static void _fill_data(Flame *f, E_Config_Dialog_Data *cfdata);
 
 void
 _config_flame_module(E_Container *con, Flame *fl)
