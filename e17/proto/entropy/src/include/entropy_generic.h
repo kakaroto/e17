@@ -72,6 +72,18 @@ struct entropy_file_stat {
 	struct stat* stat_obj;
 };
 
+typedef enum entropy_user_interaction_response {
+	ENTROPY_USER_INTERACTION_RESPONSE_YES,
+	ENTROPY_USER_INTERACTION_RESPONSE_NO,
+	ENTROPY_USER_INTERACTION_RESPONSE_ABORT
+} entropy_user_interaction_response;
+
+typedef struct entropy_user_interaction entropy_user_interaction;
+struct entropy_user_interaction {
+	long id;
+	entropy_user_interaction_response response;
+};
+
 	
 
 enum entropy_generic_file_type {

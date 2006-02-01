@@ -550,7 +550,8 @@ char* entropy_core_gui_event_get(char* event) {
 		return "entropy_gui_event_file_progress";
 	} else if (!strcmp(event, ENTROPY_GUI_EVENT_THUMBNAIL_AVAILABLE)) {
 		return "entropy_gui_event_thumbnail_available";
-
+	} else if (!strcmp(event, ENTROPY_GUI_EVENT_USER_INTERACTION_YES_NO_ABORT)) {
+		return "entropy_gui_event_user_interaction_yes_no_abort";
 	} else {
 		return "";
 	}
@@ -1131,6 +1132,22 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		ev->event_type = ENTROPY_NOTIFY_FILE_PROGRESS; 
 
 		
+
+		/*Call the requestors*/
+		ecore_list_goto_first(el);
+		while ( (iter = ecore_list_next(el)) ) {
+			//printf( "Calling callback at : %p\n", iter->plugin->gui_event_callback_p);
+			
+			if (iter->active) (*iter->plugin->gui_event_callback_p)
+				(ev, 
+				 iter, 
+				 event->data,   /*An evfs progress event*/
+				 iter);
+		}
+		entropy_notify_event_destroy(ev);		
+	} else if (!strcmp(event->event_type, ENTROPY_GUI_EVENT_USER_INTERACTION_YES_NO_ABORT)) {
+		entropy_notify_event* ev = entropy_notify_event_new();
+		ev->event_type = ENTROPY_NOTIFY_USER_INTERACTION_YES_NO_ABORT; 
 
 		/*Call the requestors*/
 		ecore_list_goto_first(el);

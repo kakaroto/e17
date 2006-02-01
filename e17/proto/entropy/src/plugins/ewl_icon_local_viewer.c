@@ -590,8 +590,8 @@ entropy_plugin_init (entropy_core * core,
 			   PACKAGE_DATA_DIR
 			   "/icons/e17_button_detail_new_dir.png");
   ewl_iconbox_context_menu_item_add (EWL_ICONBOX (viewer->iconbox), context);
-  ewl_callback_append (context, EWL_CALLBACK_CLICKED,
-		       ewl_iconbox_file_copy_cb, instance);
+  /*ewl_callback_append (context, EWL_CALLBACK_CLICKED,
+		       ewl_iconbox_file_copy_cb, instance);*/
   ewl_widget_show (context);
 
 
@@ -751,6 +751,11 @@ entropy_plugin_init (entropy_core * core,
   entropy_core_component_event_register (instance,
 					 entropy_core_gui_event_get
 					 (ENTROPY_GUI_EVENT_FILE_PROGRESS));
+
+  /*We want to know if the backend needs feedback */
+  entropy_core_component_event_register (instance,
+					 entropy_core_gui_event_get
+					 (ENTROPY_GUI_EVENT_USER_INTERACTION_YES_NO_ABORT));
 
   /*We want to know about thumbnail available events */
   entropy_core_component_event_register (instance,
@@ -1098,6 +1103,11 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *ret,
       //printf("STAT EXECUTED Response back at ewl_icon_local_viewer\n");
     }
     break;
+
+  case ENTROPY_NOTIFY_USER_INTERACTION_YES_NO_ABORT: {
+	printf("Yes/No/Abort to file copy?\n");
+  }
+  break;
 
   case ENTROPY_NOTIFY_FILE_STAT_AVAILABLE:{
 

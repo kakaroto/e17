@@ -357,13 +357,6 @@ callback (evfs_event * data, void *obj)
       else
 	request->type = TYPE_END;
 
-
-      /*Build up the gui_event wrapper */
-      gui_event = entropy_malloc (sizeof (entropy_gui_event));
-      gui_event->event_type =
-	entropy_core_gui_event_get (ENTROPY_GUI_EVENT_FILE_PROGRESS);
-      gui_event->data = request;
-
       /*Find who called us */
       uri =
 	evfs_filereference_to_string (data->resp_command.file_command.
@@ -371,12 +364,17 @@ callback (evfs_event * data, void *obj)
       instance = ecore_hash_get (file_copy_hash, uri);
 
       if (instance) {
+	/*Build up the gui_event wrapper */
+        gui_event = entropy_malloc (sizeof (entropy_gui_event));
+        gui_event->event_type =
+   	entropy_core_gui_event_get (ENTROPY_GUI_EVENT_FILE_PROGRESS);
+        gui_event->data = request;
+	      
 	entropy_core_layout_notify_event (instance, gui_event,
 					  ENTROPY_EVENT_LOCAL);
       }
       else {
 	printf ("Could not get file copy caller for '%s'\n", uri);
-	free (gui_event);
       }
 
       if (data->progress->type == EVFS_PROGRESS_TYPE_DONE) {
@@ -392,7 +390,36 @@ callback (evfs_event * data, void *obj)
     break;
 
   case EVFS_EV_OPERATION: {
+	char *uri = NULL;
+	entropy_gui_component_instance* instance;
+	entropy_gui_event* gui_event;
+
 	printf("EVFS requested feedback on an operation!\n");
+
+      /*Find who called us */
+      uri =
+	evfs_filereference_to_string (data->resp_command.file_command.
+				      files[0]);
+      instance = ecore_hash_get (file_copy_hash, uri);
+
+      if (instance) {
+         /*Build up the gui_event wrapper */
+         gui_event = entropy_malloc (sizeof (entropy_gui_event));
+         gui_event->event_type =
+	 entropy_core_gui_event_get (ENTROPY_GUI_EVENT_USER_INTERACTION_YES_NO_ABORT);
+	 gui_event->data = NULL;
+	
+	      
+	entropy_core_layout_notify_event (instance, gui_event,
+					  ENTROPY_EVENT_LOCAL);
+
+	 printf("Requesting send of operation stat to instance %p, evfs operation ID %ld\n", instance, data->op->id);
+      }
+      else {
+	printf ("Could not get file copy caller for '%s'\n", uri);
+	//free (gui_event);
+      }
+
   }
   break;
 
