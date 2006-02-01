@@ -62,6 +62,7 @@ int evfs_io_initialise() {
 
 	EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_operation_edd, evfs_operation, "id", id, EET_T_INT);
 	EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_operation_edd, evfs_operation, "status", status, EET_T_INT);
+	EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_operation_edd, evfs_operation, "substatus", substatus, EET_T_INT);
 	EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_operation_edd, evfs_operation, "response", response, EET_T_INT);
 	
 
@@ -166,18 +167,42 @@ void evfs_write_file_read_event(evfs_client* client, evfs_event* event) {
 
 void evfs_write_progress_event(evfs_client* client, evfs_command* command, evfs_event* event) {
 	int size_ret = 0;
+	evfs_filereference* ref;
+	char* data;
+
 
 	if (event->progress->type == EVFS_PROGRESS_TYPE_DONE) {
 		printf( "Sendign Done!\n");
 	}
 	
-	char* data = eet_data_descriptor_encode(_evfs_progress_event_edd, event->progress, &size_ret);
+	data = eet_data_descriptor_encode(_evfs_progress_event_edd, event->progress, &size_ret);
 
 	evfs_write_ecore_ipc_client_message(client->client, 
 		ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_PROGRESS,
 		client->id,0,0,data, size_ret  ));
 
 	free(data);
+
+
+	/*Write "From" file*/
+	ref = ecore_list_remove_first(event->file_list.list);	
+	data =eet_data_descriptor_encode(_evfs_filereference_edd, ref, &size_ret);
+		
+	evfs_write_ecore_ipc_client_message(client->client, 
+		ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_FILE_REFERENCE,
+		client->id,0,0,data, size_ret  ));
+	free(data);
+
+	/*Write "to" file*/
+	ref = ecore_list_remove_first(event->file_list.list);	
+	data =eet_data_descriptor_encode(_evfs_filereference_edd, ref, &size_ret);
+		
+	evfs_write_ecore_ipc_client_message(client->client, 
+		ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_FILE_REFERENCE,
+		client->id,0,0,data, size_ret  ));
+	free(data);
+
+	
 }
 
 void evfs_write_operation_event(evfs_client* client, evfs_event* event) {

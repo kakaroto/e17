@@ -75,7 +75,16 @@ void evfs_cleanup_progress_event(evfs_event* event) {
 	free(event->progress->file_from);
 	free(event->progress->file_to);
 	free(event->progress);
+
+	evfs_filereference* file;
 	
+	if (event->file_list.list) {
+		ecore_list_goto_first(event->file_list.list);
+		while ( (file = ecore_list_remove_first(event->file_list.list))) {
+			evfs_cleanup_filereference(file);
+		}
+		ecore_list_destroy(event->file_list.list);
+	}
 }
 
 void evfs_cleanup_operation_event(evfs_event* event) {

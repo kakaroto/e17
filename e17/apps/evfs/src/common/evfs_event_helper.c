@@ -71,9 +71,10 @@ void evfs_file_progress_event_create(evfs_client* client, evfs_command* event_co
 	event->progress->file_progress = progress;
 	event->progress->type = type;
 
-	event->progress->file_from = strdup(event_command->file_command.files[0]->path);
-	event->progress->file_to = strdup(event_command->file_command.files[1]->path);
-
+	event->file_list.list = ecore_list_new();
+	ecore_list_append(event->file_list.list, event_command->file_command.files[0]);
+	ecore_list_append(event->file_list.list, event_command->file_command.files[1]);
+	
 	evfs_write_event(client, root_command, event);
 
 	/*Now destroy*/

@@ -18,10 +18,15 @@ typedef enum evfs_operation_response {
 	EVFS_OPERATION_RESPONSE_NEGATE
 } evfs_operation_response;
 
+typedef enum evfs_operation_substatus {
+	EVFS_OPERATION_SUBSTATUS_FILE_OVERWRITE
+} evfs_operation_substatus;
+
 typedef struct evfs_operation evfs_operation;
 struct evfs_operation {
 	long id; /* A unique id for this op*/
 	evfs_operation_status status;
+	evfs_operation_substatus substatus;
 	evfs_operation_response response;
 };
 
