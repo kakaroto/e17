@@ -401,8 +401,6 @@ evfs_tar_load_tar (evfs_client * client, evfs_filereference * ref)
 
   while (evfs_uri_read (client, p_ref, &block, 512) == 512)
     {
-      printf ("Read file block..\n");
-
       if ((!memcmp
 	   (block.p.magic, TARPET_GNU_MAGIC, strlen (TARPET_GNU_MAGIC)))
 	  ||
