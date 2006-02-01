@@ -26,7 +26,7 @@ static void _fdo_paths_list_del(Fdo_Path_List * list);
 static void _fdo_paths_massage_path(char *path, char *home, char *first,
                                     char *second);
 static void _fdo_paths_check_and_add(Fdo_Path_List * paths, char *path);
-static Fdo_Path_List *_fdo_paths_get(char *env, char *type, char *gnome_extra,
+static Fdo_Path_List *_fdo_paths_get(char *env_home, char *env, char *env_home_default, char *env_default, char *type, char *gnome_extra,
                                      char *kde);
 static char *_fdo_paths_recursive_search(char *path, char *d, int (*func) (const void *data, char *path), const void *data);
 
@@ -174,7 +174,7 @@ _fdo_paths_massage_path(char *path, char *home, char *first, char *second)
       second[last] = '\0';
 
    if (first[0] == '~')
-      sprintf(path, "%s/%s/%s/",
+      sprintf(path, "%s%s/%s/",
               home, &first[1], &second[(second[0] == '/') ? 1 : 0]);
    else
       sprintf(path, "%s/%s/", first, &second[(second[0] == '/') ? 1 : 0]);
@@ -199,7 +199,7 @@ _fdo_paths_check_and_add(Fdo_Path_List * paths, char *path)
 }
 
 static Fdo_Path_List *
-_fdo_paths_get(char *env, char *type, char *gnome_extra, char *kde)
+_fdo_paths_get(char *env_home, char *env, char *env_home_default, char *env_default, char *type, char *gnome_extra, char *kde)
 {
    char *home;
    Fdo_Path_List *paths = NULL;
@@ -212,6 +212,16 @@ _fdo_paths_get(char *env, char *type, char *gnome_extra, char *kde)
    kdes = _fdo_paths_paths_to_list(kde);
 
    home = get_home();
+   if (home)
+      {
+         int last;
+
+         /* Strip traling slash of home. */
+         last = strlen(home) - 1;
+         if ((last >= 0) && (home[last] == '/'))
+            home[last] = '\0';
+      }
+
    paths = _fdo_paths_list_new(NULL);
    if (paths)
      {
@@ -219,11 +229,36 @@ _fdo_paths_get(char *env, char *type, char *gnome_extra, char *kde)
         char path[MAX_PATH];
         Fdo_Path_List *env_list;
 
+        if (env_home)
+          {
+             char *value;
+
+             value = getenv(env_home);
+	     if ((value == NULL) || (value[0] == '\0'))
+	        value = env_home_default;
+             printf("ENV %s\n", value);
+             env_list = _fdo_paths_paths_to_list(value);
+             if (env_list)
+               {
+                  for (i = 0; i < env_list->size; i++)
+                    {
+                       for (j = 0; j < types->size; j++)
+                         {
+                            _fdo_paths_massage_path(path, home,
+                                                    env_list->list[i],
+                                                    types->list[j]);
+                            _fdo_paths_check_and_add(paths, path);
+                         }
+                    }
+               }
+          }
         if (env)
           {
              char *value;
 
              value = getenv(env);
+	     if ((value == NULL) || (value[0] == '\0'))
+	        value = env_default;
              printf("ENV %s\n", value);
              env_list = _fdo_paths_paths_to_list(value);
              if (env_list)
@@ -279,14 +314,14 @@ fdo_paths_init()
 {
    if (!fdo_paths_menus)
       fdo_paths_menus =
-         _fdo_paths_get("XDG_CONFIG_DIRS", "menus", NULL, "xdgconf-menu");
+         _fdo_paths_get("XDG_CONFIG_HOME", "XDG_CONFIG_DIRS", "~/.config", "/etc/xdg", "menus", NULL, "xdgconf-menu");
    if (!fdo_paths_directories)
       fdo_paths_directories =
-         _fdo_paths_get("XDG_DATA_DIRS", "desktop-directories",
+         _fdo_paths_get("XDG_DATA_HOME", "XDG_DATA_DIRS", "~/.local/share", "/usr/local/share:/usr/share", "desktop-directories",
                         "gnome/vfolders", "xdgdata-dirs");
    if (!fdo_paths_desktops)
       fdo_paths_desktops =
-         _fdo_paths_get("XDG_DATA_DIRS", "applications",
+         _fdo_paths_get("XDG_DATA_HOME", "XDG_DATA_DIRS", "~/.local/share", "/usr/local/share:/usr/share", "applications",
                         "dist/desktop-files:dist/short-menu:gnome/apps",
                         "xdgdata-apps:apps");
    if (!fdo_paths_icons)
@@ -295,7 +330,7 @@ fdo_paths_init()
 
         /* FIXME: add ~/.icons to beginning. */
         fdo_paths_icons =
-           _fdo_paths_get("XDG_DATA_DIRS", "icons", "dist/icons",
+           _fdo_paths_get("XDG_DATA_HOME", "XDG_DATA_DIRS", "~/.local/share", "/usr/local/share:/usr/share", "icons", "dist/icons",
                           "icon:pixmap");
         _fdo_paths_check_and_add(fdo_paths_icons, "/usr/share/pixmaps/");
         gnome = getenv("$GNOME_ICON_PATH");
