@@ -252,6 +252,7 @@ _fdo_paths_get(char *env_home, char *env, char *env_home_default, char *env_defa
                     }
                }
           }
+
         if (env)
           {
              char *value;
@@ -348,6 +349,18 @@ fdo_paths_shutdown()
    E_FN_DEL(_fdo_paths_list_del, fdo_paths_icons);
 }
 
+/** Search for a file in fdo compatible locations.
+ *
+ * This will search through all the diretories of a particular type, looking 
+ * for the file.  It will recurse into subdirectories.  If func is NULL, then
+ * only the first file found will be returned.  If func is defined, then each
+ * file found will be passed to func, until func returns 1.
+ *
+ * @param   type The type of directories to search.
+ * @param   file The file to search for.
+ * @param   func A function to call for each file found.
+ * @param   data A pointer to pass on to func.
+ */
 char *
 fdo_paths_search_for_file(Fdo_Paths_Type type, char *file, int (*func) (const void *data, char *path), const void *data)
 {
