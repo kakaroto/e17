@@ -1033,7 +1033,7 @@ ewl_window_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 * Now give the windows the appropriate size and adjust the evas as
 	 * well.
 	 */
-	if (win->flags & EWL_WINDOW_USER_CONFIGURE)
+  if (win->flags & EWL_WINDOW_USER_CONFIGURE)
 		win->flags &= ~EWL_WINDOW_USER_CONFIGURE;
 	else {
 #ifdef ENABLE_EWL_SOFTWARE_X11
@@ -1083,6 +1083,7 @@ ewl_window_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ecore_list_goto_first(EWL_CONTAINER(w)->children);
 	while ((child = ecore_list_next(EWL_CONTAINER(w)->children))) {
 		int x, y;
+    int size;
 
 		/*
 		 * Try to give the child the full size of the window from it's
@@ -1092,12 +1093,22 @@ ewl_window_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		 */
 		x = ewl_object_current_x_get(EWL_OBJECT(child));
 		y = ewl_object_current_y_get(EWL_OBJECT(child));
-    
+   
 		if (x < CURRENT_X(w))
+    {
 			x = CURRENT_X(w);
+      size = ewl_object_preferred_w_get(EWL_OBJECT(child));
+      if (size > PREFERRED_W(w))
+        ewl_object_preferred_inner_w_set(EWL_OBJECT(w), size);
+    }
 		if (y < CURRENT_Y(w))
+    {
 			y = CURRENT_Y(w);
-    
+      size = ewl_object_preferred_h_get(EWL_OBJECT(child));
+      if (size > PREFERRED_H(w))
+        ewl_object_preferred_inner_h_set(EWL_OBJECT(w), size);
+    }
+
 		ewl_object_place(child, x, y, CURRENT_W(w) - (x - CURRENT_X(w)),
 				 CURRENT_H(w) - (y - CURRENT_Y(w)));
 	}

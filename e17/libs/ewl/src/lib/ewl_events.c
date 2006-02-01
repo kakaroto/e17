@@ -236,8 +236,15 @@ ewl_ev_x_window_configure(void *data __UNUSED__, int type __UNUSED__, void *e)
 	/*
 	 * Configure events really only need to occur on resize.
 	 */
-	if ((CURRENT_W(window) != ev->w) || (CURRENT_H(window) != ev->h)) {
-		window->flags |= EWL_WINDOW_USER_CONFIGURE;
+	if ((ewl_object_current_w_get(EWL_OBJECT(window)) != ev->w) || (ewl_object_current_h_get(EWL_OBJECT(window)) != ev->h)) {
+
+    /* 
+     * Right now this is commented out, as it was preventing windows from resizing
+     * when WE were the ones setting the size (mainly on initial show of the
+     * window). It would be nice to add this back in to limit the # of window
+     * resizes occuring. (As long as it doesn't break initial size.)
+     */
+		/* if (ev->from_wm) window->flags |= EWL_WINDOW_USER_CONFIGURE; */
 		ewl_object_geometry_request(EWL_OBJECT(window), 0, 0, ev->w,
 					    ev->h);
 	}
