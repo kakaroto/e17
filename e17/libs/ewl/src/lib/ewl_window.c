@@ -1092,12 +1092,14 @@ ewl_window_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		 */
 		x = ewl_object_current_x_get(EWL_OBJECT(child));
 		y = ewl_object_current_y_get(EWL_OBJECT(child));
+    
 		if (x < CURRENT_X(w))
 			x = CURRENT_X(w);
 		if (y < CURRENT_Y(w))
 			y = CURRENT_Y(w);
-		ewl_object_place(child, x, y, CURRENT_W(w) - x,
-				 CURRENT_H(w) - y);
+    
+		ewl_object_place(child, x, y, CURRENT_W(w) - (x - CURRENT_X(w)),
+				 CURRENT_H(w) - (y - CURRENT_Y(w)));
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
