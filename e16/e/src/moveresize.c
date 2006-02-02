@@ -170,6 +170,7 @@ ActionMoveEnd(EWin * ewin)
 
    if (Mode_mr.mode > 0)
      {
+	FocusEnable(1);
 	EUngrabServer();
 	ModulesSignal(ESIGNAL_ANIMATION_RESUME, NULL);
      }
@@ -438,6 +439,7 @@ ActionMoveHandleMotion(void)
 	if (Mode_mr.mode > 0)
 	  {
 	     EGrabServer();
+	     FocusEnable(0);
 	     ModulesSignal(ESIGNAL_ANIMATION_SUSPEND, NULL);
 	  }
 

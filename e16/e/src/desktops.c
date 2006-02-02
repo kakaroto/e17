@@ -1327,8 +1327,9 @@ DeskGoto(Desk * dsk)
 	DeskEnter(dsk);
      }
 
-   DeskSwitchDone();
    ActionsResume();
+
+   DeskSwitchDone();
 
    ModulesSignal(ESIGNAL_DESK_SWITCH_DONE, NULL);
 
@@ -1783,9 +1784,10 @@ DeskCurrentGotoArea(int ax, int ay)
    /* set hints up for it */
    HintsSetDesktopViewport();
 
+   ActionsResume();
+
    /* re-focus on a new ewin on that new desktop area */
    DeskSwitchDone();
-   ActionsResume();
 
    ModulesSignal(ESIGNAL_AREA_SWITCH_DONE, DesksGetCurrent());
 
