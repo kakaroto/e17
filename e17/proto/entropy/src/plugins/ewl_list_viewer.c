@@ -585,11 +585,13 @@ ewl_icon_local_viewer_add_icon (entropy_gui_component_instance * comp,
     ewl_image_file_set (EWL_IMAGE (text[0]),
 			PACKAGE_DATA_DIR "/icons/default.png", 0);
     ewl_image_constrain_set (EWL_IMAGE (text[0]), 15);
+    ewl_object_minimum_w_set(EWL_OBJECT(text[0]), 15);
     ewl_widget_show (text[0]);
 
 
     text[1] = ewl_text_new ();
     ewl_text_text_set (EWL_TEXT (text[1]), list_item->filename);	/*Name */
+    ewl_object_minimum_w_set(EWL_OBJECT(text[1]), 60);
     ewl_widget_show (text[1]);
 
     if (list_item->retrieved_stat) {
@@ -603,6 +605,7 @@ ewl_icon_local_viewer_add_icon (entropy_gui_component_instance * comp,
       text[2] = ewl_text_new ();
       ewl_widget_show (text[2]);	/* Size */
     }
+   ewl_object_minimum_w_set(EWL_OBJECT(text[2]), 30);
 
 
     if (list_item->retrieved_stat) {
@@ -616,6 +619,7 @@ ewl_icon_local_viewer_add_icon (entropy_gui_component_instance * comp,
       text[3] = ewl_text_new ();
       ewl_widget_show (text[3]);	/*Mod time */
     }
+    ewl_object_minimum_w_set(EWL_OBJECT(text[3]), 40);
 
     text[4] = ewl_label_new ();
     ewl_label_text_set (EWL_LABEL (text[4]), "...");
