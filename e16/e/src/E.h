@@ -561,7 +561,6 @@ typedef struct
       char               *machine_name;
    } wm;
    int                 mode;
-   char                flipp;
    char                action_inhibit;
    EWin               *focuswin;
    EWin               *mouse_over_ewin;

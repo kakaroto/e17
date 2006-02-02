@@ -96,9 +96,7 @@ EdgeTimeout(int val, void *data __UNUSED__)
    Mode.events.x += dx;
    Mode.events.y += dy;
    EWarpPointer(VRoot.win, Mode.events.x, Mode.events.y);
-   Mode.flipp = 1;
    DeskCurrentMoveAreaBy(dax, day);
-   Mode.flipp = 0;
    Mode.events.px = Mode.events.x;
    Mode.events.py = Mode.events.y;
 }

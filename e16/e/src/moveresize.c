@@ -64,7 +64,7 @@ int
 ActionMoveStart(EWin * ewin, int grab, char constrained, int nogroup)
 {
    EWin              **gwins;
-   int                 i, num, dx, dy;
+   int                 i, num;
 
    if (!ewin || ewin->state.inhibit_move)
       return 0;
@@ -82,14 +82,8 @@ ActionMoveStart(EWin * ewin, int grab, char constrained, int nogroup)
    Mode.mode = MODE_MOVE_PENDING;
    Mode.constrained = constrained;
 
-   dx = EoGetX(EoGetDesk(ewin));
-   dy = EoGetY(EoGetDesk(ewin));
-   Mode_mr.start_x = Mode.events.x + dx;
-   Mode_mr.start_y = Mode.events.y + dy;
-   Mode_mr.win_x = EoGetX(ewin) + dx;
-   Mode_mr.win_y = EoGetY(ewin) + dy;
-   Mode_mr.win_w = ewin->client.w;
-   Mode_mr.win_h = ewin->client.h;
+   Mode_mr.win_x = Mode.events.x - (EoGetX(ewin) + EoGetX(EoGetDesk(ewin)));
+   Mode_mr.win_y = Mode.events.y - (EoGetY(ewin) + EoGetY(EoGetDesk(ewin)));
 
    RaiseEwin(ewin);
    gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE, nogroup
@@ -222,7 +216,7 @@ ActionMoveResume(void)
 {
    EWin               *ewin, **lst;
    int                 i, num;
-   int                 x, y, fl;
+   int                 x, y, fl, dx, dy;
 
    ewin = Mode_mr.ewin;
    if (!ewin)
@@ -238,6 +232,9 @@ ActionMoveResume(void)
    if (Mode_mr.mode > 0)
       EGrabServer();
 
+   dx = Mode.events.x - Mode_mr.win_x - EoGetX(EoGetDesk(ewin)) - ewin->shape_x;
+   dy = Mode.events.y - Mode_mr.win_y - EoGetY(EoGetDesk(ewin)) - ewin->shape_y;
+
    /* Redraw any windows that were in "move mode" */
    lst =
       ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE, Mode.nogroup, &num);
@@ -248,13 +245,8 @@ ActionMoveResume(void)
 	if (!EoIsFloating(ewin))
 	   continue;
 
-	x = ewin->shape_x;
-	y = ewin->shape_y;
-	if (Mode.flipp)
-	  {
-	     x += Mode.events.x - Mode.events.px;
-	     y += Mode.events.y - Mode.events.py;
-	  }
+	x = ewin->shape_x + dx;
+	y = ewin->shape_y + dy;
 	DrawEwinShape(ewin, Mode_mr.mode, x, y,
 		      ewin->client.w, ewin->client.h, fl);
      }
