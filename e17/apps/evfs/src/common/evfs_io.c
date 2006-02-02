@@ -370,9 +370,32 @@ void evfs_write_ecore_ipc_client_message(Ecore_Ipc_Client* client, ecore_ipc_mes
 /*------------------------------------------------------------------------*/
 //Some ugly duplication here - maybe we should consider reworking this so it can
 //be generic
+//
+void evfs_write_operation_command(evfs_connection* conn, evfs_command* command) {
+	int size_ret = 0;
+
+	char* data = eet_data_descriptor_encode(_evfs_operation_edd, command->op, &size_ret);
+
+	evfs_write_ecore_ipc_server_message(conn->server, 
+			ecore_ipc_message_new(EVFS_COMMAND, EVFS_COMMAND_PART_OPERATION, 0,0,0,
+			data, size_ret));
+	free(data);
+}
 
 void evfs_write_command(evfs_connection* conn, evfs_command* command) {
 
+	/*Write the command type structure*/
+	evfs_write_ecore_ipc_server_message(conn->server, 
+			ecore_ipc_message_new(EVFS_COMMAND, EVFS_COMMAND_TYPE, 0,0,0,
+			&command->type, sizeof(evfs_command_type)));
+
+
+	evfs_write_ecore_ipc_server_message(conn->server, 
+			ecore_ipc_message_new(EVFS_COMMAND, EVFS_COMMAND_EXTRA, 0,0,0,
+			&command->file_command.extra, sizeof(int)));
+
+	printf("Command type at write command: %d\n", command->type);
+	
 	switch (command->type) {
 		case EVFS_CMD_STOPMON_FILE:
 		case EVFS_CMD_STARTMON_FILE:
@@ -387,10 +410,16 @@ void evfs_write_command(evfs_connection* conn, evfs_command* command) {
 		case EVFS_CMD_PING:
 			evfs_write_file_command(conn, command);
 			break;
+		case EVFS_CMD_OPERATION_RESPONSE:
+			evfs_write_operation_command(conn, command);
+			break;
 		default:
 			printf("Command type not handled in switch\n");
 			break;
 	}
+
+	/*Send a final*/
+	evfs_write_command_end(conn);
 
 }
 
@@ -434,18 +463,6 @@ void evfs_write_file_command(evfs_connection* conn, evfs_command* command) {
 
 	bzero(uri, 1024);
 	
-	/*Write the command type structure*/
-	evfs_write_ecore_ipc_server_message(conn->server, 
-			ecore_ipc_message_new(EVFS_COMMAND, EVFS_COMMAND_TYPE, 0,0,0,
-			&command->type, sizeof(evfs_command_type)));
-
-
-	evfs_write_ecore_ipc_server_message(conn->server, 
-			ecore_ipc_message_new(EVFS_COMMAND, EVFS_COMMAND_EXTRA, 0,0,0,
-			&command->file_command.extra, sizeof(int)));
-
-	
-
 	/*Write the files*/
 	/*Send them de-parsed to save time*/
 	for (i=0;i<command->file_command.num_files;i++) {
@@ -500,9 +517,6 @@ void evfs_write_file_command(evfs_connection* conn, evfs_command* command) {
 
 	}
 
-	/*Send a final*/
-	evfs_write_command_end(conn);
-	
 
 }
 
@@ -673,6 +687,12 @@ int evfs_process_incoming_command(evfs_server* server, evfs_command* command, ec
 				printf("BAD: Received an FD before a filerefereence!\n");
 			}
 			break;
+
+		case EVFS_COMMAND_PART_OPERATION: {
+			evfs_operation* op = eet_data_descriptor_decode(_evfs_operation_edd, message->data, message->len);
+			command->op = op;
+		}
+		break;
 
 
 		case EVFS_COMMAND_END:	

@@ -15,7 +15,8 @@ typedef enum evfs_operation_status {
 
 typedef enum evfs_operation_response {
 	EVFS_OPERATION_RESPONSE_AFFIRM,
-	EVFS_OPERATION_RESPONSE_NEGATE
+	EVFS_OPERATION_RESPONSE_NEGATE,
+	EVFS_OPERATION_RESPONSE_ABORT
 } evfs_operation_response;
 
 typedef enum evfs_operation_substatus {
@@ -35,6 +36,6 @@ evfs_operation* evfs_operation_new();
 void evfs_operation_destroy(evfs_operation* op);
 evfs_operation* evfs_operation_get_by_id(long id);
 void evfs_operation_status_set(evfs_operation* op, int status);
-void evfs_operation_user_dispatch(evfs_client* client, evfs_command* command, evfs_operation* op);
+
 
 #endif

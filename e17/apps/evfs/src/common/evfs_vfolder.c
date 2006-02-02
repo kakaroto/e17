@@ -1,6 +1,6 @@
 #include <evfs.h>
 
-static evfs_vfolder_init=0;
+static int evfs_vfolder_init=0;
 static Eet_Data_Descriptor *_evfs_vfolder_edd;
 
 void evfs_vfolder_initialise() {

@@ -11,6 +11,7 @@ void evfs_client_file_open(evfs_connection* conn, evfs_filereference* file);
 void evfs_client_file_copy(evfs_connection* conn, evfs_filereference* from, evfs_filereference* to);
 void evfs_client_file_open(evfs_connection* conn, evfs_filereference* file);
 void evfs_client_file_read(evfs_connection* conn, evfs_filereference* file, int read_size);
+void evfs_client_operation_respond(evfs_connection* conn, long opid, evfs_operation_response response);
 
 #endif
 

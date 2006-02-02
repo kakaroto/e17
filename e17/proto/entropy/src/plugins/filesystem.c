@@ -825,3 +825,9 @@ entropy_filesystem_file_rename (entropy_generic_file * file_from,
   free (uri_path_to);
 
 }
+
+void entropy_filesystem_operation_respond(long id, int response) 
+{
+	printf("Received response for %ld -> %d\n", id, response);
+	evfs_client_operation_respond(con, id, response);
+}

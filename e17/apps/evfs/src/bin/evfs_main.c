@@ -200,6 +200,10 @@ evfs_handle_command (evfs_client * client, evfs_command * command)
   case EVFS_CMD_PING:
     evfs_handle_ping_command (client, command);
     break;
+
+  case EVFS_CMD_OPERATION_RESPONSE:
+    evfs_handle_operation_command (client,command);
+    break;
   default:
     printf ("Warning - unhandled command %d\n", command->type);
     break;

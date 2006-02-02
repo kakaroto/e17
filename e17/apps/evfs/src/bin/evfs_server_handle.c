@@ -548,3 +548,8 @@ evfs_handle_ping_command (evfs_client * client, evfs_command * command)
 {
   printf ("Ping!\n");
 }
+
+
+void evfs_handle_operation_command(evfs_client* client, evfs_command* command) {
+	printf("*** Received operation response for op %ld -> %d\n", command->op->id, command->op->response);
+}

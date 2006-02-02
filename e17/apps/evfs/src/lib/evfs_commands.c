@@ -147,6 +147,22 @@ void evfs_client_file_read(evfs_connection* conn, evfs_filereference* file, int 
 	free(command);	
 }
 
+void evfs_client_operation_respond(evfs_connection* conn, long opid, evfs_operation_response response) {
+	evfs_command* command = NEW(evfs_command);
 
+	//printf("Reading a file..\n");
 
+	command->type = EVFS_CMD_OPERATION_RESPONSE;
+
+	printf("Command type for op response: %d\n", command->type);
+	command->op = NEW(evfs_operation);
+	command->op->id = opid;
+	command->op->response = response;
+
+	printf("Command type for op response: %d\n", command->type);
+	evfs_write_command(conn, command);
+	
+	free(command->op);
+	free(command);	
+}
 

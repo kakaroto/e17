@@ -17,7 +17,8 @@ typedef enum evfs_command_type
   EVFS_CMD_FILE_OPEN = 9,
   EVFS_CMD_FILE_READ = 10,
   EVFS_CMD_FILE_TEST = 11,
-  EVFS_CMD_PING = 12
+  EVFS_CMD_PING = 12,
+  EVFS_CMD_OPERATION_RESPONSE = 13
 
 }
 evfs_command_type;
@@ -31,9 +32,10 @@ typedef struct evfs_command_file {
 }
 evfs_command_file;
 
-typedef union evfs_command {
+typedef struct evfs_command {
 	evfs_command_type type;
 	evfs_command_file file_command;
+	evfs_operation* op;
 }
 evfs_command;
 

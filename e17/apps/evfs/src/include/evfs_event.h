@@ -45,6 +45,7 @@ typedef enum evfs_eventpart {
 
 	EVFS_EV_PART_OPERATION = 18,
         EVFS_COMMAND_END = 19,
+	EVFS_COMMAND_PART_OPERATION = 20,
 
 	
 	EVFS_EV_PART_END = 1000
