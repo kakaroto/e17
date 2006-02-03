@@ -214,7 +214,7 @@ find_fdo_icon(char *icon)
 			   if (directory_paths)
 			      {
 			         int wanted_size;
-			         char i;
+			         int i;
 
                                  wanted_size = atoi(icon_size);
                                  /* Loop through the themes directories. */
