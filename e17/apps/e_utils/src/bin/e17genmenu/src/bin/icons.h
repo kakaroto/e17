@@ -28,6 +28,6 @@
 /* Function Prototypes */
 char *set_icon(char *token);
 char *find_icon(char *icon);
-char *find_fdo_icon(char *icon);
+char *find_fdo_icon(char *icon, char *icon_size, char *icon_theme);
 
 #endif

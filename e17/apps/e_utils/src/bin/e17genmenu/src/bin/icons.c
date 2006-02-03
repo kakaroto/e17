@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <limits.h>
 
 #include "global.h"
 #include "config.h"
@@ -134,6 +135,7 @@ find_icon(char *icon)
    return DEFAULTICON;
 }
 
+static const char *ext[] = {".png", ".svg", ".xpm", "", NULL};
 
 /** Search for an icon the fdo way.
  *
@@ -143,18 +145,18 @@ find_icon(char *icon)
  * @return  The full path to the found icon.
  */
 char *
-find_fdo_icon(char *icon)
+find_fdo_icon(char *icon, char *icon_size, char *icon_theme)
 {
    char icn[MAX_PATH], path[MAX_PATH];
-   char *dir, *icon_size, *icon_theme, *theme_path;
+   char *dir, *theme_path;
    char *found;
 
    if (icon == NULL)
       return DEFAULTICON;
 
-#ifdef DEBUG
-   fprintf(stderr, "\tTrying To Find Icon %s\n", icon);
-#endif
+//#ifdef DEBUG
+   fprintf(stderr, "\tTrying To Find Icon %s (%s) in theme %s\n", icon, icon_size, icon_theme);
+//#endif
 
    /* Check For Unsupported Extension */
    if ((!strcmp(icon + strlen(icon) - 4, ".svg"))
@@ -171,10 +173,6 @@ find_fdo_icon(char *icon)
         if (ecore_file_exists(path))
            return strdup(icon);
      }
-
-   /* Get Icon Options */
-   icon_size = get_icon_size();
-   icon_theme = get_icon_theme();
 
    /* Get the theme description file. */
    snprintf(icn, MAX_PATH, "%s/index.theme", icon_theme);
@@ -203,7 +201,7 @@ find_fdo_icon(char *icon)
 
                      directories = (char *) ecore_hash_get(icon_group, "Directories");
                      inherits = (char *) ecore_hash_get(icon_group, "Inherits");
-		     if ((directories) && (inherits))
+		     if (directories)
 		        {
                            Fdo_Path_List *directory_paths;
 
@@ -215,7 +213,9 @@ find_fdo_icon(char *icon)
 			   if (directory_paths)
 			      {
 			         int wanted_size;
+				 int minimal_size = INT_MAX;
 			         int i;
+				 char *closest = NULL;
 
                                  wanted_size = atoi(icon_size);
                                  /* Loop through the themes directories. */
@@ -231,6 +231,7 @@ find_fdo_icon(char *icon)
 				       if (sub_group)
 				          {
 	                                     char *size, *type, *minsize, *maxsize, *threshold;
+					     int j;
 
                                              size = (char *) ecore_hash_get(sub_group, "Size");
                                              type = (char *) ecore_hash_get(sub_group, "Type");
@@ -240,7 +241,14 @@ find_fdo_icon(char *icon)
 					     if (size)
 					        {
 						   int match = 0;
-						   int this_size;
+						   int this_size, result_size = 0, min_size, max_size, thresh_size;
+
+                                                   if (!minsize)   minsize = size;
+                                                   if (!maxsize)   maxsize = size;
+                                                   if (!threshold)   threshold = "2";
+                                                   min_size = atoi(minsize);
+                                                   max_size = atoi(maxsize);
+                                                   thresh_size = atoi(threshold);
 
                                                    /* Does this theme directory match the required icon size? */
                                                    this_size = atoi(size);
@@ -251,121 +259,84 @@ find_fdo_icon(char *icon)
 						         case 'F' :   /* Fixed. */
 							    {
 							       match = (wanted_size == this_size);
+							       result_size = abs(this_size - wanted_size);
 							       break;
 							    }
 						         case 'S' :   /* Scaled. */
 							    {
-						               int min_size, max_size;
-
-                                                               if (!minsize)
-							          minsize = size;
-                                                               if (!maxsize)
-							          maxsize = size;
-                                                               min_size = atoi(minsize);
-                                                               max_size = atoi(maxsize);
 							       match = ((min_size <= wanted_size) && (wanted_size <= max_size));
+							       if (wanted_size < min_size)
+							          result_size = min_size - wanted_size;
+							       if (wanted_size > max_size)
+							          result_size = wanted_size - max_size;
 							       break;
 							    }
 						         default :    /* Threshold. */
 							    {
-						               int thresh_size;
-
-                                                               if (!threshold)
-							          threshold = "2";
-                                                               thresh_size = atoi(threshold);
 							       match = ( ((this_size - thresh_size) <= wanted_size) && (wanted_size <= (this_size + thresh_size)) );
+							       if (wanted_size < (this_size - thresh_size))
+							          result_size = min_size - wanted_size;
+							       if (wanted_size > (this_size + thresh_size))
+							          result_size = wanted_size - max_size;
 							       break;
 							    }
 						      }
-						   /* If there is a match in sizes, hunt that little icon down. */
-						   if (match)
-						      {
 
-                                                         /* First try a .png file. */
-                                                         snprintf(path, MAX_PATH, "%s/%s/%s.png", icon_theme, directory_paths->list[i], icon);
+                                                   /* Look for icon with all extensions. */
+                                                   for (j = 0; ext[j] != NULL; j++)
+						      {
+                                                         snprintf(path, MAX_PATH, "%s/%s/%s%s", icon_theme, directory_paths->list[i], icon, ext[j]);
 #ifdef DEBUG
                                                          printf("FDO icon = %s\n", path);
 #endif
                                                          found = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, path, 0, NULL, NULL);
 							 if (found)
-							    return found;
-							 else
-							    {  /* Then a .svg file. */
-                                                               snprintf(path, MAX_PATH, "%s/%s/%s.svg", icon_theme, directory_paths->list[i], icon);
-#ifdef DEBUG
-                                                               printf("FDO icon = %s\n", path);
-#endif
-                                                               found = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, path, 0, NULL, NULL);
-							       if (found)
+							    {
+							       if (match)   /* If there is a match in sizes, return the icon. */
 							          return found;
-							       else
-							          {  /* Then a .xpm file. */
-                                                                     snprintf(path, MAX_PATH, "%s/%s/%s.xpm", icon_theme, directory_paths->list[i], icon);
-#ifdef DEBUG
-                                                                     printf("FDO icon = %s\n", path);
-#endif
-                                                                     found = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, path, 0, NULL, NULL);
-							             if (found)
-							                return found;
-							             else
-							                {   /* Finally, try without an extension, in case one was given. */
-                                                                           snprintf(path, MAX_PATH, "%s/%s/%s", icon_theme, directory_paths->list[i], icon);
-#ifdef DEBUG
-                                                                           printf("FDO icon = %s\n", path);
-#endif
-                                                                           found = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, path, 0, NULL, NULL);
-							                   if (found)
-							                      return found;
-							                }
-							          }
+							       if (result_size < minimal_size)   /* While we are here, figure out our next fallback strategy. */
+							          {
+								     minimal_size = result_size;
+								     closest = found;
+								  }
 							    }
 						      }
+
 						}
 					  }
 				    }   /* for (i = 0; i < directory_paths->size; i++) */
 
                                  /* Fall back strategy #1, look for closest size in this theme. */
+				 if (closest)
+				    return closest;
 
-
-                                 /* Fall back strategy #2, Just search in the base of the icon directories. */
-                                 /* First try a .png file. */
-                                 snprintf(path, MAX_PATH, "%s.png", icon);
-#ifdef DEBUG
-                                 printf("FDO icon = %s\n", path);
-#endif
-                                 found = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, path, 0, NULL, NULL);
-				 if (found)
-				    return found;
-				 else
-				    {  /* Then a .svg file. */
-                                       snprintf(path, MAX_PATH, "%s.svg", icon);
-#ifdef DEBUG
-                                       printf("FDO icon = %s\n", path);
-#endif
-                                       found = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, path, 0, NULL, NULL);
-				       if (found)
+                                 /* Fall back strategy #2, Try again with the parent theme. */
+				 if ((inherits) && (inherits[0] != '\0') && (strcmp(icon_theme, "hicolor") != 0))
+				    {
+                                       found = find_fdo_icon(icon, icon_size, inherits);
+				       if (found != DEFAULTICON)
 				          return found;
-				       else
-				          {  /* Then a .xpm file. */
-                                             snprintf(path, MAX_PATH, "%s.xpm", icon);
+				    }
+
+                                 /* Fall back strategy #3, Try the default hicolor theme. */
+				 if ( (! ((inherits) && (inherits[0] != '\0')) ) && (strcmp(icon_theme, "hicolor") != 0))
+				    {
+                                       found = find_fdo_icon(icon, icon_size, "hicolor");
+				       if (found != DEFAULTICON)
+				          return found;
+				    }
+
+                                 /* Fall back strategy #4, Just search in the base of the icon directories. */
+                                  for (i = 0; ext[i] != NULL; i++)
+				     {
+                                        snprintf(path, MAX_PATH, "%s%s", icon, ext[i]);
 #ifdef DEBUG
-                                             printf("FDO icon = %s\n", path);
+                                        printf("FDO icon = %s\n", path);
 #endif
-                                             found = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, path, 0, NULL, NULL);
-					     if (found)
-					        return found;
-					     else
-						{   /* Finally, try without an extension, in case one was given. */
-                                                   snprintf(path, MAX_PATH, "%s", icon);
-#ifdef DEBUG
-                                                   printf("FDO icon = %s\n", path);
-#endif
-                                                   found = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, path, 0, NULL, NULL);
-						   if (found)
-						      return found;
-						}
-				          }
-			            }
+                                        found = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, path, 0, NULL, NULL);
+				        if (found)
+				          return found;
+				     }
 
 			      }
 			}
