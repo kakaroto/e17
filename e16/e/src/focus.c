@@ -410,7 +410,8 @@ doFocusToEwin(EWin * ewin, int why)
 	     _EwinGetClientXwin(ewin), NULL);
 	break;
      case FOCUS_DESK_ENTER:
-	break;
+	if (Conf.focus.mode == MODE_FOCUS_CLICK)
+	   break;
      default:
      case FOCUS_INIT:
      case FOCUS_NEXT:
