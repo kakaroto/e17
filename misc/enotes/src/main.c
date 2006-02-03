@@ -49,14 +49,13 @@ Usage: enotes [options]");
 
 	/* Read the Usage and Configurations */
 	main_config = mainconfig_new();
-	read_configuration(main_config);
-	/*if (read_configuration(main_config) != ECORE_CONFIG_PARSE_CONTINUE) {
+	if (read_configuration(main_config) != ECORE_CONFIG_PARSE_CONTINUE) {
 		ecore_config_shutdown();
 		ecore_ipc_shutdown();
 		ecore_shutdown();
 		mainconfig_free(main_config);
 		return (-1);
-	}*/
+	}
 
 	dml("Successfully Read Configurations and Usage", 1);
 
