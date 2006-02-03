@@ -12,12 +12,6 @@ struct _E_Config_Dialog_Data
    int show_labels;
 };
 
-struct _Cfg_File_Data
-{
-   E_Config_Dialog *cfd;
-   char *file;
-};
-
 /* Protos */
 static void *_create_data(E_Config_Dialog *cfd);
 static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
@@ -29,6 +23,7 @@ static Evas_Object *_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas,
                                              E_Config_Dialog_Data *cfdata);
 static int _advanced_apply_data(E_Config_Dialog *cfd,
                                 E_Config_Dialog_Data *cfdata);
+static void _fill_data(Mount *m, E_Config_Dialog_Data *cfdata);
 
 void
 _config_mount_module(E_Container *con, Mount *m)
@@ -65,7 +60,7 @@ _create_data(E_Config_Dialog *cfd)
 
    m = cfd->data;
    cfdata = E_NEW(E_Config_Dialog_Data, 1);
-
+   _fill_data(m, cfdata);
    return cfdata;
 }
 
