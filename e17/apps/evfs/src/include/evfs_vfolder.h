@@ -25,11 +25,12 @@
  */
 
 typedef struct evfs_vfolder evfs_vfolder;
-struct evfs_vfolder {
-	Evas_List* bases; /* A list of base URIs where we start our search*/
+struct evfs_vfolder
+{
+   Evas_List *bases;            /* A list of base URIs where we start our search */
 };
 
 void evfs_vfolder_initialise();
-evfs_vfolder* evfs_vfolder_new();
+evfs_vfolder *evfs_vfolder_new();
 
 #endif

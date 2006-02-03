@@ -13,23 +13,24 @@
  *
  */
 
-struct TARPET_POSIX {
-  char name[100];
-  char mode[8];
-  char uid[8];
-  char gid[8];
-  char size[12];
-  char mtime[12];
-  char checksum[8];
-  char typeflag;
-  char linkname[100];
-  char magic[6];
-  char version[2];
-  char username[32];
-  char groupname[32];
-  char major[8];
-  char minor[8];
-  char extend[155];
+struct TARPET_POSIX
+{
+   char name[100];
+   char mode[8];
+   char uid[8];
+   char gid[8];
+   char size[12];
+   char mtime[12];
+   char checksum[8];
+   char typeflag;
+   char linkname[100];
+   char magic[6];
+   char version[2];
+   char username[32];
+   char groupname[32];
+   char major[8];
+   char minor[8];
+   char extend[155];
 };
 
 #define TARPET_TYPE_REGULAR    '\0'
@@ -72,48 +73,54 @@ struct TARPET_POSIX {
  * S_IXOTH
  */
 
-struct TARPET_sparsefile {
-  char padding[12];
-  char numbytes[12];
+struct TARPET_sparsefile
+{
+   char padding[12];
+   char numbytes[12];
 };
 
-struct TARPET_GNU_ext {
-  char atime[12];
-  char ctime[12];
-  char offset[12];
-  char realsize[12];
-  char longnames[4];
-  char padding[68];
-  struct TARPET_sparsefile sparse[16];
-  char extend;
+struct TARPET_GNU_ext
+{
+   char atime[12];
+   char ctime[12];
+   char offset[12];
+   char realsize[12];
+   char longnames[4];
+   char padding[68];
+   struct TARPET_sparsefile sparse[16];
+   char extend;
 };
 
-struct TARPET_GNU_ext_old {
-  char padding[345];
-  char atime[12];
-  char ctime[12];
-  char longnames[4];
-  char padding2;
-  struct TARPET_sparsefile sparse[4];
-  char extend;
-  char realsize[12];
+struct TARPET_GNU_ext_old
+{
+   char padding[345];
+   char atime[12];
+   char ctime[12];
+   char longnames[4];
+   char padding2;
+   struct TARPET_sparsefile sparse[4];
+   char extend;
+   char realsize[12];
 };
 
-struct TARPET_GNU_sparseheader {
-  struct TARPET_sparsefile sparse[21];
-  char extend;
+struct TARPET_GNU_sparseheader
+{
+   struct TARPET_sparsefile sparse[21];
+   char extend;
 };
 
-struct TARPET_rawdata {
-  char data[512];
+struct TARPET_rawdata
+{
+   char data[512];
 };
 
-union TARPET_block {
-  struct TARPET_POSIX p;
-  struct TARPET_GNU_ext gnu;
-  struct TARPET_GNU_ext_old gnu_old;
-  struct TARPET_GNU_sparseheader sparse;
-  struct TARPET_rawdata raw;
+union TARPET_block
+{
+   struct TARPET_POSIX p;
+   struct TARPET_GNU_ext gnu;
+   struct TARPET_GNU_ext_old gnu_old;
+   struct TARPET_GNU_sparseheader sparse;
+   struct TARPET_rawdata raw;
 };
 
 #endif

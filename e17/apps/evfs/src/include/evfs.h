@@ -9,7 +9,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-
 #include <Ecore.h>
 #include <Ecore_Ipc.h>
 #include <Ecore_File.h>
@@ -17,7 +16,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-
 
 #define EVFS_IPC_TITLE "evfs_fs"
 #define MAXPATHLEN 512
@@ -35,20 +33,19 @@
 #define EVFS_FUNCTION_FILE_MOVE "evfs_file_move"
 #define EVFS_FUNCTION_FILE_STAT_GET "evfs_file_stat_get"
 
-
 #include "evfs_operation.h"
 #include "evfs_plugin.h"
 
 typedef enum
 {
-  EVFS_SUCCESS,
-  EVFS_ERROR
+   EVFS_SUCCESS,
+   EVFS_ERROR
 } evfs_status;
 
 typedef enum
 {
-  EVFS_FS_OP_FORCE      = 1,
-  EVFS_FS_OP_RECURSIVE  = 2
+   EVFS_FS_OP_FORCE = 1,
+   EVFS_FS_OP_RECURSIVE = 2
 }
 EfsdFsOps;
 
@@ -64,8 +61,8 @@ EfsdFsOps;
 #include "evfs_common.h"
 #include "evfs_vfolder.h"
 
-void evfs_operation_user_dispatch(evfs_client* client, evfs_command* command, evfs_operation* op);
-
+void evfs_operation_user_dispatch(evfs_client * client, evfs_command * command,
+                                  evfs_operation * op);
 
 /**
  * ATTRIBUTE_UNUSED:
@@ -82,8 +79,5 @@ void evfs_operation_user_dispatch(evfs_client* client, evfs_command* command, ev
 #else
 #define __UNUSED__
 #endif
-
-
-
 
 #endif

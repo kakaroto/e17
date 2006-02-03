@@ -43,501 +43,480 @@
 #include <libsmbclient.h>
 
 //static struct stat file_stat;
-int smbc_remove_unused_server (SMBCCTX * context, SMBCSRV * srv);
+int smbc_remove_unused_server(SMBCCTX * context, SMBCSRV * srv);
 static SMBCCTX *smb_context = NULL;
 Ecore_List *auth_cache;
 
 int smb_next_fd;
 Ecore_Hash *smb_fd_hash;
 
-
-
-
-static void smb_evfs_dir_list (evfs_client * client, evfs_command * command,
-			       Ecore_List ** directory_list);
-int smb_evfs_file_stat (evfs_command * command, struct stat *file_stat, int);
-int evfs_file_open (evfs_client * client, evfs_filereference * file);
-int evfs_file_close (evfs_filereference * file);
-int evfs_file_seek (evfs_filereference * file, long offset, int whence);
-int evfs_file_read (evfs_client * client, evfs_filereference * file,
-		    char *bytes, long size);
-int evfs_file_write (evfs_filereference * file, char *bytes, long size);
-int evfs_file_create (evfs_filereference * file);
-int smb_evfs_file_mkdir (evfs_filereference * file);
-int evfs_file_remove (char *file);
-
-
+static void smb_evfs_dir_list(evfs_client * client, evfs_command * command,
+                              Ecore_List ** directory_list);
+int smb_evfs_file_stat(evfs_command * command, struct stat *file_stat, int);
+int evfs_file_open(evfs_client * client, evfs_filereference * file);
+int evfs_file_close(evfs_filereference * file);
+int evfs_file_seek(evfs_filereference * file, long offset, int whence);
+int evfs_file_read(evfs_client * client, evfs_filereference * file,
+                   char *bytes, long size);
+int evfs_file_write(evfs_filereference * file, char *bytes, long size);
+int evfs_file_create(evfs_filereference * file);
+int smb_evfs_file_mkdir(evfs_filereference * file);
+int evfs_file_remove(char *file);
 
 int
-evfs_client_disconnect (evfs_client * client)
+evfs_client_disconnect(evfs_client * client)
 {
-  printf ("Received disconnect for client at evfs_fs_samba.c for client %d\n",
-	  client->id);
+   printf("Received disconnect for client at evfs_fs_samba.c for client %d\n",
+          client->id);
 }
 
-
-
 void
-evfs_auth_structure_add (Ecore_List * cache, char *username, char *password,
-			 char *path)
+evfs_auth_structure_add(Ecore_List * cache, char *username, char *password,
+                        char *path)
 {
-  evfs_auth_cache *obj = NEW (evfs_auth_cache);
-  obj->username = strdup (username);
-  obj->password = strdup (password);
-  obj->path = strdup (path);
+   evfs_auth_cache *obj = NEW(evfs_auth_cache);
 
-  printf ("Added %s:%s to '%s' for auth\n", username, password, path);
+   obj->username = strdup(username);
+   obj->password = strdup(password);
+   obj->path = strdup(path);
 
-  ecore_list_append (cache, obj);
+   printf("Added %s:%s to '%s' for auth\n", username, password, path);
+
+   ecore_list_append(cache, obj);
 }
 
 evfs_auth_cache *
-evfs_auth_cache_get (Ecore_List * cache, char *path)
+evfs_auth_cache_get(Ecore_List * cache, char *path)
 {
-  evfs_auth_cache *obj;
+   evfs_auth_cache *obj;
 
-  printf ("Looking for match for '%s' in auth cache\n", path);
+   printf("Looking for match for '%s' in auth cache\n", path);
 
-  ecore_list_goto_first (cache);
-  while ((obj = ecore_list_next (cache)))
-    {
-      if (!strncmp (obj->path, path, strlen (path)))
-	{
-	  printf ("Found match for path in cache: user '%s'\n",
-		  obj->username);
-	  return obj;
-	}
-    }
+   ecore_list_goto_first(cache);
+   while ((obj = ecore_list_next(cache)))
+     {
+        if (!strncmp(obj->path, path, strlen(path)))
+          {
+             printf("Found match for path in cache: user '%s'\n",
+                    obj->username);
+             return obj;
+          }
+     }
 
-  return NULL;
+   return NULL;
 }
 
-
 int
-smb_fd_get_next (void *ptr)
+smb_fd_get_next(void *ptr)
 {
-  smb_next_fd++;
-  ecore_hash_set (smb_fd_hash, (int *) smb_next_fd, ptr);
+   smb_next_fd++;
+   ecore_hash_set(smb_fd_hash, (int *)smb_next_fd, ptr);
 
-  printf ("Wrote ptr %p for fd %d\n", ptr, smb_next_fd);
+   printf("Wrote ptr %p for fd %d\n", ptr, smb_next_fd);
 
-  return smb_next_fd;
+   return smb_next_fd;
 }
 
 void *
-smb_fd_get_for_int (int fd)
+smb_fd_get_for_int(int fd)
 {
-  return ecore_hash_get (smb_fd_hash, (int *) fd);
+   return ecore_hash_get(smb_fd_hash, (int *)fd);
 }
-
 
 void
-evfs_smb_populate_fd (evfs_filereference * file)
+evfs_smb_populate_fd(evfs_filereference * file)
 {
-  if (file->fd_p == NULL)
-    {
-      file->fd_p = smb_fd_get_for_int (file->fd);
-    }
+   if (file->fd_p == NULL)
+     {
+        file->fd_p = smb_fd_get_for_int(file->fd);
+     }
 }
-
 
 /*---------------------------------------------------------------------------*/
 /*A temporary function until we build authentication into the protocol*/
 void
-auth_fn (const char *server, const char *share,
-	 char *workgroup, int wgmaxlen, char *username, int unmaxlen,
-	 char *password, int pwmaxlen)
+auth_fn(const char *server, const char *share,
+        char *workgroup, int wgmaxlen, char *username, int unmaxlen,
+        char *password, int pwmaxlen)
 {
-  char temp[128];
-  char path[PATH_MAX];
-  evfs_auth_cache *obj;
+   char temp[128];
+   char path[PATH_MAX];
+   evfs_auth_cache *obj;
 
-  fprintf (stdout, "Need password for //%s/%s\n", server, share);
-  snprintf (path, 512, "/%s/%s", server, share);
+   fprintf(stdout, "Need password for //%s/%s\n", server, share);
+   snprintf(path, 512, "/%s/%s", server, share);
 
-  /*Look for a cached auth for this */
-  obj = evfs_auth_cache_get (auth_cache, path);
-  if (obj)
-    {
-      strncpy (username, obj->username, unmaxlen);
-      strncpy (password, obj->password, pwmaxlen);
-      return;
-    }
+   /*Look for a cached auth for this */
+   obj = evfs_auth_cache_get(auth_cache, path);
+   if (obj)
+     {
+        strncpy(username, obj->username, unmaxlen);
+        strncpy(password, obj->password, pwmaxlen);
+        return;
+     }
 
-  fprintf (stdout, "Enter workgroup: [%s] ", workgroup);
-  fgets (temp, sizeof (temp), stdin);
+   fprintf(stdout, "Enter workgroup: [%s] ", workgroup);
+   fgets(temp, sizeof(temp), stdin);
 
-  if (temp[strlen (temp) - 1] == 0x0a)	/* A new line? */
-    temp[strlen (temp) - 1] = 0x00;
+   if (temp[strlen(temp) - 1] == 0x0a)  /* A new line? */
+      temp[strlen(temp) - 1] = 0x00;
 
-  if (temp[0])
-    strncpy (workgroup, temp, wgmaxlen - 1);
+   if (temp[0])
+      strncpy(workgroup, temp, wgmaxlen - 1);
 
-  fprintf (stdout, "Enter username: [%s] ", username);
-  fgets (temp, sizeof (temp), stdin);
+   fprintf(stdout, "Enter username: [%s] ", username);
+   fgets(temp, sizeof(temp), stdin);
 
-  if (temp[strlen (temp) - 1] == 0x0a)	/* A new line? */
-    temp[strlen (temp) - 1] = 0x00;
+   if (temp[strlen(temp) - 1] == 0x0a)  /* A new line? */
+      temp[strlen(temp) - 1] = 0x00;
 
-  if (temp[0])
-    strncpy (username, temp, unmaxlen - 1);
+   if (temp[0])
+      strncpy(username, temp, unmaxlen - 1);
 
-  fprintf (stdout, "Enter password: [%s] ", password);
-  fgets (temp, sizeof (temp), stdin);
+   fprintf(stdout, "Enter password: [%s] ", password);
+   fgets(temp, sizeof(temp), stdin);
 
-  if (temp[strlen (temp) - 1] == 0x0a)	/* A new line? */
-    temp[strlen (temp) - 1] = 0x00;
+   if (temp[strlen(temp) - 1] == 0x0a)  /* A new line? */
+      temp[strlen(temp) - 1] = 0x00;
 
-  if (temp[0])
-    strncpy (password, temp, pwmaxlen - 1);
+   if (temp[0])
+      strncpy(password, temp, pwmaxlen - 1);
 
 }
 
 /*------------------------------------------------------------------------*/
 
-
 evfs_plugin_functions *
-evfs_plugin_init ()
+evfs_plugin_init()
 {
-  int err;
+   int err;
 
+   printf("Initialising the samba plugin..\n");
+   evfs_plugin_functions *functions = malloc(sizeof(evfs_plugin_functions));
 
-  printf ("Initialising the samba plugin..\n");
-  evfs_plugin_functions *functions = malloc (sizeof (evfs_plugin_functions));
-  functions->evfs_dir_list = &smb_evfs_dir_list;
-  functions->evfs_client_disconnect = &evfs_client_disconnect;
-  functions->evfs_file_open = &evfs_file_open;
-  functions->evfs_file_close = &evfs_file_close;
-  functions->evfs_file_seek = &evfs_file_seek;
-  functions->evfs_file_read = &evfs_file_read;
-  functions->evfs_file_write = &evfs_file_write;
-  functions->evfs_file_create = &evfs_file_create;
-  functions->evfs_file_stat = &smb_evfs_file_stat;
-  functions->evfs_file_lstat = &smb_evfs_file_stat;	/*Windows file systems have no concept
-							   of 'lstat' */
+   functions->evfs_dir_list = &smb_evfs_dir_list;
+   functions->evfs_client_disconnect = &evfs_client_disconnect;
+   functions->evfs_file_open = &evfs_file_open;
+   functions->evfs_file_close = &evfs_file_close;
+   functions->evfs_file_seek = &evfs_file_seek;
+   functions->evfs_file_read = &evfs_file_read;
+   functions->evfs_file_write = &evfs_file_write;
+   functions->evfs_file_create = &evfs_file_create;
+   functions->evfs_file_stat = &smb_evfs_file_stat;
+   functions->evfs_file_lstat = &smb_evfs_file_stat;    /*Windows file systems have no concept
+                                                         * of 'lstat' */
 
+   functions->evfs_file_mkdir = &smb_evfs_file_mkdir;
+   functions->evfs_file_remove = &evfs_file_remove;
+   printf("Samba stat func at '%p'\n", &smb_evfs_file_stat);
 
-  functions->evfs_file_mkdir = &smb_evfs_file_mkdir;
-  functions->evfs_file_remove = &evfs_file_remove;
-  printf ("Samba stat func at '%p'\n", &smb_evfs_file_stat);
+   auth_cache = ecore_list_new();
+   smb_fd_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
+   smb_next_fd = 0;
 
-  auth_cache = ecore_list_new ();
-  smb_fd_hash = ecore_hash_new (ecore_direct_hash, ecore_direct_compare);
-  smb_next_fd = 0;
+   //Initialize samba (temporarily borrowed from gnomevfs)
+   smb_context = smbc_new_context();
+   if (smb_context != NULL)
+     {
+        smb_context->debug = 0;
+        smb_context->callbacks.auth_fn = auth_fn;
 
-  //Initialize samba (temporarily borrowed from gnomevfs)
-  smb_context = smbc_new_context ();
-  if (smb_context != NULL)
-    {
-      smb_context->debug = 0;
-      smb_context->callbacks.auth_fn = auth_fn;
+        if (!smbc_init_context(smb_context))
+          {
+             printf("Error initializing samba context..\n");
+             smbc_free_context(smb_context, FALSE);
+             smb_context = NULL;
+          }
+     }
 
-      if (!smbc_init_context (smb_context))
-	{
-	  printf ("Error initializing samba context..\n");
-	  smbc_free_context (smb_context, FALSE);
-	  smb_context = NULL;
-	}
-    }
-
-
-
-  return functions;
+   return functions;
 }
 
 char *
-evfs_plugin_uri_get ()
+evfs_plugin_uri_get()
 {
-  return "smb";
+   return "smb";
 }
 
 int
-smb_evfs_file_stat (evfs_command * command, struct stat *file_stat,
-		    int number)
+smb_evfs_file_stat(evfs_command * command, struct stat *file_stat, int number)
 {
 
-  int err = 0;
-  int fd = 0;
-  char dir[PATH_MAX];
-  static struct stat smb_stat;
+   int err = 0;
+   int fd = 0;
+   char dir[PATH_MAX];
+   static struct stat smb_stat;
 
-  //struct stat* file_stat = calloc(1,sizeof(struct stat));
-  //
-  /*Does this command have an attached authentication object? */
-  if (command->file_command.files[0]->username)
-    {
-      printf ("We have a username, adding to hash..\n");
-      evfs_auth_structure_add (auth_cache,
-			       command->file_command.files[number]->username,
-			       command->file_command.files[number]->password,
-			       command->file_command.files[number]->path);
-    }
+   //struct stat* file_stat = calloc(1,sizeof(struct stat));
+   //
+   /*Does this command have an attached authentication object? */
+   if (command->file_command.files[0]->username)
+     {
+        printf("We have a username, adding to hash..\n");
+        evfs_auth_structure_add(auth_cache,
+                                command->file_command.files[number]->username,
+                                command->file_command.files[number]->password,
+                                command->file_command.files[number]->path);
+     }
 
+   sprintf(dir, "smb:/%s", command->file_command.files[number]->path);
+   //printf("Getting stat on file '%s'\n", dir);
 
-  sprintf (dir, "smb:/%s", command->file_command.files[number]->path);
-  //printf("Getting stat on file '%s'\n", dir);
+   err = smb_context->stat(smb_context, (const char *)dir, &smb_stat);
+   //printf("Returned error code: %d\n", err);
+   //printf("File size: %ld\n", file_stat->st_size);
 
-  err = smb_context->stat (smb_context, (const char *) dir, &smb_stat);
-  //printf("Returned error code: %d\n", err);
-  //printf("File size: %ld\n", file_stat->st_size);
+   //printf("Returning to caller..\n");
 
-  //printf("Returning to caller..\n");
+   /*Ugly as shit - but if libsmbclient is compiled
+    * with a different mem packing regime, then
+    * this is the only way we can safely avoid blowing
+    * the stack (i.e we can't use memcpy) */
+   file_stat->st_dev = smb_stat.st_dev;
+   file_stat->st_ino = smb_stat.st_ino;
+   file_stat->st_mode = smb_stat.st_mode;
+   file_stat->st_nlink = smb_stat.st_nlink;
+   file_stat->st_uid = smb_stat.st_uid;
+   file_stat->st_gid = smb_stat.st_gid;
+   file_stat->st_rdev = smb_stat.st_rdev;
+   file_stat->st_size = smb_stat.st_size;
+   file_stat->st_blksize = smb_stat.st_blksize;
+   file_stat->st_blocks = smb_stat.st_blocks;
+   file_stat->st_atime = smb_stat.st_atime;
+   file_stat->st_mtime = smb_stat.st_mtime;
+   file_stat->st_ctime = smb_stat.st_ctime;
 
-  /*Ugly as shit - but if libsmbclient is compiled
-   * with a different mem packing regime, then
-   * this is the only way we can safely avoid blowing
-   * the stack (i.e we can't use memcpy) */
-  file_stat->st_dev = smb_stat.st_dev;
-  file_stat->st_ino = smb_stat.st_ino;
-  file_stat->st_mode = smb_stat.st_mode;
-  file_stat->st_nlink = smb_stat.st_nlink;
-  file_stat->st_uid = smb_stat.st_uid;
-  file_stat->st_gid = smb_stat.st_gid;
-  file_stat->st_rdev = smb_stat.st_rdev;
-  file_stat->st_size = smb_stat.st_size;
-  file_stat->st_blksize = smb_stat.st_blksize;
-  file_stat->st_blocks = smb_stat.st_blocks;
-  file_stat->st_atime = smb_stat.st_atime;
-  file_stat->st_mtime = smb_stat.st_mtime;
-  file_stat->st_ctime = smb_stat.st_ctime;
-
-  if (!err)
-    return EVFS_SUCCESS;
-  else
-    return EVFS_ERROR;
+   if (!err)
+      return EVFS_SUCCESS;
+   else
+      return EVFS_ERROR;
 }
 
 static void
-smb_evfs_dir_list (evfs_client * client, evfs_command * command,
-		   /*Returns.. */
-		   Ecore_List ** directory_list)
+smb_evfs_dir_list(evfs_client * client, evfs_command * command,
+                  /*Returns.. */
+                  Ecore_List ** directory_list)
 {
 
-  char dir_path[PATH_MAX];
+   char dir_path[PATH_MAX];
 
-  int fd, dh1, dh2, dh3, dsize, dirc;
-  int size;
-  char dirbuf[8192];
-  char *dirp;
-  SMBCFILE *dir = NULL;
-  struct smbc_dirent *entry = NULL;
-  Ecore_List *files = ecore_list_new ();
+   int fd, dh1, dh2, dh3, dsize, dirc;
+   int size;
+   char dirbuf[8192];
+   char *dirp;
+   SMBCFILE *dir = NULL;
+   struct smbc_dirent *entry = NULL;
+   Ecore_List *files = ecore_list_new();
 
-  /*Does this command have an attached authentication object? */
-  if (command->file_command.files[0]->username)
-    {
-      printf ("We have a username, adding to hash..\n");
-      evfs_auth_structure_add (auth_cache,
-			       command->file_command.files[0]->username,
-			       command->file_command.files[0]->password,
-			       command->file_command.files[0]->path);
-    }
+   /*Does this command have an attached authentication object? */
+   if (command->file_command.files[0]->username)
+     {
+        printf("We have a username, adding to hash..\n");
+        evfs_auth_structure_add(auth_cache,
+                                command->file_command.files[0]->username,
+                                command->file_command.files[0]->password,
+                                command->file_command.files[0]->path);
+     }
 
-  //Reappend smb protocol header for libsmbclient..
-  snprintf (dir_path, 1024, "smb:/%s", command->file_command.files[0]->path);
+   //Reappend smb protocol header for libsmbclient..
+   snprintf(dir_path, 1024, "smb:/%s", command->file_command.files[0]->path);
 
-  printf ("evfs_fs_samba: Listing directory %s\n", dir_path);
+   printf("evfs_fs_samba: Listing directory %s\n", dir_path);
 
+   if ((dir = smb_context->opendir(smb_context, dir_path)) >= 0)
+     {
 
-  if ((dir = smb_context->opendir (smb_context, dir_path)) >= 0)
-    {
+        while (entry = smb_context->readdir(smb_context, dir))
+          {
 
-      while (entry = smb_context->readdir (smb_context, dir))
-	{
+             /*Make sure we don't use . or .. */
+             if (strcmp(entry->name, ".") && strcmp(entry->name, ".."))
+               {
+                  evfs_filereference *reference = NEW(evfs_filereference);
 
-	  /*Make sure we don't use . or .. */
-	  if (strcmp (entry->name, ".") && strcmp (entry->name, ".."))
-	    {
-	      evfs_filereference *reference = NEW (evfs_filereference);
+                  if (entry->smbc_type == SMBC_FILE)
+                     reference->file_type = EVFS_FILE_NORMAL;
+                  else if (entry->smbc_type == SMBC_DIR)
+                     reference->file_type = EVFS_FILE_DIRECTORY;
+                  else if (entry->smbc_type == SMBC_WORKGROUP)
+                     reference->file_type = EVFS_FILE_SMB_WORKGROUP;
+                  else if (entry->smbc_type == SMBC_SERVER)
+                     reference->file_type = EVFS_FILE_SMB_SERVER;
+                  else if (entry->smbc_type == SMBC_FILE_SHARE)
+                     reference->file_type = EVFS_FILE_SMB_FILE_SHARE;
+                  else if (entry->smbc_type == SMBC_PRINTER_SHARE)
+                     reference->file_type = EVFS_FILE_SMB_PRINTER_SHARE;
+                  else if (entry->smbc_type == SMBC_COMMS_SHARE)
+                     reference->file_type = EVFS_FILE_SMB_COMMS_SHARE;
+                  else if (entry->smbc_type == SMBC_IPC_SHARE)
+                     reference->file_type = EVFS_FILE_SMB_IPC_SHARE;
+                  else if (entry->smbc_type == SMBC_LINK)
+                     reference->file_type = EVFS_FILE_LINK;
 
-	      if (entry->smbc_type == SMBC_FILE)
-		reference->file_type = EVFS_FILE_NORMAL;
-	      else if (entry->smbc_type == SMBC_DIR)
-		reference->file_type = EVFS_FILE_DIRECTORY;
-	      else if (entry->smbc_type == SMBC_WORKGROUP)
-		reference->file_type = EVFS_FILE_SMB_WORKGROUP;
-	      else if (entry->smbc_type == SMBC_SERVER)
-		reference->file_type = EVFS_FILE_SMB_SERVER;
-	      else if (entry->smbc_type == SMBC_FILE_SHARE)
-		reference->file_type = EVFS_FILE_SMB_FILE_SHARE;
-	      else if (entry->smbc_type == SMBC_PRINTER_SHARE)
-		reference->file_type = EVFS_FILE_SMB_PRINTER_SHARE;
-	      else if (entry->smbc_type == SMBC_COMMS_SHARE)
-		reference->file_type = EVFS_FILE_SMB_COMMS_SHARE;
-	      else if (entry->smbc_type == SMBC_IPC_SHARE)
-		reference->file_type = EVFS_FILE_SMB_IPC_SHARE;
-	      else if (entry->smbc_type == SMBC_LINK)
-		reference->file_type = EVFS_FILE_LINK;
+                  size =
+                     (sizeof(char) *
+                      strlen(command->file_command.files[0]->path)) +
+                     (sizeof(char) * strlen(entry->name)) + (sizeof(char) * 2);
+                  reference->path = malloc(size);
 
-	      size =
-		(sizeof (char) *
-		 strlen (command->file_command.files[0]->path)) +
-		(sizeof (char) * strlen (entry->name)) + (sizeof (char) * 2);
-	      reference->path = malloc (size);
+                  snprintf(reference->path, size, "%s/%s",
+                           command->file_command.files[0]->path, entry->name);
 
-	      snprintf (reference->path, size, "%s/%s",
-			command->file_command.files[0]->path, entry->name);
+                  /*printf("File '%s' is of type '%d'\n", reference->path, reference->file_type); */
 
-	      /*printf("File '%s' is of type '%d'\n", reference->path, reference->file_type); */
+                  reference->plugin_uri = strdup("smb");
+                  ecore_list_append(files, reference);
 
+                  ecore_main_loop_iterate();
+               }
+          }
+        smb_context->closedir(smb_context, dir);
 
-	      reference->plugin_uri = strdup ("smb");
-	      ecore_list_append (files, reference);
-
-	      ecore_main_loop_iterate ();
-	    }
-	}
-      smb_context->closedir (smb_context, dir);
-
-      /*Set the return pointer.. */
-      *directory_list = evfs_file_list_sort (files);
-    }
-  else
-    {
-      printf ("Could not open [%s] (%d:%s)\n", dir_path, errno,
-	      strerror (errno));
-    }
-
-
-
-}
-
-
-int
-evfs_file_open (evfs_client * client, evfs_filereference * file)
-{
-  char dir_path[1024];
-  snprintf (dir_path, 1024, "smb:/%s", file->path);
-
-  /*Does this command have an attached authentication object? */
-  if (file->username)
-    {
-      printf ("We have a username, adding to hash..\n");
-      evfs_auth_structure_add (auth_cache, file->username, file->password,
-			       file->path);
-    }
-
-  printf ("Opening file '%s' in samba\n", dir_path);
-
-  file->fd_p = smb_context->open (smb_context, dir_path, O_RDONLY, S_IRUSR);
-  file->fd = smb_fd_get_next (file->fd_p);
-
-  if (file->fd_p)
-	  return file->fd;
-  else
-	  return -1;
-}
-
-int
-evfs_file_remove (char *file)
-{
-  char file_smb[PATH_MAX];
-  static struct stat file_stat;
-
-  snprintf (file_smb, PATH_MAX, "smb:/%s", file);
-
-
-  int rr =
-    smb_context->stat (smb_context, (const char *) file_smb, &file_stat);
-  if (!rr)
-    {
-      /*File stat successful */
-      if (S_ISDIR (file_stat.st_mode))
-	{
-	  printf ("Rmdiring '%s'\n", file_smb);
-	  return smb_context->rmdir (smb_context, file_smb);
-	}
-      else
-	{
-	  printf ("Unlinking '%s'\n", file_smb);
-	  return smb_context->unlink (smb_context, file_smb);
-	}
-    }
-  else
-    {
-      printf ("Could not stat '%s'\n", file_smb);
-    }
-
+        /*Set the return pointer.. */
+        *directory_list = evfs_file_list_sort(files);
+     }
+   else
+     {
+        printf("Could not open [%s] (%d:%s)\n", dir_path, errno,
+               strerror(errno));
+     }
 
 }
 
 int
-evfs_file_close (evfs_filereference * file)
+evfs_file_open(evfs_client * client, evfs_filereference * file)
 {
-  printf ("SMB close: closing\n");
+   char dir_path[1024];
+
+   snprintf(dir_path, 1024, "smb:/%s", file->path);
+
+   /*Does this command have an attached authentication object? */
+   if (file->username)
+     {
+        printf("We have a username, adding to hash..\n");
+        evfs_auth_structure_add(auth_cache, file->username, file->password,
+                                file->path);
+     }
+
+   printf("Opening file '%s' in samba\n", dir_path);
+
+   file->fd_p = smb_context->open(smb_context, dir_path, O_RDONLY, S_IRUSR);
+   file->fd = smb_fd_get_next(file->fd_p);
+
+   if (file->fd_p)
+      return file->fd;
+   else
+      return -1;
+}
+
+int
+evfs_file_remove(char *file)
+{
+   char file_smb[PATH_MAX];
+   static struct stat file_stat;
+
+   snprintf(file_smb, PATH_MAX, "smb:/%s", file);
+
+   int rr = smb_context->stat(smb_context, (const char *)file_smb, &file_stat);
+
+   if (!rr)
+     {
+        /*File stat successful */
+        if (S_ISDIR(file_stat.st_mode))
+          {
+             printf("Rmdiring '%s'\n", file_smb);
+             return smb_context->rmdir(smb_context, file_smb);
+          }
+        else
+          {
+             printf("Unlinking '%s'\n", file_smb);
+             return smb_context->unlink(smb_context, file_smb);
+          }
+     }
+   else
+     {
+        printf("Could not stat '%s'\n", file_smb);
+     }
+
+}
+
+int
+evfs_file_close(evfs_filereference * file)
+{
+   printf("SMB close: closing\n");
 
 #ifdef HAVE_SAMBA_OLD_CLOSE
-  smb_context->close (smb_context, file->fd_p);
+   smb_context->close(smb_context, file->fd_p);
 #else
-  smb_context->close_fn (smb_context, file->fd_p);
+   smb_context->close_fn(smb_context, file->fd_p);
 #endif
 
-  return 0;
+   return 0;
 }
 
 int
-evfs_file_write (evfs_filereference * file, char *bytes, long size)
+evfs_file_write(evfs_filereference * file, char *bytes, long size)
 {
-  ssize_t i;
+   ssize_t i;
 
-  /*printf ("SMB write: %d bytes\n", size); */
+   /*printf ("SMB write: %d bytes\n", size); */
 
-  i = smb_context->write (smb_context, file->fd_p, bytes, size);
-  /*printf("Wrote %d bytes\n", i); */
+   i = smb_context->write(smb_context, file->fd_p, bytes, size);
+   /*printf("Wrote %d bytes\n", i); */
 
-  return 0;
+   return 0;
 }
 
 int
-evfs_file_seek (evfs_filereference * file, long pos, int whence)
+evfs_file_seek(evfs_filereference * file, long pos, int whence)
 {
-  //printf ("Seeking file to %ld\n", pos);
+   //printf ("Seeking file to %ld\n", pos);
 
-  smb_context->lseek (smb_context, file->fd_p, pos, SEEK_SET);
+   smb_context->lseek(smb_context, file->fd_p, pos, SEEK_SET);
 
-  return 0;
+   return 0;
 }
 
 int
-evfs_file_read (evfs_client * client, evfs_filereference * file, char *bytes,
-		long size)
+evfs_file_read(evfs_client * client, evfs_filereference * file, char *bytes,
+               long size)
 {
-  int bytes_read = 0;
-  //printf("Reading %ld bytes from file %s\n", size, file->path);
+   int bytes_read = 0;
 
-  evfs_smb_populate_fd (file);
-  //printf("FD Pointer: %p\n", file->fd_p);
+   //printf("Reading %ld bytes from file %s\n", size, file->path);
 
-  bytes_read = smb_context->read (smb_context, file->fd_p, bytes, size);
-  return bytes_read;
+   evfs_smb_populate_fd(file);
+   //printf("FD Pointer: %p\n", file->fd_p);
+
+   bytes_read = smb_context->read(smb_context, file->fd_p, bytes, size);
+   return bytes_read;
 }
 
-
-
 int
-evfs_file_create (evfs_filereference * file)
+evfs_file_create(evfs_filereference * file)
 {
-  char dir_path[1024];
-  snprintf (dir_path, 1024, "smb:/%s", file->path);
+   char dir_path[1024];
 
-  printf ("SMB File create: %s\n", dir_path);
+   snprintf(dir_path, 1024, "smb:/%s", file->path);
 
-  file->fd_p =
-    smb_context->open (smb_context, dir_path, O_CREAT | O_TRUNC | O_RDWR,
-		       S_IRUSR | S_IWUSR);
-  return 0;
+   printf("SMB File create: %s\n", dir_path);
+
+   file->fd_p =
+      smb_context->open(smb_context, dir_path, O_CREAT | O_TRUNC | O_RDWR,
+                        S_IRUSR | S_IWUSR);
+   return 0;
 }
 
-
 int
-smb_evfs_file_mkdir (evfs_filereference * file)
+smb_evfs_file_mkdir(evfs_filereference * file)
 {
-  char dir_path[1024];
-  snprintf (dir_path, 1024, "smb:/%s", file->path);
+   char dir_path[1024];
 
-  printf ("SMB File mkdir: %s\n", dir_path);
+   snprintf(dir_path, 1024, "smb:/%s", file->path);
 
-  smb_context->mkdir (smb_context, dir_path, S_IRWXU);
-  return 0;
+   printf("SMB File mkdir: %s\n", dir_path);
+
+   smb_context->mkdir(smb_context, dir_path, S_IRWXU);
+   return 0;
 
 }

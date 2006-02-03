@@ -78,5 +78,4 @@ void evfs_debug_return(const char *file, const char *func);
 #define D_RETURN_(x)   return (x)
 #endif
 
-#endif 
-
+#endif

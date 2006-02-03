@@ -37,8 +37,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 static pthread_mutex_t debug_mutex = PTHREAD_MUTEX_INITIALIZER;
-static pthread_once_t  debug_once = PTHREAD_ONCE_INIT;
-static pthread_key_t   debug_calldepth_key;
+static pthread_once_t debug_once = PTHREAD_ONCE_INIT;
+static pthread_key_t debug_calldepth_key;
 
 static void debug_once_init(void);
 static void debug_destructor(void *item);
@@ -55,118 +55,109 @@ static void *calldepth_ptr = &calldepth;
 static void debug_whitespace(int calldepth);
 static void debug_print_thread_info(void);
 
-static void 
+static void
 debug_whitespace(int calldepth)
 {
-  int i;
-  
-  for (i = 0; i < 2*calldepth; i++)
-    printf("-");
+   int i;
+
+   for (i = 0; i < 2 * calldepth; i++)
+      printf("-");
 }
 
-
-static void 
+static void
 debug_print_thread_info(void)
 {
-  printf("evfs ");
+   printf("evfs ");
 
 #if USE_THREADS
-  printf("[%li]: ", pthread_self());
+   printf("[%li]: ", pthread_self());
 #else
-  printf("[%i]: ", getpid());
+   printf("[%i]: ", getpid());
 #endif
 }
-
 
 #if USE_THREADS
 static void
 debug_once_init(void)
 {
-  pthread_key_create(&debug_calldepth_key, debug_destructor);
+   pthread_key_create(&debug_calldepth_key, debug_destructor);
 }
 
 static void
 debug_destructor(void *item)
 {
-  free(item);
+   free(item);
 }
 #endif
 
-
-void 
+void
 evfs_debug_output_start(void)
 {
 #if USE_THREADS
-  pthread_mutex_lock(&debug_mutex);
+   pthread_mutex_lock(&debug_mutex);
 #endif
 
-  debug_print_thread_info();
+   debug_print_thread_info();
 }
 
-
-void 
+void
 evfs_debug_output_end(void)
 {
-  fflush(stdout);
+   fflush(stdout);
 
 #if USE_THREADS
-  pthread_mutex_unlock(&debug_mutex);
+   pthread_mutex_unlock(&debug_mutex);
 #endif
 }
-
 
 void
 evfs_debug_enter(const char *file, const char *func)
 {
 #if USE_THREADS
-  void *calldepth_ptr;
+   void *calldepth_ptr;
 
-  pthread_once(&debug_once, debug_once_init);
-  if ((calldepth_ptr = pthread_getspecific(debug_calldepth_key)) == NULL)
-    {
-      calldepth_ptr = malloc(sizeof(int));
-      *((int*)calldepth_ptr) = 0;
-      pthread_setspecific(debug_calldepth_key, calldepth_ptr);
-    }
+   pthread_once(&debug_once, debug_once_init);
+   if ((calldepth_ptr = pthread_getspecific(debug_calldepth_key)) == NULL)
+     {
+        calldepth_ptr = malloc(sizeof(int));
+        *((int *)calldepth_ptr) = 0;
+        pthread_setspecific(debug_calldepth_key, calldepth_ptr);
+     }
 
-  pthread_mutex_lock(&debug_mutex);
+   pthread_mutex_lock(&debug_mutex);
 #endif
-  
-  (*((int*)calldepth_ptr))++;
-  printf("ENTER  ");
-  debug_print_thread_info();
-  debug_whitespace(*((int*)calldepth_ptr));
-  printf("%s, %s()\n", file, func);
-  fflush(stdout);
+
+   (*((int *)calldepth_ptr))++;
+   printf("ENTER  ");
+   debug_print_thread_info();
+   debug_whitespace(*((int *)calldepth_ptr));
+   printf("%s, %s()\n", file, func);
+   fflush(stdout);
 
 #if USE_THREADS
-  pthread_mutex_unlock(&debug_mutex);
+   pthread_mutex_unlock(&debug_mutex);
 #endif
 }
-
 
 void
 evfs_debug_return(const char *file, const char *func)
 {
 #if USE_THREADS
-  void *calldepth_ptr;
+   void *calldepth_ptr;
 
-  calldepth_ptr = pthread_getspecific(debug_calldepth_key);
-  pthread_mutex_lock(&debug_mutex);
+   calldepth_ptr = pthread_getspecific(debug_calldepth_key);
+   pthread_mutex_lock(&debug_mutex);
 #endif
 
+   printf("RETURN ");
+   debug_print_thread_info();
+   debug_whitespace(*((int *)calldepth_ptr));
+   printf("%s, %s()\n", file, func);
+   fflush(stdout);
 
-  printf("RETURN ");
-  debug_print_thread_info();
-  debug_whitespace(*((int*)calldepth_ptr));
-  printf("%s, %s()\n", file, func);
-  fflush(stdout);
-  
-  (*((int*)calldepth_ptr))--;
+   (*((int *)calldepth_ptr))--;
 
 #if USE_THREADS
-  pthread_mutex_unlock(&debug_mutex);
+   pthread_mutex_unlock(&debug_mutex);
 #endif
 }
-
-
