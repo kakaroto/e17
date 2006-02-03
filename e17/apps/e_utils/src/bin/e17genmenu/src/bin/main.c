@@ -1,6 +1,7 @@
 #include "global.h"
 #include "config.h"
 #include "menus.h"
+#include "parse.h"
 #include "sort.h"
 #include "fdo_paths.h"
 
@@ -66,7 +67,13 @@ _e17genmenu_test_fdo_paths()
          path = fdo_paths_search_for_file(FDO_PATHS_TYPE_DESKTOP, desktop, NULL, NULL);
          if (path)
 	    {
+	       Ecore_Hash *desktop_hash;
+
                printf("Path to %s is %s\n", desktop, path);
+	       desktop_hash = parse_ini_file(path);
+	       if (desktop_hash)
+	          {
+		  }
 	       free(path);
 	    }
 
