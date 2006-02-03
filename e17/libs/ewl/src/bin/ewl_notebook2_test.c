@@ -117,8 +117,13 @@ create_main_page(void)
 		ewl_container_child_append(EWL_CONTAINER(border), o);
 		ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED, 
 					notebook2_change_align, alignment[i]);
+
 		if (o2) ewl_radiobutton_chain_set(EWL_RADIOBUTTON(o), 
 							EWL_RADIOBUTTON(o2));
+
+		if (!strcmp(alignment[i], "center"))
+			ewl_radiobutton_checked_set(EWL_RADIOBUTTON(o), TRUE);
+
 		ewl_widget_show(o);
 
 		o2 = o;
@@ -138,8 +143,13 @@ create_main_page(void)
 		ewl_container_child_append(EWL_CONTAINER(border), o);
 		ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED, 
 					notebook2_change_position, position[i]);
+
 		if (o2) ewl_radiobutton_chain_set(EWL_RADIOBUTTON(o), 
 							EWL_RADIOBUTTON(o2));
+
+		if (!strcmp(alignment[i], "top"))
+			ewl_radiobutton_checked_set(EWL_RADIOBUTTON(o), TRUE);
+
 		ewl_widget_show(o);
 
 		o2 = o;
