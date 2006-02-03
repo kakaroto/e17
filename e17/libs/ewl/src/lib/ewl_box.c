@@ -200,11 +200,13 @@ ewl_box_init(Ewl_Box * b)
 void
 ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o)
 {
+	Ewl_Container *c;
+	Ewl_Widget *child;
+        char *appearance;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
 	DCHECK_TYPE("b", b, EWL_BOX_TYPE);
-
-        char *appearance;
 
 	/*
 	 * Set the orientation and reconfigure the widget so that child
@@ -223,10 +225,22 @@ ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o)
 	if ((b->orientation == EWL_ORIENTATION_HORIZONTAL)
 			&& (!strcmp(appearance,	"vbox")))
 		ewl_widget_appearance_set(EWL_WIDGET(b), "hbox");
+
 	else if ((b->orientation == EWL_ORIENTATION_VERTICAL)
 			&& (!strcmp(appearance, "hbox")))
 		ewl_widget_appearance_set(EWL_WIDGET(b), "vbox");
+
         IF_FREE(appearance);
+
+	/* we need to reset the preferred size of the box after chaning the
+	 * orientation. We'll cheat by calling ewl_box_child_show_cb foreach
+	 * child in the list */
+	ewl_object_preferred_inner_size_set(EWL_OBJECT(b), 0, 0);
+
+	c = EWL_CONTAINER(b);
+	ecore_list_goto_first(c->children);
+	while((child = ecore_list_next(c->children)))
+		ewl_box_child_show_cb(c, child);
 
 	ewl_widget_configure(EWL_WIDGET(b));
 

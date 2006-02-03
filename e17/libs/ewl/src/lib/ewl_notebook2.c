@@ -135,33 +135,19 @@ ewl_notebook2_tabbar_position_set(Ewl_Notebook2 *n, Ewl_Position pos)
 	{
 		case EWL_POSITION_LEFT:
 		case EWL_POSITION_RIGHT:
-		{
-			int h; 
-
 			ewl_box_orientation_set(EWL_BOX(n),
 						EWL_ORIENTATION_HORIZONTAL);
 			ewl_box_orientation_set(EWL_BOX(n->body.tabbar),
 						EWL_ORIENTATION_VERTICAL);
-
-			h = ewl_object_preferred_inner_h_get(EWL_OBJECT(n));
-			ewl_object_preferred_inner_h_set(EWL_OBJECT(n->body.tabbar), h);
 			break;
-		}
 		case EWL_POSITION_TOP:
 		case EWL_POSITION_BOTTOM:
 		default:
-		{
-			int w;
-
 			ewl_box_orientation_set(EWL_BOX(n),
 						EWL_ORIENTATION_VERTICAL);
 			ewl_box_orientation_set(EWL_BOX(n->body.tabbar),
 						EWL_ORIENTATION_HORIZONTAL);
-
-			w = ewl_object_preferred_inner_w_get(EWL_OBJECT(n));
-			ewl_object_preferred_inner_w_set(EWL_OBJECT(n->body.tabbar), w);
 			break;
-		}
 	}
 
 	ewl_container_child_remove(EWL_CONTAINER(n), n->body.tabbar);
