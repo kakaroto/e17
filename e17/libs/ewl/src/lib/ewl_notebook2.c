@@ -123,6 +123,8 @@ ewl_notebook2_tabbar_alignment_get(Ewl_Notebook2 *n)
 void
 ewl_notebook2_tabbar_position_set(Ewl_Notebook2 *n, Ewl_Position pos)
 {
+	int t, pw, ph;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("n", n);
 	DCHECK_TYPE("n", n, "notebook2");
@@ -139,6 +141,13 @@ ewl_notebook2_tabbar_position_set(Ewl_Notebook2 *n, Ewl_Position pos)
 						EWL_ORIENTATION_HORIZONTAL);
 			ewl_box_orientation_set(EWL_BOX(n->body.tabbar),
 						EWL_ORIENTATION_VERTICAL);
+
+			t = ewl_object_preferred_w_get(EWL_OBJECT(n->body.tabbar));
+			ewl_object_preferred_size_get(EWL_OBJECT(n->body.pages),
+									&pw, &ph);
+
+			ewl_object_preferred_inner_size_set(EWL_OBJECT(n), t + pw, ph);
+
 			break;
 		case EWL_POSITION_TOP:
 		case EWL_POSITION_BOTTOM:
@@ -147,6 +156,12 @@ ewl_notebook2_tabbar_position_set(Ewl_Notebook2 *n, Ewl_Position pos)
 						EWL_ORIENTATION_VERTICAL);
 			ewl_box_orientation_set(EWL_BOX(n->body.tabbar),
 						EWL_ORIENTATION_HORIZONTAL);
+
+			t = ewl_object_preferred_h_get(EWL_OBJECT(n->body.tabbar));
+			ewl_object_preferred_size_get(EWL_OBJECT(n->body.pages),
+									&pw, &ph);
+
+			ewl_object_preferred_inner_size_set(EWL_OBJECT(n), pw, ph + t);
 			break;
 	}
 
