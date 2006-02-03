@@ -437,8 +437,11 @@ doFocusToEwin(EWin * ewin, int why)
    Mode.focuswin = ewin;
    if (Mode.focuswin)
       FocusEwinSetActive(Mode.focuswin, 1);
-   if (why != FOCUS_DESK_LEAVE)
-      ICCCM_Focus(ewin);
+
+   if (why == FOCUS_DESK_LEAVE)
+      return;
+
+   ICCCM_Focus(ewin);
    focus_is_set = 1;
 }
 
@@ -496,6 +499,10 @@ FocusSet(void)
 void
 FocusNewDeskBegin(void)
 {
+   /* Freeze keyboard */
+   XGrabKeyboard(disp, VRoot.win, False, GrabModeAsync, GrabModeSync,
+		 CurrentTime);
+
    focus_pending_new = NULL;
    doFocusToEwin(NULL, FOCUS_DESK_LEAVE);
 }
@@ -507,6 +514,9 @@ FocusNewDesk(void)
    Mode.mouse_over_ewin = GetEwinByCurrentPointer();
 
    doFocusToEwin(NULL, FOCUS_DESK_ENTER);
+
+   /* Unfreeze keyboard */
+   XUngrabKeyboard(disp, CurrentTime);
 }
 
 static void
