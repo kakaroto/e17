@@ -25,9 +25,9 @@ struct _config_exe_data
    int done;
 };
 
+static Fdo_Path_List *_fdo_paths_list_new(char *buffer);
 static Fdo_Path_List *_fdo_paths_list_add(Fdo_Path_List * list, char *element);
 static int _fdo_paths_list_exist(Fdo_Path_List * list, char *element);
-static Fdo_Path_List *_fdo_paths_paths_to_list(char *paths);
 static void _fdo_paths_list_del(Fdo_Path_List * list);
 
 static Fdo_Path_List *_fdo_paths_get(char *before, char *env_home, char *env,
@@ -152,6 +152,48 @@ fdo_paths_search_for_file(Fdo_Paths_Type type, char *file,
    return path;
 }
 
+/** Split a list of paths into a path list.
+ *
+ * The list of paths can use any one of ;:, to seperate the paths.
+ * You can also escape the :;, with \.
+ *
+ * FIXME: The concept here is still buggy, but it should do for now.
+ *
+ * @param   paths A list of paths.
+ */
+Fdo_Path_List *
+fdo_paths_paths_to_list(char *paths)
+{
+   Fdo_Path_List *list = NULL;
+
+   list = _fdo_paths_list_new(paths);
+   if ((list) && (list->buffer))
+     {
+        char *start, *end;
+        int finished = 0;
+
+        end = list->buffer;
+        while (!finished)
+          {
+             start = end;
+	     do   /* FIXME: There is probably a better way to do this. */
+	        {
+                   while ((*end != ';') && (*end != ':') && (*end != ',') && (*end != '\0'))
+                      end++;
+	        }
+             while ((end != list->buffer) && (*(end - 1) == '\\') && (*end != '\0'));  /* Ignore any escaped ;:, */
+	     /* FIXME: We still need to unescape it now. */
+             if (*end == '\0')
+                finished = 1;
+             *end = '\0';
+             if (!_fdo_paths_list_exist(list, start))
+                list = _fdo_paths_list_add(list, start);
+             end++;
+          }
+     }
+   return list;
+}
+
 /*  We need -
 config file full of paths
 menus=pathlist
@@ -253,34 +295,6 @@ _fdo_paths_list_del(Fdo_Path_List * list)
 }
 
 static Fdo_Path_List *
-_fdo_paths_paths_to_list(char *paths)
-{
-   Fdo_Path_List *list = NULL;
-
-   list = _fdo_paths_list_new(paths);
-   if ((list) && (list->buffer))
-     {
-        char *start, *end;
-        int finished = 0;
-
-        end = list->buffer;
-        while (!finished)
-          {
-             start = end;
-             while ((*end != ':') && (*end != '\0'))
-                end++;
-             if (*end == '\0')
-                finished = 1;
-             *end = '\0';
-             if (!_fdo_paths_list_exist(list, start))
-                list = _fdo_paths_list_add(list, start);
-             end++;
-          }
-     }
-   return list;
-}
-
-static Fdo_Path_List *
 _fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default,
                char *env_default, char *type, char *gnome_extra, char *kde)
 {
@@ -294,9 +308,9 @@ _fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default,
    /* Don't sort them, as they are in preferred order from each source. */
    /* Merge the results, there are probably some duplicates. */
 
-   types = _fdo_paths_paths_to_list(type);
-   gnome_extras = _fdo_paths_paths_to_list(gnome_extra);
-   kdes = _fdo_paths_paths_to_list(kde);
+   types = fdo_paths_paths_to_list(type);
+   gnome_extras = fdo_paths_paths_to_list(gnome_extra);
+   kdes = fdo_paths_paths_to_list(kde);
 
    home = get_home();
    if (home)
@@ -320,7 +334,7 @@ _fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default,
           {
              Fdo_Path_List *befores;
 
-             befores = _fdo_paths_paths_to_list(before);
+             befores = fdo_paths_paths_to_list(before);
              if (befores)
                {
                   for (i = 0; i < befores->size; i++)
@@ -340,7 +354,7 @@ _fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default,
              value = getenv(env_home);
              if ((value == NULL) || (value[0] == '\0'))
                 value = env_home_default;
-             env_list = _fdo_paths_paths_to_list(value);
+             env_list = fdo_paths_paths_to_list(value);
              if (env_list)
                {
                   for (i = 0; i < env_list->size; i++)
@@ -364,7 +378,7 @@ _fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default,
              value = getenv(env);
              if ((value == NULL) || (value[0] == '\0'))
                 value = env_default;
-             env_list = _fdo_paths_paths_to_list(value);
+             env_list = fdo_paths_paths_to_list(value);
              if (env_list)
                {
                   for (i = 0; i < env_list->size; i++)
@@ -574,7 +588,7 @@ _fdo_paths_cb_exe_exit(void *data, int type, void *event)
 
    read = ecore_exe_event_data_get(ev->exe, ECORE_EXE_PIPE_READ);
    value = read->lines[0].line;
-   config_list = _fdo_paths_paths_to_list(value);
+   config_list = fdo_paths_paths_to_list(value);
    if (config_list)
      {
         int i, j;

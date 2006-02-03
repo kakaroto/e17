@@ -2,6 +2,7 @@
 #include "config.h"
 #include "menus.h"
 #include "parse.h"
+#include "icons.h"
 #include "sort.h"
 #include "fdo_paths.h"
 
@@ -83,6 +84,18 @@ _e17genmenu_test_fdo_paths()
                printf("Path to %s is %s\n", icon, path);
 	       free(path);
 	    }
+      }
+   path = find_fdo_icon("tux");
+   if (path)
+      {
+         printf("Path to tux is %s\n", path);
+	 free(path);
+      }
+   path = find_fdo_icon("blah");
+   if (path)
+      {
+         printf("Path to blah is %s\n", path);
+	 free(path);
       }
 
    fdo_paths_shutdown();

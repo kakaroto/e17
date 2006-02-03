@@ -139,7 +139,7 @@ get_icon_theme()
              return strdup(c);
           }
      }
-   return NULL;
+   return "crystalsvg";
 }
 
 int
