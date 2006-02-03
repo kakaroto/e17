@@ -95,6 +95,7 @@ create_main_page(void)
 	o = ewl_label_new();
 	ewl_label_text_set(EWL_LABEL(o), "Main");
 	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
 	ewl_container_child_append(EWL_CONTAINER(body), o);
 	ewl_widget_show(o);
 
