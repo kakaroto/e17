@@ -103,11 +103,12 @@ fdo_paths_shutdown()
  *
  * @param   type The type of directories to search.
  * @param   file The file to search for.
+ * @param   sub Should we search sub directories.
  * @param   func A function to call for each file found.
  * @param   data A pointer to pass on to func.
  */
 char *
-fdo_paths_search_for_file(Fdo_Paths_Type type, char *file,
+fdo_paths_search_for_file(Fdo_Paths_Type type, char *file, int sub,
                           int (*func) (const void *data, char *path),
                           const void *data)
 {
@@ -143,7 +144,7 @@ fdo_paths_search_for_file(Fdo_Paths_Type type, char *file,
                 if (func(data, path))
                    break;
           }
-        else
+        else if (sub)
            path = _fdo_paths_recursive_search(paths->list[i], file, func, data);
         if (path && (!func))
            break;

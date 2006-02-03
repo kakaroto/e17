@@ -180,7 +180,7 @@ find_fdo_icon(char *icon)
 #ifdef DEBUG
    printf("SEARCHING FOR %s\n", icn);
 #endif
-   theme_path = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, icn, NULL, NULL);
+   theme_path = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, icn, 1, NULL, NULL);
    if (theme_path)
       {
          Ecore_Hash *theme;
@@ -286,7 +286,7 @@ find_fdo_icon(char *icon)
 #ifdef DEBUG
                                                          printf("FDO icon = %s\n", path);
 #endif
-                                                         found = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, path, NULL, NULL);
+                                                         found = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, path, 0, NULL, NULL);
 							 if (found)
 							    return found;
 							 else
@@ -295,7 +295,7 @@ find_fdo_icon(char *icon)
 #ifdef DEBUG
                                                                printf("FDO icon = %s\n", path);
 #endif
-                                                               found = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, path, NULL, NULL);
+                                                               found = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, path, 0, NULL, NULL);
 							       if (found)
 							          return found;
 							       else
@@ -304,7 +304,7 @@ find_fdo_icon(char *icon)
 #ifdef DEBUG
                                                                      printf("FDO icon = %s\n", path);
 #endif
-                                                                     found = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, path, NULL, NULL);
+                                                                     found = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, path, 0, NULL, NULL);
 							             if (found)
 							                return found;
 							             else
@@ -313,7 +313,7 @@ find_fdo_icon(char *icon)
 #ifdef DEBUG
                                                                            printf("FDO icon = %s\n", path);
 #endif
-                                                                           found = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, path, NULL, NULL);
+                                                                           found = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, path, 0, NULL, NULL);
 							                   if (found)
 							                      return found;
 							                }
@@ -322,7 +322,11 @@ find_fdo_icon(char *icon)
 						      }
 						}
 					  }
-				    }
+				    }   /* for (i = 0; i < directory_paths->size; i++) */
+
+                                 /* Fall back strategy #1, look for closest size in this theme. */
+                                 /* Fall back strategy #2, Just search in the base of the icon directories. */
+
 			      }
 			}
 		  }
