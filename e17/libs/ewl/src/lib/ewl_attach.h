@@ -74,6 +74,20 @@ struct Ewl_Attach
 #define ewl_attach_name_get(w) \
 	ewl_attach_get(w, EWL_ATTACH_TYPE_NAME)
 
+/**
+ * @def ewl_attach_notebook_data_set(w, data)
+ * Convience method to attach data to a notebook item
+ */
+#define ewl_attach_notebook_data_set(w, data) \
+	ewl_attach_other_set(w, EWL_ATTACH_TYPE_NOTEBOOK_DATA, data)
+
+/**
+ * @def ewl_attach_notebook_data_get(w)
+ * Convience method to get the data attached to a notebook item
+ */
+#define ewl_attach_notebook_data_get(w) \
+	ewl_attach_get(w, EWL_ATTACH_TYPE_NOTEBOOK_DATA)
+
 void ewl_attach_text_set(Ewl_Widget *w, Ewl_Attach_Type t, const char *data);
 void ewl_attach_widget_set(Ewl_Widget *w, Ewl_Attach_Type t, Ewl_Widget *data);
 void ewl_attach_other_set(Ewl_Widget *w, Ewl_Attach_Type t, void *data);

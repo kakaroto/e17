@@ -3,9 +3,6 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
-#define EWL_NOTEBOOK2_TAB "ewl_notebook2_tab"
-#define EWL_NOTEBOOK2_PAGE "ewl_notebook2_page"
-
 /**
  * @brief Create a new notebook widget
  * @return Returns a newly allocated notebook on success. NULL on failure
@@ -237,12 +234,11 @@ ewl_notebook2_visible_page_set(Ewl_Notebook2 *n, Ewl_Widget *page)
 	if (page == n->cur_page)
 		DRETURN(DLEVEL_STABLE);
 
-	/* XXX make these and attach */
 	if (n->cur_page)
 	{
 		Ewl_Widget *w;
 
-		t = ewl_widget_data_get(n->cur_page, EWL_NOTEBOOK2_TAB);
+		t = ewl_attach_notebook_data_get(n->cur_page);
 		if (t) ewl_widget_state_set(t, "default");
 
 		/* make sure we set n->cur_page null first or the hide
@@ -255,7 +251,7 @@ ewl_notebook2_visible_page_set(Ewl_Notebook2 *n, Ewl_Widget *page)
 	n->cur_page = page;
 	ewl_widget_show(n->cur_page);
 
-	t = ewl_widget_data_get(n->cur_page, EWL_NOTEBOOK2_TAB);
+	t = ewl_attach_notebook_data_get(n->cur_page);
 	if (t) ewl_widget_state_set(t, "selected");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -351,14 +347,13 @@ ewl_notebook2_page_tab_widget_set(Ewl_Notebook2 *n, Ewl_Widget *page,
 		ewl_widget_show(tab);
 	}
 
-	/* XXX make this attach data */
-	t = ewl_widget_data_get(page, EWL_NOTEBOOK2_TAB);
+	t = ewl_attach_notebook_data_get(page);
 	if (!t)
 	{
 		t = ewl_hbox_new();
 		ewl_widget_appearance_set(t, "tab");
-		ewl_widget_data_set(page, EWL_NOTEBOOK2_TAB, t);
-		ewl_widget_data_set(t, EWL_NOTEBOOK2_PAGE, page);
+		ewl_attach_notebook_data_set(page, t);
+		ewl_attach_notebook_data_set(t, page);
 		ewl_widget_show(t);
 
 		ewl_callback_append(t, EWL_CALLBACK_CLICKED,
@@ -394,7 +389,7 @@ ewl_notebook2_page_tab_widget_get(Ewl_Notebook2 *n, Ewl_Widget *page)
 	DCHECK_TYPE_RET("n", n, EWL_NOTEBOOK2_TYPE, NULL);
 	DCHECK_TYPE_RET("page", page, EWL_WIDGET_TYPE, NULL);
 
-	t = ewl_widget_data_get(page, EWL_NOTEBOOK2_TAB);
+	t = ewl_attach_notebook_data_get(page);
 	if (!t)
 	{
 		DWARNING("We have a notebook page with no tab, bad, very bad.\n");
@@ -491,9 +486,8 @@ ewl_notebook2_cb_child_remove(Ewl_Container *c, Ewl_Widget *w)
 	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	/* XXX nasty data_get */
 	n = EWL_NOTEBOOK2(EWL_WIDGET(c)->parent);
-	t = ewl_widget_data_get(w, EWL_NOTEBOOK2_TAB);
+	t = ewl_attach_notebook_data_get(w);
 	if (t) ewl_container_child_remove(EWL_CONTAINER(n->body.tabbar), t);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -509,8 +503,7 @@ ewl_notebook2_cb_tab_clicked(Ewl_Widget *w, void *ev, void *data)
 
 	n = data;
 
-	/* XXX nast data_get */
-	page = ewl_widget_data_get(w, EWL_NOTEBOOK2_PAGE);
+	page = ewl_attach_notebook_data_get(w);
 	ewl_notebook2_visible_page_set(n, page);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
