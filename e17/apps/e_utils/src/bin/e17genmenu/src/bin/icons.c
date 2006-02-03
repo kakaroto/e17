@@ -7,7 +7,12 @@
 #include "icons.h"
 #include "parse.h"
 
-static const char *ext[] = {".png", ".svg", ".xpm", "", NULL};
+
+/* FIXME: Ideally this should be -
+ * {".png", ".svg", ".xpm", "", NULL}
+ * Add them in when they are supported in .eaps.
+ */ 
+static const char *ext[] = {".png", "", NULL};
 
 
 char *
@@ -70,7 +75,8 @@ find_icon(char *icon)
 
    /* Check For Unsupported Extension */
    if ((!strcmp(icon + strlen(icon) - 4, ".svg"))
-       || (!strcmp(icon + strlen(icon) - 4, ".ico")))
+       || (!strcmp(icon + strlen(icon) - 4, ".ico"))
+       || (!strcmp(icon + strlen(icon) - 4, ".xpm")))
       return DEFAULTICON;
 
    /* Check For An Extension, Append PNG If Missing */
@@ -87,55 +93,11 @@ find_icon(char *icon)
            return strdup(icn);
      }
 
-   snprintf(path, MAX_PATH, PIXMAPDIR "/%s", icn);
-   if (ecore_file_exists(path))
-      return strdup(path);
-
    /* Get Icon Options */
    icon_size = get_icon_size();
    icon_theme = get_icon_theme();
 
-   /* Check User Supplied Icon Theme */
-   if (icon_theme != NULL)
-     {
-        fprintf(stderr, "\tUsing Icon Theme: %s\n", icon_theme);
-        snprintf(path, MAX_PATH, "%s/%s/apps/%s", icon_theme, icon_size, icn);
-        if (ecore_file_exists(path))
-           return strdup(path);
-        snprintf(path, MAX_PATH, "%s/%s/devices/%s", icon_theme, icon_size,
-                 icn);
-        if (ecore_file_exists(path))
-           return strdup(path);
-        snprintf(path, MAX_PATH, "%s/%s/filesystems/%s", icon_theme, icon_size,
-                 icn);
-        if (ecore_file_exists(path))
-           return strdup(path);
-     }
-
-   snprintf(path, MAX_PATH, CRYSTALSVGDIR "/%s/apps/%s", icon_size, icn);
-   if (ecore_file_exists(path))
-      return strdup(path);
-   snprintf(path, MAX_PATH, CRYSTALSVGDIR "/%s/devices/%s", icon_size, icn);
-   if (ecore_file_exists(path))
-      return strdup(path);
-   snprintf(path, MAX_PATH, CRYSTALSVGDIR "/%s/filesystems/%s", icon_size, icn);
-   if (ecore_file_exists(path))
-      return strdup(path);
-
-   /* We Did Not Find the icon in theme dir,
-    * check default theme before setting a default icon */
-   snprintf(path, MAX_PATH, ICONDIR "/hicolor/%s/apps/%s", icon_size, icn);
-   if (ecore_file_exists(path))
-      return strdup(path);
-   snprintf(path, MAX_PATH, ICONDIR "/hicolor/%s/devices/%s", icon_size, icn);
-   if (ecore_file_exists(path))
-      return strdup(path);
-   snprintf(path, MAX_PATH, ICONDIR "/hicolor/%s/filesystems/%s", icon_size,
-            icn);
-   if (ecore_file_exists(path))
-      return strdup(path);
-
-   return DEFAULTICON;
+   return strdup(find_fdo_icon(icon, icon_size, icon_theme));
 }
 
 /** Search for an icon the fdo way.
@@ -176,8 +138,7 @@ find_fdo_icon(char *icon, char *icon_size, char *icon_theme)
     */
 
    char icn[MAX_PATH], path[MAX_PATH];
-   char *dir, *theme_path;
-   char *found;
+   char *theme_path, *found;
 
    if (icon == NULL)
       return DEFAULTICON;
@@ -185,22 +146,6 @@ find_fdo_icon(char *icon, char *icon_size, char *icon_theme)
 #ifdef DEBUG
    fprintf(stderr, "\tTrying To Find Icon %s (%s) in theme %s\n", icon, icon_size, icon_theme);
 #endif
-
-   /* Check For Unsupported Extension */
-   if ((!strcmp(icon + strlen(icon) - 4, ".svg"))
-       || (!strcmp(icon + strlen(icon) - 4, ".ico"))
-       || (!strcmp(icon + strlen(icon) - 4, ".xpm")))
-      return DEFAULTICON;
-
-   /* Check If Dir Supplied In Desktop File */
-   dir = ecore_file_get_dir(icon);
-   if (!strcmp(dir, icon) == 0)
-     {
-        snprintf(path, MAX_PATH, "%s", icon);
-        /* Check Supplied Dir For Icon */
-        if (ecore_file_exists(path))
-           return strdup(icon);
-     }
 
    /* Get the theme description file. */
    snprintf(icn, MAX_PATH, "%s/index.theme", icon_theme);

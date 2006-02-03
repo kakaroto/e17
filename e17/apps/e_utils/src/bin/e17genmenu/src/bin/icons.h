@@ -6,10 +6,6 @@
 #include <unistd.h>
 #include "config.h"
 
-#define PIXMAPDIR "/usr/share/pixmaps"
-#define ICONDIR "/usr/share/icons"
-#define CRYSTALSVGDIR "/usr/share/icons/crystalsvg"
-
 #define APPLICATIONICON PACKAGE_DATA_DIR"/icons/package_applications.png"
 #define COREICON PACKAGE_DATA_DIR"/icons/package_applications.png"
 #define EDITORICON PACKAGE_DATA_DIR"/icons/package_editors.png"

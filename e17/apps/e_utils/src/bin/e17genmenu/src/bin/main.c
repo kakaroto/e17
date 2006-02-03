@@ -28,16 +28,11 @@ _e17genmenu_test_fdo_paths()
 {
    int i;
    char *path;
-   char *icon_size, *icon_theme;
    char *menu = "applications.menu";
 
    printf("Testing FDO paths\n");
 
    fdo_paths_init();
-
-   /* Get Icon Options */
-   icon_size = get_icon_size();
-   icon_theme = get_icon_theme();
 
    /* You can iterate through the various path lists as needed. */
    for (i = 0; i < fdo_paths_menus->size; i++)
@@ -90,13 +85,13 @@ _e17genmenu_test_fdo_paths()
 	       free(path);
 	    }
       }
-   path = find_fdo_icon("tux", icon_size, icon_theme);
+   path = find_icon("tux");
    if (path)
       {
          printf("Path to tux is %s\n", path);
 	 free(path);
       }
-   path = find_fdo_icon("blah", icon_size, icon_theme);
+   path = find_icon("blah");
    if (path)
       {
          printf("Path to blah is %s\n", path);
