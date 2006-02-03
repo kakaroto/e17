@@ -405,7 +405,7 @@ evfs_handle_file_copy (evfs_client * client, evfs_command * command,
       evfs_operation_user_dispatch (client, command, op);
       while (op->status == EVFS_OPERATION_STATUS_USER_WAIT) {
 	ecore_main_loop_iterate ();
-	usleep (10);
+	usleep (1);
       }
 
       if (op->response == EVFS_OPERATION_RESPONSE_NEGATE) {

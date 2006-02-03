@@ -394,8 +394,6 @@ void evfs_write_command(evfs_connection* conn, evfs_command* command) {
 			ecore_ipc_message_new(EVFS_COMMAND, EVFS_COMMAND_EXTRA, 0,0,0,
 			&command->file_command.extra, sizeof(int)));
 
-	printf("Command type at write command: %d\n", command->type);
-	
 	switch (command->type) {
 		case EVFS_CMD_STOPMON_FILE:
 		case EVFS_CMD_STARTMON_FILE:
