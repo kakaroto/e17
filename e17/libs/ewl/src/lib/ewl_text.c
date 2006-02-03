@@ -4199,7 +4199,7 @@ ewl_text_tree_delete(Ewl_Text *t, unsigned int idx, unsigned int len)
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	child = ewl_text_tree_node_get(t->formatting.tree, idx, FALSE);
-	if (!child) DRETURN(DLEVEL_STABLE) 
+	if (!child) DRETURN(DLEVEL_STABLE);
 
 	pos = ewl_text_tree_idx_start_count_get(t->formatting.tree, idx, TRUE);
 	node_remaining = child->length - (idx - pos);
