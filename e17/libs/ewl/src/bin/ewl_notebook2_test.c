@@ -88,7 +88,10 @@ static void
 notebook2_delete_page(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
 							void *data)
 {
-	printf("DELETE PAGE %p\n", data);
+	Ewl_Widget *n;
+
+	n = ewl_widget_name_find("notebook");
+	ewl_container_child_remove(EWL_CONTAINER(n), EWL_WIDGET(data));
 }
 
 static Ewl_Widget *

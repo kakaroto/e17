@@ -479,6 +479,7 @@ ewl_notebook2_cb_child_remove(Ewl_Container *c, Ewl_Widget *w)
 {
 	Ewl_Widget *t;
 	Ewl_Notebook2 *n;
+	int idx = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
@@ -487,8 +488,44 @@ ewl_notebook2_cb_child_remove(Ewl_Container *c, Ewl_Widget *w)
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	n = EWL_NOTEBOOK2(EWL_WIDGET(c)->parent);
+
+	/* do nothing if the notebook is being destroyed */
+	if ((ewl_object_flags_has(EWL_OBJECT(n), EWL_FLAG_QUEUED_DPROCESS, 
+						EWL_FLAGS_QUEUED_MASK)) 
+			|| (ewl_object_flags_has(EWL_OBJECT(n), 
+				EWL_FLAG_QUEUED_DSCHEDULED, 
+				EWL_FLAGS_QUEUED_MASK)))
+		DRETURN(DLEVEL_STABLE);
+
+	/* we still have a tab, delete it */
 	t = ewl_attach_notebook_data_get(w);
-	if (t) ewl_container_child_remove(EWL_CONTAINER(n->body.tabbar), t);
+	if (t) 
+	{
+		idx = ewl_container_child_index_get(
+				EWL_CONTAINER(n->body.tabbar), t);
+
+		ewl_widget_destroy(t);
+	}
+
+	/* change visible pages if needed */
+	if (w == n->cur_page)
+	{
+		Ewl_Widget *page, *new_tab;
+
+		/* if we are before the beginning, subtract one from the index */
+		if (idx > 0) idx--;
+
+		new_tab = ewl_container_child_get(
+				EWL_CONTAINER(n->body.tabbar), idx);
+
+		if (new_tab)
+		{
+			page = ewl_attach_notebook_data_get(new_tab);
+			if (page)
+				ewl_notebook2_visible_page_set(
+						EWL_NOTEBOOK2(n), page);
+		}
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
