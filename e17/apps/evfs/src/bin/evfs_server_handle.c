@@ -417,10 +417,17 @@ evfs_handle_file_copy (evfs_client * client, evfs_command * command,
     }
 
     if (!S_ISDIR (file_stat.st_mode)) {
+      int fd = (*plugin->functions->evfs_file_open) (client,
+					    command->file_command.files[0]);
+
+      if (fd <= 0) {
+	      printf("*************************  Could not open file!\n");
+	      goto CLEANUP;
+      }
+	    
       (*dst_plugin->functions->evfs_file_create) (command->file_command.
 						  files[1]);
-      (*plugin->functions->evfs_file_open) (client,
-					    command->file_command.files[0]);
+
 
       count = 0;
       while (count < file_stat.st_size) {

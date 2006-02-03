@@ -422,7 +422,10 @@ evfs_file_open (evfs_client * client, evfs_filereference * file)
   file->fd_p = smb_context->open (smb_context, dir_path, O_RDONLY, S_IRUSR);
   file->fd = smb_fd_get_next (file->fd_p);
 
-  return file->fd;
+  if (file->fd_p)
+	  return file->fd;
+  else
+	  return -1;
 }
 
 int

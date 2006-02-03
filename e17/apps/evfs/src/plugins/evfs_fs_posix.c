@@ -446,7 +446,7 @@ evfs_file_open (evfs_client * client, evfs_filereference * file)
   file->fd = fd;
 
 
-  return 0;
+  return fd;
 }
 
 int
