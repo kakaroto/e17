@@ -65,6 +65,7 @@
         image: "e17_vhandle_thumb.png" COMP;
         image: "e17_frame_label_over.png" COMP;
         image: "e17_frame_label_under.png" COMP;
+        image: "e17_frame_label_under_selected.png" COMP;
         image: "e17_frame_outline.png" COMP;image: "e_watermark.png" COMP;
 	image: "entry.png" COMP;
 	image: "entry_focus.png" COMP;

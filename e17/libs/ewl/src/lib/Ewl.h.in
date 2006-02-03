@@ -326,6 +326,7 @@ extern"C" {
 #include <ewl_iconbox.h>
 @ewl_media_include@
 #include <ewl_notebook.h>
+#include <ewl_notebook2.h>
 #include <ewl_progressbar.h>
 #include <ewl_paned.h>
 #include <ewl_scrollpane.h>

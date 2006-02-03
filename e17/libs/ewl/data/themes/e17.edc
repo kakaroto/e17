@@ -25,6 +25,7 @@ collections {
 #include "e17/bits/separator-groups.edc"
 #include "e17/bits/window-groups.edc"
 #include "e17/bits/menu-item.edc"
+#include "e17/bits/notebook-groups.edc"
 #include "e17/bits/border-groups.edc"
 #include "e17/bits/box-groups.edc"
 #include "e17/bits/treebg-groups.edc"
@@ -100,6 +101,10 @@ data {
     item, "/spinner/velocity" "5";
 
     item, "/spacer/group" "spacer";
+
+    item, "/notebook2/group" "notebook";
+    item, "/tabbar/tab/group" "tab";
+    item, "/tabbar/tab/label/group" "tab/label";
 
     item, "/vscrollbar/group" "vscrollbar";
     item, "/hscrollbar/group" "hscrollbar";

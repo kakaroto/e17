@@ -50,6 +50,7 @@ EWLHEADERS = \
 	ewl_menu_item.h \
 	ewl_misc.h \
 	ewl_notebook.h \
+	ewl_notebook2.h \
 	ewl_object.h \
 	ewl_overlay.h \
 	ewl_paned.h \
@@ -115,6 +116,7 @@ EWLSOURCES= \
 	ewl_menu_item.c \
 	ewl_misc.c \
 	ewl_notebook.c \
+	ewl_notebook2.c \
 	ewl_object.c \
 	ewl_overlay.c \
 	ewl_paned.c \
