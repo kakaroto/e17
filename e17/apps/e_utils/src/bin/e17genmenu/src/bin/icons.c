@@ -150,6 +150,31 @@ find_icon(char *icon)
 char *
 find_fdo_icon(char *icon, char *icon_size, char *icon_theme)
 {
+   /*  NOTES ON OPTIMIZATIONS
+    *
+    * The spec has this to say -
+    *
+    * "The algorithm as described in this document works by always looking up 
+    * filenames in directories (a stat in unix terminology). A good 
+    * implementation is expected to read the directories once, and do all 
+    * lookups in memory using that information.
+    *
+    * "This caching can make it impossible for users to add icons without having 
+    * to restart applications. In order to handle this, any implementation that 
+    * does caching is required to look at the mtime of the toplevel icon 
+    * directories when doing a cache lookup, unless it already did so less than 
+    * 5 seconds ago. This means that any icon editor or theme installation 
+    * program need only to change the mtime of the the toplevel directory where 
+    * it changed the theme to make sure that the new icons will eventually get 
+    * used."
+    *
+    * On the other hand, OS caching (at least in linux) seems to do a reasonable 
+    * job here.
+    *
+    * We could also precalculate and cache all the information extracted from 
+    * the .theme files.
+    */
+
    char icn[MAX_PATH], path[MAX_PATH];
    char *dir, *theme_path;
    char *found;
