@@ -46,6 +46,10 @@ static char *_fdo_paths_recursive_search(char *path, char *d,
 
 static int _fdo_paths_cb_exe_exit(void *data, int type, void *event);
 
+/*
+ * This conforms with XDG Base Directory Specification version 0.6
+ */
+
 void
 fdo_paths_init()
 {

@@ -391,3 +391,14 @@ parse_debian_file(char *file)
    process_file(file, eap);
    free(eap);
 }
+
+Ecore_Hash *parse_ini_file(char *file)
+{
+   Ecore_Hash *result;
+
+   result = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+   if (result)
+      {
+      }
+   return result;
+}

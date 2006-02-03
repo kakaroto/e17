@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <Ecore_Data.h>
 
 /* Function Prototypes */
 char *get_t(char *icon);
@@ -12,5 +13,6 @@ char *parse_buffer(char *b, char *section);
 void parse_desktop_file(char *path);
 void parse_debian_file(char *file);
 void process_file(char *file, G_Eap *eap);
+Ecore_Hash *parse_ini_file(char *file);
 
 #endif
