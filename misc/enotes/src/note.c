@@ -779,29 +779,24 @@ char           *
 get_title_by_content(char *content)
 {
 	char           *cont;
-	int             a;
 	int             newlength;
 
 	if (!content)
 		return NULL;
-	cont = content;
-	a = 0;
 	newlength = 0;
 
-	while (a < TITLE_LENGTH && cont != NULL) {
-		if (!strncmp(cont, "\n", 1)) {
-			newlength = a;
+	while (newlength < TITLE_LENGTH && cont != NULL) {
+		if (content[newlength] == '\n') {
 			break;
 		}
-		a++;
-		cont++;
+		newlength++;
 	}
 
 	if (newlength == 0)
 		newlength = TITLE_LENGTH;
 
-	cont = malloc((newlength * sizeof(char)) + 1);
-	snprintf(cont, newlength, "%s", content);
+	cont = malloc((newlength + 1) * sizeof(char));
+	snprintf(cont, newlength + 1, "%s", content);
 	return cont;
 }
 
