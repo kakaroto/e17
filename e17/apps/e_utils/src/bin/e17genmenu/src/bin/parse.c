@@ -392,105 +392,112 @@ parse_debian_file(char *file)
    free(eap);
 }
 
-Ecore_Hash *parse_ini_file(char *file)
+Ecore_Hash *
+parse_ini_file(char *file)
 {
    Ecore_Hash *result;
 
    result = ecore_hash_new(ecore_str_hash, ecore_str_compare);
    if (result)
-      {
-         FILE *f;
-         char buffer[MAX_PATH];
-         Ecore_Hash *current = NULL;
+     {
+        FILE *f;
+        char buffer[MAX_PATH];
+        Ecore_Hash *current = NULL;
 
-         f = fopen(file, "r");
-         if (!f)
-           {
-              fprintf(stderr, "ERROR: Cannot Open File %s\n", file);
-	      ecore_hash_destroy(result);
-              return NULL;
-           }
-         ecore_hash_set_free_key(result, free);
-         ecore_hash_set_free_value(result, (Ecore_Free_Cb) ecore_hash_destroy);
-         *buffer = '\0';
+        f = fopen(file, "r");
+        if (!f)
+          {
+             fprintf(stderr, "ERROR: Cannot Open File %s\n", file);
+             ecore_hash_destroy(result);
+             return NULL;
+          }
+        ecore_hash_set_free_key(result, free);
+        ecore_hash_set_free_value(result, (Ecore_Free_Cb) ecore_hash_destroy);
+        *buffer = '\0';
 #ifdef DEBUG
-         fprintf(stdout, "PARSING INI %s\n", file);
+        fprintf(stdout, "PARSING INI %s\n", file);
 #endif
-         while (fgets(buffer, sizeof(buffer), f) != NULL)
-           {
-	      char *c;
-	      char *key;
-              char *value;
+        while (fgets(buffer, sizeof(buffer), f) != NULL)
+          {
+             char *c;
+             char *key;
+             char *value;
 
-              c = buffer;
-	      /* Strip preceeding blanks. */
-	      while ( ((*c == ' ') || (*c == '\t')) && (*c != '\n') && (*c != '\0'))
-	         c++;
-              /* Skip blank lines and comments */
-              if ((*c == '\0') || (*c == '\n') || (*c == '#'))
-                 continue;
-	      if (*c == '[')   /* New group. */
-	         {
-		    key = c + 1;
-	            while ((*c != ']') && (*c != '\n') && (*c != '\0'))
-	               c++;
-		    *c++ = '\0';
-                    current = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-		    if (current)
-		       {
-                          ecore_hash_set_free_key(current, free);
-                          ecore_hash_set_free_value(current, free);
-		          if (!ecore_hash_set(result, strdup(key), current))
-			     {
-                                fprintf(stderr, "ERROR: Cannot add [%s] group from %s\n", key, file);
-				ecore_hash_destroy(result);
-                                return NULL;
-			     }
+             c = buffer;
+             /* Strip preceeding blanks. */
+             while (((*c == ' ') || (*c == '\t')) && (*c != '\n')
+                    && (*c != '\0'))
+                c++;
+             /* Skip blank lines and comments */
+             if ((*c == '\0') || (*c == '\n') || (*c == '#'))
+                continue;
+             if (*c == '[')     /* New group. */
+               {
+                  key = c + 1;
+                  while ((*c != ']') && (*c != '\n') && (*c != '\0'))
+                     c++;
+                  *c++ = '\0';
+                  current = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+                  if (current)
+                    {
+                       ecore_hash_set_free_key(current, free);
+                       ecore_hash_set_free_value(current, free);
+                       if (!ecore_hash_set(result, strdup(key), current))
+                         {
+                            fprintf(stderr,
+                                    "ERROR: Cannot add [%s] group from %s\n",
+                                    key, file);
+                            ecore_hash_destroy(result);
+                            return NULL;
+                         }
 #ifdef DEBUG
-                          fprintf(stdout, "  GROUP [%s]\n", key);
+                       fprintf(stdout, "  GROUP [%s]\n", key);
 #endif
-		       }
-		 }
-	      else if (current)   /* key=value pair of current group. */
-	         {
-                    key = c;
-	            /* Find trailing blanks or =. */
-	            while ((*c != '=') && (*c != ' ') && (*c != '\t') && (*c != '\n') && (*c != '\0'))
-	               c++;
-                    if (*c != '=')   /* Find equals. */
-		       {
-	                 *c++ = '\0';
-	                  while ((*c != '=') && (*c != '\n') && (*c != '\0'))
-	                     c++;
-		       }
-                    if (*c == '=')   /* Equals found. */
-		       {
-	                 *c++ = '\0';
-	                  /* Strip preceeding blanks. */
-	                  while (((*c == ' ') || (*c == '\t')) && (*c != '\n') && (*c != '\0'))
-	                     c++;
-                          value = c;
-	                  /* Find end. */
-	                  while ((*c != '\n') && (*c != '\0'))
-	                     c++;
-		          *c++ = '\0';
-                          /* FIXME: should strip space at end, then unescape value. */
-		          if (!ecore_hash_set(current, strdup(key), strdup(value)))
-			     {
-                                fprintf(stderr, "ERROR: Cannot add %s=%s from %s\n", key, value, file);
-				ecore_hash_destroy(result);
-                                return NULL;
-			     }
+                    }
+               }
+             else if (current)  /* key=value pair of current group. */
+               {
+                  key = c;
+                  /* Find trailing blanks or =. */
+                  while ((*c != '=') && (*c != ' ') && (*c != '\t')
+                         && (*c != '\n') && (*c != '\0'))
+                     c++;
+                  if (*c != '=')        /* Find equals. */
+                    {
+                       *c++ = '\0';
+                       while ((*c != '=') && (*c != '\n') && (*c != '\0'))
+                          c++;
+                    }
+                  if (*c == '=')        /* Equals found. */
+                    {
+                       *c++ = '\0';
+                       /* Strip preceeding blanks. */
+                       while (((*c == ' ') || (*c == '\t')) && (*c != '\n')
+                              && (*c != '\0'))
+                          c++;
+                       value = c;
+                       /* Find end. */
+                       while ((*c != '\n') && (*c != '\0'))
+                          c++;
+                       *c++ = '\0';
+                       /* FIXME: should strip space at end, then unescape value. */
+                       if (!ecore_hash_set(current, strdup(key), strdup(value)))
+                         {
+                            fprintf(stderr, "ERROR: Cannot add %s=%s from %s\n",
+                                    key, value, file);
+                            ecore_hash_destroy(result);
+                            return NULL;
+                         }
 #ifdef DEBUG
-                          fprintf(stdout, "    %s=%s\n", key, value);
+                       fprintf(stdout, "    %s=%s\n", key, value);
 #endif
-		       }
-		 }
+                    }
+               }
 
-           }
-         buffer[0] = (char)0;
+          }
+        buffer[0] = (char)0;
 
-         fclose(f);
-      }
+        fclose(f);
+     }
    return result;
 }
