@@ -135,6 +135,13 @@ find_icon(char *icon)
 }
 
 
+/** Search for an icon the fdo way.
+ *
+ * This complies with the freedesktop.org Icon Theme Specification version 0.7
+ *
+ * @param   icon The icon to search for.
+ * @return  The full path to the found icon.
+ */
 char *
 find_fdo_icon(char *icon)
 {
@@ -168,19 +175,26 @@ find_fdo_icon(char *icon)
    icon_size = get_icon_size();
    icon_theme = get_icon_theme();
 
+   /* Get the theme description file. */
    snprintf(icn, MAX_PATH, "%s/index.theme", icon_theme);
+#ifdef DEBUG
    printf("SEARCHING FOR %s\n", icn);
+#endif
    theme_path = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, icn, NULL, NULL);
    if (theme_path)
       {
          Ecore_Hash *theme;
 
+         /* Parse the theme description file. */
+#ifdef DEBUG
          printf("Path to %s is %s\n", icn, theme_path);
+#endif
          theme = parse_ini_file(theme_path);
 	 if (theme)
 	    {
 	       Ecore_Hash *icon_group;
 
+               /* Grab the themes directory list, and what it inherits. */
                icon_group = (Ecore_Hash *) ecore_hash_get(theme, "Icon Theme");
 	       if (icon_group)
 	          {
@@ -192,7 +206,10 @@ find_fdo_icon(char *icon)
 		        {
                            Fdo_Path_List *directory_paths;
 
+                           /* Split the directory list. */
+#ifdef DEBUG
                            printf("Inherits %s Directories %s\n", inherits, directories);
+#endif
                            directory_paths = fdo_paths_paths_to_list(directories);
 			   if (directory_paths)
 			      {
@@ -200,11 +217,15 @@ find_fdo_icon(char *icon)
 			         char i;
 
                                  wanted_size = atoi(icon_size);
+                                 /* Loop through the themes directories. */
                                  for (i = 0; i < directory_paths->size; i++)
 				    {
 	                               Ecore_Hash *sub_group;
 
+#ifdef DEBUG
                                        printf("FDO icon path = %s\n", directory_paths->list[i]);
+#endif
+				       /* Get the details for this theme directory. */
                                        sub_group = (Ecore_Hash *) ecore_hash_get(theme, directory_paths->list[i]);
 				       if (sub_group)
 				          {
@@ -220,6 +241,7 @@ find_fdo_icon(char *icon)
 						   int match = 0;
 						   int this_size;
 
+                                                   /* Does this theme directory match the required icon size? */
                                                    this_size = atoi(size);
 						   if (!type)
 						      type = "Threshold";
@@ -254,34 +276,43 @@ find_fdo_icon(char *icon)
 							       break;
 							    }
 						      }
+						   /* If there is a match in sizes, hunt that little icon down. */
 						   if (match)
 						      {
 						         char *found;
 
                                                          /* First try a .png file. */
                                                          snprintf(path, MAX_PATH, "%s/%s/%s.png", icon_theme, directory_paths->list[i], icon);
+#ifdef DEBUG
                                                          printf("FDO icon = %s\n", path);
+#endif
                                                          found = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, path, NULL, NULL);
 							 if (found)
 							    return found;
 							 else
 							    {  /* Then a .svg file. */
                                                                snprintf(path, MAX_PATH, "%s/%s/%s.svg", icon_theme, directory_paths->list[i], icon);
+#ifdef DEBUG
                                                                printf("FDO icon = %s\n", path);
+#endif
                                                                found = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, path, NULL, NULL);
 							       if (found)
 							          return found;
 							       else
 							          {  /* Then a .xpm file. */
                                                                      snprintf(path, MAX_PATH, "%s/%s/%s.xpm", icon_theme, directory_paths->list[i], icon);
+#ifdef DEBUG
                                                                      printf("FDO icon = %s\n", path);
+#endif
                                                                      found = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, path, NULL, NULL);
 							             if (found)
 							                return found;
 							             else
 							                {   /* Finally, try without an extension, in case one was given. */
                                                                            snprintf(path, MAX_PATH, "%s/%s/%s", icon_theme, directory_paths->list[i], icon);
+#ifdef DEBUG
                                                                            printf("FDO icon = %s\n", path);
+#endif
                                                                            found = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, path, NULL, NULL);
 							                   if (found)
 							                      return found;
