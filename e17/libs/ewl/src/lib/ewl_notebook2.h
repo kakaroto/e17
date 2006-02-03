@@ -1,23 +1,48 @@
 #ifndef EWL_NOTEBOOK2_H
 #define EWL_NOTEBOOK2_H
 
+/**
+ * @file ewl_notebook2.h
+ * @defgroup Ewl_Notebook2: A new notebook widget
+ * @brief Defines a class for notebook layout
+ *
+ * @{
+ */
+
+/**
+ * @themekey /notebook2
+ * @themekey /notebook2/tabbar
+ * @themekey /notebook2/tabbar/
+ * @themekey /notebook2/tabbar/tab
+ * @themekey /notebook2/tabbar/tab/label
+ * @themekey /notebook2/pages
+ */
+
 #define EWL_NOTEBOOK2_TYPE "notebook2"
 
+/**
+ * @def EWL_NOTEBOOK2(n)
+ * Typecasts a pointer to an Ewl_Notebook2 pointer.
+ */
 #define EWL_NOTEBOOK2(n) ((Ewl_Notebook2 *)n)
 
 typedef struct Ewl_Notebook2 Ewl_Notebook2;
 
+/**
+ * @struct Ewl_Notebook2
+ * Inherits from Ewl_Box and extends to provide for a notebook style layout.
+ */
 struct Ewl_Notebook2
 {
-	Ewl_Box box;
+	Ewl_Box box;			/**< Inherit from Ewl_Box */
 
 	struct {
-		Ewl_Widget *tabbar;
-		Ewl_Widget *pages;
+		Ewl_Widget *tabbar;	/**< Holds the tabs */
+		Ewl_Widget *pages;	/**< Holds the notebook pages */
 	} body;
 
-	Ewl_Widget *cur_page;
-	Ewl_Position tabbar_position;
+	Ewl_Widget *cur_page;		/**< The currently active page */
+	Ewl_Position tabbar_position;	/**< The position of the tabbar in the notebook */
 };
 
 Ewl_Widget	*ewl_notebook2_new(void);

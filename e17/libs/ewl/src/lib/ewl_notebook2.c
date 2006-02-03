@@ -6,6 +6,10 @@
 #define EWL_NOTEBOOK2_TAB "ewl_notebook2_tab"
 #define EWL_NOTEBOOK2_PAGE "ewl_notebook2_page"
 
+/**
+ * @brief Create a new notebook widget
+ * @return Returns a newly allocated notebook on success. NULL on failure
+ */
 Ewl_Widget *
 ewl_notebook2_new(void)
 {
@@ -26,6 +30,11 @@ ewl_notebook2_new(void)
 	DRETURN_PTR(w, DLEVEL_STABLE);
 }
 
+/**
+ * @param n: The Ewl_Notebook2 widget to initialize
+ * @return Returns TRUE on success or NULL on failure.
+ * @brief Initialize a notebook to default values and callbacks
+ */
 int
 ewl_notebook2_init(Ewl_Notebook2 *n)
 {
@@ -77,6 +86,11 @@ ewl_notebook2_init(Ewl_Notebook2 *n)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+/**
+ * @param n: The Ewl_Notebook2 to set the tabbar alignment of
+ * @param align: The Ewl_Alignment to set the alignment too
+ * @return Returns no value.
+ */
 void
 ewl_notebook2_tabbar_alignment_set(Ewl_Notebook2 *n, unsigned int align)
 {
@@ -89,6 +103,10 @@ ewl_notebook2_tabbar_alignment_set(Ewl_Notebook2 *n, unsigned int align)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param n: The Ewl_Notebook2 to get the alignment from
+ * @return Returns the current alignment values of the widget
+ */
 unsigned int
 ewl_notebook2_tabbar_alignment_get(Ewl_Notebook2 *n)
 {
@@ -100,6 +118,11 @@ ewl_notebook2_tabbar_alignment_get(Ewl_Notebook2 *n)
 							DLEVEL_STABLE);
 }
 
+/**
+ * @param n: The Ewl_Notebook2 to set the tabbar position of
+ * @param pos: The Ewl_Position to put the tabbar in
+ * @return Returns no value.
+ */
 void
 ewl_notebook2_tabbar_position_set(Ewl_Notebook2 *n, Ewl_Position pos)
 {
@@ -150,6 +173,10 @@ ewl_notebook2_tabbar_position_set(Ewl_Notebook2 *n, Ewl_Position pos)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param n: The Ewl_Notebook2 to get the tabbar position of
+ * @return Returns the current Ewl_Position of the tabbar
+ */
 Ewl_Position
 ewl_notebook2_tabbar_position_get(Ewl_Notebook2 *n)
 {
@@ -160,6 +187,11 @@ ewl_notebook2_tabbar_position_get(Ewl_Notebook2 *n)
 	DRETURN_INT(n->tabbar_position, DLEVEL_STABLE);
 }
 
+/**
+ * @param n: The Ewl_Notebook2 to set the visible flag of the tabbar
+ * @param visible: The flag to set for the tabbar visibility
+ * @return Returns no value.
+ */
 void
 ewl_notebook2_tabbar_visible_set(Ewl_Notebook2 *n, unsigned int visible)
 {
@@ -173,6 +205,10 @@ ewl_notebook2_tabbar_visible_set(Ewl_Notebook2 *n, unsigned int visible)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param n: The Ewl_Notebook2 to get the tabbar visiblity of 
+ * @return Returns the visibility of the tabbar
+ */
 unsigned int
 ewl_notebook2_tabbar_visible_get(Ewl_Notebook2 *n)
 {
@@ -184,6 +220,11 @@ ewl_notebook2_tabbar_visible_get(Ewl_Notebook2 *n)
 							DLEVEL_STABLE);
 }
 
+/**
+ * @param n: The Ewl_Notebook2 to set the visible page of
+ * @param page: The page to set visible in the tabbar
+ * @return Returns no value.
+ */
 void
 ewl_notebook2_visible_page_set(Ewl_Notebook2 *n, Ewl_Widget *page)
 {
@@ -220,6 +261,10 @@ ewl_notebook2_visible_page_set(Ewl_Notebook2 *n, Ewl_Widget *page)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param n: The Ewl_Notebook2 to get the visible page of
+ * @return Returns the visible page of the notebook
+ */
 Ewl_Widget *
 ewl_notebook2_visible_page_get(Ewl_Notebook2 *n)
 {
@@ -230,6 +275,12 @@ ewl_notebook2_visible_page_get(Ewl_Notebook2 *n)
 	DRETURN_PTR(n->cur_page, DLEVEL_STABLE);
 }
 
+/**
+ * @param n: The Ewl_Notebook2 to set the tab text in
+ * @param page: The page to associate the tab text too
+ * @param text: The text to set in the tab
+ * @return Returns no value.
+ */
 void
 ewl_notebook2_page_tab_text_set(Ewl_Notebook2 *n, Ewl_Widget *page, 
 							const char *text)
@@ -254,6 +305,11 @@ ewl_notebook2_page_tab_text_set(Ewl_Notebook2 *n, Ewl_Widget *page,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param n: The Ewl_Notebook2 to work with
+ * @param page: The page to get the tab text from
+ * @return Returns the text of the pages tab
+ */
 const char *
 ewl_notebook2_page_tab_text_get(Ewl_Notebook2 *n, Ewl_Widget *page)
 {
@@ -271,6 +327,12 @@ ewl_notebook2_page_tab_text_get(Ewl_Notebook2 *n, Ewl_Widget *page)
 	DRETURN_PTR((o ? ewl_label_text_get(EWL_LABEL(o)) : NULL), DLEVEL_STABLE);
 }
 
+/**
+ * @param n: The Ewl_Notebook2 to set the tab into
+ * @param page: The page to associate the tab with
+ * @param tab: The contents of the tab
+ * @return Returns no value.
+ */
 void
 ewl_notebook2_page_tab_widget_set(Ewl_Notebook2 *n, Ewl_Widget *page,
 							Ewl_Widget *tab)
@@ -316,6 +378,11 @@ ewl_notebook2_page_tab_widget_set(Ewl_Notebook2 *n, Ewl_Widget *page,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param n: The Ewl_Notebook2 to get the tab widget from
+ * @param page: The page to get the tab from
+ * @return Returns the tab widget associated with the given page
+ */
 Ewl_Widget *
 ewl_notebook2_page_tab_widget_get(Ewl_Notebook2 *n, Ewl_Widget *page)
 {
