@@ -45,10 +45,11 @@
 #define EDJE_VSCROLLBAR_BTN_DECR "vscroll-down"
 #define EDJE_VSCROLLBAR_SEEKER "vtrough"
 
-#define EDJE_HSCROLLBAR_BTN_INCR "hscroll-left"
-#define EDJE_HSCROLLBAR_BTN_DECR "hscroll-right"
+#define EDJE_HSCROLLBAR_BTN_INCR "hscroll-right"
+#define EDJE_HSCROLLBAR_BTN_DECR "hscroll-left"
 #define EDJE_HSCROLLBAR_SEEKER "htrough"
 
+#define EDJE_SCROLLPANE "scrollpane"
 #define EDJE_SCROLLBAR_BUTTON "scroll-button"
 
 #define EDJE_INFO_SCROLLBARS "EnoteInfoScrollbars"

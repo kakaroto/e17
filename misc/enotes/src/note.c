@@ -330,32 +330,30 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 void
 configure_scrollbars_default(Ewl_Widget * pane)
 {
-	ewl_theme_data_str_set(pane, "/vscrollbar/button_increment/file", NULL);
-	ewl_theme_data_str_set(pane, "/vscrollbar/button_decrement/file", NULL);
+	ewl_theme_data_str_set(pane, "/vscrollbar/increment/file", NULL);
+	ewl_theme_data_str_set(pane, "/vscrollbar/decrement/file", NULL);
 	ewl_theme_data_str_set(pane, "/vscrollbar/vseeker/file", NULL);
-	ewl_theme_data_str_set(pane, "/vscrollbar/vseeker/button/file", NULL);
-	ewl_theme_data_str_set(pane, "/hscrollbar/button_increment/file", NULL);
-	ewl_theme_data_str_set(pane, "/hscrollbar/button_decrement/file", NULL);
+	ewl_theme_data_str_set(pane, "/vscrollbar/vseeker/vbutton/file", NULL);
+	ewl_theme_data_str_set(pane, "/hscrollbar/increment/file", NULL);
+	ewl_theme_data_str_set(pane, "/hscrollbar/decrement/file", NULL);
 	ewl_theme_data_str_set(pane, "/hscrollbar/hseeker/file", NULL);
-	ewl_theme_data_str_set(pane, "/hscrollbar/hseeker/button/file", NULL);
+	ewl_theme_data_str_set(pane, "/hscrollbar/hseeker/hbutton/file", NULL);
+  ewl_theme_data_str_set(pane, "/scrollpane/file", NULL);
 
-	ewl_theme_data_str_set(pane,
-			       "/vscrollbar/button_increment/group", NULL);
-	ewl_theme_data_str_set(pane,
-			       "/vscrollbar/button_decrement/group", NULL);
+	ewl_theme_data_str_set(pane, "/vscrollbar/increment/group", NULL);
+	ewl_theme_data_str_set(pane, "/vscrollbar/decrement/group", NULL);
 
 	ewl_theme_data_str_set(pane, "/vscrollbar/vseeker/group", NULL);
 
-	ewl_theme_data_str_set(pane, "/vscrollbar/vseeker/button/group", NULL);
+	ewl_theme_data_str_set(pane, "/vscrollbar/vseeker/vbutton/group", NULL);
 
-	ewl_theme_data_str_set(pane,
-			       "/hscrollbar/button_increment/group", NULL);
-	ewl_theme_data_str_set(pane,
-			       "/hscrollbar/button_decrement/group", NULL);
+	ewl_theme_data_str_set(pane, "/hscrollbar/increment/group", NULL);
+	ewl_theme_data_str_set(pane, "/hscrollbar/decrement/group", NULL);
 
 	ewl_theme_data_str_set(pane, "/hscrollbar/hseeker/group", NULL);
 
-	ewl_theme_data_str_set(pane, "/hscrollbar/hseeker/button/group", NULL);
+	ewl_theme_data_str_set(pane, "/hscrollbar/hseeker/hbutton/group", NULL);
+  ewl_theme_data_str_set(pane, "/scrollpane/group", NULL);
 
 	return;
 }
@@ -364,40 +362,34 @@ void
 configure_scrollbars(Ewl_Widget * pane, char *edjefn)
 {
 	ewl_theme_data_str_set(pane,
-			       "/vscrollbar/button_increment/file", edjefn);
-	ewl_theme_data_str_set(pane,
-			       "/vscrollbar/button_decrement/file", edjefn);
+			       "/vscrollbar/increment/file", edjefn);
+	ewl_theme_data_str_set(pane, "/vscrollbar/decrement/file", edjefn);
 	ewl_theme_data_str_set(pane, "/vscrollbar/vseeker/file", edjefn);
-	ewl_theme_data_str_set(pane, "/vscrollbar/vseeker/button/file", edjefn);
-	ewl_theme_data_str_set(pane,
-			       "/hscrollbar/button_increment/file", edjefn);
-	ewl_theme_data_str_set(pane,
-			       "/hscrollbar/button_decrement/file", edjefn);
+	ewl_theme_data_str_set(pane, "/vscrollbar/vseeker/vbutton/file", edjefn);
+	ewl_theme_data_str_set(pane, "/hscrollbar/increment/file", edjefn);
+	ewl_theme_data_str_set(pane, "/hscrollbar/decrement/file", edjefn);
 	ewl_theme_data_str_set(pane, "/hscrollbar/hseeker/file", edjefn);
-	ewl_theme_data_str_set(pane, "/hscrollbar/hseeker/button/file", edjefn);
+	ewl_theme_data_str_set(pane, "/hscrollbar/hseeker/hbutton/file", edjefn);
+  ewl_theme_data_str_set(pane, "/scrollpane/file", edjefn);
 
-	ewl_theme_data_str_set(pane,
-			       "/vscrollbar/button_increment/group",
+	ewl_theme_data_str_set(pane, "/vscrollbar/increment/group",
 			       EDJE_VSCROLLBAR_BTN_INCR);
-	ewl_theme_data_str_set(pane,
-			       "/vscrollbar/button_decrement/group",
+	ewl_theme_data_str_set(pane, "/vscrollbar/decrement/group",
 			       EDJE_VSCROLLBAR_BTN_DECR);
 	ewl_theme_data_str_set(pane, "/vscrollbar/vseeker/group",
 			       EDJE_VSCROLLBAR_SEEKER);
-	ewl_theme_data_str_set(pane,
-			       "/vscrollbar/vseeker/button/group",
+	ewl_theme_data_str_set(pane, "/vscrollbar/vseeker/vbutton/group",
 			       EDJE_SCROLLBAR_BUTTON);
-	ewl_theme_data_str_set(pane,
-			       "/hscrollbar/button_increment/group",
+	ewl_theme_data_str_set(pane, "/hscrollbar/increment/group",
 			       EDJE_HSCROLLBAR_BTN_INCR);
-	ewl_theme_data_str_set(pane,
-			       "/hscrollbar/button_decrement/group",
+	ewl_theme_data_str_set(pane, "/hscrollbar/decrement/group",
 			       EDJE_HSCROLLBAR_BTN_DECR);
 	ewl_theme_data_str_set(pane, "/hscrollbar/hseeker/group",
 			       EDJE_HSCROLLBAR_SEEKER);
-	ewl_theme_data_str_set(pane,
-			       "/hscrollbar/hseeker/button/group",
+	ewl_theme_data_str_set(pane, "/hscrollbar/hseeker/hbutton/group",
 			       EDJE_SCROLLBAR_BUTTON);
+  ewl_theme_data_str_set(pane, "/scrollpane/group", EDJE_SCROLLPANE);
+
 	return;
 }
 
