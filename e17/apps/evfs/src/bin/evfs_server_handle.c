@@ -407,6 +407,13 @@ evfs_handle_file_copy (evfs_client * client, evfs_command * command,
 	ecore_main_loop_iterate ();
 	usleep (10);
       }
+
+      if (op->response == EVFS_OPERATION_RESPONSE_NEGATE) {
+	      printf("User opted not to overwrite file!\n");
+	      goto CLEANUP;
+      } else {
+	      printf("User opted to overwrite file!\n");
+      }
     }
 
     if (!S_ISDIR (file_stat.st_mode)) {
@@ -539,6 +546,7 @@ evfs_handle_file_copy (evfs_client * client, evfs_command * command,
 	    command->file_command.files[1]->plugin_uri);
   }
 
+  CLEANUP:
   evfs_operation_destroy (op);
 
 }
@@ -551,5 +559,12 @@ evfs_handle_ping_command (evfs_client * client, evfs_command * command)
 
 
 void evfs_handle_operation_command(evfs_client* client, evfs_command* command) {
-	printf("*** Received operation response for op %ld -> %d\n", command->op->id, command->op->response);
+	evfs_operation* op_get = NULL;
+
+	op_get = evfs_operation_get_by_id(command->op->id);
+	if (op_get) {
+		op_get->status = EVFS_OPERATION_STATUS_NORMAL;
+		op_get->response = command->op->response;
+		printf("*** Received operation response for op %ld -> %d\n", command->op->id, command->op->response);
+	}
 }
