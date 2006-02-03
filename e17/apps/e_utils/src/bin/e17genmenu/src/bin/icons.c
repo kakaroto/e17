@@ -7,6 +7,9 @@
 #include "icons.h"
 #include "parse.h"
 
+static const char *ext[] = {".png", ".svg", ".xpm", "", NULL};
+
+
 char *
 set_icon(char *token)
 {
@@ -135,13 +138,13 @@ find_icon(char *icon)
    return DEFAULTICON;
 }
 
-static const char *ext[] = {".png", ".svg", ".xpm", "", NULL};
-
 /** Search for an icon the fdo way.
  *
  * This complies with the freedesktop.org Icon Theme Specification version 0.7
  *
  * @param   icon The icon to search for.
+ * @param   icon_size The icon size to search for.
+ * @param   icon_theme The icon theme to search in.
  * @return  The full path to the found icon.
  */
 char *
@@ -154,9 +157,9 @@ find_fdo_icon(char *icon, char *icon_size, char *icon_theme)
    if (icon == NULL)
       return DEFAULTICON;
 
-//#ifdef DEBUG
+#ifdef DEBUG
    fprintf(stderr, "\tTrying To Find Icon %s (%s) in theme %s\n", icon, icon_size, icon_theme);
-//#endif
+#endif
 
    /* Check For Unsupported Extension */
    if ((!strcmp(icon + strlen(icon) - 4, ".svg"))
