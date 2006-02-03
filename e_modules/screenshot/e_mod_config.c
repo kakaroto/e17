@@ -6,8 +6,6 @@
 #define S_METHOD_IMPORT 0
 #define S_METHOD_SCROT 1
 
-typedef struct _Cfg_File_Data Cfg_File_Data;
-
 struct _E_Config_Dialog_Data
 {
   Screen *screen;
@@ -39,12 +37,6 @@ struct _E_Config_Dialog_Data
     int use_thumb;
   } scrot;
 #endif
-};
-
-struct _Cfg_File_Data
-{
-  E_Config_Dialog *cfd;
-  char *file;
 };
 
 /* Protos */
