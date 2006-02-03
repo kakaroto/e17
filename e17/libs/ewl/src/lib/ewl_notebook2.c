@@ -489,14 +489,6 @@ ewl_notebook2_cb_child_remove(Ewl_Container *c, Ewl_Widget *w)
 
 	n = EWL_NOTEBOOK2(EWL_WIDGET(c)->parent);
 
-	/* do nothing if the notebook is being destroyed */
-	if ((ewl_object_flags_has(EWL_OBJECT(n), EWL_FLAG_QUEUED_DPROCESS, 
-						EWL_FLAGS_QUEUED_MASK)) 
-			|| (ewl_object_flags_has(EWL_OBJECT(n), 
-				EWL_FLAG_QUEUED_DSCHEDULED, 
-				EWL_FLAGS_QUEUED_MASK)))
-		DRETURN(DLEVEL_STABLE);
-
 	/* we still have a tab, delete it */
 	t = ewl_attach_notebook_data_get(w);
 	if (t) 
