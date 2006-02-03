@@ -348,7 +348,7 @@ void
 ewl_notebook2_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 {
 	Ewl_Notebook2 *n;
-	int pw, ph, tw, th, nw, nh;
+	int pw, ph;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
@@ -361,22 +361,8 @@ ewl_notebook2_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 	if (n->cur_page != w)
 		ewl_widget_hide(w);
 
-	ewl_object_preferred_inner_size_get(EWL_OBJECT(n->body.tabbar), &tw, &th);
 	ewl_object_preferred_inner_size_get(EWL_OBJECT(n->cur_page), &pw, &ph);
-
-	if ((n->tabbar_position == EWL_POSITION_TOP) 
-			|| (n->tabbar_position == EWL_POSITION_BOTTOM))
-	{
-		nh = th + ph;
-		nw = pw;
-	}
-	else
-	{
-		nh = ph;
-		nw = pw + tw;
-	}
-
-	ewl_object_preferred_inner_size_set(EWL_OBJECT(n), nw, nh);
+	ewl_object_preferred_inner_size_set(EWL_OBJECT(n->body.pages), pw, ph);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
