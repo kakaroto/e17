@@ -330,36 +330,36 @@ find_fdo_icon(char *icon)
                                  /* Fall back strategy #2, Just search in the base of the icon directories. */
                                  /* First try a .png file. */
                                  snprintf(path, MAX_PATH, "%s.png", icon);
-//#ifdef DEBUG
+#ifdef DEBUG
                                  printf("FDO icon = %s\n", path);
-//#endif
+#endif
                                  found = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, path, 0, NULL, NULL);
 				 if (found)
 				    return found;
 				 else
 				    {  /* Then a .svg file. */
                                        snprintf(path, MAX_PATH, "%s.svg", icon);
-//#ifdef DEBUG
+#ifdef DEBUG
                                        printf("FDO icon = %s\n", path);
-//#endif
+#endif
                                        found = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, path, 0, NULL, NULL);
 				       if (found)
 				          return found;
 				       else
 				          {  /* Then a .xpm file. */
                                              snprintf(path, MAX_PATH, "%s.xpm", icon);
-//#ifdef DEBUG
+#ifdef DEBUG
                                              printf("FDO icon = %s\n", path);
-//#endif
+#endif
                                              found = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, path, 0, NULL, NULL);
 					     if (found)
 					        return found;
 					     else
 						{   /* Finally, try without an extension, in case one was given. */
                                                    snprintf(path, MAX_PATH, "%s", icon);
-//#ifdef DEBUG
+#ifdef DEBUG
                                                    printf("FDO icon = %s\n", path);
-//#endif
+#endif
                                                    found = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, path, 0, NULL, NULL);
 						   if (found)
 						      return found;
