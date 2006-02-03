@@ -3,7 +3,7 @@ group {
    data {
       item: "inset/left" "8";
       item: "inset/right" "8";
-      item: "inset/top" "5";
+      item: "inset/top" "6";
       item: "inset/bottom" "5";
    }
 
@@ -113,14 +113,10 @@ group {
 group {
    name: "tab/label";
    data {
-      item: "pad/top" "5";
-      item: "pad/left" "5";
-      item: "pad/right" "5";
+      item: "pad/top" "4";
 
-      item: "inset/left" "5";
-      item: "inset/right" "5";
-      item: "inset/top" "3";
-      item: "inset/bottom" "0";
+      item: "inset/left" "3";
+      item: "inset/right" "3";
    }
 
    parts {
