@@ -14,6 +14,17 @@ __destroy_notebook2_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 }
 
 static void
+notebook2_cb_toggle_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+							void *data __UNUSED__)
+{
+	Ewl_Widget *n;
+
+	n = ewl_widget_name_find("notebook");
+	ewl_notebook2_tabbar_visible_set(EWL_NOTEBOOK2(n),
+			!ewl_notebook2_tabbar_visible_get(EWL_NOTEBOOK2(n)));
+}
+
+static void
 notebook2_change_align(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
 							void *data)
 {
@@ -154,6 +165,13 @@ create_main_page(void)
 
 		o2 = o;
 	}
+
+	o = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(o), "Toggle tabbar");
+	ewl_container_child_append(EWL_CONTAINER(body), o);
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED, notebook2_cb_toggle_clicked, NULL);
+	ewl_widget_show(o);
 
 	return body;
 }
