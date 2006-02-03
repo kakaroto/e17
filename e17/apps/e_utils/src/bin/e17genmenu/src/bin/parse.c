@@ -119,11 +119,10 @@ parse_exec(char *exec)
 void
 parse_desktop_file(char *path)
 {
-   char *home, *eap_name, *key, *value;
-   char buffer[MAX_PATH];
-   int length, overwrite;
-   FILE *file;
+   char *home, *eap_name;
+   int overwrite;
    G_Eap *eap;
+   Ecore_Hash *desktop;
 
    home = get_home();
    overwrite = get_overwrite();
@@ -133,59 +132,41 @@ parse_desktop_file(char *path)
    fprintf(stderr, "Parsing Desktop File %s\n", path);
 #endif
 
-   file = fopen(path, "r");
-   if (!file)
-     {
-        fprintf(stderr, "ERROR: Cannot Open File %s \n", path);
-        return;
-     }
-
    eap = calloc(1, sizeof(G_Eap));
    eap->eap_name = strdup(eap_name);
    if (eap_name)
       free(eap_name);
 
-   key = NULL;
-   value = NULL;
-   *buffer = 0;
+   desktop = parse_ini_file(path);
+   if (desktop)
+      {
+         Ecore_Hash *group;
 
-   /* Read All Entries, Store In Struct */
-   while (fgets(buffer, sizeof(buffer), file) != NULL)
-     {
-        /* Skip Blank Lines */
-        if (!(*buffer) || (*buffer == '\n'))
-           continue;
-        /* Strip New Line Char */
-        if (buffer[(length = strlen(buffer) - 1)] == '\n')
-           buffer[length] = '\0';
-        key = strtok(buffer, "=");
-        value = strstr(buffer, "=");
-        value = strtok(value, "=");
-        if ((value != NULL) && (key != NULL))
-          {
-             if (!strcmp(key, "Name"))
-                eap->name = strdup(value);
-             if (!strcmp(key, "GenericName"))
-                eap->generic = strdup(value);
-             if (!strcmp(key, "Comment"))
-                eap->comment = strdup(value);
-             if (!strcmp(key, "Categories"))
-                eap->categories = strdup(value);
-             if (!strcmp(key, "Exec"))
-                eap->exec = strdup(value);
-             if (!strcmp(key, "Icon"))
-                eap->icon = strdup(value);
-             if (!strcmp(key, "StartupNotify"))
-                eap->startup = (!strcmp(value, "true")) ? "1" : "0";
-             if (!strcmp(key, "X-KDE-StartupNotify"))
-                eap->startup = (!strcmp(value, "true")) ? "1" : "0";
-             if (!strcmp(key, "Type"))
-                eap->type = strdup(value);
-          }
-        value = NULL;
-        key = NULL;
-     }
-   fclose(file);
+         group = (Ecore_Hash *) ecore_hash_get(desktop, "Desktop Entry");
+	 if (group)
+	    {
+	       char *value;
+
+               value = (char *) ecore_hash_get(group, "Name");
+	       if (value)   eap->name = strdup(value);
+               value = (char *) ecore_hash_get(group, "GenericName");
+	       if (value)   eap->generic = strdup(value);
+               value = (char *) ecore_hash_get(group, "Comment");
+	       if (value)   eap->comment = strdup(value);
+               value = (char *) ecore_hash_get(group, "Type");
+	       if (value)   eap->type = strdup(value);
+               value = (char *) ecore_hash_get(group, "Categories");
+	       if (value)   eap->categories = strdup(value);
+               value = (char *) ecore_hash_get(group, "Exec");
+	       if (value)   eap->exec = strdup(value);
+               value = (char *) ecore_hash_get(group, "Icon");
+	       if (value)   eap->icon = strdup(value);
+               value = (char *) ecore_hash_get(group, "X-KDE-StartupNotify");
+	       if (value)   eap->startup = (!strcmp(value, "true")) ? "1" : "0";
+               value = (char *) ecore_hash_get(group, "StartupNotify");
+	       if (value)   eap->startup = (!strcmp(value, "true")) ? "1" : "0";
+            }
+      }
 
    /* Check If We Process */
    if (!eap->type)
