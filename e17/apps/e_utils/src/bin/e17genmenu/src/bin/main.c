@@ -23,6 +23,7 @@ _e17genmenu_backup()
    backup_eaps();
 }
 
+#if 0
 void
 _e17genmenu_test_fdo_paths()
 {
@@ -104,6 +105,7 @@ _e17genmenu_test_fdo_paths()
 
    exit(0);
 }
+#endif
 
 void
 _e17genmenu_help()
@@ -140,8 +142,8 @@ _e17genmenu_parseargs(int argc, char **argv)
                 _e17genmenu_help();
              if ((strstr(argv[i], "--backup")) || (strstr(argv[i], "-b")))
                 _e17genmenu_backup();
-             if ((strstr(argv[i], "--fdo")) || (strstr(argv[i], "-f")))
-                _e17genmenu_test_fdo_paths();
+//             if ((strstr(argv[i], "--fdo")) || (strstr(argv[i], "-f")))
+//                _e17genmenu_test_fdo_paths();
           }
      }
 }
@@ -217,6 +219,9 @@ main(int argc, char **argv)
    /* Set App Args */
    ecore_app_args_set(argc, (const char **)argv);
 
+   /* Get the fdo paths. */
+   fdo_paths_init();
+
    /* Start Making Menus */
    make_menus();
 
@@ -231,6 +236,8 @@ main(int argc, char **argv)
    snprintf(path, sizeof(path), "enlightenment_eapp_cache_gen %s" EAPPDIR " -r",
             get_home());
    system(path);
+
+   fdo_paths_shutdown();
 
    /* Shutdown */
    _e17genmenu_shutdown();

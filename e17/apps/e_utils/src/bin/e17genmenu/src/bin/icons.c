@@ -64,7 +64,7 @@ find_icon(char *icon)
    char *dir, *icon_size, *icon_theme, *home;
 
    if (icon == NULL)
-      return DEFAULTICON;
+      return strdup(DEFAULTICON);
 
    home = get_home();
 
@@ -77,7 +77,7 @@ find_icon(char *icon)
    if ((!strcmp(icon + strlen(icon) - 4, ".svg"))
        || (!strcmp(icon + strlen(icon) - 4, ".ico"))
        || (!strcmp(icon + strlen(icon) - 4, ".xpm")))
-      return DEFAULTICON;
+      return strdup(DEFAULTICON);
 
    /* Check For An Extension, Append PNG If Missing */
    if (strrchr(icon, '.') == NULL)

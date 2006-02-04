@@ -111,12 +111,12 @@ write_icon(char *f, char *i)
    engrave_edj_output(eet, f);
    engrave_file_free(eet);
 
-   if (icomp)
-      free(icomp);
-   if (idir)
-      free(idir);
-   if (ifile)
-      free(ifile);
+//   if (icomp)
+//      free(icomp);
+//   if (idir)
+//      free(idir);
+//   if (ifile)
+//      free(ifile);
 }
 
 void

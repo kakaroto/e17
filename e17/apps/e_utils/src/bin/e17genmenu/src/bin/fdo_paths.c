@@ -471,7 +471,9 @@ _fdo_paths_massage_path(char *path, char *home, char *first, char *second)
 static void
 _fdo_paths_check_and_add(Fdo_Path_List * paths, char *path)
 {
+#ifdef DEBUG
    printf("CHECKING %s", path);
+#endif
    if (!_fdo_paths_list_exist(paths, path))
      {
         struct stat path_stat;
@@ -479,11 +481,15 @@ _fdo_paths_check_and_add(Fdo_Path_List * paths, char *path)
         /* Check if the path exists. */
         if ((stat(path, &path_stat) == 0) && (S_ISDIR(path_stat.st_mode)))
           {
+#ifdef DEBUG
              printf(" OK");
+#endif
              _fdo_paths_list_extend(paths, path);
           }
      }
+#ifdef DEBUG
    printf("\n");
+#endif
 }
 
 static void

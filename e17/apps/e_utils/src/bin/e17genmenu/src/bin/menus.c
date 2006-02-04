@@ -30,7 +30,7 @@ check_for_dirs(char *path)
    char dirs[MAX_PATH];
 
    snprintf(dirs, sizeof(dirs), path);
-   dir = strdup(path);
+   dir = path;   //strdup(path);
    if (dirs)
      {
         if (strstr(dirs, ":"))
@@ -40,9 +40,9 @@ check_for_dirs(char *path)
       return;
    while (dir)
      {
-#ifdef DEBUG
+//#ifdef DEBUG
         fprintf(stderr, "\nChecking For %s...\n", dir);
-#endif
+//#endif
         if (ecore_file_exists(dir))
            check_for_files(strdup(dir));
 
@@ -50,8 +50,8 @@ check_for_dirs(char *path)
            break;
         dir = strtok(NULL, ":");
      }
-   if (dir)
-      free(dir);
+//   if (dir)
+//      free(dir);
 }
 
 void
