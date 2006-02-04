@@ -208,14 +208,6 @@ main(int argc, char **argv)
 				"between using tab labels along one\nedge"
 		},
 		{
-			"Notebook2",
-			__create_notebook2_test_window,
-			"ewl_notebook2_test.c",
-			"Provides a container whose children\n"
-			"are pages that can be switched\n"
-			"between using tab labels along one\nedge"
-		},
-		{
 			"Paned",
 		  	__create_paned_test_window,
 		  	"ewl_paned_test.c",

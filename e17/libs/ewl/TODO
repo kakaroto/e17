@@ -50,9 +50,6 @@ EWL BUGS
   then remove them. Should possibly add a flag to deactive this behaviour if
   the user wants complete control over their tab order.
 
-- ewl_container_child_count_get(EWL_CONTAINER(notebook)) is always returning
-  zero.
-
 - When we receive a mouse down on a widget we adjust the current position in
   the tab order to be the clicked widget (or the first non internal widget
   up the tree). This needs to be changed to check both !internal &&
