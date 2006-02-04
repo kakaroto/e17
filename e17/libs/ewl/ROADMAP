@@ -3,8 +3,6 @@ EWL ROADMAP
 
 0.0.5 
 -----
-- there are some sizing issues that have to be fixed mostly clipping 
-   related (eg, dialog test)
 - notebook API needs to be reworked
 - and either the table/grid gets finished or tree2 is done and is
    flexible enough to do that work

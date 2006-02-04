@@ -7,8 +7,6 @@ EWL BUGS
   test and the trough for the scrollbar. Should be flush.
     - The 'Password' test seems to make this gap grow.
 
-- Dialog text bounds are not considered when packing the window
-
 - Grid and Table layouts do not pack or resize correctly. The child show
   and resize callbacks do not set the preferred inner size, this is 
   necessary for correct initial size. Their logic is just plain wrong 
