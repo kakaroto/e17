@@ -364,6 +364,8 @@ ewl_notebook2_page_tab_widget_set(Ewl_Notebook2 *n, Ewl_Widget *page,
 	t = ewl_attach_notebook_data_get(page);
 	if (!t)
 	{
+		int idx = 0;
+
 		t = ewl_hbox_new();
 		ewl_widget_appearance_set(t, "tab");
 		ewl_attach_notebook_data_set(page, t);
@@ -373,9 +375,8 @@ ewl_notebook2_page_tab_widget_set(Ewl_Notebook2 *n, Ewl_Widget *page,
 		ewl_callback_append(t, EWL_CALLBACK_CLICKED,
 					ewl_notebook2_cb_tab_clicked, n);
 
-		/* XXX This has to insert into the position that the page is
-		 * in, not onto the end */
-		ewl_container_child_append(EWL_CONTAINER(n->body.tabbar), t);
+		idx = ewl_container_child_index_get(EWL_CONTAINER(n), page);
+		ewl_container_child_insert(EWL_CONTAINER(n->body.tabbar), t, idx);
 	}
 
 	/* if this is the current page set it's tab to selected */
@@ -517,9 +518,11 @@ ewl_notebook2_cb_child_remove(Ewl_Container *c, Ewl_Widget *w)
 	if (w == n->cur_page)
 	{
 		Ewl_Widget *page, *new_tab;
+		int count;
 
-		/* if we are before the beginning, subtract one from the index */
-		if (idx > 0) idx--;
+		/* make sure we aren't off the end of the list */
+		count = ewl_container_child_count_get(EWL_CONTAINER(n->body.tabbar));
+		if (idx >= count) idx = count - 1;
 
 		new_tab = ewl_container_child_get(
 				EWL_CONTAINER(n->body.tabbar), idx);

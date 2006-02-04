@@ -3,6 +3,8 @@
 static Ewl_Widget *nb2_button;
 static int count = 1;
 
+static Ewl_Widget *create_page(const char *name);
+
 static void
 __destroy_notebook2_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
@@ -72,16 +74,50 @@ notebook2_change_position(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 static void
 notebook2_append_page(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
-							void *data)
+						void *data __UNUSED__)
 {
-	printf("APPENDING TO %p\n", data);
+	Ewl_Widget *o2, *o, *vis, *n;
+	char buf[10];
+	int idx;
+
+	n = ewl_widget_name_find("notebook");
+
+	vis = ewl_notebook2_visible_page_get(EWL_NOTEBOOK2(n));
+	idx = ewl_container_child_index_get(EWL_CONTAINER(n), vis);
+
+	o2 = ewl_label_new();
+	snprintf(buf, sizeof(buf), "Page %d", count++);
+	ewl_label_text_set(EWL_LABEL(o2), buf);
+	ewl_widget_show(o2);
+
+	o = create_page(buf);
+	ewl_container_child_insert(EWL_CONTAINER(n), o, idx + 1);
+	ewl_notebook2_page_tab_widget_set(EWL_NOTEBOOK2(n), o, o2);
+	ewl_widget_show(o);
 }
 
 static void
 notebook2_prepend_page(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
-							void *data)
+						void *data __UNUSED__)
 {
-	printf("PREPENDING TO %p\n", data);
+	Ewl_Widget *n, *o2, *o, *vis;
+	char buf[10];
+	int idx;
+
+	n = ewl_widget_name_find("notebook");
+
+	vis = ewl_notebook2_visible_page_get(EWL_NOTEBOOK2(n));
+	idx = ewl_container_child_index_get(EWL_CONTAINER(n), vis);
+
+	o2 = ewl_label_new();
+	snprintf(buf, sizeof(buf), "Page %d", count++);
+	ewl_label_text_set(EWL_LABEL(o2), buf);
+	ewl_widget_show(o2);
+
+	o = create_page(buf);
+	ewl_container_child_insert(EWL_CONTAINER(n), o, idx);
+	ewl_notebook2_page_tab_widget_set(EWL_NOTEBOOK2(n), o, o2);
+	ewl_widget_show(o);
 }
 
 static void
@@ -180,19 +216,16 @@ create_main_page(void)
 }
 
 static Ewl_Widget *
-create_page(void)
+create_page(const char *name)
 {
 	Ewl_Widget *box, *box2, *o;
-	char buf[20];
-
-	snprintf(buf, sizeof(buf), "Page %d", count++);
 
 	box = ewl_vbox_new();
 	ewl_box_spacing_set(EWL_BOX(box), 10);
 	ewl_widget_show(box);
 
 	o = ewl_label_new();
-	ewl_label_text_set(EWL_LABEL(o), buf);
+	ewl_label_text_set(EWL_LABEL(o), name);
 	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
 	ewl_container_child_append(EWL_CONTAINER(box), o);
@@ -204,17 +237,17 @@ create_page(void)
 	ewl_widget_show(box2);
 
 	o = ewl_button_new();
-	ewl_button_label_set(EWL_BUTTON(o), "Append Page");
-	ewl_container_child_append(EWL_CONTAINER(box2), o);
-	ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
-				notebook2_append_page, box);
-	ewl_widget_show(o);
-
-	o = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(o), "Prepend Page");
 	ewl_container_child_append(EWL_CONTAINER(box2), o);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
 				notebook2_prepend_page, box);
+	ewl_widget_show(o);
+
+	o = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(o), "Append Page");
+	ewl_container_child_append(EWL_CONTAINER(box2), o);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
+				notebook2_append_page, box);
 	ewl_widget_show(o);
 
 	o = ewl_button_new();
@@ -233,7 +266,6 @@ __create_notebook2_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 {
 	Ewl_Widget *win, *box, *n, *o, *o2;
 	char buf[10];
-	int i;
 
 	nb2_button = w;
 
@@ -261,22 +293,36 @@ __create_notebook2_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ewl_widget_name_set(n, "notebook");
 	ewl_widget_show(n);
 
+	/* append 3 pages */
+	for (count = 1; count < 4; count++)
+	{
+		o2 = ewl_label_new();
+		snprintf(buf, sizeof(buf), "Page %d", count);
+		ewl_label_text_set(EWL_LABEL(o2), buf);
+		ewl_widget_show(o2);
+
+		o = create_page(buf);
+		ewl_container_child_append(EWL_CONTAINER(n), o);
+		ewl_notebook2_page_tab_widget_set(EWL_NOTEBOOK2(n), o, o2);
+		ewl_widget_show(o);
+	}
+
+	/* insert a page after the first */
+	o2 = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(o2), "Page 1.5");
+	ewl_widget_show(o2);
+
+	o = create_page("Page 1.5");
+	ewl_container_child_insert(EWL_CONTAINER(n), o, 1);
+	ewl_notebook2_page_tab_widget_set(EWL_NOTEBOOK2(n), o, o2);
+	ewl_widget_show(o);
+
+	/* prepend the main page */
 	o = create_main_page();
 	ewl_container_child_prepend(EWL_CONTAINER(n), o);
 	ewl_notebook2_page_tab_text_set(EWL_NOTEBOOK2(n), o, "Main");
 	ewl_widget_show(o);
 
-	for (i = 1; i < 4; i++)
-	{
-		o2 = ewl_label_new();
-		snprintf(buf, sizeof(buf), "Page %d", i);
-		ewl_label_text_set(EWL_LABEL(o2), buf);
-		ewl_widget_show(o2);
-
-		o = create_page();
-		ewl_container_child_append(EWL_CONTAINER(n), o);
-		ewl_notebook2_page_tab_widget_set(EWL_NOTEBOOK2(n), o, o2);
-		ewl_widget_show(o);
-	}
+	ewl_notebook2_visible_page_set(EWL_NOTEBOOK2(n), o);
 }
 

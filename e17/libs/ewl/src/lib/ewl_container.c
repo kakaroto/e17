@@ -245,6 +245,7 @@ ewl_container_child_insert_helper(Ewl_Container *pc, Ewl_Widget *child,
 	DCHECK_TYPE("pc", pc, EWL_CONTAINER_TYPE);
 	DCHECK_TYPE("child", child, EWL_WIDGET_TYPE);
 
+	/* already inserted */
 	if (pc == EWL_CONTAINER(child->parent))
 		DRETURN(DLEVEL_STABLE);
 
@@ -253,17 +254,26 @@ ewl_container_child_insert_helper(Ewl_Container *pc, Ewl_Widget *child,
 		DRETURN(DLEVEL_STABLE);
 	}
 
+	/* find the real container */
 	while (pc->redirect)
 		pc = pc->redirect;
 
+	/* find our insertion point */
 	ecore_list_goto_first(pc->children);
-	while ((cur = ecore_list_next(pc->children)))
+	while ((cur = ecore_list_current(pc->children)))
 	{
-		if (skip_internal && ewl_widget_internal_is(cur)) continue;
+		if (skip_internal && ewl_widget_internal_is(cur)) 
+		{
+			ecore_list_next(pc->children);
+			continue;
+		}
+
+		if (idx == index) break;
 
 		idx++;
-		if (idx == index) break;
+		ecore_list_next(pc->children);
 	}
+
 	ecore_list_insert(pc->children, child);
 	ewl_widget_parent_set(child, EWL_WIDGET(pc));
 	ewl_container_child_add_call(pc, child);
