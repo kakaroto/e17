@@ -175,5 +175,3 @@ AC_DEFUN([AC_C___ATTRIBUTE__],
   fi
   AC_MSG_RESULT($ac_cv___attribute__)
 ])
-
-AC_DEFUN([AM_GNU_GETTEXT_VERSION], [])
