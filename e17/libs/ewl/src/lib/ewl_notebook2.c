@@ -52,7 +52,7 @@ ewl_notebook2_init(Ewl_Notebook2 *n)
 	n->body.tabbar = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(n), n->body.tabbar);
 	ewl_object_fill_policy_set(EWL_OBJECT(n->body.tabbar), 
-				EWL_FLAG_FILL_HSHRINK);
+				EWL_FLAG_FILL_NONE);
 	ewl_object_alignment_set(EWL_OBJECT(n->body.tabbar), 
 						EWL_FLAG_ALIGN_CENTER);
 	ewl_widget_internal_set(n->body.tabbar, TRUE);
