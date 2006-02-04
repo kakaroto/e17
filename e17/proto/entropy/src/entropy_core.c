@@ -145,7 +145,9 @@ entropy_core* entropy_core_init() {
 			printf("Sending message to server!\n");
 			ecore_ipc_server_send(server, ENTROPY_IPC_EVENT_LAYOUT_NEW, 0, 0, 0, 0, NULL,0); 
 		}
-		printf("creating the IPC server failed! Entropy already running? FIXME we should launch another layout here\n");
+		/*printf("creating the IPC server failed! Entropy already running?
+		 * FIXME we should launch another layout here\n");
+		 */
 		ecore_main_loop_iterate();
 		exit(0);
 	}

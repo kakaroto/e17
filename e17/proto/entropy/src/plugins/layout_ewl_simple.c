@@ -12,7 +12,7 @@
 #define HEADER_CONFIG_MAX 2048
 
 static Ewl_Widget *win;
-static ewl_layout_count = 0;
+static int _ewl_layout_count = 0;
 
 int entropy_plugin_type_get ();
 char *entropy_plugin_identify ();
@@ -627,11 +627,13 @@ __destroy_main_window (Ewl_Widget * main_win, void *ev_data, void *user_data)
 {
   entropy_core *core = (entropy_core *) user_data;
   ewl_widget_destroy (main_win);
+  _ewl_layout_count--;
 
-
-  entropy_core_destroy (core);
-
-  exit (0);
+  if (_ewl_layout_count == 0)  {
+	  entropy_core_destroy (core);
+  	  /*TODO cleanup this layout's structure to avoid leaks*/
+	  exit (0); 
+  }
 }
 
 void
@@ -774,6 +776,8 @@ entropy_plugin_layout_create (entropy_core * core)
   entropy_gui_component_instance *layout;
   entropy_layout_gui *gui;
   char *tmp = NULL;
+
+  _ewl_layout_count++;
 
 
   /*EWL Stuff ----------------- */
