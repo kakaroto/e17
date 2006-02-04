@@ -20,17 +20,18 @@ typedef struct Ewl_Grid_Info Ewl_Grid_Info;
 
 struct Ewl_Grid_Info
 {
-	int             override;
-	int             size;
-	Ewl_Widget     *max;
-	Ecore_List       *cross;
+	int		 override;
+	int		 size;
+	Ewl_Widget	*max;
+	Ecore_List	*cross;
 };
 
-typedef struct _ewl_grid Ewl_Grid;
+typedef struct Ewl_Grid Ewl_Grid;
 
 #define EWL_GRID(grid) ((Ewl_Grid *)grid)
 
-struct _ewl_grid {
+struct Ewl_Grid 
+{
 	Ewl_Container   container;
 
 	/*
@@ -55,18 +56,18 @@ struct _ewl_grid {
 	/*
 	 * list of old children after a reset call
 	 */
-	Ecore_List       *rchildren;
+	Ecore_List     *rchildren;
 };
 
 
-typedef struct _ewl_grid_child Ewl_Grid_Child;
-struct _ewl_grid_child
+typedef struct Ewl_Grid_Child Ewl_Grid_Child;
+struct Ewl_Grid_Child
 {
-	int             start_col;
-	int             start_row;
+	int start_col;
+	int start_row;
 
-	int             end_col;
-	int             end_row;
+	int end_col;
+	int end_row;
 };
 
 Ewl_Widget     *ewl_grid_new(int cols, int rows);
@@ -104,4 +105,5 @@ void ewl_grid_child_resize_cb(Ewl_Container *p, Ewl_Widget *child,
  * @}
  */
 
-#endif				/* __EWL_GRID_H__ */
+#endif /* __EWL_GRID_H__ */
+

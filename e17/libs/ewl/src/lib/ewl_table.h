@@ -46,10 +46,10 @@ struct Ewl_Table
         unsigned int    homogeneous_v;   /** Vertical homogeneous flag */ 
 
 	struct {
-		int             start_r;
-		int             start_c;
-		int             end_r;
-		int             end_c;
+		int start_r;
+		int start_c;
+		int end_r;
+		int end_c;
 	} selected;
 
 };
