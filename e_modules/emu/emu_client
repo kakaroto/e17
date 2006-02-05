@@ -36,6 +36,7 @@ while true; do
   echo "emu Emu client|border"
   echo "Lock the screen|xscreensaver-command -lock|enlightenment/desktops"
   echo "Go beep|/usr/bin/play /opt/kde3/share/sounds/KDE_Beep_ShortBeep.wav"
+  echo -e "Test subs|echo \"%I %T %% %p %s %d\""
   echo "Properties|Properties"
   echo "end"
 

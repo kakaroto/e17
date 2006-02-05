@@ -995,8 +995,8 @@ _emu_menu_cb_action(void *data, E_Menu *m, E_Menu_Item *mi)
         char *action;
 
         exe = item->data;
-        action = item->action;
-        if (item->easy_menu->category_data)
+        action = strdup(item->action);
+        if ((action) && (item->easy_menu->category_data))
           {
              /* Check the category, if its border or fileman, do some % subs on action. */
              if ((item->easy_menu->category) && (strncmp(item->easy_menu->category, "border", 6) == 0))
@@ -1006,12 +1006,55 @@ _emu_menu_cb_action(void *data, E_Menu *m, E_Menu_Item *mi)
                   bd = item->easy_menu->category_data;
                   if (strcmp(action, "Properties") == 0)
                     {
-                       action = NULL;
+                       E_FREE(action);
                        border_props_dialog(m->zone->container, bd);
                     }
                   else
                     {
+		       char *buffer = NULL, *c;
+		       int length, i = 0;
+
                        /* Do some % subs on action. */
+		       length = (strlen(action) * 2) + 1;
+		       buffer = realloc(buffer, length);
+		       for (c = action; (*c) != '\0'; c++)
+		          {
+			     if ((*c) == '%')
+			        {
+                                   char *sub;
+
+				   c++;
+                                   sub = border_props_substitute(bd, 
+				                                 (*c));  // Fucked if I know why the compiler bitchs about this.
+				   if (sub)
+				      {
+				         int len;
+
+                                         len = strlen(sub);
+				         if ((i + len + 1) > length)
+				            {
+				               length *= 2;
+					       length += len + 1;
+		                               buffer = realloc(buffer, length);
+				            }
+			                 memcpy(&buffer[i], sub, len + 1);
+					 i += len;
+					 continue;
+				      }
+				      if ((*c) == '\0')
+				         break;
+				}
+				if (i > length)
+				   {
+				      length *= 2;
+		                      buffer = realloc(buffer, length);
+				   }
+			        buffer[i++] = (*c);
+			  }
+		       buffer[i++] = '\0';
+                       printf("\n_emu_menu_cb_action() -> \n%s\nbecame\n%s\n\n", action, buffer);
+                       E_FREE(action);
+		       action = buffer;
                     }
                }
              else if ((item->easy_menu->category) && (strncmp(item->easy_menu->category, "fileman/action", 14) == 0))
@@ -1029,10 +1072,10 @@ _emu_menu_cb_action(void *data, E_Menu *m, E_Menu_Item *mi)
           }
         if ((action) && (action[0] != '\0'))
           {
-             printf("_emu_menu_cb_action() -> %s\n", action);
              ecore_exe_send(exe, action, strlen(action));
              ecore_exe_send(exe, "\n", 1);
           }
+        E_FREE(action);
      }
 }
 

@@ -59,6 +59,7 @@ border_props_dialog(E_Container *con, E_Border * bd)
 EAPI char *
 border_props_substitute(E_Border * bd, char type)
 {
+   int found = 1;
    char buf[32];
    char *result = NULL;
 
@@ -119,10 +120,16 @@ border_props_substitute(E_Border * bd, char type)
      case 'z':
         result = bd->zone->name;
         break;
+     default :
+        found = 0;
+	break;
      }
    if (!result)
       result = buf;
-   return strdup(result);
+   if (found)
+      return strdup(result);
+   else
+      return NULL;
 }
 
 static void
