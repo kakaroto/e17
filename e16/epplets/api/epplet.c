@@ -1,6 +1,7 @@
 #include "config.h"
 #include "epplet.h"
 #include <errno.h>
+#include <fcntl.h>
 #include <sys/utsname.h>
 #include <signal.h>
 #include <sys/wait.h>
@@ -5495,8 +5496,9 @@ static void
 Epplet_find_instance(char *name)
 {
    struct stat         st;
+   struct flock        fl;
    char                s[1024], *tmpdir;
-   int                 i = 0, fd;
+   int                 i, fd, err, exists, locked;
    pid_t               pid;
 
    /* Find E dir */
@@ -5552,51 +5554,76 @@ Epplet_find_instance(char *name)
 
    /* Pick our instance number.  255 is the max to avoid infinite loops, which could be caused by
     * lack of insert permissions in the config directory. */
+   fl.l_type = F_WRLCK;
+   fl.l_whence = SEEK_SET;
+   fl.l_start = fl.l_len = 0;
+   locked = 0;
+
    for (i = 1; i < 256; i++)
      {
 	Esnprintf(s, sizeof(s), "%s/.lock_%i", conf_dir, i);
-	if (stat(s, &st) >= 0)
+
+	exists = stat(s, &st) == 0;
+
+	if (exists)
+	   fd = open(s, (O_RDWR | O_CREAT), 0600);
+	else
+	   fd = open(s, (O_WRONLY | O_EXCL | O_CREAT), 0600);
+	if (fd < 0)
+	   continue;
+	for (;;)
 	  {
-	     /* Lock file exists.  Read from it. */
-	     if ((fd = open(s, O_RDONLY)) < 0)
-	       {
-		  /* Either it's there and we can't read it, or it's gone now.  Next! */
-		  fprintf(stderr, "Unable to read lock file %s -- %s\n", s,
-			  strerror(errno));
-		  continue;
-	       }
-	     if ((read(fd, &pid, sizeof(pid_t))) < ((int)sizeof(pid_t)))
-	       {
-		  /* We didn't get enough bytes.  Next! */
-		  fprintf(stderr,
+	     err = fcntl(fd, F_SETLK, &fl);
+	     if (err != EINTR)
+	        break;
+	  }
+	if (err == 0)
+	  {
+	     /* Locking succeeded, file is open for writing */
+	     locked = 1;
+	     break;
+	  }
+
+	if (!exists)
+	  {
+	     /* Locking failed, but file was successfully created with O_EXCL */
+	     break;
+	  }
+
+	/* Check pid */
+	if ((read(fd, &pid, sizeof(pid_t))) < ((int)sizeof(pid_t)))
+	  {
+	     /* We didn't get enough bytes.  Next! */
+	     fprintf(stderr,
 			  "Read attempt for lock file %s failed -- %s\n", s,
 			  strerror(errno));
-		  continue;
-	       }
 	     close(fd);
-	     if (pid <= 0)
-	       {
-		  /* We got a bogus process ID.  Next! */
-		  fprintf(stderr,
-			  "Lock file %s contained a bogus process ID (%lu)\n",
-			  s, (unsigned long)pid);
-		  continue;
-	       }
-	     if ((kill(pid, 0) == 0) || (errno != ESRCH))
-	       {
-		  /* The process exists.  Next! */
-		  continue;
-	       }
-	     /* Okay, looks like a stale lockfile at this point.  Remove it. */
-	     if ((unlink(s)) != 0)
-	       {
-		  /* Removal failed.  Next! */
-		  fprintf(stderr,
-			  "Unable to remove stale lock file %s -- %s.  Please remove it manually.\n",
-			  s, strerror(errno));
-		  continue;
-	       }
+	     continue;
 	  }
+	close(fd);
+	if (pid <= 0)
+	  {
+	     /* We got a bogus process ID.  Next! */
+	     fprintf(stderr,
+		     "Lock file %s contained a bogus process ID (%lu)\n",
+		     s, (unsigned long)pid);
+	     continue;
+	  }
+	if ((kill(pid, 0) == 0) || (errno != ESRCH))
+	  {
+	     /* The process exists.  Next! */
+	     continue;
+	  }
+	/* Okay, looks like a stale lockfile at this point.  Remove it. */
+	if ((unlink(s)) != 0)
+	  {
+	     /* Removal failed.  Next! */
+	     fprintf(stderr,
+		     "Unable to remove stale lock file %s -- %s.  Please remove it manually.\n",
+		     s, strerror(errno));
+	     continue;
+	  }
+
 	srand(getpid());
 	usleep((rand() & 0xfffff));
 	if ((fd = open(s, (O_WRONLY | O_EXCL | O_CREAT), 0600)) < 0)
@@ -5604,16 +5631,20 @@ Epplet_find_instance(char *name)
 	     /* Apparently another process just came in under us and created it.  Next! */
 	     continue;
 	  }
-	pid = getpid();
-	write(fd, &pid, sizeof(pid_t));		/* Not sure how best to deal with write errors here */
-	close(fd);
-	/* If we made it here, we've just written the lock file and saved it.  We have our instance
+	/* If we made it here, we've just created the lock file.  We have our instance
 	 * number, so exit the loop. */
 	break;
      }
 
-   /* Anything this high is probably an error. */
-   if (i >= 255)
+   if (i < 256)
+     {
+	pid = getpid();
+	write(fd, &pid, sizeof(pid_t));		/* Not sure how best to deal with write errors here */
+	/* If locked do not close fd, otherwise lock is lost */
+	if (!locked)
+	   close(fd);
+     }
+   else
      {
 	i = 1;
      }
