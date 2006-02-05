@@ -1,6 +1,6 @@
 AC_INIT(etheme-ShinyMetal.spec)
 
-AM_INIT_AUTOMAKE(e16-theme-ShinyMetal, 0.16.8-0.04)
+AM_INIT_AUTOMAKE(e16-theme-ShinyMetal, 0.16.8)
 AM_MAINTAINER_MODE
 
 THEME=ShinyMetal

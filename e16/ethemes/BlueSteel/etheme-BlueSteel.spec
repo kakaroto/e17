@@ -1,5 +1,5 @@
-%define revision 0.03
-%define rev_name -%{revision}
+%define revision 1
+%define rev_name %{nil}
 
 Summary:	Enlightenment theme: BlueSteel
 Name:		e16-theme-BlueSteel
