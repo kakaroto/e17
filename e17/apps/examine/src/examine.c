@@ -429,8 +429,7 @@ render_ewl(void)
   ewl_widget_show(main_box);
 
   notebook = ewl_notebook_new();
-  ewl_notebook_tabs_position_set(EWL_NOTEBOOK(notebook), EWL_POSITION_TOP);
-  ewl_notebook_tabs_alignment_set(EWL_NOTEBOOK(notebook), EWL_FLAG_ALIGN_LEFT);
+  ewl_notebook_tabbar_alignment_set(EWL_NOTEBOOK(notebook), EWL_FLAG_ALIGN_LEFT);
   ewl_object_fill_policy_set(EWL_OBJECT(notebook), EWL_FLAG_FILL_ALL);
   ewl_container_child_append(EWL_CONTAINER(main_box), notebook);
   ewl_widget_show(notebook);
@@ -465,7 +464,7 @@ render_ewl(void)
 Ewl_Widget     *
 add_tab(char *name)
 {
-  Ewl_Widget     *button, *scrollpane, *pane;
+  Ewl_Widget     *scrollpane, *pane;
   examine_panel  *new_panel;
 
   new_panel = panels;
@@ -475,11 +474,9 @@ add_tab(char *name)
     new_panel = new_panel->next;
   }
 
-  button = ewl_text_new();
-  ewl_text_text_set(EWL_TEXT(button), name);
-  ewl_widget_show(button);
-
   scrollpane = ewl_scrollpane_new();
+  ewl_container_child_append(EWL_CONTAINER(notebook), scrollpane);
+  ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(notebook), scrollpane, name);
   ewl_object_alignment_set(EWL_OBJECT(scrollpane), EWL_FLAG_ALIGN_TOP);
   ewl_widget_show(scrollpane);
 
@@ -490,7 +487,6 @@ add_tab(char *name)
   ewl_widget_show(pane);
 
   ewl_container_child_append(EWL_CONTAINER(scrollpane), pane);
-  ewl_notebook_page_prepend(EWL_NOTEBOOK(notebook), button, scrollpane);
 
   new_panel = malloc(sizeof(examine_panel));
   new_panel->name = strdup(name);
