@@ -21,17 +21,13 @@ struct _Cfg_File_Data
 /* Protos */
 static void *_create_data(E_Config_Dialog *cfd);
 static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
-static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas,
-                                          E_Config_Dialog_Data *cfdata);
-static int _basic_apply_data(E_Config_Dialog *cfd,
-                             E_Config_Dialog_Data *cfdata);
-static Evas_Object *_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas,
-                                             E_Config_Dialog_Data *cfdata);
-static int _advanced_apply_data(E_Config_Dialog *cfd,
-                                E_Config_Dialog_Data *cfdata);
+static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
+static int _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static Evas_Object *_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
+static int _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 
 void
-_config_emu_module(E_Container *con, Emu * emu)
+_config_emu_module(E_Container *con, Emu *emu)
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
@@ -52,7 +48,7 @@ _config_emu_module(E_Container *con, Emu * emu)
 }
 
 static void
-_fill_data(Emu * emu, E_Config_Dialog_Data *cfdata)
+_fill_data(Emu *emu, E_Config_Dialog_Data *cfdata)
 {
    cfdata->autofit = (emu->conf->width == EMU_WIDTH_AUTO);
    cfdata->follower = emu->conf->follower;
@@ -86,8 +82,7 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 }
 
 static Evas_Object *
-_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas,
-                      E_Config_Dialog_Data *cfdata)
+_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
    Evas_Object *o, *ob;
    Emu *emu;
@@ -143,8 +138,7 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 }
 
 static Evas_Object *
-_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas,
-                         E_Config_Dialog_Data *cfdata)
+_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
    Evas_Object *o, *of, *ob;
    Emu *emu;
@@ -159,14 +153,12 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas,
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_label_add(evas, _("Follow Speed"));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_slider_add(evas, 1, 0, _("%1.2f px/s"), 0.0, 1.0, 0.01, 0,
-                            &(cfdata->follow_speed), NULL, 200);
+   ob = e_widget_slider_add(evas, 1, 0, _("%1.2f px/s"), 0.0, 1.0, 0.01, 0, &(cfdata->follow_speed), NULL, 200);
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
    of = e_widget_framelist_add(evas, _("Icon Size"), 0);
-   ob = e_widget_slider_add(evas, 1, 0, _("%3.0f pixels"), 8.0, 128.0, 1.0, 0,
-                            NULL, &(cfdata->iconsize), 200);
+   ob = e_widget_slider_add(evas, 1, 0, _("%3.0f pixels"), 8.0, 128.0, 1.0, 0, NULL, &(cfdata->iconsize), 200);
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
@@ -175,8 +167,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas,
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_label_add(evas, _("Autoscroll Speed:"));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_slider_add(evas, 1, 0, _("%1.2f px/s"), 0.0, 1.0, 0.01, 0,
-                            &(cfdata->autoscroll_speed), NULL, 200);
+   ob = e_widget_slider_add(evas, 1, 0, _("%1.2f px/s"), 0.0, 1.0, 0.01, 0, &(cfdata->autoscroll_speed), NULL, 200);
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 

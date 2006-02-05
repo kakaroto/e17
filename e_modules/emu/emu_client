@@ -33,6 +33,11 @@ while true; do
   echo "  Item2 Sub1 Sub1|action5"
   echo "=*"
   echo "end"
+  echo "emu Emu client|border"
+  echo "Lock the screen|xscreensaver-command -lock|enlightenment/desktops"
+  echo "Go beep|/usr/bin/play /opt/kde3/share/sounds/KDE_Beep_ShortBeep.wav"
+  echo "Properties|Properties"
+  echo "end"
 
   read -s command >/dev/null 2>&1
   ( $command ) >/dev/null 2>&1

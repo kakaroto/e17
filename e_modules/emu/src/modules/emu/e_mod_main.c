@@ -28,30 +28,22 @@ static char *_commands[] = {
 };
 
 /* E_Gadget interface. */
-static void _emu_face_init(void *data, E_Gadget_Face * face);
-static void _emu_face_free(void *data, E_Gadget_Face * face);
-static void _emu_face_change(void *data, E_Gadget_Face * face,
-                             E_Gadman_Client *gmc, E_Gadman_Change change);
-static void _emu_face_menu_init(void *data, E_Gadget_Face * face);
+static void _emu_face_init(void *data, E_Gadget_Face *face);
+static void _emu_face_free(void *data, E_Gadget_Face *face);
+static void _emu_face_change(void *data, E_Gadget_Face *face, E_Gadman_Client *gmc, E_Gadman_Change change);
+static void _emu_face_menu_init(void *data, E_Gadget_Face *face);
 
 /* Parsers. */
-static void _emu_parse_command(Emu_Face * emu_face, int command,
-                               char *name, int start, int end);
-static void _emu_parse_dropzone(Emu_Face * emu_face, char *name,
-                                int start, int end);
-static void _emu_parse_icon(Emu_Face * emu_face, char *name, int start,
-                            int end);
-static void _emu_parse_dialog(Emu_Face * emu_face, char *name,
-                              int start, int end);
-static void _emu_parse_text(Emu_Face * emu_face, char *name, int start,
-                            int end);
-static void _emu_parse_graph(Emu_Face * emu_face, char *name, int start,
-                             int end);
-static void _emu_parse_menu(Emu_Face * emu_face, char *name, int start,
-                            int end);
+static void _emu_parse_command(Emu_Face *emu_face, int command, char *name, int start, int end);
+static void _emu_parse_dropzone(Emu_Face *emu_face, char *name, int start, int end);
+static void _emu_parse_icon(Emu_Face *emu_face, char *name, int start, int end);
+static void _emu_parse_dialog(Emu_Face *emu_face, char *name, int start, int end);
+static void _emu_parse_text(Emu_Face *emu_face, char *name, int start, int end);
+static void _emu_parse_graph(Emu_Face *emu_face, char *name, int start, int end);
+static void _emu_parse_menu(Emu_Face *emu_face, char *name, int start, int end);
 
 /* Support functions. */
-static void _emu_add_face_menu(E_Gadget_Face * face, E_Menu *menu);
+static void _emu_add_face_menu(E_Gadget_Face *face, E_Menu *menu);
 
 /* Ecore_Exe callback functions. */
 static int _emu_cb_exe_add(void *data, int type, void *ev);
@@ -59,20 +51,17 @@ static int _emu_cb_exe_del(void *data, int type, void *ev);
 static int _emu_cb_exe_data(void *data, int type, void *ev);
 
 /* Menu callback functions. */
-static void _emu_face_cb_mouse_down(void *data, Evas *e,
-                                    Evas_Object *obj, void *event_info);
+static void _emu_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _emu_menu_cb_post_deactivate(void *data, E_Menu *m);
 
 static void _emu_menu_cb_action(void *data, E_Menu *m, E_Menu_Item *mi);
-static Evas_Bool _emu_menus_hash_cb_free(Evas_Hash * hash, const char *key,
-                                         void *data, void *fdata);
+static Evas_Bool _emu_menus_hash_cb_free(Evas_Hash *hash, const char *key, void *data, void *fdata);
 
 static void _emu_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 
 /* This is temporary until there is support in E_Gadget for third party modules. */
 void
-emu_gadget_face_theme_set(E_Gadget_Face * face, char *category, char *file,
-                          char *group)
+emu_gadget_face_theme_set(E_Gadget_Face *face, char *category, char *file, char *group)
 {
    Evas_Object *o;
    Evas_Coord x, y, w, h;
@@ -160,8 +149,7 @@ e_modapi_about(E_Module *m)
                         _
                         ("Experimental generic scriptable module for E17.<br><br>"
                          "Keep an eye out for the emu's.<br>"
-                         "Don't even try to run away, they're fast buggers.<br>"
-                         "Hiding in your dunny doesn't help, they can kick dunnies down."));
+                         "Don't even try to run away, they're fast buggers.<br>" "Hiding in your dunny doesn't help, they can kick dunnies down."));
    return 1;
 }
 
@@ -197,9 +185,7 @@ e_modapi_init(E_Module *m)
         emu->api.data = emu;
         emu->gad = e_gadget_new(&emu->api);
 
-        emu->del =
-           ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _emu_cb_exe_del,
-                                   emu->gad);
+        emu->del = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _emu_cb_exe_del, emu->gad);
 
         if ((emu->gad == NULL) || (emu->del == NULL))
           {
@@ -286,7 +272,7 @@ e_modapi_shutdown(E_Module *m)
  * @ingroup Emu_Module_Gadget_Group
  */
 static void
-_emu_face_init(void *data, E_Gadget_Face * face)
+_emu_face_init(void *data, E_Gadget_Face *face)
 {
    Emu *emu;
    Emu_Face *emu_face;
@@ -294,6 +280,7 @@ _emu_face_init(void *data, E_Gadget_Face * face)
    emu = data;
 
    emu_face = E_NEW(Emu_Face, 1);
+
    if (emu_face)
      {
         face->data = emu_face;
@@ -305,29 +292,19 @@ _emu_face_init(void *data, E_Gadget_Face * face)
         emu_face->command = evas_stringshare_add("emu_client");
         if (emu_face->command)
           {
-             emu_face->add =
-                ecore_event_handler_add(ECORE_EXE_EVENT_ADD, _emu_cb_exe_add,
-                                        emu_face);
-             emu_face->read =
-                ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _emu_cb_exe_data,
-                                        emu_face);
-             emu_face->exe =
-                ecore_exe_pipe_run(emu_face->command,
-                                   ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_WRITE |
-                                   ECORE_EXE_PIPE_READ_LINE_BUFFERED
-                                   /*| ECORE_EXE_RESPAWN */ , emu_face);
+             emu_face->add = ecore_event_handler_add(ECORE_EXE_EVENT_ADD, _emu_cb_exe_add, emu_face);
+             emu_face->read = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _emu_cb_exe_data, emu_face);
+             emu_face->exe = ecore_exe_pipe_run(emu_face->command, ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_WRITE | ECORE_EXE_PIPE_READ_LINE_BUFFERED
+                                                /*| ECORE_EXE_RESPAWN */ , emu_face);
              if (!emu_face->exe)
-                e_module_dialog_show(_("Enlightenment Emu Module - error"),
-                                     _("There is no emu."));
+                e_module_dialog_show(_("Enlightenment Emu Module - error"), _("There is no emu."));
           }
      }
 
    if (_emu_module_edje)
-      emu_gadget_face_theme_set(face, "base/theme/modules/emu",
-                                (char *)_emu_module_edje, "emu/main");
+      emu_gadget_face_theme_set(face, "base/theme/modules/emu", (char *)_emu_module_edje, "emu/main");
 
-   evas_object_event_callback_add(face->event_obj, EVAS_CALLBACK_MOUSE_DOWN,
-                                  _emu_face_cb_mouse_down, emu_face);
+   evas_object_event_callback_add(face->event_obj, EVAS_CALLBACK_MOUSE_DOWN, _emu_face_cb_mouse_down, emu_face);
 }
 
 /**
@@ -340,7 +317,7 @@ _emu_face_init(void *data, E_Gadget_Face * face)
  * @ingroup Emu_Module_Gadget_Group
  */
 static void
-_emu_face_menu_init(void *data, E_Gadget_Face * face)
+_emu_face_menu_init(void *data, E_Gadget_Face *face)
 {
    _emu_add_face_menu(face, face->menu);
 }
@@ -357,8 +334,7 @@ _emu_face_menu_init(void *data, E_Gadget_Face * face)
  * @ingroup Emu_Module_Gadget_Group
  */
 static void
-_emu_face_change(void *data, E_Gadget_Face * face, E_Gadman_Client *gmc,
-                 E_Gadman_Change change)
+_emu_face_change(void *data, E_Gadget_Face *face, E_Gadman_Client *gmc, E_Gadman_Change change)
 {
    printf("change face!\n");
 }
@@ -373,7 +349,7 @@ _emu_face_change(void *data, E_Gadget_Face * face, E_Gadman_Client *gmc,
  * @ingroup Emu_Module_Gadget_Group
  */
 static void
-_emu_face_free(void *data, E_Gadget_Face * face)
+_emu_face_free(void *data, E_Gadget_Face *face)
 {
    Emu *emu;
    Emu_Face *emu_face;
@@ -422,8 +398,7 @@ _emu_face_free(void *data, E_Gadget_Face * face)
  * @ingroup Emu_Module_Parser_Group
  */
 static void
-_emu_parse_command(Emu_Face * emu_face, int command, char *name, int start,
-                   int end)
+_emu_parse_command(Emu_Face *emu_face, int command, char *name, int start, int end)
 {
    switch (command)
      {
@@ -462,7 +437,7 @@ _emu_parse_command(Emu_Face * emu_face, int command, char *name, int start,
  * @ingroup Emu_Module_Parser_Group
  */
 static void
-_emu_parse_dropzone(Emu_Face * emu_face, char *name, int start, int end)
+_emu_parse_dropzone(Emu_Face *emu_face, char *name, int start, int end)
 {
    int i;
 
@@ -488,7 +463,7 @@ _emu_parse_dropzone(Emu_Face * emu_face, char *name, int start, int end)
  * @ingroup Emu_Module_Parser_Group
  */
 static void
-_emu_parse_icon(Emu_Face * emu_face, char *name, int start, int end)
+_emu_parse_icon(Emu_Face *emu_face, char *name, int start, int end)
 {
    int i;
 
@@ -514,7 +489,7 @@ _emu_parse_icon(Emu_Face * emu_face, char *name, int start, int end)
  * @ingroup Emu_Module_Parser_Group
  */
 static void
-_emu_parse_dialog(Emu_Face * emu_face, char *name, int start, int end)
+_emu_parse_dialog(Emu_Face *emu_face, char *name, int start, int end)
 {
    int i;
 
@@ -540,7 +515,7 @@ _emu_parse_dialog(Emu_Face * emu_face, char *name, int start, int end)
  * @ingroup Emu_Module_Parser_Group
  */
 static void
-_emu_parse_text(Emu_Face * emu_face, char *name, int start, int end)
+_emu_parse_text(Emu_Face *emu_face, char *name, int start, int end)
 {
    int i;
 
@@ -566,7 +541,7 @@ _emu_parse_text(Emu_Face * emu_face, char *name, int start, int end)
  * @ingroup Emu_Module_Parser_Group
  */
 static void
-_emu_parse_graph(Emu_Face * emu_face, char *name, int start, int end)
+_emu_parse_graph(Emu_Face *emu_face, char *name, int start, int end)
 {
    int i;
 
@@ -594,15 +569,13 @@ _emu_parse_graph(Emu_Face * emu_face, char *name, int start, int end)
  * @ingroup Emu_Module_Parser_Group
  */
 static void
-_emu_parse_menu(Emu_Face * emu_face, char *name, int start, int end)
+_emu_parse_menu(Emu_Face *emu_face, char *name, int start, int end)
 {
    char *category = NULL;
    int length;
 
    /* Calculate the length of the menu data. */
-   length =
-      (emu_face->lines[end].line + emu_face->lines[end].size) -
-      emu_face->lines[start].line;
+   length = (emu_face->lines[end].line + emu_face->lines[end].size) - emu_face->lines[start].line;
 
    if (length > 0)
      {
@@ -622,9 +595,7 @@ _emu_parse_menu(Emu_Face * emu_face, char *name, int start, int end)
           }
 
         /* Turn the command data into a menu. */
-        menu =
-           easy_menu_add_menus(name, category, emu_face->lines[start].line,
-                               length, _emu_menu_cb_action, emu_face->exe);
+        menu = easy_menu_add_menus(name, category, emu_face->lines[start].line, length, _emu_menu_cb_action, emu_face->exe);
         if (menu)
           {
              Easy_Menu *old_menu;
@@ -633,14 +604,12 @@ _emu_parse_menu(Emu_Face * emu_face, char *name, int start, int end)
              old_menu = evas_hash_find(emu_face->menus, menu->category);
              if (old_menu)
                {                /* Clean up the old one. */
-                  emu_face->menus =
-                     evas_hash_del(emu_face->menus, menu->category, old_menu);
+                  emu_face->menus = evas_hash_del(emu_face->menus, menu->category, old_menu);
                   emu_face->menus = evas_hash_del(emu_face->menus, NULL, old_menu);     /* Just to be on the safe side. */
                   e_object_del(E_OBJECT(old_menu->menu->menu));
                }
              /* evas_hash_direct_add is used because we allocate the key ourselves and don't deallocate it until after removing it. */
-             emu_face->menus =
-                evas_hash_direct_add(emu_face->menus, menu->category, menu);
+             emu_face->menus = evas_hash_direct_add(emu_face->menus, menu->category, menu);
           }
      }
 }
@@ -661,7 +630,7 @@ _emu_parse_menu(Emu_Face * emu_face, char *name, int start, int end)
  * @ingroup Emu_Module_Support_Group
  */
 static void
-_emu_add_face_menu(E_Gadget_Face * face, E_Menu *menu)
+_emu_add_face_menu(E_Gadget_Face *face, E_Menu *menu)
 {
    E_Menu_Item *mi;
 
@@ -794,8 +763,7 @@ _emu_cb_exe_del(void *data, int type, void *ev)
 
              face = l->data;
              emu_face = face->data;
-             if ((emu_face->exe == event->exe)
-                 && (ecore_exe_data_get(event->exe) == emu_face))
+             if ((emu_face->exe == event->exe) && (ecore_exe_data_get(event->exe) == emu_face))
                {                /* This is the event we are interested in. */
                   emu_face->exe = NULL;
 
@@ -827,8 +795,7 @@ _emu_cb_exe_data(void *data, int type, void *ev)
 
    event = ev;
    emu_face = data;
-   if ((emu_face->exe == event->exe)
-       && (ecore_exe_data_get(event->exe) == emu_face))
+   if ((emu_face->exe == event->exe) && (ecore_exe_data_get(event->exe) == emu_face))
      {                          /* This is the event we are interested in. */
         char *data;
 
@@ -845,15 +812,11 @@ _emu_cb_exe_data(void *data, int type, void *ev)
 
              /* Find out how many lines there are and make room for the new lines. */
              if (emu_face->lines)
-                for (old_size = 0; emu_face->lines[old_size].line != NULL;
-                     old_size++)
+                for (old_size = 0; emu_face->lines[old_size].line != NULL; old_size++)
                    ;
              for (new_size = 0; event->lines[new_size].line != NULL; new_size++)
                 ;
-             emu_face->lines =
-                realloc(emu_face->lines,
-                        (old_size + new_size +
-                         1) * sizeof(Ecore_Exe_Event_Data_Line));
+             emu_face->lines = realloc(emu_face->lines, (old_size + new_size + 1) * sizeof(Ecore_Exe_Event_Data_Line));
              if (emu_face->lines)
                {
                   int i;
@@ -882,14 +845,11 @@ _emu_cb_exe_data(void *data, int type, void *ev)
                          {
                             for (j = 0; _commands[j][0] != '\0'; j++)
                               {
-                                 if (strncasecmp
-                                     (emu_face->lines[i].line, _commands[j],
-                                      strlen(_commands[j])) == 0)
+                                 if (strncasecmp(emu_face->lines[i].line, _commands[j], strlen(_commands[j])) == 0)
                                    {    /* Found the beginning of a command. */
                                       unsigned char *s;
 
-                                      s = &(emu_face->lines[i].
-                                            line[strlen(_commands[j])]);
+                                      s = &(emu_face->lines[i].line[strlen(_commands[j])]);
                                       if ((s[0] == '\0') || isspace(s[0]))
                                         {       /* Double check that it wasn't part of a word. */
                                            if (isspace(s[0]))
@@ -906,8 +866,7 @@ _emu_cb_exe_data(void *data, int type, void *ev)
                             if (strcasecmp(emu_face->lines[i].line, "end") == 0)
                               { /* Found a command. */
                                  if ((i - old_size) > 1)        /* Ignore this if there is no data. */
-                                    _emu_parse_command(emu_face, j / 2, name,
-                                                       old_size + 1, i - 1);
+                                    _emu_parse_command(emu_face, j / 2, name, old_size + 1, i - 1);
                                  looking = TRUE;
                                  name = NULL;
                                  old_size = i;
@@ -922,17 +881,14 @@ _emu_cb_exe_data(void *data, int type, void *ev)
                        /* Remave old data. */
                        for (i = 0; i < old_size; i++)
                           new_size += emu_face->lines[i].size + 1;
-                       memmove(emu_face->data, &data[new_size],
-                               emu_face->size - new_size);
+                       memmove(emu_face->data, &data[new_size], emu_face->size - new_size);
                        emu_face->size -= new_size;
                        /* Adjust lines accordingly. */
                        new_size = 0;
                        for (i = old_size; new_size < emu_face->size; i++)
                          {
-                            emu_face->lines[i - old_size].line =
-                               &data[new_size];
-                            emu_face->lines[i - old_size].size =
-                               emu_face->lines[i].size;
+                            emu_face->lines[i - old_size].line = &data[new_size];
+                            emu_face->lines[i - old_size].size = emu_face->lines[i].size;
                             new_size += emu_face->lines[i].size + 1;
                          }
                        emu_face->lines[i - old_size].line = NULL;
@@ -983,9 +939,7 @@ _emu_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
    if ((ev->button == 3) && emu_face->face->menu)
      {                          /* Right clirk configuration menu. */
         e_menu_activate_mouse(emu_face->face->menu,
-                              e_zone_current_get(emu_face->face->con),
-                              ev->output.x, ev->output.y, 1, 1,
-                              E_MENU_POP_DIRECTION_AUTO, ev->timestamp);
+                              e_zone_current_get(emu_face->face->con), ev->output.x, ev->output.y, 1, 1, E_MENU_POP_DIRECTION_AUTO, ev->timestamp);
         e_util_container_fake_mouse_up_all_later(emu_face->face->con);
      }
    else if (ev->button == 1)
@@ -996,13 +950,9 @@ _emu_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
         menu = evas_hash_find(emu_face->menus, "");
         if (menu && menu->valid)
           {
-             e_menu_post_deactivate_callback_set(menu->menu->menu,
-                                                 _emu_menu_cb_post_deactivate,
-                                                 emu_face);
+             e_menu_post_deactivate_callback_set(menu->menu->menu, _emu_menu_cb_post_deactivate, emu_face);
              e_menu_activate_mouse(menu->menu->menu,
-                                   e_zone_current_get(emu_face->face->con),
-                                   ev->output.x, ev->output.y, 1, 1,
-                                   E_MENU_POP_DIRECTION_AUTO, ev->timestamp);
+                                   e_zone_current_get(emu_face->face->con), ev->output.x, ev->output.y, 1, 1, E_MENU_POP_DIRECTION_AUTO, ev->timestamp);
              e_util_container_fake_mouse_up_all_later(emu_face->face->con);
              edje_object_signal_emit(emu_face->face->main_obj, "active", "");
           }
@@ -1042,10 +992,47 @@ _emu_menu_cb_action(void *data, E_Menu *m, E_Menu_Item *mi)
    if (item->data)
      {
         Ecore_Exe *exe;
+        char *action;
 
         exe = item->data;
-        ecore_exe_send(exe, item->action, strlen(item->action));
-        ecore_exe_send(exe, "\n", 1);
+        action = item->action;
+        if (item->easy_menu->category_data)
+          {
+             /* Check the category, if its border or fileman, do some % subs on action. */
+             if ((item->easy_menu->category) && (strncmp(item->easy_menu->category, "border", 6) == 0))
+               {
+                  E_Border *bd;
+
+                  bd = item->easy_menu->category_data;
+                  if (strcmp(action, "Properties") == 0)
+                    {
+                       action = NULL;
+                       border_props_dialog(m->zone->container, bd);
+                    }
+                  else
+                    {
+                       /* Do some % subs on action. */
+                    }
+               }
+             else if ((item->easy_menu->category) && (strncmp(item->easy_menu->category, "fileman/action", 14) == 0))
+               {
+                  E_Fm_Icon *icon;
+
+                  icon = item->easy_menu->category_data;
+               }
+             else if ((item->easy_menu->category) && (strncmp(item->easy_menu->category, "fileman", 7) == 0))
+               {
+                  E_Fm_Smart_Data *sd;
+
+                  sd = item->easy_menu->category_data;
+               }
+          }
+        if ((action) && (action[0] != '\0'))
+          {
+             printf("_emu_menu_cb_action() -> %s\n", action);
+             ecore_exe_send(exe, action, strlen(action));
+             ecore_exe_send(exe, "\n", 1);
+          }
      }
 }
 
@@ -1062,8 +1049,7 @@ _emu_menu_cb_action(void *data, E_Menu *m, E_Menu_Item *mi)
  * @ingroup Emu_Module_Menu_Group
  */
 static Evas_Bool
-_emu_menus_hash_cb_free(Evas_Hash * hash, const char *key, void *data,
-                        void *fdata)
+_emu_menus_hash_cb_free(Evas_Hash *hash, const char *key, void *data, void *fdata)
 {
    Easy_Menu *menu;
 

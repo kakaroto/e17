@@ -1,14 +1,9 @@
 #include "easy_menu.h"
 
-static struct _Menu_Data *_easy_menu_add_menus_real(char *input, char *end,
-                                                    int *i, int level,
-                                                    void (*func) (void *data,
-                                                                  E_Menu *m,
-                                                                  E_Menu_Item
-                                                                  *mi),
-                                                    void *data);
-static void _easy_menu_menu_cb_create(E_Menu *m, void *category_data,
-                                      void *data);
+static struct _Menu_Data *_easy_menu_add_menus_real(Easy_Menu * easy_menu,
+                                                    char *input, char *end,
+                                                    int *i, int level, void (*func) (void *data, E_Menu *m, E_Menu_Item *mi), void *data);
+static void _easy_menu_menu_cb_create(E_Menu *m, void *category_data, void *data);
 static void _easy_menu_menu_cb_destroy(void *data);
 static void _easy_menu_menu_cb_free(void *obj);
 
@@ -25,9 +20,7 @@ static void _easy_menu_menu_cb_free(void *obj);
  * @param   data the pointer to your face.
  */
 EAPI Easy_Menu *
-easy_menu_add_menus(char *name, char *category, char *input, int length,
-                    void (*func) (void *data, E_Menu *m, E_Menu_Item *mi),
-                    void *data)
+easy_menu_add_menus(char *name, char *category, char *input, int length, void (*func) (void *data, E_Menu *m, E_Menu_Item *mi), void *data)
 {
    Easy_Menu *menu = NULL;
 
@@ -45,23 +38,16 @@ easy_menu_add_menus(char *name, char *category, char *input, int length,
              if (category == NULL)
                 category = "";
              menu->category = strdup(category);
-             menu->menu =
-                _easy_menu_add_menus_real(menu->buffer, menu->buffer + length,
-                                          &i, 0, func, data);
+             menu->menu = _easy_menu_add_menus_real(menu, menu->buffer, menu->buffer + length, &i, 0, func, data);
 
              if (menu->menu)
                {
                   e_object_data_set(E_OBJECT(menu->menu->menu), menu);
-                  e_object_del_attach_func_set(E_OBJECT(menu->menu->menu),
-                                               _easy_menu_menu_cb_free);
+                  e_object_del_attach_func_set(E_OBJECT(menu->menu->menu), _easy_menu_menu_cb_free);
 
                   /* A category that is an empty string, is handled by the caller. */
                   if (strlen(menu->category) != 0)
-                     menu->category_cb =
-                        e_menu_category_callback_add(menu->category,
-                                                     _easy_menu_menu_cb_create,
-                                                     _easy_menu_menu_cb_destroy,
-                                                     menu);
+                     menu->category_cb = e_menu_category_callback_add(menu->category, _easy_menu_menu_cb_create, _easy_menu_menu_cb_destroy, menu);
 
                   menu->valid = 1;
                }
@@ -74,9 +60,7 @@ easy_menu_add_menus(char *name, char *category, char *input, int length,
 }
 
 static struct _Menu_Data *
-_easy_menu_add_menus_real(char *input, char *end, int *i, int level,
-                          void (*func) (void *data, E_Menu *m,
-                                        E_Menu_Item *mi), void *data)
+_easy_menu_add_menus_real(Easy_Menu * easy_menu, char *input, char *end, int *i, int level, void (*func) (void *data, E_Menu *m, E_Menu_Item *mi), void *data)
 {
    char *oldInput = input;
    struct _Menu_Data *menu = calloc(1, sizeof(struct _Menu_Data));
@@ -109,26 +93,24 @@ _easy_menu_add_menus_real(char *input, char *end, int *i, int level,
              item->name = input;
              item->action = input;
              item->data = data;
+             item->easy_menu = easy_menu;
 
              /* Parse the options. */
-             while ((input < end) && (*input != '|') && (*input != '\0')
-                    && (*input != '\n'))
+             while ((input < end) && (*input != '|') && (*input != '\0') && (*input != '\n'))
                 input++;
              if ((input < end) && (*input == '|'))
                {                /* Found an action. */
                   *(input++) = '\0';
                   item->action = input;
                   /* Keep parsing. */
-                  while ((input < end) && (*input != '|') && (*input != '\0')
-                         && (*input != '\n'))
+                  while ((input < end) && (*input != '|') && (*input != '\0') && (*input != '\n'))
                      input++;
                   if ((input < end) && (*input == '|'))
                     {           /* Found an edje. */
                        *(input++) = '\0';
                        item->edje = input;
                        /* Now we are just looking for the end of the edge. */
-                       while ((input < end) && (*input != '\0')
-                              && (*input != '\n'))
+                       while ((input < end) && (*input != '\0') && (*input != '\n'))
                           input++;
                     }
                }
@@ -159,8 +141,7 @@ _easy_menu_add_menus_real(char *input, char *end, int *i, int level,
                 last_menu = last_menu->next;
 
              /* A recursing we will go. */
-             last_menu->next =
-                _easy_menu_add_menus_real(input, end, i, level + 1, func, data);
+             last_menu->next = _easy_menu_add_menus_real(easy_menu, input, end, i, level + 1, func, data);
              e_menu_item_submenu_set(item->item, last_menu->next->menu);
              /* The recursion completed this much parsing for us, catch up. */
              input = input + (*i);
@@ -191,7 +172,8 @@ _easy_menu_menu_cb_create(E_Menu *m, void *category_data, void *data)
    menu = data;
    if ((menu) && (m) && (menu->valid))
      {
-        /* Since this is created relative to the possed in menu, we need to create it each time. */
+        /* Since this is created relative to the passed in menu, we need to create it each time. */
+        menu->category_data = category_data;
         menu->item = e_menu_item_new(m);
         if (menu->item)
           {
@@ -216,6 +198,7 @@ _easy_menu_menu_cb_destroy(void *data)
    menu = data;
    if (menu)
      {
+        menu->category_data = NULL;
         if (menu->item)
           {
              e_object_del(E_OBJECT(menu->item));
