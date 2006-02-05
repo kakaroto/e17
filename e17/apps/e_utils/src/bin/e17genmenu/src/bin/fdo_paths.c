@@ -510,6 +510,9 @@ _fdo_paths_exec_config(char *home, Fdo_Path_List * extras, char *cmd)
         ecore_exe_tag_set(exe, "genmenu/fdo");
         while (ced.done == 0)
           {
+	     /* FIXME: raster is paranoid.  If too much time passes, give up.
+	      * Or find a way to let the usual event loop shit do this without spinning our wheels.
+	      */
              ecore_main_loop_iterate();
              usleep(10);
           }
