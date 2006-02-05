@@ -44,7 +44,7 @@ _config_snow_module(E_Container *con, Snow *s)
    v->advanced.apply_cfdata = NULL;
    v->advanced.create_widgets = NULL;
 
-   cfd = e_config_dialog_new(con, _("Snow Configuration"), NULL, 0, v, s);
+   cfd = e_config_dialog_new(con, D_("Snow Configuration"), NULL, 0, v, s);
    s->config_dialog = cfd;
 }
 
@@ -101,17 +101,17 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas,
    o = e_widget_list_add(evas, 0, 0);
 
    of = e_widget_framelist_add(evas, _("General Settings"), 0);
-   ob = e_widget_check_add(evas, _("Show Trees"), &(cfdata->show_trees));
+   ob = e_widget_check_add(evas, D_("Show Trees"), &(cfdata->show_trees));
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-   of = e_widget_framelist_add(evas, _("Snow Density"), 0);
+   of = e_widget_framelist_add(evas, D_("Snow Density"), 0);
    rg = e_widget_radio_group_new(&(cfdata->density));
-   ob = e_widget_radio_add(evas, _("Sparse"), DENSITY_SPARSE, rg);
+   ob = e_widget_radio_add(evas, D_("Sparse"), DENSITY_SPARSE, rg);
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_radio_add(evas, _("Medium"), DENSITY_MEDIUM, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, _("Dense"), DENSITY_DENSE, rg);
+   ob = e_widget_radio_add(evas, D_("Dense"), DENSITY_DENSE, rg);
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 

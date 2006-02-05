@@ -1,0 +1,44 @@
+# SOME DESCRIPTIVE TITLE.
+# This file is put in the public domain.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-02-05 23:07+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: e_mod_config.c:47
+msgid "Snow Configuration"
+msgstr "スノー設定"
+
+#: e_mod_config.c:104
+msgid "Show Trees"
+msgstr "木を表示する"
+
+#: e_mod_config.c:108
+msgid "Snow Density"
+msgstr "雪の密度"
+
+#: e_mod_config.c:110
+msgid "Sparse"
+msgstr "まばらに"
+
+#: e_mod_config.c:114
+msgid "Dense"
+msgstr "もうもうと"
+
+#: e_mod_main.c:86
+msgid "Enlightenment Snow Module"
+msgstr ""
+
+#: e_mod_main.c:87
+msgid "This is a snow module that may replace xsnow."
+msgstr ""

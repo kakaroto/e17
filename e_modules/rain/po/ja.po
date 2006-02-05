@@ -1,0 +1,51 @@
+# SOME DESCRIPTIVE TITLE.
+# This file is put in the public domain.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-02-05 23:22+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: e_mod_config.c:40
+msgid "Rain Module"
+msgstr "雨モジュール"
+
+#: e_mod_config.c:97
+msgid "Show Clouds"
+msgstr "雲を表示する"
+
+#: e_mod_config.c:101
+msgid "Rain Density"
+msgstr "雨の密度"
+
+#: e_mod_config.c:103
+msgid "Sprinkle"
+msgstr ""
+
+#: e_mod_config.c:105
+msgid "Drizzle"
+msgstr ""
+
+#: e_mod_config.c:107
+msgid "Downpour"
+msgstr ""
+
+#: e_mod_main.c:81
+#, fuzzy
+msgid "Enlightenment Rain Module"
+msgstr ""
+
+#: e_mod_main.c:83
+msgid ""
+"This is a simple module to display some rain on the desktop.<br>It can "
+"display clouds too, if you like clouds."
+msgstr ""

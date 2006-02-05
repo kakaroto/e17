@@ -1,3 +1,5 @@
+#define D_(str) dgettext(PACKAGE, str)
+
 #ifndef E_MOD_MAIN_H
 #define E_MOD_MAIN_H
 

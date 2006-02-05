@@ -1,3 +1,5 @@
+SUBDIRS = po
+
 MAINTAINERCLEANFILES = Makefile.in
 
 # data files for the module
