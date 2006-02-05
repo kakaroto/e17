@@ -454,7 +454,7 @@ spiftool_join(spif_charptr_t sep, spif_charptr_t *slist)
         len += strlen(SPIF_CHARPTR_C(slist[i]));
     }
     len += slen * (i - 1);
-    new_str = SPIF_CAST(charptr) MALLOC(len);
+    new_str = SPIF_CAST(charptr) MALLOC(len + 1);
     strcpy(SPIF_CHARPTR_C(new_str), SPIF_CHARPTR_C(slist[0]));
     for (i = 1; slist[i]; i++) {
         if (slen) {
