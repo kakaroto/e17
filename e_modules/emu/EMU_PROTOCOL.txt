@@ -64,5 +64,7 @@ separator.
 
 For border and fileman menus it would probably be useful to have
 something passed back to you as part of your action that identifies the
-window, file, or files.  I'll add something to do that later, probably
-in the form of replacable %x parameters.
+window, file, or files.  This is in the form of replacable %x
+parameters.  By setting the action to "Properties" for each of these
+menus, you can get a dialog showing the currently supported parameters
+and their current value.
