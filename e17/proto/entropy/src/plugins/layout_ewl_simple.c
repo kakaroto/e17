@@ -82,6 +82,7 @@ struct entropy_layout_gui
   /*Tmp */
   Ewl_Widget *samba_radio;
   Ewl_Widget *posix_radio;
+  Ewl_Widget *sftp_radio;
   Ewl_Widget *location_add_window;
   Ewl_Widget *location_add_name;
   Ewl_Widget *location_add_path;
@@ -178,8 +179,14 @@ location_add_execute_cb (Ewl_Widget * item, void *ev_data, void *user_data)
 
     layout_ewl_simple_add_config_location (instance, display_name, new_uri);
 
-  }
-  else if (ewl_checkbutton_is_checked (EWL_CHECKBUTTON (viewer->samba_radio))) {
+  } else if (ewl_checkbutton_is_checked (EWL_CHECKBUTTON (viewer->sftp_radio))) {
+    snprintf (new_uri, 2048, "sftp:///%s%s", server,path);
+    printf ("New URI is: '%s'\n", new_uri);
+    layout_ewl_simple_add_header (instance, display_name, new_uri);
+
+    layout_ewl_simple_add_config_location (instance, display_name, new_uri);
+
+  } else if (ewl_checkbutton_is_checked (EWL_CHECKBUTTON (viewer->samba_radio))) {
     if (server) {
       if (username && password) {
 	snprintf (new_uri, 2048, "smb://%s:%s@/%s%s", username, password,
@@ -199,6 +206,7 @@ location_add_execute_cb (Ewl_Widget * item, void *ev_data, void *user_data)
       printf ("Server required for remote file systems!\n");
     }
   }
+  
   else {
     printf ("No filesystem selected!\n");
   }
@@ -334,6 +342,21 @@ location_add_cb (Ewl_Widget * main_win, void *ev_data, void *user_data)
 			      ((entropy_layout_gui *) instance->data)->
 			      samba_radio);
   ewl_widget_show (((entropy_layout_gui *) instance->data)->samba_radio);
+
+  ((entropy_layout_gui *) instance->data)->sftp_radio =
+    ewl_radiobutton_new ();
+  ewl_button_label_set (EWL_BUTTON
+			(((entropy_layout_gui *) instance->data)->
+			 sftp_radio), "Sftp");
+  ewl_radiobutton_chain_set (EWL_RADIOBUTTON
+			     (((entropy_layout_gui *) instance->data)->
+			      sftp_radio),
+			     EWL_RADIOBUTTON (((entropy_layout_gui *)
+					       instance->data)->samba_radio));
+  ewl_container_child_append (EWL_CONTAINER (vbox2),
+			      ((entropy_layout_gui *) instance->data)->
+			      sftp_radio);
+  ewl_widget_show (((entropy_layout_gui *) instance->data)->sftp_radio);
 
 
 

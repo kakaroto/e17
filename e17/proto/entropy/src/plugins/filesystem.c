@@ -245,6 +245,8 @@ callback (evfs_event * data, void *obj)
 
 	/*If the calling request is currently NULL, we must go to the hash to retrieve that caller */
 	if (!calling_request) {
+
+	  printf("Looking for calling request with folder '%s'\n", folder);
 	  calling_request = ecore_hash_get (evfs_dir_requests, folder);
 	  //printf("Received a file from the hash, path is '%s'\n", calling_request->file->path);
 
@@ -330,8 +332,13 @@ callback (evfs_event * data, void *obj)
 	entropy_core_gui_event_get
 	(ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS_EXTERNAL);
       gui_event->data = file_list;
-      entropy_core_layout_notify_event (calling_request->requester, gui_event,
+      
+      if (calling_request) {
+	      entropy_core_layout_notify_event (calling_request->requester, gui_event,
 					ENTROPY_EVENT_LOCAL);
+      } else {
+	      printf("  [*] Could not get calling request for dir list - Abort!\n");
+      }
 
     }
 
@@ -723,6 +730,7 @@ filelist_get (entropy_file_request * request)
       ecore_hash_set (evfs_dir_requests, "/", new_request);
     }
     else {
+      printf("Setting dir request hash to '%s'\n", path->files[0]->path);
       ecore_hash_set (evfs_dir_requests, path->files[0]->path, new_request);
     }
 
