@@ -11,19 +11,34 @@ enum _Fdo_Paths_Type
 };
 typedef enum _Fdo_Paths_Type Fdo_Paths_Type;
 
-struct _Fdo_Path_List
+enum _Fdo_Element_Type
 {
-   char **list;                 /* An array of pointers to the paths. */
-   int size;                    /* The size of the array. */
-   char *buffer;                /* The actual path data. */
-   int length;                  /* Length of the buffer. */
-};
-typedef struct _Fdo_Path_List Fdo_Path_List;
 
-Fdo_Path_List *fdo_paths_menus;
-Fdo_Path_List *fdo_paths_directories;
-Fdo_Path_List *fdo_paths_desktops;
-Fdo_Path_List *fdo_paths_icons;
+   FDO_ELEMENT_TYPE_STRING = 1,
+   FDO_ELEMENT_TYPE_LIST = 2,
+};
+typedef enum _Fdo_Element_Type Fdo_Element_Type;
+
+struct _Fdo_Element
+{
+   void *element;                 /* A pointer to the element. */
+   Fdo_Element_Type type;   /* The type of the element. */
+};
+typedef struct _Fdo_Element Fdo_Element;
+
+struct _Fdo_List
+{
+   Fdo_Element *elements;  /* An array of elements. */
+   int size;               /* The size of the array. */
+   char **buffers;         /* An array of pointers to the bits of data. */
+   int buffers_size;       /* The size of the array. */
+};
+typedef struct _Fdo_List Fdo_List;
+
+Fdo_List *fdo_paths_menus;
+Fdo_List *fdo_paths_directories;
+Fdo_List *fdo_paths_desktops;
+Fdo_List *fdo_paths_icons;
 
 # ifdef __cplusplus
 extern "C"
@@ -32,7 +47,7 @@ extern "C"
 
    void fdo_paths_init();
    char *fdo_paths_search_for_file(Fdo_Paths_Type type, char *file, int sub, int (*func) (const void *data, char *path), const void *data);
-   Fdo_Path_List *fdo_paths_paths_to_list(char *paths);
+   Fdo_List *fdo_paths_to_list(char *paths);
    void fdo_paths_shutdown();
 
 # ifdef __cplusplus

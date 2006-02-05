@@ -176,13 +176,13 @@ find_fdo_icon(char *icon, char *icon_size, char *icon_theme)
                      inherits = (char *) ecore_hash_get(icon_group, "Inherits");
 		     if (directories)
 		        {
-                           Fdo_Path_List *directory_paths;
+                           Fdo_List *directory_paths;
 
                            /* Split the directory list. */
 #ifdef DEBUG
                            printf("Inherits %s Directories %s\n", inherits, directories);
 #endif
-                           directory_paths = fdo_paths_paths_to_list(directories);
+                           directory_paths = fdo_paths_to_list(directories);
 			   if (directory_paths)
 			      {
 			         int wanted_size;
@@ -197,10 +197,10 @@ find_fdo_icon(char *icon, char *icon_size, char *icon_theme)
 	                               Ecore_Hash *sub_group;
 
 #ifdef DEBUG
-                                       printf("FDO icon path = %s\n", directory_paths->list[i]);
+                                       printf("FDO icon path = %s\n", directory_paths->elements[i].element);
 #endif
 				       /* Get the details for this theme directory. */
-                                       sub_group = (Ecore_Hash *) ecore_hash_get(theme, directory_paths->list[i]);
+                                       sub_group = (Ecore_Hash *) ecore_hash_get(theme, directory_paths->elements[i].element);
 				       if (sub_group)
 				          {
 	                                     char *size, *type, *minsize, *maxsize, *threshold;
@@ -258,7 +258,7 @@ find_fdo_icon(char *icon, char *icon_size, char *icon_theme)
                                                    /* Look for icon with all extensions. */
                                                    for (j = 0; ext[j] != NULL; j++)
 						      {
-                                                         snprintf(path, MAX_PATH, "%s/%s/%s%s", icon_theme, directory_paths->list[i], icon, ext[j]);
+                                                         snprintf(path, MAX_PATH, "%s/%s/%s%s", icon_theme, (char *) directory_paths->elements[i].element, icon, ext[j]);
 #ifdef DEBUG
                                                          printf("FDO icon = %s\n", path);
 #endif

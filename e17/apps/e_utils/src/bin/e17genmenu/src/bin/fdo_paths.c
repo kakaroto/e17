@@ -21,22 +21,22 @@
 struct _config_exe_data
 {
    char *home;
-   Fdo_Path_List *types;
+   Fdo_List *types;
    int done;
 };
 
-static Fdo_Path_List *_fdo_paths_list_new(char *buffer);
-static Fdo_Path_List *_fdo_paths_list_add(Fdo_Path_List * list, char *element);
-static int _fdo_paths_list_exist(Fdo_Path_List * list, char *element);
-static void _fdo_paths_list_del(Fdo_Path_List * list);
+static Fdo_List *_fdo_list_new(char *buffer);
+static Fdo_List *_fdo_list_add(Fdo_List * list, char *element);
+static int _fdo_list_exist(Fdo_List * list, char *element);
+static void _fdo_list_del(Fdo_List * list);
 
-static Fdo_Path_List *_fdo_paths_get(char *before, char *env_home, char *env,
-                                     char *env_home_default, char *env_default,
-                                     char *type, char *gnome_extra, char *kde);
+static Fdo_List *_fdo_paths_get(char *before, char *env_home, char *env,
+                                char *env_home_default, char *env_default,
+                                char *type, char *gnome_extra, char *kde);
 static void _fdo_paths_massage_path(char *path, char *home, char *first,
                                     char *second);
-static void _fdo_paths_check_and_add(Fdo_Path_List * paths, char *path);
-static void _fdo_paths_exec_config(char *home, Fdo_Path_List * extras,
+static void _fdo_paths_check_and_add(Fdo_List * paths, char *path);
+static void _fdo_paths_exec_config(char *home, Fdo_List * extras,
                                    char *cmd);
 
 static char *_fdo_paths_recursive_search(char *path, char *d,
@@ -88,10 +88,10 @@ fdo_paths_init()
 void
 fdo_paths_shutdown()
 {
-   E_FN_DEL(_fdo_paths_list_del, fdo_paths_menus);
-   E_FN_DEL(_fdo_paths_list_del, fdo_paths_directories);
-   E_FN_DEL(_fdo_paths_list_del, fdo_paths_desktops);
-   E_FN_DEL(_fdo_paths_list_del, fdo_paths_icons);
+   E_FN_DEL(_fdo_list_del, fdo_paths_menus);
+   E_FN_DEL(_fdo_list_del, fdo_paths_directories);
+   E_FN_DEL(_fdo_list_del, fdo_paths_desktops);
+   E_FN_DEL(_fdo_list_del, fdo_paths_icons);
 }
 
 /** Search for a file in fdo compatible locations.
@@ -116,7 +116,7 @@ fdo_paths_search_for_file(Fdo_Paths_Type type, char *file, int sub,
    char *path = NULL;
    char temp[MAX_PATH];
    struct stat path_stat;
-   Fdo_Path_List *paths = NULL;
+   Fdo_List *paths = NULL;
 
    switch (type)
      {
@@ -136,7 +136,7 @@ fdo_paths_search_for_file(Fdo_Paths_Type type, char *file, int sub,
 
    for (i = 0; i < paths->size; i++)
      {
-        sprintf(temp, "%s%s", paths->list[i], file);
+        sprintf(temp, "%s%s", (char *) paths->elements[i].element, file);
         if (stat(temp, &path_stat) == 0)
           {
              path = strdup(temp);
@@ -145,7 +145,7 @@ fdo_paths_search_for_file(Fdo_Paths_Type type, char *file, int sub,
                    break;
           }
         else if (sub)
-           path = _fdo_paths_recursive_search(paths->list[i], file, func, data);
+           path = _fdo_paths_recursive_search(paths->elements[i].element, file, func, data);
         if (path && (!func))
            break;
      }
@@ -162,18 +162,18 @@ fdo_paths_search_for_file(Fdo_Paths_Type type, char *file, int sub,
  *
  * @param   paths A list of paths.
  */
-Fdo_Path_List *
-fdo_paths_paths_to_list(char *paths)
+Fdo_List *
+fdo_paths_to_list(char *paths)
 {
-   Fdo_Path_List *list = NULL;
+   Fdo_List *list = NULL;
 
-   list = _fdo_paths_list_new(paths);
-   if ((list) && (list->buffer))
+   list = _fdo_list_new(paths);
+   if ((list) && (list->buffers))
      {
         char *start, *end;
         int finished = 0;
 
-        end = list->buffer;
+        end = list->buffers[0];
         while (!finished)
           {
              start = end;
@@ -182,13 +182,13 @@ fdo_paths_paths_to_list(char *paths)
                    while ((*end != ';') && (*end != ':') && (*end != ',') && (*end != '\0'))
                       end++;
 	        }
-             while ((end != list->buffer) && (*(end - 1) == '\\') && (*end != '\0'));  /* Ignore any escaped ;:, */
+             while ((end != list->buffers[0]) && (*(end - 1) == '\\') && (*end != '\0'));  /* Ignore any escaped ;:, */
 	     /* FIXME: We still need to unescape it now. */
              if (*end == '\0')
                 finished = 1;
              *end = '\0';
-             if (!_fdo_paths_list_exist(list, start))
-                list = _fdo_paths_list_add(list, start);
+             if (!_fdo_list_exist(list, start))
+                list = _fdo_list_add(list, start);
              end++;
           }
      }
@@ -223,62 +223,48 @@ icons=pathlist
  *    it's entirety.  The lists will be really small, and only created at 
  *    the begining, so no biggy.
  */
-static Fdo_Path_List *
-_fdo_paths_list_new(char *buffer)
+static Fdo_List *
+_fdo_list_new(char *buffer)
 {
-   Fdo_Path_List *list;
+   Fdo_List *list;
 
-   list = E_NEW(Fdo_Path_List, 1);
+   list = E_NEW(Fdo_List, 1);
    if ((list) && (buffer))
      {
-        list->buffer = strdup(buffer);
-        list->length = strlen(list->buffer) + 1;
+        list->buffers = (char **)realloc(list->buffers, (list->buffers_size + 1) * sizeof(char *));
+        list->buffers[list->buffers_size++] = strdup(buffer);
      }
    return list;
 }
 
-static Fdo_Path_List *
-_fdo_paths_list_add(Fdo_Path_List * list, char *element)
+static Fdo_List *
+_fdo_list_add(Fdo_List * list, char *element)
 {
-   list->list = (char **)realloc(list->list, (list->size + 1) * sizeof(char *));
-   list->list[list->size++] = element;
+   list->elements = (Fdo_Element *)realloc(list->elements, (list->size + 1) * sizeof(Fdo_Element));
+   list->elements[list->size].element = element;
+   list->elements[list->size++].type = FDO_ELEMENT_TYPE_STRING;
    return list;
 }
 
-static Fdo_Path_List *
-_fdo_paths_list_extend(Fdo_Path_List * list, char *element)
+static Fdo_List *
+_fdo_list_extend(Fdo_List * list, char *element)
 {
-   int i, length;
-
-   /* Normalize the pointers. */
-   for (i = 0; i < list->size; i++)
-      list->list[i] -= (long)list->buffer;      /* FIXME: find something better to cast this to. */
-
-   length = strlen(element);
-   list->buffer =
-      (char *)realloc(list->buffer,
-                      (list->length + length + 1 + 1) * sizeof(char));
-   memcpy(&(list->buffer[list->length + 1]), element, length + 1);
-
-   /* Restore them. */
-   for (i = 0; i < list->size; i++)
-      list->list[i] += (long)list->buffer;      /* FIXME: find something better to cast this to. */
-
-   list = _fdo_paths_list_add(list, &(list->buffer[list->length + 1]));
-   list->length += length + 1;
+   list->buffers = (char **)realloc(list->buffers, (list->buffers_size + 1) * sizeof(char *));
+   list->buffers[list->buffers_size++] = strdup(element);
+   list = _fdo_list_add(list, list->buffers[list->buffers_size - 1]);
 
    return list;
 }
 
 static int
-_fdo_paths_list_exist(Fdo_Path_List * list, char *element)
+_fdo_list_exist(Fdo_List * list, char *element)
 {
    int exist = 0;
    int i;
 
    for (i = 0; i < list->size; i++)
      {
-        if (strcmp(list->list[i], element) == 0)
+        if (strcmp((char *) list->elements[i].element, element) == 0)
           {
              exist = 1;
              break;
@@ -288,30 +274,33 @@ _fdo_paths_list_exist(Fdo_Path_List * list, char *element)
 }
 
 static void
-_fdo_paths_list_del(Fdo_Path_List * list)
+_fdo_list_del(Fdo_List * list)
 {
-   E_FREE(list->buffer);
-   E_FREE(list->list);
+   int i;
+
+   E_FREE(list->elements);
+   for (i = list->buffers_size - 1; i >= 0; i--)
+      E_FREE(list->buffers[i]);
    E_FREE(list);
 }
 
-static Fdo_Path_List *
+static Fdo_List *
 _fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default,
                char *env_default, char *type, char *gnome_extra, char *kde)
 {
    char *home;
-   Fdo_Path_List *paths = NULL;
-   Fdo_Path_List *types;
-   Fdo_Path_List *gnome_extras;
-   Fdo_Path_List *kdes;
+   Fdo_List *paths = NULL;
+   Fdo_List *types;
+   Fdo_List *gnome_extras;
+   Fdo_List *kdes;
    Ecore_Event_Handler *exit_handler;
 
    /* Don't sort them, as they are in preferred order from each source. */
    /* Merge the results, there are probably some duplicates. */
 
-   types = fdo_paths_paths_to_list(type);
-   gnome_extras = fdo_paths_paths_to_list(gnome_extra);
-   kdes = fdo_paths_paths_to_list(kde);
+   types = fdo_paths_to_list(type);
+   gnome_extras = fdo_paths_to_list(gnome_extra);
+   kdes = fdo_paths_to_list(kde);
 
    home = get_home();
    if (home)
@@ -324,27 +313,27 @@ _fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default,
            home[last] = '\0';
      }
 
-   paths = _fdo_paths_list_new(NULL);
+   paths = _fdo_list_new(NULL);
    if (paths)
      {
         int i, j;
         char path[MAX_PATH];
-        Fdo_Path_List *env_list;
+        Fdo_List *env_list;
 
         if (before)
           {
-             Fdo_Path_List *befores;
+             Fdo_List *befores;
 
-             befores = fdo_paths_paths_to_list(before);
+             befores = fdo_paths_to_list(before);
              if (befores)
                {
                   for (i = 0; i < befores->size; i++)
                     {
                        _fdo_paths_massage_path(path, home,
-                                               befores->list[i], NULL);
+                                               befores->elements[i].element, NULL);
                        _fdo_paths_check_and_add(paths, path);
                     }
-                  E_FN_DEL(_fdo_paths_list_del, befores);
+                  E_FN_DEL(_fdo_list_del, befores);
                }
           }
 
@@ -355,7 +344,7 @@ _fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default,
              value = getenv(env_home);
              if ((value == NULL) || (value[0] == '\0'))
                 value = env_home_default;
-             env_list = fdo_paths_paths_to_list(value);
+             env_list = fdo_paths_to_list(value);
              if (env_list)
                {
                   for (i = 0; i < env_list->size; i++)
@@ -363,12 +352,12 @@ _fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default,
                        for (j = 0; j < types->size; j++)
                          {
                             _fdo_paths_massage_path(path, home,
-                                                    env_list->list[i],
-                                                    types->list[j]);
+                                                    env_list->elements[i].element,
+                                                    types->elements[j].element);
                             _fdo_paths_check_and_add(paths, path);
                          }
                     }
-                  E_FN_DEL(_fdo_paths_list_del, env_list);
+                  E_FN_DEL(_fdo_list_del, env_list);
                }
           }
 
@@ -379,7 +368,7 @@ _fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default,
              value = getenv(env);
              if ((value == NULL) || (value[0] == '\0'))
                 value = env_default;
-             env_list = fdo_paths_paths_to_list(value);
+             env_list = fdo_paths_to_list(value);
              if (env_list)
                {
                   for (i = 0; i < env_list->size; i++)
@@ -387,12 +376,12 @@ _fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default,
                        for (j = 0; j < types->size; j++)
                          {
                             _fdo_paths_massage_path(path, home,
-                                                    env_list->list[i],
-                                                    types->list[j]);
+                                                    env_list->elements[i].element,
+                                                    types->elements[j].element);
                             _fdo_paths_check_and_add(paths, path);
                          }
                     }
-                  E_FN_DEL(_fdo_paths_list_del, env_list);
+                  E_FN_DEL(_fdo_list_del, env_list);
                }
           }
      }
@@ -418,7 +407,7 @@ _fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default,
           {
              char cmd[128];
 
-             sprintf(cmd, "kde-config --path %s", kdes->list[i]);
+             sprintf(cmd, "kde-config --path %s", (char *) kdes->elements[i].element);
              _fdo_paths_exec_config(home, NULL, cmd);
           }
 
@@ -426,9 +415,9 @@ _fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default,
      }
 
    E_FREE(home);
-   E_FN_DEL(_fdo_paths_list_del, kdes);
-   E_FN_DEL(_fdo_paths_list_del, gnome_extras);
-   E_FN_DEL(_fdo_paths_list_del, types);
+   E_FN_DEL(_fdo_list_del, kdes);
+   E_FN_DEL(_fdo_list_del, gnome_extras);
+   E_FN_DEL(_fdo_list_del, types);
 
    return paths;
 }
@@ -469,12 +458,12 @@ _fdo_paths_massage_path(char *path, char *home, char *first, char *second)
 }
 
 static void
-_fdo_paths_check_and_add(Fdo_Path_List * paths, char *path)
+_fdo_paths_check_and_add(Fdo_List * paths, char *path)
 {
 #ifdef DEBUG
    printf("CHECKING %s", path);
 #endif
-   if (!_fdo_paths_list_exist(paths, path))
+   if (!_fdo_list_exist(paths, path))
      {
         struct stat path_stat;
 
@@ -484,7 +473,7 @@ _fdo_paths_check_and_add(Fdo_Path_List * paths, char *path)
 #ifdef DEBUG
              printf(" OK");
 #endif
-             _fdo_paths_list_extend(paths, path);
+             _fdo_list_extend(paths, path);
           }
      }
 #ifdef DEBUG
@@ -493,7 +482,7 @@ _fdo_paths_check_and_add(Fdo_Path_List * paths, char *path)
 }
 
 static void
-_fdo_paths_exec_config(char *home, Fdo_Path_List * extras, char *cmd)
+_fdo_paths_exec_config(char *home, Fdo_List * extras, char *cmd)
 {
    Ecore_Exe *exe;
    struct _config_exe_data ced;
@@ -576,8 +565,8 @@ static int
 _fdo_paths_cb_exe_exit(void *data, int type, void *event)
 {
    Ecore_Exe_Event_Del *ev;
-   Fdo_Path_List *paths;
-   Fdo_Path_List *config_list;
+   Fdo_List *paths;
+   Fdo_List *config_list;
    Ecore_Exe_Event_Data *read;
    struct _config_exe_data *ced;
    char *value;
@@ -598,7 +587,7 @@ _fdo_paths_cb_exe_exit(void *data, int type, void *event)
 
    read = ecore_exe_event_data_get(ev->exe, ECORE_EXE_PIPE_READ);
    value = read->lines[0].line;
-   config_list = fdo_paths_paths_to_list(value);
+   config_list = fdo_paths_to_list(value);
    if (config_list)
      {
         int i, j;
@@ -610,19 +599,19 @@ _fdo_paths_cb_exe_exit(void *data, int type, void *event)
                   for (j = 0; j < ced->types->size; j++)
                     {
                        _fdo_paths_massage_path(path, ced->home,
-                                               config_list->list[i],
-                                               ced->types->list[j]);
+                                               config_list->elements[i].element,
+                                               ced->types->elements[j].element);
                        _fdo_paths_check_and_add(paths, path);
                     }
                }
              else
                {
-                  _fdo_paths_massage_path(path, ced->home, config_list->list[i],
+                  _fdo_paths_massage_path(path, ced->home, config_list->elements[i].element,
                                           NULL);
                   _fdo_paths_check_and_add(paths, path);
                }
           }
-        E_FN_DEL(_fdo_paths_list_del, config_list);
+        E_FN_DEL(_fdo_list_del, config_list);
      }
 
    ced->done = 1;
