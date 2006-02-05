@@ -20,6 +20,8 @@ else
 FTP_L =
 endif
 
+SFTP_L = sftp.la
+
 TAR_L = tar.la
 
 BZIP2_L = bzip2.la
@@ -27,7 +29,7 @@ BZIP2_L = bzip2.la
 GZIP_L = gzip.la
 
 
-pkg_LTLIBRARIES         = $(POSIX_L) $(SAMBA_L) $(TAR_L) $(BZIP2_L) $(FTP_L) $(GZIP_L)
+pkg_LTLIBRARIES         = $(POSIX_L) $(SAMBA_L) $(TAR_L) $(BZIP2_L) $(FTP_L) $(GZIP_L) $(SFTP_L)
 
 posix_la_SOURCES = evfs_fs_posix.c \
 			$(top_srcdir)/src/common/evfs_debug.c \
@@ -40,6 +42,13 @@ tar_la_SOURCES = evfs_fs_tar.c \
                         $(top_srcdir)/src/common/evfs_event_helper.c \
 			$(top_srcdir)/src/bin/evfs_server_handle.c \
 			$(top_srcdir)/src/common/evfs_common.c 
+
+sftp_la_SOURCES = evfs_fs_sftp.c \
+                        $(top_srcdir)/src/common/evfs_debug.c \
+                        $(top_srcdir)/src/common/evfs_event_helper.c \
+                        $(top_srcdir)/src/bin/evfs_server_handle.c \
+                        $(top_srcdir)/src/common/evfs_common.c
+												
 
 bzip2_la_SOURCES = evfs_fs_bzip2.c \
                         $(top_srcdir)/src/common/evfs_debug.c \
@@ -90,4 +99,7 @@ ftp_la_CFLAGS =  @ecore_cflags@ @curl_cflags@
 ftp_la_LDFLAGS = -module -avoid-version
 ftp_la_LIBADD =  @ecore_libs@ -L$(top_builddir)/src/lib -levfs @curl_libs@
 
+sftp_la_CFLAGS =  @ecore_cflags@
+sftp_la_LDFLAGS = -module -avoid-version
+sftp_la_LIBADD =  @ecore_libs@ -L$(top_builddir)/src/lib -levfs
 
