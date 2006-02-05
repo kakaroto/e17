@@ -10,6 +10,8 @@ another notebook)
 without causing any problem
 * Check if all the functions of all the widgets work even is the widget is not realized
 (i.e. attached to a window)
+* etk_window_resize() does not work correctly
+* etk_paned_position_set() does not work if the paned is not realized
 * Fix the focus problems in the notebook (you can focus children which are on an invisible page)
 * Sometimes the window of a menu is not hidden when the menu is popped_down
 * The labels sometimes does not returns its ideal size requisition (happens when there is a <br>)
