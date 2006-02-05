@@ -1087,13 +1087,14 @@ static void
 PagerHandleMotion(Pager * p, int x, int y)
 {
    EWin               *ewin;
+   int                 on_screen;
 
    if (!Conf_pagers.enable)
       return;
 
-   EQueryPointer(p->win, &x, &y, NULL, NULL);
+   on_screen = EQueryPointer(p->win, &x, &y, NULL, NULL);
 
-   if (x >= 0 && x < p->w && y >= 0 && y < p->h)
+   if (on_screen && x >= 0 && x < p->w && y >= 0 && y < p->h)
       ewin = EwinInPagerAt(p, x, y);
    else
       ewin = NULL;

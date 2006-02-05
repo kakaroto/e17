@@ -434,6 +434,8 @@ HiwinShow(Hiwin * phi, EWin * ewin, int zoom, int confine)
 
 	for (i = i1; i != i2; i += step)
 	  {
+	     int                 on_screen;
+
 	     if (w > h)
 	       {
 		  ww = i;
@@ -449,8 +451,9 @@ HiwinShow(Hiwin * phi, EWin * ewin, int zoom, int confine)
 	     EoMoveResize(phi, xx, yy, ww, hh);
 	     pz->draw(phi);
 
-	     EQueryPointer(None, &px, &py, NULL, NULL);
-	     if ((px < x) || (py < y) || (px >= (x + w)) || (py >= (y + h)))
+	     on_screen = EQueryPointer(None, &px, &py, NULL, NULL);
+	     if (!on_screen ||
+		 (px < x) || (py < y) || (px >= (x + w)) || (py >= (y + h)))
 	       {
 		  pz->fini(phi, 0);
 		  HiwinHide(phi);
