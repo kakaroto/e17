@@ -68,6 +68,10 @@ ewl_widget_show(l);
 				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
 	ewl_widget_show(tree->header);
 
+	tree->rows = ewl_vbox_new();
+	ewl_container_child_append(EWL_CONTAINER(tree), tree->rows);
+	ewl_widget_show(tree->rows);
+
 	ewl_tree2_headers_visible_set(tree, TRUE);
 	ewl_tree2_fixed_rows_set(tree, FALSE);
 
@@ -75,6 +79,9 @@ ewl_widget_show(l);
 					ewl_tree2_cb_configure, NULL);
 	ewl_callback_prepend(EWL_WIDGET(tree), EWL_CALLBACK_DESTROY,
 					ewl_tree2_cb_destroy, NULL);
+
+	ewl_container_resize_notify_set(EWL_CONTAINER(tree),
+					ewl_tree2_cb_child_resize);
 
 	ewl_widget_focusable_set(EWL_WIDGET(tree), FALSE);
 
@@ -401,13 +408,26 @@ ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__
 {
 	Ewl_Tree2 *tree;
 	Ewl_Tree2_Column *col;
-	int column = 0;
+	int column = 0, dirty = FALSE;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_TREE2_TYPE);
 
 	tree = EWL_TREE2(w);
+
+	ecore_list_goto_first(tree->columns);
+	while ((col = ecore_list_next(tree->columns)))
+	{
+		if (ewl_model_dirty_get(col->model))
+		{
+			dirty = TRUE;
+			break;
+		}
+	}
+
+	/* if none of the models are dirty we are done */
+	if (!dirty) DRETURN(DLEVEL_STABLE);
 
 	/* setup the headers */
 	ewl_container_reset(EWL_CONTAINER(tree->header));
@@ -419,11 +439,33 @@ ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__
 		h = col->model->header_fetch(tree->data, column);
 		ewl_container_child_append(EWL_CONTAINER(tree->header), h);
 
-printf("%s\n", ewl_label_text_get(EWL_LABEL(h)));
-
+		/* once we are done this model won't be dirty anymore */
+		col->model->dirty = FALSE;
 		column ++;
 	}
 
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_tree2_cb_child_resize(Ewl_Container *c, Ewl_Widget *w __UNUSED__,
+					int size __UNUSED__,
+					Ewl_Orientation o __UNUSED__)
+{
+	Ewl_Tree2 *tree;
+	int hw, hh, rw, rh;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+
+	tree = EWL_TREE2(c);
+
+	ewl_object_preferred_size_get(EWL_OBJECT(tree->header), &hw, &hh);
+	ewl_object_preferred_size_get(EWL_OBJECT(tree->rows), &rw, &rh);
+
+	ewl_object_preferred_inner_size_set(EWL_OBJECT(tree), 
+					((hw > rw) ? hw : rw), hh + rh);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

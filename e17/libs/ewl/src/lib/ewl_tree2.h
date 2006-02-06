@@ -98,6 +98,7 @@ struct Ewl_Tree2
 	Ewl_Container container; /**< Inherit from container. */
 
 	Ewl_Widget *header;	 /**< The tree header */
+	Ewl_Widget *rows;	 /**< Holds the rows of the tree */
 
 	Ecore_List *columns;     /**< The tree columns. */
 	void *data;              /**< Data provided to the tree */
@@ -146,6 +147,8 @@ unsigned int	 ewl_tree2_fixed_rows_get(Ewl_Tree2 *tree);
  */
 void ewl_tree2_cb_destroy(Ewl_Widget *w, void *ev, void *data);
 void ewl_tree2_cb_configure(Ewl_Widget *w, void *ev, void *data);
+void ewl_tree2_cb_child_resize(Ewl_Container *c, Ewl_Widget *w,
+				     int size, Ewl_Orientation o);
 
 /*
  * Ewl_Tree2_Column stuff

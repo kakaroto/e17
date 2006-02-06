@@ -55,6 +55,8 @@ struct Ewl_Model
 	Ewl_Model_Sort sort;      /**< Trigger sort on column */
 	Ewl_Model_Count count;    /**< Count of data items */
 	Ewl_Model_Header_Fetch header_fetch; /**< Get the header for the given column */
+
+	unsigned int dirty;	  /**< Is this models data dirty? */
 };
 
 Ewl_Model 	*ewl_model_new(void);
@@ -74,6 +76,9 @@ Ewl_Model_Count  ewl_model_count_get(Ewl_Model *m);
 
 void		 ewl_model_header_fetch_set(Ewl_Model *m, Ewl_Model_Header_Fetch f);
 Ewl_Model_Header_Fetch ewl_model_header_fetch_get(Ewl_Model *m);
+
+void		 ewl_model_dirty_set(Ewl_Model *m, unsigned int dirty);
+unsigned int 	 ewl_model_dirty_get(Ewl_Model *m);
 
 /**
  * @}

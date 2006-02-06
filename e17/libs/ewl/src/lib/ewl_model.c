@@ -34,6 +34,9 @@ ewl_model_init(Ewl_Model *model)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("model", model, FALSE);
 
+	/* we're dirty by default */
+	model->dirty = TRUE;
+
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
@@ -184,5 +187,32 @@ ewl_model_header_fetch_get(Ewl_Model *m)
 	DRETURN_PTR(m->header_fetch, DLEVEL_STABLE);
 }
 
+/**
+ * @param m: The model to set dirty
+ * @param dirty: The dirty value to set
+ * @return Returns no value
+ */
+void
+ewl_model_dirty_set(Ewl_Model *m, unsigned int dirty)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("m", m);
 
+	m->dirty = !!dirty;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param m: The model to get the dirty value of
+ * @return Returns TRUE if the model is dirty, FALSE otherwise
+ */
+unsigned int
+ewl_model_dirty_get(Ewl_Model *m)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("m", m, FALSE);
+
+	DRETURN_INT(m->dirty, DLEVEL_STABLE);
+}
 
