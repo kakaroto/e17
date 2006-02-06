@@ -130,10 +130,14 @@ char* read_string(char** c, int* len) {
 	int length = read_int32(c);
 	char* str = malloc(length+1);
 
+	//printf("Reading string of length %d\n", length);
+
 	memcpy(str, *c, length);
 	str[length] = '\0';
 	*c += length;
 	*len = length;
+
+	//printf("String: '%s'\n", str);
 
 	return str;
 }
@@ -145,6 +149,8 @@ void read_sftp_attr(char** c, evfs_file_info** info) {
 	
 	/*Read the flags*/
 	flags = read_int32(c);
+
+	//printf("Attribute flags: %d\n", flags);
 
 	/*printf("Attr type is %d\n", (int)type);*/
 	
@@ -223,6 +229,10 @@ typedef struct
 	Ecore_Exe* ssh_conn;
 	Ecore_Hash* handle_hash;
 	Ecore_Hash* id_open_hash;
+
+	char* packet_cache;
+	int packet_cache_size;
+	int packet_length;
 } SftpConnection;
 
 
@@ -417,26 +427,34 @@ void sftp_read_names(SftpConnection* conn, char** c) {
 	id = read_int32(c);
 
 	rhandle = ecore_hash_get(conn->id_open_hash, (int*)id);
-	printf("Names identifier: %d:%p\n", id, rhandle);	
+	//printf("Names identifier: %d:%p\n", id, rhandle);	
 
 	/*Read the count of entries in this list*/
 	count =	read_int32(c); 
 
+	/*printf("********* Grabbing %d files\n", count);*/
+
+	char* offset = *c;
 	for (i=0;i<count;i++) {
+		/*printf("Offset current: %d:%d\n", (int)(*c - offset), i);*/
+	
 		int len;
-		evfs_file_info* file = NEW(evfs_file_info);	
+		evfs_file_info* file;	
 		char* name = read_string(c, &len);
 		char* longname = read_string(c, &len);
+
+		file = NEW(evfs_file_info);
+		file->filename = name;
 
 		/*Get the file attributes*/
 		read_sftp_attr(c, &file);
 
-		file->filename = name;
-
-		printf("Name: %s\n", name);
+		//printf("Name: %s\n", name);
 		ecore_list_append(rhandle->file_list, file);
 
 		free(longname);
+
+		//printf("                    * File count: %d\n", i);
 	}
 
 	sftp_read_dir(conn, rhandle->open_handle,rhandle);
@@ -462,15 +480,44 @@ static int
 sftp_exe_data(void *data, int type, void *event)
 {
    Ecore_Exe_Event_Data *ev = event;
+   char* c;
    int i;
    int length;
    char sftp_type;
-   char* c= ev->data;
    
    SftpConnection* conn = (SftpConnection*)ecore_exe_data_get(ev->exe);
    printf("  [*] DATA RET EXE %p - %p [%i bytes]\n", ev->exe, ev->data, ev->size);
 
-   length = read_int32(&c);
+   if (!conn->packet_cache) {
+	char *d = ev->data;
+   
+   	length = read_int32(&d);
+	conn->packet_length = length;
+	/*printf("Init new packet, Length: %d\n", length);*/
+
+   	conn->packet_cache = malloc(ev->size-4 );
+	conn->packet_cache_size = ev->size-4 ;
+	memcpy(conn->packet_cache, ev->data+4, ev->size-4 );
+
+	//printf("Max byte is %d %d %d\n", *((int*)ev->data+4094), *((int*)ev->data+4095), *((int*)ev->data+4096));
+   } else {
+   	/*printf("Continuing packet, making new size %d + %d = %d..\n", 
+	conn->packet_cache_size, ev->size, conn->packet_cache_size + ev->size );*/
+
+	conn->packet_cache = realloc(conn->packet_cache, conn->packet_cache_size + ev->size  );	
+	memcpy(conn->packet_cache + conn->packet_cache_size, ev->data, ev->size);
+	conn->packet_cache_size += ev->size;
+   }
+
+   /*printf("****** RATIOS %d:%d\n", conn->packet_cache_size, conn->packet_length);*/
+  
+   if (conn->packet_cache_size < conn->packet_length) {
+   	/*printf("Incomplete packet! %d:%d\n", conn->packet_cache_size, conn->packet_length);*/
+	return;
+  	
+   }
+
+   c= conn->packet_cache;
    sftp_type = read_char(&c);
 
    switch (sftp_type) {
@@ -495,6 +542,14 @@ sftp_exe_data(void *data, int type, void *event)
 		   printf ("  [*] TYPE: UNKNOWN: %d\n", sftp_type);
 		   break;
    }
+
+
+   /*printf("        ********************* Freeing last packet ***\n");*/
+   free(conn->packet_cache);
+   conn->packet_cache = NULL;
+   conn->packet_cache_size = 0;
+   conn->packet_length = 0;
+   /*printf("        ********************* Freed last packet *** \n");*/
    
 }
 
@@ -650,6 +705,9 @@ SftpConnection* sftp_connect(char* host) {
 	connection->id_open_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 	connection->host = strdup(host);
 	connection->status = SFTP_INIT;
+	connection->packet_cache = NULL;
+	connection->packet_cache_size = 0;
+	connection->packet_length = 0;
 
 	snprintf(connection_str, 4096, "/usr/bin/ssh -o ForwardX11=no -o ForwardAgent=no -o "
 				       "ClearAllForwardings=yes -o Protocol=2 -o "
