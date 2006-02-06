@@ -266,6 +266,9 @@ extern"C" {
 #include <ewl_object.h>
 #include <ewl_widget.h>
 
+#include <ewl_model.h>
+#include <ewl_view.h>
+
 #include <ewl_attach.h>
 
 #include <ewl_container.h>
@@ -333,6 +336,7 @@ extern"C" {
 #include <ewl_dnd.h>
 
 #include <ewl_tree.h>
+#include <ewl_tree2.h>
 
 #ifdef __cplusplus
 }

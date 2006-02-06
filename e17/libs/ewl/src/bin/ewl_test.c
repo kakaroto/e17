@@ -282,6 +282,13 @@ main(int argc, char **argv)
 			"Defines a widget for laying out other\n"
 				"widgets in a tree or list like manner."
 		},
+		{
+			"Tree2",
+		 	__create_tree2_test_window,
+		 	"ewl_tree2_test.c",
+			"Defines a widget for laying out other\n"
+				"widgets in a tree or list like manner."
+		},
 		{ 0, NULL, 0, NULL }
 	};
 

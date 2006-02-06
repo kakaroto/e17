@@ -49,6 +49,7 @@ EWLHEADERS = \
 	ewl_menu_base.h \
 	ewl_menu_item.h \
 	ewl_misc.h \
+	ewl_model.h \
 	ewl_notebook.h \
 	ewl_object.h \
 	ewl_overlay.h \
@@ -70,6 +71,7 @@ EWLHEADERS = \
 	ewl_tree.h \
 	ewl_tree2.h \
 	ewl_theme.h \
+	ewl_view.h \
 	ewl_widget.h \
 	ewl_window.h
 
@@ -114,6 +116,7 @@ EWLSOURCES= \
 	ewl_menu_base.c \
 	ewl_menu_item.c \
 	ewl_misc.c \
+	ewl_model.c \
 	ewl_notebook.c \
 	ewl_object.c \
 	ewl_overlay.c \
@@ -135,6 +138,7 @@ EWLSOURCES= \
 	ewl_theme.c \
 	ewl_tree.c \
 	ewl_tree2.c \
+	ewl_view.c \
 	ewl_widget.c \
 	ewl_window.c \
 	ewl_private.h \

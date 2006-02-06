@@ -48,7 +48,8 @@ ewl_test_SOURCES		=	ewl_test.h \
 					ewl_text_editor_test.c \
 					ewl_theme_test.c \
 					ewl_tooltip_test.c \
-					ewl_tree_test.c
+					ewl_tree_test.c \
+					ewl_tree2_test.c
 
 # ewl_test_LDFLAGS		=	
 ewl_test_LDADD			=	$(top_builddir)/src/lib/libewl.la @EDJE_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ @EMOTION_LIBS@ 

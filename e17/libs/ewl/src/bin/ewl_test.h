@@ -65,4 +65,4 @@ void __create_text_editor_test_window	(Ewl_Widget * w, void *ev_data, void *user
 void __create_theme_test_window         (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_tooltip_test_window       (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_tree_test_window          (Ewl_Widget * w, void *ev_data, void *user_data);
-
+void __create_tree2_test_window         (Ewl_Widget * w, void *ev_data, void *user_data); 
