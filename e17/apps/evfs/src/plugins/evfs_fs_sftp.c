@@ -48,6 +48,8 @@ typedef struct {
 } evfs_file_info;
 
 static long sftp_file_request_id = 1;
+static long sftp_open_handle_id = 1;
+static Ecore_Hash* sftp_open_handles = NULL;
 
 /*----------------------------------------------------------------*/
 #if     __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 8)
@@ -93,6 +95,13 @@ sftp_request_id_get_next()
 {
    sftp_file_request_id++;
    return sftp_file_request_id;
+}
+
+long
+sftp_open_handle_get_next()
+{
+   sftp_open_handle_id++;
+   return sftp_open_handle_id;
 }
 
 
@@ -192,12 +201,32 @@ typedef struct
 
 typedef struct 
 {
+	char* host;
+	int version;
+	int reference_count;
+	int status;
+	Ecore_Exe* ssh_conn;
+	Ecore_Hash* handle_hash;
+	Ecore_Hash* id_open_hash;
+
+	char* packet_cache;
+	int packet_cache_size;
+	int packet_length;
+} SftpConnection;
+
+typedef struct 
+{
 	char                *sftp_handle;
 	int                  sftp_handle_len;
-	unsigned long int    offset;
-	unsigned int                 info_alloc;
-	unsigned int                 info_read_ptr;
-	unsigned int                 info_write_ptr;
+	
+	uint64    offset;
+	uint64                 info_alloc;
+	uint64                info_read_ptr;
+	uint64                info_write_ptr;
+
+	long int_id;
+
+	SftpConnection* conn;
 } SftpOpenHandle;
 
 typedef enum {
@@ -220,20 +249,7 @@ typedef enum
 	SFTP_CLOSED
 } sftp_connection_status;
 
-typedef struct 
-{
-	char* host;
-	int version;
-	int reference_count;
-	int status;
-	Ecore_Exe* ssh_conn;
-	Ecore_Hash* handle_hash;
-	Ecore_Hash* id_open_hash;
 
-	char* packet_cache;
-	int packet_cache_size;
-	int packet_length;
-} SftpConnection;
 
 
 
@@ -324,6 +340,13 @@ void buffer_write_int(Buffer* buf, int data)
 	buffer_write(buf, &w_data, sizeof(int));
 }
 
+void buffer_write_long(Buffer* buf, uint64 data)
+{
+	uint64 w_data = UINT64_TO_BE(data);
+	printf("Post-be-long::::::: %ld\n", w_data);
+	buffer_write(buf, &w_data, sizeof(uint64));
+}
+
 void buffer_write_block(Buffer* buf, const char* ptr, int len)
 {
 	buffer_write_int(buf,len);
@@ -338,12 +361,67 @@ void buffer_write_string(Buffer* buf, const char* data)
 	buffer_write_block(buf,data,len);
 }
 
+void buffer_write_attributes(Buffer* buf)
+{
+	buffer_write_int(buf, 0);
+}
+
 #define SSH_PROGRAM "/usr/bin/ssh"
 typedef enum {
 	SFTP_VENDOR_INVALID = 0,
 	SFTP_VENDOR_OPENSSH,
 	SFTP_VENDOR_SSH
 } SFTPClientVendor;
+
+int
+sftp_file_open(SftpConnection* conn, char* filename, int attr)
+{
+	Buffer msg;
+	int nid;
+
+	nid = sftp_request_id_get_next();
+	buffer_init(&msg);
+	buffer_write_char(&msg, SSH2_FXP_OPEN);
+	buffer_write_int(&msg, nid);
+	buffer_write_string(&msg, filename);
+	buffer_write_int(&msg, SSH2_FXF_READ | SSH2_FXF_WRITE | SSH2_FXF_CREAT);
+	
+	buffer_write_attributes(&msg);
+	buffer_send(&msg, conn->ssh_conn);
+
+	return nid;
+	
+}
+
+int
+sftp_file_write(SftpOpenHandle* handle, char* bytes, int size)
+{
+	Buffer msg;
+	int nid;
+
+	nid = sftp_request_id_get_next();
+	buffer_init(&msg);
+
+	/*Write type*/
+	buffer_write_char(&msg, SSH2_FXP_WRITE);
+
+	/*Write id*/
+	buffer_write_int(&msg, nid);
+
+	/*Write handle*/
+	buffer_write_block(&msg, handle->sftp_handle, handle->sftp_handle_len);
+
+	/*Write offset*/
+	printf("   [*****] Write offset %ld\n", handle->info_write_ptr);
+	buffer_write_long(&msg, handle->info_write_ptr);
+	handle->info_write_ptr += size; /*FIXME do we want to update it here, and assume
+					  the server has written the bytes? */
+
+	buffer_write_block(&msg, bytes, size);
+
+	buffer_send(&msg, handle->conn->ssh_conn);
+	
+}
 
 
 int sftp_open_dir(SftpConnection* conn, char* dir)
@@ -471,7 +549,7 @@ void sftp_handle_status(SftpConnection* conn, char** c) {
 	rhandle = ecore_hash_get(conn->id_open_hash, (int*)id);
 
 	printf("Rhandle is %p\n", rhandle);
-	rhandle->status = READ_FINISHED;
+	if (rhandle) rhandle->status = READ_FINISHED;
 }
 
 
@@ -495,9 +573,9 @@ sftp_exe_data(void *data, int type, void *event)
 	conn->packet_length = length;
 	/*printf("Init new packet, Length: %d\n", length);*/
 
-   	conn->packet_cache = malloc(ev->size-4 );
-	conn->packet_cache_size = ev->size-4 ;
-	memcpy(conn->packet_cache, ev->data+4, ev->size-4 );
+   	conn->packet_cache = malloc(ev->size- sizeof(int) );
+	conn->packet_cache_size = ev->size- sizeof(int) ;
+	memcpy(conn->packet_cache, ev->data+ sizeof(int), ev->size- sizeof(int) );
 
 	//printf("Max byte is %d %d %d\n", *((int*)ev->data+4094), *((int*)ev->data+4095), *((int*)ev->data+4096));
    } else {
@@ -566,6 +644,7 @@ int evfs_file_read(evfs_client * client, evfs_filereference * file,
 int evfs_file_write(evfs_filereference * file, char *bytes, long size);
 int evfs_file_create(evfs_filereference * file);
 int evfs_file_remove(char *file);
+int evfs_file_stat(evfs_command* command, struct stat *dst_stat, int);
 
 int
 evfs_client_disconnect(evfs_client * client)
@@ -585,19 +664,20 @@ evfs_plugin_init()
 
    functions->evfs_dir_list = &evfs_dir_list;
    functions->evfs_client_disconnect = &evfs_client_disconnect;
-   /*functions->evfs_file_open = &evfs_file_open;
-   functions->evfs_file_close = &evfs_file_close;
-   functions->evfs_file_seek = &evfs_file_seek;
-   functions->evfs_file_read = &evfs_file_read;
-   functions->evfs_file_write = &evfs_file_write;
+   functions->evfs_file_open = &evfs_file_open;
    functions->evfs_file_create = &evfs_file_create;
-   functions->evfs_file_stat = &smb_evfs_file_stat;
-   functions->evfs_file_lstat = &smb_evfs_file_stat; 
-   functions->evfs_file_mkdir = &smb_evfs_file_mkdir;
+   functions->evfs_file_close = &evfs_file_close;
+   /*functions->evfs_file_seek = &evfs_file_seek;
+   functions->evfs_file_read = &evfs_file_read;*/
+   functions->evfs_file_write = &evfs_file_write;
+   functions->evfs_file_stat = &evfs_file_stat;
+   functions->evfs_file_lstat = &evfs_file_stat; 
+   /*functions->evfs_file_mkdir = &smb_evfs_file_mkdir;
    functions->evfs_file_remove = &evfs_file_remove;
    */
 
    sftp_connection_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+   sftp_open_handles = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 
    /*Init the data receive functions*/
    ecore_event_handler_add(ECORE_EXE_EVENT_DATA, sftp_exe_data, NULL);
@@ -613,6 +693,85 @@ evfs_plugin_uri_get()
    return "sftp";
 }
 
+void sftp_split_host_path(char* input, char** host, char** path) 
+{
+	int host_len = strchr(input + 1, '/') - 1 - input;
+	*host = malloc(host_len+1);
+	strncpy(*host, input + 1, host_len);
+
+	*path = strdup( input + 
+			( strchr(input + 1, '/') -
+			  input)) ;
+}
+
+int
+evfs_file_create(evfs_filereference* file) 
+{
+	return evfs_file_open(NULL, file);
+}
+
+int
+evfs_file_stat(evfs_command* command, struct stat *dst_stat, int i)
+{
+	return EVFS_ERROR;
+}
+
+int
+evfs_file_open(evfs_client * client, evfs_filereference * file) 
+{
+	SftpConnection* conn;
+	char* host, *path;
+	int rid;
+	SftpOpenHandle* handle;
+
+
+	sftp_split_host_path(file->path, &host, &path);
+	
+	
+	if ( !(conn = sftp_get_connection_for_host(host))) {
+		conn = sftp_connect(host);
+	}
+
+	while (conn->status == SFTP_INIT) {
+		ecore_main_loop_iterate();
+		usleep(10);		
+	}
+
+	printf("Opening file '%s' with sftp..\n", file->path);
+	rid = sftp_file_open(conn, path, 0);
+
+	/*Wait till we have a handle*/
+	/*FIXME - is there a better way of waiting-till-event in ecore?*/
+	while (! (handle = ecore_hash_get(conn->handle_hash, (int*)rid))) {
+		ecore_main_loop_iterate();
+		usleep(10);
+	}
+	file->fd = sftp_open_handle_get_next();
+	handle->int_id = file->fd;
+	handle->conn = conn;
+	ecore_hash_set(sftp_open_handles, (long*)file->fd, handle);
+
+	printf("Opened!\n");
+
+	return file->fd;
+}
+
+int evfs_file_close(evfs_filereference * file) {
+	printf("SFTP_CLOSE: STUB\n");
+}
+
+int evfs_file_write(evfs_filereference * file, char *bytes, long size) {
+	SftpOpenHandle* handle;
+
+
+	handle = ecore_hash_get(sftp_open_handles, (long*)file->fd);
+	if (handle) {
+		sftp_file_write(handle, bytes, size);
+	} else {
+		printf("Could not find handle for write!\n");
+	}
+}
+
 void
 evfs_dir_list(evfs_client * client, evfs_command * command,
                   /*Returns.. */
@@ -624,15 +783,10 @@ evfs_dir_list(evfs_client * client, evfs_command * command,
 	SftpReadDirHandle* rhandle = NULL;
 	evfs_file_info* file;
 	
-	char* host = strndup(command->file_command.files[0]->path + 1, 
-			strchr(command->file_command.files[0]->path + 1, '/') - 1 - 
-			command->file_command.files[0]->path);
-	
-	char* schar = strdup( command->file_command.files[0]->path + 
-			( strchr(command->file_command.files[0]->path + 1, '/') -
-			  command->file_command.files[0]->path)) ;
-
+	char* host, *schar;
 	SftpConnection* conn = NULL;
+
+	sftp_split_host_path(command->file_command.files[0]->path, &host,&schar);
 
 	printf("Original: %s\n", command->file_command.files[0]->path);
 	printf("Listing directory '%s' on host '%s', using sftp\n", schar, host );
@@ -684,8 +838,6 @@ evfs_dir_list(evfs_client * client, evfs_command * command,
 
 	}
 	ecore_list_destroy(rhandle->file_list);
-	
-
 
 	free(host);
 
@@ -739,5 +891,6 @@ SftpConnection* sftp_connect(char* host) {
 
 	return connection;
 }
+
 
 
