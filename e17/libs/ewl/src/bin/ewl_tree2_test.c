@@ -81,6 +81,7 @@ tree2_test_data_header_fetch(void *data __UNUSED__, unsigned int column)
 		ewl_label_text_set(EWL_LABEL(l), "Title");
 	else
 		ewl_label_text_set(EWL_LABEL(l), "Button");
+	ewl_callback_append(l, EWL_CALLBACK_CONFIGURE, ewl_widget_print, NULL);
 	ewl_widget_show(l);
 
 	return l;
@@ -181,6 +182,7 @@ __create_tree2_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 
 	tree = ewl_tree2_new();
 	ewl_container_child_append(EWL_CONTAINER(box), tree);
+	ewl_object_fill_policy_set(EWL_OBJECT(tree), EWL_FLAG_FILL_ALL);
 	ewl_tree2_data_set(EWL_TREE2(tree), data);
 	ewl_widget_show(tree);
 

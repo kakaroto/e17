@@ -48,24 +48,19 @@ ewl_tree2_init(Ewl_Tree2 *tree)
 	ewl_widget_appearance_set(EWL_WIDGET(tree), EWL_TREE2_TYPE);
 	ewl_widget_inherit(EWL_WIDGET(tree), EWL_TREE2_TYPE);
 
+	ewl_object_fill_policy_set(EWL_OBJECT(tree), EWL_FLAG_FILL_ALL);
+
 	tree->columns = ecore_list_new();
 	ecore_list_set_free_cb(tree->columns, ewl_tree2_cb_column_free);
 
 	tree->mode = EWL_TREE_MODE_NONE;
 
-{
-Ewl_Widget *l;
-l = ewl_label_new();
-ewl_label_text_set(EWL_LABEL(l), "TEST");
-ewl_container_child_append(EWL_CONTAINER(tree), l);
-ewl_widget_show(l);
-}
-
-	tree->header = ewl_hpaned_new();
+	tree->header = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(tree), tree->header);
 	ewl_widget_appearance_set(EWL_WIDGET(tree->header), "tree_header");
 	ewl_object_fill_policy_set(EWL_OBJECT(tree->header), 
 				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
+	ewl_callback_append(tree->header, EWL_CALLBACK_CONFIGURE, ewl_widget_print, NULL);
 	ewl_widget_show(tree->header);
 
 	tree->rows = ewl_vbox_new();
@@ -426,6 +421,11 @@ ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__
 		}
 	}
 
+ewl_widget_print(EWL_WIDGET(tree));
+
+	ewl_object_place(EWL_OBJECT(tree->header), CURRENT_X(tree), CURRENT_Y(tree), CURRENT_X(tree), CURRENT_H(tree));
+	ewl_widget_configure(tree->header);
+
 	/* if none of the models are dirty we are done */
 	if (!dirty) DRETURN(DLEVEL_STABLE);
 
@@ -464,8 +464,10 @@ ewl_tree2_cb_child_resize(Ewl_Container *c, Ewl_Widget *w __UNUSED__,
 	ewl_object_preferred_size_get(EWL_OBJECT(tree->header), &hw, &hh);
 	ewl_object_preferred_size_get(EWL_OBJECT(tree->rows), &rw, &rh);
 
-	ewl_object_preferred_inner_size_set(EWL_OBJECT(tree), 
-					((hw > rw) ? hw : rw), hh + rh);
+	ewl_object_preferred_inner_size_set(EWL_OBJECT(tree), hw, hh + rh);
+
+	ewl_object_place(EWL_OBJECT(tree->header), CURRENT_X(tree), CURRENT_Y(tree), hw, hh);
+	ewl_object_place(EWL_OBJECT(tree->rows), CURRENT_X(tree), CURRENT_Y(tree) + hh, rw, rh);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
