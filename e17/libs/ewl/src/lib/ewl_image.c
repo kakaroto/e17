@@ -88,18 +88,73 @@ ewl_image_init(Ewl_Image *i)
 }
 
 /**
+ * @param i: The image to set the file into
+ * @param path: The path to set into the image
+ * @return Returns no value.
+ */
+void
+ewl_image_file_path_set(Ewl_Image *i, const char *path)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("i", i);
+	DCHECK_PARAM_PTR("path", path);
+	DCHECK_TYPE("i", i, EWL_IMAGE_TYPE);
+
+	ewl_image_file_set(i, path, i->key);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * @param i: the image widget to get the file of
  * @return Returns the currently set filename
  * @brief get the filename this image uses
  */
 const char *
-ewl_image_file_get(Ewl_Image *i)
+ewl_image_file_path_get(Ewl_Image *i)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("i", i, NULL);
 	DCHECK_TYPE_RET("i", i, EWL_IMAGE_TYPE, NULL);
 
 	DRETURN_PTR(i->path, DLEVEL_STABLE);
+}
+
+/**
+ * @param i: The image to set the key into
+ * @param key: The key to set into the image
+ * @return Returns no value.
+ */
+void
+ewl_image_file_key_set(Ewl_Image *i, const char *key)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("i", i);
+	DCHECK_TYPE("i", i, EWL_IMAGE_TYPE);
+
+	if (i->path)
+		ewl_image_file_set(i, i->path, key);
+	else
+	{
+		IF_FREE(i->key);
+		if (key) i->key = strdup(key);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param i: The image to get the key from
+ * @return Returns the key used for this image
+ */
+const char *
+ewl_image_file_key_get(Ewl_Image *i)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("i", i, NULL);
+	DCHECK_TYPE_RET("i", i, EWL_IMAGE_TYPE, NULL);
+
+	DRETURN_PTR(i->key, DLEVEL_STABLE);
 }
 
 /**

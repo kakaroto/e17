@@ -149,7 +149,7 @@ ewl_menu_item_image_get(Ewl_Menu_Item *item)
 	DCHECK_TYPE_RET("item", item, EWL_MENU_ITEM_TYPE, NULL);
 
 	if (item->icon && ewl_widget_type_is(item->icon, "image"))
-		DRETURN_PTR(ewl_image_file_get(EWL_IMAGE(item->icon)), 
+		DRETURN_PTR(ewl_image_file_path_get(EWL_IMAGE(item->icon)), 
 				DLEVEL_STABLE);
 
 	DRETURN_PTR(NULL, DLEVEL_STABLE);

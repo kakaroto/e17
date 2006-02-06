@@ -142,7 +142,7 @@ ewl_icon_image_file_get(Ewl_Icon *icon)
 	DCHECK_TYPE_RET("icon", icon, EWL_ICON_TYPE, NULL);
 
 	if (icon->preview)
-		file = ewl_image_file_get(EWL_IMAGE(icon->preview));
+		file = ewl_image_file_path_get(EWL_IMAGE(icon->preview));
 
 	DRETURN_PTR(file, DLEVEL_STABLE);
 }

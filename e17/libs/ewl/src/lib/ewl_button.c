@@ -248,7 +248,7 @@ ewl_button_image_get(Ewl_Button *b)
 	if (!b->image_object)
 		file = NULL;
 	else 
-		file = ewl_image_file_get(EWL_IMAGE(b->image_object));
+		file = ewl_image_file_path_get(EWL_IMAGE(b->image_object));
 
 	DRETURN_PTR(file, DLEVEL_STABLE);
 }

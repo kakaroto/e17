@@ -76,12 +76,12 @@ tree2_test_data_header_fetch(void *data __UNUSED__, unsigned int column)
 	Ewl_Widget *l;
 
 	l = ewl_label_new();
-
 	if (column == 0)
 		ewl_label_text_set(EWL_LABEL(l), "Title");
+	else if (column == 1)
+		ewl_label_text_set(EWL_LABEL(l), "Image");
 	else
 		ewl_label_text_set(EWL_LABEL(l), "Button");
-	ewl_callback_append(l, EWL_CALLBACK_CONFIGURE, ewl_widget_print, NULL);
 	ewl_widget_show(l);
 
 	return l;
@@ -105,6 +105,9 @@ tree2_test_data_fetch(void *data, unsigned int row, unsigned int column)
 
 	if (column == 0)
 		val = d->rows[row]->text;
+	
+	else if (column == 1)
+		val = d->rows[row]->image;
 
 	else if (column == 1)
 		val = d->rows[row];
@@ -192,7 +195,13 @@ __create_tree2_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	ewl_view_assign_set(view, EWL_VIEW_ASSIGN(ewl_label_text_set));
 	ewl_tree2_column_append(EWL_TREE2(tree), model, view);
 
-	/* create a view for the second column that has a custom widget */
+	/* create a view for the second column that just has an ewl image */
+	view = ewl_view_new();
+	ewl_view_constructor_set(view, ewl_image_new);
+	ewl_view_assign_set(view, EWL_VIEW_ASSIGN(ewl_image_file_path_set));
+	ewl_tree2_column_append(EWL_TREE2(tree), model, view);
+
+	/* create a view for the third column that has a custom widget */
 	view = ewl_view_new();
 	ewl_view_constructor_set(view, tree2_test_custom_new);
 	ewl_view_assign_set(view, tree2_test_custom_assign_set);

@@ -55,12 +55,11 @@ ewl_tree2_init(Ewl_Tree2 *tree)
 
 	tree->mode = EWL_TREE_MODE_NONE;
 
-	tree->header = ewl_hbox_new();
+	tree->header = ewl_hpaned_new();
 	ewl_container_child_append(EWL_CONTAINER(tree), tree->header);
 	ewl_widget_appearance_set(EWL_WIDGET(tree->header), "tree_header");
 	ewl_object_fill_policy_set(EWL_OBJECT(tree->header), 
 				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
-	ewl_callback_append(tree->header, EWL_CALLBACK_CONFIGURE, ewl_widget_print, NULL);
 	ewl_widget_show(tree->header);
 
 	tree->rows = ewl_vbox_new();
@@ -421,9 +420,10 @@ ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__
 		}
 	}
 
-ewl_widget_print(EWL_WIDGET(tree));
-
-	ewl_object_place(EWL_OBJECT(tree->header), CURRENT_X(tree), CURRENT_Y(tree), CURRENT_X(tree), CURRENT_H(tree));
+	/* place the header */
+	ewl_object_place(EWL_OBJECT(tree->header), CURRENT_X(tree), 
+				CURRENT_Y(tree), CURRENT_W(tree), 
+				CURRENT_H(tree));
 	ewl_widget_configure(tree->header);
 
 	/* if none of the models are dirty we are done */
