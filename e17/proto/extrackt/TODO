@@ -1,0 +1,101 @@
+TODO:
+- remove all warnings
+
+- search for rippers / encoders and display erros if none are found
+
+- use two state buttons for the rip, rip+encode,
+  button_label("rip") =>pressed=> button_label("abort ripping") a 
+  reddish button
+  
+- fix all the FIXME's :)
+
+- recheck the logic on command.c
+
+- create utils.c, string.c
+
+- add a button to restore application default config.
+
+- clarify the data passing between the config and the extrackt config
+  cddb server in config should be referenced into the cddb struct of
+  extrackt like the ripper, encoder?
+  some cd config should be replicated to the extrackt disc info??
+  clean this up :)
+  
+- when reloading config, we need to COMPLETELY free all the ex->config.*
+
+- supress stdout/err output
+
+- add warning / dialogs when closing app while its working
+
+- make buttons play / pause / stop (mutex with ripping)
+
+- add more options
+
+- do all sorts of fancy stuff
+
++ make the abort buttons work
+  * DONE
+
++ add all the cd tokens to translate to disc data, %g, %e, etc
+  * DONE
+
++ make all progress bars work properly
+  * current rip DONE
+  * overall rip DONE 
+  * current encode DONE } both of this might be cleared to zero when we click  
+  * overall encode DONE } the button rip+encode
+  
+- finish Help / About
+  * DONE (about) (after we release cvs, make it fetch from REAME / AUTHORS)  
+
++ add configuration purger (use config versioning)
+  * DONE
+
++ make save button for the config, to set the values from the gui to the config
+  structs. like on exit
+  * DONE  
+
++ segv when closing app. is this enhance related (new free function)?
+  * DONE (no need to use free now)
+
++ when inserting cddb lookup info into tree, dont wipe it out or we lose
+  the current track selection, update fields instead.
+  * DONE
+
++ have templates for: cdparanoia, cdda2wav
+  * DONE lame, ogg123, cdparanoia, cdda2wav
+
++ add id3 information into encoded tracks
+  * DONE, the cmd line options have to be set to use it
+  
++ remove wav files after we encode them (optional)
+  * DONE
+
++ add more infp to the status bar (tracks left, tracks done)
+  * DONE
+
++ add discdb server settings and use them
+  * DONE
+
++ clear ex->rip.curr_track and ex->encode.curr_track after finishing
+  (set track num to -1 so we know nothing is happening)
+  * DONE
+
++ when ripping/encoding if the output dir doesnt exists, create it
+  * DONE
+
++ integrate with enhance
+  * DONE
+
++ do not allow multiple encodes at once:
+  * TESTED, i think its done
+  
++ if no tracks are selected, rip / encode all tracks
+  * DONE
+  
++ config->cd MUST be used (at least device settings + polling) 
+  * cdrom IN USE
+  * polling/polling interval IN USE
+  
++ add statusbar and reflect application state there (ripping / encoding...)
+  * DONE

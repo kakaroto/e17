@@ -1,0 +1,90 @@
+#define CONTROL_BUTTON(icon_name) \
+   images { \
+      image: icon_name".png" COMP; \
+   } \
+   group { \
+      name: icon_name; \
+      min: 13 13; \
+      max: 13 13; \
+      parts { \
+         part { \
+            name: "icon"; \
+            description { \
+               state: "default" 0.0; \
+               rel1 { \
+                  relative: 0.0 0.0; \
+                  offset: 0 0; \
+               } \
+               rel2 { \
+                  relative: 1.0 1.0; \
+                  offset: -1 -1; \
+               } \
+               image { \
+                  normal: icon_name".png"; \
+               } \
+               fill { \
+                  smooth: 1; \
+               } \
+            } \
+         } \
+      } \
+   }
+
+collections {
+   CONTROL_BUTTON("back");
+   CONTROL_BUTTON("cd");
+   CONTROL_BUTTON("cddb");
+   CONTROL_BUTTON("check");
+   CONTROL_BUTTON("discdb0");
+   CONTROL_BUTTON("discdb1");
+   CONTROL_BUTTON("edit");
+   CONTROL_BUTTON("eject");
+   CONTROL_BUTTON("enc0");
+   CONTROL_BUTTON("enc1");
+   CONTROL_BUTTON("enc2");
+   CONTROL_BUTTON("enc3");
+   CONTROL_BUTTON("forward");
+   CONTROL_BUTTON("gcd");
+   CONTROL_BUTTON("grip");
+   CONTROL_BUTTON("gripicon");
+   CONTROL_BUTTON("griptray");
+   CONTROL_BUTTON("list");
+   CONTROL_BUTTON("loop");
+   CONTROL_BUTTON("lowleft");
+   CONTROL_BUTTON("lowright");
+   CONTROL_BUTTON("mail");
+   CONTROL_BUTTON("menunext");
+   CONTROL_BUTTON("menupause");
+   CONTROL_BUTTON("menuplay");
+   CONTROL_BUTTON("menuprev");
+   CONTROL_BUTTON("menustop");
+   CONTROL_BUTTON("minmax");
+   CONTROL_BUTTON("mute");
+   CONTROL_BUTTON("next");
+   CONTROL_BUTTON("noloop");
+   CONTROL_BUTTON("play");
+   CONTROL_BUTTON("playlist");
+   CONTROL_BUTTON("playnorm");
+   CONTROL_BUTTON("random");
+   CONTROL_BUTTON("rewind");
+   CONTROL_BUTTON("rip0");
+   CONTROL_BUTTON("rip1");
+   CONTROL_BUTTON("rip2");
+   CONTROL_BUTTON("rip3");
+   CONTROL_BUTTON("rotate");
+   CONTROL_BUTTON("save");
+   CONTROL_BUTTON("shutdown");
+   CONTROL_BUTTON("smile1");
+   CONTROL_BUTTON("smile2");
+   CONTROL_BUTTON("smile3");
+   CONTROL_BUTTON("smile4");
+   CONTROL_BUTTON("smile5");
+   CONTROL_BUTTON("smile6");
+   CONTROL_BUTTON("smile7");
+   CONTROL_BUTTON("smile8");
+   CONTROL_BUTTON("stop");
+   CONTROL_BUTTON("test");
+   CONTROL_BUTTON("upleft");
+   CONTROL_BUTTON("upright");   
+}
+
