@@ -90,7 +90,7 @@ GNUC_EXTENSION typedef unsigned long long uint64;
 	(uint64) INT64_CONSTANT (0xff00000000000000U)) >> 56)))
 
 
-int
+long
 sftp_request_id_get_next()
 {
    sftp_file_request_id++;
@@ -230,16 +230,23 @@ typedef struct
 } SftpOpenHandle;
 
 typedef enum {
-	READ_PROGRESS,
-	READ_FINISHED
+	STATUS_PROGRESS,
+	STATUS_FINISHED
 } SftpReadStatus;
+
 
 typedef struct 
 {
 	SftpOpenHandle* open_handle;
 	Ecore_List* file_list;
 	int status;
-} SftpReadDirHandle;
+} SftpGenericHandle;
+
+/*typedef struct 
+{
+	SftpOpenHandle* open_handle;
+	int status;
+} SftpWriteFileHandle;*/
 
 
 typedef enum
@@ -377,7 +384,7 @@ int
 sftp_file_open(SftpConnection* conn, char* filename, int attr)
 {
 	Buffer msg;
-	int nid;
+	long nid;
 
 	nid = sftp_request_id_get_next();
 	buffer_init(&msg);
@@ -393,13 +400,23 @@ sftp_file_open(SftpConnection* conn, char* filename, int attr)
 	
 }
 
-int
+SftpGenericHandle*
 sftp_file_write(SftpOpenHandle* handle, char* bytes, int size)
 {
 	Buffer msg;
-	int nid;
+	long nid;
+	SftpGenericHandle* rhandle;
 
 	nid = sftp_request_id_get_next();
+
+	/*Create a handle for this op*/
+	rhandle = NEW(SftpGenericHandle);
+	rhandle->open_handle = handle;
+	rhandle->status = STATUS_PROGRESS;
+	printf("      ** Wrote rhandle for write: %d\n", nid);
+	ecore_hash_set(handle->conn->id_open_hash, (int*)nid, rhandle);
+
+	
 	buffer_init(&msg);
 
 	/*Write type*/
@@ -420,6 +437,8 @@ sftp_file_write(SftpOpenHandle* handle, char* bytes, int size)
 	buffer_write_block(&msg, bytes, size);
 
 	buffer_send(&msg, handle->conn->ssh_conn);
+
+	return rhandle;
 	
 }
 
@@ -440,16 +459,16 @@ int sftp_open_dir(SftpConnection* conn, char* dir)
 	return nid;
 }
 
-SftpReadDirHandle* sftp_read_dir(SftpConnection* conn, SftpOpenHandle* handle, SftpReadDirHandle* read)
+SftpGenericHandle* sftp_read_dir(SftpConnection* conn, SftpOpenHandle* handle, SftpGenericHandle* read)
 {
-	SftpReadDirHandle *rhandle = NULL;
+	SftpGenericHandle *rhandle = NULL;
 	
 	if (!read) {
-		rhandle = NEW(SftpReadDirHandle);
+		rhandle = NEW(SftpGenericHandle);
 
 		rhandle->open_handle = handle;
 		rhandle->file_list = ecore_list_new();
-		rhandle->status = READ_PROGRESS;
+		rhandle->status = STATUS_PROGRESS;
 	} else {
 		rhandle = read;
 	}
@@ -499,7 +518,7 @@ void sftp_read_handle(SftpConnection* conn, char **c) {
 
 void sftp_read_names(SftpConnection* conn, char** c) {
 	int id,count,i;
-	SftpReadDirHandle *rhandle;
+	SftpGenericHandle *rhandle;
 	
 	/*Read the identifier*/
 	id = read_int32(c);
@@ -540,7 +559,7 @@ void sftp_read_names(SftpConnection* conn, char** c) {
 
 void sftp_handle_status(SftpConnection* conn, char** c) {
 	int id;
-	SftpReadDirHandle* rhandle;
+	SftpGenericHandle* rhandle;
 	
 	/*Read the identifier*/
 	id = read_int32(c);
@@ -549,7 +568,7 @@ void sftp_handle_status(SftpConnection* conn, char** c) {
 	rhandle = ecore_hash_get(conn->id_open_hash, (int*)id);
 
 	printf("Rhandle is %p\n", rhandle);
-	if (rhandle) rhandle->status = READ_FINISHED;
+	if (rhandle) rhandle->status = STATUS_FINISHED;
 }
 
 
@@ -766,9 +785,20 @@ int evfs_file_write(evfs_filereference * file, char *bytes, long size) {
 
 	handle = ecore_hash_get(sftp_open_handles, (long*)file->fd);
 	if (handle) {
-		sftp_file_write(handle, bytes, size);
+		SftpGenericHandle* whandle = sftp_file_write(handle, bytes, size);
+
+		while (! (whandle->status == STATUS_FINISHED)) {
+			ecore_main_loop_iterate();
+			usleep(2);
+		}
+
+		free(whandle);
+
+		return size;
+
 	} else {
 		printf("Could not find handle for write!\n");
+		return -1;
 	}
 }
 
@@ -780,7 +810,7 @@ evfs_dir_list(evfs_client * client, evfs_command * command,
 	int rid;
 	
 	SftpOpenHandle* handle = NULL;
-	SftpReadDirHandle* rhandle = NULL;
+	SftpGenericHandle* rhandle = NULL;
 	evfs_file_info* file;
 	
 	char* host, *schar;
@@ -814,7 +844,7 @@ evfs_dir_list(evfs_client * client, evfs_command * command,
 	printf("Time to send readdirs...\n");
 	rhandle = sftp_read_dir(conn, handle,NULL);
 
-	while (! (rhandle->status == READ_FINISHED)) {
+	while (! (rhandle->status == STATUS_FINISHED)) {
 		ecore_main_loop_iterate();
 		usleep(10);
 			
