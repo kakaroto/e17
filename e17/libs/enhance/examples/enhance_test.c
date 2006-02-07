@@ -14,7 +14,6 @@ int
 on_window1_delete_event(void *data)
 {
    etk_main_quit();
-   enhance_free(en);
    enhance_shutdown();
    return 1;
 }
@@ -37,7 +36,7 @@ int main(void)
    en = enhance_new();      
    enhance_callback_data_set(en, "rip_only_clicked", &data);
    
-   enhance_file_load(en, "window1", "email.glade");
+   enhance_file_load(en, "window1", "extrackt.glade");
    
    data2 = enhance_callback_data_get(en, "rip_only_clicked");
    *data2 = string2;
