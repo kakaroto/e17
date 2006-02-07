@@ -1,0 +1,43 @@
+# Italian translation for E17 snow module.
+# This file is put in the public domain.
+# Massimo Maiurana <maiurana@inwind.it>, 2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Snow\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-02-07 13:40+0100\n"
+"PO-Revision-Date: 2006-02-07 13:55+0100\n"
+"Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: e_mod_config.c:47
+msgid "Snow Configuration"
+msgstr "Configurazione modulo Snow"
+
+#: e_mod_config.c:104
+msgid "Show Trees"
+msgstr "Mostra alberi"
+
+#: e_mod_config.c:108
+msgid "Snow Density"
+msgstr "Intensità della nevicata"
+
+#: e_mod_config.c:110
+msgid "Sparse"
+msgstr "Leggera"
+
+#: e_mod_config.c:114
+msgid "Dense"
+msgstr "Intensa"
+
+#: e_mod_main.c:86
+msgid "Enlightenment Snow Module"
+msgstr "Modulo Snow di Enlightenment"
+
+#: e_mod_main.c:87
+msgid "This is a snow module that may replace xsnow."
+msgstr "Questo è un modulo per la neve che può sostituire xsnow."
