@@ -23,7 +23,7 @@
 #define TRUE 1
 #define URI_SEP "#"
 #define EVFS_META_DIR_NAME  ".e_meta"
-#define COPY_BLOCKSIZE 4096
+#define COPY_BLOCKSIZE 16384
 #define MAX_CLIENT 9999999
 
 #define EVFS_FUNCTION_MONITOR_START "evfs_monitor_start"
@@ -48,6 +48,44 @@ typedef enum
    EVFS_FS_OP_RECURSIVE = 2
 }
 EfsdFsOps;
+
+/*----------------------------------------------------------------*/
+#if     __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 8)
+#  define GNUC_EXTENSION __extension__
+#else
+#  define GNUC_EXTENSION
+#endif
+
+GNUC_EXTENSION typedef signed long long int64;
+GNUC_EXTENSION typedef unsigned long long uint64;
+
+
+
+#define INT64_CONSTANT(val)	(GNUC_EXTENSION (val##LL))
+
+#define INT32_TO_BE(val)	((unsigned int) ( \
+    (((unsigned int) (val) & (unsigned int) 0x000000ffU) << 24) | \
+    (((unsigned int) (val) & (unsigned int) 0x0000ff00U) <<  8) | \
+    (((unsigned int) (val) & (unsigned int) 0x00ff0000U) >>  8) | \
+    (((unsigned int) (val) & (unsigned int) 0xff000000U) >> 24)))
+
+#define UINT64_TO_BE(val)	((uint64) ( \
+      (((uint64) (val) &						\
+	(uint64) INT64_CONSTANT (0x00000000000000ffU)) << 56) |	\
+      (((uint64) (val) &						\
+	(uint64) INT64_CONSTANT (0x000000000000ff00U)) << 40) |	\
+      (((uint64) (val) &						\
+	(uint64) INT64_CONSTANT (0x0000000000ff0000U)) << 24) |	\
+      (((uint64) (val) &						\
+	(uint64) INT64_CONSTANT (0x00000000ff000000U)) <<  8) |	\
+      (((uint64) (val) &						\
+	(uint64) INT64_CONSTANT (0x000000ff00000000U)) >>  8) |	\
+      (((uint64) (val) &						\
+	(uint64) INT64_CONSTANT (0x0000ff0000000000U)) >> 24) |	\
+      (((uint64) (val) &						\
+	(uint64) INT64_CONSTANT (0x00ff000000000000U)) >> 40) |	\
+      (((uint64) (val) &						\
+	(uint64) INT64_CONSTANT (0xff00000000000000U)) >> 56)))
 
 #include "evfs_event.h"
 #include "evfs_server.h"

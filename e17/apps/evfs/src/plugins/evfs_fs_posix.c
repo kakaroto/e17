@@ -418,7 +418,7 @@ evfs_file_open(evfs_client * client, evfs_filereference * file)
 {
    //printf("Open file '%s'\n", file->path);
 
-   int fd = open(file->path, O_RDONLY);
+   int fd = open(file->path, O_RDONLY | O_LARGEFILE);
 
    //printf("Assigned fd %d\n", fd);
    file->fd = fd;

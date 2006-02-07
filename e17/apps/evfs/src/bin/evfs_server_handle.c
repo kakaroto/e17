@@ -365,7 +365,7 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
    evfs_plugin *dst_plugin;
 
    char bytes[COPY_BLOCKSIZE];
-   long count;
+   uint64 count;
    char destination_file[PATH_MAX];
    long read_write_bytes = 0;
 
@@ -394,7 +394,9 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
         /*Check for supported options */
         if (!(plugin->functions->evfs_file_lstat &&
               plugin->functions->evfs_file_open &&
-              dst_plugin->functions->evfs_file_create))
+              dst_plugin->functions->evfs_file_create &&
+	      plugin->functions->evfs_file_read &&
+	      dst_plugin->functions->evfs_file_write))
           {
              printf("AHH! Copy Not supported!\n");
              evfs_operation_destroy(op);
@@ -448,6 +450,8 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
                                                          files[1]);
 
              count = 0;
+
+	     printf("Copying file, total file size %lld bytes\n", file_stat.st_size);
              while (count < file_stat.st_size)
                {
                   //(*plugin->functions->evfs_file_seek)(command->file_command.files[0], count, SEEK_SET);

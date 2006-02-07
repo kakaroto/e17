@@ -40,6 +40,7 @@
 #include <errno.h>
 #include <dirent.h>
 #include <Ecore_File.h>
+#include <sys/stat.h>
 #include "sftp.h"
 
 typedef struct {
@@ -51,43 +52,7 @@ static long sftp_file_request_id = 1;
 static long sftp_open_handle_id = 1;
 static Ecore_Hash* sftp_open_handles = NULL;
 
-/*----------------------------------------------------------------*/
-#if     __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 8)
-#  define GNUC_EXTENSION __extension__
-#else
-#  define GNUC_EXTENSION
-#endif
 
-GNUC_EXTENSION typedef signed long long int64;
-GNUC_EXTENSION typedef unsigned long long uint64;
-
-
-
-#define INT64_CONSTANT(val)	(GNUC_EXTENSION (val##LL))
-
-#define INT32_TO_BE(val)	((unsigned int) ( \
-    (((unsigned int) (val) & (unsigned int) 0x000000ffU) << 24) | \
-    (((unsigned int) (val) & (unsigned int) 0x0000ff00U) <<  8) | \
-    (((unsigned int) (val) & (unsigned int) 0x00ff0000U) >>  8) | \
-    (((unsigned int) (val) & (unsigned int) 0xff000000U) >> 24)))
-
-#define UINT64_TO_BE(val)	((uint64) ( \
-      (((uint64) (val) &						\
-	(uint64) INT64_CONSTANT (0x00000000000000ffU)) << 56) |	\
-      (((uint64) (val) &						\
-	(uint64) INT64_CONSTANT (0x000000000000ff00U)) << 40) |	\
-      (((uint64) (val) &						\
-	(uint64) INT64_CONSTANT (0x0000000000ff0000U)) << 24) |	\
-      (((uint64) (val) &						\
-	(uint64) INT64_CONSTANT (0x00000000ff000000U)) <<  8) |	\
-      (((uint64) (val) &						\
-	(uint64) INT64_CONSTANT (0x000000ff00000000U)) >>  8) |	\
-      (((uint64) (val) &						\
-	(uint64) INT64_CONSTANT (0x0000ff0000000000U)) >> 24) |	\
-      (((uint64) (val) &						\
-	(uint64) INT64_CONSTANT (0x00ff000000000000U)) >> 40) |	\
-      (((uint64) (val) &						\
-	(uint64) INT64_CONSTANT (0xff00000000000000U)) >> 56)))
 
 
 long
@@ -176,8 +141,7 @@ void read_sftp_attr(char** c, evfs_file_info** info) {
 	if (flags & SSH2_FILEXFER_ATTR_PERMISSIONS) {
 		int perms = read_int32(c);
 
-		if (S_ISREG(perms)) (*info)->type = EVFS_FILE_NORMAL;
-		else if (S_ISDIR(perms)) (*info)->type = EVFS_FILE_DIRECTORY;
+		if (S_ISLNK(perms) || S_ISDIR(perms)) (*info)->type = EVFS_FILE_DIRECTORY;
 		else (*info)->type = EVFS_FILE_NORMAL;
 	}
 
@@ -277,7 +241,7 @@ buffer_send (Buffer *buf, Ecore_Exe* fd)
 	unsigned int w_len = INT32_TO_BE(len);
 	int res=0;
 
-	printf("Writing %d bytes\n", len);
+	//printf("Writing %d bytes\n", len);
 
 	buf->read_ptr -= sizeof (int);
 
@@ -295,16 +259,23 @@ buffer_send (Buffer *buf, Ecore_Exe* fd)
 	if (!ecore_exe_send(fd, buf->read_ptr, buf->write_ptr - buf->read_ptr)) {
 		//g_critical ("Could not write entire buffer: %s", g_strerror (errno));
 		//res = GNOME_VFS_ERROR_IO;
-		printf("Could not write to buffer!\n");
+		//printf("Could not write to buffer!\n");
 	} else {
+
 		bytes_written = buf->write_ptr - buf->read_ptr;
 	
-		printf("Sent %d bytes to client\n", bytes_written);
+		//printf("Sent %d bytes to client\n", bytes_written);
 		
-		if (bytes_written == buf->write_ptr - buf->read_ptr)
+		if (bytes_written == buf->write_ptr - buf->read_ptr) {
+			//printf("Resetting alloc to base...\n");
 			buf->read_ptr = buf->write_ptr = buf->base + sizeof (unsigned int);
-		else
+			free(buf->base);
+		} else {
+			printf("More bytes to write..\n");
 			buf->read_ptr += bytes_written;
+		}
+
+		//printf("%ld bytes alloced!\n", buf->alloc);
 
 	}
 
@@ -350,7 +321,7 @@ void buffer_write_int(Buffer* buf, int data)
 void buffer_write_long(Buffer* buf, uint64 data)
 {
 	uint64 w_data = UINT64_TO_BE(data);
-	printf("Post-be-long::::::: %ld\n", w_data);
+	//printf("Post-be-long::::::: %ld\n", w_data);
 	buffer_write(buf, &w_data, sizeof(uint64));
 }
 
@@ -413,7 +384,7 @@ sftp_file_write(SftpOpenHandle* handle, char* bytes, int size)
 	rhandle = NEW(SftpGenericHandle);
 	rhandle->open_handle = handle;
 	rhandle->status = STATUS_PROGRESS;
-	printf("      ** Wrote rhandle for write: %d\n", nid);
+	//printf("      ** Wrote rhandle for write: %d\n", nid);
 	ecore_hash_set(handle->conn->id_open_hash, (int*)nid, rhandle);
 
 	
@@ -429,7 +400,7 @@ sftp_file_write(SftpOpenHandle* handle, char* bytes, int size)
 	buffer_write_block(&msg, handle->sftp_handle, handle->sftp_handle_len);
 
 	/*Write offset*/
-	printf("   [*****] Write offset %ld\n", handle->info_write_ptr);
+	//printf("   [*****] Write offset %ld\n", handle->info_write_ptr);
 	buffer_write_long(&msg, handle->info_write_ptr);
 	handle->info_write_ptr += size; /*FIXME do we want to update it here, and assume
 					  the server has written the bytes? */
@@ -564,11 +535,13 @@ void sftp_handle_status(SftpConnection* conn, char** c) {
 	/*Read the identifier*/
 	id = read_int32(c);
 
-	printf("Got a status for id %d\n", id);
+	//printf("Got a status for id %d\n", id);
 	rhandle = ecore_hash_get(conn->id_open_hash, (int*)id);
 
-	printf("Rhandle is %p\n", rhandle);
+	//printf("Rhandle is %p\n", rhandle);
 	if (rhandle) rhandle->status = STATUS_FINISHED;
+
+	ecore_hash_remove(conn->id_open_hash, (int*)id);
 }
 
 
@@ -583,7 +556,7 @@ sftp_exe_data(void *data, int type, void *event)
    char sftp_type;
    
    SftpConnection* conn = (SftpConnection*)ecore_exe_data_get(ev->exe);
-   printf("  [*] DATA RET EXE %p - %p [%i bytes]\n", ev->exe, ev->data, ev->size);
+   //printf("  [*] DATA RET EXE %p - %p [%i bytes]\n", ev->exe, ev->data, ev->size);
 
    if (!conn->packet_cache) {
 	char *d = ev->data;
@@ -623,7 +596,7 @@ sftp_exe_data(void *data, int type, void *event)
 		   sftp_read_handle(conn, &c);
 		   break;
 	   case SSH2_FXP_STATUS:
-		   printf ("  [*] TYPE: STATUS: %d\n",sftp_type);
+		   //printf ("  [*] TYPE: STATUS: %d\n",sftp_type);
 		   sftp_handle_status(conn, &c);
 
 		   break;
@@ -714,13 +687,19 @@ evfs_plugin_uri_get()
 
 void sftp_split_host_path(char* input, char** host, char** path) 
 {
+	//printf("Input: '%s'\n", input);
+	
 	int host_len = strchr(input + 1, '/') - 1 - input;
-	*host = malloc(host_len+1);
+	//printf("Host len: %d\n", host_len);
+	*host = calloc(1, host_len+1);
+	bzero(*host, host_len+1);
 	strncpy(*host, input + 1, host_len);
 
 	*path = strdup( input + 
 			( strchr(input + 1, '/') -
 			  input)) ;
+
+	//printf("Output: '%s', '%s'\n", *host, *path);
 }
 
 int
@@ -771,6 +750,9 @@ evfs_file_open(evfs_client * client, evfs_filereference * file)
 	ecore_hash_set(sftp_open_handles, (long*)file->fd, handle);
 
 	printf("Opened!\n");
+
+	free(host);
+	free(path);
 
 	return file->fd;
 }
@@ -870,6 +852,7 @@ evfs_dir_list(evfs_client * client, evfs_command * command,
 	ecore_list_destroy(rhandle->file_list);
 
 	free(host);
+	free(schar);
 
 }
 

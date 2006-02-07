@@ -18,6 +18,8 @@ AC_C_BIGENDIAN
 AC_STRUCT_ST_BLKSIZE
 AC_STRUCT_ST_BLOCKS
 
+CFLAGS="$CFLAGS -D_FILE_OFFSET_BITS=64"
+
 use_threads="yes"
 
 dnl Check for functions that we need to be thread-safe.
