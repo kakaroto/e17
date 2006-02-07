@@ -79,7 +79,7 @@ epeg_memory_open(unsigned char *data, int size)
    if (!im) return NULL;
    
    im->out.quality = 75;
-   im->in.mem.data = (unsigned char **) data;
+   im->in.mem.data = (unsigned char **)data;
    im->in.mem.size = size;
    im->in.f = NULL;
    im->in.w = 0;
@@ -1110,28 +1110,34 @@ _epeg_trim(Epeg_Image *im)
    return 0;
 }
 
+struct epeg_destination_mgr
+{
+   struct jpeg_destination_mgr dst_mgr;
+   Epeg_Image *im;
+   unsigned char *buf;
+};
+
 static int
 _epeg_encode(Epeg_Image *im)
 {
    void  *data = NULL;
    size_t size = 0;
-
-   struct jpeg_destination_mgr *dst_mgr = NULL;
+   struct epeg_destination_mgr *dst_mgr = NULL;
+   int ok = 0;
 
    if (im->out.f) return 1;
    
    if (im->out.file)
      {
 	im->out.f = fopen(im->out.file, "wb");
-   
 	if (!im->out.f)
    	  {
-		im->error = 1;
-		return 1;
+	     im->error = 1;
+	     return 1;
 	  }
      }
    else
-	im->out.f = NULL;
+     im->out.f = NULL;
    
    im->out.jinfo.err = jpeg_std_error(&(im->jerr.pub));
    im->jerr.pub.error_exit = _epeg_fatal_error_handler;
@@ -1141,23 +1147,29 @@ _epeg_encode(Epeg_Image *im)
    im->jerr.pub.format_message = _format_message;
 #endif
    
-   if (setjmp(im->jerr.setjmp_buffer)) return 1;
+   if (setjmp(im->jerr.setjmp_buffer))
+     {
+	ok = 1;
+	im->error = 1;
+	goto done;
+     }
    
    jpeg_create_compress(&(im->out.jinfo));
    if (im->out.f)
-	jpeg_stdio_dest(&(im->out.jinfo), im->out.f);
+     jpeg_stdio_dest(&(im->out.jinfo), im->out.f);
    else
      {
+	*(im->out.mem.data) = NULL;
+	*(im->out.mem.size) = 0;
 	/* Setup RAM destination manager */
-	dst_mgr = calloc(1, sizeof(struct jpeg_destination_mgr));
-	if (!dst_mgr)
-		return 1;
-	dst_mgr->init_destination = _jpeg_init_destination;
-	dst_mgr->empty_output_buffer = _jpeg_empty_output_buffer;
-	dst_mgr->term_destination = _jpeg_term_destination;
-	dst_mgr->free_in_buffer = *(im->out.mem.size);
-	dst_mgr->next_output_byte = (JOCTET *) *(im->out.mem.data);
-   	im->out.jinfo.dest = dst_mgr;
+	dst_mgr = calloc(1, sizeof(struct epeg_destination_mgr));
+	if (!dst_mgr) return 1;
+	dst_mgr->dst_mgr.init_destination = _jpeg_init_destination;
+	dst_mgr->dst_mgr.empty_output_buffer = _jpeg_empty_output_buffer;
+	dst_mgr->dst_mgr.term_destination = _jpeg_term_destination;
+	dst_mgr->im = im;
+	dst_mgr->buf = malloc(65536);
+   	im->out.jinfo.dest = (struct jpeg_destination_mgr *)dst_mgr;
      }
    im->out.jinfo.image_width      = im->out.w;
    im->out.jinfo.image_height     = im->out.h;
@@ -1203,20 +1215,23 @@ _epeg_encode(Epeg_Image *im)
    
    while (im->out.jinfo.next_scanline < im->out.h)
      jpeg_write_scanlines(&(im->out.jinfo), &(im->lines[im->out.jinfo.next_scanline]), 1);
-   
+
+   done:
    jpeg_finish_compress(&(im->out.jinfo));
-   
-   if (im->in.f || im->in.mem.data != NULL)     jpeg_destroy_decompress(&(im->in.jinfo));
-   if ((im->in.f) && (im->in.file))    fclose(im->in.f);
+   if ((im->in.f) || (im->in.mem.data != NULL)) jpeg_destroy_decompress(&(im->in.jinfo));
+   if ((im->in.f) && (im->in.file))         fclose(im->in.f);
+   if (dst_mgr)
+     {
+	free(dst_mgr->buf);
+	free(dst_mgr);
+	im->out.jinfo.dest = NULL;
+     }
    jpeg_destroy_compress(&(im->out.jinfo));
-   if ((im->out.f) && (im->out.file))  fclose(im->out.f); 
+   if ((im->out.f) && (im->out.file))       fclose(im->out.f); 
    im->in.f = NULL;
    im->out.f = NULL;
    
-   if (!im->out.file)
-	   *(im->out.mem.size) -= im->out.jinfo.dest->free_in_buffer;
-
-   return 0;
+   return ok;
 }
 
 static void 
@@ -1270,35 +1285,64 @@ _jpeg_term_source(j_decompress_ptr cinfo)
 }
 
 
-/* Destination manager methods */
+/* destination manager methods */
 METHODDEF(void)
 _jpeg_init_destination(j_compress_ptr cinfo)
 {
+   struct epeg_destination_mgr *dst_mgr;
+   
+   dst_mgr = (struct epeg_destination_mgr *)cinfo->dest;
+   dst_mgr->dst_mgr.free_in_buffer = 65536;
+   dst_mgr->dst_mgr.next_output_byte = (JOCTET *)dst_mgr->buf;
 }
 
 METHODDEF(boolean)
-_jpeg_empty_output_buffer (j_compress_ptr cinfo)
+_jpeg_empty_output_buffer(j_compress_ptr cinfo)
+{
+   struct epeg_destination_mgr *dst_mgr;
+   unsigned char *p;
+   int psize;
+   
+   dst_mgr = (struct epeg_destination_mgr *)cinfo->dest;
+   psize = *(dst_mgr->im->out.mem.size);
+   *(dst_mgr->im->out.mem.size) += 65536;
+   *(dst_mgr->im->out.mem.data) = realloc(*(dst_mgr->im->out.mem.data),
+					  *(dst_mgr->im->out.mem.size));
+   p = *(dst_mgr->im->out.mem.data);
+   memcpy(p + psize, dst_mgr->buf, 65536);
+   dst_mgr->dst_mgr.free_in_buffer = 65536;
+   dst_mgr->dst_mgr.next_output_byte = (JOCTET *)dst_mgr->buf;
+   return TRUE;
+}
+
+METHODDEF(void)
+_jpeg_term_destination(j_compress_ptr cinfo)
+{
+   struct epeg_destination_mgr *dst_mgr;
+   unsigned char *p;
+   int psize;
+   
+   dst_mgr = (struct epeg_destination_mgr *)cinfo->dest;
+   psize = *(dst_mgr->im->out.mem.size);
+   *(dst_mgr->im->out.mem.size) += 65536 - dst_mgr->dst_mgr.free_in_buffer;
+   *(dst_mgr->im->out.mem.data) = realloc(*(dst_mgr->im->out.mem.data), 
+					  *(dst_mgr->im->out.mem.size));
+   p = *(dst_mgr->im->out.mem.data);
+   memcpy(p + psize, dst_mgr->buf, 65536 - dst_mgr->dst_mgr.free_in_buffer);
+}
+
+/* be noisy - not */
+METHODDEF(void)
+_emit_message(j_common_ptr cinfo, int msg_level)
 {
 }
 
 METHODDEF(void)
-_jpeg_term_destination (j_compress_ptr cinfo)
+_output_message(j_common_ptr cinfo)
 {
 }
 
 METHODDEF(void)
-_emit_message (j_common_ptr cinfo, int msg_level)
+_format_message(j_common_ptr cinfo, char * buffer)
 {
 }
-
-METHODDEF(void)
-_output_message (j_common_ptr cinfo)
-{
-}
-
-METHODDEF(void)
-_format_message (j_common_ptr cinfo, char * buffer)
-{
-}
-
-
