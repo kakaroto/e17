@@ -1,4 +1,6 @@
 TODO:
+- add code to properly select a frontend and fail otherwise
+
 - remove all warnings
 
 - search for rippers / encoders and display erros if none are found
