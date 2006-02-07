@@ -1,0 +1,12 @@
+The usual install instructions apply:
+
+./autogen --prefix=/usr
+make
+make install (as root)
+
+or if you are a FreeBSD user:
+
+configgen.sh (get it from devel/configgen port)
+./configure --prefix=/usr
+gmake
+gmake install (as root)

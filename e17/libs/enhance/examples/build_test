@@ -1,0 +1,4 @@
+gcc -g \
+`enhance-config --cflags --libs` \
+`etk-config --cflags --libs` \
+enhance_test.c -o enhance_test

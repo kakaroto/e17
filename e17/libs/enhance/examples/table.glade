@@ -1,0 +1,89 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://glade.gnome.org/glade-2.0.dtd">
+
+<glade-interface>
+
+<widget class="GtkWindow" id="add_files_dialog">
+  <property name="visible">True</property>
+  <property name="title" translatable="yes">Add Files</property>
+  <property name="type">GTK_WINDOW_TOPLEVEL</property>
+  <property name="window_position">GTK_WIN_POS_CENTER</property>
+  <property name="modal">False</property>
+  <property name="default_width">700</property>
+  <property name="default_height">450</property>
+  <property name="resizable">True</property>
+  <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">True</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+  <signal name="delete_event" handler="gtk_widget_hide_on_delete" last_modification_time="Wed, 01 Dec 2004 18:47:13 GMT"/>
+
+<child>
+ <widget class="GtkVBox" id="vbox1">
+   <property name="visible">True</property>
+   <property name="homogeneous">False</property>
+   <property name="spacing">0</property>
+	       
+	  <child>
+	    <widget class="GtkTable" id="table1">
+	      <property name="visible">True</property>
+	      <property name="n_rows">1</property>
+	      <property name="n_columns">2</property>
+	      <property name="homogeneous">False</property>
+	      <property name="row_spacing">0</property>
+	      <property name="column_spacing">0</property>
+
+	      <child>
+		<widget class="GtkCheckButton" id="close_on_action">
+		  <property name="visible">True</property>
+		  <property name="can_focus">True</property>
+		  <property name="label" translatable="yes">Close Dialog on Add</property>
+		  <property name="use_underline">True</property>
+		  <property name="relief">GTK_RELIEF_NORMAL</property>
+		  <property name="focus_on_click">True</property>
+		  <property name="active">False</property>
+		  <property name="inconsistent">False</property>
+		  <property name="draw_indicator">True</property>
+		</widget>
+		<packing>
+		  <property name="left_attach">0</property>
+		  <property name="right_attach">0</property>
+		  <property name="top_attach">0</property>
+		  <property name="bottom_attach">1</property>
+		  <property name="x_options">fill</property>
+		  <property name="y_options">fill</property>
+		</packing>
+	      </child>
+	      
+	      <child>
+		<widget class="GtkCheckButton" id="close_on_action1">
+		  <property name="visible">True</property>
+		  <property name="can_focus">True</property>
+		  <property name="label" translatable="yes">Foobar</property>
+		  <property name="use_underline">True</property>
+		  <property name="relief">GTK_RELIEF_NORMAL</property>
+		  <property name="focus_on_click">True</property>
+		  <property name="active">False</property>
+		  <property name="inconsistent">False</property>
+		  <property name="draw_indicator">True</property>
+		</widget>
+		<packing>
+		  <property name="left_attach">1</property>
+		  <property name="right_attach">1</property>
+		  <property name="top_attach">0</property>
+		  <property name="bottom_attach">1</property>
+		  <property name="x_options">expand</property>
+		  <property name="y_options">expand</property>
+		</packing>
+	      </child>
+	      
+	    </widget>
+	  </child>	  	 
+	  
+ </widget>
+ </child> 
+</widget>
+
+</glade-interface>
