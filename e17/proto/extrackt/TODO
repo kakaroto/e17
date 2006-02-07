@@ -1,4 +1,6 @@
 TODO:
+- make sure we save ALL config
+
 - segv when rippers / encoders are not installed
 
 - add code to properly select a frontend and fail otherwise

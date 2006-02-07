@@ -742,6 +742,49 @@ _etk_fe_config_save(E_Gui_Etk *gui)
    else
      gui->ex->config.cd->poll_interval = 1;     
 
+   /*** Save config for Config->Rip - Ripper ***/
+#define EXE_SAVE_STR(cfg, str) SAVE_STR(cfg, etk_entry_text_get(ETK_ENTRY(gui->str)))
+     {
+	Evas_List *l;
+	Ex_Config_Exe *exe;	  
+	
+	for(l = gui->ex->config.rippers; l; l = l->next)
+	  {	     
+	     exe = l->data;
+	     if(!strcmp(exe->name, etk_button_label_get(ETK_BUTTON(gui->ripper_combo))))
+	       break;
+	     exe = NULL;
+	  }
+	
+	if(exe)
+	  {
+	     EXE_SAVE_STR(exe->exe, ripper_executable_entry);
+	     EXE_SAVE_STR(exe->command_line_opts, ripper_command_line_entry);
+	     EXE_SAVE_STR(exe->file_format, ripper_file_format_entry);
+	  }	
+     }
+   
+   /*** Save config for Config->Encoder - Encoder ***/
+     {
+	Evas_List *l;
+	Ex_Config_Exe *exe;	  
+	
+	for(l = gui->ex->config.encode->encoders; l; l = l->next)
+	  {	     
+	     exe = l->data;
+	     if(!strcmp(exe->name, etk_button_label_get(ETK_BUTTON(gui->encoder_combo))))
+	       break;
+	     exe = NULL;
+	  }
+	
+	if(exe)
+	  {
+	     EXE_SAVE_STR(exe->exe, encoder_executable_entry);
+	     EXE_SAVE_STR(exe->command_line_opts, encoder_command_line_entry);
+	     EXE_SAVE_STR(exe->file_format, encoder_file_format_entry);
+	  }	
+     }   
+   
    ex_config_write(gui->ex);
 }
 
