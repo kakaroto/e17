@@ -1,0 +1,52 @@
+# French translation for Rain module for Enlightenment DR0.17
+# This file is put in the public domain.
+# Chidambar 'ilLogict' Zinnoury <illogict@online.fr>, 2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: rain VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-02-07 00:55+0100\n"
+"PO-Revision-Date: 2006-02-07 01:20+0100\n"
+"Last-Translator: Chidambar 'ilLogict' Zinnoury <illogict@online.fr>\n"
+"Language-Team: Enlightenment i18n French <enlightenment-intl@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: e_mod_config.c:40
+msgid "Rain Module"
+msgstr "Module pluie"
+
+#: e_mod_config.c:97
+msgid "Show Clouds"
+msgstr "Afficher des nuages"
+
+#: e_mod_config.c:101
+msgid "Rain Density"
+msgstr "Densité de pluie"
+
+#: e_mod_config.c:103
+msgid "Sprinkle"
+msgstr "Pleuviotage"
+
+#: e_mod_config.c:105
+msgid "Drizzle"
+msgstr "Bruine"
+
+#: e_mod_config.c:107
+msgid "Downpour"
+msgstr "Déluge"
+
+#: e_mod_main.c:81
+msgid "Enlightenment Rain Module"
+msgstr "Module pluie d'Enlightenment"
+
+#: e_mod_main.c:83
+msgid ""
+"This is a simple module to display some rain on the desktop.<br>It can "
+"display clouds too, if you like clouds."
+msgstr ""
+"Ceci est module simple permettant de faire pleuvoir sur votre bureau.<br>"
+"Il peut aussi afficher des nuages, si vous aimez les nuages."
+

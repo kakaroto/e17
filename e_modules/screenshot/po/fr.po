@@ -1,0 +1,97 @@
+# French translation for Screenshot module for Enlightenment DR0.17
+# This file is put in the public domain.
+# Chidambar 'ilLogict' Zinnoury <illogict@online.fr>, 2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: screenshot VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-02-07 00:56+0100\n"
+"PO-Revision-Date: 2006-02-07 01:27+0100\n"
+"Last-Translator: Chidambar 'ilLogict' Zinnoury <illogict@online.fr>\n"
+"Language-Team: Enlightenment i18n French <enlightenment-intl@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: e_mod_config.c:75
+msgid "Screenshot Configuration"
+msgstr "Configuration de la capture d'écran"
+
+#: e_mod_config.c:163 e_mod_config.c:283
+msgid "Use Import"
+msgstr "Utiliser «import»"
+
+#: e_mod_config.c:165 e_mod_config.c:285
+msgid "Use Scrot"
+msgstr "Utiliser «scrot»"
+
+#: e_mod_config.c:172 e_mod_config.c:292
+msgid "Delay Time:"
+msgstr "Délai :"
+
+#: e_mod_config.c:182 e_mod_config.c:302
+msgid "File Settings"
+msgstr "Paramètres de fichier :"
+
+#: e_mod_config.c:185 e_mod_config.c:305
+msgid "Save Directory:"
+msgstr "Répertoire de sauvegarde :"
+
+#: e_mod_config.c:191 e_mod_config.c:311
+msgid "Filename (minus extension):"
+msgstr "Nom de fichier (sans extension) :"
+
+#: e_mod_config.c:199 e_mod_config.c:319
+#, c-format
+msgid "Example: screenshot%d = screenshot1, screenshot2, etc..."
+msgstr "Exemple : capture%d = capture1, capture2, etc…"
+
+#: e_mod_config.c:326
+msgid "Import Options"
+msgstr "Options d'«import»"
+
+#: e_mod_config.c:327 e_mod_config.c:348
+msgid "Include Image Border"
+msgstr "Inclure la bordure de l'image"
+
+#: e_mod_config.c:330
+msgid "Use Image Dithering"
+msgstr "Utiliser le lissage d'image"
+
+#: e_mod_config.c:333
+msgid "Include Window Manager Frame"
+msgstr "Inclure la bordure du gestionnaire de fenêtres"
+
+#: e_mod_config.c:336
+msgid "Choose Window To Grab"
+msgstr "Choisir la fenêtre à capturer"
+
+#: e_mod_config.c:339
+msgid "Silent"
+msgstr "Silencieux"
+
+#: e_mod_config.c:342
+msgid "Trim Edges"
+msgstr "Supprimer les bords"
+
+#: e_mod_config.c:347
+msgid "Scrot Options"
+msgstr "Options de «scrot»"
+
+#: e_mod_config.c:351
+msgid "Generate Thumbnail"
+msgstr "Générer une miniature"
+
+#: e_mod_main.c:108 e_mod_main.c:527
+msgid "Enlightenment Screenshot Module"
+msgstr "Module capture d'écran d'Enlightenment"
+
+#: e_mod_main.c:109
+msgid "This module is used to take screenshots"
+msgstr "Ce module est utilisé pour prendre des captures d'écran."
+
+#: e_mod_main.c:528
+msgid "Please Choose A Program To Use For Taking Screenshots."
+msgstr "Merci de sélectionner un programme pour les captures d'écran."
+

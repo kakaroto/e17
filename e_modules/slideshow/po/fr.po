@@ -1,0 +1,53 @@
+# French translation for Slideshow module for Enlightenment DR0.17
+# This file is put in the public domain.
+# Chidambar 'ilLogict' Zinnoury <illogict@online.fr>, 2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: slideshow VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-02-07 00:56+0100\n"
+"PO-Revision-Date: 2006-02-07 01:32+0100\n"
+"Last-Translator: Chidambar 'ilLogict' Zinnoury <illogict@online.fr>\n"
+"Language-Team: Enlightenment i18n French <enlightenment-intl@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: e_mod_config.c:47
+msgid "Slideshow Configuration"
+msgstr "Configuration de diaporama"
+
+#: e_mod_config.c:93
+msgid "Cycle Time"
+msgstr "Durée"
+
+#: e_mod_config.c:94
+msgid "Disable Timer"
+msgstr "Désactiver le temporisateur"
+
+#: e_mod_config.c:96
+#, c-format
+msgid "%3.0f seconds"
+msgstr "%3.0f secondes"
+
+#: e_mod_config.c:102
+msgid "Theme"
+msgstr "Thème"
+
+#: e_mod_config.c:104
+msgid "Sub-directory to use for backgrounds"
+msgstr "Sous-répertoire à utiliser pour les fonds d'écrans"
+
+#: e_mod_config.c:106
+msgid "Leave blank for none"
+msgstr "Laisser vide le cas échéant"
+
+#: e_mod_main.c:148
+msgid "Enlightenment Slide Show Module"
+msgstr "Module diaporama d'Enlightenment"
+
+#: e_mod_main.c:149
+msgid "This module is VERY simple and is used to cycle desktop backgrounds"
+msgstr "Ce module est TRÈS simple et permet d'avoir un diaporama de fonds d'écran."
+
