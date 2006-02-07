@@ -1,7 +1,7 @@
-#include "dumb_list.h"
-
 #ifndef _FDO_PATHS_H
 # define _FDO_PATHS_H
+
+#include "dumb_list.h"
 
 enum _Fdo_Paths_Type
 {
