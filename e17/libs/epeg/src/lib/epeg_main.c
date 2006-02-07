@@ -38,7 +38,15 @@ epeg_file_open(const char *file)
    Epeg_Image *im;
    
    im = calloc(1, sizeof(Epeg_Image));
+   if (!im) return NULL;
+   
    im->in.file = strdup(file);
+   if (!im->in.file)
+     {
+	free(im);
+	return NULL;
+     }
+   
    im->in.f = fopen(im->in.file, "rb");
    if (!im->in.f)
      {
@@ -68,12 +76,7 @@ epeg_memory_open(unsigned char *data, int size)
    Epeg_Image *im;
    
    im = calloc(1, sizeof(Epeg_Image));
-   
-   if (!im)
-     {
-	epeg_close(im);
-	return NULL;
-     }
+   if (!im) return NULL;
    
    im->out.quality = 75;
    im->in.mem.data = (unsigned char **) data;
@@ -693,7 +696,6 @@ epeg_memory_output_set(Epeg_Image *im, unsigned char **data, int *size)
 {
    im->out.mem.data = data;
    im->out.mem.size = size;
-   im->in.file = NULL;
    im->out.file = NULL;
 }
 
@@ -715,9 +717,8 @@ int
 epeg_encode(Epeg_Image *im)
 {
    int ret;
-   if ((ret = _epeg_decode(im)) != 0) {
+   if ((ret = _epeg_decode(im)) != 0)
      return (ret == 2 ? 4 : 3);
-   }
    if (_epeg_scale(im) != 0)
      return 1;
    if (_epeg_encode(im) != 0)
@@ -755,23 +756,22 @@ epeg_trim(Epeg_Image *im)
 void
 epeg_close(Epeg_Image *im)
 {
-   if (im != NULL) {
-      if (im->pixels)                   free(im->pixels);
-      if (im->lines)                    free(im->lines);
-      if (im->in.file)                  free(im->in.file);
-      if (!im->in.file)                 free(im->in.jinfo.src);
-      if (im->in.f || im->in.mem.data)  jpeg_destroy_decompress(&(im->in.jinfo));
-      if (im->in.f)                     fclose(im->in.f);
-      if (im->in.comment)               free(im->in.comment);
-      if (im->in.thumb_info.uri)        free(im->in.thumb_info.uri);
-      if (im->in.thumb_info.mime)       free(im->in.thumb_info.mime);
-      if (im->out.file)                 free(im->out.file);
-      if (!im->out.file)                free(im->out.jinfo.dest);
-      if (im->out.f || im->in.mem.data) jpeg_destroy_compress(&(im->out.jinfo));
-      if (im->out.f)                    fclose(im->out.f);
-      if (im->out.comment)              free(im->out.comment);
-      free(im);
-   }
+   if (!im) return;
+   if (im->pixels)                   free(im->pixels);
+   if (im->lines)                    free(im->lines);
+   if (im->in.file)                  free(im->in.file);
+   if (!im->in.file)                 free(im->in.jinfo.src);
+   if (im->in.f || im->in.mem.data)  jpeg_destroy_decompress(&(im->in.jinfo));
+   if (im->in.f)                     fclose(im->in.f);
+   if (im->in.comment)               free(im->in.comment);
+   if (im->in.thumb_info.uri)        free(im->in.thumb_info.uri);
+   if (im->in.thumb_info.mime)       free(im->in.thumb_info.mime);
+   if (im->out.file)                 free(im->out.file);
+   if (!im->out.file)                free(im->out.jinfo.dest);
+   if (im->out.f || im->in.mem.data) jpeg_destroy_compress(&(im->out.jinfo));
+   if (im->out.f)                    fclose(im->out.f);
+   if (im->out.comment)              free(im->out.comment);
+   free(im);
 }
 
 static Epeg_Image *
@@ -1229,65 +1229,75 @@ _epeg_fatal_error_handler(j_common_ptr cinfo)
    return;
 }
 
-
 /* Source manager methods */
-METHODDEF(void) _jpeg_decompress_error_exit(j_common_ptr cinfo)
+METHODDEF(void)
+_jpeg_decompress_error_exit(j_common_ptr cinfo)
 {
 }
 
 
-METHODDEF(void) _jpeg_init_source(j_decompress_ptr cinfo)
+METHODDEF(void)
+_jpeg_init_source(j_decompress_ptr cinfo)
 {
 }
 
-METHODDEF(boolean) _jpeg_fill_input_buffer(j_decompress_ptr cinfo)
+METHODDEF(boolean)
+_jpeg_fill_input_buffer(j_decompress_ptr cinfo)
 {
-	WARNMS(cinfo, JWRN_JPEG_EOF);
-	
-	/* Insert a fake EOI marker */
-	cinfo->src->next_input_byte = fake_EOI;
-	cinfo->src->bytes_in_buffer = sizeof(fake_EOI);
-
-	return TRUE;
+   WARNMS(cinfo, JWRN_JPEG_EOF);
+   
+   /* Insert a fake EOI marker */
+   cinfo->src->next_input_byte = fake_EOI;
+   cinfo->src->bytes_in_buffer = sizeof(fake_EOI);
+   
+   return TRUE;
 }
 
 
-METHODDEF(void) _jpeg_skip_input_data(j_decompress_ptr cinfo, long num_bytes)
+METHODDEF(void)
+_jpeg_skip_input_data(j_decompress_ptr cinfo, long num_bytes)
 {
-	if(num_bytes > (long) (cinfo)->src->bytes_in_buffer)
-		ERREXIT(cinfo, 0);
-	
-	(cinfo)->src->next_input_byte += num_bytes;
-	(cinfo)->src->bytes_in_buffer -= num_bytes;
+   if (num_bytes > (long)(cinfo)->src->bytes_in_buffer)
+     ERREXIT(cinfo, 0);
+   
+   (cinfo)->src->next_input_byte += num_bytes;
+   (cinfo)->src->bytes_in_buffer -= num_bytes;
 }
 
-METHODDEF(void) _jpeg_term_source(j_decompress_ptr cinfo)
+METHODDEF(void)
+_jpeg_term_source(j_decompress_ptr cinfo)
 {
 }
 
 
 /* Destination manager methods */
-METHODDEF(void) _jpeg_init_destination(j_compress_ptr cinfo)
+METHODDEF(void)
+_jpeg_init_destination(j_compress_ptr cinfo)
 {
 }
 
-METHODDEF(boolean) _jpeg_empty_output_buffer (j_compress_ptr cinfo)
+METHODDEF(boolean)
+_jpeg_empty_output_buffer (j_compress_ptr cinfo)
 {
 }
 
-METHODDEF(void) _jpeg_term_destination (j_compress_ptr cinfo)
+METHODDEF(void)
+_jpeg_term_destination (j_compress_ptr cinfo)
 {
 }
 
-METHODDEF(void) _emit_message (j_common_ptr cinfo, int msg_level)
+METHODDEF(void)
+_emit_message (j_common_ptr cinfo, int msg_level)
 {
 }
 
-METHODDEF(void) _output_message (j_common_ptr cinfo)
+METHODDEF(void)
+_output_message (j_common_ptr cinfo)
 {
 }
 
-METHODDEF(void) _format_message (j_common_ptr cinfo, char * buffer)
+METHODDEF(void)
+_format_message (j_common_ptr cinfo, char * buffer)
 {
 }
 
