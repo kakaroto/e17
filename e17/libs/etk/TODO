@@ -1,6 +1,7 @@
 --------------------
 [Bugs to fix (in order of pripority)]
 --------------------
+* Segvs when you call etk_object_properties_set with a property name that doesn't exist
 * Fix a bug in etk_tree: when you've scrolled to the end of the left tree in etk_test, and if you
 maximized the window, the tree is not correctly updated (maybe a bug in etk_scrolled_view)
 * The tabs of the notebook doesn't have always a correct width (happens if you embed a notebook in
@@ -23,6 +24,8 @@ Maybe a bug of the evas textblock
 [Things that need to be improved (in order of pripority)]
 --------------------
 * Improve the entry: add selection supports, better keyboard navigation [In progress: MoOm]
+* Add a cache system to cache images used by the tree and the future iconbox in order to make
+the scrolling smoother [In progress: MoOm]
 * Allow the theme to change the color/font/style of the labels
 * More API work for the tree (get a row according to (x,y) position, emit signals when a row is
 clicked, double-clicked...)
@@ -39,7 +42,7 @@ and the "normal" progress bars. Also separate the horizontal and the vertical pr
 * spinner [In progress: CodeWarrior]
 * textview [In progress: MoOm]
 * combobox
-* checkbox/radiobox menu items
+* checkbox/radiobox menu items [In progress: eZeK]
 * iconbox
 * toolbar
 * drag and drop
