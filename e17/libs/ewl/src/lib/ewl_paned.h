@@ -60,6 +60,32 @@ void ewl_paned_cb_child_hide(Ewl_Container *c, Ewl_Widget *w);
 
 void ewl_paned_cb_configure(Ewl_Widget *w, void *ev, void *data);
 
+/*
+ * Ewl_Paned_Grabber stuff
+ */
+
+#define EWL_PANED_GRABBER_TYPE "paned_grabber"
+
+typedef struct Ewl_Paned_Grabber Ewl_Paned_Grabber;
+
+#define EWL_PANED_GRABBER(g) ((Ewl_Paned_Grabber *)g)
+
+struct Ewl_Paned_Grabber
+{
+	Ewl_Separator separator;
+	unsigned int placed:1;
+};
+
+Ewl_Widget 	*ewl_paned_grabber_new(void);
+int 		 ewl_paned_grabber_init(Ewl_Paned_Grabber *g);
+
+void		 ewl_paned_grabber_orientation_set(Ewl_Paned_Grabber *g, 
+							Ewl_Orientation o);
+Ewl_Orientation  ewl_paned_grabber_orientation_get(Ewl_Paned_Grabber *g);
+
+void		 ewl_paned_grabber_show_cursor_for(Ewl_Paned_Grabber *g, 
+							unsigned int dir);
+
 /**
  * @}
  */
