@@ -5,6 +5,7 @@
 #include "icons.h"
 #include "sort.h"
 #include "fdo_paths.h"
+#include "xmlame.h"
 
 /* Function Prototypes */
 void _e17genmenu_backup(void);
@@ -52,8 +53,16 @@ _e17genmenu_test_fdo_paths()
          char *directory = "Applications.directory";
          char *desktop = "xterm.desktop";
          char *icon = "tux.png";
+	 Dumb_List *menus = NULL;
 
          printf("Path to %s is %s\n", menu, path);
+         menus = xmlame_new(NULL);
+	 if (menus)
+	    {
+	       xmlame_fill(path);
+               dumb_list_dump(menus, 0);
+               printf("\n\n");
+	    }
          free(path);
 
          /* During the processing of the menu file, you will need to search for 

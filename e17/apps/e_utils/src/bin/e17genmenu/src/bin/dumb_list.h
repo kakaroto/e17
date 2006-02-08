@@ -39,10 +39,11 @@ extern "C"
 
    Dumb_List *dumb_list_from_paths(char *paths);
    Dumb_List *dumb_list_new(char *buffer);
-   Dumb_List *dumb_list_add(Dumb_List * list, char *element);
-   Dumb_List *dumb_list_extend(Dumb_List * list, char *element);
-   int dumb_list_exist(Dumb_List * list, char *element);
-   void dumb_list_del(Dumb_List * list);
+   Dumb_List *dumb_list_add(Dumb_List *list, char *element);
+   Dumb_List *dumb_list_extend(Dumb_List *list, char *element);
+   int dumb_list_exist(Dumb_List *list, char *element);
+   void dumb_list_dump(Dumb_List *list, int level);
+   void dumb_list_del(Dumb_List *list);
 
 # ifdef __cplusplus
 }

@@ -1,4 +1,5 @@
 #include <string.h>             //string funcs
+#include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
 
@@ -143,11 +144,46 @@ dumb_list_exist(Dumb_List *list, char *element)
 }
 
 void
-dumb_list_del(Dumb_List * list)
+dumb_list_dump(Dumb_List *list, int level)
 {
    int i;
 
    E_FREE(list->elements);
+
+   for (i = 0; i < list->size; i++)
+      {
+         int j;
+
+         for (j = 0; j < level; j++)
+	    printf(" ");
+         switch (list->elements[i].type)
+	    {
+	       case DUMB_LIST_ELEMENT_TYPE_STRING :
+	          {
+		     printf("%s\n", (char *) list->elements[i].element);
+		  }
+	          break;
+
+	       case DUMB_LIST_ELEMENT_TYPE_LIST :
+	          {
+		     dumb_list_dump((Dumb_List *) list->elements[i].element, level + 1);
+		  }
+	          break;
+
+	       default :
+	          {
+		     printf("UNKNOWN ELEMENT TYPE!\n");
+		  }
+	          break;
+	    }
+      }
+}
+
+void
+dumb_list_del(Dumb_List * list)
+{
+   int i;
+
 
    for (i = list->size - 1; i >= 0; i--)
       {

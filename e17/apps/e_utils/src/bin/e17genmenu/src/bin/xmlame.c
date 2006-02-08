@@ -15,10 +15,16 @@
  * may get away with it.  Much testing on lots of systems is highly recommended.
  */
 
-Dumb_List *xmlame_new(char *buffer)
+Dumb_List *
+xmlame_new(char *buffer)
 {
    Dumb_List *list;
 
    list = dumb_list_new(buffer);
    return list;
+}
+
+void
+xmlame_fill(char *file)
+{
 }
