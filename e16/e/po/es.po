@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-28 15:49+0100\n"
+"POT-Creation-Date: 2006-02-05 18:34+0100\n"
 "PO-Revision-Date: 2005-06-14 23:39+0100\n"
 "Last-Translator: jacinto calvo sintes <netman2@seriousman.org>\n"
 "Language-Team: \n"
@@ -18,15 +18,15 @@ msgstr ""
 msgid "ActionClass Error!"
 msgstr "Error en Actionclass!"
 
-#: src/aclass.c:190 src/backgrounds.c:255 src/borders.c:642 src/buttons.c:182
+#: src/aclass.c:190 src/backgrounds.c:255 src/borders.c:644 src/buttons.c:182
 #: src/cmclass.c:84 src/cursors.c:113 src/iclass.c:356 src/tclass.c:96
 #: src/tooltips.c:123
 #, c-format
 msgid "%u references remain\n"
 msgstr "%u referencias restantes\n"
 
-#: src/aclass.c:246 src/backgrounds.c:1171 src/borders.c:1063
-#: src/borders.c:1187 src/buttons.c:721 src/cmclass.c:201 src/config.c:273
+#: src/aclass.c:246 src/backgrounds.c:1171 src/borders.c:1065
+#: src/borders.c:1189 src/buttons.c:721 src/cmclass.c:201 src/config.c:273
 #: src/cursors.c:153 src/iclass.c:538 src/iconify.c:2417 src/menus.c:1713
 #: src/menus.c:1825 src/slideout.c:418 src/tclass.c:247 src/tooltips.c:157
 #: src/windowmatch.c:153
@@ -34,8 +34,8 @@ msgstr "%u referencias restantes\n"
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIG: ignorando datos extras en \"%s\"\n"
 
-#: src/aclass.c:254 src/backgrounds.c:1179 src/borders.c:1069
-#: src/borders.c:1193 src/buttons.c:729 src/cmclass.c:209 src/config.c:281
+#: src/aclass.c:254 src/backgrounds.c:1179 src/borders.c:1071
+#: src/borders.c:1195 src/buttons.c:729 src/cmclass.c:209 src/config.c:281
 #: src/cursors.c:159 src/iclass.c:543 src/menus.c:1718 src/menus.c:1831
 #: src/slideout.c:424 src/tclass.c:253 src/tooltips.c:163
 #: src/windowmatch.c:158
@@ -364,7 +364,7 @@ msgstr "Ordenar por Atrib."
 msgid "Sort by Image"
 msgstr "Ordenar por Imagen"
 
-#: src/borders.c:642
+#: src/borders.c:644
 msgid "Border Error!"
 msgstr "Error de los Bordes!"
 
@@ -610,21 +610,21 @@ msgstr ""
 "Pulse aquí para llevar este Escritorio\n"
 "hacia el fondo.\n"
 
-#: src/desktops.c:2339 src/desktops.c:2390
+#: src/desktops.c:2341 src/desktops.c:2392
 #, c-format
 msgid "%i Desktops"
 msgstr "%i Escritorios"
 
-#: src/desktops.c:2341 src/desktops.c:2392
+#: src/desktops.c:2343 src/desktops.c:2394
 #, c-format
 msgid "%i Desktop"
 msgstr "%i Escritorio"
 
-#: src/desktops.c:2373
+#: src/desktops.c:2375
 msgid "Multiple Desktop Settings"
 msgstr "Configurar Escritorios Múltiples"
 
-#: src/desktops.c:2380
+#: src/desktops.c:2382
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -632,48 +632,48 @@ msgstr ""
 "Multiples Escritorios Enlightenment\n"
 "Dálogo de Configuracion\n"
 
-#: src/desktops.c:2385
+#: src/desktops.c:2387
 msgid "Number of virtual desktops:\n"
 msgstr "Número de Escritorios Virtuales:\n"
 
-#: src/desktops.c:2411
+#: src/desktops.c:2413
 msgid "Slide desktops around when changing"
 msgstr "Desplazar escritorios al conmutar entre ellos"
 
-#: src/desktops.c:2417
+#: src/desktops.c:2419
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Velocidad de Desplazamiento de Escritorios: (lenta)\n"
 
-#: src/desktops.c:2431
+#: src/desktops.c:2433
 msgid "Wrap desktops around"
 msgstr "Enganchar los escritorios entre ellos"
 
-#: src/desktops.c:2439
+#: src/desktops.c:2441
 msgid "Display desktop dragbar"
 msgstr "Mostrar Barra de Arrastre de Escritorios"
 
-#: src/desktops.c:2445
+#: src/desktops.c:2447
 msgid "Drag bar position:"
 msgstr "Ubicación de la Barra de Arrastre:"
 
-#: src/desktops.c:2449
+#: src/desktops.c:2451
 msgid "Top"
 msgstr "Arriba"
 
-#: src/desktops.c:2455
+#: src/desktops.c:2457
 msgid "Bottom"
 msgstr "Abajo"
 
-#: src/desktops.c:2461 src/pager.c:1817 src/pager.c:1842 src/pager.c:1867
+#: src/desktops.c:2463 src/pager.c:1818 src/pager.c:1843 src/pager.c:1868
 msgid "Left"
 msgstr "Izquierdo"
 
-#: src/desktops.c:2467 src/pager.c:1829 src/pager.c:1854 src/pager.c:1879
+#: src/desktops.c:2469 src/pager.c:1830 src/pager.c:1855 src/pager.c:1880
 msgid "Right"
 msgstr "Derecho"
 
-#: src/desktops.c:2559 src/desktops.c:2607
+#: src/desktops.c:2561 src/desktops.c:2609
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -682,7 +682,7 @@ msgstr ""
 "%i x %i\n"
 "pantallas de tamaño"
 
-#: src/desktops.c:2562 src/desktops.c:2610
+#: src/desktops.c:2564 src/desktops.c:2612
 msgid ""
 "1\n"
 "Screen in size"
@@ -690,11 +690,11 @@ msgstr ""
 "1\n"
 "Pantalla de tamaño"
 
-#: src/desktops.c:2593
+#: src/desktops.c:2595
 msgid "Virtual Desktop Settings"
 msgstr "Configurar Escritorios Virtuales"
 
-#: src/desktops.c:2600
+#: src/desktops.c:2602
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -702,19 +702,19 @@ msgstr ""
 "Escritorios Virtuales Enlightenment\n"
 "Diálogo de Configuracion\n"
 
-#: src/desktops.c:2603
+#: src/desktops.c:2605
 msgid "Virtual Desktop size:\n"
 msgstr "Tamaño de Escritorio Virtual:\n"
 
-#: src/desktops.c:2643
+#: src/desktops.c:2645
 msgid "Wrap virtual desktops around"
 msgstr "Enganchar escritorios virtuales entre ellos"
 
-#: src/desktops.c:2647
+#: src/desktops.c:2649
 msgid "Enable edge flip"
 msgstr "Habilitar cambio de bordes"
 
-#: src/desktops.c:2651
+#: src/desktops.c:2653
 msgid "Resistance at edge of screen:\n"
 msgstr "Resistencia al borde de la pantalla:\n"
 
@@ -754,11 +754,11 @@ msgstr ""
 "\n"
 "Saliendo...\n"
 
-#: src/focus.c:700
+#: src/focus.c:711
 msgid "Focus Settings"
 msgstr "Configurar enfoque"
 
-#: src/focus.c:707
+#: src/focus.c:718
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -766,93 +766,93 @@ msgstr ""
 "Enfoque Enlightenment\n"
 "Diálogo de Secciones\n"
 
-#: src/focus.c:711
+#: src/focus.c:722
 msgid "Focus follows pointer"
 msgstr "El enfoque sigue al puntero del ratón"
 
-#: src/focus.c:717
+#: src/focus.c:728
 msgid "Focus follows pointer sloppily"
 msgstr "El enfoque sigue al puntero del ratón lentamente"
 
-#: src/focus.c:723
+#: src/focus.c:734
 msgid "Focus follows mouse clicks"
 msgstr "El enfoque sigue los clicks del ratón"
 
-#: src/focus.c:733
+#: src/focus.c:744
 msgid "Clicking in a window always raises it"
 msgstr "Pulsar en una ventana siempre la eleva"
 
-#: src/focus.c:741
+#: src/focus.c:752
 msgid "All new windows first get the focus"
 msgstr "Todas las ventanas nuevas reciben el enfoque primero"
 
-#: src/focus.c:746
+#: src/focus.c:757
 msgid "Only new dialog windows get the focus"
 msgstr "Solo nuevas ventanas de diálogo reciben enfoque"
 
-#: src/focus.c:753
+#: src/focus.c:764
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr ""
 "Solo nuevas ventanas de diálogo cuyo padre tiene el enfoque reciben enfoque"
 
-#: src/focus.c:758
+#: src/focus.c:769
 #, fuzzy
 msgid "Raise windows while switching focus"
 msgstr "Enfocar ventana mientras cambiamos"
 
-#: src/focus.c:764
+#: src/focus.c:775
 #, fuzzy
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Enviar el puntero del ratón a la ventana en el cambio de enfoque"
 
-#: src/focus.c:770
+#: src/focus.c:781
 #, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Enviar el puntero del ratón a la ventana en el cambio de enfoque"
 
-#: src/focus.c:778
+#: src/focus.c:789
 msgid "Display and use focus list"
 msgstr "Mostrar y usar Lista de Enfoque"
 
-#: src/focus.c:783
+#: src/focus.c:794
 msgid "Include sticky windows in focus list"
 msgstr "Incluir ventanas pegajosas en la lista de enfoques"
 
-#: src/focus.c:788
+#: src/focus.c:799
 msgid "Include shaded windows in focus list"
 msgstr "Incluir ventanas sombreadas en la lista de enfoque"
 
-#: src/focus.c:793
+#: src/focus.c:804
 msgid "Include iconified windows in focus list"
 msgstr "Incluir ventanas iconificadas en la lista de enfoque"
 
-#: src/focus.c:798
+#: src/focus.c:809
 msgid "Focus windows while switching"
 msgstr "Enfocar ventana mientras cambiamos"
 
-#: src/focus.c:803
+#: src/focus.c:814
 msgid "Raise windows after focus switch"
 msgstr "Elevar ventana DESPUÉS de cambio de enfoque"
 
-#: src/focus.c:808
+#: src/focus.c:819
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Enviar el puntero del ratón a la ventana DESPUÉS del cambio de enfoque"
 
-#: src/focus.c:818
+#: src/focus.c:829
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr ""
 "Política al mostrar la Focuslist de la imagen (si una operación falla "
 "intentar siguiente):"
 
-#: src/focus.c:822
+#: src/focus.c:833
 msgid "First E Icon, then App Icon"
 msgstr "Primero Icono E, luego Icono App"
 
-#: src/focus.c:828
+#: src/focus.c:839
 msgid "First App Icon, then E Icon"
 msgstr "Primero Icono App, luego Icono E"
 
-#: src/focus.c:834 src/iconify.c:2374
+#: src/focus.c:845 src/iconify.c:2374
 msgid "None"
 msgstr "Ninguna"
 
@@ -1762,19 +1762,19 @@ msgstr ""
 msgid "Zoom On"
 msgstr ""
 
-#: src/pager.c:1714 src/pager.c:1797
+#: src/pager.c:1715 src/pager.c:1798
 msgid "Pager scanning speed:"
 msgstr "Velocidad de barrido del Conmutador:"
 
-#: src/pager.c:1715 src/pager.c:1798
+#: src/pager.c:1716 src/pager.c:1799
 msgid "lines per second"
 msgstr "líneas por segundo"
 
-#: src/pager.c:1752
+#: src/pager.c:1753
 msgid "Pager Settings"
 msgstr "Configurar Conmutador"
 
-#: src/pager.c:1759
+#: src/pager.c:1760
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
@@ -1782,43 +1782,43 @@ msgstr ""
 "Escritorio y Area de Enlightenment\n"
 "Diálogo de Configuración del Paginador\n"
 
-#: src/pager.c:1764
+#: src/pager.c:1765
 msgid "Enable pager display"
 msgstr "Habilitar el uso del Conmutador"
 
-#: src/pager.c:1769
+#: src/pager.c:1770
 msgid "Make miniature snapshots of the screen"
 msgstr "Hacer Miniaturas de la pantalla"
 
-#: src/pager.c:1774
+#: src/pager.c:1775
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Suavizar miniaturas de alta calidad en modo Miniaturas"
 
-#: src/pager.c:1779
+#: src/pager.c:1780
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Realizar acercamiento cuando el ratón está sobre ventanas"
 
-#: src/pager.c:1785
+#: src/pager.c:1786
 msgid "Pop up window title when mouse is over the window"
 msgstr "Mostrar título cuando el ratón está sobre ventanas"
 
-#: src/pager.c:1790
+#: src/pager.c:1791
 msgid "Continuously scan screen to update pager"
 msgstr "Barrer continuamente la pantalla para actualizar el Conmutador"
 
-#: src/pager.c:1813
+#: src/pager.c:1814
 msgid "Mouse button to select and drag windows:"
 msgstr "Botón del ratón para seleccionar y arrastrar ventanas:"
 
-#: src/pager.c:1823 src/pager.c:1848 src/pager.c:1873
+#: src/pager.c:1824 src/pager.c:1849 src/pager.c:1874
 msgid "Middle"
 msgstr "Medio"
 
-#: src/pager.c:1838
+#: src/pager.c:1839
 msgid "Mouse button to select desktops:"
 msgstr "Botón del ratón para seleccionar escritorios:"
 
-#: src/pager.c:1863
+#: src/pager.c:1864
 msgid "Mouse button to display pager menu:"
 msgstr "Botón del ratón para Mostrar menú del Conmutador:"
 

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-28 15:49+0100\n"
+"POT-Creation-Date: 2006-02-05 18:34+0100\n"
 "PO-Revision-Date: 2000-07-30 22:39+0200\n"
 "Last-Translator: Fatih Demir <kabalak@gmx.net>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -19,15 +19,15 @@ msgstr ""
 msgid "ActionClass Error!"
 msgstr "TextClass hatasý!"
 
-#: src/aclass.c:190 src/backgrounds.c:255 src/borders.c:642 src/buttons.c:182
+#: src/aclass.c:190 src/backgrounds.c:255 src/borders.c:644 src/buttons.c:182
 #: src/cmclass.c:84 src/cursors.c:113 src/iclass.c:356 src/tclass.c:96
 #: src/tooltips.c:123
 #, c-format
 msgid "%u references remain\n"
 msgstr "%u bað geriye kaldý\n"
 
-#: src/aclass.c:246 src/backgrounds.c:1171 src/borders.c:1063
-#: src/borders.c:1187 src/buttons.c:721 src/cmclass.c:201 src/config.c:273
+#: src/aclass.c:246 src/backgrounds.c:1171 src/borders.c:1065
+#: src/borders.c:1189 src/buttons.c:721 src/cmclass.c:201 src/config.c:273
 #: src/cursors.c:153 src/iclass.c:538 src/iconify.c:2417 src/menus.c:1713
 #: src/menus.c:1825 src/slideout.c:418 src/tclass.c:247 src/tooltips.c:157
 #: src/windowmatch.c:153
@@ -35,8 +35,8 @@ msgstr "%u bað geriye kaldý\n"
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIG : \"%s\"'nin ekstra bilgilerini gözardý ediyorum .\n"
 
-#: src/aclass.c:254 src/backgrounds.c:1179 src/borders.c:1069
-#: src/borders.c:1193 src/buttons.c:729 src/cmclass.c:209 src/config.c:281
+#: src/aclass.c:254 src/backgrounds.c:1179 src/borders.c:1071
+#: src/borders.c:1195 src/buttons.c:729 src/cmclass.c:209 src/config.c:281
 #: src/cursors.c:159 src/iclass.c:543 src/menus.c:1718 src/menus.c:1831
 #: src/slideout.c:424 src/tclass.c:253 src/tooltips.c:163
 #: src/windowmatch.c:158
@@ -345,7 +345,7 @@ msgstr "Üzelliklere göre sýrala"
 msgid "Sort by Image"
 msgstr "Resme göre sýrala"
 
-#: src/borders.c:642
+#: src/borders.c:644
 msgid "Border Error!"
 msgstr "Kenar hatasý!"
 
@@ -603,21 +603,21 @@ msgstr ""
 "Bu masaüstünü en dibe göndermek için\n"
 "buraya týkla .\n"
 
-#: src/desktops.c:2339 src/desktops.c:2390
+#: src/desktops.c:2341 src/desktops.c:2392
 #, c-format
 msgid "%i Desktops"
 msgstr "%i masaüstleri"
 
-#: src/desktops.c:2341 src/desktops.c:2392
+#: src/desktops.c:2343 src/desktops.c:2394
 #, c-format
 msgid "%i Desktop"
 msgstr "%i masaüstü"
 
-#: src/desktops.c:2373
+#: src/desktops.c:2375
 msgid "Multiple Desktop Settings"
 msgstr "Çoklu masaüstü ayarlarý"
 
-#: src/desktops.c:2380
+#: src/desktops.c:2382
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -625,49 +625,49 @@ msgstr ""
 "Enlightenment çoklu masaüstü\n"
 "ayarlarý diyaloðu\n"
 
-#: src/desktops.c:2385
+#: src/desktops.c:2387
 msgid "Number of virtual desktops:\n"
 msgstr "Sanal masaüstlerinin sayýsý :\n"
 
-#: src/desktops.c:2411
+#: src/desktops.c:2413
 msgid "Slide desktops around when changing"
 msgstr "Masaüstü deðiþtirirken masaüstünü kaydýrt"
 
-#: src/desktops.c:2417
+#: src/desktops.c:2419
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Masaüstü kaydýrtma hýzý : (yavaþ)\n"
 
-#: src/desktops.c:2431
+#: src/desktops.c:2433
 #, fuzzy
 msgid "Wrap desktops around"
 msgstr "Sanal masaüstleri kenarda deðiþtir"
 
-#: src/desktops.c:2439
+#: src/desktops.c:2441
 msgid "Display desktop dragbar"
 msgstr "Masaüstü çizgisini göster"
 
-#: src/desktops.c:2445
+#: src/desktops.c:2447
 msgid "Drag bar position:"
 msgstr "Masaüstü çizgisinin yeri :"
 
-#: src/desktops.c:2449
+#: src/desktops.c:2451
 msgid "Top"
 msgstr "Üst"
 
-#: src/desktops.c:2455
+#: src/desktops.c:2457
 msgid "Bottom"
 msgstr "Alt"
 
-#: src/desktops.c:2461 src/pager.c:1817 src/pager.c:1842 src/pager.c:1867
+#: src/desktops.c:2463 src/pager.c:1818 src/pager.c:1843 src/pager.c:1868
 msgid "Left"
 msgstr "Sol"
 
-#: src/desktops.c:2467 src/pager.c:1829 src/pager.c:1854 src/pager.c:1879
+#: src/desktops.c:2469 src/pager.c:1830 src/pager.c:1855 src/pager.c:1880
 msgid "Right"
 msgstr "Sað"
 
-#: src/desktops.c:2559 src/desktops.c:2607
+#: src/desktops.c:2561 src/desktops.c:2609
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -676,7 +676,7 @@ msgstr ""
 "%i * %i\n"
 "Ekran boyutlarý"
 
-#: src/desktops.c:2562 src/desktops.c:2610
+#: src/desktops.c:2564 src/desktops.c:2612
 msgid ""
 "1\n"
 "Screen in size"
@@ -684,11 +684,11 @@ msgstr ""
 "1\n"
 "Ekran boyutu"
 
-#: src/desktops.c:2593
+#: src/desktops.c:2595
 msgid "Virtual Desktop Settings"
 msgstr "Sanal masaüstü ayarlarý"
 
-#: src/desktops.c:2600
+#: src/desktops.c:2602
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -696,19 +696,19 @@ msgstr ""
 "Enlightenment sanal masaüstü\n"
 "ayarlarý diyaloðu\n"
 
-#: src/desktops.c:2603
+#: src/desktops.c:2605
 msgid "Virtual Desktop size:\n"
 msgstr "Sanal masaüstü boyutu :\n"
 
-#: src/desktops.c:2643
+#: src/desktops.c:2645
 msgid "Wrap virtual desktops around"
 msgstr "Sanal masaüstleri kenarda deðiþtir"
 
-#: src/desktops.c:2647
+#: src/desktops.c:2649
 msgid "Enable edge flip"
 msgstr "Kenar zýplamasýný aç"
 
-#: src/desktops.c:2651
+#: src/desktops.c:2653
 msgid "Resistance at edge of screen:\n"
 msgstr "Ekran kenarýnýn dayanýklýðý :\n"
 
@@ -748,11 +748,11 @@ msgstr ""
 "\n"
 "Bitiriyorum .\n"
 
-#: src/focus.c:700
+#: src/focus.c:711
 msgid "Focus Settings"
 msgstr "Foküsleme ayarlarý"
 
-#: src/focus.c:707
+#: src/focus.c:718
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -760,92 +760,92 @@ msgstr ""
 "Enlightenment foküsleme\n"
 "ayarlarý diyaloðu\n"
 
-#: src/focus.c:711
+#: src/focus.c:722
 msgid "Focus follows pointer"
 msgstr "Foküs göstergeyi takip ediyor"
 
-#: src/focus.c:717
+#: src/focus.c:728
 msgid "Focus follows pointer sloppily"
 msgstr "Foküs göstergeyi yavaþ takip ediyor"
 
-#: src/focus.c:723
+#: src/focus.c:734
 msgid "Focus follows mouse clicks"
 msgstr "Foküs fare týklamalarýný takip ediyor"
 
-#: src/focus.c:733
+#: src/focus.c:744
 msgid "Clicking in a window always raises it"
 msgstr "Pencereye týklanýnca pencereyi yükselt"
 
-#: src/focus.c:741
+#: src/focus.c:752
 msgid "All new windows first get the focus"
 msgstr "Ilken pencere çikarsa o'nu foküsla"
 
-#: src/focus.c:746
+#: src/focus.c:757
 msgid "Only new dialog windows get the focus"
 msgstr "Sadece yeni diyalok pencereleri foküs alýr"
 
-#: src/focus.c:753
+#: src/focus.c:764
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr "Sadece sahibi foküslü olan yeni diyalok pencereleri foküs alýr"
 
-#: src/focus.c:758
+#: src/focus.c:769
 #, fuzzy
 msgid "Raise windows while switching focus"
 msgstr "Pencere deðiþtirirken pencereleri foküsle"
 
-#: src/focus.c:764
+#: src/focus.c:775
 #, fuzzy
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Foküs deðiþiminde fareyi pencereye gönder"
 
-#: src/focus.c:770
+#: src/focus.c:781
 #, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Foküs deðiþiminde fareyi pencereye gönder"
 
-#: src/focus.c:778
+#: src/focus.c:789
 msgid "Display and use focus list"
 msgstr "Göster ve foküsleme listesini kullan"
 
-#: src/focus.c:783
+#: src/focus.c:794
 msgid "Include sticky windows in focus list"
 msgstr "Yapýþýk pencereleri foküsleme listesinde içer"
 
-#: src/focus.c:788
+#: src/focus.c:799
 msgid "Include shaded windows in focus list"
 msgstr "Toplanmýþ pencereleri foküsleme listesinde içer"
 
-#: src/focus.c:793
+#: src/focus.c:804
 msgid "Include iconified windows in focus list"
 msgstr "Simgeleþtirilmiþ pencereleri foküsleme listesinde içer"
 
-#: src/focus.c:798
+#: src/focus.c:809
 msgid "Focus windows while switching"
 msgstr "Pencere deðiþtirirken pencereleri foküsle"
 
-#: src/focus.c:803
+#: src/focus.c:814
 msgid "Raise windows after focus switch"
 msgstr "Foküs deðiþiminden sonra pencereleri yükselt"
 
-#: src/focus.c:808
+#: src/focus.c:819
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Foküs deðiþimden sonra fareyi pencereye gönder"
 
-#: src/focus.c:818
+#: src/focus.c:829
 #, fuzzy
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr ""
 "Ikona resmi gösterme taktiði ( birisi baþarýsýz olursa , baþkasýný dene ):"
 
-#: src/focus.c:822
+#: src/focus.c:833
 msgid "First E Icon, then App Icon"
 msgstr ""
 
-#: src/focus.c:828
+#: src/focus.c:839
 msgid "First App Icon, then E Icon"
 msgstr ""
 
-#: src/focus.c:834 src/iconify.c:2374
+#: src/focus.c:845 src/iconify.c:2374
 msgid "None"
 msgstr "Hiç biri"
 
@@ -1771,19 +1771,19 @@ msgstr ""
 msgid "Zoom On"
 msgstr ""
 
-#: src/pager.c:1714 src/pager.c:1797
+#: src/pager.c:1715 src/pager.c:1798
 msgid "Pager scanning speed:"
 msgstr "Gözey tarama hýzý :"
 
-#: src/pager.c:1715 src/pager.c:1798
+#: src/pager.c:1716 src/pager.c:1799
 msgid "lines per second"
 msgstr "satýr/saniyede"
 
-#: src/pager.c:1752
+#: src/pager.c:1753
 msgid "Pager Settings"
 msgstr "Gözey ayarlarý"
 
-#: src/pager.c:1759
+#: src/pager.c:1760
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
@@ -1791,43 +1791,43 @@ msgstr ""
 "Enlightenment masaüstü & bölge\n"
 "gözey ayarlarý diyaloðu\n"
 
-#: src/pager.c:1764
+#: src/pager.c:1765
 msgid "Enable pager display"
 msgstr "Gözey gösterimini aç"
 
-#: src/pager.c:1769
+#: src/pager.c:1770
 msgid "Make miniature snapshots of the screen"
 msgstr "Ekranýn ufacýk resimlerini çek"
 
-#: src/pager.c:1774
+#: src/pager.c:1775
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Ufacýk resimlerde ufak bir puslama yap"
 
-#: src/pager.c:1779
+#: src/pager.c:1780
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Güzey'de fare bir pencerenin üzerinde vardýðý zaman \"zoom\" yap"
 
-#: src/pager.c:1785
+#: src/pager.c:1786
 msgid "Pop up window title when mouse is over the window"
 msgstr "Fare pencerenin üstünde olduðu zaman pencere üstyazýs#_ný aç"
 
-#: src/pager.c:1790
+#: src/pager.c:1791
 msgid "Continuously scan screen to update pager"
 msgstr "Gözey'i yenilemek için ekraný daima tara"
 
-#: src/pager.c:1813
+#: src/pager.c:1814
 msgid "Mouse button to select and drag windows:"
 msgstr "Pencereleri seçme ve taþýma tuþu :"
 
-#: src/pager.c:1823 src/pager.c:1848 src/pager.c:1873
+#: src/pager.c:1824 src/pager.c:1849 src/pager.c:1874
 msgid "Middle"
 msgstr "Orta"
 
-#: src/pager.c:1838
+#: src/pager.c:1839
 msgid "Mouse button to select desktops:"
 msgstr "Masaüstünün seçme fare tuþu :"
 
-#: src/pager.c:1863
+#: src/pager.c:1864
 msgid "Mouse button to display pager menu:"
 msgstr "Gözey mönüsünü gösterten fare tuþu :"
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-28 15:49+0100\n"
+"POT-Creation-Date: 2006-02-05 18:34+0100\n"
 "PO-Revision-Date: 2005-04-20 23:11+0300\n"
 "Last-Translator: Ludwig Noujarret <ludwig@noujarret.com>\n"
 "Language-Team:  <fr@li.org>\n"
@@ -20,15 +20,15 @@ msgstr ""
 msgid "ActionClass Error!"
 msgstr "Erreur ActionClass !"
 
-#: src/aclass.c:190 src/backgrounds.c:255 src/borders.c:642 src/buttons.c:182
+#: src/aclass.c:190 src/backgrounds.c:255 src/borders.c:644 src/buttons.c:182
 #: src/cmclass.c:84 src/cursors.c:113 src/iclass.c:356 src/tclass.c:96
 #: src/tooltips.c:123
 #, c-format
 msgid "%u references remain\n"
 msgstr "Il reste %u références\n"
 
-#: src/aclass.c:246 src/backgrounds.c:1171 src/borders.c:1063
-#: src/borders.c:1187 src/buttons.c:721 src/cmclass.c:201 src/config.c:273
+#: src/aclass.c:246 src/backgrounds.c:1171 src/borders.c:1065
+#: src/borders.c:1189 src/buttons.c:721 src/cmclass.c:201 src/config.c:273
 #: src/cursors.c:153 src/iclass.c:538 src/iconify.c:2417 src/menus.c:1713
 #: src/menus.c:1825 src/slideout.c:418 src/tclass.c:247 src/tooltips.c:157
 #: src/windowmatch.c:153
@@ -36,8 +36,8 @@ msgstr "Il reste %u références\n"
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIG: Omission de donnée superflue dans \"%s\"\n"
 
-#: src/aclass.c:254 src/backgrounds.c:1179 src/borders.c:1069
-#: src/borders.c:1193 src/buttons.c:729 src/cmclass.c:209 src/config.c:281
+#: src/aclass.c:254 src/backgrounds.c:1179 src/borders.c:1071
+#: src/borders.c:1195 src/buttons.c:729 src/cmclass.c:209 src/config.c:281
 #: src/cursors.c:159 src/iclass.c:543 src/menus.c:1718 src/menus.c:1831
 #: src/slideout.c:424 src/tclass.c:253 src/tooltips.c:163
 #: src/windowmatch.c:158
@@ -364,7 +364,7 @@ msgstr "Trier par Attribut"
 msgid "Sort by Image"
 msgstr "Trier par Image"
 
-#: src/borders.c:642
+#: src/borders.c:644
 msgid "Border Error!"
 msgstr "Erreur Bordure !"
 
@@ -606,21 +606,21 @@ msgid ""
 "to the bottom.\n"
 msgstr "Cliquez ici pour abaisser ce bureau.\n"
 
-#: src/desktops.c:2339 src/desktops.c:2390
+#: src/desktops.c:2341 src/desktops.c:2392
 #, c-format
 msgid "%i Desktops"
 msgstr "%i Bureaux"
 
-#: src/desktops.c:2341 src/desktops.c:2392
+#: src/desktops.c:2343 src/desktops.c:2394
 #, c-format
 msgid "%i Desktop"
 msgstr "%i Bureau"
 
-#: src/desktops.c:2373
+#: src/desktops.c:2375
 msgid "Multiple Desktop Settings"
 msgstr "Paramètres des Bureaux multiples"
 
-#: src/desktops.c:2380
+#: src/desktops.c:2382
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -628,48 +628,48 @@ msgstr ""
 "Dialogue de paramétrage des\n"
 "Bureaux multiples\n"
 
-#: src/desktops.c:2385
+#: src/desktops.c:2387
 msgid "Number of virtual desktops:\n"
 msgstr "Nombre de bureaux virtuels:\n"
 
-#: src/desktops.c:2411
+#: src/desktops.c:2413
 msgid "Slide desktops around when changing"
 msgstr "Faire glisser les bureaux lors des déplacements"
 
-#: src/desktops.c:2417
+#: src/desktops.c:2419
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Vitesse de glissement des bureaux: (lente)\n"
 
-#: src/desktops.c:2431
+#: src/desktops.c:2433
 msgid "Wrap desktops around"
 msgstr "Placer les bureaux en boucle"
 
-#: src/desktops.c:2439
+#: src/desktops.c:2441
 msgid "Display desktop dragbar"
 msgstr "Afficher la barre de bureau"
 
-#: src/desktops.c:2445
+#: src/desktops.c:2447
 msgid "Drag bar position:"
 msgstr "Position de la barre de bureau:"
 
-#: src/desktops.c:2449
+#: src/desktops.c:2451
 msgid "Top"
 msgstr "Haut"
 
-#: src/desktops.c:2455
+#: src/desktops.c:2457
 msgid "Bottom"
 msgstr "Bas"
 
-#: src/desktops.c:2461 src/pager.c:1817 src/pager.c:1842 src/pager.c:1867
+#: src/desktops.c:2463 src/pager.c:1818 src/pager.c:1843 src/pager.c:1868
 msgid "Left"
 msgstr "Gauche"
 
-#: src/desktops.c:2467 src/pager.c:1829 src/pager.c:1854 src/pager.c:1879
+#: src/desktops.c:2469 src/pager.c:1830 src/pager.c:1855 src/pager.c:1880
 msgid "Right"
 msgstr "Droit"
 
-#: src/desktops.c:2559 src/desktops.c:2607
+#: src/desktops.c:2561 src/desktops.c:2609
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -678,7 +678,7 @@ msgstr ""
 "%i x %i\n"
 "Ecrans"
 
-#: src/desktops.c:2562 src/desktops.c:2610
+#: src/desktops.c:2564 src/desktops.c:2612
 msgid ""
 "1\n"
 "Screen in size"
@@ -686,11 +686,11 @@ msgstr ""
 "1\n"
 "Ecran"
 
-#: src/desktops.c:2593
+#: src/desktops.c:2595
 msgid "Virtual Desktop Settings"
 msgstr "Paramètres des Bureaux virtuels"
 
-#: src/desktops.c:2600
+#: src/desktops.c:2602
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -698,19 +698,19 @@ msgstr ""
 "Dialogue de paramétrage des\n"
 "Bureaux virtuels\n"
 
-#: src/desktops.c:2603
+#: src/desktops.c:2605
 msgid "Virtual Desktop size:\n"
 msgstr "Nombre de bureaux virtuels:\n"
 
-#: src/desktops.c:2643
+#: src/desktops.c:2645
 msgid "Wrap virtual desktops around"
 msgstr "Placer les bureaux virtuels en boucle"
 
-#: src/desktops.c:2647
+#: src/desktops.c:2649
 msgid "Enable edge flip"
 msgstr "Activer les bords sensitifs"
 
-#: src/desktops.c:2651
+#: src/desktops.c:2653
 msgid "Resistance at edge of screen:\n"
 msgstr "Sensibilité des bords:\n"
 
@@ -750,11 +750,11 @@ msgstr ""
 "\n"
 "Sortie.\n"
 
-#: src/focus.c:700
+#: src/focus.c:711
 msgid "Focus Settings"
 msgstr "Paramètres du Focus"
 
-#: src/focus.c:707
+#: src/focus.c:718
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -762,92 +762,92 @@ msgstr ""
 "Dialogue de paramétrage du\n"
 "Focus\n"
 
-#: src/focus.c:711
+#: src/focus.c:722
 msgid "Focus follows pointer"
 msgstr "Le focus suit la souris"
 
-#: src/focus.c:717
+#: src/focus.c:728
 msgid "Focus follows pointer sloppily"
 msgstr "Le focus suit lentement la souris"
 
-#: src/focus.c:723
+#: src/focus.c:734
 msgid "Focus follows mouse clicks"
 msgstr "Le focus suit les clics de souris"
 
-#: src/focus.c:733
+#: src/focus.c:744
 msgid "Clicking in a window always raises it"
 msgstr "Toujours élever une fenêtre qui reçoit un click"
 
-#: src/focus.c:741
+#: src/focus.c:752
 msgid "All new windows first get the focus"
 msgstr "Toutes les nouvelles fenêtres obtiennent le focus"
 
-#: src/focus.c:746
+#: src/focus.c:757
 msgid "Only new dialog windows get the focus"
 msgstr "Seules les nouvelles fenêtres de dialogue obtiennent le focus"
 
-#: src/focus.c:753
+#: src/focus.c:764
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr ""
 "Seules les nouvelles fenêtres de dialogue dont le parent a le\n"
 "focus obtiennent le focus."
 
-#: src/focus.c:758
+#: src/focus.c:769
 #, fuzzy
 msgid "Raise windows while switching focus"
 msgstr "Mettre le focus sur la fenêtre en cours de sélection"
 
-#: src/focus.c:764
+#: src/focus.c:775
 #, fuzzy
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Placer la souris sur la fenêtre qui obtient le focus"
 
-#: src/focus.c:770
+#: src/focus.c:781
 #, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Placer la souris sur la fenêtre qui obtient le focus"
 
-#: src/focus.c:778
+#: src/focus.c:789
 msgid "Display and use focus list"
 msgstr "Afficher et utiliser la liste de fenêtres"
 
-#: src/focus.c:783
+#: src/focus.c:794
 msgid "Include sticky windows in focus list"
 msgstr "Inclure les fenêtres collées dans la liste de fenêtres"
 
-#: src/focus.c:788
+#: src/focus.c:799
 msgid "Include shaded windows in focus list"
 msgstr "Inclure les fenêtres masquées dans la liste de fenêtres"
 
-#: src/focus.c:793
+#: src/focus.c:804
 msgid "Include iconified windows in focus list"
 msgstr "Inclure les fenêtres icônifiées dans la liste de fenêtres"
 
-#: src/focus.c:798
+#: src/focus.c:809
 msgid "Focus windows while switching"
 msgstr "Mettre le focus sur la fenêtre en cours de sélection"
 
-#: src/focus.c:803
+#: src/focus.c:814
 msgid "Raise windows after focus switch"
 msgstr "Elever les fenêtres après l'obtention du focus"
 
-#: src/focus.c:808
+#: src/focus.c:819
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Placer la souris sur la fenêtre après obtention du focus"
 
-#: src/focus.c:818
+#: src/focus.c:829
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr "Afficher les icônes en respectant l'ordre suivant:"
 
-#: src/focus.c:822
+#: src/focus.c:833
 msgid "First E Icon, then App Icon"
 msgstr "Icône E en premier, puis Icône de l'Application"
 
-#: src/focus.c:828
+#: src/focus.c:839
 msgid "First App Icon, then E Icon"
 msgstr "Icône de l'Application en premier, puis Icône E"
 
-#: src/focus.c:834 src/iconify.c:2374
+#: src/focus.c:845 src/iconify.c:2374
 msgid "None"
 msgstr "Aucune"
 
@@ -1746,19 +1746,19 @@ msgstr ""
 msgid "Zoom On"
 msgstr ""
 
-#: src/pager.c:1714 src/pager.c:1797
+#: src/pager.c:1715 src/pager.c:1798
 msgid "Pager scanning speed:"
 msgstr "Vitesse de balayage du pager:"
 
-#: src/pager.c:1715 src/pager.c:1798
+#: src/pager.c:1716 src/pager.c:1799
 msgid "lines per second"
 msgstr "lignes par seconde"
 
-#: src/pager.c:1752
+#: src/pager.c:1753
 msgid "Pager Settings"
 msgstr "Paramètres du Pager"
 
-#: src/pager.c:1759
+#: src/pager.c:1760
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
@@ -1766,43 +1766,43 @@ msgstr ""
 "Dialogue de paramétrage du\n"
 "Pager\n"
 
-#: src/pager.c:1764
+#: src/pager.c:1765
 msgid "Enable pager display"
 msgstr "Activer l'affichage du Pager"
 
-#: src/pager.c:1769
+#: src/pager.c:1770
 msgid "Make miniature snapshots of the screen"
 msgstr "Faire des mini-captures d'écran"
 
-#: src/pager.c:1774
+#: src/pager.c:1775
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Faire des captures de haute qualité"
 
-#: src/pager.c:1779
+#: src/pager.c:1780
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Zoomer sur les fenêtres lorsque la souris passe dessus"
 
-#: src/pager.c:1785
+#: src/pager.c:1786
 msgid "Pop up window title when mouse is over the window"
 msgstr "Afficher le titre de la fenêtre lorsque la souris passe dessus"
 
-#: src/pager.c:1790
+#: src/pager.c:1791
 msgid "Continuously scan screen to update pager"
 msgstr "Balayer continuellement l'écran pour mettre le Pager à jour"
 
-#: src/pager.c:1813
+#: src/pager.c:1814
 msgid "Mouse button to select and drag windows:"
 msgstr "Bouton de la souris pour sélectionner et déplacer les fenêtres:"
 
-#: src/pager.c:1823 src/pager.c:1848 src/pager.c:1873
+#: src/pager.c:1824 src/pager.c:1849 src/pager.c:1874
 msgid "Middle"
 msgstr "Milieu"
 
-#: src/pager.c:1838
+#: src/pager.c:1839
 msgid "Mouse button to select desktops:"
 msgstr "Bouton de la souris pour sélectionner les bureaux:"
 
-#: src/pager.c:1863
+#: src/pager.c:1864
 msgid "Mouse button to display pager menu:"
 msgstr "Bouton de la souris pour afficher le menu du pager:"
 
