@@ -36,7 +36,7 @@ typedef void    (*Ewl_Child_Add) (Ewl_Container *c, Ewl_Widget *w);
  * callback is container specific and is triggered when an Ewl_Widget is
  * removed from the Ewl_Container.
  */
-typedef void    (*Ewl_Child_Remove) (Ewl_Container *c, Ewl_Widget *w);
+typedef void    (*Ewl_Child_Remove) (Ewl_Container *c, Ewl_Widget *w, int idx);
 
 /**
  * A typedef to shorten the definition of the child_resize callbacks. This
@@ -143,7 +143,8 @@ void            ewl_container_largest_prefer(Ewl_Container *c,
 void            ewl_container_sum_prefer(Ewl_Container *c, Ewl_Orientation o);
 
 void            ewl_container_child_add_call(Ewl_Container *c, Ewl_Widget *w);
-void            ewl_container_child_remove_call(Ewl_Container *c, Ewl_Widget *w);
+void            ewl_container_child_remove_call(Ewl_Container *c, Ewl_Widget *w,
+								int idx);
 void            ewl_container_child_show_call(Ewl_Container *c, Ewl_Widget *w);
 void            ewl_container_child_hide_call(Ewl_Container *c, Ewl_Widget *w);
 

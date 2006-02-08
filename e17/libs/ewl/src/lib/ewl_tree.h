@@ -125,6 +125,7 @@ void ewl_tree_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_tree_hscroll_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_tree_child_resize_cb(Ewl_Container *c);
 void ewl_tree_node_child_add_cb(Ewl_Container *c, Ewl_Widget *w);
+void ewl_tree_node_child_del_cb(Ewl_Container *c, Ewl_Widget *w, int idx);
 
 /**
  * @}

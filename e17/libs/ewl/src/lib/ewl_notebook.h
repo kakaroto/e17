@@ -82,7 +82,7 @@ Ewl_Widget	*ewl_notebook_page_tab_widget_get(Ewl_Notebook *n,
 void ewl_notebook_cb_child_show(Ewl_Container *c, Ewl_Widget *w);
 void ewl_notebook_cb_child_hide(Ewl_Container *c, Ewl_Widget *w);
 void ewl_notebook_cb_child_add(Ewl_Container *c, Ewl_Widget *w);
-void ewl_notebook_cb_child_remove(Ewl_Container *c, Ewl_Widget *w);
+void ewl_notebook_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int rem_idx);
 
 void ewl_notebook_cb_tab_clicked(Ewl_Widget *w, void *ev, void *data);
 

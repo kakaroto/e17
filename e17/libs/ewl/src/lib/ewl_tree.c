@@ -817,7 +817,7 @@ ewl_tree_node_init(Ewl_Tree_Node *node)
 	ewl_container_add_notify_set(EWL_CONTAINER(node),
 				    ewl_tree_node_child_add_cb);
 	ewl_container_remove_notify_set(EWL_CONTAINER(node),
-				    ewl_tree_node_child_add_cb);
+				    ewl_tree_node_child_del_cb);
 
 	ewl_object_fill_policy_set(EWL_OBJECT(node), EWL_FLAG_FILL_HFILL |
 							EWL_FLAG_FILL_HSHRINK);
@@ -1056,6 +1056,18 @@ ewl_tree_node_child_add_cb(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
 	else if (VISIBLE(node->handle)) {
 		ewl_widget_hide(node->handle);
 	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_tree_node_child_del_cb(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+
+	ewl_tree_node_child_add_cb(c, w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

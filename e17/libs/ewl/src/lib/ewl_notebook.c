@@ -482,7 +482,8 @@ ewl_notebook_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 }
 
 void
-ewl_notebook_cb_child_remove(Ewl_Container *c, Ewl_Widget *w)
+ewl_notebook_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, 
+					int rem_idx __UNUSED__)
 {
 	Ewl_Widget *t;
 	Ewl_Notebook *n;

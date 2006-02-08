@@ -2756,7 +2756,7 @@ ewl_text_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 }
 
 void
-ewl_text_cb_child_del(Ewl_Container *c, Ewl_Widget *w)
+ewl_text_cb_child_del(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
 {
 	char *appearance;
 

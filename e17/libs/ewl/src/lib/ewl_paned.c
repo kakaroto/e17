@@ -223,7 +223,7 @@ ewl_paned_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
  * one of them. If that isnt' found and the last widget is internal
  * then remove that. */
 void
-ewl_paned_cb_child_remove(Ewl_Container *c, Ewl_Widget *w)
+ewl_paned_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
 {
 	Ewl_Widget *child, *prev = NULL, *last = NULL;
 

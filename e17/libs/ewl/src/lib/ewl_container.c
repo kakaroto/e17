@@ -343,6 +343,7 @@ void
 ewl_container_child_remove(Ewl_Container *pc, Ewl_Widget *child)
 {
 	Ewl_Widget *temp;
+	int idx = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("pc", pc);
@@ -371,6 +372,7 @@ ewl_container_child_remove(Ewl_Container *pc, Ewl_Widget *child)
 	 * Traverse the list to the child.
 	 */
 	temp = ecore_list_goto(pc->children, child);
+	idx = ecore_list_index(pc->children);
 
 	/*
 	 * If the child isn't found, then this isn't it's parent.
@@ -385,7 +387,7 @@ ewl_container_child_remove(Ewl_Container *pc, Ewl_Widget *child)
 	ecore_list_remove(pc->children);
 	if (VISIBLE(child) && REALIZED(child))
 		ewl_container_child_hide_call(pc, child);
-	ewl_container_child_remove_call(pc, child);
+	ewl_container_child_remove_call(pc, child, idx);
 
 	ewl_widget_configure(EWL_WIDGET(pc));
 
@@ -930,7 +932,7 @@ ewl_container_child_add_call(Ewl_Container *c, Ewl_Widget *w)
  * @brief Triggers the child_remove callback for the container @a c.
  */
 void
-ewl_container_child_remove_call(Ewl_Container *c, Ewl_Widget *w)
+ewl_container_child_remove_call(Ewl_Container *c, Ewl_Widget *w, int idx)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
@@ -945,7 +947,7 @@ ewl_container_child_remove_call(Ewl_Container *c, Ewl_Widget *w)
 		DRETURN(DLEVEL_STABLE);
 
 	if (c->child_remove)
-		c->child_remove(c, w);
+		c->child_remove(c, w, idx);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
