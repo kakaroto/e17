@@ -31,15 +31,16 @@
 
 %token BASE
 %token STRING FLOAT
-%token ACTION AFTER ALIGN ASPECT ASPECT_PREFERENCE BORDER
+%token ACTION AFTER ALIGN ASPECT ASPECT_PREFERENCE BORDER MIDDLE
 %token CLIP_TO COLLECTIONS COLOR COLOR2 COLOR3 COLOR_CLASS
 %token CONFINE DATA DESCRIPTION DRAGABLE EFFECT FILL FIT
-%token FONT FONTS GROUP GROUPS IMAGE IMAGES IN ITEM MAX MIN MOUSE_EVENTS
+%token FONT FONTS GROUP GROUPS IMAGE TEXTBLOCK IMAGES IN ITEM MAX MIN FIXED MOUSE_EVENTS
 %token NAME NORMAL OFFSET ORIGIN PART PARTS PROGRAM PROGRAMS
 %token REL1 REL2 RELATIVE REPEAT_EVENTS SCRIPT SIGNAL SIZE
-%token SMOOTH SOURCE STATE STEP TARGET TEXT TEXT_CLASS TO
+%token SMOOTH SOURCE STATE STEP TARGET TEXT TEXT_CLASS TEXT_SOURCE TO
 %token TO_X TO_Y TRANSITION TWEEN TYPE VISIBLE X Y
 %token OPEN_BRACE CLOSE_BRACE RAW COMP LOSSY
+%token STYLES STYLE SBASE TAG ELIPSIS
 %token COLON QUOTE SEMICOLON STATE_SET ACTION_STOP SIGNAL_EMIT
 %token DRAG_VAL_SET DRAG_VAL_STEP DRAG_VAL_PAGE LINEAR
 %token SINUSOIDAL ACCELERATE DECELERATE IMAGE RECT SWALLOW
@@ -78,10 +79,10 @@ edjes: /* blank */
 	}
 	;
 
-collections:  COLLECTIONS OPEN_BRACE {section = GROUPS; } collection_statement CLOSE_BRACE { section = BASE; }
+collections:  COLLECTIONS OPEN_BRACE {section = GROUPS; } collection_statement CLOSE_BRACE semicolon_maybe { section = BASE; }
 	;
 
-fonts:  FONTS OPEN_BRACE { section = FONTS; } font_statement CLOSE_BRACE { section = BASE; }
+fonts:  FONTS OPEN_BRACE { section = FONTS; } font_statement CLOSE_BRACE semicolon_maybe { section = BASE; }
 	;
 
 font_statement: /* empty */
@@ -94,7 +95,33 @@ font: FONT COLON STRING STRING SEMICOLON {
 	}
 	;
 
-images:  IMAGES OPEN_BRACE { section = IMAGES; } image_statement CLOSE_BRACE { section = BASE; }
+styles: STYLES OPEN_BRACE { section = STYLES; } styles_statement CLOSE_BRACE semicolon_maybe { section = BASE; }
+	;
+
+styles_statement: 
+	| style
+	| styles_statement style
+	;
+
+style: STYLE OPEN_BRACE { engrave_parse_style(); section = STYLE; } style_statement CLOSE_BRACE semicolon_maybe { section = STYLES; }
+	;
+
+style_statement: /* empty too? */
+	| style_entry
+	| style_statement style_entry
+	;
+
+style_entry: name
+	| base
+	| tag
+	;
+
+base: BASE COLON STRING SEMICOLON {
+		engrave_parse_base($3);
+	}
+	;
+
+images:  IMAGES OPEN_BRACE { section = IMAGES; } image_statement CLOSE_BRACE semicolon_maybe { section = BASE; }
 	;
 
 image_statement: /* empty */
@@ -119,7 +146,7 @@ image_type: RAW { $$ = ENGRAVE_IMAGE_TYPE_RAW; }
 	;
 
 /* don't set a section here yet (since BASE and GROUP have data sects) */
-data:  DATA OPEN_BRACE data_statement CLOSE_BRACE
+data:  DATA OPEN_BRACE data_statement CLOSE_BRACE semicolon_maybe
 	;
 
 data_statement: /* empty */
@@ -155,7 +182,7 @@ item: ITEM COLON STRING STRING SEMICOLON {
 	}
 	;
 
-programs: PROGRAMS OPEN_BRACE { section = PROGRAMS; } program_statement CLOSE_BRACE { section = BASE; }
+programs: PROGRAMS OPEN_BRACE { section = PROGRAMS; } program_statement CLOSE_BRACE semicolon_maybe { section = BASE; }
 	;
 
 program_statement: /* empty */
@@ -163,7 +190,7 @@ program_statement: /* empty */
 	| program_statement program
 	;
 
-program: PROGRAM OPEN_BRACE { engrave_parse_program(); section = PROGRAM; } program_body CLOSE_BRACE { section = PROGRAMS; }
+program: PROGRAM OPEN_BRACE { engrave_parse_program(); section = PROGRAM; } program_body CLOSE_BRACE semicolon_maybe { section = PROGRAMS; }
 	;
 
 program_body: /* blank */ 
@@ -194,10 +221,22 @@ name: NAME COLON STRING SEMICOLON {
                   case PROGRAM:
                     engrave_parse_program_name($3);
                     break;
+		  case STYLE:
+		    engrave_parse_style_name($3);
                   default:
                     break;
                 }
 	}
+	;
+
+base: SBASE COLON STRING SEMICOLON {
+		engrave_parse_style_base($3);
+	}
+	;
+
+tag: TAG COLON STRING STRING SEMICOLON {
+		engrave_parse_style_tag($3, $4);
+	}	
 	;
 
 program_signal: SIGNAL COLON STRING SEMICOLON {
@@ -259,11 +298,15 @@ program_after: AFTER COLON STRING SEMICOLON {
 	;
 
 collection_statement: /* empty */
+	| styles
+	| collection_statement styles
+	| images
+	| collection_statement images
 	| group
 	| collection_statement group
 	;
 
-group: GROUP OPEN_BRACE { engrave_parse_group(); section = GROUP; } group_foo CLOSE_BRACE { section = GROUPS; }
+group: GROUP OPEN_BRACE { engrave_parse_group(); section = GROUP; } group_foo CLOSE_BRACE semicolon_maybe { section = GROUPS; }
 	;
 
 group_foo: 
@@ -321,6 +364,13 @@ min: MIN COLON exp exp SEMICOLON {
 	}
 	;
 
+fixed: FIXED COLON exp exp SEMICOLON {
+               engrave_parse_state_fixed((int)$3, (int)$4);
+	}
+	;
+
+
+
 max: MAX COLON exp exp SEMICOLON {
                 switch(section)
                 {
@@ -336,15 +386,17 @@ max: MAX COLON exp exp SEMICOLON {
 	}
 	;
 
-parts: PARTS OPEN_BRACE { section = PARTS; } parts_statement CLOSE_BRACE { section = BASE; }
+parts: PARTS OPEN_BRACE { section = PARTS; } parts_statement CLOSE_BRACE semicolon_maybe { section = BASE; }
 	;
 
 parts_statement: /* empty */
 	| part
 	| parts_statement part
+	| parts_statement program_statement
+	| parts_statement programs
 	;
 
-part: PART OPEN_BRACE { engrave_parse_part(); section = PART; } part_foo CLOSE_BRACE { section = PARTS; }
+part: PART OPEN_BRACE { engrave_parse_part(); section = PART; } part_foo CLOSE_BRACE semicolon_maybe { section = PARTS; }
 	;
 
 part_foo: 
@@ -374,7 +426,20 @@ type: TYPE COLON part_type SEMICOLON {
 part_type: IMAGE { $$ = ENGRAVE_PART_TYPE_IMAGE; }
 	| RECT { $$ = ENGRAVE_PART_TYPE_RECT; }
 	| TEXT { $$ = ENGRAVE_PART_TYPE_TEXT; }
+	| TEXTBLOCK { $$ = ENGRAVE_PART_TYPE_TEXTBLOCK; }
 	| SWALLOW { $$ = ENGRAVE_PART_TYPE_SWALLOW; }
+	| STRING { /* edje accepts quoted part types. */
+		if (!strcmp($1, "RECT"))
+			$$ = ENGRAVE_PART_TYPE_RECT;
+		else if (!strcmp($1, "IMAGE"))
+			$$ = ENGRAVE_PART_TYPE_IMAGE;
+		else if (!strcmp($1, "TEXT"))
+			$$ = ENGRAVE_PART_TYPE_TEXT;
+		else if (!strcmp($1, "TEXTBLOCK"))
+			$$ = ENGRAVE_PART_TYPE_TEXTBLOCK;
+		else if (!strcmp($1, "SWALLOW"))
+			$$ = ENGRAVE_PART_TYPE_SWALLOW;
+	}
 	;
 
 effect: EFFECT COLON effect_type SEMICOLON {
@@ -428,7 +493,7 @@ part_body_entry: dragable
 	| description
 	;
 
-dragable: DRAGABLE OPEN_BRACE { section = DRAGABLE; } dragable_statement CLOSE_BRACE { section = PART; }
+dragable: DRAGABLE OPEN_BRACE { section = DRAGABLE; } dragable_statement CLOSE_BRACE semicolon_maybe { section = PART; }
 	;
 
 dragable_statement: /* empty */
@@ -456,7 +521,7 @@ confine: CONFINE COLON STRING SEMICOLON {
 	}
 	;
 
-description: DESCRIPTION OPEN_BRACE { engrave_parse_state(); section = STATE; } desc_foo CLOSE_BRACE { section = PART; }
+description: DESCRIPTION OPEN_BRACE { engrave_parse_state(); section = STATE; } desc_foo CLOSE_BRACE semicolon_maybe { section = PART; }
 	;
 
 desc_foo:
@@ -474,6 +539,7 @@ desc_preamble_entry: state
 	| align
 	| min
 	| max
+	| fixed
 	| step
 	| aspect
 	| aspect_preference
@@ -546,11 +612,11 @@ desc_body_entry: rel1
 	| text
 	;
 
-rel1: REL1 OPEN_BRACE {section = REL1;} rel_statement CLOSE_BRACE {section = STATE;}
+rel1: REL1 OPEN_BRACE {section = REL1;} rel_statement CLOSE_BRACE semicolon_maybe {section = STATE;}
 	| REL1 DOT {section = REL1;} rel_body {section = STATE;}
 	;
 
-rel2: REL2 OPEN_BRACE {section = REL2;} rel_statement CLOSE_BRACE {section = STATE;}
+rel2: REL2 OPEN_BRACE {section = REL2;} rel_statement CLOSE_BRACE semicolon_maybe {section = STATE;}
 	| REL2 DOT {section = REL2;} rel_body {section = STATE;}
 	;
 
@@ -654,7 +720,7 @@ to_y: TO_Y COLON STRING SEMICOLON {
 	}
 	;
 
-desc_image: IMAGE OPEN_BRACE { section = IMAGE; } image_state_statement CLOSE_BRACE { section = STATE; }
+desc_image: IMAGE OPEN_BRACE { section = IMAGE; } image_state_statement CLOSE_BRACE semicolon_maybe { section = STATE; }
 	| IMAGE DOT { section = IMAGE; } image_body { section = STATE; }
 	;
 
@@ -666,6 +732,12 @@ image_state_statement: /* empty */
 image_body: normal
 	| tween
 	| border
+	| middle
+	;
+
+middle: MIDDLE COLON exp SEMICOLON {
+                engrave_parse_state_image_middle((int)$3);
+	}
 	;
 
 normal: NORMAL COLON STRING SEMICOLON {
@@ -683,7 +755,7 @@ border: BORDER COLON exp exp exp exp SEMICOLON {
 	}
 	;
 
-fill: FILL OPEN_BRACE { section = FILL; } fill_statement CLOSE_BRACE { section = STATE; }
+fill: FILL OPEN_BRACE { section = FILL; } fill_statement CLOSE_BRACE semicolon_maybe { section = STATE; }
 	| FILL DOT {section = FILL; } fill_body { section = STATE; }
 	;
 
@@ -702,7 +774,7 @@ smooth: SMOOTH COLON boolean SEMICOLON {
 	}
 	;
 
-origin: ORIGIN OPEN_BRACE { section = ORIGIN; } origin_statement CLOSE_BRACE { section = FILL; }
+origin: ORIGIN OPEN_BRACE { section = ORIGIN; } origin_statement CLOSE_BRACE semicolon_maybe { section = FILL; }
 	| ORIGIN DOT { section = ORIGIN; } origin_body { section = FILL; }
 	;
 
@@ -715,7 +787,7 @@ origin_body: relative
 	| offset
 	;
 
-size: SIZE OPEN_BRACE { section = SIZE; } origin_statement CLOSE_BRACE { section = FILL; }
+size: SIZE OPEN_BRACE { section = SIZE; } origin_statement CLOSE_BRACE semicolon_maybe { section = FILL; }
 	| SIZE DOT { section = SIZE; } origin_body { section = FILL; }
 	;
 
@@ -739,8 +811,12 @@ color3: COLOR3 COLON exp exp exp exp SEMICOLON {
 	}
 	;
 
-text: TEXT OPEN_BRACE { section = TEXT; } text_statement CLOSE_BRACE { section = STATE; }
+text: TEXT OPEN_BRACE { section = TEXT; } text_statement CLOSE_BRACE semicolon_maybe { section = STATE; }
 	| TEXT DOT { section = TEXT; } text_body { section = STATE; }
+	;
+
+semicolon_maybe: /* after braces, we can have semicolons. Is this how to solve this? */
+	| SEMICOLON
 	;
 
 text_statement: /* empty */
@@ -750,15 +826,46 @@ text_statement: /* empty */
 
 text_body: text_entry
 	| text_class
+	| text_source
+	| text_style
 	| font_entry
 	| size_entry
 	| fit
+	| elipsis
 	| min
 	| align
+	| source
 	;
 
-text_entry: TEXT COLON STRING SEMICOLON {
-                engrave_parse_state_text_text($3);
+elipsis: ELIPSIS COLON exp SEMICOLON {
+		engrave_parse_state_text_elipsis((int)$3);
+	}
+	;
+
+text_style: STYLE COLON STRING SEMICOLON {
+		engrave_parse_state_text_style($3);
+	}
+	;
+
+source: SOURCE COLON STRING SEMICOLON {
+		engrave_parse_state_text_source($3);
+	}
+	;
+
+text_entry: TEXT COLON text_string SEMICOLON
+	;
+
+text_string: 
+	| STRING {
+                engrave_parse_state_text_text_add($1);
+	}
+	| text_string STRING {
+                engrave_parse_state_text_text_add($2);
+	}
+	;
+
+text_source: TEXT_SOURCE COLON STRING SEMICOLON {
+                engrave_parse_state_text_text_source($3);
 	}
 	;
 

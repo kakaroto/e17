@@ -257,10 +257,14 @@ engrave_program_action_get(Engrave_Program *ep, Engrave_Action *action,
   if (action) *action = (ep ? ep->action : ENGRAVE_ACTION_NUM);
   if (value) *value = (ep ? ep->value : 0);
   if (value2) *value2 = (ep ? ep->value2 : 0);
-  if (state)
-    snprintf(state, state_len, "%s", (ep ? ep->state : ""));
-  if (state2)
-    snprintf(state2, state2_len, "%s", (ep ? ep->state2 : ""));
+  if (state) {
+    if (ep && ep->state) snprintf(state, state_len, "%s", ep->state);
+    else state[0] = '\0';
+  }
+  if (state2) {
+    if (ep && ep->state2) snprintf(state2, state2_len, "%s",ep->state2);
+    else state2[0] = '\0';
+  }
 }
 
 /**

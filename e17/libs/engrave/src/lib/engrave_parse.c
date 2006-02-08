@@ -102,6 +102,57 @@ engrave_parse_group_max(int w, int h)
 }
 
 void
+engrave_parse_style()
+{
+  Engrave_Style *style;
+
+  style = engrave_style_new();
+  engrave_file_style_add(engrave_file, style);
+}
+
+void
+engrave_parse_base(char *base)
+{
+  Engrave_Style *style;
+
+  style = engrave_file_style_last_get(engrave_file);
+  engrave_style_base_set(style, base);
+}
+
+
+
+void
+engrave_parse_style_name(char *name)
+{
+  Engrave_Style *style;
+
+  style = engrave_file_style_last_get(engrave_file);
+  engrave_style_name_set(style, name);
+}
+
+void
+engrave_parse_style_base(char *base)
+{
+  Engrave_Style *style;
+
+  style = engrave_file_style_last_get(engrave_file);
+  engrave_style_base_set(style, base);
+}
+
+void
+engrave_parse_style_tag(char *key, char *val)
+{
+  Engrave_Style *style;
+  Engrave_Tag *tag;
+
+  style = engrave_file_style_last_get(engrave_file);
+
+  tag = engrave_tag_new(key, val);
+  engrave_style_tag_add(style, tag);
+}
+
+
+void
 engrave_parse_part()
 {
   Engrave_Group *group;
@@ -262,12 +313,13 @@ engrave_parse_state_inherit(char *name, double val)
   Engrave_Part_State *to;
   Engrave_Part_State *from;
   const char *state_name;
+  double state_value;
 
   group = engrave_file_group_last_get(engrave_file);
   part = engrave_group_part_last_get(group);
 
   to = engrave_part_state_last_get(part);
-  state_name = engrave_part_state_name_get(to, NULL);
+  state_name = engrave_part_state_name_get(to, &state_value);
 
   /* must have a name set before we can be inherited into */
   if (!state_name) {
@@ -278,7 +330,7 @@ engrave_parse_state_inherit(char *name, double val)
   }
 
   /* can't inherit into the default part */
-  if ((strlen(state_name) == 7) && (!strncmp(state_name, "default", 7))) {
+  if ((strlen(state_name) == 7) && (!strncmp(state_name, "default", 7)) && state_value == 0.0 ) {
     const char *part_name = engrave_part_name_get(part);
     fprintf(stderr, "part %s: "
               "inherit may not be used in the default description!\n",
@@ -330,6 +382,19 @@ engrave_parse_state_min(double w, double h)
   part = engrave_group_part_last_get(group);
   state = engrave_part_state_last_get(part);
   engrave_part_state_min_size_set(state, w, h);
+}
+
+void
+engrave_parse_state_fixed(double w, double h)
+{
+  Engrave_Group *group;
+  Engrave_Part *part;
+  Engrave_Part_State *state;
+
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_fixed_size_set(state, w, h);
 }
 
 void
@@ -521,6 +586,20 @@ engrave_parse_state_image_normal(char *name)
 }
 
 void
+engrave_parse_state_image_middle(int middle)
+{
+  Engrave_Group *group;
+  Engrave_Part *part;
+  Engrave_Part_State *state;
+
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_image_middle_set(state, middle);
+
+}
+
+void
 engrave_parse_state_image_tween(char *name)
 {
   Engrave_Group *group;
@@ -680,6 +759,73 @@ engrave_parse_state_text_text(char *text)
   part = engrave_group_part_last_get(group);
   state = engrave_part_state_last_get(part);
   engrave_part_state_text_text_set(state, text);
+}
+
+void
+engrave_parse_state_text_text_add(char *text)
+{
+  Engrave_Group *group;
+  Engrave_Part *part;
+  Engrave_Part_State *state;
+
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_text_text_append(state, text);
+}
+
+void
+engrave_parse_state_text_elipsis(double val)
+{
+  Engrave_Group *group;
+  Engrave_Part *part;
+  Engrave_Part_State *state;
+
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_text_elipsis_set(state, val);
+}
+
+
+void
+engrave_parse_state_text_text_source(char *text_source)
+{
+  Engrave_Group *group;
+  Engrave_Part *part;
+  Engrave_Part_State *state;
+
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_text_text_source_set(state, text_source);
+}
+
+void
+engrave_parse_state_text_source(char *source)
+{
+  Engrave_Group *group;
+  Engrave_Part *part;
+  Engrave_Part_State *state;
+
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_text_source_set(state, source);
+}
+
+
+void
+engrave_parse_state_text_style(char *style)
+{
+  Engrave_Group *group;
+  Engrave_Part *part;
+  Engrave_Part_State *state;
+
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_text_style_set(state, style);
 }
 
 void

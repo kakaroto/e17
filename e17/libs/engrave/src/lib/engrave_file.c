@@ -128,6 +128,21 @@ engrave_file_font_add(Engrave_File *e, Engrave_Font *ef)
 }
 
 /**
+ * engrave_file_style_add - add the style to the engrave file.
+ * @param e: The Engrave_File to add the style too.
+ * @param ef: The Engrave_Style to add to the file.
+ *
+ * @return Returns no value.
+ */
+void
+engrave_file_style_add(Engrave_File *e, Engrave_Style *es)
+{
+  if (!e || !es) return;
+  e->styles = evas_list_append(e->styles, es);
+  engrave_style_parent_set(es, e);
+}
+
+/**
  * engrave_file_image_add - add the image to the engrave file.
  * @param ef: The Engrave_File to add the image too.
  * @param ei: The Engrave_Image to add to the file.
@@ -170,6 +185,20 @@ engrave_file_group_add(Engrave_File *ef, Engrave_Group *eg)
   if (!ef || !eg) return;
   ef->groups = evas_list_append(ef->groups, eg);
   engrave_group_parent_set(eg, ef);
+}
+
+/**
+ * engrave_file_style_last_get - returns the last style in the file
+ * @param ef: The Engrave_File from which to retrieve the group
+ *
+ * @return Returns the last Engrave_Style in the engrave file @a ef or NULL
+ * if there are no available groups.
+ */
+Engrave_Style *
+engrave_file_style_last_get(Engrave_File *ef)
+{
+  if (!ef) return NULL;
+  return evas_list_data(evas_list_last(ef->styles));
 }
 
 /**
@@ -268,6 +297,19 @@ engrave_file_groups_count(Engrave_File *ef)
 }
 
 /**
+ * engrave_file_styles_count - count the styles in the file
+ * @param ef: The Engrave_File to check for styles
+ * 
+ * @return Returns the number of styles in the file, 0 otherwise
+ */
+int
+engrave_file_styles_count(Engrave_File *ef)
+{
+  if (!ef) return 0;
+  return evas_list_count(ef->styles);
+}
+
+/**
  * engrave_file_fonts_count - count the fonts in the file
  * @param ef: The Engrave_File to check for fonts
  * 
@@ -345,6 +387,29 @@ engrave_file_group_foreach(Engrave_File *ef,
     if (group) func(group, data);
   }
 }
+
+/**
+ * engrave_file_style_foreach - call the given function for each style object
+ * @param ef: The Engrave_File for which the styles should be iterated over
+ * @param func: The function to call for each style
+ * @param data: Any user data to pass to the given function.
+ *
+ * @return Returns no value.
+ */
+void
+engrave_file_style_foreach(Engrave_File *ef, 
+                            void (*func)(Engrave_Style *, void *data), 
+                            void *data)
+{
+  Evas_List *l;
+
+  if (!engrave_file_styles_count(ef)) return;
+  for (l = ef->styles; l; l = l->next) {
+    Engrave_Style *style = l->data;
+    if (style) func(style, data);
+  }
+}
+
 
 /**
  * engrave_file_font_foreach - call the given function for each font object

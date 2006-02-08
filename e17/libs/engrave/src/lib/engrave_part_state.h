@@ -42,7 +42,7 @@ struct _Engrave_Part_State
   {
     int w;   /**< width value */
     int h;   /**< height value */
-  } min, max;
+  } min, max, fixed;
 
   /**
    * The aspect ratio settings for the state
@@ -89,6 +89,7 @@ struct _Engrave_Part_State
     Engrave_Image *normal;  /**< The image itself */
     Evas_List *tween;       /**< List of tween images */
 
+    int middle;		/**< The middle information */
     /**
      * The border information
      */
@@ -147,9 +148,13 @@ struct _Engrave_Part_State
   {
     char *text;         /**< The text string */
     char *text_class;   /**< The text class */
+    char *text_source;   /**< The text source */
+    char *source;   /**< The text source ? */
     char *font;         /**< The font to use */
+    char *style;	/**< The text style */
 
     int size;           /**< Size to display as */
+    double elipsis;	/**< Elipsis */
 
     /**
      * Fit and min size information
@@ -193,6 +198,7 @@ void engrave_part_state_visible_set(Engrave_Part_State *eps, int visible);
 void engrave_part_state_align_set(Engrave_Part_State *eps, double x, double y);
 void engrave_part_state_step_set(Engrave_Part_State *eps, double x, double y);
 void engrave_part_state_min_size_set(Engrave_Part_State *eps, int w, int h);
+void engrave_part_state_fixed_size_set(Engrave_Part_State *eps, int w, int h);
 void engrave_part_state_max_size_set(Engrave_Part_State *eps, int w, int h);
 void engrave_part_state_aspect_set(Engrave_Part_State *eps, double w, double h);
 void engrave_part_state_aspect_preference_set(Engrave_Part_State *eps,
@@ -218,6 +224,8 @@ void engrave_part_state_image_tween_add(Engrave_Part_State *eps,
 
 void engrave_part_state_image_border_set(Engrave_Part_State *eps, 
                                         int l, int r, int t, int b);
+void engrave_part_state_image_middle_set(Engrave_Part_State *eps, 
+                                        int middle);
 void engrave_part_state_color_class_set(Engrave_Part_State *eps,
                                                         const char *class);
 void engrave_part_state_color_set(Engrave_Part_State *eps, 
@@ -239,8 +247,18 @@ void engrave_part_state_fill_size_offset_set(Engrave_Part_State *eps,
 
 void engrave_part_state_text_text_set(Engrave_Part_State *eps, 
                                                         const char *text);
+void engrave_part_state_text_elipsis_set(Engrave_Part_State *eps, 
+                                                        double val);
+void engrave_part_state_text_text_append(Engrave_Part_State *eps, 
+                                                        const char *text);
 void engrave_part_state_text_text_class_set(Engrave_Part_State *eps, 
                                                         const char *text);
+void engrave_part_state_text_style_set(Engrave_Part_State *eps, 
+                                                        const char *style);
+void engrave_part_state_text_text_source_set(Engrave_Part_State *eps, 
+                                                        const char *source);
+void engrave_part_state_text_source_set(Engrave_Part_State *eps, 
+                                                       const char *source);
 void engrave_part_state_text_font_set(Engrave_Part_State *eps, 
                                                         const char *font);
 void engrave_part_state_text_size_set(Engrave_Part_State *eps, int size);
@@ -258,6 +276,7 @@ void engrave_part_state_align_get(Engrave_Part_State *eps,
 void engrave_part_state_step_get(Engrave_Part_State *eps,
                                                       double *x, double *y);
 void engrave_part_state_min_size_get(Engrave_Part_State *eps, int *w, int *h);
+void engrave_part_state_fixed_size_get(Engrave_Part_State *eps, int *w, int *h);
 void engrave_part_state_max_size_get(Engrave_Part_State *eps, int *w, int *h);
 void engrave_part_state_aspect_get(Engrave_Part_State *eps,
                                                       double *w, double *h);
@@ -285,12 +304,17 @@ void engrave_part_state_color3_get(Engrave_Part_State *eps,
 Engrave_Image *engrave_part_state_image_normal_get(Engrave_Part_State *eps);
 void engrave_part_state_image_border_get(Engrave_Part_State *eps,
                                   int *l, int *r, int *t, int *b);
+int engrave_part_state_image_middle_get(Engrave_Part_State *eps);
 const char *engrave_part_state_text_text_get(Engrave_Part_State *eps);
 const char *engrave_part_state_text_text_class_get(Engrave_Part_State *eps);
+const char *engrave_part_state_text_style_get(Engrave_Part_State *eps);
+const char *engrave_part_state_text_text_source_get(Engrave_Part_State *eps);
+const char *engrave_part_state_text_source_get(Engrave_Part_State *eps);
 const char *engrave_part_state_text_font_get(Engrave_Part_State *eps);
 int engrave_part_state_text_size_get(Engrave_Part_State *eps);
 void engrave_part_state_text_fit_get(Engrave_Part_State *eps,
                                             int *x, int *y);
+double engrave_part_state_text_elipsis_get(Engrave_Part_State *eps);
 void engrave_part_state_text_min_get(Engrave_Part_State *eps,
                                             int *x, int *y);
 void engrave_part_state_text_align_get(Engrave_Part_State *eps,

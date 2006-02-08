@@ -15,6 +15,14 @@ void engrave_parse_group_script(char *script);
 void engrave_parse_group_name(char *name);
 void engrave_parse_group_min(int w, int h);
 void engrave_parse_group_max(int w, int h);
+
+void engrave_parse_style();
+void engrave_parse_style_name(char * name);
+void engrave_parse_style_base(char * base);
+void engrave_parse_style_tag(char * key, char * val);
+
+void engrave_parse_base(char *base);
+
 void engrave_parse_part();
 void engrave_parse_part_name(char *name);
 void engrave_parse_part_type(Engrave_Part_Type type);
@@ -32,6 +40,7 @@ void engrave_parse_state_inherit(char *name, double val);
 void engrave_parse_state_align(double x, double y);
 void engrave_parse_state_step(double x, double y);
 void engrave_parse_state_min(double w, double h);
+void engrave_parse_state_fixed(double w, double h);
 void engrave_parse_state_max(double w, double h);
 void engrave_parse_state_aspect(double w, double h);
 void engrave_parse_state_aspect_preference(
@@ -47,6 +56,7 @@ void engrave_parse_state_rel2_to_x(char *to);
 void engrave_parse_state_rel2_to_y(char *to);
 void engrave_parse_state_rel2_to(char *to);
 void engrave_parse_state_image_normal(char *name);
+void engrave_parse_state_image_middle(int middle);
 void engrave_parse_state_image_tween(char *name);
 void engrave_parse_image_border(int l, int r, int t, int b);
 void engrave_parse_state_color_class(char *color_class);
@@ -59,7 +69,13 @@ void engrave_parse_state_fill_size_relative(double x, double y);
 void engrave_parse_state_fill_origin_offset(int x, int y);
 void engrave_parse_state_fill_size_offset(int x, int y);
 void engrave_parse_state_text_text(char *text);
+void engrave_parse_state_text_elipsis(double val);
+void engrave_parse_state_text_style(char * style);
+void engrave_parse_state_text_text_add(char *text); /* used to concat texts */
 void engrave_parse_state_text_text_class(char *text_class);
+void engrave_parse_state_text_text_source(char *text_source);
+void engrave_parse_state_text_text_style(char *text_style);
+void engrave_parse_state_text_source(char *source);
 void engrave_parse_state_text_font(char *font);
 void engrave_parse_state_text_size(int size);
 void engrave_parse_state_text_fit(int x, int y);

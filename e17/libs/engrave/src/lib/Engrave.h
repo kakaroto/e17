@@ -84,6 +84,7 @@ extern "C" {
 #include <engrave_part_state.h>
 #include <engrave_part.h>
 #include <engrave_group.h>
+#include <engrave_style.h>
 #include <engrave_file.h>
 
 #include <engrave_load.h>

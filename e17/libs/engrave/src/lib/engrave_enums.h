@@ -39,6 +39,7 @@ enum _Engrave_Part_Type
 {
   ENGRAVE_PART_TYPE_IMAGE, /**< Part is an image */
   ENGRAVE_PART_TYPE_TEXT, /**< Part is text */
+  ENGRAVE_PART_TYPE_TEXTBLOCK, /**< Part is textblock */
   ENGRAVE_PART_TYPE_RECT, /**< Part is a rectangle */
   ENGRAVE_PART_TYPE_SWALLOW, /**< Part is a swallow */
   ENGRAVE_PART_TYPE_NUM

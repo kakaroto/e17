@@ -168,6 +168,24 @@ engrave_part_state_min_size_set(Engrave_Part_State *eps, int w, int h)
   eps->min.h = h;
 }
 
+
+
+/**
+ * engrave_part_state_fixed_size_set - Set the fixed size of the state.
+ * @param eps: The Engrave_Part_State to set the value too.
+ * @param w: for the width
+ * @param h: for the height
+ *
+ * @return Returns no value 
+ */
+void
+engrave_part_state_fixed_size_set(Engrave_Part_State *eps, int w, int h)
+{
+  if (!eps) return;
+  eps->fixed.w = w;
+  eps->fixed.h = h;
+}
+
 /**
  * engrave_part_state_max_size_set - Set the max size of the state.
  * @param eps: The Engrave_Part_State to set the value too.
@@ -418,6 +436,22 @@ engrave_part_state_image_border_set(Engrave_Part_State *eps,
   eps->image.border.b = b;
 }
 
+
+/**
+ * engrave_part_state_image_middle_set - Set the middle on the image.
+ * @param eps: The Engrave_Part_State to set the value too.
+ * @param middle: The middle value.
+ *
+ * @return Returns no value k
+ */
+void
+engrave_part_state_image_middle_set(Engrave_Part_State *eps, 
+                                int middle) 
+{
+  if (!eps) return;
+  eps->image.middle = middle;
+}
+
 /**
  * engrave_part_state_color_class_set - Set the colour class on the state.
  * @param eps: The Engrave_Part_State to set the value too.
@@ -592,6 +626,92 @@ engrave_part_state_text_text_set(Engrave_Part_State *eps, const char *text)
   IF_FREE(eps->text.text);
   eps->text.text = (text ? strdup(text) : NULL); 
 }
+
+/**
+ * engrave_part_state_text_text_append - Appends the text string of the state.
+ * @param eps: The Engrave_Part_State to set the value too.
+ * @param text: The text string to append.
+ *
+ * @return Returns no value 
+ */
+void
+engrave_part_state_text_text_append(Engrave_Part_State *eps, const char *text)
+{
+  if (!eps) return;
+  if (!text) return;
+  if (!eps->text.text) 
+	  eps->text.text = text ? strdup(text) : NULL;
+  else {
+	  int len = strlen(eps->text.text) + strlen(text);
+	  eps->text.text = realloc(eps->text.text, len);
+	  eps->text.text = strncat(eps->text.text, text, len);
+  }
+}
+
+/**
+ * engrave_part_state_text_elipsis_set - Set the text elipsis of the state.
+ * @param eps: The Engrave_Part_State to set the value too.
+ * @param val: The value to set to the state.
+ *
+ * @return Returns no value 
+ */
+void
+engrave_part_state_text_elipsis_set(Engrave_Part_State *eps,
+                                                double val)
+{
+  if (!eps) return;
+  eps->text.elipsis = val;
+}
+
+/**
+ * engrave_part_state_text_text_source_set - Set the text source of the state.
+ * @param eps: The Engrave_Part_State to set the value too.
+ * @param text_source: The text source to set to the state.
+ *
+ * @return Returns no value 
+ */
+void
+engrave_part_state_text_text_source_set(Engrave_Part_State *eps,
+                                                const char *text_source)
+{
+  if (!eps) return;
+  IF_FREE(eps->text.text_source);
+  eps->text.text_source = (text_source ? strdup(text_source) : NULL); 
+}
+
+/**
+ * engrave_part_state_text_source_set - Set the source of the text.
+ * @param eps: The Engrave_Part_State to set the value too.
+ * @param source: The text source to set to the state.
+ *
+ * @return Returns no value 
+ */
+void
+engrave_part_state_text_source_set(Engrave_Part_State *eps,
+                                                const char *source)
+{
+  if (!eps) return;
+  IF_FREE(eps->text.source);
+  eps->text.source = (source ? strdup(source) : NULL); 
+}
+
+
+/**
+ * engrave_part_state_text_style_set - Set the text style of the state.
+ * @param eps: The Engrave_Part_State to set the value too.
+ * @param text_style: The text style to set to the state.
+ *
+ * @return Returns no value 
+ */
+void
+engrave_part_state_text_style_set(Engrave_Part_State *eps, const char *text_style)
+{
+  if (!eps) return;
+  IF_FREE(eps->text.style);
+  eps->text.style = (text_style ? strdup(text_style) : NULL); 
+}
+
+
 
 /**
  * engrave_part_state_text_text_class_set - Set the text class of the state.
@@ -827,6 +947,22 @@ engrave_part_state_min_size_get(Engrave_Part_State *eps, int *w, int *h)
   if (w) *w = (eps ? eps->min.w : 0);
   if (h) *h = (eps ? eps->min.h : 0);
 }
+
+/**
+ * engrave_part_state_fixed_size_get - get the fixed size of the state
+ * @param eps: The Engrave_Part_State to get the min from
+ * @param w: Where to store the w value
+ * @param h: Where to store the h value
+ *
+ * @return Returns no value.
+ */
+void
+engrave_part_state_fixed_size_get(Engrave_Part_State *eps, int *w, int *h)
+{
+  if (w) *w = (eps ? eps->fixed.w : 0);
+  if (h) *h = (eps ? eps->fixed.h : 0);
+}
+
 
 /**
  * engrave_part_state_max_size_get - get the maximum size of the state
@@ -1084,6 +1220,20 @@ engrave_part_state_image_border_get(Engrave_Part_State *eps,
 }
 
 /**
+ * engrave_part_state_image_middle_get - get the middle settings
+ * @param eps: The Engrave_Part_State to get the settings from
+ *
+ * @return Returns the middle value.
+ */
+int
+engrave_part_state_image_middle_get(Engrave_Part_State *eps)
+{
+  if (eps) return eps->image.middle;
+  return 0;
+}
+
+
+/**
  * engrave_part_state_text_text_get - get the text value
  * @param eps: The Engrave_Part_State to get the text from
  *
@@ -1096,6 +1246,18 @@ engrave_part_state_text_text_get(Engrave_Part_State *eps)
 }
 
 /**
+ * engrave_part_state_text_style_get - get the text style
+ * @param eps: The Engrave_Part_State to get the value from
+ *
+ * @return Returns the text style or NULL on failure.
+ */
+const char *
+engrave_part_state_text_style_get(Engrave_Part_State *eps)
+{
+  return (eps ? eps->text.style : NULL);
+}
+
+/**
  * engrave_part_state_text_text_class_get - get the text class
  * @param eps: The Engrave_Part_State to get the value from
  *
@@ -1105,6 +1267,30 @@ const char *
 engrave_part_state_text_text_class_get(Engrave_Part_State *eps)
 {
   return (eps ? eps->text.text_class : NULL);
+}
+
+/**
+ * engrave_part_state_text_text_source_get - get the text text_source
+ * @param eps: The Engrave_Part_State to get the value from
+ *
+ * @return Returns the text source or NULL on failure.
+ */
+const char *
+engrave_part_state_text_text_source_get(Engrave_Part_State *eps)
+{
+  return (eps ? eps->text.text_source : NULL);
+}
+
+/**
+ * engrave_part_state_text_source_get - get the text text_source
+ * @param eps: The Engrave_Part_State to get the value from
+ *
+ * @return Returns the source or NULL on failure.
+ */
+const char *
+engrave_part_state_text_source_get(Engrave_Part_State *eps)
+{
+  return (eps ? eps->text.source : NULL);
 }
 
 /**
@@ -1144,6 +1330,18 @@ engrave_part_state_text_fit_get(Engrave_Part_State *eps, int *x, int *y)
 {
   if (x) *x = (eps ? eps->text.fit.x : 0);
   if (y) *y = (eps ? eps->text.fit.y : 0);
+}
+
+/**
+ * engrave_part_state_text_elipsis_get - get the text elipsis settings
+ * @param eps: The Engrave_Part_State to get the values from
+ * 
+ * @return The elipsis value
+ */
+double
+engrave_part_state_text_elipsis_get(Engrave_Part_State *eps)
+{
+  return (eps ? eps->text.elipsis : 0.0);
 }
 
 /**
