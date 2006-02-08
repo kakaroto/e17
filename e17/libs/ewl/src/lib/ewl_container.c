@@ -428,13 +428,9 @@ ewl_container_child_count_get(Ewl_Container *c)
 	DRETURN_INT(count, DLEVEL_STABLE);
 }
 
-/**
- * @param parent: The container to get the child from
- * @param index: The child index to return
- * @return Returns the widget at the given index, or NULL if not found
- */
-Ewl_Widget *
-ewl_container_child_get(Ewl_Container *parent, int index)
+static Ewl_Widget *
+ewl_container_child_helper_get(Ewl_Container *parent, int index, 
+						unsigned int skip)
 {
 	Ewl_Container *container = NULL;
 	Ewl_Widget *child;
@@ -450,7 +446,7 @@ ewl_container_child_get(Ewl_Container *parent, int index)
 	ecore_list_goto_first(container->children);
 
 	while ((child = ecore_list_next(container->children))) {
-		if (ewl_widget_internal_is(child)) continue;
+		if (skip && ewl_widget_internal_is(child)) continue;
 		if (count == index) break;
 		count ++;
 	}
@@ -459,12 +455,47 @@ ewl_container_child_get(Ewl_Container *parent, int index)
 }
 
 /**
- * @param parent: The container to search
- * @param w: The child to search for
- * @return Returns the index of the child in the parent
+ * @param parent: The container to get the child from
+ * @param index: The child index to return
+ * @return Returns the widget at the given index, or NULL if not found
  */
-unsigned int
-ewl_container_child_index_get(Ewl_Container *parent, Ewl_Widget *w)
+Ewl_Widget *
+ewl_container_child_get(Ewl_Container *parent, int index)
+{
+	Ewl_Widget *w;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("parent", parent, NULL);
+	DCHECK_TYPE_RET("parent", parent, EWL_CONTAINER_TYPE, NULL);
+
+	w = ewl_container_child_helper_get(parent, index, TRUE);
+
+	DRETURN_PTR(w, DLEVEL_STABLE);
+}
+
+/**
+ * @param parent: The container to get the child from
+ * @param index: The child index to return
+ * @return Returns the widget at the given index including internal widgets,
+ * or NULL if not found
+ */
+Ewl_Widget *
+ewl_container_child_internal_get(Ewl_Container *parent, int index)
+{
+	Ewl_Widget *w;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("parent", parent, NULL);
+	DCHECK_TYPE_RET("parent", parent, EWL_CONTAINER_TYPE, NULL);
+
+	w = ewl_container_child_helper_get(parent, index, FALSE);
+
+	DRETURN_PTR(w, DLEVEL_STABLE);
+}
+
+static unsigned int
+ewl_container_child_index_helper_get(Ewl_Container *parent, Ewl_Widget *w, 
+							unsigned int skip)
 {
 	unsigned int idx = 0;
 	Ewl_Container *container;
@@ -481,10 +512,53 @@ ewl_container_child_index_get(Ewl_Container *parent, Ewl_Widget *w)
 
 	ecore_list_goto_first(container->children);
 	while ((child = ecore_list_next(container->children))) {
-		if (ewl_widget_internal_is(child)) continue;
+		if (skip && ewl_widget_internal_is(child)) continue;
 		if (child == w) break;
 		idx ++;
 	}
+
+	DRETURN_INT(idx, DLEVEL_STABLE);
+}
+
+/**
+ * @param parent: The container to search
+ * @param w: The child to search for
+ * @return Returns the index of the child in the parent
+ */
+unsigned int
+ewl_container_child_index_get(Ewl_Container *parent, Ewl_Widget *w)
+{
+	unsigned int idx = 0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("parent", parent, idx);
+	DCHECK_PARAM_PTR_RET("w", w, idx);
+	DCHECK_TYPE_RET("parent", parent, EWL_CONTAINER_TYPE, idx);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, idx);
+				
+	idx = ewl_container_child_index_helper_get(parent, w, TRUE);
+
+	DRETURN_INT(idx, DLEVEL_STABLE);
+}
+
+/**
+ * @param parent: The container to search
+ * @param w: The child to search for
+ * @return Returns the index of the child in the parent including internal
+ * widgets
+ */
+unsigned int
+ewl_container_child_index_internal_get(Ewl_Container *parent, Ewl_Widget *w)
+{
+	unsigned int idx = 0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("parent", parent, idx);
+	DCHECK_PARAM_PTR_RET("w", w, idx);
+	DCHECK_TYPE_RET("parent", parent, EWL_CONTAINER_TYPE, idx);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, idx);
+				
+	idx = ewl_container_child_index_helper_get(parent, w, FALSE);
 
 	DRETURN_INT(idx, DLEVEL_STABLE);
 }
