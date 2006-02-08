@@ -372,7 +372,6 @@ ewl_container_child_remove(Ewl_Container *pc, Ewl_Widget *child)
 	 * Traverse the list to the child.
 	 */
 	temp = ecore_list_goto(pc->children, child);
-	idx = ecore_list_index(pc->children);
 
 	/*
 	 * If the child isn't found, then this isn't it's parent.
@@ -380,6 +379,9 @@ ewl_container_child_remove(Ewl_Container *pc, Ewl_Widget *child)
 	if (!temp) {
 		DRETURN(DLEVEL_STABLE);
 	}
+
+	/* get the index of the widget we are removing */
+	idx = ecore_list_index(pc->children);
 
 	/*
 	 * Remove the child from the parent and set the childs parent to NULL
