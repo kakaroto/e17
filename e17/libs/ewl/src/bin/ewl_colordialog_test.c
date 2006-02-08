@@ -6,7 +6,6 @@ static void
 __colordialog_cb_value_changed(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
   	Ewl_Dialog_Event *cd_ev;
-	unsigned int response;
   
 	cd_ev = ev;
 	if (cd_ev->response == EWL_STOCK_OK)

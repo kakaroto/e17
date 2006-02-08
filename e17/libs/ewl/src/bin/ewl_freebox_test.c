@@ -65,7 +65,7 @@ ewl_freebox_cb_add(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 		ewl_object_minimum_size_set(EWL_OBJECT(i), (int)width,
 							(int)height);
 
-		if (fb == sort_fb)
+		if (fb == EWL_FREEBOX(sort_fb))
 		{
 			ewl_icon_editable_set(EWL_ICON(i), TRUE);
 			ewl_callback_append(i, EWL_CALLBACK_VALUE_CHANGED,

@@ -279,5 +279,11 @@ main(int argc, char **argv)
 
 	ewl_main();
 	return 0;
+
+	/* ugly, but shuts the compiler warning up */
+	entice_text(NULL, NULL, NULL, NULL);
+	entrance_text(NULL, NULL, NULL, NULL);
+	elicit_text(NULL, NULL, NULL, NULL);
+	evidence_text(NULL, NULL, NULL, NULL);
 }
 

@@ -16,7 +16,7 @@ __combo_value_changed(Ewl_Widget *w __UNUSED__, void *ev_data,
 					void *user_data __UNUSED__)
 {
 	Ewl_Widget *entry;
-	char *text;
+	const char *text;
 
 	entry = EWL_WIDGET(ev_data);
 	text = ewl_menu_item_text_get(EWL_MENU_ITEM(entry));
@@ -29,8 +29,6 @@ __combo_value_changed(Ewl_Widget *w __UNUSED__, void *ev_data,
 		t2 = ewl_widget_data_get(entry, "dummy");
 		printf("with data: %s\n", t2);
 	}
-
-	IF_FREE(text);
 }
 
 void

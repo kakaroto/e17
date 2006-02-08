@@ -88,7 +88,7 @@ __create_button_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 */
 	check_button[1]  = ewl_checkbutton_new();
 	ewl_button_label_set(EWL_BUTTON(check_button[1] ), "With Label and checked");
-	ewl_checkbutton_checked_set(check_button[1], TRUE);
+	ewl_checkbutton_checked_set(EWL_CHECKBUTTON(check_button[1]), TRUE);
 	ewl_container_child_append(EWL_CONTAINER(button_box), check_button[1]);
 	ewl_object_alignment_set(EWL_OBJECT(check_button[1]),
 				 EWL_FLAG_ALIGN_LEFT);
