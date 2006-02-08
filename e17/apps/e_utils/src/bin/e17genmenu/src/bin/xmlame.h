@@ -4,6 +4,6 @@
 #include "dumb_list.h"
 
 Dumb_List *xmlame_new(char *buffer);
-void xmlame_fill(char *file);
+Dumb_List *xmlame_get(char *file);
 
 #endif

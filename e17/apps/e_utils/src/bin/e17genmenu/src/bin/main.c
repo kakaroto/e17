@@ -53,15 +53,16 @@ _e17genmenu_test_fdo_paths()
          char *directory = "Applications.directory";
          char *desktop = "xterm.desktop";
          char *icon = "tux.png";
-	 Dumb_List *menus = NULL;
+	 Dumb_List *menu_xml = NULL;
 
          printf("Path to %s is %s\n", menu, path);
-         menus = xmlame_new(NULL);
-	 if (menus)
+         menu_xml = xmlame_get(path);;
+	 if (menu_xml)
 	    {
-	       xmlame_fill(path);
-               dumb_list_dump(menus, 0);
+               dumb_list_dump(menu_xml, 0);
                printf("\n\n");
+	       /* convert the xml into a menu */
+	       /* create the .eap and order files from the menu */
 	    }
          free(path);
 
