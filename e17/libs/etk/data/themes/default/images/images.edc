@@ -41,6 +41,10 @@ images {
    image: "scrollbar_vdrag2.png" COMP;
    image: "scrollbar_hdrag_thumb.png" COMP;
    image: "scrollbar_vdrag_thumb.png" COMP;
+   image: "spinner_button_up1.png" COMP;
+   image: "spinner_button_up2.png" COMP;   
+   image: "spinner_button_down1.png" COMP;
+   image: "spinner_button_down2.png" COMP;   
    image: "tree.png" COMP;
    image: "tree_header_inactive.png" COMP;
    image: "tree_header_active.png" COMP;

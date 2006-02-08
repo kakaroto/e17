@@ -3,6 +3,7 @@
 #define _ETK_WIDGET_H_
 
 #include <Evas.h>
+#include <Ecore_X.h>
 #include <stdarg.h>
 #include "etk_object.h"
 #include "etk_types.h"
@@ -165,7 +166,8 @@ struct _Etk_Widget
    void (*scroll_size_get)(Etk_Widget *widget, Etk_Size *scroll_size);
    void (*scroll_margins_get)(Etk_Widget *widget, Etk_Size *margin_size);
    void (*scroll)(Etk_Widget *widget, int x, int y);
-
+   void (*drag_drop)(Etk_Widget *widget);
+   
    void (*show)(Etk_Widget *widget);
    void (*enter)(Etk_Widget *widget);
    void (*leave)(Etk_Widget *widget);
@@ -184,6 +186,12 @@ struct _Etk_Widget
    unsigned char need_redraw : 1;
    unsigned char need_theme_min_size_recalc : 1;
    unsigned char swallowed : 1;
+//#if HAVE_ECORE_X   
+   unsigned char accepts_xdnd : 1;   
+   
+   char **xdnd_files;
+   int    xdnd_files_num;
+//#endif
 };
 
 Etk_Type *etk_widget_type_get();
@@ -254,6 +262,13 @@ void etk_widget_member_object_stack_below(Etk_Widget *widget, Evas_Object *objec
 void etk_widget_clip_set(Etk_Widget *widget, Evas_Object *clip);
 void etk_widget_clip_unset(Etk_Widget *widget);
 Evas_Object *etk_widget_clip_get(Etk_Widget *widget);
+
+//#if HAVE_ECORE_X
+void          etk_widget_xdnd_set(Etk_Widget *widget, Etk_Bool on);
+Etk_Bool      etk_widget_xdnd_get(Etk_Widget *widget);
+const char  **etk_widget_xdnd_files_get(Etk_Widget *e, int *num_files);
+void          etk_widget_drag_drop(Etk_Widget *widget);
+//#endif
 
 /** @} */
 

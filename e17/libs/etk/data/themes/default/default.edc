@@ -22,5 +22,6 @@ collections {
    #include "widgets/menu.edc"
    #include "widgets/statusbar.edc"
    #include "widgets/notebook.edc"
-   #include "widgets/progress_bar.edc"   
+   #include "widgets/progress_bar.edc"
+   #include "widgets/spinner.edc"   
 }

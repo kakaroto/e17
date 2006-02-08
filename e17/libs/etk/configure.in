@@ -180,6 +180,23 @@ if test $VV -lt $VVM; then
 fi
 
 #####################################################################
+## Ecore_X
+AC_CHECK_HEADER(Ecore_X.h, [ ecore_x_includes="yes" ])
+AC_CHECK_LIB(ecore_x, ecore_x_init, ecore_x_libs="yes", ecore_x_libs="no")
+if test "x{ecore_x_includes}" != "xno" -a "x${ecore_x_includes}" != "x"; then
+  if test "x{ecore_x_libs}" != "xno" -a "x${ecore_x_libs}" != "x"; then
+    have_ecore_x="yes"
+    AC_DEFINE(HAVE_ECORE_X, 1, [Define to 1 if you have the Ecore_X headers and libraries])
+  else
+    have_ecore_x="no"
+    AC_DEFINE(HAVE_ECORE_X, 0, [Define to 1 if you have the Ecore_X headers and libraries])
+  fi
+else
+  have_ecore_x="no"
+  AC_DEFINE(HAVE_ECORE_X, 0, [Define to 1 if you have the Ecore_X headers and libraries])
+fi    
+
+#####################################################################
 ## Gettext
 ALL_LINGUAS="fr"
 AC_SUBST(ALL_LINGUAS)
@@ -250,6 +267,13 @@ echo
 echo "------------------------------------------------------------------------"
 echo "$PACKAGE $VERSION"
 echo "------------------------------------------------------------------------"
+echo
+echo
+echo "Configuration Options Summary:"
+echo
+echo "  Ecore_X support..............: $have_ecore_x"
+echo
+echo "Installation Path.........: $prefix"
 echo
 echo "Now type 'make' ('gmake' on some systems) to compile $PACKAGE,"
 echo "and then afterwards as root (or the user who will install this), type"

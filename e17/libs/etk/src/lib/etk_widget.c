@@ -13,6 +13,7 @@
 #include "etk_marshallers.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
+#include "config.h"
 
 /**
  * @addtogroup Etk_Widget
@@ -60,6 +61,7 @@ enum _Etk_Widget_Signal_Id
    ETK_WIDGET_FOCUS_SIGNAL,
    ETK_WIDGET_UNFOCUS_SIGNAL,
    ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL,
+   ETK_WIDGET_DRAG_DROP_SIGNAL,
    ETK_WIDGET_NUM_SIGNALS
 };
 
@@ -90,6 +92,7 @@ static void _etk_widget_enter_handler(Etk_Widget *widget);
 static void _etk_widget_leave_handler(Etk_Widget *widget);
 static void _etk_widget_focus_handler(Etk_Widget *widget);
 static void _etk_widget_unfocus_handler(Etk_Widget *widget);
+static void _etk_widget_drag_drop_handler(Etk_Widget *widget);
 
 static void _etk_widget_mouse_in_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
 static void _etk_widget_signal_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *event, void *data);
@@ -167,6 +170,7 @@ Etk_Type *etk_widget_type_get()
       _etk_widget_signals[ETK_WIDGET_FOCUS_SIGNAL] =         etk_signal_new("focus",         widget_type, ETK_MEMBER_OFFSET(Etk_Widget, focus),   etk_marshaller_VOID__VOID,    NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_UNFOCUS_SIGNAL] =       etk_signal_new("unfocus",       widget_type, ETK_MEMBER_OFFSET(Etk_Widget, unfocus), etk_marshaller_VOID__VOID,    NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL] = etk_signal_new("scroll_size_changed", widget_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_widget_signals[ETK_WIDGET_DRAG_DROP_SIGNAL] =     etk_signal_new("drag_drop",     widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_drop),etk_marshaller_VOID__VOID,    NULL, NULL);
       
       etk_type_property_add(widget_type, "name",              ETK_WIDGET_NAME_PROPERTY,              ETK_PROPERTY_STRING,  ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(widget_type, "parent",            ETK_WIDGET_PARENT_PROPERTY,            ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_pointer(NULL));
@@ -1395,6 +1399,19 @@ Evas_Object *etk_widget_clip_get(Etk_Widget *widget)
    return widget->clip;
 }
 
+#if HAVE_ECORE_X
+/**
+ * @brief Sends the "drag_drop" signal
+ * @param widget a widget
+ */
+void etk_widget_drag_drop(Etk_Widget *widget)
+{
+   if (!widget)
+     return;
+   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_DRAG_DROP_SIGNAL], ETK_OBJECT(widget), NULL);
+}
+
+#endif
 
 /**************************
  *
@@ -1429,7 +1446,8 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->leave = _etk_widget_leave_handler;
    widget->focus = _etk_widget_focus_handler;
    widget->unfocus = _etk_widget_unfocus_handler;
-
+   widget->drag_drop = _etk_widget_drag_drop_handler;
+   
    widget->left_inset = 0;
    widget->right_inset = 0;
    widget->top_inset = 0;
@@ -1460,7 +1478,12 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->need_redraw = ETK_FALSE;
    widget->need_theme_min_size_recalc = ETK_FALSE;
    widget->swallowed = ETK_FALSE;
-
+#if HAVE_ECORE_X   
+   widget->accepts_xdnd = ETK_FALSE;
+   widget->xdnd_files = NULL;
+   widget->xdnd_files_num = 0;
+#endif   
+   
    etk_signal_connect_full(_etk_widget_signals[ETK_WIDGET_MOUSE_IN_SIGNAL], ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_mouse_in_cb), NULL, ETK_FALSE, ETK_FALSE);
    etk_signal_connect_full(_etk_widget_signals[ETK_WIDGET_MOUSE_OUT_SIGNAL], ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_mouse_out_cb), NULL, ETK_FALSE, ETK_FALSE);
    etk_signal_connect_full(_etk_widget_signals[ETK_WIDGET_MOUSE_DOWN_SIGNAL], ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_mouse_down_cb), NULL, ETK_FALSE, ETK_FALSE);
@@ -1632,6 +1655,15 @@ static void _etk_widget_unfocus_handler(Etk_Widget *widget)
       return;
    etk_widget_theme_object_signal_emit(widget, "unfocus");
 }
+
+/* Default handler for the "drag_drop" signal */
+static void _etk_widget_drag_drop_handler(Etk_Widget *widget)
+{
+   if (!widget)
+     return;
+   etk_widget_theme_object_signal_emit(widget, "drag_drop");
+}
+
 
 /* Sets the widget as visible and queues a visibility update */
 static void _etk_widget_show_handler(Etk_Widget *widget)
@@ -1926,6 +1958,35 @@ static void _etk_widget_key_up_cb(void *data, Evas *evas, Evas_Object *object, v
       _etk_widget_key_up_cb(widget->parent, evas, NULL, event_info);
 }
 
+#if HAVE_ECORE_X
+void etk_widget_xdnd_set(Etk_Widget *widget, Etk_Bool on)
+{
+   if(on)
+     widget->accepts_xdnd = 1;
+   else
+     widget->accepts_xdnd = 0;
+}
+
+Etk_Bool etk_widget_xdnd_get(Etk_Widget *widget)
+{
+   if(widget->accepts_xdnd) return ETK_TRUE;
+
+   return ETK_FALSE;
+}
+
+const char ** etk_widget_xdnd_files_get(Etk_Widget *widget, int *num_files)
+{
+   if(!widget->accepts_xdnd || widget->xdnd_files == NULL)
+     return NULL;
+   
+   if(num_files)
+     *num_files = widget->xdnd_files_num;
+     
+   return widget->xdnd_files;
+}
+#endif
+
+
 /**************************
  *
  * Private functions
@@ -2164,8 +2225,8 @@ static void _etk_widget_smart_object_resize(Evas_Object *object, Evas_Coord w, E
          evas_object_move(widget->theme_object, widget->geometry.x, widget->geometry.y);
          evas_object_resize(widget->theme_object, widget->geometry.w, widget->geometry.h);
       }
-      if (widget->size_allocate)
-         widget->size_allocate(widget, widget->inner_geometry);
+      if (widget->size_allocate)	
+	widget->size_allocate(widget, widget->inner_geometry);	
       
       widget->need_redraw = ETK_FALSE;
    }

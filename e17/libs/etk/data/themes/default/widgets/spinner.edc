@@ -1,0 +1,180 @@
+group {
+   name: "spin_button";
+   min: 120 18;
+   parts {
+      part {
+         name: "spinner";
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.5;
+               offset: 0 -9;
+            }
+            rel2 {
+               relative: 1.0 0.5;
+               offset: -1 8;
+            }
+            image {
+               normal: "entry.png";
+               border: 8 8 8 8;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+      }
+      part {      
+	 name: "clip";
+	 type: RECT;
+	 description {
+	    state: "default" 0.0;
+	    rel1 {
+	       relative: 0.0 0.5;
+	       offset: 0 -7;
+	    }
+	    rel2 {
+	       relative: 1.0 0.5;
+	       offset: -3 6;
+	    }
+	 }
+      }      
+      part {
+	 name: "up_arrow";
+         clip_to: "clip";	 
+	 description {
+	    state: "default" 0.0;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: -16 -2;
+               to: "spinner";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -1 -9;
+               to: "spinner";
+            }
+	    image {
+	       normal: "spinner_button_up1.png";
+	    }
+	 }
+	 description {
+	    state: "down" 0.0;
+	    inherit: "default" 0.0;
+	    image {
+	       normal: "spinner_button_up2.png";
+	    }
+	 }
+      }
+      part {
+	 name: "down_arrow";
+         clip_to: "clip";
+	 description {
+	    state: "default" 0.0;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: -16 9;
+               to: "spinner";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -1 2;
+               to: "spinner";
+            }
+	    image {
+	       normal: "spinner_button_down1.png";
+	    }	    
+	 }
+	 description {
+	    state: "down" 0.0;
+	    inherit: "default" 0.0;
+	    image {
+	       normal: "spinner_button_down2.png";
+	    }
+	 }	 
+      }            
+      part {
+         name: "text_area";
+         type: SWALLOW;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 4 3;
+               to: "spinner";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -15 -3;
+               to: "spinner";
+            }
+         }
+      }
+      FOCUS_GLOW(0.0, 0.0, -1, -1, "spinner", 1.0, 1.0, 0, 0, "spinner")
+   }
+   programs {
+      program {
+         name: "spinner_focus";
+         signal: "focus";
+         source: "";
+         FOCUS_GLOW_ACTION
+      }
+      program {
+         name: "button_unfocus";
+         signal: "unfocus";
+         source: "";
+         UNFOCUS_GLOW_ACTION
+      }
+      program {  
+	 name: "up_arrow_up";  
+	 signal: "mouse,up,1";  
+	 source: "up_arrow";  
+	 action: STATE_SET "default" 0.0;  
+	 target: "up_arrow";  
+      }  
+      program {  
+	 name: "up_arrow_down";  
+	 signal: "mouse,down,1";  
+	 source: "up_arrow";  
+	 action: STATE_SET "down" 0.0;  
+	 target: "up_arrow";
+      }        
+      program {  
+	 name: "down_arrow_up";  
+	 signal: "mouse,up,1";  
+	 source: "down_arrow";
+	 action: STATE_SET "default" 0.0;  
+	 target: "down_arrow";  
+      }  
+      program {  
+	 name: "down_arrow_down";  
+	 signal: "mouse,down,1";  
+	 source: "down_arrow";  
+	 action: STATE_SET "down" 0.0;  
+	 target: "down_arrow";
+      }
+      program {       
+	 name: "up_arrow_pressed"; 
+	 source: "up_arrow";
+	 signal: "mouse,down,1"; 
+	 action: SIGNAL_EMIT "scroll_up_start" ""; 
+      } 
+      program {
+	 name: "up_arrow_released"; 
+	 source: "up_arrow";
+	 signal: "mouse,up,1"; 
+	 action: SIGNAL_EMIT "scroll_stop" "";
+      }
+      program {       
+	 name: "down_arrow_pressed"; 
+	 source: "down_arrow";
+	 signal: "mouse,down,1"; 
+	 action: SIGNAL_EMIT "scroll_down_start" ""; 
+      } 
+      program {
+	 name: "down_arrow_released"; 
+	 source: "down_arrow";
+	 signal: "mouse,up,1"; 
+	 action: SIGNAL_EMIT "scroll_stop" "";
+      }      
+   }
+}

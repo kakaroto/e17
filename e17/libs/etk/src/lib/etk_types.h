@@ -105,6 +105,7 @@ typedef struct _Etk_Filechooser_Widget Etk_Filechooser_Widget;
 typedef struct _Etk_Notebook Etk_Notebook;
 typedef struct _Etk_Progress_Bar Etk_Progress_Bar;
 typedef enum _Etk_Progress_Bar_Orientation Etk_Progress_Bar_Orientation;
+typedef struct _Etk_Spin_Button Etk_Spin_Button;
 
 /**
  * @enum Etk_Fill_Policy_Flags

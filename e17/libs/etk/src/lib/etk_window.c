@@ -1,6 +1,7 @@
 /** @file etk_window.c */
 #include "etk_window.h"
 #include <stdlib.h>
+#include <string.h>
 #include <Ecore_X.h>
 #include <Ecore_X_Cursor.h>
 #include "etk_main.h"
@@ -447,6 +448,22 @@ Etk_Bool etk_window_hide_on_delete(Etk_Object *window, void *data)
    return ETK_TRUE;
 }
 
+#if HAVE_ECORE_X
+/**
+ * @brief A utility function to use as a callback for the "delete_event" signal. It will hide the window and return ETK_TRUE to prevent the program to quit
+ * @param window the window to hide
+ * @param data the data passed when the signal is emitted - unused
+ * @return Return ETK_TRUE so the the program won't quit
+ */
+void etk_window_xdnd_aware_set(Etk_Window *window, Etk_Bool on)
+{
+   if(on)
+     ecore_x_dnd_aware_set(window->x_window, 1);
+   else
+     ecore_x_dnd_aware_set(window->x_window, 0);
+}
+#endif
+
 /**************************
  *
  * Etk specific functions
@@ -463,6 +480,25 @@ static void _etk_window_constructor(Etk_Window *window)
 
    window->ecore_evas = ecore_evas_software_x11_new(NULL, 0, 0, 0, 0, 0);
    window->x_window = ecore_evas_software_x11_window_get(window->ecore_evas);
+   
+#if HAVE_ECORE_X      
+     {   
+	const char *types[] = { "*" };
+	char **drop_types;
+	int i;
+	
+	ecore_x_dnd_aware_set(window->x_window, 1);	
+	
+	drop_types = calloc(1, sizeof(char *));
+	
+	for (i = 0; i < 1; i++)
+	  drop_types[i] = strdup(types[i]);
+	
+	ecore_x_dnd_types_set(window->x_window, drop_types , 1);	
+     }
+   
+#endif   
+   
    ETK_TOPLEVEL_WIDGET(window)->evas = ecore_evas_get(window->ecore_evas);
    ETK_TOPLEVEL_WIDGET(window)->pointer_set = _etk_window_pointer_set;
    ETK_TOPLEVEL_WIDGET(window)->geometry_get = _etk_window_toplevel_geometry_get;
