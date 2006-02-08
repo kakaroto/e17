@@ -27,6 +27,7 @@ evfs_cleanup_file_command(evfs_command * command)
         free(command->file_command.files[i]->plugin_uri);
         free(command->file_command.files[i]);
      }
+   free(command->file_command.files);
 }
 
 void
