@@ -1,5 +1,5 @@
-%define revision 0.99.3
-%define rev_name -pre3
+%define revision 1
+%define rev_name %{nil}
 
 Summary: The Enlightenment window manager.
 Name: e16

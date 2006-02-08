@@ -3737,3 +3737,23 @@ Unselect client window events on withdraw. This fixes trouble with certain
 kde(?) systray apps when not using the e16 systray. Thanks to Peter Hyman
 for going on about this :)
 
+
+-------------------------------------------------------------------------------
+
+Wed Feb  8 19:24:21 CET 2006
+(Kim)
+
+--- 0.16.8 ---
+Use default pager background in pagers for desk without background.
+Fix menu rendering after changing theme trans to 0.
+Add some missing localizable strings.
+Japanese translation update (Yasufumi Haga).
+Get rid of tooltips when closing window.
+Correct window position when dragging window through area/desk switch.
+Fix focus when dragging window through area/desk switch.
+Fix focus when entering desk where nothing should be focused.
+Freeze keyboard while switching area/desk.
+Fix focus stack after area/desk switch when using (sloppy) pointer focus.
+Remove support for ancient gettext versions.
+Quit pager zoom when leaving screen.
+
