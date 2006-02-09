@@ -29,9 +29,6 @@ static void _fdo_menus_add_dirs(Dumb_List *list, Dumb_List *paths, char *pre, ch
 static void _fdo_menus_expand_apps(const void *data, Dumb_List *list, int element, int level);
 static int _fdo_menus_check_app(const void *data, char *path);
 
-static void _fdo_menus_make_apps(const void *data, Dumb_List *list, int element, int level);
-static void _fdo_menus_dump_each_hash_node(void *value, void *user_data);
-
 
 Dumb_List *
 fdo_menus_get(char *file, Dumb_List *xml)
