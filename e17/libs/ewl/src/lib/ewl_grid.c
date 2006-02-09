@@ -509,8 +509,7 @@ ewl_grid_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 			c_y += g->row_size[i].size;
 
 
-		ewl_object_geometry_request(EWL_OBJECT(child), c_x, c_y, c_w,
-					    c_h);
+		ewl_object_place(EWL_OBJECT(child), c_x, c_y, c_w, c_h);
 		ewl_widget_configure(child);
 
 		/* reset geometry values for the next child */
