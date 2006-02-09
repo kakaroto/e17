@@ -117,19 +117,19 @@ ewl_menubar_orientation_set(Ewl_Menubar *mb, Ewl_Orientation o)
 	ewl_box_orientation_set(EWL_BOX(mb), o);
 	if (o == EWL_ORIENTATION_HORIZONTAL) {
 		ewl_object_fill_policy_set(EWL_OBJECT(mb),
-				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
+				EWL_FLAG_FILL_HFILL);
 		ewl_box_orientation_set(EWL_BOX(mb->inner_box), 
 				EWL_ORIENTATION_HORIZONTAL);
 		ewl_object_fill_policy_set(EWL_OBJECT(mb->inner_box),
-				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
+				EWL_FLAG_FILL_HFILL);
 
 	} else if (o == EWL_ORIENTATION_VERTICAL) {
 		ewl_object_fill_policy_set(EWL_OBJECT(mb),
-				EWL_FLAG_FILL_VFILL | EWL_FLAG_FILL_HSHRINK);
+				EWL_FLAG_FILL_VFILL);
 		ewl_box_orientation_set(EWL_BOX(mb->inner_box),
 				EWL_ORIENTATION_VERTICAL);
 		ewl_object_fill_policy_set(EWL_OBJECT(mb->inner_box),
-				EWL_FLAG_FILL_VFILL | EWL_FLAG_FILL_HSHRINK);
+				EWL_FLAG_FILL_VFILL);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
