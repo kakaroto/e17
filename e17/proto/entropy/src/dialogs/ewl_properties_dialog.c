@@ -195,7 +195,7 @@ void ewl_icon_local_viewer_show_stat(entropy_file_stat* file_stat) {
 	ewl_widget_show(text);
 
 	text = ewl_text_new();
-	snprintf(itext, 100, "%d kb", (int)(file_stat->stat_obj->st_size / 1024));
+	snprintf(itext, 100, "%lld kb", (long long)(file_stat->stat_obj->st_size / 1024));
 	ewl_text_text_set(EWL_TEXT(text), itext);
 	ewl_container_child_append(EWL_CONTAINER(hbox), text);
 	ewl_widget_show(text);
