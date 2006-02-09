@@ -390,7 +390,7 @@ int
 evfs_file_stat(evfs_command * command, struct stat *file_stat, int file_number)
 {
    //printf("Getting file stat...\n");
-   int res = stat(command->file_command.files[file_number]->path, file_stat);
+   int res = stat64(command->file_command.files[file_number]->path, file_stat);
 
    if (!res)
       return EVFS_SUCCESS;

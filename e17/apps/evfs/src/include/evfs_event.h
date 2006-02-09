@@ -66,7 +66,7 @@ typedef struct evfs_stat
 {
    int st_uid;
    int st_gid;
-   int st_size;
+   uint64 st_size;
    int ist_atime;
    int ist_mtime;
    int ist_ctime;
