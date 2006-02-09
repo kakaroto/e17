@@ -167,6 +167,8 @@ struct _Etk_Widget
    void (*scroll_margins_get)(Etk_Widget *widget, Etk_Size *margin_size);
    void (*scroll)(Etk_Widget *widget, int x, int y);
    void (*drag_drop)(Etk_Widget *widget);
+   void (*drag_motion)(Etk_Widget *widget);
+   void (*drag_leave)(Etk_Widget *widget);   
    
    void (*show)(Etk_Widget *widget);
    void (*enter)(Etk_Widget *widget);
@@ -268,6 +270,8 @@ void          etk_widget_xdnd_set(Etk_Widget *widget, Etk_Bool on);
 Etk_Bool      etk_widget_xdnd_get(Etk_Widget *widget);
 const char  **etk_widget_xdnd_files_get(Etk_Widget *e, int *num_files);
 void          etk_widget_drag_drop(Etk_Widget *widget);
+void          etk_widget_drag_motion(Etk_Widget *widget);
+void          etk_widget_drag_leave(Etk_Widget *widget);
 //#endif
 
 /** @} */

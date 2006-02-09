@@ -33,13 +33,15 @@ static int _etk_xdnd_position_handler(void *data, int type, void *event);
 static int _etk_xdnd_drop_handler(void *data, int type, void *event);
 static int _etk_xdnd_leave_handler(void *data, int type, void *event);
 static int _etk_xdnd_selection_handler(void *data, int type, void *event);
+
+static Etk_Widget *_etk_dnd_widget = NULL;
+Evas_List  *_etk_dnd_widgets = NULL;
 #endif	  
 
 static Evas_List *_etk_main_toplevel_widgets = NULL;
 static Etk_Bool _etk_main_running = ETK_FALSE;
 static Etk_Bool _etk_main_initialized = ETK_FALSE;
 static Ecore_Job *_etk_main_iterate_job = NULL;
-static Etk_Widget *_etk_dnd_widget = NULL;
 
 /**************************
  *
@@ -247,47 +249,40 @@ static void _etk_main_size_allocate_recursive(Etk_Widget *widget, Etk_Bool is_to
 
 #if HAVE_ECORE_X
 #define E_INSIDE(x, y, xx, yy, ww, hh) (((x) < ((xx) + (ww))) && ((y) < ((yy) + (hh))) && ((x) >= (xx)) && ((y) >= (yy)))
-static int _etk_xdnd_enter_handler(void *data, int type, void *event)
-{
-   Ecore_X_Event_Xdnd_Enter *ev;
-   int i;
-   
-   /* printf("enter\n"); */
-   ev = event;
-   /* 
-    for (i = 0; i < ev->num_types; i++)
-     printf("type: %s\n", ev->types[i]);
-    */
-   return 1;
-}
 
 /* Search the container recursively for the widget that accepts xdnd */
-static void _etk_xdnd_container_get_widgets_at(Etk_Container *cont, int x, int y, int offx, int offy, Evas_List **list)
+static void _etk_xdnd_container_get_widgets_at(Etk_Toplevel_Widget *top, int x, int y, int offx, int offy, Evas_List **list)
 {
-   Evas_List *child;
+   Evas_List *l;
      
-   for(child = etk_container_children_get(cont); child; child = child->next)
+   for(l = _etk_dnd_widgets; l; l = l->next)
      {
 	Etk_Widget *widget;
 	
-	if(!(widget = ETK_WIDGET(child->data)))
+	if(!(widget = ETK_WIDGET(l->data)))
 	  continue;
 	
 	if(E_INSIDE(x, y, 
 		    widget->inner_geometry.x + offx,
 		    widget->inner_geometry.y + offy,
 		    widget->inner_geometry.w, 
-		    widget->inner_geometry.h))
-	  {
-	     if(widget->accepts_xdnd)
-	       {
-		  *list = evas_list_append(*list, widget);
-	       }
-	     
-	     if(ETK_IS_CONTAINER(widget))
-	       _etk_xdnd_container_get_widgets_at(ETK_CONTAINER(widget), x, y, offx, offy, list);
-	  }
+		    widget->inner_geometry.h))	  
+	  *list = evas_list_append(*list, widget);	  
      }   
+}
+
+static int _etk_xdnd_enter_handler(void *data, int type, void *event)
+{
+   Ecore_X_Event_Xdnd_Enter *ev;
+   int i;
+   
+   ev = event;
+   
+//   printf("enter window!\n");
+//	for (i = 0; i < ev->num_types; i++)
+//	  printf("type: %s\n", ev->types[i]);   
+   
+   return 1;
 }
 
 static int _etk_xdnd_position_handler(void *data, int type, void *event)
@@ -297,13 +292,13 @@ static int _etk_xdnd_position_handler(void *data, int type, void *event)
    Evas_List *l;
    Evas_List *children = NULL;
    Etk_Widget *widget;
+   int x = 0, y = 0;
+   
    ev = event;
    
    /* loop top level widgets (windows) */
    for(l = _etk_main_toplevel_widgets; l; l = l->next)
-     {
-	int x, y;
-	  
+     {	  
 	if (!(window = ETK_WINDOW(l->data)))
 	  continue;
 	
@@ -312,15 +307,30 @@ static int _etk_xdnd_position_handler(void *data, int type, void *event)
 	  continue;	  
 	
 	ecore_evas_geometry_get(window->ecore_evas, &x, &y, NULL, NULL);
-	
+
 	/* find the widget we want to drop on */
-	_etk_xdnd_container_get_widgets_at(ETK_CONTAINER(window), ev->position.x, ev->position.y, x, y, &children);
-     }
+	_etk_xdnd_container_get_widgets_at(ETK_TOPLEVEL_WIDGET(window), ev->position.x, ev->position.y, x, y, &children);
+	
+	/* check if we're leaving a widget */
+	if(_etk_dnd_widget)
+	  {
+	     if(!E_INSIDE(ev->position.x, ev->position.y, 
+			  _etk_dnd_widget->geometry.x + x, _etk_dnd_widget->geometry.y + y,
+			  _etk_dnd_widget->geometry.w, _etk_dnd_widget->geometry.h))
+	       {
+		  etk_widget_drag_leave(_etk_dnd_widget);
+		  _etk_dnd_widget = NULL;
+	       }
+	  }	
+	
+	break;
+     }   
    
    /* if we found a widget, emit signals */
    if(children != NULL)
-     {
+     {	
 	Ecore_X_Rectangle rect;
+	
 	widget = (evas_list_last(children))->data;
 	_etk_dnd_widget = widget;
 	/* TODO: filter types according to what widget wants */
@@ -329,6 +339,8 @@ static int _etk_xdnd_position_handler(void *data, int type, void *event)
 	rect.width = widget->inner_geometry.w;
 	rect.height = widget->inner_geometry.h;	
 	ecore_x_dnd_send_status(1, 1, rect, ECORE_X_DND_ACTION_PRIVATE);
+	
+	etk_widget_drag_motion(widget);
      }
    
    return 1;
@@ -340,14 +352,15 @@ static int _etk_xdnd_drop_handler(void *data, int type, void *event)
    
    /* printf("drop\n"); */
    ev = event;
-   
+      
    ecore_x_selection_xdnd_request(ev->win, "text/uri-list");
    return 1;
 }
 
 static int _etk_xdnd_leave_handler(void *data, int type, void *event)
 {
-   /* printf("leave\n"); */
+   //printf("leave window\n");
+      
    return 1;
 }
 
@@ -360,7 +373,7 @@ static int _etk_xdnd_selection_handler(void *data, int type, void *event)
    Ecore_X_Selection_Data_Targets *targets;
    int i;
 
-   /* printf("selection\n"); */
+   //printf("selection\n"); 
    ev = event;
    switch (ev->selection) 
      {
@@ -425,7 +438,7 @@ static int _etk_xdnd_selection_handler(void *data, int type, void *event)
       case ECORE_X_SELECTION_CLIPBOARD:
 	if (!strcmp(ev->target, ECORE_X_SELECTION_TARGET_TARGETS)) 
 	  {
-	     printf("clipboard: %s\n", ev->target);
+	     //printf("clipboard: %s\n", ev->target);
 	     targets = ev->data;
 	     /*
 	     for (i = 0; i < targets->num_targets; i++)
