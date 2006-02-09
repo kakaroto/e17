@@ -64,6 +64,21 @@ get_overwrite()
    return 0;
 }
 
+int
+get_fdo()
+{
+   int i, argc;
+   char **argv;
+
+   ecore_app_args_get(&argc, &argv);
+   for (i = 1; i < argc; i++)
+     {
+        if ((!strcmp(argv[i], "-f")) || (!strcmp(argv[i], "--fdo")))
+           return 1;
+     }
+   return 0;
+}
+
 char *
 get_icon_compression()
 {

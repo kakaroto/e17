@@ -5,6 +5,8 @@
 
 #include "dumb_list.h"
 
+static void dumb_list_dump_each_hash_node(void *value, void *user_data);
+
 
 /** Split a list of paths into a Dumb_List.
  *
@@ -124,6 +126,15 @@ dumb_list_add_child(Dumb_List *list, Dumb_List *element)
    return list;
 }
 
+Dumb_List *
+dumb_list_add_hash(Dumb_List *list, Ecore_Hash *element)
+{
+   list->elements = (Dumb_List_Element *) realloc(list->elements, (list->size + 1) * sizeof(Dumb_List_Element));
+   list->elements[list->size].element = element;
+   list->elements[list->size++].type = DUMB_LIST_ELEMENT_TYPE_HASH;
+   return list;
+}
+
 int
 dumb_list_exist(Dumb_List *list, char *element)
 {
@@ -141,6 +152,20 @@ dumb_list_exist(Dumb_List *list, char *element)
           }
      }
    return exist;
+}
+
+void
+dumb_list_foreach(Dumb_List *list, int level, void (*func) (const void *data, Dumb_List *list, int element, int level), const void *data)
+{
+   int i;
+
+   for (i = 0; i < list->size; i++)
+      {
+         if (list->elements[i].type == DUMB_LIST_ELEMENT_TYPE_LIST)
+	    dumb_list_foreach((Dumb_List *) list->elements[i].element, level + 1, func, data);
+	 else
+	    func(data, list, i, level);
+      }
 }
 
 void
@@ -169,6 +194,16 @@ dumb_list_dump(Dumb_List *list, int level)
 		  }
 	          break;
 
+	       case DUMB_LIST_ELEMENT_TYPE_HASH :
+	          {
+		     int lev;
+
+                     lev = level + 1;
+		     printf("HASH ELEMENT TYPE\n");
+                     ecore_hash_for_each_node((Ecore_Hash *) list->elements[i].element, dumb_list_dump_each_hash_node, &lev);
+		  }
+	          break;
+
 	       default :
 	          {
 		     printf("UNKNOWN ELEMENT TYPE!\n");
@@ -176,6 +211,19 @@ dumb_list_dump(Dumb_List *list, int level)
 	          break;
 	    }
       }
+}
+
+static void dumb_list_dump_each_hash_node(void *value, void *user_data)
+{
+   Ecore_Hash_Node *node;
+   int level;
+   int j;
+
+   node = (Ecore_Hash_Node *) value;
+   level = *((int *) user_data);
+   for (j = 0; j < level; j++)
+      printf(".");
+   printf("%s = %s\n", (char *) node->key, (char *) node->value);
 }
 
 void
@@ -187,6 +235,8 @@ dumb_list_del(Dumb_List * list)
       {
          if (list->elements[i].type == DUMB_LIST_ELEMENT_TYPE_LIST)
             dumb_list_del((Dumb_List *) list->elements[i].element);
+         else if (list->elements[i].type == DUMB_LIST_ELEMENT_TYPE_HASH)
+	   ecore_hash_destroy((Ecore_Hash *) list->elements[i].element);
       }
 
    E_FREE(list->elements);

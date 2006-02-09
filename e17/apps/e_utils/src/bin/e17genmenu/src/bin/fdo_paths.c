@@ -1,3 +1,7 @@
+/*
+ * This conforms with the freedesktop.org XDG Base Directory Specification version 0.6
+ */
+
 #include <dirent.h>
 #include <string.h>             //string funcs
 #include <stdio.h>
@@ -28,16 +32,7 @@ static void _fdo_paths_check_and_add(Dumb_List * paths, char *path);
 static void _fdo_paths_exec_config(char *home, Dumb_List * extras,
                                    char *cmd);
 
-static char *_fdo_paths_recursive_search(char *path, char *d,
-                                         int (*func) (const void *data,
-                                                      char *path),
-                                         const void *data);
-
 static int _fdo_paths_cb_exe_exit(void *data, int type, void *event);
-
-/*
- * This conforms with XDG Base Directory Specification version 0.6
- */
 
 void
 fdo_paths_init()
@@ -134,7 +129,7 @@ fdo_paths_search_for_file(Fdo_Paths_Type type, char *file, int sub,
                    break;
           }
         else if (sub)
-           path = _fdo_paths_recursive_search(paths->elements[i].element, file, func, data);
+           path = fdo_paths_recursive_search(paths->elements[i].element, file, func, data);
         if (path && (!func))
            break;
      }
@@ -376,8 +371,8 @@ _fdo_paths_exec_config(char *home, Dumb_List *extras, char *cmd)
      }
 }
 
-static char *
-_fdo_paths_recursive_search(char *path, char *file,
+char *
+fdo_paths_recursive_search(char *path, char *file,
                             int (*func) (const void *data, char *path),
                             const void *data)
 {
@@ -405,19 +400,28 @@ _fdo_paths_recursive_search(char *path, char *file,
                          {
                             sprintf(info_text, "%s%s/", path, script->d_name);
                             fpath =
-                               _fdo_paths_recursive_search(info_text, file,
+                               fdo_paths_recursive_search(info_text, file,
                                                            func, data);
                          }
                     }
                   else
                     {
-                       if (strcmp(basename(info_text), file) == 0)
-                         {
-                            fpath = strdup(info_text);
-                            if (func)
-                               if (func(data, path))
-                                  break;
-                         }
+		       if (file)
+		          {
+                             if (strcmp(basename(info_text), file) == 0)
+                               {
+                                  fpath = strdup(info_text);
+                                  if (func)
+                                     if (func(data, path))
+                                        break;
+                               }
+			  }
+		       else
+		          {
+                              if (func)
+                                 if (func(data, info_text))
+                                    break;
+			  }
                     }
                   if (fpath && (!func))
                      break;

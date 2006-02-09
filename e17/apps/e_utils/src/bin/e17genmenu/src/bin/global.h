@@ -32,6 +32,7 @@ struct _G_Eap
 char *get_home(void);
 char *get_desktop_dir(void);
 int get_overwrite(void);
+int get_fdo(void);
 char *get_eap_name(char *file);
 char *get_icon_size(void);
 char *get_icon_theme(void);

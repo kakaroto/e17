@@ -378,6 +378,7 @@ parse_ini_file(char *file)
 {
    Ecore_Hash *result;
 
+   /* FIXME: this should probably be optimised by caching the results, then looking in the cache first. */
    result = ecore_hash_new(ecore_str_hash, ecore_str_compare);
    if (result)
      {

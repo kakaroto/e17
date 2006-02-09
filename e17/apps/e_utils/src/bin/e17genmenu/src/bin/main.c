@@ -4,6 +4,7 @@
 #include "parse.h"
 #include "icons.h"
 #include "sort.h"
+#include "fdo_menus.h"
 #include "fdo_paths.h"
 #include "xmlame.h"
 
@@ -59,10 +60,18 @@ _e17genmenu_test_fdo_paths()
          menu_xml = xmlame_get(path);;
 	 if (menu_xml)
 	    {
+	       Dumb_List *menus = NULL;
+
+	       /* convert the xml into menus */
+	       menus = fdo_menus_get(path, menu_xml);
                dumb_list_dump(menu_xml, 0);
                printf("\n\n");
-	       /* convert the xml into a menu */
-	       /* create the .eap and order files from the menu */
+	       if (menus)
+	          {
+                     dumb_list_dump(menus, 0);
+                     printf("\n\n");
+	             /* create the .eap and order files from the menu */
+		  }
 	    }
          free(path);
 
@@ -131,6 +140,7 @@ _e17genmenu_help()
       (" -d=<dir> | --desktop-dir=<dir>\tCreate eaps for .desktop files in <dir>\n");
    printf(" -o | --overwrite\tOverwrite Eaps\n");
    printf(" -m | --mapping\tGenerate Mapping File\n");
+   printf(" -f | --fdo\tGenerate menus from fdo files\n");
    printf(" -h | --help\t\tShow this help screen\n");
 
    /* Stop E Stuff */
@@ -152,7 +162,7 @@ _e17genmenu_parseargs(int argc, char **argv)
                 _e17genmenu_help();
              if ((strstr(argv[i], "--backup")) || (strstr(argv[i], "-b")))
                 _e17genmenu_backup();
-             if ((strstr(argv[i], "--fdo")) || (strstr(argv[i], "-f")))
+             if ((strstr(argv[i], "--test")) || (strstr(argv[i], "-z")))
                 _e17genmenu_test_fdo_paths();
           }
      }

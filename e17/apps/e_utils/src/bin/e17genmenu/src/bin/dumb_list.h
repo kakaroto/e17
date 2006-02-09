@@ -7,12 +7,14 @@
 #define E_NEW_BIG(s, n) (s *)malloc(n * sizeof(s))
 #define E_FREE(p) { if (p) {free(p); p = NULL;} }
 
+#include <Ecore_Data.h>
+
 
 enum _Dumb_List_Element_Type
 {
-
    DUMB_LIST_ELEMENT_TYPE_STRING = 1,
    DUMB_LIST_ELEMENT_TYPE_LIST = 2,
+   DUMB_LIST_ELEMENT_TYPE_HASH = 3,
 };
 typedef enum _Dumb_List_Element_Type Dumb_List_Element_Type;
 
@@ -42,7 +44,9 @@ extern "C"
    Dumb_List *dumb_list_add(Dumb_List *list, char *element);
    Dumb_List *dumb_list_extend(Dumb_List *list, char *element);
    Dumb_List *dumb_list_add_child(Dumb_List *list, Dumb_List *element);
+   Dumb_List *dumb_list_add_hash(Dumb_List *list, Ecore_Hash *element);
    int dumb_list_exist(Dumb_List *list, char *element);
+   void dumb_list_foreach(Dumb_List *list, int level, void (*func) (const void *data, Dumb_List *list, int element, int level), const void *data);
    void dumb_list_dump(Dumb_List *list, int level);
    void dumb_list_del(Dumb_List *list);
 
