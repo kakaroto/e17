@@ -7,6 +7,7 @@ static void ewl_container_child_insert_helper(Ewl_Container *pc,
 						Ewl_Widget *child, 
 						int index, 
 						int skip_internal);
+static int ewl_container_child_count_get_helper(Ewl_Container *c, int skip);
 
 /**
  * @param c: the container to initialize
@@ -396,13 +397,8 @@ ewl_container_child_remove(Ewl_Container *pc, Ewl_Widget *child)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/**
- * @param c: The container to get the child count from
- * @return Returns the number of child widgets
- * @brief Returns the number of child widgets in the container
- */
-int
-ewl_container_child_count_get(Ewl_Container *c)
+static int
+ewl_container_child_count_get_helper(Ewl_Container *c, int skip)
 {
 	Ewl_Widget *child = NULL;
 	Ewl_Container *container = NULL;
@@ -421,9 +417,47 @@ ewl_container_child_count_get(Ewl_Container *c)
 	ecore_list_goto_first(container->children);
 	while ((child = ecore_list_next(container->children)))
 	{
-		if (ewl_widget_internal_is(child)) continue;
+		if (skip && ewl_widget_internal_is(child)) continue;
 		count++;
 	}
+
+	DRETURN_INT(count, DLEVEL_STABLE);
+}
+
+/**
+ * @param c: The container to get the child count from
+ * @return Returns the number of child widgets
+ * @brief Returns the number of child widgets in the container
+ */
+int
+ewl_container_child_count_get(Ewl_Container *c)
+{
+	int count = 0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("c", c, 0);
+	DCHECK_TYPE_RET("c", c, EWL_CONTAINER_TYPE, 0);
+
+	count = ewl_container_child_count_get_helper(c, TRUE);
+
+	DRETURN_INT(count, DLEVEL_STABLE);
+}
+
+/**
+ * @param c: The container to get the child count from
+ * @return Returns the number of child widgets
+ * @brief Returns the number of child widgets in the container
+ */
+int
+ewl_container_child_count_internal_get(Ewl_Container *c)
+{
+	int count = 0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("c", c, 0);
+	DCHECK_TYPE_RET("c", c, EWL_CONTAINER_TYPE, 0);
+
+	count = ewl_container_child_count_get_helper(c, FALSE);
 
 	DRETURN_INT(count, DLEVEL_STABLE);
 }
