@@ -18,6 +18,16 @@ static void _etk_test_xdnd_drag_drop_cb(Etk_Object *object, void *data)
      }
 }
 
+static void _etk_test_xdnd_drag_motion_cb(Etk_Object *object, void *data)
+{   
+   printf("You're on top of me!\n");
+}
+
+static void _etk_test_xdnd_drag_leave_cb(Etk_Object *object, void *data)
+{   
+   printf("You're leaving me!\n");
+}
+
 static void _etk_test_xdnd_drag_drop_cb2(Etk_Object *object, void *data)
 {
    int num_files, i;
@@ -33,12 +43,26 @@ static void _etk_test_xdnd_drag_drop_cb2(Etk_Object *object, void *data)
 	printf("Widget got: file: %s\n", files[i]);
 	if((image = strstr(files[i], "file://")) != NULL)
 	  etk_image_set_from_file(ETK_IMAGE(data), image + strlen("file://"));
-     }   
+     }      
+}
+
+static void _etk_test_xdnd_clipboard_text_request_cb(Etk_Object *object, void *event, void *data)
+{
+   Etk_Event_Selection_Get *ev;
    
+   ev = event;
+   
+   etk_label_set(ETK_LABEL(object), (char *)ev->data);
+}
+
+static void _etk_test_xdnd_button_paste_cb(Etk_Object *object, void *data)
+{
+   Etk_Label *label;
+   
+   etk_selection_text_request(ETK_WIDGET(data));
 }
 
 /* Creates the window for the xdnd test */
-
 void etk_test_xdnd_window_create(void *data)
 {
    static Etk_Widget *win = NULL;
@@ -46,6 +70,7 @@ void etk_test_xdnd_window_create(void *data)
    Etk_Widget *button;
    Etk_Widget *label;
    Etk_Widget *image;
+   Etk_Widget *entry;
    
    if (win)
    {
@@ -66,6 +91,8 @@ void etk_test_xdnd_window_create(void *data)
    button = etk_button_new_with_label(_("Drag Any File Onto Me"));
    etk_widget_xdnd_set(button, ETK_TRUE);
    etk_signal_connect("drag_drop", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_xdnd_drag_drop_cb), label);
+   etk_signal_connect("drag_motion", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_xdnd_drag_motion_cb), NULL);
+   etk_signal_connect("drag_leave", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_xdnd_drag_leave_cb), NULL);
    etk_box_pack_start(ETK_BOX(vbox), button, ETK_FALSE, ETK_FALSE, 0);
    
    etk_box_pack_start(ETK_BOX(vbox), label, ETK_FALSE, ETK_FALSE, 0);   
@@ -75,9 +102,25 @@ void etk_test_xdnd_window_create(void *data)
    button = etk_button_new_with_label(_("Drag Any Image Onto Me"));
    etk_widget_xdnd_set(button, ETK_TRUE);
    etk_signal_connect("drag_drop", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_xdnd_drag_drop_cb2), image);
-   etk_box_pack_start(ETK_BOX(vbox), button, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_pack_start(ETK_BOX(vbox), button, ETK_FALSE, ETK_FALSE, 0);  
+   etk_box_pack_start(ETK_BOX(vbox), image, ETK_FALSE, ETK_FALSE, 0);
 
-   etk_box_pack_start(ETK_BOX(vbox), image, ETK_FALSE, ETK_FALSE, 0);   
+   label = etk_label_new("");
+   etk_signal_connect("selection_get", ETK_OBJECT(label), ETK_CALLBACK(_etk_test_xdnd_clipboard_text_request_cb), NULL);
+   
+   button = etk_button_new_with_label(_("Press me to paste text"));
+   etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_xdnd_button_paste_cb), label);
+   etk_box_pack_start(ETK_BOX(vbox), button, ETK_FALSE, ETK_FALSE, 0);  
+   etk_box_pack_start(ETK_BOX(vbox), label, ETK_FALSE, ETK_FALSE, 0);   
+/*   
+   label = etk_label_new(_("Control+V on entry to paste"));
+   etk_box_pack_start(ETK_BOX(vbox), label, ETK_FALSE, ETK_FALSE, 0);
+   
+   entry = etk_entry_new();
+   etk_widget_xdnd_set(entry, ETK_TRUE);
+   etk_signal_connect("drag_drop", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_xdnd_drag_drop_cb), entry);
+   etk_box_pack_start(ETK_BOX(vbox), label, ETK_FALSE, ETK_FALSE, 0);
+*/
    
    etk_widget_show_all(win);
 }

@@ -13,6 +13,7 @@
 #include "etk_marshallers.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
+#include "etk_dnd.h"
 #include "config.h"
 
 /**
@@ -63,9 +64,12 @@ enum _Etk_Widget_Signal_Id
    ETK_WIDGET_FOCUS_SIGNAL,
    ETK_WIDGET_UNFOCUS_SIGNAL,
    ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL,
+#if HAVE_ECORE_X
    ETK_WIDGET_DRAG_DROP_SIGNAL,
    ETK_WIDGET_DRAG_MOTION_SIGNAL,
-   ETK_WIDGET_DRAG_LEAVE_SIGNAL,     
+   ETK_WIDGET_DRAG_LEAVE_SIGNAL,
+   ETK_WIDGET_SELECTION_GET_SIGNAL,
+#endif     
    ETK_WIDGET_NUM_SIGNALS
 };
 
@@ -176,9 +180,12 @@ Etk_Type *etk_widget_type_get()
       _etk_widget_signals[ETK_WIDGET_FOCUS_SIGNAL] =         etk_signal_new("focus",         widget_type, ETK_MEMBER_OFFSET(Etk_Widget, focus),   etk_marshaller_VOID__VOID,    NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_UNFOCUS_SIGNAL] =       etk_signal_new("unfocus",       widget_type, ETK_MEMBER_OFFSET(Etk_Widget, unfocus), etk_marshaller_VOID__VOID,    NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL] = etk_signal_new("scroll_size_changed", widget_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_DRAG_DROP_SIGNAL] =     etk_signal_new("drag_drop",     widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_drop),etk_marshaller_VOID__VOID,    NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_DRAG_MOTION_SIGNAL] =     etk_signal_new("drag_motion",     widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_motion),etk_marshaller_VOID__VOID,    NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_DRAG_LEAVE_SIGNAL] =     etk_signal_new("drag_leave",     widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_leave),etk_marshaller_VOID__VOID,    NULL, NULL);
+#if HAVE_ECORE_X      
+      _etk_widget_signals[ETK_WIDGET_DRAG_DROP_SIGNAL] =      etk_signal_new("drag_drop",      widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_drop),   etk_marshaller_VOID__VOID,    NULL, NULL);
+      _etk_widget_signals[ETK_WIDGET_DRAG_MOTION_SIGNAL] =    etk_signal_new("drag_motion",    widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_motion), etk_marshaller_VOID__VOID,    NULL, NULL);
+      _etk_widget_signals[ETK_WIDGET_DRAG_LEAVE_SIGNAL] =     etk_signal_new("drag_leave",     widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_leave),  etk_marshaller_VOID__VOID,    NULL, NULL);
+      _etk_widget_signals[ETK_WIDGET_SELECTION_GET_SIGNAL] =  etk_signal_new("selection_get",  widget_type, -1,                                         etk_marshaller_VOID__POINTER, NULL, NULL);
+#endif      
       
       etk_type_property_add(widget_type, "name",              ETK_WIDGET_NAME_PROPERTY,              ETK_PROPERTY_STRING,  ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(widget_type, "parent",            ETK_WIDGET_PARENT_PROPERTY,            ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_pointer(NULL));
@@ -1441,6 +1448,20 @@ void etk_widget_drag_leave(Etk_Widget *widget)
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_DRAG_LEAVE_SIGNAL], ETK_OBJECT(widget), NULL);
 }
 
+/**
+ * @brief Sends the "selection_get" signal
+ * @param widget a widget
+ */
+void etk_widget_selection_get(Etk_Widget *widget, Etk_Event_Selection_Get *event)
+{
+   if (!widget)
+     return;
+
+   printf("%s <=-\n", (char*)event->data);
+   
+   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_SELECTION_GET_SIGNAL], ETK_OBJECT(widget), NULL, event);
+}
+
 #endif
 
 /**************************
@@ -1711,7 +1732,6 @@ static void _etk_widget_drag_leave_handler(Etk_Widget *widget)
      return;
    etk_widget_theme_object_signal_emit(widget, "drag_leave");
 }
-
 
 /* Sets the widget as visible and queues a visibility update */
 static void _etk_widget_show_handler(Etk_Widget *widget)
@@ -2028,7 +2048,7 @@ Etk_Bool etk_widget_xdnd_get(Etk_Widget *widget)
    return ETK_FALSE;
 }
 
-const char ** etk_widget_xdnd_files_get(Etk_Widget *widget, int *num_files)
+const char **etk_widget_xdnd_files_get(Etk_Widget *widget, int *num_files)
 {
    if(!widget->accepts_xdnd || widget->xdnd_files == NULL)
      return NULL;
