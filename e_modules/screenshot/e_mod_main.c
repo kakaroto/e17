@@ -475,9 +475,12 @@ _screen_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
                }
              opt = get_options(opts);
              f = get_filename(ef->screen->conf);
-
-             snprintf(buff, sizeof(buff), "import %s %s", opt, f);
-             if (ef->screen->conf->delay_time > 0)
+	     if (!f)
+	       snprintf(buff, sizeof(buff), "import %s", opt);	       
+	     else
+	       snprintf(buff, sizeof(buff), "import %s %s", opt, f);
+             
+	     if (ef->screen->conf->delay_time > 0)
                {
                   msg = malloc(sizeof(Edje_Message_Int_Set) + 1 * sizeof(int));
                   msg->count = 1;
@@ -506,7 +509,11 @@ _screen_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
                }
              opt = get_options(opts);
              f = get_filename(ef->screen->conf);
-             snprintf(buff, sizeof(buff), "scrot %s %s", opt, f);
+	     if (!f)
+	       snprintf(buff, sizeof(buff), "scrot %s", opt);
+	     else
+	       snprintf(buff, sizeof(buff), "scrot %s %s", opt, f);
+	       
              if (ef->screen->conf->delay_time > 0)
                {
                   msg = malloc(sizeof(Edje_Message_Int_Set) + 1 * sizeof(int));
