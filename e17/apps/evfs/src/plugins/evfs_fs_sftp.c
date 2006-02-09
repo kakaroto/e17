@@ -45,7 +45,7 @@
 
 typedef struct {
 	char* filename;
-	int type;
+	struct stat properties;
 } evfs_file_info;
 
 static long sftp_file_request_id = 1;
@@ -81,11 +81,11 @@ int read_int32(char** c) {
 	return val;
 }
 
-long read_int64(char** c) {
-	long val;
+uint64 read_uint64(char** c) {
+	uint64 val;
 	
-	//memcpy(&val, *c, 8);
-	//val = INT32_TO_BE(val);
+	memcpy(&val, *c, 8);
+	val = UINT64_TO_BE(val);
 	*c += 8; /*Jump identifier*/
 
 	return val;
@@ -116,7 +116,7 @@ char* read_string(char** c, int* len) {
 	return str;
 }
 
-void read_sftp_attr(char** c, evfs_file_info** info) {
+void read_sftp_attr(char** c, struct stat* info) {
 	int flags;
 	int id;
 	char type;
@@ -129,8 +129,9 @@ void read_sftp_attr(char** c, evfs_file_info** info) {
 	/*printf("Attr type is %d\n", (int)type);*/
 	
 	if (flags & SSH2_FILEXFER_ATTR_SIZE) {
-		long size = read_int64(c);
-		//printf ("Size: %d\n", );
+		uint64 size = read_uint64(c);
+		info->st_size = size;
+		printf ("Size: %lld\n", info->st_size);
 	}
 
 	if (flags & SSH2_FILEXFER_ATTR_UIDGID) {
@@ -140,14 +141,12 @@ void read_sftp_attr(char** c, evfs_file_info** info) {
 
 	if (flags & SSH2_FILEXFER_ATTR_PERMISSIONS) {
 		int perms = read_int32(c);
-
-		if (S_ISLNK(perms) || S_ISDIR(perms)) (*info)->type = EVFS_FILE_DIRECTORY;
-		else (*info)->type = EVFS_FILE_NORMAL;
+		info->st_mode = perms;
 	}
 
 	if (flags & SSH2_FILEXFER_ATTR_ACMODTIME) {
-		read_int32(c);
-		read_int32(c);
+		info->st_mtime = read_int32(c);
+		info->st_atime = read_int32(c);
 	}
 	if (flags & SSH2_FILEXFER_ATTR_EXTENDED) printf("Attr: Extended\n");
 }
@@ -195,7 +194,8 @@ typedef struct
 
 typedef enum {
 	STATUS_PROGRESS,
-	STATUS_FINISHED
+	STATUS_FINISHED,
+	STATUS_ATTR
 } SftpReadStatus;
 
 
@@ -203,6 +203,7 @@ typedef struct
 {
 	SftpOpenHandle* open_handle;
 	Ecore_List* file_list;
+	struct stat properties;
 	int status;
 } SftpGenericHandle;
 
@@ -413,6 +414,43 @@ sftp_file_write(SftpOpenHandle* handle, char* bytes, int size)
 	
 }
 
+SftpGenericHandle* sftp_file_read(SftpOpenHandle* handle, int size)
+{
+
+}
+
+SftpGenericHandle* sftp_file_stat(SftpConnection* conn, char* path)
+{
+	Buffer msg;
+	long nid;
+	SftpGenericHandle* rhandle;
+
+	printf("Requesting a stat of '%s'\n", path);
+
+	nid = sftp_request_id_get_next();
+
+	/*Create a handle for this op*/
+	rhandle = NEW(SftpGenericHandle);
+	rhandle->status = STATUS_PROGRESS;
+
+	ecore_hash_set(conn->id_open_hash, (int*)nid, rhandle);
+	buffer_init(&msg);
+
+	/*Write type*/
+	buffer_write_char(&msg, SSH2_FXP_LSTAT);
+
+	/*Write id*/
+	buffer_write_int(&msg, nid);
+
+	/*Write handle*/
+	buffer_write_string(&msg, path);
+
+	buffer_send(&msg, conn->ssh_conn);
+
+	return rhandle;
+
+}
+
 
 int sftp_open_dir(SftpConnection* conn, char* dir)
 {
@@ -515,7 +553,7 @@ void sftp_read_names(SftpConnection* conn, char** c) {
 		file->filename = name;
 
 		/*Get the file attributes*/
-		read_sftp_attr(c, &file);
+		read_sftp_attr(c, &file->properties);
 
 		//printf("Name: %s\n", name);
 		ecore_list_append(rhandle->file_list, file);
@@ -540,6 +578,27 @@ void sftp_handle_status(SftpConnection* conn, char** c) {
 
 	//printf("Rhandle is %p\n", rhandle);
 	if (rhandle) rhandle->status = STATUS_FINISHED;
+
+	ecore_hash_remove(conn->id_open_hash, (int*)id);
+}
+
+void sftp_handle_attr(SftpConnection* conn, char** c) {
+	int id;
+	SftpGenericHandle* rhandle;
+	
+	/*Read the identifier*/
+	id = read_int32(c);
+
+	//printf("Got a status for id %d\n", id);
+	rhandle = ecore_hash_get(conn->id_open_hash, (int*)id);
+
+	if (rhandle) {
+		/*Read the attributes...*/
+		read_sftp_attr(c, &rhandle->properties);
+		
+		//printf("Rhandle is %p\n", rhandle);
+		rhandle->status = STATUS_ATTR;
+	}
 
 	ecore_hash_remove(conn->id_open_hash, (int*)id);
 }
@@ -598,7 +657,10 @@ sftp_exe_data(void *data, int type, void *event)
 	   case SSH2_FXP_STATUS:
 		   //printf ("  [*] TYPE: STATUS: %d\n",sftp_type);
 		   sftp_handle_status(conn, &c);
-
+		   break;
+	   case SSH2_FXP_ATTRS:
+		   printf ("  [*] Received SSH ATTRIBUTES\n");
+		   sftp_handle_attr(conn, &c);
 		   break;
 	   case SSH2_FXP_VERSION:
 		   printf ("  [*] TYPE: VERSION: %d\n",sftp_type);
@@ -711,7 +773,46 @@ evfs_file_create(evfs_filereference* file)
 int
 evfs_file_stat(evfs_command* command, struct stat *dst_stat, int i)
 {
-	return EVFS_ERROR;
+	SftpConnection* conn;
+	char* host, *path;
+	int rid;
+	SftpGenericHandle* handle;
+
+
+	sftp_split_host_path(command->file_command.files[0]->path, &host, &path);
+	
+	
+	if ( !(conn = sftp_get_connection_for_host(host))) {
+		conn = sftp_connect(host);
+	}
+
+	while (conn->status == SFTP_INIT) {
+		ecore_main_loop_iterate();
+		usleep(10);		
+	}
+
+	handle = sftp_file_stat(conn, path);
+	while (! (handle->status == STATUS_FINISHED || handle->status == STATUS_ATTR)) {
+		ecore_main_loop_iterate();
+		usleep(2);
+	}
+
+	if (handle->status == STATUS_ATTR) {
+		memcpy(dst_stat, &handle->properties, sizeof(struct stat));
+		
+		free(host);
+		free(path);
+		free(handle);
+
+		return EVFS_SUCCESS;
+	} else {
+		free(host);
+		free(path);
+		free(handle);
+
+		return EVFS_ERROR;
+	}
+	
 }
 
 int
@@ -839,7 +940,11 @@ evfs_dir_list(evfs_client * client, evfs_command * command,
 		evfs_filereference* ref = NEW(evfs_filereference);
 		ref->path = malloc(strlen(host) + 1 + strlen(schar) + strlen(file->filename) + 2);
 		snprintf(ref->path, strlen(host) + 1 + strlen(schar) + strlen(file->filename) + 2, "/%s%s/%s", host, schar, file->filename);
-		ref->file_type = file->type;
+
+		if (S_ISLNK(file->properties.st_mode) || S_ISDIR(file->properties.st_mode)) 
+			ref->file_type = EVFS_FILE_DIRECTORY;
+		else 
+			ref->file_type = EVFS_FILE_NORMAL;
 		ref->plugin_uri = strdup("sftp");
 
 		ecore_list_append(*directory_list, ref);
