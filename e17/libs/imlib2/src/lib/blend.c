@@ -1772,7 +1772,9 @@ __imlib_BlendImageToImage(ImlibImage * im_src, ImlibImage * im_dst,
         int                 sx, sy, sw, sh, dx, dy, dw, dh, dxx, dyy, y2, x2;
         int                 psx, psy, psw, psh;
         int                 y, h, hh;
+#ifdef DO_MMX_ASM
         int                 do_mmx;
+#endif
 
         sx = ssx;
         sy = ssy;
