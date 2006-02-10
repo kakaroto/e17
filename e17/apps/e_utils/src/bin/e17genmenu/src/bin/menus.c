@@ -6,7 +6,7 @@
 #include "menus.h"
 #include "xmlame.h"
 
-static void _menu_make_apps(const void *data, Dumb_List *list, int element, int level);
+static int _menu_make_apps(const void *data, Dumb_List *list, int element, int level);
 static void _menu_dump_each_hash_node(void *value, void *user_data);
 
 
@@ -136,23 +136,17 @@ check_for_files(char *dir)
       free(file);
 }
 
-static void
+static int
 _menu_make_apps(const void *data, Dumb_List *list, int element, int level)
 {
    char *path;
 
    path = (char *) data;
-   if (list->elements[element].type == DUMB_LIST_ELEMENT_TYPE_STRING)
+   if (list->elements[element].type == DUMB_LIST_ELEMENT_TYPE_HASH)
       {
-         if (strcmp((char *) list->elements[element].element, "<AppDir") == 0)
-	    {
-               element++;
-               if ((list->size > element) && (list->elements[element].type == DUMB_LIST_ELEMENT_TYPE_HASH))
-	          {
-                     ecore_hash_for_each_node((Ecore_Hash *) list->elements[element].element, _menu_dump_each_hash_node, NULL);
-		  }
-	    }
+         ecore_hash_for_each_node((Ecore_Hash *) list->elements[element].element, _menu_dump_each_hash_node, NULL);
       }
+   return 0;
 }
 
 static void
@@ -163,5 +157,6 @@ _menu_dump_each_hash_node(void *value, void *user_data)
 
    node = (Ecore_Hash_Node *) value;
    file = (char *) node->value;
+   printf("CREATING %s\n", file);
    parse_desktop_file(strdup(file));
 }

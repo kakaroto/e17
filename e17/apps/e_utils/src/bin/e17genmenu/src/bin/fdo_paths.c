@@ -54,6 +54,8 @@ fdo_paths_init()
                         "applications",
                         "dist/desktop-files:dist/short-menu:gnome/apps",
                         "xdgdata-apps:apps");
+   if (!fdo_paths_kde_legacy)
+      fdo_paths_kde_legacy = _fdo_paths_get(NULL, NULL, NULL, NULL, NULL, NULL, NULL, "apps");
    if (!fdo_paths_icons)
      {
         char *gnome;

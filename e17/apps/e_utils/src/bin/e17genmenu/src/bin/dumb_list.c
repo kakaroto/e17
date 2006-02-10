@@ -117,6 +117,13 @@ dumb_list_extend(Dumb_List *list, char *element)
    return list;
 }
 
+void
+dumb_list_track(Dumb_List *list, void *element)
+{
+   list->buffers = (char **) realloc(list->buffers, (list->buffers_size + 1) * sizeof(char *));
+   list->buffers[list->buffers_size++] = element;
+}
+
 Dumb_List *
 dumb_list_add_child(Dumb_List *list, Dumb_List *element)
 {
@@ -154,18 +161,50 @@ dumb_list_exist(Dumb_List *list, char *element)
    return exist;
 }
 
-void
-dumb_list_foreach(Dumb_List *list, int level, void (*func) (const void *data, Dumb_List *list, int element, int level), const void *data)
+int
+dumb_list_foreach(Dumb_List *list, int level, int (*func) (const void *data, Dumb_List *list, int element, int level), const void *data)
 {
+   int result = 0;
    int i;
 
    for (i = 0; i < list->size; i++)
       {
          if (list->elements[i].type == DUMB_LIST_ELEMENT_TYPE_LIST)
-	    dumb_list_foreach((Dumb_List *) list->elements[i].element, level + 1, func, data);
+	    {
+	       if (dumb_list_foreach((Dumb_List *) list->elements[i].element, level + 1, func, data))
+                  result = 1;
+	    }
+	 else if (list->elements[i].type == DUMB_LIST_ELEMENT_TYPE_NULL)
+	    {
+	       int j = i;
+	       int k = i;
+	       int moved = 0;
+
+               /* Find the next non NULL element. */
+               while ((j < list->size) && (list->elements[j].type == DUMB_LIST_ELEMENT_TYPE_NULL))
+	          j++;
+	       /* Move the next batch of non NULL up. */
+               while ((j < list->size) && (list->elements[j].type != DUMB_LIST_ELEMENT_TYPE_NULL))
+	          {
+		     moved = 1;
+		     list->elements[k].type = list->elements[j].type;
+		     list->elements[k].element = list->elements[j].element;
+		     list->size--;
+	             j++;
+		     k++;
+		  }
+	       if (moved)
+		  i--;
+	       else
+	          list->size = i;
+	    }
 	 else
-	    func(data, list, i, level);
+	    {
+	       if (func(data, list, i, level))
+		  result = 1;
+	    }
       }
+   return result;
 }
 
 void
@@ -181,6 +220,12 @@ dumb_list_dump(Dumb_List *list, int level)
 	    printf(".");
          switch (list->elements[i].type)
 	    {
+	       case DUMB_LIST_ELEMENT_TYPE_NULL :
+	          {
+		     printf("NULL\n");
+		  }
+	          break;
+
 	       case DUMB_LIST_ELEMENT_TYPE_STRING :
 	          {
 		     printf("%s\n", (char *) list->elements[i].element);

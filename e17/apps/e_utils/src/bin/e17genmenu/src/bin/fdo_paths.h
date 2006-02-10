@@ -17,6 +17,7 @@ Dumb_List *fdo_paths_menus;
 Dumb_List *fdo_paths_directories;
 Dumb_List *fdo_paths_desktops;
 Dumb_List *fdo_paths_icons;
+Dumb_List *fdo_paths_kde_legacy;
 
 # ifdef __cplusplus
 extern "C"

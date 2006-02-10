@@ -46,6 +46,8 @@ _e17genmenu_test_fdo_paths()
      printf("FDO desktop path = %s\n", (char *) fdo_paths_desktops->elements[i].element);
    for (i = 0; i < fdo_paths_icons->size; i++)
      printf("FDO icon path = %s\n", (char *) fdo_paths_icons->elements[i].element);
+   for (i = 0; i < fdo_paths_kde_legacy->size; i++)
+     printf("FDO kde legacy path = %s\n", (char *) fdo_paths_kde_legacy->elements[i].element);
 
    /* First, find the main menu file. */
    path = fdo_paths_search_for_file(FDO_PATHS_TYPE_MENU, menu, 1, NULL, NULL);
@@ -235,6 +237,7 @@ main(int argc, char **argv)
 
    /* Parse Arguments */
    _e17genmenu_parseargs(argc, argv);
+//_e17genmenu_test_fdo_paths();  /* For debugging purposes, makes it easier to gdb this. */
 
    /* Set App Args */
    ecore_app_args_set(argc, (const char **)argv);
