@@ -345,6 +345,14 @@ imlib_hash_find(Imlib_Hash * hash, const char *key)
    return NULL;
 }
 
+int
+imlib_hash_size(Imlib_Hash * hash)
+{
+   if (!hash)
+      return 0;
+   return 256;
+}
+
 void
 imlib_hash_free(Imlib_Hash * hash)
 {
@@ -395,14 +403,6 @@ imlib_hash_foreach(Imlib_Hash * hash, int (*func) (Imlib_Hash * hash,
              l = next_l;
           }
      }
-}
-
-int
-imlib_hash_size(Imlib_Hash * hash)
-{
-   if (!hash)
-      return 0;
-   return 256;
 }
 
 int
