@@ -40,6 +40,7 @@ ewl_list_la_SOURCES      =        $(top_srcdir)/src/entropy_gui.c \
                                         $(top_srcdir)/src/dialogs/ewl_progress_dialog.c \
 					$(top_srcdir)/src/dialogs/ewl_rename_dialog.c \
                                         ewl_list_viewer.c $(top_srcdir)/src/dialogs/ewl_properties_dialog.c \
+					$(top_srcdir)/src/dialogs/ewl_interaction_dialog.c \
 					$(top_srcdir)/src/entropy_debug.c
 ewl_list_la_CFLAGS       = @EWL_CFLAGS@
 ewl_list_la_LDFLAGS      = -module -avoid-version
