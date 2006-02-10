@@ -80,7 +80,12 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
    menus = (Dumb_List *) unxml_data->menus;
    if (list->elements[element].type == DUMB_LIST_ELEMENT_TYPE_STRING)
       {
-         if (strcmp((char *) list->elements[element].element, "<Menu") == 0)
+         if (strncmp((char *) list->elements[element].element, "<!", 2) == 0)
+	    {
+               list->elements[element].type = DUMB_LIST_ELEMENT_TYPE_NULL;
+               list->elements[element].element = NULL;
+	    }
+         else if (strcmp((char *) list->elements[element].element, "<Menu") == 0)
 	    {
                Dumb_List *menu, *rules;
                Ecore_Hash *pool;
@@ -110,7 +115,12 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
 
                            if (list->elements[i].type == DUMB_LIST_ELEMENT_TYPE_STRING)
                               {
-                                 if (strcmp((char *) list->elements[i].element, "<Deleted/") == 0)
+                                 if (strncmp((char *) list->elements[i].element, "<!", 2) == 0)
+	                            {
+                                       list->elements[i].type = DUMB_LIST_ELEMENT_TYPE_NULL;
+                                       list->elements[i].element = NULL;
+	                            }
+                                 else if (strcmp((char *) list->elements[i].element, "<Deleted/") == 0)
 				    {
 				       flags[1] = 'D';
 				       result = 1;
