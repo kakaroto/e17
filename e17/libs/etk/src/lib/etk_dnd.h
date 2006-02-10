@@ -33,7 +33,8 @@ struct _Etk_Selection_Data_Targets
 int  etk_dnd_init();  
 int  etk_dnd_shutdown();
 void etk_selection_text_request(Etk_Widget *widget);
-
+void etk_selection_text_set(Etk_Widget *widget, char *data);
+  
 /** @} */
 
 #endif

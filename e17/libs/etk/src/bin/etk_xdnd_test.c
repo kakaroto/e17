@@ -62,6 +62,13 @@ static void _etk_test_xdnd_button_paste_cb(Etk_Object *object, void *data)
    etk_selection_text_request(ETK_WIDGET(data));
 }
 
+static void _etk_test_xdnd_button_copy_cb(Etk_Object *object, void *data)
+{
+   Etk_Label *label;
+   
+   etk_selection_text_set(ETK_WIDGET(data), etk_entry_text_get(ETK_ENTRY(data)));
+}
+
 /* Creates the window for the xdnd test */
 void etk_test_xdnd_window_create(void *data)
 {
@@ -112,15 +119,12 @@ void etk_test_xdnd_window_create(void *data)
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_xdnd_button_paste_cb), label);
    etk_box_pack_start(ETK_BOX(vbox), button, ETK_FALSE, ETK_FALSE, 0);  
    etk_box_pack_start(ETK_BOX(vbox), label, ETK_FALSE, ETK_FALSE, 0);   
-/*   
-   label = etk_label_new(_("Control+V on entry to paste"));
-   etk_box_pack_start(ETK_BOX(vbox), label, ETK_FALSE, ETK_FALSE, 0);
    
    entry = etk_entry_new();
-   etk_widget_xdnd_set(entry, ETK_TRUE);
-   etk_signal_connect("drag_drop", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_xdnd_drag_drop_cb), entry);
-   etk_box_pack_start(ETK_BOX(vbox), label, ETK_FALSE, ETK_FALSE, 0);
-*/
+   button = etk_button_new_with_label(_("Click me to copy text below"));
+   etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_xdnd_button_copy_cb), entry);
+   etk_box_pack_start(ETK_BOX(vbox), button, ETK_FALSE, ETK_FALSE, 0);   
+   etk_box_pack_start(ETK_BOX(vbox), entry, ETK_FALSE, ETK_FALSE, 0);
    
    etk_widget_show_all(win);
 }

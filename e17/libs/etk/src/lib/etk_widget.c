@@ -1456,8 +1456,6 @@ void etk_widget_selection_get(Etk_Widget *widget, Etk_Event_Selection_Get *event
 {
    if (!widget)
      return;
-
-   printf("%s <=-\n", (char*)event->data);
    
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_SELECTION_GET_SIGNAL], ETK_OBJECT(widget), NULL, event);
 }

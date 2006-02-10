@@ -101,6 +101,18 @@ void etk_selection_text_request(Etk_Widget *widget)
    ecore_x_selection_clipboard_request(win, ECORE_X_SELECTION_TARGET_UTF8_STRING);
 }
 
+void etk_selection_text_set(Etk_Widget *widget, char *data)
+{
+   Ecore_X_Window win;
+   
+   if(!ETK_IS_WINDOW(widget->toplevel_parent))
+     return;
+   
+   win = ETK_WINDOW(widget->toplevel_parent)->x_window;
+
+   ecore_x_selection_clipboard_set(win, data, strlen(data) + 1);
+}
+
 /* Search the container recursively for the widget that accepts xdnd */
 static void _etk_xdnd_container_get_widgets_at(Etk_Toplevel_Widget *top, int x, int y, int offx, int offy, Evas_List **list)
 {
@@ -129,7 +141,7 @@ static int _etk_xdnd_enter_handler(void *data, int type, void *event)
    
    ev = event;
    
-   printf("enter window!\n");
+//   printf("enter window!\n");
 //	for (i = 0; i < ev->num_types; i++)
 //	  printf("type: %s\n", ev->types[i]);   
    
@@ -213,7 +225,7 @@ static int _etk_xdnd_drop_handler(void *data, int type, void *event)
 {
    Ecore_X_Event_Xdnd_Drop *ev;
    
-   printf("drop\n");
+   //printf("drop\n");
    ev = event;
       
    ecore_x_selection_xdnd_request(ev->win, "text/uri-list");
@@ -222,7 +234,7 @@ static int _etk_xdnd_drop_handler(void *data, int type, void *event)
 
 static int _etk_xdnd_leave_handler(void *data, int type, void *event)
 {
-   printf("leave window\n");
+   //printf("leave window\n");
       
    return 1;
 }
@@ -236,7 +248,7 @@ static int _etk_xdnd_selection_handler(void *data, int type, void *event)
    Ecore_X_Selection_Data_Targets *targets;
    int i;
 
-   printf("selection\n"); 
+   //printf("selection\n"); 
    ev = event;
    switch (ev->selection) 
      {
