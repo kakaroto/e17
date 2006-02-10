@@ -195,7 +195,8 @@ typedef struct
 typedef enum {
 	STATUS_PROGRESS,
 	STATUS_FINISHED,
-	STATUS_ATTR
+	STATUS_ATTR,
+	STATUS_DATA
 } SftpReadStatus;
 
 
@@ -203,6 +204,8 @@ typedef struct
 {
 	SftpOpenHandle* open_handle;
 	Ecore_List* file_list;
+	char* data;
+	int data_size;
 	struct stat properties;
 	int status;
 } SftpGenericHandle;
@@ -218,7 +221,8 @@ typedef enum
 {
 	SFTP_INIT,
 	SFTP_CONNECTED,
-	SFTP_CLOSED
+	SFTP_CLOSED,
+	SFTP_LOCKED
 } sftp_connection_status;
 
 
@@ -414,9 +418,45 @@ sftp_file_write(SftpOpenHandle* handle, char* bytes, int size)
 	
 }
 
-SftpGenericHandle* sftp_file_read(SftpOpenHandle* handle, int size)
+SftpGenericHandle*
+sftp_file_read(SftpOpenHandle* handle, int size)
 {
+	Buffer msg;
+	long nid;
+	SftpGenericHandle* rhandle;
 
+	nid = sftp_request_id_get_next();
+
+	/*Create a handle for this op*/
+	rhandle = NEW(SftpGenericHandle);
+	rhandle->open_handle = handle;
+	rhandle->status = STATUS_PROGRESS;
+	//printf("      ** Wrote rhandle for write: %d\n", nid);
+	ecore_hash_set(handle->conn->id_open_hash, (int*)nid, rhandle);
+
+	
+	buffer_init(&msg);
+
+	/*Write type*/
+	buffer_write_char(&msg, SSH2_FXP_READ);
+
+	/*Write id*/
+	buffer_write_int(&msg, nid);
+
+	/*Write handle*/
+	buffer_write_block(&msg, handle->sftp_handle, handle->sftp_handle_len);
+
+	/*Write offset*/
+	buffer_write_long(&msg, handle->info_read_ptr);
+	handle->info_read_ptr += size; /*FIXME do we want to update it here, and assume
+					  the server has written the bytes? */
+
+	buffer_write_int(&msg, size);
+
+	buffer_send(&msg, handle->conn->ssh_conn);
+
+	return rhandle;
+	
 }
 
 SftpGenericHandle* sftp_file_stat(SftpConnection* conn, char* path)
@@ -603,6 +643,27 @@ void sftp_handle_attr(SftpConnection* conn, char** c) {
 	ecore_hash_remove(conn->id_open_hash, (int*)id);
 }
 
+void sftp_handle_data(SftpConnection* conn, char** c) {
+	int id;
+	SftpGenericHandle* rhandle;
+	
+	/*Read the identifier*/
+	id = read_int32(c);
+
+	//printf("Got a status for id %d\n", id);
+	rhandle = ecore_hash_get(conn->id_open_hash, (int*)id);
+
+	if (rhandle) {
+		/*Read the attributes...*/
+		rhandle->data = read_string(c, &rhandle->data_size);
+		
+		//printf("Rhandle is %p\n", rhandle);
+		rhandle->status = STATUS_DATA;
+	}
+
+	ecore_hash_remove(conn->id_open_hash, (int*)id);
+}
+
 
 
 static int
@@ -644,8 +705,11 @@ sftp_exe_data(void *data, int type, void *event)
    	/*printf("Incomplete packet! %d:%d\n", conn->packet_cache_size, conn->packet_length);*/
 	return;
   	
+   } else if (conn->packet_cache_size > conn->packet_length) {
+   	printf("Too much data!!!!!!!!!!!!!!!!!!!!\n");
    }
 
+   MORE_PACKETS:
    c= conn->packet_cache;
    sftp_type = read_char(&c);
 
@@ -665,18 +729,54 @@ sftp_exe_data(void *data, int type, void *event)
 	   case SSH2_FXP_VERSION:
 		   printf ("  [*] TYPE: VERSION: %d\n",sftp_type);
 		   conn->status = SFTP_CONNECTED;
+		   goto FREE; /*Ignore the reply for now - FIXME*/
 		   break;	 
 	   case SSH2_FXP_NAME:
 		   printf ("  [*] TYPE: NAME: %d\n", sftp_type);
 		   sftp_read_names(conn, &c);
 		   break;
+	   case SSH2_FXP_DATA:
+	   	   printf("   [*] TYPE: DATA\n");
+		   sftp_handle_data(conn, &c);
+		   break;
 	   default:
 		   printf ("  [*] TYPE: UNKNOWN: %d\n", sftp_type);
+		   /*Out of sync? We have to leave..*/
+		   goto FREE;
 		   break;
    }
 
+   /*Check if we have several packets here...*/
+   if (c < conn->packet_cache + conn->packet_cache_size) {
+   	int remaining = conn->packet_cache + conn->packet_cache_size - c;
+	char* old_pointer = conn->packet_cache;
+
+   	printf("%p is less than %p, more packets (%d)\n", c, conn->packet_cache + conn->packet_cache_size, (conn->packet_cache + conn->packet_cache_size) - c);
+   
+   	char *d = c;
+   
+   	length = read_int32(&d);
+	printf("We have a sub-packet - length %d - remaining %d\n", length, remaining);
+	
+	conn->packet_length = length;
+   	conn->packet_cache = malloc(remaining - sizeof(int) );
+	conn->packet_cache_size = remaining - sizeof(int) ;
+	memcpy(conn->packet_cache, d, remaining - sizeof(int) );
+
+	free(old_pointer);
+	
+	
+   	if (conn->packet_cache_size >= length)  {
+		printf("GOING TO 'more packets'\n");
+		goto MORE_PACKETS;
+	} else {
+		printf("Waiting for more data for this packet..\n");
+		return;
+	}
+   }
 
    /*printf("        ********************* Freeing last packet ***\n");*/
+   FREE:
    free(conn->packet_cache);
    conn->packet_cache = NULL;
    conn->packet_cache_size = 0;
@@ -721,8 +821,8 @@ evfs_plugin_init()
    functions->evfs_file_open = &evfs_file_open;
    functions->evfs_file_create = &evfs_file_create;
    functions->evfs_file_close = &evfs_file_close;
-   /*functions->evfs_file_seek = &evfs_file_seek;
-   functions->evfs_file_read = &evfs_file_read;*/
+   //functions->evfs_file_seek = &evfs_file_seek;
+   functions->evfs_file_read = &evfs_file_read;
    functions->evfs_file_write = &evfs_file_write;
    functions->evfs_file_stat = &evfs_file_stat;
    functions->evfs_file_lstat = &evfs_file_stat; 
@@ -813,6 +913,59 @@ evfs_file_stat(evfs_command* command, struct stat *dst_stat, int i)
 		return EVFS_ERROR;
 	}
 	
+}
+
+int evfs_file_read(evfs_client * client, evfs_filereference * file,
+                   char *bytes, long size)
+{
+	SftpConnection* conn;
+	char* host, *path;
+	int rid;
+	SftpGenericHandle* handle;
+	SftpOpenHandle* ohandle;
+
+
+	sftp_split_host_path(file->path, &host, &path);
+	
+	
+	if ( !(conn = sftp_get_connection_for_host(host))) {
+		conn = sftp_connect(host);
+	}
+
+	while (conn->status == SFTP_INIT) {
+		ecore_main_loop_iterate();
+		usleep(10);		
+	}
+
+	ohandle = ecore_hash_get(sftp_open_handles, (long*)file->fd);
+	if (ohandle) {
+
+		handle = sftp_file_read(ohandle, size);
+		while (! (handle->status == STATUS_FINISHED || handle->status == STATUS_DATA)) {
+			ecore_main_loop_iterate();
+			usleep(2);
+		}
+
+		if (handle->status == STATUS_DATA) {
+			memcpy(bytes, handle->data, handle->data_size);
+		
+			free(host);
+			free(path);
+			free(handle->data);
+			free(handle);
+
+			return handle->data_size;
+		} else {
+			free(host);
+			free(path);
+			free(handle);
+
+			return 0;
+		}
+	} else {
+		printf("Could not find open file handle\n");
+	}
+
 }
 
 int
