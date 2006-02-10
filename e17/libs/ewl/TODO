@@ -1,6 +1,9 @@
 EWL BUGS
 ========
 
+- Evas smart object layering has changed, so using EWL in an embed does not
+  work correctly since we don't get a layer set callback.
+
 - Scrollbar jumps when trying to drag the button from its lower part
 
 - The ewl_test seems to get a small gap between the right edje of the
@@ -26,8 +29,6 @@ EWL BUGS
 - The ewl_password entry needs to correctly deal with selections and
   mouse clicks.
 
-- Widgets need a focused state in the edje so we can know where the focus is
-
 - How to deal with the scrollpane with the focus? Currently widgets
   marked INTERNAL are ignored on the inital add. Should the scrollpane 
   find itself in the tab list on SHOW and substitue the seekers instead?
@@ -37,7 +38,8 @@ EWL BUGS
 
 - If you run ewl_test and select a test the main window will have the
   tests code filled in. The scrollpane ends up being twice as big as
-  it should be.
+  it should be. This appears to be from the size reported by the textblock
+  following the clear and rebuild of the text.
 
 - The text widget dosen't handle the wrap flag correctly.
 
@@ -66,8 +68,8 @@ EWL BUGS
   moving the mouse. The display of the dropdown seems to become corrupted
   when the menu is displayed again.
 
-- The menubar theme dosen't quite extend all the way to the right or bottom
-  of the screen.
+- Resize the table multiple times vertically and the items are not placed in
+  the same place as original.
 
 - The menu theme dosen't seem to get all of the mouse,out's that it should.
   Sometimes the menu_items stay in a selected mode.
