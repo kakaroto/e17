@@ -4,6 +4,10 @@ EWL BUGS
 - Evas smart object layering has changed, so using EWL in an embed does not
   work correctly since we don't get a layer set callback.
 
+- Combo currently broken. Should be reworked to have a generic combo
+  container with an inheriting text combo class that provides the editable
+  feature.
+
 - Scrollbar jumps when trying to drag the button from its lower part
 
 - The ewl_test seems to get a small gap between the right edje of the
