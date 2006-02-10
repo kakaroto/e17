@@ -91,19 +91,19 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
                if ((menu) && (rules) && (pool))
                   {
 		     int i;
-		     char *flags;
+		     char *flags = "   ", *name = "", *directory = "";
+		     char temp[MAX_PATH];
 
                      ecore_hash_set_free_key(pool, free);
                      ecore_hash_set_free_value(pool, free);
-	             dumb_list_add(menu, "<MENU");
-	             dumb_list_add(menu, "");         /* Name */
-	             dumb_list_extend(menu, "   ");   /* Flags */
-	             dumb_list_add(menu, "");         /* Directory */
+		     sprintf(temp, "<MENU <%.3s> <%s> <%s>", flags, name, directory);
+	             dumb_list_extend(menu, temp);
+		     flags = (char *) menu->elements[0].element;
+		     flags += 7;
 	             dumb_list_add_hash(menu, pool);
 	             dumb_list_add_child(menu, rules);
                      list->elements[element].element = menu;
                      list->elements[element].type = DUMB_LIST_ELEMENT_TYPE_LIST;
-		     flags = (char *) menu->elements[2].element;
 		     for (i = element + 1; i < list->size; i++)
 		        {
                            int result = 0;
@@ -169,14 +169,24 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
                                           {
                                              if (strcmp((char *) sub->elements[0].element, "<Name") == 0)
 	                                        {
-	                                           menu->elements[1].element = strdup(sub->elements[1].element);
-                                                   dumb_list_track(menu, menu->elements[1].element);
+						   name = strdup((char *) sub->elements[1].element);
+		                                   sprintf(temp, "<MENU <%.3s> <%s> <%s>", flags, name, directory);
+	                                           menu->elements[0].element = strdup(temp);
+                                                   dumb_list_track(menu, name);
+                                                   dumb_list_track(menu, menu->elements[0].element);
+						   flags = (char *) menu->elements[0].element;
+						   flags += 7;
 	                                           result = 1;
 	                                        }
                                              else if (strcmp((char *) sub->elements[0].element, "<Directory") == 0)
 	                                        {
-	                                           menu->elements[3].element = strdup(sub->elements[1].element);
-                                                   dumb_list_track(menu, menu->elements[3].element);
+						   directory = strdup((char *) sub->elements[1].element);
+		                                   sprintf(temp, "<MENU <%.3s> <%s> <%s>", flags, name, directory);
+	                                           menu->elements[0].element = strdup(temp);
+                                                   dumb_list_track(menu, directory);
+                                                   dumb_list_track(menu, menu->elements[0].element);
+						   flags = (char *) menu->elements[0].element;
+						   flags += 7;
 	                                           result = 1;
 	                                        }
                                              else if ((strcmp((char *) sub->elements[0].element, "<Include") == 0) || 
