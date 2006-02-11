@@ -195,8 +195,8 @@ ICCCM_SizeMatch(const EWin * ewin, int wi, int hi, int *pwo, int *pho)
 		  if (aspect > ewin->icccm.aspect_max)
 		     h = (int)((double)w / ewin->icccm.aspect_max);
 	       }
-	     i = w / ewin->icccm.w_inc;
-	     j = h / ewin->icccm.h_inc;
+	     i = (w + ewin->icccm.w_inc / 2) / ewin->icccm.w_inc;
+	     j = (h + ewin->icccm.h_inc / 2) / ewin->icccm.h_inc;
 	     w = i * ewin->icccm.w_inc;
 	     h = j * ewin->icccm.h_inc;
 	  }

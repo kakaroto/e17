@@ -1941,6 +1941,8 @@ DeskEventButtonRelease(Desk * dsk, XEvent * ev)
 static void
 DeskRootResize(int root, int w, int h)
 {
+   int                 ww, hh;
+
    if (EventDebug(EDBUG_TYPE_DESKS))
       Eprintf("DeskRootResize %d %dx%d\n", root, w, h);
 
@@ -1963,6 +1965,12 @@ DeskRootResize(int root, int w, int h)
       return;
 
    EWindowSync(VRoot.win);
+
+   /* Quit if size is not final */
+   EGetGeometry(VRoot.win, NULL, NULL, NULL, &ww, &hh, NULL, NULL);
+   if (w != ww || h != hh)
+      return;
+
    VRoot.w = w;
    VRoot.h = h;
 

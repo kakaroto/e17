@@ -69,6 +69,7 @@ typedef struct
    Desk               *dsk;
    int                 w, h;
    int                 dw, dh;
+   int                 screen_w, screen_h;
    int                 update_phase;
    EWin               *ewin;
    Window              sel_win;
@@ -465,21 +466,28 @@ PagerUpdate(Pager * p, int x1, int y1, int x2, int y2)
 }
 
 static void
-PagerReconfigure(Pager * p)
+PagerReconfigure(Pager * p, int apply)
 {
-   EWin               *ewin;
-   int                 ax, ay;
+   int                 ax, ay, w, h;
    double              aspect;
-
-   ewin = p->ewin;
 
    DesksGetAreaSize(&ax, &ay);
 
+   w = (int)(p->w * (double)VRoot.w / p->screen_w);
+   h = (int)(p->h * (double)VRoot.h / p->screen_h);
+   p->screen_w = VRoot.w;
+   p->screen_h = VRoot.h;
+
    aspect = ((double)VRoot.w) / ((double)VRoot.h);
-   ICCCM_SetSizeConstraints(ewin, 10 * ax, 8 * ay, 320 * ax, 240 * ay,
-			    0, 0, 4 * ax, 8 * ay,
-			    aspect * ((double)ax / (double)ay),
-			    aspect * ((double)ax / (double)ay));
+   ICCCM_SetSizeConstraints(p->ewin,
+			    VRoot.w / 64 * ax, VRoot.h / 64 * ay,
+			    VRoot.w / 4 * ax, VRoot.h / 4 * ay,
+			    0, 0, 8 * ax, (int)(8 / aspect * ay),
+			    aspect * ((double)ax / (double)ay) - .1,
+			    aspect * ((double)ax / (double)ay) + .1);
+
+   if (apply)
+      EwinResize(p->ewin, w, h);
 }
 
 static void
@@ -642,8 +650,10 @@ PagerShow(Pager * p)
       return;
 
    p->ewin = ewin;
+   p->screen_w = VRoot.w;
+   p->screen_h = VRoot.h;
 
-   PagerReconfigure(p);
+   PagerReconfigure(p, 0);
 
    ewin->client.event_mask |=
       ButtonPressMask | ButtonReleaseMask | PointerMotionMask;
@@ -1642,7 +1652,7 @@ PagersShow(int enable)
 static void
 PagersReconfigure(void)
 {
-   Pager             **pl, *p;
+   Pager             **pl;
    int                 i, num;
 
    if (!Conf_pagers.enable)
@@ -1653,11 +1663,8 @@ PagersReconfigure(void)
       return;
 
    for (i = 0; i < num; i++)
-     {
-	p = pl[i];
-	PagerReconfigure(p);
-	EwinResize(p->ewin, p->ewin->client.w, p->ewin->client.h);
-     }
+      PagerReconfigure(pl[i], 1);
+
    Efree(pl);
 }
 
