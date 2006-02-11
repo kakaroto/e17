@@ -1481,8 +1481,11 @@ BackgroundsAccounting(void)
 static void
 BackgroundsTimeout(int val __UNUSED__, void *data __UNUSED__)
 {
+   if (Conf.backgrounds.timeout <= 0)
+      Conf.backgrounds.timeout = 1;
+
    BackgroundsAccounting();
-/* RemoveTimerEvent("BACKGROUND_ACCOUNTING_TIMEOUT"); */
+
    DoIn("BACKGROUND_ACCOUNTING_TIMEOUT", 1.0 * Conf.backgrounds.timeout,
 	BackgroundsTimeout, 0, NULL);
 }
