@@ -576,7 +576,8 @@ _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data)
    
    e = data;
    ev = event;
-   evas = ecore_evas_get(ETK_WINDOW(e->win)->ecore_evas);
+
+   evas = ecore_evas_get((ETK_WINDOW(e->win))->ecore_evas);
    
    if(evas_key_modifier_is_set(evas_key_modifier_get(evas), "Control"))
      {
