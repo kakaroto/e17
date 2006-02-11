@@ -4,8 +4,6 @@
 * Segvs when you call etk_object_properties_set with a property name that doesn't exist
 * Fix a bug in etk_tree: when you've scrolled to the end of the left tree in etk_test, and if you
 maximized the window, the tree is not correctly updated (maybe a bug in etk_scrolled_view)
-* The tabs of the notebook doesn't have always a correct width (happens if you embed a notebook in
-another notebook)
 * Fix potential segvs with Amd64 and va_list
 * Check if all the widgets can be reparented on a different window (i.e. unrealized then re-realized)
 without causing any problem
@@ -33,7 +31,7 @@ clicked, double-clicked...)
 * More API work for the colorpicker. We need to be able to know the current color, and to know
 when a color is changed
 * The progress bar shouldn't inherit from etk_bin. And we shoudl maybe separate the "pulsing"
-and the "normal" progress bars. Also separate the horizontal and the vertical progress bars.
+and the "normal" progress bars. Also separate the horizontal and the vertical progress bars. [In progress: MoOm]
 * Add better mouse control for the scrollbar: wheel and click on the trough
 
 --------------------
@@ -45,5 +43,5 @@ and the "normal" progress bars. Also separate the horizontal and the vertical pr
 * checkbox/radiobox menu items [In progress: eZeK]
 * iconbox
 * toolbar
-* drag and drop
-* copy and paste
+* drag and drop [In progress: CodeWarrior]
+* copy and paste [In progress: CodeWarrior]
