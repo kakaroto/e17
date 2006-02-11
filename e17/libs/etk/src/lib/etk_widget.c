@@ -412,6 +412,7 @@ void etk_widget_realize(Etk_Widget *widget)
       evas_object_clip_set(widget->event_object, widget->clip);
    }
 
+   evas_object_propagate_events_set(widget->event_object, 0);
    evas_object_repeat_events_set(widget->event_object, widget->repeat_events);
    evas_object_pass_events_set(widget->event_object, widget->pass_events);
    
@@ -2213,7 +2214,11 @@ static void _etk_widget_object_add_to_smart(Etk_Widget *widget, Evas_Object *obj
       return;
    
    if (!evas_object_visible_get(widget->event_object))
+   {
+      _etk_widget_intercept_show_hide = ETK_FALSE;
       evas_object_hide(object);
+      _etk_widget_intercept_show_hide = ETK_TRUE;
+   }
    if (widget->clip)
       evas_object_clip_set(object, widget->clip);
    evas_object_smart_member_add(object, widget->event_object);
