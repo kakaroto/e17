@@ -193,7 +193,6 @@ static void _etk_box_constructor(Etk_Box *box)
 /* Destroys the box */
 static void _etk_box_destructor(Etk_Box *box)
 {
-   Evas_List *l;
    Etk_Widget *child;
 
    if (!box)

@@ -15,7 +15,8 @@ images {
    image: "glint2.png" COMP;
    image: "glint3.png" COMP;
    image: "entry.png" COMP;
-   image: "entry_focus.png" COMP;
+   image: "text_view_bg.png" COMP;
+   image: "text_view_over.png" COMP;
    image: "dialog_logo.png" COMP;
    image: "hhandle.png" COMP;
    image: "hhandle_down.png" COMP;
