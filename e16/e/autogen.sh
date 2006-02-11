@@ -4,8 +4,8 @@
 srcdir=`dirname $0`
 
 (test -d src && test -d dox) || {
-        echo "You must run this script in the top-level directory"
-        exit 1
+    echo "You must run this script in the top-level directory"
+    exit 1
 }
 
 echo "Generating configuration files, please wait...."
@@ -24,18 +24,18 @@ autoheader || exit 1
 echo "Running automake --add-missing"
 automake --add-missing || exit 1
 
+if test x$NOCONFIGURE != x; then
+    echo "Skipping configure process."
+    exit
+fi
 
 #conf_flags="--enable-maintainer-mode --enable-compile-warnings"
 
 if test -z "$*"; then
-        echo "I am going to run ./configure with no arguments - if you wish "
-        echo "to pass any to it, please specify them on the $0 command line."
+    echo "I am going to run ./configure with no arguments - if you wish "
+    echo "to pass any to it, please specify them on the $0 command line."
 fi
 
-if test x$NOCONFIGURE = x; then
-  echo "Running $srcdir/configure $conf_flags $@ ..."
-  $srcdir/configure $conf_flags "$@" \
-  && echo "Now type 'make' to compile."
-else
-  echo "Skipping configure process."
-fi
+echo "Running $srcdir/configure $conf_flags $@ ..."
+$srcdir/configure $conf_flags "$@"
+echo "Now type 'make' to compile."
