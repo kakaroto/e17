@@ -63,6 +63,8 @@ Etk_Bool etk_window_skip_taskbar_hint_get(Etk_Window *window);
 void etk_window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_hint);
 Etk_Bool etk_window_skip_pager_hint_get(Etk_Window *window);
 
+void etk_window_dnd_aware_set(Etk_Window *window, Etk_Bool on);
+
 Etk_Bool etk_window_hide_on_delete(Etk_Object *window, void *data);
 
 /** @} */

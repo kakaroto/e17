@@ -1,24 +1,13 @@
 /** @file etk_dnd.c */
 #include "etk_dnd.h"
-#include <locale.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 #include <Ecore.h>
 #include <Ecore_X.h>
-#include <Ecore_Job.h>
-#include <Ecore_Evas.h>
-#include <Evas.h>
-#include <Edje.h>
-#include "etk_type.h"
-#include "etk_signal.h"
-#include "etk_object.h"
-#include "etk_toplevel_widget.h"
-#include "etk_utils.h"
-#include "etk_theme.h"
+#include "etk_main.h"
+#include "etk_widget.h"
 #include "etk_window.h"
 #include "config.h"
-
-#if HAVE_ECORE_X
 
 /* Some notes for when we're developing this:
  * Signals:
@@ -33,107 +22,119 @@
  * 
  */
 
-extern Evas_List *_etk_main_toplevel_widgets;
+#define ETK_DND_INSIDE(x, y, xx, yy, ww, hh) (((x) < ((xx) + (ww))) && ((y) < ((yy) + (hh))) && ((x) >= (xx)) && ((y) >= (yy)))
 
 static Etk_Widget *_etk_dnd_widget = NULL;
 static Etk_Widget *_etk_selection_widget = NULL;
-Evas_List  *_etk_dnd_widgets = NULL;
-Evas_List  *_etk_dnd_handlers = NULL;
+static Evas_List  *_etk_dnd_handlers = NULL;
 
-#define E_INSIDE(x, y, xx, yy, ww, hh) (((x) < ((xx) + (ww))) && ((y) < ((yy) + (hh))) && ((x) >= (xx)) && ((y) >= (yy)))
-
+#if HAVE_ECORE_X
 static void _etk_xdnd_container_get_widgets_at(Etk_Toplevel_Widget *top, int x, int y, int offx, int offy, Evas_List **list);
-static int  _etk_xdnd_enter_handler(void *data, int type, void *event);
-static int  _etk_xdnd_position_handler(void *data, int type, void *event);
-static int  _etk_xdnd_drop_handler(void *data, int type, void *event);
-static int  _etk_xdnd_leave_handler(void *data, int type, void *event);
-static int  _etk_xdnd_selection_handler(void *data, int type, void *event);
-	    
-int etk_dnd_init()
+static int _etk_xdnd_enter_handler(void *data, int type, void *event);
+static int _etk_xdnd_position_handler(void *data, int type, void *event);
+static int _etk_xdnd_drop_handler(void *data, int type, void *event);
+static int _etk_xdnd_leave_handler(void *data, int type, void *event);
+static int _etk_xdnd_selection_handler(void *data, int type, void *event);
+#endif
+
+/**************************
+ *
+ * Implementation
+ *
+ **************************/
+ 
+/**
+ * @brief Inits the drag and drop system
+ * @return Returns ETK_TRUE on success, ETK_FALSE on failure
+ */
+Etk_Bool etk_dnd_init()
 {
-   if(!ecore_x_init(NULL))
-     return 0;
+   if (_etk_dnd_handlers)
+      return ETK_TRUE;
    
-   _etk_dnd_handlers = evas_list_append(_etk_dnd_handlers,
-    ecore_event_handler_add(ECORE_X_EVENT_XDND_ENTER, 
-			    _etk_xdnd_enter_handler, NULL));
-					
-   _etk_dnd_handlers = evas_list_append(_etk_dnd_handlers,
-    ecore_event_handler_add(ECORE_X_EVENT_XDND_POSITION, 
-			    _etk_xdnd_position_handler, NULL));
-   
-   _etk_dnd_handlers = evas_list_append(_etk_dnd_handlers,
-    ecore_event_handler_add(ECORE_X_EVENT_XDND_DROP, 
-			    _etk_xdnd_drop_handler, NULL));
-   
-   _etk_dnd_handlers = evas_list_append(_etk_dnd_handlers,
-    ecore_event_handler_add(ECORE_X_EVENT_XDND_LEAVE, 
-			    _etk_xdnd_leave_handler, NULL));
-   
-   _etk_dnd_handlers = evas_list_append(_etk_dnd_handlers,
-    ecore_event_handler_add(ECORE_X_EVENT_SELECTION_NOTIFY, 
-			    _etk_xdnd_selection_handler, NULL));
+#if HAVE_ECORE_X
+   _etk_dnd_handlers = evas_list_append(_etk_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_XDND_ENTER, _etk_xdnd_enter_handler, NULL));
+   _etk_dnd_handlers = evas_list_append(_etk_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_XDND_POSITION, _etk_xdnd_position_handler, NULL));
+   _etk_dnd_handlers = evas_list_append(_etk_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_XDND_DROP, _etk_xdnd_drop_handler, NULL));
+   _etk_dnd_handlers = evas_list_append(_etk_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_XDND_LEAVE, _etk_xdnd_leave_handler, NULL));
+   _etk_dnd_handlers = evas_list_append(_etk_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_SELECTION_NOTIFY, _etk_xdnd_selection_handler, NULL));
+#endif
    
    return 1;
 }
 
-int etk_dnd_shutdown()
+/**
+ * @brief Shutdowns the drag and drop system
+ */
+void etk_dnd_shutdown()
 {
-   while(_etk_dnd_handlers)
-     {
-	ecore_event_handler_del(_etk_dnd_handlers->data);
-	_etk_dnd_handlers = evas_list_remove(_etk_dnd_handlers, 
-					     _etk_dnd_handlers->data);
-     }
-   
-   return ecore_x_shutdown();
+#if HAVE_ECORE_X
+   while (_etk_dnd_handlers)
+   {
+      ecore_event_handler_del(_etk_dnd_handlers->data);
+      _etk_dnd_handlers = evas_list_remove(_etk_dnd_handlers, _etk_dnd_handlers->data);
+   }
 }
 
+/* TODO: doc */
 void etk_selection_text_request(Etk_Widget *widget)
 {
+#if HAVE_ECORE_X
    Ecore_X_Window win;
    
-   if(!ETK_IS_WINDOW(widget->toplevel_parent))
+   if (!widget || !ETK_IS_WINDOW(widget->toplevel_parent))
      return;
    
    win = ETK_WINDOW(widget->toplevel_parent)->x_window;
    _etk_selection_widget = widget;
    ecore_x_selection_clipboard_request(win, ECORE_X_SELECTION_TARGET_UTF8_STRING);
+#endif
 }
 
-void etk_selection_text_set(Etk_Widget *widget, char *data)
+/* TODO: doc */
+void etk_selection_text_set(Etk_Widget *widget, const char *data)
 {
+#if HAVE_ECORE_X
    Ecore_X_Window win;
    
-   if(!ETK_IS_WINDOW(widget->toplevel_parent))
-     return;
+   if (!widget || !ETK_IS_WINDOW(widget->toplevel_parent) || !data)
+      return;
    
    win = ETK_WINDOW(widget->toplevel_parent)->x_window;
-
-   ecore_x_selection_clipboard_set(win, data, strlen(data) + 1);
+   ecore_x_selection_clipboard_set(win, (char *)data, strlen(data) + 1);
+#endif
 }
 
+/**************************
+ *
+ * Private functions
+ *
+ **************************/
+
+#if HAVE_ECORE_X
 /* Search the container recursively for the widget that accepts xdnd */
 static void _etk_xdnd_container_get_widgets_at(Etk_Toplevel_Widget *top, int x, int y, int offx, int offy, Evas_List **list)
 {
    Evas_List *l;
-     
-   for(l = _etk_dnd_widgets; l; l = l->next)
-     {
-	Etk_Widget *widget;
-	
-	if(!(widget = ETK_WIDGET(l->data)))
-	  continue;
-	
-	if(E_INSIDE(x, y, 
-		    widget->inner_geometry.x + offx,
-		    widget->inner_geometry.y + offy,
-		    widget->inner_geometry.w, 
-		    widget->inner_geometry.h))	  
-	  *list = evas_list_append(*list, widget);	  
-     }   
+   int wx, wy, ww, wh;
+   
+   if (!top || !list)
+      return;
+   
+   for (l = etk_widget_dnd_aware_widgets_get(); l; l = l->next)
+   {
+      Etk_Widget *widget;
+      
+      if (!(widget = ETK_WIDGET(l->data)) || etk_widget_toplevel_parent_get(widget) != top)
+         continue;
+      
+      etk_widget_geometry_get(widget, &wx, &wy, &ww, &wh);
+      if (ETK_DND_INSIDE(x, y, wx + offx, wy + offy, ww, wh))
+	 *list = evas_list_append(*list, widget);
+   }
 }
 
+/* TODO: doc */
 static int _etk_xdnd_enter_handler(void *data, int type, void *event)
 {
    Ecore_X_Event_Xdnd_Enter *ev;
@@ -142,12 +143,13 @@ static int _etk_xdnd_enter_handler(void *data, int type, void *event)
    ev = event;
    
 //   printf("enter window!\n");
-//	for (i = 0; i < ev->num_types; i++)
-//	  printf("type: %s\n", ev->types[i]);   
+//   for (i = 0; i < ev->num_types; i++)
+//      printf("type: %s\n", ev->types[i]);
    
    return 1;
 }
 
+/* TODO: doc */
 static int _etk_xdnd_position_handler(void *data, int type, void *event)
 {
    Ecore_X_Event_Xdnd_Position *ev;
@@ -156,82 +158,86 @@ static int _etk_xdnd_position_handler(void *data, int type, void *event)
    Evas_List *children = NULL;
    Etk_Widget *widget;
    int x = 0, y = 0;
+   int wx, wy, ww, wh;
    
    ev = event;
 
    //printf("position!\n");
    
    /* loop top level widgets (windows) */
-   for(l = _etk_main_toplevel_widgets; l; l = l->next)
-     {	  
-	if (!(window = ETK_WINDOW(l->data)))
-	  continue;
+   for (l = etk_main_toplevel_widgets_get(); l; l = l->next)
+   {
+      if (!ETK_IS_WINDOW(l->data))
+         continue;
+      window = ETK_WINDOW(l->data);
 	
-	/* if this isnt the active window, dont waste time */
-	if(ev->win != window->x_window)
-	  continue;	  
+      /* if this isnt the active window, dont waste time */
+      if (ev->win != window->x_window)
+         continue;	  
 	
-	ecore_evas_geometry_get(window->ecore_evas, &x, &y, NULL, NULL);
+      ecore_evas_geometry_get(window->ecore_evas, &x, &y, NULL, NULL);
 
-	/* find the widget we want to drop on */
-	_etk_xdnd_container_get_widgets_at(ETK_TOPLEVEL_WIDGET(window), ev->position.x, ev->position.y, x, y, &children);
-	
-	/* check if we're leaving a widget */
-	if(_etk_dnd_widget)
-	  {
-	     if(!E_INSIDE(ev->position.x, ev->position.y, 
-			  _etk_dnd_widget->geometry.x + x, _etk_dnd_widget->geometry.y + y,
-			  _etk_dnd_widget->geometry.w, _etk_dnd_widget->geometry.h))
-	       {
-		  etk_widget_drag_leave(_etk_dnd_widget);
-		  _etk_dnd_widget = NULL;
-	       }
-	  }	
-	
-	break;
-     }   
+      /* find the widget we want to drop on */
+      _etk_xdnd_container_get_widgets_at(ETK_TOPLEVEL_WIDGET(window), ev->position.x, ev->position.y, x, y, &children);
+      
+      /* check if we're leaving a widget */
+      if (_etk_dnd_widget)
+      {
+         etk_widget_geometry_get(_etk_dnd_widget, &wx, &wy, &ww, &wh);
+         if (!ETK_DND_INSIDE(ev->position.x, ev->position.y, wx + x, wy + y, ww, wh))
+         {
+            etk_widget_drag_leave(_etk_dnd_widget);
+            _etk_dnd_widget = NULL;
+         }
+      }
+      
+      break;
+   }
    
    /* if we found a widget, emit signals */
-   if(children != NULL)
-     {	
-	Ecore_X_Rectangle rect;
-	
-	widget = (evas_list_last(children))->data;
-	_etk_dnd_widget = widget;
-	/* TODO: filter types according to what widget wants */
-	rect.x = widget->inner_geometry.x;
-	rect.y = widget->inner_geometry.y;
-	rect.width = widget->inner_geometry.w;
-	rect.height = widget->inner_geometry.h;	
-	ecore_x_dnd_send_status(1, 1, rect, ECORE_X_DND_ACTION_PRIVATE);
-	
-	etk_widget_drag_motion(widget);
-     }
+   if (children != NULL)
+   {	
+      Ecore_X_Rectangle rect;
+      
+      widget = (evas_list_last(children))->data;
+      etk_widget_geometry_get(widget, &wx, &wy, &ww, &wh);
+      _etk_dnd_widget = widget;
+      /* TODO: filter types according to what widget wants */
+      rect.x = wx;
+      rect.y = wy;
+      rect.width = ww;
+      rect.height = wh;	
+      ecore_x_dnd_send_status(1, 1, rect, ECORE_X_DND_ACTION_PRIVATE);
+      
+      etk_widget_drag_motion(widget);
+   }
    else
-     {
-	/* tell the source we wont accept it here */
-	Ecore_X_Rectangle rect;
-	
-	rect.x = 0;
-	rect.y = 0;
-	rect.width = 0;
-	rect.height = 0;
-	ecore_x_dnd_send_status(0, 1, rect, ECORE_X_DND_ACTION_PRIVATE);
-     }
+   {
+      /* tell the source we wont accept it here */
+      Ecore_X_Rectangle rect;
+      
+      rect.x = 0;
+      rect.y = 0;
+      rect.width = 0;
+      rect.height = 0;
+      ecore_x_dnd_send_status(0, 1, rect, ECORE_X_DND_ACTION_PRIVATE);
+   }
    return 1;
 }
 
+/* TODO: doc */
 static int _etk_xdnd_drop_handler(void *data, int type, void *event)
 {
    Ecore_X_Event_Xdnd_Drop *ev;
    
    //printf("drop\n");
    ev = event;
-      
+   
    ecore_x_selection_xdnd_request(ev->win, "text/uri-list");
    return 1;
 }
 
+/* TODO: doc */
 static int _etk_xdnd_leave_handler(void *data, int type, void *event)
 {
    //printf("leave window\n");
@@ -239,6 +245,7 @@ static int _etk_xdnd_leave_handler(void *data, int type, void *event)
    return 1;
 }
 
+/* TODO: doc */
 static int _etk_xdnd_selection_handler(void *data, int type, void *event)
 {
    Ecore_X_Event_Selection_Notify *ev;
@@ -251,97 +258,96 @@ static int _etk_xdnd_selection_handler(void *data, int type, void *event)
    //printf("selection\n"); 
    ev = event;
    switch (ev->selection) 
-     {
+   {
       case ECORE_X_SELECTION_PRIMARY:
-	if (!strcmp(ev->target, ECORE_X_SELECTION_TARGET_TARGETS)) 
-	  {
-	     /* printf("primary: %s\n", ev->target); */
-	     targets = ev->data;
-	     /* 
-	     for (i = 0; i < targets->num_targets; i++)
+         if (!strcmp(ev->target, ECORE_X_SELECTION_TARGET_TARGETS)) 
+	 {
+	    /* printf("primary: %s\n", ev->target); */
+	    targets = ev->data;
+	    /* 
+	    for (i = 0; i < targets->num_targets; i++)
 	       printf("target: %s\n", targets->targets[i]);
-	     */
-	  } 
-	else 
-	  {
-	     text = ev->data;
-	     /* printf("primary: %s %s\n", ev->target, text->text); */
-	  }
-	break;
-	
+	    */
+         } 
+	 else 
+	 {
+	    text = ev->data;
+	    /* printf("primary: %s %s\n", ev->target, text->text); */
+	 }
+	 break;
+      
       case ECORE_X_SELECTION_SECONDARY:
-	sel = ev->data;
+         sel = ev->data;
 	 /* printf("secondary: %s %s\n", ev->target, sel->data); */
-	break;
-	
+         break;
+      
       case ECORE_X_SELECTION_XDND:
 	 /* printf("xdnd: %s\n", ev->target); */
 
-	files = ev->data;
+	 files = ev->data;
 	
-	if(!_etk_dnd_widget || files->num_files < 1)
-	  break;	
+	 if (!_etk_dnd_widget || files->num_files < 1)
+            break;	
 	
-	/* free old data, should this be done here? */
-	for (i = 0; i < _etk_dnd_widget->xdnd_files_num; i++)
-	  {
-	     if(_etk_dnd_widget->xdnd_files[i])
-	       free(_etk_dnd_widget->xdnd_files[i]);	     
-	  }
+	 /* free old data, should this be done here? */
+	 for (i = 0; i < _etk_dnd_widget->dnd_files_num; i++)
+            free(_etk_dnd_widget->dnd_files[i]);
+         free(_etk_dnd_widget->dnd_files);	    
 	
-	if(_etk_dnd_widget->xdnd_files)
-	  free(_etk_dnd_widget->xdnd_files);	    
+         _etk_dnd_widget->dnd_files = calloc(files->num_files, sizeof(char*));
+         
+         /* printf("num_files: %d\n", files->num_files); */
 	
-	_etk_dnd_widget->xdnd_files = calloc(files->num_files, sizeof(char*));
-		
-	/* printf("num_files: %d\n", files->num_files); */
+         /* Fill in the drop data into the widget */
+         _etk_dnd_widget->dnd_files_num = files->num_files;
+         for (i = 0; i < files->num_files; i++)
+	 {
+	    /* printf("file: %s\n", files->files[i]); */
+	    _etk_dnd_widget->dnd_files[i] = strdup(files->files[i]);
+	 }
 	
-	/* Fill in the drop data into the widget */
-	_etk_dnd_widget->xdnd_files_num = files->num_files;
-	for (i = 0; i < files->num_files; i++)
-	  {
-	     /* printf("file: %s\n", files->files[i]); */
-	     _etk_dnd_widget->xdnd_files[i] = strdup(files->files[i]);
-	  }
+         /* emit the drop signal so the widget can react */
+         etk_widget_drag_drop(_etk_dnd_widget);
+         _etk_dnd_widget = NULL;
 	
-	/* emit the drop signal so the widget can react */
-	etk_widget_drag_drop(_etk_dnd_widget);
-	_etk_dnd_widget = NULL;
-	
-	ecore_x_dnd_send_finished();
-	break;
+         ecore_x_dnd_send_finished();
+         break;
 	
       case ECORE_X_SELECTION_CLIPBOARD:
-	if (!strcmp(ev->target, ECORE_X_SELECTION_TARGET_TARGETS)) 
-	  {
-	     Etk_Event_Selection_Get event;
-	     Etk_Selection_Data_Targets _targets;
-	     
-	     event.content = ETK_SELECTION_CONTENT_TARGETS;
+         if (!strcmp(ev->target, ECORE_X_SELECTION_TARGET_TARGETS)) 
+	 {
+	    Etk_Event_Selection_Get event;
+	    Etk_Selection_Data_Targets _targets;
+	    
+	    event.content = ETK_SELECTION_CONTENT_TARGETS;
 
-	     targets = ev->data;
-	     
-	     _targets.num_targets = targets->num_targets;
-	     _targets.targets = targets->targets;
-	     
-	     //printf("clipboard: %s\n", ev->target);
-	     //for (i = 0; i < targets->num_targets; i++)
-	     //  printf("target: %s\n", targets->targets[i]);
-	  } 
-	else 
-	  {
-	     Etk_Event_Selection_Get event;
-	     
-	     text = ev->data;
-	     //printf("clipboard: %s %s\n", ev->target, text->text);
-	     event.data = text->text;
-	     event.content = ETK_SELECTION_CONTENT_TEXT;
-	     etk_widget_selection_get(_etk_selection_widget, &event);
-	  }
-	break;
-     }
+	    targets = ev->data;
+	    
+            _targets.num_targets = targets->num_targets;
+	    _targets.targets = targets->targets;
+	    
+	    //printf("clipboard: %s\n", ev->target);
+	    //for (i = 0; i < targets->num_targets; i++)
+	    //  printf("target: %s\n", targets->targets[i]);
+         } 
+         else 
+	 {
+	    Etk_Event_Selection_Get event;
+	    
+	    text = ev->data;
+	    //printf("clipboard: %s %s\n", ev->target, text->text);
+	    event.data = text->text;
+	    event.content = ETK_SELECTION_CONTENT_TEXT;
+	    etk_widget_selection_get(_etk_selection_widget, &event);
+	 }
+	 break;
+         
+      default:
+         break;
+   }
    
    return 1;
 }
+#endif
 
 #endif

@@ -2,7 +2,7 @@
 #ifndef _ETK_DND_H_
 #define _ETK_DND_H_
 
-#include "etk_widget.h"
+#include "etk_types.h"
 
 #define ETK_SELECTION_TARGET_TARGETS "TARGETS"
 #define ETK_SELECTION_TARGET_TEXT "TEXT"
@@ -14,8 +14,8 @@
 struct _Etk_Event_Selection_Get
 {   
    void *data;
-   
-   enum {
+   enum
+   {
       ETK_SELECTION_CONTENT_NONE,
       ETK_SELECTION_CONTENT_TEXT,
       ETK_SELECTION_CONTENT_FILES,
@@ -26,14 +26,15 @@ struct _Etk_Event_Selection_Get
 
 struct _Etk_Selection_Data_Targets
 {
-   char     **targets;
-   int        num_targets;
+   char **targets;
+   int num_targets;
 };
 
-int  etk_dnd_init();  
-int  etk_dnd_shutdown();
+Etk_Bool etk_dnd_init();  
+void etk_dnd_shutdown();
+
 void etk_selection_text_request(Etk_Widget *widget);
-void etk_selection_text_set(Etk_Widget *widget, char *data);
+void etk_selection_text_set(Etk_Widget *widget, const char *data);
   
 /** @} */
 

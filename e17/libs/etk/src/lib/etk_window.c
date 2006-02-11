@@ -8,7 +8,7 @@
 #include "etk_utils.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
-#include "../../config.h"
+#include "config.h"
 
 /**
  * @addtogroup Etk_Window
@@ -437,6 +437,18 @@ Etk_Bool etk_window_skip_pager_hint_get(Etk_Window *window)
 }
 
 /**
+ * @brief Sets whether the window is dnd-aware (true by default)
+ * @param window a window
+ * @param on ETK_TTUE if to set the window dnd-aware
+ */
+void etk_window_xdnd_aware_set(Etk_Window *window, Etk_Bool on)
+{
+#if HAVE_ECORE_X
+   ecore_x_dnd_aware_set(window->x_window, on);
+#endif
+}
+
+/**
  * @brief A utility function to use as a callback for the "delete_event" signal. It will hide the window and return ETK_TRUE to prevent the program to quit
  * @param window the window to hide
  * @param data the data passed when the signal is emitted - unused
@@ -447,22 +459,6 @@ Etk_Bool etk_window_hide_on_delete(Etk_Object *window, void *data)
    etk_widget_hide(ETK_WIDGET(window));
    return ETK_TRUE;
 }
-
-#if HAVE_ECORE_X
-/**
- * @brief A utility function to use as a callback for the "delete_event" signal. It will hide the window and return ETK_TRUE to prevent the program to quit
- * @param window the window to hide
- * @param data the data passed when the signal is emitted - unused
- * @return Return ETK_TRUE so the the program won't quit
- */
-void etk_window_xdnd_aware_set(Etk_Window *window, Etk_Bool on)
-{
-   if(on)
-     ecore_x_dnd_aware_set(window->x_window, 1);
-   else
-     ecore_x_dnd_aware_set(window->x_window, 0);
-}
-#endif
 
 /**************************
  *
@@ -481,22 +477,21 @@ static void _etk_window_constructor(Etk_Window *window)
    window->ecore_evas = ecore_evas_software_x11_new(NULL, 0, 0, 0, 0, 0);
    window->x_window = ecore_evas_software_x11_window_get(window->ecore_evas);
    
+/* TODO: free!! */
 #if HAVE_ECORE_X      
-     {   
-	const char *types[] = { "*" };
-	char **drop_types;
-	int i;
-	
-	ecore_x_dnd_aware_set(window->x_window, 1);	
-	
-	drop_types = calloc(1, sizeof(char *));
-	
-	for (i = 0; i < 1; i++)
-	  drop_types[i] = strdup(types[i]);
-	
-	ecore_x_dnd_types_set(window->x_window, drop_types , 1);	
-     }
-   
+   {
+      const char *types[] = { "*" };
+      char **drop_types;
+      int i;
+      
+      ecore_x_dnd_aware_set(window->x_window, 1);	
+      drop_types = calloc(1, sizeof(char *));
+      
+      for (i = 0; i < 1; i++)
+         drop_types[i] = strdup(types[i]);
+      
+      ecore_x_dnd_types_set(window->x_window, drop_types , 1);	
+   }
 #endif   
    
    ETK_TOPLEVEL_WIDGET(window)->evas = ecore_evas_get(window->ecore_evas);

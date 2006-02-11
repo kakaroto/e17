@@ -1,6 +1,5 @@
 /** @file etk_main.c */
 #include "etk_main.h"
-#include "etk_dnd.h"
 #include <locale.h>
 #include <Ecore.h>
 #include <Ecore_X.h>
@@ -14,6 +13,7 @@
 #include "etk_toplevel_widget.h"
 #include "etk_utils.h"
 #include "etk_theme.h"
+#include "etk_dnd.h"
 #include "config.h"
 
 /**
@@ -25,9 +25,7 @@ static void _etk_main_iterate_job_cb(void *data);
 static void _etk_main_size_request_recursive(Etk_Widget *widget);
 static void _etk_main_size_allocate_recursive(Etk_Widget *widget, Etk_Bool is_top_level);
 
-/* we need this in etk_dnd */
-Evas_List *_etk_main_toplevel_widgets = NULL;
-
+static Evas_List *_etk_main_toplevel_widgets = NULL;
 static Etk_Bool _etk_main_running = ETK_FALSE;
 static Etk_Bool _etk_main_initialized = ETK_FALSE;
 static Ecore_Job *_etk_main_iterate_job = NULL;
@@ -62,18 +60,23 @@ Etk_Bool etk_init()
       ETK_WARNING("Ecore_Evas initialization failed!");
       return ETK_FALSE;
    }
+#if HAVE_ECORE_X
+   if (!ecore_x_init(NULL))
+   {
+      ETK_WARNING("Ecore_X initialization failed!");
+      return ETK_FALSE;
+   }
+#endif
    if (!edje_init())
    {
       ETK_WARNING("Edje initialization failed!");
       return ETK_FALSE;
    }
-#if HAVE_ECORE_X
    if (!etk_dnd_init())
    {
-      ETK_WARNING("Etk_dnd and Ecore_X initialzation failed!");
+      ETK_WARNING("Etk_dnd initialization failed!");
       return ETK_FALSE;
    }
-#endif
    etk_theme_init();
 
    /* Gettext */
@@ -183,6 +186,15 @@ void etk_main_toplevel_widget_remove(Etk_Toplevel_Widget *widget)
    if (!widget)
       return;
    _etk_main_toplevel_widgets = evas_list_remove(_etk_main_toplevel_widgets, widget);
+}
+
+/**
+ * @brief Gets the list of the created toplevel widgets
+ * @return Returns the list of the created toplevel widgets
+ */
+Evas_List *etk_main_toplevel_widgets_get()
+{
+   return _etk_main_toplevel_widgets;
 }
 
 /**************************

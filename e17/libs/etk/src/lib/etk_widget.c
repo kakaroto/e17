@@ -21,8 +21,6 @@
  * @{
  */
 
-extern Evas_List *_etk_dnd_widgets;
-
 typedef struct _Etk_Widget_Member_Object
 {
    Evas_Object *object;
@@ -141,6 +139,7 @@ static Etk_Signal *_etk_widget_signals[ETK_WIDGET_NUM_SIGNALS];
 static Etk_Bool _etk_widget_propagate_event = ETK_TRUE;
 static Etk_Bool _etk_widget_intercept_show_hide = ETK_TRUE;
 static Evas_Smart *_etk_widget_event_object_smart = NULL;
+static Evas_List *_etk_widget_dnd_widgets;
 
 /**************************
  *
@@ -1398,7 +1397,68 @@ Evas_Object *etk_widget_clip_get(Etk_Widget *widget)
    return widget->clip;
 }
 
-#if HAVE_ECORE_X
+/**
+ * @brief Sets whether the widget is dnd aware or not
+ * @param widget a widget
+ * @param on ETK_TRUE to enable dnd, ETK_FALSE to disable it
+ */
+void etk_widget_dnd_aware_set(Etk_Widget *widget, Etk_Bool on)
+{
+   if (!widget)
+      return;
+   
+   if (on)
+   {
+      widget->accepts_dnd = ETK_TRUE;
+      _etk_widget_dnd_widgets = evas_list_append(_etk_widget_dnd_widgets, widget);
+   }
+   else
+   {
+      widget->accepts_dnd = ETK_FALSE;
+      _etk_widget_dnd_widgets = evas_list_remove(_etk_widget_dnd_widgets, widget);
+   }
+}
+
+/**
+ * @brief Checks whether the widget is dnd aware
+ * @param widget a widget
+ * @return Returns ETK_TRUE if the widget is dnd aware, ETK_FALSE otherwise
+ */
+Etk_Bool etk_widget_dnd_aware_get(Etk_Widget *widget)
+{
+   if (!widget)
+      return ETK_FALSE;
+   return widget->accepts_dnd;
+}
+
+/**
+ * @brief Gets the list of the files dropped on the widget
+ * @param widget a widget
+ * @param on ETK_TRUE to enable dnd, ETK_FALSE to disable it
+ */
+const char **etk_widget_dnd_files_get(Etk_Widget *widget, int *num_files)
+{
+   if (!widget || !widget->accepts_dnd || !widget->dnd_files)
+   {
+      if (num_files)
+         num_files = 0;
+      return NULL;
+   }
+   
+   if (num_files)
+      *num_files = widget->dnd_files_num;
+   return (const char **)widget->dnd_files;
+}
+
+/**
+ * @brief Gets the list of the dnd-aware widgets
+ * @return Returns the list of the dnd-aware widgets
+ */
+Evas_List *etk_widget_dnd_aware_widgets_get()
+{
+   return _etk_widget_dnd_widgets;
+}
+
 /**
  * @brief Sends the "drag_drop" signal
  * @param widget a widget
@@ -1442,8 +1502,6 @@ void etk_widget_selection_get(Etk_Widget *widget, Etk_Event_Selection_Get *event
      return;
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_SELECTION_GET_SIGNAL], ETK_OBJECT(widget), NULL, event);
 }
-
-#endif
 
 /**************************
  *
@@ -1514,11 +1572,9 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->need_redraw = ETK_FALSE;
    widget->need_theme_min_size_recalc = ETK_FALSE;
    widget->swallowed = ETK_FALSE;
-#if HAVE_ECORE_X
-   widget->accepts_xdnd = ETK_FALSE;
-   widget->xdnd_files = NULL;
-   widget->xdnd_files_num = 0;
-#endif
+   widget->accepts_dnd = ETK_FALSE;
+   widget->dnd_files = NULL;
+   widget->dnd_files_num = 0;
 
    etk_signal_connect_full(_etk_widget_signals[ETK_WIDGET_MOUSE_IN_SIGNAL], ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_mouse_in_cb), NULL, ETK_FALSE, ETK_FALSE);
    etk_signal_connect_full(_etk_widget_signals[ETK_WIDGET_MOUSE_OUT_SIGNAL], ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_mouse_out_cb), NULL, ETK_FALSE, ETK_FALSE);
@@ -1529,6 +1585,8 @@ static void _etk_widget_constructor(Etk_Widget *widget)
 /* Destroys the widget */
 static void _etk_widget_destructor(Etk_Widget *widget)
 {
+   int i;
+   
    if (!widget)
       return;
 
@@ -1542,6 +1600,10 @@ static void _etk_widget_destructor(Etk_Widget *widget)
          etk_container_remove(ETK_CONTAINER(widget->parent), widget);
       etk_widget_parent_set(widget, NULL);
    }
+   
+   for (i = 0; i < widget->dnd_files_num; i++)
+      free(widget->dnd_files[i]);
+   free(widget->dnd_files);
    
    free(widget->theme_file);
    free(widget->theme_group);
@@ -2011,40 +2073,6 @@ static void _etk_widget_key_up_cb(void *data, Evas *evas, Evas_Object *object, v
    if (_etk_widget_propagate_event && widget->parent)
       _etk_widget_key_up_cb(widget->parent, evas, NULL, event_info);
 }
-
-#if HAVE_ECORE_X
-void etk_widget_xdnd_set(Etk_Widget *widget, Etk_Bool on)
-{
-   if(on)
-     {
-	widget->accepts_xdnd = 1;
-	_etk_dnd_widgets = evas_list_append(_etk_dnd_widgets, widget);
-     }
-   else
-     {
-	widget->accepts_xdnd = 0;
-	_etk_dnd_widgets = evas_list_remove(_etk_dnd_widgets, widget);
-     }
-}
-
-Etk_Bool etk_widget_xdnd_get(Etk_Widget *widget)
-{
-   if(widget->accepts_xdnd) return ETK_TRUE;
-
-   return ETK_FALSE;
-}
-
-const char **etk_widget_xdnd_files_get(Etk_Widget *widget, int *num_files)
-{
-   if(!widget->accepts_xdnd || widget->xdnd_files == NULL)
-     return NULL;
-   
-   if(num_files)
-     *num_files = widget->xdnd_files_num;
-     
-   return (const char **)widget->xdnd_files;
-}
-#endif
 
 /**************************
  *
