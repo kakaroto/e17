@@ -832,9 +832,6 @@ EwinInstantShade(EWin * ewin, int force)
    EoMoveResize(ewin, x, y, w, h);
    EMoveResizeWindow(ewin->win_container, -30, -30, 1, 1);
    EwinBorderCalcSizes(ewin, 1);
-#if 0				/* FIXME - Remove? */
-   ESync();
-#endif
 }
 
 void
@@ -890,9 +887,6 @@ EwinInstantUnShade(EWin * ewin)
 
    ewin->state.shaded = 0;
    EwinMoveResize(ewin, x, y, ewin->client.w, ewin->client.h);
-#if 0				/* FIXME - Remove? */
-   ESync();
-#endif
 }
 
 #define _EWIN_ADJUST_SHAPE(ewin, xo, yo) \
@@ -1071,9 +1065,6 @@ EwinShade(EWin * ewin)
 
    EwinMoveResize(ewin, EoGetX(ewin), EoGetY(ewin), ewin->client.w,
 		  ewin->client.h);
-#if 0				/* FIXME - Remove? */
-   ESync();
-#endif
 
 #if 0
    EUngrabServer();
@@ -1153,7 +1144,7 @@ EwinUnShade(EWin * ewin)
 	EChangeWindowAttributes(_EwinGetClientWin(ewin), CWWinGravity, &att);
 	a = ewin->border->border.left + ewin->border->border.right;
 	b = ewin->client.w + a;
-	c = x + a;
+	c = x + w;		/* NB! w != a is possible */
 	ewin->state.shaded = 0;
 	EMoveResizeWindow(ewin->win_container,
 			  ewin->border->border.left, ewin->border->border.top,
@@ -1229,7 +1220,7 @@ EwinUnShade(EWin * ewin)
 	EChangeWindowAttributes(_EwinGetClientWin(ewin), CWWinGravity, &att);
 	a = ewin->border->border.top + ewin->border->border.bottom;
 	b = ewin->client.h + a;
-	c = y + h;
+	c = y + h;		/* NB! h != a is possible */
 	ewin->state.shaded = 0;
 	EMoveResizeWindow(ewin->win_container,
 			  ewin->border->border.left, ewin->border->border.top,
@@ -1279,9 +1270,6 @@ EwinUnShade(EWin * ewin)
 
    EwinMoveResize(ewin, EoGetX(ewin), EoGetY(ewin), ewin->client.w,
 		  ewin->client.h);
-#if 0				/* FIXME - Remove? */
-   ESync();
-#endif
 
 #if 0
    EUngrabServer();
