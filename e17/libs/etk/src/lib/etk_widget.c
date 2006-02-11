@@ -14,7 +14,6 @@
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 #include "etk_dnd.h"
-#include "config.h"
 
 /**
  * @addtogroup Etk_Widget
@@ -57,12 +56,10 @@ enum _Etk_Widget_Signal_Id
    ETK_WIDGET_FOCUS_SIGNAL,
    ETK_WIDGET_UNFOCUS_SIGNAL,
    ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL,
-#if HAVE_ECORE_X
    ETK_WIDGET_DRAG_DROP_SIGNAL,
    ETK_WIDGET_DRAG_MOTION_SIGNAL,
    ETK_WIDGET_DRAG_LEAVE_SIGNAL,
    ETK_WIDGET_SELECTION_GET_SIGNAL,
-#endif
    ETK_WIDGET_NUM_SIGNALS
 };
 
@@ -120,6 +117,8 @@ static Etk_Bool _etk_widget_theme_object_swallow_full(Etk_Widget *swallowing_wid
 
 static void _etk_widget_child_add(Etk_Widget *parent, Etk_Widget *child);
 static void _etk_widget_child_remove(Etk_Widget *parent, Etk_Widget *child);
+static void _etk_widget_object_add_to_smart(Etk_Widget *widget, Evas_Object *object);
+static void _etk_widget_object_remove_from_smart(Etk_Widget *widget, Evas_Object *object);
 
 static Evas_List *_etk_widget_member_object_find(Etk_Widget *widget, Evas_Object *object);
 static Evas_List *_etk_widget_child_object_find(Etk_Widget *widget, Evas_Object *object);
@@ -179,12 +178,11 @@ Etk_Type *etk_widget_type_get()
       _etk_widget_signals[ETK_WIDGET_FOCUS_SIGNAL] =         etk_signal_new("focus",         widget_type, ETK_MEMBER_OFFSET(Etk_Widget, focus),   etk_marshaller_VOID__VOID,    NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_UNFOCUS_SIGNAL] =       etk_signal_new("unfocus",       widget_type, ETK_MEMBER_OFFSET(Etk_Widget, unfocus), etk_marshaller_VOID__VOID,    NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL] = etk_signal_new("scroll_size_changed", widget_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
-#if HAVE_ECORE_X
       _etk_widget_signals[ETK_WIDGET_DRAG_DROP_SIGNAL] =     etk_signal_new("drag_drop",      widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_drop),   etk_marshaller_VOID__VOID,    NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_DRAG_MOTION_SIGNAL] =   etk_signal_new("drag_motion",    widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_motion), etk_marshaller_VOID__VOID,    NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_DRAG_LEAVE_SIGNAL] =    etk_signal_new("drag_leave",     widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_leave),  etk_marshaller_VOID__VOID,    NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_SELECTION_GET_SIGNAL] = etk_signal_new("selection_get",  widget_type, -1,                                         etk_marshaller_VOID__POINTER, NULL, NULL);
-#endif
+
       etk_type_property_add(widget_type, "name",              ETK_WIDGET_NAME_PROPERTY,              ETK_PROPERTY_STRING,  ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(widget_type, "parent",            ETK_WIDGET_PARENT_PROPERTY,            ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE,          etk_property_value_pointer(NULL));
       etk_type_property_add(widget_type, "theme_file",        ETK_WIDGET_THEME_FILE_PROPERTY,        ETK_PROPERTY_STRING,  ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(etk_theme_widget_theme_get()));
@@ -394,16 +392,16 @@ void etk_widget_realize(Etk_Widget *widget)
    
    if (widget->parent && widget->parent->event_object)
    {
-      evas_object_smart_member_add(widget->event_object, widget->parent->event_object);
-      etk_widget_raise(widget);
+      /* TODO: show/hide?! */
+      _etk_widget_object_add_to_smart(widget->parent, widget->event_object);
    }
    for (l = widget->children; l; l = l->next)
    {
       child = ETK_WIDGET(l->data);
       if (child->event_object)
       {
-         evas_object_smart_member_add(child->event_object, widget->event_object);
-         etk_widget_raise(child);
+         /* TODO: show/hide?! */
+         _etk_widget_object_add_to_smart(widget, child->event_object);
       }
    }
    
@@ -423,8 +421,6 @@ void etk_widget_realize(Etk_Widget *widget)
    
    if (widget->theme_file && widget->theme_group)
    {
-      const char *data_string = NULL;
-      
       /* TODO: use etk_theme */
       widget->theme_object = edje_object_add(evas);
       if (!edje_object_file_set(widget->theme_object, widget->theme_file, widget->theme_group))
@@ -435,8 +431,7 @@ void etk_widget_realize(Etk_Widget *widget)
       }
       else
       {
-         data_string = edje_object_data_get(widget->theme_object, "inset");
-         if (!data_string || sscanf(data_string, "%d %d %d %d", &widget->left_inset, &widget->right_inset, &widget->top_inset, &widget->bottom_inset) != 4)
+         if (etk_widget_theme_object_data_get(widget, "inset", "%d %d %d %d", &widget->left_inset, &widget->right_inset, &widget->top_inset, &widget->bottom_inset) != 4)
          {
             widget->left_inset = 0;
             widget->right_inset = 0;
@@ -540,8 +535,8 @@ void etk_widget_parent_set(Etk_Widget *widget, Etk_Widget *parent)
    {
       if (widget->event_object && widget->parent && widget->parent->event_object)
       {
-         evas_object_smart_member_add(widget->event_object, widget->parent->event_object);
-         etk_widget_raise(widget);
+         /* TODO: show/hide ?! */
+         _etk_widget_object_add_to_smart(widget->parent, widget->event_object);
       }
       etk_widget_size_recalc_queue(widget);
    }
@@ -725,6 +720,7 @@ Etk_Bool etk_widget_visibility_locked_get(Etk_Widget *widget)
  * @param widget the widget to raise
  * @note It will have an effect only if the widget is realized
  */
+/* TODO: widget raise */
 void etk_widget_raise(Etk_Widget *widget)
 {
    if (!widget || !widget->parent || !widget->event_object)
@@ -737,6 +733,7 @@ void etk_widget_raise(Etk_Widget *widget)
  * @param widget the widget to lower
  * @note It will have an effect only if the widget is realized
  */
+/* TODO: widget lower */
 void etk_widget_lower(Etk_Widget *widget)
 {
    if (!widget || !widget->parent || !widget->event_object)
@@ -1040,7 +1037,7 @@ Etk_Bool etk_widget_theme_object_swallow(Etk_Widget *swallowing_widget, const ch
  */
 void etk_widget_theme_object_unswallow(Etk_Widget *swallowing_widget, Evas_Object *object)
 {
-   Evas_List *l;
+   Evas_List *l, *l2;
    Etk_Widget_Swallowed_Object *swallowed_object = NULL;
    Etk_Widget_Member_Object *member_object;
 
@@ -1062,16 +1059,17 @@ void etk_widget_theme_object_unswallow(Etk_Widget *swallowing_widget, Evas_Objec
 
    if (swallowed_object->widget)
       swallowed_object->widget->swallowed = ETK_FALSE;
+   if ((l2 = _etk_widget_member_object_find(swallowing_widget, object)))
+   {
+      member_object = l2->data;
+      member_object->swallowed = ETK_FALSE;
+      /* TODO: add to smart! show, hide? */
+      _etk_widget_object_add_to_smart(swallowing_widget, object);
+   }
 
    free(swallowed_object->swallowing_part);
    free(swallowed_object);
    swallowing_widget->swallowed_objects = evas_list_remove_list(swallowing_widget->swallowed_objects, l);
-   
-   if ((l = _etk_widget_member_object_find(swallowing_widget, object)))
-   {
-      member_object = l->data;
-      member_object->swallowed = ETK_FALSE;
-   }
    
    etk_widget_size_recalc_queue(swallowing_widget);
 }
@@ -1240,17 +1238,11 @@ Etk_Bool etk_widget_member_object_add(Etk_Widget *widget, Evas_Object *object)
    member_object->visible = evas_object_visible_get(object);
    member_object->swallowed = ETK_FALSE;
    
-   if (member_object->visible && !evas_object_visible_get(widget->event_object))
-      evas_object_hide(object);
+   _etk_widget_object_add_to_smart(widget, object);
    evas_object_intercept_show_callback_add(object, _etk_widget_member_object_intercept_show_cb, widget);
    evas_object_intercept_hide_callback_add(object, _etk_widget_member_object_intercept_hide_cb, widget);
    
-   if (widget->clip)
-      evas_object_clip_set(object, widget->clip);
-   
-   evas_object_smart_member_add(object, widget->event_object);
    widget->member_objects = evas_list_append(widget->member_objects, member_object);
-   etk_widget_member_object_raise(widget, object);
 
    return ETK_TRUE;
 }
@@ -1290,6 +1282,7 @@ void etk_widget_member_object_del(Etk_Widget *widget, Evas_Object *object)
  * @param widget a widget
  * @param object the object to raise
  */
+/* TODO member raise */
 void etk_widget_member_object_raise(Etk_Widget *widget, Evas_Object *object)
 {
    if (!widget || !object)
@@ -1304,6 +1297,7 @@ void etk_widget_member_object_raise(Etk_Widget *widget, Evas_Object *object)
  * @param widget a widget
  * @param object the object to lower
  */
+/* TODO member lower */
 void etk_widget_member_object_lower(Etk_Widget *widget, Evas_Object *object)
 {
    if (!widget || !object)
@@ -1319,6 +1313,7 @@ void etk_widget_member_object_lower(Etk_Widget *widget, Evas_Object *object)
  * @param object the object to restack
  * @param above the object above which @a object will be stacked 
  */
+/* TODO member above */
 void etk_widget_member_object_stack_above(Etk_Widget *widget, Evas_Object *object, Evas_Object *above)
 {
    if (!widget || !above || (object == above))
@@ -1335,6 +1330,7 @@ void etk_widget_member_object_stack_above(Etk_Widget *widget, Evas_Object *objec
  * @param object the object to restack
  * @param below the object below which @a object will be stacked 
  */
+/* TODO member below */
 void etk_widget_member_object_stack_below(Etk_Widget *widget, Evas_Object *object, Evas_Object *below)
 {
    if (!widget || !below || (object == below))
@@ -2200,6 +2196,20 @@ static void _etk_widget_child_remove(Etk_Widget *parent, Etk_Widget *child)
       parent->children = evas_list_remove_list(parent->children, l);
       etk_widget_size_recalc_queue(parent);
    }
+}
+
+/* Adds an object to the widget smart object */
+static void _etk_widget_object_add_to_smart(Etk_Widget *widget, Evas_Object *object)
+{
+   if (!widget || !widget->event_object || !object)
+      return;
+   
+   if (!evas_object_visible_get(widget->event_object))
+      evas_object_hide(object);
+   if (widget->clip)
+      evas_object_clip_set(object, widget->clip);
+   evas_object_smart_member_add(object, widget->event_object);
+   evas_object_raise(object);
 }
 
 /* Finds if an evas object is a member object of the widget */
