@@ -387,21 +387,16 @@ void etk_widget_realize(Etk_Widget *widget)
    evas_object_event_callback_add(widget->event_object, EVAS_CALLBACK_KEY_UP, _etk_widget_key_up_cb, widget);
    
    if (widget->parent && widget->parent->event_object)
-   {
-      /* TODO: show/hide?! */
       _etk_widget_object_add_to_smart(widget->parent, widget->event_object);
-   }
    for (l = widget->children; l; l = l->next)
    {
       child = ETK_WIDGET(l->data);
       if (child->event_object)
-      {
-         /* TODO: show/hide?! */
          _etk_widget_object_add_to_smart(widget, child->event_object);
-      }
    }
    
-   if (widget->visible)
+   if (ETK_IS_TOPLEVEL_WIDGET(widget) || (widget->parent && widget->parent->event_object &&
+         evas_object_visible_get(widget->parent->event_object) && widget->visible))
       evas_object_show(widget->event_object);
    else
       evas_object_hide(widget->event_object);
@@ -531,10 +526,7 @@ void etk_widget_parent_set(Etk_Widget *widget, Etk_Widget *parent)
    else
    {
       if (widget->event_object && widget->parent && widget->parent->event_object)
-      {
-         /* TODO: show/hide ?! */
          _etk_widget_object_add_to_smart(widget->parent, widget->event_object);
-      }
       etk_widget_size_recalc_queue(widget);
    }
 
@@ -1076,7 +1068,6 @@ void etk_widget_theme_object_unswallow(Etk_Widget *swallowing_widget, Evas_Objec
    {
       member_object = l2->data;
       member_object->swallowed = ETK_FALSE;
-      /* TODO: add to smart! show, hide? */
       _etk_widget_object_add_to_smart(swallowing_widget, object);
    }
 
@@ -2213,12 +2204,11 @@ static void _etk_widget_object_add_to_smart(Etk_Widget *widget, Evas_Object *obj
    if (!widget || !widget->event_object || !object)
       return;
    
+   _etk_widget_intercept_show_hide = ETK_FALSE;
    if (!evas_object_visible_get(widget->event_object))
-   {
-      _etk_widget_intercept_show_hide = ETK_FALSE;
       evas_object_hide(object);
-      _etk_widget_intercept_show_hide = ETK_TRUE;
-   }
+   _etk_widget_intercept_show_hide = ETK_TRUE;
+   
    if (widget->clip)
       evas_object_clip_set(object, widget->clip);
    evas_object_smart_member_add(object, widget->event_object);
