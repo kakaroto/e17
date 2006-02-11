@@ -11,7 +11,6 @@ AM_CONFIG_HEADER(config.h)
 AC_C_BIGENDIAN
 AC_PROG_CC
 AM_PROG_CC_STDC
-AC_PROG_CXX
 AC_HEADER_STDC
 AC_C_CONST
 AM_ENABLE_SHARED
@@ -107,94 +106,84 @@ function vser
   echo $V
 }
 
-AC_ARG_WITH(evas-config, [  --with-evas-config=EVAS_CONFIG    use evas-config specified ],
-[ EVAS_CONFIG=$withval;
-  echo "using "$EVAS_CONFIG" for evas-config";
-],[
-  if test -z "$EVAS_CONFIG"; then
-    PROG="evas-config";
-    AC_PATH_PROG(EVAS_CONFIG, $PROG, "", $PATH)
-  fi
-])
-evas_cflags=`$EVAS_CONFIG --cflags`
-evas_libs=`$EVAS_CONFIG --libs`
+AC_PATH_GENERIC(evas, 0.9.9,
+  [ ],
+  [
+    echo "ERROR:"
+    echo "The evas-config development script was not found in your execute"
+    echo "path. This may mean one of several things"
+    echo "1. You may not have installed the evas-devel (or evas-dev)"
+    echo "   packages."
+    echo "2. You may have evas installed somewhere not covered by your path."
+    echo ""
+    echo "If this is the case make sure you have the packages installed, AND"
+    echo "that the evas-config script is in your execute path (see your"
+    echo "shell's manual page on setting the \$PATH environment variable), OR"
+    echo "alternatively, specify the script to use with --with-evas-config."
+    AC_MSG_ERROR([Fatal Error: no evas-config detected.])
+  ]
+)
 
+AC_PATH_GENERIC(ecore, 0.9.9,
+  [ ],
+  [
+    echo "ERROR:"
+    echo "The ecore-config development script was not found in your execute"
+    echo "path. This may mean one of several things"
+    echo "1. You may not have installed the ecore-devel (or ecore-dev)"
+    echo "   packages."
+    echo "2. You may have ecore installed somewhere not covered by your path."
+    echo ""
+    echo "If this is the case make sure you have the packages installed, AND"
+    echo "that the ecore-config script is in your execute path (see your"
+    echo "shell's manual page on setting the \$PATH environment variable), OR"
+    echo "alternatively, specify the script to use with --with-ecore-config."
+    AC_MSG_ERROR([Fatal Error: no ecore-config detected.])
+  ]
+)
 
-AC_ARG_WITH(edje-config, [  --with-edje-config=EDJE_CONFIG    use edje-config specified ],
-[ EDJE_CONFIG=$withval;
-  echo "using "$EDJE_CONFIG" for edje-config";
-],[
-  if test -z "$EDJE_CONFIG"; then
-    PROG="edje-config";
-    AC_PATH_PROG(EDJE_CONFIG, $PROG, "", $PATH)
-  fi
-])
-edje_cflags=`$EDJE_CONFIG --cflags`
-edje_libs=`$EDJE_CONFIG --libs`
-
-
-AC_ARG_WITH(ecore-config, [  --with-ecore-config=ECORE_CONFIG    use ecore-config specified ],
-[ ECORE_CONFIG=$withval;
-  echo "using "$ECORE_CONFIG" for ecore-config";
-],[
-  if test -z "$ECORE_CONFIG"; then
-    PROG="ecore-config";
-    AC_PATH_PROG(ECORE_CONFIG, $PROG, "", $PATH)
-  fi
-])
-ecore_cflags=`$ECORE_CONFIG --cflags`
-ecore_libs=`$ECORE_CONFIG --libs`
-
-
-V=`$ECORE_CONFIG --version`
-if test -z "$V"; then
-  AC_MSG_ERROR(Ecore is not installed or $ECORE_CONFIG cannot be found.)
-fi
-VV=`vser $V`
-VM="0.9.9"
-VVM=`vser $VM`
-if test $VV -lt $VVM; then
-  AC_MSG_ERROR(Ecore is not at least "$VM". It is "$V".)
-fi
-
-V=`$EVAS_CONFIG --version`
-if test -z "$V"; then
-  AC_MSG_ERROR(Evas is not installed or $EVAS_CONFIG cannot be found.)
-fi
-VV=`vser $V`
-VM="0.9.9"
-VVM=`vser $VM`
-if test $VV -lt $VVM; then
-  AC_MSG_ERROR(Evas is not at least "$VM". It is "$V".)
-fi
-
-V=`$EDJE_CONFIG --version`
-if test -z "$V"; then
-  AC_MSG_ERROR(Edje is not installed or $EDJE_CONFIG cannot be found.)
-fi
-VV=`vser $V`
-VM="0.5.0"
-VVM=`vser $VM`
-if test $VV -lt $VVM; then
-  AC_MSG_ERROR(Edje is not at least "$VM". It is "$V".)
-fi
+CFLAGS=$ECORE_CFLAGS" "$CFLAGS
+AC_PATH_GENERIC(edje, 0.5.0,
+  [ ],
+  [
+    echo "ERROR:"
+    echo "The edje-config development script was not found in your execute"
+    echo "path. This may mean one of several things"
+    echo "1. You may not have installed the edje-devel (or edje-dev)"
+    echo "   packages."
+    echo "2. You may have edje installed somewhere not covered by your path."
+    echo ""
+    echo "If this is the case make sure you have the packages installed, AND"
+    echo "that the edje-config script is in your execute path (see your"
+    echo "shell's manual page on setting the \$PATH environment variable), OR"
+    echo "alternatively, specify the script to use with --with-edje-config."
+    AC_MSG_ERROR([Fatal Error: no edje-config detected.])
+  ]
+)
 
 #####################################################################
 ## Ecore_X
-AC_CHECK_HEADER(Ecore_X.h, [ ecore_x_includes="yes" ])
-AC_CHECK_LIB(ecore_x, ecore_x_init, ecore_x_libs="yes", ecore_x_libs="no")
-if test "x{ecore_x_includes}" != "xno" -a "x${ecore_x_includes}" != "x"; then
-  if test "x{ecore_x_libs}" != "xno" -a "x${ecore_x_libs}" != "x"; then
-    have_ecore_x="yes"
-    AC_DEFINE(HAVE_ECORE_X, 1, [Define to 1 if you have the Ecore_X headers and libraries])
-  else
-    have_ecore_x="no"
-    AC_DEFINE(HAVE_ECORE_X, 0, [Define to 1 if you have the Ecore_X headers and libraries])
-  fi
-else
-  have_ecore_x="no"
-  AC_DEFINE(HAVE_ECORE_X, 0, [Define to 1 if you have the Ecore_X headers and libraries])
-fi    
+have_ecore_x="no"
+save_CPPFLAGS=$CPPFLAGS
+CPPFLAGS="$CPPFLAGS $ECORE_CFLAGS"
+save_LDFLAGS=$LDFLAGS
+LDFLAGS="$LDFLAGS $ECORE_LIBS"
+AC_CHECK_HEADER(Ecore_X.h,
+  [AC_CHECK_LIB(ecore_x,
+      ecore_x_init,
+     [AC_DEFINE(HAVE_ECORE_X,
+         1,
+         [Define to 1 if you have the Ecore_X headers and libraries])
+      have_ecore_x="yes"],
+     [AC_DEFINE(HAVE_ECORE_X,
+         0,
+         [Define to 1 if you have the Ecore_X headers and libraries])])],
+  [AC_DEFINE(HAVE_ECORE_X,
+      0,
+      [Define to 1 if you have the Ecore_X headers and libraries])]
+)
+CPPFLAGS=$save_CPPFLAGS
+LDFLAGS=$save_LDFLAGS
 
 #####################################################################
 ## Gettext
@@ -207,32 +196,7 @@ AM_GNU_GETTEXT_VERSION(0.14.1)
 #####################################################################
 ## Fill in flags
 
-evas_cflags=`$EVAS_CONFIG --cflags`
-evas_libs=`$EVAS_CONFIG --libs`
-AC_SUBST(evas_cflags)
-AC_SUBST(evas_libs)
-
-ecore_cflags=`$ECORE_CONFIG --cflags`
-ecore_libs=`$ECORE_CONFIG --libs`
-AC_SUBST(ecore_cflags)
-AC_SUBST(ecore_libs)
-
-edje_cflags=`$EDJE_CONFIG --cflags`
-edje_libs=`$EDJE_CONFIG --libs`
-AC_SUBST(edje_cflags)
-AC_SUBST(edje_libs)
-
-# Build the list of required libs for etk.pc.in. Only works for libs
-# which install a .pc file of course
-if test "x$evas_libs" != "x"; then
-  requirements=evas
-fi
-if test "x$ecore_libs" != "x"; then
-  requirements="$requirements ecore"
-fi
-if test "x$edje_libs" != "x"; then
-  requirements="$requirements edje"
-fi  
+requirements="evas ecore edje"
 
 AC_SUBST(requirements)
 

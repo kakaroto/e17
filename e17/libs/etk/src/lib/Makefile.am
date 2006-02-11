@@ -9,7 +9,7 @@ DEFS = -DLOCALEDIR=\"$(localedir)\" @DEFS@
 
 INCLUDES	= \
 -I. -I$(top_srcdir)/src/lib -Wall -g \
-@ecore_cflags@ @evas_cflags@ @edje_cflags@
+@EVAS_CFLAGS@ @ECORE_CFLAGS@ @EDJE_CFLAGS@
 
 lib_LTLIBRARIES = libetk.la
 
@@ -79,7 +79,7 @@ $(ETKHEADERS)
 installed_headersdir = $(prefix)/include/etk
 installed_headers_DATA = $(ETKHEADERS)
 
-libetk_la_LIBADD  = @ecore_libs@ @evas_libs@ @edje_libs@
+libetk_la_LIBADD  = @EVAS_LIBS@ @ECORE_LIBS@ @EDJE_LIBS@
 
 libetk_la_DEPENDENCIES = 
 

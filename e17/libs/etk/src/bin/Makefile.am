@@ -11,7 +11,7 @@ EXTRA_DIST =
 
 INCLUDES	= \
 -I. -I$(top_srcdir)/src/lib -Wall -g \
-@ecore_cflags@ @evas_cflags@ @edje_cflags@
+@EVAS_CFLAGS@ @ECORE_CFLAGS@ @EDJE_CFLAGS@
 
 bin_PROGRAMS = etk_test
 
@@ -38,4 +38,4 @@ etk_spin_button_test.c \
 etk_xdnd_test.c
 
 etk_test_LDADD = $(top_builddir)/src/lib/libetk.la \
-		 @ecore_libs@ @evas_libs@ @edje_libs@
+		 @EVAS_LIBS@ @ECORE_LIBS@ @EDJE_LIBS@
