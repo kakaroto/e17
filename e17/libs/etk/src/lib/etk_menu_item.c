@@ -59,7 +59,7 @@ Etk_Type *etk_menu_item_type_get()
 
    if (!menu_item_type)
    {
-      menu_item_type = etk_type_new("Etk_Menu_Item", ETK_CONTAINER_TYPE, sizeof(Etk_Menu_Item), ETK_CONSTRUCTOR(_etk_menu_item_constructor), ETK_DESTRUCTOR(_etk_menu_item_destructor));
+      menu_item_type = etk_type_new("Etk_Menu_Item", ETK_WIDGET_TYPE, sizeof(Etk_Menu_Item), ETK_CONSTRUCTOR(_etk_menu_item_constructor), ETK_DESTRUCTOR(_etk_menu_item_destructor));
 
       _etk_menu_item_signals[ETK_MENU_ITEM_SELECTED_SIGNAL] = etk_signal_new("selected", menu_item_type, ETK_MEMBER_OFFSET(Etk_Menu_Item, selected), etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_menu_item_signals[ETK_MENU_ITEM_DESELECTED_SIGNAL] = etk_signal_new("deselected", menu_item_type, ETK_MEMBER_OFFSET(Etk_Menu_Item, deselected), etk_marshaller_VOID__VOID, NULL, NULL);
@@ -186,7 +186,7 @@ void etk_menu_item_submenu_set(Etk_Menu_Item *menu_item, Etk_Menu *submenu)
       menu_item->right_widget = etk_widget_new(ETK_WIDGET_TYPE, "theme_group", "menu_arrow", NULL);
       /* TODO: disconnect */
       etk_signal_connect("realize", ETK_OBJECT(menu_item->right_widget), ETK_CALLBACK(_etk_menu_item_right_widget_realize_cb), menu_item);
-      etk_widget_parent_set(menu_item->right_widget, ETK_CONTAINER(menu_item));
+      etk_widget_parent_set(menu_item->right_widget, ETK_WIDGET(menu_item));
       etk_widget_pass_events_set(menu_item->right_widget, ETK_TRUE);
       menu_item->right_widget_is_arrow = ETK_TRUE;
    }
@@ -222,12 +222,12 @@ void etk_menu_item_image_set(Etk_Menu_Item *menu_item, Etk_Image *image)
    
    if ((image_widget = ETK_WIDGET(image)))
    {
-      if (image_widget->parent)
-         etk_container_remove(image_widget->parent, image_widget);
+      if (image_widget->parent && ETK_IS_CONTAINER(image_widget->parent))
+         etk_container_remove(ETK_CONTAINER(image_widget->parent), image_widget);
 
       /* TODO: disconnect */
       etk_signal_connect("realize", ETK_OBJECT(image_widget), ETK_CALLBACK(_etk_menu_item_image_realize_cb), menu_item);
-      etk_widget_parent_set(image_widget, ETK_CONTAINER(menu_item));
+      etk_widget_parent_set(image_widget, ETK_WIDGET(menu_item));
       etk_widget_pass_events_set(image_widget, ETK_TRUE);
       menu_item->image = image;
    }
@@ -284,9 +284,7 @@ Etk_Type *etk_menu_separator_type_get()
    static Etk_Type *menu_separator_type = NULL;
 
    if (!menu_separator_type)
-   {
       menu_separator_type = etk_type_new("Etk_Menu_Separator", ETK_MENU_ITEM_TYPE, sizeof(Etk_Menu_Separator), NULL, NULL);
-   }
 
    return menu_separator_type;
 }

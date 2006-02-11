@@ -28,9 +28,7 @@ Etk_Type *etk_hbox_type_get()
    static Etk_Type *hbox_type = NULL;
 
    if (!hbox_type)
-   {
       hbox_type = etk_type_new("Etk_HBox", ETK_BOX_TYPE, sizeof(Etk_HBox), ETK_CONSTRUCTOR(_etk_hbox_constructor), ETK_DESTRUCTOR(_etk_hbox_destructor));
-   }
 
    return hbox_type;
 }
@@ -78,7 +76,7 @@ static void _etk_hbox_size_request(Etk_Widget *widget, Etk_Size *size_requisitio
    Etk_Box *box;
    Etk_Container *container;
    Etk_Widget *child;
-   Etk_Box_Child_Properties *child_properties;
+   Etk_Box_Child_Props *child_properties;
    Etk_Size child_requisition;
    int num_children, i;
 
@@ -89,10 +87,10 @@ static void _etk_hbox_size_request(Etk_Widget *widget, Etk_Size *size_requisitio
    container = ETK_CONTAINER(hbox);
    size_requisition->w = 0;
    size_requisition->h = 0;
-   num_children = evas_list_count(container->children);
+   num_children = evas_list_count(box->children);
    hbox->requested_sizes = realloc(hbox->requested_sizes, num_children * sizeof(int));
 
-   for (l = container->children, i = 0; l; l = l->next, i++)
+   for (l = box->children, i = 0; l; l = l->next, i++)
    {
       child = ETK_WIDGET(l->data);
       child_properties = child->child_properties;
@@ -133,7 +131,7 @@ static void _etk_hbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    Etk_Box *box;
    Etk_Container *container;
    Etk_Widget *child;
-   Etk_Box_Child_Properties *child_properties;
+   Etk_Box_Child_Props *child_properties;
    Etk_Size requested_inner_size;
    Etk_Size allocated_inner_size;
    Etk_Geometry child_geometry;
@@ -158,7 +156,7 @@ static void _etk_hbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       float ratio;
 
       ratio = (float)allocated_inner_size.w / requested_inner_size.w;
-      for (l = container->children, i = 0; l; l = l->next, i++)
+      for (l = box->children, i = 0; l; l = l->next, i++)
       {
          child = ETK_WIDGET(l->data);
          child_properties = child->child_properties;
@@ -186,7 +184,7 @@ static void _etk_hbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    {
       float free_space;
 
-      for (l = container->children; l; l = l->next)
+      for (l = box->children; l; l = l->next)
       {
          child = ETK_WIDGET(l->data);
          child_properties = child->child_properties;
@@ -199,7 +197,7 @@ static void _etk_hbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       else
          free_space = (float)(allocated_inner_size.w - requested_inner_size.w) / num_children_to_expand;
 
-      for (l = container->children, i = 0; l; l = l->next, i++)
+      for (l = box->children, i = 0; l; l = l->next, i++)
       {
          child = ETK_WIDGET(l->data);
          child_properties = child->child_properties;

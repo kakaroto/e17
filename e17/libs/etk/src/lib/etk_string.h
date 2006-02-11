@@ -33,6 +33,8 @@ struct _Etk_String
    int allocated_length;
 };
 
+Etk_Type *etk_string_type_get();
+
 Etk_String *etk_string_new(const char *value);
 Etk_String *etk_string_new_sized(const char *value, int size);
 Etk_String *etk_string_new_printf(const char *format, ...);
@@ -44,21 +46,24 @@ int etk_string_length_get(Etk_String *string);
 Etk_String *etk_string_truncate(Etk_String *string, int length);
 
 Etk_String *etk_string_set(Etk_String *string, const char *value);
-Etk_String *etk_string_set_sized(Etk_String *string, const char *value, int size);
+Etk_String *etk_string_set_sized(Etk_String *string, const char *value, int length);
 Etk_String *etk_string_set_printf(Etk_String *string, const char *format, ...);
 Etk_String *etk_string_set_vprintf(Etk_String *string, const char *format, va_list args);
 
 Etk_String *etk_string_prepend(Etk_String *string, const char *text);
+Etk_String *etk_string_prepend_sized(Etk_String *string, const char *text, int length);
 Etk_String *etk_string_prepend_char(Etk_String *string, char c);
 Etk_String *etk_string_prepend_printf(Etk_String *string, const char *format, ...);
 Etk_String *etk_string_prepend_vprintf(Etk_String *string, const char *format, va_list args);
 
 Etk_String *etk_string_append(Etk_String *string, const char *text);
+Etk_String *etk_string_append_sized(Etk_String *string, const char *text, int length);
 Etk_String *etk_string_append_char(Etk_String *string, char c);
 Etk_String *etk_string_append_printf(Etk_String *string, const char *format, ...);
 Etk_String *etk_string_append_vprintf(Etk_String *string, const char *format, va_list args);
 
 Etk_String *etk_string_insert(Etk_String *string, int pos, const char *text);
+Etk_String *etk_string_insert_sized(Etk_String *string, int pos, const char *text, int length);
 Etk_String *etk_string_insert_char(Etk_String *string, int pos, char c);
 Etk_String *etk_string_insert_printf(Etk_String *string, int pos, const char *format, ...);
 Etk_String *etk_string_insert_vprintf(Etk_String *string, int pos, const char *format, va_list args);

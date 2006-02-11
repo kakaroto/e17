@@ -116,9 +116,9 @@ int etk_container_border_width_get(Etk_Container *container)
  */
 Evas_List *etk_container_children_get(Etk_Container *container)
 {
-   if (!container)
+   if (!container || !container->children_get)
       return NULL;
-   return container->children;
+   return container->children_get(container);
 }
 
 /**
@@ -130,7 +130,7 @@ Etk_Bool etk_container_is_child(Etk_Container *container, Etk_Widget *widget)
 {
    if (!container || !widget)
       return ETK_FALSE;
-   return (evas_list_find(container->children, widget) != NULL);
+   return (evas_list_find(etk_container_children_get(container), widget) != NULL);
 }
 
 /**
@@ -142,10 +142,10 @@ void etk_container_for_each(Etk_Container *container, void (*for_each_cb)(Etk_Wi
 {
    Evas_List *l;
 
-   if (!container || !container->children || !for_each_cb)
+   if (!container || !for_each_cb)
       return;
 
-   for (l = container->children; l; l = l->next)
+   for (l = etk_container_children_get(container); l; l = l->next)
       for_each_cb(ETK_WIDGET(l->data));
 }
 
@@ -159,10 +159,10 @@ void etk_container_for_each_data(Etk_Container *container, void (*for_each_cb)(E
 {
    Evas_List *l;
 
-   if (!container || !container->children || !for_each_cb)
+   if (!container || !for_each_cb)
       return;
 
-   for (l = container->children; l; l = l->next)
+   for (l = etk_container_children_get(container); l; l = l->next)
       for_each_cb(ETK_WIDGET(l->data), data);
 }
 
@@ -205,28 +205,22 @@ static void _etk_container_constructor(Etk_Container *container)
    if (!container)
       return;
 
-   container->children = NULL;
    container->child_add = NULL;
    container->child_remove = NULL;
+   container->children_get = NULL;
    container->border_width = 0;
 }
 
-/* Destroys the container */
+/* Destoys the container */
 static void _etk_container_destructor(Etk_Container *container)
 {
-   Etk_Widget *child;
-
    if (!container)
       return;
-
-   while (container->children)
-   {
-      child = ETK_WIDGET(container->children->data);
-      etk_widget_parent_set(child, NULL);
-      etk_object_destroy(ETK_OBJECT(child));
-   }
+   
+   container->child_add = NULL;
+   container->child_remove = NULL;
+   container->children_get = NULL;
 }
-
 
 /* Sets the property whose id is "property_id" to the value "value" */
 static void _etk_container_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value)

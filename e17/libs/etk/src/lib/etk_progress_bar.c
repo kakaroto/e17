@@ -26,7 +26,6 @@ enum _Etk_Progress_Bar_Activity_Dir
 };
 
 static void _etk_progress_bar_constructor(Etk_Progress_Bar *progress_bar);
-static void _etk_progress_bar_destructor(Etk_Progress_Bar *progress_bar);
 static void _etk_progress_bar_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_progress_bar_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_progress_bar_child_create(Etk_Progress_Bar *progress_bar);
@@ -209,7 +208,7 @@ double etk_progress_bar_pulse_step_get(Etk_Progress_Bar *progress_bar)
    Etk_Widget *widget;
    
    if (!(widget = ETK_WIDGET(progress_bar)))
-     return;
+     return 0.0;
  
    return progress_bar->pulse_step;
 }

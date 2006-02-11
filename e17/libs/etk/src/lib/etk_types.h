@@ -12,7 +12,6 @@
 #define ETK_FALSE 0
 #define ETK_TRUE 1
 
-/* Etk Object: */
 typedef unsigned char Etk_Bool;
 typedef struct _Etk_Type Etk_Type;
 typedef struct _Etk_Object Etk_Object;
@@ -33,7 +32,6 @@ typedef void (*Etk_Marshaller)(Etk_Signal_Callback_Function callback, Etk_Object
 typedef void (*Etk_Accumulator)(void *return_value, const void *value_to_accum, void *data); 
 typedef void (*Etk_Notification_Callback_Function)(Etk_Object *object, const char *property_name, void *data);
 
-/* Widgets: */
 typedef struct _Etk_Widget Etk_Widget;
 typedef struct _Etk_Event_Mouse_In_Out Etk_Event_Mouse_In_Out;
 typedef struct _Etk_Event_Mouse_Up_Down Etk_Event_Mouse_Up_Down;
@@ -56,8 +54,6 @@ typedef struct _Etk_Box_Child_Properties Etk_Box_Child_Properties;
 typedef struct _Etk_HBox Etk_HBox;
 typedef struct _Etk_VBox Etk_VBox;
 typedef struct _Etk_Table Etk_Table;
-typedef struct _Etk_Table_Col_Row Etk_Table_Col_Row;
-typedef struct _Etk_Table_Child_Properties Etk_Table_Child_Properties;
 typedef struct _Etk_Alignment Etk_Alignment;
 typedef struct _Etk_Frame Etk_Frame;
 typedef struct _Etk_Paned Etk_Paned;
@@ -72,7 +68,10 @@ typedef struct _Etk_Button Etk_Button;
 typedef struct _Etk_Toggle_Button Etk_Toggle_Button;
 typedef struct _Etk_Check_Button Etk_Check_Button;
 typedef struct _Etk_Radio_Button Etk_Radio_Button;
+typedef struct _Etk_Text_Buffer Etk_Text_Buffer;
+typedef struct _Etk_Text_Iter Etk_Text_Iter;
 typedef struct _Etk_Entry Etk_Entry;
+typedef struct _Etk_Text_View Etk_Text_View;
 typedef struct _Etk_Canvas Etk_Canvas;
 typedef struct _Etk_Colorpicker Etk_Colorpicker;
 typedef struct _Etk_Colorpicker_Vertical Etk_Colorpicker_Vertical;

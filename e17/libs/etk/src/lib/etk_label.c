@@ -82,17 +82,17 @@ void etk_label_set(Etk_Label *label, const char *text)
       return;
 
    old_label = label->text;
-   if (text)
-      label->text = strdup(text);
-   else
+   /* TODO: etk_label_set: " " if the length of the label is 0 */
+   if (!text || *text == 0)
       label->text = strdup(" ");
+   else
+      label->text = strdup(text);
    free(old_label);
 
    if (label->text_object)
-   {
       evas_object_textblock_text_markup_set(label->text_object, label->text);
-      etk_widget_size_recalc_queue(ETK_WIDGET(label));
-   }
+   
+   etk_widget_size_recalc_queue(ETK_WIDGET(label));
 }
 
 /**
@@ -190,7 +190,6 @@ static void _etk_label_destructor(Etk_Label *label)
 {
    if (!label)
       return;
-
    free(label->text);
 }
 
@@ -250,13 +249,10 @@ static void _etk_label_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
    if (!(label = ETK_LABEL(widget)) || !size_requisition)
       return;
 
+   size_requisition->w = 0;
+   size_requisition->h = 0;
    if (label->text_object)
       evas_object_textblock_size_native_get(label->text_object, &size_requisition->w, &size_requisition->h);
-   else
-   {
-      size_requisition->w = 50;
-      size_requisition->h = 11;
-   }
 }
 
 /* Resizes the label to the allocated size */
@@ -319,7 +315,7 @@ static void _etk_label_realize_cb(Etk_Object *object, void *data)
    evas_object_show(label->clip);
    etk_widget_member_object_add(ETK_WIDGET(label), label->clip);
 
-   etk_label_set(label, label->text);
+   evas_object_textblock_text_markup_set(label->text_object, label->text);
 }
 
 /* Called when the label is unrealized */

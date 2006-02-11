@@ -19,7 +19,6 @@ enum _Etk_Scrolled_View_Property_Id
 };
 
 static void _etk_scrolled_view_constructor(Etk_Scrolled_View *scrolled_view);
-static void _etk_scrolled_view_destructor(Etk_Scrolled_View *scrolled_view);
 static void _etk_scrolled_view_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_scrolled_view_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_scrolled_view_size_request(Etk_Widget *widget, Etk_Size *size_requisition);
@@ -179,11 +178,11 @@ static void _etk_scrolled_view_constructor(Etk_Scrolled_View *scrolled_view)
 
    scrolled_view->hscrollbar = etk_hscrollbar_new(0.0, 0.0, 0.0, 6.0, 40.0, 0.0);
    etk_widget_visibility_locked_set(scrolled_view->hscrollbar, ETK_TRUE);
-   etk_widget_parent_set(scrolled_view->hscrollbar, ETK_CONTAINER(scrolled_view));
+   etk_widget_parent_set(scrolled_view->hscrollbar, ETK_WIDGET(scrolled_view));
    etk_widget_show(scrolled_view->hscrollbar);
    scrolled_view->vscrollbar = etk_vscrollbar_new(0.0, 0.0, 0.0, 6.0, 40.0, 0.0);
    etk_widget_visibility_locked_set(scrolled_view->vscrollbar, ETK_TRUE);
-   etk_widget_parent_set(scrolled_view->vscrollbar, ETK_CONTAINER(scrolled_view));
+   etk_widget_parent_set(scrolled_view->vscrollbar, ETK_WIDGET(scrolled_view));
    etk_widget_show(scrolled_view->vscrollbar);
 
    ETK_WIDGET(scrolled_view)->size_request = _etk_scrolled_view_size_request;

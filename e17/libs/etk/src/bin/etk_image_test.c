@@ -17,7 +17,7 @@ void etk_test_image_window_create(void *data)
    
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), _("Etk Image Test"));
-   etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);	
+   etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
 	
    images[0] = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/test.png");
    etk_image_keep_aspect_set(ETK_IMAGE(images[0]), ETK_TRUE);

@@ -32,7 +32,6 @@ enum _Etk_Button_Property_Id
 };
 
 static void _etk_button_constructor(Etk_Button *button);
-static void _etk_button_destructor(Etk_Button *button);
 static void _etk_button_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_button_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_button_image_removed_cb(Etk_Object *object, Etk_Widget *child, void *data);
@@ -484,6 +483,7 @@ static void _etk_button_child_create(Etk_Button *button)
 
    if (button->image)
    {
+      printf("_etk_button_child_create with image: %p\n", button);
       if (!button->alignment)
       {
          button->alignment = etk_alignment_new(button->xalign, button->yalign, 0.0, 0.0);
@@ -494,7 +494,11 @@ static void _etk_button_child_create(Etk_Button *button)
       etk_widget_show(button->alignment);
 
       if (button->hbox)
+      {
+         etk_container_remove(ETK_CONTAINER(button->hbox), ETK_WIDGET(button->image));
+         etk_container_remove(ETK_CONTAINER(button->hbox), button->label);
          etk_object_destroy(ETK_OBJECT(button->hbox));
+      }
       button->hbox = etk_hbox_new(ETK_FALSE, 8);
       etk_widget_visibility_locked_set(button->hbox, ETK_TRUE);
       etk_widget_pass_events_set(button->hbox, ETK_TRUE);

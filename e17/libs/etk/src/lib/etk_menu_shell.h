@@ -2,7 +2,8 @@
 #ifndef _ETK_MENU_SHELL_H_
 #define _ETK_MENU_SHELL_H_
 
-#include "etk_container.h"
+#include "etk_widget.h"
+#include <Evas.h>
 #include "etk_types.h"
 
 /**
@@ -24,10 +25,11 @@
 struct _Etk_Menu_Shell
 {
    /* private: */
-   /* Inherit from Etk_Container */
-   Etk_Container container;
+   /* Inherit from Etk_Widget */
+   Etk_Widget widget;
    
    Etk_Menu_Item *parent;
+   Evas_List *items;
    void (*items_update)(Etk_Menu_Shell *menu_shell);
 };
 

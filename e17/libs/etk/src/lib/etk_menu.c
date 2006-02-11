@@ -25,18 +25,13 @@ typedef enum _Etk_Menu_Screen_Edge
    ETK_MENU_TOP_EDGE = (1 << 3)
 } Etk_Menu_Screen_Edge;
 
-enum _Etk_Menu_Signal_Id
-{
-   ETK_MENU_NUM_SIGNALS
-};
-
 static void _etk_menu_constructor(Etk_Menu *menu);
 static void _etk_menu_destructor(Etk_Menu *menu);
 static void _etk_menu_size_request(Etk_Widget *widget, Etk_Size *size_requisition);
 static void _etk_menu_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_menu_items_update(Etk_Menu_Shell *menu_shell);
-static void _etk_menu_child_added_cb(Etk_Object *object, void *child, void *data);
-static void _etk_menu_child_removed_cb(Etk_Object *object, void *child, void *data);
+static void _etk_menu_item_added_cb(Etk_Object *object, void *item, void *data);
+static void _etk_menu_item_removed_cb(Etk_Object *object, void *item, void *data);
 static int _etk_menu_mouse_up_cb(void *data, int type, void *event);
 static int _etk_menu_mouse_move_cb(void *data, int type, void *event);
 static void _etk_menu_item_enter_cb(Etk_Object *object, void *data);
@@ -61,8 +56,6 @@ static int _etk_menu_mouse_x = -100000;
 static int _etk_menu_mouse_y = -100000;
 static Ecore_Timer *_etk_menu_slide_timer = NULL;
 
-static Etk_Signal *_etk_menu_signals[ETK_MENU_NUM_SIGNALS];
-
 /**************************
  *
  * Implementation
@@ -78,9 +71,7 @@ Etk_Type *etk_menu_type_get()
    static Etk_Type *menu_type = NULL;
 
    if (!menu_type)
-   {
       menu_type = etk_type_new("Etk_Menu", ETK_MENU_SHELL_TYPE, sizeof(Etk_Menu), ETK_CONSTRUCTOR(_etk_menu_constructor), ETK_DESTRUCTOR(_etk_menu_destructor));
-   }
 
    return menu_type;
 }
@@ -162,7 +153,7 @@ void etk_menu_popdown(Etk_Menu *menu)
    if (!menu || !(menu_list = evas_list_find_list(_etk_menu_popped_menus, menu)))
       return;
 
-   for (l = ETK_CONTAINER(menu)->children; l; l = l->next)
+   for (l = ETK_MENU_SHELL(menu)->items; l; l = l->next)
       etk_menu_item_deselect(ETK_MENU_ITEM(l->data));
 
    etk_widget_hide(ETK_WIDGET(menu->window));
@@ -205,8 +196,8 @@ static void _etk_menu_constructor(Etk_Menu *menu)
    ETK_WIDGET(menu)->size_allocate = _etk_menu_size_allocate;
    ETK_MENU_SHELL(menu)->items_update = _etk_menu_items_update;
    
-   etk_signal_connect("child_added", ETK_OBJECT(menu), ETK_CALLBACK(_etk_menu_child_added_cb), NULL);
-   etk_signal_connect("child_removed", ETK_OBJECT(menu), ETK_CALLBACK(_etk_menu_child_removed_cb), NULL);
+   etk_signal_connect("item_added", ETK_OBJECT(menu), ETK_CALLBACK(_etk_menu_item_added_cb), NULL);
+   etk_signal_connect("item_removed", ETK_OBJECT(menu), ETK_CALLBACK(_etk_menu_item_removed_cb), NULL);
 }
 
 /* Destroys the menu */
@@ -222,14 +213,14 @@ static void _etk_menu_destructor(Etk_Menu *menu)
 static void _etk_menu_size_request(Etk_Widget *widget, Etk_Size *size_requisition)
 {
    Evas_List *l;
-   Etk_Container *menu_container;
+   Etk_Menu_Shell *menu_shell;
    
-   if (!(menu_container = ETK_CONTAINER(widget)) || !size_requisition)
+   if (!(menu_shell = ETK_MENU_SHELL(widget)) || !size_requisition)
       return;
    
    size_requisition->w = 0;
    size_requisition->h = 0;
-   for (l = menu_container->children; l; l = l->next)
+   for (l = menu_shell->items; l; l = l->next)
    {
       Etk_Size child_requisition;
       
@@ -243,16 +234,16 @@ static void _etk_menu_size_request(Etk_Widget *widget, Etk_Size *size_requisitio
 static void _etk_menu_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 {
    Etk_Geometry child_geometry;
-   Etk_Container *menu_container;
+   Etk_Menu_Shell *menu_shell;
    Evas_List *l;
    int y_offset;
    
-   if (!(menu_container = ETK_CONTAINER(widget)))
+   if (!(menu_shell = ETK_MENU_SHELL(widget)))
       return;
    
    y_offset = geometry.y;
    child_geometry.x = geometry.x;
-   for (l = menu_container->children; l; l = l->next)
+   for (l = menu_shell->items; l; l = l->next)
    {
       Etk_Size child_requisition;
       
@@ -278,7 +269,7 @@ static void _etk_menu_items_update(Etk_Menu_Shell *menu_shell)
    if (!(menu = ETK_MENU(menu_shell)))
       return;
       
-   for (l = ETK_CONTAINER(menu_shell)->children; l; l = l->next)
+   for (l = menu_shell->items; l; l = l->next)
    {
       i = ETK_MENU_ITEM(l->data);
       
@@ -288,10 +279,10 @@ static void _etk_menu_items_update(Etk_Menu_Shell *menu_shell)
          items_has_right_element = ETK_TRUE;
    }
    
-   for (l = ETK_CONTAINER(menu_shell)->children; l; l = l->next)
+   for (l = menu_shell->items; l; l = l->next)
       etk_menu_item_image_show(ETK_MENU_ITEM(l->data), items_has_image);
    
-   for (l = ETK_CONTAINER(menu_shell)->children; l; l = l->next)
+   for (l = menu_shell->items; l; l = l->next)
       etk_menu_item_right_swallow_show(ETK_MENU_ITEM(l->data), items_has_right_element);
 }
 
@@ -301,34 +292,37 @@ static void _etk_menu_items_update(Etk_Menu_Shell *menu_shell)
  *
  **************************/
 
-/* Called when a child is added to the menu */
-static void _etk_menu_child_added_cb(Etk_Object *object, void *child, void *data)
+/* Called when an item is added to the menu */
+static void _etk_menu_item_added_cb(Etk_Object *object, void *item, void *data)
 {
-   Etk_Object *item;
+   Etk_Object *item_object;
    
-   if (!(item = ETK_OBJECT(child)))
+   if (!(item_object = ETK_OBJECT(item)))
       return;
    
-   etk_signal_connect("enter", item, ETK_CALLBACK(_etk_menu_item_enter_cb), NULL);
-   etk_signal_connect("leave", item, ETK_CALLBACK(_etk_menu_item_leave_cb), NULL);
-   etk_signal_connect("mouse_up", item, ETK_CALLBACK(_etk_menu_item_mouse_up_cb), NULL);
-   etk_signal_connect("selected", item, ETK_CALLBACK(_etk_menu_item_selected_cb), NULL);
-   etk_signal_connect("deselected", item, ETK_CALLBACK(_etk_menu_item_deselected_cb), NULL);
-   etk_signal_connect("activated", item, ETK_CALLBACK(_etk_menu_item_activated_cb), NULL);
+   etk_signal_connect("enter", item_object, ETK_CALLBACK(_etk_menu_item_enter_cb), NULL);
+   etk_signal_connect("leave", item_object, ETK_CALLBACK(_etk_menu_item_leave_cb), NULL);
+   etk_signal_connect("mouse_up", item_object, ETK_CALLBACK(_etk_menu_item_mouse_up_cb), NULL);
+   etk_signal_connect("selected", item_object, ETK_CALLBACK(_etk_menu_item_selected_cb), NULL);
+   etk_signal_connect("deselected", item_object, ETK_CALLBACK(_etk_menu_item_deselected_cb), NULL);
+   etk_signal_connect("activated", item_object, ETK_CALLBACK(_etk_menu_item_activated_cb), NULL);
    etk_menu_shell_update(ETK_MENU_SHELL(object));
 }
 
-/* Called when a child is removed from the menu */
-static void _etk_menu_child_removed_cb(Etk_Object *object, void *child, void *data)
+/* Called when an item is removed from the menu */
+static void _etk_menu_item_removed_cb(Etk_Object *object, void *item, void *data)
 {
-   Etk_Object *item;
+   Etk_Object *item_object;
    
-   if (!(item = ETK_OBJECT(child)))
+   if (!(item_object = ETK_OBJECT(item)))
       return;
    
-   etk_signal_disconnect("selected", item, ETK_CALLBACK(_etk_menu_item_selected_cb));
-   etk_signal_disconnect("deselected", item, ETK_CALLBACK(_etk_menu_item_deselected_cb));
-   etk_signal_disconnect("activated", item, ETK_CALLBACK(_etk_menu_item_activated_cb));
+   etk_signal_disconnect("enter", item_object, ETK_CALLBACK(_etk_menu_item_enter_cb));
+   etk_signal_disconnect("leave", item_object, ETK_CALLBACK(_etk_menu_item_leave_cb));
+   etk_signal_disconnect("mouse_up", item_object, ETK_CALLBACK(_etk_menu_item_mouse_up_cb));
+   etk_signal_disconnect("selected", item_object, ETK_CALLBACK(_etk_menu_item_selected_cb));
+   etk_signal_disconnect("deselected", item_object, ETK_CALLBACK(_etk_menu_item_deselected_cb));
+   etk_signal_disconnect("activated", item_object, ETK_CALLBACK(_etk_menu_item_activated_cb));
    etk_menu_shell_update(ETK_MENU_SHELL(object));
 }
 
@@ -435,7 +429,7 @@ static void _etk_menu_item_selected_cb(Etk_Object *object, void *data)
       return;
 
    /* First, we deactivate all the items that are on the same menu than the item */
-   for (l = ETK_CONTAINER(menu)->children; l; l = l->next)
+   for (l = ETK_MENU_SHELL(menu)->items; l; l = l->next)
    {
       if (ETK_MENU_ITEM(l->data) == item)
          continue;

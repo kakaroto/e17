@@ -68,7 +68,7 @@ static Etk_Test_Set tests[] =
    {
       "X Drag / Drop",
       etk_test_xdnd_window_create
-   }   
+   }
 };
 static int num_tests = sizeof(tests) / sizeof (tests[0]);
 

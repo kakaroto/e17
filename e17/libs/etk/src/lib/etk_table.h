@@ -3,6 +3,7 @@
 #define _ETK_TABLE_H_
 
 #include "etk_container.h"
+#include <Evas.h>
 #include "etk_types.h"
 
 /**
@@ -17,11 +18,7 @@
 /** @brief Checks if the object is an Etk_Table */
 #define ETK_IS_TABLE(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_TABLE_TYPE))
 
-/**
- * @struct Etk_Table_Child_Properties
- * @brief The properties of table child 
- */
-struct _Etk_Table_Child_Properties
+typedef struct _Etk_Table_Cell
 {
    /* private: */
    int left_attach;
@@ -31,19 +28,17 @@ struct _Etk_Table_Child_Properties
    int x_padding;
    int y_padding;
    Etk_Fill_Policy_Flags fill_policy;
-};
+   Etk_Widget *child;
+} Etk_Table_Cell;
 
-/**
- * @struct Etk_Table_Col_Row
- * @brief Describes the gemotry of a row or a col. Shouldn't be used directly
- */
-struct _Etk_Table_Col_Row
+typedef struct _Etk_Table_Col_Row
 {
+   /* private: */
    int requested_size;
    int size;
    int offset;
    Etk_Bool expand;
-};
+} Etk_Table_Col_Row;
 
 /**
  * @struct Etk_Table
@@ -55,9 +50,11 @@ struct _Etk_Table
    /* Inherit from Etk_Container */
    Etk_Container container;
 
-   Etk_Widget **cells;
+   Etk_Table_Cell **cells;
    Etk_Table_Col_Row *cols;
    Etk_Table_Col_Row *rows;
+   
+   Evas_List *children;
 
    int num_cols;
    int num_rows;

@@ -3,6 +3,7 @@
 #define _ETK_BIN_H_
 
 #include "etk_container.h"
+#include <Evas.h>
 #include "etk_types.h"
 
 /**
@@ -28,9 +29,11 @@ struct _Etk_Bin
    Etk_Container container;
 
    Etk_Widget *child;
+   Evas_List *child_list;
 };
 
 Etk_Type *etk_bin_type_get();
+
 Etk_Widget *etk_bin_child_get(Etk_Bin *bin);
 void etk_bin_child_set(Etk_Bin *bin, Etk_Widget *child);
 

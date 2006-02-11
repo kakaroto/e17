@@ -15,16 +15,11 @@
 * @{
  */
 
-enum _Etk_Menu_Bar_Signal_Id
-{
-   ETK_MENU_BAR_NUM_SIGNALS
-};
-
 static void _etk_menu_bar_constructor(Etk_Menu_Bar *menu_bar);
 static void _etk_menu_bar_size_request(Etk_Widget *widget, Etk_Size *size_requisition);
 static void _etk_menu_bar_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
-static void _etk_menu_bar_child_added_cb(Etk_Object *object, void *child, void *data);
-static void _etk_menu_bar_child_removed_cb(Etk_Object *object, void *child, void *data);
+static void _etk_menu_bar_item_added_cb(Etk_Object *object, void *item, void *data);
+static void _etk_menu_bar_item_removed_cb(Etk_Object *object, void *item, void *data);
 static int _etk_menu_bar_mouse_move_cb(void *data, int type, void *event);
 static void _etk_menu_bar_item_selected_cb(Etk_Object *object, void *data);
 static void _etk_menu_bar_item_deselected_cb(Etk_Object *object, void *data);
@@ -32,7 +27,6 @@ static void _etk_menu_bar_item_mouse_up_cb(Etk_Object *object, void *event, void
 static void _etk_menu_bar_item_submenu_popped_down_cb(Etk_Object *object, void *event, void *data);
 
 static Ecore_Event_Handler *_etk_menu_bar_mouse_move_handler = NULL;
-static Etk_Signal *_etk_menu_bar_signals[ETK_MENU_BAR_NUM_SIGNALS];
 
 /**************************
  *
@@ -49,9 +43,7 @@ Etk_Type *etk_menu_bar_type_get()
    static Etk_Type *menu_bar_type = NULL;
 
    if (!menu_bar_type)
-   {
       menu_bar_type = etk_type_new("Etk_Menu_Bar", ETK_MENU_SHELL_TYPE, sizeof(Etk_Menu_Bar), ETK_CONSTRUCTOR(_etk_menu_bar_constructor), NULL);
-   }
 
    return menu_bar_type;
 }
@@ -81,22 +73,22 @@ static void _etk_menu_bar_constructor(Etk_Menu_Bar *menu_bar)
    ETK_WIDGET(menu_bar)->size_request = _etk_menu_bar_size_request;
    ETK_WIDGET(menu_bar)->size_allocate = _etk_menu_bar_size_allocate;
    
-   etk_signal_connect("child_added", ETK_OBJECT(menu_bar), ETK_CALLBACK(_etk_menu_bar_child_added_cb), NULL);
-   etk_signal_connect("child_removed", ETK_OBJECT(menu_bar), ETK_CALLBACK(_etk_menu_bar_child_removed_cb), NULL);
+   etk_signal_connect("item_added", ETK_OBJECT(menu_bar), ETK_CALLBACK(_etk_menu_bar_item_added_cb), NULL);
+   etk_signal_connect("item_removed", ETK_OBJECT(menu_bar), ETK_CALLBACK(_etk_menu_bar_item_removed_cb), NULL);
 }
 
 /* Calculates the ideal size of the menu_bar */
 static void _etk_menu_bar_size_request(Etk_Widget *widget, Etk_Size *size_requisition)
 {
    Evas_List *l;
-   Etk_Container *menu_bar_container;
+   Etk_Menu_Shell *menu_shell;
    
-   if (!(menu_bar_container = ETK_CONTAINER(widget)) || !size_requisition)
+   if (!(menu_shell = ETK_MENU_SHELL(widget)) || !size_requisition)
       return;
    
    size_requisition->w = 0;
    size_requisition->h = 0;
-   for (l = menu_bar_container->children; l; l = l->next)
+   for (l = menu_shell->items; l; l = l->next)
    {
       Etk_Size child_requisition;
       
@@ -110,16 +102,16 @@ static void _etk_menu_bar_size_request(Etk_Widget *widget, Etk_Size *size_requis
 static void _etk_menu_bar_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 {
    Etk_Geometry child_geometry;
-   Etk_Container *menu_bar_container;
+   Etk_Menu_Shell *menu_shell;
    Evas_List *l;
    int x_offset;
    
-   if (!(menu_bar_container = ETK_CONTAINER(widget)))
+   if (!(menu_shell = ETK_MENU_SHELL(widget)))
       return;
    
    x_offset = geometry.x;
    child_geometry.y = geometry.y;
-   for (l = menu_bar_container->children; l; l = l->next)
+   for (l = menu_shell->items; l; l = l->next)
    {
       Etk_Size child_requisition;
       
@@ -139,33 +131,34 @@ static void _etk_menu_bar_size_allocate(Etk_Widget *widget, Etk_Geometry geometr
  *
  **************************/
 
-/* Called when a child is added to the menu_bar */
-static void _etk_menu_bar_child_added_cb(Etk_Object *object, void *child, void *data)
+/* Called when an item is added to the menu_bar */
+static void _etk_menu_bar_item_added_cb(Etk_Object *object, void *item, void *data)
 {
-   Etk_Object *item;
+   Etk_Object *item_object;
    
-   if (!(item = ETK_OBJECT(child)))
+   if (!(item_object = ETK_OBJECT(item)))
       return;
    
-   etk_widget_theme_set(ETK_WIDGET(item), ETK_WIDGET(item)->theme_file, "menu_bar_item");
-   etk_signal_connect("mouse_up", item, ETK_CALLBACK(_etk_menu_bar_item_mouse_up_cb), NULL);
-   etk_signal_connect("selected", item, ETK_CALLBACK(_etk_menu_bar_item_selected_cb), NULL);
-   etk_signal_connect("deselected", item, ETK_CALLBACK(_etk_menu_bar_item_deselected_cb), NULL);
-   etk_signal_connect("submenu_popped_down", item, ETK_CALLBACK(_etk_menu_bar_item_submenu_popped_down_cb), NULL);
+   /* TODO: use theme context! */
+   etk_widget_theme_set(ETK_WIDGET(item_object), ETK_WIDGET(item_object)->theme_file, "menu_bar_item");
+   etk_signal_connect("mouse_up", item_object, ETK_CALLBACK(_etk_menu_bar_item_mouse_up_cb), NULL);
+   etk_signal_connect("selected", item_object, ETK_CALLBACK(_etk_menu_bar_item_selected_cb), NULL);
+   etk_signal_connect("deselected", item_object, ETK_CALLBACK(_etk_menu_bar_item_deselected_cb), NULL);
+   etk_signal_connect("submenu_popped_down", item_object, ETK_CALLBACK(_etk_menu_bar_item_submenu_popped_down_cb), NULL);
 }
 
-/* Called when a child is removed from the menu_bar */
-static void _etk_menu_bar_child_removed_cb(Etk_Object *object, void *child, void *data)
+/* Called when an item is removed from the menu_bar */
+static void _etk_menu_bar_item_removed_cb(Etk_Object *object, void *item, void *data)
 {
-   Etk_Object *item;
+   Etk_Object *item_object;
    
-   if (!(item = ETK_OBJECT(child)))
+   if (!(item_object = ETK_OBJECT(item)))
       return;
    
-   etk_signal_disconnect("mouse_up", item, ETK_CALLBACK(_etk_menu_bar_item_mouse_up_cb));
-   etk_signal_disconnect("selected", item, ETK_CALLBACK(_etk_menu_bar_item_selected_cb));
-   etk_signal_disconnect("deselected", item, ETK_CALLBACK(_etk_menu_bar_item_deselected_cb));
-   etk_signal_disconnect("submenu_popped_down", item, ETK_CALLBACK(_etk_menu_bar_item_submenu_popped_down_cb));
+   etk_signal_disconnect("mouse_up", item_object, ETK_CALLBACK(_etk_menu_bar_item_mouse_up_cb));
+   etk_signal_disconnect("selected", item_object, ETK_CALLBACK(_etk_menu_bar_item_selected_cb));
+   etk_signal_disconnect("deselected", item_object, ETK_CALLBACK(_etk_menu_bar_item_deselected_cb));
+   etk_signal_disconnect("submenu_popped_down", item_object, ETK_CALLBACK(_etk_menu_bar_item_submenu_popped_down_cb));
 }
 
 /*
@@ -187,7 +180,7 @@ static int _etk_menu_bar_mouse_move_cb(void *data, int type, void *event)
    
    /* If the mouse pointer is above a menu item, we select it */
    etk_toplevel_widget_geometry_get(toplevel, &tx, &ty, NULL, NULL);
-   for (l = ETK_CONTAINER(menu_bar)->children; l; l = l->next)
+   for (l = ETK_MENU_SHELL(menu_bar)->items; l; l = l->next)
    {
       item = ETK_WIDGET(l->data);
       etk_widget_geometry_get(item, &item_geometry.x, &item_geometry.y, &item_geometry.w, &item_geometry.h);
@@ -215,7 +208,7 @@ static void _etk_menu_bar_item_selected_cb(Etk_Object *object, void *data)
       return;
 
    /* First, we deselect all the items that are on the same menu_bar than the item */
-   for (l = ETK_CONTAINER(menu_bar)->children; l; l = l->next)
+   for (l = ETK_MENU_SHELL(menu_bar)->items; l; l = l->next)
    {
       if (ETK_MENU_ITEM(l->data) == item)
          continue;

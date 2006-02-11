@@ -3,6 +3,7 @@
 #define _ETK_BOX_H_
 
 #include "etk_container.h"
+#include <Evas.h>
 #include "etk_types.h"
 
 /**
@@ -17,18 +18,13 @@
 /** @brief Checks if the object is an Etk_Box */
 #define ETK_IS_BOX(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_BOX_TYPE))
 
-/**
- * @struct Etk_Box_Child_Properties
- * @brief The properties of a box child 
- */
-struct _Etk_Box_Child_Properties
+typedef struct _Etk_Box_Child_Props
 {
-   /* private: */
    int padding;
    Etk_Bool expand;
    Etk_Bool fill;
    Etk_Bool pack_end;
-};
+} Etk_Box_Child_Props;
 
 /**
  * @struct Etk_Box
@@ -42,6 +38,7 @@ struct _Etk_Box
 
    int spacing;
    Etk_Bool homogeneous;
+   Evas_List *children;
 };
 
 Etk_Type *etk_box_type_get();

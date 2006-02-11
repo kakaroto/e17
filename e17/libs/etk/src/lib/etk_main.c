@@ -2,8 +2,6 @@
 #include "etk_main.h"
 #include "etk_dnd.h"
 #include <locale.h>
-#include <string.h>
-#include <stdlib.h>
 #include <Ecore.h>
 #include <Ecore_X.h>
 #include <Ecore_Job.h>
@@ -16,7 +14,6 @@
 #include "etk_toplevel_widget.h"
 #include "etk_utils.h"
 #include "etk_theme.h"
-#include "etk_window.h"
 #include "config.h"
 
 /**
@@ -70,27 +67,27 @@ Etk_Bool etk_init()
       ETK_WARNING("Edje initialization failed!");
       return ETK_FALSE;
    }
-   
 #if HAVE_ECORE_X
    if (!etk_dnd_init())
-     {
-	ETK_WARNING("Etk_dnd and Ecore_X initialzation failed!");
-	return ETK_FALSE;
-     }
-#endif   
-   
+   {
+      ETK_WARNING("Etk_dnd and Ecore_X initialzation failed!");
+      return ETK_FALSE;
+   }
+#endif
    etk_theme_init();
 
    /* Gettext */
    setlocale(LC_ALL, "");
    bindtextdomain(PACKAGE, LOCALEDIR);
    textdomain(PACKAGE);
-   
+
    _etk_main_initialized = ETK_TRUE;
    return ETK_TRUE;
 }
 
-/** @brief Shutdowns etk and frees the memory */
+/**
+ * @brief Shutdowns etk and frees the memory
+ */
 void etk_shutdown()
 {
    if (!_etk_main_initialized)
@@ -110,7 +107,9 @@ void etk_shutdown()
    _etk_main_initialized = ETK_FALSE;
 }
 
-/** @brief Enters the main loop */
+/**
+ * @brief Enters the main loop
+*/
 void etk_main()
 {
    if (!_etk_main_initialized || _etk_main_running)
@@ -120,7 +119,9 @@ void etk_main()
    ecore_main_loop_begin();
 }
 
-/** @brief Leaves the main loop */
+/**
+ * @brief Leaves the main loop
+ */
 void etk_main_quit()
 {
    if (!_etk_main_running)
@@ -133,7 +134,9 @@ void etk_main_quit()
    _etk_main_iterate_job = NULL;
 }
 
-/** @brief Runs an iteration of the main loop */
+/**
+ * @brief Runs an iteration of the main loop
+ */
 void etk_main_iterate()
 {
    Evas_List *l;
@@ -150,7 +153,9 @@ void etk_main_iterate()
    }
 }
 
-/** @brief Will run an iteration as soon as possible */
+/**
+ * @brief Will run an iteration as soon as possible
+ */
 void etk_main_iteration_queue()
 {
    if (_etk_main_iterate_job)
@@ -200,12 +205,8 @@ static void _etk_main_size_request_recursive(Etk_Widget *widget)
    Etk_Size unused_size;
    
    etk_widget_size_request(widget, &unused_size);
-   
-   if (ETK_IS_CONTAINER(widget))
-   {
-      for (l = ETK_CONTAINER(widget)->children; l; l = l->next)
-         _etk_main_size_request_recursive(ETK_WIDGET(l->data));
-   }
+   for (l = widget->children; l; l = l->next)
+      _etk_main_size_request_recursive(ETK_WIDGET(l->data));
 }
 
 /* Recusively allocates the size of all the widgets */
@@ -224,11 +225,8 @@ static void _etk_main_size_allocate_recursive(Etk_Widget *widget, Etk_Bool is_to
       geometry = widget->geometry;
    etk_widget_size_allocate(widget, geometry);
    
-   if (ETK_IS_CONTAINER(widget))
-   {
-      for (l = ETK_CONTAINER(widget)->children; l; l = l->next)
-         _etk_main_size_allocate_recursive(ETK_WIDGET(l->data), ETK_FALSE);
-   }
+   for (l = widget->children; l; l = l->next)
+      _etk_main_size_allocate_recursive(ETK_WIDGET(l->data), ETK_FALSE);
 }
 
 /** @} */

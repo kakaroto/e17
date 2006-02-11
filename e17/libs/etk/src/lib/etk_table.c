@@ -1,7 +1,8 @@
 /** @file etk_table.c */
 #include "etk_table.h"
 #include <stdlib.h>
-#include <Evas.h>
+#include "etk_signal.h"
+#include "etk_signal_callback.h"
 #include "etk_utils.h"
 
 /**
@@ -12,8 +13,6 @@
 /* Gets the array index of the cell located at column "col" and row "row" in table "table" */
 #define ETK_TABLE_CELL_INDEX(table, col, row)   ((row) * (table)->num_cols + (col))
 #define ETK_TABLE_CELL_MIN_SIZE 10
-
-int Test = 0;
 
 enum _Etk_Table_Property_Id
 {
@@ -28,6 +27,7 @@ static void _etk_table_property_set(Etk_Object *object, int property_id, Etk_Pro
 static void _etk_table_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_table_child_add(Etk_Container *container, Etk_Widget *widget);
 static void _etk_table_child_remove(Etk_Container *container, Etk_Widget *widget);
+static Evas_List *_etk_table_children_get(Etk_Container *container);
 static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisition);
 static void _etk_table_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 
@@ -89,31 +89,27 @@ Etk_Widget *etk_table_new(int num_cols, int num_rows, Etk_Bool homogeneous)
 void etk_table_cell_clear(Etk_Table *table, int col, int row)
 {
    Evas_List *l;
-   Etk_Container *container;
+   Etk_Table_Cell *cell;
    Etk_Widget *child;
-   Etk_Table_Child_Properties *child_properties;
    int i, j;
 
-   if (!(container = ETK_CONTAINER(table)) || !table->cells ||
-         col < 0 || col > table->num_cols - 1 ||
-         row < 0 || row > table->num_rows - 1 ||
-         !(child = table->cells[ETK_TABLE_CELL_INDEX(table, col, row)]) ||
-         !(l = evas_list_find_list(container->children, child)))
+   if (!table || !table->cells || col < 0 || col > table->num_cols - 1 || row < 0 || row > table->num_rows - 1)
+      return;
+   if (!(cell = table->cells[ETK_TABLE_CELL_INDEX(table, col, row)]) || !(child = cell->child))
+      return;
+   if (!(l = evas_list_find_list(table->children, child)))
       return;
 
-   if ((child_properties = child->child_properties))
+   for (i = cell->left_attach; i <= cell->right_attach; i++)
    {
-      for (i = child_properties->left_attach; i <= child_properties->right_attach; i++)
-      {
-         for (j = child_properties->top_attach; j <= child_properties->bottom_attach; j++)
-            table->cells[ETK_TABLE_CELL_INDEX(table, i, j)] = NULL;
-      }
-      free(child_properties);
-      child->child_properties = NULL;
+      for (j = cell->top_attach; j <= cell->bottom_attach; j++)
+         table->cells[ETK_TABLE_CELL_INDEX(table, i, j)] = NULL;
    }
+   free(cell);
 
+   table->children = evas_list_remove_list(table->children, l);
    etk_widget_parent_set(child, NULL);
-   etk_widget_size_recalc_queue(ETK_WIDGET(table));
+   etk_signal_emit_by_name("child_removed", ETK_OBJECT(table), NULL, child);
 }
 
 /**
@@ -125,14 +121,13 @@ void etk_table_cell_clear(Etk_Table *table, int col, int row)
 void etk_table_resize(Etk_Table *table, int num_cols, int num_rows)
 {
    Evas_List *l;
-   Etk_Container *table_container;
-   Etk_Widget **new_cells;
+   Etk_Table_Cell **new_cells;
+   Etk_Table_Cell *cell;
    Etk_Table_Col_Row *new_cols, *new_rows;
    Etk_Widget *child;
-   Etk_Table_Child_Properties *child_properties;
    int i, j;
 
-   if (!(table_container = ETK_CONTAINER(table)))
+   if (!table)
       return;
 
    if (num_cols < 0)
@@ -148,28 +143,30 @@ void etk_table_resize(Etk_Table *table, int num_cols, int num_rows)
    }
    else
    {
-      new_cells = calloc(num_cols * num_rows, sizeof(Etk_Widget *));
+      new_cells = calloc(num_cols * num_rows, sizeof(Etk_Table_Cell *));
       new_cols = malloc(num_cols * sizeof(Etk_Table_Col_Row));
       new_rows = malloc(num_rows * sizeof(Etk_Table_Col_Row));
    }
    
-   for (l = table_container->children; l; )
+   for (l = table->children; l; )
    {
       child = ETK_WIDGET(l->data);
       l = l->next;
-      child_properties = child->child_properties;
+      if (!(cell = child->child_properties))
+         continue;
+      
       /* The child is in the old table but not in the new one: we remove it */
-      if (child_properties->left_attach >= num_cols || child_properties->top_attach >= num_rows)
-         etk_table_cell_clear(table, child_properties->left_attach, child_properties->top_attach);
+      if (cell->left_attach >= num_cols || cell->top_attach >= num_rows)
+         etk_table_cell_clear(table, cell->left_attach, cell->top_attach);
       /* The child is in the new table: we copy it to the new table */
       else
       {
-         child_properties->right_attach = ETK_MIN(num_cols - 1, child_properties->right_attach);
-         child_properties->bottom_attach = ETK_MIN(num_rows - 1, child_properties->bottom_attach);
-         for (i = child_properties->left_attach; i <= child_properties->right_attach; i++)
+         cell->right_attach = ETK_MIN(num_cols - 1, cell->right_attach);
+         cell->bottom_attach = ETK_MIN(num_rows - 1, cell->bottom_attach);
+         for (i = cell->left_attach; i <= cell->right_attach; i++)
          {
-            for (j = child_properties->top_attach; j <= child_properties->bottom_attach; j++)
-               new_cells[j * num_cols + i] = child;
+            for (j = cell->top_attach; j <= cell->bottom_attach; j++)
+               new_cells[j * num_cols + i] = cell;
          }
       }
    }
@@ -204,52 +201,43 @@ void etk_table_resize(Etk_Table *table, int num_cols, int num_rows)
 void etk_table_attach(Etk_Table *table, Etk_Widget *child, int left_attach, int right_attach,
    int top_attach, int bottom_attach, int x_padding, int y_padding, Etk_Fill_Policy_Flags fill_policy)
 {
-   Etk_Table_Child_Properties *child_properties;
+   Etk_Table_Cell *cell;
    int i, j;
 
    if (!table || !table->cells || !child)
       return;
 
-   if (left_attach < 0)
-      left_attach = 0;
-   if (left_attach > table->num_cols - 1)
-      left_attach = table->num_cols - 1;
-   if (right_attach < left_attach)
-      right_attach = left_attach;
-   if (right_attach > table->num_cols - 1)
-      right_attach = table->num_cols - 1;
+   left_attach = ETK_CLAMP(left_attach, 0, table->num_cols - 1);
+   right_attach = ETK_CLAMP(right_attach, left_attach, table->num_cols - 1);
+   top_attach = ETK_CLAMP(top_attach, 0, table->num_rows - 1);
+   bottom_attach = ETK_CLAMP(bottom_attach, top_attach, table->num_rows - 1);
 
-   if (top_attach < 0)
-      top_attach = 0;
-   if (top_attach > table->num_rows - 1)
-      top_attach = table->num_rows - 1;
-   if (bottom_attach < top_attach)
-      bottom_attach = top_attach;
-   if (bottom_attach > table->num_rows - 1)
-      bottom_attach = table->num_rows - 1;
-
-   if (child->parent)
-      etk_container_remove(child->parent, child);
-   child_properties = malloc(sizeof(Etk_Table_Child_Properties));
-   child_properties->left_attach = left_attach;
-   child_properties->right_attach = right_attach;
-   child_properties->top_attach = top_attach;
-   child_properties->bottom_attach = bottom_attach;
-   child_properties->x_padding = x_padding;
-   child_properties->y_padding = y_padding;
-   child_properties->fill_policy = fill_policy;
-   child->child_properties = child_properties;
+   if (child->parent && ETK_IS_CONTAINER(child->parent))
+      etk_container_remove(ETK_CONTAINER(child->parent), child);
+   
+   cell = malloc(sizeof(Etk_Table_Cell));
+   cell->left_attach = left_attach;
+   cell->right_attach = right_attach;
+   cell->top_attach = top_attach;
+   cell->bottom_attach = bottom_attach;
+   cell->x_padding = x_padding;
+   cell->y_padding = y_padding;
+   cell->fill_policy = fill_policy;
+   cell->child = child;
+   child->child_properties = cell;
 
    for (i = left_attach; i <= right_attach; i++)
    {
       for (j = top_attach; j <= bottom_attach; j++)
       {
          etk_table_cell_clear(table, i, j);
-         table->cells[ETK_TABLE_CELL_INDEX(table, i, j)] = child;
+         table->cells[ETK_TABLE_CELL_INDEX(table, i, j)] = cell;
       }
    }
 
-   etk_widget_parent_set(child, ETK_CONTAINER(table));
+   table->children = evas_list_append(table->children, child);
+   etk_widget_parent_set(child, ETK_WIDGET(table));
+   etk_signal_emit_by_name("child_added", ETK_OBJECT(table), NULL, child);
 }
 
 /**
@@ -306,6 +294,7 @@ static void _etk_table_constructor(Etk_Table *table)
    if (!table)
       return;
 
+   table->children = NULL;
    table->cells = NULL;
    table->cols = NULL;
    table->rows = NULL;
@@ -315,6 +304,7 @@ static void _etk_table_constructor(Etk_Table *table)
 
    ETK_CONTAINER(table)->child_add = _etk_table_child_add;
    ETK_CONTAINER(table)->child_remove = _etk_table_child_remove;
+   ETK_CONTAINER(table)->children_get = _etk_table_children_get;
    ETK_WIDGET(table)->size_request = _etk_table_size_request;
    ETK_WIDGET(table)->size_allocate = _etk_table_size_allocate;
 }
@@ -322,10 +312,21 @@ static void _etk_table_constructor(Etk_Table *table)
 /* Destroys the table */
 static void _etk_table_destructor(Etk_Table *table)
 {
+   Etk_Widget *child;
+   
    if (!table)
       return;
-
-   etk_table_resize(table, 0, 0);
+   
+   while (table->children)
+   {
+      child = ETK_WIDGET(table->children->data);
+      free(child->child_properties);
+      child->child_properties = NULL;
+      table->children = evas_list_remove_list(table->children, table->children);
+   }
+   free(table->cells);
+   free(table->cols);
+   free(table->rows);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -380,17 +381,14 @@ static void _etk_table_property_get(Etk_Object *object, int property_id, Etk_Pro
 static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisition)
 {
    Etk_Table *table;
-   Etk_Container *container;
    Etk_Widget *child;
-   Etk_Table_Child_Properties *child_properties;
+   Etk_Table_Cell *cell;
    Etk_Size child_requisition;
    Evas_List *l;
    int i;
 
    if (!(table = ETK_TABLE(widget)) || !size_requisition)
       return;
-
-   container = ETK_CONTAINER(table);
 
    if (!table->cells)
    {
@@ -406,21 +404,22 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
          Etk_Bool hexpand = ETK_FALSE, vexpand = ETK_FALSE;
    
          /* We calculate the maximum size of a cell */
-         for (l = container->children; l; l = l->next)
+         for (l = table->children; l; l = l->next)
          {
             child = ETK_WIDGET(l->data);
-            child_properties = child->child_properties;
+            if (!(cell = child->child_properties))
+               continue;
             etk_widget_size_request(child, &child_requisition);
 
-            cell_size = (2 * child_properties->x_padding + child_requisition.w) / (child_properties->right_attach - child_properties->left_attach + 1);
+            cell_size = (2 * cell->x_padding + child_requisition.w) / (cell->right_attach - cell->left_attach + 1);
             if (max_col_width < cell_size)
                max_col_width = cell_size;
-            hexpand |= (child_properties->fill_policy & ETK_FILL_POLICY_HEXPAND);
+            hexpand |= (cell->fill_policy & ETK_FILL_POLICY_HEXPAND);
 
-            cell_size = (2 * child_properties->y_padding + child_requisition.h) / (child_properties->bottom_attach - child_properties->top_attach + 1);
+            cell_size = (2 * cell->y_padding + child_requisition.h) / (cell->bottom_attach - cell->top_attach + 1);
             if (max_row_height < cell_size)
                max_row_height = cell_size;
-            vexpand |= (child_properties->fill_policy & ETK_FILL_POLICY_VEXPAND);
+            vexpand |= (cell->fill_policy & ETK_FILL_POLICY_VEXPAND);
          }
 
          for (i = 0; i < table->num_cols; i++)
@@ -452,49 +451,51 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
          }
 
          /* We first treat the children that span only one column or one row */
-         for (l = container->children; l; l = l->next)
+         for (l = table->children; l; l = l->next)
          {
             child = ETK_WIDGET(l->data);
-            child_properties = child->child_properties;
+            if (!(cell = child->child_properties))
+               continue;
             etk_widget_size_request(child, &child_requisition);
 
             /* Cols */
-            if (child_properties->left_attach == child_properties->right_attach)
+            if (cell->left_attach == cell->right_attach)
             {
-               if (table->cols[child_properties->left_attach].requested_size < child_requisition.w + 2 * child_properties->x_padding)
-                  table->cols[child_properties->left_attach].requested_size = child_requisition.w + 2 * child_properties->x_padding;
-               table->cols[child_properties->left_attach].expand |= (child_properties->fill_policy & ETK_FILL_POLICY_HEXPAND);
+               if (table->cols[cell->left_attach].requested_size < child_requisition.w + 2 * cell->x_padding)
+                  table->cols[cell->left_attach].requested_size = child_requisition.w + 2 * cell->x_padding;
+               table->cols[cell->left_attach].expand |= (cell->fill_policy & ETK_FILL_POLICY_HEXPAND);
             }
 
             /* Rows */
-            if (child_properties->top_attach == child_properties->bottom_attach)
+            if (cell->top_attach == cell->bottom_attach)
             {
-               if (table->rows[child_properties->top_attach].requested_size < child_requisition.h + 2 * child_properties->y_padding)
-                  table->rows[child_properties->top_attach].requested_size = child_requisition.h + 2 * child_properties->y_padding;
-               table->rows[child_properties->top_attach].expand |= (child_properties->fill_policy & ETK_FILL_POLICY_VEXPAND);
+               if (table->rows[cell->top_attach].requested_size < child_requisition.h + 2 * cell->y_padding)
+                  table->rows[cell->top_attach].requested_size = child_requisition.h + 2 * cell->y_padding;
+               table->rows[cell->top_attach].expand |= (cell->fill_policy & ETK_FILL_POLICY_VEXPAND);
             }
          }
          /* Then, we treat the children that span multiple columns or rows */
-         for (l = container->children; l; l = l->next)
+         for (l = table->children; l; l = l->next)
          {
-            child = ETK_WIDGET(l->data);
             int cells_size;
             int num_expandable_cells;
             int free_space;
             float delta;
             Etk_Bool a_cell_already_expands;
 
-            child_properties = child->child_properties;
+            child = ETK_WIDGET(l->data);
+            if (!(cell = child->child_properties))
+               continue;
             etk_widget_size_request(child, &child_requisition);
 
             /* Cols */
-            if (child_properties->left_attach < child_properties->right_attach)
+            if (cell->left_attach < cell->right_attach)
             {
                cells_size = 0;
                num_expandable_cells = 0;
                a_cell_already_expands = ETK_FALSE;
                
-               for (i = child_properties->left_attach; i <= child_properties->right_attach; i++)
+               for (i = cell->left_attach; i <= cell->right_attach; i++)
                {
                   if (table->cols[i].expand)
                   {
@@ -504,11 +505,11 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
                }
                if (!a_cell_already_expands)
                {
-                  for (i = child_properties->left_attach; i <= child_properties->right_attach; i++)
+                  for (i = cell->left_attach; i <= cell->right_attach; i++)
                      table->cols[i].expand = ETK_TRUE;
                }
                   
-               for (i = child_properties->left_attach; i <= child_properties->right_attach; i++)
+               for (i = cell->left_attach; i <= cell->right_attach; i++)
                {
                   cells_size += table->cols[i].requested_size;
                   if (table->cols[i].expand)
@@ -520,17 +521,17 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
                {
                   if (num_expandable_cells <= 0)
                   {
-                     delta = (float)free_space / (child_properties->right_attach - child_properties->left_attach + 1);
-                     for (i = child_properties->left_attach; i <= child_properties->right_attach; i++)
+                     delta = (float)free_space / (cell->right_attach - cell->left_attach + 1);
+                     for (i = cell->left_attach; i <= cell->right_attach; i++)
                      {
-                        table->cols[i].expand |= (child_properties->fill_policy & ETK_FILL_POLICY_HEXPAND);
+                        table->cols[i].expand |= (cell->fill_policy & ETK_FILL_POLICY_HEXPAND);
                         table->cols[i].requested_size += (int)(delta * (i + 1)) - (int)(delta * i);
                      }
                   }
                   else
                   {
                      delta = (float)free_space / num_expandable_cells;
-                     for (i = child_properties->left_attach; i <= child_properties->right_attach; i++)
+                     for (i = cell->left_attach; i <= cell->right_attach; i++)
                      {
                         if (table->cols[i].expand)
                            table->cols[i].requested_size += (int)(delta * (i + 1)) - (int)(delta * i);
@@ -540,13 +541,13 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
             }
 
             /* Rows */
-            if (child_properties->top_attach < child_properties->bottom_attach)
+            if (cell->top_attach < cell->bottom_attach)
             {
                cells_size = 0;
                num_expandable_cells = 0;
                a_cell_already_expands = ETK_FALSE;
                
-               for (i = child_properties->top_attach; i <= child_properties->bottom_attach; i++)
+               for (i = cell->top_attach; i <= cell->bottom_attach; i++)
                {
                   if (table->rows[i].expand)
                   {
@@ -556,11 +557,11 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
                }
                if (!a_cell_already_expands)
                {
-                  for (i = child_properties->top_attach; i <= child_properties->bottom_attach; i++)
+                  for (i = cell->top_attach; i <= cell->bottom_attach; i++)
                      table->rows[i].expand = ETK_TRUE;
                }
                
-               for (i = child_properties->top_attach; i <= child_properties->bottom_attach; i++)
+               for (i = cell->top_attach; i <= cell->bottom_attach; i++)
                {
                   cells_size += table->rows[i].requested_size;
                   if (table->rows[i].expand)
@@ -572,17 +573,17 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
                {
                   if (num_expandable_cells <= 0)
                   {
-                     delta = (float)free_space / (child_properties->bottom_attach - child_properties->top_attach + 1);
-                     for (i = child_properties->top_attach; i <= child_properties->bottom_attach; i++)
+                     delta = (float)free_space / (cell->bottom_attach - cell->top_attach + 1);
+                     for (i = cell->top_attach; i <= cell->bottom_attach; i++)
                      {
-                        table->rows[i].expand |= (child_properties->fill_policy & ETK_FILL_POLICY_VEXPAND);
+                        table->rows[i].expand |= (cell->fill_policy & ETK_FILL_POLICY_VEXPAND);
                         table->rows[i].requested_size += (int)(delta * (i + 1)) - (int)(delta * i);
                      }
                   }
                   else
                   {
                      delta = (float)free_space / num_expandable_cells;
-                     for (i = child_properties->top_attach; i <= child_properties->bottom_attach; i++)
+                     for (i = cell->top_attach; i <= cell->bottom_attach; i++)
                      {
                         if (table->rows[i].expand)
                            table->rows[i].requested_size += (int)(delta * (i + 1)) - (int)(delta * i);
@@ -601,8 +602,8 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
       }
    }
 
-   size_requisition->w += 2 * container->border_width;
-   size_requisition->h += 2 * container->border_width;
+   size_requisition->w += 2 * ETK_CONTAINER(table)->border_width;
+   size_requisition->h += 2 * ETK_CONTAINER(table)->border_width;
 }
 
 /* Resizes the table to the size allocation */
@@ -611,7 +612,7 @@ static void _etk_table_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    Etk_Table *table;
    Etk_Container *container;
    Etk_Widget *child;
-   Etk_Table_Child_Properties *child_properties;
+   Etk_Table_Cell *cell;
    Etk_Size requested_inner_size;
    Etk_Size allocated_inner_size;
    Etk_Geometry child_geometry;
@@ -621,7 +622,6 @@ static void _etk_table_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 
    if (!(table = ETK_TABLE(widget)) || !table->cells)
       return;
-   
    container = ETK_CONTAINER(table);
 
    etk_widget_size_request(widget, &requested_inner_size);
@@ -710,19 +710,21 @@ static void _etk_table_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       }
    }
 
-   /* We allocate the size fot the children */
-   for (l = container->children; l; l = l->next)
+   /* We allocate the size for the children */
+   for (l = table->children; l; l = l->next)
    {
       child = ETK_WIDGET(l->data);
-      child_properties = child->child_properties;
-      child_geometry.x = geometry.x + table->cols[child_properties->left_attach].offset + child_properties->x_padding;
-      child_geometry.y = geometry.y + table->rows[child_properties->top_attach].offset + child_properties->y_padding;
-      child_geometry.w = table->cols[child_properties->right_attach].offset - table->cols[child_properties->left_attach].offset +
-         table->cols[child_properties->right_attach].size - 2 * child_properties->x_padding;
-      child_geometry.h = table->rows[child_properties->bottom_attach].offset - table->rows[child_properties->top_attach].offset +
-         table->rows[child_properties->bottom_attach].size - 2 * child_properties->y_padding;
+      if (!(cell = child->child_properties))
+         continue;
+      
+      child_geometry.x = geometry.x + table->cols[cell->left_attach].offset + cell->x_padding;
+      child_geometry.y = geometry.y + table->rows[cell->top_attach].offset + cell->y_padding;
+      child_geometry.w = table->cols[cell->right_attach].offset - table->cols[cell->left_attach].offset +
+         table->cols[cell->right_attach].size - 2 * cell->x_padding;
+      child_geometry.h = table->rows[cell->bottom_attach].offset - table->rows[cell->top_attach].offset +
+         table->rows[cell->bottom_attach].size - 2 * cell->y_padding;
 
-      etk_container_child_space_fill(child, &child_geometry, child_properties->fill_policy & ETK_FILL_POLICY_HFILL, child_properties->fill_policy & ETK_FILL_POLICY_VFILL); 
+      etk_container_child_space_fill(child, &child_geometry, cell->fill_policy & ETK_FILL_POLICY_HFILL, cell->fill_policy & ETK_FILL_POLICY_VFILL);
       etk_widget_size_allocate(child, child_geometry);
    }
 }
@@ -743,12 +745,24 @@ static void _etk_table_child_add(Etk_Container *container, Etk_Widget *widget)
 static void _etk_table_child_remove(Etk_Container *container, Etk_Widget *widget)
 {
    Etk_Table *table;
-   Etk_Table_Child_Properties *child_properties;
+   Etk_Table_Cell *cell;
 
-   if (!(table = ETK_TABLE(container)) || !widget || (widget->parent != container) || !(child_properties = widget->child_properties))
+   if (!(table = ETK_TABLE(container)) || !widget || (widget->parent != ETK_WIDGET(container)))
+      return;
+   if (!(cell = widget->child_properties))
       return;
 
-   etk_table_cell_clear(table, child_properties->left_attach, child_properties->top_attach);
+   etk_table_cell_clear(table, cell->left_attach, cell->top_attach);
+}
+
+/* Gets the list of the children */
+static Evas_List *_etk_table_children_get(Etk_Container *container)
+{
+   Etk_Table *table;
+   
+   if (!(table = ETK_TABLE(container)))
+      return NULL;
+   return table->children;
 }
 
 /** @} */

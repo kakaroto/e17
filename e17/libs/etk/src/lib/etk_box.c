@@ -21,6 +21,7 @@ static void _etk_box_property_set(Etk_Object *object, int property_id, Etk_Prope
 static void _etk_box_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_box_child_add(Etk_Container *container, Etk_Widget *widget);
 static void _etk_box_child_remove(Etk_Container *container, Etk_Widget *widget);
+static Evas_List *_etk_box_children_get(Etk_Container *container);
 static void _etk_box_pack_full(Etk_Box *box, Etk_Widget *child, Etk_Bool expand, Etk_Bool fill, int padding, Etk_Bool pack_end);
 
 /**************************
@@ -61,7 +62,7 @@ Etk_Type *etk_box_type_get()
  */
 void etk_box_pack_start(Etk_Box *box, Etk_Widget *child, Etk_Bool expand, Etk_Bool fill, int padding)
 {
-   _etk_box_pack_full(box, child, expand, fill, padding, 0);
+   _etk_box_pack_full(box, child, expand, fill, padding, ETK_FALSE);
 }
 
 /**
@@ -74,7 +75,7 @@ void etk_box_pack_start(Etk_Box *box, Etk_Widget *child, Etk_Bool expand, Etk_Bo
  */
 void etk_box_pack_end(Etk_Box *box, Etk_Widget *child, Etk_Bool expand, Etk_Bool fill, int padding)
 {
-   _etk_box_pack_full(box, child, expand, fill, padding, 1);
+   _etk_box_pack_full(box, child, expand, fill, padding, ETK_TRUE);
 }
 
 /**
@@ -86,32 +87,31 @@ void etk_box_pack_end(Etk_Box *box, Etk_Widget *child, Etk_Bool expand, Etk_Bool
 void etk_box_child_reorder(Etk_Box *box, Etk_Widget *child, int position)
 {
    Evas_List *l;
-   Etk_Container *container;
    int i;
 
-   if (!(container = ETK_CONTAINER(box)) || !child || (child->parent != container))
+   if (!box || !child || (child->parent != ETK_WIDGET(box)))
       return;
 
-   position = ETK_CLAMP(0, evas_list_count(container->children) - 1, position);
+   position = ETK_CLAMP(0, evas_list_count(box->children) - 1, position);
 
-   for (l = container->children, i = 0; l; l = l->next, i++)
+   for (l = box->children, i = 0; l; l = l->next, i++)
    {
-      if (l->data != child)
-         continue;
-
-      if (i == position)
+      if (l->data == child)
+      {
+         if (i == position)
+            return;
+         else if (i < position)
+         {
+            box->children = evas_list_append_relative(box->children, child, evas_list_nth(box->children, position));
+            box->children = evas_list_remove_list(box->children, l);
+         }
+         else
+         {
+            box->children = evas_list_prepend_relative(box->children, child, evas_list_nth(box->children, position));
+            box->children = evas_list_remove_list(box->children, l);
+         }
          return;
-      else if (i < position)
-      {
-         container->children = evas_list_append_relative(container->children, child, evas_list_nth(container->children, position));
-         container->children = evas_list_remove_list(container->children, l);
       }
-      else
-      {
-         container->children = evas_list_prepend_relative(container->children, child, evas_list_nth(container->children, position));
-         container->children = evas_list_remove_list(container->children, l);
-      }
-      return;
    }
 }
 
@@ -181,11 +181,13 @@ static void _etk_box_constructor(Etk_Box *box)
    if (!box)
       return;
 
+   box->children = NULL;
    box->spacing = 0;
    box->homogeneous = ETK_FALSE;
 
    ETK_CONTAINER(box)->child_add = _etk_box_child_add;
    ETK_CONTAINER(box)->child_remove = _etk_box_child_remove;
+   ETK_CONTAINER(box)->children_get = _etk_box_children_get;
 }
 
 /* Destroys the box */
@@ -193,16 +195,16 @@ static void _etk_box_destructor(Etk_Box *box)
 {
    Evas_List *l;
    Etk_Widget *child;
-   Etk_Container *container;
 
-   if (!(container = ETK_CONTAINER(box)))
+   if (!box)
       return;
 
-   for (l = container->children; l; )
+   while (box->children)
    {
-      child = ETK_WIDGET(l->data);
-      l = l->next;
-      _etk_box_child_remove(container, child);
+      child = ETK_WIDGET(box->children->data);
+      free(child->child_properties);
+      child->child_properties = NULL;
+      box->children = evas_list_remove_list(box->children, box->children);
    }
 }
 
@@ -265,17 +267,24 @@ static void _etk_box_child_remove(Etk_Container *container, Etk_Widget *widget)
 {
    Etk_Box *box;
 
-   if (!(box = ETK_BOX(container)) || !widget || (widget->parent != container))
+   if (!(box = ETK_BOX(container)) || !widget || (widget->parent != ETK_WIDGET(container)))
       return;
 
-   if (evas_list_find_list(container->children, widget))
-   {
-      free(widget->child_properties);
-      widget->child_properties = NULL;
+   free(widget->child_properties);
+   widget->child_properties = NULL;
+   box->children = evas_list_remove(box->children, widget);
+   etk_widget_parent_set(widget, NULL);
+   etk_widget_size_recalc_queue(ETK_WIDGET(box));
+}
 
-      etk_widget_parent_set(widget, NULL);
-      etk_widget_size_recalc_queue(ETK_WIDGET(box));
-   }
+/* Gets the list of the children of the box */
+static Evas_List *_etk_box_children_get(Etk_Container *container)
+{
+   Etk_Box *box;
+   
+   if (!(box = ETK_BOX(container)))
+      return NULL;
+   return box->children;
 }
 
 /**************************
@@ -288,22 +297,23 @@ static void _etk_box_child_remove(Etk_Container *container, Etk_Widget *widget)
  * on the sides of the child and if "pack_end" == ETK_TRUE, the child will be packed at the end of the box */
 static void _etk_box_pack_full(Etk_Box *box, Etk_Widget *child, Etk_Bool expand, Etk_Bool fill, int padding, Etk_Bool pack_end)
 {
-   Etk_Container *container;
-   Etk_Box_Child_Properties *child_properties;
+   Etk_Box_Child_Props *child_props;
    
-   if (!(container = ETK_CONTAINER(box)) || !child)
+   if (!box || !child)
       return;
 
-   if (child->parent)
-      etk_container_remove(child->parent, child);
-   child_properties = malloc(sizeof(Etk_Box_Child_Properties));
-   child_properties->expand = expand;
-   child_properties->fill = fill;
-   child_properties->padding = padding;
-   child_properties->pack_end = pack_end;
-   child->child_properties = child_properties;
+   /* TODO: con_remove */
+   if (child->parent && ETK_IS_CONTAINER(child->parent))
+      etk_container_remove(ETK_CONTAINER(child->parent), child);
+   child_props = malloc(sizeof(Etk_Box_Child_Props));
+   child_props->expand = expand;
+   child_props->fill = fill;
+   child_props->padding = padding;
+   child_props->pack_end = pack_end;
+   child->child_properties = child_props;
 
-   etk_widget_parent_set(child, container);
+   box->children = evas_list_append(box->children, child);
+   etk_widget_parent_set(child, ETK_WIDGET(box));
 }
 
 

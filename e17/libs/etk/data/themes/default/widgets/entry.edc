@@ -50,7 +50,7 @@ group {
          FOCUS_GLOW_ACTION
       }
       program {
-         name: "button_unfocus";
+         name: "entry_unfocus";
          signal: "unfocus";
          source: "";
          UNFOCUS_GLOW_ACTION

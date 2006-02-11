@@ -31,8 +31,8 @@
 struct _Etk_Menu_Item
 {
    /* private: */
-   /* Inherit from Etk_Container */
-   Etk_Container container;
+   /* Inherit from Etk_Widget */
+   Etk_Widget widget;
    
    void (*selected)(Etk_Menu_Item *menu_item);
    void (*deselected)(Etk_Menu_Item *menu_item);
@@ -79,7 +79,6 @@ void etk_menu_item_image_set(Etk_Menu_Item *menu_item, Etk_Image *image);
 
 void etk_menu_item_image_show(Etk_Menu_Item *menu_item, Etk_Bool show);
 void etk_menu_item_right_swallow_show(Etk_Menu_Item *menu_item, Etk_Bool show);
-
 
 Etk_Type *etk_menu_separator_type_get();
 Etk_Widget *etk_menu_separator_new();

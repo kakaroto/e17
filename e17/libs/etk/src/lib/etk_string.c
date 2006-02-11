@@ -256,6 +256,18 @@ Etk_String *etk_string_prepend(Etk_String *string, const char *text)
 }
 
 /**
+ * @brief Prepends a text with a specific length  to a string
+ * @param string a string
+ * @param text the text to prepend to the string
+ * @param length the length of the text to prepend
+ * @return Returns the string
+ */
+Etk_String *etk_string_prepend_sized(Etk_String *string, const char *text, int length)
+{
+   return etk_string_insert_sized(string, 0, text, length);
+}
+
+/**
  * @brief Prepends a character to a string
  * @param string a string
  * @param c the character to prepend to the string
@@ -320,6 +332,18 @@ Etk_String *etk_string_append(Etk_String *string, const char *text)
 }
 
 /**
+ * @brief Appends a text with a specific length  to a string
+ * @param string a string
+ * @param text the text to append to the string
+ * @param length the length of the text to append
+ * @return Returns the string
+ */
+Etk_String *etk_string_append_sized(Etk_String *string, const char *text, int length)
+{
+   return etk_string_insert_sized(string, string->length, text, length);
+}
+
+/**
  * @brief Appends a character to a string
  * @param string a string
  * @param c the character to append to the string
@@ -381,24 +405,37 @@ Etk_String *etk_string_append_vprintf(Etk_String *string, const char *format, va
  */
 Etk_String *etk_string_insert(Etk_String *string, int pos, const char *text)
 {
-   int length;
-   int i;
-   
    if (!string)
       return NULL;
    if (!text || *text == 0)
       return string;
+   return etk_string_insert_sized(string, pos, text, strlen(text));
+}
+
+/**
+ * @brief Inserts a text with a specific length into a string
+ * @param string a string
+ * @param pos the position where to insert the text
+ * @param text the text to insert into the string
+ * @param length the length of the text to insert
+ * @return Returns the string
+ */
+Etk_String *etk_string_insert_sized(Etk_String *string, int pos, const char *text, int length)
+{
+   if (!string)
+      return NULL;
+   if (!text || *text == 0 || length <= 0)
+      return string;
    
    pos = ETK_CLAMP(pos, 0, string->length);
-   length = strlen(text);
+   length = ETK_MIN(length, strlen(text));
    if (string->length + length > string->allocated_length)
    {
       string->string = realloc(string->string, ETK_STRING_SIZE_TO_ALLOC(string->length + length) + 1);
       string->allocated_length = ETK_STRING_SIZE_TO_ALLOC(string->length + length);
    }
-   for (i = string->length - 1; i >= pos; i--)
-      string->string[i + length] = string->string[i];
    
+   memmove(&string->string[pos + length], &string->string[pos], length);
    strncpy(&string->string[pos], text, length);
    string->length += length;
    string->string[string->length] = 0;

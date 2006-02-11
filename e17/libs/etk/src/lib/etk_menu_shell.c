@@ -8,11 +8,13 @@
 
 /**
  * @addtogroup Etk_Menu_Shell
-* @{
+ * @{
  */
 
-enum _Etk_Widget_Signal_Id
+enum _Etk_Menu_Shell_Signal_Id
 {
+   ETK_MENU_SHELL_ITEM_ADDED_SIGNAL,
+   ETK_MENU_SHELL_ITEM_REMOVED_SIGNAL,
    ETK_MENU_SHELL_NUM_SIGNALS
 };
 
@@ -37,7 +39,10 @@ Etk_Type *etk_menu_shell_type_get()
 
    if (!menu_shell_type)
    {
-      menu_shell_type = etk_type_new("Etk_Menu_Shell", ETK_CONTAINER_TYPE, sizeof(Etk_Menu_Shell), ETK_CONSTRUCTOR(_etk_menu_shell_constructor), ETK_DESTRUCTOR(_etk_menu_shell_destructor));
+      menu_shell_type = etk_type_new("Etk_Menu_Shell", ETK_WIDGET_TYPE, sizeof(Etk_Menu_Shell), ETK_CONSTRUCTOR(_etk_menu_shell_constructor), ETK_DESTRUCTOR(_etk_menu_shell_destructor));
+   
+      _etk_menu_shell_signals[ETK_MENU_SHELL_ITEM_ADDED_SIGNAL] = etk_signal_new("item_added", menu_shell_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
+      _etk_menu_shell_signals[ETK_MENU_SHELL_ITEM_REMOVED_SIGNAL] = etk_signal_new("item_removed", menu_shell_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
    }
 
    return menu_shell_type;
@@ -62,8 +67,10 @@ void etk_menu_shell_append(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item)
    if (!menu_shell || !item)
       return;
    
-   etk_widget_parent_set(ETK_WIDGET(item), ETK_CONTAINER(menu_shell));
+   menu_shell->items = evas_list_append(menu_shell->items, item);
+   etk_widget_parent_set(ETK_WIDGET(item), ETK_WIDGET(menu_shell));
    item->parent = menu_shell;
+   etk_signal_emit(_etk_menu_shell_signals[ETK_MENU_SHELL_ITEM_ADDED_SIGNAL], ETK_OBJECT(menu_shell), NULL, item);
 }
 
 /**
@@ -88,6 +95,7 @@ static void _etk_menu_shell_constructor(Etk_Menu_Shell *menu_shell)
 {
    if (!menu_shell)
       return;
+   menu_shell->items = NULL;
    menu_shell->parent = NULL;
    menu_shell->items_update = NULL;
 }
@@ -97,20 +105,7 @@ static void _etk_menu_shell_destructor(Etk_Menu_Shell *menu_shell)
 {
    if (!menu_shell)
       return;
-   /* TODO menu_shell_destructor */
+   evas_list_free(menu_shell->items);
 }
-
-/**************************
- *
- * Callbacks and handlers
- *
- **************************/
-
-
-/**************************
- *
- * Private functions
- *
- **************************/
 
 /** @} */

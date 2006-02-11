@@ -1,0 +1,78 @@
+group {
+   name: "text_view";
+   min: 120 18;
+   parts {
+      part {
+         name: "text_view_bg";
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 0 0;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -1 -1;
+            }
+            image {
+               normal: "text_view_bg.png";
+               border: 6 6 6 6;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+      }
+      part {
+         name: "text_area";
+         type: SWALLOW;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 4 3;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -5 -3;
+            }
+         }
+      }
+      part {
+         name: "text_view_over";
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 0 0;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -1 -1;
+            }
+            image {
+               normal: "text_view_over.png";
+               border: 13 13 13 13;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+      }
+      FOCUS_GLOW(0.0, 0.0, -1, -1, "text_view_bg", 1.0, 1.0, 0, 0, "text_view_bg")
+   }
+   programs {
+      program {
+         name: "text_view_focus";
+         signal: "focus";
+         source: "";
+         FOCUS_GLOW_ACTION
+      }
+      program {
+         name: "text_view_unfocus";
+         signal: "unfocus";
+         source: "";
+         UNFOCUS_GLOW_ACTION
+      }
+   }
+}

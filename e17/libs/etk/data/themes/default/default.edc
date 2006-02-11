@@ -13,6 +13,7 @@ collections {
    #include "widgets/check_button.edc"
    #include "widgets/radio_button.edc"
    #include "widgets/entry.edc"
+   #include "widgets/text_view.edc"
    #include "widgets/slider.edc"
    #include "widgets/scrollbar.edc"
    #include "widgets/tree.edc"
@@ -23,5 +24,5 @@ collections {
    #include "widgets/statusbar.edc"
    #include "widgets/notebook.edc"
    #include "widgets/progress_bar.edc"
-   #include "widgets/spinner.edc"   
+   #include "widgets/spinner.edc"
 }
