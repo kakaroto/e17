@@ -13,7 +13,6 @@
 #include "etk_marshallers.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
-#include "etk_dnd.h"
 
 /**
  * @addtogroup Etk_Widget
@@ -118,11 +117,8 @@ static Etk_Bool _etk_widget_theme_object_swallow_full(Etk_Widget *swallowing_wid
 static void _etk_widget_child_add(Etk_Widget *parent, Etk_Widget *child);
 static void _etk_widget_child_remove(Etk_Widget *parent, Etk_Widget *child);
 static void _etk_widget_object_add_to_smart(Etk_Widget *widget, Evas_Object *object);
-static void _etk_widget_object_remove_from_smart(Etk_Widget *widget, Evas_Object *object);
 
 static Evas_List *_etk_widget_member_object_find(Etk_Widget *widget, Evas_Object *object);
-static Evas_List *_etk_widget_child_object_find(Etk_Widget *widget, Evas_Object *object);
-
 static void _etk_widget_member_object_intercept_show_cb(void *data, Evas_Object *obj);
 static void _etk_widget_member_object_intercept_hide_cb(void *data, Evas_Object *obj);
 
@@ -718,27 +714,43 @@ Etk_Bool etk_widget_visibility_locked_get(Etk_Widget *widget)
 /**
  * @brief Raises a widget: it will be above all the other widgets that have the same parent
  * @param widget the widget to raise
- * @note It will have an effect only if the widget is realized
  */
-/* TODO: widget raise */
 void etk_widget_raise(Etk_Widget *widget)
 {
-   if (!widget || !widget->parent || !widget->event_object)
+   Evas_List *l;
+   
+   if (!widget || !widget->parent)
       return;
-   etk_widget_member_object_raise(widget->parent, widget->event_object);
+   
+   if ((l = evas_list_find_list(widget->parent->children, widget)))
+   {
+      widget->parent->children = evas_list_remove_list(widget->parent->children, l);
+      widget->parent->children = evas_list_append(widget->parent->children, widget);
+   }
+   
+   if (widget->event_object)
+      evas_object_raise(widget->event_object);
 }
 
 /**
  * @brief Lowers a widget: it will be below all the other widgets that have the same parent
  * @param widget the widget to lower
- * @note It will have an effect only if the widget is realized
  */
-/* TODO: widget lower */
 void etk_widget_lower(Etk_Widget *widget)
 {
-   if (!widget || !widget->parent || !widget->event_object)
+   Evas_List *l;
+   
+   if (!widget || !widget->parent)
       return;
-   etk_widget_member_object_lower(widget->parent, widget->event_object);
+   
+   if ((l = evas_list_find_list(widget->parent->children, widget)))
+   {
+      widget->parent->children = evas_list_remove_list(widget->parent->children, l);
+      widget->parent->children = evas_list_prepend(widget->parent->children, widget);
+   }
+   
+   if (widget->event_object)
+      evas_object_lower(widget->event_object);
 }
 
 /**
@@ -1282,13 +1294,12 @@ void etk_widget_member_object_del(Etk_Widget *widget, Evas_Object *object)
  * @param widget a widget
  * @param object the object to raise
  */
-/* TODO member raise */
 void etk_widget_member_object_raise(Etk_Widget *widget, Evas_Object *object)
 {
    if (!widget || !object)
       return;
 
-   if (_etk_widget_member_object_find(widget, object) || _etk_widget_child_object_find(widget, object))
+   if (_etk_widget_member_object_find(widget, object))
       evas_object_raise(object);
 }
 
@@ -1297,13 +1308,12 @@ void etk_widget_member_object_raise(Etk_Widget *widget, Evas_Object *object)
  * @param widget a widget
  * @param object the object to lower
  */
-/* TODO member lower */
 void etk_widget_member_object_lower(Etk_Widget *widget, Evas_Object *object)
 {
    if (!widget || !object)
       return;
 
-   if (_etk_widget_member_object_find(widget, object) || _etk_widget_child_object_find(widget, object))
+   if (_etk_widget_member_object_find(widget, object))
       evas_object_lower(object);
 }
 
@@ -1313,14 +1323,12 @@ void etk_widget_member_object_lower(Etk_Widget *widget, Evas_Object *object)
  * @param object the object to restack
  * @param above the object above which @a object will be stacked 
  */
-/* TODO member above */
 void etk_widget_member_object_stack_above(Etk_Widget *widget, Evas_Object *object, Evas_Object *above)
 {
    if (!widget || !above || (object == above))
       return;
 
-   if ((_etk_widget_member_object_find(widget, object) || _etk_widget_child_object_find(widget, object)) &&
-      (_etk_widget_member_object_find(widget, above) || _etk_widget_child_object_find(widget, above)))
+   if (_etk_widget_member_object_find(widget, object) && _etk_widget_member_object_find(widget, above))
       evas_object_stack_above(object, above);
 }
 
@@ -1330,14 +1338,12 @@ void etk_widget_member_object_stack_above(Etk_Widget *widget, Evas_Object *objec
  * @param object the object to restack
  * @param below the object below which @a object will be stacked 
  */
-/* TODO member below */
 void etk_widget_member_object_stack_below(Etk_Widget *widget, Evas_Object *object, Evas_Object *below)
 {
    if (!widget || !below || (object == below))
       return;
    
-   if ((_etk_widget_member_object_find(widget, object) || _etk_widget_child_object_find(widget, object)) &&
-      (_etk_widget_member_object_find(widget, below) || _etk_widget_child_object_find(widget, below)))
+   if (_etk_widget_member_object_find(widget, object) && _etk_widget_member_object_find(widget, below))
       evas_object_stack_below(object, below);
 }
 
@@ -1600,6 +1606,8 @@ static void _etk_widget_destructor(Etk_Widget *widget)
    for (i = 0; i < widget->dnd_files_num; i++)
       free(widget->dnd_files[i]);
    free(widget->dnd_files);
+   if (widget->accepts_dnd)
+      _etk_widget_dnd_widgets = evas_list_remove(_etk_widget_dnd_widgets, widget);
    
    free(widget->theme_file);
    free(widget->theme_group);
@@ -2225,24 +2233,6 @@ static Evas_List *_etk_widget_member_object_find(Etk_Widget *widget, Evas_Object
    {
       m = l->data;
       if (m->object == object)
-         return l;
-   }
-   return NULL;
-}
-
-/* Finds if an evas object is the event object of a child of the widget */
-static Evas_List *_etk_widget_child_object_find(Etk_Widget *widget, Evas_Object *object)
-{
-   Evas_List *l;
-   Etk_Widget *child;
-   
-   if (!widget || !object)
-      return NULL;
-   
-   for (l = widget->children; l; l = l->next)
-   {
-      child = ETK_WIDGET(l->data);
-      if (child->event_object == object)
          return l;
    }
    return NULL;

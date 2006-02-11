@@ -22,9 +22,7 @@ Etk_Type *etk_check_button_type_get()
    static Etk_Type *check_button_type = NULL;
 
    if (!check_button_type)
-   {
       check_button_type = etk_type_new("Etk_Check_Button", ETK_TOGGLE_BUTTON_TYPE, sizeof(Etk_Check_Button), NULL, NULL);
-   }
 
    return check_button_type;
 }

@@ -130,7 +130,6 @@ static void _etk_entry_realize_cb(Etk_Object *object, void *data)
    entry->editable_object = etk_editable_text_object_add(evas);
    evas_object_show(entry->editable_object);
    etk_widget_theme_object_swallow(entry_widget, "text_area", entry->editable_object);
-   etk_widget_member_object_add(entry_widget, entry->editable_object);
 }
 
 /* Called when the entry is unrealized */

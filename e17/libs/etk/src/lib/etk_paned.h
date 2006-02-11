@@ -3,6 +3,7 @@
 #define _ETK_PANED_H_
 
 #include "etk_container.h"
+#include <Evas.h>
 #include "etk_types.h"
 
 /**

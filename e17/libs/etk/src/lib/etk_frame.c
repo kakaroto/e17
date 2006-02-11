@@ -124,7 +124,6 @@ static void _etk_frame_destructor(Etk_Frame *frame)
 {
    if (!frame)
       return;
-
    free(frame->label);
 }
 

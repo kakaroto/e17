@@ -25,15 +25,14 @@ static void _etk_vpaned_size_request(Etk_Widget *widget, Etk_Size *size_requisit
 static void _etk_hpaned_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_vpaned_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_paned_child_add(Etk_Container *container, Etk_Widget *widget);
-static void _etk_paned_child_remove(Etk_Container *container, Etk_Widget *widget);;
+static void _etk_paned_child_remove(Etk_Container *container, Etk_Widget *widget);
+static Evas_List *_etk_paned_children_get(Etk_Container *container);
 
 static void _etk_paned_separator_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *event, void *data);
 static void _etk_paned_separator_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *event, void *data);
 static void _etk_paned_separator_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data);
 static void _etk_paned_separator_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data);
 static void _etk_paned_separator_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Move *event, void *data);
-static void _etk_paned_child_realize_cb(Etk_Object *object, void *data);
-static void _etk_paned_child_removed_cb(Etk_Object *object, void *removed_child, void *data);
 
 static void _etk_hpaned_position_calc(Etk_Paned *paned);
 static void _etk_vpaned_position_calc(Etk_Paned *paned);
@@ -147,12 +146,11 @@ void etk_paned_add1(Etk_Paned *paned, Etk_Widget *child, Etk_Bool expand)
    paned->expand1 = expand;
    if (child)
    {
-      /* TODO: con_remove */
       if (child->parent && ETK_IS_CONTAINER(child->parent))
          etk_container_remove(ETK_CONTAINER(child->parent), child);
-
-      etk_signal_connect("realize", ETK_OBJECT(child), ETK_CALLBACK(_etk_paned_child_realize_cb), paned);
       etk_widget_parent_set(child, ETK_WIDGET(paned));
+      
+      etk_widget_raise(paned->separator);
    }
 }
 
@@ -175,9 +173,9 @@ void etk_paned_add2(Etk_Paned *paned, Etk_Widget *child, Etk_Bool expand)
    {
       if (child->parent && ETK_IS_CONTAINER(child))
          etk_container_remove(ETK_CONTAINER(child->parent), child);
-
-      etk_signal_connect("realize", ETK_OBJECT(child), ETK_CALLBACK(_etk_paned_child_realize_cb), paned);
       etk_widget_parent_set(child, ETK_WIDGET(paned));
+      
+      etk_widget_raise(paned->separator);
    }
 }
 
@@ -236,8 +234,7 @@ static void _etk_paned_constructor(Etk_Paned *paned)
    paned->child2 = NULL;
    ETK_CONTAINER(paned)->child_add = _etk_paned_child_add;
    ETK_CONTAINER(paned)->child_remove = _etk_paned_child_remove;
-
-   etk_signal_connect("child_removed", ETK_OBJECT(paned), ETK_CALLBACK(_etk_paned_child_removed_cb), NULL);
+   ETK_CONTAINER(paned)->children_get = _etk_paned_children_get;
 }
 
 /* Initializes the default values of the hpaned */
@@ -460,6 +457,13 @@ static void _etk_paned_child_remove(Etk_Container *container, Etk_Widget *widget
    etk_widget_size_recalc_queue(ETK_WIDGET(paned));
 }
 
+/* Returns the children of the paned */
+static Evas_List *_etk_paned_children_get(Etk_Container *container)
+{
+   /* TODO: implement etk_paned_children_get */
+   return NULL;
+}
+
 /**************************
  *
  * Callbacks and handlers
@@ -533,23 +537,6 @@ static void _etk_paned_separator_mouse_move_cb(Etk_Object *object, Etk_Event_Mou
    else
       paned->position = event->cur.canvas.y - paned->drag_delta;
    etk_widget_redraw_queue(ETK_WIDGET(paned));
-}
-
-/* Called when a child of the paned is realized */
-static void _etk_paned_child_realize_cb(Etk_Object *object, void *data)
-{
-   Etk_Paned *paned;
-   
-   if (!(paned = ETK_PANED(data)))
-      return;
-   /* TODO access to event_object to raise the paned separa */
-   etk_widget_member_object_raise(ETK_WIDGET(paned), paned->separator->event_object);
-}
-
-/* Called when a child of the paned is removed */
-static void _etk_paned_child_removed_cb(Etk_Object *object, void *removed_child, void *data)
-{
-   etk_signal_disconnect("realize", ETK_OBJECT(removed_child), ETK_CALLBACK(_etk_paned_child_realize_cb));
 }
 
 /**************************

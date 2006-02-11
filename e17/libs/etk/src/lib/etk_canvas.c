@@ -12,6 +12,7 @@
 static void _etk_canvas_constructor(Etk_Canvas *canvas);
 static void _etk_canvas_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_canvas_realize_cb(Etk_Object *object, void *data);
+static void _etk_canvas_unrealize_cb(Etk_Object *object, void *data);
 
 /**************************
  *
@@ -28,9 +29,7 @@ Etk_Type *etk_canvas_type_get()
    static Etk_Type *canvas_type = NULL;
 
    if (!canvas_type)
-   {
       canvas_type = etk_type_new("Etk_Canvas", ETK_WIDGET_TYPE, sizeof(Etk_Canvas), ETK_CONSTRUCTOR(_etk_canvas_constructor), NULL);
-   }
 
    return canvas_type;
 }
@@ -84,6 +83,7 @@ static void _etk_canvas_constructor(Etk_Canvas *canvas)
    canvas->clip = NULL;
    ETK_WIDGET(canvas)->size_allocate = _etk_canvas_size_allocate;
    etk_signal_connect("realize", ETK_OBJECT(canvas), ETK_CALLBACK(_etk_canvas_realize_cb), NULL);
+   etk_signal_connect("unrealize", ETK_OBJECT(canvas), ETK_CALLBACK(_etk_canvas_unrealize_cb), NULL);
 }
 
 /* Moves and resizes the clip of the canvas */
@@ -115,6 +115,18 @@ static void _etk_canvas_realize_cb(Etk_Object *object, void *data)
 
    canvas->clip = evas_object_rectangle_add(evas);
    etk_widget_clip_set(ETK_WIDGET(canvas), canvas->clip);
+}
+
+/* Called when the canvas is unrealized */
+static void _etk_canvas_unrealize_cb(Etk_Object *object, void *data)
+{
+   Etk_Canvas *canvas;
+   
+   if (!(canvas = ETK_CANVAS(object)))
+      return;
+   
+   etk_widget_clip_unset(ETK_WIDGET(canvas));
+   evas_object_del(canvas->clip);
 }
 
 /** @} */

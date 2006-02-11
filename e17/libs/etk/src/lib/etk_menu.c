@@ -114,8 +114,8 @@ void etk_menu_popup_at_xy(Etk_Menu *menu, int x, int y)
       _etk_menu_mouse_move_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE, _etk_menu_mouse_move_cb, menu);
       ecore_x_window_show(_etk_menu_input_window);
       ecore_x_keyboard_grab(_etk_menu_input_window);
-      /* TODO: fixme pointer_grab!!
-      ecore_x_pointer_grab(_etk_menu_input_window); */
+      /* TODO: fixme pointer_grab!! */
+      ecore_x_pointer_grab(_etk_menu_input_window);
 
       _etk_menu_root_popup_timestamp = ecore_x_current_time_get();
       _etk_menu_root = menu;
@@ -160,8 +160,8 @@ void etk_menu_popdown(Etk_Menu *menu)
    if (menu == _etk_menu_root)
    {
       ecore_x_keyboard_ungrab();
-      /* TODO: pointer grab, fixme!!
-      ecore_x_pointer_ungrab(); */
+      /* TODO: pointer grab, fixme!! */
+      ecore_x_pointer_ungrab();
       ecore_x_window_hide(_etk_menu_input_window);
       ecore_event_handler_del(_etk_menu_mouse_up_handler);
       ecore_event_handler_del(_etk_menu_mouse_move_handler);

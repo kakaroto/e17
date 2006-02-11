@@ -367,7 +367,6 @@ static void _etk_button_image_removed_cb(Etk_Object *object, Etk_Widget *child, 
 
    if (!(button = ETK_BUTTON(data)) || (child != ETK_WIDGET(button->image)))
       return;
-
    button->image = NULL;
    _etk_button_child_create(button);
 }
@@ -483,7 +482,6 @@ static void _etk_button_child_create(Etk_Button *button)
 
    if (button->image)
    {
-      printf("_etk_button_child_create with image: %p\n", button);
       if (!button->alignment)
       {
          button->alignment = etk_alignment_new(button->xalign, button->yalign, 0.0, 0.0);
@@ -493,6 +491,7 @@ static void _etk_button_child_create(Etk_Button *button)
       etk_container_add(ETK_CONTAINER(button), button->alignment);
       etk_widget_show(button->alignment);
 
+      /* TODO: do we really need to destroy the hbox?? */ 
       if (button->hbox)
       {
          etk_container_remove(ETK_CONTAINER(button->hbox), ETK_WIDGET(button->image));
@@ -504,12 +503,11 @@ static void _etk_button_child_create(Etk_Button *button)
       etk_widget_pass_events_set(button->hbox, ETK_TRUE);
       etk_container_add(ETK_CONTAINER(button->alignment), button->hbox);
       etk_widget_show(button->hbox);
+      etk_signal_connect("child_removed", ETK_OBJECT(button->hbox), ETK_CALLBACK(_etk_button_image_removed_cb), button);
 
       etk_box_pack_start(ETK_BOX(button->hbox), ETK_WIDGET(button->image), ETK_FALSE, ETK_FALSE, 0);
       etk_widget_pass_events_set(ETK_WIDGET(button->image), ETK_TRUE);
       etk_widget_size_request_set(ETK_WIDGET(button->image), 16, 16);
-      /* TODO: destroy the image of the button ?
-      etk_signal_connect("remove", ETK_OBJECT(button->hbox), ETK_CALLBACK(_etk_button_image_removed_cb), button); */
       etk_widget_show(ETK_WIDGET(button->image));
 
       if (button->label)
