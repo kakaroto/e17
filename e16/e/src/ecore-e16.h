@@ -231,8 +231,9 @@ extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_PID;
 extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_HANDLED_ICONS;
 
 extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_PING;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_SYNC_REQUEST;
 #endif
+extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_SYNC_REQUEST;
+extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_SYNC_REQUEST_COUNTER;
 
 extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_WINDOW_OPACITY;
 

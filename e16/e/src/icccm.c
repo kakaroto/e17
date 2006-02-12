@@ -27,6 +27,9 @@
 #include "ewins.h"
 #include "hints.h"
 #include "xwin.h"
+#if USE_XSYNC
+#include <X11/extensions/sync.h>
+#endif
 
 static void         ICCCM_SetIconSizes(void);
 
@@ -250,13 +253,31 @@ ICCCM_SetSizeConstraints(EWin * ewin, unsigned int wmin, unsigned int hmin,
 }
 
 void
-ICCCM_Configure(const EWin * ewin)
+ICCCM_Configure(EWin * ewin)
 {
    XEvent              ev;
    Window              child;
 
    if (EwinIsInternal(ewin))
       return;
+
+#if USE_XSYNC
+   if (ewin->ewmh.sync_request_enable && !EServerIsGrabbed())
+     {
+	long long           count;
+
+	count = ++ewin->ewmh.sync_request_count;
+
+	if (count == 0)
+	   ewin->ewmh.sync_request_count = ++count;
+	ecore_x_client_message32_send(_EwinGetClientXwin(ewin),
+				      ECORE_X_ATOM_WM_PROTOCOLS,
+				      StructureNotifyMask,
+				      ECORE_X_ATOM_NET_WM_SYNC_REQUEST,
+				      Mode.events.time,
+				      count & 0xffffffff, count >> 32, 0);
+     }
+#endif
 
    ev.type = ConfigureNotify;
    ev.xconfigure.display = disp;
@@ -282,6 +303,24 @@ ICCCM_Configure(const EWin * ewin)
    ev.xconfigure.above = EoGetWin(ewin);
    ev.xconfigure.override_redirect = False;
    XSendEvent(disp, _EwinGetClientXwin(ewin), False, StructureNotifyMask, &ev);
+
+#if USE_XSYNC
+   if (ewin->ewmh.sync_request_enable && !EServerIsGrabbed())
+     {
+	XSyncWaitCondition  xswc[1];
+
+	xswc[0].trigger.counter = ewin->ewmh.sync_request_counter;
+	xswc[0].trigger.value_type = XSyncAbsolute;
+	XSyncIntsToValue(&xswc[0].trigger.wait_value,
+			 ewin->ewmh.sync_request_count & 0xffffffff,
+			 ewin->ewmh.sync_request_count >> 32);
+	xswc[0].trigger.test_type = XSyncPositiveComparison;
+	XSyncIntsToValue(&xswc[0].event_threshold, 0, 0);
+	Eprintf("Sync t=%#lx c=%llx\n", xswc[0].trigger.counter,
+		ewin->ewmh.sync_request_count);
+	XSyncAwait(disp, xswc, 1);
+     }
+#endif
 }
 
 void
@@ -679,6 +718,18 @@ ICCCM_GetHints(EWin * ewin, Atom atom_change)
 		     ewin->icccm.take_focus = ewin->icccm.need_input = 1;
 		  else if (prop[i] == ECORE_X_ATOM_WM_DELETE_WINDOW)
 		     ewin->icccm.delete_window = 1;
+#if USE_XSYNC
+		  else if (prop[i] == ECORE_X_ATOM_NET_WM_SYNC_REQUEST)
+		    {
+		       unsigned int        c;
+
+		       ewin->ewmh.sync_request_enable = 1;
+		       ecore_x_window_prop_card32_get(_EwinGetClientXwin(ewin),
+						      ECORE_X_ATOM_NET_WM_SYNC_REQUEST_COUNTER,
+						      &c, 1);
+		       ewin->ewmh.sync_request_counter = c;
+		    }
+#endif
 	       }
 	     XFree(prop);
 	  }

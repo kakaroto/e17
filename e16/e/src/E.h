@@ -61,6 +61,8 @@
 #define USE_COMPOSITE 1
 #endif
 
+#define USE_XSYNC 0		/* Experimental */
+
 #include <Imlib2.h>
 
 #define ENABLE_COLOR_MODIFIERS 0	/* Not functional */

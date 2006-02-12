@@ -27,6 +27,9 @@
 #include "emodule.h"
 #include "xwin.h"
 #include <sys/time.h>
+#if USE_XSYNC
+#include <X11/extensions/sync.h>
+#endif
 #if USE_XRANDR
 #include <X11/extensions/Xrandr.h>
 #endif
@@ -43,6 +46,11 @@ static const char  *EventName(unsigned int type);
 
 static int          event_base_shape = 0;
 static int          error_base_shape = 0;
+
+#if USE_XSYNC
+static int          event_base_sync = 0;
+static int          error_base_sync = 0;
+#endif
 
 #if USE_XRANDR
 static int          event_base_randr = 0;
@@ -95,6 +103,32 @@ EventsInit(void)
 		 "Exiting.\n"));
 	EExit(1);
      }
+
+#if USE_XSYNC
+   if (XSyncQueryExtension(disp, &event_base_sync, &error_base_sync))
+     {
+	XSyncInitialize(disp, &major, &minor);
+	EventsExtensionShowInfo("SYNC", major, minor,
+				event_base_sync, error_base_sync);
+
+#if 1				/* Debug */
+	{
+	   int                 i, num;
+	   XSyncSystemCounter *xssc;
+
+	   xssc = XSyncListSystemCounters(disp, &num);
+	   for (i = 0; i < num; i++)
+	     {
+		Eprintf("%2d: %10s %#lx %#x:%#x\n", i,
+			xssc[i].name,
+			xssc[i].counter,
+			XSyncValueHigh32(xssc[i].resolution),
+			XSyncValueLow32(xssc[i].resolution));
+	     }
+	}
+#endif
+     }
+#endif
 
 #if USE_XRANDR
    if (XRRQueryExtension(disp, &event_base_randr, &error_base_randr))

@@ -206,6 +206,11 @@ struct _ewin
       char               *wm_icon_name;
       unsigned int       *wm_icon, wm_icon_len;
       unsigned int        opacity;
+#if USE_XSYNC
+      char                sync_request_enable;
+      XID                 sync_request_counter;
+      long long           sync_request_count;
+#endif
    } ewmh;
    struct
    {

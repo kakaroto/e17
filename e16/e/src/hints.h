@@ -122,7 +122,7 @@ void                ICCCM_SetSizeConstraints(EWin * ewin, unsigned int wmin,
 					     unsigned int winc,
 					     unsigned int hinc, double amin,
 					     double amax);
-void                ICCCM_Configure(const EWin * ewin);
+void                ICCCM_Configure(EWin * ewin);
 void                ICCCM_AdoptStart(const EWin * ewin);
 void                ICCCM_Adopt(const EWin * ewin);
 void                ICCCM_Withdraw(const EWin * ewin);
