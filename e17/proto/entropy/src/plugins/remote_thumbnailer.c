@@ -99,6 +99,9 @@ entropy_plugin_init (entropy_core * core)
   entropy_core_component_event_register (instance,
 					 entropy_core_gui_event_get
 					 (ENTROPY_GUI_EVENT_FILE_PROGRESS));
+  entropy_core_component_event_register (instance,
+					 entropy_core_gui_event_get
+					 (ENTROPY_GUI_EVENT_USER_INTERACTION_YES_NO_ABORT));
 
   return instance;
 }
@@ -109,6 +112,19 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *obj,
 {
 
   switch (eevent->event_type) {
+  case ENTROPY_NOTIFY_USER_INTERACTION_YES_NO_ABORT: {
+	/*Always overwrite here - we're in /tmp, and we don't want to prompt
+	 * the user*/
+        void (*operation_func)(long id,int response);
+        entropy_plugin* plugin;
+	long id = (long)obj;
+
+        //FIXME
+        plugin = entropy_plugins_type_get_first( ENTROPY_PLUGIN_BACKEND_FILE ,ENTROPY_PLUGIN_SUB_TYPE_ALL);
+        operation_func = dlsym(plugin->dl_ref, "entropy_filesystem_operation_respond");
+        (*operation_func)( id, ENTROPY_USER_INTERACTION_RESPONSE_YES );
+
+  }
   case ENTROPY_NOTIFY_FILE_PROGRESS:{
       entropy_file_progress *progress = obj;
 
