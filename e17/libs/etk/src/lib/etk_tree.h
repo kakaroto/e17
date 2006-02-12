@@ -52,6 +52,7 @@ struct _Etk_Tree_Row
    
    void **cells_data;
    void *data;
+   void (*data_free_cb)(void *data);
    
    int num_visible_children;
    int num_parent_children;
@@ -191,6 +192,7 @@ void etk_tree_row_fields_set_valist(Etk_Tree_Row *row, va_list args);
 void etk_tree_row_fields_get(Etk_Tree_Row *row, ...);
 void etk_tree_row_fields_get_valist(Etk_Tree_Row *row, va_list args);
 void etk_tree_row_data_set(Etk_Tree_Row *row, void *data);
+void etk_tree_row_data_set_full(Etk_Tree_Row *row, void *data, void (*free_cb)(void *data));
 void *etk_tree_row_data_get(Etk_Tree_Row *row);
 
 void etk_tree_row_scroll_to(Etk_Tree_Row *row, Etk_Bool center_the_row);

@@ -1049,9 +1049,25 @@ void etk_tree_row_fields_get_valist(Etk_Tree_Row *row, va_list args)
  */
 void etk_tree_row_data_set(Etk_Tree_Row *row, void *data)
 {
+   etk_tree_row_data_set_full(row, data, NULL);
+}
+
+/**
+ * @brief Sets a value to the data member of a row. The date could be retrieved with @a etk_tree_row_data_get()
+ * @param row a row
+ * @param data the data to set
+ * @param free_cb the function to call to free the data
+ */
+void etk_tree_row_data_set_full(Etk_Tree_Row *row, void *data, void (*free_cb)(void *data))
+{
    if (!row)
       return;
+   
+   if (row->data && row->data_free_cb)
+      row->data_free_cb(row->data);
+   
    row->data = data;
+   row->data_free_cb = free_cb;
 }
 
 /**
@@ -2272,6 +2288,7 @@ static Etk_Tree_Row *_etk_tree_row_new_valist(Etk_Tree *tree, Etk_Tree_Row *row,
    new_row->expanded = ETK_FALSE;
    new_row->selected = ETK_FALSE;
    new_row->data = NULL;
+   new_row->data_free_cb = NULL;
 
    new_row->cells_data = malloc(sizeof(void *) * tree->num_cols);
    for (i = 0; i < tree->num_cols; i++)
@@ -2423,6 +2440,9 @@ static void _etk_tree_row_free(Etk_Tree_Row *row)
       }
       free(row->cells_data);
    }
+   
+   if (row->data && row->data_free_cb)
+      row->data_free_cb(row->data);
    
    if (row->parent)
    {

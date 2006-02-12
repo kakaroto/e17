@@ -87,6 +87,15 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source Code Directory])
 
+case "$host_os" in
+    *bsd*)
+       AC_DEFINE(HAVE_BSD, [], "Have a BSD distribution")
+    ;;
+    linux*)
+       AC_DEFINE(HAVE_LINUX, [], "Have a Linux distribution")
+    ;;
+esac
+
 function vser
 {
   v=$1

@@ -1,26 +1,40 @@
 /** @file etk_filechooser_widget.c */
 #include "etk_filechooser_widget.h"
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
+#include <limits.h>
 #include <Ecore_Data.h>
 #include <Ecore_File.h>
 #include "etk_theme.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
-#include "etk_button.h"
 #include "etk_tree.h"
 #include "etk_tree_model.h"
 #include "etk_paned.h"
 #include "etk_box.h"
 #include "etk_hbox.h"
 #include "etk_vbox.h"
-#include "etk_entry.h"
+#include "config.h"
+
+/* OS-specific to list the mount points */
+#ifdef HAVE_LINUX
+#include <mntent.h>
+#endif
+
+#ifdef HAVE_BSD
+#include <sys/param.h>
+#include <sys/ucred.h>
+#include <sys/mount.h>
+#endif
 
 /**
  * @addtogroup Etk_Filechooser_Widget
  * @{
  */
+ 
+#define ETK_FILECHOOSER_FAVS_FILE ".gtk-bookmarks"
 
 enum _Etk_Filechooser_Widget_Signal_Id
 {
@@ -29,7 +43,9 @@ enum _Etk_Filechooser_Widget_Signal_Id
 
 enum _Etk_Filechooser_Widget_Property_Id
 {
-   ETK_FILECHOOSER_WIDGET_PATH_PROPERTY
+   ETK_FILECHOOSER_WIDGET_PATH_PROPERTY,
+   ETK_FILECHOOSER_WIDGET_SELECT_MULTIPLE_PROPERTY,
+   ETK_FILECHOOSER_WIDGET_SHOW_HIDDEN_PROPERTY
 };
 
 typedef struct _Etk_Filechooser_Widget_Icons
@@ -42,11 +58,15 @@ static void _etk_filechooser_widget_constructor(Etk_Filechooser_Widget *filechoo
 static void _etk_filechooser_widget_destructor(Etk_Filechooser_Widget *filechooser_widget);
 static void _etk_filechooser_widget_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_filechooser_widget_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_filechooser_widget_favs_get(Etk_Filechooser_Widget *filechooser_widget);
-static void _etk_filechooser_widget_dir_row_selected_cb(Etk_Object *object, Etk_Tree_Row *row, void *data);
-static void _etk_filechooser_widget_fav_row_selected_cb(Etk_Object *object, Etk_Tree_Row *row, void *data);
+static void _etk_filechooser_widget_size_request(Etk_Widget *widget, Etk_Size *size_requisition);
+static void _etk_filechooser_widget_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
+static void _etk_filechooser_widget_place_selected_cb(Etk_Object *object, Etk_Tree_Row *row, void *data);
+static void _etk_filechooser_widget_fav_selected_cb(Etk_Object *object, Etk_Tree_Row *row, void *data);
+static void _etk_filechooser_widget_file_selected_cb(Etk_Object *object, Etk_Tree_Row *row, void *data);
+static void _etk_filechooser_widget_places_tree_fill(Etk_Filechooser_Widget *fcw);
+static void _etk_filechooser_widget_favs_tree_fill(Etk_Filechooser_Widget *fcw);
 
-static Etk_Filechooser_Widget_Icons _etk_file_chooser_icons[] =
+static Etk_Filechooser_Widget_Icons _etk_filechooser_icons[] =
 {
    { "jpg", "mimetypes/image-x-generic_16" },
    { "jpeg", "mimetypes/image-x-generic_16" },
@@ -66,8 +86,11 @@ static Etk_Filechooser_Widget_Icons _etk_file_chooser_icons[] =
    { "zip", "mimetypes/package-x-generic_16" },
    { "rar", "mimetypes/package-x-generic_16" },
 };
-static int _etk_file_chooser_num_icons = sizeof(_etk_file_chooser_icons) / sizeof (_etk_file_chooser_icons[0]);
-static Etk_Signal *_etk_filechooser_widget_signals[ETK_FILECHOOSER_WIDGET_NUM_SIGNALS];
+static int _etk_filechooser_num_icons = sizeof(_etk_filechooser_icons) / sizeof (_etk_filechooser_icons[0]);
+
+static char *_etk_filechooser_unsupported_fs[] = { "proc", "sysfs", "tmpfs", "devpts", "usbfs" };
+static int _etk_filechooser_num_unsupported_fs = sizeof(_etk_filechooser_unsupported_fs) / sizeof (_etk_filechooser_unsupported_fs[0]);
+/* static Etk_Signal *_etk_filechooser_widget_signals[ETK_FILECHOOSER_WIDGET_NUM_SIGNALS]; */
 
 /**************************
  *
@@ -85,12 +108,14 @@ Etk_Type *etk_filechooser_widget_type_get()
 
    if (!filechooser_widget_type)
    {
-      filechooser_widget_type = etk_type_new("Etk_Filechooser_Widget", ETK_BIN_TYPE, sizeof(Etk_Filechooser_Widget), ETK_CONSTRUCTOR(_etk_filechooser_widget_constructor), ETK_DESTRUCTOR(_etk_filechooser_widget_destructor));
+      filechooser_widget_type = etk_type_new("Etk_Filechooser_Widget", ETK_WIDGET_TYPE, sizeof(Etk_Filechooser_Widget), ETK_CONSTRUCTOR(_etk_filechooser_widget_constructor), ETK_DESTRUCTOR(_etk_filechooser_widget_destructor));
 
       //_etk_filechooser_widget_signals[ETK_FILECHOOSER_WIDGET_TEXT_POPPED_SIGNAL] = etk_signal_new("text_popped", filechooser_widget_type, -1, etk_marshaller_VOID__INT_POINTER, NULL, NULL);
       
       etk_type_property_add(filechooser_widget_type, "path", ETK_FILECHOOSER_WIDGET_PATH_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
-      
+      etk_type_property_add(filechooser_widget_type, "select_multiple", ETK_FILECHOOSER_WIDGET_SELECT_MULTIPLE_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
+      etk_type_property_add(filechooser_widget_type, "show_hidden", ETK_FILECHOOSER_WIDGET_SHOW_HIDDEN_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
+
       filechooser_widget_type->property_set = _etk_filechooser_widget_property_set;
       filechooser_widget_type->property_get = _etk_filechooser_widget_property_get;
    }
@@ -107,12 +132,15 @@ Etk_Widget *etk_filechooser_widget_new()
    return etk_widget_new(ETK_FILECHOOSER_WIDGET_TYPE, NULL);
 }
 
-/* TODO */
+/**
+ * @brief Sets the current forlder of the filechooser
+ * @param filechooser_widget 
+ */
 void etk_filechooser_widget_current_folder_set(Etk_Filechooser_Widget *filechooser_widget, const char *folder)
 {
    Ecore_List *files;
-   char *file_name;
-   char *file_path = NULL;
+   char *filename;
+   char file_path[PATH_MAX];
    time_t mod_time;
    struct tm *mod_time2;
    char mod_time_string[128];
@@ -126,75 +154,133 @@ void etk_filechooser_widget_current_folder_set(Etk_Filechooser_Widget *filechoos
    
    free(filechooser_widget->current_folder);
    filechooser_widget->current_folder = strdup(folder);
-   etk_tree_clear(ETK_TREE(filechooser_widget->dir_tree));
    etk_tree_clear(ETK_TREE(filechooser_widget->files_tree));
-   /* TODO: fix */
-   etk_tree_append(ETK_TREE(filechooser_widget->dir_tree),
-      filechooser_widget->dir_col, etk_theme_icon_theme_get(), "actions/go-up_16", "..", NULL);
    
+   /* TODO: Do not walk through the list twice!! */
    ecore_list_goto_first(files);
-   while ((file_name = ecore_list_next(files)))
+   while ((filename = ecore_list_next(files)))
    {
-      if (file_name[0] == '.')
-         continue;
+      if (!filechooser_widget->show_hidden) 
+      {
+         if (filename[0] == '.')
+            continue;
+      }
       
-      free(file_path);
-      file_path = malloc(strlen(folder) + strlen(file_name) + 2);
-      sprintf(file_path, "%s/%s", folder, file_name);
-      
+      snprintf(file_path, PATH_MAX, "%s/%s", folder, filename);
       if (!ecore_file_is_dir(file_path))
          continue;
       
       mod_time = ecore_file_mod_time(file_path);
       mod_time2 = gmtime(&mod_time);
+      /* TODO: compiler warning? */
       strftime(mod_time_string, 128, "%x", mod_time2);
       
-      etk_tree_append(ETK_TREE(filechooser_widget->dir_tree),
-         filechooser_widget->dir_col, etk_theme_icon_theme_get(), "places/folder_16", file_name, NULL);
       etk_tree_append(ETK_TREE(filechooser_widget->files_tree),
-         filechooser_widget->files_name_col, etk_theme_icon_theme_get(), "places/folder_16", file_name,
+         filechooser_widget->files_name_col, etk_theme_icon_theme_get(), "places/folder_16", filename,
          filechooser_widget->files_date_col, mod_time_string, NULL);
    }
    
    ecore_list_goto_first(files);
-   while ((file_name = ecore_list_next(files)))
+   while ((filename = ecore_list_next(files)))
    {
       const char *ext;
       char *icon = NULL;
       int i;
       
-      if (file_name[0] == '.')
-         continue;
+      if (!filechooser_widget->show_hidden) 
+      {
+         if (filename[0] == '.')
+            continue;
+      }
       
-      free(file_path);
-      file_path = malloc(strlen(folder) + strlen(file_name) + 2);
-      sprintf(file_path, "%s/%s", folder, file_name);
-      
+      snprintf(file_path, PATH_MAX, "%s/%s", folder, filename);
       if (ecore_file_is_dir(file_path))
          continue;
       
-      if ((ext = strrchr(file_name, '.')) && (ext = ext + 1))
+      if ((ext = strrchr(filename, '.')) && (ext = ext + 1))
       {
-         for (i = 0; i < _etk_file_chooser_num_icons; i++)
+         for (i = 0; i < _etk_filechooser_num_icons; i++)
          {
-            if (strcasecmp(ext, _etk_file_chooser_icons[i].extension) == 0)
+            if (strcasecmp(ext, _etk_filechooser_icons[i].extension) == 0)
             {
-               icon = _etk_file_chooser_icons[i].icon;
+               icon = _etk_filechooser_icons[i].icon;
                break;
             }
          }
       }
       mod_time = ecore_file_mod_time(file_path);
       mod_time2 = gmtime(&mod_time);
+      /* TODO: compiler warning? */
       strftime(mod_time_string, 128, "%x", mod_time2);
       
       etk_tree_append(ETK_TREE(filechooser_widget->files_tree),
-         filechooser_widget->files_name_col, etk_theme_icon_theme_get(), icon ? icon : "mimetypes/text-x-generic_16", file_name,
+         filechooser_widget->files_name_col, etk_theme_icon_theme_get(), icon ? icon : "mimetypes/text-x-generic_16", filename,
          filechooser_widget->files_date_col, mod_time_string, NULL);
    }
    
-   free(file_path);
    ecore_list_destroy(files);
+}
+
+/**
+ * @brief Retrieves the current folder
+ * @return Returns the current folder
+ */
+const char *etk_filechooser_widget_current_folder_get(Etk_Filechooser_Widget *filechooser_widget) 
+{
+   if (!filechooser_widget)
+      return NULL;
+   return filechooser_widget->current_folder;
+}
+
+/**
+ * @brief Sets if the filechooser widget can select multiple files
+ * @param filechooser_widget a filechooser widget
+ * @param select_multiple ETK_TRUE to allow the filechooser to select multiple files
+ */
+void etk_filechooser_widget_select_multiple_set(Etk_Filechooser_Widget *filechooser_widget, Etk_Bool select_multiple)
+{
+   if (!filechooser_widget || !filechooser_widget->files_tree)
+      return;
+   etk_tree_multiple_select_set(ETK_TREE(filechooser_widget->files_tree), select_multiple);   
+}
+
+/**
+ * @brief Retrieves if the file chooser widget can select multiple files
+ * @return Returns if the file chooser widget can select multiple files
+ */
+Etk_Bool etk_filechooser_widget_select_multiple_get(Etk_Filechooser_Widget *filechooser_widget)
+{
+   if (filechooser_widget)
+      return ETK_FALSE;
+   /* TODO: notify */
+   return etk_tree_multiple_select_get(ETK_TREE(filechooser_widget->files_tree));
+}
+
+/**
+ * @brief Sets if the file chooser widget can show hidden files
+ * @param filechooser_widget a filechooser widget
+ * @param show_hidden ETK_TRUE to allow the filechooser to show hidden files
+ */
+void etk_filechooser_widget_show_hidden_set(Etk_Filechooser_Widget *filechooser_widget, Etk_Bool show_hidden)
+{
+   if (!filechooser_widget)
+      return;
+
+   filechooser_widget->show_hidden = show_hidden;
+   /* TODO: !! */
+   //etk_filechooser_widget_current_folder_set(filechooser_widget, filechooser_widget->current_folder);
+   etk_object_notify(ETK_OBJECT(filechooser_widget), "show_hidden");
+}
+
+/**
+ * @brief Retrieve if the file chooser widget can show hidden files
+ * @return Returns if the file chooser widget can show hidden files
+ */
+Etk_Bool etk_filechooser_widget_show_hidden_get(Etk_Filechooser_Widget *filechooser_widget)
+{
+   if (!filechooser_widget)
+      return ETK_FALSE;
+   return filechooser_widget->show_hidden;
 }
 
 /**************************
@@ -206,53 +292,59 @@ void etk_filechooser_widget_current_folder_set(Etk_Filechooser_Widget *filechoos
 /* Initializes the members */
 static void _etk_filechooser_widget_constructor(Etk_Filechooser_Widget *fcw)
 {
-   Etk_Widget *hpaned, *vpaned;
+   Etk_Widget *vpaned;
    
    if (!fcw)
       return;
    
-   hpaned = etk_hpaned_new();
-   etk_widget_visibility_locked_set(hpaned, ETK_TRUE);
-   etk_container_add(ETK_CONTAINER(fcw), hpaned);
-   etk_widget_show(hpaned);
+   ETK_WIDGET(fcw)->size_request = _etk_filechooser_widget_size_request;
+   ETK_WIDGET(fcw)->size_allocate = _etk_filechooser_widget_size_allocate;
+   fcw->current_folder = NULL;
+   fcw->select_multiple = ETK_FALSE;
+   fcw->show_hidden = ETK_FALSE;
+   
+   fcw->hpaned = etk_hpaned_new();
+   etk_widget_parent_set(fcw->hpaned, ETK_WIDGET(fcw));
+   etk_widget_show(fcw->hpaned);
+   etk_widget_visibility_locked_set(fcw->hpaned, ETK_TRUE);
    
    vpaned = etk_vpaned_new();
-   etk_widget_visibility_locked_set(vpaned, ETK_TRUE);
-   etk_paned_add1(ETK_PANED(hpaned), vpaned, ETK_FALSE);
+   etk_paned_add1(ETK_PANED(fcw->hpaned), vpaned, ETK_FALSE);
    etk_widget_show(vpaned);
+   etk_widget_visibility_locked_set(vpaned, ETK_TRUE);
    
-   fcw->dir_tree = etk_tree_new();
-   etk_widget_visibility_locked_set(fcw->dir_tree, ETK_TRUE);
-   etk_widget_size_request_set(fcw->dir_tree, 180, 240);
-   etk_paned_add1(ETK_PANED(vpaned), fcw->dir_tree, ETK_TRUE);
-   fcw->dir_col = etk_tree_col_new(ETK_TREE(fcw->dir_tree), "Directories", etk_tree_model_icon_text_new(ETK_TREE(fcw->dir_tree), ETK_TREE_FROM_EDJE), 120);
-   etk_tree_build(ETK_TREE(fcw->dir_tree));
-   etk_widget_show(fcw->dir_tree);
-   etk_signal_connect("row_selected", ETK_OBJECT(fcw->dir_tree), ETK_CALLBACK(_etk_filechooser_widget_dir_row_selected_cb), fcw);
+   fcw->places_tree = etk_tree_new();
+   etk_widget_size_request_set(fcw->places_tree, 180, 180);
+   etk_paned_add1(ETK_PANED(vpaned), fcw->places_tree, ETK_TRUE);
+   fcw->places_col = etk_tree_col_new(ETK_TREE(fcw->places_tree), _("Places"), etk_tree_model_icon_text_new(ETK_TREE(fcw->places_tree), ETK_TREE_FROM_EDJE), 120);
+   etk_tree_build(ETK_TREE(fcw->places_tree));
+   etk_widget_show(fcw->places_tree);
+   etk_widget_visibility_locked_set(fcw->places_tree, ETK_TRUE);
+   etk_signal_connect("row_selected", ETK_OBJECT(fcw->places_tree), ETK_CALLBACK(_etk_filechooser_widget_place_selected_cb), fcw);
    
    fcw->fav_tree = etk_tree_new();
-   etk_widget_visibility_locked_set(fcw->fav_tree, ETK_TRUE);
-   etk_widget_size_request_set(fcw->fav_tree, 180, 120);
-   etk_paned_add2(ETK_PANED(vpaned), fcw->fav_tree, ETK_FALSE);
-   fcw->fav_col = etk_tree_col_new(ETK_TREE(fcw->fav_tree), "Favorites", etk_tree_model_icon_text_new(ETK_TREE(fcw->fav_tree), ETK_TREE_FROM_EDJE), 120);
+   etk_widget_size_request_set(fcw->fav_tree, 180, 180);
+   etk_paned_add2(ETK_PANED(vpaned), fcw->fav_tree, ETK_TRUE);
+   fcw->fav_col = etk_tree_col_new(ETK_TREE(fcw->fav_tree), _("Favorites"), etk_tree_model_icon_text_new(ETK_TREE(fcw->fav_tree), ETK_TREE_FROM_EDJE), 120);
    etk_tree_build(ETK_TREE(fcw->fav_tree));
    etk_widget_show(fcw->fav_tree);
-   
-   etk_signal_connect("row_selected", ETK_OBJECT(fcw->fav_tree), ETK_CALLBACK(_etk_filechooser_widget_fav_row_selected_cb), fcw);
+   etk_widget_visibility_locked_set(fcw->fav_tree, ETK_TRUE);
+   etk_signal_connect("row_selected", ETK_OBJECT(fcw->fav_tree), ETK_CALLBACK(_etk_filechooser_widget_fav_selected_cb), fcw);
    
    fcw->files_tree = etk_tree_new();
-   etk_widget_visibility_locked_set(fcw->files_tree, ETK_TRUE);
    etk_widget_size_request_set(fcw->files_tree, 400, 120);
-   etk_paned_add2(ETK_PANED(hpaned), fcw->files_tree, ETK_TRUE);
-   fcw->files_name_col = etk_tree_col_new(ETK_TREE(fcw->files_tree), "Filename", etk_tree_model_icon_text_new(ETK_TREE(fcw->files_tree), ETK_TREE_FROM_EDJE), 100);
+   etk_paned_add2(ETK_PANED(fcw->hpaned), fcw->files_tree, ETK_TRUE);
+   fcw->files_name_col = etk_tree_col_new(ETK_TREE(fcw->files_tree), _("Filename"), etk_tree_model_icon_text_new(ETK_TREE(fcw->files_tree), ETK_TREE_FROM_EDJE), 100);
    etk_tree_col_expand_set(fcw->files_name_col, ETK_TRUE);
-   fcw->files_date_col = etk_tree_col_new(ETK_TREE(fcw->files_tree), "Date", etk_tree_model_text_new(ETK_TREE(fcw->files_tree)), 60);
+   fcw->files_date_col = etk_tree_col_new(ETK_TREE(fcw->files_tree), _("Date"), etk_tree_model_text_new(ETK_TREE(fcw->files_tree)), 60);
    etk_tree_build(ETK_TREE(fcw->files_tree));
    etk_widget_show(fcw->files_tree);
+   etk_widget_visibility_locked_set(fcw->files_tree, ETK_TRUE);
+   etk_signal_connect("row_selected", ETK_OBJECT(fcw->files_tree), ETK_CALLBACK(_etk_filechooser_widget_file_selected_cb), fcw);
 
-   _etk_filechooser_widget_favs_get(ETK_FILECHOOSER_WIDGET(fcw));   
+   _etk_filechooser_widget_places_tree_fill(ETK_FILECHOOSER_WIDGET(fcw));
+   _etk_filechooser_widget_favs_tree_fill(ETK_FILECHOOSER_WIDGET(fcw));
    
-   fcw->current_folder = NULL;
    /* Go to home */
    etk_filechooser_widget_current_folder_set(ETK_FILECHOOSER_WIDGET(fcw), NULL);
 }
@@ -274,10 +366,14 @@ static void _etk_filechooser_widget_property_set(Etk_Object *object, int propert
       return;
 
    switch (property_id)
-   {/*
-      case ETK_FILECHOOSER_WIDGET_HAS_RESIZE_GRIP_PROPERTY:
-         etk_filechooser_widget_has_resize_grip_set(filechooser_widget, etk_property_value_bool_get(value));
-         break;*/
+   {
+      case ETK_FILECHOOSER_WIDGET_SELECT_MULTIPLE_PROPERTY:
+         etk_filechooser_widget_select_multiple_set(filechooser_widget, etk_property_value_bool_get(value));
+         break;
+      case ETK_FILECHOOSER_WIDGET_SHOW_HIDDEN_PROPERTY:
+         etk_filechooser_widget_show_hidden_set(filechooser_widget, etk_property_value_bool_get(value));
+         break;
+      /* TODO: ETK_FILECHOOSER_WIDGET_PATH_PROPERTY */
       default:
          break;
    }
@@ -292,48 +388,37 @@ static void _etk_filechooser_widget_property_get(Etk_Object *object, int propert
       return;
 
    switch (property_id)
-   {/*
-      case ETK_FILECHOOSER_WIDGET_HAS_RESIZE_GRIP_PROPERTY:
-         etk_property_value_bool_set(value, filechooser_widget->has_resize_grip);
-         break;*/
+   {
+      case ETK_FILECHOOSER_WIDGET_SELECT_MULTIPLE_PROPERTY:
+         etk_property_value_bool_set(value, etk_filechooser_widget_select_multiple_get(filechooser_widget));
+         break;
+      case ETK_FILECHOOSER_WIDGET_SHOW_HIDDEN_PROPERTY:
+         etk_property_value_bool_set(value, etk_filechooser_widget_show_hidden_get(filechooser_widget));
+         break;
+      /* TODO: ETK_FILECHOOSER_WIDGET_PATH_PROPERTY */
       default:
          break;
    }
 }
 
-/* Get favorites from file in ~/ETK_FILECHOOSER_FAVS */
-static void _etk_filechooser_widget_favs_get(Etk_Filechooser_Widget *filechooser_widget)
+/* Calculates the ideal size for the filechooser */
+static void _etk_filechooser_widget_size_request(Etk_Widget *widget, Etk_Size *size_requisition)
 {
-   char *folder;
-   char file_path[PATH_MAX];
-   char fav[PATH_MAX];
-   char line[PATH_MAX];
-   FILE *f;
+   Etk_Filechooser_Widget *fcw;
    
-   if (!filechooser_widget)
-     return;
-   if (!(folder = getenv("HOME")))
-     return;
+   if (!(fcw = ETK_FILECHOOSER_WIDGET(widget)) || !size_requisition)
+      return;
+   etk_widget_size_request(fcw->hpaned, size_requisition);
+}
+
+/* Renders the filechooser in the allocated geometry */
+static void _etk_filechooser_widget_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
+{
+   Etk_Filechooser_Widget *fcw;
    
-   snprintf(file_path, sizeof(file_path), "%s/%s", folder, ETK_FILECHOOSER_FAVS);
-     
-   if((f = fopen (file_path, "r")) == NULL)
-     return;
-   
-   etk_tree_freeze(ETK_TREE(filechooser_widget->fav_tree));
-   etk_tree_clear(ETK_TREE(filechooser_widget->fav_tree));
-   
-   while(fgets(line, PATH_MAX, f) != NULL)
-     {
-	Etk_Tree_Row *row;
-	sscanf(line,"file://%s",fav);
-	row = etk_tree_append(ETK_TREE(filechooser_widget->fav_tree),
-			      filechooser_widget->fav_col, etk_theme_icon_theme_get(), "places/folder_16", ecore_file_get_file(fav), NULL);
-	etk_tree_row_data_set(row, (void*)strdup(fav)); /* any special things to do here to free? */
-     }
-   
-   fclose (f);
-   etk_tree_thaw(ETK_TREE(filechooser_widget->fav_tree));
+   if (!(fcw = ETK_FILECHOOSER_WIDGET(widget)))
+      return;
+   etk_widget_size_allocate(fcw->hpaned, geometry);
 }
 
 /**************************
@@ -342,40 +427,179 @@ static void _etk_filechooser_widget_favs_get(Etk_Filechooser_Widget *filechooser
  *
  **************************/
 
-/* Called when a row of the "directories" tree is selected */
-static void _etk_filechooser_widget_dir_row_selected_cb(Etk_Object *object, Etk_Tree_Row *row, void *data)
+/* Called when a row of the "places" tree is selected */
+static void _etk_filechooser_widget_place_selected_cb(Etk_Object *object, Etk_Tree_Row *row, void *data)
 {
    Etk_Filechooser_Widget *filechooser_widget;
    char *selected_dir;
-   char *new_dir;
    
-   if (!(filechooser_widget = ETK_FILECHOOSER_WIDGET(data)))
-      return;
-   etk_tree_row_fields_get(row, filechooser_widget->dir_col, NULL, NULL, &selected_dir, NULL);
+   if (!(filechooser_widget = ETK_FILECHOOSER_WIDGET(data)) || !(selected_dir = etk_tree_row_data_get(row)))
+     return;
    
-   new_dir = malloc(strlen(filechooser_widget->current_folder) + strlen(selected_dir) + 2);
-   sprintf(new_dir, "%s/%s", filechooser_widget->current_folder, selected_dir);
-   etk_filechooser_widget_current_folder_set(filechooser_widget, new_dir);
-   free(new_dir);
+   if (strcmp(selected_dir, "..") == 0)
+      ;
+   else
+      etk_filechooser_widget_current_folder_set(filechooser_widget, selected_dir);
 }
 
-static void _etk_filechooser_widget_fav_row_selected_cb(Etk_Object *object, Etk_Tree_Row *row, void *data)
+/* Called when a row of the "favorites" tree is selected */
+static void _etk_filechooser_widget_fav_selected_cb(Etk_Object *object, Etk_Tree_Row *row, void *data)
 {
    Etk_Filechooser_Widget *filechooser_widget;
-   char *selected_dir;
    
    if (!(filechooser_widget = ETK_FILECHOOSER_WIDGET(data)))
      return;
-      
-   selected_dir = etk_tree_row_data_get(row);
-   etk_filechooser_widget_current_folder_set(filechooser_widget, selected_dir);
+   etk_filechooser_widget_current_folder_set(filechooser_widget, etk_tree_row_data_get(row));
+}
+
+/* Called when a row of the "files" tree is selected */
+static void _etk_filechooser_widget_file_selected_cb(Etk_Object *object, Etk_Tree_Row *row, void *data)
+{
+   /*Etk_Filechooser_Widget *filechooser_widget;
+   char *selected_file;
+   char *new_file;
    
-}    
+   if (!(filechooser_widget = ETK_FILECHOOSER_WIDGET(data)))
+      return;
+
+   etk_tree_row_fields_get(row, filechooser_widget->files_name_col, NULL, NULL, &selected_file, NULL);
+
+   new_file = malloc(strlen(filechooser_widget->current_folder) + strlen(selected_file) + 2);
+   sprintf(new_file, "%s/%s", filechooser_widget->current_folder, selected_file);
+   etk_filechooser_widget_current_file_set(filechooser_widget, new_file);
+   free(new_file);*/
+}
 
 /**************************
  *
  * Private functions
  *
  **************************/
+
+/* Fills the "places" tree with some default elements, and with the mount points */
+static void _etk_filechooser_widget_places_tree_fill(Etk_Filechooser_Widget *fcw)
+{
+   char *home;
+   Etk_Tree_Row *row;
+   
+   if (!fcw)
+      return;
+   
+   etk_tree_freeze(ETK_TREE(fcw->places_tree));
+   
+   row = etk_tree_append(ETK_TREE(fcw->places_tree), fcw->places_col, etk_theme_icon_theme_get(), "actions/go-up_16", "..", NULL);
+   etk_tree_row_data_set_full(row, strdup(".."), free);
+   
+   if ((home = getenv("HOME")))
+   {
+      row = etk_tree_append(ETK_TREE(fcw->places_tree), fcw->places_col, etk_theme_icon_theme_get(), "places/user-home_16", _("Home"), NULL);
+      etk_tree_row_data_set_full(row, strdup(home), free);
+   }
+   
+   row = etk_tree_append(ETK_TREE(fcw->places_tree), fcw->places_col, etk_theme_icon_theme_get(), "devices/computer_16", _("Root"), NULL);
+   etk_tree_row_data_set_full(row, strdup("/"), free);
+   
+   /* Adds the mount points */
+#ifdef HAVE_LINUX
+   {
+      FILE *mtab;
+      struct mntent *mount_point;
+      Etk_Bool fs_supported;
+      int i;
+         
+      if ((mtab = setmntent("/etc/mtab", "rt")))
+      {
+         while ((mount_point = getmntent(mtab)))
+         {
+            if (strcmp(mount_point->mnt_dir, "/") == 0 || strcmp(mount_point->mnt_dir, "/home") == 0)
+               continue;
+            
+            fs_supported = ETK_TRUE;
+            for (i = 0; i < _etk_filechooser_num_unsupported_fs; i++)
+            {
+               if (strcmp(mount_point->mnt_type, _etk_filechooser_unsupported_fs[i]) == 0)
+               {
+                  fs_supported = ETK_FALSE;
+                  break;
+               }
+            }
+            if (!fs_supported)
+               continue;
+            
+            row = etk_tree_append(ETK_TREE(fcw->places_tree), fcw->places_col, etk_theme_icon_theme_get(), "devices/drive-harddisk_16", ecore_file_get_file(mount_point->mnt_dir), NULL);
+            etk_tree_row_data_set_full(row, strdup(mount_point->mnt_dir), free);
+         }
+         endmntent(mtab);
+      }
+   }
+#endif
+   
+#ifdef HAVE_BSD
+   {
+      struct statfs *mount_points;
+      int num_mount_points;
+      Etk_Bool fs_supported;
+      int i, j;
+      
+      num_mount_points = getmntinfo(&mount_points, MNT_NOWAIT);
+      for (i = 0; i < num_mount_points; i++)
+      {
+         if (strcmp(mount_points[i].f_mntonname, "/") == 0 || strcmp(mount_points[i].f_mntonname, "/home") == 0)
+               continue;
+            
+         fs_supported = ETK_TRUE;
+         for (j = 0; j < _etk_filechooser_num_unsupported_fs; j++)
+         {
+            if (strcmp(mount_points[i].f_fstypename, _etk_filechooser_unsupported_fs[j]) == 0)
+            {
+               fs_supported = ETK_FALSE;
+               break;
+            }
+         }
+         if (!fs_supported)
+            continue;
+         
+         row = etk_tree_append(ETK_TREE(fcw->places_tree), fcw->places_col, etk_theme_icon_theme_get(), "devices/drive-harddisk_16", ecore_file_get_file(mount_points[i].f_mntonname), NULL);
+         etk_tree_row_data_set_full(row, strdup(mount_points[i].f_mntonname), free);
+      }
+   }
+#endif
+   
+   etk_tree_thaw(ETK_TREE(fcw->places_tree));
+}
+
+/* Get favorites from file in ~/.gtk-bookmarks */
+static void _etk_filechooser_widget_favs_tree_fill(Etk_Filechooser_Widget *fcw)
+{
+   char *folder;
+   FILE *f;
+   char file_path[PATH_MAX];
+   char line[PATH_MAX];
+   char fav[PATH_MAX];
+   
+   if (!fcw)
+     return;
+   if (!(folder = getenv("HOME")))
+     return;
+   
+   snprintf(file_path, sizeof(file_path), "%s/%s", folder, ETK_FILECHOOSER_FAVS_FILE);
+   if (!(f = fopen(file_path, "r")))
+      return;
+   
+   etk_tree_freeze(ETK_TREE(fcw->fav_tree));
+   while (fgets(line, PATH_MAX, f))
+   {
+      Etk_Tree_Row *row;
+      
+      if (sscanf(line, "file://%s", fav) == 1)
+      {
+         row = etk_tree_append(ETK_TREE(fcw->fav_tree), fcw->fav_col, etk_theme_icon_theme_get(), "places/folder_16", ecore_file_get_file(fav), NULL);
+         etk_tree_row_data_set_full(row, strdup(fav), free);
+      }
+   }
+   etk_tree_thaw(ETK_TREE(fcw->fav_tree));
+   
+   fclose(f);
+}
 
 /** @} */
