@@ -275,7 +275,9 @@ void etk_widget_drag_drop(Etk_Widget *widget);
 void etk_widget_drag_motion(Etk_Widget *widget);
 void etk_widget_drag_leave(Etk_Widget *widget);
 
-void etk_widget_selection_get(Etk_Widget *widget, Etk_Event_Selection_Get *event);
+void etk_widget_selection_received(Etk_Widget *widget, Etk_Event_Selection_Request *event);
+
+void etk_widget_clipboard_received(Etk_Widget *widget, Etk_Event_Selection_Request *event);
 
 /** @} */
 

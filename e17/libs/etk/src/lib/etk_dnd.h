@@ -11,7 +11,7 @@
 #define ETK_SELECTION_TARGET_UTF8_STRING "UTF8_STRING"
 #define ETK_SELECTION_TARGET_FILENAME "FILENAME"
 
-struct _Etk_Event_Selection_Get
+struct _Etk_Event_Selection_Request
 {   
    void *data;
    enum

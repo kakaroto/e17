@@ -58,7 +58,8 @@ enum _Etk_Widget_Signal_Id
    ETK_WIDGET_DRAG_DROP_SIGNAL,
    ETK_WIDGET_DRAG_MOTION_SIGNAL,
    ETK_WIDGET_DRAG_LEAVE_SIGNAL,
-   ETK_WIDGET_SELECTION_GET_SIGNAL,
+   ETK_WIDGET_SELECTION_RECEIVED_SIGNAL,
+   ETK_WIDGET_CLIPBOARD_RECEIVED_SIGNAL,
    ETK_WIDGET_NUM_SIGNALS
 };
 
@@ -177,7 +178,8 @@ Etk_Type *etk_widget_type_get()
       _etk_widget_signals[ETK_WIDGET_DRAG_DROP_SIGNAL] =     etk_signal_new("drag_drop",      widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_drop),   etk_marshaller_VOID__VOID,    NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_DRAG_MOTION_SIGNAL] =   etk_signal_new("drag_motion",    widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_motion), etk_marshaller_VOID__VOID,    NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_DRAG_LEAVE_SIGNAL] =    etk_signal_new("drag_leave",     widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_leave),  etk_marshaller_VOID__VOID,    NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_SELECTION_GET_SIGNAL] = etk_signal_new("selection_get",  widget_type, -1,                                         etk_marshaller_VOID__POINTER, NULL, NULL);
+      _etk_widget_signals[ETK_WIDGET_SELECTION_RECEIVED_SIGNAL] = etk_signal_new("selection_received",  widget_type, -1,                                         etk_marshaller_VOID__POINTER, NULL, NULL);
+      _etk_widget_signals[ETK_WIDGET_CLIPBOARD_RECEIVED_SIGNAL] = etk_signal_new("clipboard_received",  widget_type, -1,                                         etk_marshaller_VOID__POINTER, NULL, NULL);
 
       etk_type_property_add(widget_type, "name",              ETK_WIDGET_NAME_PROPERTY,              ETK_PROPERTY_STRING,  ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(widget_type, "parent",            ETK_WIDGET_PARENT_PROPERTY,            ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE,          etk_property_value_pointer(NULL));
@@ -1487,14 +1489,25 @@ void etk_widget_drag_leave(Etk_Widget *widget)
 }
 
 /**
- * @brief Sends the "selection_get" signal
+ * @brief Sends the "selection_received" signal
  * @param widget a widget
  */
-void etk_widget_selection_get(Etk_Widget *widget, Etk_Event_Selection_Get *event)
+void etk_widget_selection_received(Etk_Widget *widget, Etk_Event_Selection_Request *event)
 {
    if (!widget)
      return;
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_SELECTION_GET_SIGNAL], ETK_OBJECT(widget), NULL, event);
+   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_SELECTION_RECEIVED_SIGNAL], ETK_OBJECT(widget), NULL, event);
+}
+
+/**
+ * @brief Sends the "clipboard_received" signal
+ * @param widget a widget
+ */
+void etk_widget_clipboard_received(Etk_Widget *widget, Etk_Event_Selection_Request *event)
+{
+   if (!widget)
+     return;
+   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_CLIPBOARD_RECEIVED_SIGNAL], ETK_OBJECT(widget), NULL, event);
 }
 
 /**************************

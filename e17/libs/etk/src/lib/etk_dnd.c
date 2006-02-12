@@ -20,12 +20,22 @@
  * drag_motion: mouse is moving on widget
  * drag_drop: object dropped on widget
  * 
+ * selection_received: when our widget gets the selection it has asked for
+ *                     (ie, we want to get a selection)
+ * selection_get: when a request for a selection has been made to our widget
+ *                (ie, someone is getting our selection from us)
+ * selection_clear_event: the selection has been cleared
+ * 
+ * clipboard_received: when our widget gets the clipboard data it has asked for
+ *                     (ie, we want to get a clipboard's text / image)
+ * 
  */
 
 #define ETK_DND_INSIDE(x, y, xx, yy, ww, hh) (((x) < ((xx) + (ww))) && ((y) < ((yy) + (hh))) && ((x) >= (xx)) && ((y) >= (yy)))
 
+Etk_Widget *_etk_selection_widget = NULL;
+
 static Etk_Widget *_etk_dnd_widget = NULL;
-static Etk_Widget *_etk_selection_widget = NULL;
 static Evas_List  *_etk_dnd_handlers = NULL;
 
 #if HAVE_ECORE_X
@@ -60,7 +70,7 @@ Etk_Bool etk_dnd_init()
    _etk_dnd_handlers = evas_list_append(_etk_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_SELECTION_NOTIFY, _etk_xdnd_selection_handler, NULL));
 #endif
    
-   return 1;
+   return ETK_TRUE;
 }
 
 /**
@@ -74,35 +84,7 @@ void etk_dnd_shutdown()
       ecore_event_handler_del(_etk_dnd_handlers->data);
       _etk_dnd_handlers = evas_list_remove(_etk_dnd_handlers, _etk_dnd_handlers->data);
    }
-}
-
-/* TODO: doc */
-void etk_selection_text_request(Etk_Widget *widget)
-{
-#if HAVE_ECORE_X
-   Ecore_X_Window win;
-   
-   if (!widget || !ETK_IS_WINDOW(widget->toplevel_parent))
-     return;
-   
-   win = ETK_WINDOW(widget->toplevel_parent)->x_window;
-   _etk_selection_widget = widget;
-   ecore_x_selection_clipboard_request(win, ECORE_X_SELECTION_TARGET_UTF8_STRING);
-#endif
-}
-
-/* TODO: doc */
-void etk_selection_text_set(Etk_Widget *widget, const char *data)
-{
-#if HAVE_ECORE_X
-   Ecore_X_Window win;
-   
-   if (!widget || !ETK_IS_WINDOW(widget->toplevel_parent) || !data)
-      return;
-   
-   win = ETK_WINDOW(widget->toplevel_parent)->x_window;
-   ecore_x_selection_clipboard_set(win, (char *)data, strlen(data) + 1);
-#endif
+#endif   
 }
 
 /**************************
@@ -115,6 +97,7 @@ void etk_selection_text_set(Etk_Widget *widget, const char *data)
 /* Search the container recursively for the widget that accepts xdnd */
 static void _etk_xdnd_container_get_widgets_at(Etk_Toplevel_Widget *top, int x, int y, int offx, int offy, Evas_List **list)
 {
+
    Evas_List *l;
    int wx, wy, ww, wh;
    
@@ -316,6 +299,8 @@ static int _etk_xdnd_selection_handler(void *data, int type, void *event)
       case ECORE_X_SELECTION_CLIPBOARD:
          if (!strcmp(ev->target, ECORE_X_SELECTION_TARGET_TARGETS)) 
 	 {
+	    /* REDO THIS CODE!!!
+	    
 	    Etk_Event_Selection_Get event;
 	    Etk_Selection_Data_Targets _targets;
 	    
@@ -329,16 +314,18 @@ static int _etk_xdnd_selection_handler(void *data, int type, void *event)
 	    //printf("clipboard: %s\n", ev->target);
 	    //for (i = 0; i < targets->num_targets; i++)
 	    //  printf("target: %s\n", targets->targets[i]);
+	    
+	    */
          } 
          else 
 	 {
-	    Etk_Event_Selection_Get event;
+	    /* emit signal to widget that the clipboard text is sent to it */
+	    Etk_Event_Selection_Request event;
 	    
 	    text = ev->data;
-	    //printf("clipboard: %s %s\n", ev->target, text->text);
 	    event.data = text->text;
 	    event.content = ETK_SELECTION_CONTENT_TEXT;
-	    etk_widget_selection_get(_etk_selection_widget, &event);
+	    etk_widget_clipboard_received(_etk_selection_widget, &event);
 	 }
 	 break;
          
@@ -350,4 +337,3 @@ static int _etk_xdnd_selection_handler(void *data, int type, void *event)
 }
 #endif
 
-#endif

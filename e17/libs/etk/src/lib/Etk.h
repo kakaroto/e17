@@ -63,5 +63,6 @@
 #include "etk_progress_bar.h"
 #include "etk_spin_button.h"
 #include "etk_dnd.h"
+#include "etk_clipboard.h"
 
 #endif

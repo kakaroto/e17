@@ -54,7 +54,7 @@ void etk_test_xdnd_window_create(void *data)
    etk_box_pack_start(ETK_BOX(vbox), image, ETK_FALSE, ETK_FALSE, 0);
 
    label = etk_label_new("");
-   etk_signal_connect("selection_get", ETK_OBJECT(label), ETK_CALLBACK(_etk_test_xdnd_clipboard_text_request_cb), NULL);
+   etk_signal_connect("clipboard_received", ETK_OBJECT(label), ETK_CALLBACK(_etk_test_xdnd_clipboard_text_request_cb), NULL);
    
    button = etk_button_new_with_label(_("Press me to paste text"));
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_xdnd_button_paste_cb), label);
@@ -120,7 +120,7 @@ static void _etk_test_xdnd_drag_drop_cb2(Etk_Object *object, void *data)
 /* Called when a some text is pasted */
 static void _etk_test_xdnd_clipboard_text_request_cb(Etk_Object *object, void *event, void *data)
 {
-   Etk_Event_Selection_Get *ev;
+   Etk_Event_Selection_Request *ev;
    
    ev = event;
    etk_label_set(ETK_LABEL(object), (char *)ev->data);
@@ -129,11 +129,15 @@ static void _etk_test_xdnd_clipboard_text_request_cb(Etk_Object *object, void *e
 /* Called when the "paste" button is clicked */
 static void _etk_test_xdnd_button_paste_cb(Etk_Object *object, void *data)
 {
-   etk_selection_text_request(ETK_WIDGET(data));
+   etk_clipboard_text_request(ETK_WIDGET(data));
 }
 
 /* Called when the "copy" button is clicked */
 static void _etk_test_xdnd_button_copy_cb(Etk_Object *object, void *data)
 {
-   etk_selection_text_set(ETK_WIDGET(data), etk_entry_text_get(ETK_ENTRY(data)));
+   const char *text = NULL;
+   
+   text = etk_entry_text_get(ETK_ENTRY(data));
+   if(text)
+     etk_clipboard_text_set(ETK_WIDGET(data), text, strlen(text) + 1);
 }

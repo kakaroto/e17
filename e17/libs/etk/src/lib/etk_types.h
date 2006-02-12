@@ -105,7 +105,7 @@ typedef struct _Etk_Notebook Etk_Notebook;
 typedef struct _Etk_Progress_Bar Etk_Progress_Bar;
 typedef enum _Etk_Progress_Bar_Orientation Etk_Progress_Bar_Orientation;
 typedef struct _Etk_Spin_Button Etk_Spin_Button;
-typedef struct _Etk_Event_Selection_Get Etk_Event_Selection_Get;
+typedef struct _Etk_Event_Selection_Request Etk_Event_Selection_Request;
 typedef struct _Etk_Selection_Data_Targets Etk_Selection_Data_Targets;
 
 /**
