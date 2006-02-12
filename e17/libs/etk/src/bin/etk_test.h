@@ -3,13 +3,6 @@
 
 #include "Etk.h"
 
-typedef struct _Etk_Test_Set Etk_Test_Set;
-struct _Etk_Test_Set
-{
-   char *name;
-   void (*func)(void *data);
-};
-
 void etk_test_button_window_create(void *data);
 void etk_test_entry_window_create(void *data);
 void etk_test_table_window_create(void *data);
