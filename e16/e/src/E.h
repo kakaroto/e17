@@ -502,6 +502,7 @@ typedef struct
       unsigned int        last_button;
       unsigned int        last_keycode;
       char                double_click;
+      char                on_screen;
    } events;
    struct
    {

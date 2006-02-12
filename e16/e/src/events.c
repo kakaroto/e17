@@ -182,12 +182,14 @@ HandleEvent(XEvent * ev)
 	     return;
 	  }
 #endif
+	Mode.events.on_screen = ev->xkey.same_screen;
 	goto do_stuff;
 
      case ButtonPress:
      case ButtonRelease:
 	Mode.events.time = ev->xbutton.time;
 	ModeGetXY(ev->xbutton.root, ev->xbutton.x_root, ev->xbutton.y_root);
+	Mode.events.on_screen = ev->xbutton.same_screen;
 	goto do_stuff;
 
      case MotionNotify:
@@ -195,6 +197,7 @@ HandleEvent(XEvent * ev)
 	Mode.events.px = Mode.events.x;
 	Mode.events.py = Mode.events.y;
 	ModeGetXY(ev->xmotion.root, ev->xmotion.x_root, ev->xmotion.y_root);
+	Mode.events.on_screen = ev->xmotion.same_screen;
 
 	ActionsHandleMotion();
 	break;
@@ -202,6 +205,7 @@ HandleEvent(XEvent * ev)
      case EnterNotify:
 	Mode.context_win = ev->xany.window;
 	Mode.events.time = ev->xcrossing.time;
+	Mode.events.on_screen = ev->xcrossing.same_screen;
 	if (ev->xcrossing.mode == NotifyGrab &&
 	    ev->xcrossing.detail == NotifyInferior)
 	  {
@@ -213,6 +217,7 @@ HandleEvent(XEvent * ev)
 
      case LeaveNotify:
 	Mode.events.time = ev->xcrossing.time;
+	Mode.events.on_screen = ev->xcrossing.same_screen;
 	if (ev->xcrossing.mode == NotifyGrab &&
 	    ev->xcrossing.detail == NotifyInferior)
 	  {
@@ -803,10 +808,12 @@ EventShow(const XEvent * ev)
 	break;
      case EnterNotify:
      case LeaveNotify:
-	Eprintf("%#08lx EV-%s win=%#lx sub=%#lx m=%s d=%s\n", ser, name, win,
-		ev->xcrossing.subwindow,
-		EventNotifyModeName(ev->xcrossing.mode),
-		EventNotifyDetailName(ev->xcrossing.detail));
+	Eprintf
+	   ("%#08lx EV-%s win=%#lx sub=%#lx m=%s d=%s sscreen=%d focus=%d\n",
+	    ser, name, win, ev->xcrossing.subwindow,
+	    EventNotifyModeName(ev->xcrossing.mode),
+	    EventNotifyDetailName(ev->xcrossing.detail),
+	    ev->xcrossing.same_screen, ev->xcrossing.focus);
 	break;
      case FocusIn:
      case FocusOut:
