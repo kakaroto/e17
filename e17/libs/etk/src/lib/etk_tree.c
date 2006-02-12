@@ -51,6 +51,8 @@ enum _Etk_Tree_Signal_Id
 {
    ETK_TREE_ROW_SELECTED_SIGNAL,
    ETK_TREE_ROW_UNSELECTED_SIGNAL,
+   ETK_TREE_ROW_CLICKED_SIGNAL,
+   ETK_TREE_ROW_ACTIVATED_SIGNAL,
    ETK_TREE_ROW_EXPANDED_SIGNAL,
    ETK_TREE_ROW_COLLAPSED_SIGNAL,
    ETK_TREE_SELECT_ALL_SIGNAL,
@@ -107,6 +109,7 @@ static void _etk_tree_col_property_get(Etk_Object *object, int property_id, Etk_
 
 static void _etk_tree_expander_clicked_cb(Etk_Object *object, void *event_info, void *data);
 static void _etk_tree_row_pressed_cb(Etk_Object *object, void *event_info, void *data);
+static void _etk_tree_row_clicked_cb(Etk_Object *object, void *event_info, void *data);
 static void _etk_tree_focus_cb(Etk_Object *object, void *event, void *data);
 static void _etk_tree_unfocus_cb(Etk_Object *object, void *event, void *data);
 static void _etk_tree_key_down_cb(Etk_Object *object, void *event, void *data);
@@ -156,6 +159,8 @@ Etk_Type *etk_tree_type_get()
 
       _etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL] = etk_signal_new("row_selected", tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_tree_signals[ETK_TREE_ROW_UNSELECTED_SIGNAL] = etk_signal_new("row_unselected", tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
+      _etk_tree_signals[ETK_TREE_ROW_CLICKED_SIGNAL] = etk_signal_new("row_clicked", tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
+      _etk_tree_signals[ETK_TREE_ROW_ACTIVATED_SIGNAL] = etk_signal_new("row_activated", tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_tree_signals[ETK_TREE_ROW_EXPANDED_SIGNAL] = etk_signal_new("row_expaned", tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_tree_signals[ETK_TREE_ROW_COLLAPSED_SIGNAL] = etk_signal_new("row_collapsed", tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_tree_signals[ETK_TREE_SELECT_ALL_SIGNAL] = etk_signal_new("select_all", tree_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
@@ -1859,7 +1864,27 @@ static void _etk_tree_row_pressed_cb(Etk_Object *object, void *event_info, void 
       return;
 
    event = event_info;
-   _etk_tree_row_select(row->tree, row, event->modifiers);
+   if (event->button == 1)
+   {
+      _etk_tree_row_select(row->tree, row, event->modifiers);
+      if (event->flags & EVAS_BUTTON_DOUBLE_CLICK)
+         etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_ACTIVATED_SIGNAL], ETK_OBJECT(row->tree), NULL, row);
+   }
+   
+}
+
+/* Called when a row is clicked */
+static void _etk_tree_row_clicked_cb(Etk_Object *object, void *event_info, void *data)
+{
+   Etk_Tree_Row *row;
+   Etk_Event_Mouse_Up_Down *event;
+
+   if (!(row = etk_object_data_get(object, "_Etk_Tree::row")))
+      return;
+
+   event = event_info;
+   if (event->button == 1)
+      etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_CLICKED_SIGNAL], ETK_OBJECT(row->tree), NULL, row);
 }
 
 /* Called when the tree is focused */
@@ -1935,6 +1960,11 @@ static void _etk_tree_key_down_cb(Etk_Object *object, void *event, void *data)
       etk_range_value_set(vscrollbar_range, vscrollbar_range->value + vscrollbar_range->page_increment);
    else if (strcmp(key_event->key, "Prior") == 0)
       etk_range_value_set(vscrollbar_range, vscrollbar_range->value - vscrollbar_range->page_increment);
+   else if (strcmp(key_event->key, "space") == 0)
+   {
+      if (tree->last_selected)
+         etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_ACTIVATED_SIGNAL], ETK_OBJECT(tree), NULL, tree->last_selected);
+   }
    else
       propagate = ETK_TRUE;
    
@@ -2365,6 +2395,7 @@ static Etk_Tree_Row_Objects *_etk_tree_row_objects_new(Etk_Tree *tree)
    etk_widget_clip_set(new_row_objects->background, ETK_TREE_GRID(tree->grid)->clip);
    etk_widget_parent_set(new_row_objects->background, ETK_CONTAINER(tree->grid));
    etk_signal_connect("mouse_down", ETK_OBJECT(new_row_objects->background), ETK_CALLBACK(_etk_tree_row_pressed_cb), NULL);
+   etk_signal_connect("mouse_click", ETK_OBJECT(new_row_objects->background), ETK_CALLBACK(_etk_tree_row_clicked_cb), NULL);
    
    /* Creates the expander of the row */
    if (tree->mode == ETK_TREE_MODE_TREE)
