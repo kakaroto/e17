@@ -12,6 +12,7 @@
 
 enum _Etk_Toplevel_Widget_Property_Id
 {
+   ETK_TOPLEVEL_WIDGET_EVAS_PROPERTY,
    ETK_TOPLEVEL_WIDGET_FOCUSED_WIDGET_PROPERTY
 };
 
@@ -41,6 +42,7 @@ Etk_Type *etk_toplevel_widget_type_get()
    {
       toplevel_widget_type = etk_type_new("Etk_Toplevel_Widget", ETK_BIN_TYPE, sizeof(Etk_Toplevel_Widget), ETK_CONSTRUCTOR(_etk_toplevel_widget_constructor), ETK_DESTRUCTOR(_etk_toplevel_widget_destructor));
       
+      etk_type_property_add(toplevel_widget_type, "evas", ETK_TOPLEVEL_WIDGET_EVAS_PROPERTY, ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE, etk_property_value_pointer(NULL));
       etk_type_property_add(toplevel_widget_type, "focused_widget", ETK_TOPLEVEL_WIDGET_FOCUSED_WIDGET_PROPERTY, ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_pointer(NULL));
    
       toplevel_widget_type->property_set = _etk_toplevel_widget_property_set;
@@ -279,8 +281,11 @@ static void _etk_toplevel_widget_property_get(Etk_Object *object, int property_i
 
    switch (property_id)
    {
+      case ETK_TOPLEVEL_WIDGET_EVAS_PROPERTY:
+         etk_property_value_pointer_set(value, toplevel_widget->evas);
+         break;
       case ETK_TOPLEVEL_WIDGET_FOCUSED_WIDGET_PROPERTY:
-         etk_property_value_pointer_set(value, ETK_OBJECT(toplevel_widget->focused_widget));
+         etk_property_value_pointer_set(value, toplevel_widget->focused_widget);
          break;
       default:
          break;
@@ -297,19 +302,12 @@ static void _etk_toplevel_widget_property_get(Etk_Object *object, int property_i
 static void _etk_toplevel_widget_realize_cb(Etk_Object *object, void *data)
 {
    Etk_Toplevel_Widget *toplevel_widget;
-   Etk_Widget *widget;
 
    if (!(toplevel_widget = ETK_TOPLEVEL_WIDGET(object)))
       return;
 
-   widget = ETK_WIDGET(toplevel_widget);
-   if (toplevel_widget->focused_widget)
-   {
-      if (toplevel_widget->focused_widget->event_object)
-         evas_object_focus_set(toplevel_widget->focused_widget->event_object, 1);
-   }
-   else if (widget->event_object)
-      evas_object_focus_set(widget->event_object, 1);
+   if (!toplevel_widget->focused_widget && ETK_WIDGET(toplevel_widget)->event_object)
+      evas_object_focus_set(ETK_WIDGET(toplevel_widget)->event_object, 1);
 }
 
 /**************************

@@ -510,8 +510,7 @@ static void _etk_window_constructor(Etk_Window *window)
    etk_signal_connect("size_request", ETK_OBJECT(window), ETK_CALLBACK(_etk_window_size_request_cb), NULL);
    etk_signal_connect_swapped("show", ETK_OBJECT(window), ETK_CALLBACK(ecore_evas_show), window->ecore_evas);
    etk_signal_connect_swapped("hide", ETK_OBJECT(window), ETK_CALLBACK(ecore_evas_hide), window->ecore_evas);
-   
-   etk_widget_realize(ETK_WIDGET(window));
+   etk_object_notify(ETK_OBJECT(window), "evas");
 }
 
 /* Destroys the window */

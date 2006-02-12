@@ -107,6 +107,10 @@ static void _etk_widget_mouse_wheel_cb(void *data, Evas *evas, Evas_Object *obje
 static void _etk_widget_key_down_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
 static void _etk_widget_signal_key_down_cb(Etk_Object *object, Etk_Event_Key_Up_Down *event, void *data);
 static void _etk_widget_key_up_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
+static void _etk_widget_toplevel_evas_changed_cb(Etk_Object *object, const char *property_name, void *data);
+
+static void _etk_widget_realize(Etk_Widget *widget);
+static void _etk_widget_unrealize(Etk_Widget *widget);
 
 static void _etk_widget_toplevel_parent_set(Etk_Widget *widget, Etk_Toplevel_Widget *toplevel_parent);
 static void _etk_widget_realize_all(Etk_Widget *widget);
@@ -174,13 +178,13 @@ Etk_Type *etk_widget_type_get()
       _etk_widget_signals[ETK_WIDGET_LEAVE_SIGNAL] =         etk_signal_new("leave",         widget_type, ETK_MEMBER_OFFSET(Etk_Widget, leave),   etk_marshaller_VOID__VOID,    NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_FOCUS_SIGNAL] =         etk_signal_new("focus",         widget_type, ETK_MEMBER_OFFSET(Etk_Widget, focus),   etk_marshaller_VOID__VOID,    NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_UNFOCUS_SIGNAL] =       etk_signal_new("unfocus",       widget_type, ETK_MEMBER_OFFSET(Etk_Widget, unfocus), etk_marshaller_VOID__VOID,    NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL] = etk_signal_new("scroll_size_changed", widget_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_DRAG_DROP_SIGNAL] =     etk_signal_new("drag_drop",      widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_drop),   etk_marshaller_VOID__VOID,    NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_DRAG_MOTION_SIGNAL] =   etk_signal_new("drag_motion",    widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_motion), etk_marshaller_VOID__VOID,    NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_DRAG_LEAVE_SIGNAL] =    etk_signal_new("drag_leave",     widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_leave),  etk_marshaller_VOID__VOID,    NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_SELECTION_RECEIVED_SIGNAL] = etk_signal_new("selection_received",  widget_type, -1,                                         etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_CLIPBOARD_RECEIVED_SIGNAL] = etk_signal_new("clipboard_received",  widget_type, -1,                                         etk_marshaller_VOID__POINTER, NULL, NULL);
-
+      _etk_widget_signals[ETK_WIDGET_DRAG_DROP_SIGNAL] =     etk_signal_new("drag_drop",     widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_drop),   etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_widget_signals[ETK_WIDGET_DRAG_MOTION_SIGNAL] =   etk_signal_new("drag_motion",   widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_motion), etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_widget_signals[ETK_WIDGET_DRAG_LEAVE_SIGNAL] =    etk_signal_new("drag_leave",    widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_leave),  etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_widget_signals[ETK_WIDGET_SELECTION_RECEIVED_SIGNAL] = etk_signal_new("selection_received", widget_type, -1,                           etk_marshaller_VOID__POINTER, NULL, NULL);
+      _etk_widget_signals[ETK_WIDGET_CLIPBOARD_RECEIVED_SIGNAL] = etk_signal_new("clipboard_received", widget_type, -1,                           etk_marshaller_VOID__POINTER, NULL, NULL);
+      _etk_widget_signals[ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL] = etk_signal_new("scroll_size_changed", widget_type, -1,                         etk_marshaller_VOID__VOID,    NULL, NULL);
+      
       etk_type_property_add(widget_type, "name",              ETK_WIDGET_NAME_PROPERTY,              ETK_PROPERTY_STRING,  ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(widget_type, "parent",            ETK_WIDGET_PARENT_PROPERTY,            ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE,          etk_property_value_pointer(NULL));
       etk_type_property_add(widget_type, "theme_file",        ETK_WIDGET_THEME_FILE_PROPERTY,        ETK_PROPERTY_STRING,  ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(etk_theme_widget_theme_get()));
@@ -355,137 +359,8 @@ void etk_widget_theme_set(Etk_Widget *widget, const char *theme_file, const char
       etk_object_notify(ETK_OBJECT(widget), "theme_group");
    }
    
-   if (widget->realized && (!widget->theme_file || !widget->theme_group))
-      etk_widget_unrealize(widget);
-   else if (widget->theme_file && widget->theme_group)
-      etk_widget_realize(widget);
-}
-
-/**
- * @brief Realizes the widget: it will load the theme and allocate the graphical ressources
- * @param widget the widget to realize
- * @note It shouldn't be called manually, it's mainly called by widget implementations
- */
-void etk_widget_realize(Etk_Widget *widget)
-{
-   Evas *evas = NULL;
-   Evas_List *l;
-   Etk_Widget *child;
-
-   if (!widget || !(evas = etk_widget_toplevel_evas_get(widget)))
-      return;
-
-   if (widget->realized)
-      etk_widget_unrealize(widget);
-
-   widget->event_object = _etk_widget_event_object_add(evas, widget);
-   evas_object_event_callback_add(widget->event_object, EVAS_CALLBACK_MOUSE_IN, _etk_widget_mouse_in_cb, widget);
-   evas_object_event_callback_add(widget->event_object, EVAS_CALLBACK_MOUSE_OUT, _etk_widget_mouse_out_cb, widget);
-   evas_object_event_callback_add(widget->event_object, EVAS_CALLBACK_MOUSE_MOVE, _etk_widget_mouse_move_cb, widget);
-   evas_object_event_callback_add(widget->event_object, EVAS_CALLBACK_MOUSE_DOWN, _etk_widget_mouse_down_cb, widget);
-   evas_object_event_callback_add(widget->event_object, EVAS_CALLBACK_MOUSE_UP, _etk_widget_mouse_up_cb, widget);
-   evas_object_event_callback_add(widget->event_object, EVAS_CALLBACK_MOUSE_WHEEL, _etk_widget_mouse_wheel_cb, widget);
-   evas_object_event_callback_add(widget->event_object, EVAS_CALLBACK_KEY_DOWN, _etk_widget_key_down_cb, widget);
-   evas_object_event_callback_add(widget->event_object, EVAS_CALLBACK_KEY_UP, _etk_widget_key_up_cb, widget);
-   
-   if (widget->parent && widget->parent->event_object)
-      _etk_widget_object_add_to_smart(widget->parent, widget->event_object);
-   for (l = widget->children; l; l = l->next)
-   {
-      child = ETK_WIDGET(l->data);
-      if (child->event_object)
-         _etk_widget_object_add_to_smart(widget, child->event_object);
-   }
-   
-   if (ETK_IS_TOPLEVEL_WIDGET(widget) || (widget->parent && widget->parent->event_object &&
-         evas_object_visible_get(widget->parent->event_object) && widget->visible))
-      evas_object_show(widget->event_object);
-   else
-      evas_object_hide(widget->event_object);
-   
-   if (widget->clip)
-   {
-      evas_object_show(widget->clip);
-      evas_object_clip_set(widget->event_object, widget->clip);
-   }
-
-   evas_object_propagate_events_set(widget->event_object, 0);
-   evas_object_repeat_events_set(widget->event_object, widget->repeat_events);
-   evas_object_pass_events_set(widget->event_object, widget->pass_events);
-   
-   if (widget->theme_file && widget->theme_group)
-   {
-      /* TODO: use etk_theme */
-      widget->theme_object = edje_object_add(evas);
-      if (!edje_object_file_set(widget->theme_object, widget->theme_file, widget->theme_group))
-      {
-         ETK_WARNING("Can't load theme %s:%s", widget->theme_file, widget->theme_group);
-         evas_object_del(widget->theme_object);
-         widget->theme_object = NULL;
-      }
-      else
-      {
-         if (etk_widget_theme_object_data_get(widget, "inset", "%d %d %d %d", &widget->left_inset, &widget->right_inset, &widget->top_inset, &widget->bottom_inset) != 4)
-         {
-            widget->left_inset = 0;
-            widget->right_inset = 0;
-            widget->top_inset = 0;
-            widget->bottom_inset = 0;
-         }
-         etk_widget_member_object_add(widget, widget->theme_object);
-         evas_object_show(widget->theme_object);
-         etk_widget_member_object_lower(widget, widget->theme_object);
-      }
-   }
-
-   widget->need_theme_min_size_recalc = ETK_TRUE;
-   widget->realized = ETK_TRUE;
-
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_REALIZE_SIGNAL], ETK_OBJECT(widget), NULL);
-   etk_widget_size_recalc_queue(widget);
-}
-
-/**
- * @brief Unrealizes the widget: it will unload the theme and free the graphical ressources
- * @param widget the widget to unrealize
- * @note It shouldn't be called manually, it's mainly called by widget implementations
- */
-void etk_widget_unrealize(Etk_Widget *widget)
-{
-   Etk_Widget_Member_Object *m;
-   Etk_Widget_Swallowed_Object *swallowed_object;
-
-   if (!widget || !widget->realized)
-      return;
-
-   while (widget->swallowed_objects)
-   {
-      swallowed_object = widget->swallowed_objects->data;
-      etk_widget_theme_object_unswallow(widget, swallowed_object->object);
-   }
-   
-   widget->theme_object = NULL;
-   while (widget->member_objects)
-   {
-      m = widget->member_objects->data;
-      evas_object_del(m->object);
-      free(m);
-      widget->member_objects = evas_list_remove_list(widget->member_objects, widget->member_objects);
-   }
-   
-   evas_object_del(widget->event_object);
-   widget->event_object = NULL;
-   
-   if (widget->clip)
-      evas_object_hide(widget->clip);
-   
-   widget->left_inset = 0;
-   widget->right_inset = 0;
-   widget->top_inset = 0;
-   widget->bottom_inset = 0;
-   
-   widget->realized = ETK_FALSE;
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_UNREALIZE_SIGNAL], ETK_OBJECT(widget), NULL);
+   /* TODO */
+   _etk_widget_realize(widget);
 }
 
 /**
@@ -915,7 +790,6 @@ void etk_widget_leave(Etk_Widget *widget)
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_LEAVE_SIGNAL], ETK_OBJECT(widget), NULL);
 }
 
-/* TODO: etk_widget_focus: if the child is realized, focus it? */
 /**
  * @brief Focuses the widget
  * @param widget a widget
@@ -1495,7 +1369,7 @@ void etk_widget_drag_leave(Etk_Widget *widget)
 void etk_widget_selection_received(Etk_Widget *widget, Etk_Event_Selection_Request *event)
 {
    if (!widget)
-     return;
+      return;
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_SELECTION_RECEIVED_SIGNAL], ETK_OBJECT(widget), NULL, event);
 }
 
@@ -1506,7 +1380,7 @@ void etk_widget_selection_received(Etk_Widget *widget, Etk_Event_Selection_Reque
 void etk_widget_clipboard_received(Etk_Widget *widget, Etk_Event_Selection_Request *event)
 {
    if (!widget)
-     return;
+      return;
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_CLIPBOARD_RECEIVED_SIGNAL], ETK_OBJECT(widget), NULL, event);
 }
 
@@ -1587,6 +1461,9 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    etk_signal_connect_full(_etk_widget_signals[ETK_WIDGET_MOUSE_OUT_SIGNAL], ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_mouse_out_cb), NULL, ETK_FALSE, ETK_FALSE);
    etk_signal_connect_full(_etk_widget_signals[ETK_WIDGET_MOUSE_DOWN_SIGNAL], ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_mouse_down_cb), NULL, ETK_FALSE, ETK_FALSE);
    etk_signal_connect_full(_etk_widget_signals[ETK_WIDGET_KEY_DOWN_SIGNAL], ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_key_down_cb), NULL, ETK_FALSE, ETK_FALSE);
+   
+   if (ETK_IS_TOPLEVEL_WIDGET(widget))
+      etk_object_notification_callback_add(ETK_OBJECT(widget), "evas", _etk_widget_toplevel_evas_changed_cb, NULL);
 }
 
 /* Destroys the widget */
@@ -1597,7 +1474,7 @@ static void _etk_widget_destructor(Etk_Widget *widget)
    if (!widget)
       return;
 
-   etk_widget_unrealize(widget);
+   _etk_widget_unrealize(widget);
    while (widget->children)
       etk_object_destroy(ETK_OBJECT(widget->children->data));
    
@@ -2083,11 +1960,149 @@ static void _etk_widget_key_up_cb(void *data, Evas *evas, Evas_Object *object, v
       _etk_widget_key_up_cb(widget->parent, evas, NULL, event_info);
 }
 
+/* Called when the widget is a toplevel widget and when its evas is changed */
+static void _etk_widget_toplevel_evas_changed_cb(Etk_Object *object, const char *property_name, void *data)
+{
+   Etk_Widget *widget;
+   Evas *evas;
+   
+   if (!(widget = ETK_WIDGET(object)))
+      return;
+   
+   evas = etk_toplevel_widget_evas_get(ETK_TOPLEVEL_WIDGET(widget));
+   if (evas && (!widget->event_object || evas_object_evas_get(widget->event_object) != evas))
+      _etk_widget_realize_all(widget);
+   else if (!evas && widget->event_object)
+      _etk_widget_unrealize_all(widget);
+}
+
 /**************************
  *
  * Private functions
  *
  **************************/
+
+/* Realizes the widget: it will load the theme and allocate the graphical ressources */
+static void _etk_widget_realize(Etk_Widget *widget)
+{
+   Evas *evas = NULL;
+   Evas_List *l;
+   Etk_Widget *child;
+   
+   if (!widget || !(evas = etk_widget_toplevel_evas_get(widget)))
+      return;
+   
+   if (widget->realized)
+      _etk_widget_unrealize(widget);
+
+   widget->event_object = _etk_widget_event_object_add(evas, widget);
+   evas_object_event_callback_add(widget->event_object, EVAS_CALLBACK_MOUSE_IN, _etk_widget_mouse_in_cb, widget);
+   evas_object_event_callback_add(widget->event_object, EVAS_CALLBACK_MOUSE_OUT, _etk_widget_mouse_out_cb, widget);
+   evas_object_event_callback_add(widget->event_object, EVAS_CALLBACK_MOUSE_MOVE, _etk_widget_mouse_move_cb, widget);
+   evas_object_event_callback_add(widget->event_object, EVAS_CALLBACK_MOUSE_DOWN, _etk_widget_mouse_down_cb, widget);
+   evas_object_event_callback_add(widget->event_object, EVAS_CALLBACK_MOUSE_UP, _etk_widget_mouse_up_cb, widget);
+   evas_object_event_callback_add(widget->event_object, EVAS_CALLBACK_MOUSE_WHEEL, _etk_widget_mouse_wheel_cb, widget);
+   evas_object_event_callback_add(widget->event_object, EVAS_CALLBACK_KEY_DOWN, _etk_widget_key_down_cb, widget);
+   evas_object_event_callback_add(widget->event_object, EVAS_CALLBACK_KEY_UP, _etk_widget_key_up_cb, widget);
+   
+   if (widget->parent && widget->parent->event_object)
+      _etk_widget_object_add_to_smart(widget->parent, widget->event_object);
+   for (l = widget->children; l; l = l->next)
+   {
+      child = ETK_WIDGET(l->data);
+      if (child->event_object)
+         _etk_widget_object_add_to_smart(widget, child->event_object);
+   }
+   
+   if (ETK_IS_TOPLEVEL_WIDGET(widget) || (widget->parent && widget->parent->event_object &&
+         evas_object_visible_get(widget->parent->event_object) && widget->visible))
+      evas_object_show(widget->event_object);
+   else
+      evas_object_hide(widget->event_object);
+   
+   if (widget->clip)
+   {
+      evas_object_show(widget->clip);
+      evas_object_clip_set(widget->event_object, widget->clip);
+   }
+
+   evas_object_propagate_events_set(widget->event_object, 0);
+   evas_object_repeat_events_set(widget->event_object, widget->repeat_events);
+   evas_object_pass_events_set(widget->event_object, widget->pass_events);
+   
+   if (widget->toplevel_parent && (widget == etk_toplevel_widget_focused_widget_get(widget->toplevel_parent)))
+      evas_object_focus_set(widget->event_object, 1);
+   
+   if (widget->theme_file && widget->theme_group)
+   {
+      /* TODO: use etk_theme */
+      widget->theme_object = edje_object_add(evas);
+      if (!edje_object_file_set(widget->theme_object, widget->theme_file, widget->theme_group))
+      {
+         ETK_WARNING("Can't load theme %s:%s", widget->theme_file, widget->theme_group);
+         evas_object_del(widget->theme_object);
+         widget->theme_object = NULL;
+      }
+      else
+      {
+         if (etk_widget_theme_object_data_get(widget, "inset", "%d %d %d %d", &widget->left_inset, &widget->right_inset, &widget->top_inset, &widget->bottom_inset) != 4)
+         {
+            widget->left_inset = 0;
+            widget->right_inset = 0;
+            widget->top_inset = 0;
+            widget->bottom_inset = 0;
+         }
+         etk_widget_member_object_add(widget, widget->theme_object);
+         evas_object_show(widget->theme_object);
+         etk_widget_member_object_lower(widget, widget->theme_object);
+      }
+   }
+
+   widget->need_theme_min_size_recalc = ETK_TRUE;
+   widget->realized = ETK_TRUE;
+
+   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_REALIZE_SIGNAL], ETK_OBJECT(widget), NULL);
+   etk_widget_size_recalc_queue(widget);
+}
+
+/* Unrealizes the widget: it will unload the theme and free the graphical ressources */
+static void _etk_widget_unrealize(Etk_Widget *widget)
+{
+   Etk_Widget_Member_Object *m;
+   Etk_Widget_Swallowed_Object *swallowed_object;
+
+   if (!widget || !widget->realized)
+      return;
+
+   while (widget->swallowed_objects)
+   {
+      swallowed_object = widget->swallowed_objects->data;
+      etk_widget_theme_object_unswallow(widget, swallowed_object->object);
+   }
+   
+   widget->theme_object = NULL;
+   while (widget->member_objects)
+   {
+      m = widget->member_objects->data;
+      evas_object_del(m->object);
+      free(m);
+      widget->member_objects = evas_list_remove_list(widget->member_objects, widget->member_objects);
+   }
+   
+   evas_object_del(widget->event_object);
+   widget->event_object = NULL;
+   
+   if (widget->clip)
+      evas_object_hide(widget->clip);
+   
+   widget->left_inset = 0;
+   widget->right_inset = 0;
+   widget->top_inset = 0;
+   widget->bottom_inset = 0;
+   
+   widget->realized = ETK_FALSE;
+   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_UNREALIZE_SIGNAL], ETK_OBJECT(widget), NULL);
+}
 
 /* Used by etk_widget_parent_set */
 static void _etk_widget_toplevel_parent_set(Etk_Widget *widget, Etk_Toplevel_Widget *toplevel_parent)
@@ -2110,7 +2125,7 @@ static void _etk_widget_realize_all(Etk_Widget *widget)
    if (!widget)
       return;
 
-   etk_widget_realize(widget);
+   _etk_widget_realize(widget);
    for (l = widget->children; l; l = l->next)
       _etk_widget_realize_all(ETK_WIDGET(l->data));
 }
@@ -2123,7 +2138,7 @@ static void _etk_widget_unrealize_all(Etk_Widget *widget)
    if (!widget)
       return;
 
-   etk_widget_unrealize(widget);
+   _etk_widget_unrealize(widget);
    for (l = widget->children; l; l = l->next)
       _etk_widget_unrealize_all(ETK_WIDGET(l->data));
 }

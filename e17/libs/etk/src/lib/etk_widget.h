@@ -206,9 +206,6 @@ void etk_widget_inner_geometry_get(Etk_Widget *widget, int *x, int *y, int *w, i
 Etk_Toplevel_Widget *etk_widget_toplevel_parent_get(Etk_Widget *widget);
 Evas *etk_widget_toplevel_evas_get(Etk_Widget *widget);
 void etk_widget_theme_set(Etk_Widget *widget, const char *theme_file, const char *theme_group);
-void etk_widget_realize(Etk_Widget *widget);
-void etk_widget_unrealize(Etk_Widget *widget);
-
 void etk_widget_parent_set(Etk_Widget *widget, Etk_Widget *parent);
 
 void etk_widget_repeat_events_set(Etk_Widget *widget, Etk_Bool repeat_events);
@@ -276,7 +273,6 @@ void etk_widget_drag_motion(Etk_Widget *widget);
 void etk_widget_drag_leave(Etk_Widget *widget);
 
 void etk_widget_selection_received(Etk_Widget *widget, Etk_Event_Selection_Request *event);
-
 void etk_widget_clipboard_received(Etk_Widget *widget, Etk_Event_Selection_Request *event);
 
 /** @} */

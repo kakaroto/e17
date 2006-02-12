@@ -19,8 +19,8 @@
 
 /**
  * @struct Etk_Viewport
- * @brief A viewport is a bin container which has the ability to scroll. Thus, all the widgets that @
- * has no scrolling method have to be placed in a viewport, in order to be scrollable in an Etk_Scrolled_Window
+ * @brief A viewport is a bin container which has the ability to scroll. Thus, all the widgets that @n
+ * have no scrolling ability have to be placed in a viewport, in order to be scrollable in an Etk_Scrolled_View
  */
 struct _Etk_Viewport
 {

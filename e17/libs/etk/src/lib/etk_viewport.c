@@ -32,9 +32,7 @@ Etk_Type *etk_viewport_type_get()
    static Etk_Type *viewport_type = NULL;
 
    if (!viewport_type)
-   {
       viewport_type = etk_type_new("Etk_Viewport", ETK_BIN_TYPE, sizeof(Etk_Viewport), ETK_CONSTRUCTOR(_etk_viewport_constructor), NULL);
-   }
 
    return viewport_type;
 }
