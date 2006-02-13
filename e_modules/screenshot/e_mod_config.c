@@ -151,7 +151,6 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
   s = cfd->data;
 
   cfdata->screen = s;
-  _fill_data (cfdata);
 
   o = e_widget_list_add (evas, 0, 0);
   of = e_widget_framelist_add (evas, _("General Settings"), 0);
@@ -271,7 +270,6 @@ _advanced_create_widgets (E_Config_Dialog * cfd, Evas * evas,
 
   s = cfd->data;
   cfdata->screen = s;
-  _fill_data (cfdata);
 
   o = e_widget_list_add (evas, 0, 0);
   of = e_widget_framelist_add (evas, _("General Settings"), 0);

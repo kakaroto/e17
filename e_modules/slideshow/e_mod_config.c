@@ -62,9 +62,11 @@ static void *
 _create_data(E_Config_Dialog *cfd)
 {
    E_Config_Dialog_Data *cfdata;
+   Slide *s;
 
+   s = cfd->data;
    cfdata = E_NEW(E_Config_Dialog_Data, 1);
-
+   _fill_data(s, cfdata);
    return cfdata;
 }
 
@@ -84,10 +86,6 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas,
                       E_Config_Dialog_Data *cfdata)
 {
    Evas_Object *o, *ob, *of;
-   Slide *s;
-
-   s = cfd->data;
-   _fill_data(s, cfdata);
 
    o = e_widget_list_add(evas, 0, 0);
    of = e_widget_framelist_add(evas, D_("Cycle Time"), 0);
@@ -125,13 +123,9 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    s->conf->disable_timer = cfdata->disable_timer;
 #ifdef WANT_OSIRIS
    if (cfdata->theme != NULL)
-     {
-        s->conf->theme = (char *)evas_stringshare_add(cfdata->theme);
-     }
+     s->conf->theme = (char *)evas_stringshare_add(cfdata->theme);
    else
-     {
-        s->conf->theme = (char *)evas_stringshare_add("");
-     }
+     s->conf->theme = (char *)evas_stringshare_add("");
 #endif
    e_config_save_queue();
    e_border_button_bindings_grab_all();

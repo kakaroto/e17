@@ -4,28 +4,29 @@
 
 typedef struct _Cfg_File_Data Cfg_File_Data;
 
-struct _E_Config_Dialog_Data {
-   int                 resolution;
+struct _E_Config_Dialog_Data
+{
+   int resolution;
 };
 
-struct _Cfg_File_Data {
-   E_Config_Dialog    *cfd;
-   char               *file;
+struct _Cfg_File_Data
+{
+   E_Config_Dialog *cfd;
+   char *file;
 };
 
 /* Protos */
-static void        *_create_data(E_Config_Dialog * cfd);
-static void         _free_data(E_Config_Dialog * cfd,
-                               E_Config_Dialog_Data * cfdata);
-static Evas_Object *_basic_create_widgets(E_Config_Dialog * cfd, Evas * evas,
-                                          E_Config_Dialog_Data * cfdata);
-static int          _basic_apply_data(E_Config_Dialog * cfd,
-                                      E_Config_Dialog_Data * cfdata);
+static void *_create_data(E_Config_Dialog *cfd);
+static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas,
+                                          E_Config_Dialog_Data *cfdata);
+static int _basic_apply_data(E_Config_Dialog *cfd,
+                             E_Config_Dialog_Data *cfdata);
 
 void
-_config_tclock_module(E_Container * con, TClock_Face * f)
+_config_tclock_module(E_Container *con, TClock_Face * f)
 {
-   E_Config_Dialog    *cfd;
+   E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
 
    v = E_NEW(E_Config_Dialog_View, 1);
@@ -39,16 +40,16 @@ _config_tclock_module(E_Container * con, TClock_Face * f)
 }
 
 static void
-_fill_data(TClock_Face * f, E_Config_Dialog_Data * cfdata)
+_fill_data(TClock_Face * f, E_Config_Dialog_Data *cfdata)
 {
    cfdata->resolution = f->conf->resolution;
 }
 
-static void        *
-_create_data(E_Config_Dialog * cfd)
+static void *
+_create_data(E_Config_Dialog *cfd)
 {
    E_Config_Dialog_Data *cfdata;
-   TClock_Face        *f;
+   TClock_Face *f;
 
    f = cfd->data;
    cfdata = E_NEW(E_Config_Dialog_Data, 1);
@@ -57,17 +58,17 @@ _create_data(E_Config_Dialog * cfd)
 }
 
 static void
-_free_data(E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
+_free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    free(cfdata);
 }
 
 static Evas_Object *
-_basic_create_widgets(E_Config_Dialog * cfd, Evas * evas,
-                      E_Config_Dialog_Data * cfdata)
+_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas,
+                      E_Config_Dialog_Data *cfdata)
 {
-   Evas_Object        *o, *of, *ob;
-   E_Radio_Group      *rg;
+   Evas_Object *o, *of, *ob;
+   E_Radio_Group *rg;
 
    o = e_widget_list_add(evas, 0, 0);
    of = e_widget_framelist_add(evas, _("Resolution"), 0);
@@ -81,9 +82,9 @@ _basic_create_widgets(E_Config_Dialog * cfd, Evas * evas,
 }
 
 static int
-_basic_apply_data(E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
+_basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-   TClock_Face        *f;
+   TClock_Face *f;
 
    f = cfd->data;
    e_border_button_bindings_ungrab_all();

@@ -78,10 +78,6 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas,
 {
    Evas_Object *o, *ob, *of;
    E_Radio_Group *rg;
-   Mount *m;
-
-   m = cfd->data;
-   _fill_data(m, cfdata);
 
    o = e_widget_list_add(evas, 0, 0);
    of = e_widget_framelist_add(evas, _("General Settings"), 0);
@@ -124,10 +120,6 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas,
 {
    Evas_Object *o, *ob, *of;
    E_Radio_Group *rg;
-   Mount *m;
-
-   m = cfd->data;
-   _fill_data(m, cfdata);
 
    o = e_widget_list_add(evas, 0, 0);
    of = e_widget_framelist_add(evas, _("General Settings"), 0);
