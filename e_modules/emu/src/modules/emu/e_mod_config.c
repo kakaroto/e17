@@ -85,10 +85,6 @@ static Evas_Object *
 _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
    Evas_Object *o, *ob;
-   Emu *emu;
-
-   emu = cfd->data;
-   _fill_data(emu, cfdata);
 
    o = e_widget_list_add(evas, 0, 0);
    ob = e_widget_check_add(evas, _("Show Follower"), &(cfdata->follower));
@@ -141,10 +137,6 @@ static Evas_Object *
 _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
    Evas_Object *o, *of, *ob;
-   Emu *emu;
-
-   emu = cfd->data;
-   _fill_data(emu, cfdata);
 
    o = e_widget_list_add(evas, 0, 0);
 
