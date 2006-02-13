@@ -3,7 +3,9 @@
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
+#include <Edje.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define is_digit(ch) (((ch)>=(unsigned)'0'&&(ch)<=(unsigned)'9')?1:0)
 
@@ -102,7 +104,7 @@ static void _etk_spin_button_realize_cb(Etk_Object *object, void *data)
 
 /* FIXME: etk_entry should support an "empty" string so we dont have to set it to " " */
 static char *
-_etk_spin_button_str_to_num(char *str, Etk_Bool *changed)
+_etk_spin_button_str_to_num(const char *str, Etk_Bool *changed)
 {
    int i, j = 0;
    int found_dot = 0;
@@ -166,7 +168,7 @@ _etk_spin_button_str_to_num(char *str, Etk_Bool *changed)
 static void _etk_spin_button_text_changed_cb(Etk_Object *object, void *data)
 {
    Etk_Spin_Button *spin_button;
-   char            *text;
+   const char      *text;
    char            *text2;
    Etk_Bool         changed;
    
