@@ -1066,7 +1066,6 @@ void etk_widget_theme_object_part_text_set(Etk_Widget *widget, const char *part_
       return;
    edje_object_part_text_set(widget->theme_object, part_name, text);
    widget->need_theme_min_size_recalc = ETK_TRUE;
-   etk_widget_size_recalc_queue(widget);
 }
 
 /**

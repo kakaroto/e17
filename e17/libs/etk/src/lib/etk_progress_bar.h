@@ -18,23 +18,33 @@
 /** @brief Checks if the object is an Etk_Progress_Bar */
 #define ETK_IS_PROGRESS_BAR(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_PROGRESS_BAR_TYPE))
 
+/**
+ * @enum Etk_Progress_Bar_Orientation
+ * @brief Describes in which orientation the progress bar should move (left to right by default)
+ */
 enum _Etk_Progress_Bar_Orientation
 {
    ETK_PROGRESS_BAR_LEFT_TO_RIGHT,
-   ETK_PROGRESS_BAR_BOTTOM_TO_TOP
+   ETK_PROGRESS_BAR_RIGHT_TO_LEFT
 };   
 
+/**
+ * @struct Etk_Progress_Bar
+ * @brief An Etk_Progress_Bar is a widget used to indicates the progress of a process
+ */
 struct _Etk_Progress_Bar
 {
    /* private: */
-   /* Inherit from Etk_Bin */
-   Etk_Bin bin;
-
-   Etk_Widget *label;   
+   /* Inherit from Etk_Widget */
+   Etk_Widget widget;
    
-   unsigned char activity_dir : 1;
+   char *text;
+   double fraction;
+   double pulse_pos;
    double pulse_step;
+   Etk_Progress_Bar_Orientation pulse_dir;
    Etk_Progress_Bar_Orientation orientation;
+   Etk_Bool is_pulsing;
 };
 
 Etk_Type *etk_progress_bar_type_get();

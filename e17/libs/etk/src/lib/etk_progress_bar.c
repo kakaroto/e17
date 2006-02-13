@@ -3,32 +3,26 @@
 #include <stdlib.h>
 #include <string.h>
 #include <Edje.h>
-#include "etk_label.h"
+#include "etk_signal.h"
+#include "etk_signal_callback.h"
 #include "etk_utils.h"
 
 /**
  * @addtogroup Etk_Progress_Bar
-* @{
+ * @{
  */
-
 
 enum _Etk_Progress_Bar_Property_Id
 {
-   ETK_PROGRESS_BAR_LABEL_PROPERTY,
+   ETK_PROGRESS_BAR_TEXT_PROPERTY,
    ETK_PROGRESS_BAR_FRACTION_PROPERTY,
    ETK_PROGRESS_BAR_PULSE_STEP_PROPERTY
-};
-
-enum _Etk_Progress_Bar_Activity_Dir
-{
-   ETK_PROGRESS_BAR_ACTIVITY_DIR_LEFT,
-   ETK_PROGRESS_BAR_ACTIVITY_DIR_RIGHT
 };
 
 static void _etk_progress_bar_constructor(Etk_Progress_Bar *progress_bar);
 static void _etk_progress_bar_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_progress_bar_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_progress_bar_child_create(Etk_Progress_Bar *progress_bar);
+static void _etk_progress_bar_update(Etk_Progress_Bar *progress_bar);
 
 /**************************
  *
@@ -46,11 +40,11 @@ Etk_Type *etk_progress_bar_type_get()
 
    if (!progress_bar_type)
    {
-      progress_bar_type = etk_type_new("Etk_Progress_Bar", ETK_BIN_TYPE, sizeof(Etk_Progress_Bar), ETK_CONSTRUCTOR(_etk_progress_bar_constructor), NULL);
+      progress_bar_type = etk_type_new("Etk_Progress_Bar", ETK_WIDGET_TYPE, sizeof(Etk_Progress_Bar), ETK_CONSTRUCTOR(_etk_progress_bar_constructor), NULL);
 
-      etk_type_property_add(progress_bar_type, "label", ETK_PROGRESS_BAR_LABEL_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_string(NULL));
-      etk_type_property_add(progress_bar_type, "fraction", ETK_PROGRESS_BAR_FRACTION_PROPERTY, ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_double(0.0));
-      etk_type_property_add(progress_bar_type, "pulse_step", ETK_PROGRESS_BAR_PULSE_STEP_PROPERTY, ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_double(0.1));
+      etk_type_property_add(progress_bar_type, "text", ETK_PROGRESS_BAR_TEXT_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
+      etk_type_property_add(progress_bar_type, "fraction", ETK_PROGRESS_BAR_FRACTION_PROPERTY, ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_double(0.0));
+      etk_type_property_add(progress_bar_type, "pulse_step", ETK_PROGRESS_BAR_PULSE_STEP_PROPERTY, ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_double(0.1));
       
       progress_bar_type->property_set = _etk_progress_bar_property_set;
       progress_bar_type->property_get = _etk_progress_bar_property_get;
@@ -80,17 +74,19 @@ Etk_Widget *etk_progress_bar_new_with_text(const char *text)
 /**
  * @brief Sets the text of the progress bar
  * @param progress_bar a progress bar
- * @param text the text to set
+ * @param text the text to set. You can use the subsitution character %p which will be replaced by the current percentage
  */
 void etk_progress_bar_text_set(Etk_Progress_Bar *progress_bar, const char *text)
 {
-   Etk_Widget *widget;
-
-   if (!(widget = ETK_WIDGET(progress_bar)) || !progress_bar->label)
+   if (!progress_bar || progress_bar->text == text)
       return;
-
-   etk_label_set(ETK_LABEL(progress_bar->label), text);
-   _etk_progress_bar_child_create(progress_bar);
+   
+   if (progress_bar->text)
+      free(progress_bar->text);
+   progress_bar->text = text ? strdup(text) : NULL;
+   
+   _etk_progress_bar_update(progress_bar);
+   etk_object_notify(ETK_OBJECT(progress_bar), "text");
 }
 
 /**
@@ -100,9 +96,9 @@ void etk_progress_bar_text_set(Etk_Progress_Bar *progress_bar, const char *text)
  */
 const char *etk_progress_bar_text_get(Etk_Progress_Bar *progress_bar)
 {
-   if (!progress_bar || !progress_bar->label)
+   if (!progress_bar)
       return NULL;
-   return etk_label_get(ETK_LABEL(progress_bar->label));;
+   return progress_bar->text;
 }
 
 /**
@@ -115,12 +111,16 @@ void etk_progress_bar_fraction_set(Etk_Progress_Bar *progress_bar, double fracti
    Etk_Widget *widget;
    
    if (!(widget = ETK_WIDGET(progress_bar)))
-     return;
+      return;
    
-   if(fraction < 0.0) fraction = 0.0;
-   if(fraction > 1.0) fraction = 1.0;
-   
-   edje_object_part_drag_size_set(widget->theme_object, "filler", fraction, 0.0);
+   fraction = ETK_CLAMP(fraction, 0.0, 1.0);
+   if (progress_bar->fraction != fraction)
+   {
+      progress_bar->fraction = fraction;
+      progress_bar->is_pulsing = ETK_FALSE;
+      _etk_progress_bar_update(progress_bar);
+      etk_object_notify(ETK_OBJECT(progress_bar), "fraction");
+   }
 }
 
 /**
@@ -130,16 +130,9 @@ void etk_progress_bar_fraction_set(Etk_Progress_Bar *progress_bar, double fracti
  */
 double etk_progress_bar_fraction_get(Etk_Progress_Bar *progress_bar)
 {
-   Etk_Widget *widget;
-   double dw;
-   double dh;
-   
-   if (!(widget = ETK_WIDGET(progress_bar)))
-     return -0.1;
-   
-   edje_object_part_drag_size_get(widget->theme_object, "filler", &dw, &dh);
-      
-   return dw;
+   if (!progress_bar)
+      return 0.0;
+   return progress_bar->fraction;
 }
 
 /**
@@ -148,36 +141,38 @@ double etk_progress_bar_fraction_get(Etk_Progress_Bar *progress_bar)
  */
 void etk_progress_bar_pulse(Etk_Progress_Bar *progress_bar)
 {
-   Etk_Widget *widget;
-   double new_drag_value;
-   double dx;
-   double dy;
+   if (!progress_bar)
+      return;
    
-   if (!(widget = ETK_WIDGET(progress_bar)))
-     return;
-   
-   edje_object_part_drag_size_set(widget->theme_object, "filler", 0.3, 0.0);
-   
-   edje_object_part_drag_value_get(widget->theme_object, "filler", &dx, &dy);
-   new_drag_value = dx;
-   
-   if(progress_bar->activity_dir == ETK_PROGRESS_BAR_ACTIVITY_DIR_LEFT)
-   {   
-      new_drag_value += progress_bar->pulse_step;
-      if(new_drag_value > 1.0)
+   if (!progress_bar->is_pulsing)
+   {
+      progress_bar->pulse_pos = 0.0;
+      progress_bar->pulse_dir = ETK_PROGRESS_BAR_LEFT_TO_RIGHT;
+      progress_bar->is_pulsing = ETK_TRUE;
+   }
+   else
+   {
+      if (progress_bar->pulse_dir == ETK_PROGRESS_BAR_LEFT_TO_RIGHT)
       {
-	 progress_bar->activity_dir = ETK_PROGRESS_BAR_ACTIVITY_DIR_RIGHT;
-      }   
-   } else {
-      
-      new_drag_value -= progress_bar->pulse_step;
-      if(new_drag_value < 0.0)
-      {
-         progress_bar->activity_dir = ETK_PROGRESS_BAR_ACTIVITY_DIR_LEFT;
+         progress_bar->pulse_pos += progress_bar->pulse_step;
+         if (progress_bar->pulse_pos > 1.0)
+         {
+            progress_bar->pulse_dir = ETK_PROGRESS_BAR_RIGHT_TO_LEFT;
+            progress_bar->pulse_pos = 1.0;
+         }
       }
-   }   
+      else
+      {
+         progress_bar->pulse_pos -= progress_bar->pulse_step;
+         if (progress_bar->pulse_pos < 0.0)
+         {
+            progress_bar->pulse_dir = ETK_PROGRESS_BAR_LEFT_TO_RIGHT;
+            progress_bar->pulse_pos = 0.0;
+         }
+      }
+   }
    
-   edje_object_part_drag_value_set(widget->theme_object, "filler", new_drag_value, 0.0);
+   _etk_progress_bar_update(progress_bar);
 }
 
 /**
@@ -187,15 +182,15 @@ void etk_progress_bar_pulse(Etk_Progress_Bar *progress_bar)
  */
 void etk_progress_bar_pulse_step_set(Etk_Progress_Bar *progress_bar, double pulse_step)
 {
-   Etk_Widget *widget;
-   
-   if (!(widget = ETK_WIDGET(progress_bar)))
-     return;
+   if (!progress_bar)
+      return;
  
-   if(pulse_step > 1.0 || pulse_step < 0.0)
-     return;
-   
-   progress_bar->pulse_step = pulse_step;
+   pulse_step = ETK_CLAMP(pulse_step, 0.0, 1.0);
+   if (progress_bar->pulse_step != pulse_step)
+   {
+      progress_bar->pulse_step = pulse_step;
+      etk_object_notify(ETK_OBJECT(progress_bar), "pulse_step");
+   }
 }
 
 /**
@@ -205,34 +200,10 @@ void etk_progress_bar_pulse_step_set(Etk_Progress_Bar *progress_bar, double puls
  */
 double etk_progress_bar_pulse_step_get(Etk_Progress_Bar *progress_bar)
 {
-   Etk_Widget *widget;
-   
-   if (!(widget = ETK_WIDGET(progress_bar)))
-     return 0.0;
- 
+   if (!progress_bar)
+      return 0.0;
    return progress_bar->pulse_step;
 }
-
-#if 0
-/* TODO: we cant allow this until we have vertical labels */
-/**
- * @brief Set the orientation of the progress bar.
- * @param progress_bar a progess bar
- * @param orientation the new orientation
- */
-void etk_progress_bar_pulse_orientation_set(Etk_Progress_Bar *progress_bar, Etk_Progress_Bar_Orientation orientation)
-{
-   Etk_Widget *widget;
-   
-   if (!(widget = ETK_WIDGET(progress_bar)))
-     return;
- 
-   if(progress_bar->orientation == orientation)
-     return;
-   
-   progress_bar->orientation = orientation;
-}
-#endif 
 
 /**************************
  *
@@ -246,15 +217,15 @@ static void _etk_progress_bar_constructor(Etk_Progress_Bar *progress_bar)
    if (!progress_bar)
       return;
 
-   progress_bar->activity_dir = ETK_PROGRESS_BAR_ACTIVITY_DIR_LEFT;
+   progress_bar->text = NULL;
+   progress_bar->fraction = 0.0;
+   progress_bar->pulse_pos = 0.0;
    progress_bar->pulse_step = 0.1;
+   progress_bar->pulse_dir = ETK_PROGRESS_BAR_LEFT_TO_RIGHT;
    progress_bar->orientation = ETK_PROGRESS_BAR_LEFT_TO_RIGHT;
+   progress_bar->is_pulsing = ETK_FALSE;
    
-   progress_bar->label = etk_label_new(NULL);
-   etk_widget_visibility_locked_set(progress_bar->label, ETK_TRUE);
-   etk_label_alignment_set(ETK_LABEL(progress_bar->label), 0.5, 0.5);
-   etk_widget_pass_events_set(progress_bar->label, ETK_TRUE);
-   etk_container_add(ETK_CONTAINER(progress_bar), progress_bar->label);
+   etk_signal_connect_swapped("realize", ETK_OBJECT(progress_bar), ETK_CALLBACK(_etk_progress_bar_update), progress_bar);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -267,7 +238,7 @@ static void _etk_progress_bar_property_set(Etk_Object *object, int property_id, 
 
    switch (property_id)
    {
-      case ETK_PROGRESS_BAR_LABEL_PROPERTY:
+      case ETK_PROGRESS_BAR_TEXT_PROPERTY:
          etk_progress_bar_text_set(progress_bar, etk_property_value_string_get(value));
          break;
       case ETK_PROGRESS_BAR_FRACTION_PROPERTY:
@@ -291,14 +262,14 @@ static void _etk_progress_bar_property_get(Etk_Object *object, int property_id, 
 
    switch (property_id)
    {
-      case ETK_PROGRESS_BAR_LABEL_PROPERTY:
-         etk_property_value_string_set(value, etk_progress_bar_text_get(progress_bar));
+      case ETK_PROGRESS_BAR_TEXT_PROPERTY:
+         etk_property_value_string_set(value, progress_bar->text);
          break;
       case ETK_PROGRESS_BAR_FRACTION_PROPERTY:
-         etk_property_value_double_set(value, etk_progress_bar_fraction_get(progress_bar));
+         etk_property_value_double_set(value, progress_bar->fraction);
          break;
       case ETK_PROGRESS_BAR_PULSE_STEP_PROPERTY:
-         etk_property_value_double_set(value, etk_progress_bar_pulse_step_get(progress_bar));
+         etk_property_value_double_set(value, progress_bar->pulse_step);
          break;      
       default:
          break;
@@ -307,21 +278,34 @@ static void _etk_progress_bar_property_get(Etk_Object *object, int property_id, 
 
 /**************************
  *
- * Callbacks and handlers
+ * Private functions
  *
  **************************/
 
-/* Creates the child of the progress_bar */
-static void _etk_progress_bar_child_create(Etk_Progress_Bar *progress_bar)
+/* Updates the label and the bar of the progress bar */
+static void _etk_progress_bar_update(Etk_Progress_Bar *progress_bar)
 {
-   if (!progress_bar)
+   Etk_Widget *widget;
+   
+   if (!(widget = ETK_WIDGET(progress_bar)) || !widget->theme_object)
       return;
-
-   if (progress_bar->label)
+   
+   if (!progress_bar->is_pulsing)
    {
-      etk_container_add(ETK_CONTAINER(progress_bar), progress_bar->label);
-      etk_widget_show(ETK_WIDGET(progress_bar->label));
+      if (progress_bar->orientation == ETK_PROGRESS_BAR_LEFT_TO_RIGHT)
+         edje_object_part_drag_value_set(widget->theme_object, "filler", 0.0, 0.0);
+      else
+         edje_object_part_drag_value_set(widget->theme_object, "filler", 1.0, 0.0);
+      edje_object_part_drag_size_set(widget->theme_object, "filler", progress_bar->fraction, 0.0);
    }
+   else
+   {
+      edje_object_part_drag_value_set(widget->theme_object, "filler", progress_bar->pulse_pos, 0.0);
+      /* TODO: the size of the filler should be themable */
+      edje_object_part_drag_size_set(widget->theme_object, "filler", 0.3, 0.0);
+   }
+   
+   etk_widget_theme_object_part_text_set(widget, "text", progress_bar->text ? progress_bar->text : "");
 }
 
 /** @} */
