@@ -64,5 +64,6 @@
 #include "etk_spin_button.h"
 #include "etk_dnd.h"
 #include "etk_clipboard.h"
+#include "etk_selection.h"
 
 #endif

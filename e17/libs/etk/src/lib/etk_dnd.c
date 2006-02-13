@@ -33,7 +33,7 @@
 
 #define ETK_DND_INSIDE(x, y, xx, yy, ww, hh) (((x) < ((xx) + (ww))) && ((y) < ((yy) + (hh))) && ((x) >= (xx)) && ((y) >= (yy)))
 
-Etk_Widget *_etk_selection_widget = NULL;
+extern Etk_Widget *_etk_selection_widget;
 
 static Etk_Widget *_etk_dnd_widget = NULL;
 static Evas_List  *_etk_dnd_handlers = NULL;
@@ -253,20 +253,23 @@ static int _etk_xdnd_selection_handler(void *data, int type, void *event)
 	    */
          } 
 	 else 
-	 {
+	 {	    
+	    /* emit signal to widget that the clipboard text is sent to it */
+	    Etk_Event_Selection_Request event;
+	    
 	    text = ev->data;
-	    /* printf("primary: %s %s\n", ev->target, text->text); */
+	    event.data = text->text;
+	    event.content = ETK_SELECTION_CONTENT_TEXT;
+	    etk_widget_selection_received(_etk_selection_widget, &event);
 	 }
 	 break;
       
       case ECORE_X_SELECTION_SECONDARY:
          sel = ev->data;
-	 /* printf("secondary: %s %s\n", ev->target, sel->data); */
+	 printf("secondary: %s %s\n", ev->target, sel->data);
          break;
       
       case ECORE_X_SELECTION_XDND:
-	 /* printf("xdnd: %s\n", ev->target); */
-
 	 files = ev->data;
 	
 	 if (!_etk_dnd_widget || files->num_files < 1)
@@ -279,15 +282,10 @@ static int _etk_xdnd_selection_handler(void *data, int type, void *event)
 	
          _etk_dnd_widget->dnd_files = calloc(files->num_files, sizeof(char*));
          
-         /* printf("num_files: %d\n", files->num_files); */
-	
          /* Fill in the drop data into the widget */
          _etk_dnd_widget->dnd_files_num = files->num_files;
-         for (i = 0; i < files->num_files; i++)
-	 {
-	    /* printf("file: %s\n", files->files[i]); */
-	    _etk_dnd_widget->dnd_files[i] = strdup(files->files[i]);
-	 }
+         for (i = 0; i < files->num_files; i++)	
+	_etk_dnd_widget->dnd_files[i] = strdup(files->files[i]);	 
 	
          /* emit the drop signal so the widget can react */
          etk_widget_drag_drop(_etk_dnd_widget);

@@ -32,9 +32,6 @@ struct _Etk_Selection_Data_Targets
 
 Etk_Bool etk_dnd_init();  
 void etk_dnd_shutdown();
-
-void etk_selection_text_request(Etk_Widget *widget);
-void etk_selection_text_set(Etk_Widget *widget, const char *data);
   
 /** @} */
 
