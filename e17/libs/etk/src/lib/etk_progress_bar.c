@@ -68,7 +68,7 @@ Etk_Widget *etk_progress_bar_new()
  */
 Etk_Widget *etk_progress_bar_new_with_text(const char *text)
 {
-   return etk_widget_new(ETK_PROGRESS_BAR_TYPE, "theme_group", "progress_bar", "label", text, NULL);
+   return etk_widget_new(ETK_PROGRESS_BAR_TYPE, "theme_group", "progress_bar", "text", text, NULL);
 }
 
 /**

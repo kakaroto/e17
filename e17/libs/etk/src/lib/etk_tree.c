@@ -5,6 +5,7 @@
 #include <string.h>
 #include <math.h>
 #include <Ecore_Data.h>
+#include <Edje.h>
 #include "etk_tree_model.h"
 #include "etk_scrolled_view.h"
 #include "etk_button.h"
@@ -42,8 +43,8 @@ typedef struct _Etk_Tree_Cell_Objects
 
 typedef struct _Etk_Tree_Row_Objects
 {
-   Etk_Widget *expander;
-   Etk_Widget *background;
+   Evas_Object *expander;
+   Evas_Object *background;
    Etk_Tree_Cell_Objects *cells_objects;
 } Etk_Tree_Row_Objects;
 
@@ -107,9 +108,9 @@ static void _etk_tree_col_destructor(Etk_Tree_Col *tree_col);
 static void _etk_tree_col_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_tree_col_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 
-static void _etk_tree_expander_clicked_cb(Etk_Object *object, void *event_info, void *data);
-static void _etk_tree_row_pressed_cb(Etk_Object *object, void *event_info, void *data);
-static void _etk_tree_row_clicked_cb(Etk_Object *object, void *event_info, void *data);
+static void _etk_tree_expander_clicked_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _etk_tree_row_pressed_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _etk_tree_row_clicked_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _etk_tree_focus_cb(Etk_Object *object, void *event, void *data);
 static void _etk_tree_unfocus_cb(Etk_Object *object, void *event, void *data);
 static void _etk_tree_key_down_cb(Etk_Object *object, void *event, void *data);
@@ -159,7 +160,7 @@ Etk_Type *etk_tree_type_get()
 
       _etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL] = etk_signal_new("row_selected", tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_tree_signals[ETK_TREE_ROW_UNSELECTED_SIGNAL] = etk_signal_new("row_unselected", tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_tree_signals[ETK_TREE_ROW_CLICKED_SIGNAL] = etk_signal_new("row_clicked", tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
+      _etk_tree_signals[ETK_TREE_ROW_CLICKED_SIGNAL] = etk_signal_new("row_clicked", tree_type, -1, etk_marshaller_VOID__POINTER_POINTER, NULL, NULL);
       _etk_tree_signals[ETK_TREE_ROW_ACTIVATED_SIGNAL] = etk_signal_new("row_activated", tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_tree_signals[ETK_TREE_ROW_EXPANDED_SIGNAL] = etk_signal_new("row_expaned", tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_tree_signals[ETK_TREE_ROW_COLLAPSED_SIGNAL] = etk_signal_new("row_collapsed", tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
@@ -1841,26 +1842,33 @@ static void _etk_tree_unrealize_cb(Etk_Object *object, void *data)
 }
 
 /* Called when an expander is clicked */
-static void _etk_tree_expander_clicked_cb(Etk_Object *object, void *event_info, void *data)
+static void _etk_tree_expander_clicked_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Etk_Tree_Row *row;
+   Evas_Event_Mouse_Up *event;
+   Evas_Coord x, y, w, h;
 
-   if (!(row = etk_object_data_get(object, "_Etk_Tree::row")))
+   if (!(row = evas_object_data_get(obj, "_Etk_Tree::row")))
       return;
 
-   if (row->expanded)
-      etk_tree_row_collapse(row);
-   else
-      etk_tree_row_expand(row);
+   event = event_info;
+   evas_object_geometry_get(obj, &x, &y, &w, &h);
+   if (x <= event->canvas.x && x + w >= event->canvas.x && y <= event->canvas.y && y + h >= event->canvas.y)
+   {
+      if (row->expanded)
+         etk_tree_row_collapse(row);
+      else
+         etk_tree_row_expand(row);
+   }
 }
 
 /* Called when the row is pressed */
-static void _etk_tree_row_pressed_cb(Etk_Object *object, void *event_info, void *data)
+static void _etk_tree_row_pressed_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Etk_Tree_Row *row;
-   Etk_Event_Mouse_Up_Down *event;
+   Evas_Event_Mouse_Down *event;
 
-   if (!(row = etk_object_data_get(object, "_Etk_Tree::row")))
+   if (!(row = evas_object_data_get(obj, "_Etk_Tree::row")))
       return;
 
    event = event_info;
@@ -1874,17 +1882,32 @@ static void _etk_tree_row_pressed_cb(Etk_Object *object, void *event_info, void 
 }
 
 /* Called when a row is clicked */
-static void _etk_tree_row_clicked_cb(Etk_Object *object, void *event_info, void *data)
+static void _etk_tree_row_clicked_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Etk_Tree_Row *row;
-   Etk_Event_Mouse_Up_Down *event;
+   Evas_Event_Mouse_Up *evas_event;
+   Etk_Event_Mouse_Up_Down event;
+   Evas_Coord x, y, w, h;
 
-   if (!(row = etk_object_data_get(object, "_Etk_Tree::row")))
+   if (!(row = evas_object_data_get(obj, "_Etk_Tree::row")))
       return;
 
-   event = event_info;
-   if (event->button == 1)
-      etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_CLICKED_SIGNAL], ETK_OBJECT(row->tree), NULL, row);
+   evas_event = event_info;
+   evas_object_geometry_get(obj, &x, &y, &w, &h);
+   if (x <= evas_event->canvas.x && x + w >= evas_event->canvas.x && y <= evas_event->canvas.y && y + h >= evas_event->canvas.y)
+   {
+      event.button = evas_event->button;
+      event.canvas.x = evas_event->canvas.x;
+      event.canvas.y = evas_event->canvas.y;
+      event.widget.x = evas_event->canvas.x - ETK_WIDGET(row->tree)->inner_geometry.x;
+      event.widget.y = evas_event->canvas.y - ETK_WIDGET(row->tree)->inner_geometry.y;
+      event.modifiers = evas_event->modifiers;
+      event.locks = evas_event->locks;
+      event.flags = evas_event->flags;
+      event.timestamp = evas_event->timestamp;
+      
+      etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_CLICKED_SIGNAL], ETK_OBJECT(row->tree), NULL, row, &event);
+   }
 }
 
 /* Called when the tree is focused */
@@ -2183,11 +2206,13 @@ static void _etk_tree_update(Etk_Tree *tree)
    l = tree->rows_widgets;
    _etk_tree_rows_draw(tree, &tree->root, &l, x, w, h, first_visible_col->xoffset, y - delta, first_visible_nth, (first_visible_nth % 2));
 
+   /* Hide the remaining row objects */
    for (; l; l = l->next)
    {
       row_objects = l->data;
-      etk_widget_hide(row_objects->background);
-      etk_widget_hide(row_objects->expander);
+      evas_object_hide(row_objects->background);
+      if (row_objects->expander)
+         evas_object_hide(row_objects->expander);
       for (i = 0; i < tree->num_cols; i++)
       {
          for (j = 0; j < ETK_TREE_NUM_OBJECTS_PER_CELL; j++)
@@ -2235,43 +2260,41 @@ static int _etk_tree_rows_draw(Etk_Tree *tree, Etk_Tree_Row *parent_row, Evas_Li
          *items_objects = (*items_objects)->next;
    
          item_y = yoffset + i * tree->row_height;
-         geometry.x = x;
-         geometry.y = item_y;
-         geometry.w = w;
-         geometry.h = tree->row_height;
-         etk_widget_size_allocate(row_objects->background, geometry);
-         etk_object_data_set(ETK_OBJECT(row_objects->background), "_Etk_Tree::row", row);
-         etk_widget_show(row_objects->background);
+         
+         evas_object_move(row_objects->background, x, item_y);
+         evas_object_resize(row_objects->background, w, tree->row_height);
+         evas_object_data_set(row_objects->background, "_Etk_Tree::row", row);
+         evas_object_show(row_objects->background);
          
          if ((first_row_color + i) % 2 == 0)
-            etk_widget_theme_object_signal_emit(row_objects->background, "odd");
+            edje_object_signal_emit(row_objects->background, "odd" , "");
          else
-            etk_widget_theme_object_signal_emit(row_objects->background, "even");
+            edje_object_signal_emit(row_objects->background, "even" , "");
          
          if (row->selected)
-            etk_widget_theme_object_signal_emit(row_objects->background, "selected");
+            edje_object_signal_emit(row_objects->background, "selected" , "");
          else
-            etk_widget_theme_object_signal_emit(row_objects->background, "unselected");
+            edje_object_signal_emit(row_objects->background, "unselected" , "");
          
-         if (row->first_child)
+         if (row_objects->expander)
          {
-            geometry.x = x + xoffset;
-            geometry.y = item_y + (tree->row_height - tree->expander_size + 1) / 2;
-            geometry.w = tree->expander_size;
-            geometry.h = tree->expander_size;
-            
-            if (etk_widget_clip_get(row_objects->expander) != first_visible_col->clip)
+            if (row->first_child)
             {
-               etk_widget_clip_unset(row_objects->expander);
-               etk_widget_clip_set(row_objects->expander, first_visible_col->clip);
+               if (evas_object_clip_get(row_objects->expander) != first_visible_col->clip)
+               {
+                  evas_object_clip_unset(row_objects->expander);
+                  evas_object_clip_set(row_objects->expander, first_visible_col->clip);
+               }
+               evas_object_move(row_objects->expander, x + xoffset, item_y + (tree->row_height - tree->expander_size + 1) / 2);
+               evas_object_resize(row_objects->expander, tree->expander_size, tree->expander_size);
+               edje_object_signal_emit(row_objects->expander, row->expanded ? "expand" : "collapse", "");
+               
+               evas_object_data_set(row_objects->expander, "_Etk_Tree::row", row);
+               evas_object_show(row_objects->expander);
             }
-            etk_widget_size_allocate(row_objects->expander, geometry);
-            etk_widget_theme_object_signal_emit(row_objects->expander, row->expanded ? "expand" : "collapse");
-            etk_object_data_set(ETK_OBJECT(row_objects->expander), "_Etk_Tree::row", row);
-            etk_widget_show(row_objects->expander);
+            else
+               evas_object_hide(row_objects->expander);
          }
-         else
-            etk_widget_hide(row_objects->expander);
    
          for (j = 0; j < tree->num_cols; j++)
          {
@@ -2389,20 +2412,26 @@ static Etk_Tree_Row_Objects *_etk_tree_row_objects_new(Etk_Tree *tree)
    if (!tree || !tree->built || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(tree))))
       return NULL;
 
-   /* Creates the background object of the row */
    new_row_objects = malloc(sizeof(Etk_Tree_Row_Objects));
-   new_row_objects->background = etk_widget_new(ETK_WIDGET_TYPE, "theme_group", "tree_row", "repeat_events", ETK_TRUE, "visibility_locked", ETK_TRUE, NULL);
-   etk_widget_clip_set(new_row_objects->background, ETK_TREE_GRID(tree->grid)->clip);
-   etk_widget_parent_set(new_row_objects->background, ETK_CONTAINER(tree->grid));
-   etk_signal_connect("mouse_down", ETK_OBJECT(new_row_objects->background), ETK_CALLBACK(_etk_tree_row_pressed_cb), NULL);
-   etk_signal_connect("mouse_click", ETK_OBJECT(new_row_objects->background), ETK_CALLBACK(_etk_tree_row_clicked_cb), NULL);
+   
+   /* Creates the background object of the row */
+   /* TODO: use etk_theme */
+   new_row_objects->background = edje_object_add(evas);
+   edje_object_file_set(new_row_objects->background, ETK_WIDGET(tree)->theme_file, "tree_row");
+   evas_object_repeat_events_set(new_row_objects->background, 1);
+   evas_object_clip_set(new_row_objects->background, ETK_TREE_GRID(tree->grid)->clip);
+   evas_object_event_callback_add(new_row_objects->background, EVAS_CALLBACK_MOUSE_DOWN, _etk_tree_row_pressed_cb, NULL);
+   evas_object_event_callback_add(new_row_objects->background, EVAS_CALLBACK_MOUSE_UP, _etk_tree_row_clicked_cb, NULL);
+   etk_widget_member_object_add(tree->grid, new_row_objects->background);
    
    /* Creates the expander of the row */
    if (tree->mode == ETK_TREE_MODE_TREE)
    {
-      new_row_objects->expander = etk_widget_new(ETK_WIDGET_TYPE, "theme_group", "tree_expander", "visibility_locked", ETK_TRUE, NULL);
-      etk_widget_parent_set(new_row_objects->expander, ETK_CONTAINER(tree->grid));
-      etk_signal_connect("mouse_click", ETK_OBJECT(new_row_objects->expander), ETK_CALLBACK(_etk_tree_expander_clicked_cb), NULL);
+      /* TODO: use etk_theme */
+      new_row_objects->expander = edje_object_add(evas);
+      edje_object_file_set(new_row_objects->expander, ETK_WIDGET(tree)->theme_file, "tree_expander");
+      evas_object_event_callback_add(new_row_objects->expander, EVAS_CALLBACK_MOUSE_UP, _etk_tree_expander_clicked_cb, NULL);
+      etk_widget_member_object_add(tree->grid, new_row_objects->expander);
    }
    else
       new_row_objects->expander = NULL;
@@ -2435,9 +2464,15 @@ static void _etk_tree_row_objects_free(Etk_Tree_Row_Objects *row_objects, Etk_Tr
       return;
 
    if (row_objects->background)
-      etk_object_destroy(ETK_OBJECT(row_objects->background));
+   {
+      etk_widget_member_object_del(tree->grid, row_objects->background);
+      evas_object_del(row_objects->background);
+   }
    if (row_objects->expander)
-      etk_object_destroy(ETK_OBJECT(row_objects->expander));
+   {
+      etk_widget_member_object_del(tree->grid, row_objects->expander);
+      evas_object_del(row_objects->expander);
+   }
 
    for (i = 0; i < tree->num_cols; i++)
    {

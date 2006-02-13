@@ -69,6 +69,26 @@ void etk_marshaller_VOID__POINTER(Etk_Signal_Callback_Function callback, Etk_Obj
    callback_VOID__POINTER(object, arg1, data);
 }
 
+/* etk_marshaller_VOID__POINTER_POINTER */
+void etk_marshaller_VOID__POINTER_POINTER(Etk_Signal_Callback_Function callback, Etk_Object *object, void *data, void *return_value, va_list arguments)
+{
+   typedef void (*Etk_Signal_Callback_Function_VOID__POINTER_POINTER)(Etk_Object *object, void *arg1, void *arg2, void *data);
+
+   void *arg1;
+   void *arg2;
+
+   Etk_Signal_Callback_Function_VOID__POINTER_POINTER callback_VOID__POINTER_POINTER;
+
+   if (!callback || !object)
+      return;
+
+   arg1 = va_arg(arguments, void *);
+   arg2 = va_arg(arguments, void *);
+
+   callback_VOID__POINTER_POINTER = (Etk_Signal_Callback_Function_VOID__POINTER_POINTER)callback;
+   callback_VOID__POINTER_POINTER(object, arg1, arg2, data);
+}
+
 /* etk_marshaller_VOID__INT_POINTER */
 void etk_marshaller_VOID__INT_POINTER(Etk_Signal_Callback_Function callback, Etk_Object *object, void *data, void *return_value, va_list arguments)
 {
