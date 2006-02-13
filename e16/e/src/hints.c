@@ -31,8 +31,15 @@
 #include "hints.h"
 #include "xwin.h"
 
-static Atom         ENL_WIN_DATA;
-static Atom         ENL_WIN_BORDER;
+/* Misc atoms */
+Atom                E_XROOTPMAP_ID;
+Atom                E_XROOTCOLOR_PIXEL;
+
+/* E16 atoms */
+static Ecore_X_Atom ENL_INTERNAL_AREA_DATA;
+static Ecore_X_Atom ENL_INTERNAL_DESK_DATA;
+static Ecore_X_Atom ENL_WIN_DATA;
+static Ecore_X_Atom ENL_WIN_BORDER;
 
 /*
  * Functions that set X11-properties from E-internals
@@ -43,6 +50,14 @@ HintsInit(void)
 {
    Atom                atom;
    Window              win;
+
+   E_XROOTPMAP_ID = XInternAtom(disp, "_XROOTPMAP_ID", False);
+   E_XROOTCOLOR_PIXEL = XInternAtom(disp, "_XROOTCOLOR_PIXEL", False);
+
+   ENL_INTERNAL_AREA_DATA = XInternAtom(disp, "ENL_INTERNAL_AREA_DATA", False);
+   ENL_INTERNAL_DESK_DATA = XInternAtom(disp, "ENL_INTERNAL_DESK_DATA", False);
+   ENL_WIN_DATA = XInternAtom(disp, "ENL_WIN_DATA", False);
+   ENL_WIN_BORDER = XInternAtom(disp, "ENL_WIN_BORDER", False);
 
    win = ECreateWindow(VRoot.win, -200, -200, 5, 5, 0);
 
@@ -62,9 +77,6 @@ HintsInit(void)
      }
 
    Mode.hints.old_root_pmap = HintsGetRootPixmap(VRoot.win);
-
-   ENL_WIN_DATA = XInternAtom(disp, "ENL_WIN_DATA", False);
-   ENL_WIN_BORDER = XInternAtom(disp, "ENL_WIN_BORDER", False);
 }
 
 void
@@ -268,14 +280,11 @@ HintsProcessClientMessage(XClientMessageEvent * event)
 Pixmap
 HintsGetRootPixmap(Window win)
 {
-   Atom                a = 0;
    Ecore_X_Pixmap      pm;
    int                 num;
 
-   a = XInternAtom(disp, "_XROOTPMAP_ID", False);
-
    pm = None;
-   num = ecore_x_window_prop_xid_get(win, a, XA_PIXMAP, &pm, 1);
+   num = ecore_x_window_prop_xid_get(win, E_XROOTPMAP_ID, XA_PIXMAP, &pm, 1);
 
    return pm;
 }
@@ -283,22 +292,15 @@ HintsGetRootPixmap(Window win)
 void
 HintsSetRootInfo(Window win, Pixmap pmap, unsigned int color)
 {
-   static Atom         a = 0, aa = 0;
    Ecore_X_Pixmap      pm;
-
-   if (!a)
-     {
-	a = XInternAtom(disp, "_XROOTPMAP_ID", False);
-	aa = XInternAtom(disp, "_XROOTCOLOR_PIXEL", False);
-     }
 
    if (Conf.hints.set_xroot_info_on_root_window)
       win = VRoot.win;
 
    pm = pmap;
-   ecore_x_window_prop_xid_set(win, a, XA_PIXMAP, &pm, 1);
+   ecore_x_window_prop_xid_set(win, E_XROOTPMAP_ID, XA_PIXMAP, &pm, 1);
 
-   ecore_x_window_prop_card32_set(win, aa, &color, 1);
+   ecore_x_window_prop_card32_set(win, E_XROOTCOLOR_PIXEL, &color, 1);
 }
 
 typedef union
@@ -367,22 +369,7 @@ EHintsGetInfo(EWin * ewin)
    num = ecore_x_window_prop_card32_get(_EwinGetClientXwin(ewin), ENL_WIN_DATA,
 					(unsigned int *)c, ENL_DATA_ITEMS + 1);
    if (num != ENL_DATA_ITEMS)
-     {
-#if 1				/* FIXME - Remove this after a while */
-	num =
-	   ecore_x_window_prop_card32_get(_EwinGetClientXwin(ewin),
-					  XInternAtom(disp, "ENL_INTERNAL_DATA",
-						      False),
-					  (unsigned int *)c, 1);
-	if (num > 0)
-	  {
-	     ewin->state.identified = 1;
-	     ewin->client.grav = StaticGravity;
-	     ewin->state.placed = 1;
-	  }
-#endif
-	return;
-     }
+      return;
 
    ewin->state.identified = 1;
    ewin->client.grav = StaticGravity;
@@ -417,7 +404,6 @@ EHintsGetInfo(EWin * ewin)
 void
 EHintsSetDeskInfo(void)
 {
-   Atom                a;
    int                 i, ax, ay, n_desks;
    unsigned int       *c;
 
@@ -436,12 +422,11 @@ EHintsSetDeskInfo(void)
 	c[(i * 2) + 1] = ay;
      }
 
-   a = XInternAtom(disp, "ENL_INTERNAL_AREA_DATA", False);
-   ecore_x_window_prop_card32_set(VRoot.win, a, c, 2 * n_desks);
+   ecore_x_window_prop_card32_set(VRoot.win, ENL_INTERNAL_AREA_DATA,
+				  c, 2 * n_desks);
 
-   a = XInternAtom(disp, "ENL_INTERNAL_DESK_DATA", False);
    c[0] = DesksGetCurrentNum();
-   ecore_x_window_prop_card32_set(VRoot.win, a, c, 1);
+   ecore_x_window_prop_card32_set(VRoot.win, ENL_INTERNAL_DESK_DATA, c, 1);
 
    Efree(c);
 }
@@ -449,7 +434,6 @@ EHintsSetDeskInfo(void)
 void
 EHintsGetDeskInfo(void)
 {
-   Atom                a;
    unsigned int       *c;
    int                 num, i, n_desks;
 
@@ -458,16 +442,16 @@ EHintsGetDeskInfo(void)
    if (!c)
       return;
 
-   a = XInternAtom(disp, "ENL_INTERNAL_AREA_DATA", False);
-   num = ecore_x_window_prop_card32_get(VRoot.win, a, c, 2 * n_desks);
+   num = ecore_x_window_prop_card32_get(VRoot.win, ENL_INTERNAL_AREA_DATA,
+					c, 2 * n_desks);
    if (num > 0)
      {
 	for (i = 0; i < (num / 2); i++)
 	   DeskSetArea(DeskGet(i), c[(i * 2)], c[(i * 2) + 1]);
      }
 
-   a = XInternAtom(disp, "ENL_INTERNAL_DESK_DATA", False);
-   num = ecore_x_window_prop_card32_get(VRoot.win, a, c, 1);
+   num = ecore_x_window_prop_card32_get(VRoot.win, ENL_INTERNAL_DESK_DATA,
+					c, 1);
    if (num > 0)
      {
 	DesksSetCurrent(DeskGet(c[0]));

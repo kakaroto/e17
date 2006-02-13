@@ -25,18 +25,6 @@
 #include <Ecore_X.h>
 #include <Ecore_X_Atoms.h>
 
-/* WM identification */
-extern Ecore_X_Atom ECORE_X_ATOM_NET_SUPPORTED;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_SUPPORTING_WM_CHECK;
-
-/* Misc window ops */
-extern Ecore_X_Atom ECORE_X_ATOM_NET_CLOSE_WINDOW;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_MOVERESIZE;
-
-/* Startup notification */
-extern Ecore_X_Atom ECORE_X_ATOM_NET_STARTUP_INFO_BEGIN;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_STARTUP_INFO;
-
 #else
 
 #define Ecore_X_ID       XID

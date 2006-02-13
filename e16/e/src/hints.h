@@ -24,6 +24,10 @@
 #ifndef _HINTS_H_
 #define _HINTS_H_
 
+/* Misc atoms */
+Atom                E_XROOTPMAP_ID;
+Atom                E_XROOTCOLOR_PIXEL;
+
 /* ewmh.c */
 void                EWMH_Init(Window win_wm_check);
 void                EWMH_SetDesktopCount(void);
