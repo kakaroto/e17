@@ -143,6 +143,7 @@ Etk_Property_Value *etk_property_value_create(Etk_Property_Type type, ...)
  * @param arg the value of the new Etk_Property_Value
  * @return Returns the new property value
  */
+/* TODO: Is it safe on Amd64? */
 Etk_Property_Value *etk_property_value_create_valist(Etk_Property_Type type, va_list *arg)
 {
    Etk_Property_Value *new_value;

@@ -1,10 +1,8 @@
 --------------------
 [Bugs to fix (in order of pripority)]
 --------------------
-* Segvs when you call etk_object_properties_set with a property name that doesn't exist
 * Fix a bug in etk_tree: when you've scrolled to the end of the left tree in etk_test, and if you
 maximized the window, the tree is not correctly updated (maybe a bug in etk_scrolled_view)
-* Fix potential segvs with Amd64 and va_list
 * Check if all the widgets can be reparented on a different window (i.e. unrealized then re-realized)
 without causing any problem
 * Check if all the functions of all the widgets work even is the widget is not realized
@@ -27,11 +25,9 @@ the scrolling smoother [In progress: MoOm]
 * Allow the theme to change the color/font/style of the labels
 * More API work for the tree (get a row according to (x,y) position, emit signals when a row is
 clicked, double-clicked...)
-* The filechooser still need to be finished/rewritten
+* The filechooser still need to be finished/rewritten [In progress: MoOm]
 * More API work for the colorpicker. We need to be able to know the current color, and to know
 when a color is changed
-* The progress bar shouldn't inherit from etk_bin. And we shoudl maybe separate the "pulsing"
-and the "normal" progress bars. Also separate the horizontal and the vertical progress bars. [In progress: MoOm]
 * Add better mouse control for the scrollbar: wheel and click on the trough
 
 --------------------

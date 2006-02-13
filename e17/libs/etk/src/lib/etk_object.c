@@ -89,6 +89,7 @@ Etk_Object *etk_object_new(Etk_Type *object_type, const char *first_property, ..
 Etk_Object *etk_object_new_valist(Etk_Type *object_type, const char *first_property, va_list args)
 {
    Etk_Object *new_object;
+   va_list args2;
 
    if (!object_type)
       return NULL;
@@ -98,9 +99,9 @@ Etk_Object *etk_object_new_valist(Etk_Type *object_type, const char *first_prope
    _etk_object_created_objects = evas_list_append(_etk_object_created_objects, new_object);
    
    etk_type_object_construct(object_type, new_object);
-   /* TODO: va_copy ?? */
-   /* va_copy(args2, args); */
-   etk_object_properties_set_valist(new_object, first_property, args);
+   va_copy(args2, args);
+   etk_object_properties_set_valist(new_object, first_property, args2);
+   va_end(args2);
 
    return new_object;
 }
@@ -371,6 +372,12 @@ void etk_object_properties_set_valist(Etk_Object *object, const char *first_prop
             etk_property_value_delete(property_value);
          }
       }
+      else
+      {
+         ETK_WARNING("The object %p of type \"%s\" has no property called \"%s\"",
+           object, object->type->name, property_name);
+         break;
+      }
    }
    va_end(args2);
 }
@@ -422,6 +429,12 @@ void etk_object_properties_get_valist(Etk_Object *object, const char *first_prop
             value_location = va_arg(args, void *);
             etk_property_value_get(property_value, etk_property_value_type_get(property_value), value_location);
          }
+      }
+      else
+      {
+         ETK_WARNING("The object %p of type \"%s\" has no property called \"%s\"",
+            object, object->type->name, property_name);
+         break;
       }
    }
    etk_property_value_delete(property_value);
