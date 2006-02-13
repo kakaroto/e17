@@ -1,6 +1,6 @@
-#define FOCUS_GLOW(x1, y1, offx1, offy1, to1, x2, y2, offx2, offy2, to2) \
+#define DROP_GLOW(x1, y1, offx1, offy1, to1, x2, y2, offx2, offy2, to2) \
 part { \
-   name: "focus"; \
+   name: "drop_glow"; \
    mouse_events: 0; \
    description { \
       state: "default" 0.0; \
@@ -17,7 +17,7 @@ part { \
          to: to2; \
       } \
       image { \
-         normal: "focus_glow.png"; \
+         normal: "drop_glow.png"; \
          border: 7 7 7 7; \
       } \
       fill { \
@@ -25,19 +25,19 @@ part { \
       } \
    } \
    description { \
-      state: "focused" 0.0; \
+      state: "visible" 0.0; \
       inherit: "default" 0.0; \
       visible: 1; \
       color: 255 255 255 255; \
    } \
 }
 
-#define FOCUS_GLOW_ACTION \
-action: STATE_SET "focused" 0.0; \
+#define DROP_ENTER_ACTION \
+action: STATE_SET "visible" 0.0; \
 transition: DECELERATE 0.2; \
-target: "focus";
+target: "drop_glow";
 
-#define UNFOCUS_GLOW_ACTION \
+#define DROP_LEAVE_ACTION \
 action: STATE_SET "default" 0.0; \
 transition: ACCELERATE 0.5; \
-target: "focus";
+target: "drop_glow";

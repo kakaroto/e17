@@ -1,8 +1,8 @@
 images {
    image: "border.png" COMP;
    image: "background.png" COMP;
-   image: "focus.png" COMP;
    image: "focus_glow.png" COMP;
+   image: "drop_glow.png" COMP;
    image: "button_down.png" COMP;
    image: "button_up.png" COMP;
    image: "button_toggled.png" COMP;

@@ -1,4 +1,5 @@
 #include "macros/focus.edc"
+#include "macros/dnd.edc"
 #include "macros/scrollbar.edc"
 #include "macros/paned.edc"
 fonts {

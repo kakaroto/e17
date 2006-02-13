@@ -202,6 +202,7 @@ group {
          }
       }
       FOCUS_GLOW(0.0, 0.0, 0, 0, "button", 1.0, 1.0, -1, -1, "button")
+      DROP_GLOW(0.0, 0.0, 0, 0, "button", 1.0, 1.0, -1, -1, "button")
    }
    programs {
       program {
@@ -243,6 +244,24 @@ group {
          signal: "unfocus";
          source: "";
          UNFOCUS_GLOW_ACTION
+      }
+      program {
+         name: "drop_enter";
+         signal: "drop_enter";
+         source: "";
+         DROP_ENTER_ACTION
+      }
+      program {
+         name: "drag_leave";
+         signal: "drag_leave";
+         source: "";
+         DROP_LEAVE_ACTION
+      }
+      program {
+         name: "drag_drop";
+         signal: "drag_drop";
+         source: "";
+         DROP_LEAVE_ACTION
       }
       program {
          name: "go_active";
