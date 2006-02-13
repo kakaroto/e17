@@ -83,6 +83,8 @@ AC_SUBST(my_libs)
 
 AC_OUTPUT([
 Makefile
+epeg.pc
+epeg-uninstalled.pc
 epeg.spec
 src/Makefile
 src/lib/Makefile
