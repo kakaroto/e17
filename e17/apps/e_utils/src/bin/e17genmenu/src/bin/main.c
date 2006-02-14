@@ -229,9 +229,6 @@ main(int argc, char **argv)
 {
    char path[MAX_PATH];
 
-   char *tmp;
-   int ret;
-
    /* Init E Stuff */
    _e17genmenu_init();
 

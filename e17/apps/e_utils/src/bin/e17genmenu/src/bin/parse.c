@@ -424,14 +424,7 @@ parse_ini_file(char *file)
                     {
                        ecore_hash_set_free_key(current, free);
                        ecore_hash_set_free_value(current, free);
-                       if (!ecore_hash_set(result, strdup(key), current))
-                         {
-                            fprintf(stderr,
-                                    "ERROR: Cannot add [%s] group from %s\n",
-                                    key, file);
-                            ecore_hash_destroy(result);
-                            return NULL;
-                         }
+                       ecore_hash_set(result, strdup(key), current);
 #ifdef DEBUG
                        fprintf(stdout, "  GROUP [%s]\n", key);
 #endif
@@ -463,13 +456,7 @@ parse_ini_file(char *file)
                           c++;
                        *c++ = '\0';
                        /* FIXME: should strip space at end, then unescape value. */
-                       if (!ecore_hash_set(current, strdup(key), strdup(value)))
-                         {
-                            fprintf(stderr, "ERROR: Cannot add %s=%s from %s\n",
-                                    key, value, file);
-                            ecore_hash_destroy(result);
-                            return NULL;
-                         }
+                       ecore_hash_set(current, strdup(key), strdup(value));
 #ifdef DEBUG
                        fprintf(stdout, "    %s=%s\n", key, value);
 #endif

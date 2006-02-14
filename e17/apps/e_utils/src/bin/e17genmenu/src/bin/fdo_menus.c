@@ -7,7 +7,7 @@
  *
  */
 #include <dirent.h>
-#include <string.h>             //string funcs
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -34,13 +34,14 @@ struct _fdo_menus_unxml_data
    char *file;
    char *base;
    char *path;
+   Dumb_List *stack;
 };
 
 static int _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level);
 static void _fdo_menus_unxml_rules(Dumb_List *rules, Dumb_List *list, char type, char sub_type);
 static void _fdo_menus_unxml_moves(Dumb_List *menu, Dumb_List *list);
 static void _fdo_menus_add_dirs(Dumb_List *list, Dumb_List *paths, char *pre, char *post, char *extra, int element);
-static int _fdo_menus_expand_apps(const void *data, Dumb_List *list, int element, int level);
+static int _fdo_menus_expand_apps(struct _fdo_menus_unxml_data *unxml_data, char *app_dir, Ecore_Hash *pool);
 static int _fdo_menus_check_app(const void *data, char *path);
 
 
@@ -51,20 +52,22 @@ fdo_menus_get(char *file, Dumb_List *xml)
 
    data.file = file;
    data.menus = dumb_list_new(NULL);
-   if (data.menus)
+   data.stack = dumb_list_new(NULL);
+   if ((data.menus) && (data.stack))
       {
          data.base = ecore_file_strip_ext(ecore_file_get_file(file));
          data.path = ecore_file_get_dir(file);
 	 if ((data.base) && (data.path))
 	    {
-	       /* FIXME: There is some scope for merging some of these. */
                dumb_list_foreach(xml, 0, _fdo_menus_unxml, &data);
-               dumb_list_foreach(xml, 0, _fdo_menus_expand_apps, &data);
-
-//dumb_list_dump(xml, 0);
 	    }
          E_FREE(data.path);
          E_FREE(data.base);
+      }
+   else
+      {
+         E_FN_DEL(dumb_list_del, (data.stack));
+         E_FN_DEL(dumb_list_del, (data.menus));
       }
    return data.menus;
 }
@@ -96,12 +99,14 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
                if ((menu) && (rules) && (pool))
                   {
 		     int i;
-		     char *flags = "   ", *name = "", *directory = "";
+		     char *flags = "   ", *name = "", *directory = "", *menu_path = "";
 		     char temp[MAX_PATH];
 
                      ecore_hash_set_free_key(pool, free);
                      ecore_hash_set_free_value(pool, free);
 		     sprintf(temp, "<MENU <%.3s> <%s> <%s>", flags, name, directory);
+	             dumb_list_extend(menu, temp);
+		     sprintf(temp, "<MENU_PATH %s", menu_path);
 	             dumb_list_extend(menu, temp);
 		     flags = (char *) menu->elements[0].element;
 		     flags += 7;
@@ -179,6 +184,8 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
                                           {
                                              if (strcmp((char *) sub->elements[0].element, "<Name") == 0)
 	                                        {
+						   int i, length = 0;
+
 						   name = strdup((char *) sub->elements[1].element);
 		                                   sprintf(temp, "<MENU <%.3s> <%s> <%s>", flags, name, directory);
 	                                           menu->elements[0].element = strdup(temp);
@@ -186,6 +193,33 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
                                                    dumb_list_track(menu, menu->elements[0].element);
 						   flags = (char *) menu->elements[0].element;
 						   flags += 7;
+						   /* The rest of this is probably not needed, ekcept to ease debugging. */
+						   if (unxml_data->stack->size <= level)
+						      {
+						         while (unxml_data->stack->size < level)
+						            dumb_list_add(unxml_data->stack, "");
+						         dumb_list_add(unxml_data->stack, name);
+						      }
+						   else
+	                                                 unxml_data->stack->elements[level].element = name;
+					           temp[0] = '\0';
+                                                   for (i = 0; i <= level; i++)
+                                                      {
+						         char *text;
+
+						         /* I can safely assume that they are all strings. */
+							 text = (char *) unxml_data->stack->elements[i].element;
+							 if (text[0] != '\0')
+							    {
+							       sprintf(&temp[length], "%s%s", ((length) ? "/" : ""), text);
+	                                                       length += strlen(text);
+							    }
+						      }
+						   menu_path = strdup(temp);
+		                                   sprintf(temp, "<MENU_PATH %s", menu_path);
+	                                           menu->elements[1].element = strdup(temp);
+                                                   dumb_list_track(menu, menu_path);
+                                                   dumb_list_track(menu, menu->elements[1].element);
 	                                           result = 1;
 	                                        }
                                              else if (strcmp((char *) sub->elements[0].element, "<Directory") == 0)
@@ -207,7 +241,7 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
 	                                        }
                                              else if (strcmp((char *) sub->elements[0].element, "<Menu") == 0)
 					        {
-                                                   _fdo_menus_unxml(data, sub, 0, level);
+                                                   _fdo_menus_unxml(data, sub, 0, level + 1);
 	                                           dumb_list_add_child(menu, (Dumb_List *) sub->elements[0].element);
 						   /* FIXME: Dunno if this causes a memory leak, but for now we play it safe. */
                                                    list->elements[i].type = DUMB_LIST_ELEMENT_TYPE_NULL;
@@ -246,6 +280,46 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
                                  list->elements[i].type = DUMB_LIST_ELEMENT_TYPE_NULL;
                                  list->elements[i].element = NULL;
 			      }
+			}
+
+		     for (i = 4; i < menu->size; i++)
+		        {
+			   int result = 0;
+
+                           if (menu->elements[i].type == DUMB_LIST_ELEMENT_TYPE_STRING)
+			      {
+                                 if (strncmp((char *) menu->elements[i].element, "<AppDir ", 8) == 0)
+				    {
+				       char *app_dir;
+
+				       app_dir = (char *) menu->elements[i].element;
+                                       _fdo_menus_expand_apps(unxml_data, &app_dir[8], pool);
+				       result = 1;
+				    }
+                                 else if (strncmp((char *) menu->elements[i].element, "<DirectoryDir ", 8) == 0)
+				    {
+				    }
+                                 else if (strncmp((char *) menu->elements[i].element, "<MergeDir ", 8) == 0)
+				    {
+				    }
+                                 else if (strncmp((char *) menu->elements[i].element, "<MergeFile ", 8) == 0)
+				    {
+				    }
+			      }
+			   if (result)
+			      {
+                                 if (menu->elements[i].type == DUMB_LIST_ELEMENT_TYPE_LIST)
+                                    dumb_list_del((Dumb_List *) menu->elements[i].element);
+                                 menu->elements[i].type = DUMB_LIST_ELEMENT_TYPE_NULL;
+                                 menu->elements[i].element = NULL;
+			      }
+			}
+
+                     /* Remove it if it has been deleted. */
+                     if (flags[1] != 'D')
+		        {
+                           list->elements[element].element = menu;
+                           list->elements[element].type = DUMB_LIST_ELEMENT_TYPE_LIST;
 			}
 		  }
 	       else
@@ -372,52 +446,20 @@ _fdo_menus_add_dirs(Dumb_List *list, Dumb_List *paths, char *pre, char *post, ch
 }
 
 static int
-_fdo_menus_expand_apps(const void *data, Dumb_List *list, int element, int level)
+_fdo_menus_expand_apps(struct _fdo_menus_unxml_data *unxml_data, char *app_dir, Ecore_Hash *pool)
 {
-   struct _fdo_menus_unxml_data *unxml_data;
-   char *path;
-
-   unxml_data = (struct _fdo_menus_unxml_data *) data;
-   path = (char *) unxml_data->path;
-   if (list->elements[element].type == DUMB_LIST_ELEMENT_TYPE_STRING)
+   if (pool)
       {
-         if (strncmp((char *) list->elements[element].element, "<AppDir ", 8) == 0)
-	    {
-               Ecore_Hash *pool;
+         struct _fdo_menus_expand_apps_data our_data;
+         char dir[MAX_PATH];
 
-               pool = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-               if (pool)
-                  {
-		     struct _fdo_menus_expand_apps_data our_data;
-
-		     our_data.pool = pool;
-                     ecore_hash_set_free_key(pool, free);
-                     ecore_hash_set_free_value(pool, free);
-//                     element++;
-//                     if ((list->size > element) && (list->elements[element].type == DUMB_LIST_ELEMENT_TYPE_STRING))
-		        {
-		           char dir[MAX_PATH];
-		           char *app_dir;
-
-                           app_dir = (char *) list->elements[element].element;
-			   app_dir += 8;
-                           sprintf(dir, "%s", app_dir);
-			   if (dir[0] != '/')
-                              sprintf(dir, "%s/%s", path, app_dir);
-                           our_data.path = dir;
-			   our_data.length = strlen(dir);
-                           fdo_paths_recursive_search(dir, NULL, _fdo_menus_check_app, &our_data);
-	                   /* The dir is the next element
-		            * readdir dir/ *.desktop
-		            *   name = subdir-subdir--file.desktop
-		            *   hash add name, path/subdir/file.desktop
-		            * replace element with this hash.
-		            */
-                           list->elements[element].element = pool;
-                           list->elements[element].type = DUMB_LIST_ELEMENT_TYPE_HASH;
-			}
-	          }
-	    }
+	 our_data.pool = pool;
+         sprintf(dir, "%s", app_dir);
+	 if (dir[0] != '/')
+           sprintf(dir, "%s/%s", unxml_data->path, app_dir);
+         our_data.path = dir;
+	 our_data.length = strlen(dir);
+         fdo_paths_recursive_search(dir, NULL, _fdo_menus_check_app, &our_data);
       }
    return 0;
 }
@@ -442,13 +484,9 @@ _fdo_menus_check_app(const void *data, char *path)
 	       if ((file) && (path))
 	          {
 	             for (i = 0; file[i] != '\0'; i++ )
-	               if (file[i] == '/')
-		         file[i] = '-';
-                     if (!ecore_hash_set(our_data->pool, file, strdup(path)))
-		        {
-                           free(path);
-                           free(file);
-			}
+	                if (file[i] == '/')
+		           file[i] = '-';
+                     ecore_hash_set(our_data->pool, file, strdup(path));
 		  }
 	    }
       }
@@ -477,9 +515,9 @@ merge menus
       mark any <Menu> that has been affected.
   for each marked <Menu> recursively
     consolidate duplicate child <Menu>s.
-  for each <Menu> recursively
-    if there are <Deleted> elements that are not ovreridden by a <NotDelete> element
-      remove this <Menu> element and all it's children.
+*  for each <Menu> recursively
+*    if there are <Deleted> elements that are not ovreridden by a <NotDelete> element
+*      remove this <Menu> element and all it's children.
 
 generate menus
 *  for each <Menu> that is <NotOnlyUnallocated> (which is the default)
@@ -487,16 +525,20 @@ generate menus
 *      for each .desktop
 *        if it exists in the pool, replace it.
 *	 else add it to the pool.
-    for each <Include> and <Exclude>
-      for each .desktop in pool
-        for each rule
-          if rule matches .desktop in pool
-	     if rule is an <Include>
-	        add .desktop to menu.
-	        mark it as allocated
-	     if rule is an <Exclude>
-	       remove .desktop from menu.
-	       leave it as allocated.
+     for each parent <Menu>
+       for each .desktop in the pool
+          if it doesn't exist in the child <Menu> pool
+	    add it to the pool.
+     for each <Include> and <Exclude>
+        for each .desktop in pool
+           for each rule
+              if rule matches .desktop in pool
+	        if rule is an <Include>
+	           add .desktop to menu.
+	           mark it as allocated
+	        if rule is an <Exclude>
+	           remove .desktop from menu.
+	           leave it as allocated.
 
 
 <Menu (list)

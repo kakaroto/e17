@@ -130,6 +130,7 @@ dumb_list_add_child(Dumb_List *list, Dumb_List *element)
    list->elements = (Dumb_List_Element *) realloc(list->elements, (list->size + 1) * sizeof(Dumb_List_Element));
    list->elements[list->size].element = element;
    list->elements[list->size++].type = DUMB_LIST_ELEMENT_TYPE_LIST;
+   element->parent = list;
    return list;
 }
 
