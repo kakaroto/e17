@@ -114,6 +114,8 @@ ewl_menu_item_text_set(Ewl_Menu_Item *item, const char *text)
 					item->text);
 			ewl_object_fill_policy_set(EWL_OBJECT(item->text),
 					EWL_FLAG_FILL_HFILL);
+			ewl_object_alignment_set(EWL_OBJECT(item->text),
+					EWL_FLAG_ALIGN_LEFT);
 			ewl_widget_show(item->text);
 		}
 

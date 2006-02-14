@@ -891,6 +891,50 @@ ewl_widget_appearance_part_text_set(Ewl_Widget * w, char *part, char *text)
 }
 
 /**
+ * @param w: the widget whose text to retrieve
+ * @param part: the theme part name whose text to retrieve
+ * @return Returns NULL on failure, a copy of the current text on success.
+ * @brief Retrieve a copy of a parts current text.
+ *
+ * Get the text of a given Edje-define TEXT part.  This is for
+ * widgets whose Edje appearance defines TEXT parts, and enables
+ * each of those text parts to be retrieved independently.
+ */
+char *
+ewl_widget_appearance_part_text_get(Ewl_Widget * w, char *part)
+{
+	int i;
+	Ewl_Pair *match = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("w", w, NULL);
+	DCHECK_PARAM_PTR_RET("part", part, NULL);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
+
+	/*
+	 * Check for an existing instance of the part key.
+	 */
+	if (w->theme_text.list) {
+		if (w->theme_text.direct) {
+			match = EWL_PAIR(w->theme_text.list);
+			if (strcmp(part, match->key))
+				match = NULL;
+		}
+		else {
+			for (i = 0; i < w->theme_text.len; i++) {
+				Ewl_Pair *current = w->theme_text.list[i];
+				if (!strcmp(current->key, part)) {
+					match = current;
+					break;
+				}
+			}
+		}
+	}
+
+	DRETURN_PTR((match ? strdup(match->value) : NULL), DLEVEL_STABLE);
+}
+
+/**
  * @param w: the widget whose text to change
  * @param part: the theme part name whose text to change
  * @param text: the new text to change to
@@ -919,6 +963,30 @@ ewl_widget_appearance_text_set(Ewl_Widget * w, char *text)
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param w: the widget whose text to retrieve
+ * @return Returns the current text on success, NULL on failure.
+ * @brief Retrieve the text of the given theme part of a widget
+ */
+char *
+ewl_widget_appearance_text_get(Ewl_Widget * w)
+{
+	char *part;
+	char *match = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("w", w, NULL);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
+
+	part = ewl_theme_data_str_get(w, "textpart");
+	if (part) {
+		match = ewl_widget_appearance_part_text_get(w, part);
+		FREE(part);
+	}
+
+	DRETURN_PTR(match, DLEVEL_STABLE);
 }
 
 /**

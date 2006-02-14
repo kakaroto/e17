@@ -30,7 +30,6 @@ typedef struct Ewl_Label Ewl_Label;
 struct Ewl_Label
 {
 	Ewl_Widget widget;      /**< Inherit from Ewl_Widget */
-	char * text;            /**< The text set into the widget */
 };
 
 Ewl_Widget *ewl_label_new(void);
@@ -38,12 +37,6 @@ int         ewl_label_init(Ewl_Label *la);
 
 void        ewl_label_text_set(Ewl_Label *la, const char *text);
 const char *ewl_label_text_get(Ewl_Label *la);
-
-/*
- * Internally used callbacks
- */
-void ewl_label_realize_cb(Ewl_Widget *w, void *ev, void *data);
-void ewl_label_destroy_cb(Ewl_Widget *w, void *ev, void *data);
 
 /**
  * @}

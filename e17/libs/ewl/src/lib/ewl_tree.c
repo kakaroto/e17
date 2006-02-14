@@ -326,6 +326,8 @@ ewl_tree_text_row_add(Ewl_Tree *tree, Ewl_Row *prow, char **text)
 		texts[i] = ewl_label_new();
 		ewl_object_fill_policy_set(EWL_OBJECT(texts[i]),
 				EWL_FLAG_FILL_NONE);
+		ewl_object_alignment_set(EWL_OBJECT(texts[i]),
+					 EWL_FLAG_ALIGN_LEFT);
 		ewl_widget_show(texts[i]);
 
 		if (text) {

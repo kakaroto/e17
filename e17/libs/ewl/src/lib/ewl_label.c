@@ -3,8 +3,6 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
-static void ewl_label_apply(Ewl_Label *la);
-
 /**
  * @return Returns a new Ewl_Widget if successful, NULL on failure
  * @brief Creates a new Ewl_Label widget with the @a text text in it
@@ -48,10 +46,8 @@ ewl_label_init(Ewl_Label *la)
 
 	ewl_widget_appearance_set(w, EWL_LABEL_TYPE);
 	ewl_widget_inherit(w, EWL_LABEL_TYPE);
-	ewl_object_fill_policy_set(EWL_OBJECT(la), EWL_FLAG_FILL_FILL);
+	ewl_object_fill_policy_set(EWL_OBJECT(la), EWL_FLAG_FILL_NONE);
 	ewl_widget_focusable_set(w, FALSE);
-
-	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, ewl_label_destroy_cb, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -69,11 +65,7 @@ ewl_label_text_set(Ewl_Label *la, const char *text)
 	DCHECK_PARAM_PTR("la", la);
 	DCHECK_TYPE("la", la, EWL_LABEL_TYPE);
 
-	IF_FREE(la->text);
-	if (text) la->text = strdup(text);
-	else la->text = strdup("");
-
-	ewl_label_apply(la);
+	ewl_widget_appearance_text_set(EWL_WIDGET(la), (char *)text);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -90,45 +82,5 @@ ewl_label_text_get(Ewl_Label *la)
 	DCHECK_PARAM_PTR_RET("la", la, NULL);
 	DCHECK_TYPE_RET("la", la, EWL_LABEL_TYPE, NULL);
 
-	DRETURN_PTR(la->text, DLEVEL_STABLE);
+	DRETURN_PTR(ewl_widget_appearance_text_get(EWL_WIDGET(la)), DLEVEL_STABLE);
 }
-
-void
-ewl_label_realize_cb(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-
-	ewl_label_apply(EWL_LABEL(w));
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-ewl_label_destroy_cb(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
-{
-        Ewl_Label *label;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-
-	label = EWL_LABEL(w);
-	IF_FREE(label->text);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-static void
-ewl_label_apply(Ewl_Label *la)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("la", la);
-	DCHECK_TYPE("la", la, EWL_LABEL_TYPE);
-
-	ewl_widget_appearance_text_set(EWL_WIDGET(la), la->text);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-

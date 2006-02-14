@@ -48,9 +48,9 @@ typedef struct Ewl_Callback_Chain Ewl_Callback_Chain;
 struct Ewl_Callback_Chain
 {
 	void **list;
-	unsigned short int mask;
-	unsigned short int len;
-	unsigned short int index;
+	unsigned char mask;
+	unsigned char len;
+	unsigned char index;
 };
 
 typedef struct Ewl_Color_Set Ewl_Color_Set;
@@ -131,7 +131,9 @@ char           *ewl_widget_appearance_get(Ewl_Widget * w);
 char	       *ewl_widget_appearance_path_get(Ewl_Widget * w);
 void            ewl_widget_appearance_part_text_set(Ewl_Widget * w, char *part,
 						   char *text);     
+char           *ewl_widget_appearance_part_text_get(Ewl_Widget * w, char *part);
 void            ewl_widget_appearance_text_set(Ewl_Widget * w, char *text);
+char           *ewl_widget_appearance_text_get(Ewl_Widget * w);
 
 void            ewl_widget_inherit(Ewl_Widget *widget, char *type);
 
