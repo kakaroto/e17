@@ -2445,17 +2445,16 @@ ewl_text_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 		evas_object_move(t->textblock, xx, yy);
 		evas_object_resize(t->textblock, ww, hh);
 
-		if (t->dirty) {
+		if (t->dirty)
 			ewl_text_display(t);
 
-			/* XXX ewl_text_triggers_realize here? */
-			ewl_text_triggers_configure(t);
+		/* XXX ewl_text_triggers_realize here? */
+		ewl_text_triggers_configure(t);
 
-			/* re-configure the selection to make sure it resizes
-			 * if needed */
-			if (t->selection)
-				ewl_widget_configure(EWL_WIDGET(t->selection));
-		}
+		/* re-configure the selection to make sure it resizes
+		 * if needed */
+		if (t->selection)
+			ewl_widget_configure(EWL_WIDGET(t->selection));
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -2671,7 +2670,7 @@ ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	t->in_select = TRUE;
 
 	ewl_text_trigger_position(t, t->selection);
-		
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }	   
 
