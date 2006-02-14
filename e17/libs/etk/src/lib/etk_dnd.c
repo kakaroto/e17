@@ -33,10 +33,13 @@
 
 #define ETK_DND_INSIDE(x, y, xx, yy, ww, hh) (((x) < ((xx) + (ww))) && ((y) < ((yy) + (hh))) && ((x) >= (xx)) && ((y) >= (yy)))
 
-extern Etk_Widget *_etk_selection_widget;
+extern Etk_Widget  *_etk_selection_widget;
 
-static Etk_Widget *_etk_dnd_widget = NULL;
-static Evas_List  *_etk_dnd_handlers = NULL;
+static char       **_etk_dnd_types          = NULL;
+static int          _etk_dnd_types_num      = 0;
+static Etk_Widget  *_etk_dnd_widget         = NULL;
+static Evas_List   *_etk_dnd_handlers       = NULL;
+static int          _etk_dnd_widget_accepts = 0;
 
 #if HAVE_ECORE_X
 static void _etk_xdnd_container_get_widgets_at(Etk_Toplevel_Widget *top, int x, int y, int offx, int offy, Evas_List **list);
@@ -94,7 +97,15 @@ void etk_dnd_shutdown()
  **************************/
 
 #if HAVE_ECORE_X
-/* Search the container recursively for the widget that accepts xdnd */
+/**
+ * @brief Search the container recursively for the widget that accepts xdnd
+ * @param top top level widget
+ * @param x the x coord we're searching under
+ * @param y the y coord we're searching under
+ * @param xoff the x offset for the window
+ * @param yoff the y offset for the window
+ * @param list the evas list we're going to append widgets to
+ */
 static void _etk_xdnd_container_get_widgets_at(Etk_Toplevel_Widget *top, int x, int y, int offx, int offy, Evas_List **list)
 {
 
@@ -104,7 +115,7 @@ static void _etk_xdnd_container_get_widgets_at(Etk_Toplevel_Widget *top, int x, 
    if (!top || !list)
       return;
    
-   for (l = etk_widget_dnd_aware_widgets_get(); l; l = l->next)
+   for (l = etk_widget_dnd_dest_widgets_get(); l; l = l->next)
    {
       Etk_Widget *widget;
       
@@ -117,22 +128,44 @@ static void _etk_xdnd_container_get_widgets_at(Etk_Toplevel_Widget *top, int x, 
    }
 }
 
-/* TODO: doc */
+/**
+ * @brief The event handler for when a drag enters our window
+ */
 static int _etk_xdnd_enter_handler(void *data, int type, void *event)
 {
    Ecore_X_Event_Xdnd_Enter *ev;
-   //int i;
+   int i;
    
    ev = event;
    
-//   printf("enter window!\n");
-//   for (i = 0; i < ev->num_types; i++)
-//      printf("type: %s\n", ev->types[i]);
+   printf("enter window!\n");   
+   for (i = 0; i < ev->num_types; i++)
+     printf("type: %s\n", ev->types[i]);   
+   
+   if(_etk_dnd_types != NULL && _etk_dnd_types_num >= 0)
+   {
+      for (i = 0; i < _etk_dnd_types_num; i++)
+	if(_etk_dnd_types[i]) free(_etk_dnd_types[i]);
+   }
+   
+   if(_etk_dnd_types != NULL) free(_etk_dnd_types);
+   _etk_dnd_types_num = 0;
+   
+   if(ev->num_types > 0)
+   {
+      _etk_dnd_types = calloc(ev->num_types, sizeof(char*));
+      for (i = 0; i < ev->num_types; i++)
+	_etk_dnd_types[i] = strdup(ev->types[i]);
+
+      _etk_dnd_types_num = ev->num_types;
+   }
    
    return 1;
 }
 
-/* TODO: doc */
+/**
+ * @brief The event handler for when a drag is moving in our window
+ */
 static int _etk_xdnd_position_handler(void *data, int type, void *event)
 {
    Ecore_X_Event_Xdnd_Position *ev;
@@ -171,6 +204,7 @@ static int _etk_xdnd_position_handler(void *data, int type, void *event)
          {
             etk_widget_drag_leave(_etk_dnd_widget);
             _etk_dnd_widget = NULL;
+	    _etk_dnd_widget_accepts = 0;
          }
       }
       
@@ -181,18 +215,55 @@ static int _etk_xdnd_position_handler(void *data, int type, void *event)
    if (children != NULL)
    {	
       Ecore_X_Rectangle rect;
+      int i;
       
       widget = (evas_list_last(children))->data;
       etk_widget_geometry_get(widget, &wx, &wy, &ww, &wh);
-      _etk_dnd_widget = widget;
-      /* TODO: filter types according to what widget wants */
+
       rect.x = wx;
       rect.y = wy;
       rect.width = ww;
-      rect.height = wh;	
-      ecore_x_dnd_send_status(1, 1, rect, ECORE_X_DND_ACTION_PRIVATE);
+      rect.height = wh;
       
-      etk_widget_drag_motion(widget);
+      if(_etk_dnd_widget == widget && _etk_dnd_widget_accepts)
+      {
+	 etk_widget_drag_motion(widget);
+	 ecore_x_dnd_send_status(1, 1, rect, ECORE_X_DND_ACTION_PRIVATE);
+      }
+      else
+      {      
+	 _etk_dnd_widget = widget;
+      
+	 /* first case - no specific types, so just accept */
+	 if(_etk_dnd_widget->dnd_types == NULL || _etk_dnd_widget->dnd_types_num <= 0)
+	 {
+	    ecore_x_dnd_send_status(1, 1, rect, ECORE_X_DND_ACTION_PRIVATE);
+	    _etk_dnd_widget_accepts = 1;
+	    etk_widget_drag_enter(widget);
+	    return 1;
+	 }
+	 
+	 /* second case - we found matching types, accept */
+	 for(i = 0; i < _etk_dnd_types_num; i++)
+	   {
+	      int j;
+	      
+	      for(j = 0; j < _etk_dnd_widget->dnd_types_num; j++)
+		{
+		   if(!strcmp(_etk_dnd_widget->dnd_types[j], _etk_dnd_types[i]))
+		   {
+		      ecore_x_dnd_send_status(1, 1, rect, ECORE_X_DND_ACTION_PRIVATE);
+		      _etk_dnd_widget_accepts = 1;
+		      etk_widget_drag_enter(widget);
+		      return 1;
+		   }
+		}
+	   }
+	 
+	 /* third case - no matches at all, dont accept */
+	 ecore_x_dnd_send_status(0, 1, rect, ECORE_X_DND_ACTION_PRIVATE);
+	 _etk_dnd_widget_accepts = 0;
+      }
    }
    else
    {
@@ -212,11 +283,24 @@ static int _etk_xdnd_position_handler(void *data, int type, void *event)
 static int _etk_xdnd_drop_handler(void *data, int type, void *event)
 {
    Ecore_X_Event_Xdnd_Drop *ev;
+   int i;
    
    //printf("drop\n");
    ev = event;
    
-   ecore_x_selection_xdnd_request(ev->win, "text/uri-list");
+   /* first case - if we dont have a type preferece, send everyting */
+   if(_etk_dnd_widget->dnd_types == NULL || _etk_dnd_widget->dnd_types_num <= 0)
+   {
+      for(i = 0; i < _etk_dnd_types_num; i++)
+	ecore_x_selection_xdnd_request(ev->win, _etk_dnd_types[i]);
+   }
+   /* second case - send only our preferred types */
+   else
+   {
+      for(i = 0; i < _etk_dnd_widget->dnd_types_num; i++)
+	ecore_x_selection_xdnd_request(ev->win, _etk_dnd_widget->dnd_types[i]);
+   }
+   
    return 1;
 }
 
@@ -270,27 +354,30 @@ static int _etk_xdnd_selection_handler(void *data, int type, void *event)
          break;
       
       case ECORE_X_SELECTION_XDND:
-	 files = ev->data;
+        if(!strcmp(ev->target, "text/uri-list"))
+	 {      
+	    files = ev->data;
 	
-	 if (!_etk_dnd_widget || files->num_files < 1)
-            break;	
-	
-	 /* free old data, should this be done here? */
-	 for (i = 0; i < _etk_dnd_widget->dnd_files_num; i++)
-            free(_etk_dnd_widget->dnd_files[i]);
-         free(_etk_dnd_widget->dnd_files);	    
-	
-         _etk_dnd_widget->dnd_files = calloc(files->num_files, sizeof(char*));
-         
-         /* Fill in the drop data into the widget */
-         _etk_dnd_widget->dnd_files_num = files->num_files;
-         for (i = 0; i < files->num_files; i++)	
-	_etk_dnd_widget->dnd_files[i] = strdup(files->files[i]);	 
-	
-         /* emit the drop signal so the widget can react */
-         etk_widget_drag_drop(_etk_dnd_widget);
-         _etk_dnd_widget = NULL;
-	
+	    if (!_etk_dnd_widget || files->num_files < 1)
+	      break;	
+	    
+	    /* free old data, should this be done here? */
+	    for (i = 0; i < _etk_dnd_widget->dnd_files_num; i++)
+	      free(_etk_dnd_widget->dnd_files[i]);
+	    free(_etk_dnd_widget->dnd_files);	    
+	    
+	    _etk_dnd_widget->dnd_files = calloc(files->num_files, sizeof(char*));
+	    
+	    /* Fill in the drop data into the widget */
+	    _etk_dnd_widget->dnd_files_num = files->num_files;
+	    for (i = 0; i < files->num_files; i++)	
+	      _etk_dnd_widget->dnd_files[i] = strdup(files->files[i]);
+	 }
+	    
+	 /* emit the drop signal so the widget can react */
+	 etk_widget_drag_drop(_etk_dnd_widget);
+	 _etk_dnd_widget = NULL;	 
+	 
          ecore_x_dnd_send_finished();
          break;
 	

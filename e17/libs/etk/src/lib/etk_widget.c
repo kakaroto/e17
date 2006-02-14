@@ -56,6 +56,7 @@ enum _Etk_Widget_Signal_Id
    ETK_WIDGET_UNFOCUS_SIGNAL,
    ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL,
    ETK_WIDGET_DRAG_DROP_SIGNAL,
+   ETK_WIDGET_DRAG_ENTER_SIGNAL,     
    ETK_WIDGET_DRAG_MOTION_SIGNAL,
    ETK_WIDGET_DRAG_LEAVE_SIGNAL,
    ETK_WIDGET_SELECTION_RECEIVED_SIGNAL,
@@ -93,6 +94,7 @@ static void _etk_widget_unfocus_handler(Etk_Widget *widget);
 
 static void _etk_widget_drag_drop_handler(Etk_Widget *widget);
 static void _etk_widget_drag_motion_handler(Etk_Widget *widget);
+static void _etk_widget_drag_enter_handler(Etk_Widget *widget);
 static void _etk_widget_drag_leave_handler(Etk_Widget *widget);
 
 static void _etk_widget_mouse_in_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
@@ -139,7 +141,7 @@ static Etk_Signal *_etk_widget_signals[ETK_WIDGET_NUM_SIGNALS];
 static Etk_Bool _etk_widget_propagate_event = ETK_TRUE;
 static Etk_Bool _etk_widget_intercept_show_hide = ETK_TRUE;
 static Evas_Smart *_etk_widget_event_object_smart = NULL;
-static Evas_List *_etk_widget_dnd_widgets;
+static Evas_List *_etk_widget_dnd_dest_widgets;
 
 /**************************
  *
@@ -180,6 +182,7 @@ Etk_Type *etk_widget_type_get()
       _etk_widget_signals[ETK_WIDGET_UNFOCUS_SIGNAL] =       etk_signal_new("unfocus",       widget_type, ETK_MEMBER_OFFSET(Etk_Widget, unfocus), etk_marshaller_VOID__VOID,    NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_DRAG_DROP_SIGNAL] =     etk_signal_new("drag_drop",     widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_drop),   etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_DRAG_MOTION_SIGNAL] =   etk_signal_new("drag_motion",   widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_motion), etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_widget_signals[ETK_WIDGET_DRAG_ENTER_SIGNAL] =    etk_signal_new("drag_enter",    widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_enter),  etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_DRAG_LEAVE_SIGNAL] =    etk_signal_new("drag_leave",    widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_leave),  etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_SELECTION_RECEIVED_SIGNAL] = etk_signal_new("selection_received", widget_type, -1,                           etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_CLIPBOARD_RECEIVED_SIGNAL] = etk_signal_new("clipboard_received", widget_type, -1,                           etk_marshaller_VOID__POINTER, NULL, NULL);
@@ -1267,11 +1270,11 @@ Evas_Object *etk_widget_clip_get(Etk_Widget *widget)
 }
 
 /**
- * @brief Sets whether the widget is dnd aware or not
+ * @brief Sets whether the widget is dnd destination
  * @param widget a widget
- * @param on ETK_TRUE to enable dnd, ETK_FALSE to disable it
+ * @param on ETK_TRUE to enable this widget as a dnd destination, ETK_FALSE to disable it
  */
-void etk_widget_dnd_aware_set(Etk_Widget *widget, Etk_Bool on)
+void etk_widget_dnd_dest_set(Etk_Widget *widget, Etk_Bool on)
 {
    if (!widget)
       return;
@@ -1279,25 +1282,76 @@ void etk_widget_dnd_aware_set(Etk_Widget *widget, Etk_Bool on)
    if (on)
    {
       widget->accepts_dnd = ETK_TRUE;
-      _etk_widget_dnd_widgets = evas_list_append(_etk_widget_dnd_widgets, widget);
+      _etk_widget_dnd_dest_widgets = evas_list_append(_etk_widget_dnd_dest_widgets, widget);
    }
    else
    {
       widget->accepts_dnd = ETK_FALSE;
-      _etk_widget_dnd_widgets = evas_list_remove(_etk_widget_dnd_widgets, widget);
+      _etk_widget_dnd_dest_widgets = evas_list_remove(_etk_widget_dnd_dest_widgets, widget);
    }
 }
 
 /**
- * @brief Checks whether the widget is dnd aware
+ * @brief Checks whether the widget is a dnd destination
  * @param widget a widget
- * @return Returns ETK_TRUE if the widget is dnd aware, ETK_FALSE otherwise
+ * @return Returns ETK_TRUE if the widget is a dnd destination, ETK_FALSE otherwise
  */
-Etk_Bool etk_widget_dnd_aware_get(Etk_Widget *widget)
+Etk_Bool etk_widget_dnd_dest_get(Etk_Widget *widget)
 {
    if (!widget)
       return ETK_FALSE;
    return widget->accepts_dnd;
+}
+
+/**
+ * @brief Sets the possible types for dnd
+ * @param widget a widget
+ * @param types list of acceptable types
+ * @param num number of types
+ */
+void etk_widget_dnd_types_set(Etk_Widget *widget, char **types, int num)
+{
+   int i;
+   
+   if (!widget)
+      return;
+   
+   /* free old data */
+   if(num <= 0 || types == NULL || 
+     (widget->dnd_types_num > 0 && widget->dnd_types != NULL))
+   {
+      
+      for(i = 0; i < widget->dnd_types_num; i++)
+	if(widget->dnd_types[i]) free(widget->dnd_types[i]);
+      
+      if(widget->dnd_types) free(widget->dnd_types);
+      
+      widget->dnd_types = NULL;
+      widget->dnd_types_num = 0;
+      return;
+   }
+   
+   widget->dnd_types = calloc(num, sizeof(char*));
+   for(i = 0; i < num; i++)
+     widget->dnd_types[i] = strdup(types[i]);
+   
+   widget->dnd_types_num = num;
+}
+
+/**
+ * @brief Gets the possible types for dnd
+ * @param widget a widget
+ * @param num number of types that the widget has
+ * @return returns the dnd types this widget supports
+ */
+const char **etk_widget_dnd_types_get(Etk_Widget *widget, int *num)
+{
+   if (!widget)
+      return ETK_FALSE;
+   
+   if(num)
+     *num = widget->dnd_types_num;
+   return widget->dnd_types;
 }
 
 /**
@@ -1320,12 +1374,12 @@ const char **etk_widget_dnd_files_get(Etk_Widget *widget, int *num_files)
 }
 
 /**
- * @brief Gets the list of the dnd-aware widgets
- * @return Returns the list of the dnd-aware widgets
+ * @brief Gets the list of the widgets that are dnd destinations
+ * @return Returns the list of the dnd destination widgets
  */
-Evas_List *etk_widget_dnd_aware_widgets_get()
+Evas_List *etk_widget_dnd_dest_widgets_get()
 {
-   return _etk_widget_dnd_widgets;
+   return _etk_widget_dnd_dest_widgets;
 }
 
 /**
@@ -1351,7 +1405,19 @@ void etk_widget_drag_motion(Etk_Widget *widget)
 }
 
 /**
- * @brief Sends the "drag_motion" signal
+ * @brief Sends the "drag_enter" signal
+ * @param widget a widget
+ */
+void etk_widget_drag_enter(Etk_Widget *widget)
+{
+   if (!widget)
+      return;
+
+   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_DRAG_ENTER_SIGNAL], ETK_OBJECT(widget), NULL);
+}
+
+/**
+ * @brief Sends the "drag_leave" signal
  * @param widget a widget
  */
 void etk_widget_drag_leave(Etk_Widget *widget)
@@ -1419,6 +1485,7 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->unfocus = _etk_widget_unfocus_handler;
    widget->drag_drop = _etk_widget_drag_drop_handler;
    widget->drag_motion = _etk_widget_drag_motion_handler;
+   widget->drag_enter = _etk_widget_drag_enter_handler;   
    widget->drag_leave = _etk_widget_drag_leave_handler; 
 
    widget->left_inset = 0;
@@ -1455,7 +1522,9 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->accepts_dnd = ETK_FALSE;
    widget->dnd_files = NULL;
    widget->dnd_files_num = 0;
-
+   widget->dnd_types = NULL;
+   widget->dnd_types_num = 0;
+   
    etk_signal_connect_full(_etk_widget_signals[ETK_WIDGET_MOUSE_IN_SIGNAL], ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_mouse_in_cb), NULL, ETK_FALSE, ETK_FALSE);
    etk_signal_connect_full(_etk_widget_signals[ETK_WIDGET_MOUSE_OUT_SIGNAL], ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_mouse_out_cb), NULL, ETK_FALSE, ETK_FALSE);
    etk_signal_connect_full(_etk_widget_signals[ETK_WIDGET_MOUSE_DOWN_SIGNAL], ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_mouse_down_cb), NULL, ETK_FALSE, ETK_FALSE);
@@ -1488,7 +1557,7 @@ static void _etk_widget_destructor(Etk_Widget *widget)
       free(widget->dnd_files[i]);
    free(widget->dnd_files);
    if (widget->accepts_dnd)
-      _etk_widget_dnd_widgets = evas_list_remove(_etk_widget_dnd_widgets, widget);
+      _etk_widget_dnd_dest_widgets = evas_list_remove(_etk_widget_dnd_dest_widgets, widget);
    
    free(widget->theme_file);
    free(widget->theme_group);
@@ -1664,6 +1733,15 @@ static void _etk_widget_drag_motion_handler(Etk_Widget *widget)
    if (!widget)
       return;
    etk_widget_theme_object_signal_emit(widget, "drag_motion");
+}
+
+/* Default handler for the "drag_enter" signal */
+static void _etk_widget_drag_enter_handler(Etk_Widget *widget)
+{
+   if (!widget)
+      return;
+
+   etk_widget_theme_object_signal_emit(widget, "drag_enter");
 }
 
 /* Default handler for the "drag_leave" signal */

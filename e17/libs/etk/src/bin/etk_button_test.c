@@ -1,8 +1,6 @@
 #include "etk_test.h"
 #include "config.h"
 
-static void _etk_test_button_drag_drop_cb(Etk_Object *object, void *data);
-
 /* Creates the window for the button test */
 void etk_test_button_window_create(void *data)
 {
@@ -52,28 +50,10 @@ void etk_test_button_window_create(void *data)
    etk_box_pack_start(ETK_BOX(vbox), button_radio, ETK_FALSE, ETK_FALSE, 0);
    
    button_toggle = etk_toggle_button_new_with_label(_("Toggle button"));
-   etk_widget_dnd_aware_set(button_toggle, ETK_TRUE);
-   etk_signal_connect("drag_drop", ETK_OBJECT(button_toggle), ETK_CALLBACK(_etk_test_button_drag_drop_cb), button_toggle);
    etk_box_pack_start(ETK_BOX(vbox), button_toggle, ETK_FALSE, ETK_FALSE, 0);
    
    button_toggle = etk_toggle_button_new();
    etk_box_pack_start(ETK_BOX(vbox), button_toggle, ETK_FALSE, ETK_FALSE, 0);
 
    etk_widget_show_all(win);
-}
-
-/* Called when a file is dropped on the button */
-static void _etk_test_button_drag_drop_cb(Etk_Object *object, void *data)
-{
-   int num_files, i;
-   const char **files;
-   
-   if (!object)
-      return;
-   
-   files = etk_widget_dnd_files_get(ETK_WIDGET(object), &num_files);
-   printf("Our test widget got a drop with %d files\n", num_files);
-   
-   for (i = 0; i < num_files; i++)
-      printf("Widget got the file: %s\n", files[i]);
 }
