@@ -53,6 +53,7 @@ struct _Etk_Tree_Row
    void **cells_data;
    void *data;
    void (*data_free_cb)(void *data);
+   void *row_objects;
    
    int num_visible_children;
    int num_parent_children;
