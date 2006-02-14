@@ -3530,6 +3530,25 @@ ewl_text_selection_select_to(Ewl_Text_Trigger *s, unsigned int idx)
 		ewl_text_trigger_length_set(s, idx - base);
 	}
 
+	/* XXX this needs to be SOFTWARE_X11 and GL_X11 */
+#ifdef ENABLE_EWL_SOFTWARE_X11
+	if (ewl_config.evas.engine & EWL_ENGINE_X11)
+	{
+		Ewl_Embed *emb;
+		Ewl_Window *win;
+		char *txt;
+
+		emb = ewl_embed_widget_find(EWL_WIDGET(s->text_parent));
+		win = ewl_window_window_find(emb->evas_window);
+
+		/* set the clipboard text */
+		txt = ewl_text_selection_text_get(EWL_TEXT(s->text_parent));
+		if (txt) ecore_x_selection_primary_set(
+						(Ecore_X_Window)win->window, 
+						txt, strlen(txt) + 1);
+	}
+#endif
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
