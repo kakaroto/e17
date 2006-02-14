@@ -11,21 +11,46 @@
 #define ETK_SELECTION_TARGET_UTF8_STRING "UTF8_STRING"
 #define ETK_SELECTION_TARGET_FILENAME "FILENAME"
 
-struct _Etk_Event_Selection_Request
-{   
-   void *data;
-   enum
-   {
-      ETK_SELECTION_CONTENT_NONE,
-      ETK_SELECTION_CONTENT_TEXT,
-      ETK_SELECTION_CONTENT_FILES,
-      ETK_SELECTION_CONTENT_TARGETS,
-      ETK_SELECTION_CONTENT_CUSTOM
-   } content;   
+enum _Etk_Selection_Content
+{
+   ETK_SELECTION_CONTENT_NONE,
+   ETK_SELECTION_CONTENT_TEXT,
+   ETK_SELECTION_CONTENT_FILES,
+   ETK_SELECTION_CONTENT_TARGETS,
+   ETK_SELECTION_CONTENT_CUSTOM
 };
+
+struct _Etk_Event_Selection_Request
+{    
+   void *data;
+   Etk_Selection_Content content;
+};
+
+struct _Etk_Selection_Data
+{
+   unsigned char    *data;
+   int               length;
+   
+   int             (*free)(void *data);
+};
+
+struct _Etk_Selection_Data_Files
+{
+   Etk_Selection_Data data;
+   char     **files;
+   int        num_files;
+};
+
+struct _Etk_Selection_Data_Text
+{
+   Etk_Selection_Data data;
+   char     *text;
+};
+
 
 struct _Etk_Selection_Data_Targets
 {
+   Etk_Selection_Data data;   
    char **targets;
    int num_targets;
 };

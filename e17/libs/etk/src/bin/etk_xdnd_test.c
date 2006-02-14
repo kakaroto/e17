@@ -1,11 +1,12 @@
 #include "etk_test.h"
 #include <string.h>
+#include <stdlib.h>
 #include "config.h"
 
-static void _etk_test_xdnd_drag_drop_cb(Etk_Object *object, void *data);
+static void _etk_test_xdnd_drag_drop_cb(Etk_Object *object, void *event, void *data);
 static void _etk_test_xdnd_drag_motion_cb(Etk_Object *object, void *data);
 static void _etk_test_xdnd_drag_leave_cb(Etk_Object *object, void *data);
-static void _etk_test_xdnd_drag_drop_cb2(Etk_Object *object, void *data);
+static void _etk_test_xdnd_drag_drop_cb2(Etk_Object *object, void *event, void *data);
 static void _etk_test_xdnd_clipboard_text_request_cb(Etk_Object *object, void *event, void *data);
 static void _etk_test_xdnd_button_paste_cb(Etk_Object *object, void *data);
 static void _etk_test_xdnd_button_copy_cb(Etk_Object *object, void *data);
@@ -95,18 +96,26 @@ void etk_test_xdnd_window_create(void *data)
 }
 
 /* Called when a file is dropped on the button */
-static void _etk_test_xdnd_drag_drop_cb(Etk_Object *object, void *data)
+static void _etk_test_xdnd_drag_drop_cb(Etk_Object *object, void *event, void *data)
 {
-   int num_files, i;
-   const char **files;
+   Etk_Event_Selection_Request *ev;   
+   Etk_Selection_Data_Files *files;
    
-   files = etk_widget_dnd_files_get(ETK_WIDGET(object), &num_files);
-   printf("Our test widget got a drop with %d files\n", num_files);
+   int i;
    
-   for (i = 0; i < num_files; i++)
+   ev = event;
+
+   if(ev->content != ETK_SELECTION_CONTENT_FILES)
+     return;
+
+   files = ev->data;
+   
+   printf("Our test widget got a drop with %d files\n", files->num_files);
+   
+   for (i = 0; i < files->num_files; i++)
    {
-      printf("Widget got the file: %s\n", files[i]);
-      etk_label_set(ETK_LABEL(data), files[i]);
+      printf("Widget got the file: %s\n", files->files[i]);
+      etk_label_set(ETK_LABEL(data), files->files[i]);
    }
 }
 
@@ -123,24 +132,27 @@ static void _etk_test_xdnd_drag_leave_cb(Etk_Object *object, void *data)
 }
 
 /* Called when a file is dropped on the second button */
-static void _etk_test_xdnd_drag_drop_cb2(Etk_Object *object, void *data)
+static void _etk_test_xdnd_drag_drop_cb2(Etk_Object *object, void *event, void *data)
 {
-   int num_files, i;
-   const char **files;
+   Etk_Event_Selection_Request *ev;
+   Etk_Selection_Data_Files *files;
+   int i;
+
+   ev = event;  
    
-   files = etk_widget_dnd_files_get(ETK_WIDGET(object), &num_files);
-   
-   if(files == NULL || num_files < 1)
+   if(ev->content != ETK_SELECTION_CONTENT_FILES)
      return;
    
-   printf("Our test widget got a drop with %d files\n", num_files);
+   files = ev->data;
    
-   for (i = 0; i < num_files; i++)
+   printf("Our test widget got a drop with %d files\n", files->num_files);
+   
+   for (i = 0; i < files->num_files; i++)
    {
       char *image;
       
-      printf("Widget got the file: %s\n", files[i]);
-      if ((image = strstr(files[i], "file://")) != NULL)
+      printf("Widget got the file: %s\n", files->files[i]);
+      if ((image = strstr(files->files[i], "file://")) != NULL)
          etk_image_set_from_file(ETK_IMAGE(data), image + strlen("file://"));
    }
 }
@@ -149,9 +161,11 @@ static void _etk_test_xdnd_drag_drop_cb2(Etk_Object *object, void *data)
 static void _etk_test_xdnd_clipboard_text_request_cb(Etk_Object *object, void *event, void *data)
 {
    Etk_Event_Selection_Request *ev;
+   Etk_Selection_Data_Text     *ev_text;
    
    ev = event;
-   etk_label_set(ETK_LABEL(object), (char *)ev->data);
+   ev_text = ev->data;
+   etk_label_set(ETK_LABEL(object), ev_text->text);
 }
 
 /* Called when the "paste" button is clicked */
@@ -174,9 +188,11 @@ static void _etk_test_xdnd_button_copy_cb(Etk_Object *object, void *data)
 static void _etk_test_xdnd_selection_text_request_cb(Etk_Object *object, void *event, void *data)
 {
    Etk_Event_Selection_Request *ev;
+   Etk_Selection_Data_Text     *ev_text;
    
    ev = event;
-   etk_label_set(ETK_LABEL(object), (char *)ev->data);
+   ev_text = ev->data;   
+   etk_label_set(ETK_LABEL(object), ev_text->text);
 }
 
 /* Called when the "get selection" button is clicked */

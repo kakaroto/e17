@@ -192,8 +192,6 @@ struct _Etk_Widget
    unsigned char need_theme_min_size_recalc : 1;
    unsigned char accepts_dnd : 1;
    
-   char **dnd_files;
-   int    dnd_files_num;
    char **dnd_types;
    int    dnd_types_num;
 };
@@ -266,12 +264,14 @@ void etk_widget_clip_set(Etk_Widget *widget, Evas_Object *clip);
 void etk_widget_clip_unset(Etk_Widget *widget);
 Evas_Object *etk_widget_clip_get(Etk_Widget *widget);
 
-void etk_widget_dnd_dest_set(Etk_Widget *widget, Etk_Bool on);
-Etk_Bool etk_widget_dnd_dest_get(Etk_Widget *widget);
-Evas_List *etk_widget_dnd_dest_widgets_get();
+void         etk_widget_dnd_dest_set(Etk_Widget *widget, Etk_Bool on);
+Etk_Bool     etk_widget_dnd_dest_get(Etk_Widget *widget);
+Evas_List   *etk_widget_dnd_dest_widgets_get();
 const char **etk_widget_dnd_files_get(Etk_Widget *e, int *num_files);
-
-void etk_widget_drag_drop(Etk_Widget *widget);
+void         etk_widget_dnd_types_set(Etk_Widget *widget, char **types, int num);
+const char **etk_widget_dnd_types_get(Etk_Widget *widget, int *num);
+    
+void etk_widget_drag_drop(Etk_Widget *widget, Etk_Event_Selection_Request *event);
 void etk_widget_drag_motion(Etk_Widget *widget);
 void etk_widget_drag_enter(Etk_Widget *widget);
 void etk_widget_drag_leave(Etk_Widget *widget);

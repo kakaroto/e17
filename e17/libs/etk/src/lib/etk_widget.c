@@ -180,7 +180,7 @@ Etk_Type *etk_widget_type_get()
       _etk_widget_signals[ETK_WIDGET_LEAVE_SIGNAL] =         etk_signal_new("leave",         widget_type, ETK_MEMBER_OFFSET(Etk_Widget, leave),   etk_marshaller_VOID__VOID,    NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_FOCUS_SIGNAL] =         etk_signal_new("focus",         widget_type, ETK_MEMBER_OFFSET(Etk_Widget, focus),   etk_marshaller_VOID__VOID,    NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_UNFOCUS_SIGNAL] =       etk_signal_new("unfocus",       widget_type, ETK_MEMBER_OFFSET(Etk_Widget, unfocus), etk_marshaller_VOID__VOID,    NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_DRAG_DROP_SIGNAL] =     etk_signal_new("drag_drop",     widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_drop),   etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_widget_signals[ETK_WIDGET_DRAG_DROP_SIGNAL] =     etk_signal_new("drag_drop",     widget_type, -1,                                     etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_DRAG_MOTION_SIGNAL] =   etk_signal_new("drag_motion",   widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_motion), etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_DRAG_ENTER_SIGNAL] =    etk_signal_new("drag_enter",    widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_enter),  etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_DRAG_LEAVE_SIGNAL] =    etk_signal_new("drag_leave",    widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_leave),  etk_marshaller_VOID__VOID, NULL, NULL);
@@ -1355,25 +1355,6 @@ const char **etk_widget_dnd_types_get(Etk_Widget *widget, int *num)
 }
 
 /**
- * @brief Gets the list of the files dropped on the widget
- * @param widget a widget
- * @param on ETK_TRUE to enable dnd, ETK_FALSE to disable it
- */
-const char **etk_widget_dnd_files_get(Etk_Widget *widget, int *num_files)
-{
-   if (!widget || !widget->accepts_dnd || !widget->dnd_files)
-   {
-      if (num_files)
-         num_files = 0;
-      return NULL;
-   }
-   
-   if (num_files)
-      *num_files = widget->dnd_files_num;
-   return (const char **)widget->dnd_files;
-}
-
-/**
  * @brief Gets the list of the widgets that are dnd destinations
  * @return Returns the list of the dnd destination widgets
  */
@@ -1386,11 +1367,13 @@ Evas_List *etk_widget_dnd_dest_widgets_get()
  * @brief Sends the "drag_drop" signal
  * @param widget a widget
  */
-void etk_widget_drag_drop(Etk_Widget *widget)
+void etk_widget_drag_drop(Etk_Widget *widget, Etk_Event_Selection_Request *event)
 {
    if (!widget)
       return;
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_DRAG_DROP_SIGNAL], ETK_OBJECT(widget), NULL);
+   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_DRAG_DROP_SIGNAL], ETK_OBJECT(widget), NULL, event);
+   /* FIXME: why isnt this being emitted automatically?!? */
+   etk_widget_theme_object_signal_emit(widget, "drag_drop");   
 }
 
 /**
@@ -1520,8 +1503,6 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->need_theme_min_size_recalc = ETK_FALSE;
    widget->swallowed = ETK_FALSE;
    widget->accepts_dnd = ETK_FALSE;
-   widget->dnd_files = NULL;
-   widget->dnd_files_num = 0;
    widget->dnd_types = NULL;
    widget->dnd_types_num = 0;
    
@@ -1553,9 +1534,6 @@ static void _etk_widget_destructor(Etk_Widget *widget)
       etk_widget_parent_set(widget, NULL);
    }
    
-   for (i = 0; i < widget->dnd_files_num; i++)
-      free(widget->dnd_files[i]);
-   free(widget->dnd_files);
    if (widget->accepts_dnd)
       _etk_widget_dnd_dest_widgets = evas_list_remove(_etk_widget_dnd_dest_widgets, widget);
    
@@ -1724,6 +1702,7 @@ static void _etk_widget_drag_drop_handler(Etk_Widget *widget)
 {
    if (!widget)
       return;
+   
    etk_widget_theme_object_signal_emit(widget, "drag_drop");
 }
 

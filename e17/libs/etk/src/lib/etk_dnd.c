@@ -138,9 +138,9 @@ static int _etk_xdnd_enter_handler(void *data, int type, void *event)
    
    ev = event;
    
-   printf("enter window!\n");   
-   for (i = 0; i < ev->num_types; i++)
-     printf("type: %s\n", ev->types[i]);   
+   //printf("enter window!\n");   
+   //for (i = 0; i < ev->num_types; i++)
+   //  printf("type: %s\n", ev->types[i]);   
    
    if(_etk_dnd_types != NULL && _etk_dnd_types_num >= 0)
    {
@@ -320,7 +320,7 @@ static int _etk_xdnd_selection_handler(void *data, int type, void *event)
    Ecore_X_Selection_Data_Files *files;
    Ecore_X_Selection_Data_Text *text;
    Ecore_X_Selection_Data_Targets *targets;
-   int i;
+   //int i;
 
    //printf("selection\n"); 
    ev = event;
@@ -340,10 +340,21 @@ static int _etk_xdnd_selection_handler(void *data, int type, void *event)
 	 {	    
 	    /* emit signal to widget that the clipboard text is sent to it */
 	    Etk_Event_Selection_Request event;
+	    Etk_Selection_Data_Text     event_text;
 	    
 	    text = ev->data;
-	    event.data = text->text;
-	    event.content = ETK_SELECTION_CONTENT_TEXT;
+	   
+	    if (!_etk_selection_widget)
+	      break;	    
+	    
+	    event_text.text = text->text;
+	    event_text.data.data = text->data.data;
+	    event_text.data.length = text->data.length;
+	    event_text.data.free = text->data.free;
+	    
+	    event.data = &event_text;
+	    event.content = ETK_SELECTION_CONTENT_TEXT;	    	    
+	    
 	    etk_widget_selection_received(_etk_selection_widget, &event);
 	 }
 	 break;
@@ -355,27 +366,61 @@ static int _etk_xdnd_selection_handler(void *data, int type, void *event)
       
       case ECORE_X_SELECTION_XDND:
         if(!strcmp(ev->target, "text/uri-list"))
-	 {      
+	 {
+	    Etk_Event_Selection_Request event;	    
+	    Etk_Selection_Data_Files    event_files;
+	    
 	    files = ev->data;
 	
 	    if (!_etk_dnd_widget || files->num_files < 1)
-	      break;	
+	      break;		    
 	    
-	    /* free old data, should this be done here? */
-	    for (i = 0; i < _etk_dnd_widget->dnd_files_num; i++)
-	      free(_etk_dnd_widget->dnd_files[i]);
-	    free(_etk_dnd_widget->dnd_files);	    
+	    event_files.files = files->files;
+	    event_files.num_files = files->num_files;
+	    event_files.data.data = files->data.data;
+	    event_files.data.length = files->data.length;
+	    event_files.data.free = files->data.free;
 	    
-	    _etk_dnd_widget->dnd_files = calloc(files->num_files, sizeof(char*));
+	    event.data = &event_files;
+	    event.content = ETK_SELECTION_CONTENT_FILES;	   
 	    
-	    /* Fill in the drop data into the widget */
-	    _etk_dnd_widget->dnd_files_num = files->num_files;
-	    for (i = 0; i < files->num_files; i++)	
-	      _etk_dnd_widget->dnd_files[i] = strdup(files->files[i]);
+	    /* emit the drop signal so the widget can react */
+	    etk_widget_drag_drop(_etk_dnd_widget, &event);
 	 }
+         else if(!strcmp(ev->target, "text/plain") || 
+		 !strcmp(ev->target, ECORE_X_SELECTION_TARGET_UTF8_STRING))
+	 {
+	    Etk_Event_Selection_Request event;
+	    Etk_Selection_Data_Text     event_text;
 	    
-	 /* emit the drop signal so the widget can react */
-	 etk_widget_drag_drop(_etk_dnd_widget);
+	    text = ev->data;
+	   
+	    if (!_etk_dnd_widget)
+	      break;	    
+	    
+	    event_text.text = text->text;
+	    event_text.data.data = text->data.data;
+	    event_text.data.length = text->data.length;
+	    event_text.data.free = text->data.free;
+	    
+	    event.data = &event_text;
+	    event.content = ETK_SELECTION_CONTENT_TEXT;	    
+	    
+	    /* emit the drop signal so the widget can react */
+	    etk_widget_drag_drop(_etk_dnd_widget, &event);
+	 }
+         else
+	 {
+	    /* couldnt find any data type that etk supports, send raw data */
+	    Etk_Event_Selection_Request event;
+	    
+	    event.data = ev->data;
+	    event.content = ETK_SELECTION_CONTENT_CUSTOM;
+	    
+	    /* emit the drop signal so the widget can react */
+	    etk_widget_drag_drop(_etk_dnd_widget, &event);
+	 }
+      
 	 _etk_dnd_widget = NULL;	 
 	 
          ecore_x_dnd_send_finished();
@@ -406,10 +451,21 @@ static int _etk_xdnd_selection_handler(void *data, int type, void *event)
 	 {
 	    /* emit signal to widget that the clipboard text is sent to it */
 	    Etk_Event_Selection_Request event;
+	    Etk_Selection_Data_Text     event_text;
 	    
 	    text = ev->data;
-	    event.data = text->text;
-	    event.content = ETK_SELECTION_CONTENT_TEXT;
+	   
+	    if (!_etk_selection_widget)
+	      break;	    
+	    
+	    event_text.text = text->text;
+	    event_text.data.data = text->data.data;
+	    event_text.data.length = text->data.length;
+	    event_text.data.free = text->data.free;
+	    
+	    event.data = &event_text;
+	    event.content = ETK_SELECTION_CONTENT_TEXT;	    
+	    
 	    etk_widget_clipboard_received(_etk_selection_widget, &event);
 	 }
 	 break;
