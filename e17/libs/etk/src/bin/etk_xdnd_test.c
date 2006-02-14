@@ -7,6 +7,7 @@ static void _etk_test_xdnd_drag_drop_cb(Etk_Object *object, void *event, void *d
 static void _etk_test_xdnd_drag_motion_cb(Etk_Object *object, void *data);
 static void _etk_test_xdnd_drag_leave_cb(Etk_Object *object, void *data);
 static void _etk_test_xdnd_drag_drop_cb2(Etk_Object *object, void *event, void *data);
+static void _etk_test_xdnd_drag_drop_cb3(Etk_Object *object, void *event, void *data);
 static void _etk_test_xdnd_clipboard_text_request_cb(Etk_Object *object, void *event, void *data);
 static void _etk_test_xdnd_button_paste_cb(Etk_Object *object, void *data);
 static void _etk_test_xdnd_button_copy_cb(Etk_Object *object, void *data);
@@ -19,10 +20,13 @@ void etk_test_xdnd_window_create(void *data)
 {
    static Etk_Widget  *win = NULL;
    Etk_Widget  *vbox;
+   Etk_Widget  *vbox2;
    Etk_Widget  *button;
    Etk_Widget  *label;
    Etk_Widget  *image;
    Etk_Widget  *entry;
+   Etk_Widget  *frame;
+   Etk_Widget  *sep;
    char      **dnd_types;
    int         dnd_types_num;  
    
@@ -32,65 +36,107 @@ void etk_test_xdnd_window_create(void *data)
       return;
    }
    
+   /* create window */
    win = etk_window_new();
-   etk_window_title_set(ETK_WINDOW(win), _("Etk X Drag / Drop Test"));
+   etk_window_title_set(ETK_WINDOW(win), _("Etk DnD / Selections Test"));
    etk_container_border_width_set(ETK_CONTAINER(win), 5);
    etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    
+   /* create main box */
    vbox = etk_vbox_new(ETK_FALSE, 3);
    etk_container_add(ETK_CONTAINER(win), vbox);
-
-   label = etk_label_new(_("No File Set"));   
+   
+   /* frame for DnD tests */
+   frame = etk_frame_new("Drag and Drop");
+   etk_container_add(ETK_CONTAINER(vbox), frame);   
+   vbox2 = etk_vbox_new(ETK_FALSE, 3);
+   etk_container_add(ETK_CONTAINER(frame), vbox2);
    
    dnd_types_num = 1;
    dnd_types = calloc(dnd_types_num, sizeof(char*));
    dnd_types[0] = strdup("text/uri-list");
    
-   button = etk_button_new_with_label(_("Drag Any File Onto Me"));
+   label = etk_label_new(_("No File Set"));         
+   button = etk_button_new_with_label(_("Drop a file here (text/uri-list)"));
    etk_widget_dnd_dest_set(button, ETK_TRUE);
    etk_widget_dnd_types_set(button, dnd_types, dnd_types_num);
    etk_signal_connect("drag_drop", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_xdnd_drag_drop_cb), label);
    etk_signal_connect("drag_motion", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_xdnd_drag_motion_cb), NULL);
    etk_signal_connect("drag_leave", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_xdnd_drag_leave_cb), NULL);
-   etk_box_pack_start(ETK_BOX(vbox), button, ETK_FALSE, ETK_FALSE, 0);
-   
-   etk_box_pack_start(ETK_BOX(vbox), label, ETK_FALSE, ETK_FALSE, 0);   
+   etk_box_pack_start(ETK_BOX(vbox2), button, ETK_FALSE, ETK_FALSE, 0);   
+   etk_box_pack_start(ETK_BOX(vbox2), label, ETK_FALSE, ETK_FALSE, 0);
 
+   sep = etk_hseparator_new();
+   etk_box_pack_start(ETK_BOX(vbox2), sep, ETK_FALSE, ETK_FALSE, 0);
+   
    image = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/e_icon.png");
-
-   button = etk_button_new_with_label(_("Drag Any Image Onto Me"));
+   button = etk_button_new_with_label(_("Drop an image here"));
    etk_widget_dnd_dest_set(button, ETK_TRUE);
+   dnd_types_num = 1;
+   dnd_types = calloc(dnd_types_num, sizeof(char*));
+   dnd_types[0] = strdup("text/uri-list");
+   etk_widget_dnd_types_set(button, dnd_types, dnd_types_num);   
    etk_signal_connect("drag_drop", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_xdnd_drag_drop_cb2), image);
-   etk_box_pack_start(ETK_BOX(vbox), button, ETK_FALSE, ETK_FALSE, 0);  
-   etk_box_pack_start(ETK_BOX(vbox), image, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_pack_start(ETK_BOX(vbox2), button, ETK_FALSE, ETK_FALSE, 0);  
+   etk_box_pack_start(ETK_BOX(vbox2), image, ETK_FALSE, ETK_FALSE, 0);
 
-   label = etk_label_new("");
-   etk_signal_connect("clipboard_received", ETK_OBJECT(label), ETK_CALLBACK(_etk_test_xdnd_clipboard_text_request_cb), NULL);
+   sep = etk_hseparator_new();
+   etk_box_pack_start(ETK_BOX(vbox2), sep, ETK_FALSE, ETK_FALSE, 0);   
    
+   label = etk_label_new(_("Drop some text below"));
+   entry = etk_entry_new();   
+   dnd_types_num = 1;
+   dnd_types = calloc(dnd_types_num, sizeof(char*));
+   dnd_types[0] = strdup("text/plain");  
+   etk_widget_dnd_types_set(entry, dnd_types, dnd_types_num);
+   etk_widget_dnd_dest_set(entry, ETK_TRUE);   
+   etk_signal_connect("drag_drop", ETK_OBJECT(entry), ETK_CALLBACK(_etk_test_xdnd_drag_drop_cb3), NULL);
+   etk_box_pack_start(ETK_BOX(vbox2), label, ETK_FALSE, ETK_FALSE, 0);  
+   etk_box_pack_start(ETK_BOX(vbox2), entry, ETK_FALSE, ETK_FALSE, 0);   
+   
+   /* frame for clipboard tests */
+   frame = etk_frame_new("Clipboard");
+   etk_container_add(ETK_CONTAINER(vbox), frame);   
+   vbox2 = etk_vbox_new(ETK_FALSE, 0);
+   etk_container_add(ETK_CONTAINER(frame), vbox2);
+   
+   label = etk_label_new("");
+   etk_signal_connect("clipboard_received", ETK_OBJECT(label), ETK_CALLBACK(_etk_test_xdnd_clipboard_text_request_cb), NULL);   
    button = etk_button_new_with_label(_("Press me to paste text"));
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_xdnd_button_paste_cb), label);
-   etk_box_pack_start(ETK_BOX(vbox), button, ETK_FALSE, ETK_FALSE, 0);  
-   etk_box_pack_start(ETK_BOX(vbox), label, ETK_FALSE, ETK_FALSE, 0);   
+   etk_box_pack_start(ETK_BOX(vbox2), button, ETK_FALSE, ETK_FALSE, 0);  
+   etk_box_pack_start(ETK_BOX(vbox2), label, ETK_FALSE, ETK_FALSE, 0);   
+   
+   sep = etk_hseparator_new();
+   etk_box_pack_start(ETK_BOX(vbox2), sep, ETK_FALSE, ETK_FALSE, 0);   
    
    entry = etk_entry_new();
    button = etk_button_new_with_label(_("Click me to copy text below"));
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_xdnd_button_copy_cb), entry);
-   etk_box_pack_start(ETK_BOX(vbox), button, ETK_FALSE, ETK_FALSE, 0);   
-   etk_box_pack_start(ETK_BOX(vbox), entry, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_pack_start(ETK_BOX(vbox2), button, ETK_FALSE, ETK_FALSE, 0);   
+   etk_box_pack_start(ETK_BOX(vbox2), entry, ETK_FALSE, ETK_FALSE, 0);
+   
+   /* frame for selection test */
+   frame = etk_frame_new("Selections");
+   etk_container_add(ETK_CONTAINER(vbox), frame);
+   vbox2 = etk_vbox_new(ETK_FALSE, 0);
+   etk_container_add(ETK_CONTAINER(frame), vbox2);
    
    label = etk_label_new("");
-   etk_signal_connect("selection_received", ETK_OBJECT(label), ETK_CALLBACK(_etk_test_xdnd_selection_text_request_cb), NULL);
-   
+   etk_signal_connect("selection_received", ETK_OBJECT(label), ETK_CALLBACK(_etk_test_xdnd_selection_text_request_cb), NULL);   
    button = etk_button_new_with_label(_("Press me to get selection text"));
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_xdnd_button_selection_get_cb), label);
-   etk_box_pack_start(ETK_BOX(vbox), button, ETK_FALSE, ETK_FALSE, 0);  
-   etk_box_pack_start(ETK_BOX(vbox), label, ETK_FALSE, ETK_FALSE, 0);   
+   etk_box_pack_start(ETK_BOX(vbox2), button, ETK_FALSE, ETK_FALSE, 0);  
+   etk_box_pack_start(ETK_BOX(vbox2), label, ETK_FALSE, ETK_FALSE, 0);   
+   
+   sep = etk_hseparator_new();
+   etk_box_pack_start(ETK_BOX(vbox2), sep, ETK_FALSE, ETK_FALSE, 0);   
    
    entry = etk_entry_new();
    button = etk_button_new_with_label(_("Click me to set selection text"));
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_xdnd_button_selection_set_cb), entry);
-   etk_box_pack_start(ETK_BOX(vbox), button, ETK_FALSE, ETK_FALSE, 0);   
-   etk_box_pack_start(ETK_BOX(vbox), entry, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_pack_start(ETK_BOX(vbox2), button, ETK_FALSE, ETK_FALSE, 0);   
+   etk_box_pack_start(ETK_BOX(vbox2), entry, ETK_FALSE, ETK_FALSE, 0);
    
    etk_widget_show_all(win);
 }
@@ -155,6 +201,22 @@ static void _etk_test_xdnd_drag_drop_cb2(Etk_Object *object, void *event, void *
       if ((image = strstr(files->files[i], "file://")) != NULL)
          etk_image_set_from_file(ETK_IMAGE(data), image + strlen("file://"));
    }
+}
+
+/* Called when text is dropped on the entry */
+static void _etk_test_xdnd_drag_drop_cb3(Etk_Object *object, void *event, void *data)
+{
+   Etk_Event_Selection_Request *ev;
+   Etk_Selection_Data_Text *text;
+
+   ev = event;  
+   
+   if(ev->content != ETK_SELECTION_CONTENT_TEXT)
+     return;
+   
+   text = ev->data;
+   
+   etk_entry_text_set(ETK_ENTRY(object), text->text);
 }
 
 /* Called when a some text is pasted */
