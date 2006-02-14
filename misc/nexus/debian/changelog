@@ -1,3 +1,17 @@
+xfonts-nexus (0.0.2-10) unstable; urgency=low
+
+  * Yet another take at getting rid of xfont-nexus:
+    Create a transitional packagae built by this source.
+    That is a package which contains no files and depends on xfonts-nexus.
+    Then make xfonts-nexus provide and replace xfont-nexus,
+    but not conflict with it.
+    (closes: #341025)
+  * Update to standards version 3.6.2
+  * Add versioned dependancy on utils (>> 4.0.3) as per
+    policy manual 11.8.5
+
+ -- Simon Horman <horms@debian.org>  Tue, 14 Feb 2006 11:41:57 +0900
+
 xfonts-nexus (0.0.2-9) unstable; urgency=low
 
   * Add Replaces, Conflicts and Provides xfont-nexus as per
