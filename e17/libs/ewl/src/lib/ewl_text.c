@@ -2829,6 +2829,9 @@ ewl_text_trigger_init(Ewl_Text_Trigger *trigger, Ewl_Text_Trigger_Type type)
 
 	ewl_widget_focusable_set(EWL_WIDGET(trigger), FALSE);
 
+	/* XXX should these be internal? */
+	ewl_widget_internal_set(EWL_WIDGET(trigger), TRUE);
+
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
@@ -3487,6 +3490,7 @@ ewl_text_trigger_area_init(Ewl_Text_Trigger_Area *area,
 		ewl_widget_color_set(EWL_WIDGET(area), 0, 0, 0, 0);
 
 	ewl_widget_focusable_set(EWL_WIDGET(area), FALSE);
+	ewl_widget_internal_set(EWL_WIDGET(area), TRUE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
