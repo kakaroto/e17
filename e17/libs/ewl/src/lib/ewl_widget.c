@@ -1123,7 +1123,7 @@ ewl_widget_tab_order_append(Ewl_Widget *w)
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	emb = ewl_embed_widget_find(w);
-	ewl_embed_tab_order_append(emb, w);
+	if (emb) ewl_embed_tab_order_append(emb, w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1146,7 +1146,7 @@ ewl_widget_tab_order_prepend(Ewl_Widget *w)
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	emb = ewl_embed_widget_find(w);
-	ewl_embed_tab_order_prepend(emb, w);
+	if (emb) ewl_embed_tab_order_prepend(emb, w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1169,7 +1169,7 @@ ewl_widget_tab_order_insert(Ewl_Widget *w, unsigned int idx)
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	emb = ewl_embed_widget_find(w);
-	ewl_embed_tab_order_insert(emb, w, idx);
+	if (emb) ewl_embed_tab_order_insert(emb, w, idx);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1192,7 +1192,7 @@ ewl_widget_tab_order_insert_before(Ewl_Widget *w, Ewl_Widget *before)
 	DCHECK_TYPE("before", before, EWL_WIDGET_TYPE);
 
 	emb = ewl_embed_widget_find(w);
-	ewl_embed_tab_order_insert_before(emb, w, before);
+	if (emb) ewl_embed_tab_order_insert_before(emb, w, before);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1216,7 +1216,7 @@ ewl_widget_tab_order_insert_after(Ewl_Widget *w, Ewl_Widget *after)
 	DCHECK_TYPE("after", after, EWL_WIDGET_TYPE);
 
 	emb = ewl_embed_widget_find(w);
-	ewl_embed_tab_order_insert_after(emb, w, after);
+	if (emb) ewl_embed_tab_order_insert_after(emb, w, after);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1235,7 +1235,7 @@ ewl_widget_tab_order_remove(Ewl_Widget *w)
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	emb = ewl_embed_widget_find(w);
-	ewl_embed_tab_order_remove(emb, w);
+	if (emb) ewl_embed_tab_order_remove(emb, w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
