@@ -177,6 +177,7 @@ struct _Etk_Widget
    void (*drag_motion)(Etk_Widget *widget);
    void (*drag_enter)(Etk_Widget *widget);   
    void (*drag_leave)(Etk_Widget *widget);
+   void (*drag_end)(Etk_Widget *widget);   
 
    unsigned char realized : 1;
    unsigned char swallowed : 1;
@@ -275,6 +276,7 @@ void etk_widget_drag_drop(Etk_Widget *widget, Etk_Event_Selection_Request *event
 void etk_widget_drag_motion(Etk_Widget *widget);
 void etk_widget_drag_enter(Etk_Widget *widget);
 void etk_widget_drag_leave(Etk_Widget *widget);
+void etk_widget_drag_end(Etk_Widget *widget);
 
 void etk_widget_selection_received(Etk_Widget *widget, Etk_Event_Selection_Request *event);
 void etk_widget_clipboard_received(Etk_Widget *widget, Etk_Event_Selection_Request *event);

@@ -58,7 +58,8 @@ enum _Etk_Widget_Signal_Id
    ETK_WIDGET_DRAG_DROP_SIGNAL,
    ETK_WIDGET_DRAG_ENTER_SIGNAL,     
    ETK_WIDGET_DRAG_MOTION_SIGNAL,
-   ETK_WIDGET_DRAG_LEAVE_SIGNAL,
+   ETK_WIDGET_DRAG_LEAVE_SIGNAL,  
+   ETK_WIDGET_DRAG_END_SIGNAL,
    ETK_WIDGET_SELECTION_RECEIVED_SIGNAL,
    ETK_WIDGET_CLIPBOARD_RECEIVED_SIGNAL,
    ETK_WIDGET_NUM_SIGNALS
@@ -96,6 +97,7 @@ static void _etk_widget_drag_drop_handler(Etk_Widget *widget);
 static void _etk_widget_drag_motion_handler(Etk_Widget *widget);
 static void _etk_widget_drag_enter_handler(Etk_Widget *widget);
 static void _etk_widget_drag_leave_handler(Etk_Widget *widget);
+static void _etk_widget_drag_end_handler(Etk_Widget *widget);
 
 static void _etk_widget_mouse_in_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
 static void _etk_widget_signal_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *event, void *data);
@@ -184,6 +186,7 @@ Etk_Type *etk_widget_type_get()
       _etk_widget_signals[ETK_WIDGET_DRAG_MOTION_SIGNAL] =   etk_signal_new("drag_motion",   widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_motion), etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_DRAG_ENTER_SIGNAL] =    etk_signal_new("drag_enter",    widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_enter),  etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_DRAG_LEAVE_SIGNAL] =    etk_signal_new("drag_leave",    widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_leave),  etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_widget_signals[ETK_WIDGET_DRAG_END_SIGNAL] =      etk_signal_new("drag_end",    widget_type,   ETK_MEMBER_OFFSET(Etk_Widget, drag_end),    etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_SELECTION_RECEIVED_SIGNAL] = etk_signal_new("selection_received", widget_type, -1,                           etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_CLIPBOARD_RECEIVED_SIGNAL] = etk_signal_new("clipboard_received", widget_type, -1,                           etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL] = etk_signal_new("scroll_size_changed", widget_type, -1,                         etk_marshaller_VOID__VOID,    NULL, NULL);
@@ -1411,6 +1414,17 @@ void etk_widget_drag_leave(Etk_Widget *widget)
 }
 
 /**
+ * @brief Sends the "drag_end" signal
+ * @param widget a widget
+ */
+void etk_widget_drag_end(Etk_Widget *widget)
+{
+   if (!widget)
+      return;
+   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_DRAG_END_SIGNAL], ETK_OBJECT(widget), NULL);
+}
+
+/**
  * @brief Sends the "selection_received" signal
  * @param widget a widget
  */
@@ -1469,7 +1483,8 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->drag_drop = _etk_widget_drag_drop_handler;
    widget->drag_motion = _etk_widget_drag_motion_handler;
    widget->drag_enter = _etk_widget_drag_enter_handler;   
-   widget->drag_leave = _etk_widget_drag_leave_handler; 
+   widget->drag_leave = _etk_widget_drag_leave_handler;
+   widget->drag_end = _etk_widget_drag_end_handler;   
 
    widget->left_inset = 0;
    widget->right_inset = 0;
@@ -1729,6 +1744,14 @@ static void _etk_widget_drag_leave_handler(Etk_Widget *widget)
    if (!widget)
       return;
    etk_widget_theme_object_signal_emit(widget, "drag_leave");
+}
+
+/* Default handler for the "drag_end" signal */
+static void _etk_widget_drag_end_handler(Etk_Widget *widget)
+{
+   if (!widget)
+      return;
+   etk_widget_theme_object_signal_emit(widget, "drag_end");
 }
 
 /* Called when the mouse pointer enters the widget */

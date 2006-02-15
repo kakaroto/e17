@@ -111,6 +111,7 @@ typedef struct _Etk_Selection_Data_Files Etk_Selection_Data_Files;
 typedef struct _Etk_Selection_Data_Text Etk_Selection_Data_Text;
 typedef struct _Etk_Selection_Data_Targets Etk_Selection_Data_Targets;
 typedef enum   _Etk_Selection_Content Etk_Selection_Content;
+typedef struct _Etk_Drag Etk_Drag;
 /**
  * @enum Etk_Fill_Policy_Flags
  * @brief Describes how a child should fill the space allocated by its parent container
