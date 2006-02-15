@@ -715,6 +715,7 @@ ewl_widget_parent_set(Ewl_Widget * w, Ewl_Widget * p)
 {
 	Ewl_Widget *tmp;
 	Ewl_Container *op;
+	Ewl_Embed *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -727,6 +728,10 @@ ewl_widget_parent_set(Ewl_Widget * w, Ewl_Widget * p)
 
 	if (!p)
 		ewl_widget_obscure(w);
+
+	emb = ewl_embed_widget_find(w);
+	if (emb)
+		ewl_embed_info_widgets_cleanup(emb, w);
 
 	/*
 	 * Verify this will not result in recursively nested widgets.
@@ -752,17 +757,21 @@ ewl_widget_parent_set(Ewl_Widget * w, Ewl_Widget * p)
 	 */
 	if (op) {
 		ewl_container_child_remove(op, w);
+		/*
 		if (!p)
 			ewl_callback_del(w, EWL_CALLBACK_DESTROY,
 					ewl_widget_child_destroy_cb);
+					*/
 	}
 	/*
 	 * A widget that has not had a previous parent needs the parent
 	 * destruction callback added.
 	 */
 	else if (p) {
+		/*
 		ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
 					ewl_widget_child_destroy_cb, NULL);
+					*/
 	}
 
 	ewl_callback_call_with_event_data(w, EWL_CALLBACK_REPARENT, p);
@@ -2562,6 +2571,7 @@ ewl_widget_theme_insets_get(Ewl_Widget *w, int *l, int *r, int *t, int *b)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/*
 void
 ewl_widget_child_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__)
@@ -2575,12 +2585,13 @@ ewl_widget_child_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
+*/
 
 
 void
 ewl_widget_drag_down_cb(Ewl_Widget *w, void *ev_data ,
-				void *user_data __UNUSED__) {
+				void *user_data __UNUSED__)
+{
 	Ewl_Event_Mouse_Down *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
