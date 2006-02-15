@@ -1589,6 +1589,8 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->need_theme_min_size_recalc = ETK_FALSE;
    widget->swallowed = ETK_FALSE;
    widget->accepts_dnd = ETK_FALSE;
+   widget->dnd_source = ETK_FALSE;
+   widget->dnd_dest = ETK_FALSE;
    widget->dnd_types = NULL;
    widget->dnd_types_num = 0;
    

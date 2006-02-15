@@ -19,6 +19,7 @@ enum _Etk_Text_View_Signal_Id
 };
 
 static void _etk_text_view_constructor(Etk_Text_View *text_view);
+static void _etk_text_view_destructor(Etk_Text_View *text_view);
 static void _etk_text_view_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_text_view_realize_cb(Etk_Object *object, void *data);
 static void _etk_text_view_unrealize_cb(Etk_Object *object, void *data);
@@ -41,8 +42,7 @@ Etk_Type *etk_text_view_type_get()
 
    if (!text_view_type)
    {
-      /* TODO: destructor */
-      text_view_type = etk_type_new("Etk_Text_View", ETK_WIDGET_TYPE, sizeof(Etk_Text_View), ETK_CONSTRUCTOR(_etk_text_view_constructor), NULL);
+      text_view_type = etk_type_new("Etk_Text_View", ETK_WIDGET_TYPE, sizeof(Etk_Text_View), ETK_CONSTRUCTOR(_etk_text_view_constructor), ETK_DESTRUCTOR(_etk_text_view_destructor));
 
       _etk_text_view_signals[ETK_TEXT_VIEW_TEXT_CHANGED_SIGNAL] = etk_signal_new("text_changed", text_view_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
    }
@@ -66,7 +66,7 @@ Etk_Widget *etk_text_view_new()
  *
  **************************/
 
-/* Initializes the default values of the text_view */
+/* Initializes the default values of the text view */
 static void _etk_text_view_constructor(Etk_Text_View *text_view)
 {
    if (!text_view)
@@ -79,6 +79,15 @@ static void _etk_text_view_constructor(Etk_Text_View *text_view)
    etk_signal_connect("unrealize", ETK_OBJECT(text_view), ETK_CALLBACK(_etk_text_view_unrealize_cb), NULL);
 }
 
+/* Destroys the text view */
+static void _etk_text_view_destructor(Etk_Text_View *text_view)
+{
+   if (!text_view)
+      return;
+   etk_object_destroy(ETK_OBJECT(text_view->textblock));
+   text_view->textblock = NULL;
+}
+
 /* TODO: Renders the textblock object */
 static void _etk_text_view_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 {
@@ -87,9 +96,8 @@ static void _etk_text_view_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
    if (!(text_view = ETK_TEXT_VIEW(widget)))
       return;
    
-   printf("text_view_size_allocate\n");
-   evas_object_move(text_view->textblock->textblock_object, geometry.x, geometry.y);
-   evas_object_resize(text_view->textblock->textblock_object, geometry.w, geometry.h);
+   evas_object_move(text_view->textblock->smart_object, geometry.x, geometry.y);
+   evas_object_resize(text_view->textblock->smart_object, geometry.w, geometry.h);
 }
 
 /**************************
@@ -107,8 +115,9 @@ static void _etk_text_view_realize_cb(Etk_Object *object, void *data)
    if (!(text_view = ETK_TEXT_VIEW(object)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(text_view))))
       return;
 
-   //etk_textblock_realize(text_view->textblock, evas);
-   etk_widget_member_object_add(ETK_WIDGET(text_view), text_view->textblock->textblock_object);
+   etk_textblock_realize(text_view->textblock, evas);
+   etk_widget_member_object_add(ETK_WIDGET(text_view), text_view->textblock->smart_object);
+   evas_object_show(text_view->textblock->smart_object);
 }
 
 /* Called when the text view is unrealized */
@@ -119,8 +128,11 @@ static void _etk_text_view_unrealize_cb(Etk_Object *object, void *data)
    if (!(text_view = ETK_TEXT_VIEW(object)))
       return;
    
-   etk_widget_member_object_del(ETK_WIDGET(text_view), text_view->textblock->textblock_object);
-   //etk_textblock_unrealize(text_view->textblock);
+   if (text_view->textblock)
+   {
+      etk_widget_member_object_del(ETK_WIDGET(text_view), text_view->textblock->smart_object);
+      etk_textblock_unrealize(text_view->textblock);
+   }
 }
 
 /** @} */

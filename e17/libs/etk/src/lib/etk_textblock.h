@@ -39,6 +39,7 @@ struct _Etk_Textblock
    /* Inherit from Etk_Object */
    Etk_Object object;
    
+   Evas_Object *smart_object;
    Evas_Object *textblock_object;
    Evas_Object *cursor_object;
    Evas_Object *clip;
