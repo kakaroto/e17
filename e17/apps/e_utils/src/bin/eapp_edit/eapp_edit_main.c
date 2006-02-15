@@ -246,14 +246,14 @@ eapp_populate(Ewl_Tree *tree, char *file, char *lang, char *winclass)
     ewl_image_file_set(EWL_IMAGE(row[1]), file, "icon");
     ewl_image_proportional_set(EWL_IMAGE(row[1]), TRUE);
     ewl_image_scale_to(EWL_IMAGE(row[1]), 32, 32);
-    ewl_callback_append(row[1], EWL_CALLBACK_CLICKED, eapp_cb_fd_show, NULL);
     /* FIXME: This can give it a decent background, but introduces a sizing
      * issue to track down
      * ewl_widget_appearance_set(row[1], "entry"); */
     ewl_widget_name_set(row[1], "icon");
     ewl_widget_show(row[1]);
 
-    ewl_tree_row_add(tree, NULL, row);
+    row[0] = ewl_tree_row_add(tree, NULL, row);
+    ewl_callback_append(row[0], EWL_CALLBACK_CLICKED, eapp_cb_fd_show, NULL);
 
     /* add all the eet data */
     for (i = 0; i < (sizeof(keys) / sizeof(keys[0])); i++)
