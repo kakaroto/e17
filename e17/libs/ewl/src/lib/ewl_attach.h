@@ -36,14 +36,14 @@ struct Ewl_Attach
 
 /**
  * @def ewl_attach_tooltip_text_set(w, data)
- * Conviencice method to set a tooltip text attachment
+ * Convenience method to set a tooltip text attachment
  */
 #define ewl_attach_tooltip_text_set(w, data) \
 	ewl_attach_text_set(w, EWL_ATTACH_TYPE_TOOLTIP, data)
 
 /**
  * @def ewl_attach_tooltip_widget_set(w, data)
- * Convience method to set a tooltip widget attachement
+ * Convenience method to set a tooltip widget attachement
  */
 #define ewl_attach_tooltip_widget_set(w, data) \
 	ewl_attach_widget_set(w, EWL_ATTACH_TYPE_TOOLTIP, data)
@@ -51,7 +51,7 @@ struct Ewl_Attach
 
 /**
  * @def ewl_attach_mouse_pointer_set(w, data)
- * Convience method to set a pointer widget attachment
+ * Convenience method to set a pointer widget attachment
  */
 #define ewl_attach_mouse_cursor_set(w, data) \
 	ewl_attach_other_set(w, EWL_ATTACH_TYPE_MOUSE_CURSOR, \
@@ -59,42 +59,42 @@ struct Ewl_Attach
 
 /**
  * @def ewl_attach_color_set(w, data)
- * Convience method to set a colour widget attachment
+ * Convenience method to set a colour widget attachment
  */
 #define ewl_attach_color_set(w, data) \
 	ewl_attach_other_set(w, EWL_ATTACH_TYPE_COLOR, data)
 
 /**
  * @def ewl_attach_color_get(w) 
- * Convience method to get a colour attachment back
+ * Convenience method to get a colour attachment back
  */
 #define ewl_attach_color_get(w) \
 	ewl_attach_get(w, EWL_ATTACH_TYPE_COLOR)
 
 /**
  * @def ewl_attach_name_set(w, data)
- * Convience method to set a widget name attachment
+ * Convenience method to set a widget name attachment
  */
 #define ewl_attach_name_set(w, data) \
 	ewl_attach_text_set(w, EWL_ATTACH_TYPE_NAME, data)
 
 /**
  * @def ewl_attach_name_get(w)
- * Convience method to get a widgets name attachment
+ * Convenience method to get a widgets name attachment
  */
 #define ewl_attach_name_get(w) \
 	ewl_attach_get(w, EWL_ATTACH_TYPE_NAME)
 
 /**
  * @def ewl_attach_notebook_data_set(w, data)
- * Convience method to attach data to a notebook item
+ * Convenience method to attach data to a notebook item
  */
 #define ewl_attach_notebook_data_set(w, data) \
 	ewl_attach_other_set(w, EWL_ATTACH_TYPE_NOTEBOOK_DATA, data)
 
 /**
  * @def ewl_attach_notebook_data_get(w)
- * Convience method to get the data attached to a notebook item
+ * Convenience method to get the data attached to a notebook item
  */
 #define ewl_attach_notebook_data_get(w) \
 	ewl_attach_get(w, EWL_ATTACH_TYPE_NOTEBOOK_DATA)
