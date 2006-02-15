@@ -1,0 +1,17 @@
+
+Instructions for compilation:
+
+1) Download Poppler [1] from CVS:
+
+cvs -d :pserver:anoncvs@cvs.freedesktop.org:/cvs/poppler login
+cvs -d :pserver:anoncvs@cvs.freedesktop.org:/cvs/poppler co poppler
+
+2) Install poppler with the following option to autogen.sh
+   or configure:
+
+./configure --enable-xpdf-headers
+
+3) Evas and Ecore are needed. Ewl and Etk are optional
+
+
+[1] http://poppler.freedesktop.org/
