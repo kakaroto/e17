@@ -1,0 +1,126 @@
+AC_PREREQ(2.54)
+AC_INIT(epdf, 0.1, enlightenment-devel@lists.sourceforge.net)
+AC_CONFIG_HEADERS(config.h)
+AM_INIT_AUTOMAKE
+AC_PROG_LIBTOOL
+
+AC_PROG_CC
+
+PKG_CHECK_MODULES(POPPLER, \
+   poppler >= 0.5,
+   [have_poppler=yes],
+  [
+    echo "ERROR:"
+    echo "The poppler.pc development file was not found in your pkg-config"
+    echo "path. This may mean one of several things"
+    echo "1. You may not have installed the CVS version of poppler (current"
+    echo "   0.5 version)."
+    echo "2. You may not have installed the poppler-devel (or poppler-dev)"
+    echo "   packages."
+    echo "3. You may have evas installed somewhere not covered by your path."
+    echo ""
+    echo "If this is the case make sure you have the packages installed, AND"
+    echo "that the poppler.pc file is in your pkg-config path (see your"
+    echo "shell's manual page on setting the \$PKG_CONFIG_PATH environment variable)."
+    AC_MSG_ERROR([Fatal Error: no popppler library detected.])
+   ]
+)
+
+AC_PATH_GENERIC(evas, 0.9.9,
+  [ ],
+  [
+    echo "ERROR:"
+    echo "The evas-config development script was not found in your execute"
+    echo "path. This may mean one of several things"
+    echo "1. You may not have installed the evas-devel (or evas-dev)"
+    echo "   packages."
+    echo "2. You may have evas installed somewhere not covered by your path."
+    echo ""
+    echo "If this is the case make sure you have the packages installed, AND"
+    echo "that the evas-config script is in your execute path (see your"
+    echo "shell's manual page on setting the \$PATH environment variable), OR"
+    echo "alternatively, specify the script to use with --with-evas-config."
+    AC_MSG_ERROR([Fatal Error: no evas-config detected.])
+  ]
+)
+
+AC_PATH_GENERIC(ecore, 0.9.9,
+  [ ],
+  [
+    echo "ERROR:"
+    echo "The ecore-config development script was not found in your execute"
+    echo "path. This may mean one of several things"
+    echo "1. You may not have installed the ecore-devel (or ecore-dev)"
+    echo "   packages."
+    echo "2. You may have ecore installed somewhere not covered by your path."
+    echo ""
+    echo "If this is the case make sure you have the packages installed, AND"
+    echo "that the ecore-config script is in your execute path (see your"
+    echo "shell's manual page on setting the \$PATH environment variable), OR"
+    echo "alternatively, specify the script to use with --with-ecore-config."
+    AC_MSG_ERROR([Fatal Error: no ecore-config detected.])
+  ]
+)
+
+requirements="evas ecore"
+
+AC_PATH_GENERIC(ewl, 0.0.4, [have_ewl="yes"], [have_ewl="no"])
+if test "x$have_ewl" = "xyes" ; then
+   requirements="$requirements ewl"
+else
+   EWL_CFLAGS=""
+   EWL_LIBS=""
+   AC_SUBST(EWL_CFLAGS)
+   AC_SUBST(EWL_LIBS)
+fi
+AM_CONDITIONAL(BUILD_EPDF_EWL, test x$have_ewl = xyes)
+
+AC_PATH_GENERIC(etk, 0.1.0, [have_etk="yes"], [have_etk="no"])
+if test "x$have_etk" = "xyes" ; then
+   requirements="$requirements etk"
+else
+   ETK_CFLAGS=""
+   ETK_LIBS=""
+   AC_SUBST(ETK_CFLAGS)
+   AC_SUBST(ETK_LIBS)
+fi
+AM_CONDITIONAL(BUILD_EPDF_ETK, test x$have_etk = xyes)
+
+AC_SUBST(requirements)
+
+AC_OUTPUT([
+Makefile
+epdf.pc
+src/Makefile
+src/lib/Makefile
+src/bin/Makefile
+epdf-config
+],[
+chmod +x epdf-config
+])
+
+#####################################################################
+## Info
+
+echo
+echo
+echo
+echo "------------------------------------------------------------------------"
+echo "$PACKAGE_NAME $PACKAGE_VERSION"
+echo "------------------------------------------------------------------------"
+echo
+echo "Configuration Options Summary:"
+echo
+echo "  Ewl widget...........: $have_ewl"
+echo "  Etk widget...........: $have_etk"
+echo
+echo "  Compilation..........: make"
+echo
+echo "  Installation.........: make install"
+echo
+echo "    prefix.........: $prefix"
+echo "    binaries.......: $bindir"
+echo "    libraries......: $libdir"
+echo "    headers........: $includedir"
+echo
+
