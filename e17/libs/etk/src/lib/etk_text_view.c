@@ -5,8 +5,7 @@
 #include <string.h>
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
-#include "etk_text_buffer.h"
-#include "etk_string.h"
+#include "etk_textblock.h"
 
 /**
  * @addtogroup Etk_Text_View
@@ -22,6 +21,7 @@ enum _Etk_Text_View_Signal_Id
 static void _etk_text_view_constructor(Etk_Text_View *text_view);
 static void _etk_text_view_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_text_view_realize_cb(Etk_Object *object, void *data);
+static void _etk_text_view_unrealize_cb(Etk_Object *object, void *data);
 
 static Etk_Signal *_etk_text_view_signals[ETK_TEXT_VIEW_NUM_SIGNALS];
 
@@ -72,11 +72,11 @@ static void _etk_text_view_constructor(Etk_Text_View *text_view)
    if (!text_view)
       return;
 
-   text_view->text_buffer = etk_text_buffer_new();
-   text_view->textblock_object = NULL;
+   text_view->textblock = etk_textblock_new();
    ETK_WIDGET(text_view)->size_allocate = _etk_text_view_size_allocate;
 
    etk_signal_connect("realize", ETK_OBJECT(text_view), ETK_CALLBACK(_etk_text_view_realize_cb), NULL);
+   etk_signal_connect("unrealize", ETK_OBJECT(text_view), ETK_CALLBACK(_etk_text_view_unrealize_cb), NULL);
 }
 
 /* TODO: Renders the textblock object */
@@ -88,7 +88,8 @@ static void _etk_text_view_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
       return;
    
    printf("text_view_size_allocate\n");
-   evas_object_textblock_text_markup_set(text_view->textblock_object, etk_string_get(text_view->text_buffer->formatted_buffer));
+   evas_object_move(text_view->textblock->textblock_object, geometry.x, geometry.y);
+   evas_object_resize(text_view->textblock->textblock_object, geometry.w, geometry.h);
 }
 
 /**************************
@@ -97,25 +98,29 @@ static void _etk_text_view_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
  *
  **************************/
 
-/* Called when the text_view is realized */
+/* Called when the text view is realized */
 static void _etk_text_view_realize_cb(Etk_Object *object, void *data)
 {
-   Evas_Textblock_Style *text_style;
    Etk_Text_View *text_view;
-   Etk_Widget *text_view_widget;
    Evas *evas;
 
-   if (!(text_view_widget = ETK_WIDGET(object)) || !(evas = etk_widget_toplevel_evas_get(text_view_widget)))
+   if (!(text_view = ETK_TEXT_VIEW(object)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(text_view))))
       return;
 
-   text_view = ETK_TEXT_VIEW(text_view_widget);
-   text_view->textblock_object = evas_object_textblock_add(evas);
-   text_style = evas_textblock_style_new();
-   evas_textblock_style_set(text_style, "DEFAULT='font=Vera font_size=10 align=left color=#000000 wrap=word' br='\n'");
-   evas_object_textblock_style_set(text_view->textblock_object, text_style);
-   evas_object_show(text_view->textblock_object);
-   etk_widget_theme_object_swallow(text_view_widget, "text_area", text_view->textblock_object);
-   etk_widget_member_object_add(text_view_widget, text_view->textblock_object);
+   //etk_textblock_realize(text_view->textblock, evas);
+   etk_widget_member_object_add(ETK_WIDGET(text_view), text_view->textblock->textblock_object);
+}
+
+/* Called when the text view is unrealized */
+static void _etk_text_view_unrealize_cb(Etk_Object *object, void *data)
+{
+   Etk_Text_View *text_view;
+
+   if (!(text_view = ETK_TEXT_VIEW(object)))
+      return;
+   
+   etk_widget_member_object_del(ETK_WIDGET(text_view), text_view->textblock->textblock_object);
+   //etk_textblock_unrealize(text_view->textblock);
 }
 
 /** @} */

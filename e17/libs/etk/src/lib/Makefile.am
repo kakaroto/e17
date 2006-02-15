@@ -17,6 +17,7 @@ EXTRA_DIST =
 
 ETKHEADERS = \
 Etk.h etk_types.h etk_main.h etk_utils.h \
+etk_string.h \
 etk_type.h etk_object.h etk_property.h \
 etk_signal.h etk_signal_callback.h etk_marshallers.h \
 etk_theme.h etk_cache.h \
@@ -29,7 +30,7 @@ etk_window.h etk_dialog.h \
 etk_image.h \
 etk_stock.h \
 etk_label.h \
-etk_string.h etk_text_buffer.h etk_text_iter.h etk_editable_text_object.h \
+etk_textblock.h etk_editable_text_object.h \
 etk_button.h etk_toggle_button.h etk_check_button.h etk_radio_button.h \
 etk_entry.h etk_text_view.h \
 etk_canvas.h \
@@ -50,6 +51,7 @@ etk_drag.h
 
 libetk_la_SOURCES = \
 etk_main.c etk_utils.c \
+etk_string.c \
 etk_type.c etk_object.c etk_property.c \
 etk_signal.c etk_signal_callback.c etk_marshallers.c \
 etk_theme.c etk_cache.c \
@@ -62,7 +64,7 @@ etk_window.c etk_dialog.c \
 etk_image.c \
 etk_stock.c \
 etk_label.c \
-etk_string.c etk_text_buffer.c etk_text_iter.c etk_editable_text_object.c \
+etk_textblock.c etk_editable_text_object.c \
 etk_button.c etk_toggle_button.c etk_check_button.c etk_radio_button.c \
 etk_entry.c etk_text_view.c \
 etk_canvas.c \

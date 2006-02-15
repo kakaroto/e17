@@ -28,8 +28,7 @@ struct _Etk_Text_View
    /* Inherit from Etk_Widget */
    Etk_Widget widget;
 
-   Etk_Text_Buffer *text_buffer;
-   Evas_Object *textblock_object;
+   Etk_Textblock *textblock;
 };
 
 Etk_Type *etk_text_view_type_get();
