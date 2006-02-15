@@ -37,6 +37,8 @@
 
 #define DEBUG_PAGER 0
 
+#define USE_PAGER_BACKGROUND_CACHE 1
+
 #define EwinGetVX(ew) (ew->vx)
 #define EwinGetVY(ew) (ew->vy)
 #define EwinGetVX2(ew) (ew->vx + EoGetW(ew))
@@ -482,9 +484,9 @@ PagerReconfigure(Pager * p, int apply)
    ICCCM_SetSizeConstraints(p->ewin,
 			    VRoot.w / 64 * ax, VRoot.h / 64 * ay,
 			    VRoot.w / 4 * ax, VRoot.h / 4 * ay,
-			    0, 0, 8 * ax, (int)(8 / aspect * ay),
-			    aspect * ((double)ax / (double)ay) - .1,
-			    aspect * ((double)ax / (double)ay) + .1);
+			    0, 0, ax, ay,
+			    aspect * ((double)ax / (double)ay),
+			    aspect * ((double)ax / (double)ay));
 
    if (apply)
       EwinResize(p->ewin, w, h);
@@ -507,8 +509,9 @@ PagerUpdateBg(Pager * p)
    pmap = p->bgpmap = ECreatePixmap(p->win, p->dw, p->dh, VRoot.depth);
 
    bg = DeskBackgroundGet(p->dsk);
-   if (bg && Conf_pagers.snap)
+   if (bg)
      {
+#if USE_PAGER_BACKGROUND_CACHE
 	char                s[4096];
 	char               *uniq;
 	Imlib_Image        *im;
@@ -528,7 +531,9 @@ PagerUpdateBg(Pager * p)
 	  }
 	else
 	  {
+#endif
 	     BackgroundApplyPmap(bg, pmap, p->dw, p->dh);
+#if USE_PAGER_BACKGROUND_CACHE
 	     imlib_context_set_drawable(pmap);
 	     im = imlib_create_image_from_drawable(0, 0, 0, p->dw, p->dh, 1);
 	     imlib_context_set_image(im);
@@ -536,6 +541,7 @@ PagerUpdateBg(Pager * p)
 	     imlib_save_image(s);
 	     imlib_free_image_and_decache();
 	  }
+#endif
 	return;
      }
 
