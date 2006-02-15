@@ -2,25 +2,36 @@
 #define EWL_ATTACH_H
 
 /**
- * @file ewl_attach.h
- * @defgroup Ewl_Attach Attachments: The attachment mechanisms
- * Defines methods for attaching data to widgets
+ * @defgroup Ewl_Attach Ewl_Attach: A mechanism to attach data to widgets.
+ * @brief Defines methods for attaching data to widgets
  *
  * @{
  */
 
 #define EWL_ATTACH_TOOLTIP_TYPE "tooltip"
 
+/**
+ * @def EWL_ATTACH(attach)
+ * Typecast a pointer to an Ewl_Attach pointer 
+ */
 #define EWL_ATTACH(attach) ((Ewl_Attach *) attach)
 
+/**
+ * Ewl_Attach provides a way to attach data to widgets
+ */
 typedef struct Ewl_Attach Ewl_Attach;
+
+/**
+ * @struct Ewl_Attach
+ * Contains the attachment information
+ */
 struct Ewl_Attach
 {
-	Ewl_Attach_Type type;
-	Ewl_Attach_Data_Type data_type;
+	Ewl_Attach_Type type;		/**< The type of the attachment */
+	Ewl_Attach_Data_Type data_type; /**< The data type of the attachment */
 
-	void *data;
-	void *priv_data;
+	void *data;			/**< The attachment data */
+	void *priv_data;		/**< Any private data in the attachment */
 };
 
 /**
@@ -39,7 +50,7 @@ struct Ewl_Attach
 
 
 /**
- * @def ewl_attach_pointer_set(w, data)
+ * @def ewl_attach_mouse_pointer_set(w, data)
  * Convience method to set a pointer widget attachment
  */
 #define ewl_attach_mouse_cursor_set(w, data) \
@@ -91,22 +102,9 @@ struct Ewl_Attach
 void ewl_attach_text_set(Ewl_Widget *w, Ewl_Attach_Type t, const char *data);
 void ewl_attach_widget_set(Ewl_Widget *w, Ewl_Attach_Type t, Ewl_Widget *data);
 void ewl_attach_other_set(Ewl_Widget *w, Ewl_Attach_Type t, void *data);
-
 void *ewl_attach_get(Ewl_Widget *w, Ewl_Attach_Type t);
 
-/* 
- * internal stuff 
- */
-Ewl_Attach_List *ewl_attach_list_new(void);
-void ewl_attach_list_free(Ewl_Attach_List *list);
-
-void ewl_attach_list_add(Ewl_Attach_List *list, Ewl_Widget *parent, Ewl_Attach *attach);
 void ewl_attach_list_del(Ewl_Attach_List *list, Ewl_Attach_Type type);
-void *ewl_attach_list_get(Ewl_Attach_List *list, Ewl_Attach_Type type);
-
-Ewl_Attach *ewl_attach_new(Ewl_Attach_Type t, Ewl_Attach_Data_Type dt, void *data);
-int ewl_attach_init(Ewl_Attach *attach, Ewl_Attach_Type t, Ewl_Attach_Data_Type dt, void *data);
-void ewl_attach_free(Ewl_Attach *attach);
 
 /**
  * @}

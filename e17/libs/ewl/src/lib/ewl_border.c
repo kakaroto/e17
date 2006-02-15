@@ -104,7 +104,7 @@ ewl_border_text_get(Ewl_Border * b)
  * @param b: The Ewl_Border to set the label position on
  * @param pos: The Ewl_Position to set on for the label.
  * @return Returns no value.
- * @brief Sets the position of the lable in the border container
+ * @brief Sets the position of the label in the border container
  */
 void
 ewl_border_label_position_set(Ewl_Border *b, Ewl_Position pos)
@@ -155,6 +155,7 @@ ewl_border_label_position_set(Ewl_Border *b, Ewl_Position pos)
 /**
  * @param b: The Ewl_Border to get the label position from
  * @return Returns the Ewl_Position setting of the label on this border
+ * @brief Gets the label position of the border
  */
 Ewl_Position
 ewl_border_label_position_get(Ewl_Border *b)

@@ -1,10 +1,8 @@
-#ifndef __EWL_BORDER_H__
-#define __EWL_BORDER_H__
+#ifndef EWL_BORDER_H
+#define EWL_BORDER_H
 
 /**
- * @file ewl_border.h
- *
- * @defgroup Ewl_Border Border: A container with a border and label
+ * @defgroup Ewl_Border Ewl_Border: A container with a border and label
  * @brief Defines the Ewl_Border class used for adding a border decoration
  * around a group of widgets.
  *
@@ -19,8 +17,7 @@
 #define EWL_BORDER_TYPE "border"
 
 /**
- * Provides an Ewl_Widget to simply act as a separator between other
- * Ewl_Widget's.
+ * Ewl_Border provides a container that has a labeled border.
  */
 typedef struct Ewl_Border Ewl_Border;
 
@@ -60,5 +57,5 @@ unsigned int    ewl_border_label_alignment_get(Ewl_Border *b);
  * @}
  */
 
-#endif				/* __EWL_BORDER_H__ */
+#endif
 

@@ -20,6 +20,19 @@ struct Ewl_Attach_Tooltip
 	Ewl_Widget *to;
 };
 
+static Ewl_Attach_List *ewl_attach_list_new(void);
+static void ewl_attach_list_free(Ewl_Attach_List *list);
+
+static void ewl_attach_list_add(Ewl_Attach_List *list, Ewl_Widget *parent, 
+							Ewl_Attach *attach);
+static void *ewl_attach_list_get(Ewl_Attach_List *list, Ewl_Attach_Type type);
+
+static Ewl_Attach *ewl_attach_new(Ewl_Attach_Type t, 
+				Ewl_Attach_Data_Type dt, void *data);
+static int ewl_attach_init(Ewl_Attach *attach, Ewl_Attach_Type t, 
+				Ewl_Attach_Data_Type dt, void *data);
+static void ewl_attach_free(Ewl_Attach *attach);
+
 static void ewl_attach_parent_setup(Ewl_Widget *w);
 static void ewl_attach_cb_parent_destroy(Ewl_Widget *w, void *ev, void *data);
 static void ewl_attach_attach_type_setup(Ewl_Widget *w, Ewl_Attach *attach);
@@ -41,6 +54,7 @@ static Ewl_Attach_Tooltip *ewl_attach_tooltip = NULL;
  * @param t: The type of the attachment
  * @param data: The text to set as the attachment
  * @return Returns no value
+ * @brief Attaches the text @p data to the widget @p w
  */
 void
 ewl_attach_text_set(Ewl_Widget *w, Ewl_Attach_Type t, const char *data)
@@ -72,6 +86,7 @@ ewl_attach_text_set(Ewl_Widget *w, Ewl_Attach_Type t, const char *data)
  * @param t: The type of data being attached
  * @param data: The wiget to attach
  * @return Returns no value
+ * @brief Attaches a widget @p data to the widget @p w
  */
 void
 ewl_attach_widget_set(Ewl_Widget *w, Ewl_Attach_Type t, Ewl_Widget *data)
@@ -104,6 +119,8 @@ ewl_attach_widget_set(Ewl_Widget *w, Ewl_Attach_Type t, Ewl_Widget *data)
  * @param t: The type of attachment
  * @param data: The data to attach
  * @return Returns no value
+ * @brief Attaches the data @p data to the widget @p w with the attache type
+ * of @p t
  */
 void
 ewl_attach_other_set(Ewl_Widget *w, Ewl_Attach_Type t, void *data)
@@ -133,6 +150,7 @@ ewl_attach_other_set(Ewl_Widget *w, Ewl_Attach_Type t, void *data)
  * @param w: The widget to get the attachment from
  * @param t: The type of attachment to get
  * @return Returns the data for the given attachment type
+ * @brief Get the attachment of type @p t from the widget @p w
  */
 void *
 ewl_attach_get(Ewl_Widget *w, Ewl_Attach_Type t)
@@ -156,7 +174,7 @@ ewl_attach_get(Ewl_Widget *w, Ewl_Attach_Type t)
 	DRETURN_PTR(NULL, DLEVEL_STABLE);
 }
 
-Ewl_Attach_List *
+static Ewl_Attach_List *
 ewl_attach_list_new(void)
 {
 	Ewl_Attach_List *list;
@@ -168,7 +186,7 @@ ewl_attach_list_new(void)
 	DRETURN_PTR(list, DLEVEL_STABLE);
 }
 
-void
+static void
 ewl_attach_list_free(Ewl_Attach_List *list)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -193,7 +211,7 @@ ewl_attach_list_free(Ewl_Attach_List *list)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
+static void
 ewl_attach_list_add(Ewl_Attach_List *list, Ewl_Widget *parent, Ewl_Attach *attach)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -280,6 +298,12 @@ ewl_attach_attach_type_setup(Ewl_Widget *w, Ewl_Attach *attach)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param list: The Ewl_Attach_List to delete
+ * @param type: The Ewl_Attach_Type to delete
+ * @return Returns no value
+ * @brief Deletes the given type @p type from the list @p list
+ */
 void
 ewl_attach_list_del(Ewl_Attach_List *list, Ewl_Attach_Type type)
 {
@@ -333,7 +357,7 @@ ewl_attach_list_del(Ewl_Attach_List *list, Ewl_Attach_Type type)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void *
+static void *
 ewl_attach_list_get(Ewl_Attach_List *list, Ewl_Attach_Type type)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -372,7 +396,7 @@ ewl_attach_list_get(Ewl_Attach_List *list, Ewl_Attach_Type type)
 	DRETURN_PTR(NULL, DLEVEL_STABLE);
 }
 
-Ewl_Attach *
+static Ewl_Attach *
 ewl_attach_new(Ewl_Attach_Type t, Ewl_Attach_Data_Type dt, void *data)
 {
 	Ewl_Attach *attach;
@@ -393,7 +417,7 @@ ewl_attach_new(Ewl_Attach_Type t, Ewl_Attach_Data_Type dt, void *data)
 	DRETURN_PTR(attach, DLEVEL_STABLE);
 }
 
-int
+static int
 ewl_attach_init(Ewl_Attach *attach, Ewl_Attach_Type t, 
 			Ewl_Attach_Data_Type dt, void *data)
 {
@@ -411,7 +435,7 @@ ewl_attach_init(Ewl_Attach *attach, Ewl_Attach_Type t,
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-void
+static void
 ewl_attach_free(Ewl_Attach *attach)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
