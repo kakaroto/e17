@@ -24,7 +24,7 @@
  * messages and another box (action_area) to put buttons
  * (usually). These boxes can be separated by a line.
  */
-typedef struct _Ewl_Dialog Ewl_Dialog;
+typedef struct Ewl_Dialog Ewl_Dialog;
 
 /**
  * @def EWL_DIALOG(dialog)
@@ -38,7 +38,7 @@ typedef struct _Ewl_Dialog Ewl_Dialog;
  * and buttons (action_area). The action_area could be on top, bottom,
  * right or left of the window. The boxes could be separated by a line.
  */
-struct _Ewl_Dialog
+struct Ewl_Dialog
 {
 	Ewl_Window   window; /* Inherit from a window */
 

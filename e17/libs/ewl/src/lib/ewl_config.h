@@ -8,9 +8,9 @@
  * @{
  */
 
-typedef struct _ewl_config Ewl_Config;
+typedef struct Ewl_Config Ewl_Config;
 
-struct _ewl_config
+struct Ewl_Config
 {
 	time_t                  mtime;
 	struct {
