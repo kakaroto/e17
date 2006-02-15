@@ -1,9 +1,8 @@
-#ifndef __EWL_COMBO_H__
-#define __EWL_COMBO_H__
+#ifndef EWL_COMBO_H
+#define EWL_COMBO_H
 
 /**
- * @file ewl_combo.h
- * @defgroup Ewl_Combo Combo: A Simple Internal Combo Box
+ * @defgroup Ewl_Combo Ewl_Combo: A Simple Combo Box
  * Defines a combo box used internally. The contents on the box are not drawn
  * outside of the Evas.
  *
@@ -59,4 +58,4 @@ void ewl_combo_collapse_cb(Ewl_Widget * w, void *ev_data, void *user_data);
  * @}
  */
 
-#endif				/* __EWL_COMBO_H__ */
+#endif

@@ -1,44 +1,47 @@
-#ifndef __EWL_CONFIG_H__
-#define __EWL_CONFIG_H__
+#ifndef EWL_CONFIG_H
+#define EWL_CONFIG_H
 
 /**
- * @file ewl_config.h
- * @defgroup Ewl_Config Config: Functions for Manipulating Configuration Data
+ * @defgroup Ewl_Config Ewl_Config: Functions for Manipulating Configuration Data
  *
  * @{
  */
 
 typedef struct Ewl_Config Ewl_Config;
 
+/**
+ * @struct Ewl_Config
+ * The Ewl_Config stuct holds configuration data for the EWL library 
+ */
 struct Ewl_Config
 {
-	time_t                  mtime;
 	struct {
-		int             enable;
-		int             level;
-		int 		indent_lvl;
+		int enable;		/**< Is debugging enabled */
+		int level;		/**< Current debug level */
+		int indent_lvl;		/**< How far to indent */
 
-		int		segv;
-		int		backtrace;
-		int		gc_reap;
-	} debug;
-	struct {
-		int             font_cache;
-		int             image_cache;
-		int		engine;
-		char           *render_method;
-	} evas;
-	struct {
-		char           *name;
-		int             cache;
-		int             cclass_override;
-		int             print_keys;
-		int             print_signals;
-	} theme;
+		int segv;		/**< Segv on warning */
+		int backtrace;		/**< Backtrace on warning */
+		int gc_reap;		/**< Log on garbage collection */
+	} debug;			/**< Debuggin configuration */
 
+	struct {
+		int font_cache;		/**< Font cache size */
+		int image_cache;	/**< Image cache size */
+		int engine;		/**< Engines available */
+		char *render_method;	/**< Current render method */
+	} evas;				/**< Evas configuration */
+
+	struct {
+		char *name;		/**< Theme name */
+		int cache;		/**< Cache size */
+		int cclass_override;	/**< Colour class override */
+		int print_keys;		/**< Print theme keys as accessed */
+		int print_signals;	/**< Print theme signals as accessed */
+	} theme;			/**< Theme configuration */
 };
 
-extern Ewl_Config ewl_config;
+extern Ewl_Config ewl_config;	/**< The global configuration data */
 
 int             ewl_config_init(void);
 void            ewl_config_shutdown(void);
@@ -54,4 +57,4 @@ char *          ewl_config_render_method_get(void);
  * @}
  */
 
-#endif				/* __EWL_CONFIG_H__ */
+#endif
