@@ -56,23 +56,6 @@ struct _Etk_Selection_Data_Targets
    int num_targets;
 };
 
-
-#define ETK_DRAG_TYPE       (etk_drag_type_get())
-#define ETK_DRAG(obj)       (ETK_OBJECT_CAST((obj), ETK_DRAG_TYPE, Etk_Drag))
-#define ETK_IS_DRAG(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_DRAG_TYPE))
-
-struct _Etk_Drag
-{
-   /* private: */
-   /* Inherit from Etk_Window */
-   Etk_Window window;   
-   
-   char         **types;
-   unsigned int   num_types;
-   void          *data;
-   int            data_size;   
-};
-
 Etk_Bool etk_dnd_init();  
 void etk_dnd_shutdown();
   

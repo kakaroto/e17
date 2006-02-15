@@ -192,9 +192,12 @@ struct _Etk_Widget
    unsigned char need_redraw : 1;
    unsigned char need_theme_min_size_recalc : 1;
    unsigned char accepts_dnd : 1;
-   
-   char **dnd_types;
-   int    dnd_types_num;
+   unsigned char dnd_source : 1;
+   unsigned char dnd_dest : 1;   
+
+   Etk_Drag *drag;
+   char    **dnd_types;
+   int       dnd_types_num;
 };
 
 Etk_Type *etk_widget_type_get();
@@ -268,6 +271,10 @@ Evas_Object *etk_widget_clip_get(Etk_Widget *widget);
 void         etk_widget_dnd_dest_set(Etk_Widget *widget, Etk_Bool on);
 Etk_Bool     etk_widget_dnd_dest_get(Etk_Widget *widget);
 Evas_List   *etk_widget_dnd_dest_widgets_get();
+void         etk_widget_dnd_source_set(Etk_Widget *widget, Etk_Bool on);
+Etk_Bool     etk_widget_dnd_source_get(Etk_Widget *widget);
+void         etk_widget_dnd_drag_widget_set(Etk_Widget *widget, Etk_Widget *drag_widget);
+void         etk_widget_dnd_drag_data_set(Etk_Widget *widget, const char **types, int num_types, void *data, int data_size);
 const char **etk_widget_dnd_files_get(Etk_Widget *e, int *num_files);
 void         etk_widget_dnd_types_set(Etk_Widget *widget, char **types, int num);
 const char **etk_widget_dnd_types_get(Etk_Widget *widget, int *num);

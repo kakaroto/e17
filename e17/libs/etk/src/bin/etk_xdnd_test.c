@@ -3,9 +3,6 @@
 #include <stdlib.h>
 #include "config.h"
 
-static Etk_Widget *drag;
-static int start = 1;
-
 static void _etk_test_xdnd_drag_drop_cb(Etk_Object *object, void *event, void *data);
 static void _etk_test_xdnd_drag_motion_cb(Etk_Object *object, void *data);
 static void _etk_test_xdnd_drag_leave_cb(Etk_Object *object, void *data);
@@ -17,8 +14,6 @@ static void _etk_test_xdnd_button_copy_cb(Etk_Object *object, void *data);
 static void _etk_test_xdnd_selection_text_request_cb(Etk_Object *object, void *event, void *data);
 static void _etk_test_xdnd_button_selection_set_cb(Etk_Object *object, void *data);
 static void _etk_test_xdnd_button_selection_get_cb(Etk_Object *object, void *data);
-static void _etk_test_xdnd_mouse_move_cb(Etk_Object *object, void *event, void *data);
-static void _etk_test_xdnd_drag_end_cb(Etk_Object *object, void *data);
  
 /* Creates the window for the xdnd test */
 void etk_test_xdnd_window_create(void *data)
@@ -103,11 +98,9 @@ void etk_test_xdnd_window_create(void *data)
    etk_box_pack_start(ETK_BOX(vbox2), sep, ETK_FALSE, ETK_FALSE, 0);   
    
    button = etk_button_new_with_label(_("Drag Me!"));
-   etk_signal_connect("mouse_move", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_xdnd_mouse_move_cb), NULL);   
-   drag = etk_drag_new();
-   etk_signal_connect("drag_end", ETK_OBJECT(drag), ETK_CALLBACK(_etk_test_xdnd_drag_end_cb), NULL);
-   label = etk_label_new(_("Dragged Text!"));
-   etk_container_add(ETK_CONTAINER(drag), etk_button_new_with_label("Foo!"));
+   etk_widget_dnd_source_set(button, ETK_TRUE);
+   etk_widget_dnd_drag_widget_set(button, etk_button_new_with_label("This is a test!"));
+   etk_widget_dnd_drag_data_set(button, dnd_types, dnd_types_num, "This is the drag data!", strlen("This is the drag data!") + 1);
    etk_box_pack_start(ETK_BOX(vbox2), button, ETK_FALSE, ETK_FALSE, 0);
    
    
@@ -289,33 +282,3 @@ static void _etk_test_xdnd_button_selection_set_cb(Etk_Object *object, void *dat
    if(text)
      etk_selection_text_set(ETK_WIDGET(data), text, strlen(text) + 1);
 }
-
-static void _etk_test_xdnd_mouse_move_cb(Etk_Object *object, void *event, void *data)
-{
-   Etk_Event_Mouse_Move *ev;
-   
-   ev = event;
-   
-   if(ev->buttons & 0x001 && start)
-     {
-	const char **types;
-	unsigned int num_types;
-	char *data;	
-	
-	start = 0;
-	types = calloc(1, sizeof(char*));
-	num_types = 1;
-	types[0] = strdup("text/plain");
-	data = strdup("This is the drag data!");
-	
-	etk_drag_types_set(ETK_DRAG(drag), types, num_types);
-	etk_drag_data_set(ETK_DRAG(drag), data, strlen(data) + 1);
-	etk_drag_begin(ETK_DRAG(drag));
-     }
-}
-
-static void _etk_test_xdnd_drag_end_cb(Etk_Object *object, void *data)
-{
-   start = 1;
-}
-  

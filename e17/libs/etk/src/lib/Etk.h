@@ -65,5 +65,6 @@
 #include "etk_dnd.h"
 #include "etk_clipboard.h"
 #include "etk_selection.h"
+#include "etk_drag.h"
 
 #endif

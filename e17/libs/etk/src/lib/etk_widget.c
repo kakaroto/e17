@@ -13,6 +13,7 @@
 #include "etk_marshallers.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
+#include "etk_drag.h"
 
 /**
  * @addtogroup Etk_Widget
@@ -138,12 +139,16 @@ static void _etk_widget_event_object_show_cb(Evas_Object *obj);
 static void _etk_widget_event_object_hide_cb(Evas_Object *obj);
 static void _etk_widget_event_object_clip_set_cb(Evas_Object *object, Evas_Object *clip);
 static void _etk_widget_event_object_clip_unset_cb(Evas_Object *object);
+static void _etk_widget_dnd_drag_mouse_move_cb(Etk_Object *object, void *event, void *data);
+static void _etk_widget_dnd_drag_end_cb(Etk_Object *object, void *data);  
 
 static Etk_Signal *_etk_widget_signals[ETK_WIDGET_NUM_SIGNALS];
-static Etk_Bool _etk_widget_propagate_event = ETK_TRUE;
-static Etk_Bool _etk_widget_intercept_show_hide = ETK_TRUE;
+static Etk_Bool    _etk_widget_propagate_event = ETK_TRUE;
+static Etk_Bool    _etk_widget_intercept_show_hide = ETK_TRUE;
 static Evas_Smart *_etk_widget_event_object_smart = NULL;
-static Evas_List *_etk_widget_dnd_dest_widgets;
+static Evas_List  *_etk_widget_dnd_dest_widgets = NULL;
+static Evas_List  *_etk_widget_dnd_source_widgets = NULL;
+static Etk_Bool    _etk_dnd_drag_start = ETK_TRUE;
 
 /**************************
  *
@@ -1285,11 +1290,13 @@ void etk_widget_dnd_dest_set(Etk_Widget *widget, Etk_Bool on)
    if (on)
    {
       widget->accepts_dnd = ETK_TRUE;
+      widget->dnd_dest = ETK_TRUE;
       _etk_widget_dnd_dest_widgets = evas_list_append(_etk_widget_dnd_dest_widgets, widget);
    }
    else
    {
       widget->accepts_dnd = ETK_FALSE;
+      widget->dnd_dest = ETK_FALSE;
       _etk_widget_dnd_dest_widgets = evas_list_remove(_etk_widget_dnd_dest_widgets, widget);
    }
 }
@@ -1303,7 +1310,71 @@ Etk_Bool etk_widget_dnd_dest_get(Etk_Widget *widget)
 {
    if (!widget)
       return ETK_FALSE;
-   return widget->accepts_dnd;
+   return (widget->accepts_dnd && widget->dnd_dest);
+}
+
+/**
+ * @brief Sets whether the widget is dnd source
+ * @param widget a widget
+ * @param on ETK_TRUE to enable this widget as a dnd source, ETK_FALSE to disable it
+ */
+void etk_widget_dnd_source_set(Etk_Widget *widget, Etk_Bool on)
+{
+   if (!widget)
+      return;
+   
+   if (on)
+   {      
+      widget->accepts_dnd = ETK_TRUE;
+      widget->dnd_source = ETK_TRUE;      
+      _etk_widget_dnd_source_widgets = evas_list_append(_etk_widget_dnd_source_widgets, widget);
+      widget->drag = etk_drag_new();
+      etk_signal_connect("mouse_move", ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_dnd_drag_mouse_move_cb), NULL);
+      etk_signal_connect("drag_end", ETK_OBJECT(widget->drag), ETK_CALLBACK(_etk_widget_dnd_drag_end_cb), NULL);
+   }
+   else
+   {
+      widget->accepts_dnd = ETK_FALSE;
+      widget->dnd_source = ETK_TRUE;      
+      _etk_widget_dnd_source_widgets = evas_list_remove(_etk_widget_dnd_source_widgets, widget);
+   }
+}
+
+/**
+ * @brief Checks whether the widget is a dnd source
+ * @param widget a widget
+ * @return Returns ETK_TRUE if the widget is a dnd source, ETK_FALSE otherwise
+ */
+Etk_Bool etk_widget_dnd_source_get(Etk_Widget *widget)
+{
+   if (!widget)
+      return ETK_FALSE;
+   return (widget->accepts_dnd && widget->dnd_source);
+}
+
+/**
+ * @brief Sets the visual data for the drag (the widget to be displayed)
+ * @param widget a widget
+ * @param drag_widget the widget that will appear in the drag window
+ */
+void etk_widget_dnd_drag_widget_set(Etk_Widget *widget, Etk_Widget *drag_widget)
+{
+   if(!widget || !drag_widget)
+     return;
+   
+   etk_container_add(ETK_CONTAINER(widget->drag), drag_widget);
+}
+
+void etk_widget_dnd_drag_data_set(Etk_Widget *widget, const char **types, int num_types, void *data, int data_size)
+{
+   if(!widget)
+     return;
+   
+   if(!widget->drag || !widget->dnd_source)
+     return;
+   
+   etk_drag_types_set(widget->drag, types, num_types);
+   etk_drag_data_set(widget->drag, data, data_size);   
 }
 
 /**
@@ -1549,8 +1620,11 @@ static void _etk_widget_destructor(Etk_Widget *widget)
       etk_widget_parent_set(widget, NULL);
    }
    
-   if (widget->accepts_dnd)
+   if (widget->accepts_dnd && widget->dnd_dest)
       _etk_widget_dnd_dest_widgets = evas_list_remove(_etk_widget_dnd_dest_widgets, widget);
+   
+   if (widget->accepts_dnd && widget->dnd_source)
+     _etk_widget_dnd_source_widgets = evas_list_remove(_etk_widget_dnd_source_widgets, widget);
    
    free(widget->theme_file);
    free(widget->theme_group);
@@ -2618,6 +2692,38 @@ static void _etk_widget_event_object_clip_unset_cb(Evas_Object *object)
       }
    }
    widget->clip = NULL;
+}
+
+static void _etk_widget_dnd_drag_mouse_move_cb(Etk_Object *object, void *event, void *data)
+{
+   Etk_Event_Mouse_Move *ev;
+   
+   ev = event;
+
+   if(ev->buttons & 0x001 && _etk_dnd_drag_start)
+     {
+	const char **types;
+	unsigned int num_types;
+	char *data;
+	Etk_Drag *drag;
+	
+	drag = (ETK_WIDGET(object))->drag;
+	
+	_etk_dnd_drag_start = ETK_FALSE;
+	types = calloc(1, sizeof(char*));
+	num_types = 1;
+	types[0] = strdup("text/plain");
+	data = strdup("This is the drag data!");
+	
+//	etk_drag_types_set(drag, types, num_types);
+//	etk_drag_data_set(drag, data, strlen(data) + 1);
+	etk_drag_begin(drag);
+     }
+}
+
+static void _etk_widget_dnd_drag_end_cb(Etk_Object *object, void *data)
+{
+   _etk_dnd_drag_start = ETK_TRUE;   
 }
 
 /** @} */

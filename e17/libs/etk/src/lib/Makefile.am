@@ -45,7 +45,8 @@ etk_progress_bar.h \
 etk_spin_button.h \
 etk_dnd.h \
 etk_clipboard.h \
-etk_selection.h
+etk_selection.h \
+etk_drag.h
 
 libetk_la_SOURCES = \
 etk_main.c etk_utils.c \
@@ -78,6 +79,7 @@ etk_spin_button.c \
 etk_dnd.c \
 etk_clipboard.c \
 etk_selection.c \
+etk_drag.c \
 $(ETKHEADERS)
 
 installed_headersdir = $(prefix)/include/etk
