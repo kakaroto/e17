@@ -1,11 +1,11 @@
-#ifndef __EWL_DATEPICKER_H__
-#define __EWL_DATEPICKER_H__
+#ifndef EWL_DATEPICKER_H
+#define EWL_DATEPICKER_H
 
 /**
- * @file ewl_datepicker.h
- * @defgroup Ewl_Datepicker datepicker: The EWL Datepicker widget
+ * @defgroup Ewl_Datepicker Ewl_Datepicker: The EWL Datepicker widget
  * @brief Defines the Ewl_Datepicker class,  
  *
+ * @{
  */
 
 /** 
@@ -15,6 +15,9 @@
 
 #define EWL_DATEPICKER_TYPE "datepicker"
 
+/**
+ * The Ewl_Datepicker
+ */
 typedef struct Ewl_Datepicker Ewl_Datepicker;
 
 /**
@@ -26,14 +29,13 @@ typedef struct Ewl_Datepicker Ewl_Datepicker;
 /** 
  * @struct Ewl_Datepicker
  * Inherits from an Ewl_Text 
- * 
  */
 struct Ewl_Datepicker
 {
-	Ewl_Text  text; /**< Inherit from Ewl_Text */
+	Ewl_Text  text; 		/**< Inherit from Ewl_Text */
 
-	Ewl_Widget* calendar;
-	Ewl_Widget* calendar_window;
+	Ewl_Widget *calendar;		/**< The calendar */
+	Ewl_Widget *calendar_window;	/**< The window */
 
 };
 
@@ -43,13 +45,13 @@ int		 ewl_datepicker_init(Ewl_Datepicker* datepicker);
 /*
  * Internally used callbacks, override at your risk
  */
-void ewl_datepicker_destroy_cb(Ewl_Widget *w, void *ev_data,
-				void *user_data);
-void ewl_datepicker_configure_cb(Ewl_Widget *w, void *ev_data,
-				void *user_data);
-void ewl_datepicker_value_changed_cb(Ewl_Widget *w, void *ev_data,
-				void *user_data);
-void ewl_datepicker_realize_cb(Ewl_Widget *w, void *ev_data, 
-				void *user_data);
+void ewl_datepicker_destroy_cb(Ewl_Widget *w, void *ev, void *user_data);
+void ewl_datepicker_configure_cb(Ewl_Widget *w, void *ev, void *user_data);
+void ewl_datepicker_value_changed_cb(Ewl_Widget *w, void *ev, void *user_data);
+void ewl_datepicker_realize_cb(Ewl_Widget *w, void *ev, void *user_data);
+
+/**
+ * @}
+ */
 
 #endif

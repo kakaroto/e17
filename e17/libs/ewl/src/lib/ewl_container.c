@@ -492,6 +492,7 @@ ewl_container_child_helper_get(Ewl_Container *parent, int index,
  * @param parent: The container to get the child from
  * @param index: The child index to return
  * @return Returns the widget at the given index, or NULL if not found
+ * @brief Retrieve the child at the given index in the container.
  */
 Ewl_Widget *
 ewl_container_child_get(Ewl_Container *parent, int index)
@@ -512,6 +513,8 @@ ewl_container_child_get(Ewl_Container *parent, int index)
  * @param index: The child index to return
  * @return Returns the widget at the given index including internal widgets,
  * or NULL if not found
+ * @brief Retrieves the child at the given index in the container taking
+ * internal widgets into account.
  */
 Ewl_Widget *
 ewl_container_child_internal_get(Ewl_Container *parent, int index)
@@ -558,6 +561,7 @@ ewl_container_child_index_helper_get(Ewl_Container *parent, Ewl_Widget *w,
  * @param parent: The container to search
  * @param w: The child to search for
  * @return Returns the index of the child in the parent
+ * @brief Retrieves the index of the given child in the container
  */
 unsigned int
 ewl_container_child_index_get(Ewl_Container *parent, Ewl_Widget *w)
@@ -580,6 +584,8 @@ ewl_container_child_index_get(Ewl_Container *parent, Ewl_Widget *w)
  * @param w: The child to search for
  * @return Returns the index of the child in the parent including internal
  * widgets
+ * @brief Retrieves the index of the given child in the container taking
+ * internal widgets into account 
  */
 unsigned int
 ewl_container_child_index_internal_get(Ewl_Container *parent, Ewl_Widget *w)
@@ -983,6 +989,8 @@ ewl_container_largest_prefer(Ewl_Container *c, Ewl_Orientation o)
 /**
  * @param c: the container to use the child size sum in a specified direction
  * @param o: the orientation direction of the sum to use
+ * @return Returns no value
+ * @brief Set the sum orientation of the container
  */
 void
 ewl_container_sum_prefer(Ewl_Container *c, Ewl_Orientation o)

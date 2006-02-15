@@ -1,9 +1,8 @@
-#ifndef __EWL_CONTAINER_H__
-#define __EWL_CONTAINER_H__
+#ifndef EWL_CONTAINER_H
+#define EWL_CONTAINER_H
 
 /**
- * @file ewl_container.h
- * @defgroup Ewl_Container Container: Widgets Holding Other Widgets
+ * @defgroup Ewl_Container Ewl_Container: Widgets Holding Other Widgets
  * @brief Define the Ewl_Container class which inherits from Ewl_Widget and adds
  * the ability to nest Ewl_Widget's inside.
  *
@@ -170,4 +169,4 @@ void ewl_container_unrealize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
  * @}
  */
 
-#endif				/* __EWL_CONTAINER_H__ */
+#endif

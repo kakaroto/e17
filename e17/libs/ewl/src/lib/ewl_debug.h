@@ -1,5 +1,5 @@
-#ifndef __EWL_DEBUG_H__
-#define __EWL_DEBUG_H__
+#ifndef EWL_DEBUG_H
+#define EWL_DEBUG_H
 
 #include "ewl_misc.h"
 #include <stdio.h>
@@ -211,5 +211,5 @@ inline void ewl_backtrace(void);
 	fprintf(stderr, fmt); \
 }
 
-#endif				/* __EWL_DEBUG_H__ */
+#endif
 

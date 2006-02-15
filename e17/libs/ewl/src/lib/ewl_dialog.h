@@ -1,12 +1,8 @@
-#ifndef __EWL_DIALOG_H__
-#define __EWL_DIALOG_H__
+#ifndef EWL_DIALOG_H
+#define EWL_DIALOG_H
 
 /**
- * @file ewl_dialog.h
- * @defgroup Ewl_Dialog Dialog: A Window to prompt the user for
- * Displaying Messages, asking
- * questions or warnings.
- * 
+ * @defgroup Ewl_Dialog Ewl_Dialog: A dialog window
  * @brief Defines the Ewl_Dialog class which extends the Ewl_Window class.
  *
  * @{
@@ -20,7 +16,7 @@
 #define EWL_DIALOG_TYPE "dialog"
 
 /**
- * The dialog structure is a window with two area: a box (vbox) to hold
+ * The dialog structure is a window with two areas: a box (vbox) to hold
  * messages and another box (action_area) to put buttons
  * (usually). These boxes can be separated by a line.
  */
@@ -69,4 +65,4 @@ void         ewl_dialog_has_separator_set (Ewl_Dialog *dialog,
  * @}
  */
 
-#endif /* __EWL_DIALOG_H__ */
+#endif

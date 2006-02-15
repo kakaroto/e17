@@ -243,6 +243,13 @@ ewl_dialog_has_separator_set(Ewl_Dialog *dialog, unsigned int has_sep)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param d: The Ewl_Dialog to work with
+ * @param pos: The area of the dialog to set active
+ * @return Returns no value
+ * @brief Sets the section of the dialog that will have widgets packed into
+ * it
+ */
 void
 ewl_dialog_active_area_set(Ewl_Dialog *d, Ewl_Position pos)
 {
@@ -262,6 +269,11 @@ ewl_dialog_active_area_set(Ewl_Dialog *d, Ewl_Position pos)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param d: The Ewl_Dialog to get the active area from
+ * @return Returns the active portion of the dialog
+ * @brief Retrieve the location of the dialog widgets will be packed into
+ */
 Ewl_Position
 ewl_dialog_active_area_get(Ewl_Dialog *d)
 {
