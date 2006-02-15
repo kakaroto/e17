@@ -37,3 +37,6 @@ EXTRA_DIST = README AUTHORS COPYING COPYING-PLAIN \
     	     debian/epeg0-bin.files \
              debian/libepeg0.files \
              debian/rules
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = epeg.pc
