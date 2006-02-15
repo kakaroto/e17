@@ -9,6 +9,7 @@ static void ewl_colorpicker_display_update(Ewl_Colorpicker *cp, unsigned int r,
 
 /**
  * @return Returns a new Ewl_Colorpicker widget or NULL on failure
+ * @brief Creates a new Ewl_Colorpicker widget
  */
 Ewl_Widget *
 ewl_colorpicker_new(void)
@@ -35,6 +36,7 @@ ewl_colorpicker_new(void)
 /**
  * @param cp: The Ewl_Colorpicker to initialize
  * @return Returns TRUE on success or FALSE on failure
+ * @brief Initializes the @p cp color picker widget
  */
 int
 ewl_colorpicker_init(Ewl_Colorpicker *cp)
@@ -355,7 +357,8 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
  * @param cp: The colour picker to set the has_alpha flag on.
  * @param alpha: Value to set the has_alpha param too. (TRUE or FALSE)
  * @return Returns no value.
- **/
+ * @brief Set if the color picker displays alpha information
+ */
 void
 ewl_colorpicker_has_alpha_set(Ewl_Colorpicker *cp, unsigned int alpha)
 {
@@ -371,6 +374,7 @@ ewl_colorpicker_has_alpha_set(Ewl_Colorpicker *cp, unsigned int alpha)
 /**
  * @param cp: The colour picker to get the has_alpha flag from
  * @return Returns the value of the has_alpha flag (TRUE or FALSE)
+ * @brief Retrieves if the color picker displays alpha information
  */
 unsigned int
 ewl_colorpicker_has_alpha_get(Ewl_Colorpicker *cp)
@@ -385,6 +389,7 @@ ewl_colorpicker_has_alpha_get(Ewl_Colorpicker *cp)
 /**
  * @param cp: the colourpicker to set the alpha value too
  * @param alpha: The alpha value to set.
+ * @brief Set the alpha value into the color picker
  */
 void
 ewl_colorpicker_alpha_set(Ewl_Colorpicker *cp, unsigned int alpha)
@@ -402,6 +407,7 @@ ewl_colorpicker_alpha_set(Ewl_Colorpicker *cp, unsigned int alpha)
 /**
  * @param cp: The colourpicker to get the alpha value from
  * @return Returns the alpha value of the colorpicker (0-255)
+ * @brief Retrive the alpha value from the color picker
  */
 unsigned int
 ewl_colorpicker_alpha_get(Ewl_Colorpicker *cp)
@@ -423,6 +429,7 @@ ewl_colorpicker_alpha_get(Ewl_Colorpicker *cp)
  * @param g: The green value to set
  * @param b: The blue value to set
  * @return Returns no value.
+ * @brief Set the current RGB values into the color picker
  */
 void
 ewl_colorpicker_current_rgb_set(Ewl_Colorpicker *cp, unsigned int r,
@@ -454,6 +461,7 @@ ewl_colorpicker_current_rgb_set(Ewl_Colorpicker *cp, unsigned int r,
  * @param g: Where to store the green value
  * @param b: Where to store the blue value
  * @return Returns no value
+ * @brief Retrieve the current RGB values from the color picker
  */
 void
 ewl_colorpicker_current_rgb_get(Ewl_Colorpicker *cp, unsigned int *r,
@@ -474,6 +482,7 @@ ewl_colorpicker_current_rgb_get(Ewl_Colorpicker *cp, unsigned int *r,
  * @param g: The green value to set
  * @param b: The blue value to set
  * @return Returns no value.
+ * @brief Set the previous RBG values into the color picker
  */
 void
 ewl_colorpicker_previous_rgb_set(Ewl_Colorpicker *cp, unsigned int r,
@@ -498,6 +507,7 @@ ewl_colorpicker_previous_rgb_set(Ewl_Colorpicker *cp, unsigned int r,
  * @param g: Where to store the green value
  * @param b: Where to store the blue value
  * @return Returns no value.
+ * @brief Retrieve the previous RGB values from the color picker
  */
 void
 ewl_colorpicker_previous_rgb_get(Ewl_Colorpicker *cp, unsigned int *r,
@@ -518,6 +528,7 @@ ewl_colorpicker_previous_rgb_get(Ewl_Colorpicker *cp, unsigned int *r,
  * @param cp: The colorpicker to set the mode on
  * @param mode: The mode to set on the colorpicker
  * @return Returns no value.
+ * @brief Set the color mode of the color picker
  */
 void
 ewl_colorpicker_color_mode_set(Ewl_Colorpicker *cp, Ewl_Color_Mode mode)
@@ -536,6 +547,7 @@ ewl_colorpicker_color_mode_set(Ewl_Colorpicker *cp, Ewl_Color_Mode mode)
 /**
  * @param cp: The colorpicker to get the mode from
  * @return Returns the Ewl_Color_Mode of the colorpicker
+ * @brief Get the color mode of the color picker
  */
 Ewl_Color_Mode
 ewl_colorpicker_color_mode_get(Ewl_Colorpicker *cp)

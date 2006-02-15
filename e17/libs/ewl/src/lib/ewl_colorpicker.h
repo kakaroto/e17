@@ -2,8 +2,7 @@
 #define EWL_COLORPICKER_H
 
 /**
- * @file ewl_colorpicker.h
- * @defgroup Ewl_Colorpicker Colorpicker: The colour picking widget
+ * @defgroup Ewl_Colorpicker Ewl_Colorpicker: The colour picking widget
  *
  * @{
  */
@@ -16,46 +15,53 @@
  */
 #define EWL_COLORPICKER(cp) ((Ewl_Colorpicker *) cp)
 
+/**
+ * The Ewl_Colorpicker
+ */
 typedef struct Ewl_Colorpicker Ewl_Colorpicker;
 
+/**
+ * @struct Ewl_Colorpicker
+ * This inherits from Ewl_Box to produce a color picker widget
+ */
 struct Ewl_Colorpicker
 {
-	Ewl_Box box;
+	Ewl_Box box;			/**< Inherit from Ewl_Box */
 	struct
 	{
-		Ewl_Widget *square;
-		Ewl_Widget *vertical;
-	} picker;
+		Ewl_Widget *square;	/**< The square picker box */
+		Ewl_Widget *vertical;	/**< The vertical picker box */
+	} picker;			/**< This holds the two picker boxes */
 
 	struct
 	{
-		Ewl_Widget *current;
-		Ewl_Widget *previous;
-	} preview;
+		Ewl_Widget *current;	/**< The current colour preview */
+		Ewl_Widget *previous;	/**< The previous colour preview */
+	} preview;			/**< The preview boxes */
 
 	struct
 	{
 		struct
 		{
-			Ewl_Widget *r;
-		 	Ewl_Widget *g;
-			Ewl_Widget *b;
-		} rgb;
+			Ewl_Widget *r;	/**< The red value */
+		 	Ewl_Widget *g;	/**< The green value */
+			Ewl_Widget *b;	/**< The blue value */
+		} rgb;			/**< The pickers RGB values */
 
 		struct
 		{
-			Ewl_Widget *h;
-			Ewl_Widget *s;
-			Ewl_Widget *v;
-		} hsv;
+			Ewl_Widget *h;	/**< The current hue */
+			Ewl_Widget *s;	/**< The current saturation */
+			Ewl_Widget *v;	/**< The current value */
+		} hsv;			/**< The pickers HSV values */
 
-		Ewl_Widget *alpha;
-	} spinners;
+		Ewl_Widget *alpha;	/**< The alpha value */
+	} spinners;			/**< The spinners to hold the different values */
 
-	Ewl_Color_Set previous;
-	Ewl_Color_Mode mode;
+	Ewl_Color_Set previous;		/**< The previous color */
+	Ewl_Color_Mode mode;		/**< The current mode */
 
-	unsigned int has_alpha:1;
+	unsigned int has_alpha:1;	/**< Does the picker deal with alpha values */
 };
 
 Ewl_Widget 	*ewl_colorpicker_new(void);
