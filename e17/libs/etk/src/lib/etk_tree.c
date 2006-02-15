@@ -770,13 +770,14 @@ void etk_tree_row_del(Etk_Tree_Row *row)
          break;
       }
    }
-   _etk_tree_row_free(row);
    
    if (!row->tree->frozen)
    {
       etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(row->tree->grid), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(row->tree->grid));
    }
+   
+   _etk_tree_row_free(row);
 }
 
 /**
