@@ -21,8 +21,8 @@ enum Ewl_Callback_Type
 	EWL_CALLBACK_UNREALIZE, /**< When a widget is no longer drawn */
 	EWL_CALLBACK_SHOW, /**< A widget has been marked visible */
 	EWL_CALLBACK_HIDE, /**< A widget is marked hidden */
-        EWL_CALLBACK_OBSCURE, /**< Widget is offscreen */
-        EWL_CALLBACK_REVEAL, /**< Widget returned to screen */
+	EWL_CALLBACK_OBSCURE, /**< Widget is offscreen */
+	EWL_CALLBACK_REVEAL, /**< Widget returned to screen */
 	EWL_CALLBACK_DESTROY, /**< The widget is freed */
 	EWL_CALLBACK_DELETE_WINDOW, /**< The window is being closed */
 	EWL_CALLBACK_CONFIGURE, /**< The object is being resized */
