@@ -2,8 +2,7 @@
 #define EWL_COLORDIALOG_H
 
 /**
- * @file ewl_colordialog.h
- * @defgroup Ewl_ColorDialog ColorDialog: A Simple Colour Dialog widget
+ * @defgroup Ewl_Colordialog Ewl_Colordialog: A Simple Colour Dialog widget
  *
  * @{
  */
@@ -16,12 +15,19 @@
  */
 #define EWL_COLORDIALOG(cd) ((Ewl_Colordialog *) cd)
 
+/**
+ * The Ewl_Colordialog
+ */
 typedef struct Ewl_Colordialog Ewl_Colordialog;
 
+/**
+ * @struct Ewl_Colordialog
+ * Inherit from the Ewl_Dialog to create a color dialog widget
+ */
 struct Ewl_Colordialog
 { 
-	Ewl_Dialog  dialog;
-	Ewl_Widget *picker;
+	Ewl_Dialog  dialog;	/**< Inherits from Ewl_Dialog */
+	Ewl_Widget *picker;	/**< Store the color picker widget */
 };
 
 Ewl_Widget 	*ewl_colordialog_new(void);

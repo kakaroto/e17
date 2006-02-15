@@ -7,9 +7,7 @@ static void ewl_colordialog_respond(Ewl_Colordialog *cd, unsigned int response);
 
 /**
  *  @return Returns a new Ewl_Colordialog widget
- *  
- *  This will display a colorpicker inside a window with an Ok and Cancel
- *  button. When the user hits one of the buttons
+ *  @brief Create a new Ewl_Colordialog widget
  */
 Ewl_Widget *
 ewl_colordialog_new(void)
@@ -87,6 +85,12 @@ ewl_colordialog_init(Ewl_Colordialog *cd)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+/**
+ * @param cd: The color dialog to set the alpha value on
+ * @param alpha: If the color dialog should show the alpha option
+ * @return Returns no value
+ * @brief This will set if the color dialog will show the alpha information
+ */
 void
 ewl_colordialog_has_alpha_set(Ewl_Colordialog *cd, unsigned int alpha)
 {
@@ -99,6 +103,12 @@ ewl_colordialog_has_alpha_set(Ewl_Colordialog *cd, unsigned int alpha)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param cd: The color dialog to get the alpha information from
+ * @return Returns TRUE if the color dialog is showing alpha information
+ * @brief This retrieves weither or not the color dialog is showing alpha
+ * information.
+ */
 unsigned int
 ewl_colordialog_has_alpha_get(Ewl_Colordialog *cd)
 {
@@ -113,6 +123,12 @@ ewl_colordialog_has_alpha_get(Ewl_Colordialog *cd)
 	DRETURN_INT(alpha, DLEVEL_STABLE);
 }
 
+/**
+ * @param cd: The color dialog to set the alpha into
+ * @param alpha: The alpha value to set into the color dialog
+ * @return Returns no value
+ * @brief Sets the alpha value of the @p cd dialog to @p alpha
+ */
 void
 ewl_colordialog_alpha_set(Ewl_Colordialog *cd, unsigned int alpha)
 {
@@ -125,6 +141,11 @@ ewl_colordialog_alpha_set(Ewl_Colordialog *cd, unsigned int alpha)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param cd: The color dialog to get the alpha value from
+ * @return Returns the current alpha value selected in the dialog
+ * @brief This retrieves the current alpha value selected in the dialog
+ */
 unsigned int
 ewl_colordialog_alpha_get(Ewl_Colordialog *cd)
 {
@@ -139,6 +160,14 @@ ewl_colordialog_alpha_get(Ewl_Colordialog *cd)
 	DRETURN_INT(alpha, DLEVEL_STABLE);
 }
 
+/**
+ * @param cd: The color dialog to set the rgb values into
+ * @param r: The red value to set
+ * @param g: The green value to set
+ * @param b: The blue value to set
+ * @return Returns no value.
+ * @brief This sets the given rbg information into the color dialog
+ */
 void
 ewl_colordialog_current_rgb_set(Ewl_Colordialog *cd, unsigned int r,
 				unsigned int g, unsigned int b)
@@ -152,6 +181,14 @@ ewl_colordialog_current_rgb_set(Ewl_Colordialog *cd, unsigned int r,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param cd: The color dialog to get the rgb information from
+ * @param r: Where to store the red value
+ * @param g: Where to store the green value
+ * @param b: Where to store the blue value
+ * @return Returns no value.
+ * @brief This will retrieve the rgb values from the color dialog
+ */
 void
 ewl_colordialog_current_rgb_get(Ewl_Colordialog *cd, unsigned int *r,
 				unsigned int *g, unsigned int *b)
@@ -165,6 +202,15 @@ ewl_colordialog_current_rgb_get(Ewl_Colordialog *cd, unsigned int *r,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param cd: The color dialog to set the previous rgb values into
+ * @param r: The red value to set
+ * @param g: The green value to set
+ * @param b: The blue value to set
+ * @return Returns no value.
+ * @brief This sets the given rgb values as the color to display in the
+ * previous color box of the color dialog.
+ */
 void
 ewl_colordialog_previous_rgb_set(Ewl_Colordialog *cd, unsigned int r,
 				unsigned int g, unsigned int b)
@@ -178,6 +224,15 @@ ewl_colordialog_previous_rgb_set(Ewl_Colordialog *cd, unsigned int r,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param cd: The color dialog to get the rgb information from
+ * @param r: Where to store the red value
+ * @param g: Where to store the green value
+ * @param b: Where to store the blue value
+ * @return Returns no value.
+ * @brief This will retrieve the value current set into the previous color box of
+ * the color dialog rgb values from the color dialog
+ */
 void
 ewl_colordialog_previous_rgb_get(Ewl_Colordialog *cd, unsigned int *r,
 				unsigned int *g, unsigned int *b)
@@ -191,6 +246,12 @@ ewl_colordialog_previous_rgb_get(Ewl_Colordialog *cd, unsigned int *r,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param cd: The color dialog to set the mode of
+ * @param type: The mode to set on the color dialog
+ * @return Returns no value.
+ * @brief Sets the color dialog mode to @p type
+ */
 void
 ewl_colordialog_color_mode_set(Ewl_Colordialog *cd, Ewl_Color_Mode type)
 {
@@ -203,6 +264,12 @@ ewl_colordialog_color_mode_set(Ewl_Colordialog *cd, Ewl_Color_Mode type)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param cd: The color dialog to get the mode from
+ * @return Returns the current mode of the color dialog
+ * @brief This will retrive the current Ewl_Color_Mode set on the color
+ * dialog
+ */
 Ewl_Color_Mode
 ewl_colordialog_color_mode_get(Ewl_Colordialog *cd)
 {
