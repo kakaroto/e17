@@ -626,6 +626,37 @@ ewl_window_dnd_aware_set(Ewl_Window *win)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param win: The window to set the selection on
+ * @param txt: The text to set into the selection
+ * @return Returns no value.
+ *
+ ' @brief This will set the given @a txt as the selection text on the window
+ * or clear the text if @a txt is NULL
+ */
+void
+ewl_window_selection_text_set(Ewl_Window *win, const char *txt)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+
+	/* XXX this needs to be SOFTWARE_X11 and GL_X11 */
+#ifdef ENABLE_EWL_SOFTWARE_X11
+	if (ewl_config.evas.engine & EWL_ENGINE_X11)
+	{
+		if (txt) 
+			ecore_x_selection_primary_set(
+					(Ecore_X_Window)win->window, 
+					(char *)txt, strlen(txt) + 1);
+		else
+			ecore_x_selection_primary_clear();
+	}
+#endif
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 void
 ewl_window_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
