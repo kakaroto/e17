@@ -38,7 +38,7 @@ ewl_radiobutton_new(void)
 int
 ewl_radiobutton_init(Ewl_Radiobutton *rb)
 {
-	Ewl_CheckButton *cb;
+	Ewl_Checkbutton *cb;
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -102,7 +102,7 @@ void
 ewl_radiobutton_clicked_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
-	Ewl_CheckButton *cb;
+	Ewl_Checkbutton *cb;
 	Ewl_Radiobutton *rb;
 	int oc;
 
@@ -115,7 +115,7 @@ ewl_radiobutton_clicked_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	oc = ewl_checkbutton_is_checked(cb);
 
 	if (rb->chain && !ecore_list_is_empty(rb->chain)) {
-		Ewl_CheckButton *c;
+		Ewl_Checkbutton *c;
 
 		ecore_list_goto_first(rb->chain);
 		while ((c = ecore_list_next(rb->chain)) != NULL) {

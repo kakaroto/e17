@@ -30,12 +30,12 @@ typedef struct Ewl_Radiobutton Ewl_Radiobutton;
 #define EWL_RADIOBUTTON(button) ((Ewl_Radiobutton *) button)
 
 /**
- * Inherits from  Ewl_CheckButton and extends it to provide grouping buttons
+ * Inherits from  Ewl_Checkbutton and extends it to provide grouping buttons
  * to limit to a single selection in a group at a given time.
  */
 struct Ewl_Radiobutton
 {
-	Ewl_CheckButton   button; /**< Inherit from Ewl_CheckButton */
+	Ewl_Checkbutton   button; /**< Inherit from Ewl_Checkbutton */
 	Ecore_List       *chain; /**< List of members of the group */
 };
 
@@ -46,7 +46,7 @@ void            ewl_radiobutton_chain_set(Ewl_Radiobutton *w, Ewl_Radiobutton *c
 
 /**
  * @def ewl_radiobutton_checked_set(r, c)
- * Shortcut for setting the checked status on the inherited Ewl_CheckButton
+ * Shortcut for setting the checked status on the inherited Ewl_Checkbutton
  * fields.
  */
 #define ewl_radiobutton_checked_set(r, c) \
@@ -54,7 +54,7 @@ void            ewl_radiobutton_chain_set(Ewl_Radiobutton *w, Ewl_Radiobutton *c
 
 /**
  * @def ewl_radiobutton_is_checked(r)
- * Shortcut for checking the checked status on the inherited Ewl_CheckButton
+ * Shortcut for checking the checked status on the inherited Ewl_Checkbutton
  * fields.
  */
 #define ewl_radiobutton_is_checked(r) \
