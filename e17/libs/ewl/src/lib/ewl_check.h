@@ -1,10 +1,8 @@
-#ifndef _EWL_CHECK_H_
-#define _EWL_CHECK_H_
+#ifndef EWL_CHECK_H
+#define EWL_CHECK_H
 
 /**
- * @file ewl_check.h
- *
- * @defgroup Ewl_Check Check: The Simple Check for a Checkbutton
+ * @defgroup Ewl_Check Ewl_Check: The Simple Check for a Checkbutton
  * Defines a widget with single purpose of providing a button with a checked
  * state, without any extra decorating.
  *
@@ -37,8 +35,8 @@ typedef struct Ewl_Check Ewl_Check;
  */
 struct Ewl_Check
 {
-	Ewl_Widget      w; /**< Inherit from Ewl_Widget */
-	int             checked; /**< Indicates if this is checked */
+	Ewl_Widget w; /**< Inherit from Ewl_Widget */
+	int checked; /**< Indicates if this is checked */
 };
 
 Ewl_Widget     *ewl_check_new(void);

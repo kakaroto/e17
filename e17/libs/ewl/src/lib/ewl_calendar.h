@@ -1,12 +1,11 @@
-#ifndef __EWL_CALENDAR_H__
-#define __EWL_CALENDAR_H__
+#ifndef EWL_CALENDAR_H
+#define EWL_CALENDAR_H
 
 /**
- * @file ewl_calendar.h
- * @defgroup Ewl_Calendar Calendar: The EWL Calendar Widget
+ * @defgroup Ewl_Calendar Ewl_Calendar: The EWL Calendar Widget
  * @brief Defines the Ewl_Calendar class  
- * Defined the Ewl_Calendar class, allowing selection of a day in time
  *
+ * @{
  */
 
 /** 
@@ -16,6 +15,9 @@
 
 #define EWL_CALENDAR_TYPE "calendar"
 
+/**
+ * The Ewl_Calendar structure
+ */
 typedef struct Ewl_Calendar Ewl_Calendar;
 
 /**
@@ -31,21 +33,25 @@ typedef struct Ewl_Calendar Ewl_Calendar;
  */
 struct Ewl_Calendar
 {
-	Ewl_Box	box; /**< Inherit from Ewl_Box */
+	Ewl_Box	box; 			/**< Inherit from Ewl_Box */
 
-	int cur_day;
-	int cur_month;
-	int cur_year;
-	Ewl_Widget *grid;
-	Ewl_Widget *month_label;
+	int cur_day;			/**< The current day selected */
+	int cur_month;			/**< The current month selected */
+	int cur_year;			/**< The current year selected */
+	Ewl_Widget *grid;		/**< The layout grid */
+	Ewl_Widget *month_label;	/**< The month label */
 };
 
 Ewl_Widget	*ewl_calendar_new(void);
 int		 ewl_calendar_init(Ewl_Calendar *calendar);
-char * 		 ewl_calendar_ascii_time_get(Ewl_Calendar *cal);
+char  		*ewl_calendar_ascii_time_get(Ewl_Calendar *cal);
 int 		 ewl_calendar_day_get(Ewl_Calendar *c);
 int 		 ewl_calendar_month_get(Ewl_Calendar *c);
 int 		 ewl_calendar_year_get(Ewl_Calendar *c);
+
+/**
+ * @}
+ */
 
 #endif
 

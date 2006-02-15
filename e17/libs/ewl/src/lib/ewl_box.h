@@ -1,9 +1,8 @@
-#ifndef __EWL_BOX_H__
-#define __EWL_BOX_H__
+#ifndef EWL_BOX_H
+#define EWL_BOX_H
 
 /**
- * @file ewl_box.h
- * @defgroup Ewl_Box Box: The Box Layout Container.
+ * @defgroup Ewl_Box Ewl_Box: The Box Layout Container.
  * @brief Defines the Ewl_Box class used for laying out Ewl_Widget's in a
  * horizontal or vertical line.
  *
@@ -77,4 +76,4 @@ void            ewl_box_configure_homogeneous_cb(Ewl_Widget *w, void *ev_data,
  * @}
  */
 
-#endif				/* __EWL_BOX_H__ */
+#endif

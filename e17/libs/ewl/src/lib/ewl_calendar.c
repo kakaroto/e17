@@ -156,6 +156,7 @@ ewl_calendar_ascii_time_get(Ewl_Calendar *cal)
 /**
  * @param c: The Ewl_Calendar to get the day from
  * @return Returns the day currently selected in the calendar
+ * @brief Returns the current day selected in the calendar
  */
 int
 ewl_calendar_day_get(Ewl_Calendar *c) 
@@ -170,6 +171,7 @@ ewl_calendar_day_get(Ewl_Calendar *c)
 /**
  * @param c: The Ewl_Calendar to get the month from
  * @return Returns the month currently selected in the calendar
+ * @brief Returns the month selected in the calendar
  */
 int
 ewl_calendar_month_get(Ewl_Calendar *c) 
@@ -184,6 +186,7 @@ ewl_calendar_month_get(Ewl_Calendar *c)
 /**
  * @param c: The Ewl_Calendar to get the year from
  * @return Returns the current year selected in the calendar
+ * @brief Returns the year currently selected in the calendar
  */
 int
 ewl_calendar_year_get(Ewl_Calendar *c) 

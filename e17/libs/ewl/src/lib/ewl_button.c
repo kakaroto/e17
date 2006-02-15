@@ -155,6 +155,7 @@ ewl_button_label_get(Ewl_Button *b)
  * @param b: The button to set the stock type on
  * @param stock: The Ewl_Stock_Type to set on the button
  * @return Returns no value.
+ * @brief Set the type of the stock button to use
  */
 void
 ewl_button_stock_type_set(Ewl_Button *b, Ewl_Stock_Type stock)
@@ -195,6 +196,7 @@ ewl_button_stock_type_set(Ewl_Button *b, Ewl_Stock_Type stock)
 /**
  * @param b: The button to get the stock type from
  * @return Returns the Ewl_Stock_Type of the button
+ * @brief Get the stock button type in use
  */
 Ewl_Stock_Type 
 ewl_button_stock_type_get(Ewl_Button *b)
@@ -211,6 +213,7 @@ ewl_button_stock_type_get(Ewl_Button *b)
  * @param file: The file to use for the image
  * @param key: The edje key to use for the image (or NULL if not using edje)
  * @return Returns no value.
+ * @brief Set the image file @p file and the image key @p key to use
  */
 void
 ewl_button_image_set(Ewl_Button *b, const char *file, const char *key)
@@ -235,6 +238,7 @@ ewl_button_image_set(Ewl_Button *b, const char *file, const char *key)
 /**
  * @param b: The button to the the image file from
  * @return Returns the image file used in the button or NULL on failure
+ * @brief Get the image file used by the button
  */
 const char *
 ewl_button_image_get(Ewl_Button *b)
