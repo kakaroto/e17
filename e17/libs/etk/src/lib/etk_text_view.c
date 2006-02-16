@@ -23,6 +23,7 @@ static void _etk_text_view_destructor(Etk_Text_View *text_view);
 static void _etk_text_view_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_text_view_realize_cb(Etk_Object *object, void *data);
 static void _etk_text_view_unrealize_cb(Etk_Object *object, void *data);
+static void _etk_text_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Up_Down *event, void *data);
 
 static Etk_Signal *_etk_text_view_signals[ETK_TEXT_VIEW_NUM_SIGNALS];
 
@@ -77,6 +78,7 @@ static void _etk_text_view_constructor(Etk_Text_View *text_view)
 
    etk_signal_connect("realize", ETK_OBJECT(text_view), ETK_CALLBACK(_etk_text_view_realize_cb), NULL);
    etk_signal_connect("unrealize", ETK_OBJECT(text_view), ETK_CALLBACK(_etk_text_view_unrealize_cb), NULL);
+   etk_signal_connect("key_down", ETK_OBJECT(text_view), ETK_CALLBACK(_etk_text_view_key_down_cb), NULL);
 }
 
 /* Destroys the text view */
@@ -133,6 +135,20 @@ static void _etk_text_view_unrealize_cb(Etk_Object *object, void *data)
       etk_widget_member_object_del(ETK_WIDGET(text_view), text_view->textblock->smart_object);
       etk_textblock_unrealize(text_view->textblock);
    }
+}
+
+/* Called when a key is pressed */
+static void _etk_text_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Up_Down *event, void *data)
+{
+   Etk_Text_View *text_view;
+
+   if (!(text_view = ETK_TEXT_VIEW(object)) || !event)
+      return;
+   
+   if (strcmp(event->key, "Left") == 0)
+      etk_textblock_iter_go_to_prev_char(text_view->textblock->cursor);
+   else if (strcmp(event->key, "Right") == 0)
+      etk_textblock_iter_go_to_next_char(text_view->textblock->cursor);
 }
 
 /** @} */

@@ -10,6 +10,7 @@
 
 static void _etk_textblock_constructor(Etk_Textblock *textblock);
 static void _etk_textblock_destructor(Etk_Textblock *textblock);
+static void _etk_textblock_cursor_object_update(Etk_Textblock *textblock);
 static void _etk_textblock_object_evas_set(Etk_Textblock *textblock, Evas *new_evas);
 
 static void _etk_textblock_smart_move_cb(Evas_Object *obj, Evas_Coord x, Evas_Coord y);
@@ -91,6 +92,12 @@ void etk_textblock_realize(Etk_Textblock *textblock, Evas *evas)
    evas_object_smart_member_add(textblock->clip, textblock->smart_object);
    evas_object_lower(textblock->clip);*/
    /* TODO: realize: creates selection rects, clip, cursor, timer  */
+   
+   textblock->cursor_object = evas_object_rectangle_add(evas);
+   /* TODO: theme */
+   evas_object_color_set(textblock->cursor_object, 255, 128, 0, 80);
+   evas_object_smart_member_add(textblock->cursor_object, textblock->smart_object);
+   _etk_textblock_cursor_object_update(textblock);
 }
 
 /* TODO: doc */
@@ -169,6 +176,52 @@ void etk_textblock_iter_copy(Etk_Textblock_Iter *iter, Etk_Textblock_Iter *dest_
    evas_textblock_cursor_copy(iter->cursor, dest_iter->cursor);
 }
 
+/* TODO: doc */
+void etk_textblock_iter_go_to_start(Etk_Textblock_Iter *iter)
+{
+   if (!iter || !iter->textblock || !iter->cursor)
+      return;
+   
+   evas_textblock_cursor_node_first(iter->cursor);
+   while (!evas_textblock_cursor_node_text_get(iter->cursor) && evas_textblock_cursor_node_next(iter->cursor));
+   evas_textblock_cursor_char_first(iter->cursor);
+   
+   _etk_textblock_cursor_object_update(iter->textblock);
+}
+
+/* TODO: doc */
+void etk_textblock_iter_go_to_end(Etk_Textblock_Iter *iter)
+{
+   if (!iter || !iter->textblock || !iter->cursor)
+      return;
+   
+   evas_textblock_cursor_node_last(iter->cursor);
+   while (!evas_textblock_cursor_node_text_get(iter->cursor) && evas_textblock_cursor_node_prev(iter->cursor));
+   evas_textblock_cursor_char_last(iter->cursor);
+   
+   _etk_textblock_cursor_object_update(iter->textblock);
+}
+
+/* TODO: doc */
+void etk_textblock_iter_go_to_prev_char(Etk_Textblock_Iter *iter)
+{
+   if (!iter || !iter->textblock || !iter->cursor)
+      return;
+   
+   evas_textblock_cursor_char_prev(iter->cursor);
+   _etk_textblock_cursor_object_update(iter->textblock);
+}
+
+/* TODO: doc */
+void etk_textblock_iter_go_to_next_char(Etk_Textblock_Iter *iter)
+{
+   if (!iter || !iter->textblock || !iter->cursor)
+      return;
+   
+   evas_textblock_cursor_char_next(iter->cursor);
+   _etk_textblock_cursor_object_update(iter->textblock);
+}
+
 /**************************
  *
  * Etk specific functions
@@ -245,7 +298,7 @@ static void _etk_textblock_constructor(Etk_Textblock *textblock)
    
    textblock->textblock_object = evas_object_textblock_add(_etk_textblock_evas);
    evas_object_textblock_style_set(textblock->textblock_object, _etk_textblock_style);
-   /* TODO; does it need to be shown */
+   /* TODO: does it need to be shown */
    evas_object_show(textblock->textblock_object);
    
    textblock->cursor = etk_textblock_iter_new(textblock);
@@ -281,6 +334,8 @@ static void _etk_textblock_constructor(Etk_Textblock *textblock)
       "plutôt naïve Louÿs rêva crapaüter Íosa Úrmhac Óighe pór Éava Ádhaim"
       "</blockquote>"
       );
+      
+   etk_textblock_iter_go_to_start(textblock->cursor);
 }
 
 /* Destroys the textblock */
@@ -329,6 +384,23 @@ static void _etk_textblock_destructor(Etk_Textblock *textblock)
  *
  **************************/
 
+/* Updates the position and the size of the cursor object */
+static void _etk_textblock_cursor_object_update(Etk_Textblock *textblock)
+{
+   Evas_Coord tbx, tby;
+   Evas_Coord cx, cy, cw, ch;
+   
+   if (!textblock || !textblock->cursor || !textblock->cursor->cursor)
+      return;
+   if (!textblock->textblock_object || !textblock->cursor_object)
+      return;
+   
+   evas_object_geometry_get(textblock->textblock_object, &tbx, &tby, NULL, NULL);
+   evas_textblock_cursor_char_geometry_get(textblock->cursor->cursor, &cx, &cy, &cw, &ch);
+   evas_object_move(textblock->cursor_object, tbx + cx, tby + cy);
+   evas_object_resize(textblock->cursor_object, cw, ch);
+}
+
 /* Changes the evas used by the textblock object */
 static void _etk_textblock_object_evas_set(Etk_Textblock *textblock, Evas *new_evas)
 {
@@ -370,6 +442,9 @@ static void _etk_textblock_object_evas_set(Etk_Textblock *textblock, Evas *new_e
       for (l = textblock->iterators; l; l = l->next)
       {
          iter = l->data;
+         if (iter->evas_changed)
+            continue;
+         
          evas_textblock_cursor_char_first(old_cursor);
          if (evas_textblock_cursor_compare(old_cursor, iter->cursor) <= 0)
          {
@@ -380,7 +455,6 @@ static void _etk_textblock_object_evas_set(Etk_Textblock *textblock, Evas *new_e
                iter->cursor = evas_object_textblock_cursor_new(new_tbo);
                evas_textblock_cursor_copy(new_cursor, iter->cursor);
                evas_textblock_cursor_pos_set(iter->cursor, evas_textblock_cursor_pos_get(cursor));
-               
                evas_textblock_cursor_free(cursor);
                iter->evas_changed = ETK_TRUE;
             }
@@ -425,6 +499,12 @@ static void _etk_textblock_object_evas_set(Etk_Textblock *textblock, Evas *new_e
    textblock->textblock_object = new_tbo;
 }
 
+/**************************
+ *
+ * Smart object functions
+ *
+ **************************/
+
 /* Called when the smart object of the textblock is moved */
 static void _etk_textblock_smart_move_cb(Evas_Object *obj, Evas_Coord x, Evas_Coord y)
 {
@@ -448,11 +528,12 @@ static void _etk_textblock_smart_resize_cb(Evas_Object *obj, Evas_Coord w, Evas_
    if (!obj || !(textblock = evas_object_smart_data_get(obj)))
       return;
    
-   /* TODO: smart_resize: update selection_rects, cursor_object  */
+   /* TODO: smart_resize: update selection_rects  */
    if (textblock->textblock_object)
       evas_object_resize(textblock->textblock_object, w, h);
    if (textblock->clip)
       evas_object_resize(textblock->clip, w, h);
+   _etk_textblock_cursor_object_update(textblock);
 }
 
 /* Called when the smart object of the textblock is shown */

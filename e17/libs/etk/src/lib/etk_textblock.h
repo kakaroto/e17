@@ -63,6 +63,12 @@ Etk_Textblock_Iter *etk_textblock_iter_new(Etk_Textblock *textblock);
 void etk_textblock_iter_free(Etk_Textblock_Iter *iter);
 void etk_textblock_iter_copy(Etk_Textblock_Iter *iter, Etk_Textblock_Iter *dest_iter);
 
+void etk_textblock_iter_go_to_start(Etk_Textblock_Iter *iter);
+void etk_textblock_iter_go_to_end(Etk_Textblock_Iter *iter);
+
+void etk_textblock_iter_go_to_prev_char(Etk_Textblock_Iter *iter);
+void etk_textblock_iter_go_to_next_char(Etk_Textblock_Iter *iter);
+
 /** @} */
 
 #endif
