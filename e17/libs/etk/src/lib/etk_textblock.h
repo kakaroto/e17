@@ -27,6 +27,7 @@ struct _Etk_Textblock_Iter
 {
    Evas_Textblock_Cursor *cursor;
    Etk_Textblock *textblock;
+   Etk_Bool evas_changed;
 };
 
 /**
@@ -57,6 +58,10 @@ Etk_Textblock *etk_textblock_new();
 
 void etk_textblock_realize(Etk_Textblock *textblock, Evas *evas);
 void etk_textblock_unrealize(Etk_Textblock *textblock);
+
+Etk_Textblock_Iter *etk_textblock_iter_new(Etk_Textblock *textblock);
+void etk_textblock_iter_free(Etk_Textblock_Iter *iter);
+void etk_textblock_iter_copy(Etk_Textblock_Iter *iter, Etk_Textblock_Iter *dest_iter);
 
 /** @} */
 
