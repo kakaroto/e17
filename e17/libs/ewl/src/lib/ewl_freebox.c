@@ -257,8 +257,8 @@ ewl_freebox_layout_auto(Ewl_Freebox *fb)
 	cur_x = base_x;
 
 	c = EWL_CONTAINER(fb);
-	ecore_list_goto_first(c->children);
-	while ((child = ecore_list_next(c->children)))
+	ecore_dlist_goto_first(c->children);
+	while ((child = ecore_dlist_next(c->children)))
 	{
 		int child_h, child_w;
 
@@ -332,14 +332,14 @@ ewl_freebox_layout_comparator(Ewl_Freebox *fb)
 				ewl_container_child_count_get(EWL_CONTAINER(fb)));
 
 		/* stick it all in the heap */
-		while ((child = ecore_list_remove_first(c->children)))
+		while ((child = ecore_dlist_remove_first(c->children)))
 			ecore_sheap_insert(sheap, child);
 
 		ecore_sheap_sort(sheap);
 
 		/* pull it from the heap and stick back into the container */
 		while ((child = ecore_sheap_extract(sheap)))
-			ecore_list_append(c->children, child);
+			ecore_dlist_append(c->children, child);
 
 		ecore_sheap_destroy(sheap);
 

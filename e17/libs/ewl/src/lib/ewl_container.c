@@ -39,7 +39,7 @@ ewl_container_init(Ewl_Container *c)
 	/*
 	 * Initialize the fields specific to the container class.
 	 */
-	c->children = ecore_list_new();
+	c->children = ecore_dlist_new();
 
 	/*
 	 * All containers need to perform the function of updating the
@@ -191,7 +191,7 @@ ewl_container_child_append(Ewl_Container *pc, Ewl_Widget *child)
 	while (pc->redirect)
 		pc = pc->redirect;
 
-	ecore_list_append(pc->children, child);
+	ecore_dlist_append(pc->children, child);
 	ewl_widget_parent_set(child, EWL_WIDGET(pc));
 	ewl_container_child_add_call(pc, child);
 
@@ -226,7 +226,7 @@ ewl_container_child_prepend(Ewl_Container *pc, Ewl_Widget *child)
 	while (pc->redirect)
 		pc = pc->redirect;
 
-	ecore_list_prepend(pc->children, child);
+	ecore_dlist_prepend(pc->children, child);
 	ewl_widget_parent_set(child, EWL_WIDGET(pc));
 	ewl_container_child_add_call(pc, child);
 
@@ -260,22 +260,22 @@ ewl_container_child_insert_helper(Ewl_Container *pc, Ewl_Widget *child,
 		pc = pc->redirect;
 
 	/* find our insertion point */
-	ecore_list_goto_first(pc->children);
-	while ((cur = ecore_list_current(pc->children)))
+	ecore_dlist_goto_first(pc->children);
+	while ((cur = ecore_dlist_current(pc->children)))
 	{
 		if (skip_internal && ewl_widget_internal_is(cur)) 
 		{
-			ecore_list_next(pc->children);
+			ecore_dlist_next(pc->children);
 			continue;
 		}
 
 		if (idx == index) break;
 
 		idx++;
-		ecore_list_next(pc->children);
+		ecore_dlist_next(pc->children);
 	}
 
-	ecore_list_insert(pc->children, child);
+	ecore_dlist_insert(pc->children, child);
 	ewl_widget_parent_set(child, EWL_WIDGET(pc));
 	ewl_container_child_add_call(pc, child);
 
@@ -360,19 +360,24 @@ ewl_container_child_remove(Ewl_Container *pc, Ewl_Widget *child)
 			pc = pc->redirect;
 	}
 
-	/*
-	 * First remove reference to the parent if necessary.
-	 */
-	if (EWL_CONTAINER(child->parent) == pc)
-		ewl_widget_parent_set(child, NULL);
-
 	if (!pc->children)
 		DRETURN(DLEVEL_STABLE);
 
 	/*
+	 * First remove reference to the parent if necessary.
+	 * Bail out after setting the parent as that will get us back here
+	 * with a NULL parent on the widget.
+	 *
+	 */
+	if (EWL_CONTAINER(child->parent) == pc) {
+		ewl_widget_parent_set(child, NULL);
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	/*
 	 * Traverse the list to the child.
 	 */
-	temp = ecore_list_goto(pc->children, child);
+	temp = ecore_dlist_goto(pc->children, child);
 
 	/*
 	 * If the child isn't found, then this isn't it's parent.
@@ -382,12 +387,12 @@ ewl_container_child_remove(Ewl_Container *pc, Ewl_Widget *child)
 	}
 
 	/* get the index of the widget we are removing */
-	idx = ecore_list_index(pc->children);
+	idx = ecore_dlist_index(pc->children);
 
 	/*
 	 * Remove the child from the parent and set the childs parent to NULL
 	 */
-	ecore_list_remove(pc->children);
+	ecore_dlist_remove(pc->children);
 	if (VISIBLE(child) && REALIZED(child))
 		ewl_container_child_hide_call(pc, child);
 	ewl_container_child_remove_call(pc, child, idx);
@@ -414,8 +419,8 @@ ewl_container_child_count_get_helper(Ewl_Container *c, int skip)
 	container = c;
 	while (container->redirect) container = container->redirect;
 
-	ecore_list_goto_first(container->children);
-	while ((child = ecore_list_next(container->children)))
+	ecore_dlist_goto_first(container->children);
+	while ((child = ecore_dlist_next(container->children)))
 	{
 		if (skip && ewl_widget_internal_is(child)) continue;
 		count++;
@@ -477,9 +482,9 @@ ewl_container_child_helper_get(Ewl_Container *parent, int index,
 	container = parent;
 	while (container->redirect) container = container->redirect;
 
-	ecore_list_goto_first(container->children);
+	ecore_dlist_goto_first(container->children);
 
-	while ((child = ecore_list_next(container->children))) {
+	while ((child = ecore_dlist_next(container->children))) {
 		if (skip && ewl_widget_internal_is(child)) continue;
 		if (count == index) break;
 		count ++;
@@ -547,8 +552,8 @@ ewl_container_child_index_helper_get(Ewl_Container *parent, Ewl_Widget *w,
 	container = parent;
 	while (container->redirect) container = container->redirect;
 
-	ecore_list_goto_first(container->children);
-	while ((child = ecore_list_next(container->children))) {
+	ecore_dlist_goto_first(container->children);
+	while ((child = ecore_dlist_next(container->children))) {
 		if (skip && ewl_widget_internal_is(child)) continue;
 		if (child == w) break;
 		idx ++;
@@ -685,15 +690,15 @@ ewl_container_child_at_get(Ewl_Container *widget, int x, int y)
 	DCHECK_PARAM_PTR_RET("widget", widget, NULL);
 	DCHECK_TYPE("widget", widget, EWL_WIDGET_TYPE);
 
-	if (!widget->children || ecore_list_is_empty(widget->children))
+	if (!widget->children || ecore_dlist_is_empty(widget->children))
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ecore_list_goto_first(widget->children);
+	ecore_dlist_goto_first(widget->children);
 
 	/*
 	 * Search through the children to find an intersecting child.
 	 */
-	while ((child = ecore_list_next(EWL_CONTAINER(widget)->children))) {
+	while ((child = ecore_dlist_next(EWL_CONTAINER(widget)->children))) {
 		if (x >= (CURRENT_X(child) - INSET_LEFT(child))
 		    && y >= (CURRENT_Y(child) - INSET_TOP(child))
 		    && (CURRENT_X(child) + CURRENT_W(child) +
@@ -729,7 +734,7 @@ ewl_container_child_at_recursive_get(Ewl_Container *widget, int x, int y)
 	DCHECK_PARAM_PTR_RET("widget", widget, NULL);
 	DCHECK_TYPE_RET("widget", widget, EWL_WIDGET_TYPE, NULL);
 
-	if (!widget->children || ecore_list_is_empty(widget->children))
+	if (!widget->children || ecore_dlist_is_empty(widget->children))
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	/*
@@ -785,8 +790,8 @@ ewl_container_reset(Ewl_Container *c)
 	/*
 	 * Loop through removing each child and destroying it.
 	 */
-	ecore_list_goto_first(c->children);
-	while ((w = ecore_list_current(c->children))) {
+	ecore_dlist_goto_first(c->children);
+	while ((w = ecore_dlist_current(c->children))) {
 		if (!ewl_object_flags_has(EWL_OBJECT(w),
 					EWL_FLAG_PROPERTY_INTERNAL,
 					EWL_FLAGS_PROPERTY_MASK)) {
@@ -796,10 +801,10 @@ ewl_container_reset(Ewl_Container *c)
 			 * Start over in case the list was modified from a
 			 * callback.
 			 */
-			ecore_list_goto_first(c->children);
+			ecore_dlist_goto_first(c->children);
 		}
 		else
-			ecore_list_next(c->children);
+			ecore_dlist_next(c->children);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -825,7 +830,7 @@ ewl_container_child_iterate_begin(Ewl_Container *c)
 	while (c->redirect)
 		c = c->redirect;
 
-	ecore_list_goto_first(c->children);
+	ecore_dlist_goto_first(c->children);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -851,7 +856,7 @@ ewl_container_child_next(Ewl_Container *c)
 		w = c->iterator(c);
 	}
 	else {
-		while ((w = ecore_list_next(c->children)) &&
+		while ((w = ecore_dlist_next(c->children)) &&
 				(ewl_widget_internal_is(w)));
 	}
 
@@ -972,8 +977,8 @@ ewl_container_largest_prefer(Ewl_Container *c, Ewl_Orientation o)
 		set_size = ewl_object_preferred_inner_h_set;
 	}
 
-	ecore_list_goto_first(c->children);
-	while ((child = ecore_list_next(c->children))) {
+	ecore_dlist_goto_first(c->children);
+	while ((child = ecore_dlist_next(c->children))) {
 		if (VISIBLE(child) && REALIZED(child)) {
 			curr_size = get_size(child);
 			if (curr_size > max_size)
@@ -1013,8 +1018,8 @@ ewl_container_sum_prefer(Ewl_Container *c, Ewl_Orientation o)
 		set_size = ewl_object_preferred_inner_h_set;
 	}
 
-	ecore_list_goto_first(c->children);
-	while ((child = ecore_list_next(c->children))) {
+	ecore_dlist_goto_first(c->children);
+	while ((child = ecore_dlist_next(c->children))) {
 		if (VISIBLE(child) && REALIZED(child))
 			curr_size += get_size(child);
 	}
@@ -1155,14 +1160,14 @@ ewl_container_destroy(Ewl_Container *c)
 		 * Destroy any children still in the container. Do not remove
 		 * in order to avoid list walking.
 		 */
-		while ((child = ecore_list_goto_first(c->children))) {
+		while ((child = ecore_dlist_goto_first(c->children))) {
 			ewl_widget_destroy(child);
 		}
 
 		/*
 		 * Destroy the container list and set it to NULL.
 		 */
-		ecore_list_destroy(c->children);
+		ecore_dlist_destroy(c->children);
 		c->children = NULL;
 	}
 
@@ -1251,8 +1256,8 @@ ewl_container_reparent_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	/*
 	 * Reparent all of the containers children
 	 */
-	ecore_list_goto_first(EWL_CONTAINER(w)->children);
-	while ((child = ecore_list_next(EWL_CONTAINER(w)->children)) != NULL) {
+	ecore_dlist_goto_first(EWL_CONTAINER(w)->children);
+	while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children)) != NULL) {
 		ewl_widget_reparent(child);
 	}
 
@@ -1286,8 +1291,8 @@ ewl_container_obscure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	 * obscured.
 	 */
 	if (c->children) {
-		ecore_list_goto_first(c->children);
-		while ((w = ecore_list_next(c->children))) {
+		ecore_dlist_goto_first(c->children);
+		while ((w = ecore_dlist_next(c->children))) {
 			if (REALIZED(w))
 				ewl_widget_obscure(w);
 		}
@@ -1356,7 +1361,7 @@ ewl_container_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	c = EWL_CONTAINER(w);
 
-	if (!c->children || ecore_list_is_empty(c->children))
+	if (!c->children || ecore_dlist_is_empty(c->children))
 		DRETURN(DLEVEL_STABLE);
 
 	/*
@@ -1365,7 +1370,7 @@ ewl_container_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 * to update it's evas related fields to the new information, and then
 	 * realize any of them that should be visible.
 	 */
-	while ((child = ecore_list_goto_index(c->children, i))) {
+	while ((child = ecore_dlist_goto_index(c->children, i))) {
 		ewl_callback_call_with_event_data(child, EWL_CALLBACK_REPARENT,
 				c);
 		if (VISIBLE(child))
@@ -1424,8 +1429,8 @@ ewl_container_unrealize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 * exist at this point. Is this legitimate ordering?
 	 */
 	if (c->children) {
-		ecore_list_goto_first(c->children);
-		while ((child = ecore_list_next(c->children))) {
+		ecore_dlist_goto_first(c->children);
+		while ((child = ecore_dlist_next(c->children))) {
 			ewl_widget_unrealize(child);
 		}
 	}

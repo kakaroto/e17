@@ -132,8 +132,8 @@ ewl_paned_orientation_set(Ewl_Paned *p, Ewl_Orientation o)
 	if (p->orientation == o)
 		DRETURN(DLEVEL_STABLE);
 
-	ecore_list_goto_first(EWL_CONTAINER(p)->children);
-	while ((child = ecore_list_next(EWL_CONTAINER(p)->children)))
+	ecore_dlist_goto_first(EWL_CONTAINER(p)->children);
+	while ((child = ecore_dlist_next(EWL_CONTAINER(p)->children)))
 	{
 		/* Update each internal child to have the correct
 		 * appearance/orientation. XXX This assumes that all 
@@ -211,14 +211,14 @@ ewl_paned_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	/* check first widget */
-	child = ecore_list_goto_first(c->children);
+	child = ecore_dlist_goto_first(c->children);
 
 	/* if there are no children remaining in the container we're done */
 	if (!child) 
 		DRETURN(DLEVEL_STABLE);
 
 	/* try to find the node to remove */
-	while ((child = ecore_list_current(c->children)))
+	while ((child = ecore_dlist_current(c->children)))
 	{
 		if (ewl_widget_internal_is(child))
 		{
@@ -226,7 +226,7 @@ ewl_paned_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
 			 * remove one of them */
 			if (prev)
 			{
-				ecore_list_remove(c->children);
+				ecore_dlist_remove(c->children);
 				last = NULL;
 				break;
 			}
@@ -237,14 +237,14 @@ ewl_paned_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
 			prev = NULL;
 
 		last = child;
-		ecore_list_next(c->children);
+		ecore_dlist_next(c->children);
 	}
 
 	/* the last widget was internal we need to remove it */
 	if (last && ewl_widget_internal_is(last))
 	{
-		ecore_list_goto(c->children, last);
-		ecore_list_remove(c->children);
+		ecore_dlist_goto(c->children, last);
+		ecore_dlist_remove(c->children);
 	}
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -297,8 +297,8 @@ ewl_paned_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 		DRETURN(DLEVEL_STABLE);
 
 	/* show the grabber */
-	ecore_list_goto_first(c->children);
-	while ((cur = ecore_list_next(c->children)))
+	ecore_dlist_goto_first(c->children);
+	while ((cur = ecore_dlist_next(c->children)))
 	{
 		if (cur == w)
 		{
@@ -306,7 +306,7 @@ ewl_paned_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 			 * visible */
 			if (!prev || VISIBLE(prev))
 			{
-				prev = ecore_list_next(c->children);
+				prev = ecore_dlist_next(c->children);
 				if (prev) ewl_widget_show(prev);
 			}
 			else if (prev)
@@ -349,8 +349,8 @@ ewl_paned_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
 		DRETURN(DLEVEL_STABLE);
 
 	/* hide the grabber */
-	ecore_list_goto_first(c->children);
-	while ((cur = ecore_list_next(c->children)))
+	ecore_dlist_goto_first(c->children);
+	while ((cur = ecore_dlist_next(c->children)))
 	{
 		if (cur == w)
 		{
@@ -358,7 +358,7 @@ ewl_paned_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
 			 * visible */
 			if (!prev || (!VISIBLE(prev)))
 			{
-				prev = ecore_list_next(c->children);
+				prev = ecore_dlist_next(c->children);
 				if (prev)
 					ewl_widget_hide(prev);
 			}
@@ -387,13 +387,13 @@ ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	p = EWL_PANED(w);
 
 	/* the easy one */
-	if (ecore_list_is_empty(EWL_CONTAINER(w)->children))
+	if (ecore_dlist_is_empty(EWL_CONTAINER(w)->children))
 		DRETURN(DLEVEL_STABLE);
 
 	/* only one widget, give entire size */
-	if (ecore_list_nodes(EWL_CONTAINER(w)->children) == 1)
+	if (ecore_dlist_nodes(EWL_CONTAINER(w)->children) == 1)
 	{
-		cur = ecore_list_goto_first(EWL_CONTAINER(w)->children);
+		cur = ecore_dlist_goto_first(EWL_CONTAINER(w)->children);
 		ewl_object_place(EWL_OBJECT(cur), CURRENT_X(p), CURRENT_Y(p),
 						CURRENT_W(p), CURRENT_H(p));
 		DRETURN(DLEVEL_STABLE);
@@ -423,8 +423,8 @@ ewl_paned_configure_horizontal(Ewl_Paned *p)
 
 	c = EWL_CONTAINER(p);
 
-	ecore_list_goto_first(c->children);
-	while ((cur = ecore_list_next(c->children)))
+	ecore_dlist_goto_first(c->children);
+	while ((cur = ecore_dlist_next(c->children)))
 	{
 		if (!VISIBLE(cur)) continue;
 
@@ -454,7 +454,7 @@ ewl_paned_configure_horizontal(Ewl_Paned *p)
 			pane_size = 0; 
 			skip = cur;
 
-			while ((skip = ecore_list_next(c->children)))
+			while ((skip = ecore_dlist_next(c->children)))
 			{
 				if (!VISIBLE(skip)) continue;
 				if (!ewl_widget_internal_is(skip))
@@ -488,9 +488,9 @@ ewl_paned_configure_horizontal(Ewl_Paned *p)
 				use_min = 1;
 			}
 
-			ecore_list_goto(c->children, prev);
+			ecore_dlist_goto(c->children, prev);
 			i = 0;
-			while ((prev = ecore_list_next(c->children)))
+			while ((prev = ecore_dlist_next(c->children)))
 			{
 				if (ewl_widget_internal_is(prev))
 				{
@@ -572,8 +572,8 @@ ewl_paned_configure_vertical(Ewl_Paned *p)
 
 	c = EWL_CONTAINER(p);
 
-	ecore_list_goto_first(c->children);
-	while ((cur = ecore_list_next(c->children)))
+	ecore_dlist_goto_first(c->children);
+	while ((cur = ecore_dlist_next(c->children)))
 	{
 		if (!VISIBLE(cur)) continue;
 
@@ -603,7 +603,7 @@ ewl_paned_configure_vertical(Ewl_Paned *p)
 			pane_size = 0; 
 			skip = cur;
 
-			while ((skip = ecore_list_next(c->children)))
+			while ((skip = ecore_dlist_next(c->children)))
 			{
 				if (!VISIBLE(skip)) continue;
 				if (!ewl_widget_internal_is(skip))
@@ -637,9 +637,9 @@ ewl_paned_configure_vertical(Ewl_Paned *p)
 				use_min = 1;
 			}
 
-			ecore_list_goto(c->children, prev);
+			ecore_dlist_goto(c->children, prev);
 			i = 0;
-			while ((prev = ecore_list_next(c->children)))
+			while ((prev = ecore_dlist_next(c->children)))
 			{
 				if (ewl_widget_internal_is(prev))
 				{
@@ -920,8 +920,8 @@ ewl_paned_grabber_horizontal_shift(Ewl_Paned *p, Ewl_Widget *w, int to)
 
 	c = EWL_CONTAINER(p);
 
-	ecore_list_goto_first(c->children);
-	while ((cur = ecore_list_next(c->children)))
+	ecore_dlist_goto_first(c->children);
+	while ((cur = ecore_dlist_next(c->children)))
 	{
 		if (!ewl_widget_internal_is(cur)) 
 		{
@@ -997,8 +997,8 @@ ewl_paned_grabber_vertical_shift(Ewl_Paned *p, Ewl_Widget *w, int to)
 
 	c = EWL_CONTAINER(p);
 
-	ecore_list_goto_first(c->children);
-	while ((cur = ecore_list_next(c->children)))
+	ecore_dlist_goto_first(c->children);
+	while ((cur = ecore_dlist_next(c->children)))
 	{
 		if (!ewl_widget_internal_is(cur)) 
 		{

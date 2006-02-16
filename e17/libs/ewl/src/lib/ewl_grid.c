@@ -488,8 +488,8 @@ ewl_grid_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	c_x = CURRENT_X(EWL_OBJECT(w));
 	c_y = CURRENT_Y(EWL_OBJECT(w));
 
-	ecore_list_goto_first(EWL_CONTAINER(w)->children);
-	while ((child = ecore_list_next(EWL_CONTAINER(w)->children)) != NULL) {
+	ecore_dlist_goto_first(EWL_CONTAINER(w)->children);
+	while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children)) != NULL) {
 		c = (Ewl_Grid_Child *) ewl_widget_data_get(child, (void *) g);
 
 		/* calculate child widgets width */

@@ -98,8 +98,8 @@ ewl_menu_base_expand_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	/*
 	 * Give all the items in the submenu a reference to this popup.
 	 */
-	ecore_list_goto_first(pb->children);
-	while ((child = ecore_list_next(pb->children))) {
+	ecore_dlist_goto_first(pb->children);
+	while ((child = ecore_dlist_next(pb->children))) {
 		if (ewl_widget_type_is(child, "menu_item")) {
 			item = EWL_MENU_ITEM(child);
 			item->inmenu = menu->popup;

@@ -266,13 +266,13 @@ ewl_combo_expand_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	ewl_callback_append(combo->button, EWL_CALLBACK_MOUSE_DOWN,
 					ewl_combo_collapse_cb, combo);
 
-	ecore_list_goto_first(pb->children);
+	ecore_dlist_goto_first(pb->children);
 
 	/*
 	 * Set all of the items in this menu a callback to set the currently selected
 	 * widget
 	 */
-	while ((child = ecore_list_next(pb->children))) {
+	while ((child = ecore_dlist_next(pb->children))) {
 		ewl_callback_del(child, EWL_CALLBACK_FOCUS_IN, ewl_combo_item_focus_in_cb);
 		ewl_callback_append(child, EWL_CALLBACK_FOCUS_IN,
 					ewl_combo_item_focus_in_cb, combo);

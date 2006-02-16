@@ -124,7 +124,7 @@ ewl_row_column_get(Ewl_Row *row, short n)
 	DCHECK_PARAM_PTR_RET("row", row, NULL);
 	DCHECK_TYPE_RET("row", row, EWL_ROW_TYPE, NULL);
 
-	found = ecore_list_goto_index(EWL_CONTAINER(row)->children, n + 1);
+	found = ecore_dlist_goto_index(EWL_CONTAINER(row)->children, n + 1);
 
 	DRETURN_PTR(found, DLEVEL_STABLE);
 }
@@ -150,8 +150,8 @@ ewl_row_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	x = CURRENT_X(w);
 	remains = CURRENT_W(w);
 
-	nodes = ecore_list_nodes(c->children);
-	ecore_list_goto_first(c->children);
+	nodes = ecore_dlist_nodes(c->children);
+	ecore_dlist_goto_first(c->children);
 
 	/*
 	 * This should be the common case, a row bounded by a set of fields,
@@ -178,7 +178,7 @@ ewl_row_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		 * Iterate over the children and position the children.
 		 */
 		ewl_container_child_iterate_begin(EWL_CONTAINER(hdr));
-		while ((child = ecore_list_next(c->children))) {
+		while ((child = ecore_dlist_next(c->children))) {
 			align = EWL_OBJECT(ewl_container_child_next(EWL_CONTAINER(hdr)));
 			if (align)
 				width = ewl_object_current_x_get(align) + ewl_object_current_w_get(align) - x;
@@ -205,7 +205,7 @@ ewl_row_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 */
 	else {
 		int tx = x;
-		while ((child = ecore_list_next(c->children))) {
+		while ((child = ecore_dlist_next(c->children))) {
 			int portion;
 
 			/*
@@ -224,9 +224,9 @@ ewl_row_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		/* Divvy up remaining space */
 		if (remains) {
 			tx = x;
-			nodes = ecore_list_nodes(c->children);
-		       	ecore_list_goto_first(c->children);
-			while ((child = ecore_list_next(c->children))) {
+			nodes = ecore_dlist_nodes(c->children);
+		       	ecore_dlist_goto_first(c->children);
+			while ((child = ecore_dlist_next(c->children))) {
 				int portion;
 				int width = ewl_object_current_w_get(child);
 

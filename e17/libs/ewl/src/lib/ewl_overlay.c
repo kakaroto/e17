@@ -80,8 +80,8 @@ ewl_overlay_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	/*
 	 * Configure each of the child widgets.
 	 */
-	ecore_list_goto_first(EWL_CONTAINER(w)->children);
-	while ((child = ecore_list_next(EWL_CONTAINER(w)->children))) {
+	ecore_dlist_goto_first(EWL_CONTAINER(w)->children);
+	while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children))) {
 		int width, height;
 		/*
 		 * Try to give the child the full size of the overlay from it's
@@ -141,8 +141,8 @@ ewl_overlay_child_resize_cb(Ewl_Container *c, Ewl_Widget *w,
 	child = EWL_OBJECT(w);
 	overlay = EWL_OVERLAY(c);
 
-	ecore_list_goto_first(EWL_CONTAINER(overlay)->children);
-	while ((child = ecore_list_next(EWL_CONTAINER(overlay)->children))) {
+	ecore_dlist_goto_first(EWL_CONTAINER(overlay)->children);
+	while ((child = ecore_dlist_next(EWL_CONTAINER(overlay)->children))) {
 		int cs;
 
 		/*

@@ -238,8 +238,8 @@ ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o)
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(b), 0, 0);
 
 	c = EWL_CONTAINER(b);
-	ecore_list_goto_first(c->children);
-	while((child = ecore_list_next(c->children)))
+	ecore_dlist_goto_first(c->children);
+	while((child = ecore_dlist_next(c->children)))
 		ewl_box_child_show_cb(c, child);
 
 	ewl_widget_configure(EWL_WIDGET(b));
@@ -328,7 +328,7 @@ ewl_box_spacing_set(Ewl_Box * b, int s)
 
 	w = EWL_WIDGET(b);
 
-	nodes = ecore_list_nodes(EWL_CONTAINER(b)->children);
+	nodes = ecore_dlist_nodes(EWL_CONTAINER(b)->children);
 
 	if (nodes) {
 		nodes--;
@@ -381,7 +381,7 @@ ewl_box_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	/*
 	 * Catch the easy case, and return.
 	 */
-	if (ecore_list_is_empty(EWL_CONTAINER(w)->children))
+	if (ecore_dlist_is_empty(EWL_CONTAINER(w)->children))
 		DRETURN(DLEVEL_STABLE);
 
 	/*
@@ -450,12 +450,12 @@ ewl_box_configure_homogeneous_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	if (ecore_list_is_empty(EWL_CONTAINER(w)->children))
+	if (ecore_dlist_is_empty(EWL_CONTAINER(w)->children))
 		DRETURN(DLEVEL_STABLE);
 
 	num = 0;
-	ecore_list_goto_first(EWL_CONTAINER(w)->children);
-	while ((child = ecore_list_next(EWL_CONTAINER(w)->children))) {
+	ecore_dlist_goto_first(EWL_CONTAINER(w)->children);
+	while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children))) {
 		if (VISIBLE(child))
 			num++;
 	}
@@ -490,8 +490,8 @@ ewl_box_configure_homogeneous_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	*fill_size = *fill_size / num;
 
 	i = 0;
-	ecore_list_goto_first(EWL_CONTAINER(w)->children);
-	while ((child = ecore_list_next(EWL_CONTAINER(w)->children))) {
+	ecore_dlist_goto_first(EWL_CONTAINER(w)->children);
+	while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children))) {
 		if (VISIBLE(child)) {
 			i++;
 			if (i == num)
@@ -517,14 +517,14 @@ ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
 	DCHECK_PARAM_PTR("b", b);
 	DCHECK_TYPE("b", b, EWL_BOX_TYPE);
 
-	initial = *fill_size / ecore_list_nodes(EWL_CONTAINER(b)->children);
+	initial = *fill_size / ecore_dlist_nodes(EWL_CONTAINER(b)->children);
 
 	/*
 	 * Sort the children into lists dependant on their alignment within the
 	 * box.
 	 */
-	ecore_list_goto_first(EWL_CONTAINER(b)->children);
-	while ((child = ecore_list_next(EWL_CONTAINER(b)->children))) {
+	ecore_dlist_goto_first(EWL_CONTAINER(b)->children);
+	while ((child = ecore_dlist_next(EWL_CONTAINER(b)->children))) {
 		int             change;
 
 		/*
@@ -560,7 +560,7 @@ ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
 			policy = ewl_object_fill_policy_get(child);
 			policy &= ewl_box_info->f_policy;
 			if (policy || change == initial)
-				ecore_list_append(ewl_box_spread, child);
+				ecore_dlist_append(ewl_box_spread, child);
 		}
 	}
 
@@ -585,8 +585,8 @@ ewl_box_configure_fill(Ewl_Box * b __UNUSED__, int *fill_size,
 	 * Calculate the space to give per child. Safeguard against divide by
 	 * zero.
 	 */
-	space = (ecore_list_is_empty(ewl_box_spread) ? 0 :
-		 *fill_size / ecore_list_nodes(ewl_box_spread));
+	space = (ecore_dlist_is_empty(ewl_box_spread) ? 0 :
+		 *fill_size / ecore_dlist_nodes(ewl_box_spread));
 
 	/*
 	 * As long as children keep accepting more space, we should loop
@@ -695,8 +695,8 @@ ewl_box_configure_layout(Ewl_Box * b, int *x, int *y, int *fill,
 	/*
 	 * Configure the widgets on the first list.
 	 */
-	ecore_list_goto_first(EWL_CONTAINER(b)->children);
-	while ((child = ecore_list_next(EWL_CONTAINER(b)->children))) {
+	ecore_dlist_goto_first(EWL_CONTAINER(b)->children);
+	while ((child = ecore_dlist_next(EWL_CONTAINER(b)->children))) {
 
 		if (VISIBLE(child)) {
 
@@ -770,7 +770,7 @@ ewl_box_child_show_cb(Ewl_Container * c, Ewl_Widget * w)
 	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	if (ecore_list_nodes(c->children) > 1)
+	if (ecore_dlist_nodes(c->children) > 1)
 		space = EWL_BOX(c)->spacing;
 
 	/*
@@ -814,7 +814,7 @@ ewl_box_child_homogeneous_show_cb(Ewl_Container * c,
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 
-	numc = ecore_list_nodes(c->children);
+	numc = ecore_dlist_nodes(c->children);
 	numc--;
 	if (numc)
 		space = EWL_BOX(c)->spacing;
@@ -845,7 +845,7 @@ ewl_box_child_hide_cb(Ewl_Container * c, Ewl_Widget * w)
 	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	if (ecore_list_nodes(c->children) > 1)
+	if (ecore_dlist_nodes(c->children) > 1)
 		space = b->spacing;
 
 	if (b->orientation == EWL_ORIENTATION_HORIZONTAL) {

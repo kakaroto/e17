@@ -1111,8 +1111,8 @@ ewl_window_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	/*
 	 * Configure each of the child widgets.
 	 */
-	ecore_list_goto_first(EWL_CONTAINER(w)->children);
-	while ((child = ecore_list_next(EWL_CONTAINER(w)->children))) {
+	ecore_dlist_goto_first(EWL_CONTAINER(w)->children);
+	while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children))) {
 		int x, y;
     int size;
 
