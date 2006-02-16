@@ -238,6 +238,7 @@ ewl_embed_focus_get(Ewl_Embed *embed)
  * @param embed: The embed to set the active value on
  * @param act: The active value to set
  * @return Returns no value.
+ * @brief Sets if the given embed @p embed is active or not
  */
 void
 ewl_embed_active_set(Ewl_Embed *embed, unsigned int act)
@@ -298,6 +299,7 @@ ewl_embed_active_set(Ewl_Embed *embed, unsigned int act)
 
 /**
  * @return Returns the currently active embed
+ * @brief Returns the currently active embed widget
  */
 Ewl_Embed *
 ewl_embed_active_embed_get(void)
@@ -1358,6 +1360,7 @@ ewl_embed_tab_order_previous(Ewl_Embed *e)
  * @param embed: The embed to set the focused widget too
  * @param w: The widget to set as having focus
  * @return Returns no value.
+ * @brief Set the current focused widget in the embed
  */
 void
 ewl_embed_focused_widget_set(Ewl_Embed *embed, Ewl_Widget *w)
@@ -1386,6 +1389,7 @@ ewl_embed_focused_widget_set(Ewl_Embed *embed, Ewl_Widget *w)
 /**
  * @param embed: The embed to get the curerntly focused widget
  * @return Returns the currently focused widget
+ * @brief Get the current focused widget in the embed.
  */
 Ewl_Widget *
 ewl_embed_focused_widget_get(Ewl_Embed *embed)

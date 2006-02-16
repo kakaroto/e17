@@ -1,9 +1,8 @@
-#ifndef __EWL_EMBED_H__
-#define __EWL_EMBED_H__
+#ifndef EWL_EMBED_H
+#define EWL_EMBED_H
 
 /**
- * @file ewl_embed.h
- * @defgroup Ewl_Embed Embed: A Container for Displaying on an Evas
+ * @defgroup Ewl_Embed Ewl_Embed: A Container for Displaying on an Evas
  * Defines the Ewl_Embed class to provide EWL with the ability to work with an
  * evas.
  *
@@ -41,7 +40,6 @@ typedef void *Ewl_Embed_Evas_Window;
 #define EWL_EMBED_EVAS_WINDOW(window) ((Ewl_Embed_Evas_Window *)window)
 
 /**
- * @struct Ewl_Embed
  * @brief The class inheriting from Ewl_Container that acts as a top level
  * widget for interacting with the evas.
  */
@@ -63,12 +61,12 @@ struct Ewl_Embed
 
 	struct
 	{
-		Ewl_Widget *clicked;
-		Ewl_Widget *focused;
-		Ewl_Widget *mouse_in;
-	} last;
+		Ewl_Widget *clicked; /**< Last clicked widget */
+		Ewl_Widget *focused; /**< Last focused widget */
+		Ewl_Widget *mouse_in; /**< Last widget to receive a mouse_in */
+	} last;			     /**< Collection of widgets to last receive events */
 
-	Ewl_Widget *dnd_widget;
+	Ewl_Widget *dnd_widget;	     /**< The current DND widget */
 };
 
 Ewl_Widget     *ewl_embed_new(void);
@@ -97,7 +95,6 @@ void            ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y,
 					  unsigned int modifiers);
 
 void		ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y,int*,int*,int*,int*);
-void		ewl_embed_dnd_enter_feed(Ewl_Embed *embed, int x, int y, void* dnd_event);
 void		ewl_embed_dnd_drop_feed(Ewl_Embed* , int x, int y, int internal);
 
 void            ewl_embed_mouse_out_feed(Ewl_Embed *embed, int x, int y,
@@ -145,4 +142,4 @@ void ewl_embed_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
  * @}
  */
 
-#endif				/* __EWL_EMBED_H__ */
+#endif

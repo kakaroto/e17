@@ -31,6 +31,7 @@ static int ewl_dnd_event_dnd_move(void *data, int type, void *event);
 /**
  * @return Returns TRUE if the DND system was successfully initialized,
  * FALSE otherwise
+ * @brief Initialize the DND sybsystem
  */
 int
 ewl_dnd_init(void) 
@@ -48,6 +49,7 @@ ewl_dnd_init(void)
 }
 
 /**
+ * @return Returns no value.
  * @brief Shuts down the EWL DND system
  */
 void
@@ -80,6 +82,7 @@ ewl_dnd_position_windows_set(Ewl_Widget *w)
 /**
  * @param widget: The widget to get the types for
  * @return Returns the Ewl_Dnd_Types for the given widget
+ * @brief Get the Ewl_Dnd_Types for the given widget
  */
 Ewl_Dnd_Types *
 ewl_dnd_types_for_widget_get(Ewl_Widget *widget)
@@ -108,6 +111,7 @@ ewl_dnd_types_for_widget_get(Ewl_Widget *widget)
 /**
  * @param: The widget to start dragging
  * @return Returns no value
+ * @brief Tells the widget to start dragging
  */
 void
 ewl_drag_start(Ewl_Widget *w) 
@@ -142,7 +146,7 @@ ewl_drag_start(Ewl_Widget *w)
 	ecore_x_window_resize(ewl_dnd_evas_win, 64, 64);
 	ecore_evas_override_set(ewl_dnd_drag_canvas, 1);
 	
-	//ecore_evas_software_x11_direct_resize_set(ewl_dnd_drag_evas, 1);
+	/* ecore_evas_software_x11_direct_resize_set(ewl_dnd_drag_evas, 1); */
 	ecore_evas_ignore_events_set(ewl_dnd_drag_canvas, 1);
 
 	/* XXX Setup a cursor (This needs to become generic) */
@@ -178,8 +182,8 @@ ewl_drag_start(Ewl_Widget *w)
 }
 
 /**
- * @brief Disables DND
  * @return Returns no value
+ * @brief Disables DND
  */
 void
 ewl_dnd_disable(void) 
@@ -192,8 +196,8 @@ ewl_dnd_disable(void)
 }
 
 /**
- * @brief Enables DND
  * @return Returns no value
+ * @brief Enables DND
  */
 void
 ewl_dnd_enable(void) 
@@ -207,6 +211,7 @@ ewl_dnd_enable(void)
 
 /**
  * @return Returns the current DND status
+ * @brief Retrieves the current DND status
  */
 int
 ewl_dnd_status_get(void) 
@@ -218,6 +223,7 @@ ewl_dnd_status_get(void)
 
 /**
  * @return Returns the current DND widget
+ * @brief Retrieves the current DND widget
  */
 Ewl_Widget *
 ewl_dnd_drag_widget_get(void) 
@@ -228,6 +234,7 @@ ewl_dnd_drag_widget_get(void)
 }
 
 /**
+ * @return Returns no value.
  * @brief Clears the current DND widget
  */
 void

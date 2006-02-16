@@ -10,7 +10,6 @@
 typedef struct Ewl_Config Ewl_Config;
 
 /**
- * @struct Ewl_Config
  * The Ewl_Config stuct holds configuration data for the EWL library 
  */
 struct Ewl_Config

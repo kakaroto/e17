@@ -29,7 +29,6 @@ typedef struct Ewl_Button Ewl_Button;
 #define EWL_BUTTON(button) ((Ewl_Button *) button)
 
 /**
- * @struct Ewl_Button
  * @brief A simple Ewl_Widget to provide for a clickable button in the UI.
  * Provides easy facilities for adding a Ewl_Text label to the button, and
  * a Ewl_Image but allows for placing any number of Ewl_Widget's in the Ewl_Button.

@@ -6,6 +6,7 @@
 /**
  * @param text: The text to set into the entry
  * @return Returns a new Ewl_Widget on success or NULL on failure
+ * @brief Create and return a new Ewl_Entry widget
  */
 Ewl_Widget *
 ewl_entry_new(void)
@@ -32,6 +33,7 @@ ewl_entry_new(void)
  * @param e: The Ewl_Entry to initialize
  * @param text: The text to put into the entry
  * @return Returns TRUE on success or FALSE on failure
+ * @brief Initializes an Ewl_Entry widget to default values
  */
 int
 ewl_entry_init(Ewl_Entry *e)
@@ -91,6 +93,7 @@ ewl_entry_init(Ewl_Entry *e)
  * @param e: The Ewl_Entry to set the multiline status
  * @param multiline: The multiline status to set
  * @return Returns no value
+ * @brief Set if the entry is multiline or not
  */
 void
 ewl_entry_multiline_set(Ewl_Entry *e, unsigned int multiline)
@@ -107,9 +110,10 @@ ewl_entry_multiline_set(Ewl_Entry *e, unsigned int multiline)
 /**
  * @param e: The Ewl_Entry to get the multiline status from
  * @return Returns the multline status of the widget
+ * @brief Retrieve if the entry is multiline or not
  */
 unsigned int
-ewl_entry_multline_get(Ewl_Entry *e)
+ewl_entry_multiline_get(Ewl_Entry *e)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("e", e, 0);
@@ -122,6 +126,7 @@ ewl_entry_multline_get(Ewl_Entry *e)
  * @param e: The Ewl_Entry to set the editable status of
  * @param editable: The value to set for the editable flag
  * @return Returns no value
+ * @brief Set if the entry is editable or not
  */
 void
 ewl_entry_editable_set(Ewl_Entry *e, unsigned int editable)
@@ -164,6 +169,7 @@ ewl_entry_editable_set(Ewl_Entry *e, unsigned int editable)
 /**
  * @param e: The Ewl_Entry to get the editable status from
  * @return Returns the editable status of the entry
+ * @brief Retrieve if the entry is editable or not
  */
 unsigned int
 ewl_entry_editable_get(Ewl_Entry *e)
@@ -178,6 +184,7 @@ ewl_entry_editable_get(Ewl_Entry *e)
 /**
  * @param e: The entry to clear the selection of
  * @return Returns TRUE if a selection was cleared, FALSE otherwise.
+ * @brief Clear the current selection in the entry
  */
 unsigned int 
 ewl_entry_selection_clear(Ewl_Entry *e)

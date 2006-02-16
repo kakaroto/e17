@@ -30,7 +30,6 @@ typedef struct Ewl_Check Ewl_Check;
 #define EWL_CHECK(c) ((Ewl_Check *)c)
 
 /**
- * @struct Ewl_Check
  * Inherits from Ewl_Check and extends it to provide a checked state.
  */
 struct Ewl_Check

@@ -28,7 +28,6 @@ typedef struct Ewl_Border Ewl_Border;
 #define EWL_BORDER(border) ((Ewl_Border *) border)
 
 /**
- * @struct Ewl_Border
  * @brief Inherits from Ewl_Container to allow drawing a border and label
  * decoration around widgets.
  */

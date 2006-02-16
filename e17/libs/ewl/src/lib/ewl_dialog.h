@@ -29,7 +29,6 @@ typedef struct Ewl_Dialog Ewl_Dialog;
 #define EWL_DIALOG(dialog) ((Ewl_Dialog *) dialog)
 
 /**
- * @struct Ewl_Dialog
  * Extends the Ewl_Window class. Add two boxes to hold massages (vbox)
  * and buttons (action_area). The action_area could be on top, bottom,
  * right or left of the window. The boxes could be separated by a line.

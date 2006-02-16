@@ -29,7 +29,6 @@ typedef struct Ewl_Checkbutton Ewl_Checkbutton;
 #define EWL_CHECKBUTTON(button) ((Ewl_Checkbutton *) button)
 
 /**
- * @struct Ewl_Checkbutton
  * Inherits from Ewl_Widget and expands to provide a stateful check button.
  */
 struct Ewl_Checkbutton

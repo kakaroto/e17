@@ -29,7 +29,6 @@ typedef struct Ewl_Combo Ewl_Combo;
 #define EWL_COMBO(combo) ((Ewl_Combo *) combo)
 
 /**
- * @struct Ewl_Combo
  * Inherits from the Ewl_Menu_Base and does not extend the structure, but
  * provides policy for drawing on the current evas.
  */

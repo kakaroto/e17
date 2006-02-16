@@ -22,7 +22,6 @@
 typedef struct Ewl_Attach Ewl_Attach;
 
 /**
- * @struct Ewl_Attach
  * Contains the attachment information
  */
 struct Ewl_Attach

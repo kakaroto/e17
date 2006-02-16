@@ -1,9 +1,8 @@
-#ifndef __EWL_DND_H__
-#define __EWL_DND_H__
+#ifndef EWL_DND_H
+#define EWL_DND_H
 
 /**
- * @file ewl_dnd.h
- * @defgroup Ewl_Dnd Dnd: The files containing DND functions
+ * @defgroup Ewl_Dnd Ewl_Dnd: The files containing DND functions
  *
  * @{
  */

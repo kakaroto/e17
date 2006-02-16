@@ -24,7 +24,6 @@ typedef struct Ewl_Cell Ewl_Cell;
 #define EWL_CELL(t) ((Ewl_Cell *)t)
 
 /**
- * @struct Ewl_Cell
  * The cell inherits from the container for packing widgets inside the
  * cell.
  */
