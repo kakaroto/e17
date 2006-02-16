@@ -1328,7 +1328,7 @@ void etk_widget_dnd_source_set(Etk_Widget *widget, Etk_Bool on)
       widget->accepts_dnd = ETK_TRUE;
       widget->dnd_source = ETK_TRUE;      
       _etk_widget_dnd_source_widgets = evas_list_append(_etk_widget_dnd_source_widgets, widget);
-      widget->drag = etk_drag_new();
+      widget->drag = etk_drag_new(widget);
       etk_signal_connect("mouse_move", ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_dnd_drag_mouse_move_cb), NULL);
       etk_signal_connect("drag_end", ETK_OBJECT(widget->drag), ETK_CALLBACK(_etk_widget_dnd_drag_end_cb), NULL);
    }
@@ -1425,7 +1425,7 @@ const char **etk_widget_dnd_types_get(Etk_Widget *widget, int *num)
    
    if(num)
      *num = widget->dnd_types_num;
-   return widget->dnd_types;
+   return (const char **)(widget->dnd_types);
 }
 
 /**
@@ -1606,8 +1606,6 @@ static void _etk_widget_constructor(Etk_Widget *widget)
 /* Destroys the widget */
 static void _etk_widget_destructor(Etk_Widget *widget)
 {
-   int i;
-   
    if (!widget)
       return;
 

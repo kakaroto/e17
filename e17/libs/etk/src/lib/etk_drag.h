@@ -14,9 +14,8 @@ struct _Etk_Drag
    /* private: */
    /* Inherit from Etk_Window */
    Etk_Window window;   
-   
-   int            dx, dy;
-   int            win_x, win_y;
+
+   Etk_Widget *widget;
    
    char         **types;
    unsigned int   num_types;
@@ -24,11 +23,14 @@ struct _Etk_Drag
    int            data_size;   
 };
 
-Etk_Widget *etk_drag_new();
+Etk_Type   *etk_drag_type_get();  
+Etk_Widget *etk_drag_new(Etk_Widget *widget);
 void        etk_drag_types_set(Etk_Drag *drag, const char **types, unsigned int num_types);
 void        etk_drag_data_set(Etk_Drag *drag, void *data, int size);
 void        etk_drag_begin(Etk_Drag *drag);
-
+void        etk_drag_parent_widget_set(Etk_Drag *drag, Etk_Widget *widget);
+Etk_Widget *etk_drag_parent_widget_get(Etk_Drag *drag);
+  
 
 /** @} */
 

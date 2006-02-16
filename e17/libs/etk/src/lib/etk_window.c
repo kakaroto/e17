@@ -620,6 +620,9 @@ static void _etk_window_pointer_set(Etk_Toplevel_Widget *toplevel_widget, Etk_Po
 
    switch (pointer_type)
    {
+      case ETK_POINTER_DND_DROP:
+         x_pointer_type = ECORE_X_CURSOR_PLUS;
+         break;
       case ETK_POINTER_MOVE:
          x_pointer_type = ECORE_X_CURSOR_FLEUR;
          break;

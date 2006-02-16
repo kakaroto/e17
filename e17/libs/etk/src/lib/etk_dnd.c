@@ -9,6 +9,7 @@
 #include "etk_widget.h"
 #include "etk_toplevel_widget.h"
 #include "etk_window.h"
+#include "etk_drag.h"
 #include "config.h"
 
 /* Some notes for when we're developing this:
@@ -494,13 +495,11 @@ static int _etk_xdnd_status_handler(void *data, int type, void *event)
    
    if(!ev->will_accept)
    {
-  //    etk_toplevel_widget_pointer_pop(etk_widget_toplevel_parent_get(ETK_WIDGET(_etk_drag_widget)), ETK_POINTER_RESIZE_BR);
+      etk_toplevel_widget_pointer_push(etk_widget_toplevel_parent_get(etk_drag_parent_widget_get(ETK_DRAG(_etk_drag_widget))), ETK_POINTER_DEFAULT);
       return 1;
    }
    
-//   etk_toplevel_widget_pointer_push(etk_widget_toplevel_parent_get(ETK_WIDGET(_etk_drag_widget)), ETK_POINTER_RESIZE_BR);
-   etk_toplevel_widget_pointer_push(ETK_TOPLEVEL_WIDGET(ETK_WINDOW(_etk_drag_widget)), ETK_POINTER_RESIZE_BR);
-   
+   etk_toplevel_widget_pointer_push(etk_widget_toplevel_parent_get(etk_drag_parent_widget_get(ETK_DRAG(_etk_drag_widget))), ETK_POINTER_DND_DROP);
    return 1;
 }
 
