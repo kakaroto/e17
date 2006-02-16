@@ -83,20 +83,24 @@ find_icon(char *icon)
    if (strrchr(icon, '.') == NULL)
       snprintf(icn, sizeof(icn), "%s.png", icon);
 
-   /* Check If Dir Supplied In Desktop File */
-   dir = ecore_file_get_dir(icn);
-   if (!strcmp(dir, icn) == 0)
-     {
-        snprintf(path, MAX_PATH, "%s", icn);
-        /* Check Supplied Dir For Icon */
-        if (ecore_file_exists(path))
-           return strdup(icn);
-     }
-
    /* Get Icon Options */
    icon_size = get_icon_size();
    icon_theme = get_icon_theme();
 
+   if (!icon_theme) 
+     {
+	
+	/* Check If Dir Supplied In Desktop File */
+	dir = ecore_file_get_dir(icn);
+	if (!strcmp(dir, icn) == 0)
+	  {
+	     snprintf(path, MAX_PATH, "%s", icn);
+	     /* Check Supplied Dir For Icon */
+	     if (ecore_file_exists(path))
+	       return strdup(icn);
+	  }
+     }
+   
    return strdup(find_fdo_icon(icon, icon_size, icon_theme));
 }
 

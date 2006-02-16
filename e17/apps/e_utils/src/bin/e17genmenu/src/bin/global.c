@@ -154,6 +154,7 @@ get_icon_theme()
              return strdup(c);
           }
      }
+   /* Doesn't this tie us specifically to KDE ? */
    return "crystalsvg";
 }
 
