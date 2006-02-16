@@ -9,10 +9,6 @@ static void ewl_paned_grabber_cb_mouse_up(Ewl_Widget *w, void *ev,
 							void *data);
 static void ewl_paned_grabber_cb_mouse_move(Ewl_Widget *w, void *ev, 
 							void *data);
-static void ewl_paned_grabber_cb_mouse_in(Ewl_Widget *w, void *ev, 
-							void *data);
-static void ewl_paned_grabber_cb_mouse_out(Ewl_Widget *w, void *ev, 
-							void *data);
 
 static void ewl_paned_configure_horizontal(Ewl_Paned *p);
 static void ewl_paned_configure_vertical(Ewl_Paned *p);
@@ -128,7 +124,6 @@ void
 ewl_paned_orientation_set(Ewl_Paned *p, Ewl_Orientation o)
 {
 	Ewl_Widget *child;
-	Ewl_Orientation sep;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
@@ -137,11 +132,6 @@ ewl_paned_orientation_set(Ewl_Paned *p, Ewl_Orientation o)
 	if (p->orientation == o)
 		DRETURN(DLEVEL_STABLE);
 
-	if (o == EWL_ORIENTATION_HORIZONTAL)
-		sep = EWL_ORIENTATION_VERTICAL;
-	else
-		sep = EWL_ORIENTATION_HORIZONTAL;
-
 	ecore_list_goto_first(EWL_CONTAINER(p)->children);
 	while ((child = ecore_list_next(EWL_CONTAINER(p)->children)))
 	{
@@ -149,8 +139,8 @@ ewl_paned_orientation_set(Ewl_Paned *p, Ewl_Orientation o)
 		 * appearance/orientation. XXX This assumes that all 
 		 * internal widgets will be grabbers ... */
 		if (ewl_widget_internal_is(child))
-			ewl_paned_grabber_orientation_set(
-					EWL_PANED_GRABBER(child), sep);
+			ewl_paned_grabber_paned_orientation_set(
+					EWL_PANED_GRABBER(child), o);
 	}
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -189,22 +179,9 @@ ewl_paned_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 		DRETURN(DLEVEL_STABLE);
 
 	/* create the required grabber */
-	if (EWL_PANED(c)->orientation == EWL_ORIENTATION_HORIZONTAL)
-		idx = EWL_ORIENTATION_VERTICAL;
-	else
-		idx = EWL_ORIENTATION_HORIZONTAL;
-
 	o = ewl_paned_grabber_new();
-	ewl_paned_grabber_orientation_set(EWL_PANED_GRABBER(o), idx);
-
-	ewl_callback_append(o, EWL_CALLBACK_MOUSE_DOWN,
-			ewl_paned_grabber_cb_mouse_down, c);
-	ewl_callback_append(o, EWL_CALLBACK_MOUSE_UP,
-			ewl_paned_grabber_cb_mouse_up, c);
-	ewl_callback_append(o, EWL_CALLBACK_MOUSE_IN,
-			ewl_paned_grabber_cb_mouse_in, c);
-	ewl_callback_append(o, EWL_CALLBACK_MOUSE_OUT,
-			ewl_paned_grabber_cb_mouse_out, c);
+	ewl_paned_grabber_paned_orientation_set(EWL_PANED_GRABBER(o),
+					EWL_PANED(c)->orientation);
 
 	idx = ewl_container_child_index_get(c, w);
 	ewl_container_child_insert(c, o, idx);
@@ -728,16 +705,153 @@ ewl_paned_configure_vertical(Ewl_Paned *p)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/*
+ * Ewl_Paned_Grabber stuff
+ */
+
+/**
+ * @return Returns a new Ewl_Paned_Grabber widget or NULL on failure
+ */
+Ewl_Widget *
+ewl_paned_grabber_new(void)
+{
+	Ewl_Widget *w;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	w = NEW(Ewl_Paned_Grabber, 1);
+	if (!w)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+
+	if (!ewl_paned_grabber_init(EWL_PANED_GRABBER(w)))
+	{
+		ewl_widget_destroy(w);
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+	}
+
+	DRETURN_PTR(w, DLEVEL_STABLE);
+}
+
+/**
+ * @param g: The Ewl_Paned_Grabber to initialize
+ * @return Returns TRUE on success or FALSE on failure
+ */
+int
+ewl_paned_grabber_init(Ewl_Paned_Grabber *g)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("g", g, FALSE);
+
+	if (!ewl_separator_init(EWL_SEPARATOR(g)))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	ewl_widget_inherit(EWL_WIDGET(g), EWL_PANED_GRABBER_TYPE);
+	ewl_paned_grabber_paned_orientation_set(g, EWL_ORIENTATION_VERTICAL);
+
+	ewl_callback_append(EWL_WIDGET(g), EWL_CALLBACK_MOUSE_DOWN,
+				ewl_paned_grabber_cb_mouse_down, NULL);
+	ewl_callback_append(EWL_WIDGET(g), EWL_CALLBACK_MOUSE_UP,
+				ewl_paned_grabber_cb_mouse_up, NULL);
+
+	/* grabber is always internal to the paned */
+	ewl_widget_internal_set(EWL_WIDGET(g), TRUE);
+
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/**
+ * @param g: The Ewl_Paned_Grabber to set the orientation on
+ * @param o: The Ewl_Orientation to set on the grabber
+ * @return Returns no value.
+ */
+void
+ewl_paned_grabber_paned_orientation_set(Ewl_Paned_Grabber *g, Ewl_Orientation o)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("g", g);
+	DCHECK_TYPE("g", g, EWL_PANED_GRABBER_TYPE);
+
+	if (o == EWL_ORIENTATION_HORIZONTAL)
+	{
+		ewl_separator_orientation_set(EWL_SEPARATOR(g), 
+						EWL_ORIENTATION_VERTICAL);
+		ewl_widget_appearance_set(EWL_WIDGET(g), "grabber/vertical");
+		ewl_paned_grabber_show_cursor_for(g, 
+					EWL_POSITION_LEFT | EWL_POSITION_RIGHT);
+	}
+	else
+	{
+		ewl_separator_orientation_set(EWL_SEPARATOR(g),
+						EWL_ORIENTATION_HORIZONTAL);
+		ewl_widget_appearance_set(EWL_WIDGET(g), "grabber/horizontal");
+		ewl_paned_grabber_show_cursor_for(g,
+					EWL_POSITION_TOP | EWL_POSITION_BOTTOM);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param g: The Ewl_Paned_Grabber to get the orientation from
+ * @return Returns the Ewl_Orientation set on the grabber
+ */
+Ewl_Orientation 
+ewl_paned_grabber_orientation_get(Ewl_Paned_Grabber *g)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("g", g, EWL_ORIENTATION_HORIZONTAL);
+	DCHECK_TYPE_RET("g", g, EWL_PANED_GRABBER_TYPE, 
+					EWL_ORIENTATION_HORIZONTAL);
+
+	DRETURN_INT(ewl_separator_orientation_get(EWL_SEPARATOR(g)), 
+						DLEVEL_STABLE);
+}
+
+/**
+ * @param g: The Ewl_Paned_Grabber to set the cursor for
+ * @param dir: The diretions to show arrows for
+ * @return Returns no value.
+ *
+ * @brief This will show the arrows to allow the grabber to move in the
+ * directions specified by @a dir.
+ */
+void
+ewl_paned_grabber_show_cursor_for(Ewl_Paned_Grabber *g, unsigned int dir)
+{
+	int pos = 0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("g", g);
+	DCHECK_TYPE("g", g, EWL_PANED_GRABBER_TYPE);
+
+	if ((dir & EWL_POSITION_LEFT) && (dir & EWL_POSITION_RIGHT))
+		pos = EWL_MOUSE_CURSOR_SB_H_DOUBLE_ARROW;
+	else if ((dir & EWL_POSITION_TOP) && (dir & EWL_POSITION_BOTTOM))
+		pos = EWL_MOUSE_CURSOR_SB_V_DOUBLE_ARROW;
+	else if (dir & EWL_POSITION_LEFT)
+		pos = EWL_MOUSE_CURSOR_SB_LEFT_ARROW;
+	else if (dir & EWL_POSITION_RIGHT)
+		pos = EWL_MOUSE_CURSOR_SB_RIGHT_ARROW;
+	else if (dir & EWL_POSITION_TOP)
+		pos = EWL_MOUSE_CURSOR_SB_UP_ARROW;
+	else
+		pos = EWL_MOUSE_CURSOR_SB_DOWN_ARROW;
+
+	ewl_attach_mouse_cursor_set(EWL_WIDGET(g), pos);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 static void
 ewl_paned_grabber_cb_mouse_down(Ewl_Widget *w, void *ev __UNUSED__, 
-						void *data)
+						void *data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
-				ewl_paned_grabber_cb_mouse_move, data);
+				ewl_paned_grabber_cb_mouse_move, NULL);
 	ewl_widget_state_set(w, "selected");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -759,7 +873,8 @@ ewl_paned_grabber_cb_mouse_up(Ewl_Widget *w, void *ev __UNUSED__,
 }
 
 static void
-ewl_paned_grabber_cb_mouse_move(Ewl_Widget *w, void *ev, void *data)
+ewl_paned_grabber_cb_mouse_move(Ewl_Widget *w, void *ev, 
+					void *data __UNUSED__)
 {
 	Ewl_Paned *p;
 	Ewl_Event_Mouse_Move *e;
@@ -768,7 +883,7 @@ ewl_paned_grabber_cb_mouse_move(Ewl_Widget *w, void *ev, void *data)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	p = data;
+	p = EWL_PANED(w->parent);
 	e = ev;
 
 	if (p->orientation == EWL_ORIENTATION_HORIZONTAL)
@@ -783,32 +898,6 @@ ewl_paned_grabber_cb_mouse_move(Ewl_Widget *w, void *ev, void *data)
 				&& (e->y < (CURRENT_Y(p) + CURRENT_H(p))))
 			ewl_paned_grabber_vertical_shift(p, w, e->y);
 	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-static void
-ewl_paned_grabber_cb_mouse_in(Ewl_Widget *w, void *ev __UNUSED__, 
-						void *data __UNUSED__)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-
-	/* XXX change cursor */
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-static void
-ewl_paned_grabber_cb_mouse_out(Ewl_Widget *w, void *ev __UNUSED__, 
-						void *data __UNUSED__)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-
-	/* XXX change cursor */
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -965,137 +1054,4 @@ ewl_paned_grabber_vertical_shift(Ewl_Paned *p, Ewl_Widget *w, int to)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
-/*
- * Ewl_Paned_Grabber stuff
- */
-
-/**
- * @return Returns a new Ewl_Paned_Grabber widget or NULL on failure
- */
-Ewl_Widget *
-ewl_paned_grabber_new(void)
-{
-	Ewl_Widget *w;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	w = NEW(Ewl_Paned_Grabber, 1);
-	if (!w)
-		DRETURN_PTR(NULL, DLEVEL_STABLE);
-
-	if (!ewl_paned_grabber_init(EWL_PANED_GRABBER(w)))
-	{
-		ewl_widget_destroy(w);
-		DRETURN_PTR(NULL, DLEVEL_STABLE);
-	}
-
-	DRETURN_PTR(w, DLEVEL_STABLE);
-}
-
-/**
- * @param g: The Ewl_Paned_Grabber to initialize
- * @return Returns TRUE on success or FALSE on failure
- */
-int
-ewl_paned_grabber_init(Ewl_Paned_Grabber *g)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("g", g, FALSE);
-
-	if (!ewl_separator_init(EWL_SEPARATOR(g)))
-		DRETURN_INT(FALSE, DLEVEL_STABLE);
-
-	ewl_widget_inherit(EWL_WIDGET(g), EWL_PANED_GRABBER_TYPE);
-	ewl_paned_grabber_orientation_set(g, EWL_ORIENTATION_HORIZONTAL);
-
-	/* grabber is always internal to the paned */
-	ewl_widget_internal_set(EWL_WIDGET(g), TRUE);
-
-	DRETURN_INT(TRUE, DLEVEL_STABLE);
-}
-
-/**
- * @param g: The Ewl_Paned_Grabber to set the orientation on
- * @param o: The Ewl_Orientation to set on the grabber
- * @return Returns no value.
- */
-void
-ewl_paned_grabber_orientation_set(Ewl_Paned_Grabber *g, Ewl_Orientation o)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("g", g);
-	DCHECK_TYPE("g", g, EWL_PANED_GRABBER_TYPE);
-
-	if (o == EWL_ORIENTATION_VERTICAL)
-	{
-		ewl_separator_orientation_set(EWL_SEPARATOR(g), 
-						EWL_ORIENTATION_VERTICAL);
-		ewl_widget_appearance_set(EWL_WIDGET(g), "grabber/vertical");
-		ewl_paned_grabber_show_cursor_for(g, 
-					EWL_POSITION_LEFT | EWL_POSITION_RIGHT);
-	}
-	else
-	{
-		ewl_separator_orientation_set(EWL_SEPARATOR(g),
-						EWL_ORIENTATION_HORIZONTAL);
-		ewl_widget_appearance_set(EWL_WIDGET(g), "grabber/horizontal");
-		ewl_paned_grabber_show_cursor_for(g,
-					EWL_POSITION_TOP | EWL_POSITION_BOTTOM);
-	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param g: The Ewl_Paned_Grabber to get the orientation from
- * @return Returns the Ewl_Orientation set on the grabber
- */
-Ewl_Orientation 
-ewl_paned_grabber_orientation_get(Ewl_Paned_Grabber *g)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("g", g, EWL_ORIENTATION_HORIZONTAL);
-	DCHECK_TYPE_RET("g", g, EWL_PANED_GRABBER_TYPE, 
-					EWL_ORIENTATION_HORIZONTAL);
-
-	DRETURN_INT(ewl_separator_orientation_get(EWL_SEPARATOR(g)), 
-						DLEVEL_STABLE);
-}
-
-/**
- * @param g: The Ewl_Paned_Grabber to set the cursor for
- * @param dir: The diretions to show arrows for
- * @return Returns no value.
- *
- * @brief This will show the arrows to allow the grabber to move in the
- * directions specified by @a dir.
- */
-void
-ewl_paned_grabber_show_cursor_for(Ewl_Paned_Grabber *g, unsigned int dir)
-{
-	int pos = 0;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("g", g);
-	DCHECK_TYPE("g", g, EWL_PANED_GRABBER_TYPE);
-
-	if ((dir & EWL_POSITION_LEFT) && (dir & EWL_POSITION_RIGHT))
-		pos = EWL_MOUSE_CURSOR_SB_H_DOUBLE_ARROW;
-	else if ((dir & EWL_POSITION_TOP) && (dir & EWL_POSITION_BOTTOM))
-		pos = EWL_MOUSE_CURSOR_SB_V_DOUBLE_ARROW;
-	else if (dir & EWL_POSITION_LEFT)
-		pos = EWL_MOUSE_CURSOR_SB_LEFT_ARROW;
-	else if (dir & EWL_POSITION_RIGHT)
-		pos = EWL_MOUSE_CURSOR_SB_RIGHT_ARROW;
-	else if (dir & EWL_POSITION_TOP)
-		pos = EWL_MOUSE_CURSOR_SB_UP_ARROW;
-	else
-		pos = EWL_MOUSE_CURSOR_SB_DOWN_ARROW;
-
-	ewl_attach_mouse_cursor_set(EWL_WIDGET(g), pos);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
 
