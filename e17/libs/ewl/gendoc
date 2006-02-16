@@ -2,3 +2,4 @@
 ## DoxyGen Generic Generation Script
 
 doxygen
+cp doc/images/hilite.png doc/html

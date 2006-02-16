@@ -1,11 +1,11 @@
 body {
-    background-image: url("hilite.png") no-repeat
-    background-position: top left;
-    background-color: #dddddd;
+    background-color: #ffffff;
     color: #000000;
     font-family: sans-serif;
     padding: 8px;
-    margin: 0;
+    margin: 0 auto;
+    width: 75%;
+    text-align: left;
 }
 
 h1 {
@@ -29,33 +29,56 @@ hr {
     height: 1;
 }
 
-.fragment {
-    background-image: url("hilite.png") no-repeat;
+pre.fragment {
+    background-image: url("hilite.png");
+    background-repeat: no-repeat;
     background-position: left top;
     border: thin solid #888888;
-    background-color: #eeeeee;
+    background-color: #dddddd;
     padding: 4px;
     text-align: left;
     vertical-align: center;
     font-size: 12;
 }
 
+div.navindex {
+    border-left: thin solid #888888;
+    border-bottom: thin solid #888888;
+    border-right: thin solid #888888;
+    background-color: #dddddd;
+    text-align: center;
+    padding: 1px;
+    font-size: 12px;
+}
+
 div.qindex {
-    width: 100%;
-    border: 0px;
-    text-align: left;
-    margin: 2px;
-    padding: 2px;
-    line-height: 140%;
+    border: thin solid #888888;
+    background-color: #dddddd;
+    text-align: center;
+    padding: 1px;
+    font-size: 12px;
 }
 
 div.nav {
     border: thin solid #888888;
-    background-color: #ffffff;
+    border-bottom: 0px solid #888888;
+    background-color: #dddddd;
     padding: 1px;
     text-align: center;
     vertical-align: center;
-    font-size: 12;
+    font-size: 22;
+    font-weight: bolder;
+    line-height: 140%;
+}
+
+div.footer {
+    border: thin solid #888888;
+    background-color: #dddddd;
+    padding: 1px;
+    text-align: center;
+    vertical-align: center;
+    font-size: 10;
+    font-weight: bold;
     line-height: 140%;
 }
 
