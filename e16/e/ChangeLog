@@ -3757,3 +3757,14 @@ Fix focus stack after area/desk switch when using (sloppy) pointer focus.
 Remove support for ancient gettext versions.
 Quit pager zoom when leaving screen.
 
+
+-------------------------------------------------------------------------------
+
+Thu Feb 16 22:37:38 CET 2006
+(Kim)
+
+--- 0.16.8.1 0.01 ---
+Scale pagers on screen resolution change.
+Fix position after unshading certain borders. Cleanups.
+Add sanity check for background timeout value.
+
