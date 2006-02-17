@@ -45,6 +45,7 @@ static int _fdo_menus_expand_apps(struct _fdo_menus_unxml_data *unxml_data, char
 static int _fdo_menus_check_app(const void *data, char *path);
 static int _fdo_menus_generate(const void *data, Dumb_List *list, int element, int level);
 static void _fdo_menus_inherit_apps(void *value, void *user_data);
+static int _fdo_menus_apply_rules(Dumb_List *rules, Ecore_Hash *pool);
 
 
 Dumb_List *
@@ -247,8 +248,15 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
                                              else if ((strcmp((char *) sub->elements[0].element, "<Include") == 0) || 
 					              (strcmp((char *) sub->elements[0].element, "<Exclude") == 0))
 	                                        {
-						   _fdo_menus_unxml_rules(rules, sub, ((char *) sub->elements[0].element)[1], 'O');
-	                                           result = 1;
+                                                   Dumb_List *new_sub;
+
+                                                   new_sub = dumb_list_new(NULL);
+		                                   if (new_sub)
+		                                      {
+		                                         dumb_list_add_child(rules, new_sub);
+						         _fdo_menus_unxml_rules(new_sub, sub, ((char *) sub->elements[0].element)[1], 'O');
+	                                                 result = 1;
+                                                      }
 	                                        }
                                              else if (strcmp((char *) sub->elements[0].element, "<Menu") == 0)
 					        {
@@ -361,9 +369,9 @@ _fdo_menus_unxml_rules(Dumb_List *rules, Dumb_List *list, char type, char sub_ty
 		     sprintf(temp, "%c%c All", type, sub_type);
 		     dumb_list_extend(rules, temp);
 		  }
-               else if (strcmp((char *) list->elements[i].element, "<File") == 0)
+               else if (strcmp((char *) list->elements[i].element, "<Filename") == 0)
 	          {
-		     sprintf(temp, "%c%c File %s", type, sub_type, (char *) list->elements[i + 1].element);
+		     sprintf(temp, "%c%c Filename %s", type, sub_type, (char *) list->elements[i + 1].element);
 		     dumb_list_extend(rules, temp);
 		  }
                else if (strcmp((char *) list->elements[i].element, "<Category") == 0)
@@ -558,6 +566,44 @@ printf("MAKING MENU - %s \t\t%s\n", path, name);
 	          }
 
                /* Process the rules. */
+               for (i = 0; i < rules->size; i++)
+                  {
+                     if (_fdo_menus_apply_rules(rules, pool))
+		        {
+			}
+		  }
+
+/*
+OR (implied)
+  loop through the rules
+  as soon as one matches, return true
+  otherwise return false.
+
+SUB RULES
+  process the sub rules, return the result
+
+AND
+  loop through the rules
+  as soon as one doesn't match, return false
+  otherwise return true.
+
+NOT (implied OR)
+  loop through the rules
+  as soon as one matches, return false
+  otherwise return true.
+
+ALL
+  return true
+
+FILENAME
+  if the rule string matches the desktop id return true
+  otherwise return false
+
+CATEGORY
+  loop through the apps categories
+  as soon as one matches the rule string, return true
+  otherwise return false.
+ */
 	    }
       }
    return 0;
@@ -578,6 +624,19 @@ _fdo_menus_inherit_apps(void *value, void *user_data)
       ecore_hash_set(pool, strdup(key), strdup(app));
 }
 
+
+static int
+_fdo_menus_apply_rules(Dumb_List *rules, Ecore_Hash *pool)
+{
+   int result = FALSE;
+   int i;
+
+   for (i = 0; i < rules->size; i++)
+      {
+      }
+
+   return result;
+}
 
 /*
 merge menus
