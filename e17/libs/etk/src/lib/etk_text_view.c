@@ -146,9 +146,9 @@ static void _etk_text_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Up_Down
       return;
    
    if (strcmp(event->key, "Left") == 0)
-      etk_textblock_iter_go_to_prev_char(text_view->textblock->cursor);
+      etk_textblock_iter_goto_prev_char(text_view->textblock->cursor);
    else if (strcmp(event->key, "Right") == 0)
-      etk_textblock_iter_go_to_next_char(text_view->textblock->cursor);
+      etk_textblock_iter_goto_next_char(text_view->textblock->cursor);
 }
 
 /** @} */

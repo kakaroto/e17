@@ -10,6 +10,9 @@
 
 static void _etk_textblock_constructor(Etk_Textblock *textblock);
 static void _etk_textblock_destructor(Etk_Textblock *textblock);
+
+static void _etk_textblock_iter_goto_prev_char_full(Etk_Textblock_Iter *iter, Etk_Bool include_new_line);
+static void _etk_textblock_iter_goto_next_char_full(Etk_Textblock_Iter *iter, Etk_Bool include_new_line);
 static void _etk_textblock_cursor_object_update(Etk_Textblock *textblock);
 static void _etk_textblock_object_evas_set(Etk_Textblock *textblock, Evas *new_evas);
 
@@ -95,7 +98,7 @@ void etk_textblock_realize(Etk_Textblock *textblock, Evas *evas)
    
    textblock->cursor_object = evas_object_rectangle_add(evas);
    /* TODO: theme */
-   evas_object_color_set(textblock->cursor_object, 255, 128, 0, 80);
+   evas_object_color_set(textblock->cursor_object, 0, 0, 0, 255);
    evas_object_smart_member_add(textblock->cursor_object, textblock->smart_object);
    _etk_textblock_cursor_object_update(textblock);
 }
@@ -140,6 +143,23 @@ void etk_textblock_unrealize(Etk_Textblock *textblock)
 }
 
 /* TODO: doc */
+void etk_textblock_text_set(Etk_Textblock *textblock, const char *text)
+{
+   Evas_List *l;
+   Etk_Textblock_Iter *iter;
+   
+   if (!textblock)
+      return;
+   
+   evas_object_textblock_text_markup_set(textblock->textblock_object, text ? text : "");
+   for (l = textblock->iterators; l; l = l->next)
+   {
+      iter = l->data;
+      etk_textblock_iter_goto_start(iter);
+   }
+}
+
+/* TODO: doc */
 Etk_Textblock_Iter *etk_textblock_iter_new(Etk_Textblock *textblock)
 {
    Etk_Textblock_Iter *new_iter;
@@ -149,10 +169,11 @@ Etk_Textblock_Iter *etk_textblock_iter_new(Etk_Textblock *textblock)
    
    new_iter = malloc(sizeof(Etk_Textblock_Iter));
    new_iter->cursor = evas_object_textblock_cursor_new(textblock->textblock_object);
-   evas_textblock_cursor_node_first(new_iter->cursor);
    new_iter->textblock = textblock;
    
    textblock->iterators = evas_list_append(textblock->iterators, new_iter);
+   etk_textblock_iter_goto_start(new_iter);
+   
    return new_iter;
 }
 
@@ -177,7 +198,7 @@ void etk_textblock_iter_copy(Etk_Textblock_Iter *iter, Etk_Textblock_Iter *dest_
 }
 
 /* TODO: doc */
-void etk_textblock_iter_go_to_start(Etk_Textblock_Iter *iter)
+void etk_textblock_iter_goto_start(Etk_Textblock_Iter *iter)
 {
    if (!iter || !iter->textblock || !iter->cursor)
       return;
@@ -186,11 +207,12 @@ void etk_textblock_iter_go_to_start(Etk_Textblock_Iter *iter)
    while (!evas_textblock_cursor_node_text_get(iter->cursor) && evas_textblock_cursor_node_next(iter->cursor));
    evas_textblock_cursor_char_first(iter->cursor);
    
+   /* TODO */
    _etk_textblock_cursor_object_update(iter->textblock);
 }
 
 /* TODO: doc */
-void etk_textblock_iter_go_to_end(Etk_Textblock_Iter *iter)
+void etk_textblock_iter_goto_end(Etk_Textblock_Iter *iter)
 {
    if (!iter || !iter->textblock || !iter->cursor)
       return;
@@ -199,27 +221,20 @@ void etk_textblock_iter_go_to_end(Etk_Textblock_Iter *iter)
    while (!evas_textblock_cursor_node_text_get(iter->cursor) && evas_textblock_cursor_node_prev(iter->cursor));
    evas_textblock_cursor_char_last(iter->cursor);
    
+   /* TODO */
    _etk_textblock_cursor_object_update(iter->textblock);
 }
 
 /* TODO: doc */
-void etk_textblock_iter_go_to_prev_char(Etk_Textblock_Iter *iter)
+void etk_textblock_iter_goto_prev_char(Etk_Textblock_Iter *iter)
 {
-   if (!iter || !iter->textblock || !iter->cursor)
-      return;
-   
-   evas_textblock_cursor_char_prev(iter->cursor);
-   _etk_textblock_cursor_object_update(iter->textblock);
+   _etk_textblock_iter_goto_prev_char_full(iter, ETK_TRUE);
 }
 
 /* TODO: doc */
-void etk_textblock_iter_go_to_next_char(Etk_Textblock_Iter *iter)
+void etk_textblock_iter_goto_next_char(Etk_Textblock_Iter *iter)
 {
-   if (!iter || !iter->textblock || !iter->cursor)
-      return;
-   
-   evas_textblock_cursor_char_next(iter->cursor);
-   _etk_textblock_cursor_object_update(iter->textblock);
+   _etk_textblock_iter_goto_next_char_full(iter, ETK_TRUE);
 }
 
 /**************************
@@ -239,6 +254,7 @@ static void _etk_textblock_constructor(Etk_Textblock *textblock)
    textblock->cursor_object = NULL;
    textblock->clip = NULL;
    textblock->selection_rects = NULL;
+   textblock->cursor = NULL;
    textblock->selection_start = NULL;
    textblock->iterators = NULL;
    textblock->cursor_timer = NULL;
@@ -303,39 +319,6 @@ static void _etk_textblock_constructor(Etk_Textblock *textblock)
    
    textblock->cursor = etk_textblock_iter_new(textblock);
    textblock->selection_start = etk_textblock_iter_new(textblock);
-   
-   /* TODO: testing */
-   evas_object_textblock_text_markup_set
-     (textblock->textblock_object,
-      "<center><h1>Title</h1></center><br>"
-      "<p><tab>A pragraph here <red>red text</red> and stuff.</p>"
-      "<p>And escaping &lt; and &gt; as well as &amp; as <h1>normal.</h1></p>"
-      "<p>If you want a newline use &lt;br&gt;<br>woo a new line!</p>"
-      "<right>Right "
-      "<style=outline color=#fff outline_color=#000>aligned</> "
-      "<style=shadow shadow_color=#fff8>text</> "
-      "<style=soft_shadow shadow_color=#0002>should</> "
-      "<style=glow color=#fff glow2_color=#fe87 glow_color=#f214 >go here</> "
-      "<style=far_shadow shadow_color=#0005>as it is</> "
-      "<style=outline_shadow color=#fff outline_color=#8228 shadow_color=#005>within</> "
-      "<style=outline_soft_shadow color=#fff outline_color=#8228 shadow_color=#0002>right tags</> "
-      "<style=far_soft_shadow color=#fff shadow_color=#0002>to make it align to the</> "
-      "<underline=on underline_color=#00f>right hand</> "
-      "<backing=on backing_color=#fff8>side </><backing_color=#ff08>of</><backing_color=#0f08> </>"
-      "<strikethrough=on strikethrough_color=#f0f8>the textblock</>.</right>"
-      "<p>And "
-      "<underline=double underline_color=#f00 underline2_color=#00f>now we need</> "
-      "to test some <color=#f00 font_size=8>C</><color=#0f0 font_size=10>O</>"
-      "<color=#00f font_size=12>L</><color=#fff font_size=14>O</>"
-      "<color=#ff0 font_size=16>R</><color=#0ff font_size=18> Bla Rai</>"
-      "<color=#f0f font_size=20> Stuff</>.</p>"
-      "<blockquote>"
-      "Heizölrückstoßabdämpfung fløde pingüino kilómetros cœur déçu l'âme "
-      "plutôt naïve Louÿs rêva crapaüter Íosa Úrmhac Óighe pór Éava Ádhaim"
-      "</blockquote>"
-      );
-      
-   etk_textblock_iter_go_to_start(textblock->cursor);
 }
 
 /* Destroys the textblock */
@@ -384,6 +367,80 @@ static void _etk_textblock_destructor(Etk_Textblock *textblock)
  *
  **************************/
 
+/* TODO: doc */
+static void _etk_textblock_iter_goto_prev_char_full(Etk_Textblock_Iter *iter, Etk_Bool include_new_line)
+{
+   Evas_Textblock_Cursor *tmp;
+   const char *format;
+   
+   if (!iter || !iter->textblock || !iter->cursor)
+      return;
+   
+   if (!evas_textblock_cursor_char_prev(iter->cursor))
+   {
+      tmp = evas_object_textblock_cursor_new(iter->textblock->textblock_object);
+      evas_textblock_cursor_copy(iter->cursor, tmp);
+      while (evas_textblock_cursor_node_prev(tmp))
+      {
+         if (evas_textblock_cursor_node_text_get(tmp))
+         {
+            evas_textblock_cursor_char_last(tmp);
+            evas_textblock_cursor_copy(tmp, iter->cursor);
+            break;
+         }
+         if ((format = evas_textblock_cursor_node_format_get(tmp)))
+         {
+            if ((*format == '\t') || ((*format == '\n') && include_new_line))
+            {
+               evas_textblock_cursor_copy(tmp, iter->cursor);
+               break;
+            }
+         }
+      }
+      evas_textblock_cursor_free(tmp);
+   }
+   
+   /* TODO */
+   _etk_textblock_cursor_object_update(iter->textblock);
+}
+
+/* TODO: doc */
+static void _etk_textblock_iter_goto_next_char_full(Etk_Textblock_Iter *iter, Etk_Bool include_new_line)
+{
+   Evas_Textblock_Cursor *tmp;
+   const char *format;
+   
+   if (!iter || !iter->textblock || !iter->cursor)
+      return;
+   
+   if (!evas_textblock_cursor_char_next(iter->cursor))
+   {
+      tmp = evas_object_textblock_cursor_new(iter->textblock->textblock_object);
+      evas_textblock_cursor_copy(iter->cursor, tmp);
+      while (evas_textblock_cursor_node_next(tmp))
+      {
+         if (evas_textblock_cursor_node_text_get(tmp))
+         {
+            evas_textblock_cursor_char_first(tmp);
+            evas_textblock_cursor_copy(tmp, iter->cursor);
+            break;
+         }
+         if ((format = evas_textblock_cursor_node_format_get(tmp)))
+         {
+            if ((*format == '\t') || ((*format == '\n') && include_new_line))
+            {
+               evas_textblock_cursor_copy(tmp, iter->cursor);
+               break;
+            }
+         }
+      }
+      evas_textblock_cursor_free(tmp);
+   }
+   
+   /* TODO */
+   _etk_textblock_cursor_object_update(iter->textblock);
+}
+
 /* Updates the position and the size of the cursor object */
 static void _etk_textblock_cursor_object_update(Etk_Textblock *textblock)
 {
@@ -398,7 +455,7 @@ static void _etk_textblock_cursor_object_update(Etk_Textblock *textblock)
    evas_object_geometry_get(textblock->textblock_object, &tbx, &tby, NULL, NULL);
    evas_textblock_cursor_char_geometry_get(textblock->cursor->cursor, &cx, &cy, &cw, &ch);
    evas_object_move(textblock->cursor_object, tbx + cx, tby + cy);
-   evas_object_resize(textblock->cursor_object, cw, ch);
+   evas_object_resize(textblock->cursor_object, 1, ch);
 }
 
 /* Changes the evas used by the textblock object */
