@@ -1,9 +1,8 @@
-#ifndef __EWL_SCROLLPANE_H__
-#define __EWL_SCROLLPANE_H__
+#ifndef EWL_SCROLLPANE_H
+#define EWL_SCROLLPANE_H
 
 /**
- * @file ewl_scrollpane.h
- * @defgroup Ewl_ScrollPane ScrollPane: A Scrollable Viewing Area
+ * @defgroup Ewl_ScrollPane Ewl_ScrollPane: A Scrollable Viewing Area
  * Provides a scrollable area for viewing large sets of widgets in a smaller
  * viewable region.
  *
@@ -29,7 +28,6 @@ typedef struct Ewl_ScrollPane Ewl_ScrollPane;
 #define EWL_SCROLLPANE(scrollpane) ((Ewl_ScrollPane *) scrollpane)
 
 /**
- * @struct Ewl_ScrollPane
  * Inherits from Ewl_Container and extends it to enclose a single widget in
  * vertical and horizontal scrollbars for panning around displaying different
  * regions of the enclosed widget.
@@ -86,4 +84,4 @@ void ewl_scrollpane_child_resize_cb(Ewl_Container *parent, Ewl_Widget *child);
  * @}
  */
 
-#endif				/* __EWL_SCROLLPANE_H__ */
+#endif

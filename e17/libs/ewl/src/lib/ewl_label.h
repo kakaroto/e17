@@ -1,10 +1,9 @@
-#ifndef __EWL_LABEL_H__
-#define __EWL_LABEL_H__
+#ifndef EWL_LABEL_H
+#define EWL_LABEL_H
 
 /**
- * @file ewl_label.h
- * @defgroup Ewl_Label Label: A fully-themable text label
- * @brief Defines a class for a fullty-themable text label
+ * @defgroup Ewl_Label Ewl_Label: A fully-themable text label
+ * Defines a class for a fullty-themable text label
  * 
  * @{
  */
@@ -24,7 +23,6 @@ typedef struct Ewl_Label Ewl_Label;
 #define EWL_LABEL(label) ((Ewl_Label *)label)
 
 /**
- * @struct Ewl_Label
  * Inherits from Ewl_Widget class
  */
 struct Ewl_Label

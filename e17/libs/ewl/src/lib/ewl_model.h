@@ -2,9 +2,8 @@
 #define EWL_MODEL_H
 
 /**
- * @file ewl_model.h
- * @defgroup Ewl_Model Model: A data model
- * @brief Defines communication callbacks for views and controllers. 
+ * @defgroup Ewl_Model Ewl_Model: A data model
+ * Defines communication callbacks for views and controllers. 
  * Query row/column data, indicate expansion points, notify views and 
  * controllers of changes, trigger sorting on a row/column combination.
  *
@@ -48,6 +47,9 @@ typedef Ewl_Widget *(*Ewl_Model_Header_Fetch)(void *data, unsigned int column);
 #define EWL_MODEL(model) ((Ewl_Model *)model)
 typedef struct Ewl_Model Ewl_Model;
 
+/**
+ * This holds the callbacks needed to define a model
+ */
 struct Ewl_Model
 {
 	Ewl_Model_Fetch fetch;    /**< Retrieve data for a cell */

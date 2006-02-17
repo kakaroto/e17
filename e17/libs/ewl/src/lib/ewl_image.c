@@ -233,6 +233,7 @@ ewl_image_constrain_set(Ewl_Image *i, unsigned int size)
 /**
  * @param i: The Ewl_Image to get the consrain size from
  * @return Returns the current constrain size on the image
+ * @brief Get the current constrain value set on the image
  */
 unsigned int
 ewl_image_constrain_get(Ewl_Image *i)

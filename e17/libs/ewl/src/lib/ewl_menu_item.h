@@ -2,8 +2,8 @@
 #define EWL_MENU_ITEM_H
 
 /**
- * @file ewl_menu_item.h
- * @defgroup Ewl_Menu_Item Menu_Item: The basic menu item
+ * @defgroup Ewl_Menu_Item Ewl_Menu_Item: The basic menu item
+ * The basic menu item
  *
  * @{
  */
@@ -28,7 +28,6 @@ typedef struct Ewl_Menu_Item Ewl_Menu_Item;
 #define EWL_MENU_ITEM(mi) ((Ewl_Menu_Item *) mi)
 
 /**
- * @struct Ewl_Menu_Item
  * Inherits from Ewl_Box to gain it's layout abilities, places policy on top
  * of the box framework to provide a simple menu layout of icon and label.
  */

@@ -495,12 +495,11 @@ ewl_iconbox_context_menu_item_add(Ewl_Iconbox *ib, Ewl_Widget *item)
 }
 
 /**
- * @param t: The Ewl_Text to delete the text from
- * @param length: The length of text to delete
+ * @param ib: The Ewl_Iconbox to add add the item too
+ * @param item: The item to add
  * @return Returns no value
  *
- * This will delete the specified length of text from the current cursor
- * position
+ * Add a menu item to the icons menu
  */
 void
 ewl_iconbox_icon_menu_item_add(Ewl_Iconbox *ib, Ewl_Widget *item) 

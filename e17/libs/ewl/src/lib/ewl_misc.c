@@ -604,6 +604,10 @@ ewl_init_remove_option(int *argc, char **argv, int i)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @return Returns no value
+ * @brief Print out the Ewl help text
+ */
 void
 ewl_print_help(void)
 {
@@ -685,6 +689,10 @@ ewl_configure_request(Ewl_Widget * w)
 	DLEAVE_FUNCTION(DLEVEL_TESTING);
 }
 
+/**
+ * @return Returns no value
+ * @brief Configure all the widgets that need to be configured
+ */
 void
 ewl_configure_queue(void)
 {
@@ -815,6 +823,10 @@ ewl_realize_cancel_request(Ewl_Widget *w)
 	DLEAVE_FUNCTION(DLEVEL_TESTING);
 }
 
+/**
+ * @return Returns no value
+ * @brief Realize all widgets that need to be realized
+ */
 void
 ewl_realize_queue(void)
 {
@@ -915,6 +927,10 @@ ewl_in_realize_phase(void)
 	DRETURN_INT((phase_status & EWL_FLAG_QUEUED_RSCHEDULED), DLEVEL_STABLE);
 }
 
+/**
+ * @return Returns the current engine mask
+ * @brief This will get the engine mask currently used by Ewl
+ */
 unsigned int
 ewl_engine_mask_get(void)
 {
@@ -923,6 +939,14 @@ ewl_engine_mask_get(void)
 	DRETURN_INT(ewl_config.evas.engine, DLEVEL_STABLE);
 }
 
+/**
+ * @param w: The widget to destroy
+ * @return Returns no value
+ * @brief Queues the widget to be destroyed. 
+ *
+ * NOTE you should be using ewl_widget_destroy instead of calling 
+ * ewl_destroy_request directly.
+ */
 void
 ewl_destroy_request(Ewl_Widget *w)
 {
@@ -952,7 +976,7 @@ ewl_destroy_request(Ewl_Widget *w)
 }
 
 /**
- * @param obj: evas to queue for destruction
+ * @param evas: evas to queue for destruction
  * @return Returns no value.
  * @brief Queues an evas to be destroyed at a later time.
  */
@@ -1068,6 +1092,11 @@ strdup(const char *str)
 }
 #endif
 
+/**
+ * @return Returns a string with a number of spaces equal to the current
+ * debug level
+ * @brief Creates a string used to indent debug messages
+ */
 char *
 ewl_debug_get_indent(void)
 {

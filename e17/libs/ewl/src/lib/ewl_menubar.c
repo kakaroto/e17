@@ -29,6 +29,7 @@ ewl_menubar_new(void)
 /**
  * @return Returns NULL on failure or a pointer to a new horizontal menubar
  * on success
+ * @brief Creates a new Ewl_Menubar in a horizontal orientation
  */
 Ewl_Widget *
 ewl_hmenubar_new(void)
@@ -50,6 +51,7 @@ ewl_hmenubar_new(void)
 /**
  * @return Returns NULL on failure or a pointer to a new vertical menubar on
  * success
+ * @brief Creates a new Ewl_Menubar in a vertical orientation 
  */
 Ewl_Widget *
 ewl_vmenubar_new(void)
@@ -106,6 +108,7 @@ ewl_menubar_init(Ewl_Menubar *mb)
  * @param mb: The menubar to set the orientation on
  * @param o: The orientation to set onto the menubar
  * @return Returns no value.
+ * @brief Sets the orientation of the menubar
  */
 void
 ewl_menubar_orientation_set(Ewl_Menubar *mb, Ewl_Orientation o)
@@ -138,6 +141,7 @@ ewl_menubar_orientation_set(Ewl_Menubar *mb, Ewl_Orientation o)
 /**
  * @param mb: The menubar to get the orientation from
  * @return Returns the orientation of the menubar
+ * @brief Gets the orientation of the menubar
  */
 Ewl_Orientation
 ewl_menubar_orientation_get(Ewl_Menubar *mb)

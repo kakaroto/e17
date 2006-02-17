@@ -5,8 +5,6 @@
 
 
 /**
- * @param image: the image icon to use for this menu
- * @param title: the text to place in the menu
  * @return Returns a pointer to a new menu on success, NULL on failure.
  * @brief Create a new internal menu
  */
@@ -31,8 +29,6 @@ ewl_menu_new(void)
 
 /**
  * @param menu: the menu to initialize
- * @param image: the path to the icon image
- * @param title: the string displayed in the title
  * @return Returns no value.
  * @brief Initialize an internal menu to starting values
  */

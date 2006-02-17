@@ -84,3 +84,4 @@ ewl_label_text_get(Ewl_Label *la)
 
 	DRETURN_PTR(ewl_widget_appearance_text_get(EWL_WIDGET(la)), DLEVEL_STABLE);
 }
+

@@ -1,9 +1,8 @@
-#ifndef __EWL_SPINNER_H__
-#define __EWL_SPINNER_H__
+#ifndef EWL_SPINNER_H
+#define EWL_SPINNER_H
 
 /**
- * file ewl_spinner.h
- * @defgroup Ewl_Spinner Spinner: A Numerical Value Entry
+ * @defgroup Ewl_Spinner Ewl_Spinner: A Numerical Value Entry
  * Provides a field for entering numerical values, along with buttons to
  * increment and decrement the value.
  *
@@ -83,4 +82,5 @@ void ewl_spinner_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
  * @}
  */
 
-#endif				/* __EWL_SPINNER_H__ */
+#endif
+

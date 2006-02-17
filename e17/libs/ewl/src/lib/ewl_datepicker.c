@@ -32,7 +32,7 @@ ewl_datepicker_new(void)
 }
 
 /**
- * @param db: The Ewl_Datepicker to initialize
+ * @param dp: The Ewl_Datepicker to initialize
  * @return Returns TRUE on success or FALSE on failure
  * @brief Initialize the date picker to default values.
  */

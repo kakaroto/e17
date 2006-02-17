@@ -109,7 +109,7 @@ ewl_dnd_types_for_widget_get(Ewl_Widget *widget)
 }
 
 /**
- * @param: The widget to start dragging
+ * @param w: The widget to start dragging
  * @return Returns no value
  * @brief Tells the widget to start dragging
  */

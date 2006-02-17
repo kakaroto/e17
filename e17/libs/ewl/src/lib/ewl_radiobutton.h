@@ -1,9 +1,8 @@
-#ifndef __EWL_RADIOBUTTON_H__
-#define __EWL_RADIOBUTTON_H__
+#ifndef EWL_RADIOBUTTON_H
+#define EWL_RADIOBUTTON_H
 
 /**
- * @file ewl_radiobutton.h
- * @defgroup Ewl_Radiobutton Radiobutton: A Radio Button Widget and Grouping System
+ * @defgroup Ewl_Radiobutton Ewl_Radiobutton: A Radio Button Widget and Grouping System
  * Provides for a simple radiobutton with label, and to group radio buttons
  * for selecting a single option.
  *
@@ -70,4 +69,4 @@ void ewl_radiobutton_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
  * @}
  */
 
-#endif				/* __EWL_RADIOBUTTON_H__ */
+#endif

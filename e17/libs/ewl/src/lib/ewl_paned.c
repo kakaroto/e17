@@ -119,6 +119,7 @@ ewl_paned_init(Ewl_Paned *p)
  * @param p: The paned to set the orientation on
  * @param o: The Ewl_Orientation to set
  * @return Returns no value.
+ * @brief Set the orientation of the paned widget
  */
 void 
 ewl_paned_orientation_set(Ewl_Paned *p, Ewl_Orientation o)
@@ -148,6 +149,7 @@ ewl_paned_orientation_set(Ewl_Paned *p, Ewl_Orientation o)
 /**
  * @param p: The Ewl_Paned to get the orientation from
  * @return Returns the Ewl_Orientation currently set on the paned
+ * @brief Get the orientation of the paned widget
  */
 Ewl_Orientation
 ewl_paned_orientation_get(Ewl_Paned *p)

@@ -4,8 +4,8 @@
 #include "ewl_private.h"
 
 /**
- * @brief Create a new notebook widget
  * @return Returns a newly allocated notebook on success. NULL on failure
+ * @brief Create a new notebook widget
  */
 Ewl_Widget *
 ewl_notebook_new(void)
@@ -84,6 +84,7 @@ ewl_notebook_init(Ewl_Notebook *n)
  * @param n: The Ewl_Notebook to set the tabbar alignment of
  * @param align: The Ewl_Alignment to set the alignment too
  * @return Returns no value.
+ * @brief Set the alignment of the tabbar in the notebook widget
  */
 void
 ewl_notebook_tabbar_alignment_set(Ewl_Notebook *n, unsigned int align)
@@ -100,6 +101,7 @@ ewl_notebook_tabbar_alignment_set(Ewl_Notebook *n, unsigned int align)
 /**
  * @param n: The Ewl_Notebook to get the alignment from
  * @return Returns the current alignment values of the widget
+ * @brief Retrieves the alignment of the tabbar in the notebook widget
  */
 unsigned int
 ewl_notebook_tabbar_alignment_get(Ewl_Notebook *n)
@@ -116,6 +118,7 @@ ewl_notebook_tabbar_alignment_get(Ewl_Notebook *n)
  * @param n: The Ewl_Notebook to set the tabbar position of
  * @param pos: The Ewl_Position to put the tabbar in
  * @return Returns no value.
+ * @brief Set the position of the tabbar in the notebook widget
  */
 void
 ewl_notebook_tabbar_position_set(Ewl_Notebook *n, Ewl_Position pos)
@@ -184,6 +187,7 @@ ewl_notebook_tabbar_position_set(Ewl_Notebook *n, Ewl_Position pos)
 /**
  * @param n: The Ewl_Notebook to get the tabbar position of
  * @return Returns the current Ewl_Position of the tabbar
+ * @brief Get the position of the tabbar in the notebook widget
  */
 Ewl_Position
 ewl_notebook_tabbar_position_get(Ewl_Notebook *n)
@@ -199,6 +203,7 @@ ewl_notebook_tabbar_position_get(Ewl_Notebook *n)
  * @param n: The Ewl_Notebook to set the visible flag of the tabbar
  * @param visible: The flag to set for the tabbar visibility
  * @return Returns no value.
+ * @brief Set if the tabbar is visible
  */
 void
 ewl_notebook_tabbar_visible_set(Ewl_Notebook *n, unsigned int visible)
@@ -216,6 +221,7 @@ ewl_notebook_tabbar_visible_set(Ewl_Notebook *n, unsigned int visible)
 /**
  * @param n: The Ewl_Notebook to get the tabbar visiblity of 
  * @return Returns the visibility of the tabbar
+ * @brief Retrieve if the tabbar is visible
  */
 unsigned int
 ewl_notebook_tabbar_visible_get(Ewl_Notebook *n)
@@ -232,6 +238,7 @@ ewl_notebook_tabbar_visible_get(Ewl_Notebook *n)
  * @param n: The Ewl_Notebook to set the visible page of
  * @param page: The page to set visible in the tabbar
  * @return Returns no value.
+ * @brief Set the current visible page of the notebook
  */
 void
 ewl_notebook_visible_page_set(Ewl_Notebook *n, Ewl_Widget *page)
@@ -271,6 +278,7 @@ ewl_notebook_visible_page_set(Ewl_Notebook *n, Ewl_Widget *page)
 /**
  * @param n: The Ewl_Notebook to get the visible page of
  * @return Returns the visible page of the notebook
+ * @brief Get the current visible page of the notebook
  */
 Ewl_Widget *
 ewl_notebook_visible_page_get(Ewl_Notebook *n)
@@ -287,6 +295,7 @@ ewl_notebook_visible_page_get(Ewl_Notebook *n)
  * @param page: The page to associate the tab text too
  * @param text: The text to set in the tab
  * @return Returns no value.
+ * @brief Set the text of the tab for the page @p page to the text @p text
  */
 void
 ewl_notebook_page_tab_text_set(Ewl_Notebook *n, Ewl_Widget *page, 
@@ -316,6 +325,7 @@ ewl_notebook_page_tab_text_set(Ewl_Notebook *n, Ewl_Widget *page,
  * @param n: The Ewl_Notebook to work with
  * @param page: The page to get the tab text from
  * @return Returns the text of the pages tab
+ * @brief Get the text of the notebook page @p page
  */
 const char *
 ewl_notebook_page_tab_text_get(Ewl_Notebook *n, Ewl_Widget *page)
@@ -339,6 +349,7 @@ ewl_notebook_page_tab_text_get(Ewl_Notebook *n, Ewl_Widget *page)
  * @param page: The page to associate the tab with
  * @param tab: The contents of the tab
  * @return Returns no value.
+ * @brief Set the widget to use as the tab for the page @p page to widget @p tab
  */
 void
 ewl_notebook_page_tab_widget_set(Ewl_Notebook *n, Ewl_Widget *page,
@@ -389,6 +400,7 @@ ewl_notebook_page_tab_widget_set(Ewl_Notebook *n, Ewl_Widget *page,
  * @param n: The Ewl_Notebook to get the tab widget from
  * @param page: The page to get the tab from
  * @return Returns the tab widget associated with the given page
+ * @brief Retrieve the widget used as the tab for the page @p page
  */
 Ewl_Widget *
 ewl_notebook_page_tab_widget_get(Ewl_Notebook *n, Ewl_Widget *page)

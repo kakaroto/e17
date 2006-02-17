@@ -1,11 +1,11 @@
-#ifndef __EWL_SEPARATOR_H__
-#define __EWL_SEPARATOR_H__
+#ifndef EWL_SEPARATOR_H
+#define EWL_SEPARATOR_H
 
 /**
- * @file ewl_separator.h
- * @defgroup Ewl_Separator Separator: A Visual Separator Between Widgets
+ * @defgroup Ewl_Separator Ewl_Separator: A Visual Separator Between Widgets
  * Defines the Ewl_Separator class used for drawing lines between widgets when
  * visual separation is needed.
+ *
  * @{
  */
 
@@ -31,7 +31,6 @@ typedef struct Ewl_Separator Ewl_Separator;
 #define EWL_SEPARATOR(separator) ((Ewl_Separator *) separator)
 
 /**
- * @struct Ewl_Separator
  * @brief Inherits from Ewl_Widget to allow drawing a horizontal or vertical
  * line between widgets, depending on the orientation the Ewl_Separator.
  */
@@ -51,4 +50,6 @@ Ewl_Orientation ewl_separator_orientation_get(Ewl_Separator *s);
 /**
  * @}
  */
-#endif				/* __EWL_SEPARATOR_H__ */
+
+#endif
+

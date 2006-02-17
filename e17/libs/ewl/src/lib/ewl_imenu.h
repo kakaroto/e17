@@ -1,9 +1,8 @@
-#ifndef __EWL_IMENU_H__
-#define __EWL_IMENU_H__
+#ifndef EWL_IMENU_H
+#define EWL_IMENU_H
 
 /**
- * @file ewl_imenu.h
- * @defgroup Ewl_Imenu Imenu: A Simple Internal Menu
+ * @defgroup Ewl_Imenu Ewl_Imenu: A Simple Internal Menu
  * Defines a menu used internally. The contents on the menu are not drawn
  * outside of the Evas.
  *
@@ -29,13 +28,12 @@ typedef struct Ewl_Imenu Ewl_Imenu;
 #define EWL_IMENU(menu) ((Ewl_Imenu *) menu)
 
 /**
- * @struct Ewl_Imenu
  * Inherits from the Ewl_Menu_Base and does not extend the structure, but
  * provides policy for drawing on the current evas.
  */
 struct Ewl_Imenu
 {
-	Ewl_Menu_Base base;
+	Ewl_Menu_Base base;		/**< Inherit from Ewl_Menu_base */
 };
 
 Ewl_Widget	*ewl_imenu_new(void);
@@ -52,4 +50,4 @@ void ewl_imenu_popup_destroy_cb(Ewl_Widget *w, void *ev, void *data);
  * @}
  */
 
-#endif				/* __EWL_IMENU_H__ */
+#endif

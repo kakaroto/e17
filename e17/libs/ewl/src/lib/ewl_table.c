@@ -9,7 +9,6 @@
  * @param col_headers: the column titles
  * @return Returns a a newl table on success, NULL on failure.
  * @brief Create a new table
- *
  */
 Ewl_Widget *
 ewl_table_new(int cols, int rows, char **col_headers)
@@ -502,7 +501,7 @@ ewl_table_child_show_cb(Ewl_Container *p, Ewl_Widget *c __UNUSED__)
  * @param table: the table to change homogeneous layout 
  * @param h: the boolean value to change the layout mode to
  * @return Returns no value.
- * @breif Change the homogeneous layout of the box
+ * @brief Change the homogeneous layout of the box
  *
  * Grids use non-homogeneous layout by default, this can be used
  * to change that. 
@@ -526,7 +525,7 @@ ewl_table_homogeneous_set(Ewl_Table *table, unsigned int h)
  * @param table: the table to change horizontal homogeneous layout 
  * @param h: the boolean value to change the horizontal layout mode to
  * @return Returns no value.
- * @breif Change the horizontal homogeneous layout of the box
+ * @brief Change the horizontal homogeneous layout of the box
  *
  * Grids use non-homogeneous layout by default, this can be used
  * to change that for horizontal orientation, i.e. all columns can
@@ -552,7 +551,7 @@ ewl_table_hhomogeneous_set(Ewl_Table *table, unsigned int h)
  * @param table: the table to change vertical homogeneous layout 
  * @param h: the boolean value to change the vertical layout mode to
  * @return Returns no value.
- * @breif Change the vertical homogeneous layout of the box
+ * @brief Change the vertical homogeneous layout of the box
  *
  * Grids use non-homogeneous layout by default, this can be used
  * to change that for vertical orientation, i.e. all rows can have 
@@ -590,7 +589,7 @@ ewl_table_hhomogeneous_get(Ewl_Table *table)
 }
 
 /**
- * @param g: the table to get the vertical layout 
+ * @param table: the table to get the vertical layout 
  * @return The vertical homogeneous flag 
  * @brief Retrieves the vertical homogeneous flag  
  */
@@ -603,3 +602,4 @@ ewl_table_vhomogeneous_get(Ewl_Table *table)
 
 	DRETURN_INT(table->homogeneous_v, DLEVEL_STABLE); 
 }
+

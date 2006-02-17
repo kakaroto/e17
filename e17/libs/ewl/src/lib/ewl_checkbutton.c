@@ -71,6 +71,8 @@ ewl_checkbutton_init(Ewl_Checkbutton *cb)
 }
 
 /**
+ * @param cb: The checkbutton to set the checked value of
+ * @param c: The checked value to set
  * @return Returns no value.
  * @brief Update the checked state of the check button.
  */

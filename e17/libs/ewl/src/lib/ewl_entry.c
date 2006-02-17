@@ -4,7 +4,6 @@
 #include "ewl_private.h"
 
 /**
- * @param text: The text to set into the entry
  * @return Returns a new Ewl_Widget on success or NULL on failure
  * @brief Create and return a new Ewl_Entry widget
  */
@@ -31,7 +30,6 @@ ewl_entry_new(void)
 
 /**
  * @param e: The Ewl_Entry to initialize
- * @param text: The text to put into the entry
  * @return Returns TRUE on success or FALSE on failure
  * @brief Initializes an Ewl_Entry widget to default values
  */

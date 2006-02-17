@@ -4,12 +4,10 @@
 #include "ewl_private.h"
 
 /*
- * TODO
- *  - may need to optimize this to only redraw if we have a resize, or a
- *    type/mode change
- *  - implement a triangle selection mode
- *
- *  - Add a theme item for the cross hairs ...
+ *  @todo may need to optimize this to only redraw if we have a resize, or a
+ *  type/mode change
+ *  @todo implement a triangle selection mode
+ *  @todo Add a theme item for the cross hairs ...
  */
 
 static void ewl_spectrum_hsv_from_rgb(Ewl_Spectrum *sp);
@@ -32,6 +30,7 @@ static void ewl_spectrum_color_coord_map_square(Ewl_Spectrum *sp, int x,
 
 /**
  * @return Returns a new Ewl_Spectrum widget or NULL on failure
+ * @brief Creates a new Ewl_Spectrum widget
  */
 Ewl_Widget *
 ewl_spectrum_new(void)
@@ -58,6 +57,7 @@ ewl_spectrum_new(void)
 /**
  * @param sp: The Ewl_Spectrum to init
  * @return Returns TRUEE on success or FALSE on failure
+ * @brief Initializes an Ewl_Specturm widget to default values
  */
 int
 ewl_spectrum_init(Ewl_Spectrum *sp)
@@ -114,6 +114,7 @@ ewl_spectrum_init(Ewl_Spectrum *sp)
  * @param sp: The Ewl_Spectrum to set the type on
  * @param type: The type to set the spectrum too
  * @return Returns no value
+ * @brief Set the type of the spectrum
  */
 void
 ewl_spectrum_type_set(Ewl_Spectrum *sp, Ewl_Spectrum_Type type)
@@ -131,6 +132,7 @@ ewl_spectrum_type_set(Ewl_Spectrum *sp, Ewl_Spectrum_Type type)
 /**
  * @param sp: The Ewl_Spectrum to get the type from
  * @return Returns the spectrum type
+ * @brief Get the type of the spectrum
  */
 Ewl_Spectrum_Type
 ewl_spectrum_type_get(Ewl_Spectrum *sp)
@@ -146,6 +148,7 @@ ewl_spectrum_type_get(Ewl_Spectrum *sp)
  * @param sp: The Ewl_Spectrum to set the mode on
  * @param mode: The mode to set the spectrum too
  * @return Returns no value.
+ * @brief Set the mode of the spectrum
  */
 void
 ewl_spectrum_mode_set(Ewl_Spectrum *sp, Ewl_Color_Mode mode)
@@ -162,7 +165,9 @@ ewl_spectrum_mode_set(Ewl_Spectrum *sp, Ewl_Color_Mode mode)
 
 /**
  * @param sp: The Ewl_Spectrum to get the mode from
- * @param Returns the mode of the spectrum */
+ * @return Returns the mode of the spectrum 
+ * @brief Get the mode of the spectrum 
+ */
 Ewl_Color_Mode
 ewl_spectrum_mode_get(Ewl_Spectrum *sp)
 {
@@ -179,6 +184,7 @@ ewl_spectrum_mode_get(Ewl_Spectrum *sp)
  * @param g: The green value to set
  * @param b: The blue value to set
  * @return Returns no value
+ * @brief Set the RGB values for the spectrum
  */
 void
 ewl_spectrum_rgb_set(Ewl_Spectrum *sp, unsigned int r, 
@@ -208,6 +214,7 @@ ewl_spectrum_rgb_set(Ewl_Spectrum *sp, unsigned int r,
  * @param g: Where to store the green value
  * @param b: Where to store the blue value
  * @return Returns no value.
+ * @brief Get the RGB values for the spectrum
  */
 void
 ewl_spectrum_rgb_get(Ewl_Spectrum *sp, unsigned int *r, 
@@ -230,6 +237,7 @@ ewl_spectrum_rgb_get(Ewl_Spectrum *sp, unsigned int *r,
  * @param s: The saturation to set
  * @param v: The value to set
  * @return Returns no value
+ * @brief Set the HSV values for the spectrum
  */
 void
 ewl_spectrum_hsv_set(Ewl_Spectrum *sp, double h, double s, double v)
@@ -263,6 +271,7 @@ ewl_spectrum_hsv_set(Ewl_Spectrum *sp, double h, double s, double v)
  * @param s: Where to place the saturation
  * @param v: Where to place the value
  * @return Returns no value.
+ * @brief Get the HSV value from the spectrum
  */
 void
 ewl_spectrum_hsv_get(Ewl_Spectrum *sp, double *h, double *s, double *v)

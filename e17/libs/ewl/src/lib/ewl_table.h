@@ -1,10 +1,9 @@
-#ifndef __EWL_TABLE_H__
-#define __EWL_TABLE_H__
+#ifndef EWL_TABLE_H
+#define EWL_TABLE_H
 
 /**
- * @file ewl_table.h
- * @defgroup Ewl_Table Table: The Table Layout Container.
- * @brief Defines the Ewl_Box class used for laying out Ewl_Widget's in a
+ * @defgroup Ewl_Table Ewl_Table: The Table Layout Container.
+ * Defines the Ewl_Box class used for laying out Ewl_Widget's in a
  * horizontal or vertical line.
  *
  * @{
@@ -29,28 +28,26 @@ typedef struct Ewl_Table Ewl_Table;
  */
 #define EWL_TABLE(table) ((Ewl_Table *)table)
 
+/**
+ * Inherits from Ewl_Container and extends to provide a table layout
+ */
 struct Ewl_Table
 {
-	Ewl_Container   container;
+	Ewl_Container   container;		/**< Inherit from Ewl_Container */
+	Ewl_Grid       *grid;			/**< Table uses a grid based layout */
 
-	Ewl_Grid       *grid;
+	char          **col_headers;		/**< The column headers */
+	int             row_select;		/**< boolean: select entire rows */
 
-	char          **col_headers;
-
-	int             row_select;	/* boolean: select entire rows */
-
-        /*
-         * Flag indicating space assignment 
-         */
-        unsigned int    homogeneous_h;   /** Horizontal homogeneous flag */
-        unsigned int    homogeneous_v;   /** Vertical homogeneous flag */ 
+        unsigned int    homogeneous_h;   	/**< Horizontal homogeneous flag */
+        unsigned int    homogeneous_v;   	/**< Vertical homogeneous flag */ 
 
 	struct {
-		int start_r;
-		int start_c;
-		int end_r;
-		int end_c;
-	} selected;
+		int start_r;			/**< Selection start row */
+		int start_c;			/**< Selection start column */
+		int end_r;			/**< Selection end row */
+		int end_c;			/**< Selection end column */
+	} selected;				/**< Currently selected rows */
 
 };
 
@@ -61,7 +58,6 @@ void            ewl_table_add(Ewl_Table *table, Ewl_Widget *w, int start_col,
 			      int end_col, int start_row, int end_row);
 void            ewl_table_reset(Ewl_Table *t, int cols, int rows,
 				char **c_headers);
-void            ewl_table_row_select(Ewl_Table *t, int boolean);
 
 void            ewl_table_col_w_set(Ewl_Table *table, int col, int width);
 void            ewl_table_row_h_set(Ewl_Table *table, int row, int height);
@@ -91,7 +87,6 @@ void ewl_table_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_table_show_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_table_child_configure_cb(Ewl_Widget * w, void *ev_data,
 							void *user_data);
-//void ewl_table_child_show_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_table_child_select_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_table_child_show_cb(Ewl_Container *p, Ewl_Widget *c); 
 
@@ -99,4 +94,4 @@ void ewl_table_child_show_cb(Ewl_Container *p, Ewl_Widget *c);
  * @}
  */
 
-#endif				/* __EWL_TABLE_H__ */
+#endif

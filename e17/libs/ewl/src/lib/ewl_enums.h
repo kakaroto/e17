@@ -308,7 +308,7 @@ enum Ewl_Stock_Type
 typedef enum Ewl_Stock_Type Ewl_Stock_Type;
 
 /**
- * @enum Ewl_Color_Pick_Mode
+ * @enum Ewl_Color_Mode
  */
 enum Ewl_Color_Mode 
 {

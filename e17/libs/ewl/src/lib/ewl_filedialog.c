@@ -126,6 +126,7 @@ ewl_filedialog_type_get(Ewl_Filedialog *fd)
 
 /**
  * @param fd: the filedialog to change types
+ * @param t: The type to set the filedialog too
  * @return Returns no value.
  * @brief Change the current filedialog type.
  */

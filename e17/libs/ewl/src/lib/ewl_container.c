@@ -1051,6 +1051,7 @@ ewl_container_child_add_call(Ewl_Container *c, Ewl_Widget *w)
 /**
  * @param c: the container removing a child widget
  * @param w: the child widget removed from the container
+ * @param idx: The index that the child was in when it was removed
  * @return Returns no value.
  * @brief Triggers the child_remove callback for the container @a c.
  */

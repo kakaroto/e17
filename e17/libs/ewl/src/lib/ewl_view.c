@@ -59,6 +59,7 @@ ewl_view_constructor_set(Ewl_View *v, Ewl_View_Constructor construct)
  * @param v: The Ewl_View to get the constructor from
  * @return Returns the Ewl_View_Constructor set into the view or NULL if
  * none set.
+ * @brief Get the constructor set on this view
  */
 Ewl_View_Constructor
 ewl_view_constructor_get(Ewl_View *v)
@@ -73,6 +74,7 @@ ewl_view_constructor_get(Ewl_View *v)
  * @param v: The Ewl_View to set the assignment function into
  * @param assign: The Ewl_View_Assign assignment function to set
  * @return Returns no value.
+ * @brief Set the assign pointer on this view
  */
 void
 ewl_view_assign_set(Ewl_View *v, Ewl_View_Assign assign)
@@ -89,6 +91,7 @@ ewl_view_assign_set(Ewl_View *v, Ewl_View_Assign assign)
  * @param v: The Ewl_View to get the assignment function from
  * @return Returns the Ewl_View_Assign set into the Ewl_View or NULL if none
  * set.
+ * @brief Get the assign pointer set on this view
  */
 Ewl_View_Assign
 ewl_view_assign_get(Ewl_View *v)

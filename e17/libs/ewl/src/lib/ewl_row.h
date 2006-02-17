@@ -1,10 +1,10 @@
-#ifndef _EWL_ROW_H
-#define _EWL_ROW_H
+#ifndef EWL_ROW_H
+#define EWL_ROW_H
 
 /**
- * @file ewl_row.h
+ * @defgroup Ewl_Row Ewl_Row: The Row widget
+ * Defines a widget to display a row
  *
- * @defgroup Ewl_Row Row The Row widget
  * @{
  */
 
@@ -15,16 +15,25 @@
 
 #define EWL_ROW_TYPE "row"
 
+/**
+ * The Ewl_Row widget
+ */
 typedef struct Ewl_Row Ewl_Row;
+
+/**
+ * @def EWL_ROW(t)
+ * Typecasts a pointer to an Ewl_Row pointer
+ */
 #define EWL_ROW(t) ((Ewl_Row *)t)
 
 /*
- * Tree rows layout cells in a left to right fashion.
+ * Inherits from Ewl_Container to create a tree rows that 
+ * lays out cells in a left to right fashion.
  */
 struct Ewl_Row
 {
-	Ewl_Container container;
-	Ewl_Row *header;
+	Ewl_Container container;	/**< Inherit from Ewl_Container */
+	Ewl_Row *header;		/**< The header row */
 };
 
 Ewl_Widget 	*ewl_row_new(void);

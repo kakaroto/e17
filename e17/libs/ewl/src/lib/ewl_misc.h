@@ -1,23 +1,13 @@
-#ifndef __EWL_MISC_H__
-#define __EWL_MISC_H__
+#ifndef EWL_MISC_H
+#define EWL_MISC_H
 
 /**
- * @file ewl_misc.h
- *
- * @defgroup Ewl_Misc Misc: Miscellaneous Utility Functions
+ * @defgroup Ewl_Misc Ewl_Misc: Miscellaneous Utility Functions
  * Provides important miscellaneous functionality such as manipulation of the
  * main loop.
  *
  * @{
  */
-
-typedef struct Ewl_Options Ewl_Options;
-
-struct Ewl_Options
-{
-	int             debug_level;
-	char           *xdisplay;
-};
 
 int             ewl_init(int *argc, char **argv);
 void            ewl_print_help(void);
@@ -49,4 +39,4 @@ char *strdup(const char *str);
  * @}
  */
 
-#endif				/* __EWL_MISC_H__ */
+#endif

@@ -1,9 +1,9 @@
-#ifndef EWL_BAR_H
-#define EWL_BAR_H
+#ifndef EWL_STATUSBAR_H
+#define EWL_STATUSBAR_H
 
 /**
  * @defgroup Ewl_Statusbar Ewl_Statusbar: A status bar widget
- * @brief Defines a class for displaying status bars
+ * Defines a class for displaying status bars
  *
  * @{
  */
@@ -16,6 +16,7 @@
 #define EWL_STATUSBAR_TYPE "statusbar"
 
 /**
+ * The Ewl_Statusbar
  */
 typedef struct Ewl_Statusbar Ewl_Statusbar;
 
@@ -26,7 +27,6 @@ typedef struct Ewl_Statusbar Ewl_Statusbar;
 #define EWL_STATUSBAR(statusbar) ((Ewl_Statusbar *) statusbar)
 
 /**
- * @struct Ewl_Statusbar
  * Inherits from the Ewl_Box class and extends it to provide for
  * a simple status bar
  */

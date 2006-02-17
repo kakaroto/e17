@@ -71,7 +71,6 @@ ewl_vseeker_new(void)
 
 /**
  * @param s: the seeker to be initialized
- * @param orientation: the orientation of the seeker
  * @return Returns no value.
  * @brief Initialize the seeker to some sane starting values
  *
@@ -182,6 +181,21 @@ ewl_seeker_orientation_set(Ewl_Seeker *s, Ewl_Orientation o)
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param s: The seeker to get the orientation from
+ * @return Returns the orientation set on the seeker
+ * @brief This will retrieve the current orientation set on the seeker
+ */
+Ewl_Orientation 
+ewl_seeker_orientation_get(Ewl_Seeker *s)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("s", s, EWL_ORIENTATION_HORIZONTAL);
+	DCHECK_TYPE_RET("s", s, EWL_SEEKER_TYPE, EWL_ORIENTATION_HORIZONTAL);
+
+	DRETURN_INT(s->orientation, DLEVEL_STABLE);
 }
 
 /**

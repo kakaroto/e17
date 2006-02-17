@@ -18,11 +18,9 @@ static void ewl_widget_drag_move_cb(Ewl_Widget *w, void *ev_data, void *user_dat
 static void ewl_widget_drag_up_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 static void ewl_widget_drag_down_cb (Ewl_Widget *w, void *ev_data, void *user_data);
 
-/* static int edjes = 0; */
-
 /**
- * @brief Allocate a new widget.
  * @return Returns a newly allocated widget on success, NULL on failure.
+ * @brief Allocate a new widget.
  *
  * Do not use this function unless you know what you are doing! It is only
  * intended to easily create custom widgets that are not containers.
@@ -945,7 +943,6 @@ ewl_widget_appearance_part_text_get(Ewl_Widget * w, char *part)
 
 /**
  * @param w: the widget whose text to change
- * @param part: the theme part name whose text to change
  * @param text: the new text to change to
  * @return Returns no value.
  * @brief Change the text of the given theme part of a widget
@@ -1162,6 +1159,7 @@ ewl_widget_tab_order_prepend(Ewl_Widget *w)
 
 /**
  * @param w: the widget to be moved to the front of the focus list
+ * @param idx: The index to insert the tab into
  * @return Returns no value.
  * @brief Changes the order in the embed so @a w receives focus first on tab.
  *
@@ -1233,6 +1231,7 @@ ewl_widget_tab_order_insert_after(Ewl_Widget *w, Ewl_Widget *after)
 /**
  * @param w: The widget to remove from the tab order
  * @return Returns no value.
+ * @brief Remove the widget from the tab order
  */
 void
 ewl_widget_tab_order_remove(Ewl_Widget *w)
@@ -1253,6 +1252,7 @@ ewl_widget_tab_order_remove(Ewl_Widget *w)
  * @param w: The widget to set if it accepts or blocks focus changes
  * @param val: TRUE or FALSE on if this widget blocks tabbing off
  * @return Returns no value.
+ * @brief Set if the widget should ignore focus changes
  */
 void
 ewl_widget_ignore_focus_change_set(Ewl_Widget *w, unsigned int val)
@@ -1276,6 +1276,7 @@ ewl_widget_ignore_focus_change_set(Ewl_Widget *w, unsigned int val)
 /**
  * @param w: The widget to check if it blocks tab focus
  * @return Returns TRUE if the widget blocks tab focus, FALSE otherwise.
+ * @brief Get if the widget is ignoring focus changes
  */
 unsigned int
 ewl_widget_ignore_focus_change_get(Ewl_Widget *w)
@@ -1291,6 +1292,12 @@ ewl_widget_ignore_focus_change_get(Ewl_Widget *w)
 	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
+/**
+ * @param w: The widget to set the focusable values
+ * @param val: The focusable value to set
+ * @return Returns no value
+ * @brief Set if the given widget is focusable or not
+ */
 void
 ewl_widget_focusable_set(Ewl_Widget *w, unsigned int val)
 {
@@ -1310,6 +1317,11 @@ ewl_widget_focusable_set(Ewl_Widget *w, unsigned int val)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param w: The widget to get the focusable state from
+ * @return Returns TRUE if the widget is focusable, FALSE otherwise
+ * @brief Checks the focusable state of the widget
+ */
 unsigned int
 ewl_widget_focusable_get(Ewl_Widget *w)
 {
@@ -1487,6 +1499,11 @@ ewl_widget_internal_is(Ewl_Widget *w)
 	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
+/**
+ * @param w: The widget to check
+ * @return Returns TRUE if the widget is onscreen
+ * @brief Checks if the given widget is currently on screen
+ */
 unsigned int
 ewl_widget_onscreen_is(Ewl_Widget *w)
 {
@@ -2667,6 +2684,7 @@ ewl_widget_drag_up_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 /**
  * @param w: the widget to set draggable state
  * @param val: the true/false state of draggable
+ * @param cb: The drag callback to set
  * @return Returns no value.
  * @brief Set the draggable state, and setup any callbacks
  */

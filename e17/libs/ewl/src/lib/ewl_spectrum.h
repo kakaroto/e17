@@ -2,8 +2,8 @@
 #define EWL_SPECTRUM_H
 
 /**
- * @file ewl_spectrum.h
- * @defgroup Ewl_Spectrum Spectrum The colour spectrum widget
+ * @defgroup Ewl_Spectrum Ewl_Spectrum: The colour spectrum widget
+ * Defines a colour spectrum widget
  *
  * @{
  */
@@ -26,24 +26,24 @@ typedef struct Ewl_Spectrum Ewl_Spectrum;
  */
 struct Ewl_Spectrum 
 {
-	Ewl_Overlay overlay;
-	Ewl_Widget *canvas;
+	Ewl_Overlay overlay;		/**< Inherit from Ewl_Overlay */
+	Ewl_Widget *canvas;		/**< The canvas to draw on */
 	
 	struct 
 	{
-		Ewl_Widget *vertical;
-		Ewl_Widget *horizontal;
-	} cross_hairs;
+		Ewl_Widget *vertical;	/**< Vertical portion of the crosshairs */
+		Ewl_Widget *horizontal; /**< Horizontal portion of the crosshairs */
+	} cross_hairs;			/**< Selection crosshairs */
 
-	Ewl_Color_Set rgb;
+	Ewl_Color_Set rgb;		/**< Current RBG colour of the spectrum */
 	struct {
-		double h;
-		double s;
-		double v;
-	} hsv;
+		double h;		/**< The current hue */
+		double s;		/**< The current saturation */
+		double v;		/**< The current value */
+	} hsv;				/**< The HSV setting of the specturm */
 
-	Ewl_Color_Mode mode;
-	Ewl_Spectrum_Type type;
+	Ewl_Color_Mode mode;		/**< The mode of the spectrum */
+	Ewl_Spectrum_Type type;		/**< The type of the spectrum */
 };
 
 Ewl_Widget	*ewl_spectrum_new(void);

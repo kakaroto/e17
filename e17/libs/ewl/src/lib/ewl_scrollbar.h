@@ -1,9 +1,8 @@
-#ifndef __EWL_SCROLLBAR_H__
-#define __EWL_SCROLLBAR_H__
+#ifndef EWL_SCROLLBAR_H
+#define EWL_SCROLLBAR_H
 
 /**
- * @file ewl_scrollbar.h
- * @defgroup Ewl_Scrollbar Scrollbar: A Simple Scrollbar Widget
+ * @defgroup Ewl_Scrollbar Ewl_Scrollbar: A Simple Scrollbar Widget
  * Defines an Ewl_Scrollbar for using when scrolling values are needed.
  *
  * @{
@@ -41,7 +40,6 @@ typedef struct Ewl_Scrollbar Ewl_Scrollbar;
 #define EWL_SCROLLBAR(scrollbar) ((Ewl_Scrollbar *) scrollbar)
 
 /**
- * @struct Ewl_Scrollbar
  * Inherits from Ewl_Box to layout an Ewl_Seeker and two Ewl_Buttons to
  * provide scrollbar functionality.
  */
@@ -89,4 +87,4 @@ void ewl_scrollbar_scroll_stop_cb(Ewl_Widget *w, void *ev_data,
  * @}
  */
 
-#endif				/* __EWL_SCROLLBAR_H__ */
+#endif

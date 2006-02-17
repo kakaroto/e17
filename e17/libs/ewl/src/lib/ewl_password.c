@@ -6,7 +6,6 @@
 static void ewl_password_text_insert(Ewl_Password *e, const char *s);
 
 /**
- * @param text: the initial text to display in the widget
  * @return Returns a new password widget on success, NULL on failure.
  * @brief Allocate and initialize a new password widget
  */

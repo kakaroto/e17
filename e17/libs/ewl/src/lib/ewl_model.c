@@ -27,6 +27,7 @@ ewl_model_new(void)
 /**
  * @param model: The Ewl_Model to initialize
  * @return Returns TRUE on success or FALSE on failure
+ * @brief Set the model to the default values
  */
 int
 ewl_model_init(Ewl_Model *model)
@@ -44,6 +45,7 @@ ewl_model_init(Ewl_Model *model)
  * @param m: The Ewl_Model to set the fetch callback into
  * @param get: The Ewl_Model_Fetch callback to set
  * @return Returns no value.
+ * @brief Sets the fetch callback in the model
  */
 void
 ewl_model_fetch_set(Ewl_Model *m, Ewl_Model_Fetch get)
@@ -59,6 +61,7 @@ ewl_model_fetch_set(Ewl_Model *m, Ewl_Model_Fetch get)
 /**
  * @param m: The Ewl_Model to get the fetch callback from
  * @return Returns the Ewl_Model_Fetch callback or NULL if none set
+ * @brief Gets the fetch callback from the model
  */
 Ewl_Model_Fetch
 ewl_model_fetch_get(Ewl_Model *m)
@@ -73,6 +76,7 @@ ewl_model_fetch_get(Ewl_Model *m)
  * @param m: The Ewl_Model to set the subfetch callback into
  * @param get: The Ewl_Model_Fetch callback for subrows
  * @return Returns no value.
+ * @brief Sets the subfetch callback into the model
  */
 void
 ewl_model_subfetch_set(Ewl_Model *m, Ewl_Model_Fetch get)
@@ -88,6 +92,7 @@ ewl_model_subfetch_set(Ewl_Model *m, Ewl_Model_Fetch get)
 /**
  * @param m: The Ewl_Model to get the subfetch callback from
  * @return Returns the Ewl_Model_Fetch for the subfetch callback
+ * @brief Gets the subfetch callback from the model
  */
 Ewl_Model_Fetch
 ewl_model_subfetch_get(Ewl_Model *m)
@@ -102,6 +107,7 @@ ewl_model_subfetch_get(Ewl_Model *m)
  * @param m: The Ewl_Model to set the sort callback on
  * @param sort: The sort callback to set
  * @return Returns no value.
+ * @brief Sets the sort callback into the model
  */
 void
 ewl_model_sort_set(Ewl_Model *m, Ewl_Model_Sort sort)
@@ -117,6 +123,7 @@ ewl_model_sort_set(Ewl_Model *m, Ewl_Model_Sort sort)
 /**
  * @param m: The Ewl_Model to get the sort callback from
  * @return Returns the Ewl_Model_Sort set on the model or NULL if none set
+ * @brief Gets the sort callback from the model
  */
 Ewl_Model_Sort
 ewl_model_sort_get(Ewl_Model *m)
@@ -131,6 +138,7 @@ ewl_model_sort_get(Ewl_Model *m)
  * @param m: The Ewl_Model to set the count callback on
  * @param count: The count callback to set on the model
  * @return Returns no value.
+ * @brief Sets the count callback into the model
  */
 void
 ewl_model_count_set(Ewl_Model *m, Ewl_Model_Count count)
@@ -147,6 +155,7 @@ ewl_model_count_set(Ewl_Model *m, Ewl_Model_Count count)
  * @param m: The Ewl_Model to get the count callback from
  * @return Returns the Ewl_Model_Count callback set on the model or NULL if
  * none set.
+ * @brief Gets the count callback from the model
  */
 Ewl_Model_Count
 ewl_model_count_get(Ewl_Model *m)
@@ -161,6 +170,7 @@ ewl_model_count_get(Ewl_Model *m)
  * @param m: The Ewl_Model to set the header_fetch callback on
  * @param f: The Ewl_Model_Header_Fetch callback
  * @return Returns no value.
+ * @brief Sets the header fetch callback into the model
  */
 void
 ewl_model_header_fetch_set(Ewl_Model *m, Ewl_Model_Header_Fetch f)
@@ -177,6 +187,7 @@ ewl_model_header_fetch_set(Ewl_Model *m, Ewl_Model_Header_Fetch f)
  * @param m: The Ewl_Model to get the Ewl_Model_Header_Fetch function from
  * @return Returns the Ewl_Model_Header_Fetch callback set on the model, or
  * NULL on failure.
+ * @brief Gets the header fetch callback from the model
  */
 Ewl_Model_Header_Fetch 
 ewl_model_header_fetch_get(Ewl_Model *m)
@@ -191,6 +202,7 @@ ewl_model_header_fetch_get(Ewl_Model *m)
  * @param m: The model to set dirty
  * @param dirty: The dirty value to set
  * @return Returns no value
+ * @brief Sets if the model is dirty
  */
 void
 ewl_model_dirty_set(Ewl_Model *m, unsigned int dirty)
@@ -206,6 +218,7 @@ ewl_model_dirty_set(Ewl_Model *m, unsigned int dirty)
 /**
  * @param m: The model to get the dirty value of
  * @return Returns TRUE if the model is dirty, FALSE otherwise
+ * @brief Gets if the model is dirty
  */
 unsigned int
 ewl_model_dirty_get(Ewl_Model *m)

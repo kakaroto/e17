@@ -1,10 +1,10 @@
-
-#ifndef __EWL_PROGRESSBAR_H__
-#define __EWL_PROGRESSBAR_H__
+#ifndef EWL_PROGRESSBAR_H
+#define EWL_PROGRESSBAR_H
 
 /**
- * @file ewl_progressbar.h
- * @defgroup Ewl_Progressbar Progressbar: A progressbar from a value
+ * @defgroup Ewl_Progressbar Ewl_Progressbar: A progressbar from a value
+ * A progress bar widget
+ *
  * @{
  */
 
@@ -29,10 +29,8 @@ typedef struct Ewl_Progressbar Ewl_Progressbar;
 #define EWL_PROGRESSBAR(progressbar) ((Ewl_Progressbar *) progressbar)
 
 /**
- * @struct Ewl_Progressbar
  * Inherits from Ewl_Container and creates an internal Ewl_Widget, the
  * statusbar itself.
- * 
  */
 struct Ewl_Progressbar
 {
@@ -74,4 +72,4 @@ void ewl_progressbar_child_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
  * @}
  */
 
-#endif				/* __EWL_PROGRESSBAR_H__ */
+#endif

@@ -1,9 +1,7 @@
-
-#ifndef __EWL_THEME_H__
-#define __EWL_THEME_H__
+#ifndef EWL_THEME_H
+#define EWL_THEME_H
 
 /**
- * @file ewl_theme.h
  * @page theming How Themes Work
  *
  * EWL relies on a graphical layout engine called Edje. Edje allows a themer
@@ -21,7 +19,7 @@
  */
 
 /**
- * @defgroup Ewl_Theme Theme: Methods for Accessing and Modifying Theme Data
+ * @defgroup Ewl_Theme Ewl_Theme: Methods for Accessing and Modifying Theme Data
  * Provides methods for accessing theme data, global theme data or per-widget
  * theme data.
  *
@@ -49,4 +47,4 @@ void            ewl_theme_data_default_int_set(char *k, int v);
  * @}
  */
 
-#endif				/* __EWL_THEME_H__ */
+#endif

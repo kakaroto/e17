@@ -1,10 +1,9 @@
-#ifndef __EWL_PANED_H__
-#define __EWL_PANED_H__
+#ifndef EWL_PANED_H
+#define EWL_PANED_H
 
 /**
- * @file ewl_paned.h
- * @defgroup Ewl_Paned Paned: A paned widget
- * @brief Provides a widget to have a resizable paned container
+ * @defgroup Ewl_Paned Ewl_Paned: A paned widget
+ * Provides a widget to have a resizable paned container
  *
  * @{
  */
@@ -21,6 +20,7 @@
 #define EWL_PANED_TYPE "paned"
 
 /**
+ * The Ewl_Paned widget
  */
 typedef struct Ewl_Paned Ewl_Paned;
 
@@ -31,13 +31,12 @@ typedef struct Ewl_Paned Ewl_Paned;
 #define EWL_PANED(paned) ((Ewl_Paned *) paned)
 
 /**
- * @struct Ewl_Paned
  * Inherits from Ewl_Container and extends to provided the paned widget
  */
 struct Ewl_Paned
 {
-	Ewl_Container container;
-	Ewl_Orientation	orientation;
+	Ewl_Container container;	/**< Inherit from Ewl_Container */
+	Ewl_Orientation	orientation;	/**< The orientation of the paned */
 };
 
 Ewl_Widget	*ewl_paned_new(void);
@@ -91,5 +90,4 @@ void		 ewl_paned_grabber_show_cursor_for(Ewl_Paned_Grabber *g,
  */
 
 #endif
-
 

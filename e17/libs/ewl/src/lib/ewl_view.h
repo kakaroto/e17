@@ -2,8 +2,7 @@
 #define EWL_VIEW_H
 
 /**
- * @file ewl_view.h
- * @defgroup Ewl_View View: A data view
+ * @defgroup Ewl_View Ewl_View: A data view
  * @brief Defines the callbacks for setting up the widgets based on the data 
  * returned from the Model. Create widgets, set data on widgets, calculate 
  * sizing, minimize number of widgets.
@@ -32,6 +31,9 @@ typedef void (*Ewl_View_Assign)(Ewl_Widget *w, void *data);
 #define EWL_VIEW(view) ((Ewl_View *)view)
 typedef struct Ewl_View Ewl_View;
 
+/**
+ * The view function pointers
+ */
 struct Ewl_View
 {
 	Ewl_View_Constructor construct;     /**< Create a widget for display */

@@ -1,9 +1,8 @@
-#ifndef __EWL_TEXT__
-#define __EWL_TEXT__
+#ifndef EWL_TEXT_H
+#define EWL_TEXT_H
 
 /**
- * @file ewl_text.h
- * @defgroup Ewl_Text text: A text layout widget
+ * @defgroup Ewl_Text Ewl_Text: A text layout widget
  * @brief Defines a class for text layout and formatting
  *
  * @{
@@ -30,8 +29,19 @@
  */
 #define EWL_TEXT(x) ((Ewl_Text *)x)
 
+/**
+ * A tree containing the text information
+ */
 typedef struct Ewl_Text_Tree Ewl_Text_Tree;
+
+/**
+ * A context node for the tree, contains formatting information
+ */
 typedef struct Ewl_Text_Context Ewl_Text_Context;
+
+/**
+ * A trigger in the text, used for selections and clickable text
+ */
 typedef struct Ewl_Text_Trigger Ewl_Text_Trigger;
 
 /**
@@ -41,7 +51,6 @@ typedef struct Ewl_Text_Trigger Ewl_Text_Trigger;
 typedef struct Ewl_Text Ewl_Text;
 
 /**
- * @struct Ewl_Text
  * Inherits from the Ewl_Container class and extends it to provide text layout
  * and formatting
  */
@@ -367,5 +376,5 @@ int ewl_text_trigger_area_init(Ewl_Text_Trigger_Area *area,
  * @}
  */
 
-#endif /* __EWL_TEXT_H__ */
+#endif
 

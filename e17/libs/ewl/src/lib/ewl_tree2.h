@@ -70,7 +70,6 @@
 typedef struct Ewl_Tree2_Column Ewl_Tree2_Column;
 
 /**
- * @struct Ewl_Tree2_Column
  * Holdes the model and view to use for this column in the tree
  */
 struct Ewl_Tree2_Column

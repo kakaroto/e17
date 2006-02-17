@@ -13,12 +13,11 @@ static Ewl_Text_Context *ewl_text_default_context = NULL;
 #define EWL_TEXT_EXTEND_VAL  4096
 
 /*
- * TODO
- * - need a way to handle fonts that aren't in the theme .edj
- * - need to setup the styles/align/wrap data from the theme in 
- *   ewl_text_context_default_create
- *   - new theme keys for the align/wrap stuff
- * - need to fill in the condense function
+ * @todo need a way to handle fonts that aren't in the theme .edj
+ * @todo need to setup the styles/align/wrap data from the theme in 
+ * ewl_text_context_default_create
+ * @todo new theme keys for the align/wrap stuff
+ * @todo need to fill in the condense function
  */
 
 /* Make a static hash to look up the context's. They can be shared between
@@ -69,6 +68,7 @@ static void ewl_text_selection_select_to(Ewl_Text_Trigger *s, unsigned int idx);
 
 /**
  * @return Returns a new Ewl_Text widget on success, NULL on failure.
+ * @brief Creates a new Ewl_Text widget
  */
 Ewl_Widget *
 ewl_text_new(void)
@@ -94,6 +94,7 @@ ewl_text_new(void)
 /**
  * @param t: The Ewl_Text widget
  * @return Returns TRUE on successfully init or FALSE on failure
+ * @brief Initializes an Ewl_Text widget to default values
  */
 int
 ewl_text_init(Ewl_Text *t)
@@ -150,6 +151,7 @@ ewl_text_init(Ewl_Text *t)
 /**
  * @param t: The Ewl_Text to get the length from
  * @return Returns the length of the text in the widget @a t
+ * @brief Retrieve the length of the text
  */
 unsigned int
 ewl_text_length_get(Ewl_Text *t)
@@ -168,6 +170,7 @@ ewl_text_length_get(Ewl_Text *t)
  * @param y: Where to put the y value
  * @param w: Where to put the w value
  * @param h: Where to put the h value
+ * @brief Map the given index into a position in the text widget
  */
 void
 ewl_text_index_geometry_map(Ewl_Text *t, unsigned int idx, int *x, int *y, 
@@ -223,6 +226,7 @@ ewl_text_index_geometry_map(Ewl_Text *t, unsigned int idx, int *x, int *y,
  * @param x: The x coord to map
  * @param y: The y coord to map
  * @return Returns the index of the given coordinates
+ * @brief Map the given coordinate into an index into the text widget
  */
 unsigned int
 ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
@@ -301,6 +305,7 @@ ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
 /**
  * @param t: The Ewl_Text to get the text from
  * @return Returns the text in the widget @a t or NULL if no text is set
+ * @brief Retrieve the text from the text widget
  */
 char *
 ewl_text_text_get(Ewl_Text *t)
@@ -315,6 +320,7 @@ ewl_text_text_get(Ewl_Text *t)
 /**
  * @param t: The Ewl_Text to clear
  * @return Returns no value
+ * @brief Clear the text widget
  */
 void
 ewl_text_clear(Ewl_Text *t)
@@ -358,6 +364,7 @@ ewl_text_clear(Ewl_Text *t)
  * @param t: The Ewl_Text to set the text into
  * @param text: The text to set into the widget
  * @return Returns no value
+ * @brief Set the text in the text widget
  */
 void
 ewl_text_text_set(Ewl_Text *t, const char *text)
@@ -376,6 +383,7 @@ ewl_text_text_set(Ewl_Text *t, const char *text)
  * @param t: The Ewl_Text to set the text into
  * @param text: The text to set into the widget
  * @return Returns no value
+ * @brief Prepend the given text into the text widget
  */
 void 
 ewl_text_text_prepend(Ewl_Text *t, const char *text)
@@ -392,6 +400,7 @@ ewl_text_text_prepend(Ewl_Text *t, const char *text)
  * @param t: The Ewl_Text to set the text into
  * @param text: The text to set into the widget
  * @return Returns no value
+ * @brief Append the text into the text widget
  */
 void
 ewl_text_text_append(Ewl_Text *t, const char *text)
@@ -410,6 +419,7 @@ ewl_text_text_append(Ewl_Text *t, const char *text)
  * @param text: The text to set into the widget
  * @param idx: The index to insert the text at
  * @return Returns no value
+ * @brief Insert the given text into the text widget
  */
 void
 ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int idx)
@@ -483,8 +493,7 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int idx)
  * @param t: The Ewl_Text to delete the text from
  * @param length: The length of text to delete
  * @return Returns no value
- *
- * This will delete the specified length of text from the current cursor
+ * @brief This will delete the specified length of text from the current cursor
  * position
  */
 void
@@ -541,6 +550,7 @@ ewl_text_text_delete(Ewl_Text *t, unsigned int length)
  * @param t: The text to set the selectable value of
  * @param selectable: The selectable value to set
  * @return Returns no value
+ * @brief Set if the text is selectable
  */
 void
 ewl_text_selectable_set(Ewl_Text *t, unsigned int selectable)
@@ -574,7 +584,8 @@ ewl_text_selectable_set(Ewl_Text *t, unsigned int selectable)
 
 /**
  * @param t: The text to get the selectable value from
- * @retun Returns the selectable value of the widget
+ * @return Returns the selectable value of the widget
+ * @brief Get the selectable state of the text
  */
 unsigned int
 ewl_text_selectable_get(Ewl_Text *t)
@@ -616,6 +627,7 @@ ewl_text_selection_text_get(Ewl_Text *t)
  * @param t: The Ewl_Text to get the selection from
  * @return Returns the selection object of this text or NULL if no current
  * selection
+ * @brief Get the current text selection
  */
 Ewl_Text_Trigger *
 ewl_text_selection_get(Ewl_Text *t)
@@ -635,6 +647,7 @@ ewl_text_selection_get(Ewl_Text *t)
 /**
  * @param t: The text to check if there is a selection
  * @return Returns TRUE if there is selected text, FALSE otherwise
+ * @brief Check if anything is selected in the text widget
  */
 unsigned int
 ewl_text_has_selection(Ewl_Text *t)
@@ -655,6 +668,7 @@ ewl_text_has_selection(Ewl_Text *t)
  * @param t: The Ewl_Text widget to set the position into
  * @param pos: The position to set
  * @return Returns no value.
+ * @brief Set the cursor position in the text widget
  */
 void
 ewl_text_cursor_position_set(Ewl_Text *t, unsigned int pos)
@@ -681,6 +695,7 @@ ewl_text_cursor_position_set(Ewl_Text *t, unsigned int pos)
 /**
  * @param t: The Ewl_Text to get the cursor position from
  * @return Returns the current cursor position in the widget
+ * @brief Retrieve the cursor position from the text widget
  */
 unsigned int
 ewl_text_cursor_position_get(Ewl_Text *t)
@@ -695,6 +710,7 @@ ewl_text_cursor_position_get(Ewl_Text *t)
 /**
  * @param t: The Ewl_Text to get the cursor position one line up from
  * @return Returns the cursor position if we moved up one line
+ * @brief Get the index if we were to move the cursor up one line
  */
 unsigned int
 ewl_text_cursor_position_line_up_get(Ewl_Text *t)
@@ -738,6 +754,7 @@ ewl_text_cursor_position_line_up_get(Ewl_Text *t)
 /**
  * @param t: The Ewl_Text to get the cursor position one line down from
  * @return Returns the cursor position if we moved down one line
+ * @brief Get the index if we were to move the cursor down one line
  */
 unsigned int
 ewl_text_cursor_position_line_down_get(Ewl_Text *t)
@@ -781,8 +798,8 @@ ewl_text_cursor_position_line_down_get(Ewl_Text *t)
 /**
  * @param t: The Ewl_Widget to set the font into
  * @param font: The font to set
- *
- * This will set the current font to be used when we insert more text
+ * @return Returns no value
+ * @brief This will set the current font to be used when we insert more text
  */
 void
 ewl_text_font_set(Ewl_Text *t, const char *font)
@@ -809,8 +826,8 @@ ewl_text_font_set(Ewl_Text *t, const char *font)
  * @param t: The Ewl_Text to set the font too
  * @param font: The font to set
  * @param length: The distance to set the font over
- *
- * This will apply the specfied @a font from the current cursor position to
+ * @return Returns no value
+ * @brief This will apply the specfied @a font from the current cursor position to
  * the length specified
  */
 void
@@ -847,8 +864,8 @@ ewl_text_font_apply(Ewl_Text *t, const char *font, unsigned int length)
 /**
  * @param t: The Ewl_Text to get the font from
  * @param idx: The index to get the font at
- *
- * This will retrive the font used at the specified index in the text
+ * @return Returns no value
+ * @brief This will retrive the font used at the specified index in the text
  */
 char *
 ewl_text_font_get(Ewl_Text *t, unsigned int idx)
@@ -870,6 +887,8 @@ ewl_text_font_get(Ewl_Text *t, unsigned int idx)
 /**
  * @param t: The Ewl_Text to set the size too
  * @param size: The size to set the font too
+ * @return Returns no value
+ * @brief Set the font size to use when inserting new text
  */
 void
 ewl_text_font_size_set(Ewl_Text *t, unsigned int size)
@@ -893,8 +912,8 @@ ewl_text_font_size_set(Ewl_Text *t, unsigned int size)
  * @param t: The Ewl_Text to set the size into
  * @param size: The size to set
  * @param length: Length of block to get the new size
- *
- * This will apply the font size to the text from the current cursor
+ * @return Returns no value
+ * @brief This will apply the font size to the text from the current cursor
  * position for the given length
  */
 void
@@ -926,6 +945,8 @@ ewl_text_font_size_apply(Ewl_Text *t, unsigned int size, unsigned int length)
 /**
  * @param t: The Ewl_Text to get the size from
  * @param idx: The index you want to get the size for
+ * @return Returns no value
+ * @brief Retrieve the font size at the given index
  */
 unsigned int
 ewl_text_font_size_get(Ewl_Text *t, unsigned int idx)
@@ -947,6 +968,8 @@ ewl_text_font_size_get(Ewl_Text *t, unsigned int idx)
  * @param g: The green value
  * @param b: The blue value
  * @param a: The alpha value
+ * @return Returns no value
+ * @brief Set the text colour at the cursor
  */
 void
 ewl_text_color_set(Ewl_Text *t, unsigned int r, unsigned int g, 
@@ -977,8 +1000,8 @@ ewl_text_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
  * @param b: The blue value to set
  * @param a: The alpha value to set
  * @param length: The length of text to apply the colour over
- *
- * This will set the given colour from the current cursor position for the
+ * @return Returns no value
+ * @brief This will set the given colour from the current cursor position for the
  * specified length
  */
 void 
@@ -1021,6 +1044,8 @@ ewl_text_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
  * @param b: Where to put the blue value
  * @param a: Where to put the alpha value
  * @param idx: The index to get the colour from 
+ * @return Returns no value
+ * @brief Retrives the text colour at the given index
  */
 void
 ewl_text_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
@@ -1048,6 +1073,8 @@ ewl_text_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 /**
  * @param t: The Ewl_Text ot set the alignment into
  * @param align: The alignment to set
+ * @return Returns no value
+ * @brief Set the current alignment value of the text
  */
 void
 ewl_text_align_set(Ewl_Text *t, unsigned int align)
@@ -1071,8 +1098,8 @@ ewl_text_align_set(Ewl_Text *t, unsigned int align)
  * @param t: The Ewl_Text to apply the alignment too
  * @param align: The alignment to apply
  * @param length: The length to apply the alignment for
- *
- * This will set the given alignment from the current cursor position for
+ * @return Returns no value
+ * @brief This will set the given alignment from the current cursor position for
  * the given length of text
  */
 void
@@ -1104,6 +1131,8 @@ ewl_text_align_apply(Ewl_Text *t, unsigned int align, unsigned int length)
 /**
  * @param t: The Ewl_Text to get the alignment from
  * @param idx: The index to get the alignment from
+ * @return Returns the current text alignment value
+ * @brief Retrieves the alignment value from the given index
  */
 unsigned int
 ewl_text_align_get(Ewl_Text *t, unsigned int idx)
@@ -1122,6 +1151,8 @@ ewl_text_align_get(Ewl_Text *t, unsigned int idx)
 /**
  * @param t: The Ewl_Text to set the style into
  * @param styles: The styles to set into the text
+ * @return Returns no value
+ * @brief Sets the given styles into the text at the cursor
  */
 void
 ewl_text_styles_set(Ewl_Text *t, unsigned int styles)
@@ -1145,8 +1176,8 @@ ewl_text_styles_set(Ewl_Text *t, unsigned int styles)
  * @param t: The Ewl_Text to apply the style too
  * @param styles: The styles to set into the text
  * @param length: The length of text to apply the style too
- *
- * This will set the given style from the current cursor position for the
+ * @return Returns no value
+ * @brief This will set the given style from the current cursor position for the
  * given length of text
  */
 void
@@ -1176,16 +1207,16 @@ ewl_text_styles_apply(Ewl_Text *t, unsigned int styles, unsigned int length)
 }
 
 /**
-  * @param t: The text to add the style too
-  * @param style: The style to add to the text
-  * @param length: The lenght of text to add the style too
-  *
-  * This will add the given style to the text from the cursor up to length
-  * characters
-  */
- void
- ewl_text_style_add(Ewl_Text *t, Ewl_Text_Style style, unsigned int length)
- {
+ * @param t: The text to add the style too
+ * @param style: The style to add to the text
+ * @param length: The lenght of text to add the style too
+ * @return Returns no value
+ * @brief This will add the given style to the text from the cursor up to length
+ * characters
+ */
+void
+ewl_text_style_add(Ewl_Text *t, Ewl_Text_Style style, unsigned int length)
+{
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
@@ -1193,14 +1224,14 @@ ewl_text_styles_apply(Ewl_Text *t, unsigned int styles, unsigned int length)
 	ewl_text_tree_context_style_apply(t, style, t->cursor_position, length, FALSE);
  
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
- }
+}
  
 /**
  * @param t: The text to delete the style from
  * @param style: The style to delete from the text 
  * @param length: The lenght of text to delete the style from 
- *
- * This will delete the given style from the text starting at the cursor up 
+ * @return Returns no value
+ * @brief This will delete the given style from the text starting at the cursor up 
  * to length characters
  */
 void
@@ -1223,8 +1254,8 @@ ewl_text_style_del(Ewl_Text *t, Ewl_Text_Style style, unsigned int length)
  * @param t: The text to invert the style on
  * @param style: The style to invert in the text 
  * @param length: The lenght of text to invert the style on 
- *
- * This will invert the given style in the text starting at the cursor up 
+ * @return Returns no value
+ * @brief This will invert the given style in the text starting at the cursor up 
  * to length characters
  */
 void
@@ -1246,6 +1277,8 @@ ewl_text_style_invert(Ewl_Text *t, Ewl_Text_Style style, unsigned int length)
  * @param t: The text to check for the style
  * @param style: The style to check for
  * @param idx: The index to check for the style
+ * @return Returns no value
+ * @brief Check if the given style is set at the given index in the text
  */
 unsigned int
 ewl_text_style_has(Ewl_Text *t, Ewl_Text_Style style, unsigned int idx)
@@ -1266,6 +1299,8 @@ ewl_text_style_has(Ewl_Text *t, Ewl_Text_Style style, unsigned int idx)
 /**
  * @param t: The Ewl_Text to get the style from
  * @param idx: The index to get the style from
+ * @return Get the styles set at the given index in the text
+ * @brief Retrives the styles in use at the given index
  */
 unsigned int
 ewl_text_styles_get(Ewl_Text *t, unsigned int idx)
@@ -1284,6 +1319,8 @@ ewl_text_styles_get(Ewl_Text *t, unsigned int idx)
 /**
  * @param t: The Ewl_Text to set the wrap into
  * @param wrap: The wrap value to set
+ * @return Returns no value
+ * @brief Sets the wrap value of the text at the given index
  */
 void
 ewl_text_wrap_set(Ewl_Text *t, unsigned int wrap)
@@ -1307,8 +1344,8 @@ ewl_text_wrap_set(Ewl_Text *t, unsigned int wrap)
  * @param t: The Ewl_Text to apply the wrap value too
  * @param wrap: The wrap value to apply
  * @param length: The length of text to apply the wrap value over
- *
- * This will apply the given wrap value from the current cursor position for
+ * @return Returns no value
+ * @brief This will apply the given wrap value from the current cursor position for
  * the given length of text
  */
 void
@@ -1340,6 +1377,8 @@ ewl_text_wrap_apply(Ewl_Text *t, unsigned int wrap, unsigned int length)
 /**
  * @param t: The Ewl_Text to get the wrap value for
  * @param idx: The index to get the wrap value from
+ * @return Returns the wrap value of the text at the given index
+ * @brief Retrives the text wrap value at the given index
  */
 unsigned int
 ewl_text_wrap_get(Ewl_Text *t, unsigned int idx)
@@ -1361,6 +1400,8 @@ ewl_text_wrap_get(Ewl_Text *t, unsigned int idx)
  * @param g: The green value
  * @param b: The blue value
  * @param a: The alpha value
+ * @return Returns no value
+ * @brief Set the background colour at the cursor
  */
 void
 ewl_text_bg_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
@@ -1391,8 +1432,8 @@ ewl_text_bg_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
  * @param b: The blue value
  * @param a: The alpha value
  * @param length: The length of text to apply the bg colour over
- *
- * This will set the bg colour of the text from the current cursor position
+ * @return Returns no value
+ * @brief This will set the bg colour of the text from the current cursor position
  * to the given length.
  */
 void
@@ -1435,6 +1476,8 @@ ewl_text_bg_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
  * @param b: Where to put the blue value
  * @param a: Where to put the alpha value
  * @param idx: The index to get the colour from
+ * @return Returns no value
+ * @brief Get the text background colour at the given index
  */
 void
 ewl_text_bg_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
@@ -1465,6 +1508,8 @@ ewl_text_bg_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
  * @param g: The green value
  * @param b: The blue value
  * @param a: The alpha value
+ * @return Returns no value
+ * @brief Set the glow colour at the cursor
  */
 void
 ewl_text_glow_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
@@ -1495,8 +1540,8 @@ ewl_text_glow_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
  * @param b: The blue value
  * @param a: The alpha value
  * @param length: The length of text to apply the glow colour over
- *
- * This will set the glow colour of the text from the current cursor position
+ * @return Returns no value
+ * @brief This will set the glow colour of the text from the current cursor position
  * to the given length.
  */
 void
@@ -1539,6 +1584,8 @@ ewl_text_glow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
  * @param b: Where to put the blue value
  * @param a: Where to put the alpha value
  * @param idx: The index to get the colour from
+ * @return Returns no value
+ * @brief Get the glow colour at the given index
  */
 void
 ewl_text_glow_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
@@ -1569,6 +1616,8 @@ ewl_text_glow_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
  * @param g: The green value
  * @param b: The blue value
  * @param a: The alpha value
+ * @return Returns no value
+ * @brief Set the outline colour at the cursor
  */
 void
 ewl_text_outline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
@@ -1599,8 +1648,8 @@ ewl_text_outline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
  * @param b: The blue value
  * @param a: The alpha value
  * @param length: The length of text to apply the outline colour over
- *
- * This will set the outline colour of the text from the current cursor position
+ * @return Returns no value
+ * @brief This will set the outline colour of the text from the current cursor position
  * to the given length.
  */
 void
@@ -1643,6 +1692,8 @@ ewl_text_outline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
  * @param b: Where to put the blue value
  * @param a: Where to put the alpha value
  * @param idx: The index to get the colour from
+ * @return Returns no value
+ * @brief Get the outline colour at the given index
  */
 void
 ewl_text_outline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
@@ -1673,6 +1724,8 @@ ewl_text_outline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
  * @param g: The green value
  * @param b: The blue value
  * @param a: The alpha value
+ * @return Returns no value
+ * @brief Set the shadow colour at the cursor
  */
 void
 ewl_text_shadow_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
@@ -1703,8 +1756,8 @@ ewl_text_shadow_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
  * @param b: The blue value
  * @param a: The alpha value
  * @param length: The length of text to apply the shadow colour over
- *
- * This will set the shadow colour of the text from the current cursor position
+ * @return Returns no value
+ * @brief This will set the shadow colour of the text from the current cursor position
  * to the given length.
  */
 void
@@ -1747,6 +1800,8 @@ ewl_text_shadow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
  * @param b: Where to put the blue value
  * @param a: Where to put the alpha value
  * @param idx: The index to get the colour from
+ * @return Returns no value
+ * @brief Retrieve the shadow colour at the given index
  */
 void
 ewl_text_shadow_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
@@ -1777,6 +1832,8 @@ ewl_text_shadow_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
  * @param g: The green value
  * @param b: The blue value
  * @param a: The alpha value
+ * @return Returns no value
+ * @brief Set the strikethrough colour at the cursor
  */
 void
 ewl_text_strikethrough_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
@@ -1807,8 +1864,8 @@ ewl_text_strikethrough_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
  * @param b: The blue value
  * @param a: The alpha value
  * @param length: The length of text to apply the strikethrough colour over
- *
- * This will set the strikethrough colour of the text from the current cursor position
+ * @return Returns no value
+ * @brief This will set the strikethrough colour of the text from the current cursor position
  * to the given length.
  */
 void
@@ -1851,6 +1908,8 @@ ewl_text_strikethrough_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
  * @param b: Where to put the blue value
  * @param a: Where to put the alpha value
  * @param idx: The index to get the colour from
+ * @return Returns no value
+ * @brief Retrieve the strikethrough colour at the given index
  */
 void
 ewl_text_strikethrough_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
@@ -1881,6 +1940,8 @@ ewl_text_strikethrough_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
  * @param g: The green value
  * @param b: The blue value
  * @param a: The alpha value
+ * @return Returns no value
+ * @brief Set the underline colour at the cursor
  */
 void
 ewl_text_underline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
@@ -1911,8 +1972,8 @@ ewl_text_underline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
  * @param b: The blue value
  * @param a: The alpha value
  * @param length: The length of text to apply the underline colour over
- *
- * This will set the underline colour of the text from the current cursor position
+ * @return Returns no value
+ * @brief This will set the underline colour of the text from the current cursor position
  * to the given length.
  */
 void
@@ -1955,6 +2016,8 @@ ewl_text_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
  * @param b: Where to put the blue value
  * @param a: Where to put the alpha value
  * @param idx: The index to get the colour from
+ * @return Returns no value
+ * @brief Retrieve the underline colour at the given index
  */
 void
 ewl_text_underline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
@@ -1985,6 +2048,8 @@ ewl_text_underline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
  * @param g: The green value
  * @param b: The blue value
  * @param a: The alpha value
+ * @return Returns no value
+ * @brief Set the double underline colour at the cursor
  */
 void
 ewl_text_double_underline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
@@ -2015,8 +2080,8 @@ ewl_text_double_underline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
  * @param b: The blue value
  * @param a: The alpha value
  * @param length: The length of text to apply the double underline colour over
- *
- * This will set the double_underline colour of the text from the current cursor position
+ * @return Returns no value
+ * @brief This will set the double_underline colour of the text from the current cursor position
  * to the given length.
  */
 void
@@ -2059,6 +2124,8 @@ ewl_text_double_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int 
  * @param b: Where to put the blue value
  * @param a: Where to put the alpha value
  * @param idx: The index to get the colour from
+ * @return Returns no value
+ * @brief Retrieve the double underline colour at the given index
  */
 void
 ewl_text_double_underline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,

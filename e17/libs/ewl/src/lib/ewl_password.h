@@ -1,9 +1,8 @@
-#ifndef __EWL_PASSWORD_H__
-#define __EWL_PASSWORD_H__
+#ifndef EWL_PASSWORD_H
+#define EWL_PASSWORD_H
 
 /**
- * @file ewl_password.h
- * @defgroup Ewl_Password Password: A Single Line Text Password Widget
+ * @defgroup Ewl_Password Ewl_Password: A Single Line Text Password Widget
  * @brief Defines the Ewl_Password class to allow for single line obscured text.
  *
  * @{
@@ -28,7 +27,6 @@ typedef struct Ewl_Password Ewl_Password;
 #define EWL_PASSWORD(password) ((Ewl_Password *) password)
 
 /**
- * @struct Ewl_Password
  * Inherits from the Ewl_Entry and extends it to obscure the text.
  */
 struct Ewl_Password
@@ -57,5 +55,5 @@ void ewl_password_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
  * @}
  */
 
-#endif				/* __EWL_PASSWORD_H__ */
+#endif
 

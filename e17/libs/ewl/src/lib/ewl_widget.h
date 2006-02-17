@@ -1,9 +1,8 @@
-#ifndef __EWL_WIDGET_H__
-#define __EWL_WIDGET_H__
+#ifndef EWL_WIDGET_H
+#define EWL_WIDGET_H
 
 /**
- * @file ewl_widget.h
- * @defgroup Ewl_Widget Widget: The Parent Widget Class Common to All Widgets
+ * @defgroup Ewl_Widget Ewl_Widget: The Parent Widget Class Common to All Widgets
  * @brief Defines the Ewl_Widget class and it's accessor/modifier functions.
  *
  * The Ewl_Widget extends the Ewl_Object to provide the basic facilities
@@ -16,50 +15,91 @@
 
 #define EWL_WIDGET_TYPE "widget"
 
+/**
+ * The attachment list 
+ */
 typedef struct Ewl_Attach_List Ewl_Attach_List;
+
+/**
+ * A list of things attached to a widget
+ */
 struct Ewl_Attach_List
 {
-	void **list;
-	unsigned int direct:1;
-	unsigned int len:31;
-};
-
-typedef struct Ewl_Pair Ewl_Pair;
-#define EWL_PAIR(p) ((Ewl_Pair *)p)
-struct Ewl_Pair
-{
-	const char *key;
-	char *value;
-};
-
-typedef struct Ewl_Pair_List Ewl_Pair_List;
-struct Ewl_Pair_List
-{
-	Ewl_Pair **list;
-	unsigned int direct:1;
-	unsigned int len:31;
+	void **list;		/**< The attachment list */
+	unsigned int direct:1;	/**< Is this a direct pointer to an attached item */
+	unsigned int len:31;	/**< Number of things in the attachment list */
 };
 
 /**
- * Callback chain container a list and bitmask of chain properties.
+ * A key/value pair set
+ */
+typedef struct Ewl_Pair Ewl_Pair;
+
+/**
+ * @def EWL_PAIR(p)
+ * Typedcasts a pointer to an Ewl_Pair pointer
+ */
+#define EWL_PAIR(p) ((Ewl_Pair *)p)
+
+/**
+ * Contains a key and a value pair
+ */
+struct Ewl_Pair
+{
+	const char *key; /**< The key */
+	char *value;	/**< The value */
+};
+
+/**
+ * A list of key value pairs
+ */
+typedef struct Ewl_Pair_List Ewl_Pair_List;
+
+/**
+ * Contains a list of key value pairs
+ */
+struct Ewl_Pair_List
+{
+	Ewl_Pair **list;	/**< The key/value list */
+	unsigned int direct:1;	/**< Does this list point directly to a pair */
+	unsigned int len:31;	/**< Length of the list */
+};
+
+/**
+ * Callback chain contains a list and bitmask of chain properties.
  */
 typedef struct Ewl_Callback_Chain Ewl_Callback_Chain;
 
+/**
+ * The callback chain contains the length, mask and information on the list 
+ */
 struct Ewl_Callback_Chain
 {
-	void **list;
-	unsigned char mask;
-	unsigned char len;
-	unsigned char index;
+	void **list;		/**< The callback list */
+	unsigned char mask;	/**< The callback mask */
+	unsigned char len;	/**< Length of the list */
+	unsigned char index;	/**< Current list index */
 };
 
+/**
+ * A set of colours 
+ */
 typedef struct Ewl_Color_Set Ewl_Color_Set;
 
+/**
+ * Contains an RGBA set of colours
+ */
 struct Ewl_Color_Set
 {
-	int r, g, b, a;
+	int r, 	/**< The red value */
+	    g, 	/**< The green value */
+	    b, 	/**< The blue value */
+	    a;	/**< The alpha value */
 };
 
+/**
+ * Function pointer for the Ewl widget drag
+ */
 typedef void *(*Ewl_Widget_Drag)(void);
 
 /**
@@ -75,7 +115,6 @@ typedef struct Ewl_Widget Ewl_Widget;
 #define EWL_WIDGET(widget) ((Ewl_Widget *) widget)
 
 /**
- * @class Ewl_Widget
  * The class inheriting from Ewl_Object that provides appearance, parent, and
  * callback capabilities.
  */
@@ -145,8 +184,8 @@ void            ewl_widget_parent_set(Ewl_Widget * w, Ewl_Widget * p);
 void            ewl_widget_enable(Ewl_Widget * w);
 void            ewl_widget_disable(Ewl_Widget * w);
 
-void            ewl_widget_print_tree(Ewl_Widget *w);
 void            ewl_widget_print(Ewl_Widget *w);
+void		ewl_widget_tree_print(Ewl_Widget *w);
 
 int             ewl_widget_layer_sum_get(Ewl_Widget *w);
 void            ewl_widget_layer_set(Ewl_Widget *w, int layer);
@@ -216,4 +255,4 @@ void ewl_widget_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data);
  * @}
  */
 
-#endif				/* __EWL_WIDGET_H__ */
+#endif

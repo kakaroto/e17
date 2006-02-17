@@ -730,6 +730,7 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
  * @param embed: the embed where the DND drop event is to occur
  * @param x: the x coordinate of the mouse drop
  * @param y: the y coordinate of the mouse drop
+ * @param internal: Is this an internal drop?
  * @return Returns no value.
  * @brief Sends the event for a DND drop into an embed.
  */
@@ -785,6 +786,10 @@ ewl_embed_dnd_drop_feed(Ewl_Embed *embed, int x, int y, int internal)
  * @param embed: the embed where the DND position event is to occur
  * @param x: the x coordinate of the mouse move
  * @param y: the y coordinate of the mouse move
+ * @param px: Where to store the position x value
+ * @param py: Where to store the position y value
+ * @param pw: Where to store the position width
+ * @param ph: Where to store the position height
  * @return Returns no value.
  * @brief Sends the event for a DND position into an embed.
  */

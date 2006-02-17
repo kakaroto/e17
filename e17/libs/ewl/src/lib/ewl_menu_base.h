@@ -1,9 +1,8 @@
-#ifndef __EWL_MENU_BASE_H__
-#define __EWL_MENU_BASE_H__
+#ifndef EWL_MENU_BASE_H
+#define EWL_MENU_BASE_H
 
 /**
- * @file ewl_menu_base.h
- * @defgroup Ewl_Menu_Base Menu_Base: The Basic Menu Functionality
+ * @defgroup Ewl_Menu_Base Ewl_Menu_Base: The Basic Menu Functionality
  * @brief Defines the basic menu classes that are extended to an actual menu
  * implementation by inheriting classes such as Ewl_Menu and Ewl_Imenu.
  *
@@ -28,6 +27,9 @@ typedef struct Ewl_Menu_Base Ewl_Menu_Base;
  */
 #define EWL_MENU_BASE(menu) ((Ewl_Menu_Base *) menu)
 
+/**
+ * Inherits from Ewl_Menu_Item and extends to create the base menu 
+ */
 struct Ewl_Menu_Base
 {
 	Ewl_Menu_Item   item;   /**< Inherit from Ewl_Menu_Item */

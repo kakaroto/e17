@@ -1,9 +1,8 @@
-#ifndef __EWL_OVERLAY_H__
-#define __EWL_OVERLAY_H__
+#ifndef EWL_OVERLAY_H
+#define EWL_OVERLAY_H
 
 /**
- * @file ewl_overlay.h
- * @defgroup Ewl_Overlay Overlay: A Container for Displaying on an Evas
+ * @defgroup Ewl_Overlay Ewl_Overlay: A Container for Displaying on an Evas
  * Defines the Ewl_Overlay class to provide EWL with the ability to work with an
  * evas.
  *
@@ -30,7 +29,6 @@ typedef struct Ewl_Overlay Ewl_Overlay;
 #define EWL_OVERLAY(widget) ((Ewl_Overlay *) widget)
 
 /**
- * @struct Ewl_Overlay
  * @brief The class inheriting from Ewl_Container that acts as a top level
  * widget for interacting with the evas.
  */
@@ -55,4 +53,4 @@ void ewl_overlay_child_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
  * @}
  */
 
-#endif				/* __EWL_OVERLAY_H__ */
+#endif

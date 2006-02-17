@@ -1,11 +1,11 @@
-
-#ifndef __EWL_MACROS_H__
-#define __EWL_MACROS_H__
+#ifndef EWL_MACROS_H
+#define EWL_MACROS_H
 
 /**
- * @file ewl_macros.h
- * @defgroup Ewl_Macros Macros: Useful Macros Used Internally and Available Externally
+ * @defgroup Ewl_Macros Ewl_Macros: Useful Macros Used Internally and Available Externally
  * Defines a variety of utility macros.
+ *
+ * @{
  */
 
 #undef NEW
@@ -59,12 +59,24 @@
 #define ZERO(ptr, type, num) ptr = memset(ptr, 0, sizeof(type) * (num))
 
 #ifndef MIN
+/**
+ * @def MIN(x, y)
+ * Select the minimum of two values
+ */
 #define MIN(x, y) (((x) > (y)) ? (y) : (x))
 #endif
 
 #ifndef MAX
+/**
+ * @def MAX(x, y)
+ * Select the maximum of two values
+ */
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 #endif
 
-#endif				/* __EWL_MACROS_H__ */
+/**
+ * @}
+ */
+
+#endif
 

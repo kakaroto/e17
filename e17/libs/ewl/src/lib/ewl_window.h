@@ -1,10 +1,9 @@
-#ifndef __EWL_WINDOW_H__
-#define __EWL_WINDOW_H__
+#ifndef EWL_WINDOW_H
+#define EWL_WINDOW_H
 
 /**
- * @file ewl_window.h
- * @defgroup Ewl_Window Window: A Container for Displaying in a New Window
- * @brief Defines the Ewl_Window class which extends the Ewl_Embed class by
+ * @defgroup Ewl_Window Ewl_Window: A Container for Displaying in a New Window
+ * Defines the Ewl_Window class which extends the Ewl_Embed class by
  * creating it's own window and evas.
  *
  * @{
@@ -30,7 +29,6 @@ typedef struct Ewl_Window Ewl_Window;
 #define EWL_WINDOW(win) ((Ewl_Window *) win)
 
 /**
- * @struct Ewl_Window
  * Extends the Ewl_Embed class to create it's own window and evas for drawing,
  * sizing and positioning.
  */
@@ -52,8 +50,8 @@ struct Ewl_Window
 	int             y; /**< Screen relative vertical position of window */
 	char           *render; /**< The render engine in use */
 
-	Ewl_Dnd_Types dnd_types;
-	Ewl_Widget* dnd_last_position;
+	Ewl_Dnd_Types dnd_types;	/**< The dnd type */
+	Ewl_Widget* dnd_last_position;	/**< The last dnd position */
 };
 
 Ewl_Widget     *ewl_window_new(void);
@@ -98,4 +96,4 @@ void ewl_window_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
  * @}
  */
 
-#endif				/* __EWL_WINDOW_H__ */
+#endif

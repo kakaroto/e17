@@ -86,6 +86,7 @@ ewl_tree2_init(Ewl_Tree2 *tree)
  * @param tree: The Ewl_Tree to set the data into
  * @param data: The data to set into the tree
  * @return Returns no value.
+ * @brief Set the data into the tree
  */
 void
 ewl_tree2_data_set(Ewl_Tree2 *tree, void *data)
@@ -102,6 +103,7 @@ ewl_tree2_data_set(Ewl_Tree2 *tree, void *data)
 /**
  * @param tree: The Ewl_Tree to get the data from
  * @return Returns the data currently set into the tree or NULL on failure
+ * @brief Get the data out of the tree
  */
 void *
 ewl_tree2_data_get(Ewl_Tree2 *tree)
@@ -118,6 +120,7 @@ ewl_tree2_data_get(Ewl_Tree2 *tree)
  * @param model: The model to use for this column
  * @param view: The view to use for this column
  * @return Returns no value.
+ * @brief Append a new column to the tree
  */
 void
 ewl_tree2_column_append(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view)
@@ -150,6 +153,7 @@ ewl_tree2_column_append(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view)
  * @param model: The model to use for this column
  * @param view: The view to use for this column
  * @return Returns no value.
+ * @brief Prepend a new column to the tree
  */
 void
 ewl_tree2_column_prepend(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view)
@@ -183,6 +187,7 @@ ewl_tree2_column_prepend(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view)
  * @param view: The view to use for this column
  * @param idx: The index to insert into 
  * @return Returns no value.
+ * @brief Insert a new column into the tree
  */
 void
 ewl_tree2_column_insert(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view, 
@@ -216,6 +221,7 @@ ewl_tree2_column_insert(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view,
  * @param tree: The tree to remove the column from
  * @param idx: The column index to remove
  * @return Returns no value
+ * @brief Remove a column from the tree
  */
 void
 ewl_tree2_column_remove(Ewl_Tree2 *tree, unsigned int idx)
@@ -238,6 +244,7 @@ ewl_tree2_column_remove(Ewl_Tree2 *tree, unsigned int idx)
  * @param tree: The tree to toggle the header visibility
  * @param visible: The visiblity to set the tree to (TRUE == on, FALSE == off)
  * @return Returns no value
+ * @brief Toggle if the header is visible in the tree
  */
 void
 ewl_tree2_headers_visible_set(Ewl_Tree2 *tree, unsigned char visible)
@@ -259,6 +266,7 @@ ewl_tree2_headers_visible_set(Ewl_Tree2 *tree, unsigned char visible)
 /**
  * @param tree: The tree to get the header visiblity from
  * @return Returns the current header visiblity of the tree
+ * @brief Retrieve if the header is visible in the tree
  */
 unsigned int
 ewl_tree2_headers_visible_get(Ewl_Tree2 *tree)
@@ -273,6 +281,7 @@ ewl_tree2_headers_visible_get(Ewl_Tree2 *tree)
 /**
  * @param tree: The tree to get the selected cells from
  * @return Returns an Ecore_List of cells selected in the tree
+ * @brief Get the selected cells from the tree
  */
 Ecore_List *
 ewl_tree2_selected_cells_get(Ewl_Tree2 *tree)
@@ -287,6 +296,7 @@ ewl_tree2_selected_cells_get(Ewl_Tree2 *tree)
 /**
  * @param tree: The tree to clear the selected cells from
  * @return Returns no value.
+ * @brief Clear the selected cells in the tree
  */
 void
 ewl_tree2_selected_cells_clear(Ewl_Tree2 *tree)
@@ -306,6 +316,7 @@ ewl_tree2_selected_cells_clear(Ewl_Tree2 *tree)
 /**
  * @param tree: The tree to get the mode from
  * @return Returns the current Ewl_Tree_Mode of the tree
+ * @brief Get the mode from the tree
  */
 Ewl_Tree_Mode 
 ewl_tree2_mode_get(Ewl_Tree2 *tree)
@@ -321,6 +332,7 @@ ewl_tree2_mode_get(Ewl_Tree2 *tree)
  * @param tree: The Ewl_Tree to set the mode into
  * @param mode: The Ewl_Tree_Mode to set into the tree
  * @return Returns no value.
+ * @brief Set the mode of the tree
  */
 void 
 ewl_tree2_mode_set(Ewl_Tree2 *tree, Ewl_Tree_Mode mode)
@@ -353,6 +365,7 @@ ewl_tree2_mode_set(Ewl_Tree2 *tree, Ewl_Tree_Mode mode)
  * @param tree: The tree to set the fixed row flag into
  * @param fixed: The fixed row flag to set into the tree
  * @return Returns no value.
+ * @brief Set the fixed row size of the tree
  */
 void
 ewl_tree2_fixed_rows_set(Ewl_Tree2 *tree, unsigned int fixed)
@@ -369,6 +382,7 @@ ewl_tree2_fixed_rows_set(Ewl_Tree2 *tree, unsigned int fixed)
 /**
  * @param tree: The tree to get the fixed row flag from
  * @return Returns the current fixed row flag of the tree
+ * @brief Retrieve the fixed row size of the tree
  */
 unsigned int
 ewl_tree2_fixed_rows_get(Ewl_Tree2 *tree)

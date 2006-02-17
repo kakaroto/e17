@@ -1,9 +1,8 @@
-#ifndef _EWL_TREE_H
-#define _EWL_TREE_H
+#ifndef EWL_TREE_H
+#define EWL_TREE_H
 
 /**
- * @file ewl_tree.h
- * @defgroup Ewl_Tree Tree: A Widget for List or Tree Layout
+ * @defgroup Ewl_Tree Ewl_Tree: A Widget for List or Tree Layout
  * @brief Defines a widget for laying out other widgets in a tree or list like
  * manner.
  *
@@ -18,6 +17,9 @@
 #define EWL_TREE_TYPE "tree"
 #define EWL_TREE_NODE_TYPE "node"
 
+/**
+ * The Ewl_Tree widget
+ */
 typedef struct Ewl_Tree Ewl_Tree;
 
 /**
@@ -27,7 +29,6 @@ typedef struct Ewl_Tree Ewl_Tree;
 #define EWL_TREE(t) ((Ewl_Tree *)t)
 
 /**
- * @struct Ewl_Tree
  * The tree is a columnar listing, where items in the list may be nested below
  * other items.
  */
@@ -43,6 +44,9 @@ struct Ewl_Tree
 	unsigned int   headers_visible; /**< Are the headers visible */
 };
 
+/**
+ * A node in the tree
+ */
 typedef struct Ewl_Tree_Node Ewl_Tree_Node;
 
 /**
@@ -64,21 +68,12 @@ struct Ewl_Tree_Node
 	Ewl_Tree_Node_Flags expanded; /**< Indicator of expansion state */
 };
 
-/*
- * Node creation/initialization functions.
- */
 Ewl_Widget 	*ewl_tree_node_new(void);
 int 		 ewl_tree_node_init(Ewl_Tree_Node *tree_node);
 
-/*
- * Node state modifying functions
- */
 void 		 ewl_tree_node_collapse(Ewl_Tree_Node *tree);
 void 		 ewl_tree_node_expand(Ewl_Tree_Node *tree);
 
-/*
- * Tree creation/initialization functions.
- */
 Ewl_Widget 	*ewl_tree_new(unsigned short columns);
 int 		 ewl_tree_init(Ewl_Tree *tree, unsigned short columns);
 

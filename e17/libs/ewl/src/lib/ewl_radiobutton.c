@@ -28,7 +28,6 @@ ewl_radiobutton_new(void)
 
 /**
  * @param rb: the radio button to initialize
- * @param label: the label for the initialized radio button
  * @return Returns no value.
  * @brief Initialize the radio button fields and callbacks
  *

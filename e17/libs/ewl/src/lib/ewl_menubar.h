@@ -1,10 +1,9 @@
-#ifndef __EWL_MENUBAR_H__
-#define __EWL_MENUBAR_H__
+#ifndef EWL_MENUBAR_H
+#define EWL_MENUBAR_H
 
 /**
- * @file ewl_menubar.h
- * @defgroup Ewl_Menubar Menubar: A menu bar widget
- * @brief Defines a class for displaying menu bars
+ * @defgroup Ewl_Menubar Ewl_Menubar: A menu bar widget
+ * Defines a class for displaying menu bars
  *
  * @{
  */
@@ -17,6 +16,7 @@
 #define EWL_MENUBAR_TYPE "menubar"
 
 /**
+ * The Ewl_Menubar widget
  */
 typedef struct Ewl_Menubar Ewl_Menubar;
 
@@ -27,7 +27,6 @@ typedef struct Ewl_Menubar Ewl_Menubar;
 #define EWL_MENUBAR(menubar) ((Ewl_Menubar *) menubar)
 
 /**
- * @struct Ewl_Menubar
  * Inherits from the Ewl_Box class and extends it to provide for
  * a menubar
  */

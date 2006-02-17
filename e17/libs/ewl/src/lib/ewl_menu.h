@@ -1,9 +1,8 @@
-#ifndef __EWL_MENU_H__
-#define __EWL_MENU_H__
+#ifndef EWL_MENU_H
+#define EWL_MENU_H
 
 /**
- * @file ewl_menu.h
- * @defgroup Ewl_Menu Menu: A Simple Windowed Menu
+ * @defgroup Ewl_Menu Ewl_Menu: A Simple Windowed Menu
  * Defines a menu used globally. The contents on the menu are drawn outside of
  * the Evas.
  *
@@ -29,17 +28,16 @@ typedef struct Ewl_Menu Ewl_Menu;
 #define EWL_MENU(menu) ((Ewl_Menu *) menu)
 
 /**
- * @struct Ewl_Menu
  * Inherits from the Ewl_Menu_Base and does not extend the structure, but
  * provides policy for drawing on the current evas.
  */
 struct Ewl_Menu
 {
-	Ewl_Menu_Base  base;
-        int            popup_x;
-        int            popup_y;
+	Ewl_Menu_Base  base;		/**< Inherit from Ewl_Menu_Base */
+        int            popup_x;		/**< Popup X position */
+        int            popup_y;		/**< Popup Y position */
 
-	Ewl_Widget    *menubar_parent;
+	Ewl_Widget    *menubar_parent;	/**< Parent menu bar */
 };
 
 Ewl_Widget	*ewl_menu_new(void);
@@ -61,4 +59,4 @@ void ewl_menu_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data);
  * @}
  */
 
-#endif				/* __EWL_MENU_H__ */
+#endif

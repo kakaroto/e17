@@ -15,7 +15,7 @@
  */
 #define EWL_OBJECT_MIN_SIZE (1)
 /**
- * @def EWL_OBJECT_MIN_SIZE 
+ * @def EWL_OBJECT_MAX_SIZE 
  * The maximum possible size any object can receive.
  */
 #define EWL_OBJECT_MAX_SIZE (INT_MAX)
@@ -33,7 +33,6 @@ typedef struct Ewl_Object Ewl_Object;
 #define EWL_OBJECT(object) ((Ewl_Object *) object)
 
 /**
- * @class Ewl_Object
  * @brief Provides facilities for sizing, position, alignment and fill policy.
  *
  * The fields of the object, while their explanations are fairly clear, can be

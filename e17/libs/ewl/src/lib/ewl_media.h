@@ -1,11 +1,10 @@
-#ifndef __EWL_MEDIA_H__
-#define __EWL_MEDIA_H__
+#ifndef EWL_MEDIA_H
+#define EWL_MEDIA_H
 
 #include <Emotion.h>
 
 /**
- * @file ewl_media.h
- * @defgroup Ewl_Media Media: A Multi media widget
+ * @defgroup Ewl_Media Ewl_Media: A Multi media widget
  * @brief Defines a class for displaing video
  *
  * @{
@@ -19,6 +18,7 @@
 #define EWL_MEDIA_TYPE "media"
 
 /**
+ * The Ewl_Media widget
  */
 typedef struct Ewl_Media Ewl_Media;
 
@@ -29,7 +29,6 @@ typedef struct Ewl_Media Ewl_Media;
 #define EWL_MEDIA(media) ((Ewl_Media *) media)
 
 /**
- * @struct Ewl_Media
  * Inherits from the Ewl_Widget class and extends it to provide for multi-line
  * media layout, obstacle wrapping, and a variety of formatting.
  */
@@ -79,4 +78,4 @@ void ewl_media_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
  * @}
  */
 
-#endif				/* __EWL_MEDIA_H__ */
+#endif

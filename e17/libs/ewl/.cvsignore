@@ -28,3 +28,4 @@ ewl.pc
 ewl.spec
 doc
 *.tar.gz
+ewl_doxy_warnings.txt

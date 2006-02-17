@@ -1,9 +1,8 @@
-#ifndef __EWL_SEEKER_H__
-#define __EWL_SEEKER_H__
+#ifndef EWL_SEEKER_H
+#define EWL_SEEKER_H
 
 /**
- * @file ewl_seeker.h
- * @defgroup Ewl_Seeker Seeker: A Value Selector from a Range
+ * @defgroup Ewl_Seeker Ewl_Seeker: A Value Selector from a Range
  * Defines an Ewl_Widget with a draggable button enclosed, used to select a
  * value from a range.
  *
@@ -33,7 +32,6 @@ typedef struct Ewl_Seeker Ewl_Seeker;
 #define EWL_SEEKER(seeker) ((Ewl_Seeker *) seeker)
 
 /**
- * @struct Ewl_Seeker
  * Inherits from Ewl_Container and creates internal Ewl_Widget's to provide a
  * range and a draggable area to select a value from that range.
  */
@@ -95,4 +93,4 @@ void ewl_seeker_child_show_cb(Ewl_Container *p, Ewl_Widget * w);
  * @}
  */
 
-#endif				/* __EWL_SEEKER_H__ */
+#endif

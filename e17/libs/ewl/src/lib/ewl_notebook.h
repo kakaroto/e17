@@ -2,9 +2,8 @@
 #define EWL_NOTEBOOK_H
 
 /**
- * @file ewl_notebook.h
- * @defgroup Ewl_Notebook: A new notebook widget
- * @brief Defines a class for notebook layout
+ * @defgroup Ewl_Notebook Ewl_Notebook: A notebook widget
+ * Defines a class for notebook layout
  *
  * @{
  */
@@ -29,7 +28,6 @@
 typedef struct Ewl_Notebook Ewl_Notebook;
 
 /**
- * @struct Ewl_Notebook
  * Inherits from Ewl_Box and extends to provide for a notebook style layout.
  */
 struct Ewl_Notebook

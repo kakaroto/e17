@@ -98,6 +98,12 @@ ewl_separator_init(Ewl_Separator *s)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+/**
+ * @param s: The separator to set the orientation on
+ * @param o: The orientation to set on the separator
+ * @return Returns no value
+ * @brief Set the orientation of the separator
+ */
 void
 ewl_separator_orientation_set(Ewl_Separator *s, Ewl_Orientation o)
 {
@@ -128,6 +134,11 @@ ewl_separator_orientation_set(Ewl_Separator *s, Ewl_Orientation o)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param s: The separator to get the orientation from
+ * @return Returns the orientation currently set on the separator
+ * @brief This retrieves the current orientation of the separator
+ */
 Ewl_Orientation
 ewl_separator_orientation_get(Ewl_Separator *s)
 {
