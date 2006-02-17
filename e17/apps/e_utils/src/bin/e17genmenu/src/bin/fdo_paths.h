@@ -24,10 +24,10 @@ extern "C"
 {
 # endif
 
-   void fdo_paths_init();
+   void fdo_paths_init(void);
    char *fdo_paths_search_for_file(Fdo_Paths_Type type, char *file, int sub, int (*func) (const void *data, char *path), const void *data);
    char *fdo_paths_recursive_search(char *path, char *d, int (*func) (const void *data, char *path), const void *data);
-   void fdo_paths_shutdown();
+   void fdo_paths_shutdown(void);
 
 # ifdef __cplusplus
 }

@@ -373,12 +373,29 @@ parse_debian_file(char *file)
    free(eap);
 }
 
+void
+parse_ini_init()
+{
+   if (!ini_file_cache)
+      {
+         ini_file_cache = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+         if (ini_file_cache)
+            {
+               ecore_hash_set_free_key(ini_file_cache, free);
+               ecore_hash_set_free_value(ini_file_cache, (Ecore_Free_Cb) ecore_hash_destroy);
+            }
+      }
+}
+
 Ecore_Hash *
 parse_ini_file(char *file)
 {
    Ecore_Hash *result;
 
-   /* FIXME: this should probably be optimised by caching the results, then looking in the cache first. */
+   result = (Ecore_Hash *) ecore_hash_get(ini_file_cache, file);
+   if (result)
+      return result;
+
    result = ecore_hash_new(ecore_str_hash, ecore_str_compare);
    if (result)
      {
@@ -467,6 +484,17 @@ parse_ini_file(char *file)
         buffer[0] = (char)0;
 
         fclose(f);
+        ecore_hash_set(ini_file_cache, strdup(file), result);
      }
    return result;
+}
+
+void
+parse_ini_shutdown()
+{
+   if(ini_file_cache)
+      {
+         ecore_hash_destroy(ini_file_cache);
+	 ini_file_cache = NULL;
+      }
 }

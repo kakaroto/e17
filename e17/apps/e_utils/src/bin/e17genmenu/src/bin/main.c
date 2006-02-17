@@ -36,6 +36,7 @@ _e17genmenu_test_fdo_paths()
    printf("Testing FDO paths\n");
 
    fdo_paths_init();
+   parse_ini_init();
 
    /* You can iterate through the various path lists as needed. */
    for (i = 0; i < fdo_paths_menus->size; i++)
@@ -120,6 +121,7 @@ _e17genmenu_test_fdo_paths()
 	 free(path);
       }
 
+   parse_ini_shutdown();
    fdo_paths_shutdown();
 
    _e17genmenu_shutdown();
@@ -241,6 +243,7 @@ main(int argc, char **argv)
 
    /* Get the fdo paths. */
    fdo_paths_init();
+   parse_ini_init();
 
    /* Start Making Menus */
    make_menus();
@@ -257,6 +260,7 @@ main(int argc, char **argv)
             get_home());
    system(path);
 
+   parse_ini_shutdown();
    fdo_paths_shutdown();
 
    /* Shutdown */
