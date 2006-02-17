@@ -139,12 +139,23 @@ check_for_files(char *dir)
 static int
 _menu_make_apps(const void *data, Dumb_List *list, int element, int level)
 {
-   char *path;
-
-   path = (char *) data;
-   if (list->elements[element].type == DUMB_LIST_ELEMENT_TYPE_HASH)
+   if (list->elements[element].type == DUMB_LIST_ELEMENT_TYPE_STRING)
       {
-         ecore_hash_for_each_node((Ecore_Hash *) list->elements[element].element, _menu_dump_each_hash_node, NULL);
+         if (strncmp((char *) list->elements[element].element, "<MENU ", 6) == 0)
+	    {
+               char *name, *path;
+               Ecore_Hash *pool, *apps;
+
+               name = (char *) list->elements[element].element;
+               path = (char *) list->elements[element + 1].element;
+               pool  = (Ecore_Hash *) list->elements[element + 2].element;
+               apps  = (Ecore_Hash *) list->elements[element + 4].element;
+printf("MAKING MENU - %s \t\t%s\n", path, name);
+
+               ecore_hash_for_each_node(apps, _menu_dump_each_hash_node, path);
+               /* FIXME: Remove this line.  At this early stage of development, apps is empty, so generate from pool instead. */
+               ecore_hash_for_each_node(pool, _menu_dump_each_hash_node, path);
+	    }
       }
    return 0;
 }
@@ -153,8 +164,9 @@ static void
 _menu_dump_each_hash_node(void *value, void *user_data)
 {
    Ecore_Hash_Node *node;
-   char *file;
+   char *file, *path;
 
+   path = (char *) user_data;
    node = (Ecore_Hash_Node *) value;
    file = (char *) node->value;
    printf("CREATING %s\n", file);

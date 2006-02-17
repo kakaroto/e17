@@ -43,6 +43,8 @@ static void _fdo_menus_unxml_moves(Dumb_List *menu, Dumb_List *list);
 static void _fdo_menus_add_dirs(Dumb_List *list, Dumb_List *paths, char *pre, char *post, char *extra, int element);
 static int _fdo_menus_expand_apps(struct _fdo_menus_unxml_data *unxml_data, char *app_dir, Ecore_Hash *pool);
 static int _fdo_menus_check_app(const void *data, char *path);
+static int _fdo_menus_generate(const void *data, Dumb_List *list, int element, int level);
+static void _fdo_menus_inherit_apps(void *value, void *user_data);
 
 
 Dumb_List *
@@ -60,6 +62,11 @@ fdo_menus_get(char *file, Dumb_List *xml)
 	 if ((data.base) && (data.path))
 	    {
                dumb_list_foreach(xml, 0, _fdo_menus_unxml, &data);
+               dumb_list_dump(xml, 0);
+               printf("\n\n");
+               dumb_list_foreach(xml, 0, _fdo_menus_generate, &data);
+               dumb_list_dump(xml, 0);
+               printf("\n\n");
 	    }
          E_FREE(data.path);
          E_FREE(data.base);
@@ -91,12 +98,13 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
          else if (strcmp((char *) list->elements[element].element, "<Menu") == 0)
 	    {
                Dumb_List *menu, *rules;
-               Ecore_Hash *pool;
+               Ecore_Hash *pool, *apps;
 
                menu = dumb_list_new(NULL);
                rules = dumb_list_new(NULL);
                pool = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-               if ((menu) && (rules) && (pool))
+               apps = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+               if ((menu) && (rules) && (pool) && (apps))
                   {
 		     int i;
 		     char *flags = "   ", *name = "", *directory = "", *menu_path = "";
@@ -104,6 +112,8 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
 
                      ecore_hash_set_free_key(pool, free);
                      ecore_hash_set_free_value(pool, free);
+                     ecore_hash_set_free_key(apps, free);
+                     ecore_hash_set_free_value(apps, free);
 		     sprintf(temp, "<MENU <%.3s> <%s> <%s>", flags, name, directory);
 	             dumb_list_extend(menu, temp);
 		     sprintf(temp, "<MENU_PATH %s", menu_path);
@@ -112,6 +122,7 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
 		     flags += 7;
 	             dumb_list_add_hash(menu, pool);
 	             dumb_list_add_child(menu, rules);
+	             dumb_list_add_hash(menu, apps);
                      list->elements[element].element = menu;
                      list->elements[element].type = DUMB_LIST_ELEMENT_TYPE_LIST;
 		     for (i = element + 1; i < list->size; i++)
@@ -324,6 +335,7 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
 		  }
 	       else
 	          {
+		     if (apps)     ecore_hash_destroy(apps);
 		     if (pool)     ecore_hash_destroy(pool);
 		     if (rules)    dumb_list_del(rules);
 		     if (menu)     dumb_list_del(menu);
@@ -480,19 +492,92 @@ _fdo_menus_check_app(const void *data, char *path)
 	       char *file;
 
                file = strdup(path + our_data->length);
-	       path = strdup(path);
+//	       path = strdup(path);
 	       if ((file) && (path))
 	          {
+                     char app[MAX_PATH + 2];
+
 	             for (i = 0; file[i] != '\0'; i++ )
 	                if (file[i] == '/')
 		           file[i] = '-';
-                     ecore_hash_set(our_data->pool, file, strdup(path));
+		     sprintf(app, "U %s", path);
+                     ecore_hash_set(our_data->pool, file, strdup(app));
 		  }
 	    }
       }
 
    return 1;
 }
+
+
+static int
+_fdo_menus_generate(const void *data, Dumb_List *list, int element, int level)
+{
+   struct _fdo_menus_unxml_data *unxml_data;
+   Dumb_List *menus;
+
+   unxml_data = (struct _fdo_menus_unxml_data *) data;
+   menus = (Dumb_List *) unxml_data->menus;
+   if (list->elements[element].type == DUMB_LIST_ELEMENT_TYPE_STRING)
+      {
+         if (strncmp((char *) list->elements[element].element, "<MENU ", 6) == 0)
+	    {
+	       int i;
+               char *name, *path;
+               Dumb_List *rules;
+               Ecore_Hash *pool, *apps;
+
+               name = (char *) list->elements[element].element;
+               path = (char *) list->elements[element + 1].element;
+               pool  = (Ecore_Hash *) list->elements[element + 2].element;
+               rules = (Dumb_List *) list->elements[element + 3].element;
+               apps  = (Ecore_Hash *) list->elements[element + 4].element;
+printf("MAKING MENU - %s \t\t%s\n", path, name);
+
+               /* Inherit the pools. */
+	       if (unxml_data->stack->size <= level)
+	          {
+	             while (unxml_data->stack->size < level)
+	                dumb_list_add_hash(unxml_data->stack, pool);
+	             dumb_list_add_hash(unxml_data->stack, pool);
+	          }
+	       else
+	          {
+                     unxml_data->stack->elements[level].type = DUMB_LIST_ELEMENT_TYPE_HASH;
+                     unxml_data->stack->elements[level].element = pool;
+		  }
+               for (i = level - 1; i >= 0; i--)
+                  {
+                     if (unxml_data->stack->elements[i].type == DUMB_LIST_ELEMENT_TYPE_HASH)
+		        {
+		           Ecore_Hash *ancestor;
+
+		           ancestor = (Ecore_Hash *) unxml_data->stack->elements[i].element;
+                           ecore_hash_for_each_node(ancestor, _fdo_menus_inherit_apps, pool);
+			}
+	          }
+
+               /* Process the rules. */
+	    }
+      }
+   return 0;
+}
+
+static void
+_fdo_menus_inherit_apps(void *value, void *user_data)
+{
+   Ecore_Hash_Node *node;
+   Ecore_Hash *pool;
+   char *key, *app;
+
+   pool = (Ecore_Hash *) user_data;
+   node = (Ecore_Hash_Node *) value;
+   key = (char *) node->key;
+   app = (char *) node->value;
+   if (!ecore_hash_get(pool, key))
+      ecore_hash_set(pool, strdup(key), strdup(app));
+}
+
 
 /*
 merge menus
@@ -525,10 +610,10 @@ generate menus
 *      for each .desktop
 *        if it exists in the pool, replace it.
 *	 else add it to the pool.
-     for each parent <Menu>
-       for each .desktop in the pool
-          if it doesn't exist in the child <Menu> pool
-	    add it to the pool.
+*     for each parent <Menu>
+*       for each .desktop in the pool
+*          if it doesn't exist in the child <Menu> pool
+*	    add it to the pool.
      for each <Include> and <Exclude>
         for each .desktop in pool
            for each rule
