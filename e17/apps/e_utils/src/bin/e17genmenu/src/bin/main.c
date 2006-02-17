@@ -71,8 +71,8 @@ _e17genmenu_test_fdo_paths()
 //               printf("\n\n");
 	       if (menus)
 	          {
-                     dumb_list_dump(menus, 0);
-                     printf("\n\n");
+//                     dumb_list_dump(menus, 0);
+//                     printf("\n\n");
 	             /* create the .eap and order files from the menu */
 		  }
 	    }

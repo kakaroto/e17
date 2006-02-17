@@ -224,7 +224,7 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
 							 if (text[0] != '\0')
 							    {
 							       sprintf(&temp[length], "%s%s", ((length) ? "/" : ""), text);
-	                                                       length += strlen(text);
+	                                                       length += strlen(text) + ((length) ? 1 : 0);
 							    }
 						      }
 						   menu_path = strdup(temp);
