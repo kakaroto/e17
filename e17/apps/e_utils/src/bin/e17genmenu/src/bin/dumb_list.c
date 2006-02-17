@@ -190,12 +190,11 @@ dumb_list_foreach(Dumb_List *list, int level, int (*func) (const void *data, Dum
 		     moved = 1;
 		     list->elements[k].type = list->elements[j].type;
 		     list->elements[k].element = list->elements[j].element;
-		     list->size--;
 	             j++;
 		     k++;
 		  }
 	       if (moved)
-		  i--;
+		     i--;
 	       else
 	          list->size = i;
 	    }
