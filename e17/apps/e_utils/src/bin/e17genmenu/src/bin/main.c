@@ -67,14 +67,6 @@ _e17genmenu_test_fdo_paths()
 
 	       /* convert the xml into menus */
 	       menus = fdo_menus_get(path, menu_xml);
-//               dumb_list_dump(menu_xml, 0);
-//               printf("\n\n");
-	       if (menus)
-	          {
-//                     dumb_list_dump(menus, 0);
-//                     printf("\n\n");
-	             /* create the .eap and order files from the menu */
-		  }
 	    }
          free(path);
 

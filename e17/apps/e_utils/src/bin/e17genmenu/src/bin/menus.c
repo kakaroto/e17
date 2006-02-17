@@ -151,10 +151,7 @@ _menu_make_apps(const void *data, Dumb_List *list, int element, int level)
                pool  = (Ecore_Hash *) list->elements[element + 2].element;
                apps  = (Ecore_Hash *) list->elements[element + 4].element;
 printf("MAKING MENU - %s \t\t%s\n", path, name);
-
                ecore_hash_for_each_node(apps, _menu_dump_each_hash_node, path);
-               /* FIXME: Remove this line.  At this early stage of development, apps is empty, so generate from pool instead. */
-               ecore_hash_for_each_node(pool, _menu_dump_each_hash_node, path);
 	    }
       }
    return 0;
