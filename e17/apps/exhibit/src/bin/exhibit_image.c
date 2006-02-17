@@ -24,8 +24,7 @@ _ex_image_mouse_wheel(Etk_Object *object, void *event, void *data)
    
    ev = event;
    e = data;
-   evas = ecore_evas_get(ETK_WINDOW(e->win)->ecore_evas);
-   
+   evas = etk_widget_toplevel_evas_get(ETK_WIDGET(e->win));   
    
    if(evas_key_modifier_is_set(evas_key_modifier_get(evas), "Control"))
      {
