@@ -24,8 +24,6 @@ typedef struct Ewl_Check Ewl_Check;
 /**
  * @def EWL_CHECK(c)
  * Typecasts a pointer to an Ewl_Check pointer.
- *
- * @{
  */
 #define EWL_CHECK(c) ((Ewl_Check *)c)
 
@@ -56,3 +54,4 @@ void            ewl_check_update_check_cb(Ewl_Widget *w, void *ev_data,
  */
 
 #endif
+

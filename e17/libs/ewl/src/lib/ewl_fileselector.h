@@ -94,5 +94,9 @@ Ewl_Fileselector_Data *ewl_fileselector_data_new(const char *name, off_t  size,
 						       time_t time, mode_t mode);
 void ewl_fileselector_data_free(Ewl_Fileselector_Data *d);
 
+/**
+ * @}
+ */
+
 #endif /* __EWL_FILESELECTOR_H__ */
 

@@ -86,5 +86,9 @@ void ewl_notebook_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int rem_idx);
 
 void ewl_notebook_cb_tab_clicked(Ewl_Widget *w, void *ev, void *data);
 
+/**
+ * @}
+ */
+
 #endif
 
