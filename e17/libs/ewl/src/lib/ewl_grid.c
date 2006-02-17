@@ -6,12 +6,10 @@
 static void ewl_grid_resize(Ewl_Grid *g);
 
 /**
- * ewl_grid_new - create a new grid
  * @param cols: number of columns
  * @param rows: number of rows
- *
- * @return Returns a pointer to a newly allocated grid on success, NULL on
- * failure.
+ * @return Returns a pointer to a newly allocated grid on success, NULL on failure.
+ * @brief Create a new Ewl_Grid widget
  */
 Ewl_Widget *
 ewl_grid_new(int cols, int rows)
@@ -34,13 +32,12 @@ ewl_grid_new(int cols, int rows)
 
 
 /**
- * ewl_grid_init - initialize the grid to starting values
  * @param g: the grid
  * @param cols: number of columns
  * @param rows: number of rows
- *
  * @return Returns no value. Responsible for setting up default values and
  * callbacks within a grid structure
+ * @brief Initializes an Ewl_Grid widget to default values
  */
 int
 ewl_grid_init(Ewl_Grid *g, int cols, int rows)
@@ -99,12 +96,11 @@ ewl_grid_init(Ewl_Grid *g, int cols, int rows)
 }
 
 /**
- * ewl_grid_reset - clear the grid and set new geometry
  * @param g: the grid
  * @param cols: the new number of columns
  * @param rows: the new number of rows
- *
  * @return Returns no value
+ * @brief Clears the grid and sets new geometry
  */
 void
 ewl_grid_reset(Ewl_Grid *g, int cols, int rows)
@@ -165,7 +161,7 @@ ewl_grid_reset(Ewl_Grid *g, int cols, int rows)
  * @param g: the grid to change homogeneous layout 
  * @param h: the boolean value to change the layout mode to
  * @return Returns no value.
- * @breif Change the homogeneous layout of the box
+ * @brief Change the homogeneous layout of the grid
  *
  * Grids use non-homogeneous layout by default, this can be used
  * to change that. 
@@ -189,7 +185,7 @@ ewl_grid_homogeneous_set(Ewl_Grid *g, unsigned int h)
  * @param g: the grid to change horizontal homogeneous layout 
  * @param h: the boolean value to change the horizontal layout mode to
  * @return Returns no value.
- * @breif Change the horizontal homogeneous layout of the box
+ * @brief Change the horizontal homogeneous layout of the box
  *
  * Grids use non-homogeneous layout by default, this can be used
  * to change that for horizontal orientation, i.e. all columns can
@@ -212,7 +208,7 @@ ewl_grid_hhomogeneous_set(Ewl_Grid *g, unsigned int h)
  * @param g: the grid to change vertical homogeneous layout 
  * @param h: the boolean value to change the vertical layout mode to
  * @return Returns no value.
- * @breif Change the vertical homogeneous layout of the box
+ * @brief Change the vertical homogeneous layout of the box
  *
  * Grids use non-homogeneous layout by default, this can be used
  * to change that for vertical orientation, i.e. all rows can have 
@@ -262,15 +258,14 @@ ewl_grid_vhomogeneous_get(Ewl_Grid *g)
 }
 
 /**
- * ewl_grid_add - add a child widget to the grid
  * @param g: the grid
  * @param w: the child widget
  * @param start_col: the start column
  * @param end_col: the end column
  * @param start_row: the start row
  * @param end_row: the end row
- *
  * @return Returns no value
+ * @brief Add a child widget to the grid
  */
 void
 ewl_grid_add(Ewl_Grid *g, Ewl_Widget *w,
@@ -322,12 +317,11 @@ ewl_grid_add(Ewl_Grid *g, Ewl_Widget *w,
 }
 
 /**
- * ewl_grid_col_w_set - set the width of a column
  * @param g: the grid
  * @param col: the column
  * @param width: the new width
- *
  * @return Returns no value.
+ * @brief Set the widget of a column
  */
 void
 ewl_grid_col_w_set(Ewl_Grid *g, int col, int width)
@@ -359,13 +353,11 @@ ewl_grid_col_w_set(Ewl_Grid *g, int col, int width)
 }
 
 /**
- * ewl_grid_col_w_get - get the width of a column
- *
  * @param g: the grid
  * @param col: the column
  * @param width: integer pointer to store the width in
- *
  * @return Returns no value.
+ * @brief Get the width of a column
  */
 void
 ewl_grid_col_w_get(Ewl_Grid *g, int col, int *width)
@@ -381,12 +373,11 @@ ewl_grid_col_w_get(Ewl_Grid *g, int col, int *width)
 }
 
 /**
- * ewl_grid_row_h_set - set the height of a row
  * @param g: the grid
  * @param row: the row
  * @param height: the new height
- *
  * @return Returns no value.
+ * @brief Set the height of a row
  */
 void
 ewl_grid_row_h_set(Ewl_Grid *g, int row, int height)
@@ -415,13 +406,11 @@ ewl_grid_row_h_set(Ewl_Grid *g, int row, int height)
 }
 
 /**
- * ewl_grid_row_h_get - get the height of a row
- *
  * @param g: the grid
  * @param row: the row
  * @param height: integer pointer to store the height in
- *
  * @return Returns no value.
+ * @brief Get the height of a row
  */
 void
 ewl_grid_row_h_get(Ewl_Grid *g, int row, int *height)
@@ -857,3 +846,4 @@ ewl_grid_child_resize_cb(Ewl_Container *p, Ewl_Widget *child, int size,
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+

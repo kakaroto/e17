@@ -1,11 +1,10 @@
-#ifndef __EWL_GRID_H__
-#define __EWL_GRID_H__
+#ifndef EWL_GRID_H
+#define EWL_GRID_H
 
 /**
- * @file ewl_grid.h
- *
- * @defgroup Ewl_Grid Grid The ewl grid widget
+ * @defgroup Ewl_Grid Ewl_Grid The ewl grid widget
  * @brief The Ewl Grid widget
+ *
  * @{
  */
 
@@ -26,41 +25,42 @@ struct Ewl_Grid_Info
 	Ecore_List	*cross;
 };
 
+/**
+ * The Ewl_Grid widget 
+ */
 typedef struct Ewl_Grid Ewl_Grid;
 
+/**
+ * @def EWL_GRID(grid)
+ * Typecast a pointer to an Ewl_Grid pointer
+ */
 #define EWL_GRID(grid) ((Ewl_Grid *)grid)
 
+/**
+ * Inherit from Ewl_Container and extend to privide a grid layout widget
+ */
 struct Ewl_Grid 
 {
-	Ewl_Container   container;
+	Ewl_Container   container;		/**< Inherit from Ewl_Container */
 
-	/*
-	 * horisontal/vertical size of the columns and rows
-	 */
-	Ewl_Grid_Info  *col_size;
-	Ewl_Grid_Info  *row_size;
+	Ewl_Grid_Info  *col_size;		/**< Horizontal/vertical size of the columns */
+	Ewl_Grid_Info  *row_size;		/**< Horizontal/vertical size of the rows */
 
-	int             rows, cols;
+	int rows;				/**< Row count */
+	int cols;				/**< Column count */
 
-	/*
-	 * Flag indicating space assignment 
-         */
-	unsigned int	homogeneous_h;   /** Horizontal homogeneous flag */
-	unsigned int	homogeneous_v;   /** Vertical homogeneous flag */ 
-	/*
-	 * total size of the grid widget
-	 */
-	int             grid_h;
-	int             grid_w;
+	unsigned int homogeneous_h;   		/**< Horizontal homogeneous flag */
+	unsigned int homogeneous_v;   		/**< Vertical homogeneous flag */ 
 
-	/*
-	 * list of old children after a reset call
-	 */
-	Ecore_List     *rchildren;
+	int grid_h;				/**< Total height of the grid */
+	int grid_w;				/**< Total width of the grid */
+
+	Ecore_List *rchildren;			/**< List of old children after a reset call */
 };
 
 
 typedef struct Ewl_Grid_Child Ewl_Grid_Child;
+
 struct Ewl_Grid_Child
 {
 	int start_col;
@@ -105,5 +105,5 @@ void ewl_grid_child_resize_cb(Ewl_Container *p, Ewl_Widget *child,
  * @}
  */
 
-#endif /* __EWL_GRID_H__ */
+#endif
 

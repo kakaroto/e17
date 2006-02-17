@@ -1,9 +1,8 @@
-#ifndef __EWL_EVENTS_H__
-#define __EWL_EVENTS_H__
+#ifndef EWL_EVENTS_H
+#define EWL_EVENTS_H
 
 /**
- * @file ewl_events.h
- * @defgroup Ewl_Events Events: Lower Level Event Handlers
+ * @defgroup Ewl_Events Ewl_Events: Lower Level Event Handlers
  * @brief Defines the routines that dispatch the lower level events to EWL.
  *
  * @{
@@ -12,7 +11,6 @@
 typedef struct Ewl_Event_Window_Expose Ewl_Event_Window_Expose;
 
 /**
- * @struct Ewl_Event_Window_Expose
  * Describes the evas region that received an expose notification.
  */
 struct Ewl_Event_Window_Expose
@@ -26,7 +24,6 @@ struct Ewl_Event_Window_Expose
 typedef struct Ewl_Event_Window_Configure Ewl_Event_Window_Configure;
 
 /**
- * @struct Ewl_Event_Window_Configure
  * Notifies widgets when the enclosing window size has changed.
  */
 struct Ewl_Event_Window_Configure
@@ -40,7 +37,6 @@ struct Ewl_Event_Window_Configure
 typedef struct Ewl_Event_Window_Delete Ewl_Event_Window_Delete;
 
 /**
- * @struct Ewl_Event_Window_Delete
  * Notifies of window close requests.
  */
 struct Ewl_Event_Window_Delete
@@ -51,7 +47,6 @@ struct Ewl_Event_Window_Delete
 typedef struct Ewl_Event_Key_Down Ewl_Event_Key_Down;
 
 /**
- * @struct Ewl_Event_Key_Down
  * Provides clients with necessary information about the key press event.
  */
 struct Ewl_Event_Key_Down
@@ -63,7 +58,6 @@ struct Ewl_Event_Key_Down
 typedef struct Ewl_Event_Key_Up Ewl_Event_Key_Up;
 
 /**
- * @struct Ewl_Event_Key_Up
  * Provides clients with necessary information about the key release event.
  */
 struct Ewl_Event_Key_Up
@@ -75,7 +69,6 @@ struct Ewl_Event_Key_Up
 typedef struct Ewl_Event_Mouse_Down Ewl_Event_Mouse_Down;
 
 /**
- * @struct Ewl_Event_Mouse_Down
  * Provides information about the mouse down event.
  */
 struct Ewl_Event_Mouse_Down
@@ -90,7 +83,6 @@ struct Ewl_Event_Mouse_Down
 typedef struct Ewl_Event_Mouse_Up Ewl_Event_Mouse_Up;
 
 /**
- * @struct Ewl_Event_Mouse_Up
  * Provides information about the mouse up event.
  */
 struct Ewl_Event_Mouse_Up
@@ -104,7 +96,6 @@ struct Ewl_Event_Mouse_Up
 typedef struct Ewl_Event_Mouse_Move Ewl_Event_Mouse_Move;
 
 /**
- * @struct Ewl_Event_Mouse_Move
  * Provides information about mouse movement
  */
 struct Ewl_Event_Mouse_Move
@@ -117,7 +108,6 @@ struct Ewl_Event_Mouse_Move
 typedef struct Ewl_Event_Mouse_In Ewl_Event_Mouse_In;
 
 /**
- * @struct Ewl_Event_Mouse_In
  * Provides information about the mouse entering
  */
 struct Ewl_Event_Mouse_In
@@ -130,7 +120,6 @@ struct Ewl_Event_Mouse_In
 typedef struct Ewl_Event_Mouse_Out Ewl_Event_Mouse_Out;
 
 /**
- * @struct Ewl_Event_Mouse_Out
  * Provides information about the mouse leaving
  */
 struct Ewl_Event_Mouse_Out
@@ -143,7 +132,6 @@ struct Ewl_Event_Mouse_Out
 typedef struct Ewl_Event_Mouse_Wheel Ewl_Event_Mouse_Wheel;
 
 /**
- * @struct Ewl_Event_Mouse_Wheel
  * Provides information about the mouse wheel scrolling
  */
 struct Ewl_Event_Mouse_Wheel
@@ -158,7 +146,6 @@ struct Ewl_Event_Mouse_Wheel
 typedef struct Ewl_Dnd_Types Ewl_Dnd_Types;
 
 /**
- * @struct Ewl_Dnd_Types
  * Provides type information about an external DND drag
  */
 struct Ewl_Dnd_Types
@@ -169,7 +156,6 @@ struct Ewl_Dnd_Types
 };
 
 /**
- * @struct Ewl_Event_Dnd_Drop
  * Provides information about dnd drops movement
  */
 struct Ewl_Event_Dnd_Drop
@@ -185,7 +171,6 @@ typedef struct Ewl_Event_Dnd_Drop Ewl_Event_Dnd_Drop;
 typedef struct Ewl_Dialog_Event Ewl_Dialog_Event;
 
 /**
- * @struct Ewl_Dialog_Event
  * Stores the reponse from a dialog
  */
 struct Ewl_Dialog_Event
@@ -201,4 +186,4 @@ void 		ewl_ev_modifiers_set(unsigned int modifiers);
  * @}
  */
 
-#endif				/* __EWL_EVENTS_H__ */
+#endif

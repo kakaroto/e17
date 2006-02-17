@@ -1,9 +1,8 @@
-#ifndef __EWL_IMAGE_H__
-#define __EWL_IMAGE_H__
+#ifndef EWL_IMAGE_H
+#define EWL_IMAGE_H
 
 /**
- * @file ewl_image.h
- * @defgroup Ewl_Image Image: An Image Display Widget
+ * @defgroup Ewl_Image Ewl_Image: An Image Display Widget
  * Provides a widget for displaying evas loadable images, and edjes.
  *
  * @{
@@ -21,34 +20,45 @@ enum Ewl_Image_Type
 	EWL_IMAGE_TYPE_NORMAL, /**< Standard image type */
 	EWL_IMAGE_TYPE_EDJE /**< Edje image type */
 };
-
 typedef enum Ewl_Image_Type Ewl_Image_Type;
 
+/**
+ * The Ewl_Image widget
+ */
 typedef struct Ewl_Image Ewl_Image;
 
+/**
+ * @def EWL_IMAGE(image)
+ * Typecase a pointer to an Ewl_Image widget
+ */
 #define EWL_IMAGE(image) ((Ewl_Image *) image)
 
 /**
- * @struct Ewl_Image
- *
+ * Inherits from Ewl_Widget and extends to provide an image widget
  */
 struct Ewl_Image
 {
-	Ewl_Widget      widget;
-	Ewl_Image_Type  type;
-	Evas_Object    *image;
-	char           *path;
-	char           *key;
-	char		proportional;
-	int 		ow, oh;
-	double		sw, sh;
-	int		cs;
-	Evas_Coord	aw, ah;
+	Ewl_Widget      widget;		/**< Inherit from Ewl_Widget */
+	Ewl_Image_Type  type;		/**< The type of the image */
+	Evas_Object    *image;		/**< The evas object for the image */
+	char           *path;		/**< The path to the image */
+	char           *key;		/**< The key for the image */
+	char		proportional;	/**< Is the image displayed proportional */
+	int 		ow, 		/**< Original image width */
+			oh;		/**< Original image height */
+	double		sw, 		/**< Scale width */
+			sh;		/**< Scale height */
+	int		cs;		/**< Constrain size */
+	Evas_Coord	aw, 		/**< Scale width */
+			ah;		/**< Scale height */
 
 	struct {
-		int set;
-		int x, y, w, h;
-	} tile;
+		int set;		/**< Tiling set? */
+		int x, 			/**< Tile x start */
+		    y, 			/**< Tile y start */
+		    w, 			/**< Tile width */
+		    h;			/**< Tile height */
+	} tile;				/**< Image tiling information */
 };
 
 Ewl_Widget	*ewl_image_new(void);
@@ -85,4 +95,4 @@ void ewl_image_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data );
  * @}
  */
 
-#endif				/* __EWL_IMAGE_H__ */
+#endif

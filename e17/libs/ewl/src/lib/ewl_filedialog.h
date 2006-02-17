@@ -1,21 +1,9 @@
-#ifndef __EWL_FILEDIALOG_H__
-#define __EWL_FILEDIALOG_H__
+#ifndef EWL_FILEDIALOG_H
+#define EWL_FILEDIALOG_H
 
 /**
- * @file ewl_filedialog.h
- * @defgroup Ewl_Filedialog Filedialog: A Dialog For Picking Files
- *
- * The filedialog is intended to be used for a simple file chooser. It can be
- * placed inside any other container, and provides the ability to pack extra
- * buttons or widgets along the left side. It currently supports two types, an
- * Open and a Save dialog.
- *
- * The normal use of the filedialog is to create a new one the first time an
- * event occurs that requires one. Setting a callback for
- * EWL_CALLBACK_VALUE_CHANGED, allows the programmer to determine when the
- * Open/Save buttons were chosen. If the event data on the callback is NULL,
- * Cancel was clicked, otherwise, the event data is a pointer to the chosen
- * file(s).
+ * @defgroup Ewl_Filedialog Ewl_Filedialog: A Dialog For Picking Files
+ * A simple dialog to show a file selector widget
  *
  * @{
  */
@@ -39,7 +27,6 @@ typedef struct Ewl_Filedialog Ewl_Filedialog;
 #define EWL_FILEDIALOG(fd) ((Ewl_Filedialog *) fd)
 
 /**
- * @struct Ewl_Filedialog
  * Creates a dialog for the fileselector
  */
 struct Ewl_Filedialog
@@ -78,4 +65,4 @@ void ewl_filedialog_delete_window_cb(Ewl_Widget *w, void *ev_data, void *data);
  * @}
  */
 
-#endif /* __EWL_FS_H__ */
+#endif

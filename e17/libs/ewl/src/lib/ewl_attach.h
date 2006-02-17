@@ -49,8 +49,8 @@ struct Ewl_Attach
 
 
 /**
- * @def ewl_attach_mouse_pointer_set(w, data)
- * Convenience method to set a pointer widget attachment
+ * @def ewl_attach_mouse_cursor_set(w, data)
+ * Convenience method to set a cursor widget attachment
  */
 #define ewl_attach_mouse_cursor_set(w, data) \
 	ewl_attach_other_set(w, EWL_ATTACH_TYPE_MOUSE_CURSOR, \

@@ -1,17 +1,10 @@
-#ifndef __EWL_FILESELECTOR_H__
-#define __EWL_FILESELECTOR_H__
+#ifndef EWL_FILESELECTOR_H
+#define EWL_FILESELECTOR_H
 
 /**
- * @file ewl_fileselector.h
- * @defgroup Ewl_Fileselector Fileselector: Basic File And Directory Listing
- *
- * Displays a list of directories and a list of files for the user to choose.
- * The selector triggers a EWL_CALLBACK_VALUE_CHANGED callback when either a
- * click causes the selected file to change, when a double click causes the
- * currently displayed directory to change, or when a double click on a file
- * occurs to signal an open. The event data passed to the callback is NULL,
- * unless the double click event occurred on a file, in which case it is the
- * file's path.
+ * @defgroup Ewl_Fileselector Ewl_Fileselector: Basic File And Directory Listing
+ * A simple widget that is used to display a list of directories and files
+ * for the user to choose from.
  *
  * @{
  */

@@ -1,9 +1,8 @@
-#ifndef __EWL_FLOATER_H__
-#define __EWL_FLOATER_H__
+#ifndef EWL_FLOATER_H
+#define EWL_FLOATER_H
 
 /**
- * @file ewl_floater.h
- * @defgroup Ewl_Floater Floater: A Floating Container
+ * @defgroup Ewl_Floater Ewl_Floater: A Floating Container
  * @brief Defines a widget for layering above other widgets in EWL's drawing
  * area, with the ability to follow the movement of another widget.
  *
@@ -30,7 +29,6 @@ typedef struct Ewl_Floater Ewl_Floater;
 #define EWL_FLOATER(floater) ((Ewl_Floater *) floater)
 
 /**
- * @struct Ewl_Floater
  * Inherits from Ewl_Box for layout purposes. Provides a means to layer above
  * other widgets and to follow the movement of another widget.
  */
@@ -48,7 +46,6 @@ int             ewl_floater_init(Ewl_Floater *f);
 void            ewl_floater_follow_set(Ewl_Floater *f, Ewl_Widget *p);
 Ewl_Widget     *ewl_floater_follow_get(Ewl_Floater *f);
 void            ewl_floater_position_set(Ewl_Floater *parent, int x, int y);
-void            ewl_floater_position_get(Ewl_Floater *parent, int *x, int *y);
 
 /*
  * Internally used callbacks, override at your own risk.
@@ -64,4 +61,4 @@ void ewl_floater_reparent_cb(Ewl_Widget *parent, void *ev_data,
  * @}
  */
 
-#endif				/* __EWL_FLOATER_H__ */
+#endif

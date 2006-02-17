@@ -1,9 +1,8 @@
-#ifndef __EWL_OBJECT_H__
-#define __EWL_OBJECT_H__
+#ifndef EWL_OBJECT_H
+#define EWL_OBJECT_H
 
 /**
- * @file ewl_object.h
- * @defgroup Ewl_Object Object: Basic Object Inherited by Ewl_Widget
+ * @defgroup Ewl_Object Ewl_Object: Basic Object Inherited by Ewl_Widget
  * @brief Defines the Ewl_Object class along with methods and macros related
  * to it.
  *
@@ -11,11 +10,13 @@
  */
 
 /**
- * @def EWL_OBJECT_MIN_SIZE The minimum possible size any object can receive.
+ * @def EWL_OBJECT_MIN_SIZE
+ * The minimum possible size any object can receive.
  */
 #define EWL_OBJECT_MIN_SIZE (1)
 /**
- * @def EWL_OBJECT_MIN_SIZE The maximum possible size any object can receive.
+ * @def EWL_OBJECT_MIN_SIZE 
+ * The maximum possible size any object can receive.
  */
 #define EWL_OBJECT_MAX_SIZE (INT_MAX)
 
@@ -26,8 +27,8 @@
 typedef struct Ewl_Object Ewl_Object;
 
 /**
- * @def EWL_OBJECT(object) A typecast for accessing the inherited object
- * fields.
+ * @def EWL_OBJECT(object) 
+ * A typecast for accessing the inherited object fields.
  */
 #define EWL_OBJECT(object) ((Ewl_Object *) object)
 
@@ -338,4 +339,4 @@ unsigned int    ewl_object_flags_get(Ewl_Object *o, unsigned int mask);
  * @}
  */
 
-#endif				/* __EWL_OBJECT_H__ */
+#endif

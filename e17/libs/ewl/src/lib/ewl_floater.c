@@ -63,6 +63,7 @@ ewl_floater_init(Ewl_Floater *f)
  * @param f: The Ewl_Floater to set the follow into
  * @param p: The widget to follow
  * @return Returns no value
+ * @brief Set the widget to follow
  */
 void
 ewl_floater_follow_set(Ewl_Floater *f, Ewl_Widget *p)
@@ -102,6 +103,7 @@ ewl_floater_follow_set(Ewl_Floater *f, Ewl_Widget *p)
 /**
  * @param f: The Floater to get the follow from
  * @return Returns the widget the floater is following, or NULL
+ * @brief Get the widget we are following
  */
 Ewl_Widget *
 ewl_floater_follow_get(Ewl_Floater *f)

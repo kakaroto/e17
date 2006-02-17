@@ -1,5 +1,5 @@
-#ifndef __EWL_ICONBOX_H__
-#define __EWL_ICONBOX_H__
+#ifndef EWL_ICONBOX_H
+#define EWL_ICONBOX_H
 
 #define EWL_ICONBOX_ICON_PADDING 15
 #define EWL_ICONBOX_MOVE_TOLERANCE 5
@@ -10,11 +10,11 @@
 #include <time.h>
 
 /**
- * @file ewl_iconbox.h
- * @defgroup Ewl_Iconbox Iconbox: The Icon Box Layout Container
- * @brief Defines the Ewl_Iconbox class, used to display a collection of icons 
- *  	  with annotations and support arranging/manipulating contained icons
+ * @defgroup Ewl_Iconbox Ewl_Iconbox: The Icon Box Layout Container
+ * Defines the Ewl_Iconbox class, used to display a collection of icons 
+ * with annotations and support arranging/manipulating contained icons
  *
+ * @{
  */
 
 /** 
@@ -24,6 +24,9 @@
 
 #define EWL_ICONBOX_TYPE "iconbox"
 
+/**
+ * The Ewl_Iconbox
+ */
 typedef struct Ewl_Iconbox Ewl_Iconbox;
 
 typedef struct Ewl_Iconbox_Icon Ewl_Iconbox_Icon;
@@ -53,71 +56,65 @@ struct Ewl_Iconbox_Icon
 #define EWL_ICONBOX_ICON(icon) ((Ewl_Iconbox_Icon *) icon)
 
 /** 
- * @struct Ewl_Iconbox
- * Inherits from an Ewl_Container to provide layout facilities for child widgets placed inside
+ * Inherits from an Ewl_Box to provide layout facilities for child widgets placed inside
  * Layout is either free-form, or auto-arranged to a grid.
  */
 struct Ewl_Iconbox
 {
-	Ewl_Box	box; /**< Inherit from Ewl_Container */
+	Ewl_Box	box; 				/**< Inherit from Ewl_Box */
 
-	Ewl_Widget *ewl_iconbox_scrollpane;
-	Ewl_Widget *ewl_iconbox_pane_inner;
+	Ewl_Widget *ewl_iconbox_scrollpane;	/**< The scrollpane */
+	Ewl_Widget *ewl_iconbox_pane_inner;	/**< The inner pane */
 
-	Ewl_Widget *ewl_iconbox_context_menu;
-	Ewl_Widget *ewl_iconbox_context_menu_item;
-	Ewl_Widget *ewl_iconbox_menu_floater;
-	Ewl_Widget *ewl_iconbox_menu_box;
-	Ewl_Widget *ewl_iconbox_view_menu;
+	Ewl_Widget *ewl_iconbox_context_menu;	/**< The context menu */
+	Ewl_Widget *ewl_iconbox_context_menu_item;	/**< Context menu item */
+	Ewl_Widget *ewl_iconbox_menu_floater;	/**< The menu floater */
+	Ewl_Widget *ewl_iconbox_view_menu;	/**< The view menu */
 
-	Ewl_Widget *icon_menu_floater;
-	Ewl_Widget *icon_menu_item;
-	Ewl_Widget *icon_menu;
+	Ewl_Widget *icon_menu_floater;		/**< Icon menu floater */
+	Ewl_Widget *icon_menu_item;		/**< Icon menu item */
+	Ewl_Widget *icon_menu;			/**< Icon menu */
 
 
-	Ecore_List *ewl_iconbox_icon_list;  /* The icon list */
-	char *test;
+	Ecore_List *ewl_iconbox_icon_list;	/**< The icon list */
 
-	Ewl_Iconbox_Icon *drag_icon;
-	Ewl_Iconbox_Icon *edit_icon;
-	Ewl_Iconbox_Icon *select_icon;
+	Ewl_Iconbox_Icon *drag_icon;		/**< The drag icon */
+	Ewl_Iconbox_Icon *edit_icon;		/**< The edit icon */
+	Ewl_Iconbox_Icon *select_icon;		/**< The select icon */
 
-	int xdown, ydown;		   /* Last icon button down x/y, for edge resistence */
-	int dx, dy;			   /* Drag start x/y */
-	int lx, ly;			   /* Layout x, layout y */
-	int ox, oy;			   /* Layout x offset, layout y offset */
-	int iw, ih;			   /* Custom icon width/height*/
+	int xdown, 				/**< Last icon button down x, for edge resistence */
+	    ydown;		   		/**< Last icon button down y, for edge resistence */
+	int dx,					/**< Drag start x */ 
+	    dy;			   		/**< Drag start y */
+	int lx, 				/**< Layout x */
+	    ly;			   		/**< Layout y */
+	int ox, 				/**< Layout x offset */
+	    oy;			   		/**< Layout y offset */
+	int iw, 				/**< Custom icon width */
+	    ih;			   		/**< Custom icon height*/
 
-	/*Background*/
-	Ewl_Widget *background;
+	Ewl_Widget *background;			/**< Background */
 
-	/* Objects for label editing..*/
-	Ewl_Widget *entry;
-	Ewl_Widget *entry_floater;
-	Ewl_Widget *entry_box;
+	Ewl_Widget *entry;			/**< label editing entry */
+	Ewl_Widget *entry_floater;		/**< Entry floater */
+	Ewl_Widget *entry_box;			/**< Entry box */
 
-	/* Objects for selection */
-	Ewl_Widget *select;
-	Ewl_Widget *select_floater;
-	int drag_box;			  /* Are we dragging? */
+	Ewl_Widget *select;			/**< selection */
+	Ewl_Widget *select_floater;		/**< Selection floater */
+	int drag_box;			  	/**< Are we dragging? */
 
-	/* Key event/repeat timer */
-	struct timeval lasttime;
-	void (*key_event_cb)(Ewl_Iconbox *ib, void *data, char *keyname);
-	void *key_event_data;
+	struct timeval lasttime;		/**< Last key event/repeat time */
+	void (*key_event_cb)(Ewl_Iconbox *ib, void *data, char *keyname); /**< Key event callback */
+	void *key_event_data;			/**< Key event data */
 
-	/* Editable flag */
-	int editable;
+	int editable;				/**< Does the iconbox allow editing */
 };
-
 
 Ewl_Widget	*ewl_iconbox_new(void);
 Ewl_Widget	*ewl_iconbox_icon_new(void);
 int		 ewl_iconbox_init(Ewl_Iconbox *iconbox);
 int		 ewl_iconbox_icon_init(Ewl_Iconbox_Icon *icon);
 
-
-/* External functions */
 void 		 ewl_iconbox_icon_size_custom_set(Ewl_Iconbox *ib, int w, int h);
 void 		 ewl_iconbox_editable_set(Ewl_Iconbox *ib, int edit);
 void 		 ewl_iconbox_icon_arrange(Ewl_Iconbox *ib);
@@ -137,7 +134,9 @@ void 		 ewl_iconbox_controlled_key_callback_register(Ewl_Iconbox *ib,
 					void *data);
 Ecore_List	*ewl_iconbox_get_selection(Ewl_Iconbox *ib);
 
-/* Internal callbacks */
+/* 
+ * Internal callbacks 
+ */
 void ewl_iconbox_dnd_drop_cb(Ewl_Widget *item, void *ev_data, void *user_data);
 void ewl_iconbox_dnd_position_cb(Ewl_Widget *item, void *ev_data, void *user_data);
 void ewl_iconbox_arrange_cb(Ewl_Widget *w, void *ev_data, void *user_data);
@@ -152,6 +151,10 @@ void ewl_iconbox_icon_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_iconbox_icon_label_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_iconbox_icon_destroy_cb(Ewl_Widget *w, void *ev_data ,void *user_data );
 void ewl_iconbox_key_press_cb (Ewl_Widget *w, void *ev_data, void *user_data);
+
+/**
+ * @}
+ */
 
 #endif
 

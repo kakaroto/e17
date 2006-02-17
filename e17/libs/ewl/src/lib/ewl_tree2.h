@@ -1,9 +1,8 @@
-#ifndef _EWL_TREE2_H
-#define _EWL_TREE2_H
+#ifndef EWL_TREE2_H
+#define EWL_TREE2_H
 
 /**
- * @file ewl_tree2.h
- * @defgroup Ewl_Tree2 Tree: A Widget for List or Tree Layout
+ * @defgroup Ewl_Tree2 Ewl_Tree2: A Widget for List or Tree Layout
  * @brief Defines a widget for laying out other widgets in a tree or list
  * like manner. This also fulfills the functionality often seen in a table
  * widget.
@@ -89,7 +88,6 @@ struct Ewl_Tree2_Column
 typedef struct Ewl_Tree2 Ewl_Tree2;
 
 /**
- * @struct Ewl_Tree
  * The tree is a columnar listing, where items in the list may be nested
  * below other items.
  */

@@ -91,6 +91,7 @@ ewl_image_init(Ewl_Image *i)
  * @param i: The image to set the file into
  * @param path: The path to set into the image
  * @return Returns no value.
+ * @brief Sets the path to the image file
  */
 void
 ewl_image_file_path_set(Ewl_Image *i, const char *path)
@@ -124,6 +125,7 @@ ewl_image_file_path_get(Ewl_Image *i)
  * @param i: The image to set the key into
  * @param key: The key to set into the image
  * @return Returns no value.
+ * @brief Sets the key to use for the image
  */
 void
 ewl_image_file_key_set(Ewl_Image *i, const char *key)
