@@ -9,8 +9,7 @@
 
 int 
 ex_http_connection_open(char * server, int port)
-{
-	
+{	
    int sock;
 #ifdef USE_IPV6
    struct addrinfo hints, *res, *res0;
@@ -84,7 +83,6 @@ ex_http_connection_close(int sock)
 int 
 ex_http_line_read(int sock, char * buf, int size)
 {
-
    int i = 0;
 	
    while (i < size - 1)
@@ -128,7 +126,6 @@ ex_http_line_read_first(int sock, char * buf, int size)
 char * 
 ex_http_get(char * url)
 {
-
    char *server, getstr[1024], *buf = NULL, *bptr;
    char *gs, *gc, *turl = url;
    int sock, n, bsize, port = 0;
@@ -224,5 +221,3 @@ Done:
     */
    return buf;
 }
-
-

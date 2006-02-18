@@ -199,7 +199,6 @@ int cddb_2_id3[] =
 void
 ex_cddb_default_set(Ex_Disc_Data *dd, int numtracks)
 {
-
    int t;
 
    for(t=0; t < numtracks; t++)
@@ -215,9 +214,7 @@ ex_cddb_default_set(Ex_Disc_Data *dd, int numtracks)
    dd->year = 0;
    dd->genre = 7;
    dd->id3genre = -1;
-
 }
-
 
 /* will receive the header of our own protocol, the request 
  * to the cddb server. it makes the comunication process
@@ -226,7 +223,6 @@ ex_cddb_default_set(Ex_Disc_Data *dd, int numtracks)
 void
 ex_cddb_request_send(Extrackt *ex, char *header, char *request)
 {
-
    pid_t   pid;
    char *response;
       
@@ -281,7 +277,6 @@ ex_cddb_request_send(Extrackt *ex, char *header, char *request)
      }
 }
 
-
 /* find all the discs that match */
 void
 ex_cddb_match_find(Extrackt *ex)
@@ -298,8 +293,7 @@ ex_cddb_match_find(Extrackt *ex)
    sprintf(request, "%s+%d",request, ex->disc_info.length.mins*60 + 
 	    ex->disc_info.length.secs);
    
-   ex_cddb_request_send(ex,"DBMF",request);   
-   
+   ex_cddb_request_send(ex,"DBMF",request);      
 }
 
 /* get the disc info associated with the list id */
@@ -317,7 +311,6 @@ ex_cddb_match_get(Extrackt *ex, char *genre, char *list_id)
 void
 ex_cddb_response_find_parse(Extrackt *ex, char *response)
 {
-
    char *genre;
    char *id;
    char *line;
@@ -330,8 +323,7 @@ ex_cddb_response_find_parse(Extrackt *ex, char *response)
 
 	/* store the info and request the data */
 	ex_cddb_match_get(ex,genre,id);
-     }
-   
+     }  
 }
 
 void
@@ -388,7 +380,6 @@ ex_cddb_genre_to_num(char *genre)
 int
 ex_id3_genre_value(char *genre)
 {
-
    int i;
    for(i=0; id3_genres[i].name; i++)
      {
@@ -484,8 +475,7 @@ _ex_cddb_line_process(char *inbuffer, Ex_Disc_Data *data, int numtracks)
 	st = strtok(NULL, "");
 	if(st == NULL)
 	  return;
-	
-	
+		
 	sprintf(data->track[track].name, "%s", st);
 	
 	len = strlen(data->track[track].number);
@@ -527,8 +517,6 @@ _ex_cddb_line_process(char *inbuffer, Ex_Disc_Data *data, int numtracks)
 	snprintf(data->playlist + len, 256 - len, "%s", inbuffer + 10);
      }
 }
-
-
 					    
 /* get the pointer to data from a line without the
  * \n \0 . (end of cddb protocol) 

@@ -429,8 +429,7 @@ ex_cddev_stat(Extrackt *ex,int read_toc)
       ex->disc_info.disc_mode=CDAUDIO_COMPLETED;
       break;
    }
-#endif
-   
+#endif   
      
    if(read_toc)
      ex_cddev_toc_read(ex);
@@ -811,7 +810,6 @@ ex_cddev_volume_set(Extrackt *ex, Ex_Disc_Volume *vol)
    return TRUE;
 }
 
-
 /* CD Changer routines */
 
 /* Choose a particular disc from the CD changer */
@@ -862,7 +860,6 @@ ex_cddev_changer_slots_get(Extrackt *ex)
 int
 ex_cddev_track_size(Ex_Track_Info *track)
 {
-
    int start_sector;
    int end_sector;
    int size;
@@ -874,6 +871,4 @@ ex_cddev_track_size(Ex_Track_Info *track)
    printf("the file will have this size %d\n", size);
    
    return size;
-      
-
 }

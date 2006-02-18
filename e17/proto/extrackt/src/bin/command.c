@@ -20,7 +20,6 @@
       astr = ex_string_escape(tmp); \
    }
    
-
 /* local subsystem internal functions */
 /**************************************/
 char *_ex_command_translate(char *istr, Extrackt *ex, Ex_Config_Exe_Type ext, int escape);
@@ -29,7 +28,6 @@ void  _ex_command_encode_sigterm(int i);
 
 static int rip_pid;
 static int enc_pid;
-
 
 /* FIXME make a list of chars that need to be replaced/escaped */
 char *
@@ -90,8 +88,6 @@ ex_string_dir_make(char *path)
 	       }
 	  }
      }
-
-
 }
 
 int
@@ -119,7 +115,6 @@ ex_string_file_exists(char *path)
 char *
 ex_string_file_extension_get(char *file)
 {
-
    char *ext;
 
    ext = rindex(file,'.') + 1;
@@ -133,26 +128,22 @@ ex_string_file_delete(char *file)
      printf("error deleting file\n");
 }
 
-
 /* will tranlsate something like %e/%A/%t.mp3 (istr) => 
  * mp3/Bob\ Marley/01.mp3 (ostr) */
 char **
 ex_command_translate(Extrackt *ex, Ex_Config_Exe_Type ext)
 {
-
    char *istr;
    char *l;
    
    char **argv;
    int argc;
- 
-	
+ 	
    Ex_Config_Exe *exe;
 
    /* put the exe on the first element of the array */
    argv = (char **)E_NEW(1, char *);
-   
-	
+   	
    if(ext == EX_CONFIG_EXE_RIPPER)
      {
 	exe = ex->rip.ripper;
@@ -178,7 +169,6 @@ ex_command_translate(Extrackt *ex, Ex_Config_Exe_Type ext)
    argv = (char **)realloc(argv,sizeof(char *) * (argc + 1));
    argv[argc] = NULL;
 
-   
    return argv;
 }
 
@@ -200,14 +190,12 @@ _ex_command_translate(char *istr, Extrackt *ex, Ex_Config_Exe_Type ext, int esca
    Ex_Config_Exe *exe;
    
    if(ext == EX_CONFIG_EXE_RIPPER)
-     {
-	
+     {	
 	exe = ex->rip.ripper;
 	tracknumber = ex->rip.tracks->data;
      }
    else
-     {
-	
+     {	
 	exe = ex->encode.encoder;
 	tracknumber = ex->encode.tracks->data;
      }
@@ -327,8 +315,7 @@ _ex_command_translate(char *istr, Extrackt *ex, Ex_Config_Exe_Type ext, int esca
    buf[i] = '\0';
    ostr = E_STRDUP(buf);
    E_FREE(buf);
-   return ostr;
-   
+   return ostr;   
 }
 
 void
@@ -433,7 +420,6 @@ ex_command_encode(Extrackt *ex)
 	return;
      }
    return;
-
 }
 
 int	
@@ -533,9 +519,7 @@ ex_command_rip(Extrackt *ex)
 	return;
      }
    return;
-
 }
-
 
 void
 ex_command_rip_append(Extrackt *ex, int tracknumber)
@@ -551,11 +535,9 @@ ex_command_rip_append(Extrackt *ex, int tracknumber)
      ex->encode.num_total++;
 }
 
-
 int
 ex_command_rip_update(Extrackt *ex)
 {
-
    double percent;
    char *percentstring;
    struct stat s;
@@ -632,7 +614,6 @@ ex_command_rip_abort(Extrackt *ex)
    
    while(ex->rip.tracks)
      ex->rip.tracks = evas_list_remove_list(ex->rip.tracks,ex->rip.tracks);
-
 }
 
 void

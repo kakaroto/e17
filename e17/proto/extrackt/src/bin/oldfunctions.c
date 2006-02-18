@@ -26,7 +26,6 @@ struct _Ex_Cddb_Query
 /* cache functions */
 /*******************/
 
-
 /* See if a disc is in the local database */
 int
 ex_cddb_disc_cached(Extrackt *ex)
