@@ -355,24 +355,18 @@ ewl_container_child_remove(Ewl_Container *pc, Ewl_Widget *child)
 	if (child == EWL_WIDGET(pc->redirect))
 		pc->redirect = NULL;
 
-	if (child->parent != EWL_WIDGET(pc)) {
-		while (pc->redirect)
-			pc = pc->redirect;
-	}
-
-	if (!pc->children)
-		DRETURN(DLEVEL_STABLE);
-
 	/*
 	 * First remove reference to the parent if necessary.
 	 * Bail out after setting the parent as that will get us back here
 	 * with a NULL parent on the widget.
-	 *
 	 */
-	if (EWL_CONTAINER(child->parent) == pc) {
+	if (child->parent) {
 		ewl_widget_parent_set(child, NULL);
 		DRETURN(DLEVEL_STABLE);
 	}
+
+	if (!pc->children)
+		DRETURN(DLEVEL_STABLE);
 
 	/*
 	 * Traverse the list to the child.
