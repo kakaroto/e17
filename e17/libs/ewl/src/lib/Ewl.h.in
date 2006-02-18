@@ -1,5 +1,5 @@
-#ifndef _EWL_H
-#define _EWL_H
+#ifndef EWL_H
+#define EWL_H
 
 /**
  * @file Ewl.h
@@ -9,12 +9,12 @@
  */
 
 /**
- * @mainpage Enlightened Widget Library Documentation
+ * @mainpage The Enlightened Widget Library
  *
  * @section intro Introduction
  *
  * The Enlightened Widget Library (EWL) is a widget toolkit based on the
- * libraries provided for Enlightenment 17 development. Rendering is performed
+ * libraries developed for Enlightenment 17. Rendering is performed
  * using Evas, a fast abstracted canvas library that supports multiple
  * backends. The appearances of the widgets are described by Edje files,
  * which are essentially files containing a collection of images and
@@ -45,7 +45,7 @@
  * };
  * @endcode
  *
- * Creates a new class of objects, Foo, which inherits from the Bar class and
+ * Creates a new class of object, Foo, which inherits from the Bar class and
  * extends it by adding an integer baz. If the first line of the struct had
  * been Ewl_Bar *bar; it would most likely result in some buffer overflows
  * when initializing the widget.
@@ -54,17 +54,17 @@
  *
  * The basis for all widgets in EWL is the Ewl_Object. Ewl_Objects are never
  * allocated outside of another widget, it provides size and position
- * information for the widget as well as info about it's padding and insets.
+ * information for the widget as well as info about its padding and insets.
  * There are also fields for indicating object alignment and fill policies.
- * Eventually, it will also contain a type field, which will essentially be a
- * colon separated listing of all the inheriting classes for a particular
- * widget.
  *
  * The next step above the Ewl_Object is the Ewl_Widget. Again, these are
  * never allocated by themselves, but are part of all the other widgets
  * available in EWL. The Ewl_Widget class provides necessary information about
- * a widget that relates to it's appearance, it's parent container, event
- * handling, as well as a few miscellaneous tasks common to all widgets.
+ * a widget that relates to its appearance, its parent container, event
+ * handling, as well as a few miscellaneous tasks common to all widgets. The
+ * Ewl_Widget structure also contains information on the inheritance of any
+ * given widget. This is useful if you need to check the type of a widget in
+ * your code.
  *
  * A necessary class that some widgets inherit from is Ewl_Container. This is
  * used for holding collections of widgets and laying them out. Containers are
