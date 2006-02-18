@@ -128,5 +128,5 @@ main(int argc, char **argv)
    /* shutdown the app */
    extrackt_shutdown(ex);
 
-   return 1;
+   return 0;
 }
