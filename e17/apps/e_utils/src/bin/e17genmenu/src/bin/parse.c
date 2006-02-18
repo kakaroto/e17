@@ -6,6 +6,9 @@
 #include "order.h"
 #include "parse.h"
 
+static void _parse_desktop_del(Desktop *desktop);
+
+
 char *
 get_t(char *icon)
 {
@@ -385,16 +388,21 @@ parse_ini_init()
                ecore_hash_set_free_value(ini_file_cache, (Ecore_Free_Cb) ecore_hash_destroy);
             }
       }
+   if (!desktop_cache)
+      {
+         desktop_cache = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+         if (desktop_cache)
+            {
+               ecore_hash_set_free_key(desktop_cache, free);
+               ecore_hash_set_free_value(desktop_cache, (Ecore_Free_Cb) _parse_desktop_del);
+            }
+      }
 }
 
 Ecore_Hash *
 parse_ini_file(char *file)
 {
    Ecore_Hash *result;
-
-   result = (Ecore_Hash *) ecore_hash_get(ini_file_cache, file);
-   if (result)
-      return result;
 
    result = ecore_hash_new(ecore_str_hash, ecore_str_compare);
    if (result)
@@ -489,6 +497,54 @@ parse_ini_file(char *file)
    return result;
 }
 
+Desktop *parse_desktop_ini_file(char *file)
+{
+   Desktop *result;
+
+   result = (Desktop *) ecore_hash_get(desktop_cache, file);
+   if (!result)
+      {
+         result = calloc(1, sizeof(Desktop));
+	 if (result)
+	    {
+	       result->data = parse_ini_file(file);
+	       if (result->data)
+	          {
+                     result->group = (Ecore_Hash *) ecore_hash_get(result->data, "Desktop Entry");
+	             if (result->group)
+	                {
+		           char *temp;
+
+                           temp = (char *) ecore_hash_get(result->group, "Categories");
+		           if (temp)
+                              result->Categories = dumb_list_from_paths(temp);
+                           temp = (char *) ecore_hash_get(result->group, "OnlyShowIn");
+		           if (temp)
+                              result->OnlyShowIn = dumb_list_from_paths(temp);
+                           temp = (char *) ecore_hash_get(result->group, "NotShowIn");
+		           if (temp)
+                              result->NotShowIn = dumb_list_from_paths(temp);
+		        }
+                     ecore_hash_set(desktop_cache, strdup(file), result);
+		  }
+	       else
+	          {
+		     free(result);
+		     result = NULL;
+		  }
+	    }
+      }
+   return result;
+}
+
+static void _parse_desktop_del(Desktop *desktop)
+{
+   if (desktop->NotShowIn)    dumb_list_del(desktop->NotShowIn);
+   if (desktop->OnlyShowIn)   dumb_list_del(desktop->OnlyShowIn);
+   if (desktop->Categories)   dumb_list_del(desktop->Categories);
+   free(desktop);
+}
+
 void
 parse_ini_shutdown()
 {
@@ -496,5 +552,10 @@ parse_ini_shutdown()
       {
          ecore_hash_destroy(ini_file_cache);
 	 ini_file_cache = NULL;
+      }
+   if(desktop_cache)
+      {
+         ecore_hash_destroy(desktop_cache);
+	 desktop_cache = NULL;
       }
 }

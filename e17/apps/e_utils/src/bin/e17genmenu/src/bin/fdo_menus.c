@@ -35,6 +35,7 @@ struct _fdo_menus_unxml_data
    char *base;
    char *path;
    Dumb_List *stack;
+   int unallocated;
 };
 
 struct _fdo_menus_generate_data
@@ -57,7 +58,7 @@ static int _fdo_menus_check_app(const void *data, char *path);
 static int _fdo_menus_generate(const void *data, Dumb_List *list, int element, int level);
 static void _fdo_menus_inherit_apps(void *value, void *user_data);
 static void _fdo_menus_select_app(void *value, void *user_data);
-static int _fdo_menus_apply_rules(struct _fdo_menus_generate_data *generate_data, Dumb_List *rule, char *key, Ecore_Hash *desktop);
+static int _fdo_menus_apply_rules(struct _fdo_menus_generate_data *generate_data, Dumb_List *rule, char *key, Desktop *desktop);
 
 
 Dumb_List *
@@ -76,10 +77,14 @@ fdo_menus_get(char *file, Dumb_List *xml)
 	    {
                dumb_list_foreach(xml, 0, _fdo_menus_unxml, &data);
 //               dumb_list_dump(xml, 0);
-//               printf("\n\n");
+               printf("\n\n");
+               data.unallocated = FALSE;
+               dumb_list_foreach(xml, 0, _fdo_menus_generate, &data);
+               printf("\n\n");
+               data.unallocated = TRUE;
                dumb_list_foreach(xml, 0, _fdo_menus_generate, &data);
 //               dumb_list_dump(xml, 0);
-//               printf("\n\n");
+               printf("\n\n");
 	    }
          E_FREE(data.path);
          E_FREE(data.base);
@@ -512,16 +517,12 @@ _fdo_menus_check_app(const void *data, char *path)
 	       char *file;
 
                file = strdup(path + our_data->length);
-//	       path = strdup(path);
 	       if ((file) && (path))
 	          {
-                     char app[MAX_PATH + 2];
-
 	             for (i = 0; file[i] != '\0'; i++ )
 	                if (file[i] == '/')
 		           file[i] = '-';
-		     sprintf(app, "U %s", path);
-                     ecore_hash_set(our_data->pool, file, strdup(app));
+                     ecore_hash_set(our_data->pool, file, strdup(path));
 		  }
 	    }
       }
@@ -545,40 +546,43 @@ _fdo_menus_generate(const void *data, Dumb_List *list, int element, int level)
 	       int i;
 	       struct _fdo_menus_generate_data generate_data;
 
-               generate_data.unallocated = FALSE;
+               generate_data.unallocated = unxml_data->unallocated;
                generate_data.name = (char *) list->elements[element].element;
                generate_data.path = (char *) list->elements[element + 1].element;
                generate_data.pool  = (Ecore_Hash *) list->elements[element + 2].element;
                generate_data.rules = (Dumb_List *) list->elements[element + 3].element;
                generate_data.apps  = (Ecore_Hash *) list->elements[element + 4].element;
-printf("MAKING MENU - %s \t\t%s\n", generate_data.path, generate_data.name);
 
-               /* Inherit the pools. */
-	       if (unxml_data->stack->size <= level)
+               /* Inherit the pools on the first pass. */
+	       if (!generate_data.unallocated)
 	          {
-	             while (unxml_data->stack->size < level)
-	                dumb_list_add_hash(unxml_data->stack, generate_data.pool);
-	             dumb_list_add_hash(unxml_data->stack, generate_data.pool);
-	          }
-	       else
-	          {
-                     unxml_data->stack->elements[level].type = DUMB_LIST_ELEMENT_TYPE_HASH;
-                     unxml_data->stack->elements[level].element = generate_data.pool;
+	             if (unxml_data->stack->size <= level)
+	                {
+	                   while (unxml_data->stack->size < level)
+	                      dumb_list_add_hash(unxml_data->stack, generate_data.pool);
+	                   dumb_list_add_hash(unxml_data->stack, generate_data.pool);
+	                }
+	             else
+	                {
+                           unxml_data->stack->elements[level].type = DUMB_LIST_ELEMENT_TYPE_HASH;
+                           unxml_data->stack->elements[level].element = generate_data.pool;
+	            	}
+                     for (i = level - 1; i >= 0; i--)
+                        {
+                           if (unxml_data->stack->elements[i].type == DUMB_LIST_ELEMENT_TYPE_HASH)
+		              {
+		                 Ecore_Hash *ancestor;
+
+		                 ancestor = (Ecore_Hash *) unxml_data->stack->elements[i].element;
+                                 ecore_hash_for_each_node(ancestor, _fdo_menus_inherit_apps, generate_data.pool);
+			      }
+	                }
 		  }
-               for (i = level - 1; i >= 0; i--)
-                  {
-                     if (unxml_data->stack->elements[i].type == DUMB_LIST_ELEMENT_TYPE_HASH)
-		        {
-		           Ecore_Hash *ancestor;
-
-		           ancestor = (Ecore_Hash *) unxml_data->stack->elements[i].element;
-                           ecore_hash_for_each_node(ancestor, _fdo_menus_inherit_apps, generate_data.pool);
-			}
-	          }
 
                /* Process the rules. */
-	       if (generate_data.name[9] != 'O')
+	       if (generate_data.name[9] == (generate_data.unallocated ? 'O' : ' '))
 	          {
+                     printf("MAKING MENU - %s \t\t%s\n", generate_data.path, generate_data.name);
                      for (i = 0; i < generate_data.rules->size; i++)
                         {
                            if (generate_data.rules->elements[i].type == DUMB_LIST_ELEMENT_TYPE_LIST)
@@ -602,34 +606,6 @@ printf("MAKING MENU - %s \t\t%s\n", generate_data.path, generate_data.name);
 			      printf("Fuck, a bug in _fdo_menus.\n");
                         }
 		  }
-
-               generate_data.unallocated = TRUE;
-               /* Process the rules, again. */
-	       if (generate_data.name[9] == 'O')
-	          {
-                     for (i = 0; i < generate_data.rules->size; i++)
-                        {
-                           if (generate_data.rules->elements[i].type == DUMB_LIST_ELEMENT_TYPE_LIST)
-		              {
-                                 generate_data.rule = (Dumb_List *) generate_data.rules->elements[i].element;
-			         if (generate_data.rule->size > 0)
-			            {
-			               if ( ((char *) generate_data.rule->elements[0].element)[0] == 'I' )
-				          {
-				             generate_data.include = TRUE;
-                                             ecore_hash_for_each_node(generate_data.pool, _fdo_menus_select_app, &generate_data);
-				          }
-				       else
-				          {
-				             generate_data.include = FALSE;
-                                             ecore_hash_for_each_node(generate_data.apps, _fdo_menus_select_app, &generate_data);
-				          }
-			            }
-			      }
-		           else
-			      printf("Fuck, a bug in _fdo_menus.\n");
-                        }
-	          }
 	    }
       }
    return 0;
@@ -654,7 +630,7 @@ static void
 _fdo_menus_select_app(void *value, void *user_data)
 {
    Ecore_Hash_Node *node;
-   Ecore_Hash *desktop;
+   Desktop *desktop;
    struct _fdo_menus_generate_data *generate_data;
    char *key, *app;
 
@@ -663,16 +639,17 @@ _fdo_menus_select_app(void *value, void *user_data)
    key = (char *) node->key;
    app = (char *) node->value;
 
-   if ((generate_data->unallocated) && (app[0] == 'A'))
+   desktop = parse_desktop_ini_file(app);
+
+   if ((generate_data->unallocated) && (desktop->allocated))
       return;
 
-   desktop = parse_ini_file(&app[2]);
    if (_fdo_menus_apply_rules(generate_data, generate_data->rule, key, desktop))
       {
+         desktop->allocated = TRUE;
          if (generate_data->include)
 	    {
-	       app[0] = 'A';
-	       ecore_hash_set(generate_data->apps, key, strdup(&app[2]));
+	       ecore_hash_set(generate_data->apps, key, strdup(app));
 	       printf("INCLUDING %s%s\n", ((generate_data->unallocated) ? "UNALLOCATED " : ""), key);
 	    }
 	 else
@@ -684,7 +661,7 @@ _fdo_menus_select_app(void *value, void *user_data)
 }
 
 static int
-_fdo_menus_apply_rules(struct _fdo_menus_generate_data *generate_data, Dumb_List *rule, char *key, Ecore_Hash *desktop)
+_fdo_menus_apply_rules(struct _fdo_menus_generate_data *generate_data, Dumb_List *rule, char *key, Desktop *desktop)
 {
    char type = 'O';
    int result = FALSE;
@@ -722,7 +699,20 @@ _fdo_menus_apply_rules(struct _fdo_menus_generate_data *generate_data, Dumb_List
 
 		     case 'C' :
 		        {
-			   /* FIXME: try to match a category. */
+			   /* Try to match a category. */
+			   if (desktop->Categories)
+			      {
+                                 int j;
+
+                                 for (j = 0; j < desktop->Categories->size; j++)
+                                    {
+			               if (strcmp((char *) (desktop->Categories->elements[j].element), &rul[4]) == 0)
+				          {
+			                     sub_result = TRUE;
+			                     break;
+					  }
+				    }
+			      }
 			   break;
 			}
 		  }
@@ -816,7 +806,7 @@ merge menus
 *    if there are <Deleted> elements that are not ovreridden by a <NotDelete> element
 *      remove this <Menu> element and all it's children.
 
-generate menus
+*generate menus
 *  for each <Menu> that is <NotOnlyUnallocated> (which is the default)
 *    for each <AppDir>
 *      for each .desktop
@@ -833,7 +823,6 @@ generate menus
 *                 if rule matches .desktop in pool
 *	           add .desktop to menu.
 *	           mark it as allocated
-
 *        if rule is an <Exclude>
 *           for each .desktop in menu
 *              for each rule

@@ -59,7 +59,7 @@ _e17genmenu_test_fdo_paths()
          char *icon = "tux.png";
 	 Dumb_List *menu_xml = NULL;
 
-         printf("Path to %s is %s\n", menu, path);
+         printf("\n\nPath to %s is %s\n", menu, path);
          menu_xml = xmlame_get(path);;
 	 if (menu_xml)
 	    {
