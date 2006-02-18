@@ -548,9 +548,17 @@ DeskBackgroundConfigure(Desk * dsk)
 #endif
 	  {
 	     if (dsk->bg.pmap != None)
-		ESetWindowBackgroundPixmap(win, dsk->bg.pmap);
+	       {
+		  ESetWindowBackgroundPixmap(win, dsk->bg.pmap);
+		  if (dsk->num == 0 && win != VRoot.win)
+		     ESetWindowBackgroundPixmap(VRoot.win, dsk->bg.pmap);
+	       }
 	     else
-		ESetWindowBackground(win, dsk->bg.pixel);
+	       {
+		  ESetWindowBackground(win, dsk->bg.pixel);
+		  if (dsk->num == 0 && win != VRoot.win)
+		     ESetWindowBackground(VRoot.win, dsk->bg.pixel);
+	       }
 	     EClearWindow(win);
 	  }
 
@@ -562,6 +570,8 @@ DeskBackgroundConfigure(Desk * dsk)
 	   HintsSetRootInfo(EoGetWin(dsk), None, 0);
 
 	ESetWindowBackgroundPixmap(win, None);
+	if (dsk->num == 0 && win != VRoot.win)
+	   ESetWindowBackgroundPixmap(VRoot.win, None);
      }
 }
 
