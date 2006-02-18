@@ -125,7 +125,6 @@ _etk_fe_gui_pipefd_handler_cb(void *data, Ecore_Fd_Handler *fd_handler)
 static int
 _etk_fe_gui_poll_timer_handler_cb(void *data)
 {
-
    E_Gui_Etk *gui;
    gui = (E_Gui_Etk *)data;
    
@@ -137,7 +136,6 @@ _etk_fe_gui_poll_timer_handler_cb(void *data)
 static int
 _etk_fe_gui_fast_timer_handler_cb(void *data)
 {
-
    E_Gui_Etk *gui;
    gui = (E_Gui_Etk *)data;
    
@@ -148,7 +146,6 @@ _etk_fe_gui_fast_timer_handler_cb(void *data)
 static int
 _etk_fe_gui_slow_timer_handler_cb(void *data)
 {
-
    E_Gui_Etk *gui;
    gui = (E_Gui_Etk *)data;
   
@@ -183,7 +180,6 @@ _etk_fe_gui_slow_timer_handler_cb(void *data)
 	snprintf(str, size, "%s: %s %s [%d / %d ]", _("Rip"), _("Track"), num, gui->ex->rip.num_done + 1, gui->ex->rip.num_total);
 	etk_statusbar_pop(ETK_STATUSBAR(gui->statusbar1), 0);	
 	etk_statusbar_push(ETK_STATUSBAR(gui->statusbar1), str, 0);
-
      }
    else
      {
@@ -266,7 +262,6 @@ _etk_fe_gui_encoder_select_cb(Etk_Object *obj, void *data)
    Ex_Config_Exe *ecx;
    E_Gui_Etk *gui;
    
-
    gui = data;
    mi = ETK_MENU_ITEM(obj);
    if(!ex_command_encode_set(gui->ex,mi->label))
@@ -277,7 +272,6 @@ _etk_fe_gui_encoder_select_cb(Etk_Object *obj, void *data)
    etk_entry_text_set(ETK_ENTRY(gui->encoder_command_line_entry),ecx->command_line_opts);
    etk_entry_text_set(ETK_ENTRY(gui->encoder_file_format_entry),ecx->file_format);
    etk_button_label_set(ETK_BUTTON(gui->encoder_combo), ecx->name);
-   
 }
 
 static void
@@ -327,8 +321,8 @@ _etk_fe_gui_ripper_select_cb(Etk_Object *obj, void *data)
    etk_entry_text_set(ETK_ENTRY(gui->ripper_command_line_entry),ecx->command_line_opts);
    etk_entry_text_set(ETK_ENTRY(gui->ripper_file_format_entry),ecx->file_format);
    etk_button_label_set(ETK_BUTTON(gui->ripper_combo), ecx->name);
-   
 }
+
 /* FIXME this function is exactly the same as the rip callback
  * just sets the encoder on, we should reuse the other */
 void
@@ -530,8 +524,7 @@ _etk_fe_gui_show(E_Gui_Etk *gui)
    gui->ripper_executable_entry = enhance_var_get(en, "ripper_executable_entry");
    gui->ripper_command_line_entry = enhance_var_get(en, "ripper_command_line_entry");
    gui->ripper_file_format_entry = enhance_var_get(en, "ripper_file_format_entry");
-   
-  
+     
    gui->rip_cur_pbar = enhance_var_get(en, "rip_cur_pbar");
    gui->rip_tot_pbar = enhance_var_get(en, "rip_tot_pbar");
    gui->encode_cur_pbar = enhance_var_get(en, "encode_cur_pbar");   
@@ -542,7 +535,6 @@ _etk_fe_gui_show(E_Gui_Etk *gui)
    gui->cddb_primary_cgi_entry = enhance_var_get(en, "cddb_primary_cgi_entry");
    gui->cddb_secondary_server_entry = enhance_var_get(en, "cddb_secondary_server_entry");
    gui->cddb_secondary_cgi_entry = enhance_var_get(en, "cddb_secondary_cgi_entry");
-   
    
    gui->poll_interval_entry = enhance_var_get(en, "poll_interval_entry");   
    gui->cdrom_entry = enhance_var_get(en, "cdrom_entry");
@@ -566,7 +558,6 @@ _etk_fe_gui_show(E_Gui_Etk *gui)
    etk_statusbar_push(ETK_STATUSBAR(gui->statusbar1), "Rip: Idle", 0);
    etk_statusbar_push(ETK_STATUSBAR(gui->statusbar2), "Encode: Idle", 0);
 
-   
    /* create tree for holding track names, times, and rip status */
    etk_widget_size_request_set(gui->tracks_tree, 320, 350);   
 
@@ -637,8 +628,7 @@ _etk_fe_config_load(E_Gui_Etk *gui)
 			    gui->ex->config.cd->poll_interval);
    etk_entry_text_set(ETK_ENTRY(gui->poll_interval_entry), tmp);
    E_FREE(tmp);
-   
-     
+        
    /* encoder tab */
    /***************/
      {
@@ -662,8 +652,8 @@ _etk_fe_config_load(E_Gui_Etk *gui)
 	etk_entry_text_set(ETK_ENTRY(gui->encoder_command_line_entry),ecx->command_line_opts);
 	etk_entry_text_set(ETK_ENTRY(gui->encoder_file_format_entry),ecx->file_format);
 	etk_button_label_set(ETK_BUTTON(gui->encoder_combo), ecx->name);
-
      }
+   
    /* ripper tab */
    /***************/
      {
@@ -691,8 +681,7 @@ _etk_fe_config_load(E_Gui_Etk *gui)
 
 	etk_entry_text_set(ETK_ENTRY(gui->cddb_primary_server_entry),ecs->name);
 	etk_entry_text_set(ETK_ENTRY(gui->cddb_primary_cgi_entry),ecs->cgi_prog);
-     }
- 
+     } 
 }
 
 static void
@@ -951,7 +940,6 @@ etk_fe_rip_percent_update(double percent)
    etk_progress_bar_fraction_set(ETK_PROGRESS_BAR(gui->rip_tot_pbar), percent_total);
    etk_progress_bar_text_set(ETK_PROGRESS_BAR(gui->rip_tot_pbar), text);      
 }
-
 
 /* the exported frontend struct */
 /********************************/
