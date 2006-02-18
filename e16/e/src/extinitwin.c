@@ -22,7 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
-#include "ecore-e16.h"
+#include "e16-ecore_hints.h"
 #include "xwin.h"
 #include <sys/time.h>
 

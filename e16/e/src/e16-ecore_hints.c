@@ -31,7 +31,7 @@
 #include <X11/Xutil.h>
 
 #include "config.h"
-#include "ecore-e16.h"
+#include "e16-ecore_hints.h"
 
 #define _ATOM_GET(name) \
    XInternAtom(_ecore_x_disp, name, False)

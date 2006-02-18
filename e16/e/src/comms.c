@@ -22,8 +22,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "e16-ecore_hints.h"
 #include "e16-ecore_list.h"
-#include "ecore-e16.h"
 #include "xwin.h"
 
 struct _client

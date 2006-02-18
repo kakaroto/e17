@@ -23,7 +23,7 @@
  */
 #include "E.h"
 #include "desktops.h"
-#include "ecore-e16.h"
+#include "e16-ecore_hints.h"
 #include "ewins.h"
 #include "hints.h"
 #include "xwin.h"

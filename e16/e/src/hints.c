@@ -26,7 +26,7 @@
 #include "E.h"
 #include "borders.h"		/* FIXME - Should not be here */
 #include "desktops.h"		/* FIXME - Should not be here */
-#include "ecore-e16.h"
+#include "e16-ecore_hints.h"
 #include "ewins.h"
 #include "hints.h"
 #include "xwin.h"

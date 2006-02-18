@@ -23,7 +23,7 @@
  */
 #include "E.h"
 #ifdef USE_ECORE_X
-#include "ecore-e16.h"
+#include <Ecore_X.h>
 #endif
 #include "xwin.h"
 #include <X11/Xutil.h>

@@ -38,12 +38,12 @@ e16_SOURCES = \
 	dialog.h	        \
 	dock.c			\
 	draw.c			\
+	e16-ecore_hints.c	\
+	e16-ecore_hints.h	\
 	e16-ecore_list.c	\
 	e16-ecore_list.h	\
 	econfig.c		\
 	econfig.h		\
-	ecore-e16.c		\
-	ecore-e16.h		\
 	edge.c			\
 	emodule.c		\
 	emodule.h		\

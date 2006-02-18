@@ -22,8 +22,8 @@
  */
 #include "E.h"
 #include "desktops.h"
+#include "e16-ecore_hints.h"
 #include "ecompmgr.h"
-#include "ecore-e16.h"
 #include "eobj.h"
 #include "ewins.h"		/* FIXME - Should not be here */
 #include "hints.h"

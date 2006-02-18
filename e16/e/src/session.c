@@ -23,7 +23,7 @@
  */
 #include "E.h"
 #include "dialog.h"
-#include "ecore-e16.h"
+#include "e16-ecore_hints.h"
 #include "emodule.h"
 #include "ewins.h"
 #include "snaps.h"
