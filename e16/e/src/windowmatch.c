@@ -25,6 +25,7 @@
 #include "borders.h"
 #include "conf.h"
 #include "desktops.h"
+#include "e16-ecore_list.h"
 #include "emodule.h"
 #include "ewins.h"
 #include "ewin-ops.h"
@@ -67,6 +68,8 @@ struct _windowmatch
 
 static int          WindowMatchEwinOpsParse(EWin * ewin, const char *ops);
 
+static Ecore_List  *wm_list = NULL;
+
 static const char  *MatchType[] = {
    NULL, "Title", "Name", "Class", "Size", "Width", "Height", "Prop", NULL
 };
@@ -100,6 +103,10 @@ WindowMatchCreate(const char *name)
    if (!b)
       return NULL;
 
+   if (!wm_list)
+      wm_list = ecore_list_new();
+   ecore_list_prepend(wm_list, b);
+
    b->name = Estrdup(name);
    b->width.max = 99999;
    b->height.max = 99999;
@@ -113,8 +120,7 @@ WindowMatchDestroy(WindowMatch * wm)
    if (!wm)
       return;
 
-   while (RemoveItemByPtr(wm, LIST_TYPE_WINDOWMATCH))
-      ;
+   ecore_list_remove_node(wm_list, wm);
 
    if (wm->name)
       Efree(wm->name);
@@ -172,12 +178,8 @@ WindowMatchConfigLoad(FILE * fs)
 	  case CONFIG_CLOSE:
 	     if (wm)
 	       {
-		  if (wm->match && wm->op)
-		     AddItem(wm, wm->name, 0, LIST_TYPE_WINDOWMATCH);
-		  else
-		    {
-		       WindowMatchDestroy(wm);
-		    }
+		  if (!wm->match || !wm->op)
+		     WindowMatchDestroy(wm);
 		  wm = NULL;
 		  err = 0;
 	       }
@@ -263,7 +265,7 @@ WindowMatchConfigLoad(FILE * fs)
 	  case WINDOWMATCH_USEBORDER:
 	     if (!wm)
 		break;
-	     wm->border = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+	     wm->border = BorderFind(s2);
 	     if (!wm->border)
 		break;
 	     wm->op = MATCH_OP_BORDER;
@@ -402,7 +404,7 @@ WindowMatchDecode(const char *line)
    switch (wm->op)
      {
      case MATCH_OP_BORDER:
-	wm->border = FindItem(args, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+	wm->border = BorderFind(args);
 	if (!wm->border)
 	  {
 	     err = 1;
@@ -435,7 +437,7 @@ WindowMatchDecode(const char *line)
      }
    else
      {
-	AddItemEnd(wm, wm->name, 0, LIST_TYPE_WINDOWMATCH);
+	ecore_list_append(wm_list, ecore_list_remove_node(wm_list, wm));
      }
    return wm;
 }
@@ -593,31 +595,30 @@ WindowMatchTest(const EWin * ewin, const WindowMatch * wm)
    return match;
 }
 
+typedef struct
+{
+   int                 type;
+   const EWin         *ewin;
+} wmatch_type_data;
+
+static int
+WindowMatchTypeMatch(const void *data, const void *match)
+{
+   const WindowMatch  *wm = data;
+   const wmatch_type_data *wmtd = match;
+
+   return !(wm->op == wmtd->type && WindowMatchTest(wmtd->ewin, wm));
+}
+
 static WindowMatch *
 WindowMatchType(const EWin * ewin, int type)
 {
-   WindowMatch       **lst, *wm;
-   int                 i, num;
+   wmatch_type_data    wmtd;
 
-   lst = (WindowMatch **) ListItemType(&num, LIST_TYPE_WINDOWMATCH);
-   for (i = 0; i < num; i++)
-     {
-	wm = lst[i];
+   wmtd.type = type;
+   wmtd.ewin = ewin;
 
-	if (wm->op != type)
-	   continue;
-
-	if (!WindowMatchTest(ewin, lst[i]))
-	   continue;
-	goto done;
-     }
-   wm = NULL;
-
- done:
-   if (lst)
-      Efree(lst);
-
-   return wm;
+   return ecore_list_find(wm_list, WindowMatchTypeMatch, &wmtd);
 }
 
 Border             *
@@ -840,26 +841,16 @@ WindowMatchEwinOpsParse(EWin * ewin, const char *ops)
 void
 WindowMatchEwinOps(EWin * ewin)
 {
-   WindowMatch       **lst, *wm;
-   int                 i, num;
+   const WindowMatch  *wm;
 
-   lst = (WindowMatch **) ListItemType(&num, LIST_TYPE_WINDOWMATCH);
-   for (i = 0; i < num; i++)
-     {
-	wm = lst[i];
+   ECORE_LIST_FOR_EACH(wm_list, wm)
+   {
+      if (wm->op != MATCH_OP_WINOP || !WindowMatchTest(ewin, wm))
+	 continue;
 
-	if (wm->op != MATCH_OP_WINOP)
-	   continue;
-
-	if (!WindowMatchTest(ewin, lst[i]))
-	   continue;
-
-	/* Match found - do the ops */
-	WindowMatchEwinOpsParse(ewin, wm->args);
-     }
-
-   if (lst)
-      Efree(lst);
+      /* Match found - do the ops */
+      WindowMatchEwinOpsParse(ewin, wm->args);
+   }
 }
 
 /*
@@ -892,7 +883,7 @@ WindowMatchIpc(const char *params, Client * c __UNUSED__)
 {
    const char         *p;
    char                cmd[128], prm[4096], buf[4096];
-   int                 i, len, num;
+   int                 len;
 
    cmd[0] = prm[0] = '\0';
    p = params;
@@ -908,13 +899,10 @@ WindowMatchIpc(const char *params, Client * c __UNUSED__)
      }
    else if (!strncmp(cmd, "list", 2))
      {
-	WindowMatch       **lst;
+	WindowMatch        *wm;
 
-	lst = (WindowMatch **) ListItemType(&num, LIST_TYPE_WINDOWMATCH);
-	for (i = 0; i < num; i++)
-	   IpcPrintf("%s\n", WindowMatchEncode(lst[i], buf, sizeof(buf)));
-	if (lst)
-	   Efree(lst);
+	ECORE_LIST_FOR_EACH(wm_list, wm)
+	   IpcPrintf("%s\n", WindowMatchEncode(wm, buf, sizeof(buf)));
      }
 }
 

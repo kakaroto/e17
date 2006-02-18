@@ -24,6 +24,7 @@
 #include "E.h"
 #include "desktops.h"
 #include "dialog.h"
+#include "e16-ecore_list.h"
 #include "ecore-e16.h"
 #include "emodule.h"
 #include "eobj.h"
@@ -144,6 +145,8 @@ static void         IboxEventIconWin(XEvent * ev, void *prm);
 
 #define IB_TYPE_ICONBOX     0
 #define IB_TYPE_SYSTRAY     1
+
+static Ecore_List  *ibox_list = NULL;
 
 static void
 IB_Animate(char iconify, EWin * from, EWin * to)
@@ -326,6 +329,13 @@ IconboxCreate(const char *name)
    Iconbox            *ib;
 
    ib = Ecalloc(1, sizeof(Iconbox));
+   if (!ib)
+      return NULL;
+
+   if (!ibox_list)
+      ibox_list = ecore_list_new();
+   ecore_list_append(ibox_list, ib);
+
    ib->name = Estrdup(name);
    ib->type = (name && !strncmp(name, "_ST_", 4)) ?
       IB_TYPE_SYSTRAY : IB_TYPE_ICONBOX;
@@ -402,8 +412,6 @@ IconboxCreate(const char *name)
    ib->num_objs = 0;
    ib->objs = NULL;
 
-   AddItem(ib, ib->name, 0, LIST_TYPE_ICONBOX);
-
    if (ib->type == IB_TYPE_SYSTRAY)
       SystrayInit(ib, ib->icon_win, VRoot.scr);
 
@@ -415,7 +423,7 @@ IconboxDestroy(Iconbox * ib, int exiting)
 {
    int                 i;
 
-   RemoveItemByPtr(ib, LIST_TYPE_ICONBOX);
+   ecore_list_remove_node(ibox_list, ib);
 
    if (ib->name)
       Efree(ib->name);
@@ -453,6 +461,18 @@ IconboxDestroy(Iconbox * ib, int exiting)
 
    if (!exiting)
       IconboxesConfigSave();
+}
+
+static int
+_IconboxMatchName(const void *data, const void *match)
+{
+   return strcmp(((const Iconbox *)data)->name, match);
+}
+
+static Iconbox     *
+IconboxFind(const char *name)
+{
+   return ecore_list_find(ibox_list, _IconboxMatchName, name);
 }
 
 static void
@@ -740,43 +760,30 @@ RemoveMiniIcon(EWin * ewin)
    IconboxRedraw(ib);
 }
 
-static Iconbox    **
-IconboxesList(int *num)
-{
-   /* list all currently available Iconboxes */
-   return (Iconbox **) ListItemType(num, LIST_TYPE_ICONBOX);
-}
-
 static Iconbox     *
 SelectIconboxForEwin(EWin * ewin)
 {
    /* find the appropriate iconbox from all available ones for this app */
    /* if it is to be iconified, or if it is alreayd return which iconbox */
    /* it's in */
-   Iconbox           **lst, *ib, *ib_sel = NULL;
-   int                 i, num = 0;
+   Iconbox            *ib, *ib_sel = NULL;
 
    if (!ewin)
-      return NULL;
-
-   lst = IconboxesList(&num);
-   if (!lst)
       return NULL;
 
    if (ewin->state.iconified)
      {
 	/* find the iconbox this window got iconifed into */
-	for (i = 0; i < num; i++)
-	  {
-	     ib = lst[i];
-	     if (ib->type != IB_TYPE_ICONBOX)
-		continue;
+	ECORE_LIST_FOR_EACH(ibox_list, ib)
+	{
+	   if (ib->type != IB_TYPE_ICONBOX)
+	      continue;
 
-	     if (IconboxObjEwinFind(ib, ewin) < 0)
-		continue;
-	     ib_sel = ib;
-	     break;
-	  }
+	   if (IconboxObjEwinFind(ib, ewin) < 0)
+	      continue;
+	   ib_sel = ib;
+	   break;
+	}
      }
    else
      {
@@ -785,29 +792,26 @@ SelectIconboxForEwin(EWin * ewin)
 	int                 dx, dy, dist;
 
 	min_dist = 0x7fffffff;
-	for (i = 0; i < num; i++)
-	  {
-	     ib = lst[i];
-	     if (ib->ewin == NULL || ib->type != IB_TYPE_ICONBOX)
-		continue;
+	ECORE_LIST_FOR_EACH(ibox_list, ib)
+	{
+	   if (ib->ewin == NULL || ib->type != IB_TYPE_ICONBOX)
+	      continue;
 
-	     dx = (EoGetX(ib->ewin) + (EoGetW(ib->ewin) / 2)) -
-		(EoGetX(ewin) + (EoGetW(ewin) / 2));
-	     dy = (EoGetY(ib->ewin) + (EoGetH(ib->ewin) / 2)) -
-		(EoGetY(ewin) + (EoGetH(ewin) / 2));
-	     dist = (dx * dx) + (dy * dy);
-	     if ((!EoIsSticky(ib->ewin)) &&
-		 (EoGetDesk(ib->ewin) != EoGetDesk(ewin)))
-		dist += (VRoot.w * VRoot.w) + (VRoot.h * VRoot.h);
-	     if (dist < min_dist)
-	       {
-		  min_dist = dist;
-		  ib_sel = ib;
-	       }
-	  }
+	   dx = (EoGetX(ib->ewin) + (EoGetW(ib->ewin) / 2)) -
+	      (EoGetX(ewin) + (EoGetW(ewin) / 2));
+	   dy = (EoGetY(ib->ewin) + (EoGetH(ib->ewin) / 2)) -
+	      (EoGetY(ewin) + (EoGetH(ewin) / 2));
+	   dist = (dx * dx) + (dy * dy);
+	   if ((!EoIsSticky(ib->ewin)) &&
+	       (EoGetDesk(ib->ewin) != EoGetDesk(ewin)))
+	      dist += (VRoot.w * VRoot.w) + (VRoot.h * VRoot.h);
+	   if (dist < min_dist)
+	     {
+		min_dist = dist;
+		ib_sel = ib;
+	     }
+	}
      }
-
-   Efree(lst);
 
    return ib_sel;
 }
@@ -837,16 +841,10 @@ IconboxUpdateEwinIcon(Iconbox * ib, EWin * ewin, int icon_mode)
 static void
 IconboxesUpdateEwinIcon(EWin * ewin, int icon_mode)
 {
-   Iconbox           **ib;
-   int                 i, num = 0;
+   Iconbox            *ib;
 
-   ib = IconboxesList(&num);
-   if (!ib)
-      return;
-
-   for (i = 0; i < num; i++)
-      IconboxUpdateEwinIcon(ib[i], ewin, icon_mode);
-   Efree(ib);
+   ECORE_LIST_FOR_EACH(ibox_list, ib)
+      IconboxUpdateEwinIcon(ib, ewin, icon_mode);
 }
 
 static void
@@ -1799,20 +1797,14 @@ IB_ShowMenu(Iconbox * ib, int x __UNUSED__, int y __UNUSED__)
 static void
 IconboxesShow(void)
 {
-   int                 i, num;
-   Iconbox           **ibl;
+   Iconbox            *ib;
 
-   ibl = IconboxesList(&num);
-   if (ibl)
+   if (ecore_list_nodes(ibox_list) > 0)
      {
-	for (i = 0; i < num; i++)
-	   IconboxShow(ibl[i]);
-	Efree(ibl);
+	ECORE_LIST_FOR_EACH(ibox_list, ib) IconboxShow(ib);
      }
    else if (Conf.startup.firsttime)
      {
-	Iconbox            *ib;
-
 	ib = IconboxCreate("_IB_0");
 	IconboxShow(ib);
 	IconboxesConfigSave();
@@ -1822,16 +1814,9 @@ IconboxesShow(void)
 static void
 IconboxesDestroy(void)
 {
-   int                 i, num;
-   Iconbox           **ibl;
+   Iconbox            *ib;
 
-   ibl = IconboxesList(&num);
-   if (!ibl)
-      return;
-
-   for (i = 0; i < num; i++)
-      IconboxDestroy(ibl[i], 1);
-   Efree(ibl);
+   ECORE_LIST_FOR_EACH(ibox_list, ib) IconboxDestroy(ib, 1);
 }
 
 static void
@@ -2051,7 +2036,7 @@ IboxEventIconWin(XEvent * ev, void *prm)
 	if (!ewin)
 	   break;
 
-	tt = FindItem("ICONBOX", 0, LIST_FINDBY_NAME, LIST_TYPE_TOOLTIP);
+	tt = TooltipFind("ICONBOX");
 	if (tt)
 	   TooltipHide(tt);
 
@@ -2077,7 +2062,7 @@ IboxEventIconWin(XEvent * ev, void *prm)
 	   break;
 	name_ewin = ewin;
 
-	tt = FindItem("ICONBOX", 0, LIST_FINDBY_NAME, LIST_TYPE_TOOLTIP);
+	tt = TooltipFind("ICONBOX");
 	if (!tt)
 	   break;
 
@@ -2091,7 +2076,7 @@ IboxEventIconWin(XEvent * ev, void *prm)
 	break;
 
      case LeaveNotify:
-	tt = FindItem("ICONBOX", 0, LIST_FINDBY_NAME, LIST_TYPE_TOOLTIP);
+	tt = TooltipFind("ICONBOX");
 	if (tt)
 	  {
 	     TooltipHide(tt);
@@ -2128,7 +2113,7 @@ CB_ConfigureIconbox(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 
 	if (!tmp_ib_name)
 	   return;
-	ib = FindItem(tmp_ib_name, 0, LIST_FINDBY_NAME, LIST_TYPE_ICONBOX);
+	ib = IconboxFind(tmp_ib_name);
 	if (!ib)
 	   return;
 
@@ -2175,7 +2160,7 @@ IconboxConfigure(Iconbox * ib)
    if (!ib)
       return;
 
-   d = FindItem("CONFIGURE_ICONBOX", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   d = DialogFind("CONFIGURE_ICONBOX");
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
@@ -2431,7 +2416,7 @@ IconboxesConfigLoad(void)
 	     break;
 
 	  case CONFIG_CLASSNAME:	/* __NAME %s */
-	     ib = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_ICONBOX);
+	     ib = IconboxFind(s2);
 	     if (ib)
 		IconboxDestroy(ib, 0);
 	     ib = IconboxCreate(s2);
@@ -2505,10 +2490,7 @@ IconboxesConfigSave(void)
 {
    char                s[FILEPATH_LEN_MAX];
    FILE               *fs;
-   int                 i, num;
-   Iconbox           **iblist;
-
-   iblist = IconboxesList(&num);
+   Iconbox            *ib;
 
    Esnprintf(s, sizeof(s), "%s.ibox", EGetSavePrefix());
    fs = fopen(s, "w");
@@ -2516,30 +2498,27 @@ IconboxesConfigSave(void)
       return;
 
    /* We should check for errors... */
-   for (i = num - 1; i >= 0; i--)
-     {
-	fprintf(fs, "19 999\n");
-	fprintf(fs, "100 %s\n", iblist[i]->name);
-	fprintf(fs, "200 %i\n", iblist[i]->orientation);
-	fprintf(fs, "2001 %i\n", iblist[i]->nobg);
-	fprintf(fs, "2002 %i\n", iblist[i]->shownames);
-	fprintf(fs, "2003 %i\n", iblist[i]->iconsize);
-	fprintf(fs, "2004 %i\n", iblist[i]->icon_mode);
-	fprintf(fs, "2005 %i\n", iblist[i]->scrollbar_side);
-	fprintf(fs, "2006 %i\n", iblist[i]->arrow_side);
-	fprintf(fs, "2007 %i\n", iblist[i]->auto_resize);
-	fprintf(fs, "2008 %i\n", iblist[i]->draw_icon_base);
-	fprintf(fs, "2009 %i\n", iblist[i]->scrollbar_hide);
-	fprintf(fs, "2010 %i\n", iblist[i]->cover_hide);
-	fprintf(fs, "2011 %i\n", iblist[i]->auto_resize_anchor);
-	fprintf(fs, "2012 %i\n", iblist[i]->animate);
-	fprintf(fs, "1000\n");
-     }
+   ECORE_LIST_FOR_EACH(ibox_list, ib)
+   {
+      fprintf(fs, "19 999\n");
+      fprintf(fs, "100 %s\n", ib->name);
+      fprintf(fs, "200 %i\n", ib->orientation);
+      fprintf(fs, "2001 %i\n", ib->nobg);
+      fprintf(fs, "2002 %i\n", ib->shownames);
+      fprintf(fs, "2003 %i\n", ib->iconsize);
+      fprintf(fs, "2004 %i\n", ib->icon_mode);
+      fprintf(fs, "2005 %i\n", ib->scrollbar_side);
+      fprintf(fs, "2006 %i\n", ib->arrow_side);
+      fprintf(fs, "2007 %i\n", ib->auto_resize);
+      fprintf(fs, "2008 %i\n", ib->draw_icon_base);
+      fprintf(fs, "2009 %i\n", ib->scrollbar_hide);
+      fprintf(fs, "2010 %i\n", ib->cover_hide);
+      fprintf(fs, "2011 %i\n", ib->auto_resize_anchor);
+      fprintf(fs, "2012 %i\n", ib->animate);
+      fprintf(fs, "1000\n");
+   }
 
    fclose(fs);
-
-   if (iblist)
-      Efree(iblist);
 }
 
 /*
@@ -2591,7 +2570,7 @@ IconboxesConfigure(const char *params)
    if (!params || !params[0])
       params = "DEFAULT";
 
-   ib = FindItem(params, 0, LIST_FINDBY_NAME, LIST_TYPE_ICONBOX);
+   ib = IconboxFind(params);
    if (ib)
       IconboxConfigure(ib);
 }
@@ -2625,13 +2604,11 @@ IboxIpc(const char *params, Client * c __UNUSED__)
      }
    else if (!strncmp(cmd, "new", 3))
      {
-	Iconbox            *ib, **ibl;
+	Iconbox            *ib;
 
 	if (!prm[0])
 	  {
-	     ibl = IconboxesList(&num);
-	     if (ibl)
-		Efree(ibl);
+	     num = ecore_list_nodes(ibox_list);
 	     Esnprintf(prm, sizeof(prm), "_IB_%i", num);
 	  }
 	ib = IconboxCreate(prm);

@@ -887,7 +887,8 @@ ArrangeEwinXY(EWin * ewin, int *px, int *py)
 		fixed[j].p = EoGetLayer(e);
 	     j++;
 	  }
-	blst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
+
+	blst = ButtonsGetList(&num);
 	if (blst)
 	  {
 	     fixed = Erealloc(fixed, sizeof(RectBox) * (num + j));
@@ -1052,7 +1053,7 @@ ArrangeEwins(const char *params)
 	  }
      }
 
-   blst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
+   blst = ButtonsGetList(&num);
    if (blst)
      {
 	fixed = Erealloc(fixed, sizeof(RectBox) * (num + k));

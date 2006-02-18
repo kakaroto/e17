@@ -114,7 +114,7 @@ SettingsTransparency(void)
       *radio_dialog, *radio_tooltip, *radio_hilight;
    char                s[256];
 
-   d = FindItem("CONFIGURE_TRANS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   d = DialogFind("CONFIGURE_TRANS");
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");

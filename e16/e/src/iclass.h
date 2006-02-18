@@ -102,6 +102,7 @@ int                 ImageclassIsTransparent(ImageClass * ic);
 Imlib_Image        *EImageBlendPT(Imlib_Image * im, Window win, int w, int h,
 				  int image_type);
 
+ImageClass         *ImageclassFind(const char *name, int fallback);
 void                ImageclassIncRefcount(ImageClass * ic);
 void                ImageclassDecRefcount(ImageClass * ic);
 const char         *ImageclassGetName(ImageClass * ic);
@@ -109,7 +110,6 @@ Imlib_Border       *ImageclassGetPadding(ImageClass * ic);
 ImageState         *ImageclassGetImageState(ImageClass * ic, int state,
 					    int active, int sticky);
 ImageClass         *ImageclassCreateSimple(const char *name, const char *image);
-ImageClass         *ImageclassFind(const char *name, int fallback);
 Imlib_Image        *ImageclassGetImage(ImageClass * ic, int active, int sticky,
 				       int state);
 Pixmap              ImageclassApplySimple(ImageClass * ic, Window win,

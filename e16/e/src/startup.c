@@ -44,16 +44,13 @@ StartupWindowsCreate(void)
       return;
 
    /* Acting only as boolean? */
-   if (FindItem
-       ("STARTUP_BACKGROUND_SIDEWAYS", 0, LIST_FINDBY_NAME,
-	LIST_TYPE_BACKGROUND))
+   if (BackgroundFind("STARTUP_BACKGROUND_SIDEWAYS"))
       bg_sideways = 1;
 
    ic = ImageclassFind("STARTUP_BAR", 0);
    if (!ic)
       ic = ImageclassFind("DESKTOP_DRAGBUTTON_HORIZ", 0);
-   bg = FindItem("STARTUP_BACKGROUND", 0, LIST_FINDBY_NAME,
-		 LIST_TYPE_BACKGROUND);
+   bg = BackgroundFind("STARTUP_BACKGROUND");
    if (!ic || !bg)
       return;
 

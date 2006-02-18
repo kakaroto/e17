@@ -24,6 +24,7 @@
 #include "E.h"
 #include "borders.h"
 #include "dialog.h"
+#include "e16-ecore_list.h"
 #include "emodule.h"
 #include "ewins.h"
 #include "groups.h"
@@ -35,6 +36,8 @@
 #define SET_TOGGLE 2
 
 #define DISABLE_PAGER_ICONBOX_GROUPING 0
+
+static Ecore_List  *group_list = NULL;
 
 static struct
 {
@@ -65,6 +68,10 @@ GroupCreate(void)
    if (!g)
       return NULL;
 
+   if (!group_list)
+      group_list = ecore_list_new();
+   ecore_list_append(group_list, g);
+
    t = GetTime();
    g->index = (int)((GetTime() - (floor(t / 1000) * 1000)) * 10000);
    /* g->index = (int)(GetTime() * 100); */
@@ -89,11 +96,31 @@ GroupDestroy(Group * g)
    if (!g)
       return;
 
+   ecore_list_remove_node(group_list, g);
+
    if (g == Mode_groups.current)
       Mode_groups.current = NULL;
    if (g->members)
       Efree(g->members);
    Efree(g);
+}
+
+static int
+GroupMatchId(const void *data, const void *match)
+{
+   return ((const Group *)data)->index != (int)(long)match;
+}
+
+Group              *
+GroupFind(int gid)
+{
+   return ecore_list_find(group_list, GroupMatchId, (void *)(long)gid);
+}
+
+void
+GroupSetId(Group * group, int gid)
+{
+   group->index = gid;
 }
 
 static void
@@ -131,30 +158,76 @@ BreakWindowGroup(EWin * ewin, Group * g)
      }
 }
 
-void
+Group              *
 BuildWindowGroup(EWin ** ewins, int num)
 {
    int                 i;
-   Group              *g;
+   Group              *group;
 
-   Mode_groups.current = g = GroupCreate();
-   AddItem(g, NULL, g->index, LIST_TYPE_GROUP);
+   Mode_groups.current = group = GroupCreate();
 
    for (i = 0; i < num; i++)
+      AddEwinToGroup(ewins[i], group);
+
+   return group;
+}
+
+Group             **
+GroupsGetList(int *pnum)
+{
+   return (Group **) ecore_list_items_get(group_list, pnum);
+}
+
+Group             **
+ListWinGroups(const EWin * ewin, char group_select, int *num)
+{
+   Group             **groups = NULL;
+   Group             **groups2 = NULL;
+   int                 i, j, killed = 0;
+
+   switch (group_select)
      {
-#if DISABLE_PAGER_ICONBOX_GROUPING
-	/* disable iconboxes and pagers to go into groups */
-	if ((ewins[i]->ibox) || (ewins[i]->pager))
+     case GROUP_SELECT_EWIN_ONLY:
+	groups = (Group **) Emalloc(sizeof(Group *) * ewin->num_groups);
+	if (!groups)
+	   break;
+	memcpy(groups, ewin->groups, sizeof(Group *) * ewin->num_groups);
+	*num = ewin->num_groups;
+	break;
+     case GROUP_SELECT_ALL_EXCEPT_EWIN:
+	groups2 = GroupsGetList(num);
+	if (!groups2)
+	   break;
+
+	for (i = 0; i < (*num); i++)
 	  {
-	     DialogOK(_("Cannot comply"),
-		      _("Iconboxes and Pagers are disallowed from being\n"
-			"members of a group. You cannot add these windows\n"
-			"to a group.\n"));
-	     return;
+	     for (j = 0; j < ewin->num_groups; j++)
+	       {
+		  if (ewin->groups[j] == groups2[i])
+		    {
+		       groups2[i] = NULL;
+		       killed++;
+		    }
+	       }
 	  }
-#endif
-	AddEwinToGroup(ewins[i], g);
+	groups = (Group **) Emalloc(sizeof(Group *) * (*num - killed));
+	if (groups)
+	  {
+	     j = 0;
+	     for (i = 0; i < (*num); i++)
+		if (groups2[i])
+		   groups[j++] = groups2[i];
+	     (*num) -= killed;
+	  }
+	Efree(groups2);
+	break;
+     case GROUP_SELECT_ALL:
+     default:
+	groups = GroupsGetList(num);
+	break;
      }
+
+   return groups;
 }
 
 void
@@ -249,7 +322,6 @@ RemoveEwinFromGroup(EWin * ewin, Group * g)
 		   Erealloc(g->members, sizeof(EWin *) * g->num_members);
 	     else
 	       {
-		  RemoveItemByPtr(g, LIST_TYPE_GROUP);
 		  GroupDestroy(g);
 	       }
 
@@ -345,8 +417,7 @@ ShowHideWinGroups(EWin * ewin, int group_index, char onoff)
 		  if (!gwins[i]->border->group_border_name)
 		     continue;
 
-		  b = FindItem(gwins[i]->border->group_border_name,
-			       0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+		  b = BorderFind(gwins[i]->border->group_border_name);
 		  if (b)
 		     gwins[i]->previous_border = gwins[i]->border;
 	       }
@@ -362,8 +433,7 @@ ShowHideWinGroups(EWin * ewin, int group_index, char onoff)
 		  if (!gwins[i]->border->group_border_name)
 		     continue;
 
-		  b = FindItem(gwins[i]->border->group_border_name,
-			       0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+		  b = BorderFind(gwins[i]->border->group_border_name);
 		  if (b)
 		     gwins[i]->previous_border = gwins[i]->border;
 	       }
@@ -393,49 +463,44 @@ ShowHideWinGroups(EWin * ewin, int group_index, char onoff)
 void
 SaveGroups(void)
 {
-   Group             **groups;
-   int                 i, num_groups;
+   Group              *g;
    FILE               *f;
    char                s[1024];
 
-   groups = (Group **) ListItemType(&num_groups, LIST_TYPE_GROUP);
-   if (!groups)
+   if (ecore_list_nodes(group_list) <= 0)
       return;
 
    Esnprintf(s, sizeof(s), "%s.groups", EGetSavePrefix());
    f = fopen(s, "w");
    if (!f)
-      goto done;
+      return;
 
-   for (i = 0; i < num_groups; i++)
-     {
-	if (!groups[i]->members)
-	   continue;
+   ECORE_LIST_FOR_EACH(group_list, g)
+   {
+      if (!g->members)
+	 continue;
 
-	/* Only if the group should be remembered, write info */
-	if (!groups[i]->members[0]->snap)
-	   continue;
+      /* Only if the group should be remembered, write info */
+      if (!g->members[0]->snap)
+	 continue;
 
 #if 0
-	if (!groups[i]->members[0]->snap->num_groups)
-	   continue;
+      if (!g->members[0]->snap->num)
+	 continue;
 #endif
 
-	fprintf(f, "NEW: %i\n", groups[i]->index);
-	fprintf(f, "ICONIFY: %i\n", groups[i]->cfg.iconify);
-	fprintf(f, "KILL: %i\n", groups[i]->cfg.kill);
-	fprintf(f, "MOVE: %i\n", groups[i]->cfg.move);
-	fprintf(f, "RAISE: %i\n", groups[i]->cfg.raise);
-	fprintf(f, "SET_BORDER: %i\n", groups[i]->cfg.set_border);
-	fprintf(f, "STICK: %i\n", groups[i]->cfg.stick);
-	fprintf(f, "SHADE: %i\n", groups[i]->cfg.shade);
-	fprintf(f, "MIRROR: %i\n", groups[i]->cfg.mirror);
-     }
-   fclose(f);
+      fprintf(f, "NEW: %i\n", g->index);
+      fprintf(f, "ICONIFY: %i\n", g->cfg.iconify);
+      fprintf(f, "KILL: %i\n", g->cfg.kill);
+      fprintf(f, "MOVE: %i\n", g->cfg.move);
+      fprintf(f, "RAISE: %i\n", g->cfg.raise);
+      fprintf(f, "SET_BORDER: %i\n", g->cfg.set_border);
+      fprintf(f, "STICK: %i\n", g->cfg.stick);
+      fprintf(f, "SHADE: %i\n", g->cfg.shade);
+      fprintf(f, "MIRROR: %i\n", g->cfg.mirror);
+   }
 
- done:
-   if (groups)
-      Efree(groups);
+   fclose(f);
 }
 
 static void
@@ -465,7 +530,6 @@ GroupsLoad(void)
 	       {
 		  word(s, 2, ss);
 		  g->index = atoi(ss);
-		  AddItem(g, NULL, g->index, LIST_TYPE_GROUP);
 	       }
 	  }
 	else if (!strcmp(ss, "ICONIFY:"))
@@ -617,7 +681,7 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
 
    ShowHideWinGroups(ewin, 0, SET_ON);
 
-   d = FindItem("GROUP_SELECTION", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   d = DialogFind("GROUP_SELECTION");
    if (d)
      {
 	SoundPlay("GROUP_SETTINGS_ACTIVE");
@@ -740,7 +804,7 @@ SettingsGroups(EWin * ewin)
 	return;
      }
 
-   d = FindItem("CONFIGURE_GROUP", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   d = DialogFind("CONFIGURE_GROUP");
    if (d)
      {
 	SoundPlay("GROUP_SETTINGS_ACTIVE");
@@ -879,8 +943,7 @@ SettingsDefaultGroupControl(void)
    Dialog             *d;
    DItem              *table, *di;
 
-   d = FindItem("CONFIGURE_DEFAULT_GROUP_CONTROL", 0, LIST_FINDBY_NAME,
-		LIST_TYPE_DIALOG);
+   d = DialogFind("CONFIGURE_DEFAULT_GROUP_CONTROL");
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
@@ -1077,14 +1140,31 @@ doBreakGroup(EWin * ewin, const char *params __UNUSED__)
 #endif
 
 static void
+GroupShow(Group * g)
+{
+   int                 j;
+
+   for (j = 0; j < g->num_members; j++)
+      IpcPrintf("%d: %s\n", g->index, g->members[j]->icccm.wm_name);
+
+   IpcPrintf("        index: %d\n" "  num_members: %d\n"
+	     "      iconify: %d\n" "         kill: %d\n"
+	     "         move: %d\n" "        raise: %d\n"
+	     "   set_border: %d\n" "        stick: %d\n"
+	     "        shade: %d\n" "       mirror: %d\n",
+	     g->index, g->num_members,
+	     g->cfg.iconify, g->cfg.kill,
+	     g->cfg.move, g->cfg.raise,
+	     g->cfg.set_border, g->cfg.stick, g->cfg.shade, g->cfg.mirror);
+}
+
+static void
 IPC_GroupInfo(const char *params, Client * c __UNUSED__)
 {
-   Group             **groups = NULL;
-   int                 num_groups, i, j;
+   Group              *group;
 
    if (params)
      {
-	Group              *group;
 	char                groupid[FILEPATH_LEN_MAX];
 	int                 gix;
 
@@ -1092,48 +1172,17 @@ IPC_GroupInfo(const char *params, Client * c __UNUSED__)
 	word(params, 1, groupid);
 	sscanf(groupid, "%d", &gix);
 
-	group = FindItem(NULL, gix, LIST_FINDBY_ID, LIST_TYPE_GROUP);
-
-	if (!group)
-	  {
-	     IpcPrintf("Error: no such group: %d", gix);
-	     return;
-	  }
-
-	groups = (Group **) Emalloc(sizeof(Group **));
-	if (!groups)
-	   return;
-
-	groups[0] = group;
-	num_groups = 1;
+	group = GroupFind(gix);
+	if (group)
+	   GroupShow(group);
+	else
+	   IpcPrintf("Error: no such group: %d", gix);
      }
    else
      {
-	groups = (Group **) ListItemType(&num_groups, LIST_TYPE_GROUP);
-
-	IpcPrintf("Number of groups: %d\n", num_groups);
+	IpcPrintf("Number of groups: %d\n", ecore_list_nodes(group_list));
+	ECORE_LIST_FOR_EACH(group_list, group) GroupShow(group);
      }
-
-   for (i = 0; i < num_groups; i++)
-     {
-	for (j = 0; j < groups[i]->num_members; j++)
-	   IpcPrintf("%d: %s\n", groups[i]->index,
-		     groups[i]->members[j]->icccm.wm_name);
-
-	IpcPrintf("        index: %d\n" "  num_members: %d\n"
-		  "      iconify: %d\n" "         kill: %d\n"
-		  "         move: %d\n" "        raise: %d\n"
-		  "   set_border: %d\n" "        stick: %d\n"
-		  "        shade: %d\n" "       mirror: %d\n",
-		  groups[i]->index, groups[i]->num_members,
-		  groups[i]->cfg.iconify, groups[i]->cfg.kill,
-		  groups[i]->cfg.move, groups[i]->cfg.raise,
-		  groups[i]->cfg.set_border, groups[i]->cfg.stick,
-		  groups[i]->cfg.shade, groups[i]->cfg.mirror);
-     }
-
-   if (groups)
-      Efree(groups);
 }
 
 static void
@@ -1188,7 +1237,7 @@ IPC_GroupOps(const char *params, Client * c __UNUSED__)
 	if (groupid[0])
 	  {
 	     sscanf(groupid, "%d", &gix);
-	     group = FindItem(NULL, gix, LIST_FINDBY_ID, LIST_TYPE_GROUP);
+	     group = GroupFind(gix);
 	  }
 	AddEwinToGroup(ewin, group);
 	IpcPrintf("add %8x", win);
@@ -1201,7 +1250,7 @@ IPC_GroupOps(const char *params, Client * c __UNUSED__)
 	if (groupid[0])
 	  {
 	     sscanf(groupid, "%d", &gix);
-	     group = FindItem(NULL, gix, LIST_FINDBY_ID, LIST_TYPE_GROUP);
+	     group = GroupFind(gix);
 	  }
 	RemoveEwinFromGroup(ewin, group);
 	IpcPrintf("del %8x", win);
@@ -1214,7 +1263,7 @@ IPC_GroupOps(const char *params, Client * c __UNUSED__)
 	if (groupid[0])
 	  {
 	     sscanf(groupid, "%d", &gix);
-	     group = FindItem(NULL, gix, LIST_FINDBY_ID, LIST_TYPE_GROUP);
+	     group = GroupFind(gix);
 	  }
 	BreakWindowGroup(ewin, group);
 	IpcPrintf("break %8x", win);
@@ -1261,7 +1310,7 @@ IPC_Group(const char *params, Client * c __UNUSED__)
 	return;
      }
 
-   group = FindItem(NULL, gix, LIST_FINDBY_ID, LIST_TYPE_GROUP);
+   group = GroupFind(gix);
 
    if (!group)
      {

@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "dialog.h"
+#include "e16-ecore_list.h"
 #include "ewins.h"
 #include "hints.h"
 #include "iclass.h"
@@ -196,7 +197,6 @@ struct _dialog
    int                 xu1, yu1, xu2, yu2;
 };
 
-static Dialog      *FindDialog(Window win);
 static int          FindADialog(void);
 
 static void         DialogHandleEvents(XEvent * ev, void *prm);
@@ -209,6 +209,9 @@ static void         DialogFreeItem(DItem * di);
 static int          DialogItemCheckButtonGetState(DItem * di);
 
 static void         DialogUpdate(Dialog * d);
+
+static Ecore_List  *dialog_list = NULL;
+
 static char         dialog_update_pending = 0;
 
 void
@@ -232,6 +235,13 @@ DialogCreate(const char *name)
    Dialog             *d;
 
    d = Ecalloc(1, sizeof(Dialog));
+   if (!d)
+      return NULL;
+
+   if (!dialog_list)
+      dialog_list = ecore_list_new();
+   ecore_list_append(dialog_list, d);
+
    d->name = Estrdup(name);
    d->win = ECreateWindow(VRoot.win, -20, -20, 2, 2, 0);
    EventCallbackRegister(d->win, 0, DialogHandleEvents, d);
@@ -267,7 +277,7 @@ DialogDestroy(Dialog * d)
 {
    int                 i;
 
-   RemoveItem(NULL, d->win, LIST_FINDBY_ID, LIST_TYPE_DIALOG);
+   ecore_list_remove_node(dialog_list, d);
 
    if (d->name)
       Efree(d->name);
@@ -291,6 +301,18 @@ DialogDestroy(Dialog * d)
    EDestroyWindow(d->win);
 
    Efree(d);
+}
+
+static int
+_DialogMatchName(const void *data, const void *match)
+{
+   return strcmp(((const Dialog *)data)->name, match);
+}
+
+Dialog             *
+DialogFind(const char *name)
+{
+   return ecore_list_find(dialog_list, _DialogMatchName, name);
 }
 
 void
@@ -636,8 +658,6 @@ ShowDialog(Dialog * d)
 	else
 	   ArrangeEwinCentered(ewin);
      }
-   if (!FindDialog(d->win))
-      AddItem(d, d->name, d->win, LIST_TYPE_DIALOG);
 
    ShowEwin(ewin);
    DialogRedraw(d);
@@ -1737,23 +1757,17 @@ DialogUpdate(Dialog * d)
 void
 DialogsCheckUpdate(void)
 {
-   Dialog             *d, **ds;
-   int                 i, num;
+   Dialog             *d;
 
    if (!dialog_update_pending)
       return;
    dialog_update_pending = 0;
 
-   ds = (Dialog **) ListItemType(&num, LIST_TYPE_DIALOG);
-   for (i = 0; i < num; i++)
-     {
-	d = ds[i];
-	if (!d->update)
-	   continue;
-	DialogUpdate(d);
-     }
-   if (ds)
-      Efree(ds);
+   ECORE_LIST_FOR_EACH(dialog_list, d)
+   {
+      if (d->update)
+	 DialogUpdate(d);
+   }
 }
 
 static void
@@ -2529,25 +2543,6 @@ DButtonHandleEvents(XEvent * ev, void *prm)
 /*
  * Finders
  */
-
-static Dialog      *
-FindDialog(Window win)
-{
-   Dialog            **ds, *d = NULL;
-   int                 i, num;
-
-   ds = (Dialog **) ListItemType(&num, LIST_TYPE_DIALOG);
-   for (i = 0; i < num; i++)
-     {
-	if (ds[i]->win != win)
-	   continue;
-	d = ds[i];
-	break;
-     }
-   if (ds)
-      Efree(ds);
-   return d;
-}
 
 EWin               *
 FindEwinByDialog(Dialog * d)

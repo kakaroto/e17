@@ -601,7 +601,7 @@ MenuCreateFromBorders(const char *name, MenuStyle * ms)
 
    m = MenuCreate(name, NULL, NULL, ms);
 
-   lst = (Border **) ListItemType(&num, LIST_TYPE_BORDER);
+   lst = BordersGetList(&num);
    if (lst)
       Quicksort((void **)lst, 0, num - 1, BorderNameCompare);
    for (i = 0; i < num; i++)
@@ -721,7 +721,7 @@ MenuLoadFromGroups(Menu * m)
 
    MenuEmpty(m, 0);
 
-   lst = (Group **) ListItemType(&num, LIST_TYPE_GROUP);
+   lst = GroupsGetList(&num);
    if (!lst)
       return 1;
 
@@ -804,7 +804,7 @@ MenusCreateInternal(const char *type, const char *name, const char *style,
    m = NULL;
    ms = NULL;
    if (style)
-      ms = FindItem(style, 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
+      ms = MenuStyleFind(style);
 
    if (!strcmp(type, "file"))
      {

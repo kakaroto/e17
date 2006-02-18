@@ -26,6 +26,7 @@
 #include "borders.h"
 #include "buttons.h"
 #include "desktops.h"
+#include "e16-ecore_list.h"
 #include "emodule.h"
 #include "eobj.h"
 #include "ewins.h"
@@ -39,6 +40,7 @@
 typedef struct
 {
    EObj                o;
+   char               *name;
    char                direction;
    int                 num_objs;
    EObj              **objs;
@@ -47,6 +49,8 @@ typedef struct
 } Slideout;
 
 static void         SlideoutCalcSize(Slideout * s);
+
+static Ecore_List  *slideout_list = NULL;
 
 static struct
 {
@@ -58,7 +62,7 @@ NULL};
 static void         SlideoutHandleEvent(XEvent * ev, void *prm);
 
 static Slideout    *
-SlideoutCreate(char *name, char dir)
+SlideoutCreate(const char *name, char dir)
 {
    Slideout           *s;
 
@@ -66,8 +70,10 @@ SlideoutCreate(char *name, char dir)
    if (!s)
       return NULL;
 
-   EoInit(s, EOBJ_TYPE_MISC, None, -10, -10, 1, 1, 1, name);
+   s->name = Estrdup(name);
    s->direction = dir;
+
+   EoInit(s, EOBJ_TYPE_MISC, None, -10, -10, 1, 1, 1, name);
    EoSetFade(s, 0);
    ESelectInput(EoGetWin(s), SLIDEOUT_EVENT_MASK);
    EventCallbackRegister(EoGetWin(s), 0, SlideoutHandleEvent, s);
@@ -331,9 +337,7 @@ SlideoutAddButton(Slideout * s, Button * b)
 {
    EObj               *eob = (EObj *) b;
 
-   if (!b)
-      return;
-   if (!s)
+   if (!s || !b)
       return;
 
    s->num_objs++;
@@ -402,6 +406,9 @@ SlideoutsConfigLoad(FILE * fs)
    char               *name = 0;
    int                 fields;
 
+   if (!slideout_list)
+      slideout_list = ecore_list_new();
+
    while (GetLine(s, sizeof(s), fs))
      {
 	s2[0] = 0;
@@ -429,7 +436,7 @@ SlideoutsConfigLoad(FILE * fs)
 	  {
 	  case CONFIG_CLOSE:
 	     if (slideout)
-		AddItem(slideout, EoGetName(slideout), 0, LIST_TYPE_SLIDEOUT);
+		ecore_list_prepend(slideout_list, slideout);
 	     goto done;
 	  case CONFIG_CLASSNAME:
 	     if (name)
@@ -442,13 +449,7 @@ SlideoutsConfigLoad(FILE * fs)
 		Efree(name);
 	     break;
 	  case CONFIG_BUTTON:
-	     {
-		Button             *b;
-
-		b = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_BUTTON);
-		if (b)
-		   SlideoutAddButton(slideout, b);
-	     }
+	     SlideoutAddButton(slideout, ButtonFind(s2));
 	     break;
 	  default:
 	     Alert(_("Warning: unable to determine what to do with\n"
@@ -485,6 +486,18 @@ SlideoutsSighan(int sig, void *prm)
      }
 }
 
+static int
+_SlideoutMatchName(const void *data, const void *match)
+{
+   return strcmp(((const Slideout *)data)->name, match);
+}
+
+static Slideout    *
+SlideoutFind(const char *name)
+{
+   return ecore_list_find(slideout_list, _SlideoutMatchName, name);
+}
+
 static void
 IPC_Slideout(const char *params, Client * c __UNUSED__)
 {
@@ -493,7 +506,7 @@ IPC_Slideout(const char *params, Client * c __UNUSED__)
    if (!params)
       return;
 
-   s = FindItem(params, 0, LIST_FINDBY_NAME, LIST_TYPE_SLIDEOUT);
+   s = SlideoutFind(params);
    if (!s)
       return;
 

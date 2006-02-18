@@ -978,7 +978,7 @@ FxSettings(void)
    Dialog             *d;
    DItem              *table, *di;
 
-   d = FindItem("CONFIGURE_FX", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   d = DialogFind("CONFIGURE_FX");
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");

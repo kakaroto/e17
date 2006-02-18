@@ -25,12 +25,15 @@
 #include "aclass.h"
 #include "conf.h"
 #include "dialog.h"
+#include "e16-ecore_list.h"
 #include "emodule.h"
 #include "eobj.h"
 #include "iclass.h"
 #include "tclass.h"
 #include "tooltips.h"
 #include "xwin.h"
+
+static Ecore_List  *tt_list = NULL;
 
 static struct
 {
@@ -49,6 +52,7 @@ static struct
 
 struct _tooltip
 {
+   const char         *name;
    ImageClass         *iclass[5];
    TextClass          *tclass;
    int                 dist;
@@ -76,6 +80,7 @@ TooltipCreate(const char *name, ImageClass * ic0, ImageClass * ic1,
 
    tt = Ecalloc(1, sizeof(ToolTip));
 
+   tt->name = Estrdup(name);
    tt->iclass[0] = ic1;
    tt->iclass[1] = ic2;
    tt->iclass[2] = ic3;
@@ -106,7 +111,7 @@ TooltipCreate(const char *name, ImageClass * ic0, ImageClass * ic1,
 
    tt->ref_count = 0;
 
-   AddItem(tt, name, 0, LIST_TYPE_TOOLTIP);
+   ecore_list_prepend(tt_list, tt);
 
    return tt;
 }
@@ -142,6 +147,9 @@ TooltipConfigLoad(FILE * ConfigFile)
    int                 distance = 0;
    int                 fields;
 
+   if (!tt_list)
+      tt_list = ecore_list_new();
+
    tt = NULL;
    while (GetLine(s, sizeof(s), ConfigFile))
      {
@@ -170,14 +178,16 @@ TooltipConfigLoad(FILE * ConfigFile)
 		tt = TooltipCreate(name, drawiclass, bubble1, bubble2,
 				   bubble3, bubble4, tclass, distance,
 				   tooltiphelppic);
-	     if (name)
-		Efree(name);
+	     _EFREE(name);
 	     goto done;
 
 	  case CONFIG_CLASSNAME:
-	     if (ConfigSkipIfExists(ConfigFile, s2, LIST_TYPE_TOOLTIP))
-		goto done;
-	     name = Estrdup(s2);
+	     if (TooltipFind(s2))
+	       {
+		  SkipTillEnd(ConfigFile);
+		  goto done;
+	       }
+	     _EFDUP(name, s2);
 	     break;
 	  case TOOLTIP_DRAWICLASS:
 	  case CONFIG_IMAGECLASS:
@@ -684,10 +694,18 @@ TooltipHide(ToolTip * tt)
    for (i = 4; i >= 0; i--)
       if (tt->win[i])
 	 EobjUnmap(tt->win[i]);
+}
 
-#if 0				/* FIXME - Remove? */
-   ESync();
-#endif
+static int
+_TooltipMatchName(const void *data, const void *match)
+{
+   return strcmp(((const ToolTip *)data)->name, match);
+}
+
+ToolTip            *
+TooltipFind(const char *name)
+{
+   return ecore_list_find(tt_list, _TooltipMatchName, name);
 }
 
 /*
@@ -697,18 +715,9 @@ TooltipHide(ToolTip * tt)
 void
 TooltipsHide(void)
 {
-   ToolTip           **lst;
-   int                 i, j;
+   ToolTip            *tt;
 
-   lst = (ToolTip **) ListItemType(&j, LIST_TYPE_TOOLTIP);
-   if (lst)
-     {
-	for (i = 0; i < j; i++)
-	  {
-	     TooltipHide(lst[i]);
-	  }
-	Efree(lst);
-     }
+   ECORE_LIST_FOR_EACH(tt_list, tt) TooltipHide(tt);
 }
 
 void
@@ -736,7 +745,7 @@ ToolTipTimeout(int val __UNUSED__, void *data __UNUSED__)
    const char         *tts;
 
    if (!ttip)
-      ttip = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_TOOLTIP);
+      ttip = TooltipFind("DEFAULT");
    if (!ttip)
       return;
 
@@ -837,7 +846,7 @@ SettingsTooltips(void)
    Dialog             *d;
    DItem              *table, *di;
 
-   d = FindItem("CONFIGURE_TOOLTIPS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   d = DialogFind("CONFIGURE_TOOLTIPS");
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");

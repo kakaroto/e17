@@ -34,6 +34,7 @@ typedef int         (MenuLoader) (Menu * m);
 
 /* menus.c */
 int                 MenuStyleConfigLoad(FILE * fs);
+MenuStyle          *MenuStyleFind(const char *name);
 
 Menu               *MenuCreate(const char *name, const char *title,
 			       Menu * parent, MenuStyle * ms);

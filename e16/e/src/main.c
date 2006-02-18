@@ -127,9 +127,6 @@ main(int argc, char **argv)
    if (str)
       EDirUserCacheSet(str);
 
-   /* Set up the internal data lists used to find everything */
-   ListsInit(LIST_TYPE_COUNT);
-
    srand((unsigned int)time(NULL));
 
    if (!uname(&ubuf))

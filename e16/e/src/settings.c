@@ -48,7 +48,7 @@ SettingsMoveResize(void)
    Dialog             *d;
    DItem              *table, *di, *radio1, *radio2, *radio3;
 
-   d = FindItem("CONFIGURE_MOVERESIZE", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   d = DialogFind("CONFIGURE_MOVERESIZE");
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
@@ -237,7 +237,7 @@ SettingsPlacement(void)
    Dialog             *d;
    DItem              *table, *di, *radio;
 
-   d = FindItem("CONFIGURE_PLACEMENT", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   d = DialogFind("CONFIGURE_PLACEMENT");
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
@@ -433,7 +433,7 @@ SettingsAutoRaise(void)
    Dialog             *d;
    DItem              *table, *di;
 
-   d = FindItem("CONFIGURE_AUTORAISE", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   d = DialogFind("CONFIGURE_AUTORAISE");
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
@@ -501,8 +501,7 @@ SettingsMiscellaneous(void)
    Dialog             *d;
    DItem              *table, *di;
 
-   d = FindItem("CONFIGURE_MISCELLANEOUS", 0, LIST_FINDBY_NAME,
-		LIST_TYPE_DIALOG);
+   d = DialogFind("CONFIGURE_MISCELLANEOUS");
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
@@ -585,7 +584,7 @@ SettingsComposite(void)
    Dialog             *d;
    DItem              *table, *di, *radio;
 
-   d = FindItem("CONFIGURE_COMPOSITE", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   d = DialogFind("CONFIGURE_COMPOSITE");
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");

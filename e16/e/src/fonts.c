@@ -21,12 +21,27 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "e16-ecore_list.h"
 
 typedef struct
 {
    char               *name;
    char               *font;
 } FontAlias;
+
+static Ecore_List  *font_list = NULL;
+
+static void
+_FontAliasDestroy(void *data)
+{
+   FontAlias          *fa = data;
+
+   if (!fa)
+      return;
+   _EFREE(fa->name);
+   _EFREE(fa->font);
+   Efree(fa);
+}
 
 static FontAlias   *
 FontAliasCreate(const char *name, const char *font)
@@ -39,21 +54,21 @@ FontAliasCreate(const char *name, const char *font)
 
    fa->name = Estrdup(name);
    fa->font = Estrdup(font);
-   AddItem(fa, fa->name, 0, LIST_TYPE_FONT);
+
+   if (!font_list)
+     {
+	font_list = ecore_list_new();
+	ecore_list_set_free_cb(font_list, _FontAliasDestroy);
+     }
+   ecore_list_prepend(font_list, fa);
 
    return fa;
 }
 
-static void
-FontAliasDestroy(FontAlias * fa)
+static int
+_FontMatchName(const void *data, const void *match)
 {
-   if (!fa)
-      return;
-
-   RemoveItem(fa->name, 0, LIST_FINDBY_NAME, LIST_TYPE_FONT);
-   _EFREE(fa->name);
-   _EFREE(fa->font);
-   Efree(fa);
+   return strcmp(((const FontAlias *)data)->name, match);
 }
 
 const char         *
@@ -61,7 +76,7 @@ FontLookup(const char *name)
 {
    FontAlias          *fa;
 
-   fa = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_FONT);
+   fa = ecore_list_find(font_list, _FontMatchName, name);
 
    return (fa) ? fa->font : NULL;
 }
@@ -116,8 +131,6 @@ FontConfigLoad(FILE * fs)
 void
 FontConfigUnload(void)
 {
-   FontAlias          *fa;
-
-   while ((fa = RemoveItem(NULL, 0, LIST_FINDBY_NONE, LIST_TYPE_FONT)) != NULL)
-      FontAliasDestroy(fa);
+   ecore_list_destroy(font_list);
+   font_list = NULL;
 }

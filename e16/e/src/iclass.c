@@ -25,6 +25,7 @@
 #include "backgrounds.h"
 #include "conf.h"
 #include "desktops.h"
+#include "e16-ecore_list.h"
 #include "emodule.h"
 #include "iclass.h"
 #include "tclass.h"
@@ -84,6 +85,8 @@ struct _imageclass
 #endif
    unsigned int        ref_count;
 };
+
+static Ecore_List  *iclass_list = NULL;
 
 #ifdef ENABLE_THEME_TRANSPARENCY
 
@@ -324,6 +327,10 @@ ImageclassCreate(const char *name)
    if (!ic)
       return NULL;
 
+   if (!iclass_list)
+      iclass_list = ecore_list_new();
+   ecore_list_prepend(iclass_list, ic);
+
    ic->name = Estrdup(name);
    ic->norm.normal = ic->norm.hilited = ic->norm.clicked = ic->norm.disabled =
       NULL;
@@ -357,8 +364,8 @@ ImageclassDestroy(ImageClass * ic)
 		 ic->ref_count);
 	return;
      }
-   while (RemoveItemByPtr(ic, LIST_TYPE_ICLASS))
-      ;
+
+   ecore_list_remove_node(iclass_list, ic);
 
    if (ic->name)
       Efree(ic->name);
@@ -398,6 +405,12 @@ ImageclassGetPadding(ImageClass * ic)
    return (ic) ? &(ic->padding) : NULL;
 }
 
+static int
+_ImageclassMatchName(const void *data, const void *match)
+{
+   return strcmp(((const ImageClass *)data)->name, match);
+}
+
 ImageClass         *
 ImageclassFind(const char *name, int fallback)
 {
@@ -405,12 +418,12 @@ ImageclassFind(const char *name, int fallback)
 
    if (name)
      {
-	ic = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+	ic = ecore_list_find(iclass_list, _ImageclassMatchName, name);
 	if (ic || !fallback)
 	   return ic;
      }
 
-   ic = FindItem("__FALLBACK_ICLASS", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+   ic = ecore_list_find(iclass_list, _ImageclassMatchName, "__FALLBACK_ICLASS");
 
    return ic;
 }
@@ -547,7 +560,6 @@ ImageclassConfigLoad(FILE * fs)
 	  {
 	  case CONFIG_CLOSE:
 	     ImageclassPopulate(ic);
-	     AddItem(ic, ic->name, 0, LIST_TYPE_ICLASS);
 	     goto done;
 	  case ICLASS_LRTB:
 	     {
@@ -615,8 +627,11 @@ ImageclassConfigLoad(FILE * fs)
 	     break;
 	  case CONFIG_CLASSNAME:
 	  case ICLASS_NAME:
-	     if (ConfigSkipIfExists(fs, s2, LIST_TYPE_ICLASS))
-		goto done;
+	     if (ImageclassFind(s2, 0))
+	       {
+		  SkipTillEnd(fs);
+		  goto done;
+	       }
 	     ic = ImageclassCreate(s2);
 	     break;
 	  case CONFIG_DESKTOP:
@@ -725,7 +740,6 @@ ImageclassCreateSimple(const char *name, const char *image)
    ic->norm.normal->im_file = Estrdup(image);
    ic->norm.normal->unloadable = 1;
    ImageclassPopulate(ic);
-   AddItem(ic, ic->name, 0, LIST_TYPE_ICLASS);
 
    ImagestateRealize(ic->norm.normal);
 
@@ -1473,7 +1487,6 @@ ImageclassSetupFallback(void)
    ic->padding.bottom = 8;
 
    ImageclassPopulate(ic);
-   AddItem(ic, ic->name, 0, LIST_TYPE_ICLASS);
 
    /* Create all black image class for filler borders */
    ic = ImageclassCreate("__BLACK");
@@ -1486,7 +1499,6 @@ ImageclassSetupFallback(void)
    ESetColor(&(ic->norm.normal->lolo), 0, 0, 0);
 
    ImageclassPopulate(ic);
-   AddItem(ic, ic->name, 0, LIST_TYPE_ICLASS);
 }
 
 /*
@@ -1527,14 +1539,7 @@ ImageclassIpc(const char *params, Client * c __UNUSED__)
 
    if (!strncmp(param1, "list", 2))
      {
-	ImageClass        **lst;
-	int                 num, i;
-
-	lst = (ImageClass **) ListItemType(&num, LIST_TYPE_ICLASS);
-	for (i = 0; i < num; i++)
-	   IpcPrintf("%s\n", lst[i]->name);
-	if (lst)
-	   Efree(lst);
+	ECORE_LIST_FOR_EACH(iclass_list, ic) IpcPrintf("%s\n", ic->name);
 	return;
      }
 

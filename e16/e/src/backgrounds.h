@@ -27,6 +27,9 @@
 typedef struct _background Background;
 
 /* backgrounds.c */
+Background         *BackgroundFind(const char *name);
+Background         *BackgroundCheck(Background * bg);
+Background         *BackgroundGetRandom(void);
 char               *BackgroundGetUniqueString(const Background * bg);
 void                BackgroundPixmapSet(Background * bg, Pixmap pmap);
 void                BackgroundPixmapUnset(Background * bg, Pixmap pmap);

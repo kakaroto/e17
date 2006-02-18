@@ -64,17 +64,20 @@ struct _group
 };
 
 /* finders.c */
-Group             **ListWinGroups(const EWin * ewin, char group_select,
-				  int *num);
 EWin              **ListWinGroupMembersForEwin(const EWin * ewin, int action,
 					       char nogroup, int *num);
 
 /* groups.c */
-void                BuildWindowGroup(EWin ** ewins, int num);
+Group              *BuildWindowGroup(EWin ** ewins, int num);
 Group              *EwinsInGroup(const EWin * ewin1, const EWin * ewin2);
 void                AddEwinToGroup(EWin * ewin, Group * g);
+Group              *GroupFind(int gid);
+void                GroupSetId(Group * group, int gid);
 void                GroupsEwinRemove(EWin * ewin);
 void                SaveGroups(void);
+Group             **GroupsGetList(int *pnum);
+Group             **ListWinGroups(const EWin * ewin, char group_select,
+				  int *num);
 int                 GroupsGetSwapmove(void);
 
 #endif /* _GROUPS_H_ */

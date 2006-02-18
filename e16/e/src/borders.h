@@ -87,6 +87,7 @@ typedef struct _ewinbit
 EWinBit;
 
 /* borders.c */
+Border             *BorderFind(const char *name);
 void                BorderIncRefcount(const Border * b);
 void                BorderDecRefcount(const Border * b);
 const char         *BorderGetName(const Border * b);
@@ -104,6 +105,9 @@ void                EwinSetBorderByName(EWin * ewin, const char *name);
 int                 BorderWinpartIndex(EWin * ewin, Window win);
 Border             *BorderCreateFiller(int left, int right, int top,
 				       int bottom);
+void                BordersForeach(void (*func) (Border * b, void *data),
+				   void *data);
+Border            **BordersGetList(int *pnum);
 void                BordersSetupFallback(void);
 
 #endif /* _BORDERS_H_ */

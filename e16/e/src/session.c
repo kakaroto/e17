@@ -963,7 +963,7 @@ SessionLogoutConfirm(void)
    Dialog             *d;
    EWin               *ewin;
 
-   d = FindItem("LOGOUT_DIALOG", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   d = DialogFind("LOGOUT_DIALOG");
    if (!d)
      {
 	SoundPlay("SOUND_LOGOUT");
@@ -1092,7 +1092,7 @@ SettingsSession(void)
    Dialog             *d;
    DItem              *table, *di;
 
-   d = FindItem("CONFIGURE_SESSION", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   d = DialogFind("CONFIGURE_SESSION");
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");

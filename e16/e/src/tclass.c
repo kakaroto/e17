@@ -23,10 +23,13 @@
  */
 #include "E.h"
 #include "conf.h"
+#include "e16-ecore_list.h"
 #include "emodule.h"
 #include "iclass.h"
 #include "tclass.h"
 #include "xwin.h"
+
+static Ecore_List  *tclass_list = NULL;
 
 static char        *
 TextstateFontLookup(const char *name)
@@ -81,6 +84,10 @@ TextclassCreate(const char *name)
    tc = Ecalloc(1, sizeof(TextClass));
    if (!tc)
       return NULL;
+
+   if (!tclass_list)
+      tclass_list = ecore_list_new();
+   ecore_list_prepend(tclass_list, tc);
 
    tc->name = Estrdup(name);
    tc->justification = 512;
@@ -203,6 +210,12 @@ TextclassPopulate(TextClass * tclass)
       tclass->sticky_active.disabled = tclass->sticky_active.normal;
 }
 
+static int
+_TextclassMatchName(const void *data, const void *match)
+{
+   return strcmp(((const TextClass *)data)->name, match);
+}
+
 TextClass          *
 TextclassFind(const char *name, int fallback)
 {
@@ -210,12 +223,12 @@ TextclassFind(const char *name, int fallback)
 
    if (name)
      {
-	tc = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_TCLASS);
+	tc = ecore_list_find(tclass_list, _TextclassMatchName, name);
 	if (tc || !fallback)
 	   return tc;
      }
 
-   tc = FindItem("__FALLBACK_TCLASS", 0, LIST_FINDBY_NAME, LIST_TYPE_TCLASS);
+   tc = ecore_list_find(tclass_list, _TextclassMatchName, "__FALLBACK_TCLASS");
 
    return tc;
 }
@@ -257,15 +270,14 @@ TextclassConfigLoad(FILE * fs)
 	switch (i1)
 	  {
 	  case CONFIG_CLOSE:
-	     if (tc)
-	       {
-		  TextclassPopulate(tc);
-		  AddItem(tc, tc->name, 0, LIST_TYPE_TCLASS);
-	       }
+	     TextclassPopulate(tc);
 	     goto done;
 	  case CONFIG_CLASSNAME:
-	     if (ConfigSkipIfExists(fs, s2, LIST_TYPE_TCLASS))
-		goto done;
+	     if (TextclassFind(s2, 0))
+	       {
+		  SkipTillEnd(fs);
+		  goto done;
+	       }
 	     tc = TextclassCreate(s2);
 	     break;
 	  case TEXT_ORIENTATION:
@@ -495,7 +507,6 @@ TextclassSighan(int sig, void *prm __UNUSED__)
 	tc->norm.normal->fontname =
 	   Estrdup("-*-helvetica-medium-r-*-*-12-*-*-*-*-*-*-*");
 	ESetColor(&(tc->norm.normal->fg_col), 0, 0, 0);
-	AddItem(tc, tc->name, 0, LIST_TYPE_TCLASS);
 	break;
      }
 }
@@ -523,14 +534,7 @@ TextclassIpc(const char *params, Client * c __UNUSED__)
 
    if (!strncmp(param1, "list", 2))
      {
-	TextClass         **lst;
-	int                 num, i;
-
-	lst = (TextClass **) ListItemType(&num, LIST_TYPE_TCLASS);
-	for (i = 0; i < num; i++)
-	   IpcPrintf("%s\n", lst[i]->name);
-	if (lst)
-	   Efree(lst);
+	ECORE_LIST_FOR_EACH(tclass_list, tc) IpcPrintf("%s\n", tc->name);
 	return;
      }
 

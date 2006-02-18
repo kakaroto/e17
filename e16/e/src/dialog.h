@@ -57,6 +57,7 @@ typedef void        (DialogItemCallbackFunc) (int val, void *data);
 
 /* dialog.c */
 Dialog             *DialogCreate(const char *name);
+Dialog             *DialogFind(const char *name);
 void                DialogBindKey(Dialog * d, const char *key,
 				  DialogCallbackFunc * func, int val);
 void                DialogSetText(Dialog * d, const char *text);

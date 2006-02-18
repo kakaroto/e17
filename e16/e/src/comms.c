@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "e16-ecore_list.h"
 #include "ecore-e16.h"
 #include "xwin.h"
 
@@ -35,6 +36,8 @@ struct _client
    char               *info;
    char                replied;
 };
+
+static Ecore_List  *client_list = NULL;
 
 static Window       comms_win = 0;
 
@@ -58,8 +61,11 @@ ClientCreate(Window win)
    c->win = win;
    ERegisterWindow(win);
    EventCallbackRegister(win, 0, ClientHandleEvents, c);
-   AddItem(c, st, win, LIST_TYPE_CLIENT);
    XSelectInput(disp, win, StructureNotifyMask | SubstructureNotifyMask);
+
+   if (!client_list)
+      client_list = ecore_list_new();
+   ecore_list_prepend(client_list, c);
 
    return c;
 }
@@ -67,15 +73,13 @@ ClientCreate(Window win)
 static void
 ClientDestroy(Client * c)
 {
-   Window              win;
-
    if (!c)
       return;
 
-   win = c->win;
-   RemoveItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_CLIENT);
-   EventCallbackUnregister(win, 0, ClientHandleEvents, c);
-   EUnregisterWindow(win);
+   ecore_list_remove_node(client_list, c);
+
+   EventCallbackUnregister(c->win, 0, ClientHandleEvents, c);
+   EUnregisterWindow(c->win);
    if (c->name)
       Efree(c->name);
    if (c->msg)
@@ -141,6 +145,12 @@ ClientConfigure(Client * c, const char *str)
    return 0;
 }
 
+static int
+ClientMatchWindow(const void *data, const void *match)
+{
+   return ((const Client *)data)->win != (Window) match;
+}
+
 static char        *
 ClientCommsGet(Client ** c, XClientMessageEvent * ev)
 {
@@ -162,7 +172,7 @@ ClientCommsGet(Client ** c, XClientMessageEvent * ev)
    for (i = 0; i < 12; i++)
       s[i] = ev->data.b[i + 8];
    sscanf(s2, "%lx", &win);
-   cl = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_CLIENT);
+   cl = ecore_list_find(client_list, ClientMatchWindow, (void *)win);
    if (!cl)
      {
 	cl = ClientCreate(win);
@@ -334,6 +344,7 @@ CommsSendToMasterWM(const char *s)
    CommsDoSend(RootWindow(disp, Mode.wm.master_screen), s);
 }
 
+#if 0				/* Unused */
 /*
  * When we are running in multi-head, connect to the slave wm processes
  * and broadcast the message
@@ -371,3 +382,4 @@ CommsBroadcast(const char *s)
      }
    StrlistFree(l, num);
 }
+#endif

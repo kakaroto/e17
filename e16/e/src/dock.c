@@ -126,7 +126,7 @@ DockIt(EWin * ewin)
 {
    ImageClass         *ic;
 
-   ic = FindItem("DEFAULT_DOCK_BUTTON", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+   ic = ImageclassFind("DEFAULT_DOCK_BUTTON", 1);
 
    if (Conf.dock.sticky)
       EoSetSticky(ewin, 1);

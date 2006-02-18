@@ -26,6 +26,7 @@
 #include "backgrounds.h"
 #include "desktops.h"
 #include "dialog.h"
+#include "e16-ecore_list.h"
 #include "emodule.h"
 #include "iclass.h"
 #include "tclass.h"
@@ -57,6 +58,8 @@ struct _background
    unsigned int        ref_count;	/* bg */
    unsigned int        use_count;	/* pmap */
 };
+
+static Ecore_List  *bg_list = NULL;
 
 char               *
 BackgroundGetUniqueString(const Background * bg)
@@ -257,7 +260,8 @@ BackgroundDestroy(Background * bg)
 	return -1;
      }
 
-   RemoveItemByPtr(bg, LIST_TYPE_BACKGROUND);
+   ecore_list_remove_node(bg_list, bg);
+
    BackgroundFilesRemove(bg);
    BackgroundPixmapFree(bg);
 
@@ -310,6 +314,10 @@ BackgroundCreate(const char *name, XColor * solid, const char *bgn, char tile,
    if (!bg)
       return NULL;
 
+   if (!bg_list)
+      bg_list = ecore_list_new();
+   ecore_list_prepend(bg_list, bg);
+
    bg->name = Estrdup(name);
 
    ESetColor(&(bg->bg_solid), 160, 160, 160);
@@ -332,15 +340,31 @@ BackgroundCreate(const char *name, XColor * solid, const char *bgn, char tile,
    bg->top.xperc = txperc;
    bg->top.yperc = typerc;
 
-   AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
-
    return bg;
+}
+
+static int
+_BackgroundMatchName(const void *data, const void *match)
+{
+   return strcmp(((const Background *)data)->name, match);
+}
+
+Background         *
+BackgroundFind(const char *name)
+{
+   return ecore_list_find(bg_list, _BackgroundMatchName, name);
+}
+
+Background         *
+BackgroundCheck(Background * bg)
+{
+   return ecore_list_goto(bg_list, bg);
 }
 
 void
 BackgroundDestroyByName(const char *name)
 {
-   BackgroundDestroy(FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND));
+   BackgroundDestroy(BackgroundFind(name));
 }
 
 static void
@@ -862,7 +886,7 @@ BrackgroundCreateFromImage(const char *bgid, const char *file,
    int                 maxw = 48, maxh = 48;
    int                 justx = 512, justy = 512;
 
-   bg = FindItem(bgid, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
+   bg = BackgroundFind(bgid);
 
    if (thumb)
      {
@@ -1113,14 +1137,28 @@ BackgroundGetInfoString2(const Background * bg, char *buf, int len)
 void
 BackgroundsInvalidate(int refresh)
 {
-   int                 i, num;
-   Background        **lst;
+   Background         *bg;
 
-   lst = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
-   for (i = 0; i < num; i++)
-      BackgroundInvalidate(lst[i], refresh);
-   if (lst)
-      Efree(lst);
+   ECORE_LIST_FOR_EACH(bg_list, bg) BackgroundInvalidate(bg, refresh);
+}
+
+Background         *
+BackgroundGetRandom(void)
+{
+   Background         *bg;
+   int                 num;
+   unsigned int        rnd;
+
+   num = ecore_list_nodes(bg_list);
+   for (;;)
+     {
+	rnd = rand();
+	bg = ecore_list_goto_index(bg_list, rnd % num);
+	if (num <= 1 || !BackgroundIsNone(bg))
+	   break;
+     }
+
+   return bg;
 }
 
 /*
@@ -1230,7 +1268,7 @@ BackgroundsConfigLoad(FILE * fs)
 
 	  case CONFIG_CLASSNAME:
 	  case BG_NAME:
-	     bg = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
+	     bg = BackgroundFind(s2);
 	     if (bg)
 	       {
 		  ignore = 1;
@@ -1349,12 +1387,11 @@ BackgroundsConfigSave(void)
 {
    char                s[FILEPATH_LEN_MAX], st[FILEPATH_LEN_MAX];
    FILE               *fs;
-   int                 i, num;
-   Background        **bglist;
+   Background         *bg;
    unsigned int        j;
-   int                 r, g, b;
+   int                 i, num, r, g, b;
 
-   bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
+   num = ecore_list_nodes(bg_list);
    if (num <= 0)
       return;
 
@@ -1365,55 +1402,56 @@ BackgroundsConfigSave(void)
 
    for (i = num - 1; i >= 0; i--)
      {
+	bg = ecore_list_goto_index(bg_list, i);
+	if (!bg)
+	   continue;
+
 	fprintf(fs, "5 999\n");
 
-	fprintf(fs, "100 %s\n", bglist[i]->name);
-	EGetColor(&(bglist[i]->bg_solid), &r, &g, &b);
+	fprintf(fs, "100 %s\n", bg->name);
+	EGetColor(&(bg->bg_solid), &r, &g, &b);
 	fprintf(fs, "560 %d %d %d\n", r, g, b);
 
-	if ((bglist[i]->bg.file) && (!bglist[i]->bg.real_file))
-	   bglist[i]->bg.real_file = ThemeFileFind(bglist[i]->bg.file, 0);
+	if ((bg->bg.file) && (!bg->bg.real_file))
+	   bg->bg.real_file = ThemeFileFind(bg->bg.file, 0);
 
-	if ((bglist[i]->top.file) && (!bglist[i]->top.real_file))
-	   bglist[i]->top.real_file = ThemeFileFind(bglist[i]->top.file, 0);
+	if ((bg->top.file) && (!bg->top.real_file))
+	   bg->top.real_file = ThemeFileFind(bg->top.file, 0);
 
-	if ((bglist[i]->bg.file) && (bglist[i]->bg.real_file))
+	if ((bg->bg.file) && (bg->bg.real_file))
 	  {
 	     fprintf(fs, "561 %s %d %d %d %d %d %d\n",
-		     bglist[i]->bg.real_file, bglist[i]->bg_tile,
-		     bglist[i]->bg.keep_aspect, bglist[i]->bg.xjust,
-		     bglist[i]->bg.yjust, bglist[i]->bg.xperc,
-		     bglist[i]->bg.yperc);
+		     bg->bg.real_file, bg->bg_tile,
+		     bg->bg.keep_aspect, bg->bg.xjust,
+		     bg->bg.yjust, bg->bg.xperc, bg->bg.yperc);
 	  }
-	else if (bglist[i]->bg.file)
+	else if (bg->bg.file)
 	  {
 	     fprintf(fs, "561 %s %d %d %d %d %d %d\n",
-		     bglist[i]->bg.file, bglist[i]->bg_tile,
-		     bglist[i]->bg.keep_aspect, bglist[i]->bg.xjust,
-		     bglist[i]->bg.yjust, bglist[i]->bg.xperc,
-		     bglist[i]->bg.yperc);
+		     bg->bg.file, bg->bg_tile,
+		     bg->bg.keep_aspect, bg->bg.xjust,
+		     bg->bg.yjust, bg->bg.xperc, bg->bg.yperc);
 	  }
 
-	if ((bglist[i]->top.file) && (bglist[i]->top.real_file))
+	if ((bg->top.file) && (bg->top.real_file))
 	  {
 	     fprintf(fs, "562 %s %d %d %d %d %d\n",
-		     bglist[i]->top.real_file,
-		     bglist[i]->top.keep_aspect, bglist[i]->top.xjust,
-		     bglist[i]->top.yjust, bglist[i]->top.xperc,
-		     bglist[i]->top.yperc);
+		     bg->top.real_file,
+		     bg->top.keep_aspect, bg->top.xjust,
+		     bg->top.yjust, bg->top.xperc, bg->top.yperc);
 	  }
-	else if (bglist[i]->top.file)
+	else if (bg->top.file)
 	  {
 	     fprintf(fs, "562 %s %d %d %d %d %d\n",
-		     bglist[i]->top.file, bglist[i]->top.keep_aspect,
-		     bglist[i]->top.xjust, bglist[i]->top.yjust,
-		     bglist[i]->top.xperc, bglist[i]->top.yperc);
+		     bg->top.file, bg->top.keep_aspect,
+		     bg->top.xjust, bg->top.yjust, bg->top.xperc,
+		     bg->top.yperc);
 	  }
 
 #if ENABLE_COLOR_MODIFIERS
-	if (bglist[i]->cmclass)
+	if (bg->cmclass)
 	  {
-	     fprintf(fs, "370 %s\n", bglist[i]->cmclass->name);
+	     fprintf(fs, "370 %s\n", bg->cmclass->name);
 	  }
 #endif
 
@@ -1421,9 +1459,9 @@ BackgroundsConfigSave(void)
 	  {
 	     Desk               *dsk = DeskGet(j);
 
-	     if (BackgroundIsNone(bglist[i]) && !DeskBackgroundGet(dsk))
+	     if (BackgroundIsNone(bg) && !DeskBackgroundGet(dsk))
 		fprintf(fs, "564 %d\n", j);
-	     if (DeskBackgroundGet(dsk) == bglist[i])
+	     if (DeskBackgroundGet(dsk) == bg)
 		fprintf(fs, "564 %d\n", j);
 	  }
 
@@ -1434,8 +1472,6 @@ BackgroundsConfigSave(void)
 
    Esnprintf(s, sizeof(s), "%s.backgrounds", EGetSavePrefix());
    E_mv(st, s);
-
-   Efree(bglist);
 }
 
 /*
@@ -1445,13 +1481,10 @@ BackgroundsConfigSave(void)
 static void
 BackgroundsAccounting(void)
 {
-   time_t              now;
-   int                 i, num;
    unsigned int        j;
-   Background        **lst, *bg;
    Desk               *dsk;
-
-   now = time(NULL);
+   Background         *bg;
+   time_t              now;
 
    for (j = 0; j < DesksGetNumber(); j++)
      {
@@ -1460,22 +1493,18 @@ BackgroundsAccounting(void)
 	   BackgroundTouch(DeskBackgroundGet(dsk));
      }
 
-   lst = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
-   for (i = 0; i < num; i++)
-     {
-	bg = lst[i];
+   now = time(NULL);
+   ECORE_LIST_FOR_EACH(bg_list, bg)
+   {
+      /* Skip if no pixmap or not timed out */
+      if ((bg->pmap == None) ||
+	  ((now - BackgroundGetTimestamp(bg)) <= Conf.backgrounds.timeout))
+	 continue;
 
-	/* Skip if no pixmap or not timed out */
-	if ((bg->pmap == None) ||
-	    ((now - BackgroundGetTimestamp(bg)) <= Conf.backgrounds.timeout))
-	   continue;
-
-	if (bg->ref_count)
-	   DesksBackgroundFree(bg, 0);
-	BackgroundPixmapFree(bg);
-     }
-   if (lst)
-      Efree(lst);
+      if (bg->ref_count)
+	 DesksBackgroundFree(bg, 0);
+      BackgroundPixmapFree(bg);
+   }
 }
 
 static void
@@ -1740,13 +1769,28 @@ CB_ConfigureNewBG(Dialog * d __UNUSED__, int val __UNUSED__,
 static void
 CB_ConfigureDelBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 {
-   Background        **bglist, *bg;
+   Background         *bg;
    int                 i, num;
    int                 slider, lower, upper;
 
-   bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
-   if (!bglist || num <= 1)
-      goto done;
+   num = ecore_list_nodes(bg_list);
+   if (num <= 1)
+      return;
+
+   bg = ecore_list_goto(bg_list, tmp_bg);
+   if (!bg)
+      return;
+
+   i = ecore_list_index(bg_list);
+   bg = ecore_list_goto_index(bg_list, (i < num - 1) ? i + 1 : i - 1);
+
+   DeskBackgroundSet(DesksGetCurrent(), bg);
+
+   if (val == 0)
+      BackgroundDestroy(tmp_bg);
+   else
+      BackgroundDelete(tmp_bg);
+   tmp_bg = NULL;
 
    DialogItemSliderGetBounds(bg_sel_slider, &lower, &upper);
    slider = DialogItemSliderGetVal(bg_sel_slider);
@@ -1755,33 +1799,9 @@ CB_ConfigureDelBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
    if (slider > upper)
       DialogItemSliderSetVal(bg_sel_slider, upper);
 
-   bg = NULL;
-   for (i = 0; i < num; i++)
-     {
-	if (bglist[i] == tmp_bg)
-	  {
-	     if (i < (num - 1))
-		bg = bglist[i + 1];
-	     else
-		bg = bglist[i - 1];
-	     break;
-	  }
-     }
-
-   DeskBackgroundSet(DesksGetCurrent(), bg);
-   if (val == 0)
-      BackgroundDestroy(tmp_bg);
-   else
-      BackgroundDelete(tmp_bg);
-   tmp_bg = NULL;
-
    BgDialogSetNewCurrent(bg);
 
    autosave();
-
- done:
-   if (bglist)
-      Efree(bglist);
 }
 
 /* Move current background to first position in list */
@@ -1789,28 +1809,24 @@ static void
 CB_ConfigureFrontBG(Dialog * d __UNUSED__, int val __UNUSED__,
 		    void *data __UNUSED__)
 {
-   MoveItemToListTop(tmp_bg, LIST_TYPE_BACKGROUND);
+   ecore_list_prepend(bg_list, ecore_list_remove_node(bg_list, tmp_bg));
    BG_RedrawView();
    autosave();
 }
-
-static int          tmp_bg_selected = -1;
 
 /* Draw the scrolling background image window */
 static void
 BG_RedrawView(void)
 {
-   int                 num, i;
-   Background        **bglist;
-   int                 w, h;
+   Background         *bg;
+   int                 x, w, h, num;
    Window              win;
-   int                 x;
    Pixmap              pmap;
    GC                  gc;
    ImageClass         *ic_button;
 
-   bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
-   if (!bglist)
+   num = ecore_list_nodes(bg_list);
+   if (num <= 0)
       return;
 
    win = DialogItemAreaGetWindow(bg_sel);
@@ -1827,51 +1843,50 @@ BG_RedrawView(void)
 
    x = -(num * (64 + 8) - w) * tmp_bg_sel_sliderval / (4 * num);
 
-   for (i = 0; i < num; i++)
-     {
-	if (((x + 64 + 8) >= 0) && (x < w))
-	  {
-	     Imlib_Image        *im;
+   ECORE_LIST_FOR_EACH(bg_list, bg)
+   {
+      if (((x + 64 + 8) >= 0) && (x < w))
+	{
+	   Imlib_Image        *im;
 
-	     if (ic_button)
-		ImageclassApplySimple(ic_button, win, pmap,
-				      (i == tmp_bg_selected) ?
-				      STATE_CLICKED : STATE_NORMAL,
-				      x, 0, 64 + 8, 48 + 8);
+	   if (ic_button)
+	      ImageclassApplySimple(ic_button, win, pmap,
+				    (bg == tmp_bg) ?
+				    STATE_CLICKED : STATE_NORMAL,
+				    x, 0, 64 + 8, 48 + 8);
 
-	     if (BackgroundIsNone(bglist[i]))
-	       {
-		  TextClass          *tc;
+	   if (BackgroundIsNone(bg))
+	     {
+		TextClass          *tc;
 
-		  tc = TextclassFind("DIALOG", 1);
-		  if (tc)
-		    {
-		       int                 tw, th;
+		tc = TextclassFind("DIALOG", 1);
+		if (tc)
+		  {
+		     int                 tw, th;
 
-		       TextSize(tc, 0, 0, STATE_NORMAL,
-				_("No\nBackground"), &tw, &th, 17);
-		       TextDraw(tc, pmap, 0, 0, STATE_NORMAL,
-				_("No\nBackground"), x + 4,
-				4 + ((48 - th) / 2), 64, 48, 17, 512);
-		    }
-	       }
-	     else
-	       {
-		  im = BackgroundCacheMini(bglist[i], 1, 0);
-		  if (im)
-		    {
-		       imlib_context_set_image(im);
-		       imlib_context_set_drawable(pmap);
-		       imlib_render_image_on_drawable_at_size(x + 4, 4, 64, 48);
-		       imlib_free_image();
-		    }
-	       }
-	  }
-	x += (64 + 8);
-     }
+		     TextSize(tc, 0, 0, STATE_NORMAL,
+			      _("No\nBackground"), &tw, &th, 17);
+		     TextDraw(tc, pmap, 0, 0, STATE_NORMAL,
+			      _("No\nBackground"), x + 4,
+			      4 + ((48 - th) / 2), 64, 48, 17, 512);
+		  }
+	     }
+	   else
+	     {
+		im = BackgroundCacheMini(bg, 1, 0);
+		if (im)
+		  {
+		     imlib_context_set_image(im);
+		     imlib_context_set_drawable(pmap);
+		     imlib_render_image_on_drawable_at_size(x + 4, 4, 64, 48);
+		     imlib_free_image();
+		  }
+	     }
+	}
+      x += (64 + 8);
+   }
    EFreeGC(gc);
    EFreePixmap(pmap);
-   Efree(bglist);
 
    EClearWindow(win);
 }
@@ -1906,7 +1921,7 @@ static void
 CB_BGAreaEvent(int val __UNUSED__, void *data)
 {
    int                 x, num, w, h;
-   Background        **bglist;
+   Background         *bg;
    XEvent             *ev = (XEvent *) data;
 
    DialogItemAreaGetSize(bg_sel, &w, &h);
@@ -1914,20 +1929,15 @@ CB_BGAreaEvent(int val __UNUSED__, void *data)
    switch (ev->type)
      {
      case ButtonPress:
-	bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
-	if (!bglist)
-	   break;
-
+	num = ecore_list_nodes(bg_list);
 	x = (num * (64 + 8) - w) * tmp_bg_sel_sliderval / (4 * num) +
 	   ev->xbutton.x;
-	tmp_bg_selected = x / (64 + 8);
-	if ((tmp_bg_selected >= 0) && (tmp_bg_selected < num))
-	  {
-	     BgDialogSetNewCurrent(bglist[tmp_bg_selected]);
-	     DeskBackgroundSet(DesksGetCurrent(), tmp_bg);
-	     autosave();
-	  }
-	Efree(bglist);
+	bg = ecore_list_goto_index(bg_list, x / (64 + 8));
+	if (!bg || bg == DeskBackgroundGet(DesksGetCurrent()))
+	   break;
+	BgDialogSetNewCurrent(bg);
+	DeskBackgroundSet(DesksGetCurrent(), bg);
+	autosave();
 	break;
      }
 }
@@ -1950,70 +1960,43 @@ CB_DesktopTimeout(Dialog * d __UNUSED__, int val __UNUSED__, void *data)
 static void
 BGSettingsGoTo(Background * bg)
 {
-   Background        **bglist;
    int                 i, num;
 
-   if (!FindItem("CONFIGURE_BG", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG))
+   if (!DialogFind("CONFIGURE_BG"))
       return;
 
-   bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
-   if (!bglist)
+   bg = ecore_list_goto(bg_list, bg);
+   if (!bg)
       return;
 
-   for (i = 0; i < num; i++)
-     {
-	if (bglist[i] == bg)
-	  {
-	     DialogItemSliderSetVal(bg_sel_slider, 4 * i);
-	     DialogDrawItems(bg_sel_dialog, bg_sel_slider, 0, 0, 99999, 99999);
-	     DialogItemCallCallback(NULL, bg_sel_slider);
-	     tmp_bg_selected = i;
-	     BgDialogSetNewCurrent(bglist[tmp_bg_selected]);
-	     tmp_bg_selected = -1;
-	     break;
-	  }
-     }
-   Efree(bglist);
+   i = ecore_list_index(bg_list);
+   num = ecore_list_nodes(bg_list);
+   i = ((4 * num + 20) * i) / num - 8;
+   if (i < 0)
+      i = 0;
+   else if (i > 4 * num)
+      i = 4 * num;
+   DialogItemSliderSetVal(bg_sel_slider, i);
+   DialogDrawItems(bg_sel_dialog, bg_sel_slider, 0, 0, 99999, 99999);
+   DialogItemCallCallback(NULL, bg_sel_slider);
+   BgDialogSetNewCurrent(bg);
 }
 
 static void
-CB_BGPrev(Dialog * d __UNUSED__, int val __UNUSED__, void *data __UNUSED__)
+CB_BGNext(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 {
-   Background        **bglist;
-   int                 i, num;
+   Background         *bg;
 
-   bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
-   for (i = 0; i < num; i++)
-     {
-	if ((bglist[i] == tmp_bg) && (i > 0))
-	  {
-	     BGSettingsGoTo(bglist[i - 1]);
-	     DeskBackgroundSet(DesksGetCurrent(), bglist[i - 1]);
-	     break;
-	  }
-     }
-   if (bglist)
-      Efree(bglist);
-}
+   bg = ecore_list_goto(bg_list, tmp_bg);
+   if (!bg)
+      return;
 
-static void
-CB_BGNext(Dialog * d __UNUSED__, int val __UNUSED__, void *data __UNUSED__)
-{
-   Background        **bglist;
-   int                 i, num;
+   bg = ecore_list_goto_index(bg_list, ecore_list_index(bg_list) + val);
+   if (!bg)
+      return;
 
-   bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
-   for (i = 0; i < num; i++)
-     {
-	if ((bglist[i] == tmp_bg) && (i < (num - 1)))
-	  {
-	     BGSettingsGoTo(bglist[i + 1]);
-	     DeskBackgroundSet(DesksGetCurrent(), bglist[i + 1]);
-	     break;
-	  }
-     }
-   if (bglist)
-      Efree(bglist);
+   BGSettingsGoTo(bg);
+   DeskBackgroundSet(DesksGetCurrent(), bg);
 }
 
 static int
@@ -2044,22 +2027,17 @@ CB_BGSortFile(Dialog * d __UNUSED__, int val __UNUSED__, void *data __UNUSED__)
    Background        **bglist;
    int                 i, num;
 
-   bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
+   bglist = (Background **) ecore_list_items_get(bg_list, &num);
    if (!bglist)
       return;
 
    /* remove them all from the list */
    for (i = 0; i < num; i++)
-      RemoveItemByPtr(bglist[i], LIST_TYPE_BACKGROUND);
+      ecore_list_remove_node(bg_list, bglist[i]);
    Quicksort((void **)bglist, 0, num - 1,
 	     (int (*)(void *d1, void *d2))BG_SortFileCompare);
    for (i = 0; i < num; i++)
-     {
-	Background         *bg;
-
-	bg = bglist[i];
-	AddItem(bg, BackgroundGetName(bg), 0, LIST_TYPE_BACKGROUND);
-     }
+      ecore_list_prepend(bg_list, bglist[i]);
    Efree(bglist);
 
    BGSettingsGoTo(tmp_bg);
@@ -2074,13 +2052,13 @@ CB_BGSortAttrib(Dialog * d __UNUSED__, int val __UNUSED__,
    Background        **bglist;
    int                 i, num;
 
-   bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
+   bglist = (Background **) ecore_list_items_get(bg_list, &num);
    if (!bglist)
       return;
 
    /* remove them all from the list */
    for (i = 0; i < num; i++)
-      RemoveItemByPtr(bglist[i], LIST_TYPE_BACKGROUND);
+      ecore_list_remove_node(bg_list, bglist[i]);
    for (i = 0; i < num; i++)
      {
 	Background         *bg;
@@ -2088,7 +2066,7 @@ CB_BGSortAttrib(Dialog * d __UNUSED__, int val __UNUSED__,
 	bg = bglist[i];
 	if ((bg) && (bg->bg_tile) && (bg->bg.xperc == 0) && (bg->bg.yperc == 0))
 	  {
-	     AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
+	     ecore_list_prepend(bg_list, bg);
 	     bglist[i] = NULL;
 	  }
      }
@@ -2099,7 +2077,7 @@ CB_BGSortAttrib(Dialog * d __UNUSED__, int val __UNUSED__,
 	bg = bglist[i];
 	if (bg)
 	  {
-	     AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
+	     ecore_list_prepend(bg_list, bg);
 	     bglist[i] = NULL;
 	  }
      }
@@ -2117,21 +2095,17 @@ CB_BGSortContent(Dialog * d __UNUSED__, int val __UNUSED__,
    Background        **bglist;
    int                 i, num;
 
-   bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
-   if (bglist)
-     {
-	/* remove them all from the list */
-	for (i = 0; i < num; i++)
-	   RemoveItemByPtr(bglist[i], LIST_TYPE_BACKGROUND);
-	for (i = 0; i < num; i++)
-	  {
-	     Background         *bg;
+   bglist = (Background **) ecore_list_items_get(bg_list, &num);
+   if (!bglist)
+      return;
 
-	     bg = bglist[i];
-	     AddItem(bg, BackgroundGetName(bg), 0, LIST_TYPE_BACKGROUND);
-	  }
-	Efree(bglist);
-     }
+   /* remove them all from the list */
+   for (i = 0; i < num; i++)
+      ecore_list_remove_node(bg_list, bglist[i]);
+   for (i = 0; i < num; i++)
+      ecore_list_prepend(bg_list, bglist[i]);
+   Efree(bglist);
+
    autosave();
 }
 
@@ -2144,7 +2118,7 @@ SettingsBackground(Background * bg)
    int                 num;
    char                s[1024];
 
-   d = FindItem("CONFIGURE_BG", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   d = DialogFind("CONFIGURE_BG");
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
@@ -2355,16 +2329,16 @@ SettingsBackground(Background * bg)
    di = DialogAddItem(table2, DITEM_BUTTON);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetText(di, "<-");
-   DialogItemSetCallback(di, CB_BGPrev, 0, NULL);
-   DialogBindKey(d, "Left", CB_BGPrev, 0);
-   DialogBindKey(d, "BackSpace", CB_BGPrev, 0);
+   DialogItemSetCallback(di, CB_BGNext, -1, NULL);
+   DialogBindKey(d, "Left", CB_BGNext, -1);
+   DialogBindKey(d, "BackSpace", CB_BGNext, -1);
 
    di = DialogAddItem(table2, DITEM_BUTTON);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetText(di, "->");
-   DialogItemSetCallback(di, CB_BGNext, 0, NULL);
-   DialogBindKey(d, "Right", CB_BGNext, 0);
-   DialogBindKey(d, "space", CB_BGNext, 0);
+   DialogItemSetCallback(di, CB_BGNext, 1, NULL);
+   DialogBindKey(d, "Right", CB_BGNext, 1);
+   DialogBindKey(d, "space", CB_BGNext, 1);
 
    di = DialogAddItem(table, DITEM_BUTTON);
    DialogItemSetFill(di, 0, 0);
@@ -2394,14 +2368,7 @@ SettingsBackground(Background * bg)
    DialogItemAreaSetSize(di, 160, 56);
    DialogItemAreaSetEventFunc(di, CB_BGAreaEvent);
 
-   num = 0;
-   {
-      Background        **bglist;
-
-      bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
-      if (bglist)
-	 Efree(bglist);
-   }
+   num = ecore_list_nodes(bg_list);
    di = bg_sel_slider = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetColSpan(di, 3);
    DialogItemSliderSetBounds(di, 0, num * 4);
@@ -2420,7 +2387,6 @@ SettingsBackground(Background * bg)
    ShowDialog(d);
 
    CB_DesktopMiniDisplayRedraw(NULL, 1, area);
-   BG_RedrawView();
    BGSettingsGoTo(tmp_bg);
 }
 
@@ -2440,7 +2406,7 @@ BackgroundSet1(const char *name, const char *params)
    if (!p)
       return;
 
-   bg = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
+   bg = BackgroundFind(name);
    if (!bg)
      {
 	bg = BackgroundCreate(name, NULL, NULL, 0, 0, 0,
@@ -2552,7 +2518,7 @@ BackgroundSet2(const char *name, const char *params)
 	      topf, &tkeep_aspect, &txjust, &tyjust, &txperc, &typerc);
    ESetColor(&xclr, r, g, b);
 
-   bg = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
+   bg = BackgroundFind(name);
    if (bg)
      {
 	BackgroundModify(bg, &xclr, bgf, tile, keep_aspect, xjust,
@@ -2599,7 +2565,7 @@ BackgroundsIpc(const char *params, Client * c __UNUSED__)
      {
 	Window              win;
 
-	bg = FindItem(prm, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
+	bg = BackgroundFind(prm);
 	if (bg)
 	  {
 	     win = None;
@@ -2618,19 +2584,11 @@ BackgroundsIpc(const char *params, Client * c __UNUSED__)
      }
    else if (!strncmp(cmd, "list", 2))
      {
-	Background        **lst;
-
-	lst = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
-	for (i = 0; i < num; i++)
-	  {
-	     IpcPrintf("%s\n", BackgroundGetName(lst[i]));
-	  }
-	if (lst)
-	   Efree(lst);
+	ECORE_LIST_FOR_EACH(bg_list, bg) IpcPrintf("%s\n", bg->name);
      }
    else if (!strncmp(cmd, "load", 2))
      {
-	bg = FindItem(prm, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
+	bg = BackgroundFind(prm);
 	if (bg)
 	  {
 	     IpcPrintf("Background already defined\n");
@@ -2646,7 +2604,7 @@ BackgroundsIpc(const char *params, Client * c __UNUSED__)
      }
    else if (!strncmp(cmd, "show", 2))
      {
-	bg = FindItem(prm, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
+	bg = BackgroundFind(prm);
 
 	if (bg)
 	  {
@@ -2661,7 +2619,7 @@ BackgroundsIpc(const char *params, Client * c __UNUSED__)
 	if (!strcmp(prm, "-"))
 	   bg = NULL;
 	else
-	   bg = FindItem(prm, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
+	   bg = BackgroundFind(prm);
 
 	num = DesksGetCurrentNum();
 	sscanf(p, "%d %n", &num, &len);
@@ -2670,7 +2628,7 @@ BackgroundsIpc(const char *params, Client * c __UNUSED__)
      }
    else if (!strncmp(cmd, "xget", 2))
      {
-	bg = FindItem(prm, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
+	bg = BackgroundFind(prm);
 
 	if (bg)
 	  {
@@ -2700,7 +2658,7 @@ IPC_BackgroundUse(const char *params, Client * c __UNUSED__)
 
    word(params, 1, param1);
 
-   bg = FindItem(param1, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
+   bg = BackgroundFind(param1);
    if (!bg)
       return;
 
@@ -2729,7 +2687,7 @@ IPC_BackgroundColormodifierSet(const char *params, Client * c __UNUSED__)
       return;
 
    sscanf(params, "%1000s %1000s", buf, buf2);
-   bg = FindItem(buf, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
+   bg = BackgroundFind(buf);
    cm = FindItem(buf2, 0, LIST_FINDBY_NAME, LIST_TYPE_COLORMODIFIER);
    if ((bg) && (bg->cmclass != cm))
      {
@@ -2758,7 +2716,7 @@ IPC_BackgroundColormodifierGet(const char *params, Client * c)
       return;
 
    sscanf(params, "%1000s", param1);
-   bg = FindItem(param1, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
+   bg = BackgroundFind(param1);
    Esnprintf(buf, sizeof(buf), "(null)");
    if ((bg) && (bg->cmclass))
       Esnprintf(buf, sizeof(buf), "%s", bg->cmclass->name);

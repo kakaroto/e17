@@ -25,6 +25,7 @@
 #include "backgrounds.h"
 #include "desktops.h"
 #include "dialog.h"
+#include "e16-ecore_list.h"
 #include "emodule.h"
 #include "ewins.h"
 #include "groups.h"
@@ -86,12 +87,14 @@ typedef struct
 static void         PagerScanCancel(Pager * p);
 static void         PagerScanTimeout(int val, void *data);
 static void         PagerUpdateTimeout(int val, void *data);
-static void         PagerCheckUpdate(Pager * p);
+static void         PagerCheckUpdate(Pager * p, void *prm);
 static void         PagerEwinUpdateFromPager(Pager * p, EWin * ewin);
 static void         PagerHiwinHide(void);
 static void         PagerEwinGroupSet(void);
 static void         PagerEvent(XEvent * ev, void *prm);
 static void         PagerHiwinEvent(XEvent * ev, void *prm);
+
+static Ecore_List  *pager_list = NULL;
 
 static char         pager_update_pending = 0;
 
@@ -106,6 +109,13 @@ PagerCreate(void)
       return NULL;
 
    p = Ecalloc(1, sizeof(Pager));
+   if (!p)
+      return NULL;
+
+   if (!pager_list)
+      pager_list = ecore_list_new();
+   ecore_list_append(pager_list, p);
+
    p->name = NULL;
    p->win = ECreateWindow(VRoot.win, 0, 0, 1, 1, 0);
    EventCallbackRegister(p->win, 0, PagerEvent, p);
@@ -117,7 +127,8 @@ PagerCreate(void)
 static void
 PagerDestroy(Pager * p)
 {
-   RemoveItem("PAGER", p->win, LIST_FINDBY_ID, LIST_TYPE_PAGER);
+   ecore_list_remove_node(pager_list, p);
+
    PagerScanCancel(p);
    if (p->name)
       Efree(p->name);
@@ -594,7 +605,7 @@ PagerEwinMoveResize(EWin * ewin, int resize __UNUSED__)
    p->pmap = ECreatePixmap(p->win, p->w, p->h, VRoot.depth);
    ESetWindowBackgroundPixmap(p->win, p->pmap);
    p->do_newbg = 1;
-   PagerCheckUpdate(p);
+   PagerCheckUpdate(p, NULL);
 
    ic = ImageclassFind("PAGER_SEL", 0);
    if (ic)
@@ -687,58 +698,59 @@ PagerShow(Pager * p)
      }
 
    ShowEwin(ewin);
-
-   AddItem(p, "PAGER", p->win, LIST_TYPE_PAGER);
 }
 
-static Pager      **
-PagersForDesktop(Desk * dsk, int *num)
+static void
+PagersForeach(Desk * dsk, void (*func) (Pager * p, void *prm), void *prm)
 {
-   Pager             **pp = NULL;
-   Pager             **pl = NULL;
-   int                 i, pnum;
+   Pager              *p, *p_cur;
 
-   if (!Conf_pagers.enable)
-      return NULL;
+   if (!pager_list)
+      return;
 
-   *num = 0;
-   pl = (Pager **) ListItemType(&pnum, LIST_TYPE_PAGER);
-   if (!pl)
-      return NULL;
+   /* We may get here recursively */
+   p_cur = ecore_list_current(pager_list);
 
-   for (i = 0; i < pnum; i++)
-     {
-	if (pl[i]->dsk == dsk)
-	  {
-	     (*num)++;
-	     pp = Erealloc(pp, sizeof(Pager *) * (*num));
-	     pp[(*num) - 1] = pl[i];
-	  }
-     }
+   ECORE_LIST_FOR_EACH(pager_list, p)
+   {
+      if (dsk && dsk != p->dsk)
+	 continue;
+      func(p, prm);
+   }
 
-   Efree(pl);
+   ecore_list_goto(pager_list, p_cur);
+}
 
-   return pp;
+typedef struct
+{
+   int                 x1, y1, x2, y2;
+} pager_update_data;
+
+static void
+_PagerUpdate(Pager * p, void *prm)
+{
+   pager_update_data  *pud = prm;
+
+   PagerUpdate(p, pud->x1, pud->y1, pud->x2, pud->y2);
 }
 
 static void
 PagersUpdate(Desk * dsk, int x1, int y1, int x2, int y2)
 {
-   Pager             **pl;
-   int                 i, num;
+   pager_update_data   pud;
 
-   pl = PagersForDesktop(dsk, &num);
-   if (!pl)
+   if (ecore_list_nodes(pager_list) <= 0)
       return;
 
-   for (i = 0; i < num; i++)
-      PagerUpdate(pl[i], x1, y1, x2, y2);
-
-   Efree(pl);
+   pud.x1 = x1;
+   pud.y1 = y1;
+   pud.x2 = x2;
+   pud.y2 = y2;
+   PagersForeach(dsk, _PagerUpdate, &pud);
 }
 
 static void
-PagerCheckUpdate(Pager * p)
+PagerCheckUpdate(Pager * p, void *prm __UNUSED__)
 {
    if (p->do_newbg)
      {
@@ -755,24 +767,14 @@ PagerCheckUpdate(Pager * p)
 static void
 PagersCheckUpdate(void)
 {
-   Pager             **pl;
-   int                 i, num;
-
    if (!pager_update_pending || !Conf_pagers.enable)
       return;
    if (Mode.mode != MODE_NONE && Conf_pagers.snap)
       return;
 
-   pl = (Pager **) ListItemType(&num, LIST_TYPE_PAGER);
-   if (!pl)
-      return;
-
-   for (i = 0; i < num; i++)
-      PagerCheckUpdate(pl[i]);
+   PagersForeach(NULL, PagerCheckUpdate, NULL);
 
    pager_update_pending = 0;
-
-   Efree(pl);
 }
 
 static void
@@ -958,37 +960,32 @@ PagerClose(Pager * p)
 }
 
 static void
-UpdatePagerSel(void)
+_PagerUpdateSel(Pager * p, void *prm __UNUSED__)
 {
-   Pager             **pl;
-   Pager              *p;
-   int                 i, pnum, cx, cy;
+   int                 cx, cy;
    ImageClass         *ic;
 
+   if (p->dsk != DesksGetCurrent())
+      EUnmapWindow(p->sel_win);
+   else
+     {
+	DeskGetArea(p->dsk, &cx, &cy);
+	EMoveWindow(p->sel_win, cx * p->dw, cy * p->dh);
+	EMapWindow(p->sel_win);
+	ic = ImageclassFind("PAGER_SEL", 0);
+	if (ic)
+	   ImageclassApply(ic, p->sel_win, p->dw, p->dh, 0, 0,
+			   STATE_NORMAL, 0, ST_PAGER);
+     }
+}
+
+static void
+UpdatePagerSel(void)
+{
    if (!Conf_pagers.enable)
       return;
 
-   pl = (Pager **) ListItemType(&pnum, LIST_TYPE_PAGER);
-   if (!pl)
-      return;
-
-   for (i = 0; i < pnum; i++)
-     {
-	p = pl[i];
-	if (p->dsk != DesksGetCurrent())
-	   EUnmapWindow(p->sel_win);
-	else
-	  {
-	     DeskGetArea(p->dsk, &cx, &cy);
-	     EMoveWindow(p->sel_win, cx * p->dw, cy * p->dh);
-	     EMapWindow(p->sel_win);
-	     ic = ImageclassFind("PAGER_SEL", 0);
-	     if (ic)
-		ImageclassApply(ic, p->sel_win, p->dw, p->dh, 0, 0,
-				STATE_NORMAL, 0, ST_PAGER);
-	  }
-     }
-   Efree(pl);
+   PagersForeach(NULL, _PagerUpdateSel, NULL);
 }
 
 static void
@@ -1007,7 +1004,7 @@ PagerShowTt(EWin * ewin)
    if (MenusActive())		/* Don't show Tooltip when menu is up */
       return;
 
-   tt = FindItem("PAGER", 0, LIST_FINDBY_NAME, LIST_TYPE_TOOLTIP);
+   tt = TooltipFind("PAGER");
    if (tt)
      {
 	if (ewin)
@@ -1152,22 +1149,15 @@ NewPagerForDesktop(Desk * dsk)
 }
 
 static void
+_PagerUpdateBackground(Pager * p, void *prm __UNUSED__)
+{
+   p->do_newbg = 1;
+}
+
+static void
 PagersUpdateBackground(Desk * dsk)
 {
-   Pager             **pl;
-   int                 i, num;
-
-   if (dsk)
-      pl = PagersForDesktop(dsk, &num);
-   else
-      pl = (Pager **) ListItemType(&num, LIST_TYPE_PAGER);
-   if (!pl)
-      return;
-
-   for (i = 0; i < num; i++)
-      pl[i]->do_newbg = 1;
-
-   Efree(pl);
+   PagersForeach(dsk, _PagerUpdateBackground, NULL);
 
    pager_update_pending = 1;
 }
@@ -1193,9 +1183,14 @@ PagerSetHiQ(char onoff)
 }
 
 static void
-PagerSetSnap(char onoff)
+_PagerSetSnap(Pager * p, void *prm __UNUSED__)
 {
-   Pager             **pl;
+   PagerScanTrig(p);
+}
+
+static void
+PagersSetSnap(char onoff)
+{
    EWin               *const *lst;
    int                 i, num;
 
@@ -1210,20 +1205,8 @@ PagerSetSnap(char onoff)
 
    PagersUpdateBackground(NULL);
 
-   if (Conf_pagers.snap)
-     {
-	pl = (Pager **) ListItemType(&num, LIST_TYPE_PAGER);
-	if (!pl)
-	   return;
-
-	for (i = 0; i < num; i++)
-	  {
-	     if (Conf_pagers.scanspeed > 0 && pl[i]->dsk == DesksGetCurrent())
-		PagerScanTrig(pl[i]);
-	  }
-
-	Efree(pl);
-     }
+   if (Conf_pagers.snap && Conf_pagers.scanspeed > 0)
+      PagersForeach(DesksGetCurrent(), _PagerSetSnap, NULL);
 
    autosave();
 }
@@ -1606,33 +1589,38 @@ PagerHiwinEvent(XEvent * ev, void *prm)
  * Pagers handling
  */
 
-static void
-PagersEnableForDesktop(Desk * dsk)
+static int
+PagersForDesktopCount(Desk * dsk)
 {
-   Pager             **pl;
-   int                 num;
+   Pager              *p;
+   int                 num = 0;
 
-   pl = PagersForDesktop(dsk, &num);
-   if (!pl)
-      NewPagerForDesktop(dsk);
-   else
-      Efree(pl);
+   ECORE_LIST_FOR_EACH(pager_list, p)
+   {
+      if (p->dsk == dsk)
+	 num++;
+   }
+
+   return num;
 }
 
 static void
-PagersDisableForDesktop(Desk * dsk)
+_PagerClose(Pager * p, void *prm __UNUSED__)
 {
-   Pager             **pl;
+   PagerClose(p);
+}
 
-   int                 i, num;
+static void
+PagersForDesktopEnable(Desk * dsk)
+{
+   if (PagersForDesktopCount(dsk) <= 0)
+      NewPagerForDesktop(dsk);
+}
 
-   pl = PagersForDesktop(dsk, &num);
-   if (!pl)
-      return;
-
-   for (i = 0; i < num; i++)
-      PagerClose(pl[i]);
-   Efree(pl);
+static void
+PagersForDesktopDisable(Desk * dsk)
+{
+   PagersForeach(dsk, _PagerClose, NULL);
 }
 
 static void
@@ -1644,34 +1632,30 @@ PagersShow(int enable)
      {
 	Conf_pagers.enable = 1;
 	for (i = 0; i < DesksGetNumber(); i++)
-	   PagersEnableForDesktop(DeskGet(i));
+	   PagersForDesktopEnable(DeskGet(i));
 	UpdatePagerSel();
      }
    else if (!enable && Conf_pagers.enable)
      {
 	for (i = 0; i < DesksGetNumber(); i++)
-	   PagersDisableForDesktop(DeskGet(i));
+	   PagersForDesktopDisable(DeskGet(i));
 	Conf_pagers.enable = 0;
      }
 }
 
 static void
+_PagerReconfigure(Pager * p, void *prm __UNUSED__)
+{
+   PagerReconfigure(p, 1);
+}
+
+static void
 PagersReconfigure(void)
 {
-   Pager             **pl;
-   int                 i, num;
-
    if (!Conf_pagers.enable)
       return;
 
-   pl = (Pager **) ListItemType(&num, LIST_TYPE_PAGER);
-   if (!pl)
-      return;
-
-   for (i = 0; i < num; i++)
-      PagerReconfigure(pl[i], 1);
-
-   Efree(pl);
+   PagersForeach(NULL, _PagerReconfigure, NULL);
 }
 
 /*
@@ -1711,10 +1695,10 @@ CB_ConfigurePager(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 		Conf_pagers.scanspeed = tmp_pager_scan_speed;
 	     else
 		Conf_pagers.scanspeed = 0;
-	     PagerSetSnap(tmp_pager_snap);
+	     PagersSetSnap(tmp_pager_snap);
 	  }
 	if (Conf_pagers.snap != tmp_pager_snap)
-	   PagerSetSnap(tmp_pager_snap);
+	   PagersSetSnap(tmp_pager_snap);
      }
    autosave();
 }
@@ -1739,7 +1723,7 @@ SettingsPager(void)
    DItem              *table, *di, *radio;
    char                s[256];
 
-   d = FindItem("CONFIGURE_PAGER", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   d = DialogFind("CONFIGURE_PAGER");
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
@@ -1942,7 +1926,7 @@ PagersSighan(int sig, void *prm)
 	NewPagerForDesktop(prm);
 	break;
      case ESIGNAL_DESK_REMOVED:
-	PagersDisableForDesktop(prm);
+	PagersForDesktopDisable(prm);
 	break;
      case ESIGNAL_DESK_SWITCH_START:
 	PagerHiwinHide();
@@ -2008,7 +1992,7 @@ IPC_Pager(const char *params, Client * c __UNUSED__)
 	  }
 	else if (!strcmp(prm1, "on"))
 	  {
-	     PagersEnableForDesktop(dsk);
+	     PagersForDesktopEnable(dsk);
 	  }
 	else if (!strcmp(prm1, "new"))
 	  {
@@ -2016,7 +2000,7 @@ IPC_Pager(const char *params, Client * c __UNUSED__)
 	  }
 	else if (!strcmp(prm1, "off"))
 	  {
-	     PagersDisableForDesktop(dsk);
+	     PagersForDesktopDisable(dsk);
 	  }
      }
    else if (!strcmp(prm1, "hiq"))
@@ -2029,9 +2013,9 @@ IPC_Pager(const char *params, Client * c __UNUSED__)
    else if (!strcmp(prm1, "snap"))
      {
 	if (!strcmp(p, "on"))
-	   PagerSetSnap(1);
+	   PagersSetSnap(1);
 	else if (!strcmp(p, "off"))
-	   PagerSetSnap(0);
+	   PagersSetSnap(0);
      }
    else if (!strcmp(prm1, "zoom"))
      {

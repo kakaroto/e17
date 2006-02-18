@@ -94,7 +94,7 @@ DeskControlsCreate(Desk * dsk)
       Conf.desks.dragbar_length = VRoot.w;
 
    Esnprintf(s, sizeof(s), "DRAGBAR_DESKTOP_%i", dsk->num);
-   ac = FindItem(s, 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
+   ac = ActionclassFind(s);
    if (!ac)
      {
 	ac = ActionclassCreate(s, 0);
@@ -136,7 +136,7 @@ DeskControlsCreate(Desk * dsk)
      }
 
    Esnprintf(s, sizeof(s), "RAISEBUTTON_DESKTOP_%i", dsk->num);
-   ac2 = FindItem(s, 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
+   ac2 = ActionclassFind(s);
    if (!ac2)
      {
 	ac2 = ActionclassCreate(s, 0);
@@ -150,7 +150,7 @@ DeskControlsCreate(Desk * dsk)
      }
 
    Esnprintf(s, sizeof(s), "LOWERBUTTON_DESKTOP_%i", dsk->num);
-   ac3 = FindItem(s, 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
+   ac3 = ActionclassFind(s);
    if (!ac3)
      {
 	ac3 = ActionclassCreate(s, 0);
@@ -329,33 +329,13 @@ DeskControlsCreate(Desk * dsk)
 static void
 DeskControlsDestroy(Desk * dsk, int id)
 {
-   Button            **blst;
-   int                 num, i;
-
-   blst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, id);
-   if (!blst)
-      return;
-
-   for (i = 0; i < num; i++)
-      if (EobjGetDesk((EObj *) (blst[i])) == dsk)
-	 ButtonDestroy(blst[i]);
-   Efree(blst);
+   ButtonsForeach(id, dsk, ButtonDestroy);
 }
 
 static void
 DeskControlsShow(Desk * dsk, int id)
 {
-   Button            **blst;
-   int                 num, i;
-
-   blst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, id);
-   if (!blst)
-      return;
-
-   for (i = 0; i < num; i++)
-      if (EobjGetDesk((EObj *) (blst[i])) == dsk)
-	 ButtonShow(blst[i]);
-   Efree(blst);
+   ButtonsForeach(id, dsk, ButtonShow);
 }
 
 static void
@@ -385,32 +365,16 @@ DeskEventsConfigure(Desk * dsk, int mode)
 static void
 DeskConfigure(Desk * dsk)
 {
-   Background        **lst, *bg;
-   int                 num;
-   unsigned int        rnd;
+   Background         *bg;
 
    DeskControlsCreate(dsk);
    DeskControlsShow(dsk, 1);
 
    bg = desks.bg[dsk->num];
    if (bg)
-      bg = FindItem(bg, 0, LIST_FINDBY_POINTER, LIST_TYPE_BACKGROUND);
+      bg = BackgroundCheck(bg);
    if (!bg)
-     {
-	lst = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
-	if (lst)
-	  {
-	     for (;;)
-	       {
-		  rnd = rand();
-		  rnd %= num;
-		  bg = lst[rnd];
-		  if (num <= 1 || !BackgroundIsNone(bg))
-		     break;
-	       }
-	     Efree(lst);
-	  }
-     }
+      bg = BackgroundGetRandom();
    DeskBackgroundSet(dsk, bg);
 
    if (dsk->num > 0)
@@ -981,50 +945,28 @@ DesksControlsRefresh(void)
 static void
 DeskShowTabs(void)
 {
-   Button            **blst;
-   int                 num, i;
-
-   blst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 2);
-   if (blst)
-     {
-	for (i = 0; i < num; i++)
-	   ButtonShow(blst[i]);
-	Efree(blst);
-     }
+   ButtonsForeach(2, NULL, ButtonShow);
 }
 
 static void
 DeskHideTabs(void)
 {
-   Button            **blst;
-   int                 num, i;
-
-   blst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 2);
-   if (blst)
-     {
-	for (i = 0; i < num; i++)
-	   ButtonHide(blst[i]);
-	Efree(blst);
-     }
+   ButtonsForeach(2, NULL, ButtonHide);
 }
 #endif
 
 static void
+DeskButtonShowDefault(Button * b)
+{
+   if (!ButtonDoShowDefault(b))
+      return;
+   ButtonShow(b);
+}
+
+static void
 DeskShowButtons(void)
 {
-   Button            **blst;
-   int                 i, num;
-
-   blst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 0);
-   if (blst)
-     {
-	for (i = 0; i < num; i++)
-	  {
-	     if (ButtonDoShowDefault(blst[i]))
-		ButtonShow(blst[i]);
-	  }
-	Efree(blst);
-     }
+   ButtonsForeach(0, NULL, DeskButtonShowDefault);
 }
 
 static void
@@ -1901,7 +1843,7 @@ DeskCheckAction(Desk * dsk __UNUSED__, XEvent * ev)
 {
    ActionClass        *ac;
 
-   ac = FindItem("DESKBINDINGS", 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
+   ac = ActionclassFind("DESKBINDINGS");
    if (!ac)
       return 0;
 
@@ -1980,7 +1922,7 @@ DeskRootResize(int root, int w, int h)
 static ActionClass *
 DeskGetAclass(void *data __UNUSED__)
 {
-   return FindItem("DESKBINDINGS", 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
+   return ActionclassFind("DESKBINDINGS");
 }
 
 static void
@@ -2360,7 +2302,7 @@ SettingsDesktops(void)
    DItem              *table, *di, *area, *slider, *radio;
    char                s[64];
 
-   d = FindItem("CONFIGURE_DESKTOPS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   d = DialogFind("CONFIGURE_DESKTOPS");
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
@@ -2581,7 +2523,7 @@ SettingsArea(void)
    DItem              *table, *di, *area, *slider, *slider2, *table2;
    char                s[64];
 
-   d = FindItem("CONFIGURE_AREA", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   d = DialogFind("CONFIGURE_AREA");
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");

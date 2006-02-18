@@ -38,6 +38,8 @@ e16_SOURCES = \
 	dialog.h	        \
 	dock.c			\
 	draw.c			\
+	e16-ecore_list.c	\
+	e16-ecore_list.h	\
 	econfig.c		\
 	econfig.h		\
 	ecore-e16.c		\
@@ -75,7 +77,6 @@ e16_SOURCES = \
 	icons.h			\
 	ipc.c			\
 	lang.c			\
-	lists.c			\
 	main.c			\
 	memory.c		\
 	menus.c			\

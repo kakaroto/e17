@@ -1309,7 +1309,7 @@ EwinOpFullscreen(EWin * ewin, int source __UNUSED__, int on)
 	ICCCM_SizeMatch(ewin, w, h, &ww, &hh);
 	if (w == ww && h == hh)
 	  {
-	     b = FindItem("BORDERLESS", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+	     b = BorderFind("BORDERLESS");
 	  }
 	else
 	  {
@@ -1714,7 +1714,7 @@ EwinOpSetBorder(EWin * ewin, int source __UNUSED__, const char *name)
    Border             *b;
    char                shadechange = 0;
 
-   b = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+   b = BorderFind(name);
    if (!b)
       return;
 

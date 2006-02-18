@@ -957,7 +957,7 @@ AddInternalToFamily(Window win, const char *bname, int type, void *ptr,
       init(ewin, ptr);		/* Type specific initialisation */
 
    if (bname)
-      ewin->border = FindItem(bname, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+      ewin->border = BorderFind(bname);
 
    EwinConfigure(ewin);
 
@@ -1791,7 +1791,7 @@ ActionsCheck(const char *which, EWin * ewin, XEvent * ev)
    if (Mode.action_inhibit)	/* Probably not here */
       return 0;
 
-   ac = FindItem(which, 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
+   ac = ActionclassFind(which);
    if (!ac)
       return 0;
 

@@ -172,6 +172,12 @@ IPC_Nop(const char *params __UNUSED__, Client * c __UNUSED__)
 
 /* Should be elsewhere */
 static void
+IPC_Border_CB_List(Border * b, void *data __UNUSED__)
+{
+   IpcPrintf("%s\n", BorderGetName(b));
+}
+
+static void
 IPC_Border(const char *params, Client * c __UNUSED__)
 {
    if (!params)
@@ -182,15 +188,7 @@ IPC_Border(const char *params, Client * c __UNUSED__)
 
    if (!strncmp(params, "list", 2))
      {
-	Border            **lst;
-	int                 num, i;
-
-	lst = (Border **) ListItemType(&num, LIST_TYPE_BORDER);
-	for (i = 0; i < num; i++)
-	   IpcPrintf("%s\n", lst[i]->name);
-	if (lst)
-	   Efree(lst);
-	return;
+	BordersForeach(IPC_Border_CB_List, NULL);
      }
 }
 

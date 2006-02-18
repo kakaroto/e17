@@ -25,6 +25,7 @@
 #include "aclass.h"
 #include "buttons.h"
 #include "desktops.h"
+#include "e16-ecore_list.h"
 #include "emodule.h"
 #include "iclass.h"
 #include "tclass.h"
@@ -56,6 +57,7 @@ struct _button
    ActionClass        *aclass;
    TextClass          *tclass;
    char               *label;
+   int                 id;
    int                 flags;
    char                internal;
    char                default_show;
@@ -68,6 +70,8 @@ struct _button
    char                left;
    unsigned int        ref_count;
 };
+
+static Ecore_List  *button_list = NULL;
 
 static struct
 {
@@ -121,6 +125,11 @@ ButtonCreate(const char *name, int id, ImageClass * iclass,
 
    b = Ecalloc(1, sizeof(Button));
 
+   if (!button_list)
+      button_list = ecore_list_new();
+   ecore_list_append(button_list, b);
+
+   b->id = id;
    b->label = Estrdup(label);
 
    b->iclass = iclass;
@@ -166,8 +175,6 @@ ButtonCreate(const char *name, int id, ImageClass * iclass,
    ESelectInput(EoGetWin(b), BUTTON_EVENT_MASK);
    EventCallbackRegister(EoGetWin(b), 0, ButtonHandleEvents, b);
 
-   AddItemEnd(b, EoGetName(b), id, LIST_TYPE_BUTTON);
-
    return b;
 }
 
@@ -183,8 +190,7 @@ ButtonDestroy(Button * b)
 	return;
      }
 
-   while (RemoveItemByPtr(b, LIST_TYPE_BUTTON))
-      ;
+   ecore_list_remove_node(button_list, b);
 
    EoFini(b);
 
@@ -201,6 +207,18 @@ ButtonDestroy(Button * b)
       Efree(b->label);
 
    Efree(b);
+}
+
+static int
+_ButtonMatchName(const void *data, const void *match)
+{
+   return strcmp(((const Button *)data)->o.name, match);
+}
+
+Button             *
+ButtonFind(const char *name)
+{
+   return ecore_list_find(button_list, _ButtonMatchName, name);
 }
 
 static void
@@ -456,23 +474,40 @@ ButtonDragEnd(Button * b)
    autosave();
 }
 
+Button            **
+ButtonsGetList(int *pnum)
+{
+   return (Button **) ecore_list_items_get(button_list, pnum);
+}
+
+void
+ButtonsForeach(int id, Desk * dsk, void (*func) (Button * b))
+{
+   Button             *b;
+
+   for (ecore_list_goto_first(button_list);
+	(b = ecore_list_next(button_list)) != NULL;)
+     {
+	if (id >= 0 && id != b->id)
+	   continue;
+	if (dsk && dsk != EoGetDesk(b))
+	   continue;
+	func(b);
+     }
+}
+
 void
 ButtonsMoveStickyToDesk(Desk * dsk)
 {
-   Button            **lst, *btn;
-   int                 i, num;
+   Button             *b;
 
-   lst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
-   for (i = 0; i < num; i++)
-     {
-	btn = lst[i];
-	if (!EoIsSticky(btn) || ButtonIsInternal(btn))
-	   continue;
+   ECORE_LIST_FOR_EACH(button_list, b)
+   {
+      if (!EoIsSticky(b) || ButtonIsInternal(b))
+	 continue;
 
-	ButtonMoveToDesktop(btn, dsk);
-     }
-   if (lst)
-      Efree(lst);
+      ButtonMoveToDesktop(b, dsk);
+   }
 }
 
 /*
@@ -511,8 +546,7 @@ ButtonEventMouseDown(Button * b, XEvent * ev)
      {
 	ActionClass        *ac;
 
-	ac = FindItem("ACTION_BUTTON_DRAG", 0, LIST_FINDBY_NAME,
-		      LIST_TYPE_ACLASS);
+	ac = ActionclassFind("ACTION_BUTTON_DRAG");
 	if (ac && !Mode_buttons.action_inhibit)
 	   ActionclassEvent(ac, ev, NULL);
      }
@@ -617,7 +651,7 @@ ButtonGetAclass(void *data)
    Button             *b = data;
 
    /* Validate button */
-   if (!FindItem(b, 0, LIST_FINDBY_POINTER, LIST_TYPE_BUTTON))
+   if (!ecore_list_goto(button_list, b))
       return NULL;
 
    return b->aclass;
@@ -767,11 +801,11 @@ ButtonsConfigLoad(FILE * ConfigFile)
 	  case BUTTON_NAME:
 	     _EFREE(name);
 	     name = Estrdup(s2);
-	     pbt = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_BUTTON);
+	     pbt = ButtonFind(name);
 	     break;
 	  case CONFIG_ACTIONCLASS:
 	  case BUTTON_ACLASS:
-	     ac = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
+	     ac = ActionclassFind(s2);
 	     if (pbt)
 		pbt->aclass = ac;
 	     break;
@@ -915,7 +949,7 @@ ButtonsConfigSave(void)
    Button            **blst;
    int                 flags;
 
-   blst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 0);
+   blst = ButtonsGetList(&num);
    if (!blst)
       return;
 
@@ -926,7 +960,7 @@ ButtonsConfigSave(void)
 
    for (i = 0; i < num; i++)
      {
-	if (blst[i]->internal)
+	if (blst[i]->id != 0 || blst[i]->internal)
 	   continue;
 
 	fprintf(fs, "4 999\n");
@@ -1008,21 +1042,47 @@ ButtonsSighan(int sig, void *prm __UNUSED__)
      }
 }
 
+typedef struct
+{
+   int                 id;
+   int                 match;
+   const char         *regex;
+} button_match_data;
+
+static void
+_ButtonHideShow(void *data, void *prm)
+{
+   Button             *b = data;
+   button_match_data  *bmd = prm;
+   int                 match;
+
+   if (bmd->id >= 0 && bmd->id != b->id)
+      return;
+
+   if (bmd->regex)
+     {
+	match = matchregexp(bmd->regex, EoGetName(b));
+	if ((match && !bmd->match) || (!match && bmd->match))
+	   return;
+	if (!strcmp(EoGetName(b), "_DESKTOP_DESKRAY_DRAG_CONTROL"))	/* FIXME - ??? */
+	   return;
+     }
+
+   ButtonToggle(b);
+}
+
 static void
 doHideShowButton(const char *params)
 {
-   Button            **lst, *b;
+   Button             *b;
    char                s[1024];
    const char         *ss;
-   int                 num, i;
+   button_match_data   bmd = { -1, 1, NULL };
 
    if (!params)
      {
-	lst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 0);
-	for (i = 0; i < num; i++)
-	   ButtonToggle(lst[i]);
-	if (lst)
-	   Efree(lst);
+	bmd.id = 0;
+	ecore_list_for_each(button_list, _ButtonHideShow, &bmd);
 	goto done;
      }
 
@@ -1030,7 +1090,7 @@ doHideShowButton(const char *params)
    if (!strcmp(s, "button"))
      {
 	sscanf(params, "%*s %1000s", s);
-	b = FindItem(s, 0, LIST_FINDBY_NAME, LIST_TYPE_BUTTON);
+	b = ButtonFind(s);
 	if (b)
 	   ButtonToggle(b);
      }
@@ -1040,18 +1100,8 @@ doHideShowButton(const char *params)
 	if (!ss)
 	   return;
 
-	lst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
-	for (i = 0; i < num; i++)
-	  {
-	     if (matchregexp(ss, EoGetName(lst[i])))
-	       {
-		  if (strcmp(EoGetName(lst[i]),
-			     "_DESKTOP_DESKRAY_DRAG_CONTROL"))
-		     ButtonToggle(lst[i]);
-	       }
-	  }
-	if (lst)
-	   Efree(lst);
+	bmd.regex = ss;
+	ecore_list_for_each(button_list, _ButtonHideShow, &bmd);
      }
    else if (!strcmp(s, "all_buttons_except"))
      {
@@ -1059,29 +1109,14 @@ doHideShowButton(const char *params)
 	if (!ss)
 	   return;
 
-	lst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 0);
-	for (i = 0; i < num; i++)
-	  {
-	     if (!matchregexp(ss, EoGetName(lst[i])))
-	       {
-		  if (strcmp(EoGetName(lst[i]),
-			     "_DESKTOP_DESKRAY_DRAG_CONTROL"))
-		     ButtonToggle(lst[i]);
-	       }
-	  }
-	if (lst)
-	   Efree(lst);
+	bmd.id = 0;
+	bmd.match = 0;
+	bmd.regex = ss;
+	ecore_list_for_each(button_list, _ButtonHideShow, &bmd);
      }
    else if (!strcmp(s, "all"))
      {
-	lst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
-	for (i = 0; i < num; i++)
-	  {
-	     if (strcmp(EoGetName(lst[i]), "_DESKTOP_DESKRAY_DRAG_CONTROL"))
-		ButtonToggle(lst[i]);
-	  }
-	if (lst)
-	   Efree(lst);
+	ecore_list_for_each(button_list, _ButtonHideShow, &bmd);
      }
 
  done:
@@ -1093,7 +1128,8 @@ ButtonsIpc(const char *params, Client * c __UNUSED__)
 {
    const char         *p;
    char                cmd[128], prm[4096];
-   int                 i, len, num;
+   int                 len;
+   Button             *b;
 
    cmd[0] = prm[0] = '\0';
    p = params;
@@ -1109,21 +1145,11 @@ ButtonsIpc(const char *params, Client * c __UNUSED__)
      }
    else if (!strncmp(cmd, "list", 2))
      {
-	Button            **lst, *b;
-
 	IpcPrintf("Win       d  s  l     x     y     w     h name\n");
-	lst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
-	for (i = 0; i < num; i++)
-	  {
-	     b = lst[i];
-	     IpcPrintf("%#lx %2d %2d %2d %5d+%5d %5dx%5d %s\n",
-		       EoGetWin(b), EoGetDeskNum(b), EoIsSticky(b),
-		       EoGetLayer(b), EoGetX(b), EoGetY(b), EoGetW(b),
-		       EoGetH(b), EoGetName(lst[i]));
-	  }
-	if (lst)
-	   Efree(lst);
-
+	ECORE_LIST_FOR_EACH(button_list, b)
+	   IpcPrintf("%#lx %2d %2d %2d %5d+%5d %5dx%5d %s\n",
+		     EoGetWin(b), EoGetDeskNum(b), EoIsSticky(b), EoGetLayer(b),
+		     EoGetX(b), EoGetY(b), EoGetW(b), EoGetH(b), EoGetName(b));
      }
    else if (!strncmp(cmd, "move", 2))
      {

@@ -24,6 +24,7 @@
 #include "E.h"
 #include "aclass.h"
 #include "borders.h"
+#include "e16-ecore_list.h"
 #include "ewins.h"
 #include "hints.h"
 #include "iclass.h"
@@ -37,6 +38,8 @@
    EnterWindowMask | LeaveWindowMask | PointerMotionMask)
 #define EWIN_BORDER_TITLE_EVENT_MASK \
   (EWIN_BORDER_PART_EVENT_MASK)
+
+static Ecore_List  *border_list = NULL;
 
 static void         BorderDestroy(Border * b);
 static void         BorderWinpartHandleEvents(XEvent * ev, void *prm);
@@ -424,7 +427,7 @@ EwinBorderSelect(EWin * ewin)
 
    if (ewin->inh_wm.b.border)
      {
-	b = FindItem("BORDERLESS", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+	b = BorderFind("BORDERLESS");
 	goto done;
      }
 
@@ -436,16 +439,16 @@ EwinBorderSelect(EWin * ewin)
    b = NULL;
 
    if (ewin->props.no_border)
-      b = FindItem("BORDERLESS", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+      b = BorderFind("BORDERLESS");
 
    if (!b)
       b = WindowMatchEwinBorder(ewin);
 
    if (!b)
-      b = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+      b = BorderFind("DEFAULT");
 
    if (!b)
-      b = FindItem("__FALLBACK_BORDER", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+      b = BorderFind("__FALLBACK_BORDER");
 
  done:
    ewin->normal_border = ewin->border = b;
@@ -608,11 +611,7 @@ EwinSetBorder(EWin * ewin, const Border * b, int apply)
 void
 EwinSetBorderByName(EWin * ewin, const char *name)
 {
-   Border             *b;
-
-   b = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
-
-   EwinSetBorder(ewin, b, 0);
+   EwinSetBorder(ewin, BorderFind(name), 0);
 }
 
 static Border      *
@@ -623,6 +622,10 @@ BorderCreate(const char *name)
    b = Ecalloc(1, sizeof(Border));
    if (!b)
       return NULL;
+
+   if (!border_list)
+      border_list = ecore_list_new();
+   ecore_list_prepend(border_list, b);
 
    b->name = Estrdup(name);
    b->group_border_name = NULL;
@@ -645,8 +648,7 @@ BorderDestroy(Border * b)
 	return;
      }
 
-   while (RemoveItemByPtr(b, LIST_TYPE_BORDER))
-      ;
+   ecore_list_remove_node(border_list, b);
 
    for (i = 0; i < b->num_winparts; i++)
      {
@@ -669,6 +671,18 @@ BorderDestroy(Border * b)
       Efree(b->group_border_name);
    if (b->aclass)
       ActionclassDecRefcount(b->aclass);
+}
+
+static int
+_BorderMatchName(const void *data, const void *match)
+{
+   return strcmp(((const Border *)data)->name, match);
+}
+
+Border             *
+BorderFind(const char *name)
+{
+   return ecore_list_find(border_list, _BorderMatchName, name);
 }
 
 static void
@@ -1086,14 +1100,14 @@ BorderPartLoad(FILE * fs, char type __UNUSED__, Border * b)
 	     break;
 	  case CONFIG_ACTIONCLASS:
 	  case BORDERPART_ACLASS:
-	     aclass = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
+	     aclass = ActionclassFind(s2);
 	     break;
 	  case CONFIG_TEXT:
 	  case BORDERPART_TEXTCLASS:
 	     tclass = TextclassFind(s2, 1);
 	     break;
 	  case CONFIG_CURSOR:
-	     ec = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_ECURSOR);
+	     ec = ECursorFind(s2);
 	     break;
 	  case BORDERPART_ONTOP:
 	     ontop = atoi(s2);
@@ -1170,7 +1184,6 @@ BorderConfigLoad(FILE * fs)
    char                s[FILEPATH_LEN_MAX];
    char                s2[FILEPATH_LEN_MAX];
    int                 i1;
-   char                added = 0;
    int                 fields;
 
    while (GetLine(s, sizeof(s), fs))
@@ -1207,17 +1220,16 @@ BorderConfigLoad(FILE * fs)
 	     switch (i1)
 	       {
 	       case CONFIG_CLOSE:
-		  if (!added)
-		     AddItem(b, b->name, 0, LIST_TYPE_BORDER);
 		  goto done;
 	       case BORDER_INIT:
-		  AddItem(b, b->name, 0, LIST_TYPE_BORDER);
-		  added = 1;
 		  break;
 	       case CONFIG_CLASSNAME:
 	       case BORDER_NAME:
-		  if (ConfigSkipIfExists(fs, s2, LIST_TYPE_BORDER))
-		     goto done;
+		  if (BorderFind(s2))
+		    {
+		       SkipTillEnd(fs);
+		       goto done;
+		    }
 		  b = BorderCreate(s2);
 		  break;
 	       case BORDER_GROUP_NAME:
@@ -1242,8 +1254,7 @@ BorderConfigLoad(FILE * fs)
 		  b->changes_shape = atoi(s2);
 		  break;
 	       case CONFIG_ACTIONCLASS:
-		  b->aclass =
-		     FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
+		  b->aclass = ActionclassFind(s2);
 		  break;
 	       default:
 		  break;
@@ -1262,7 +1273,7 @@ BorderCreateFiller(int left, int right, int top, int bottom)
    Border             *b;
    ImageClass         *ic;
 
-   ic = FindItem("__BLACK", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+   ic = ImageclassFind("__BLACK", 1);
 
    b = BorderCreate("__FILLER");
    b->throwaway = 1;
@@ -1295,6 +1306,18 @@ BorderCreateFiller(int left, int right, int top, int bottom)
 }
 
 void
+BordersForeach(void (*func) (Border * b, void *data), void *data)
+{
+   ecore_list_for_each(border_list, (Ecore_For_Each) func, data);
+}
+
+Border            **
+BordersGetList(int *pnum)
+{
+   return (Border **) ecore_list_items_get(border_list, pnum);
+}
+
+void
 BordersSetupFallback(void)
 {
    /*
@@ -1307,12 +1330,11 @@ BordersSetupFallback(void)
    ImageClass         *ic;
    ActionClass        *ac;
 
-   ac = FindItem("__FALLBACK_ACTION", 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
-   ic = FindItem("__FALLBACK_ICLASS", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+   ac = ActionclassFind("__FALLBACK_ACTION");
+   ic = ImageclassFind("__FALLBACK_ICLASS", 0);
 
    /* create a fallback border in case no border is found */
    b = BorderCreate("__FALLBACK_BORDER");
-   AddItem(b, b->name, 0, LIST_TYPE_BORDER);
 
    b->border.left = 8;
    b->border.right = 8;

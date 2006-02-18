@@ -24,6 +24,7 @@
 #include "E.h"
 #include "X11/cursorfont.h"
 #include "conf.h"
+#include "e16-ecore_list.h"
 #include "emodule.h"
 #include "xwin.h"
 
@@ -37,6 +38,8 @@ struct _ecursor
    char                inroot;
 #endif
 };
+
+static Ecore_List  *cursor_list = NULL;
 
 static ECursor     *
 ECursorCreate(const char *name, const char *image, int native_id, XColor * fg,
@@ -97,7 +100,9 @@ ECursorCreate(const char *name, const char *image, int native_id, XColor * fg,
    ec->inroot = 0;
 #endif
 
-   AddItem(ec, ec->name, 0, LIST_TYPE_ECURSOR);
+   if (!cursor_list)
+      cursor_list = ecore_list_new();
+   ecore_list_prepend(cursor_list, ec);
 
    return ec;
 }
@@ -115,14 +120,25 @@ ECursorDestroy(ECursor * ec)
 	return;
      }
 
-   while (RemoveItemByPtr(ec, LIST_TYPE_ECURSOR))
-      ;
+   ecore_list_remove_node(cursor_list, ec);
 
    if (ec->name)
       Efree(ec->name);
    if (ec->file)
       Efree(ec->file);
    Efree(ec);
+}
+
+static int
+_ECursorMatchName(const void *data, const void *match)
+{
+   return strcmp(((const ECursor *)data)->name, match);
+}
+
+ECursor            *
+ECursorFind(const char *name)
+{
+   return ecore_list_find(cursor_list, _ECursorMatchName, name);
 }
 
 static int
@@ -180,8 +196,11 @@ ECursorConfigLoad(FILE * fs)
 	     break;
 
 	  case CONFIG_CLASSNAME:
-	     if (ConfigSkipIfExists(fs, s2, LIST_TYPE_ECURSOR))
-		goto done;
+	     if (ECursorFind(s2))
+	       {
+		  SkipTillEnd(fs);
+		  goto done;
+	       }
 	     _EFDUP(name, s2);
 	     break;
 	  case CURS_BG_RGB:
@@ -232,7 +251,7 @@ ECursorGetByName(const char *name, unsigned int fallback)
 {
    ECursor            *ec;
 
-   ec = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_ECURSOR);
+   ec = ECursorFind(name);
    if (!ec)
       return XCreateFontCursor(disp, fallback);
 
@@ -253,12 +272,6 @@ ECursorDecRefcount(ECursor * ec)
 {
    if (ec)
       ec->ref_count--;
-}
-
-static const char  *
-ECursorGetName(ECursor * ec)
-{
-   return (ec) ? ec->name : 0;
 }
 
 #if 0				/* Not used */
@@ -318,7 +331,7 @@ CursorsIpc(const char *params, Client * c __UNUSED__)
 {
    const char         *p;
    char                cmd[128], prm[4096];
-   int                 i, len, num;
+   int                 len;
    ECursor            *ec;
 
    cmd[0] = prm[0] = '\0';
@@ -337,21 +350,11 @@ CursorsIpc(const char *params, Client * c __UNUSED__)
      }
    else if (!strncmp(cmd, "del", 3))
      {
-	ec = FindItem(prm, 0, LIST_FINDBY_NAME, LIST_TYPE_ECURSOR);
-	if (ec)
-	   ECursorDestroy(ec);
+	ECursorDestroy(ECursorFind(prm));
      }
    else if (!strncmp(cmd, "list", 2))
      {
-	ECursor           **lst;
-
-	lst = (ECursor **) ListItemType(&num, LIST_TYPE_ECURSOR);
-	for (i = 0; i < num; i++)
-	  {
-	     IpcPrintf("%s\n", ECursorGetName(lst[i]));
-	  }
-	if (lst)
-	   Efree(lst);
+	ECORE_LIST_FOR_EACH(cursor_list, ec) IpcPrintf("%s\n", ec->name);
      }
 }
 

@@ -24,6 +24,7 @@
 #include "E.h"
 #include "aclass.h"
 #include "conf.h"
+#include "e16-ecore_list.h"
 #include "emodule.h"
 #include "ewins.h"
 
@@ -59,6 +60,9 @@ struct _actionclass
 
 static void         UnGrabActionKey(Action * aa);
 static void         GrabActionKey(Action * aa);
+
+static Ecore_List  *aclass_list = NULL;
+static Ecore_List  *aclass_list_global = NULL;
 
 static char         mode_action_destroy = 0;
 
@@ -171,8 +175,19 @@ ActionclassCreate(const char *name, int global)
    ac->list = NULL;
    ac->tooltipstring = NULL;
    ac->ref_count = 0;
-   AddItem(ac, ac->name, 0, (global)?
-	   LIST_TYPE_ACLASS_GLOBAL : LIST_TYPE_ACLASS);
+
+   if (global)
+     {
+	if (!aclass_list_global)
+	   aclass_list_global = ecore_list_new();
+	ecore_list_prepend(aclass_list_global, ac);
+     }
+   else
+     {
+	if (!aclass_list)
+	   aclass_list = ecore_list_new();
+	ecore_list_prepend(aclass_list, ac);
+     }
 
    return ac;
 }
@@ -191,8 +206,8 @@ ActionclassDestroy(ActionClass * ac)
 		 ac->ref_count);
 	return;
      }
-   while (RemoveItemByPtr(ac, LIST_TYPE_ACLASS))
-      ;
+
+   ecore_list_remove_node(aclass_list, ac);
 
    for (i = 0; i < ac->num; i++)
       ActionDestroy(ac->list[i]);
@@ -204,6 +219,24 @@ ActionclassDestroy(ActionClass * ac)
       Efree(ac->tooltipstring);
    Efree(ac);
    mode_action_destroy = 1;
+}
+
+static int
+_ActionclassMatchName(const void *data, const void *match)
+{
+   return strcmp(((const ActionClass *)data)->name, match);
+}
+
+ActionClass        *
+ActionclassGlobalFind(const char *name)
+{
+   return ecore_list_find(aclass_list_global, _ActionclassMatchName, name);
+}
+
+ActionClass        *
+ActionclassFind(const char *name)
+{
+   return ecore_list_find(aclass_list, _ActionclassMatchName, name);
 }
 
 int
@@ -285,10 +318,10 @@ AclassConfigLoad(FILE * fs)
 
 	  case CONFIG_CLASSNAME:
 	  case ACLASS_NAME:
-	     ac = RemoveItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
+	     ac = ecore_list_remove_node(aclass_list, ActionclassFind(s2));
 	     if (!ac)
-		ac = RemoveItem(s2, 0, LIST_FINDBY_NAME,
-				LIST_TYPE_ACLASS_GLOBAL);
+		ac = ecore_list_remove_node(aclass_list_global,
+					    ActionclassGlobalFind(s2));
 	     if (ac)
 	       {
 		  if (!strcmp(s2, "KEYBINDINGS"))
@@ -299,10 +332,10 @@ AclassConfigLoad(FILE * fs)
 	     break;
 	  case CONFIG_TYPE:
 	  case ACLASS_TYPE:
-	     if (atoi(s2) == LIST_TYPE_ACLASS)
+	     if (atoi(s2) == ACLASS_TYPE_ACLASS)
 		break;
-	     RemoveItem(ac->name, 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
-	     AddItem(ac, ac->name, 0, LIST_TYPE_ACLASS_GLOBAL);
+	     ecore_list_remove_node(aclass_list, ActionclassFind(s2));
+	     ecore_list_prepend(aclass_list_global, ac);
 	     global = 1;
 
 	     break;
@@ -642,10 +675,10 @@ AclassConfigLoad2(FILE * fs)
 
 	if (!strcmp(prm1, "Aclass"))
 	  {
-	     ac = RemoveItem(prm2, 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
+	     ac = ecore_list_remove_node(aclass_list, ActionclassFind(prm2));
 	     if (!ac)
-		ac = RemoveItem(prm2, 0, LIST_FINDBY_NAME,
-				LIST_TYPE_ACLASS_GLOBAL);
+		ac = ecore_list_remove_node(aclass_list_global,
+					    ActionclassGlobalFind(prm2));
 	     if (ac)
 		ActionclassDestroy(ac);
 
@@ -729,7 +762,7 @@ AclassConfigSave(void)
    if (!Mode.keybinds_changed)
       return;
 
-   ac = FindItem("KEYBINDINGS", 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS_GLOBAL);
+   ac = ActionclassGlobalFind("KEYBINDINGS");
    if (!ac || ac->num <= 0)
       return;
 
@@ -991,18 +1024,13 @@ ActionclassEvent(ActionClass * ac, XEvent * ev, EWin * ewin)
 int
 ActionclassesGlobalEvent(XEvent * ev)
 {
-   ActionClass       **lst;
-   int                 i, num, match;
-
-   lst = (ActionClass **) ListItemType(&num, LIST_TYPE_ACLASS_GLOBAL);
-   if (!lst)
-      return 0;
+   ActionClass        *ac;
+   int                 match;
 
    match = 0;
-   for (i = 0; i < num; i++)
-      match |= ActionclassEvent(lst[i], ev, GetFocusEwin());
-
-   Efree(lst);
+   for (ecore_list_goto_first(aclass_list_global);
+	(ac = ecore_list_next(aclass_list_global)) != NULL;)
+      match |= ActionclassEvent(ac, ev, GetFocusEwin());
 
    return match;
 }
@@ -1051,7 +1079,8 @@ AclassIpc(const char *params, Client * c __UNUSED__)
 {
    const char         *p;
    char                cmd[128], prm[4096];
-   int                 i, len, num;
+   int                 i, len;
+   ActionClass        *ac;
 
    cmd[0] = prm[0] = '\0';
    p = params;
@@ -1067,11 +1096,9 @@ AclassIpc(const char *params, Client * c __UNUSED__)
      }
    else if (!strncmp(cmd, "kb", 2))
      {
-	ActionClass        *ac;
 	Action             *aa;
 
-	ac = FindItem("KEYBINDINGS", 0, LIST_FINDBY_NAME,
-		      LIST_TYPE_ACLASS_GLOBAL);
+	ac = ActionclassGlobalFind("KEYBINDINGS");
 	if (!ac || ac->num <= 0)
 	   return;
 
@@ -1087,13 +1114,10 @@ AclassIpc(const char *params, Client * c __UNUSED__)
      }
    else if (!strncmp(cmd, "list", 2))
      {
-	ActionClass       **lst;
-
-	lst = (ActionClass **) ListItemType(&num, LIST_TYPE_ACLASS);
-	for (i = 0; i < num; i++)
-	   IpcPrintf("%s\n", ActionclassGetName(lst[i]));
-	if (lst)
-	   Efree(lst);
+	IpcPrintf("Global:\n");
+	ECORE_LIST_FOR_EACH(aclass_list_global, ac) IpcPrintf("%s\n", ac->name);
+	IpcPrintf("Normal:\n");
+	ECORE_LIST_FOR_EACH(aclass_list, ac) IpcPrintf("%s\n", ac->name);
      }
    else if (!strncmp(cmd, "load", 2))
      {
@@ -1110,7 +1134,7 @@ IPC_KeybindingsGet(const char *params __UNUSED__, Client * c __UNUSED__)
    Action             *aa;
    int                 i, mod;
 
-   ac = FindItem("KEYBINDINGS", 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS_GLOBAL);
+   ac = ActionclassGlobalFind("KEYBINDINGS");
    if (!ac)
       return;
 
@@ -1186,8 +1210,8 @@ IPC_KeybindingsSet(const char *params, Client * c __UNUSED__)
 
    Mode.keybinds_changed = 1;
 
-   ac = (ActionClass *) RemoveItem("KEYBINDINGS", 0, LIST_FINDBY_NAME,
-				   LIST_TYPE_ACLASS_GLOBAL);
+   ac = ecore_list_remove_node(aclass_list_global,
+			       ActionclassGlobalFind("KEYBINDINGS"));
    if (ac)
       ActionclassDestroy(ac);
 
@@ -1312,7 +1336,7 @@ GrabButtonGrabs(EWin * ewin)
    Action             *aa;
    unsigned int        mod, button, mask;
 
-   ac = FindItem("BUTTONBINDINGS", 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
+   ac = ActionclassFind("BUTTONBINDINGS");
    if (!ac)
       return;
 
@@ -1364,7 +1388,7 @@ UnGrabButtonGrabs(EWin * ewin)
    Action             *aa;
    unsigned int        mod, button;
 
-   ac = FindItem("BUTTONBINDINGS", 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
+   ac = ActionclassFind("BUTTONBINDINGS");
    if (!ac)
       return;
 

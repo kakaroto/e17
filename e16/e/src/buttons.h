@@ -46,6 +46,7 @@ Button             *ButtonCreate(const char *name, int id,
 				 int xsr, int xsa, int ysr, int ysa, char simg,
 				 int desk, char sticky);
 void                ButtonDestroy(Button * b);
+Button             *ButtonFind(const char *name);
 void                ButtonShow(Button * b);
 void                ButtonHide(Button * b);
 void                ButtonMoveToCoord(Button * b, int x, int y);
@@ -61,6 +62,9 @@ int                 ButtonDoShowDefault(const Button * b);
 int                 ButtonEmbedWindow(Button * ButtonToUse,
 				      Window WindowToEmbed);
 
+Button            **ButtonsGetList(int *pnum);
+void                ButtonsForeach(int id, struct _desk *dsk,
+				   void (*func) (Button * b));
 void                ButtonsMoveStickyToDesk(struct _desk *d);
 int                 ButtonsConfigLoad(FILE * fs);
 

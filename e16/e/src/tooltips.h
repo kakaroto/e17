@@ -31,9 +31,12 @@ typedef struct _tooltip ToolTip;
 typedef struct _actionclass *(CB_GetAclass) (void *data);
 
 int                 TooltipConfigLoad(FILE * fs);
+
 void                TooltipShow(ToolTip * tt, const char *text,
 				struct _actionclass *ac, int x, int y);
 void                TooltipHide(ToolTip * tt);
+
+ToolTip            *TooltipFind(const char *name);
 
 void                TooltipsSetPending(int type, CB_GetAclass * func,
 				       void *data);

@@ -24,6 +24,7 @@
 #include "E.h"
 #include "borders.h"
 #include "dialog.h"
+#include "e16-ecore_list.h"
 #include "emodule.h"
 #include "eobj.h"
 #include "ewins.h"
@@ -125,6 +126,9 @@ static void         MenuItemHandleEvents(XEvent * ev, void *mi);
 static void         MenuMaskerHandleEvents(XEvent * ev, void *prm);
 
 static void         MenusHide(void);
+
+static Ecore_List  *menu_list = NULL;
+static Ecore_List  *menu_style_list = NULL;
 
 static MenuItem    *
 MenuFindItemByChild(Menu * m, Menu * mc)
@@ -285,8 +289,7 @@ MenuShow(Menu * m, char noshow)
      {
 	Border             *b;
 
-	b = FindItem(m->style->border_name, 0, LIST_FINDBY_NAME,
-		     LIST_TYPE_BORDER);
+	b = BorderFind(m->style->border_name);
 	if (b)
 	  {
 	     int                 width;
@@ -391,6 +394,13 @@ MenuStyleCreate(const char *name)
    MenuStyle          *ms;
 
    ms = Ecalloc(1, sizeof(MenuStyle));
+   if (!ms)
+      return NULL;
+
+   if (!menu_style_list)
+      menu_style_list = ecore_list_new();
+   ecore_list_prepend(menu_style_list, ms);
+
    ms->iconpos = ICON_LEFT;
    MenuStyleSetName(ms, name);
 
@@ -417,6 +427,18 @@ MenuItemCreate(const char *text, ImageClass * iclass,
    return mi;
 }
 
+static int
+_MenuStyleMatchName(const void *data, const void *match)
+{
+   return strcmp(((const MenuStyle *)data)->name, match);
+}
+
+MenuStyle          *
+MenuStyleFind(const char *name)
+{
+   return ecore_list_find(menu_style_list, _MenuStyleMatchName, name);
+}
+
 void
 MenuSetInternal(Menu * m)
 {
@@ -433,7 +455,10 @@ void
 MenuSetName(Menu * m, const char *name)
 {
    _EFDUP(m->name, name);
-   AddItem(m, m->name, 0, LIST_TYPE_MENU);
+
+   if (!menu_list)
+      menu_list = ecore_list_new();
+   ecore_list_prepend(menu_list, m);
 }
 
 void
@@ -502,7 +527,7 @@ MenuSetStyle(Menu * m, MenuStyle * ms)
    if (!ms && m->parent)
       ms = m->parent->style;
    if (!ms)
-      ms = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
+      ms = MenuStyleFind("DEFAULT");
    m->style = ms;
    if (ms)
       ms->ref_count++;
@@ -532,7 +557,7 @@ MenuDestroy(Menu * m)
    if (!m)
       return;
 
-   m = RemoveItemByPtr(m, LIST_TYPE_MENU);
+   m = ecore_list_remove_node(menu_list, m);
    if (!m)
       return;
 
@@ -984,9 +1009,8 @@ MenuHideMasker(void)
 static void
 MenusDestroyLoaded(void)
 {
-   Menu               *menu;
-   Menu              **menus;
-   int                 i, num, found_one;
+   Menu               *m;
+   int                 found_one;
 
    MenusHide();
 
@@ -994,48 +1018,46 @@ MenusDestroyLoaded(void)
    do
      {
 	found_one = 0;
-	menus = (Menu **) ListItemType(&num, LIST_TYPE_MENU);
-	for (i = 0; i < num; i++)
-	  {
-	     menu = menus[i];
-	     if (menu->internal)
-		continue;
+	ECORE_LIST_FOR_EACH(menu_list, m)
+	{
+	   if (m->internal)
+	      continue;
 
-	     MenuDestroy(menu);
-	     /* Destroying a menu may result in sub-menus being
-	      * destroyed too, so we have to re-find all menus
-	      * afterwards. Inefficient yes, but it works...
-	      */
-	     found_one = 1;
-	     break;
-	  }
-	if (menus)
-	   Efree(menus);
+	   MenuDestroy(m);
+	   /* Destroying a menu may result in sub-menus being
+	    * destroyed too, so we have to re-find all menus
+	    * afterwards. Inefficient yes, but it works...
+	    */
+	   found_one = 1;
+	   break;
+	}
      }
    while (found_one);
+}
+
+static int
+_MenuMatchName(const void *data, const void *match)
+{
+   const Menu         *m = data;
+
+   if ((m->name && !strcmp(match, m->name)) ||
+       (m->alias && !strcmp(match, m->alias)))
+      return 0;
+
+   return 1;
 }
 
 static Menu        *
 MenuFind(const char *name)
 {
-   Menu               *m, **lst;
-   int                 i, num;
+   Menu               *m;
 
-   lst = (Menu **) ListItemType(&num, LIST_TYPE_MENU);
-   for (i = 0; i < num; i++)
-     {
-	m = lst[i];
-	if ((m->name && !strcmp(name, m->name)) ||
-	    (m->alias && !strcmp(name, m->alias)))
-	   goto done;
-     }
+   m = ecore_list_find(menu_list, _MenuMatchName, name);
+   if (m)
+      return (m);
 
    /* Not in list - try if we can load internal */
    m = MenusCreateInternal(name, name, NULL, NULL);
-
- done:
-   if (lst)
-      Efree(lst);
 
    return m;
 }
@@ -1077,17 +1099,9 @@ MenusHide(void)
 static void
 MenusTouch(void)
 {
-   Menu               *m, **lst;
-   int                 i, num;
+   Menu               *m;
 
-   lst = (Menu **) ListItemType(&num, LIST_TYPE_MENU);
-   for (i = 0; i < num; i++)
-     {
-	m = lst[i];
-	m->redraw = 1;
-     }
-   if (lst)
-      Efree(lst);
+   ECORE_LIST_FOR_EACH(menu_list, m) m->redraw = 1;
 }
 
 /*
@@ -1721,7 +1735,6 @@ MenuStyleConfigLoad(FILE * ConfigFile)
 	switch (i1)
 	  {
 	  case CONFIG_CLOSE:
-	     AddItem(ms, ms->name, 0, LIST_TYPE_MENU_STYLE);
 	     goto done;
 	  case CONFIG_CLASSNAME:
 	     ms = MenuStyleCreate(s2);
@@ -1775,8 +1788,7 @@ MenuStyleConfigLoad(FILE * ConfigFile)
 
 		ms->border_name = Estrdup(s2);
 
-		b = FindItem(ms->border_name, 0, LIST_FINDBY_NAME,
-			     LIST_TYPE_BORDER);
+		b = BorderFind(ms->border_name);
 		if (b)
 		   BorderIncRefcount(b);
 	     }
@@ -1859,7 +1871,7 @@ MenuConfigLoad(FILE * fs)
 		MenuSetName(m, s2);
 	     break;
 	  case MENU_USE_STYLE:
-	     ms = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
+	     ms = MenuStyleFind(s2);
 	     if (ms)
 		MenuSetStyle(m, ms);
 	     break;
@@ -1919,7 +1931,7 @@ MenuConfigLoad(FILE * fs)
 	     ic = NULL;
 	     if (strcmp("NULL", s3))
 		ic = ImageclassFind(s3, 0);
-	     mm = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_MENU);
+	     mm = MenuFind(s2);
 #if 0				/* FIXME - Remove? */
 	     /* if submenu empty - dont put it in - only if menu found */
 	     if (MenuIsEmpty(mm))
@@ -1944,24 +1956,20 @@ MenuConfigLoad(FILE * fs)
 static void
 MenusTimeout(int val __UNUSED__, void *data __UNUSED__)
 {
-   Menu               *m, **lst;
-   int                 i, num;
+   Menu               *m;
    time_t              ts;
 
    /* Unload contents if loadable and no access in > 5 min */
    ts = time(0);
-   lst = (Menu **) ListItemType(&num, LIST_TYPE_MENU);
-   for (i = 0; i < num; i++)
-     {
-	m = lst[i];
-	if (!m->loader || m->shown || m->num == 0 || ts - m->last_access < 300)
-	   continue;
+   ECORE_LIST_FOR_EACH(menu_list, m)
+   {
+      if (!m->loader || m->shown || m->num == 0 || ts - m->last_access < 300)
+	 continue;
 
-	MenuEmpty(m, 0);
-	m->last_change = 0;
-     }
-   if (lst)
-      Efree(lst);
+      MenuEmpty(m, 0);
+      m->last_change = 0;
+   }
+
    DoIn("MenusCheck", 300.0, MenusTimeout, 0, NULL);
 }
 
@@ -2024,7 +2032,7 @@ MenusSettings(void)
    Dialog             *d;
    DItem              *table, *di;
 
-   d = FindItem("CONFIGURE_MENUS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   d = DialogFind("CONFIGURE_MENUS");
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
@@ -2072,7 +2080,8 @@ MenusIpc(const char *params, Client * c __UNUSED__)
 {
    const char         *p;
    char                cmd[128], prm[4096];
-   int                 i, len, num;
+   int                 len;
+   Menu               *m;
 
    cmd[0] = prm[0] = '\0';
    p = params;
@@ -2093,15 +2102,7 @@ MenusIpc(const char *params, Client * c __UNUSED__)
      }
    else if (!strncmp(cmd, "list", 2))
      {
-	Menu              **lst;
-
-	lst = (Menu **) ListItemType(&num, LIST_TYPE_MENU);
-	for (i = 0; i < num; i++)
-	  {
-	     IpcPrintf("%s\n", lst[i]->name);
-	  }
-	if (lst)
-	   Efree(lst);
+	ECORE_LIST_FOR_EACH(menu_list, m) IpcPrintf("%s\n", m->name);
      }
    else if (!strncmp(cmd, "reload", 2))
      {

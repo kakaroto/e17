@@ -142,58 +142,6 @@ EwinFindByString(const char *match, int type)
    return ewin;
 }
 
-Group             **
-ListWinGroups(const EWin * ewin, char group_select, int *num)
-{
-   Group             **groups = NULL;
-   Group             **groups2 = NULL;
-   int                 i, j, killed = 0;
-
-   switch (group_select)
-     {
-     case GROUP_SELECT_EWIN_ONLY:
-	groups = (Group **) Emalloc(sizeof(Group *) * ewin->num_groups);
-	if (!groups)
-	   break;
-	memcpy(groups, ewin->groups, sizeof(Group *) * ewin->num_groups);
-	*num = ewin->num_groups;
-	break;
-     case GROUP_SELECT_ALL_EXCEPT_EWIN:
-	groups2 = (Group **) ListItemType(num, LIST_TYPE_GROUP);
-	if (groups2)
-	  {
-	     for (i = 0; i < (*num); i++)
-	       {
-		  for (j = 0; j < ewin->num_groups; j++)
-		    {
-		       if (ewin->groups[j] == groups2[i])
-			 {
-			    groups2[i] = NULL;
-			    killed++;
-			 }
-		    }
-	       }
-	     groups = (Group **) Emalloc(sizeof(Group *) * (*num - killed));
-	     if (groups)
-	       {
-		  j = 0;
-		  for (i = 0; i < (*num); i++)
-		     if (groups2[i])
-			groups[j++] = groups2[i];
-		  (*num) -= killed;
-	       }
-	     Efree(groups2);
-	  }
-	break;
-     case GROUP_SELECT_ALL:
-     default:
-	groups = (Group **) ListItemType(num, LIST_TYPE_GROUP);
-	break;
-     }
-
-   return groups;
-}
-
 EWin              **
 ListWinGroupMembersForEwin(const EWin * ewin, int action, char nogroup,
 			   int *pnum)

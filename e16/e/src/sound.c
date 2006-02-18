@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "dialog.h"
+#include "e16-ecore_list.h"
 #include "emodule.h"
 
 #ifdef HAVE_LIBESD
@@ -63,6 +64,8 @@ static struct
 } Conf_sound;
 
 static int          sound_fd = -1;
+
+Ecore_List         *sound_list = NULL;
 
 #ifdef HAVE_LIBESD
 static Sample      *
@@ -167,7 +170,7 @@ SamplePlay(Sample * s)
 #endif /* HAVE_LIBESD */
 
 static void
-DestroySample(Sample * s)
+SampleDestroy(Sample * s)
 {
 #ifdef HAVE_LIBESD
    if ((s->id) && (sound_fd >= 0))
@@ -186,6 +189,18 @@ DestroySample(Sample * s)
       Efree(s);
 }
 
+static void
+_SclassSampleDestroy(void *data, void *user_data __UNUSED__)
+{
+   SoundClass         *sclass = data;
+
+   if (!sclass || !sclass->sample)
+      return;
+
+   SampleDestroy(sclass->sample);
+   sclass->sample = NULL;
+}
+
 static SoundClass  *
 SclassCreate(const char *name, const char *file)
 {
@@ -195,10 +210,13 @@ SclassCreate(const char *name, const char *file)
    if (!sclass)
       return NULL;
 
+   if (!sound_list)
+      sound_list = ecore_list_new();
+   ecore_list_prepend(sound_list, sclass);
+
    sclass->name = Estrdup(name);
    sclass->file = Estrdup(file);
    sclass->sample = NULL;
-   AddItem(sclass, sclass->name, 0, LIST_TYPE_SCLASS);
 
    return sclass;
 }
@@ -208,13 +226,13 @@ SclassDestroy(SoundClass * sclass)
 {
    if (!sclass)
       return;
-   RemoveItem(sclass->name, 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS);
+   ecore_list_remove_node(sound_list, sclass);
    if (sclass->name)
       Efree(sclass->name);
    if (sclass->file)
       Efree(sclass->file);
    if (sclass->sample)
-      DestroySample(sclass->sample);
+      SampleDestroy(sclass->sample);
    Efree(sclass);
 }
 
@@ -233,10 +251,16 @@ SclassApply(SoundClass * sclass)
 #endif
 }
 
-static const char  *
-SclassGetName(SoundClass * sclass)
+static int
+_SclassMatchName(const void *data, const void *match)
 {
-   return sclass->name;
+   return strcmp(((const SoundClass *)data)->name, match);
+}
+
+static SoundClass  *
+SclassFind(const char *name)
+{
+   return ecore_list_find(sound_list, _SclassMatchName, name);
 }
 
 void
@@ -247,7 +271,7 @@ SoundPlay(const char *name)
    if (!Conf_sound.enable)
       return;
 
-   sclass = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS);
+   sclass = SclassFind(name);
    SclassApply(sclass);
 }
 
@@ -256,8 +280,9 @@ SoundFree(const char *name)
 {
    SoundClass         *sclass;
 
-   sclass = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS);
+   sclass = SclassFind(name);
    SclassDestroy(sclass);
+
    return sclass != NULL;
 }
 
@@ -294,21 +319,10 @@ SoundInit(void)
 static void
 SoundExit(void)
 {
-   SoundClass        **lst;
-   int                 num, i;
-
    if (sound_fd < 0)
       return;
 
-   lst = (SoundClass **) ListItemType(&num, LIST_TYPE_SCLASS);
-   for (i = 0; i < num; i++)
-     {
-	if (lst[i]->sample)
-	   DestroySample(lst[i]->sample);
-	lst[i]->sample = NULL;
-     }
-   if (lst)
-      Efree(lst);
+   ecore_list_for_each(sound_list, _SclassSampleDestroy, NULL);
 
    close(sound_fd);
    sound_fd = -1;
@@ -430,7 +444,7 @@ SettingsAudio(void)
    Dialog             *d;
    DItem              *table, *di;
 
-   d = FindItem("CONFIGURE_AUDIO", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   d = DialogFind("CONFIGURE_AUDIO");
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
@@ -478,7 +492,8 @@ SoundIpc(const char *params, Client * c __UNUSED__)
 {
    const char         *p;
    char                cmd[128], prm[4096];
-   int                 i, len, num;
+   int                 len;
+   SoundClass         *sc;
 
    cmd[0] = prm[0] = '\0';
    p = params;
@@ -499,15 +514,7 @@ SoundIpc(const char *params, Client * c __UNUSED__)
      }
    else if (!strncmp(cmd, "list", 2))
      {
-	SoundClass        **lst;
-
-	lst = (SoundClass **) ListItemType(&num, LIST_TYPE_SCLASS);
-	for (i = 0; i < num; i++)
-	  {
-	     IpcPrintf("%s\n", SclassGetName(lst[i]));
-	  }
-	if (lst)
-	   Efree(lst);
+	ECORE_LIST_FOR_EACH(sound_list, sc) IpcPrintf("%s\n", sc->name);
      }
    else if (!strncmp(cmd, "new", 3))
      {

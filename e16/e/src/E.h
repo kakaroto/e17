@@ -178,38 +178,6 @@ int                 Esnprintf(va_alist);
 #define SPANS_COMMON(x1, w1, x2, w2) \
    (!((((x2) + (w2)) <= (x1)) || ((x2) >= ((x1) + (w1)))))
 
-#define LIST_FINDBY_NAME        0
-#define LIST_FINDBY_ID          1
-#define LIST_FINDBY_BOTH        2
-#define LIST_FINDBY_NONE        3
-#define LIST_FINDBY_POINTER     4
-
-#define LIST_TYPE_ANY            0
-#define LIST_TYPE_CLIENT         1
-#define LIST_TYPE_BORDER         3
-#define LIST_TYPE_ICLASS         4
-#define LIST_TYPE_ACLASS         5
-#define LIST_TYPE_ACLASS_GLOBAL  7
-#define LIST_TYPE_TCLASS         9
-#define LIST_TYPE_BACKGROUND    10
-#define LIST_TYPE_BUTTON        11
-#define LIST_TYPE_SCLASS        12
-#define LIST_TYPE_WINDOWMATCH   13
-#define LIST_TYPE_COLORMODIFIER 14
-#define LIST_TYPE_SLIDEOUT      16
-#define LIST_TYPE_TOOLTIP       18
-#define LIST_TYPE_MENU          21
-#define LIST_TYPE_MENU_STYLE    22
-#define LIST_TYPE_ECURSOR       23
-#define LIST_TYPE_SNAPSHOT      24
-#define LIST_TYPE_DIALOG        25
-#define LIST_TYPE_FONT          26
-#define LIST_TYPE_PAGER         27
-#define LIST_TYPE_ICONBOX       28
-#define LIST_TYPE_GROUP         32
-
-#define LIST_TYPE_COUNT         33
-
 #define STATE_NORMAL            0
 #define STATE_HILITED           1
 #define STATE_CLICKED           2
@@ -647,7 +615,7 @@ void                CommsBroadcast(const char *s);
 void                CommsBroadcastToSlaveWMs(const char *s);
 
 /* config.c */
-int                 ConfigSkipIfExists(FILE * fs, const char *name, int type);
+void                SkipTillEnd(FILE * ConfigFile);
 char               *GetLine(char *s, int size, FILE * f);
 void                ConfigAlertLoad(const char *txt);
 char               *FindFile(const char *file, const char *themepath,
@@ -674,6 +642,7 @@ void                CoordsHide(void);
 #define ECSR_ACT_RESIZE     5
 #define ECSR_COUNT          6
 
+ECursor            *ECursorFind(const char *name);
 void                ECursorApply(ECursor * ec, Window win);
 void                ECursorIncRefcount(ECursor * ec);
 void                ECursorDecRefcount(ECursor * ec);
@@ -843,23 +812,6 @@ char               *EstrLoc2Int(const char *str, int len);
 char               *EstrUtf82Int(const char *str, int len);
 const char         *EstrInt2Enc(const char *str, int want_utf8);
 void                EstrInt2EncFree(const char *str, int want_utf8);
-
-/* lists.c */
-void                ListsInit(int num);
-void               *FindItem(const void *name, int id, int find_by, int type);
-void                AddItem(const void *item, const char *name, int id,
-			    int type);
-void                AddItemEnd(const void *item, const char *name, int id,
-			       int type);
-void               *RemoveItem(const void *name, int id, int find_by, int type);
-void               *RemoveItemByPtr(const void *item, int type);
-void              **ListItemType(int *num, int type);
-char              **ListItems(int *num, int type);
-void              **ListItemTypeID(int *num, int type, int id);
-void              **ListItemTypeName(int *num, int type, const char *name);
-void                MoveItemToListTop(const void *item, int type);
-void                MoveItemToListBottom(const void *item, int type);
-void                ListChangeItemID(int type, void *ptr, int id);
 
 /* main.c */
 void                EExit(int exitcode);

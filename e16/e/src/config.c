@@ -32,10 +32,7 @@
 #include "tclass.h"
 #include "tooltips.h"
 
-#define SKIP_If_EXISTS(name, type) \
-   if (ConfigSkipIfExists(ConfigFile, name, type)) return
-
-static void
+void
 SkipTillEnd(FILE * ConfigFile)
 {
    char                s[FILEPATH_LEN_MAX];
@@ -50,17 +47,6 @@ SkipTillEnd(FILE * ConfigFile)
 	if (i2 == CONFIG_OPEN)
 	   SkipTillEnd(ConfigFile);
      }
-}
-
-int
-ConfigSkipIfExists(FILE * ConfigFile, const char *name, int type)
-{
-   if (FindItem(name, 0, LIST_FINDBY_NAME, type))
-     {
-	SkipTillEnd(ConfigFile);
-	return 1;
-     }
-   return 0;
 }
 
 static int

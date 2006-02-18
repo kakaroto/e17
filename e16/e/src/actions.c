@@ -281,7 +281,7 @@ About(void)
    DItem              *table, *di;
    char                buf[1024];
 
-   d = FindItem("ABOUT_ENLIGHTENMENT", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   d = DialogFind("ABOUT_ENLIGHTENMENT");
    if (d)
      {
 	ShowDialog(d);

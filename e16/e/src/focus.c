@@ -679,7 +679,7 @@ SettingsFocus(void)
    Dialog             *d;
    DItem              *table, *di, *radio, *radio2;
 
-   d = FindItem("CONFIGURE_FOCUS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   d = DialogFind("CONFIGURE_FOCUS");
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
