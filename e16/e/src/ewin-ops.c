@@ -1281,6 +1281,30 @@ EwinUnShade(EWin * ewin)
 }
 
 void
+EwinOpMove(EWin * ewin, int source, int x, int y)
+{
+   Mode.op_source = source;
+   EwinMove(ewin, x, y);
+   Mode.op_source = 0;
+}
+
+void
+EwinOpResize(EWin * ewin, int source, int w, int h)
+{
+   Mode.op_source = source;
+   EwinResize(ewin, w, h);
+   Mode.op_source = 0;
+}
+
+void
+EwinOpMoveResize(EWin * ewin, int source, int x, int y, int w, int h)
+{
+   Mode.op_source = source;
+   EwinMoveResize(ewin, x, y, w, h);
+   Mode.op_source = 0;
+}
+
+void
 EwinOpFullscreen(EWin * ewin, int source __UNUSED__, int on)
 {
    int                 x, y, w, h, ww, hh;

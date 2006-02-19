@@ -634,7 +634,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
    switch (md)
      {
      case 0:
-	EwinMoveResize(ewin, x, y, w, h);
+	EwinOpMoveResize(ewin, OPSRC_USER, x, y, w, h);
 	EwinShapeSet(ewin);
 	CoordsShow(ewin);
 	break;

@@ -396,10 +396,10 @@ ActionResizeEnd(EWin * ewin)
    else
      {
 	if (ewin->state.shaded)
-	   EwinMove(ewin, ewin->shape_x, ewin->shape_y);
+	   EwinOpMove(ewin, OPSRC_USER, ewin->shape_x, ewin->shape_y);
 	else
-	   EwinMoveResize(ewin, ewin->shape_x, ewin->shape_y,
-			  ewin->shape_w, ewin->shape_h);
+	   EwinOpMoveResize(ewin, OPSRC_USER, ewin->shape_x, ewin->shape_y,
+			    ewin->shape_w, ewin->shape_h);
      }
 
    ESync();
@@ -622,7 +622,8 @@ ActionMoveHandleMotion(void)
 		       tmp_swapcoord_y = Mode_mr.swapcoord_y;
 		       Mode_mr.swapcoord_x = ewin2->shape_x;
 		       Mode_mr.swapcoord_y = ewin2->shape_y;
-		       EwinMove(ewin2, tmp_swapcoord_x, tmp_swapcoord_y);
+		       EwinOpMove(ewin2, OPSRC_USER,
+				  tmp_swapcoord_x, tmp_swapcoord_y);
 		       break;
 		    }
 	       }

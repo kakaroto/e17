@@ -352,6 +352,10 @@ void                EwinMoveToArea(EWin * ewin, int ax, int ay);
 void                EwinMoveToLinearArea(EWin * ewin, int a);
 void                EwinMoveLinearAreaBy(EWin * ewin, int a);
 
+void                EwinOpMove(EWin * ewin, int source, int x, int y);
+void                EwinOpResize(EWin * ewin, int source, int w, int h);
+void                EwinOpMoveResize(EWin * ewin, int source, int x, int y,
+				     int w, int h);
 void                EwinOpClose(EWin * ewin, int source);
 void                EwinOpActivate(EWin * ewin, int source);
 void                EwinOpKill(EWin * ewin, int source);
