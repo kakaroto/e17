@@ -358,7 +358,7 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
 			      }
 			}
 
-                     /* Remove it if it has been deleted. */
+                     /* Add it if it has not been deleted. */
                      if (flags[1] != 'D')
 		        {
                            list->elements[element].element = menu;
