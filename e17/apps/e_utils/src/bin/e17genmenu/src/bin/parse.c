@@ -120,19 +120,19 @@ parse_exec(char *exec)
 }
 
 void
-parse_desktop_file(char *path)
+parse_desktop_file(char *app, char *menu_path)
 {
    char *home, *eap_name;
    int overwrite;
    G_Eap *eap;
-   Ecore_Hash *desktop;
+   Desktop *desktop;
 
    home = get_home();
    overwrite = get_overwrite();
-   eap_name = get_eap_name(path);
+   eap_name = get_eap_name(app);
 
 #ifdef DEBUG
-   fprintf(stderr, "Parsing Desktop File %s\n", path);
+   fprintf(stderr, "Parsing Desktop File %s\n", app);
 #endif
 
    eap = calloc(1, sizeof(G_Eap));
@@ -140,44 +140,38 @@ parse_desktop_file(char *path)
    if (eap_name)
       free(eap_name);
 
-   desktop = parse_ini_file(path);
+   desktop = parse_desktop_ini_file(app);
    if (desktop)
       {
-         Ecore_Hash *group;
+         char *value;
 
-         group = (Ecore_Hash *) ecore_hash_get(desktop, "Desktop Entry");
-	 if (group)
-	    {
-	       char *value;
-
-               value = (char *) ecore_hash_get(group, "Name");
-	       if (value)   eap->name = strdup(value);
-               value = (char *) ecore_hash_get(group, "GenericName");
-	       if (value)   eap->generic = strdup(value);
-               value = (char *) ecore_hash_get(group, "Comment");
-	       if (value)   eap->comment = strdup(value);
-               value = (char *) ecore_hash_get(group, "Type");
-	       if (value)   eap->type = strdup(value);
-               value = (char *) ecore_hash_get(group, "Categories");
-	       if (value)   eap->categories = strdup(value);
-               value = (char *) ecore_hash_get(group, "Exec");
-	       if (value)   eap->exec = strdup(value);
-               value = (char *) ecore_hash_get(group, "Icon");
-	       if (value)   eap->icon = strdup(value);
-               value = (char *) ecore_hash_get(group, "X-KDE-StartupNotify");
-	       if (value)   eap->startup = (!strcmp(value, "true")) ? "1" : "0";
-               value = (char *) ecore_hash_get(group, "StartupNotify");
-	       if (value)   eap->startup = (!strcmp(value, "true")) ? "1" : "0";
-            }
+         value = (char *) ecore_hash_get(desktop->group, "Name");
+	 if (value)   eap->name = strdup(value);
+         value = (char *) ecore_hash_get(desktop->group, "GenericName");
+	 if (value)   eap->generic = strdup(value);
+         value = (char *) ecore_hash_get(desktop->group, "Comment");
+	 if (value)   eap->comment = strdup(value);
+         value = (char *) ecore_hash_get(desktop->group, "Type");
+	 if (value)   eap->type = strdup(value);
+         value = (char *) ecore_hash_get(desktop->group, "Categories");
+	 if (value)   eap->categories = strdup(value);
+         value = (char *) ecore_hash_get(desktop->group, "Exec");
+	 if (value)   eap->exec = strdup(value);
+         value = (char *) ecore_hash_get(desktop->group, "Icon");
+	 if (value)   eap->icon = strdup(value);
+         value = (char *) ecore_hash_get(desktop->group, "X-KDE-StartupNotify");
+	 if (value)   eap->startup = (!strcmp(value, "true")) ? "1" : "0";
+         value = (char *) ecore_hash_get(desktop->group, "StartupNotify");
+	 if (value)   eap->startup = (!strcmp(value, "true")) ? "1" : "0";
       }
 
    /* Check If We Process */
    if (!eap->type)
-      process_file(path, eap);
+      process_file(app, menu_path, eap);
    if (eap->type)
      {
         if (!strcmp(eap->type, "Application"))
-           process_file(path, eap);
+           process_file(app, menu_path, eap);
      }
 
    /* Write Out Mapping File ? */
@@ -189,9 +183,10 @@ parse_desktop_file(char *path)
 
         FILE *f;
         char buff[MAX_PATH];
+        char map_path[MAX_PATH];
 
-        snprintf(path, sizeof(path), "%s/MAPPING", home);
-        f = fopen(path, "a+");
+        snprintf(map_path, sizeof(map_path), "%s/MAPPING", home);
+        f = fopen(map_path, "a+");
         if (!f)
           {
              fprintf(stderr, "ERROR: Cannot Open Mapping File\n");
@@ -206,7 +201,7 @@ parse_desktop_file(char *path)
 }
 
 void
-process_file(char *file, G_Eap *eap)
+process_file(char *file, char *menu_path, G_Eap *eap)
 {
    char *home, *window_class, *exec, *category, *icon;
    char path[MAX_PATH], order_path[MAX_PATH], buffer[MAX_PATH];
@@ -227,18 +222,27 @@ process_file(char *file, G_Eap *eap)
 
    if ((ecore_file_exists(path)) && (!overwrite))
      {
-        category = NULL;
-        if (eap->categories != NULL)
-          {
-             category = find_category(eap->categories);
-             if (category != NULL)
-               {
-                  snprintf(order_path, sizeof(order_path), "%s" EFAVDIR "/%s",
-                           home, category);
-                  modify_order(order_path, eap->eap_name);
-               }
-          }
-        return;
+        if (menu_path != NULL)
+           {
+              snprintf(order_path, sizeof(order_path), "%s" EFAVDIR "/%s",
+                     home, menu_path);
+              modify_order(order_path, eap->eap_name);
+	   }
+	else
+	   {
+              category = NULL;
+              if (eap->categories != NULL)
+                {
+                   category = find_category(eap->categories);
+                   if (category != NULL)
+                     {
+                        snprintf(order_path, sizeof(order_path), "%s" EFAVDIR "/%s",
+                                 home, category);
+                        modify_order(order_path, eap->eap_name);
+                     }
+                }
+              return;
+	   }
      }
 
    if (eap->icon != NULL)
@@ -278,18 +282,28 @@ process_file(char *file, G_Eap *eap)
       write_eap(path, "app/window/class", window_class);
 
    snprintf(buffer, sizeof(buffer),
-            "enlightenment_eapp_cache_gen %s/.e/e/applications/all -r",
+            "enlightenment_eapp_cache_gen %s/.e/e/applications/all -r > /dev/null 2>&1",
             getenv("HOME"));
    system(buffer);
 
    category = NULL;
-   if (eap->categories != NULL)
+   if (menu_path != NULL)
+      {
+             snprintf(buffer, sizeof(buffer),
+                      "enlightenment_eapp_cache_gen %s/.e/e/applications/favorite/%s -r /dev/null 2>&1",
+                      getenv("HOME"), menu_path);
+             system(buffer);
+             snprintf(order_path, sizeof(order_path), "%s" EFAVDIR "/%s", home,
+                      menu_path);
+             modify_order(order_path, eap->eap_name);
+      }
+   else if (eap->categories != NULL)
      {
         category = find_category(eap->categories);
         if (category != NULL)
           {
              snprintf(buffer, sizeof(buffer),
-                      "enlightenment_eapp_cache_gen %s/.e/e/applications/favorite/%s -r",
+                      "enlightenment_eapp_cache_gen %s/.e/e/applications/favorite/%s -r /dev/null 2>&1",
                       getenv("HOME"), category);
              system(buffer);
              snprintf(order_path, sizeof(order_path), "%s" EFAVDIR "/%s", home,
@@ -372,7 +386,7 @@ parse_debian_file(char *file)
 
    fclose(f);
 
-   process_file(file, eap);
+   process_file(file, NULL, eap);
    free(eap);
 }
 

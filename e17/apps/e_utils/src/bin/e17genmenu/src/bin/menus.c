@@ -120,7 +120,7 @@ check_for_files(char *dir)
                   if (!strcmp(file, "kalarm.desktop"))
                      return;
                   /* Parse Desktop File */
-                  parse_desktop_file(strdup(path));
+                  parse_desktop_file(strdup(path), NULL);
                }
              else if (strstr(DEBIAN_DIRS, dir) != NULL)
                {
@@ -150,8 +150,8 @@ _menu_make_apps(const void *data, Dumb_List *list, int element, int level)
                path = (char *) list->elements[element + 1].element;
                pool  = (Ecore_Hash *) list->elements[element + 2].element;
                apps  = (Ecore_Hash *) list->elements[element + 4].element;
-printf("MAKING MENU - %s \t\t%s\n", path, name);
-               ecore_hash_for_each_node(apps, _menu_dump_each_hash_node, path);
+               printf("MAKING MENU - %s \t\t%s\n", path, name);
+               ecore_hash_for_each_node(apps, _menu_dump_each_hash_node, &path[11]);
 	    }
       }
    return 0;
@@ -166,6 +166,6 @@ _menu_dump_each_hash_node(void *value, void *user_data)
    path = (char *) user_data;
    node = (Ecore_Hash_Node *) value;
    file = (char *) node->value;
-   printf("CREATING %s\n", file);
-   parse_desktop_file(strdup(file));
+   printf("MAKING EAP %s -> %s\n", path, file);
+   parse_desktop_file(strdup(file), path);
 }
