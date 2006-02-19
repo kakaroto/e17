@@ -62,7 +62,7 @@ xmlame_get(char *file)
          list = xmlame_new(buffer);
 	 if (list)
 	    {
-	       /* Have thde file name as the first item on the list, for alter reference. */
+	       /* Have the file name as the first item on the list, for later reference. */
 	       dumb_list_extend(list, file);
 	       _xmlame_parse(list, buffer);
 	    }
