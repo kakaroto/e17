@@ -82,6 +82,7 @@ typedef struct
    char                do_newbg;
    char                do_update;
    int                 x1, y1, x2, y2;
+   float               scale;
 } Pager;
 
 static void         PagerScanCancel(Pager * p);
@@ -481,26 +482,41 @@ PagerUpdate(Pager * p, int x1, int y1, int x2, int y2)
 static void
 PagerReconfigure(Pager * p, int apply)
 {
-   int                 ax, ay, w, h;
-   double              aspect;
+   int                 ax, ay, w, h, dx, dy;
+   double              aspect, f;
 
    DesksGetAreaSize(&ax, &ay);
 
-   w = (int)(p->w * (double)VRoot.w / p->screen_w);
-   h = (int)(p->h * (double)VRoot.h / p->screen_h);
-   p->screen_w = VRoot.w;
-   p->screen_h = VRoot.h;
-
    aspect = ((double)VRoot.w) / ((double)VRoot.h);
+
+   dx = 2;
+   for (;;)
+     {
+	f = dx / aspect;
+	dy = (int)(f + .5);
+	f -= (double)dy;
+	if (f < 0)
+	   f = -f;
+	if (f < .1)
+	   break;
+	dx *= 2;
+	if (dx >= 16)
+	   break;
+     }
+
    ICCCM_SetSizeConstraints(p->ewin,
 			    VRoot.w / 64 * ax, VRoot.h / 64 * ay,
 			    VRoot.w / 4 * ax, VRoot.h / 4 * ay,
-			    0, 0, ax, ay,
+			    0, 0, dx * ax, dy * ay,
 			    aspect * ((double)ax / (double)ay),
 			    aspect * ((double)ax / (double)ay));
 
    if (apply)
-      EwinResize(p->ewin, w, h);
+     {
+	w = (int)(ax * VRoot.w / p->scale + .5);
+	h = (int)(ay * VRoot.h / p->scale + .5);
+	EwinResize(p->ewin, w, h);
+     }
 }
 
 static void
@@ -601,6 +617,9 @@ PagerEwinMoveResize(EWin * ewin, int resize __UNUSED__)
    p->h = h;
    p->dw = w / ax;
    p->dh = h / ay;
+
+   if (p->scale <= 0. || Mode.op_source == OPSRC_USER)
+      p->scale = ((float)VRoot.w / p->dw + (float)VRoot.h / p->dh) / 2;
 
    p->pmap = ECreatePixmap(p->win, p->w, p->h, VRoot.depth);
    ESetWindowBackgroundPixmap(p->win, p->pmap);
@@ -1650,12 +1669,18 @@ _PagerReconfigure(Pager * p, void *prm __UNUSED__)
 }
 
 static void
+_PagersReconfigureTimeout(int val __UNUSED__, void *data __UNUSED__)
+{
+   PagersForeach(NULL, _PagerReconfigure, NULL);
+}
+
+static void
 PagersReconfigure(void)
 {
    if (!Conf_pagers.enable)
       return;
 
-   PagersForeach(NULL, _PagerReconfigure, NULL);
+   DoIn("pg-cfg", .5, _PagersReconfigureTimeout, 0, NULL);
 }
 
 /*
