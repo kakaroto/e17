@@ -2,7 +2,7 @@
 #define __ESMART_PDF_H__
 
 
-#include "Evas_Poppler.h"
+#include "Epdf.h"
 
 typedef struct _Smart_Pdf Smart_Pdf;
 

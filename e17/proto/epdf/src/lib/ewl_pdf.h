@@ -1,7 +1,7 @@
 #ifndef __EWL_PDF_H__
 #define __EWL_PDF_H__
 
-#include <Evas_Poppler.h>
+#include <Epdf.h>
 
 /**
  * @file ewl_pdf.h

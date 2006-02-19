@@ -6,7 +6,7 @@
 #include <Ecore.h>
 #include <Ecore_Evas.h>
 
-#include "Evas_Poppler.h"
+#include "Epdf.h"
 
 static void
 document_info_print (Evas_Poppler_Document *document, Evas_Poppler_Page *page);

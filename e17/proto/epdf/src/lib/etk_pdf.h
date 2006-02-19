@@ -2,7 +2,7 @@
 #ifndef _ETK_PDF_H_
 #define _ETK_PDF_H_
 
-#include <Evas_Poppler.h>
+#include <Epdf.h>
 #include "etk_widget.h"
 
 /**

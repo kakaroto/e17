@@ -7,7 +7,7 @@ AC_PROG_LIBTOOL
 AC_PROG_CC
 
 PKG_CHECK_MODULES(POPPLER, \
-   poppler >= 0.5,
+   poppler >= 0.5.0,
    [have_poppler=yes],
   [
     echo "ERROR:"
