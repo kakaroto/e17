@@ -25,6 +25,14 @@ group {
                border: 8 8 8 8;
             }
          }
+	 description {
+	    state: "disabled" 0.0;
+	    inherit: "default" 0.0;
+	    image {
+	       normal: "entry_disabled.png";
+	       border: 8 8 8 8;
+	    }
+	 }
          description {
             state: "focus" 0.0;
             inherit: "default" 0.0;
@@ -67,6 +75,42 @@ group {
       }
    }
    programs {
+
+      program {
+	name: 	"disable";
+	signal: "disabled";
+	source: "*";
+	action: STATE_SET "disabled" 0.0;
+	transition: LINEAR 0.2;
+	target: "entry";
+      }
+
+      program {
+        name:   "enable";
+        signal: "enabled";
+        source: "*";
+        action: STATE_SET "default" 0.0;
+        transition: LINEAR 0.2;
+        target: "entry";
+      } 
+
+      program {
+        name:   "noteditable";
+        signal: "noteditable";
+        source: "*";
+        action: STATE_SET "disabled" 0.0;
+        transition: LINEAR 0.2;
+        target: "entry";
+      } 
+
+      program {
+        name:   "editable";
+        signal: "editable";
+        source: "*";
+        action: STATE_SET "default" 0.0;
+        transition: LINEAR 0.2;
+        target: "entry";
+      } 
 
       program {
          name: "entry_focus";
