@@ -57,13 +57,13 @@ group
 	 mouse_events:  0;
 	 description {
 	    state:    "default" 0.0;
-	    color: 255 255 255 255;
+	    color: 255 255 255 200;
 	    aspect:   1.0 1.0;
 	    rel1 { 
-	    	 offset: 0 0; 
+	    	 offset: 0 6; 
 	    }
 	    rel2 { 
-	    	 offset: -1 -1; 
+	    	 offset: -1 -10; 
 	    }
 	    image { 
 	    	  normal: "module_icon.png"; 
@@ -91,12 +91,12 @@ group
 	      rel2 { 
 	      	   relative: 1.0 0.0; 
 	      }
-	      color: 255 255 255 255;
+	      color: 51 181 69 255;
 	      color3: 0 0 0 100;
 	      text {
 		   text: "out"; 
 		   font: "VeraMono";
-		   size:  8;     
+		   size:  10;     
 		   min:     1 1;
 		   align: 1.0 0.0;
 	      }
@@ -120,12 +120,12 @@ group
 	      rel2 { 
 	      	   relative: 1.0 1.0; 
 	      }
-	      color: 255 255 255 255;
+	      color: 213 91 91 255;
 	      color3: 0 0 0 100;
 	      text {
 		   text: "in"; 
 		   font: "VeraMono";
-		   size:  8;     
+		   size:  10;     
 		   min:     1 1;
 		   align: 1.0 0.0;
 	      }
