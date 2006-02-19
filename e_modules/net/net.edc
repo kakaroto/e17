@@ -1,9 +1,6 @@
 images
 {
   image: "module_icon.png" COMP;
-  image: "bg.png" COMP;  
-  image: "over.png" COMP;
-  image: "over_res.png" COMP;  
 }
 
 fonts
@@ -56,54 +53,17 @@ group
       
       parts{
       part {
-	name:          "background";
-	mouse_events:  1;
-	description {
-	  state:    "default" 0.0; 
-	  rel1 { 
-	       to: "overlay"; 
-	  }
-	  rel2 { 
-	       to: "overlay"; 
-	  }
-	  image { 
-	  	normal: "bg.png"; 
-		border: 6 6 6 6; 
-	  }
-	  fill { 
-	       smooth: 0; 
-	  }
-      }
-    }
-      
-      part {
-	 name:          "overlay";
-	 mouse_events:  0;
-	 description {
-	    state:    "default" 0.0;
-	    image { 
-	    	  normal: "over.png";
-	          border: 13 13 13 13;
-	          middle: 0;
-	    }
-	    fill {
-	       smooth: 0;
-	    }
-	 }
-      }
-
-      part {
 	 name:          "net";
 	 mouse_events:  0;
 	 description {
 	    state:    "default" 0.0;
-	    color: 255 255 255 128;
+	    color: 255 255 255 255;
 	    aspect:   1.0 1.0;
 	    rel1 { 
-	    	 offset: 4 4; 
+	    	 offset: 0 0; 
 	    }
 	    rel2 { 
-	    	 offset: -5 -5; 
+	    	 offset: -1 -1; 
 	    }
 	    image { 
 	    	  normal: "module_icon.png"; 
@@ -125,14 +85,14 @@ group
 	      align: 1.0 0.0;
 	      rel1 { 
 	      	   relative: 1.0 0.0; 
-		   to_x: "overlay"; 
+		   to_x: "net"; 
 		   offset: -2 1; 
 	      }
 	      rel2 { 
 	      	   relative: 1.0 0.0; 
 	      }
-	      color: 0 0 0 255;
-	      color3: 255 255 255 100;
+	      color: 255 255 255 255;
+	      color3: 0 0 0 100;
 	      text {
 		   text: "out"; 
 		   font: "VeraMono";
@@ -154,14 +114,14 @@ group
 	      align: 1.0 0.0;
 	      rel1 { 
 	      	   relative: 1.0 1.0; 
-		   to_x: "overlay"; 
+		   to_x: "net"; 
 		   offset: -2 -10;  
 	      }
 	      rel2 { 
 	      	   relative: 1.0 1.0; 
 	      }
-	      color: 0 0 0 255;
-	      color3: 255 255 255 100;
+	      color: 255 255 255 255;
+	      color3: 0 0 0 100;
 	      text {
 		   text: "in"; 
 		   font: "VeraMono";
