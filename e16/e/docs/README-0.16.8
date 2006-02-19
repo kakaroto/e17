@@ -2,6 +2,21 @@
 About 0.16.8
 ============
 
+Contents
+--------
+
+- Major changes and new features
+- Configuration files
+- Session Scripts
+- Default keybindings
+- Using e16 with GNOME
+- Using e16 with KDE
+- Migrating from Enlightenment 0.16.7 to 0.16.8 
+
+
+Major changes and new features
+------------------------------
+
 Changes:
 - "enlightenment" has been renamed to "e16".
 - The default user configuration directory is "~/.e16".
@@ -101,83 +116,6 @@ When doing border/icon matches, the window match list is searched from the
 start, and the first matching item will be used.
 
 
-Using e16 with GNOME
---------------------
-(Using Fedora Core 4, may be pertinent to other distributions as well).
-
-The GNOME desktop can be started using e16 as WM with:
-
-$ export WINDOW_MANAGER=e16
-$ gnome-sesssion
-
-Alternatively, add a GNOME/e16 session entry to the display manager login:
-# cp /usr/share/e16/misc/e-gnome.desktop /usr/share/xsessions/
-
-However, somewhere along the way the script /usr/bin/gnome-wm is called.
-This is supposed to handle differences in all the different WM's out there,
-but does not know of "e16". This will cause a major delay when starting up
-the GNOME desktop.
-One way to fix this is to use gnome-session-properties to get rid of
-the "gnome-wm" session entry.
-Another is to apply this patch to /usr/bin/gnome-wm:
-
---- /usr/bin/gnome-wm-org       2005-04-19 21:33:53.000000000 +0200
-+++ /usr/bin/gnome-wm   2005-11-15 20:46:09.000000000 +0100
-@@ -69,7 +69,7 @@
- OPT2=
- if [ ! -z "$SMID" ] ; then
-   case `basename $WINDOW_MANAGER` in
--    sawfish|sawmill|metacity)
-+    sawfish|sawmill|metacity|e16)
-       OPT1=--sm-client-id=$SMID
-       ;;
-     openbox)
-
-
-Using e16 with KDE
-------------------
-(Using Fedora Core 4, may work with other distributions as well).
-
-The KDE desktop can be started using e16 as WM with:
-
-$ export KDEWM=e16
-$ startkde
-
-Alternatively, add a KDE/e16 session entry to the display manager login:
-# cp /usr/share/e16/misc/e-kde.desktop /usr/share/xsessions/
-
-
-Migrating from Enlightenment 0.16.7 to 0.16.8 
----------------------------------------------
-By Peter Hyman (pete4abw@comcast.net)
-
-Users upgrading from enlightenment 0.16.7 need to read the following.
-
-Several organizational changes have occurred that will require
-some manual adjustments. Mainly these deal with changes to 
-configuration and shared directory names. This was done to avoid
-collisions with the new enlightenment DR17.
-
-1) home configuration directory is now ~/.e16, not ~/.enlightenment.
-2) menu files have been moved to a subdirectory called menus
-   you will need to move customized menus and subdirectories to
-   ~/.e16/menus. Note: because of this menu files will have to have
-   menus/ prepended to it in order to be located. Ex:
-   file.menu file...
-   "User Menus"
-   "User Application list" NULL menu "menus/user_apps.menu"
-   whereas the old menu version did not have menus/. 
-3) you will need to move ~/.enlightenment/backgrounds files to ~/.e16
-   and any themes as well.
-4) $prefix/share/enlightenment has been changed to $prefix/share/e16
-5) if installed E-docs and Epplet directories will have to be moved 
-   to $prefix/share/e16
-6) any additional themes that were added to the $prefix/share/enlightenment
-   directory will have to be moved to $prefix/share/e16
-7) any startup scripts or Session scripts that reference the startup
-   executable `enlightenment` must be edited to the new e16 program.
-
-
 Session Scripts
 ---------------
 By Peter Hyman (pete4abw@comcast.net)
@@ -257,3 +195,124 @@ This process is very flexible since when used, the user can turn off
 individual scripts and applications by chmod -x or simply leave the
 startup directories empty or remove them.
 
+
+Default keybindings
+-------------------
+
+Alt-Ctrl   Home		Auto-arrange windows
+Alt-Ctrl   Insert	Launch Eterm
+Alt-Ctrl   Delete	Log out
+Alt-Ctrl   End		Exit
+Alt-Ctrl   Right	Goto next desk
+Alt-Ctrl   Left		Goto previous desk
+Alt-Shift  Down		Move desk area down
+Alt-Shift  Up		 -    -    -   up
+Alt-Shift  Left		 -    -    -   left
+Alt-Shift  Right	 -    -    -   right
+Alt        F1		Goto desk 0
+Alt        F2		 -    -   1
+Alt        F3		 -    -   2
+Alt        F4		 -    -   3
+Alt        F5		 -    -   4
+Alt        F6		 -    -   5
+Alt        F7		 -    -   6
+Alt        F8		 -    -   7
+Alt        Tab		Switch focus (using focus list, if enabled)
+Alt-Ctrl   Up		Raise active window
+Alt-Ctrl   Down		Lower active window
+Alt-Ctrl   x		Close active window
+Alt-Ctrl   k		Destroy active window
+Alt-Ctrl   s		Toggle active window sticky state
+Alt-Ctrl   i		Iconify active window
+Alt-Ctrl   r		Toggle active window shaded state
+Alt-Ctrl   f		Toggle active window fullscreen state
+Alt-Ctrl   m		Toggle active window maximized state
+Alt-Ctrl   w		Show window-ops menu for active window
+Alt        Return	Toggle active window zoomed state
+Ctrl-Shift F1		Show User menu          (default left mouse button)
+Ctrl-Shift F2		Show Enlightenment menu (default middle mouse button)
+Ctrl-Shift F3		Show Configuration menu (default right mouse button)
+Ctrl-Shift F4		Show Window List menu   (default Alt-middle mouse button)
+
+Alt-Ctrl   a		Toggle visibility of all buttons
+Alt-Ctrl   b		Toggle visibility of theme buttons
+Alt-Ctrl   c		Toggle visibility of configuration buttons
+Alt-Ctrl   d		Switch dragbar position
+Alt-Ctrl   o		Switch dragbar button ordering
+
+
+Using e16 with GNOME
+--------------------
+(Using Fedora Core 4, may be pertinent to other distributions as well).
+
+The GNOME desktop can be started using e16 as WM with:
+
+$ export WINDOW_MANAGER=e16
+$ gnome-sesssion
+
+Alternatively, add a GNOME/e16 session entry to the display manager login:
+# cp /usr/share/e16/misc/e-gnome.desktop /usr/share/xsessions/
+
+However, somewhere along the way the script /usr/bin/gnome-wm is called.
+This is supposed to handle differences in all the different WM's out there,
+but does not know of "e16". This will cause a major delay when starting up
+the GNOME desktop.
+One way to fix this is to use gnome-session-properties to get rid of
+the "gnome-wm" session entry.
+Another is to apply this patch to /usr/bin/gnome-wm:
+
+--- /usr/bin/gnome-wm-org       2005-04-19 21:33:53.000000000 +0200
++++ /usr/bin/gnome-wm   2005-11-15 20:46:09.000000000 +0100
+@@ -69,7 +69,7 @@
+ OPT2=
+ if [ ! -z "$SMID" ] ; then
+   case `basename $WINDOW_MANAGER` in
+-    sawfish|sawmill|metacity)
++    sawfish|sawmill|metacity|e16)
+       OPT1=--sm-client-id=$SMID
+       ;;
+     openbox)
+
+
+Using e16 with KDE
+------------------
+(Using Fedora Core 4, may work with other distributions as well).
+
+The KDE desktop can be started using e16 as WM with:
+
+$ export KDEWM=e16
+$ startkde
+
+Alternatively, add a KDE/e16 session entry to the display manager login:
+# cp /usr/share/e16/misc/e-kde.desktop /usr/share/xsessions/
+
+
+Migrating from Enlightenment 0.16.7 to 0.16.8 
+---------------------------------------------
+By Peter Hyman (pete4abw@comcast.net)
+
+Users upgrading from enlightenment 0.16.7 need to read the following.
+
+Several organizational changes have occurred that will require
+some manual adjustments. Mainly these deal with changes to 
+configuration and shared directory names. This was done to avoid
+collisions with the new enlightenment DR17.
+
+1) home configuration directory is now ~/.e16, not ~/.enlightenment.
+2) menu files have been moved to a subdirectory called menus
+   you will need to move customized menus and subdirectories to
+   ~/.e16/menus. Note: because of this menu files will have to have
+   menus/ prepended to it in order to be located. Ex:
+   file.menu file...
+   "User Menus"
+   "User Application list" NULL menu "menus/user_apps.menu"
+   whereas the old menu version did not have menus/. 
+3) you will need to move ~/.enlightenment/backgrounds files to ~/.e16
+   and any themes as well.
+4) $prefix/share/enlightenment has been changed to $prefix/share/e16
+5) if installed E-docs and Epplet directories will have to be moved 
+   to $prefix/share/e16
+6) any additional themes that were added to the $prefix/share/enlightenment
+   directory will have to be moved to $prefix/share/e16
+7) any startup scripts or Session scripts that reference the startup
+   executable `enlightenment` must be edited to the new e16 program.
