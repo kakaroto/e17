@@ -63,7 +63,7 @@ group
 	    	 offset: 0 6; 
 	    }
 	    rel2 { 
-	    	 offset: -1 -10; 
+	    	 offset: -1 -6; 
 	    }
 	    image { 
 	    	  normal: "eth_dev.png"; 
