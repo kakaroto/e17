@@ -1,6 +1,11 @@
 /*
  * Copyright (C) 2000-2006 Carsten Haitzler and various contributors (see AUTHORS)
  *
+ * Copyright (C) Nathan Ingersoll (author)
+ * Copyright (C) Ibukun Olumuyiwa (ewd -> ecore)
+ * Copyright (C) Dan Sinclair     (various cleanups)
+ * Copyright (C) Kim Woelders     (e16 port/additions)
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
  * deal in the Software without restriction, including without limitation the
