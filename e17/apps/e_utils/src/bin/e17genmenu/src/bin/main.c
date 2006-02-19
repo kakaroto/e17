@@ -218,14 +218,19 @@ _e17genmenu_shutdown()
    return;
 }
 
+double convert, icon_time = 0.0;
+int menu_count, item_count;
+
 int
 main(int argc, char **argv)
 {
    char path[MAX_PATH];
+   double start, begin, paths, gen;
 
    /* Init E Stuff */
    _e17genmenu_init();
 
+   start = ecore_time_get();
    /* Parse Arguments */
    _e17genmenu_parseargs(argc, argv);
 //_e17genmenu_test_fdo_paths();  /* For debugging purposes, makes it easier to gdb this. */
@@ -234,11 +239,16 @@ main(int argc, char **argv)
    ecore_app_args_set(argc, (const char **)argv);
 
    /* Get the fdo paths. */
+   begin = ecore_time_get();
    fdo_paths_init();
+   paths = ecore_time_get() - begin;
    parse_ini_init();
 
+   begin = ecore_time_get();
    /* Start Making Menus */
    make_menus();
+   convert -= begin;
+   gen = ecore_time_get() - begin;
 
    /* Sort Menus */
    sort_favorites();
@@ -251,6 +261,8 @@ main(int argc, char **argv)
    snprintf(path, sizeof(path), "enlightenment_eapp_cache_gen %s" EAPPDIR " -r",
             get_home());
    system(path);
+
+  printf("\nTotal time %3.3f seconds, generate fdo paths %3.3f, convert fdo menus %3.3f, generate %d eaps in %d menus %3.3f, finding icons %3.3f.\n", ecore_time_get() - start, paths, convert, item_count, menu_count, gen - icon_time, icon_time);
 
    parse_ini_shutdown();
    fdo_paths_shutdown();

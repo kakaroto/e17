@@ -8,6 +8,8 @@
 #include "parse.h"
 
 
+extern double icon_time;
+
 /* FIXME: Ideally this should be -
  * {".png", ".svg", ".xpm", "", NULL}
  * Add them in when they are supported in .eaps.
@@ -143,9 +145,14 @@ find_fdo_icon(char *icon, char *icon_size, char *icon_theme)
 
    char icn[MAX_PATH], path[MAX_PATH];
    char *theme_path, *found;
+   double begin;
 
+   begin = ecore_time_get();
    if (icon == NULL)
-      return DEFAULTICON;
+      {
+         icon_time += ecore_time_get() - begin;
+         return DEFAULTICON;
+      }
 
 #ifdef DEBUG
    fprintf(stderr, "\tTrying To Find Icon %s (%s) in theme %s\n", icon, icon_size, icon_theme);
@@ -270,7 +277,10 @@ find_fdo_icon(char *icon, char *icon_size, char *icon_theme)
 							 if (found)
 							    {
 							       if (match)   /* If there is a match in sizes, return the icon. */
-							          return found;
+                                                                  {
+                                                                     icon_time += ecore_time_get() - begin;
+							             return found;
+								  }
 							       if (result_size < minimal_size)   /* While we are here, figure out our next fallback strategy. */
 							          {
 								     minimal_size = result_size;
@@ -285,14 +295,20 @@ find_fdo_icon(char *icon, char *icon_size, char *icon_theme)
 
                                  /* Fall back strategy #1, look for closest size in this theme. */
 				 if (closest)
-				    return closest;
+                                    {
+                                       icon_time += ecore_time_get() - begin;
+				       return closest;
+				    }
 
                                  /* Fall back strategy #2, Try again with the parent theme. */
 				 if ((inherits) && (inherits[0] != '\0') && (strcmp(icon_theme, "hicolor") != 0))
 				    {
                                        found = find_fdo_icon(icon, icon_size, inherits);
 				       if (found != DEFAULTICON)
-				          return found;
+                                          {
+                                             icon_time += ecore_time_get() - begin;
+				             return found;
+					  }
 				    }
 
                                  /* Fall back strategy #3, Try the default hicolor theme. */
@@ -300,7 +316,10 @@ find_fdo_icon(char *icon, char *icon_size, char *icon_theme)
 				    {
                                        found = find_fdo_icon(icon, icon_size, "hicolor");
 				       if (found != DEFAULTICON)
-				          return found;
+                                          {
+                                             icon_time += ecore_time_get() - begin;
+				             return found;
+					  }
 				    }
 
                                  /* Fall back strategy #4, Just search in the base of the icon directories. */
@@ -312,7 +331,10 @@ find_fdo_icon(char *icon, char *icon_size, char *icon_theme)
 #endif
                                         found = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, path, 0, NULL, NULL);
 				        if (found)
-				          return found;
+                                           {
+                                              icon_time += ecore_time_get() - begin;
+				              return found;
+					   }
 				     }
 
 			      }
@@ -322,5 +344,6 @@ find_fdo_icon(char *icon, char *icon_size, char *icon_theme)
 	 free(theme_path);
       }
 
+   icon_time += ecore_time_get() - begin;
    return DEFAULTICON;
 }

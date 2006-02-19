@@ -6,6 +6,10 @@
 #include "menus.h"
 #include "xmlame.h"
 
+extern double convert;
+extern int menu_count, item_count;
+
+
 static int _menu_make_apps(const void *data, Dumb_List *list, int element, int level);
 static void _menu_dump_each_hash_node(void *value, void *user_data);
 
@@ -35,6 +39,7 @@ make_menus()
 
 	             /* convert the xml into menus */
 	             menus = fdo_menus_get(menu_file, menu_xml);
+		     convert = ecore_time_get();
 	             if (menus)
 	                {
 	                   /* create the .eap and order files from the menu */
@@ -151,6 +156,7 @@ _menu_make_apps(const void *data, Dumb_List *list, int element, int level)
                pool  = (Ecore_Hash *) list->elements[element + 2].element;
                apps  = (Ecore_Hash *) list->elements[element + 4].element;
                printf("MAKING MENU - %s \t\t%s\n", path, name);
+	       menu_count++;
                ecore_hash_for_each_node(apps, _menu_dump_each_hash_node, &path[11]);
 	    }
       }
@@ -167,5 +173,6 @@ _menu_dump_each_hash_node(void *value, void *user_data)
    node = (Ecore_Hash_Node *) value;
    file = (char *) node->value;
    printf("MAKING EAP %s -> %s\n", path, file);
+   item_count++;
    parse_desktop_file(strdup(file), path);
 }
