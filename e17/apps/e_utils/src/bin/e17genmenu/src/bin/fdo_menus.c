@@ -76,14 +76,14 @@ fdo_menus_get(char *file, Dumb_List *xml)
 	 if ((data.base) && (data.path))
 	    {
                dumb_list_foreach(xml, 0, _fdo_menus_unxml, &data);
-//               dumb_list_dump(xml, 0);
+               dumb_list_dump(xml, 0);
                printf("\n\n");
                data.unallocated = FALSE;
                dumb_list_foreach(xml, 0, _fdo_menus_generate, &data);
                printf("\n\n");
                data.unallocated = TRUE;
                dumb_list_foreach(xml, 0, _fdo_menus_generate, &data);
-//               dumb_list_dump(xml, 0);
+               dumb_list_dump(xml, 0);
                printf("\n\n");
 	    }
          E_FREE(data.path);
