@@ -95,9 +95,11 @@ data {
 
     item, "/selection_area/group" "selection_area";
 
-    item, "/spinner/controls/group" "spinner-controls";
+   // item, "/spinner/controls/group" "spinner-controls";
     item, "/spinner/controls/decrement/group" "spinner-down";
     item, "/spinner/controls/increment/group" "spinner-up";
+    item, "/spinner/controls/increment/body/group" "spinnerup";
+    item, "/spinner/controls/decrement/body/group" "spinnerdown";
     item, "/spinner/acceleration" "5";
     item, "/spinner/velocity" "5";
 
@@ -133,9 +135,11 @@ data {
 
     item, "/window/group" "window";
     item, "/scrollpane/group" "box";
-    item, "/theme/author" "dj2 (www.everburning.com) and titansoccer15 (www.assistix.org)";
+    item, "/theme/author" "dj2 (www.everburning.com) and titansoccer15 
+(www.assistix.org)";
     item, "/theme/font_path" "fonts";
     item, "/theme/license" 
-    "Creative Commons License: http://creativecommons.org/licenses/bg-sa/1.0";
+    "Creative Commons License: 
+http://creativecommons.org/licenses/bg-sa/1.0";
     item, "/theme/name" "e17";
 }

@@ -84,6 +84,7 @@
 	image: "e17_tranny.png" COMP;
 	image: "paned_vthumb.png" COMP;
 	image: "e17_frame_label_header_under.png" COMP;
-	
+	image: "e17_spinner_top_arrow.png" COMP;
+	image: "e17_spinner_bottom_arrow.png" COMP;	
 	
 	
