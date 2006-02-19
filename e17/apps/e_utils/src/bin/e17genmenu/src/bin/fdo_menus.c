@@ -35,6 +35,7 @@ struct _fdo_menus_unxml_data
    char *base;
    char *path;
    Dumb_List *stack;
+   Dumb_List *merge_stack;
    int unallocated;
 };
 
@@ -192,6 +193,11 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
 				             result = 1;
 		                          }
 	                            }
+                                 else if (strcmp((char *) list->elements[i].element, "<KDELegacyDirs/") == 0)
+	                            {
+                                       _fdo_menus_add_dirs(menu, fdo_paths_kde_legacy, "<LegacyDir prefix=\"kde-\"", "</LegacyDir", NULL, i);
+				       result = 1;
+				    }
                                  else if (strcmp((char *) list->elements[i].element, "</Menu") == 0)
 				    {
 				       result = 1;
@@ -324,28 +330,29 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
 
                            if (menu->elements[i].type == DUMB_LIST_ELEMENT_TYPE_STRING)
 			      {
-                                 if (strncmp((char *) menu->elements[i].element, "<AppDir ", 8) == 0)
-				    {
-				       char *app_dir;
+				 char *string;
 
-				       app_dir = (char *) menu->elements[i].element;
-                                       _fdo_menus_expand_apps(unxml_data, &app_dir[8], pool);
+				 string = (char *) menu->elements[i].element;
+                                 if (strncmp(string, "<AppDir ", 8) == 0)
+				    {
+                                       _fdo_menus_expand_apps(unxml_data, &string[8], pool);
 				       result = 1;
 				    }
-                                 else if (strncmp((char *) menu->elements[i].element, "<DirectoryDir ", 8) == 0)
+                                 else if (strncmp(string, "<DirectoryDir ", 8) == 0)
 				    {
 				    }
-                                 else if (strncmp((char *) menu->elements[i].element, "<MergeDir ", 8) == 0)
+                                 else if (strncmp(string, "<LegacyDir ", 11) == 0)
 				    {
 				    }
-                                 else if (strncmp((char *) menu->elements[i].element, "<MergeFile ", 8) == 0)
+                                 else if (strncmp(string, "<MergeDir ", 8) == 0)
+				    {
+				    }
+                                 else if (strncmp(string, "<MergeFile ", 8) == 0)
 				    {
 				    }
 			      }
 			   if (result)
 			      {
-                                 if (menu->elements[i].type == DUMB_LIST_ELEMENT_TYPE_LIST)
-                                    dumb_list_del((Dumb_List *) menu->elements[i].element);
                                  menu->elements[i].type = DUMB_LIST_ELEMENT_TYPE_NULL;
                                  menu->elements[i].element = NULL;
 			      }

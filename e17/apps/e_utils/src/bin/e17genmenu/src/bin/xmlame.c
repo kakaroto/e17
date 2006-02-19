@@ -61,7 +61,11 @@ xmlame_get(char *file)
 	    }
          list = xmlame_new(buffer);
 	 if (list)
-	    _xmlame_parse(list, buffer);
+	    {
+	       /* Have thde file name as the first item on the list, for alter reference. */
+	       dumb_list_extend(list, file);
+	       _xmlame_parse(list, buffer);
+	    }
       }
    return list;
 }

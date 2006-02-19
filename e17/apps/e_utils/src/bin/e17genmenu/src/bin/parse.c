@@ -545,6 +545,8 @@ Desktop *parse_desktop_ini_file(char *file)
 	       if (result->data)
 	          {
                      result->group = (Ecore_Hash *) ecore_hash_get(result->data, "Desktop Entry");
+	             if (!result->group)
+                        result->group = (Ecore_Hash *) ecore_hash_get(result->data, "KDE Desktop Entry");
 	             if (result->group)
 	                {
 		           char *temp;
