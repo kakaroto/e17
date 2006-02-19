@@ -1,0 +1,144 @@
+images
+{
+  image, "module_icon.png" COMP;
+  image, "bg.png" COMP;  
+  image, "over.png" COMP;
+  image, "over_res.png" COMP;  
+}
+
+fonts
+{
+  font, "VeraMono.ttf" "VeraMono";
+}
+
+collections
+{
+group
+    {
+      name, "modules/net/main";
+      script {
+		public message(Msg_Type:type, id, ...) {
+		      if (type == MSG_INT_SET) {
+		      		new tmp;
+		      		new in_str[64];
+		      		new out_str[64];		      		
+		      		
+				tmp = getarg(2);
+				if (tmp > 1048576) {
+					tmp = tmp / 1048576;
+	   		   		snprintf(in_str, sizeof(in_str), "%i MB", tmp);					
+				}
+				else if (tmp > 1024 && tmp < 1048576) {
+					tmp = tmp / 1024;
+	   		   		snprintf(in_str, sizeof(in_str), "%i KB", tmp);					
+				}
+				else {
+	   		   		snprintf(in_str, sizeof(in_str), "%i B", tmp);
+	   		   	}
+				set_text(PART:"in-text", in_str);				
+
+				tmp = getarg(3);
+				if (tmp > 1048576) {
+					tmp = tmp / 1048576;
+	   		   		snprintf(out_str, sizeof(out_str), "%i MB", tmp);					
+				}
+				else if (tmp > 1024 && tmp < 1048576) {
+					tmp = tmp / 1024;
+	   		   		snprintf(out_str, sizeof(out_str), "%i KB", tmp);					
+				}
+				else {
+	   		   		snprintf(out_str, sizeof(out_str), "%i B", tmp);
+	   		   	}
+				set_text(PART:"out-text", out_str);				
+		      }
+	       }      
+      }
+      
+      parts{
+      part {
+	name,          "background";
+	mouse_events,  1;
+	description {
+	  state,    "default" 0.0; 
+	  rel1 { to, "overlay"; }
+	  rel2 { to, "overlay"; }
+	  image { normal, "bg.png"; border, 6 6 6 6; }
+	  fill { smooth, 0; }
+	 }
+      }
+      
+      part {
+	 name,          "overlay";
+	 mouse_events,  0;
+	 description {
+	    state,    "default" 0.0;
+	    image { normal, "over.png";
+	            border, 13 13 13 13;
+	            middle, 0;
+	    }
+	    fill {
+	       smooth, 0;
+	    }
+	 }
+      }
+
+      part {
+	 name,          "net";
+	 mouse_events,  0;
+	 description {
+	    state,    "default" 0.0;
+	    color, 255 255 255 128;
+	    aspect:   1.0 1.0;
+	    rel1{ offset, 4 4; }
+	    rel2{ offset, -5 -5; }
+	    image { normal, "module_icon.png"; }
+	    fill { smooth, 0;  }
+	 }
+      }
+
+      part 
+	  {
+	    name,           "out-text";
+	    type,           TEXT;
+	    effect,         SOFT_SHADOW;
+	    mouse_events, 0;
+	    description {
+	      state, "default" 0.0;
+	      align, 1.0 0.0;
+	      rel1 { relative, 1.0 0.0; to_x, "overlay"; offset, -2 1; }
+	      rel2 { relative, 1.0 0.0; }
+	      color, 0 0 0 255;
+	      color3, 255 255 255 100;
+	      text {
+		text, "out"; font, "VeraMono";
+		size,  10;     min,     1 1;
+		align, 1.0 0.0;
+	      }
+	    }
+	  }
+
+	part 
+	  {
+	    name,           "in-text";
+	    type,           TEXT;
+	    effect,         SOFT_SHADOW;
+	    mouse_events, 0;
+	    description {
+	      state, "default" 0.0;
+	      align, 1.0 0.0;
+	      rel1 { relative, 1.0 1.0; to_x, "overlay"; offset, -2 -10;  }
+	      rel2 { relative, 1.0 1.0; }
+	      color, 0 0 0 255;
+	      color3, 255 255 255 100;
+	      text {
+		text, "in"; font, "VeraMono";
+		size,  10;     min,     1 1;
+		align, 1.0 0.0;
+	      }
+	    }
+	  }
+      } 
+    }//close group net
+
+}
+
