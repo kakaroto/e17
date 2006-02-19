@@ -6,6 +6,8 @@
 #include "order.h"
 #include "parse.h"
 
+extern double cache_time;
+
 static void _parse_desktop_del(Desktop *desktop);
 
 
@@ -206,6 +208,7 @@ process_file(char *file, char *menu_path, G_Eap *eap)
    char *home, *window_class, *exec, *category, *icon;
    char path[MAX_PATH], order_path[MAX_PATH], buffer[MAX_PATH];
    int overwrite;
+   double begin;
 
    if (!eap)
       return;
@@ -281,18 +284,22 @@ process_file(char *file, char *menu_path, G_Eap *eap)
    if (window_class != NULL)
       write_eap(path, "app/window/class", window_class);
 
+   begin = ecore_time_get();
    snprintf(buffer, sizeof(buffer),
             "enlightenment_eapp_cache_gen %s/.e/e/applications/all -r > /dev/null 2>&1",
             getenv("HOME"));
    system(buffer);
+   cache_time += ecore_time_get() - begin;
 
    category = NULL;
    if (menu_path != NULL)
       {
+             begin = ecore_time_get();
              snprintf(buffer, sizeof(buffer),
                       "enlightenment_eapp_cache_gen %s/.e/e/applications/favorite/%s -r /dev/null 2>&1",
                       getenv("HOME"), menu_path);
              system(buffer);
+             cache_time += ecore_time_get() - begin;
              snprintf(order_path, sizeof(order_path), "%s" EFAVDIR "/%s", home,
                       menu_path);
              modify_order(order_path, eap->eap_name);
@@ -302,10 +309,12 @@ process_file(char *file, char *menu_path, G_Eap *eap)
         category = find_category(eap->categories);
         if (category != NULL)
           {
+             begin = ecore_time_get();
              snprintf(buffer, sizeof(buffer),
                       "enlightenment_eapp_cache_gen %s/.e/e/applications/favorite/%s -r /dev/null 2>&1",
                       getenv("HOME"), category);
              system(buffer);
+             cache_time += ecore_time_get() - begin;
              snprintf(order_path, sizeof(order_path), "%s" EFAVDIR "/%s", home,
                       category);
              modify_order(order_path, eap->eap_name);

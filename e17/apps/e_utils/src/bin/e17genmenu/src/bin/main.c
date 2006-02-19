@@ -218,7 +218,7 @@ _e17genmenu_shutdown()
    return;
 }
 
-double convert, icon_time = 0.0;
+double convert, icon_time = 0.0, cache_time = 0.0;
 int menu_count, item_count;
 
 int
@@ -262,7 +262,8 @@ main(int argc, char **argv)
             get_home());
    system(path);
 
-  printf("\nTotal time %3.3f seconds, generate fdo paths %3.3f, convert fdo menus %3.3f, generate %d eaps in %d menus %3.3f, finding icons %3.3f.\n", ecore_time_get() - start, paths, convert, item_count, menu_count, gen - icon_time, icon_time);
+  printf("\nTotal time %3.3f seconds, finding fdo paths %3.3f, converting fdo menus %3.3f, generating %d eaps in %d menus %3.3f, finding icons %3.3f, generating eap caches %3.3f.\n",
+         ecore_time_get() - start, paths, convert, item_count, menu_count, gen - (icon_time + cache_time), icon_time, cache_time);
 
    parse_ini_shutdown();
    fdo_paths_shutdown();
