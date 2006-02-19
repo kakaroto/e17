@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Slideshow\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-01 19:18+0100\n"
+"POT-Creation-Date: 2006-02-18 17:53+0100\n"
 "PO-Revision-Date: 2006-02-01 19:31+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
@@ -18,28 +18,28 @@ msgstr ""
 msgid "Slideshow Configuration"
 msgstr "Configurazione modulo Slideshow"
 
-#: e_mod_config.c:93
+#: e_mod_config.c:91
 msgid "Cycle Time"
 msgstr "Durata singola visualizzazione"
 
-#: e_mod_config.c:94
+#: e_mod_config.c:92
 msgid "Disable Timer"
 msgstr "Disabilita timer"
 
-#: e_mod_config.c:96
+#: e_mod_config.c:94
 #, c-format
 msgid "%3.0f seconds"
 msgstr "%3.0f secondi"
 
-#: e_mod_config.c:102
+#: e_mod_config.c:100
 msgid "Theme"
 msgstr "Tema"
 
-#: e_mod_config.c:104
+#: e_mod_config.c:102
 msgid "Sub-directory to use for backgrounds"
 msgstr "Sottodirectory per gli sfondi"
 
-#: e_mod_config.c:106
+#: e_mod_config.c:104
 msgid "Leave blank for none"
 msgstr "Lasciare vuoto per \"nessuna\""
 
@@ -50,5 +50,5 @@ msgstr "Modulo Slideshow di Enlightenment"
 #: e_mod_main.c:149
 msgid "This module is VERY simple and is used to cycle desktop backgrounds"
 msgstr ""
-"Questo modulo è molto semplice e serve per"
-"vedere ciclicamente gli sfondi del desktop"
+"Questo modulo è molto semplice e serve per vedere ciclicamente gli sfondi del "
+"desktop"
