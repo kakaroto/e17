@@ -105,6 +105,13 @@ __create_entry_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ewl_container_child_append(EWL_CONTAINER(entry_box), entry[2]);
 	ewl_widget_show(entry[2]);
 
+	o = ewl_entry_new();
+	ewl_text_text_set(EWL_TEXT(o), "disabled");
+	ewl_object_padding_set(EWL_OBJECT(o), 5, 5, 0, 0);
+	ewl_container_child_append(EWL_CONTAINER(entry_box), o);
+	ewl_widget_disable(o);
+	ewl_widget_show(o);
+
 	button_hbox = ewl_hbox_new();
 	ewl_object_alignment_set(EWL_OBJECT(button_hbox), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_child_append(EWL_CONTAINER(entry_box), button_hbox);
