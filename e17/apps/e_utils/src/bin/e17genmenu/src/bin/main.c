@@ -255,12 +255,17 @@ main(int argc, char **argv)
    sort_menus();
 
    /* Update E Cache */
+   begin = ecore_time_get();
 #ifdef DEBUG
-   fprintf(stderr, "Regenerating Eapp Cache...\n");
+   fprintf(stderr, "Regenerating Eapp Caches...\n");
 #endif
    snprintf(path, sizeof(path), "enlightenment_eapp_cache_gen %s" EAPPDIR " -r",
             get_home());
    system(path);
+   snprintf(path, sizeof(path), "enlightenment_eapp_cache_gen %s/.e/e/applications/favorite -r",
+            get_home());
+   system(path);
+   cache_time += ecore_time_get() - begin;
 
   printf("\nTotal time %3.3f seconds, finding fdo paths %3.3f, converting fdo menus %3.3f, generating %d eaps in %d menus %3.3f, finding icons %3.3f, generating eap caches %3.3f.\n",
          ecore_time_get() - start, paths, convert, item_count, menu_count, gen - (icon_time + cache_time), icon_time, cache_time);
