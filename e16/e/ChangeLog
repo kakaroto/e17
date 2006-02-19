@@ -3768,3 +3768,16 @@ Scale pagers on screen resolution change.
 Fix position after unshading certain borders. Cleanups.
 Add sanity check for background timeout value.
 
+
+-------------------------------------------------------------------------------
+
+Sun Feb 19 23:10:05 CET 2006
+(Kim)
+
+--- 0.16.8.1 0.02 ---
+Fix parsing menu files without newline at end of file.
+Move lists to Ecore_List.
+Rename some files.
+Quick fix for apps that want to inherit the root pixmap.
+Notes on tweaking the Aqua theme (Yasufumi Haga).
+
