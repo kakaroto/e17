@@ -7,6 +7,7 @@
 #include "parse.h"
 
 extern double cache_time;
+extern int reject_count;
 
 static void _parse_desktop_del(Desktop *desktop);
 
@@ -143,7 +144,7 @@ parse_desktop_file(char *app, char *menu_path)
       free(eap_name);
 
    desktop = parse_desktop_ini_file(app);
-   if (desktop)
+   if ((desktop) && (desktop->group))
       {
          char *value;
 
@@ -181,7 +182,10 @@ parse_desktop_file(char *app, char *menu_path)
      {
         if ((!eap->icon) || (!eap->name) ||
             (!eap->exec) || (!eap->window_class))
-           return;
+           {
+	      reject_count++;
+              return;
+	   }
 
         FILE *f;
         char buff[MAX_PATH];
@@ -192,6 +196,7 @@ parse_desktop_file(char *app, char *menu_path)
         if (!f)
           {
              fprintf(stderr, "ERROR: Cannot Open Mapping File\n");
+	     reject_count++;
              return;
           }
         snprintf(buff, sizeof(buff), "%s|!%s|!%s|!%s\n",
