@@ -95,7 +95,6 @@ data {
 
     item, "/selection_area/group" "selection_area";
 
-   // item, "/spinner/controls/group" "spinner-controls";
     item, "/spinner/controls/decrement/group" "spinner-down";
     item, "/spinner/controls/increment/group" "spinner-up";
     item, "/spinner/controls/increment/body/group" "spinnerup";
