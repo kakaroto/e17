@@ -83,6 +83,10 @@ ewl_entry_init(Ewl_Entry *e)
 				ewl_entry_cb_mouse_down, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP,
 				ewl_entry_cb_mouse_up, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_WIDGET_DISABLE,
+				ewl_entry_cb_disable, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_WIDGET_ENABLE,
+				ewl_entry_cb_enable, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -386,6 +390,30 @@ ewl_entry_cb_mouse_up(Ewl_Widget *w, void *ev __UNUSED__,
 
 	e->in_select_mode = FALSE;
 	ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE, ewl_entry_cb_mouse_move);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_entry_cb_disable(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	ewl_entry_editable_set(EWL_ENTRY(w), FALSE);
+	
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_entry_cb_enable(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	ewl_entry_editable_set(EWL_ENTRY(w), TRUE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

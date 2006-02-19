@@ -56,6 +56,8 @@ void ewl_entry_cb_mouse_up(Ewl_Widget *w, void *ev, void *data);
 void ewl_entry_cb_mouse_move(Ewl_Widget *w, void *ev, void *data);
 void ewl_entry_cb_focus_in(Ewl_Widget *w, void *ev, void *data);
 void ewl_entry_cb_focus_out(Ewl_Widget *w, void *ev, void *data);
+void ewl_entry_cb_disable(Ewl_Widget *w, void *ev, void *data);
+void ewl_entry_cb_enable(Ewl_Widget *w, void *ev, void *data);
 
 void ewl_entry_cursor_move_left(Ewl_Entry *e);
 void ewl_entry_cursor_move_right(Ewl_Entry *e);
