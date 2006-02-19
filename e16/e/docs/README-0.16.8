@@ -2,6 +2,14 @@
 About 0.16.8
 ============
 
+Credits
+-------
+This note contains contributions by
+- Kim Woelders
+- Peter Hyman (pete4abw@comcast.net)
+- Yasufumi Haga (yasufumi.haga@nifty.com)
+
+
 Contents
 --------
 
@@ -65,6 +73,7 @@ themes will have to be moved/linked to ~/.e16/themes/ or <datadir>/e16/themes/.
 A few themes will have to be tweaked to work with e16.8. The most likely problem
 is that configuration settings or menu definitions are included in .cfg files
 where they are no longer accepted.
+See the "Migrating ..." section below for additional information.
 
 e16keyedit will work, but the "Action" field is no longer used. In stead, the
 action (IPC command) must be specified in the "Parameters" field.
@@ -118,9 +127,6 @@ start, and the first matching item will be used.
 
 Session Scripts
 ---------------
-By Peter Hyman (pete4abw@comcast.net)
-November 2005
-
 Enlightenment can now automatically run user scripts or applications during
 Startup, Restart, and Shutdown. This facilitates the loading of system
 tray applets, rss readers, screensavers, and other daemons (e.g. dbus),
@@ -289,7 +295,6 @@ Alternatively, add a KDE/e16 session entry to the display manager login:
 
 Migrating from Enlightenment 0.16.7 to 0.16.8 
 ---------------------------------------------
-By Peter Hyman (pete4abw@comcast.net)
 
 Users upgrading from enlightenment 0.16.7 need to read the following.
 
@@ -316,3 +321,30 @@ collisions with the new enlightenment DR17.
    directory will have to be moved to $prefix/share/e16
 7) any startup scripts or Session scripts that reference the startup
    executable `enlightenment` must be edited to the new e16 program.
+
+
+A few themes have to be tweaked to work with 0.16.8.
+For the AQUA theme (and derivatives) this can be done as follows:
+
+1) move to AQUA theme directory
+2) edit menustyles.cfg to comment out "#include <menus/menus.cfg>":
+
+#include <definitions>
+__E_CFG_VERSION 0
+
+#include <menustyles/menustyles.cfg>
+/*#include <menus/menus.cfg>*/
+
+3) move to ~/.e16
+4) copy /usr/local/share/e16/config/menus.cfg to ~/.e16 like:
+   (assuming the installation prefix is /usr/local)
+
+$ cp /usr/local/share/e16/config/menus.cfg ~/.e16
+
+5) append the contents of menus/menus.cfg in AQUA theme to
+   menus.cfg in ~/.e16:
+
+$ cat /path/to/aquq-theme/menus/menus.cfg >> menus.cfg
+
+6) You may need to restart e16.8 after purging all caches
+
