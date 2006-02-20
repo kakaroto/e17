@@ -1,5 +1,6 @@
 #include <Etk.h>
 #include "entropy.h"
+#include "entropy_gui.h"
 #include <dlfcn.h>
 #include <Ecore.h>
 #include <stdlib.h>
@@ -14,6 +15,7 @@ struct entropy_layout_gui
   entropy_gui_component_instance *iconbox_viewer;
   entropy_gui_component_instance *structure_viewer;
   Etk_Widget *tree;
+  Etk_Widget *paned;
 };
 
 static Etk_Bool
@@ -55,8 +57,7 @@ layout_etk_simple_add_header (entropy_gui_component_instance * instance,
 
   /*Now attach an object to it */
   structure =
-    entropy_plugins_type_get_first (instance->core->plugin_list,
-				    ENTROPY_PLUGIN_GUI_COMPONENT,
+    entropy_plugins_type_get_first ( ENTROPY_PLUGIN_GUI_COMPONENT,
 				    ENTROPY_PLUGIN_GUI_COMPONENT_STRUCTURE_VIEW);
 
   /*if (structure) {
@@ -107,10 +108,6 @@ layout_ewl_simple_parse_config (entropy_gui_component_instance * instance,
 
     printf ("Name/uri is %s %s\n", name, uri);
 
-    layout_ewl_simple_add_header (instance, name, uri);
-
-
-
     /*Cut the obj up by semicolon; */
 
   }
@@ -134,8 +131,6 @@ layout_ewl_simple_parse_config (entropy_gui_component_instance * instance,
       uri = strtok (NULL, ";");
 
       printf ("Name/uri is %s %s\n", name, uri);
-
-      layout_ewl_simple_add_header (instance, name, uri);
 
       free (object);
     }
@@ -161,7 +156,7 @@ entropy_plugin_init (entropy_core * core)
 char *
 entropy_plugin_identify ()
 {
-  return (char *) "Simple ETK layout container";
+  return (char *) "etk";
 }
 
 int
@@ -170,9 +165,17 @@ entropy_plugin_type_get ()
   return ENTROPY_PLUGIN_GUI_LAYOUT;
 }
 
+char*
+entropy_plugin_toolkit_get() 
+{
+	return ENTROPY_TOOLKIT_ETK;
+}
+
 void
 entropy_plugin_layout_main ()
 {
+
+  printf("Init ETK main...\n");
   etk_main ();
 }
 
@@ -182,14 +185,27 @@ entropy_plugin_layout_create (entropy_core * core)
   Etk_Widget *window;
   entropy_layout_gui *gui;
   entropy_gui_component_instance *layout;
+  entropy_gui_component_instance* instance;
+  Etk_Widget* test;
+  
 
   void *(*entropy_plugin_init) (entropy_core * core,
 				entropy_gui_component_instance *);
   void *(*structure_plugin_init) (entropy_core * core,
 				  entropy_gui_component_instance *,
+				  void* parent_visual,
 				  void *data);
+
+  void *(*local_plugin_init) (entropy_core * core,
+				  entropy_gui_component_instance *,
+				  void *data);
+  
   entropy_plugin *plugin;
   entropy_plugin *structure;
+  entropy_plugin *local;
+  entropy_generic_file* file;
+  Etk_Tree_Col* col;
+  Etk_Tree_Row* row;
 
 
   /*Entropy related init */
@@ -198,15 +214,82 @@ entropy_plugin_layout_create (entropy_core * core)
   layout->data = gui;
   layout->core = core;
 
+  /*Register this layout container with the core, so our children can get events */
+  entropy_core_layout_register (core, layout);
 
 
   /*Etk related init */
   window = etk_window_new ();
-  gui->tree = etk_tree_new ();
-  etk_container_add (ETK_CONTAINER (window), gui->tree);
+  gui->paned = etk_hpaned_new();
+  etk_container_add(ETK_CONTAINER(window), gui->paned);
+
   etk_signal_connect ("delete_event", ETK_OBJECT (window),
 		      ETK_CALLBACK (_etk_window_deleted_cb), core);
 
+  etk_widget_size_request_set(ETK_WIDGET(window), 800,600);
+
+  /*Tree init*/
+  gui->tree = etk_tree_new();
+  etk_paned_add1(ETK_PANED(gui->paned), gui->tree, ETK_TRUE);
+  etk_tree_mode_set(ETK_TREE(gui->tree), ETK_TREE_MODE_TREE);
+  col = etk_tree_col_new(ETK_TREE(gui->tree), _("Folders"), 
+		  etk_tree_model_icon_text_new(ETK_TREE(gui->tree), ETK_TREE_FROM_EDJE), 60);
+  
+  etk_tree_col_expand_set(col, ETK_TRUE);
+  etk_tree_build(ETK_TREE(gui->tree));
+
+  /*Add test row */
+  etk_tree_freeze(ETK_TREE(gui->tree));
+  row = etk_tree_append(ETK_TREE(gui->tree), col, 
+			  etk_theme_icon_theme_get(), "places/start-here_16", _("Home Directory"), NULL);
+  etk_tree_thaw(ETK_TREE(gui->tree));
+  
+  
+  structure = entropy_plugins_type_get_first(ENTROPY_PLUGIN_GUI_COMPONENT,ENTROPY_PLUGIN_GUI_COMPONENT_STRUCTURE_VIEW);
+   structure_plugin_init =
+      dlsym (structure->dl_ref, "entropy_plugin_init");
+
+   file = entropy_generic_file_new();
+   strcpy(file->path, "/home");
+   strcpy(file->filename, "chaos");
+   strcpy(file->uri_base, "posix");
+   strcpy(file->mime_type, "file/folder");
+
+
+   instance = (*structure_plugin_init)(core, layout, row,file);
+   instance->plugin = structure;
+   /*-----------------------*/
+
+  /*Add test row */
+  etk_tree_freeze(ETK_TREE(gui->tree));
+  row = etk_tree_append(ETK_TREE(gui->tree), col, 
+			  etk_theme_icon_theme_get(), "places/start-here_16", _("Filesystem Root"), NULL);
+  etk_tree_thaw(ETK_TREE(gui->tree));
+  
+  
+  structure = entropy_plugins_type_get_first(ENTROPY_PLUGIN_GUI_COMPONENT,ENTROPY_PLUGIN_GUI_COMPONENT_STRUCTURE_VIEW);
+   structure_plugin_init =
+      dlsym (structure->dl_ref, "entropy_plugin_init");
+
+   file = entropy_generic_file_new();
+   strcpy(file->path, "/");
+   strcpy(file->filename, "/");
+   strcpy(file->uri_base, "posix");
+   strcpy(file->mime_type, "file/folder");
+
+   instance = (*structure_plugin_init)(core, layout, row,file);
+   instance->plugin = structure;
+   /*-----------------------*/
+
+  local = entropy_plugins_type_get_first(ENTROPY_PLUGIN_GUI_COMPONENT,ENTROPY_PLUGIN_GUI_COMPONENT_LOCAL_VIEW);
+  local_plugin_init =
+      dlsym (local->dl_ref, "entropy_plugin_init");   
+  instance = (*local_plugin_init)(core, layout,file);
+  instance->plugin = local;
+
+  etk_paned_add2(ETK_PANED(gui->paned), instance->gui_object, ETK_TRUE);
+
+  
   etk_widget_show_all (window);
 
 

@@ -38,7 +38,7 @@ entropy_sigseg_act(int x, siginfo_t *info, void *data)
 }
 
 
-int main() {
+int main(int argc, char** argv) {
 	entropy_alert_init(NULL);
 	
 	struct sigaction action;
@@ -49,7 +49,7 @@ int main() {
 	sigaction(SIGSEGV, &action, NULL);
 
 	
-	entropy_core_init();
+	entropy_core_init(argc,argv);
 
 	return 0;
 }

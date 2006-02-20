@@ -16,6 +16,19 @@ void entropy_thumbnailer_plugin_print(Ecore_Hash* mime_register) {
 
 }
 
+char* entropy_plugin_helper_toolkit_get(entropy_plugin* plugin) {
+	char* (*_entropy_plugin_toolkit_get)();	
+	char* res;
+	_entropy_plugin_toolkit_get = dlsym(plugin->dl_ref, "entropy_plugin_toolkit_get");
+
+	if (_entropy_plugin_toolkit_get) {
+		res = (*_entropy_plugin_toolkit_get)();
+		return res;
+	} else {
+		return NULL;
+	}
+}
+
 
 
 int entropy_core_plugin_type_get(entropy_plugin* plugin) {
@@ -54,7 +67,10 @@ entropy_plugin* entropy_plugins_type_get_first(int type, int subtype) {
         ecore_list_goto_first(plugins);
         while ( (list_item = ecore_list_next(plugins)) ) {
 		/*printf("Scanning '%s' for first\n", list_item->filename);*/
-                if (list_item->type == type && (subtype == ENTROPY_PLUGIN_SUB_TYPE_ALL || subtype == list_item->subtype)) {
+                if (list_item->type == type && (subtype == ENTROPY_PLUGIN_SUB_TYPE_ALL || subtype == list_item->subtype)
+		 && (type != ENTROPY_PLUGIN_GUI_COMPONENT || 
+		(type == ENTROPY_PLUGIN_GUI_COMPONENT && 
+		 !strcmp(list_item->toolkit, entropy_layout_global_toolkit_get())))) {
 			return list_item;
                 }
         }
@@ -87,7 +103,10 @@ Ecore_List* entropy_plugins_type_get(int type, int subtype) {
 	while ( (list_item = ecore_list_next(plugins)) ) {
 		/*printf("Scanning plugin: %s\n", list_item->filename);*/
 		if (list_item->type == type && 
-		   (subtype == ENTROPY_PLUGIN_SUB_TYPE_ALL || subtype == list_item->subtype)) {
+		   (subtype == ENTROPY_PLUGIN_SUB_TYPE_ALL || subtype == list_item->subtype)
+		   && (type != ENTROPY_PLUGIN_GUI_COMPONENT || 
+		(type == ENTROPY_PLUGIN_GUI_COMPONENT && 
+		 !strcmp(list_item->toolkit, entropy_layout_global_toolkit_get())))) {
 			ecore_list_append(plugin_list, list_item);
 		}
 	}

@@ -101,9 +101,14 @@ entropy_plugin_type_get ()
 char *
 entropy_plugin_identify ()
 {
-  return (char *) "Simple EWL layout container";
+  return (char *) "ewl";
 }
 
+char*
+entropy_plugin_toolkit_get() 
+{
+	return ENTROPY_TOOLKIT_EWL;
+}
 
 void
 ewl_layout_simple_tooltip_show_cb (Ewl_Widget * item, void *ev_data,
@@ -530,7 +535,8 @@ layout_ewl_simple_add_header (entropy_gui_component_instance * instance,
   entropy_ewl_layout_header_uri *header =
     calloc (1, sizeof (entropy_ewl_layout_header_uri));
   void *(*structure_plugin_init) (entropy_core * core,
-				  entropy_gui_component_instance *,
+				  entropy_gui_component_instance *, 
+				  void* parent_visual,
 				  void *data);
   entropy_layout_gui *gui = ((entropy_layout_gui *) instance->data);
   Ewl_Widget *tree = gui->tree;
@@ -571,7 +577,7 @@ layout_ewl_simple_add_header (entropy_gui_component_instance * instance,
       structure_plugin_init =
 	dlsym (structure->dl_ref, "entropy_plugin_init");
       gui->structure_viewer =
-	(*structure_plugin_init) (instance->core, instance, file);
+	(*structure_plugin_init) (instance->core, instance, tree, file);
       gui->structure_viewer->plugin = structure;
       visual = EWL_WIDGET (gui->structure_viewer->gui_object);
       if (!visual)
@@ -749,6 +755,11 @@ entropy_plugin_layout_main ()
 void
 entropy_plugin_destroy (entropy_gui_component_instance * comp)
 {
+  if (!comp) {
+	printf("*** No plugin to destroy at layout_ewl_simple.c\n");
+  	return;
+  }
+	
   entropy_layout_gui *gui = comp->data;
   Ecore_List *keys;
   void *key;

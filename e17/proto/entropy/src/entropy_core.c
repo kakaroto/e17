@@ -111,9 +111,26 @@ entropy_core* entropy_core_new() {
 	return core;
 }
 
+void entropy_core_args_parse(entropy_core* core, int argc, char** argv) 
+{
+	int ac = 1;
 
+	/*Defaults*/
+	core->settings.layout_engine = "ewl";
+		
+	while (ac < argc) {
+		printf("Parsing '%s'...\n", argv[ac]);
 
-entropy_core* entropy_core_init() {
+		if (!strncmp(argv[ac], "--layout=", 9)) {
+				core->settings.layout_engine = argv[ac]+9;
+				printf("Layout engine is '%s'\n", core->settings.layout_engine);
+		}
+		
+		ac++;
+	}
+}
+
+entropy_core* entropy_core_init(int argc, char** argv) {
 	entropy_plugin* plugin;
 	void (*entropy_plugin_layout_main)();
 	entropy_gui_component_instance* (*entropy_plugin_layout_create)(entropy_core*);
@@ -126,6 +143,9 @@ entropy_core* entropy_core_init() {
 	
 	entropy_core* core = entropy_core_new();
 	core_core=core;
+
+	/*Read inbound arguments*/
+	entropy_core_args_parse(core, argc,argv);
 
 	/*Init the file cache mutex*/
 	pthread_mutex_init(&core->file_cache_mutex, NULL);
@@ -209,6 +229,7 @@ entropy_core* entropy_core_init() {
 	layout->core = core;
 	core->layout_global = layout;
 	entropy_core_layout_register(core, layout);
+	printf("Registered global layout %p...\n", core->layout_global);
 
         /*Init the mime register */
         core->entropy_thumbnailers = entropy_thumbnailers_register_init();
@@ -219,8 +240,16 @@ entropy_core* entropy_core_init() {
 
         /*Load plugins*/
         ecore_list_goto_first(core->plugin_list);
-        while ( (plugin = ecore_list_next(core->plugin_list)) ) {
-                entropy_plugin_load(core, plugin);
+        while ( (plugin = ecore_list_current(core->plugin_list)) ) {
+                int res = entropy_plugin_load(core, plugin);
+		if (res) {
+			printf("Removing plugin from list..%s\n", plugin->filename);
+			ecore_list_remove(core->plugin_list);
+		} else {
+			printf("Going to next plugin...%s\n", plugin->filename);
+			ecore_list_next(core->plugin_list);
+		}
+		
         }
 
 
@@ -571,6 +600,7 @@ int entropy_plugin_load(entropy_core* core, entropy_plugin* plugin) {
         int (*entropy_plugin_type_get)();
 	int (*entropy_plugin_sub_type_get)();
 	void* (*entropy_plugin_init)(entropy_core* core);
+	
 
 	void (*gui_event_callback)(void*,void*);
 
@@ -628,21 +658,28 @@ int entropy_plugin_load(entropy_core* core, entropy_plugin* plugin) {
 
 
         } else if (type == ENTROPY_PLUGIN_GUI_LAYOUT) {
-                //printf("Found a layout manager.\n");
-                core->layout_plugin = entropy_plugin_layout_register(plugin);
+                char* id = entropy_plugin_plugin_identify(plugin);
+		
+		if (!strncmp(core->settings.layout_engine, id, strlen(core->settings.layout_engine))) {
+			core->layout_plugin = entropy_plugin_layout_register(plugin);
 
-		/*Initializing..*/
-		entropy_plugin_init = dlsym(plugin->dl_ref, "entropy_plugin_init");
-		(*entropy_plugin_init)(core);
+			/*Initializing..*/
+			entropy_plugin_init = dlsym(plugin->dl_ref, "entropy_plugin_init");
+			(*entropy_plugin_init)(core);
 
-		
-		
-		
+			/*ID the global system toolkit*/
+			plugin->toolkit = entropy_plugin_helper_toolkit_get(plugin);
+
+			/*Set this as the default toolkit/plugin type*/
+		} else {
+			return 1;
+		}
         } else if (type == ENTROPY_PLUGIN_GUI_COMPONENT) {
 		/* TODO Get the subtype */
 
 		gui_event_callback = dlsym(plugin->dl_ref, "gui_event_callback");
 		plugin->gui_event_callback_p = gui_event_callback;
+		plugin->toolkit = entropy_plugin_helper_toolkit_get(plugin);
 
 		//printf("Setting components event callback to %p\n", gui_event_callback);
 		
@@ -669,6 +706,11 @@ int entropy_plugin_load(entropy_core* core, entropy_plugin* plugin) {
 
 
 	return 0;
+}
+
+
+char* entropy_layout_global_toolkit_get() {
+	return core_core->layout_plugin->toolkit;
 }
 
 
@@ -796,6 +838,7 @@ void entropy_core_layout_register(entropy_core* core, entropy_gui_component_inst
 	
 	/*First, make a new hash of event types for this new layout component, this will be the event hash*/
 	if (comp) {
+		printf("Registered layout: %p\n", comp);
 		hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 		ecore_hash_set(core->layout_gui_events, comp, hash);
 
@@ -841,14 +884,13 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 	entropy_gui_component_instance* iter;
 	Ecore_List* el;	
 	Ecore_Hash* lay_hash;
+	entropy_gui_component_instance* layout = NULL;
 
 	if (!instance) {
 		printf("entropy_core_layout_notify_event: instance was NULL\n");	
 		return;
 	}
 	
-
-	entropy_gui_component_instance* layout = NULL;
 	if (event_type == ENTROPY_EVENT_LOCAL) {
 
 		//If layout_parent is null, assume passed object *is* a layout.  FIXME bad - we should probably set a prop to layout
@@ -860,15 +902,10 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 	} else if (event_type == ENTROPY_EVENT_GLOBAL) {
 		layout = entropy_core_global_layout_get(instance->core);
 	}
-
 	//printf("Instance's core reference: instance: %p, %p\n", instance, instance->core);
-	
 	lay_hash = ecore_hash_get(instance->core->layout_gui_events, layout);
-
-
-
 	if (!lay_hash) {
-		printf("Error: Attempted to raise event for unregistered layout container\n");
+		printf("Error: Attempted to raise event for unregistered layout container (%p)\n", layout);
 		entropy_free(event);
 		return;
 	}

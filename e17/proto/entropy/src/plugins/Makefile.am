@@ -18,13 +18,17 @@ STRUCTURE_VIEWER_L = structure_viewer.la
 SYSTEM_THUMBNAILER_L = system_thumbnailer.la
 ACTION_SIMPLE_L = action_simple.la
 
-#if 0
-#LAYOUT_ETK_L = layout_etk_simple.la
-#else
+if HAVE_ETK
+LAYOUT_ETK_L = layout_etk_simple.la
+ETK_STRUCTURE_VIEWER_L = etk_structure_viewer.la
+ETK_LIST_VIEWER_L = etk_list.la
+else
 LAYOUT_ETK_L =
-#endif
+ETK_LIST_VIEWER_L =
+ETK_STRUCTURE_VIEWER_L =
+endif
 
-pkg_LTLIBRARIES		= $(MIME_L) $(THUMBNAILER_L) $(POSIX_L) $(LAYOUT_L) $(EWL_LOCAL_ICON_L) $(STRUCTURE_VIEWER_L) $(SYSTEM_THUMBNAILER_L) $(ACTION_SIMPLE_L) $(LAYOUT_ETK_L) $(EWL_LIST_L) $(REMOTE_THUMBNAILER_L) $(DISTRIB_THUMBNAILER_L)
+pkg_LTLIBRARIES		= $(MIME_L) $(THUMBNAILER_L) $(POSIX_L) $(LAYOUT_L) $(EWL_LOCAL_ICON_L) $(STRUCTURE_VIEWER_L) $(SYSTEM_THUMBNAILER_L) $(ACTION_SIMPLE_L) $(LAYOUT_ETK_L) $(EWL_LIST_L) $(REMOTE_THUMBNAILER_L) $(DISTRIB_THUMBNAILER_L) $(ETK_STRUCTURE_VIEWER_L) $(ETK_LIST_VIEWER_L)
 
 ewl_local_icon_la_SOURCES      = 	$(top_srcdir)/src/entropy_gui.c \
 					$(top_srcdir)/src/dialogs/ewl_progress_dialog.c \
@@ -68,11 +72,25 @@ layout_ewl_simple_la_CFLAGS    = @EWL_CFLAGS@
 layout_ewl_simple_la_LDFLAGS   = -module -avoid-version
 layout_ewl_simple_la_LIBADD    = @EWL_LIBS@
 
-#layout_etk_simple_la_SOURCES  =  layout_etk_simple.c $(top_srcdir)/src/entropy_debug.c
-#layout_etk_simple_la_CFLAGS   = @ETK_CFLAGS@
-#layout_etk_simple_la_LDFLAGS  = -module -avoid-version
-#layout_etk_simple_la_LIBADD   = @ETK_LIBS@
+if HAVE_ETK
+layout_etk_simple_la_SOURCES  =  layout_etk_simple.c $(top_srcdir)/src/entropy_debug.c
+layout_etk_simple_la_CFLAGS   = @ETK_CFLAGS@
+layout_etk_simple_la_LDFLAGS  = -module -avoid-version
+layout_etk_simple_la_LIBADD   = @ETK_LIBS@
 
+etk_structure_viewer_la_SOURCES    = $(top_srcdir)/src/entropy_gui.c \
+                                etk_structure_viewer.c $(top_srcdir)/src/entropy_debug.c
+etk_structure_viewer_la_CFLAGS     = @ETK_CFLAGS@
+etk_structure_viewer_la_LDFLAGS    = -module -avoid-version
+etk_structure_viewer_la_LIBADD     = @ETK_LIBS@
+
+etk_list_la_SOURCES      =      etk_list_viewer.c $(top_srcdir)/src/entropy_gui.c \
+                                        $(top_srcdir)/src/entropy_debug.c
+etk_list_la_CFLAGS       = @ETK_CFLAGS@
+etk_list_la_LDFLAGS      = -module -avoid-version
+etk_list_la_LIBADD       = @ETK_LIBS@
+
+endif
 
 mime_la_SOURCES                = mime.c $(top_srcdir)/src/entropy_core.c
 mime_la_CFLAGS 	               = @EVFS_CFLAGS@

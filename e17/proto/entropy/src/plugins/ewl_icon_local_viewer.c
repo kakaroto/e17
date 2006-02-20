@@ -109,6 +109,12 @@ entropy_plugin_identify ()
   return (char *) "Icon View";
 }
 
+char*
+entropy_plugin_toolkit_get() 
+{
+	return ENTROPY_TOOLKIT_EWL;
+}
+
 
 void
 entropy_file_wait_list_add (entropy_icon_viewer * viewer, Ecore_List * list)

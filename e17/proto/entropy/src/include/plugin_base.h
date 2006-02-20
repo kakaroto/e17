@@ -1,6 +1,7 @@
 #ifndef __PLUGIN_BASE_H_
 #define __PLUGIN_BASE_H_
 
+#include <limits.h>
 
 enum ENTROPY_PLUGIN_TYPES {
 	ENTROPY_PLUGIN_BACKEND_FILE ,
@@ -27,11 +28,12 @@ typedef struct entropy_plugin entropy_plugin;
 struct entropy_plugin {
 	int type;
 	int subtype;
-	char filename[255];
+	char filename[PATH_MAX];
 	void* dl_ref;
 	void (*gui_event_callback_p)();
 
 	void* data; 
+	char* toolkit;
 };
 
 typedef struct entropy_mime_object entropy_mime_object;

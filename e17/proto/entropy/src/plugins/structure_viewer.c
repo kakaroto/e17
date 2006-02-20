@@ -57,6 +57,12 @@ entropy_plugin_identify ()
   return (char *) "File system tree structure viewer";
 }
 
+char*
+entropy_plugin_toolkit_get() 
+{
+	return ENTROPY_TOOLKIT_EWL;
+}
+
 /*Ewl_Widget* entropy_plugin_gui_component_visual_get() {
 	return itree;
 }*/

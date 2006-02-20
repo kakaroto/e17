@@ -49,6 +49,7 @@ int entropy_core_plugin_sub_type_get(entropy_plugin* plugin);
 entropy_plugin* entropy_plugins_type_get_first(int type, int subtype);
 void entropy_core_layout_register(entropy_core* core, entropy_gui_component_instance* comp);
 entropy_thumbnail* entropy_thumbnail_create(entropy_generic_file* e_file);
+char* entropy_layout_global_toolkit_get();
 
 /*Event hierarchy functions*/
 void entropy_core_component_event_register(entropy_gui_component_instance* comp, char* event);

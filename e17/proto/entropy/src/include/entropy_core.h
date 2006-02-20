@@ -5,7 +5,10 @@
 #include "entropy.h"
 #include "notification_engine.h"
 
-
+typedef struct _entropy_core_settings entropy_core_settings;
+struct _entropy_core_settings {
+	char* layout_engine;
+};
 
 
 typedef struct entropy_core entropy_core;
@@ -23,6 +26,7 @@ struct entropy_core {
 
 	void* layout_global; /*The global layout context*/
 	entropy_notification_engine* notify;
+	
 	entropy_plugin* layout_plugin; /* The main layout plugin that we are relying on */
 	pthread_mutex_t file_cache_mutex;
 
@@ -31,20 +35,14 @@ struct entropy_core {
 	Ecore_Hash* object_associate_hash;
 	Ecore_Hash* mime_action_hint;
 
-	
-
 	char* user_home_dir;
 	char* thumbnail_path;
-
-
 	
+	entropy_core_settings settings;
 };
 
-
-
-
 entropy_core* entropy_core_new();
-entropy_core* entropy_core_init();
+entropy_core* entropy_core_init(int,char**);
 void entropy_core_destroy(entropy_core* core);
 
 

@@ -248,7 +248,7 @@ callback (evfs_event * data, void *obj)
 
 	  printf("Looking for calling request with folder '%s'\n", folder);
 	  calling_request = ecore_hash_get (evfs_dir_requests, folder);
-	  //printf("Received a file from the hash, path is '%s'\n", calling_request->file->path);
+	  printf("Received a file from the hash, path is '%s'\n", calling_request->file->path);
 
 	  /*Append the original request as the first item in the list */
 	  /*It's not nice having to do this, but we're kind of stuck.  Should be ok as long
