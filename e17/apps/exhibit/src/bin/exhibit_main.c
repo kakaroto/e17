@@ -144,42 +144,32 @@ _ex_main_button_fit_to_window_cb(Etk_Object *obj, void *data)
 }
 
 void
-_ex_main_itree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *data)
+_ex_main_image_set(Exhibit *e, char *image)
 {
-   Etk_Tree *tree;
    Etk_Range *hs, *vs;
-   char *icol_string;
    char *title;
    int   w, h;
    int   bytes;
    char  size[30];
-   Exhibit *e;
-
-   e = data;
-   e->zoom = 0;
-   _ex_main_statusbar_zoom_update(e);
    
-   tree = ETK_TREE(object);
-
-   etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), NULL, &icol_string, etk_tree_nth_col_get(tree, 1),NULL);
-   title = calloc(strlen(icol_string) + strlen(WINDOW_TITLE) + 5, sizeof(char));
-   snprintf(title, strlen(icol_string) + strlen(WINDOW_TITLE) + 5, "%s - %s", icol_string, WINDOW_TITLE);
+   title = calloc(strlen(image) + strlen(WINDOW_TITLE) + 5, sizeof(char));
+   snprintf(title, strlen(image) + strlen(WINDOW_TITLE) + 5, "%s - %s", image, WINDOW_TITLE);
    etk_window_title_set(ETK_WINDOW(e->win), title);
       
-   if(_ex_file_is_ebg(icol_string))
+   if(_ex_file_is_ebg(image))
      {
 	/* can we do this without the size request? it doesnt look good */
 	etk_widget_size_request_set(ETK_WIDGET(e->cur_tab->image), 800, 600);	
-	etk_image_set_from_edje(ETK_IMAGE(e->cur_tab->image), icol_string, "desktop/background");
+	etk_image_set_from_edje(ETK_IMAGE(e->cur_tab->image), image, "desktop/background");
      }
    else
      {
-	etk_image_set_from_file(ETK_IMAGE(e->cur_tab->image), icol_string);
+	etk_image_set_from_file(ETK_IMAGE(e->cur_tab->image), image);
 	etk_image_size_get(ETK_IMAGE(e->cur_tab->image), &w, &h);	
 	etk_widget_size_request_set(ETK_WIDGET(e->cur_tab->image), w, h);
      }
    
-   bytes = ecore_file_size(icol_string);
+   bytes = ecore_file_size(image);
    snprintf(size, sizeof(size), "%d K", (int)(bytes/1024));
    etk_statusbar_pop(ETK_STATUSBAR(e->statusbar[0]), 0);
    etk_statusbar_push(ETK_STATUSBAR(e->statusbar[0]), size, 0);
@@ -194,6 +184,24 @@ _ex_main_itree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *data
       
    etk_range_value_set(hs, (double)w/2);
    etk_range_value_set(vs, (double)h/2);   
+}
+
+void
+_ex_main_itree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *data)
+{
+   Exhibit *e;   
+   Etk_Tree *tree;
+   char *icol_string;      
+
+   e = data;
+   e->zoom = 0;
+   _ex_main_statusbar_zoom_update(e);
+   
+   tree = ETK_TREE(object);
+
+   etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), NULL, &icol_string, etk_tree_nth_col_get(tree, 1),NULL);
+   
+   _ex_main_image_set(e, icol_string);
 }
 
 void
@@ -669,6 +677,54 @@ _ex_main_window_tab_append(Exhibit *e, Ex_Tab *tab)
    etk_notebook_current_page_set(ETK_NOTEBOOK(e->notebook), evas_list_count(e->tabs) - 1);
 }
 
+static void _etk_main_drag_drop_cb(Etk_Object *object, void *event, void *data)
+{
+   Etk_Event_Selection_Request *ev;
+   Etk_Selection_Data_Files *files;
+   Exhibit *e;
+   
+   int i;
+   
+   ev = event;
+   e = data;
+   
+   if(ev->content != ETK_SELECTION_CONTENT_FILES)
+     return;
+   
+   files = ev->data;
+   
+   for (i = 0; i < files->num_files; i++)
+     {
+	char *dir;
+	char *file;
+	
+
+	if ((file = strstr(files->files[i], "file://")) == NULL)
+	  continue;
+		
+	
+	file += strlen("file://");	
+	dir = ecore_file_get_dir(file);
+	
+	if(!ecore_file_is_dir(dir))
+	  continue;
+	
+	if(!ecore_file_exists(file))
+	  file = NULL;
+	
+	E_FREE(e->cur_tab->dir);
+	e->cur_tab->dir = strdup(dir);
+	etk_tree_clear(ETK_TREE(e->cur_tab->itree));
+	etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
+	_ex_main_populate_files(e, ecore_file_get_file(file));
+	if(ecore_file_exists(file) && !ecore_file_is_dir(file))
+	  _ex_main_image_set(e, file);
+	etk_notebook_page_tab_label_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, _ex_file_get(e->cur_tab->cur_path));
+	break;
+     }
+}
+
+
 void
 _ex_main_window_show(char *dir)
 {
@@ -676,7 +732,9 @@ _ex_main_window_show(char *dir)
    Ex_Tab  *tab;
    char    *file;
    char    *homedir;
-
+   char   **dnd_types;
+   int      dnd_types_num;
+   
    e = calloc(1, sizeof(Exhibit));
    e->mouse.down = 0;
    e->menu = NULL;
@@ -705,6 +763,12 @@ _ex_main_window_show(char *dir)
    tab = NULL;
    
    e->win = etk_window_new();
+   etk_widget_dnd_dest_set(e->win, ETK_TRUE);
+   dnd_types_num = 1;
+   dnd_types = calloc(dnd_types_num, sizeof(char*));
+   dnd_types[0] = strdup("text/uri-list");
+   etk_signal_connect("drag_drop", ETK_OBJECT(e->win), ETK_CALLBACK(_etk_main_drag_drop_cb), e);
+   etk_widget_dnd_types_set(e->win, dnd_types, dnd_types_num);   
    etk_window_title_set(ETK_WINDOW(e->win), WINDOW_TITLE " - Image Viewing the Kewl Way!");
    etk_window_wmclass_set(ETK_WINDOW(e->win), "exhibit", "Exhibit");
    etk_window_resize(ETK_WINDOW(e->win), WINDOW_WIDTH, WINDOW_HEIGHT);   
