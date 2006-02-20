@@ -323,6 +323,11 @@ ConfigFileRead(FILE * fs)
 		       if (err)
 			  ConfigAlertLoad(_("Menu style"));
 		       break;
+		    case CONFIG_MENU:
+		       err = MenuConfigLoad(fs);
+		       if (err)
+			  ConfigAlertLoad(_("Menu"));
+		       break;
 		    case CONFIG_BORDER:
 		       err = BorderConfigLoad(fs);
 		       if (err)

@@ -1803,7 +1803,7 @@ MenuStyleConfigLoad(FILE * ConfigFile)
    return err;
 }
 
-static int
+int
 MenuConfigLoad(FILE * fs)
 {
    int                 err = 0;

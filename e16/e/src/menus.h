@@ -36,6 +36,7 @@ typedef int         (MenuLoader) (Menu * m);
 int                 MenuStyleConfigLoad(FILE * fs);
 MenuStyle          *MenuStyleFind(const char *name);
 
+int                 MenuConfigLoad(FILE * fs);
 Menu               *MenuCreate(const char *name, const char *title,
 			       Menu * parent, MenuStyle * ms);
 void                MenuDestroy(Menu * m);
