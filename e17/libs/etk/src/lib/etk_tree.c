@@ -1893,7 +1893,6 @@ static void _etk_tree_row_pressed_cb(void *data, Evas *e, Evas_Object *obj, void
    /* Double or triple click */
    if (!(evas_event->flags & EVAS_BUTTON_NONE) && (_etk_tree_last_clicked_row == row_objects->row))
    {
-      printf("DOUBLE!\n");
       event.button = evas_event->button;
       event.canvas.x = evas_event->canvas.x;
       event.canvas.y = evas_event->canvas.y;
@@ -1903,9 +1902,11 @@ static void _etk_tree_row_pressed_cb(void *data, Evas *e, Evas_Object *obj, void
       event.locks = evas_event->locks;
       event.flags = evas_event->flags;
       event.timestamp = evas_event->timestamp;
+      
+      printf("DOUBLE!\n");
+      
       if(!row_objects->row->tree->dnd_event)
 	{
-	   printf("NOPE!\n");
 	   etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_CLICKED_SIGNAL], ETK_OBJECT(row_objects->row->tree), NULL, row_objects->row, &event);
 	}
       
@@ -1915,7 +1916,6 @@ static void _etk_tree_row_pressed_cb(void *data, Evas *e, Evas_Object *obj, void
       
       if (!(evas_event->flags & EVAS_BUTTON_TRIPLE_CLICK) && (evas_event->button == 1) && !row_objects->row->tree->dnd_event)
 	{
-	   printf("NOPE2!\n");
 	   etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_ACTIVATED_SIGNAL], ETK_OBJECT(row_objects->row->tree), NULL, row_objects->row);
 	}
    }
@@ -2835,7 +2835,7 @@ static void _etk_tree_drag_drop_cb(Etk_Object *object, void *event, void *data)
       
       tree = ETK_TREE(object);
       tree->dnd_event = ETK_TRUE;
-      
+            
       evas_event_feed_mouse_down(etk_toplevel_widget_evas_get(win), 1,
 				 EVAS_BUTTON_NONE,
 				 ecore_x_current_time_get(),
