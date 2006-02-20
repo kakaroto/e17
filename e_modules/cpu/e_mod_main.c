@@ -1,6 +1,6 @@
 #include <e.h>
 #include "e_mod_main.h"
-//#include "e_mod_config.h"
+#include "e_mod_config.h"
 #include "config.h"
 
 static Cpu *_cpu_init                   (E_Module *m);
@@ -104,10 +104,9 @@ e_modapi_config(E_Module *m)
      return 0;
    
    con = e_container_current_get(e_manager_current_get());
-
-/*   if (c->face->con == con)
+   if (c->face->con == con)
      _configure_cpu_module(con, c);
-*/   
+   
    return 1;
 }
 
@@ -176,7 +175,7 @@ _cpu_init(E_Module *m)
 		  
 		  mi = e_menu_item_new(c->config_menu);
 		  e_menu_item_label_set(mi, _("Configuration"));
-		  //e_menu_item_callback_set(mi, _cpu_face_cb_menu_configure, cf);
+		  e_menu_item_callback_set(mi, _cpu_face_cb_menu_configure, cf);
 		  
 		  mi = e_menu_item_new(c->config_menu);
 		  e_menu_item_label_set(mi, con->name);
@@ -282,7 +281,7 @@ _cpu_face_menu_new(Cpu_Face *cf)
    
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("Configuration"));
-   //e_menu_item_callback_set(mi, _cpu_face_cb_menu_configure, cf);
+   e_menu_item_callback_set(mi, _cpu_face_cb_menu_configure, cf);
    
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("Edit Mode"));
@@ -397,7 +396,7 @@ _cpu_face_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi)
    Cpu_Face *cf;
 
    cf = data;
-   //_configure_cpu_module(cf->con, cf->cpu);
+   _configure_cpu_module(cf->con, cf->cpu);
 }
 
 static int 
