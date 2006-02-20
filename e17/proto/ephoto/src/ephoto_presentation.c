@@ -13,7 +13,7 @@ _change_picture_cb(void *data)
 	/*********************/
 	
 	/****Make sure audio keeps playing :)*****/
-	#ifdef __EWL_MEDIA_H__
+	#ifdef EWL_MEDIA_H
 	if (audio != 0) {
 		ewl_media_play_set(EWL_MEDIA(s->audio1), 1);
 	}
@@ -86,7 +86,7 @@ realize_cb(Ewl_Widget *w, void *event, void *data)
 void
 play_cb(Ewl_Widget *w, void *event, void *data)
 {
-#ifdef __EWL_MEDIA_H__
+#ifdef EWL_MEDIA_H
 	if (audio != 0) {
 		ewl_media_play_set(EWL_MEDIA(s->audio1), 1);
 		audiolen = ewl_media_length_get(EWL_MEDIA(s->audio1));
@@ -136,7 +136,7 @@ slideshow_cb(Ewl_Widget *w, void *event, void *data)
 	ewl_callback_append(s->wins, EWL_CALLBACK_CLICKED, destroys_cb, NULL);
 	ewl_widget_show(s->wins);
 
-#ifdef __EWL_MEDIA_H__
+#ifdef EWL_MEDIA_H
 	if (audio != 0) {
 		s->audio1 = ewl_media_new();
 		ewl_container_child_append(EWL_CONTAINER(s->wins), s->audio1);
@@ -150,7 +150,7 @@ slideshow_cb(Ewl_Widget *w, void *event, void *data)
 	/*******************************************************************/
 	
 	/*******Start the slideshow*******/	
-#ifdef __EWL_MEDIA_H__
+#ifdef EWL_MEDIA_H
 	ewl_callback_append(s->audio1, EWL_CALLBACK_REALIZE, play_cb, NULL);
 #endif
 	

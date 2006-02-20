@@ -451,7 +451,7 @@ audio_cb(Ewl_Widget *w, void *event, void *data)
 	audios = strdup(pathi);
 	audio = 1;
 	printf("%s\n", audios);
-	#ifdef __EWL_MEDIA_H__
+#ifdef EWL_MEDIA_H
 	if (audio != 0) {
 		ewl_widget_enable(m->audiolen);
 		ewl_widget_state_set(m->audiolen, "enabled");
