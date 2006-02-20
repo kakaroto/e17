@@ -54,6 +54,7 @@ struct _background
 #if ENABLE_COLOR_MODIFIERS
    ColorModifierClass *cmclass;
 #endif
+   char                external;
    char                keepim;
    unsigned int        ref_count;	/* bg */
    unsigned int        use_count;	/* pmap */
@@ -323,6 +324,8 @@ BackgroundCreate(const char *name, XColor * solid, const char *bgn, char tile,
    ESetColor(&(bg->bg_solid), 160, 160, 160);
    if (solid)
       bg->bg_solid = *solid;
+   else
+      bg->external = 1;
    if (bgn)
       bg->bg.file = Estrdup(bgn);
    bg->bg_tile = tile;
@@ -1053,7 +1056,7 @@ BackgroundGetPixmap(const Background * bg)
 int
 BackgroundIsNone(const Background * bg)
 {
-   return (bg) ? !strcmp(bg->name, "NONE") : 1;
+   return (bg) ? bg->external : 1;
 }
 
 static Imlib_Image *
@@ -2127,12 +2130,8 @@ SettingsBackground(Background * bg)
      }
    SoundPlay("SOUND_SETTINGS_BG");
 
-   if (!bg || BackgroundIsNone(bg))
-     {
-	Esnprintf(s, sizeof(s), "__NEWBG_%i", (unsigned)time(NULL));
-	bg = BackgroundCreate(s, NULL, NULL, 1, 1, 0, 0, 0, 0, NULL, 1,
-			      512, 512, 0, 0);
-     }
+   if (!bg)
+      bg = BackgroundFind("NONE");
    tmp_bg = bg;
 
    BG_GetValues();
@@ -2402,6 +2401,7 @@ BackgroundSet1(const char *name, const char *params)
    char                valu[FILEPATH_LEN_MAX];
    int                 len;
    Background         *bg;
+   XColor              xclr;
 
    if (!p)
       return;
@@ -2409,7 +2409,8 @@ BackgroundSet1(const char *name, const char *params)
    bg = BackgroundFind(name);
    if (!bg)
      {
-	bg = BackgroundCreate(name, NULL, NULL, 0, 0, 0,
+	ESetColor(&xclr, 0, 0, 0);
+	bg = BackgroundCreate(name, &xclr, NULL, 0, 0, 0,
 			      0, 0, 0, NULL, 0, 0, 0, 0, 0);
 	if (!bg)
 	  {
