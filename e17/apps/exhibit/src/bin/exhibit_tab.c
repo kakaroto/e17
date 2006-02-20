@@ -1,5 +1,7 @@
 #include "exhibit.h"
 
+static void _ex_tab_tree_drag_begin_cb(Etk_Object *object, void *data);
+
 Ex_Tab *
 _ex_tab_new(Exhibit *e, char *dir)
 {
@@ -23,6 +25,8 @@ _ex_tab_new(Exhibit *e, char *dir)
    etk_tree_build(ETK_TREE(tab->dtree));
 
    tab->itree = etk_tree_new();
+   etk_widget_dnd_source_set(ETK_WIDGET(tab->itree), ETK_TRUE);
+   etk_signal_connect("drag_begin", ETK_OBJECT(tab->itree), ETK_CALLBACK(_ex_tab_tree_drag_begin_cb), tab);
    etk_widget_size_request_set(tab->itree, 180, 120);
    etk_tree_multiple_select_set(ETK_TREE(tab->itree), ETK_TRUE);
    etk_signal_connect("row_selected", ETK_OBJECT(tab->itree), ETK_CALLBACK(_ex_main_itree_item_clicked_cb), e);
@@ -89,4 +93,39 @@ _ex_tab_select(Ex_Tab *tab)
    etk_widget_show(tab->scrolled_view);
       
    etk_widget_show_all(tab->e->win);
+}
+
+static void _ex_tab_tree_drag_begin_cb(Etk_Object *object, void *data)
+{
+   Ex_Tab *tab;
+   Etk_Tree *tree;
+   Etk_Tree_Row *row;
+   char *icol1_string;   
+   char *icol2_string;
+   const char **types;
+   unsigned int num_types;
+   char *drag_data;
+   Etk_Drag *drag;
+   Etk_Widget *image;
+
+   tab = data;
+   tree = ETK_TREE(object);
+   row = etk_tree_selected_row_get(tree);
+   
+   drag = (ETK_WIDGET(tree))->drag;
+   
+   etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), &icol1_string, &icol2_string, etk_tree_nth_col_get(tree, 1),NULL);
+   
+   types = calloc(1, sizeof(char*));
+   num_types = 1;
+   types[0] = strdup("text/uri-list");
+   drag_data = calloc(PATH_MAX, sizeof(char));
+   snprintf(drag_data, PATH_MAX * sizeof(char), "file://%s/%s", tab->cur_path, icol2_string);
+   
+   etk_drag_types_set(drag, types, num_types);
+   etk_drag_data_set(drag, drag_data, strlen(drag_data) + 1);
+   image = etk_image_new_from_file(icol1_string);
+   etk_image_keep_aspect_set(ETK_IMAGE(image), ETK_TRUE);
+   etk_widget_size_request_set(image, 96, 96);
+   etk_container_add(ETK_CONTAINER(drag), image);
 }
