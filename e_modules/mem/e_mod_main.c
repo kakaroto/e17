@@ -1,0 +1,508 @@
+#include <e.h>
+#include "e_mod_main.h"
+#include "e_mod_config.h"
+#include "config.h"
+
+static Mem *_mem_init                   (E_Module *m);
+static void _mem_shutdown               (Mem *n);
+static void _mem_config_menu_new        (Mem *n);
+static int  _mem_face_init              (Mem_Face *cf);
+static void _mem_face_menu_new          (Mem_Face *cf);
+static void _mem_face_enable            (Mem_Face *cf);
+static void _mem_face_disable           (Mem_Face *cf);
+static void _mem_face_free              (Mem_Face *cf);
+static void _mem_face_cb_gmc_change     (void *data, E_Gadman_Client *gmc, E_Gadman_Change change);
+static void _mem_face_cb_mouse_down     (void *data, Evas *evas, Evas_Object *obj, void *event_info);
+static void _mem_face_cb_menu_edit      (void *data, E_Menu *mn, E_Menu_Item *mi);
+static void _mem_face_cb_menu_configure (void *data, E_Menu *mn, E_Menu_Item *mi);
+static int  _mem_face_update_values     (void *data);
+static void _mem_face_get_mem_values    (Mem_Face *cf, int *real, int *swap);
+
+static int mem_count;
+
+EAPI E_Module_Api e_modapi = 
+{
+   E_MODULE_API_VERSION,
+     "Mem"
+};
+
+EAPI void *
+e_modapi_init(E_Module *m) 
+{
+   Mem *c;
+   
+   c = _mem_init(m);
+   if (!c)
+     return NULL;
+   
+   m->config_menu = c->config_menu;
+   return c;
+}
+
+EAPI int
+e_modapi_shutdown(E_Module *m) 
+{
+   Mem *c;
+   
+   c = m->data;
+   if (!c)
+     return 0;
+   
+   if (m->config_menu) 
+     {
+	e_menu_deactivate(m->config_menu);
+	e_object_del(E_OBJECT(m->config_menu));
+	m->config_menu = NULL;
+     }
+   if (c->cfd) 
+     {
+	e_object_del(E_OBJECT(c->cfd));
+	c->cfd = NULL;
+     }
+   _mem_shutdown(c);
+   return 1;
+}
+
+EAPI int
+e_modapi_save(E_Module *m) 
+{
+   Mem *c;
+   
+   c = m->data;
+   if (!c)
+     return 0;
+   e_config_domain_save("module.mem", c->conf_edd, c->conf);
+   return 1;
+}
+
+EAPI int
+e_modapi_info(E_Module *m) 
+{
+   m->icon_file = strdup(PACKAGE_DATA_DIR"/module_icon.png");
+   return 1;
+}
+
+EAPI int
+e_modapi_about(E_Module *m) 
+{
+   e_module_dialog_show(_("Enlightenment Mem Monitor Module"),
+			_("This module is used to monitor memory."));
+   return 1;
+}
+
+EAPI int
+e_modapi_config(E_Module *m) 
+{
+   Mem *c;
+   E_Container *con;
+   
+   c = m->data;
+   if (!c)
+     return 0;
+   if (!c->face)
+     return 0;
+   
+   con = e_container_current_get(e_manager_current_get());
+   if (c->face->con == con)
+     _configure_mem_module(con, c);
+   
+   return 1;
+}
+
+static Mem *
+_mem_init(E_Module *m) 
+{
+   Mem *c;
+   E_Menu_Item *mi;
+   Evas_List *mans, *l, *l2;
+   
+   c = E_NEW(Mem, 1);
+   if (!c)
+     return NULL;
+   
+   c->conf_edd = E_CONFIG_DD_NEW("Mem_Config", Config);
+   #undef T
+   #undef D
+   #define T Config
+   #define D c->conf_edd
+   E_CONFIG_VAL(D, T, check_interval, INT);
+   E_CONFIG_VAL(D, T, real_ignore_buffers, UCHAR);
+   E_CONFIG_VAL(D, T, real_ignore_cached, UCHAR);
+   
+   c->conf = e_config_domain_load("module.mem", c->conf_edd);
+   if (!c->conf) 
+     {
+	c->conf = E_NEW(Config, 1);
+	c->conf->check_interval = 1;
+	c->conf->real_ignore_buffers = 0;
+	c->conf->real_ignore_cached = 0;
+     }
+   E_CONFIG_LIMIT(c->conf->check_interval, 0, 60);
+   
+   _mem_config_menu_new(c);
+   
+   mans = e_manager_list();
+   for (l = mans; l; l = l->next) 
+     {
+	E_Manager *man;
+	
+	man = l->data;
+	for (l2 = man->containers; l2; l2 = l2->next) 
+	  {
+	     E_Container *con;
+	     Mem_Face *cf;
+	     
+	     con = l2->data;
+	     cf = E_NEW(Mem_Face, 1);
+	     if (cf) 
+	       {
+		  cf->conf_face_edd = E_CONFIG_DD_NEW("Mem_Face_Config", Config_Face);
+		  #undef T
+		  #undef D
+		  #define T Config_Face
+		  #define D cf->conf_face_edd
+		  E_CONFIG_VAL(D, T, enabled, UCHAR);
+		  
+		  c->face = cf;
+		  cf->mem = c;		  
+		  cf->con = con;
+		  cf->evas = con->bg_evas;
+		  
+		  cf->conf = E_NEW(Config_Face, 1);
+		  cf->conf->enabled = 1;
+		  
+		  if (!_mem_face_init(cf))
+		    return NULL;
+		  
+		  _mem_face_menu_new(cf);
+		  
+		  mi = e_menu_item_new(c->config_menu);
+		  e_menu_item_label_set(mi, _("Configuration"));
+		  e_menu_item_callback_set(mi, _mem_face_cb_menu_configure, cf);
+		  
+		  mi = e_menu_item_new(c->config_menu);
+		  e_menu_item_label_set(mi, con->name);
+		  e_menu_item_submenu_set(mi, cf->menu);
+		 
+		  if (!cf->conf->enabled)
+		    _mem_face_disable(cf);
+		  else
+		    _mem_face_enable(cf);
+	       }
+	  }
+     }
+   return c;
+}
+
+static void
+_mem_shutdown(Mem *c) 
+{
+   _mem_face_free(c->face);
+   
+   E_FREE(c->conf);
+   E_CONFIG_DD_FREE(c->conf_edd);
+   E_FREE(c);
+}
+
+static void
+_mem_config_menu_new(Mem *c) 
+{
+   E_Menu *mn;
+   
+   mn = e_menu_new();
+   c->config_menu = mn;
+}
+
+static int
+_mem_face_init(Mem_Face *cf) 
+{
+   Evas_Object *o;
+   char buf[4096];
+   
+   evas_event_freeze(cf->evas);
+   
+   o = edje_object_add(cf->evas);
+   cf->mem_obj = o;
+   
+   if (!e_theme_edje_object_set(o, "base/theme/modules/mem", 
+				"modules/mem/main")) 
+     {
+	snprintf(buf, sizeof(buf), PACKAGE_DATA_DIR"/mem.edj");	
+	edje_object_file_set(o, buf, "modules/mem/main");
+     }
+   
+   evas_object_show(o);
+
+   /*
+   o = evas_object_rectangle_add(cf->evas);
+   cf->chart_obj = o;
+   evas_object_layer_set(o, 2);
+   evas_object_repeat_events_set(o, 0);
+   evas_object_color_set(o, 0, 0, 0, 255);
+   evas_object_show(o);
+   */
+   
+   o = evas_object_rectangle_add(cf->evas);
+   cf->event_obj = o;
+   evas_object_layer_set(o, 2);
+   evas_object_repeat_events_set(o, 1);
+   evas_object_color_set(o, 0, 0, 0, 0);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN,
+				  _mem_face_cb_mouse_down, cf);
+   evas_object_show(o);
+   
+   cf->gmc = e_gadman_client_new(cf->con->gadman);
+   e_gadman_client_domain_set(cf->gmc, "module.mem", mem_count++);
+   e_gadman_client_policy_set(cf->gmc,
+			      E_GADMAN_POLICY_ANYWHERE |
+			      E_GADMAN_POLICY_HMOVE |
+			      E_GADMAN_POLICY_HSIZE |
+			      E_GADMAN_POLICY_VMOVE |
+			      E_GADMAN_POLICY_VSIZE);
+   e_gadman_client_min_size_set(cf->gmc, 4, 4);
+   e_gadman_client_max_size_set(cf->gmc, 128, 128);
+   e_gadman_client_auto_size_set(cf->gmc, 40, 40);
+   e_gadman_client_align_set(cf->gmc, 1.0, 1.0);
+   e_gadman_client_aspect_set(cf->gmc, 1.0, 1.0);
+   e_gadman_client_resize(cf->gmc, 40, 40);
+   e_gadman_client_change_func_set(cf->gmc, _mem_face_cb_gmc_change, cf);
+   e_gadman_client_load(cf->gmc);
+   evas_event_thaw(cf->evas);
+
+   cf->monitor = ecore_timer_add((double)cf->mem->conf->check_interval, _mem_face_update_values, cf);
+   return 1;
+}
+
+static void
+_mem_face_menu_new(Mem_Face *cf) 
+{
+   E_Menu *mn;
+   E_Menu_Item *mi;
+   
+   mn = e_menu_new();
+   cf->menu = mn;
+   
+   mi = e_menu_item_new(mn);
+   e_menu_item_label_set(mi, _("Configuration"));
+   e_menu_item_callback_set(mi, _mem_face_cb_menu_configure, cf);
+   
+   mi = e_menu_item_new(mn);
+   e_menu_item_label_set(mi, _("Edit Mode"));
+   e_menu_item_callback_set(mi, _mem_face_cb_menu_edit, cf);
+}
+
+static void
+_mem_face_enable(Mem_Face *cf) 
+{
+   cf->conf->enabled = 1;
+   e_config_save_queue();
+   evas_object_show(cf->mem_obj);
+   /* evas_object_show(cf->chart_obj); */
+   evas_object_show(cf->event_obj);
+}
+
+static void
+_mem_face_disable(Mem_Face *cf) 
+{
+   cf->conf->enabled = 0;
+   e_config_save_queue();
+   evas_object_hide(cf->event_obj);
+   /* evas_object_hide(cf->chart_obj); */
+   evas_object_hide(cf->mem_obj);
+}
+
+static void 
+_mem_face_free(Mem_Face *cf) 
+{
+   if (cf->monitor)
+     ecore_timer_del(cf->monitor);
+   if (cf->menu)
+     e_object_del(E_OBJECT(cf->menu));
+   if (cf->event_obj)
+     evas_object_del(cf->event_obj);
+   if (cf->mem_obj)
+     evas_object_del(cf->mem_obj);
+
+   /*
+   if (cf->chart_obj)
+     evas_object_del(cf->chart_obj);
+    */
+   
+   if (cf->gmc) 
+     {
+	e_gadman_client_save(cf->gmc);
+	e_object_del(E_OBJECT(cf->gmc));
+     }
+   
+   E_FREE(cf->conf);
+   E_FREE(cf);
+   mem_count--;
+}
+
+static void 
+_mem_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change) 
+{
+   Mem_Face *cf;
+   Evas_Coord x, y, w, h;
+   
+   cf = data;
+   switch (change) 
+     {
+      case E_GADMAN_CHANGE_MOVE_RESIZE:
+	e_gadman_client_geometry_get(cf->gmc, &x, &y, &w, &h);
+	evas_object_move(cf->mem_obj, x, y);
+	/* evas_object_move(cf->chart_obj, x, y); */
+	evas_object_move(cf->event_obj, x, y);
+	evas_object_resize(cf->mem_obj, w, h);
+	/* evas_object_resize(cf->chart_obj, w, h); */
+	evas_object_resize(cf->event_obj, w, h);
+	break;
+      case E_GADMAN_CHANGE_RAISE:
+	evas_object_raise(cf->mem_obj);
+	/* evas_object_raise(cf->chart_obj); */
+	evas_object_raise(cf->event_obj);
+	break;
+      default:
+	break;
+     }   
+}
+
+static void 
+_mem_face_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event_info) 
+{
+   Mem_Face *cf;
+   Evas_Event_Mouse_Down *ev;
+   
+   ev = event_info;
+   cf = data;
+   if (ev->button == 3) 
+     {
+	e_menu_activate_mouse(cf->menu, e_zone_current_get(cf->con),
+			      ev->output.x, ev->output.y, 1, 1,
+			      E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
+	e_util_container_fake_mouse_up_all_later(cf->con);
+     }
+}
+
+static void 
+_mem_face_cb_menu_edit(void *data, E_Menu *mn, E_Menu_Item *mi) 
+{
+   Mem_Face *cf;
+   
+   cf = data;
+   e_gadman_mode_set(cf->gmc->gadman, E_GADMAN_MODE_EDIT);
+}
+
+static void 
+_mem_face_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi) 
+{
+   Mem_Face *cf;
+
+   cf = data;
+   _configure_mem_module(cf->con, cf->mem);
+}
+
+static int 
+_mem_face_update_values(void *data) 
+{
+   Mem_Face *cf;
+   int real, swap;
+   Edje_Message_String_Set *msg;
+   char real_str[100];
+   char swap_str[100];
+   
+   cf = data;
+   _mem_face_get_mem_values(cf, &real, &swap);
+
+   real = real / 1024;
+   swap = swap / 1024;
+   
+   snprintf(real_str, sizeof(real_str), "%d MB", real);
+   snprintf(swap_str, sizeof(swap_str), "%d MB", swap);
+   
+   msg = malloc(sizeof(Edje_Message_String_Set) - sizeof(char *) + (1 + sizeof(char *)));
+   msg->count = 2;
+   msg->str[0] = real_str;
+   msg->str[1] = swap_str;
+   edje_object_message_send(cf->mem_obj, EDJE_MESSAGE_STRING_SET, 1, msg);
+   free(msg); 
+   
+   return 1;
+}
+
+static void
+_mem_face_get_mem_values(Mem_Face *cf, int *real, int *swap) 
+{
+   FILE *pmeminfo = NULL;
+   int cursor = 0;
+   char *line, *field;
+   unsigned char c;
+   long int value = 0, mtotal = 0, stotal = 0, mfree = 0, sfree = 0;
+   ldiv_t ldresult;
+   long int liresult;
+
+   /* open /proc/meminfo */
+   if (!(pmeminfo = fopen("/proc/meminfo", "r")))
+     {
+        fprintf(stderr, "can't open /proc/meminfo");
+        return;
+     }
+
+   /* parse /proc/meminfo */
+   line = (char *)calloc(64, sizeof(char));
+   while (fscanf(pmeminfo, "%c", &c) != EOF)
+     {
+        if (c != '\n')
+          {
+             line[cursor++] = c;
+          }
+        else
+          {
+             field = (char *)malloc(strlen(line) * sizeof(char));
+             sscanf(line, "%s %ld kB", field, &value);
+             if (strcmp(field, "MemTotal:") == 0)
+	       mtotal = value;
+             else if (strcmp(field, "MemFree:") == 0)
+	       mfree = value;
+             else if (cf->mem->conf->real_ignore_buffers && strcmp(field, "Buffers:") == 0)
+	       mfree += value;
+             else if (cf->mem->conf->real_ignore_cached && strcmp(field, "Cached:") == 0)
+	       mfree += value;
+             else if (cf->mem->conf->real_ignore_cached && strcmp(field, "SwapCached:") == 0)
+	       sfree += value;
+             else if (strcmp(field, "SwapTotal:") == 0)
+	       stotal = value;
+             else if (strcmp(field, "SwapFree:") == 0)
+	       sfree = value;
+             free(line);
+             free(field);
+             cursor = 0;
+             line = (char *)calloc(64, sizeof(char));
+          }
+     }
+   fclose(pmeminfo);
+
+   /* calculate memory usage in percent */
+   /* FIXME : figure out a better way to do this */
+   ldresult = ldiv(mtotal, 100);
+   liresult = ldresult.quot;
+   ldresult = ldiv((mtotal - mfree), liresult);
+   //mem_real_usage = ldresult.quot;
+
+   /* calculate swap usage in percent */
+   if (stotal < 1)
+     {
+        //mem_swap_usage = 0;
+     }
+   else
+     {
+        ldresult = ldiv(stotal, 100);
+        liresult = ldresult.quot;
+        ldresult = ldiv((stotal - sfree), liresult);
+        //mem_swap_usage = ldresult.quot;
+     }
+
+   *real = mtotal - mfree;
+   *swap = stotal - sfree;
+   return;
+}

@@ -1,0 +1,115 @@
+images
+{
+  image: "mem.png" COMP;
+}
+
+fonts
+{
+  font: "VeraMono.ttf" "VeraMono";
+}
+
+collections
+{
+group
+    {
+      name: "modules/mem/main";
+      script {
+		public message(Msg_Type:type, id, ...) {
+		      if (type == MSG_STRING_SET) {
+		      		new real_str[100];
+				new swap_str[100];
+				
+				getsarg(2, real_str, sizeof(real_str));
+				getsarg(3, swap_str, sizeof(swap_str));
+				
+				set_text(PART:"real-text", real_str);
+				set_text(PART:"swap-text", swap_str);				
+		      }
+	       }      
+      }
+      
+      parts{
+      part {
+	 name:          "mem";
+	 mouse_events:  0;
+	 description {
+	    state:    "default" 0.0;
+	    color: 255 255 255 200;
+	    aspect:   1.0 1.0;
+	    rel1 { 
+	    	 offset: 0 6; 
+	    }
+	    rel2 { 
+	    	 offset: -1 -6; 
+	    }
+	    image { 
+	    	  normal: "mem.png"; 
+	    }
+	    fill { 
+	    	 smooth: 0;  
+	    }
+	 }
+      }
+	part 
+	  {
+	    name:           "real-text";
+	    type:           TEXT;
+	    effect:         SOFT_SHADOW;
+	    mouse_events: 0;
+	    description {
+	      state: "default" 0.0;
+	      align: 1.0 0.0;
+	      rel1 { 
+	      	   relative: 1.0 0.0;
+		   to_x: "mem";
+		   offset: -2 1;  
+	      }
+	      rel2 { 
+	      	   relative: 1.0 0.0; 
+	      }
+	      color: 255 255 255 255;
+	      color3: 0 0 0 100;
+	      text {
+		   text: "real"; 
+		   font: "VeraMono";
+		   size:  10;     
+		   min:     1 1;
+		   align: 1.0 0.0;
+	      }
+	    }
+	  }
+
+	part 
+	  {
+	    name:           "swap-text";
+	    type:           TEXT;
+	    effect:         SOFT_SHADOW;
+	    mouse_events: 0;
+	    description {
+	      state: "default" 0.0;
+	      align: 1.0 0.0;
+	      rel1 { 
+	      	   relative: 1.0 1.0; 
+		   to_x: "mem"; 
+		   offset: -2 -10;  
+	      }
+	      rel2 { 
+	      	   relative: 1.0 1.0; 
+	      }
+	      color: 213 91 91 255;
+	      color3: 0 0 0 100;
+	      text {
+		   text: "swap"; 
+		   font: "VeraMono";
+		   size:  10;     
+		   min:     1 1;
+		   align: 1.0 0.0;
+	      }
+	    }
+	  }	  
+	  
+	  
+      } 
+    }//close group net
+}
+
