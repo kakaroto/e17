@@ -124,6 +124,64 @@ dumb_list_track(Dumb_List *list, void *element)
    list->buffers[list->buffers_size++] = element;
 }
 
+
+/* OK, so we need an insert after all, and it falls into the dumb category. */
+Dumb_List *
+dumb_list_insert(Dumb_List *list, int before, void *element, Dumb_List_Element_Type type)
+{
+   int i;
+
+   list->elements = (Dumb_List_Element *) realloc(list->elements, (list->size + 1) * sizeof(Dumb_List_Element));
+   list->size++;
+   for (i = list->size - 1; i > before; i--)
+      {
+         list->elements[i].element = list->elements[i - 1].element;
+         list->elements[i].type = list->elements[i - 1].type;
+      }
+   list->elements[before].element = element;
+   list->elements[before].type = type;
+   return list;
+}
+
+
+/* OK, so we need a list insert after all, and it falls into the dumb category. */
+Dumb_List *
+dumb_list_insert_list(Dumb_List *list, int before, Dumb_List *element)
+{
+   int i, size;
+
+   size = element->size;
+   list->elements = (Dumb_List_Element *) realloc(list->elements, (list->size + size) * sizeof(Dumb_List_Element));
+   list->size += size;
+   for (i = list->size - 1; i > before; i--)
+      {
+         list->elements[i].element = list->elements[i - size].element;
+         list->elements[i].type = list->elements[i - size].type;
+      }
+   for (i = 0; i < size; i++)
+      {
+         list->elements[before + i].element = element->elements[i].element;
+         list->elements[before + i].type = element->elements[i].type;
+      }
+
+   /* Careful, this might screw up the freeing order if that is important. */
+/*
+   size = element->buffers_size;
+   if (size)
+      {
+         list->buffers = (char **) realloc(list->buffers, (list->buffers_size + size) * sizeof(char *));
+         list->buffers_size += size;
+         for (i = 0; i < size; i++)
+            {
+               list->buffers[list->buffers_size + i] = element->buffers[i];
+	       element->buffers[i] = NULL;
+            }
+      }
+*/
+   return list;
+}
+
+
 Dumb_List *
 dumb_list_add_child(Dumb_List *list, Dumb_List *element)
 {
@@ -177,6 +235,7 @@ dumb_list_foreach(Dumb_List *list, int level, int (*func) (const void *data, Dum
 	    }
 	 else if (list->elements[i].type == DUMB_LIST_ELEMENT_TYPE_NULL)
 	    {
+               /* This falls into the dumb category. */
 	       int j = i;
 	       int k = i;
 	       int moved = 0;

@@ -51,6 +51,8 @@ struct _fdo_menus_generate_data
 };
 
 static int _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level);
+static int _fdo_menus_check_directory(const void *data, char *path);
+static int _fdo_menus_check_menu(const void *data, char *path);
 static void _fdo_menus_unxml_rules(Dumb_List *rules, Dumb_List *list, char type, char sub_type);
 static void _fdo_menus_unxml_moves(Dumb_List *menu, Dumb_List *list);
 static void _fdo_menus_add_dirs(Dumb_List *list, Dumb_List *paths, char *pre, char *post, char *extra, int element);
@@ -81,7 +83,6 @@ fdo_menus_get(char *file, Dumb_List *xml)
                printf("\n\n");
                data.unallocated = FALSE;
                dumb_list_foreach(xml, 0, _fdo_menus_generate, &data);
-               printf("\n\n");
                data.unallocated = TRUE;
                dumb_list_foreach(xml, 0, _fdo_menus_generate, &data);
                dumb_list_dump(xml, 0);
@@ -228,7 +229,7 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
                                                    dumb_list_track(menu, menu->elements[0].element);
 						   flags = (char *) menu->elements[0].element;
 						   flags += 7;
-						   /* The rest of this is probably not needed, ekcept to ease debugging. */
+						   /* The rest of this is probably not needed, except to ease debugging. */
 						   if (unxml_data->stack->size <= level)
 						      {
 						         while (unxml_data->stack->size < level)
@@ -333,19 +334,42 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
 				 char *string;
 
 				 string = (char *) menu->elements[i].element;
-                                 if (strncmp(string, "<AppDir ", 8) == 0)
+                                 if (strncmp(string, "<DirectoryDir ", 14) == 0)
 				    {
-                                       _fdo_menus_expand_apps(unxml_data, &string[8], pool);
-				       result = 1;
-				    }
-                                 else if (strncmp(string, "<DirectoryDir ", 8) == 0)
-				    {
+				       char merge_path[MAX_PATH];
+				       Dumb_List *merge;
+
+                                       if (string[14] == '/')
+				          sprintf(merge_path, "%s", &string[14]);
+				       else
+				          sprintf(merge_path, "%s%s", unxml_data->path, &string[14]);
+                                       merge = dumb_list_new(NULL);
+				       if (merge)
+				          {
+                                             fdo_paths_recursive_search(merge_path, NULL, _fdo_menus_check_directory, merge);
+					     dumb_list_insert_list(menu, i + 1, merge);
+					  }
+			               result = 1;
 				    }
                                  else if (strncmp(string, "<LegacyDir ", 11) == 0)
 				    {
 				    }
-                                 else if (strncmp(string, "<MergeDir ", 8) == 0)
+                                 else if (strncmp(string, "<MergeDir ", 10) == 0)
 				    {
+				       char merge_path[MAX_PATH];
+				       Dumb_List *merge;
+
+                                       if (string[10] == '/')
+				          sprintf(merge_path, "%s", &string[10]);
+				       else
+				          sprintf(merge_path, "%s%s", unxml_data->path, &string[10]);
+                                       merge = dumb_list_new(NULL);
+				       if (merge)
+				          {
+                                             fdo_paths_recursive_search(merge_path, NULL, _fdo_menus_check_menu, merge);
+					     dumb_list_insert_list(menu, i + 1, merge);
+					  }
+			               result = 1;
 				    }
                                  else if (strncmp(string, "<MergeFile ", 8) == 0)
 				    {
@@ -357,6 +381,29 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
                                  menu->elements[i].element = NULL;
 			      }
 			}
+
+		     for (i = 4; i < menu->size; i++)
+		        {
+			   int result = 0;
+
+                           if (menu->elements[i].type == DUMB_LIST_ELEMENT_TYPE_STRING)
+			      {
+				 char *string;
+
+				 string = (char *) menu->elements[i].element;
+                                 if (strncmp(string, "<AppDir ", 8) == 0)
+				    {
+                                       _fdo_menus_expand_apps(unxml_data, &string[8], pool);
+				       result = 1;
+				    }
+			      }
+			   if (result)
+			      {
+                                 menu->elements[i].type = DUMB_LIST_ELEMENT_TYPE_NULL;
+                                 menu->elements[i].element = NULL;
+			      }
+			}
+
 
                      /* Add it if it has not been deleted. */
                      if (flags[1] != 'D')
@@ -374,6 +421,50 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
 		  }
 	    }
       }
+   return 0;
+}
+
+static int
+_fdo_menus_check_directory(const void *data, char *path)
+{
+   char *p;
+   Dumb_List *merge;
+
+   merge = (Dumb_List *) data;
+   p = strrchr(path, '.');
+   if (p)
+      {
+         if (strcmp(p, ".directory") == 0)
+	    {
+	       char merge_file[MAX_PATH];
+
+               sprintf(merge_file, "<Directory %s", path);
+	       dumb_list_extend(merge, merge_file);
+	    }
+      }
+
+   return 0;
+}
+
+static int
+_fdo_menus_check_menu(const void *data, char *path)
+{
+   char *p;
+   Dumb_List *merge;
+
+   merge = (Dumb_List *) data;
+   p = strrchr(path, '.');
+   if (p)
+      {
+         if (strcmp(p, ".menu") == 0)
+	    {
+	       char merge_file[MAX_PATH];
+
+               sprintf(merge_file, "<MergeFile type=\"path\" %s", path);
+	       dumb_list_extend(merge, merge_file);
+	    }
+      }
+
    return 0;
 }
 

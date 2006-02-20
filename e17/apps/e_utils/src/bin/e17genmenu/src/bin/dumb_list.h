@@ -46,6 +46,8 @@ extern "C"
    Dumb_List *dumb_list_add(Dumb_List *list, char *element);
    void       dumb_list_track(Dumb_List *list, void *element);
    Dumb_List *dumb_list_extend(Dumb_List *list, char *element);
+   Dumb_List *dumb_list_insert(Dumb_List *list, int before, void *element, Dumb_List_Element_Type type);
+   Dumb_List *dumb_list_insert_list(Dumb_List *list, int before, Dumb_List *element);
    Dumb_List *dumb_list_add_child(Dumb_List *list, Dumb_List *element);
    Dumb_List *dumb_list_add_hash(Dumb_List *list, Ecore_Hash *element);
    int        dumb_list_exist(Dumb_List *list, char *element);
