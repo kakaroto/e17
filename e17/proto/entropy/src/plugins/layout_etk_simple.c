@@ -265,7 +265,7 @@ entropy_plugin_layout_create (entropy_core * core)
 
 
   etk_box_pack_start(ETK_BOX(vbox), menubar, ETK_FALSE, ETK_FALSE, 0);
-  etk_box_pack_end(ETK_BOX(vbox), gui->paned, ETK_FALSE, ETK_FALSE, 0);
+  etk_box_pack_end(ETK_BOX(vbox), gui->paned, TRUE, TRUE, 0);
 
   //etk_widget_size_request_set(ETK_WIDGET(window), 800,600);
 
