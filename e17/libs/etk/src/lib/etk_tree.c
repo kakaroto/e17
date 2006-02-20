@@ -13,6 +13,8 @@
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
+#include "etk_window.h"
+#include "config.h"
 
 /**
  * @addtogroup Etk_Tree
@@ -120,6 +122,8 @@ static void _etk_tree_header_mouse_up_cb(Etk_Object *object, void *event, void *
 static void _etk_tree_header_mouse_move_cb(Etk_Object *object, void *event, void *data);
 static void _etk_tree_header_mouse_in_cb(Etk_Object *object, void *event, void *data);
 static void _etk_tree_header_mouse_out_cb(Etk_Object *object, void *event, void *data);
+static void _etk_tree_drag_drop_cb(Etk_Object *object, void *event, void *data);
+
 
 static void _etk_tree_update(Etk_Tree *tree);
 static int _etk_tree_rows_draw(Etk_Tree *tree, Etk_Tree_Row *first_row, Evas_List **items_objects,
@@ -1529,6 +1533,8 @@ static void _etk_tree_constructor(Etk_Tree *tree)
    tree->xoffset = 0;
    tree->yoffset = 0.0;
 
+   tree->dnd_event = ETK_FALSE;
+   
    ETK_WIDGET(tree)->size_allocate = _etk_tree_size_allocate;
    
    etk_signal_connect("realize", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree_realize_cb), NULL);
@@ -1536,6 +1542,7 @@ static void _etk_tree_constructor(Etk_Tree *tree)
    etk_signal_connect("focus", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree_focus_cb), NULL);
    etk_signal_connect("unfocus", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree_unfocus_cb), NULL);
    etk_signal_connect("key_down", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree_key_down_cb), NULL);
+   etk_signal_connect("drag_drop", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree_drag_drop_cb), NULL);   
 }
 
 /* Destroys the tree */
@@ -1888,13 +1895,14 @@ static void _etk_tree_row_pressed_cb(void *data, Evas *e, Evas_Object *obj, void
       event.locks = evas_event->locks;
       event.flags = evas_event->flags;
       event.timestamp = evas_event->timestamp;
-      etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_CLICKED_SIGNAL], ETK_OBJECT(row_objects->row->tree), NULL, row_objects->row, &event);
+      if(!row_objects->row->tree->dnd_event)
+	etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_CLICKED_SIGNAL], ETK_OBJECT(row_objects->row->tree), NULL, row_objects->row, &event);
       
       /* We have to check this again because the user can remove the row on the "clicked" signal */
       if (!row_objects->row)
          return;
       
-      if (!(evas_event->flags & EVAS_BUTTON_TRIPLE_CLICK) && (evas_event->button == 1))
+      if (!(evas_event->flags & EVAS_BUTTON_TRIPLE_CLICK) && (evas_event->button == 1) && !row_objects->row->tree->dnd_event)
          etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_ACTIVATED_SIGNAL], ETK_OBJECT(row_objects->row->tree), NULL, row_objects->row);
    }
    
@@ -1932,8 +1940,11 @@ static void _etk_tree_row_clicked_cb(void *data, Evas *e, Evas_Object *obj, void
       event.locks = evas_event->locks;
       event.flags = EVAS_BUTTON_NONE;
       event.timestamp = evas_event->timestamp;
-      
-      etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_CLICKED_SIGNAL], ETK_OBJECT(row_objects->row->tree), NULL, row_objects->row, &event);
+
+      if(row_objects->row->tree->dnd_event)      	 
+	row_objects->row->tree->dnd_event = ETK_FALSE;
+      else
+	etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_CLICKED_SIGNAL], ETK_OBJECT(row_objects->row->tree), NULL, row_objects->row, &event);
       _etk_tree_last_clicked_row = row_objects->row;
    }
 }
@@ -2029,6 +2040,8 @@ static void _etk_tree_header_mouse_down_cb(Etk_Object *object, void *event, void
    Etk_Tree_Col *col;
    Etk_Event_Mouse_Up_Down *down_event;
 
+   printf("mouse down!\n");
+   
    if (!(col = data) || !(down_event = event))
       return;
 
@@ -2664,13 +2677,16 @@ static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Evas_Modifie
 {
    if (!tree || !row)
       return;
-
+  
    if (!tree->multiple_select || !modifiers)
    {
       etk_tree_unselect_all(tree);
       row->selected = ETK_TRUE;
       tree->last_selected = row;
-      etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, row);
+      if(tree->dnd_event)      
+	etk_widget_theme_object_signal_emit(ETK_WIDGET(tree), "selected");
+      else
+	etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, row);
    }
    else
    {
@@ -2703,7 +2719,11 @@ static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Evas_Modifie
             }
          }
          tree->last_selected = row;
-         etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, row);
+	 
+	 if(tree->dnd_event)      
+	   etk_widget_theme_object_signal_emit(ETK_WIDGET(tree), "selected");
+	 else
+	   etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, row);
       }
       else if (evas_key_modifier_is_set(modifiers, "Control"))
       {
@@ -2711,13 +2731,19 @@ static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Evas_Modifie
          {
             row->selected = ETK_FALSE;
             tree->last_selected = row;
-            etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_UNSELECTED_SIGNAL], ETK_OBJECT(tree), NULL, row);
+	    if(tree->dnd_event)      
+	      etk_widget_theme_object_signal_emit(ETK_WIDGET(tree), "selected");
+	    else
+	      etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, row);
          }
          else
          {
             row->selected = ETK_TRUE;
             tree->last_selected = row;
-            etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, row);
+	    if(tree->dnd_event)      
+	      etk_widget_theme_object_signal_emit(ETK_WIDGET(tree), "selected");
+	    else
+	      etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, row);
          }
       }
       else
@@ -2725,7 +2751,10 @@ static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Evas_Modifie
          etk_tree_unselect_all(tree);
          row->selected = ETK_TRUE;
          tree->last_selected = row;
-         etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, row);
+	 if(tree->dnd_event)      
+	   etk_widget_theme_object_signal_emit(ETK_WIDGET(tree), "selected");
+	 else
+	   etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, row);
       }
    }
 
@@ -2758,3 +2787,31 @@ static void _etk_tree_heapify(Etk_Tree *tree, Etk_Tree_Row **heap, int root, int
       _etk_tree_heapify(tree, heap, max, size, compare_cb, asc, col, data);
    }
 }
+
+static void _etk_tree_drag_drop_cb(Etk_Object *object, void *event, void *data)
+{
+#if HAVE_ECORE_X   
+   Etk_Event_Selection_Request *ev;
+   Etk_Widget *win;
+      
+   win = etk_widget_toplevel_parent_get(ETK_WIDGET(object));
+   if(ETK_IS_WINDOW(win))
+   {
+      Etk_Tree *tree;
+      
+      tree = ETK_TREE(object);
+      tree->dnd_event = ETK_TRUE;
+      
+      evas_event_feed_mouse_down(etk_toplevel_widget_evas_get(win), 1,
+				 EVAS_BUTTON_NONE,
+				 ecore_x_current_time_get(),
+				 NULL);
+      
+      evas_event_feed_mouse_up(etk_toplevel_widget_evas_get(win), 1,
+			       EVAS_BUTTON_NONE,
+			       ecore_x_current_time_get(),
+			       NULL);      
+   }      
+#endif   
+}
+  

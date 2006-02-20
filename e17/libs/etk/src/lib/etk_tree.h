@@ -102,6 +102,8 @@ struct _Etk_Tree
    int cell_margins[4];
    int expander_size;
    Etk_Color separator_color;
+   
+   Etk_Bool dnd_event;
 };
 
 /**

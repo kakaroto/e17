@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "config.h"
 
+static void _etk_test_tree_drag_drop_cb(Etk_Object *object, void *event, void *data);
 static void _etk_test_tree_add_items(Etk_Tree *tree, int n);
 static void _etk_test_tree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data);
 static void _etk_test_tree_row_unselected(Etk_Object *object, Etk_Tree_Row *row, void *data);
@@ -81,6 +82,8 @@ void etk_test_tree_window_create(void *data)
    etk_table_attach(ETK_TABLE(table), label, 1, 1, 0, 0, 0, 0, ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL);
 
    tree = etk_tree_new();
+   etk_widget_dnd_dest_set(tree, ETK_TRUE);
+   etk_signal_connect("drag_drop", ETK_OBJECT(tree), ETK_CALLBACK(_etk_test_tree_drag_drop_cb), NULL);   
    etk_widget_size_request_set(tree, 320, 400);
    etk_table_attach_defaults(ETK_TABLE(table), tree, 1, 1, 1, 1);
 
@@ -128,6 +131,20 @@ void etk_test_tree_window_create(void *data)
    etk_box_pack_start(ETK_BOX(hbox), button, ETK_TRUE, ETK_TRUE, 0);
 
    etk_widget_show_all(win);
+}
+
+static void _etk_test_tree_drag_drop_cb(Etk_Object *object, void *event, void *data)
+{
+   Etk_Event_Selection_Request *ev;
+   Etk_Tree *tree;
+   Etk_Tree_Row *row;
+   char *col1_string, *col3_path;
+   int col2_value;
+
+   tree = ETK_TREE(object);
+   row = etk_tree_selected_row_get(tree);
+   etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), NULL, &col1_string, etk_tree_nth_col_get(tree, 1), &col2_value, etk_tree_nth_col_get(tree, 2), &col3_path, NULL);
+   printf(_("Row dropped on %p: \"%s\" %d %s\n"), row, col1_string, col2_value, col3_path);      
 }
 
 /* Adds n items to the tree */
