@@ -26,7 +26,7 @@ changequote([,])dnl
 AC_PATH_GENERIC(imlib2, 1.0.0,
   [ have_imlib2="yes" ],
   [
-    have_imlib2="yes"
+    have_imlib2="no"
     AC_MSG_ERROR(Cannot find imlib2: Is imlib2-config in the path?)
   ]
 )
@@ -83,7 +83,7 @@ AC_PATH_GENERIC(ecore, 0.9.9,
     CFLAGS=$SAVE_CFLAGS
   ],
   [
-    have_ecore="yes"
+    have_ecore="no"
     AC_MSG_ERROR(Cannot find Ecore_Evas on your system: jpeg thumbnail suckage!)
   ]
 )
@@ -92,7 +92,7 @@ dnl Make sure the Edje header/lib is available
 AC_PATH_GENERIC(edje, 0.5.0,
   [ have_edje="yes" ],
   [
-    have_edje="yes"
+    have_edje="no"
     AC_MSG_ERROR(Cannot find Edje on your system: edje thumbnail suckage!)
   ]
 )
