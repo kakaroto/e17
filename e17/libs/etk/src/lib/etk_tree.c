@@ -2842,5 +2842,5 @@ static void _etk_tree_drag_drop_cb(Etk_Object *object, void *event, void *data)
   
 static void _etk_tree_drag_end_cb(Etk_Object *object, void *data)
 {
-   _etk_tree_drag_start = ETK_TRUE;
+   _etk_tree_drag_start = ETK_FALSE;
 }
