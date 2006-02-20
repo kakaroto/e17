@@ -245,10 +245,10 @@ _uptime_face_init(Uptime_Face *cf)
 			      E_GADMAN_POLICY_HMOVE |
 			      E_GADMAN_POLICY_VMOVE);
    e_gadman_client_min_size_set(cf->gmc, 4, 4);
-   e_gadman_client_max_size_set(cf->gmc, 130, 40);
-   e_gadman_client_auto_size_set(cf->gmc, 130, 40);
+   e_gadman_client_max_size_set(cf->gmc, 160, 20);
+   e_gadman_client_auto_size_set(cf->gmc, 160, 20);
    e_gadman_client_align_set(cf->gmc, 1.0, 1.0);
-   e_gadman_client_resize(cf->gmc, 130, 40);
+   e_gadman_client_resize(cf->gmc, 160, 20);
    e_gadman_client_change_func_set(cf->gmc, _uptime_face_cb_gmc_change, cf);
    e_gadman_client_load(cf->gmc);
    evas_event_thaw(cf->evas);
