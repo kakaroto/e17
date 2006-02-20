@@ -52,6 +52,8 @@ Ewl_Stock_Type	 ewl_button_stock_type_get(Ewl_Button *b);
 
 void		 ewl_button_image_set(Ewl_Button *b, const char *file, const char *key);
 const char	*ewl_button_image_get(Ewl_Button *b);
+unsigned int     ewl_button_alignment_get(Ewl_Button *b);
+void             ewl_button_alignment_set(Ewl_Button *b, unsigned int align);
 
 /*
  * Internal

@@ -118,6 +118,15 @@ ewl_button_label_set(Ewl_Button *b, const char *l)
 		b->label_object = NULL;
 	}
 	else if (!b->label_object) {
+		Ewl_Container *redir;
+
+		/*
+		 * Save the current redirection and focus on the point where our
+		 * internal widgets belong.
+		 */
+		redir = ewl_container_redirect_get(EWL_CONTAINER(b));
+		ewl_container_redirect_set(EWL_CONTAINER(b), b->body);
+
 		b->label_object = ewl_label_new();
 		ewl_label_text_set(EWL_LABEL(b->label_object), l);
 		ewl_object_fill_policy_set(EWL_OBJECT(b->label_object),
@@ -125,6 +134,8 @@ ewl_button_label_set(Ewl_Button *b, const char *l)
 		ewl_container_child_append(EWL_CONTAINER(b), b->label_object);
 		ewl_widget_internal_set(b->label_object, TRUE);
 		ewl_widget_show(b->label_object);
+
+		ewl_container_redirect_set(EWL_CONTAINER(b), redir);
 	}
 	else
 		ewl_label_text_set(EWL_LABEL(b->label_object), l);
@@ -160,7 +171,7 @@ ewl_button_label_get(Ewl_Button *b)
 void
 ewl_button_stock_type_set(Ewl_Button *b, Ewl_Stock_Type stock)
 {
-	char *data;
+	const char *data;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
@@ -187,7 +198,6 @@ ewl_button_stock_type_set(Ewl_Button *b, Ewl_Stock_Type stock)
 		theme = ewl_theme_path_get();
 		ewl_button_image_set(b, theme, data);
 		FREE(theme);
-		FREE(data);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -218,6 +228,8 @@ ewl_button_stock_type_get(Ewl_Button *b)
 void
 ewl_button_image_set(Ewl_Button *b, const char *file, const char *key)
 {
+	Ewl_Container *redir;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
 	DCHECK_PARAM_PTR("file", file);
@@ -226,11 +238,20 @@ ewl_button_image_set(Ewl_Button *b, const char *file, const char *key)
 	if (b->image_object)
 		ewl_widget_destroy(b->image_object);
 
+	/*
+	 * Save the current redirection and focus on the point where our
+	 * internal widgets belong.
+	 */
+	redir = ewl_container_redirect_get(EWL_CONTAINER(b));
+	ewl_container_redirect_set(EWL_CONTAINER(b), b->body);
+
 	b->image_object = ewl_image_new();
 	ewl_container_child_prepend(EWL_CONTAINER(b), b->image_object);
 	ewl_image_file_set(EWL_IMAGE(b->image_object), file, key);
 	ewl_widget_internal_set(b->image_object, TRUE);
 	ewl_widget_show(b->image_object);
+
+	ewl_container_redirect_set(EWL_CONTAINER(b), redir);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -255,6 +276,41 @@ ewl_button_image_get(Ewl_Button *b)
 		file = ewl_image_file_path_get(EWL_IMAGE(b->image_object));
 
 	DRETURN_PTR(file, DLEVEL_STABLE);
+}
+
+/**
+ * @param b: The button to set the content alignment
+ * @param align: The new alignment for button contents
+ * @return Returns no value.
+ * @brief Set the alignment of the contents of the button.
+ */
+void
+ewl_button_alignment_set(Ewl_Button *b, unsigned int align)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("b", b);
+	DCHECK_TYPE("b", b, EWL_BUTTON_TYPE);
+
+	ewl_object_alignment_set(EWL_OBJECT(b->body), align);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param b: The button to set the content alignment
+ * @param align: The new alignment for button contents
+ * @return Returns no value.
+ * @brief Set the alignment of the contents of the button.
+ */
+unsigned int
+ewl_button_alignment_get(Ewl_Button *b)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("b", b, 0);
+	DCHECK_TYPE_RET("b", b, EWL_BUTTON_TYPE, 0);
+
+	DRETURN_INT(ewl_object_alignment_get(EWL_OBJECT(b->body)),
+			DLEVEL_STABLE);
 }
 
 void
