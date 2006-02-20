@@ -16,6 +16,8 @@ struct entropy_layout_gui
   entropy_gui_component_instance *structure_viewer;
   Etk_Widget *tree;
   Etk_Widget *paned;
+  Etk_Widget *statusbar_box;
+  Etk_Widget *statusbars[3];
 };
 
 typedef enum _Etk_Menu_Item_Type
@@ -265,7 +267,7 @@ entropy_plugin_layout_create (entropy_core * core)
 
 
   etk_box_pack_start(ETK_BOX(vbox), menubar, ETK_FALSE, ETK_FALSE, 0);
-  etk_box_pack_end(ETK_BOX(vbox), gui->paned, TRUE, TRUE, 0);
+  etk_box_pack_start(ETK_BOX(vbox), gui->paned, TRUE, TRUE, 0);
 
   //etk_widget_size_request_set(ETK_WIDGET(window), 800,600);
 
@@ -338,12 +340,22 @@ entropy_plugin_layout_create (entropy_core * core)
 
   etk_paned_add2(ETK_PANED(gui->paned), instance->gui_object, ETK_TRUE);
 
+  gui->statusbar_box = etk_hbox_new(ETK_TRUE, 0);
+  etk_box_pack_start(ETK_BOX(vbox), gui->statusbar_box, ETK_FALSE, ETK_FALSE, 0);
   
+  gui->statusbars[0] = etk_statusbar_new();
+  etk_statusbar_has_resize_grip_set(ETK_STATUSBAR(gui->statusbars[0]), ETK_FALSE);
+  etk_box_pack_start(ETK_BOX(gui->statusbar_box), gui->statusbars[0], ETK_TRUE, ETK_TRUE, 0);
+   
+  gui->statusbars[1] = etk_statusbar_new();
+  etk_statusbar_has_resize_grip_set(ETK_STATUSBAR(gui->statusbars[1]), ETK_FALSE);
+  etk_box_pack_start(ETK_BOX(gui->statusbar_box), gui->statusbars[1], ETK_TRUE, ETK_TRUE, 0);
+   
+  gui->statusbars[2] = etk_statusbar_new();
+  etk_statusbar_has_resize_grip_set(ETK_STATUSBAR(gui->statusbars[2]), ETK_TRUE);
+  etk_box_pack_start(ETK_BOX(gui->statusbar_box), gui->statusbars[2], ETK_TRUE, ETK_TRUE, 0);
+     
   etk_widget_show_all (window);
-
-
-
-
 
   return layout;
 }
