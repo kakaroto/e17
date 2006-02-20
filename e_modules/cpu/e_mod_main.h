@@ -8,7 +8,6 @@ typedef struct _Cpu_Face Cpu_Face;
 
 struct _Config 
 {
-   char *device;
    int check_interval;
 };
 
