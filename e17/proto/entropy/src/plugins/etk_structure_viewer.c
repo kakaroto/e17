@@ -173,7 +173,8 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 			      structure_viewer_add_row (comp, file, row);
 			      ecore_hash_set (viewer->loaded_dirs, row, (int*)1);
 			  }
-	}
+			  etk_tree_row_expand(row);
+		}
 
 	      }
 	}
