@@ -2040,8 +2040,6 @@ static void _etk_tree_header_mouse_down_cb(Etk_Object *object, void *event, void
    Etk_Tree_Col *col;
    Etk_Event_Mouse_Up_Down *down_event;
 
-   printf("mouse down!\n");
-   
    if (!(col = data) || !(down_event = event))
       return;
 
