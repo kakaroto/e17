@@ -132,7 +132,7 @@ _wlan_init(E_Module *m)
    if (!n->conf) 
      {
 	n->conf = E_NEW(Config, 1);
-	n->conf->device = (char *)evas_stringshare_add("");
+	n->conf->device = (char *)evas_stringshare_add("wlan0");
 	n->conf->check_interval = 30;
      }
    E_CONFIG_LIMIT(n->conf->check_interval, 0, 60);
@@ -436,9 +436,6 @@ _wlan_face_update_values(void *data)
      }
    fclose(stat);
    
-   if (!found_dev)
-     return 1;
-
    /* Update the modules text */
    Edje_Message_Int_Set *msg;
    
