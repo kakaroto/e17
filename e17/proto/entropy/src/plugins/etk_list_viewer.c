@@ -323,8 +323,10 @@ entropy_plugin_init (entropy_core * core,
   etk_tree_mode_set(ETK_TREE(viewer->tree), ETK_TREE_MODE_LIST);
  
   viewer->tree_col1 = etk_tree_col_new(ETK_TREE(viewer->tree), _("Icon"), 
-		  etk_tree_model_image_new(ETK_TREE(viewer->tree), ETK_TREE_FROM_FILE), 16);
-  etk_tree_col_expand_set(viewer->tree_col1, ETK_TRUE);
+		  etk_tree_model_image_new(ETK_TREE(viewer->tree), ETK_TREE_FROM_FILE), 48);
+  /* Perhaps this is better than expanding it? -- CodeWarrior
+   * etk_tree_col_expand_set(viewer->tree_col1, ETK_TRUE);
+  */
   
   viewer->tree_col1 = etk_tree_col_new(ETK_TREE(viewer->tree), _("Filename"), 
 		  etk_tree_model_text_new(ETK_TREE(viewer->tree)), 100);

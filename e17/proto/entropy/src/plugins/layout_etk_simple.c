@@ -271,7 +271,7 @@ entropy_plugin_layout_create (entropy_core * core)
 
   /*Tree init*/
   gui->tree = etk_tree_new();
-  etk_paned_add1(ETK_PANED(gui->paned), gui->tree, ETK_TRUE);
+  etk_paned_add1(ETK_PANED(gui->paned), gui->tree, ETK_FALSE);
   etk_tree_mode_set(ETK_TREE(gui->tree), ETK_TREE_MODE_TREE);
   col = etk_tree_col_new(ETK_TREE(gui->tree), _("Folders"), 
 		  etk_tree_model_icon_text_new(ETK_TREE(gui->tree), ETK_TREE_FROM_EDJE), 60);
