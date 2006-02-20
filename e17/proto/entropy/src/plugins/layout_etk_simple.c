@@ -228,7 +228,10 @@ entropy_plugin_layout_create (entropy_core * core)
   etk_signal_connect ("delete_event", ETK_OBJECT (window),
 		      ETK_CALLBACK (_etk_window_deleted_cb), core);
 
-  etk_widget_size_request_set(ETK_WIDGET(window), 800,600);
+  etk_window_title_set(ETK_WINDOW(window), "Entropy");
+  etk_window_wmclass_set(ETK_WINDOW(window), "entropy", "Entropy");
+
+  //etk_widget_size_request_set(ETK_WIDGET(window), 800,600);
 
   /*Tree init*/
   gui->tree = etk_tree_new();
@@ -239,6 +242,8 @@ entropy_plugin_layout_create (entropy_core * core)
   
   etk_tree_col_expand_set(col, ETK_TRUE);
   etk_tree_build(ETK_TREE(gui->tree));
+
+  etk_widget_size_request_set(gui->tree, 180, 600);
 
   /*Add test row */
   etk_tree_freeze(ETK_TREE(gui->tree));

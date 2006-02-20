@@ -43,6 +43,15 @@ struct gui_file
   Etk_Tree_Row *icon;
 };
 
+
+void
+gui_file_destroy (gui_file * file)
+{
+  entropy_free (file);
+
+}
+
+
 int
 entropy_plugin_type_get ()
 {
@@ -65,6 +74,46 @@ char*
 entropy_plugin_toolkit_get() 
 {
 	return ENTROPY_TOOLKIT_ETK;
+}
+
+void
+gui_object_destroy_and_free (entropy_gui_component_instance * comp,
+			     Ecore_Hash * gui_hash)
+{
+
+  Ecore_List *list;
+  entropy_generic_file *obj;
+  gui_file *freeobj;
+  entropy_etk_file_list_viewer *view = comp->data;
+
+  /*Temporarily stop callbacks, we don't want to clobber an in-op process */
+  entropy_notify_lock_loop (comp->core->notify);
+
+  list = ecore_hash_keys (gui_hash);
+
+  ecore_list_goto_first (list);
+  while ((obj = ecore_list_next (list))) {
+
+
+    freeobj = ecore_hash_get (gui_hash, obj);
+    if (freeobj) {
+      /*De-Associate this icon with this file in the core, so DND works */
+      entropy_core_object_file_disassociate (freeobj->icon);
+
+      gui_file_destroy (freeobj);
+    }
+
+    /*Tell the core we no longer need this file - it might free it now */
+    entropy_core_file_cache_remove_reference (obj->md5);
+  }
+  ecore_hash_destroy (gui_hash);
+  view->gui_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
+  
+  ecore_list_destroy (list);
+
+  entropy_notify_unlock_loop (comp->core->notify);
+
+
 }
 
 
@@ -171,9 +220,10 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
   switch (eevent->event_type) {
   	  case ENTROPY_NOTIFY_FILELIST_REQUEST_EXTERNAL:
 	  case ENTROPY_NOTIFY_FILELIST_REQUEST:{
-
-						  
 	      entropy_generic_file *file;
+
+	      gui_object_destroy_and_free(comp, viewer->gui_hash);
+
 
 	      etk_tree_clear(ETK_TREE(viewer->tree));
 
@@ -297,6 +347,8 @@ entropy_plugin_init (entropy_core * core,
 
   
   etk_tree_build(ETK_TREE(viewer->tree));
+
+  etk_widget_size_request_set(viewer->tree, 600, 600);
 
   instance->data = viewer;
   instance->core = core;
