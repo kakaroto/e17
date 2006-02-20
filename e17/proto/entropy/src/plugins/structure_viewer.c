@@ -296,10 +296,12 @@ structure_viewer_add_row (entropy_gui_component_instance * instance,
   Ewl_Widget *hbox = ewl_hbox_new ();
   Ewl_Widget *children[2];
   Ewl_Widget *label = ewl_text_new ();
-  ewl_text_text_set (EWL_TEXT (label), file->filename);
   event_file_core *event;
   entropy_file_structure_viewer *viewer =
     (entropy_file_structure_viewer *) instance->data;
+
+  printf("Setting structure viewer with '%s'...\n", file->filename);
+  ewl_text_text_set (EWL_TEXT (label), file->filename);
 
   image = ewl_image_new ();
   ewl_image_file_set (EWL_IMAGE (image),
@@ -368,7 +370,9 @@ entropy_plugin_destroy (entropy_gui_component_instance * comp)
 
 entropy_gui_component_instance *
 entropy_plugin_init (entropy_core * core,
-		     entropy_gui_component_instance * layout, void *data)
+		     entropy_gui_component_instance * layout, 
+		     void* parent_visual,
+		     void *data)
 {
   entropy_gui_component_instance *instance;
   entropy_file_structure_viewer *viewer;
