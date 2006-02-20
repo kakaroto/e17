@@ -206,6 +206,8 @@ entropy_plugin_layout_create (entropy_core * core)
   entropy_generic_file* file;
   Etk_Tree_Col* col;
   Etk_Tree_Row* row;
+  char* home = getenv("HOME");
+  char* pos;
 
 
   /*Entropy related init */
@@ -250,8 +252,13 @@ entropy_plugin_layout_create (entropy_core * core)
       dlsym (structure->dl_ref, "entropy_plugin_init");
 
    file = entropy_generic_file_new();
-   strcpy(file->path, "/home");
-   strcpy(file->filename, "chaos");
+
+   pos = strrchr(home, '/');
+   *pos = '\0';
+   pos++;
+
+   strcpy(file->path, home);
+   strcpy(file->filename, pos);
    strcpy(file->uri_base, "posix");
    strcpy(file->mime_type, "file/folder");
 
@@ -272,6 +279,7 @@ entropy_plugin_layout_create (entropy_core * core)
       dlsym (structure->dl_ref, "entropy_plugin_init");
 
    file = entropy_generic_file_new();
+   
    strcpy(file->path, "/");
    strcpy(file->filename, "/");
    strcpy(file->uri_base, "posix");
