@@ -33,7 +33,6 @@ _configure_net_module(E_Container *con, Net *n)
    v->free_cfdata = _free_data;
    v->basic.apply_cfdata = _basic_apply_data;
    v->basic.create_widgets = _basic_create_widgets;
-   v->override_auto_apply = 1;
    
    cfd = e_config_dialog_new(con, _("Net Configuration"), NULL, 0, v, n);
    n->cfd = cfd;
