@@ -449,8 +449,8 @@ _fdo_paths_cb_exe_exit(void *data, int type, void *event)
    ev = event;
    if (!ev->exe)
       return 1;
-   if (!(ecore_exe_tag_get(ev->exe) &&
-         (!strcmp(ecore_exe_tag_get(ev->exe), "genmenu/fdo"))))
+   value = ecore_exe_tag_get(ev->exe);
+   if ((!value) || (strcmp(value, "genmenu/fdo")) != 0)
       return 1;
    paths = data;
    if (!paths)
@@ -460,35 +460,38 @@ _fdo_paths_cb_exe_exit(void *data, int type, void *event)
       return 1;
 
    read = ecore_exe_event_data_get(ev->exe, ECORE_EXE_PIPE_READ);
-   value = read->lines[0].line;
-   if (value)
+   if ((read) && (read->lines[0].line))
       {
-         config_list = dumb_list_from_paths(value);
-         if (config_list)
-           {
-              int i, j;
+         value = read->lines[0].line;
+         if (value)
+            {
+               config_list = dumb_list_from_paths(value);
+               if (config_list)
+                  {
+                     int i, j;
 
-              for (i = 0; i < config_list->size; i++)
-                {
-                   if (ced->types)
-                     {
-                        for (j = 0; j < ced->types->size; j++)
-                          {
-                             _fdo_paths_massage_path(path, ced->home,
+                     for (i = 0; i < config_list->size; i++)
+                        {
+                           if (ced->types)
+                              {
+                                 for (j = 0; j < ced->types->size; j++)
+                                    {
+                                       _fdo_paths_massage_path(path, ced->home,
                                                config_list->elements[i].element,
                                                ced->types->elements[j].element);
-                             _fdo_paths_check_and_add(paths, path);
-                          }
-                     }
-                   else
-                     {
-                        _fdo_paths_massage_path(path, ced->home, config_list->elements[i].element,
+                                       _fdo_paths_check_and_add(paths, path);
+                                    }
+                              }
+                           else
+                              {
+                                 _fdo_paths_massage_path(path, ced->home, config_list->elements[i].element,
                                           NULL);
-                        _fdo_paths_check_and_add(paths, path);
-                     }
-                }
-              E_FN_DEL(dumb_list_del, config_list);
-           }
+                                 _fdo_paths_check_and_add(paths, path);
+                              }
+                        }
+                     E_FN_DEL(dumb_list_del, config_list);
+                  }
+            }
       }
    ced->done = 1;
    return 1;
