@@ -128,8 +128,6 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
   e_file->instance = instance;
   e_file->icon=new_row;
 
-  printf("Added row with pointer %p\n", new_row);
- 
   ecore_hash_set(viewer->gui_hash, file, e_file);
   ecore_hash_set(viewer->row_hash, new_row, e_file);
 
@@ -214,6 +212,8 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 		  etk_tree_row_fields_set((Etk_Tree_Row*)obj->icon, 
 		  col1, obj->thumbnail->thumbnail_filename, 
 		  NULL);
+
+		  etk_tree_thaw(ETK_TREE(viewer->tree));
 
 		  /*ewl_image_file_set (EWL_IMAGE (image),
 			      obj->thumbnail->thumbnail_filename, 0);*/
