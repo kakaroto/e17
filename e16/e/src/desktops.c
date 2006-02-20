@@ -562,7 +562,10 @@ DeskBackgroundConfigure(Desk * dsk)
 	     EClearWindow(win);
 	  }
 
-	HintsSetRootInfo(EoGetWin(dsk), dsk->bg.pmap, dsk->bg.pixel);
+	if (Conf.hints.set_xroot_info_on_root_window)
+	   HintsSetRootInfo(VRoot.win, dsk->bg.pmap, dsk->bg.pixel);
+	else
+	   HintsSetRootInfo(EoGetWin(dsk), dsk->bg.pmap, dsk->bg.pixel);
      }
    else
      {

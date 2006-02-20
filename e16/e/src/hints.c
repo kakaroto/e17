@@ -294,9 +294,6 @@ HintsSetRootInfo(Window win, Pixmap pmap, unsigned int color)
 {
    Ecore_X_Pixmap      pm;
 
-   if (Conf.hints.set_xroot_info_on_root_window)
-      win = VRoot.win;
-
    pm = pmap;
    ecore_x_window_prop_xid_set(win, E_XROOTPMAP_ID, XA_PIXMAP, &pm, 1);
 
