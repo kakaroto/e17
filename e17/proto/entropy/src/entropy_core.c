@@ -116,7 +116,7 @@ void entropy_core_args_parse(entropy_core* core, int argc, char** argv)
 	int ac = 1;
 
 	/*Defaults*/
-	core->settings.layout_engine = "etk";
+	core->settings.layout_engine = "ewl";
 		
 	while (ac < argc) {
 		printf("Parsing '%s'...\n", argv[ac]);

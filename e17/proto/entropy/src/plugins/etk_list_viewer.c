@@ -136,26 +136,16 @@ static void _etk_list_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *row, 
    instance = file->instance;
    viewer = instance->data;
 	
-   /*printf(_("Row clicked %p. Button: %d. "), row, event->button);
-   if (event->flags & EVAS_BUTTON_TRIPLE_CLICK)
-      printf(_("Triple Click\n"));
-   else if (event->flags & EVAS_BUTTON_DOUBLE_CLICK)
-      printf(_("Double Click\n"));
-   else
-      printf(_("Single Click\n"));*/
 
-  //printf("Received row: %p, %p: %s\n", e_event, instance, e_event->file->path);
-  
-  /*if (e_event) {
+	  
+   if (event->flags & EVAS_BUTTON_DOUBLE_CLICK) {
+	   printf("Row clicked, file is: %s\n", file->file->filename); 
+
 	  gui_event = entropy_malloc (sizeof (entropy_gui_event));
 	  gui_event->event_type =
 	    entropy_core_gui_event_get (ENTROPY_GUI_EVENT_ACTION_FILE);
-	  gui_event->data = e_event->file;
-	  entropy_core_layout_notify_event (e_event->instance, gui_event, ENTROPY_EVENT_GLOBAL);
-   }*/
-
-   if (event->flags & EVAS_BUTTON_DOUBLE_CLICK) {
-	   printf("Row clicked, file is: %s\n", file->file->filename); 
+	  gui_event->data = file->file;
+	  entropy_core_layout_notify_event (file->instance, gui_event, ENTROPY_EVENT_GLOBAL);
    }
 }
 
