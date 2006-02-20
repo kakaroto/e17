@@ -111,17 +111,35 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
   gui_file *e_file;
   Etk_Tree_Col* col1;
   Etk_Tree_Col* col2;
+  Etk_Tree_Col* col3;
+  Etk_Tree_Col* col4;
+  char buffer[50];
+
 
   viewer = instance->data;
   
   col1 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 0);
   col2 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 1);
+  col3 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 2);
+  col4 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 3);
+  
   
   etk_tree_freeze(ETK_TREE(viewer->tree));
   
-  new_row = etk_tree_append(ETK_TREE(viewer->tree), 
+  if (!file->retrieved_stat) {
+	  new_row = etk_tree_append(ETK_TREE(viewer->tree), 
 		  col1, PACKAGE_DATA_DIR "/icons/default.png", 
 		  col2,   file->filename, NULL);
+  } else {
+	  snprintf(buffer,50, "%d Kb", file->properties.st_size / 1024);
+	  new_row = etk_tree_append(ETK_TREE(viewer->tree), 
+		  col1, PACKAGE_DATA_DIR "/icons/default.png", 
+		  col2,   file->filename,
+		  col3,   buffer,
+		  col4,   file->mime_type,
+		  NULL);
+	  
+  }
 
   e_file = entropy_malloc(sizeof(gui_file));
   e_file->file = file;		/*Create a clone of this file, and add it to the event */
