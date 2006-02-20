@@ -59,7 +59,8 @@ enum _Etk_Widget_Signal_Id
    ETK_WIDGET_DRAG_DROP_SIGNAL,
    ETK_WIDGET_DRAG_ENTER_SIGNAL,     
    ETK_WIDGET_DRAG_MOTION_SIGNAL,
-   ETK_WIDGET_DRAG_LEAVE_SIGNAL,  
+   ETK_WIDGET_DRAG_LEAVE_SIGNAL,
+   ETK_WIDGET_DRAG_BEGIN_SIGNAL,     
    ETK_WIDGET_DRAG_END_SIGNAL,
    ETK_WIDGET_SELECTION_RECEIVED_SIGNAL,
    ETK_WIDGET_CLIPBOARD_RECEIVED_SIGNAL,
@@ -98,6 +99,7 @@ static void _etk_widget_drag_drop_handler(Etk_Widget *widget);
 static void _etk_widget_drag_motion_handler(Etk_Widget *widget);
 static void _etk_widget_drag_enter_handler(Etk_Widget *widget);
 static void _etk_widget_drag_leave_handler(Etk_Widget *widget);
+static void _etk_widget_drag_begin_handler(Etk_Widget *widget);
 static void _etk_widget_drag_end_handler(Etk_Widget *widget);
 
 static void _etk_widget_mouse_in_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
@@ -191,6 +193,7 @@ Etk_Type *etk_widget_type_get()
       _etk_widget_signals[ETK_WIDGET_DRAG_MOTION_SIGNAL] =   etk_signal_new("drag_motion",   widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_motion), etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_DRAG_ENTER_SIGNAL] =    etk_signal_new("drag_enter",    widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_enter),  etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_DRAG_LEAVE_SIGNAL] =    etk_signal_new("drag_leave",    widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_leave),  etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_widget_signals[ETK_WIDGET_DRAG_BEGIN_SIGNAL] =    etk_signal_new("drag_begin",    widget_type,   ETK_MEMBER_OFFSET(Etk_Widget, drag_begin),    etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_DRAG_END_SIGNAL] =      etk_signal_new("drag_end",    widget_type,   ETK_MEMBER_OFFSET(Etk_Widget, drag_end),    etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_SELECTION_RECEIVED_SIGNAL] = etk_signal_new("selection_received", widget_type, -1,                           etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_CLIPBOARD_RECEIVED_SIGNAL] = etk_signal_new("clipboard_received", widget_type, -1,                           etk_marshaller_VOID__POINTER, NULL, NULL);
@@ -1325,18 +1328,29 @@ void etk_widget_dnd_source_set(Etk_Widget *widget, Etk_Bool on)
    
    if (on)
    {      
+      
       widget->accepts_dnd = ETK_TRUE;
       widget->dnd_source = ETK_TRUE;      
       _etk_widget_dnd_source_widgets = evas_list_append(_etk_widget_dnd_source_widgets, widget);
-      widget->drag = etk_drag_new(widget);
-      etk_signal_connect("mouse_move", ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_dnd_drag_mouse_move_cb), NULL);
-      etk_signal_connect("drag_end", ETK_OBJECT(widget->drag), ETK_CALLBACK(_etk_widget_dnd_drag_end_cb), NULL);
+      
+      if(!widget->dnd_internal)
+      {
+	 widget->drag = etk_drag_new(widget);
+	 etk_signal_connect("mouse_move", ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_dnd_drag_mouse_move_cb), NULL);
+	 etk_signal_connect("drag_end", ETK_OBJECT(widget->drag), ETK_CALLBACK(_etk_widget_dnd_drag_end_cb), NULL);
+      }
    }
    else
    {
       widget->accepts_dnd = ETK_FALSE;
-      widget->dnd_source = ETK_TRUE;      
+      widget->dnd_source = ETK_FALSE;
       _etk_widget_dnd_source_widgets = evas_list_remove(_etk_widget_dnd_source_widgets, widget);
+      
+      if(!widget->dnd_internal)
+      {
+	 etk_signal_disconnect("mouse_move", ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_dnd_drag_mouse_move_cb));
+	 etk_signal_disconnect("drag_end", ETK_OBJECT(widget->drag), ETK_CALLBACK(_etk_widget_dnd_drag_end_cb));
+      }
    }
 }
 
@@ -1350,6 +1364,30 @@ Etk_Bool etk_widget_dnd_source_get(Etk_Widget *widget)
    if (!widget)
       return ETK_FALSE;
    return (widget->accepts_dnd && widget->dnd_source);
+}
+
+/**
+ * @brief Set whether the widget wants to handle its own dnd or not
+ * @param widget a widget
+ * @parab on ETK_TRUE if the widget handles its own dnd, ETK_FALSE otherwise
+ */
+void etk_widget_dnd_internal_set(Etk_Widget *widget, Etk_Bool on)
+{
+   if (!widget)
+      return ETK_FALSE;
+   widget->dnd_internal = on;
+}
+
+/**
+ * @brief Checks whether the widget wants to handle its own dnd or not
+ * @param widget a widget
+ * @return Returns ETK_TRUE if the widget handles its own dnd, ETK_FALSE otherwise
+ */
+Etk_Bool etk_widget_dnd_internal_get(Etk_Widget *widget)
+{
+   if (!widget)
+      return ETK_FALSE;
+   return (widget->dnd_internal);
 }
 
 /**
@@ -1485,6 +1523,17 @@ void etk_widget_drag_leave(Etk_Widget *widget)
 }
 
 /**
+ * @brief Sends the "drag_begin" signal
+ * @param widget a widget
+ */
+void etk_widget_drag_begin(Etk_Widget *widget)
+{
+   if (!widget)
+      return;
+   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_DRAG_BEGIN_SIGNAL], ETK_OBJECT(widget), NULL);
+}
+
+/**
  * @brief Sends the "drag_end" signal
  * @param widget a widget
  */
@@ -1555,7 +1604,8 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->drag_motion = _etk_widget_drag_motion_handler;
    widget->drag_enter = _etk_widget_drag_enter_handler;   
    widget->drag_leave = _etk_widget_drag_leave_handler;
-   widget->drag_end = _etk_widget_drag_end_handler;   
+   widget->drag_begin = _etk_widget_drag_begin_handler;   
+   widget->drag_end = _etk_widget_drag_end_handler;
 
    widget->left_inset = 0;
    widget->right_inset = 0;
@@ -1589,6 +1639,7 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->need_theme_min_size_recalc = ETK_FALSE;
    widget->swallowed = ETK_FALSE;
    widget->accepts_dnd = ETK_FALSE;
+   widget->dnd_internal = ETK_FALSE;
    widget->dnd_source = ETK_FALSE;
    widget->dnd_dest = ETK_FALSE;
    widget->dnd_types = NULL;
@@ -1818,6 +1869,14 @@ static void _etk_widget_drag_leave_handler(Etk_Widget *widget)
    if (!widget)
       return;
    etk_widget_theme_object_signal_emit(widget, "drag_leave");
+}
+
+/* Default handler for the "drag_begin" signal */
+static void _etk_widget_drag_begin_handler(Etk_Widget *widget)
+{
+   if (!widget)
+      return;
+   etk_widget_theme_object_signal_emit(widget, "drag_begin");
 }
 
 /* Default handler for the "drag_end" signal */
@@ -2701,24 +2760,24 @@ static void _etk_widget_dnd_drag_mouse_move_cb(Etk_Object *object, void *event, 
    ev = event;
 
    if(ev->buttons & 0x001 && _etk_dnd_drag_start)
-     {
-	const char **types;
-	unsigned int num_types;
-	char *data;
-	Etk_Drag *drag;
-	
-	drag = (ETK_WIDGET(object))->drag;
-	
-	_etk_dnd_drag_start = ETK_FALSE;
-	types = calloc(1, sizeof(char*));
-	num_types = 1;
-	types[0] = strdup("text/plain");
-	data = strdup("This is the drag data!");
-	
-//	etk_drag_types_set(drag, types, num_types);
-//	etk_drag_data_set(drag, data, strlen(data) + 1);
-	etk_drag_begin(drag);
-     }
+   {
+      const char **types;
+      unsigned int num_types;
+      char *data;
+      Etk_Drag *drag;
+      
+      drag = (ETK_WIDGET(object))->drag;
+      
+      _etk_dnd_drag_start = ETK_FALSE;
+      types = calloc(1, sizeof(char*));
+      num_types = 1;
+      types[0] = strdup("text/plain");
+      data = strdup("This is the drag data!");
+      
+      //etk_drag_types_set(drag, types, num_types);
+      //etk_drag_data_set(drag, data, strlen(data) + 1);
+      etk_drag_begin(drag);
+   }
 }
 
 static void _etk_widget_dnd_drag_end_cb(Etk_Object *object, void *data)

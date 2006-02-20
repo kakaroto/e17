@@ -84,6 +84,7 @@ void etk_drag_begin(Etk_Drag *drag)
 {
    _etk_drag_widget = drag;
    
+   etk_widget_drag_begin(drag->widget);
    etk_widget_show_all(ETK_WIDGET(drag));   
    ecore_evas_ignore_events_set((ETK_WINDOW(drag))->ecore_evas, 1);
    ecore_x_dnd_types_set((ETK_WINDOW(drag))->x_window, drag->types, drag->num_types);

@@ -114,6 +114,7 @@ static void _etk_tree_col_property_get(Etk_Object *object, int property_id, Etk_
 static void _etk_tree_expander_clicked_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _etk_tree_row_pressed_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _etk_tree_row_clicked_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _etk_tree_row_mouse_move_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _etk_tree_focus_cb(Etk_Object *object, void *event, void *data);
 static void _etk_tree_unfocus_cb(Etk_Object *object, void *event, void *data);
 static void _etk_tree_key_down_cb(Etk_Object *object, void *event, void *data);
@@ -123,7 +124,7 @@ static void _etk_tree_header_mouse_move_cb(Etk_Object *object, void *event, void
 static void _etk_tree_header_mouse_in_cb(Etk_Object *object, void *event, void *data);
 static void _etk_tree_header_mouse_out_cb(Etk_Object *object, void *event, void *data);
 static void _etk_tree_drag_drop_cb(Etk_Object *object, void *event, void *data);
-
+static void _etk_tree_drag_end_cb(Etk_Object *object, void *data);
 
 static void _etk_tree_update(Etk_Tree *tree);
 static int _etk_tree_rows_draw(Etk_Tree *tree, Etk_Tree_Row *first_row, Evas_List **items_objects,
@@ -145,6 +146,7 @@ static void _etk_tree_heapify(Etk_Tree *tree, Etk_Tree_Row **heap, int root, int
 static Etk_Tree_Row *_etk_tree_last_clicked_row = NULL;
 static Etk_Signal *_etk_tree_signals[ETK_TREE_NUM_SIGNALS];
 static Etk_Signal *_etk_tree_col_signals[ETK_TREE_COL_NUM_SIGNALS];
+static Etk_Bool    _etk_tree_drag_start = ETK_TRUE;
 
 /**************************
  *
@@ -179,7 +181,7 @@ Etk_Type *etk_tree_type_get()
       etk_type_property_add(tree_type, "row_height", ETK_TREE_ROW_HEIGHT_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(24));
       
       tree_type->property_set = _etk_tree_property_set;
-      tree_type->property_get = _etk_tree_property_get;
+      tree_type->property_get = _etk_tree_property_get;      
    }
 
    return tree_type;
@@ -1536,13 +1538,17 @@ static void _etk_tree_constructor(Etk_Tree *tree)
    tree->dnd_event = ETK_FALSE;
    
    ETK_WIDGET(tree)->size_allocate = _etk_tree_size_allocate;
+   etk_widget_dnd_internal_set(ETK_WIDGET(tree), ETK_TRUE);   
+   (ETK_WIDGET(tree))->drag = etk_drag_new(ETK_WIDGET(tree));   
    
    etk_signal_connect("realize", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree_realize_cb), NULL);
    etk_signal_connect("unrealize", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree_unrealize_cb), NULL);
    etk_signal_connect("focus", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree_focus_cb), NULL);
    etk_signal_connect("unfocus", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree_unfocus_cb), NULL);
    etk_signal_connect("key_down", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree_key_down_cb), NULL);
-   etk_signal_connect("drag_drop", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree_drag_drop_cb), NULL);   
+   etk_signal_connect("drag_drop", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree_drag_drop_cb), NULL);
+   etk_signal_connect("drag_end", ETK_OBJECT((ETK_WIDGET(tree))->drag), ETK_CALLBACK(_etk_tree_drag_end_cb), NULL);
+   
 }
 
 /* Destroys the tree */
@@ -1946,6 +1952,26 @@ static void _etk_tree_row_clicked_cb(void *data, Evas *e, Evas_Object *obj, void
       else
 	etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_CLICKED_SIGNAL], ETK_OBJECT(row_objects->row->tree), NULL, row_objects->row, &event);
       _etk_tree_last_clicked_row = row_objects->row;
+   }
+}
+
+/* Called when the mouse moves over a row */
+static void _etk_tree_row_mouse_move_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Etk_Event_Mouse_Move *ev;
+   Etk_Tree_Row_Objects *row_objects;
+   
+   ev = event_info;
+   if (!(row_objects = data) || !row_objects->row)
+     return;   
+   
+   if(ev->buttons & 0x001 && _etk_tree_drag_start)
+   {
+      Etk_Drag *drag;
+      
+      _etk_tree_drag_start = ETK_FALSE;      
+      drag = (ETK_WIDGET(row_objects->row->tree))->drag;      
+      etk_drag_begin(drag);      
    }
 }
 
@@ -2515,6 +2541,7 @@ static Etk_Tree_Row_Objects *_etk_tree_row_objects_new(Etk_Tree *tree)
    evas_object_clip_set(new_row_objects->background, ETK_TREE_GRID(tree->grid)->clip);
    evas_object_event_callback_add(new_row_objects->background, EVAS_CALLBACK_MOUSE_DOWN, _etk_tree_row_pressed_cb, new_row_objects);
    evas_object_event_callback_add(new_row_objects->background, EVAS_CALLBACK_MOUSE_UP, _etk_tree_row_clicked_cb, new_row_objects);
+   evas_object_event_callback_add(new_row_objects->background, EVAS_CALLBACK_MOUSE_MOVE, _etk_tree_row_mouse_move_cb, new_row_objects);
    etk_widget_member_object_add(tree->grid, new_row_objects->background);
    
    /* Creates the expander of the row */
@@ -2813,3 +2840,7 @@ static void _etk_tree_drag_drop_cb(Etk_Object *object, void *event, void *data)
 #endif   
 }
   
+static void _etk_tree_drag_end_cb(Etk_Object *object, void *data)
+{
+   _etk_tree_drag_start = ETK_TRUE;
+}

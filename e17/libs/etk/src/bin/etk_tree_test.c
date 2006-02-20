@@ -4,6 +4,7 @@
 #include "config.h"
 
 static void _etk_test_tree_drag_drop_cb(Etk_Object *object, void *event, void *data);
+static void _etk_test_tree_drag_begin_cb(Etk_Object *object, void *event, void *data);
 static void _etk_test_tree_add_items(Etk_Tree *tree, int n);
 static void _etk_test_tree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data);
 static void _etk_test_tree_row_unselected(Etk_Object *object, Etk_Tree_Row *row, void *data);
@@ -82,8 +83,10 @@ void etk_test_tree_window_create(void *data)
    etk_table_attach(ETK_TABLE(table), label, 1, 1, 0, 0, 0, 0, ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL);
 
    tree = etk_tree_new();
-   etk_widget_dnd_dest_set(tree, ETK_TRUE);
-   etk_signal_connect("drag_drop", ETK_OBJECT(tree), ETK_CALLBACK(_etk_test_tree_drag_drop_cb), NULL);   
+   etk_widget_dnd_source_set(ETK_WIDGET(tree), ETK_TRUE);   
+   etk_widget_dnd_dest_set(ETK_WIDGET(tree), ETK_TRUE);
+   etk_signal_connect("drag_drop", ETK_OBJECT(tree), ETK_CALLBACK(_etk_test_tree_drag_drop_cb), NULL);
+   etk_signal_connect("drag_begin", ETK_OBJECT(tree), ETK_CALLBACK(_etk_test_tree_drag_begin_cb), NULL);
    etk_widget_size_request_set(tree, 320, 400);
    etk_table_attach_defaults(ETK_TABLE(table), tree, 1, 1, 1, 1);
 
@@ -145,6 +148,37 @@ static void _etk_test_tree_drag_drop_cb(Etk_Object *object, void *event, void *d
    row = etk_tree_selected_row_get(tree);
    etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), NULL, &col1_string, etk_tree_nth_col_get(tree, 1), &col2_value, etk_tree_nth_col_get(tree, 2), &col3_path, NULL);
    printf(_("Row dropped on %p: \"%s\" %d %s\n"), row, col1_string, col2_value, col3_path);      
+}
+
+static void _etk_test_tree_drag_begin_cb(Etk_Object *object, void *event, void *data)
+{
+   Etk_Tree *tree;
+   Etk_Tree_Row *row;
+   char *col1_string, *col3_path;
+   int col2_value;   
+   const char **types;
+   unsigned int num_types;
+   char *drag_data;
+   Etk_Drag *drag;
+   Etk_Widget *button;
+   
+   tree = ETK_TREE(object);
+   row = etk_tree_selected_row_get(tree);
+   
+   drag = (ETK_WIDGET(tree))->drag;
+   
+   etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), NULL, &col1_string, etk_tree_nth_col_get(tree, 1), &col2_value, etk_tree_nth_col_get(tree, 2), &col3_path, NULL);   
+   
+   types = calloc(1, sizeof(char*));
+   num_types = 1;
+   types[0] = strdup("text/plain");
+   drag_data = strdup(col1_string);
+      
+   etk_drag_types_set(drag, types, num_types);
+   etk_drag_data_set(drag, drag_data, strlen(drag_data) + 1);
+   button = etk_button_new_with_label(col1_string);
+   etk_button_image_set(ETK_BUTTON(button), ETK_IMAGE(etk_image_new_from_file(col3_path)));
+   etk_container_add(ETK_CONTAINER(drag), button);
 }
 
 /* Adds n items to the tree */
