@@ -62,7 +62,7 @@ dnl Make sure the Evas header/lib is available
 AC_PATH_GENERIC(evas, 0.9.9,
   [ have_evas="yes" ],
   [
-    have_evas="yes"
+    have_evas="no"
     AC_MSG_ERROR(Cannot find Evas on your system: jpeg thumbnail suckage!)
   ]
 )
