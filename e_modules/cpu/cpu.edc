@@ -1,0 +1,79 @@
+images
+{
+  image: "cpu.png" COMP;
+}
+
+fonts
+{
+  font: "VeraMono.ttf" "VeraMono";
+}
+
+collections
+{
+group
+    {
+      name: "modules/cpu/main";
+      script {
+		public message(Msg_Type:type, id, ...) {
+		      if (type == MSG_STRING_SET) {
+		      		new in_str[100];		      				      		
+				getsarg(2, in_str, sizeof(in_str));
+				set_text(PART:"in-text", in_str);
+		      }
+	       }      
+      }
+      
+      parts{
+      part {
+	 name:          "cpu";
+	 mouse_events:  0;
+	 description {
+	    state:    "default" 0.0;
+	    color: 255 255 255 255;
+	    aspect:   1.0 1.0;
+	    rel1 { 
+	    	 offset: 0 0; 
+	    }
+	    rel2 { 
+	    	 offset: -1 -1; 
+	    }
+	    image { 
+	    	  normal: "cpu.png"; 
+	    }
+	    fill { 
+	    	 smooth: 0;  
+	    }
+	 }
+      }
+	part 
+	  {
+	    name:           "in-text";
+	    type:           TEXT;
+	    effect:         SOFT_SHADOW;
+	    mouse_events: 0;
+	    description {
+	      state: "default" 0.0;
+	      align: 1.0 0.0;
+	      rel1 { 
+	      	   relative: 1.0 0.0;
+		   to_x: "cpu";
+		   offset: -2 1;  
+	      }
+	      rel2 { 
+	      	   relative: 1.0 0.0; 
+	      }
+	      color: 255 255 255 255;
+	      color3: 0 0 0 100;
+	      text {
+		   text: "%"; 
+		   font: "VeraMono";
+		   size:  10;     
+		   min:     1 1;
+		   align: 1.0 0.0;
+	      }
+	    }
+	  }
+      } 
+    }//close group net
+}
+
