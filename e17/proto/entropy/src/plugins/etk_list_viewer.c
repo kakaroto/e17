@@ -6,7 +6,7 @@
 #include <Etk.h>
 
 static int etk_callback_setup = 0;
-static Ecore_Hash* instance_map_hash;
+static Ecore_Hash* row_hash;
 
 typedef struct entropy_etk_file_list_viewer entropy_etk_file_list_viewer;
 struct entropy_etk_file_list_viewer
@@ -76,6 +76,7 @@ entropy_plugin_toolkit_get()
 	return ENTROPY_TOOLKIT_ETK;
 }
 
+
 void
 gui_object_destroy_and_free (entropy_gui_component_instance * comp,
 			     Ecore_Hash * gui_hash)
@@ -84,6 +85,7 @@ gui_object_destroy_and_free (entropy_gui_component_instance * comp,
   Ecore_List *list;
   entropy_generic_file *obj;
   gui_file *freeobj;
+  Etk_Tree_Row* row;
   entropy_etk_file_list_viewer *view = comp->data;
 
   /*Temporarily stop callbacks, we don't want to clobber an in-op process */
@@ -108,8 +110,13 @@ gui_object_destroy_and_free (entropy_gui_component_instance * comp,
   }
   ecore_hash_destroy (gui_hash);
   view->gui_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
-  
   ecore_list_destroy (list);
+
+
+  ecore_list_goto_first(view->files);
+  while ((row = ecore_list_remove_first(view->files))) {
+	  ecore_hash_remove(row_hash, row);
+  }
 
   entropy_notify_unlock_loop (comp->core->notify);
 
@@ -122,12 +129,12 @@ static void _etk_list_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *row, 
    entropy_gui_component_instance* instance;
    entropy_etk_file_list_viewer* viewer;
    entropy_gui_event *gui_event;
-   event_file_core* e_event;
+   gui_file* file;
    
-   
-   instance = ecore_hash_get(instance_map_hash, row);
+  
+   file = ecore_hash_get(row_hash, row);
+   instance = file->instance;
    viewer = instance->data;
-   e_event = ecore_hash_get(viewer->row_hash, row);
 	
    /*printf(_("Row clicked %p. Button: %d. "), row, event->button);
    if (event->flags & EVAS_BUTTON_TRIPLE_CLICK)
@@ -139,15 +146,17 @@ static void _etk_list_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *row, 
 
   //printf("Received row: %p, %p: %s\n", e_event, instance, e_event->file->path);
   
-  if (e_event) {
+  /*if (e_event) {
 	  gui_event = entropy_malloc (sizeof (entropy_gui_event));
 	  gui_event->event_type =
 	    entropy_core_gui_event_get (ENTROPY_GUI_EVENT_ACTION_FILE);
 	  gui_event->data = e_event->file;
 	  entropy_core_layout_notify_event (e_event->instance, gui_event, ENTROPY_EVENT_GLOBAL);
-   }
+   }*/
 
-   
+   if (event->flags & EVAS_BUTTON_DOUBLE_CLICK) {
+	   printf("Row clicked, file is: %s\n", file->file->filename); 
+   }
 }
 
 
@@ -202,10 +211,10 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
   e_file->icon=new_row;
 
   ecore_hash_set(viewer->gui_hash, file, e_file);
-  ecore_hash_set(viewer->row_hash, new_row, e_file);
+  ecore_hash_set(row_hash, new_row, e_file);
 
   /*Save this file in this list of files we're responsible for */
-  ecore_list_append (viewer->files, e_file);
+  ecore_list_append (viewer->files, new_row);
 
   etk_tree_thaw(ETK_TREE(viewer->tree));
 }
@@ -233,7 +242,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 		  /*We need the file's mime type, 
 		   * so get it here if it's not here already...*/
 		  if (!strlen (file->mime_type)) {
-		    char* mime = entropy_mime_file_identify (comp->core->mime_plugins, file);
+		    entropy_mime_file_identify (comp->core->mime_plugins, file);
 		  }
 
 		  if (file->mime_type) {
@@ -393,6 +402,14 @@ entropy_plugin_init (entropy_core * core,
   entropy_core_component_event_register (instance,
 					 entropy_core_gui_event_get
 					 (ENTROPY_GUI_EVENT_FILE_PROGRESS));
+
+  if (!etk_callback_setup) {
+	  etk_callback_setup = 1;
+	  row_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
+  }
+
+  etk_signal_connect("row_clicked", ETK_OBJECT( viewer->tree  ), 
+		  ETK_CALLBACK(_etk_list_viewer_row_clicked), NULL);
 
   printf("Initialising ETK list viewer...%p\n", instance);
 
