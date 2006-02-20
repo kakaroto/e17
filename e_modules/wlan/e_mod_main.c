@@ -233,23 +233,13 @@ _wlan_face_init(Wlan_Face *nf)
      }
    
    evas_object_show(o);
-
-   /*
-   o = evas_object_rectangle_add(nf->evas);
-   nf->chart_obj = o;
-   evas_object_layer_set(o, 2);
-   evas_object_repeat_events_set(o, 0);
-   evas_object_color_set(o, 0, 0, 0, 255);
-   evas_object_show(o);
-   */
    
    o = evas_object_rectangle_add(nf->evas);
    nf->event_obj = o;
    evas_object_layer_set(o, 2);
    evas_object_repeat_events_set(o, 1);
    evas_object_color_set(o, 0, 0, 0, 0);
-   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN,
-				  _wlan_face_cb_mouse_down, nf);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _wlan_face_cb_mouse_down, nf);
    evas_object_show(o);
    
    nf->gmc = e_gadman_client_new(nf->con->gadman);
@@ -437,7 +427,7 @@ _wlan_face_update_values(void *data)
                    &dummy, &dummy) < 11)
 	  continue;
 
-        if (!strcmp(iface, nf->wlan->conf->device))
+        if (!strcmp(iface, strdup(nf->wlan->conf->device)))
           {
              found_dev = 1;
              break;
