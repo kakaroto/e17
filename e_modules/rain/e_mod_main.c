@@ -231,6 +231,7 @@ _rain_config_menu_new(Rain *rain)
 
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, "Configuration");
+   e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");   
    e_menu_item_callback_set(mi, _rain_menu_cb_configure, rain);
 
    return mn;

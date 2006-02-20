@@ -220,6 +220,7 @@ _flame_config_menu_new(Flame *f)
    mn = e_menu_new();
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("Configuration"));
+   e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");         
    e_menu_item_callback_set(mi, _flame_menu_cb_configure, f);
    f->config_menu = mn;
    return mn;

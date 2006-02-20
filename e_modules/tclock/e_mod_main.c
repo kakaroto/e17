@@ -389,11 +389,13 @@ _tclock_face_menu_new(TClock_Face * face)
 
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("Configuration"));
+   e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");         
    e_menu_item_callback_set(mi, _tclock_face_cb_menu_configure, face);
 
    /* Edit */
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("Edit Mode"));
+   e_util_menu_item_edje_icon_set(mi, "enlightenment/gadgets");         
    e_menu_item_callback_set(mi, _tclock_face_cb_menu_edit, face);
 }
 

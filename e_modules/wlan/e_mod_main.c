@@ -132,7 +132,7 @@ _wlan_init(E_Module *m)
    if (!n->conf) 
      {
 	n->conf = E_NEW(Config, 1);
-	n->conf->device = (char *)evas_stringshare_add("eth0");
+	n->conf->device = (char *)evas_stringshare_add("");
 	n->conf->check_interval = 30;
      }
    E_CONFIG_LIMIT(n->conf->check_interval, 0, 60);
@@ -225,8 +225,7 @@ _wlan_face_init(Wlan_Face *nf)
    o = edje_object_add(nf->evas);
    nf->wlan_obj = o;
    
-   if (!e_theme_edje_object_set(o, "base/theme/modules/wlan", 
-				"modules/wlan/main")) 
+   if (!e_theme_edje_object_set(o, "base/theme/modules/wlan", "modules/wlan/main")) 
      {
 	snprintf(buf, sizeof(buf), PACKAGE_DATA_DIR"/wlan.edj");	
 	edje_object_file_set(o, buf, "modules/wlan/main");
@@ -275,10 +274,12 @@ _wlan_face_menu_new(Wlan_Face *nf)
    
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("Configuration"));
+   e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");         
    e_menu_item_callback_set(mi, _wlan_face_cb_menu_configure, nf);
    
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("Edit Mode"));
+   e_util_menu_item_edje_icon_set(mi, "enlightenment/gadgets");         
    e_menu_item_callback_set(mi, _wlan_face_cb_menu_edit, nf);
 }
 
