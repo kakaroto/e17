@@ -4,7 +4,7 @@
 #include "config.h"
 
 static void _etk_test_tree_drag_drop_cb(Etk_Object *object, void *event, void *data);
-static void _etk_test_tree_drag_begin_cb(Etk_Object *object, void *event, void *data);
+static void _etk_test_tree_drag_begin_cb(Etk_Object *object, void *data);
 static void _etk_test_tree_add_items(Etk_Tree *tree, int n);
 static void _etk_test_tree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data);
 static void _etk_test_tree_row_unselected(Etk_Object *object, Etk_Tree_Row *row, void *data);
@@ -150,7 +150,7 @@ static void _etk_test_tree_drag_drop_cb(Etk_Object *object, void *event, void *d
    printf(_("Row dropped on %p: \"%s\" %d %s\n"), row, col1_string, col2_value, col3_path);      
 }
 
-static void _etk_test_tree_drag_begin_cb(Etk_Object *object, void *event, void *data)
+static void _etk_test_tree_drag_begin_cb(Etk_Object *object, void *data)
 {
    Etk_Tree *tree;
    Etk_Tree_Row *row;

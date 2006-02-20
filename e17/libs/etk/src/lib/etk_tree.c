@@ -1901,9 +1901,7 @@ static void _etk_tree_row_pressed_cb(void *data, Evas *e, Evas_Object *obj, void
       event.modifiers = evas_event->modifiers;
       event.locks = evas_event->locks;
       event.flags = evas_event->flags;
-      event.timestamp = evas_event->timestamp;
-      
-      printf("DOUBLE!\n");
+      event.timestamp = evas_event->timestamp;      
       
       if(!row_objects->row->tree->dnd_event)
 	{
