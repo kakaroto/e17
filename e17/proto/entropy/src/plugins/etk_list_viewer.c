@@ -2,6 +2,7 @@
 #include "entropy_gui.h"
 #include <dlfcn.h>
 #include <limits.h>
+#include <time.h>
 #include <Etk.h>
 
 static int etk_callback_setup = 0;
@@ -113,6 +114,7 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
   Etk_Tree_Col* col2;
   Etk_Tree_Col* col3;
   Etk_Tree_Col* col4;
+  Etk_Tree_Col* col5;
   char buffer[50];
 
 
@@ -122,6 +124,7 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
   col2 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 1);
   col3 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 2);
   col4 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 3);
+  col5 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 4);
   
   
   etk_tree_freeze(ETK_TREE(viewer->tree));
@@ -131,12 +134,15 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
 		  col1, PACKAGE_DATA_DIR "/icons/default.png", 
 		  col2,   file->filename, NULL);
   } else {
+	 // time_t stime = file->properties.st_mtime
+	  
 	  snprintf(buffer,50, "%d Kb", file->properties.st_size / 1024);
 	  new_row = etk_tree_append(ETK_TREE(viewer->tree), 
 		  col1, PACKAGE_DATA_DIR "/icons/default.png", 
 		  col2,   file->filename,
 		  col3,   buffer,
 		  col4,   file->mime_type,
+		  col5,   ctime(&file->properties.st_mtime),
 		  NULL);
 	  
   }
