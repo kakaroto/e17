@@ -206,7 +206,7 @@ entropy_plugin_layout_create (entropy_core * core)
   entropy_generic_file* file;
   Etk_Tree_Col* col;
   Etk_Tree_Row* row;
-  char* home = getenv("HOME");
+  char* home = strdup(getenv("HOME"));
   char* pos;
 
 
