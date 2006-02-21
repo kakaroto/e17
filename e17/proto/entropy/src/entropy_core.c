@@ -184,6 +184,7 @@ entropy_core* entropy_core_init(int argc, char** argv) {
 
 	//printf ("Initialising the file cache..\n");
 	core->file_interest_list = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+	core->uri_reference_list = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 
 	//Misc setup (thumbnail path)
 	core->user_home_dir = strdup(getenv("HOME"));
@@ -1261,12 +1262,26 @@ void entropy_core_file_cache_add(char* md5, entropy_file_listener* listener) {
 	
 }
 
+entropy_generic_file* entropy_core_uri_generic_file_retrieve(char* uri) {
+	entropy_generic_file* file;
+	
+	file = ecore_hash_get(core_core->uri_reference_list, uri);
+	return file;
+}
+
 void entropy_core_file_cache_add_reference(char* md5) {
 	LOCK(&core_core->file_cache_mutex);
 	entropy_file_listener* listener = ecore_hash_get(core_core->file_interest_list, md5);
 
 	if (listener) {
 		listener->count++;
+
+		/*At this point, check if the file needs a uri generating..
+		 * And generate if necesary */
+		if (!listener->file->uri) {
+			listener->file->uri = 	entropy_core_generic_file_uri_create(listener->file,0);
+			ecore_hash_set(core_core->uri_reference_list, listener->file->uri, listener->file);
+		}
 	}
 	UNLOCK(&core_core->file_cache_mutex);
 }
@@ -1280,9 +1295,8 @@ void entropy_core_file_cache_remove_reference(char* md5) {
 		listener->count--;
 		if (listener->count <= 0 && 0) {
 
-			//printf("Freeing file '%s'\n", listener->file->filename);
-
-			/*This should be a seperate function*/
+			ecore_hash_remove(core_core->uri_reference_list, listener->file->uri);
+			
 			entropy_generic_file_destroy(listener->file);
 			free(listener);
 

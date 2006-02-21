@@ -112,7 +112,7 @@ static void _entropy_etk_list_viewer_drag_begin_cb(Etk_Object *object, void *dat
    //snprintf(drag_data, PATH_MAX * sizeof(char), "file://%s/%s", tab->cur_path, icol2_string);
    
    etk_drag_types_set(drag, types, num_types);
-   etk_drag_data_set(drag, drag_data, sizeof(void*));
+   etk_drag_data_set(drag, drag_data, strlen(drag_data)+1);
    /*image = etk_image_new_from_file(icol1_string);
    etk_image_keep_aspect_set(ETK_IMAGE(image), ETK_TRUE);
    etk_widget_size_request_set(image, 96, 96);
@@ -400,12 +400,9 @@ entropy_plugin_init (entropy_core * core,
    dnd_types[0] = strdup("text/plain");  
   etk_widget_dnd_source_set(viewer->tree, ETK_TRUE);
   etk_widget_dnd_drag_widget_set(viewer->tree, etk_button_new_with_label("Drag Widget"));
-  etk_widget_dnd_drag_data_set(viewer->tree, dnd_types, dnd_types_num, "This is the drag data!", strlen("This is the drag data!") + 1);
+  //etk_widget_dnd_drag_data_set(viewer->tree, dnd_types, dnd_types_num, "This is the drag data!", strlen("This is the drag data!") + 1);
   etk_signal_connect("drag_begin", viewer->tree , ETK_CALLBACK(_entropy_etk_list_viewer_drag_begin_cb), instance);
-
-
-
-  
+  etk_tree_multiple_select_set(ETK_TREE(viewer->tree), ETK_TRUE); 
   etk_tree_build(ETK_TREE(viewer->tree));
 
   etk_widget_size_request_set(viewer->tree, 600, 600);

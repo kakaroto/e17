@@ -21,7 +21,10 @@ struct entropy_core {
 	Ecore_Hash* entropy_thumbnailers_child;
 	Ecore_Hash* layout_gui_events;
 	Ecore_Timer* notify_executer;
+	
 	Ecore_Hash* file_interest_list; /*A file cache of all files we have loaded*/
+	Ecore_Hash* uri_reference_list;
+	
 	Ecore_Ipc_Server* server;
 
 	void* layout_global; /*The global layout context*/

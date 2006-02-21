@@ -21,6 +21,8 @@ struct entropy_generic_file {
 	char* username;  /*Do we have a cached auth reference for this file/location? */
 	char* password;
 
+	char* uri;
+
 	entropy_thumbnail* thumbnail;
 
 	struct entropy_generic_file* parent;

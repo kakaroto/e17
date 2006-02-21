@@ -63,13 +63,15 @@ entropy_plugin_toolkit_get()
 static void _etk_structure_viewer_xdnd_drag_drop_cb(Etk_Object *object, void *event, void *data)
 {
    Etk_Event_Selection_Request *ev;   
-   Etk_Selection_Data_Files *files;
+   Etk_Selection_Data_Text *text;
    
    int i;
    
    ev = event;
+   text = ev->data;
+   
 
-   printf("Drop data '%s'\n", (char*)ev->data);
+   printf("Drop data '%p'\n", (char*)text->text);
 }
 
 static void _etk_structure_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up_Down *event, void *data)
