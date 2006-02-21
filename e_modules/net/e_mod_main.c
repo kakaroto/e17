@@ -174,7 +174,6 @@ _net_init(E_Module *m)
 	     nf = _net_face_init(n, con);
 	     if (nf) 
 	       {
-		  printf("Created Face\n");
 		  if (!fl)
 		    {
 		       nf->conf = E_NEW(Config_Face, 1);
