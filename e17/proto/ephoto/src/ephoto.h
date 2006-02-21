@@ -4,7 +4,6 @@
 #include <Ewl.h>
 #include <Ecore_Evas.h>
 #include <Ecore_File.h>
-#include <Epsilon.h>
 #include <fnmatch.h>
 #include <libgen.h>
 #include <limits.h>
