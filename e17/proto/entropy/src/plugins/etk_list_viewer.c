@@ -395,9 +395,9 @@ entropy_plugin_init (entropy_core * core,
 
 
   /*DND Setup*/
+   dnd_types_num = 1;
    dnd_types = calloc(dnd_types_num, sizeof(char*));
    dnd_types[0] = strdup("text/plain");  
-   dnd_types_num = 1;
   etk_widget_dnd_source_set(viewer->tree, ETK_TRUE);
   etk_widget_dnd_drag_widget_set(viewer->tree, etk_button_new_with_label("Drag Widget"));
   etk_widget_dnd_drag_data_set(viewer->tree, dnd_types, dnd_types_num, "This is the drag data!", strlen("This is the drag data!") + 1);
