@@ -63,6 +63,7 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 		m->imagetree = ewl_tree_new(1);
 		ewl_container_child_append(EWL_CONTAINER(m->images), m->imagetree);
 		ewl_object_maximum_size_set(EWL_OBJECT(m->imagetree), 200, 175);
+		ewl_tree_headers_visible_set(EWL_TREE(m->imagetree), 0);
 		ewl_widget_show(m->imagetree);
 		
 		/******************************************/
@@ -116,6 +117,10 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 				printf("%s\n", pathw);
 			}
 			if ( fnmatch("*.[Jj][Pp][Gg]", pathw, 0) == 0 ) {
+				ecore_list_append(imagefiles, strdup(pathw));
+				printf("%s\n", pathw);
+			}
+			if ( fnmatch("*.[Jj][Pp][Ee][Gg]", pathw, 0) == 0 ) {
 				ecore_list_append(imagefiles, strdup(pathw));
 				printf("%s\n", pathw);
 			}
@@ -253,6 +258,7 @@ populatea_cb(Ewl_Widget *w, void *event, void *data)
 		m->image = ewl_image_new();
 		ewl_image_file_set(EWL_IMAGE(m->image), PACKAGE_DATA_DIR "/images/up.png", NULL);
 		ewl_container_child_append(EWL_CONTAINER(m->hbox), m->image);
+		ewl_tree_headers_visible_set(EWL_TREE(m->audiotree), 0);
 		ewl_widget_show(m->image);
 		
 		m->texta = ewl_text_new();
