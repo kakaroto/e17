@@ -17,9 +17,9 @@ static void      _net_face_cb_mouse_down(void *data, Evas *evas, Evas_Object *ob
 static void      _net_face_cb_menu_edit(void *data, E_Menu *mn, E_Menu_Item *mi);
 static void      _net_face_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi);
 static int       _net_face_update_values(void *data);
-static void      _net_face_graph_values(Net_Face *nf, int in, int out);
 
 static int net_count;
+
 static E_Config_DD *conf_edd;
 static E_Config_DD *conf_face_edd;
 
@@ -143,7 +143,6 @@ _net_init(E_Module *m)
    E_CONFIG_VAL(D, T, enabled, UCHAR);
    E_CONFIG_VAL(D, T, device, STR);
    E_CONFIG_VAL(D, T, check_interval, INT);
-   E_CONFIG_VAL(D, T, display_mode, INT);
    
    conf_edd = E_CONFIG_DD_NEW("Net_Config", Config);
    #undef T
@@ -180,7 +179,6 @@ _net_init(E_Module *m)
 		       nf->conf->enabled = 1;
 		       nf->conf->device = (char *)evas_stringshare_add("eth0");
 		       nf->conf->check_interval = 30;
-		       nf->conf->display_mode = NET_DISPLAY_MBYTES;
 		       n->conf->faces = evas_list_append(n->conf->faces, nf->conf);
 		    }
 		  else 
@@ -189,7 +187,6 @@ _net_init(E_Module *m)
 		       fl = fl->next;
 		    }
 		  E_CONFIG_LIMIT(nf->conf->check_interval, 0, 60);
-		  E_CONFIG_LIMIT(nf->conf->display_mode, NET_DISPLAY_BYTES, NET_DISPLAY_MBYTES);
 		  
 		  nf->monitor = ecore_timer_add((double)nf->conf->check_interval, _net_face_update_values, nf);   
 		  
@@ -262,8 +259,7 @@ _net_face_init(Net *n, E_Container *con)
      {
 	snprintf(buf, sizeof(buf), PACKAGE_DATA_DIR"/net.edj");	
 	edje_object_file_set(o, buf, "modules/net/main");
-     }
-   
+     }   
    evas_object_show(o);
 
    o = evas_object_rectangle_add(nf->evas);
@@ -271,8 +267,7 @@ _net_face_init(Net *n, E_Container *con)
    evas_object_layer_set(o, 2);
    evas_object_repeat_events_set(o, 1);
    evas_object_color_set(o, 0, 0, 0, 0);
-   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN,
-				  _net_face_cb_mouse_down, nf);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _net_face_cb_mouse_down, nf);
    evas_object_show(o);
    
    nf->gmc = e_gadman_client_new(nf->con->gadman);
@@ -322,7 +317,6 @@ _net_face_enable(Net_Face *nf)
    nf->conf->enabled = 1;
    e_config_save_queue();
    evas_object_show(nf->net_obj);
-   /* evas_object_show(nf->chart_obj); */
    evas_object_show(nf->event_obj);
 }
 
@@ -332,7 +326,6 @@ _net_face_disable(Net_Face *nf)
    nf->conf->enabled = 0;
    e_config_save_queue();
    evas_object_hide(nf->event_obj);
-   /* evas_object_hide(nf->chart_obj); */
    evas_object_hide(nf->net_obj);
 }
 
@@ -350,12 +343,6 @@ _net_face_free(Net_Face *nf)
      evas_object_del(nf->event_obj);
    if (nf->net_obj)
      evas_object_del(nf->net_obj);
-
-   /*
-   if (nf->chart_obj)
-     evas_object_del(nf->chart_obj);
-    */
-   
    if (nf->gmc) 
      {
 	e_gadman_client_save(nf->gmc);
@@ -439,9 +426,18 @@ _net_face_update_values(void *data)
    FILE *stat;
    char dev[64];
    char buf[256];
-   unsigned long in, out, dummy;
-   static unsigned long old_in, old_out;
+   static unsigned long old_in = 0;
+   static unsigned long old_out = 0;
+   unsigned long in = 0;
+   unsigned long out = 0;
+   unsigned long dummy = 0;
    int found;
+   long max_in = 171008;
+   long max_out = 28672;
+   long bytes_in;
+   long bytes_out;
+   int in_use = 0;
+   int out_use = 0;
    
    nf = data;
    
@@ -474,40 +470,30 @@ _net_face_update_values(void *data)
    if (!found) 
      return 1;
    
-   if (in != old_in)
-     old_in = in;
-   else
-     in = 0;
+   if (old_in && old_out) 
+     {
+	bytes_in = in - old_in;
+	bytes_out = out - old_out;
+	
+	in_use = (int)((bytes_in * 100L) / max_in);
+	out_use = (int)((bytes_out * 100L) / max_out);
+     }
+   else 
+     {
+	in_use = 0;
+	out_use = 0;	
+     }
    
-   if (out != old_out)
-     old_out = out;
-   else
-     out = 0;
+   old_in = in;
+   old_out = out;
    
    /* Update the modules text */
    Edje_Message_String_Set *msg;
    char in_str[100];
    char out_str[100];
    
-   switch (nf->conf->display_mode) 
-     {
-      case NET_DISPLAY_BYTES:
-	snprintf(in_str, sizeof(in_str), "Rx: %d B", in);
-	snprintf(out_str, sizeof(out_str), "Tx: %d B", out);	
-	break;
-      case NET_DISPLAY_KBYTES:
-	in = in / 1024;
-	out = out / 1024;
-	snprintf(in_str, sizeof(in_str), "Rx: %d KB", in);
-	snprintf(out_str, sizeof(out_str), "Tx: %d KB", out);
-	break;
-      case NET_DISPLAY_MBYTES:
-	in = in / 1048576;
-	out = out / 1048576;
-	snprintf(in_str, sizeof(in_str), "Rx: %d MB", in);
-	snprintf(out_str, sizeof(out_str), "Tx: %d MB", out);	
-	break;
-     }
+   snprintf(in_str, sizeof(in_str), "Rx: %d B", in_use);
+   snprintf(out_str, sizeof(out_str), "Tx: %d B", out_use);	
    
    msg = malloc(sizeof(Edje_Message_String_Set) - sizeof(char *) + (1 + sizeof(char *)));
    msg->count = 2;
@@ -517,36 +503,4 @@ _net_face_update_values(void *data)
    free(msg);
 
    return 1;
-}
-
-static void 
-_net_face_graph_values(Net_Face *nf, int in, int out) 
-{
-   Evas_Object *o;
-   int x, y, w, h;
-   double factor = 0.0;
-   int in_val, out_val;
-   
-   if (!nf)
-     return;
-   
-   evas_object_geometry_get(nf->net_obj, &x, &y, &w, &h);
-   
-   /* Graph Values */
-   factor = ((double)h / (double)100);   
-   in_val = (int)((double)in * factor);
-   out_val = (int)((double)out * factor);
-
-   if (in_val > 100)
-     in_val = 100;
-   if (out_val > 100)
-     out_val = 100;
-   
-   o = evas_object_line_add(nf->evas);
-   evas_object_clip_set(o, nf->chart_obj);
-   evas_object_layer_set(o, 2);
-   evas_object_line_xy_set(o, x + w, y, x + w, y + in_val);
-   evas_object_color_set(o, 255, 0, 0, 128);
-   evas_object_pass_events_set(o, 1);
-   evas_object_show(o);
 }
