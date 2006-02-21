@@ -16,7 +16,7 @@ static void _mem_face_cb_mouse_down     (void *data, Evas *evas, Evas_Object *ob
 static void _mem_face_cb_menu_edit      (void *data, E_Menu *mn, E_Menu_Item *mi);
 static void _mem_face_cb_menu_configure (void *data, E_Menu *mn, E_Menu_Item *mi);
 static int  _mem_face_update_values     (void *data);
-static void _mem_face_get_mem_values    (Mem_Face *cf, int *real, int *swap);
+static void _mem_face_get_mem_values    (Mem_Face *cf, int *real, int *swap, int *total_real, int *total_swap);
 
 static int mem_count;
 
@@ -408,19 +408,19 @@ static int
 _mem_face_update_values(void *data) 
 {
    Mem_Face *cf;
-   int real, swap;
+   int real, swap, total_real, total_swap;
    Edje_Message_String_Set *msg;
    char real_str[100];
    char swap_str[100];
    
    cf = data;
-   _mem_face_get_mem_values(cf, &real, &swap);
+   _mem_face_get_mem_values(cf, &real, &swap, &total_real, &total_swap);
 
    real = real / 1024;
    swap = swap / 1024;
    
-   snprintf(real_str, sizeof(real_str), "%d MB", real);
-   snprintf(swap_str, sizeof(swap_str), "%d MB", swap);
+   snprintf(real_str, sizeof(real_str), "%d/%d MB", total_real, real);
+   snprintf(swap_str, sizeof(swap_str), "%d/%d MB", total_swap, swap);
    
    msg = malloc(sizeof(Edje_Message_String_Set) - sizeof(char *) + (1 + sizeof(char *)));
    msg->count = 2;
@@ -433,7 +433,7 @@ _mem_face_update_values(void *data)
 }
 
 static void
-_mem_face_get_mem_values(Mem_Face *cf, int *real, int *swap) 
+_mem_face_get_mem_values(Mem_Face *cf, int *real, int *swap, int *total_real, int *total_swap) 
 {
    FILE *pmeminfo = NULL;
    int cursor = 0;
@@ -506,5 +506,7 @@ _mem_face_get_mem_values(Mem_Face *cf, int *real, int *swap)
 
    *real = mtotal - mfree;
    *swap = stotal - sfree;
+   *total_real = mtotal / 1024;
+   *total_swap = stotal / 1024;   
    return;
 }
