@@ -2,7 +2,7 @@
 #include <dlfcn.h>
 
 static Ecore_List *types = NULL;
-#define THUMBNAILER_LOCAL_PLUGIN "posix"
+#define THUMBNAILER_LOCAL_PLUGIN "file"
 
 int
 entropy_plugin_type_get ()
