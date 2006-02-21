@@ -345,6 +345,11 @@ entropy_plugin_init (entropy_core * core,
   etk_tree_col_expand_set(viewer->tree_col1, ETK_TRUE);
 
 
+  /*DND Setup*/
+  etk_widget_dnd_source_set(viewer->tree, ETK_TRUE);
+  etk_widget_dnd_drag_widget_set(viewer->tree, etk_button_new_with_label("Drag Widget"));
+
+
 
   
   etk_tree_build(ETK_TREE(viewer->tree));
