@@ -359,9 +359,9 @@ void entropy_core_config_load() {
 
 	/*Set some defaults*/
 	mime_type_actions = ecore_list_new();
-	ecore_list_append(mime_type_actions, "image/jpeg:entice");
-        ecore_list_append(mime_type_actions, "image/png:entice");
-        ecore_list_append(mime_type_actions, "image/gif:entice");
+	ecore_list_append(mime_type_actions, "image/jpeg:exhibit");
+        ecore_list_append(mime_type_actions, "image/png:exhibit");
+        ecore_list_append(mime_type_actions, "image/gif:exhibit");
         ecore_list_append(mime_type_actions, "text/html:/usr/bin/firefox");
         ecore_list_append(mime_type_actions, "text/csrc:gvim");
         ecore_list_append(mime_type_actions, "audio/x-mp3:xmms");
