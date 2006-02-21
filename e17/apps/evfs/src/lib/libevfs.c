@@ -243,6 +243,7 @@ evfs_tokenize_uri(char *uri)
    ecore_list_append(plugin, "ftp");
    ecore_list_append(plugin, "gzip");
    ecore_list_append(plugin, "sftp");
+   ecore_list_append(plugin, "posix");
 
    ecore_list_append(reserved, "://");
    ecore_list_append(reserved, "@");
@@ -451,7 +452,13 @@ evfs_parse_uri(char *uri)
    if (token)
      {
         /*Should be a plugin, assume it is (bad) */
-        new_ref->plugin_uri = strdup(token->token_s);
+
+	/*Patch for posix->file*/
+        if (!strcmp(token->token_s, "posix")) {
+		new_ref->plugin_uri = strdup("file");	
+	} else {
+		new_ref->plugin_uri = strdup(token->token_s);
+	}
      }
    else
      {
