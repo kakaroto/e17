@@ -5,7 +5,7 @@
 
 #include "e_mod_main.h"
 
-void _configure_wlan_module(E_Container *con, Wlan *n);
+void _configure_wlan_module(Wlan_Face *nf);
 
 #endif
 #endif

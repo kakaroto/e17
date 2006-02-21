@@ -5,25 +5,31 @@ typedef struct _Config Config;
 typedef struct _Config_Face Config_Face;
 typedef struct _Wlan Wlan;
 typedef struct _Wlan_Face Wlan_Face;
+typedef enum   _Display_Mode 
+{
+   NET_DISPLAY_BYTES,
+     NET_DISPLAY_KBYTES,
+     NET_DISPLAY_MBYTES
+} Display_Mode;
 
 struct _Config 
 {
-   char *device;
-   int check_interval;
+   Evas_List *faces;
 };
 
 struct _Config_Face 
 {
    unsigned char enabled;
+   char *device;
+   int check_interval;
+   int display_mode;
 };
 
 struct _Wlan 
 {
    E_Menu *config_menu;
-   Wlan_Face *face;
+   Evas_List *faces;
    Config *conf;
-   
-   E_Config_DD *conf_edd;
    E_Config_Dialog *cfd;
 };
 
@@ -35,7 +41,6 @@ struct _Wlan_Face
    Wlan *wlan;
 
    Config_Face *conf;
-   E_Config_DD *conf_face_edd;
    
    Evas_Object *wlan_obj;
    Evas_Object *event_obj;

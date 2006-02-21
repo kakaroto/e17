@@ -15,22 +15,9 @@ group
       name: "modules/wlan/main";
       script {
 		public message(Msg_Type:type, id, ...) {
-		      if (type == MSG_INT_SET) {
-		      		new tmp;
+		      if (type == MSG_STRING_SET) {
 		      		new in_str[64];
-		      		
-				tmp = getarg(2);
-				if (tmp > 1048576) {
-					tmp = tmp / 1048576;
-	   		   		snprintf(in_str, sizeof(in_str), "%i MB", tmp);					
-				}
-				else if (tmp > 1024 && tmp < 1048576) {
-					tmp = tmp / 1024;
-	   		   		snprintf(in_str, sizeof(in_str), "%i KB", tmp);					
-				}
-				else {
-	   		   		snprintf(in_str, sizeof(in_str), "%i B", tmp);
-	   		   	}
+				getsarg(2, in_str, sizeof(in_str));
 				set_text(PART:"link-text", in_str);				
 		      }
 	       }      

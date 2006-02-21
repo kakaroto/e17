@@ -3,22 +3,24 @@
 #include "e_mod_config.h"
 #include "config.h"
 
-static Wlan *_wlan_init(E_Module *m);
-static void _wlan_shutdown(Wlan *n);
-static void _wlan_config_menu_new(Wlan *n);
+static Wlan      *_wlan_init(E_Module *m);
+static void      _wlan_shutdown(Wlan *n);
+static void      _wlan_config_menu_new(Wlan *n);
 
-static int  _wlan_face_init(Wlan_Face *nf);
-static void _wlan_face_menu_new(Wlan_Face *nf);
-static void _wlan_face_enable(Wlan_Face *nf);
-static void _wlan_face_disable(Wlan_Face *nf);
-static void _wlan_face_free(Wlan_Face *nf);
-static void _wlan_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change);
-static void _wlan_face_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event_info);
-static void _wlan_face_cb_menu_edit(void *data, E_Menu *mn, E_Menu_Item *mi);
-static void _wlan_face_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi);
-static int  _wlan_face_update_values(void *data);
+static Wlan_Face *_wlan_face_init(Wlan *n, E_Container *con);
+static void      _wlan_face_menu_new(Wlan_Face *nf);
+static void      _wlan_face_enable(Wlan_Face *nf);
+static void      _wlan_face_disable(Wlan_Face *nf);
+static void      _wlan_face_free(Wlan_Face *nf);
+static void      _wlan_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change);
+static void      _wlan_face_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event_info);
+static void      _wlan_face_cb_menu_edit(void *data, E_Menu *mn, E_Menu_Item *mi);
+static void      _wlan_face_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi);
+static int       _wlan_face_update_values(void *data);
 
 static int wlan_count;
+static E_Config_DD *conf_edd;
+static E_Config_DD *conf_face_edd;
 
 EAPI E_Module_Api e_modapi = 
 {
@@ -71,7 +73,7 @@ e_modapi_save(E_Module *m)
    n = m->data;
    if (!n)
      return 0;
-   e_config_domain_save("module.wlan", n->conf_edd, n->conf);
+   e_config_domain_save("module.wlan", conf_edd, n->conf);
    return 1;
 }
 
@@ -85,7 +87,7 @@ e_modapi_info(E_Module *m)
 EAPI int
 e_modapi_about(E_Module *m) 
 {
-   e_module_dialog_show(_("Enlightenment WLan Monitor Module"),
+   e_module_dialog_show(_("Enlightenment Wlan Monitor Module"),
 			_("This module is used to monitor a wlan device."));
    return 1;
 }
@@ -94,18 +96,30 @@ EAPI int
 e_modapi_config(E_Module *m) 
 {
    Wlan *n;
+   Evas_List *l;
    E_Container *con;
    
    n = m->data;
    if (!n)
      return 0;
-   if (!n->face)
+   if (!n->faces)
      return 0;
    
-   con = e_container_current_get(e_manager_current_get());
-   if (n->face->con == con)
-     _configure_wlan_module(con, n);
-   
+   for (l = n->faces; l; l = l->next) 
+     {
+	Wlan_Face *nf;
+	
+	nf = l->data;
+	if (!nf) 
+	  continue;
+	
+	con = e_container_current_get(e_manager_current_get());
+	if (nf->con == con) 
+	  {
+	     _configure_wlan_module(nf);
+	     break;
+	  }
+     }
    return 1;
 }
 
@@ -114,32 +128,37 @@ _wlan_init(E_Module *m)
 {
    Wlan *n;
    E_Menu_Item *mi;
-   Evas_List *mans, *l, *l2;
+   Evas_List *mans, *l, *l2, *fl;
    
    n = E_NEW(Wlan, 1);
    if (!n)
      return NULL;
    
-   n->conf_edd = E_CONFIG_DD_NEW("Wlan_Config", Config);
+   conf_face_edd = E_CONFIG_DD_NEW("Wlan_Config_Face", Config_Face);
+   #undef T
+   #undef D
+   #define T Config_Face
+   #define D conf_face_edd
+   E_CONFIG_VAL(D, T, enabled, UCHAR);
+   E_CONFIG_VAL(D, T, device, STR);
+   E_CONFIG_VAL(D, T, check_interval, INT);
+   E_CONFIG_VAL(D, T, display_mode, INT);
+   
+   conf_edd = E_CONFIG_DD_NEW("Wlan_Config", Config);
    #undef T
    #undef D
    #define T Config
-   #define D n->conf_edd
-   E_CONFIG_VAL(D, T, device, STR);
-   E_CONFIG_VAL(D, T, check_interval, INT);
+   #define D conf_edd
+   E_CONFIG_LIST(D, T, faces, conf_face_edd);
    
-   n->conf = e_config_domain_load("module.wlan", n->conf_edd);
+   n->conf = e_config_domain_load("module.wlan", conf_edd);
    if (!n->conf) 
-     {
-	n->conf = E_NEW(Config, 1);
-	n->conf->device = (char *)evas_stringshare_add("wlan0");
-	n->conf->check_interval = 30;
-     }
-   E_CONFIG_LIMIT(n->conf->check_interval, 0, 60);
+     n->conf = E_NEW(Config, 1);
    
    _wlan_config_menu_new(n);
    
    mans = e_manager_list();
+   fl = n->conf->faces;
    for (l = mans; l; l = l->next) 
      {
 	E_Manager *man;
@@ -151,26 +170,27 @@ _wlan_init(E_Module *m)
 	     Wlan_Face *nf;
 	     
 	     con = l2->data;
-	     nf = E_NEW(Wlan_Face, 1);
+	     nf = _wlan_face_init(n, con);
 	     if (nf) 
 	       {
-		  nf->conf_face_edd = E_CONFIG_DD_NEW("Wlan_Face_Config", Config_Face);
-		  #undef T
-		  #undef D
-		  #define T Config_Face
-		  #define D nf->conf_face_edd
-		  E_CONFIG_VAL(D, T, enabled, UCHAR);
+		  if (!fl)
+		    {
+		       nf->conf = E_NEW(Config_Face, 1);
+		       nf->conf->enabled = 1;
+		       nf->conf->device = (char *)evas_stringshare_add("wlan0");
+		       nf->conf->check_interval = 30;
+		       nf->conf->display_mode = NET_DISPLAY_MBYTES;
+		       n->conf->faces = evas_list_append(n->conf->faces, nf->conf);
+		    }
+		  else 
+		    {
+		       nf->conf = fl->data;
+		       fl = fl->next;
+		    }
+		  E_CONFIG_LIMIT(nf->conf->check_interval, 0, 60);
+		  E_CONFIG_LIMIT(nf->conf->display_mode, NET_DISPLAY_BYTES, NET_DISPLAY_MBYTES);
 		  
-		  n->face = nf;
-		  nf->wlan = n;		  
-		  nf->con = con;
-		  nf->evas = con->bg_evas;
-		  
-		  nf->conf = E_NEW(Config_Face, 1);
-		  nf->conf->enabled = 1;
-		  
-		  if (!_wlan_face_init(nf))
-		    return NULL;
+		  nf->monitor = ecore_timer_add((double)nf->conf->check_interval, _wlan_face_update_values, nf);   
 		  
 		  _wlan_face_menu_new(nf);
 		  
@@ -184,8 +204,6 @@ _wlan_init(E_Module *m)
 		 
 		  if (!nf->conf->enabled)
 		    _wlan_face_disable(nf);
-		  else
-		    _wlan_face_enable(nf);
 	       }
 	  }
      }
@@ -195,13 +213,16 @@ _wlan_init(E_Module *m)
 static void
 _wlan_shutdown(Wlan *n) 
 {
-   _wlan_face_free(n->face);
+   E_CONFIG_DD_FREE(conf_edd);
+   E_CONFIG_DD_FREE(conf_face_edd);
 
-   if (n->conf->device)
-     evas_stringshare_del(n->conf->device);
+   while (n->faces)
+     _wlan_face_free(n->faces->data);
+
+   e_object_del(E_OBJECT(n->config_menu));
+   evas_list_free(n->conf->faces);
    
    E_FREE(n->conf);
-   E_CONFIG_DD_FREE(n->conf_edd);
    E_FREE(n);
 }
 
@@ -214,11 +235,22 @@ _wlan_config_menu_new(Wlan *n)
    n->config_menu = mn;
 }
 
-static int
-_wlan_face_init(Wlan_Face *nf) 
+static Wlan_Face *
+_wlan_face_init(Wlan *n, E_Container *con) 
 {
+   Wlan_Face *nf;
    Evas_Object *o;
    char buf[4096];
+
+   nf = E_NEW(Wlan_Face, 1);
+   if (!nf)
+     return NULL;   
+   nf->wlan = n;
+   n->faces = evas_list_append(n->faces, nf);
+
+   nf->con = con;
+   e_object_ref(E_OBJECT(con));
+   nf->evas = con->bg_evas;
    
    evas_event_freeze(nf->evas);
    
@@ -232,13 +264,14 @@ _wlan_face_init(Wlan_Face *nf)
      }
    
    evas_object_show(o);
-   
+
    o = evas_object_rectangle_add(nf->evas);
    nf->event_obj = o;
    evas_object_layer_set(o, 2);
    evas_object_repeat_events_set(o, 1);
    evas_object_color_set(o, 0, 0, 0, 0);
-   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _wlan_face_cb_mouse_down, nf);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN,
+				  _wlan_face_cb_mouse_down, nf);
    evas_object_show(o);
    
    nf->gmc = e_gadman_client_new(nf->con->gadman);
@@ -258,9 +291,8 @@ _wlan_face_init(Wlan_Face *nf)
    e_gadman_client_change_func_set(nf->gmc, _wlan_face_cb_gmc_change, nf);
    e_gadman_client_load(nf->gmc);
    evas_event_thaw(nf->evas);
-
-   nf->monitor = ecore_timer_add((double)nf->wlan->conf->check_interval, _wlan_face_update_values, nf);
-   return 1;
+   
+   return nf;
 }
 
 static void
@@ -274,12 +306,12 @@ _wlan_face_menu_new(Wlan_Face *nf)
    
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("Configuration"));
-   e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");         
+   e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");   
    e_menu_item_callback_set(mi, _wlan_face_cb_menu_configure, nf);
    
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("Edit Mode"));
-   e_util_menu_item_edje_icon_set(mi, "enlightenment/gadgets");         
+   e_util_menu_item_edje_icon_set(mi, "enlightenment/gadgets");   
    e_menu_item_callback_set(mi, _wlan_face_cb_menu_edit, nf);
 }
 
@@ -306,6 +338,9 @@ _wlan_face_disable(Wlan_Face *nf)
 static void 
 _wlan_face_free(Wlan_Face *nf) 
 {
+   e_object_unref(E_OBJECT(nf->con));
+   e_object_del(E_OBJECT(nf->menu));
+   
    if (nf->monitor)
      ecore_timer_del(nf->monitor);
    if (nf->menu)
@@ -326,6 +361,8 @@ _wlan_face_free(Wlan_Face *nf)
 	e_object_del(E_OBJECT(nf->gmc));
      }
    
+   nf->wlan->faces = evas_list_remove(nf->wlan->faces, nf);
+   
    E_FREE(nf->conf);
    E_FREE(nf);
    wlan_count--;
@@ -343,20 +380,17 @@ _wlan_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change chang
       case E_GADMAN_CHANGE_MOVE_RESIZE:
 	e_gadman_client_geometry_get(nf->gmc, &x, &y, &w, &h);
 	evas_object_move(nf->wlan_obj, x, y);
-	/* evas_object_move(nf->chart_obj, x, y); */
 	evas_object_move(nf->event_obj, x, y);
 	evas_object_resize(nf->wlan_obj, w, h);
-	/* evas_object_resize(nf->chart_obj, w, h); */
 	evas_object_resize(nf->event_obj, w, h);
 	break;
       case E_GADMAN_CHANGE_RAISE:
 	evas_object_raise(nf->wlan_obj);
-	/* evas_object_raise(nf->chart_obj); */
 	evas_object_raise(nf->event_obj);
 	break;
       default:
 	break;
-     }   
+     }
 }
 
 static void 
@@ -391,7 +425,10 @@ _wlan_face_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi)
    Wlan_Face *nf;
 
    nf = data;
-   _configure_wlan_module(nf->con, nf->wlan);
+   if (!nf)
+     return;
+   
+   _configure_wlan_module(nf);
 }
 
 static int 
@@ -408,6 +445,10 @@ _wlan_face_update_values(void *data)
    int wlan_link = 0;
    int wlan_level = 0;
    int wlan_noise = 0;
+   Edje_Message_String_Set *msg;
+   char in_str[100];
+
+   nf = data;
    
    stat = fopen("/proc/net/wireless", "r");
    if (!stat)
@@ -426,23 +467,25 @@ _wlan_face_update_values(void *data)
                    iface, &wlan_status, &wlan_link, &wlan_level,
                    &wlan_noise, &dummy, &dummy, &dummy, &dummy,
                    &dummy, &dummy) < 11)
-	  continue;
-
-        if (!strcmp(iface, strdup(nf->wlan->conf->device)))
+	  continue;	
+        if (!strcmp(iface, strdup(nf->conf->device)))
           {
              found_dev = 1;
              break;
           }
      }
    fclose(stat);
+
+   if (!found_dev)
+     return 1;
    
-   /* Update the modules text */
-   Edje_Message_Int_Set *msg;
+   /* Update the modules text */   
+   snprintf(in_str, sizeof(in_str), "LNK: %d", wlan_link);
    
-   msg = malloc(sizeof(Edje_Message_Int_Set) + 1 * sizeof(int));
+   msg = malloc(sizeof(Edje_Message_String_Set) - sizeof(char *) + (1 + sizeof(char *)));
    msg->count = 1;
-   msg->val[0] = wlan_link;
-   edje_object_message_send(nf->wlan_obj, EDJE_MESSAGE_INT_SET, 1, msg);
+   msg->str[0] = in_str;
+   edje_object_message_send(nf->wlan_obj, EDJE_MESSAGE_STRING_SET, 1, msg);
    free(msg);
 
    return 1;
