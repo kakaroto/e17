@@ -92,16 +92,22 @@ static void _entropy_etk_list_viewer_drag_begin_cb(Etk_Object *object, void *dat
    entropy_gui_component_instance* instance;
    entropy_etk_file_list_viewer* viewer;
 
+   Evas_List* rows;
+
    instance = data;
    viewer = instance->data;
 
    printf("Drag start...\n");
 
    tree = ETK_TREE(object);
-   row = etk_tree_selected_row_get(tree);
    drag = (ETK_WIDGET(tree))->drag;
-   //etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), &icol1_string, &icol2_string, etk_tree_nth_col_get(tree, 1),NULL);
-   
+
+   for (rows = etk_tree_selected_rows_get(tree); rows; rows = rows->next ) {
+	   printf("Row %p resolves to %p:%s!\n", rows->data, ecore_hash_get(row_hash, rows->data),
+			   ((gui_file*)ecore_hash_get(row_hash, rows->data))->file->uri );
+   }
+  
+
    types = calloc(1, sizeof(char*));
    num_types = 1;
    types[0] = strdup("text/plain");
@@ -247,7 +253,6 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
 
   ecore_hash_set(viewer->gui_hash, file, e_file);
 
-  printf("Set %p to %p\n", new_row, e_file);
   ecore_hash_set(row_hash, new_row, e_file);
 
   /*Save this file in this list of files we're responsible for */

@@ -39,6 +39,15 @@ void entropy_generic_file_destroy(entropy_generic_file* file) {
 		print_allocation();
 }
 
+void entropy_generic_file_uri_set(entropy_generic_file* file) {
+	if (file->uri == NULL) {
+		file->uri =entropy_core_generic_file_uri_create(file,0);
+		ecore_hash_set(entropy_core_get_core()->uri_reference_list, file->uri, file);
+
+		printf("Set uri for %p to %s...\n", file, file->uri);
+	}
+}
+
 /*Ecore_List* entropy_generic_file_list_sort(Ecore_List* file_list) {
 	Ecore_List* new_list = ecore_list_new();
 	entropy_generic_file* file_ins;

@@ -11,7 +11,7 @@
 #include <limits.h>
 
 #define NO_HIDDEN 1
-#define URI_POSIX "posix"
+#define URI_POSIX "file"
 
 
 
@@ -573,7 +573,7 @@ filelist_get (entropy_file_request * request)
   evfs_file_uri_path *dir_path;
   entropy_file_listener *listener;
 
-  if ((!strcmp (request->file->uri_base, "posix")) && !request->drill_down
+  if ((!strcmp (request->file->uri_base, URI_POSIX)) && !request->drill_down
       && !request->file->parent) {
     printf ("Listing standard posix directory...\n");
 
@@ -596,7 +596,7 @@ filelist_get (entropy_file_request * request)
       return NULL;
     }
 
-    snprintf (posix_name, 1024, "posix://%s", dire);
+    snprintf (posix_name, 1024, "file://%s", dire);
     dir_path = evfs_parse_uri (posix_name);
 
     /*First demonitor this reqeuestor's last directory, if any */
@@ -626,7 +626,7 @@ filelist_get (entropy_file_request * request)
 	if (request->file_type == FILE_ALL || filetype == request->file_type) {
 	  /*printf ("Adding..\n"); */
 
-	  md5 = md5_entropy_path_file ("posix", dire, de->d_name);
+	  md5 = md5_entropy_path_file ("file", dire, de->d_name);
 
 	  /*printf("Looking for key %s\n", md5);  */
 	  if (!(listener = entropy_core_file_cache_retrieve (md5))) {

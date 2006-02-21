@@ -178,7 +178,7 @@ location_add_execute_cb (Ewl_Widget * item, void *ev_data, void *user_data)
 
 
   if (ewl_checkbutton_is_checked (EWL_CHECKBUTTON (viewer->posix_radio))) {
-    snprintf (new_uri, 2048, "posix://%s", path);
+    snprintf (new_uri, 2048, "file://%s", path);
     printf ("New URI is: '%s'\n", new_uri);
     layout_ewl_simple_add_header (instance, display_name, new_uri);
 
@@ -515,7 +515,7 @@ layout_ewl_simple_config_create (entropy_core * core)
   char *eg = calloc (HEADER_CONFIG_MAX, sizeof (char));
 
   snprintf (eg, HEADER_CONFIG_MAX,
-	    "Computer;posix:///|Home;posix://%s|Samba Example (Don't use!);smb://username:password@/test/machine/folder",
+	    "Computer;file:///|Home;file://%s|Samba Example (Don't use!);smb://username:password@/test/machine/folder",
 	    entropy_core_home_dir_get (core));
 
   //printf("Setting default config string..\n");

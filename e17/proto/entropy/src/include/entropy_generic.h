@@ -95,4 +95,6 @@ enum entropy_generic_file_type {
 	FILE_FOLDER
 };
 
+void entropy_generic_file_uri_set(entropy_generic_file* file);
+
 #endif

@@ -302,7 +302,7 @@ entropy_plugin_layout_create (entropy_core * core)
 
    strcpy(file->path, home);
    strcpy(file->filename, pos);
-   strcpy(file->uri_base, "posix");
+   strcpy(file->uri_base, "file");
    strcpy(file->mime_type, "file/folder");
 
 
@@ -325,7 +325,7 @@ entropy_plugin_layout_create (entropy_core * core)
    
    strcpy(file->path, "/");
    strcpy(file->filename, "/");
-   strcpy(file->uri_base, "posix");
+   strcpy(file->uri_base, "file");
    strcpy(file->mime_type, "file/folder");
 
    instance = (*structure_plugin_init)(core, layout, row,file);

@@ -1,7 +1,7 @@
 #include "entropy.h"
 
 static Ecore_List *types = NULL;
-#define THUMBNAILER_LOCAL_PLUGIN "posix"
+#define THUMBNAILER_LOCAL_PLUGIN "file"
 
 int
 entropy_plugin_type_get ()
@@ -50,7 +50,7 @@ entropy_thumbnailer_thumbnail_get (entropy_thumbnail_request * request)
   entropy_thumbnail *thumb;
 
   /*This thumbnailer is only for local files */
-  if (strcmp (request->file->uri_base, "posix"))
+  if (strcmp (request->file->uri_base, THUMBNAILER_LOCAL_PLUGIN))
     return NULL;
 
   if (!request->file->thumbnail) {

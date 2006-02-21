@@ -13,8 +13,8 @@ static entropy_generic_file *tmp_file;
 static entropy_gui_component_instance *local_instance;
 
 
-#define THUMBNAILER_LOCAL_PLUGIN "posix"
-#define TMP_THUMBNAIL "posix:///tmp/"
+#define THUMBNAILER_LOCAL_PLUGIN "file"
+#define TMP_THUMBNAIL "file:///tmp/"
 
 int
 entropy_plugin_type_get ()
@@ -55,7 +55,7 @@ entropy_thumbnailer_thumbnail_get (entropy_thumbnail_request * request)
   copy_func = dlsym (plugin->dl_ref, "entropy_filesystem_file_copy");
 
   /*This thumbnailer is only for remotel files */
-  if (!strcmp (request->file->uri_base, "posix"))
+  if (!strcmp (request->file->uri_base, "file"))
     return NULL;
 
   /*If we already have a thumbnail, don't bother remaking it */
@@ -93,7 +93,7 @@ entropy_plugin_init (entropy_core * core)
   file_instance_hash = ecore_hash_new (ecore_str_hash, ecore_str_compare);
 
   tmp_file = entropy_generic_file_new ();
-  strcpy (tmp_file->uri_base, "posix");
+  strcpy (tmp_file->uri_base, "file");
   strcpy (tmp_file->path, "/tmp");
 
   entropy_core_component_event_register (instance,

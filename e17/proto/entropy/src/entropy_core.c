@@ -1256,6 +1256,9 @@ void entropy_core_file_cache_add(char* md5, entropy_file_listener* listener) {
 		printf("*** BAD: Called set-reference with file already cached!\n");
 		entropy_core_file_cache_add_reference(md5);
 	}
+
+	entropy_generic_file_uri_set(listener->file);
+	
 	file_cache_size++;
 	/*printf("File cache goes to %ld\n", file_cache_size);*/
 	UNLOCK(&core_core->file_cache_mutex);
@@ -1269,6 +1272,7 @@ entropy_generic_file* entropy_core_uri_generic_file_retrieve(char* uri) {
 	return file;
 }
 
+
 void entropy_core_file_cache_add_reference(char* md5) {
 	LOCK(&core_core->file_cache_mutex);
 	entropy_file_listener* listener = ecore_hash_get(core_core->file_interest_list, md5);
@@ -1278,10 +1282,7 @@ void entropy_core_file_cache_add_reference(char* md5) {
 
 		/*At this point, check if the file needs a uri generating..
 		 * And generate if necesary */
-		if (!listener->file->uri) {
-			listener->file->uri = 	entropy_core_generic_file_uri_create(listener->file,0);
-			ecore_hash_set(core_core->uri_reference_list, listener->file->uri, listener->file);
-		}
+		entropy_generic_file_uri_set(listener->file);
 	}
 	UNLOCK(&core_core->file_cache_mutex);
 }
