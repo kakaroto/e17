@@ -550,6 +550,7 @@ layout_ewl_simple_add_header (entropy_gui_component_instance * instance,
 
   header->header = strdup (name);
   header->uri = strdup (uri);
+  
   header->visual = hbox;
   header->layout = instance;
   ecore_hash_set (gui->headers, hbox, header);

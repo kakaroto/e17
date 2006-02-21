@@ -91,14 +91,17 @@ static void _etk_structure_viewer_xdnd_drag_drop_cb(Etk_Object *object, void *ev
 	     {
 		     entropy_generic_file* file = entropy_core_uri_generic_file_retrieve(files->files[i]);
 	     
-		     if (file) {
-			     printf("File is '%s' ---> %p\n", files->files[i], file);
-			     printf("Destination: %s\n", e_event->file->uri);
-
-			     entropy_plugin_filesystem_file_copy(file, e_event->file->uri, instance);
-		     } else {
-			     printf("Argh! need to make one of these files!\n");
+		     if (!file) {
+			     entropy_file_listener* listener = entropy_malloc(sizeof(entropy_file_listener));
+			     file = entropy_core_parse_uri(files->files[i]);
+			     listener->file = file;
+			     listener->count = 1;
+			     entropy_core_file_cache_add(file->md5, listener);
 		     }
+		     printf("File is '%s' ---> %p\n", files->files[i], file);
+		     printf("Destination: %s\n", e_event->file->uri);
+
+		     entropy_plugin_filesystem_file_copy(file, e_event->file->uri, instance);
 	     }
    } else {
 	   printf("Could not get instance for dropped row!\n");
