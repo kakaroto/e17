@@ -14,25 +14,20 @@ group
     {
 	name, "modules/uptime/main";
 	parts {
-      	part {
-	     name:          "base";
-	     type: RECT;
-	     mouse_events:  0;
-	     description {
-	     		 state:    "default" 0.0;
-			 color: 255 255 255 0;
-	     	  	 rel1 { 
-	     	    	      offset: 0 0; 
-	     	  	 }
-	      	  	 rel2 { 
-	    	    	      offset: -1 -1; 
-	     	  	 }
-	     }
+      part {
+      	   name: "base";
+	   type: RECT;
+	   mouse_events: 0;
+	   description {
+	   	       state: "default" 0.0;
+		       color: 255 255 255 255;
+	   }
+      }
       	     
-	     }
      		part {
 			name,		"uptime";
 			type,           TEXT;
+	    clip_to: "base";	 	    			
 			effect,         SOFT_SHADOW;
 			mouse_events, 0;
 	    description {
@@ -50,7 +45,7 @@ group
 	      text {
 		   text: "uptime"; 
 		   font: "VeraMono";
-		   size:  10;     
+		   size:  8;     
 		   min:     1 1;
 		   align: 0.5 0.5;
 	      }
