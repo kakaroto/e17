@@ -69,7 +69,7 @@ group
 	      color: 51 181 69 255;
 	      color3: 0 0 0 100;
 	      text {
-		   text: "out"; 
+		   text: ""; 
 		   font: "VeraMono";
 		   size:  10;     
 		   min:     1 1;
@@ -98,7 +98,7 @@ group
 	      color: 213 91 91 255;
 	      color3: 0 0 0 100;
 	      text {
-		   text: "in"; 
+		   text: ""; 
 		   font: "VeraMono";
 		   size:  10;     
 		   min:     1 1;
