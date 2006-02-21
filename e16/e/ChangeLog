@@ -3781,3 +3781,15 @@ Rename some files.
 Quick fix for apps that want to inherit the root pixmap.
 Notes on tweaking the Aqua theme (Yasufumi Haga).
 
+
+-------------------------------------------------------------------------------
+
+Tue Feb 21 19:58:22 CET 2006
+(Kim)
+
+--- 0.16.8.1 0.03 ---
+Add move/resize functions with action source parameter.
+Yet another attempt to get pager scaling on resolution change right.
+Reenable having menu definitions in theme (hmm.. why did I take this out?).
+Fix background configuration when background is NONE.
+
