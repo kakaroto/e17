@@ -325,6 +325,12 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 	      }
 	      break;
 
+     case ENTROPY_NOTIFY_FILE_CREATE:{
+      //printf ("Received file create event at icon viewer for file %s \n", ((entropy_generic_file*)ret)->filename);
+      list_viewer_add_row (comp, (entropy_generic_file *) el);				      
+     }
+     break;	  
+
      case ENTROPY_NOTIFY_THUMBNAIL_REQUEST:{
    	   /*Only bother if we have a thumbnail, and a component */
 	      if (el && comp) {
