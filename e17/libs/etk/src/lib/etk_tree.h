@@ -85,6 +85,7 @@ struct _Etk_Tree
    
    Etk_Tree_Row root;
    Etk_Tree_Row *last_selected;
+   int           num_selected_rows;
 
    Evas_Object *headers_clip;
    Evas_List *rows_widgets;
