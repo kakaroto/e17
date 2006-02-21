@@ -276,6 +276,7 @@ Evas_List   *etk_widget_dnd_dest_widgets_get();
 void         etk_widget_dnd_source_set(Etk_Widget *widget, Etk_Bool on);
 Etk_Bool     etk_widget_dnd_source_get(Etk_Widget *widget);
 void         etk_widget_dnd_drag_widget_set(Etk_Widget *widget, Etk_Widget *drag_widget);
+Etk_Widget  *etk_widget_dnd_drag_widget_get(Etk_Widget *widget);  
 void         etk_widget_dnd_drag_data_set(Etk_Widget *widget, const char **types, int num_types, void *data, int data_size);
 const char **etk_widget_dnd_files_get(Etk_Widget *e, int *num_files);
 void         etk_widget_dnd_types_set(Etk_Widget *widget, char **types, int num);

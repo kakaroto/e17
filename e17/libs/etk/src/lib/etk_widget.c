@@ -1403,6 +1403,32 @@ void etk_widget_dnd_drag_widget_set(Etk_Widget *widget, Etk_Widget *drag_widget)
    etk_container_add(ETK_CONTAINER(widget->drag), drag_widget);
 }
 
+/**
+ * @brief Gets the visual data for the drag (the widget to be displayed)
+ * @param widget a widget
+ * @Returns Return the widget that will appear in the drag window
+ */
+Etk_Widget *etk_widget_dnd_drag_widget_get(Etk_Widget *widget)
+{
+   Evas_List *children = NULL;
+   
+   if(!widget)
+     return;
+   
+   children = etk_container_children_get(ETK_CONTAINER(widget->drag));
+   
+   if(!children)
+     return NULL;
+   
+   if(evas_list_count(children) < 1)
+     return NULL;
+   
+   if(ETK_IS_WIDGET(children->data))
+     return (Etk_Widget*)children->data;
+   
+   return NULL;
+}
+
 void etk_widget_dnd_drag_data_set(Etk_Widget *widget, const char **types, int num_types, void *data, int data_size)
 {
    if(!widget)
