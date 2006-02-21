@@ -95,6 +95,9 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
    nf = cfd->data;
    nf->net->cfd = NULL;
+   E_FREE(cfdata->device);
+   if (cfdata->devs)
+     ecore_list_destroy(cfdata->devs);
    free(cfdata);
 }
 
