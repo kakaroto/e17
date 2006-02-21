@@ -1529,7 +1529,7 @@ static void _etk_tree_constructor(Etk_Tree *tree)
    tree->expander_size = 0;
    tree->headers_clip = NULL;
    tree->rows_widgets = NULL;
-   tree->num_rows_selected = 0;
+   tree->num_selected_rows = 0;
 
    tree->built = ETK_FALSE;
    tree->frozen = ETK_FALSE;
