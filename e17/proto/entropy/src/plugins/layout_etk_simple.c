@@ -200,7 +200,8 @@ entropy_plugin_layout_create (entropy_core * core)
   Etk_Widget* menu;
   char* home = strdup(getenv("HOME"));
   char* pos;
-
+  char* md5;
+  entropy_file_listener* listener;
 
   /*Entropy related init */
   layout = entropy_malloc (sizeof (entropy_gui_component_instance));	/*Create a component instance */
@@ -305,6 +306,12 @@ entropy_plugin_layout_create (entropy_core * core)
    strcpy(file->uri_base, "file");
    strcpy(file->mime_type, "file/folder");
 
+   listener = entropy_malloc(sizeof(entropy_file_listener));
+   file->md5 = md5_entropy_path_file(file->uri_base, file->path, file->filename);
+   listener->file = file;
+   listener->count = 1;
+   entropy_core_file_cache_add(file->md5, listener);
+
 
    instance = (*structure_plugin_init)(core, layout, row,file);
    instance->plugin = structure;
@@ -327,6 +334,13 @@ entropy_plugin_layout_create (entropy_core * core)
    strcpy(file->filename, "/");
    strcpy(file->uri_base, "file");
    strcpy(file->mime_type, "file/folder");
+
+   listener = entropy_malloc(sizeof(entropy_file_listener));
+   file->md5 = md5_entropy_path_file(file->uri_base, file->path, file->filename);
+   listener->file = file;
+   listener->count = 1;
+   entropy_core_file_cache_add(file->md5, listener);
+   
 
    instance = (*structure_plugin_init)(core, layout, row,file);
    instance->plugin = structure;
