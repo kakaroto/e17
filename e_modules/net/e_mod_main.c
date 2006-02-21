@@ -497,18 +497,14 @@ _net_face_update_values(void *data)
 	snprintf(out_str, sizeof(out_str), "%d B", out);	
 	break;
       case NET_DISPLAY_KBYTES:
-	//if ((in > 1024) && (in < 1048576))
-	  in = in / 1024;
-	//if ((out > 1024) && (out < 1048576))
-	  out = out / 1024;
+	in = in / 1024;
+	out = out / 1024;
 	snprintf(in_str, sizeof(in_str), "%d KB", in);
 	snprintf(out_str, sizeof(out_str), "%d KB", out);
 	break;
       case NET_DISPLAY_MBYTES:
-	//if (in > 1048576)
-	  in = in / 1048576;
-	//if (out > 1048576)
-	  out = out / 1048576;
+	in = in / 1048576;
+	out = out / 1048576;
 	snprintf(in_str, sizeof(in_str), "%d MB", in);
 	snprintf(out_str, sizeof(out_str), "%d MB", out);	
 	break;
