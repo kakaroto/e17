@@ -5,6 +5,12 @@ typedef struct _Config Config;
 typedef struct _Config_Face Config_Face;
 typedef struct _Net Net;
 typedef struct _Net_Face Net_Face;
+typedef enum   _Display_Mode 
+{
+   NET_DISPLAY_BYTES,
+     NET_DISPLAY_KBYTES,
+     NET_DISPLAY_MBYTES
+} Display_Mode;
 
 struct _Config 
 {
@@ -16,6 +22,7 @@ struct _Config_Face
    unsigned char enabled;
    char *device;
    int check_interval;
+   int display_mode;
 };
 
 struct _Net 

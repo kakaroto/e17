@@ -15,38 +15,13 @@ group
       name: "modules/net/main";
       script {
 		public message(Msg_Type:type, id, ...) {
-		      if (type == MSG_INT_SET) {
-		      		new tmp;
+		      if (type == MSG_STRING_SET) {
 		      		new in_str[64];
 		      		new out_str[64];		      		
-		      		
-				tmp = getarg(2);
-				if (tmp > 1048576) {
-					tmp = tmp / 1048576;
-	   		   		snprintf(in_str, sizeof(in_str), "%i MB", tmp);					
-				}
-				else if (tmp > 1024 && tmp < 1048576) {
-					tmp = tmp / 1024;
-	   		   		snprintf(in_str, sizeof(in_str), "%i KB", tmp);					
-				}
-				else {
-	   		   		snprintf(in_str, sizeof(in_str), "%i B", tmp);
-	   		   	}
+				getsarg(2, in_str, sizeof(in_str));
+				getsarg(3, out_str, sizeof(out_str));
 				set_text(PART:"in-text", in_str);				
-
-				tmp = getarg(3);
-				if (tmp > 1048576) {
-					tmp = tmp / 1048576;
-	   		   		snprintf(out_str, sizeof(out_str), "%i MB", tmp);					
-				}
-				else if (tmp > 1024 && tmp < 1048576) {
-					tmp = tmp / 1024;
-	   		   		snprintf(out_str, sizeof(out_str), "%i KB", tmp);					
-				}
-				else {
-	   		   		snprintf(out_str, sizeof(out_str), "%i B", tmp);
-	   		   	}
-				set_text(PART:"out-text", out_str);				
+				set_text(PART:"out-text", out_str);								
 		      }
 	       }      
       }

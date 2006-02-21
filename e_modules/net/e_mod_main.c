@@ -143,6 +143,7 @@ _net_init(E_Module *m)
    E_CONFIG_VAL(D, T, enabled, UCHAR);
    E_CONFIG_VAL(D, T, device, STR);
    E_CONFIG_VAL(D, T, check_interval, INT);
+   E_CONFIG_VAL(D, T, display_mode, INT);
    
    conf_edd = E_CONFIG_DD_NEW("Net_Config", Config);
    #undef T
@@ -180,6 +181,7 @@ _net_init(E_Module *m)
 		       nf->conf->enabled = 1;
 		       nf->conf->device = (char *)evas_stringshare_add("eth0");
 		       nf->conf->check_interval = 30;
+		       nf->conf->display_mode = NET_DISPLAY_MBYTES;
 		       n->conf->faces = evas_list_append(n->conf->faces, nf->conf);
 		    }
 		  else 
@@ -188,7 +190,8 @@ _net_init(E_Module *m)
 		       fl = fl->next;
 		    }
 		  E_CONFIG_LIMIT(nf->conf->check_interval, 0, 60);
-
+		  E_CONFIG_LIMIT(nf->conf->display_mode, NET_DISPLAY_BYTES, NET_DISPLAY_MBYTES);
+		  
 		  nf->monitor = ecore_timer_add((double)nf->conf->check_interval, _net_face_update_values, nf);   
 		  
 		  _net_face_menu_new(nf);
@@ -481,18 +484,41 @@ _net_face_update_values(void *data)
      old_out = out;
    else
      out = 0;
-
-   /* Graph values */
-   /* _net_face_graph_values(nf, in, out); */
    
    /* Update the modules text */
-   Edje_Message_Int_Set *msg;
+   Edje_Message_String_Set *msg;
+   char in_str[100];
+   char out_str[100];
    
-   msg = malloc(sizeof(Edje_Message_Int_Set) + 1 * sizeof(int));
+   switch (nf->conf->display_mode) 
+     {
+      case NET_DISPLAY_BYTES:
+	snprintf(in_str, sizeof(in_str), "%d B", in);
+	snprintf(out_str, sizeof(out_str), "%d B", out);	
+	break;
+      case NET_DISPLAY_KBYTES:
+	//if ((in > 1024) && (in < 1048576))
+	  in = in / 1024;
+	//if ((out > 1024) && (out < 1048576))
+	  out = out / 1024;
+	snprintf(in_str, sizeof(in_str), "%d KB", in);
+	snprintf(out_str, sizeof(out_str), "%d KB", out);
+	break;
+      case NET_DISPLAY_MBYTES:
+	//if (in > 1048576)
+	  in = in / 1048576;
+	//if (out > 1048576)
+	  out = out / 1048576;
+	snprintf(in_str, sizeof(in_str), "%d MB", in);
+	snprintf(out_str, sizeof(out_str), "%d MB", out);	
+	break;
+     }
+   
+   msg = malloc(sizeof(Edje_Message_String_Set) - sizeof(char *) + (1 + sizeof(char *)));
    msg->count = 2;
-   msg->val[0] = in;
-   msg->val[1] = out;   
-   edje_object_message_send(nf->net_obj, EDJE_MESSAGE_INT_SET, 1, msg);
+   msg->str[0] = in_str;
+   msg->str[1] = out_str;   
+   edje_object_message_send(nf->net_obj, EDJE_MESSAGE_STRING_SET, 1, msg);
    free(msg);
 
    return 1;
