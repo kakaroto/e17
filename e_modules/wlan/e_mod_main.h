@@ -5,12 +5,6 @@ typedef struct _Config Config;
 typedef struct _Config_Face Config_Face;
 typedef struct _Wlan Wlan;
 typedef struct _Wlan_Face Wlan_Face;
-typedef enum   _Display_Mode 
-{
-   NET_DISPLAY_BYTES,
-     NET_DISPLAY_KBYTES,
-     NET_DISPLAY_MBYTES
-} Display_Mode;
 
 struct _Config 
 {
@@ -22,7 +16,6 @@ struct _Config_Face
    unsigned char enabled;
    char *device;
    int check_interval;
-   int display_mode;
 };
 
 struct _Wlan 
@@ -44,7 +37,7 @@ struct _Wlan_Face
    
    Evas_Object *wlan_obj;
    Evas_Object *event_obj;
-   Evas_Object *chart_obj;
+/*   Evas_Object *chart_obj; */
    
    Ecore_Timer *monitor;
    

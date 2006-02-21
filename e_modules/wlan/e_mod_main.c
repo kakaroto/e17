@@ -142,7 +142,6 @@ _wlan_init(E_Module *m)
    E_CONFIG_VAL(D, T, enabled, UCHAR);
    E_CONFIG_VAL(D, T, device, STR);
    E_CONFIG_VAL(D, T, check_interval, INT);
-   E_CONFIG_VAL(D, T, display_mode, INT);
    
    conf_edd = E_CONFIG_DD_NEW("Wlan_Config", Config);
    #undef T
@@ -179,7 +178,6 @@ _wlan_init(E_Module *m)
 		       nf->conf->enabled = 1;
 		       nf->conf->device = (char *)evas_stringshare_add("wlan0");
 		       nf->conf->check_interval = 30;
-		       nf->conf->display_mode = NET_DISPLAY_MBYTES;
 		       n->conf->faces = evas_list_append(n->conf->faces, nf->conf);
 		    }
 		  else 
@@ -188,7 +186,6 @@ _wlan_init(E_Module *m)
 		       fl = fl->next;
 		    }
 		  E_CONFIG_LIMIT(nf->conf->check_interval, 0, 60);
-		  E_CONFIG_LIMIT(nf->conf->display_mode, NET_DISPLAY_BYTES, NET_DISPLAY_MBYTES);
 		  
 		  nf->monitor = ecore_timer_add((double)nf->conf->check_interval, _wlan_face_update_values, nf);   
 		  
@@ -339,7 +336,6 @@ static void
 _wlan_face_free(Wlan_Face *nf) 
 {
    e_object_unref(E_OBJECT(nf->con));
-   e_object_del(E_OBJECT(nf->menu));
    
    if (nf->monitor)
      ecore_timer_del(nf->monitor);
@@ -349,12 +345,6 @@ _wlan_face_free(Wlan_Face *nf)
      evas_object_del(nf->event_obj);
    if (nf->wlan_obj)
      evas_object_del(nf->wlan_obj);
-
-   /*
-   if (nf->chart_obj)
-     evas_object_del(nf->chart_obj);
-    */
-   
    if (nf->gmc) 
      {
 	e_gadman_client_save(nf->gmc);

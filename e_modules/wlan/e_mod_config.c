@@ -7,7 +7,6 @@ struct _E_Config_Dialog_Data
 {
    char *device;
    int check_interval;
-   int display_mode;
    
    Ecore_List *devs;
    int dev_num;
@@ -51,8 +50,6 @@ _fill_data(Wlan_Face *nf, E_Config_Dialog_Data *cfdata)
      cfdata->device = strdup(nf->conf->device);
    else
      cfdata->device = NULL;
-
-   cfdata->display_mode = nf->conf->display_mode;
    
    if (!cfdata->device)
      return;
@@ -106,19 +103,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    char *tmp;
    int i;
    
-   o = e_widget_list_add(evas, 0, 0);
-   of = e_widget_framelist_add(evas, _("Display Settings"), 0);   
-   ot = e_widget_table_add(evas, 0);   
-   rg = e_widget_radio_group_new(&(cfdata->display_mode));
-   ob = e_widget_radio_add(evas, _("Show In Bytes"), NET_DISPLAY_BYTES, rg);
-   e_widget_table_object_append (ot, ob, 0, 0, 1, 1, 1, 0, 1, 0);
-   ob = e_widget_radio_add(evas, _("Show In KBytes"), NET_DISPLAY_KBYTES, rg);
-   e_widget_table_object_append (ot, ob, 0, 1, 1, 1, 1, 0, 1, 0);
-   ob = e_widget_radio_add(evas, _("Show In MBytes"), NET_DISPLAY_MBYTES, rg);
-   e_widget_table_object_append (ot, ob, 0, 2, 1, 1, 1, 0, 1, 0);   
-   e_widget_framelist_object_append(of, ot);
-   e_widget_list_object_append(o, of, 1, 1, 0.5);
-      
+   o = e_widget_list_add(evas, 0, 0);      
    of = e_widget_framelist_add(evas, _("Device Settings"), 0);
    ot = e_widget_table_add(evas, 0);   
    rg = e_widget_radio_group_new(&(cfdata->dev_num));
@@ -153,7 +138,6 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    if (tmp != NULL)
      nf->conf->device = (char *)evas_stringshare_add(strdup(tmp));
    nf->conf->check_interval = cfdata->check_interval;
-   nf->conf->display_mode = cfdata->display_mode;
    e_config_save_queue ();
 
    if (nf->monitor)
