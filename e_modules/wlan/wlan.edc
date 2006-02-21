@@ -25,7 +25,18 @@ group
       
       parts{
       part {
+      	   name: "base";
+	   type: RECT;
+	   mouse_events: 0;
+	   description {
+	   	       state: "default" 0.0;
+		       color: 255 255 255 255;
+	   }
+      }
+      
+      part {
 	 name:          "wlan";
+	 clip_to: "base";	 	 
 	 mouse_events:  0;
 	 description {
 	    state:    "default" 0.0;
@@ -49,6 +60,7 @@ group
 	  {
 	    name:           "link-text";
 	    type:           TEXT;
+	    clip_to: "base";	 	    
 	    effect:         SOFT_SHADOW;
 	    mouse_events: 0;
 	    description {
@@ -67,7 +79,7 @@ group
 	      text {
 		   text: "Link"; 
 		   font: "VeraMono";
-		   size:  10;     
+		   size:  8;     
 		   min:     1 1;
 		   align: 1.0 0.0;
 	      }

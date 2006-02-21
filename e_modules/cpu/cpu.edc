@@ -25,17 +25,28 @@ group
       
       parts{
       part {
+      	   name: "base";
+	   type: RECT;
+	   mouse_events: 0;
+	   description {
+	   	       state: "default" 0.0;
+		       color: 255 255 255 255;
+	   }
+      }
+      
+      part {
 	 name:          "cpu";
+	 clip_to: "base";	 
 	 mouse_events:  0;
 	 description {
 	    state:    "default" 0.0;
-	    color: 255 255 255 255;
+	    color: 255 255 255 200;
 	    aspect:   1.0 1.0;
 	    rel1 { 
-	    	 offset: 0 0; 
+	    	 offset: 0 6; 
 	    }
 	    rel2 { 
-	    	 offset: -1 -1; 
+	    	 offset: -1 -6; 
 	    }
 	    image { 
 	    	  normal: "cpu.png"; 
@@ -49,6 +60,7 @@ group
 	  {
 	    name:           "in-text";
 	    type:           TEXT;
+           clip_to: "base";	    
 	    effect:         SOFT_SHADOW;
 	    mouse_events: 0;
 	    description {
@@ -67,7 +79,7 @@ group
 	      text {
 		   text: "%"; 
 		   font: "VeraMono";
-		   size:  10;     
+		   size:  8;     
 		   min:     1 1;
 		   align: 1.0 0.0;
 	      }
