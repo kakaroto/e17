@@ -62,7 +62,7 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 	
 		m->imagetree = ewl_tree_new(1);
 		ewl_container_child_append(EWL_CONTAINER(m->images), m->imagetree);
-		ewl_object_maximum_size_set(EWL_OBJECT(m->imagetree), 200, 160);
+		ewl_object_maximum_size_set(EWL_OBJECT(m->imagetree), 200, 175);
 		ewl_widget_show(m->imagetree);
 		
 		/******************************************/
@@ -240,7 +240,7 @@ populatea_cb(Ewl_Widget *w, void *event, void *data)
 		
 		m->audiotree = ewl_tree_new(1);
 		ewl_container_child_append(EWL_CONTAINER(m->songs), m->audiotree);
-		ewl_object_maximum_size_set(EWL_OBJECT(m->audiotree), 200, 160);
+		ewl_object_maximum_size_set(EWL_OBJECT(m->audiotree), 200, 175);
 		ewl_widget_show(m->audiotree);
 	
 		/*************************************/

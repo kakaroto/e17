@@ -40,7 +40,7 @@ main(int argc, char **argv)
 	m->win = ewl_window_new();
 	ewl_window_title_set(EWL_WINDOW(m->win), "ephoto");
 	ewl_window_name_set(EWL_WINDOW(m->win), "ephoto");
-	ewl_object_size_request(EWL_OBJECT(m->win), 524, 440);
+	ewl_object_size_request(EWL_OBJECT(m->win), 550, 480);
 	ewl_callback_append(m->win, EWL_CALLBACK_DELETE_WINDOW, destroy_cb, NULL);
 	ewl_widget_show(m->win);
 
@@ -61,7 +61,7 @@ main(int argc, char **argv)
 	ewl_border_label_alignment_set(EWL_BORDER(m->images), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_child_append(EWL_CONTAINER(m->vbox), m->images);
 	ewl_object_alignment_set(EWL_OBJECT(m->images), EWL_FLAG_ALIGN_CENTER);
-	ewl_object_maximum_size_set(EWL_OBJECT(m->images), 250, 210);
+	ewl_object_size_request(EWL_OBJECT(m->images), 250, 210);
 	ewl_widget_show(m->images);
 	
 	m->directory = ewl_entry_new();
@@ -81,7 +81,7 @@ main(int argc, char **argv)
 	ewl_border_label_alignment_set(EWL_BORDER(m->songs), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_child_append(EWL_CONTAINER(m->vbox), m->songs);
 	ewl_object_alignment_set(EWL_OBJECT(m->songs), EWL_FLAG_ALIGN_CENTER);
-	ewl_object_maximum_size_set(EWL_OBJECT(m->songs), 250, 210);
+	ewl_object_size_request(EWL_OBJECT(m->songs), 250, 210);
 	ewl_widget_show(m->songs);
 	
 	m->directorya = ewl_entry_new();
