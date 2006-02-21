@@ -492,20 +492,20 @@ _net_face_update_values(void *data)
    switch (nf->conf->display_mode) 
      {
       case NET_DISPLAY_BYTES:
-	snprintf(in_str, sizeof(in_str), "%d B", in);
-	snprintf(out_str, sizeof(out_str), "%d B", out);	
+	snprintf(in_str, sizeof(in_str), "Rx: %d B", in);
+	snprintf(out_str, sizeof(out_str), "Tx: %d B", out);	
 	break;
       case NET_DISPLAY_KBYTES:
 	in = in / 1024;
 	out = out / 1024;
-	snprintf(in_str, sizeof(in_str), "%d KB", in);
-	snprintf(out_str, sizeof(out_str), "%d KB", out);
+	snprintf(in_str, sizeof(in_str), "Rx: %d KB", in);
+	snprintf(out_str, sizeof(out_str), "Tx: %d KB", out);
 	break;
       case NET_DISPLAY_MBYTES:
 	in = in / 1048576;
 	out = out / 1048576;
-	snprintf(in_str, sizeof(in_str), "%d MB", in);
-	snprintf(out_str, sizeof(out_str), "%d MB", out);	
+	snprintf(in_str, sizeof(in_str), "Rx: %d MB", in);
+	snprintf(out_str, sizeof(out_str), "Tx: %d MB", out);	
 	break;
      }
    
