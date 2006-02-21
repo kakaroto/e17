@@ -81,9 +81,6 @@ entropy_plugin_toolkit_get()
 static void _entropy_etk_list_viewer_drag_begin_cb(Etk_Object *object, void *data)
 {
    Etk_Tree *tree;
-   Etk_Tree_Row *row;
-   char *icol1_string;   
-   char *icol2_string;
    const char **types;
    unsigned int num_types;
    void *drag_data;
@@ -91,40 +88,50 @@ static void _entropy_etk_list_viewer_drag_begin_cb(Etk_Object *object, void *dat
    Etk_Widget *image;
    entropy_gui_component_instance* instance;
    entropy_etk_file_list_viewer* viewer;
+   int i=0;
+
+   char buffer[8192]; /* Um - help - what do we size this to? */
+   
+   int count = 0;
 
    Evas_List* rows;
 
    instance = data;
    viewer = instance->data;
 
-   printf("Drag start...\n");
-
    tree = ETK_TREE(object);
+   rows = etk_tree_selected_rows_get(tree);
    drag = (ETK_WIDGET(tree))->drag;
 
-   for (rows = etk_tree_selected_rows_get(tree); rows; rows = rows->next ) {
+   count = evas_list_count(rows);
+   bzero(buffer,8192);
+   for (; rows; rows = rows->next ) {
 	   printf("Row %p resolves to %p:%s!\n", rows->data, ecore_hash_get(row_hash, rows->data),
 			   ((gui_file*)ecore_hash_get(row_hash, rows->data))->file->uri );
+	   strcat(buffer, ((gui_file*)ecore_hash_get(row_hash, rows->data))->file->uri);
+	   strcat(buffer, "\r\n");
    }
   
 
    types = calloc(1, sizeof(char*));
    num_types = 1;
-   types[0] = strdup("text/plain");
-   drag_data = strdup("Hi!"); //ecore_hash_get(row_hash,  row);
+   types[0] = strdup("text/uri-list");
+    
 
-   printf("Row: %p, Drag data: %p\n", row, drag_data);
-   
-   //snprintf(drag_data, PATH_MAX * sizeof(char), "file://%s/%s", tab->cur_path, icol2_string);
+   printf("Drag buffer: %s\n", buffer);
    
    etk_drag_types_set(drag, types, num_types);
-   etk_drag_data_set(drag, drag_data, strlen(drag_data)+1);
+   etk_drag_data_set(drag, buffer, strlen(buffer)+1);
+
+
+
+   
    /*image = etk_image_new_from_file(icol1_string);
    etk_image_keep_aspect_set(ETK_IMAGE(image), ETK_TRUE);
    etk_widget_size_request_set(image, 96, 96);
    etk_container_add(ETK_CONTAINER(drag), image);*/
 
-
+   evas_list_free(rows);
 }
 
 
@@ -402,7 +409,7 @@ entropy_plugin_init (entropy_core * core,
   /*DND Setup*/
    dnd_types_num = 1;
    dnd_types = calloc(dnd_types_num, sizeof(char*));
-   dnd_types[0] = strdup("text/plain");  
+   dnd_types[0] = strdup("text/uri-list");  
   etk_widget_dnd_source_set(viewer->tree, ETK_TRUE);
   etk_widget_dnd_drag_widget_set(viewer->tree, etk_button_new_with_label("Drag Widget"));
   //etk_widget_dnd_drag_data_set(viewer->tree, dnd_types, dnd_types_num, "This is the drag data!", strlen("This is the drag data!") + 1);

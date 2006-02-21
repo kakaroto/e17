@@ -44,7 +44,6 @@ void entropy_generic_file_uri_set(entropy_generic_file* file) {
 		file->uri =entropy_core_generic_file_uri_create(file,0);
 		ecore_hash_set(entropy_core_get_core()->uri_reference_list, file->uri, file);
 
-		printf("Set uri for %p to %s...\n", file, file->uri);
 	}
 }
 

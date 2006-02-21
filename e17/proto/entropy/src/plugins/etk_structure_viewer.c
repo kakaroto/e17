@@ -63,15 +63,42 @@ entropy_plugin_toolkit_get()
 static void _etk_structure_viewer_xdnd_drag_drop_cb(Etk_Object *object, void *event, void *data)
 {
    Etk_Event_Selection_Request *ev;   
-   Etk_Selection_Data_Text *text;
-   
+   Etk_Selection_Data_Files *files;
+   Etk_Tree* tree;
+   Etk_Tree_Row* row;
    int i;
+   entropy_etk_file_structure_viewer* viewer;
+   entropy_gui_component_instance* instance;
+   event_file_core* e_event;
    
    ev = event;
-   text = ev->data;
-   
+   files = ev->data;
+   tree = ETK_TREE(object);
+   row = etk_tree_selected_row_get(tree);
 
-   printf("Drop data '%p'\n", (char*)text->text);
+   instance = ecore_hash_get(instance_map_hash, row);
+   if (instance) {
+	   viewer = instance->data;
+	   e_event = ecore_hash_get(viewer->row_hash, row);
+   
+	   if(ev->content != ETK_SELECTION_CONTENT_FILES) {
+	     printf("Drop wasn't files!\n");
+	     return;
+	   }
+
+	   printf("We received %d files\n", files->num_files);
+	   for (i = 0; i < files->num_files; i++)
+	     {
+		     entropy_generic_file* file = entropy_core_uri_generic_file_retrieve(files->files[i]);
+	     
+		     printf("File is '%s' ---> %p\n", files->files[i], file);
+		     printf("Destination: %s\n", e_event->file->uri);
+
+		     entropy_plugin_filesystem_file_copy(file, e_event->file->uri, instance);
+	     }
+   } else {
+	   printf("Could not get instance for dropped row!\n");
+   }
 }
 
 static void _etk_structure_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up_Down *event, void *data)
@@ -117,7 +144,6 @@ structure_viewer_add_row (entropy_gui_component_instance * instance,
 {
   Etk_Tree_Row* new_row;
   entropy_etk_file_structure_viewer* viewer;
-  char* folder;
   event_file_core *event;
   Etk_Tree_Col* col;
   Etk_Tree_Row* parent;
@@ -252,7 +278,7 @@ entropy_plugin_init (entropy_core * core,
 	  /*Accept drops*/
 	   dnd_types_num = 1;
 	   dnd_types = calloc(dnd_types_num, sizeof(char*));
-	   dnd_types[0] = strdup("text/plain");  
+	   dnd_types[0] = strdup("text/uri-list");  
 	   etk_widget_dnd_types_set(  ((Etk_Tree_Row*)parent_visual)->tree, 
 	   			dnd_types, dnd_types_num);
 	   etk_widget_dnd_dest_set( ((Etk_Tree_Row*)parent_visual)->tree  , ETK_TRUE);
