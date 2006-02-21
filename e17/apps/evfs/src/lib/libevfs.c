@@ -237,7 +237,7 @@ evfs_tokenize_uri(char *uri)
    snprintf(dup_uri, strlen(uri) + 1, "%s ", uri);
 
    ecore_list_append(plugin, "smb");    /*Shift these to register when a plugin registers */
-   ecore_list_append(plugin, "posix");
+   ecore_list_append(plugin, "file");
    ecore_list_append(plugin, "tar");
    ecore_list_append(plugin, "bzip2");
    ecore_list_append(plugin, "ftp");

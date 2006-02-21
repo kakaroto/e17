@@ -192,11 +192,18 @@ typedef struct
 	SftpConnection* conn;
 } SftpOpenHandle;
 
+void sftp_ohandle_destroy(SftpOpenHandle* o) 
+{
+	if (o->sftp_handle) free(o->sftp_handle);
+	free(o);
+}
+
 typedef enum {
 	STATUS_PROGRESS,
 	STATUS_FINISHED,
 	STATUS_ATTR,
-	STATUS_DATA
+	STATUS_DATA,
+	STATUS_CLOSE
 } SftpReadStatus;
 
 
@@ -1012,7 +1019,42 @@ evfs_file_open(evfs_client * client, evfs_filereference * file)
 }
 
 int evfs_file_close(evfs_filereference * file) {
-	printf("SFTP_CLOSE: STUB\n");
+	SftpConnection* conn;
+	char* host, *path;
+	int rid;
+	SftpGenericHandle* handle;
+	SftpOpenHandle* ohandle;
+
+
+	sftp_split_host_path(file->path, &host, &path);
+	
+	
+	if ( !(conn = sftp_get_connection_for_host(host))) {
+		conn = sftp_connect(host);
+	}
+
+	while (conn->status == SFTP_INIT) {
+		ecore_main_loop_iterate();
+		usleep(10);		
+	}
+
+	ohandle = ecore_hash_get(sftp_open_handles, (long*)file->fd);
+	if (ohandle) {
+
+		//handle = sftp_file_close(ohandle);
+		while (! (handle->status == STATUS_FINISHED || handle->status == STATUS_CLOSE)) {
+			ecore_main_loop_iterate();
+			usleep(2);
+		}
+
+		free(host);
+		free(path);
+		ecore_hash_remove(sftp_open_handles, (long*)file->fd);
+		sftp_ohandle_destroy(ohandle);
+	} else {
+		printf("Could not find open file handle\n");
+	}
+
 }
 
 int evfs_file_write(evfs_filereference * file, char *bytes, long size) {

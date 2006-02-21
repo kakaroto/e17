@@ -80,7 +80,7 @@ Ecore_Hash *posix_monitor_hash;
 evfs_plugin_functions *
 evfs_plugin_init()
 {
-   printf("Initialising the posix plugin..\n");
+   printf("Initialising the file plugin..\n");
    evfs_plugin_functions *functions = calloc(1, sizeof(evfs_plugin_functions));
 
    posix_monitor_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
@@ -110,7 +110,7 @@ evfs_plugin_init()
 char *
 evfs_plugin_uri_get()
 {
-   return "posix";
+   return "file";
 }
 
 int
@@ -204,7 +204,7 @@ evfs_file_monitor_fam_handler(void *data, Ecore_File_Monitor * em,
              printf("  Notifying client at id %ld of %s\n", mon->client->id,
                     path);
 
-             evfs_file_monitor_event_create(mon->client, type, path, "posix");  /*Find a better way to do the plugin */
+             evfs_file_monitor_event_create(mon->client, type, path, "file");  /*Find a better way to do the plugin */
              /*We should really use an evfs_filereference here */
           }
      }
@@ -389,8 +389,14 @@ evfs_file_rename(evfs_client * client, evfs_command * command)
 int
 evfs_file_stat(evfs_command * command, struct stat *file_stat, int file_number)
 {
+   int res;
+	
    //printf("Getting file stat...\n");
-   int res = stat64(command->file_command.files[file_number]->path, file_stat);
+   #ifdef  __USE_LARGEFILE64
+   res = stat64(command->file_command.files[file_number]->path, file_stat);
+   #else
+   res = stat(command->file_command.files[file_number]->path, file_stat);
+   #endif
 
    if (!res)
       return EVFS_SUCCESS;
@@ -530,7 +536,7 @@ evfs_dir_list(evfs_client * client, evfs_command * command,
                }
 
              ref->path = strdup(full_name);
-             ref->plugin_uri = strdup("posix");
+             ref->plugin_uri = strdup("file");
              ecore_list_append(files, ref);
           }
      }

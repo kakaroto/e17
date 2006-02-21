@@ -42,7 +42,7 @@ callback(evfs_event * data, void *obj)
 
    /*if (mon_current == 2) {
     * static char str_data[1024];
-    * snprintf(str_data,1024,"posix://%s/newfile", getenv("HOME"));
+    * snprintf(str_data,1024,"file://%s/newfile", getenv("HOME"));
     * 
     * evfs_file_uri_path* path = evfs_parse_uri(str_data);
     * printf("Removing monitor...\n");
@@ -106,7 +106,7 @@ main(int argc, char **argv)
 
    if (!patharg)
      {
-        snprintf(pathi, 1024, "posix://%s", getenv("HOME"));
+        snprintf(pathi, 1024, "file://%s", getenv("HOME"));
      }
    else
      {
@@ -115,7 +115,7 @@ main(int argc, char **argv)
 
    con = evfs_connect(&callback, NULL);
 
-   //path = evfs_parse_uri("posix:///dev/ttyS0");
+   //path = evfs_parse_uri("file:///dev/ttyS0");
 
    printf("Listing dir: %s\n", pathi);
    dir_path = evfs_parse_uri(pathi);
