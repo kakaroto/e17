@@ -9,7 +9,8 @@ void entropy_thumbnailer_plugin_print(Ecore_Hash* mime_register) {
 	Ecore_List* keys = ecore_hash_keys(mime_register);
 	ecore_list_goto_first(keys);
 	while ( (mime_type = ecore_list_next(keys)) ) {
-		printf ("We have a handler for '%s', it is: %s\n", mime_type, ((entropy_plugin*)ecore_hash_get(mime_register, mime_type))->filename );
+		printf ("We have a handler for '%s', it is: %s\n", mime_type, 
+		((entropy_plugin*)ecore_hash_get(mime_register, mime_type))->filename );
 
 	}
 	ecore_list_destroy(keys);
@@ -119,4 +120,22 @@ void entropy_plugin_filesystem_file_remove(entropy_plugin* plugin, entropy_gener
 	del_func = dlsym(plugin->dl_ref, "entropy_filesystem_file_remove");
 
 	(*del_func)(file);
+}
+
+
+int entropy_plugin_filesystem_file_copy(entropy_generic_file* source, char* dest, entropy_gui_component_instance* requester) {
+  entropy_gui_component_instance *instance = requester;
+  entropy_plugin *plugin =
+    entropy_plugins_type_get_first (ENTROPY_PLUGIN_BACKEND_FILE,
+				    ENTROPY_PLUGIN_SUB_TYPE_ALL);
+
+  void (*copy_func) (entropy_generic_file * source, char *dest_uri,
+		     entropy_gui_component_instance * requester);
+
+
+  /*Get the func ref */
+  copy_func = dlsym (plugin->dl_ref, "entropy_filesystem_file_copy");
+
+  (*copy_func) (source, dest,
+		  instance);
 }

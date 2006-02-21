@@ -192,13 +192,6 @@ dnd_drop_callback (Ewl_Widget * w, void *ev_data, void *user_data)
       entropy_generic_file *file;
       char dest_dir[PATH_MAX];
 
-      entropy_plugin *plugin =
-	entropy_plugins_type_get_first (ENTROPY_PLUGIN_BACKEND_FILE,
-					ENTROPY_PLUGIN_SUB_TYPE_ALL);
-      void (*copy_func) (entropy_generic_file * source, char *dest_uri,
-			 entropy_gui_component_instance * requester);
-      copy_func = dlsym (plugin->dl_ref, "entropy_filesystem_file_copy");
-
       snprintf (dest_dir, PATH_MAX, "%s://%s/%s", event->file->uri_base,
 		event->file->path, event->file->filename);
 
@@ -208,7 +201,7 @@ dnd_drop_callback (Ewl_Widget * w, void *ev_data, void *user_data)
 	if ((file = entropy_core_object_file_association_get (icon))) {
 	  printf ("Filename: '%s' - '%s/%s'\n", file->uri_base, file->path,
 		  file->filename);
-	  (*copy_func) (file, dest_dir, event->instance);
+	      entropy_plugin_filesystem_file_copy(file, dest_dir, event->instance);
 	}
       }
 

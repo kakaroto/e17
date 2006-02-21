@@ -18,7 +18,6 @@ typedef struct entropy_config entropy_config;
 #include "entropy_generic.h"
 #include "string.h"
 #include "plugin_base.h"
-#include "plugin_helper.h"
 #include "entropy_mime_engine.h"
 #include "entropy_thumbnailer_engine.h"
 #include "thumbnail_generic.h"
@@ -28,6 +27,7 @@ typedef struct entropy_config entropy_config;
 #include "entropy_file.h"
 #include "entropy_macros.h"
 #include "entropy_config.h"
+#include "plugin_helper.h"
 
 #define IPC_TITLE "entropy"
 #define ENTROPY_IPC_EVENT_CORE 1

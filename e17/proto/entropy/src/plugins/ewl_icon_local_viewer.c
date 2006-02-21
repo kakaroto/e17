@@ -213,24 +213,12 @@ ewl_iconbox_file_paste_cb (Ewl_Widget * w, void *ev_data, void *user_data)
   entropy_generic_file *file;
   entropy_gui_component_instance *instance =
     ((entropy_gui_component_instance *) user_data);
-  entropy_plugin *plugin =
-    entropy_plugins_type_get_first (ENTROPY_PLUGIN_BACKEND_FILE,
-				    ENTROPY_PLUGIN_SUB_TYPE_ALL);
-
-  void (*copy_func) (entropy_generic_file * source, char *dest_uri,
-		     entropy_gui_component_instance * requester);
-
-
-  /*Get the func ref */
-  copy_func = dlsym (plugin->dl_ref, "entropy_filesystem_file_copy");
-
-  //printf("Paste the following files:\n");
 
   selected = entropy_core_selected_files_get (instance->core);
   ecore_list_goto_first (selected);
 
   while ((file = ecore_list_next (selected))) {
-    (*copy_func) (file, ((entropy_icon_viewer *) instance->data)->current_dir,
+    entropy_plugin_filesystem_file_copy(file, ((entropy_icon_viewer *) instance->data)->current_dir,
 		  instance);
   }
 }

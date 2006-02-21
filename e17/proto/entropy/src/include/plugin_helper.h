@@ -9,5 +9,6 @@ char* entropy_plugin_plugin_identify(entropy_plugin* plugin);
 char* entropy_plugin_helper_toolkit_get(entropy_plugin* plugin);
 
 void entropy_plugin_filesystem_file_remove(entropy_plugin* plugin, entropy_generic_file* file);
+int entropy_plugin_filesystem_file_copy(entropy_generic_file* source, char* dest, entropy_gui_component_instance* requester);
 
 #endif
