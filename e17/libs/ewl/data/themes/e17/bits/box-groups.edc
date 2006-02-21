@@ -44,23 +44,6 @@ group {
 	    }
 	}    
 	part {
-	    name: "watermark";
-	    mouse_events: 0;
-	    description {
-	        state: "default" 0.0;
-		max: 220 220;
-	        rel1 {
-	            to:	 "background2";
-	        }
-	        rel2 {
-	            to:	 "background2";
-	        }
-	        image {
-	            normal: "e_watermark.png";
-	        }
-	    }
-        }
-	part {
 	    name: "focus";
 	    mouse_events: 0;
 	    description {
