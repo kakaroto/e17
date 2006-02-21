@@ -92,6 +92,9 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
    nf = cfd->data;
    nf->wlan->cfd = NULL;
+   E_FREE(cfdata->device);
+   if (cfdata->devs)
+     ecore_list_destroy(cfdata->devs);
    free(cfdata);
 }
 
