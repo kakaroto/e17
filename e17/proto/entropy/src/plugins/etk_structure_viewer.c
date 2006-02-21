@@ -60,6 +60,18 @@ entropy_plugin_toolkit_get()
 }
 
 
+static void _etk_structure_viewer_xdnd_drag_drop_cb(Etk_Object *object, void *event, void *data)
+{
+   Etk_Event_Selection_Request *ev;   
+   Etk_Selection_Data_Files *files;
+   
+   int i;
+   
+   ev = event;
+
+   printf("Drop data '%s'\n", (char*)ev->data);
+}
+
 static void _etk_structure_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up_Down *event, void *data)
 {
    entropy_gui_component_instance* instance;
@@ -192,6 +204,8 @@ entropy_plugin_init (entropy_core * core,
 {	
   entropy_gui_component_instance *instance;	
   entropy_etk_file_structure_viewer *viewer;
+   char      **dnd_types;
+   int         dnd_types_num; 
 
     
   instance = entropy_gui_component_instance_new ();
@@ -232,6 +246,16 @@ entropy_plugin_init (entropy_core * core,
 	  
 	  etk_signal_connect("row_clicked", ETK_OBJECT( ((Etk_Tree_Row*)parent_visual)->tree  ), 
 		  ETK_CALLBACK(_etk_structure_viewer_row_clicked), NULL);
+
+	  /*Accept drops*/
+	   dnd_types_num = 1;
+	   dnd_types = calloc(dnd_types_num, sizeof(char*));
+	   dnd_types[0] = strdup("text/plain");  
+	   etk_widget_dnd_types_set(  ((Etk_Tree_Row*)parent_visual)->tree, 
+	   			dnd_types, dnd_types_num);
+	   etk_widget_dnd_dest_set( ((Etk_Tree_Row*)parent_visual)->tree  , ETK_TRUE);
+	   etk_signal_connect("drag_drop", ETK_OBJECT( ((Etk_Tree_Row*)parent_visual)->tree  ), 
+	   			ETK_CALLBACK(_etk_structure_viewer_xdnd_drag_drop_cb), NULL);
 
 	  instance_map_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 
