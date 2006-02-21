@@ -120,7 +120,7 @@ static void _ex_tab_tree_drag_begin_cb(Etk_Object *object, void *data)
    num_types = 1;
    types[0] = strdup("text/uri-list");
    drag_data = calloc(PATH_MAX, sizeof(char));
-   snprintf(drag_data, PATH_MAX * sizeof(char), "file://%s/%s", tab->cur_path, icol2_string);
+   snprintf(drag_data, PATH_MAX * sizeof(char), "file://%s%s\r\n", tab->cur_path, icol2_string);
    
    etk_drag_types_set(drag, types, num_types);
    etk_drag_data_set(drag, drag_data, strlen(drag_data) + 1);
