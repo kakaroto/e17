@@ -3,24 +3,25 @@
 #include "e_mod_config.h"
 #include "config.h"
 
-static Net *_net_init(E_Module *m);
-static void _net_shutdown(Net *n);
-static void _net_config_menu_new(Net *n);
+static Net      *_net_init(E_Module *m);
+static void      _net_shutdown(Net *n);
+static void      _net_config_menu_new(Net *n);
 
-static int  _net_face_init(Net_Face *nf);
-static void _net_face_menu_new(Net_Face *nf);
-static void _net_face_enable(Net_Face *nf);
-static void _net_face_disable(Net_Face *nf);
-static void _net_face_free(Net_Face *nf);
-static void _net_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change);
-static void _net_face_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event_info);
-static void _net_face_cb_menu_edit(void *data, E_Menu *mn, E_Menu_Item *mi);
-static void _net_face_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi);
-
-static int  _net_face_update_values(void *data);
-static void _net_face_graph_values(Net_Face *nf, int in, int out);
+static Net_Face *_net_face_init(Net *n, E_Container *con);
+static void      _net_face_menu_new(Net_Face *nf);
+static void      _net_face_enable(Net_Face *nf);
+static void      _net_face_disable(Net_Face *nf);
+static void      _net_face_free(Net_Face *nf);
+static void      _net_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change);
+static void      _net_face_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event_info);
+static void      _net_face_cb_menu_edit(void *data, E_Menu *mn, E_Menu_Item *mi);
+static void      _net_face_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi);
+static int       _net_face_update_values(void *data);
+static void      _net_face_graph_values(Net_Face *nf, int in, int out);
 
 static int net_count;
+static E_Config_DD *conf_edd;
+static E_Config_DD *conf_face_edd;
 
 EAPI E_Module_Api e_modapi = 
 {
@@ -73,7 +74,7 @@ e_modapi_save(E_Module *m)
    n = m->data;
    if (!n)
      return 0;
-   e_config_domain_save("module.net", n->conf_edd, n->conf);
+   e_config_domain_save("module.net", conf_edd, n->conf);
    return 1;
 }
 
@@ -96,18 +97,30 @@ EAPI int
 e_modapi_config(E_Module *m) 
 {
    Net *n;
+   Evas_List *l;
    E_Container *con;
    
    n = m->data;
    if (!n)
      return 0;
-   if (!n->face)
+   if (!n->faces)
      return 0;
    
-   con = e_container_current_get(e_manager_current_get());
-   if (n->face->con == con)
-     _configure_net_module(con, n);
-   
+   for (l = n->faces; l; l = l->next) 
+     {
+	Net_Face *nf;
+	
+	nf = l->data;
+	if (!nf) 
+	  continue;
+	
+	con = e_container_current_get(e_manager_current_get());
+	if (nf->con == con) 
+	  {
+	     _configure_net_module(nf);
+	     break;
+	  }
+     }
    return 1;
 }
 
@@ -116,32 +129,36 @@ _net_init(E_Module *m)
 {
    Net *n;
    E_Menu_Item *mi;
-   Evas_List *mans, *l, *l2;
+   Evas_List *mans, *l, *l2, *fl;
    
    n = E_NEW(Net, 1);
    if (!n)
      return NULL;
    
-   n->conf_edd = E_CONFIG_DD_NEW("Net_Config", Config);
+   conf_face_edd = E_CONFIG_DD_NEW("Net_Config_Face", Config_Face);
    #undef T
    #undef D
-   #define T Config
-   #define D n->conf_edd
+   #define T Config_Face
+   #define D conf_face_edd
+   E_CONFIG_VAL(D, T, enabled, UCHAR);
    E_CONFIG_VAL(D, T, device, STR);
    E_CONFIG_VAL(D, T, check_interval, INT);
    
-   n->conf = e_config_domain_load("module.net", n->conf_edd);
+   conf_edd = E_CONFIG_DD_NEW("Net_Config", Config);
+   #undef T
+   #undef D
+   #define T Config
+   #define D conf_edd
+   E_CONFIG_LIST(D, T, faces, conf_face_edd);
+   
+   n->conf = e_config_domain_load("module.net", conf_edd);
    if (!n->conf) 
-     {
-	n->conf = E_NEW(Config, 1);
-	n->conf->device = (char *)evas_stringshare_add("eth0");
-	n->conf->check_interval = 30;
-     }
-   E_CONFIG_LIMIT(n->conf->check_interval, 0, 60);
+     n->conf = E_NEW(Config, 1);
    
    _net_config_menu_new(n);
    
    mans = e_manager_list();
+   fl = n->conf->faces;
    for (l = mans; l; l = l->next) 
      {
 	E_Manager *man;
@@ -153,26 +170,26 @@ _net_init(E_Module *m)
 	     Net_Face *nf;
 	     
 	     con = l2->data;
-	     nf = E_NEW(Net_Face, 1);
+	     nf = _net_face_init(n, con);
 	     if (nf) 
 	       {
-		  nf->conf_face_edd = E_CONFIG_DD_NEW("Net_Face_Config", Config_Face);
-		  #undef T
-		  #undef D
-		  #define T Config_Face
-		  #define D nf->conf_face_edd
-		  E_CONFIG_VAL(D, T, enabled, UCHAR);
-		  
-		  n->face = nf;
-		  nf->net = n;		  
-		  nf->con = con;
-		  nf->evas = con->bg_evas;
-		  
-		  nf->conf = E_NEW(Config_Face, 1);
-		  nf->conf->enabled = 1;
-		  
-		  if (!_net_face_init(nf))
-		    return NULL;
+		  printf("Created Face\n");
+		  if (!fl)
+		    {
+		       nf->conf = E_NEW(Config_Face, 1);
+		       nf->conf->enabled = 1;
+		       nf->conf->device = (char *)evas_stringshare_add("eth0");
+		       nf->conf->check_interval = 30;
+		       n->conf->faces = evas_list_append(n->conf->faces, nf->conf);
+		    }
+		  else 
+		    {
+		       nf->conf = fl->data;
+		       fl = fl->next;
+		    }
+		  E_CONFIG_LIMIT(nf->conf->check_interval, 0, 60);
+
+		  nf->monitor = ecore_timer_add((double)nf->conf->check_interval, _net_face_update_values, nf);   
 		  
 		  _net_face_menu_new(nf);
 		  
@@ -186,8 +203,6 @@ _net_init(E_Module *m)
 		 
 		  if (!nf->conf->enabled)
 		    _net_face_disable(nf);
-		  else
-		    _net_face_enable(nf);
 	       }
 	  }
      }
@@ -197,13 +212,16 @@ _net_init(E_Module *m)
 static void
 _net_shutdown(Net *n) 
 {
-   _net_face_free(n->face);
+   E_CONFIG_DD_FREE(conf_edd);
+   E_CONFIG_DD_FREE(conf_face_edd);
 
-   if (n->conf->device)
-     evas_stringshare_del(n->conf->device);
+   while (n->faces)
+     _net_face_free(n->faces->data);
+
+   e_object_del(E_OBJECT(n->config_menu));
+   evas_list_free(n->conf->faces);
    
    E_FREE(n->conf);
-   E_CONFIG_DD_FREE(n->conf_edd);
    E_FREE(n);
 }
 
@@ -216,19 +234,29 @@ _net_config_menu_new(Net *n)
    n->config_menu = mn;
 }
 
-static int
-_net_face_init(Net_Face *nf) 
+static Net_Face *
+_net_face_init(Net *n, E_Container *con) 
 {
+   Net_Face *nf;
    Evas_Object *o;
    char buf[4096];
+
+   nf = E_NEW(Net_Face, 1);
+   if (!nf)
+     return NULL;   
+   nf->net = n;
+   n->faces = evas_list_append(n->faces, nf);
+
+   nf->con = con;
+   e_object_ref(E_OBJECT(con));
+   nf->evas = con->bg_evas;
    
    evas_event_freeze(nf->evas);
    
    o = edje_object_add(nf->evas);
    nf->net_obj = o;
    
-   if (!e_theme_edje_object_set(o, "base/theme/modules/net", 
-				"modules/net/main")) 
+   if (!e_theme_edje_object_set(o, "base/theme/modules/net", "modules/net/main")) 
      {
 	snprintf(buf, sizeof(buf), PACKAGE_DATA_DIR"/net.edj");	
 	edje_object_file_set(o, buf, "modules/net/main");
@@ -236,15 +264,6 @@ _net_face_init(Net_Face *nf)
    
    evas_object_show(o);
 
-   /*
-   o = evas_object_rectangle_add(nf->evas);
-   nf->chart_obj = o;
-   evas_object_layer_set(o, 2);
-   evas_object_repeat_events_set(o, 0);
-   evas_object_color_set(o, 0, 0, 0, 255);
-   evas_object_show(o);
-   */
-   
    o = evas_object_rectangle_add(nf->evas);
    nf->event_obj = o;
    evas_object_layer_set(o, 2);
@@ -271,9 +290,8 @@ _net_face_init(Net_Face *nf)
    e_gadman_client_change_func_set(nf->gmc, _net_face_cb_gmc_change, nf);
    e_gadman_client_load(nf->gmc);
    evas_event_thaw(nf->evas);
-
-   nf->monitor = ecore_timer_add((double)nf->net->conf->check_interval, _net_face_update_values, nf);
-   return 1;
+   
+   return nf;
 }
 
 static void
@@ -319,6 +337,9 @@ _net_face_disable(Net_Face *nf)
 static void 
 _net_face_free(Net_Face *nf) 
 {
+   e_object_unref(E_OBJECT(nf->con));
+   e_object_del(E_OBJECT(nf->menu));
+   
    if (nf->monitor)
      ecore_timer_del(nf->monitor);
    if (nf->menu)
@@ -339,6 +360,8 @@ _net_face_free(Net_Face *nf)
 	e_object_del(E_OBJECT(nf->gmc));
      }
    
+   nf->net->faces = evas_list_remove(nf->net->faces, nf);
+   
    E_FREE(nf->conf);
    E_FREE(nf);
    net_count--;
@@ -356,20 +379,17 @@ _net_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change
       case E_GADMAN_CHANGE_MOVE_RESIZE:
 	e_gadman_client_geometry_get(nf->gmc, &x, &y, &w, &h);
 	evas_object_move(nf->net_obj, x, y);
-	/* evas_object_move(nf->chart_obj, x, y); */
 	evas_object_move(nf->event_obj, x, y);
 	evas_object_resize(nf->net_obj, w, h);
-	/* evas_object_resize(nf->chart_obj, w, h); */
 	evas_object_resize(nf->event_obj, w, h);
 	break;
       case E_GADMAN_CHANGE_RAISE:
 	evas_object_raise(nf->net_obj);
-	/* evas_object_raise(nf->chart_obj); */
 	evas_object_raise(nf->event_obj);
 	break;
       default:
 	break;
-     }   
+     }
 }
 
 static void 
@@ -404,7 +424,10 @@ _net_face_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi)
    Net_Face *nf;
 
    nf = data;
-   _configure_net_module(nf->con, nf->net);
+   if (!nf)
+     return;
+   
+   _configure_net_module(nf);
 }
 
 static int 
@@ -438,7 +461,7 @@ _net_face_update_values(void *data)
                    &dummy, &dummy, &dummy, &dummy, &dummy, &out, &dummy,
                    &dummy, &dummy, &dummy, &dummy, &dummy, &dummy) < 17)
            continue;
-	if (!strcmp(dev, strdup(nf->net->conf->device))) 
+	if (!strcmp(dev, strdup(nf->conf->device))) 
 	  {
 	     found = 1;
 	     break;

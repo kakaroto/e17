@@ -17,12 +17,12 @@ static void        *_create_data            (E_Config_Dialog *cfd);
 static void         _free_data              (E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 static Evas_Object *_basic_create_widgets   (E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
 static int          _basic_apply_data       (E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
-static void         _fill_data              (Net *n, E_Config_Dialog_Data *cfdata);
+static void         _fill_data              (Net_Face *nf, E_Config_Dialog_Data *cfdata);
 static void         _net_config_get_devices (Ecore_List *devs);
 
 /* Config Calls */
 void
-_configure_net_module(E_Container *con, Net *n)
+_configure_net_module(Net_Face *nf)
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
@@ -34,20 +34,20 @@ _configure_net_module(E_Container *con, Net *n)
    v->basic.apply_cfdata = _basic_apply_data;
    v->basic.create_widgets = _basic_create_widgets;
    
-   cfd = e_config_dialog_new(con, _("Net Configuration"), NULL, 0, v, n);
-   n->cfd = cfd;
+   cfd = e_config_dialog_new(nf->con, _("Net Configuration"), NULL, 0, v, nf);
+   nf->net->cfd = cfd;
 }
 
 static void
-_fill_data(Net *n, E_Config_Dialog_Data *cfdata)
+_fill_data(Net_Face *nf, E_Config_Dialog_Data *cfdata)
 {
    char *tmp;
    int i;
 
-   cfdata->check_interval = n->conf->check_interval;
+   cfdata->check_interval = nf->conf->check_interval;
    
-   if (n->conf->device != NULL)
-     cfdata->device = strdup(n->conf->device);
+   if (nf->conf->device != NULL)
+     cfdata->device = strdup(nf->conf->device);
    else
      cfdata->device = NULL;
    
@@ -77,21 +77,21 @@ static void *
 _create_data(E_Config_Dialog *cfd)
 {
    E_Config_Dialog_Data *cfdata;
-   Net *n;
+   Net_Face *nf;
 
-   n = cfd->data;
+   nf = cfd->data;
    cfdata = E_NEW(E_Config_Dialog_Data, 1);
-   _fill_data(n, cfdata);
+   _fill_data(nf, cfdata);
    return cfdata;
 }
 
 static void
 _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-   Net *n;
+   Net_Face *nf;
 
-   n = cfd->data;
-   n->cfd = NULL;
+   nf = cfd->data;
+   nf->net->cfd = NULL;
    free(cfdata);
 }
 
@@ -100,11 +100,8 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 {
    Evas_Object *o, *of, *ob, *ot;
    E_Radio_Group *rg;
-   Net *n;
    char *tmp;
    int i;
-   
-   n = cfd->data;
    
    o = e_widget_list_add(evas, 0, 0);
    of = e_widget_framelist_add(evas, _("Device Settings"), 0);
@@ -135,20 +132,18 @@ static int
 _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    char *tmp;
-   Net *n;
+   Net_Face *nf;
 
-   n = cfd->data;
-   //e_border_button_bindings_ungrab_all();
+   nf = cfd->data;
    tmp = ecore_list_goto_index(cfdata->devs, cfdata->dev_num);
    if (tmp != NULL)
-     n->conf->device = (char *)evas_stringshare_add(strdup(tmp));
-   n->conf->check_interval = cfdata->check_interval;
+     nf->conf->device = (char *)evas_stringshare_add(strdup(tmp));
+   nf->conf->check_interval = cfdata->check_interval;
    e_config_save_queue ();
-   //e_border_button_bindings_grab_all ();
 
-   if (n->face->monitor)
-     ecore_timer_interval_set(n->face->monitor, (double)cfdata->check_interval);
-
+   if (nf->monitor)
+     ecore_timer_interval_set(nf->monitor, (double)cfdata->check_interval);
+   
    return 1;
 }
 

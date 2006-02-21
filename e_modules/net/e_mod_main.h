@@ -8,22 +8,21 @@ typedef struct _Net_Face Net_Face;
 
 struct _Config 
 {
-   char *device;
-   int check_interval;
+   Evas_List *faces;
 };
 
 struct _Config_Face 
 {
    unsigned char enabled;
+   char *device;
+   int check_interval;
 };
 
 struct _Net 
 {
    E_Menu *config_menu;
-   Net_Face *face;
+   Evas_List *faces;
    Config *conf;
-   
-   E_Config_DD *conf_edd;
    E_Config_Dialog *cfd;
 };
 
@@ -35,7 +34,6 @@ struct _Net_Face
    Net *net;
 
    Config_Face *conf;
-   E_Config_DD *conf_face_edd;
    
    Evas_Object *net_obj;
    Evas_Object *event_obj;

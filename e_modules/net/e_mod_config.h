@@ -5,7 +5,7 @@
 
 #include "e_mod_main.h"
 
-void _configure_net_module(E_Container *con, Net *n);
+void _configure_net_module(Net_Face *nf);
 
 #endif
 #endif
