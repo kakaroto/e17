@@ -1,9 +1,3 @@
-Re arrange fdo_menu code to better match the order the specs says to do
-things in, making use of the new Dumb_List insert code to insert
-expanded xml.  This wil be a temporary measure, as performance will be
-better to do everything at once rather than lots of seperate tree walks. 
-We are doing correct first, fast later.
-
 A seperate "strip common appdirs and such" pass.  Keep a hash of indexes
 to Dumb_Tree elements, if the current appdir is in the hash, null out
 the element the one in the hash points to, and replace the index in the
