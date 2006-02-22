@@ -144,7 +144,6 @@ static void _etk_tree_row_unselect_all(Etk_Tree_Row *row);
 static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Evas_Modifier *modifiers);
 static void _etk_tree_heapify(Etk_Tree *tree, Etk_Tree_Row **heap, int root, int size, int (*compare_cb)(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data), int asc, Etk_Tree_Col *col, void *data);
 
-static Etk_Tree_Row *_etk_tree_last_clicked_row = NULL;
 static Etk_Signal *_etk_tree_signals[ETK_TREE_NUM_SIGNALS];
 static Etk_Signal *_etk_tree_col_signals[ETK_TREE_COL_NUM_SIGNALS];
 static Etk_Bool    _etk_tree_drag_started = ETK_FALSE;
@@ -1893,7 +1892,7 @@ static void _etk_tree_row_pressed_cb(void *data, Evas *e, Evas_Object *obj, void
    evas_event = event_info;
    
    /* Double or triple click */
-   if (!(evas_event->flags & EVAS_BUTTON_NONE) && (_etk_tree_last_clicked_row == row_objects->row))
+   if (!(evas_event->flags & EVAS_BUTTON_NONE))
    {
       event.button = evas_event->button;
       event.canvas.x = evas_event->canvas.x;
@@ -1941,7 +1940,7 @@ static void _etk_tree_row_clicked_cb(void *data, Evas *e, Evas_Object *obj, void
 
    evas_event = event_info;
    evas_object_geometry_get(obj, &x, &y, &w, &h);
-   if (((evas_event->flags & EVAS_BUTTON_NONE) || (row_objects->row != _etk_tree_last_clicked_row)) &&
+   if ((evas_event->flags & EVAS_BUTTON_NONE) &&
       x <= evas_event->canvas.x && x + w >= evas_event->canvas.x &&
       y <= evas_event->canvas.y && y + h >= evas_event->canvas.y)
    {
@@ -1967,9 +1966,7 @@ static void _etk_tree_row_clicked_cb(void *data, Evas *e, Evas_Object *obj, void
       if(row_objects->row->tree->dnd_event)      	 
 	row_objects->row->tree->dnd_event = ETK_FALSE;
       else
-	etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_CLICKED_SIGNAL], ETK_OBJECT(row_objects->row->tree), NULL, row_objects->row, &event);
-      
-      _etk_tree_last_clicked_row = row_objects->row;
+	etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_CLICKED_SIGNAL], ETK_OBJECT(row_objects->row->tree), NULL, row_objects->row, &event);      
    }
 }
 
