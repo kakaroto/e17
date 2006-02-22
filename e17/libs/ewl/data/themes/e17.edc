@@ -23,6 +23,7 @@ collections {
 #include "e17/bits/stock-groups.edc"
 #include "e17/bits/tree-groups.edc"
 #include "e17/bits/separator-groups.edc"
+#include "e17/bits/statusbar-groups.edc"
 #include "e17/bits/window-groups.edc"
 #include "e17/bits/menu-item.edc"
 #include "e17/bits/notebook-groups.edc"
@@ -125,6 +126,8 @@ data {
     item, "/menu/group" "menu";
     item, "/menu/vbox/menu_container/label/group" "submenuitem";
 
+    item, "/statusbar/group" "statusbar";
+
     item, "/menubar/group" "menubar";
     item, "/menu_item/label/group" "menuitem";
 
@@ -134,11 +137,8 @@ data {
 
     item, "/window/group" "window";
     item, "/scrollpane/group" "box";
-    item, "/theme/author" "dj2 (www.everburning.com) and titansoccer15 
-(www.assistix.org)";
+    item, "/theme/author" "dj2 (www.everburning.com) and titansoccer15 (www.assistix.org)";
     item, "/theme/font_path" "fonts";
-    item, "/theme/license" 
-    "Creative Commons License: 
-http://creativecommons.org/licenses/bg-sa/1.0";
+    item, "/theme/license" "Creative Commons License: http://creativecommons.org/licenses/bg-sa/1.0";
     item, "/theme/name" "e17";
 }
