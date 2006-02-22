@@ -36,15 +36,14 @@ _change_picture_cb(void *data)
 		s->text = NULL;
 	}
 	s->screen = ewl_image_new();
-	/* ewl_theme_data_str_set(s->screen, "/image/file", PACKAGE_DATA_DIR "/images/images.edc");
-	ewl_theme_data_str_set(s->screen, "/image/group", "entry"); */
+	ewl_theme_data_str_set(s->screen, "/image/group", "entry");
 	ewl_image_file_set(EWL_IMAGE(s->screen), picture1, NULL);
 	ewl_object_alignment_set(EWL_OBJECT(s->screen), EWL_FLAG_ALIGN_CENTER);
 	if ( ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->fullrad)) == 0 ) {
 		ewl_object_maximum_size_set(EWL_OBJECT(s->screen), w, h);
 	}
 	ewl_object_fill_policy_set(EWL_OBJECT(s->screen), EWL_FLAG_FILL_SHRINK);
-	ewl_container_child_append(EWL_CONTAINER(s->wins), s->screen);
+	ewl_container_child_append(EWL_CONTAINER(s->cell), s->screen);
 	ewl_widget_show(s->screen);	
 
 	if (!picture1 && ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->loopcheck)) == 1 ) {
@@ -57,15 +56,14 @@ _change_picture_cb(void *data)
 		hsize = ewl_text_text_get(EWL_TEXT(m->hsize));
 		h = atoi(hsize);
 		s->screen = ewl_image_new();
-		/* ewl_theme_data_str_set(s->screen, "/image/file", PACKAGE_DATA_DIR "/images/images.edc");
-		ewl_theme_data_str_set(s->screen, "/image/group", "entry"); */
+		ewl_theme_data_str_set(s->screen, "/image/group", "entry");
 		ewl_object_fill_policy_set(EWL_OBJECT(s->screen), EWL_FLAG_FILL_SHRINK);
 		ewl_image_file_set(EWL_IMAGE(s->screen), picture2, NULL);
 		ewl_object_alignment_set(EWL_OBJECT(s->screen), EWL_FLAG_ALIGN_CENTER);
 		if ( ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->fullrad)) == 0 ) {
 			ewl_object_maximum_size_set(EWL_OBJECT(s->screen), w, h);
 		}
-		ewl_container_child_append(EWL_CONTAINER(s->wins), s->screen);
+		ewl_container_child_append(EWL_CONTAINER(s->cell), s->screen);
 		ewl_widget_show(s->screen);
 	}
 	if (!picture1 && ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->loopcheck)) == 0 ) {
@@ -106,10 +104,10 @@ slideshow_cb(Ewl_Widget *w, void *event, void *data)
 	char *picture1;
 	char *wsize;
 	char *hsize;
-	char *pic1;
 	int ws;
 	int h;
 	int time;
+	char *pic1;
 	/**************/
 	
 	/****Make sure s->wins isn't open****/
@@ -139,6 +137,17 @@ slideshow_cb(Ewl_Widget *w, void *event, void *data)
 	ewl_callback_append(s->wins, EWL_CALLBACK_DELETE_WINDOW, destroys_cb, NULL);
 	ewl_callback_append(s->wins, EWL_CALLBACK_CLICKED, destroys_cb, NULL);
 	ewl_widget_show(s->wins);
+	
+	s->screen = ewl_image_new();
+	ewl_image_file_set(EWL_IMAGE(s->screen), PACKAGE_DATA_DIR "/images/black.png", NULL);
+	ewl_object_fill_policy_set(EWL_OBJECT(s->screen), EWL_FLAG_FILL_ALL);
+	ewl_container_child_append(EWL_CONTAINER(s->wins), s->screen);
+	ewl_widget_show(s->screen);	
+
+	s->cell = ewl_cell_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(s->cell), EWL_FLAG_FILL_ALL);
+	ewl_container_child_append(EWL_CONTAINER(s->wins), s->cell);
+	ewl_widget_show(s->cell);
 
 #ifdef EWL_MEDIA_H
 	if (audio != 0) {
@@ -154,9 +163,7 @@ slideshow_cb(Ewl_Widget *w, void *event, void *data)
 	/*******************************************************************/
 	
 	/*******Start the slideshow*******/	
-#ifdef EWL_MEDIA_H
 	ewl_callback_append(s->audio1, EWL_CALLBACK_REALIZE, play_cb, NULL);
-#endif
 	
 	if ( ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->audiolen)) == 1 ) {
 		time = audiolen / slidenum;
@@ -165,20 +172,18 @@ slideshow_cb(Ewl_Widget *w, void *event, void *data)
 		time = ewl_spinner_value_get(EWL_SPINNER(m->slidetime));
 	}
 	s->timer = ecore_timer_add(time, _change_picture_cb, NULL);
+	/*******************************************************************/
 	pic1 = ecore_dlist_goto_first(m->imagelist);
-	
 	s->screen = ewl_image_new();
-	/* ewl_theme_data_str_set(s->screen, "/image/file", PACKAGE_DATA_DIR "/images/images.edc");
-	ewl_theme_data_str_set(s->screen, "/image/group", "entry"); */
+	ewl_theme_data_str_set(s->screen, "/image/group", "entry");
 	ewl_image_file_set(EWL_IMAGE(s->screen), pic1, NULL);
 	ewl_object_alignment_set(EWL_OBJECT(s->screen), EWL_FLAG_ALIGN_CENTER);
 	if ( ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->fullrad)) == 0 ) {
 		ewl_object_maximum_size_set(EWL_OBJECT(s->screen), ws, h);
 	}
 	ewl_object_fill_policy_set(EWL_OBJECT(s->screen), EWL_FLAG_FILL_SHRINK);
-	ewl_container_child_append(EWL_CONTAINER(s->wins), s->screen);
+	ewl_container_child_append(EWL_CONTAINER(s->cell), s->screen);
 	ewl_widget_show(s->screen);
-	/*******************************************************************/
 }
 
 void
