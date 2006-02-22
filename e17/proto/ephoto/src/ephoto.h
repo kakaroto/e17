@@ -89,7 +89,10 @@ struct _Slide
 	Ewl_Widget	*vboxs;
 	Ewl_Widget	*hboxs;
 	Ewl_Widget	*screen;
+	Ewl_Widget  *white;
+	Ewl_Widget  *black;
 	Ewl_Widget  *text;
+	Ewl_Widget  *cell;
 	Ecore_Timer	*timer;
 };
 
