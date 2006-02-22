@@ -12,21 +12,7 @@ collections
 {
 group
     {
-      name: "modules/mem/main";
-      script {
-		public message(Msg_Type:type, id, ...) {
-		      if (type == MSG_STRING_SET) {
-		      		new real_str[100];
-				new swap_str[100];
-				
-				getsarg(2, real_str, sizeof(real_str));
-				getsarg(3, swap_str, sizeof(swap_str));
-				set_text(PART:"real-text", real_str);
-				set_text(PART:"swap-text", swap_str);				
-		      }
-	       }      
-      }
-      
+      name: "modules/mem/main";      
       parts{
       part {
       	   name: "base";
@@ -38,18 +24,35 @@ group
 	   }
       }      
       part {
+      	   name: "mem_clip";
+	   type: RECT;
+	   clip_to: "base";
+	   mouse_events: 0;
+	   description {
+	   	       state: "default" 0.0;
+		       color: 255 255 255 255;
+		       rel1 {
+		       	    to_x: "base";
+		       }
+		       rel2 {
+		       	    to: "base";
+		       }
+	   }
+      }      
+      
+      part {
 	 name:          "mem";
-	 clip_to: "base";	 
+	 clip_to: "mem_clip";	 
 	 mouse_events:  0;
 	 description {
 	    state:    "default" 0.0;
 	    color: 255 255 255 200;
 	    aspect:   1.0 1.0;
-	    rel1 { 
-	    	 offset: 0 6; 
+	    rel1 {
+	    	 to: "base";
 	    }
 	    rel2 { 
-	    	 offset: -1 -6; 
+	    	 to: "base";
 	    }
 	    image { 
 	    	  normal: "mem.png"; 
@@ -63,7 +66,7 @@ group
 	  {
 	    name:           "real-text";
 	    type:           TEXT;
-	    clip_to: "base";	    
+	    clip_to: "mem_clip";	    
 	    effect:         SOFT_SHADOW;
 	    mouse_events: 0;
 	    description {
@@ -72,7 +75,7 @@ group
 	      rel1 { 
 	      	   relative: 1.0 0.0;
 		   to_x: "mem";
-		   offset: -2 1;  
+		   offset: -2 10;  
 	      }
 	      rel2 { 
 	      	   relative: 1.0 0.0; 
@@ -93,7 +96,7 @@ group
 	  {
 	    name:           "swap-text";
 	    type:           TEXT;
-	    clip_to: "base";	    
+	    clip_to: "mem_clip";	    
 	    effect:         SOFT_SHADOW;
 	    mouse_events: 0;
 	    description {
@@ -101,7 +104,7 @@ group
 	      align: 1.0 0.0;
 	      rel1 { 
 	      	   relative: 1.0 1.0; 
-		   to_x: "mem"; 
+		   to_x: "mem";
 		   offset: -2 -10;  
 	      }
 	      rel2 { 

@@ -409,7 +409,6 @@ _mem_face_update_values(void *data)
 {
    Mem_Face *cf;
    int real, swap, total_real, total_swap;
-   Edje_Message_String_Set *msg;
    char real_str[100];
    char swap_str[100];
    
@@ -421,13 +420,8 @@ _mem_face_update_values(void *data)
    
    snprintf(real_str, sizeof(real_str), "%d/%d MB", total_real, real);
    snprintf(swap_str, sizeof(swap_str), "%d/%d MB", total_swap, swap);
-   
-   msg = malloc(sizeof(Edje_Message_String_Set) - sizeof(char *) + (1 + sizeof(char *)));
-   msg->count = 2;
-   msg->str[0] = real_str;
-   msg->str[1] = swap_str;
-   edje_object_message_send(cf->mem_obj, EDJE_MESSAGE_STRING_SET, 1, msg);
-   free(msg); 
+   edje_object_part_text_set(cf->mem_obj, "real-text", real_str);
+   edje_object_part_text_set(cf->mem_obj, "swap-text", swap_str);
    
    return 1;
 }
