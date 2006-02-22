@@ -9,7 +9,6 @@
 
 #include <Ecore_Data.h>
 
-
 typedef enum _Dumb_Tree_Element_Type Dumb_Tree_Element_Type;
 enum _Dumb_Tree_Element_Type
 {
@@ -22,18 +21,18 @@ enum _Dumb_Tree_Element_Type
 typedef struct _Dumb_Tree_Element Dumb_Tree_Element;
 struct _Dumb_Tree_Element
 {
-   void *element;                 /* A pointer to the element. */
-   Dumb_Tree_Element_Type type;   /* The type of the element. */
+   void *element;               /* A pointer to the element. */
+   Dumb_Tree_Element_Type type; /* The type of the element. */
 };
 
 typedef struct _Dumb_Tree Dumb_Tree;
 struct _Dumb_Tree
 {
-   Dumb_Tree_Element *elements;  /* An array of elements. */
-   int size;                     /* The size of the array. */
-   char **buffers;               /* An array of pointers to the bits of data. */
-   int buffers_size;             /* The size of the array. */
-   Dumb_Tree *parent;            /* Parent if this is a child. */
+   Dumb_Tree_Element *elements; /* An array of elements. */
+   int size;                    /* The size of the array. */
+   char **buffers;              /* An array of pointers to the bits of data. */
+   int buffers_size;            /* The size of the array. */
+   Dumb_Tree *parent;           /* Parent if this is a child. */
 };
 
 # ifdef __cplusplus
@@ -43,17 +42,17 @@ extern "C"
 
    Dumb_Tree *dumb_tree_from_paths(char *paths);
    Dumb_Tree *dumb_tree_new(char *buffer);
-   Dumb_Tree *dumb_tree_add(Dumb_Tree *tree, char *element);
-   void       dumb_tree_track(Dumb_Tree *tree, void *element);
-   Dumb_Tree *dumb_tree_extend(Dumb_Tree *tree, char *element);
-   Dumb_Tree *dumb_tree_insert(Dumb_Tree *tree, int before, void *element, Dumb_Tree_Element_Type type);
-   Dumb_Tree *dumb_tree_insert_tree(Dumb_Tree *tree, int before, Dumb_Tree *element);
-   Dumb_Tree *dumb_tree_add_child(Dumb_Tree *tree, Dumb_Tree *element);
-   Dumb_Tree *dumb_tree_add_hash(Dumb_Tree *tree, Ecore_Hash *element);
-   int        dumb_tree_exist(Dumb_Tree *tree, char *element);
-   int        dumb_tree_foreach(Dumb_Tree *tree, int level, int (*func) (const void *data, Dumb_Tree *tree, int element, int level), const void *data);
-   void       dumb_tree_dump(Dumb_Tree *tree, int level);
-   void       dumb_tree_del(Dumb_Tree *tree);
+   Dumb_Tree *dumb_tree_add(Dumb_Tree * tree, char *element);
+   void dumb_tree_track(Dumb_Tree * tree, void *element);
+   Dumb_Tree *dumb_tree_extend(Dumb_Tree * tree, char *element);
+   Dumb_Tree *dumb_tree_insert(Dumb_Tree * tree, int before, void *element, Dumb_Tree_Element_Type type);
+   Dumb_Tree *dumb_tree_insert_tree(Dumb_Tree * tree, int before, Dumb_Tree * element);
+   Dumb_Tree *dumb_tree_add_child(Dumb_Tree * tree, Dumb_Tree * element);
+   Dumb_Tree *dumb_tree_add_hash(Dumb_Tree * tree, Ecore_Hash * element);
+   int dumb_tree_exist(Dumb_Tree * tree, char *element);
+   int dumb_tree_foreach(Dumb_Tree * tree, int level, int (*func) (const void *data, Dumb_Tree * tree, int element, int level), const void *data);
+   void dumb_tree_dump(Dumb_Tree * tree, int level);
+   void dumb_tree_del(Dumb_Tree * tree);
 
 # ifdef __cplusplus
 }

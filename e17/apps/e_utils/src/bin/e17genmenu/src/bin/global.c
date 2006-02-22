@@ -33,16 +33,13 @@ get_desktop_dir()
    ecore_app_args_get(&argc, &argv);
    for (i = 1; i < argc; i++)
      {
-        if ((strncmp(argv[i], "-d", 2) == 0) ||
-            (strncmp(argv[i], "--desktop-dir", 13) == 0))
+        if ((strncmp(argv[i], "-d", 2) == 0) || (strncmp(argv[i], "--desktop-dir", 13) == 0))
           {
              c = strstr(argv[i], "=");
              c = strtok(c, "=");
              if (c)
                 return strdup(c);
-             fprintf(stderr,
-                     "You must specify a directory for the %s argument\n",
-                     argv[i]);
+             fprintf(stderr, "You must specify a directory for the %s argument\n", argv[i]);
              exit(1);
           }
      }
@@ -88,8 +85,7 @@ get_icon_compression()
    ecore_app_args_get(&argc, &argv);
    for (i = 1; i < argc; i++)
      {
-        if ((strncmp(argv[i], "--lossy", 11) == 0)
-            || (strncmp(argv[i], "-l", 2) == 0))
+        if ((strncmp(argv[i], "--lossy", 11) == 0) || (strncmp(argv[i], "-l", 2) == 0))
            return strdup("LOSSY");
      }
    return strdup("COMP");
@@ -125,8 +121,7 @@ get_icon_size()
    ecore_app_args_get(&argc, &argv);
    for (i = 1; i < argc; i++)
      {
-        if ((strncmp(argv[i], "--icon-size", 11) == 0)
-            || (strncmp(argv[i], "-s", 2) == 0))
+        if ((strncmp(argv[i], "--icon-size", 11) == 0) || (strncmp(argv[i], "-s", 2) == 0))
           {
              c = strstr(argv[i], "=");
              c = strtok(c, "=");
@@ -146,8 +141,7 @@ get_icon_theme()
    ecore_app_args_get(&argc, &argv);
    for (i = 1; i < argc; i++)
      {
-        if ((strncmp(argv[i], "--icon-theme", 12) == 0)
-            || (strncmp(argv[i], "-t", 2) == 0))
+        if ((strncmp(argv[i], "--icon-theme", 12) == 0) || (strncmp(argv[i], "-t", 2) == 0))
           {
              c = strstr(argv[i], "=");
              c = strtok(c, "=");
@@ -185,8 +179,7 @@ backup_eaps()
    snprintf(path, sizeof(path), "%s" EAPPDIR, get_home());
    if (!ecore_file_exists(path))
      {
-        fprintf(stderr, "ERROR: %s doesn't exist. Where are the eapps ?\n",
-                path);
+        fprintf(stderr, "ERROR: %s doesn't exist. Where are the eapps ?\n", path);
         return;
      }
 
@@ -240,8 +233,7 @@ write_mapping_file(G_Eap *eap)
         fprintf(stderr, "ERROR: Cannot Open Mapping File\n");
         return;
      }
-   snprintf(buff, sizeof(buff), "%s|!%s|!%s|!%s\n", eap->icon, eap->name,
-            eap->window_class, eap->exec);
+   snprintf(buff, sizeof(buff), "%s|!%s|!%s|!%s\n", eap->icon, eap->name, eap->window_class, eap->exec);
    fwrite(buff, sizeof(char), strlen(buff), f);
    fclose(f);
 }

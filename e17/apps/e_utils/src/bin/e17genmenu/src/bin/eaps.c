@@ -149,11 +149,9 @@ write_eap(char *file, char *section, char *value)
            eet_delete(ef, section);
         if (value)
           {
-             i = eet_write(ef, strdup(section), strdup(value), strlen(value),
-                           0);
+             i = eet_write(ef, strdup(section), strdup(value), strlen(value), 0);
              if (i == 0)
-                fprintf(stderr, "Failed To Write %s To %s Of %s\n", value,
-                        section, file);
+                fprintf(stderr, "Failed To Write %s To %s Of %s\n", value, section, file);
           }
      }
    eet_close(ef);

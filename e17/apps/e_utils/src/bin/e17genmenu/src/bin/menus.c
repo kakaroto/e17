@@ -9,10 +9,8 @@
 extern double convert;
 extern int menu_count, item_count;
 
-
-static int _menu_make_apps(const void *data, Dumb_Tree *tree, int element, int level);
+static int _menu_make_apps(const void *data, Dumb_Tree * tree, int element, int level);
 static void _menu_dump_each_hash_node(void *value, void *user_data);
-
 
 void
 make_menus()
@@ -20,51 +18,51 @@ make_menus()
    char *d;
 
    if (get_fdo())
-      {
-         char *menu = "applications.menu";
-         char *menu_file;
+     {
+        char *menu = "applications.menu";
+        char *menu_file;
 
-         /* First, find the main menu file. */
-         menu_file = fdo_paths_search_for_file(FDO_PATHS_TYPE_MENU, menu, 1, NULL, NULL);
-         if (menu_file)
-            {
-	       char *path;
-	       Dumb_Tree *menu_xml = NULL;
+        /* First, find the main menu file. */
+        menu_file = fdo_paths_search_for_file(FDO_PATHS_TYPE_MENU, menu, 1, NULL, NULL);
+        if (menu_file)
+          {
+             char *path;
+             Dumb_Tree *menu_xml = NULL;
 
-               path = ecore_file_get_dir(menu_file);
-               menu_xml = xmlame_get(menu_file);;
-	       if ((menu_xml) && (path))
-	          {
-	             Dumb_Tree *menus = NULL;
+             path = ecore_file_get_dir(menu_file);
+             menu_xml = xmlame_get(menu_file);;
+             if ((menu_xml) && (path))
+               {
+                  Dumb_Tree *menus = NULL;
 
-	             /* convert the xml into menus */
-	             menus = fdo_menus_get(menu_file, menu_xml);
-		     convert = ecore_time_get();
-	             if (menus)
-	                {
-	                   /* create the .eap and order files from the menu */
-                           dumb_tree_foreach(menu_xml, 0, _menu_make_apps, path);
-		        }
-	          }
-               E_FREE(path);
-            }
-      }
+                  /* convert the xml into menus */
+                  menus = fdo_menus_get(menu_file, menu_xml);
+                  convert = ecore_time_get();
+                  if (menus)
+                    {
+                       /* create the .eap and order files from the menu */
+                       dumb_tree_foreach(menu_xml, 0, _menu_make_apps, path);
+                    }
+               }
+             E_FREE(path);
+          }
+     }
    else
-      {
-         d = get_desktop_dir();
-         if (d)
-            check_for_dirs(strdup(d));
+     {
+        d = get_desktop_dir();
+        if (d)
+           check_for_dirs(strdup(d));
 
-         if (!d)
-           {
-              /* Check desktop files in these directories */
-              check_for_dirs(GNOME_DIRS);
-              check_for_dirs(KDE_DIRS);
-              check_for_dirs(DEBIAN_DIRS);
-           }
-         if (d)
-            free(d);
-      }
+        if (!d)
+          {
+             /* Check desktop files in these directories */
+             check_for_dirs(GNOME_DIRS);
+             check_for_dirs(KDE_DIRS);
+             check_for_dirs(DEBIAN_DIRS);
+          }
+        if (d)
+           free(d);
+     }
 }
 
 void
@@ -74,7 +72,7 @@ check_for_dirs(char *path)
    char dirs[MAX_PATH];
 
    snprintf(dirs, sizeof(dirs), path);
-   dir = path;   //strdup(path);
+   dir = path;                  //strdup(path);
    if (dirs)
      {
         if (strstr(dirs, ":"))
@@ -142,24 +140,24 @@ check_for_files(char *dir)
 }
 
 static int
-_menu_make_apps(const void *data, Dumb_Tree *tree, int element, int level)
+_menu_make_apps(const void *data, Dumb_Tree * tree, int element, int level)
 {
    if (tree->elements[element].type == DUMB_TREE_ELEMENT_TYPE_STRING)
-      {
-         if (strncmp((char *) tree->elements[element].element, "<MENU ", 6) == 0)
-	    {
-               char *name, *path;
-               Ecore_Hash *pool, *apps;
+     {
+        if (strncmp((char *)tree->elements[element].element, "<MENU ", 6) == 0)
+          {
+             char *name, *path;
+             Ecore_Hash *pool, *apps;
 
-               name = (char *) tree->elements[element].element;
-               path = (char *) tree->elements[element + 1].element;
-               pool  = (Ecore_Hash *) tree->elements[element + 2].element;
-               apps  = (Ecore_Hash *) tree->elements[element + 4].element;
-               printf("MAKING MENU - %s \t\t%s\n", path, name);
-	       menu_count++;
-               ecore_hash_for_each_node(apps, _menu_dump_each_hash_node, &path[11]);
-	    }
-      }
+             name = (char *)tree->elements[element].element;
+             path = (char *)tree->elements[element + 1].element;
+             pool = (Ecore_Hash *) tree->elements[element + 2].element;
+             apps = (Ecore_Hash *) tree->elements[element + 4].element;
+             printf("MAKING MENU - %s \t\t%s\n", path, name);
+             menu_count++;
+             ecore_hash_for_each_node(apps, _menu_dump_each_hash_node, &path[11]);
+          }
+     }
    return 0;
 }
 
@@ -169,9 +167,9 @@ _menu_dump_each_hash_node(void *value, void *user_data)
    Ecore_Hash_Node *node;
    char *file, *path;
 
-   path = (char *) user_data;
+   path = (char *)user_data;
    node = (Ecore_Hash_Node *) value;
-   file = (char *) node->value;
+   file = (char *)node->value;
    printf("MAKING EAP %s -> %s\n", path, file);
    item_count++;
    parse_desktop_file(strdup(file), path);

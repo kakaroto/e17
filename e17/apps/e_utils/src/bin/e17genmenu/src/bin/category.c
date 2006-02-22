@@ -41,8 +41,8 @@ cat = "Games";
              
              else if ((strstr(token, "AudioVideo") != NULL) || 
                       (strstr(token, "Sound") != NULL) || 
-                      (strstr(token, "Video") != NULL) || 
-                      (strstr(token, "Multimedia") != NULL))
+(strstr(token, "Video") != NULL) || 
+(strstr(token, "Multimedia") != NULL))
                 
                {
                   
@@ -83,8 +83,8 @@ cat = "System";
 }
              
              else if ((strstr(token, "Shells") != NULL) || 
-                      (strstr(token, "Utility") != NULL) || 
-                      (strstr(token, "Tools") != NULL))
+(strstr(token, "Utility") != NULL) || 
+(strstr(token, "Tools") != NULL))
                 
                {
                   
@@ -93,8 +93,8 @@ cat = "Utilities";
 }
              
              else if ((strstr(token, "Viewers") != NULL) || 
-                      (strstr(token, "Editors") != NULL) || 
-                      (strstr(token, "Text") != NULL))
+(strstr(token, "Editors") != NULL) || 
+(strstr(token, "Text") != NULL))
                 
                {
                   
@@ -111,7 +111,7 @@ cat = "Graphics";
 }
              
              else if ((strstr(token, "WindowManagers") != NULL) || 
-                      (strstr(token, "Core") != NULL))
+(strstr(token, "Core") != NULL))
                 
                {
                   
@@ -120,7 +120,7 @@ cat = "Core";
 }
              
              else if ((strstr(token, "Settings") != NULL) || 
-                      (strstr(token, "Accessibility") != NULL))
+(strstr(token, "Accessibility") != NULL))
                 
                {
                   

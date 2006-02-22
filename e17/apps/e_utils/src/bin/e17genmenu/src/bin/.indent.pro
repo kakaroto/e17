@@ -1,4 +1,4 @@
--i3 -bl -bad -nbap -sob -ncdb -di1 -nbc -lp -nce -npcs -sc -ncs -l80 -nut
+-i3 -bl -bad -nbap -sob -ncdb -di1 -nbc -lp -nce -npcs -sc -ncs -l160 -nut
 -T G_Eap
 -T Ecore_List
 -T Eet_File

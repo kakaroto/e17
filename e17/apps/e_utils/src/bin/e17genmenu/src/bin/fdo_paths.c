@@ -23,14 +23,10 @@ struct _config_exe_data
    int done;
 };
 
-static Dumb_Tree *_fdo_paths_get(char *before, char *env_home, char *env,
-                                char *env_home_default, char *env_default,
-                                char *type, char *gnome_extra, char *kde);
-static void _fdo_paths_massage_path(char *path, char *home, char *first,
-                                    char *second);
+static Dumb_Tree *_fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default, char *env_default, char *type, char *gnome_extra, char *kde);
+static void _fdo_paths_massage_path(char *path, char *home, char *first, char *second);
 static void _fdo_paths_check_and_add(Dumb_Tree * paths, char *path);
-static void _fdo_paths_exec_config(char *home, Dumb_Tree * extras,
-                                   char *cmd);
+static void _fdo_paths_exec_config(char *home, Dumb_Tree * extras, char *cmd);
 
 static int _fdo_paths_cb_exe_exit(void *data, int type, void *event);
 
@@ -38,22 +34,15 @@ void
 fdo_paths_init()
 {
    if (!fdo_paths_menus)
-      fdo_paths_menus =
-         _fdo_paths_get(NULL, "XDG_CONFIG_HOME", "XDG_CONFIG_DIRS", "~/.config",
-                        "/etc/xdg", "menus", NULL, "xdgconf-menu");
+      fdo_paths_menus = _fdo_paths_get(NULL, "XDG_CONFIG_HOME", "XDG_CONFIG_DIRS", "~/.config", "/etc/xdg", "menus", NULL, "xdgconf-menu");
    if (!fdo_paths_directories)
       fdo_paths_directories =
          _fdo_paths_get(NULL, "XDG_DATA_HOME", "XDG_DATA_DIRS",
-                        "~/.local/share", "/usr/local/share:/usr/share",
-                        "desktop-directories", "gnome/vfolders",
-                        "xdgdata-dirs");
+                        "~/.local/share", "/usr/local/share:/usr/share", "desktop-directories", "gnome/vfolders", "xdgdata-dirs");
    if (!fdo_paths_desktops)
       fdo_paths_desktops =
          _fdo_paths_get(NULL, "XDG_DATA_HOME", "XDG_DATA_DIRS",
-                        "~/.local/share", "/usr/local/share:/usr/share",
-                        "applications",
-                        "dist/desktop-files:dist/short-menu:gnome/apps",
-                        "xdgdata-apps:apps");
+                        "~/.local/share", "/usr/local/share:/usr/share", "applications", "dist/desktop-files:dist/short-menu:gnome/apps", "xdgdata-apps:apps");
    if (!fdo_paths_kde_legacy)
       fdo_paths_kde_legacy = _fdo_paths_get(NULL, NULL, NULL, NULL, NULL, NULL, NULL, "apps");
    if (!fdo_paths_icons)
@@ -61,9 +50,7 @@ fdo_paths_init()
         char *gnome;
 
         fdo_paths_icons =
-           _fdo_paths_get("~/.icons", "XDG_DATA_HOME", "XDG_DATA_DIRS",
-                          "~/.local/share", "/usr/local/share:/usr/share",
-                          "icons", "dist/icons", "icon:pixmap");
+           _fdo_paths_get("~/.icons", "XDG_DATA_HOME", "XDG_DATA_DIRS", "~/.local/share", "/usr/local/share:/usr/share", "icons", "dist/icons", "icon:pixmap");
         _fdo_paths_check_and_add(fdo_paths_icons, "/usr/share/pixmaps/");
         gnome = getenv("$GNOME_ICON_PATH");
         if (gnome)
@@ -94,9 +81,7 @@ fdo_paths_shutdown()
  * @param   data A pointer to pass on to func.
  */
 char *
-fdo_paths_search_for_file(Fdo_Paths_Type type, char *file, int sub,
-                          int (*func) (const void *data, char *path),
-                          const void *data)
+fdo_paths_search_for_file(Fdo_Paths_Type type, char *file, int sub, int (*func) (const void *data, char *path), const void *data)
 {
    int i;
    char *path = NULL;
@@ -122,7 +107,7 @@ fdo_paths_search_for_file(Fdo_Paths_Type type, char *file, int sub,
 
    for (i = 0; i < paths->size; i++)
      {
-        sprintf(temp, "%s%s", (char *) paths->elements[i].element, file);
+        sprintf(temp, "%s%s", (char *)paths->elements[i].element, file);
         if (stat(temp, &path_stat) == 0)
           {
              path = strdup(temp);
@@ -139,7 +124,6 @@ fdo_paths_search_for_file(Fdo_Paths_Type type, char *file, int sub,
    return path;
 }
 
-
 /*  We need -
 config file full of paths
 menus=pathlist
@@ -148,10 +132,8 @@ directories=pathlist
 icons=pathlist
 */
 
-
 static Dumb_Tree *
-_fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default,
-               char *env_default, char *type, char *gnome_extra, char *kde)
+_fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default, char *env_default, char *type, char *gnome_extra, char *kde)
 {
    char *home;
    Dumb_Tree *paths = NULL;
@@ -194,8 +176,7 @@ _fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default,
                {
                   for (i = 0; i < befores->size; i++)
                     {
-                       _fdo_paths_massage_path(path, home,
-                                               befores->elements[i].element, NULL);
+                       _fdo_paths_massage_path(path, home, befores->elements[i].element, NULL);
                        _fdo_paths_check_and_add(paths, path);
                     }
                   E_FN_DEL(dumb_tree_del, befores);
@@ -216,9 +197,7 @@ _fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default,
                     {
                        for (j = 0; j < types->size; j++)
                          {
-                            _fdo_paths_massage_path(path, home,
-                                                    env_list->elements[i].element,
-                                                    types->elements[j].element);
+                            _fdo_paths_massage_path(path, home, env_list->elements[i].element, types->elements[j].element);
                             _fdo_paths_check_and_add(paths, path);
                          }
                     }
@@ -240,9 +219,7 @@ _fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default,
                     {
                        for (j = 0; j < types->size; j++)
                          {
-                            _fdo_paths_massage_path(path, home,
-                                                    env_list->elements[i].element,
-                                                    types->elements[j].element);
+                            _fdo_paths_massage_path(path, home, env_list->elements[i].element, types->elements[j].element);
                             _fdo_paths_check_and_add(paths, path);
                          }
                     }
@@ -258,9 +235,7 @@ _fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default,
     *      if it exists, add it to end of paths
     */
 
-   exit_handler =
-      ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _fdo_paths_cb_exe_exit,
-                              paths);
+   exit_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _fdo_paths_cb_exe_exit, paths);
    if (exit_handler)
      {
         int i;
@@ -272,7 +247,7 @@ _fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default,
           {
              char cmd[128];
 
-             sprintf(cmd, "kde-config --path %s", (char *) kdes->elements[i].element);
+             sprintf(cmd, "kde-config --path %s", (char *)kdes->elements[i].element);
              _fdo_paths_exec_config(home, NULL, cmd);
           }
 
@@ -308,8 +283,7 @@ _fdo_paths_massage_path(char *path, char *home, char *first, char *second)
    if (second)
      {
         if (first[0] == '~')
-           sprintf(path, "%s%s/%s/",
-                   home, &first[1], &second[(second[0] == '/') ? 1 : 0]);
+           sprintf(path, "%s%s/%s/", home, &first[1], &second[(second[0] == '/') ? 1 : 0]);
         else
            sprintf(path, "%s/%s/", first, &second[(second[0] == '/') ? 1 : 0]);
      }
@@ -347,7 +321,7 @@ _fdo_paths_check_and_add(Dumb_Tree * paths, char *path)
 }
 
 static void
-_fdo_paths_exec_config(char *home, Dumb_Tree *extras, char *cmd)
+_fdo_paths_exec_config(char *home, Dumb_Tree * extras, char *cmd)
 {
    Ecore_Exe *exe;
    struct _config_exe_data ced;
@@ -355,18 +329,15 @@ _fdo_paths_exec_config(char *home, Dumb_Tree *extras, char *cmd)
    ced.home = home;
    ced.types = extras;
    ced.done = 0;
-   exe =
-      ecore_exe_pipe_run(cmd,
-                         ECORE_EXE_PIPE_AUTO | ECORE_EXE_PIPE_READ |
-                         ECORE_EXE_PIPE_READ_LINE_BUFFERED, &ced);
+   exe = ecore_exe_pipe_run(cmd, ECORE_EXE_PIPE_AUTO | ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_READ_LINE_BUFFERED, &ced);
    if (exe)
      {
         ecore_exe_tag_set(exe, "genmenu/fdo");
         while (ced.done == 0)
           {
-	     /* FIXME: raster is paranoid.  If too much time passes, give up.
-	      * Or find a way to let the usual event loop shit do this without spinning our wheels.
-	      */
+             /* FIXME: raster is paranoid.  If too much time passes, give up.
+              * Or find a way to let the usual event loop shit do this without spinning our wheels.
+              */
              ecore_main_loop_iterate();
              usleep(10);
           }
@@ -374,9 +345,7 @@ _fdo_paths_exec_config(char *home, Dumb_Tree *extras, char *cmd)
 }
 
 char *
-fdo_paths_recursive_search(char *path, char *file,
-                            int (*func) (const void *data, char *path),
-                            const void *data)
+fdo_paths_recursive_search(char *path, char *file, int (*func) (const void *data, char *path), const void *data)
 {
    char *fpath = NULL;
    DIR *dir = NULL;
@@ -397,33 +366,30 @@ fdo_paths_recursive_search(char *path, char *file,
                {
                   if (S_ISDIR(script_stat.st_mode))
                     {
-                       if ((strcmp(basename(info_text), ".") != 0)
-                           && (strcmp(basename(info_text), "..") != 0))
+                       if ((strcmp(basename(info_text), ".") != 0) && (strcmp(basename(info_text), "..") != 0))
                          {
                             sprintf(info_text, "%s%s/", path, script->d_name);
-                            fpath =
-                               fdo_paths_recursive_search(info_text, file,
-                                                           func, data);
+                            fpath = fdo_paths_recursive_search(info_text, file, func, data);
                          }
                     }
                   else
                     {
-		       if (file)
-		          {
-                             if (strcmp(basename(info_text), file) == 0)
-                               {
-                                  fpath = strdup(info_text);
-                                  if (func)
-                                     if (func(data, path))
-                                        break;
-                               }
-			  }
-		       else
-		          {
-                              if (func)
-                                 if (func(data, info_text))
-                                    break;
-			  }
+                       if (file)
+                         {
+                            if (strcmp(basename(info_text), file) == 0)
+                              {
+                                 fpath = strdup(info_text);
+                                 if (func)
+                                    if (func(data, path))
+                                       break;
+                              }
+                         }
+                       else
+                         {
+                            if (func)
+                               if (func(data, info_text))
+                                  break;
+                         }
                     }
                   if (fpath && (!func))
                      break;
@@ -461,38 +427,35 @@ _fdo_paths_cb_exe_exit(void *data, int type, void *event)
 
    read = ecore_exe_event_data_get(ev->exe, ECORE_EXE_PIPE_READ);
    if ((read) && (read->lines[0].line))
-      {
-         value = read->lines[0].line;
-         if (value)
-            {
-               config_list = dumb_tree_from_paths(value);
-               if (config_list)
-                  {
-                     int i, j;
+     {
+        value = read->lines[0].line;
+        if (value)
+          {
+             config_list = dumb_tree_from_paths(value);
+             if (config_list)
+               {
+                  int i, j;
 
-                     for (i = 0; i < config_list->size; i++)
-                        {
-                           if (ced->types)
+                  for (i = 0; i < config_list->size; i++)
+                    {
+                       if (ced->types)
+                         {
+                            for (j = 0; j < ced->types->size; j++)
                               {
-                                 for (j = 0; j < ced->types->size; j++)
-                                    {
-                                       _fdo_paths_massage_path(path, ced->home,
-                                               config_list->elements[i].element,
-                                               ced->types->elements[j].element);
-                                       _fdo_paths_check_and_add(paths, path);
-                                    }
-                              }
-                           else
-                              {
-                                 _fdo_paths_massage_path(path, ced->home, config_list->elements[i].element,
-                                          NULL);
+                                 _fdo_paths_massage_path(path, ced->home, config_list->elements[i].element, ced->types->elements[j].element);
                                  _fdo_paths_check_and_add(paths, path);
                               }
-                        }
-                     E_FN_DEL(dumb_tree_del, config_list);
-                  }
-            }
-      }
+                         }
+                       else
+                         {
+                            _fdo_paths_massage_path(path, ced->home, config_list->elements[i].element, NULL);
+                            _fdo_paths_check_and_add(paths, path);
+                         }
+                    }
+                  E_FN_DEL(dumb_tree_del, config_list);
+               }
+          }
+     }
    ced->done = 1;
    return 1;
 }

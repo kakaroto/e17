@@ -88,8 +88,7 @@ sort_menu(char *path)
         name = get_name(strdup(path2));
         if (name != NULL)
           {
-             snprintf(path2, sizeof(path2), "%s:%s", strdup(name),
-                      strdup(buffer));
+             snprintf(path2, sizeof(path2), "%s:%s", strdup(name), strdup(buffer));
              if (!search_list(eaps, strdup(path2)))
                 eaps = add_list(eaps, strdup(path2));
           }

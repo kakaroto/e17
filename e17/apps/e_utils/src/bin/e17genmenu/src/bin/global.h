@@ -16,16 +16,16 @@
 typedef struct _G_Eap G_Eap;
 struct _G_Eap
 {
-    char *eap_name;
-    char *name;
-    char *generic;
-    char *comment;
-    char *categories;
-    char *exec;
-    char *icon;
-    char *startup;
-    char *type;
-	char *window_class;
+   char *eap_name;
+   char *name;
+   char *generic;
+   char *comment;
+   char *categories;
+   char *exec;
+   char *icon;
+   char *startup;
+   char *type;
+   char *window_class;
 };
 
 /* Function Prototypes */

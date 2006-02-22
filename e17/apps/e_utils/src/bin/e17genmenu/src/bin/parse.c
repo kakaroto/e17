@@ -8,8 +8,7 @@
 
 extern int reject_count;
 
-static void _parse_desktop_del(Desktop *desktop);
-
+static void _parse_desktop_del(Desktop * desktop);
 
 char *
 get_t(char *icon)
@@ -144,28 +143,37 @@ parse_desktop_file(char *app, char *menu_path)
 
    desktop = parse_desktop_ini_file(app);
    if ((desktop) && (desktop->group))
-      {
-         char *value;
+     {
+        char *value;
 
-         value = (char *) ecore_hash_get(desktop->group, "Name");
-	 if (value)   eap->name = strdup(value);
-         value = (char *) ecore_hash_get(desktop->group, "GenericName");
-	 if (value)   eap->generic = strdup(value);
-         value = (char *) ecore_hash_get(desktop->group, "Comment");
-	 if (value)   eap->comment = strdup(value);
-         value = (char *) ecore_hash_get(desktop->group, "Type");
-	 if (value)   eap->type = strdup(value);
-         value = (char *) ecore_hash_get(desktop->group, "Categories");
-	 if (value)   eap->categories = strdup(value);
-         value = (char *) ecore_hash_get(desktop->group, "Exec");
-	 if (value)   eap->exec = strdup(value);
-         value = (char *) ecore_hash_get(desktop->group, "Icon");
-	 if (value)   eap->icon = strdup(value);
-         value = (char *) ecore_hash_get(desktop->group, "X-KDE-StartupNotify");
-	 if (value)   eap->startup = (!strcmp(value, "true")) ? "1" : "0";
-         value = (char *) ecore_hash_get(desktop->group, "StartupNotify");
-	 if (value)   eap->startup = (!strcmp(value, "true")) ? "1" : "0";
-      }
+        value = (char *)ecore_hash_get(desktop->group, "Name");
+        if (value)
+           eap->name = strdup(value);
+        value = (char *)ecore_hash_get(desktop->group, "GenericName");
+        if (value)
+           eap->generic = strdup(value);
+        value = (char *)ecore_hash_get(desktop->group, "Comment");
+        if (value)
+           eap->comment = strdup(value);
+        value = (char *)ecore_hash_get(desktop->group, "Type");
+        if (value)
+           eap->type = strdup(value);
+        value = (char *)ecore_hash_get(desktop->group, "Categories");
+        if (value)
+           eap->categories = strdup(value);
+        value = (char *)ecore_hash_get(desktop->group, "Exec");
+        if (value)
+           eap->exec = strdup(value);
+        value = (char *)ecore_hash_get(desktop->group, "Icon");
+        if (value)
+           eap->icon = strdup(value);
+        value = (char *)ecore_hash_get(desktop->group, "X-KDE-StartupNotify");
+        if (value)
+           eap->startup = (!strcmp(value, "true")) ? "1" : "0";
+        value = (char *)ecore_hash_get(desktop->group, "StartupNotify");
+        if (value)
+           eap->startup = (!strcmp(value, "true")) ? "1" : "0";
+     }
 
    /* Check If We Process */
    if (!eap->type)
@@ -179,12 +187,11 @@ parse_desktop_file(char *app, char *menu_path)
    /* Write Out Mapping File ? */
    if (get_mapping())
      {
-        if ((!eap->icon) || (!eap->name) ||
-            (!eap->exec) || (!eap->window_class))
-           {
-	      reject_count++;
-              return;
-	   }
+        if ((!eap->icon) || (!eap->name) || (!eap->exec) || (!eap->window_class))
+          {
+             reject_count++;
+             return;
+          }
 
         FILE *f;
         char buff[MAX_PATH];
@@ -195,11 +202,10 @@ parse_desktop_file(char *app, char *menu_path)
         if (!f)
           {
              fprintf(stderr, "ERROR: Cannot Open Mapping File\n");
-	     reject_count++;
+             reject_count++;
              return;
           }
-        snprintf(buff, sizeof(buff), "%s|!%s|!%s|!%s\n",
-                 eap->icon, eap->name, eap->window_class, eap->exec);
+        snprintf(buff, sizeof(buff), "%s|!%s|!%s|!%s\n", eap->icon, eap->name, eap->window_class, eap->exec);
         fwrite(buff, sizeof(char), strlen(buff), f);
         fclose(f);
      }
@@ -229,26 +235,24 @@ process_file(char *file, char *menu_path, G_Eap *eap)
    if ((ecore_file_exists(path)) && (!overwrite))
      {
         if (menu_path != NULL)
-           {
-              snprintf(order_path, sizeof(order_path), "%s" EFAVDIR "/%s",
-                     home, menu_path);
-              modify_order(order_path, eap->eap_name);
-	   }
-	else
-	   {
-              category = NULL;
-              if (eap->categories != NULL)
-                {
-                   category = find_category(eap->categories);
-                   if (category != NULL)
-                     {
-                        snprintf(order_path, sizeof(order_path), "%s" EFAVDIR "/%s",
-                                 home, category);
-                        modify_order(order_path, eap->eap_name);
-                     }
-                }
-              return;
-	   }
+          {
+             snprintf(order_path, sizeof(order_path), "%s" EFAVDIR "/%s", home, menu_path);
+             modify_order(order_path, eap->eap_name);
+          }
+        else
+          {
+             category = NULL;
+             if (eap->categories != NULL)
+               {
+                  category = find_category(eap->categories);
+                  if (category != NULL)
+                    {
+                       snprintf(order_path, sizeof(order_path), "%s" EFAVDIR "/%s", home, category);
+                       modify_order(order_path, eap->eap_name);
+                    }
+               }
+             return;
+          }
      }
 
    if (eap->icon != NULL)
@@ -289,18 +293,16 @@ process_file(char *file, char *menu_path, G_Eap *eap)
 
    category = NULL;
    if (menu_path != NULL)
-      {
-             snprintf(order_path, sizeof(order_path), "%s" EFAVDIR "/%s", home,
-                      menu_path);
-             modify_order(order_path, eap->eap_name);
-      }
+     {
+        snprintf(order_path, sizeof(order_path), "%s" EFAVDIR "/%s", home, menu_path);
+        modify_order(order_path, eap->eap_name);
+     }
    else if (eap->categories != NULL)
      {
         category = find_category(eap->categories);
         if (category != NULL)
           {
-             snprintf(order_path, sizeof(order_path), "%s" EFAVDIR "/%s", home,
-                      category);
+             snprintf(order_path, sizeof(order_path), "%s" EFAVDIR "/%s", home, category);
              modify_order(order_path, eap->eap_name);
           }
      }
@@ -387,23 +389,23 @@ void
 parse_ini_init()
 {
    if (!ini_file_cache)
-      {
-         ini_file_cache = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-         if (ini_file_cache)
-            {
-               ecore_hash_set_free_key(ini_file_cache, free);
-               ecore_hash_set_free_value(ini_file_cache, (Ecore_Free_Cb) ecore_hash_destroy);
-            }
-      }
+     {
+        ini_file_cache = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+        if (ini_file_cache)
+          {
+             ecore_hash_set_free_key(ini_file_cache, free);
+             ecore_hash_set_free_value(ini_file_cache, (Ecore_Free_Cb) ecore_hash_destroy);
+          }
+     }
    if (!desktop_cache)
-      {
-         desktop_cache = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-         if (desktop_cache)
-            {
-               ecore_hash_set_free_key(desktop_cache, free);
-               ecore_hash_set_free_value(desktop_cache, (Ecore_Free_Cb) _parse_desktop_del);
-            }
-      }
+     {
+        desktop_cache = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+        if (desktop_cache)
+          {
+             ecore_hash_set_free_key(desktop_cache, free);
+             ecore_hash_set_free_value(desktop_cache, (Ecore_Free_Cb) _parse_desktop_del);
+          }
+     }
 }
 
 Ecore_Hash *
@@ -439,8 +441,7 @@ parse_ini_file(char *file)
 
              c = buffer;
              /* Strip preceeding blanks. */
-             while (((*c == ' ') || (*c == '\t')) && (*c != '\n')
-                    && (*c != '\0'))
+             while (((*c == ' ') || (*c == '\t')) && (*c != '\n') && (*c != '\0'))
                 c++;
              /* Skip blank lines and comments */
              if ((*c == '\0') || (*c == '\n') || (*c == '#'))
@@ -466,8 +467,7 @@ parse_ini_file(char *file)
                {
                   key = c;
                   /* Find trailing blanks or =. */
-                  while ((*c != '=') && (*c != ' ') && (*c != '\t')
-                         && (*c != '\n') && (*c != '\0'))
+                  while ((*c != '=') && (*c != ' ') && (*c != '\t') && (*c != '\n') && (*c != '\0'))
                      c++;
                   if (*c != '=')        /* Find equals. */
                     {
@@ -479,8 +479,7 @@ parse_ini_file(char *file)
                     {
                        *c++ = '\0';
                        /* Strip preceeding blanks. */
-                       while (((*c == ' ') || (*c == '\t')) && (*c != '\n')
-                              && (*c != '\0'))
+                       while (((*c == ' ') || (*c == '\t')) && (*c != '\n') && (*c != '\0'))
                           c++;
                        value = c;
                        /* Find end. */
@@ -504,67 +503,72 @@ parse_ini_file(char *file)
    return result;
 }
 
-Desktop *parse_desktop_ini_file(char *file)
+Desktop *
+parse_desktop_ini_file(char *file)
 {
    Desktop *result;
 
    result = (Desktop *) ecore_hash_get(desktop_cache, file);
    if (!result)
-      {
-         result = calloc(1, sizeof(Desktop));
-	 if (result)
-	    {
-	       result->data = parse_ini_file(file);
-	       if (result->data)
-	          {
-                     result->group = (Ecore_Hash *) ecore_hash_get(result->data, "Desktop Entry");
-	             if (!result->group)
-                        result->group = (Ecore_Hash *) ecore_hash_get(result->data, "KDE Desktop Entry");
-	             if (result->group)
-	                {
-		           char *temp;
+     {
+        result = calloc(1, sizeof(Desktop));
+        if (result)
+          {
+             result->data = parse_ini_file(file);
+             if (result->data)
+               {
+                  result->group = (Ecore_Hash *) ecore_hash_get(result->data, "Desktop Entry");
+                  if (!result->group)
+                     result->group = (Ecore_Hash *) ecore_hash_get(result->data, "KDE Desktop Entry");
+                  if (result->group)
+                    {
+                       char *temp;
 
-                           temp = (char *) ecore_hash_get(result->group, "Categories");
-		           if (temp)
-                              result->Categories = dumb_tree_from_paths(temp);
-                           temp = (char *) ecore_hash_get(result->group, "OnlyShowIn");
-		           if (temp)
-                              result->OnlyShowIn = dumb_tree_from_paths(temp);
-                           temp = (char *) ecore_hash_get(result->group, "NotShowIn");
-		           if (temp)
-                              result->NotShowIn = dumb_tree_from_paths(temp);
-		        }
-                     ecore_hash_set(desktop_cache, strdup(file), result);
-		  }
-	       else
-	          {
-		     free(result);
-		     result = NULL;
-		  }
-	    }
-      }
+                       temp = (char *)ecore_hash_get(result->group, "Categories");
+                       if (temp)
+                          result->Categories = dumb_tree_from_paths(temp);
+                       temp = (char *)ecore_hash_get(result->group, "OnlyShowIn");
+                       if (temp)
+                          result->OnlyShowIn = dumb_tree_from_paths(temp);
+                       temp = (char *)ecore_hash_get(result->group, "NotShowIn");
+                       if (temp)
+                          result->NotShowIn = dumb_tree_from_paths(temp);
+                    }
+                  ecore_hash_set(desktop_cache, strdup(file), result);
+               }
+             else
+               {
+                  free(result);
+                  result = NULL;
+               }
+          }
+     }
    return result;
 }
 
-static void _parse_desktop_del(Desktop *desktop)
+static void
+_parse_desktop_del(Desktop * desktop)
 {
-   if (desktop->NotShowIn)    dumb_tree_del(desktop->NotShowIn);
-   if (desktop->OnlyShowIn)   dumb_tree_del(desktop->OnlyShowIn);
-   if (desktop->Categories)   dumb_tree_del(desktop->Categories);
+   if (desktop->NotShowIn)
+      dumb_tree_del(desktop->NotShowIn);
+   if (desktop->OnlyShowIn)
+      dumb_tree_del(desktop->OnlyShowIn);
+   if (desktop->Categories)
+      dumb_tree_del(desktop->Categories);
    free(desktop);
 }
 
 void
 parse_ini_shutdown()
 {
-   if(ini_file_cache)
-      {
-         ecore_hash_destroy(ini_file_cache);
-	 ini_file_cache = NULL;
-      }
-   if(desktop_cache)
-      {
-         ecore_hash_destroy(desktop_cache);
-	 desktop_cache = NULL;
-      }
+   if (ini_file_cache)
+     {
+        ecore_hash_destroy(ini_file_cache);
+        ini_file_cache = NULL;
+     }
+   if (desktop_cache)
+     {
+        ecore_hash_destroy(desktop_cache);
+        desktop_cache = NULL;
+     }
 }

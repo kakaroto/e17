@@ -7,12 +7,11 @@
 #include <Ecore_Data.h>
 #include "dumb_tree.h"
 
-
 typedef struct _Desktop Desktop;
 struct _Desktop
 {
    Ecore_Hash *data, *group;
-   Dumb_Tree *Categories, *OnlyShowIn, *NotShowIn;  /* FIXME: Better to have these as hashes. */
+   Dumb_Tree *Categories, *OnlyShowIn, *NotShowIn;      /* FIXME: Better to have these as hashes. */
    int NoDisplay, Hidden, allocated;
 };
 

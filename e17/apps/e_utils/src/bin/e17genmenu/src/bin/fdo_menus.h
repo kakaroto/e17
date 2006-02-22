@@ -8,7 +8,7 @@ extern "C"
 {
 # endif
 
-   Dumb_Tree *fdo_menus_get(char *file, Dumb_Tree *xml);
+   Dumb_Tree *fdo_menus_get(char *file, Dumb_Tree * xml);
 
 # ifdef __cplusplus
 }
