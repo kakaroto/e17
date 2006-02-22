@@ -57,17 +57,12 @@ _e17genmenu_test_fdo_paths()
         char *directory = "Applications.directory";
         char *desktop = "xterm.desktop";
         char *icon = "tux.png";
-        Dumb_Tree *menu_xml = NULL;
+        Dumb_Tree *menus = NULL;
 
         printf("\n\nPath to %s is %s\n", menu, path);
-        menu_xml = xmlame_get(path);;
-        if (menu_xml)
-          {
-             Dumb_Tree *menus = NULL;
 
-             /* convert the xml into menus */
-             menus = fdo_menus_get(path, menu_xml);
-          }
+        /* convert the xml into menus */
+        menus = fdo_menus_get(path, NULL, 0);
         free(path);
 
         /* During the processing of the menu file, you will need to search for 
@@ -216,7 +211,7 @@ _e17genmenu_shutdown()
    return;
 }
 
-double convert, icon_time = 0.0, cache_time = 0.0;
+double convert_time = 0.0, icon_time = 0.0, cache_time = 0.0;
 int menu_count, item_count, reject_count;
 
 int
@@ -245,7 +240,6 @@ main(int argc, char **argv)
    begin = ecore_time_get();
    /* Start Making Menus */
    make_menus();
-   convert -= begin;
    gen = ecore_time_get() - begin;
 
    /* Sort Menus */
@@ -265,7 +259,7 @@ main(int argc, char **argv)
 
    printf
       ("\nTotal time %3.3f seconds, finding fdo paths %3.3f, converting fdo menus %3.3f, generating %d (rejected %d) eaps in %d menus %3.3f, finding icons %3.3f, generating eap caches %3.3f.\n",
-       ecore_time_get() - start, paths, convert, item_count, reject_count, menu_count, gen - icon_time, icon_time, cache_time);
+       ecore_time_get() - start, paths, convert_time, item_count, reject_count, menu_count, gen - icon_time, icon_time, cache_time);
 
    parse_ini_shutdown();
    fdo_paths_shutdown();

@@ -4,9 +4,7 @@
 #include "fdo_paths.h"
 #include "parse.h"
 #include "menus.h"
-#include "xmlame.h"
 
-extern double convert;
 extern int menu_count, item_count;
 
 static int _menu_make_apps(const void *data, Dumb_Tree * tree, int element, int level);
@@ -27,21 +25,18 @@ make_menus()
         if (menu_file)
           {
              char *path;
-             Dumb_Tree *menu_xml = NULL;
 
              path = ecore_file_get_dir(menu_file);
-             menu_xml = xmlame_get(menu_file);;
-             if ((menu_xml) && (path))
+             if (path)
                {
                   Dumb_Tree *menus = NULL;
 
                   /* convert the xml into menus */
-                  menus = fdo_menus_get(menu_file, menu_xml);
-                  convert = ecore_time_get();
+                  menus = fdo_menus_get(menu_file, NULL, 0);
                   if (menus)
                     {
                        /* create the .eap and order files from the menu */
-                       dumb_tree_foreach(menu_xml, 0, _menu_make_apps, path);
+                       dumb_tree_foreach(menus, 0, _menu_make_apps, path);
                     }
                }
              E_FREE(path);

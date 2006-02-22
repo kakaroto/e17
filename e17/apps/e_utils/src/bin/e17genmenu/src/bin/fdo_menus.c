@@ -20,6 +20,10 @@
 #include "global.h"
 #include "fdo_paths.h"
 #include "parse.h"
+#include "xmlame.h"
+
+extern double convert_time;
+
 
 struct _fdo_menus_expand_apps_data
 {
@@ -30,13 +34,11 @@ struct _fdo_menus_expand_apps_data
 
 struct _fdo_menus_unxml_data
 {
-   Dumb_Tree *menus;
    char *file;
    char *base;
    char *path;
-   Dumb_Tree *stack;
-   Dumb_Tree *merge_stack;
-   int unallocated;
+   Dumb_Tree *stack, *merge_stack;
+   int unallocated, level;
 };
 
 struct _fdo_menus_generate_data
@@ -68,50 +70,109 @@ static void _fdo_menus_select_app(void *value, void *user_data);
 static int _fdo_menus_apply_rules(struct _fdo_menus_generate_data *generate_data, Dumb_Tree * rule, char *key, Desktop * desktop);
 
 Dumb_Tree *
-fdo_menus_get(char *file, Dumb_Tree * xml)
+fdo_menus_get(char *file, Dumb_Tree *merge_stack, int level)
 {
+   Dumb_Tree * menu_xml;
    struct _fdo_menus_unxml_data data;
+   double begin;
+   int oops = 0;
 
-   data.file = file;
-   data.menus = dumb_tree_new(NULL);
+   /* Preperation. */
+   begin = ecore_time_get();
    data.stack = dumb_tree_new(NULL);
-   if ((data.menus) && (data.stack))
+   data.base = ecore_file_strip_ext(ecore_file_get_file(file));
+   data.path = ecore_file_get_dir(file);
+   if ((level == 0) && (merge_stack == NULL))
+      merge_stack = dumb_tree_new(NULL);
+   menu_xml = xmlame_get(file);
+   if ((data.stack) && (data.base) && (data.path) && (merge_stack) && (menu_xml))
      {
-        data.base = ecore_file_strip_ext(ecore_file_get_file(file));
-        data.path = ecore_file_get_dir(file);
-        if ((data.base) && (data.path))
+        int i;
+
+        data.file = file;
+        data.level = level;
+        data.merge_stack = merge_stack;
+
+        /* Setup the merge stack. */
+        if (merge_stack->size <= level)
           {
-             dumb_tree_foreach(xml, 0, _fdo_menus_unxml, &data);
-             dumb_tree_foreach(xml, 0, _fdo_menus_merge, &data);
-             dumb_tree_foreach(xml, 0, _fdo_menus_expand_default_dirs, &data);
-             dumb_tree_dump(xml, 0);
-             printf("\n\n");
-             data.unallocated = FALSE;
-             dumb_tree_foreach(xml, 0, _fdo_menus_generate, &data);
-             data.unallocated = TRUE;
-             dumb_tree_foreach(xml, 0, _fdo_menus_generate, &data);
-             dumb_tree_dump(xml, 0);
-             printf("\n\n");
+              while (merge_stack->size < level)
+                 dumb_tree_add(merge_stack, "");
+              dumb_tree_add(merge_stack, file);
           }
-        E_FREE(data.path);
-        E_FREE(data.base);
+        else
+           merge_stack->elements[level].element = file;
+
+        /* Find out if we are looping. */
+        for (i = 0; i < level; i++)
+          {
+             char *text;
+
+             /* I can safely assume that they are all strings. */
+             text = (char *)merge_stack->elements[i].element;
+	     if (strcmp(text, file) == 0)
+	        {
+		   fprintf(stderr, "Oops, infinite menu merging loop detected at %s\n", file);
+		   oops++;
+		}
+	  }
+
+        if (oops == 0)
+	   {
+	      /* Get on with it. */
+              dumb_tree_foreach(menu_xml, 0, _fdo_menus_unxml, &data);
+              dumb_tree_foreach(menu_xml, 0, _fdo_menus_merge, &data);
+              dumb_tree_foreach(menu_xml, 0, _fdo_menus_expand_default_dirs, &data);
+
+              if (level == 0)
+	        {
+                   convert_time += ecore_time_get() - begin;
+                   dumb_tree_dump(menu_xml, 0);
+                   printf("\n\n");
+                   begin = ecore_time_get();
+	        }
+
+              data.unallocated = FALSE;
+              dumb_tree_foreach(menu_xml, 0, _fdo_menus_generate, &data);
+              data.unallocated = TRUE;
+              dumb_tree_foreach(menu_xml, 0, _fdo_menus_generate, &data);
+
+              if (level == 0)
+	        {
+                   convert_time += ecore_time_get() - begin;
+                   dumb_tree_dump(menu_xml, 0);
+                   printf("\n\n");
+                   begin = ecore_time_get();
+	        }
+	   }
      }
    else
+      oops++;
+
+   if (oops)
      {
+        E_FN_DEL(dumb_tree_del, (menu_xml));
+        if (level == 0)
+	   {
+              E_FN_DEL(dumb_tree_del, (merge_stack));
+	   }
+        E_FREE(data.path);
+        E_FREE(data.base);
         E_FN_DEL(dumb_tree_del, (data.stack));
-        E_FN_DEL(dumb_tree_del, (data.menus));
      }
-   return data.menus;
+
+   if (level == 0)
+      convert_time += ecore_time_get() - begin;
+
+   return menu_xml;
 }
 
 static int
 _fdo_menus_unxml(const void *data, Dumb_Tree * tree, int element, int level)
 {
    struct _fdo_menus_unxml_data *unxml_data;
-   Dumb_Tree *menus;
 
    unxml_data = (struct _fdo_menus_unxml_data *)data;
-   menus = (Dumb_Tree *) unxml_data->menus;
    if (tree->elements[element].type == DUMB_TREE_ELEMENT_TYPE_STRING)
      {
         if (strncmp((char *)tree->elements[element].element, "<!", 2) == 0)
@@ -524,11 +585,10 @@ static int
 _fdo_menus_merge(const void *data, Dumb_Tree * tree, int element, int level)
 {
    struct _fdo_menus_unxml_data *unxml_data;
-   Dumb_Tree *menus, *merge;
+   Dumb_Tree *merge;
    int result = 0;
  
    unxml_data = (struct _fdo_menus_unxml_data *)data;
-   menus = (Dumb_Tree *) unxml_data->menus;
    merge = dumb_tree_new(NULL);
    if (tree->elements[element].type == DUMB_TREE_ELEMENT_TYPE_STRING)
      {
@@ -582,11 +642,10 @@ static int
 _fdo_menus_expand_default_dirs(const void *data, Dumb_Tree * tree, int element, int level)
 {
    struct _fdo_menus_unxml_data *unxml_data;
-   Dumb_Tree *menus, *merge;
+   Dumb_Tree *merge;
    int result = 0;
  
    unxml_data = (struct _fdo_menus_unxml_data *)data;
-   menus = (Dumb_Tree *) unxml_data->menus;
    merge = dumb_tree_new(NULL);
    if (tree->elements[element].type == DUMB_TREE_ELEMENT_TYPE_STRING)
      {
@@ -621,10 +680,8 @@ static int
 _fdo_menus_generate(const void *data, Dumb_Tree * tree, int element, int level)
 {
    struct _fdo_menus_unxml_data *unxml_data;
-   Dumb_Tree *menus;
 
    unxml_data = (struct _fdo_menus_unxml_data *)data;
-   menus = (Dumb_Tree *) unxml_data->menus;
    if (tree->elements[element].type == DUMB_TREE_ELEMENT_TYPE_STRING)
      {
         if (strncmp((char *)tree->elements[element].element, "<MENU ", 6) == 0)
@@ -933,12 +990,12 @@ CATEGORY
 
 /*
 merge menus
-  expand <KDELegacyDirs> to <LegacyDir>.
+*  expand <KDELegacyDirs> to <LegacyDir>.
   for each <MergeFile>, <MergeDir>, and <LegacyDir> element
     get the root <Menu> elements from that elements file/s.
     remove the <Name> element from those root <Menu> elements.
     replace that element with the child elements of those root <Menu> elements.
-    expand the <DefaultMergeDirs> with the name/s of that elements file/s
+*    expand the <DefaultMergeDirs> with the name/s of that elements file/s
   loop until all <MergeFile>, <MergeDir>, and <LegacyDir> elements are done,
   careful to avoid infinite loops in files that reference each other.
 *  for each <Menu> recursively
