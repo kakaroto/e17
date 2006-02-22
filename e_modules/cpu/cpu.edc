@@ -12,17 +12,7 @@ collections
 {
 group
     {
-      name: "modules/cpu/main";
-      script {
-		public message(Msg_Type:type, id, ...) {
-		      if (type == MSG_STRING_SET) {
-		      		new in_str[100];		      				      		
-				getsarg(2, in_str, sizeof(in_str));
-				set_text(PART:"in-text", in_str);
-		      }
-	       }      
-      }
-      
+      name: "modules/cpu/main";      
       parts{
       part {
       	   name: "base";
