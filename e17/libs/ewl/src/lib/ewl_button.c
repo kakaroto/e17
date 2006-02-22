@@ -228,30 +228,35 @@ ewl_button_stock_type_get(Ewl_Button *b)
 void
 ewl_button_image_set(Ewl_Button *b, const char *file, const char *key)
 {
-	Ewl_Container *redir;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
 	DCHECK_PARAM_PTR("file", file);
 	DCHECK_TYPE("b", b, EWL_BUTTON_TYPE);
 
+	/* FIXME: Is this necessary?
 	if (b->image_object)
 		ewl_widget_destroy(b->image_object);
+		*/
 
-	/*
-	 * Save the current redirection and focus on the point where our
-	 * internal widgets belong.
-	 */
-	redir = ewl_container_redirect_get(EWL_CONTAINER(b));
-	ewl_container_redirect_set(EWL_CONTAINER(b), EWL_CONTAINER(b->body));
+	if (!b->image_object) {
+		Ewl_Container *redir;
 
-	b->image_object = ewl_image_new();
-	ewl_container_child_prepend(EWL_CONTAINER(b), b->image_object);
+
+		/*
+		 * Save the current redirection and focus on the point where our
+		 * internal widgets belong.
+		 */
+		redir = ewl_container_redirect_get(EWL_CONTAINER(b));
+		ewl_container_redirect_set(EWL_CONTAINER(b), EWL_CONTAINER(b->body));
+		b->image_object = ewl_image_new();
+		ewl_container_child_prepend(EWL_CONTAINER(b), b->image_object);
+		ewl_widget_internal_set(b->image_object, TRUE);
+		ewl_widget_show(b->image_object);
+
+		ewl_container_redirect_set(EWL_CONTAINER(b), redir);
+	}
+
 	ewl_image_file_set(EWL_IMAGE(b->image_object), file, key);
-	ewl_widget_internal_set(b->image_object, TRUE);
-	ewl_widget_show(b->image_object);
-
-	ewl_container_redirect_set(EWL_CONTAINER(b), redir);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -276,6 +281,27 @@ ewl_button_image_get(Ewl_Button *b)
 		file = ewl_image_file_path_get(EWL_IMAGE(b->image_object));
 
 	DRETURN_PTR(file, DLEVEL_STABLE);
+}
+
+/**
+ * @param b: The button to set the image size on
+ * @return Returns no value.
+ * @brief Set the size of the image inside the button.
+ */
+void
+ewl_button_image_scale_to(Ewl_Button *b, int width, int height)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("b", b);
+	DCHECK_TYPE("b", b, EWL_BUTTON_TYPE);
+
+	if (!b->image_object)
+		ewl_button_image_set(b, "", NULL);
+
+	ewl_image_proportional_set(EWL_IMAGE(b->image_object), TRUE);
+	ewl_image_scale_to(EWL_IMAGE(b->image_object), width, height);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
