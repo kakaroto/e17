@@ -58,6 +58,10 @@ static void _fdo_menus_unxml_moves(Dumb_Tree * menu, Dumb_Tree * tree);
 static void _fdo_menus_add_dirs(Dumb_Tree * tree, Dumb_Tree * paths, char *pre, char *post, char *extra, int element);
 static int _fdo_menus_expand_apps(struct _fdo_menus_unxml_data *unxml_data, char *app_dir, Ecore_Hash * pool);
 static int _fdo_menus_check_app(const void *data, char *path);
+
+static int _fdo_menus_merge(const void *data, Dumb_Tree * tree, int element, int level);
+static int _fdo_menus_expand_default_dirs(const void *data, Dumb_Tree * tree, int element, int level);
+
 static int _fdo_menus_generate(const void *data, Dumb_Tree * tree, int element, int level);
 static void _fdo_menus_inherit_apps(void *value, void *user_data);
 static void _fdo_menus_select_app(void *value, void *user_data);
@@ -78,6 +82,8 @@ fdo_menus_get(char *file, Dumb_Tree * xml)
         if ((data.base) && (data.path))
           {
              dumb_tree_foreach(xml, 0, _fdo_menus_unxml, &data);
+             dumb_tree_foreach(xml, 0, _fdo_menus_merge, &data);
+             dumb_tree_foreach(xml, 0, _fdo_menus_expand_default_dirs, &data);
              dumb_tree_dump(xml, 0);
              printf("\n\n");
              data.unallocated = FALSE;
@@ -174,29 +180,6 @@ _fdo_menus_unxml(const void *data, Dumb_Tree * tree, int element, int level)
                                  flags[2] = ' ';
                                  result = 1;
                               }
-                            else if (strcmp((char *)tree->elements[i].element, "<DefaultAppDirs/") == 0)
-                              {
-                                 _fdo_menus_add_dirs(menu, fdo_paths_desktops, "<AppDir", "</AppDir", NULL, i);
-                                 result = 1;
-                              }
-                            else if (strcmp((char *)tree->elements[i].element, "<DefaultDirectoryDirs/") == 0)
-                              {
-                                 _fdo_menus_add_dirs(menu, fdo_paths_directories, "<DirectoryDir", "</DirectoryDir", NULL, i);
-                                 result = 1;
-                              }
-                            else if (strcmp((char *)tree->elements[i].element, "<DefaultMergeDirs/") == 0)
-                              {
-                                 if (unxml_data->base)
-                                   {
-                                      _fdo_menus_add_dirs(menu, fdo_paths_menus, "<MergeDir", "</MergeDir", unxml_data->base, i);
-                                      result = 1;
-                                   }
-                              }
-                            else if (strcmp((char *)tree->elements[i].element, "<KDELegacyDirs/") == 0)
-                              {
-                                 _fdo_menus_add_dirs(menu, fdo_paths_kde_legacy, "<LegacyDir prefix=\"kde-\"", "</LegacyDir", NULL, i);
-                                 result = 1;
-                              }
                             else if (strcmp((char *)tree->elements[i].element, "</Menu") == 0)
                               {
                                  result = 1;
@@ -256,6 +239,7 @@ _fdo_menus_unxml(const void *data, Dumb_Tree * tree, int element, int level)
                                            dumb_tree_track(menu, menu->elements[1].element);
                                            result = 1;
                                         }
+				      /* FIXME: Move this to later in the sequence. */
                                       else if (strcmp((char *)sub->elements[0].element, "<Directory") == 0)
                                         {
                                            directory = strdup((char *)sub->elements[1].element);
@@ -266,19 +250,6 @@ _fdo_menus_unxml(const void *data, Dumb_Tree * tree, int element, int level)
                                            flags = (char *)menu->elements[0].element;
                                            flags += 7;
                                            result = 1;
-                                        }
-                                      else if ((strcmp((char *)sub->elements[0].element, "<Include") == 0) ||
-                                               (strcmp((char *)sub->elements[0].element, "<Exclude") == 0))
-                                        {
-                                           Dumb_Tree *new_sub;
-
-                                           new_sub = dumb_tree_new(NULL);
-                                           if (new_sub)
-                                             {
-                                                dumb_tree_add_child(rules, new_sub);
-                                                _fdo_menus_unxml_rules(new_sub, sub, ((char *)sub->elements[0].element)[1], 'O');
-                                                result = 1;
-                                             }
                                         }
                                       else if (strcmp((char *)sub->elements[0].element, "<Menu") == 0)
                                         {
@@ -296,7 +267,7 @@ _fdo_menus_unxml(const void *data, Dumb_Tree * tree, int element, int level)
                                         }
                                       else
                                         {
-                                           if ((sub->size == 3) && (sub->elements[1].type == DUMB_TREE_ELEMENT_TYPE_STRING))
+                                           if ( (sub->size == 3) && (sub->elements[1].type == DUMB_TREE_ELEMENT_TYPE_STRING)  && (((char *)sub->elements[1].element)[0] != '<'   ) )
                                              {
                                                 char temp[MAX_PATH];
 
@@ -320,85 +291,6 @@ _fdo_menus_unxml(const void *data, Dumb_Tree * tree, int element, int level)
                                dumb_tree_del((Dumb_Tree *) tree->elements[i].element);
                             tree->elements[i].type = DUMB_TREE_ELEMENT_TYPE_NULL;
                             tree->elements[i].element = NULL;
-                         }
-                    }
-
-                  for (i = 4; i < menu->size; i++)
-                    {
-                       int result = 0;
-
-                       if (menu->elements[i].type == DUMB_TREE_ELEMENT_TYPE_STRING)
-                         {
-                            char *string;
-
-                            string = (char *)menu->elements[i].element;
-                            if (strncmp(string, "<DirectoryDir ", 14) == 0)
-                              {
-                                 char merge_path[MAX_PATH];
-                                 Dumb_Tree *merge;
-
-                                 if (string[14] == '/')
-                                    sprintf(merge_path, "%s", &string[14]);
-                                 else
-                                    sprintf(merge_path, "%s%s", unxml_data->path, &string[14]);
-                                 merge = dumb_tree_new(NULL);
-                                 if (merge)
-                                   {
-                                      fdo_paths_recursive_search(merge_path, NULL, _fdo_menus_check_directory, merge);
-                                      dumb_tree_insert_tree(menu, i + 1, merge);
-                                   }
-                                 result = 1;
-                              }
-                            else if (strncmp(string, "<LegacyDir ", 11) == 0)
-                              {
-                              }
-                            else if (strncmp(string, "<MergeDir ", 10) == 0)
-                              {
-                                 char merge_path[MAX_PATH];
-                                 Dumb_Tree *merge;
-
-                                 if (string[10] == '/')
-                                    sprintf(merge_path, "%s", &string[10]);
-                                 else
-                                    sprintf(merge_path, "%s%s", unxml_data->path, &string[10]);
-                                 merge = dumb_tree_new(NULL);
-                                 if (merge)
-                                   {
-                                      fdo_paths_recursive_search(merge_path, NULL, _fdo_menus_check_menu, merge);
-                                      dumb_tree_insert_tree(menu, i + 1, merge);
-                                   }
-                                 result = 1;
-                              }
-                            else if (strncmp(string, "<MergeFile ", 8) == 0)
-                              {
-                              }
-                         }
-                       if (result)
-                         {
-                            menu->elements[i].type = DUMB_TREE_ELEMENT_TYPE_NULL;
-                            menu->elements[i].element = NULL;
-                         }
-                    }
-
-                  for (i = 4; i < menu->size; i++)
-                    {
-                       int result = 0;
-
-                       if (menu->elements[i].type == DUMB_TREE_ELEMENT_TYPE_STRING)
-                         {
-                            char *string;
-
-                            string = (char *)menu->elements[i].element;
-                            if (strncmp(string, "<AppDir ", 8) == 0)
-                              {
-                                 _fdo_menus_expand_apps(unxml_data, &string[8], pool);
-                                 result = 1;
-                              }
-                         }
-                       if (result)
-                         {
-                            menu->elements[i].type = DUMB_TREE_ELEMENT_TYPE_NULL;
-                            menu->elements[i].element = NULL;
                          }
                     }
 
@@ -575,7 +467,8 @@ _fdo_menus_add_dirs(Dumb_Tree * tree, Dumb_Tree * paths, char *pre, char *post, 
            sprintf(t, "%s %s%s-merged/", pre, (char *)paths->elements[i].element, extra);
         else
            sprintf(t, "%s %s", pre, (char *)paths->elements[i].element);
-        dumb_tree_extend(tree, t);
+	if (tree)
+           dumb_tree_extend(tree, t);
      }
 }
 
@@ -628,6 +521,103 @@ _fdo_menus_check_app(const void *data, char *path)
 }
 
 static int
+_fdo_menus_merge(const void *data, Dumb_Tree * tree, int element, int level)
+{
+   struct _fdo_menus_unxml_data *unxml_data;
+   Dumb_Tree *menus, *merge;
+   int result = 0;
+ 
+   unxml_data = (struct _fdo_menus_unxml_data *)data;
+   menus = (Dumb_Tree *) unxml_data->menus;
+   merge = dumb_tree_new(NULL);
+   if (tree->elements[element].type == DUMB_TREE_ELEMENT_TYPE_STRING)
+     {
+        char *string;
+
+        string = (char *)tree->elements[element].element;
+        if (strcmp(string, "<DefaultMergeDirs/") == 0)
+          {
+             if (unxml_data->base)
+                _fdo_menus_add_dirs(merge, fdo_paths_menus, "<MergeDir", "</MergeDir", unxml_data->base, element);
+             result = 1;
+          }
+        else if (strcmp(string, "<KDELegacyDirs/") == 0)
+          {
+             _fdo_menus_add_dirs(merge, fdo_paths_kde_legacy, "<LegacyDir prefix=\"kde-\"", "</LegacyDir", NULL, element);
+             result = 1;
+          }
+        else if (strncmp(string, "<MergeDir ", 10) == 0)
+          {
+             char merge_path[MAX_PATH];
+
+             if (string[10] == '/')
+                sprintf(merge_path, "%s", &string[10]);
+             else
+                sprintf(merge_path, "%s%s", unxml_data->path, &string[10]);
+             fdo_paths_recursive_search(merge_path, NULL, _fdo_menus_check_menu, merge);
+             result = 1;
+          }
+        else if (strncmp(string, "<LegacyDir ", 11) == 0)
+          {
+          }
+        else if (strncmp(string, "<MergeFile ", 8) == 0)
+          {
+          }
+     }
+
+   if (result)
+     {
+        if ((merge) && (merge->size))
+           dumb_tree_merge(tree, element + 1, merge);
+
+        tree->elements[element].type = DUMB_TREE_ELEMENT_TYPE_NULL;
+        tree->elements[element].element = NULL;
+     }
+
+   return 0;
+}
+
+
+static int
+_fdo_menus_expand_default_dirs(const void *data, Dumb_Tree * tree, int element, int level)
+{
+   struct _fdo_menus_unxml_data *unxml_data;
+   Dumb_Tree *menus, *merge;
+   int result = 0;
+ 
+   unxml_data = (struct _fdo_menus_unxml_data *)data;
+   menus = (Dumb_Tree *) unxml_data->menus;
+   merge = dumb_tree_new(NULL);
+   if (tree->elements[element].type == DUMB_TREE_ELEMENT_TYPE_STRING)
+     {
+        char *string;
+
+        string = (char *)tree->elements[element].element;
+        if (strcmp(string, "<DefaultAppDirs/") == 0)
+          {
+             _fdo_menus_add_dirs(merge, fdo_paths_desktops, "<AppDir", "</AppDir", NULL, element);
+             result = 1;
+          }
+        else if (strcmp(string, "<DefaultDirectoryDirs/") == 0)
+          {
+             _fdo_menus_add_dirs(merge, fdo_paths_directories, "<DirectoryDir", "</DirectoryDir", NULL, element);
+             result = 1;
+          }
+     }
+   if (result)
+     {
+        if ((merge) && (merge->size))
+           dumb_tree_merge(tree, element + 1, merge);
+
+        tree->elements[element].type = DUMB_TREE_ELEMENT_TYPE_NULL;
+        tree->elements[element].element = NULL;
+     }
+
+   return 0;
+}
+
+
+static int
 _fdo_menus_generate(const void *data, Dumb_Tree * tree, int element, int level)
 {
    struct _fdo_menus_unxml_data *unxml_data;
@@ -649,9 +639,75 @@ _fdo_menus_generate(const void *data, Dumb_Tree * tree, int element, int level)
              generate_data.rules = (Dumb_Tree *) tree->elements[element + 3].element;
              generate_data.apps = (Ecore_Hash *) tree->elements[element + 4].element;
 
-             /* Inherit the pools on the first pass. */
+             /* generate and inherit the pools on the first pass, and preparse the include/exclude logic. */
              if (!generate_data.unallocated)
                {
+                  int i;
+
+                  for (i = element + 5; i < tree->size; i++)
+		    {
+                       int result = 0;
+                       char *string;
+
+                       if (tree->elements[i].type == DUMB_TREE_ELEMENT_TYPE_STRING)
+                         {
+                            string = (char *)tree->elements[i].element;
+                            if (strncmp(string, "<AppDir ", 8) == 0)
+                              {
+                                 _fdo_menus_expand_apps(unxml_data, &string[8], generate_data.pool);
+                                 result = 1;
+                              }
+                            else if (strncmp(string, "<DirectoryDir ", 14) == 0)
+                              {
+                                 char merge_path[MAX_PATH];
+                                 Dumb_Tree *merge;
+
+                                 if (string[14] == '/')
+                                    sprintf(merge_path, "%s", &string[14]);
+                                 else
+                                    sprintf(merge_path, "%s%s", unxml_data->path, &string[14]);
+                                 merge = dumb_tree_new(NULL);
+				 if (merge)
+				    {
+                                       fdo_paths_recursive_search(merge_path, NULL, _fdo_menus_check_directory, merge);
+                                       dumb_tree_merge(tree, i + 1, merge);
+				    }
+                                 result = 1;
+                              }
+                         }
+                       else if (tree->elements[i].type == DUMB_TREE_ELEMENT_TYPE_TREE)
+                         {
+                            Dumb_Tree *sub;
+
+                            sub = (Dumb_Tree *) tree->elements[i].element;
+                            if ((sub) && (sub->size))
+                              {
+                                 if (sub->elements[0].type == DUMB_TREE_ELEMENT_TYPE_STRING)
+                                   {
+                                      string = (char *)sub->elements[0].element;
+                                      if ((strcmp(string, "<Include") == 0) || (strcmp(string, "<Exclude") == 0))
+                                        {
+                                           Dumb_Tree *new_sub;
+
+                                           new_sub = dumb_tree_new(NULL);
+                                           if (new_sub)
+                                             {
+                                                dumb_tree_add_child(generate_data.rules, new_sub);
+                                                _fdo_menus_unxml_rules(new_sub, sub, string[1], 'O');
+                                             }
+                                           result = 1;
+                                        }
+				   }
+			      }
+			 }
+
+                       if (result)
+                         {
+                            tree->elements[i].type = DUMB_TREE_ELEMENT_TYPE_NULL;
+                            tree->elements[i].element = NULL;
+                         }
+		     }
+
                   if (unxml_data->stack->size <= level)
                     {
                        while (unxml_data->stack->size < level)

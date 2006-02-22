@@ -231,7 +231,7 @@ main(int argc, char **argv)
    start = ecore_time_get();
    /* Parse Arguments */
    _e17genmenu_parseargs(argc, argv);
-//_e17genmenu_test_fdo_paths();  /* For debugging purposes, makes it easier to gdb this. */
+_e17genmenu_test_fdo_paths();  /* For debugging purposes, makes it easier to gdb this. */
 
    /* Set App Args */
    ecore_app_args_set(argc, (const char **)argv);

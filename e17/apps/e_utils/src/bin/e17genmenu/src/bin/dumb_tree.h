@@ -46,7 +46,7 @@ extern "C"
    void dumb_tree_track(Dumb_Tree * tree, void *element);
    Dumb_Tree *dumb_tree_extend(Dumb_Tree * tree, char *element);
    Dumb_Tree *dumb_tree_insert(Dumb_Tree * tree, int before, void *element, Dumb_Tree_Element_Type type);
-   Dumb_Tree *dumb_tree_insert_tree(Dumb_Tree * tree, int before, Dumb_Tree * element);
+   Dumb_Tree *dumb_tree_merge(Dumb_Tree * tree, int before, Dumb_Tree * element);
    Dumb_Tree *dumb_tree_add_child(Dumb_Tree * tree, Dumb_Tree * element);
    Dumb_Tree *dumb_tree_add_hash(Dumb_Tree * tree, Ecore_Hash * element);
    int dumb_tree_exist(Dumb_Tree * tree, char *element);

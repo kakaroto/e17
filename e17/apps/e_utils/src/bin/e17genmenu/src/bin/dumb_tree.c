@@ -135,31 +135,34 @@ dumb_tree_insert(Dumb_Tree * tree, int before, void *element, Dumb_Tree_Element_
    return tree;
 }
 
-/* OK, so we need a tree insert after all, and it falls into the dumb category. */
+/* OK, so we need a tree merge after all, and it falls into the dumb category. */
 Dumb_Tree *
-dumb_tree_insert_tree(Dumb_Tree * tree, int before, Dumb_Tree * element)
+dumb_tree_merge(Dumb_Tree * tree, int before, Dumb_Tree * element)
 {
    int i, size;
 
    size = element->size;
-   tree->elements = (Dumb_Tree_Element *) realloc(tree->elements, (tree->size + size) * sizeof(Dumb_Tree_Element));
-   tree->size += size;
-   for (i = tree->size - 1; i > before; i--)
-     {
-        tree->elements[i].element = tree->elements[i - size].element;
-        tree->elements[i].type = tree->elements[i - size].type;
-     }
-   for (i = 0; i < size; i++)
-     {
-        tree->elements[before + i].element = element->elements[i].element;
-        tree->elements[before + i].type = element->elements[i].type;
-     }
+   if (size)
+      {
+         tree->elements = (Dumb_Tree_Element *) realloc(tree->elements, (tree->size + size) * sizeof(Dumb_Tree_Element));
+         tree->size += size;
+         for (i = tree->size - 1; i > before; i--)
+           {
+              tree->elements[i].element = tree->elements[i - size].element;
+              tree->elements[i].type = tree->elements[i - size].type;
+           }
+         for (i = 0; i < size; i++)
+           {
+              tree->elements[before + i].element = element->elements[i].element;
+              tree->elements[before + i].type = element->elements[i].type;
+           }
+      }
 
    /* Careful, this might screw up the freeing order if that is important. */
-/*
    size = element->buffers_size;
    if (size)
       {
+/*
          tree->buffers = (char **) realloc(tree->buffers, (tree->buffers_size + size) * sizeof(char *));
          tree->buffers_size += size;
          for (i = 0; i < size; i++)
@@ -167,8 +170,8 @@ dumb_tree_insert_tree(Dumb_Tree * tree, int before, Dumb_Tree * element)
                tree->buffers[tree->buffers_size + i] = element->buffers[i];
 	       element->buffers[i] = NULL;
             }
-      }
 */
+      }
    return tree;
 }
 
