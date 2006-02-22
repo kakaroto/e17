@@ -13,15 +13,6 @@ collections
 group
     {
       name: "modules/wlan/main";
-      script {
-		public message(Msg_Type:type, id, ...) {
-		      if (type == MSG_STRING_SET) {
-		      		new in_str[64];
-				getsarg(2, in_str, sizeof(in_str));
-				set_text(PART:"link-text", in_str);				
-		      }
-	       }      
-      }
       
       parts{
       part {
