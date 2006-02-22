@@ -435,7 +435,6 @@ _wlan_face_update_values(void *data)
    int wlan_link = 0;
    int wlan_level = 0;
    int wlan_noise = 0;
-   Edje_Message_String_Set *msg;
    char in_str[100];
 
    nf = data;
@@ -470,13 +469,8 @@ _wlan_face_update_values(void *data)
      return 1;
    
    /* Update the modules text */   
-   snprintf(in_str, sizeof(in_str), "LNK: %d", wlan_link);
+   snprintf(in_str, sizeof(in_str), "LNK: %ld", (long)wlan_link);
+   edje_object_part_text_set(nf->wlan_obj, "link-text", in_str);
    
-   msg = malloc(sizeof(Edje_Message_String_Set) - sizeof(char *) + (1 + sizeof(char *)));
-   msg->count = 1;
-   msg->str[0] = in_str;
-   edje_object_message_send(nf->wlan_obj, EDJE_MESSAGE_STRING_SET, 1, msg);
-   free(msg);
-
    return 1;
 }
