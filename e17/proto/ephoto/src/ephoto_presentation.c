@@ -36,6 +36,8 @@ _change_picture_cb(void *data)
 		s->text = NULL;
 	}
 	s->screen = ewl_image_new();
+	/* ewl_theme_data_str_set(s->screen, "/image/file", PACKAGE_DATA_DIR "/images/images.edc");
+	ewl_theme_data_str_set(s->screen, "/image/group", "entry"); */
 	ewl_image_file_set(EWL_IMAGE(s->screen), picture1, NULL);
 	ewl_object_alignment_set(EWL_OBJECT(s->screen), EWL_FLAG_ALIGN_CENTER);
 	if ( ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->fullrad)) == 0 ) {
@@ -55,6 +57,8 @@ _change_picture_cb(void *data)
 		hsize = ewl_text_text_get(EWL_TEXT(m->hsize));
 		h = atoi(hsize);
 		s->screen = ewl_image_new();
+		/* ewl_theme_data_str_set(s->screen, "/image/file", PACKAGE_DATA_DIR "/images/images.edc");
+		ewl_theme_data_str_set(s->screen, "/image/group", "entry"); */
 		ewl_object_fill_policy_set(EWL_OBJECT(s->screen), EWL_FLAG_FILL_SHRINK);
 		ewl_image_file_set(EWL_IMAGE(s->screen), picture2, NULL);
 		ewl_object_alignment_set(EWL_OBJECT(s->screen), EWL_FLAG_ALIGN_CENTER);
@@ -164,6 +168,8 @@ slideshow_cb(Ewl_Widget *w, void *event, void *data)
 	pic1 = ecore_dlist_goto_first(m->imagelist);
 	
 	s->screen = ewl_image_new();
+	/* ewl_theme_data_str_set(s->screen, "/image/file", PACKAGE_DATA_DIR "/images/images.edc");
+	ewl_theme_data_str_set(s->screen, "/image/group", "entry"); */
 	ewl_image_file_set(EWL_IMAGE(s->screen), pic1, NULL);
 	ewl_object_alignment_set(EWL_OBJECT(s->screen), EWL_FLAG_ALIGN_CENTER);
 	if ( ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->fullrad)) == 0 ) {
@@ -187,6 +193,8 @@ first_cb(Ewl_Widget * w, void *event, void *data)
 	ewl_widget_destroy(p->imagep);
 	
 	p->imagep = ewl_image_new();
+	/* ewl_theme_data_str_set(p->imagep, "/image/file", PACKAGE_DATA_DIR "/images/images.edc");
+	ewl_theme_data_str_set(p->imagep, "/image/group", "entry"); */
 	ewl_object_fill_policy_set(EWL_OBJECT(p->imagep), EWL_FLAG_FILL_SHRINK);
 	ewl_image_file_set(EWL_IMAGE(p->imagep), picturep, NULL);
 	ewl_object_alignment_set(EWL_OBJECT(p->imagep), EWL_FLAG_ALIGN_CENTER);
@@ -211,6 +219,8 @@ next_cb(Ewl_Widget * w, void *event, void *data)
 	ewl_widget_destroy(p->imagep);
 	
 	p->imagep = ewl_image_new();
+	/* ewl_theme_data_str_set(p->imagep, "/image/file", PACKAGE_DATA_DIR "/images/images.edc");
+	ewl_theme_data_str_set(p->imagep, "/image/group", "entry"); */
 	ewl_object_fill_policy_set(EWL_OBJECT(p->imagep), EWL_FLAG_FILL_SHRINK);
 	ewl_image_file_set(EWL_IMAGE(p->imagep), picturep, NULL);
 	ewl_object_alignment_set(EWL_OBJECT(p->imagep), EWL_FLAG_ALIGN_CENTER);
@@ -234,6 +244,8 @@ previous_cb(Ewl_Widget * w, void *event, void *data)
 	ewl_widget_destroy(p->imagep);
 	
 	p->imagep = ewl_image_new();
+	/* ewl_theme_data_str_set(p->imagep, "/image/file", PACKAGE_DATA_DIR "/images/images.edc");
+	ewl_theme_data_str_set(p->imagep, "/image/group", "entry"); */
 	ewl_object_fill_policy_set(EWL_OBJECT(p->imagep), EWL_FLAG_FILL_SHRINK);
 	ewl_image_file_set(EWL_IMAGE(p->imagep), picturep, NULL);
 	ewl_object_alignment_set(EWL_OBJECT(p->imagep), EWL_FLAG_ALIGN_CENTER);
@@ -252,6 +264,8 @@ last_cb(Ewl_Widget * w, void *event, void *data)
 	ewl_widget_destroy(p->imagep);
 	
 	p->imagep = ewl_image_new();
+	/* ewl_theme_data_str_set(p->imagep, "/image/file", PACKAGE_DATA_DIR "/images/images.edc");
+	ewl_theme_data_str_set(p->imagep, "/image/group", "entry"); */
 	ewl_object_fill_policy_set(EWL_OBJECT(p->imagep), EWL_FLAG_FILL_SHRINK);
 	ewl_image_file_set(EWL_IMAGE(p->imagep), picturep, NULL);
 	ewl_object_alignment_set(EWL_OBJECT(p->imagep), EWL_FLAG_ALIGN_CENTER);
@@ -312,6 +326,8 @@ presentation_cb(Ewl_Widget * w, void *event, void *data)
 	pictureone = ecore_dlist_goto_first(m->imagelist);
 	
 	p->imagep = ewl_image_new();
+	/* ewl_theme_data_str_set(p->imagep, "/image/file", PACKAGE_DATA_DIR "/images/images.edc");
+	ewl_theme_data_str_set(p->imagep, "/image/group", "entry"); */
 	ewl_object_fill_policy_set(EWL_OBJECT(p->imagep), EWL_FLAG_FILL_SHRINK);
 	ewl_image_file_set(EWL_IMAGE(p->imagep), pictureone, NULL);
 	ewl_object_alignment_set(EWL_OBJECT(p->imagep), EWL_FLAG_ALIGN_CENTER);
