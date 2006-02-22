@@ -49,6 +49,7 @@ extern "C"
    Dumb_Tree *dumb_tree_merge(Dumb_Tree * tree, int before, Dumb_Tree * element);
    Dumb_Tree *dumb_tree_add_child(Dumb_Tree * tree, Dumb_Tree * element);
    Dumb_Tree *dumb_tree_add_hash(Dumb_Tree * tree, Ecore_Hash * element);
+   void dumb_tree_remove(Dumb_Tree * tree, int element);
    int dumb_tree_exist(Dumb_Tree * tree, char *element);
    int dumb_tree_foreach(Dumb_Tree * tree, int level, int (*func) (const void *data, Dumb_Tree * tree, int element, int level), const void *data);
    void dumb_tree_dump(Dumb_Tree * tree, int level);

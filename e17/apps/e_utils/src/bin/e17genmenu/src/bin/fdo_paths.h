@@ -13,6 +13,7 @@ enum _Fdo_Paths_Type
 };
 typedef enum _Fdo_Paths_Type Fdo_Paths_Type;
 
+Dumb_Tree *fdo_paths_config;
 Dumb_Tree *fdo_paths_menus;
 Dumb_Tree *fdo_paths_directories;
 Dumb_Tree *fdo_paths_desktops;

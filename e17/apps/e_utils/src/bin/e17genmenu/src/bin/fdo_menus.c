@@ -112,7 +112,7 @@ fdo_menus_get(char *file, Dumb_Tree *merge_stack, int level)
              text = (char *)merge_stack->elements[i].element;
 	     if (strcmp(text, file) == 0)
 	        {
-		   fprintf(stderr, "Oops, infinite menu merging loop detected at %s\n", file);
+		   fprintf(stderr, "\n### Oops, infinite menu merging loop detected at %s\n", file);
 		   oops++;
 		}
 	  }
@@ -122,28 +122,27 @@ fdo_menus_get(char *file, Dumb_Tree *merge_stack, int level)
 	      /* Get on with it. */
               dumb_tree_foreach(menu_xml, 0, _fdo_menus_unxml, &data);
               dumb_tree_foreach(menu_xml, 0, _fdo_menus_merge, &data);
-              dumb_tree_foreach(menu_xml, 0, _fdo_menus_expand_default_dirs, &data);
 
-              if (level == 0)
+              /* The rest of this is only done after ALL the menus have been merged. */
+	      if (level == 0)
 	        {
+                   dumb_tree_foreach(menu_xml, 0, _fdo_menus_expand_default_dirs, &data);
+
                    convert_time += ecore_time_get() - begin;
                    dumb_tree_dump(menu_xml, 0);
                    printf("\n\n");
                    begin = ecore_time_get();
-	        }
 
-              data.unallocated = FALSE;
-              dumb_tree_foreach(menu_xml, 0, _fdo_menus_generate, &data);
-              data.unallocated = TRUE;
-              dumb_tree_foreach(menu_xml, 0, _fdo_menus_generate, &data);
+                   data.unallocated = FALSE;
+                   dumb_tree_foreach(menu_xml, 0, _fdo_menus_generate, &data);
+                   data.unallocated = TRUE;
+                   dumb_tree_foreach(menu_xml, 0, _fdo_menus_generate, &data);
 
-              if (level == 0)
-	        {
                    convert_time += ecore_time_get() - begin;
                    dumb_tree_dump(menu_xml, 0);
                    printf("\n\n");
                    begin = ecore_time_get();
-	        }
+		 }
 	   }
      }
    else
@@ -620,8 +619,100 @@ _fdo_menus_merge(const void *data, Dumb_Tree * tree, int element, int level)
         else if (strncmp(string, "<LegacyDir ", 11) == 0)
           {
           }
-        else if (strncmp(string, "<MergeFile ", 8) == 0)
+        else if (strncmp(string, "<MergeFile ", 11) == 0)
           {
+             char merge_path[MAX_PATH];
+	     int path_type = 1;
+
+             /* FIXME: need to weed out duplicate <MergeFile's, use the last one. */
+	     string += 11;
+             if (strncmp(string, "type=\"", 6) == 0)
+	        {
+	           string += 6;
+                   if (strncmp(string, "parent\"", 7) == 0)
+	              path_type = 0;
+		   while ((*string != '"') && (*string != '\0'))
+		     string++;
+		   if (*string != '\0')
+		     string++;
+		   while ((*string == ' ') && (*string != '\0'))
+		     string++;
+		}
+	     if (path_type)
+	        {
+                   if (string[0] == '/')
+                      sprintf(merge_path, "%s", string);
+                   else
+                      sprintf(merge_path, "%s/%s", unxml_data->path, string);
+		}
+	     else   /* This is a parent type MergeFile. */
+	        {
+		   /* The spec is a little unclear, and the examples may look like they
+		    * contradict the description, but it all makes sense if you cross
+		    * reference it with the XDG Base Directory Specification (version 0.6).
+		    * To make things harder, parent type MergeFiles never appear on my box.
+		    *
+		    * What you do is this.
+		    *
+		    * Take the XDG_CONFIG_DIRS stuff as a whole ($XDG_CONFIG_HOME, then 
+		    * $XDG_CONFIG_DIRS), in this code that will be fdo_paths_config.
+		    *
+		    * If this menu file is from one of the directories in fdo_paths_config,
+		    * scan the rest of fdo_paths_config looking for the new menu.  In other 
+		    * words start searching in the next fdo_paths_config entry after the one
+		    * that this menu is in.
+		    *
+		    * The file to look for is the path to this menu with the portion from
+		    * fdo_paths_config stripped off the beginning.  For instance, the top level
+		    * menu file is typically /etc/xdg/menus/applications.menu, and /etc/xdg is
+		    * typically in fdo_paths_config, so search for menus/applications.menu.
+                    *
+		    * If this menu file is NOT from one of the directories in fdo_paths_menus,
+		    * insert nothing.
+		    *
+		    * The first one found wins, if none are found, don't merge anything.
+		    */
+
+                   /* FIXME: Actually implement this when I have some menus that will exercise it. */
+	           merge_path[0] = '\0';
+                   printf("\n### Didn't expect a MergeFile parent type\n");
+		}
+	     if (merge_path[0] != '\0')
+	        {
+		   Dumb_Tree *new_menu;
+
+                   new_menu = fdo_menus_get(merge_path, unxml_data->merge_stack, level + 1);
+		   if (new_menu)
+		      {
+		         if (new_menu->size > 1)
+			    {
+		               if (new_menu->elements[1].type == DUMB_TREE_ELEMENT_TYPE_TREE)
+			          {
+			             new_menu = (Dumb_Tree *)new_menu->elements[1].element;
+		                     if (new_menu->size > 0)
+			                {
+		                           if (new_menu->elements[0].type == DUMB_TREE_ELEMENT_TYPE_TREE)
+			                     {
+			                        merge = (Dumb_Tree *)new_menu->elements[0].element;
+			                        dumb_tree_remove(merge, 0);
+			                        dumb_tree_remove(merge, 1);
+			                        dumb_tree_remove(merge, 2);
+			                        dumb_tree_remove(merge, 3);
+			                        dumb_tree_remove(merge, 4);
+				                /* FIXME: The MENU_PATHs need to be prefixed. */
+			                     }
+			                  else
+			                     printf("FUCK an error in _fdo_menus_merge(%s)\n", merge_path);
+                                        }
+		                     else
+			                printf("FUCK another error in _fdo_menus_merge(%s)\n", merge_path);
+			          }
+			       else
+			          printf("FUCK ME! An error in _fdo_menus_merge(%s)\n", merge_path);
+			    }
+		      }
+		}
+             result = 1;
           }
      }
 
@@ -992,12 +1083,12 @@ CATEGORY
 merge menus
 *  expand <KDELegacyDirs> to <LegacyDir>.
   for each <MergeFile>, <MergeDir>, and <LegacyDir> element
-    get the root <Menu> elements from that elements file/s.
-    remove the <Name> element from those root <Menu> elements.
-    replace that element with the child elements of those root <Menu> elements.
+*    get the root <Menu> elements from that elements file/s.
+*    remove the <Name> element from those root <Menu> elements.
+*    replace that element with the child elements of those root <Menu> elements.
 *    expand the <DefaultMergeDirs> with the name/s of that elements file/s
-  loop until all <MergeFile>, <MergeDir>, and <LegacyDir> elements are done,
-  careful to avoid infinite loops in files that reference each other.
+*  loop until all <MergeFile>, <MergeDir>, and <LegacyDir> elements are done,
+*  careful to avoid infinite loops in files that reference each other.
 *  for each <Menu> recursively
     consolidate duplicate child <Menu>s.
 *    expand <DefaultAppDir>s and <DefaultDirectoryDir>s to <AppDir>s and <DirectoryDir>s.

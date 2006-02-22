@@ -33,6 +33,8 @@ static int _fdo_paths_cb_exe_exit(void *data, int type, void *event);
 void
 fdo_paths_init()
 {
+   if (!fdo_paths_config)
+      fdo_paths_config = _fdo_paths_get(NULL, "XDG_CONFIG_HOME", "XDG_CONFIG_DIRS", "~/.config", "/etc/xdg", "", NULL, NULL);
    if (!fdo_paths_menus)
       fdo_paths_menus = _fdo_paths_get(NULL, "XDG_CONFIG_HOME", "XDG_CONFIG_DIRS", "~/.config", "/etc/xdg", "menus", NULL, "xdgconf-menu");
    if (!fdo_paths_directories)
@@ -154,7 +156,7 @@ _fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default, 
      {
         int last;
 
-        /* Strip traling slash of home. */
+        /* Strip trailing slash of home. */
         last = strlen(home) - 1;
         if ((last >= 0) && (home[last] == '/'))
            home[last] = '\0';
@@ -280,7 +282,7 @@ _fdo_paths_massage_path(char *path, char *home, char *first, char *second)
            second[last] = '\0';
      }
 
-   if (second)
+   if ((second) && (second[0] != '\0'))
      {
         if (first[0] == '~')
            sprintf(path, "%s%s/%s/", home, &first[1], &second[(second[0] == '/') ? 1 : 0]);

@@ -194,6 +194,17 @@ dumb_tree_add_hash(Dumb_Tree * tree, Ecore_Hash * element)
    return tree;
 }
 
+void
+dumb_tree_remove(Dumb_Tree * tree, int element)
+{
+   if (tree->size > element)
+      {
+         tree->elements[element].type = DUMB_TREE_ELEMENT_TYPE_NULL;
+         tree->elements[element].element = NULL;
+      }
+}
+
+
 int
 dumb_tree_exist(Dumb_Tree * tree, char *element)
 {

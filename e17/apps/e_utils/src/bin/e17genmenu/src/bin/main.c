@@ -39,6 +39,8 @@ _e17genmenu_test_fdo_paths()
    parse_ini_init();
 
    /* You can iterate through the various path lists as needed. */
+   for (i = 0; i < fdo_paths_config->size; i++)
+      printf("FDO config path = %s\n", (char *)fdo_paths_config->elements[i].element);
    for (i = 0; i < fdo_paths_menus->size; i++)
       printf("FDO menu path = %s\n", (char *)fdo_paths_menus->elements[i].element);
    for (i = 0; i < fdo_paths_directories->size; i++)
