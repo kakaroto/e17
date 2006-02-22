@@ -488,19 +488,11 @@ _net_face_update_values(void *data)
    old_out = out;
    
    /* Update the modules text */
-   Edje_Message_String_Set *msg;
    char in_str[100];
    char out_str[100];
-   
    snprintf(in_str, sizeof(in_str), "Rx: %d B", in_use);
    snprintf(out_str, sizeof(out_str), "Tx: %d B", out_use);	
-   
-   msg = malloc(sizeof(Edje_Message_String_Set) - sizeof(char *) + (1 + sizeof(char *)));
-   msg->count = 2;
-   msg->str[0] = in_str;
-   msg->str[1] = out_str;   
-   edje_object_message_send(nf->net_obj, EDJE_MESSAGE_STRING_SET, 1, msg);
-   free(msg);
-
+   edje_object_part_text_set(nf->net_obj, "out-text", out_str);
+   edje_object_part_text_set(nf->net_obj, "in-text", in_str);
    return 1;
 }

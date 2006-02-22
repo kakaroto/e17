@@ -12,20 +12,7 @@ collections
 {
 group
     {
-      name: "modules/net/main";
-      script {
-		public message(Msg_Type:type, id, ...) {
-		      if (type == MSG_STRING_SET) {
-		      		new in_str[64];
-		      		new out_str[64];		      		
-				getsarg(2, in_str, sizeof(in_str));
-				getsarg(3, out_str, sizeof(out_str));
-				set_text(PART:"in-text", in_str);				
-				set_text(PART:"out-text", out_str);								
-		      }
-	       }      
-      }
-      
+      name: "modules/net/main";      
       parts{
       part {
       	   name: "base";
