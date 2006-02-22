@@ -10,7 +10,7 @@ extern double convert;
 extern int menu_count, item_count;
 
 
-static int _menu_make_apps(const void *data, Dumb_List *list, int element, int level);
+static int _menu_make_apps(const void *data, Dumb_Tree *tree, int element, int level);
 static void _menu_dump_each_hash_node(void *value, void *user_data);
 
 
@@ -29,13 +29,13 @@ make_menus()
          if (menu_file)
             {
 	       char *path;
-	       Dumb_List *menu_xml = NULL;
+	       Dumb_Tree *menu_xml = NULL;
 
                path = ecore_file_get_dir(menu_file);
                menu_xml = xmlame_get(menu_file);;
 	       if ((menu_xml) && (path))
 	          {
-	             Dumb_List *menus = NULL;
+	             Dumb_Tree *menus = NULL;
 
 	             /* convert the xml into menus */
 	             menus = fdo_menus_get(menu_file, menu_xml);
@@ -43,7 +43,7 @@ make_menus()
 	             if (menus)
 	                {
 	                   /* create the .eap and order files from the menu */
-                           dumb_list_foreach(menu_xml, 0, _menu_make_apps, path);
+                           dumb_tree_foreach(menu_xml, 0, _menu_make_apps, path);
 		        }
 	          }
                E_FREE(path);
@@ -142,19 +142,19 @@ check_for_files(char *dir)
 }
 
 static int
-_menu_make_apps(const void *data, Dumb_List *list, int element, int level)
+_menu_make_apps(const void *data, Dumb_Tree *tree, int element, int level)
 {
-   if (list->elements[element].type == DUMB_LIST_ELEMENT_TYPE_STRING)
+   if (tree->elements[element].type == DUMB_TREE_ELEMENT_TYPE_STRING)
       {
-         if (strncmp((char *) list->elements[element].element, "<MENU ", 6) == 0)
+         if (strncmp((char *) tree->elements[element].element, "<MENU ", 6) == 0)
 	    {
                char *name, *path;
                Ecore_Hash *pool, *apps;
 
-               name = (char *) list->elements[element].element;
-               path = (char *) list->elements[element + 1].element;
-               pool  = (Ecore_Hash *) list->elements[element + 2].element;
-               apps  = (Ecore_Hash *) list->elements[element + 4].element;
+               name = (char *) tree->elements[element].element;
+               path = (char *) tree->elements[element + 1].element;
+               pool  = (Ecore_Hash *) tree->elements[element + 2].element;
+               apps  = (Ecore_Hash *) tree->elements[element + 4].element;
                printf("MAKING MENU - %s \t\t%s\n", path, name);
 	       menu_count++;
                ecore_hash_for_each_node(apps, _menu_dump_each_hash_node, &path[11]);

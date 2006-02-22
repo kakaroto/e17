@@ -1,7 +1,7 @@
 #ifndef _FDO_PATHS_H
 # define _FDO_PATHS_H
 
-#include "dumb_list.h"
+#include "dumb_tree.h"
 
 enum _Fdo_Paths_Type
 {
@@ -13,11 +13,11 @@ enum _Fdo_Paths_Type
 };
 typedef enum _Fdo_Paths_Type Fdo_Paths_Type;
 
-Dumb_List *fdo_paths_menus;
-Dumb_List *fdo_paths_directories;
-Dumb_List *fdo_paths_desktops;
-Dumb_List *fdo_paths_icons;
-Dumb_List *fdo_paths_kde_legacy;
+Dumb_Tree *fdo_paths_menus;
+Dumb_Tree *fdo_paths_directories;
+Dumb_Tree *fdo_paths_desktops;
+Dumb_Tree *fdo_paths_icons;
+Dumb_Tree *fdo_paths_kde_legacy;
 
 # ifdef __cplusplus
 extern "C"

@@ -30,62 +30,62 @@ struct _fdo_menus_expand_apps_data
 
 struct _fdo_menus_unxml_data
 {
-   Dumb_List *menus;
+   Dumb_Tree *menus;
    char *file;
    char *base;
    char *path;
-   Dumb_List *stack;
-   Dumb_List *merge_stack;
+   Dumb_Tree *stack;
+   Dumb_Tree *merge_stack;
    int unallocated;
 };
 
 struct _fdo_menus_generate_data
 {
    char *name, *path;
-   Dumb_List *rules;
+   Dumb_Tree *rules;
    Ecore_Hash *pool, *apps;
    int unallocated;
 
-   Dumb_List *rule;
+   Dumb_Tree *rule;
    int include;
 };
 
-static int _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level);
+static int _fdo_menus_unxml(const void *data, Dumb_Tree *tree, int element, int level);
 static int _fdo_menus_check_directory(const void *data, char *path);
 static int _fdo_menus_check_menu(const void *data, char *path);
-static void _fdo_menus_unxml_rules(Dumb_List *rules, Dumb_List *list, char type, char sub_type);
-static void _fdo_menus_unxml_moves(Dumb_List *menu, Dumb_List *list);
-static void _fdo_menus_add_dirs(Dumb_List *list, Dumb_List *paths, char *pre, char *post, char *extra, int element);
+static void _fdo_menus_unxml_rules(Dumb_Tree *rules, Dumb_Tree *tree, char type, char sub_type);
+static void _fdo_menus_unxml_moves(Dumb_Tree *menu, Dumb_Tree *tree);
+static void _fdo_menus_add_dirs(Dumb_Tree *tree, Dumb_Tree *paths, char *pre, char *post, char *extra, int element);
 static int _fdo_menus_expand_apps(struct _fdo_menus_unxml_data *unxml_data, char *app_dir, Ecore_Hash *pool);
 static int _fdo_menus_check_app(const void *data, char *path);
-static int _fdo_menus_generate(const void *data, Dumb_List *list, int element, int level);
+static int _fdo_menus_generate(const void *data, Dumb_Tree *tree, int element, int level);
 static void _fdo_menus_inherit_apps(void *value, void *user_data);
 static void _fdo_menus_select_app(void *value, void *user_data);
-static int _fdo_menus_apply_rules(struct _fdo_menus_generate_data *generate_data, Dumb_List *rule, char *key, Desktop *desktop);
+static int _fdo_menus_apply_rules(struct _fdo_menus_generate_data *generate_data, Dumb_Tree *rule, char *key, Desktop *desktop);
 
 
-Dumb_List *
-fdo_menus_get(char *file, Dumb_List *xml)
+Dumb_Tree *
+fdo_menus_get(char *file, Dumb_Tree *xml)
 {
    struct _fdo_menus_unxml_data data;
 
    data.file = file;
-   data.menus = dumb_list_new(NULL);
-   data.stack = dumb_list_new(NULL);
+   data.menus = dumb_tree_new(NULL);
+   data.stack = dumb_tree_new(NULL);
    if ((data.menus) && (data.stack))
       {
          data.base = ecore_file_strip_ext(ecore_file_get_file(file));
          data.path = ecore_file_get_dir(file);
 	 if ((data.base) && (data.path))
 	    {
-               dumb_list_foreach(xml, 0, _fdo_menus_unxml, &data);
-               dumb_list_dump(xml, 0);
+               dumb_tree_foreach(xml, 0, _fdo_menus_unxml, &data);
+               dumb_tree_dump(xml, 0);
                printf("\n\n");
                data.unallocated = FALSE;
-               dumb_list_foreach(xml, 0, _fdo_menus_generate, &data);
+               dumb_tree_foreach(xml, 0, _fdo_menus_generate, &data);
                data.unallocated = TRUE;
-               dumb_list_foreach(xml, 0, _fdo_menus_generate, &data);
-               dumb_list_dump(xml, 0);
+               dumb_tree_foreach(xml, 0, _fdo_menus_generate, &data);
+               dumb_tree_dump(xml, 0);
                printf("\n\n");
 	    }
          E_FREE(data.path);
@@ -93,35 +93,35 @@ fdo_menus_get(char *file, Dumb_List *xml)
       }
    else
       {
-         E_FN_DEL(dumb_list_del, (data.stack));
-         E_FN_DEL(dumb_list_del, (data.menus));
+         E_FN_DEL(dumb_tree_del, (data.stack));
+         E_FN_DEL(dumb_tree_del, (data.menus));
       }
    return data.menus;
 }
 
 
 static int
-_fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
+_fdo_menus_unxml(const void *data, Dumb_Tree *tree, int element, int level)
 {
    struct _fdo_menus_unxml_data *unxml_data;
-   Dumb_List *menus;
+   Dumb_Tree *menus;
 
    unxml_data = (struct _fdo_menus_unxml_data *) data;
-   menus = (Dumb_List *) unxml_data->menus;
-   if (list->elements[element].type == DUMB_LIST_ELEMENT_TYPE_STRING)
+   menus = (Dumb_Tree *) unxml_data->menus;
+   if (tree->elements[element].type == DUMB_TREE_ELEMENT_TYPE_STRING)
       {
-         if (strncmp((char *) list->elements[element].element, "<!", 2) == 0)
+         if (strncmp((char *) tree->elements[element].element, "<!", 2) == 0)
 	    {
-               list->elements[element].type = DUMB_LIST_ELEMENT_TYPE_NULL;
-               list->elements[element].element = NULL;
+               tree->elements[element].type = DUMB_TREE_ELEMENT_TYPE_NULL;
+               tree->elements[element].element = NULL;
 	    }
-         else if (strcmp((char *) list->elements[element].element, "<Menu") == 0)
+         else if (strcmp((char *) tree->elements[element].element, "<Menu") == 0)
 	    {
-               Dumb_List *menu, *rules;
+               Dumb_Tree *menu, *rules;
                Ecore_Hash *pool, *apps;
 
-               menu = dumb_list_new(NULL);
-               rules = dumb_list_new(NULL);
+               menu = dumb_tree_new(NULL);
+               rules = dumb_tree_new(NULL);
                pool = ecore_hash_new(ecore_str_hash, ecore_str_compare);
                apps = ecore_hash_new(ecore_str_hash, ecore_str_compare);
                if ((menu) && (rules) && (pool) && (apps))
@@ -135,58 +135,58 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
                      ecore_hash_set_free_key(apps, free);
                      ecore_hash_set_free_value(apps, free);
 		     sprintf(temp, "<MENU <%.3s> <%s> <%s>", flags, name, directory);
-	             dumb_list_extend(menu, temp);
+	             dumb_tree_extend(menu, temp);
 		     sprintf(temp, "<MENU_PATH %s", menu_path);
-	             dumb_list_extend(menu, temp);
+	             dumb_tree_extend(menu, temp);
 		     flags = (char *) menu->elements[0].element;
 		     flags += 7;
-	             dumb_list_add_hash(menu, pool);
-	             dumb_list_add_child(menu, rules);
-	             dumb_list_add_hash(menu, apps);
-                     list->elements[element].element = menu;
-                     list->elements[element].type = DUMB_LIST_ELEMENT_TYPE_LIST;
-		     for (i = element + 1; i < list->size; i++)
+	             dumb_tree_add_hash(menu, pool);
+	             dumb_tree_add_child(menu, rules);
+	             dumb_tree_add_hash(menu, apps);
+                     tree->elements[element].element = menu;
+                     tree->elements[element].type = DUMB_TREE_ELEMENT_TYPE_TREE;
+		     for (i = element + 1; i < tree->size; i++)
 		        {
                            int result = 0;
 
-                           if (list->elements[i].type == DUMB_LIST_ELEMENT_TYPE_STRING)
+                           if (tree->elements[i].type == DUMB_TREE_ELEMENT_TYPE_STRING)
                               {
-                                 if (strncmp((char *) list->elements[i].element, "<!", 2) == 0)
+                                 if (strncmp((char *) tree->elements[i].element, "<!", 2) == 0)
 	                            {
-                                       list->elements[i].type = DUMB_LIST_ELEMENT_TYPE_NULL;
-                                       list->elements[i].element = NULL;
+                                       tree->elements[i].type = DUMB_TREE_ELEMENT_TYPE_NULL;
+                                       tree->elements[i].element = NULL;
 	                            }
-                                 else if (strcmp((char *) list->elements[i].element, "<Deleted/") == 0)
+                                 else if (strcmp((char *) tree->elements[i].element, "<Deleted/") == 0)
 				    {
 				       flags[1] = 'D';
 				       result = 1;
 				    }
-                                 else if (strcmp((char *) list->elements[i].element, "<NotDeleted/") == 0)
+                                 else if (strcmp((char *) tree->elements[i].element, "<NotDeleted/") == 0)
 				    {
 				       flags[1] = ' ';
 				       result = 1;
 				    }
-                                 else if (strcmp((char *) list->elements[i].element, "<OnlyUnallocated/") == 0)
+                                 else if (strcmp((char *) tree->elements[i].element, "<OnlyUnallocated/") == 0)
 				    {
 				       flags[2] = 'O';
 				       result = 1;
 				    }
-                                 else if (strcmp((char *) list->elements[i].element, "<NotOnlyUnallocated/") == 0)
+                                 else if (strcmp((char *) tree->elements[i].element, "<NotOnlyUnallocated/") == 0)
 				    {
 				       flags[2] = ' ';
 				       result = 1;
 				    }
-                                 else if (strcmp((char *) list->elements[i].element, "<DefaultAppDirs/") == 0)
+                                 else if (strcmp((char *) tree->elements[i].element, "<DefaultAppDirs/") == 0)
 	                            {
                                        _fdo_menus_add_dirs(menu, fdo_paths_desktops, "<AppDir", "</AppDir", NULL, i);
 				       result = 1;
 	                            }
-                                 else if (strcmp((char *) list->elements[i].element, "<DefaultDirectoryDirs/") == 0)
+                                 else if (strcmp((char *) tree->elements[i].element, "<DefaultDirectoryDirs/") == 0)
 	                            {
                                        _fdo_menus_add_dirs(menu, fdo_paths_directories, "<DirectoryDir", "</DirectoryDir", NULL, i);
 				       result = 1;
 	                            }
-                                 else if (strcmp((char *) list->elements[i].element, "<DefaultMergeDirs/") == 0)
+                                 else if (strcmp((char *) tree->elements[i].element, "<DefaultMergeDirs/") == 0)
 	                            {
 	                               if (unxml_data->base)
 	                                  {
@@ -194,29 +194,29 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
 				             result = 1;
 		                          }
 	                            }
-                                 else if (strcmp((char *) list->elements[i].element, "<KDELegacyDirs/") == 0)
+                                 else if (strcmp((char *) tree->elements[i].element, "<KDELegacyDirs/") == 0)
 	                            {
                                        _fdo_menus_add_dirs(menu, fdo_paths_kde_legacy, "<LegacyDir prefix=\"kde-\"", "</LegacyDir", NULL, i);
 				       result = 1;
 				    }
-                                 else if (strcmp((char *) list->elements[i].element, "</Menu") == 0)
+                                 else if (strcmp((char *) tree->elements[i].element, "</Menu") == 0)
 				    {
 				       result = 1;
 				    }
 				 else
 				    {
-	                               dumb_list_extend(menu, (char *) list->elements[i].element);
+	                               dumb_tree_extend(menu, (char *) tree->elements[i].element);
 				       result = 1;
 				    }
 			      }
-                           else if (list->elements[i].type == DUMB_LIST_ELEMENT_TYPE_LIST)
+                           else if (tree->elements[i].type == DUMB_TREE_ELEMENT_TYPE_TREE)
                               {
-                                 Dumb_List *sub;
+                                 Dumb_Tree *sub;
 
-                                 sub = (Dumb_List *) list->elements[i].element;
+                                 sub = (Dumb_Tree *) tree->elements[i].element;
 				 if ((sub) && (sub->size))
 				    {
-                                       if (sub->elements[0].type == DUMB_LIST_ELEMENT_TYPE_STRING)
+                                       if (sub->elements[0].type == DUMB_TREE_ELEMENT_TYPE_STRING)
                                           {
                                              if (strcmp((char *) sub->elements[0].element, "<Name") == 0)
 	                                        {
@@ -225,16 +225,16 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
 						   name = strdup((char *) sub->elements[1].element);
 		                                   sprintf(temp, "<MENU <%.3s> <%s> <%s>", flags, name, directory);
 	                                           menu->elements[0].element = strdup(temp);
-                                                   dumb_list_track(menu, name);
-                                                   dumb_list_track(menu, menu->elements[0].element);
+                                                   dumb_tree_track(menu, name);
+                                                   dumb_tree_track(menu, menu->elements[0].element);
 						   flags = (char *) menu->elements[0].element;
 						   flags += 7;
 						   /* The rest of this is probably not needed, except to ease debugging. */
 						   if (unxml_data->stack->size <= level)
 						      {
 						         while (unxml_data->stack->size < level)
-						            dumb_list_add(unxml_data->stack, "");
-						         dumb_list_add(unxml_data->stack, name);
+						            dumb_tree_add(unxml_data->stack, "");
+						         dumb_tree_add(unxml_data->stack, name);
 						      }
 						   else
 	                                                 unxml_data->stack->elements[level].element = name;
@@ -254,8 +254,8 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
 						   menu_path = strdup(temp);
 		                                   sprintf(temp, "<MENU_PATH %s", menu_path);
 	                                           menu->elements[1].element = strdup(temp);
-                                                   dumb_list_track(menu, menu_path);
-                                                   dumb_list_track(menu, menu->elements[1].element);
+                                                   dumb_tree_track(menu, menu_path);
+                                                   dumb_tree_track(menu, menu->elements[1].element);
 	                                           result = 1;
 	                                        }
                                              else if (strcmp((char *) sub->elements[0].element, "<Directory") == 0)
@@ -263,8 +263,8 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
 						   directory = strdup((char *) sub->elements[1].element);
 		                                   sprintf(temp, "<MENU <%.3s> <%s> <%s>", flags, name, directory);
 	                                           menu->elements[0].element = strdup(temp);
-                                                   dumb_list_track(menu, directory);
-                                                   dumb_list_track(menu, menu->elements[0].element);
+                                                   dumb_tree_track(menu, directory);
+                                                   dumb_tree_track(menu, menu->elements[0].element);
 						   flags = (char *) menu->elements[0].element;
 						   flags += 7;
 	                                           result = 1;
@@ -272,12 +272,12 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
                                              else if ((strcmp((char *) sub->elements[0].element, "<Include") == 0) || 
 					              (strcmp((char *) sub->elements[0].element, "<Exclude") == 0))
 	                                        {
-                                                   Dumb_List *new_sub;
+                                                   Dumb_Tree *new_sub;
 
-                                                   new_sub = dumb_list_new(NULL);
+                                                   new_sub = dumb_tree_new(NULL);
 		                                   if (new_sub)
 		                                      {
-		                                         dumb_list_add_child(rules, new_sub);
+		                                         dumb_tree_add_child(rules, new_sub);
 						         _fdo_menus_unxml_rules(new_sub, sub, ((char *) sub->elements[0].element)[1], 'O');
 	                                                 result = 1;
                                                       }
@@ -285,10 +285,10 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
                                              else if (strcmp((char *) sub->elements[0].element, "<Menu") == 0)
 					        {
                                                    _fdo_menus_unxml(data, sub, 0, level + 1);
-	                                           dumb_list_add_child(menu, (Dumb_List *) sub->elements[0].element);
+	                                           dumb_tree_add_child(menu, (Dumb_Tree *) sub->elements[0].element);
 						   /* FIXME: Dunno if this causes a memory leak, but for now we play it safe. */
-                                                   list->elements[i].type = DUMB_LIST_ELEMENT_TYPE_NULL;
-                                                   list->elements[i].element = NULL;
+                                                   tree->elements[i].type = DUMB_TREE_ELEMENT_TYPE_NULL;
+                                                   tree->elements[i].element = NULL;
 //	                                           result = 1;
 						}
                                              else if (strcmp((char *) sub->elements[0].element, "<Move") == 0)
@@ -298,19 +298,19 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
 	                                        }
                                              else
 				                {
-						   if ((sub->size == 3) && (sub->elements[1].type == DUMB_LIST_ELEMENT_TYPE_STRING))
+						   if ((sub->size == 3) && (sub->elements[1].type == DUMB_TREE_ELEMENT_TYPE_STRING))
 						      {
 						         char temp[MAX_PATH];
 
                                                          sprintf(temp, "%s %s", (char *) sub->elements[0].element, (char *) sub->elements[1].element);
-	                                                 dumb_list_extend(menu, temp);
+	                                                 dumb_tree_extend(menu, temp);
 							 result = 1;
 						      }
 						   else
 						      {
-	                                                 dumb_list_add_child(menu, sub);
-                                                         list->elements[i].type = DUMB_LIST_ELEMENT_TYPE_NULL;
-                                                         list->elements[i].element = NULL;
+	                                                 dumb_tree_add_child(menu, sub);
+                                                         tree->elements[i].type = DUMB_TREE_ELEMENT_TYPE_NULL;
+                                                         tree->elements[i].element = NULL;
 						      }
 				                }
                                           }
@@ -318,10 +318,10 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
 			      }
 			   if (result)
 			      {
-                                 if (list->elements[i].type == DUMB_LIST_ELEMENT_TYPE_LIST)
-                                    dumb_list_del((Dumb_List *) list->elements[i].element);
-                                 list->elements[i].type = DUMB_LIST_ELEMENT_TYPE_NULL;
-                                 list->elements[i].element = NULL;
+                                 if (tree->elements[i].type == DUMB_TREE_ELEMENT_TYPE_TREE)
+                                    dumb_tree_del((Dumb_Tree *) tree->elements[i].element);
+                                 tree->elements[i].type = DUMB_TREE_ELEMENT_TYPE_NULL;
+                                 tree->elements[i].element = NULL;
 			      }
 			}
 
@@ -329,7 +329,7 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
 		        {
 			   int result = 0;
 
-                           if (menu->elements[i].type == DUMB_LIST_ELEMENT_TYPE_STRING)
+                           if (menu->elements[i].type == DUMB_TREE_ELEMENT_TYPE_STRING)
 			      {
 				 char *string;
 
@@ -337,17 +337,17 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
                                  if (strncmp(string, "<DirectoryDir ", 14) == 0)
 				    {
 				       char merge_path[MAX_PATH];
-				       Dumb_List *merge;
+				       Dumb_Tree *merge;
 
                                        if (string[14] == '/')
 				          sprintf(merge_path, "%s", &string[14]);
 				       else
 				          sprintf(merge_path, "%s%s", unxml_data->path, &string[14]);
-                                       merge = dumb_list_new(NULL);
+                                       merge = dumb_tree_new(NULL);
 				       if (merge)
 				          {
                                              fdo_paths_recursive_search(merge_path, NULL, _fdo_menus_check_directory, merge);
-					     dumb_list_insert_list(menu, i + 1, merge);
+					     dumb_tree_insert_tree(menu, i + 1, merge);
 					  }
 			               result = 1;
 				    }
@@ -357,17 +357,17 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
                                  else if (strncmp(string, "<MergeDir ", 10) == 0)
 				    {
 				       char merge_path[MAX_PATH];
-				       Dumb_List *merge;
+				       Dumb_Tree *merge;
 
                                        if (string[10] == '/')
 				          sprintf(merge_path, "%s", &string[10]);
 				       else
 				          sprintf(merge_path, "%s%s", unxml_data->path, &string[10]);
-                                       merge = dumb_list_new(NULL);
+                                       merge = dumb_tree_new(NULL);
 				       if (merge)
 				          {
                                              fdo_paths_recursive_search(merge_path, NULL, _fdo_menus_check_menu, merge);
-					     dumb_list_insert_list(menu, i + 1, merge);
+					     dumb_tree_insert_tree(menu, i + 1, merge);
 					  }
 			               result = 1;
 				    }
@@ -377,7 +377,7 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
 			      }
 			   if (result)
 			      {
-                                 menu->elements[i].type = DUMB_LIST_ELEMENT_TYPE_NULL;
+                                 menu->elements[i].type = DUMB_TREE_ELEMENT_TYPE_NULL;
                                  menu->elements[i].element = NULL;
 			      }
 			}
@@ -386,7 +386,7 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
 		        {
 			   int result = 0;
 
-                           if (menu->elements[i].type == DUMB_LIST_ELEMENT_TYPE_STRING)
+                           if (menu->elements[i].type == DUMB_TREE_ELEMENT_TYPE_STRING)
 			      {
 				 char *string;
 
@@ -399,7 +399,7 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
 			      }
 			   if (result)
 			      {
-                                 menu->elements[i].type = DUMB_LIST_ELEMENT_TYPE_NULL;
+                                 menu->elements[i].type = DUMB_TREE_ELEMENT_TYPE_NULL;
                                  menu->elements[i].element = NULL;
 			      }
 			}
@@ -408,16 +408,16 @@ _fdo_menus_unxml(const void *data, Dumb_List *list, int element, int level)
                      /* Add it if it has not been deleted. */
                      if (flags[1] != 'D')
 		        {
-                           list->elements[element].element = menu;
-                           list->elements[element].type = DUMB_LIST_ELEMENT_TYPE_LIST;
+                           tree->elements[element].element = menu;
+                           tree->elements[element].type = DUMB_TREE_ELEMENT_TYPE_TREE;
 			}
 		  }
 	       else
 	          {
 		     if (apps)     ecore_hash_destroy(apps);
 		     if (pool)     ecore_hash_destroy(pool);
-		     if (rules)    dumb_list_del(rules);
-		     if (menu)     dumb_list_del(menu);
+		     if (rules)    dumb_tree_del(rules);
+		     if (menu)     dumb_tree_del(menu);
 		  }
 	    }
       }
@@ -428,9 +428,9 @@ static int
 _fdo_menus_check_directory(const void *data, char *path)
 {
    char *p;
-   Dumb_List *merge;
+   Dumb_Tree *merge;
 
-   merge = (Dumb_List *) data;
+   merge = (Dumb_Tree *) data;
    p = strrchr(path, '.');
    if (p)
       {
@@ -439,7 +439,7 @@ _fdo_menus_check_directory(const void *data, char *path)
 	       char merge_file[MAX_PATH];
 
                sprintf(merge_file, "<Directory %s", path);
-	       dumb_list_extend(merge, merge_file);
+	       dumb_tree_extend(merge, merge_file);
 	    }
       }
 
@@ -450,9 +450,9 @@ static int
 _fdo_menus_check_menu(const void *data, char *path)
 {
    char *p;
-   Dumb_List *merge;
+   Dumb_Tree *merge;
 
-   merge = (Dumb_List *) data;
+   merge = (Dumb_Tree *) data;
    p = strrchr(path, '.');
    if (p)
       {
@@ -461,7 +461,7 @@ _fdo_menus_check_menu(const void *data, char *path)
 	       char merge_file[MAX_PATH];
 
                sprintf(merge_file, "<MergeFile type=\"path\" %s", path);
-	       dumb_list_extend(merge, merge_file);
+	       dumb_tree_extend(merge, merge_file);
 	    }
       }
 
@@ -470,77 +470,77 @@ _fdo_menus_check_menu(const void *data, char *path)
 
 
 static void
-_fdo_menus_unxml_rules(Dumb_List *rules, Dumb_List *list, char type, char sub_type)
+_fdo_menus_unxml_rules(Dumb_Tree *rules, Dumb_Tree *tree, char type, char sub_type)
 {
    int i;
    char temp[MAX_PATH];
 
-   for (i = 0; i < list->size; i++)
+   for (i = 0; i < tree->size; i++)
       {
-         if (list->elements[i].type == DUMB_LIST_ELEMENT_TYPE_STRING)
+         if (tree->elements[i].type == DUMB_TREE_ELEMENT_TYPE_STRING)
             {
-               if (strcmp((char *) list->elements[i].element, "<All/") == 0)
+               if (strcmp((char *) tree->elements[i].element, "<All/") == 0)
 	          {
 		     sprintf(temp, "%c%cA", type, sub_type);
-		     dumb_list_extend(rules, temp);
+		     dumb_tree_extend(rules, temp);
 		  }
-               else if (strcmp((char *) list->elements[i].element, "<Filename") == 0)
+               else if (strcmp((char *) tree->elements[i].element, "<Filename") == 0)
 	          {
-		     sprintf(temp, "%c%cF %s", type, sub_type, (char *) list->elements[i + 1].element);
-		     dumb_list_extend(rules, temp);
+		     sprintf(temp, "%c%cF %s", type, sub_type, (char *) tree->elements[i + 1].element);
+		     dumb_tree_extend(rules, temp);
 		  }
-               else if (strcmp((char *) list->elements[i].element, "<Category") == 0)
+               else if (strcmp((char *) tree->elements[i].element, "<Category") == 0)
 	          {
-		     sprintf(temp, "%c%cC %s", type, sub_type, (char *) list->elements[i + 1].element);
-		     dumb_list_extend(rules, temp);
+		     sprintf(temp, "%c%cC %s", type, sub_type, (char *) tree->elements[i + 1].element);
+		     dumb_tree_extend(rules, temp);
 		  }
-               else if (strcmp((char *) list->elements[i].element, "<Or") == 0)
+               else if (strcmp((char *) tree->elements[i].element, "<Or") == 0)
 	          {
-                     _fdo_menus_unxml_rules(rules, (Dumb_List *) list->elements[i + 1].element, type, sub_type);
+                     _fdo_menus_unxml_rules(rules, (Dumb_Tree *) tree->elements[i + 1].element, type, sub_type);
 		  }
-               else if ((strcmp((char *) list->elements[i].element, "<And") == 0) ||
-                        (strcmp((char *) list->elements[i].element, "<Not") == 0))
+               else if ((strcmp((char *) tree->elements[i].element, "<And") == 0) ||
+                        (strcmp((char *) tree->elements[i].element, "<Not") == 0))
 	          {
 		     char this_type;
-                     Dumb_List *sub;
+                     Dumb_Tree *sub;
 
-                     this_type = ((char *) list->elements[i].element)[1];
-                     sub = dumb_list_new(NULL);
+                     this_type = ((char *) tree->elements[i].element)[1];
+                     sub = dumb_tree_new(NULL);
 		     if (sub)
 		        {
-		           dumb_list_add_child(rules, sub);
-                           for (i++; i < list->size; i++)
+		           dumb_tree_add_child(rules, sub);
+                           for (i++; i < tree->size; i++)
                               {
-                                 if (list->elements[i].type == DUMB_LIST_ELEMENT_TYPE_LIST)
-                                    _fdo_menus_unxml_rules(sub, (Dumb_List *) list->elements[i].element, type, this_type);
+                                 if (tree->elements[i].type == DUMB_TREE_ELEMENT_TYPE_TREE)
+                                    _fdo_menus_unxml_rules(sub, (Dumb_Tree *) tree->elements[i].element, type, this_type);
 			      }
 			}
 		  }
 	    }
-         else if (list->elements[i].type == DUMB_LIST_ELEMENT_TYPE_LIST)
+         else if (tree->elements[i].type == DUMB_TREE_ELEMENT_TYPE_TREE)
             {
-               _fdo_menus_unxml_rules(rules, (Dumb_List *) list->elements[i].element, type, sub_type);
+               _fdo_menus_unxml_rules(rules, (Dumb_Tree *) tree->elements[i].element, type, sub_type);
 	    }
       }
 }
 
 static void
-_fdo_menus_unxml_moves(Dumb_List *menu, Dumb_List *list)
+_fdo_menus_unxml_moves(Dumb_Tree *menu, Dumb_Tree *tree)
 {
    int i;
    char *old = NULL;
    char *new = NULL;
 
-   for (i = 0; i < list->size; i++)
+   for (i = 0; i < tree->size; i++)
       {
-         if (list->elements[i].type == DUMB_LIST_ELEMENT_TYPE_LIST)
+         if (tree->elements[i].type == DUMB_TREE_ELEMENT_TYPE_TREE)
             {
-               Dumb_List *sub;
+               Dumb_Tree *sub;
 
-               sub = (Dumb_List *) list->elements[i].element;
+               sub = (Dumb_Tree *) tree->elements[i].element;
 	       if ((sub) && (sub->size))
 	          {
-                     if (sub->elements[0].type == DUMB_LIST_ELEMENT_TYPE_STRING)
+                     if (sub->elements[0].type == DUMB_TREE_ELEMENT_TYPE_STRING)
 		        {
                            if (strcmp((char *) sub->elements[0].element, "<Old") == 0)
 			      old = strdup((char *) sub->elements[1].element);
@@ -554,7 +554,7 @@ _fdo_menus_unxml_moves(Dumb_List *menu, Dumb_List *list)
                char temp[MAX_PATH * 2];
 
                sprintf(temp, "<MOVE <%s> <%s>", old, new);
-	       dumb_list_extend(menu, temp);
+	       dumb_tree_extend(menu, temp);
 	       free(old);
                old = NULL;
 	       free(new);
@@ -564,7 +564,7 @@ _fdo_menus_unxml_moves(Dumb_List *menu, Dumb_List *list)
 }
 
 static void
-_fdo_menus_add_dirs(Dumb_List *list, Dumb_List *paths, char *pre, char *post, char *extra, int element)
+_fdo_menus_add_dirs(Dumb_Tree *tree, Dumb_Tree *paths, char *pre, char *post, char *extra, int element)
 {
    int i;
    char t[MAX_PATH];
@@ -576,7 +576,7 @@ _fdo_menus_add_dirs(Dumb_List *list, Dumb_List *paths, char *pre, char *post, ch
 	    sprintf(t, "%s %s%s-merged/", pre, (char *) paths->elements[i].element, extra);
          else
 	    sprintf(t, "%s %s", pre, (char *) paths->elements[i].element);
-         dumb_list_extend(list, t);
+         dumb_tree_extend(tree, t);
       }
 }
 
@@ -630,26 +630,26 @@ _fdo_menus_check_app(const void *data, char *path)
 
 
 static int
-_fdo_menus_generate(const void *data, Dumb_List *list, int element, int level)
+_fdo_menus_generate(const void *data, Dumb_Tree *tree, int element, int level)
 {
    struct _fdo_menus_unxml_data *unxml_data;
-   Dumb_List *menus;
+   Dumb_Tree *menus;
 
    unxml_data = (struct _fdo_menus_unxml_data *) data;
-   menus = (Dumb_List *) unxml_data->menus;
-   if (list->elements[element].type == DUMB_LIST_ELEMENT_TYPE_STRING)
+   menus = (Dumb_Tree *) unxml_data->menus;
+   if (tree->elements[element].type == DUMB_TREE_ELEMENT_TYPE_STRING)
       {
-         if (strncmp((char *) list->elements[element].element, "<MENU ", 6) == 0)
+         if (strncmp((char *) tree->elements[element].element, "<MENU ", 6) == 0)
 	    {
 	       int i;
 	       struct _fdo_menus_generate_data generate_data;
 
                generate_data.unallocated = unxml_data->unallocated;
-               generate_data.name = (char *) list->elements[element].element;
-               generate_data.path = (char *) list->elements[element + 1].element;
-               generate_data.pool  = (Ecore_Hash *) list->elements[element + 2].element;
-               generate_data.rules = (Dumb_List *) list->elements[element + 3].element;
-               generate_data.apps  = (Ecore_Hash *) list->elements[element + 4].element;
+               generate_data.name = (char *) tree->elements[element].element;
+               generate_data.path = (char *) tree->elements[element + 1].element;
+               generate_data.pool  = (Ecore_Hash *) tree->elements[element + 2].element;
+               generate_data.rules = (Dumb_Tree *) tree->elements[element + 3].element;
+               generate_data.apps  = (Ecore_Hash *) tree->elements[element + 4].element;
 
                /* Inherit the pools on the first pass. */
 	       if (!generate_data.unallocated)
@@ -657,17 +657,17 @@ _fdo_menus_generate(const void *data, Dumb_List *list, int element, int level)
 	             if (unxml_data->stack->size <= level)
 	                {
 	                   while (unxml_data->stack->size < level)
-	                      dumb_list_add_hash(unxml_data->stack, generate_data.pool);
-	                   dumb_list_add_hash(unxml_data->stack, generate_data.pool);
+	                      dumb_tree_add_hash(unxml_data->stack, generate_data.pool);
+	                   dumb_tree_add_hash(unxml_data->stack, generate_data.pool);
 	                }
 	             else
 	                {
-                           unxml_data->stack->elements[level].type = DUMB_LIST_ELEMENT_TYPE_HASH;
+                           unxml_data->stack->elements[level].type = DUMB_TREE_ELEMENT_TYPE_HASH;
                            unxml_data->stack->elements[level].element = generate_data.pool;
 	            	}
                      for (i = level - 1; i >= 0; i--)
                         {
-                           if (unxml_data->stack->elements[i].type == DUMB_LIST_ELEMENT_TYPE_HASH)
+                           if (unxml_data->stack->elements[i].type == DUMB_TREE_ELEMENT_TYPE_HASH)
 		              {
 		                 Ecore_Hash *ancestor;
 
@@ -683,9 +683,9 @@ _fdo_menus_generate(const void *data, Dumb_List *list, int element, int level)
                      printf("MAKING MENU - %s \t\t%s\n", generate_data.path, generate_data.name);
                      for (i = 0; i < generate_data.rules->size; i++)
                         {
-                           if (generate_data.rules->elements[i].type == DUMB_LIST_ELEMENT_TYPE_LIST)
+                           if (generate_data.rules->elements[i].type == DUMB_TREE_ELEMENT_TYPE_TREE)
 		              {
-                                 generate_data.rule = (Dumb_List *) generate_data.rules->elements[i].element;
+                                 generate_data.rule = (Dumb_Tree *) generate_data.rules->elements[i].element;
 			         if (generate_data.rule->size > 0)
 			            {
 			               if ( ((char *) generate_data.rule->elements[0].element)[0] == 'I' )
@@ -759,7 +759,7 @@ _fdo_menus_select_app(void *value, void *user_data)
 }
 
 static int
-_fdo_menus_apply_rules(struct _fdo_menus_generate_data *generate_data, Dumb_List *rule, char *key, Desktop *desktop)
+_fdo_menus_apply_rules(struct _fdo_menus_generate_data *generate_data, Dumb_Tree *rule, char *key, Desktop *desktop)
 {
    char type = 'O';
    int result = FALSE;
@@ -767,9 +767,9 @@ _fdo_menus_apply_rules(struct _fdo_menus_generate_data *generate_data, Dumb_List
 
    for (i = 0; i < rule->size; i++)
       {
-         if (rule->elements[i].type == DUMB_LIST_ELEMENT_TYPE_LIST)
+         if (rule->elements[i].type == DUMB_TREE_ELEMENT_TYPE_TREE)
 	    {
-               result = _fdo_menus_apply_rules(generate_data, (Dumb_List *) rule->elements[i].element, key, desktop);
+               result = _fdo_menus_apply_rules(generate_data, (Dumb_Tree *) rule->elements[i].element, key, desktop);
 	    }
 	 else
 	    {
@@ -929,24 +929,24 @@ merge menus
 *	           leave it as allocated.
 
 
-<Menu (list)
+<Menu (tree)
   name
   flags = "   " or "MDO" the first letter of - Marked, Deleted, OnlyUnallocated 
   pool (hash)
     id = path
     id = path
-  rules (list)
+  rules (tree)
     rule
     rule
   menu (hash)
     id = path
     id = path
-  <Menu (list)
-  <Menu (list)
+  <Menu (tree)
+  <Menu (tree)
 
-rules (list)
+rules (tree)
   include/exclude or all/file/category x
-  and/not (list)
+  and/not (tree)
     include/exclude and/not all/file/category x
 
 

@@ -1,0 +1,17 @@
+Re arrange fdo_menu code to better match the order the specs says to do
+things in, making use of the new Dumb_List insert code to insert
+expanded xml.
+
+A seperate "strip common appdirs and such" pass.  Keep a hash of indexes
+to Dumb_List elements, if the current appdir is in the hash, null out
+the element the one in the hash points to, and replace the index in the
+hash with a pointer to the new appdir, otherwise add it to the hash. 
+Careful not to move the already pointed to appdirs.
+
+Rename Dumb_List to Dumb_Tree.
+
+Maybe setup a hash of function pointers for xmlame to call for each
+token it finds.  Otherwise split the big blob of code in fdo_menus into
+bite size chunks.
+
+Convert more of this to use ecore.

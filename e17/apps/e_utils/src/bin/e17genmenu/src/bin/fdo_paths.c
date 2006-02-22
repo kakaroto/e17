@@ -19,17 +19,17 @@
 struct _config_exe_data
 {
    char *home;
-   Dumb_List *types;
+   Dumb_Tree *types;
    int done;
 };
 
-static Dumb_List *_fdo_paths_get(char *before, char *env_home, char *env,
+static Dumb_Tree *_fdo_paths_get(char *before, char *env_home, char *env,
                                 char *env_home_default, char *env_default,
                                 char *type, char *gnome_extra, char *kde);
 static void _fdo_paths_massage_path(char *path, char *home, char *first,
                                     char *second);
-static void _fdo_paths_check_and_add(Dumb_List * paths, char *path);
-static void _fdo_paths_exec_config(char *home, Dumb_List * extras,
+static void _fdo_paths_check_and_add(Dumb_Tree * paths, char *path);
+static void _fdo_paths_exec_config(char *home, Dumb_Tree * extras,
                                    char *cmd);
 
 static int _fdo_paths_cb_exe_exit(void *data, int type, void *event);
@@ -74,10 +74,10 @@ fdo_paths_init()
 void
 fdo_paths_shutdown()
 {
-   E_FN_DEL(dumb_list_del, fdo_paths_menus);
-   E_FN_DEL(dumb_list_del, fdo_paths_directories);
-   E_FN_DEL(dumb_list_del, fdo_paths_desktops);
-   E_FN_DEL(dumb_list_del, fdo_paths_icons);
+   E_FN_DEL(dumb_tree_del, fdo_paths_menus);
+   E_FN_DEL(dumb_tree_del, fdo_paths_directories);
+   E_FN_DEL(dumb_tree_del, fdo_paths_desktops);
+   E_FN_DEL(dumb_tree_del, fdo_paths_icons);
 }
 
 /** Search for a file in fdo compatible locations.
@@ -102,7 +102,7 @@ fdo_paths_search_for_file(Fdo_Paths_Type type, char *file, int sub,
    char *path = NULL;
    char temp[MAX_PATH];
    struct stat path_stat;
-   Dumb_List *paths = NULL;
+   Dumb_Tree *paths = NULL;
 
    switch (type)
      {
@@ -149,23 +149,23 @@ icons=pathlist
 */
 
 
-static Dumb_List *
+static Dumb_Tree *
 _fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default,
                char *env_default, char *type, char *gnome_extra, char *kde)
 {
    char *home;
-   Dumb_List *paths = NULL;
-   Dumb_List *types;
-   Dumb_List *gnome_extras;
-   Dumb_List *kdes;
+   Dumb_Tree *paths = NULL;
+   Dumb_Tree *types;
+   Dumb_Tree *gnome_extras;
+   Dumb_Tree *kdes;
    Ecore_Event_Handler *exit_handler;
 
    /* Don't sort them, as they are in preferred order from each source. */
    /* Merge the results, there are probably some duplicates. */
 
-   types = dumb_list_from_paths(type);
-   gnome_extras = dumb_list_from_paths(gnome_extra);
-   kdes = dumb_list_from_paths(kde);
+   types = dumb_tree_from_paths(type);
+   gnome_extras = dumb_tree_from_paths(gnome_extra);
+   kdes = dumb_tree_from_paths(kde);
 
    home = get_home();
    if (home)
@@ -178,18 +178,18 @@ _fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default,
            home[last] = '\0';
      }
 
-   paths = dumb_list_new(NULL);
+   paths = dumb_tree_new(NULL);
    if (paths)
      {
         int i, j;
         char path[MAX_PATH];
-        Dumb_List *env_list;
+        Dumb_Tree *env_list;
 
         if (before)
           {
-             Dumb_List *befores;
+             Dumb_Tree *befores;
 
-             befores = dumb_list_from_paths(before);
+             befores = dumb_tree_from_paths(before);
              if (befores)
                {
                   for (i = 0; i < befores->size; i++)
@@ -198,7 +198,7 @@ _fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default,
                                                befores->elements[i].element, NULL);
                        _fdo_paths_check_and_add(paths, path);
                     }
-                  E_FN_DEL(dumb_list_del, befores);
+                  E_FN_DEL(dumb_tree_del, befores);
                }
           }
 
@@ -209,7 +209,7 @@ _fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default,
              value = getenv(env_home);
              if ((value == NULL) || (value[0] == '\0'))
                 value = env_home_default;
-             env_list = dumb_list_from_paths(value);
+             env_list = dumb_tree_from_paths(value);
              if (env_list)
                {
                   for (i = 0; i < env_list->size; i++)
@@ -222,7 +222,7 @@ _fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default,
                             _fdo_paths_check_and_add(paths, path);
                          }
                     }
-                  E_FN_DEL(dumb_list_del, env_list);
+                  E_FN_DEL(dumb_tree_del, env_list);
                }
           }
 
@@ -233,7 +233,7 @@ _fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default,
              value = getenv(env);
              if ((value == NULL) || (value[0] == '\0'))
                 value = env_default;
-             env_list = dumb_list_from_paths(value);
+             env_list = dumb_tree_from_paths(value);
              if (env_list)
                {
                   for (i = 0; i < env_list->size; i++)
@@ -246,7 +246,7 @@ _fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default,
                             _fdo_paths_check_and_add(paths, path);
                          }
                     }
-                  E_FN_DEL(dumb_list_del, env_list);
+                  E_FN_DEL(dumb_tree_del, env_list);
                }
           }
      }
@@ -280,9 +280,9 @@ _fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default,
      }
 
    E_FREE(home);
-   E_FN_DEL(dumb_list_del, kdes);
-   E_FN_DEL(dumb_list_del, gnome_extras);
-   E_FN_DEL(dumb_list_del, types);
+   E_FN_DEL(dumb_tree_del, kdes);
+   E_FN_DEL(dumb_tree_del, gnome_extras);
+   E_FN_DEL(dumb_tree_del, types);
 
    return paths;
 }
@@ -323,12 +323,12 @@ _fdo_paths_massage_path(char *path, char *home, char *first, char *second)
 }
 
 static void
-_fdo_paths_check_and_add(Dumb_List * paths, char *path)
+_fdo_paths_check_and_add(Dumb_Tree * paths, char *path)
 {
 #ifdef DEBUG
    printf("CHECKING %s", path);
 #endif
-   if (!dumb_list_exist(paths, path))
+   if (!dumb_tree_exist(paths, path))
      {
         struct stat path_stat;
 
@@ -338,7 +338,7 @@ _fdo_paths_check_and_add(Dumb_List * paths, char *path)
 #ifdef DEBUG
              printf(" OK");
 #endif
-             dumb_list_extend(paths, path);
+             dumb_tree_extend(paths, path);
           }
      }
 #ifdef DEBUG
@@ -347,7 +347,7 @@ _fdo_paths_check_and_add(Dumb_List * paths, char *path)
 }
 
 static void
-_fdo_paths_exec_config(char *home, Dumb_List *extras, char *cmd)
+_fdo_paths_exec_config(char *home, Dumb_Tree *extras, char *cmd)
 {
    Ecore_Exe *exe;
    struct _config_exe_data ced;
@@ -439,8 +439,8 @@ static int
 _fdo_paths_cb_exe_exit(void *data, int type, void *event)
 {
    Ecore_Exe_Event_Del *ev;
-   Dumb_List *paths;
-   Dumb_List *config_list;
+   Dumb_Tree *paths;
+   Dumb_Tree *config_list;
    Ecore_Exe_Event_Data *read;
    struct _config_exe_data *ced;
    char *value;
@@ -465,7 +465,7 @@ _fdo_paths_cb_exe_exit(void *data, int type, void *event)
          value = read->lines[0].line;
          if (value)
             {
-               config_list = dumb_list_from_paths(value);
+               config_list = dumb_tree_from_paths(value);
                if (config_list)
                   {
                      int i, j;
@@ -489,7 +489,7 @@ _fdo_paths_cb_exe_exit(void *data, int type, void *event)
                                  _fdo_paths_check_and_add(paths, path);
                               }
                         }
-                     E_FN_DEL(dumb_list_del, config_list);
+                     E_FN_DEL(dumb_tree_del, config_list);
                   }
             }
       }

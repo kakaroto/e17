@@ -526,13 +526,13 @@ Desktop *parse_desktop_ini_file(char *file)
 
                            temp = (char *) ecore_hash_get(result->group, "Categories");
 		           if (temp)
-                              result->Categories = dumb_list_from_paths(temp);
+                              result->Categories = dumb_tree_from_paths(temp);
                            temp = (char *) ecore_hash_get(result->group, "OnlyShowIn");
 		           if (temp)
-                              result->OnlyShowIn = dumb_list_from_paths(temp);
+                              result->OnlyShowIn = dumb_tree_from_paths(temp);
                            temp = (char *) ecore_hash_get(result->group, "NotShowIn");
 		           if (temp)
-                              result->NotShowIn = dumb_list_from_paths(temp);
+                              result->NotShowIn = dumb_tree_from_paths(temp);
 		        }
                      ecore_hash_set(desktop_cache, strdup(file), result);
 		  }
@@ -548,9 +548,9 @@ Desktop *parse_desktop_ini_file(char *file)
 
 static void _parse_desktop_del(Desktop *desktop)
 {
-   if (desktop->NotShowIn)    dumb_list_del(desktop->NotShowIn);
-   if (desktop->OnlyShowIn)   dumb_list_del(desktop->OnlyShowIn);
-   if (desktop->Categories)   dumb_list_del(desktop->Categories);
+   if (desktop->NotShowIn)    dumb_tree_del(desktop->NotShowIn);
+   if (desktop->OnlyShowIn)   dumb_tree_del(desktop->OnlyShowIn);
+   if (desktop->Categories)   dumb_tree_del(desktop->Categories);
    free(desktop);
 }
 

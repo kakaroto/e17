@@ -187,13 +187,13 @@ find_fdo_icon(char *icon, char *icon_size, char *icon_theme)
                      inherits = (char *) ecore_hash_get(icon_group, "Inherits");
 		     if (directories)
 		        {
-                           Dumb_List *directory_paths;
+                           Dumb_Tree *directory_paths;
 
                            /* Split the directory list. */
 #ifdef DEBUG
                            printf("Inherits %s Directories %s\n", inherits, directories);
 #endif
-                           directory_paths = dumb_list_from_paths(directories);
+                           directory_paths = dumb_tree_from_paths(directories);
 			   if (directory_paths)
 			      {
 			         int wanted_size;

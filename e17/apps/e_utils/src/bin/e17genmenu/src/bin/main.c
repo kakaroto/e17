@@ -57,13 +57,13 @@ _e17genmenu_test_fdo_paths()
          char *directory = "Applications.directory";
          char *desktop = "xterm.desktop";
          char *icon = "tux.png";
-	 Dumb_List *menu_xml = NULL;
+	 Dumb_Tree *menu_xml = NULL;
 
          printf("\n\nPath to %s is %s\n", menu, path);
          menu_xml = xmlame_get(path);;
 	 if (menu_xml)
 	    {
-	       Dumb_List *menus = NULL;
+	       Dumb_Tree *menus = NULL;
 
 	       /* convert the xml into menus */
 	       menus = fdo_menus_get(path, menu_xml);

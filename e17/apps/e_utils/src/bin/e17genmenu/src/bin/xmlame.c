@@ -27,24 +27,24 @@
  * The final '>' of a tag is replaced with a '\0', but it's existance can be implied.
  */
 
-static char *_xmlame_parse(Dumb_List *list, char *buffer);
+static char *_xmlame_parse(Dumb_Tree *tree, char *buffer);
 
 
-Dumb_List *
+Dumb_Tree *
 xmlame_new(char *buffer)
 {
-   Dumb_List *list;
+   Dumb_Tree *tree;
 
-   list = dumb_list_new(buffer);
-   return list;
+   tree = dumb_tree_new(buffer);
+   return tree;
 }
 
-Dumb_List *
+Dumb_Tree *
 xmlame_get(char *file)
 {
    int size;
    char *buffer;
-   Dumb_List *list = NULL;
+   Dumb_Tree *tree = NULL;
 
    size = ecore_file_size(file);
    buffer = (char *) malloc(size + 1);
@@ -59,19 +59,19 @@ xmlame_get(char *file)
 	       if (read(fd, buffer, size) == size)
 		     buffer[size] = '\0';
 	    }
-         list = xmlame_new(buffer);
-	 if (list)
+         tree = xmlame_new(buffer);
+	 if (tree)
 	    {
-	       /* Have the file name as the first item on the list, for later reference. */
-	       dumb_list_extend(list, file);
-	       _xmlame_parse(list, buffer);
+	       /* Have the file name as the first item on the tree, for later reference. */
+	       dumb_tree_extend(tree, file);
+	       _xmlame_parse(tree, buffer);
 	    }
       }
-   return list;
+   return tree;
 }
 
 static char *
-_xmlame_parse(Dumb_List *list, char *buffer)
+_xmlame_parse(Dumb_Tree *tree, char *buffer)
 {
    do
       {
@@ -91,7 +91,7 @@ _xmlame_parse(Dumb_List *list, char *buffer)
 
                t = *buffer;
 	       *buffer = '\0';
-	       dumb_list_extend(list, strdup(text));
+	       dumb_tree_extend(tree, strdup(text));
 	       *buffer = t;
 	    }
          if (*buffer != '\0')
@@ -108,23 +108,23 @@ _xmlame_parse(Dumb_List *list, char *buffer)
                      *buffer++ = '\0';
 	             if (begin[1] == '/')
 	                {   /* The end of an element. */
-	                   dumb_list_add(list, begin);
+	                   dumb_tree_add(tree, begin);
                            break;
 		        }
                      else if ((begin[1] == '!') || (begin[1] == '-') || (*(buffer - 2) == '/'))
 	                {   /* This is a script, a comment, or a stand alone tag. */
-	                   dumb_list_add(list, begin);
+	                   dumb_tree_add(tree, begin);
 	                }
 	             else
 	                {   /* The beginning of an element. */
-                           Dumb_List *new_list;
+                           Dumb_Tree *new_tree;
 
-                           new_list = xmlame_new(NULL);
-	                   if (new_list)
+                           new_tree = xmlame_new(NULL);
+	                   if (new_tree)
 	                      {
-		                 dumb_list_add_child(list, new_list);
-	                         dumb_list_add(new_list, begin);
-	                         buffer = _xmlame_parse(new_list, buffer);
+		                 dumb_tree_add_child(tree, new_tree);
+	                         dumb_tree_add(new_tree, begin);
+	                         buffer = _xmlame_parse(new_tree, buffer);
 		              }
 	                }
 	          }
