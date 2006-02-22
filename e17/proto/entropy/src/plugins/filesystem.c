@@ -350,9 +350,6 @@ callback (evfs_event * data, void *obj)
 	entropy_malloc (sizeof (entropy_file_progress));
       char *uri = NULL;
 
-      //printf("Progress for file '%s' is %f percent\n", 
-      //              (char*)data->resp_command.file_command.files[0]->path, data->progress.file_progress);
-
       ecore_list_goto_first(data->file_list.list);
       request->file_from = evfs_filereference_to_entropy_generic_file(ecore_list_current(data->file_list.list));
       ecore_list_next(data->file_list.list);

@@ -31,6 +31,14 @@ struct entropy_file_gui_component {
 	entropy_gui_component_instance* instance;
 };
 
+typedef struct entropy_file_progress_window {
+        void* progress_window;
+        void* file_from;
+        void* file_to;
+        void* progressbar;
+} entropy_file_progress_window;
+
+
 entropy_file_gui_component* entropy_file_gui_component_new();
 void entropy_file_gui_component_destroy(entropy_file_gui_component*);
 entropy_file_gui_component* entropy_file_gui_component_new_with_data(entropy_generic_file* file, 

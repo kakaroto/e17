@@ -3,6 +3,7 @@
 #include <dlfcn.h>
 #include <limits.h>
 #include <Etk.h>
+#include "etk_progress_dialog.h"
 
 static int etk_callback_setup = 0;
 static Ecore_Hash* instance_map_hash;

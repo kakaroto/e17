@@ -79,12 +79,15 @@ layout_etk_simple_la_LDFLAGS  = -module -avoid-version
 layout_etk_simple_la_LIBADD   = @ETK_LIBS@
 
 etk_structure_viewer_la_SOURCES    = $(top_srcdir)/src/entropy_gui.c \
+				$(top_srcdir)/src/dialogs/etk_progress_dialog.c \
                                 etk_structure_viewer.c $(top_srcdir)/src/entropy_debug.c
 etk_structure_viewer_la_CFLAGS     = @ETK_CFLAGS@
 etk_structure_viewer_la_LDFLAGS    = -module -avoid-version
 etk_structure_viewer_la_LIBADD     = @ETK_LIBS@
 
-etk_list_la_SOURCES      =      etk_list_viewer.c $(top_srcdir)/src/entropy_gui.c \
+etk_list_la_SOURCES      =      etk_list_viewer.c \
+				$(top_srcdir)/src/dialogs/etk_progress_dialog.c \
+				$(top_srcdir)/src/entropy_gui.c \
                                         $(top_srcdir)/src/entropy_debug.c
 etk_list_la_CFLAGS       = @ETK_CFLAGS@
 etk_list_la_LDFLAGS      = -module -avoid-version

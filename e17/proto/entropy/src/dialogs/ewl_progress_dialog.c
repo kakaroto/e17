@@ -1,5 +1,6 @@
 #include "entropy.h"
 #include <Ewl.h>
+#include "entropy_gui.h"
 #include "ewl_progress_dialog.h"
 
 void ewl_progress_window_create(entropy_file_progress_window* progress) {

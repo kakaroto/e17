@@ -22,6 +22,8 @@ struct entropy_etk_file_list_viewer
 
   Ecore_List *gui_events;
   Ecore_List *files;		/*The entropy_generic_file references we copy. */
+
+  entropy_file_progress_window* progress;
   
   Etk_Widget *last_selected_label;
 };
@@ -330,6 +332,24 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
       list_viewer_add_row (comp, (entropy_generic_file *) el);				      
      }
      break;	  
+
+    case ENTROPY_NOTIFY_FILE_PROGRESS:{
+   	entropy_etk_file_list_viewer *view = comp->data;
+	entropy_file_progress *progress = el;
+
+	if (!view->progress)
+		view->progress = entropy_etk_progress_window_create();
+
+	entropy_etk_progress_dialog_show(view->progress);
+	entropy_etk_progress_dialog_set_file_from_to(view->progress, progress->file_from, progress->file_to);
+	entropy_etk_progress_dialog_set_progress_pct(view->progress, &progress->progress);
+
+	if (progress->type == TYPE_END)
+		entropy_etk_progress_dialog_hide(view->progress);
+
+	
+     }
+     break;
 
      case ENTROPY_NOTIFY_THUMBNAIL_REQUEST:{
    	   /*Only bother if we have a thumbnail, and a component */
