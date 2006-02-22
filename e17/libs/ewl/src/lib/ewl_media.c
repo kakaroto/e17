@@ -14,10 +14,11 @@ static void ewl_media_update_timer_cb(void *data, Evas_Object *obj, void
 Ewl_Widget *
 ewl_media_new(void)
 {
-	Ewl_Media *m;
+	Ewl_Media *m = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
+#ifdef BUILD_EMOTION_SUPPORT
 	m = NEW(Ewl_Media, 1);
 	if (!m)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
@@ -26,6 +27,7 @@ ewl_media_new(void)
 		ewl_widget_destroy(EWL_WIDGET(m));
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
+#endif
 
 	DRETURN_PTR(EWL_WIDGET(m), DLEVEL_STABLE);
 }
@@ -63,6 +65,18 @@ ewl_media_init(Ewl_Media *m)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+unsigned int
+ewl_media_is_available(void)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+#ifdef BUILD_EMOTION_SUPPORT
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
+#else
+	DRETURN_INT(FALSE, DLEVEL_STABLE);
+#endif
+}
+
 /**
  * @param m: the media area widget to set the module
  * @param module: the module to set in the media widget @a m 
@@ -82,6 +96,7 @@ ewl_media_module_set(Ewl_Media *m, Ewl_Media_Module_Type module)
 
 	m->module = module;
 
+#ifdef BUILD_EMOTION_SUPPORT
 	/*
 	 * Initialize emotion
 	 */
@@ -101,6 +116,7 @@ ewl_media_module_set(Ewl_Media *m, Ewl_Media_Module_Type module)
 				break;
 		}
 	}
+#endif
 
 	DRETURN_INT(ret, DLEVEL_STABLE);
 }
@@ -139,6 +155,7 @@ ewl_media_media_set(Ewl_Media *m, const char *media)
 	IF_FREE(m->media);
 	m->media = strdup(media);
 
+#ifdef BUILD_EMOTION_SUPPORT
 	/*
 	 * Update the emotion to the new file
 	 */
@@ -146,6 +163,7 @@ ewl_media_media_set(Ewl_Media *m, const char *media)
 		emotion_object_file_set(m->video, m->media);
 		ewl_media_size_update(m);
 	}
+#endif
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -179,8 +197,10 @@ ewl_media_length_get(Ewl_Media *m)
 	DCHECK_PARAM_PTR_RET("m", m, 0);
 	DCHECK_TYPE_RET("m", m, EWL_MEDIA_TYPE, 0);
 
+#ifdef BUILD_EMOTION_SUPPORT
 	if (m->video)
 		length = emotion_object_play_length_get(m->video); 
+#endif
 
 	DRETURN_INT(length, DLEVEL_STABLE);
 }
@@ -227,11 +247,13 @@ void
 ewl_media_play_set(Ewl_Media *m, int p) 
 {
 	DENTER_FUNCTION(DLEVEL_STABLE)
-		DCHECK_PARAM_PTR("m", m);
+	DCHECK_PARAM_PTR("m", m);
 	DCHECK_TYPE("m", m, EWL_MEDIA_TYPE);
 
+#ifdef BUILD_EMOTION_SUPPORT
 	if (m->video)
 		emotion_object_play_set(m->video, p);
+#endif
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -247,11 +269,13 @@ ewl_media_seekable_get(Ewl_Media *m)
 	int seekable = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE)
-		DCHECK_PARAM_PTR_RET("m", m, 0);
+	DCHECK_PARAM_PTR_RET("m", m, 0);
 	DCHECK_TYPE_RET("m", m, EWL_MEDIA_TYPE, 0);
 
+#ifdef BUILD_EMOTION_SUPPORT
 	if (m->video && !m->block_seek)
 		seekable = emotion_object_seekable_get(m->video);
+#endif
 
 	DRETURN_INT(seekable, DLEVEL_STABLE);
 }
@@ -267,11 +291,13 @@ ewl_media_position_get(Ewl_Media *m)
 	double p = 0.0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE)
-		DCHECK_PARAM_PTR_RET("m", m, 0);
+	DCHECK_PARAM_PTR_RET("m", m, 0);
 	DCHECK_TYPE_RET("m", m, EWL_MEDIA_TYPE, 0);
 
+#ifdef BUILD_EMOTION_SUPPORT
 	if (m->video)
 		p = emotion_object_position_get(m->video);
+#endif
 
 	DRETURN_FLOAT(p, DLEVEL_STABLE);
 }
@@ -317,14 +343,16 @@ void
 ewl_media_position_set(Ewl_Media *m, double p)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE)
-		DCHECK_PARAM_PTR("m", m);
+	DCHECK_PARAM_PTR("m", m);
 	DCHECK_TYPE("m", m, EWL_MEDIA_TYPE);
 
+#ifdef BUILD_EMOTION_SUPPORT
 	if (m->video && ewl_media_seekable_get(m)) {
 		m->block_seek = 1;
 		emotion_object_position_set(m->video, p);
 		m->block_seek = 0;
 	}
+#endif
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -340,11 +368,13 @@ ewl_media_audio_mute_get(Ewl_Media *m)
 	int mute = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE)
-		DCHECK_PARAM_PTR_RET("m", m, 0);
+	DCHECK_PARAM_PTR_RET("m", m, 0);
 	DCHECK_TYPE("m", m, EWL_MEDIA_TYPE);
 
+#ifdef BUILD_EMOTION_SUPPORT
 	if (m->video)
 		mute = emotion_object_audio_mute_get(m->video);
+#endif
 
 	DRETURN_INT(mute, DLEVEL_STABLE);
 }
@@ -359,11 +389,13 @@ void
 ewl_media_audio_mute_set(Ewl_Media *m, int mute) 
 {
 	DENTER_FUNCTION(DLEVEL_STABLE)
-		DCHECK_PARAM_PTR("m", m);
+	DCHECK_PARAM_PTR("m", m);
 	DCHECK_TYPE("m", m, EWL_MEDIA_TYPE);
 
+#ifdef BUILD_EMOTION_SUPPORT
 	if (m->video)
 		emotion_object_audio_mute_set(m->video, mute);
+#endif
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -379,11 +411,13 @@ ewl_media_audio_volume_get(Ewl_Media *m)
 	double v = 0.0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE)
-		DCHECK_PARAM_PTR_RET("m", m, 0);
+	DCHECK_PARAM_PTR_RET("m", m, 0);
 	DCHECK_TYPE_RET("m", m, EWL_MEDIA_TYPE, 0.0);
 
+#ifdef BUILD_EMOTION_SUPPORT
 	if (m->video)
 		emotion_object_audio_volume_get(m->video);
+#endif
 
 	DRETURN_FLOAT(v, DLEVEL_STABLE);
 }
@@ -398,11 +432,13 @@ void
 ewl_media_audio_volume_set(Ewl_Media *m, double v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE)
-		DCHECK_PARAM_PTR("m", m);
+	DCHECK_PARAM_PTR("m", m);
 	DCHECK_TYPE("m", m, EWL_MEDIA_TYPE);
 
+#ifdef BUILD_EMOTION_SUPPORT
 	if (m->video)
 		emotion_object_audio_volume_set(m->video, v);
+#endif
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -425,6 +461,7 @@ ewl_media_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 */
 	emb = ewl_embed_widget_find(w);
 
+#ifdef BUILD_EMOTION_SUPPORT
 	/*
 	 * Create the emotion
 	 */
@@ -433,6 +470,7 @@ ewl_media_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		emotion_object_file_set(m->video, m->media);
 		ewl_media_size_update(m);
 	}
+#endif
 
 	if (w->fx_clip_box)
 		evas_object_clip_set(m->video, w->fx_clip_box);
@@ -498,7 +536,9 @@ ewl_media_size_update(Ewl_Media *m)
 	DCHECK_PARAM_PTR("m", m);
 	DCHECK_TYPE("m", m, EWL_MEDIA_TYPE);
 
+#ifdef BUILD_EMOTION_SUPPORT
 	emotion_object_size_get(m->video, &width, &height);
+#endif
 	if (width && height)
 		ewl_object_preferred_inner_size_set(EWL_OBJECT(m), width, height);
 

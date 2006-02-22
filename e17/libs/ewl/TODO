@@ -173,7 +173,3 @@ EWL TODO
 - Need to split the evas engine code out then use function pointers to do
   the engine functions instead of the current #ifdef method.
 
-- Need to modify ewl_media so that it will always build but has a
-  ewl_media_is_avaialbe() call that returns TRUE if support was compiled in
-  for ewl_media. Saves having to do custom app hacks.
-

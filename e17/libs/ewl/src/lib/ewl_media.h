@@ -1,7 +1,9 @@
 #ifndef EWL_MEDIA_H
 #define EWL_MEDIA_H
 
+#ifdef BUILD_EMOTION_SUPPORT
 #include <Emotion.h>
+#endif
 
 /**
  * @defgroup Ewl_Media Ewl_Media: A Multi media widget
@@ -43,6 +45,8 @@ struct Ewl_Media
 
 Ewl_Widget		*ewl_media_new(void);
 int		 	 ewl_media_init(Ewl_Media *m);
+
+unsigned int		 ewl_media_is_available(void);
 
 int			 ewl_media_module_set(Ewl_Media *m, 
 						Ewl_Media_Module_Type module);

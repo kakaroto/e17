@@ -44,6 +44,7 @@ EWLHEADERS = \
 	ewl_image.h \
 	ewl_imenu.h \
 	ewl_macros.h \
+	ewl_media.h \
 	ewl_menu.h \
 	ewl_menubar.h \
 	ewl_menu_base.h \
@@ -73,12 +74,7 @@ EWLHEADERS = \
 	ewl_theme.h \
 	ewl_view.h \
 	ewl_widget.h \
-	ewl_window.h
-
-if BUILD_EMOTION_SUPPORT
-EWLEMOTIONHEADERS= \
-	ewl_media.h
-endif
+	ewl_window.h 
 
 EWLSOURCES= \
 	ewl_attach.c \
@@ -110,6 +106,7 @@ EWLSOURCES= \
 	ewl_icon.c \
 	ewl_iconbox.c \
 	ewl_image.c \
+	ewl_media.c \
 	ewl_imenu.c \
 	ewl_menu.c \
 	ewl_menubar.c \
@@ -144,18 +141,11 @@ EWLSOURCES= \
 	ewl_private.h \
 	$(EWLHEADERS)
 
-if BUILD_EMOTION_SUPPORT
-EWLEMOTIONSOURCES= \
-	ewl_media.c \
-	$(EWLEMOTIONHEADERS)
-endif
-
 libewl_la_SOURCES = \
-	$(EWLSOURCES) \
-	$(EWLEMOTIONSOURCES)
+	$(EWLSOURCES)
 
 installed_headersdir = $(prefix)/include/ewl
-installed_headers_DATA = $(EWLHEADERS) $(EWLEMOTIONHEADERS)
+installed_headers_DATA = $(EWLHEADERS)
 
 libewl_la_LIBADD = @EDJE_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ @EMOTION_LIBS@ -lm
 libewl_la_LDFLAGS = -version-info 0:0:0

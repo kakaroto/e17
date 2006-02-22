@@ -4,11 +4,7 @@ MAINTAINERCLEANFILES 		= 	Makefile.in
 AM_CFLAGS			=	-W -Wall -Wno-implicit
 INCLUDES			=	-I$(top_srcdir)/src/lib -I$(top_builddir)/src/lib @EDJE_CFLAGS@ @ECORE_CFLAGS@ @EVAS_CFLAGS@ @EMOTION_CFLAGS@
 
-EWLTESTPROGRAMS                 =	ewl_test ewl_embed_test ewl_simple_test
-if BUILD_EMOTION_SUPPORT
-EWLMEDIATESTPROGRAMS            =	ewl_media_test
-else
-endif
+EWLTESTPROGRAMS                 =	ewl_test ewl_embed_test ewl_simple_test ewl_media_test
 
 bin_PROGRAMS			=	$(EWLTESTPROGRAMS) $(EWLMEDIATESTPROGRAMS)
 
@@ -66,13 +62,11 @@ ewl_simple_test_SOURCES		=	ewl_simple_test.c
 # ewl_simple_test_LDFLAGS	=	
 ewl_simple_test_LDADD		=	$(top_builddir)/src/lib/libewl.la @EDJE_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ @EMOTION_LIBS@
 
-if BUILD_EMOTION_SUPPORT
 ewl_media_test_DEPENDENCIES		=	$(top_builddir)/src/lib/libewl.la
 ewl_media_test_SOURCES			=	ewl_media_test.c
 
 # ewl_media_test_LDFLAGS		=	
 ewl_media_test_LDADD			= $(top_builddir)/src/lib/libewl.la @EDJE_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ @EMOTION_LIBS@
-endif
 
 EXTRA_DIST 			= 	$(ewl_test_SOURCES) \
 					$(ewl_embed_test_SOURCES) \

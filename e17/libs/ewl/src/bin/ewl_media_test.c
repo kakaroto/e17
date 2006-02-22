@@ -181,6 +181,13 @@ main(int argc, char ** argv)
 		return 1;
 	}
 
+	if (!ewl_media_is_available())
+	{
+		printf("Ewl_Media is not available. Please install Emotion "
+			"and rebuild Ewl\n");
+		return 1;
+	}
+
 	for (i = 1; i < argc; i++)
 	{
 		if (!strcmp(argv[i], "-gstreamer"))
