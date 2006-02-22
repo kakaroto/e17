@@ -323,10 +323,9 @@ ewl_button_alignment_set(Ewl_Button *b, unsigned int align)
 }
 
 /**
- * @param b: The button to set the content alignment
- * @param align: The new alignment for button contents
+ * @param b: The button to get the content alignment
  * @return Returns no value.
- * @brief Set the alignment of the contents of the button.
+ * @brief Gets the alignment of the contents of the button.
  */
 unsigned int
 ewl_button_alignment_get(Ewl_Button *b)
@@ -336,6 +335,41 @@ ewl_button_alignment_get(Ewl_Button *b)
 	DCHECK_TYPE_RET("b", b, EWL_BUTTON_TYPE, 0);
 
 	DRETURN_INT(ewl_object_alignment_get(EWL_OBJECT(b->body)),
+			DLEVEL_STABLE);
+}
+
+/**
+ * @param b: The button to set the content fill policy
+ * @param align: The new fill policy for button contents
+ * @return Returns no value.
+ * @brief Set the fill policy of the contents of the button.
+ */
+void
+ewl_button_fill_policy_set(Ewl_Button *b, unsigned int fill)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("b", b);
+	DCHECK_TYPE("b", b, EWL_BUTTON_TYPE);
+
+	ewl_object_fill_policy_set(EWL_OBJECT(b->body), fill);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param b: The button to set the content fill policy
+ * @param align: The new fill policy for button contents
+ * @return Returns no value.
+ * @brief Set the fill policy of the contents of the button.
+ */
+unsigned int
+ewl_button_fill_policy_get(Ewl_Button *b)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("b", b, 0);
+	DCHECK_TYPE_RET("b", b, EWL_BUTTON_TYPE, 0);
+
+	DRETURN_INT(ewl_object_fill_policy_get(EWL_OBJECT(b->body)),
 			DLEVEL_STABLE);
 }
 

@@ -55,6 +55,8 @@ const char	*ewl_button_image_get(Ewl_Button *b);
 void             ewl_button_image_scale_to(Ewl_Button *b, int width, int height);
 unsigned int     ewl_button_alignment_get(Ewl_Button *b);
 void             ewl_button_alignment_set(Ewl_Button *b, unsigned int align);
+unsigned int     ewl_button_fill_policy_get(Ewl_Button *b);
+void             ewl_button_fill_policy_set(Ewl_Button *b, unsigned int fill);
 
 /*
  * Internal
