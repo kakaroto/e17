@@ -662,13 +662,11 @@ ewl_object_minimum_w_set(Ewl_Object *o, int w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("o", o);
 
-	if (w < 1) {
-		ewl_print_warning();
-		DRETURN(DLEVEL_STABLE);
-	}
-
 	if (w < EWL_OBJECT_MIN_SIZE)
 		w = EWL_OBJECT_MIN_SIZE;
+
+	if (w > EWL_OBJECT_MAX_SIZE)
+		w = EWL_OBJECT_MAX_SIZE;
 
 	old_size = MINIMUM_W(o);
 	new_size = MINIMUM_W(o) = w;
@@ -705,13 +703,11 @@ ewl_object_minimum_h_set(Ewl_Object *o, int h)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("o", o);
 
-	if (h < 1) {
-		ewl_print_warning();
-		DRETURN(DLEVEL_STABLE);
-	}
-
 	if (h < EWL_OBJECT_MIN_SIZE)
 		h = EWL_OBJECT_MIN_SIZE;
+
+	if (h > EWL_OBJECT_MAX_SIZE)
+		h = EWL_OBJECT_MAX_SIZE;
 
 	old_size = MINIMUM_H(o);
 	new_size = MINIMUM_H(o) = h;
@@ -871,10 +867,8 @@ ewl_object_maximum_w_set(Ewl_Object *o, int w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("o", o);
 
-	if (w < 1) {
-		ewl_print_warning();
-		DRETURN(DLEVEL_STABLE);
-	}
+	if (w < EWL_OBJECT_MIN_SIZE)
+		w = EWL_OBJECT_MIN_SIZE;
 
 	if (w > EWL_OBJECT_MAX_SIZE)
 		w = EWL_OBJECT_MAX_SIZE;
@@ -909,10 +903,8 @@ ewl_object_maximum_h_set(Ewl_Object *o, int h)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("o", o);
 
-	if (h < 1) {
-		ewl_print_warning();
-		DRETURN(DLEVEL_STABLE);
-	}
+	if (h < EWL_OBJECT_MIN_SIZE)
+		h = EWL_OBJECT_MIN_SIZE;
 
 	if (h > EWL_OBJECT_MAX_SIZE)
 		h = EWL_OBJECT_MAX_SIZE;

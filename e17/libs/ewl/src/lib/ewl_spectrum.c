@@ -17,7 +17,7 @@ static void ewl_spectrum_mouse_process(Ewl_Spectrum *sp, unsigned int x,
 							unsigned int y);
 
 static void ewl_spectrum_hsv_to_rgb(double h, double s, double v,
-				unsigned int *r, unsigned int *g, unsigned *b);
+						int *r, int *g, int *b);
 static void ewl_spectrum_color_coord_map(Ewl_Spectrum *sp, int x, int y, 
 					int w, int h, unsigned int *r, 
 					unsigned int *g, unsigned int *b);
@@ -477,7 +477,7 @@ ewl_spectrum_rgb_from_hsv(Ewl_Spectrum *sp)
 
 static void
 ewl_spectrum_hsv_to_rgb(double h, double s, double v,
-		unsigned int *r, unsigned int *g, unsigned *b)
+				int *r, int *g, int *b)
 {
 	unsigned int r_tmp = 0, g_tmp = 0, b_tmp = 0;
 
@@ -617,7 +617,7 @@ static void
 ewl_spectrum_color_coord_map_vertical(Ewl_Spectrum *sp, int y, int img_h,
 					unsigned int *r, unsigned int *g, unsigned int *b)
 {
-	unsigned int r_tmp, g_tmp, b_tmp;
+	int r_tmp, g_tmp, b_tmp;
 	double h, s, v;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -674,7 +674,7 @@ static void
 ewl_spectrum_color_coord_map_square(Ewl_Spectrum *sp, int x, int y, int img_w, int img_h,
 					unsigned int *r, unsigned int *g, unsigned int *b)
 {
-	unsigned int r_tmp, g_tmp, b_tmp;
+	int r_tmp, g_tmp, b_tmp;
 	double h, s, v;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);

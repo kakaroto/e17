@@ -344,16 +344,15 @@ static char *ewl_fileselector_path_up_get(char *path)
 		l--;
 
 	if (l < 0)  {
-		DRETURN_PTR(strdup("/"), DLEVEL_STABLE);
+		new_path = strdup("/");
 	} else {
 		l++;
 		new_path = (char *) malloc(sizeof(char) * (l + 1));
 		new_path = memcpy(new_path, path, l);
 		new_path[l] = '\0';
-		DRETURN_PTR(new_path, DLEVEL_STABLE);
 	}
 
-	DRETURN_PTR(NULL, DLEVEL_STABLE);
+	DRETURN_PTR(new_path, DLEVEL_STABLE);
 }
 
 /* if non NULL, result must be freed */

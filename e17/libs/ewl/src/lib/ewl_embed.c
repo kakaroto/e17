@@ -756,10 +756,10 @@ ewl_embed_dnd_drop_feed(Ewl_Embed *embed, int x, int y, int internal)
 		
 		
 		if (internal) {
-			void* (*cb)();
+			Ewl_Widget_Drag cb;
 			
 			/* Retrieve the callback for this widget's data */
-			cb = ewl_widget_data_get(widget, "DROP_CB");
+			cb = (Ewl_Widget_Drag)ewl_widget_data_get(widget, "DROP_CB");
 			if (cb) { 
 				drop_data = (*cb)();
 				ev.data = drop_data;

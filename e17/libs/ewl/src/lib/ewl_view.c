@@ -67,7 +67,7 @@ ewl_view_constructor_get(Ewl_View *v)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("v", v, NULL);
 
-	DRETURN_PTR(v->construct, DLEVEL_STABLE);
+	DRETURN_INT(v->construct, DLEVEL_STABLE);
 }
 
 /**
@@ -99,6 +99,6 @@ ewl_view_assign_get(Ewl_View *v)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("v", v, NULL);
 
-	DRETURN_PTR(v->assign, DLEVEL_STABLE);
+	DRETURN_INT(v->assign, DLEVEL_STABLE);
 }
 

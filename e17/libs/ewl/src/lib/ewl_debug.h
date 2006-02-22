@@ -25,7 +25,7 @@ inline void ewl_backtrace(void);
 		char *indent = ewl_debug_get_indent(); \
 		ewl_config.debug.indent_lvl ++; \
 		fprintf(stderr, "%s--> %s:%i\tEntering %s();\n", \
-			indent, __FILE__, __LINE__, __FUNCTION__); \
+			indent, __FILE__, __LINE__, __func__); \
 		FREE(indent); \
 	  } \
 }
@@ -38,7 +38,7 @@ inline void ewl_backtrace(void);
 	        ewl_config.debug.indent_lvl --; \
 		indent = ewl_debug_get_indent(); \
 		fprintf(stderr, "%s<--  %s:%i\tLeaving  %s();\n", \
-			indent, __FILE__, __LINE__, __FUNCTION__); \
+			indent, __FILE__, __LINE__, __func__); \
 		FREE(indent); \
 	  } \
 }
@@ -51,7 +51,7 @@ inline void ewl_backtrace(void);
 		char *indent; \
 		indent = ewl_debug_get_indent(); \
 		fprintf(stderr, "%s<--  %s:%i\tReturn in %s();\n", \
-			indent, __FILE__, __LINE__, __FUNCTION__); \
+			indent, __FILE__, __LINE__, __func__); \
 		FREE(indent); \
 	  } \
 	return; \
@@ -65,7 +65,7 @@ inline void ewl_backtrace(void);
 		char *indent; \
 		indent = ewl_debug_get_indent(); \
 		fprintf(stderr, "%s<--  %s:%i\tReturning %p in %s();\n", \
-			indent, __FILE__, __LINE__, (void *) (ptr), __FUNCTION__); \
+			indent, __FILE__, __LINE__, (void *) (ptr), __func__); \
 		FREE(indent); \
 	  } \
 	return (void *)(ptr); \
@@ -79,7 +79,7 @@ inline void ewl_backtrace(void);
 		char *indent; \
 		indent = ewl_debug_get_indent(); \
 		fprintf(stderr, "%s<--  %s:%i\tReturning %f in %s();\n", \
-			indent, __FILE__, __LINE__, (float) (num), __FUNCTION__); \
+			indent, __FILE__, __LINE__, (float) (num), __func__); \
 		FREE(indent); \
 	  } \
 	return num; \
@@ -93,7 +93,7 @@ inline void ewl_backtrace(void);
 		char *indent; \
 		indent = ewl_debug_get_indent(); \
 		fprintf(stderr, "%s<--  %s:%i\tReturning %i in %s();\n", \
-			indent, __FILE__, __LINE__, (int) (num), __FUNCTION__); \
+			indent, __FILE__, __LINE__, (int) (num), __func__); \
 		FREE(indent); \
 	  } \
 	return num; \
@@ -103,7 +103,7 @@ inline void ewl_backtrace(void);
 { \
 	ewl_print_warning(); \
 	fprintf(stderr, "\tIn function:\n\n" \
-			"\t%s();\n\n", __FUNCTION__); \
+			"\t%s();\n\n", __func__); \
 	fprintf(stderr, fmt); \
 	ewl_backtrace(); \
 	ewl_segv(); \
@@ -119,7 +119,7 @@ inline void ewl_backtrace(void);
 				"\tWith the parameter:\n\n" \
 				"\t%s\n\n" \
 				"\tbeing NULL. Please fix your program.\n", \
-				__FUNCTION__, str); \
+				__func__, str); \
 		ewl_backtrace(); \
 		ewl_segv(); \
 		return; \
@@ -136,7 +136,7 @@ inline void ewl_backtrace(void);
 				"\tWith the parameter:\n\n" \
 				"\t%s\n\n" \
 				"\tbeing NULL. Please fix your program.\n", \
-				__FUNCTION__, str); \
+				__func__, str); \
 		ewl_backtrace(); \
 		ewl_segv(); \
 		return ret; \
@@ -154,7 +154,7 @@ inline void ewl_backtrace(void);
 				"\t%s\n\n" \
 				"\tas the wrong type. (%s) instead of (%s).\n" \
 				"\tPlease fix your program.\n", \
-				__FUNCTION__, str, EWL_WIDGET(ptr)->inheritance, type); \
+				__func__, str, EWL_WIDGET(ptr)->inheritance, type); \
 		ewl_backtrace(); \
 		ewl_segv(); \
 	} \
@@ -171,7 +171,7 @@ inline void ewl_backtrace(void);
 				"\t%s\n\n" \
 				"\tas the wrong type. (%s) instead of (%s).\n" \
 				"\tPlease fix your program.\n", \
-				__FUNCTION__, str, EWL_WIDGET(ptr)->inheritance, type); \
+				__func__, str, EWL_WIDGET(ptr)->inheritance, type); \
 		ewl_backtrace(); \
 		ewl_segv(); \
 		return ret; \
@@ -207,7 +207,7 @@ inline void ewl_backtrace(void);
 { \
 	ewl_print_warning(); \
 	fprintf(stderr, "\tIn function:\n\n" \
-			"\t%s();\n\n", __FUNCTION__); \
+			"\t%s();\n\n", __func__); \
 	fprintf(stderr, fmt); \
 }
 

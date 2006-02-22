@@ -176,7 +176,7 @@ char           *ewl_widget_appearance_text_get(Ewl_Widget * w);
 
 void            ewl_widget_inherit(Ewl_Widget *widget, char *type);
 
-unsigned int    ewl_widget_type_is(Ewl_Widget *widget, char *type);
+unsigned int    ewl_widget_type_is(Ewl_Widget *widget, const char *type);
 unsigned int    ewl_widget_onscreen_is(Ewl_Widget *widget);
 
 void            ewl_widget_parent_set(Ewl_Widget * w, Ewl_Widget * p);

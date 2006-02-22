@@ -52,7 +52,7 @@ ewl_print_warning(void)
 {
 	fprintf(stderr, "\n***** Ewl Developer Warning ***** :\n"
 		" To find where this is occurring set a breakpoint\n"
-		" for the function %s.\n", __FUNCTION__);
+		" for the function ewl_print_warning.\n");
 }
 
 /**
@@ -375,7 +375,7 @@ ewl_main(void)
  * 9. Repeat steps 2-6 until program exits.
  */
 int
-ewl_idle_render(void *data)
+ewl_idle_render(void *data __UNUSED__)
 {
 	Ewl_Widget *w;
 	Ewl_Embed  *emb;
@@ -465,7 +465,6 @@ ewl_idle_render(void *data)
 	}
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
-	data = NULL;
 }
 
 /**

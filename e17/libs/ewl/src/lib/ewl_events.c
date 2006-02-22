@@ -3,7 +3,7 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
-extern Ecore_List *ewl_embed_list;;
+extern Ecore_List *ewl_embed_list;
 static unsigned int key_modifiers = 0;
 
 #ifdef ENABLE_EWL_SOFTWARE_X11

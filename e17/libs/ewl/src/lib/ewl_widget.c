@@ -739,7 +739,7 @@ ewl_widget_parent_set(Ewl_Widget * w, Ewl_Widget * p)
 	tmp = p;
 	while (tmp) {
 		if (tmp == w) {
-			ewl_print_warning();
+			DWARNING("ERROR: Recursivly nested widgets.\n");
 			DRETURN(DLEVEL_STABLE);
 		}
 		tmp = tmp->parent;
@@ -1464,7 +1464,7 @@ ewl_widget_inherit(Ewl_Widget *widget, char *inherit)
  * @brief Determine if the widget @a w has inherited from the type @a t.
  */
 unsigned int
-ewl_widget_type_is(Ewl_Widget *widget, char *type)
+ewl_widget_type_is(Ewl_Widget *widget, const char *type)
 {
 	int found = FALSE;
 	char tmp[PATH_MAX];
@@ -2714,7 +2714,7 @@ ewl_widget_draggable_set(Ewl_Widget *w, unsigned int val, Ewl_Widget_Drag cb)
 						ewl_widget_drag_up_cb, NULL);
 
 			if (cb) {
-				ewl_widget_data_set(w, "DROP_CB", cb);
+				ewl_widget_data_set(w, "DROP_CB", (void *)cb);
 			}
 		}
 	} 

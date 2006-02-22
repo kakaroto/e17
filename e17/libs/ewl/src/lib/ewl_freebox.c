@@ -149,7 +149,7 @@ ewl_freebox_comparator_get(Ewl_Freebox *fb)
 	DCHECK_PARAM_PTR_RET("fb", fb, NULL);
 	DCHECK_TYPE_RET("fb", fb, EWL_FREEBOX_TYPE, NULL);
 
-	DRETURN_PTR(fb->comparator, DLEVEL_STABLE);
+	DRETURN_INT(fb->comparator, DLEVEL_STABLE);
 }
 
 /**

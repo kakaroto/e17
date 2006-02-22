@@ -179,7 +179,7 @@ struct Ewl_Dialog_Event
 };
 
 int		ewl_ev_init(void);
-unsigned int 	ewl_ev_modifiers_get();
+unsigned int 	ewl_ev_modifiers_get(void);
 void 		ewl_ev_modifiers_set(unsigned int modifiers);
 
 /**

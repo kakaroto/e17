@@ -125,7 +125,7 @@ ewl_button_label_set(Ewl_Button *b, const char *l)
 		 * internal widgets belong.
 		 */
 		redir = ewl_container_redirect_get(EWL_CONTAINER(b));
-		ewl_container_redirect_set(EWL_CONTAINER(b), b->body);
+		ewl_container_redirect_set(EWL_CONTAINER(b), EWL_CONTAINER(b->body));
 
 		b->label_object = ewl_label_new();
 		ewl_label_text_set(EWL_LABEL(b->label_object), l);
@@ -243,7 +243,7 @@ ewl_button_image_set(Ewl_Button *b, const char *file, const char *key)
 	 * internal widgets belong.
 	 */
 	redir = ewl_container_redirect_get(EWL_CONTAINER(b));
-	ewl_container_redirect_set(EWL_CONTAINER(b), b->body);
+	ewl_container_redirect_set(EWL_CONTAINER(b), EWL_CONTAINER(b->body));
 
 	b->image_object = ewl_image_new();
 	ewl_container_child_prepend(EWL_CONTAINER(b), b->image_object);

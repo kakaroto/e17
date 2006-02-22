@@ -168,13 +168,12 @@ ewl_iconbox_icon_new(void)
 
 
 static void
-ewl_iconbox_inner_pane_calculate(Ewl_Iconbox *ib)
+ewl_iconbox_inner_pane_calculate(Ewl_Iconbox *ib __UNUSED__)
 {
+#if 0
 	int pw,ph;
 	int sw,sh;
 	int nw=0,nh=0;
-
-	return;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ib", ib);
@@ -196,6 +195,7 @@ ewl_iconbox_inner_pane_calculate(Ewl_Iconbox *ib)
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+#endif
 }
 
 /**
@@ -1381,7 +1381,7 @@ ewl_iconbox_mouse_move_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_da
 	
 	if (list_item != NULL) {			
 		DRETURN(DLEVEL_STABLE);
-		
+#if 0		
 		/*Ewl_Widget* icon_box = (Ewl_Widget*)list_item->box;*/
 		int fw,fh;
 
@@ -1395,6 +1395,7 @@ ewl_iconbox_mouse_move_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_da
 		ewl_object_position_request(EWL_OBJECT(list_item), 
 							ev->x - (fw/2), 
 							ev->y - (fh/2));
+#endif
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1491,10 +1492,11 @@ ewl_iconbox_icon_mouse_down(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_
 						EWL_CALLBACK_FOCUS_IN);
 	} else {
 		DRETURN(DLEVEL_STABLE);
-
+#if 0
 		/*Select/drag start*/
 		ib->drag = 1;
 		ib->icon_box_parent->drag_icon = ib;
+#endif
 	}
 
 	/*ewl_callback_call_with_event_data(EWL_WIDGET(ib), EWL_CALLBACK_MOUSE_DOWN, ev_data);*/

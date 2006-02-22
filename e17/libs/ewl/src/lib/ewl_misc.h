@@ -25,7 +25,7 @@ int             ewl_garbage_collect_idler(void *data);
 void            ewl_realize_phase_enter(void);
 void            ewl_realize_phase_exit(void);
 int             ewl_in_realize_phase(void);
-unsigned int    ewl_engine_mask_get();
+unsigned int    ewl_engine_mask_get(void);
 void            ewl_evas_destroy(Evas *evas);
 void            ewl_evas_object_destroy(Evas_Object *obj);
 char 	       *ewl_debug_get_indent(void);

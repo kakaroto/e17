@@ -648,7 +648,7 @@ ewl_window_selection_text_set(Ewl_Window *win, const char *txt)
 		if (txt) 
 			ecore_x_selection_primary_set(
 					(Ecore_X_Window)win->window, 
-					(char *)txt, strlen(txt) + 1);
+					(unsigned char *)txt, strlen(txt) + 1);
 		else
 			ecore_x_selection_primary_clear();
 	}
