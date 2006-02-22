@@ -48,20 +48,12 @@ ewl_combo_init(Ewl_Combo *combo, char *title)
 	if (!ewl_menu_base_init(EWL_MENU_BASE(combo)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_menu_item_text_set(EWL_MENU_ITEM(combo), title);
+	ewl_button_label_set(EWL_BUTTON(combo), title);
 	ewl_object_fill_policy_set(EWL_OBJECT(combo), EWL_FLAG_FILL_HFILL |
 			EWL_FLAG_FILL_HSHRINK);
 
 	ewl_widget_appearance_set( EWL_WIDGET(combo), EWL_COMBO_TYPE );
 	ewl_widget_inherit(EWL_WIDGET(combo), EWL_COMBO_TYPE);
-
-	if (EWL_MENU_ITEM(combo)->icon)
-		ewl_widget_destroy(EWL_MENU_ITEM(combo)->icon);
-	EWL_MENU_ITEM(combo)->icon = NULL;
-
-	if (EWL_MENU_ITEM(combo)->text)
-		ewl_widget_destroy(EWL_MENU_ITEM(combo)->text);
-	EWL_MENU_ITEM(combo)->text = NULL;
 
 	redirect = ewl_container_redirect_get( EWL_CONTAINER(combo) );
 	ewl_container_redirect_set( EWL_CONTAINER(combo), NULL );

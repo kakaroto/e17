@@ -51,17 +51,17 @@ __create_menubar_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 				   NULL};
 		for(i = 0; m_items[i] != NULL; i++) {
 			item = ewl_menu_new();
-			ewl_menu_item_text_set(EWL_MENU_ITEM(item), m_items[i]);
+			ewl_button_label_set(EWL_BUTTON(item), m_items[i]);
 			ewl_container_child_append(EWL_CONTAINER(h_menubar), item);
 			ewl_widget_show(item);
 
 			foo = ewl_menu_item_new();
-			ewl_menu_item_text_set(EWL_MENU_ITEM(foo), "foo");
+			ewl_button_label_set(EWL_BUTTON(foo), "foo");
 			ewl_container_child_append(EWL_CONTAINER(item), foo);
 			ewl_widget_show(foo);
 
 			foo = ewl_menu_item_new();
-			ewl_menu_item_text_set(EWL_MENU_ITEM(foo), "foobar");
+			ewl_button_label_set(EWL_BUTTON(foo), "foobar");
 			ewl_container_child_append(EWL_CONTAINER(item), foo);
 			ewl_widget_show(foo);
 
@@ -80,17 +80,17 @@ __create_menubar_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 		ewl_widget_show(item);
 
 		item = ewl_menu_new();
-		ewl_menu_item_text_set(EWL_MENU_ITEM(item), "Help");
+		ewl_button_label_set(EWL_BUTTON(item), "Help");
 		ewl_container_child_append(EWL_CONTAINER(h_menubar), item);
 		ewl_widget_show(item);
 
 		foo = ewl_menu_item_new();
-		ewl_menu_item_text_set(EWL_MENU_ITEM(foo), "foo");
+		ewl_button_label_set(EWL_BUTTON(foo), "foo");
 		ewl_container_child_append(EWL_CONTAINER(item), foo);
 		ewl_widget_show(foo);
 
 		foo = ewl_menu_item_new();
-		ewl_menu_item_text_set(EWL_MENU_ITEM(foo), "foobar");
+		ewl_button_label_set(EWL_BUTTON(foo), "foobar");
 		ewl_container_child_append(EWL_CONTAINER(item), foo);
 		ewl_widget_show(foo);
 	}
@@ -110,17 +110,17 @@ __create_menubar_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 			Ewl_Widget *foo;
 
 			item = ewl_menu_new();
-			ewl_menu_item_text_set(EWL_MENU_ITEM(item), m_items[i]);
+			ewl_button_label_set(EWL_BUTTON(item), m_items[i]);
 			ewl_container_child_append(EWL_CONTAINER(v_menubar), item);
 			ewl_widget_show(item);
 
 			foo = ewl_menu_item_new();
-			ewl_menu_item_text_set(EWL_MENU_ITEM(foo), "foo");
+			ewl_button_label_set(EWL_BUTTON(foo), "foo");
 			ewl_container_child_append(EWL_CONTAINER(item), foo);
 			ewl_widget_show(foo);
 
 			foo = ewl_menu_item_new();
-			ewl_menu_item_text_set(EWL_MENU_ITEM(foo), "foobar");
+			ewl_button_label_set(EWL_BUTTON(foo), "foobar");
 			ewl_container_child_append(EWL_CONTAINER(item), foo);
 			ewl_widget_show(foo);
 

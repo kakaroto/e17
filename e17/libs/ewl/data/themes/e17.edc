@@ -124,12 +124,12 @@ data {
 
     item, "/imenu/group" "menu";
     item, "/menu/group" "menu";
-    item, "/menu/vbox/menu_container/label/group" "submenuitem";
+    item, "/menu/vbox/menu_container/body/label/group" "submenuitem";
 
     item, "/statusbar/group" "statusbar";
 
     item, "/menubar/group" "menubar";
-    item, "/menu_item/label/group" "menuitem";
+    item, "/menu_item/body/label/group" "menuitem";
 
     item, "/tooltip/offset" 15;
     item, "/tooltip/delay" "1.0";

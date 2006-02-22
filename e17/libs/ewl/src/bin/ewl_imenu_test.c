@@ -15,9 +15,9 @@ static void
 __imenu_focus_in(Ewl_Widget * w, void *ev_data __UNUSED__, 
 				void *user_data __UNUSED__)
 {
-	char *text;
+	const char *text;
 
-	text = ewl_text_text_get(EWL_TEXT(EWL_MENU_ITEM(w)->text));
+	text = ewl_button_label_get(EWL_BUTTON(w));
 	printf("%s item down\n", text);
 }
 
@@ -67,7 +67,7 @@ __create_imenu_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	 * Create the menu
 	 */
 	imenu1 = ewl_imenu_new();
-	ewl_menu_item_text_set(EWL_MENU_ITEM(imenu1), "test menu");
+	ewl_button_label_set(EWL_BUTTON(imenu1), "test menu");
 	ewl_object_fill_policy_set(EWL_OBJECT(imenu1), EWL_FLAG_FILL_NONE);
 	ewl_container_child_append(EWL_CONTAINER(imenu_box), imenu1);
 	ewl_widget_show(imenu1);
@@ -76,8 +76,8 @@ __create_imenu_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	 * Append some test items
 	 */
 	item = ewl_menu_item_new();
-	ewl_menu_item_image_set(EWL_MENU_ITEM(item), "/usr/share/pixmaps/dia-diagram.png");
-	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "dia");
+	ewl_button_image_set(EWL_BUTTON(item), "/usr/share/pixmaps/dia-diagram.png", NULL);
+	ewl_button_label_set(EWL_BUTTON(item), "dia");
 	ewl_container_child_append(EWL_CONTAINER(imenu1), item);
 	ewl_callback_append(item, EWL_CALLBACK_FOCUS_IN, __imenu_focus_in, NULL);
 	ewl_callback_append(item, EWL_CALLBACK_CONFIGURE,
@@ -89,14 +89,14 @@ __create_imenu_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	ewl_widget_show(item);
 
 	item = ewl_menu_item_new();
-	ewl_menu_item_image_set(EWL_MENU_ITEM(item), "/usr/share/pixmaps/wilber.png");
-	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "gimp");
+	ewl_button_image_set(EWL_BUTTON(item), "/usr/share/pixmaps/wilber.png", NULL);
+	ewl_button_label_set(EWL_BUTTON(item), "gimp");
 	ewl_container_child_append(EWL_CONTAINER(imenu1), item);
 	ewl_callback_append(item, EWL_CALLBACK_FOCUS_IN, __imenu_focus_in, NULL);
 	ewl_widget_show(item);
 
 	item = ewl_menu_item_new();
-	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "button");
+	ewl_button_label_set(EWL_BUTTON(item), "button");
 	ewl_container_child_append(EWL_CONTAINER(imenu1), item);
 	ewl_callback_append(item, EWL_CALLBACK_FOCUS_IN, __imenu_focus_in, NULL);
 	ewl_widget_show(item);
@@ -105,18 +105,18 @@ __create_imenu_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	 * Create a sub-menu
 	 */
 	imenu2 = ewl_imenu_new();
-	ewl_menu_item_text_set(EWL_MENU_ITEM(imenu2), "Sub menu");
+	ewl_button_label_set(EWL_BUTTON(imenu2), "Sub menu");
 	ewl_container_child_append(EWL_CONTAINER(imenu1), imenu2);
 	ewl_widget_show(imenu2);
 
 	item = ewl_menu_item_new();
-	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "button");
+	ewl_button_label_set(EWL_BUTTON(item), "button");
 	ewl_container_child_append(EWL_CONTAINER(imenu2), item);
 	ewl_callback_append(item, EWL_CALLBACK_FOCUS_IN, __imenu_focus_in, NULL);
 	ewl_widget_show(item);
 
 	item = ewl_menu_item_new();
-	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "button");
+	ewl_button_label_set(EWL_BUTTON(item), "button");
 	ewl_container_child_append(EWL_CONTAINER(imenu2), item);
 	ewl_callback_append(item, EWL_CALLBACK_FOCUS_IN, __imenu_focus_in, NULL);
 	ewl_widget_show(item);

@@ -295,21 +295,19 @@ ewl_iconbox_init(Ewl_Iconbox *ib)
 	/*-------------------------------------------*/
 	/* Get the context menu ready */
 	ib->ewl_iconbox_context_menu = ewl_menu_new();
-	ewl_menu_item_text_set(EWL_MENU_ITEM(ib->ewl_iconbox_context_menu), " ");
+	ewl_button_label_set(EWL_BUTTON(ib->ewl_iconbox_context_menu), " ");
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_menu_floater), ib->ewl_iconbox_context_menu);
 	ewl_widget_show(ib->ewl_iconbox_context_menu);
 
 	/* Add auto-arrange ability */
 	ib->ewl_iconbox_view_menu = ewl_menu_new();
-	ewl_menu_item_text_set(EWL_MENU_ITEM(ib->ewl_iconbox_view_menu),
-			       "View");
+	ewl_button_label_set(EWL_BUTTON(ib->ewl_iconbox_view_menu), "View");
 	ewl_widget_appearance_set(EWL_WIDGET(ib->ewl_iconbox_view_menu), 
 							EWL_MENU_ITEM_TYPE);
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_context_menu), ib->ewl_iconbox_view_menu);
 	
 	ib->ewl_iconbox_context_menu_item = ewl_menu_item_new();
-	ewl_menu_item_text_set(EWL_MENU_ITEM(ib->ewl_iconbox_context_menu_item),
-			       "Auto-Arrange");
+	ewl_button_label_set(EWL_BUTTON(ib->ewl_iconbox_context_menu_item), "Auto-Arrange");
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_view_menu), ib->ewl_iconbox_context_menu_item);
 	ewl_callback_append(ib->ewl_iconbox_context_menu_item, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_arrange_cb, ib);
 	ewl_widget_show(ib->ewl_iconbox_context_menu_item);
@@ -330,13 +328,12 @@ ewl_iconbox_init(Ewl_Iconbox *ib)
 			       ib->ewl_iconbox_pane_inner);
 	
 	ib->icon_menu = ewl_menu_new();
-	ewl_menu_item_text_set(EWL_MENU_ITEM(ib->icon_menu), " ");
+	ewl_button_label_set(EWL_BUTTON(ib->icon_menu), " ");
 	ewl_container_child_append(EWL_CONTAINER(ib->icon_menu_floater), ib->icon_menu);
 	ewl_widget_show(ib->icon_menu);
 
 	ib->icon_menu_item = ewl_menu_item_new();
-	ewl_menu_item_text_set(EWL_MENU_ITEM(ib->icon_menu_item),
-			       "Icon-Context");
+	ewl_button_label_set(EWL_BUTTON(ib->icon_menu_item), "Icon-Context");
 	ewl_container_child_append(EWL_CONTAINER(ib->icon_menu), ib->icon_menu_item);
 	ewl_widget_show(ib->icon_menu_item);
 
