@@ -8,8 +8,6 @@ the element the one in the hash points to, and replace the index in the
 hash with a pointer to the new appdir, otherwise add it to the hash. 
 Careful not to move the already pointed to appdirs.
 
-Rename Dumb_List to Dumb_Tree.
-
 Maybe setup a hash of function pointers for xmlame to call for each
 token it finds.  Otherwise split the big blob of code in fdo_menus into
 bite size chunks.
