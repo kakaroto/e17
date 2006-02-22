@@ -1026,6 +1026,9 @@ int evfs_file_close(evfs_filereference * file) {
 	SftpOpenHandle* ohandle;
 
 
+	return 0;
+	//FIXME - not done yet
+	
 	sftp_split_host_path(file->path, &host, &path);
 	
 	
@@ -1041,7 +1044,7 @@ int evfs_file_close(evfs_filereference * file) {
 	ohandle = ecore_hash_get(sftp_open_handles, (long*)file->fd);
 	if (ohandle) {
 
-		//handle = sftp_file_close(ohandle);
+		handle = sftp_file_close(ohandle);
 		while (! (handle->status == STATUS_FINISHED || handle->status == STATUS_CLOSE)) {
 			ecore_main_loop_iterate();
 			usleep(2);
