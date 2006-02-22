@@ -32,8 +32,6 @@ void layout_ewl_simple_add_header (entropy_gui_component_instance * instance,
 				   char *name, char *uri);
 void layout_ewl_simple_add_config_location (entropy_gui_component_instance *
 					    instance, char *name, char *uri);
-Ecore_Hash *layout_ewl_simple_parse_config (entropy_gui_component_instance *
-					    instance, char *config);
 void __destroy_main_window (Ewl_Widget * main_win, void *ev_data,
 			    void *user_data);
 void contract_cb (Ewl_Widget * main_win, void *ev_data, void *user_data);
@@ -595,63 +593,6 @@ layout_ewl_simple_add_header (entropy_gui_component_instance * instance,
   }
 }
 
-Ecore_Hash *
-layout_ewl_simple_parse_config (entropy_gui_component_instance * instance,
-				char *config)
-{
-  Ecore_Hash *ret = ecore_hash_new (ecore_str_hash, ecore_str_compare);
-
-  if (!strstr (config, "|")) {
-    char *name;
-    char *uri;
-
-    //printf("Simple case - only one object...\n");
-
-    name = strtok (config, ";");
-    uri = strtok (NULL, ";");
-
-    //printf("Name/uri is %s %s\n", name,uri);
-
-    layout_ewl_simple_add_header (instance, name, uri);
-
-
-
-    /*Cut the obj up by semicolon; */
-
-  }
-  else {
-    Ecore_List *objects = ecore_list_new ();
-    char *object;
-    char *name;
-    char *uri;
-
-    //printf("Complex case, multiple objects...\n");
-
-    object = strtok (config, "|");
-    ecore_list_append (objects, strdup (object));
-    while ((object = strtok (NULL, "|"))) {
-      ecore_list_append (objects, strdup (object));
-    }
-
-    ecore_list_goto_first (objects);
-    while ((object = ecore_list_next (objects))) {
-      name = strtok (object, ";");
-      uri = strtok (NULL, ";");
-
-      //printf("Name/uri is %s %s\n", name,uri);
-
-      layout_ewl_simple_add_header (instance, name, uri);
-
-      free (object);
-    }
-    ecore_list_destroy (objects);
-
-  }
-
-  return ret;
-}
-
-
 void
 __destroy_main_window (Ewl_Widget * main_win, void *ev_data, void *user_data)
 {
@@ -830,6 +771,11 @@ entropy_plugin_layout_create (entropy_core * core)
   Ewl_Widget *menubar;
   Ewl_Widget *menu;
   Ewl_Widget *item;
+  
+  Ecore_Hash *config_hash;
+  Ecore_List *config_hash_keys;
+  char* key;
+  
   Ecore_List *local_plugins;
   entropy_gui_component_instance *instance;
 
@@ -1075,7 +1021,20 @@ entropy_plugin_layout_create (entropy_core * core)
   }
 
   printf ("Config for layout is: '%s' (%d)\n", tmp, strlen (tmp));
-  layout_ewl_simple_parse_config (layout, tmp);
+  
+  config_hash = entropy_config_standard_structures_parse (layout, tmp);
+  config_hash_keys = ecore_hash_keys(config_hash);
+  while ( (key = ecore_list_remove_first(config_hash_keys))) {
+	  char* uri = ecore_hash_get(config_hash, key);
+	  layout_ewl_simple_add_header (layout, key, uri);
+	  
+	  ecore_hash_remove(config_hash, key);
+	  free(key);
+	  free(uri);
+  }
+  ecore_list_destroy(config_hash_keys);
+  ecore_hash_destroy(config_hash);
+  
   entropy_free (tmp);
 
   ewl_widget_show (box);

@@ -4,6 +4,7 @@
 #include <limits.h>
 #include <time.h>
 #include <Etk.h>
+#include "etk_progress_dialog.h"
 
 static int etk_callback_setup = 0;
 static Ecore_Hash* row_hash;
@@ -352,6 +353,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
      break;
 
      case ENTROPY_NOTIFY_THUMBNAIL_REQUEST:{
+
    	   /*Only bother if we have a thumbnail, and a component */
 	      if (el && comp) {
 		gui_file *obj;
@@ -372,9 +374,6 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 		  NULL);
 
 		  etk_tree_thaw(ETK_TREE(viewer->tree));
-
-		  /*ewl_image_file_set (EWL_IMAGE (image),
-			      obj->thumbnail->thumbnail_filename, 0);*/
 
 		} else {
 		  printf ("ERR: Couldn't find a hash reference for this file!\n");
@@ -458,9 +457,6 @@ entropy_plugin_init (entropy_core * core,
   entropy_core_component_event_register (instance,
 					 entropy_core_gui_event_get
 					 (ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS_EXTERNAL));
-  entropy_core_component_event_register (instance,
-					 entropy_core_gui_event_get
-					 (ENTROPY_GUI_EVENT_FILE_REMOVE_DIRECTORY));
 
   /*Register our interest in receiving file mod/create/delete notifications */
   entropy_core_component_event_register (instance,
@@ -489,6 +485,17 @@ entropy_plugin_init (entropy_core * core,
 					 entropy_core_gui_event_get
 					 (ENTROPY_GUI_EVENT_FILE_PROGRESS));
 
+  /*We want to know if the backend needs feedback */
+  entropy_core_component_event_register (instance,
+					 entropy_core_gui_event_get
+					 (ENTROPY_GUI_EVENT_USER_INTERACTION_YES_NO_ABORT));
+
+  /*We want to know about thumbnail available events */
+  entropy_core_component_event_register (instance,
+					 entropy_core_gui_event_get
+					 (ENTROPY_GUI_EVENT_THUMBNAIL_AVAILABLE));
+
+  
   if (!etk_callback_setup) {
 	  etk_callback_setup = 1;
 	  row_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);

@@ -110,6 +110,7 @@ void
 gui_event_callback (entropy_notify_event * eevent, void *requestor, void *obj,
 		    entropy_gui_component_instance * comp)
 {
+  entropy_file_progress *progress;
 
   switch (eevent->event_type) {
   case ENTROPY_NOTIFY_USER_INTERACTION_YES_NO_ABORT: {
@@ -125,8 +126,10 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *obj,
         (*operation_func)( id, ENTROPY_USER_INTERACTION_RESPONSE_YES );
 
   }
+  break; 
+
   case ENTROPY_NOTIFY_FILE_PROGRESS:{
-      entropy_file_progress *progress = obj;
+      progress = obj;
 
       if (progress->type == TYPE_END) {
 	entropy_file_listener *listener;
@@ -171,6 +174,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *obj,
 					      ENTROPY_EVENT_LOCAL);
 
 	    //printf("Removing reference to '%s'\n", listener->file->md5);
+	    //
 	    entropy_core_file_cache_remove_reference (listener->file->md5);
 
 	    /*Remove the d/led image */

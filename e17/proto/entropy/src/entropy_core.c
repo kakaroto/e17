@@ -1254,7 +1254,10 @@ void entropy_core_file_cache_add(char* md5, entropy_file_listener* listener) {
 		ecore_hash_set(core_core->file_interest_list, md5, listener);
 	} else {
 		printf("*** BAD: Called set-reference with file already cached!\n");
+
+		UNLOCK(&core_core->file_cache_mutex);
 		entropy_core_file_cache_add_reference(md5);
+		LOCK(&core_core->file_cache_mutex);
 	}
 
 	entropy_generic_file_uri_set(listener->file);
@@ -1340,9 +1343,17 @@ char* entropy_thumbnail_dir_get() {
 
 entropy_generic_file* entropy_core_parse_uri(char* uri) {
 	char* pos;
-	entropy_generic_file* file = entropy_generic_file_new();
-	evfs_file_uri_path* uri_path = evfs_parse_uri(uri);
+	entropy_generic_file* file; 	
+	evfs_file_uri_path* uri_path; 
+	entropy_file_listener* listener;
 
+	/*If we already have this file made, don't remake it..*/
+	if ( (file = entropy_core_uri_generic_file_retrieve(uri))) {
+		return file;
+	}
+
+	file = entropy_generic_file_new();
+	uri_path = evfs_parse_uri(uri);
 
 	/*Get the last "/", after this is the filename (or dir name, or whatever)*/
 	/*printf("Path: '%s'\n", uri_path->files[0]->path);*/
@@ -1365,8 +1376,12 @@ entropy_generic_file* entropy_core_parse_uri(char* uri) {
 	
 	strcpy(file->uri_base, uri_path->files[0]->plugin_uri);
 
-	//printf("Made a file with plugin '%s', path '%s', filename '%s'\n", file->uri_base, file->path, file->filename);
-
+	/*Cache the file*/
+	listener = entropy_malloc(sizeof(entropy_file_listener));
+	file->md5 = md5_entropy_path_file(file->uri_base, file->path, file->filename);
+	listener->file = file;
+	listener->count = 1;
+	entropy_core_file_cache_add(file->md5, listener);
 
 	return file;
 }

@@ -3,6 +3,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include "entropy_gui.h"
 
 
 
@@ -91,4 +92,60 @@ void entropy_config_destroy(entropy_config* config) {
 	ecore_config_file_save(config->config_dir_and_file);
 	
 	//printf("STUB\n");
+}
+
+
+
+
+
+/*Config helper functions*/
+
+
+Ecore_Hash *
+entropy_config_standard_structures_parse (entropy_gui_component_instance * instance,
+				char *config)
+{
+  Ecore_Hash *ret = ecore_hash_new (ecore_str_hash, ecore_str_compare);
+
+  if (!strstr (config, "|")) {
+    char *name;
+    char *uri;
+
+    //printf("Simple case - only one object...\n");
+
+    name = strtok (config, ";");
+    uri = strtok (NULL, ";");
+
+    ecore_hash_set(ret, strdup(name), strdup(uri));
+
+  }
+  else {
+    Ecore_List *objects = ecore_list_new ();
+    char *object;
+    char *name;
+    char *uri;
+
+    //printf("Complex case, multiple objects...\n");
+
+    object = strtok (config, "|");
+    ecore_list_append (objects, strdup (object));
+    while ((object = strtok (NULL, "|"))) {
+      ecore_list_append (objects, strdup (object));
+    }
+
+    ecore_list_goto_first (objects);
+    while ((object = ecore_list_next (objects))) {
+      name = strtok (object, ";");
+      uri = strtok (NULL, ";");
+
+      
+
+      ecore_hash_set(ret, strdup(name), strdup(uri));
+      free (object);
+    }
+    ecore_list_destroy (objects);
+
+  }
+
+  return ret;
 }

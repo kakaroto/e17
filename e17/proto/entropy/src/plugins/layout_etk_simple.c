@@ -73,67 +73,6 @@ static Etk_Widget *_entropy_etk_menu_item_new(Etk_Menu_Item_Type item_type, cons
    return menu_item;
 }
 
-
-/*------------------------------------------------*/
-/*Config handlers*/
-
-
-Ecore_Hash *
-layout_ewl_simple_parse_config (entropy_gui_component_instance * instance,
-				char *config)
-{
-  Ecore_Hash *ret = ecore_hash_new (ecore_str_hash, ecore_str_compare);
-  char *last;
-
-  if (!strstr (config, "|")) {
-    char *name;
-    char *uri;
-
-    printf ("Simple case - only one object...\n");
-
-    name = strtok (config, ";");
-    uri = strtok (NULL, ";");
-
-    printf ("Name/uri is %s %s\n", name, uri);
-
-    /*Cut the obj up by semicolon; */
-
-  }
-  else {
-    Ecore_List *objects = ecore_list_new ();
-    char *object;
-    char *name;
-    char *uri;
-
-    printf ("Complex case, multiple objects...\n");
-
-    object = strtok (config, "|");
-    ecore_list_append (objects, strdup (object));
-    while ((object = strtok (NULL, "|"))) {
-      ecore_list_append (objects, strdup (object));
-    }
-
-    ecore_list_goto_first (objects);
-    while ((object = ecore_list_next (objects))) {
-      name = strtok (object, ";");
-      uri = strtok (NULL, ";");
-
-      printf ("Name/uri is %s %s\n", name, uri);
-
-      free (object);
-    }
-    ecore_list_destroy (objects);
-
-
-
-  }
-
-  return ret;
-}
-
-/*------------------------------------------------*/
-
-
 void
 entropy_plugin_init (entropy_core * core)
 {
@@ -167,6 +106,54 @@ entropy_plugin_layout_main ()
   etk_main ();
 }
 
+void layout_etk_simple_add_header(entropy_gui_component_instance* instance, char* name, char* uri)
+{
+  void *(*entropy_plugin_init) (entropy_core * core,
+				entropy_gui_component_instance *);
+  void *(*structure_plugin_init) (entropy_core * core,
+				  entropy_gui_component_instance *,
+				  void* parent_visual,
+				  void *data);
+
+  void *(*local_plugin_init) (entropy_core * core,
+				  entropy_gui_component_instance *,
+				  void *data);
+  
+  entropy_plugin *plugin;
+  entropy_plugin *structure;
+  entropy_plugin *local;
+  entropy_generic_file* file;
+  Etk_Tree_Row* row;
+  Etk_Tree_Col* col;
+  entropy_layout_gui* gui = instance->data; 
+
+
+
+  col = etk_tree_nth_col_get(ETK_TREE(gui->tree), 0);
+	
+  etk_tree_freeze(ETK_TREE(gui->tree));
+  row = etk_tree_append(ETK_TREE(gui->tree), col, 
+			  etk_theme_icon_theme_get(), "places/start-here_16", _(name), NULL);
+  etk_tree_thaw(ETK_TREE(gui->tree));
+  
+  
+  structure = entropy_plugins_type_get_first(ENTROPY_PLUGIN_GUI_COMPONENT,ENTROPY_PLUGIN_GUI_COMPONENT_STRUCTURE_VIEW);
+   structure_plugin_init =
+      dlsym (structure->dl_ref, "entropy_plugin_init");
+
+   file = entropy_core_parse_uri (uri);
+   /*We shouldn't really assume it's a folder - but it bootstraps us for
+    * now- FIXME*/
+   strcpy(file->mime_type, "file/folder");
+
+  if (!strlen (file->mime_type)) {
+	    entropy_mime_file_identify (instance->core->mime_plugins, file);
+  }
+   
+   instance = (*structure_plugin_init)(instance->core, instance, row,file);
+   instance->plugin = structure;
+}
+
 entropy_gui_component_instance *
 entropy_plugin_layout_create (entropy_core * core)
 {
@@ -191,7 +178,6 @@ entropy_plugin_layout_create (entropy_core * core)
   entropy_plugin *plugin;
   entropy_plugin *structure;
   entropy_plugin *local;
-  entropy_generic_file* file;
   Etk_Tree_Col* col;
   Etk_Tree_Row* row;
   Etk_Widget* vbox;
@@ -202,6 +188,10 @@ entropy_plugin_layout_create (entropy_core * core)
   char* pos;
   char* md5;
   entropy_file_listener* listener;
+
+  Ecore_Hash* config_hash;
+  Ecore_List* config_hash_keys;
+  char *tmp,*key;
 
   /*Entropy related init */
   layout = entropy_malloc (sizeof (entropy_gui_component_instance));	/*Create a component instance */
@@ -284,72 +274,36 @@ entropy_plugin_layout_create (entropy_core * core)
 
   etk_widget_size_request_set(gui->tree, 180, 600);
 
-  /*Add test row */
-  etk_tree_freeze(ETK_TREE(gui->tree));
-  row = etk_tree_append(ETK_TREE(gui->tree), col, 
-			  etk_theme_icon_theme_get(), "places/start-here_16", _("Home Directory"), NULL);
-  etk_tree_thaw(ETK_TREE(gui->tree));
+
+  /*Config load*/
+  if (!(tmp = entropy_config_str_get ("layout_ewl_simple", "structure_bar"))) {
+    //layout_ewl_simple_config_create (core);
+    tmp = entropy_config_str_get ("layout_ewl_simple", "structure_bar");
+  }
+
+  printf ("Config for layout is: '%s' (%d)\n", tmp, strlen (tmp));
   
+  config_hash = entropy_config_standard_structures_parse (layout, tmp);
+  config_hash_keys = ecore_hash_keys(config_hash);
+  while ( (key = ecore_list_remove_first(config_hash_keys))) {
+	  char* uri = ecore_hash_get(config_hash, key);
+	  layout_etk_simple_add_header (layout, key, uri);
+	  
+	  ecore_hash_remove(config_hash, key);
+	  free(key);
+	  free(uri);
+  }
+  ecore_list_destroy(config_hash_keys);
+  ecore_hash_destroy(config_hash);
   
-  structure = entropy_plugins_type_get_first(ENTROPY_PLUGIN_GUI_COMPONENT,ENTROPY_PLUGIN_GUI_COMPONENT_STRUCTURE_VIEW);
-   structure_plugin_init =
-      dlsym (structure->dl_ref, "entropy_plugin_init");
-
-   file = entropy_generic_file_new();
-
-   pos = strrchr(home, '/');
-   *pos = '\0';
-   pos++;
-
-   strcpy(file->path, home);
-   strcpy(file->filename, pos);
-   strcpy(file->uri_base, "file");
-   strcpy(file->mime_type, "file/folder");
-
-   listener = entropy_malloc(sizeof(entropy_file_listener));
-   file->md5 = md5_entropy_path_file(file->uri_base, file->path, file->filename);
-   listener->file = file;
-   listener->count = 1;
-   entropy_core_file_cache_add(file->md5, listener);
-
-
-   instance = (*structure_plugin_init)(core, layout, row,file);
-   instance->plugin = structure;
-   /*-----------------------*/
-
-  /*Add test row */
-  etk_tree_freeze(ETK_TREE(gui->tree));
-  row = etk_tree_append(ETK_TREE(gui->tree), col, 
-			  etk_theme_icon_theme_get(), "places/start-here_16", _("Filesystem Root"), NULL);
-  etk_tree_thaw(ETK_TREE(gui->tree));
+  entropy_free (tmp);
   
-  
-  structure = entropy_plugins_type_get_first(ENTROPY_PLUGIN_GUI_COMPONENT,ENTROPY_PLUGIN_GUI_COMPONENT_STRUCTURE_VIEW);
-   structure_plugin_init =
-      dlsym (structure->dl_ref, "entropy_plugin_init");
 
-   file = entropy_generic_file_new();
-   
-   strcpy(file->path, "/");
-   strcpy(file->filename, "/");
-   strcpy(file->uri_base, "file");
-   strcpy(file->mime_type, "file/folder");
-
-   listener = entropy_malloc(sizeof(entropy_file_listener));
-   file->md5 = md5_entropy_path_file(file->uri_base, file->path, file->filename);
-   listener->file = file;
-   listener->count = 1;
-   entropy_core_file_cache_add(file->md5, listener);
-   
-
-   instance = (*structure_plugin_init)(core, layout, row,file);
-   instance->plugin = structure;
-   /*-----------------------*/
-
+  /*Initialise the list view*/
   local = entropy_plugins_type_get_first(ENTROPY_PLUGIN_GUI_COMPONENT,ENTROPY_PLUGIN_GUI_COMPONENT_LOCAL_VIEW);
   local_plugin_init =
       dlsym (local->dl_ref, "entropy_plugin_init");   
-  instance = (*local_plugin_init)(core, layout,file);
+  instance = (*local_plugin_init)(core, layout,NULL);
   instance->plugin = local;
 
   etk_paned_add2(ETK_PANED(gui->paned), instance->gui_object, ETK_TRUE);

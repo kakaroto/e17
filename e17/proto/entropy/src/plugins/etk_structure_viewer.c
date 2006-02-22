@@ -6,7 +6,7 @@
 #include "etk_progress_dialog.h"
 
 static int etk_callback_setup = 0;
-static Ecore_Hash* instance_map_hash;
+static Ecore_Hash* instance_map_hash = NULL;
 
 typedef struct entropy_etk_file_structure_viewer entropy_etk_file_structure_viewer;
 struct entropy_etk_file_structure_viewer
