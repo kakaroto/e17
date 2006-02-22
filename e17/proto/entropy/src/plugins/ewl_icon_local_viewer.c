@@ -580,10 +580,11 @@ entropy_plugin_init (entropy_core * core,
 
   /*Add some context menu items */
   context = ewl_menu_item_new ();
-  ewl_menu_item_text_set (EWL_MENU_ITEM (context), "New Directory");
-  ewl_menu_item_image_set (EWL_MENU_ITEM (context),
+  ewl_button_label_set (EWL_BUTTON (context), "New Directory");
+  ewl_button_image_set (EWL_BUTTON (context),
 			   PACKAGE_DATA_DIR
-			   "/icons/e17_button_detail_new_dir.png");
+			   "/icons/e17_button_detail_new_dir.png",
+			   NULL);
   ewl_iconbox_context_menu_item_add (EWL_ICONBOX (viewer->iconbox), context);
   /*ewl_callback_append (context, EWL_CALLBACK_CLICKED,
 		       ewl_iconbox_file_copy_cb, instance);*/
@@ -592,10 +593,11 @@ entropy_plugin_init (entropy_core * core,
 
   /*Add some context menu items */
   context = ewl_menu_item_new ();
-  ewl_menu_item_text_set (EWL_MENU_ITEM (context), "Copy selection");
-  ewl_menu_item_image_set (EWL_MENU_ITEM (context),
+  ewl_button_label_set (EWL_BUTTON (context), "Copy selection");
+  ewl_button_image_set (EWL_BUTTON (context),
 			   PACKAGE_DATA_DIR
-			   "/icons/e17_button_detail_copy.png");
+			   "/icons/e17_button_detail_copy.png",
+			   NULL);
   ewl_iconbox_context_menu_item_add (EWL_ICONBOX (viewer->iconbox), context);
   ewl_callback_append (context, EWL_CALLBACK_CLICKED,
 		       ewl_iconbox_file_copy_cb, instance);
@@ -603,10 +605,11 @@ entropy_plugin_init (entropy_core * core,
 
   /*Add some context menu items */
   context = ewl_menu_item_new ();
-  ewl_menu_item_text_set (EWL_MENU_ITEM (context), "Paste");
-  ewl_menu_item_image_set (EWL_MENU_ITEM (context),
+  ewl_button_label_set (EWL_BUTTON (context), "Paste");
+  ewl_button_image_set (EWL_BUTTON (context),
 			   PACKAGE_DATA_DIR
-			   "/icons/e17_button_detail_paste.png");
+			   "/icons/e17_button_detail_paste.png", 
+			   NULL);
   ewl_iconbox_context_menu_item_add (EWL_ICONBOX (viewer->iconbox), context);
   ewl_callback_append (context, EWL_CALLBACK_CLICKED,
 		       ewl_iconbox_file_paste_cb, instance);
@@ -619,7 +622,7 @@ entropy_plugin_init (entropy_core * core,
 
   /*Add some context menu items */
   context = ewl_menu_item_new ();
-  ewl_menu_item_text_set (EWL_MENU_ITEM (context),
+  ewl_button_label_set (EWL_BUTTON (context),
 			  "Set custom folder background...");
   ewl_iconbox_context_menu_item_add (EWL_ICONBOX (viewer->iconbox), context);
   ewl_callback_append (context, EWL_CALLBACK_CLICKED,
@@ -628,7 +631,7 @@ entropy_plugin_init (entropy_core * core,
 
   /*Add some context menu items */
   context = ewl_menu_item_new ();
-  ewl_menu_item_text_set (EWL_MENU_ITEM (context),
+  ewl_button_label_set (EWL_BUTTON (context),
 			  "Remove current custom background");
   ewl_iconbox_context_menu_item_add (EWL_ICONBOX (viewer->iconbox), context);
   ewl_callback_append (context, EWL_CALLBACK_CLICKED,
@@ -639,10 +642,11 @@ entropy_plugin_init (entropy_core * core,
 
   /*Copy */
   context = ewl_menu_item_new ();
-  ewl_menu_item_text_set (EWL_MENU_ITEM (context), "Copy");
-  ewl_menu_item_image_set (EWL_MENU_ITEM (context),
+  ewl_button_label_set (EWL_BUTTON (context), "Copy");
+  ewl_button_image_set (EWL_BUTTON (context),
 			   PACKAGE_DATA_DIR
-			   "/icons/e17_button_detail_copy.png");
+			   "/icons/e17_button_detail_copy.png",
+			   NULL);
   ewl_widget_show (context);
   ewl_iconbox_icon_menu_item_add (EWL_ICONBOX (viewer->iconbox), context);
   ewl_callback_append (context, EWL_CALLBACK_CLICKED,
@@ -650,10 +654,11 @@ entropy_plugin_init (entropy_core * core,
   //
 
   context = ewl_menu_item_new ();
-  ewl_menu_item_text_set (EWL_MENU_ITEM (context), "Cut");
-  ewl_menu_item_image_set (EWL_MENU_ITEM (context),
+  ewl_button_label_set (EWL_BUTTON (context), "Cut");
+  ewl_button_image_set (EWL_BUTTON (context),
 			   PACKAGE_DATA_DIR
-			   "/icons/e17_button_detail_cut.png");
+			   "/icons/e17_button_detail_cut.png",
+			   NULL);
   ewl_widget_show (context);
   ewl_iconbox_icon_menu_item_add (EWL_ICONBOX (viewer->iconbox), context);
   //ewl_callback_append(context, EWL_CALLBACK_MOUSE_DOWN, icon_properties_cb, instance);
@@ -661,10 +666,11 @@ entropy_plugin_init (entropy_core * core,
 
   /*Icon menu */
   context = ewl_menu_item_new ();
-  ewl_menu_item_text_set (EWL_MENU_ITEM (context), "Rename");
-  ewl_menu_item_image_set (EWL_MENU_ITEM (context),
+  ewl_button_label_set (EWL_BUTTON (context), "Rename");
+  ewl_button_image_set (EWL_BUTTON (context),
 			   PACKAGE_DATA_DIR
-			   "/icons/e17_button_detail_rename.png");
+			   "/icons/e17_button_detail_rename.png",
+			   NULL);
   ewl_callback_append (context, EWL_CALLBACK_CLICKED,
 		       ewl_icon_local_viewer_menu_rename_cb, instance);
   ewl_widget_show (context);
@@ -672,10 +678,11 @@ entropy_plugin_init (entropy_core * core,
 
   /*Icon menu */
   context = ewl_menu_item_new ();
-  ewl_menu_item_text_set (EWL_MENU_ITEM (context), "Delete");
-  ewl_menu_item_image_set (EWL_MENU_ITEM (context),
+  ewl_button_label_set (EWL_BUTTON (context), "Delete");
+  ewl_button_image_set (EWL_BUTTON (context),
 			   PACKAGE_DATA_DIR
-			   "/icons/e17_button_detail_delete.png");
+			   "/icons/e17_button_detail_delete.png",
+			   NULL);
   ewl_widget_show (context);
   ewl_iconbox_icon_menu_item_add (EWL_ICONBOX (viewer->iconbox), context);
   ewl_callback_append (context, EWL_CALLBACK_CLICKED,
@@ -683,10 +690,11 @@ entropy_plugin_init (entropy_core * core,
 
   /*Icon menu */
   context = ewl_menu_item_new ();
-  ewl_menu_item_text_set (EWL_MENU_ITEM (context), "Properties");
-  ewl_menu_item_image_set (EWL_MENU_ITEM (context),
+  ewl_button_label_set (EWL_BUTTON (context), "Properties");
+  ewl_button_image_set (EWL_BUTTON (context),
 			   PACKAGE_DATA_DIR
-			   "/icons/e17_button_detail_properties.png");
+			   "/icons/e17_button_detail_properties.png",
+			   NULL);
   ewl_widget_show (context);
   ewl_iconbox_icon_menu_item_add (EWL_ICONBOX (viewer->iconbox), context);
   ewl_callback_append (context, EWL_CALLBACK_CLICKED, icon_properties_cb,

@@ -869,13 +869,13 @@ entropy_plugin_layout_create (entropy_core * core)
 
 
   menu = ewl_menu_new ();
-  ewl_menu_item_text_set (EWL_MENU_ITEM (menu), "File");
+  ewl_button_label_set (EWL_BUTTON (menu), "File");
   ewl_container_child_append (EWL_CONTAINER (menubar), menu);
   ewl_object_fill_policy_set (EWL_OBJECT (menu), EWL_FLAG_FILL_NONE);
   ewl_widget_show (menu);
 
   item = ewl_menu_item_new ();
-  ewl_menu_item_text_set (EWL_MENU_ITEM (item), "Exit");
+  ewl_button_label_set (EWL_BUTTON (item), "Exit");
   ewl_container_child_append (EWL_CONTAINER (menu), item);
   ewl_callback_append (EWL_WIDGET (item), EWL_CALLBACK_CLICKED,
 		       __destroy_main_window, core);
@@ -883,27 +883,27 @@ entropy_plugin_layout_create (entropy_core * core)
 
 
   menu = ewl_menu_new ();
-  ewl_menu_item_text_set (EWL_MENU_ITEM (menu), "Tools");
+  ewl_button_label_set (EWL_BUTTON (menu), "Tools");
   ewl_container_child_append (EWL_CONTAINER (menubar), menu);
   ewl_object_fill_policy_set (EWL_OBJECT (menu), EWL_FLAG_FILL_NONE);
   ewl_widget_show (menu);
 
   item = ewl_menu_item_new ();
-  ewl_menu_item_text_set (EWL_MENU_ITEM (item), "Add Location...");
+  ewl_button_label_set (EWL_BUTTON (item), "Add Location...");
   ewl_container_child_append (EWL_CONTAINER (menu), item);
   ewl_callback_append (EWL_WIDGET (item), EWL_CALLBACK_CLICKED,
 		       location_add_cb, layout);
   ewl_widget_show (item);
 
   item = ewl_menu_item_new ();
-  ewl_menu_item_text_set (EWL_MENU_ITEM (item), "Setup MIME Actions...");
+  ewl_button_label_set (EWL_BUTTON (item), "Setup MIME Actions...");
   ewl_container_child_append (EWL_CONTAINER (menu), item);
   ewl_callback_append (EWL_WIDGET (item), EWL_CALLBACK_CLICKED, mime_cb,
 		       layout);
   ewl_widget_show (item);
 
   menu = ewl_menu_new ();
-  ewl_menu_item_text_set (EWL_MENU_ITEM (menu), "View");
+  ewl_button_label_set (EWL_BUTTON (menu), "View");
   ewl_container_child_append (EWL_CONTAINER (menubar), menu);
   ewl_object_fill_policy_set (EWL_OBJECT (menu), EWL_FLAG_FILL_NONE);
   ewl_widget_show (menu);
@@ -913,7 +913,7 @@ entropy_plugin_layout_create (entropy_core * core)
     char *name = entropy_plugin_plugin_identify (instance->plugin);
 
     item = ewl_menu_item_new ();
-    ewl_menu_item_text_set (EWL_MENU_ITEM (item), name);
+    ewl_button_label_set (EWL_BUTTON (item), name);
     ewl_container_child_append (EWL_CONTAINER (menu), item);
     ewl_callback_append (EWL_WIDGET (item), EWL_CALLBACK_CLICKED,
 			 layout_ewl_simple_local_view_cb, instance);
@@ -921,14 +921,14 @@ entropy_plugin_layout_create (entropy_core * core)
   }
 
   item = ewl_menu_item_new ();
-  ewl_menu_item_text_set (EWL_MENU_ITEM (item), "Hide Tree View");
+  ewl_button_label_set (EWL_BUTTON (item), "Hide Tree View");
   ewl_container_child_append (EWL_CONTAINER (menu), item);
   ewl_callback_append (EWL_WIDGET (item), EWL_CALLBACK_CLICKED,
 		       layout_ewl_simple_structure_view_cb, layout);
   ewl_widget_show (item);
 
   item = ewl_menu_item_new ();
-  ewl_menu_item_text_set (EWL_MENU_ITEM (item), "Show Tree View");
+  ewl_button_label_set (EWL_BUTTON (item), "Show Tree View");
   ewl_container_child_append (EWL_CONTAINER (menu), item);
   ewl_callback_append (EWL_WIDGET (item), EWL_CALLBACK_CLICKED,
 		       layout_ewl_simple_structure_view_show_cb, layout);
@@ -936,13 +936,13 @@ entropy_plugin_layout_create (entropy_core * core)
 
 
   menu = ewl_menu_new ();
-  ewl_menu_item_text_set (EWL_MENU_ITEM (menu), "Debug");
+  ewl_button_label_set (EWL_BUTTON (menu), "Debug");
   ewl_container_child_append (EWL_CONTAINER (menubar), menu);
   ewl_object_fill_policy_set (EWL_OBJECT (menu), EWL_FLAG_FILL_NONE);
   ewl_widget_show (menu);
 
   item = ewl_menu_item_new ();
-  ewl_menu_item_text_set (EWL_MENU_ITEM (item), "File Cache");
+  ewl_button_label_set (EWL_BUTTON (item), "File Cache");
   ewl_container_child_append (EWL_CONTAINER (menu), item);
   ewl_widget_show (item);
 
@@ -957,20 +957,20 @@ entropy_plugin_layout_create (entropy_core * core)
 
 
   menu = ewl_menu_new ();
-  ewl_menu_item_text_set (EWL_MENU_ITEM (menu), "Help");
+  ewl_button_label_set (EWL_BUTTON (menu), "Help");
   ewl_container_child_append (EWL_CONTAINER (menubar), menu);
   ewl_object_fill_policy_set (EWL_OBJECT (menu), EWL_FLAG_FILL_NONE);
   ewl_widget_show (menu);
 
   item = ewl_menu_item_new ();
-  ewl_menu_item_text_set (EWL_MENU_ITEM (item), "Tip Of The Day..");
+  ewl_button_label_set (EWL_BUTTON (item), "Tip Of The Day..");
   ewl_container_child_append (EWL_CONTAINER (menu), item);
   ewl_callback_append (EWL_WIDGET (item), EWL_CALLBACK_CLICKED,
 		       ewl_layout_simple_tooltip_show_cb, layout);
   ewl_widget_show (item);
 
   item = ewl_menu_item_new ();
-  ewl_menu_item_text_set (EWL_MENU_ITEM (item), "About..");
+  ewl_button_label_set (EWL_BUTTON (item), "About..");
   ewl_container_child_append (EWL_CONTAINER (menu), item);
   ewl_callback_append (EWL_WIDGET (item), EWL_CALLBACK_CLICKED,
 		       ewl_layout_simple_about_dialog_cb, layout);
@@ -984,18 +984,18 @@ entropy_plugin_layout_create (entropy_core * core)
   ewl_container_child_append (EWL_CONTAINER (win), gui->context_menu_floater);
 
   gui->context_menu = ewl_menu_new ();
-  ewl_menu_item_text_set (EWL_MENU_ITEM (gui->context_menu), " ");
+  ewl_button_label_set (EWL_BUTTON (gui->context_menu), " ");
   ewl_container_child_append (EWL_CONTAINER (gui->context_menu_floater),
 			      gui->context_menu);
 
 
   item = ewl_menu_item_new ();
-  ewl_menu_item_text_set (EWL_MENU_ITEM (item), "Edit");
+  ewl_button_label_set (EWL_BUTTON (item), "Edit");
   ewl_container_child_append (EWL_CONTAINER (gui->context_menu), item);
   ewl_widget_show (item);
 
   item = ewl_menu_item_new ();
-  ewl_menu_item_text_set (EWL_MENU_ITEM (item), "Delete");
+  ewl_button_label_set (EWL_BUTTON (item), "Delete");
   ewl_container_child_append (EWL_CONTAINER (gui->context_menu), item);
   ewl_callback_append (item, EWL_CALLBACK_CLICKED,
 		       location_menu_popup_delete_cb, layout);
