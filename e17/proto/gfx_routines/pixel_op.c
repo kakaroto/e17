@@ -78,7 +78,7 @@ static int did_mmx = 0;
 
 #endif
 
-static DATA32 cpu_flags = CPU_C;
+static DATA32 cpu_flags = CPU_OS;
 static sigjmp_buf cpu_detect_buf;
 
 static void
@@ -226,32 +226,35 @@ pixel_op_get(Pixel_Op_Params *params, int cpumode)
    Pixel_Op op = PIXEL_OP_COPY;
    
    if ((!params) || (!params->dst.p))
-	return NULL;
+     return NULL;
 
    op = params->op;
+   /* early check for an op for a cpu that doesnt support it */
+   if (cpumode > cpu_flags) return NULL;
+   
    /* early check for non-copy ops */
-   if ( (params->src.c == 0x00000000) && 
-	((params->op != PIXEL_OP_COPY) || (params->op != PIXEL_OP_MUL)) )
-	return NULL;
-
+   if ((params->src.c == 0x00000000) && 
+       ((params->op != PIXEL_OP_COPY) || (params->op != PIXEL_OP_MUL)))
+     return NULL;
+   
    /* set src.p related params */
    if ((params->src.p) && (params->src.pa < SP_LAST))
-	sp = params->src.pa;
-
+     sp = params->src.pa;
+   
    /* set src.m related params */
    if ((params->src.m) && (params->src.ma < SM_LAST))
-	sm = params->src.ma;
-
+     sm = params->src.ma;
+   
    /* set src.c related params */
    if (params->src.c == 0xffffffff)
-	sc = SC_N;
+     sc = SC_N;
    else if ((params->src.c & 0xff000000) == 0xff000000)
-	sc = SC_AN;
+     sc = SC_AN;
    else if (params->src.c == ((params->src.c & 0xff000000) |
-                               ((params->src.c >> 8) & 0xff0000) |
-                               ((params->src.c >> 16) & 0xff00) |
-                               ((params->src.c >> 24) & 0xff)))
-	sc = SC_AA;
+			      ((params->src.c >> 8) & 0xff0000) |
+			      ((params->src.c >> 16) & 0xff00) |
+			      ((params->src.c >> 24) & 0xff)))
+     sc = SC_AA;
    if (params->src.c == 0x00000000)
      {
 	sp = SP_N;
@@ -261,8 +264,8 @@ pixel_op_get(Pixel_Op_Params *params, int cpumode)
 
    /* set dst.p related params */
    if (params->dst.pa < DP_LAST)
-	dp = params->dst.pa;
-
+     dp = params->dst.pa;
+   
    return op_table[op][sp][sm][sc][dp][cpumode];
 }
 
