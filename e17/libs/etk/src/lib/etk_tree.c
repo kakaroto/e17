@@ -1939,10 +1939,12 @@ static void _etk_tree_row_clicked_cb(void *data, Evas *e, Evas_Object *obj, void
       return;
 
    evas_event = event_info;
-   evas_object_geometry_get(obj, &x, &y, &w, &h);
-   if ((evas_event->flags & EVAS_BUTTON_NONE) &&
-      x <= evas_event->canvas.x && x + w >= evas_event->canvas.x &&
-      y <= evas_event->canvas.y && y + h >= evas_event->canvas.y)
+   evas_object_geometry_get(obj, &x, &y, &w, &h);   
+      
+/* Why do we have those checks here? */
+//   if ((evas_event->flags & EVAS_BUTTON_NONE) &&
+//       x <= evas_event->canvas.x && x + w >= evas_event->canvas.x &&
+//       y <= evas_event->canvas.y && y + h >= evas_event->canvas.y)
    {
       event.button = evas_event->button;
       event.canvas.x = evas_event->canvas.x;
@@ -1952,8 +1954,8 @@ static void _etk_tree_row_clicked_cb(void *data, Evas *e, Evas_Object *obj, void
       event.modifiers = evas_event->modifiers;
       event.locks = evas_event->locks;
       event.flags = EVAS_BUTTON_NONE;
-      event.timestamp = evas_event->timestamp;
-
+      event.timestamp = evas_event->timestamp;      
+      
       if (!evas_key_modifier_is_set(event.modifiers, "Control") &&
 	  !evas_key_modifier_is_set(event.modifiers, "Shift") &&
 	  row_objects->row->selected && evas_event->button == 1 &&
