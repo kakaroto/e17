@@ -19,6 +19,9 @@ void entropy_config_str_set(char* module, char* key, char* value);
 Ecore_Hash *
 entropy_config_standard_structures_parse (entropy_gui_component_instance * instance,
 						char *config);
+void
+entropy_config_standard_structures_add (entropy_gui_component_instance *
+       instance, char *name, char *uri);
 
 
 #define ENTROPY_CONFIG_INT_UNDEFINED 65535

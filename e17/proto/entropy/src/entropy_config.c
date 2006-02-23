@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include "entropy_gui.h"
 
+#define HEADER_CONFIG_MAX 2048
 
 
 entropy_config* entropy_config_init(entropy_core* core) {
