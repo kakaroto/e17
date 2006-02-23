@@ -9,8 +9,7 @@ $(CFLAGS) \
 
 LIBS = \
 $(CFLAGS) \
-`$(CFBIN)imlib2-config --libs` \
--lpthread
+`$(CFBIN)imlib2-config --libs`
 
 ####################
 OBJS = $(SRCS:.c=.o)

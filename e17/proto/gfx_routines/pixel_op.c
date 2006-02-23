@@ -133,7 +133,11 @@ _pixel_op_cpu_sse_test(void)
 static void
 _pixel_op_cpu_sse2_test(void)
 {
+   DATA8 buf[32];
    movdqa_r2r(xmm1, xmm1);
+   packuswb_r2r(xmm1, xmm1);
+   movq_r2r(xmm1, xmm2);
+   movq_r2m(xmm1, buf);
 }
 #endif
 
