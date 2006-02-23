@@ -1024,7 +1024,7 @@ ewl_tree_node_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Tree_Node *node;
 	Ewl_Container *c;
 	Ewl_Object *child;
-	int x, y;
+	int x, y, hw = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -1047,7 +1047,8 @@ ewl_tree_node_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		ewl_object_geometry_request(EWL_OBJECT(node->handle),
 				CURRENT_X(w), CURRENT_Y(w), CURRENT_W(w),
 				CURRENT_H(w));
-		x += ewl_object_current_w_get(EWL_OBJECT(node->handle));
+		hw = ewl_object_current_w_get(EWL_OBJECT(node->handle));
+		x += hw;
 	}
 
 	/*
@@ -1055,7 +1056,7 @@ ewl_tree_node_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 */
 	while ((child = ecore_dlist_next(c->children))) {
 		if (VISIBLE(child) && EWL_WIDGET(child) != node->handle) {
-			ewl_object_geometry_request(child, x, y, CURRENT_W(w),
+			ewl_object_geometry_request(child, x, y, CURRENT_W(w) - hw,
 						    ewl_object_preferred_h_get(child));
 			y += ewl_object_current_h_get(child);
 		}
