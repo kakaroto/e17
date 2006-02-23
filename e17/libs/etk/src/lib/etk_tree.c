@@ -1955,8 +1955,6 @@ static void _etk_tree_row_clicked_cb(void *data, Evas *e, Evas_Object *obj, void
       event.locks = evas_event->locks;
       event.flags = EVAS_BUTTON_NONE;
       event.timestamp = evas_event->timestamp;      
-
-      printf("selected = %d\n", row_objects->row->tree->num_selected_rows);
       
       if (!evas_key_modifier_is_set(event.modifiers, "Control") &&
 	  !evas_key_modifier_is_set(event.modifiers, "Shift") &&
