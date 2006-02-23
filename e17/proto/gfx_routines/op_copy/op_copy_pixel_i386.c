@@ -110,14 +110,14 @@ OPREG(_op_copy_pas_dpas_sse, PIXEL_OP_COPY, /* register the function */
 #ifdef OP_FN /* do it using sse2 */
 OPFN(_op_copy_p_dp_sse2) {
    DATA32 *s, *d, *e;
-   s = p->src.p; d = p->dst.p; e = s + p->l - 63;
-   while ((((unsigned long)((unsigned char *)s)) & 0x3f))
+   s = p->src.p; d = p->dst.p; e = s + p->l - 31;
+   while ((((unsigned long)((unsigned char *)s)) & 0x1f))
      { *d = *s; d++; s++;}
-   e-=63;
-   for (; s < e; s+=64, d+=64) {
-      MOVE_64DWORDS_ALIGNED_SSE2(s, d);
+   e-=31;
+   for (; s < e; s+=32, d+=32) {
+      MOVE_32DWORDS_ALIGNED_SSE2(s, d);
    }
-   e+=63;
+   e+=31;
    for (; s < e; s++, d++) {
       *d = *s;
    }
