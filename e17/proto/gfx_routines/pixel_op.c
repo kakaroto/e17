@@ -8,28 +8,14 @@
 #include "mmx.h"
 
 static Pixel_Op_Func op_table
-  [PIXEL_OP_LAST]
-  [2]/*src p*/ [2]/*src m*/ [3]/*src c*/ [3]/*src alpha or sparse alpha*/
-  [2]/*dst p or m*/[2]/*dst alpha */
+  [PIXEL_OP_LAST]/*pix op*/
+  [SP_LAST]/*src p*/ [SM_LAST]/*src m*/ [SC_LAST]/*src c*/
+  [D_LAST]/*dst*/
   [5]/*CPU*/
   ;
 
-#define S_PN 0
-#define S_P1 1
-#define S_MN 0
-#define S_M1 1
-#define S_CN 0
-#define S_CA 1
-#define S_C1 2
-#define S_AN 0
-#define S_A1 1
-#define S_AS 2
-#define D_P  0
-#define D_M  1
-#define D_AN 0
-#define D_A1 1
 #define OPFN(n) static void n(Pixel_Op_Params *p)
-#define OPREG(n, op, sp, sm, sc, sa, dpm, da, cpu) op_table[op][sp][sm][sc][sa][dpm][da][cpu] = n
+#define OPREG(n, op, sp, sm, sc, dp, cpu) op_table[op][sp][sm][sc][dp][cpu] = n
 
 /* this is only here instead of autfoo checks - not perfect */
 #if defined(__POWERPC__) || defined(__powerpc__) || defined(__sparc__) || defined(sparc) ||  defined(__sparc64__) || defined(__mips__) || defined(m68k)
@@ -63,10 +49,12 @@ static Pixel_Op_Func op_table
 static int did_mmx = 0;
 
 # define OP_FN
-# include "pixel_op_copy.c"
-# include "pixel_op_fill.c"
-# include "pixel_op_copy_i386.c"
-# include "pixel_op_fill_i386.c"
+# include "op_copy_main_.c"
+# include "op_blend_main_.c"
+# include "op_mul_main_.c"
+# include "op_copy_main_i386.c"
+# include "op_blend_main_i386.c"
+# include "op_mul_main_i386.c"
 # undef OP_FN
 
 #endif
@@ -80,10 +68,12 @@ static int did_mmx = 0;
 # define CPU_ALTIVEC 2
 
 # define OP_FN
-# include "pixel_op_copy.c"
-# include "pixel_op_fill.c"
-# include "pixel_op_copy_ppc.c"
-# include "pixel_op_fill_ppc.c"
+# include "op_copy_main_.c"
+# include "op_blend_main_.c"
+# include "op_mul_main_.c"
+# include "op_copy_main_ppc.c"
+# include "op_blend_main_ppc.c"
+# include "op_mul_main_ppc.c"
 # undef OP_FN
 
 #endif
@@ -187,15 +177,18 @@ pixel_op_init(void)
    memset(op_table, 0, sizeof(op_table));
    
 # define OP_REG
-# include "pixel_op_copy.c"
-# include "pixel_op_fill.c"
+# include "op_copy_main_.c"
+# include "op_blend_main_.c"
+# include "op_mul_main_.c"
 # ifdef ARCH_X86
-#  include "pixel_op_copy_i386.c"
-#  include "pixel_op_fill_i386.c"
+#  include "op_copy_main_i386.c"
+# include "op_blend_main_i386.c"
+# include "op_mul_main_i386.c"
 # endif   
 # ifdef ARCH_PPC
-#  include "pixel_op_copy_ppc.c"
-#  include "pixel_op_fill_ppc.c"
+#  include "op_copy_main_ppc.c"
+# include "op_blend_main_ppc.c"
+# include "op_mul_main_ppc.c"
 # endif   
 # undef OP_REG
 
@@ -214,6 +207,8 @@ pixel_op_shutdown(void)
 inline void
 pixel_op_params_init(Pixel_Op_Params *params, DATA32 v)
 {
+   if (!params) return;
+
    memset(params, 0, sizeof(Pixel_Op_Params));
    params->v = v;
    params->src.c = 0xffffffff;
@@ -222,20 +217,49 @@ pixel_op_params_init(Pixel_Op_Params *params, DATA32 v)
 Pixel_Op_Func
 pixel_op_get(Pixel_Op_Params *params, int cpumode)
 {
-   DATA8 sp = S_PN, sm = S_MN, sc = S_C1, sa = S_AN;
-   DATA8 dpm = D_P, da = D_AN;
+   DATA8 sp = SP_N, sm = SM_N, sc = SC;
+   DATA8 dp = DP;
+   Pixel_Op op = PIXEL_OP_COPY;
    
-   if (params->src.c == 0xffffffff) sc = S_CN;
-   else if (((params->src.c & 0xff000000) == 0x00000000) &&
-	    (params->op != PIXEL_OP_COPY)) return NULL;
-   else if ((params->src.c & 0x00ffffff) == 0x00ffffff) sc = S_CA;
-   if (params->src.p) sp = S_P1;
-   if (params->src.m) sm = S_M1;
-   sa += params->src.alpha;
-   sa += params->src.sparse;
-   if (params->dst.m) dpm = D_M;
-   da = params->dst.alpha;
-   return op_table[params->op][sp][sm][sc][sa][dpm][da][cpumode];
+   if ((!params) || (!params->dst.p))
+	return NULL;
+
+   op = params->op;
+   /* early check for non-copy ops */
+   if ( (params->src.c == 0x00000000) && 
+	((params->op != PIXEL_OP_COPY) || (params->op != PIXEL_OP_MUL)) )
+	return NULL;
+
+   /* set src.p related params */
+   if ((params->src.p) && (params->src.pa < SP_LAST))
+	sp = params->src.pa;
+
+   /* set src.m related params */
+   if ((params->src.m) && (params->src.ma < SM_LAST))
+	sm = params->src.ma;
+
+   /* set src.c related params */
+   if (params->src.c == 0xffffffff)
+	sc = SC_N;
+   else if ((params->src.c & 0xff000000) == 0xff000000)
+	sc = SC_AN;
+   else if (params->src.c == ((params->src.c & 0xff000000) |
+                               ((params->src.c >> 8) & 0xff0000) |
+                               ((params->src.c >> 16) & 0xff00) |
+                               ((params->src.c >> 24) & 0xff)))
+	sc = SC_AA;
+   if (params->src.c == 0x00000000)
+     {
+	sp = SP_N;
+	sm = SM_N;
+	op = PIXEL_OP_COPY;
+     }
+
+   /* set dst.p related params */
+   if (params->dst.pa < DP_LAST)
+	dp = params->dst.pa;
+
+   return op_table[op][sp][sm][sc][dp][cpumode];
 }
 
 void

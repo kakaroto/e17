@@ -111,11 +111,21 @@ typedef	union {
 #define	mmx_m2r(op, mem, reg) \
 	__asm__ __volatile__ (#op " %0, %%" #reg \
 			      : /* nothing */ \
-			      : "X" (mem))
+			      : "m" (mem))
 
 #define	mmx_r2m(op, reg, mem) \
 	__asm__ __volatile__ (#op " %%" #reg ", %0" \
-			      : "=X" (mem) \
+			      : "=m" (mem) \
+			      : /* nothing */ )
+
+#define	mmx_a2r(op, mem, reg) \
+	__asm__ __volatile__ (#op " %0, %%" #reg \
+			      : /* nothing */ \
+			      : "g" (mem))
+
+#define	mmx_r2a(op, reg, mem) \
+	__asm__ __volatile__ (#op " %%" #reg ", %0" \
+			      : "=g" (mem) \
 			      : /* nothing */ )
 
 #define	mmx_r2r(op, regs, regd) \
@@ -148,8 +158,8 @@ typedef	union {
 	 but is most useful for moving things between
 	 mmx registers and ordinary registers)
 */
-#define	movd_m2r(var, reg)	mmx_m2r(movd, var, reg)
-#define	movd_r2m(reg, var)	mmx_r2m(movd, reg, var)
+#define	movd_m2r(var, reg)	mmx_a2r(movd, var, reg)
+#define	movd_r2m(reg, var)	mmx_r2a(movd, reg, var)
 #define	movd_r2r(regs, regd)	mmx_r2r(movd, regs, regd)
 #define	movd(vars, vard) \
 	__asm__ __volatile__ ("movd %1, %%mm0\n\t" \
@@ -511,6 +521,28 @@ typedef	union {
 		: "q" (dst), "r" (src) \
 		: "memory",  "st");
 
+#define MOVE_32DWORDS_SSE2(src,dst) \
+	   __asm__ ( \
+		"movdqu (%1), %%xmm0 \n" \
+		"movdqu 0x10(%1), %%xmm1 \n" \
+	 	"movdqu 0x20(%1), %%xmm2 \n" \
+		"movdqu 0x30(%1), %%xmm3 \n" \
+		"movdqu 0x40(%1), %%xmm4 \n" \
+		"movdqu 0x50(%1), %%xmm5 \n" \
+		"movdqu 0x60(%1), %%xmm6 \n" \
+		"movdqu 0x70(%1), %%xmm7 \n" \
+		"movntdq %%xmm0, (%0) \n" \
+		"movntdq %%xmm1, 0x10(%0) \n" \
+		"movntdq %%xmm2, 0x20(%0) \n" \
+		"movntdq %%xmm3, 0x30(%0) \n" \
+		"movntdq %%xmm4, 0x40(%0) \n" \
+		"movntdq %%xmm5, 0x50(%0) \n" \
+		"movntdq %%xmm6, 0x60(%0) \n" \
+		"movntdq %%xmm7, 0x70(%0) \n" \
+		: \
+		: "q" (dst), "r" (src) \
+		: "memory",  "st");
+
 #define MOVE_32DWORDS_ALIGNED_SSE2(src,dst) \
 	   __asm__ ( \
 		"movdqa (%1), %%xmm0 \n" \
@@ -533,7 +565,7 @@ typedef	union {
 		: "q" (dst), "r" (src) \
 		: "memory",  "st");
 
-#define MOVE_32DWORDS_SSE2(src,dst) \
+#define MOVE_64DWORDS_SSE2(src,dst) \
 	   __asm__ ( \
 		"movdqu (%1), %%xmm0 \n" \
 		"movdqu 0x10(%1), %%xmm1 \n" \
@@ -543,6 +575,14 @@ typedef	union {
 		"movdqu 0x50(%1), %%xmm5 \n" \
 		"movdqu 0x60(%1), %%xmm6 \n" \
 		"movdqu 0x70(%1), %%xmm7 \n" \
+		"movdqu 0x80(%1), %%xmm8 \n" \
+	 	"movdqu 0x90(%1), %%xmm9 \n" \
+		"movdqu 0x100(%1), %%xmm10 \n" \
+		"movdqu 0x110(%1), %%xmm11 \n" \
+		"movdqu 0x120(%1), %%xmm12 \n" \
+		"movdqu 0x130(%1), %%xmm13 \n" \
+		"movdqu 0x140(%1), %%xmm14 \n" \
+		"movdqu 0x150(%1), %%xmm15 \n" \
 		"movntdq %%xmm0, (%0) \n" \
 		"movntdq %%xmm1, 0x10(%0) \n" \
 		"movntdq %%xmm2, 0x20(%0) \n" \
@@ -551,6 +591,52 @@ typedef	union {
 		"movntdq %%xmm5, 0x50(%0) \n" \
 		"movntdq %%xmm6, 0x60(%0) \n" \
 		"movntdq %%xmm7, 0x70(%0) \n" \
+		"movntdq %%xmm8, 0x80(%0) \n" \
+		"movntdq %%xmm9, 0x90(%0) \n" \
+		"movntdq %%xmm10, 0x100(%0) \n" \
+		"movntdq %%xmm11, 0x110(%0) \n" \
+		"movntdq %%xmm12, 0x120(%0) \n" \
+		"movntdq %%xmm13, 0x130(%0) \n" \
+		"movntdq %%xmm14, 0x140(%0) \n" \
+		"movntdq %%xmm15, 0x150(%0) \n" \
+		: \
+		: "q" (dst), "r" (src) \
+		: "memory",  "st");
+
+#define MOVE_64DWORDS_ALIGNED_SSE2(src,dst) \
+	   __asm__ ( \
+		"movdqa (%1), %%xmm0 \n" \
+		"movdqa 0x10(%1), %%xmm1 \n" \
+	 	"movdqa 0x20(%1), %%xmm2 \n" \
+		"movdqa 0x30(%1), %%xmm3 \n" \
+		"movdqa 0x40(%1), %%xmm4 \n" \
+		"movdqa 0x50(%1), %%xmm5 \n" \
+		"movdqa 0x60(%1), %%xmm6 \n" \
+		"movdqa 0x70(%1), %%xmm7 \n" \
+		"movdqa 0x80(%1), %%xmm8 \n" \
+	 	"movdqa 0x90(%1), %%xmm9 \n" \
+		"movdqa 0x100(%1), %%xmm10 \n" \
+		"movdqa 0x110(%1), %%xmm11 \n" \
+		"movdqa 0x120(%1), %%xmm12 \n" \
+		"movdqa 0x130(%1), %%xmm13 \n" \
+		"movdqa 0x140(%1), %%xmm14 \n" \
+		"movdqa 0x150(%1), %%xmm15 \n" \
+		"movntdq %%xmm0, (%0) \n" \
+		"movntdq %%xmm1, 0x10(%0) \n" \
+		"movntdq %%xmm2, 0x20(%0) \n" \
+		"movntdq %%xmm3, 0x30(%0) \n" \
+		"movntdq %%xmm4, 0x40(%0) \n" \
+		"movntdq %%xmm5, 0x50(%0) \n" \
+		"movntdq %%xmm6, 0x60(%0) \n" \
+		"movntdq %%xmm7, 0x70(%0) \n" \
+		"movntdq %%xmm8, 0x80(%0) \n" \
+		"movntdq %%xmm9, 0x90(%0) \n" \
+		"movntdq %%xmm10, 0x100(%0) \n" \
+		"movntdq %%xmm11, 0x110(%0) \n" \
+		"movntdq %%xmm12, 0x120(%0) \n" \
+		"movntdq %%xmm13, 0x130(%0) \n" \
+		"movntdq %%xmm14, 0x140(%0) \n" \
+		"movntdq %%xmm15, 0x150(%0) \n" \
 		: \
 		: "q" (dst), "r" (src) \
 		: "memory",  "st");
