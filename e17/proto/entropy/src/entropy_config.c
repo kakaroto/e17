@@ -149,3 +149,17 @@ entropy_config_standard_structures_parse (entropy_gui_component_instance * insta
 
   return ret;
 }
+
+void
+entropy_config_standard_structures_add (entropy_gui_component_instance *
+				       instance, char *name, char *uri)
+{
+  char *current_uri =
+    entropy_config_str_get ("layout_ewl_simple", "structure_bar");
+  char new_uri[HEADER_CONFIG_MAX];
+
+  snprintf (new_uri, HEADER_CONFIG_MAX, "%s|%s;%s", current_uri, name, uri);
+  entropy_config_str_set ("layout_ewl_simple", "structure_bar", new_uri);
+
+  entropy_free (current_uri);
+}

@@ -106,22 +106,21 @@ entropy_plugin_layout_main ()
   etk_main ();
 }
 
+
+void _location_add_cb(Etk_Object *obj, void *data)
+{
+	printf("Add location\n");
+	etk_location_add_dialog_create((entropy_gui_component_instance*)data);
+}
+
 void layout_etk_simple_add_header(entropy_gui_component_instance* instance, char* name, char* uri)
 {
-  void *(*entropy_plugin_init) (entropy_core * core,
-				entropy_gui_component_instance *);
   void *(*structure_plugin_init) (entropy_core * core,
 				  entropy_gui_component_instance *,
 				  void* parent_visual,
 				  void *data);
 
-  void *(*local_plugin_init) (entropy_core * core,
-				  entropy_gui_component_instance *,
-				  void *data);
-  
-  entropy_plugin *plugin;
   entropy_plugin *structure;
-  entropy_plugin *local;
   entropy_generic_file* file;
   Etk_Tree_Row* row;
   Etk_Tree_Col* col;
@@ -161,33 +160,17 @@ entropy_plugin_layout_create (entropy_core * core)
   entropy_layout_gui *gui;
   entropy_gui_component_instance *layout;
   entropy_gui_component_instance* instance;
-  Etk_Widget* test;
-  
-
-  void *(*entropy_plugin_init) (entropy_core * core,
-				entropy_gui_component_instance *);
-  void *(*structure_plugin_init) (entropy_core * core,
-				  entropy_gui_component_instance *,
-				  void* parent_visual,
-				  void *data);
 
   void *(*local_plugin_init) (entropy_core * core,
 				  entropy_gui_component_instance *,
 				  void *data);
   
-  entropy_plugin *plugin;
-  entropy_plugin *structure;
   entropy_plugin *local;
   Etk_Tree_Col* col;
-  Etk_Tree_Row* row;
   Etk_Widget* vbox;
   Etk_Widget* menubar;
   Etk_Widget* menu_item;
   Etk_Widget* menu;
-  char* home = strdup(getenv("HOME"));
-  char* pos;
-  char* md5;
-  entropy_file_listener* listener;
 
   Ecore_Hash* config_hash;
   Ecore_List* config_hash_keys;
@@ -234,7 +217,10 @@ entropy_plugin_layout_create (entropy_core * core)
   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Tools"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menubar), NULL);
   menu = etk_menu_new();
   etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));
-  _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Add Location"), ETK_STOCK_ADDRESS_BOOK_NEW, ETK_MENU_SHELL(menu), NULL);
+  
+  menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Add Location"), ETK_STOCK_ADDRESS_BOOK_NEW, ETK_MENU_SHELL(menu), NULL);
+  etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_location_add_cb), layout);
+  
   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Program Associations.."), ETK_STOCK_SYSTEM_SHUTDOWN, ETK_MENU_SHELL(menu), NULL);
 
   
