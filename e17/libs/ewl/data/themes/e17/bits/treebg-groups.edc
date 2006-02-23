@@ -1,14 +1,17 @@
 group{
     name, "row_background";
-
+	 min: 0 19;
+	 max: 9999 19;
     data {
     }
 
     parts {
         part {
-            name, "row_background";
+            name, "row_background";        
             mouse_events, 0;
             description {
+                min: 0 19;
+	 				 max: 9999 19;
                 state, "even" 0.0;
                 rel1 {
                     relative, 0.0 0.0;
@@ -26,6 +29,8 @@ group{
             }
             description {
                 state, "odd" 0.0;
+                min: 0 19;
+	 				 max: 99999 19;
                 rel1 {
                     relative, 0.0 0.0;
                     offset, 0 0;
@@ -45,6 +50,8 @@ group{
             name, "tree-select";
             mouse_events, 0;
             description {
+            	 min: 0 19;
+	 				 max: 9999 19;
                 state, "default" 0.0;
                 image {
                     normal, "e17_tranny.png";
@@ -55,6 +62,8 @@ group{
             }
 	    description {
                 state, "selected" 0.0;
+                min: 0 19;
+	 				 max: 9999 19;
                 rel1 {
                     relative, 0.0 0.0;
                     offset, 0 0;
@@ -64,7 +73,7 @@ group{
                     offset, -1 -1;
                 }
                 image {
-                    normal, "e17_hhandle.png";
+                    normal, "row_select.png";
                     border, 3 3 3 3;
                 }
              color, 255 255 255 255;  
@@ -105,38 +114,6 @@ group{
        		transition: LINEAR 0.0;
 		target:     row_background;
     	}	
-    }
-}
-group{
-    name, "tree_background";
-
-    data {
-        item, "inset/top" "2";
-        item, "inset/bottom" "2";
-        item, "inset/left" "2";
-        item, "inset/right" "2";
-    }
-
-    parts {
-        part {
-            name, "tree_background";
-	    mouse_events, 0;
-            description {
-                state, "default" 0.0;
-                rel1 {
-                    relative, 0.0 0.0;
-                    offset, 0 0;
-                }
-                rel2 {
-                     relative, 1.0 1.0;
-                     offset, -1 -1;
-                }
-		image {
-		    normal, "e17_tranny.png";
-		}
-                color, 220 224 220 255;
-            }
-	}
-    }
+   }
 }
 
