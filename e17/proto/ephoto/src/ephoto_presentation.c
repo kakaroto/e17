@@ -13,11 +13,12 @@ _change_picture_cb(void *data)
 	/*********************/
 	
 	/****Make sure audio keeps playing :)*****/
-	#ifdef EWL_MEDIA_H
-	if (audio != 0) {
-		ewl_media_play_set(EWL_MEDIA(s->audio1), 1);
-	}
-	#endif
+printf("res %d\n", ewl_media_is_available());
+if ( ewl_media_is_available() ) {
+		if (audio != 0) {
+			ewl_media_play_set(EWL_MEDIA(s->audio1), 1);
+		}
+}
 	/*****************************************/
 	
 	/***Cycle the slideshow!***/
@@ -88,12 +89,13 @@ realize_cb(Ewl_Widget *w, void *event, void *data)
 void
 play_cb(Ewl_Widget *w, void *event, void *data)
 {
-#ifdef EWL_MEDIA_H
-	if (audio != 0) {
-		ewl_media_play_set(EWL_MEDIA(s->audio1), 1);
-		audiolen = ewl_media_length_get(EWL_MEDIA(s->audio1));
-	}
-#endif
+printf("res %d\n", ewl_media_is_available());
+if ( ewl_media_is_available() ) {
+		if (audio != 0) {
+			ewl_media_play_set(EWL_MEDIA(s->audio1), 1);
+			audiolen = ewl_media_length_get(EWL_MEDIA(s->audio1));
+		}
+}
 }
 
 void
@@ -149,17 +151,18 @@ slideshow_cb(Ewl_Widget *w, void *event, void *data)
 	ewl_container_child_append(EWL_CONTAINER(s->wins), s->cell);
 	ewl_widget_show(s->cell);
 
-#ifdef EWL_MEDIA_H
-	if (audio != 0) {
-		s->audio1 = ewl_media_new();
-		ewl_container_child_append(EWL_CONTAINER(s->wins), s->audio1);
-		ewl_media_module_get(EWL_MEDIA(s->audio1));
-		ewl_media_module_set(EWL_MEDIA(s->audio1), EWL_MEDIA_MODULE_XINE);
-		ewl_media_media_set(EWL_MEDIA(s->audio1), audios);
-		ewl_object_maximum_size_set(EWL_OBJECT(s->audio1), 1, 1);
-		ewl_widget_show(s->audio1);
-	}
-#endif
+printf("res %d\n", ewl_media_is_available());
+if ( ewl_media_is_available() ) {
+		if (audio != 0) {
+			s->audio1 = ewl_media_new();
+			ewl_container_child_append(EWL_CONTAINER(s->wins), s->audio1);
+			ewl_media_module_get(EWL_MEDIA(s->audio1));
+			ewl_media_module_set(EWL_MEDIA(s->audio1), EWL_MEDIA_MODULE_XINE);
+			ewl_media_media_set(EWL_MEDIA(s->audio1), audios);
+			ewl_object_maximum_size_set(EWL_OBJECT(s->audio1), 1, 1);
+			ewl_widget_show(s->audio1);
+		}
+}
 	/*******************************************************************/
 	
 	/*******Start the slideshow*******/	

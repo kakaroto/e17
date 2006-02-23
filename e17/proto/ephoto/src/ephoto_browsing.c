@@ -70,10 +70,12 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 
 		/*********Lets setup the parent dir row**********/
 		m->hbox = ewl_hbox_new();
+		ewl_object_alignment_set(EWL_OBJECT(m->hbox), EWL_FLAG_ALIGN_CENTER);
 		ewl_box_spacing_set(EWL_BOX(m->hbox), 5);
 		ewl_widget_show(m->hbox);
 		
 		m->image = ewl_image_new();
+		ewl_tree_expandable_rows_set(EWL_TREE(m->imagetree), FALSE);
 		ewl_image_file_set(EWL_IMAGE(m->image), PACKAGE_DATA_DIR "/images/up.png", NULL);
 		ewl_container_child_append(EWL_CONTAINER(m->hbox), m->image);
 		ewl_widget_show(m->image);
@@ -83,6 +85,7 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 		ewl_text_text_set(EWL_TEXT(m->texti), up);
 		ewl_object_minimum_size_set(EWL_OBJECT(m->texti), 10, 16);
 		ewl_object_fill_policy_set(EWL_OBJECT(m->texti), EWL_FLAG_FILL_ALL);
+		ewl_object_alignment_set(EWL_OBJECT(m->texti), EWL_FLAG_ALIGN_CENTER);
 		ewl_container_child_append(EWL_CONTAINER(m->hbox), m->texti);
 		ewl_widget_show(m->texti);
 		
@@ -244,6 +247,7 @@ populatea_cb(Ewl_Widget *w, void *event, void *data)
 		ewl_widget_destroy(m->audiotree);
 		
 		m->audiotree = ewl_tree_new(1);
+		ewl_tree_expandable_rows_set(EWL_TREE(m->audiotree), FALSE);
 		ewl_container_child_append(EWL_CONTAINER(m->songs), m->audiotree);
 		ewl_object_maximum_size_set(EWL_OBJECT(m->audiotree), 200, 175);
 		ewl_widget_show(m->audiotree);
@@ -346,6 +350,7 @@ populatea_cb(Ewl_Widget *w, void *event, void *data)
 			ewl_text_text_set(EWL_TEXT(m->text), bname2);
   			ewl_object_minimum_size_set(EWL_OBJECT(m->text), 10, 16);
 			ewl_object_fill_policy_set(EWL_OBJECT(m->text), EWL_FLAG_FILL_ALL);
+			ewl_object_alignment_set(EWL_OBJECT(m->text), EWL_FLAG_ALIGN_CENTER);
 			ewl_container_child_append(EWL_CONTAINER(m->hbox), m->text);
 			ewl_widget_show(m->text);
 			
@@ -463,11 +468,11 @@ audio_cb(Ewl_Widget *w, void *event, void *data)
 	audios = strdup(pathi);
 	audio = 1;
 	printf("%s\n", audios);
-#ifdef EWL_MEDIA_H
-	if (audio != 0) {
-		ewl_widget_enable(m->audiolen);
-		ewl_widget_state_set(m->audiolen, "enabled");
+   if ( ewl_media_is_available() ) {
+		if (audio != 0) {
+			ewl_widget_enable(m->audiolen);
+			ewl_widget_state_set(m->audiolen, "enabled");
+		}
 	}
-#endif
 }
 
