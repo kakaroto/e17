@@ -1955,6 +1955,8 @@ static void _etk_tree_row_clicked_cb(void *data, Evas *e, Evas_Object *obj, void
       event.locks = evas_event->locks;
       event.flags = EVAS_BUTTON_NONE;
       event.timestamp = evas_event->timestamp;      
+
+      printf("selected = %d\n", row_objects->row->tree->num_selected_rows);
       
       if (!evas_key_modifier_is_set(event.modifiers, "Control") &&
 	  !evas_key_modifier_is_set(event.modifiers, "Shift") &&
@@ -2738,7 +2740,6 @@ static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Evas_Modifie
          if (!evas_key_modifier_is_set(modifiers, "Control"))
 	 {
             etk_tree_unselect_all(tree);
-	    tree->num_selected_rows = 1;
 	 }
    
          if (!tree->last_selected)
@@ -2761,11 +2762,17 @@ static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Evas_Modifie
                }
                else
 	       {
+		  Etk_Bool state;
+		  
+		  state = r->selected;
                   r->selected |= selected;
-		  if(!r->selected)
-		    ++tree->num_selected_rows;
-		  else
-		    --tree->num_selected_rows;
+		  if(state != r->selected)
+		  {
+		     if(!r->selected)		       
+		       --tree->num_selected_rows;
+		     else		       
+		       ++tree->num_selected_rows;		       
+		  }
 	       }
             }
             if (selected)
