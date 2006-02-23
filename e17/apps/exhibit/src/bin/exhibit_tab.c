@@ -1,5 +1,8 @@
 #include "exhibit.h"
 
+#define EX_DND_MAX_NUM 25
+#define EX_DND_COL_NUM 5
+
 static void _ex_tab_tree_drag_begin_cb(Etk_Object *object, void *data);
 
 Ex_Tab *
@@ -97,35 +100,82 @@ _ex_tab_select(Ex_Tab *tab)
 
 static void _ex_tab_tree_drag_begin_cb(Etk_Object *object, void *data)
 {
-   Ex_Tab *tab;
-   Etk_Tree *tree;
+   Ex_Tab       *tab;
+   Etk_Tree     *tree;
    Etk_Tree_Row *row;
+   Etk_Drag     *drag;
+   Etk_Widget   *image;
+   Evas_List    *rows;
    char *icol1_string;   
    char *icol2_string;
+   char *drag_data;   
    const char **types;
    unsigned int num_types;
-   char *drag_data;
-   Etk_Drag *drag;
-   Etk_Widget *image;
 
    tab = data;
    tree = ETK_TREE(object);
-   row = etk_tree_selected_row_get(tree);
-   
    drag = (ETK_WIDGET(tree))->drag;
    
-   etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), &icol1_string, &icol2_string, etk_tree_nth_col_get(tree, 1),NULL);
+   rows = etk_tree_selected_rows_get(tree);
    
    types = calloc(1, sizeof(char*));
    num_types = 1;
-   types[0] = strdup("text/uri-list");
-   drag_data = calloc(PATH_MAX, sizeof(char));
-   snprintf(drag_data, PATH_MAX * sizeof(char), "file://%s%s\r\n", tab->cur_path, icol2_string);
+   types[0] = strdup("text/uri-list");   
+   
+   if(evas_list_count(rows) > 1)
+     {
+	Evas_List *ll;
+	Etk_Widget *table;
+	int i = 0, l = 0, r = 0, t = 0, b = 0, row_num;
+		
+	if(evas_list_count(rows) >= EX_DND_COL_NUM)
+	  row_num = evas_list_count(rows) / EX_DND_COL_NUM;
+	else
+	  row_num = 1;
+	
+	table = etk_table_new(EX_DND_COL_NUM, row_num + 1, ETK_TRUE);
+	drag_data = calloc(PATH_MAX * evas_list_count(rows), sizeof(char));
+	for(ll = rows; ll; ll = ll->next)
+	  {
+	     char *tmp[PATH_MAX];
+	     
+	     row = ll->data;
+	     etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), &icol1_string, &icol2_string, etk_tree_nth_col_get(tree, 1),NULL);
+	     snprintf(tmp, PATH_MAX * sizeof(char), "file://%s%s\r\n", tab->cur_path, icol2_string);
+	     strncat(drag_data, tmp, PATH_MAX * evas_list_count(rows));
+	     if(i <= EX_DND_MAX_NUM * EX_DND_MAX_NUM)
+	       {
+		  image = etk_image_new_from_file(icol1_string);
+		  etk_image_keep_aspect_set(ETK_IMAGE(image), ETK_TRUE);
+		  etk_widget_size_request_set(image, 48, 48);
+		  etk_table_attach(ETK_TABLE(table), image, l, r, t, b, 3, 3,
+				   ETK_FILL_POLICY_NONE);
+		  
+		  ++l; ++r;
+		  
+		  if(l == EX_DND_COL_NUM)
+		    {
+		       l = r = 0;
+		       ++t; ++b;
+		    }	     
+	       }
+	     ++i;
+	  }
+	
+	etk_container_add(ETK_CONTAINER(drag), table);	
+     }
+   else
+     {   
+	row = etk_tree_selected_row_get(tree);      
+	etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), &icol1_string, &icol2_string, etk_tree_nth_col_get(tree, 1),NULL);
+	drag_data = calloc(PATH_MAX, sizeof(char));
+	snprintf(drag_data, PATH_MAX * sizeof(char), "file://%s%s\r\n", tab->cur_path, icol2_string);
+	image = etk_image_new_from_file(icol1_string);
+	etk_image_keep_aspect_set(ETK_IMAGE(image), ETK_TRUE);
+	etk_widget_size_request_set(image, 96, 96);
+	etk_container_add(ETK_CONTAINER(drag), image);	
+     }
    
    etk_drag_types_set(drag, types, num_types);
    etk_drag_data_set(drag, drag_data, strlen(drag_data) + 1);
-   image = etk_image_new_from_file(icol1_string);
-   etk_image_keep_aspect_set(ETK_IMAGE(image), ETK_TRUE);
-   etk_widget_size_request_set(image, 96, 96);
-   etk_container_add(ETK_CONTAINER(drag), image);
 }
