@@ -172,7 +172,7 @@ AC_PATH_GENERIC(emotion, 0.0.1,
     have_emotion="yes"
     ewl_media_include="#include <ewl_media.h>"
     requirements="$requirements emotion"
-    AC_DEFINE(BUILD_EMOTION_SUPPORT, 1, [Enable X11 Software])
+    AC_DEFINE(BUILD_EMOTION_SUPPORT, 1, [Enable Emotion Support for Ewl_Media])
   ],
   [
     have_emotion="no"
