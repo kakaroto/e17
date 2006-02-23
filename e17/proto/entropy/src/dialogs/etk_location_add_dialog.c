@@ -191,7 +191,7 @@ void etk_location_add_dialog_create(entropy_gui_component_instance* instance)
 				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
 
 	dialog->name_entry = etk_entry_new();
-	etk_entry_text_set(ETK_ENTRY(entry), "New Location");
+	etk_entry_text_set(ETK_ENTRY(dialog->name_entry), "New Location");
 	etk_table_attach(ETK_TABLE(dialog->vbox2), dialog->name_entry,1,1,0,0,
 				0,0,
 				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
