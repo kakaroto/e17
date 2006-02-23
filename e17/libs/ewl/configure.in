@@ -172,13 +172,13 @@ AC_PATH_GENERIC(emotion, 0.0.1,
     have_emotion="yes"
     ewl_media_include="#include <ewl_media.h>"
     requirements="$requirements emotion"
+    AC_DEFINE(BUILD_EMOTION_SUPPORT, 1, [Enable X11 Software])
   ],
   [
     have_emotion="no"
     echo "No emotion-config detected."
   ]
 )
-AM_CONDITIONAL(BUILD_EMOTION_SUPPORT, test "x$have_emotion" = "xyes")
 
 CFLAGS=$EMOTION_CFLAGS" "$CFLAGS
 
