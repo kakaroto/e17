@@ -6,7 +6,7 @@ INCLUDES			=	-I$(top_srcdir)/src/lib -I$(top_builddir)/src/lib @EDJE_CFLAGS@ @EC
 
 EWLTESTPROGRAMS                 =	ewl_test ewl_embed_test ewl_simple_test ewl_media_test
 
-bin_PROGRAMS			=	$(EWLTESTPROGRAMS) $(EWLMEDIATESTPROGRAMS)
+bin_PROGRAMS			=	$(EWLTESTPROGRAMS)
 
 ewl_test_DEPENDENCIES		=	$(top_builddir)/src/lib/libewl.la
 ewl_test_SOURCES		=	ewl_test.h \
