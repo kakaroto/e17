@@ -107,6 +107,7 @@ ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 	ewl_callback_append(EWL_WIDGET(tree->header), EWL_CALLBACK_CONFIGURE,
 				ewl_tree_header_configure_cb, tree->scrollarea);
 	ewl_tree_headers_visible_set(tree, 1);
+	ewl_tree_expandable_rows_set(tree, 1);
 
 	ewl_widget_focusable_set(EWL_WIDGET(tree), FALSE);
 
@@ -155,7 +156,7 @@ ewl_tree_headers_set(Ewl_Tree *tree, char **headers)
 }
 
 /**
- * @param tree: The tree to set the header visibleity
+ * @param tree: The tree to set the header visiblity
  * @param visible: The visiblity to set
  * @return Returns no value.
  * @brief Sets the visiblity of the headers in the tree
@@ -205,6 +206,39 @@ ewl_tree_headers_visible_get(Ewl_Tree *tree)
 }
 
 /**
+ * @param tree: The tree to set the row expandability
+ * @param visible: The expandability to set
+ * @return Returns no value.
+ * @brief Sets the expandability of the rows in the tree
+ */
+void
+ewl_tree_expandable_rows_set(Ewl_Tree *tree, unsigned int expand)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("tree", tree);
+	DCHECK_TYPE("tree", tree, EWL_TREE_TYPE);
+ 
+	tree->expands_visible = expand;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: The tree the get the header visiblity
+ * @return Returns the header visibliity of the tree
+ * @brief Gets the header visibility of the tree
+ */
+unsigned int
+ewl_tree_expandable_rows_get(Ewl_Tree *tree)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("tree", tree, 0);
+	DCHECK_TYPE_RET("tree", tree, EWL_TREE_TYPE, 0);
+
+	DRETURN_INT(tree->expands_visible, DLEVEL_STABLE);
+}
+
+/**
  * @param tree: the tree to hold the widgets
  * @param prow: the parent row of the new row for the added widgets
  * @param children: a NULL terminated array of widgets to add to the tree
@@ -242,6 +276,8 @@ ewl_tree_row_add(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 	node = ewl_tree_node_new();
 	if (!node)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
+
+	ewl_tree_node_expandable_set(EWL_TREE_NODE(node), tree->expands_visible);
 
 	row = ewl_row_new();
 	if (!row) {
@@ -494,7 +530,7 @@ ewl_tree_row_expand_set(Ewl_Row *row, Ewl_Tree_Node_Flags expanded)
 	node = EWL_TREE_NODE(EWL_WIDGET(row)->parent);
 	if (node && node->expanded != expanded) {
 		if (!expanded || expanded == EWL_TREE_NODE_COLLAPSED) {
-			if (!expanded)
+			if (!expanded && node->handle)
 				ewl_widget_hide(node->handle);
 			ewl_tree_node_collapse(EWL_TREE_NODE(node));
 		}
@@ -829,24 +865,56 @@ ewl_tree_node_init(Ewl_Tree_Node *node)
 	ewl_callback_prepend(EWL_WIDGET(node), EWL_CALLBACK_DESTROY,
 			    ewl_tree_node_destroy_cb, NULL);
 
-	/*
-	 * The handle for expanding and collapsing the branch point at this
-	 * node.
-	 */
-	node->handle = ewl_check_new();
-	ewl_object_fill_policy_set(EWL_OBJECT(node->handle),
-				   EWL_FLAG_FILL_NONE);
-	ewl_object_alignment_set(EWL_OBJECT(node->handle), EWL_FLAG_ALIGN_TOP);
-	ewl_container_child_append(EWL_CONTAINER(node), node->handle);
-	ewl_callback_append(node->handle, EWL_CALLBACK_VALUE_CHANGED,
-			    ewl_tree_node_toggle_cb, node);
-	ewl_widget_show(node->handle);
-
 	node->expanded = EWL_TREE_NODE_COLLAPSED;
 
 	ewl_widget_focusable_set(EWL_WIDGET(node), FALSE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/**
+ */
+void
+ewl_tree_node_expandable_set(Ewl_Tree_Node *node, int expand)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("node", node);
+	DCHECK_TYPE("node", node, EWL_TREE_NODE_TYPE);
+
+	/*
+	 * The handle for expanding and collapsing the branch point at this
+	 * node.
+	 */
+	if (expand && !node->handle) {
+		node->handle = ewl_check_new();
+		ewl_object_fill_policy_set(EWL_OBJECT(node->handle),
+					   EWL_FLAG_FILL_NONE);
+		ewl_object_alignment_set(EWL_OBJECT(node->handle),
+				EWL_FLAG_ALIGN_TOP);
+		ewl_container_child_prepend(EWL_CONTAINER(node), node->handle);
+		ewl_callback_append(node->handle, EWL_CALLBACK_VALUE_CHANGED,
+				    ewl_tree_node_toggle_cb, node);
+		ewl_widget_show(node->handle);
+	}
+	else if (node->handle) {
+		ewl_widget_destroy(node->handle);
+		node->handle = NULL;
+	}
+}
+
+/**
+ */
+int
+ewl_tree_node_expandable_get(Ewl_Tree_Node *node)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("node", node, FALSE);
+	DCHECK_TYPE_RET("node", node, EWL_TREE_NODE_TYPE, FALSE);
+
+	if (node->handle)
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
+
+	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
 /**
@@ -972,11 +1040,15 @@ ewl_tree_node_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		DRETURN(DLEVEL_STABLE);
 
 	ecore_dlist_goto_first(c->children);
+	x = CURRENT_X(w);
 	y = CURRENT_Y(w);
 
-	ewl_object_geometry_request(EWL_OBJECT(node->handle), CURRENT_X(w),
-				    CURRENT_Y(w), CURRENT_W(w), CURRENT_H(w));
-	x = CURRENT_X(w) + ewl_object_current_w_get(EWL_OBJECT(node->handle));
+	if (node->handle) {
+		ewl_object_geometry_request(EWL_OBJECT(node->handle),
+				CURRENT_X(w), CURRENT_Y(w), CURRENT_W(w),
+				CURRENT_H(w));
+		x += ewl_object_current_w_get(EWL_OBJECT(node->handle));
+	}
 
 	/*
 	 * All subsequent children are lower nodes and rows.
@@ -1052,10 +1124,10 @@ ewl_tree_node_child_add_cb(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
 		node->row = node->handle;
 
 	if (ecore_dlist_nodes(c->children) > 2 ) {
-		if (HIDDEN(node->handle))
+		if (node->handle && HIDDEN(node->handle))
 			ewl_widget_show(node->handle);
 	}
-	else if (VISIBLE(node->handle)) {
+	else if (node->handle && VISIBLE(node->handle)) {
 		ewl_widget_hide(node->handle);
 	}
 
@@ -1085,7 +1157,7 @@ ewl_tree_node_child_show_cb(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
 
 	node = EWL_TREE_NODE(c);
 
-	if (node->expanded) {
+	if (node->handle && node->expanded) {
 		ewl_container_sum_prefer(c, EWL_ORIENTATION_VERTICAL);
 		if (REALIZED(node->handle) && VISIBLE(node->handle))
 			ewl_object_preferred_inner_h_set(EWL_OBJECT(c),
@@ -1098,11 +1170,11 @@ ewl_tree_node_child_show_cb(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
 	}
 
 	ewl_container_largest_prefer(c, EWL_ORIENTATION_HORIZONTAL);
-	if (REALIZED(node->handle) && VISIBLE(node->handle))
+	if (node->handle && REALIZED(node->handle) && VISIBLE(node->handle))
 		ewl_object_preferred_inner_w_set(EWL_OBJECT(c), PREFERRED_W(c) +
 			ewl_object_preferred_w_get(EWL_OBJECT(node->handle)));
 
-	if (!node->expanded)
+	if (!node->expanded && node->handle)
 		ewl_widget_hide(node->handle);
 
 	ewl_widget_configure(EWL_WIDGET(c)->parent);
@@ -1128,7 +1200,7 @@ ewl_tree_node_child_hide_cb(Ewl_Container *c, Ewl_Widget *w)
 		DRETURN(DLEVEL_STABLE);
 
 	if (ecore_dlist_nodes(c->children) < 3) {
-		if (VISIBLE(node->handle))
+		if (node->handle && VISIBLE(node->handle))
 			ewl_widget_hide(node->handle);
 	}
 

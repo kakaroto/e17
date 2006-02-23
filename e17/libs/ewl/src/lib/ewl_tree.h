@@ -36,12 +36,13 @@ struct Ewl_Tree
 {
 	Ewl_Container  container;  /**< Inherit from Ewl_Container */
 
-	unsigned short ncols;      /**< Number of columns in tree */
 	Ewl_Widget    *header;     /**< Array of widgets in the header */
 	Ewl_Widget    *scrollarea; /**< Scrollable area of rows */
 	Ecore_List    *selected;   /**< The currently selected rows */
 	Ewl_Tree_Mode  mode;       /**< Mode for selecting rows */
-	unsigned int   headers_visible; /**< Are the headers visible */
+	unsigned short ncols;      /**< Number of columns in tree */
+	unsigned short headers_visible; /**< Are the headers visible */
+	unsigned short expands_visible; /**< Are the rows expandable */
 };
 
 /**
@@ -71,6 +72,9 @@ struct Ewl_Tree_Node
 Ewl_Widget 	*ewl_tree_node_new(void);
 int 		 ewl_tree_node_init(Ewl_Tree_Node *tree_node);
 
+void             ewl_tree_node_expandable_set(Ewl_Tree_Node *node, int expand);
+int              ewl_tree_node_expandable_get(Ewl_Tree_Node *node);
+
 void 		 ewl_tree_node_collapse(Ewl_Tree_Node *tree);
 void 		 ewl_tree_node_expand(Ewl_Tree_Node *tree);
 
@@ -82,6 +86,9 @@ void  		 ewl_tree_columns_set(Ewl_Tree *tree, unsigned short columns);
 
 void		ewl_tree_headers_visible_set(Ewl_Tree *tree, unsigned int visible);
 unsigned int	ewl_tree_headers_visible_get(Ewl_Tree *tree);
+
+void		ewl_tree_expandable_rows_set(Ewl_Tree *tree, unsigned int visible);
+unsigned int	ewl_tree_expandable_rows_get(Ewl_Tree *tree);
 
 
 Ecore_List 	*ewl_tree_selected_get(Ewl_Tree *tree);

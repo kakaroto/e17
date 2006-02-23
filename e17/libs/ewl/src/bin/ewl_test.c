@@ -348,6 +348,7 @@ main(int argc, char **argv)
 
 	main_tree = ewl_tree_new(1);
 	ewl_tree_headers_set (EWL_TREE (main_tree), header);
+	ewl_tree_expandable_rows_set(EWL_TREE (main_tree), FALSE);
 	ewl_container_child_append(EWL_CONTAINER(main_box), main_tree);
 	ewl_object_fill_policy_set (EWL_OBJECT (main_tree),
 				    EWL_FLAG_FILL_HSHRINK |
