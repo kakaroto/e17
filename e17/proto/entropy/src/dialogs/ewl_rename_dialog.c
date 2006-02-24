@@ -4,7 +4,7 @@
 #include <limits.h>
 #include <dlfcn.h>
 
-Ewl_Widget* rename_text_widget;
+static Ewl_Widget* rename_text_widget;
 
 void ewl_rename_dialog_rename_cb(Ewl_Widget* w, void* ev_data, void* user_data)
 {
