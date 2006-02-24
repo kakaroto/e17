@@ -82,7 +82,41 @@ void _location_add_next_cb(Etk_Object *obj, void *data)
 		etk_container_add(ETK_CONTAINER(dialog->frame), dialog->vbox2);
 	} else if (dialog->screen_id == 1) {
 		/*Finish!*/
+		const char *host= NULL, *path = NULL, *name = NULL, *username = NULL, *password = NULL;
+		char buffer[PATH_MAX];
+
+		name = etk_entry_text_get(ETK_ENTRY(dialog->name_entry));
+		host = etk_entry_text_get(ETK_ENTRY(dialog->host_widget_entry));
+		username = etk_entry_text_get(ETK_ENTRY(dialog->username_widget_entry));
+		password = etk_entry_text_get(ETK_ENTRY(dialog->password_widget_entry));
+		path = etk_entry_text_get(ETK_ENTRY(dialog->path_entry));
+
+		printf("Adding location '%s'\n", name);
+
+		bzero(buffer, PATH_MAX);
+
+		snprintf(buffer, PATH_MAX, "%s://", dialog->selected_uri);
+
+		if (system->properties & REQUIRES_AUTH) {
+			strcat(buffer, username);
+			strcat(buffer, ":");
+			strcat(buffer, password);
+			strcat(buffer, "@");
+		}
 		
+		if (system->properties & REQUIRES_HOST) {
+			strcat(buffer, "/");
+			strcat(buffer, host);
+		}
+
+		strcat(buffer, path);		
+	
+		printf("Final URI: '%s'\n", buffer);
+
+		entropy_config_standard_structures_add (dialog->instance, (char*)name, buffer);
+		(*dialog->add_callback)(dialog->instance, (char*)name, buffer);
+
+		//etk_object_destroy(ETK_OBJECT(dialog->window));
 	}
 }
 
@@ -115,7 +149,8 @@ static void location_add_initialise() {
 }
 
 
-void etk_location_add_dialog_create(entropy_gui_component_instance* instance)
+void etk_location_add_dialog_create(entropy_gui_component_instance* instance, 
+		void (*add_callback)(entropy_gui_component_instance*, char*, char*) )
 {
 	Ecore_List* filesystems;
 	evfs_filesystem* system;
@@ -136,6 +171,9 @@ void etk_location_add_dialog_create(entropy_gui_component_instance* instance)
 
 	if (!location_add_init) 
 		location_add_initialise();
+
+	dialog->instance = instance;
+	dialog->add_callback = add_callback;
 
 	dialog->window = etk_window_new();
 	
@@ -191,7 +229,7 @@ void etk_location_add_dialog_create(entropy_gui_component_instance* instance)
 				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
 
 	dialog->name_entry = etk_entry_new();
-	etk_entry_text_set(ETK_ENTRY(dialog->name_entry), "New Location");
+	etk_entry_text_set(ETK_ENTRY(dialog->name_entry), _("New Location"));
 	etk_table_attach(ETK_TABLE(dialog->vbox2), dialog->name_entry,1,1,0,0,
 				0,0,
 				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);

@@ -11,6 +11,8 @@
 
 #define HEADER_CONFIG_MAX 2048
 
+
+
 static Ewl_Widget *win;
 static int _ewl_layout_count = 0;
 
@@ -30,8 +32,6 @@ void location_add_cb (Ewl_Widget * main_win, void *ev_data, void *user_data);
 void layout_ewl_simple_config_create (entropy_core * core);
 void layout_ewl_simple_add_header (entropy_gui_component_instance * instance,
 				   char *name, char *uri);
-void layout_ewl_simple_add_config_location (entropy_gui_component_instance *
-					    instance, char *name, char *uri);
 void __destroy_main_window (Ewl_Widget * main_win, void *ev_data,
 			    void *user_data);
 void contract_cb (Ewl_Widget * main_win, void *ev_data, void *user_data);
@@ -180,14 +180,14 @@ location_add_execute_cb (Ewl_Widget * item, void *ev_data, void *user_data)
     printf ("New URI is: '%s'\n", new_uri);
     layout_ewl_simple_add_header (instance, display_name, new_uri);
 
-    layout_ewl_simple_add_config_location (instance, display_name, new_uri);
+    entropy_config_standard_structures_add (instance, display_name, new_uri);
 
   } else if (ewl_checkbutton_is_checked (EWL_CHECKBUTTON (viewer->sftp_radio))) {
     snprintf (new_uri, 2048, "sftp:///%s%s", server,path);
     printf ("New URI is: '%s'\n", new_uri);
     layout_ewl_simple_add_header (instance, display_name, new_uri);
 
-    layout_ewl_simple_add_config_location (instance, display_name, new_uri);
+    entropy_config_standard_structures_add (instance, display_name, new_uri);
 
   } else if (ewl_checkbutton_is_checked (EWL_CHECKBUTTON (viewer->samba_radio))) {
     if (server) {
@@ -203,7 +203,7 @@ location_add_execute_cb (Ewl_Widget * item, void *ev_data, void *user_data)
 	layout_ewl_simple_add_header (instance, display_name, new_uri);
       }
 
-      layout_ewl_simple_add_config_location (instance, display_name, new_uri);
+      entropy_config_standard_structures_add (instance, display_name, new_uri);
     }
     else {
       printf ("Server required for remote file systems!\n");
@@ -490,22 +490,6 @@ location_add_cb (Ewl_Widget * main_win, void *ev_data, void *user_data)
   ewl_object_custom_size_set (EWL_OBJECT (window), 400, 250);
   ewl_widget_show (window);
 }
-
-
-void
-layout_ewl_simple_add_config_location (entropy_gui_component_instance *
-				       instance, char *name, char *uri)
-{
-  char *current_uri =
-    entropy_config_str_get ("layout_ewl_simple", "structure_bar");
-  char new_uri[HEADER_CONFIG_MAX];
-
-  snprintf (new_uri, HEADER_CONFIG_MAX, "%s|%s;%s", current_uri, name, uri);
-  entropy_config_str_set ("layout_ewl_simple", "structure_bar", new_uri);
-
-  entropy_free (current_uri);
-}
-
 
 void
 layout_ewl_simple_config_create (entropy_core * core)

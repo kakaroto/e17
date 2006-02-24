@@ -26,6 +26,8 @@ typedef enum _Etk_Menu_Item_Type
    ETK_MENU_ITEM_SEPARATOR
 } Etk_Menu_Item_Type;
 
+void layout_etk_simple_add_header(entropy_gui_component_instance* instance, char* name, char* uri);
+
 static Etk_Bool
 _etk_window_deleted_cb (Etk_Object * object, void *data)
 {
@@ -110,7 +112,7 @@ entropy_plugin_layout_main ()
 void _location_add_cb(Etk_Object *obj, void *data)
 {
 	printf("Add location\n");
-	etk_location_add_dialog_create((entropy_gui_component_instance*)data);
+	etk_location_add_dialog_create((entropy_gui_component_instance*)data, layout_etk_simple_add_header);
 }
 
 void layout_etk_simple_add_header(entropy_gui_component_instance* instance, char* name, char* uri)
