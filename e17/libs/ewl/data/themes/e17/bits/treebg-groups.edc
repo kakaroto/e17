@@ -11,40 +11,30 @@ group{
             mouse_events, 0;
             description {
                 min: 0 19;
-	 				 max: 9999 19;
+	        max: 9999 19;
                 state, "even" 0.0;
-                rel1 {
-                    relative, 0.0 0.0;
-                    offset, 0 0;
-                }
-                rel2 {
-                     relative, 1.0 1.0;
-                     offset, -1 -1;
-                }
                 image {
                      normal, "e17_ilist_bg0.png";
                      border, 5 5 5 5;
+		}
+		fill {
+			smooth: 0;
 		}
                 color, 255 255 255 35;
             }
             description {
                 state, "odd" 0.0;
                 min: 0 19;
-	 				 max: 99999 19;
-                rel1 {
-                    relative, 0.0 0.0;
-                    offset, 0 0;
-                }
-                rel2 {
-                    relative, 1.0 1.0;
-                    offset, -1 -1;
-                }
+	 	max: 99999 19;
 		image {
                     normal, "e17_ilist_bg1.png";
 		    border, 5 5 5 5;
                 }
 		color, 255 255 255 200;
-            }
+            	fill {
+			smooth: 0;
+		}
+	    }
 	}
 	part {
             name, "tree-select";
@@ -63,19 +53,14 @@ group{
 	    description {
                 state, "selected" 0.0;
                 min: 0 19;
-	 				 max: 9999 19;
-                rel1 {
-                    relative, 0.0 0.0;
-                    offset, 0 0;
-                }
-                rel2 {
-                    relative, 1.0 1.0;
-                    offset, -1 -1;
-                }
+	 	max: 9999 19;
                 image {
                     normal, "row_select.png";
                     border, 3 3 3 3;
                 }
+		fill {
+			smooth: 0;
+		}
              color, 255 255 255 255;  
     	    }
 	}
