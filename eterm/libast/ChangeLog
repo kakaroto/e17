@@ -768,3 +768,8 @@ Sun Feb  5 00:58:03 2006                        Michael Jennings (mej)
 
 Fixed off-by-1 error in spiftool_join().
 ----------------------------------------------------------------------
+Fri Feb 24 16:45:38 2006                        Michael Jennings (mej)
+
+Make removal of options from argv[] optional and off by default.
+Fixes Eterm problem with WM_COMMAND entries being empty.
+----------------------------------------------------------------------

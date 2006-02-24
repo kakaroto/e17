@@ -1743,9 +1743,7 @@ extern const char *true_vals[], *false_vals[];
  *
  * The option parser settings structure (spifopt_settings_t_struct)
  * has an 8-bit flag field which contains toggles affecting the
- * parser's internal behavior.  As a general rule, these will not be
- * flags that client programs will want to manipulate.  In the event
- * that you do wish to manipulate these flags, use the
+ * parser's internal behavior.  Manipulate these flags using the
  * SPIFOPT_FLAGS_*() macros.
  *
  * @ingroup DOXGRP_OPT
@@ -1760,6 +1758,17 @@ extern const char *true_vals[], *false_vals[];
  * this flag is not required.
  */
 #define SPIFOPT_SETTING_PREPARSE         (1UL << 0)
+
+/** 
+ * Remove arguments flag.  This flag controls whether spifopt_parse()
+ * will return argv[] unmodified or remove all option parameters.  For
+ * example: if this flag were set and argv[] contained "tar", "-zcvf",
+ * "foo.tar.gz", "foo/" prior to calling spifopt_parse(), after option
+ * parsing was complete, argv[] would contain only "tar", "foo/".
+ * Everything else would be consumed by the options "-z", "-c", "-v",
+ * and "-f foo.tar.gz".  Use of this flag is not required.
+ */
+#define SPIFOPT_SETTING_REMOVE_ARGS      (1UL << 1)
 /*@}*/
 
 /*@{*/

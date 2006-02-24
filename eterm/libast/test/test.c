@@ -563,6 +563,7 @@ test_options(void)
     SPIFOPT_NUMOPTS_SET(sizeof(opts2) / sizeof(spifopt_t));
     SPIFOPT_ALLOWBAD_SET(0);
     SPIFOPT_FLAGS_SET(SPIFOPT_SETTING_PREPARSE);
+    SPIFOPT_FLAGS_SET(SPIFOPT_SETTING_REMOVE_ARGS);
     spifopt_parse(argc2, argv2);
     TEST_FAIL_IF(strcmp(SPIF_CHARPTR_C(display), "foo:0"));
     TEST_FAIL_IF(name != NULL);

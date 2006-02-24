@@ -498,7 +498,9 @@ handle_arglist(spif_int32_t n, spif_charptr_t val_ptr, unsigned char hasequal,
         for (k = 0; k < len; k++) {
             tmp[k] = SPIF_CAST(charptr) STRDUP(argv[k + i]);
             D_OPTIONS(("tmp[%d] == %s\n", k, tmp[k]));
-            argv[k + i] = NULL;
+            if (SPIFOPT_FLAGS_IS_SET(SPIFOPT_SETTING_REMOVE_ARGS)) {
+                argv[k + i] = NULL;
+            }
         }
         tmp[k] = SPIF_NULL_TYPE(charptr);
         *(SPIF_CAST_C(spif_charptr_t **) SPIFOPT_OPT_VALUE(n)) = tmp;
@@ -560,7 +562,7 @@ spifopt_parse(int argc, char *argv[])
                 NEXT_LETTER();
             }
         }
-        if (!SPIFOPT_FLAGS_IS_SET(SPIFOPT_SETTING_PREPARSE)) {
+        if (!SPIFOPT_FLAGS_IS_SET(SPIFOPT_SETTING_PREPARSE) && SPIFOPT_FLAGS_IS_SET(SPIFOPT_SETTING_REMOVE_ARGS)) {
             argv[i] = NULL;
         }
 
@@ -663,7 +665,7 @@ spifopt_parse(int argc, char *argv[])
                 ((spifopt_abstract_handler_t) SPIFOPT_OPT_VALUE(j))(val_ptr);
             }
         }
-        if (!SPIFOPT_FLAGS_IS_SET(SPIFOPT_SETTING_PREPARSE)) {
+        if (!SPIFOPT_FLAGS_IS_SET(SPIFOPT_SETTING_PREPARSE) && SPIFOPT_FLAGS_IS_SET(SPIFOPT_SETTING_REMOVE_ARGS)) {
             argv[i] = NULL;
         }
         NEXT_LOOP();
@@ -671,7 +673,7 @@ spifopt_parse(int argc, char *argv[])
 
     if (SPIFOPT_FLAGS_IS_SET(SPIFOPT_SETTING_PREPARSE)) {
         SPIFOPT_FLAGS_CLEAR(SPIFOPT_SETTING_PREPARSE);
-    } else {
+    } else if (SPIFOPT_FLAGS_IS_SET(SPIFOPT_SETTING_REMOVE_ARGS)) {
         for (i = 1, j = 1; i < argc; i++) {
             if (argv[i]) {
                 argv[j] = argv[i];
