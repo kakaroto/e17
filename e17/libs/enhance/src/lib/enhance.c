@@ -145,13 +145,17 @@ _e_property_handle(Enhance *en, EXML_Node *node)
    
    else if (!strcmp(name, "xalign"))
      {
-	PROPERTY_DOUBLE;	
+	PROPERTY_DOUBLE;
+	IF_PARENT_CLASS("GtkImage")
+	  return;
 	etk_object_properties_set(ETK_OBJECT(wid->wid), "xalign", value, NULL);
      }
          
    else if(!strcmp(name, "yalign"))
      {
 	PROPERTY_DOUBLE;
+	IF_PARENT_CLASS("GtkImage")
+	  return;	
 	etk_object_properties_set(ETK_OBJECT(wid->wid), "yalign", value, NULL);
      }
    
