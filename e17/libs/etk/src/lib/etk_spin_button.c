@@ -164,7 +164,7 @@ _etk_spin_button_str_to_num(const char *str, Etk_Bool *changed)
    return ret;
 }
 
-/* Called when the spin button is realized */
+/* Called when the spin button's text is changed */
 static void _etk_spin_button_text_changed_cb(Etk_Object *object, void *data)
 {
    Etk_Spin_Button *spin_button;
