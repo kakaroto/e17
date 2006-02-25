@@ -489,7 +489,6 @@ _engage_app_change(void *data, E_App *a, E_App_Change ch)
 	   case E_APP_ORDER:
 	     if (a == e->apps)
 	       {
-/* FIXME - this is moving all .order icons to after the others - BAD
 		  for (ll = e->apps->subapps; ll; ll = ll->next)
 		    {
 		       Engage_Icon *ic;
@@ -499,7 +498,31 @@ _engage_app_change(void *data, E_App *a, E_App_Change ch)
 		       ic = _engage_icon_find(eb, a2);
 		       if (ic) _engage_icon_reorder_after(ic, NULL);
 		    }
-*/
+		  Evas_List *nondots = NULL;
+		  /* collect all ic that are not .order... */
+		  for (ll = eb->icons; ll; ll = ll->next)
+		    {
+		       Engage_Icon *ic;
+
+		       ic = ll->data;
+		       if (ic->dotorder == 0) 
+			 {
+			    nondots = evas_list_append(nondots, ic);
+			 }
+		    }
+		  /* ...and put them at the end*/
+		  if (nondots) 
+		    {
+		       for (; nondots; nondots = nondots->next)
+			 {
+			    Engage_Icon *ic;
+
+			    ic = nondots->data;
+			    _engage_icon_reorder_after(ic, NULL);
+			 }
+		       evas_list_free(nondots);
+		    }
+		  _engage_bar_frame_resize(eb);
 	       }
 	     break;
 	   case E_APP_EXEC:
