@@ -102,8 +102,6 @@ ewl_paned_init(Ewl_Paned *p)
 					ewl_paned_cb_child_show);
 	ewl_container_hide_notify_set(EWL_CONTAINER(p),
 					ewl_paned_cb_child_hide);
-	ewl_container_resize_notify_set(EWL_CONTAINER(p),
-					ewl_paned_cb_child_resize);
 
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 				ewl_paned_cb_configure, NULL);
@@ -137,8 +135,7 @@ ewl_paned_orientation_set(Ewl_Paned *p, Ewl_Orientation o)
 	while ((child = ecore_dlist_next(EWL_CONTAINER(p)->children)))
 	{
 		/* Update each internal child to have the correct
-		 * appearance/orientation. XXX This assumes that all 
-		 * internal widgets will be grabbers ... */
+		 * appearance/orientation. */
 		if (ewl_widget_internal_is(child))
 			ewl_paned_grabber_paned_orientation_set(
 					EWL_PANED_GRABBER(child), o);
@@ -252,19 +249,6 @@ ewl_paned_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
 }
 
 void
-ewl_paned_cb_child_resize(Ewl_Container *c, Ewl_Widget *w, int size __UNUSED__, 
-						Ewl_Orientation o __UNUSED__)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
 ewl_paned_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 {
 	int cw, ch, ww, wh;
@@ -283,12 +267,10 @@ ewl_paned_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 	 * the shown widget (including the grabbers */
 	if (EWL_PANED(c)->orientation == EWL_ORIENTATION_HORIZONTAL) {
 		cw += ww;
-		if (wh > ch)
-			ch = wh;
+		if (wh > ch) ch = wh;
 	}
 	else {
-		if (ww > cw)
-			cw = ww;
+		if (ww > cw) cw = ww;
 		ch += wh;
 	}
 
@@ -961,8 +943,7 @@ ewl_paned_grabber_horizontal_shift(Ewl_Paned *p, Ewl_Widget *w, int to)
 		to = bx + CURRENT_W(before);
 
 	/* dont' move to the right of the grabber to the right of us */
-	if (to > ax)
-		to = ax;
+	if (to > ax) to = ax;
 
 	/* XXX shoud check min widget sizes here */
 	ewl_object_place(EWL_OBJECT(before), CURRENT_X(before), 
@@ -1038,8 +1019,7 @@ ewl_paned_grabber_vertical_shift(Ewl_Paned *p, Ewl_Widget *w, int to)
 		to = by + CURRENT_H(before);
 
 	/* dont' move to the right of the grabber to the right of us */
-	if (to > ay)
-		to = ay;
+	if (to > ay) to = ay;
 
 	/* XXX shoud check min widget sizes here */
 	ewl_object_place(EWL_OBJECT(before), CURRENT_X(before), 

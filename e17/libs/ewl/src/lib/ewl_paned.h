@@ -52,8 +52,6 @@ Ewl_Orientation  ewl_paned_orientation_get(Ewl_Paned *p);
  */
 void ewl_paned_cb_child_add(Ewl_Container *c, Ewl_Widget *w);
 void ewl_paned_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx);
-void ewl_paned_cb_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
-							Ewl_Orientation o);
 void ewl_paned_cb_child_show(Ewl_Container *c, Ewl_Widget *w);
 void ewl_paned_cb_child_hide(Ewl_Container *c, Ewl_Widget *w);
 
