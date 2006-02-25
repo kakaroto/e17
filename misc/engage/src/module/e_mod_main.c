@@ -100,6 +100,7 @@ static void    _engage_app_icon_cb_mouse_out(void *data, Evas *e, Evas_Object *o
 
 static void    _engage_bar_cb_menu_enabled(void *data, E_Menu *m, E_Menu_Item *mi);
 static void    _engage_bar_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi);
+static void    _engage_bar_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 
 static void    _engage_bar_cb_menu_zoom(void *data, E_Menu *m, E_Menu_Item *mi);
 static void    _engage_bar_cb_menu_zoom_stretch(void *data, E_Menu *m, E_Menu_Item *mi);
@@ -925,6 +926,7 @@ _engage_bar_menu_gen(Engage_Bar *eb)
    /* Edit */
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, "Edit Mode");
+   e_util_menu_item_edje_icon_set(mi, "enlightenment/gadgets");
    e_menu_item_callback_set(mi, _engage_bar_cb_menu_edit, eb);
 
    
@@ -952,7 +954,12 @@ _engage_bar_menu_gen(Engage_Bar *eb)
 	     l = l->next;
 	  }      
      }
-   
+
+   /* Configuration */
+   mi = e_menu_item_new(mn);
+   e_menu_item_label_set(mi, "Configuration");
+   e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
+   e_menu_item_callback_set(mi, _engage_bar_cb_menu_configure, eb);
 }
 
 static void
@@ -2452,6 +2459,17 @@ _engage_bar_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi)
 
    eb = data;
    e_gadman_mode_set(eb->gmc->gadman, E_GADMAN_MODE_EDIT);
+}
+
+static void
+_engage_bar_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   Engage_Bar *eb;
+
+   eb = data;
+   if (!eb)
+     return;
+   _engage_module_config(eb->con, eb);
 }
 
 static void
