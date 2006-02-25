@@ -1,10 +1,8 @@
-#include "e.h"
+#include <e.h>
 #include "e_mod_main.h"
 #include "config.h"
 
-typedef struct _cfdata CFData;
-
-struct _cfdata
+struct _E_Config_Dialog_Data
 {
    int    click_focus;
 
@@ -20,11 +18,11 @@ struct _cfdata
 
 /* Protos */
 static void     *_create_data(E_Config_Dialog *cfd);
-static void     _free_data(E_Config_Dialog *cfd, void *data);
-static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data);
-static int      _basic_apply_data(E_Config_Dialog *cfd, void *data);
-static Evas_Object *_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data);
-static int      _advanced_apply_data(E_Config_Dialog *cfd, void *data);
+static void     _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *data);
+static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *data);
+static int      _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *data);
+static Evas_Object *_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *data);
+static int      _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *data);
 
 void _engage_module_config(E_Container *con, Engage_Bar *eb)
 {
@@ -50,7 +48,7 @@ void _engage_module_config(E_Container *con, Engage_Bar *eb)
 }
 
 static void
-_fill_data(Engage_Bar *eb, CFData *cfdata)
+_fill_data(Engage_Bar *eb, E_Config_Dialog_Data *cfdata)
 {
    cfdata->click_focus = eb->engage->conf->click_focus;
 
@@ -68,22 +66,16 @@ _fill_data(Engage_Bar *eb, CFData *cfdata)
 static void *
 _create_data(E_Config_Dialog *cfd)
 {
-   CFData *cfdata;
-   Engage_Bar *eb;
-
-   eb = cfd->data;
-   cfdata = E_NEW(CFData, 1);
-   _fill_data(eb, cfdata);
+   E_Config_Dialog_Data *cfdata;
+   cfdata = E_NEW(E_Config_Dialog_Data, 1);
    return cfdata;
 }
 
 static void
-_free_data(E_Config_Dialog *cfd, void *data)
+_free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-   CFData *cfdata;
    Engage_Bar *eb;
 
-   cfdata = data;
    free(cfdata);
 
    eb = cfd->data;
@@ -91,10 +83,10 @@ _free_data(E_Config_Dialog *cfd, void *data)
 }
 
 static Evas_Object *
-_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data)
+_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *data)
 {
    Evas_Object *o, *of, *ob;
-   CFData *cfdata;
+   E_Config_Dialog_Data *cfdata;
    Engage_Bar *eb;
 
    eb = cfd->data;
@@ -133,12 +125,10 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data)
 }
 
 static int
-_basic_apply_data(E_Config_Dialog *cfd, void *data)
+_basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-   CFData *cfdata;
    Engage_Bar *eb;
 
-   cfdata = data;
    eb = cfd->data;
    eb->engage->conf->click_focus = cfdata->click_focus;
 
@@ -154,14 +144,12 @@ _basic_apply_data(E_Config_Dialog *cfd, void *data)
 }
 
 static Evas_Object *
-_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data)
+_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
    Evas_Object *o, *of, *ob;
-   CFData *cfdata;
    Engage_Bar *eb;
 
    eb = cfd->data;
-   cfdata = data;
 
    o = e_widget_list_add(evas, 0, 0);
    of = e_widget_framelist_add(evas, "Global Options", 0);
@@ -204,12 +192,10 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data)
 }
 
 static int
-_advanced_apply_data(E_Config_Dialog *cfd, void *data)
+_advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-   CFData *cfdata;
    Engage_Bar *eb;
 
-   cfdata = data;
    eb = cfd->data;
    eb->engage->conf->click_focus = cfdata->click_focus;
 
