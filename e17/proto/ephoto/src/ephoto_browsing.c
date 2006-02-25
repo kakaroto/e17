@@ -448,16 +448,16 @@ images_cb(Ewl_Widget *w, void *event, void *data)
 	ecore_dlist_append(m->imagelist, strdup(pathi));
 	slidenum++;
 	
-	home = getenv("HOME");
-	snprintf(imagedb, PATH_MAX, "%s/ephoto_images", home);
-	printf("%s\n", imagedb);
-	snprintf(tempcheck, PATH_MAX, "%s/%s", imagedb, name);
-	printf("%s\n", tempcheck);
-	if ( !ecore_file_exists(tempcheck) ) {
-		snprintf(equiv, PATH_MAX, "%s", pathi);
-		printf("%s\n", equiv);
-		ecore_file_cp(equiv, tempcheck);
-	}
+	//home = getenv("HOME");
+	//snprintf(imagedb, PATH_MAX, "%s/ephoto_images", home);
+	//printf("%s\n", imagedb);
+	//snprintf(tempcheck, PATH_MAX, "%s/%s", imagedb, name);
+	//printf("%s\n", tempcheck);
+	//if ( !ecore_file_exists(tempcheck) ) {
+	//	snprintf(equiv, PATH_MAX, "%s", pathi);
+	//	printf("%s\n", equiv);
+	//	ecore_file_cp(equiv, tempcheck);
+	//}
 	/**********************************************************/
 
 	/****Enable the slideshow and presentation buttons so we can get to work****/

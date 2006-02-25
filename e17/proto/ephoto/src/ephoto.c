@@ -37,11 +37,11 @@ main(int argc, char **argv)
 	/*****************************************/
 	/****Get db directory****/
 	char *home = getenv("HOME");
-	snprintf(tempdb, PATH_MAX, "%s/ephoto_images", home);
-	if ( !ecore_file_is_dir(tempdb) ) {
-		ecore_file_mkdir(tempdb);
-	}
-	snprintf(db, PATH_MAX, "%s", tempdb);
+	//snprintf(tempdb, PATH_MAX, "%s/ephoto_images", home);
+	//if ( !ecore_file_is_dir(tempdb) ) {
+	//	ecore_file_mkdir(tempdb);
+	//}
+	//snprintf(db, PATH_MAX, "%s", tempdb);
 	/**************************/
 	/****Setup the layout****/
 	m->win = ewl_window_new();
@@ -72,7 +72,7 @@ main(int argc, char **argv)
 	ewl_widget_show(m->images);
 	
 	m->directory = ewl_entry_new();
-	ewl_text_text_set(EWL_TEXT(m->directory), db);
+	ewl_text_text_set(EWL_TEXT(m->directory), home);
 	ewl_object_alignment_set(EWL_OBJECT(m->directory), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_child_append(EWL_CONTAINER(m->images), m->directory);
 	ewl_callback_append(m->directory, EWL_CALLBACK_VALUE_CHANGED, populatei_cb, NULL);
