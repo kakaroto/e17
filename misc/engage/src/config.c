@@ -343,7 +343,7 @@ od_config_menu_draw(Evas_Coord x, Evas_Coord y)
         snprintf(full, len, menu_text_not_launcher, icon->name);
       }
       printf("context menu on %s\n", icon->name);
-//      ewl_menu_item_text_set(EWL_MENU_ITEM(menu_app_name), full);
+//      ewl_button_label_set(EWL_BUTTON(menu_app_name), full);
       free(full);
       break;
     }
