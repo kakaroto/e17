@@ -468,8 +468,8 @@ _wlan_face_update_values(void *data)
    if (!found_dev)
      return 1;
    
-   /* Update the modules text */   
-   snprintf(in_str, sizeof(in_str), "LNK: %ld", (long)wlan_link);
+   /* Update the modules text */
+   snprintf(in_str, sizeof(in_str), "LNK: %d%%", (100 - (wlan_level - wlan_noise)));
    edje_object_part_text_set(nf->wlan_obj, "link-text", in_str);
    
    return 1;
