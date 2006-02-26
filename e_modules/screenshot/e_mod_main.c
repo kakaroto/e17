@@ -187,7 +187,7 @@ _screen_init(E_Module *m)
 # endif
 #endif
         e->conf->location = (char *)evas_stringshare_add(e_user_homedir_get());
-        e->conf->filename = (char *)evas_stringshare_add("");
+        e->conf->filename = (char *)evas_stringshare_add("screenshot%d");
 #ifdef HAVE_IMPORT
         e->conf->import.use_img_border = 1;
         e->conf->import.use_dither = 1;
@@ -583,7 +583,8 @@ get_filename(Config *conf)
    Ecore_List *fl = NULL;
    int c = 0;
    char *file, *x;
-
+   char *tmp;
+   
    /* Get Location */
    if (!conf->location)
      {
@@ -626,26 +627,26 @@ get_filename(Config *conf)
                        c++;
                     }
                   /* Add To Filename */
-                  snprintf(buff, sizeof(buff), strdup(conf->filename), c);
+		  /* Strip extension in case user adds it */
+		  tmp = ecore_file_strip_ext(conf->filename);		  
+                  snprintf(buff, sizeof(buff), strdup(tmp), c);
                   snprintf(buff, sizeof(buff), "%s/%s.png",
                            strdup(conf->location), strdup(buff));
                }
           }
         else
           {
-             snprintf(buff, sizeof(buff), strdup(conf->filename));
+	     /* Strip extension in case user adds it */
+	     tmp = ecore_file_strip_ext(conf->filename);	     
+             snprintf(buff, sizeof(buff), strdup(tmp));
              snprintf(buff, sizeof(buff), "%s/%s.png", strdup(conf->location),
                       strdup(buff));
           }
      }
    if (buff)
-     {
-        return strdup(buff);
-     }
+     return strdup(buff);
    else
-     {
-        return NULL;
-     }
+     return NULL;
 }
 
 static int
