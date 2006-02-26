@@ -354,20 +354,23 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 	Etk_Tree_Col* col4;
 	Etk_Tree_Col* col5;
 	
-	col1 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 0);
-	col2 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 1);
-	col3 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 2);
-	col4 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 3);
-	col5 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 4);
+	/*If !obj, it has been deleted - fail silently*/
+	if (obj) {
+		col1 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 0);
+		col2 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 1);
+		col3 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 2);
+		col4 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 3);
+		col5 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 4);
+		
+		snprintf(buffer,50, "%d Kb", file_stat->stat_obj->st_size / 1024);
 
-	snprintf(buffer,50, "%d Kb", file_stat->stat_obj->st_size / 1024);
-
-	etk_tree_freeze(ETK_TREE(viewer->tree));
-	etk_tree_row_fields_set((Etk_Tree_Row*)obj->icon, 
+		etk_tree_freeze(ETK_TREE(viewer->tree));
+		etk_tree_row_fields_set((Etk_Tree_Row*)obj->icon, 
 				col3, buffer,
 				col5, ctime(&file_stat->stat_obj->st_mtime),
 				NULL);
-	etk_tree_thaw(ETK_TREE(viewer->tree));
+		etk_tree_thaw(ETK_TREE(viewer->tree));
+	}
      }
      break;					 
 

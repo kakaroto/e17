@@ -136,6 +136,7 @@ callback (evfs_event * data, void *obj)
       entropy_gui_event *gui_event;
       entropy_gui_component_instance *instance;
       entropy_file_stat *file_stat;
+      entropy_file_listener* listener;
 
 
       char *md5;
@@ -169,27 +170,31 @@ callback (evfs_event * data, void *obj)
       file_stat->stat_obj->st_ctime = data->stat.stat_obj.ist_ctime;
 
       /*Retrieve the file. This is bad - the file might not exist anymore! */
-      file_stat->file = entropy_core_file_cache_retrieve (md5)->file;
+      listener = entropy_core_file_cache_retrieve (md5);
+      if (listener) {
+	   	file_stat->file = listener->file;
 
-      /*Build up the gui_event wrapper */
-      gui_event = entropy_malloc (sizeof (entropy_gui_event));
-      gui_event->event_type =
-	entropy_core_gui_event_get (ENTROPY_GUI_EVENT_FILE_STAT_AVAILABLE);
-      gui_event->data = file_stat;
+	      /*Build up the gui_event wrapper */
+	      gui_event = entropy_malloc (sizeof (entropy_gui_event));
+	      gui_event->event_type =
+		entropy_core_gui_event_get (ENTROPY_GUI_EVENT_FILE_STAT_AVAILABLE);
+	      gui_event->data = file_stat;
 
-      //printf("File stat at %p\n", file_stat);
+	      //printf("File stat at %p\n", file_stat);
 
-      ecore_hash_remove (stat_request_hash, md5);
-      entropy_free (folder);
-      entropy_free (md5);
-
-      /*Call the callback stuff */
-      entropy_core_layout_notify_event (instance, gui_event,
+	      /*Call the callback stuff */
+	      entropy_core_layout_notify_event (instance, gui_event,
 					ENTROPY_EVENT_LOCAL);
+      } else {
+	      printf("Error! Couldn't fine listener for '%s'\n", data->resp_command.file_command.files[0]->path);
+      }
 
       /*Do some freeing */
       entropy_free (file_stat);
       entropy_free (file_stat->stat_obj);
+      ecore_hash_remove (stat_request_hash, md5);
+      entropy_free (folder);
+      entropy_free (md5);
 
       /*No need to free event - notify_event frees it for us */
 
