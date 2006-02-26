@@ -167,9 +167,6 @@ callback (evfs_event * data, void *obj)
       file_stat->stat_obj->st_atime = data->stat.stat_obj.ist_atime;
       file_stat->stat_obj->st_mtime = data->stat.stat_obj.ist_mtime;
       file_stat->stat_obj->st_ctime = data->stat.stat_obj.ist_ctime;
-      printf ("Size of evfs_event: %d\n", sizeof (evfs_stat));
-
-
 
       /*Retrieve the file. This is bad - the file might not exist anymore! */
       file_stat->file = entropy_core_file_cache_retrieve (md5)->file;

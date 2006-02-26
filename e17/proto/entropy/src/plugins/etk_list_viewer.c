@@ -218,7 +218,8 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
 {
   Etk_Tree_Row* new_row;
   entropy_etk_file_list_viewer* viewer;
-  gui_file *e_file;
+  gui_file *e_file = NULL;
+  entropy_gui_event *gui_event;
   Etk_Tree_Col* col1;
   Etk_Tree_Col* col2;
   Etk_Tree_Col* col3;
@@ -244,6 +245,7 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
 		  col2,   file->filename, 
 		  col4, file->mime_type,
 		  NULL);
+
   } else {
 	 // time_t stime = file->properties.st_mtime
 	  
@@ -264,11 +266,21 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
   e_file->icon=new_row;
 
   ecore_hash_set(viewer->gui_hash, file, e_file);
-
   ecore_hash_set(row_hash, new_row, e_file);
 
   /*Save this file in this list of files we're responsible for */
   ecore_list_append (viewer->files, new_row);
+
+
+  if (!file->retrieved_stat) {
+	  /*And request the properties...*/
+	  gui_event = entropy_malloc (sizeof (entropy_gui_event));
+	  gui_event->event_type =
+	  entropy_core_gui_event_get (ENTROPY_GUI_EVENT_FILE_STAT);
+	  gui_event->data = file;
+	   entropy_core_layout_notify_event (instance, gui_event,
+				      ENTROPY_EVENT_LOCAL);
+  }
 
   etk_tree_thaw(ETK_TREE(viewer->tree));
 }
@@ -329,6 +341,35 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 
 	      }
 	      break;
+
+     case ENTROPY_NOTIFY_FILE_STAT_AVAILABLE:{
+
+	entropy_file_stat *file_stat = (entropy_file_stat *) el;	
+	gui_file* obj = ecore_hash_get (viewer->gui_hash, file_stat->file);
+	char buffer[50];
+
+	Etk_Tree_Col* col1;
+	Etk_Tree_Col* col2;
+	Etk_Tree_Col* col3;
+	Etk_Tree_Col* col4;
+	Etk_Tree_Col* col5;
+	
+	col1 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 0);
+	col2 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 1);
+	col3 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 2);
+	col4 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 3);
+	col5 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 4);
+
+	snprintf(buffer,50, "%d Kb", file_stat->stat_obj->st_size / 1024);
+
+	etk_tree_freeze(ETK_TREE(viewer->tree));
+	etk_tree_row_fields_set((Etk_Tree_Row*)obj->icon, 
+				col3, buffer,
+				col5, ctime(&file_stat->stat_obj->st_mtime),
+				NULL);
+	etk_tree_thaw(ETK_TREE(viewer->tree));
+     }
+     break;					 
 
      case ENTROPY_NOTIFY_FILE_CREATE:{
       //printf ("Received file create event at icon viewer for file %s \n", ((entropy_generic_file*)ret)->filename);
@@ -440,7 +481,7 @@ entropy_plugin_init (entropy_core * core,
   etk_widget_dnd_source_set(viewer->tree, ETK_TRUE);
   etk_widget_dnd_drag_widget_set(viewer->tree, etk_button_new_with_label("Drag Widget"));
   //etk_widget_dnd_drag_data_set(viewer->tree, dnd_types, dnd_types_num, "This is the drag data!", strlen("This is the drag data!") + 1);
-  etk_signal_connect("drag_begin", viewer->tree , ETK_CALLBACK(_entropy_etk_list_viewer_drag_begin_cb), instance);
+  etk_signal_connect("drag_begin", ETK_OBJECT(viewer->tree) , ETK_CALLBACK(_entropy_etk_list_viewer_drag_begin_cb), instance);
   etk_tree_multiple_select_set(ETK_TREE(viewer->tree), ETK_TRUE); 
   etk_tree_build(ETK_TREE(viewer->tree));
 
