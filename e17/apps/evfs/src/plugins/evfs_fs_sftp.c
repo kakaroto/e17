@@ -131,7 +131,7 @@ void read_sftp_attr(char** c, struct stat* info) {
 	if (flags & SSH2_FILEXFER_ATTR_SIZE) {
 		uint64 size = read_uint64(c);
 		info->st_size = size;
-		printf ("Size: %lld\n", info->st_size);
+		//printf ("Size: %lld\n", info->st_size);
 	}
 
 	if (flags & SSH2_FILEXFER_ATTR_UIDGID) {
@@ -472,8 +472,6 @@ SftpGenericHandle* sftp_file_stat(SftpConnection* conn, char* path)
 	long nid;
 	SftpGenericHandle* rhandle;
 
-	printf("Requesting a stat of '%s'\n", path);
-
 	nid = sftp_request_id_get_next();
 
 	/*Create a handle for this op*/
@@ -556,8 +554,6 @@ void sftp_read_handle(SftpConnection* conn, char **c) {
 	char* str;
 	SftpOpenHandle* handle = NEW(SftpOpenHandle);
 	
-	printf("Reading a handle..\n");
-	
 	/*Read the identifier*/
 	id = read_int32(c);
 
@@ -566,9 +562,9 @@ void sftp_read_handle(SftpConnection* conn, char **c) {
 	handle->sftp_handle= str;
 	handle->sftp_handle_len = length;
 
-	printf("  [*] Reading handle with id %d, length %d\n", id, length);
+	//printf("  [*] Reading handle with id %d, length %d\n", id, length);
 
-	printf("  [*] Writing handle to hash (%p) , with id %d\n", handle, id);
+	//printf("  [*] Writing handle to hash (%p) , with id %d\n", handle, id);
 	ecore_hash_set(conn->handle_hash, (int*)id, handle);
 }
 
@@ -713,7 +709,7 @@ sftp_exe_data(void *data, int type, void *event)
 	return;
   	
    } else if (conn->packet_cache_size > conn->packet_length) {
-   	printf("Too much data!!!!!!!!!!!!!!!!!!!!\n");
+   	/*printf("Too much data!!!!!!!!!!!!!!!!!!!!\n");*/
    }
 
    MORE_PACKETS:
@@ -722,7 +718,7 @@ sftp_exe_data(void *data, int type, void *event)
 
    switch (sftp_type) {
 	   case SSH2_FXP_HANDLE:
-		   printf ("  [*] TYPE: HANDLE: %d\n", sftp_type);
+		   //printf ("  [*] TYPE: HANDLE: %d\n", sftp_type);
 		   sftp_read_handle(conn, &c);
 		   break;
 	   case SSH2_FXP_STATUS:
@@ -730,24 +726,24 @@ sftp_exe_data(void *data, int type, void *event)
 		   sftp_handle_status(conn, &c);
 		   break;
 	   case SSH2_FXP_ATTRS:
-		   printf ("  [*] Received SSH ATTRIBUTES\n");
+		   //printf ("  [*] Received SSH ATTRIBUTES\n");
 		   sftp_handle_attr(conn, &c);
 		   break;
 	   case SSH2_FXP_VERSION:
-		   printf ("  [*] TYPE: VERSION: %d\n",sftp_type);
+		   //printf ("  [*] TYPE: VERSION: %d\n",sftp_type);
 		   conn->status = SFTP_CONNECTED;
 		   goto FREE; /*Ignore the reply for now - FIXME*/
 		   break;	 
 	   case SSH2_FXP_NAME:
-		   printf ("  [*] TYPE: NAME: %d\n", sftp_type);
+		   //printf ("  [*] TYPE: NAME: %d\n", sftp_type);
 		   sftp_read_names(conn, &c);
 		   break;
 	   case SSH2_FXP_DATA:
-	   	   printf("   [*] TYPE: DATA\n");
+	   	   //printf("   [*] TYPE: DATA\n");
 		   sftp_handle_data(conn, &c);
 		   break;
 	   default:
-		   printf ("  [*] TYPE: UNKNOWN: %d\n", sftp_type);
+		   //printf ("  [*] TYPE: UNKNOWN: %d\n", sftp_type);
 		   /*Out of sync? We have to leave..*/
 		   goto FREE;
 		   break;
@@ -758,12 +754,12 @@ sftp_exe_data(void *data, int type, void *event)
    	int remaining = conn->packet_cache + conn->packet_cache_size - c;
 	char* old_pointer = conn->packet_cache;
 
-   	printf("%p is less than %p, more packets (%d)\n", c, conn->packet_cache + conn->packet_cache_size, (conn->packet_cache + conn->packet_cache_size) - c);
+   	//printf("%p is less than %p, more packets (%d)\n", c, conn->packet_cache + conn->packet_cache_size, (conn->packet_cache + conn->packet_cache_size) - c);
    
    	char *d = c;
    
    	length = read_int32(&d);
-	printf("We have a sub-packet - length %d - remaining %d\n", length, remaining);
+	//printf("We have a sub-packet - length %d - remaining %d\n", length, remaining);
 	
 	conn->packet_length = length;
    	conn->packet_cache = malloc(remaining - sizeof(int) );
@@ -774,10 +770,10 @@ sftp_exe_data(void *data, int type, void *event)
 	
 	
    	if (conn->packet_cache_size >= length)  {
-		printf("GOING TO 'more packets'\n");
+		//printf("GOING TO 'more packets'\n");
 		goto MORE_PACKETS;
 	} else {
-		printf("Waiting for more data for this packet..\n");
+		//printf("Waiting for more data for this packet..\n");
 		return;
 	}
    }
@@ -996,7 +992,6 @@ evfs_file_open(evfs_client * client, evfs_filereference * file)
 		usleep(10);		
 	}
 
-	printf("Opening file '%s' with sftp..\n", file->path);
 	rid = sftp_file_open(conn, path, 0);
 
 	/*Wait till we have a handle*/
@@ -1009,8 +1004,6 @@ evfs_file_open(evfs_client * client, evfs_filereference * file)
 	handle->int_id = file->fd;
 	handle->conn = conn;
 	ecore_hash_set(sftp_open_handles, (long*)file->fd, handle);
-
-	printf("Opened!\n");
 
 	free(host);
 	free(path);

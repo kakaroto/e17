@@ -247,21 +247,15 @@ evfs_handle_file_stat_command(evfs_client * client, evfs_command * command)
 {
    struct stat file_stat;
 
-   printf("At file stat handler\n");
-   printf("Looking for plugin for '%s'\n",
-          command->file_command.files[0]->plugin_uri);
    evfs_plugin *plugin = evfs_get_plugin_for_uri(client->server,
                                                  command->file_command.
                                                  files[0]->plugin_uri);
    if (plugin)
      {
-        printf("Pointer here: %p\n", plugin->functions->evfs_file_stat);
         (*(plugin->functions->evfs_file_stat)) (command, &file_stat, 0);
 
         evfs_stat_event_create(client, command, &file_stat);
      }
-   printf("Handled event, client is %p\n", client);
-
 }
 
 void
@@ -284,7 +278,6 @@ evfs_handle_file_open_command(evfs_client * client, evfs_command * command)
                 command->file_command.files[0]->fd);
         evfs_open_event_create(client, command);
      }
-   printf("Handled event, client is %p\n", client);
 
 }
 
