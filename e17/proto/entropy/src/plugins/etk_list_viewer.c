@@ -274,6 +274,9 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
 
   if (!file->retrieved_stat) {
 	  /*And request the properties...*/
+
+	  entropy_core_file_cache_add_reference (file->md5);
+	  
 	  gui_event = entropy_malloc (sizeof (entropy_gui_event));
 	  gui_event->event_type =
 	  entropy_core_gui_event_get (ENTROPY_GUI_EVENT_FILE_STAT);
@@ -370,6 +373,8 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 				col5, ctime(&file_stat->stat_obj->st_mtime),
 				NULL);
 		etk_tree_thaw(ETK_TREE(viewer->tree));
+
+		entropy_core_file_cache_remove_reference (file_stat->file->md5);
 	}
      }
      break;					 

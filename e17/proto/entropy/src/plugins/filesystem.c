@@ -536,7 +536,6 @@ filestat_get (entropy_file_request * request)
   evfs_file_uri_path *path;
   char *uri = uri = entropy_core_generic_file_uri_create (request->file, 0);
 
-
   //printf("Getting a stat from evfs...\n");
 
 
