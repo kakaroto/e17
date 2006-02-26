@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <dirent.h>
 #include <e.h>
 #include <Ecore.h>
@@ -164,9 +165,16 @@ _parse_fstab(Mount *mnt)
    *s = 0;
    for (; fgets(s, sizeof(s), f);)
      {
+        p = s;
+
+        /* skip leading space */
+        while (*p && isspace(*p))
+           p++;
+
         /* skip comments and blank lines */
-        if (!(*s) || (*s == '\n') || (*s == '#'))
+        if (!(*p) || (*p == '\n') || (*p == '#'))
            continue;
+
         for (i = 0; i < 4; i++)
           {
              info[i] = NULL;
@@ -174,23 +182,64 @@ _parse_fstab(Mount *mnt)
 
         /* parse tokens we need */
         i = 0;
-        token = strtok(s, " \t");
+        token = strtok(p, " \t");
         if (token)
-           info[i++] = strdup(token);
-        while ((token = strtok(NULL, " \t")) && (i < 4))
-           info[i++] = strdup(token);
+          {
+             info[i++] = strdup(token);
+             while ((token = strtok(NULL, " \t")) && (i < 4))
+                info[i++] = strdup(token);
+             if (i != 4 || !(*info[--i]))
+                continue; // no options
+          }
+        else
+           continue; // empty line ?
 
         /* see if device is mountable by user */
         user_mnt = 0;
-        p = info[3];
-        while ((p = strstr(p, "user")))
+        for (p = strtok(info[3], ","); p; p = strtok(NULL, ","))
           {
-             if (p != strstr(info[3], "user_xattr"))
+             if (strcmp(p, "nouser") == 0)
+               {
+                  user_mnt = 0;
+                  // keep looking, subsequent 'user' will override..
+               }
+             else if (strcmp(p, "user") == 0 || strcmp(p, "users") == 0)
                {
                   user_mnt = 1;
-                  break;
+                  // keep looking, subsequent 'nouser' will override..
                }
-             p++;
+             else if (strcmp(p, "owner") == 0)
+               {
+                  struct stat st;
+
+                  if (stat(info[0], &st) == 0 && st.st_uid == geteuid())
+                    {
+                       user_mnt = 1;
+                       break;
+                    }
+               }
+             else if (strcmp(p, "group") == 0)
+               {
+                  struct stat st;
+
+                  if (stat(info[0], &st) == 0)
+                    {
+                       gid_t gids[NGROUPS_MAX];
+                       int gidn;
+
+                       if ((gidn = getgroups(NGROUPS_MAX, gids)) != -1)
+                         {
+                            while (gidn >= 0 && st.st_gid != gids[gidn])
+                               gidn--;
+
+                            if (gidn != -1)
+                              {
+                                 user_mnt = 1;
+                                 break;
+                              }
+                         }
+                    }
+               }
           }
 
         if (user_mnt)
