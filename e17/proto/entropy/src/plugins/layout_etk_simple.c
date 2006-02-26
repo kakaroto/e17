@@ -20,6 +20,8 @@ struct entropy_layout_gui
   Etk_Widget *statusbar_box;
   Etk_Widget *statusbars[3];
 
+  Ecore_Hash* toplevel_row_entries;
+
   Etk_Widget* popup;
 };
 
@@ -286,6 +288,9 @@ entropy_plugin_layout_create (entropy_core * core)
           ETK_CALLBACK(_etk_layout_row_clicked), layout);
 
    _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Delete this entry"), ETK_STOCK_DOCUMENT_OPEN, ETK_MENU_SHELL(gui->popup),NULL);
+
+   /*Make the toplevel row hash*/
+   gui->toplevel_row_entries = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 
 
   /*Config load*/

@@ -241,7 +241,9 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
   if (!file->retrieved_stat) {
 	  new_row = etk_tree_append(ETK_TREE(viewer->tree), 
 		  col1, PACKAGE_DATA_DIR "/icons/default.png", 
-		  col2,   file->filename, NULL);
+		  col2,   file->filename, 
+		  col4, file->mime_type,
+		  NULL);
   } else {
 	 // time_t stime = file->properties.st_mtime
 	  
