@@ -15,27 +15,18 @@ group
       name: "modules/net/main";      
       parts{
       part {
-      	   name: "base";
-	   type: RECT;
-	   mouse_events: 0;
-	   description {
-	   	       state: "default" 0.0;
-		       color: 255 255 255 255;
-	   }
-      }
-      part {
 	 name:          "net";
-	 clip_to: "base";
+	 clip_to: "net_clip";	 
 	 mouse_events:  0;
 	 description {
 	    state:    "default" 0.0;
 	    color: 255 255 255 200;
-	    aspect:   1.0 1.0;
-	    rel1 { 
-	    	 offset: 0 6; 
+	    aspect:   0.5 2.25;
+	    rel1 {
+	       relative: 0.0 0.0;
 	    }
 	    rel2 { 
-	    	 offset: -1 -6; 
+	       relative: 1.0 1.0;	    
 	    }
 	    image { 
 	    	  normal: "eth_dev.png"; 
@@ -45,21 +36,17 @@ group
 	    }
 	 }
       }
-
-      part 
-	  {
+	part {
 	    name:           "out-text";
-	    clip_to: 	    "base";
 	    type:           TEXT;
+	    clip_to: "net_clip";	    
 	    effect:         SOFT_SHADOW;
 	    mouse_events: 0;
 	    description {
 	      state: "default" 0.0;
 	      align: 1.0 0.0;
 	      rel1 { 
-	      	   relative: 1.0 0.0; 
-		   to_x: "net"; 
-		   offset: -2 1; 
+	      	   relative: 1.0 0.0;
 	      }
 	      rel2 { 
 	      	   relative: 1.0 0.0; 
@@ -76,24 +63,21 @@ group
 	    }
 	  }
 
-	part 
-	  {
+	part {
 	    name:           "in-text";
-	    clip_to: 	    "base";
 	    type:           TEXT;
+	    clip_to: "net_clip";	    
 	    effect:         SOFT_SHADOW;
 	    mouse_events: 0;
 	    description {
 	      state: "default" 0.0;
-	      align: 1.0 0.0;
+	      align: 1.0 1.0;
 	      rel1 { 
 	      	   relative: 1.0 1.0; 
-		   to_x: "net"; 
-		   offset: -2 -12;  
 	      }
 	      rel2 { 
 	      	   relative: 1.0 1.0; 
-	      }
+	      }      
 	      color: 213 91 91 255;
 	      color3: 0 0 0 100;
 	      text {
@@ -101,10 +85,24 @@ group
 		   font: "VeraMono";
 		   size:  8;     
 		   min:     1 1;
-		   align: 1.0 0.0;
+		   align: 1.0 1.0;
 	      }
 	    }
-	  }
+	  }	  
+      part {
+	 name:           "net_clip";
+	 type:           RECT;
+	 mouse_events:   0;
+	 description {
+	    state: "default" 0.0;
+	    color: 255 255 255 255;
+	 }
+	 description {
+	    state: "faded" 0.0;
+	    color: 255 255 255 128;
+	 }
+      }    	  
+	  
       } 
     }//close group net
 }
