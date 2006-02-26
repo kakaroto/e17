@@ -28,6 +28,14 @@ _location_add_window_delete (Etk_Object * object, void *data)
 	return ETK_TRUE;
 }
 
+
+void _entropy_etk_location_cancel_cb(Etk_Object *object, void *data) {
+	entropy_etk_location_add_dialog* dialog = data;
+	
+	etk_widget_hide(ETK_WIDGET(dialog->window));
+	//etk_object_destroy(ETK_OBJECT(dialog->window));
+}
+
 void _entropy_etk_location_radio_cb(Etk_Object *object, void *data)
 {
 	entropy_etk_location_add_dialog* dialog = data;
@@ -116,7 +124,7 @@ void _location_add_next_cb(Etk_Object *obj, void *data)
 		entropy_config_standard_structures_add (dialog->instance, (char*)name, buffer);
 		(*dialog->add_callback)(dialog->instance, (char*)name, buffer);
 
-		etk_object_destroy(ETK_OBJECT(dialog->window));
+		etk_widget_hide(ETK_WIDGET(dialog->window));
 	}
 }
 
@@ -291,7 +299,9 @@ void etk_location_add_dialog_create(entropy_gui_component_instance* instance,
 	etk_signal_connect("clicked", ETK_OBJECT(dialog_button), ETK_CALLBACK(_location_add_next_cb), dialog);
 
 	dialog_button = etk_button_new_with_label("Cancel");
+	etk_signal_connect("clicked", ETK_OBJECT(dialog_button), ETK_CALLBACK(_entropy_etk_location_cancel_cb), dialog);
 	etk_box_pack_start(ETK_BOX(hbox), dialog_button, ETK_TRUE, ETK_TRUE, 5);
+	
 
 	etk_container_add(ETK_CONTAINER(outer_vbox), hbox);
 

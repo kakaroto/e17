@@ -1,6 +1,7 @@
 #include <Etk.h>
 #include "entropy.h"
 #include "entropy_gui.h"
+#include "etk_location_add_dialog.h"
 #include <dlfcn.h>
 #include <Ecore.h>
 #include <stdlib.h>
@@ -18,6 +19,8 @@ struct entropy_layout_gui
   Etk_Widget *paned;
   Etk_Widget *statusbar_box;
   Etk_Widget *statusbars[3];
+
+  Etk_Widget* popup;
 };
 
 typedef enum _Etk_Menu_Item_Type
@@ -42,6 +45,21 @@ void
 entropy_plugin_destroy (entropy_gui_component_instance * comp)
 {
   printf ("Destroying layout_etk...\n");
+}
+
+static void _etk_layout_row_clicked(Etk_Object *object, 
+		Etk_Tree_Row *row, Etk_Event_Mouse_Up_Down *event, void *data)
+{
+	entropy_gui_component_instance* instance = data;
+	entropy_layout_gui* gui = instance->data;	
+	
+	printf("Button: %d\n", event->button);
+
+	if (event->button == 3) {
+		etk_tree_row_select(row);
+		etk_menu_popup(ETK_MENU(gui->popup));
+	}
+	
 }
 
 static Etk_Widget *_entropy_etk_menu_item_new(Etk_Menu_Item_Type item_type, const char *label,
@@ -261,6 +279,13 @@ entropy_plugin_layout_create (entropy_core * core)
   etk_tree_build(ETK_TREE(gui->tree));
 
   etk_widget_size_request_set(gui->tree, 180, 600);
+
+  /*Popup init*/
+   gui->popup = etk_menu_new();
+   etk_signal_connect("row_clicked", ETK_OBJECT( gui->tree  ),
+          ETK_CALLBACK(_etk_layout_row_clicked), layout);
+
+   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Delete this entry"), ETK_STOCK_DOCUMENT_OPEN, ETK_MENU_SHELL(gui->popup),NULL);
 
 
   /*Config load*/
