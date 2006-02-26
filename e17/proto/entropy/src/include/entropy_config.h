@@ -22,6 +22,8 @@ entropy_config_standard_structures_parse (entropy_gui_component_instance * insta
 void
 entropy_config_standard_structures_add (entropy_gui_component_instance *
        instance, char *name, char *uri);
+void
+entropy_config_standard_structures_create ();
 
 
 #define ENTROPY_CONFIG_INT_UNDEFINED 65535

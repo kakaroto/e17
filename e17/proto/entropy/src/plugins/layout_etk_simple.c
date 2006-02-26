@@ -295,7 +295,7 @@ entropy_plugin_layout_create (entropy_core * core)
 
   /*Config load*/
   if (!(tmp = entropy_config_str_get ("layout_ewl_simple", "structure_bar"))) {
-    //layout_ewl_simple_config_create (core);
+    entropy_config_standard_structures_create ();
     tmp = entropy_config_str_get ("layout_ewl_simple", "structure_bar");
   }
 

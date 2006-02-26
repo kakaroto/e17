@@ -492,22 +492,6 @@ location_add_cb (Ewl_Widget * main_win, void *ev_data, void *user_data)
 }
 
 void
-layout_ewl_simple_config_create (entropy_core * core)
-{
-  char *eg = calloc (HEADER_CONFIG_MAX, sizeof (char));
-
-  snprintf (eg, HEADER_CONFIG_MAX,
-	    "Computer;file:///|Home;file://%s|Samba Example (Don't use!);smb://username:password@/test/machine/folder",
-	    entropy_core_home_dir_get (core));
-
-  //printf("Setting default config string..\n");
-  entropy_config_str_set ("layout_ewl_simple", "structure_bar", eg);
-
-  free (eg);
-}
-
-
-void
 layout_ewl_simple_add_header (entropy_gui_component_instance * instance,
 			      char *name, char *uri)
 {
@@ -1000,7 +984,7 @@ entropy_plugin_layout_create (entropy_core * core)
   ewl_container_child_append (EWL_CONTAINER (gui->local_container), iconbox);
 
   if (!(tmp = entropy_config_str_get ("layout_ewl_simple", "structure_bar"))) {
-    layout_ewl_simple_config_create (core);
+    entropy_config_standard_structures_create ();
     tmp = entropy_config_str_get ("layout_ewl_simple", "structure_bar");
   }
 

@@ -164,3 +164,21 @@ entropy_config_standard_structures_add (entropy_gui_component_instance *
 
   entropy_free (current_uri);
 }
+
+void
+entropy_config_standard_structures_create ()
+{
+  entropy_core* core = entropy_core_get_core();
+	
+  char *eg = calloc (HEADER_CONFIG_MAX, sizeof (char));
+
+  snprintf (eg, HEADER_CONFIG_MAX,
+	    "Computer;file:///|Home;file://%s|Samba Example (Don't use!);smb://username:password@/test/machine/folder",
+	    entropy_core_home_dir_get (core));
+
+  //printf("Setting default config string..\n");
+  entropy_config_str_set ("layout_ewl_simple", "structure_bar", eg);
+
+  free (eg);
+}
+
