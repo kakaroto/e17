@@ -232,15 +232,6 @@ _mem_face_init(Mem_Face *cf)
      }
    
    evas_object_show(o);
-
-   /*
-   o = evas_object_rectangle_add(cf->evas);
-   cf->chart_obj = o;
-   evas_object_layer_set(o, 2);
-   evas_object_repeat_events_set(o, 0);
-   evas_object_color_set(o, 0, 0, 0, 255);
-   evas_object_show(o);
-   */
    
    o = evas_object_rectangle_add(cf->evas);
    cf->event_obj = o;
@@ -259,11 +250,9 @@ _mem_face_init(Mem_Face *cf)
 			      E_GADMAN_POLICY_HSIZE |
 			      E_GADMAN_POLICY_VMOVE |
 			      E_GADMAN_POLICY_VSIZE);
-   e_gadman_client_min_size_set(cf->gmc, 4, 4);
-   e_gadman_client_max_size_set(cf->gmc, 128, 128);
+   e_gadman_client_max_size_set(cf->gmc, 256, 128);
    e_gadman_client_auto_size_set(cf->gmc, 40, 40);
    e_gadman_client_align_set(cf->gmc, 1.0, 1.0);
-   //e_gadman_client_aspect_set(cf->gmc, 1.0, 1.0);
    e_gadman_client_resize(cf->gmc, 40, 40);
    e_gadman_client_change_func_set(cf->gmc, _mem_face_cb_gmc_change, cf);
    e_gadman_client_load(cf->gmc);

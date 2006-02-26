@@ -15,32 +15,6 @@ group
       name: "modules/mem/main";      
       parts{
       part {
-      	   name: "base";
-	   type: RECT;
-	   mouse_events: 0;
-	   description {
-	   	       state: "default" 0.0;
-		       color: 255 255 255 255;
-	   }
-      }      
-      part {
-      	   name: "mem_clip";
-	   type: RECT;
-	   clip_to: "base";
-	   mouse_events: 0;
-	   description {
-	   	       state: "default" 0.0;
-		       color: 255 255 255 255;
-		       rel1 {
-		       	    to_x: "base";
-		       }
-		       rel2 {
-		       	    to: "base";
-		       }
-	   }
-      }      
-      
-      part {
 	 name:          "mem";
 	 clip_to: "mem_clip";	 
 	 mouse_events:  0;
@@ -49,10 +23,10 @@ group
 	    color: 255 255 255 200;
 	    aspect:   0.5 2.25;
 	    rel1 {
-	    	 to: "base";
+	       relative: 0.0 0.0;
 	    }
 	    rel2 { 
-	    	 to: "base";
+	       relative: 1.0 1.0;	    
 	    }
 	    image { 
 	    	  normal: "mem.png"; 
@@ -62,8 +36,7 @@ group
 	    }
 	 }
       }
-	part 
-	  {
+	part {
 	    name:           "real-text";
 	    type:           TEXT;
 	    clip_to: "mem_clip";	    
@@ -74,8 +47,6 @@ group
 	      align: 1.0 0.0;
 	      rel1 { 
 	      	   relative: 1.0 0.0;
-		   to_x: "mem";
-		   offset: -2 10;  
 	      }
 	      rel2 { 
 	      	   relative: 1.0 0.0; 
@@ -85,15 +56,14 @@ group
 	      text {
 		   text: ""; 
 		   font: "VeraMono";
-		   size:  10;     
+		   size:  8;     
 		   min:     1 1;
 		   align: 1.0 0.0;
 	      }
 	    }
 	  }
 
-	part 
-	  {
+	part {
 	    name:           "swap-text";
 	    type:           TEXT;
 	    clip_to: "mem_clip";	    
@@ -101,11 +71,9 @@ group
 	    mouse_events: 0;
 	    description {
 	      state: "default" 0.0;
-	      align: 1.0 0.0;
+	      align: 1.0 1.0;
 	      rel1 { 
 	      	   relative: 1.0 1.0; 
-		   to_x: "mem";
-		   offset: -2 -20;  
 	      }
 	      rel2 { 
 	      	   relative: 1.0 1.0; 
@@ -115,13 +83,25 @@ group
 	      text {
 		   text: ""; 
 		   font: "VeraMono";
-		   size:  10;     
+		   size:  8;     
 		   min:     1 1;
-		   align: 1.0 0.0;
+		   align: 1.0 1.0;
 	      }
 	    }
 	  }	  
-	  
+      part {
+	 name:           "mem_clip";
+	 type:           RECT;
+	 mouse_events:   0;
+	 description {
+	    state: "default" 0.0;
+	    color: 255 255 255 255;
+	 }
+	 description {
+	    state: "faded" 0.0;
+	    color: 255 255 255 128;
+	 }
+      }    	  
 	  
       } 
     }//close group net
