@@ -257,7 +257,7 @@ _cpu_face_init(Cpu_Face *cf)
 			      E_GADMAN_POLICY_HSIZE |
 			      E_GADMAN_POLICY_VMOVE |
 			      E_GADMAN_POLICY_VSIZE);
-   e_gadman_client_min_size_set(cf->gmc, 4, 4);
+   e_gadman_client_min_size_set(cf->gmc, 45, 50);
    e_gadman_client_max_size_set(cf->gmc, 128, 128);
    e_gadman_client_auto_size_set(cf->gmc, 40, 40);
    e_gadman_client_align_set(cf->gmc, 1.0, 1.0);
