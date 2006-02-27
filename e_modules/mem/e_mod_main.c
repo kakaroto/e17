@@ -253,6 +253,7 @@ _mem_face_init(Mem_Face *cf)
    e_gadman_client_max_size_set(cf->gmc, 256, 128);
    e_gadman_client_auto_size_set(cf->gmc, 40, 40);
    e_gadman_client_align_set(cf->gmc, 1.0, 1.0);
+   e_gadman_client_aspect_set(cf->gmc, 3.25, 3.25);
    e_gadman_client_resize(cf->gmc, 40, 40);
    e_gadman_client_change_func_set(cf->gmc, _mem_face_cb_gmc_change, cf);
    e_gadman_client_load(cf->gmc);
