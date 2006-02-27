@@ -30,7 +30,7 @@ Etk_Signal_Callback *etk_signal_callback_new(Etk_Signal *signal, Etk_Signal_Call
    if (!signal || !callback)
       return NULL;
 
-   new_callback = malloc(sizeof(Etk_Signal_Callback));
+   new_callback = calloc(1,sizeof(Etk_Signal_Callback));
    new_callback->signal = signal;
    new_callback->callback = callback;
    new_callback->data = data;

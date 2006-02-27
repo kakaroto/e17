@@ -185,7 +185,7 @@ Etk_String *etk_string_set_sized(Etk_String *string, const char *value, int size
       if (size > string->allocated_length)
       {
          free(string->string);
-         string->string = malloc(ETK_STRING_SIZE_TO_ALLOC(size) + 1);
+         string->string = calloc(1,ETK_STRING_SIZE_TO_ALLOC(size) + 1);
          string->allocated_length = ETK_STRING_SIZE_TO_ALLOC(size);
       }
       
@@ -570,7 +570,7 @@ static char *_etk_string_vprintf(const char *format, va_list args)
    
    va_copy(args2, args);
    length = vsnprintf(&c, 1, format, args2);
-   text = malloc(length + 1);
+   text = calloc(1,length + 1);
    vsprintf(text, format, args2);
    va_end(args2);
    

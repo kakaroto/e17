@@ -843,7 +843,7 @@ void etk_tree_sort(Etk_Tree *tree, int (*compare_cb)(Etk_Tree *tree, Etk_Tree_Ro
    for (num_rows = 0, r = tree->root.first_child; r; r = r->next, num_rows++);
    if (num_rows <= 1)
       return;
-   heap = malloc(num_rows * sizeof(Etk_Tree_Row *));
+   heap = calloc(1,num_rows * sizeof(Etk_Tree_Row *));
    asc = ascendant ? -1 : 1;
    
    /* We insert all the rows in the heap */
@@ -2434,7 +2434,7 @@ static Etk_Tree_Row *_etk_tree_row_new_valist(Etk_Tree *tree, Etk_Tree_Row *row,
    if (!tree || !tree->built || !row)
       return NULL;
 
-   new_row = malloc(sizeof(Etk_Tree_Row));
+   new_row = calloc(1,sizeof(Etk_Tree_Row));
    new_row->tree = tree;
    new_row->parent = row;
    new_row->first_child = NULL;
@@ -2447,7 +2447,7 @@ static Etk_Tree_Row *_etk_tree_row_new_valist(Etk_Tree *tree, Etk_Tree_Row *row,
    new_row->data_free_cb = NULL;
    new_row->row_objects = NULL;
 
-   new_row->cells_data = malloc(sizeof(void *) * tree->num_cols);
+   new_row->cells_data = calloc(1,sizeof(void *) * tree->num_cols);
    for (i = 0; i < tree->num_cols; i++)
    {
       new_row->cells_data[i] = calloc(1, tree->columns[i]->model->cell_data_size);
@@ -2569,7 +2569,7 @@ static Etk_Tree_Row_Objects *_etk_tree_row_objects_new(Etk_Tree *tree)
    if (!tree || !tree->built || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(tree))))
       return NULL;
 
-   new_row_objects = malloc(sizeof(Etk_Tree_Row_Objects));
+   new_row_objects = calloc(1,sizeof(Etk_Tree_Row_Objects));
    new_row_objects->row = NULL;
    
    /* Creates the background object of the row */

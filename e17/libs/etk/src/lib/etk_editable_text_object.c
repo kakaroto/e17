@@ -471,7 +471,7 @@ static void _etk_editable_text_smart_add(Evas_Object *object)
       _etk_editable_text_style_use_count = 0;
    }
 
-   editable_text_sd = malloc(sizeof(Etk_Editable_Text_Smart_Data));
+   editable_text_sd = calloc(1,sizeof(Etk_Editable_Text_Smart_Data));
    editable_text_sd->show_cursor = ETK_FALSE;
    editable_text_sd->cursor_at_the_end = ETK_TRUE;
    editable_text_sd->cursor_timer = NULL;

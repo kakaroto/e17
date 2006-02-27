@@ -66,7 +66,7 @@ void etk_drag_types_set(Etk_Drag *drag, const char **types, unsigned int num_typ
 {
    int i;
    
-   drag->types = malloc(num_types * sizeof(char *));
+   drag->types = calloc(1,num_types * sizeof(char *));
    
    for (i = 0; i < num_types; i++)
      drag->types[i] = strdup(types[i]);

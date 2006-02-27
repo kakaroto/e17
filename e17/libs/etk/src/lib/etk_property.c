@@ -32,7 +32,7 @@ Etk_Property *etk_property_new(const char *name, int property_id, Etk_Property_T
    if (!name)
       return NULL;
 
-   new_property = malloc(sizeof(Etk_Property));
+   new_property = calloc(1,sizeof(Etk_Property));
    new_property->name = strdup(name);
    new_property->id = property_id;
    new_property->type = type;
@@ -114,7 +114,7 @@ Etk_Property_Type etk_property_value_type_get(Etk_Property_Value *value)
 Etk_Property_Value *etk_property_value_new()
 {
    Etk_Property_Value *new_value;
-   new_value = malloc(sizeof(Etk_Property_Value));
+   new_value = calloc(1,sizeof(Etk_Property_Value));
    new_value->type = ETK_PROPERTY_NONE;
    return new_value;
 }

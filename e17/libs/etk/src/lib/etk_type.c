@@ -51,7 +51,7 @@ Etk_Type *etk_type_new(const char *type_name, Etk_Type *parent_type, int type_si
    if (!type_name)
       return NULL;
 
-   new_type = malloc(sizeof(Etk_Type));
+   new_type = calloc(1,sizeof(Etk_Type));
    new_type->name = strdup(type_name);
    new_type->type_size = type_size;
    new_type->constructor = constructor;
@@ -72,7 +72,7 @@ Etk_Type *etk_type_new(const char *type_name, Etk_Type *parent_type, int type_si
       int i;
 
       new_type->hierarchy_depth = parent_type->hierarchy_depth + 1;
-      new_type->hierarchy = malloc(sizeof(Etk_Type *) * new_type->hierarchy_depth);
+      new_type->hierarchy = calloc(1,sizeof(Etk_Type *) * new_type->hierarchy_depth);
       new_type->hierarchy[0] = parent_type;
       for (i = 1; i < new_type->hierarchy_depth; i++)
          new_type->hierarchy[i] = parent_type->hierarchy[i - 1];

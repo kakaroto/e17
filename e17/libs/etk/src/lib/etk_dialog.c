@@ -155,7 +155,7 @@ void etk_dialog_button_add(Etk_Dialog *dialog, const char *label, int response_i
    button = etk_button_new_with_label(label);
    etk_widget_visibility_locked_set(button, ETK_TRUE);
    
-   id = malloc(sizeof(int));
+   id = calloc(1,sizeof(int));
    *id = response_id;
    etk_object_data_set_full(ETK_OBJECT(dialog), "_Etk_Dialog::response_id", id, free);
    

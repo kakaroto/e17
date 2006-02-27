@@ -160,7 +160,7 @@ void etk_toplevel_widget_pointer_push(Etk_Toplevel_Widget *toplevel_widget, Etk_
    if (!toplevel_widget)
       return;
 
-   new_pointer_type = malloc(sizeof(Etk_Pointer_Type));
+   new_pointer_type = calloc(1,sizeof(Etk_Pointer_Type));
    *new_pointer_type = pointer_type;
    prev_pointer_type = evas_list_data(evas_list_last(toplevel_widget->pointer_stack));
    toplevel_widget->pointer_stack = evas_list_append(toplevel_widget->pointer_stack, new_pointer_type);

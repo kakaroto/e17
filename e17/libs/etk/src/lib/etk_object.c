@@ -94,7 +94,7 @@ Etk_Object *etk_object_new_valist(Etk_Type *object_type, const char *first_prope
    if (!object_type)
       return NULL;
 
-   new_object = malloc(object_type->type_size);
+   new_object = calloc(1,object_type->type_size);
    new_object->type = object_type;
    _etk_object_created_objects = evas_list_append(_etk_object_created_objects, new_object);
    
@@ -284,7 +284,7 @@ void etk_object_data_set_full(Etk_Object *object, const char *key, void *value, 
       free(data);
    }
    
-   data = malloc(sizeof(Etk_Object_Data));
+   data = calloc(1,sizeof(Etk_Object_Data));
    data->value = value;
    data->free_cb = free_cb;
    object->data_hash = evas_hash_add(object->data_hash, key, data);
@@ -483,12 +483,12 @@ void etk_object_notification_callback_add(Etk_Object *object, const char *proper
 
    if (!(list = evas_hash_find(object->notification_callbacks_hash, property_name)))
    {
-      list = malloc(sizeof(Evas_List *));
+      list = calloc(1,sizeof(Evas_List *));
       *list = NULL;
       object->notification_callbacks_hash = evas_hash_add(object->notification_callbacks_hash, property_name, list);
    }
 
-   new_callback = malloc(sizeof(Etk_Notification_Callback));
+   new_callback = calloc(1,sizeof(Etk_Notification_Callback));
    new_callback->callback = callback;
    new_callback->data = data;
    *list = evas_list_append(*list, new_callback);

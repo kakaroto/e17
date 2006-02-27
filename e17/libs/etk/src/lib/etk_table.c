@@ -144,8 +144,8 @@ void etk_table_resize(Etk_Table *table, int num_cols, int num_rows)
    else
    {
       new_cells = calloc(num_cols * num_rows, sizeof(Etk_Table_Cell *));
-      new_cols = malloc(num_cols * sizeof(Etk_Table_Col_Row));
-      new_rows = malloc(num_rows * sizeof(Etk_Table_Col_Row));
+      new_cols = calloc(1,num_cols * sizeof(Etk_Table_Col_Row));
+      new_rows = calloc(1,num_rows * sizeof(Etk_Table_Col_Row));
    }
    
    for (l = table->children; l; )
@@ -215,7 +215,7 @@ void etk_table_attach(Etk_Table *table, Etk_Widget *child, int left_attach, int 
    if (child->parent && ETK_IS_CONTAINER(child->parent))
       etk_container_remove(ETK_CONTAINER(child->parent), child);
    
-   cell = malloc(sizeof(Etk_Table_Cell));
+   cell = calloc(1,sizeof(Etk_Table_Cell));
    cell->left_attach = left_attach;
    cell->right_attach = right_attach;
    cell->top_attach = top_attach;

@@ -167,7 +167,7 @@ Etk_Textblock_Iter *etk_textblock_iter_new(Etk_Textblock *textblock)
    if (!textblock)
       return NULL;
    
-   new_iter = malloc(sizeof(Etk_Textblock_Iter));
+   new_iter = calloc(1,sizeof(Etk_Textblock_Iter));
    new_iter->cursor = evas_object_textblock_cursor_new(textblock->textblock_object);
    new_iter->textblock = textblock;
    

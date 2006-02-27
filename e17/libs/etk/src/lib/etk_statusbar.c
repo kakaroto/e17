@@ -97,12 +97,12 @@ int etk_statusbar_context_id_get(Etk_Statusbar *statusbar, const char *context)
    if (!statusbar || !context)
       return -1;
    
-   key = malloc(strlen("_Etk_Statusbar::") + strlen(context) + 1);
+   key = calloc(1,strlen("_Etk_Statusbar::") + strlen(context) + 1);
    sprintf(key, "_Etk_Statusbar::%s", context);
    
    if (!(context_id = etk_object_data_get(ETK_OBJECT(statusbar), key)))
    {
-      context_id = malloc(sizeof(int));
+      context_id = calloc(1,sizeof(int));
       *context_id = statusbar->next_context_id++;
       etk_object_data_set_full(ETK_OBJECT(statusbar), key, context_id, free);
    }
@@ -125,7 +125,7 @@ int etk_statusbar_push(Etk_Statusbar *statusbar, const char *message, int contex
    if (!statusbar || !message)
       return -1;
    
-   new_msg = malloc(sizeof(Etk_Statusbar_Msg));
+   new_msg = calloc(1,sizeof(Etk_Statusbar_Msg));
    new_msg->msg = strdup(message);
    new_msg->context_id = context_id;
    new_msg->message_id = statusbar->next_message_id++;

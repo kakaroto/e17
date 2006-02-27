@@ -382,7 +382,7 @@ static Etk_Notebook_Page *_etk_notebook_page_create(Etk_Notebook *notebook, cons
    if (!notebook)
       return NULL;
    
-   new_page = malloc(sizeof(Etk_Notebook_Page));
+   new_page = calloc(1,sizeof(Etk_Notebook_Page));
    prev_page = notebook->pages ? notebook->pages->data : NULL;
    new_page->tab = etk_widget_new(ETK_RADIO_BUTTON_TYPE, "theme_group", "notebook_tab", "label", tab_label,
       "group", prev_page ? etk_radio_button_group_get(ETK_RADIO_BUTTON(prev_page->tab)) : NULL, NULL);
