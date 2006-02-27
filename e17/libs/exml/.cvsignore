@@ -7,5 +7,7 @@ config.log
 config.status
 config.sub
 configure
+install.sh
 libtool
 ltmain.sh
+missing
