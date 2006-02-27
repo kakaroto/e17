@@ -18,7 +18,8 @@ static void _cpu_face_cb_menu_configure (void *data, E_Menu *mn, E_Menu_Item *mi
 static int  _cpu_face_update_values     (void *data);
 static int  _cpu_face_get_cpu_count     (Cpu_Face *cf); 
 static int  _cpu_face_get_load          (Cpu_Face *cf); 
-//static void _cpu_face_graph_values      (Cpu_Face *cf, int val);
+static void _cpu_face_graph_values      (Cpu_Face *cf, int val);
+static void _cpu_face_graph_clear       (Cpu_Face *cf);
 
 static int cpu_count;
 
@@ -227,18 +228,16 @@ _cpu_face_init(Cpu_Face *cf)
      {
 	snprintf(buf, sizeof(buf), PACKAGE_DATA_DIR"/cpu.edj");	
 	edje_object_file_set(o, buf, "modules/cpu/main");
-     }
-   
+     }   
    evas_object_show(o);
 
-   /*
-   o = evas_object_rectangle_add(cf->evas);
-   cf->chart_clip_obj = o;
+   o = edje_object_add(cf->evas); //evas_object_rectangle_add(cf->evas);
+   cf->chart_obj = o;
    evas_object_layer_set(o, 1);
    evas_object_repeat_events_set(o, 0);
-   evas_object_color_set(o, 255, 255, 255, 100);
+   evas_object_pass_events_set(o, 1);
+   evas_object_color_set(o, 255, 255, 255, 255);
    evas_object_show(o);
-   */
    
    o = evas_object_rectangle_add(cf->evas);
    cf->event_obj = o;
@@ -259,10 +258,9 @@ _cpu_face_init(Cpu_Face *cf)
 			      E_GADMAN_POLICY_VSIZE);
    e_gadman_client_min_size_set(cf->gmc, 45, 50);
    e_gadman_client_max_size_set(cf->gmc, 128, 128);
-   e_gadman_client_auto_size_set(cf->gmc, 40, 40);
+   e_gadman_client_auto_size_set(cf->gmc, 45, 50);
    e_gadman_client_align_set(cf->gmc, 1.0, 1.0);
-   //e_gadman_client_aspect_set(cf->gmc, 1.0, 1.0);
-   e_gadman_client_resize(cf->gmc, 40, 40);
+   e_gadman_client_resize(cf->gmc, 45, 50);
    e_gadman_client_change_func_set(cf->gmc, _cpu_face_cb_gmc_change, cf);
    e_gadman_client_load(cf->gmc);
    evas_event_thaw(cf->evas);
@@ -297,7 +295,7 @@ _cpu_face_enable(Cpu_Face *cf)
    cf->conf->enabled = 1;
    e_config_save_queue();
    evas_object_show(cf->cpu_obj);
-   /* evas_object_show(cf->chart_obj); */
+   evas_object_show(cf->chart_obj);
    evas_object_show(cf->event_obj);
 }
 
@@ -307,7 +305,7 @@ _cpu_face_disable(Cpu_Face *cf)
    cf->conf->enabled = 0;
    e_config_save_queue();
    evas_object_hide(cf->event_obj);
-   /* evas_object_hide(cf->chart_obj); */
+   evas_object_hide(cf->chart_obj);
    evas_object_hide(cf->cpu_obj);
 }
 
@@ -322,11 +320,10 @@ _cpu_face_free(Cpu_Face *cf)
      evas_object_del(cf->event_obj);
    if (cf->cpu_obj)
      evas_object_del(cf->cpu_obj);
-
-   /*
    if (cf->chart_obj)
      evas_object_del(cf->chart_obj);
-    */
+   if (cf->old_values)
+     _cpu_face_graph_clear(cf);
    
    if (cf->gmc) 
      {
@@ -349,17 +346,21 @@ _cpu_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change
    switch (change) 
      {
       case E_GADMAN_CHANGE_MOVE_RESIZE:
+	if (cf->monitor)
+	  ecore_timer_del(cf->monitor);
 	e_gadman_client_geometry_get(cf->gmc, &x, &y, &w, &h);
-	evas_object_move(cf->cpu_obj, x, y);
-	//evas_object_move(cf->chart_clip_obj, x, y);
+	evas_object_move(cf->chart_obj, x, y);
 	evas_object_move(cf->event_obj, x, y);
-	evas_object_resize(cf->cpu_obj, w, h);
-	//evas_object_resize(cf->chart_clip_obj, w, h);
+	evas_object_move(cf->cpu_obj, x, y);
+	evas_object_resize(cf->chart_obj, w, h);
 	evas_object_resize(cf->event_obj, w, h);
+	evas_object_resize(cf->cpu_obj, w, h);
+	_cpu_face_graph_clear(cf);	
+	cf->monitor = ecore_timer_add((double)cf->cpu->conf->check_interval, _cpu_face_update_values, cf);
 	break;
       case E_GADMAN_CHANGE_RAISE:
 	evas_object_raise(cf->cpu_obj);
-	//evas_object_raise(cf->chart_clip_obj);
+	evas_object_raise(cf->chart_obj);
 	evas_object_raise(cf->event_obj);
 	break;
       default:
@@ -411,11 +412,14 @@ _cpu_face_update_values(void *data)
    
    cf = data;
    val = _cpu_face_get_load(cf);
+   
    if (val == -1)
      return 1;
 
    snprintf(str, sizeof(str), "%d %%", val);
    edje_object_part_text_set(cf->cpu_obj, "in-text", str);   
+   
+   _cpu_face_graph_values(cf, val);
    return 1;
 }
 
@@ -492,33 +496,68 @@ _cpu_face_get_load(Cpu_Face *cf)
    old_si = new_si;
 
    if (load >= 100)
-     return 100;   
+     load = 100;
+   
    return load;   
 }
 
-/*
 static void 
 _cpu_face_graph_values(Cpu_Face *cf, int val) 
 {
-   double factor = 0.0;
-   int value = 0;
    int x, y, w, h;
    Evas_Object *o;
-
-   evas_object_geometry_get(cf->cpu_obj, &x, &y, &w, &h);
+   Evas_Object *last = NULL;
+   Evas_List *l;
+   int i, j = 0;
    
-   factor = ((double)h) / ((double)100);
-   value = (int)(((double)val) * factor);
-   if (value == 0)
-     return;
+   evas_object_geometry_get(cf->chart_obj, &x, &y, &w, &h);
    
    o = evas_object_line_add(cf->evas);
-   evas_object_clip_set(o, cf->chart_clip_obj);
-   evas_object_layer_set(o, 3);
-   evas_object_line_xy_set(o, (x + w), (y), (x + w), (y + value));
-   evas_object_color_set(o, 255, 0, 0, 255);
-   evas_object_pass_events_set(o, 1);
-   evas_object_show(o);
+   edje_object_part_swallow(cf->chart_obj, "lines", o);
+   evas_object_layer_set(o, 1);
+   if (val == 0)
+     evas_object_hide(o);
+   else 
+     {
+	evas_object_line_xy_set(o, (x + w), (y + h), (x + w), ((y + h) - val));
+	evas_object_color_set(o, 255, 0, 0, 150);
+	evas_object_pass_events_set(o, 1);
+	evas_object_show(o);
+     }
+   
+   cf->old_values = evas_list_prepend(cf->old_values, o);
+   l = cf->old_values;
+   for (i = (x + w); l && (j -2) < w; l = l->next, j++) 
+     {
+	Evas_Coord oy;
+	Evas_Object *lo;
+	
+	lo = (Evas_Object *)evas_list_data(l);
+	evas_object_geometry_get(lo, NULL, &oy, NULL, NULL);
+	evas_object_move(lo, i--, oy);
+	last = lo;
+     }
+   
+   if ((j - 2) >= w) 
+     {
+	cf->old_values = evas_list_remove(cf->old_values, last);
+	evas_object_del(last);
+     }
+   
    return;
 }
-*/
+
+static void 
+_cpu_face_graph_clear(Cpu_Face *cf) 
+{
+   Evas_List *l;
+
+   for (l = cf->old_values; l; l = l->next) 
+     {
+	Evas_Object *o;
+	o = evas_list_data(l);
+	evas_object_del(o);
+     }
+   evas_list_free(cf->old_values);
+   cf->old_values = NULL;
+}
