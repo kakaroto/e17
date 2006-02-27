@@ -80,6 +80,44 @@ entropy_plugin_toolkit_get()
 }
 
 
+/* Compares two rows of the tree */
+static int _entropy_etk_list_filename_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data)
+{
+   char *row1_value, *row2_value;
+   
+   if (!tree || !row1 || !row2 || !col)
+      return 0;
+   
+   etk_tree_row_fields_get(row1, col, &row1_value, NULL);
+   etk_tree_row_fields_get(row2, col, &row2_value, NULL);
+
+   return strcmp(row1_value, row2_value);
+}
+
+/* Compares two rows of the tree */
+static int _entropy_etk_list_size_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data)
+{
+   gui_file *file1, *file2;
+   
+   if (!tree || !row1 || !row2 || !col)
+      return 0;
+   
+   file1 = ecore_hash_get(row_hash, row1);
+   file2 = ecore_hash_get(row_hash, row2);
+   
+   if (file1 && file2) {
+	   if (file1->file->properties.st_size > file2->file->properties.st_size) {
+		   return 1;
+	   } else if (file1->file->properties.st_size < file2->file->properties.st_size) {
+		   return -1;
+	   } else return 0;
+   } else {
+	   printf("Could not locate file!\n");
+	   return 0;
+   }
+}
+
+
 
 static void _entropy_etk_list_viewer_drag_begin_cb(Etk_Object *object, void *data)
 {
@@ -249,7 +287,7 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
   } else {
 	 // time_t stime = file->properties.st_mtime
 	  
-	  snprintf(buffer,50, "%d Kb", file->properties.st_size / 1024);
+	  snprintf(buffer,50, "%lld Kb", file->properties.st_size / 1024);
 	  new_row = etk_tree_append(ETK_TREE(viewer->tree), 
 		  col1, PACKAGE_DATA_DIR "/icons/default.png", 
 		  col2,   file->filename,
@@ -365,7 +403,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 		col4 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 3);
 		col5 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 4);
 		
-		snprintf(buffer,50, "%d Kb", file_stat->stat_obj->st_size / 1024);
+		snprintf(buffer,50, "%lld Kb", file_stat->stat_obj->st_size / 1024);
 
 		etk_tree_freeze(ETK_TREE(viewer->tree));
 		etk_tree_row_fields_set((Etk_Tree_Row*)obj->icon, 
@@ -468,10 +506,12 @@ entropy_plugin_init (entropy_core * core,
   viewer->tree_col1 = etk_tree_col_new(ETK_TREE(viewer->tree), _("Filename"), 
 		  etk_tree_model_text_new(ETK_TREE(viewer->tree)), 100);
   etk_tree_col_expand_set(viewer->tree_col1, ETK_TRUE);
+  etk_tree_col_sort_func_set(viewer->tree_col1, _entropy_etk_list_filename_compare_cb, ETK_TRUE, NULL);
 
   viewer->tree_col1 = etk_tree_col_new(ETK_TREE(viewer->tree), _("Size"), 
 		  etk_tree_model_text_new(ETK_TREE(viewer->tree)),40);
   etk_tree_col_expand_set(viewer->tree_col1, ETK_TRUE);
+  etk_tree_col_sort_func_set(viewer->tree_col1, _entropy_etk_list_size_compare_cb, ETK_TRUE, NULL);
 
   viewer->tree_col1 = etk_tree_col_new(ETK_TREE(viewer->tree), _("Type"), 
 		  etk_tree_model_text_new(ETK_TREE(viewer->tree)),40);

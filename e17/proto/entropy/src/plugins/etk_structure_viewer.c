@@ -115,7 +115,9 @@ static void _etk_structure_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *
    entropy_etk_file_structure_viewer* viewer;
    entropy_gui_event *gui_event;
    event_file_core* e_event;
-   
+
+   if (!(event->button == 1))
+	   return;
    
    instance = ecore_hash_get(instance_map_hash, row);
    if (instance) {
