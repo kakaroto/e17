@@ -80,9 +80,9 @@ AC_ARG_ENABLE(hints-gnome,
   [  --enable-hints-gnome    compile with GNOME(<2.0) hints support @<:@default=no@:>@],,
   enable_hints_gnome=no)
 
-AC_ARG_ENABLE(ecore-x,
-  [  --enable-ecore-x        use ecore-x interface to X11 (for testing only - DO NOT USE!) @<:@default=no@:>@],,
-  enable_ecore_x=no)
+AC_ARG_ENABLE(ecore,
+  [  --enable-ecore        use ecore functions (for testing only - DO NOT USE!) @<:@default=no@:>@],,
+  enable_ecore=no)
 
 if test "x$enable_hints_gnome" = "xyes"; then
   AC_DEFINE(ENABLE_GNOME, 1, [GNOME(<2.0) Hints])
@@ -133,16 +133,17 @@ AC_CHECK_LIB(Imlib2, imlib_create_image,
   AC_MSG_ERROR([Fatal Error: no Imlib2 detected.]),
   $IMLIB_LIBS)
 
-if test "x$enable_ecore_x" = "xyes"; then
+if test "x$enable_ecore" = "xyes"; then
   AC_CHECK_LIB(ecore_x, ecore_x_init,
     [
+      AC_DEFINE(USE_ECORE, 1, [Ecore list support])
       AC_DEFINE(USE_ECORE_X, 1, [Ecore_x support])
       AC_SUBST(ecore_libs)
       AC_SUBST(ecore_cflags)
     ],[
       AC_MSG_ERROR(Cannot find ecore: Is ecore-config in path?)
     ])
-  ecore_libs=`ecore-config --libs`
+  ecore_libs=`ecore-config --libs-x`
   ecore_cflags=`ecore-config --cflags`
   AC_SUBST(ecore_libs)
   AC_SUBST(ecore_cflags)

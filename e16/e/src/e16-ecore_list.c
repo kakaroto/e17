@@ -41,6 +41,8 @@
 #define TRUE 1
 #endif
 
+#if !USE_ECORE
+
 struct _ecore_list_node
 {
    void               *data;
@@ -953,6 +955,8 @@ ecore_list_node_destroy(Ecore_List_Node * node, Ecore_Free_Cb free_func)
 
    return TRUE;
 }
+
+#endif /* !USE_ECORE */
 
 /*
  * E16 additions

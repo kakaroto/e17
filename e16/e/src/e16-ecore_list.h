@@ -33,6 +33,12 @@
 #ifndef _E16_ECORE_LIST_H_
 #define _E16_ECORE_LIST_H_
 
+#if USE_ECORE
+
+#include <Ecore_Data.h>
+
+#else
+
 #undef EAPI
 #define EAPI
 
@@ -93,6 +99,8 @@ EAPI int            ecore_list_node_destroy(Ecore_List_Node * _e_node,
 
 EAPI int            ecore_list_set_free_cb(Ecore_List * list,
 					   Ecore_Free_Cb free_func);
+
+#endif /* USE_ECORE */
 
 /* e16 additions */
 #define ECORE_LIST_FOR_EACH(list, p) \
