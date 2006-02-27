@@ -56,11 +56,12 @@ struct _background
 #endif
    char                external;
    char                keepim;
-   unsigned int        ref_count;	/* bg */
-   unsigned int        use_count;	/* pmap */
+   unsigned int        ref_count;
+   unsigned int        seq_no;
 };
 
 static Ecore_List  *bg_list = NULL;
+static unsigned int bg_seq_no = 0;
 
 char               *
 BackgroundGetUniqueString(const Background * bg)
@@ -153,39 +154,15 @@ BackgroundGetUniqueString(const Background * bg)
 void
 BackgroundPixmapSet(Background * bg, Pixmap pmap)
 {
-   if (bg->pmap != pmap)
-     {
-	if (bg->use_count || bg->pmap != None)
-	   Eprintf("*** BackgroundPixmapSet %s: pmap mismatch %#lx/%#lx\n",
-		   bg->name, bg->pmap, pmap);
-	bg->pmap = pmap;
-     }
-   bg->use_count++;
-}
-
-void
-BackgroundPixmapUnset(Background * bg, Pixmap pmap)
-{
-   if (bg->pmap != pmap || !bg->use_count)
-     {
-	Eprintf("*** BackgroundPixmapUnset %s: pmap mismatch %#lx/%#lx\n",
-		bg->name, bg->pmap, pmap);
-     }
-   if (bg->use_count)
-      bg->use_count--;
+   if (bg->pmap != None && bg->pmap != pmap)
+      Eprintf("*** BackgroundPixmapSet %s: pmap was set %#lx/%#lx\n",
+	      bg->name, bg->pmap, pmap);
+   bg->pmap = pmap;
 }
 
 static void
 BackgroundPixmapFree(Background * bg)
 {
-   if (!bg)
-      return;
-
-   if (bg->use_count)
-     {
-	Eprintf("*** BackgroundPixmapFree %s: still referenced(%d)\n",
-		bg->name, bg->use_count);
-     }
    if (bg->pmap)
      {
 	imlib_free_pixmap_and_mask(bg->pmap);
@@ -343,6 +320,8 @@ BackgroundCreate(const char *name, XColor * solid, const char *bgn, char tile,
    bg->top.xperc = txperc;
    bg->top.yperc = typerc;
 
+   bg->seq_no = ++bg_seq_no;
+
    return bg;
 }
 
@@ -373,14 +352,10 @@ BackgroundDestroyByName(const char *name)
 static void
 BackgroundInvalidate(Background * bg, int refresh)
 {
-   int                 used;
-
-   used = bg->ref_count;
-   if (used)
-      DesksBackgroundFree(bg, 1);
    BackgroundPixmapFree(bg);
-   if (used && refresh)
-      DesksBackgroundRefresh(bg);
+   bg->seq_no = ++bg_seq_no;
+   if (bg->ref_count && refresh)
+      DesksBackgroundRefresh(bg, DESK_BG_REFRESH);
 }
 
 static int
@@ -601,11 +576,12 @@ BackgroundCreatePixmap(Window win, unsigned int w, unsigned int h,
     * invalid one from a previous session.
     */
    pmap = ECreatePixmap(win, w, h, depth);
-   if (win == VRoot.win && pmap == Mode.hints.old_root_pmap)
+   if (win == VRoot.win && pmap == Mode.root.ext_pmap)
      {
 	EFreePixmap(pmap);
 	pmap = ECreatePixmap(win, w, h, depth);
-	Mode.hints.old_root_pmap = None;
+	Mode.root.ext_pmap = None;
+	Mode.root.ext_pmap_valid = 0;
      }
    return pmap;
 }
@@ -1017,12 +993,6 @@ BackgroundTouch(Background * bg)
    bg->last_viewed = time(NULL);
 }
 
-static              time_t
-BackgroundGetTimestamp(const Background * bg)
-{
-   return bg->last_viewed;
-}
-
 const char         *
 BackgroundGetName(const Background * bg)
 {
@@ -1051,6 +1021,12 @@ Pixmap
 BackgroundGetPixmap(const Background * bg)
 {
    return (bg) ? bg->pmap : None;
+}
+
+unsigned int
+BackgroundGetSeqNo(const Background * bg)
+{
+   return bg->seq_no;
 }
 
 int
@@ -1484,28 +1460,20 @@ BackgroundsConfigSave(void)
 static void
 BackgroundsAccounting(void)
 {
-   unsigned int        j;
-   Desk               *dsk;
    Background         *bg;
    time_t              now;
 
-   for (j = 0; j < DesksGetNumber(); j++)
-     {
-	dsk = DeskGet(j);
-	if ((DeskBackgroundGet(dsk)) && (DeskIsViewable(dsk)))
-	   BackgroundTouch(DeskBackgroundGet(dsk));
-     }
+   DesksBackgroundRefresh(NULL, DESK_BG_TIMEOUT);
 
    now = time(NULL);
    ECORE_LIST_FOR_EACH(bg_list, bg)
    {
       /* Skip if no pixmap or not timed out */
-      if ((bg->pmap == None) ||
-	  ((now - BackgroundGetTimestamp(bg)) <= Conf.backgrounds.timeout))
+      if (bg->pmap == None ||
+	  ((now - bg->last_viewed) <= Conf.backgrounds.timeout))
 	 continue;
 
-      if (bg->ref_count)
-	 DesksBackgroundFree(bg, 0);
+      DesksBackgroundRefresh(NULL, DESK_BG_FREE);
       BackgroundPixmapFree(bg);
    }
 }

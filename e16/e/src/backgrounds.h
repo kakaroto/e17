@@ -32,7 +32,6 @@ Background         *BackgroundCheck(Background * bg);
 Background         *BackgroundGetRandom(void);
 char               *BackgroundGetUniqueString(const Background * bg);
 void                BackgroundPixmapSet(Background * bg, Pixmap pmap);
-void                BackgroundPixmapUnset(Background * bg, Pixmap pmap);
 void                BackgroundDestroyByName(const char *name);
 void                BackgroundRealize(Background * bg, Drawable draw,
 				      unsigned int rw, unsigned int rh,
@@ -49,6 +48,7 @@ void                BackgroundTouch(Background * bg);
 const char         *BackgroundGetName(const Background * bg);
 int                 BackgroundGetColor(const Background * bg);
 Pixmap              BackgroundGetPixmap(const Background * bg);
+unsigned int        BackgroundGetSeqNo(const Background * bg);
 int                 BackgroundIsNone(const Background * bg);
 Background         *BrackgroundCreateFromImage(const char *bgid,
 					       const char *file, char *thumb,

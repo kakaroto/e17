@@ -39,6 +39,7 @@ struct _desk;
 
 int                 EVisualIsARGB(Visual * vis);
 
+int                 ECompMgrIsActive(void);
 int                 ECompMgrDeskConfigure(struct _desk *dsk);
 
 void                ECompMgrWinNew(EObj * eo);

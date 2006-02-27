@@ -498,13 +498,11 @@ ECompMgrDeskConfigure(Desk * dsk)
    eo = dsk->bg.o;
    if (!eo)
       return 1;
-   cw = eo->cmhook;
 
-   if (!dsk->viewable)
-     {
-	ECompMgrWinInvalidate(eo, INV_PICTURE);
-	return 1;
-     }
+   ECompMgrWinInvalidate(eo, INV_PICTURE);
+
+   if (!dsk->viewable && dsk->bg.bg)
+      return 1;
 
    if (dsk->bg.pmap == None)
      {
@@ -523,8 +521,6 @@ ECompMgrDeskConfigure(Desk * dsk)
 	pmap = dsk->bg.pmap;
      }
 
-   ECompMgrWinInvalidate(eo, INV_PICTURE);
-
    pa.repeat = True;
    pictfmt = XRenderFindVisualFormat(disp, VRoot.vis);
    pict = XRenderCreatePicture(disp, pmap, pictfmt, CPRepeat, &pa);
@@ -535,6 +531,7 @@ ECompMgrDeskConfigure(Desk * dsk)
    /* New background, all must be repainted */
    ECompMgrDamageAll();
 
+   cw = eo->cmhook;
    cw->picture = pict;
 
    D1printf
@@ -2173,6 +2170,12 @@ ECompMgrShadowsInit(int mode, int cleanup)
 #define ECompMgrShadowsInit(mode, cleanup)
 #endif
 
+int
+ECompMgrIsActive(void)
+{
+   return Mode_compmgr.active;
+}
+
 static void
 ECompMgrStart(void)
 {
@@ -2226,7 +2229,7 @@ ECompMgrStart(void)
      }
 
 #if !USE_BG_WIN_ON_ALL_DESKS
-   DesksBackgroundRefresh(NULL);
+   DesksBackgroundRefresh(NULL, DESK_BG_RECONFIGURE_ALL);
 #endif
    _ECM_SET_CLIP_CHANGED();
    EUngrabServer();
@@ -2287,7 +2290,7 @@ ECompMgrStop(void)
    EventCallbackUnregister(VRoot.win, 0, ECompMgrHandleRootEvent, NULL);
 
 #if !USE_BG_WIN_ON_ALL_DESKS
-   DesksBackgroundRefresh(NULL);
+   DesksBackgroundRefresh(NULL, DESK_BG_RECONFIGURE_ALL);
 #endif
    EUngrabServer();
    ESync();

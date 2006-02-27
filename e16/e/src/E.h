@@ -482,10 +482,6 @@ typedef struct
    } grabs;
    struct
    {
-      Pixmap              old_root_pmap;
-   } hints;
-   struct
-   {
       const char         *lang;
       char                utf8_int;	/* Use UTF-8 internally */
       char                utf8_loc;	/* Locale is UTF-8 */
@@ -508,6 +504,11 @@ typedef struct
       char                doing_manual;
       char                doing_slide;
    } place;
+   struct
+   {
+      Pixmap              ext_pmap;
+      char                ext_pmap_valid;
+   } root;
    struct
    {
       char               *path;

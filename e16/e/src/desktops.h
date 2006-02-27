@@ -24,9 +24,14 @@
 #ifndef _DESKTOPS_H_
 #define _DESKTOPS_H_
 
+#include "eobj.h"
+
 #define USE_BG_WIN_ON_ALL_DESKS 0
 
-#include "eobj.h"
+#define DESK_BG_REFRESH         1
+#define DESK_BG_FREE            2
+#define DESK_BG_TIMEOUT         3
+#define DESK_BG_RECONFIGURE_ALL 4
 
 typedef struct _desk Desk;
 
@@ -47,9 +52,11 @@ struct _desk
    {
       struct _background *bg;
       EObj               *o;
+      EObj               *o_bg;
       Pixmap              pmap;
+      Pixmap              pmap_set;
       unsigned long       pixel;
-      char                isset;
+      unsigned int        seq_no;
    } bg;
    struct
    {
@@ -64,7 +71,6 @@ Desk               *DeskGet(unsigned int desk);
 Desk               *DeskGetRelative(Desk * dsk, int inc);
 void                DeskGetArea(const Desk * dsk, int *ax, int *ay);
 void                DeskSetArea(Desk * dsk, int ax, int ay);
-int                 DeskIsViewable(const Desk * dsk);
 void                DeskSetDirtyStack(Desk * dsk, EObj * eo);
 void                DeskGoto(Desk * dsk);
 void                DeskGotoNum(unsigned int desk);
@@ -76,8 +82,7 @@ void                DeskBackgroundAssign(unsigned int desk,
 struct _background *DeskBackgroundGet(const Desk * dsk);
 void                DeskBackgroundSet(Desk * dsk, struct _background *bg);
 
-void                DesksBackgroundFree(struct _background *bg, int force);
-void                DesksBackgroundRefresh(struct _background *bg);
+void                DesksBackgroundRefresh(struct _background *bg, int what);
 
 void                DeskCurrentGetArea(int *ax, int *ay);
 void                DeskCurrentGotoArea(int ax, int ay);

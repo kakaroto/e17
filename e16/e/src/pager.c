@@ -536,7 +536,7 @@ PagerUpdateBg(Pager * p)
    pmap = p->bgpmap = ECreatePixmap(p->win, p->dw, p->dh, VRoot.depth);
 
    bg = DeskBackgroundGet(p->dsk);
-   if (bg)
+   if (Conf_pagers.snap && bg)
      {
 #if USE_PAGER_BACKGROUND_CACHE
 	char                s[4096];
@@ -569,6 +569,13 @@ PagerUpdateBg(Pager * p)
 	     imlib_free_image_and_decache();
 	  }
 #endif
+	return;
+     }
+
+   if (Conf_pagers.snap && p->dsk->bg.pmap)
+     {
+	ScaleRect(p->dsk->bg.pmap, pmap, NULL, 0, 0, VRoot.w, VRoot.h, 0,
+		  0, p->dw, p->dh, Conf_pagers.hiq);
 	return;
      }
 

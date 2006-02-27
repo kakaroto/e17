@@ -76,7 +76,8 @@ HintsInit(void)
 	HintsSetWindowClass(VRoot.win, "Virtual-Root", "Enlightenment");
      }
 
-   Mode.hints.old_root_pmap = HintsGetRootPixmap(VRoot.win);
+   Mode.root.ext_pmap = HintsGetRootPixmap(VRoot.win);
+   Mode.root.ext_pmap_valid = EDrawableCheck(Mode.root.ext_pmap, 0);
 }
 
 void
@@ -426,6 +427,12 @@ EHintsSetDeskInfo(void)
    ecore_x_window_prop_card32_set(VRoot.win, ENL_INTERNAL_DESK_DATA, c, 1);
 
    Efree(c);
+
+   if (Mode.root.ext_pmap_valid)
+     {
+	HintsSetRootInfo(VRoot.win, Mode.root.ext_pmap, 0);
+	ESetWindowBackgroundPixmap(VRoot.win, Mode.root.ext_pmap);
+     }
 }
 
 void

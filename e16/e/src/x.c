@@ -892,6 +892,9 @@ EDrawableCheck(Drawable draw, int grab)
 {
    int                 ok;
 
+   if (draw == None)
+      return 0;
+
    if (grab)
       EGrabServer();
 

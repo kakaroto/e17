@@ -410,6 +410,7 @@ DeskCreate(int desk, int configure)
    EventCallbackRegister(EoGetWin(dsk), 0, DeskHandleEvents, dsk);
    EoSetFade(dsk, 0);
    EoSetShadow(dsk, 0);
+   dsk->bg.o = EoObj(dsk);
    if (desk == 0)
      {
 	desks.current = dsk;
@@ -420,14 +421,14 @@ DeskCreate(int desk, int configure)
 	eo->floating = 0;
 	eo->fade = eo->shadow = 0;
 	EobjSetLayer(eo, 0);
-	EobjMap(eo, 0);
-	dsk->bg.o = eo;
 	EventCallbackRegister(EobjGetWin(eo), 0, DeskHandleEvents, dsk);
+	dsk->bg.o_bg = eo;
+	if (Mode.root.ext_pmap_valid)
+	   dsk->bg.pmap_set = Mode.root.ext_pmap;
 #endif
      }
    else
      {
-	dsk->bg.o = EoObj(dsk);
 	EoSetFloating(dsk, 1);
 	EoSetLayer(dsk, 0);
 #if 0				/* TBD */
@@ -446,7 +447,7 @@ DeskCreate(int desk, int configure)
    eo->fade = eo->shadow = 0;
    EobjReparent(eo, EoObj(dsk), 0, 0);
    EobjSetLayer(eo, 0);
-   dsk->bg.o = eo;
+   dsk->bg.o_bg = eo;
    EventCallbackRegister(EobjGetWin(eo), 0, DeskHandleEvents, dsk);
 #endif
 
@@ -463,11 +464,11 @@ DeskDestroy(Desk * dsk)
 {
    ModulesSignal(ESIGNAL_DESK_REMOVED, dsk);
 
-   if (dsk->bg.o != EoObj(dsk))
+   if (dsk->bg.o_bg)
      {
-	EventCallbackUnregister(EobjGetWin(dsk->bg.o), 0, DeskHandleEvents,
+	EventCallbackUnregister(EobjGetWin(dsk->bg.o_bg), 0, DeskHandleEvents,
 				dsk);
-	EobjWindowDestroy(dsk->bg.o);
+	EobjWindowDestroy(dsk->bg.o_bg);
      }
    EventCallbackUnregister(EoGetWin(dsk), 0, DeskHandleEvents, dsk);
 
@@ -475,11 +476,7 @@ DeskDestroy(Desk * dsk)
    DeskControlsDestroy(dsk, 2);
 
    if (dsk->bg.bg)
-     {
-	if (dsk->bg.pmap != None)
-	   BackgroundPixmapUnset(dsk->bg.bg, dsk->bg.pmap);
-	BackgroundDecRefcount(dsk->bg.bg);
-     }
+      BackgroundDecRefcount(dsk->bg.bg);
 
    EoFini(dsk);
 
@@ -492,8 +489,6 @@ DeskGetBackgroundWin(const Desk * dsk)
 {
    if (!dsk)
       return VRoot.win;
-   if (!dsk->bg.bg || !dsk->bg.o)
-      return EoGetWin(dsk);
    return EobjGetWin(dsk->bg.o);
 }
 
@@ -516,28 +511,33 @@ static void
 DeskBackgroundConfigure(Desk * dsk)
 {
    Window              win;
+   Pixmap              pmap = dsk->bg.pmap;
+   unsigned long       pixel = dsk->bg.pixel;
 
    if (EventDebug(EDBUG_TYPE_DESKS))
-      Eprintf("DeskBackgroundConfigure %d %#lx v=%d - %#lx %#lx %#lx\n",
-	      dsk->num, EoGetWin(dsk), dsk->viewable,
-	      EobjGetWin(dsk->bg.o), dsk->bg.pmap, dsk->bg.pixel);
+      Eprintf
+	 ("DeskBackgroundConfigure %d v=%d %#lx/%#lx: ext=%d pmap=%#lx/%#lx pixel=%#lx/%#lx\n",
+	  dsk->num, dsk->viewable, EoGetWin(dsk), EobjGetWin(dsk->bg.o),
+	  BackgroundIsNone(dsk->bg.bg), pmap, dsk->bg.pmap_set, pixel,
+	  dsk->bg.pixel);
 
-   if (dsk->bg.o != EoObj(dsk))
+   if (dsk->bg.o_bg)
      {
-	if (dsk->bg.bg)
+	if (ECompMgrIsActive())
 	  {
-	     EobjMap(dsk->bg.o, 0);
+	     dsk->bg.o = dsk->bg.o_bg;
+	     EobjMap(dsk->bg.o_bg, 0);
 	  }
 	else
 	  {
-	     EobjUnmap(dsk->bg.o);
-	     return;
+	     dsk->bg.o = EoObj(dsk);
+	     EobjUnmap(dsk->bg.o_bg);
 	  }
      }
 
    win = EobjGetWin(dsk->bg.o);
 
-   if (dsk->viewable)
+   if (dsk->viewable || !dsk->bg.bg)
      {
 #if !USE_BG_WIN_ON_ALL_DESKS
 	if (ECompMgrDeskConfigure(dsk))
@@ -547,27 +547,26 @@ DeskBackgroundConfigure(Desk * dsk)
 	else
 #endif
 	  {
-	     if (dsk->bg.pmap != None)
+	     if (pmap != None)
 	       {
-		  ESetWindowBackgroundPixmap(win, dsk->bg.pmap);
+		  ESetWindowBackgroundPixmap(win, pmap);
 		  if (dsk->num == 0 && win != VRoot.win)
-		     ESetWindowBackgroundPixmap(VRoot.win, dsk->bg.pmap);
+		     ESetWindowBackgroundPixmap(VRoot.win, pmap);
 	       }
 	     else
 	       {
-		  ESetWindowBackground(win, dsk->bg.pixel);
+		  ESetWindowBackground(win, pixel);
 		  if (dsk->num == 0 && win != VRoot.win)
-		     ESetWindowBackground(VRoot.win, dsk->bg.pixel);
+		     ESetWindowBackground(VRoot.win, pixel);
 	       }
 	     EClearWindow(win);
 	  }
 
-	if (Conf.hints.set_xroot_info_on_root_window)
-	   HintsSetRootInfo(VRoot.win, dsk->bg.pmap, dsk->bg.pixel);
-	else
-	   HintsSetRootInfo(EoGetWin(dsk), dsk->bg.pmap, dsk->bg.pixel);
+	HintsSetRootInfo(EoGetWin(dsk), pmap, pixel);
+	if (Conf.hints.set_xroot_info_on_root_window && win != VRoot.win)
+	   HintsSetRootInfo(VRoot.win, pmap, pixel);
      }
-   else
+   else if (dsk->bg.bg)
      {
 	if (!Conf.hints.set_xroot_info_on_root_window)
 	   HintsSetRootInfo(EoGetWin(dsk), None, 0);
@@ -579,74 +578,87 @@ DeskBackgroundConfigure(Desk * dsk)
 }
 
 static void
-DeskBackgroundFree(Desk * dsk, int force)
+DeskBackgroundRefresh(Desk * dsk, int why)
 {
-   if (!dsk->bg.isset)
-      return;
-
-   dsk->bg.isset = 0;
+   Background         *bg = dsk->bg.bg;
+   Pixmap              pmap = dsk->bg.pmap;
+   unsigned long       pixel = dsk->bg.pixel;
+   int                 changed = 0;
+   int                 reconfigure = 0;
 
    if (EventDebug(EDBUG_TYPE_DESKS))
-      Eprintf("DeskBackgroundFree %d v=%d force=%d\n", dsk->num,
-	      dsk->viewable, force);
+      Eprintf("DeskBackgroundRefresh %d v=%d why=%d pmap=%#lx pixel=%#lx\n",
+	      dsk->num, dsk->viewable, why, pmap, pixel);
 
-   if (!dsk->viewable || force)
+   switch (why)
      {
-	if (dsk->bg.pmap != None)
-	  {
-	     BackgroundPixmapUnset(dsk->bg.bg, dsk->bg.pmap);
-	     dsk->bg.pmap = None;
-	  }
+     case DESK_BG_REFRESH:
+	if (bg && dsk->viewable)
+	   BackgroundTouch(bg);
+	break;
+
+     case DESK_BG_RECONFIGURE_ALL:
+	reconfigure = 1;
+	break;
+
+     case DESK_BG_TIMEOUT:
+	if (bg && dsk->viewable)
+	   BackgroundTouch(bg);
+	return;
+
+     case DESK_BG_FREE:
+	if (!bg || dsk->viewable)
+	   return;
+	break;
      }
 
-   if (!dsk->viewable)
-      DeskBackgroundConfigure(dsk);
-}
-
-static void
-DeskBackgroundRefresh(Desk * dsk)
-{
-   Background         *bg;
-   Pixmap              pmap;
-   unsigned long       pixel;
-
-   if (!dsk->viewable)
-      return;
-
-   if (EventDebug(EDBUG_TYPE_DESKS))
-      Eprintf("DeskBackgroundRefresh %d v=%d - %dx%d\n", dsk->num,
-	      dsk->viewable, EoGetW(dsk), EoGetH(dsk));
-
-   bg = dsk->bg.bg;
    if (bg)
      {
-	pmap = BackgroundGetPixmap(bg);
-	pixel = 0;
+	if (dsk->viewable)
+	  {
+	     if (BackgroundGetSeqNo(bg) == dsk->bg.seq_no)
+		goto done;
 
-	if (dsk->bg.isset && dsk->bg.pmap == pmap)
-	   return;
+	     pmap = BackgroundGetPixmap(bg);
+	     pixel = 0;
 
-	if (pmap == None)
-	   BackgroundRealize(bg, EoGetWin(dsk), EoGetW(dsk), EoGetH(dsk), 1,
-			     &pmap, &pixel);
+	     if (pmap == None)
+		BackgroundRealize(bg, EoGetWin(dsk), EoGetW(dsk), EoGetH(dsk),
+				  1, &pmap, &pixel);
+	     if (pmap != None)
+		BackgroundPixmapSet(bg, pmap);
 
-	if (pmap != None && pmap != dsk->bg.pmap)
-	   BackgroundPixmapSet(dsk->bg.bg, pmap);
+	     dsk->bg.seq_no = BackgroundGetSeqNo(bg);
+	     changed = 1;
+	  }
+	else
+	  {
+	     if (dsk->bg.pmap == None)
+		return;
 
-	dsk->bg.pmap = pmap;
-	dsk->bg.pixel = pixel;
+	     pmap = None;
+	     pixel = 0;
+	     dsk->bg.seq_no = 0;
+	  }
      }
-   dsk->bg.isset = 1;
-   DeskBackgroundConfigure(dsk);
-}
-
-static void
-DeskBackgroundUpdate(Desk * dsk)
-{
-   if (dsk->viewable)
-      DeskBackgroundRefresh(dsk);
    else
-      DeskBackgroundFree(dsk, 0);
+     {
+	pmap = (Mode.root.ext_pmap_valid) ? Mode.root.ext_pmap : None;
+	pixel = 0;
+	changed = pmap != dsk->bg.pmap_set;
+     }
+
+ done:
+   dsk->bg.pmap = pmap;
+   if (reconfigure || pmap != dsk->bg.pmap_set || pixel != dsk->bg.pixel)
+     {
+	dsk->bg.pixel = pixel;
+	DeskBackgroundConfigure(dsk);
+	dsk->bg.pmap_set = pmap;
+     }
+
+   if (changed)
+      ModulesSignal(ESIGNAL_BACKGROUND_CHANGE, dsk);
 }
 
 void
@@ -660,7 +672,6 @@ DeskBackgroundSet(Desk * dsk, Background * bg)
 
    if (dsk->bg.bg != bg)
      {
-	DeskBackgroundFree(dsk, 1);
 	if (dsk->bg.bg)
 	   BackgroundDecRefcount(dsk->bg.bg);
 	if (bg)
@@ -669,14 +680,11 @@ DeskBackgroundSet(Desk * dsk, Background * bg)
 
    dsk->bg.bg = bg;
 
-   if (dsk->viewable)
-      DeskBackgroundRefresh(dsk);
-
-   ModulesSignal(ESIGNAL_BACKGROUND_CHANGE, dsk);
+   DeskBackgroundRefresh(dsk, DESK_BG_REFRESH);
 }
 
 void
-DesksBackgroundFree(Background * bg, int force)
+DesksBackgroundRefresh(Background * bg, int why)
 {
    Desk               *dsk;
    unsigned int        i;
@@ -684,28 +692,11 @@ DesksBackgroundFree(Background * bg, int force)
    for (i = 0; i < Conf.desks.num; i++)
      {
 	dsk = _DeskGet(i);
-	if (dsk->bg.bg != bg)
+	if (!dsk)		/* May happen during init */
 	   continue;
-	DeskBackgroundFree(dsk, force);
-     }
-}
-
-void
-DesksBackgroundRefresh(Background * bg)
-{
-   Desk               *dsk;
-   unsigned int        i;
-
-   for (i = 0; i < Conf.desks.num; i++)
-     {
-	dsk = _DeskGet(i);
-	if (!dsk)
+	if (dsk->bg.bg != bg && why == DESK_BG_REFRESH)
 	   continue;
-	if (bg && dsk->bg.bg != bg)
-	   continue;
-	if (!bg && dsk->viewable)	/* CM start/stop hack */
-	   dsk->bg.isset = 0;
-	DeskBackgroundUpdate(dsk);
+	DeskBackgroundRefresh(dsk, why);
      }
 }
 
@@ -726,9 +717,9 @@ DeskResize(int desk, int w, int h)
 	x = (dsk->viewable) ? EoGetX(dsk) : VRoot.w;
 	EoMoveResize(dsk, x, 0, w, h);
      }
-   if (dsk->bg.o && dsk->bg.o != EoObj(dsk))
-      EobjMoveResize(dsk->bg.o, 0, 0, w, h);
-   DeskBackgroundUpdate(dsk);
+   if (dsk->bg.o_bg)
+      EobjMoveResize(dsk->bg.o_bg, 0, 0, w, h);
+   DeskBackgroundRefresh(dsk, DESK_BG_REFRESH);
    DeskControlsDestroy(dsk, 1);
    DeskControlsCreate(dsk);
    DeskControlsShow(dsk, 1);
@@ -775,12 +766,6 @@ DeskSetArea(Desk * dsk, int ax, int ay)
 
    dsk->current_area_x = ax;
    dsk->current_area_y = ay;
-}
-
-int
-DeskIsViewable(const Desk * dsk)
-{
-   return dsk->viewable;
 }
 
 void
@@ -1110,7 +1095,8 @@ DeskMove(Desk * dsk, int x, int y)
 	     if (!dd->viewable && v)
 	       {
 		  dd->viewable = 1;
-		  DeskBackgroundRefresh(_DeskGet(desks.order[i]));
+		  DeskBackgroundRefresh(_DeskGet(desks.order[i]),
+					DESK_BG_REFRESH);
 	       }
 	     else if (dd->viewable && !v)
 	       {
@@ -1162,7 +1148,7 @@ DeskEnter(Desk * dsk)
    EGrabServer();
 
    dsk->viewable = 1;
-   DeskBackgroundRefresh(dsk);
+   DeskBackgroundRefresh(dsk, DESK_BG_REFRESH);
    MoveToDeskTop(dsk);
 
    desks.previous = desks.current = dsk;
@@ -1303,7 +1289,7 @@ UncoverDesktop(unsigned int desk)
    dsk = _DeskGet(desk);
 
    dsk->viewable = 1;
-   DeskBackgroundRefresh(dsk);
+   DeskBackgroundRefresh(dsk, DESK_BG_REFRESH);
 }
 
 static void
@@ -1377,7 +1363,7 @@ DeskShow(int desk)
    dsk = _DeskGet(desk);
 
    dsk->viewable = 1;
-   DeskBackgroundRefresh(dsk);
+   DeskBackgroundRefresh(dsk, DESK_BG_REFRESH);
    MoveToDeskTop(desk);
 
    if (desk == 0)
@@ -1958,6 +1944,39 @@ DeskHandleTooltip(Desk * dsk, XEvent * ev)
 }
 
 static void
+DeskPropertyChange(Desk * dsk, XEvent * ev)
+{
+   Pixmap              pmap;
+
+   if (ev->xproperty.atom == E_XROOTPMAP_ID)
+     {
+	/* Possible race here? */
+	pmap = HintsGetRootPixmap(ev->xany.window);
+	if (EventDebug(EDBUG_TYPE_DESKS))
+	   Eprintf("DeskPropertyChange win=%#lx _XROOTPMAP_ID=%#lx\n",
+		   ev->xany.window, pmap);
+	if (ev->xany.window != VRoot.win)
+	   return;
+	dsk->bg.pmap_set = pmap;
+	if (pmap == dsk->bg.pmap)
+	   return;
+	if (pmap == Mode.root.ext_pmap)
+	   return;
+	Mode.root.ext_pmap = pmap;
+	Mode.root.ext_pmap_valid = EDrawableCheck(pmap, 0);
+	DesksBackgroundRefresh(NULL, DESK_BG_REFRESH);
+     }
+   else if (ev->xproperty.atom == E_XROOTCOLOR_PIXEL)
+     {
+	if (EventDebug(EDBUG_TYPE_DESKS))
+	   Eprintf("DeskPropertyChange win=%#lx _XROOTCOLOR_PIXEL\n",
+		   ev->xany.window);
+	if (ev->xany.window != VRoot.win)
+	   return;
+     }
+}
+
+static void
 DeskHandleEvents(XEvent * ev, void *prm)
 {
    Desk               *dsk = (Desk *) prm;
@@ -1986,6 +2005,11 @@ DeskHandleEvents(XEvent * ev, void *prm)
      case ConfigureNotify:
 	if (ev->xconfigure.window == VRoot.win)
 	   DeskRootResize(0, ev->xconfigure.width, ev->xconfigure.height);
+	break;
+
+     case PropertyNotify:
+	if (ev->xany.window == VRoot.win)
+	   DeskPropertyChange(dsk, ev);
 	break;
 
 #if USE_XRANDR
