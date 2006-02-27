@@ -93,7 +93,7 @@ static int _entropy_etk_list_filename_compare_cb(Etk_Tree *tree, Etk_Tree_Row *r
    file2 = ecore_hash_get(row_hash, row2);
   
    if (file1 && file2) {
-	 val = strcmp(file1->file->filename, file2->file->filename);
+	 val = strcasecmp(file1->file->filename, file2->file->filename);
 	 
 	 if ( !strcmp(file1->file->mime_type, "file/folder") && strcmp(file2->file->mime_type, "file/folder"))
 		 return -1;
