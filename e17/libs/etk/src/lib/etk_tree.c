@@ -549,6 +549,22 @@ int etk_tree_col_place_get(Etk_Tree_Col *col)
 }
 
 /**
+ * @brief Sets the sorting function for a columb
+ * @param col a tree column
+ * @param compare_cb the sorting comparator
+ * @param ascendant wether we want ascending or descending results
+ * @param data a pointer to user data
+ */
+void etk_tree_col_sort_func_set(Etk_Tree_Col *col, int (*compare_cb)(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data), Etk_Bool ascendant, void *data)
+{  
+   if(!col)
+     return;
+   col->sort.compare_cb = compare_cb;
+   col->sort.ascendant = ascendant;
+   col->sort.data = data;
+}
+
+/**
  * @brief Sets the mode used by the tree. The tree has to be not built
  * @param tree a tree
  * @param mode the mode which will be used by the tree: ETK_TREE_MODE_LIST (rows can not have children) or ETK_TREE_MODE_TREE (rows can have children)
@@ -1677,6 +1693,9 @@ static void _etk_tree_col_constructor(Etk_Tree_Col *tree_col)
    tree_col->header = NULL;
    tree_col->clip = NULL;
    tree_col->separator = NULL;
+   tree_col->sort.compare_cb = NULL;
+   tree_col->sort.ascendant = ETK_TRUE;
+   tree_col->sort.data = NULL;      
 }
 
 /* Destroys the tree column */
@@ -2106,7 +2125,8 @@ static void _etk_tree_header_mouse_up_cb(Etk_Object *object, void *event, void *
       col->tree->column_to_resize = NULL;
    else
    {
-      /* TODO: sort */
+      if(col->sort.compare_cb)
+	etk_tree_sort(col->tree, col->sort.compare_cb, col->sort.ascendant, col, col->sort.data);
    }
 }
 

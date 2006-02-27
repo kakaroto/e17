@@ -94,6 +94,7 @@ void etk_test_tree_window_create(void *data)
    etk_tree_multiple_select_set(ETK_TREE(tree), ETK_TRUE);
    col1 = etk_tree_col_new(ETK_TREE(tree), _("Column 1"), etk_tree_model_icon_text_new(ETK_TREE(tree), ETK_TREE_FROM_FILE), 90);
    col2 = etk_tree_col_new(ETK_TREE(tree), _("Column 2"), etk_tree_model_int_new(ETK_TREE(tree)), 90);
+   etk_tree_col_sort_func_set(col2, _etk_test_tree_compare_cb, ETK_TRUE, NULL);
    col3 = etk_tree_col_new(ETK_TREE(tree), _("Column 3"), etk_tree_model_image_new(ETK_TREE(tree), ETK_TREE_FROM_FILE), 90);
    etk_tree_build(ETK_TREE(tree));
 
