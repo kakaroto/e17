@@ -129,14 +129,20 @@ _cpu_init(E_Module *m)
    #define T Config
    #define D c->conf_edd
    E_CONFIG_VAL(D, T, check_interval, INT);
+   E_CONFIG_VAL(D, T, show_text, INT);
+   E_CONFIG_VAL(D, T, show_graph, INT);
    
    c->conf = e_config_domain_load("module.cpu", c->conf_edd);
    if (!c->conf) 
      {
 	c->conf = E_NEW(Config, 1);
 	c->conf->check_interval = 1;
+	c->conf->show_text = 1;
+	c->conf->show_graph = 1;
      }
    E_CONFIG_LIMIT(c->conf->check_interval, 0, 60);
+   E_CONFIG_LIMIT(c->conf->check_interval, 0, 1);
+   E_CONFIG_LIMIT(c->conf->check_interval, 0, 1);
    
    _cpu_config_menu_new(c);
    
@@ -221,17 +227,15 @@ _cpu_face_init(Cpu_Face *cf)
    evas_event_freeze(cf->evas);
    
    o = edje_object_add(cf->evas);
-   cf->cpu_obj = o;
-   
-   if (!e_theme_edje_object_set(o, "base/theme/modules/cpu", 
-				"modules/cpu/main")) 
+   cf->cpu_obj = o;   
+   if (!e_theme_edje_object_set(o, "base/theme/modules/cpu", "modules/cpu/main")) 
      {
 	snprintf(buf, sizeof(buf), PACKAGE_DATA_DIR"/cpu.edj");	
 	edje_object_file_set(o, buf, "modules/cpu/main");
      }   
    evas_object_show(o);
 
-   o = edje_object_add(cf->evas); //evas_object_rectangle_add(cf->evas);
+   o = edje_object_add(cf->evas);
    cf->chart_obj = o;
    evas_object_layer_set(o, 1);
    evas_object_repeat_events_set(o, 0);
@@ -244,8 +248,7 @@ _cpu_face_init(Cpu_Face *cf)
    evas_object_layer_set(o, 2);
    evas_object_repeat_events_set(o, 1);
    evas_object_color_set(o, 0, 0, 0, 0);
-   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN,
-				  _cpu_face_cb_mouse_down, cf);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _cpu_face_cb_mouse_down, cf);
    evas_object_show(o);
    
    cf->gmc = e_gadman_client_new(cf->con->gadman);
@@ -263,6 +266,7 @@ _cpu_face_init(Cpu_Face *cf)
    e_gadman_client_resize(cf->gmc, 45, 50);
    e_gadman_client_change_func_set(cf->gmc, _cpu_face_cb_gmc_change, cf);
    e_gadman_client_load(cf->gmc);
+   
    evas_event_thaw(cf->evas);
 
    cf->monitor = ecore_timer_add((double)cf->cpu->conf->check_interval, _cpu_face_update_values, cf);
@@ -320,10 +324,10 @@ _cpu_face_free(Cpu_Face *cf)
      evas_object_del(cf->event_obj);
    if (cf->cpu_obj)
      evas_object_del(cf->cpu_obj);
-   if (cf->chart_obj)
-     evas_object_del(cf->chart_obj);
    if (cf->old_values)
      _cpu_face_graph_clear(cf);
+   if (cf->chart_obj)
+     evas_object_del(cf->chart_obj);
    
    if (cf->gmc) 
      {
@@ -346,8 +350,6 @@ _cpu_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change
    switch (change) 
      {
       case E_GADMAN_CHANGE_MOVE_RESIZE:
-	if (cf->monitor)
-	  ecore_timer_del(cf->monitor);
 	e_gadman_client_geometry_get(cf->gmc, &x, &y, &w, &h);
 	evas_object_move(cf->chart_obj, x, y);
 	evas_object_move(cf->event_obj, x, y);
@@ -355,8 +357,12 @@ _cpu_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change
 	evas_object_resize(cf->chart_obj, w, h);
 	evas_object_resize(cf->event_obj, w, h);
 	evas_object_resize(cf->cpu_obj, w, h);
-	_cpu_face_graph_clear(cf);	
+	_cpu_face_graph_clear(cf);
+	/*
+	if (cf->monitor)
+	  ecore_timer_del(cf->monitor);
 	cf->monitor = ecore_timer_add((double)cf->cpu->conf->check_interval, _cpu_face_update_values, cf);
+	 */
 	break;
       case E_GADMAN_CHANGE_RAISE:
 	evas_object_raise(cf->cpu_obj);
@@ -416,10 +422,17 @@ _cpu_face_update_values(void *data)
    if (val == -1)
      return 1;
 
-   snprintf(str, sizeof(str), "%d %%", val);
-   edje_object_part_text_set(cf->cpu_obj, "in-text", str);   
+   if (cf->cpu->conf->show_text) 
+     {
+	snprintf(str, sizeof(str), "%d %%", val);
+	edje_object_part_text_set(cf->cpu_obj, "in-text", str);   
+     }
    
-   _cpu_face_graph_values(cf, val);
+   if (cf->cpu->conf->show_graph) 
+     _cpu_face_graph_values(cf, val);
+   else 
+     _cpu_face_graph_clear(cf);
+
    return 1;
 }
 
@@ -509,9 +522,11 @@ _cpu_face_graph_values(Cpu_Face *cf, int val)
    Evas_Object *last = NULL;
    Evas_List *l;
    int i, j = 0;
+   int v;
    
    evas_object_geometry_get(cf->chart_obj, &x, &y, &w, &h);
-   
+
+   v = (int)((double)val * ((double)h / (double)100));      
    o = evas_object_line_add(cf->evas);
    edje_object_part_swallow(cf->chart_obj, "lines", o);
    evas_object_layer_set(o, 1);
@@ -519,7 +534,7 @@ _cpu_face_graph_values(Cpu_Face *cf, int val)
      evas_object_hide(o);
    else 
      {
-	evas_object_line_xy_set(o, (x + w), (y + h), (x + w), ((y + h) - val));
+	evas_object_line_xy_set(o, (x + w), (y + h), (x + w), ((y + h) - v));
 	evas_object_color_set(o, 255, 0, 0, 150);
 	evas_object_pass_events_set(o, 1);
 	evas_object_show(o);

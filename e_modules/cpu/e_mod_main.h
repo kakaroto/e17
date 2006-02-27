@@ -9,6 +9,8 @@ typedef struct _Cpu_Face Cpu_Face;
 struct _Config 
 {
    int check_interval;
+   int show_text;
+   int show_graph;
 };
 
 struct _Config_Face 
