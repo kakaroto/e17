@@ -45,6 +45,7 @@ typedef enum   _Etk_Stock_Size Etk_Stock_Size;
 typedef enum   _Etk_Pointer_Type Etk_Pointer_Type;
 typedef struct _Etk_Toplevel_Widget Etk_Toplevel_Widget;
 typedef struct _Etk_Window Etk_Window;
+typedef enum   _Etk_Window_Position Etk_Window_Position;
 typedef struct _Etk_Dialog Etk_Dialog;
 typedef enum   _Etk_Dialog_Response_ID Etk_Dialog_Response_ID;
 typedef struct _Etk_Container Etk_Container;

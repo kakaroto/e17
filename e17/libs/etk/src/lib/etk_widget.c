@@ -517,10 +517,11 @@ void etk_widget_show_all(Etk_Widget *widget)
    if (!widget)
       return;
 
-   if (!widget->visibility_locked)
-      etk_widget_show(widget);
    for (l = widget->children; l; l = l->next)
       etk_widget_show_all(ETK_WIDGET(l->data));
+   
+   if (!widget->visibility_locked)
+     etk_widget_show(widget);   
 }
 
 /**

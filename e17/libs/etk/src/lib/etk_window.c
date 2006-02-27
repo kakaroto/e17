@@ -460,6 +460,63 @@ Etk_Bool etk_window_hide_on_delete(Etk_Object *window, void *data)
    return ETK_TRUE;
 }
 
+/**
+ * @brief Moves the window to a defined position
+ * @param window a window
+ * @param position
+ */
+void etk_window_position_set(Etk_Window *window, Etk_Window_Position position)
+{
+#if HAVE_ECORE_X   
+   int w, h;
+   int x2, y2, w2, h2;
+   
+   if (!window)
+     return;
+   
+   switch (position)
+     {
+      case ETK_WINDOW_POSITION_CENTER:
+	
+	if(!(ETK_WIDGET(window))->visible)
+	{
+	   window->position = ETK_WINDOW_POSITION_CENTER;
+	   break;
+	}
+	
+	if(window->parent)	  
+	  ecore_evas_geometry_get(window->parent->ecore_evas, 
+				  &x2, &y2, &w2, &h2);
+	else
+	  ecore_x_window_geometry_get(ecore_x_window_root_first_get(), 
+				      &x2, &y2, &w2, &h2);	
+	
+	ecore_evas_geometry_get(window->ecore_evas, NULL, NULL, &w, &h);
+	ecore_evas_move(window->ecore_evas, x2 + (w2 - w) / 2, 
+			                    y2 + (h2 - h) / 2);
+	break;
+	
+      case ETK_WINDOW_POSITION_MOUSE:
+	ecore_x_pointer_xy_get(ecore_x_window_root_first_get(), &x2, &y2);
+	ecore_evas_move(window->ecore_evas, x2, y2);
+	break;	       
+     }   
+#endif   
+}
+
+/**
+ * @brief Sets the window's parent
+ * @param window a window
+ * @param parent a window
+ */
+void etk_window_parent_set(Etk_Window *window, Etk_Window *parent)
+{
+   if(!window || !parent)
+     return;
+   
+   window->parent = parent;
+}
+
 /**************************
  *
  * Etk specific functions
@@ -474,8 +531,10 @@ static void _etk_window_constructor(Etk_Window *window)
 
    window->delete_event = _etk_window_delete_event_handler;
 
-   window->ecore_evas = ecore_evas_software_x11_new(NULL, 0, 0, 0, 0, 0);
+   window->ecore_evas = ecore_evas_software_x11_new(0, 0, 0, 0, 0, 0);
    window->x_window = ecore_evas_software_x11_window_get(window->ecore_evas);
+   window->position = -1;
+   window->parent = NULL;
    
 /* TODO: free!! */
 #if HAVE_ECORE_X      
@@ -501,7 +560,7 @@ static void _etk_window_constructor(Etk_Window *window)
    /* TODO: font path */
    evas_font_path_append(ETK_TOPLEVEL_WIDGET(window)->evas, PACKAGE_DATA_DIR "/fonts/");
    ecore_evas_data_set(window->ecore_evas, "etk_window", window);
-   ecore_evas_callback_resize_set(window->ecore_evas, _etk_window_move_cb);
+   ecore_evas_callback_move_set(window->ecore_evas, _etk_window_move_cb);
    ecore_evas_callback_resize_set(window->ecore_evas, _etk_window_resize_cb);
    ecore_evas_callback_focus_in_set(window->ecore_evas, _etk_window_focus_in_cb);
    ecore_evas_callback_focus_out_set(window->ecore_evas, _etk_window_focus_out_cb);
@@ -535,6 +594,16 @@ static void _etk_window_move_cb(Ecore_Evas *ecore_evas)
    if (!(window = ETK_WINDOW(ecore_evas_data_get(ecore_evas, "etk_window"))))
       return;
    etk_signal_emit(_etk_window_signals[ETK_WINDOW_MOVE_SIGNAL], ETK_OBJECT(window), NULL);
+
+   switch(window->position)
+   {
+      case ETK_WINDOW_POSITION_CENTER:
+      etk_window_position_set(window, ETK_WINDOW_POSITION_CENTER);
+      break;
+      
+      default:
+      break;
+   }   
 }
 
 /* Called when the window is resized */
@@ -545,7 +614,7 @@ static void _etk_window_resize_cb(Ecore_Evas *ecore_evas)
    if (!(window = ETK_WINDOW(ecore_evas_data_get(ecore_evas, "etk_window"))))
       return;
    etk_signal_emit(_etk_window_signals[ETK_WINDOW_RESIZE_SIGNAL], ETK_OBJECT(window), NULL);
-   etk_widget_redraw_queue(ETK_WIDGET(window));
+   etk_widget_redraw_queue(ETK_WIDGET(window));      
 }
 
 /* Called when the window is focused in */

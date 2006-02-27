@@ -20,6 +20,16 @@
 /** @brief Check if the object is an Etk_Window */
 #define ETK_IS_WINDOW(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_WINDOW_TYPE))
 
+/**
+ * @enum Etk_Window_Position
+ * @brief The position of a window
+ */
+enum _Etk_Window_Position
+{
+   ETK_WINDOW_POSITION_CENTER,
+   ETK_WINDOW_POSITION_MOUSE     
+};
+
 struct _Etk_Window
 {
    /* private: */
@@ -28,7 +38,10 @@ struct _Etk_Window
 
    Ecore_Evas *ecore_evas;
    Ecore_X_Window x_window;
-
+   
+   Etk_Window_Position position;
+   Etk_Window *parent;
+   
    Etk_Bool (*delete_event)(Etk_Window *window);
 };
 
@@ -53,20 +66,23 @@ void etk_window_unstick(Etk_Window *window);
 void etk_window_focus(Etk_Window *window);
 void etk_window_unfocus(Etk_Window *window);
 
-void etk_window_decorated_set(Etk_Window *window, Etk_Bool decorated);
+void     etk_window_decorated_set(Etk_Window *window, Etk_Bool decorated);
 Etk_Bool etk_window_decorated_get(Etk_Window *window);
-void etk_window_shaped_set(Etk_Window *window, Etk_Bool shaped);
+void     etk_window_shaped_set(Etk_Window *window, Etk_Bool shaped);
 Etk_Bool etk_window_shaped_get(Etk_Window *window);
 
-void etk_window_skip_taskbar_hint_set(Etk_Window *window, Etk_Bool skip_taskbar_hint);
+void     etk_window_skip_taskbar_hint_set(Etk_Window *window, Etk_Bool skip_taskbar_hint);
 Etk_Bool etk_window_skip_taskbar_hint_get(Etk_Window *window);
-void etk_window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_hint);
+void     etk_window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_hint);
 Etk_Bool etk_window_skip_pager_hint_get(Etk_Window *window);
 
-void etk_window_dnd_aware_set(Etk_Window *window, Etk_Bool on);
+void     etk_window_dnd_aware_set(Etk_Window *window, Etk_Bool on);
 
 Etk_Bool etk_window_hide_on_delete(Etk_Object *window, void *data);
 
+void     etk_window_position_set(Etk_Window *window, Etk_Window_Position position);
+void     etk_window_parent_set(Etk_Window *window, Etk_Window *parent);
+  
 /** @} */
 
 #endif
