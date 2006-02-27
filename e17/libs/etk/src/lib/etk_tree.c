@@ -147,6 +147,7 @@ static void _etk_tree_heapify(Etk_Tree *tree, Etk_Tree_Row **heap, int root, int
 static Etk_Signal *_etk_tree_signals[ETK_TREE_NUM_SIGNALS];
 static Etk_Signal *_etk_tree_col_signals[ETK_TREE_COL_NUM_SIGNALS];
 static Etk_Bool    _etk_tree_drag_started = ETK_FALSE;
+static Evas_Button_Flags _etk_tree_button_flags = 0;
 
 /**************************
  *
@@ -1923,13 +1924,11 @@ static void _etk_tree_row_pressed_cb(void *data, Evas *e, Evas_Object *obj, void
       event.flags = evas_event->flags;
       event.timestamp = evas_event->timestamp;      
 
-#if 0 
-      /* we dont need this anymore */
       if(!row_objects->row->tree->dnd_event)
 	{
-	   etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_CLICKED_SIGNAL], ETK_OBJECT(row_objects->row->tree), NULL, row_objects->row, &event);
+	   //etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_CLICKED_SIGNAL], ETK_OBJECT(row_objects->row->tree), NULL, row_objects->row, &event);
+	   _etk_tree_button_flags = evas_event->flags;
 	}
-#endif      
       
       /* We have to check this again because the user can remove the row on the "clicked" signal */
       if (!row_objects->row)
@@ -1975,7 +1974,7 @@ static void _etk_tree_row_clicked_cb(void *data, Evas *e, Evas_Object *obj, void
       event.widget.y = evas_event->canvas.y - ETK_WIDGET(row_objects->row->tree)->inner_geometry.y;
       event.modifiers = evas_event->modifiers;
       event.locks = evas_event->locks;
-      event.flags = EVAS_BUTTON_NONE;
+      event.flags = _etk_tree_button_flags;//EVAS_BUTTON_NONE;
       event.timestamp = evas_event->timestamp;      
       
       if (!evas_key_modifier_is_set(event.modifiers, "Control") &&
@@ -1985,12 +1984,12 @@ static void _etk_tree_row_clicked_cb(void *data, Evas *e, Evas_Object *obj, void
       {
 	 etk_tree_unselect_all(row_objects->row->tree);
 	 _etk_tree_row_select(row_objects->row->tree, row_objects->row, evas_event->modifiers);
-      }
+      }     
       
       if(row_objects->row->tree->dnd_event)      	 
 	row_objects->row->tree->dnd_event = ETK_FALSE;
       else
-	etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_CLICKED_SIGNAL], ETK_OBJECT(row_objects->row->tree), NULL, row_objects->row, &event);      
+	etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_CLICKED_SIGNAL], ETK_OBJECT(row_objects->row->tree), NULL, row_objects->row, &event);
    }
 }
 
