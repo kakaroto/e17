@@ -427,7 +427,9 @@ _cpu_face_update_values(void *data)
 	snprintf(str, sizeof(str), "%d %%", val);
 	edje_object_part_text_set(cf->cpu_obj, "in-text", str);   
      }
-   
+   else
+     edje_object_part_text_set(cf->cpu_obj, "in-text", "");   
+     
    if (cf->cpu->conf->show_graph) 
      _cpu_face_graph_values(cf, val);
    else 
