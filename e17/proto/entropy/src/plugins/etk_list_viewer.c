@@ -117,6 +117,30 @@ static int _entropy_etk_list_size_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1,
    }
 }
 
+/* Compares two rows of the tree */
+static int _entropy_etk_list_date_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data)
+{
+   gui_file *file1, *file2;
+   
+   if (!tree || !row1 || !row2 || !col)
+      return 0;
+   
+   file1 = ecore_hash_get(row_hash, row1);
+   file2 = ecore_hash_get(row_hash, row2);
+   
+   if (file1 && file2) {
+	   if (file1->file->properties.st_mtime > file2->file->properties.st_mtime) {
+		   return 1;
+	   } else if (file1->file->properties.st_mtime < file2->file->properties.st_mtime) {
+		   return -1;
+	   } else return 0;
+   } else {
+	   printf("Could not locate file!\n");
+	   return 0;
+   }
+}
+
+
 
 
 static void _entropy_etk_list_viewer_drag_begin_cb(Etk_Object *object, void *data)
@@ -520,6 +544,7 @@ entropy_plugin_init (entropy_core * core,
   viewer->tree_col1 = etk_tree_col_new(ETK_TREE(viewer->tree), _("Date Modified"), 
 		  etk_tree_model_text_new(ETK_TREE(viewer->tree)),70);
   etk_tree_col_expand_set(viewer->tree_col1, ETK_TRUE);
+  etk_tree_col_sort_func_set(viewer->tree_col1, _entropy_etk_list_date_compare_cb, ETK_TRUE, NULL);
 
 
   /*DND Setup*/

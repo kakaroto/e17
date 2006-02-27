@@ -116,7 +116,8 @@ static void _etk_structure_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *
    entropy_gui_event *gui_event;
    event_file_core* e_event;
 
-   if (!(event->button == 1))
+   if ( (!(event->button == 1)) || event->flags & EVAS_BUTTON_TRIPLE_CLICK 
+	|| event->flags & EVAS_BUTTON_DOUBLE_CLICK )
 	   return;
    
    instance = ecore_hash_get(instance_map_hash, row);
@@ -124,16 +125,6 @@ static void _etk_structure_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *
 	   viewer = instance->data;
 	   e_event = ecore_hash_get(viewer->row_hash, row);
 	
-   /*printf(_("Row clicked %p. Button: %d. "), row, event->button);
-   if (event->flags & EVAS_BUTTON_TRIPLE_CLICK)
-      printf(_("Triple Click\n"));
-   else if (event->flags & EVAS_BUTTON_DOUBLE_CLICK)
-      printf(_("Double Click\n"));
-   else
-      printf(_("Single Click\n"));*/
-
-  //printf("Received row: %p, %p: %s\n", e_event, instance, e_event->file->path);
-  
 	  if (e_event) {
 		  gui_event = entropy_malloc (sizeof (entropy_gui_event));
 		  gui_event->event_type =
