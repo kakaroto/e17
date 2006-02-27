@@ -389,8 +389,10 @@ DeskConfigure(Desk * dsk)
 static Desk        *
 DeskCreate(int desk, int configure)
 {
-   Desk               *dsk;
+#if USE_COMPOSITE
    EObj               *eo;
+#endif
+   Desk               *dsk;
    Window              win;
    char                buf[64];
 
@@ -415,6 +417,7 @@ DeskCreate(int desk, int configure)
      {
 	desks.current = dsk;
 #if !USE_BG_WIN_ON_ALL_DESKS	/* TBD - Use per virtual root bg window? */
+#if USE_COMPOSITE
 	/* Add background window */
 	eo = EobjWindowCreate(EOBJ_TYPE_ROOT_BG, 0, 0, VRoot.w, VRoot.h,
 			      0, "Root-bg");
@@ -423,6 +426,7 @@ DeskCreate(int desk, int configure)
 	EobjSetLayer(eo, 0);
 	EventCallbackRegister(EobjGetWin(eo), 0, DeskHandleEvents, dsk);
 	dsk->bg.o_bg = eo;
+#endif
 	if (Mode.root.ext_pmap_valid)
 	   dsk->bg.pmap_set = Mode.root.ext_pmap;
 #endif
@@ -440,6 +444,7 @@ DeskCreate(int desk, int configure)
      }
 
 #if USE_BG_WIN_ON_ALL_DESKS	/* TBD - Use per virtual root bg window? */
+#if USE_COMPOSITE
    /* Add background window */
    Esnprintf(buf, sizeof(buf), "Desk-bg-%d", desk);
    eo = EobjWindowCreate(EOBJ_TYPE_MISC, 0, 0, VRoot.w, VRoot.h, 0, buf);
@@ -449,6 +454,7 @@ DeskCreate(int desk, int configure)
    EobjSetLayer(eo, 0);
    dsk->bg.o_bg = eo;
    EventCallbackRegister(EobjGetWin(eo), 0, DeskHandleEvents, dsk);
+#endif
 #endif
 
    HintsSetRootHints(EoGetWin(dsk));
@@ -464,12 +470,14 @@ DeskDestroy(Desk * dsk)
 {
    ModulesSignal(ESIGNAL_DESK_REMOVED, dsk);
 
+#if USE_COMPOSITE
    if (dsk->bg.o_bg)
      {
 	EventCallbackUnregister(EobjGetWin(dsk->bg.o_bg), 0, DeskHandleEvents,
 				dsk);
 	EobjWindowDestroy(dsk->bg.o_bg);
      }
+#endif
    EventCallbackUnregister(EoGetWin(dsk), 0, DeskHandleEvents, dsk);
 
    DeskControlsDestroy(dsk, 1);
@@ -521,6 +529,7 @@ DeskBackgroundConfigure(Desk * dsk)
 	  BackgroundIsNone(dsk->bg.bg), pmap, dsk->bg.pmap_set, pixel,
 	  dsk->bg.pixel);
 
+#if USE_COMPOSITE
    if (dsk->bg.o_bg)
      {
 	if (ECompMgrIsActive())
@@ -534,6 +543,7 @@ DeskBackgroundConfigure(Desk * dsk)
 	     EobjUnmap(dsk->bg.o_bg);
 	  }
      }
+#endif
 
    win = EobjGetWin(dsk->bg.o);
 
@@ -717,8 +727,10 @@ DeskResize(int desk, int w, int h)
 	x = (dsk->viewable) ? EoGetX(dsk) : VRoot.w;
 	EoMoveResize(dsk, x, 0, w, h);
      }
+#if USE_COMPOSITE
    if (dsk->bg.o_bg)
       EobjMoveResize(dsk->bg.o_bg, 0, 0, w, h);
+#endif
    DeskBackgroundRefresh(dsk, DESK_BG_REFRESH);
    DeskControlsDestroy(dsk, 1);
    DeskControlsCreate(dsk);

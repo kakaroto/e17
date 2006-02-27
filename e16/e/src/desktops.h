@@ -52,7 +52,9 @@ struct _desk
    {
       struct _background *bg;
       EObj               *o;
+#if USE_COMPOSITE
       EObj               *o_bg;
+#endif
       Pixmap              pmap;
       Pixmap              pmap_set;
       unsigned long       pixel;
