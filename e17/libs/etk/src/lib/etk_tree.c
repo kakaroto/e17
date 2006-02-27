@@ -1929,7 +1929,7 @@ static void _etk_tree_row_pressed_cb(void *data, Evas *e, Evas_Object *obj, void
 	{
 	   etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_CLICKED_SIGNAL], ETK_OBJECT(row_objects->row->tree), NULL, row_objects->row, &event);
 	}
-#enfif      
+#endif      
       
       /* We have to check this again because the user can remove the row on the "clicked" signal */
       if (!row_objects->row)
