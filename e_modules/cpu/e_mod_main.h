@@ -42,6 +42,7 @@ struct _Cpu_Face
    Evas_Object *cpu_obj;
    Evas_Object *event_obj;
    Evas_Object *chart_obj;
+   Evas_Object *txt_obj;
    
    Ecore_Timer *monitor;
    

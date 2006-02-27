@@ -233,6 +233,7 @@ _cpu_face_init(Cpu_Face *cf)
 	snprintf(buf, sizeof(buf), PACKAGE_DATA_DIR"/cpu.edj");	
 	edje_object_file_set(o, buf, "modules/cpu/main");
      }   
+   evas_object_pass_events_set(o, 1);
    evas_object_show(o);
 
    o = edje_object_add(cf->evas);
@@ -242,10 +243,23 @@ _cpu_face_init(Cpu_Face *cf)
    evas_object_pass_events_set(o, 1);
    evas_object_color_set(o, 255, 255, 255, 255);
    evas_object_show(o);
+
+   o = edje_object_add(cf->evas);
+   cf->txt_obj = o;
+   if (!e_theme_edje_object_set(o, "base/theme/modules/cpu", "modules/cpu/text")) 
+     {
+	snprintf(buf, sizeof(buf), PACKAGE_DATA_DIR"/cpu.edj");	
+	edje_object_file_set(o, buf, "modules/cpu/text");
+     }      
+   evas_object_layer_set(o, 2);
+   evas_object_repeat_events_set(o, 0);
+   evas_object_pass_events_set(o, 1);
+   evas_object_color_set(o, 255, 255, 255, 255);
+   evas_object_show(o);
    
    o = evas_object_rectangle_add(cf->evas);
    cf->event_obj = o;
-   evas_object_layer_set(o, 2);
+   evas_object_layer_set(o, 3);
    evas_object_repeat_events_set(o, 1);
    evas_object_color_set(o, 0, 0, 0, 0);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _cpu_face_cb_mouse_down, cf);
@@ -262,6 +276,7 @@ _cpu_face_init(Cpu_Face *cf)
    e_gadman_client_min_size_set(cf->gmc, 45, 50);
    e_gadman_client_max_size_set(cf->gmc, 128, 128);
    e_gadman_client_auto_size_set(cf->gmc, 45, 50);
+   e_gadman_client_aspect_set(cf->gmc, 1.0, 1.0);
    e_gadman_client_align_set(cf->gmc, 1.0, 1.0);
    e_gadman_client_resize(cf->gmc, 45, 50);
    e_gadman_client_change_func_set(cf->gmc, _cpu_face_cb_gmc_change, cf);
@@ -301,6 +316,7 @@ _cpu_face_enable(Cpu_Face *cf)
    evas_object_show(cf->cpu_obj);
    evas_object_show(cf->chart_obj);
    evas_object_show(cf->event_obj);
+   evas_object_show(cf->txt_obj);
 }
 
 static void
@@ -311,6 +327,7 @@ _cpu_face_disable(Cpu_Face *cf)
    evas_object_hide(cf->event_obj);
    evas_object_hide(cf->chart_obj);
    evas_object_hide(cf->cpu_obj);
+   evas_object_hide(cf->txt_obj);   
 }
 
 static void 
@@ -328,6 +345,8 @@ _cpu_face_free(Cpu_Face *cf)
      _cpu_face_graph_clear(cf);
    if (cf->chart_obj)
      evas_object_del(cf->chart_obj);
+   if (cf->txt_obj)
+     evas_object_del(cf->txt_obj);
    
    if (cf->gmc) 
      {
@@ -354,20 +373,18 @@ _cpu_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change
 	evas_object_move(cf->chart_obj, x, y);
 	evas_object_move(cf->event_obj, x, y);
 	evas_object_move(cf->cpu_obj, x, y);
+	evas_object_move(cf->txt_obj, x, y);	
 	evas_object_resize(cf->chart_obj, w, h);
 	evas_object_resize(cf->event_obj, w, h);
 	evas_object_resize(cf->cpu_obj, w, h);
+	evas_object_resize(cf->txt_obj, w, h);	
 	_cpu_face_graph_clear(cf);
-	/*
-	if (cf->monitor)
-	  ecore_timer_del(cf->monitor);
-	cf->monitor = ecore_timer_add((double)cf->cpu->conf->check_interval, _cpu_face_update_values, cf);
-	 */
 	break;
       case E_GADMAN_CHANGE_RAISE:
 	evas_object_raise(cf->cpu_obj);
 	evas_object_raise(cf->chart_obj);
 	evas_object_raise(cf->event_obj);
+	evas_object_raise(cf->txt_obj);	
 	break;
       default:
 	break;
@@ -424,11 +441,11 @@ _cpu_face_update_values(void *data)
 
    if (cf->cpu->conf->show_text) 
      {
-	snprintf(str, sizeof(str), "%d %%", val);
-	edje_object_part_text_set(cf->cpu_obj, "in-text", str);   
+	snprintf(str, sizeof(str), "%d%%", val);
+	edje_object_part_text_set(cf->txt_obj, "in-text", str);   
      }
    else
-     edje_object_part_text_set(cf->cpu_obj, "in-text", "");   
+     edje_object_part_text_set(cf->txt_obj, "in-text", "");   
      
    if (cf->cpu->conf->show_graph) 
      _cpu_face_graph_values(cf, val);
@@ -537,7 +554,7 @@ _cpu_face_graph_values(Cpu_Face *cf, int val)
    else 
      {
 	evas_object_line_xy_set(o, (x + w), (y + h), (x + w), ((y + h) - v));
-	evas_object_color_set(o, 255, 0, 0, 150);
+	evas_object_color_set(o, 255, 0, 0, 100);
 	evas_object_pass_events_set(o, 1);
 	evas_object_show(o);
      }
