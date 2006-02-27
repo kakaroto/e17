@@ -1922,11 +1922,14 @@ static void _etk_tree_row_pressed_cb(void *data, Evas *e, Evas_Object *obj, void
       event.locks = evas_event->locks;
       event.flags = evas_event->flags;
       event.timestamp = evas_event->timestamp;      
-      
+
+#if 0 
+      /* we dont need this anymore */
       if(!row_objects->row->tree->dnd_event)
 	{
 	   etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_CLICKED_SIGNAL], ETK_OBJECT(row_objects->row->tree), NULL, row_objects->row, &event);
 	}
+#enfif      
       
       /* We have to check this again because the user can remove the row on the "clicked" signal */
       if (!row_objects->row)
