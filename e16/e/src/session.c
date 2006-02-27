@@ -1043,26 +1043,14 @@ SessionHelper(int when)
      case ESESSION_INIT:
 	if (Conf.session.enable_script && Conf.session.script)
 	   SessionRunProg(Conf.session.script, "init");
-#if ENABLE_OLD_SESSION_HELPERS
-	else if (Conf.session.cmd_init)
-	   SessionRunProg(Conf.session.cmd_init, NULL);
-#endif
 	break;
      case ESESSION_START:
 	if (Conf.session.enable_script && Conf.session.script)
 	   SessionRunProg(Conf.session.script, "start");
-#if ENABLE_OLD_SESSION_HELPERS
-	else if (Conf.session.cmd_start)
-	   SessionRunProg(Conf.session.cmd_start, NULL);
-#endif
 	break;
      case ESESSION_STOP:
 	if (Conf.session.enable_script && Conf.session.script)
 	   SessionRunProg(Conf.session.script, "stop");
-#if ENABLE_OLD_SESSION_HELPERS
-	else if (Conf.session.cmd_stop)
-	   SessionRunProg(Conf.session.cmd_stop, NULL);
-#endif
 	break;
      }
 }
