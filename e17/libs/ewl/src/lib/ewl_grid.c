@@ -312,6 +312,8 @@ ewl_grid_add(Ewl_Grid *g, Ewl_Widget *w,
 	/* store the child info in the child widget */
 	ewl_widget_data_set(w, (void *) g, child);
 	ewl_container_child_append(EWL_CONTAINER(g), w);
+	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_DESTROY, 
+                             ewl_grid_child_destroy_cb, g);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -527,6 +529,23 @@ ewl_grid_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	IF_FREE(g->row_size)
 	g->col_size = NULL;
 	g->row_size = NULL;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_grid_child_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+		void *user_data)
+{
+	Ewl_Widget *child;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	child = (Ewl_Widget *)ewl_widget_data_get(w, user_data);
+
+	IF_FREE(child)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
