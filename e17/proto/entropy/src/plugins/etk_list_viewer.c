@@ -83,15 +83,28 @@ entropy_plugin_toolkit_get()
 /* Compares two rows of the tree */
 static int _entropy_etk_list_filename_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data)
 {
-   char *row1_value, *row2_value;
+   gui_file *file1, *file2;
+   int val;
    
    if (!tree || !row1 || !row2 || !col)
       return 0;
-   
-   etk_tree_row_fields_get(row1, col, &row1_value, NULL);
-   etk_tree_row_fields_get(row2, col, &row2_value, NULL);
 
-   return strcmp(row1_value, row2_value);
+   file1 = ecore_hash_get(row_hash, row1);
+   file2 = ecore_hash_get(row_hash, row2);
+  
+   if (file1 && file2) {
+	 val = strcmp(file1->file->filename, file2->file->filename);
+	 
+	 if ( !strcmp(file1->file->mime_type, "file/folder") && strcmp(file2->file->mime_type, "file/folder"))
+		 return -1;
+	 else if (!strcmp(file2->file->mime_type, "file/folder") && strcmp(file1->file->mime_type, "file/folder"))
+		 return 1;
+	 else 
+		 return val;
+   } else {
+	   printf("Could not locate file!\n");
+	   return 0;
+   }
 }
 
 /* Compares two rows of the tree */
