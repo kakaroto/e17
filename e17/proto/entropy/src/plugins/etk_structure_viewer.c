@@ -7,6 +7,7 @@
 
 static int etk_callback_setup = 0;
 static Ecore_Hash* instance_map_hash = NULL;
+static Ecore_Hash* tree_map_hash = NULL;
 
 typedef struct entropy_etk_file_structure_viewer entropy_etk_file_structure_viewer;
 struct entropy_etk_file_structure_viewer
@@ -273,6 +274,13 @@ entropy_plugin_init (entropy_core * core,
   if (!etk_callback_setup) {
 	  printf("ETK stuff setup! *******\n");
 	  
+	  instance_map_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
+	  tree_map_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
+
+	  etk_callback_setup = 1;
+  }
+
+  if (!ecore_hash_get(tree_map_hash, ((Etk_Tree_Row*)parent_visual)->tree)) {
 	  etk_signal_connect("row_clicked", ETK_OBJECT( ((Etk_Tree_Row*)parent_visual)->tree  ), 
 		  ETK_CALLBACK(_etk_structure_viewer_row_clicked), NULL);
 
@@ -280,15 +288,14 @@ entropy_plugin_init (entropy_core * core,
 	   dnd_types_num = 1;
 	   dnd_types = calloc(dnd_types_num, sizeof(char*));
 	   dnd_types[0] = strdup("text/uri-list");  
-	   etk_widget_dnd_types_set(  ((Etk_Tree_Row*)parent_visual)->tree, 
+	   etk_widget_dnd_types_set(  ETK_WIDGET(((Etk_Tree_Row*)parent_visual)->tree), 
 	   			dnd_types, dnd_types_num);
-	   etk_widget_dnd_dest_set( ((Etk_Tree_Row*)parent_visual)->tree  , ETK_TRUE);
+	   etk_widget_dnd_dest_set( ETK_WIDGET(((Etk_Tree_Row*)parent_visual)->tree)  , ETK_TRUE);
 	   etk_signal_connect("drag_drop", ETK_OBJECT( ((Etk_Tree_Row*)parent_visual)->tree  ), 
 	   			ETK_CALLBACK(_etk_structure_viewer_xdnd_drag_drop_cb), NULL);
 
-	  instance_map_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
-
-	  etk_callback_setup = 1;
+	   ecore_hash_set(tree_map_hash, ((Etk_Tree_Row*)parent_visual)->tree, (int*)1);
+ 
   }
 
   structure_viewer_add_row (instance, (entropy_generic_file *) data, NULL);

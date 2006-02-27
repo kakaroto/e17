@@ -23,6 +23,8 @@ struct entropy_layout_gui
   Ecore_Hash* toplevel_row_entries;
 
   Etk_Widget* popup;
+
+  Ecore_Hash* config_hash;
 };
 
 typedef enum _Etk_Menu_Item_Type
@@ -47,6 +49,8 @@ void
 entropy_plugin_destroy (entropy_gui_component_instance * comp)
 {
   printf ("Destroying layout_etk...\n");
+
+
 }
 
 static void _etk_layout_row_clicked(Etk_Object *object, 
@@ -194,7 +198,7 @@ entropy_plugin_layout_create (entropy_core * core)
   Etk_Widget* menu_item;
   Etk_Widget* menu;
 
-  Ecore_Hash* config_hash;
+
   Ecore_List* config_hash_keys;
   char *tmp,*key;
 
@@ -301,18 +305,16 @@ entropy_plugin_layout_create (entropy_core * core)
 
   printf ("Config for layout is: '%s' (%d)\n", tmp, strlen (tmp));
   
-  config_hash = entropy_config_standard_structures_parse (layout, tmp);
-  config_hash_keys = ecore_hash_keys(config_hash);
+  gui->config_hash = entropy_config_standard_structures_parse (layout, tmp);
+  config_hash_keys = ecore_hash_keys(gui->config_hash);
   while ( (key = ecore_list_remove_first(config_hash_keys))) {
-	  char* uri = ecore_hash_get(config_hash, key);
+	  char* uri = ecore_hash_get(gui->config_hash, key);
 	  layout_etk_simple_add_header (layout, key, uri);
 	  
-	  ecore_hash_remove(config_hash, key);
 	  free(key);
 	  free(uri);
   }
   ecore_list_destroy(config_hash_keys);
-  ecore_hash_destroy(config_hash);
   
   entropy_free (tmp);
   

@@ -152,11 +152,6 @@ callback (evfs_event * data, void *obj)
       md5 = md5_entropy_path_file (data->resp_command.file_command.files[0]->plugin_uri, folder, pos + 1);
       instance = ecore_hash_get (stat_request_hash, md5);
 
-      //printf("Got an instance for this stat request: '%p'\n", instance);
-
-
-      //printf("Received stat response at callback for file '%s'\n", data->resp_command.file_command.files[0]->path);
-
       /*Build a file<->stat structure to pass to requester */
       file_stat = entropy_malloc (sizeof (entropy_file_stat));
       file_stat->stat_obj = entropy_malloc (sizeof (struct stat));
@@ -172,7 +167,16 @@ callback (evfs_event * data, void *obj)
       /*Retrieve the file. This is bad - the file might not exist anymore! */
       listener = entropy_core_file_cache_retrieve (md5);
       if (listener) {
-	   	file_stat->file = listener->file;
+	      file_stat->file = listener->file;
+
+	      /*Pop stats*/
+	      listener->file->properties.st_uid = data->stat.stat_obj.st_uid;
+	      listener->file->properties.st_gid = data->stat.stat_obj.st_gid;
+	      listener->file->properties.st_size = data->stat.stat_obj.st_size;
+	      listener->file->properties.st_atime = data->stat.stat_obj.ist_atime;
+	      listener->file->properties.st_mtime = data->stat.stat_obj.ist_mtime;
+	      listener->file->properties.st_ctime = data->stat.stat_obj.ist_ctime;
+
 
 	      /*Build up the gui_event wrapper */
 	      gui_event = entropy_malloc (sizeof (entropy_gui_event));

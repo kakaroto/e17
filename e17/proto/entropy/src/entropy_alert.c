@@ -40,7 +40,7 @@ entropy_alert_init(const char *disp)
    
    /* dont i18n this - i dont want gettext doing anything as this is called 
       from a segv */
-   title = "Enlightenment Error";
+   title = "Entropy Error";
    str1 = "(F1) Ignore";
    str2 = "(F2) Restart";
    str3 = "(F3) Exit";
