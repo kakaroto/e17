@@ -17,7 +17,8 @@ static void _mem_face_cb_menu_edit      (void *data, E_Menu *mn, E_Menu_Item *mi
 static void _mem_face_cb_menu_configure (void *data, E_Menu *mn, E_Menu_Item *mi);
 static int  _mem_face_update_values     (void *data);
 static void _mem_face_get_mem_values    (Mem_Face *cf, int *real, int *swap, int *total_real, int *total_swap);
-
+static void _mem_face_graph_values      (Mem_Face *mf, int val);
+static void _mem_face_graph_clear       (Mem_Face *mf);
 static int mem_count;
 
 EAPI E_Module_Api e_modapi = 
@@ -126,6 +127,8 @@ _mem_init(E_Module *m)
    #define T Config
    #define D c->conf_edd
    E_CONFIG_VAL(D, T, check_interval, INT);
+   E_CONFIG_VAL(D, T, show_text, INT);
+   E_CONFIG_VAL(D, T, show_graph, INT);   
    E_CONFIG_VAL(D, T, real_ignore_buffers, UCHAR);
    E_CONFIG_VAL(D, T, real_ignore_cached, UCHAR);
    
@@ -134,10 +137,14 @@ _mem_init(E_Module *m)
      {
 	c->conf = E_NEW(Config, 1);
 	c->conf->check_interval = 1;
+	c->conf->show_text = 1;
+	c->conf->show_graph = 1;
 	c->conf->real_ignore_buffers = 0;
 	c->conf->real_ignore_cached = 0;
      }
    E_CONFIG_LIMIT(c->conf->check_interval, 0, 60);
+   E_CONFIG_LIMIT(c->conf->show_text, 0, 1);
+   E_CONFIG_LIMIT(c->conf->show_graph, 0, 1);
    
    _mem_config_menu_new(c);
    
@@ -224,22 +231,53 @@ _mem_face_init(Mem_Face *cf)
    o = edje_object_add(cf->evas);
    cf->mem_obj = o;
    
-   if (!e_theme_edje_object_set(o, "base/theme/modules/mem", 
-				"modules/mem/main")) 
+   if (!e_theme_edje_object_set(o, "base/theme/modules/mem", "modules/mem/main")) 
      {
 	snprintf(buf, sizeof(buf), PACKAGE_DATA_DIR"/mem.edj");	
 	edje_object_file_set(o, buf, "modules/mem/main");
-     }
-   
+     }   
+   evas_object_show(o);
+
+   o = edje_object_add(cf->evas);
+   cf->chart_obj = o;
+   evas_object_layer_set(o, 1);
+   evas_object_repeat_events_set(o, 1);
+   evas_object_color_set(o, 255, 255, 255, 255);
+   evas_object_pass_events_set(o, 1);
    evas_object_show(o);
    
+   o = edje_object_add(cf->evas);
+   cf->rtxt_obj = o;
+   if (!e_theme_edje_object_set(o, "base/theme/modules/mem", "modules/mem/real_text")) 
+     {
+	snprintf(buf, sizeof(buf), PACKAGE_DATA_DIR"/mem.edj");	
+	edje_object_file_set(o, buf, "modules/mem/real_text");
+     }
+   evas_object_layer_set(o, 2);
+   evas_object_repeat_events_set(o, 0);
+   evas_object_color_set(o, 255, 255, 255, 255);
+   evas_object_pass_events_set(o, 1);
+   evas_object_show(o);
+
+   o = edje_object_add(cf->evas);
+   cf->stxt_obj = o;
+   if (!e_theme_edje_object_set(o, "base/theme/modules/mem", "modules/mem/swap_text")) 
+     {
+	snprintf(buf, sizeof(buf), PACKAGE_DATA_DIR"/mem.edj");	
+	edje_object_file_set(o, buf, "modules/mem/swap_text");
+     }
+   evas_object_layer_set(o, 2);
+   evas_object_repeat_events_set(o, 0);
+   evas_object_color_set(o, 255, 255, 255, 255);
+   evas_object_pass_events_set(o, 1);
+   evas_object_show(o);
+      
    o = evas_object_rectangle_add(cf->evas);
    cf->event_obj = o;
-   evas_object_layer_set(o, 2);
+   evas_object_layer_set(o, 3);
    evas_object_repeat_events_set(o, 1);
    evas_object_color_set(o, 0, 0, 0, 0);
-   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN,
-				  _mem_face_cb_mouse_down, cf);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _mem_face_cb_mouse_down, cf);
    evas_object_show(o);
    
    cf->gmc = e_gadman_client_new(cf->con->gadman);
@@ -289,8 +327,10 @@ _mem_face_enable(Mem_Face *cf)
    cf->conf->enabled = 1;
    e_config_save_queue();
    evas_object_show(cf->mem_obj);
-   /* evas_object_show(cf->chart_obj); */
+   evas_object_show(cf->chart_obj);   
    evas_object_show(cf->event_obj);
+   evas_object_show(cf->rtxt_obj);
+   evas_object_show(cf->stxt_obj);   
 }
 
 static void
@@ -299,8 +339,10 @@ _mem_face_disable(Mem_Face *cf)
    cf->conf->enabled = 0;
    e_config_save_queue();
    evas_object_hide(cf->event_obj);
-   /* evas_object_hide(cf->chart_obj); */
+   evas_object_hide(cf->chart_obj);   
    evas_object_hide(cf->mem_obj);
+   evas_object_hide(cf->rtxt_obj);
+   evas_object_hide(cf->stxt_obj);
 }
 
 static void 
@@ -314,11 +356,14 @@ _mem_face_free(Mem_Face *cf)
      evas_object_del(cf->event_obj);
    if (cf->mem_obj)
      evas_object_del(cf->mem_obj);
-
-   /*
    if (cf->chart_obj)
      evas_object_del(cf->chart_obj);
-    */
+   if (cf->rtxt_obj)
+     evas_object_del(cf->rtxt_obj);
+   if (cf->stxt_obj)
+     evas_object_del(cf->stxt_obj);
+   if (cf->old_real)
+     _mem_face_graph_clear(cf);
    
    if (cf->gmc) 
      {
@@ -343,16 +388,23 @@ _mem_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change
       case E_GADMAN_CHANGE_MOVE_RESIZE:
 	e_gadman_client_geometry_get(cf->gmc, &x, &y, &w, &h);
 	evas_object_move(cf->mem_obj, x, y);
-	/* evas_object_move(cf->chart_obj, x, y); */
+	evas_object_move(cf->chart_obj, x, y);
 	evas_object_move(cf->event_obj, x, y);
+	evas_object_move(cf->rtxt_obj, x, y);
+	evas_object_move(cf->stxt_obj, x, y);	
 	evas_object_resize(cf->mem_obj, w, h);
-	/* evas_object_resize(cf->chart_obj, w, h); */
+	evas_object_resize(cf->chart_obj, w, h);
 	evas_object_resize(cf->event_obj, w, h);
+	evas_object_resize(cf->rtxt_obj, w, h);
+	evas_object_resize(cf->stxt_obj, w, h);
+	_mem_face_graph_clear(cf);
 	break;
       case E_GADMAN_CHANGE_RAISE:
 	evas_object_raise(cf->mem_obj);
-	/* evas_object_raise(cf->chart_obj); */
+	evas_object_raise(cf->chart_obj);
 	evas_object_raise(cf->event_obj);
+	evas_object_raise(cf->rtxt_obj);
+	evas_object_raise(cf->stxt_obj);	
 	break;
       default:
 	break;
@@ -405,13 +457,24 @@ _mem_face_update_values(void *data)
    cf = data;
    _mem_face_get_mem_values(cf, &real, &swap, &total_real, &total_swap);
 
-   real = real / 1024;
-   swap = swap / 1024;
-   
-   snprintf(real_str, sizeof(real_str), "%d/%d MB", total_real, real);
-   snprintf(swap_str, sizeof(swap_str), "%d/%d MB", total_swap, swap);
-   edje_object_part_text_set(cf->mem_obj, "real-text", real_str);
-   edje_object_part_text_set(cf->mem_obj, "swap-text", swap_str);
+   if (cf->mem->conf->show_text) 
+     {
+	snprintf(real_str, sizeof(real_str), "%d/%d MB", (total_real / 1024), (real / 1024));
+	snprintf(swap_str, sizeof(swap_str), "%d/%d MB", (total_swap / 1024), (swap / 1024));
+	edje_object_part_text_set(cf->rtxt_obj, "real-text", real_str);
+	edje_object_part_text_set(cf->stxt_obj, "swap-text", swap_str);
+     }
+   else
+     {
+	edje_object_part_text_set(cf->rtxt_obj, "real-text", "");
+	edje_object_part_text_set(cf->stxt_obj, "swap-text", "");	
+     }
+
+   double tr = ((double)real / (double)total_real);   
+   if (cf->mem->conf->show_graph)
+     _mem_face_graph_values(cf, (tr * 100));
+   else
+     _mem_face_graph_clear(cf);
    
    return 1;
 }
@@ -439,26 +502,24 @@ _mem_face_get_mem_values(Mem_Face *cf, int *real, int *swap, int *total_real, in
    while (fscanf(pmeminfo, "%c", &c) != EOF)
      {
         if (c != '\n')
-          {
-             line[cursor++] = c;
-          }
+	  line[cursor++] = c;
         else
           {
              field = (char *)malloc(strlen(line) * sizeof(char));
              sscanf(line, "%s %ld kB", field, &value);
-             if (strcmp(field, "MemTotal:") == 0)
+             if (!strcmp(field, "MemTotal:"))
 	       mtotal = value;
-             else if (strcmp(field, "MemFree:") == 0)
+             else if (!strcmp(field, "MemFree:"))
 	       mfree = value;
-             else if (cf->mem->conf->real_ignore_buffers && strcmp(field, "Buffers:") == 0)
+             else if (cf->mem->conf->real_ignore_buffers && (!strcmp(field, "Buffers:")))
 	       mfree += value;
-             else if (cf->mem->conf->real_ignore_cached && strcmp(field, "Cached:") == 0)
+             else if (cf->mem->conf->real_ignore_cached && (!strcmp(field, "Cached:")))
 	       mfree += value;
-             else if (cf->mem->conf->real_ignore_cached && strcmp(field, "SwapCached:") == 0)
+             else if (cf->mem->conf->real_ignore_cached && (!strcmp(field, "SwapCached:")))
 	       sfree += value;
-             else if (strcmp(field, "SwapTotal:") == 0)
+             else if (!strcmp(field, "SwapTotal:"))
 	       stotal = value;
-             else if (strcmp(field, "SwapFree:") == 0)
+             else if (!strcmp(field, "SwapFree:"))
 	       sfree = value;
              free(line);
              free(field);
@@ -468,29 +529,85 @@ _mem_face_get_mem_values(Mem_Face *cf, int *real, int *swap, int *total_real, in
      }
    fclose(pmeminfo);
 
+   /* calculate swap usage in percent */
+   if (stotal >= 1)
+     {
+        ldresult = ldiv(stotal, 100);
+        liresult = ldresult.quot;
+        ldresult = ldiv((stotal - sfree), liresult);
+     }
+   
    /* calculate memory usage in percent */
    /* FIXME : figure out a better way to do this */
    ldresult = ldiv(mtotal, 100);
    liresult = ldresult.quot;
    ldresult = ldiv((mtotal - mfree), liresult);
-   //mem_real_usage = ldresult.quot;
-
-   /* calculate swap usage in percent */
-   if (stotal < 1)
-     {
-        //mem_swap_usage = 0;
-     }
-   else
-     {
-        ldresult = ldiv(stotal, 100);
-        liresult = ldresult.quot;
-        ldresult = ldiv((stotal - sfree), liresult);
-        //mem_swap_usage = ldresult.quot;
-     }
-
-   *real = mtotal - mfree;
-   *swap = stotal - sfree;
-   *total_real = mtotal / 1024;
-   *total_swap = stotal / 1024;   
+   
+   *real = (mtotal - mfree);
+   *swap = (stotal - sfree);
+   *total_real = mtotal;
+   *total_swap = stotal;   
    return;
 }
+
+static void 
+_mem_face_graph_values(Mem_Face *mf, int val) 
+{
+   int x, y, w, h;
+   Evas_Object *o;
+   Evas_Object *last = NULL;
+   Evas_List *l;
+   int i, j = 0;
+   
+   evas_object_geometry_get(mf->chart_obj, &x, &y, &w, &h);
+   
+   val = (int)(((double)val) * (((double)h) / ((double)100)));      
+
+   o = evas_object_line_add(mf->evas);
+   edje_object_part_swallow(mf->chart_obj, "lines", o);
+   evas_object_layer_set(o, 1);
+   if (val == 0)
+     evas_object_hide(o);
+   else 
+     {
+	evas_object_line_xy_set(o, (x + w), (y + h), (x + w), ((y + h) - val));
+	evas_object_color_set(o, 218, 195, 35, 200);
+	evas_object_pass_events_set(o, 1);
+	evas_object_show(o);
+     }
+   
+   mf->old_real = evas_list_prepend(mf->old_real, o);
+   l = mf->old_real;
+   for (i = (x + w); l && (j -2) < w; l = l->next, j++) 
+     {
+	Evas_Coord oy;
+	Evas_Object *lo;
+	
+	lo = (Evas_Object *)evas_list_data(l);
+	evas_object_geometry_get(lo, NULL, &oy, NULL, NULL);
+	evas_object_move(lo, i--, oy);
+	last = lo;
+     }
+   
+   if ((j - 2) >= w) 
+     {
+	mf->old_real = evas_list_remove(mf->old_real, last);
+	evas_object_del(last);
+     }   
+}
+
+static void 
+_mem_face_graph_clear(Mem_Face *mf) 
+{
+   Evas_List *l;
+
+   for (l = mf->old_real; l; l = l->next) 
+     {
+	Evas_Object *o;
+	o = evas_list_data(l);
+	evas_object_del(o);
+     }
+   evas_list_free(mf->old_real);
+   mf->old_real = NULL;   
+}
+

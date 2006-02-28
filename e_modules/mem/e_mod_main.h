@@ -9,6 +9,8 @@ typedef struct _Mem_Face Mem_Face;
 struct _Config 
 {
    int check_interval;
+   int show_text;
+   int show_graph;
    unsigned char real_ignore_buffers;
    unsigned char real_ignore_cached;
 };
@@ -34,12 +36,16 @@ struct _Mem_Face
    E_Container *con;
    E_Menu *menu;
    Mem *mem;
-
+   Evas_List *old_real;
+   
    Config_Face *conf;
    E_Config_DD *conf_face_edd;
    
    Evas_Object *mem_obj;
    Evas_Object *event_obj;
+   Evas_Object *chart_obj;
+   Evas_Object *rtxt_obj;
+   Evas_Object *stxt_obj;
    
    Ecore_Timer *monitor;
    
