@@ -16,6 +16,8 @@ struct _Config_Face
    unsigned char enabled;
    char *device;
    int check_interval;
+   int show_text;
+   int show_graph;
 };
 
 struct _Wlan 
@@ -32,12 +34,14 @@ struct _Wlan_Face
    E_Container *con;
    E_Menu *menu;
    Wlan *wlan;
-
+   Evas_List *old_values;
+   
    Config_Face *conf;
    
    Evas_Object *wlan_obj;
    Evas_Object *event_obj;
-/*   Evas_Object *chart_obj; */
+   Evas_Object *chart_obj;
+   Evas_Object *txt_obj;
    
    Ecore_Timer *monitor;
    

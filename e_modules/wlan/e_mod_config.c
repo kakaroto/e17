@@ -7,6 +7,8 @@ struct _E_Config_Dialog_Data
 {
    char *device;
    int check_interval;
+   int show_text;
+   int show_graph;
    
    Ecore_List *devs;
    int dev_num;
@@ -45,6 +47,8 @@ _fill_data(Wlan_Face *nf, E_Config_Dialog_Data *cfdata)
    int i;
 
    cfdata->check_interval = nf->conf->check_interval;
+   cfdata->show_text = nf->conf->show_text;
+   cfdata->show_graph = nf->conf->show_graph;
    
    if (nf->conf->device != NULL)
      cfdata->device = strdup(nf->conf->device);
@@ -106,7 +110,14 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    char *tmp;
    int i;
    
-   o = e_widget_list_add(evas, 0, 0);      
+   o = e_widget_list_add(evas, 0, 0);
+   of = e_widget_framelist_add(evas, _("General Settings"), 0);
+   ob = e_widget_check_add(evas, _("Show Text"), (&(cfdata->show_text)));
+   e_widget_framelist_object_append(of, ob);
+   ob = e_widget_check_add(evas, _("Show Graph"), (&(cfdata->show_graph)));
+   e_widget_framelist_object_append(of, ob);
+   e_widget_list_object_append(o, of, 1, 1, 0.5);
+   
    of = e_widget_framelist_add(evas, _("Device Settings"), 0);
    ot = e_widget_table_add(evas, 0);   
    rg = e_widget_radio_group_new(&(cfdata->dev_num));
@@ -141,6 +152,9 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    if (tmp != NULL)
      nf->conf->device = (char *)evas_stringshare_add(strdup(tmp));
    nf->conf->check_interval = cfdata->check_interval;
+   nf->conf->show_text = cfdata->show_text;
+   nf->conf->show_graph = cfdata->show_graph;
+   
    e_config_save_queue ();
 
    if (nf->monitor)
