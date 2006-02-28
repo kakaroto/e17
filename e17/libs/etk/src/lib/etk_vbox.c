@@ -138,12 +138,16 @@ static void _etk_vbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    int num_children_to_expand = 0, i;
    float start_offset = 0, end_offset = 0;
 
-   if (!(vbox = ETK_VBOX(widget)))
+   if ((!(vbox = ETK_VBOX(widget))) || !vbox->requested_sizes)
       return;
+
+    
 
    box = ETK_BOX(vbox);
    widget = ETK_WIDGET(vbox);
    container = ETK_CONTAINER(vbox);
+
+   printf("Children: %d\n", evas_list_count(ETK_BOX(widget)->children));
 
    etk_widget_size_request(widget, &requested_inner_size);
    requested_inner_size.w -= 2 * container->border_width;
