@@ -223,7 +223,8 @@ dumb_tree_exist(Dumb_Tree * tree, char *element)
 }
 
 int
-dumb_tree_foreach(Dumb_Tree * tree, int level, int (*func) (const void *data, Dumb_Tree * tree, int element, int level), const void *data)
+dumb_tree_foreach(Dumb_Tree * tree, int level, int (*func) (const void *data, Dumb_Tree * tree, int element, int level),
+                  const void *data)
 {
    int result = 0;
    int i;

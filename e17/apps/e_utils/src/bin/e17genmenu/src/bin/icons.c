@@ -71,7 +71,8 @@ find_icon(char *icon)
 #endif
 
    /* Check For Unsupported Extension */
-   if ((!strcmp(icon + strlen(icon) - 4, ".svg")) || (!strcmp(icon + strlen(icon) - 4, ".ico")) || (!strcmp(icon + strlen(icon) - 4, ".xpm")))
+   if ((!strcmp(icon + strlen(icon) - 4, ".svg")) || (!strcmp(icon + strlen(icon) - 4, ".ico"))
+       || (!strcmp(icon + strlen(icon) - 4, ".xpm")))
       return strdup(DEFAULTICON);
 
    /* Check For An Extension, Append PNG If Missing */
@@ -253,7 +254,8 @@ find_fdo_icon(char *icon, char *icon_size, char *icon_theme)
                                                 }
                                              default:  /* Threshold. */
                                                 {
-                                                   match = (((this_size - thresh_size) <= wanted_size) && (wanted_size <= (this_size + thresh_size)));
+                                                   match = (((this_size - thresh_size) <= wanted_size)
+                                                            && (wanted_size <= (this_size + thresh_size)));
                                                    if (wanted_size < (this_size - thresh_size))
                                                       result_size = min_size - wanted_size;
                                                    if (wanted_size > (this_size + thresh_size))
@@ -265,7 +267,8 @@ find_fdo_icon(char *icon, char *icon_size, char *icon_theme)
                                            /* Look for icon with all extensions. */
                                            for (j = 0; ext[j] != NULL; j++)
                                              {
-                                                snprintf(path, MAX_PATH, "%s/%s/%s%s", icon_theme, (char *)directory_paths->elements[i].element, icon, ext[j]);
+                                                snprintf(path, MAX_PATH, "%s/%s/%s%s", icon_theme,
+                                                         (char *)directory_paths->elements[i].element, icon, ext[j]);
 #ifdef DEBUG
                                                 printf("FDO icon = %s\n", path);
 #endif

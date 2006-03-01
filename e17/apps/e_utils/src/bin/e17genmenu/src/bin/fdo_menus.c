@@ -57,9 +57,8 @@ struct _fdo_menus_legacy_data
    Dumb_Tree *current;
    char *prefix;
    char *path;
-   int   length;
+   int length;
 };
-
 
 static int _fdo_menus_unxml(const void *data, Dumb_Tree * tree, int element, int level);
 static int _fdo_menus_check_directory(const void *data, char *path);
@@ -343,7 +342,8 @@ _fdo_menus_unxml(const void *data, Dumb_Tree * tree, int element, int level)
                                              {
                                                 char temp[MAX_PATH];
 
-                                                sprintf(temp, "%s %s", (char *)sub->elements[0].element, (char *)sub->elements[1].element);
+                                                sprintf(temp, "%s %s", (char *)sub->elements[0].element,
+                                                        (char *)sub->elements[1].element);
                                                 dumb_tree_extend(menu, temp);
                                                 result = 1;
                                              }
@@ -482,7 +482,8 @@ _fdo_menus_unxml_rules(Dumb_Tree * rules, Dumb_Tree * tree, char type, char sub_
                {
                   _fdo_menus_unxml_rules(rules, (Dumb_Tree *) tree->elements[i + 1].element, type, sub_type);
                }
-             else if ((strcmp((char *)tree->elements[i].element, "<And") == 0) || (strcmp((char *)tree->elements[i].element, "<Not") == 0))
+             else if ((strcmp((char *)tree->elements[i].element, "<And") == 0)
+                      || (strcmp((char *)tree->elements[i].element, "<Not") == 0))
                {
                   char this_type;
                   Dumb_Tree *sub;
@@ -654,12 +655,12 @@ _fdo_menus_merge(const void *data, Dumb_Tree * tree, int element, int level)
              struct _fdo_menus_legacy_data legacy_data;
 
              string += 11;
-	     legacy_data.prefix = NULL;
-	     legacy_data.merge = merge;
+             legacy_data.prefix = NULL;
+             legacy_data.merge = merge;
              if (strncmp(string, "prefix=\"", 8) == 0)
                {
                   string += 8;
-		  legacy_data.prefix = string;
+                  legacy_data.prefix = string;
                   while ((*string != '"') && (*string != '\0'))
                      string++;
                   if (*string != '\0')
@@ -671,9 +672,9 @@ _fdo_menus_merge(const void *data, Dumb_Tree * tree, int element, int level)
                 sprintf(merge_path, "%s", string);
              else
                 sprintf(merge_path, "%s%s", unxml_data->path, string);
-	     legacy_data.path = merge_path;
-	     legacy_data.length = strlen(merge_path);
-	     printf("<LEGACYDIR> - %s - %s\n", legacy_data.prefix, merge_path);
+             legacy_data.path = merge_path;
+             legacy_data.length = strlen(merge_path);
+             printf("<LEGACYDIR> - %s - %s\n", legacy_data.prefix, merge_path);
              fdo_paths_recursive_search(merge_path, NULL, _fdo_menus_legacy_menu_dir, _fdo_menus_legacy_menu, &legacy_data);
              result = 1;
           }

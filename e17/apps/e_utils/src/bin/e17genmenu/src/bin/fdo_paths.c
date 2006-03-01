@@ -23,7 +23,8 @@ struct _config_exe_data
    int done;
 };
 
-static Dumb_Tree *_fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default, char *env_default, char *type, char *gnome_extra, char *kde);
+static Dumb_Tree *_fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default, char *env_default, char *type,
+                                 char *gnome_extra, char *kde);
 static void _fdo_paths_massage_path(char *path, char *home, char *first, char *second);
 static void _fdo_paths_check_and_add(Dumb_Tree * paths, char *path);
 static void _fdo_paths_exec_config(char *home, Dumb_Tree * extras, char *cmd);
@@ -36,7 +37,8 @@ fdo_paths_init()
    if (!fdo_paths_config)
       fdo_paths_config = _fdo_paths_get(NULL, "XDG_CONFIG_HOME", "XDG_CONFIG_DIRS", "~/.config", "/etc/xdg", "", NULL, NULL);
    if (!fdo_paths_menus)
-      fdo_paths_menus = _fdo_paths_get(NULL, "XDG_CONFIG_HOME", "XDG_CONFIG_DIRS", "~/.config", "/etc/xdg", "menus", NULL, "xdgconf-menu");
+      fdo_paths_menus =
+         _fdo_paths_get(NULL, "XDG_CONFIG_HOME", "XDG_CONFIG_DIRS", "~/.config", "/etc/xdg", "menus", NULL, "xdgconf-menu");
    if (!fdo_paths_directories)
       fdo_paths_directories =
          _fdo_paths_get(NULL, "XDG_DATA_HOME", "XDG_DATA_DIRS",
@@ -44,7 +46,8 @@ fdo_paths_init()
    if (!fdo_paths_desktops)
       fdo_paths_desktops =
          _fdo_paths_get(NULL, "XDG_DATA_HOME", "XDG_DATA_DIRS",
-                        "~/.local/share", "/usr/local/share:/usr/share", "applications", "dist/desktop-files:dist/short-menu:gnome/apps", "xdgdata-apps:apps");
+                        "~/.local/share", "/usr/local/share:/usr/share", "applications",
+                        "dist/desktop-files:dist/short-menu:gnome/apps", "xdgdata-apps:apps");
    if (!fdo_paths_kde_legacy)
       fdo_paths_kde_legacy = _fdo_paths_get(NULL, NULL, NULL, NULL, NULL, NULL, NULL, "apps");
    if (!fdo_paths_icons)
@@ -52,7 +55,8 @@ fdo_paths_init()
         char *gnome;
 
         fdo_paths_icons =
-           _fdo_paths_get("~/.icons", "XDG_DATA_HOME", "XDG_DATA_DIRS", "~/.local/share", "/usr/local/share:/usr/share", "icons", "dist/icons", "icon:pixmap");
+           _fdo_paths_get("~/.icons", "XDG_DATA_HOME", "XDG_DATA_DIRS", "~/.local/share", "/usr/local/share:/usr/share", "icons",
+                          "dist/icons", "icon:pixmap");
         _fdo_paths_check_and_add(fdo_paths_icons, "/usr/share/pixmaps/");
         gnome = getenv("$GNOME_ICON_PATH");
         if (gnome)
@@ -135,7 +139,8 @@ icons=pathlist
 */
 
 static Dumb_Tree *
-_fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default, char *env_default, char *type, char *gnome_extra, char *kde)
+_fdo_paths_get(char *before, char *env_home, char *env, char *env_home_default, char *env_default, char *type, char *gnome_extra,
+               char *kde)
 {
    char *home;
    Dumb_Tree *paths = NULL;
@@ -347,7 +352,8 @@ _fdo_paths_exec_config(char *home, Dumb_Tree * extras, char *cmd)
 }
 
 char *
-fdo_paths_recursive_search(char *path, char *file, int (*dir_func) (const void *data, char *path), int (*func) (const void *data, char *path), const void *data)
+fdo_paths_recursive_search(char *path, char *file, int (*dir_func) (const void *data, char *path),
+                           int (*func) (const void *data, char *path), const void *data)
 {
    char *fpath = NULL;
    DIR *dir = NULL;
@@ -447,7 +453,8 @@ _fdo_paths_cb_exe_exit(void *data, int type, void *event)
                          {
                             for (j = 0; j < ced->types->size; j++)
                               {
-                                 _fdo_paths_massage_path(path, ced->home, config_list->elements[i].element, ced->types->elements[j].element);
+                                 _fdo_paths_massage_path(path, ced->home, config_list->elements[i].element,
+                                                         ced->types->elements[j].element);
                                  _fdo_paths_check_and_add(paths, path);
                               }
                          }
