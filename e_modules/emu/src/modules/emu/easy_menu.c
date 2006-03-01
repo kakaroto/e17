@@ -2,7 +2,8 @@
 
 static struct _Menu_Data *_easy_menu_add_menus_real(Easy_Menu * easy_menu,
                                                     char *input, char *end,
-                                                    int *i, int level, void (*func) (void *data, E_Menu *m, E_Menu_Item *mi), void *data);
+                                                    int *i, int level, void (*func) (void *data, E_Menu *m, E_Menu_Item *mi),
+                                                    void *data);
 static void _easy_menu_menu_cb_create(E_Menu *m, void *category_data, void *data);
 static void _easy_menu_menu_cb_destroy(void *data);
 static void _easy_menu_menu_cb_free(void *obj);
@@ -20,7 +21,8 @@ static void _easy_menu_menu_cb_free(void *obj);
  * @param   data the pointer to your face.
  */
 EAPI Easy_Menu *
-easy_menu_add_menus(char *name, char *category, char *input, int length, void (*func) (void *data, E_Menu *m, E_Menu_Item *mi), void *data)
+easy_menu_add_menus(char *name, char *category, char *input, int length, void (*func) (void *data, E_Menu *m, E_Menu_Item *mi),
+                    void *data)
 {
    Easy_Menu *menu = NULL;
 
@@ -47,7 +49,8 @@ easy_menu_add_menus(char *name, char *category, char *input, int length, void (*
 
                   /* A category that is an empty string, is handled by the caller. */
                   if (strlen(menu->category) != 0)
-                     menu->category_cb = e_menu_category_callback_add(menu->category, _easy_menu_menu_cb_create, _easy_menu_menu_cb_destroy, menu);
+                     menu->category_cb =
+                        e_menu_category_callback_add(menu->category, _easy_menu_menu_cb_create, _easy_menu_menu_cb_destroy, menu);
 
                   menu->valid = 1;
                }
@@ -60,7 +63,8 @@ easy_menu_add_menus(char *name, char *category, char *input, int length, void (*
 }
 
 static struct _Menu_Data *
-_easy_menu_add_menus_real(Easy_Menu * easy_menu, char *input, char *end, int *i, int level, void (*func) (void *data, E_Menu *m, E_Menu_Item *mi), void *data)
+_easy_menu_add_menus_real(Easy_Menu * easy_menu, char *input, char *end, int *i, int level,
+                          void (*func) (void *data, E_Menu *m, E_Menu_Item *mi), void *data)
 {
    char *oldInput = input;
    struct _Menu_Data *menu = calloc(1, sizeof(struct _Menu_Data));

@@ -149,7 +149,8 @@ e_modapi_about(E_Module *m)
                         _
                         ("Experimental generic scriptable module for E17.<br><br>"
                          "Keep an eye out for the emu's.<br>"
-                         "Don't even try to run away, they're fast buggers.<br>" "Hiding in your dunny doesn't help, they can kick dunnies down."));
+                         "Don't even try to run away, they're fast buggers.<br>"
+                         "Hiding in your dunny doesn't help, they can kick dunnies down."));
    return 1;
 }
 
@@ -294,8 +295,9 @@ _emu_face_init(void *data, E_Gadget_Face *face)
           {
              emu_face->add = ecore_event_handler_add(ECORE_EXE_EVENT_ADD, _emu_cb_exe_add, emu_face);
              emu_face->read = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _emu_cb_exe_data, emu_face);
-             emu_face->exe = ecore_exe_pipe_run(emu_face->command, ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_WRITE | ECORE_EXE_PIPE_READ_LINE_BUFFERED
-                                                /*| ECORE_EXE_RESPAWN */ , emu_face);
+             emu_face->exe =
+                ecore_exe_pipe_run(emu_face->command, ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_WRITE | ECORE_EXE_PIPE_READ_LINE_BUFFERED
+                                   /*| ECORE_EXE_RESPAWN */ , emu_face);
              if (!emu_face->exe)
                 e_module_dialog_show(_("Enlightenment Emu Module - error"), _("There is no emu."));
           }
@@ -939,7 +941,8 @@ _emu_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
    if ((ev->button == 3) && emu_face->face->menu)
      {                          /* Right clirk configuration menu. */
         e_menu_activate_mouse(emu_face->face->menu,
-                              e_zone_current_get(emu_face->face->con), ev->output.x, ev->output.y, 1, 1, E_MENU_POP_DIRECTION_AUTO, ev->timestamp);
+                              e_zone_current_get(emu_face->face->con), ev->output.x, ev->output.y, 1, 1, E_MENU_POP_DIRECTION_AUTO,
+                              ev->timestamp);
         e_util_container_fake_mouse_up_all_later(emu_face->face->con);
      }
    else if (ev->button == 1)
@@ -952,7 +955,8 @@ _emu_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
           {
              e_menu_post_deactivate_callback_set(menu->menu->menu, _emu_menu_cb_post_deactivate, emu_face);
              e_menu_activate_mouse(menu->menu->menu,
-                                   e_zone_current_get(emu_face->face->con), ev->output.x, ev->output.y, 1, 1, E_MENU_POP_DIRECTION_AUTO, ev->timestamp);
+                                   e_zone_current_get(emu_face->face->con), ev->output.x, ev->output.y, 1, 1,
+                                   E_MENU_POP_DIRECTION_AUTO, ev->timestamp);
              e_util_container_fake_mouse_up_all_later(emu_face->face->con);
              edje_object_signal_emit(emu_face->face->main_obj, "active", "");
           }

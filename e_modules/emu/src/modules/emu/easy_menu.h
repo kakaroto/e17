@@ -39,7 +39,8 @@ struct _Easy_Menu
    int valid;                   /* Probably just being paranoid.  This prevents this structure from being used when it isn't complete. */
 };
 
-EAPI Easy_Menu *easy_menu_add_menus(char *name, char *category, char *input, int length, void (*func) (void *data, E_Menu *m, E_Menu_Item *mi), void *data);
+EAPI Easy_Menu *easy_menu_add_menus(char *name, char *category, char *input, int length,
+                                    void (*func) (void *data, E_Menu *m, E_Menu_Item *mi), void *data);
 
 #endif
 #endif
