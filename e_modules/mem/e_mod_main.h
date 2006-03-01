@@ -11,6 +11,7 @@ struct _Config
    int check_interval;
    int show_text;
    int show_graph;
+   int show_percent;
    unsigned char real_ignore_buffers;
    unsigned char real_ignore_cached;
 };

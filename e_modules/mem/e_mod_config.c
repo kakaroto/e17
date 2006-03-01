@@ -8,6 +8,7 @@ struct _E_Config_Dialog_Data
    int check_interval;
    int show_text;
    int show_graph;
+   int show_percent;
    int real_ignore_buffers;
    int real_ignore_cached;
 };
@@ -45,6 +46,7 @@ _fill_data(Mem *c, E_Config_Dialog_Data *cfdata)
    cfdata->real_ignore_cached = c->conf->real_ignore_cached;
    cfdata->show_text = c->conf->show_text;
    cfdata->show_graph = c->conf->show_graph;
+   cfdata->show_percent = c->conf->show_percent;
 }
 
 static void *
@@ -81,6 +83,8 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    of = e_widget_framelist_add(evas, _("Mem Settings"), 0);
    ob = e_widget_check_add(evas, _("Show Text"), &(cfdata->show_text));
    e_widget_framelist_object_append(of, ob);
+   ob = e_widget_check_add(evas, _("Show Text As Percent"), &(cfdata->show_percent));
+   e_widget_framelist_object_append(of, ob);
    ob = e_widget_check_add(evas, _("Show Graph"), &(cfdata->show_graph));
    e_widget_framelist_object_append(of, ob);   
    ob = e_widget_check_add(evas, _("Ignore Buffers"), &(cfdata->real_ignore_buffers));
@@ -108,6 +112,7 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    c->conf->real_ignore_cached = cfdata->real_ignore_cached;
    c->conf->show_text = cfdata->show_text;
    c->conf->show_graph = cfdata->show_graph;
+   c->conf->show_percent = cfdata->show_percent;
    e_config_save_queue ();
    if (c->face->monitor)
      ecore_timer_interval_set(c->face->monitor, (double)cfdata->check_interval);

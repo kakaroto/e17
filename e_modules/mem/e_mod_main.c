@@ -128,6 +128,7 @@ _mem_init(E_Module *m)
    #define D c->conf_edd
    E_CONFIG_VAL(D, T, check_interval, INT);
    E_CONFIG_VAL(D, T, show_text, INT);
+   E_CONFIG_VAL(D, T, show_percent, INT);   
    E_CONFIG_VAL(D, T, show_graph, INT);   
    E_CONFIG_VAL(D, T, real_ignore_buffers, UCHAR);
    E_CONFIG_VAL(D, T, real_ignore_cached, UCHAR);
@@ -139,12 +140,14 @@ _mem_init(E_Module *m)
 	c->conf->check_interval = 1;
 	c->conf->show_text = 1;
 	c->conf->show_graph = 1;
+	c->conf->show_percent = 1;
 	c->conf->real_ignore_buffers = 0;
 	c->conf->real_ignore_cached = 0;
      }
    E_CONFIG_LIMIT(c->conf->check_interval, 0, 60);
    E_CONFIG_LIMIT(c->conf->show_text, 0, 1);
    E_CONFIG_LIMIT(c->conf->show_graph, 0, 1);
+   E_CONFIG_LIMIT(c->conf->show_percent, 0, 1);
    
    _mem_config_menu_new(c);
    
@@ -457,8 +460,19 @@ _mem_face_update_values(void *data)
 
    if (cf->mem->conf->show_text) 
      {
-	snprintf(real_str, sizeof(real_str), "%d/%d MB", (real / 1024), (total_real / 1024));
-	snprintf(swap_str, sizeof(swap_str), "%d/%d MB", (swap / 1024), (total_swap / 1024));
+	if (!cf->mem->conf->show_percent) 
+	  {
+	     snprintf(real_str, sizeof(real_str), "%d/%d MB", (real / 1024), (total_real / 1024));
+	     snprintf(swap_str, sizeof(swap_str), "%d/%d MB", (swap / 1024), (total_swap / 1024));
+	  }
+	 else 
+	  {
+	     double tr;
+	     tr = (((double)real / (double)total_real) * 100);   
+	     snprintf(real_str, sizeof(real_str), "%1.2f%%", tr);
+	     tr = (((double)swap / (double)total_swap) * 100);   
+	     snprintf(swap_str, sizeof(swap_str), "%1.2f%%", tr);
+	  }
 	edje_object_part_text_set(cf->rtxt_obj, "real-text", real_str);
 	edje_object_part_text_set(cf->stxt_obj, "swap-text", swap_str);
      }
