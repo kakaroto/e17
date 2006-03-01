@@ -317,8 +317,8 @@ _net_face_init(Net *n, E_Container *con)
 			      E_GADMAN_POLICY_HSIZE |
 			      E_GADMAN_POLICY_VMOVE |
 			      E_GADMAN_POLICY_VSIZE);
-   e_gadman_client_min_size_set(nf->gmc, 40, 40);
-   e_gadman_client_max_size_set(nf->gmc, 128, 128);
+   //e_gadman_client_min_size_set(nf->gmc, 40, 40);
+   //e_gadman_client_max_size_set(nf->gmc, 128, 128);
    e_gadman_client_auto_size_set(nf->gmc, 40, 40);
    e_gadman_client_align_set(nf->gmc, 1.0, 1.0);
    e_gadman_client_resize(nf->gmc, 40, 40);
