@@ -349,6 +349,7 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
   Etk_Tree_Col* col4;
   Etk_Tree_Col* col5;
   char buffer[50];
+  char date_buffer[26];
 
 
   viewer = instance->data;
@@ -373,12 +374,15 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
 	 // time_t stime = file->properties.st_mtime
 	  
 	  snprintf(buffer,50, "%lld Kb", file->properties.st_size / 1024);
+	  ctime_r(&file->properties.st_mtime, date_buffer);
+	  date_buffer[strlen(date_buffer)-1] = '\0';
+	  
 	  new_row = etk_tree_append(ETK_TREE(viewer->tree), 
 		  col1, PACKAGE_DATA_DIR "/icons/default.png", 
 		  col2,   file->filename,
 		  col3,   buffer,
 		  col4,   file->mime_type,
-		  col5,   ctime(&file->properties.st_mtime),
+		  col5,   date_buffer,
 		  NULL);
 	  
   }
@@ -473,6 +477,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 	entropy_file_stat *file_stat = (entropy_file_stat *) el;	
 	gui_file* obj = ecore_hash_get (viewer->gui_hash, file_stat->file);
 	char buffer[50];
+	char date_buffer[26];
 
 	Etk_Tree_Col* col1;
 	Etk_Tree_Col* col2;
@@ -489,11 +494,13 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 		col5 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 4);
 		
 		snprintf(buffer,50, "%lld Kb", file_stat->stat_obj->st_size / 1024);
+		ctime_r(&file_stat->stat_obj->st_mtime, date_buffer);
+		date_buffer[strlen(date_buffer)-1] = '\0';
 
 		etk_tree_freeze(ETK_TREE(viewer->tree));
 		etk_tree_row_fields_set((Etk_Tree_Row*)obj->icon, 
 				col3, buffer,
-				col5, ctime(&file_stat->stat_obj->st_mtime),
+				col5, date_buffer,
 				NULL);
 		etk_tree_thaw(ETK_TREE(viewer->tree));
 
