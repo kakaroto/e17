@@ -1,109 +1,156 @@
 images
 {
-  image: "eth_dev.png" COMP;
+   image: "eth_dev.png" COMP;
 }
 
 fonts
 {
-  font: "VeraMono.ttf" "VeraMono";
+   font: "VeraMono.ttf" "VeraMono";
 }
 
 collections
 {
-group
-    {
-      name: "modules/net/main";      
-      parts{
-      part {
-	 name:          "net";
-	 clip_to: "net_clip";	 
-	 mouse_events:  0;
-	 description {
-	    state:    "default" 0.0;
-	    color: 255 255 255 200;
-	    aspect:   0.5 2.25;
-	    rel1 {
-	       relative: 0.0 0.0;
-	    }
-	    rel2 { 
-	       relative: 1.0 1.0;	    
-	    }
-	    image { 
-	    	  normal: "eth_dev.png"; 
-	    }
-	    fill { 
-	    	 smooth: 0;  
-	    }
-	 }
-      }
-	part {
-	    name:           "out-text";
-	    type:           TEXT;
-	    clip_to: "net_clip";	    
-	    effect:         SOFT_SHADOW;
-	    mouse_events: 0;
-	    description {
-	      state: "default" 0.0;
-	      align: 1.0 0.0;
-	      rel1 { 
-	      	   relative: 1.0 0.0;
-	      }
-	      rel2 { 
-	      	   relative: 1.0 0.0; 
-	      }
-	      color: 51 181 69 255;
-	      color3: 0 0 0 100;
-	      text {
-		   text: ""; 
-		   font: "VeraMono";
-		   size:  8;     
-		   min:     1 1;
-		   align: 1.0 0.0;
-	      }
-	    }
+   group
+     {
+	name: "modules/net/main";
+	parts
+	  {
+	     part
+	       {
+		  name:           "net_clip";
+		  type:           RECT;
+		  mouse_events:   0;
+		  description
+		    {
+		       state: "default" 0.0;
+		       color: 255 255 255 255;
+		    }
+	       }
+	     part
+	       {
+		  name:          "net";
+		  clip_to: "net_clip";
+		  mouse_events:  0;
+		  description
+		    {
+		       state:    "default" 0.0;
+		       color: 255 255 255 200;
+		       //aspect:   0.5 2.25;
+		       rel1
+			 {
+			    relative: 0.0 0.0;
+			 }
+		       rel2
+			 {
+			    relative: 1.0 1.0;
+			 }
+		       image
+			 {
+			    normal: "eth_dev.png";
+			 }
+		       fill
+			 {
+			    smooth: 0;
+			 }
+		    }
+	       }
+	     part
+	       {
+		  name,          "lines";
+		  mouse_events,  0;
+		  type,          SWALLOW;
+		  clip_to: 	"net_clip";
+		  description
+		    {
+		       state,    "default" 0.0;
+		       rel1
+			 {
+			    relative: 0.0 0.0;
+			 }
+		       rel2
+			 {
+			    relative: 1.0 1.0;
+			 }
+		       color, 0 0 0 0;
+		    }
+	       }
 	  }
+     }
 
-	part {
-	    name:           "in-text";
-	    type:           TEXT;
-	    clip_to: "net_clip";	    
-	    effect:         SOFT_SHADOW;
-	    mouse_events: 0;
-	    description {
-	      state: "default" 0.0;
-	      align: 1.0 1.0;
-	      rel1 { 
-	      	   relative: 1.0 1.0; 
-	      }
-	      rel2 { 
-	      	   relative: 1.0 1.0; 
-	      }      
-	      color: 213 91 91 255;
-	      color3: 0 0 0 100;
-	      text {
-		   text: ""; 
-		   font: "VeraMono";
-		   size:  8;     
-		   min:     1 1;
-		   align: 1.0 1.0;
-	      }
-	    }
-	  }	  
-      part {
-	 name:           "net_clip";
-	 type:           RECT;
-	 mouse_events:   0;
-	 description {
-	    state: "default" 0.0;
-	    color: 255 255 255 255;
-	 }
-	 description {
-	    state: "faded" 0.0;
-	    color: 255 255 255 128;
-	 }
-      }    	  
-	  
-      } 
-    }//close group net
+   group
+     {
+	name: "modules/net/tx_text";
+	parts
+	  {
+	     part
+	       {
+		  name:           "tx-text";
+		  type:           TEXT;
+		  effect:         SOFT_SHADOW;
+		  mouse_events: 0;
+		  description
+		    {
+		       state: "default" 0.0;
+		       align: 1.0 0.0;
+		       rel1
+			 {
+			    relative: 0.0 0.0;
+			 }
+		       rel2
+			 {
+			    relative: 1.0 0.0;
+			 }
+		       color: 51 181 69 255;
+		       color3: 0 0 0 100;
+		       text
+			 {
+			    text: "Tx";
+			    font: "VeraMono";
+			    size:  10;
+			    min:     1 1;
+			    align: 1.0 0.0;
+			 }
+		    }
+	       }
+	  }
+     }
+
+   group
+     {
+	name: "modules/net/rx_text";
+	parts
+	  {
+	     part
+	       {
+		  name:           "rx-text";
+		  type:           TEXT;
+		  effect:         SOFT_SHADOW;
+		  mouse_events: 0;
+		  description
+		    {
+		       state: "default" 0.0;
+		       align: 1.0 1.0;
+		       rel1
+			 {
+			    relative: 0.0 0.0;
+			 }
+		       rel2
+			 {
+			    relative: 1.0 1.0;
+			 }
+		       color: 255 0 0 255;
+		       color3: 0 0 0 100;
+		       text
+			 {
+			    text: "Rx";
+			    font: "VeraMono";
+			    size:  10;
+			    min:     1 1;
+			    align: 1.0 1.0;
+			 }
+		    }
+	       }
+	  }
+     }
 }
 

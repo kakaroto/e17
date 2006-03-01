@@ -17,6 +17,8 @@ static void      _net_face_cb_mouse_down(void *data, Evas *evas, Evas_Object *ob
 static void      _net_face_cb_menu_edit(void *data, E_Menu *mn, E_Menu_Item *mi);
 static void      _net_face_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi);
 static int       _net_face_update_values(void *data);
+static void      _net_face_graph_values(Net_Face *nf, int tx_val, int rx_val);
+static void      _net_face_graph_clear(Net_Face *nf);
 
 static int net_count;
 
@@ -143,6 +145,8 @@ _net_init(E_Module *m)
    E_CONFIG_VAL(D, T, enabled, UCHAR);
    E_CONFIG_VAL(D, T, device, STR);
    E_CONFIG_VAL(D, T, check_interval, INT);
+   E_CONFIG_VAL(D, T, show_text, INT);
+   E_CONFIG_VAL(D, T, show_graph, INT);
    
    conf_edd = E_CONFIG_DD_NEW("Net_Config", Config);
    #undef T
@@ -179,6 +183,8 @@ _net_init(E_Module *m)
 		       nf->conf->enabled = 1;
 		       nf->conf->device = (char *)evas_stringshare_add("eth0");
 		       nf->conf->check_interval = 30;
+		       nf->conf->show_text = 1;
+		       nf->conf->show_graph = 1;
 		       n->conf->faces = evas_list_append(n->conf->faces, nf->conf);
 		    }
 		  else 
@@ -187,6 +193,8 @@ _net_init(E_Module *m)
 		       fl = fl->next;
 		    }
 		  E_CONFIG_LIMIT(nf->conf->check_interval, 0, 60);
+		  E_CONFIG_LIMIT(nf->conf->show_text, 0, 1);
+		  E_CONFIG_LIMIT(nf->conf->show_graph, 0, 1);
 		  
 		  nf->monitor = ecore_timer_add((double)nf->conf->check_interval, _net_face_update_values, nf);   
 		  
@@ -262,9 +270,40 @@ _net_face_init(Net *n, E_Container *con)
      }   
    evas_object_show(o);
 
+   o = edje_object_add(nf->evas);
+   nf->chart_obj = o;
+   evas_object_layer_set(o, 1);
+   evas_object_repeat_events_set(o, 1);
+   evas_object_color_set(o, 255, 255, 255, 255);
+   evas_object_show(o);
+
+   o = edje_object_add(nf->evas);
+   nf->rtxt_obj = o;
+   if (!e_theme_edje_object_set(o, "base/theme/modules/net", "modules/net/rx_text")) 
+     {
+	snprintf(buf, sizeof(buf), PACKAGE_DATA_DIR"/net.edj");	
+	edje_object_file_set(o, buf, "modules/net/rx_text");
+     }   
+   evas_object_layer_set(o, 2);
+   evas_object_repeat_events_set(o, 1);
+   evas_object_color_set(o, 255, 255, 255, 255);
+   evas_object_show(o);
+   
+   o = edje_object_add(nf->evas);
+   nf->ttxt_obj = o;
+   if (!e_theme_edje_object_set(o, "base/theme/modules/net", "modules/net/tx_text")) 
+     {
+	snprintf(buf, sizeof(buf), PACKAGE_DATA_DIR"/net.edj");	
+	edje_object_file_set(o, buf, "modules/net/tx_text");
+     }   
+   evas_object_layer_set(o, 2);
+   evas_object_repeat_events_set(o, 1);
+   evas_object_color_set(o, 255, 255, 255, 255);
+   evas_object_show(o);
+   
    o = evas_object_rectangle_add(nf->evas);
    nf->event_obj = o;
-   evas_object_layer_set(o, 2);
+   evas_object_layer_set(o, 3);
    evas_object_repeat_events_set(o, 1);
    evas_object_color_set(o, 0, 0, 0, 0);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _net_face_cb_mouse_down, nf);
@@ -278,11 +317,11 @@ _net_face_init(Net *n, E_Container *con)
 			      E_GADMAN_POLICY_HSIZE |
 			      E_GADMAN_POLICY_VMOVE |
 			      E_GADMAN_POLICY_VSIZE);
-   e_gadman_client_min_size_set(nf->gmc, 4, 4);
+   e_gadman_client_min_size_set(nf->gmc, 40, 40);
    e_gadman_client_max_size_set(nf->gmc, 128, 128);
    e_gadman_client_auto_size_set(nf->gmc, 40, 40);
    e_gadman_client_align_set(nf->gmc, 1.0, 1.0);
-   //e_gadman_client_aspect_set(nf->gmc, 1.0, 1.0);
+   e_gadman_client_aspect_set(nf->gmc, 1.0, 1.0);
    e_gadman_client_resize(nf->gmc, 40, 40);
    e_gadman_client_change_func_set(nf->gmc, _net_face_cb_gmc_change, nf);
    e_gadman_client_load(nf->gmc);
@@ -318,6 +357,9 @@ _net_face_enable(Net_Face *nf)
    e_config_save_queue();
    evas_object_show(nf->net_obj);
    evas_object_show(nf->event_obj);
+   evas_object_show(nf->chart_obj);
+   evas_object_show(nf->rtxt_obj);
+   evas_object_show(nf->ttxt_obj);   
 }
 
 static void
@@ -327,6 +369,9 @@ _net_face_disable(Net_Face *nf)
    e_config_save_queue();
    evas_object_hide(nf->event_obj);
    evas_object_hide(nf->net_obj);
+   evas_object_hide(nf->chart_obj);
+   evas_object_hide(nf->rtxt_obj);
+   evas_object_hide(nf->ttxt_obj);
 }
 
 static void 
@@ -343,6 +388,15 @@ _net_face_free(Net_Face *nf)
      evas_object_del(nf->event_obj);
    if (nf->net_obj)
      evas_object_del(nf->net_obj);
+   if (nf->chart_obj)
+     evas_object_del(nf->chart_obj);
+   if (nf->rtxt_obj)
+     evas_object_del(nf->rtxt_obj);
+   if (nf->ttxt_obj)
+     evas_object_del(nf->ttxt_obj);
+   if (nf->old_rx)
+     _net_face_graph_clear(nf);
+   
    if (nf->gmc) 
      {
 	e_gadman_client_save(nf->gmc);
@@ -369,12 +423,22 @@ _net_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change
 	e_gadman_client_geometry_get(nf->gmc, &x, &y, &w, &h);
 	evas_object_move(nf->net_obj, x, y);
 	evas_object_move(nf->event_obj, x, y);
+	evas_object_move(nf->chart_obj, x, y);
+	evas_object_move(nf->rtxt_obj, x, y);
+	evas_object_move(nf->ttxt_obj, x, y);	
 	evas_object_resize(nf->net_obj, w, h);
 	evas_object_resize(nf->event_obj, w, h);
+	evas_object_resize(nf->chart_obj, w, h);
+	evas_object_resize(nf->rtxt_obj, w, h);
+	evas_object_resize(nf->ttxt_obj, w, h);	
+	_net_face_graph_clear(nf);
 	break;
       case E_GADMAN_CHANGE_RAISE:
 	evas_object_raise(nf->net_obj);
 	evas_object_raise(nf->event_obj);
+	evas_object_raise(nf->chart_obj);
+	evas_object_raise(nf->rtxt_obj);
+	evas_object_raise(nf->ttxt_obj);	
 	break;
       default:
 	break;
@@ -490,9 +554,98 @@ _net_face_update_values(void *data)
    /* Update the modules text */
    char in_str[100];
    char out_str[100];
-   snprintf(in_str, sizeof(in_str), "Rx: %d B", in_use);
-   snprintf(out_str, sizeof(out_str), "Tx: %d B", out_use);	
-   edje_object_part_text_set(nf->net_obj, "out-text", out_str);
-   edje_object_part_text_set(nf->net_obj, "in-text", in_str);
+   
+   if (nf->conf->show_text) 
+     {
+	snprintf(in_str, sizeof(in_str), "Rx: %d B", in_use);
+	snprintf(out_str, sizeof(out_str), "Tx: %d B", out_use);
+	edje_object_part_text_set(nf->ttxt_obj, "tx-text", out_str);
+	edje_object_part_text_set(nf->rtxt_obj, "rx-text", in_str);
+     }
+    else 
+     {
+	edje_object_part_text_set(nf->ttxt_obj, "tx-text", "");
+	edje_object_part_text_set(nf->rtxt_obj, "rx-text", "");	
+     }
+   
+   if (nf->conf->show_graph) 
+     _net_face_graph_values(nf, out_use, in_use);
+   else 
+     _net_face_graph_clear(nf);
+   
    return 1;
 }
+
+static void 
+_net_face_graph_values(Net_Face *nf, int tx_val, int rx_val) 
+{
+   int x, y, w, h;
+   Evas_Object *o;
+   Evas_Object *last = NULL;
+   Evas_List *l;
+   int i, j = 0;
+
+   evas_object_geometry_get(nf->chart_obj, &x, &y, &w, &h);
+
+   if (rx_val > 100)
+     rx_val = 100;
+   
+   rx_val = (int)(((double)rx_val) * (((double)h) / ((double)100)));      
+   
+   o = evas_object_line_add(nf->evas);
+   edje_object_part_swallow(nf->chart_obj, "lines", o);
+   evas_object_layer_set(o, 1);
+   if (rx_val == 0)
+     evas_object_hide(o);
+   else 
+     {
+	evas_object_line_xy_set(o, (x + w), (y + h), (x + w), ((y + h) - rx_val));
+	evas_object_color_set(o, 255, 0, 0, 100);
+	evas_object_pass_events_set(o, 1);
+	evas_object_show(o);
+     }
+   
+   nf->old_rx = evas_list_prepend(nf->old_rx, o);
+   l = nf->old_rx;
+   for (i = (x + w); l && (j -2) < w; l = l->next, j++) 
+     {
+	Evas_Coord oy;
+	Evas_Object *lo;
+	
+	lo = (Evas_Object *)evas_list_data(l);
+	evas_object_geometry_get(lo, NULL, &oy, NULL, NULL);
+	evas_object_move(lo, i--, oy);
+	last = lo;
+     }
+   
+   if ((j - 2) >= w) 
+     {
+	nf->old_rx = evas_list_remove(nf->old_rx, last);
+	evas_object_del(last);
+     }      
+}
+
+static void 
+_net_face_graph_clear(Net_Face *nf) 
+{
+   Evas_List *l;
+   
+   for (l = nf->old_rx; l; l = l->next) 
+     {
+	Evas_Object *o;
+	o = evas_list_data(l);
+	evas_object_del(o);
+     }
+   evas_list_free(nf->old_rx);
+   nf->old_rx = NULL;
+
+   for (l = nf->old_tx; l; l = l->next) 
+     {
+	Evas_Object *o;
+	o = evas_list_data(l);
+	evas_object_del(o);
+     }
+   evas_list_free(nf->old_tx);
+   nf->old_tx = NULL;
+}
+

@@ -16,6 +16,8 @@ struct _Config_Face
    unsigned char enabled;
    char *device;
    int check_interval;
+   int show_text;
+   int show_graph;
 };
 
 struct _Net 
@@ -32,11 +34,14 @@ struct _Net_Face
    E_Container *con;
    E_Menu *menu;
    Net *net;
-
+   Evas_List *old_rx, *old_tx;
    Config_Face *conf;
    
    Evas_Object *net_obj;
    Evas_Object *event_obj;
+   Evas_Object *chart_obj;
+   Evas_Object *rtxt_obj;
+   Evas_Object *ttxt_obj;
    
    Ecore_Timer *monitor;
    
