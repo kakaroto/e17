@@ -6,6 +6,8 @@
 #include <Etk.h>
 #include "etk_progress_dialog.h"
 
+#define EN_DND_COL_NUM 5
+
 static int etk_callback_setup = 0;
 static Ecore_Hash* row_hash;
 
@@ -167,12 +169,16 @@ static void _entropy_etk_list_viewer_drag_begin_cb(Etk_Object *object, void *dat
    entropy_gui_component_instance* instance;
    entropy_etk_file_list_viewer* viewer;
    int i=0;
-
    char buffer[8192]; /* Um - help - what do we size this to? */
-   
    int count = 0;
-
    Evas_List* rows;
+   Etk_Widget* table;
+   int l=0,r=0,t=0,b=0;
+   int added_object = 0;
+   gui_file* file;
+   Etk_Widget* vbox;
+   Etk_Widget* label;
+   char label_buffer[50];
 
    instance = data;
    viewer = instance->data;
@@ -181,14 +187,56 @@ static void _entropy_etk_list_viewer_drag_begin_cb(Etk_Object *object, void *dat
    rows = etk_tree_selected_rows_get(tree);
    drag = (ETK_WIDGET(tree))->drag;
 
+   table = etk_table_new(5,5,ETK_TRUE);
    count = evas_list_count(rows);
    bzero(buffer,8192);
    for (; rows; rows = rows->next ) {
+	   file = ((gui_file*)ecore_hash_get(row_hash, rows->data));
+	   
 	   printf("Row %p resolves to %p:%s!\n", rows->data, ecore_hash_get(row_hash, rows->data),
 			   ((gui_file*)ecore_hash_get(row_hash, rows->data))->file->uri );
 	   strcat(buffer, ((gui_file*)ecore_hash_get(row_hash, rows->data))->file->uri);
 	   strcat(buffer, "\r\n");
+
+	   if (added_object < (EN_DND_COL_NUM*5)-1) {
+		   /*Build the drag widget*/
+		   vbox = etk_vbox_new(ETK_TRUE,0);
+
+		   /*Print the label*/
+		   bzero(label_buffer, sizeof(label_buffer));
+
+		   if (strlen(file->file->filename) > 5) {
+			   snprintf(label_buffer,5,"%s", file->file->filename);
+			   strcat(label_buffer, "...");
+		   } else {
+			   sprintf(label_buffer,"%s", file->file->filename);
+		   }
+   		   label = etk_label_new(label_buffer);
+
+
+		   image = etk_image_new_from_file(file->file->thumbnail->thumbnail_filename);
+		   etk_image_keep_aspect_set(ETK_IMAGE(image), ETK_TRUE);
+		   etk_widget_size_request_set(image, 48, 48);
+
+
+		  etk_box_pack_start(ETK_BOX(vbox), image, ETK_FALSE, ETK_FALSE, 0);
+		  etk_box_pack_start(ETK_BOX(vbox), label, ETK_FALSE, ETK_FALSE, 0);
+		  
+
+		  etk_table_attach(ETK_TABLE(table), vbox, l, r, t, b, 3, 3,
+			   ETK_FILL_POLICY_NONE);
+		  
+		  ++l; ++r;
+		  added_object++;
+		  if(l == EN_DND_COL_NUM) {
+		       l = r = 0;
+		       ++t; ++b;
+		    }	 
+	  }
+	  
    }
+
+   etk_container_add(ETK_CONTAINER(drag), table);
   
 
    types = calloc(1, sizeof(char*));
@@ -565,7 +613,6 @@ entropy_plugin_init (entropy_core * core,
    dnd_types = calloc(dnd_types_num, sizeof(char*));
    dnd_types[0] = strdup("text/uri-list");  
   etk_widget_dnd_source_set(viewer->tree, ETK_TRUE);
-  etk_widget_dnd_drag_widget_set(viewer->tree, etk_button_new_with_label("Drag Widget"));
   //etk_widget_dnd_drag_data_set(viewer->tree, dnd_types, dnd_types_num, "This is the drag data!", strlen("This is the drag data!") + 1);
   etk_signal_connect("drag_begin", ETK_OBJECT(viewer->tree) , ETK_CALLBACK(_entropy_etk_list_viewer_drag_begin_cb), instance);
   etk_tree_multiple_select_set(ETK_TREE(viewer->tree), ETK_TRUE); 
