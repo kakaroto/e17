@@ -457,8 +457,8 @@ _mem_face_update_values(void *data)
 
    if (cf->mem->conf->show_text) 
      {
-	snprintf(real_str, sizeof(real_str), "%d/%d MB", (total_real / 1024), (real / 1024));
-	snprintf(swap_str, sizeof(swap_str), "%d/%d MB", (total_swap / 1024), (swap / 1024));
+	snprintf(real_str, sizeof(real_str), "%d/%d MB", (real / 1024), (total_real / 1024));
+	snprintf(swap_str, sizeof(swap_str), "%d/%d MB", (swap / 1024), (total_swap / 1024));
 	edje_object_part_text_set(cf->rtxt_obj, "real-text", real_str);
 	edje_object_part_text_set(cf->stxt_obj, "swap-text", swap_str);
      }
