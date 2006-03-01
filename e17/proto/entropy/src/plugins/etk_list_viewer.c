@@ -156,6 +156,38 @@ static int _entropy_etk_list_date_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1,
 }
 
 
+/* Called when the user presses a key */
+static void _etk_entropy_list_viewer_key_down_cb(Etk_Object *object, void *event, void *data)
+{
+   Etk_Event_Key_Up_Down *key_event = event;
+
+   Etk_Tree* tree;
+   Evas_List* row_list;
+   gui_file* file;
+
+   /*entropy_gui_component_instance* instance;
+   entropy_etk_file_list_viewer* viewer;*/
+	
+   tree = ETK_TREE(object);
+   row_list = etk_tree_selected_rows_get(tree);
+
+
+   if (!strcmp(key_event->key, "Delete")) {
+	   printf("Delete pressed!\n");
+
+	  for (; row_list; row_list = row_list->next ) {
+	  	file = ((gui_file*)ecore_hash_get(row_hash, row_list->data));
+
+		if (file) {
+			printf("Deleting '%s'...\n", file->file->filename);
+			entropy_plugin_filesystem_file_remove(file->file);
+		}
+
+	  }
+
+   }
+
+}
 
 
 static void _entropy_etk_list_viewer_drag_begin_cb(Etk_Object *object, void *data)
@@ -163,12 +195,10 @@ static void _entropy_etk_list_viewer_drag_begin_cb(Etk_Object *object, void *dat
    Etk_Tree *tree;
    const char **types;
    unsigned int num_types;
-   void *drag_data;
    Etk_Drag *drag;
    Etk_Widget *image;
    entropy_gui_component_instance* instance;
    entropy_etk_file_list_viewer* viewer;
-   int i=0;
    char buffer[8192]; /* Um - help - what do we size this to? */
    int count = 0;
    Evas_List* rows;
@@ -264,6 +294,19 @@ static void _entropy_etk_list_viewer_drag_begin_cb(Etk_Object *object, void *dat
 
 
 void
+gui_file_remove_destroy_single(entropy_gui_component_instance * comp,
+		gui_file* file)
+{
+	entropy_etk_file_list_viewer *view = comp->data;
+	
+	ecore_hash_remove(view->gui_hash, file->file);
+	ecore_hash_remove(row_hash, file->icon);
+
+	entropy_free(file);
+	
+}
+
+void
 gui_object_destroy_and_free (entropy_gui_component_instance * comp,
 			     Ecore_Hash * gui_hash)
 {
@@ -336,6 +379,21 @@ static void _etk_list_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *row, 
 }
 
 
+void
+list_viewer_remove_row(entropy_gui_component_instance* instance,
+		entropy_generic_file* file)
+{
+	entropy_etk_file_list_viewer* viewer = instance->data;
+	gui_file* event_file = NULL;
+
+	event_file = ecore_hash_get(viewer->gui_hash,file);
+
+	etk_tree_row_del(event_file->icon);
+
+	/*Destroy the gui_file object..*/
+	gui_file_remove_destroy_single(instance,event_file);
+	
+}
 
 void
 list_viewer_add_row (entropy_gui_component_instance * instance,
@@ -535,6 +593,12 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
      }
      break;
 
+     case ENTROPY_NOTIFY_FILE_REMOVE_DIRECTORY:
+     case ENTROPY_NOTIFY_FILE_REMOVE:{
+ 	    list_viewer_remove_row(comp, (entropy_generic_file *) el);
+     }
+     break;
+
      case ENTROPY_NOTIFY_THUMBNAIL_REQUEST:{
 
    	   /*Only bother if we have a thumbnail, and a component */
@@ -689,6 +753,9 @@ entropy_plugin_init (entropy_core * core,
   etk_signal_connect("row_clicked", ETK_OBJECT( viewer->tree  ), 
 		  ETK_CALLBACK(_etk_list_viewer_row_clicked), NULL);
 
+  etk_signal_connect("key_down", ETK_OBJECT(viewer->tree), 
+		  ETK_CALLBACK(_etk_entropy_list_viewer_key_down_cb), NULL);
+  
   printf("Initialising ETK list viewer...%p\n", instance);
 
   return instance;

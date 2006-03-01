@@ -137,7 +137,6 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *obj,
 	entropy_thumbnail *thumb;
 	entropy_gui_event *gui_event;
 	char *md5 = NULL;
-	entropy_plugin *plugin;
 
 	entropy_gui_component_instance *instance = NULL;
 
@@ -178,11 +177,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *obj,
 	    entropy_core_file_cache_remove_reference (listener->file->md5);
 
 	    /*Remove the d/led image */
-	    plugin =
-	      entropy_plugins_type_get_first (ENTROPY_PLUGIN_BACKEND_FILE,
-					      ENTROPY_PLUGIN_SUB_TYPE_ALL);
-
-	    entropy_plugin_filesystem_file_remove (plugin, tmp_file);
+	    entropy_plugin_filesystem_file_remove (tmp_file);
 	  }
 	  else {
 	    printf ("Remote thumbnailer: Couldn't make thumbnail\n");

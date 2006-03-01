@@ -115,7 +115,11 @@ Ecore_List* entropy_plugins_type_get(int type, int subtype) {
 	return plugin_list;	
 }
 
-void entropy_plugin_filesystem_file_remove(entropy_plugin* plugin, entropy_generic_file* file) {
+void entropy_plugin_filesystem_file_remove(entropy_generic_file* file) {
+  	entropy_plugin *plugin =
+	      entropy_plugins_type_get_first (
+	ENTROPY_PLUGIN_BACKEND_FILE, ENTROPY_PLUGIN_SUB_TYPE_ALL);
+	
 	void (*del_func)(entropy_generic_file* source);
 	del_func = dlsym(plugin->dl_ref, "entropy_filesystem_file_remove");
 
