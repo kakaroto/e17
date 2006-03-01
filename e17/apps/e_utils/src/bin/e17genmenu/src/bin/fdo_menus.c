@@ -24,7 +24,6 @@
 
 extern double convert_time;
 
-
 struct _fdo_menus_expand_apps_data
 {
    char *path;
@@ -70,9 +69,9 @@ static void _fdo_menus_select_app(void *value, void *user_data);
 static int _fdo_menus_apply_rules(struct _fdo_menus_generate_data *generate_data, Dumb_Tree * rule, char *key, Desktop * desktop);
 
 Dumb_Tree *
-fdo_menus_get(char *file, Dumb_Tree *merge_stack, int level)
+fdo_menus_get(char *file, Dumb_Tree * merge_stack, int level)
 {
-   Dumb_Tree * menu_xml;
+   Dumb_Tree *menu_xml;
    struct _fdo_menus_unxml_data data;
    double begin;
    int oops = 0;
@@ -96,9 +95,9 @@ fdo_menus_get(char *file, Dumb_Tree *merge_stack, int level)
         /* Setup the merge stack. */
         if (merge_stack->size <= level)
           {
-              while (merge_stack->size < level)
-                 dumb_tree_add(merge_stack, "");
-              dumb_tree_add(merge_stack, file);
+             while (merge_stack->size < level)
+                dumb_tree_add(merge_stack, "");
+             dumb_tree_add(merge_stack, file);
           }
         else
            merge_stack->elements[level].element = file;
@@ -110,40 +109,40 @@ fdo_menus_get(char *file, Dumb_Tree *merge_stack, int level)
 
              /* I can safely assume that they are all strings. */
              text = (char *)merge_stack->elements[i].element;
-	     if (strcmp(text, file) == 0)
-	        {
-		   fprintf(stderr, "\n### Oops, infinite menu merging loop detected at %s\n", file);
-		   oops++;
-		}
-	  }
+             if (strcmp(text, file) == 0)
+               {
+                  fprintf(stderr, "\n### Oops, infinite menu merging loop detected at %s\n", file);
+                  oops++;
+               }
+          }
 
         if (oops == 0)
-	   {
-	      /* Get on with it. */
-              dumb_tree_foreach(menu_xml, 0, _fdo_menus_unxml, &data);
-              dumb_tree_foreach(menu_xml, 0, _fdo_menus_merge, &data);
+          {
+             /* Get on with it. */
+             dumb_tree_foreach(menu_xml, 0, _fdo_menus_unxml, &data);
+             dumb_tree_foreach(menu_xml, 0, _fdo_menus_merge, &data);
 
-              /* The rest of this is only done after ALL the menus have been merged. */
-	      if (level == 0)
-	        {
-                   dumb_tree_foreach(menu_xml, 0, _fdo_menus_expand_default_dirs, &data);
+             /* The rest of this is only done after ALL the menus have been merged. */
+             if (level == 0)
+               {
+                  dumb_tree_foreach(menu_xml, 0, _fdo_menus_expand_default_dirs, &data);
 
-                   convert_time += ecore_time_get() - begin;
-                   dumb_tree_dump(menu_xml, 0);
-                   printf("\n\n");
-                   begin = ecore_time_get();
+                  convert_time += ecore_time_get() - begin;
+                  dumb_tree_dump(menu_xml, 0);
+                  printf("\n\n");
+                  begin = ecore_time_get();
 
-                   data.unallocated = FALSE;
-                   dumb_tree_foreach(menu_xml, 0, _fdo_menus_generate, &data);
-                   data.unallocated = TRUE;
-                   dumb_tree_foreach(menu_xml, 0, _fdo_menus_generate, &data);
+                  data.unallocated = FALSE;
+                  dumb_tree_foreach(menu_xml, 0, _fdo_menus_generate, &data);
+                  data.unallocated = TRUE;
+                  dumb_tree_foreach(menu_xml, 0, _fdo_menus_generate, &data);
 
-                   convert_time += ecore_time_get() - begin;
-                   dumb_tree_dump(menu_xml, 0);
-                   printf("\n\n");
-                   begin = ecore_time_get();
-		 }
-	   }
+                  convert_time += ecore_time_get() - begin;
+                  dumb_tree_dump(menu_xml, 0);
+                  printf("\n\n");
+                  begin = ecore_time_get();
+               }
+          }
      }
    else
       oops++;
@@ -152,9 +151,9 @@ fdo_menus_get(char *file, Dumb_Tree *merge_stack, int level)
      {
         E_FN_DEL(dumb_tree_del, (menu_xml));
         if (level == 0)
-	   {
-              E_FN_DEL(dumb_tree_del, (merge_stack));
-	   }
+          {
+             E_FN_DEL(dumb_tree_del, (merge_stack));
+          }
         E_FREE(data.path);
         E_FREE(data.base);
         E_FN_DEL(dumb_tree_del, (data.stack));
@@ -299,7 +298,7 @@ _fdo_menus_unxml(const void *data, Dumb_Tree * tree, int element, int level)
                                            dumb_tree_track(menu, menu->elements[1].element);
                                            result = 1;
                                         }
-				      /* FIXME: Move this to later in the sequence. */
+                                      /* FIXME: Move this to later in the sequence. */
                                       else if (strcmp((char *)sub->elements[0].element, "<Directory") == 0)
                                         {
                                            directory = strdup((char *)sub->elements[1].element);
@@ -327,7 +326,8 @@ _fdo_menus_unxml(const void *data, Dumb_Tree * tree, int element, int level)
                                         }
                                       else
                                         {
-                                           if ( (sub->size == 3) && (sub->elements[1].type == DUMB_TREE_ELEMENT_TYPE_STRING)  && (((char *)sub->elements[1].element)[0] != '<'   ) )
+                                           if ((sub->size == 3) && (sub->elements[1].type == DUMB_TREE_ELEMENT_TYPE_STRING)
+                                               && (((char *)sub->elements[1].element)[0] != '<'))
                                              {
                                                 char temp[MAX_PATH];
 
@@ -527,7 +527,7 @@ _fdo_menus_add_dirs(Dumb_Tree * tree, Dumb_Tree * paths, char *pre, char *post, 
            sprintf(t, "%s %s%s-merged/", pre, (char *)paths->elements[i].element, extra);
         else
            sprintf(t, "%s %s", pre, (char *)paths->elements[i].element);
-	if (tree)
+        if (tree)
            dumb_tree_extend(tree, t);
      }
 }
@@ -586,7 +586,7 @@ _fdo_menus_merge(const void *data, Dumb_Tree * tree, int element, int level)
    struct _fdo_menus_unxml_data *unxml_data;
    Dumb_Tree *merge;
    int result = 0;
- 
+
    unxml_data = (struct _fdo_menus_unxml_data *)data;
    merge = dumb_tree_new(NULL);
    if (tree->elements[element].type == DUMB_TREE_ELEMENT_TYPE_STRING)
@@ -622,96 +622,96 @@ _fdo_menus_merge(const void *data, Dumb_Tree * tree, int element, int level)
         else if (strncmp(string, "<MergeFile ", 11) == 0)
           {
              char merge_path[MAX_PATH];
-	     int path_type = 1;
+             int path_type = 1;
 
              /* FIXME: need to weed out duplicate <MergeFile's, use the last one. */
-	     string += 11;
+             string += 11;
              if (strncmp(string, "type=\"", 6) == 0)
-	        {
-	           string += 6;
-                   if (strncmp(string, "parent\"", 7) == 0)
-	              path_type = 0;
-		   while ((*string != '"') && (*string != '\0'))
-		     string++;
-		   if (*string != '\0')
-		     string++;
-		   while ((*string == ' ') && (*string != '\0'))
-		     string++;
-		}
-	     if (path_type)
-	        {
-                   if (string[0] == '/')
-                      sprintf(merge_path, "%s", string);
-                   else
-                      sprintf(merge_path, "%s/%s", unxml_data->path, string);
-		}
-	     else   /* This is a parent type MergeFile. */
-	        {
-		   /* The spec is a little unclear, and the examples may look like they
-		    * contradict the description, but it all makes sense if you cross
-		    * reference it with the XDG Base Directory Specification (version 0.6).
-		    * To make things harder, parent type MergeFiles never appear on my box.
-		    *
-		    * What you do is this.
-		    *
-		    * Take the XDG_CONFIG_DIRS stuff as a whole ($XDG_CONFIG_HOME, then 
-		    * $XDG_CONFIG_DIRS), in this code that will be fdo_paths_config.
-		    *
-		    * If this menu file is from one of the directories in fdo_paths_config,
-		    * scan the rest of fdo_paths_config looking for the new menu.  In other 
-		    * words start searching in the next fdo_paths_config entry after the one
-		    * that this menu is in.
-		    *
-		    * The file to look for is the path to this menu with the portion from
-		    * fdo_paths_config stripped off the beginning.  For instance, the top level
-		    * menu file is typically /etc/xdg/menus/applications.menu, and /etc/xdg is
-		    * typically in fdo_paths_config, so search for menus/applications.menu.
-                    *
-		    * If this menu file is NOT from one of the directories in fdo_paths_menus,
-		    * insert nothing.
-		    *
-		    * The first one found wins, if none are found, don't merge anything.
-		    */
+               {
+                  string += 6;
+                  if (strncmp(string, "parent\"", 7) == 0)
+                     path_type = 0;
+                  while ((*string != '"') && (*string != '\0'))
+                     string++;
+                  if (*string != '\0')
+                     string++;
+                  while ((*string == ' ') && (*string != '\0'))
+                     string++;
+               }
+             if (path_type)
+               {
+                  if (string[0] == '/')
+                     sprintf(merge_path, "%s", string);
+                  else
+                     sprintf(merge_path, "%s/%s", unxml_data->path, string);
+               }
+             else               /* This is a parent type MergeFile. */
+               {
+                  /* The spec is a little unclear, and the examples may look like they
+                   * contradict the description, but it all makes sense if you cross
+                   * reference it with the XDG Base Directory Specification (version 0.6).
+                   * To make things harder, parent type MergeFiles never appear on my box.
+                   *
+                   * What you do is this.
+                   *
+                   * Take the XDG_CONFIG_DIRS stuff as a whole ($XDG_CONFIG_HOME, then 
+                   * $XDG_CONFIG_DIRS), in this code that will be fdo_paths_config.
+                   *
+                   * If this menu file is from one of the directories in fdo_paths_config,
+                   * scan the rest of fdo_paths_config looking for the new menu.  In other 
+                   * words start searching in the next fdo_paths_config entry after the one
+                   * that this menu is in.
+                   *
+                   * The file to look for is the path to this menu with the portion from
+                   * fdo_paths_config stripped off the beginning.  For instance, the top level
+                   * menu file is typically /etc/xdg/menus/applications.menu, and /etc/xdg is
+                   * typically in fdo_paths_config, so search for menus/applications.menu.
+                   *
+                   * If this menu file is NOT from one of the directories in fdo_paths_menus,
+                   * insert nothing.
+                   *
+                   * The first one found wins, if none are found, don't merge anything.
+                   */
 
-                   /* FIXME: Actually implement this when I have some menus that will exercise it. */
-	           merge_path[0] = '\0';
-                   printf("\n### Didn't expect a MergeFile parent type\n");
-		}
-	     if (merge_path[0] != '\0')
-	        {
-		   Dumb_Tree *new_menu;
+                  /* FIXME: Actually implement this when I have some menus that will exercise it. */
+                  merge_path[0] = '\0';
+                  printf("\n### Didn't expect a MergeFile parent type\n");
+               }
+             if (merge_path[0] != '\0')
+               {
+                  Dumb_Tree *new_menu;
 
-                   new_menu = fdo_menus_get(merge_path, unxml_data->merge_stack, level + 1);
-		   if (new_menu)
-		      {
-		         if (new_menu->size > 1)
-			    {
-		               if (new_menu->elements[1].type == DUMB_TREE_ELEMENT_TYPE_TREE)
-			          {
-			             new_menu = (Dumb_Tree *)new_menu->elements[1].element;
-		                     if (new_menu->size > 0)
-			                {
-		                           if (new_menu->elements[0].type == DUMB_TREE_ELEMENT_TYPE_TREE)
-			                     {
-			                        merge = (Dumb_Tree *)new_menu->elements[0].element;
-			                        dumb_tree_remove(merge, 0);
-			                        dumb_tree_remove(merge, 1);
-			                        dumb_tree_remove(merge, 2);
-			                        dumb_tree_remove(merge, 3);
-			                        dumb_tree_remove(merge, 4);
-				                /* FIXME: The MENU_PATHs need to be prefixed. */
-			                     }
-			                  else
-			                     printf("FUCK an error in _fdo_menus_merge(%s)\n", merge_path);
+                  new_menu = fdo_menus_get(merge_path, unxml_data->merge_stack, level + 1);
+                  if (new_menu)
+                    {
+                       if (new_menu->size > 1)
+                         {
+                            if (new_menu->elements[1].type == DUMB_TREE_ELEMENT_TYPE_TREE)
+                              {
+                                 new_menu = (Dumb_Tree *) new_menu->elements[1].element;
+                                 if (new_menu->size > 0)
+                                   {
+                                      if (new_menu->elements[0].type == DUMB_TREE_ELEMENT_TYPE_TREE)
+                                        {
+                                           merge = (Dumb_Tree *) new_menu->elements[0].element;
+                                           dumb_tree_remove(merge, 0);
+                                           dumb_tree_remove(merge, 1);
+                                           dumb_tree_remove(merge, 2);
+                                           dumb_tree_remove(merge, 3);
+                                           dumb_tree_remove(merge, 4);
+                                           /* FIXME: The MENU_PATHs need to be prefixed. */
                                         }
-		                     else
-			                printf("FUCK another error in _fdo_menus_merge(%s)\n", merge_path);
-			          }
-			       else
-			          printf("FUCK ME! An error in _fdo_menus_merge(%s)\n", merge_path);
-			    }
-		      }
-		}
+                                      else
+                                         printf("FUCK an error in _fdo_menus_merge(%s)\n", merge_path);
+                                   }
+                                 else
+                                    printf("FUCK another error in _fdo_menus_merge(%s)\n", merge_path);
+                              }
+                            else
+                               printf("FUCK ME! An error in _fdo_menus_merge(%s)\n", merge_path);
+                         }
+                    }
+               }
              result = 1;
           }
      }
@@ -728,14 +728,13 @@ _fdo_menus_merge(const void *data, Dumb_Tree * tree, int element, int level)
    return 0;
 }
 
-
 static int
 _fdo_menus_expand_default_dirs(const void *data, Dumb_Tree * tree, int element, int level)
 {
    struct _fdo_menus_unxml_data *unxml_data;
    Dumb_Tree *merge;
    int result = 0;
- 
+
    unxml_data = (struct _fdo_menus_unxml_data *)data;
    merge = dumb_tree_new(NULL);
    if (tree->elements[element].type == DUMB_TREE_ELEMENT_TYPE_STRING)
@@ -766,7 +765,6 @@ _fdo_menus_expand_default_dirs(const void *data, Dumb_Tree * tree, int element, 
    return 0;
 }
 
-
 static int
 _fdo_menus_generate(const void *data, Dumb_Tree * tree, int element, int level)
 {
@@ -793,7 +791,7 @@ _fdo_menus_generate(const void *data, Dumb_Tree * tree, int element, int level)
                   int i;
 
                   for (i = element + 5; i < tree->size; i++)
-		    {
+                    {
                        int result = 0;
                        char *string;
 
@@ -815,11 +813,11 @@ _fdo_menus_generate(const void *data, Dumb_Tree * tree, int element, int level)
                                  else
                                     sprintf(merge_path, "%s%s", unxml_data->path, &string[14]);
                                  merge = dumb_tree_new(NULL);
-				 if (merge)
-				    {
-                                       fdo_paths_recursive_search(merge_path, NULL, _fdo_menus_check_directory, merge);
-                                       dumb_tree_merge(tree, i + 1, merge);
-				    }
+                                 if (merge)
+                                   {
+                                      fdo_paths_recursive_search(merge_path, NULL, _fdo_menus_check_directory, merge);
+                                      dumb_tree_merge(tree, i + 1, merge);
+                                   }
                                  result = 1;
                               }
                          }
@@ -845,16 +843,16 @@ _fdo_menus_generate(const void *data, Dumb_Tree * tree, int element, int level)
                                              }
                                            result = 1;
                                         }
-				   }
-			      }
-			 }
+                                   }
+                              }
+                         }
 
                        if (result)
                          {
                             tree->elements[i].type = DUMB_TREE_ELEMENT_TYPE_NULL;
                             tree->elements[i].element = NULL;
                          }
-		     }
+                    }
 
                   if (unxml_data->stack->size <= level)
                     {

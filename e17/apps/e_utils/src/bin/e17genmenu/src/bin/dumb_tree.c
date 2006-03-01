@@ -143,25 +143,25 @@ dumb_tree_merge(Dumb_Tree * tree, int before, Dumb_Tree * element)
 
    size = element->size;
    if (size)
-      {
-         tree->elements = (Dumb_Tree_Element *) realloc(tree->elements, (tree->size + size) * sizeof(Dumb_Tree_Element));
-         tree->size += size;
-         for (i = tree->size - 1; i > before; i--)
-           {
-              tree->elements[i].element = tree->elements[i - size].element;
-              tree->elements[i].type = tree->elements[i - size].type;
-           }
-         for (i = 0; i < size; i++)
-           {
-              tree->elements[before + i].element = element->elements[i].element;
-              tree->elements[before + i].type = element->elements[i].type;
-           }
-      }
+     {
+        tree->elements = (Dumb_Tree_Element *) realloc(tree->elements, (tree->size + size) * sizeof(Dumb_Tree_Element));
+        tree->size += size;
+        for (i = tree->size - 1; i > before; i--)
+          {
+             tree->elements[i].element = tree->elements[i - size].element;
+             tree->elements[i].type = tree->elements[i - size].type;
+          }
+        for (i = 0; i < size; i++)
+          {
+             tree->elements[before + i].element = element->elements[i].element;
+             tree->elements[before + i].type = element->elements[i].type;
+          }
+     }
 
    /* Careful, this might screw up the freeing order if that is important. */
    size = element->buffers_size;
    if (size)
-      {
+     {
 /*
          tree->buffers = (char **) realloc(tree->buffers, (tree->buffers_size + size) * sizeof(char *));
          tree->buffers_size += size;
@@ -171,7 +171,7 @@ dumb_tree_merge(Dumb_Tree * tree, int before, Dumb_Tree * element)
 	       element->buffers[i] = NULL;
             }
 */
-      }
+     }
    return tree;
 }
 
@@ -198,12 +198,11 @@ void
 dumb_tree_remove(Dumb_Tree * tree, int element)
 {
    if (tree->size > element)
-      {
-         tree->elements[element].type = DUMB_TREE_ELEMENT_TYPE_NULL;
-         tree->elements[element].element = NULL;
-      }
+     {
+        tree->elements[element].type = DUMB_TREE_ELEMENT_TYPE_NULL;
+        tree->elements[element].element = NULL;
+     }
 }
-
 
 int
 dumb_tree_exist(Dumb_Tree * tree, char *element)
