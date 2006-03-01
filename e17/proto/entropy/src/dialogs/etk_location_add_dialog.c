@@ -32,8 +32,7 @@ _location_add_window_delete (Etk_Object * object, void *data)
 void _entropy_etk_location_cancel_cb(Etk_Object *object, void *data) {
 	entropy_etk_location_add_dialog* dialog = data;
 	
-	etk_widget_hide(ETK_WIDGET(dialog->window));
-	//etk_object_destroy(ETK_OBJECT(dialog->window));
+	etk_object_destroy(ETK_OBJECT(dialog->window));
 }
 
 void _entropy_etk_location_radio_cb(Etk_Object *object, void *data)
@@ -124,7 +123,7 @@ void _location_add_next_cb(Etk_Object *obj, void *data)
 		entropy_config_standard_structures_add (dialog->instance, (char*)name, buffer);
 		(*dialog->add_callback)(dialog->instance, (char*)name, buffer);
 
-		etk_widget_hide(ETK_WIDGET(dialog->window));
+		etk_widget_destroy(ETK_WIDGET(dialog->window));
 	}
 }
 
