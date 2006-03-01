@@ -212,14 +212,14 @@ static void _entropy_etk_list_viewer_drag_begin_cb(Etk_Object *object, void *dat
 			   sprintf(label_buffer,"%s", file->file->filename);
 		   }
    		   label = etk_label_new(label_buffer);
-
-
-		   image = etk_image_new_from_file(file->file->thumbnail->thumbnail_filename);
-		   etk_image_keep_aspect_set(ETK_IMAGE(image), ETK_TRUE);
-		   etk_widget_size_request_set(image, 48, 48);
-
-
-		  etk_box_pack_start(ETK_BOX(vbox), image, ETK_FALSE, ETK_FALSE, 0);
+		   
+		  if (file->file->thumbnail && file->file->thumbnail->thumbnail_filename) {
+			image = etk_image_new_from_file(file->file->thumbnail->thumbnail_filename);
+			 etk_image_keep_aspect_set(ETK_IMAGE(image), ETK_TRUE);
+			 etk_widget_size_request_set(image, 48, 48);
+			 etk_box_pack_start(ETK_BOX(vbox), image, ETK_FALSE, ETK_FALSE, 0);
+		  }
+		  
 		  etk_box_pack_start(ETK_BOX(vbox), label, ETK_FALSE, ETK_FALSE, 0);
 		  
 
