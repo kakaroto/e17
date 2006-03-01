@@ -118,7 +118,7 @@ fdo_paths_search_for_file(Fdo_Paths_Type type, char *file, int sub, int (*func) 
                    break;
           }
         else if (sub)
-           path = fdo_paths_recursive_search(paths->elements[i].element, file, func, data);
+           path = fdo_paths_recursive_search(paths->elements[i].element, file, NULL, func, data);
         if (path && (!func))
            break;
      }
@@ -347,7 +347,7 @@ _fdo_paths_exec_config(char *home, Dumb_Tree * extras, char *cmd)
 }
 
 char *
-fdo_paths_recursive_search(char *path, char *file, int (*func) (const void *data, char *path), const void *data)
+fdo_paths_recursive_search(char *path, char *file, int (*dir_func) (const void *data, char *path), int (*func) (const void *data, char *path), const void *data)
 {
    char *fpath = NULL;
    DIR *dir = NULL;
@@ -371,7 +371,10 @@ fdo_paths_recursive_search(char *path, char *file, int (*func) (const void *data
                        if ((strcmp(basename(info_text), ".") != 0) && (strcmp(basename(info_text), "..") != 0))
                          {
                             sprintf(info_text, "%s%s/", path, script->d_name);
-                            fpath = fdo_paths_recursive_search(info_text, file, func, data);
+                            if (dir_func)
+                               if (dir_func(data, info_text))
+                                  break;
+                            fpath = fdo_paths_recursive_search(info_text, file, dir_func, func, data);
                          }
                     }
                   else
