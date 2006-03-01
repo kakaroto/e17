@@ -27,7 +27,7 @@ void etk_test_xdnd_window_create(void *data)
    Etk_Widget  *entry;
    Etk_Widget  *frame;
    Etk_Widget  *sep;
-   char      **dnd_types;
+   const char **dnd_types;
    int         dnd_types_num;  
    
    if (win)

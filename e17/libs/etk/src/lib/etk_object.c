@@ -1,4 +1,4 @@
-;/** @file etk_object.c */
+/** @file etk_object.c */
 #include "etk_object.h"
 #include <stdlib.h>
 #include <string.h>

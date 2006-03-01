@@ -139,7 +139,6 @@ void etk_test_tree_window_create(void *data)
 
 static void _etk_test_tree_drag_drop_cb(Etk_Object *object, void *event, void *data)
 {
-   Etk_Event_Selection_Request *ev;
    Etk_Tree *tree;
    Etk_Tree_Row *row;
    char *col1_string, *col3_path;
@@ -166,7 +165,7 @@ static void _etk_test_tree_drag_begin_cb(Etk_Object *object, void *data)
    tree = ETK_TREE(object);
    row = etk_tree_selected_row_get(tree);
    
-   drag = (ETK_WIDGET(tree))->drag;
+   drag = ETK_DRAG((ETK_WIDGET(tree))->drag);
    
    etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), NULL, &col1_string, etk_tree_nth_col_get(tree, 1), &col2_value, etk_tree_nth_col_get(tree, 2), &col3_path, NULL);   
    

@@ -5,6 +5,7 @@
 #include <Edje.h>
 #include <Evas.h>
 #include "etk_utils.h"
+#include "etk_tree.h"
 
 typedef struct _Etk_Tree_Model_Image
 {

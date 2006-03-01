@@ -197,7 +197,7 @@ struct _Etk_Widget
    unsigned char dnd_dest : 1;
    unsigned char dnd_internal: 1;
 
-   Etk_Drag *drag;
+   Etk_Widget *drag;
    char    **dnd_types;
    int       dnd_types_num;
 };
@@ -279,7 +279,7 @@ void         etk_widget_dnd_drag_widget_set(Etk_Widget *widget, Etk_Widget *drag
 Etk_Widget  *etk_widget_dnd_drag_widget_get(Etk_Widget *widget);  
 void         etk_widget_dnd_drag_data_set(Etk_Widget *widget, const char **types, int num_types, void *data, int data_size);
 const char **etk_widget_dnd_files_get(Etk_Widget *e, int *num_files);
-void         etk_widget_dnd_types_set(Etk_Widget *widget, char **types, int num);
+void         etk_widget_dnd_types_set(Etk_Widget *widget, const char **types, int num);
 const char **etk_widget_dnd_types_get(Etk_Widget *widget, int *num);
 Etk_Bool     etk_widget_dnd_internal_get(Etk_Widget *widget);
 void         etk_widget_dnd_internal_set(Etk_Widget *widget, Etk_Bool on);

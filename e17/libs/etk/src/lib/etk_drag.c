@@ -147,7 +147,7 @@ static void _etk_drag_constructor(Etk_Drag *drag)
 /* Sets the property whose id is "property_id" to the value "value" */
 static void _etk_drag_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value)
 {
-   Etk_Dialog *drag;
+   Etk_Drag *drag;
          
    if (!(drag = ETK_DRAG(object)) || !value)
      return;

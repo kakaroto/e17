@@ -266,7 +266,7 @@ Etk_Tree_Col *etk_tree_col_new(Etk_Tree *tree, const char *title, Etk_Tree_Model
    etk_signal_connect("mouse_move", ETK_OBJECT(new_header), ETK_CALLBACK(_etk_tree_header_mouse_move_cb), new_col);
    etk_signal_connect("mouse_in", ETK_OBJECT(new_header), ETK_CALLBACK(_etk_tree_header_mouse_in_cb), new_col);
    etk_signal_connect("mouse_out", ETK_OBJECT(new_header), ETK_CALLBACK(_etk_tree_header_mouse_out_cb), new_col);
-   etk_widget_parent_set(new_header, ETK_CONTAINER(tree));
+   etk_widget_parent_set(new_header, ETK_WIDGET(tree));
    etk_widget_show(new_header);
    if (tree->headers_clip)
       etk_widget_clip_set(new_header, tree->headers_clip);
@@ -1509,7 +1509,7 @@ static void _etk_tree_constructor(Etk_Tree *tree)
    tree->scrolled_view = etk_scrolled_view_new();
    etk_widget_visibility_locked_set(tree->scrolled_view, ETK_TRUE);
    etk_widget_repeat_events_set(tree->scrolled_view, ETK_TRUE);
-   etk_widget_parent_set(tree->scrolled_view, ETK_CONTAINER(tree));
+   etk_widget_parent_set(tree->scrolled_view, ETK_WIDGET(tree));
    etk_widget_show(tree->scrolled_view);
    
    tree->grid = etk_widget_new(ETK_TREE_GRID_TYPE, "theme_group", "tree", "repeat_events", ETK_TRUE, "visibility_locked", ETK_TRUE, NULL);
@@ -2881,9 +2881,8 @@ static void _etk_tree_heapify(Etk_Tree *tree, Etk_Tree_Row **heap, int root, int
 
 static void _etk_tree_drag_drop_cb(Etk_Object *object, void *event, void *data)
 {
-#if HAVE_ECORE_X   
-   Etk_Event_Selection_Request *ev;
-   Etk_Widget *win;
+#if HAVE_ECORE_X      
+   Etk_Toplevel_Widget *win;
       
    win = etk_widget_toplevel_parent_get(ETK_WIDGET(object));
    if(ETK_IS_WINDOW(win))

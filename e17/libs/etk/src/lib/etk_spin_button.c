@@ -22,9 +22,9 @@ static void _etk_spin_button_text_changed_cb(Etk_Object *object, void *data);
 static void _etk_spin_button_scroll_start_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void _etk_spin_button_scroll_stop_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
 
-static void _etk_spin_button_value_changed_handler(Etk_Range *range, double value);
-static void _etk_spin_button_page_size_changed_cb(Etk_Object *object, const char *property_name, void *data);
-static void _etk_spin_button_range_changed_cb(Etk_Object *object, const char *property_name, void *data);
+//static void _etk_spin_button_value_changed_handler(Etk_Range *range, double value);
+//static void _etk_spin_button_page_size_changed_cb(Etk_Object *object, const char *property_name, void *data);
+//static void _etk_spin_button_range_changed_cb(Etk_Object *object, const char *property_name, void *data);
 static void _etk_spin_button_mouse_wheel(Etk_Object *object, void *event, void *data);
 
 /**************************
@@ -56,7 +56,7 @@ Etk_Type *etk_spin_button_type_get()
 Etk_Widget *etk_spin_button_new(double min, double max, double step)
 {
    Etk_Widget *new_widget;
-   Etk_Table *new_spin_button;
+//   Etk_Table *new_spin_button;
    
    new_widget = etk_widget_new(ETK_SPIN_BUTTON_TYPE, "theme_group", "spin_button", "focusable", ETK_TRUE, "focus_on_press", ETK_TRUE, NULL);
    

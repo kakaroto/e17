@@ -1375,7 +1375,7 @@ Etk_Bool etk_widget_dnd_source_get(Etk_Widget *widget)
 void etk_widget_dnd_internal_set(Etk_Widget *widget, Etk_Bool on)
 {
    if (!widget)
-      return ETK_FALSE;
+      return;
    widget->dnd_internal = on;
 }
 
@@ -1414,7 +1414,7 @@ Etk_Widget *etk_widget_dnd_drag_widget_get(Etk_Widget *widget)
    Evas_List *children = NULL;
    
    if(!widget)
-     return;
+     return NULL;
    
    children = etk_container_children_get(ETK_CONTAINER(widget->drag));
    
@@ -1438,8 +1438,8 @@ void etk_widget_dnd_drag_data_set(Etk_Widget *widget, const char **types, int nu
    if(!widget->drag || !widget->dnd_source)
      return;
    
-   etk_drag_types_set(widget->drag, types, num_types);
-   etk_drag_data_set(widget->drag, data, data_size);   
+   etk_drag_types_set(ETK_DRAG(widget->drag), types, num_types);
+   etk_drag_data_set(ETK_DRAG(widget->drag), data, data_size);   
 }
 
 /**
@@ -1448,7 +1448,7 @@ void etk_widget_dnd_drag_data_set(Etk_Widget *widget, const char **types, int nu
  * @param types list of acceptable types
  * @param num number of types
  */
-void etk_widget_dnd_types_set(Etk_Widget *widget, char **types, int num)
+void etk_widget_dnd_types_set(Etk_Widget *widget, const char **types, int num)
 {
    int i;
    
