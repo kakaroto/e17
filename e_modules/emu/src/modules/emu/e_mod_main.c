@@ -1011,50 +1011,49 @@ _emu_menu_cb_action(void *data, E_Menu *m, E_Menu_Item *mi)
                     }
                   else
                     {
-		       char *buffer = NULL, *c;
-		       int length, i = 0;
+                       char *buffer = NULL, *c;
+                       int length, i = 0;
 
                        /* Do some % subs on action. */
-		       length = (strlen(action) * 2) + 1;
-		       buffer = realloc(buffer, length);
-		       for (c = action; (*c) != '\0'; c++)
-		          {
-			     if ((*c) == '%')
-			        {
-                                   char *sub;
+                       length = (strlen(action) * 2) + 1;
+                       buffer = realloc(buffer, length);
+                       for (c = action; (*c) != '\0'; c++)
+                         {
+                            if ((*c) == '%')
+                              {
+                                 char *sub;
 
-				   c++;
-                                   sub = border_props_substitute(bd, 
-				                                 (*c));  // Fucked if I know why the compiler bitchs about this.
-				   if (sub)
-				      {
-				         int len;
+                                 c++;
+                                 sub = border_props_substitute(bd, (*c));       // Fucked if I know why the compiler bitchs about this.
+                                 if (sub)
+                                   {
+                                      int len;
 
-                                         len = strlen(sub);
-				         if ((i + len + 1) > length)
-				            {
-				               length *= 2;
-					       length += len + 1;
-		                               buffer = realloc(buffer, length);
-				            }
-			                 memcpy(&buffer[i], sub, len + 1);
-					 i += len;
-					 continue;
-				      }
-				      if ((*c) == '\0')
-				         break;
-				}
-				if (i > length)
-				   {
-				      length *= 2;
-		                      buffer = realloc(buffer, length);
-				   }
-			        buffer[i++] = (*c);
-			  }
-		       buffer[i++] = '\0';
+                                      len = strlen(sub);
+                                      if ((i + len + 1) > length)
+                                        {
+                                           length *= 2;
+                                           length += len + 1;
+                                           buffer = realloc(buffer, length);
+                                        }
+                                      memcpy(&buffer[i], sub, len + 1);
+                                      i += len;
+                                      continue;
+                                   }
+                                 if ((*c) == '\0')
+                                    break;
+                              }
+                            if (i > length)
+                              {
+                                 length *= 2;
+                                 buffer = realloc(buffer, length);
+                              }
+                            buffer[i++] = (*c);
+                         }
+                       buffer[i++] = '\0';
                        printf("\n_emu_menu_cb_action() -> \n%s\nbecame\n%s\n\n", action, buffer);
                        E_FREE(action);
-		       action = buffer;
+                       action = buffer;
                     }
                }
              else if ((item->easy_menu->category) && (strncmp(item->easy_menu->category, "fileman/action", 14) == 0))

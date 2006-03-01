@@ -120,9 +120,9 @@ border_props_substitute(E_Border * bd, char type)
      case 'z':
         result = bd->zone->name;
         break;
-     default :
+     default:
         found = 0;
-	break;
+        break;
      }
    if (!result)
       result = buf;
