@@ -99,7 +99,7 @@ collections
 			 {
 			    relative: 1.0 0.0;
 			 }
-		       color: 218 195 35 255;
+		       color: 213 91 91 255;
 		       color3: 0 0 0 100;
 		       text
 			 {
@@ -136,7 +136,8 @@ collections
 			 {
 			    relative: 1.0 1.0;
 			 }
-		       color: 213 91 91 255;
+		       
+		       color: 218 195 35 255;
 		       color3: 0 0 0 100;
 		       text
 			 {

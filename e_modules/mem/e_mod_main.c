@@ -288,10 +288,10 @@ _mem_face_init(Mem_Face *cf)
 			      E_GADMAN_POLICY_HSIZE |
 			      E_GADMAN_POLICY_VMOVE |
 			      E_GADMAN_POLICY_VSIZE);
-   e_gadman_client_max_size_set(cf->gmc, 256, 128);
+   e_gadman_client_max_size_set(cf->gmc, 128, 128);
    e_gadman_client_auto_size_set(cf->gmc, 40, 40);
    e_gadman_client_align_set(cf->gmc, 1.0, 1.0);
-   e_gadman_client_aspect_set(cf->gmc, 3.25, 3.25);
+   //e_gadman_client_aspect_set(cf->gmc, 3.25, 3.25);
    e_gadman_client_resize(cf->gmc, 40, 40);
    e_gadman_client_change_func_set(cf->gmc, _mem_face_cb_gmc_change, cf);
    e_gadman_client_load(cf->gmc);
@@ -571,7 +571,7 @@ _mem_face_graph_values(Mem_Face *mf, int val)
    else 
      {
 	evas_object_line_xy_set(o, (x + w), (y + h), (x + w), ((y + h) - val));
-	evas_object_color_set(o, 218, 195, 35, 200);
+	evas_object_color_set(o, 255, 0, 0, 200);
 	evas_object_pass_events_set(o, 1);
 	evas_object_show(o);
      }
