@@ -170,6 +170,7 @@ void layout_etk_simple_add_header(entropy_gui_component_instance* instance, char
    /*We shouldn't really assume it's a folder - but it bootstraps us for
     * now- FIXME*/
    strcpy(file->mime_type, "file/folder");
+   file->filetype = FILE_FOLDER;
 
   if (!strlen (file->mime_type)) {
 	    entropy_mime_file_identify (instance->core->mime_plugins, file);

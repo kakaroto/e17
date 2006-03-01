@@ -155,6 +155,7 @@ structure_viewer_add_row (entropy_gui_component_instance * instance,
   
   col = etk_tree_nth_col_get(ETK_TREE(parent->tree), 0);
   etk_tree_freeze(ETK_TREE(viewer->tree));
+
   
   if (!prow) {
 	  new_row = etk_tree_append_to_row((Etk_Tree_Row*)viewer->parent_visual, col, 
