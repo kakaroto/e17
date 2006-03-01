@@ -1,18 +1,15 @@
-images
-{
- image:"emu1.png" COMP;
- image:"FancyEgg.png" COMP;
- image:"e17_titlebar.png" COMP;
+images {
+   image: "emu1.png" COMP;
+   image: "FancyEgg.png" COMP;
+   image: "e17_titlebar.png" COMP;
 }
 
-fonts
-{
- font:"Vera.ttf" "Edje-Vera";
- font:"VeraBd.ttf" "Edje-Vera-Bold";
+fonts {
+   font: "Vera.ttf"   "Edje-Vera";
+   font: "VeraBd.ttf" "Edje-Vera-Bold";
 }
 
-collections
-{
+collections {
 #include "module_icon.edc"
 #include "module_face.edc"
 }
