@@ -79,8 +79,6 @@ void                DeskGotoNum(unsigned int desk);
 void                DeskRestack(Desk * dsk);
 Window              DeskGetBackgroundWin(const Desk * dsk);
 
-void                DeskBackgroundAssign(unsigned int desk,
-					 struct _background *bg);
 struct _background *DeskBackgroundGet(const Desk * dsk);
 void                DeskBackgroundSet(Desk * dsk, struct _background *bg);
 

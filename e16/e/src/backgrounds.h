@@ -28,8 +28,7 @@ typedef struct _background Background;
 
 /* backgrounds.c */
 Background         *BackgroundFind(const char *name);
-Background         *BackgroundCheck(Background * bg);
-Background         *BackgroundGetRandom(void);
+
 char               *BackgroundGetUniqueString(const Background * bg);
 void                BackgroundPixmapSet(Background * bg, Pixmap pmap);
 void                BackgroundDestroyByName(const char *name);
@@ -53,6 +52,9 @@ int                 BackgroundIsNone(const Background * bg);
 Background         *BrackgroundCreateFromImage(const char *bgid,
 					       const char *file, char *thumb,
 					       int thlen);
+
+void                BackgroundSetForDesk(Background * bg, unsigned int desk);
+Background         *BackgroundGetForDesk(unsigned int desk);
 
 void                BackgroundsInvalidate(int refresh);
 int                 BackgroundsConfigLoad(FILE * fs);

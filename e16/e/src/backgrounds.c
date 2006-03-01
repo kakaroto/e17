@@ -63,6 +63,9 @@ struct _background
 static Ecore_List  *bg_list = NULL;
 static unsigned int bg_seq_no = 0;
 
+#define N_BG_ASSIGNED 32
+static Background  *bg_assigned[N_BG_ASSIGNED];
+
 char               *
 BackgroundGetUniqueString(const Background * bg)
 {
@@ -337,7 +340,7 @@ BackgroundFind(const char *name)
    return ecore_list_find(bg_list, _BackgroundMatchName, name);
 }
 
-Background         *
+static Background  *
 BackgroundCheck(Background * bg)
 {
    return ecore_list_goto(bg_list, bg);
@@ -1121,7 +1124,7 @@ BackgroundsInvalidate(int refresh)
    ECORE_LIST_FOR_EACH(bg_list, bg) BackgroundInvalidate(bg, refresh);
 }
 
-Background         *
+static Background  *
 BackgroundGetRandom(void)
 {
    Background         *bg;
@@ -1136,6 +1139,32 @@ BackgroundGetRandom(void)
 	if (num <= 1 || !BackgroundIsNone(bg))
 	   break;
      }
+
+   return bg;
+}
+
+void
+BackgroundSetForDesk(Background * bg, unsigned int desk)
+{
+   if (desk >= N_BG_ASSIGNED)
+      return;
+
+   bg_assigned[desk] = bg;
+}
+
+Background         *
+BackgroundGetForDesk(unsigned int desk)
+{
+   Background         *bg;
+
+   if (desk >= N_BG_ASSIGNED)
+      return NULL;
+
+   bg = bg_assigned[desk];
+   if (bg)
+      bg = BackgroundCheck(bg);
+   if (!bg)
+      bg = BackgroundGetRandom();
 
    return bg;
 }
@@ -1262,20 +1291,18 @@ BackgroundsConfigLoad(FILE * fs)
 
 	  case BG_DESKNUM:
 	     desk = atoi(s2);
-	     if (desk < DesksGetNumber())
+	     if (desk >= N_BG_ASSIGNED)
+		break;
+	     if (!bg_assigned[desk] || Conf.backgrounds.user)
 	       {
-		  if ((DeskBackgroundGet(DeskGet(desk)) == NULL) ||
-		      (Conf.backgrounds.user))
+		  if (!ignore)
 		    {
-		       if (!ignore)
-			 {
-			    if (!bg)
-			       bg = BackgroundCreate(name, &xclr, bg1, i1, i2,
-						     i3, i4, i5, i6, bg2, j1,
-						     j2, j3, j4, j5);
-			 }
-		       DeskBackgroundAssign(desk, bg);
+		       if (!bg)
+			  bg = BackgroundCreate(name, &xclr, bg1, i1, i2,
+						i3, i4, i5, i6, bg2, j1,
+						j2, j3, j4, j5);
 		    }
+		  bg_assigned[desk] = bg;
 	       }
 	     break;
 
@@ -1434,13 +1461,9 @@ BackgroundsConfigSave(void)
 	  }
 #endif
 
-	for (j = 0; j < DesksGetNumber(); j++)
+	for (j = 0; j < N_BG_ASSIGNED; j++)
 	  {
-	     Desk               *dsk = DeskGet(j);
-
-	     if (BackgroundIsNone(bg) && !DeskBackgroundGet(dsk))
-		fprintf(fs, "564 %d\n", j);
-	     if (DeskBackgroundGet(dsk) == bg)
+	     if (bg == bg_assigned[j])
 		fprintf(fs, "564 %d\n", j);
 	  }
 

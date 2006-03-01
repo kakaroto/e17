@@ -53,7 +53,6 @@ typedef struct _desktops
    Desk               *previous;
    Desk               *desk[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
    unsigned int        order[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
-   Background         *bg[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
    int                 drag_x0, drag_y0;
 }
 Desktops;
@@ -370,11 +369,7 @@ DeskConfigure(Desk * dsk)
    DeskControlsCreate(dsk);
    DeskControlsShow(dsk, 1);
 
-   bg = desks.bg[dsk->num];
-   if (bg)
-      bg = BackgroundCheck(bg);
-   if (!bg)
-      bg = BackgroundGetRandom();
+   bg = BackgroundGetForDesk(dsk->num);
    DeskBackgroundSet(dsk, bg);
 
    if (dsk->num > 0)
@@ -427,8 +422,6 @@ DeskCreate(int desk, int configure)
 	EventCallbackRegister(EobjGetWin(eo), 0, DeskHandleEvents, dsk);
 	dsk->bg.o_bg = eo;
 #endif
-	if (Mode.root.ext_pmap_valid)
-	   dsk->bg.pmap_set = Mode.root.ext_pmap;
 #endif
      }
    else
@@ -498,15 +491,6 @@ DeskGetBackgroundWin(const Desk * dsk)
    if (!dsk)
       return VRoot.win;
    return EobjGetWin(dsk->bg.o);
-}
-
-void
-DeskBackgroundAssign(unsigned int desk, Background * bg)
-{
-   if (desk >= ENLIGHTENMENT_CONF_NUM_DESKTOPS)
-      return;
-
-   desks.bg[desk] = bg;
 }
 
 Background         *
@@ -677,6 +661,7 @@ DeskBackgroundSet(Desk * dsk, Background * bg)
    if (!dsk)
       return;
 
+   BackgroundSetForDesk(bg, dsk->num);
    if (bg && BackgroundIsNone(bg))
       bg = NULL;
 
