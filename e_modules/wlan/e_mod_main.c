@@ -267,12 +267,12 @@ _wlan_face_init(Wlan *n, E_Container *con)
 	snprintf(buf, sizeof(buf), PACKAGE_DATA_DIR"/wlan.edj");
 	edje_object_file_set(o, buf, "modules/wlan/main");
      }
-
+   evas_object_layer_set(o, 1);
    evas_object_show(o);
 
    o = edje_object_add(nf->evas);
    nf->chart_obj = o;
-   evas_object_layer_set(o, 1);
+   evas_object_layer_set(o, 2);
    evas_object_repeat_events_set(o, 1);
    evas_object_pass_events_set(o, 1);
    evas_object_color_set(o, 255, 255, 255, 255);
@@ -285,7 +285,7 @@ _wlan_face_init(Wlan *n, E_Container *con)
 	snprintf(buf, sizeof(buf), PACKAGE_DATA_DIR"/wlan.edj");
 	edje_object_file_set(o, buf, "modules/wlan/text");
      }   
-   evas_object_layer_set(o, 2);
+   evas_object_layer_set(o, 3);
    evas_object_repeat_events_set(o, 1);
    evas_object_pass_events_set(o, 1);
    evas_object_color_set(o, 255, 255, 255, 255);
@@ -293,7 +293,7 @@ _wlan_face_init(Wlan *n, E_Container *con)
    
    o = evas_object_rectangle_add(nf->evas);
    nf->event_obj = o;
-   evas_object_layer_set(o, 3);
+   evas_object_layer_set(o, 4);
    evas_object_repeat_events_set(o, 1);
    evas_object_color_set(o, 0, 0, 0, 0);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN,
@@ -308,11 +308,8 @@ _wlan_face_init(Wlan *n, E_Container *con)
 			      E_GADMAN_POLICY_HSIZE |
 			      E_GADMAN_POLICY_VMOVE |
 			      E_GADMAN_POLICY_VSIZE);
-   e_gadman_client_min_size_set(nf->gmc, 40, 40);
-   e_gadman_client_max_size_set(nf->gmc, 128, 128);
    e_gadman_client_auto_size_set(nf->gmc, 40, 40);
    e_gadman_client_align_set(nf->gmc, 1.0, 1.0);
-   e_gadman_client_aspect_set(nf->gmc, 1.0, 1.0);
    e_gadman_client_resize(nf->gmc, 40, 40);
    e_gadman_client_change_func_set(nf->gmc, _wlan_face_cb_gmc_change, nf);
    e_gadman_client_load(nf->gmc);
