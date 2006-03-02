@@ -103,6 +103,28 @@ int etk_notebook_page_prepend(Etk_Notebook *notebook, const char *tab_label, Etk
 }
 
 /**
+ * @brief Delete the specified page of the notebook
+ * @param notebook a notebook
+ * @param page_num the number of the page to delete to
+ */
+void etk_notebook_page_remove(Etk_Notebook *notebook, int page_num)
+{
+   Evas_List *l;
+   Etk_Notebook_Page *page;
+   
+   if (!notebook || !(l = evas_list_nth_list(notebook->pages, page_num)))
+      return;
+     
+   page = l->data;
+   etk_widget_parent_set(page->page_frame, NULL);
+   etk_object_destroy(ETK_OBJECT(page->page_frame));
+   etk_widget_parent_set(page->tab, NULL);
+   etk_object_destroy(ETK_OBJECT(page->tab));
+   free(page);
+   notebook->pages = evas_list_remove_list(notebook->pages, l);
+}
+
+/**
  * @brief Sets the label of the tab of a page of the notebook
  * @param notebook a notebook
  * @param page_num the number of the page to set the tab label to

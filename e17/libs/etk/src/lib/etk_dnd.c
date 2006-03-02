@@ -369,7 +369,7 @@ static int _etk_xdnd_selection_handler(void *data, int type, void *event)
       
       case ECORE_X_SELECTION_SECONDARY:
          sel = ev->data;
-	 printf("secondary: %s %s\n", ev->target, sel->data);
+         //printf("secondary: %s %s\n", ev->target, sel->data);
          break;
       
       case ECORE_X_SELECTION_XDND:
