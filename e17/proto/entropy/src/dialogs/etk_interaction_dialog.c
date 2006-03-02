@@ -18,6 +18,8 @@ void etk_entropy_user_interaction_dialog_cb(Etk_Object* w, void* user_data)
 	
 	window = etk_object_data_get(ETK_OBJECT(w), "window");
 	etk_object_destroy(ETK_OBJECT(window));
+	/* this is a temporary fix */
+	etk_signal_stop();
 }
 
 void entropy_etk_user_interaction_dialog_new(entropy_file_operation* interact) 
