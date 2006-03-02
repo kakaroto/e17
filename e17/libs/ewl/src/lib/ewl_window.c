@@ -114,18 +114,15 @@ ewl_window_window_find(void *window)
  * functions to update the window.
  */
 void
-ewl_window_title_set(Ewl_Window *win, char *title)
+ewl_window_title_set(Ewl_Window *win, const char *title)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
-	if (!title)
-		title = "";
-
-	if (strcmp(win->title, title)) {
+	if ((!title) || (strcmp(win->title, title))) {
 		IF_FREE(win->title);
-		win->title = strdup(title);
+		win->title = (title ? strdup(title) : strdup(""));
 	}
 
 	if (!REALIZED(win))
@@ -133,8 +130,8 @@ ewl_window_title_set(Ewl_Window *win, char *title)
 
 #ifdef ENABLE_EWL_SOFTWARE_X11
 	if (strstr(win->render, "x11")) {
-		ecore_x_icccm_title_set((Ecore_X_Window)win->window, title);
-		ecore_x_netwm_name_set((Ecore_X_Window)win->window, title);
+		ecore_x_icccm_title_set((Ecore_X_Window)win->window, win->title);
+		ecore_x_netwm_name_set((Ecore_X_Window)win->window, win->title);
 	}
 #endif
 
@@ -168,18 +165,15 @@ ewl_window_title_get(Ewl_Window *win)
  * functions to update the window.
  */
 void
-ewl_window_name_set(Ewl_Window *win, char *name)
+ewl_window_name_set(Ewl_Window *win, const char *name)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
-	if (!name)
-		name = "";
-
-	if (strcmp(win->name, name)) {
+	if ((!name) || (strcmp(win->name, name))) {
 		IF_FREE(win->name);
-		win->name = strdup(name);
+		win->name = (name ? strdup(name) : strdup(""));
 	}
 
 	if (!REALIZED(win))
@@ -188,7 +182,7 @@ ewl_window_name_set(Ewl_Window *win, char *name)
 #ifdef ENABLE_EWL_SOFTWARE_X11
 	if (strstr(win->render, "x11"))
 		ecore_x_icccm_name_class_set((Ecore_X_Window)win->window,
-					     name, win->name);
+					     win->name, win->name);
 #endif
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -221,20 +215,18 @@ ewl_window_name_get(Ewl_Window *win)
  * functions to update the window.
  */
 void
-ewl_window_class_set(Ewl_Window *win, char *classname)
+ewl_window_class_set(Ewl_Window *win, const char *classname)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
-	if (!classname)
-		classname = "";
-
-	if (win->classname && !strcmp(win->classname, classname))
-		DRETURN(DLEVEL_STABLE);
-
-	IF_FREE(win->classname);
-	win->classname = strdup(classname);
+	if ((!classname) || (!win->classname) 
+			|| (strcmp(win->classname, classname)))
+	{
+		IF_FREE(win->classname);
+		win->classname = (classname ? strdup(classname) : strdup(""));
+	}
 
 	if (!REALIZED(win))
 		DRETURN(DLEVEL_STABLE);
@@ -242,7 +234,7 @@ ewl_window_class_set(Ewl_Window *win, char *classname)
 #ifdef ENABLE_EWL_SOFTWARE_X11
 	if (strstr(win->render, "x11"))
 		ecore_x_icccm_name_class_set((Ecore_X_Window)win->window,
-					     classname, win->classname);
+					     win->classname, win->classname);
 #endif
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
