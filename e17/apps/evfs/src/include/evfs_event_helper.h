@@ -20,6 +20,6 @@ void evfs_open_event_create(evfs_client * client, evfs_command * command);
 void evfs_read_event_create(evfs_client * client, evfs_command * command,
                             char *bytes, long size);
 void evfs_operation_event_create(evfs_client * client, evfs_command * command,
-                                 evfs_operation * op);
+                                 evfs_operation * op, char* misc);
 
 #endif

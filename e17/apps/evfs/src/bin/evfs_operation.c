@@ -53,8 +53,8 @@ evfs_operation_status_set(evfs_operation * op, int status)
 
 void
 evfs_operation_user_dispatch(evfs_client * client, evfs_command * command,
-                             evfs_operation * op)
+                             evfs_operation * op, char* misc)
 {
    /*printf ("stub"); */
-   evfs_operation_event_create(client, command, op);
+   evfs_operation_event_create(client, command, op,misc);
 }

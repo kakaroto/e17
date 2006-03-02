@@ -30,6 +30,7 @@ typedef struct evfs_operation evfs_operation;
 struct evfs_operation
 {
    long id;                     /* A unique id for this op */
+   char* misc_str;
    evfs_operation_status status;
    evfs_operation_substatus substatus;
    evfs_operation_response response;

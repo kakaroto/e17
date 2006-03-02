@@ -100,7 +100,7 @@ GNUC_EXTENSION typedef unsigned long long uint64;
 #include "evfs_vfolder.h"
 
 void evfs_operation_user_dispatch(evfs_client * client, evfs_command * command,
-                                  evfs_operation * op);
+                                  evfs_operation * op, char* misc);
 
 /**
  * ATTRIBUTE_UNUSED:

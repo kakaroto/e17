@@ -127,12 +127,13 @@ evfs_read_event_create(evfs_client * client, evfs_command * command,
 
 void
 evfs_operation_event_create(evfs_client * client, evfs_command * command,
-                            evfs_operation * op)
+                            evfs_operation * op, char* misc)
 {
    evfs_event *event = NEW(evfs_event);
 
    event->type = EVFS_EV_OPERATION;
    event->op = op;
+   event->op->misc_str = misc;
    evfs_write_event(client, command, event);
 
    /*Destroy */

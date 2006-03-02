@@ -90,6 +90,8 @@ evfs_io_initialise()
 
    EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_operation_edd, evfs_operation, "id", id,
                                  EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_operation_edd, evfs_operation,
+		                                       "misc_str", misc_str, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_operation_edd, evfs_operation, "status",
                                  status, EET_T_INT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_operation_edd, evfs_operation,
