@@ -25,9 +25,9 @@ esac
 
 dnl Set PACKAGE_LOCALE_DIR in config.h.
 if test "x${prefix}" = "xNONE"; then
-  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}/locale", [Locale data directory])
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${PACKAGE}/locale", [Locale data directory])
 else
-  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale", [Locale data directory])
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${PACKAGE}/locale", [Locale data directory])
 fi
 
 dnl Set PACKAGE_DATA_DIR in config.h.
@@ -39,6 +39,20 @@ if test "x${datadir}" = 'x${prefix}/share'; then
   fi
 else
   AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}", [Shared data directory])
+fi
+
+dnl Set PACKAGE_LIB_DIR in config.h.
+if test "x${libdir}" = 'x${exec_prefix}/lib'; then
+  if test "x${prefix}" = "xNONE"; then
+    echo "Prefix is NONE"
+    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${ac_default_prefix}/lib/${PACKAGE}", [Library module directory])
+  else
+    echo "Prefix is ${prefix}"
+    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${prefix}/lib/${PACKAGE}", [Library module directory])
+  fi
+else
+  echo "libdir is ${libdir}"
+  AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${libdir}/${PACKAGE}", [Library module directory])
 fi
 
 dnl Set PACKAGE_SOURCE_DIR in config.h.
@@ -197,6 +211,7 @@ ewl.pc
 ewl-config
 src/Makefile
 src/bin/Makefile
+src/bin/tests/Makefile
 src/lib/Ewl.h
 src/lib/Makefile
 data/Makefile
