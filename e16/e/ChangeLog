@@ -3793,3 +3793,16 @@ Yet another attempt to get pager scaling on resolution change right.
 Reenable having menu definitions in theme (hmm.. why did I take this out?).
 Fix background configuration when background is NONE.
 
+
+-------------------------------------------------------------------------------
+
+Fri Mar  3 00:07:10 CET 2006
+(Kim)
+
+--- 0.16.8.1 0.04 ---
+Rework background handling:
+- Only use root background overlay when composite is enabled
+- Improve handling of external backgrounds ("No Background")
+- Fix external background handling when composite is enabled
+Fix button shape change when composite is enabled.
+
