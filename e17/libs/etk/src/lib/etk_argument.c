@@ -53,7 +53,21 @@ int etk_arguments_parse(Etk_Argument *args, int argc, char **argv)
       
    /* no arguments */
    if(argc < 2)
-     return 0;
+     {
+	/* check for required arguments */
+	i = 0;
+	arg = args;	     
+	while(arg->short_name != -1)
+	  {
+	     if(arg->flags & ETK_ARGUMENT_FLAG_REQUIRED)
+	       {
+		  printf(_("Argument %d '-%c | --%s' is required\n"), i, arg->short_name, arg->long_name);
+		  return ETK_ARGUMENT_RETURN_REQUIRED_NOT_FOUND;
+	       }
+	     ++i; ++arg;
+	  }
+	return ETK_ARGUMENT_RETURN_OK;
+     }
    
    for(i = 1; i < argc; i++)
      {
@@ -66,7 +80,7 @@ int etk_arguments_parse(Etk_Argument *args, int argc, char **argv)
 	if(strlen(cur) < 2)
 	  {
 	     printf(_("Argument %d '%s' is too short\n"), i, argv[i]);
-	     return 0;
+	     return ETK_ARGUMENT_RETURN_MALFORMED;
 	  }
 	
 	/* short (single char) argument of the form -d val or -dval */
@@ -89,7 +103,7 @@ int etk_arguments_parse(Etk_Argument *args, int argc, char **argv)
 			    if(val[0] == '-')
 			      {
 				 printf(_("Argument %d '%s' requires a value\n"), i, cur);
-				 return 0;
+				 return ETK_ARGUMENT_RETURN_REQUIRED_VALUE_NOT_FOUND;
 			      }
 			    
 			    if(arg->data)			      
@@ -104,7 +118,7 @@ int etk_arguments_parse(Etk_Argument *args, int argc, char **argv)
 			 {
 			    /* if no value is present, report error */
 			    printf(_("Argument %d '%s' requires a value\n"), i, cur);
-			    return 0;
+			    return ETK_ARGUMENT_RETURN_REQUIRED_VALUE_NOT_FOUND;
 			 }
 		       else if(!(arg->flags & ETK_ARGUMENT_FLAG_VALUE_REQUIRED))
 			 arg->flags |= ETK_ARGUMENT_FLAG_PRIV_SET;
@@ -154,7 +168,7 @@ int etk_arguments_parse(Etk_Argument *args, int argc, char **argv)
 			    if(val[0] == '-')
 			      {
 				 printf(_("Argument %d '%s' requires a value\n"), i, cur);
-				 return 0;
+				 return ETK_ARGUMENT_RETURN_REQUIRED_VALUE_NOT_FOUND;
 			      }
 			    
 			    if(arg->data)			      
@@ -171,7 +185,7 @@ int etk_arguments_parse(Etk_Argument *args, int argc, char **argv)
 			 {
 			    /* if no value is present, report error */
 			    printf(_("Argument %d '%s' requires a value\n"), i, cur);
-			    return 0;
+			    return ETK_ARGUMENT_RETURN_REQUIRED_VALUE_NOT_FOUND;
 			 }
 		       else if(!(arg->flags & ETK_ARGUMENT_FLAG_VALUE_REQUIRED))
 			 arg->flags |= ETK_ARGUMENT_FLAG_PRIV_SET;
@@ -188,6 +202,20 @@ int etk_arguments_parse(Etk_Argument *args, int argc, char **argv)
 	  }	
      }
    
+   /* check for required arguments */
+   i = 0;
+   arg = args;	     
+   while(arg->short_name != -1)
+     {
+	if(!(arg->flags & ETK_ARGUMENT_FLAG_PRIV_SET) &&
+	   arg->flags & ETK_ARGUMENT_FLAG_REQUIRED)
+	  {
+	     printf(_("Argument %d '-%c | --%s' is required\n"), i, arg->short_name, arg->long_name);
+	     return ETK_ARGUMENT_RETURN_REQUIRED_NOT_FOUND;
+	  }
+	++i; ++arg;
+     }
+   
    /* call all the callbacks */
    i = 0;
    arg = args;	     
@@ -196,10 +224,9 @@ int etk_arguments_parse(Etk_Argument *args, int argc, char **argv)
 	if(arg->func && arg->flags & ETK_ARGUMENT_FLAG_PRIV_SET)
 	  arg->func(args, i);
 	++i; ++arg;
-     }   
+     }
    
-   return 1;
+   return ETK_ARGUMENT_RETURN_OK;
 }
 
 /** @} */
-

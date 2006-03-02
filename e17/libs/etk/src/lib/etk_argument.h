@@ -9,6 +9,14 @@
  * @{
  */
 
+enum _Etk_Argument_Returns
+{
+   ETK_ARGUMENT_RETURN_OK = 1,                   /* no problems */
+   ETK_ARGUMENT_RETURN_REQUIRED_NOT_FOUND = 2,   /* required arg not found */
+   ETK_ARGUMENT_RETURN_REQUIRED_VALUE_NOT_FOUND = 3, /* required value for arg no found */
+   ETK_ARGUMENT_RETURN_MALFORMED = 4             /* malformed argument */  
+};
+
 enum _Etk_Argument_Flags
 {
    ETK_ARGUMENT_FLAG_REQUIRED = 1 << 0,     /* argument itself is required */
