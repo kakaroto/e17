@@ -5,6 +5,7 @@
 #include <time.h>
 #include <Etk.h>
 #include "etk_progress_dialog.h"
+#include "etk_user_interaction_dialog.h"
 
 #define EN_DND_COL_NUM 5
 
@@ -654,6 +655,11 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
      case ENTROPY_NOTIFY_FILE_REMOVE_DIRECTORY:
      case ENTROPY_NOTIFY_FILE_REMOVE:{
  	    list_viewer_remove_row(comp, (entropy_generic_file *) el);
+     }
+     break;
+
+     case ENTROPY_NOTIFY_USER_INTERACTION_YES_NO_ABORT: {
+	entropy_etk_user_interaction_dialog_new((long)el);
      }
      break;
 

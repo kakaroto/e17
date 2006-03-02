@@ -123,7 +123,7 @@ void _location_add_next_cb(Etk_Object *obj, void *data)
 		entropy_config_standard_structures_add (dialog->instance, (char*)name, buffer);
 		(*dialog->add_callback)(dialog->instance, (char*)name, buffer);
 
-		etk_widget_destroy(ETK_WIDGET(dialog->window));
+		etk_object_destroy(ETK_OBJECT(dialog->window));
 	}
 }
 
