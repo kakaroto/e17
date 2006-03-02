@@ -22,6 +22,17 @@ group {
 		    smooth : 0;
 		}
             }
+	   description {
+		state,   "nobg" 0.0;
+		inherit, "default" 0.0;
+		image {
+		   normal, "e17_tranny.png";
+		   border, 7 7 7 7;
+		}
+		fill {
+		   smooth: 0;
+		}
+	   }
 	}    
 	part {
 	    name:		"over";
@@ -83,6 +94,14 @@ group {
                 transition: LINEAR 0.0;
                 target:     "focus";
         }
+	program {
+		name:      "nobg";
+		signal:    "nobg";
+		source:    "*";
+		action:    STATE_SET "nobg" 0.0;
+		transition: LINEAR 0.0;
+		target:    "background2";
+	}
     }    
 }
 
