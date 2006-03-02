@@ -1,4 +1,4 @@
-#include "Test.h"
+#include "Ewl_Test2.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -10,17 +10,18 @@
 #define MAIN_WIDTH 640
 #define MAIN_HEIGHT 320
 
-static int window_count = 0;
-static void ewl_test_cb_delete_window(Ewl_Widget *w, void *ev, void *data);
-static int create_main_test_window(Ewl_Container *win);
-static void run_argument_tests(int argc, char ** argv);
-static void run_window_test(Ewl_Test *test, int width, int height);
-static int run_test(Ewl_Container *box, Ewl_Test *test);
-static void run_test_boxed(Ewl_Widget *w, void *ev, void *data);
 static int ewl_test_setup_tests(void);
 static void ewl_test_print_tests(void);
 
+static void run_test(Ewl_Container *box, Ewl_Test *test);
+static void run_test_boxed(Ewl_Widget *w, void *ev, void *data);
+static void run_window_test(Ewl_Test *test, int width, int height);
+static int create_main_test_window(Ewl_Container *win);
+
+static void ewl_test_cb_delete_window(Ewl_Widget *w, void *ev, void *data);
+
 static Ecore_List *tests = NULL;
+static int window_count = 0;
 
 int
 main(int argc, char **argv)
@@ -40,18 +41,28 @@ main(int argc, char **argv)
 		return 1;
 	}
 
-	/* check for any flags ... */
+	/* check for any flags */
 	for (i = 0; i < argc; i++)
 	{
+		Ewl_Test *t;
+
 		if (!strncmp(argv[i], "-list", 5))
 		{
 			ewl_test_print_tests();
-			return 0;
+			exit(0);
+		}
+
+		/* see if this thing was a test to run */
+		ecore_list_goto_first(tests);
+		while ((t = ecore_list_next(tests)))
+		{
+			if (!strcasecmp(argv[i], t->name))
+			{
+				run_window_test(t, 0, 0);
+				break;
+			}
 		}
 	}
-
-	/* see if any tests were passed in and run them */
-	if (argc > 1) run_argument_tests(argc, argv);
 
 	/* no passed in tests, run the main test app */
 	if (window_count < 1)
@@ -81,27 +92,6 @@ ewl_test_cb_delete_window(Ewl_Widget *w, void *ev __UNUSED__,
 }
 
 static void
-run_argument_tests(int argc, char ** argv)
-{
-	int i;
-
-	for (i = 1; i < argc; i++)
-	{
-		Ewl_Test *t;
-
-		ecore_list_goto_first(tests);
-		while ((t = ecore_list_next(tests)))
-		{
-			if (!strcasecmp(argv[i], t->name))
-			{
-				run_window_test(t, 0, 0);
-				break;
-			}
-		}
-	}
-}
-
-static void
 ewl_test_print_tests(void)
 {
 	Ewl_Test *t;
@@ -118,8 +108,8 @@ run_window_test(Ewl_Test *test, int width, int height)
 	Ewl_Widget *win, *box;
 
 	win = ewl_window_new();
-	ewl_window_title_set(EWL_WINDOW(win), (char *)test->name);
-	ewl_window_name_set(EWL_WINDOW(win), (char *)test->name);
+	ewl_window_title_set(EWL_WINDOW(win), test->name);
+	ewl_window_name_set(EWL_WINDOW(win), test->name);
 	ewl_window_class_set(EWL_WINDOW(win), "Ewl Test Window");
 	ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW,
 					ewl_test_cb_delete_window, NULL);	
@@ -132,10 +122,7 @@ run_window_test(Ewl_Test *test, int width, int height)
 	ewl_container_child_append(EWL_CONTAINER(win), box);
 	ewl_widget_show(box);
 
-	if (!run_test(EWL_CONTAINER(box), test))
-		ewl_widget_destroy(win);
-	else
-		window_count ++;
+	run_test(EWL_CONTAINER(box), test);
 }
 
 static void
@@ -155,14 +142,11 @@ run_test_boxed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	ewl_notebook_visible_page_set(EWL_NOTEBOOK(n), c);
 }
 
-static int
+static void
 run_test(Ewl_Container *box, Ewl_Test *test)
 {
 	if (test->func(box))
-	{
-		return 1;
-	}
-	return 0;
+		window_count ++;
 }
 
 static int
@@ -170,7 +154,6 @@ ewl_test_setup_tests(void)
 {
 	char buf[PATH_MAX], buf2[PATH_MAX];
 	Ecore_List *list = NULL, *list2;
-	int i = 0;
 	char *file = NULL;
 
 	tests = ecore_list_new();
@@ -219,17 +202,13 @@ ewl_test_setup_tests(void)
 			func_info = dlsym(handle, "test_info");
 			if (func_info)
 			{
-				Ewl_Test *t = calloc(1, sizeof(Ewl_Test));
+				Ewl_Test *t;
+				
+				t = calloc(1, sizeof(Ewl_Test));
 				func_info(t);
 				t->handle = handle;
-
 				ecore_list_append(tests, t);
 			}
-			i++;
-		}
-		else {
-			fprintf(stderr, "Failed to open %s: %s\n", file,
-					dlerror());
 		}
 		free(file);
 	}
@@ -250,7 +229,7 @@ create_main_test_window(Ewl_Container *box)
 	ewl_container_child_append(box, note);
 	ewl_widget_name_set(note, "notebook");
 	ewl_notebook_tabbar_alignment_set(EWL_NOTEBOOK(note),
-						EWL_FLAG_ALIGN_CENTER);
+					EWL_FLAG_ALIGN_CENTER);
 	ewl_widget_show(note);
 
 	tree = ewl_tree_new(1);
@@ -276,7 +255,7 @@ create_main_test_window(Ewl_Container *box)
 	ecore_list_goto_first(tests);
 	while ((t = ecore_list_next(tests)))
 	{
-		Ewl_Widget *parent, *w;
+		Ewl_Widget *parent = NULL, *w;
 		entries[0] = (char *)t->name;
 
 		if (t->type == EWL_TEST_TYPE_SIMPLE)

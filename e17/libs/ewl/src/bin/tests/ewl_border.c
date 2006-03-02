@@ -1,4 +1,4 @@
-#include "Test.h"
+#include "Ewl_Test2.h"
 
 static Ewl_Widget *button_aleft, *button_acenter;
 static Ewl_Widget *button_aright, *button_atop, *button_abottom;

@@ -1,4 +1,4 @@
-#include "Test.h"
+#include "Ewl_Test2.h"
 #include <stdlib.h>
 
 static int create_test(Ewl_Container *win);
