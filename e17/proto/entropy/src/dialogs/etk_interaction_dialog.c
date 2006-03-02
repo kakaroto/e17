@@ -50,6 +50,16 @@ void entropy_etk_user_interaction_dialog_new(entropy_file_operation* interact)
 				(int*)ENTROPY_USER_INTERACTION_RESPONSE_YES );
 		etk_widget_show(button);
 
+		button = etk_button_new_with_label("Yes to all");
+		etk_container_add(ETK_CONTAINER(hbox), button);
+		
+		etk_object_data_set(ETK_OBJECT(button), "window", window);
+		etk_object_data_set(ETK_OBJECT(button), "operation", (long*)interact->id);
+
+		etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(etk_entropy_user_interaction_dialog_cb), 
+				(int*)ENTROPY_USER_INTERACTION_RESPONSE_YES_TO_ALL );
+		etk_widget_show(button);
+
 		button = etk_button_new();
 		etk_button_label_set(ETK_BUTTON(button), "No");
 		etk_container_add(ETK_CONTAINER(hbox), button);
@@ -60,6 +70,16 @@ void entropy_etk_user_interaction_dialog_new(entropy_file_operation* interact)
 		etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(etk_entropy_user_interaction_dialog_cb), 
 				(int*)ENTROPY_USER_INTERACTION_RESPONSE_NO );
 		
+		etk_widget_show(button);
+
+		button = etk_button_new_with_label("No to all");
+		etk_container_add(ETK_CONTAINER(hbox), button);
+		
+		etk_object_data_set(ETK_OBJECT(button), "window", window);
+		etk_object_data_set(ETK_OBJECT(button), "operation", (long*)interact->id);
+
+		etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(etk_entropy_user_interaction_dialog_cb), 
+				(int*)ENTROPY_USER_INTERACTION_RESPONSE_NO_TO_ALL );
 		etk_widget_show(button);
 
 		button = etk_button_new();
