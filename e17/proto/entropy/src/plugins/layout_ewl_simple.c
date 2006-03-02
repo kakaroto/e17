@@ -735,7 +735,6 @@ entropy_plugin_layout_create (entropy_core * core)
   Ewl_Widget *hbox;
   Ewl_Widget *contract_button;
   Ewl_Widget *expand_button;
-  Ewl_Widget *scrollpane;
   Ewl_Widget *menubar;
   Ewl_Widget *menu;
   Ewl_Widget *item;
@@ -808,15 +807,15 @@ entropy_plugin_layout_create (entropy_core * core)
   vbox = ewl_vbox_new ();
   hbox = ewl_hbox_new ();
 
-  scrollpane = ewl_scrollpane_new ();
   contract_button = ewl_button_new ();
   ewl_button_label_set (EWL_BUTTON (contract_button), "<");
   expand_button = ewl_button_new ();
   ewl_button_label_set (EWL_BUTTON (expand_button), ">");
 
   tree = ewl_scrollpane_new ();
-  ewl_box_spacing_set (EWL_BOX (EWL_SCROLLPANE (tree)->box), 5);
-  gui->tree = tree;
+  ewl_container_child_append(EWL_CONTAINER(tree), vbox);
+  //ewl_box_spacing_set (EWL_BOX (EWL_SCROLLPANE (tree)->box), 5);
+  gui->tree = vbox;
 
   gui->paned = ewl_hpaned_new ();
   gui->local_container = ewl_cell_new ();
@@ -979,7 +978,7 @@ entropy_plugin_layout_create (entropy_core * core)
   ewl_container_child_append (EWL_CONTAINER (box), menubar);
   ewl_container_child_append (EWL_CONTAINER (box), gui->paned);
 
-  ewl_container_child_append (EWL_CONTAINER (gui->paned), gui->tree);
+  ewl_container_child_append (EWL_CONTAINER (gui->paned), tree);
 
   ewl_container_child_append (EWL_CONTAINER (gui->paned),
 			      gui->local_container);
@@ -1012,7 +1011,6 @@ entropy_plugin_layout_create (entropy_core * core)
   ewl_widget_show (hbox);
   ewl_widget_show (contract_button);
   ewl_widget_show (expand_button);
-  ewl_widget_show (scrollpane);
   ewl_widget_show (gui->paned);
   ewl_widget_show (gui->local_container);
   ewl_widget_show (tree);

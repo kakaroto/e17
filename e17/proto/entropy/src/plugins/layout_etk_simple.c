@@ -150,15 +150,26 @@ void layout_etk_simple_add_header(entropy_gui_component_instance* instance, char
   entropy_generic_file* file;
   Etk_Tree_Row* row;
   Etk_Tree_Col* col;
-  entropy_layout_gui* gui = instance->data; 
-
-
+  entropy_layout_gui* gui = instance->data;
+  char* icon_string = NULL;
 
   col = etk_tree_nth_col_get(ETK_TREE(gui->tree), 0);
+
+  /*Parse the file from the URI*/
+   file = entropy_core_parse_uri (uri);
+
+   /*This will be moved to a central function. TODO*/
+   if (!strcmp(file->uri_base, "file"))
+	   icon_string = PACKAGE_DATA_DIR "/icons/local-system.jpg";
+  else if (!strcmp(file->uri_base, "smb"))
+	  icon_string = PACKAGE_DATA_DIR "/icons/samba-system.jpg";
+   else if (!strcmp(file->uri_base,"sftp"))
+	  icon_string = PACKAGE_DATA_DIR "/icons/sftp-system.jpg"; 
+			   
 	
   etk_tree_freeze(ETK_TREE(gui->tree));
   row = etk_tree_append(ETK_TREE(gui->tree), col, 
-			  etk_theme_icon_theme_get(), "places/start-here_16", _(name), NULL);
+			  icon_string, _(name), NULL);
   etk_tree_thaw(ETK_TREE(gui->tree));
   
   
@@ -166,7 +177,6 @@ void layout_etk_simple_add_header(entropy_gui_component_instance* instance, char
    structure_plugin_init =
       dlsym (structure->dl_ref, "entropy_plugin_init");
 
-   file = entropy_core_parse_uri (uri);
    /*We shouldn't really assume it's a folder - but it bootstraps us for
     * now- FIXME*/
    strcpy(file->mime_type, "file/folder");
@@ -280,7 +290,7 @@ entropy_plugin_layout_create (entropy_core * core)
   etk_paned_add1(ETK_PANED(gui->paned), gui->tree, ETK_FALSE);
   etk_tree_mode_set(ETK_TREE(gui->tree), ETK_TREE_MODE_TREE);
   col = etk_tree_col_new(ETK_TREE(gui->tree), _("Folders"), 
-		  etk_tree_model_icon_text_new(ETK_TREE(gui->tree), ETK_TREE_FROM_EDJE), 60);
+		  etk_tree_model_icon_text_new(ETK_TREE(gui->tree), ETK_TREE_FROM_FILE), 60);
   
   etk_tree_col_expand_set(col, ETK_TRUE);
   etk_tree_build(ETK_TREE(gui->tree));

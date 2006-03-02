@@ -159,10 +159,10 @@ structure_viewer_add_row (entropy_gui_component_instance * instance,
   
   if (!prow) {
 	  new_row = etk_tree_append_to_row((Etk_Tree_Row*)viewer->parent_visual, col, 
-			  etk_theme_icon_theme_get(), "places/user-home_16", _(file->filename), NULL);
+			  PACKAGE_DATA_DIR "/icons/folder.png", _(file->filename), NULL);
   } else {
 	  new_row = etk_tree_append_to_row(prow, col, 
-			  etk_theme_icon_theme_get(), "places/user-home_16", _(file->filename), NULL);
+			  PACKAGE_DATA_DIR "/icons/folder.png", _(file->filename), NULL);
   }
 
   ecore_hash_set(instance_map_hash, new_row, instance);
