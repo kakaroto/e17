@@ -372,7 +372,12 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
    evfs_operation *op;
 
    /*Make a new evfs_operation, for client communication */
-   op = evfs_operation_new();
+   if (root_command == command) {
+	   op = evfs_operation_new();
+	   root_command->op = op;
+   } else {
+	   op = root_command->op;
+   }
 
    plugin =
       evfs_get_plugin_for_uri(client->server,
@@ -403,7 +408,7 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 
         /*If this file exists, lock our operation until we get confirmation
          * from the user that they want to overwrite, or not */
-        if (res != EVFS_ERROR)
+        if ( (res != EVFS_ERROR) && !(op->status == EVFS_OPERATION_STATUS_OVERRIDE) )
           {
              printf("File overwrite\n");
              evfs_operation_status_set(op, EVFS_OPERATION_STATUS_USER_WAIT);
@@ -422,7 +427,11 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
                }
              else
                {
-                  printf("User opted to overwrite file!\n");
+		 if (op->response == EVFS_OPERATION_RESPONSE_AFFIRM_ALL) {
+			 op->status = EVFS_OPERATION_STATUS_OVERRIDE;
+		 }
+		       
+                  printf("User opted to overwrite file! -%d\n", op->response);
                }
           }
 
@@ -574,7 +583,8 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
      }
 
  CLEANUP:
-   evfs_operation_destroy(op);
+   if (command == root_command)
+	   evfs_operation_destroy(op);
 
 }
 

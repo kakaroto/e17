@@ -16,9 +16,11 @@ typedef enum evfs_operation_status
 
 typedef enum evfs_operation_response
 {
-   EVFS_OPERATION_RESPONSE_AFFIRM,
-   EVFS_OPERATION_RESPONSE_NEGATE,
-   EVFS_OPERATION_RESPONSE_ABORT
+   EVFS_OPERATION_RESPONSE_AFFIRM=0,
+   EVFS_OPERATION_RESPONSE_AFFIRM_ALL=1,
+   EVFS_OPERATION_RESPONSE_NEGATE=2,
+   EVFS_OPERATION_RESPONSE_NEGATE_ALL=3,
+   EVFS_OPERATION_RESPONSE_ABORT=4
 } evfs_operation_response;
 
 typedef enum evfs_operation_substatus
