@@ -403,6 +403,7 @@ callback (evfs_event * data, void *obj)
 	char *uri = NULL;
 	entropy_gui_component_instance* instance;
 	entropy_gui_event* gui_event;
+	entropy_file_operation* op;
 
 	printf("EVFS requested feedback on an operation!\n");
 
@@ -417,13 +418,20 @@ callback (evfs_event * data, void *obj)
          gui_event = entropy_malloc (sizeof (entropy_gui_event));
          gui_event->event_type =
 	 entropy_core_gui_event_get (ENTROPY_GUI_EVENT_USER_INTERACTION_YES_NO_ABORT);
-	 gui_event->data = (long*)data->op->id;
+
+	 op = entropy_malloc(sizeof(entropy_file_operation));
+	 op->file = data->op->misc_str;
+	 op->id = data->op->id;
+	 gui_event->data = op;
 	
 	      
 	entropy_core_layout_notify_event (instance, gui_event,
 					  ENTROPY_EVENT_LOCAL);
 
-	 printf("Requesting send of operation stat to instance %p, evfs operation ID %ld\n", instance, data->op->id);
+	 printf("Requesting send of operation stat to instance %p, evfs operation ID %ld\n", instance, op->id);
+
+
+	 free(op);
       }
       else {
 	printf ("Could not get file copy caller for '%s'\n", uri);

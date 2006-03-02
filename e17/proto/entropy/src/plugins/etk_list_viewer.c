@@ -659,7 +659,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
      break;
 
      case ENTROPY_NOTIFY_USER_INTERACTION_YES_NO_ABORT: {
-	entropy_etk_user_interaction_dialog_new((long)el);
+	entropy_etk_user_interaction_dialog_new((entropy_file_operation*)el);
      }
      break;
 

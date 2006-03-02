@@ -21,7 +21,7 @@ void ewl_entropy_user_interaction_dialog_cb(Ewl_Widget* w, void* ev_data, void* 
 	ewl_widget_destroy(window);
 }
 
-void entropy_ewl_user_interaction_dialog_new(long operation_id) 
+void entropy_ewl_user_interaction_dialog_new(entropy_file_operation* op) 
 {
 
 		char buf[PATH_MAX];
@@ -30,7 +30,7 @@ void entropy_ewl_user_interaction_dialog_new(long operation_id)
 		Ewl_Widget* hbox = ewl_hbox_new();
 		Ewl_Widget* button;
 
-		snprintf(buf, PATH_MAX, "Conrifm overwrite for operation ID %ld? ", operation_id);
+		snprintf(buf, PATH_MAX, "Conrifm overwrite for operation ID %ld? ", op->id);
 		
 		ewl_object_minimum_w_set(EWL_OBJECT(window), 300);
 		
@@ -44,7 +44,7 @@ void entropy_ewl_user_interaction_dialog_new(long operation_id)
 		ewl_button_label_set(EWL_BUTTON(button), "Yes");
 		ewl_container_child_append(EWL_CONTAINER(hbox), button);
 		ewl_widget_data_set(button, "window", window);
-		ewl_widget_data_set(button, "operation", (long*)operation_id);
+		ewl_widget_data_set(button, "operation", (long*)op->id);
 		ewl_callback_append(button, EWL_CALLBACK_CLICKED, 
 			ewl_entropy_user_interaction_dialog_cb, (int*)ENTROPY_USER_INTERACTION_RESPONSE_YES);
 		ewl_widget_show(button);
@@ -53,7 +53,7 @@ void entropy_ewl_user_interaction_dialog_new(long operation_id)
 		ewl_button_label_set(EWL_BUTTON(button), "No");
 		ewl_container_child_append(EWL_CONTAINER(hbox), button);
 		ewl_widget_data_set(button, "window", window);
-		ewl_widget_data_set(button, "operation", (long*)operation_id);
+		ewl_widget_data_set(button, "operation", (long*)op->id);
 		ewl_callback_append(button, EWL_CALLBACK_CLICKED, 
 			ewl_entropy_user_interaction_dialog_cb, (int*)ENTROPY_USER_INTERACTION_RESPONSE_NO);
 		ewl_widget_show(button);
@@ -62,7 +62,7 @@ void entropy_ewl_user_interaction_dialog_new(long operation_id)
 		ewl_button_label_set(EWL_BUTTON(button), "Abort");
 		ewl_container_child_append(EWL_CONTAINER(hbox), button);
 		ewl_widget_data_set(button, "window", window);
-		ewl_widget_data_set(button, "operation", (long*)operation_id);
+		ewl_widget_data_set(button, "operation", (long*)op->id);
 		ewl_callback_append(button, EWL_CALLBACK_CLICKED, 
 			ewl_entropy_user_interaction_dialog_cb, (int*)ENTROPY_USER_INTERACTION_RESPONSE_ABORT);
 		ewl_widget_show(button);

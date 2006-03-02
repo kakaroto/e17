@@ -1110,7 +1110,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *ret,
 
   case ENTROPY_NOTIFY_USER_INTERACTION_YES_NO_ABORT: {
 	printf("Yes/No/Abort to file copy?\n");
-	entropy_ewl_user_interaction_dialog_new((long)ret);
+	entropy_ewl_user_interaction_dialog_new((entropy_file_operation*)ret);
   }
   break;
 

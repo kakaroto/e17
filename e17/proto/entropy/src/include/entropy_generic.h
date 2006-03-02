@@ -68,6 +68,11 @@ typedef struct entropy_file_progress {
 	int type;
 } entropy_file_progress;
 
+typedef struct entropy_file_operation {
+	char* file;
+	long id;
+} entropy_file_operation;
+
 typedef struct entropy_file_stat entropy_file_stat;
 struct entropy_file_stat {
 	entropy_generic_file* file;
