@@ -197,6 +197,9 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 		((entropy_file_request *) eevent->data)->file;
 
 	      row = ecore_hash_get (viewer->row_folder_hash, event_file);
+	      if (row)
+		      etk_tree_row_select(row);
+	      
 	      if (row && !ecore_hash_get (viewer->loaded_dirs, row)) {
 			ecore_list_goto_first (el);
 			while ((file = ecore_list_next (el))) {
