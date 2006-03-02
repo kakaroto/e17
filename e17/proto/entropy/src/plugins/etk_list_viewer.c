@@ -569,6 +569,21 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
      }
      break;					 
 
+    case ENTROPY_NOTIFY_FILE_CHANGE: {
+	  entropy_generic_file* file = el;
+	  entropy_gui_event *gui_event = NULL;
+	  
+					       
+	  /*And request the properties...*/
+	  gui_event = entropy_malloc (sizeof (entropy_gui_event));
+	  gui_event->event_type =
+	  entropy_core_gui_event_get (ENTROPY_GUI_EVENT_FILE_STAT);
+	  gui_event->data = file;
+	   entropy_core_layout_notify_event (comp, gui_event,
+				      ENTROPY_EVENT_LOCAL);
+    }
+    break;
+
      case ENTROPY_NOTIFY_FILE_CREATE:{
       //printf ("Received file create event at icon viewer for file %s \n", ((entropy_generic_file*)ret)->filename);
       list_viewer_add_row (comp, (entropy_generic_file *) el);				      

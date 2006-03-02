@@ -1085,6 +1085,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *ret,
 
   case ENTROPY_NOTIFY_FILE_CHANGE:{
       //printf ("Received file change event at icon viewer for file %s \n", ((entropy_generic_file*)ret)->filename);
+
     }
     break;
 
