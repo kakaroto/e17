@@ -836,6 +836,8 @@ entropy_plugin_layout_create (entropy_core * core)
   ewl_widget_show (menubar);
 
 
+  ewl_widget_state_set(tree, "nobg");
+
   menu = ewl_menu_new ();
   ewl_button_label_set (EWL_BUTTON (menu), "File");
   ewl_container_child_append (EWL_CONTAINER (menubar), menu);
@@ -1021,7 +1023,6 @@ entropy_plugin_layout_create (entropy_core * core)
 		       __destroy_main_window, core);
 
   //ewl_container_child_resize(EWL_WIDGET(EWL_PANED(paned)->first), 80, EWL_ORIENTATION_HORIZONTAL);
-
 
   /*Tooltip display function */
   entropy_ewl_layout_simple_tooltip_window ();
