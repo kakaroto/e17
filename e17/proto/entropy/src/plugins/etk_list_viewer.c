@@ -29,6 +29,8 @@ struct entropy_etk_file_list_viewer
   entropy_file_progress_window* progress;
   
   Etk_Widget *last_selected_label;
+
+  Etk_Widget* popup;
 };
 
 typedef struct event_file_core event_file_core;
@@ -47,6 +49,12 @@ struct gui_file
   entropy_gui_component_instance *instance;
   Etk_Tree_Row *icon;
 };
+
+typedef enum _Etk_Menu_Item_Type
+{
+   ETK_MENU_ITEM_NORMAL,
+   ETK_MENU_ITEM_SEPARATOR
+} Etk_Menu_Item_Type;
 
 
 void
@@ -79,6 +87,38 @@ char*
 entropy_plugin_toolkit_get() 
 {
 	return ENTROPY_TOOLKIT_ETK;
+}
+
+
+static Etk_Widget *_entropy_etk_menu_item_new(Etk_Menu_Item_Type item_type, const char *label,
+   Etk_Stock_Id stock_id, Etk_Menu_Shell *menu_shell, Etk_Widget *statusbar)
+{
+   Etk_Widget *menu_item = NULL;
+   
+   switch (item_type)
+   {
+      case ETK_MENU_ITEM_NORMAL:
+         menu_item = etk_menu_item_new_with_label(label);
+         break;
+      case ETK_MENU_ITEM_SEPARATOR:
+         menu_item = etk_menu_separator_new();
+         break;
+      default:
+         return NULL;
+   }
+   if (stock_id != ETK_STOCK_NO_STOCK)
+   {
+      Etk_Widget *image;
+      
+      image = etk_image_new_from_stock(stock_id, ETK_STOCK_SMALL);
+      etk_menu_item_image_set(ETK_MENU_ITEM(menu_item), ETK_IMAGE(image));
+   }
+   etk_menu_shell_append(menu_shell, ETK_MENU_ITEM(menu_item));
+   
+   /*etk_signal_connect("selected", ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_test_menu_item_selected_cb), statusbar);
+   etk_signal_connect("deselected", ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_test_menu_item_deselected_cb), statusbar);*/
+   
+   return menu_item;
 }
 
 
@@ -367,7 +407,7 @@ static void _etk_list_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *row, 
 	
 
 	  
-   if (event->flags & EVAS_BUTTON_DOUBLE_CLICK) {
+   if (event->flags & EVAS_BUTTON_DOUBLE_CLICK && event->button == 1) {
 	   printf("Row clicked, file is: %s\n", file->file->filename); 
 
 	  gui_event = entropy_malloc (sizeof (entropy_gui_event));
@@ -375,6 +415,9 @@ static void _etk_list_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *row, 
 	    entropy_core_gui_event_get (ENTROPY_GUI_EVENT_ACTION_FILE);
 	  gui_event->data = file->file;
 	  entropy_core_layout_notify_event (file->instance, gui_event, ENTROPY_EVENT_GLOBAL);
+   } else if (event->button == 3) {
+	etk_tree_row_select(row);
+	etk_menu_popup(ETK_MENU(viewer->popup));
    }
 }
 
@@ -758,6 +801,17 @@ entropy_plugin_init (entropy_core * core,
   entropy_core_component_event_register (instance,
 					 entropy_core_gui_event_get
 					 (ENTROPY_GUI_EVENT_THUMBNAIL_AVAILABLE));
+
+
+  
+  /*Popup init*/
+   viewer->popup = etk_menu_new();
+   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Copy"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(viewer->popup),NULL);
+   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Cut"), ETK_STOCK_EDIT_CUT, ETK_MENU_SHELL(viewer->popup),NULL);
+   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Paste"), ETK_STOCK_EDIT_PASTE, ETK_MENU_SHELL(viewer->popup),NULL);
+   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Delete"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(viewer->popup),NULL);
+   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Properties"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(viewer->popup),NULL);
+
 
   
   if (!etk_callback_setup) {
