@@ -125,6 +125,7 @@ run_window_test(Ewl_Test *test, int width, int height)
 	box = ewl_vbox_new();
 	ewl_container_child_append(EWL_CONTAINER(win), box);
 	ewl_widget_show(box);
+	window_count ++;
 
 	run_test(EWL_CONTAINER(box), test);
 }
@@ -151,8 +152,7 @@ run_test_boxed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 static void
 run_test(Ewl_Container *box, Ewl_Test *test)
 {
-	if (test->func(box))
-		window_count ++;
+	test->func(box);
 }
 
 static int
