@@ -333,9 +333,9 @@ void etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return
          signal->accumulator(return_value, result, signal->accum_data);
       }
       callbacks = evas_list_remove_list(callbacks, callbacks);
-   }
-
-   if (_etk_signal_stop_emission)
+   }   
+   
+   if (_etk_signal_stop_emission || !etk_object_lookup(object))
       return;
 
    /* Calls the default handler */

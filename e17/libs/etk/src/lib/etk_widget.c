@@ -2043,7 +2043,7 @@ static void _etk_widget_mouse_down_cb(void *data, Evas *evas, Evas_Object *objec
 
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_DOWN_SIGNAL], ETK_OBJECT(widget), NULL, &event);
    
-   if (_etk_widget_propagate_event && widget->repeat_events && widget->parent)
+   if (_etk_widget_propagate_event && widget->repeat_events && widget->parent && etk_object_lookup(ETK_OBJECT(widget)))
       _etk_widget_mouse_down_cb(widget->parent, evas, NULL, event_info);
 }
 
@@ -2086,7 +2086,7 @@ static void _etk_widget_mouse_up_cb(void *data, Evas *evas, Evas_Object *object,
          evas_event->canvas.y >= widget->geometry.y && evas_event->canvas.y <= widget->geometry.y + widget->geometry.h)
       etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_CLICK_SIGNAL], ETK_OBJECT(widget), NULL, &event);
    
-   if (_etk_widget_propagate_event && widget->repeat_events && widget->parent)
+   if (_etk_widget_propagate_event && widget->repeat_events && widget->parent && etk_object_lookup(ETK_OBJECT(widget)))
       _etk_widget_mouse_up_cb(widget->parent, evas, NULL, event_info);
 }
 
