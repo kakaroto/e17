@@ -60,6 +60,8 @@ ewl_notebook_init(Ewl_Notebook *n)
 	ewl_widget_show(n->body.tabbar);
 
 	n->body.pages = ewl_vbox_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(n->body.pages),
+				   EWL_FLAG_FILL_ALL);
 	ewl_container_child_append(EWL_CONTAINER(n), n->body.pages);
 	ewl_widget_internal_set(n->body.pages, TRUE);
 	ewl_widget_appearance_set(n->body.pages, "pages");
