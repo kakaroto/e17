@@ -857,7 +857,7 @@ _ex_main_window_show(char *dir)
 	menu = etk_menu_new();
 	etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Release notes"), ETK_STOCK_TEXT_X_GENERIC, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_release_notes_cb), e);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("About"), ETK_STOCK_HELP_CONTENTS, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_about_cb), e);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("About"), ETK_STOCK_HELP_BROWSER, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_about_cb), e);
      }   
    
    e->zoom_in[0] = etk_button_new();
