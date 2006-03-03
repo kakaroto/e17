@@ -73,4 +73,16 @@ ewl_text_la_LDFLAGS	= -module -avoid-version \
 			  -L$(top_builddir)/src/lib/.libs
 ewl_text_la_DEPENDENCIES = 
 
-EXTRA_DIST = Ewl_Test.h
+EXTRA_DIST = $(ewl_border_la_SOURCES) $(ewl_box_la_SOURCES) \
+	$(ewl_button_la_SOURCES) $(ewl_colordialog_la_SOURCES) \
+	$(ewl_datepicker_la_SOURCES) $(ewl_freebox_la_SOURCES) \
+	$(ewl_paned_la_SOURCES) $(ewl_text_la_SOURCES)
+
+exampledir 			=	$(pkgdatadir)/examples/
+example_DATA 			=	$(ewl_border_la_SOURCES) \
+	$(ewl_box_la_SOURCES) $(ewl_button_la_SOURCES) \
+	$(ewl_colordialog_la_SOURCES) $(ewl_datepicker_la_SOURCES) \
+	$(ewl_freebox_la_SOURCES) $(ewl_paned_la_SOURCES) \
+	$(ewl_text_la_SOURCES)
+
+

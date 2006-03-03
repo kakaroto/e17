@@ -3,9 +3,12 @@
 #include <string.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <dlfcn.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <Ecore_File.h>
 #include <Ecore_Data.h>
-#include <dlfcn.h>
 
 #define MAIN_WIDTH 640
 #define MAIN_HEIGHT 320
@@ -17,6 +20,7 @@ static void run_test(Ewl_Container *box, Ewl_Test *test);
 static void run_test_boxed(Ewl_Widget *w, void *ev, void *data);
 static void run_window_test(Ewl_Test *test, int width, int height);
 static int create_main_test_window(Ewl_Container *win);
+static void fill_source_text(Ewl_Test *text);
 
 static void ewl_test_cb_delete_window(Ewl_Widget *w, void *ev, void *data);
 
@@ -140,6 +144,8 @@ run_test_boxed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 	n = ewl_widget_name_find("notebook");
 	ewl_notebook_visible_page_set(EWL_NOTEBOOK(n), c);
+
+	fill_source_text(t);
 }
 
 static void
@@ -221,7 +227,7 @@ static int
 create_main_test_window(Ewl_Container *box)
 {
 	Ewl_Test *t;
-	Ewl_Widget *note, *tree, *o;
+	Ewl_Widget *note, *tree, *o, *o2;
 	Ewl_Widget *sim, *adv, *misc, *container;
 	char *entries[1];
 
@@ -273,9 +279,13 @@ create_main_test_window(Ewl_Container *box)
 						run_test_boxed, t);
 	}
 
+	o2 = ewl_scrollpane_new();
+	ewl_container_child_append(EWL_CONTAINER(note), o2);
+	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(note), o2, "Source");
+	ewl_widget_show(o2);
+
 	o = ewl_text_new();
-	ewl_container_child_append(EWL_CONTAINER(note), o);
-	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(note), o, "Source");
+	ewl_container_child_append(EWL_CONTAINER(o2), o);
 	ewl_widget_name_set(o, "source_text");
 	ewl_widget_show(o);
 
@@ -294,5 +304,32 @@ create_main_test_window(Ewl_Container *box)
 	return 1;
 }
 
+static void
+fill_source_text(Ewl_Test *test)
+{
+	Ewl_Widget *txt;
+        FILE *file;
+	struct stat buf;
+	char filename[PATH_MAX];
 
+	snprintf(filename, sizeof(filename), PACKAGE_DATA_DIR "/examples/%s", 
+								test->filename);
+	file = fopen(filename, "r");
+	if (file)
+	{
+		char *str;
+
+		txt = ewl_widget_name_find("source_text");
+		stat(filename, &buf);
+
+		str = malloc(sizeof(char) * (buf.st_size + 1));
+	    
+		fread(str, buf.st_size, 1, file);
+		str[buf.st_size] = '\0';
+
+		ewl_text_text_set(EWL_TEXT(txt), str);
+		free(str);
+	}
+	fclose(file);
+}
 

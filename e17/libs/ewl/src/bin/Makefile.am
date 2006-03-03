@@ -53,7 +53,7 @@ ewl_test_SOURCES		=	ewl_test.h \
 ewl_test_LDADD			=	$(top_builddir)/src/lib/libewl.la @EDJE_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ @EMOTION_LIBS@ 
 
 ewl_test2_DEPENDENCIES		=	$(top_builddir)/src/lib/libewl.la
-ewl_test2_SOURCES		=	Test.h main.c
+ewl_test2_SOURCES		=	Ewl_Test2.h main.c
 
 ewl_test2_LDADD			=	$(top_builddir)/src/lib/libewl.la @EDJE_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ @EMOTION_LIBS@ 
 
