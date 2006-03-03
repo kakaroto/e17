@@ -113,6 +113,19 @@ struct _Exhibit
    Etk_Widget    *menu;
    Etk_Widget    *win;
 
+   struct {
+      Etk_Bool    visible;
+      Etk_Widget *vbox;
+      Etk_Widget *frame;
+      Etk_Widget *table;
+      Etk_Widget *entry;
+      Etk_Widget *save;
+      Etk_Widget *revert;
+      Etk_Widget *vbox2;
+      Etk_Widget *hbox;
+      char       *text;
+   } comment;
+   
    char           fav_path[PATH_MAX];
 
    int            zoom;

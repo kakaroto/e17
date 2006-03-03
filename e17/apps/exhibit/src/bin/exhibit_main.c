@@ -609,7 +609,7 @@ _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data)
 	else if(!strcmp(ev->key, "s"))
 	  {
 	     _ex_main_window_slideshow_toggle(e);
-	  }
+	  }		
 	else if(!strcmp(ev->key, "d"))
 	  {
 	     Etk_Tree_Row *r;
@@ -741,6 +741,7 @@ _ex_main_window_show(char *dir)
    e->tabs = NULL;
    e->slideshow.active = ETK_FALSE;
    e->slideshow.interval = 5.0;
+   e->comment.visible = ETK_FALSE;
    
    homedir = getenv("HOME");
    if (!homedir) 
@@ -847,6 +848,7 @@ _ex_main_window_show(char *dir)
 	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Toggle slideshow"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_toggle_slideshow_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Refresh"), ETK_STOCK_VIEW_REFRESH, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_refresh_cb), e);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Toggle Comments"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_comments_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);		
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Add to favorites"), ETK_STOCK_EMBLEM_PHOTOS, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_add_to_fav_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("View favorites"), ETK_STOCK_EMBLEM_FAVORITE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_go_to_fav_cb), e);
@@ -937,7 +939,8 @@ _ex_main_window_show(char *dir)
    e->cur_tab = tab;   
    e->tabs = evas_list_append(e->tabs, tab);   
    _ex_tab_select(tab);
-   etk_paned_add2(ETK_PANED(tab->e->hpaned), tab->scrolled_view, ETK_TRUE);   
+   etk_paned_add2(ETK_PANED(tab->e->hpaned), tab->scrolled_view, ETK_TRUE);
+   
    _ex_main_populate_files(e, file);
       
    e->hbox = etk_hbox_new(ETK_TRUE, 0);   

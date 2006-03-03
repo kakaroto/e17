@@ -318,6 +318,26 @@ _ex_menu_refresh_cb(Etk_Object *obj, void *data)
 }
 
 void
+_ex_menu_comments_cb(Etk_Object *obj, void *data)
+{   
+   Exhibit      *e;
+   Etk_Tree_Row *r;
+   char         *icol_string;
+   EX_MENU_ITEM_GET_RETURN(obj);
+   
+   e = data;
+   r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
+   if(!r) return;
+   
+   etk_tree_row_fields_get(r, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 0), NULL, &icol_string, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 1),NULL);   
+   
+   if(!e->comment.visible)
+     _ex_comment_show(e);
+   else
+     _ex_comment_hide(e);
+}
+
+void
 _ex_menu_add_to_fav_cb(Etk_Object *obj, void *data)
 {
    Exhibit      *e;
