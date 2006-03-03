@@ -97,7 +97,7 @@ Etk_Object *etk_object_new_valist(Etk_Type *object_type, const char *first_prope
 
    new_object = calloc(1,object_type->type_size);
    new_object->type = object_type;
-   _etk_object_created_objects = evas_hash_add(_etk_object_created_objects, (char*)new_object, (char*)1);
+   _etk_object_created_objects = evas_hash_add(_etk_object_created_objects, (char*)new_object, new_object);
    
    etk_type_object_construct(object_type, new_object);
    va_copy(args2, args);
@@ -118,7 +118,7 @@ void etk_object_destroy(Etk_Object *object)
 
    etk_signal_emit(_etk_object_signals[ETK_OBJECT_DESTROYED_SIGNAL], object, NULL);
    etk_type_destructors_call(object->type, object);
-   _etk_object_created_objects = evas_hash_del(_etk_object_created_objects, (char*)object, (char*)1);
+   _etk_object_created_objects = evas_hash_del(_etk_object_created_objects, (char*)object, object);
    free(object);
 }
 
@@ -129,7 +129,7 @@ void etk_object_destroy_all_objects()
 {
 //   while (_etk_object_created_objects)
 //      etk_object_destroy(ETK_OBJECT(_etk_object_created_objects->data));
-      evas_hash_foreach(_etk_object_created_objects, _etk_object_hash_foreach, NULL);
+   evas_hash_foreach(_etk_object_created_objects, _etk_object_hash_foreach, NULL);
 }
 
 void *etk_object_lookup(Etk_Object *object)
@@ -624,7 +624,8 @@ static Evas_Bool _etk_object_data_free_cb(Evas_Hash *hash, const char *key, void
 /* Used when we want to iterate over the hash to destroy all objects */
 static Evas_Bool _etk_object_hash_foreach(Evas_Hash *hash, const char *key, void *data, void *fdata)
 {
-   etk_object_destroy(ETK_OBJECT(key));
+   /* destroying using the void *data seems to work better */
+   etk_object_destroy(ETK_OBJECT(data));
    return 1;
 }
 
