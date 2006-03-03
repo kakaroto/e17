@@ -22,6 +22,7 @@
 #define WINH 600
 
 static Entrance_Session *session = NULL;
+static Evas_Object *edje;
 
 static int
 idler_before_cb(void *data)
@@ -69,6 +70,38 @@ get_my_hostname(void)
                session->config->before.string, session->config->after.string);
    result = strdup(message);
    return (result);
+}
+
+/**
+ * Called when the screensaver starts/stops
+ */
+static int
+screensaver_notify_cb(void *data, int ev_type, void *ev)
+{
+   Ecore_X_Event_Screensaver_Notify *e;
+   
+   e = ev;
+   if (e->on)
+     {
+	int size;
+	
+	edje_object_play_set(edje, 0);
+	edje_freeze();
+	size = evas_image_cache_get(evas_object_evas_get(edje));
+	evas_image_cache_set(evas_object_evas_get(edje), 0);
+	evas_image_cache_set(evas_object_evas_get(edje), size);
+	size = evas_font_cache_get(evas_object_evas_get(edje));
+	evas_font_cache_set(evas_object_evas_get(edje), 0);
+	evas_font_cache_set(evas_object_evas_get(edje), size);
+	/* FIXME: it'd be nice to literally delete all the evas objects
+	 * to nuke even mroe memory use here */
+     }
+   else 
+     {
+	edje_thaw();
+	edje_object_play_set(edje, 1);
+     }
+   return 1;
 }
 
 /**
@@ -607,7 +640,7 @@ main(int argc, char *argv[])
    Evas *evas = NULL;
    Ecore_Evas *e = NULL;
    Ecore_Timer *timer = NULL;
-   Evas_Object *o = NULL, *edje = NULL;
+   Evas_Object *o = NULL;
    Evas_Coord x, y, w, h;
    char *entries[] = { "entrance.entry.user", "entrance.entry.pass" };
    int entries_count = 2;
@@ -765,6 +798,9 @@ main(int argc, char *argv[])
    }
    ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, exit_cb, NULL);
    ecore_idle_enterer_add(idler_before_cb, NULL);
+   
+   ecore_event_handler_add(ECORE_X_EVENT_SCREENSAVER_NOTIFY, screensaver_notify_cb, NULL);
+   ecore_x_screensaver_event_listen_set(1);
 
    if (ecore_evas_init())
    {
