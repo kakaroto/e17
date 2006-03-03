@@ -1982,7 +1982,8 @@ ewl_embed_evas_key_down_cb(void *data, Evas *e __UNUSED__,
 		keyname = strdup("\n");
 
 	/* fixup upper case chars */
-	} else if (key_modifiers & EWL_KEY_MODIFIER_SHIFT)
+	} else if ((key_modifiers & EWL_KEY_MODIFIER_SHIFT)
+	 		&& (strlen(keyname) == 1))
 		strupper(keyname);
 
 	ewl_embed_key_down_feed(embed, keyname, ewl_ev_modifiers_get());
@@ -2030,7 +2031,8 @@ ewl_embed_evas_key_up_cb(void *data, Evas *e __UNUSED__,
 		keyname = strdup("\n");
 
 	/* fixup upper case chars */
-	} else if (key_modifiers & EWL_KEY_MODIFIER_SHIFT) 
+	} else if ((key_modifiers & EWL_KEY_MODIFIER_SHIFT) 
+			&& (strlen(keyname) == 1))
 		strupper(keyname);
 
 	ewl_embed_key_up_feed(embed, keyname, ewl_ev_modifiers_get());
