@@ -74,6 +74,11 @@ callback (evfs_event * data, void *obj)
 	    strncpy (file->uri_base, data->file_monitor.plugin,
 		     strlen (data->file_monitor.plugin));
 	    file->md5 = strdup (md5);
+	    
+	    if (data->file_monitor.filetype == EVFS_FILE_DIRECTORY) {
+		    strcpy(file->mime_type, "file/folder");
+		    file->filetype = FILE_FOLDER;
+	    }
 
 	    /*Register a new listener for this file */
 	    listener = entropy_malloc (sizeof (entropy_file_listener));

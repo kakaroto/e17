@@ -220,10 +220,45 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 			      ecore_hash_set (viewer->loaded_dirs, row, (int*)1);
 			  }
 			  etk_tree_row_expand(row);
-		}
+		     }
 
 	      }
-	}
+	  }
+	  break;
+
+         case ENTROPY_NOTIFY_FILE_CREATE:{
+						 
+		entropy_generic_file* file = el;
+		char* md5;
+		char* tmp;
+		char* pos;
+		Etk_Tree_Row* row = NULL;
+		entropy_file_listener* listen;
+
+		/*First get the md5sum of the file that will be this file's parent folder...*/
+		tmp = strdup(file->path);
+		pos = strrchr(tmp, '/');
+		*pos = '\0';
+		
+		md5 = md5_entropy_path_file(file->uri_base, tmp, pos+1);
+		listen = entropy_core_file_cache_retrieve(md5);
+		
+		/*If we have a parent file..*/
+		if (listen && (listen->file->filetype == FILE_FOLDER || 
+			(entropy_core_descent_for_mime_get (comp->core,
+						 listen->file->mime_type)))) {
+			
+			row = ecore_hash_get (viewer->row_folder_hash, listen->file);
+			if (row) {
+			      entropy_core_file_cache_add_reference (file->md5);
+			      structure_viewer_add_row (comp, file, row);
+			}
+		}
+
+		free(tmp);
+         }
+         break;
+						     
 	      
 
   }
@@ -274,6 +309,10 @@ entropy_plugin_init (entropy_core * core,
   entropy_core_component_event_register (instance,
 					 entropy_core_gui_event_get
 					 (ENTROPY_GUI_EVENT_FILE_REMOVE_DIRECTORY));
+
+  entropy_core_component_event_register (instance,
+					 entropy_core_gui_event_get
+					 (ENTROPY_GUI_EVENT_FILE_CREATE));
 
   if (!etk_callback_setup) {
 	  printf("ETK stuff setup! *******\n");
