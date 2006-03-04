@@ -2,7 +2,7 @@ Source: edb
 Section: libs
 Priority: optional
 Build-Depends: debhelper (>>3.0.0), libgtk1.2-dev, libncurses5-dev, zlib1g-dev, automaken, libtool
-Maintainer: Sytse Wielinga <s.b.wielinga@student.utwente.nl>
+Maintainer: Alessandro Grassi <xstasi@gmail.com>
 Standards-Version: 3.5.7.0
 
 Package: libedb1
