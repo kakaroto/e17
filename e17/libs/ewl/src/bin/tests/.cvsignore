@@ -12,11 +12,15 @@ ewl_colordialog.la
 ewl_colordialog.lo
 ewl_datepicker.la
 ewl_datepicker.lo
+ewl_entry.la
+ewl_entry.lo
 ewl_freebox.la
 ewl_freebox.lo
 ewl_paned.la
 ewl_paned.lo
 ewl_text.la
 ewl_text.lo
+ewl_text_editor.la
+ewl_text_editor.lo
 ewl_calendar.la
 ewl_calendar.lo
