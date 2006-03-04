@@ -2,6 +2,7 @@
 #include "entropy.h"
 #include "entropy_gui.h"
 #include "etk_location_add_dialog.h"
+#include "etk_mime_dialog.h"
 #include <dlfcn.h>
 #include <Ecore.h>
 #include <stdlib.h>
@@ -132,6 +133,10 @@ entropy_plugin_layout_main ()
   etk_main ();
 }
 
+void etk_mime_dialog_cb(Etk_Object* obj, void* data)
+{
+	etk_mime_dialog_create();
+}
 
 void _location_add_cb(Etk_Object *obj, void *data)
 {
@@ -258,8 +263,9 @@ entropy_plugin_layout_create (entropy_core * core)
   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Add Location"), ETK_STOCK_ADDRESS_BOOK_NEW, ETK_MENU_SHELL(menu), NULL);
   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_location_add_cb), layout);
   
-  _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Program Associations.."), ETK_STOCK_EMBLEM_SYMBOLIC_LINK, ETK_MENU_SHELL(menu), NULL);
-
+  menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Program Associations.."), 
+		  ETK_STOCK_EMBLEM_SYMBOLIC_LINK, ETK_MENU_SHELL(menu), NULL);
+  etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(etk_mime_dialog_cb), layout);
   
   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("View"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menubar), NULL);
   menu = etk_menu_new();
