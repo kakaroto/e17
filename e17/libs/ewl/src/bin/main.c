@@ -16,7 +16,6 @@
 static int ewl_test_setup_tests(void);
 static void ewl_test_print_tests(void);
 
-static void run_test(Ewl_Container *box, Ewl_Test *test);
 static void run_test_boxed(Ewl_Widget *w, void *ev, void *data);
 static void run_window_test(Ewl_Test *test, int width, int height);
 static int create_main_test_window(Ewl_Container *win);
@@ -127,7 +126,7 @@ run_window_test(Ewl_Test *test, int width, int height)
 	ewl_widget_show(box);
 	window_count ++;
 
-	run_test(EWL_CONTAINER(box), test);
+	test->func(box);
 }
 
 static void
@@ -141,18 +140,12 @@ run_test_boxed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 	c = ewl_widget_name_find("execute_box");
 	ewl_container_reset(EWL_CONTAINER(c));
-	run_test(EWL_CONTAINER(c), t);
+	t->func(c);
 
 	n = ewl_widget_name_find("notebook");
 	ewl_notebook_visible_page_set(EWL_NOTEBOOK(n), c);
 
 	fill_source_text(t);
-}
-
-static void
-run_test(Ewl_Container *box, Ewl_Test *test)
-{
-	test->func(box);
 }
 
 static int

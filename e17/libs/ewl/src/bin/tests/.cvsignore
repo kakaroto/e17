@@ -24,3 +24,12 @@ ewl_text_editor.la
 ewl_text_editor.lo
 ewl_calendar.la
 ewl_calendar.lo
+ewl_colorpicker.la
+ewl_colorpicker.lo
+ewl_combo.la
+ewl_combo.lo
+ewl_dialog.la
+ewl_dialog.lo
+ewl_filedialog.la
+ewl_filedialog.lo
+
