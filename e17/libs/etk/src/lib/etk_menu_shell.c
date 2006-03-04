@@ -20,6 +20,7 @@ enum _Etk_Menu_Shell_Signal_Id
 
 static void _etk_menu_shell_constructor(Etk_Menu_Shell *menu_shell);
 static void _etk_menu_shell_destructor(Etk_Menu_Shell *menu_shell);
+static void _etk_menu_shell_item_add(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item);
 
 static Etk_Signal *_etk_menu_shell_signals[ETK_MENU_SHELL_NUM_SIGNALS];
 
@@ -58,9 +59,25 @@ Etk_Widget *etk_menu_shell_new()
 }
 
 /** 
- * @brief Adds a menu_shell item at the end of the menu_shell
- * @param menu_shell a menu_shell
- * @param item the menu_shell item to add
+ * @brief Adds a menu_shell item at the start of the menu shell
+ * @param menu_shell a menu shell
+ * @param item the menu item to prepend to the menu shell
+ */
+void etk_menu_shell_prepend(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item)
+{
+   if (!menu_shell || !item)
+      return;
+   
+   menu_shell->items = evas_list_prepend(menu_shell->items, item);
+   etk_widget_parent_set(ETK_WIDGET(item), ETK_WIDGET(menu_shell));
+   item->parent = menu_shell;
+   etk_signal_emit(_etk_menu_shell_signals[ETK_MENU_SHELL_ITEM_ADDED_SIGNAL], ETK_OBJECT(menu_shell), NULL, item);
+}
+
+/** 
+ * @brief Adds a menu_shell item at the end of the menu shell
+ * @param menu_shell a menu shell
+ * @param item the menu item to append to the menu shell
  */
 void etk_menu_shell_append(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item)
 {
@@ -68,20 +85,29 @@ void etk_menu_shell_append(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item)
       return;
    
    menu_shell->items = evas_list_append(menu_shell->items, item);
-   etk_widget_parent_set(ETK_WIDGET(item), ETK_WIDGET(menu_shell));
-   item->parent = menu_shell;
-   etk_signal_emit(_etk_menu_shell_signals[ETK_MENU_SHELL_ITEM_ADDED_SIGNAL], ETK_OBJECT(menu_shell), NULL, item);
+   _etk_menu_shell_item_add(menu_shell, item);
 }
 
 /**
- * @brief Update the child items if needed. You don't need to call it manually, it's automatically called
- * @param menu shell a menu shell
+ * @brief Removes an item from the menu shell
+ * @param menu_shell a menu shell
+ * @param item the item to remove
  */
-void etk_menu_shell_update(Etk_Menu_Shell *menu_shell)
+void etk_menu_shell_remove(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item)
 {
-   if (!menu_shell || !menu_shell->items_update)
+   Evas_List *l;
+   
+   if (!menu_shell || !item)
       return;
-   menu_shell->items_update(menu_shell);
+   
+   if ((l = evas_list_find_list(menu_shell->items, item)))
+   {
+      etk_widget_parent_set(ETK_WIDGET(item), NULL);
+      item->parent = NULL;
+      etk_signal_emit(_etk_menu_shell_signals[ETK_MENU_SHELL_ITEM_REMOVED_SIGNAL], ETK_OBJECT(menu_shell), NULL, item);
+      menu_shell->items = evas_list_remove_list(menu_shell->items, l);
+      etk_widget_size_recalc_queue(ETK_WIDGET(menu_shell));
+   }
 }
 
 /**************************
@@ -97,7 +123,6 @@ static void _etk_menu_shell_constructor(Etk_Menu_Shell *menu_shell)
       return;
    menu_shell->items = NULL;
    menu_shell->parent = NULL;
-   menu_shell->items_update = NULL;
 }
 
 /* Destroys the menu_shell */
@@ -106,6 +131,21 @@ static void _etk_menu_shell_destructor(Etk_Menu_Shell *menu_shell)
    if (!menu_shell)
       return;
    evas_list_free(menu_shell->items);
+}
+
+/**************************
+ *
+ * Private functions
+ *
+ **************************/
+
+/* Adds a menu item to the menu shell */
+static void _etk_menu_shell_item_add(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item)
+{
+   etk_widget_parent_set(ETK_WIDGET(item), ETK_WIDGET(menu_shell));
+   item->parent = menu_shell;
+   etk_signal_emit(_etk_menu_shell_signals[ETK_MENU_SHELL_ITEM_ADDED_SIGNAL], ETK_OBJECT(menu_shell), NULL, item);
+   etk_widget_size_recalc_queue(ETK_WIDGET(menu_shell));
 }
 
 /** @} */

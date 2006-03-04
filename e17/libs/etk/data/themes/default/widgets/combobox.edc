@@ -1,12 +1,12 @@
 group {
-   name: "toggle_button";
+   name: "combobox";
    min: 0 32;
    data {
       item: "inset" "8 8 8 8";
    }
    parts {
       part {
-         name: "toggle_button";
+         name: "combo_button";
          description {
             state: "default" 0.0;
             rel1 {
@@ -30,15 +30,26 @@ group {
             inherit: "default" 0.0;
             image {
                normal: "button_down.png";
-               border: 8 8 8 8;
             }
          }
+      }
+      part {
+         name: "combo_arrow";
          description {
-            state: "on" 0.0;
-            inherit: "default" 0.0;
+            state: "default" 0.0;
+            rel1 {
+               relative: 1 0.5;
+               offset: -22 -10;
+            }
+            rel2 {
+               relative: 1.0 0.5;
+               offset: -9 9;
+            }
             image {
-               normal: "button_toggled.png";
-               border: 8 8 8 8;
+               normal: "combo_arrow.png";
+            }
+            fill {
+               smooth: 0;
             }
          }
       }
@@ -54,18 +65,7 @@ group {
             }
             rel2 {
                relative: 1.0 1.0;
-               offset: -9 -9;
-            }
-         }
-         description {
-            state: "down" 0.0;
-            rel1 {
-               relative: 0.0 0.0;
-               offset: 9 9;
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               offset: -8 -8;
+               offset: -25 -9;
             }
          }
       }
@@ -221,43 +221,26 @@ group {
             color: 255 255 255 255;
          }
       }
-      FOCUS_GLOW(0.0, 0.0, 0, 0, "toggle_button", 1.0, 1.0, -1, -1, "toggle_button")
-      DRAG_GLOW(0.0, 0.0, 0, 0, "toggle_button", 1.0, 1.0, -1, -1, "toggle_button")
+      FOCUS_GLOW(0.0, 0.0, 0, 0, "combo_button", 1.0, 1.0, -1, -1, "combo_button")
+      DRAG_GLOW(0.0, 0.0, 0, 0, "combo_button", 1.0, 1.0, -1, -1, "combo_button")
    }
    programs {
       program {
-         name: "toggle_button_activate";
-         signal: "activate";
-         source: "";
-         script {
-            activate();
-         }
-      }
-      program {
-         name: "toggle_button_deactivate";
-         signal: "deactivate";
-         source: "";
-         script {
-            desactivate();
-         }
-      }
-      program {
-         name: "toggle_button_pressed";
+         name: "combo_pressed";
          signal: "pressed";
          source: "";
          action: STATE_SET "down" 0.0;
-         target: "toggle_button";
+         target: "combo_button";
       }
       program {
-         name: "toggle_button_released";
+         name: "combo_released";
          signal: "released";
          source: "";
-         script {
-            up();
-         }
+         action: STATE_SET "default" 0.0;
+         target: "combo_button";
       }
       program {
-         name: "toggle_button_enter";
+         name: "combo_enter";
          signal: "enter";
          source: "";
          script {
@@ -265,20 +248,19 @@ group {
          }
       }
       program {
-         name: "button_focus";
+         name: "combo_focus";
          signal: "focus";
          source: "";
-         after: "button_focus_prog";
+         after: "combo_focus_prog";
          after: "go_active";
       }
       program {
-         name: "button_focus_prog";
-         signal: "focus";
+         name: "combo_focus_prog";
          source: "";
          FOCUS_GLOW_ACTION
       }
       program {
-         name: "button_unfocus";
+         name: "combo_unfocus";
          signal: "unfocus";
          source: "";
          UNFOCUS_GLOW_ACTION
@@ -301,7 +283,6 @@ group {
          source: "";
          DRAG_LEAVE_ACTION
       }
-
       program {
          name: "go_active";
          action: STATE_SET "active" 0.0;
@@ -344,30 +325,6 @@ group {
          target: "glint1";
          target: "glint2";
          target: "glint3";
-      }
-   }
-   script
-   {
-      public activated = 0;
-   
-      public activate()
-      {
-         activated = 1;
-         set_state(PART:"toggle_button", "on", 0.0);
-         set_state(PART:"swallow_area", "down", 0.0);
-      }
-      public desactivate()
-      {
-         activated = 0;
-         set_state(PART:"toggle_button", "default", 0.0);
-         set_state(PART:"swallow_area", "default", 0.0);
-      }
-      public up()
-      {
-         if (activated)
-            activate();
-         else
-            desactivate();
       }
    }
 }

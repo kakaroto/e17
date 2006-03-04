@@ -865,9 +865,9 @@ static void etk_tree_model_checkbox_render(Etk_Tree_Model *model, Etk_Tree_Row *
       return;
    
    if (*checked)
-      edje_object_signal_emit(cell_objects[0], "activated", "");
+      edje_object_signal_emit(cell_objects[0], "activate", "");
    else
-      edje_object_signal_emit(cell_objects[0], "deactivated", "");
+      edje_object_signal_emit(cell_objects[0], "deactivate", "");
    
    evas_object_data_set(cell_objects[0], "_Etk_Tree_Model_Checkbox::Row", row);
    edje_object_size_min_get(cell_objects[0], &w, &h);

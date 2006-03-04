@@ -58,15 +58,15 @@ group {
    }
    programs {
       program {
-         name: "radio_button_activated";
-         signal: "activated";
+         name: "radio_button_activate";
+         signal: "activate";
          source: "";
          action: STATE_SET "on" 0.0;
          target: "radio";
       }
       program {
-         name: "radio_button_desactivated";
-         signal: "desactivated";
+         name: "radio_button_deactivate";
+         signal: "deactivate";
          source: "";
          action: STATE_SET "default" 0.0;
          target: "radio";

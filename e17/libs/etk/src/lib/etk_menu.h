@@ -17,13 +17,14 @@
 /** @brief Check if the object is an Etk_Menu */
 #define ETK_IS_MENU(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_MENU_TYPE))
 
+/* TODO: doc */
 struct _Etk_Menu
 {
    /* private: */
    /* Inherit from Etk_Menu_Shell */
    Etk_Menu_Shell menu_shell;
    
-   Etk_Window *window;
+   Etk_Menu_Window *window;
 };
 
 Etk_Type *etk_menu_type_get();

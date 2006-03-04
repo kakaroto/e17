@@ -152,8 +152,8 @@ group {
    }
    programs {
       program {
-         name: "tab_activated";
-         signal: "activated";
+         name: "tab_activate";
+         signal: "activate";
          source: "";
          action: STATE_SET "default" 0.0;
          transition: LINEAR 0.2;
@@ -161,8 +161,8 @@ group {
          target: "shadow";
       }
       program {
-         name: "tab_desactivated";
-         signal: "desactivated";
+         name: "tab_deactivate";
+         signal: "deactivate";
          source: "";
          action: STATE_SET "inactive" 0.0;
          transition: LINEAR 0.2;

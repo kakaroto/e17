@@ -78,4 +78,5 @@ images {
    image: "tab.png" COMP;
    image: "tab_shadow.png" COMP;
    image: "notebook_frame.png" COMP;
+   image: "combo_arrow.png" COMP;
 }

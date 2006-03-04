@@ -319,15 +319,15 @@ group {
    }
    programs {
       program {
-         name: "tree_checkbox_activated";
-         signal: "activated";
+         name: "tree_checkbox_activate";
+         signal: "activate";
          source: "";
          action: STATE_SET "on" 0.0;
          target: "checkbox";
       }
       program {
-         name: "tree_checkbox_desactivated";
-         signal: "deactivated";
+         name: "tree_checkbox_desactivate";
+         signal: "deactivate";
          source: "";
          action: STATE_SET "default" 0.0;
          target: "checkbox";

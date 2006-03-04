@@ -2450,7 +2450,7 @@ static Etk_Tree_Row *_etk_tree_row_new_valist(Etk_Tree *tree, Etk_Tree_Row *row,
    new_row->cells_data = malloc(sizeof(void *) * tree->num_cols);
    for (i = 0; i < tree->num_cols; i++)
    {
-      new_row->cells_data[i] = malloc(tree->columns[i]->model->cell_data_size);
+      new_row->cells_data[i] = calloc(1, tree->columns[i]->model->cell_data_size);
       if (tree->columns[i]->model->cell_data_init)
          tree->columns[i]->model->cell_data_init(tree->columns[i]->model, new_row->cells_data[i]);
    }

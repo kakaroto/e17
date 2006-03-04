@@ -26,4 +26,5 @@ collections {
    #include "widgets/notebook.edc"
    #include "widgets/progress_bar.edc"
    #include "widgets/spinner.edc"
+   #include "widgets/combobox.edc"
 }

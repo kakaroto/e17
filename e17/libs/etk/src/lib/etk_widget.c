@@ -191,10 +191,10 @@ Etk_Type *etk_widget_type_get()
       _etk_widget_signals[ETK_WIDGET_UNFOCUS_SIGNAL] =       etk_signal_new("unfocus",       widget_type, ETK_MEMBER_OFFSET(Etk_Widget, unfocus), etk_marshaller_VOID__VOID,    NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_DRAG_DROP_SIGNAL] =     etk_signal_new("drag_drop",     widget_type, -1,                                     etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_DRAG_MOTION_SIGNAL] =   etk_signal_new("drag_motion",   widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_motion), etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_DRAG_ENTER_SIGNAL] =    etk_signal_new("drag_enter",    widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_enter),  etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_DRAG_LEAVE_SIGNAL] =    etk_signal_new("drag_leave",    widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_leave),  etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_DRAG_BEGIN_SIGNAL] =    etk_signal_new("drag_begin",    widget_type,   ETK_MEMBER_OFFSET(Etk_Widget, drag_begin),    etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_DRAG_END_SIGNAL] =      etk_signal_new("drag_end",    widget_type,   ETK_MEMBER_OFFSET(Etk_Widget, drag_end),    etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_widget_signals[ETK_WIDGET_DRAG_ENTER_SIGNAL] =    etk_signal_new("drag_enter",    widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_enter), etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_widget_signals[ETK_WIDGET_DRAG_LEAVE_SIGNAL] =    etk_signal_new("drag_leave",    widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_leave), etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_widget_signals[ETK_WIDGET_DRAG_BEGIN_SIGNAL] =    etk_signal_new("drag_begin",    widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_begin), etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_widget_signals[ETK_WIDGET_DRAG_END_SIGNAL] =      etk_signal_new("drag_end",      widget_type, ETK_MEMBER_OFFSET(Etk_Widget, drag_end), etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_SELECTION_RECEIVED_SIGNAL] = etk_signal_new("selection_received", widget_type, -1,                           etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_CLIPBOARD_RECEIVED_SIGNAL] = etk_signal_new("clipboard_received", widget_type, -1,                           etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL] = etk_signal_new("scroll_size_changed", widget_type, -1,                         etk_marshaller_VOID__VOID,    NULL, NULL);
@@ -373,7 +373,6 @@ void etk_widget_theme_set(Etk_Widget *widget, const char *theme_file, const char
       etk_object_notify(ETK_OBJECT(widget), "theme_group");
    }
    
-   /* TODO */
    _etk_widget_realize(widget);
 }
 

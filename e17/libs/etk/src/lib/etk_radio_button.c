@@ -18,7 +18,7 @@ static void _etk_radio_button_constructor(Etk_Radio_Button *radio_button);
 static void _etk_radio_button_destructor(Etk_Radio_Button *radio_button);
 static void _etk_radio_button_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_radio_button_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_radio_button_clicked_handler(Etk_Button *button);
+static void _etk_radio_button_active_set(Etk_Toggle_Button *toggle_button, Etk_Bool active);
 
 /**
  * @brief Gets the type of an Etk_Radio_Button
@@ -89,7 +89,7 @@ Etk_Widget *etk_radio_button_new_with_label_from_widget(const char *label, Etk_R
 }
 
 /**
- * @brief Sets the group of the of the radio button
+ * @brief Sets the group of the radio button
  * @param radio_button a radio button
  * @param group the group to use
  */
@@ -126,7 +126,6 @@ void etk_radio_button_group_set(Etk_Radio_Button *radio_button, Evas_List **grou
 
    radio_button->can_uncheck = ETK_TRUE;
    etk_toggle_button_active_set(toggle_button, active);
-   radio_button->can_uncheck = ETK_FALSE;
 }
 
 /**
@@ -155,7 +154,7 @@ static void _etk_radio_button_constructor(Etk_Radio_Button *radio_button)
 
    radio_button->group = NULL;
    radio_button->can_uncheck = ETK_FALSE;
-   ETK_BUTTON(radio_button)->clicked = _etk_radio_button_clicked_handler;
+   ETK_TOGGLE_BUTTON(radio_button)->active_set = _etk_radio_button_active_set;
 }
 
 /* Destroys the radio button widget */
@@ -210,28 +209,25 @@ static void _etk_radio_button_property_get(Etk_Object *object, int property_id, 
 
 /**************************
  *
- * Callbacks and handlers
+ * Private functions
  *
  **************************/
 
-/* Called when the radio is clicked */
-static void _etk_radio_button_clicked_handler(Etk_Button *button)
+/* Behavior for the active_set function of the radio button */
+static void _etk_radio_button_active_set(Etk_Toggle_Button *toggle_button, Etk_Bool active)
 {
-   Etk_Toggle_Button *toggle_button;
    Etk_Radio_Button *radio_button;
    Etk_Toggle_Button *tb;
    Evas_List *l;
 
-   if (!(toggle_button = ETK_TOGGLE_BUTTON(button)))
+   if (!(radio_button = ETK_RADIO_BUTTON(toggle_button)) || toggle_button->active == active)
       return;
 
-   radio_button = ETK_RADIO_BUTTON(toggle_button);
    if (!toggle_button->active || (toggle_button->active && radio_button->can_uncheck))
    {
-      etk_widget_theme_object_signal_emit(ETK_WIDGET(toggle_button), "clicked");
-      toggle_button->active = !toggle_button->active;
-      etk_toggle_button_toggled(toggle_button);
+      toggle_button->active = active;
       etk_object_notify(ETK_OBJECT(toggle_button), "active");
+      etk_signal_emit_by_name("toggled", ETK_OBJECT(toggle_button), NULL);
    
       if (toggle_button->active)
       {
@@ -243,10 +239,10 @@ static void _etk_radio_button_clicked_handler(Etk_Button *button)
             {
                ETK_RADIO_BUTTON(tb)->can_uncheck = ETK_TRUE;
                etk_toggle_button_active_set(tb, ETK_FALSE);
-               ETK_RADIO_BUTTON(tb)->can_uncheck = ETK_FALSE;
             }
          }
       }
+      radio_button->can_uncheck = ETK_FALSE;
    }
 }
 

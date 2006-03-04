@@ -84,15 +84,15 @@ group {
    }
    programs {
       program {
-         name: "check_button_activated";
-         signal: "activated";
+         name: "check_button_activate";
+         signal: "activate";
          source: "";
          action: STATE_SET "on" 0.0;
          target: "checkbox";
       }
       program {
-         name: "check_button_desactivated";
-         signal: "desactivated";
+         name: "check_button_deactivate";
+         signal: "deactivate";
          source: "";
          action: STATE_SET "default" 0.0;
          target: "checkbox";

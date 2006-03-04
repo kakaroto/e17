@@ -30,15 +30,14 @@ struct _Etk_Menu_Shell
    
    Etk_Menu_Item *parent;
    Evas_List *items;
-   void (*items_update)(Etk_Menu_Shell *menu_shell);
 };
 
 Etk_Type *etk_menu_shell_type_get();
 Etk_Widget *etk_menu_shell_new();
 
+void etk_menu_shell_prepend(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item);
 void etk_menu_shell_append(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item);
-
-void etk_menu_shell_update(Etk_Menu_Shell *menu_shell);
+void etk_menu_shell_remove(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item);
 
 /** @} */
 

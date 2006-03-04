@@ -87,12 +87,13 @@ group {
          }
       }
       part {
-         name: "image_swallow";
+         name: "left_widget_swallow";
          type: SWALLOW;
          mouse_events: 0;
          description {
             state: "invisible" 0.0;
             visible: 0;
+            fixed: 1 1;
             rel1 {
                relative: 0.0 0.0;
                offset: 0 0;
@@ -104,6 +105,7 @@ group {
          }
          description {
             state: "visible" 0.0;
+            fixed: 1 1;
             rel1 {
                relative: 0.0 0.5;
                offset: 3 -8;
@@ -115,11 +117,10 @@ group {
          }
       }
       part {
-         name: "right_swallow";
-         type: SWALLOW;
+         name: "arrow";
          mouse_events: 0;
          description {
-            state: "invisible" 0.0;
+            state: "default" 0.0;
             visible: 0;
             rel1 {
                relative: 1.0 0.0;
@@ -129,16 +130,34 @@ group {
                relative: 1.0 1.0;
                offset: -1 -1;
             }
+            image {
+               normal: "menu_arrow.png";
+            }
          }
          description {
             state: "visible" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
             rel1 {
                relative: 1.0 0.5;
-               offset: -19 -8;
+               offset: -13 -6;
             }
             rel2 {
                relative: 1.0 0.5;
-               offset: -4 7;
+               offset: -1 5;
+            }
+         }
+         description {
+            state: "spacer" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+            rel1 {
+               relative: 1.0 0.5;
+               offset: -13 -6;
+            }
+            rel2 {
+               relative: 1.0 0.5;
+               offset: -1 5;
             }
          }
       }
@@ -150,12 +169,12 @@ group {
             rel1 {
                relative: 1.0 0.0;
                offset: 0 0;
-               to_x: "image_swallow";
+               to_x: "left_widget_swallow";
             }
             rel2 {
                relative: 0.0 1.0;
                offset: -1 -1;
-               to_x: "right_swallow";
+               to_x: "arrow";
             }
             image {
                normal: "menu_item_outline.png";
@@ -183,12 +202,12 @@ group {
             rel1 {
                relative: 1.0 0.0;
                offset: 0 0;
-               to_x: "image_swallow";
+               to_x: "left_widget_swallow";
             }
             rel2 {
                relative: 0.0 1.0;
                offset: -1 -1;
-               to_x: "right_swallow";
+               to_x: "arrow";
             }
             image {
                normal: "menu_item_shadow2.png";
@@ -215,12 +234,12 @@ group {
             rel1 {
                relative: 1.0 0.0;
                offset: 0 0;
-               to_x: "image_swallow";
+               to_x: "left_widget_swallow";
             }
             rel2 {
                relative: 0.0 1.0;
                offset: -1 -1;
-               to_x: "right_swallow";
+               to_x: "arrow";
             }
             image {
                normal: "menu_item_shadow1.png";
@@ -247,12 +266,12 @@ group {
             rel1 {
                relative: 1.0 0.0;
                offset: 0 0;
-               to_x: "image_swallow";
+               to_x: "left_widget_swallow";
             }
             rel2 {
                relative: 0.0 1.0;
                offset: -1 -1;
-               to_x: "right_swallow";
+               to_x: "arrow";
             }
             image {
                normal: "menu_item_highlight.png";
@@ -279,12 +298,12 @@ group {
             rel1 {
                relative: 1.0 0.0;
                offset: 13 6;
-               to_x: "image_swallow";
+               to_x: "left_widget_swallow";
             }
             rel2 {
                relative: 0.0 1.0;
                offset: -14 -7;
-               to_x: "right_swallow";
+               to_x: "arrow";
             }
             text {
                text: "label";
@@ -573,33 +592,40 @@ group {
       }
       
       program {
-         name: "image_show";
-         signal: "image_show";
+         name: "left_widget_show";
+         signal: "left_widget_show";
          source: "";
          action: STATE_SET "visible" 0.0;
-         target: "image_swallow";
+         target: "left_widget_swallow";
       }
       program {
-         name: "image_hide";
-         signal: "image_hide";
+         name: "left_widget_hide";
+         signal: "left_widget_hide";
          source: "";
          action: STATE_SET "invisible" 0.0;
-         target: "image_swallow";
+         target: "left_widget_swallow";
       }
 
       program {
-         name: "right_swallow_show";
-         signal: "right_swallow_show";
+         name: "arrow_show";
+         signal: "arrow_show";
          source: "";
          action: STATE_SET "visible" 0.0;
-         target: "right_swallow";
+         target: "arrow";
       }
       program {
-         name: "right_swallow_hide";
-         signal: "right_swallow_hide";
+         name: "arrow_spacer";
+         signal: "arrow_spacer";
          source: "";
-         action: STATE_SET "invisible" 0.0;
-         target: "right_swallow";
+         action: STATE_SET "spacer" 0.0;
+         target: "arrow";
+      }
+      program {
+         name: "arrow_hide";
+         signal: "arrow_hide";
+         source: "";
+         action: STATE_SET "default" 0.0;
+         target: "arrow";
       }
    }
 }
@@ -649,7 +675,7 @@ group {
          }
       }
       part {
-         name: "image_swallow";
+         name: "left_widget_swallow";
          type: SWALLOW;
          mouse_events: 0;
          description {
@@ -677,23 +703,6 @@ group {
          }
       }
       part {
-         name: "right_swallow";
-         type: SWALLOW;
-         mouse_events: 0;
-         description {
-            state: "invisible" 0.0;
-            visible: 0;
-            rel1 {
-               relative: 1.0 0.0;
-               offset: -1 0;
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               offset: -1 -1;
-            }
-         }
-      }
-      part {
          name: "item_shadow2";
          mouse_events: 0;
          description {
@@ -703,7 +712,7 @@ group {
             rel1 {
                relative: 1.0 0.0;
                offset: 0 0;
-               to_x: "image_swallow";
+               to_x: "left_widget_swallow";
             }
             rel2 {
                relative: 1.0 1.0;
@@ -734,7 +743,7 @@ group {
             rel1 {
                relative: 1.0 0.0;
                offset: 0 0;
-               to_x: "image_swallow";
+               to_x: "left_widget_swallow";
             }
             rel2 {
                relative: 1.0 1.0;
@@ -765,7 +774,7 @@ group {
             rel1 {
                relative: 1.0 0.0;
                offset: 0 0;
-               to_x: "image_swallow";
+               to_x: "left_widget_swallow";
             }
             rel2 {
                relative: 1.0 1.0;
@@ -796,7 +805,7 @@ group {
             rel1 {
                relative: 1.0 0.0;
                offset: 13 6;
-               to_x: "image_swallow";
+               to_x: "left_widget_swallow";
             }
             rel2 {
                relative: 1.0 1.0;
@@ -1085,45 +1094,23 @@ group {
       }
       
       program {
-         name: "image_show";
-         signal: "image_show";
+         name: "left_widget_show";
+         signal: "left_widget_show";
          source: "";
          action: STATE_SET "visible" 0.0;
-         target: "image_swallow";
+         target: "left_widget_swallow";
       }
       program {
-         name: "image_hide";
-         signal: "image_hide";
+         name: "left_widget_hide";
+         signal: "left_widget_hide";
          source: "";
          action: STATE_SET "invisible" 0.0;
-         target: "image_swallow";
+         target: "left_widget_swallow";
       }
    }
 }
 group {
-   name: "menu_arrow";
-   parts {
-      part {
-         name: "arrow";
-         description {
-            state: "default" 0.0;
-            rel1 {
-               relative: 0.5 0.5;
-               offset: -6 -6;
-            }
-            rel2 {
-               relative: 0.5 0.5;
-               offset: 6 5;
-            }
-            image {
-               normal: "menu_arrow.png";
-            }
-         }
-      }
-   }
-}
-group {
-   name: "menu_checkbox";
+   name: "menu_check";
    parts {
       part {
          name: "check";
@@ -1151,6 +1138,22 @@ group {
                normal: "checkbox_on.png";
             }
          }
+      }
+   }
+   programs {
+      program {
+         name: "check";
+         signal: "check";
+         source: "";
+         action: STATE_SET "checked" 0.0;
+         target: "check";
+      }
+      program {
+         name: "uncheck";
+         signal: "uncheck";
+         source: "";
+         action: STATE_SET "default" 0.0;
+         target: "check";
       }
    }
 }
@@ -1183,6 +1186,22 @@ group {
                normal: "radio_on.png";
             }
          }
+      }
+   }
+   programs {
+      program {
+         name: "check";
+         signal: "check";
+         source: "";
+         action: STATE_SET "on" 0.0;
+         target: "radio";
+      }
+      program {
+         name: "uncheck";
+         signal: "uncheck";
+         source: "";
+         action: STATE_SET "default" 0.0;
+         target: "radio";
       }
    }
 }
