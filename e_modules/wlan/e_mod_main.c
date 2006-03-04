@@ -477,6 +477,8 @@ _wlan_face_update_values(void *data)
    int wlan_link = 0;
    int wlan_level = 0;
    int wlan_noise = 0;
+   int wlan_value = 0;
+   
    char in_str[100];
 
    nf = data;
@@ -510,17 +512,21 @@ _wlan_face_update_values(void *data)
    if (!found_dev)
      return 1;
 
+   wlan_value = (100 - wlan_level - wlan_noise);
+   if (wlan_level == 0)
+     wlan_value = 0;
+   
    /* Update the modules text */
    if (nf->conf->show_text)
      {
-	snprintf(in_str, sizeof(in_str), "LNK: %d%%", (100 - (wlan_level - wlan_noise)));
+	snprintf(in_str, sizeof(in_str), "LNK: %d%%", wlan_value);
 	edje_object_part_text_set(nf->wlan_obj, "link-text", in_str);
      }   
    else
      edje_object_part_text_set(nf->wlan_obj, "link-text", "");
    
    if (nf->conf->show_graph) 
-     _wlan_face_graph_values(nf, (100 - (wlan_level - wlan_noise)));
+     _wlan_face_graph_values(nf, wlan_value);
    else
      _wlan_face_graph_clear(nf);
      
