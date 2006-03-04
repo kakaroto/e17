@@ -165,6 +165,7 @@ evfs_file_monitor_fam_handler(void *data, Ecore_File_Monitor * em,
 {
    Ecore_List *mon_list;
    int type;
+   int filetype = EVFS_FILE_NORMAL;
 
    /*printf("Got an event for %s..", path); */
 
@@ -180,6 +181,7 @@ evfs_file_monitor_fam_handler(void *data, Ecore_File_Monitor * em,
         break;
      case ECORE_FILE_EVENT_CREATED_DIRECTORY:
         type = EVFS_FILE_EV_CREATE;
+	filetype = EVFS_FILE_DIRECTORY;
         break;
      case ECORE_FILE_EVENT_DELETED_FILE:
         type = EVFS_FILE_EV_REMOVE;
@@ -204,7 +206,7 @@ evfs_file_monitor_fam_handler(void *data, Ecore_File_Monitor * em,
              printf("  Notifying client at id %ld of %s\n", mon->client->id,
                     path);
 
-             evfs_file_monitor_event_create(mon->client, type, path, "file");  /*Find a better way to do the plugin */
+             evfs_file_monitor_event_create(mon->client, type, path, filetype, "file");  /*Find a better way to do the plugin */
              /*We should really use an evfs_filereference here */
           }
      }

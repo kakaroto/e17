@@ -6,7 +6,7 @@
 
 void
 evfs_file_monitor_event_create(evfs_client * client, int type, const char *path,
-                               const char *plugin)
+                               int filetype, const char *plugin)
 {
    /*Create a reply event for a file mon event, send it , destroy event */
 
@@ -17,6 +17,7 @@ evfs_file_monitor_event_create(evfs_client * client, int type, const char *path,
    event->file_monitor.fileev_type = type;
    event->file_monitor.plugin = strdup(plugin);
    event->file_monitor.filename_len = strlen(path) + 1;
+   event->file_monitor.filetype = filetype;
 
    evfs_write_event(client, NULL, event);
 

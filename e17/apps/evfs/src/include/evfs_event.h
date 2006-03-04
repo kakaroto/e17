@@ -47,8 +47,10 @@ typedef enum evfs_eventpart
    EVFS_FILE_REFERENCE_FD = 17,
 
    EVFS_EV_PART_OPERATION = 18,
-   EVFS_COMMAND_END = 19,
-   EVFS_COMMAND_PART_OPERATION = 20,
+   EVFS_EV_PART_FILE_MONITOR = 19,
+   
+   EVFS_COMMAND_END = 20,
+   EVFS_COMMAND_PART_OPERATION = 21,
 
    EVFS_EV_PART_END = 1000
 } evfs_eventpart;
@@ -88,6 +90,7 @@ struct evfs_event_file_monitor
    char *plugin;
    char *filename;
    int filename_len;
+   int filetype;
 };
 
 typedef struct evfs_event_stat evfs_event_stat;

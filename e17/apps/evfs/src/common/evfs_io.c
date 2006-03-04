@@ -6,6 +6,7 @@ static int io_init = 0;
 static Eet_Data_Descriptor *_evfs_filereference_edd;
 static Eet_Data_Descriptor *_evfs_progress_event_edd;
 static Eet_Data_Descriptor *_evfs_operation_edd;
+static Eet_Data_Descriptor *_evfs_filemonitor_edd;
 
 Eet_Data_Descriptor *
 evfs_io_filereference_edd_get()
@@ -99,6 +100,36 @@ evfs_io_initialise()
    EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_operation_edd, evfs_operation,
                                  "response", response, EET_T_INT);
 
+
+   /*File monitor edd*/
+   _evfs_filemonitor_edd =
+      eet_data_descriptor_new("evfs_filemonitor", sizeof(evfs_event_file_monitor),
+                              (void *(*)(void *))evas_list_next,
+                              (void *(*)(void *, void *))evas_list_append,
+                              (void *(*)(void *))evas_list_data,
+                              (void *(*)(void *))evas_list_free,
+                              (void (*)
+                               (void *,
+                                int (*)(void *, const char *, void *, void *),
+                                void *))evas_hash_foreach, (void *(*)(void *,
+                                                                      const char
+                                                                      *,
+                                                                      void *))
+                              evas_hash_add, (void (*)(void *))evas_hash_free);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_filemonitor_edd, evfs_event_file_monitor, "fileev_type", fileev_type,
+                                 EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_filemonitor_edd, evfs_event_file_monitor,
+		                                       "plugin", plugin, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_filemonitor_edd, evfs_event_file_monitor,
+		                                       "filename", filename, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_filemonitor_edd, evfs_event_file_monitor,
+		                                       "filename_len", filename_len, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_filemonitor_edd, evfs_event_file_monitor,
+		                                       "filetype", filetype, EET_T_INT);
+   
+
+   
    return 0;
 
 }
@@ -138,42 +169,18 @@ evfs_event_client_id_notify(evfs_client * client)
 void
 evfs_write_event_file_monitor(evfs_client * client, evfs_event * event)
 {
+   int size_ret = 0;
+   char *data;
 
-   /*Write the type */
+	
+   /*Write "From" file */
+   data = eet_data_descriptor_encode(_evfs_filemonitor_edd, &event->file_monitor, &size_ret);
+
    evfs_write_ecore_ipc_client_message(client->client,
                                        ecore_ipc_message_new(EVFS_EV_REPLY,
-                                                             EVFS_EV_PART_FILE_MONITOR_TYPE,
+                                                             EVFS_EV_PART_FILE_MONITOR,
                                                              client->id, 0, 0,
-                                                             &event->
-                                                             file_monitor.
-                                                             fileev_type,
-                                                             sizeof
-                                                             (evfs_file_monitor_type)));
-
-   /*Write the filename this is an event for */
-   evfs_write_ecore_ipc_client_message(client->client,
-                                       ecore_ipc_message_new(EVFS_EV_REPLY,
-                                                             EVFS_EV_PART_FILE_MONITOR_FILENAME,
-                                                             client->id, 0, 0,
-                                                             event->
-                                                             file_monitor.
-                                                             filename,
-                                                             event->
-                                                             file_monitor.
-                                                             filename_len));
-
-   /*Write the plugin */
-   evfs_write_ecore_ipc_client_message(client->client,
-                                       ecore_ipc_message_new(EVFS_EV_REPLY,
-                                                             EVFS_EV_PART_FILE_MONITOR_PLUGIN,
-                                                             client->id, 0, 0,
-                                                             event->
-                                                             file_monitor.
-                                                             plugin,
-                                                             strlen(event->
-                                                                    file_monitor.
-                                                                    plugin) +
-                                                             1));
+                                                             data, size_ret));
 
 }
 
@@ -370,17 +377,16 @@ evfs_read_event(evfs_event * event, ecore_ipc_message * msg)
 
         memcpy(&event->type, msg->data, sizeof(evfs_eventtype));
         break;
-     case EVFS_EV_PART_FILE_MONITOR_TYPE:
-        memcpy(&event->file_monitor.fileev_type, msg->data,
-               sizeof(evfs_file_monitor_type));
-        break;
-     case EVFS_EV_PART_FILE_MONITOR_FILENAME:
-        event->file_monitor.filename = strdup(msg->data);
-        event->file_monitor.filename_len = strlen(msg->data);
-        break;
-     case EVFS_EV_PART_FILE_MONITOR_PLUGIN:
-        event->file_monitor.plugin = strdup(msg->data);
-        break;
+     case EVFS_EV_PART_FILE_MONITOR: {
+	evfs_event_file_monitor* fmev =
+		eet_data_descriptor_decode(_evfs_filemonitor_edd, msg->data,
+                             msg->len); 				     
+        memcpy(&event->file_monitor, fmev,
+               sizeof(evfs_event_file_monitor));
+
+	free(fmev);
+     }
+     break;
 
      case EVFS_EV_PART_STAT_SIZE:
 
