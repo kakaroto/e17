@@ -56,7 +56,7 @@ Etk_Signal *etk_signal_new(const char *signal_name, Etk_Type *object_type, long 
    if (!signal_name || !object_type || !marshaller)
       return NULL;
 
-   new_signal = calloc(1,sizeof(Etk_Signal));
+   new_signal = malloc(sizeof(Etk_Signal));
    new_signal->name = strdup(signal_name);
    new_signal->object_type = object_type;
    new_signal->default_handler_offset = default_handler_offset;

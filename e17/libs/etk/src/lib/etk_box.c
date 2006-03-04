@@ -304,7 +304,7 @@ static void _etk_box_pack_full(Etk_Box *box, Etk_Widget *child, Etk_Bool expand,
    /* TODO: con_remove */
    if (child->parent && ETK_IS_CONTAINER(child->parent))
       etk_container_remove(ETK_CONTAINER(child->parent), child);
-   child_props = calloc(1,sizeof(Etk_Box_Child_Props));
+   child_props = malloc(sizeof(Etk_Box_Child_Props));
    child_props->expand = expand;
    child_props->fill = fill;
    child_props->padding = padding;

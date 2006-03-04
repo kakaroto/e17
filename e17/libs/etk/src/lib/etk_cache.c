@@ -151,7 +151,7 @@ void etk_cache_image_object_add(Evas_Object *image_object)
    if (!(cache_system = _etk_cache_system_get(evas)) && !(cache_system = _etk_cache_system_create(evas)))
       return;
    
-   new_item = calloc(1,sizeof(Etk_Cache_Image_Object_Item));
+   new_item = malloc(sizeof(Etk_Cache_Image_Object_Item));
    new_item->filename = strdup(filename);
    new_item->image_object = image_object;
    evas_object_hide(new_item->image_object);
@@ -287,7 +287,7 @@ void etk_cache_edje_object_add_with_state(Evas_Object *edje_object, int state)
    if (!(cache_system = _etk_cache_system_get(evas)) && !(cache_system = _etk_cache_system_create(evas)))
       return;
    
-   new_item = calloc(1,sizeof(Etk_Cache_Edje_Object_Item));
+   new_item = malloc(sizeof(Etk_Cache_Edje_Object_Item));
    new_item->filename = strdup(filename);
    new_item->group = strdup(group);
    new_item->state = ETK_MIN(state, -1);
@@ -451,7 +451,7 @@ static Etk_Cache_System *_etk_cache_system_create(Evas *evas)
    if (!evas)
       return NULL;
    
-   cache_system = calloc(1,sizeof(Etk_Cache_System));
+   cache_system = malloc(sizeof(Etk_Cache_System));
    cache_system->evas = evas;
    
    cache_system->max_image_objects = 256;
@@ -580,7 +580,7 @@ static char *_etk_cache_edje_key_generate(const char *filename, const char *grou
    if (!filename || !group)
       return NULL;
    
-   key = calloc(1,strlen(filename) + strlen(group) + 2);
+   key = malloc(strlen(filename) + strlen(group) + 2);
    sprintf(key, "%s/%s", filename, group);
    return key;
 }

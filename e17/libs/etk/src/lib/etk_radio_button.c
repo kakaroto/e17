@@ -113,7 +113,7 @@ void etk_radio_button_group_set(Etk_Radio_Button *radio_button, Evas_List **grou
 
    if (!group)
    {
-      group = calloc(1,sizeof(Evas_List *));
+      group = malloc(sizeof(Evas_List *));
       *group = NULL;
       active = ETK_TRUE;
    }

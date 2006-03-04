@@ -222,7 +222,7 @@ static char *_etk_theme_find(const char *subdir, const char *theme_name)
    if (!theme_name || !subdir)
       return ETK_FALSE;
    
-   path = calloc(1,strlen(subdir) + strlen(PACKAGE_DATA_DIR"//.edj") + strlen(theme_name) + 1);
+   path = malloc(strlen(subdir) + strlen(PACKAGE_DATA_DIR"//.edj") + strlen(theme_name) + 1);
    sprintf(path, PACKAGE_DATA_DIR"/%s/%s.edj", subdir, theme_name);
    if (ecore_file_exists(path))
       return path;

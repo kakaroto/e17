@@ -1127,7 +1127,7 @@ Etk_Bool etk_widget_member_object_add(Etk_Widget *widget, Evas_Object *object)
    if (_etk_widget_member_object_find(widget, object))
       return ETK_TRUE;
    
-   member_object = calloc(1,sizeof(Etk_Widget_Member_Object));
+   member_object = malloc(sizeof(Etk_Widget_Member_Object));
    member_object->object = object;
    member_object->visible = evas_object_visible_get(object);
    member_object->swallowed = ETK_FALSE;
@@ -2417,7 +2417,7 @@ static Etk_Bool _etk_widget_theme_object_swallow_full(Etk_Widget *swallowing_wid
    if ((previously_swallowed = edje_object_part_swallow_get(swallowing_widget->theme_object, part)))
       etk_widget_theme_object_unswallow(swallowing_widget, previously_swallowed);
    
-   swallowed_object = calloc(1,sizeof(Etk_Widget_Swallowed_Object));
+   swallowed_object = malloc(sizeof(Etk_Widget_Swallowed_Object));
    swallowed_object->object = object;
    swallowed_object->swallowing_part = strdup(part);
    swallowed_object->widget = widget;
