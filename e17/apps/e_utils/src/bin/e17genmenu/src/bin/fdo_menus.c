@@ -55,11 +55,13 @@ struct _fdo_menus_legacy_data
 {
    Dumb_Tree *merge;
    Dumb_Tree *current;
+   char *menu;
    char *prefix;
    char *path;
-   int length;
+   int length, menu_length, level;
 };
 
+static Dumb_Tree *_fdo_menus_create_menu();
 static int _fdo_menus_unxml(const void *data, Dumb_Tree * tree, int element, int level);
 static int _fdo_menus_check_directory(const void *data, char *path);
 static int _fdo_menus_check_menu(const void *data, char *path);
@@ -191,32 +193,17 @@ _fdo_menus_unxml(const void *data, Dumb_Tree * tree, int element, int level)
           }
         else if (strcmp((char *)tree->elements[element].element, "<Menu") == 0)
           {
-             Dumb_Tree *menu, *rules;
-             Ecore_Hash *pool, *apps;
+             Dumb_Tree *menu;
 
-             menu = dumb_tree_new(NULL);
-             rules = dumb_tree_new(NULL);
-             pool = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-             apps = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-             if ((menu) && (rules) && (pool) && (apps))
+             menu = _fdo_menus_create_menu();
+             if (menu)
                {
                   int i;
                   char *flags = "    ", *name = "", *directory = "", *menu_path = "";
                   char temp[MAX_PATH];
 
-                  ecore_hash_set_free_key(pool, free);
-                  ecore_hash_set_free_value(pool, free);
-                  ecore_hash_set_free_key(apps, free);
-                  ecore_hash_set_free_value(apps, free);
-                  sprintf(temp, "<MENU <%.4s> <%s> <%s>", flags, name, directory);
-                  dumb_tree_extend(menu, temp);
-                  sprintf(temp, "<MENU_PATH %s", menu_path);
-                  dumb_tree_extend(menu, temp);
                   flags = (char *)menu->elements[0].element;
                   flags += 7;
-                  dumb_tree_add_hash(menu, pool);
-                  dumb_tree_add_child(menu, rules);
-                  dumb_tree_add_hash(menu, apps);
                   tree->elements[element].element = menu;
                   tree->elements[element].type = DUMB_TREE_ELEMENT_TYPE_TREE;
                   for (i = element + 1; i < tree->size; i++)
@@ -373,20 +360,47 @@ _fdo_menus_unxml(const void *data, Dumb_Tree * tree, int element, int level)
                        tree->elements[element].type = DUMB_TREE_ELEMENT_TYPE_TREE;
                     }
                }
-             else
-               {
-                  if (apps)
-                     ecore_hash_destroy(apps);
-                  if (pool)
-                     ecore_hash_destroy(pool);
-                  if (rules)
-                     dumb_tree_del(rules);
-                  if (menu)
-                     dumb_tree_del(menu);
-               }
           }
      }
    return 0;
+}
+
+static Dumb_Tree *
+_fdo_menus_create_menu()
+{
+   Dumb_Tree *menu, *rules;
+   Ecore_Hash *pool, *apps;
+
+   menu = dumb_tree_new(NULL);
+   rules = dumb_tree_new(NULL);
+   pool = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+   apps = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+   if ((menu) && (rules) && (pool) && (apps))
+     {
+        ecore_hash_set_free_key(pool, free);
+        ecore_hash_set_free_value(pool, free);
+        ecore_hash_set_free_key(apps, free);
+        ecore_hash_set_free_value(apps, free);
+        dumb_tree_extend(menu, "<MENU <    > <> <>");
+        dumb_tree_extend(menu, "<MENU_PATH ");
+        dumb_tree_add_hash(menu, pool);
+        dumb_tree_add_child(menu, rules);
+        dumb_tree_add_hash(menu, apps);
+     }
+   else
+     {
+        if (apps)
+           ecore_hash_destroy(apps);
+        if (pool)
+           ecore_hash_destroy(pool);
+        if (rules)
+           dumb_tree_del(rules);
+        if (menu)
+           dumb_tree_del(menu);
+	menu = NULL;
+     }
+
+   return menu;
 }
 
 static int
@@ -437,9 +451,71 @@ static int
 _fdo_menus_legacy_menu_dir(const void *data, char *path)
 {
    struct _fdo_menus_legacy_data *legacy_data;
+   Dumb_Tree *menu;
+   int start;
+   int i, count = 0;
 
    legacy_data = (struct _fdo_menus_legacy_data *)data;
-   printf("  LEGACYDIR DIR  - %s - %s  %s\n", legacy_data->prefix, legacy_data->path, &path[legacy_data->length]);
+   for (i = legacy_data->length; path[i] != '\0'; i++)
+     {
+        if (path[i] == '/')
+           count++;
+     }
+   if (count == 1)
+     {
+        legacy_data->current = legacy_data->merge;
+        legacy_data->level = 0;
+     }
+   else if (count <= legacy_data->level)
+     {
+        if ((legacy_data->current) && (legacy_data->current->parent))
+          {
+	     legacy_data->current = legacy_data->current->parent;
+             legacy_data->level--;
+	  }
+     }
+
+   start = legacy_data->length;
+   count = 0;
+   for (i = legacy_data->length; path[i] != '\0'; i++)
+     {
+        if (path[i] == '/')
+	  {
+	     if (count >= legacy_data->level)
+	       {
+	          path[i] = '\0';
+                  menu = _fdo_menus_create_menu();
+	          if (menu)
+	            {
+                       char temp[MAX_PATH];
+
+                       sprintf(temp, "<MENU <   L> <%s> <>", &path[start]);
+                       menu->elements[0].element = strdup(temp);
+                       dumb_tree_track(menu, menu->elements[0].element);
+                       sprintf(temp, "<MENU_PATH %s/%s", legacy_data->menu, &path[legacy_data->length]);
+                       menu->elements[1].element = strdup(temp);
+                       dumb_tree_track(menu, menu->elements[1].element);
+
+	               dumb_tree_add_child(legacy_data->current, menu);
+                       /*  This is not needed, but if it was, this is where it would go.
+                       sprintf(temp, "<AppDir %s/", path);
+                       dumb_tree_extend(menu, temp);
+		       */
+                       sprintf(temp, "<DirectoryDir %s/", path);
+                       dumb_tree_extend(menu, temp);
+
+	               legacy_data->current = menu;
+                       legacy_data->level++;
+	            }
+	          path[i] = '/';
+               }
+	     start = i + 1;
+	     count++;
+	  }
+     }
+
+   legacy_data->level = count;
+
    return 0;
 }
 
@@ -447,9 +523,85 @@ static int
 _fdo_menus_legacy_menu(const void *data, char *path)
 {
    struct _fdo_menus_legacy_data *legacy_data;
+   char *menu_path, *file;
+   char temp[MAX_PATH];
+   int i, count = 0, menu_count = 0;
 
    legacy_data = (struct _fdo_menus_legacy_data *)data;
-   printf("  LEGACYDIR FILE - %s - %s  %s\n", legacy_data->prefix, legacy_data->path, &path[legacy_data->length]);
+   menu_path = (char *)legacy_data->current->elements[1].element;
+   menu_path += 12 + legacy_data->menu_length;
+
+   for (i = legacy_data->length; path[i] != '\0'; i++)
+     {
+        if (path[i] == '/')
+           count++;
+     }
+   for (i = 0; menu_path[i] != '\0'; i++)
+     {
+        if (menu_path[i] == '/')
+           menu_count++;
+     }
+   while (menu_count >= count)
+     {
+        legacy_data->current = legacy_data->current->parent;
+        menu_count--;
+     }
+   if (legacy_data->current->elements[1].type == DUMB_TREE_ELEMENT_TYPE_STRING)
+     {
+        menu_path = (char *)legacy_data->current->elements[1].element;
+        menu_path += 12 + legacy_data->menu_length;
+     }
+   else
+     {
+        /* FIXME:  Bugger, a corner case.
+	 * If this is .directory, then maybe ignore it?
+	 * If this is a desktop, we need to put it into the pool of the menu that legacy_data->merge will get merged into.
+	 */ 
+        menu_path = "";
+        printf("  LEGACYDIR FILE - %s - %s  %s\n", legacy_data->prefix, legacy_data->path, &path[legacy_data->length]);
+	return 0;
+     }
+   
+   menu_count = strlen(menu_path);
+   if (menu_count)
+      menu_count++;
+   file = &path[legacy_data->length + menu_count];
+   count = strlen(file);
+   
+   if (strcmp(".directory", file) == 0)
+     {
+	menu_path = (char *)legacy_data->current->elements[0].element;
+	menu_count = strlen(menu_path);
+	menu_path[menu_count - 3] = '\0';
+        sprintf(temp, "%s <.directory>", menu_path);
+        legacy_data->current->elements[0].element = strdup(temp);
+        dumb_tree_track(legacy_data->current, legacy_data->current->elements[0].element);
+     }
+   else if (strcmp(".desktop", &file[count - 8]) == 0)
+     {
+        Ecore_Hash *pool;
+	Dumb_Tree *rules;
+
+        pool = (Ecore_Hash *) legacy_data->current->elements[2].element;
+        rules = (Dumb_Tree *) legacy_data->current->elements[3].element;
+	if (rules->size == 0)
+	  {
+	     Dumb_Tree *new_rules;
+
+             new_rules = dumb_tree_new(NULL);
+	     if (new_rules)
+	        dumb_tree_add_child(rules, new_rules);
+	  }
+	sprintf(temp, "%s%s", legacy_data->prefix, file);
+        ecore_hash_set(pool, strdup(temp), strdup(path));
+	if (rules->size > 0)
+	  {
+             rules = (Dumb_Tree *) rules->elements[0].element;
+	     sprintf(temp, "IOF %s%s", legacy_data->prefix, file);
+             dumb_tree_extend(rules, temp);
+	  }
+     }
+
    return 0;
 }
 
@@ -657,6 +809,12 @@ _fdo_menus_merge(const void *data, Dumb_Tree * tree, int element, int level)
              string += 11;
              legacy_data.prefix = NULL;
              legacy_data.merge = merge;
+             legacy_data.current = merge;
+	     legacy_data.level = 0;
+	     legacy_data.menu = (char *)tree->elements[0].element;
+	     legacy_data.menu += 14;
+	     legacy_data.menu_length = index(legacy_data.menu, '>') - legacy_data.menu;
+	     legacy_data.menu[legacy_data.menu_length] = '\0';
              if (strncmp(string, "prefix=\"", 8) == 0)
                {
                   string += 8;
@@ -676,6 +834,7 @@ _fdo_menus_merge(const void *data, Dumb_Tree * tree, int element, int level)
              legacy_data.length = strlen(merge_path);
              printf("<LEGACYDIR> - %s - %s\n", legacy_data.prefix, merge_path);
              fdo_paths_recursive_search(merge_path, NULL, _fdo_menus_legacy_menu_dir, _fdo_menus_legacy_menu, &legacy_data);
+	     legacy_data.menu[legacy_data.menu_length] = '>';
              result = 1;
           }
         else if (strncmp(string, "<MergeFile ", 11) == 0)
@@ -1139,21 +1298,21 @@ CATEGORY
 /*
 merge menus
 *  expand <KDELegacyDir>'s to <LegacyDir>.
-   expand <LegacyDir>'s
-     for each dir (recursive)
-       create recursively nested <MENU <   L> <dirname> <> element
-    //   <AppDir>dirpath</AppDir>
-       <DirectoryDir>dirpath</DirectoryDir>
-       if exist .directory
-         add <.directory> to name
-       <Include>
-       for each *.desktop
+*   expand <LegacyDir>'s
+*     for each dir (recursive)
+*       create recursively nested <MENU <   L> <dirname> <> element
+*    //   <AppDir>dirpath</AppDir>
+*       <DirectoryDir>dirpath</DirectoryDir>
+*       if exist .directory
+*         add <.directory> to name
+*       <Include>
+*       for each *.desktop
          if no categories in bar.desktop
-	   <Filename>prefix-bar.desktop</Filename> 
+*	   <Filename>prefix-bar.desktop</Filename> 
          add "Legacy" to categories
-         add any prefix to the desktop ID.
-	 add it to the pool
-       </Include>
+*        add any prefix to the desktop ID.
+*	 add it to the pool
+*       </Include>
 *  for each <MergeFile>, and <MergeDir> element
 *    get the root <Menu> elements from that elements file/s.
 *    remove the <Name> element from those root <Menu> elements.

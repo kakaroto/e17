@@ -44,12 +44,34 @@ fdo_paths_init()
          _fdo_paths_get(NULL, "XDG_DATA_HOME", "XDG_DATA_DIRS",
                         "~/.local/share", "/usr/local/share:/usr/share", "desktop-directories", "gnome/vfolders", "xdgdata-dirs");
    if (!fdo_paths_desktops)
-      fdo_paths_desktops =
-         _fdo_paths_get(NULL, "XDG_DATA_HOME", "XDG_DATA_DIRS",
-                        "~/.local/share", "/usr/local/share:/usr/share", "applications",
-                        "dist/desktop-files:dist/short-menu:gnome/apps", "xdgdata-apps:apps");
+     {
+         fdo_paths_desktops =
+            _fdo_paths_get(NULL, "XDG_DATA_HOME", "XDG_DATA_DIRS",
+                           "~/.local/share", "/usr/local/share:/usr/share", "applications",
+                           "dist/desktop-files:dist/short-menu:gnome/apps", "xdgdata-apps:apps");
+         _fdo_paths_check_and_add(fdo_paths_desktops, "/usr/share/update-desktop-files/templates");
+     }
    if (!fdo_paths_kde_legacy)
-      fdo_paths_kde_legacy = _fdo_paths_get(NULL, NULL, NULL, NULL, NULL, NULL, NULL, "apps");
+     {
+        int i;
+        char temp[MAX_PATH];
+
+        fdo_paths_kde_legacy = _fdo_paths_get(NULL, NULL, NULL, NULL, NULL, NULL, NULL, "apps");
+	for (i = 0; i < fdo_paths_kde_legacy->size; i++)
+	  {
+	     char *path, *t1, *t2;
+
+             path = (char *)fdo_paths_kde_legacy->elements[i].element;
+	     t1 = rindex(path, '/');
+	     *t1 = '\0';
+	     t2 = rindex(path, '/');
+	     *t2 = '\0';
+	     sprintf(temp, "%s/apps/kappfinder/apps/", path);
+	     *t2 = '/';
+	     *t1 = '/';
+             _fdo_paths_check_and_add(fdo_paths_kde_legacy, temp);
+	  }
+     }
    if (!fdo_paths_icons)
      {
         char *gnome;
