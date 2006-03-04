@@ -451,18 +451,26 @@ void etk_object_notify(Etk_Object *object, const char *property_name)
    Evas_List *l;
    Evas_List **notification_callbacks;
    Etk_Notification_Callback *callback;
+   void *object_ptr;
 
    if (!object || !property_name)
       return;
    if (!(notification_callbacks = evas_hash_find(object->notification_callbacks_hash, property_name)))
       return;
 
+   object_ptr = object;
+   etk_object_weak_pointer_add(object, &object_ptr);
    for (l = *notification_callbacks; l; l = l->next)
    {
       callback = l->data;
       if (callback->callback)
          callback->callback(object, property_name, callback->data);
+      
+      /* The object has been destroyed */
+      if (!object_ptr)
+         return;
    }
+   etk_object_weak_pointer_remove(object, &object_ptr);
 }
 
 /**
