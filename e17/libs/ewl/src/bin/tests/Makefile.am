@@ -16,7 +16,8 @@ pkgdir                  = $(libdir)/ewl/tests
 pkg_LTLIBRARIES		= ewl_border.la ewl_box.la ewl_button.la \
 			  ewl_colordialog.la ewl_datepicker.la \
 			  ewl_freebox.la ewl_paned.la ewl_text.la \
-			  ewl_calendar.la ewl_text_editor.la
+			  ewl_calendar.la ewl_text_editor.la \
+			  ewl_entry.la
 
 ewl_border_la_SOURCES   = ewl_border.c
 ewl_border_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
@@ -52,6 +53,13 @@ ewl_datepicker_la_LDFLAGS	= -module -avoid-version \
 			  -L$(top_builddir)/src/lib \
 			  -L$(top_builddir)/src/lib/.libs
 ewl_datepicker_la_DEPENDENCIES = 
+
+ewl_entry_la_SOURCES   = ewl_entry.c
+ewl_entry_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
+ewl_entry_la_LDFLAGS	= -module -avoid-version \
+			  -L$(top_builddir)/src/lib \
+			  -L$(top_builddir)/src/lib/.libs
+ewl_entry_la_DEPENDENCIES = 
 
 ewl_freebox_la_SOURCES   = ewl_freebox.c
 ewl_freebox_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
@@ -100,6 +108,6 @@ example_DATA 			=	$(ewl_border_la_SOURCES) \
 	$(ewl_colordialog_la_SOURCES) $(ewl_datepicker_la_SOURCES) \
 	$(ewl_freebox_la_SOURCES) $(ewl_paned_la_SOURCES) \
 	$(ewl_text_la_SOURCES) $(ewl_calendar_la_SOURCES) \
-	$(ewl_text_editor_la_SOURCES)
+	$(ewl_text_editor_la_SOURCES) $(ewl_entry_la_SOURCES)
 
 
