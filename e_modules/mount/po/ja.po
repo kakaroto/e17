@@ -1,72 +1,70 @@
 # SOME DESCRIPTIVE TITLE.
 # This file is put in the public domain.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Yasufumi Haga <yasufumi.haga@nifty.com> 2006.
 #
 #, fuzzy
 msgid ""
-msgstr "Project-Id-Version: PACKAGE VERSION\n"
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-29 20:28+0900\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2006-03-03 17:23+0900\n"
+"PO-Revision-Date: 2006-03-03 21:33+0900\n"
+"Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:44
+#: e_mod_config.c:41
 msgid "Mount Configuration"
-msgstr "Mount設定"
+msgstr "Mount の設定"
 
-#: e_mod_config.c:89 e_mod_config.c:132
+#: e_mod_config.c:84 e_mod_config.c:126
 msgid "Show Labels"
-msgstr ""
+msgstr "ラベルを表示する"
 
-#: e_mod_config.c:93 e_mod_config.c:136
+#: e_mod_config.c:88 e_mod_config.c:130
 msgid "Layout Settings"
-msgstr ""
+msgstr "mount アイコンの配置"
 
-#: e_mod_config.c:95 e_mod_config.c:138
+#: e_mod_config.c:90 e_mod_config.c:132
 msgid "Use Vertical Layout"
-msgstr ""
+msgstr "縦に並べる"
 
-#: e_mod_config.c:97 e_mod_config.c:140
+#: e_mod_config.c:93 e_mod_config.c:135
 msgid "Use Horizontal Layout"
-msgstr ""
+msgstr "横に並べる"
 
-#: e_mod_config.c:144
+#: e_mod_config.c:140
 msgid "Icon Size"
-msgstr ""
+msgstr "アイコンの大きさ"
 
-#: e_mod_config.c:145
-#, c-format
-msgid "%3.0f pixels"
-msgstr ""
-
-#: e_mod_main.c:110
+#: e_mod_main.c:123
 msgid "Enlightenment Mount Module"
-msgstr ""
+msgstr "Enlightenment mount モジュール"
 
-#: e_mod_main.c:111
+#: e_mod_main.c:124
 msgid "This is a mount module to mount/unmount devices."
-msgstr ""
+msgstr "これはデバイスをマウント、アンマウントする mount モジュールです."
 
-#: e_mod_main.c:147
+#: e_mod_main.c:161
 msgid "Cannot Parse fstab"
-msgstr ""
+msgstr "fstab が解析できません."
 
-#: e_mod_main.c:147 e_mod_main.c:1106 e_mod_main.c:1114 e_mod_main.c:1122
+#: e_mod_main.c:161 e_mod_main.c:1283 e_mod_main.c:1291 e_mod_main.c:1299
 msgid "Mount Module"
-msgstr ""
+msgstr "mount モジュール"
 
-#: e_mod_main.c:1107
+#: e_mod_main.c:1284
 msgid "Unmount Failed !!<br>Perhaps this device is in use or is not mounted."
 msgstr ""
+"アンマウントに失敗しました.<br>デバイスが使用中か, マウントされていません."
 
-#: e_mod_main.c:1115
+#: e_mod_main.c:1292
 msgid "Mount Failed !!<br>Please check that media is inserted"
-msgstr ""
+msgstr "マウントに失敗しました.<br>メディアはちゃんと挿入されていますか？"
 
-#: e_mod_main.c:1122
+#: e_mod_main.c:1299
 msgid "Eject Failed !!"
-msgstr ""
+msgstr "メディアの排出に失敗しました."

@@ -1,97 +1,98 @@
 # SOME DESCRIPTIVE TITLE.
 # This file is put in the public domain.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Yasufumi Haga <yasufumi.haga@nifty.com>, 2006
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-27 00:40+0900\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2006-03-02 20:14+0900\n"
+"PO-Revision-Date: 2006-03-02 23:55+0900\n"
+"Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:78
+#: e_mod_config.c:75
 msgid "Screenshot Configuration"
 msgstr "スクリーンショット設定"
 
-#: e_mod_config.c:169 e_mod_config.c:289
+#: e_mod_config.c:162 e_mod_config.c:281
 msgid "Use Import"
-msgstr ""
+msgstr "import を使って撮る"
 
-#: e_mod_config.c:171 e_mod_config.c:291
+#: e_mod_config.c:164 e_mod_config.c:283
 msgid "Use Scrot"
-msgstr ""
+msgstr "scrot を使って撮る"
 
-#: e_mod_config.c:178 e_mod_config.c:299
+#: e_mod_config.c:171 e_mod_config.c:290
 msgid "Delay Time:"
-msgstr ""
+msgstr "セルフタイマー"
 
-#: e_mod_config.c:187 e_mod_config.c:308
+#: e_mod_config.c:181 e_mod_config.c:300
 msgid "File Settings"
-msgstr ""
+msgstr "保存方法"
 
-#: e_mod_config.c:190 e_mod_config.c:311
+#: e_mod_config.c:184 e_mod_config.c:303
 msgid "Save Directory:"
-msgstr ""
+msgstr "保存先のディレクトリ"
 
-#: e_mod_config.c:196 e_mod_config.c:317
+#: e_mod_config.c:190 e_mod_config.c:309
 msgid "Filename (minus extension):"
-msgstr ""
+msgstr "保存するファイル名 (拡張子は除く)"
 
-#: e_mod_config.c:202 e_mod_config.c:323
+#: e_mod_config.c:198 e_mod_config.c:317
 #, c-format
 msgid "Example: screenshot%d = screenshot1, screenshot2, etc..."
-msgstr ""
+msgstr "ファイル名の例: screenshot%d = screenshot1, screenshot2, 等..."
 
-#: e_mod_config.c:330
+#: e_mod_config.c:324
 msgid "Import Options"
-msgstr ""
+msgstr "import のオプション"
 
-#: e_mod_config.c:331 e_mod_config.c:347
+#: e_mod_config.c:325 e_mod_config.c:346
 msgid "Include Image Border"
-msgstr ""
+msgstr "ボーダーを含める"
 
-#: e_mod_config.c:333
+#: e_mod_config.c:328
 msgid "Use Image Dithering"
-msgstr ""
+msgstr "ディザリングを使う"
 
-#: e_mod_config.c:335
+#: e_mod_config.c:331
 msgid "Include Window Manager Frame"
-msgstr ""
+msgstr "ウィンドウマネージャのフレームを含める"
+
+#: e_mod_config.c:334
+msgid "Choose Window To Grab"
+msgstr "選択したウィンドウだけを取り込む"
 
 #: e_mod_config.c:337
-msgid "Choose Window To Grab"
-msgstr ""
-
-#: e_mod_config.c:339
 msgid "Silent"
-msgstr ""
+msgstr "メッセージは表示しない"
 
-#: e_mod_config.c:341
+#: e_mod_config.c:340
 msgid "Trim Edges"
-msgstr ""
+msgstr "縁を取り除く"
 
-#: e_mod_config.c:346
+#: e_mod_config.c:345
 msgid "Scrot Options"
-msgstr ""
+msgstr "scrot のオプション"
 
 #: e_mod_config.c:349
 msgid "Generate Thumbnail"
-msgstr ""
+msgstr "サムネイルを作成する"
 
-#: e_mod_main.c:106 e_mod_main.c:493
+#: e_mod_main.c:108 e_mod_main.c:536
 msgid "Enlightenment Screenshot Module"
-msgstr ""
+msgstr "Enlightenment screenshot モジュール"
 
-#: e_mod_main.c:107
+#: e_mod_main.c:109
 msgid "This module is used to take screenshots"
-msgstr ""
+msgstr "このモジュールはスクリーンショットを撮るためのモジュールです."
 
-#: e_mod_main.c:494
+#: e_mod_main.c:537
 msgid "Please Choose A Program To Use For Taking Screenshots."
-msgstr ""
+msgstr "スクリーンショットを撮るために使用するプログラムを決めて下さい."
