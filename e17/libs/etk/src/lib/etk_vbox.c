@@ -5,7 +5,7 @@
 
 /**
  * @addtogroup Etk_VBox
-* @{
+ * @{
  */
 
 static void _etk_vbox_constructor(Etk_VBox *vbox);
@@ -138,10 +138,9 @@ static void _etk_vbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    int num_children_to_expand = 0, i;
    float start_offset = 0, end_offset = 0;
 
-   if ((!(vbox = ETK_VBOX(widget))) || !vbox->requested_sizes)
+   /* Fixme: correctly and fix hbox too */
+   if ((!(vbox = ETK_VBOX(widget))))
       return;
-
-    
 
    box = ETK_BOX(vbox);
    widget = ETK_WIDGET(vbox);

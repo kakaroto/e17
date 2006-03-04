@@ -301,7 +301,8 @@ void etk_signal_emit_by_name(const char *signal_name, Etk_Object *object, void *
  * @param object the object which emits the signal (it will be passed as the first argument to the callback function)
  * @param return_value the location where we will put the return value (may be NULL)
  * @param args the arguments to pass to the callback function
- */ 
+ */
+/* TODO: Fixme the right way! */
 void etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return_value, va_list args)
 {
    Evas_List *callbacks;
@@ -335,7 +336,7 @@ void etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return
       callbacks = evas_list_remove_list(callbacks, callbacks);
    }   
    
-   if (_etk_signal_stop_emission || !etk_object_lookup(object))
+   if (_etk_signal_stop_emission)
       return;
 
    /* Calls the default handler */

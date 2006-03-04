@@ -29,10 +29,8 @@ static void _etk_object_constructor(Etk_Object *object);
 static void _etk_object_destructor(Etk_Object *object);
 static Evas_Bool _etk_object_notification_callbacks_free_cb(Evas_Hash *hash, const char *key, void *data, void *fdata);
 static Evas_Bool _etk_object_data_free_cb(Evas_Hash *hash, const char *key, void *data, void *fdata);
-static Evas_Bool _etk_object_hash_foreach(Evas_Hash *hash, const char *key, void *data, void *fdata);
 
 static Evas_List *_etk_object_created_objects = NULL;
-static Evas_Hash *_etk_object_created_objects_hash = NULL;
 static Etk_Signal *_etk_object_signals[ETK_OBJECT_NUM_SIGNALS];
 
 /**************************
@@ -99,7 +97,6 @@ Etk_Object *etk_object_new_valist(Etk_Type *object_type, const char *first_prope
    new_object = malloc(object_type->type_size);
    new_object->type = object_type;
    _etk_object_created_objects = evas_list_append(_etk_object_created_objects, new_object);
-   _etk_object_created_objects_hash = evas_hash_add(_etk_object_created_objects_hash, new_object, new_object);
    
    etk_type_object_construct(object_type, new_object);
    va_copy(args2, args);
@@ -121,7 +118,6 @@ void etk_object_destroy(Etk_Object *object)
    etk_signal_emit(_etk_object_signals[ETK_OBJECT_DESTROYED_SIGNAL], object, NULL);
    etk_type_destructors_call(object->type, object);
    _etk_object_created_objects = evas_list_remove(_etk_object_created_objects, object);
-   _etk_object_created_objects_hash = evas_hash_del(_etk_object_created_objects_hash, object, object);
    free(object);
 }
 
@@ -131,16 +127,7 @@ void etk_object_destroy(Etk_Object *object)
 void etk_object_destroy_all_objects()
 {
    while (_etk_object_created_objects)
-     etk_object_destroy(ETK_OBJECT(_etk_object_created_objects->data));
-}
-
-/*
- * @brief Looks up an object so we know if it exists
- * @param object the object we want to find
- */
-void *etk_object_lookup(Etk_Object *object)
-{
-   return evas_hash_find(_etk_object_created_objects_hash, object);
+      etk_object_destroy(ETK_OBJECT(_etk_object_created_objects->data));
 }
 
 /**

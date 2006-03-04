@@ -517,11 +517,10 @@ void etk_widget_show_all(Etk_Widget *widget)
    if (!widget)
       return;
 
+   if (!widget->visibility_locked)
+     etk_widget_show(widget);
    for (l = widget->children; l; l = l->next)
       etk_widget_show_all(ETK_WIDGET(l->data));
-   
-   if (!widget->visibility_locked)
-     etk_widget_show(widget);   
 }
 
 /**
@@ -1938,7 +1937,7 @@ static void _etk_widget_mouse_in_cb(void *data, Evas *evas, Evas_Object *object,
 
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_IN_SIGNAL], ETK_OBJECT(widget), NULL, &event);
    
-   if (_etk_widget_propagate_event && widget->parent && etk_object_lookup(ETK_OBJECT(widget)))
+   if (_etk_widget_propagate_event && widget->parent)
       _etk_widget_mouse_in_cb(widget->parent, evas, NULL, event_info);
 }
 
@@ -1974,7 +1973,7 @@ static void _etk_widget_mouse_out_cb(void *data, Evas *evas, Evas_Object *object
 
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_OUT_SIGNAL], ETK_OBJECT(widget), NULL, &event);
    
-   if (_etk_widget_propagate_event && widget->parent && etk_object_lookup(ETK_OBJECT(widget)))
+   if (_etk_widget_propagate_event && widget->parent)
       _etk_widget_mouse_out_cb(widget->parent, evas, NULL, event_info);
 }
 
@@ -2014,7 +2013,7 @@ static void _etk_widget_mouse_move_cb(void *data, Evas *evas, Evas_Object *objec
 
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_MOVE_SIGNAL], ETK_OBJECT(widget), NULL, &event);
    
-   if (_etk_widget_propagate_event && widget->parent && etk_object_lookup(ETK_OBJECT(widget)))
+   if (_etk_widget_propagate_event && widget->parent)
       _etk_widget_mouse_move_cb(widget->parent, evas, NULL, event_info);
 }
 
@@ -2043,7 +2042,7 @@ static void _etk_widget_mouse_down_cb(void *data, Evas *evas, Evas_Object *objec
 
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_DOWN_SIGNAL], ETK_OBJECT(widget), NULL, &event);
    
-   if (_etk_widget_propagate_event && widget->repeat_events && widget->parent && etk_object_lookup(ETK_OBJECT(widget)))
+   if (_etk_widget_propagate_event && widget->repeat_events && widget->parent)
       _etk_widget_mouse_down_cb(widget->parent, evas, NULL, event_info);
 }
 
@@ -2081,9 +2080,6 @@ static void _etk_widget_mouse_up_cb(void *data, Evas *evas, Evas_Object *object,
    event.timestamp = evas_event->timestamp;
 
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_UP_SIGNAL], ETK_OBJECT(widget), NULL, &event);
-
-   if(!etk_object_lookup(ETK_OBJECT(widget)))
-     return;
    
    if (evas_event->canvas.x >= widget->geometry.x && evas_event->canvas.x <= widget->geometry.x + widget->geometry.w &&
          evas_event->canvas.y >= widget->geometry.y && evas_event->canvas.y <= widget->geometry.y + widget->geometry.h)
@@ -2118,7 +2114,7 @@ static void _etk_widget_mouse_wheel_cb(void *data, Evas *evas, Evas_Object *obje
 
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_WHEEL_SIGNAL], ETK_OBJECT(widget), NULL, &event);
    
-   if (_etk_widget_propagate_event && widget->parent && etk_object_lookup(ETK_OBJECT(widget)))
+   if (_etk_widget_propagate_event && widget->parent)
       _etk_widget_mouse_wheel_cb(widget->parent, evas, NULL, event_info);
 }
 
@@ -2145,7 +2141,7 @@ static void _etk_widget_key_down_cb(void *data, Evas *evas, Evas_Object *object,
 
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_KEY_DOWN_SIGNAL], ETK_OBJECT(widget), NULL, &event);
    
-   if (_etk_widget_propagate_event && widget->parent && etk_object_lookup(ETK_OBJECT(widget)))
+   if (_etk_widget_propagate_event && widget->parent)
       _etk_widget_key_down_cb(widget->parent, evas, NULL, event_info);
 }
 
@@ -2198,7 +2194,7 @@ static void _etk_widget_key_up_cb(void *data, Evas *evas, Evas_Object *object, v
 
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_KEY_UP_SIGNAL], ETK_OBJECT(widget), NULL, &event);
    
-   if (_etk_widget_propagate_event && widget->parent && etk_object_lookup(ETK_OBJECT(widget)))
+   if (_etk_widget_propagate_event && widget->parent)
       _etk_widget_key_up_cb(widget->parent, evas, NULL, event_info);
 }
 
