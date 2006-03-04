@@ -215,8 +215,8 @@ Ecore_DList *
 evfs_tokenize_uri(char *uri)
 {
    Ecore_DList *tokens = ecore_dlist_new();
-   Ecore_List *reserved = ecore_dlist_new();
-   Ecore_List *plugin = ecore_dlist_new();
+   Ecore_DList *reserved = ecore_dlist_new();
+   Ecore_DList *plugin = ecore_dlist_new();
 
    char *dup_uri = malloc(strlen(uri) + 2);
 
@@ -233,47 +233,50 @@ evfs_tokenize_uri(char *uri)
    int j = 1;
    char c = '1';
    int len = 0;
+   char tagged = 0;
 
    snprintf(dup_uri, strlen(uri) + 1, "%s ", uri);
 
-   ecore_list_append(plugin, "smb");    /*Shift these to register when a plugin registers */
-   ecore_list_append(plugin, "file");
-   ecore_list_append(plugin, "tar");
-   ecore_list_append(plugin, "bzip2");
-   ecore_list_append(plugin, "ftp");
-   ecore_list_append(plugin, "gzip");
-   ecore_list_append(plugin, "sftp");
-   ecore_list_append(plugin, "posix");
+   ecore_dlist_append(plugin, "smb");    /*Shift these to register when a plugin registers */
+   ecore_dlist_append(plugin, "file");
+   ecore_dlist_append(plugin, "tar");
+   ecore_dlist_append(plugin, "bzip2");
+   ecore_dlist_append(plugin, "ftp");
+   ecore_dlist_append(plugin, "gzip");
+   ecore_dlist_append(plugin, "sftp");
+   ecore_dlist_append(plugin, "posix");
 
-   ecore_list_append(reserved, "://");
-   ecore_list_append(reserved, "@");
-   ecore_list_append(reserved, "/");
-   ecore_list_append(reserved, ":");
-   ecore_list_append(reserved, "#");
-   ecore_list_append(reserved, ";");
+   ecore_dlist_append(reserved, "://");
+   ecore_dlist_append(reserved, "@");
+   ecore_dlist_append(reserved, "/");
+   ecore_dlist_append(reserved, ":");
+   ecore_dlist_append(reserved, "#");
+   ecore_dlist_append(reserved, ";");
 
    //printf ("Lexing '%s'\n", dup_uri);
    //printf("Strlen(uri): %d\n", strlen(uri));
 
    while (j <= strlen(dup_uri))
      {
-        new_alpha = isalnum(l_uri[i]) | l_uri[i] == '.';
+	new_alpha = isalnum(l_uri[i]) | l_uri[i] == '.';
+
         len = 0;
+	tagged = 0;
 
         strncpy(tmp_tok, l_uri, 3);
         tmp_tok[3] = '\0';
         //printf("Current token is: '%s'\n", tmp_tok);
 
         /*Check if it's an operator */
-        ecore_list_goto_first(reserved);
-        while ((cmp = ecore_list_next(reserved)))
+        ecore_dlist_goto_first(reserved);
+        while ((cmp = ecore_dlist_next(reserved)))
           {
              if (!strncmp(tmp_tok, cmp, strlen(cmp)))
                {
                   //printf("Found token (operator) %s, added %d to l_uri\n", cmp, strlen(cmp));
                   l_uri += strlen(cmp);
                   len = strlen(cmp);
-                  i = 0;
+		  tagged = 1;
 
                   //printf("L_URI becomes '%s'\n", l_uri);
                   token = NEW(evfs_uri_token);
@@ -291,16 +294,15 @@ evfs_tokenize_uri(char *uri)
         tmp_tok[i] = '\0';
         //printf("Current token (keyword match) is: '%s'\n", tmp_tok);
 
-        ecore_list_goto_first(plugin);
-        while ((cmp = ecore_list_next(plugin)))
+        ecore_dlist_goto_first(plugin);
+        while ((cmp = ecore_dlist_next(plugin)))
           {
              if (!strncmp(tmp_tok, cmp, strlen(cmp)))
                {
                   //printf("Found token (keyword) %s, added %d to l_uri\n", cmp, strlen(cmp));
 
                   l_uri += strlen(cmp);
-                  i = 0;
-                  //printf("L_URI becomes '%s'\n", l_uri);
+		  tagged = 2;
 
                   token = NEW(evfs_uri_token);
                   token->token_s = strdup(cmp);
@@ -323,9 +325,6 @@ evfs_tokenize_uri(char *uri)
 
              tmp_tok[i] = '\0';
 
-             //printf ("Looks like a string..\n");
-             //printf("Found string: '%s', i is %d, j is %d, strlen(dup_uri) is %d\n", tmp_tok,i,j,strlen(dup_uri));
-
              token = NEW(evfs_uri_token);
              token->token_s = strdup(tmp_tok);
              token->type = EVFS_URI_TOKEN_STRING;
@@ -333,18 +332,23 @@ evfs_tokenize_uri(char *uri)
              bzero(tmp_tok, 255);
 
              l_uri += i;
-             i = 0;
+	     tagged = 3;
           }
 
         solid_alpha = new_alpha;
 
       cont_loop:
-        if (!len)
-           j++;
-        else if (len - 1 > 0)
-           j += len - 1;
-        else
-           j += len;
+
+	if (tagged > 0) {
+		if (tagged == 1 || tagged == 2)
+			j += strlen(cmp);
+		else
+			j += i;
+
+		i = 0;
+		
+     	}
+	
         i++;
         //printf("i:J (%d:%d) - %d\n", i,j,strlen(dup_uri));
      }
@@ -356,6 +360,7 @@ evfs_tokenize_uri(char *uri)
     * the case*/
    if (strlen(tmp_tok) > 0)
      {
+	printf("libevfs.c evil - FIXME\n");
         token = NEW(evfs_uri_token);
         token->token_s = strdup(tmp_tok);
         token->type = EVFS_URI_TOKEN_STRING;
