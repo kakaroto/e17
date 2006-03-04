@@ -90,6 +90,7 @@ callback (evfs_event * data, void *obj)
 
 	  }
 	  else {
+		  
 	    file = listener->file;
 	    entropy_free (md5);	/*We don't need this one, we're returning an old ref */
 	    entropy_free (folder);

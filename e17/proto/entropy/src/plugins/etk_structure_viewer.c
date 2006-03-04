@@ -247,9 +247,23 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 		}
          }
          break;
+
+
+	 case ENTROPY_NOTIFY_FILE_REMOVE_DIRECTORY: {
+		entropy_generic_file* file = el;
+		Etk_Tree_Row* row = NULL;
+	
+		row = ecore_hash_get (viewer->row_folder_hash, file);
+		if (row) {
+			etk_tree_row_del(row);
+			ecore_hash_remove(viewer->row_folder_hash, file);
+		}
+		
+	 }
+	 break;
 						     
 	      
-
+	default: break;
   }
 
 }
@@ -302,6 +316,10 @@ entropy_plugin_init (entropy_core * core,
   entropy_core_component_event_register (instance,
 					 entropy_core_gui_event_get
 					 (ENTROPY_GUI_EVENT_FILE_CREATE));
+  entropy_core_component_event_register (instance,
+					 entropy_core_gui_event_get
+					 (ENTROPY_GUI_EVENT_FILE_REMOVE_DIRECTORY));
+  
 
   if (!etk_callback_setup) {
 	  printf("ETK stuff setup! *******\n");
