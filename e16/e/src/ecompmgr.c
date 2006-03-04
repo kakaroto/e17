@@ -96,13 +96,13 @@ typedef struct
    unsigned            fadeout:1;
    Damage              damage;
    Picture             picture;
-   Picture             alphaPict;
+   Picture             pict_alpha;	/* Solid, current opacity */
    XserverRegion       shape;
    XserverRegion       extents;
    XserverRegion       clip;
 #if ENABLE_SHADOWS
-   Picture             shadowPict;
-   Picture             shadow;
+   Picture             shadow_alpha;	/* Solid, sharp * current opacity */
+   Picture             shadow_pict;	/* Blurred shaped shadow */
    int                 shadow_dx;
    int                 shadow_dy;
    int                 shadow_width;
@@ -139,8 +139,13 @@ static struct
       int                 offset_x, offset_y;
       struct
       {
+	 unsigned int        opacity;
 	 int                 radius;
       } blur;
+      struct
+      {
+	 unsigned int        opacity;
+      } sharp;
    } shadows;
    struct
    {
@@ -151,7 +156,7 @@ static struct
    struct
    {
       int                 mode;
-      int                 opacity;
+      unsigned int        opacity;
    } override_redirect;
 } Conf_compmgr;
 
@@ -171,6 +176,10 @@ static struct
    EObj               *eo_first;
    EObj               *eo_last;
    XserverRegion       rgn_screen;
+   int                 shadow_mode;
+   unsigned int        opac_or;	/* 0 -> 0xffffffff */
+   float               opac_blur;	/* 0. -> 1. */
+   float               opac_sharp;	/* 0. -> 1. */
 } Mode_compmgr;
 
 #define _ECM_SET_CLIP_CHANGED()  Mode_compmgr.reorder = 1
@@ -182,6 +191,7 @@ static Picture      rootBuffer;
 static XserverRegion allDamage;
 
 #define OPAQUE          0xffffffff
+#define OP32(op) ((double)(op)/OPAQUE)
 
 #define WINDOW_UNREDIR  0
 #define WINDOW_SOLID    1
@@ -660,8 +670,6 @@ ECompMgrDamageAll(void)
 
 #if ENABLE_SHADOWS
 
-#define SHADOW_OPACITY	0.75
-
 static Picture      blackPicture;
 static Picture      transBlackPicture;
 
@@ -938,14 +946,14 @@ win_extents(EObj * eo)
    r.height = cw->rch;
 
 #if ENABLE_SHADOWS
-   if (eo->shadow && Conf_compmgr.shadows.mode != ECM_SHADOWS_OFF &&
-       (Conf_compmgr.shadows.mode == ECM_SHADOWS_SHARP ||
+   if (eo->shadow && Mode_compmgr.shadow_mode != ECM_SHADOWS_OFF &&
+       (Mode_compmgr.shadow_mode == ECM_SHADOWS_SHARP ||
 	cw->mode != WINDOW_ARGB) &&
-       (Conf_compmgr.shadows.mode != ECM_SHADOWS_BLURRED || !EobjIsShaped(eo)))
+       (Mode_compmgr.shadow_mode != ECM_SHADOWS_BLURRED || !EobjIsShaped(eo)))
      {
 	XRectangle          sr;
 
-	if (Conf_compmgr.shadows.mode == ECM_SHADOWS_SHARP)
+	if (Mode_compmgr.shadow_mode == ECM_SHADOWS_SHARP)
 	  {
 	     cw->shadow_dx = Conf_compmgr.shadows.offset_x;
 	     cw->shadow_dy = Conf_compmgr.shadows.offset_y;
@@ -960,15 +968,16 @@ win_extents(EObj * eo)
 	     cw->shadow_dy =
 		Conf_compmgr.shadows.offset_y -
 		Conf_compmgr.shadows.blur.radius * 5 / 4;
-	     if (!cw->shadow)
+	     if (!cw->shadow_pict)
 	       {
-		  double              opacity = SHADOW_OPACITY;
+		  double              opacity;
 
+		  opacity = Mode_compmgr.opac_blur;
 		  if (cw->mode == WINDOW_TRANS)
-		     opacity *= ((double)cw->opacity) / OPAQUE;
-		  cw->shadow = shadow_picture(opacity, cw->rcw, cw->rch,
-					      &cw->shadow_width,
-					      &cw->shadow_height);
+		     opacity *= OP32(cw->opacity);
+		  cw->shadow_pict = shadow_picture(opacity, cw->rcw, cw->rch,
+						   &cw->shadow_width,
+						   &cw->shadow_height);
 	       }
 	  }
 	sr.x = cw->rcx + cw->shadow_dx;
@@ -1000,13 +1009,13 @@ win_extents(EObj * eo)
       ERegionShow("extents", rgn);
 
 #if 0				/* FIXME - Set picture clip region */
-   if (cw->shadow)
+   if (cw->shadow_pict)
      {
 	XserverRegion       clip;
 
 	clip = ERegionClone(cw->extents);
 	ERegionSubtractOffset(clip, 0, 0, cw->shape);
-	XFixesSetPictureClipRegion(disp, cw->shadow, 0, 0, clip);
+	XFixesSetPictureClipRegion(disp, cw->shadow_pict, 0, 0, clip);
 	ERegionDestroy(clip);
      }
 #endif
@@ -1092,10 +1101,10 @@ ECompMgrWinInvalidate(EObj * eo, int what)
 	cw->picture = None;
      }
 
-   if ((what & INV_OPACITY) && cw->alphaPict != None)
+   if ((what & INV_OPACITY) && cw->pict_alpha != None)
      {
-	XRenderFreePicture(dpy, cw->alphaPict);
-	cw->alphaPict = None;
+	XRenderFreePicture(dpy, cw->pict_alpha);
+	cw->pict_alpha = None;
      }
 
    if ((what & (INV_CLIP | INV_GEOM)) && cw->clip != None)
@@ -1105,16 +1114,17 @@ ECompMgrWinInvalidate(EObj * eo, int what)
      }
 
 #if ENABLE_SHADOWS
-   if ((what & (INV_SIZE | INV_OPACITY | INV_SHADOW)) && cw->shadow != None)
+   if ((what & (INV_SIZE | INV_OPACITY | INV_SHADOW)) &&
+       cw->shadow_pict != None)
      {
-	XRenderFreePicture(dpy, cw->shadow);
-	cw->shadow = None;
+	XRenderFreePicture(dpy, cw->shadow_pict);
+	cw->shadow_pict = None;
 	what |= INV_GEOM;
      }
-   if ((what & (INV_SIZE | INV_OPACITY | INV_SHADOW)) && cw->shadowPict != None)
+   if ((what & (INV_OPACITY | INV_SHADOW)) && cw->shadow_alpha != None)
      {
-	XRenderFreePicture(dpy, cw->shadowPict);
-	cw->shadowPict = None;
+	XRenderFreePicture(dpy, cw->shadow_alpha);
+	cw->shadow_alpha = None;
      }
 #endif
 
@@ -1422,8 +1432,7 @@ ECompMgrWinNew(EObj * eo)
      }
 
    if (eo->type == EOBJ_TYPE_EXT)
-      eo->opacity =
-	 (unsigned int)(Conf_compmgr.override_redirect.opacity << 24);
+      eo->opacity = Mode_compmgr.opac_or;
    if (eo->opacity == 0)
       eo->opacity = 0xFFFFFFFF;
 
@@ -1431,22 +1440,6 @@ ECompMgrWinNew(EObj * eo)
      {
 	ESelectInputAdd(eo->win, VisibilityChangeMask);
      }
-
-   cw->picture = None;
-   cw->pixmap = None;
-
-   cw->alphaPict = None;
-   cw->shape = None;
-   cw->extents = None;
-   cw->clip = None;
-#if ENABLE_SHADOWS
-   cw->shadowPict = None;
-   cw->shadow = None;
-   cw->shadow_dx = 0;
-   cw->shadow_dy = 0;
-   cw->shadow_width = 0;
-   cw->shadow_height = 0;
-#endif
 
    cw->opacity = 0xdeadbeef;
    ECompMgrWinSetOpacity(eo, eo->opacity);
@@ -1671,7 +1664,7 @@ ECompMgrWinDamage(EObj * eo, XEvent * ev __UNUSED__)
 			 eo->x + cw->a.border_width,
 			 eo->y + cw->a.border_width);
 #if 0				/* ENABLE_SHADOWS - FIXME - This is not right, remove? */
-	if (Conf_compmgr.shadows.mode == ECM_SHADOWS_SHARP)
+	if (Mode_compmgr.shadow_mode == ECM_SHADOWS_SHARP)
 	  {
 	     XserverRegion       o;
 
@@ -1683,15 +1676,6 @@ ECompMgrWinDamage(EObj * eo, XEvent * ev __UNUSED__)
 #endif
      }
    ECompMgrDamageMergeObject(eo, parts, 1);
-}
-
-/* Ensure that the blend mask is up to date */
-static void
-ECompMgrCheckAlphaMask(ECmWinInfo * cw)
-{
-   if (cw->opacity != OPAQUE && !cw->alphaPict)
-      cw->alphaPict = EPictureCreateSolid(False, (double)cw->opacity / OPAQUE,
-					  0., 0., 0.);
 }
 
 static void
@@ -1883,6 +1867,7 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
    ECmWinInfo         *cw;
    Desk               *dsk = eo->desk;
    int                 x, y;
+   Picture             alpha;
 
    cw = eo->cmhook;
 
@@ -1940,10 +1925,12 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	     if (EventDebug(EDBUG_TYPE_COMPMGR2))
 		ECompMgrWinDumpInfo("ECompMgrRepaintObj trans", eo, clip, 0);
 	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, clip);
-	     ECompMgrCheckAlphaMask(cw);
-	     XRenderComposite(dpy, PictOpOver, cw->picture, cw->alphaPict, pbuf,
-			      0, 0, 0, 0, x + cw->rcx, y + cw->rcy, cw->rcw,
-			      cw->rch);
+	     if (cw->opacity != OPAQUE && !cw->pict_alpha)
+		cw->pict_alpha =
+		   EPictureCreateSolid(False, OP32(cw->opacity), 0., 0., 0.);
+	     XRenderComposite(dpy, PictOpOver, cw->picture, cw->pict_alpha,
+			      pbuf, 0, 0, 0, 0, x + cw->rcx, y + cw->rcy,
+			      cw->rcw, cw->rch);
 	     break;
 	  }
 
@@ -1951,21 +1938,21 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	if (!eo->shadow)
 	   return;
 
-	switch (Conf_compmgr.shadows.mode)
+	switch (Mode_compmgr.shadow_mode)
 	  {
 	  case ECM_SHADOWS_OFF:
 	     break;
 
 	  case ECM_SHADOWS_SHARP:
-	     if (cw->opacity != OPAQUE && !cw->shadowPict)
-		cw->shadowPict = EPictureCreateSolid(True,
-						     (double)cw->opacity /
-						     OPAQUE * 0.3, 0., 0., 0.);
+	     if (cw->opacity != OPAQUE && !cw->shadow_alpha)
+		cw->shadow_alpha =
+		   EPictureCreateSolid(True,
+				       OP32(cw->opacity) *
+				       Mode_compmgr.opac_sharp, 0., 0., 0.);
+	     alpha = cw->shadow_alpha ? cw->shadow_alpha : transBlackPicture;
 	     ERegionSubtractOffset(clip, x, y, cw->shape);
 	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, clip);
-	     XRenderComposite(dpy, PictOpOver,
-			      cw->shadowPict ? cw->
-			      shadowPict : transBlackPicture, cw->picture, pbuf,
+	     XRenderComposite(dpy, PictOpOver, alpha, cw->picture, pbuf,
 			      0, 0, 0, 0,
 			      x + cw->rcx + cw->shadow_dx,
 			      y + cw->rcy + cw->shadow_dy,
@@ -1973,13 +1960,13 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	     break;
 
 	  case ECM_SHADOWS_BLURRED:
-	     if (cw->shadow == None)
+	     if (cw->shadow_pict == None)
 		break;
 
 	     ERegionSubtractOffset(clip, x, y, cw->shape);
 	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, clip);
-	     XRenderComposite(dpy, PictOpOver, blackPicture, cw->shadow, pbuf,
-			      0, 0, 0, 0,
+	     XRenderComposite(dpy, PictOpOver, blackPicture, cw->shadow_pict,
+			      pbuf, 0, 0, 0, 0,
 			      x + cw->rcx + cw->shadow_dx,
 			      y + cw->rcy + cw->shadow_dy,
 			      cw->shadow_width, cw->shadow_height);
@@ -2128,8 +2115,21 @@ ECompMgrRootExpose(void *prm __UNUSED__, XEvent * ev)
 static void
 ECompMgrShadowsInit(int mode, int cleanup)
 {
+   Mode_compmgr.shadow_mode = mode;
+
+   if (Conf_compmgr.shadows.blur.opacity > 100)
+      Conf_compmgr.shadows.blur.opacity = 100;
+   Mode_compmgr.opac_blur = .01 * Conf_compmgr.shadows.blur.opacity;
+   if (Conf_compmgr.shadows.sharp.opacity > 100)
+      Conf_compmgr.shadows.sharp.opacity = 100;
+   Mode_compmgr.opac_sharp = .01 * Conf_compmgr.shadows.sharp.opacity;
+
    if (mode == ECM_SHADOWS_BLURRED)
-      gaussianMap = make_gaussian_map((double)Conf_compmgr.shadows.blur.radius);
+     {
+	if (!gaussianMap)
+	   gaussianMap =
+	      make_gaussian_map((double)Conf_compmgr.shadows.blur.radius);
+     }
    else
      {
 	if (gaussianMap)
@@ -2138,7 +2138,10 @@ ECompMgrShadowsInit(int mode, int cleanup)
      }
 
    if (mode != ECM_SHADOWS_OFF)
-      blackPicture = EPictureCreateSolid(True, 1., 0., 0., 0.);
+     {
+	if (blackPicture == None)
+	   blackPicture = EPictureCreateSolid(True, 1., 0., 0., 0.);
+     }
    else
      {
 	if (blackPicture)
@@ -2147,7 +2150,11 @@ ECompMgrShadowsInit(int mode, int cleanup)
      }
 
    if (mode == ECM_SHADOWS_SHARP)
-      transBlackPicture = EPictureCreateSolid(True, 0.3, 0., 0., 0.);
+     {
+	if (transBlackPicture == None)
+	   transBlackPicture =
+	      EPictureCreateSolid(True, Mode_compmgr.opac_sharp, 0., 0., 0.);
+     }
    else
      {
 	if (transBlackPicture)
@@ -2187,7 +2194,13 @@ ECompMgrStart(void)
       return;
    Conf_compmgr.enable = Mode_compmgr.active = 1;
 
-   EGrabServer();
+   if (Conf_compmgr.override_redirect.opacity > 255)
+      Conf_compmgr.override_redirect.opacity = 100;
+   else if (Conf_compmgr.override_redirect.opacity > 100)	/* Fixup - Remove */
+      Conf_compmgr.override_redirect.opacity =
+	 (Conf_compmgr.override_redirect.opacity * 100) / 255;
+   Mode_compmgr.opac_or =
+      ((Conf_compmgr.override_redirect.opacity * 255) / 100) << 24;
 
    pa.subwindow_mode = IncludeInferiors;
    pictfmt = XRenderFindVisualFormat(disp, VRoot.vis);
@@ -2195,6 +2208,8 @@ ECompMgrStart(void)
       XRenderCreatePicture(disp, VRoot.win, pictfmt, CPSubwindowMode, &pa);
 
    ECompMgrShadowsInit(Conf_compmgr.shadows.mode, 0);
+
+   EGrabServer();
 
    switch (Conf_compmgr.mode)
      {
@@ -2491,7 +2506,7 @@ ECompMgrHandleRootEvent(XEvent * ev, void *prm)
 
 #if USE_DESK_EXPOSE		/* FIXME - Remove? */
      case Expose:
-	if (Conf_compmgr.shadows.mode != ECM_SHADOWS_OFF)
+	if (Mode_compmgr.shadow_mode != ECM_SHADOWS_OFF)
 	   ECompMgrRootExpose(prm, ev);
 	break;
 #endif
@@ -2633,13 +2648,15 @@ static const CfgItem CompMgrCfgItems[] = {
    CFG_ITEM_INT(Conf_compmgr, shadows.offset_x, 3),
    CFG_ITEM_INT(Conf_compmgr, shadows.offset_y, 5),
    CFG_ITEM_INT(Conf_compmgr, shadows.blur.radius, 5),
+   CFG_ITEM_INT(Conf_compmgr, shadows.blur.opacity, 75),
+   CFG_ITEM_INT(Conf_compmgr, shadows.sharp.opacity, 30),
    CFG_ITEM_BOOL(Conf_compmgr, resize_fix_enable, 0),
    CFG_ITEM_BOOL(Conf_compmgr, use_name_pixmap, 0),
    CFG_ITEM_BOOL(Conf_compmgr, fading.enable, 1),
    CFG_ITEM_INT(Conf_compmgr, fading.dt_us, 10000),
    CFG_ITEM_INT(Conf_compmgr, fading.step, 0x10000000),
    CFG_ITEM_INT(Conf_compmgr, override_redirect.mode, 1),
-   CFG_ITEM_INT(Conf_compmgr, override_redirect.opacity, 240),
+   CFG_ITEM_INT(Conf_compmgr, override_redirect.opacity, 90),
 };
 #define N_CFG_ITEMS (sizeof(CompMgrCfgItems)/sizeof(CfgItem))
 
