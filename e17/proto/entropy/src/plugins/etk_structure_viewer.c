@@ -229,33 +229,22 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
          case ENTROPY_NOTIFY_FILE_CREATE:{
 						 
 		entropy_generic_file* file = el;
-		char* md5;
-		char* tmp;
-		char* pos;
+		entropy_generic_file* parent_file = NULL;
 		Etk_Tree_Row* row = NULL;
-		entropy_file_listener* listen;
 
-		/*First get the md5sum of the file that will be this file's parent folder...*/
-		tmp = strdup(file->path);
-		pos = strrchr(tmp, '/');
-		*pos = '\0';
-		
-		md5 = md5_entropy_path_file(file->uri_base, tmp, pos+1);
-		listen = entropy_core_file_cache_retrieve(md5);
-		
+		parent_file = entropy_core_parent_folder_file_get(file);
+
 		/*If we have a parent file..*/
-		if (listen && (listen->file->filetype == FILE_FOLDER || 
+		if (parent_file && (file->filetype == FILE_FOLDER || 
 			(entropy_core_descent_for_mime_get (comp->core,
-						 listen->file->mime_type)))) {
+						 file->mime_type)))) {
 			
-			row = ecore_hash_get (viewer->row_folder_hash, listen->file);
+			row = ecore_hash_get (viewer->row_folder_hash, parent_file);
 			if (row) {
 			      entropy_core_file_cache_add_reference (file->md5);
 			      structure_viewer_add_row (comp, file, row);
 			}
 		}
-
-		free(tmp);
          }
          break;
 						     

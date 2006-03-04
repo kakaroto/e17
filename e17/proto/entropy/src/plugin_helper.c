@@ -142,4 +142,6 @@ int entropy_plugin_filesystem_file_copy(entropy_generic_file* source, char* dest
 
   (*copy_func) (source, dest,
 		  instance);
+
+  return 1;
 }

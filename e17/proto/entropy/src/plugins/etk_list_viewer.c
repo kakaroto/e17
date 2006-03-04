@@ -32,6 +32,8 @@ struct entropy_etk_file_list_viewer
   Etk_Widget *last_selected_label;
 
   Etk_Widget* popup;
+
+  entropy_generic_file* current_folder;
 };
 
 typedef struct event_file_core event_file_core;
@@ -531,6 +533,11 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 	  case ENTROPY_NOTIFY_FILELIST_REQUEST:{
 	      entropy_generic_file *file;
 
+	      entropy_generic_file *event_file =
+		((entropy_file_request *) eevent->data)->file;
+
+	      viewer->current_folder = event_file;
+
 	      gui_object_destroy_and_free(comp, viewer->gui_hash);
 
 
@@ -629,8 +636,13 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
     break;
 
      case ENTROPY_NOTIFY_FILE_CREATE:{
-      //printf ("Received file create event at icon viewer for file %s \n", ((entropy_generic_file*)ret)->filename);
-      list_viewer_add_row (comp, (entropy_generic_file *) el);				      
+      entropy_generic_file* file = el;
+      
+      /*Check that this file is the current dir we are displaying*/
+      entropy_generic_file* parent_folder = entropy_core_parent_folder_file_get(file);
+      if (parent_folder && parent_folder == viewer->current_folder) {
+	      list_viewer_add_row (comp, file);				      
+      }
      }
      break;	  
 

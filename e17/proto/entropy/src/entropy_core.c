@@ -1411,6 +1411,32 @@ void entropy_log(char* message, const int level) {
 }
 
 
+entropy_generic_file* entropy_core_parent_folder_file_get(entropy_generic_file* file) 
+{
+	char* md5;
+	char* tmp;
+	char* pos;
+	entropy_file_listener* listen;
+	entropy_generic_file* return_file = NULL;
+
+	/*First get the md5sum of the file that will be this file's parent folder...*/
+	tmp = strdup(file->path);
+	pos = strrchr(tmp, '/');
+	*pos = '\0';
+		
+	md5 = md5_entropy_path_file(file->uri_base, tmp, pos+1);
+	listen = entropy_core_file_cache_retrieve(md5);
+		
+	if (listen) {
+		return_file = listen->file;
+	}
+	free(tmp);
+	free(md5);
+
+	return return_file;
+
+}
+
 char* entropy_core_generic_file_uri_create (entropy_generic_file* file, int drill_down) {
 	entropy_generic_file* source_file;
 	char* uri = malloc(PATH_MAX);
