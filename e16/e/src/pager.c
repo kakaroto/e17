@@ -26,6 +26,7 @@
 #include "desktops.h"
 #include "dialog.h"
 #include "e16-ecore_list.h"
+#include "ecompmgr.h"
 #include "emodule.h"
 #include "ewins.h"
 #include "groups.h"
@@ -1109,6 +1110,8 @@ PagerZoomChange(Pager * p, int delta)
 
    if (delta > 0)
      {
+	if (!ECompMgrIsActive() && Mode_pagers.zoom >= 2)
+	   return;
 	if (Mode_pagers.zoom >= 8)
 	   return;
 	Mode_pagers.zoom++;
