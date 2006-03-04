@@ -512,7 +512,7 @@ _wlan_face_update_values(void *data)
    if (!found_dev)
      return 1;
 
-   wlan_value = (100 - wlan_level - wlan_noise);
+   wlan_value = -(100 - wlan_level - wlan_noise);
    if (wlan_level == 0)
      wlan_value = 0;
    
