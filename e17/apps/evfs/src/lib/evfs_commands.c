@@ -15,6 +15,7 @@ evfs_monitor_add(evfs_connection * conn, evfs_filereference * ref)
    evfs_write_command(conn, command);
 
    free(command);
+   free(command->file_command.files);
 }
 
 void
@@ -30,6 +31,7 @@ evfs_monitor_remove(evfs_connection * conn, evfs_filereference * ref)
    evfs_write_command(conn, command);
 
    free(command);
+   free(command->file_command.files);
 }
 
 void

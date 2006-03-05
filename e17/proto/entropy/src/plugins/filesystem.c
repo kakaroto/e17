@@ -51,6 +51,9 @@ callback (evfs_event * data, void *obj)
       //printf("DEMO: For file: '%s'\n", (char*)data->file_monitor.filename);
       //printf("DEMO: Directory '%s\n", folder);
       //printf("DEMO: Plugin: '%s'\n", (char*)data->file_monitor.plugin);
+      //
+
+      printf("Got a monitor event for folder '%s'..\n", folder);
 
 
       watchers = ecore_hash_keys (folder_monitor_hash);
@@ -62,6 +65,9 @@ callback (evfs_event * data, void *obj)
 	     folder)) {
 	  char *md5 = md5_entropy_path_file (data->file_monitor.plugin, folder, pos + 1);
 	  entropy_file_listener *listener;
+
+
+	  printf("Creating event for instance/layout %p..\n", key);
 
 
 	  entropy_generic_file *file;
@@ -128,6 +134,8 @@ callback (evfs_event * data, void *obj)
 
 	  }
 
+	  printf("Dispatching create event for '%s' to %p\n", file->filename, key);
+	  
 	  gui_event->data = file;
 	  entropy_core_layout_notify_event (key, gui_event,
 					    ENTROPY_EVENT_LOCAL);
@@ -459,7 +467,8 @@ callback (evfs_event * data, void *obj)
 /*Internal functions*/
 void
 filesystem_monitor_directory (void *requester, evfs_file_uri_path * folder)
-{
+{ 
+  printf("Monitoring '%s' for '%p'\n", folder->files[0]->path, requester);
   ecore_hash_set (folder_monitor_hash, requester, folder);
 }
 
@@ -468,9 +477,32 @@ filesystem_demonitor_directory (void *requester)
 {
   /*We assume we only monitor one dir at a time, per requester */
   evfs_file_uri_path *dir = ecore_hash_get (folder_monitor_hash, requester);
+  Ecore_List* keys;
+  entropy_gui_component_instance* key;
+  evfs_file_uri_path* compare;
+  int found = 0;
+  
   if (dir) {
-    //fprintf(stderr, "Demonitoring '%s'\n", dir->files[0]->path);
-    evfs_monitor_remove (con, dir->files[0]);
+    ecore_hash_remove(folder_monitor_hash, requester);
+   	  
+    //fprintf(stderr, "Demonitoring '%s' for '%p'...\n", dir->files[0]->path, requester);
+
+    /*Now check if anyone else is monitoring this dir - if not, remove the evfs listener*/
+    keys = ecore_hash_keys(folder_monitor_hash);  
+    while ( (key = ecore_list_remove_first(keys))) {
+	    compare = ecore_hash_get(folder_monitor_hash, key);
+	    if (compare && evfs_filereference_equal_is(dir->files[0], compare->files[0]))
+		    found = 1;
+    }
+    
+    if (!found) {
+	    //printf("Removing last watcher on directory!\n");
+	    evfs_monitor_remove (con, dir->files[0]);
+    } else {
+	    //printf("More watchers on directory!\n");
+    }
+
+    evfs_cleanup_file_uri_path(dir);
   }
   else {
     //fprintf(stderr, "This requester has no monitored directories\n");

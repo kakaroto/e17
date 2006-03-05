@@ -640,6 +640,13 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
       
       /*Check that this file is the current dir we are displaying*/
       entropy_generic_file* parent_folder = entropy_core_parent_folder_file_get(file);
+
+      printf("At list viewer, Parent folder is: %p : Current folder: %p\n", parent_folder, viewer->current_folder);
+      if (parent_folder) {
+	      printf("Parent folder string: %s/%s : Current folder: %s/%s", parent_folder->path, parent_folder->filename,
+			      viewer->current_folder->path, viewer->current_folder->filename);
+      }
+      
       if (parent_folder && parent_folder == viewer->current_folder) {
 	      list_viewer_add_row (comp, file);				      
       }

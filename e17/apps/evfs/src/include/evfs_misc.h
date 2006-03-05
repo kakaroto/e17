@@ -39,4 +39,6 @@ void evfs_handle_monitor_start_command(evfs_client * client,
 unsigned long evfs_server_get_next_id(evfs_server * serve);
 char *evfs_filereference_to_string(evfs_filereference * ref);
 
+int evfs_filereference_equal_is(evfs_filereference* file1, evfs_filereference* file2);
+
 #endif

@@ -38,3 +38,23 @@ evfs_file_list_sort(Ecore_List * file_list)
 
    return file_list;
 }
+
+
+int evfs_filereference_equal_is(evfs_filereference* file1, evfs_filereference* file2)
+{
+	int equal = 1;
+	evfs_filereference* p1 = file1;
+	evfs_filereference* p2 = file2;
+	
+	if (strcmp(file1->path, file2->path) || strcmp(file1->plugin_uri, file2->plugin_uri))
+		equal = 0;
+
+	if (equal) {
+		if ( (file1->parent && !file2->parent)  || (file2->parent && !file1->parent))
+			equal = 0;
+		else if (file1 ->parent && file2->parent)
+			equal = evfs_filereference_equal_is(file1->parent, file2->parent);
+	}
+
+	return equal;
+}

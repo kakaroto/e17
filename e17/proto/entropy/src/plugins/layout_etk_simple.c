@@ -196,6 +196,9 @@ void layout_etk_simple_add_header(entropy_gui_component_instance* instance, char
   /*Parse the file from the URI*/
    file = entropy_core_parse_uri (uri);
 
+   printf("Object for %s/%s is %p....\n", file->path, file->filename, file);
+   
+
    /*This will be moved to a central function. TODO*/
    if (!strcmp(file->uri_base, "file"))
 	   icon_string = PACKAGE_DATA_DIR "/icons/local-system.jpg";

@@ -994,9 +994,12 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_CREATE)) {
 		entropy_notify_event* ev = entropy_notify_event_new();
 		ev->event_type = ENTROPY_NOTIFY_FILE_CREATE;
+	
+		printf("Create event at notify_event\n");
 		
 		ecore_list_goto_first(el);
 		while ( (iter = ecore_list_next(el)) ) {
+			printf ("Notifying %p of create event\n", iter);
 			if (iter->active) (*iter->plugin->gui_event_callback_p)
 				(ev, 
 				 iter, 
@@ -1346,7 +1349,9 @@ entropy_generic_file* entropy_core_parse_uri(char* uri) {
 	entropy_file_listener* listener;
 
 	/*If we already have this file made, don't remake it..*/
+	/*printf("Looking for file with uri: %s...\n", uri);*/
 	if ( (file = entropy_core_uri_generic_file_retrieve(uri))) {
+		/*printf("Found %p!, returning...\n", file);*/
 		return file;
 	}
 
