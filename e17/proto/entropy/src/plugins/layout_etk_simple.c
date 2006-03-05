@@ -36,14 +36,21 @@ typedef enum _Etk_Menu_Item_Type
 
 void layout_etk_simple_add_header(entropy_gui_component_instance* instance, char* name, char* uri);
 
+
+void layout_etk_simple_quit(entropy_core* core)
+{
+  entropy_core_destroy (core);
+  etk_main_quit ();
+}
+
 static Etk_Bool
 _etk_window_deleted_cb (Etk_Object * object, void *data)
 {
   entropy_core *core = (entropy_core *) data;
 
-  entropy_core_destroy (core);
-  etk_main_quit ();
-  exit (0);
+  layout_etk_simple_quit(core);
+
+  return ETK_TRUE;
 }
 
 void
@@ -77,10 +84,10 @@ static Etk_Widget *_entropy_etk_menu_item_new(Etk_Menu_Item_Type item_type, cons
    switch (item_type)
    {
       case ETK_MENU_ITEM_NORMAL:
-         menu_item = etk_menu_item_new_with_label(label);
+         menu_item = etk_menu_item_image_new_with_label(label);
          break;
       case ETK_MENU_ITEM_SEPARATOR:
-         menu_item = etk_menu_separator_new();
+         menu_item = etk_menu_item_separator_new();
          break;
       default:
          return NULL;
@@ -90,7 +97,7 @@ static Etk_Widget *_entropy_etk_menu_item_new(Etk_Menu_Item_Type item_type, cons
       Etk_Widget *image;
       
       image = etk_image_new_from_stock(stock_id, ETK_STOCK_SMALL);
-      etk_menu_item_image_set(ETK_MENU_ITEM(menu_item), ETK_IMAGE(image));
+      etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
    }
    etk_menu_shell_append(menu_shell, ETK_MENU_ITEM(menu_item));
    
@@ -133,6 +140,14 @@ entropy_plugin_layout_main ()
   etk_main ();
 }
 
+void etk_layout_simple_exit_cb(Etk_Object* obj, void* data)
+{
+	entropy_gui_component_instance* instance = data;
+
+	layout_etk_simple_quit(instance->core);
+}
+
+
 void etk_mime_dialog_cb(Etk_Object* obj, void* data)
 {
 	etk_mime_dialog_create();
@@ -142,6 +157,24 @@ void _location_add_cb(Etk_Object *obj, void *data)
 {
 	printf("Add location\n");
 	etk_location_add_dialog_create((entropy_gui_component_instance*)data, layout_etk_simple_add_header);
+}
+
+
+void
+_entropy_etk_layout_key_down_cb(Etk_Object *object, void *event, void *data)
+{
+   Etk_Event_Key_Up_Down *ev;
+   entropy_gui_component_instance* instance = data;
+
+   ev = event;
+
+   if(evas_key_modifier_is_set(ev->modifiers, "Control"))
+   {
+	   if (!strcmp(ev->key, "q"))
+	   {
+		   layout_etk_simple_quit(instance->core);
+	   }
+   }
 }
 
 void layout_etk_simple_add_header(entropy_gui_component_instance* instance, char* name, char* uri)
@@ -230,6 +263,8 @@ entropy_plugin_layout_create (entropy_core * core)
 
   /*Etk related init */
   window = etk_window_new ();
+  etk_signal_connect("key_down", ETK_OBJECT(window), ETK_CALLBACK(_entropy_etk_layout_key_down_cb), layout);
+  
   gui->paned = etk_hpaned_new();
 
   etk_signal_connect ("delete_event", ETK_OBJECT (window),
@@ -246,7 +281,8 @@ entropy_plugin_layout_create (entropy_core * core)
   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("File"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menubar), NULL);
   menu = etk_menu_new();
   etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));
-  _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Exit"), ETK_STOCK_SYSTEM_SHUTDOWN, ETK_MENU_SHELL(menu), NULL);
+  menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Exit"), ETK_STOCK_SYSTEM_SHUTDOWN, ETK_MENU_SHELL(menu), NULL);
+  etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(etk_layout_simple_exit_cb), layout);
   
   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Edit"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menubar), NULL);
   menu = etk_menu_new();

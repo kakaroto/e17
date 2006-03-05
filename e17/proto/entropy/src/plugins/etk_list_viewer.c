@@ -101,10 +101,10 @@ static Etk_Widget *_entropy_etk_menu_item_new(Etk_Menu_Item_Type item_type, cons
    switch (item_type)
    {
       case ETK_MENU_ITEM_NORMAL:
-         menu_item = etk_menu_item_new_with_label(label);
+         menu_item = etk_menu_item_image_new_with_label(label);
          break;
       case ETK_MENU_ITEM_SEPARATOR:
-         menu_item = etk_menu_separator_new();
+         menu_item = etk_menu_item_separator_new();
          break;
       default:
          return NULL;
