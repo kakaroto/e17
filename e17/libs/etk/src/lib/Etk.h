@@ -68,5 +68,6 @@
 #include "etk_selection.h"
 #include "etk_drag.h"
 #include "etk_argument.h"
+#include "etk_tooltips.h"
 
 #endif

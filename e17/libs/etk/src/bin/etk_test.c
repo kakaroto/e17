@@ -128,6 +128,7 @@ int main(int argc, char *argv[])
       return 0;
    };
 
+   etk_tooltips_enable();
    _etk_test_main_window();
    etk_main();
    etk_shutdown();

@@ -78,7 +78,7 @@ Etk_Bool etk_init()
       return ETK_FALSE;
    }
    etk_theme_init();
-
+   etk_tooltips_init();
    /* Gettext */
    setlocale(LC_ALL, "");
    bindtextdomain(PACKAGE, LOCALEDIR);
@@ -100,6 +100,7 @@ void etk_shutdown()
    etk_signal_shutdown();
    etk_type_shutdown();
    etk_theme_shutdown();
+   etk_tooltips_shutdown();
    etk_dnd_shutdown();
    edje_shutdown();
    ecore_evas_shutdown();
