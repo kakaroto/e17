@@ -10,6 +10,9 @@
 
 //This is here mostly as a demo of the "widget library independence" of entropy, but is on hold
 //for the moment until ETK supports more widgets that we need
+//
+
+static int _etk_layout_window_count = 0;
 
 typedef struct entropy_layout_gui entropy_layout_gui;
 struct entropy_layout_gui
@@ -46,9 +49,18 @@ void layout_etk_simple_quit(entropy_core* core)
 static Etk_Bool
 _etk_window_deleted_cb (Etk_Object * object, void *data)
 {
-  entropy_core *core = (entropy_core *) data;
+  entropy_gui_component_instance* instance = data;
+	
+  /*Decrement window reference counter*/
+  _etk_layout_window_count--;
 
-  layout_etk_simple_quit(core);
+  /*TODO - destroy this layout object, and deregister for events*/
+
+  etk_object_destroy(ETK_OBJECT(instance->gui_object));
+  
+  if (_etk_layout_window_count == 0) {
+	  layout_etk_simple_quit(instance->core);
+  }
 
   return ETK_TRUE;
 }
@@ -266,12 +278,13 @@ entropy_plugin_layout_create (entropy_core * core)
 
   /*Etk related init */
   window = etk_window_new ();
+  layout->gui_object = window;
   etk_signal_connect("key_down", ETK_OBJECT(window), ETK_CALLBACK(_entropy_etk_layout_key_down_cb), layout);
   
   gui->paned = etk_hpaned_new();
 
   etk_signal_connect ("delete_event", ETK_OBJECT (window),
-		      ETK_CALLBACK (_etk_window_deleted_cb), core);
+		      ETK_CALLBACK (_etk_window_deleted_cb), layout);
 
   etk_window_title_set(ETK_WINDOW(window), "Entropy");
   etk_window_wmclass_set(ETK_WINDOW(window), "entropy", "Entropy");
@@ -400,6 +413,9 @@ entropy_plugin_layout_create (entropy_core * core)
   etk_box_pack_start(ETK_BOX(gui->statusbar_box), gui->statusbars[2], ETK_TRUE, ETK_TRUE, 0);
      
   etk_widget_show_all (window);
+
+  /*Increment the window counter*/
+  _etk_layout_window_count++;
 
   return layout;
 }
