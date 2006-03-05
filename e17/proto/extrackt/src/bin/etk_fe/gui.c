@@ -226,10 +226,10 @@ _etk_fe_gui_menu_item_new(E_Gui_Menu_Item_Type item_type, const char *label,
    switch (item_type)
      {
       case E_GUI_MENU_ITEM_NORMAL:
-	menu_item = etk_menu_item_new_with_label(label);
+	menu_item = etk_menu_item_image_new_with_label(label);
 	break;
       case E_GUI_MENU_ITEM_SEPERATOR:
-	menu_item = etk_menu_separator_new();
+	menu_item = etk_menu_item_separator_new();
 	break;
       default:
 	return NULL;
@@ -662,7 +662,7 @@ _etk_fe_config_load(E_Gui_Etk *gui)
 	for(l = gui->ex->config.rippers; l; l=l->next)
 	  {
 	     ecx = (Ex_Config_Exe *)l->data;
-	     _etk_fe_gui_menu_item_new(E_GUI_MENU_ITEM_NORMAL, _(ecx->name), ETK_MENU_SHELL(gui->ripper_menu), _etk_fe_gui_ripper_select_cb, gui);
+	     _etk_fe_gui_menu_item_new(E_GUI_MENU_ITEM_NORMAL, _(ecx->name), ETK_MENU_SHELL(gui->ripper_menu), ETK_CALLBACK(_etk_fe_gui_ripper_select_cb), gui);
 	  }
 	/* FIXME we should save the last selected 
 	 * fill the values for the first */

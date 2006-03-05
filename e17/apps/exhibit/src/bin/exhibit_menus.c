@@ -26,10 +26,10 @@ _ex_menu_item_new(Ex_Menu_Item_Type item_type, const char *label,
    switch (item_type)
      {
       case EX_MENU_ITEM_NORMAL:
-	menu_item = etk_menu_item_new_with_label(label);
+	menu_item = etk_menu_item_image_new_with_label(label);
 	break;
       case EX_MENU_ITEM_SEPERATOR:
-	menu_item = etk_menu_separator_new();
+	menu_item = etk_menu_item_separator_new();
 	break;
       default:
 	return NULL;
@@ -40,7 +40,7 @@ _ex_menu_item_new(Ex_Menu_Item_Type item_type, const char *label,
 	Etk_Widget *image;
 
 	image = etk_image_new_from_stock(stock_id, ETK_STOCK_SMALL);
-	etk_menu_item_image_set(ETK_MENU_ITEM(menu_item), ETK_IMAGE(image));
+	etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
      }
    else if (stock_id < ETK_STOCK_NO_STOCK)
      {	
@@ -52,7 +52,7 @@ _ex_menu_item_new(Ex_Menu_Item_Type item_type, const char *label,
 	     image = etk_image_new_from_edje(PACKAGE_DATA_DIR
 					     "/images/images.edj",
 					     ex_images[stock_id]);
-	     etk_menu_item_image_set(ETK_MENU_ITEM(menu_item), ETK_IMAGE(image));
+	     etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
 	  }
      }
    etk_menu_shell_append(menu_shell, ETK_MENU_ITEM(menu_item));

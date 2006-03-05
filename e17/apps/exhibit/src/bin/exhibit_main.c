@@ -732,7 +732,7 @@ _ex_main_window_show(char *dir)
    Ex_Tab  *tab;
    char    *file;
    char    *homedir;
-   char   **dnd_types;
+   const char **dnd_types;
    int      dnd_types_num;
    
    e = calloc(1, sizeof(Exhibit));

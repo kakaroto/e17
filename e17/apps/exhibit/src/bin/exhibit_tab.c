@@ -103,7 +103,7 @@ static void _ex_tab_tree_drag_begin_cb(Etk_Object *object, void *data)
    Ex_Tab       *tab;
    Etk_Tree     *tree;
    Etk_Tree_Row *row;
-   Etk_Drag     *drag;
+   Etk_Widget   *drag;
    Etk_Widget   *image;
    Evas_List    *rows;
    char *icol1_string;   
@@ -137,7 +137,7 @@ static void _ex_tab_tree_drag_begin_cb(Etk_Object *object, void *data)
 	drag_data = calloc(PATH_MAX * evas_list_count(rows), sizeof(char));
 	for(ll = rows; ll; ll = ll->next)
 	  {
-	     char *tmp[PATH_MAX];
+	     char tmp[PATH_MAX];
 	     
 	     row = ll->data;
 	     etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), &icol1_string, &icol2_string, etk_tree_nth_col_get(tree, 1),NULL);
@@ -176,6 +176,6 @@ static void _ex_tab_tree_drag_begin_cb(Etk_Object *object, void *data)
 	etk_container_add(ETK_CONTAINER(drag), image);	
      }
    
-   etk_drag_types_set(drag, types, num_types);
-   etk_drag_data_set(drag, drag_data, strlen(drag_data) + 1);
+   etk_drag_types_set(ETK_DRAG(drag), types, num_types);
+   etk_drag_data_set(ETK_DRAG(drag), drag_data, strlen(drag_data) + 1);
 }
