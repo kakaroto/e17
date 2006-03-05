@@ -59,6 +59,9 @@ callback (evfs_event * data, void *obj)
       watchers = ecore_hash_keys (folder_monitor_hash);
       ecore_list_goto_first (watchers);
       while ((key = ecore_list_next (watchers))) {
+	printf("Scanning watcher... %s:%s\n", ((evfs_file_uri_path *)
+	      ecore_hash_get (folder_monitor_hash, key))->files[0]->path, folder );
+	      
 	if (!strcmp
 	    (((evfs_file_uri_path *)
 	      ecore_hash_get (folder_monitor_hash, key))->files[0]->path,
@@ -91,15 +94,11 @@ callback (evfs_event * data, void *obj)
 	    listener->file = file;
 	    listener->count = 0;
 	    entropy_core_file_cache_add (md5, listener);
-
-	    entropy_free (folder);
-
 	  }
 	  else {
 		  
 	    file = listener->file;
 	    entropy_free (md5);	/*We don't need this one, we're returning an old ref */
-	    entropy_free (folder);
 	  }
 
 
@@ -141,6 +140,8 @@ callback (evfs_event * data, void *obj)
 					    ENTROPY_EVENT_LOCAL);
 	}
       }
+
+      entropy_free (folder);
     }
     break;
 
