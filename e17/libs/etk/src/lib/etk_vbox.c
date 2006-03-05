@@ -138,7 +138,6 @@ static void _etk_vbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    int num_children_to_expand = 0, i;
    float start_offset = 0, end_offset = 0;
 
-   /* Fixme: correctly and fix hbox too */
    if ((!(vbox = ETK_VBOX(widget))))
       return;
 
@@ -146,7 +145,7 @@ static void _etk_vbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    widget = ETK_WIDGET(vbox);
    container = ETK_CONTAINER(vbox);
 
-   etk_widget_size_request(widget, &requested_inner_size);
+   _etk_vbox_size_request(widget, &requested_inner_size);
    requested_inner_size.w -= 2 * container->border_width;
    requested_inner_size.h -= 2 * container->border_width;
    allocated_inner_size.w = geometry.w - 2 * container->border_width;

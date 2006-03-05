@@ -145,7 +145,7 @@ static void _etk_hbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    widget = ETK_WIDGET(hbox);
    container = ETK_CONTAINER(hbox);
 
-   etk_widget_size_request(widget, &requested_inner_size);
+   _etk_hbox_size_request(widget, &requested_inner_size);
    requested_inner_size.w -= 2 * container->border_width;
    requested_inner_size.h -= 2 * container->border_width;
    allocated_inner_size.w = geometry.w - 2 * container->border_width;
