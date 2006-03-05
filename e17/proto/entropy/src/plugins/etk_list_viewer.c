@@ -60,6 +60,16 @@ typedef enum _Etk_Menu_Item_Type
 } Etk_Menu_Item_Type;
 
 
+/*Headers*/
+void
+gui_event_callback (entropy_notify_event * eevent, void *requestor,
+		    void *el, entropy_gui_component_instance * comp);
+void gui_file_destroy (gui_file * file);
+int entropy_plugin_type_get ();
+
+/*-------------*/
+
+
 void
 gui_file_destroy (gui_file * file)
 {
@@ -114,7 +124,7 @@ static Etk_Widget *_entropy_etk_menu_item_new(Etk_Menu_Item_Type item_type, cons
       Etk_Widget *image;
       
       image = etk_image_new_from_stock(stock_id, ETK_STOCK_SMALL);
-      etk_menu_item_image_set(ETK_MENU_ITEM(menu_item), ETK_IMAGE(image));
+      etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
    }
    etk_menu_shell_append(menu_shell, ETK_MENU_ITEM(menu_item));
    
@@ -459,6 +469,37 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
 
 
   viewer = instance->data;
+
+
+
+   if (!strlen (file->mime_type)) {
+		    entropy_mime_file_identify (instance->core->mime_plugins, file);
+  }
+
+  if (file->mime_type) {
+	    entropy_plugin* thumb = entropy_thumbnailer_retrieve (file->mime_type);
+	    if (thumb) {
+			entropy_thumbnail_request *request = entropy_thumbnail_request_new ();
+			request->file = file;
+			request->instance = instance;
+
+			entropy_notify_event *ev =
+			  entropy_notify_request_register (instance->core->notify, instance,
+				   ENTROPY_NOTIFY_THUMBNAIL_REQUEST,
+				   thumb,
+				   "entropy_thumbnailer_thumbnail_get",
+				   request, NULL);
+
+			entropy_notify_event_callback_add (ev, (void *) gui_event_callback,
+				   instance);
+			entropy_notify_event_cleanup_add (ev, request);
+
+			entropy_notify_event_commit (instance->core->notify, ev);
+	    }
+  }
+
+
+  
   
   col1 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 0);
   col2 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 1);
@@ -548,32 +589,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 
 		  /*We need the file's mime type, 
 		   * so get it here if it's not here already...*/
-		  if (!strlen (file->mime_type)) {
-		    entropy_mime_file_identify (comp->core->mime_plugins, file);
-		  }
-
-		  if (file->mime_type) {
-		    entropy_plugin* thumb = entropy_thumbnailer_retrieve (file->mime_type);
-		    if (thumb) {
-				entropy_thumbnail_request *request = entropy_thumbnail_request_new ();
-				request->file = file;
-				request->instance = comp;
-
-				entropy_notify_event *ev =
-				  entropy_notify_request_register (comp->core->notify, comp,
-					   ENTROPY_NOTIFY_THUMBNAIL_REQUEST,
-					   thumb,
-					   "entropy_thumbnailer_thumbnail_get",
-					   request, NULL);
-
-				entropy_notify_event_callback_add (ev, (void *) gui_event_callback,
-					   comp);
-				entropy_notify_event_cleanup_add (ev, request);
-
-				entropy_notify_event_commit (comp->core->notify, ev);
-		    }
-		  }
-
+		  
 		      /*Tell the core we're watching 
 		       * this file*/
 		      entropy_core_file_cache_add_reference (file->md5);
@@ -641,11 +657,11 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
       /*Check that this file is the current dir we are displaying*/
       entropy_generic_file* parent_folder = entropy_core_parent_folder_file_get(file);
 
-      printf("At list viewer, Parent folder is: %p : Current folder: %p\n", parent_folder, viewer->current_folder);
-      if (parent_folder) {
+      /*printf("At list viewer, Parent folder is: %p : Current folder: %p\n", parent_folder, viewer->current_folder);*/
+      /*if (parent_folder) {
 	      printf("Parent folder string: %s/%s : Current folder: %s/%s", parent_folder->path, parent_folder->filename,
 			      viewer->current_folder->path, viewer->current_folder->filename);
-      }
+      }*/
       
       if (parent_folder && parent_folder == viewer->current_folder) {
 	      list_viewer_add_row (comp, file);				      
