@@ -1310,14 +1310,16 @@ void entropy_core_file_cache_remove_reference(char* md5) {
 
 	if (listener) {
 		listener->count--;
-		if (listener->count <= 0 && 0) {
+		if (listener->count <= 0) {
 
 			ecore_hash_remove(core_core->uri_reference_list, listener->file->uri);
+
+			ecore_hash_remove(core_core->file_interest_list, md5);
 			
 			entropy_generic_file_destroy(listener->file);
 			free(listener);
 
-			ecore_hash_remove(core_core->file_interest_list, md5);
+			
 
 			file_cache_size--;
 

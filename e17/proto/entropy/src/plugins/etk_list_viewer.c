@@ -359,17 +359,21 @@ gui_file_remove_destroy_single(entropy_gui_component_instance * comp,
 	
 }
 
-void
+Ecore_List* 
 gui_object_destroy_and_free (entropy_gui_component_instance * comp,
 			     Ecore_Hash * gui_hash)
 {
 
   Ecore_List *list;
+  Ecore_List *file_remove_ref_list;
   entropy_generic_file *obj;
   gui_file *freeobj;
   Etk_Tree_Row* row;
   entropy_etk_file_list_viewer *view = comp->data;
 
+
+  file_remove_ref_list = ecore_list_new();
+  
   /*Temporarily stop callbacks, we don't want to clobber an in-op process */
   entropy_notify_lock_loop (comp->core->notify);
 
@@ -388,7 +392,7 @@ gui_object_destroy_and_free (entropy_gui_component_instance * comp,
     }
 
     /*Tell the core we no longer need this file - it might free it now */
-    entropy_core_file_cache_remove_reference (obj->md5);
+    ecore_list_append(file_remove_ref_list, obj->md5);
   }
   ecore_hash_destroy (gui_hash);
   view->gui_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
@@ -402,6 +406,8 @@ gui_object_destroy_and_free (entropy_gui_component_instance * comp,
 
   entropy_notify_unlock_loop (comp->core->notify);
 
+
+  return file_remove_ref_list;
 
 }
 
@@ -573,14 +579,15 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
   	  case ENTROPY_NOTIFY_FILELIST_REQUEST_EXTERNAL:
 	  case ENTROPY_NOTIFY_FILELIST_REQUEST:{
 	      entropy_generic_file *file;
+	      Ecore_List* remove_ref;
+	      char* ref;
 
 	      entropy_generic_file *event_file =
 		((entropy_file_request *) eevent->data)->file;
 
 	      viewer->current_folder = event_file;
 
-	      gui_object_destroy_and_free(comp, viewer->gui_hash);
-
+	      remove_ref = gui_object_destroy_and_free(comp, viewer->gui_hash);
 
 	      etk_tree_clear(ETK_TREE(viewer->tree));
 
@@ -595,6 +602,11 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 		      entropy_core_file_cache_add_reference (file->md5);
 		      list_viewer_add_row (comp, file);
 		}
+
+		while ( (ref = ecore_list_remove_first(remove_ref))) 
+			entropy_core_file_cache_remove_reference (ref);
+		ecore_list_destroy(remove_ref);
+
 
 	      }
 	      break;
