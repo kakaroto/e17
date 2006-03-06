@@ -37,6 +37,7 @@
 
 extern char *remotecmd;
 
+void            update_autosave(void);
 /* The Main Function */
 int             main(int argc, char *argv[]);
 

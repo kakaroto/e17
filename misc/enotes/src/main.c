@@ -15,6 +15,24 @@
 
 MainConfig     *main_config;
 char *remotecmd;
+Ecore_Timer *autosave_timer = NULL;
+
+static int
+_autosave_timer_tick(void *data) {
+  autosave();
+
+  return 1;
+}
+
+void
+update_autosave(void) {
+  if (main_config->autosave == 1 && autosave_timer == NULL)
+    autosave_timer = ecore_timer_add(30, _autosave_timer_tick, NULL);
+  if (main_config->autosave == 0 && autosave_timer != NULL) {
+    ecore_timer_del(autosave_timer);
+    autosave_timer = NULL;
+  }
+}
 
 /* The Main Function */
 
@@ -25,8 +43,7 @@ char *remotecmd;
  * @brief: The first function once enotes is called.
  */
 int
-main(int argc, char *argv[])
-{
+main(int argc, char *argv[]) {
 	int             note_count;
 
 	/* IPC Check */
@@ -84,7 +101,10 @@ Usage: enotes [options]");
 		dml("Efl Successfully Initiated", 1);
 
 		/* Autoloading */
-		if (main_config->autosave == 1)autoload();
+		if (main_config->autosave == 1) {
+      autoload();
+      update_autosave();
+    }
 
 		if(remotecmd!=NULL)handle_ipc_message(remotecmd);
 
@@ -114,6 +134,8 @@ Usage: enotes [options]");
 		/* Autosaving */
 		if (main_config->autosave == 1)
 			autosave();
+    if (autosave_timer)
+      ecore_timer_del(autosave_timer);
 
 		/* Shutdown the E-Libs */
 		edje_shutdown();

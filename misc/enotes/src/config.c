@@ -11,7 +11,7 @@
  **************************************************/
 
 
-#include "note.h"
+#include "main.h"
 
 /**
  * @return: Returns an allocated MainConfig variable with some default values
@@ -32,7 +32,8 @@ MainConfig *mainconfig_new(void)
 	p->ontop = 0;
 	p->sticky = 0;
 
-	return (p);}
+	return (p);
+}
 
 /**
  * @param p: The MainConfig variable to free.
@@ -42,14 +43,24 @@ void mainconfig_free(MainConfig * p){
 	if (p) {
 		if (p->render_method)free(p->render_method);
 		if (p->theme)free(p->theme);
-		free(p);}}
+		free(p);
+  }
+}
 
 /* LISTENERS */
 
-void theme_listener(const char *key, const Ecore_Config_Type type, const int tag,void *data){
+void theme_listener(const char *key, const Ecore_Config_Type type,
+    const int tag,void *data){
 	main_config->theme = ecore_config_theme_get(key);
 	cc_update_theme();
-	notes_update_themes();}
+	notes_update_themes();
+}
+
+void autosave_listener(const char *key, const Ecore_Config_Type type,
+    const int tag,void *data){
+  main_config->autosave = ecore_config_boolean_get(key);
+  update_autosave();
+}
 
 void remotearg(char *val,void *data){
 	remotecmd=val;
@@ -106,5 +117,8 @@ int read_configuration(MainConfig * p){
 	p->sticky = ecore_config_boolean_get("enotes.sticky");
 
 	ecore_config_listen("theme", "enotes.theme", (void*)&theme_listener, 0, NULL);
+  ecore_config_listen("autosave", "enotes.autosave", (void*)&autosave_listener,
+      0, NULL);
 
-	return (retv);}
+	return (retv);
+}
