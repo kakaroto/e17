@@ -36,4 +36,6 @@ ewl_fileselector.la
 ewl_fileselector.lo
 ewl_floater.la
 ewl_floater.lo
+ewl_icon.la
+ewl_icon.lo
 

@@ -19,7 +19,7 @@ pkg_LTLIBRARIES		= ewl_border.la ewl_box.la ewl_button.la \
 			  ewl_calendar.la ewl_combo.la ewl_colorpicker.la \
 			  ewl_dialog.la ewl_entry.la ewl_filedialog.la \
 			  ewl_text_editor.la ewl_fileselector.la \
-			  ewl_floater.la
+			  ewl_floater.la ewl_icon.la
 
 ewl_border_la_SOURCES   = ewl_border.c
 ewl_border_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
@@ -147,6 +147,13 @@ ewl_floater_la_LDFLAGS	= -module -avoid-version \
 			  -L$(top_builddir)/src/lib/.libs
 ewl_floater_la_DEPENDENCIES = 
 
+ewl_icon_la_SOURCES   = ewl_icon.c
+ewl_icon_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
+ewl_icon_la_LDFLAGS	= -module -avoid-version \
+			  -L$(top_builddir)/src/lib \
+			  -L$(top_builddir)/src/lib/.libs
+ewl_icon_la_DEPENDENCIES = 
+
 FILES = $(ewl_border_la_SOURCES) $(ewl_box_la_SOURCES) \
 	$(ewl_button_la_SOURCES) $(ewl_colordialog_la_SOURCES) \
 	$(ewl_datepicker_la_SOURCES) $(ewl_freebox_la_SOURCES) \
@@ -155,7 +162,7 @@ FILES = $(ewl_border_la_SOURCES) $(ewl_box_la_SOURCES) \
 	$(ewl_colorpicker_la_SOURCES) $(ewl_dialog_la_SOURCES) \
 	$(ewl_entry_la_SOURCES) $(ewl_filedialog_la_SOURCES) \
 	$(ewl_text_editor_la_SOURCES) $(ewl_fileselector_la_SOURCES) \
-	$(ewl_floater_la_SOURCES)
+	$(ewl_floater_la_SOURCES) $(ewl_icon_la_SOURCES)
 
 EXTRA_DIST = $(FILES)
 
