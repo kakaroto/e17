@@ -140,6 +140,12 @@ void etk_mime_dialog_add_edit_create(char* mime, char* program) {
 
 	etk_widget_show_all(mime_dialog_add_edit_window);
 
+        if (mime) {
+                printf("Setting mime to '%s'...\n", mime);
+                etk_entry_text_set(ETK_ENTRY(etk_mime_mime_entry), mime);
+        }
+        if (program) etk_entry_text_set(ETK_ENTRY(etk_mime_program_entry), program);
+
 }
 
 void _entropy_etk_mime_dialog_edit_cb(Etk_Object* w, void* user_data)
