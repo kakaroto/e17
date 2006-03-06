@@ -554,17 +554,41 @@ _net_face_update_values(void *data)
    char in_str[100];
    char out_str[100];
    
-   if (nf->conf->show_text) 
+   if (!nf->conf->show_text) 
      {
-	snprintf(in_str, sizeof(in_str), "Rx: %d B", in_use);
-	snprintf(out_str, sizeof(out_str), "Tx: %d B", out_use);
-	edje_object_part_text_set(nf->ttxt_obj, "tx-text", out_str);
-	edje_object_part_text_set(nf->rtxt_obj, "rx-text", in_str);
+	edje_object_part_text_set(nf->ttxt_obj, "tx-text", "");
+	edje_object_part_text_set(nf->rtxt_obj, "rx-text", "");		
      }
     else 
      {
-	edje_object_part_text_set(nf->ttxt_obj, "tx-text", "");
-	edje_object_part_text_set(nf->rtxt_obj, "rx-text", "");	
+	if (bytes_in > 1048576) 
+	  {
+	     bytes_in = bytes_in / 1048576;
+	     snprintf(in_str, sizeof(in_str), "Rx: %d Mb", bytes_in);
+	  }
+	else if (bytes_in > 1024 && bytes_in < 1048576) 
+	  {
+	     bytes_in = bytes_in / 1024; 
+	     snprintf(in_str, sizeof(in_str), "Rx: %d Kb", bytes_in);
+	  }
+	else
+	  snprintf(in_str, sizeof(in_str), "Rx: %d B", bytes_in);	     
+	
+	if (bytes_out > 1048576) 
+	  {
+	     bytes_out = bytes_out / 1048576;
+	     snprintf(out_str, sizeof(out_str), "Tx: %d Mb", bytes_out);
+	  }
+	else if (bytes_out > 1024 && bytes_out < 1048576) 
+	  {
+	     bytes_out = bytes_out / 1024; 
+	     snprintf(out_str, sizeof(out_str), "Tx: %d Kb", bytes_out);
+	  }
+	else
+	  snprintf(out_str, sizeof(out_str), "Tx: %d B", bytes_out);	     
+
+	edje_object_part_text_set(nf->ttxt_obj, "tx-text", out_str);
+	edje_object_part_text_set(nf->rtxt_obj, "rx-text", in_str);
      }
    
    if (nf->conf->show_graph) 
