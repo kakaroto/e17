@@ -38,4 +38,5 @@ ewl_floater.la
 ewl_floater.lo
 ewl_icon.la
 ewl_icon.lo
-
+ewl_iconbox.la
+ewl_iconbox.lo
