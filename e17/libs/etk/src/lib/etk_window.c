@@ -220,8 +220,8 @@ void etk_window_center_on_window(Etk_Window *window_to_center, Etk_Window *windo
          /* TODO: will it work with multiscreen? */
          ecore_x_window_geometry_get(ecore_x_window_root_first_get(), &x, &y, &w, &h);
       
-      ecore_evas_geometry_get(window->ecore_evas, NULL, NULL, &cw, &ch);
-      ecore_evas_move(window->ecore_evas, x + (w - cw) / 2, y + (h - ch) / 2);
+      ecore_evas_geometry_get(window_to_center->ecore_evas, NULL, NULL, &cw, &ch);
+      ecore_evas_move(window_to_center->ecore_evas, x + (w - cw) / 2, y + (h - ch) / 2);
    }
 }
 
