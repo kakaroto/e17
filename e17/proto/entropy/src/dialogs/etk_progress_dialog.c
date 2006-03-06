@@ -58,6 +58,6 @@ void entropy_etk_progress_dialog_show(entropy_file_progress_window* dialog)
 
 void entropy_etk_progress_dialog_hide(entropy_file_progress_window* dialog)
 {
-	etk_widget_hide_all(ETK_WIDGET(dialog->progress_window));
+	etk_widget_hide(ETK_WIDGET(dialog->progress_window));
 }
 
