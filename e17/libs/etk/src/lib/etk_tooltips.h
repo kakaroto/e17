@@ -17,6 +17,8 @@ void etk_tooltips_disable();
 
 void etk_tooltips_tip_set(Etk_Widget *widget, const char *text);
 const char *etk_tooltips_tip_get(Etk_Widget *widget);
+void etk_tooltips_pop_up(Etk_Widget *widget);
+void etk_tooltips_pop_down();
   
 /** @} */
 
