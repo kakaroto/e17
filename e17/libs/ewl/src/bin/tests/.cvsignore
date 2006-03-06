@@ -32,4 +32,8 @@ ewl_dialog.la
 ewl_dialog.lo
 ewl_filedialog.la
 ewl_filedialog.lo
+ewl_fileselector.la
+ewl_fileselector.lo
+ewl_floater.la
+ewl_floater.lo
 

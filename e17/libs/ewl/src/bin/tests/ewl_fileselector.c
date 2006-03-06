@@ -16,5 +16,10 @@ test_info(Ewl_Test *test)
 static int
 create_test(Ewl_Container *box)
 {
+	Ewl_Widget *w;
+
+	w = ewl_fileselector_new();
+	ewl_container_child_append(box, w);
+	ewl_widget_show(w);
 }
 
