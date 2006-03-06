@@ -1247,6 +1247,18 @@ char* md5_entropy_path_file(char* plugin, char* folder, char* filename) {
 }
 
 
+Ecore_List* entropy_core_file_cache_keys_retrieve() 
+{
+	Ecore_List* ret = NULL;
+	
+	LOCK(&core_core->file_cache_mutex);
+	ret = ecore_hash_keys(core_core->file_interest_list);
+	UNLOCK(&core_core->file_cache_mutex);
+
+	return ret;
+}
+
+
 void entropy_core_file_cache_add(char* md5, entropy_file_listener* listener) {
 
 	LOCK(&core_core->file_cache_mutex);

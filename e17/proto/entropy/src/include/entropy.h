@@ -58,6 +58,7 @@ char* entropy_core_gui_event_get(char* event);
 
 
 /*File/File cache functions*/
+Ecore_List* entropy_core_file_cache_keys_retrieve();
 entropy_generic_file* entropy_core_parent_folder_file_get(entropy_generic_file* file);
 void entropy_core_file_cache_add_reference(char* md5);
 entropy_generic_file* entropy_core_uri_generic_file_retrieve(char* uri);

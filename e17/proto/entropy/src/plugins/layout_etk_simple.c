@@ -213,11 +213,11 @@ void layout_etk_simple_add_header(entropy_gui_component_instance* instance, char
 
    /*This will be moved to a central function. TODO*/
    if (!strcmp(file->uri_base, "file"))
-	   icon_string = PACKAGE_DATA_DIR "/icons/local-system.jpg";
+	   icon_string = PACKAGE_DATA_DIR "/icons/local-system.png";
   else if (!strcmp(file->uri_base, "smb"))
-	  icon_string = PACKAGE_DATA_DIR "/icons/samba-system.jpg";
+	  icon_string = PACKAGE_DATA_DIR "/icons/samba-system.png";
    else if (!strcmp(file->uri_base,"sftp"))
-	  icon_string = PACKAGE_DATA_DIR "/icons/sftp-system.jpg"; 
+	  icon_string = PACKAGE_DATA_DIR "/icons/sftp-system.png"; 
 			   
 	
   etk_tree_freeze(ETK_TREE(gui->tree));

@@ -8,7 +8,7 @@ FILES =  c.png default.png document.png folder.png folder_structure.png \
 	e17_button_detail_properties.png e17_button_detail_paste.png \
 	e17_button_detail_new_dir.png default_bg.jpg \
 	entropy.png tip.png \
-	local-system.jpg samba-system.jpg sftp-system.jpg
+	local-system.png samba-system.png sftp-system.png
 
 miscdir = $(pkgdatadir)/icons
 misc_DATA = $(FILES)
