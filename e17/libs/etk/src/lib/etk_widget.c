@@ -41,7 +41,6 @@ enum _Etk_Widget_Signal_Id
    ETK_WIDGET_REALIZE_SIGNAL,
    ETK_WIDGET_UNREALIZE_SIGNAL,
    ETK_WIDGET_SIZE_REQUEST_SIGNAL,
-   ETK_WIDGET_SIZE_ALLOCATE_SIGNAL,
    ETK_WIDGET_MOUSE_IN_SIGNAL,
    ETK_WIDGET_MOUSE_OUT_SIGNAL,
    ETK_WIDGET_MOUSE_MOVE_SIGNAL,
@@ -73,6 +72,7 @@ enum _Etk_Widget_Property_Id
    ETK_WIDGET_PARENT_PROPERTY,
    ETK_WIDGET_THEME_FILE_PROPERTY,
    ETK_WIDGET_THEME_GROUP_PROPERTY,
+   ETK_WIDGET_GEOMETRY_PROPERTY,
    ETK_WIDGET_WIDTH_REQUEST_PROPERTY,
    ETK_WIDGET_HEIGHT_REQUEST_PROPERTY,
    ETK_WIDGET_VISIBLE_PROPERTY,
@@ -175,7 +175,6 @@ Etk_Type *etk_widget_type_get()
       _etk_widget_signals[ETK_WIDGET_REALIZE_SIGNAL] =       etk_signal_new("realize",       widget_type, -1,                                     etk_marshaller_VOID__VOID,    NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_UNREALIZE_SIGNAL] =     etk_signal_new("unrealize",     widget_type, -1,                                     etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_SIZE_REQUEST_SIGNAL] =  etk_signal_new("size_request",  widget_type, -1,                                     etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_SIZE_ALLOCATE_SIGNAL] = etk_signal_new("size_allocate", widget_type, -1,                                     etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_MOUSE_IN_SIGNAL] =      etk_signal_new("mouse_in",      widget_type, -1,                                     etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_MOUSE_OUT_SIGNAL] =     etk_signal_new("mouse_out",     widget_type, -1,                                     etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_MOUSE_MOVE_SIGNAL] =    etk_signal_new("mouse_move",    widget_type, -1,                                     etk_marshaller_VOID__POINTER, NULL, NULL);
@@ -203,6 +202,7 @@ Etk_Type *etk_widget_type_get()
       etk_type_property_add(widget_type, "parent",            ETK_WIDGET_PARENT_PROPERTY,            ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE,          etk_property_value_pointer(NULL));
       etk_type_property_add(widget_type, "theme_file",        ETK_WIDGET_THEME_FILE_PROPERTY,        ETK_PROPERTY_STRING,  ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(etk_theme_widget_theme_get()));
       etk_type_property_add(widget_type, "theme_group",       ETK_WIDGET_THEME_GROUP_PROPERTY,       ETK_PROPERTY_STRING,  ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
+      etk_type_property_add(widget_type, "geometry",          ETK_WIDGET_GEOMETRY_PROPERTY,          ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE,          etk_property_value_pointer(NULL));
       etk_type_property_add(widget_type, "width_request",     ETK_WIDGET_WIDTH_REQUEST_PROPERTY,     ETK_PROPERTY_INT,     ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(-1));
       etk_type_property_add(widget_type, "height_request",    ETK_WIDGET_HEIGHT_REQUEST_PROPERTY,    ETK_PROPERTY_INT,     ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(-1));
       etk_type_property_add(widget_type, "visible",           ETK_WIDGET_VISIBLE_PROPERTY,           ETK_PROPERTY_BOOL,    ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
@@ -777,8 +777,6 @@ void etk_widget_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       evas_object_move(widget->event_object, geometry.x, geometry.y);
    if (geometry.w != widget->geometry.w || geometry.h != widget->geometry.h || widget->need_redraw)
       evas_object_resize(widget->event_object, geometry.w, geometry.h);
-   
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_SIZE_ALLOCATE_SIGNAL], ETK_OBJECT(widget), NULL, &geometry);
 }
 
 /**
@@ -1784,6 +1782,9 @@ static void _etk_widget_property_get(Etk_Object *object, int property_id, Etk_Pr
       case ETK_WIDGET_THEME_GROUP_PROPERTY:
          etk_property_value_string_set(value, widget->theme_group);
          break;
+      case ETK_WIDGET_GEOMETRY_PROPERTY:
+         etk_property_value_pointer_set(value, &widget->geometry);
+         break;
       case ETK_WIDGET_WIDTH_REQUEST_PROPERTY:
          etk_property_value_int_set(value, widget->requested_size.w);
          break;
@@ -2622,6 +2623,8 @@ static void _etk_widget_event_object_move_cb(Evas_Object *obj, Evas_Coord x, Eva
             evas_object_move(child->event_object, child_x + x_offset, child_y + y_offset);
          }
       }
+      
+      etk_object_notify(ETK_OBJECT(widget), "geometry");
    }
 }
 
@@ -2649,6 +2652,7 @@ static void _etk_widget_event_object_resize_cb(Evas_Object *obj, Evas_Coord w, E
          widget->size_allocate(widget, widget->inner_geometry);
       
       widget->need_redraw = ETK_FALSE;
+      etk_object_notify(ETK_OBJECT(widget), "geometry");
    }
 }
 

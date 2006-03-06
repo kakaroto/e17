@@ -624,7 +624,7 @@ static void _etk_table_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       return;
    container = ETK_CONTAINER(table);
 
-   etk_widget_size_request(widget, &requested_inner_size);
+   _etk_table_size_request(widget, &requested_inner_size);
    requested_inner_size.w -= 2 * container->border_width;
    requested_inner_size.h -= 2 * container->border_width;
    allocated_inner_size.w = geometry.w - 2 * container->border_width;

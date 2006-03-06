@@ -12,7 +12,7 @@
 
 /**
  * @addtogroup Etk_Window
-* @{
+ * @{
  */
 
 enum _Etk_Widget_Signal_Id
@@ -25,13 +25,30 @@ enum _Etk_Widget_Signal_Id
    ETK_WINDOW_NUM_SIGNALS
 };
 
+enum _Etk_Window_Property_Id
+{
+   ETK_WINDOW_TITLE_PROPERTY,
+   ETK_WINDOW_ICONIFIED_PROPERTY,
+   ETK_WINDOW_MAXIMIZED_PROPERTY,
+   ETK_WINDOW_FULLSCREEN_PROPERTY,
+   ETK_WINDOW_STICKY_PROPERTY,
+   ETK_WINDOW_FOCUSED_PROPERTY,
+   ETK_WINDOW_DECORATED_PROPERTY,
+   ETK_WINDOW_SHAPED_PROPERTY,
+   ETK_WINDOW_SKIP_TASKBAR_PROPERTY,
+   ETK_WINDOW_SKIP_PAGER_PROPERTY
+};
+
 static void _etk_window_constructor(Etk_Window *window);
 static void _etk_window_destructor(Etk_Window *window);
+static void _etk_window_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
+static void _etk_window_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_window_move_cb(Ecore_Evas *ecore_evas);
 static void _etk_window_resize_cb(Ecore_Evas *ecore_evas);
 static void _etk_window_focus_in_cb(Ecore_Evas *ecore_evas);
 static void _etk_window_focus_out_cb(Ecore_Evas *ecore_evas);
 static void _etk_window_delete_request_cb(Ecore_Evas *ecore_evas);
+static void _etk_window_show_cb(Etk_Object *object, void *data);
 static void _etk_window_size_request_cb(Etk_Window *window, Etk_Size *requisition, void *data);
 static Etk_Bool _etk_window_delete_event_handler(Etk_Window *window);
 static void _etk_window_toplevel_geometry_get(Etk_Toplevel_Widget *toplevel, int *x, int *y, int *w, int *h);
@@ -62,6 +79,20 @@ Etk_Type *etk_window_type_get()
       _etk_window_signals[ETK_WINDOW_FOCUS_IN_SIGNAL] = etk_signal_new("focus_in", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_window_signals[ETK_WINDOW_FOCUS_OUT_SIGNAL] = etk_signal_new("focus_out", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_window_signals[ETK_WINDOW_DELETE_EVENT_SIGNAL] = etk_signal_new("delete_event", window_type, ETK_MEMBER_OFFSET(Etk_Window, delete_event), etk_marshaller_BOOL__VOID, etk_accumulator_bool_or, NULL);
+   
+      etk_type_property_add(window_type, "title", ETK_WINDOW_TITLE_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
+      etk_type_property_add(window_type, "iconified", ETK_WINDOW_ICONIFIED_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
+      etk_type_property_add(window_type, "maximized", ETK_WINDOW_MAXIMIZED_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
+      etk_type_property_add(window_type, "fullscreen", ETK_WINDOW_FULLSCREEN_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
+      etk_type_property_add(window_type, "sticky", ETK_WINDOW_STICKY_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
+      etk_type_property_add(window_type, "focused", ETK_WINDOW_FOCUSED_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
+      etk_type_property_add(window_type, "decorated", ETK_WINDOW_DECORATED_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
+      etk_type_property_add(window_type, "shaped", ETK_WINDOW_SHAPED_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
+      etk_type_property_add(window_type, "skip_taskbar", ETK_WINDOW_SKIP_TASKBAR_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
+      etk_type_property_add(window_type, "skip_pager", ETK_WINDOW_SKIP_PAGER_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
+      
+      window_type->property_set = _etk_window_property_set;
+      window_type->property_get = _etk_window_property_get;
    }
 
    return window_type;
@@ -86,6 +117,19 @@ void etk_window_title_set(Etk_Window *window, const char *title)
    if (!window)
       return;
    ecore_evas_title_set(window->ecore_evas, title);
+   etk_object_notify(ETK_OBJECT(window), "title");
+}
+
+/**
+ * @brief Gets the title of the window
+ * @param window the window
+ * @return Returns the title of the window
+ */ 
+const char *etk_window_title_get(Etk_Window *window)
+{
+   if (!window)
+      return NULL;
+   return ecore_evas_title_get(window->ecore_evas);
 }
 
 /**
@@ -147,6 +191,57 @@ void etk_window_geometry_get(Etk_Window *window, int *x, int *y, int *w, int *h)
 }
 
 /**
+ * @brief Centers a window on another window
+ * @param window_to_center the window to center
+ * @param window the window on which @a window_to_center will be centered. If NULL, the window will be centered on the screen
+ */
+void etk_window_center_on_window(Etk_Window *window_to_center, Etk_Window *window)
+{
+   int x, y, w, h;
+   int cw, ch;
+   
+   if (!window_to_center)
+      return;
+   
+   if (window_to_center->wait_size_request)
+   {
+      window_to_center->center = ETK_TRUE;
+      window_to_center->center_on_window = window;
+      /* TODO: what if "window" is destroyed meanwhile ?? */
+      /*if (window)
+         etk_object_weak_pointer_add(ETK_OBJECT(window), &window_to_center->center_window);*/
+   }
+   else
+   {
+      /* TODO: what if window->wait_size_request == TRUE ?? */
+      if (window)
+         ecore_evas_geometry_get(window->ecore_evas, &x, &y, &w, &h);
+      else
+         /* TODO: will it work with multiscreen? */
+         ecore_x_window_geometry_get(ecore_x_window_root_first_get(), &x, &y, &w, &h);
+      
+      ecore_evas_geometry_get(window->ecore_evas, NULL, NULL, &cw, &ch);
+      ecore_evas_move(window->ecore_evas, x + (w - cw) / 2, y + (h - ch) / 2);
+   }
+}
+
+/**
+ * @brief Moves the window at the mouse position
+ * @param window a window
+ */
+void etk_window_move_to_mouse(Etk_Window *window)
+{
+   int x, y;
+   
+   if (!window)
+      return;
+   
+   /* TODO: will it work with multiscreen? */
+   ecore_x_pointer_xy_get(ecore_x_window_root_first_get(), &x, &y);
+   etk_window_move(window, x, y);
+}
+
+/**
  * @brief Iconifies (i.e. minimize) the window
  * @param window a window
  */
@@ -155,6 +250,7 @@ void etk_window_iconify(Etk_Window *window)
    if (!window)
       return;
    ecore_evas_iconified_set(window->ecore_evas, 1);
+   etk_object_notify(ETK_OBJECT(window), "iconified");
 }
 
 /**
@@ -166,6 +262,19 @@ void etk_window_deiconify(Etk_Window *window)
    if (!window)
       return;
    ecore_evas_iconified_set(window->ecore_evas, 0);
+   etk_object_notify(ETK_OBJECT(window), "iconified");
+}
+
+/**
+ * @brief Gets whether the window is iconified
+ * @param window a window
+ * @return Returns ETK_TRUE if the window is iconified, ETK_FALSE otherwise
+ */
+Etk_Bool etk_window_is_iconified(Etk_Window *window)
+{
+   if (!window)
+      return ETK_FALSE;
+   return ecore_evas_iconified_get(window->ecore_evas);
 }
 
 /**
@@ -177,6 +286,7 @@ void etk_window_maximize(Etk_Window *window)
    if (!window)
       return;
    ecore_evas_maximized_set(window->ecore_evas, 1);
+   etk_object_notify(ETK_OBJECT(window), "maximized");
 }
 
 /**
@@ -188,6 +298,19 @@ void etk_window_unmaximize(Etk_Window *window)
    if (!window)
       return;
    ecore_evas_maximized_set(window->ecore_evas, 0);
+   etk_object_notify(ETK_OBJECT(window), "maximized");
+}
+
+/**
+ * @brief Gets whether the window is maximized
+ * @param window a window
+ * @return Returns ETK_TRUE if the window is maximized, ETK_FALSE otherwise
+ */
+Etk_Bool etk_window_is_maximized(Etk_Window *window)
+{
+   if (!window)
+      return ETK_FALSE;
+   return ecore_evas_maximized_get(window->ecore_evas);
 }
 
 /**
@@ -199,6 +322,7 @@ void etk_window_fullscreen(Etk_Window *window)
    if (!window)
       return;
    ecore_evas_fullscreen_set(window->ecore_evas, 1);
+   etk_object_notify(ETK_OBJECT(window), "fullscreen");
 }
 
 /**
@@ -210,6 +334,19 @@ void etk_window_unfullscreen(Etk_Window *window)
    if (!window)
       return;
    ecore_evas_fullscreen_set(window->ecore_evas, 0);
+   etk_object_notify(ETK_OBJECT(window), "fullscreen");
+}
+
+/**
+ * @brief Gets whether the window is in the fullscreen state
+ * @param window a window
+ * @return Returns ETK_TRUE if the window is in the fullscreen state, ETK_FALSE otherwise
+ */
+Etk_Bool etk_window_is_fullscreen(Etk_Window *window)
+{
+   if (!window)
+      return ETK_FALSE;
+   return ecore_evas_fullscreen_get(window->ecore_evas);
 }
 
 /**
@@ -221,6 +358,7 @@ void etk_window_stick(Etk_Window *window)
    if (!window)
       return;
    ecore_evas_sticky_set(window->ecore_evas, 1);
+   etk_object_notify(ETK_OBJECT(window), "sticky");
 }
 
 /**
@@ -232,6 +370,19 @@ void etk_window_unstick(Etk_Window *window)
    if (!window)
       return;
    ecore_evas_sticky_set(window->ecore_evas, 0);
+   etk_object_notify(ETK_OBJECT(window), "sticky");
+}
+
+/**
+ * @brief Gets whether the window is sticky (i.e. if it appears on all the virtual desktops)
+ * @param window a window
+ * @return Returns ETK_TRUE if the window is sticky, ETK_FALSE otherwise
+ */
+Etk_Bool etk_window_is_sticky(Etk_Window *window)
+{
+   if (!window)
+      return ETK_FALSE;
+   return ecore_evas_sticky_get(window->ecore_evas);
 }
 
 /**
@@ -257,6 +408,18 @@ void etk_window_unfocus(Etk_Window *window)
 }
 
 /**
+ * @brief Gets whether the window is focused
+ * @param window a window
+ * @return Returns ETK_TRUE if the window is focused, ETK_FALSE otherwise
+ */
+Etk_Bool etk_window_is_focused(Etk_Window *window)
+{
+   if (!window)
+      return ETK_FALSE;
+   return ecore_evas_focus_get(window->ecore_evas);
+}
+
+/**
  * @brief Sets wheter the window is decorated
  * @param window a window
  * @param decorated if @a decorated is ETK_FALSE, the border of the window will be hidden
@@ -266,6 +429,7 @@ void etk_window_decorated_set(Etk_Window *window, Etk_Bool decorated)
    if (!window)
       return;
    ecore_evas_borderless_set(window->ecore_evas, !decorated);
+   etk_object_notify(ETK_OBJECT(window), "decorated");
 }
 
 /**
@@ -290,6 +454,7 @@ void etk_window_shaped_set(Etk_Window *window, Etk_Bool shaped)
    if (!window)
       return;
    ecore_evas_shaped_set(window->ecore_evas, shaped);
+   etk_object_notify(ETK_OBJECT(window), "shaped");
 }
 
 /**
@@ -341,6 +506,7 @@ void etk_window_skip_taskbar_hint_set(Etk_Window *window, Etk_Bool skip_taskbar_
       else
          ecore_x_netwm_window_state_set(window->x_window, NULL, 0);
    }
+   etk_object_notify(ETK_OBJECT(window), "skip_taskbar");
 }
 
 /**
@@ -407,6 +573,7 @@ void etk_window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_hint
       else
          ecore_x_netwm_window_state_set(window->x_window, NULL, 0);
    }
+   etk_object_notify(ETK_OBJECT(window), "skip_pager");
 }
 
 /**
@@ -443,9 +610,7 @@ Etk_Bool etk_window_skip_pager_hint_get(Etk_Window *window)
  */
 void etk_window_xdnd_aware_set(Etk_Window *window, Etk_Bool on)
 {
-#if HAVE_ECORE_X
    ecore_x_dnd_aware_set(window->x_window, on);
-#endif
 }
 
 /**
@@ -458,63 +623,6 @@ Etk_Bool etk_window_hide_on_delete(Etk_Object *window, void *data)
 {
    etk_widget_hide(ETK_WIDGET(window));
    return ETK_TRUE;
-}
-
-/**
- * @brief Moves the window to a defined position
- * @param window a window
- * @param position
- */
-void etk_window_position_set(Etk_Window *window, Etk_Window_Position position)
-{
-#if HAVE_ECORE_X   
-   int w, h;
-   int x2, y2, w2, h2;
-   
-   if (!window)
-     return;
-   
-   switch (position)
-     {
-      case ETK_WINDOW_POSITION_CENTER:
-	
-	if(!(ETK_WIDGET(window))->visible)
-	{
-	   window->position = ETK_WINDOW_POSITION_CENTER;
-	   break;
-	}
-	
-	if(window->parent)	  
-	  ecore_evas_geometry_get(window->parent->ecore_evas, 
-				  &x2, &y2, &w2, &h2);
-	else
-	  ecore_x_window_geometry_get(ecore_x_window_root_first_get(), 
-				      &x2, &y2, &w2, &h2);	
-	
-	ecore_evas_geometry_get(window->ecore_evas, NULL, NULL, &w, &h);
-	ecore_evas_move(window->ecore_evas, x2 + (w2 - w) / 2, 
-			                    y2 + (h2 - h) / 2);
-	break;
-	
-      case ETK_WINDOW_POSITION_MOUSE:
-	ecore_x_pointer_xy_get(ecore_x_window_root_first_get(), &x2, &y2);
-	ecore_evas_move(window->ecore_evas, x2, y2);
-	break;	       
-     }   
-#endif   
-}
-
-/**
- * @brief Sets the window's parent
- * @param window a window
- * @param parent a window
- */
-void etk_window_parent_set(Etk_Window *window, Etk_Window *parent)
-{
-   if(!window || !parent)
-     return;
-   
-   window->parent = parent;
 }
 
 /**************************
@@ -533,25 +641,11 @@ static void _etk_window_constructor(Etk_Window *window)
 
    window->ecore_evas = ecore_evas_software_x11_new(0, 0, 0, 0, 0, 0);
    window->x_window = ecore_evas_software_x11_window_get(window->ecore_evas);
-   window->position = -1;
-   window->parent = NULL;
+   window->wait_size_request = ETK_TRUE;
+   window->center = ETK_FALSE;
+   window->center_on_window = NULL;
    
-/* TODO: free!! */
-#if HAVE_ECORE_X      
-   {
-      const char *types[] = { "*" };
-      char **drop_types;
-      int i;
-      
-      ecore_x_dnd_aware_set(window->x_window, 1);	
-      drop_types = calloc(1, sizeof(char *));
-      
-      for (i = 0; i < 1; i++)
-         drop_types[i] = strdup(types[i]);
-      
-      ecore_x_dnd_types_set(window->x_window, drop_types , 1);	
-   }
-#endif   
+   ecore_x_dnd_aware_set(window->x_window, 1);
    
    ETK_TOPLEVEL_WIDGET(window)->evas = ecore_evas_get(window->ecore_evas);
    ETK_TOPLEVEL_WIDGET(window)->pointer_set = _etk_window_pointer_set;
@@ -567,7 +661,7 @@ static void _etk_window_constructor(Etk_Window *window)
    ecore_evas_callback_delete_request_set(window->ecore_evas, _etk_window_delete_request_cb);
 
    etk_signal_connect("size_request", ETK_OBJECT(window), ETK_CALLBACK(_etk_window_size_request_cb), NULL);
-   etk_signal_connect_swapped("show", ETK_OBJECT(window), ETK_CALLBACK(ecore_evas_show), window->ecore_evas);
+   etk_signal_connect("show", ETK_OBJECT(window), ETK_CALLBACK(_etk_window_show_cb), NULL);
    etk_signal_connect_swapped("hide", ETK_OBJECT(window), ETK_CALLBACK(ecore_evas_hide), window->ecore_evas);
    etk_object_notify(ETK_OBJECT(window), "evas");
 }
@@ -578,6 +672,111 @@ static void _etk_window_destructor(Etk_Window *window)
    if (!window)
       return;
    ecore_evas_free(window->ecore_evas);
+}
+
+/* Sets the property whose id is "property_id" to the value "value" */
+static void _etk_window_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value)
+{
+   Etk_Window *window;
+
+   if (!(window = ETK_WINDOW(object)) || !value)
+      return;
+   
+   switch (property_id)
+   {
+      case ETK_WINDOW_TITLE_PROPERTY:
+         etk_window_title_set(window, etk_property_value_string_get(value));
+         break;
+      case ETK_WINDOW_ICONIFIED_PROPERTY:
+         if (etk_property_value_bool_get(value))
+            etk_window_iconify(window);
+         else
+            etk_window_deiconify(window);
+         break;
+      case ETK_WINDOW_MAXIMIZED_PROPERTY:
+         if (etk_property_value_bool_get(value))
+            etk_window_maximize(window);
+         else
+            etk_window_unmaximize(window);
+         break;
+      case ETK_WINDOW_FULLSCREEN_PROPERTY:
+         if (etk_property_value_bool_get(value))
+            etk_window_fullscreen(window);
+         else
+            etk_window_unfullscreen(window);
+         break;
+      case ETK_WINDOW_STICKY_PROPERTY:
+         if (etk_property_value_bool_get(value))
+            etk_window_stick(window);
+         else
+            etk_window_unstick(window);
+         break;
+      case ETK_WINDOW_FOCUSED_PROPERTY:
+         if (etk_property_value_bool_get(value))
+            etk_window_focus(window);
+         else
+            etk_window_unfocus(window);
+         break;
+      case ETK_WINDOW_DECORATED_PROPERTY:
+         etk_window_decorated_set(window, etk_property_value_bool_get(value));
+         break;
+      case ETK_WINDOW_SHAPED_PROPERTY:
+         etk_window_shaped_set(window, etk_property_value_bool_get(value));
+         break;
+      case ETK_WINDOW_SKIP_TASKBAR_PROPERTY:
+         etk_window_skip_taskbar_hint_set(window, etk_property_value_bool_get(value));
+         break;
+      case ETK_WINDOW_SKIP_PAGER_PROPERTY:
+         etk_window_skip_pager_hint_set(window, etk_property_value_bool_get(value));
+         break;
+      default:
+         break;
+   }
+}
+
+/* Gets the value of the property whose id is "property_id" */
+static void _etk_window_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value)
+{
+   Etk_Window *window;
+
+   if (!(window = ETK_WINDOW(object)) || !value)
+      return;
+
+   switch (property_id)
+   {
+      case ETK_WINDOW_TITLE_PROPERTY:
+         etk_property_value_string_set(value, etk_window_title_get(window));
+         break;
+      case ETK_WINDOW_ICONIFIED_PROPERTY:
+         etk_property_value_bool_set(value, etk_window_is_iconified(window));
+         break;
+      case ETK_WINDOW_MAXIMIZED_PROPERTY:
+         etk_property_value_bool_set(value, etk_window_is_maximized(window));
+         break;
+      case ETK_WINDOW_FULLSCREEN_PROPERTY:
+         etk_property_value_bool_set(value, etk_window_is_fullscreen(window));
+         break;
+      case ETK_WINDOW_STICKY_PROPERTY:
+         etk_property_value_bool_set(value, etk_window_is_sticky(window));
+         break;
+      case ETK_WINDOW_FOCUSED_PROPERTY:
+         etk_property_value_bool_set(value, etk_window_is_focused(window));
+         break;
+      case ETK_WINDOW_DECORATED_PROPERTY:
+         etk_property_value_bool_set(value, etk_window_decorated_get(window));
+         break;
+      case ETK_WINDOW_SHAPED_PROPERTY:
+         etk_property_value_bool_set(value, etk_window_shaped_get(window));
+         break;
+      case ETK_WINDOW_SKIP_TASKBAR_PROPERTY:
+         etk_property_value_bool_set(value, etk_window_skip_taskbar_hint_get(window));
+         break;
+      case ETK_WINDOW_SKIP_PAGER_PROPERTY:
+         etk_property_value_bool_set(value, etk_window_skip_pager_hint_get(window));
+         break;
+      default:
+         break;
+   }
 }
 
 /**************************
@@ -594,16 +793,6 @@ static void _etk_window_move_cb(Ecore_Evas *ecore_evas)
    if (!(window = ETK_WINDOW(ecore_evas_data_get(ecore_evas, "etk_window"))))
       return;
    etk_signal_emit(_etk_window_signals[ETK_WINDOW_MOVE_SIGNAL], ETK_OBJECT(window), NULL);
-
-   switch(window->position)
-   {
-      case ETK_WINDOW_POSITION_CENTER:
-      etk_window_position_set(window, ETK_WINDOW_POSITION_CENTER);
-      break;
-      
-      default:
-      break;
-   }   
 }
 
 /* Called when the window is resized */
@@ -625,6 +814,7 @@ static void _etk_window_focus_in_cb(Ecore_Evas *ecore_evas)
    if (!(window = ETK_WINDOW(ecore_evas_data_get(ecore_evas, "etk_window"))))
       return;
    etk_signal_emit(_etk_window_signals[ETK_WINDOW_FOCUS_IN_SIGNAL], ETK_OBJECT(window), NULL);
+   etk_object_notify(ETK_OBJECT(window), "focused");
 }
 
 /* Called when the window is focused out */
@@ -635,9 +825,10 @@ static void _etk_window_focus_out_cb(Ecore_Evas *ecore_evas)
    if (!(window = ETK_WINDOW(ecore_evas_data_get(ecore_evas, "etk_window"))))
       return;
    etk_signal_emit(_etk_window_signals[ETK_WINDOW_FOCUS_OUT_SIGNAL], ETK_OBJECT(window), NULL);
+   etk_object_notify(ETK_OBJECT(window), "focused");
 }
 
-/* Called when the user want to close the window */
+/* Called when the user wants to close the window */
 static void _etk_window_delete_request_cb(Ecore_Evas *ecore_evas)
 {
    Etk_Bool result;
@@ -651,6 +842,16 @@ static void _etk_window_delete_request_cb(Ecore_Evas *ecore_evas)
       etk_object_destroy(window);
 }
 
+/* Called when the window is shown */
+static void _etk_window_show_cb(Etk_Object *object, void *data)
+{
+   Etk_Window *window;
+   
+   if (!(window = ETK_WINDOW(object)) || window->wait_size_request)
+      return;
+   ecore_evas_show(window->ecore_evas);
+}
+
 /* Called when a size request signal is emitted */
 static void _etk_window_size_request_cb(Etk_Window *window, Etk_Size *requisition, void *data)
 {
@@ -662,6 +863,19 @@ static void _etk_window_size_request_cb(Etk_Window *window, Etk_Size *requisitio
       if (w < requisition->w || h < requisition->h)
          ecore_evas_resize(window->ecore_evas, ETK_MAX(w, requisition->w), ETK_MAX(h, requisition->h));
       ecore_evas_size_min_set(window->ecore_evas, requisition->w, requisition->h);
+      
+      if (window->wait_size_request)
+      {
+         window->wait_size_request = ETK_FALSE;
+         if (etk_widget_is_visible(ETK_WIDGET(window)))
+            ecore_evas_show(window->ecore_evas);
+         if (window->center)
+         {
+            etk_window_center_on_window(window, window->center_on_window);
+            window->center = ETK_FALSE;
+            window->center_on_window = NULL;
+         }
+      }
    }
 }
 

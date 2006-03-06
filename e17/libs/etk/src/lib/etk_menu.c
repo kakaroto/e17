@@ -103,13 +103,6 @@ void etk_menu_popdown(Etk_Menu *menu)
    if (!menu)
       return;
    etk_menu_window_popdown(menu->window);
-   
-   /* TODO: popdown */
-   /*for (l = ETK_MENU_SHELL(menu)->items; l; l = l->next)
-      etk_menu_item_deselect(ETK_MENU_ITEM(l->data));
-   
-   if (ETK_MENU_SHELL(menu)->parent)
-      etk_signal_emit_by_name("submenu_popped_down", ETK_OBJECT(ETK_MENU_SHELL(menu)->parent), NULL);*/
 }
 
 /**************************

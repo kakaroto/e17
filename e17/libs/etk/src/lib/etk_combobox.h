@@ -28,7 +28,7 @@ struct _Etk_Combobox
    Etk_Widget widget;
    
    Etk_Widget *button;
-   Etk_Widget *window;
+   Etk_Menu_Window *window;
 };
 
 Etk_Type *etk_combobox_type_get();
