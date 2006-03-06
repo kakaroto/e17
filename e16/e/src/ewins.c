@@ -1007,8 +1007,6 @@ EwinUnmap2(EWin * ewin)
       Mode.mouse_over_ewin = NULL;
    if (ewin == Mode.context_ewin)
       Mode.context_ewin = NULL;
-
-   ModulesSignal(ESIGNAL_EWIN_UNMAP, ewin);
 }
 
 static void
@@ -1149,6 +1147,8 @@ EwinEventUnmap(EWin * ewin)
    EWindowSetMapped(_EwinGetClientWin(ewin), 0);
    EoUnmap(ewin);
    EwinUnmap2(ewin);
+
+   ModulesSignal(ESIGNAL_EWIN_UNMAP, ewin);
 
    if (ewin->state.state == EWIN_STATE_ICONIC)
       return;

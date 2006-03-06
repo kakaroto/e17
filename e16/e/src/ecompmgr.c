@@ -1238,6 +1238,8 @@ doECompMgrWinFade(int val, void *data)
 #endif
    if (cw->fading)
       ECompMgrWinFadeDoIn(eo, (unsigned int)val);
+   else if (eo->type == EOBJ_TYPE_EWIN)
+      ModulesSignal(eo->shown ? ESIGNAL_EWIN_CHANGE : ESIGNAL_EWIN_UNMAP, eo);
    ECompMgrWinSetOpacity(eo, op);
 }
 
