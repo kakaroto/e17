@@ -1,0 +1,9 @@
+-i3 -bl -bad -nbap -sob -ncdb -di1 -nbc -lp -nce -npcs -sc -ncs -l132 -nut
+-T G_Eap
+-T Ecore_List
+-T Eet_File
+-T Engrave_File
+-T Engrave_Image
+-T Engrave_Group
+-T Engrave_Part
+-T Engrave_Part_State
