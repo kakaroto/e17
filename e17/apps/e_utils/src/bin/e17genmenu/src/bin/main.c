@@ -275,7 +275,7 @@ main(int argc, char **argv)
    printf("* WARNING!                                                                     *\n");
    printf("*                                                                              *\n");
    printf("* E17 will be completely unresponsive for a few minutes after this finishes    *\n");
-   printf("* runnisg.  This is due to a bad interaction with the eap caching code when    *\n");
+   printf("* running.  This is due to a bad interaction with the eap caching code when    *\n");
    printf("* you generate a lot of eaps at once, like e17genmenu just did.  raster is     *\n");
    printf("* aware of this problem, and has a fix on his TODO list.                       *\n");
    printf("********************************************************************************\n");
