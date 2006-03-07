@@ -1,8 +1,8 @@
-MAINTAINERCLEANFILES = Makefile.in
+MAINTAINERCLEANFILES = Makefile.in e_modules-net.spec
 
 EDJE_CC = @edje_cc@
 EDJE_FLAGS = -v
-
+EXTRA_DIST=$(files_DATA) eth_dev.png module_icon.png e_modules-net.spec e_modules-net.spec.in
 # data files for the module
 filesdir = $(datadir)
 

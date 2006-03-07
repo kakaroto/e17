@@ -195,6 +195,7 @@ AC_SUBST(e_modules)
 
 AC_OUTPUT([
 Makefile
+e_modules-net.spec
 ],[
 ])
 
