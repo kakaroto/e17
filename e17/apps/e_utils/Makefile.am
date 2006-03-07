@@ -17,6 +17,6 @@ dist-hook:
 	fi
 
 EXTRA_DIST = AUTHORS COPYING COPYING-PLAIN INSTALL NEWS README e_utils.spec \
-	     debian/control debian/copyright debian/changelog.in \
+	     debian/control debian/copyright \
 	     debian/changelog debian/rules debian/eutils.files \
 	     debian/docs e_utils.spec.in

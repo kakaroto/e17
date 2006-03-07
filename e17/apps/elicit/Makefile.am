@@ -4,7 +4,7 @@ SUBDIRS = src data
 
 EXTRA_DIST = \
 	README AUTHORS COPYING elicit.spec \
-	debian/changelog debian/changelog.in \
+	debian/changelog \
 	debian/rules debian/control debian/copyright \
 	debian/elicit.files elicit.spec.in
 
