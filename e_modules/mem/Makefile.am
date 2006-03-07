@@ -1,4 +1,4 @@
-MAINTAINERCLEANFILES = Makefile.in
+MAINTAINERCLEANFILES = Makefile.in e_modules-mem.spec
 
 EDJE_CC = @edje_cc@
 EDJE_FLAGS = -v
