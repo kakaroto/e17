@@ -25,7 +25,7 @@ EXTRA_DIST = AUTHORS COPYING COPYING-PLAIN \
 	     edb.spec.in edb.spec \
 	     edb.oe.in edb.oe edb-native.oe.in edb-native.oe \
 	     edb.bb.in edb.bb edbXnative.bb.in edbXnative.bb \
-	     debian/changelog.in debian/changelog \
+	     debian/changelog \
 	     debian/control \
 	     debian/copyright \
 	     debian/libedb1-dev.install \

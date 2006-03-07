@@ -20,7 +20,7 @@ install-data-local:
 bin_SCRIPTS = epsilon-config
 
 EXTRA_DIST = README AUTHORS COPYING epsilon.spec.in epsilon.spec gendoc \
-	     Doxyfile debian/changelog.in debian/changelog debian/rules \
+	     Doxyfile debian/changelog debian/rules \
 	     debian/copyright debian/control debian/epsilon0-bin.files \
 	     debian/libepsilon0.files debian/libepsilon0-dev.files \
 	     epsilon.pc.in

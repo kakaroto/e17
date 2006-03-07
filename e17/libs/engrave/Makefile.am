@@ -33,5 +33,5 @@ dist-hook:
 
 EXTRA_DIST = README AUTHORS COPYING engrave.spec engrave.spec.in \
 	     debian/control debian/rules debian/copyright \
-	     debian/changelog.in debian/changelog \
+	     debian/changelog \
 	     debian/libengrave0.files debian/libengrave0-dev.files
