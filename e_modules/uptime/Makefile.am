@@ -1,10 +1,12 @@
-MAINTAINERCLEANFILES = Makefile.in
+MAINTAINERCLEANFILES = Makefile.in e_modules-uptime.spec
 
 EDJE_CC = @edje_cc@
 EDJE_FLAGS = -v
 
 # data files for the module
 filesdir = $(datadir)
+
+EXTRA_DIST = $(files_DATA) uptime.png e_modules-uptime.spec e_modules-uptime.spec.in 
 
 files_DATA = \
 module_icon.png \
