@@ -271,6 +271,15 @@ main(int argc, char **argv)
    system(path);
    cache_time += ecore_time_get() - begin;
 
+   printf("********************************************************************************\n");
+   printf("* WARNING!                                                                     *\n");
+   printf("*                                                                              *\n");
+   printf("* E17 will be completely unresponsive for a few minutes after this finishes    *\n");
+   printf("* runnisg.  This is due to a bad interaction with the eap caching code when    *\n");
+   printf("* you generate a lot of eaps at once, like e17genmenu just did.  raster is     *\n");
+   printf("* aware of this problem, and has a fix on his TODO list.                       *\n");
+   printf("********************************************************************************\n");
+
    printf("\nTotal time %3.3f seconds, finding fdo paths %3.3f, converting fdo menus %3.3f, generating %d (rejected %d) eaps in %d menus %3.3f, finding icons %3.3f, generating eap caches %3.3f.\n",
        ecore_time_get() - start, paths, convert_time, item_count, reject_count, menu_count, gen - icon_time, icon_time, cache_time);
 
