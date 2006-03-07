@@ -1,10 +1,12 @@
-MAINTAINERCLEANFILES = Makefile.in
+MAINTAINERCLEANFILES = Makefile.in e_modules-wlan.spec
 
 EDJE_CC = @edje_cc@
 EDJE_FLAGS = -v
 
 # data files for the module
 filesdir = $(datadir)
+
+EXTRA_DIST = $(files_DATA) wlan.png module_icon.png e_modules-wlan.spec e_modules-wlan.spec.in
 
 files_DATA = \
 module_icon.png \
