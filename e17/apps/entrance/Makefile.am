@@ -21,3 +21,6 @@ dist-hook:
 	if test -d data; then \
 	  (cd $(srcdir); tar -cf - data) | (cd $(distdir); tar -xf -) \
 	fi
+
+install-data-am:
+	sh data/config/autodetect.sh
