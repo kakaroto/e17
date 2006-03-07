@@ -149,7 +149,7 @@ engrave_edj_output(Engrave_File *engrave_file, const char *path)
   if (fontdir) snprintf(fpart, sizeof(fpart), "-fd %s", fontdir);
   else fpart[0] = '\0';
 
-  snprintf(cmd, sizeof(cmd), "edje_cc -v %s %s %s %s", 
+  snprintf(cmd, sizeof(cmd), "edje_cc %s %s %s %s", 
                                       ipart, fpart, tmpn, path);
   ret = system(cmd);
 
