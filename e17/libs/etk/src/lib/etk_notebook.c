@@ -125,6 +125,35 @@ void etk_notebook_page_remove(Etk_Notebook *notebook, int page_num)
 }
 
 /**
+ * @brief Gets the numbers of pages of the notebok
+ * @param notebook a notebook
+ * @return Returns the number of pages
+ */
+int etk_notebook_num_pages_get(Etk_Notebook *notebook)
+{
+   if (!notebook)
+      return -1;
+   return evas_list_count(notebook->pages);
+}
+
+/**
+ * @brief Gets the label of the tab of a page of the notebook
+ * @param notebook a notebook
+ * @param page_num the number of the page to get the tab label to
+ * @return Returns the label
+ */
+const char *etk_notebook_page_tab_label_get(Etk_Notebook *notebook, int page_num)
+{
+   Etk_Notebook_Page *page;
+
+   if (!notebook || !(page = evas_list_nth(notebook->pages, page_num)))
+     return NULL;
+   if(!ETK_IS_BUTTON(page->tab))
+     return;       
+   return etk_button_label_get(ETK_BUTTON(page->tab));
+}
+
+/**
  * @brief Sets the label of the tab of a page of the notebook
  * @param notebook a notebook
  * @param page_num the number of the page to set the tab label to
@@ -136,6 +165,8 @@ void etk_notebook_page_tab_label_set(Etk_Notebook *notebook, int page_num, const
    
    if (!notebook || !(page = evas_list_nth(notebook->pages, page_num)))
       return;
+   if(!ETK_IS_BUTTON(page->tab))
+     return;   
    etk_button_label_set(ETK_BUTTON(page->tab), tab_label);
 }
 
