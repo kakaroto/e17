@@ -140,20 +140,24 @@ fdo_menus_get(char *file, Dumb_Tree * merge_stack, int level)
                {
                   dumb_tree_foreach(menu_xml, 0, _fdo_menus_expand_default_dirs, &data);
 
+#ifdef DEBUG
                   convert_time += ecore_time_get() - begin;
                   dumb_tree_dump(menu_xml, 0);
                   printf("\n\n");
                   begin = ecore_time_get();
+#endif
 
                   data.unallocated = FALSE;
                   dumb_tree_foreach(menu_xml, 0, _fdo_menus_generate, &data);
                   data.unallocated = TRUE;
                   dumb_tree_foreach(menu_xml, 0, _fdo_menus_generate, &data);
 
+#ifdef DEBUG
                   convert_time += ecore_time_get() - begin;
                   dumb_tree_dump(menu_xml, 0);
                   printf("\n\n");
                   begin = ecore_time_get();
+#endif
                }
           }
      }
@@ -832,7 +836,9 @@ _fdo_menus_merge(const void *data, Dumb_Tree * tree, int element, int level)
                 sprintf(merge_path, "%s%s", unxml_data->path, string);
              legacy_data.path = merge_path;
              legacy_data.length = strlen(merge_path);
+#ifdef DEBUG
              printf("<LEGACYDIR> - %s - %s\n", legacy_data.prefix, merge_path);
+#endif
              fdo_paths_recursive_search(merge_path, NULL, _fdo_menus_legacy_menu_dir, _fdo_menus_legacy_menu, &legacy_data);
 	     legacy_data.menu[legacy_data.menu_length] = '>';
              result = 1;
@@ -1098,7 +1104,9 @@ _fdo_menus_generate(const void *data, Dumb_Tree * tree, int element, int level)
              /* Process the rules. */
              if (generate_data.name[9] == (generate_data.unallocated ? 'O' : ' '))
                {
+#ifdef DEBUG
                   printf("MAKING MENU - %s \t\t%s\n", generate_data.path, generate_data.name);
+#endif
                   for (i = 0; i < generate_data.rules->size; i++)
                     {
                        if (generate_data.rules->elements[i].type == DUMB_TREE_ELEMENT_TYPE_TREE)
@@ -1166,12 +1174,16 @@ _fdo_menus_select_app(void *value, void *user_data)
         if (generate_data->include)
           {
              ecore_hash_set(generate_data->apps, key, strdup(app));
+#ifdef DEBUG
              printf("INCLUDING %s%s\n", ((generate_data->unallocated) ? "UNALLOCATED " : ""), key);
+#endif
           }
         else
           {
              ecore_hash_remove(generate_data->apps, key);
+#ifdef DEBUG
              printf("EXCLUDING %s%s\n", ((generate_data->unallocated) ? "UNALLOCATED " : ""), key);
+#endif
           }
      }
 }

@@ -14,13 +14,32 @@ void
 make_menus()
 {
    char *d;
+   char *menu = "applications.menu";
+   char *menu_file;
 
-   if (get_fdo())
+   d = get_desktop_dir();
+   if ((d) && (!get_fdo()))
+      check_for_dirs(strdup(d));
+
+   if (!d)
      {
-        char *menu = "applications.menu";
-        char *menu_file;
+         if (!get_fdo())
+	   {
+	      int i;
 
-        /* First, find the main menu file. */
+        printf("Generating menus.\n");
+              /* Check desktop files in these directories */
+              check_for_dirs(GNOME_DIRS);    /* FIXME: probably obsolete. */
+              check_for_dirs(KDE_DIRS);      /* FIXME: probably obsolete. */
+              check_for_dirs(DEBIAN_DIRS);   /* FIXME: may or may not be obsolete. */
+              for (i = 0; i < fdo_paths_desktops->size; i++)
+                 check_for_dirs((char *)fdo_paths_desktops->elements[i].element);
+              for (i = 0; i < fdo_paths_kde_legacy->size; i++)
+                 check_for_dirs((char *)fdo_paths_kde_legacy->elements[i].element);
+	   }
+
+        printf("Converting freedesktop.org (fdo) menus.\n");
+        /* Find the main menu file. */
         menu_file = fdo_paths_search_for_file(FDO_PATHS_TYPE_MENU, menu, 1, NULL, NULL);
         if (menu_file)
           {
@@ -41,23 +60,11 @@ make_menus()
                }
              E_FREE(path);
           }
-     }
-   else
-     {
-        d = get_desktop_dir();
-        if (d)
-           check_for_dirs(strdup(d));
 
-        if (!d)
-          {
-             /* Check desktop files in these directories */
-             check_for_dirs(GNOME_DIRS);
-             check_for_dirs(KDE_DIRS);
-             check_for_dirs(DEBIAN_DIRS);
-          }
-        if (d)
-           free(d);
      }
+
+   if (d)
+      free(d);
 }
 
 void
@@ -148,7 +155,9 @@ _menu_make_apps(const void *data, Dumb_Tree * tree, int element, int level)
              path = (char *)tree->elements[element + 1].element;
              pool = (Ecore_Hash *) tree->elements[element + 2].element;
              apps = (Ecore_Hash *) tree->elements[element + 4].element;
+#ifdef DEBUG
              printf("MAKING MENU - %s \t\t%s\n", path, name);
+#endif
              menu_count++;
              ecore_hash_for_each_node(apps, _menu_dump_each_hash_node, &path[11]);
           }
@@ -165,7 +174,9 @@ _menu_dump_each_hash_node(void *value, void *user_data)
    path = (char *)user_data;
    node = (Ecore_Hash_Node *) value;
    file = (char *)node->value;
+#ifdef DEBUG
    printf("MAKING EAP %s -> %s\n", path, file);
+#endif
    item_count++;
    parse_desktop_file(strdup(file), path);
 }

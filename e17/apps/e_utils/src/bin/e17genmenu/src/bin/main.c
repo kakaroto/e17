@@ -132,7 +132,7 @@ _e17genmenu_help()
    printf(" -d=<dir> | --desktop-dir=<dir>\tCreate eaps for .desktop files in <dir>\n");
    printf(" -o | --overwrite\tOverwrite Eaps\n");
    printf(" -m | --mapping\tGenerate Mapping File\n");
-   printf(" -f | --fdo\tGenerate menus from fdo files\n");
+   printf(" -f | --fdo\tGenerate menus from freedesktop.org (fdo) files only\n");
    printf(" -h | --help\t\tShow this help screen\n");
 
    /* Stop E Stuff */
@@ -239,14 +239,26 @@ main(int argc, char **argv)
    paths = ecore_time_get() - begin;
    parse_ini_init();
 
+   /* Just being paranoid, and cause people have removed these during testing. */
+   snprintf(path, sizeof(path), "%s/.e/e/applications/all", get_home());
+   ecore_file_mkpath(path);
+   snprintf(path, sizeof(path), "%s/.e/e/applications/favorite", get_home());
+   ecore_file_mkpath(path);
+
    begin = ecore_time_get();
    /* Start Making Menus */
    make_menus();
    gen = ecore_time_get() - begin;
 
    /* Sort Menus */
+   /* FIXME: One or both of these get's it wrong, plus they don't seem to be needed anyway.
    sort_favorites();
    sort_menus();
+   *
+   * Currently I do this instead, it seems to work -
+   */
+   snprintf(path, sizeof(path), "%s/.e/e/applications/favorite/.eap.cache.cfg", get_home());
+   ecore_file_unlink(path);
 
    /* Update E Cache */
    begin = ecore_time_get();
@@ -259,8 +271,7 @@ main(int argc, char **argv)
    system(path);
    cache_time += ecore_time_get() - begin;
 
-   printf
-      ("\nTotal time %3.3f seconds, finding fdo paths %3.3f, converting fdo menus %3.3f, generating %d (rejected %d) eaps in %d menus %3.3f, finding icons %3.3f, generating eap caches %3.3f.\n",
+   printf("\nTotal time %3.3f seconds, finding fdo paths %3.3f, converting fdo menus %3.3f, generating %d (rejected %d) eaps in %d menus %3.3f, finding icons %3.3f, generating eap caches %3.3f.\n",
        ecore_time_get() - start, paths, convert_time, item_count, reject_count, menu_count, gen - icon_time, icon_time, cache_time);
 
    parse_ini_shutdown();

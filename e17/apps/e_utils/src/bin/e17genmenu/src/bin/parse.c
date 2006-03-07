@@ -236,7 +236,7 @@ process_file(char *file, char *menu_path, G_Eap *eap)
      {
         if (menu_path != NULL)
           {
-             snprintf(order_path, sizeof(order_path), "%s" EFAVDIR "/%s", home, menu_path);
+             snprintf(order_path, sizeof(order_path), "%s" EFAVDIR "/Converted Menus/%s", home, menu_path);
              modify_order(order_path, eap->eap_name);
           }
         else
@@ -247,7 +247,7 @@ process_file(char *file, char *menu_path, G_Eap *eap)
                   category = find_category(eap->categories);
                   if (category != NULL)
                     {
-                       snprintf(order_path, sizeof(order_path), "%s" EFAVDIR "/%s", home, category);
+                       snprintf(order_path, sizeof(order_path), "%s" EFAVDIR "/Generated Menus/%s", home, category);
                        modify_order(order_path, eap->eap_name);
                     }
                }
@@ -294,7 +294,7 @@ process_file(char *file, char *menu_path, G_Eap *eap)
    category = NULL;
    if (menu_path != NULL)
      {
-        snprintf(order_path, sizeof(order_path), "%s" EFAVDIR "/%s", home, menu_path);
+        snprintf(order_path, sizeof(order_path), "%s" EFAVDIR "/Converted Menus/%s", home, menu_path);
         modify_order(order_path, eap->eap_name);
      }
    else if (eap->categories != NULL)
@@ -302,7 +302,7 @@ process_file(char *file, char *menu_path, G_Eap *eap)
         category = find_category(eap->categories);
         if (category != NULL)
           {
-             snprintf(order_path, sizeof(order_path), "%s" EFAVDIR "/%s", home, category);
+             snprintf(order_path, sizeof(order_path), "%s" EFAVDIR "/Generated Menus/%s", home, category);
              modify_order(order_path, eap->eap_name);
           }
      }
