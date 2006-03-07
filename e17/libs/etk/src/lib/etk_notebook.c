@@ -149,7 +149,7 @@ const char *etk_notebook_page_tab_label_get(Etk_Notebook *notebook, int page_num
    if (!notebook || !(page = evas_list_nth(notebook->pages, page_num)))
      return NULL;
    if(!ETK_IS_BUTTON(page->tab))
-     return;       
+     return NULL;       
    return etk_button_label_get(ETK_BUTTON(page->tab));
 }
 
@@ -234,6 +234,38 @@ int etk_notebook_current_page_get(Etk_Notebook *notebook)
          return i;
    }
    return -1;
+}
+
+int etk_notebook_prev_page(Etk_Notebook *notebook)
+{
+   int current;
+   
+   if (!notebook || !notebook->current_page)
+     return -1;
+   
+   current = etk_notebook_current_page_get(notebook);
+   if(current - 1 >= 0)
+   {
+      etk_notebook_current_page_set(notebook, current - 1);
+      return current - 1;
+   }
+   return -1;
+}
+
+int etk_notebook_next_page(Etk_Notebook *notebook)
+{
+   int current;
+   
+   if (!notebook || !notebook->current_page)
+     return -1;
+   
+   current = etk_notebook_current_page_get(notebook);
+   if(current + 1 < etk_notebook_num_pages_get(notebook))
+   {
+      etk_notebook_current_page_set(notebook, current + 1);
+      return current + 1;
+   }
+   return -1;   
 }
 
 /**************************
