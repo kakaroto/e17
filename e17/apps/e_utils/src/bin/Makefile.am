@@ -1,5 +1,9 @@
 MAINTAINERCLEANFILES = Makefile.in
 
+if BUILD_E17GENMENU
+e17genmenu_subdir = e17genmenu
+endif
+
 if BUILD_EAPP_EDIT
 eapp_edit_subdir = eapp_edit
 endif
@@ -24,4 +28,4 @@ if BUILD_ETHEMES
 ethemes_subdir = ethemes
 endif
 
-SUBDIRS = $(eapp_edit_subdir) $(e17setroot_subdir) $(entangle_subdir) $(emblem_subdir) $(exige_subdir) $(ethemes_subdir)
+SUBDIRS = $(e17genmenu_subdir) $(eapp_edit_subdir) $(e17setroot_subdir) $(entangle_subdir) $(emblem_subdir) $(exige_subdir) $(ethemes_subdir)

@@ -1,20 +1,27 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = src icons 
+INCLUDES = \
+-I../../lib \
+-I/usr/include \
+-I/usr/local/include \
+-I$(top_srcdir)/lib \
+@EET_CFLAGS@ \
+@ECORE_CFLAGS@ \
+@ENGRAVE_CFLAGS@
 
-MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess config.h.in config.sub configure install-sh \
-		       ltconfig ltmain.sh missing mkinstalldirs stamp-h.in
+AM_CFLAGS =\
+	 -Wall\
+	 -g
 
-e17genmenudocdir = ${prefix}/doc/e17genmenu
-e17genmenudoc_DATA = README COPYING	AUTHORS ChangeLog INSTALL NEWS
+bin_PROGRAMS = e17genmenu
 
-EXTRA_DIST = $(e17genmenudoc_DATA) icons autogen.sh
+e17genmenu_SOURCES = main.c global.c menus.c parse.c eaps.c icons.c \
+	category.c order.c sort.c fdo_menus.c fdo_paths.c dumb_tree.c \
+	xmlame.c
 
-# Copy all the spec files. Of cource, only one is actually used.
-dist-hook:
-	for specfile in *.spec; do \
-		if test -f $$specfile; then \
-			cp -p $$specfile $(distdir); \
-		fi \
-	done
+noinst_HEADERS = global.h menus.h parse.h eaps.h icons.h \
+	category.h order.h sort.h fdo_menus.h fdo_paths.h \
+	dumb_tree.h xmlame.h
+
+e17genmenu_LDADD = @EET_LIBS@ @ECORE_LIBS@ @ENGRAVE_LIBS@
 
