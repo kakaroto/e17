@@ -187,6 +187,21 @@ void etk_notebook_page_tab_widget_set(Etk_Notebook *notebook, int page_num, Etk_
 }
 
 /**
+ * @brief Gets the widget used as child of a tab of the notebook.
+ * @param notebook a notebook
+ * @param page_num the number of the page to set the tab widget to
+ * @return The widget used as child of the tab
+ */
+Etk_Widget *etk_notebook_page_tab_widget_get(Etk_Notebook *notebook, int page_num)
+{
+   Etk_Notebook_Page *page;
+   
+   if (!notebook || !(page = evas_list_nth(notebook->pages, page_num)))
+      return NULL;
+   return etk_bin_child_get(ETK_BIN(page->tab));
+}
+
+/**
  * @brief Sets the widget to display when the corresponding tab is activated
  * @param notebook a notebook
  * @param page_num the number of the page to set the page widget to

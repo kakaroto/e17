@@ -4,6 +4,8 @@
 static Etk_Widget *_etk_test_notebook_page1_widget_create();
 static Etk_Widget *_etk_test_notebook_page2_widget_create();
 static Etk_Widget *_etk_test_notebook_page3_widget_create();
+static void _etk_test_notebook_next_page(Etk_Object *object, void *data);
+static void _etk_test_notebook_prev_page(Etk_Object *object, void *data);
 
 /* Creates the window for the notebook test */
 void etk_test_notebook_window_create(void *data)
@@ -11,7 +13,10 @@ void etk_test_notebook_window_create(void *data)
    static Etk_Widget *win = NULL;
    Etk_Widget *notebook;
    Etk_Widget *page_widget;
-
+   Etk_Widget *hbox;
+   Etk_Widget *vbox;
+   Etk_Widget *button;
+   
    if (win)
    {
       etk_widget_show_all(ETK_WIDGET(win));
@@ -22,8 +27,22 @@ void etk_test_notebook_window_create(void *data)
    etk_container_border_width_set(ETK_CONTAINER(win), 5);
    etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);	
    
+   vbox = etk_vbox_new(ETK_FALSE, 0);
+   etk_container_add(ETK_CONTAINER(win), vbox);
+   
+   hbox = etk_hbox_new(ETK_FALSE, 0);
+   etk_box_pack_start(ETK_BOX(vbox), hbox, ETK_FALSE, ETK_FALSE, 0);
+
    notebook = etk_notebook_new();
-   etk_container_add(ETK_CONTAINER(win), notebook);
+   etk_box_pack_start(ETK_BOX(vbox), notebook, ETK_TRUE, ETK_TRUE, 0);
+   
+   button = etk_button_new_with_label(_("Prev"));
+   etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_notebook_prev_page), notebook);
+   etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
+   
+   button = etk_button_new_with_label(_("Next"));
+   etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_notebook_next_page), notebook);
+   etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);   
    
    page_widget = _etk_test_notebook_page1_widget_create();
    etk_notebook_page_append(ETK_NOTEBOOK(notebook), "Tab 1 - Table test", page_widget);
@@ -172,4 +191,14 @@ static Etk_Widget *_etk_test_notebook_page3_widget_create()
    etk_box_pack_end(ETK_BOX(hbox), slider, ETK_TRUE, ETK_TRUE, 0);
 
    return hbox;
+}
+
+static void _etk_test_notebook_next_page(Etk_Object *object, void *data)
+{
+   etk_notebook_next_page(ETK_NOTEBOOK(data));
+}
+
+static void _etk_test_notebook_prev_page(Etk_Object *object, void *data)
+{
+   etk_notebook_prev_page(ETK_NOTEBOOK(data));
 }
