@@ -804,7 +804,7 @@ AddToFamily(EWin * ewin, Window win)
      {
 	/* if set for borderless then dont slide it in */
 	if (Conf.place.slidein && !Mode.place.doing_slide &&
-	    !ewin->state.no_border)
+	    !ewin->state.no_border && dsk == DesksGetCurrent())
 	   doslide = 1;
 
 	if (Conf.place.manual && !Mode.place.doing_manual &&
