@@ -81,7 +81,7 @@ evas_poppler_page_render (Evas_Poppler_Page *page, Evas_Object *o, int x, int y,
 
   output_dev = new SplashOutputDev(splashModeRGB8, 4, gFalse, white);
   output_dev->startDoc(doc->pdfdoc->getXRef ());
-  
+  printf ("PAGE : %d\n", page->index + 1);
   doc->pdfdoc->displayPageSlice(output_dev, page->index + 1, xres, yres,
                                 0, false, false, false, -1, -1, -1, -1);
   bitmap = output_dev->getBitmap ();
