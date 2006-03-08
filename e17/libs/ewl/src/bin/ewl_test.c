@@ -137,13 +137,6 @@ main(int argc, char **argv)
 				"inside a EWL application."
 	       	},
 		{
-			"Tooltip",
-		    	__create_tooltip_test_window,
-		    	"ewl_tooltip_test.c",
-			"Defines a widget for displaying short\n"
-				"messages after a delay."
-		},
-		{
 			"Tree",
 		 	__create_tree_test_window,
 		 	"ewl_tree_test.c",
