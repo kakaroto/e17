@@ -637,6 +637,12 @@ SettingsComposite(void)
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetColSpan(di, 2);
+   DialogItemSetText(di, _("Shadows Sharp2"));
+   DialogItemRadioButtonSetFirst(di, radio);
+   DialogItemRadioButtonGroupSetVal(di, 3);
+
+   di = DialogAddItem(table, DITEM_RADIOBUTTON);
+   DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Shadows Blurred"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 2);
