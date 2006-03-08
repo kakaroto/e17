@@ -126,7 +126,7 @@ run_window_test(Ewl_Test *test, int width, int height)
 	ewl_widget_show(box);
 	window_count ++;
 
-	test->func(box);
+	test->func(EWL_CONTAINER(box));
 }
 
 static void
@@ -140,7 +140,7 @@ run_test_boxed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 	c = ewl_widget_name_find("execute_box");
 	ewl_container_reset(EWL_CONTAINER(c));
-	t->func(c);
+	t->func(EWL_CONTAINER(c));
 
 	n = ewl_widget_name_find("notebook");
 	ewl_notebook_visible_page_set(EWL_NOTEBOOK(n), c);

@@ -21,5 +21,7 @@ create_test(Ewl_Container *box)
 	w = ewl_fileselector_new();
 	ewl_container_child_append(box, w);
 	ewl_widget_show(w);
+
+	return 1;
 }
 

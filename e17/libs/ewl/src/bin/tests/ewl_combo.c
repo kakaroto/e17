@@ -1,6 +1,6 @@
 #include "Ewl_Test2.h"
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
 
 static int create_test(Ewl_Container *win);
 static void combo_value_changed(Ewl_Widget *w, void *ev, void *data);
