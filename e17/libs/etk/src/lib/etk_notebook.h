@@ -50,10 +50,12 @@ int etk_notebook_num_pages_get(Etk_Notebook *notebook);
 int etk_notebook_prev_page(Etk_Notebook *notebook);
 int etk_notebook_next_page(Etk_Notebook *notebook);
 
-const char *etk_notebook_page_tab_label_get(Etk_Notebook *notebook, int page_num);
 void etk_notebook_page_tab_label_set(Etk_Notebook *notebook, int page_num, const char *tab_label);
+const char *etk_notebook_page_tab_label_get(Etk_Notebook *notebook, int page_num);
+
 void etk_notebook_page_tab_widget_set(Etk_Notebook *notebook, int page_num, Etk_Widget *tab_widget);
 Etk_Widget *etk_notebook_page_tab_widget_get(Etk_Notebook *notebook, int page_num);
+
 void etk_notebook_page_child_set(Etk_Notebook *notebook, int page_num, Etk_Widget *child);
 
 void etk_notebook_current_page_set(Etk_Notebook *notebook, int page_num);
