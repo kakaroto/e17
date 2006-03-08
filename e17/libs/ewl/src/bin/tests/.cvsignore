@@ -40,3 +40,5 @@ ewl_icon.la
 ewl_icon.lo
 ewl_iconbox.la
 ewl_iconbox.lo
+ewl_tooltip.lo
+ewl_tooltip.la
