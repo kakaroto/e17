@@ -71,6 +71,9 @@ void etk_window_focus(Etk_Window *window);
 void etk_window_unfocus(Etk_Window *window);
 Etk_Bool etk_window_is_focused(Etk_Window *window);
 
+void etk_window_raise(Etk_Window *window);
+void etk_window_lower(Etk_Window *window);
+
 void etk_window_decorated_set(Etk_Window *window, Etk_Bool decorated);
 Etk_Bool etk_window_decorated_get(Etk_Window *window);
 void etk_window_shaped_set(Etk_Window *window, Etk_Bool shaped);

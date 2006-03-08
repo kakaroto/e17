@@ -420,6 +420,28 @@ Etk_Bool etk_window_is_focused(Etk_Window *window)
 }
 
 /**
+ * @brief Raises the window
+ * @param window a window
+ */
+void etk_window_raise(Etk_Window *window)
+{
+   if (!window)
+      return;
+   ecore_evas_raise(window->ecore_evas);
+}
+
+/**
+ * @brief Lowers the window
+ * @param window a window
+ */
+void etk_window_lower(Etk_Window *window)
+{
+   if (!window)
+      return;
+   ecore_evas_lower(window->ecore_evas);
+}
+
+/**
  * @brief Sets wheter the window is decorated
  * @param window a window
  * @param decorated if @a decorated is ETK_FALSE, the border of the window will be hidden
