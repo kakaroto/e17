@@ -13,37 +13,17 @@ bin_PROGRAMS			=	$(EWLTESTPROGRAMS)
 ewl_test_DEPENDENCIES		=	$(top_builddir)/src/lib/libewl.la
 ewl_test_SOURCES		=	ewl_test.h \
 					ewl_test.c \
-					ewl_border_test.c \
-					ewl_box_test.c \
-					ewl_button_test.c \
-					ewl_calendar_test.c \
-					ewl_colordialog_test.c \
-					ewl_colorpicker_test.c \
-					ewl_combo_test.c \
-					ewl_datepicker_test.c \
-					ewl_dialog_test.c \
-					ewl_entry_test.c \
-					ewl_freebox_test.c \
-					ewl_filedialog_test.c \
-					ewl_filedialog_multi_test.c \
-					ewl_fileselector_test.c \
-					ewl_floater_test.c \
-					ewl_icon_test.c \
-					ewl_iconbox_test.c \
 					ewl_image_test.c \
 					ewl_imenu_test.c \
 					ewl_menu_test.c \
 					ewl_menu_bar_test.c \
 					ewl_notebook_test.c \
-					ewl_paned_test.c \
 					ewl_password_test.c \
 					ewl_progressbar_test.c \
 					ewl_seeker_test.c \
 					ewl_spinner_test.c \
 					ewl_statusbar_test.c \
 					ewl_table_test.c \
-					ewl_text_test.c \
-					ewl_text_editor_test.c \
 					ewl_theme_test.c \
 					ewl_tooltip_test.c \
 					ewl_tree_test.c \

@@ -58,118 +58,6 @@ main(int argc, char **argv)
 	Ewl_Widget     *prow;
 	static test_set       tests[] = {
 		{
-			"Border",
-		   	__create_border_test_window,
-		   	"ewl_border_test.c", 
-			"Defines the Ewl_Border class for displaying\n"
-				"a container with a label."
-		},
-		{
-			"Box",
-			__create_box_test_window,
-			"ewl_box_test.c",
-			"Defines the Ewl_Box class used for\n"
-				"laying out Ewl_Widget's in a horizontal\n"
-				"or vertical line."
-		},
-		{
-			"Button",
-		   	__create_button_test_window,
-		   	"ewl_button_test.c",
-			"The button class is a basic button\n"
-				"with a label. This class inherits from\n"
-				"the Ewl_Box to allow for placing any\n"
-				"other widget inside the button."
-		},
-		{
-			"Calendar",
-			__create_calendar_test_window,
-			"ewl_calendar_test.c",
-			"Defines a calendar widget."
-		},
-		{
-			"ColorDialog",
-			__create_colordialog_test_window,
-			"ewl_colordialog_test.c",
-			"Defines a dialog with a color picker."
-		},
-		{
-			"ColorPicker",
-			__create_colorpicker_test_window,
-			"ewl_colorpicker_test.c",
-			"Defines a color picker."
-		},
-		{
-			"Combo",
-		  	__create_combo_test_window,
-		  	"ewl_combo_test.c",
-			"Defines a combo box used internally.\n"
-				"The contents on the box are not drawn\n"
-				"outside of the Evas."
-		},
-                {
-                        "DatePicker",
-                        __create_datepicker_test_window,
-                        "ewl_datepicker_test.c",
-                        "Defines a datepicker widget."
-                },
-		{
-			"Dialog",
-		   	__create_dialog_test_window,
-		   	"ewl_dialog_test.c",
-			"Defines a dialog window."
-		},
-		{
-			"Entry",
-		  	__create_entry_test_window,
-		  	"ewl_entry_test.c",
-			"Defines the Ewl_Entry class to allow\n"
-				"for single line editable text.",
-		},
-		{
-			"Freebox",
-			__create_freebox_test_window,
-			"ewl_freebox_test.c",
-			"The freebox is used for a more free layout system\n"
-				"then the other containers",
-		},
-		{
-			"Filedialog",
-			__create_filedialog_test_window,
-			"ewl_filedialog_test.c",
-			"The filedialog is intended to be used\n"
-				"for a simple file chooser.",
-		},
-		{
-			"Filedialog MultiSelect",
-		       	__create_filedialog_multi_test_window,
-		       	"ewl_filedialog_multi_test.c",
-			"The filedialog with multiple selections enabled",
-		},
-		{
-			"Floater",
-		    	__create_floater_test_window,
-		    	"ewl_floater_test.c",
-			"Defines a widget for layering above other\n "
-				"widgets in EWL's drawing area, with\n"
-				"the ability to follow the movement of\n"
-				"another widget."
-		},
-                {
-                        "Icon",
-                        __create_icon_test_window,
-                        "ewl_icon_test.c",
-                        "Provides a widget for displaying an icon"
-                },
-                {
-                        "Iconbox",
-                        __create_iconbox_test_window,
-                        "ewl_iconbox_test.c",
-                        "Provides a widget for displaying icons\n"
-                                "in an arranged grid, or freeform,\n"
-				"with callback and label editing facilities.",
-                },
-		{
 			"Image",
 		  	__create_image_test_window,
 		  	"ewl_image_test.c",
@@ -208,12 +96,6 @@ main(int argc, char **argv)
 				"between using tab labels along one\nedge"
 		},
 		{
-			"Paned",
-		  	__create_paned_test_window,
-		  	"ewl_paned_test.c",
-			"Defines the Ewl_Paned to hold two resizable panes."
-		},
-		{
 			"Password",
 		     	__create_password_test_window,
 		     	"ewl_password_test.c",
@@ -246,20 +128,6 @@ main(int argc, char **argv)
 		  	"ewl_table_test.c",
 			"Defines the Ewl_Table class used for\n"
 				"laying out Ewl_Widget's in an array."
-		},
-		{
-			"Text",
-		     	__create_text_test_window,
-		     	"ewl_text_test.c",
-			"Defines a class for multi-line text layout\n"
-				"and formatting."
-		},
-		{
-			"Text Editor",
-		     	__create_text_editor_test_window,
-		     	"ewl_text_editor_test.c",
-			"Defines a class for multi-line text layout\n"
-				"and formatting."
 		},
 		{
 			"Theme",
