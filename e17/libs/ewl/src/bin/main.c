@@ -301,7 +301,7 @@ static void
 fill_source_text(Ewl_Test *test)
 {
 	Ewl_Widget *txt;
-        FILE *file;
+	FILE *file;
 	struct stat buf;
 	char filename[PATH_MAX];
 
