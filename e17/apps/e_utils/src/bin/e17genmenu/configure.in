@@ -7,7 +7,7 @@ AC_INIT(configure.in)
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 
-AM_INIT_AUTOMAKE(e17genmenu, 4.2.0)
+AM_INIT_AUTOMAKE(e17genmenu, 4.2.1)
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
 
@@ -123,9 +123,6 @@ fi
 
 AC_OUTPUT([
 Makefile
-src/Makefile
-src/bin/Makefile
-icons/Makefile
 ])
 
 echo
