@@ -1,5 +1,5 @@
 MAINTAINERCLEANFILES = Makefile.in
-iconsdir = $(pkgdatadir)/icons
+iconsdir = $(pkgdatadir)/data/e17genmenu/icons
 icons_DATA = \
 e.png \
 package_applications.png \
