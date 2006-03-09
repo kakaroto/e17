@@ -339,6 +339,9 @@ static void _etk_entry_text_changed_cb(Etk_Object *object, void *data)
       int size;
       
       text = etk_editable_text_object_text_get(entry->editable_object);
+      if(!text) 
+	return;
+      
       while(*text == '*')
 	++text;
       
