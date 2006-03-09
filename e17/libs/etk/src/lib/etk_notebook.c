@@ -217,6 +217,47 @@ void etk_notebook_page_child_set(Etk_Notebook *notebook, int page_num, Etk_Widge
 }
 
 /**
+ * @brief Gets the widget displayed when the corresponding tab is activated
+ * @param notebook a notebook
+ * @param page_num the number of the page to set the page widget to
+ * @return Widget to displayed when the corresponding tab is activated
+ */
+Etk_Widget *etk_notebook_page_child_get(Etk_Notebook *notebook, int page_num)
+{
+   Etk_Notebook_Page *page;
+   
+   if (!notebook || !(page = evas_list_nth(notebook->pages, page_num)))
+      return NULL;
+   return etk_bin_child_get(ETK_BIN(page->page_frame));
+}
+
+/**
+ * @brief Gets the number of the page corresponding to the child widget
+ * @param notebook a notebook
+ * @param child the child widget of the page who's number we wish to get
+ * @return The number of the page or -1 if the page is not found
+ */
+int etk_notebook_page_num_get(Etk_Notebook *notebook, Etk_Widget *child)
+{
+   Etk_Notebook_Page *page;
+   Evas_List *l;
+   int i = 0;
+   
+   if (!notebook)
+     return -1;
+   
+   for(l = notebook->pages; l; l = l->next)
+   {      
+      page = l->data;
+      if(etk_bin_child_get(ETK_BIN(page->page_frame)) == child)
+	return i;
+      ++i;
+   }
+   
+   return -1;
+}
+
+/**
  * @brief Sets the current page of the notebook
  * @param notebook a notebook
  * @param page_num the number of the page to set as current
