@@ -1,9 +1,82 @@
 e17genmenu
-----------------------------------------------------------------
-e17genmenu is an application to automatically generate menu entries for the Enlightenment Window Manager (DR17) on Linux based on Gnome/Kde menus. It is written in C, utilizing the Enlightenment Foundation Libraries including Ecore, Engrave, and Eet.
+----------------------------------------------------------------------
+e17genmenu is an application to automatically generate menu entries for
+the Enlightenment Window Manager (DR17) based on freedesktop.org (fdo)
+compatible menus as used by other window managers like Gnome and Kde. 
+It is written in C, utilising the Enlightenment Foundation Libraries
+including Ecore, Engrave, and Eet.
 
-Note:
-----------------------------------------------------------------
-This version from cvs is going to undergo a rewrite and will more than likely break often.
-If your looking for a stable version to generate menus for E17, then I'd suggest getting the 4.2.0 version from
-https://sourceforge.net/projects/e17genmenu/ .
+Currently it produces two sub menus in your "Favorite Applications"
+menu, "Converted Menus", and "Generated Menus", while leaving your
+original "Favorite Applications" menu items untouched.  The first one is
+your systems fdo compliant menu converted to an E17 menu, the second one
+is the result of the previous menu generation behaviour of e17genmenu. 
+If you use the --fdo option, you only get the fdo conversions.
+
+
+Note: 
+----------------------------------------------------------------------
+This version from Enlightenment e17 cvs is being rewritten and will more
+than likely break often.  Please backup your ~/.e/e/applications
+directory before using this version.  If your looking for a stable
+version to generate menus for E17, then I'd suggest getting the 4.2.0
+version from https://sourceforge.net/projects/e17genmenu/ .
+
+
+Limitations:
+----------------------------------------------------------------------
+As this is still being rewritten, there are some limitations, mostly due
+to the fact that not everything has been written yet.  These limitations
+mostly apply to the fdo conversion.  These limitations will slowly go
+away as we write more code.  As this is experimental code, heaps of
+debugging output is likely to be generated.
+
+E17 will be completely unresponsive for a few minutes after e17genmenu
+finishes running.  This is due to a bad interaction with the eap caching
+code when you generate a lot of eaps at once, like e17genmenu does. 
+raster is aware of this problem, and has a fix on his TODO list.
+
+It should find all of the applications that are normally in Gnome and
+Kde menus.  It probably wont put them all in the correct place, or with
+the correct icon.
+
+The menu names and icons are not correctly set yet.  Menu and
+application names are not localised.
+
+Some applications are not being included due to some strangeness in the
+way they define their icons.  This is currently under investigation.
+
+
+Please help test this:
+----------------------------------------------------------------------
+The freedesktop.org standards are not really proper standards as such,
+more a collection of current practise formulated into a guide for others
+to implement.  So not everybody implements them the same way, and there
+is legacy behaviour that might be different from the specs.  So
+e17genmenu needs to be tested on as many different systems as possible. 
+Firstly to see if we followed the specs well enough to work well,
+secondly to see if others followed the specs well enough for e17genmenu
+to work, and thirdly to figure out what needs to be done when some
+random distro deviates enough from the specs that e17genmenu doesn't
+work as planned.
+
+Please help us test e17genmenu.
+
+Backup your ~/.e/e/applications directory first.
+
+Run e17genmenu, the adventurous can try running e17genmenu -o. 
+
+Send an email to onefang (email address in e17/apps/e_utils/AUTHORS) and
+tell me what distro of what OS you tried it in, the speed and type of
+your CPU, details of any applications you think it should have included
+in "Generated Menus" but didn't, and the last line output by e17genmenu
+(the timing statistics).  If you can, try to track down the .desktop
+files that match the missing apps and tell me what directory they are
+in.  Don't send me the entire output of e17genmenu, or the files
+themselves unless I specifically request it.
+
+That is worth repeating.
+
+DO NOT send me any .desktop files, .menu files, e17genmenu output, or
+anything else that is large UNLESS I specifically ask you to.  Bandwidth
+is very expensive here in Australia.
