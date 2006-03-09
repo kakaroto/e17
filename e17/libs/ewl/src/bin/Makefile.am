@@ -18,7 +18,6 @@ ewl_test_SOURCES		=	ewl_test.h \
 					ewl_notebook_test.c \
 					ewl_progressbar_test.c \
 					ewl_spinner_test.c \
-					ewl_table_test.c \
 					ewl_theme_test.c 
 
 # ewl_test_LDFLAGS		=	

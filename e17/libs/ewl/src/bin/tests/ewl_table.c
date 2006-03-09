@@ -1,75 +1,35 @@
-#include "ewl_test.h"
+#include "Ewl_Test2.h"
+#include <stdio.h>
 
-static Ewl_Widget *table_button = NULL;
+static int create_test(Ewl_Container *box);
 
-static void
-__destroy_table_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
-					void *user_data __UNUSED__)
+void 
+test_info(Ewl_Test *test)
 {
-	ewl_widget_destroy(w);
-	ewl_callback_append(table_button, EWL_CALLBACK_CLICKED,
-			    __create_table_test_window, NULL);
+	test->name = "Table";
+	test->tip = "Defines the Ewl_Table class used for\n"
+			"laying out Ewl_Widget's in an array.";
+	test->filename = "ewl_table.c";
+	test->func = create_test;
+	test->type = EWL_TEST_TYPE_CONTAINER;
 }
 
-void
-__create_table_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
-					void *user_data __UNUSED__)
+static int
+create_test(Ewl_Container *box)
 {
-	Ewl_Widget     *table_win;
-	Ewl_Widget     *table_box;
-	Ewl_Widget     *table;
-	Ewl_Widget     *button[10];
-	char           *headers[4];
-	char           *one = "one";
-	char           *two = "two";
-	char           *three = "three";
-	char           *four = "four";
-
-	table_button = w;
-
-	table_win = ewl_window_new();
-	ewl_window_title_set(EWL_WINDOW(table_win), "Table Test");
-	ewl_window_name_set(EWL_WINDOW(table_win), "EWL Test Application");
-	ewl_window_class_set(EWL_WINDOW(table_win), "EFL Test Application");
-
-	if (w) {
-		ewl_callback_del(w, EWL_CALLBACK_CLICKED, 
-					__create_table_test_window);
-		ewl_callback_append(table_win, EWL_CALLBACK_DELETE_WINDOW,
-				    __destroy_table_test_window, NULL);
-	} else 
-		ewl_callback_append(table_win, EWL_CALLBACK_DELETE_WINDOW,
-					__close_main_window, NULL);
-	ewl_widget_show(table_win);
-
-	/*
-	 * Create the main box for holding the widgets
-	 */
-	table_box = ewl_vbox_new();
-	ewl_object_fill_policy_set(EWL_OBJECT(table_box), EWL_FLAG_FILL_FILL);
-	ewl_container_child_append(EWL_CONTAINER(table_win), table_box);
-	ewl_theme_data_str_set(table_box,
-			       "/appearance/box/vertical/base/visible", "no");
-	ewl_widget_show(table_box);
-
-
-	headers[0] = one;
-	headers[1] = two;
-	headers[2] = three;
-	headers[3] = four;
+	Ewl_Widget *table, *button[10];
+	char *headers[] = { "one", "two", "three", "four" };
 
 	table = ewl_table_new(4, 5, headers);
-	ewl_container_child_append(EWL_CONTAINER(table_box), table);
+	ewl_container_child_append(box, table);
 	ewl_widget_show(table);
-
-	
 
 	button[0] = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(button[0]), "FIRST");
 	ewl_table_add(EWL_TABLE(table), button[0], 3, 4, 2, 3);
 	ewl_widget_show(button[0]);
 
-/*
+#if 0
 	button[1] = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(button[1]), NULL);
 	ewl_table_attach(EWL_TABLE(table), button[1], 1, 1, 2, 2);
@@ -149,8 +109,8 @@ __create_table_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 
 	ewl_table_attach(EWL_TABLE(table), button[11], 4, 4, 5, 5);
 	ewl_widget_realize(button[11]);
-*/
+#endif
 
-	ewl_widget_configure(table);
+	return 1;
 }
 

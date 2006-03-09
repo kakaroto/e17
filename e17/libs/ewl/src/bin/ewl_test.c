@@ -97,13 +97,6 @@ main(int argc, char **argv)
 				"and decrement the value."
 		},
 		{
-			"Table",
-		  	__create_table_test_window,
-		  	"ewl_table_test.c",
-			"Defines the Ewl_Table class used for\n"
-				"laying out Ewl_Widget's in an array."
-		},
-		{
 			"Theme",
 		  	__create_theme_test_window,
 		  	"ewl_theme_test.c",

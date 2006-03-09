@@ -34,5 +34,4 @@ void __create_notebook_test_window      (Ewl_Widget * w, void *ev_data, void *us
 void __create_progressbar_test_window   (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_scrollpane_test_window    (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_spinner_test_window       (Ewl_Widget * w, void *ev_data, void *user_data);
-void __create_table_test_window         (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_theme_test_window         (Ewl_Widget * w, void *ev_data, void *user_data);
