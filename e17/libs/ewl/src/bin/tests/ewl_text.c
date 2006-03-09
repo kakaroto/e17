@@ -11,7 +11,7 @@ static void trigger_cb(Ewl_Widget *w, void *ev, void *data);
 static int text_test_set_get(char *buf, int len);
 
 static Ewl_Unit_Test text_unit_tests[] = {
-		{"set/get", text_test_set_get},	
+		{"text set/get", text_test_set_get},	
 		{NULL, NULL}
 	};
 

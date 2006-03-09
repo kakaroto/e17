@@ -22,7 +22,7 @@ pkg_LTLIBRARIES		= ewl_border.la ewl_box.la ewl_button.la \
 			  ewl_floater.la ewl_icon.la ewl_iconbox.la  \
 			  ewl_tooltip.la ewl_seeker.la ewl_statusbar.la \
 			  ewl_scrollbar.la ewl_password.la ewl_menubar.la \
-			  ewl_tree2.la
+			  ewl_tree2.la ewl_image.la
 
 ewl_border_la_SOURCES   = ewl_border.c
 ewl_border_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
@@ -156,6 +156,13 @@ ewl_iconbox_la_LDFLAGS	= -module -avoid-version \
 			  -L$(top_builddir)/src/lib \
 			  -L$(top_builddir)/src/lib/.libs
 ewl_iconbox_la_DEPENDENCIES = 
+
+ewl_image_la_SOURCES   = ewl_image.c
+ewl_image_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
+ewl_image_la_LDFLAGS	= -module -avoid-version \
+			  -L$(top_builddir)/src/lib \
+			  -L$(top_builddir)/src/lib/.libs
+ewl_image_la_DEPENDENCIES = 
 
 ewl_tooltip_la_SOURCES   = ewl_tooltip.c
 ewl_tooltip_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
