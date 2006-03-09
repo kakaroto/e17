@@ -149,6 +149,7 @@ get_icon_theme()
           }
      }
    /* Doesn't this tie us specifically to KDE ? */
+//   return "crystalsvg";
    return "hicolor";
 }
 

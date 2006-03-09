@@ -22,6 +22,8 @@
 #include "parse.h"
 #include "xmlame.h"
 
+#define DEBUG 1
+
 extern double convert_time;
 
 struct _fdo_menus_expand_apps_data

@@ -11,7 +11,7 @@
 #define MAX_PATH 4096
 #define EFAVDIR "/.e/e/applications/favorite"
 #define EAPPDIR "/.e/e/applications/all"
-#define DEFAULTICON PACKAGE_DATA_DIR"/icons/e.png"
+#define DEFAULTICON PACKAGE_DATA_DIR"/data/e17genmenu/icons/e.png"
 
 typedef struct _G_Eap G_Eap;
 struct _G_Eap

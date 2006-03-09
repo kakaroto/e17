@@ -8,6 +8,8 @@
 #include "fdo_paths.h"
 #include "xmlame.h"
 
+#define DEBUG 1
+
 /* Function Prototypes */
 void _e17genmenu_backup(void);
 void _e17genmenu_help(void);
@@ -24,100 +26,6 @@ _e17genmenu_backup()
 #endif
    backup_eaps();
 }
-
-#if 1
-void
-_e17genmenu_test_fdo_paths()
-{
-   int i;
-   char *path;
-   char *menu = "applications.menu";
-
-   printf("Testing FDO paths\n");
-
-   fdo_paths_init();
-   parse_ini_init();
-
-   /* You can iterate through the various path lists as needed. */
-   for (i = 0; i < fdo_paths_config->size; i++)
-      printf("FDO config path = %s\n", (char *)fdo_paths_config->elements[i].element);
-   for (i = 0; i < fdo_paths_menus->size; i++)
-      printf("FDO menu path = %s\n", (char *)fdo_paths_menus->elements[i].element);
-   for (i = 0; i < fdo_paths_directories->size; i++)
-      printf("FDO directory path = %s\n", (char *)fdo_paths_directories->elements[i].element);
-   for (i = 0; i < fdo_paths_desktops->size; i++)
-      printf("FDO desktop path = %s\n", (char *)fdo_paths_desktops->elements[i].element);
-   for (i = 0; i < fdo_paths_icons->size; i++)
-      printf("FDO icon path = %s\n", (char *)fdo_paths_icons->elements[i].element);
-   for (i = 0; i < fdo_paths_kde_legacy->size; i++)
-      printf("FDO kde legacy path = %s\n", (char *)fdo_paths_kde_legacy->elements[i].element);
-
-   /* First, find the main menu file. */
-   path = fdo_paths_search_for_file(FDO_PATHS_TYPE_MENU, menu, 1, NULL, NULL);
-   if (path)
-     {
-        char *directory = "Applications.directory";
-        char *desktop = "xterm.desktop";
-        char *icon = "tux.png";
-        Dumb_Tree *menus = NULL;
-
-        printf("\n\nPath to %s is %s\n", menu, path);
-
-        /* convert the xml into menus */
-        menus = fdo_menus_get(path, NULL, 0);
-        free(path);
-
-        /* During the processing of the menu file, you will need to search for 
-         * .directory files, .desktop files, and icons.
-         */
-        path = fdo_paths_search_for_file(FDO_PATHS_TYPE_DIRECTORY, directory, 1, NULL, NULL);
-        if (path)
-          {
-             printf("Path to %s is %s\n", directory, path);
-             free(path);
-          }
-
-        path = fdo_paths_search_for_file(FDO_PATHS_TYPE_DESKTOP, desktop, 1, NULL, NULL);
-        if (path)
-          {
-             Ecore_Hash *desktop_hash;
-
-             printf("Path to %s is %s\n", desktop, path);
-             desktop_hash = parse_ini_file(path);
-             if (desktop_hash)
-               {
-               }
-             free(path);
-          }
-
-        path = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, icon, 1, NULL, NULL);
-        if (path)
-          {
-             printf("Path to %s is %s\n", icon, path);
-             free(path);
-          }
-     }
-   path = find_icon("tux");
-   if (path)
-     {
-        printf("Path to tux is %s\n", path);
-        free(path);
-     }
-   path = find_icon("blah");
-   if (path)
-     {
-        printf("Path to blah is %s\n", path);
-        free(path);
-     }
-
-   parse_ini_shutdown();
-   fdo_paths_shutdown();
-
-   _e17genmenu_shutdown();
-
-   exit(0);
-}
-#endif
 
 void
 _e17genmenu_help()
@@ -154,8 +62,6 @@ _e17genmenu_parseargs(int argc, char **argv)
                 _e17genmenu_help();
              if ((strstr(argv[i], "--backup")) || (strstr(argv[i], "-b")))
                 _e17genmenu_backup();
-             if ((strstr(argv[i], "--test")) || (strstr(argv[i], "-z")))
-                _e17genmenu_test_fdo_paths();
           }
      }
 }
@@ -221,6 +127,9 @@ main(int argc, char **argv)
 {
    char path[MAX_PATH];
    double start, begin, paths, gen;
+#ifdef DEBUG
+   int i;
+#endif
 
    /* Init E Stuff */
    _e17genmenu_init();
@@ -228,7 +137,6 @@ main(int argc, char **argv)
    start = ecore_time_get();
    /* Parse Arguments */
    _e17genmenu_parseargs(argc, argv);
-//_e17genmenu_test_fdo_paths();  /* For debugging purposes, makes it easier to gdb this. */
 
    /* Set App Args */
    ecore_app_args_set(argc, (const char **)argv);
@@ -238,6 +146,22 @@ main(int argc, char **argv)
    fdo_paths_init();
    paths = ecore_time_get() - begin;
    parse_ini_init();
+
+#ifdef DEBUG
+   /* You can iterate through the various path lists as needed. */
+   for (i = 0; i < fdo_paths_config->size; i++)
+      printf("FDO config path = %s\n", (char *)fdo_paths_config->elements[i].element);
+   for (i = 0; i < fdo_paths_menus->size; i++)
+      printf("FDO menu path = %s\n", (char *)fdo_paths_menus->elements[i].element);
+   for (i = 0; i < fdo_paths_directories->size; i++)
+      printf("FDO directory path = %s\n", (char *)fdo_paths_directories->elements[i].element);
+   for (i = 0; i < fdo_paths_desktops->size; i++)
+      printf("FDO desktop path = %s\n", (char *)fdo_paths_desktops->elements[i].element);
+   for (i = 0; i < fdo_paths_icons->size; i++)
+      printf("FDO icon path = %s\n", (char *)fdo_paths_icons->elements[i].element);
+   for (i = 0; i < fdo_paths_kde_legacy->size; i++)
+      printf("FDO kde legacy path = %s\n", (char *)fdo_paths_kde_legacy->elements[i].element);
+#endif
 
    /* Just being paranoid, and cause people have removed these during testing. */
    snprintf(path, sizeof(path), "%s/.e/e/applications/all", get_home());

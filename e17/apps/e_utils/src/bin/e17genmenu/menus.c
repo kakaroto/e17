@@ -5,6 +5,8 @@
 #include "parse.h"
 #include "menus.h"
 
+#define DEBUG 1
+
 extern int menu_count, item_count;
 
 static int _menu_make_apps(const void *data, Dumb_Tree * tree, int element, int level);
