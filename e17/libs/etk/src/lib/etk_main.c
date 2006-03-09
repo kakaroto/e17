@@ -14,6 +14,7 @@
 #include "etk_utils.h"
 #include "etk_theme.h"
 #include "etk_dnd.h"
+#include "etk_tooltips.h"
 #include "config.h"
 
 /**

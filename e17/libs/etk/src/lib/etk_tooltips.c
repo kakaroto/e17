@@ -220,8 +220,7 @@ void etk_tooltips_pop_down()
      return;
    
    etk_widget_hide(_etk_tooltips_window);
-   if(_etk_tooltips_timer)
-     ecore_timer_del(_etk_tooltips_timer);
+   _etk_tooltips_timer = NULL;
    _etk_tooltips_cur_object = NULL;
 }
 
@@ -240,6 +239,8 @@ static void _etk_tooltips_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In_Out
 /* Timer callback, pops up the tooltip */
 static int _etk_tooltips_timer_cb(void *data)
 {
+   if(!_etk_tooltips_timer || !_etk_tooltips_cur_object) 
+     return;
    etk_tooltips_pop_up(ETK_WIDGET(_etk_tooltips_cur_object));
    return 0;
 }
