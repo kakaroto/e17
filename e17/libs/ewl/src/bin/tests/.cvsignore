@@ -48,3 +48,9 @@ ewl_seeker.la
 ewl_seeker.lo
 ewl_statusbar.la
 ewl_statusbar.lo
+ewl_password.la
+ewl_password.lo
+ewl_menubar.la
+ewl_menubar.lo
+ewl_tree2.la
+ewl_tree2.lo

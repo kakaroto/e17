@@ -16,15 +16,12 @@ ewl_test_SOURCES		=	ewl_test.h \
 					ewl_image_test.c \
 					ewl_imenu_test.c \
 					ewl_menu_test.c \
-					ewl_menu_bar_test.c \
 					ewl_notebook_test.c \
-					ewl_password_test.c \
 					ewl_progressbar_test.c \
 					ewl_spinner_test.c \
 					ewl_table_test.c \
 					ewl_theme_test.c \
-					ewl_tree_test.c \
-					ewl_tree2_test.c
+					ewl_tree_test.c
 
 # ewl_test_LDFLAGS		=	
 ewl_test_LDADD			=	$(top_builddir)/src/lib/libewl.la @EDJE_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ @EMOTION_LIBS@ 

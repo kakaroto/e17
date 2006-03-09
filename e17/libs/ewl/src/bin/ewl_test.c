@@ -82,25 +82,12 @@ main(int argc, char **argv)
 				"such as Ewl_Menu and Ewl_IMenu."
 		},
 		{
-			"Menubar",
-		    	__create_menubar_test_window,
-		    	"ewl_menubar_test.c",
-			"Defines a menubar that can be used to hold menus."
-		},
-		{
 			"Notebook",
 		     	__create_notebook_test_window,
 		     	"ewl_notebook_test.c",
 			"Provides a container whose children\n"
 				"are pages that can be switched\n"
 				"between using tab labels along one\nedge"
-		},
-		{
-			"Password",
-		     	__create_password_test_window,
-		     	"ewl_password_test.c",
-			"Defines the Ewl_Password class to allow\n"
-				"for single line obscured text."
 		},
 		{
 			"Progressbar",
@@ -134,13 +121,6 @@ main(int argc, char **argv)
 			"Tree",
 		 	__create_tree_test_window,
 		 	"ewl_tree_test.c",
-			"Defines a widget for laying out other\n"
-				"widgets in a tree or list like manner."
-		},
-		{
-			"Tree2",
-		 	__create_tree2_test_window,
-		 	"ewl_tree2_test.c",
 			"Defines a widget for laying out other\n"
 				"widgets in a tree or list like manner."
 		},

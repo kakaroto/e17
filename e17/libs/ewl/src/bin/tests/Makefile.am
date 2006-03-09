@@ -21,8 +21,8 @@ pkg_LTLIBRARIES		= ewl_border.la ewl_box.la ewl_button.la \
 			  ewl_text_editor.la ewl_fileselector.la \
 			  ewl_floater.la ewl_icon.la ewl_iconbox.la  \
 			  ewl_tooltip.la ewl_seeker.la ewl_statusbar.la \
-			  ewl_scrollbar.la
-
+			  ewl_scrollbar.la ewl_password.la ewl_menubar.la \
+			  ewl_tree2.la
 
 ewl_border_la_SOURCES   = ewl_border.c
 ewl_border_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
@@ -185,6 +185,27 @@ ewl_scrollbar_la_LDFLAGS	= -module -avoid-version \
 			  -L$(top_builddir)/src/lib/.libs
 ewl_scrollbar_la_DEPENDENCIES = 
 
+ewl_password_la_SOURCES   = ewl_password.c
+ewl_password_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
+ewl_password_la_LDFLAGS	= -module -avoid-version \
+			  -L$(top_builddir)/src/lib \
+			  -L$(top_builddir)/src/lib/.libs
+ewl_password_la_DEPENDENCIES = 
+
+ewl_menubar_la_SOURCES   = ewl_menubar.c
+ewl_menubar_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
+ewl_menubar_la_LDFLAGS	= -module -avoid-version \
+			  -L$(top_builddir)/src/lib \
+			  -L$(top_builddir)/src/lib/.libs
+ewl_menubar_la_DEPENDENCIES = 
+
+ewl_tree2_la_SOURCES   = ewl_tree2.c
+ewl_tree2_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
+ewl_tree2_la_LDFLAGS	= -module -avoid-version \
+			  -L$(top_builddir)/src/lib \
+			  -L$(top_builddir)/src/lib/.libs
+ewl_tree2_la_DEPENDENCIES = 
+
 FILES = $(ewl_border_la_SOURCES) $(ewl_box_la_SOURCES) \
 	$(ewl_button_la_SOURCES) $(ewl_colordialog_la_SOURCES) \
 	$(ewl_datepicker_la_SOURCES) $(ewl_freebox_la_SOURCES) \
@@ -196,7 +217,8 @@ FILES = $(ewl_border_la_SOURCES) $(ewl_box_la_SOURCES) \
 	$(ewl_floater_la_SOURCES) $(ewl_icon_la_SOURCES) \
 	$(ewl_iconbox_la_SOURCES) $(ewl_tooltip_la_SOURCES) \
 	$(ewl_seeker_la_SOURCES) $(ewl_statusbar_la_SOURCES) \
-	$(ewl_scrollbar_la_SOURCES)
+	$(ewl_scrollbar_la_SOURCES) $(ewl_password_la_SOURCES) \
+	$(ewl_menubar_la_SOURCES) $(ewl_tree2_la_SOURCES)
 
 EXTRA_DIST = $(FILES)
 
