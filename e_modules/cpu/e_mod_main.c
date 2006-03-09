@@ -33,7 +33,11 @@ EAPI void *
 e_modapi_init(E_Module *m) 
 {
    Cpu *c;
-   
+
+   /* Set up module's message catalogue */
+   bindtextdomain(PACKAGE, LOCALEDIR);
+   bind_textdomain_codeset(PACKAGE, "UTF-8");
+
    c = _cpu_init(m);
    if (!c)
      return NULL;
@@ -88,8 +92,8 @@ e_modapi_info(E_Module *m)
 EAPI int
 e_modapi_about(E_Module *m) 
 {
-   e_module_dialog_show(_("Enlightenment Cpu Monitor Module"),
-			_("This module is used to monitor a cpu."));
+   e_module_dialog_show(D_("Enlightenment Cpu Monitor Module"),
+			D_("This module is used to monitor a cpu."));
    return 1;
 }
 

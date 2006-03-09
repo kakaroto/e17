@@ -1,5 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in e_modules-cpu.spec
 
+SUBDIRS = po
+
 EDJE_CC = @edje_cc@
 EDJE_FLAGS = -v
 

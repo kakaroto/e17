@@ -31,7 +31,7 @@ _configure_cpu_module(E_Container *con, Cpu *c)
    v->basic.apply_cfdata = _basic_apply_data;
    v->basic.create_widgets = _basic_create_widgets;
    
-   cfd = e_config_dialog_new(con, _("Cpu Configuration"), NULL, 0, v, c);
+   cfd = e_config_dialog_new(con, D_("Cpu Configuration"), NULL, 0, v, c);
    c->cfd = cfd;
 }
 
@@ -74,13 +74,13 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    c = cfd->data;
    
    o = e_widget_list_add(evas, 0, 0);
-   of = e_widget_framelist_add(evas, _("Cpu Settings"), 0);
-   ob = e_widget_check_add(evas, _("Show Text"), (&(cfdata->show_text)));
+   of = e_widget_framelist_add(evas, D_("Cpu Settings"), 0);
+   ob = e_widget_check_add(evas, D_("Show Text"), (&(cfdata->show_text)));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_check_add(evas, _("Show Graph"), (&(cfdata->show_graph)));   
+   ob = e_widget_check_add(evas, D_("Show Graph"), (&(cfdata->show_graph)));   
    e_widget_framelist_object_append(of, ob);
 
-   ob = e_widget_label_add(evas, _("Check Interval:"));
+   ob = e_widget_label_add(evas, D_("Check Interval:"));
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_slider_add(evas, 1, 0, _("%1.0f seconds"), 1, 60, 1, 0, NULL, &(cfdata->check_interval), 150);
    e_widget_framelist_object_append(of, ob);

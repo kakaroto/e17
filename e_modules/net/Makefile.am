@@ -1,5 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in e_modules-net.spec
 
+SUBDIRS = po
+
 EDJE_CC = @edje_cc@
 EDJE_FLAGS = -v
 EXTRA_DIST=$(files_DATA) eth_dev.png module_icon.png e_modules-net.spec e_modules-net.spec.in

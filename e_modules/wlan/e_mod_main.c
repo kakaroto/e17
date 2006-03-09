@@ -35,6 +35,10 @@ e_modapi_init(E_Module *m)
 {
    Wlan *n;
 
+   /* Set up module's message catalogue */
+   bindtextdomain(PACKAGE, LOCALEDIR);
+   bind_textdomain_codeset(PACKAGE, "UTF-8");
+
    n = _wlan_init(m);
    if (!n)
      return NULL;
@@ -89,8 +93,8 @@ e_modapi_info(E_Module *m)
 EAPI int
 e_modapi_about(E_Module *m)
 {
-   e_module_dialog_show(_("Enlightenment Wlan Monitor Module"),
-			_("This module is used to monitor a wlan device."));
+   e_module_dialog_show(D_("Enlightenment Wlan Monitor Module"),
+			D_("This module is used to monitor a wlan device."));
    return 1;
 }
 

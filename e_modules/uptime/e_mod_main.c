@@ -30,7 +30,11 @@ EAPI void *
 e_modapi_init(E_Module *m) 
 {
    Uptime *c;
-   
+
+   /* Set up module's message catalogue */
+   bindtextdomain(PACKAGE, LOCALEDIR);
+   bind_textdomain_codeset(PACKAGE, "UTF-8");
+
    c = _uptime_init(m);
    if (!c)
      return NULL;
@@ -85,8 +89,8 @@ e_modapi_info(E_Module *m)
 EAPI int
 e_modapi_about(E_Module *m) 
 {
-   e_module_dialog_show(_("Enlightenment Uptime Monitor Module"),
-			_("This module is used to monitor uptime."));
+   e_module_dialog_show(D_("Enlightenment Uptime Monitor Module"),
+			D_("This module is used to monitor uptime."));
    return 1;
 }
 
@@ -400,7 +404,7 @@ _uptime_face_update_values(void *data)
   
    cf = data;
    sysinfo(&s_info);
-   sprintf(u_date_time, "uptime: %ld days, %ld:%02ld:%02ld",
+   sprintf(u_date_time, D_("uptime: %ld days, %ld:%02ld:%02ld"),
 	   s_info.uptime / day, (s_info.uptime % day) / hour,
 	   (s_info.uptime % hour) / minute, s_info.uptime % minute);
    edje_object_part_text_set(cf->uptime_obj, "uptime", u_date_time);   

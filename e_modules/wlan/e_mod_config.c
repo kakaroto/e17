@@ -36,7 +36,7 @@ _configure_wlan_module(Wlan_Face *nf)
    v->basic.apply_cfdata = _basic_apply_data;
    v->basic.create_widgets = _basic_create_widgets;
    
-   cfd = e_config_dialog_new(nf->con, _("Wlan Configuration"), NULL, 0, v, nf);
+   cfd = e_config_dialog_new(nf->con, D_("Wlan Configuration"), NULL, 0, v, nf);
    nf->wlan->cfd = cfd;
 }
 
@@ -111,14 +111,14 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    int i;
    
    o = e_widget_list_add(evas, 0, 0);
-   of = e_widget_framelist_add(evas, _("General Settings"), 0);
-   ob = e_widget_check_add(evas, _("Show Text"), (&(cfdata->show_text)));
+   of = e_widget_framelist_add(evas, D_("General Settings"), 0);
+   ob = e_widget_check_add(evas, D_("Show Text"), (&(cfdata->show_text)));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_check_add(evas, _("Show Graph"), (&(cfdata->show_graph)));
+   ob = e_widget_check_add(evas, D_("Show Graph"), (&(cfdata->show_graph)));
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
    
-   of = e_widget_framelist_add(evas, _("Device Settings"), 0);
+   of = e_widget_framelist_add(evas, D_("Device Settings"), 0);
    ot = e_widget_table_add(evas, 0);   
    rg = e_widget_radio_group_new(&(cfdata->dev_num));
    i = 0;
@@ -130,7 +130,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 	i++;
      }
    i++;
-   ob = e_widget_label_add(evas, _("Check Interval:"));
+   ob = e_widget_label_add(evas, D_("Check Interval:"));
    e_widget_table_object_append(ot, ob, 0, i, 1, 1, 0, 0, 1, 0);
    i++;
    ob = e_widget_slider_add(evas, 1, 0, _("%1.0f seconds"), 1, 60, 1, 0, NULL, &(cfdata->check_interval), 150);
