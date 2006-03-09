@@ -534,7 +534,8 @@ _fdo_menus_legacy_menu(const void *data, char *path)
    int i, count = 0, menu_count = 0;
 
    legacy_data = (struct _fdo_menus_legacy_data *)data;
-   if (legacy_data->current->elements[1].type == DUMB_TREE_ELEMENT_TYPE_STRING)
+   if ((legacy_data->current) && (legacy_data->current->size > 0) &&
+       (legacy_data->current->elements[1].type == DUMB_TREE_ELEMENT_TYPE_STRING))
      {
         menu_path = (char *)legacy_data->current->elements[1].element;
         menu_path += 12 + legacy_data->menu_length;
