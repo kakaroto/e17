@@ -117,12 +117,6 @@ main(int argc, char **argv)
 				"and decrement the value."
 		},
 		{
-			"Statusbar",
-		      	__create_statusbar_test_window,
-		      	"ewl_statusbar_test.c",
-			"Provides a statusbar for the window."
-		},
-		{
 			"Table",
 		  	__create_table_test_window,
 		  	"ewl_table_test.c",

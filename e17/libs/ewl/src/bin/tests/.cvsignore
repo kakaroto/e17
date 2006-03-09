@@ -42,3 +42,9 @@ ewl_iconbox.la
 ewl_iconbox.lo
 ewl_tooltip.lo
 ewl_tooltip.la
+ewl_scrollbar.la
+ewl_scrollbar.lo
+ewl_seeker.la
+ewl_seeker.lo
+ewl_statusbar.la
+ewl_statusbar.lo
