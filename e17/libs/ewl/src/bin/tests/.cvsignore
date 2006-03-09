@@ -60,3 +60,5 @@ ewl_tree.lo
 ewl_tree.la
 ewl_table.la
 ewl_table.lo
+ewl_notebook.la
+ewl_notebook.lo

@@ -1,18 +1,75 @@
-#include "ewl_test.h"
+#include "Ewl_Test2.h"
+#include <stdio.h>
+#include <string.h>
 
-static Ewl_Widget *nb2_button;
+static int create_test(Ewl_Container *box);
+static Ewl_Widget *create_page(const char *name);
+static Ewl_Widget *create_main_page(void);
+static void notebook_cb_toggle_clicked(Ewl_Widget *w, void *ev, void *data);
+static void notebook_change_align(Ewl_Widget *w, void *ev, void *data);
+static void notebook_change_position(Ewl_Widget *w, void *ev, void *data);
+static void notebook_append_page(Ewl_Widget *w, void *ev, void *data);
+static void notebook_prepend_page(Ewl_Widget *w, void *ev, void *data);
+static void notebook_delete_page(Ewl_Widget *w, void *ev, void *data);
+
 static int count = 1;
 
-static Ewl_Widget *create_page(const char *name);
-
-static void
-__destroy_notebook_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
-						void *user_data __UNUSED__)
+void 
+test_info(Ewl_Test *test)
 {
-	ewl_widget_destroy(w);
+	test->name = "Notebook";
+	test->tip = "Provides a container whose children\n"
+			"are pages that can be switched\n"
+			"between using tab labels along one\nedge";
+	test->filename = "ewl_notebook.c";
+	test->func = create_test;
+	test->type = EWL_TEST_TYPE_CONTAINER;
+}
 
-	ewl_callback_append(nb2_button, EWL_CALLBACK_CLICKED,
-			    __create_notebook_test_window, NULL);
+static int
+create_test(Ewl_Container *box)
+{
+	Ewl_Widget *n, *o, *o2;
+	char buf[10];
+
+	n = ewl_notebook_new();
+	ewl_container_child_append(EWL_CONTAINER(box), n);
+	ewl_widget_name_set(n, "notebook");
+	ewl_widget_show(n);
+
+	/* append 3 pages */
+	for (count = 1; count < 4; count++)
+	{
+		o2 = ewl_label_new();
+		snprintf(buf, sizeof(buf), "Page %d", count);
+		ewl_label_text_set(EWL_LABEL(o2), buf);
+		ewl_widget_show(o2);
+
+		o = create_page(buf);
+		ewl_container_child_append(EWL_CONTAINER(n), o);
+		ewl_notebook_page_tab_widget_set(EWL_NOTEBOOK(n), o, o2);
+		ewl_widget_show(o);
+	}
+
+	/* insert a page after the first */
+	o2 = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(o2), "Page 1.5");
+	ewl_widget_show(o2);
+
+	o = create_page("Page 1.5");
+	ewl_container_child_insert(EWL_CONTAINER(n), o, 1);
+	ewl_notebook_page_tab_widget_set(EWL_NOTEBOOK(n), o, o2);
+	ewl_widget_show(o);
+
+	/* prepend the main page */
+	o = create_main_page();
+	ewl_container_child_prepend(EWL_CONTAINER(n), o);
+	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(n), o, "Main");
+	ewl_widget_show(o);
+
+	ewl_notebook_visible_page_set(EWL_NOTEBOOK(n), o);
+
+	return 1;
 }
 
 static void
@@ -258,71 +315,5 @@ create_page(const char *name)
 	ewl_widget_show(o);
 
 	return box;
-}
-
-void
-__create_notebook_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
-						void *user_data __UNUSED__)
-{
-	Ewl_Widget *win, *box, *n, *o, *o2;
-	char buf[10];
-
-	nb2_button = w;
-
-	win = ewl_window_new();
-	ewl_window_title_set(EWL_WINDOW(win), "Notebook Test");
-	ewl_window_name_set(EWL_WINDOW(win), "EWL Test Application");
-	ewl_window_class_set(EWL_WINDOW(win), "EFL Test Application");
-
-	if (w) {
-		ewl_callback_del(w, EWL_CALLBACK_CLICKED,
-				 __create_notebook_test_window);
-		ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW,
-				    __destroy_notebook_test_window, NULL);
-	} else 
-		ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW,
-						__close_main_window, NULL);
-	ewl_widget_show(win);
-
-	box = ewl_hbox_new();
-	ewl_container_child_append(EWL_CONTAINER(win), box);
-	ewl_widget_show(box);
-
-	n = ewl_notebook_new();
-	ewl_container_child_append(EWL_CONTAINER(box), n);
-	ewl_widget_name_set(n, "notebook");
-	ewl_widget_show(n);
-
-	/* append 3 pages */
-	for (count = 1; count < 4; count++)
-	{
-		o2 = ewl_label_new();
-		snprintf(buf, sizeof(buf), "Page %d", count);
-		ewl_label_text_set(EWL_LABEL(o2), buf);
-		ewl_widget_show(o2);
-
-		o = create_page(buf);
-		ewl_container_child_append(EWL_CONTAINER(n), o);
-		ewl_notebook_page_tab_widget_set(EWL_NOTEBOOK(n), o, o2);
-		ewl_widget_show(o);
-	}
-
-	/* insert a page after the first */
-	o2 = ewl_label_new();
-	ewl_label_text_set(EWL_LABEL(o2), "Page 1.5");
-	ewl_widget_show(o2);
-
-	o = create_page("Page 1.5");
-	ewl_container_child_insert(EWL_CONTAINER(n), o, 1);
-	ewl_notebook_page_tab_widget_set(EWL_NOTEBOOK(n), o, o2);
-	ewl_widget_show(o);
-
-	/* prepend the main page */
-	o = create_main_page();
-	ewl_container_child_prepend(EWL_CONTAINER(n), o);
-	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(n), o, "Main");
-	ewl_widget_show(o);
-
-	ewl_notebook_visible_page_set(EWL_NOTEBOOK(n), o);
 }
 

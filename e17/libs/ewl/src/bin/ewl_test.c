@@ -75,14 +75,6 @@ main(int argc, char **argv)
 				"such as Ewl_Menu and Ewl_IMenu."
 		},
 		{
-			"Notebook",
-		     	__create_notebook_test_window,
-		     	"ewl_notebook_test.c",
-			"Provides a container whose children\n"
-				"are pages that can be switched\n"
-				"between using tab labels along one\nedge"
-		},
-		{
 			"Progressbar",
 			__create_progressbar_test_window,
 			"ewl_progressbar_test.c",
