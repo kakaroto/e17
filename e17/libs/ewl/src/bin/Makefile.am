@@ -13,7 +13,6 @@ bin_PROGRAMS			=	$(EWLTESTPROGRAMS)
 ewl_test_DEPENDENCIES		=	$(top_builddir)/src/lib/libewl.la
 ewl_test_SOURCES		=	ewl_test.h \
 					ewl_test.c \
-					ewl_image_test.c \
 					ewl_imenu_test.c \
 					ewl_menu_test.c \
 					ewl_notebook_test.c \

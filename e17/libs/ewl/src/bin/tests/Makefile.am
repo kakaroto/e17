@@ -225,7 +225,8 @@ FILES = $(ewl_border_la_SOURCES) $(ewl_box_la_SOURCES) \
 	$(ewl_iconbox_la_SOURCES) $(ewl_tooltip_la_SOURCES) \
 	$(ewl_seeker_la_SOURCES) $(ewl_statusbar_la_SOURCES) \
 	$(ewl_scrollbar_la_SOURCES) $(ewl_password_la_SOURCES) \
-	$(ewl_menubar_la_SOURCES) $(ewl_tree2_la_SOURCES)
+	$(ewl_menubar_la_SOURCES) $(ewl_tree2_la_SOURCES) \
+	$(ewl_image_la_SOURCES)
 
 EXTRA_DIST = $(FILES)
 

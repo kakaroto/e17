@@ -28,7 +28,6 @@ struct _test_set
 };
 
 void __close_main_window                (Ewl_Widget * w, void *ev_data, void *user_data);
-void __create_image_test_window         (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_imenu_test_window         (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_menu_test_window          (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_notebook_test_window      (Ewl_Widget * w, void *ev_data, void *user_data);

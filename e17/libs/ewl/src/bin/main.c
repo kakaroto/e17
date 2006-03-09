@@ -383,8 +383,8 @@ fill_source_text(Ewl_Test *test)
 
 		ewl_text_text_set(EWL_TEXT(txt), str);
 		free(str);
+		fclose(file);
 	}
-	fclose(file);
 }
 
 static void

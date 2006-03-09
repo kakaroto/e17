@@ -58,13 +58,6 @@ main(int argc, char **argv)
 	Ewl_Widget     *prow;
 	static test_set       tests[] = {
 		{
-			"Image",
-		  	__create_image_test_window,
-		  	"ewl_image_test.c",
-			"Provides a widget for displaying evas\n"
-				"loadable images, and edjes.",
-	       	},
-		{
 			"IMenu",
 		  	__create_imenu_test_window,
 		  	"ewl_imenu_test.c",
