@@ -245,7 +245,7 @@ eapp_populate(Ewl_Tree *tree, char *file, char *lang, char *winclass)
     row[1] = ewl_image_new();
     ewl_image_file_set(EWL_IMAGE(row[1]), file, "icon");
     ewl_image_proportional_set(EWL_IMAGE(row[1]), TRUE);
-    ewl_image_scale_set(EWL_IMAGE(row[1]), 32, 32);
+    ewl_image_size_set(EWL_IMAGE(row[1]), 32, 32);
     /* FIXME: This can give it a decent background, but introduces a sizing
      * issue to track down
      * ewl_widget_appearance_set(row[1], "entry"); */
