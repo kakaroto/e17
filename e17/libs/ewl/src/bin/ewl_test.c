@@ -75,12 +75,6 @@ main(int argc, char **argv)
 				"such as Ewl_Menu and Ewl_IMenu."
 		},
 		{
-			"Progressbar",
-			__create_progressbar_test_window,
-			"ewl_progressbar_test.c",
-			"Provides a progress bar from a given value."
-		},
-		{
 			"Theme",
 		  	__create_theme_test_window,
 		  	"ewl_theme_test.c",

@@ -24,7 +24,7 @@ pkg_LTLIBRARIES		= ewl_border.la ewl_box.la ewl_button.la \
 			  ewl_scrollbar.la ewl_password.la ewl_menubar.la \
 			  ewl_tree2.la ewl_image.la ewl_tree.la \
 			  ewl_table.la ewl_notebook.la ewl_scrollpane.la \
-			  ewl_spinner.la
+			  ewl_spinner.la ewl_progressbar.la
 
 ewl_border_la_SOURCES   = ewl_border.c
 ewl_border_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
@@ -250,6 +250,13 @@ ewl_spinner_la_LDFLAGS	= -module -avoid-version \
 			  -L$(top_builddir)/src/lib/.libs
 ewl_spinner_la_DEPENDENCIES = 
 
+ewl_progressbar_la_SOURCES   = ewl_progressbar.c
+ewl_progressbar_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
+ewl_progressbar_la_LDFLAGS	= -module -avoid-version \
+			  -L$(top_builddir)/src/lib \
+			  -L$(top_builddir)/src/lib/.libs
+ewl_progressbar_la_DEPENDENCIES = 
+
 FILES = $(ewl_border_la_SOURCES) $(ewl_box_la_SOURCES) \
 	$(ewl_button_la_SOURCES) $(ewl_colordialog_la_SOURCES) \
 	$(ewl_datepicker_la_SOURCES) $(ewl_freebox_la_SOURCES) \
@@ -265,7 +272,8 @@ FILES = $(ewl_border_la_SOURCES) $(ewl_box_la_SOURCES) \
 	$(ewl_menubar_la_SOURCES) $(ewl_tree2_la_SOURCES) \
 	$(ewl_image_la_SOURCES) $(ewl_tree_la_SOURCES) \
 	$(ewl_table_la_SOURCES) $(ewl_notebook_la_SOURCES) \
-	$(ewl_scrollpane_la_SOURCES) $(ewl_spinner_la_SOURCES)
+	$(ewl_scrollpane_la_SOURCES) $(ewl_spinner_la_SOURCES) \
+	$(ewl_progressbar_la_SOURCES)
 
 EXTRA_DIST = $(FILES)
 
