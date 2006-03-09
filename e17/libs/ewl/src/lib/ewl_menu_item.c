@@ -47,7 +47,7 @@ ewl_menu_item_init(Ewl_Menu_Item *item)
 	ewl_button_fill_policy_set(EWL_BUTTON(item), EWL_FLAG_FILL_HFILL);
 	ewl_button_alignment_set(EWL_BUTTON(item), EWL_FLAG_ALIGN_LEFT);
 	ewl_button_label_set(EWL_BUTTON(item), "");
-	ewl_button_image_scale_to(EWL_BUTTON(item), 16, 16);
+	ewl_button_image_size_set(EWL_BUTTON(item), 16, 16);
 	ewl_widget_appearance_set(EWL_WIDGET(item), EWL_MENU_ITEM_TYPE);
 	ewl_widget_inherit(EWL_WIDGET(item), EWL_MENU_ITEM_TYPE);
 

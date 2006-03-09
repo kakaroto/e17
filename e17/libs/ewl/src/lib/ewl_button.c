@@ -289,7 +289,7 @@ ewl_button_image_get(Ewl_Button *b)
  * @brief Set the size of the image inside the button.
  */
 void
-ewl_button_image_scale_to(Ewl_Button *b, int width, int height)
+ewl_button_image_size_set(Ewl_Button *b, int width, int height)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
@@ -298,8 +298,25 @@ ewl_button_image_scale_to(Ewl_Button *b, int width, int height)
 	if (!b->image_object)
 		ewl_button_image_set(b, "", NULL);
 
-	ewl_image_proportional_set(EWL_IMAGE(b->image_object), TRUE);
-	ewl_image_scale_to(EWL_IMAGE(b->image_object), width, height);
+	ewl_image_size_set(EWL_IMAGE(b->image_object), width, height);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param b: The button to get the image size on
+ * @return Returns no value.
+ * @brief Get the size of the image inside the button.
+ */
+void
+ewl_button_image_size_get(Ewl_Button *b, int *width, int *height)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("b", b);
+	DCHECK_TYPE("b", b, EWL_BUTTON_TYPE);
+
+	if (!b->image_object)
+		ewl_image_size_get(EWL_IMAGE(b->image_object), width, height);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
