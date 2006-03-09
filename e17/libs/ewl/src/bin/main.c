@@ -20,9 +20,11 @@ static void run_test_boxed(Ewl_Widget *w, void *ev, void *data);
 static void run_window_test(Ewl_Test *test, int width, int height);
 static void run_unit_tests(Ewl_Test *test);
 static int create_main_test_window(Ewl_Container *win);
-static void fill_source_text(Ewl_Test *text);
+static void fill_source_text(Ewl_Test *test);
+static void setup_unit_tests(Ewl_Test *test);
 
 static void ewl_test_cb_delete_window(Ewl_Widget *w, void *ev, void *data);
+static void cb_run_unit_tests(Ewl_Widget *w, void *ev, void *data);
 
 static Ecore_List *tests = NULL;
 static int window_count = 0;
@@ -183,6 +185,7 @@ run_test_boxed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	ewl_notebook_visible_page_set(EWL_NOTEBOOK(n), c);
 
 	fill_source_text(t);
+	setup_unit_tests(t);
 }
 
 static int
@@ -261,6 +264,7 @@ create_main_test_window(Ewl_Container *box)
 	Ewl_Widget *note, *tree, *o, *o2;
 	Ewl_Widget *sim, *adv, *misc, *container;
 	char *entries[1];
+	char *headers[] = {"Test", "Pass/Fail", "Reason"};
 
 	note = ewl_notebook_new();
 	ewl_container_child_append(box, note);
@@ -329,8 +333,21 @@ create_main_test_window(Ewl_Container *box)
 	o = ewl_vbox_new();
 	ewl_container_child_append(EWL_CONTAINER(note), o);
 	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(note), o, "Unit Tests");
-	ewl_widget_name_set(o, "unit_test_box");
 	ewl_widget_show(o);
+
+	o2 = ewl_tree_new(3);
+	ewl_container_child_append(EWL_CONTAINER(o), o2);
+	ewl_tree_headers_set(EWL_TREE(o2), headers);
+	ewl_widget_name_set(o2, "unit_test_tree");
+	ewl_widget_show(o2);
+
+	o2 = ewl_button_new();
+	ewl_container_child_append(EWL_CONTAINER(o), o2);
+	ewl_button_label_set(EWL_BUTTON(o2), "Run unit tests");
+	ewl_callback_append(o2, EWL_CALLBACK_CLICKED, cb_run_unit_tests, NULL);
+	ewl_object_fill_policy_set(EWL_OBJECT(o2), EWL_FLAG_FILL_SHRINK);
+	ewl_widget_name_set(o2, "unit_test_button");
+	ewl_widget_show(o2);
 
 	o = ewl_text_new();
 	ewl_container_child_append(EWL_CONTAINER(note), o);
@@ -369,4 +386,60 @@ fill_source_text(Ewl_Test *test)
 	}
 	fclose(file);
 }
+
+static void
+setup_unit_tests(Ewl_Test *test)
+{
+	Ewl_Widget *button, *tree;
+	char *entries[3];
+	int i;
+
+	button = ewl_widget_name_find("unit_test_button");
+	tree = ewl_widget_name_find("unit_test_tree");
+
+	ewl_container_reset(EWL_CONTAINER(tree));
+
+	/* attach the test data to the button */
+	ewl_widget_data_set(button, "test", test);
+
+	/* just clean up if no tests */
+	if (!test->unit_tests) return;
+
+	for (i = 0; test->unit_tests[i].func; i++)
+	{
+		entries[0] = (char *)test->unit_tests[i].name;
+		entries[1] = "";
+		entries[2] = "";
+
+		ewl_tree_text_row_add(EWL_TREE(tree), NULL, entries);
+	}
+}
+
+static void
+cb_run_unit_tests(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
+{
+	Ewl_Test *test;
+	Ewl_Widget *tree;
+	char *entries[3];
+	char buf[1024];
+	int i;
+
+	test = ewl_widget_data_get(w, "test");
+	if ((!test) || (!test->unit_tests)) return;
+
+	tree = ewl_widget_name_find("unit_test_tree");
+	ewl_container_reset(EWL_CONTAINER(tree));
+
+	for (i = 0; test->unit_tests[i].func; i++)
+	{
+		int ret;
+		ret = test->unit_tests[i].func(buf, sizeof(buf));
+
+		entries[0] = (char *)test->unit_tests[i].name;
+		entries[1] = (ret ? "PASS" : "FAIL");
+		entries[2] = (ret ? "" : buf);
+		ewl_tree_text_row_add(EWL_TREE(tree), NULL, entries);
+	}
+}
+
 
