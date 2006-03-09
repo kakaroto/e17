@@ -18,6 +18,7 @@ static void ewl_test_print_tests(void);
 
 static void run_test_boxed(Ewl_Widget *w, void *ev, void *data);
 static void run_window_test(Ewl_Test *test, int width, int height);
+static void run_unit_tests(Ewl_Test *test);
 static int create_main_test_window(Ewl_Container *win);
 static void fill_source_text(Ewl_Test *text);
 
@@ -29,7 +30,7 @@ static int window_count = 0;
 int
 main(int argc, char **argv)
 {
-	int i;
+	int i, unit_test = 0, ran_test = 0;
 
 	/* initialize the ewl library */
 	if (!ewl_init(&argc, argv))
@@ -54,6 +55,8 @@ main(int argc, char **argv)
 			ewl_test_print_tests();
 			exit(0);
 		}
+		else if (!strncmp(argv[i], "-unit", 5))
+			unit_test = 1;
 
 		/* see if this thing was a test to run */
 		ecore_list_goto_first(tests);
@@ -61,14 +64,19 @@ main(int argc, char **argv)
 		{
 			if (!strcasecmp(argv[i], t->name))
 			{
-				run_window_test(t, 0, 0);
+				if (unit_test)
+					run_unit_tests(t);
+				else
+					run_window_test(t, 0, 0);
+
+				ran_test ++;
 				break;
 			}
 		}
 	}
 
 	/* no passed in tests, run the main test app */
-	if (window_count < 1)
+	if (!ran_test)
 	{
 		Ewl_Test test;
 
@@ -110,6 +118,9 @@ run_window_test(Ewl_Test *test, int width, int height)
 {
 	Ewl_Widget *win, *box;
 
+	/* nothing to do if there is no ui test */
+	if (!test->func) return;
+
 	win = ewl_window_new();
 	ewl_window_title_set(EWL_WINDOW(win), test->name);
 	ewl_window_name_set(EWL_WINDOW(win), test->name);
@@ -130,6 +141,27 @@ run_window_test(Ewl_Test *test, int width, int height)
 }
 
 static void
+run_unit_tests(Ewl_Test *test)
+{
+	Ewl_Unit_Test *t;
+	char buf[1024];
+
+	/* no unit tests, nothign to do */
+	if (!test->unit_tests) return;
+
+	ecore_list_goto_first(test->unit_tests);
+	while ((t = ecore_list_next(test->unit_tests)))
+	{
+		int ret;
+
+		printf("Running %s: ", t->name);
+		ret = t->func(buf, sizeof(buf));
+		printf("%s %s", (ret ? "passed" : "failed"), buf);
+		buf[0] = '\0';
+	}
+}
+
+static void
 run_test_boxed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 							void *data)
 {
@@ -137,6 +169,9 @@ run_test_boxed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	Ewl_Widget *c, *n;
 
 	t = data;
+
+	/* nothing to do if no ui test */
+	if (!t->func) return;
 
 	c = ewl_widget_name_find("execute_box");
 	ewl_container_reset(EWL_CONTAINER(c));
@@ -198,6 +233,7 @@ ewl_test_setup_tests(void)
 		{
 			void (*func_info)(Ewl_Test *test);
 
+			/* the UI test info */
 			func_info = dlsym(handle, "test_info");
 			if (func_info)
 			{
@@ -286,6 +322,12 @@ create_main_test_window(Ewl_Container *box)
 	ewl_container_child_append(EWL_CONTAINER(note), o);
 	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(note), o, "Execute");
 	ewl_widget_name_set(o, "execute_box");
+	ewl_widget_show(o);
+
+	o = ewl_vbox_new();
+	ewl_container_child_append(EWL_CONTAINER(note), o);
+	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(note), o, "Unit Tests");
+	ewl_widget_name_set(o, "unit_test_box");
 	ewl_widget_show(o);
 
 	o = ewl_text_new();

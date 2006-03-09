@@ -29,6 +29,14 @@ struct Ewl_Test
 	void *handle;
 	Ewl_Test_Type type;
 	int (*func)(Ewl_Container *con);
+	Ecore_List *unit_tests;
+};
+
+typedef struct Ewl_Unit_Test Ewl_Unit_Test;
+struct Ewl_Unit_Test
+{
+	const char *name;
+	int (*func)(char *buf, int len);
 };
 
 #endif
