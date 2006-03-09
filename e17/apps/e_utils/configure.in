@@ -173,8 +173,8 @@ if test "x$have_evas" = "xyes" -a "x$have_ecore" = "xyes" -a "x$have_edje" = "xy
   build_ethemes="yes"
 fi
 
-AM_CONDITIONAL(BUILD_E17GENMENU, test $build_e17genmenu = "xyes")
-AM_CONDITIONAL(BUILD_EAPP_EDIT, test $build_eapp_edit = "xyes")
+AM_CONDITIONAL(BUILD_E17GENMENU, test $xbuild_e17genmenu = "xyes")
+AM_CONDITIONAL(BUILD_EAPP_EDIT, test $xbuild_eapp_edit = "xyes")
 AM_CONDITIONAL(BUILD_E17SETROOT, test "x$build_e17setroot" = "xyes")
 AM_CONDITIONAL(BUILD_ENTANGLE, test "x$build_entangle" = "xyes")
 AM_CONDITIONAL(BUILD_EMBLEM, test "x$build_emblem" = "xyes")
