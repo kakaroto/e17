@@ -56,3 +56,5 @@ ewl_tree2.la
 ewl_tree2.lo
 ewl_image.la
 ewl_image.lo
+ewl_tree.lo
+ewl_tree.la

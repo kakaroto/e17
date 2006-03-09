@@ -110,13 +110,6 @@ main(int argc, char **argv)
 			"Shows the utilization of themes\n"
 				"inside a EWL application."
 	       	},
-		{
-			"Tree",
-		 	__create_tree_test_window,
-		 	"ewl_tree_test.c",
-			"Defines a widget for laying out other\n"
-				"widgets in a tree or list like manner."
-		},
 		{ 0, NULL, 0, NULL }
 	};
 
