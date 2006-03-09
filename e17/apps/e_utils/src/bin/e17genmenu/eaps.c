@@ -74,11 +74,10 @@ write_icon(char *f, char *i)
 #ifdef DEBUG
    fprintf(stderr, "\tWriting Icon %s\n", i);
 #endif
-   if (!i)
-      ifile = ecore_file_get_file(DEFAULTICON);
-   if (i)
-      ifile = ecore_file_get_file(i);
-
+   /* FIXME: This does not seem to be catching all the problems.  Further head scratching is needed. */
+   if ((!i) || (i[0] == '\0'))
+      i = DEFAULTICON;
+   ifile = ecore_file_get_file(i);
    idir = ecore_file_get_dir(i);
 
    eet = engrave_file_new();

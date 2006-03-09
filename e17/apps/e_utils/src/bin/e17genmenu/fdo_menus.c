@@ -534,8 +534,16 @@ _fdo_menus_legacy_menu(const void *data, char *path)
    int i, count = 0, menu_count = 0;
 
    legacy_data = (struct _fdo_menus_legacy_data *)data;
-   menu_path = (char *)legacy_data->current->elements[1].element;
-   menu_path += 12 + legacy_data->menu_length;
+   if (legacy_data->current->elements[1].type == DUMB_TREE_ELEMENT_TYPE_STRING)
+     {
+        menu_path = (char *)legacy_data->current->elements[1].element;
+        menu_path += 12 + legacy_data->menu_length;
+     }
+   else
+     {
+        menu_path = "";
+        printf("  PROBLEM IN LEGACYDIR FILE - %s - %s  %s\n", legacy_data->prefix, legacy_data->path, &path[legacy_data->length]);
+     }
 
    for (i = legacy_data->length; path[i] != '\0'; i++)
      {
