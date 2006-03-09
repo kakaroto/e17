@@ -81,14 +81,6 @@ main(int argc, char **argv)
 			"Provides a progress bar from a given value."
 		},
 		{
-			"Spinner",
-		    	__create_spinner_test_window,
-		    	"ewl_spinner_test.c",
-			"Provides a field for entering numerical\n"
-				"values, along with buttons to increment\n"
-				"and decrement the value."
-		},
-		{
 			"Theme",
 		  	__create_theme_test_window,
 		  	"ewl_theme_test.c",
