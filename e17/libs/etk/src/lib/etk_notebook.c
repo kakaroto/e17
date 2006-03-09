@@ -244,7 +244,7 @@ int etk_notebook_page_num_get(Etk_Notebook *notebook, Etk_Widget *child)
    int i = 0;
    
    if (!notebook)
-     return -1;
+     return 0;
    
    for(l = notebook->pages; l; l = l->next)
    {      

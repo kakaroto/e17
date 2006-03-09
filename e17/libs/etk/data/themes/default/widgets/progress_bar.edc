@@ -1,6 +1,9 @@
 group {
    name: "progress_bar";
    min: 120 18;
+   data {      
+      item: "filler_pulse_width" "0.3";
+   }
    parts {
       part {
          name: "progress_bar";

@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <Edje.h>
+#include "etk_widget.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
@@ -23,6 +24,7 @@ static void _etk_progress_bar_constructor(Etk_Progress_Bar *progress_bar);
 static void _etk_progress_bar_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_progress_bar_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_progress_bar_update(Etk_Progress_Bar *progress_bar);
+static void _etk_progress_bar_realize_cb(Etk_Object *object, void *data);
 
 /**************************
  *
@@ -59,7 +61,14 @@ Etk_Type *etk_progress_bar_type_get()
  */
 Etk_Widget *etk_progress_bar_new()
 {
-   return etk_widget_new(ETK_PROGRESS_BAR_TYPE, "theme_group", "progress_bar", NULL);
+   Etk_Widget *progress_bar;
+   
+   progress_bar = etk_widget_new(ETK_PROGRESS_BAR_TYPE, "theme_group", "progress_bar", NULL);
+   if(!progress_bar)
+     return NULL;
+   
+   etk_signal_connect("realize", ETK_OBJECT(progress_bar), ETK_CALLBACK(_etk_progress_bar_realize_cb), NULL);
+   return progress_bar;
 }
 
 /**
@@ -68,7 +77,14 @@ Etk_Widget *etk_progress_bar_new()
  */
 Etk_Widget *etk_progress_bar_new_with_text(const char *text)
 {
-   return etk_widget_new(ETK_PROGRESS_BAR_TYPE, "theme_group", "progress_bar", "text", text, NULL);
+   Etk_Widget *progress_bar;
+   
+   progress_bar =  etk_widget_new(ETK_PROGRESS_BAR_TYPE, "theme_group", "progress_bar", "text", text, NULL);
+   if(!progress_bar)
+     return NULL;
+   
+   etk_signal_connect("realize", ETK_OBJECT(progress_bar), ETK_CALLBACK(_etk_progress_bar_realize_cb), NULL);
+   return progress_bar;   
 }
 
 /**
@@ -301,11 +317,19 @@ static void _etk_progress_bar_update(Etk_Progress_Bar *progress_bar)
    else
    {
       edje_object_part_drag_value_set(widget->theme_object, "filler", progress_bar->pulse_pos, 0.0);
-      /* TODO: the size of the filler should be themable */
-      edje_object_part_drag_size_set(widget->theme_object, "filler", 0.3, 0.0);
+      edje_object_part_drag_size_set(widget->theme_object, "filler", progress_bar->filler_pulse_w, 0.0);
    }
    
    etk_widget_theme_object_part_text_set(widget, "text", progress_bar->text ? progress_bar->text : "");
+}
+
+static void _etk_progress_bar_realize_cb(Etk_Object *object, void *data)
+{     
+   Etk_Progress_Bar *progress_bar;
+   
+   progress_bar = ETK_PROGRESS_BAR(object);
+   if (etk_widget_theme_object_data_get(ETK_WIDGET(object), "filler_pulse_width", "%lg", &progress_bar->filler_pulse_w) != 1)
+     progress_bar->filler_pulse_w = 0.3;
 }
 
 /** @} */

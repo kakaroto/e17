@@ -42,6 +42,7 @@ struct _Etk_Progress_Bar
    double fraction;
    double pulse_pos;
    double pulse_step;
+   double filler_pulse_w;
    Etk_Progress_Bar_Orientation pulse_dir;
    Etk_Progress_Bar_Orientation orientation;
    Etk_Bool is_pulsing;
