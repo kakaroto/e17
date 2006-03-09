@@ -240,6 +240,45 @@ const char *etk_filechooser_widget_current_folder_get(Etk_Filechooser_Widget *fi
 }
 
 /**
+ * @brief Retrives the current file selected
+ * @return Returns filename
+ */
+const char *etk_filechooser_widget_selected_file_get(Etk_Filechooser_Widget *filechooser_widget)
+{
+   const char *filename;
+   Etk_Tree_Row *row;
+
+   if (!filechooser_widget && !(filechooser_widget->files_tree))
+      return NULL;
+
+   row = etk_tree_selected_row_get(ETK_TREE(filechooser_widget->files_tree));
+   etk_tree_row_fields_get(row, filechooser_widget->files_name_col, NULL, NULL, &filename, NULL);
+
+   return filename;
+}
+
+/**
+ * @brief Retrives the current files selected
+ * @return Returns filenames list
+ */
+Evas_List *etk_filechooser_widget_selected_files_get(Etk_Filechooser_Widget *filechooser_widget)
+{
+    char *filename;
+    Evas_List *files = NULL;
+    Evas_List *selected_rows;
+    Evas_List *l;
+
+    selected_rows = etk_tree_selected_rows_get(ETK_TREE(filechooser_widget->files_tree));
+    for(l = selected_rows; l; l = l->next)
+     {
+       etk_tree_row_fields_get(l->data, filechooser_widget->files_name_col, NULL, NULL, &filename, NULL);
+       files = evas_list_append(files, filename);
+     }
+
+    return files;
+}
+
+/**
  * @brief Sets if the filechooser widget can select multiple files
  * @param filechooser_widget a filechooser widget
  * @param select_multiple ETK_TRUE to allow the filechooser to select multiple files

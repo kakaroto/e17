@@ -2793,7 +2793,7 @@ static void _etk_widget_dnd_drag_mouse_move_cb(Etk_Object *object, void *event, 
       const char **types;
       unsigned int num_types;
       char *data;
-      Etk_Drag *drag;
+      Etk_Widget *drag;
       
       drag = (ETK_WIDGET(object))->drag;
       
@@ -2805,7 +2805,7 @@ static void _etk_widget_dnd_drag_mouse_move_cb(Etk_Object *object, void *event, 
       
       //etk_drag_types_set(drag, types, num_types);
       //etk_drag_data_set(drag, data, strlen(data) + 1);
-      etk_drag_begin(drag);
+      etk_drag_begin(ETK_DRAG(drag));
    }
 }
 

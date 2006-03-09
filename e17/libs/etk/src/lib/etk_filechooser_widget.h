@@ -58,6 +58,9 @@ Etk_Bool etk_filechooser_widget_show_hidden_get(Etk_Filechooser_Widget *filechoo
 void etk_filechooser_widget_current_folder_set(Etk_Filechooser_Widget *filechooser_widget, const char *folder);
 const char *etk_filechooser_widget_current_folder_get(Etk_Filechooser_Widget *filechooser_widget);
 
+const char *etk_filechooser_widget_selected_file_get(Etk_Filechooser_Widget *widget);
+Evas_List *etk_filechooser_widget_selected_files_get(Etk_Filechooser_Widget *widget);
+
 /** @} */
 
 #endif
