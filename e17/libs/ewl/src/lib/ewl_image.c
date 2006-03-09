@@ -604,8 +604,6 @@ ewl_image_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 		sw = (double)ww / (double)i->ow;
 		sh = (double)hh / (double)i->oh;
-		printf("Image size: %dx%d\n", ww, hh);
-		printf("Scale ratios: %fx%f\n", sw, sh);
 		if (sw < sh) {
 			hh = sw * i->oh;
 		}
