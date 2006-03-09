@@ -240,7 +240,7 @@ static void _etk_tooltips_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In_Out
 static int _etk_tooltips_timer_cb(void *data)
 {
    if(!_etk_tooltips_timer || !_etk_tooltips_cur_object) 
-     return;
+     return 0;
    etk_tooltips_pop_up(ETK_WIDGET(_etk_tooltips_cur_object));
    return 0;
 }
