@@ -41,3 +41,5 @@ when a color is changed
 * toolbar
 * drag and drop [In progress: CodeWarrior]
 * copy and paste [In progress: CodeWarrior]
+* signals in dialog
+* add spin buttons and sliders to colorpicker
