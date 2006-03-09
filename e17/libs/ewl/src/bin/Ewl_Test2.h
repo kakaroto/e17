@@ -19,6 +19,13 @@ enum Ewl_Test_Type
 };
 typedef enum Ewl_Test_Type Ewl_Test_Type;
 
+typedef struct Ewl_Unit_Test Ewl_Unit_Test;
+struct Ewl_Unit_Test
+{
+	const char *name;
+	int (*func)(char *buf, int len);
+};
+
 typedef struct Ewl_Test Ewl_Test;
 struct Ewl_Test
 {
@@ -29,14 +36,7 @@ struct Ewl_Test
 	void *handle;
 	Ewl_Test_Type type;
 	int (*func)(Ewl_Container *con);
-	Ecore_List *unit_tests;
-};
-
-typedef struct Ewl_Unit_Test Ewl_Unit_Test;
-struct Ewl_Unit_Test
-{
-	const char *name;
-	int (*func)(char *buf, int len);
+	Ewl_Unit_Test *unit_tests;
 };
 
 #endif

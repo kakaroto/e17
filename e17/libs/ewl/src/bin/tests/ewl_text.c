@@ -8,6 +8,13 @@ static void trigger_cb_mouse_out(Ewl_Widget *w, void *ev, void *data);
 static void trigger_cb_mouse_in(Ewl_Widget *w, void *ev, void *data);
 static void trigger_cb(Ewl_Widget *w, void *ev, void *data);
 
+static int text_test_set_get(char *buf, int len);
+
+static Ewl_Unit_Test text_unit_tests[] = {
+		{"set/get", text_test_set_get},	
+		{NULL, NULL}
+	};
+
 void 
 test_info(Ewl_Test *test)
 {
@@ -17,6 +24,7 @@ test_info(Ewl_Test *test)
 	test->filename = "ewl_text.c";
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_SIMPLE;
+	test->unit_tests = text_unit_tests;
 }
 
 static int
@@ -141,4 +149,24 @@ trigger_cb_mouse_out(Ewl_Widget *w, void *ev __UNUSED__,
 	ewl_text_cursor_position_set(EWL_TEXT(t->text_parent), t->pos);
 	ewl_text_color_apply(EWL_TEXT(t->text_parent), 0, 0, 0, 255, t->len);
 }
+
+static int
+text_test_set_get(char *buf, int len)
+{
+	Ewl_Widget *o;
+	char *t;
+	int ret = 0;
+
+	o = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(o), "This is the test text.");
+	t = ewl_text_text_get(EWL_TEXT(o));
+
+	if (strcmp(t, "This is the test text."))
+		snprintf(buf, len, "text_get did not match text_set.");
+	else
+		ret = 1;
+
+	return ret;
+}
+
 

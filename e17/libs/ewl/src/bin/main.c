@@ -88,7 +88,9 @@ main(int argc, char **argv)
 		run_window_test(&test, MAIN_WIDTH, MAIN_HEIGHT);
 	}
 
-	ewl_main();
+	if (!unit_test)
+		ewl_main();
+
 	return 0;
 }
 
@@ -143,20 +145,20 @@ run_window_test(Ewl_Test *test, int width, int height)
 static void
 run_unit_tests(Ewl_Test *test)
 {
-	Ewl_Unit_Test *t;
+	int i;
 	char buf[1024];
 
 	/* no unit tests, nothign to do */
 	if (!test->unit_tests) return;
 
-	ecore_list_goto_first(test->unit_tests);
-	while ((t = ecore_list_next(test->unit_tests)))
+	for (i = 0; test->unit_tests[i].func; i++)
 	{
 		int ret;
 
-		printf("Running %s: ", t->name);
-		ret = t->func(buf, sizeof(buf));
-		printf("%s %s", (ret ? "passed" : "failed"), buf);
+		printf("Running %s: ", test->unit_tests[i].name);
+		ret = test->unit_tests[i].func(buf, sizeof(buf));
+		printf("%s %s\n", (ret ? "passed" : "failed"), 
+						(ret ? "" : buf));
 		buf[0] = '\0';
 	}
 }
