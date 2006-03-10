@@ -1,7 +1,7 @@
 PROJECT_NAME           = "Enlightened Widget Library"
 PROJECT_NUMBER         = 
 OUTPUT_DIRECTORY       = doc/
-INPUT                  = src/lib
+INPUT                  = src/lib src/bin src/bin/tests
 IMAGE_PATH             = doc/images/
 OUTPUT_LANGUAGE        = English
 GENERATE_HTML          = YES

@@ -10,6 +10,10 @@
 #define __UNUSED__
 #endif
 
+/**
+ * @enum Ewl_Test_Type
+ * The different types of tests available 
+ */
 enum Ewl_Test_Type
 {
 	EWL_TEST_TYPE_SIMPLE,
@@ -20,24 +24,38 @@ enum Ewl_Test_Type
 };
 typedef enum Ewl_Test_Type Ewl_Test_Type;
 
+/**
+ * Provides information on a unit test
+ */
 typedef struct Ewl_Unit_Test Ewl_Unit_Test;
+
+/**
+ * Contains the information needed to run a unit test
+ */
 struct Ewl_Unit_Test
 {
-	const char *name;
-	int (*func)(char *buf, int len);
+	const char *name;		 /**< The test name */
+	int (*func)(char *buf, int len); /**< The test function */
 };
 
+/**
+ * Provides information on an Ewl Test set
+ */
 typedef struct Ewl_Test Ewl_Test;
+
+/**
+ * Holds information on an Ewl Test set
+ */
 struct Ewl_Test
 {
-	const char *name;
-	const char *filename;
-	const char *tip;
+	const char *name;		 /**< The test name */
+	const char *filename;		 /**< Filename of the test */
+	const char *tip;		 /**< Tooltip for the test */
 
-	void *handle;
-	Ewl_Test_Type type;
-	int (*func)(Ewl_Container *con);
-	Ewl_Unit_Test *unit_tests;
+	void *handle;			 /**< Dynamic file handle for test */
+	Ewl_Test_Type type;		 /**< The type of test */
+	int (*func)(Ewl_Container *con); /**< The test function */
+	Ewl_Unit_Test *unit_tests;	 /**< The test unit tests */
 };
 
 #endif

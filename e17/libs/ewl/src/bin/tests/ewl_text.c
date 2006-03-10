@@ -3,6 +3,15 @@
 #include <string.h>
 #include <stdlib.h>
 
+/**
+ * @addtogroup Ewl_Text
+ * @{
+ * @section text_tut Tutorial
+ *
+ * You can use the text widget to display text stuff.
+ * @}
+ */
+
 static int create_test(Ewl_Container *box);
 static void trigger_cb_mouse_out(Ewl_Widget *w, void *ev, void *data);
 static void trigger_cb_mouse_in(Ewl_Widget *w, void *ev, void *data);
