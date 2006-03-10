@@ -65,6 +65,11 @@ ewl_media_init(Ewl_Media *m)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+/**
+ * @return Returns TRUE if the media widget is available, FALSE otherwise
+ * @brief This will check if the modules required for the media widget were
+ * available at compile time or not.
+ */
 unsigned int
 ewl_media_is_available(void)
 {

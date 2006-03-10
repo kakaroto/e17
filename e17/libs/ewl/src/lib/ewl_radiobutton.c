@@ -117,7 +117,7 @@ ewl_radiobutton_clicked_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		Ewl_Checkbutton *c;
 
 		ecore_list_goto_first(rb->chain);
-		while ((c = ecore_list_next(rb->chain)) != NULL) {
+		while ((c = ecore_list_next(rb->chain))) {
 			ewl_checkbutton_checked_set(c, 0);
 		}
 	}
