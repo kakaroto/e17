@@ -5,11 +5,9 @@
 
 /**
  * @addtogroup Ewl_Text
- * @{
  * @section text_tut Tutorial
  *
  * You can use the text widget to display text stuff.
- * @}
  */
 
 static int create_test(Ewl_Container *box);
