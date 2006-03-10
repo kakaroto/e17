@@ -1,18 +1,41 @@
-TODO:
+TODO (release version 1.0.0 when this is done):
+===============================================
+
+-menus
+  * new window
+  * save image as
+  * search
+  * rename
+  * delete
+  * open in options based on config values
+  * refresh
+  * release notes
+  * about
+  
+- options
+  * slide show speed
+  * path to favorites
+  * comments visibile / hidden by default (with remembering last state)
+  
+- wallpaper setting - center, stretch, tile
+
+- andy's comments feature
+  * gui bits
+  * comment code
+
+- key shotcuts
+  * x - fit / unfit to window
 
 + sorting
-- click on image to change
 + wheel changing / zooming
-- dnd
-- options
++ dnd
 + fix .spec file
 + make argv work with /path/to/image.png and not only /path/to/dir
-- wallpaper setting - center, stretch, tile
-- andy's comments feature
 
 BUGS:
+=====
 
-- fix autocomplete
+- fix autocomplete (combobox?)
 - if we're scrolled to the end of the dir tree, clicking on a dir needs to
   reset the scrollbar to the top.
 - if we're looking at a LOT of images and change dir before they have
