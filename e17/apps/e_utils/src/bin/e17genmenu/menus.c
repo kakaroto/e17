@@ -8,6 +8,7 @@
 #define DEBUG 1
 
 extern int menu_count, item_count;
+extern double generate_time;
 
 static int _menu_make_apps(const void *data, Dumb_Tree * tree, int element, int level);
 static void _menu_dump_each_hash_node(void *value, void *user_data);
@@ -18,6 +19,7 @@ make_menus()
    char *d;
    char *menu = "applications.menu";
    char *menu_file;
+   double begin;
 
    d = get_desktop_dir();
    if ((d) && (!get_fdo()))
@@ -29,7 +31,8 @@ make_menus()
 	   {
 	      int i;
 
-        printf("Generating menus.\n");
+              printf("Generating menus.\n");
+              begin = ecore_time_get();
               /* Check desktop files in these directories */
               check_for_dirs(GNOME_DIRS);    /* FIXME: probably obsolete. */
               check_for_dirs(KDE_DIRS);      /* FIXME: probably obsolete. */
@@ -38,6 +41,7 @@ make_menus()
                  check_for_dirs((char *)fdo_paths_desktops->elements[i].element);
               for (i = 0; i < fdo_paths_kde_legacy->size; i++)
                  check_for_dirs((char *)fdo_paths_kde_legacy->elements[i].element);
+              generate_time = ecore_time_get() - begin;
 	   }
 
         printf("Converting freedesktop.org (fdo) menus.\n");
