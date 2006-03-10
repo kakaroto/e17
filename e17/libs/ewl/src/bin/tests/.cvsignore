@@ -76,3 +76,5 @@ ewl_media.la
 ewl_media.lo
 ewl_imenu.la
 ewl_imenu.lo
+ewl_widget.la
+ewl_widget.lo

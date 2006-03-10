@@ -182,18 +182,19 @@ run_test_boxed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 	t = data;
 
-	/* nothing to do if no ui test */
-	if (!t->func) return;
+	fill_source_text(t);
+	setup_unit_tests(t);
 
 	c = ewl_widget_name_find("execute_box");
 	ewl_container_reset(EWL_CONTAINER(c));
-	t->func(EWL_CONTAINER(c));
+
+	if (t->type != EWL_TEST_TYPE_UNIT)
+		t->func(EWL_CONTAINER(c));
+	else
+		c = ewl_widget_name_find("unit_test_box");
 
 	n = ewl_widget_name_find("notebook");
 	ewl_notebook_visible_page_set(EWL_NOTEBOOK(n), c);
-
-	fill_source_text(t);
-	setup_unit_tests(t);
 }
 
 static int
@@ -270,9 +271,9 @@ create_main_test_window(Ewl_Container *box)
 {
 	Ewl_Test *t;
 	Ewl_Widget *menubar, *note, *tree, *o, *o2;
-	Ewl_Widget *sim, *adv, *misc, *container;
+	Ewl_Widget *sim, *adv, *misc, *container, *unit;
 	char *entries[1];
-	char *headers[] = {"Test", "Pass/Fail", "Reason"};
+	char *headers[] = {"Test", "Status", "Failure Reason"};
 
 	menubar = ewl_hmenubar_new();
 	ewl_container_child_append(EWL_CONTAINER(box), menubar);
@@ -336,6 +337,9 @@ create_main_test_window(Ewl_Container *box)
 	entries[0] = "Misc";
 	misc = ewl_tree_text_row_add(EWL_TREE(tree), NULL, entries);
 
+	entries[0] = "Unit";
+	unit = ewl_tree_text_row_add(EWL_TREE(tree), NULL, entries);
+
 	/* add the tests to the category rows */
 	ecore_list_goto_first(tests);
 	while ((t = ecore_list_next(tests)))
@@ -351,6 +355,8 @@ create_main_test_window(Ewl_Container *box)
 			parent = container;
 		else if (t->type == EWL_TEST_TYPE_MISC)
 			parent = misc;
+		else if (t->type == EWL_TEST_TYPE_UNIT)
+			parent = unit;
 
 		w = ewl_tree_text_row_add(EWL_TREE(tree), 
 					EWL_ROW(parent), entries);
@@ -377,6 +383,7 @@ create_main_test_window(Ewl_Container *box)
 	o = ewl_vbox_new();
 	ewl_container_child_append(EWL_CONTAINER(note), o);
 	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(note), o, "Unit Tests");
+	ewl_widget_name_set(o, "unit_test_box");
 	ewl_widget_show(o);
 
 	o2 = ewl_tree_new(3);
