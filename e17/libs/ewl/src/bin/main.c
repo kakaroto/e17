@@ -182,6 +182,13 @@ run_test_boxed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 	t = data;
 
+	/* make sure we have a function if we aren't a straight unit test */
+	if ((t->type != EWL_TEST_TYPE_UNIT) && (!t->func))
+	{
+		printf("Warning: Not UI test function defined.\n");
+		return;
+	}
+
 	fill_source_text(t);
 	setup_unit_tests(t);
 
