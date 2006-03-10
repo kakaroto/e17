@@ -1176,26 +1176,15 @@ _mount_box_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
 {
    Evas_Event_Mouse_Down *ev;
    Mount_Box *mntbox;
-   E_Manager *man;
-   E_Container *con;
 
    ev = event_info;
    mntbox = data;
    if (ev->button == 3)
      {
-        man = e_manager_current_get();
-        if (!man)
-           return;
-        con = e_container_current_get(man);
-        if (!con)
-           return;
-        if (con == NULL)
-           return;
-
-        e_menu_activate_mouse(mntbox->menu, e_zone_current_get(con),
+        e_menu_activate_mouse(mntbox->menu, e_zone_current_get(mntbox->con),
                               ev->output.x, ev->output.y, 1, 1,
                               E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
-        e_util_container_fake_mouse_up_later(con, 3);
+        e_util_container_fake_mouse_up_later(mntbox->con, 3);
      }
 }
 
