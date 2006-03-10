@@ -24,6 +24,7 @@ static void fill_source_text(Ewl_Test *test);
 static void setup_unit_tests(Ewl_Test *test);
 
 static void ewl_test_cb_delete_window(Ewl_Widget *w, void *ev, void *data);
+static void ewl_test_cb_exit(Ewl_Widget *w, void *ev, void *data);
 static void cb_run_unit_tests(Ewl_Widget *w, void *ev, void *data);
 
 static Ecore_List *tests = NULL;
@@ -104,6 +105,13 @@ ewl_test_cb_delete_window(Ewl_Widget *w, void *ev __UNUSED__,
 
 	if ((--window_count) < 1)
 		ewl_main_quit();
+}
+
+static void
+ewl_test_cb_exit(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+		 void *data __UNUSED__)
+{
+	ewl_main_quit();
 }
 
 static void
@@ -261,10 +269,46 @@ static int
 create_main_test_window(Ewl_Container *box)
 {
 	Ewl_Test *t;
-	Ewl_Widget *note, *tree, *o, *o2;
+	Ewl_Widget *menubar, *note, *tree, *o, *o2;
 	Ewl_Widget *sim, *adv, *misc, *container;
 	char *entries[1];
 	char *headers[] = {"Test", "Pass/Fail", "Reason"};
+
+	menubar = ewl_hmenubar_new();
+	ewl_container_child_append(EWL_CONTAINER(box), menubar);
+	ewl_widget_show(menubar);
+
+	o = ewl_menu_new();
+	ewl_container_child_append(EWL_CONTAINER(menubar), o);
+	ewl_button_label_set(EWL_BUTTON(o), "File");
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
+	ewl_widget_show(o);
+
+	o2 = ewl_menu_item_new();
+	ewl_button_label_set(EWL_BUTTON(o2), "Exit");
+	ewl_callback_append(o2, EWL_CALLBACK_CLICKED, ewl_test_cb_exit, NULL);
+	ewl_container_child_append(EWL_CONTAINER(o), o2);
+	ewl_widget_show(o2);
+
+	o = ewl_spacer_new();
+	ewl_container_child_append(EWL_CONTAINER(menubar), o);
+	ewl_widget_show(o);
+
+	o = ewl_menu_new();
+	ewl_container_child_append(EWL_CONTAINER(menubar), o);
+	ewl_button_label_set(EWL_BUTTON(o), "Help");
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
+	ewl_widget_show(o);
+
+	o2 = ewl_menu_item_new();
+	ewl_button_label_set(EWL_BUTTON(o2), "About EWL...");
+	ewl_container_child_append(EWL_CONTAINER(o), o2);
+	ewl_widget_show(o2);
+
+	o2 = ewl_menu_item_new();
+	ewl_button_label_set(EWL_BUTTON(o2), "EWL Test Help");
+	ewl_container_child_append(EWL_CONTAINER(o), o2);
+	ewl_widget_show(o2);
 
 	note = ewl_notebook_new();
 	ewl_container_child_append(box, note);
@@ -341,12 +385,24 @@ create_main_test_window(Ewl_Container *box)
 	ewl_widget_name_set(o2, "unit_test_tree");
 	ewl_widget_show(o2);
 
+	o2 = ewl_hbox_new();
+	ewl_container_child_append(EWL_CONTAINER(o), o2);
+	ewl_object_fill_policy_set(EWL_OBJECT(o2), EWL_FLAG_FILL_HFILL);
+	ewl_widget_show(o2);
+
+	o = o2;
+
 	o2 = ewl_button_new();
 	ewl_container_child_append(EWL_CONTAINER(o), o2);
 	ewl_button_label_set(EWL_BUTTON(o2), "Run unit tests");
 	ewl_callback_append(o2, EWL_CALLBACK_CLICKED, cb_run_unit_tests, NULL);
 	ewl_object_fill_policy_set(EWL_OBJECT(o2), EWL_FLAG_FILL_SHRINK);
 	ewl_widget_name_set(o2, "unit_test_button");
+	ewl_widget_show(o2);
+
+	o2 = ewl_progressbar_new();
+	ewl_widget_name_set(o2, "unit_test_progress");
+	ewl_container_child_append(EWL_CONTAINER(o), o2);
 	ewl_widget_show(o2);
 
 	o = ewl_text_new();

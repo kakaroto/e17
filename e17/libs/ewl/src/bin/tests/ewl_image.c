@@ -19,10 +19,17 @@ static void create_image_fd_window_response (Ewl_Widget *w, void *ev, void *data
 static void create_image_fd_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 
 static int create_test(Ewl_Container *box);
+
 static int path_test_set_get(char *buf, int len);
+static int scale_test_set_get(char *buf, int len);
+static int size_test_set_get(char *buf, int len);
+static int constrain_test_set_get(char *buf, int len);
 
 static Ewl_Unit_Test image_unit_tests[] = {
 		{"image path set/get", path_test_set_get},	
+		{"image scale set/get", scale_test_set_get},	
+		{"image size set/get", size_test_set_get},	
+		{"image constrain set/get", constrain_test_set_get},	
 		{NULL, NULL}
 	};
 
@@ -304,6 +311,63 @@ path_test_set_get(char *buf, int len)
 
 	if (strcmp(t, "/invalid/path"))
 		snprintf(buf, len, "path_get did not match path_set.");
+	else
+		ret = 1;
+
+	return ret;
+}
+
+static int
+scale_test_set_get(char *buf, int len)
+{
+	Ewl_Widget *o;
+	int ret = 0;
+	double sw, sh;
+
+	o = ewl_image_new();
+	ewl_image_scale_set(EWL_IMAGE(o), 2.0, 2.0);
+	ewl_image_scale_get(EWL_IMAGE(o), &sw, &sh);
+
+	if (sw != 2.0 || sh != 2.0)
+		snprintf(buf, len, "scale_get did not match scale_set.");
+	else
+		ret = 1;
+
+	return ret;
+}
+
+static int
+size_test_set_get(char *buf, int len)
+{
+	Ewl_Widget *o;
+	int ret = 0;
+	int sw, sh;
+
+	o = ewl_image_new();
+	ewl_image_size_set(EWL_IMAGE(o), 2, 2);
+	ewl_image_size_get(EWL_IMAGE(o), &sw, &sh);
+
+	if (sw != 2 || sh != 2)
+		snprintf(buf, len, "size_get did not match size_set.");
+	else
+		ret = 1;
+
+	return ret;
+}
+
+static int
+constrain_test_set_get(char *buf, int len)
+{
+	Ewl_Widget *o;
+	int ret = 0;
+	int sw;
+
+	o = ewl_image_new();
+	ewl_image_constrain_set(EWL_IMAGE(o), 2);
+	sw = ewl_image_constrain_get(EWL_IMAGE(o));
+
+	if (sw != 2)
+		snprintf(buf, len, "scale_get did not match scale_set.");
 	else
 		ret = 1;
 
