@@ -24,7 +24,8 @@ pkg_LTLIBRARIES		= ewl_border.la ewl_box.la ewl_button.la \
 			  ewl_scrollbar.la ewl_password.la ewl_menubar.la \
 			  ewl_tree2.la ewl_image.la ewl_tree.la \
 			  ewl_table.la ewl_notebook.la ewl_scrollpane.la \
-			  ewl_spinner.la ewl_progressbar.la
+			  ewl_spinner.la ewl_progressbar.la ewl_theme.la \
+			  ewl_media.la ewl_menu.la ewl_imenu.la
 
 ewl_border_la_SOURCES   = ewl_border.c
 ewl_border_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
@@ -257,6 +258,34 @@ ewl_progressbar_la_LDFLAGS	= -module -avoid-version \
 			  -L$(top_builddir)/src/lib/.libs
 ewl_progressbar_la_DEPENDENCIES = 
 
+ewl_theme_la_SOURCES   = ewl_theme.c
+ewl_theme_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
+ewl_theme_la_LDFLAGS	= -module -avoid-version \
+			  -L$(top_builddir)/src/lib \
+			  -L$(top_builddir)/src/lib/.libs
+ewl_theme_la_DEPENDENCIES = 
+
+ewl_media_la_SOURCES   = ewl_media.c
+ewl_media_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
+ewl_media_la_LDFLAGS	= -module -avoid-version \
+			  -L$(top_builddir)/src/lib \
+			  -L$(top_builddir)/src/lib/.libs
+ewl_media_la_DEPENDENCIES = 
+
+ewl_menu_la_SOURCES   = ewl_menu.c
+ewl_menu_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
+ewl_menu_la_LDFLAGS	= -module -avoid-version \
+			  -L$(top_builddir)/src/lib \
+			  -L$(top_builddir)/src/lib/.libs
+ewl_menu_la_DEPENDENCIES = 
+
+ewl_imenu_la_SOURCES   = ewl_imenu.c
+ewl_imenu_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
+ewl_imenu_la_LDFLAGS	= -module -avoid-version \
+			  -L$(top_builddir)/src/lib \
+			  -L$(top_builddir)/src/lib/.libs
+ewl_imenu_la_DEPENDENCIES = 
+
 FILES = $(ewl_border_la_SOURCES) $(ewl_box_la_SOURCES) \
 	$(ewl_button_la_SOURCES) $(ewl_colordialog_la_SOURCES) \
 	$(ewl_datepicker_la_SOURCES) $(ewl_freebox_la_SOURCES) \
@@ -273,7 +302,9 @@ FILES = $(ewl_border_la_SOURCES) $(ewl_box_la_SOURCES) \
 	$(ewl_image_la_SOURCES) $(ewl_tree_la_SOURCES) \
 	$(ewl_table_la_SOURCES) $(ewl_notebook_la_SOURCES) \
 	$(ewl_scrollpane_la_SOURCES) $(ewl_spinner_la_SOURCES) \
-	$(ewl_progressbar_la_SOURCES)
+	$(ewl_progressbar_la_SOURCES) $(ewl_theme_la_SOURCES) \
+	$(ewl_media_la_SOURCES) $(ewl_menu_la_SOURCES) \
+	$(ewl_imenu_la_SOURCES)
 
 EXTRA_DIST = $(FILES)
 

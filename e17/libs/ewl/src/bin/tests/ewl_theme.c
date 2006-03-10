@@ -1,25 +1,86 @@
-#include "ewl_test.h"
+#include "Ewl_Test.h"
+#include <sys/types.h>
+#include <dirent.h>
+#include <stdio.h>
+#include <string.h>
+#include <limits.h>
 
-#define THEME_DIR PACKAGE_DATA_DIR"/themes/"
-#define THEME_TEST_NOTEBOOK "notebook"
+static int create_test(Ewl_Container *box);
+static Ewl_Widget *widgets_build(void);
+static void cb_select_theme(Ewl_Widget *w, void *ev, void *data);
 
-static void
-__destroy_theme_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
-					void *user_data __UNUSED__)
+void 
+test_info(Ewl_Test *test)
 {
-	ewl_widget_destroy(w);
+	test->name = "Theme";
+	test->tip = "Shows the utilization of themes\n"
+			"inside a EWL application.";
+	test->filename = "ewl_theme.c";
+	test->func = create_test;
+	test->type = EWL_TEST_TYPE_ADVANCED;
+}
+
+static int
+create_test(Ewl_Container *box)
+{
+        Ewl_Widget *box2, *vbox, *list, *misc;
+        DIR *rep;
+        struct dirent *file;
+
+	box2 = ewl_hbox_new();
+	ewl_container_child_append(box, box2);
+	ewl_widget_show(box2);
+
+	/* the theme list tree */
+        list = ewl_border_new();
+	ewl_border_text_set(EWL_BORDER(list), "Theme name");
+	ewl_container_child_append(EWL_CONTAINER(box2), list);
+	ewl_widget_show(list);
+	
+	rep = opendir(PACKAGE_DATA_DIR "/themes");
+	while ((file = readdir(rep))) 
+	{
+		char *name;
+        	int len;
+
+	        name = file->d_name;
+		len = strlen(name);
+
+		if ((len >= 4) && (!strcmp(name + len - 4, ".edj"))) {
+			Ewl_Widget *w;
+
+			w = ewl_button_new();
+			ewl_button_label_set(EWL_BUTTON(w), name);
+			ewl_object_fill_policy_set(EWL_OBJECT(w), 
+				EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
+			ewl_callback_append(w, EWL_CALLBACK_CLICKED,
+					    cb_select_theme, strdup(name));
+			ewl_container_child_append(EWL_CONTAINER(list), w);
+			ewl_widget_show(w);
+		}
+	}
+	
+	vbox = ewl_border_new();
+	ewl_border_text_set(EWL_BORDER(vbox), "Theme Visualization");
+	ewl_container_child_append(EWL_CONTAINER(box2), vbox);
+	ewl_widget_show(vbox);
+	
+	misc = widgets_build();
+	ewl_container_child_append(EWL_CONTAINER(vbox), misc);
+	ewl_widget_show(misc);
+
+	return 1;
 }
 
 static void
-__select_theme(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
-					void *user_data)
+cb_select_theme(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *data)
 {
 	Ewl_Widget *n;
 	char theme_filename[PATH_MAX];
 	
-	n = ewl_widget_name_find(THEME_TEST_NOTEBOOK);
-	snprintf(theme_filename, sizeof(theme_filename), THEME_DIR "/%s", 
-							(char *)user_data);
+	n = ewl_widget_name_find("notebook");
+	snprintf(theme_filename, sizeof(theme_filename), 
+			PACKAGE_DATA_DIR "/themes/%s", (char *)data);
 	ewl_theme_data_str_set(n, "/file", theme_filename);
 }
 
@@ -39,7 +100,7 @@ widgets_build(void)
 	};
 
 	notebook = ewl_notebook_new();
-	ewl_widget_name_set(notebook, THEME_TEST_NOTEBOOK);
+	ewl_widget_name_set(notebook, "notebook");
 	
 	/* buttons */
 	vbox = ewl_vbox_new();
@@ -76,7 +137,8 @@ widgets_build(void)
 	/* numerical/text entries */
 	vbox = ewl_vbox_new();
 	ewl_container_child_append(EWL_CONTAINER(notebook), vbox);
-	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(notebook), vbox, "Numerical & Text Entries");
+	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(notebook), vbox, 
+						"Numerical & Text Entries");
 	ewl_widget_show(vbox);
 	
 	misc = ewl_entry_new();
@@ -132,13 +194,16 @@ widgets_build(void)
 	ewl_container_child_append(EWL_CONTAINER(vbox), misc);
 	ewl_widget_show(misc);
 
-	for (i = 0; i < 3; i++) {
+	for (i = 0; i < 3; i++) 
+	{
 		item = ewl_menu_item_new();
 		if (menus[i].name)
-			ewl_button_label_set(EWL_BUTTON(item), menus[i].name);
+			ewl_button_label_set(EWL_BUTTON(item), 
+						menus[i].name);
 
 		if (menus[i].image)
-			ewl_button_image_set(EWL_BUTTON(item), menus[i].image, NULL);
+			ewl_button_image_set(EWL_BUTTON(item), 
+						menus[i].image, NULL);
 
 		ewl_container_child_append(EWL_CONTAINER(misc), item);
 		ewl_widget_show(item);
@@ -153,13 +218,16 @@ widgets_build(void)
 	ewl_container_child_append(EWL_CONTAINER(vbox), misc);
 	ewl_widget_show(misc);
 
-	for (i = 0; i < 3; i++) {
+	for (i = 0; i < 3; i++) 
+	{
 		item = ewl_menu_item_new();
 		if (menus[i].name)
-			ewl_button_label_set(EWL_BUTTON(item), menus[i].name);
+			ewl_button_label_set(EWL_BUTTON(item), 
+						menus[i].name);
 
 		if (menus[i].image)
-			ewl_button_image_set(EWL_BUTTON(item), menus[i].image, NULL);
+			ewl_button_image_set(EWL_BUTTON(item), 
+						menus[i].image, NULL);
 
 		ewl_container_child_append(EWL_CONTAINER(misc), item);
 		ewl_widget_show(item);
@@ -173,13 +241,16 @@ widgets_build(void)
 	ewl_container_child_append(EWL_CONTAINER(vbox), misc);
 	ewl_widget_show(misc);
 
-	for (i = 0; i < 3; i++) {
+	for (i = 0; i < 3; i++) 
+	{
 		item = ewl_menu_item_new();
 		if (menus[i].name)
-			ewl_button_label_set(EWL_BUTTON(item), menus[i].name);
+			ewl_button_label_set(EWL_BUTTON(item), 
+						menus[i].name);
 
 		if (menus[i].image)
-			ewl_button_image_set(EWL_BUTTON(item), menus[i].image, NULL);
+			ewl_button_image_set(EWL_BUTTON(item), 
+						menus[i].image, NULL);
 
 		ewl_container_child_append(EWL_CONTAINER(misc), item);
 		ewl_widget_show(item);
@@ -188,7 +259,8 @@ widgets_build(void)
 	/* List/tree */
 	vbox = ewl_vbox_new();
 	ewl_container_child_append(EWL_CONTAINER(notebook), vbox);
-	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(notebook), vbox, "List and Tree");
+	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(notebook), vbox, 
+							"List and Tree");
 	ewl_widget_show(vbox);
 	
 	str = "List";
@@ -270,70 +342,4 @@ widgets_build(void)
 
 	return notebook;
 }
-
-void
-__create_theme_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
-						void *user_data __UNUSED__)
-{
-        Ewl_Widget *theme_win, *hbox, *vbox, *list, *misc;
-        DIR *rep;
-        struct dirent *lecture;
-
-        theme_win = ewl_window_new();
-        ewl_window_title_set(EWL_WINDOW(theme_win), "Theme Viewer Test");
-        ewl_window_name_set(EWL_WINDOW(theme_win), "EWL Test Application");
-        ewl_window_class_set(EWL_WINDOW(theme_win), "EFL Test Application");
-        ewl_callback_append(theme_win, EWL_CALLBACK_DELETE_WINDOW,
-				     __destroy_theme_test_window, NULL);
-	ewl_widget_show(theme_win);
-
-	if (w)
-      	        ewl_callback_append(theme_win, EWL_CALLBACK_DELETE_WINDOW,
-				     __destroy_theme_test_window, NULL);
-	else
-	        ewl_callback_append(theme_win, EWL_CALLBACK_DELETE_WINDOW,
-				     __close_main_window, NULL);
-	
-        hbox = ewl_hpaned_new();
-        ewl_container_child_append(EWL_CONTAINER(theme_win), hbox);
-        ewl_widget_show(hbox);
-
-	/* the theme list tree */
-        list = ewl_border_new();
-	ewl_border_text_set(EWL_BORDER(list), "Theme name");
-	ewl_container_child_append(EWL_CONTAINER(hbox), list);
-	ewl_widget_show(list);
-	
-	rep = opendir(THEME_DIR);
-	while ((lecture = readdir(rep))) {
-		char *name;
-        	int len;
-
-	        name = lecture->d_name;
-		len = strlen(name);
-
-		if ((len >= 4) && (!strcmp(name + len - 4, ".edj"))) {
-			Ewl_Widget *w;
-
-			w = ewl_button_new();
-			ewl_button_label_set(EWL_BUTTON(w), name);
-			ewl_object_fill_policy_set(EWL_OBJECT(w), 
-						EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
-			ewl_callback_append(w, EWL_CALLBACK_CLICKED,
-						    __select_theme, strdup(name));
-			ewl_container_child_append(EWL_CONTAINER(list), w);
-			ewl_widget_show(w);
-		}
-	}
-	
-	vbox = ewl_border_new();
-	ewl_border_text_set(EWL_BORDER(vbox), "Theme Visualization");
-	ewl_container_child_append(EWL_CONTAINER(hbox), vbox);
-	ewl_widget_show(vbox);
-	
-	misc = widgets_build();
-	ewl_container_child_append(EWL_CONTAINER(vbox), misc);
-	ewl_widget_show(misc);
-}
-
 

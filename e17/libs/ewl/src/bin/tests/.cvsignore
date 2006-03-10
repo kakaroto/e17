@@ -68,3 +68,11 @@ ewl_spinner.la
 ewl_spinner.lo
 ewl_progressbar.la
 ewl_progressbar.lo
+ewl_menu.lo
+ewl_menu.la
+ewl_theme.la
+ewl_theme.lo
+ewl_media.la
+ewl_media.lo
+ewl_imenu.la
+ewl_imenu.lo

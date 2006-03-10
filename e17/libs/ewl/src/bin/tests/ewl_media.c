@@ -1,52 +1,132 @@
-#include <Ewl.h>
-#ifdef HAVE_CONFIG_H
-#include "ewl-config.h"
-#endif
-
-#include <stdlib.h>
+#include "Ewl_Test.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-#if HAVE___ATTRIBUTE__
-#define __UNUSED__ __attribute__((unused))
-#else
-#define __UNUSED__
-#endif
-
-static Ewl_Widget *video;
-static Ewl_Widget *fd_win;
-static Ewl_Widget *seeker;
+static Ewl_Widget *video, *seeker, *fd_win;
+static Ewl_Media_Module_Type module_type;
 
 typedef struct {
 	Ewl_Stock_Type name;
 	Ewl_Callback_Function func;
 } Control;
 
-static void
-del_cb(Ewl_Widget *w, void *event __UNUSED__, void *data __UNUSED__) 
+static int create_test(Ewl_Container *box);
+static void create_media_window(Ewl_Media_Module_Type type);
+static void cb_launch(Ewl_Widget *w, void *ev, void *data);
+static void cb_gstreamer_change(Ewl_Widget *w, void *ev, void *data);
+static void cb_xine_change(Ewl_Widget *w, void *ev, void *data);
+static void del_cb(Ewl_Widget *w, void *event, void *data);
+static void play_cb(Ewl_Widget *w, void *event, void *data); 
+static void stop_cb(Ewl_Widget *w, void *event, void *data);
+static void ff_cb(Ewl_Widget *w, void *event, void *data); 
+static void rew_cb(Ewl_Widget *w, void *event, void *data);
+static void video_realize_cb(Ewl_Widget *w, void *event, void *data);
+static void video_change_cb(Ewl_Widget *w, void *event, void *data);
+static void seeker_move_cb(Ewl_Widget *w, void *event, void *data); 
+static void open_file_cb(Ewl_Widget *w, void *event, void *data);
+static void open_cb(Ewl_Widget *w, void *event, void *data);
+static void key_up_cb(Ewl_Widget *w, void *event, void *data);
+
+void 
+test_info(Ewl_Test *test)
 {
-	ewl_widget_hide(w);
+	test->name = "Media";
+	test->tip = "A widget to display media files.";
+	test->filename = "ewl_media.c";
+	test->func = create_test;
+	test->type = EWL_TEST_TYPE_ADVANCED;
+}
+
+static int
+create_test(Ewl_Container *box)
+{
+	Ewl_Widget *o, *o2;
+#if 0
+	if (!ewl_media_is_available())
+	{
+		o = ewl_label_new();
+		ewl_label_text_set(EWL_LABEL(o), 
+				"Ewl_Media is not available. "
+				"Please install Emotion "
+				"and rebuild Ewl.");
+		ewl_container_child_append(box, o);
+		ewl_widget_show(o);
+
+		return 1;
+	}
+#endif
+	o = ewl_radiobutton_new();
+	ewl_button_label_set(EWL_BUTTON(o), "Gstreamer");
+	ewl_radiobutton_checked_set(EWL_RADIOBUTTON(o), FALSE);
+	ewl_container_child_append(box, o);
+	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
+					cb_gstreamer_change, NULL);
+	ewl_widget_show(o);
+
+	o2 = ewl_radiobutton_new();
+	ewl_button_label_set(EWL_BUTTON(o2), "Xine");
+	ewl_radiobutton_chain_set(EWL_RADIOBUTTON(o2), EWL_RADIOBUTTON(o));
+	ewl_radiobutton_checked_set(EWL_RADIOBUTTON(o2), TRUE);
+	ewl_container_child_append(box, o2);
+	ewl_callback_append(o2, EWL_CALLBACK_VALUE_CHANGED,
+					cb_xine_change, NULL);
+	ewl_widget_show(o2);
+
+	module_type = EWL_MEDIA_MODULE_XINE;
+
+	o = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(o), "Launch media test");
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED, cb_launch, NULL);
+	ewl_container_child_append(box, o);
+	ewl_widget_show(o);
+
+	return 1;
+}
+
+static void
+cb_gstreamer_change(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+					void *data __UNUSED__)
+{
+	module_type = EWL_MEDIA_MODULE_GSTREAMER;
+}
+
+static void
+cb_xine_change(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+					void *data __UNUSED__)
+{
+	module_type = EWL_MEDIA_MODULE_XINE;
+}
+
+static void
+cb_launch(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *data __UNUSED__)
+{
+	create_media_window(module_type);
+}
+
+static void
+del_cb(Ewl_Widget *w, void *event __UNUSED__, void *data __UNUSED__)
+{
 	ewl_widget_destroy(w);
-	ewl_main_quit();
 }
 
 static void
 play_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__, 
-		void *data __UNUSED__) 
+				void *data __UNUSED__) 
 {
 	ewl_media_play_set(EWL_MEDIA(video), 1);
 }
 
 static void
 stop_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__,
-		void *data __UNUSED__)
+				void *data __UNUSED__)
 {
 	ewl_media_play_set(EWL_MEDIA(video), 0);
 }
 
 static void
 ff_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__,
-		void *data __UNUSED__) 
+				void *data __UNUSED__) 
 {
 	double p;
 
@@ -56,7 +136,7 @@ ff_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__,
 
 static void
 rew_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__, 
-		void *data __UNUSED__)
+				void *data __UNUSED__)
 {
 	double p;
 
@@ -66,7 +146,7 @@ rew_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__,
 
 static void
 video_realize_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__, 
-		void *data __UNUSED__)
+				void *data __UNUSED__)
 {
 	double len;
 
@@ -94,20 +174,13 @@ video_change_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__, void *data)
 
 static void
 seeker_move_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__,
-		void *data __UNUSED__) 
+					void *data __UNUSED__) 
 {
 	double val;
 
 	val = ewl_seeker_value_get(EWL_SEEKER(seeker));
 	if (ewl_media_seekable_get(EWL_MEDIA(video)))
 		ewl_media_position_set(EWL_MEDIA(video), val);
-}
-
-static void
-fd_win_del_cb(Ewl_Widget *w, void *event __UNUSED__, void *data __UNUSED__)
-{
-	ewl_widget_hide(w);
-	ewl_widget_destroy(w);
 }
 
 static void
@@ -128,28 +201,17 @@ open_file_cb(Ewl_Widget *w, void *event, void *data __UNUSED__)
 
 static void
 open_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__,
-		void *data __UNUSED__)
+					void *data __UNUSED__)
 {
-	Ewl_Widget *fd = NULL;
-
 	if (fd_win) {
 		ewl_widget_show(fd_win);
 		return;
 	}
 
-	fd_win = ewl_window_new();
-	ewl_window_title_set(EWL_WINDOW(fd_win), "EWL Media Open");
-	ewl_window_class_set(EWL_WINDOW(fd_win), "EWL_Media_Open");
-	ewl_window_name_set(EWL_WINDOW(fd_win), "EWL_Media_Open");
-	ewl_callback_append(fd_win, EWL_CALLBACK_DELETE_WINDOW, 
-			fd_win_del_cb, NULL);
+	fd_win = ewl_filedialog_new();
+	ewl_filedialog_type_set(EWL_FILEDIALOG(fd_win), EWL_FILEDIALOG_TYPE_OPEN);
+	ewl_callback_append(fd_win, EWL_CALLBACK_VALUE_CHANGED, open_file_cb, NULL);
 	ewl_widget_show(fd_win);
-
-	fd = ewl_filedialog_new();
-	ewl_filedialog_type_set(EWL_FILEDIALOG(fd), EWL_FILEDIALOG_TYPE_OPEN);
-	ewl_container_child_append(EWL_CONTAINER(fd_win), fd);
-	ewl_callback_append(fd, EWL_CALLBACK_VALUE_CHANGED, open_file_cb, NULL);
-	ewl_widget_show(fd);
 }
 
 static void
@@ -167,37 +229,12 @@ key_up_cb(Ewl_Widget *w, void *event, void *data)
 		del_cb(w, event, data);
 }
 
-int
-main(int argc, char ** argv) 
+static void
+create_media_window(Ewl_Media_Module_Type type)
 {
-	Ewl_Widget *win = NULL, *o = NULL, *b = NULL;
+	Ewl_Widget *win, *o = NULL, *b = NULL;
 	Ewl_Widget *controls = NULL, *time = NULL;
-	Ewl_Media_Module_Type type = EWL_MEDIA_MODULE_XINE;
 	char * file = NULL;
-	int i;
-
-	if (!ewl_init(&argc, argv)) {
-		printf("Can't init ewl");
-		return 1;
-	}
-
-	if (!ewl_media_is_available())
-	{
-		printf("Ewl_Media is not available. Please install Emotion "
-			"and rebuild Ewl\n");
-		return 1;
-	}
-
-	for (i = 1; i < argc; i++)
-	{
-		if (!strcmp(argv[i], "-gstreamer"))
-			type = EWL_MEDIA_MODULE_GSTREAMER;
-
-		else if (!strcmp(argv[i], "-xine"))
-			type = EWL_MEDIA_MODULE_XINE;
-		else
-			file = argv[i];
-	}
 
 	win = ewl_window_new();
 	ewl_window_title_set(EWL_WINDOW(win), "EWL Media test");
@@ -282,9 +319,5 @@ main(int argc, char ** argv)
 	ewl_object_insets_set(EWL_OBJECT(time), 0, 3, 0, 0);
 	ewl_object_fill_policy_set(EWL_OBJECT(time), EWL_FLAG_FILL_SHRINK);
 	ewl_widget_show(time);
-
-	ewl_main();
-	return 0;
 }
-
 
