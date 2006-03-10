@@ -73,6 +73,7 @@ void		 ewl_image_file_key_set(Ewl_Image *i, const char *key);
 const char 	*ewl_image_file_key_get(Ewl_Image *i);
 
 void		 ewl_image_proportional_set(Ewl_Image *i, char p);
+char	 	 ewl_image_proportional_get(Ewl_Image *i);
 void		 ewl_image_scale_set(Ewl_Image *i, double wp, double hp);
 void		 ewl_image_scale_get(Ewl_Image *i, double *wp, double *hp);
 void		 ewl_image_size_set(Ewl_Image *i, int w, int h);

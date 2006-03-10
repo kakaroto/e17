@@ -267,6 +267,21 @@ ewl_image_proportional_set(Ewl_Image *i, char p)
 }
 
 /**
+ * @param i: the image to get the proportional setting value
+ * @return Returns TRUE if the image is forced proportional, FALSE otherwise.
+ * @brief Get boolean to determine how to scale
+ */
+char
+ewl_image_proportional_get(Ewl_Image *i)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("i", i, FALSE);
+	DCHECK_TYPE_RET("i", i, EWL_IMAGE_TYPE, FALSE);
+
+	DRETURN_INT(i->proportional, DLEVEL_STABLE);
+}
+
+/**
  * @param i: the image to scale
  * @param wp: the percentage to scale width
  * @param hp: the percentage to scale height
