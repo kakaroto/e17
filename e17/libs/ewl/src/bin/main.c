@@ -7,6 +7,7 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <Ecore.h>
 #include <Ecore_File.h>
 #include <Ecore_Data.h>
 
@@ -23,12 +24,15 @@ static int create_main_test_window(Ewl_Container *win);
 static void fill_source_text(Ewl_Test *test);
 static void setup_unit_tests(Ewl_Test *test);
 
+static int ewl_test_cb_unit_test_timer(void *data);
 static void ewl_test_cb_delete_window(Ewl_Widget *w, void *ev, void *data);
 static void ewl_test_cb_exit(Ewl_Widget *w, void *ev, void *data);
 static void cb_run_unit_tests(Ewl_Widget *w, void *ev, void *data);
 
 static Ecore_List *tests = NULL;
 static int window_count = 0;
+static int current_unit_test = 0;
+static Ecore_Timer *unit_test_timer = NULL;
 
 int
 main(int argc, char **argv)
@@ -95,6 +99,44 @@ main(int argc, char **argv)
 		ewl_main();
 
 	return 0;
+}
+
+static int
+ewl_test_cb_unit_test_timer(void *data)
+{
+	char buf[1024];
+	char *entries[3];
+	Ewl_Widget *tree;
+	Ewl_Unit_Test *unit_tests = data;
+
+	tree = ewl_widget_name_find("unit_test_tree");
+
+	if (unit_tests[current_unit_test].func)
+	{
+		int ret;
+		Ewl_Widget *progress;
+
+		ret = unit_tests[current_unit_test].func(buf, sizeof(buf));
+
+		progress = ewl_widget_name_find("unit_test_progress");
+
+		entries[0] = (char *)unit_tests[current_unit_test].name;
+		entries[1] = (ret ? "PASS" : "FAIL");
+		entries[2] = (ret ? "" : buf);
+		ewl_tree_text_row_add(EWL_TREE(tree), NULL, entries);
+
+		ewl_progressbar_value_set(EWL_PROGRESSBAR(progress),
+				(double)(++current_unit_test));
+	}
+	else
+	{
+		ecore_timer_del(unit_test_timer);
+		unit_test_timer = NULL;
+		current_unit_test = 0;
+		return 0;
+	}
+
+	return 1;
 }
 
 static void
@@ -488,28 +530,29 @@ setup_unit_tests(Ewl_Test *test)
 static void
 cb_run_unit_tests(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
+	int i;
 	Ewl_Test *test;
 	Ewl_Widget *tree;
-	char *entries[3];
-	char buf[1024];
-	int i;
-
-	test = ewl_widget_data_get(w, "test");
-	if ((!test) || (!test->unit_tests)) return;
+	Ewl_Widget *progress;
 
 	tree = ewl_widget_name_find("unit_test_tree");
 	ewl_container_reset(EWL_CONTAINER(tree));
 
-	for (i = 0; test->unit_tests[i].func; i++)
-	{
-		int ret;
-		ret = test->unit_tests[i].func(buf, sizeof(buf));
+	test = ewl_widget_data_get(w, "test");
+	if ((!test) || (!test->unit_tests)) return;
 
-		entries[0] = (char *)test->unit_tests[i].name;
-		entries[1] = (ret ? "PASS" : "FAIL");
-		entries[2] = (ret ? "" : buf);
-		ewl_tree_text_row_add(EWL_TREE(tree), NULL, entries);
+	for (i = 0; test->unit_tests[i].func; i++);
+
+	progress = ewl_widget_name_find("unit_test_progress");
+	ewl_progressbar_range_set(EWL_PROGRESSBAR(progress), (double)(i));
+	ewl_progressbar_value_set(EWL_PROGRESSBAR(progress), 0.0);
+
+	if (unit_test_timer) {
+		ecore_timer_del(unit_test_timer);
+		current_unit_test = 0;
 	}
+
+	unit_test_timer = ecore_timer_add(0.1, ewl_test_cb_unit_test_timer, test->unit_tests);
 }
 
 
