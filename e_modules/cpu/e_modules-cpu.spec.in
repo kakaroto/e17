@@ -1,4 +1,4 @@
-%define module_name rpu
+%define module_name cpu
 
 Summary: %{module_name} module for the Enlightenment window manager
 Name: e_modules-%{module_name}
