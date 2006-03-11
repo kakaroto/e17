@@ -59,6 +59,8 @@ evfs_list_dir_event_create(evfs_client * client, evfs_command * command,
 {
    /*Create a reply event for a file mon event, send it , destroy event */
 
+   printf("EVFS: sending directory listing\n");
+
    evfs_event *event = NEW(evfs_event);
 
    event->type = EVFS_EV_DIR_LIST;
