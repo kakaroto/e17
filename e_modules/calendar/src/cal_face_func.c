@@ -59,6 +59,7 @@ calendar_face_new(E_Container *con, Calendar * calendar)
    int check, i;
 
    Calendar_Face *face;
+   E_Gadman_Policy  policy;
 
    face = E_NEW(Calendar_Face, 1);
    if (!face)
@@ -273,10 +274,18 @@ calendar_face_new(E_Container *con, Calendar * calendar)
    face->gmc = e_gadman_client_new(con->gadman);
    e_gadman_client_domain_set(face->gmc, "module.calendar",
                               increment_cal_count());
-   e_gadman_client_policy_set(face->gmc,
-                              E_GADMAN_POLICY_ANYWHERE | E_GADMAN_POLICY_HMOVE |
-                              E_GADMAN_POLICY_VMOVE | E_GADMAN_POLICY_HSIZE |
-                              E_GADMAN_POLICY_VSIZE);
+   policy =  E_GADMAN_POLICY_ANYWHERE | E_GADMAN_POLICY_HMOVE |
+             E_GADMAN_POLICY_VMOVE | E_GADMAN_POLICY_HSIZE |
+             E_GADMAN_POLICY_VSIZE;
+
+   if (calendar->conf->allow_overlap == 0)
+     policy &= ~E_GADMAN_POLICY_ALLOW_OVERLAP;
+   else
+     policy |= E_GADMAN_POLICY_ALLOW_OVERLAP;
+
+   e_gadman_client_policy_set(face->gmc, policy);
+
+
    //e_gadman_client_min_size_set(face->gmc, 14, 7);
    e_gadman_client_align_set(face->gmc, 1.0, 1.0);
    e_gadman_client_resize(face->gmc, 240, 320);

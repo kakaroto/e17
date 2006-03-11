@@ -10,7 +10,7 @@ struct _calendar_cfdata
    char *size2;
    int temp_ImageYes;
    int temp_UserCS;
-
+   int allow_overlap;
    Calendar *calendar;
 };
 
@@ -146,6 +146,11 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data)
    e_widget_framelist_object_append(of, ob);
    e_widget_table_object_append(o, of, 0, 2, 1, 1, 1, 1, 1, 1);
 
+   of = e_widget_framelist_add(evas, _("Extras"), 0);
+   ob = e_widget_check_add(evas, _("Allow windows to overlap this gadget"), &(cfdata->calendar->conf->allow_overlap));
+   e_widget_framelist_object_append(of, ob);
+   e_widget_table_object_append(o, of, 0, 3, 1, 1, 1, 1, 1, 1);
+
    return o;
 }
 /***************************************************
@@ -258,7 +263,7 @@ _color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas,
    Evas_Object *font_title;
    Evas_Object *start_table;
    Evas_Object *start_tableB, *ofB;
-   Evas_Object *entry;
+   Evas_Object *entry, *s_table;
    E_Radio_Group *rg;
    E_Manager *man;
    E_Container *con;
@@ -291,6 +296,7 @@ _color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas,
      }
 
    o = e_widget_table_add(evas, 0);
+   s_table = e_widget_table_add(evas, 0);
 
    of2 = e_widget_framelist_add(evas, _("Top Image"), 1);
    rg = e_widget_radio_group_new(&(cfdata->calendar->conf->ImageYes));
@@ -298,7 +304,14 @@ _color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas,
    e_widget_framelist_object_append(of2, ob);
    ob = e_widget_radio_add(evas, _("Without"), 1, rg);
    e_widget_framelist_object_append(of2, ob);
-   e_widget_table_object_append(o, of2, 0, 0, 1, 1, 1, 1, 1, 1);
+   e_widget_table_object_append(s_table, of2, 0, 0, 1, 1, 1, 1, 1, 1);
+
+   of = e_widget_framelist_add(evas, _("Extras"), 0);
+   ob = e_widget_check_add(evas, _("Allow windows to overlap this gadget"), &(cfdata->calendar->conf->allow_overlap));
+   e_widget_framelist_object_append(of, ob);
+   e_widget_table_object_append(s_table, of, 0, 1, 1, 1, 1, 1, 1, 1);
+
+   e_widget_table_object_append(o, s_table, 0, 0, 1, 1, 1, 1, 1, 1);
 
    start_table = e_widget_table_add(evas, 0);
    of = e_widget_framelist_add(evas, _("First Day of Week"), 0);

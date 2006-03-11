@@ -115,6 +115,8 @@ int view_month;
    
 int view_year;
 
+int allow_overlap;
+
 };
 
 

@@ -419,7 +419,7 @@ calendar_add_dates(Calendar_Face * face, Calendar * calendar, int skew)
                            DayOfMonth);
                   if ((DayOfMonth == date.tm_mday)
                       && (calendar->conf->view_month == date.tm_mon)
-                      && (calendar->conf->view_year == date.tm_year))
+                      && (calendar->conf->view_year == date.tm_year + 1900))
                     {
                        edje_object_part_text_set(face->today_object[counter]->
                                                  obj, "date-text", DateBox);
