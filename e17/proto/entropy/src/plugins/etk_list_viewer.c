@@ -601,7 +601,10 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 
 	      remove_ref = gui_object_destroy_and_free(comp, viewer->gui_hash);
 
+	      printf("Clearing tree..\n");
+	      etk_tree_freeze(ETK_TREE(viewer->tree));
 	      etk_tree_clear(ETK_TREE(viewer->tree));
+	      etk_tree_thaw(ETK_TREE(viewer->tree));
 
 		ecore_list_goto_first (el);
 		while ((file = ecore_list_next (el))) {

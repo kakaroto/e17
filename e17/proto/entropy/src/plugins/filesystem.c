@@ -203,8 +203,9 @@ callback (evfs_event * data, void *obj)
       }
 
       /*Do some freeing */
-      entropy_free (file_stat);
       entropy_free (file_stat->stat_obj);
+      entropy_free (file_stat);
+
       ecore_hash_remove (stat_request_hash, md5);
       entropy_free (folder);
       entropy_free (md5);
@@ -226,135 +227,106 @@ callback (evfs_event * data, void *obj)
       char *folder;
       char *pos;
 
-      //printf("Received a directory listing..\nFiles:\n\n");
-      //printf("Original uri: %s\n", data->resp_command.file_command.files[0]->path);
-
-      if (!data->file_list.list) {
-	//printf("No directory received - invalid uri?\n");
-	ecore_list_destroy (file_list);
-	return;
-      }
-      else {
-	//printf("File list at %p\n", data->file_list.list);
-      }
-
-      ecore_list_goto_first (data->file_list.list);
-      while ((ref = ecore_list_next (data->file_list.list))) {
-	/*printf("(%s) Received file type for file: %d\n", ref->path, ref->file_type); */
-
-	folder = strdup ((char *) ref->path);
-	pos = rindex (folder, '/');
-	*pos = '\0';
-
-	filename = strdup (pos + 1);
-
-	/*If we are the root dir (i.e. we only have 
-	 * one "/", replace it (so we can use it below),
-	 * and assume this filename has length (BAD).  */
-	if (!strlen (folder)) {
-	  *pos = '/';
-	  *(pos + 1) = '\0';
-	}
-
-	/*printf("Calling folder is '%s'\n", folder); */
-
-	/*If the calling request is currently NULL, we must go to the hash to retrieve that caller */
-	if (!calling_request) {
-
-	  printf("Looking for calling request with folder '%s'\n", folder);
-	  calling_request = ecore_hash_get (evfs_dir_requests, folder);
-	  printf("Received a file from the hash, path is '%s'\n", calling_request->file->path);
-
-	  /*Append the original request as the first item in the list */
-	  /*It's not nice having to do this, but we're kind of stuck.  Should be ok as long
-	   * as it gets documented*/
-	  ecore_list_append (file_list, calling_request);
-
-	}
-
-	//printf("Folder name: '%s', filename '%s'\n", folder, pos+1);
-
-	/*Look for an existing file we have cached */
-	char *md5 = md5_entropy_path_file (ref->plugin_uri, folder, filename);
-
-	/*Now create, or grab, a file */
-	if (!(listener = entropy_core_file_cache_retrieve (md5))) {
-
-	  file = entropy_generic_file_new ();
-	  /*For now, just make an entropy_generic_file for this object */
-	  strncpy (file->path, folder, 255);
-	  strncpy (file->filename, filename, strlen (filename) + 1);
-	  file->md5 = strdup (md5);
-
-	  /*Set the file type, if evfs provided it */
-	  if (ref->file_type == EVFS_FILE_DIRECTORY) {
-	    file->filetype = FILE_FOLDER;
-	    strcpy (file->mime_type, "file/folder");
-
-	    //printf("Marked this file as a directory\n");
-	  }
-	  else {
-	    //printf("Didn't mark this file, type %d\n",ref->file_type);
-	    file->filetype = FILE_STANDARD;
-	    bzero (file->mime_type, MIME_LENGTH);
-	  }
-
-	  if (calling_request
-	      && (calling_request->drill_down
-		  || calling_request->set_parent)) {
-	    /*printf("Calling request had a parent...\n");
-	       printf("File ('%s') parent's name is '%s'\n", 
-	       file->filename, calling_request->reparent_file->filename); */
-
-	    file->parent = calling_request->reparent_file;
-
-	    /*We are referencing the parent, so - we need to tell the core that we *need* this
-	     * file - i.e. don't clean it up*/
-	    entropy_core_file_cache_add_reference (calling_request->
-						   reparent_file->md5);
-	  }
-
-	  /*Mark the file's uri FIXME do this properly */
-	  strcpy (file->uri_base, ref->plugin_uri);
-	  /*printf("Assigned plugin URI: '%s'\n", ref->plugin_uri); */
-
-
-	  /*Register a new listener for this file */
-	  listener = entropy_malloc (sizeof (entropy_file_listener));
-	  listener->file = file;
-	  listener->count = 0;
-	  entropy_core_file_cache_add (md5, listener);
-
-
-	}
-	else {
-	  file = listener->file;
-	  entropy_free (md5);	/*We don't need this one, we're returning an old ref */
-	}
-
-	free (folder);
-	free (filename);
-
-
-	/*Add this file to our list */
-	ecore_list_append (file_list, file);
-      }
-
-
-      /*Create a GUI event to send to watchers */
-      gui_event = entropy_malloc (sizeof (entropy_gui_event));
-      gui_event->event_type =
-	entropy_core_gui_event_get
-	(ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS_EXTERNAL);
-      gui_event->data = file_list;
-      
+      printf("Looking for callers for dir list for: '%s'\n", data->resp_command.file_command.files[0]->path);
+      calling_request = ecore_hash_get (evfs_dir_requests, data->resp_command.file_command.files[0]->path);
       if (calling_request) {
-	      entropy_core_layout_notify_event (calling_request->requester, gui_event,
-					ENTROPY_EVENT_LOCAL);
-      } else {
-	      printf("  [*] Could not get calling request for dir list - Abort!\n");
-      }
+	     /*Remove from directory requesters*/
+	      ecore_hash_remove(evfs_dir_requests, data->resp_command.file_command.files[0]->path);
+		
+	      
+	      ecore_list_append(file_list, calling_request);
+	      
+	      folder = data->resp_command.file_command.files[0]->path;
 
+	      if (data->file_list.list) {
+		      ecore_list_goto_first (data->file_list.list);
+		      while ((ref = ecore_list_next (data->file_list.list))) {
+			/*printf("(%s) Received file type for file: %d\n", ref->path, ref->file_type); */
+
+			pos = rindex (ref->path, '/');
+			filename = strdup (pos + 1);
+
+			/*Look for an existing file we have cached */
+			char *md5 = md5_entropy_path_file (ref->plugin_uri, folder, filename);
+
+			/*Now create, or grab, a file */
+			if (!(listener = entropy_core_file_cache_retrieve (md5))) {
+	
+			  file = entropy_generic_file_new ();
+			  /*For now, just make an entropy_generic_file for this object */
+			  strncpy (file->path, folder, 255);
+			  strncpy (file->filename, filename, strlen (filename) + 1);
+			  file->md5 = strdup (md5);
+
+			  /*Set the file type, if evfs provided it */
+			  if (ref->file_type == EVFS_FILE_DIRECTORY) {
+			    file->filetype = FILE_FOLDER;
+			    strcpy (file->mime_type, "file/folder");
+	
+			    //printf("Marked this file as a directory\n");
+			  }
+			  else {
+			    //printf("Didn't mark this file, type %d\n",ref->file_type);
+			    file->filetype = FILE_STANDARD;
+			    bzero (file->mime_type, MIME_LENGTH);
+			  }
+
+			  if (calling_request
+			      && (calling_request->drill_down
+				  || calling_request->set_parent)) {
+			    /*printf("Calling request had a parent...\n");
+			       printf("File ('%s') parent's name is '%s'\n", 
+			       file->filename, calling_request->reparent_file->filename); */
+		
+			    file->parent = calling_request->reparent_file;
+	
+			    /*We are referencing the parent, so - we need to tell the core that we *need* this
+			     * file - i.e. don't clean it up*/
+			    entropy_core_file_cache_add_reference (calling_request->
+							   reparent_file->md5);
+			  }
+	
+			  /*Mark the file's uri FIXME do this properly */
+			  strcpy (file->uri_base, ref->plugin_uri);
+			  /*printf("Assigned plugin URI: '%s'\n", ref->plugin_uri); */
+	
+
+			  /*Register a new listener for this file */
+			  listener = entropy_malloc (sizeof (entropy_file_listener));
+			  listener->file = file;
+			  listener->count = 0;
+			  entropy_core_file_cache_add (md5, listener);
+			}
+			else {
+			  file = listener->file;
+			  entropy_free (md5);	/*We don't need this one, we're returning an old ref */
+			}
+		
+			free (filename);
+	
+			/*Add this file to our list */
+			ecore_list_append (file_list, file);
+		      }
+		}
+
+	      /*Create a GUI event to send to watchers */
+	      gui_event = entropy_malloc (sizeof (entropy_gui_event));
+	      gui_event->event_type =
+		entropy_core_gui_event_get
+		(ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS_EXTERNAL);
+	      gui_event->data = file_list;
+	      
+	      if (calling_request) {
+		      entropy_core_layout_notify_event (calling_request->requester, gui_event,
+						ENTROPY_EVENT_LOCAL);
+	      } else {
+		      printf("  [*] Could not get calling request for dir list - Abort!\n");
+	      }
+
+	      free(calling_request);
+	} else {
+		ecore_list_destroy (file_list);
+	}
     }
 
     break;
