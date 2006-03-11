@@ -414,19 +414,9 @@ create_main_test_window(Ewl_Container *box)
 						run_test_boxed, t);
 	}
 
-	o2 = ewl_scrollpane_new();
-	ewl_container_child_append(EWL_CONTAINER(note), o2);
-	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(note), o2, "Source");
-	ewl_widget_show(o2);
-
-	o = ewl_text_new();
-	ewl_container_child_append(EWL_CONTAINER(o2), o);
-	ewl_widget_name_set(o, "source_text");
-	ewl_widget_show(o);
-
 	o = ewl_vbox_new();
 	ewl_container_child_append(EWL_CONTAINER(note), o);
-	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(note), o, "Execute");
+	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(note), o, "UI Test");
 	ewl_widget_name_set(o, "execute_box");
 	ewl_widget_show(o);
 
@@ -461,6 +451,16 @@ create_main_test_window(Ewl_Container *box)
 	ewl_widget_name_set(o2, "unit_test_progress");
 	ewl_container_child_append(EWL_CONTAINER(o), o2);
 	ewl_widget_show(o2);
+
+	o2 = ewl_scrollpane_new();
+	ewl_container_child_append(EWL_CONTAINER(note), o2);
+	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(note), o2, "Source");
+	ewl_widget_show(o2);
+
+	o = ewl_text_new();
+	ewl_container_child_append(EWL_CONTAINER(o2), o);
+	ewl_widget_name_set(o, "source_text");
+	ewl_widget_show(o);
 
 	o2 = ewl_scrollpane_new();
 	ewl_container_child_append(EWL_CONTAINER(note), o2);
