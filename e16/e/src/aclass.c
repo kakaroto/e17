@@ -27,6 +27,7 @@
 #include "e16-ecore_list.h"
 #include "emodule.h"
 #include "ewins.h"
+#include <ctype.h>
 
 typedef struct _actiontype
 {
@@ -580,27 +581,12 @@ ActionDecode(const char *line)
      case EVENT_DOUBLE_DOWN:
      case EVENT_MOUSE_ENTER:
      case EVENT_MOUSE_LEAVE:
-	switch (key[0])
-	  {
-	  case '*':
-	     anybut = 1;
-	     break;
-	  case '1':
-	     button = 1;
-	     break;
-	  case '2':
-	     button = 2;
-	     break;
-	  case '3':
-	     button = 3;
-	     break;
-	  case '4':
-	     button = 4;
-	     break;
-	  case '5':
-	     button = 5;
-	     break;
-	  }
+	if (key[0] == '*')
+	   anybut = 1;
+	else if (isdigit(key[0]))
+	   button = atoi(key);
+	if (!anybut && button == 0)
+	   return NULL;		/* Invalid */
 	key[0] = '\0';
 	break;
      }
