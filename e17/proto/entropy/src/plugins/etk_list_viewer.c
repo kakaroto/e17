@@ -6,6 +6,7 @@
 #include <Etk.h>
 #include "etk_progress_dialog.h"
 #include "etk_user_interaction_dialog.h"
+#include "etk_directory_add_dialog.h"
 
 #define EN_DND_COL_NUM 5
 
@@ -209,6 +210,16 @@ static int _entropy_etk_list_date_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1,
 }
 
 
+void _entropy_etk_list_viewer_directory_add_cb(Etk_Object *object, void *data)
+{
+	entropy_gui_component_instance* instance = data;
+	entropy_etk_file_list_viewer* viewer = instance->data;
+
+	if (viewer->current_folder) {
+		etk_directory_add_dialog_create(viewer->current_folder)	;
+	}
+}
+
 /* Called when the user presses a key */
 static void _etk_entropy_list_viewer_key_down_cb(Etk_Object *object, void *event, void *data)
 {
@@ -268,9 +279,10 @@ static void _entropy_etk_list_viewer_drag_begin_cb(Etk_Object *object, void *dat
 
    tree = ETK_TREE(object);
    rows = etk_tree_selected_rows_get(tree);
+   
    drag = (ETK_WIDGET(tree))->drag;
 
-   table = etk_table_new(5,5,ETK_TRUE);
+   table = etk_table_new(5,5,ETK_FALSE);
    count = evas_list_count(rows);
    bzero(buffer,8192);
    for (; rows; rows = rows->next ) {
@@ -754,6 +766,8 @@ entropy_plugin_init (entropy_core * core,
   entropy_etk_file_list_viewer *viewer;
   char  **dnd_types;
   int dnd_types_num=0;
+  Etk_Widget* new_menu;
+  Etk_Widget* menu_item;
 
     
   instance = entropy_gui_component_instance_new ();
@@ -864,6 +878,14 @@ entropy_plugin_init (entropy_core * core,
    _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Paste"), ETK_STOCK_EDIT_PASTE, ETK_MENU_SHELL(viewer->popup),NULL);
    _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Delete"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(viewer->popup),NULL);
    _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Properties"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(viewer->popup),NULL);
+
+   menu_item =  _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("New"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(viewer->popup),NULL);
+   new_menu = etk_menu_new();
+   etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(new_menu));
+
+   menu_item =  _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Folder.."), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(new_menu),NULL);
+   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_entropy_etk_list_viewer_directory_add_cb), instance);
+
 
 
   

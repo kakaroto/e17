@@ -779,7 +779,7 @@ entropy_generic_file* entropy_generic_file_clone(entropy_generic_file* file) {
 	entropy_generic_file* clone = entropy_malloc(sizeof(entropy_generic_file));
 
 	strncpy(clone->filename, file->filename, FILENAME_LENGTH);
-	strncpy(clone->path, file->path, 255);
+	strncpy(clone->path, file->path, PATH_MAX);
 	strncpy(clone->mime_type, file->mime_type, MIME_LENGTH);
 	strncpy(clone->uri_base, file->uri_base, 15);
 
@@ -792,6 +792,13 @@ entropy_generic_file* entropy_generic_file_clone(entropy_generic_file* file) {
 		clone->password = strdup(file->password);
 	else
 		clone->password = NULL;
+
+	if (file->uri)
+		clone->uri = strdup(file->uri);
+	else
+		clone->uri = NULL;
+
+	clone->parent = file->parent;
 
 	clone->thumbnail = file->thumbnail;
 	clone->md5 = strdup(file->md5);

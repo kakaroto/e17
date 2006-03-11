@@ -126,6 +126,18 @@ void entropy_plugin_filesystem_file_remove(entropy_generic_file* file) {
 	(*del_func)(file);
 }
 
+void entropy_plugin_filesystem_directory_create(entropy_generic_file* file, char* dir) {
+        entropy_plugin *plugin =
+              entropy_plugins_type_get_first (
+        ENTROPY_PLUGIN_BACKEND_FILE, ENTROPY_PLUGIN_SUB_TYPE_ALL);
+
+        void (*dir_func)(entropy_generic_file*, char*);
+        dir_func = dlsym(plugin->dl_ref, "entropy_filesystem_directory_create");
+
+        (*dir_func)(file, dir);
+}
+
+
 
 int entropy_plugin_filesystem_file_copy(entropy_generic_file* source, char* dest, entropy_gui_component_instance* requester) {
   entropy_gui_component_instance *instance = requester;

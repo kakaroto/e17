@@ -4,13 +4,14 @@
 #include "plugin_base.h"
 #include "entropy_core.h"
 #include "thumbnail_generic.h"
+#include "limits.h"
 
 #define MIME_LENGTH 40
 #define FILENAME_LENGTH 255
 
 typedef struct entropy_generic_file entropy_generic_file;
 struct entropy_generic_file {
-        char path[255];
+        char path[PATH_MAX];
         char filename[FILENAME_LENGTH];
         char mime_type[MIME_LENGTH];
 	char uri_base[15];

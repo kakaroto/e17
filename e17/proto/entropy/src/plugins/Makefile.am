@@ -92,7 +92,8 @@ etk_list_la_SOURCES      =      etk_list_viewer.c \
 				$(top_srcdir)/src/dialogs/etk_progress_dialog.c \
 				$(top_srcdir)/src/entropy_gui.c \
                                 $(top_srcdir)/src/entropy_debug.c \
-				$(top_srcdir)/src/dialogs/etk_interaction_dialog.c
+				$(top_srcdir)/src/dialogs/etk_interaction_dialog.c \
+				$(top_srcdir)/src/dialogs/etk_directory_add_dialog.c
 etk_list_la_CFLAGS       = @ETK_CFLAGS@
 etk_list_la_LDFLAGS      = -module -avoid-version
 etk_list_la_LIBADD       = @ETK_LIBS@

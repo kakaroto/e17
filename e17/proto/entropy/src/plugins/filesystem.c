@@ -47,12 +47,6 @@ callback (evfs_event * data, void *obj)
       char *pos = rindex (folder, '/');
       *pos = '\0';
 
-      //printf("DEMO: Received a file monitor notification\n");
-      //printf("DEMO: For file: '%s'\n", (char*)data->file_monitor.filename);
-      //printf("DEMO: Directory '%s\n", folder);
-      //printf("DEMO: Plugin: '%s'\n", (char*)data->file_monitor.plugin);
-      //
-
       printf("Got a monitor event for folder '%s'..\n", folder);
 
 
@@ -852,6 +846,41 @@ entropy_filesystem_file_remove (entropy_generic_file * file)
 
   free (uri);
 
+}
+
+
+/*
+ * Directory create function
+ */
+void
+entropy_filesystem_directory_create (entropy_generic_file * parent, char* child_name)
+{
+  evfs_file_uri_path *uri_path_from;
+  entropy_generic_file* new_dir;
+
+
+
+  new_dir = entropy_generic_file_clone(parent);
+  snprintf(new_dir->path, PATH_MAX, "%s/%s", parent->path, parent->filename);
+  snprintf(new_dir->filename, FILENAME_LENGTH, "%s", child_name);
+  if (new_dir->uri)
+	  free(new_dir->uri);
+
+  new_dir->uri = entropy_core_generic_file_uri_create (new_dir, 0);
+
+  if (new_dir->md5)
+	  free(new_dir->md5);
+
+  new_dir->md5 = md5_entropy_path_file(new_dir->uri_base, new_dir->path, new_dir->filename);
+  
+
+  uri_path_from = evfs_parse_uri (new_dir->uri);
+  printf("Making directory '%s'....\n", uri_path_from->files[0]->path);
+
+  evfs_client_directory_create (con, uri_path_from->files[0]);
+
+
+  entropy_generic_file_destroy(new_dir);
 }
 
 
