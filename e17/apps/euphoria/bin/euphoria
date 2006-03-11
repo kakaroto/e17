@@ -70,7 +70,7 @@ class Euphoria
 
 			signal_playback_state
 			@playtime_updater.enabled =
-				(@playback_state == XmmsClient::XmmsClient::PLAY)
+				(@playback_state == Xmms::Client::PLAY)
 		end
 
 		# is repeat enabled?
@@ -182,7 +182,7 @@ private
 	end
 
 	def init_xmms
-		@xmms = XmmsClient::XmmsClient.new("Euphoria")
+		@xmms = Xmms::Client.new("Euphoria")
 		@xmms.connect(ENV["XMMS_PATH"] || @config.ipc_path)
 		@xmms.add_to_ecore_mainloop
 
@@ -203,7 +203,7 @@ private
 
 		@edje.on_signal("playback.play") do
 			case @playback_state
-				when XmmsClient::XmmsClient::PLAY
+				when Xmms::Client::PLAY
 					@xmms.playback_stop.wait
 					sleep(0.5) # evil hack, fix xmms2d instead
 					@xmms.playback_start.wait
@@ -218,9 +218,9 @@ private
 
 		@edje.on_signal("playback.pause") do
 			case @playback_state
-				when XmmsClient::XmmsClient::PLAY
+				when Xmms::Client::PLAY
 					@xmms.playback_pause.wait
-				when XmmsClient::XmmsClient::PAUSE
+				when Xmms::Client::PAUSE
 					@xmms.playback_start.wait
 			end
 		end
@@ -229,7 +229,7 @@ private
 			@xmms.playlist_set_next_rel(1).wait
 			@xmms.playback_tickle.wait
 
-			if @playback_state != XmmsClient::XmmsClient::PLAY
+			if @playback_state != Xmms::Client::PLAY
 				@xmms.playback_start.wait
 			end
 		end
@@ -238,7 +238,7 @@ private
 			@xmms.playlist_set_next_rel(-1).wait
 			@xmms.playback_tickle.wait
 
-			if @playback_state != XmmsClient::XmmsClient::PLAY
+			if @playback_state != Xmms::Client::PLAY
 				@xmms.playback_start.wait
 			end
 		end
@@ -293,7 +293,7 @@ private
 	def handle_current_pos(res)
 		begin
 			pos = res.value
-		rescue XmmsClient::Result::ValueError
+		rescue Xmms::Result::ValueError
 		else
 			ui_fill_track_info(@playlist[pos])
 		end
@@ -330,9 +330,9 @@ private
 
 	def signal_playback_state
 		sig = case @playback_state
-			when XmmsClient::XmmsClient::PAUSE
+			when Xmms::Client::PAUSE
 				"PLAYBACK_STATE_PAUSED"
-			when XmmsClient::XmmsClient::PLAY
+			when Xmms::Client::PLAY
 				"PLAYBACK_STATE_PLAYING"
 			else
 				"PLAYBACK_STATE_STOPPED"
