@@ -22,6 +22,7 @@ static void run_window_test(Ewl_Test *test, int width, int height);
 static void run_unit_tests(Ewl_Test *test);
 static int create_main_test_window(Ewl_Container *win);
 static void fill_source_text(Ewl_Test *test);
+static void text_parse(Ewl_Test *test, char *str);
 static void setup_unit_tests(Ewl_Test *test);
 
 static int ewl_test_cb_unit_test_timer(void *data);
@@ -461,9 +462,13 @@ create_main_test_window(Ewl_Container *box)
 	ewl_container_child_append(EWL_CONTAINER(o), o2);
 	ewl_widget_show(o2);
 
+	o2 = ewl_scrollpane_new();
+	ewl_container_child_append(EWL_CONTAINER(note), o2);
+	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(note), o2, "Tutorial");
+	ewl_widget_show(o2);
+
 	o = ewl_text_new();
-	ewl_container_child_append(EWL_CONTAINER(note), o);
-	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(note), o, "Tutorial");
+	ewl_container_child_append(EWL_CONTAINER(o2), o);
 	ewl_widget_name_set(o, "tutorial_text");
 	ewl_widget_show(o);
 
@@ -473,7 +478,6 @@ create_main_test_window(Ewl_Container *box)
 static void
 fill_source_text(Ewl_Test *test)
 {
-	Ewl_Widget *txt;
 	FILE *file;
 	struct stat buf;
 	char filename[PATH_MAX];
@@ -485,17 +489,15 @@ fill_source_text(Ewl_Test *test)
 	{
 		char *str;
 
-		txt = ewl_widget_name_find("source_text");
 		stat(filename, &buf);
 
 		str = malloc(sizeof(char) * (buf.st_size + 1));
-	    
 		fread(str, buf.st_size, 1, file);
 		str[buf.st_size] = '\0';
-
-		ewl_text_text_set(EWL_TEXT(txt), str);
-		free(str);
 		fclose(file);
+
+		text_parse(test, str);
+		free(str);
 	}
 }
 
@@ -561,6 +563,43 @@ cb_run_unit_tests(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 	unit_test_timer = ecore_timer_add(0.1, ewl_test_cb_unit_test_timer, 
 							test->unit_tests);
+}
+
+static void
+text_parse(Ewl_Test *test __UNUSED__, char *str)
+{
+	Ewl_Widget *txt, *tutorial;
+	char *start, *end, tmp;
+
+	txt = ewl_widget_name_find("source_text");
+	tutorial = ewl_widget_name_find("tutorial_text");
+
+	start = strstr(str, "/**");
+	if (!start)
+	{
+		ewl_text_text_set(EWL_TEXT(txt), str);
+		ewl_text_text_set(EWL_TEXT(tutorial),  "");
+		return;
+	}
+
+	end = strstr(str, "*/");
+	end++;
+
+	while (*(start - 1) == '\n') start --;
+
+	tmp = *start;
+	*start = '\0';
+	
+	ewl_text_text_set(EWL_TEXT(txt), str);
+	ewl_text_text_append(EWL_TEXT(txt), end + 1);
+
+	*start = tmp;
+	tmp = *(end + 1);
+	*(end + 1) = '\0';
+
+	ewl_text_text_set(EWL_TEXT(tutorial), start);
+
+	*(end + 1) = tmp;
 }
 
 
