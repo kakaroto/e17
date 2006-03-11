@@ -106,23 +106,23 @@ ewl_test_cb_unit_test_timer(void *data)
 {
 	char buf[1024];
 	char *entries[3];
-	Ewl_Widget *tree;
-	Ewl_Unit_Test *unit_tests = data;
+	Ewl_Unit_Test *unit_tests;
+	int ret = 1;
 
-	tree = ewl_widget_name_find("unit_test_tree");
-
+	unit_tests = data;
 	if (unit_tests[current_unit_test].func)
 	{
-		int ret;
-		Ewl_Widget *progress;
+		int val;
+		Ewl_Widget *tree, *progress;
 
-		ret = unit_tests[current_unit_test].func(buf, sizeof(buf));
+		val = unit_tests[current_unit_test].func(buf, sizeof(buf));
 
+		tree = ewl_widget_name_find("unit_test_tree");
 		progress = ewl_widget_name_find("unit_test_progress");
 
 		entries[0] = (char *)unit_tests[current_unit_test].name;
-		entries[1] = (ret ? "PASS" : "FAIL");
-		entries[2] = (ret ? "" : buf);
+		entries[1] = (val ? "PASS" : "FAIL");
+		entries[2] = (val ? "" : buf);
 		ewl_tree_text_row_add(EWL_TREE(tree), NULL, entries);
 
 		ewl_progressbar_value_set(EWL_PROGRESSBAR(progress),
@@ -133,10 +133,10 @@ ewl_test_cb_unit_test_timer(void *data)
 		ecore_timer_del(unit_test_timer);
 		unit_test_timer = NULL;
 		current_unit_test = 0;
-		return 0;
+		ret = 0;
 	}
 
-	return 1;
+	return ret;
 }
 
 static void
@@ -502,7 +502,7 @@ fill_source_text(Ewl_Test *test)
 static void
 setup_unit_tests(Ewl_Test *test)
 {
-	Ewl_Widget *button, *tree;
+	Ewl_Widget *button, *tree, *progress;
 	char *entries[3];
 	int i;
 
@@ -525,6 +525,11 @@ setup_unit_tests(Ewl_Test *test)
 
 		ewl_tree_text_row_add(EWL_TREE(tree), NULL, entries);
 	}
+
+	progress = ewl_widget_name_find("unit_test_progress");
+	ewl_progressbar_range_set(EWL_PROGRESSBAR(progress), (double)(i));
+	ewl_progressbar_value_set(EWL_PROGRESSBAR(progress), 0.0);
+
 }
 
 static void
@@ -541,18 +546,21 @@ cb_run_unit_tests(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	test = ewl_widget_data_get(w, "test");
 	if ((!test) || (!test->unit_tests)) return;
 
-	for (i = 0; test->unit_tests[i].func; i++);
+	for (i = 0; test->unit_tests[i].func; i++)
+		;
 
 	progress = ewl_widget_name_find("unit_test_progress");
 	ewl_progressbar_range_set(EWL_PROGRESSBAR(progress), (double)(i));
 	ewl_progressbar_value_set(EWL_PROGRESSBAR(progress), 0.0);
 
-	if (unit_test_timer) {
+	if (unit_test_timer) 
+	{
 		ecore_timer_del(unit_test_timer);
 		current_unit_test = 0;
 	}
 
-	unit_test_timer = ecore_timer_add(0.1, ewl_test_cb_unit_test_timer, test->unit_tests);
+	unit_test_timer = ecore_timer_add(0.1, ewl_test_cb_unit_test_timer, 
+							test->unit_tests);
 }
 
 
