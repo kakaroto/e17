@@ -23,3 +23,5 @@ void evfs_handle_file_read_command(evfs_client * client,
 void evfs_handle_ping_command(evfs_client * client, evfs_command * command);
 void evfs_handle_operation_command(evfs_client * client,
                                    evfs_command * command);
+
+void evfs_handle_directory_create_command(evfs_client * client, evfs_command * command);

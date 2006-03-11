@@ -18,7 +18,8 @@ typedef enum evfs_command_type
    EVFS_CMD_FILE_READ = 10,
    EVFS_CMD_FILE_TEST = 11,
    EVFS_CMD_PING = 12,
-   EVFS_CMD_OPERATION_RESPONSE = 13
+   EVFS_CMD_OPERATION_RESPONSE = 13,
+   EVFS_CMD_DIRECTORY_CREATE = 14
 }
 evfs_command_type;
 

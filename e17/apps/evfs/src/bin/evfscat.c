@@ -16,7 +16,7 @@ callback(evfs_event * data, void *obj)
 	    */
 
         evfs_client_file_read(con, data->resp_command.file_command.files[0],
-                              4096);
+                              16384);
 
         break;
 
@@ -27,7 +27,7 @@ callback(evfs_event * data, void *obj)
              fwrite(data->data.bytes, data->data.size, 1, stdout);
              evfs_client_file_read(con,
                                    data->resp_command.file_command.files[0],
-                                   4096);
+                                   16384);
           }
         else
           {

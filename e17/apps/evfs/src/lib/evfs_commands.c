@@ -47,6 +47,7 @@ evfs_client_file_remove(evfs_connection * conn, evfs_filereference * ref)
 
    evfs_write_command(conn, command);
 
+   free(command->file_command.files);
    free(command);
 
 }
@@ -65,6 +66,7 @@ evfs_client_file_rename(evfs_connection * conn, evfs_filereference * from,
    command->file_command.files[0] = from;
    command->file_command.files[1] = to;
 
+   free(command->file_command.files);
    evfs_write_command(conn, command);
 
    free(command);
@@ -83,6 +85,7 @@ evfs_client_file_stat(evfs_connection * conn, evfs_filereference * file)
 
    evfs_write_command(conn, command);
 
+   free(command->file_command.files);
    free(command);
 
 }
@@ -101,6 +104,7 @@ evfs_client_dir_list(evfs_connection * conn, evfs_filereference * file)
 
    evfs_write_command(conn, command);
 
+   free(command->file_command.files);
    free(command);
 
 }
@@ -122,6 +126,7 @@ evfs_client_file_copy(evfs_connection * conn, evfs_filereference * from,
 
    evfs_write_command(conn, command);
 
+   free(command->file_command.files);
    free(command);
 }
 
@@ -139,6 +144,7 @@ evfs_client_file_open(evfs_connection * conn, evfs_filereference * file)
 
    evfs_write_command(conn, command);
 
+   free(command->file_command.files);
    free(command);
 }
 
@@ -158,8 +164,29 @@ evfs_client_file_read(evfs_connection * conn, evfs_filereference * file,
 
    evfs_write_command(conn, command);
 
+   free(command->file_command.files);
    free(command);
 }
+
+
+void
+evfs_client_directory_create(evfs_connection * conn, evfs_filereference * file)
+{
+   evfs_command *command = NEW(evfs_command);
+
+   //printf("Reading a file..\n");
+
+   command->type = EVFS_CMD_DIRECTORY_CREATE;
+   command->file_command.num_files = 1;
+   command->file_command.files = malloc(sizeof(evfs_filereference *) * 1);
+   command->file_command.files[0] = file;
+
+   evfs_write_command(conn, command);
+	
+   free(command->file_command.files);
+   free(command);
+}
+
 
 void
 evfs_client_operation_respond(evfs_connection * conn, long opid,

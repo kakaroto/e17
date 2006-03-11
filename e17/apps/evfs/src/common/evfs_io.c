@@ -546,6 +546,7 @@ evfs_write_command(evfs_connection * conn, evfs_command * command)
      case EVFS_CMD_FILE_COPY:
      case EVFS_CMD_FILE_OPEN:
      case EVFS_CMD_FILE_READ:
+     case EVFS_CMD_DIRECTORY_CREATE:
      case EVFS_CMD_PING:
         evfs_write_file_command(conn, command);
         break;
@@ -577,6 +578,7 @@ evfs_write_command_client(evfs_client * client, evfs_command * command)
      case EVFS_CMD_FILE_COPY:
      case EVFS_CMD_FILE_OPEN:
      case EVFS_CMD_FILE_READ:
+     case EVFS_CMD_DIRECTORY_CREATE:
      case EVFS_CMD_PING:
         evfs_write_file_command_client(client, command);
         break;

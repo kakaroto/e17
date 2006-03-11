@@ -341,8 +341,30 @@ evfs_handle_dir_list_command(evfs_client * client, evfs_command * command)
         printf("No plugin for '%s'\n",
                command->file_command.files[0]->plugin_uri);
      }
-
 }
+
+
+
+void evfs_handle_directory_create_command(evfs_client* client, evfs_command* command) 
+{
+	evfs_plugin* plugin = NULL;
+	int ret = 0;
+	
+       plugin =
+       evfs_get_plugin_for_uri(client->server,
+                              command->file_command.files[0]->plugin_uri);
+	
+	if (plugin) {
+		printf("Making new directory '%s'",
+	        command->file_command.files[0]->path);
+		  
+	        ret =
+	        (*plugin->functions->evfs_file_mkdir) (command->file_command.files[0]);
+		printf("....ret was %d\n", ret);
+	}
+}
+
+
 
 /* TODO:
  * 1. check if file exists before open/write.  if so, wait-and-lock for user
@@ -358,7 +380,7 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
    evfs_plugin *dst_plugin;
 
    char bytes[COPY_BLOCKSIZE];
-   uint64 count;
+   int64 count;
    char destination_file[PATH_MAX];
    long read_write_bytes = 0;
 

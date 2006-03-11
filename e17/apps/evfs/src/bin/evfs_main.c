@@ -191,6 +191,10 @@ evfs_handle_command(evfs_client * client, evfs_command * command)
         printf("File copy handler\n");
         evfs_handle_file_copy(client, command, command);
         break;
+
+     case EVFS_CMD_DIRECTORY_CREATE:
+	evfs_handle_directory_create_command(client,command);
+	break;
      case EVFS_CMD_PING:
         evfs_handle_ping_command(client, command);
         break;
