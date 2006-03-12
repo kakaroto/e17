@@ -18,7 +18,6 @@ static void      _wlan_face_cb_menu_edit(void *data, E_Menu *mn, E_Menu_Item *mi
 static void      _wlan_face_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi);
 static int       _wlan_face_update_values(void *data);
 static void      _wlan_face_graph_values(Wlan_Face *wf, int val);
-static void      _wlan_face_graph_clear(Wlan_Face *wf);
 
 static int wlan_count;
 static E_Config_DD *conf_edd;
