@@ -12,3 +12,6 @@ ephoto_CFLAGS = @ewl_cflags@
 
 ephoto_LDADD =  $(INTLLIBS) \
 		@ewl_libs@
+
+EXTRA_DIST = \
+	     ephoto.h
