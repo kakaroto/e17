@@ -631,15 +631,21 @@ tutorial_parse(Ewl_Text *tutorial, char *str)
 		}
 		else if (*ptr2 == '*')
 		{
-			char *prev;
+			char *prev, tmp;
 
 			prev = ptr2;
 			while ((*ptr2 == '*') || (*ptr2 == ' ')) ptr2 --;
-			*(++ptr2) = '\0';
+
+			if (*ptr2 != '\n')
+				ptr2 = prev;
+
+			tmp = *(++ptr2);
+			*ptr2 = '\0';
 
 			if (ptr2 > ptr)
 				ewl_text_text_append(tutorial, ptr);
 
+			*ptr2 = tmp;
 			ptr2 = prev;
 
 			/* we're done if we have a / */
@@ -660,6 +666,7 @@ tutorial_parse(Ewl_Text *tutorial, char *str)
 					|| (!strncmp(ptr2, "section", 7)))
 			{
 				int size = 14;
+				char t;
 
 				if (!strncmp(ptr2, "addtogroup", 10))
 					size = 18;
@@ -669,13 +676,15 @@ tutorial_parse(Ewl_Text *tutorial, char *str)
 
 				while (*tmp != ' ') tmp --;
 				tmp ++;
+				t = *ptr2;
 				*ptr2 = '\0';
 
 				ewl_text_font_size_set(tutorial, size);
 				ewl_text_text_append(tutorial, tmp);
 				ewl_text_text_append(tutorial, "\n");
 				ewl_text_font_size_set(tutorial, 10);
-				
+			
+				*ptr2 = t;
 				ptr2 ++;
 			}
 			else if (!strncmp(ptr2, "code", 4))
