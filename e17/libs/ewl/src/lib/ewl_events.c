@@ -302,7 +302,7 @@ ewl_ev_x_key_down(void *data __UNUSED__, int type __UNUSED__, void *e)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ev = e;
-	embed = ewl_embed_evas_window_find((void *)ev->win);
+	embed = ewl_window_window_find((void *)ev->win);
 
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
