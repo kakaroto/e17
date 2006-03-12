@@ -163,6 +163,24 @@ Etk_Widget *etk_dialog_button_add(Etk_Dialog *dialog, const char *label, int res
 }
 
 /**
+ * @brief Add a button from the stock buttons to the dialog's action area
+ * @param stock_id the button's stock id
+ * @param response_id the button's response id (Etk_Dialog_Response_ID)
+ * @return Returns the newly added button.
+ */
+Etk_Widget *etk_dialog_button_add_from_stock(Etk_Dialog *dialog, int stock_id, int response_id)
+{
+   Etk_Widget *button;
+
+   if (!dialog)
+      return NULL;
+   
+   button = etk_button_new_from_stock(stock_id);
+   etk_dialog_pack_button_in_action_area(dialog, ETK_BUTTON(button), response_id, ETK_FALSE, ETK_FALSE, 6, ETK_TRUE);
+   return button;   
+}
+
+/**
  * @brief Pack a pre-created button into the dialog's action area
  * @param dialog the dialog we want to pack into
  * @param button the button we want to pacl

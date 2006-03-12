@@ -23,6 +23,7 @@ static const Etk_Stock_Item _etk_stock_items[] =
    { "actions/appointment-new_16", "actions/appointment-new_22", "actions/appointment-new_48", "" },
    { "actions/bookmark-new_16", "actions/bookmark-new_22", "actions/bookmark-new_48", "" },
    { "actions/contact-new_16", "actions/contact-new_22", "actions/contact-new_48", "" },
+   { "actions/dialog-ok_16", "actions/dialog-ok_22", "actions/dialog-ok_48", "Ok" },
    { "actions/dialog-cancel_16", "actions/dialog-cancel_22", "actions/dialog-cancel_48", "Cancel" },
    { "actions/document-new_16", "actions/document-new_22", "actions/document-new_48", "New" },
    { "actions/document-open_16", "actions/document-open_22", "actions/document-open_48", "Open" },
