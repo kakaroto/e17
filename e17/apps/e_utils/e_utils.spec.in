@@ -70,6 +70,14 @@ Requires: enlightenment >= 0.16.999
 %description ethemes
 A theme selector with preview
 
+%package e17genmenu
+Summary:  A menu generator for e17
+Group: User Interface/Desktops
+Requires: enlightenment >= 0.16.999
+
+%description e17genmenu
+A menu generator for e17
+
 %prep
 %setup -q
 
@@ -123,5 +131,11 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root)
 %{_bindir}/ethemes
 %{_datadir}/enlightenment/config-apps/ethemes.eap
+
+%files e17genmenu
+%defattr(-, root, root)
+%{_bindir}/e17genmenu
+%{_datadir}/%{name}/data/e17genmenu/icons/*
+
 
 %changelog
