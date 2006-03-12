@@ -48,6 +48,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 static evfs_server *server;
 
+evfs_server* 
+evfs_server_get()
+{
+	return server;
+}
+
 evfs_client *
 evfs_client_get(Ecore_Ipc_Client * client)
 {
@@ -150,9 +156,11 @@ ipc_client_data(void *data __UNUSED__, int type __UNUSED__, void *event)
    return 1;
 }
 
-void
+int
 evfs_handle_command(evfs_client * client, evfs_command * command)
 {
+   int cleanup_command=1;
+	
    switch (command->type)
      {
      case EVFS_CMD_STARTMON_FILE:
@@ -190,6 +198,7 @@ evfs_handle_command(evfs_client * client, evfs_command * command)
      case EVFS_CMD_FILE_COPY:
         printf("File copy handler\n");
         evfs_handle_file_copy(client, command, command);
+	cleanup_command = 0;
         break;
 
      case EVFS_CMD_DIRECTORY_CREATE:
@@ -206,6 +215,8 @@ evfs_handle_command(evfs_client * client, evfs_command * command)
         printf("Warning - unhandled command %d\n", command->type);
         break;
      }
+
+   return cleanup_command;
 }
 
 evfs_plugin *
@@ -296,21 +307,24 @@ evfs_load_plugins()
 int
 ecore_timer_enterer(__UNUSED__ void *data)
 {
+   evfs_operation_queue_run();
+	
    return 1;
 }
 
 int
 incoming_command_cb(__UNUSED__ void *data)
 {
+   int clean =0;
+	
    evfs_command_client *com_cli =
       ecore_list_remove_first(server->incoming_command_list);
 
    if (com_cli)
      {
-        evfs_handle_command(com_cli->client, com_cli->command);
-        evfs_cleanup_command(com_cli->command, EVFS_CLEANUP_FREE_COMMAND);
+        clean = evfs_handle_command(com_cli->client, com_cli->command);
+        if (clean) evfs_cleanup_command(com_cli->command, EVFS_CLEANUP_FREE_COMMAND);
         free(com_cli);
-
      }
 
    return 1;
@@ -335,7 +349,7 @@ main(int argc, char **argv)
    ecore_idle_enterer_add(incoming_command_cb, NULL);
 
    /*Add a timer, to make sure our event loop keeps going.  Kinda hacky */
-   ecore_timer_add(0.5, ecore_timer_enterer, NULL);
+   ecore_timer_add(0.1, ecore_timer_enterer, NULL);
 
    /*Load the plugins */
    evfs_load_plugins();

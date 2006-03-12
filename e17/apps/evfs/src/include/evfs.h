@@ -33,7 +33,6 @@
 #define EVFS_FUNCTION_FILE_MOVE "evfs_file_move"
 #define EVFS_FUNCTION_FILE_STAT_GET "evfs_file_stat_get"
 
-#include "evfs_operation.h"
 #include "evfs_plugin.h"
 
 typedef enum
@@ -90,17 +89,20 @@ GNUC_EXTENSION typedef unsigned long long uint64;
 #include "evfs_event.h"
 #include "evfs_server.h"
 #include "evfs_misc.h"
-#include "evfs_commands.h"
 #include "evfs_cleanup.h"
 #include "evfs_io.h"
 #include "evfs_new.h"
-#include "evfs_event_helper.h"
 #include "evfs_server_handle.h"
 #include "evfs_common.h"
 #include "evfs_vfolder.h"
+#include "evfs_operation.h"
+#include "evfs_operation_tasks.h"
+#include "evfs_commands.h"
+#include "evfs_event_helper.h"
 
 void evfs_operation_user_dispatch(evfs_client * client, evfs_command * command,
                                   evfs_operation * op, char* misc);
+evfs_server* evfs_server_get();
 
 /**
  * ATTRIBUTE_UNUSED:

@@ -13,7 +13,8 @@ void evfs_stat_event_create(evfs_client * client, evfs_command * command,
 void evfs_list_dir_event_create(evfs_client * client, evfs_command * command,
                                 Ecore_List * files);
 void evfs_file_progress_event_create(evfs_client * client,
-                                     evfs_command * event_command,
+				     evfs_filereference* prog_file1,
+				     evfs_filereference* prog_file2,
                                      evfs_command * root_command,
                                      double progress, evfs_progress_type type);
 void evfs_open_event_create(evfs_client * client, evfs_command * command);

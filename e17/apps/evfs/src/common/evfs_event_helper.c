@@ -74,7 +74,8 @@ evfs_list_dir_event_create(evfs_client * client, evfs_command * command,
 
 void
 evfs_file_progress_event_create(evfs_client * client,
-                                evfs_command * event_command,
+				evfs_filereference* file_from,
+				evfs_filereference* file_to,
                                 evfs_command * root_command, double progress,
                                 evfs_progress_type type)
 {
@@ -89,9 +90,9 @@ evfs_file_progress_event_create(evfs_client * client,
 
    event->file_list.list = ecore_list_new();
    ecore_list_append(event->file_list.list,
-                     event_command->file_command.files[0]);
+                     file_from);
    ecore_list_append(event->file_list.list,
-                     event_command->file_command.files[1]);
+                     file_to);
 
    evfs_write_event(client, root_command, event);
 

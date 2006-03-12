@@ -379,26 +379,21 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
    evfs_plugin *plugin;
    evfs_plugin *dst_plugin;
 
-   char bytes[COPY_BLOCKSIZE];
-   int64 count;
    char destination_file[PATH_MAX];
-   long read_write_bytes = 0;
 
    struct stat file_stat;
    struct stat dest_stat;
 
    int progress = 0;
-   int last_notify_progress = 0;
-   int b_read = 0, b_write = 0;
    int res;
-   evfs_operation *op;
+   evfs_operation_files *op;
 
    /*Make a new evfs_operation, for client communication */
    if (root_command == command) {
-	   op = evfs_operation_new();
-	   root_command->op = op;
+	   op = evfs_operation_files_new(client, root_command);
+	   root_command->op = EVFS_OPERATION(op);
    } else {
-	   op = root_command->op;
+	   op = EVFS_OPERATION_FILES(root_command->op);
    }
 
    plugin =
@@ -418,8 +413,8 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 	      plugin->functions->evfs_file_read &&
 	      dst_plugin->functions->evfs_file_write))
           {
-             printf("AHH! Copy Not supported!\n");
-             evfs_operation_destroy(op);
+             printf("ARGH! Copy Not supported!\n");
+             evfs_operation_destroy(EVFS_OPERATION(op));
              return;
           }
 
@@ -428,128 +423,26 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
         res =
            (*dst_plugin->functions->evfs_file_lstat) (command, &dest_stat, 1);
 
-        /*If this file exists, lock our operation until we get confirmation
-         * from the user that they want to overwrite, or not */
-        if ( (res != EVFS_ERROR) && !(op->status == EVFS_OPERATION_STATUS_OVERRIDE) )
-          {
-             printf("File overwrite\n");
-             evfs_operation_status_set(op, EVFS_OPERATION_STATUS_USER_WAIT);
-
-             evfs_operation_user_dispatch(client, root_command, op, command->file_command.files[1]->path);
-             while (op->status == EVFS_OPERATION_STATUS_USER_WAIT)
-               {
-                  ecore_main_loop_iterate();
-                  usleep(1);
-               }
-
-             if (op->response == EVFS_OPERATION_RESPONSE_NEGATE)
-               {
-                  printf("User opted not to overwrite file!\n");
-                  goto CLEANUP;
-               }
-             else
-               {
-		 if (op->response == EVFS_OPERATION_RESPONSE_AFFIRM_ALL) {
-			 op->status = EVFS_OPERATION_STATUS_OVERRIDE;
-		 }
-		       
-                  printf("User opted to overwrite file! -%d\n", op->response);
-               }
-          }
-
         if (!S_ISDIR(file_stat.st_mode))
           {
-             int fd = (*plugin->functions->evfs_file_open) (client,
-                                                            command->
-                                                            file_command.
-                                                            files[0]);
+		  evfs_operation_copy_task_add(EVFS_OPERATION(op), 
+		       evfs_filereference_clone(command->file_command.files[0]),
+		       evfs_filereference_clone(command->file_command.files[1]),
+		       file_stat, dest_stat);
 
-             if (fd <= 0)
-               {
-                  printf("*************************  Could not open file!\n");
-                  goto CLEANUP;
-               }
-
-             (*dst_plugin->functions->evfs_file_create) (command->file_command.
-                                                         files[1]);
-
-             count = 0;
-
-	     printf("Copying file, total file size %lld bytes\n", file_stat.st_size);
-             while (count < file_stat.st_size)
-               {
-                  //(*plugin->functions->evfs_file_seek)(command->file_command.files[0], count, SEEK_SET);
-
-                  read_write_bytes =
-                     (file_stat.st_size >
-                      count +
-                      COPY_BLOCKSIZE) ? COPY_BLOCKSIZE : (file_stat.st_size -
-                                                          count);
-
-                  //printf("Reading/writing %d bytes\n", read_write_bytes);
-
-                  //TODO: Implement error checking here
-                  b_read =
-                     (*plugin->functions->evfs_file_read) (client,
-                                                           command->
-                                                           file_command.
-                                                           files[0], bytes,
-                                                           read_write_bytes);
-                  if (b_read > 0)
-                    {
-                       b_write =
-                          (*dst_plugin->functions->evfs_file_write) (command->
-                                                                     file_command.
-                                                                     files[1],
-                                                                     bytes,
-                                                                     b_read);
-                       //printf("%d  -> %d\n", b_read, b_write);
-                    }
-                  count += b_read;
-
-                  progress =
-                     (double)((double)count / (double)file_stat.st_size * 100);
-                  if (progress % 1 == 0 && last_notify_progress < progress)
-                    {
-                       evfs_file_progress_event_create(client, command,
-                                                       root_command, progress,
-                                                       EVFS_PROGRESS_TYPE_CONTINUE);
-                       last_notify_progress = progress;
-                    }
-
-                  //printf("Bytes to go: %d\n", file_stat.st_size - count);
-
-                  /*Iterate */
-                  ecore_main_loop_iterate();
-               }
-             (*dst_plugin->functions->evfs_file_close) (command->file_command.
-                                                        files[1]);
-             (*plugin->functions->evfs_file_close) (command->file_command.
-                                                    files[0]);
-          }
-        else
-          {
+          } else {
              Ecore_List *directory_list = NULL;
+
+		  evfs_operation_mkdir_task_add(EVFS_OPERATION(op), 
+		       evfs_filereference_clone(command->file_command.files[1]));
 
              /*First, we need a directory list... */
              (*plugin->functions->evfs_dir_list) (client, command,
                                                   &directory_list);
              if (directory_list)
                {
-                  int ret = 0;
                   evfs_filereference *file = NULL;
 
-                  /*OK, so the directory exists at the source, and contains files.
-                   * Let's make the destination directory first..*/
-                  printf("Making new directory '%s'",
-                         command->file_command.files[1]->path);
-                  ret =
-                     (*dst_plugin->functions->evfs_file_mkdir) (command->
-                                                                file_command.
-                                                                files[1]);
-                  printf("....ret was %d\n", ret);
-
-                  //printf("Recursive directory list for '%s' received..\n", command->file_command.files[0]->path);
                   while ((file = ecore_list_remove_first(directory_list)))
                     {
                        evfs_filereference *source = NEW(evfs_filereference);
@@ -592,9 +485,16 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
           }
 
         /*Only send '100%' event when we're back at the top, or we aren't recursive */
-        if (command == root_command)
-           evfs_file_progress_event_create(client, command, root_command, 100,
-                                           EVFS_PROGRESS_TYPE_DONE);
+        if (command == root_command) {
+           /*evfs_file_progress_event_create(client, command, root_command, 100,
+                                           EVFS_PROGRESS_TYPE_DONE);*/
+
+	   evfs_operation_tasks_print(EVFS_OPERATION(op));
+
+	   evfs_operation_queue_pending_add(EVFS_OPERATION(op));
+
+	}
+
 
      }
    else
@@ -603,11 +503,6 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
                command->file_command.files[0]->plugin_uri,
                command->file_command.files[1]->plugin_uri);
      }
-
- CLEANUP:
-   if (command == root_command)
-	   evfs_operation_destroy(op);
-
 }
 
 void

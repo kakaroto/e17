@@ -141,7 +141,7 @@ typedef struct evfs_event
    evfs_event_file_monitor file_monitor;
    evfs_event_stat stat;
    evfs_event_progress *progress;
-   evfs_operation *op;
+   struct evfs_operation *op;
 
    evfs_event_data data;
 }

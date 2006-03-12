@@ -36,7 +36,7 @@ typedef struct evfs_command
 {
    evfs_command_type type;
    evfs_command_file file_command;
-   evfs_operation *op;
+   struct evfs_operation *op;
 }
 evfs_command;
 
