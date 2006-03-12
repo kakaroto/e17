@@ -42,5 +42,6 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root)
 %doc AUTHORS ChangeLog COPYING* INSTALL NEWS README
 %{_libdir}/enlightenment/modules/%{module_name}
+%{_datadir}/locale/*
 
 %changelog
