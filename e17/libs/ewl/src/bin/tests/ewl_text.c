@@ -42,7 +42,7 @@
  * @code
  * void ewl_text_color_set(Ewl_Text *t, int r, int g, int b, int a);
  * void ewl_text_color_get(Ewl_Text *t, int *r, int *g, int *b, int *a);
- * void ewl_text_color_apply(Ewl_Text *t, int r, int g, int b, int a, * unsigned int len);
+ * void ewl_text_color_apply(Ewl_Text *t, int r, int g, int b, int a, unsigned int len);
  * @endcode
  *
  * There are similar calls to mainipluate the font, font size, font colour,
