@@ -278,11 +278,6 @@ calendar_face_new(E_Container *con, Calendar * calendar)
              E_GADMAN_POLICY_VMOVE | E_GADMAN_POLICY_HSIZE |
              E_GADMAN_POLICY_VSIZE;
 
-   if (calendar->conf->allow_overlap == 0)
-     policy &= ~E_GADMAN_POLICY_ALLOW_OVERLAP;
-   else
-     policy |= E_GADMAN_POLICY_ALLOW_OVERLAP;
-
    e_gadman_client_policy_set(face->gmc, policy);
 
 

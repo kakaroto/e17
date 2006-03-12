@@ -10,7 +10,6 @@ struct _calendar_cfdata
    char *size2;
    int temp_ImageYes;
    int temp_UserCS;
-   int allow_overlap;
    Calendar *calendar;
 };
 
@@ -145,11 +144,6 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data)
    ob = e_widget_radio_add(evas, _("Saturday"), 6, rg);
    e_widget_framelist_object_append(of, ob);
    e_widget_table_object_append(o, of, 0, 2, 1, 1, 1, 1, 1, 1);
-
-   of = e_widget_framelist_add(evas, _("Extras"), 0);
-   ob = e_widget_check_add(evas, _("Allow windows to overlap this gadget"), &(cfdata->calendar->conf->allow_overlap));
-   e_widget_framelist_object_append(of, ob);
-   e_widget_table_object_append(o, of, 0, 3, 1, 1, 1, 1, 1, 1);
 
    return o;
 }
@@ -305,11 +299,6 @@ _color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas,
    ob = e_widget_radio_add(evas, _("Without"), 1, rg);
    e_widget_framelist_object_append(of2, ob);
    e_widget_table_object_append(s_table, of2, 0, 0, 1, 1, 1, 1, 1, 1);
-
-   of = e_widget_framelist_add(evas, _("Extras"), 0);
-   ob = e_widget_check_add(evas, _("Allow windows to overlap this gadget"), &(cfdata->calendar->conf->allow_overlap));
-   e_widget_framelist_object_append(of, ob);
-   e_widget_table_object_append(s_table, of, 0, 1, 1, 1, 1, 1, 1, 1);
 
    e_widget_table_object_append(o, s_table, 0, 0, 1, 1, 1, 1, 1, 1);
 

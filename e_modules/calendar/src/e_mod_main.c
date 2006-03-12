@@ -303,7 +303,6 @@ E_CONFIG_VAL(D, T, arrow_path, STR);
    
 E_CONFIG_VAL(D, T, UserCS, INT);
    
-E_CONFIG_VAL(D, T, allow_overlap, INT);
 //Store colors
       E_CONFIG_LIST(D, T, Today_s_text_colors, conf_color_edd);
    
@@ -462,8 +461,6 @@ calendar->conf->DayofWeek_Start = 0;
         
 calendar->conf->UserCS = FALSE;
         
-calendar->conf->allow_overlap = 0;
-
 calendar_face_set_colors(calendar);
         
 calendar_face_set_text(calendar);

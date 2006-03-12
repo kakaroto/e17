@@ -7,7 +7,6 @@ struct _E_Config_Dialog_Data
    int autofit;
    int follower;
    int iconsize;
-   int allow_overlap;
    double follow_speed;
    double autoscroll_speed;
 };
@@ -53,7 +52,6 @@ _fill_data(Emu *emu, E_Config_Dialog_Data *cfdata)
    cfdata->autofit = (emu->conf->width == EMU_WIDTH_AUTO);
    cfdata->follower = emu->conf->follower;
    cfdata->iconsize = emu->conf->iconsize;
-   cfdata->allow_overlap = emu->conf->allow_overlap;
    cfdata->follow_speed = emu->conf->follow_speed;
    cfdata->autoscroll_speed = emu->conf->autoscroll_speed;
 }
@@ -92,8 +90,6 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    ob = e_widget_check_add(evas, _("Auto Fit Icons"), &(cfdata->autofit));
    e_widget_list_object_append(o, ob, 1, 1, 0.5);
 
-   ob = e_widget_check_add(evas, _("Allow Overlap"), &(cfdata->allow_overlap));
-   e_widget_list_object_append(o, ob, 1, 1, 0.5);
    return o;
 }
 
@@ -112,11 +108,6 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
      {
         emu->conf->follower = 0;
      }
-
-   if (cfdata->allow_overlap && !emu->conf->allow_overlap)
-      emu->conf->allow_overlap = 1;
-   else if (!cfdata->allow_overlap && emu->conf->allow_overlap)
-      emu->conf->allow_overlap = 0;
 
    if ((cfdata->autofit) && (emu->conf->width == EMU_WIDTH_FIXED))
      {
@@ -163,11 +154,6 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-   /* allow overlap checkbox */
-   of = e_widget_framelist_add(evas, _("Extras"), 0);
-   ob = e_widget_check_add(evas, _("Allow Overlap"), &(cfdata->allow_overlap));
-   e_widget_framelist_object_append(of, ob);
-   e_widget_list_object_append(o, of, 1, 1, 0.5);
    return o;
 }
 
@@ -186,12 +172,6 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
      {
         emu->conf->follower = 0;
      }
-
-   /* allow overlap check box */
-   if (cfdata->allow_overlap && !emu->conf->allow_overlap)
-      emu->conf->allow_overlap = 1;
-   else if (!cfdata->allow_overlap && emu->conf->allow_overlap)
-      emu->conf->allow_overlap = 0;
 
    if ((cfdata->autofit) && (emu->conf->width == EMU_WIDTH_FIXED))
      {
