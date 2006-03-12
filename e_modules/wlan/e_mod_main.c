@@ -182,8 +182,8 @@ _wlan_init(E_Module *m)
 		  if (!fl)
 		    {
 		       nf->conf = E_NEW(Config_Face, 1);
-		       nf->conf->enabled = 1;
-		       nf->conf->device = (char *)evas_stringshare_add("wlan0");
+		       nf->conf->enabled = 1; //wlan0
+		       nf->conf->device = (char *)evas_stringshare_add("eth0");
 		       nf->conf->check_interval = 30;
 		       nf->conf->show_text = 1;
 		       nf->conf->show_graph = 1;
@@ -480,12 +480,10 @@ _wlan_face_update_values(void *data)
    int wlan_link = 0;
    int wlan_level = 0;
    int wlan_noise = 0;
-   int wlan_value = 0;
    
    char in_str[100];
 
    nf = data;
-
    stat = fopen("/proc/net/wireless", "r");
    if (!stat)
      return 1;
@@ -514,22 +512,18 @@ _wlan_face_update_values(void *data)
 
    if (!found_dev)
      return 1;
-
-   wlan_value = -(100 - wlan_level - wlan_noise);
-   if (wlan_level == 0)
-     wlan_value = 0;
    
    /* Update the modules text */
    if (nf->conf->show_text)
      {
-	snprintf(in_str, sizeof(in_str), "LNK: %d%%", wlan_value);
+	snprintf(in_str, sizeof(in_str), "LNK: %d%%", wlan_link);
 	edje_object_part_text_set(nf->txt_obj, "link-text", in_str);
      }   
    else
      edje_object_part_text_set(nf->txt_obj, "link-text", "");
-   
+
    if (nf->conf->show_graph) 
-     _wlan_face_graph_values(nf, wlan_value);
+     _wlan_face_graph_values(nf, wlan_link);
    else
      _wlan_face_graph_clear(nf);
      
