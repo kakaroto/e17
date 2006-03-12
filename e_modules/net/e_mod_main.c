@@ -18,7 +18,6 @@ static void      _net_face_cb_menu_edit(void *data, E_Menu *mn, E_Menu_Item *mi)
 static void      _net_face_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi);
 static int       _net_face_update_values(void *data);
 static void      _net_face_graph_values(Net_Face *nf, int tx_val, int rx_val);
-static void      _net_face_graph_clear(Net_Face *nf);
 
 static int net_count;
 
@@ -536,11 +535,16 @@ _net_face_update_values(void *data)
    
    if (!found) 
      return 1;
-   
+      
    if (old_in && old_out) 
      {
 	bytes_in = in - old_in;
 	bytes_out = out - old_out;
+	
+	if (bytes_in < 0)
+	  bytes_in = 0;
+	if (bytes_out < 0)
+	  bytes_out = 0;
 	
 	in_use = (int)((bytes_in * 100L) / max_in);
 	out_use = (int)((bytes_out * 100L) / max_out);
@@ -562,6 +566,11 @@ _net_face_update_values(void *data)
      {
 	edje_object_part_text_set(nf->ttxt_obj, "tx-text", "");
 	edje_object_part_text_set(nf->rtxt_obj, "rx-text", "");		
+     }
+   else if ((bytes_in < 0) || (bytes_out < 0))
+     {
+	edje_object_part_text_set(nf->ttxt_obj, "tx-text", "Tx: 0 B");
+	edje_object_part_text_set(nf->rtxt_obj, "rx-text", "Rx: 0 B");	
      }
     else 
      {
@@ -652,7 +661,7 @@ _net_face_graph_values(Net_Face *nf, int tx_val, int rx_val)
      }      
 }
 
-static void 
+void 
 _net_face_graph_clear(Net_Face *nf) 
 {
    Evas_List *l;

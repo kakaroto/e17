@@ -149,8 +149,15 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
    nf = cfd->data;
    tmp = ecore_list_goto_index(cfdata->devs, cfdata->dev_num);
-   if (tmp != NULL)
-     nf->conf->device = (char *)evas_stringshare_add(strdup(tmp));
+   if (tmp != NULL) 
+     {
+	if (strcmp(tmp, nf->conf->device)) 
+	  {
+	     _net_face_graph_clear(nf);
+	     nf->conf->device = (char *)evas_stringshare_add(strdup(tmp));
+	  }
+     }
+   
    nf->conf->check_interval = cfdata->check_interval;
    nf->conf->show_text = cfdata->show_text;
    nf->conf->show_graph = cfdata->show_graph;
