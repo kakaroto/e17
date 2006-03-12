@@ -65,8 +65,11 @@ struct _Etk_Combobox
    Etk_Widget widget;
    
    Etk_Widget *button;
-   Etk_Widget *active_item_widget;
    Etk_Menu_Window *window;
+   
+   Etk_Combobox_Item *active_item;
+   Etk_Widget *active_item_widget;
+   Etk_Widget **active_item_children;
    
    int num_cols;   
    Etk_Combobox_Column **cols;
@@ -87,6 +90,10 @@ void etk_combobox_column_add(Etk_Combobox *combobox, Etk_Combobox_Column_Type co
 void etk_combobox_build(Etk_Combobox *combobox);
 
 Etk_Combobox_Item *etk_combobox_item_append(Etk_Combobox *combobox, void *data, ...);
+void etk_combobox_item_activate(Etk_Combobox_Item *item);
+
+void etk_combobox_active_item_set(Etk_Combobox *combobox, Etk_Combobox_Item *item);
+Etk_Combobox_Item *etk_combobox_active_item_get(Etk_Combobox *combobox);
 
 /** @} */
 

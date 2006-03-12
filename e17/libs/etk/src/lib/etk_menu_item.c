@@ -60,7 +60,7 @@ static void _etk_menu_item_check_active_set(Etk_Menu_Item_Check *check_item, Etk
 static void _etk_menu_item_radio_active_set(Etk_Menu_Item_Check *check_item, Etk_Bool active);
 
 static Etk_Signal *_etk_menu_item_signals[ETK_MENU_ITEM_NUM_SIGNALS];
-static Etk_Signal *_etk_menu_item_check_signals[ETK_MENU_ITEM_CHECK_TOGGLED_SIGNAL];
+static Etk_Signal *_etk_menu_item_check_signals[ETK_MENU_ITEM_CHECK_NUM_SIGNALS];
 
 /**************************
  *

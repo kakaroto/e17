@@ -296,13 +296,14 @@ static void _etk_menu_item_leave_cb(Etk_Object *object, void *data)
    etk_menu_item_deselect(item);
 }
 
-/* Called when the user has clicked on the item */
+/* Called when the user has released the item */
 static void _etk_menu_item_mouse_up_cb(Etk_Object *object, void *event, void *data)
 {
    Etk_Menu_Item *item;
    
    if (!(item = ETK_MENU_ITEM(object)) || item->submenu)
       return;
+   /* TODO */
    etk_menu_item_activate(item);
 }
 
