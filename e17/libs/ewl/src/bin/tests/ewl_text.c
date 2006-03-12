@@ -66,7 +66,7 @@
  *
  * After the user has made a selection it can be checked and retrieved with:
  * @code
- * unsigned int ewl_text_selection_has(Ewl_Text *t);
+ * unsigned int ewl_text_has_selection(Ewl_Text *t);
  * Ewl_Text_Trigger *ewl_text_selection_get(Ewl_Text *t);
  * char *ewl_text_selection_text_get(Ewl_Text *t);
  * @endcode
