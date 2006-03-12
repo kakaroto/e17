@@ -1,6 +1,6 @@
 MAINTAINERCLEANFILES = Makefile.in
 EXTRA_DIST = default.edc
-
+SUBDIRS = icons
 EDJE_CC = edje_cc
 EDJE_FLAGS = \
 -v \

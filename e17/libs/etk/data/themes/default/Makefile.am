@@ -1,6 +1,10 @@
 MAINTAINERCLEANFILES = Makefile.in
 EXTRA_DIST = default.edc
-
+SUBDIRS = fonts \
+	  images \
+	  macros \
+	  widgets
+	  
 EDJE_CC = edje_cc
 EDJE_FLAGS = \
 -v \
@@ -17,3 +21,4 @@ default.edj: Makefile default.edc
 
 clean-local:
 	rm -f *.edj
+	rm -rf autom4te.cache

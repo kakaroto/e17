@@ -12,7 +12,7 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 
 bin_SCRIPTS = etk-config
 
-EXTRA_DIST = config.rpath mkinstalldirs  \
+EXTRA_DIST = \
 AUTHORS \
 COPYING \
 gendoc \
