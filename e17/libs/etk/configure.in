@@ -226,6 +226,7 @@ data/images/Makefile
 data/icons/Makefile
 data/icons/default/Makefile
 po/Makefile
+intl/Makefile
 etk-config
 ],[
 chmod +x etk-config

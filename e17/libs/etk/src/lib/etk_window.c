@@ -172,7 +172,9 @@ void etk_window_resize(Etk_Window *window, int w, int h)
       return;
    
    ecore_evas_size_min_get(window->ecore_evas, &min_w, &min_h);
-   ecore_evas_resize(window->ecore_evas, ETK_MAX(w, min_w), ETK_MAX(h, min_h));
+   window->width = ETK_MAX(w, min_w);
+   window->height = ETK_MAX(h, min_h);
+   ecore_evas_resize(window->ecore_evas, window->width, window->height);
 }
 
 /**
@@ -187,7 +189,12 @@ void etk_window_geometry_get(Etk_Window *window, int *x, int *y, int *w, int *h)
 {
    if (!window)
       return;
-   ecore_evas_geometry_get(window->ecore_evas, x, y, w, h);
+   
+   ecore_evas_geometry_get(window->ecore_evas, x, y, NULL, NULL);
+   if (w)
+      *w = window->width;
+   if (h)
+      *h = window->height;
 }
 
 /**
@@ -207,20 +214,32 @@ void etk_window_center_on_window(Etk_Window *window_to_center, Etk_Window *windo
    {
       window_to_center->center = ETK_TRUE;
       window_to_center->center_on_window = window;
-      /* TODO: what if "window" is destroyed meanwhile ?? */
-      /*if (window)
-         etk_object_weak_pointer_add(ETK_OBJECT(window), &window_to_center->center_window);*/
+      if (window)
+         etk_object_weak_pointer_add(ETK_OBJECT(window), (void **)(&window_to_center->center_on_window));
    }
    else
    {
-      /* TODO: what if window->wait_size_request == TRUE ?? */
       if (window)
-         ecore_evas_geometry_get(window->ecore_evas, &x, &y, &w, &h);
+      {
+         etk_window_geometry_get(window, &x, &y, &w, &h);
+         if (window->wait_size_request)
+         {
+            Etk_Size size_requisition;
+            
+            etk_widget_size_request(ETK_WIDGET(window), &size_requisition);
+            w = size_requisition.w;
+            h = size_requisition.h;
+         }
+      }
       else
-         /* TODO: will it work with multiscreen? */
-         ecore_x_window_geometry_get(ecore_x_window_root_first_get(), &x, &y, &w, &h);
+      {
+         Ecore_X_Window root;
+         
+         for (root = window_to_center->x_window; ecore_x_window_parent_get(root) != 0; root = ecore_x_window_parent_get(root));
+         ecore_x_window_geometry_get(root, &x, &y, &w, &h);
+      }
       
-      ecore_evas_geometry_get(window_to_center->ecore_evas, NULL, NULL, &cw, &ch);
+      etk_window_geometry_get(window_to_center, NULL, NULL, &cw, &ch);
       ecore_evas_move(window_to_center->ecore_evas, x + (w - cw) / 2, y + (h - ch) / 2);
    }
 }
@@ -232,12 +251,13 @@ void etk_window_center_on_window(Etk_Window *window_to_center, Etk_Window *windo
 void etk_window_move_to_mouse(Etk_Window *window)
 {
    int x, y;
+   Ecore_X_Window root;
    
    if (!window)
       return;
    
-   /* TODO: will it work with multiscreen? */
-   ecore_x_pointer_xy_get(ecore_x_window_root_first_get(), &x, &y);
+   for (root = window->x_window; ecore_x_window_parent_get(root) != 0; root = ecore_x_window_parent_get(root));
+   ecore_x_pointer_xy_get(root, &x, &y);
    etk_window_move(window, x, y);
 }
 
@@ -417,28 +437,6 @@ Etk_Bool etk_window_is_focused(Etk_Window *window)
    if (!window)
       return ETK_FALSE;
    return ecore_evas_focus_get(window->ecore_evas);
-}
-
-/**
- * @brief Raises the window
- * @param window a window
- */
-void etk_window_raise(Etk_Window *window)
-{
-   if (!window)
-      return;
-   ecore_evas_raise(window->ecore_evas);
-}
-
-/**
- * @brief Lowers the window
- * @param window a window
- */
-void etk_window_lower(Etk_Window *window)
-{
-   if (!window)
-      return;
-   ecore_evas_lower(window->ecore_evas);
 }
 
 /**
@@ -663,6 +661,8 @@ static void _etk_window_constructor(Etk_Window *window)
 
    window->ecore_evas = ecore_evas_software_x11_new(0, 0, 0, 0, 0, 0);
    window->x_window = ecore_evas_software_x11_window_get(window->ecore_evas);
+   window->width = 0;
+   window->height = 0; 
    window->wait_size_request = ETK_TRUE;
    window->center = ETK_FALSE;
    window->center_on_window = NULL;
@@ -693,7 +693,10 @@ static void _etk_window_destructor(Etk_Window *window)
 {
    if (!window)
       return;
+   
    ecore_evas_free(window->ecore_evas);
+   if (window->center_on_window)
+      etk_object_weak_pointer_remove(ETK_OBJECT(window->center_on_window), (void **)(&window->center_on_window));
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -824,8 +827,10 @@ static void _etk_window_resize_cb(Ecore_Evas *ecore_evas)
 
    if (!(window = ETK_WINDOW(ecore_evas_data_get(ecore_evas, "etk_window"))))
       return;
+   
+   ecore_evas_geometry_get(ecore_evas, NULL, NULL, &window->width, &window->height);
    etk_signal_emit(_etk_window_signals[ETK_WINDOW_RESIZE_SIGNAL], ETK_OBJECT(window), NULL);
-   etk_widget_redraw_queue(ETK_WIDGET(window));      
+   etk_widget_redraw_queue(ETK_WIDGET(window));
 }
 
 /* Called when the window is focused in */
@@ -877,14 +882,15 @@ static void _etk_window_show_cb(Etk_Object *object, void *data)
 /* Called when a size request signal is emitted */
 static void _etk_window_size_request_cb(Etk_Window *window, Etk_Size *requisition, void *data)
 {
-   int w, h;
-
    if (window && requisition && requisition->w >= 0 && requisition->h >= 0)
    {
-      ecore_evas_geometry_get(window->ecore_evas, NULL, NULL, &w, &h);
-      if (w < requisition->w || h < requisition->h)
-         ecore_evas_resize(window->ecore_evas, ETK_MAX(w, requisition->w), ETK_MAX(h, requisition->h));
       ecore_evas_size_min_set(window->ecore_evas, requisition->w, requisition->h);
+      if (window->width < requisition->w || window->height < requisition->h)
+      {
+         window->width = ETK_MAX(window->width, requisition->w);
+         window->height = ETK_MAX(window->height, requisition->h);
+         ecore_evas_resize(window->ecore_evas, window->width, window->height);
+      }
       
       if (window->wait_size_request)
       {

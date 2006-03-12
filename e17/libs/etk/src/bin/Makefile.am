@@ -10,7 +10,7 @@ DEFS = -DLOCALEDIR=\"$(localedir)\" @DEFS@
 EXTRA_DIST =
 
 INCLUDES	= \
--I. -I$(top_srcdir)/src/lib -Wall -g \
+-I. -I../.. -I$(top_srcdir)/src/lib -Wall -g \
 @EVAS_CFLAGS@ @ECORE_CFLAGS@ @EDJE_CFLAGS@
 
 bin_PROGRAMS = etk_test

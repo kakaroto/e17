@@ -21,8 +21,12 @@ void etk_test_combobox_window_create(void *data)
    vbox = etk_vbox_new(ETK_FALSE, 3);
    etk_container_add(ETK_CONTAINER(win), vbox);
 
-   combobox = etk_combobox_new();
+   combobox = etk_combobox_new_default();
    etk_box_pack_start(ETK_BOX(vbox), combobox, ETK_FALSE, ETK_FALSE, 0);
+   
+   etk_combobox_item_append(ETK_COMBOBOX(combobox), NULL, "Test 1");
+   etk_combobox_item_append(ETK_COMBOBOX(combobox), NULL, "Test 2");
+   etk_combobox_item_append(ETK_COMBOBOX(combobox), NULL, "Test 3");
 
    etk_widget_show_all(win);
 }

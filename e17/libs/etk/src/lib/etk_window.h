@@ -32,6 +32,9 @@ struct _Etk_Window
    Ecore_Evas *ecore_evas;
    Ecore_X_Window x_window;
    
+   int width;
+   int height;
+   
    Etk_Bool (*delete_event)(Etk_Window *window);
    Etk_Bool wait_size_request;
    Etk_Bool center;
@@ -70,9 +73,6 @@ Etk_Bool etk_window_is_sticky(Etk_Window *window);
 void etk_window_focus(Etk_Window *window);
 void etk_window_unfocus(Etk_Window *window);
 Etk_Bool etk_window_is_focused(Etk_Window *window);
-
-void etk_window_raise(Etk_Window *window);
-void etk_window_lower(Etk_Window *window);
 
 void etk_window_decorated_set(Etk_Window *window, Etk_Bool decorated);
 Etk_Bool etk_window_decorated_get(Etk_Window *window);

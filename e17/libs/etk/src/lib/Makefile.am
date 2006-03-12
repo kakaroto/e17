@@ -8,7 +8,7 @@ localedir = $(datadir)/locale
 DEFS = -DLOCALEDIR=\"$(localedir)\" @DEFS@
 
 INCLUDES	= \
--I. -I$(top_srcdir)/src/lib -Wall -g \
+-I. -I../.. -I$(top_srcdir)/src/lib -Wall -g \
 @EVAS_CFLAGS@ @ECORE_CFLAGS@ @EDJE_CFLAGS@
 
 lib_LTLIBRARIES = libetk.la

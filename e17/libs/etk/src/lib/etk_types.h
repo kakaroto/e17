@@ -103,6 +103,7 @@ typedef struct _Etk_Menu_Item_Image Etk_Menu_Item_Image;
 typedef struct _Etk_Menu_Item_Check Etk_Menu_Item_Check;
 typedef struct _Etk_Menu_Item_Radio Etk_Menu_Item_Radio;
 typedef struct _Etk_Combobox Etk_Combobox;
+typedef struct _Etk_Combobox_Column Etk_Combobox_Column;
 typedef struct _Etk_Combobox_Item Etk_Combobox_Item;
 typedef struct _Etk_Statusbar Etk_Statusbar;
 typedef struct _Etk_Filechooser_Widget Etk_Filechooser_Widget;

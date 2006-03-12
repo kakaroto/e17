@@ -556,18 +556,16 @@ int etk_tree_col_place_get(Etk_Tree_Col *col)
 }
 
 /**
- * @brief Sets the sorting function for a columb
+ * @brief Sets the sorting function for a column
  * @param col a tree column
  * @param compare_cb the sorting comparator
- * @param ascendant wether we want ascending or descending results
- * @param data a pointer to user data
+ * @param data a pointer to user data, it will be passed to compare_cb
  */
-void etk_tree_col_sort_func_set(Etk_Tree_Col *col, int (*compare_cb)(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data), Etk_Bool ascendant, void *data)
+void etk_tree_col_sort_func_set(Etk_Tree_Col *col, int (*compare_cb)(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data), void *data)
 {  
-   if(!col)
-     return;
+   if (!col)
+      return;
    col->sort.compare_cb = compare_cb;
-   col->sort.ascendant = ascendant;
    col->sort.data = data;
 }
 
@@ -888,6 +886,9 @@ void etk_tree_sort(Etk_Tree *tree, int (*compare_cb)(Etk_Tree *tree, Etk_Tree_Ro
    tree->root.first_child = first_row;
    tree->root.last_child = r;
    free(heap);
+   
+   tree->last_sorted_col = col;
+   tree->last_sorted_ascendant = ascendant;
    
    etk_widget_redraw_queue(ETK_WIDGET(tree->grid));
 }
@@ -1529,6 +1530,8 @@ static void _etk_tree_constructor(Etk_Tree *tree)
    tree->column_to_resize = NULL;
    tree->resize_pointer_shown = ETK_FALSE;
    tree->headers_visible = ETK_TRUE;
+   tree->last_sorted_col = NULL;
+   tree->last_sorted_ascendant = ETK_FALSE;
 
    tree->root.tree = tree;
    tree->root.parent = NULL;
@@ -1701,7 +1704,6 @@ static void _etk_tree_col_constructor(Etk_Tree_Col *tree_col)
    tree_col->clip = NULL;
    tree_col->separator = NULL;
    tree_col->sort.compare_cb = NULL;
-   tree_col->sort.ascendant = ETK_TRUE;
    tree_col->sort.data = NULL;      
 }
 
@@ -2183,8 +2185,13 @@ static void _etk_tree_header_mouse_up_cb(Etk_Object *object, void *event, void *
       col->tree->column_to_resize = NULL;
    else
    {
-      if(col->sort.compare_cb)
-	etk_tree_sort(col->tree, col->sort.compare_cb, col->sort.ascendant, col, col->sort.data);
+      if (col->sort.compare_cb)
+      {
+         if (col->tree->last_sorted_col == col)
+            etk_tree_sort(col->tree, col->sort.compare_cb, !col->tree->last_sorted_ascendant, col, col->sort.data);
+         else
+            etk_tree_sort(col->tree, col->sort.compare_cb, ETK_TRUE, col, col->sort.data);
+      }
    }
 }
 

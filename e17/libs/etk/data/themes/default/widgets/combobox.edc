@@ -32,6 +32,13 @@ group {
                normal: "button_down.png";
             }
          }
+         description {
+            state: "on" 0.0;
+            inherit: "default" 0.0;
+            image {
+               normal: "button_toggled.png";
+            }
+         }
       }
       part {
          name: "combo_arrow";
@@ -226,18 +233,35 @@ group {
    }
    programs {
       program {
-         name: "combo_pressed";
+         name: "combo_button_activate";
+         signal: "activate";
+         source: "";
+         script {
+            activate();
+         }
+      }
+      program {
+         name: "combo_button_deactivate";
+         signal: "deactivate";
+         source: "";
+         script {
+            desactivate();
+         }
+      }
+      program {
+         name: "combo_button_pressed";
          signal: "pressed";
          source: "";
          action: STATE_SET "down" 0.0;
          target: "combo_button";
       }
       program {
-         name: "combo_released";
+         name: "combo_button_released";
          signal: "released";
          source: "";
-         action: STATE_SET "default" 0.0;
-         target: "combo_button";
+         script {
+            up();
+         }
       }
       program {
          name: "combo_enter";
@@ -325,6 +349,188 @@ group {
          target: "glint1";
          target: "glint2";
          target: "glint3";
+      }
+   }
+   script
+   {
+      public activated = 0;
+   
+      public activate()
+      {
+         activated = 1;
+         set_state(PART:"combo_button", "on", 0.0);
+         set_state(PART:"swallow_area", "down", 0.0);
+      }
+      public desactivate()
+      {
+         activated = 0;
+         set_state(PART:"combo_button", "default", 0.0);
+         set_state(PART:"swallow_area", "default", 0.0);
+      }
+      public up()
+      {
+         if (activated)
+            activate();
+         else
+            desactivate();
+      }
+   }
+}
+
+group {
+   name: "combobox_window";
+   data {
+      item: "inset" "2 2 2 2";
+   }
+   parts {
+      part {
+	 name: "window_bg1";
+	 mouse_events: 0;
+	 type: RECT;
+	 description {
+	    state: "default" 0.0;
+	    color: 221 221 221 255;
+	    rel1 {
+	       relative: 0.0 1.0;
+	       offset: 1 0;
+	       to_y: "window_bg2";
+	    }
+	    rel2 {
+	       relative: 1.0 1.0;
+	       offset: -2 -2;
+	    }
+	 }
+      }
+      part {
+         name: "window_bg2";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+	    max: 99999 48;
+	    align: 0.5 0.0;
+	    rel1 {
+	       relative: 0.0 0.0;
+	       offset: 1 1;
+	    }
+	    rel2 {
+	       relative: 1.0 1.0;
+	       offset: -2 -2;
+	    }
+            image {
+               normal: "background.png";
+            }
+	    fill {
+	       smooth: 0;
+	    }
+         }
+      }
+      part {
+         name: "window_bg_border";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 0 0;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -1 -1;
+            }
+            image {
+               normal: "border.png";
+               border: 1 1 1 1;
+               middle: 0;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+      }
+   }
+   /*parts {
+      part {
+         name: "border";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 255;
+            rel1 {
+               relative: 0 0;
+               offset: 0 0;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -1 -1;
+            }
+         }
+      }
+      part {
+         name: "background";
+         type: RECT;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            color: 255 255 255 255;
+            rel1 {
+               relative: 0 0;
+               offset: 1 1;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -2 -2;
+            }
+         }
+      }
+   }*/
+}
+
+
+group {
+   name: "combobox_item";
+   data {
+      item: "inset" "4 4 4 4";
+   }
+   parts {
+      part {
+	 name: "item_bg";
+	 mouse_events: 1;
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 0 0;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -1 -1;
+            }
+         }
+	 description {
+	    state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: 239 191 114 80;
+	 }
+      }
+   }
+   programs {
+      program {
+         name: "select";
+         signal: "select";
+         source: "";
+         action: STATE_SET "selected" 0.0;
+         target: "item_bg";
+      }
+      program {
+         name: "unselect";
+         signal: "unselect";
+         source: "";
+         action: STATE_SET "default" 0.0;
+         target: "item_bg";
       }
    }
 }

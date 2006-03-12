@@ -182,10 +182,12 @@ static void _etk_menu_window_constructor(Etk_Menu_Window *menu_window)
 {
    if (!menu_window)
       return;
-      
+   
    etk_window_decorated_set(ETK_WINDOW(menu_window), ETK_FALSE);
    etk_window_skip_taskbar_hint_set(ETK_WINDOW(menu_window), ETK_TRUE);
    etk_window_skip_pager_hint_set(ETK_WINDOW(menu_window), ETK_TRUE);
+   /* TODO */
+   ecore_x_netwm_window_type_set(ETK_WINDOW(menu_window)->x_window, ECORE_X_WINDOW_TYPE_MENU);
 }
 
 /**************************

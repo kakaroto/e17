@@ -30,7 +30,6 @@ group {
             inherit: "default" 0.0;
             image {
                normal: "button_down.png";
-               border: 8 8 8 8;
             }
          }
          description {
@@ -38,7 +37,6 @@ group {
             inherit: "default" 0.0;
             image {
                normal: "button_toggled.png";
-               border: 8 8 8 8;
             }
          }
       }
