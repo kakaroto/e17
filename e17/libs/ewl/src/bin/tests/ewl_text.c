@@ -8,6 +8,11 @@
  * @section text_tut Tutorial
  *
  * You can use the text widget to display text stuff.
+ * This is another line.
+ *
+ * @code
+ * ewl_text_text_set(EWL_TEXT(t), "foo");
+ * @endcode
  */
 
 static int create_test(Ewl_Container *box);

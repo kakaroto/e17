@@ -22,7 +22,8 @@ static void run_window_test(Ewl_Test *test, int width, int height);
 static void run_unit_tests(Ewl_Test *test);
 static int create_main_test_window(Ewl_Container *win);
 static void fill_source_text(Ewl_Test *test);
-static void text_parse(Ewl_Test *test, char *str);
+static void text_parse(char *str);
+static void tutorial_parse(Ewl_Text *tutorial, char *str);
 static void setup_unit_tests(Ewl_Test *test);
 
 static int ewl_test_cb_unit_test_timer(void *data);
@@ -460,6 +461,7 @@ create_main_test_window(Ewl_Container *box)
 	o = ewl_text_new();
 	ewl_container_child_append(EWL_CONTAINER(o2), o);
 	ewl_widget_name_set(o, "source_text");
+	ewl_text_selectable_set(EWL_TEXT(o), TRUE);
 	ewl_widget_show(o);
 
 	o2 = ewl_scrollpane_new();
@@ -470,6 +472,7 @@ create_main_test_window(Ewl_Container *box)
 	o = ewl_text_new();
 	ewl_container_child_append(EWL_CONTAINER(o2), o);
 	ewl_widget_name_set(o, "tutorial_text");
+	ewl_text_selectable_set(EWL_TEXT(o), TRUE);
 	ewl_widget_show(o);
 
 	return 1;
@@ -496,7 +499,7 @@ fill_source_text(Ewl_Test *test)
 		str[buf.st_size] = '\0';
 		fclose(file);
 
-		text_parse(test, str);
+		text_parse(str);
 		free(str);
 	}
 }
@@ -566,7 +569,7 @@ cb_run_unit_tests(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 }
 
 static void
-text_parse(Ewl_Test *test __UNUSED__, char *str)
+text_parse(char *str)
 {
 	Ewl_Widget *txt, *tutorial;
 	char *start, *end, tmp;
@@ -597,9 +600,99 @@ text_parse(Ewl_Test *test __UNUSED__, char *str)
 	tmp = *(end + 1);
 	*(end + 1) = '\0';
 
-	ewl_text_text_set(EWL_TEXT(tutorial), start);
+	tutorial_parse(EWL_TEXT(tutorial), start);
 
 	*(end + 1) = tmp;
 }
 
+static void
+tutorial_parse(Ewl_Text *tutorial, char *str)
+{
+	char *ptr, *ptr2;
+
+	ptr = str;
+
+	/* move past the comment stuff to the start of the tutorial */
+	while ((*ptr == '/') || (*ptr == '*') || (*ptr == '\n')
+			|| (*ptr == ' '))
+		ptr ++;
+
+	/* while we've still got data */
+	while (ptr != NULL)
+	{
+		ptr2 = ptr;
+		while ((*ptr2 != '*') && (*ptr2 != '@') && (*ptr2 != NULL))
+			ptr2 ++;
+
+		if (ptr2 == NULL)
+		{
+			ewl_text_text_append(tutorial, ptr);
+			break;
+		}
+		else if (*ptr2 == '*')
+		{
+			char *prev;
+
+			prev = ptr2;
+			while ((*ptr2 == '*') || (*ptr2 == ' ')) ptr2 --;
+			*(++ptr2) = '\0';
+
+			if (ptr2 > ptr)
+				ewl_text_text_append(tutorial, ptr);
+
+			ptr2 = prev;
+
+			/* we're done if we have a / */
+			if (*(ptr2 + 1) == '/')
+				break;
+
+			while ((*ptr2 == '*') || (*ptr2 == ' ')) ptr2 ++;
+		}
+		else if (*ptr2 == '@')
+		{
+			char *tmp;
+
+			*ptr2 = '\0';
+			ewl_text_text_append(tutorial, ptr);
+
+			ptr2++;
+			if ((!strncmp(ptr2, "addtogroup", 10))
+					|| (!strncmp(ptr2, "section", 7)))
+			{
+				int size = 14;
+
+				if (!strncmp(ptr2, "addtogroup", 10))
+					size = 18;
+
+				ptr2 = strstr(ptr2, "\n");
+				tmp = ptr2;
+
+				while (*tmp != ' ') tmp --;
+				*ptr2 = '\0';
+
+				ewl_text_font_size_set(tutorial, size);
+				ewl_text_text_append(tutorial, tmp);
+				ewl_text_text_append(tutorial, "\n");
+				ewl_text_font_size_set(tutorial, 10);
+				
+				ptr2 ++;
+			}
+			else if (!strncmp(ptr2, "code", 4))
+			{
+				ptr2 += strlen("code\n");
+				ewl_text_bg_color_set(tutorial, 
+						128, 128, 128, 255);
+			}
+			else if (!strncmp(ptr2, "endcode", 7))
+			{
+				ptr2 += strlen("endcode\n");
+				ewl_text_bg_color_set(tutorial,
+						255, 255, 255, 255);
+			}
+			else
+				printf("Didn't match (%s)\n", ptr2);
+		}
+		ptr = ptr2;
+	}
+}
 
