@@ -32,6 +32,7 @@ struct _Etk_Entry
    
    Etk_Bool     is_password;
    char        *password_text;
+   char        *text;
 };
 
 Etk_Type *etk_entry_type_get();

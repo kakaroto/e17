@@ -83,10 +83,15 @@ Etk_Widget *etk_entry_new()
  */
 void etk_entry_text_set(Etk_Entry *entry, const char *text)
 {
-   if (!entry || !entry->editable_object)
+   if (!entry)
       return;
-   etk_editable_text_object_text_set(entry->editable_object, text);
-   etk_signal_emit(_etk_entry_signals[ETK_ENTRY_TEXT_CHANGED_SIGNAL], ETK_OBJECT(entry), NULL);
+   if(!entry->editable_object)
+     entry->text = strdup(text);
+   else
+   {
+      etk_editable_text_object_text_set(entry->editable_object, text);
+      etk_signal_emit(_etk_entry_signals[ETK_ENTRY_TEXT_CHANGED_SIGNAL], ETK_OBJECT(entry), NULL);
+   }
 }
 
 /**
@@ -175,6 +180,7 @@ static void _etk_entry_constructor(Etk_Entry *entry)
    entry->editable_object = NULL;
    entry->is_password = ETK_FALSE;
    entry->password_text = NULL;
+   entry->text = NULL;   
    
    etk_signal_connect("realize", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_realize_cb), NULL);
    etk_signal_connect("unrealize", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_unrealize_cb), NULL);
@@ -239,6 +245,12 @@ static void _etk_entry_realize_cb(Etk_Object *object, void *data)
 
    entry = ETK_ENTRY(entry_widget);
    entry->editable_object = etk_editable_text_object_add(evas);
+   if(entry->text != NULL)
+   {
+      etk_editable_text_object_text_set(entry->editable_object, entry->text);
+      free(entry->text);
+      entry->text = NULL;
+   }
    evas_object_show(entry->editable_object);
    etk_widget_theme_object_swallow(entry_widget, "text_area", entry->editable_object);
 }
