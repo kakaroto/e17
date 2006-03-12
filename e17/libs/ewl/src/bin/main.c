@@ -690,14 +690,14 @@ tutorial_parse(Ewl_Text *tutorial, char *str)
 			else if (!strncmp(ptr2, "code", 4))
 			{
 				ptr2 += strlen("code\n");
-				ewl_text_bg_color_set(tutorial, 
+				ewl_text_color_set(tutorial, 
 						128, 128, 128, 255);
 			}
 			else if (!strncmp(ptr2, "endcode", 7))
 			{
 				ptr2 += strlen("endcode\n");
-				ewl_text_bg_color_set(tutorial,
-						255, 255, 255, 255);
+				ewl_text_color_set(tutorial,
+						0, 0, 0, 255);
 			}
 			else
 				printf("Didn't match (%s)\n", ptr2);
