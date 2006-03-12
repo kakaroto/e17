@@ -22,6 +22,7 @@ extern "C" {
  * freed with evas_poppler_font_info_delete.
  */
 Evas_Poppler_Font_Info *evas_poppler_font_info_new (const char                 *font_name,
+                                                    const char                 *font_path,
                                                     unsigned char               is_embedded,
                                                     unsigned char               is_subset,
                                                     Evas_Poppler_Font_Info_Type type);
@@ -44,6 +45,16 @@ void evas_poppler_font_info_delete (Evas_Poppler_Font_Info *fi);
  * Get the name of a Evas_Poppler_Font_Info. The name must not be freed.
  */
 const char *evas_poppler_font_info_font_name_get (Evas_Poppler_Font_Info *fi);
+
+/**
+ * Get the path of a Evas_Poppler_Font_Info
+ *
+ * @param fi The Evas_Poppler_Font_Info to get the name from
+ * @return The path of the font
+ *
+ * Get the path of a Evas_Poppler_Font_Info. The path must not be freed.
+ */
+const char *evas_poppler_font_info_font_path_get (Evas_Poppler_Font_Info *fi);
 
 /**
  * Whether the font is embedded in the file, or not

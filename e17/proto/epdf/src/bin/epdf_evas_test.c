@@ -204,6 +204,7 @@ document_info_print (Evas_Poppler_Document *document, Evas_Poppler_Page *page)
   ecore_list_goto_first (fonts);
   while ((font = ecore_list_next (fonts))) {
     printf ("    %s (", evas_poppler_font_info_font_name_get (font));
+    printf ("%s, ", evas_poppler_font_info_font_path_get (font));
     printf ("%s, ", evas_poppler_font_info_type_name_get (font));
     if (!evas_poppler_font_info_is_embedded_get (font))
       printf ("not ");

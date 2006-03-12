@@ -290,13 +290,17 @@ evas_poppler_document_scan_for_fonts (Evas_Poppler_Document *document, int page_
       Evas_Poppler_Font_Info     *font;
       Evas_Poppler_Font_Info     *font2;
       char                       *font_name = NULL;
+      char                       *font_path = NULL;
       int                         index = 0;
 
       if (((::FontInfo*)items->get(i))->getName())
         font_name = ((::FontInfo*)items->get(i))->getName()->getCString();
 
+      if (((::FontInfo*)items->get(i))->getFile())
+        font_path = ((::FontInfo*)items->get(i))->getFile()->getCString();
+
       type = (Evas_Poppler_Font_Info_Type)((::FontInfo*)items->get(i))->getType();
-      font = evas_poppler_font_info_new (font_name,
+      font = evas_poppler_font_info_new (font_name, font_path,
                                          ((::FontInfo*)items->get(i))->getEmbedded(),
                                          ((::FontInfo*)items->get(i))->getSubset(),
                                          type);
@@ -310,6 +314,7 @@ evas_poppler_document_scan_for_fonts (Evas_Poppler_Document *document, int page_
         index++;
       font_name = strdup (font->font_name + index);
       font2 = evas_poppler_font_info_new (font_name,
+                                          font_path,
                                           font->is_embedded,
                                           font->is_subset,
                                           font->type);

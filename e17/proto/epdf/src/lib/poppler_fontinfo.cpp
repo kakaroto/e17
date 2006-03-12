@@ -7,7 +7,7 @@
 
 
 Evas_Poppler_Font_Info *
-evas_poppler_font_info_new (const char *font_name, unsigned char is_embedded, unsigned char is_subset, Evas_Poppler_Font_Info_Type type)
+evas_poppler_font_info_new (const char *font_name, const char *font_path, unsigned char is_embedded, unsigned char is_subset, Evas_Poppler_Font_Info_Type type)
 {
   Evas_Poppler_Font_Info *fi;
 
@@ -16,6 +16,7 @@ evas_poppler_font_info_new (const char *font_name, unsigned char is_embedded, un
     return NULL;
 
   fi->font_name = strdup (font_name);
+  fi->font_path = strdup (font_path);
   fi->is_embedded = is_embedded;
   fi->is_subset = is_subset;
   fi->type = type;
@@ -32,6 +33,9 @@ evas_poppler_font_info_delete (Evas_Poppler_Font_Info *fi)
   if (fi->font_name)
     free (fi->font_name);
 
+  if (fi->font_path)
+    free (fi->font_path);
+
   free(fi);
 }
 
@@ -42,6 +46,15 @@ evas_poppler_font_info_font_name_get (Evas_Poppler_Font_Info *fi)
     return NULL;
 
   return (const char *)fi->font_name;
+}
+
+const char *
+evas_poppler_font_info_font_path_get (Evas_Poppler_Font_Info *fi)
+{
+  if (!fi)
+    return NULL;
+
+  return (const char *)fi->font_path;
 }
 
 unsigned char

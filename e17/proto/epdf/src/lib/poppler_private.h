@@ -21,6 +21,7 @@ typedef struct _Evas_Poppler_Document Evas_Poppler_Document;
 struct _Evas_Poppler_Font_Info
 {
   char                       *font_name;
+  char                       *font_path;
   unsigned char               is_embedded;
   unsigned char               is_subset;
   Evas_Poppler_Font_Info_Type type;
