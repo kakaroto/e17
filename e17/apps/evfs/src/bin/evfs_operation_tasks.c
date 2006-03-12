@@ -30,7 +30,7 @@ int evfs_operation_tasks_file_copy_run(evfs_operation* op,
              (*copy->file_to->plugin->functions->evfs_file_create) (copy->file_to);
 	}
 
-	
+	/*printf ("next_byte:size  -> %lld:%lld\n", copy->next_byte, copy->source_stat.st_size);	*/
 	while (iter < TASK_COPY_ITERATIONS && 
 		copy->next_byte < copy->source_stat.st_size) {
 		int b_read = 0, b_write= 0;

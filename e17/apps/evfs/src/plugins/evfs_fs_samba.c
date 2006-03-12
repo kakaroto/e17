@@ -464,7 +464,7 @@ evfs_file_write(evfs_filereference * file, char *bytes, long size)
    i = smb_context->write(smb_context, file->fd_p, bytes, size);
    /*printf("Wrote %d bytes\n", i); */
 
-   return 0;
+   return i;
 }
 
 int
@@ -499,7 +499,7 @@ evfs_file_create(evfs_filereference * file)
 
    snprintf(dir_path, 1024, "smb:/%s", file->path);
 
-   printf("SMB File create: %s\n", dir_path);
+   /*printf("SMB File create: %s\n", dir_path);*/
 
    file->fd_p =
       smb_context->open(smb_context, dir_path, O_CREAT | O_TRUNC | O_RDWR,
@@ -511,6 +511,14 @@ int
 smb_evfs_file_mkdir(evfs_filereference * file)
 {
    char dir_path[1024];
+
+   /*Does this command have an attached authentication object? */
+   if (file->username)
+     {
+        printf("We have a username, adding to hash..\n");
+        evfs_auth_structure_add(auth_cache, file->username, file->password,
+                                file->path);
+     }
 
    snprintf(dir_path, 1024, "smb:/%s", file->path);
 
