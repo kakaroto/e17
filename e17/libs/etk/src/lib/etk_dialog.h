@@ -61,7 +61,8 @@ Etk_Widget *etk_dialog_new();
 void etk_dialog_pack_in_main_area(Etk_Dialog *dialog, Etk_Widget *widget, Etk_Bool expand, Etk_Bool fill, int padding, Etk_Bool pack_at_end);
 void etk_dialog_pack_in_action_area(Etk_Dialog *dialog, Etk_Widget *widget, Etk_Bool expand, Etk_Bool fill, int padding, Etk_Bool pack_at_end);
 
-void etk_dialog_button_add(Etk_Dialog *dialog, const char *label, int response_id);
+void etk_dialog_pack_button_in_action_area(Etk_Dialog *dialog, Etk_Button *button, int response_id, Etk_Bool expand, Etk_Bool fill, int padding, Etk_Bool pack_at_end);
+Etk_Widget *etk_dialog_button_add(Etk_Dialog *dialog, const char *label, int response_id);
 
 void etk_dialog_has_separator_set(Etk_Dialog *dialog, Etk_Bool has_separator);
 Etk_Bool etk_dialog_has_separator_get(Etk_Dialog *dialog);

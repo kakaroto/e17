@@ -29,7 +29,8 @@ enum _Etk_Dialog_Property_Id
 static void _etk_dialog_constructor(Etk_Dialog *dialog);
 static void _etk_dialog_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_dialog_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-
+static void _etk_dialog_button_clicked_cb(Etk_Object *object, void *data);
+  
 static Etk_Signal *_etk_dialog_signals[ETK_DIALOG_NUM_SIGNALS];
 
 /**************************
@@ -143,25 +144,55 @@ Etk_Bool etk_dialog_has_separator_get(Etk_Dialog *dialog)
    return dialog->has_separator;
 }
 
-/* TODO: doc */
-void etk_dialog_button_add(Etk_Dialog *dialog, const char *label, int response_id)
+/**
+ * @brief Add a button to the dialog's action area
+ * @param label the button's label
+ * @param response_id the button's response id (Etk_Dialog_Response_ID)
+ * @return Returns the newly added button.
+ */
+Etk_Widget *etk_dialog_button_add(Etk_Dialog *dialog, const char *label, int response_id)
 {
    Etk_Widget *button;
-   int *id;
 
    if (!dialog)
-      return;
-
+      return NULL;
+   
    button = etk_button_new_with_label(label);
-   etk_widget_visibility_locked_set(button, ETK_TRUE);
+   etk_dialog_pack_button_in_action_area(dialog, ETK_BUTTON(button), response_id, ETK_FALSE, ETK_FALSE, 6, ETK_TRUE);
+   return button;   
+}
+
+/**
+ * @brief Pack a pre-created button into the dialog's action area
+ * @param dialog the dialog we want to pack into
+ * @param button the button we want to pacl
+ * @param response_id the response id of the button (Etk_Dialog_Response_ID)
+ * @param expand expand the button
+ * @param fill make the button fill the available space
+ * @param padding how much padding the button will have in pixels
+ * @param pack_at_end if true, the button will be packed at the end of button box
+ */
+void etk_dialog_pack_button_in_action_area(Etk_Dialog *dialog, Etk_Button *button, int response_id, Etk_Bool expand, Etk_Bool fill, int padding, Etk_Bool pack_at_end)
+{
+   int *id;   
+
+   if (!dialog)
+      return;   
+   
+   etk_widget_visibility_locked_set(ETK_WIDGET(button), ETK_TRUE);
+   etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_dialog_button_clicked_cb), dialog);
    
    id = malloc(sizeof(int));
    *id = response_id;
-   etk_object_data_set_full(ETK_OBJECT(dialog), "_Etk_Dialog::response_id", id, free);
+   etk_object_data_set_full(ETK_OBJECT(button), "_Etk_Dialog::response_id", id, free);
    
-   etk_box_pack_end(ETK_BOX(dialog->action_area_hbox), button, ETK_FALSE, ETK_FALSE, 6);
-   etk_widget_show(button);
+   if(pack_at_end)
+     etk_box_pack_end(ETK_BOX(dialog->action_area_hbox), ETK_WIDGET(button), fill, expand, padding);
+   else
+     etk_box_pack_start(ETK_BOX(dialog->action_area_hbox), ETK_WIDGET(button), fill, expand, padding);     
+   etk_widget_show(ETK_WIDGET(button));
 }
+
 
 /**************************
  *
@@ -239,5 +270,13 @@ static void _etk_dialog_property_get(Etk_Object *object, int property_id, Etk_Pr
  *
  **************************/
 
+static void _etk_dialog_button_clicked_cb(Etk_Object *object, void *data)
+{
+   int *response_id;
+   
+   response_id = (int*)etk_object_data_get(object, "_Etk_Dialog::response_id");
+
+   etk_signal_emit(_etk_dialog_signals[ETK_DIALOG_RESPONSE_SIGNAL], ETK_OBJECT(data), NULL, *response_id);
+}
 
 /** @} */
