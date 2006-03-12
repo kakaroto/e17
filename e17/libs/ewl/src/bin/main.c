@@ -668,6 +668,7 @@ tutorial_parse(Ewl_Text *tutorial, char *str)
 				tmp = ptr2;
 
 				while (*tmp != ' ') tmp --;
+				tmp ++;
 				*ptr2 = '\0';
 
 				ewl_text_font_size_set(tutorial, size);
