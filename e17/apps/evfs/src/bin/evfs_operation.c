@@ -247,7 +247,7 @@ void evfs_operation_run_tasks(evfs_operation* op)
 
 
 				if (task->status == EVFS_OPERATION_TASK_STATUS_COMMITTED) {
-					EVFS_OPERATION_FILES(task)->progress_files += 1;
+					EVFS_OPERATION_FILES(op)->progress_files += 1;
 					op->processed_tasks++;
 				}
 
@@ -266,7 +266,7 @@ void evfs_operation_run_tasks(evfs_operation* op)
 				evfs_operation_tasks_mkdir_run(op, EVFS_OPERATION_TASK_MKDIR(task));
 
 				if (task->status == EVFS_OPERATION_TASK_STATUS_COMMITTED) {
-					EVFS_OPERATION_FILES(task)->progress_files += 1;
+					EVFS_OPERATION_FILES(op)->progress_files += 1;
 					op->processed_tasks++;
 				}
 				break;				
