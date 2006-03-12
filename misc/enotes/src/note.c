@@ -778,25 +778,31 @@ get_content_by_note_struct(Note * note)
 char           *
 get_title_by_content(char *content)
 {
-	char           *cont;
-	int             newlength;
+	char           *cont, *start;
+	int             newlength, i;
 
 	if (!content)
 		return NULL;
-	newlength = 0;
+	newlength = i = 0;
 
-	while (newlength < TITLE_LENGTH && cont != NULL) {
-		if (content[newlength] == '\n') {
-			break;
+  start = content;
+	while (newlength < TITLE_LENGTH && content[i] != '\0') {
+		if (content[i++] == '\n') {
+      if (newlength == 0) {
+        start++;
+        continue;
+      } else {
+		    break;
+      }
 		}
 		newlength++;
 	}
 
 	if (newlength == 0)
-		newlength = TITLE_LENGTH;
+		return "(blank)";
 
 	cont = malloc((newlength + 1) * sizeof(char));
-	snprintf(cont, newlength + 1, "%s", content);
+	snprintf(cont, newlength + 1, "%s", start);
 	return cont;
 }
 
