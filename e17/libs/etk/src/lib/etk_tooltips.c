@@ -208,7 +208,7 @@ void etk_tooltips_pop_up(Etk_Widget *widget)
    etk_widget_show_all(_etk_tooltips_window);
    free(key);
 #endif  
-   _etk_tooltips_timer = NULL;      
+   _etk_tooltips_timer = NULL;
 }
 
 /**
@@ -259,6 +259,9 @@ static void _etk_tooltips_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Move
 {
    if(!_etk_tooltips_enabled)
      return;
+   
+   if(_etk_tooltips_timer != NULL)     
+     ecore_timer_del(_etk_tooltips_timer);     
    
    etk_tooltips_pop_down();
    _etk_tooltips_cur_object = object;
