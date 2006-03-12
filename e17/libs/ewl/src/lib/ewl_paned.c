@@ -423,7 +423,7 @@ ewl_paned_configure_horizontal(Ewl_Paned *p)
 
 		/* the grabber is before the start of the pane, so we're
 		 * assuming it hasn't been placed yet */
-		if ((CURRENT_X(cur) < CURRENT_X(p)))
+		if ((ewl_object_current_x_get(EWL_OBJECT(cur)) < CURRENT_X(p)))
 		{
 			int panes, pane_size, grabbers, grab_size, i;
 			int pref_size = 0, min_size = 0, use_min = 0, extra = 0;
@@ -432,7 +432,7 @@ ewl_paned_configure_horizontal(Ewl_Paned *p)
 			/* the previous widget and this grabber */
 			panes = 1;
 			grabbers = 1;
-			grab_size = CURRENT_W(cur);
+			grab_size = ewl_object_current_w_get(EWL_OBJECT(cur));
 			pref_size = ewl_object_preferred_w_get(EWL_OBJECT(prev));
 			min_size = ewl_object_minimum_w_get(EWL_OBJECT(prev));
 			pane_size = 0; 
@@ -451,9 +451,9 @@ ewl_paned_configure_horizontal(Ewl_Paned *p)
 					continue;
 				}
 				
-				if ((CURRENT_X(skip) < CURRENT_X(p)))
+				if ((ewl_object_current_x_get(EWL_OBJECT(skip)) < CURRENT_X(p)))
 				{
-					grab_size += CURRENT_W(skip);
+					grab_size += ewl_object_current_x_get(EWL_OBJECT(skip));
 					grabbers ++;
 					continue;
 				}
@@ -462,7 +462,7 @@ ewl_paned_configure_horizontal(Ewl_Paned *p)
 
 			/* we have a grabber thats been placed,
 			 * calculate the size per pane */
-			if (skip) pane_size = CURRENT_X(skip) - cur_pos;
+			if (skip) pane_size = ewl_object_current_x_get(EWL_OBJECT(skip)) - cur_pos;
 			else pane_size = CURRENT_W(p) - cur_pos;
 
 			pane_size -= grab_size;
@@ -480,10 +480,10 @@ ewl_paned_configure_horizontal(Ewl_Paned *p)
 				{
 					ewl_object_place(EWL_OBJECT(prev),
 							cur_pos, CURRENT_Y(p),
-							CURRENT_W(prev), 
+							ewl_object_current_w_get(EWL_OBJECT(prev)), 
 							CURRENT_H(p));
 
-					cur_pos += CURRENT_W(prev);
+					cur_pos += ewl_object_current_w_get(EWL_OBJECT(prev));
 				}
 				else
 				{
@@ -523,8 +523,8 @@ ewl_paned_configure_horizontal(Ewl_Paned *p)
 
 		/* place the grabber and move to its left side */
 		ewl_object_place(EWL_OBJECT(cur), cur_pos, CURRENT_Y(p),
-						CURRENT_W(cur), CURRENT_H(p));
-		cur_pos += CURRENT_W(cur);
+						ewl_object_current_w_get(EWL_OBJECT(cur)), CURRENT_H(p));
+		cur_pos += ewl_object_current_w_get(EWL_OBJECT(cur));
 		prev = NULL;
 	}
 
@@ -572,7 +572,7 @@ ewl_paned_configure_vertical(Ewl_Paned *p)
 
 		/* the grabber is before the start of the pane, so we're
 		 * assuming it hasn't been placed yet */
-		if ((CURRENT_Y(cur) < CURRENT_Y(p)))
+		if ((ewl_object_current_y_get(EWL_OBJECT(cur)) < CURRENT_Y(p)))
 		{
 			int panes, pane_size, grabbers, grab_size, i;
 			int pref_size = 0, min_size = 0, use_min = 0, extra = 0;
@@ -581,7 +581,7 @@ ewl_paned_configure_vertical(Ewl_Paned *p)
 			/* the previous widget and this grabber */
 			panes = 1;
 			grabbers = 1;
-			grab_size = CURRENT_H(cur);
+			grab_size = ewl_object_current_h_get(EWL_OBJECT(cur));
 			pref_size = ewl_object_preferred_h_get(EWL_OBJECT(prev));
 			min_size = ewl_object_minimum_h_get(EWL_OBJECT(prev));
 			pane_size = 0; 
@@ -596,9 +596,9 @@ ewl_paned_configure_vertical(Ewl_Paned *p)
 					continue;
 				}
 				
-				if ((CURRENT_Y(skip) < CURRENT_Y(p)))
+				if ((ewl_object_current_y_get(EWL_OBJECT(skip)) < CURRENT_Y(p)))
 				{
-					grab_size += CURRENT_H(skip);
+					grab_size += ewl_object_current_h_get(EWL_OBJECT(skip));
 					pref_size += ewl_object_preferred_h_get(
 								EWL_OBJECT(skip));
 					min_size += ewl_object_minimum_h_get(
@@ -611,7 +611,7 @@ ewl_paned_configure_vertical(Ewl_Paned *p)
 
 			/* we have a grabber thats been placed,
 			 * calculate the size per pane */
-			if (skip) pane_size = CURRENT_Y(skip) - cur_pos;
+			if (skip) pane_size = ewl_object_current_y_get(EWL_OBJECT(skip)) - cur_pos;
 			else pane_size = CURRENT_H(p) - cur_pos;
 
 			pane_size -= grab_size;
@@ -630,9 +630,9 @@ ewl_paned_configure_vertical(Ewl_Paned *p)
 					ewl_object_place(EWL_OBJECT(prev),
 							CURRENT_X(p), cur_pos,
 							CURRENT_W(p), 
-							CURRENT_H(prev));
+							ewl_object_current_h_get(EWL_OBJECT(prev)));
 
-					cur_pos += CURRENT_H(prev);
+					cur_pos += ewl_object_current_h_get(EWL_OBJECT(prev));
 				}
 				else
 				{
@@ -672,8 +672,8 @@ ewl_paned_configure_vertical(Ewl_Paned *p)
 
 		/* place the grabber and move to its left side */
 		ewl_object_place(EWL_OBJECT(cur), CURRENT_Y(p), cur_pos,
-						CURRENT_W(p), CURRENT_H(cur));
-		cur_pos += CURRENT_H(cur);
+						CURRENT_W(p), ewl_object_current_h_get(EWL_OBJECT(cur)));
+		cur_pos += ewl_object_current_h_get(EWL_OBJECT(cur));
 		prev = NULL;
 	}
 
@@ -920,11 +920,11 @@ ewl_paned_grabber_horizontal_shift(Ewl_Paned *p, Ewl_Widget *w, int to)
 			else
 			{
 				if (!found)
-					bx = CURRENT_X(cur) +
-						CURRENT_W(cur);
+					bx = ewl_object_current_x_get(EWL_OBJECT(cur)) +
+						ewl_object_current_w_get(EWL_OBJECT(cur));
 				else
 				{
-					ax = CURRENT_X(cur);
+					ax = ewl_object_current_x_get(EWL_OBJECT(cur));
 					break;
 				}
 			}
@@ -939,22 +939,23 @@ ewl_paned_grabber_horizontal_shift(Ewl_Paned *p, Ewl_Widget *w, int to)
 	}
 
 	/* don't move to the left of the grabber to the left of us */
-	if (to < (bx + CURRENT_W(before)))
-		to = bx + CURRENT_W(before);
+	if (to < (bx + ewl_object_current_w_get(EWL_OBJECT(before))))
+		to = bx + ewl_object_current_w_get(EWL_OBJECT(before));
 
 	/* dont' move to the right of the grabber to the right of us */
 	if (to > ax) to = ax;
 
 	/* XXX shoud check min widget sizes here */
-	ewl_object_place(EWL_OBJECT(before), CURRENT_X(before), 
-					CURRENT_Y(before), 
-					to - (bx + CURRENT_W(before)), 
-					CURRENT_H(before));
+	ewl_object_place(EWL_OBJECT(before),
+			ewl_object_current_x_get(EWL_OBJECT(before)),
+			ewl_object_current_y_get(EWL_OBJECT(before)),
+			to - (bx + ewl_object_current_w_get(EWL_OBJECT(before))),
+			ewl_object_current_h_get(EWL_OBJECT(before)));
 
-	ewl_object_place(EWL_OBJECT(after), to + CURRENT_W(w), 
-					CURRENT_Y(after), 
-					ax - (to + CURRENT_W(w)),
-					CURRENT_H(after));
+	ewl_object_place(EWL_OBJECT(after), to + ewl_object_current_w_get(EWL_OBJECT(w)), 
+					ewl_object_current_y_get(EWL_OBJECT(after)), 
+					ax - (to + ewl_object_current_w_get(EWL_OBJECT(w))),
+					ewl_object_current_h_get(EWL_OBJECT(after)));
 
 	ewl_object_x_request(EWL_OBJECT(w), to);
 	ewl_widget_configure(EWL_WIDGET(p));
@@ -996,11 +997,11 @@ ewl_paned_grabber_vertical_shift(Ewl_Paned *p, Ewl_Widget *w, int to)
 			else
 			{
 				if (!found)
-					by = CURRENT_Y(cur) +
-						CURRENT_H(cur);
+					by = ewl_object_current_y_get(EWL_OBJECT(cur)) +
+						ewl_object_current_h_get(EWL_OBJECT(cur));
 				else
 				{
-					ay = CURRENT_Y(cur);
+					ay = ewl_object_current_y_get(EWL_OBJECT(cur));
 					break;
 				}
 			}
@@ -1015,21 +1016,22 @@ ewl_paned_grabber_vertical_shift(Ewl_Paned *p, Ewl_Widget *w, int to)
 	}
 
 	/* don't move above the grabber above us */
-	if (to < (by + CURRENT_H(before)))
-		to = by + CURRENT_H(before);
+	if (to < (by + ewl_object_current_h_get(EWL_OBJECT(before))))
+		to = by + ewl_object_current_h_get(EWL_OBJECT(before));
 
 	/* dont' move to the right of the grabber to the right of us */
 	if (to > ay) to = ay;
 
 	/* XXX shoud check min widget sizes here */
-	ewl_object_place(EWL_OBJECT(before), CURRENT_X(before), 
-					CURRENT_Y(before), CURRENT_W(before), 
-					to - (by + CURRENT_H(before)));
+	ewl_object_place(EWL_OBJECT(before), ewl_object_current_x_get(EWL_OBJECT(before)), 
+					ewl_object_current_y_get(EWL_OBJECT(before)),
+					ewl_object_current_w_get(EWL_OBJECT(before)), 
+					to - (by + ewl_object_current_h_get(EWL_OBJECT(before))));
 
-	ewl_object_place(EWL_OBJECT(after), CURRENT_X(after),
-					to + CURRENT_H(w), 
-					CURRENT_W(after),
-					ay - (to + CURRENT_H(w)));
+	ewl_object_place(EWL_OBJECT(after), ewl_object_current_x_get(EWL_OBJECT(after)),
+					to + ewl_object_current_h_get(EWL_OBJECT(w)), 
+					ewl_object_current_w_get(EWL_OBJECT(after)),
+					ay - (to + ewl_object_current_h_get(EWL_OBJECT(w))));
 
 	ewl_object_y_request(EWL_OBJECT(w), to);
 	ewl_widget_configure(EWL_WIDGET(p));
