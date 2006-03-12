@@ -524,10 +524,10 @@ _wlan_face_update_values(void *data)
    if (nf->conf->show_text)
      {
 	snprintf(in_str, sizeof(in_str), "LNK: %d%%", wlan_value);
-	edje_object_part_text_set(nf->wlan_obj, "link-text", in_str);
+	edje_object_part_text_set(nf->txt_obj, "link-text", in_str);
      }   
    else
-     edje_object_part_text_set(nf->wlan_obj, "link-text", "");
+     edje_object_part_text_set(nf->txt_obj, "link-text", "");
    
    if (nf->conf->show_graph) 
      _wlan_face_graph_values(nf, wlan_value);
@@ -583,7 +583,7 @@ _wlan_face_graph_values(Wlan_Face *wf, int val)
      }
 }
 
-static void
+void
 _wlan_face_graph_clear(Wlan_Face *wf)
 {
    Evas_List *l;

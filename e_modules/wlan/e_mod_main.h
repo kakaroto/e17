@@ -59,4 +59,6 @@ EAPI int   e_modapi_info     (E_Module *m);
 EAPI int   e_modapi_about    (E_Module *m);
 EAPI int   e_modapi_config   (E_Module *m);
 
+void _wlan_face_graph_clear(Wlan_Face *wf);
+
 #endif
