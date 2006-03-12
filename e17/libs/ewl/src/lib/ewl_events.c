@@ -296,15 +296,15 @@ ewl_ev_x_window_delete(void *data __UNUSED__, int type __UNUSED__, void *e)
 int
 ewl_ev_x_key_down(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
-	Ewl_Embed *embed;
+	Ewl_Window *window;
 	Ecore_X_Event_Key_Down *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ev = e;
-	embed = ewl_window_window_find((void *)ev->win);
+	window = ewl_window_window_find((void *)ev->win);
 
-	if (!embed)
+	if (!window)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
 	if (strstr(ev->keyname, "Shift_"))
@@ -320,9 +320,9 @@ ewl_ev_x_key_down(void *data __UNUSED__, int type __UNUSED__, void *e)
 	else if (strstr(ev->keyname, "Hyper_"))
 		key_modifiers |= EWL_KEY_MODIFIER_WIN;
 	else if (!ev->key_compose || iscntrl(*ev->key_compose))
-		ewl_embed_key_down_feed(embed, ev->keyname, key_modifiers);
+		ewl_embed_key_down_feed(EWL_EMBED(window), ev->keyname, key_modifiers);
 	else
-		ewl_embed_key_down_feed(embed, ev->key_compose, key_modifiers);
+		ewl_embed_key_down_feed(EWL_EMBED(window), ev->key_compose, key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -339,15 +339,15 @@ ewl_ev_x_key_down(void *data __UNUSED__, int type __UNUSED__, void *e)
 int
 ewl_ev_x_key_up(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
-	Ewl_Embed *embed;
+	Ewl_Window *window;
 	Ecore_X_Event_Key_Up *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ev = e;
 
-	embed = ewl_embed_evas_window_find((void *)ev->win);
-	if (!embed)
+	window = ewl_window_window_find((void *)ev->win);
+	if (!window)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
 	if (strstr(ev->keyname, "Shift_"))
@@ -363,9 +363,9 @@ ewl_ev_x_key_up(void *data __UNUSED__, int type __UNUSED__, void *e)
 	else if (strstr(ev->keyname, "Hyper_"))
 		key_modifiers &= ~EWL_KEY_MODIFIER_WIN;
 	else if (!ev->key_compose || iscntrl(*ev->key_compose))
-		ewl_embed_key_up_feed(embed, ev->keyname, key_modifiers);
+		ewl_embed_key_up_feed(EWL_EMBED(window), ev->keyname, key_modifiers);
 	else
-		ewl_embed_key_up_feed(embed, ev->key_compose, key_modifiers);
+		ewl_embed_key_up_feed(EWL_EMBED(window), ev->key_compose, key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -384,15 +384,15 @@ int
 ewl_ev_x_mouse_down(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
 	int clicks = 1;
-	Ewl_Embed *embed;
+	Ewl_Window *window;
 	Ecore_X_Event_Mouse_Button_Down *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ev = e;
 
-	embed = ewl_embed_evas_window_find((void *)ev->win);
-	if (!embed)
+	window = ewl_window_window_find((void *)ev->win);
+	if (!window)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
 	if (ev->double_click)
@@ -400,7 +400,7 @@ ewl_ev_x_mouse_down(void *data __UNUSED__, int type __UNUSED__, void *e)
 	if (ev->triple_click)
 		clicks = 3;
 
-	ewl_embed_mouse_down_feed(embed, ev->button, clicks, ev->x, ev->y,
+	ewl_embed_mouse_down_feed(EWL_EMBED(window), ev->button, clicks, ev->x, ev->y,
 				  key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -419,18 +419,18 @@ ewl_ev_x_mouse_down(void *data __UNUSED__, int type __UNUSED__, void *e)
 int
 ewl_ev_x_mouse_up(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
-	Ewl_Embed *embed;
+	Ewl_Window *window;
 	Ecore_X_Event_Mouse_Button_Up *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ev = e;
 
-	embed = ewl_embed_evas_window_find((void *)ev->win);
-	if (!embed)
+	window = ewl_window_window_find((void *)ev->win);
+	if (!window)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	ewl_embed_mouse_up_feed(embed, ev->button, ev->x, ev->y, key_modifiers);
+	ewl_embed_mouse_up_feed(EWL_EMBED(window), ev->button, ev->x, ev->y, key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -448,18 +448,18 @@ ewl_ev_x_mouse_up(void *data __UNUSED__, int type __UNUSED__, void *e)
 int
 ewl_ev_x_mouse_move(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
-	Ewl_Embed *embed;
+	Ewl_Window *window;
 	Ecore_X_Event_Mouse_Move *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ev = e;
 
-	embed = ewl_embed_evas_window_find((void *)ev->win);
-	if (!embed)
+	window = ewl_window_window_find((void *)ev->win);
+	if (!window)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	ewl_embed_mouse_move_feed(embed, ev->x, ev->y, key_modifiers);
+	ewl_embed_mouse_move_feed(EWL_EMBED(window), ev->x, ev->y, key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -476,16 +476,16 @@ ewl_ev_x_mouse_move(void *data __UNUSED__, int type __UNUSED__, void *e)
 int
 ewl_ev_x_mouse_out(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
-	Ewl_Embed *embed;
+	Ewl_Window *window;
 	Ecore_X_Event_Mouse_Out *ev = e;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	embed = ewl_embed_evas_window_find((void *)ev->win);
-	if (!embed)
+	window = ewl_window_window_find((void *)ev->win);
+	if (!window)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	ewl_embed_mouse_out_feed(embed, ev->x, ev->y, key_modifiers);
+	ewl_embed_mouse_out_feed(EWL_EMBED(window), ev->x, ev->y, key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -502,16 +502,16 @@ ewl_ev_x_mouse_out(void *data __UNUSED__, int type __UNUSED__, void *e)
 int
 ewl_ev_x_mouse_wheel(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
-	Ewl_Embed *embed;
+	Ewl_Window *window;
 	Ecore_X_Event_Mouse_Wheel *ev = e;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	embed = ewl_embed_evas_window_find((void *)ev->win);
-	if (!embed)
+	window = ewl_window_window_find((void *)ev->win);
+	if (!window)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	ewl_embed_mouse_wheel_feed(embed, ev->x, ev->y, ev->z, ev->direction, key_modifiers);
+	ewl_embed_mouse_wheel_feed(EWL_EMBED(window), ev->x, ev->y, ev->z, ev->direction, key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -528,16 +528,16 @@ ewl_ev_x_mouse_wheel(void *data __UNUSED__, int type __UNUSED__, void *e)
 int
 ewl_ev_x_focus_in(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
-	Ewl_Embed *embed;
+	Ewl_Window *window;
 	Ecore_X_Event_Window_Focus_In *ev = e;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	embed = ewl_embed_evas_window_find((void *)ev->win);
-	if (!embed)
+	window = ewl_window_window_find((void *)ev->win);
+	if (!window)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	ewl_callback_call(EWL_WIDGET(embed), EWL_CALLBACK_FOCUS_IN);
+	ewl_callback_call(EWL_WIDGET(window), EWL_CALLBACK_FOCUS_IN);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -554,16 +554,16 @@ ewl_ev_x_focus_in(void *data __UNUSED__, int type __UNUSED__, void *e)
 int
 ewl_ev_x_focus_out(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
-	Ewl_Embed *embed;
+	Ewl_Window *window;
 	Ecore_X_Event_Window_Focus_Out *ev = e;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	embed = ewl_embed_evas_window_find((void *)ev->win);
-	if (!embed)
+	window = ewl_window_window_find((void *)ev->win);
+	if (!window)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	ewl_callback_call(EWL_WIDGET(embed), EWL_CALLBACK_FOCUS_OUT);
+	ewl_callback_call(EWL_WIDGET(window), EWL_CALLBACK_FOCUS_OUT);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
