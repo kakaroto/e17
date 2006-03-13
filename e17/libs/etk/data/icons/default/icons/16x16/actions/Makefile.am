@@ -5,6 +5,7 @@ appointment-new.png \
 bookmark-new.png \
 contact-new.png \
 dialog-cancel.png \
+dialog-ok.png \
 document-new.png \
 document-open.png \
 document-print.png \
