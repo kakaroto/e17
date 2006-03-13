@@ -157,6 +157,15 @@ ewl_ev_modifiers_set(unsigned int modifiers)
 
 #ifdef ENABLE_EWL_SOFTWARE_X11
 
+/*
+ * In general all of the X event handlers should find their matching window
+ * with ewl_window_window_find, and not ewl_embed_evas_window_find. If the
+ * embed function is used, then we get duplicate events for apps that setup
+ * their own handlers and embed EWL. The exception to this is selection events
+ * such as copy/paste and DND. These events need to be handled for embedded
+ * EWL, but have no equivalent in the Evas callback namespace.
+ */
+
 /**
  * @param data: user specified data passed to the function
  * @param type: the type of event triggering the function call
@@ -174,18 +183,18 @@ ewl_ev_x_window_expose(void *data __UNUSED__, int type __UNUSED__, void * e)
 	 * let them know in case a widget is using a non-evas based draw method
 	 */
 	Ecore_X_Event_Window_Damage *ev;
-	Ewl_Embed *embed;
+	Ewl_Window *window;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ev = e;
 
-	embed = ewl_embed_evas_window_find((void *)ev->win);
-	if (!embed)
+	window = ewl_window_window_find((void *)ev->win);
+	if (!window)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	evas_damage_rectangle_add(embed->evas, ev->x, ev->y, ev->w, ev->h);
-	ewl_callback_call(EWL_WIDGET(embed), EWL_CALLBACK_EXPOSE);
+	evas_damage_rectangle_add(EWL_EMBED(window)->evas, ev->x, ev->y, ev->w, ev->h);
+	ewl_callback_call(EWL_WIDGET(window), EWL_CALLBACK_EXPOSE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
