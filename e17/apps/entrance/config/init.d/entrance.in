@@ -35,7 +35,7 @@ case "$1" in
   ;;
   stop)
 	echo -n "Stopping Entrance: entrance"
-	kill -9 `cat $PIDFILE` 
+	if [ -f $PIDFILE ]; then kill -9 `cat $PIDFILE` ; fi
 	echo "."
   ;;
   restart)
