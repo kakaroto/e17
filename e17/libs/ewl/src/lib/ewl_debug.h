@@ -14,7 +14,7 @@ void ewl_print_warning(void);
 void ewl_segv(void);
 void ewl_backtrace(void);
 
-// #define DEBUG 1
+#define DEBUG 1
 
 #ifdef DEBUG
 
