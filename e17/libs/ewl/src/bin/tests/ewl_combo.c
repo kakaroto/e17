@@ -86,7 +86,7 @@ create_test(Ewl_Container *box)
 	ewl_combo_view_set(EWL_COMBO(combo), view);
 	ewl_combo_data_set(EWL_COMBO(combo), data);
 	ewl_widget_show(combo);
-
+#if 0
 	/* create the editable model/view */
 	model = ewl_model_new();
 	ewl_model_count_set(model, combo_test_data_count_get);
@@ -108,7 +108,7 @@ create_test(Ewl_Container *box)
 	ewl_combo_view_set(EWL_COMBO(combo), view);
 	ewl_combo_data_set(EWL_COMBO(combo), data);
 	ewl_widget_show(combo);
-
+#endif
 	o = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(o), "Add items");
 	ewl_container_child_append(EWL_CONTAINER(box), o);
