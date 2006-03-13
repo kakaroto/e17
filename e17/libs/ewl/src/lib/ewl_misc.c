@@ -47,7 +47,7 @@ int ewl_ecore_exit(void *data, int type, void *event);
  * Set a breakpoint at this function in order to retrieve backtraces from
  * warning messages.
  */
-inline void
+void
 ewl_print_warning(void)
 {
 	fprintf(stderr, "\n***** Ewl Developer Warning ***** :\n"
@@ -59,7 +59,7 @@ ewl_print_warning(void)
  * @return Returns no value.
  * @brief This will cause EWL to SEGV. (Handy for debugging)
  */
-inline void
+void
 ewl_segv(void)
 {
 	if (ewl_config.debug.segv) {
@@ -72,7 +72,7 @@ ewl_segv(void)
  * @returns Returns no value.
  * @brief This will print a backtrace at the given point.
  */
-inline void
+void
 ewl_backtrace(void)
 {
 #ifdef __GLIBC__

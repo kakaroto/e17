@@ -10,11 +10,11 @@
 #define DLEVEL_TESTING 10
 #define DLEVEL_STABLE 20
 
-inline void ewl_print_warning(void);
-inline void ewl_segv(void);
-inline void ewl_backtrace(void);
+void ewl_print_warning(void);
+void ewl_segv(void);
+void ewl_backtrace(void);
 
-#define DEBUG 1
+// #define DEBUG 1
 
 #ifdef DEBUG
 

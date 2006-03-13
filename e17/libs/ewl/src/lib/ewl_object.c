@@ -506,7 +506,7 @@ ewl_object_position_request(Ewl_Object *o, int x, int y)
  * The given x coordinate is stored to be applied to the object @a o at a later
  * time.
  */
-inline void
+void
 ewl_object_x_request(Ewl_Object *o, int x)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -527,7 +527,7 @@ ewl_object_x_request(Ewl_Object *o, int x)
  * The given y coordinate is stored to be applied to the object @a o at a later
  * time.
  */
-inline void
+void
 ewl_object_y_request(Ewl_Object *o, int y)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -654,7 +654,7 @@ ewl_object_minimum_size_set(Ewl_Object *o, int w, int h)
  * maximum width are less than the new minimum, they are set to the new minimum
  * width.
  */
-inline void
+void
 ewl_object_minimum_w_set(Ewl_Object *o, int w)
 {
 	int old_size, new_size;
@@ -695,7 +695,7 @@ ewl_object_minimum_w_set(Ewl_Object *o, int w)
  * maximum height are less than the new minimum, they are set to the new minimum
  * height.
  */
-inline void
+void
 ewl_object_minimum_h_set(Ewl_Object *o, int h)
 {
 	int old_size, new_size;
@@ -731,7 +731,7 @@ ewl_object_minimum_h_set(Ewl_Object *o, int h)
  * @return Returns the minimum width of the object @a o.
  * @brief Get the minimum width of an object
  */
-inline int
+int
 ewl_object_minimum_w_get(Ewl_Object *o)
 {
 	int val;
@@ -753,7 +753,7 @@ ewl_object_minimum_w_get(Ewl_Object *o)
  * @return Returns the minimum height of the object.
  * @brief Get the minimum height of an object
  */
-inline int
+int
 ewl_object_minimum_h_get(Ewl_Object *o)
 {
 	int val;
@@ -775,7 +775,7 @@ ewl_object_minimum_h_get(Ewl_Object *o)
  * @return Returns the minimum width of the object @a o.
  * @brief Get the minimum width of an object
  */
-inline int
+int
 ewl_object_minimum_inner_w_get(Ewl_Object *o)
 {
 	int val;
@@ -793,7 +793,7 @@ ewl_object_minimum_inner_w_get(Ewl_Object *o)
  * @return Returns the minimum height of the object.
  * @brief Get the minimum height of an object
  */
-inline int
+int
 ewl_object_minimum_inner_h_get(Ewl_Object *o)
 {
 	int val;
@@ -861,7 +861,7 @@ ewl_object_maximum_size_set(Ewl_Object *o, int w, int h)
  * minimum width are less than the new maximum, they are set to the new
  * maximum width.
  */
-inline void
+void
 ewl_object_maximum_w_set(Ewl_Object *o, int w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -897,7 +897,7 @@ ewl_object_maximum_w_set(Ewl_Object *o, int w)
  * current height or minimum width are less than the new maximum, they are set
  * to the new maximum height.
  */
-inline void
+void
 ewl_object_maximum_h_set(Ewl_Object *o, int h)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -928,7 +928,7 @@ ewl_object_maximum_h_set(Ewl_Object *o, int h)
  * @return Returns the maximum width of the object.
  * @brief Get the maximum width of an object
  */
-inline int
+int
 ewl_object_maximum_w_get(Ewl_Object *o)
 {
 	int val;
@@ -952,7 +952,7 @@ ewl_object_maximum_w_get(Ewl_Object *o)
  * @return Returns the maximum height of the object.
  * @brief Get the maximum height of an object
  */
-inline int
+int
 ewl_object_maximum_h_get(Ewl_Object *o)
 {
 	int val;
@@ -976,7 +976,7 @@ ewl_object_maximum_h_get(Ewl_Object *o)
  * @return Returns the maximum width of the object.
  * @brief Get the maximum width of an object
  */
-inline int
+int
 ewl_object_maximum_inner_w_get(Ewl_Object *o)
 {
 	int val;
@@ -994,7 +994,7 @@ ewl_object_maximum_inner_w_get(Ewl_Object *o)
  * @return Returns the maximum height of the object.
  * @brief Get the maximum height of an object
  */
-inline int
+int
 ewl_object_maximum_inner_h_get(Ewl_Object *o)
 {
 	int val;
@@ -1280,7 +1280,7 @@ ewl_object_insets_right_get(Ewl_Object *o)
  * Stores the new alignment value into the object for use
  * when laying out the object.
  */
-inline void
+void
 ewl_object_alignment_set(Ewl_Object *o, unsigned int align)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -1356,7 +1356,7 @@ ewl_object_place(Ewl_Object *o, int x, int y, int w, int h)
  * Stores the new fill policy value into the object for use when laying out
  * the object.
  */
-inline void
+void
 ewl_object_fill_policy_set(Ewl_Object *o, unsigned int fill)
 {
 	unsigned int old_mask;

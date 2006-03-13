@@ -118,33 +118,33 @@ void            ewl_object_geometry_request(Ewl_Object *o, int x, int y,
 					    int w, int h);
 void            ewl_object_size_request(Ewl_Object *o, int w, int h);
 void            ewl_object_position_request(Ewl_Object *o, int x, int y);
-inline void     ewl_object_x_request(Ewl_Object *o, int x);
-inline void     ewl_object_y_request(Ewl_Object *o, int y);
+void     ewl_object_x_request(Ewl_Object *o, int x);
+void     ewl_object_y_request(Ewl_Object *o, int y);
 void            ewl_object_w_request(Ewl_Object *o, int w);
 void            ewl_object_h_request(Ewl_Object *o, int h);
 
 void            ewl_object_minimum_size_set(Ewl_Object *o, int w, int h);
-inline void     ewl_object_minimum_w_set(Ewl_Object *o, int w);
-inline void     ewl_object_minimum_h_set(Ewl_Object *o, int h);
+void     ewl_object_minimum_w_set(Ewl_Object *o, int w);
+void     ewl_object_minimum_h_set(Ewl_Object *o, int h);
 
 void            ewl_object_minimum_size_get(Ewl_Object *o, int *w, int *h);
-inline int      ewl_object_minimum_w_get(Ewl_Object *o);
-inline int      ewl_object_minimum_h_get(Ewl_Object *o);
+int      ewl_object_minimum_w_get(Ewl_Object *o);
+int      ewl_object_minimum_h_get(Ewl_Object *o);
 
 void            ewl_object_maximum_size_set(Ewl_Object *o, int w, int h);
-inline void     ewl_object_maximum_w_set(Ewl_Object *o, int w);
-inline void     ewl_object_maximum_h_set(Ewl_Object *o, int h);
+void     ewl_object_maximum_w_set(Ewl_Object *o, int w);
+void     ewl_object_maximum_h_set(Ewl_Object *o, int h);
 
 void            ewl_object_maximum_size_get(Ewl_Object *o, int *w, int *h);
-inline int	ewl_object_maximum_w_get(Ewl_Object *o);
-inline int	ewl_object_maximum_h_get(Ewl_Object *o);
+int	ewl_object_maximum_w_get(Ewl_Object *o);
+int	ewl_object_maximum_h_get(Ewl_Object *o);
 
 unsigned int    ewl_object_alignment_get(Ewl_Object *o);
-inline void     ewl_object_alignment_set(Ewl_Object *o, unsigned int align);
+void     ewl_object_alignment_set(Ewl_Object *o, unsigned int align);
 void            ewl_object_place(Ewl_Object *o, int x, int y, int w, int h);
 
 unsigned int    ewl_object_fill_policy_get(Ewl_Object *o);
-inline void     ewl_object_fill_policy_set(Ewl_Object *o, unsigned int fill);
+void     ewl_object_fill_policy_set(Ewl_Object *o, unsigned int fill);
 
 /*
  * Padding setting and retrieval functions.
