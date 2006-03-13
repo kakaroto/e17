@@ -792,12 +792,12 @@ entropy_plugin_init (entropy_core * core,
   viewer->tree_col1 = etk_tree_col_new(ETK_TREE(viewer->tree), _("Filename"), 
 		  etk_tree_model_text_new(ETK_TREE(viewer->tree)), 150);
   //etk_tree_col_expand_set(viewer->tree_col1, ETK_TRUE);
-  etk_tree_col_sort_func_set(viewer->tree_col1, _entropy_etk_list_filename_compare_cb, ETK_TRUE, NULL);
+  etk_tree_col_sort_func_set(viewer->tree_col1, _entropy_etk_list_filename_compare_cb, NULL);
 
   viewer->tree_col1 = etk_tree_col_new(ETK_TREE(viewer->tree), _("Size"), 
 		  etk_tree_model_text_new(ETK_TREE(viewer->tree)),60);
   //etk_tree_col_expand_set(viewer->tree_col1, ETK_TRUE);
-  etk_tree_col_sort_func_set(viewer->tree_col1, _entropy_etk_list_size_compare_cb, ETK_TRUE, NULL);
+  etk_tree_col_sort_func_set(viewer->tree_col1, _entropy_etk_list_size_compare_cb, NULL);
 
   viewer->tree_col1 = etk_tree_col_new(ETK_TREE(viewer->tree), _("Type"), 
 		  etk_tree_model_text_new(ETK_TREE(viewer->tree)),65);
@@ -806,7 +806,7 @@ entropy_plugin_init (entropy_core * core,
   viewer->tree_col1 = etk_tree_col_new(ETK_TREE(viewer->tree), _("Date Modified"), 
 		  etk_tree_model_text_new(ETK_TREE(viewer->tree)),90);
   //etk_tree_col_expand_set(viewer->tree_col1, ETK_TRUE);
-  etk_tree_col_sort_func_set(viewer->tree_col1, _entropy_etk_list_date_compare_cb, ETK_TRUE, NULL);
+  etk_tree_col_sort_func_set(viewer->tree_col1, _entropy_etk_list_date_compare_cb, NULL);
 
 
   /*DND Setup*/

@@ -103,7 +103,7 @@ void etk_file_cache_dialog_create()
 	tree_col = etk_tree_col_new(ETK_TREE(tree), _("Listeners"), 
 		  etk_tree_model_int_new(ETK_TREE(tree)), 125);
 
-	etk_tree_col_sort_func_set(tree_col, _entropy_etk_file_cache_dialog_listener_compare_cb, ETK_TRUE, NULL);
+	etk_tree_col_sort_func_set(tree_col, _entropy_etk_file_cache_dialog_listener_compare_cb, NULL);
 
 	tree_col = etk_tree_col_new(ETK_TREE(tree), _("Filename"), 
 		  etk_tree_model_text_new(ETK_TREE(tree)), 150);
