@@ -226,6 +226,16 @@ ewl_image_constrain_set(Ewl_Image *i, unsigned int size)
 	DCHECK_TYPE("i", i, EWL_IMAGE_TYPE);
 
 	i->cs = size;
+	if (size) {
+		ewl_object_preferred_inner_w_set(EWL_OBJECT(i), size);
+		ewl_object_preferred_inner_h_set(EWL_OBJECT(i), size);
+	}
+	else if (i->sw != 1.0 || i->sh != 1.0) {
+		ewl_image_scale_set(i, i->sw, i->sh);
+	}
+	else if (i->aw != i->ow || i->ah != i->oh) {
+		ewl_image_size_set(i, i->aw, i->ah);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
