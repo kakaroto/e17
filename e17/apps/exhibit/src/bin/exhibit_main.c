@@ -155,7 +155,9 @@ _ex_main_image_set(Exhibit *e, char *image)
    title = calloc(strlen(image) + strlen(WINDOW_TITLE) + 5, sizeof(char));
    snprintf(title, strlen(image) + strlen(WINDOW_TITLE) + 5, "%s - %s", image, WINDOW_TITLE);
    etk_window_title_set(ETK_WINDOW(e->win), title);
-      
+
+   snprintf(e->cur_tab->cur_file, sizeof(e->cur_tab->cur_file), "%s", image);
+   
    if(_ex_file_is_ebg(image))
      {
 	/* can we do this without the size request? it doesnt look good */
@@ -183,7 +185,9 @@ _ex_main_image_set(Exhibit *e, char *image)
    vs = etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(e->cur_tab->scrolled_view));
       
    etk_range_value_set(hs, (double)w/2);
-   etk_range_value_set(vs, (double)h/2);   
+   etk_range_value_set(vs, (double)h/2);
+   
+   _ex_comment_load(e);     
 }
 
 void

@@ -71,6 +71,7 @@ struct _Ex_Tab
 {
    char          *dir;
    char           cur_path[PATH_MAX];
+   char           cur_file[PATH_MAX];   
    int            num;
 
    Etk_Bool       fit_window;   
@@ -187,5 +188,6 @@ struct _Ex_Thumb
 #include "exhibit_slideshow.h"
 #include "exhibit_favorites.h"
 #include "exhibit_options.h"
+#include "exhibit_comment.h"
 
 #endif
