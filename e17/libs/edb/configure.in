@@ -455,6 +455,7 @@ edb.oe
 edb-native.oe
 edb.bb
 edbXnative.bb
+debian/changelog
 ], [
 chmod +x edb-config
 ])
