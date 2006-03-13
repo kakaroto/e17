@@ -34,13 +34,6 @@ typedef void (*Ewl_Model_Sort)(void *data, unsigned int column);
 typedef int (*Ewl_Model_Count)(void *data);
 
 /**
- * @def EWL_MODEL_DATA_HEADER_GET(f)
- * Model callback to get the header for a given column
- */
-#define EWL_MODEL_DATA_HEADER_GET(f) ((Ewl_Model_Header_Fetch)f)
-typedef Ewl_Widget *(*Ewl_Model_Header_Fetch)(void *data, int column);
-
-/**
  * @def EWL_MODEL(model)
  * Typecasts a pointer to an Ewl_Model pointer.
  */
@@ -56,7 +49,6 @@ struct Ewl_Model
 	Ewl_Model_Fetch subfetch; /**< Check for subdata */
 	Ewl_Model_Sort sort;      /**< Trigger sort on column */
 	Ewl_Model_Count count;    /**< Count of data items */
-	Ewl_Model_Header_Fetch header_fetch; /**< Get the header for the given column */
 };
 
 Ewl_Model 	*ewl_model_new(void);
@@ -73,9 +65,6 @@ Ewl_Model_Sort   ewl_model_sort_get(Ewl_Model *m);
 
 void             ewl_model_count_set(Ewl_Model *m, Ewl_Model_Count count);
 Ewl_Model_Count  ewl_model_count_get(Ewl_Model *m);
-
-void		 ewl_model_header_fetch_set(Ewl_Model *m, Ewl_Model_Header_Fetch f);
-Ewl_Model_Header_Fetch ewl_model_header_fetch_get(Ewl_Model *m);
 
 /**
  * @}

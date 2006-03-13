@@ -25,6 +25,13 @@ typedef Ewl_Widget *(*Ewl_View_Constructor)(void);
 typedef void (*Ewl_View_Assign)(Ewl_Widget *w, void *data);
 
 /**
+ * @def EWLVIEW_HEADER_GET(f)
+ * View callback to get the header for a given column
+ */
+#define EWL_VIEW_HEADER_GET(f) ((Ewl_View_Header_Fetch)f)
+typedef Ewl_Widget *(*Ewl_View_Header_Fetch)(void *data, int column);
+
+/**
  * @def EWL_VIEW(view)
  * Typecasts a pointer to an Ewl_View pointer.
  */
@@ -38,16 +45,20 @@ struct Ewl_View
 {
 	Ewl_View_Constructor construct;     /**< Create a widget for display */
 	Ewl_View_Assign assign;             /**< Assign data to a widget */
+	Ewl_View_Header_Fetch header_fetch; /**< Get the header for the given column */
 };
 
-Ewl_View            *ewl_view_new(void);
-int                  ewl_view_init(Ewl_View *view);
+Ewl_View 		*ewl_view_new(void);
+int 			 ewl_view_init(Ewl_View *view);
 
-void                 ewl_view_constructor_set(Ewl_View *view, Ewl_View_Constructor construct);
-Ewl_View_Constructor ewl_view_constructor_get(Ewl_View *view);
+void 			 ewl_view_constructor_set(Ewl_View *view, Ewl_View_Constructor construct);
+Ewl_View_Constructor 	 ewl_view_constructor_get(Ewl_View *view);
 
-void                 ewl_view_assign_set(Ewl_View *view, Ewl_View_Assign assign);
-Ewl_View_Assign      ewl_view_assign_get(Ewl_View *view);
+void 			 ewl_view_assign_set(Ewl_View *view, Ewl_View_Assign assign);
+Ewl_View_Assign 	 ewl_view_assign_get(Ewl_View *view);
+
+void 			 ewl_view_header_fetch_set(Ewl_View *v, Ewl_View_Header_Fetch f);
+Ewl_View_Header_Fetch 	 ewl_view_header_fetch_get(Ewl_View *v);
 
 /**
  * @}

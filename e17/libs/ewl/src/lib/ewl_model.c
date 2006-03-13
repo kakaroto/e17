@@ -163,35 +163,3 @@ ewl_model_count_get(Ewl_Model *m)
 	DRETURN_INT(m->count, DLEVEL_STABLE);
 }
 
-/**
- * @param m: The Ewl_Model to set the header_fetch callback on
- * @param f: The Ewl_Model_Header_Fetch callback
- * @return Returns no value.
- * @brief Sets the header fetch callback into the model
- */
-void
-ewl_model_header_fetch_set(Ewl_Model *m, Ewl_Model_Header_Fetch f)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("m", m);
-
-	m->header_fetch = f;
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param m: The Ewl_Model to get the Ewl_Model_Header_Fetch function from
- * @return Returns the Ewl_Model_Header_Fetch callback set on the model, or
- * NULL on failure.
- * @brief Gets the header fetch callback from the model
- */
-Ewl_Model_Header_Fetch 
-ewl_model_header_fetch_get(Ewl_Model *m)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("m", m, NULL);
-
-	DRETURN_INT(m->header_fetch, DLEVEL_STABLE);
-}
-

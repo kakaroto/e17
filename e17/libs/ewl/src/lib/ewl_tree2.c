@@ -452,7 +452,7 @@ ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__
 	{
 		Ewl_Widget *h;
 
-		h = col->model->header_fetch(tree->data, column);
+		h = col->view->header_fetch(tree->data, column);
 		ewl_container_child_append(EWL_CONTAINER(tree->header), h);
 
 		/* once we are done this model won't be dirty anymore */

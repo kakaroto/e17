@@ -56,7 +56,6 @@ create_test(Ewl_Container *box)
         ewl_model_fetch_set(model, tree2_test_data_fetch);
         ewl_model_sort_set(model, tree2_test_data_sort);
         ewl_model_count_set(model, tree2_test_data_count_get);
-        ewl_model_header_fetch_set(model, tree2_test_data_header_fetch);
 
         tree = ewl_tree2_new();
         ewl_container_child_append(EWL_CONTAINER(box), tree);
@@ -68,18 +67,21 @@ create_test(Ewl_Container *box)
         view = ewl_view_new();
         ewl_view_constructor_set(view, ewl_label_new);
         ewl_view_assign_set(view, EWL_VIEW_ASSIGN(ewl_label_text_set));
+        ewl_view_header_fetch_set(view, tree2_test_data_header_fetch);
         ewl_tree2_column_append(EWL_TREE2(tree), model, view);
 
         /* create a view for the second column that just has an ewl image */
         view = ewl_view_new();
         ewl_view_constructor_set(view, ewl_image_new);
         ewl_view_assign_set(view, EWL_VIEW_ASSIGN(ewl_image_file_path_set));
+        ewl_view_header_fetch_set(view, tree2_test_data_header_fetch);
         ewl_tree2_column_append(EWL_TREE2(tree), model, view);
 
         /* create a view for the third column that has a custom widget */
         view = ewl_view_new();
         ewl_view_constructor_set(view, tree2_test_custom_new);
         ewl_view_assign_set(view, tree2_test_custom_assign_set);
+        ewl_view_header_fetch_set(view, tree2_test_data_header_fetch);
         ewl_tree2_column_append(EWL_TREE2(tree), model, view);
 
 	return 1;

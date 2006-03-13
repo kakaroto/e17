@@ -102,3 +102,35 @@ ewl_view_assign_get(Ewl_View *v)
 	DRETURN_INT(v->assign, DLEVEL_STABLE);
 }
 
+/**
+ * @param v: The Ewl_View to set the header_fetch callback on
+ * @param f: The Ewl_View_Header_Fetch callback
+ * @return Returns no value.
+ * @brief Sets the header fetch callback into the view 
+ */
+void
+ewl_view_header_fetch_set(Ewl_View *v, Ewl_View_Header_Fetch f)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("v", v);
+
+	v->header_fetch = f;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param v: The Ewl_View to get the Ewl_View_Header_Fetch function from
+ * @return Returns the Ewl_View_Header_Fetch callback set on the view, or
+ * NULL on failure.
+ * @brief Gets the header fetch callback from the view
+ */
+Ewl_View_Header_Fetch 
+ewl_view_header_fetch_get(Ewl_View *v)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("v", v, NULL);
+
+	DRETURN_INT(v->header_fetch, DLEVEL_STABLE);
+}
+

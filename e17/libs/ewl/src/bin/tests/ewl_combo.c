@@ -53,12 +53,12 @@ create_test(Ewl_Container *box)
 	model = ewl_model_new();
 	ewl_model_fetch_set(model, combo_test_data_fetch);
 	ewl_model_count_set(model, combo_test_data_count_get);
-	ewl_model_header_fetch_set(model, combo_test_data_header_fetch);
 
 	/* create the view for ewl_label widgets */
 	view = ewl_view_new();
 	ewl_view_constructor_set(view, ewl_label_new);
 	ewl_view_assign_set(view, EWL_VIEW_ASSIGN(ewl_label_text_set));
+	ewl_view_header_fetch_set(view, combo_test_data_header_fetch);
 
 	combo = ewl_combo_new();
 	ewl_widget_name_set(combo, "combo_label");
@@ -74,6 +74,7 @@ create_test(Ewl_Container *box)
 	view = ewl_view_new();
 	ewl_view_constructor_set(view, ewl_image_new);
 	ewl_view_assign_set(view, EWL_VIEW_ASSIGN(ewl_image_file_path_set));
+	ewl_view_header_fetch_set(view, combo_test_data_header_fetch);
 
 	combo = ewl_combo_new();
 	ewl_widget_name_set(combo, "combo_image");
@@ -89,13 +90,13 @@ create_test(Ewl_Container *box)
 	model = ewl_model_new();
 	ewl_model_count_set(model, combo_test_data_count_get);
 	ewl_model_fetch_set(model, combo_test_data_fetch);
-	ewl_model_header_fetch_set(model, 
-			combo_test_data_editable_header_fetch);
 
 	view = ewl_view_new();
 	ewl_view_constructor_set(view, combo_test_editable_new);
 	ewl_view_assign_set(view, 	
 			EWL_VIEW_ASSIGN(combo_test_editable_val_set));
+	ewl_view_header_fetch_set(view, 
+			combo_test_data_editable_header_fetch);
 
 	combo = ewl_combo_new();
 	ewl_widget_name_set(combo, "combo_custom");
@@ -105,6 +106,7 @@ create_test(Ewl_Container *box)
 	ewl_combo_model_set(EWL_COMBO(combo), model);
 	ewl_combo_view_set(EWL_COMBO(combo), view);
 	ewl_combo_data_set(EWL_COMBO(combo), data);
+	ewl_combo_editable_set(EWL_COMBO(combo), TRUE);
 	ewl_widget_show(combo);
 
 	o = ewl_button_new();
@@ -213,7 +215,6 @@ combo_test_data_editable_header_fetch(void *data, int col)
 	char *val;
 
 	d = data;
-
 	w = ewl_hbox_new();
 	if (col > -1)
 	{
@@ -226,8 +227,6 @@ combo_test_data_editable_header_fetch(void *data, int col)
 	}
 	else
 		val = "Please select an option.";
-
-printf("%d %s\n", col, val);
 
 	o = ewl_entry_new();
 	ewl_text_text_set(EWL_TEXT(o), val);
@@ -251,8 +250,6 @@ static void
 combo_test_editable_val_set(Ewl_Widget *w, void *data)
 {
 	Ewl_Widget *o;
-
-printf("%s\n", (char *)data);
 
 	o = ewl_image_new();
 	ewl_image_file_path_set(EWL_IMAGE(o), (char *)data);

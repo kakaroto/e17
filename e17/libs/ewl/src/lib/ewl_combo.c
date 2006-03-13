@@ -118,7 +118,7 @@ ewl_combo_selected_set(Ewl_Combo *combo, int idx)
 				combo->model->fetch(combo->data, idx, 0));
 	}
 	else
-		combo->selected = combo->model->header_fetch(combo->data, 
+		combo->selected = combo->view->header_fetch(combo->data, 
 							combo->selected_idx);	
 
 	ewl_container_child_prepend(EWL_CONTAINER(combo), combo->selected);
