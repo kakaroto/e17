@@ -39,7 +39,7 @@ struct Ewl_Combo
 
 	Ewl_Widget *button; /**< expand/contract button */
 	Ewl_Widget *selected; /**< Selected widget */
-	unsigned int selected_idx; /**< The selected row */
+	int selected_idx; /**< The selected row */
 
 	Ewl_Model *model; /**< The model for the combo */
 	Ewl_View *view;   /**< The view for the combo */
