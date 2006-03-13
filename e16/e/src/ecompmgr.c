@@ -125,7 +125,7 @@ typedef struct
 #define ECM_SHADOWS_BLURRED  2	/* use window extents for shadow, blurred */
 #endif
 
-#define ECM_OR_UNMANAGED     0
+#define ECM_OR_UNREDIRECTED  0
 #define ECM_OR_ON_MAP        1
 #define ECM_OR_ON_MAPUNMAP   2
 #define ECM_OR_ON_CREATE     3
@@ -954,26 +954,39 @@ win_extents(EObj * eo)
    ECmWinInfo         *cw = eo->cmhook;
    XRectangle          r, sr;
    XserverRegion       rgn;
+   unsigned int        bw;
 
+   /* FIXME - Get this right */
+   bw = cw->a.border_width;
    if (Mode_compmgr.use_pixmap)
      {
 	cw->rcx = eo->x;
 	cw->rcy = eo->y;
-	cw->rcw = eo->w + cw->a.border_width * 2;
-	cw->rch = eo->h + cw->a.border_width * 2;
+	cw->rcw = eo->w + 2 * bw;
+	cw->rch = eo->h + 2 * bw;
      }
    else
      {
-	cw->rcx = eo->x + cw->a.border_width;
-	cw->rcy = eo->y + cw->a.border_width;
+	cw->rcx = eo->x + bw;
+	cw->rcy = eo->y + bw;
 	cw->rcw = eo->w;
 	cw->rch = eo->h;
      }
 
-   r.x = cw->rcx;
-   r.y = cw->rcy;
-   r.width = cw->rcw;
-   r.height = cw->rch;
+   if (eo->noredir && bw)
+     {
+	r.x = eo->x;
+	r.y = eo->y;
+	r.width = eo->w + 2 * bw;
+	r.height = eo->h + 2 * bw;
+     }
+   else
+     {
+	r.x = cw->rcx;
+	r.y = cw->rcy;
+	r.width = cw->rcw;
+	r.height = cw->rch;
+     }
 
 #if ENABLE_SHADOWS
    if (!eo->shadow || Mode_compmgr.shadow_mode == ECM_SHADOWS_OFF)
@@ -1098,6 +1111,9 @@ ECompMgrWinGetPixmap(const EObj * eo)
 
    if (cw->pixmap != None)
       return cw->pixmap;
+
+   if (eo->noredir)
+      return None;
 
    cw->pixmap = XCompositeNameWindowPixmap(disp, eo->win);
 
@@ -1393,7 +1409,7 @@ ECompMgrWinSetPicts(EObj * eo)
 {
    ECmWinInfo         *cw = eo->cmhook;
 
-   if (cw->pixmap == None && eo->shown &&
+   if (cw->pixmap == None && eo->shown && !eo->noredir &&
        (Mode_compmgr.use_pixmap || (eo->fade && Conf_compmgr.fading.enable)))
      {
 	cw->pixmap = XCompositeNameWindowPixmap(disp, eo->win);
@@ -1457,6 +1473,14 @@ ECompMgrWinNew(EObj * eo)
    cw->a.depth = attr.depth;
    cw->a.visual = attr.visual;
    cw->a.border_width = attr.border_width;
+
+   if (eo->type == EOBJ_TYPE_EXT &&
+       Conf_compmgr.override_redirect.mode == ECM_OR_UNREDIRECTED)
+     {
+	eo->noredir = 1;
+	eo->fade = 0;
+	eo->shadow = 0;
+     }
 
    if (!eo->noredir)
      {
@@ -1852,7 +1876,7 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 	if (!cw->damaged)
 	   continue;
 #endif
-	if (cw->picture == None)
+	if (cw->picture == None && !eo->noredir)
 	   continue;
 
 	D4printf
@@ -2515,7 +2539,7 @@ ECompMgrHandleRootEvent(XEvent * ev, void *prm)
 
      case MapNotify:
 	eo = EobjListStackFind(ev->xmap.window);
-	if (!eo && Conf_compmgr.override_redirect.mode)
+	if (!eo)
 	   eo = EobjRegister(ev->xmap.window, EOBJ_TYPE_EXT);
 	if (eo && eo->type == EOBJ_TYPE_EXT && eo->cmhook)
 	  {
