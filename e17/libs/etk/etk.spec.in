@@ -1,0 +1,69 @@
+%define _missing_doc_files_terminate_build 0
+
+Summary: Etk is a toolkit based on the EFL
+Name: @PACKAGE@
+Version: @VERSION@
+Release: 0.%(date '+%Y%m%d')
+License: BSD
+Group: System Environment/Libraries
+Source: %{name}-%{version}.tar.gz
+Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
+Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
+Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
+URL: http://www.enlightenment.org/
+#BuildSuggests: xorg-x11-devel doxygen
+BuildRoot: %{_tmppath}/%{name}-%{version}-root
+
+%description
+Etk is a toolkit based on the EFL
+
+%package devel
+Summary: Etk headers, static libraries, documentation and test programs
+Group: System Environment/Libraries
+Requires: %{name} = %{version}
+
+%description devel
+Headers, static libraries, test programs and documentation for Etk
+
+%prep
+%setup -q
+
+%build
+%{configure} --prefix=%{_prefix}
+### use this if you have build problems
+#./configure --prefix=%{_prefix}
+%{__make} %{?_smp_mflags} %{?mflags}
+
+%install
+%{__make} %{?mflags_install} DESTDIR=$RPM_BUILD_ROOT install
+
+%clean
+test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
+
+%post
+/sbin/ldconfig
+
+%postun
+/sbin/ldconfig
+
+%files
+%defattr(-, root, root)
+%doc AUTHORS COPYING COPYING-PLAIN README
+%{_libdir}/*.so.*
+%{_libdir}/*.la
+%{_bindir}/etk_test
+%{_datadir}/etk/fonts/*
+%{_datadir}/etk/icons/*
+%{_datadir}/etk/images/*
+%{_datadir}/etk/themes/*
+%{_datadir}/locale/*/*/*
+
+%files devel
+%defattr(-, root, root)
+%{_libdir}/*.so
+%{_libdir}/*.a
+%{_bindir}/etk-config
+%{_libdir}/pkgconfig/etk.pc
+%{_includedir}/*
+
+%changelog

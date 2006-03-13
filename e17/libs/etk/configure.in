@@ -214,6 +214,7 @@ AC_SUBST(requirements)
 
 AC_OUTPUT([
 Makefile
+etk.spec
 etk.pc
 src/Makefile
 src/lib/Makefile

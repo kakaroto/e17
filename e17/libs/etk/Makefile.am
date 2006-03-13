@@ -19,7 +19,9 @@ gendoc \
 Doxyfile \
 README \
 ABOUT-NLS \
-etk.pc.in
+etk.pc.in \
+etk.spec.in \
+etk.spec
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = etk.pc
