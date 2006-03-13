@@ -6,6 +6,9 @@ bookmark-new.png \
 contact-new.png \
 dialog-cancel.png \
 dialog-ok.png \
+dialog-close.png \
+dialog-no.png \
+dialog-yes.png \
 document-new.png \
 document-open.png \
 document-print.png \

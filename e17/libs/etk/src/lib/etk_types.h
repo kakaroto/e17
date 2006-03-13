@@ -121,6 +121,8 @@ typedef struct _Etk_Drag Etk_Drag;
 typedef enum   _Etk_Argument_Returns Etk_Argument_Returns;
 typedef enum   _Etk_Argument_Flags Etk_Argument_Flags;
 typedef struct _Etk_Argument Etk_Argument;
+typedef struct _Etk_Message_Dialog Etk_Message_Dialog;
+
 /**
  * @enum Etk_Fill_Policy_Flags
  * @brief Describes how a child should fill the space allocated by its parent container

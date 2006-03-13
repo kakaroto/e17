@@ -51,7 +51,8 @@ etk_clipboard.h \
 etk_selection.h \
 etk_drag.h \
 etk_argument.h \
-etk_tooltips.h
+etk_tooltips.h \
+etk_message_dialog.h
 
 libetk_la_SOURCES = \
 etk_main.c etk_utils.c \
@@ -90,6 +91,7 @@ etk_selection.c \
 etk_drag.c \
 etk_argument.c \
 etk_tooltips.c \
+etk_message_dialog.c \
 $(ETKHEADERS)
 
 installed_headersdir = $(prefix)/include/etk

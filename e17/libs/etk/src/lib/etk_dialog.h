@@ -37,7 +37,7 @@ enum _Etk_Dialog_Response_ID
 };
 
 /**
- * @enum Etk_Dialog
+ * @struct Etk_Dialog
  * @brief A dialog is a window with buttons in its bottom area to allow the user to respond to a request. @n
  * A horizontal separator can also separate the button area from the upper area. It's enabled by default
  */
