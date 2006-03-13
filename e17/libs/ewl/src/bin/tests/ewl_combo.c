@@ -20,6 +20,11 @@ static void *combo_test_data_fetch(void *data, unsigned int row,
 static int combo_test_data_count_get(void *data);
 static void combo_cb_add(Ewl_Widget *w, void *ev, void *data);
 
+static Ewl_Widget *combo_test_data_editable_header_fetch(void *data, 
+							unsigned int col);
+static Ewl_Widget *combo_test_editable_new(void);
+static void combo_test_editable_val_set(Ewl_Widget *w, void *data);
+
 void 
 test_info(Ewl_Test *test)
 {
@@ -74,6 +79,28 @@ create_test(Ewl_Container *box)
 
 	combo = ewl_combo_new();
 	ewl_widget_name_set(combo, "combo_image");
+	ewl_container_child_append(EWL_CONTAINER(hbox), combo);
+	ewl_callback_append(combo, EWL_CALLBACK_VALUE_CHANGED,
+					combo_value_changed, NULL);
+	ewl_combo_model_set(EWL_COMBO(combo), model);
+	ewl_combo_view_set(EWL_COMBO(combo), view);
+	ewl_combo_data_set(EWL_COMBO(combo), data);
+	ewl_widget_show(combo);
+
+	/* create the editable model/view */
+	model = ewl_model_new();
+	ewl_model_count_set(model, combo_test_data_count_get);
+	ewl_model_fetch_set(model, combo_test_data_fetch);
+	ewl_model_header_fetch_set(model, 
+			combo_test_data_editable_header_fetch);
+
+	view = ewl_view_new();
+	ewl_view_constructor_set(view, combo_test_editable_new);
+	ewl_view_assign_set(view, 	
+			EWL_VIEW_ASSIGN(combo_test_editable_val_set));
+
+	combo = ewl_combo_new();
+	ewl_widget_name_set(combo, "combo_custom");
 	ewl_container_child_append(EWL_CONTAINER(hbox), combo);
 	ewl_callback_append(combo, EWL_CALLBACK_VALUE_CHANGED,
 					combo_value_changed, NULL);
@@ -180,5 +207,68 @@ combo_cb_add(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	c = ewl_widget_name_find("combo_image");
 	ewl_combo_dirty_set(EWL_COMBO(c), 1);
 }
+
+static Ewl_Widget *
+combo_test_data_editable_header_fetch(void *data, 
+				unsigned int col __UNUSED__)
+{
+	Combo_Test_Data *d;
+	Ewl_Widget *w, *o, *combo;
+	int idx;
+	char *val;
+
+	d = data;
+	combo = ewl_widget_name_find("combo_custom");
+	idx = ewl_combo_selected_get(EWL_COMBO(combo));
+
+	w = ewl_hbox_new();
+	if (idx > -1)
+	{
+		o = ewl_image_new();
+		ewl_image_file_path_set(EWL_IMAGE(o), d->data[idx]);
+		ewl_container_child_append(EWL_CONTAINER(w), o);
+		ewl_widget_show(o);
+
+		val = d->data[idx];
+	}
+	else
+		val = "Please select an option.";
+
+	o = ewl_entry_new();
+	ewl_text_text_set(EWL_TEXT(o), d->data[idx]);
+	ewl_container_child_append(EWL_CONTAINER(w), o);
+	ewl_widget_show(o);
+
+	return w;
+}
+
+static Ewl_Widget *
+combo_test_editable_new(void)
+{
+	Ewl_Widget *w;
+
+	w = ewl_hbox_new();
+
+	return w;
+}
+
+static void
+combo_test_editable_val_set(Ewl_Widget *w, void *data)
+{
+	Ewl_Widget *o;
+
+printf("%s\n", (char *)data);
+
+	o = ewl_image_new();
+	ewl_image_file_path_set(EWL_IMAGE(o), (char *)data);
+	ewl_container_child_append(EWL_CONTAINER(w), o);
+	ewl_widget_show(o);
+
+	o = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(o), (char *)data);
+	ewl_container_child_append(EWL_CONTAINER(w), o);
+	ewl_widget_show(o);
+}
+
 
 

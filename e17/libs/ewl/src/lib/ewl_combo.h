@@ -46,6 +46,7 @@ struct Ewl_Combo
 
 	void *data;	  /**< The data for the combo */
 	unsigned char dirty:1; /**< The combo's data is dirty */
+	unsigned char editable:1; /**< Is the combo editable */
 };
 
 Ewl_Widget 	*ewl_combo_new(void);
@@ -66,12 +67,17 @@ void		*ewl_combo_data_get(Ewl_Combo *combo);
 void		 ewl_combo_dirty_set(Ewl_Combo *combo, unsigned int dirty);
 unsigned int	 ewl_combo_dirty_get(Ewl_Combo *combo);
 
+void		 ewl_combo_editable_set(Ewl_Combo *combo, 
+						unsigned int editable);
+unsigned int	 ewl_combo_editable_get(Ewl_Combo *combo);
+
 /*
  * Internally used callbacks, override at your own risk.
  */
 void ewl_combo_cb_configure(Ewl_Widget *w, void *ev, void *data);
 void ewl_combo_cb_decrement_clicked(Ewl_Widget *w, void *ev, void *data);
 void ewl_combo_cb_increment_clicked(Ewl_Widget *w, void *ev, void *data);
+void ewl_combo_cb_item_clicked(Ewl_Widget *w, void *ev, void *data);
 
 /**
  * @}

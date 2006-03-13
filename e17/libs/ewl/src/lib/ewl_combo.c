@@ -3,12 +3,9 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
-void ewl_combo_cb_item_clicked(Ewl_Widget *w, void *ev, void *data);
-
 /**
- * @param title: the text to place in the combo
  * @return Returns a pointer to a new combo on success, NULL on failure.
- * @brief Create a new internal combo
+ * @brief Create a new combo box
  */
 Ewl_Widget *
 ewl_combo_new(void)
@@ -30,6 +27,11 @@ ewl_combo_new(void)
 	DRETURN_PTR(EWL_WIDGET(combo), DLEVEL_STABLE);
 }
 
+/**
+ * @param combo: The Ewl_Combo to initialize
+ * @return Returns TRUE on success or FALSE on failure
+ * @brief Initializes a combo to default values 
+ */
 int
 ewl_combo_init(Ewl_Combo *combo)
 {
@@ -42,17 +44,14 @@ ewl_combo_init(Ewl_Combo *combo)
 
 	ewl_widget_inherit(EWL_WIDGET(combo), EWL_COMBO_TYPE);
 	ewl_widget_appearance_set(EWL_WIDGET(combo), EWL_COMBO_TYPE);
-
 	ewl_box_orientation_set(EWL_BOX(combo), EWL_ORIENTATION_HORIZONTAL);
 
 	combo->button = ewl_button_new();
+	ewl_container_child_append(EWL_CONTAINER(combo), combo->button);
 	ewl_widget_appearance_set(combo->button, "decrement");
 	ewl_widget_internal_set(combo->button, TRUE);
 	ewl_object_alignment_set(EWL_OBJECT(combo->button), 
 					EWL_FLAG_ALIGN_RIGHT);
-	ewl_container_child_append(EWL_CONTAINER(combo), combo->button);
-	ewl_object_fill_policy_set(EWL_OBJECT(combo->button), 
-					EWL_FLAG_FILL_NONE);
 	ewl_callback_append(combo->button, EWL_CALLBACK_CLICKED,
 				ewl_combo_cb_decrement_clicked, combo);
 	ewl_widget_show(combo->button);
@@ -78,11 +77,18 @@ ewl_combo_init(Ewl_Combo *combo)
 	combo->selected_idx = -2; 
 	ewl_callback_append(EWL_WIDGET(combo), EWL_CALLBACK_CONFIGURE,
 					ewl_combo_cb_configure, NULL);
-	ewl_object_fill_policy_set(EWL_OBJECT(combo), EWL_FLAG_FILL_NONE);
+	ewl_object_fill_policy_set(EWL_OBJECT(combo), 
+				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+/**
+ * @param combo: The Ewl_Combo to work with
+ * @param idx: The data index to set selected
+ * @return Returns no value
+ * @brief Sets the given item in the data as selected
+ */
 void
 ewl_combo_selected_set(Ewl_Combo *combo, int idx)
 {
@@ -105,7 +111,7 @@ ewl_combo_selected_set(Ewl_Combo *combo, int idx)
 
 	/* if we have a selected value then show it in the top, else show
 	 * the header */
-	if (idx > -1)
+	if ((idx > -1) && (!combo->editable))
 	{
 		combo->selected = combo->view->construct();
 		combo->view->assign(combo->selected, 
@@ -120,6 +126,12 @@ ewl_combo_selected_set(Ewl_Combo *combo, int idx)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param combo: The Ewl_Combo to get the selected value from
+ * @return Returns the index of the currently selected item or -1 if none
+ * selected.
+ * @brief Retrieves the currently selected index from the combo box
+ */
 int 
 ewl_combo_selected_get(Ewl_Combo *combo)
 {
@@ -130,6 +142,12 @@ ewl_combo_selected_get(Ewl_Combo *combo)
 	DRETURN_INT(combo->selected_idx, DLEVEL_STABLE);
 }
 
+/**
+ * @param combo: The Ewl_Combo to work with
+ * @param model: The Ewl_Model to set into the combo
+ * @return Returns no value.
+ * @brief Associates the given model with the combo
+ */
 void
 ewl_combo_model_set(Ewl_Combo *combo, Ewl_Model *model)
 {
@@ -144,6 +162,11 @@ ewl_combo_model_set(Ewl_Combo *combo, Ewl_Model *model)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param combo: The Ewl_Combo to get the model from
+ * @return Returns the model currently set into this combo
+ * @brief Retrieves the model set into the combo box
+ */
 Ewl_Model *
 ewl_combo_model_get(Ewl_Combo *combo)
 {
@@ -154,6 +177,12 @@ ewl_combo_model_get(Ewl_Combo *combo)
 	DRETURN_PTR(combo->model, DLEVEL_STABLE);
 }
 
+/**
+ * @param combo: The Ewl_Combo to set the view into 
+ * @param view: The Ewl_View to set into the combo
+ * @return Returns no value.
+ * @brief Set the view for the combo to @a view
+ */
 void
 ewl_combo_view_set(Ewl_Combo *combo, Ewl_View *view)
 {
@@ -168,6 +197,11 @@ ewl_combo_view_set(Ewl_Combo *combo, Ewl_View *view)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param combo: The Ewl_Combo to use.
+ * @return Returns the view currently set in the combo
+ * @brief Retrieves the view currently set into the combo
+ */
 Ewl_View *
 ewl_combo_view_get(Ewl_Combo *combo)
 {
@@ -178,6 +212,12 @@ ewl_combo_view_get(Ewl_Combo *combo)
 	DRETURN_PTR(combo->view, DLEVEL_STABLE);
 }
 
+/**
+ * @param combo: The Ewl_Combo to work with
+ * @param data: The data to set into the combo
+ * @return Returns no value.
+ * @brief This sets the data for the combo into the combo itself.
+ */
 void
 ewl_combo_data_set(Ewl_Combo *combo, void *data)
 {
@@ -192,6 +232,11 @@ ewl_combo_data_set(Ewl_Combo *combo, void *data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param combo: The Ewl_Combo to get the data from
+ * @return Returns the data set into the combo
+ * @brief This returns the data used in the combo 
+ */
 void *
 ewl_combo_data_get(Ewl_Combo *combo)
 {
@@ -202,6 +247,13 @@ ewl_combo_data_get(Ewl_Combo *combo)
 	DRETURN_PTR(combo->data, DLEVEL_STABLE);
 }
 
+/**
+ * @param combo: The Ewl_Combo to work with
+ * @param dirty: Set to TRUE if the data in the combo has changed
+ * @return Returns no value
+ * @brief Setting this to TRUE tells the combo that it's data has changed
+ * and it will need to re-create it's drop down.
+ */
 void
 ewl_combo_dirty_set(Ewl_Combo *combo, unsigned int dirty)
 {
@@ -214,6 +266,11 @@ ewl_combo_dirty_set(Ewl_Combo *combo, unsigned int dirty)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param combo: The Ewl_Combo to use
+ * @return Returns the dirty status of the combo
+ * @brief Returns if the combo is currently dirty or not
+ */
 unsigned int
 ewl_combo_dirty_get(Ewl_Combo *combo)
 {
@@ -222,6 +279,49 @@ ewl_combo_dirty_get(Ewl_Combo *combo)
 	DCHECK_TYPE_RET("combo", combo, EWL_COMBO_TYPE, FALSE);
 
 	DRETURN_INT(combo->dirty, DLEVEL_STABLE);
+}
+
+/**
+ * @param combo: The Ewl_Combo to use
+ * @param editable: Set if the combo is editable or not
+ * @return Returns no value
+ * @brief This will set if the displayed data in the combo is editable. 
+ *  
+ * If the editable flag is set to TRUE then the combo will always request
+ * the header as the item to display. If it is FALSE then the combo will use
+ * the selected widget as the display.
+ */
+void
+ewl_combo_editable_set(Ewl_Combo *combo, unsigned int editable)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("combo", combo);
+	DCHECK_TYPE("combo", combo, EWL_COMBO_TYPE);
+
+	if (combo->editable == editable)
+		DRETURN(DLEVEL_STABLE);
+
+	combo->editable = !!editable;
+
+	/* force the selected display to change */
+	ewl_combo_selected_set(combo, combo->selected_idx);	
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param combo: The Ewl_Combo to use
+ * @return Returns the editable status of the combo
+ * @brief Retrieves the editable status of the combo
+ */
+unsigned int
+ewl_combo_editable_get(Ewl_Combo *combo)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("combo", combo, FALSE);
+	DCHECK_TYPE_RET("combo", combo, EWL_COMBO_TYPE, FALSE);
+
+	DRETURN_INT(combo->editable, DLEVEL_STABLE);
 }
 
 void
@@ -263,6 +363,9 @@ ewl_combo_cb_decrement_clicked(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 	/* nothing to do if we have no model/view or data */
 	if ((!combo->model) || (!combo->view) || (!combo->data))
 		DRETURN(DLEVEL_STABLE);
+
+	/* XXX put checks to make sure all the needed module and view
+	 * function callbacks are setup */
 
 	/* change hte button appearance and expand the menu */
 	ewl_widget_appearance_set(combo->button, "increment");
