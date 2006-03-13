@@ -236,7 +236,8 @@ widgets_build(void)
 	misc = ewl_hseparator_new();
 	ewl_container_child_append(EWL_CONTAINER(vbox), misc);
 	ewl_widget_show(misc);
-	
+#if 0	
+XXX Port this to use the model/view system
 	misc = ewl_combo_new("Combo entry");
 	ewl_container_child_append(EWL_CONTAINER(vbox), misc);
 	ewl_widget_show(misc);
@@ -255,7 +256,8 @@ widgets_build(void)
 		ewl_container_child_append(EWL_CONTAINER(misc), item);
 		ewl_widget_show(item);
 	}
-	
+#endif
+
 	/* List/tree */
 	vbox = ewl_vbox_new();
 	ewl_container_child_append(EWL_CONTAINER(notebook), vbox);

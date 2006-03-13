@@ -26,7 +26,7 @@ pkg_LTLIBRARIES		= ewl_border.la ewl_box.la ewl_button.la \
 			  ewl_table.la ewl_notebook.la ewl_scrollpane.la \
 			  ewl_spinner.la ewl_progressbar.la ewl_theme.la \
 			  ewl_media.la ewl_menu.la ewl_imenu.la \
-			  ewl_widget.la
+			  ewl_widget.la 
 
 ewl_border_la_SOURCES   = ewl_border.c
 ewl_border_la_LIBADD    = $(top_builddir)/src/lib/libewl.la

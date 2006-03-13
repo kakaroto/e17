@@ -427,11 +427,13 @@ ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__
 	ecore_list_goto_first(tree->columns);
 	while ((col = ecore_list_next(tree->columns)))
 	{
+#if 0
 		if (ewl_model_dirty_get(col->model))
 		{
 			dirty = TRUE;
 			break;
 		}
+#endif
 	}
 
 	/* place the header */
@@ -454,7 +456,7 @@ ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__
 		ewl_container_child_append(EWL_CONTAINER(tree->header), h);
 
 		/* once we are done this model won't be dirty anymore */
-		col->model->dirty = FALSE;
+//		col->model->dirty = FALSE;
 		column ++;
 	}
 

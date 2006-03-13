@@ -91,8 +91,10 @@ data {
     item, "/stock/save" "stock/save";
     item, "/stock/stop" "stock/stop";
 
-    item, "/combo/decrement/group" "vscroll-down";
-    item, "/combo/increment/group" "vscroll-up";
+    item, "/combo/decrement/group" "spinner-down";
+    item, "/combo/decrement/body/group" "spinnerdown";
+    item, "/combo/increment/group" "spinner-up";
+    item, "/combo/increment/body/group" "spinnerup";
 
     item, "/selection_area/group" "selection_area";
 
