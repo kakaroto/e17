@@ -116,12 +116,13 @@ ewl_combo_selected_set(Ewl_Combo *combo, int idx)
 		combo->selected = combo->view->construct();
 		combo->view->assign(combo->selected, 
 				combo->model->fetch(combo->data, idx, 0));
-		ewl_widget_show(combo->selected);
 	}
 	else
-		combo->selected = combo->model->header_fetch(combo->data, 0);	
+		combo->selected = combo->model->header_fetch(combo->data, 
+							combo->selected_idx);	
 
 	ewl_container_child_prepend(EWL_CONTAINER(combo), combo->selected);
+	ewl_widget_show(combo->selected);
 						
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

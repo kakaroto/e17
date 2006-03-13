@@ -13,15 +13,13 @@ struct Combo_Test_Data
 static void *combo_test_data_setup(void);
 static int create_test(Ewl_Container *win);
 static void combo_value_changed(Ewl_Widget *w, void *ev, void *data);
-static Ewl_Widget *combo_test_data_header_fetch(void *data, 
-							unsigned int col);
+static Ewl_Widget *combo_test_data_header_fetch(void *data, int col);
 static void *combo_test_data_fetch(void *data, unsigned int row,
 						unsigned int col);
 static int combo_test_data_count_get(void *data);
 static void combo_cb_add(Ewl_Widget *w, void *ev, void *data);
 
-static Ewl_Widget *combo_test_data_editable_header_fetch(void *data, 
-							unsigned int col);
+static Ewl_Widget *combo_test_data_editable_header_fetch(void *data, int col);
 static Ewl_Widget *combo_test_editable_new(void);
 static void combo_test_editable_val_set(Ewl_Widget *w, void *data);
 
@@ -86,7 +84,7 @@ create_test(Ewl_Container *box)
 	ewl_combo_view_set(EWL_COMBO(combo), view);
 	ewl_combo_data_set(EWL_COMBO(combo), data);
 	ewl_widget_show(combo);
-#if 0
+
 	/* create the editable model/view */
 	model = ewl_model_new();
 	ewl_model_count_set(model, combo_test_data_count_get);
@@ -108,7 +106,7 @@ create_test(Ewl_Container *box)
 	ewl_combo_view_set(EWL_COMBO(combo), view);
 	ewl_combo_data_set(EWL_COMBO(combo), data);
 	ewl_widget_show(combo);
-#endif
+
 	o = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(o), "Add items");
 	ewl_container_child_append(EWL_CONTAINER(box), o);
@@ -135,8 +133,7 @@ combo_test_data_setup(void)
 }
 
 static Ewl_Widget *
-combo_test_data_header_fetch(void *data __UNUSED__, 
-				unsigned int col __UNUSED__)
+combo_test_data_header_fetch(void *data __UNUSED__, int col __UNUSED__)
 {
 	Ewl_Widget *header;
 
@@ -209,33 +206,31 @@ combo_cb_add(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 }
 
 static Ewl_Widget *
-combo_test_data_editable_header_fetch(void *data, 
-				unsigned int col __UNUSED__)
+combo_test_data_editable_header_fetch(void *data, int col)
 {
 	Combo_Test_Data *d;
-	Ewl_Widget *w, *o, *combo;
-	int idx;
+	Ewl_Widget *w, *o;
 	char *val;
 
 	d = data;
-	combo = ewl_widget_name_find("combo_custom");
-	idx = ewl_combo_selected_get(EWL_COMBO(combo));
 
 	w = ewl_hbox_new();
-	if (idx > -1)
+	if (col > -1)
 	{
 		o = ewl_image_new();
-		ewl_image_file_path_set(EWL_IMAGE(o), d->data[idx]);
+		ewl_image_file_path_set(EWL_IMAGE(o), d->data[col]);
 		ewl_container_child_append(EWL_CONTAINER(w), o);
 		ewl_widget_show(o);
 
-		val = d->data[idx];
+		val = d->data[col];
 	}
 	else
 		val = "Please select an option.";
 
+printf("%d %s\n", col, val);
+
 	o = ewl_entry_new();
-	ewl_text_text_set(EWL_TEXT(o), d->data[idx]);
+	ewl_text_text_set(EWL_TEXT(o), val);
 	ewl_container_child_append(EWL_CONTAINER(w), o);
 	ewl_widget_show(o);
 

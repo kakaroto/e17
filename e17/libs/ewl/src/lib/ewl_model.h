@@ -38,7 +38,7 @@ typedef int (*Ewl_Model_Count)(void *data);
  * Model callback to get the header for a given column
  */
 #define EWL_MODEL_DATA_HEADER_GET(f) ((Ewl_Model_Header_Fetch)f)
-typedef Ewl_Widget *(*Ewl_Model_Header_Fetch)(void *data, unsigned int column);
+typedef Ewl_Widget *(*Ewl_Model_Header_Fetch)(void *data, int column);
 
 /**
  * @def EWL_MODEL(model)
