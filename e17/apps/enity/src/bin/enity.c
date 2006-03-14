@@ -21,7 +21,12 @@ static void _en_ok_print_stdout_cb(Etk_Object *obj, int response_id, void *data)
    switch(response_id)
      {
       case ETK_RESPONSE_OK:
-	if(ETK_IS_ENTRY(data))
+	if (!data)
+	  {
+	     _en_retval = 0;
+	     break;
+	  }
+	else if(ETK_IS_ENTRY(data))
 	  {
 	     printf("%s\n", etk_entry_text_get(ETK_ENTRY(data)));
 	     break;
@@ -143,7 +148,7 @@ static void _en_question_cb(Etk_Argument *args, int index)
      value = data->data;
 
    dialog = etk_message_dialog_new(ETK_MESSAGE_DIALOG_QUESTION, ETK_MESSAGE_DIALOG_OK_CANCEL, value);
-   etk_signal_connect("response", ETK_OBJECT(dialog), ETK_CALLBACK(_en_ok_print_stdout_cb), NULL);   
+   etk_signal_connect("response", ETK_OBJECT(dialog), ETK_CALLBACK(_en_ok_print_stdout_cb), NULL);
    
    etk_container_border_width_set(ETK_CONTAINER(dialog), 4);
    etk_window_title_set(ETK_WINDOW(dialog), _("Question"));
