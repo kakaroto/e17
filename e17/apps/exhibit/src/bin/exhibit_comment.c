@@ -60,27 +60,43 @@ _ex_comment_hide(Exhibit *e)
 void
 _ex_comment_load(Exhibit *e)
 {
-   
+   char *file, *comment;
+   unsigned int len;
+
+   file = ((Ex_Tab *) e->cur_tab)->cur_file;
+   if (_ex_file_is_jpg(file))
+     if (_ex_comment_jpeg_read(file, &comment, &len))
+       {
+	  etk_entry_text_set(ETK_ENTRY(e->comment.entry), comment);
+	  return;
+       }
+   etk_entry_text_set(ETK_ENTRY(e->comment.entry), "");
 }
 
 void
 _ex_comment_save(Exhibit *e)
 {
-   
+   char *file;
+
+   file = ((Ex_Tab *) e->cur_tab)->cur_file;
+   if (_ex_file_is_jpg(file))
+     _ex_comment_jpeg_write(file,
+       etk_entry_text_get(ETK_ENTRY(e->comment.entry)),
+       strlen(etk_entry_text_get(ETK_ENTRY(e->comment.entry))));
 }
 
 void
 _ex_comment_revert(Exhibit *e)
 {
-   
+   _ex_comment_load(e);
 }
 
 static void _ex_comment_save_clicked_cb(Etk_Object *obj, void *data)
 {
-   
+   _ex_comment_save((Exhibit *) data);
 }
 
 static void _ex_comment_revert_clicked_cb(Etk_Object *obj, void *data)
 {
-   
+   _ex_comment_revert((Exhibit *) data);
 }

@@ -56,6 +56,21 @@ _ex_file_is_ebg(char *file)
    return val;
 }
 
+int
+_ex_file_is_jpg(char *file)
+{
+   char        *ext;
+   Evas_List   *groups, *l;
+
+   ext = strrchr(file, '.');
+   if (!ext) return 0;
+
+   if (strcasecmp(ext, ".jpg") && strcasecmp(ext, ".jpeg"))
+      return 0;
+
+   return 1;
+}
+
 char *
 _ex_file_strip_extention(char *path) {
    char *ptr;
