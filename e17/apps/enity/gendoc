@@ -1,0 +1,12 @@
+#!/bin/sh
+cp ./exhibit.c.in ./exhibit.c
+for I in `find ./src/lib -name "exhibit.h" -print`; do
+  cat $I >> ./exhibit.c
+done
+#for I in `find ./src/lib -name "*.c" -print`; do
+#  cat $I >> ./exhibit.c
+#done
+rm -rf ./doc/html ./doc/latex ./doc/man
+doxygen
+cp doc/img/*.png doc/html/
+exit 0
