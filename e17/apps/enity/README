@@ -33,8 +33,6 @@ enity --warning \
 enity --info \
       --text 'Installation complete!'
 
-the following are work in progress:
-
 enity --question \
       --text 'Are you sure you want to proceed?'
       
