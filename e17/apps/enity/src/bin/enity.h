@@ -24,6 +24,7 @@ static Evas_List *_en_arg_data_get(Etk_Argument *args, char *key);
 static void _en_ok_print_stdout_cb(Etk_Object *obj, int response_id, void *data);
 static void _en_entry_cb(Etk_Argument *args, int index);
 static void _en_error_cb(Etk_Argument *args, int index);
+static void _en_question_cb(Etk_Argument *args, int index);
 static void _en_info_cb(Etk_Argument *args, int index);
 static void _en_warning_cb(Etk_Argument *args, int index);
 static void _en_list_column_cb(Etk_Argument *args, int index);

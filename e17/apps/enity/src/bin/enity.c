@@ -110,11 +110,13 @@ static void _en_entry_cb(Etk_Argument *args, int index)
 static void _en_error_cb(Etk_Argument *args, int index)
 {
    Etk_Widget *dialog;
-   Evas_List  *data;
    const char *value;
+   Evas_List *data;
      
    if((data = _en_arg_data_get(args, "text")) == NULL)
-     value = strdup(_("An error has occured"));
+     value = strdup(_("No information available"));
+   else
+     value = data->data;
 
    dialog = etk_message_dialog_new(ETK_MESSAGE_DIALOG_ERROR, ETK_MESSAGE_DIALOG_OK, value);
    etk_signal_connect_swapped("response", ETK_OBJECT(dialog), ETK_CALLBACK(etk_main_quit), NULL);
@@ -122,6 +124,27 @@ static void _en_error_cb(Etk_Argument *args, int index)
    
    etk_container_border_width_set(ETK_CONTAINER(dialog), 4);
    etk_window_title_set(ETK_WINDOW(dialog), _("Error"));
+
+   etk_widget_show_all(dialog);
+}
+
+static void _en_question_cb(Etk_Argument *args, int index)
+{
+   Etk_Widget *dialog;
+   const char *value;
+   Evas_List *data;
+     
+   if((data = _en_arg_data_get(args, "text")) == NULL)
+     value = strdup(_("No information available"));
+   else
+     value = data->data;
+
+   dialog = etk_message_dialog_new(ETK_MESSAGE_DIALOG_QUESTION, ETK_MESSAGE_DIALOG_OK_CANCEL, value);
+   etk_signal_connect_swapped("response", ETK_OBJECT(dialog), ETK_CALLBACK(etk_main_quit), NULL);
+   
+   
+   etk_container_border_width_set(ETK_CONTAINER(dialog), 4);
+   etk_window_title_set(ETK_WINDOW(dialog), _("Question"));
 
    etk_widget_show_all(dialog);
 }
@@ -273,6 +296,9 @@ Etk_Argument args[] = {
      
      /* --error options */
      { "error", ' ', NULL, _en_error_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL, "Display error dialog" },
+   
+     /* --question options */
+     { "question", ' ', NULL, _en_question_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL, "Display question dialog" },   
 
      /* --info options */
      { "info", ' ', NULL, _en_info_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL, "Display info dialog" },
