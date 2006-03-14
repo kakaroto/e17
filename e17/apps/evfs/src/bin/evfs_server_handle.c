@@ -139,11 +139,18 @@ evfs_handle_monitor_stop_command(evfs_client * client, evfs_command * command)
 }
 
 void
-evfs_handle_file_remove_command(evfs_client * client, evfs_command * command)
+evfs_handle_file_remove_command(evfs_client * client, evfs_command * command, evfs_command* root_command)
 {
    struct stat file_stat;
+   evfs_operation_files* op;
 
-   //printf("At remove handle for %s\n", command->file_command.files[0]->path );
+   if (root_command == command) {
+	   op = evfs_operation_files_new(client, root_command);
+	   command->op = EVFS_OPERATION(op);
+   } else {
+	   op = root_command->op;
+   }
+
 
    evfs_plugin *plugin = evfs_get_plugin_for_uri(client->server,
                                                  command->file_command.
@@ -151,26 +158,21 @@ evfs_handle_file_remove_command(evfs_client * client, evfs_command * command)
    if (plugin)
      {
         (*plugin->functions->evfs_file_lstat) (command, &file_stat, 0);
-        //printf("ST_MODE: %d\n", file_stat.st_mode);
-
-        //printf("Pointer here: %p\n", plugin->functions->evfs_file_remove);
 
         /*If we're not a dir, simple remove command */
         if (!S_ISDIR(file_stat.st_mode))
           {
 
-             (*plugin->functions->evfs_file_remove) (command->file_command.
-                                                     files[0]->path);
-             //printf("REMOVE FIL: '%s'\n", command->file_command.files[0]->path);
-             //
+		  evfs_operation_remove_task_add(EVFS_OPERATION(op), 
+		       evfs_filereference_clone(command->file_command.files[0]),
+		       file_stat);		
+		  
              /*Iterate */
              ecore_main_loop_iterate();
 
           }
         else
           {
-             //printf("IS LINK RES: %d, for %s\n", S_ISLNK(file_stat.st_mode), command->file_command.files[0]->path);
-
              if (!S_ISLNK(file_stat.st_mode))
                {
 
@@ -194,16 +196,17 @@ evfs_handle_file_remove_command(evfs_client * client, evfs_command * command)
                             recursive_command->file_command.num_files = 1;
 
                             evfs_handle_file_remove_command(client,
-                                                            recursive_command);
+                                                            recursive_command, root_command);
                             evfs_cleanup_command(recursive_command,
                                                  EVFS_CLEANUP_FREE_COMMAND);
 
                          }
                     }
 
-                  //printf("REMOVE DIR: '%s'\n", command->file_command.files[0]->path);
-                  (*plugin->functions->evfs_file_remove) (command->file_command.
-                                                          files[0]->path);
+		  evfs_operation_remove_task_add(EVFS_OPERATION(op), 
+		       evfs_filereference_clone(command->file_command.files[0]),
+		       file_stat);	
+
                }
              else
                {
@@ -211,6 +214,17 @@ evfs_handle_file_remove_command(evfs_client * client, evfs_command * command)
                }
 
           }
+
+
+        if (command == root_command) {
+           /*evfs_file_progress_event_create(client, command, root_command, 100,
+                                           EVFS_PROGRESS_TYPE_DONE);*/
+
+	   evfs_operation_tasks_print(EVFS_OPERATION(op));
+
+	   evfs_operation_queue_pending_add(EVFS_OPERATION(op));
+
+	}
      }
    else
      {

@@ -41,4 +41,6 @@ char *evfs_filereference_to_string(evfs_filereference * ref);
 
 int evfs_filereference_equal_is(evfs_filereference* file1, evfs_filereference* file2);
 
+evfs_filereference* evfs_empty_file_get();
+
 #endif

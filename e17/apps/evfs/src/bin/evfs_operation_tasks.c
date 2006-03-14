@@ -111,3 +111,22 @@ void evfs_operation_tasks_mkdir_run(evfs_operation* op, evfs_operation_task_mkdi
 	/*TODO - handle 'fail' state*/
 	EVFS_OPERATION_TASK(task)->status = EVFS_OPERATION_TASK_STATUS_COMMITTED;
 }
+
+uint64 evfs_operation_tasks_file_remove_run(evfs_operation* op, evfs_operation_task_file_remove* task)
+{
+	int ret=0;
+
+	if (!task->file->plugin)
+		task->file->plugin = evfs_get_plugin_for_uri(evfs_server_get(),
+                              task->file->plugin_uri);
+
+	ret = (*task->file->plugin->functions->evfs_file_remove) (task->file->path);
+
+	/*TODO - handle 'fail' state*/
+	EVFS_OPERATION_TASK(task)->status = EVFS_OPERATION_TASK_STATUS_COMMITTED;
+
+	return task->file_stat.st_size;
+}
+
+
+

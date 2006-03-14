@@ -152,6 +152,8 @@ void evfs_operation_response_handle(evfs_operation* op, evfs_operation_task* tas
 void evfs_operation_copy_task_add(evfs_operation* op, evfs_filereference* file_from, 
 		evfs_filereference* file_to, struct stat from_stat, struct stat to_stat, int);
 void evfs_operation_mkdir_task_add(evfs_operation* op, evfs_filereference* dir);
+void evfs_operation_remove_task_add(evfs_operation* op, evfs_filereference* file, struct stat file_stat);
+
 void evfs_operation_tasks_print(evfs_operation* op);
 void evfs_operation_queue_pending_add(evfs_operation* op);
 void evfs_operation_queue_run();

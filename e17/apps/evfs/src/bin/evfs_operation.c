@@ -67,6 +67,9 @@ evfs_operation_destroy(evfs_operation * op)
 			   case EVFS_OPERATION_TASK_TYPE_MKDIR:
 				   evfs_cleanup_filereference(EVFS_OPERATION_TASK_MKDIR(task)->file);
 				   break;
+   			   case EVFS_OPERATION_TASK_TYPE_FILE_REMOVE:
+				   evfs_cleanup_filereference(EVFS_OPERATION_TASK_FILE_REMOVE(task)->file);
+				   break;
 			   default:
 				   printf("Destroying unknown task type\n");
 				   break;
@@ -134,6 +137,23 @@ void evfs_operation_copy_task_add(evfs_operation* op, evfs_filereference* file_f
 	ecore_list_append(op->sub_task, copy);
 }
 
+void evfs_operation_remove_task_add(evfs_operation* op, evfs_filereference* file, struct stat file_stat)
+{
+	evfs_operation_files* fop = EVFS_OPERATION_FILES(op);
+	evfs_operation_task_file_remove* remove = calloc(1, sizeof(evfs_operation_task_file_remove));
+
+	remove->file = file;
+	memcpy(&remove->file_stat, &file_stat, sizeof(struct stat));
+
+	EVFS_OPERATION_TASK(remove)->status = EVFS_OPERATION_TASK_STATUS_PENDING;
+	EVFS_OPERATION_TASK(remove)->type = EVFS_OPERATION_TASK_TYPE_FILE_REMOVE;
+
+	fop->total_bytes += file_stat.st_size;
+	fop->total_files += 1;
+
+	ecore_list_append(op->sub_task, remove);
+}
+
 
 /*Sub task functions*/
 void evfs_operation_mkdir_task_add(evfs_operation* op, evfs_filereference* dir)
@@ -173,6 +193,8 @@ void evfs_operation_tasks_print(evfs_operation* op)
 									
 				break;
 			case EVFS_OPERATION_TASK_TYPE_FILE_REMOVE:
+				printf("REMOVE: %s://%s \n", EVFS_OPERATION_TASK_FILE_REMOVE(task)->file->plugin_uri,
+								     EVFS_OPERATION_TASK_FILE_REMOVE(task)->file->path);				
 				break;
 
 			case EVFS_OPERATION_TASK_TYPE_MKDIR:
@@ -305,6 +327,40 @@ void evfs_operation_run_tasks(evfs_operation* op)
 						op->command, 100, 
 						EVFS_PROGRESS_TYPE_DONE);					
 				}
+			}
+			break;
+
+			case EVFS_OPERATION_TASK_TYPE_FILE_REMOVE: {
+				int prog = 0;
+				double progress;
+				double calc;
+
+				prog = evfs_operation_tasks_file_remove_run(op, EVFS_OPERATION_TASK_FILE_REMOVE(task));
+				EVFS_OPERATION_FILES(op)->progress_bytes += prog;
+
+				calc = (double)EVFS_OPERATION_FILES(op)->total_bytes / (double)EVFS_OPERATION_FILES(op)->progress_bytes;
+				progress = 1.0 / calc;
+				progress *= 100.0;
+
+				evfs_file_progress_event_create(op->client,  EVFS_OPERATION_TASK_FILE_REMOVE(task)->file,
+						evfs_empty_file_get(),
+						op->command, progress, 
+						EVFS_PROGRESS_TYPE_CONTINUE);
+
+
+				if (task->status == EVFS_OPERATION_TASK_STATUS_COMMITTED) {
+					EVFS_OPERATION_FILES(op)->progress_files += 1;
+					op->processed_tasks++;
+				}
+
+				//FIXME - ther's probably a better place to put this*/
+				if (op->processed_tasks == ecore_list_nodes(op->sub_task) && task->status == EVFS_OPERATION_TASK_STATUS_COMMITTED) {
+					evfs_file_progress_event_create(op->client,  EVFS_OPERATION_TASK_FILE_REMOVE(task)->file,
+						evfs_empty_file_get(),
+						op->command, 100, 
+						EVFS_PROGRESS_TYPE_DONE);					
+				}
+								      
 			}
 			break;
 			

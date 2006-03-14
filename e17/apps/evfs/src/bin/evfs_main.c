@@ -181,7 +181,8 @@ evfs_handle_command(evfs_client * client, evfs_command * command)
         printf("Move file stub\n");
         break;
      case EVFS_CMD_REMOVE_FILE:
-        evfs_handle_file_remove_command(client, command);
+        evfs_handle_file_remove_command(client, command, command);
+	cleanup_command=0;
         break;
      case EVFS_CMD_FILE_STAT:
         evfs_handle_file_stat_command(client, command);
@@ -349,7 +350,7 @@ main(int argc, char **argv)
    ecore_idle_enterer_add(incoming_command_cb, NULL);
 
    /*Add a timer, to make sure our event loop keeps going.  Kinda hacky */
-   ecore_timer_add(0.1, ecore_timer_enterer, NULL);
+   ecore_timer_add(0.02, ecore_timer_enterer, NULL);
 
    /*Load the plugins */
    evfs_load_plugins();

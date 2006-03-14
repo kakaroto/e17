@@ -583,7 +583,7 @@ evfs_write_command_client(evfs_client * client, evfs_command * command)
         evfs_write_file_command_client(client, command);
         break;
      default:
-        printf("Command type not handled in switch (client)\n");
+        printf("Command type not handled in switch (client) : %d\n", command->type);
         break;
 
      }

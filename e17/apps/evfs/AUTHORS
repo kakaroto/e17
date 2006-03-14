@@ -1,15 +1,11 @@
-Alex Taylor <alex@logisticchaos.com>
+Main VFS Engine:
+	Alex Taylor <alex@logisticchaos.com>
 
-Some of the code in EVFS (namely the posix file plugin, and other bits) 
-are by Christian Kreibich <cK@whoop.org>
+'file' plugin
+	Christian Kreibich <cK@whoop.org> Christian Kreibich <cK@whoop.org>
 
-Contributors
-------------
-Victor Kojouharov <?>
+'ftp' plugin:
+	John Kha <?>
 
-Plugin Authors
---------------
-FTP Plugin - John Kha <?> 
-
-
-
+Misc. Patches:
+	Victor Kojouharov
