@@ -3,3 +3,43 @@ Enity - Create Etk dialogs using scripts
 Enity allows users to create Etk dialogs using shell scripts or other
 scripting languages that can call programs. The basic idea is to ease the
 development of quick interfaces for input, configuration, installation, etc...
+
+Examples:
+
+enity --list \
+      --title='Resolution' \
+      --text='Select your prefered resolution' \
+      --column='Num' --column='Option' \
+      '1' '1920x1440' \
+      '2' '1856x1392' \
+      '3' '1792x1344' \
+      '4' '1600x1200' \
+      '5' '1280x1024' \
+      '6' '1280x960'  \
+      '7' '1280x800'  \
+      '8' '1280x768'  \
+      '9' '1152x864'  \
+      '10' '1024x768' \
+      '11' '800x600'  \
+      '12' '640x480'
+      
+enity --entry \
+      --text "Please enter username:" \
+      --entry-text "username"
+      
+enity --warning \
+      --text 'Low disk space!'
+      
+enity --info \
+      --text 'Installation complete!'
+
+the following are work in progress:
+
+enity --question \
+      --text 'Are you sure you want to proceed?'
+      
+enity --error \
+      --text 'Could not detect your VGA card!'
+            
+
+
