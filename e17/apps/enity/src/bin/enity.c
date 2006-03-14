@@ -1,5 +1,7 @@
 #include "enity.h"
 
+static _en_retval = 0;
+
 static Evas_List *_en_arg_data_get(Etk_Argument *args, char *key)
 {
    Etk_Argument *arg;
@@ -69,9 +71,10 @@ static void _en_ok_print_stdout_cb(Etk_Object *obj, int response_id, void *data)
 	     printf("%s\n", valist[1]);
 #endif	     
 	     break;
-	  }
+	  }	
 	break;
       case ETK_RESPONSE_CANCEL:
+	_en_retval = 1;
 	break;
      }
    
@@ -140,8 +143,7 @@ static void _en_question_cb(Etk_Argument *args, int index)
      value = data->data;
 
    dialog = etk_message_dialog_new(ETK_MESSAGE_DIALOG_QUESTION, ETK_MESSAGE_DIALOG_OK_CANCEL, value);
-   etk_signal_connect_swapped("response", ETK_OBJECT(dialog), ETK_CALLBACK(etk_main_quit), NULL);
-   
+   etk_signal_connect("response", ETK_OBJECT(dialog), ETK_CALLBACK(_en_ok_print_stdout_cb), NULL);   
    
    etk_container_border_width_set(ETK_CONTAINER(dialog), 4);
    etk_window_title_set(ETK_WINDOW(dialog), _("Question"));
@@ -323,5 +325,5 @@ int main(int argc, char **argv)
    etk_main_quit();
    etk_shutdown();
    
-   return 0;
+   return _en_retval;
 }
