@@ -317,15 +317,20 @@ ewl_image_scale_set(Ewl_Image *i, double wp, double hp)
 	/*
 	 * Use set bounds if available, otherwise original image size.
 	 */
-	if (i->aw)
-		aw = i->aw;
-	else
-		aw = i->ow;
+	if (i->cs) {
+		aw = ah = i->cs;
+	}
+	else {
+		if (i->aw)
+			aw = i->aw;
+		else
+			aw = i->ow;
 
-	if (i->ah)
-		ah = i->ah;
-	else
-		ah = i->oh;
+		if (i->ah)
+			ah = i->ah;
+		else
+			ah = i->oh;
+	}
 
 	/*
 	 * Check for proportional scaling and adjust to fit.
@@ -520,15 +525,20 @@ ewl_image_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	/*
 	 * Bound to absolute size.
 	 */
-	if (i->aw)
-		ww = i->aw;
-	else
-		ww = i->ow;
+	if (i->cs) {
+		ww = hh = i->cs;
+	}
+	else {
+		if (i->aw)
+			ww = i->aw;
+		else
+			ww = i->ow;
 
-	if (i->ah)
-		hh = i->ah;
-	else
-		hh = i->oh;
+		if (i->ah)
+			hh = i->ah;
+		else
+			hh = i->oh;
+	}
 
 	ewl_object_preferred_inner_w_set(EWL_OBJECT(i), sw * ww);
 	ewl_object_preferred_inner_h_set(EWL_OBJECT(i), sh * hh);
