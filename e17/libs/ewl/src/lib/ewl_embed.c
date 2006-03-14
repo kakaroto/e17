@@ -1019,6 +1019,7 @@ ewl_embed_object_cache(Ewl_Embed *e, Evas_Object *obj)
 {
 	const char *type;
 	Ecore_List *obj_list;
+	Evas_List *clippees, *l;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
@@ -1030,6 +1031,10 @@ ewl_embed_object_cache(Ewl_Embed *e, Evas_Object *obj)
 
 	evas_object_clip_unset(obj);
 	evas_object_hide(obj);
+
+	clippees = evas_object_clipees_get(obj);
+	for (l = clippees; l; l = l->next)
+		evas_object_clip_unset(l->data);
 
 	if (e->obj_cache) {
 		type = evas_object_type_get(obj);
