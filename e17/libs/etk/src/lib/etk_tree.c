@@ -759,6 +759,25 @@ Etk_Tree_Row *etk_tree_append(Etk_Tree *tree, ...)
 }
 
 /**
+ * @brief Appends a new row to the tree using a va_list
+ * @param tree a tree
+ * @param args a va_list consisting of an Etk_Tree_Col * followed by the value of the cell, then again, an Etk_Tree_Col * followed by its value... terminated by NULL
+ * @return Returns the new row
+ */
+Etk_Tree_Row *etk_tree_append_valist(Etk_Tree *tree, va_list args)
+{
+   Etk_Tree_Row *new_row;
+
+
+   if (!tree || !tree->built)
+      return NULL;
+
+   new_row = _etk_tree_row_new_valist(tree, &tree->root, args);
+
+   return new_row;
+}
+
+/**
  * @brief Appends a new row as a child of a another row of the tree. The tree has to be in the ETK_TREE_MODE_TREE mode
  * @param row a row
  * @param ... an Etk_Tree_Col * followed by the value(s) of the cell, then again, an Etk_Tree_Col * followed by its value(s)... terminated by NULL

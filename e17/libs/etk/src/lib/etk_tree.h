@@ -188,6 +188,7 @@ void etk_tree_select_all(Etk_Tree *tree);
 void etk_tree_unselect_all(Etk_Tree *tree);
 
 Etk_Tree_Row *etk_tree_append(Etk_Tree *tree, ...);
+Etk_Tree_Row *etk_tree_append_valist(Etk_Tree *tree, va_list args);
 Etk_Tree_Row *etk_tree_append_to_row(Etk_Tree_Row *row, ...);
 void etk_tree_row_del(Etk_Tree_Row *row);
 void etk_tree_clear(Etk_Tree *tree);

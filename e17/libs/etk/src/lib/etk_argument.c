@@ -2,10 +2,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <Evas.h>
 #include "etk_utils.h"
 #include "etk_argument.h"
 
 #define ETK_ARGUMENT_FLAG_PRIV_SET (1 << 4)
+
+static Evas_Hash *_etk_argument_extra = NULL;
 
 /**
  * @brief Parses the arguments as described by the user
@@ -77,12 +80,12 @@ int etk_arguments_parse(Etk_Argument *args, int argc, char **argv)
       if(!cur) continue;
       
       /* min length is 2, anything less is invalid */
-      if(strlen(cur) < 2)
+      if(strlen(cur) < 2 && cur[0] == '-')
       {
 	 printf(_("Argument %d '%s' is too short\n"), i, argv[i]);
 	 return ETK_ARGUMENT_RETURN_MALFORMED;
       }
-      
+
       /* short (single char) argument of the form -d val or -dval */
       if(cur[0] == '-' && cur[1] != '-')
       {
@@ -106,10 +109,7 @@ int etk_arguments_parse(Etk_Argument *args, int argc, char **argv)
 		     return ETK_ARGUMENT_RETURN_REQUIRED_VALUE_NOT_FOUND;
 		  }
 		  
-		  if(arg->data)			      
-		    *(arg->data) = *val;
-		  else
-		    arg->data = val;
+		  arg->data = evas_list_append(arg->data, val);
 		  arg->flags |= ETK_ARGUMENT_FLAG_PRIV_SET;
 		  ++i;
 	       }
@@ -171,10 +171,7 @@ int etk_arguments_parse(Etk_Argument *args, int argc, char **argv)
 		     return ETK_ARGUMENT_RETURN_REQUIRED_VALUE_NOT_FOUND;
 		  }
 		  
-		  if(arg->data)			      
-		    *(arg->data) = *val;
-		  else
-		    arg->data = val;
+		  arg->data = evas_list_append(arg->data, val);
 		  arg->flags |= ETK_ARGUMENT_FLAG_PRIV_SET;
 		  
 		  if(!tmp)
@@ -196,10 +193,54 @@ int etk_arguments_parse(Etk_Argument *args, int argc, char **argv)
 	       free(cur);
 	       cur = argv[i];
 	    }
+	    	    
+	    if(arg->flags & ETK_ARGUMENT_FLAG_MULTIVALUE && i + 1 < argc &&
+	       arg->short_name != -1 && arg->flags & ETK_ARGUMENT_FLAG_PRIV_SET)
+	    {
+	       /* if we want multi-argument arguments like:
+		* foo --bar "one" "two" "three"
+		* then this is where we get them.
+		*/
+	       char *extra;
+	       Evas_List *value = NULL;
+	       int j = 1;
+	       
+	       extra = argv[i + j];
+	       while(i + j < argc)
+	       {
+		  if(extra[0] == '-')
+		  {
+		     j = argc;
+		     break;
+		  }
+		  
+		  if(arg->long_name != NULL)
+		    value = evas_hash_find(_etk_argument_extra, arg->long_name);
+		  else if(arg->short_name != ' ' && arg->short_name != -1)
+		    value = evas_hash_find(_etk_argument_extra, &arg->short_name);
+		  else
+		    break;
+		  
+		  if(!value)
+		  {
+		     value = evas_list_append(value, extra);
+		     _etk_argument_extra = evas_hash_add(_etk_argument_extra, arg->long_name ? arg->long_name : &arg->short_name, value);
+		  }
+		  else
+		  {
+		     _etk_argument_extra = evas_hash_del(_etk_argument_extra, arg->long_name ? arg->long_name : &arg->short_name, value);
+		     value = evas_list_append(value, extra);
+		     _etk_argument_extra = evas_hash_add(_etk_argument_extra, arg->long_name ? arg->long_name : &arg->short_name, value);
+		  }
+		  
+		  ++j;
+		  extra = argv[i + j];
+	       }
+	    }
 	    
-	    ++arg;		  
+	    ++arg;	    
 	 }
-      }	
+      }      
    }
    
    /* check for required arguments */
@@ -227,6 +268,14 @@ int etk_arguments_parse(Etk_Argument *args, int argc, char **argv)
    }
    
    return ETK_ARGUMENT_RETURN_OK;
+}
+
+Evas_List *etk_argument_extra_find(const char *key)
+{
+   if(!_etk_argument_extra)
+     return NULL;
+   
+   return evas_hash_find(_etk_argument_extra, "column");
 }
 
 /** @} */
