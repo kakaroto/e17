@@ -2,7 +2,7 @@
 #define EWL_COMBO_H
 
 /**
- * @defgroup Ewl_Combo Ewl_Combo: A Simple Combo Box
+ * @addtogroup Ewl_Combo Ewl_Combo: A Simple Combo Box
  * Defines a combo box used internally. The contents on the box are not drawn
  * outside of the Evas.
  *
