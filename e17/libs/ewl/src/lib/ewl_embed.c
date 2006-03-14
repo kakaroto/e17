@@ -1032,6 +1032,8 @@ ewl_embed_object_cache(Ewl_Embed *e, Evas_Object *obj)
 	evas_object_clip_unset(obj);
 	evas_object_hide(obj);
 
+	/* we have to unclip all of the clippees so that we don't end up
+	 * getting into an infinite loop resetting the clip later */
 	clippees = evas_object_clipees_get(obj);
 	for (l = clippees; l; l = l->next)
 		evas_object_clip_unset(l->data);
