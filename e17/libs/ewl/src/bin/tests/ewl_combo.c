@@ -3,6 +3,21 @@
 #include <string.h>
 #include <stdlib.h>
 
+/**
+ * @addtogroup Ewl_Combo
+ *
+ * @section Notes
+ *
+ * Note, if you set the combo to editable, with ewl_combo_editable set then
+ * instead of using the model/view to get the data we will query the view
+ * for the header. It is then up to the app to do what they will with the
+ * header to make it 'editable'. In most cases, this will mean packing an
+ * entry into there with the value from the data. In this case you will need
+ * to attach a EWL_CALLBACK_VALUE_CHANGED callback to the entry and handle
+ * its value change yourself. The combo won't know about any changed values
+ * in the entry and will always have the value from the data.
+ */
+
 typedef struct Combo_Test_Data Combo_Test_Data;
 struct Combo_Test_Data
 {
