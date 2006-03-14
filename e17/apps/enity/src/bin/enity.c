@@ -1,6 +1,6 @@
 #include "enity.h"
 
-static _en_retval = 0;
+static int _en_retval = 0;
 
 static Evas_List *_en_arg_data_get(Etk_Argument *args, char *key)
 {
