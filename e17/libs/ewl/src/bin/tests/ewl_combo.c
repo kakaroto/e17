@@ -18,6 +18,7 @@ static void *combo_test_data_fetch(void *data, unsigned int row,
 						unsigned int col);
 static int combo_test_data_count_get(void *data);
 static void combo_cb_add(Ewl_Widget *w, void *ev, void *data);
+static void combo_cb_entry_changed(Ewl_Widget *w, void *ev, void *data);
 
 static Ewl_Widget *combo_test_data_editable_header_fetch(void *data, int col);
 static Ewl_Widget *combo_test_editable_new(void);
@@ -231,6 +232,8 @@ combo_test_data_editable_header_fetch(void *data, int col)
 	o = ewl_entry_new();
 	ewl_text_text_set(EWL_TEXT(o), val);
 	ewl_container_child_append(EWL_CONTAINER(w), o);
+	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED, 
+				combo_cb_entry_changed, NULL);
 	ewl_widget_show(o);
 
 	return w;
@@ -260,6 +263,13 @@ combo_test_editable_val_set(Ewl_Widget *w, void *data)
 	ewl_label_text_set(EWL_LABEL(o), (char *)data);
 	ewl_container_child_append(EWL_CONTAINER(w), o);
 	ewl_widget_show(o);
+}
+
+static void
+combo_cb_entry_changed(Ewl_Widget *w, void *ev __UNUSED__, 
+					void *data __UNUSED__)
+{
+	printf("value changed to (%s)\n", ewl_text_text_get(EWL_TEXT(w)));
 }
 
 
