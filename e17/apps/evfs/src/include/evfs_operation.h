@@ -9,11 +9,17 @@
 typedef enum evfs_operation_status
 {
    EVFS_OPERATION_STATUS_USER_WAIT,
+   EVFS_OPERATION_STATUS_REPLY_RECEIVED,
    EVFS_OPERATION_STATUS_ERROR,
    EVFS_OPERATION_STATUS_OVERRIDE,
    EVFS_OPERATION_STATUS_NORMAL,
    EVFS_OPERATION_STATUS_COMPLETED
 } evfs_operation_status;
+
+typedef enum evfs_operation_wait_type
+{
+	EVFS_OPERATION_WAIT_TYPE_FILE_OVERWRITE
+} evfs_operation_wait_type;
 
 typedef enum evfs_operation_response
 {
@@ -45,6 +51,9 @@ typedef enum evfs_operation_task_status
 {
 	EVFS_OPERATION_TASK_STATUS_PENDING,
 	EVFS_OPERATION_TASK_STATUS_EXEC,
+	EVFS_OPERATION_TASK_STATUS_EXEC_CONT,  /*When we have cause to go into user_wait,
+						 but have done so already*/
+	EVFS_OPERATION_TASK_STATUS_CANCEL,
 	EVFS_OPERATION_TASK_STATUS_COMMITTED
 } evfs_operation_task_status;
 
@@ -62,6 +71,7 @@ struct evfs_operation
    char* misc_str;
    evfs_operation_status status;
    evfs_operation_substatus substatus;
+   evfs_operation_wait_type wait_type;
    evfs_operation_response response;
 
    Ecore_List* sub_task;   /*The tasks that must be performed by this operation pre-completion*/
@@ -98,7 +108,9 @@ struct evfs_operation_task_file_copy {
 	evfs_operation_task task;
 
 	struct stat source_stat;
+	int source_stat_response;
 	struct stat dest_stat;
+	int dest_stat_response;
 
 	evfs_filereference* file_from;
 	evfs_filereference* file_to;
@@ -134,8 +146,11 @@ evfs_operation_files* evfs_operation_files_new(evfs_client* client, evfs_command
 void evfs_operation_destroy(evfs_operation * op);
 evfs_operation *evfs_operation_get_by_id(long id);
 void evfs_operation_status_set(evfs_operation * op, int status);
+void evfs_operation_wait_type_set(evfs_operation* op, int type);
+void evfs_operation_response_handle(evfs_operation* op, evfs_operation_task* task);
+
 void evfs_operation_copy_task_add(evfs_operation* op, evfs_filereference* file_from, 
-		evfs_filereference* file_to, struct stat from_stat, struct stat to_stat);
+		evfs_filereference* file_to, struct stat from_stat, struct stat to_stat, int);
 void evfs_operation_mkdir_task_add(evfs_operation* op, evfs_filereference* dir);
 void evfs_operation_tasks_print(evfs_operation* op);
 void evfs_operation_queue_pending_add(evfs_operation* op);

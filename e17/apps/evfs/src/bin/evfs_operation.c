@@ -96,6 +96,11 @@ evfs_operation_status_set(evfs_operation * op, int status)
    op->status = status;
 }
 
+void evfs_operation_wait_type_set(evfs_operation* op, int type) 
+{
+	op->wait_type = type;
+}
+
 void
 evfs_operation_user_dispatch(evfs_client * client, evfs_command * command,
                              evfs_operation * op, char* misc)
@@ -108,7 +113,7 @@ evfs_operation_user_dispatch(evfs_client * client, evfs_command * command,
 
 /*Sub task functions*/
 void evfs_operation_copy_task_add(evfs_operation* op, evfs_filereference* file_from, evfs_filereference* file_to, struct stat from_stat,
-		struct stat to_stat)
+		struct stat to_stat, int to_stat_response)
 {
 	evfs_operation_files* fop = EVFS_OPERATION_FILES(op);
 	evfs_operation_task_file_copy* copy = calloc(1, sizeof(evfs_operation_task_file_copy));
@@ -118,6 +123,7 @@ void evfs_operation_copy_task_add(evfs_operation* op, evfs_filereference* file_f
 	copy->next_byte = 0;
 	memcpy(&copy->source_stat, &from_stat, sizeof(struct stat));
 	memcpy(&copy->dest_stat, &to_stat, sizeof(struct stat));
+	copy->dest_stat_response = to_stat_response;
 
 	EVFS_OPERATION_TASK(copy)->status = EVFS_OPERATION_TASK_STATUS_PENDING;
 	EVFS_OPERATION_TASK(copy)->type = EVFS_OPERATION_TASK_TYPE_FILE_COPY;
@@ -216,12 +222,52 @@ void evfs_operation_queue_run()
 	}
 }
 
+//TODO - move this to some kind of state table, so we can deal with it properly
+void evfs_operation_response_handle(evfs_operation* op, evfs_operation_task* task)
+{
+
+	switch (op->wait_type) {
+		case EVFS_OPERATION_WAIT_TYPE_FILE_OVERWRITE:
+			printf("This is a file overwrite wait type\n");
+
+			/*In this case, we want to look at the response - if it's an 
+			 * affirm, continue as normal. If it's deny, jump over it*/
+
+			if (op->response == EVFS_OPERATION_RESPONSE_AFFIRM) {
+				task->status = EVFS_OPERATION_TASK_STATUS_EXEC_CONT;
+				op->status = EVFS_OPERATION_STATUS_NORMAL;
+			} else if (op->response == EVFS_OPERATION_RESPONSE_AFFIRM_ALL) {
+				op->status = EVFS_OPERATION_STATUS_OVERRIDE;
+			} else if (op->response == EVFS_OPERATION_RESPONSE_NEGATE) {
+				printf("NEGATE reponse received\n");
+				task->status = EVFS_OPERATION_TASK_STATUS_CANCEL;
+				op->status = EVFS_OPERATION_STATUS_NORMAL;
+			} else if (op->response == EVFS_OPERATION_RESPONSE_ABORT) {
+				op->status = EVFS_OPERATION_STATUS_COMPLETED;
+				task->status = EVFS_OPERATION_TASK_STATUS_CANCEL;
+			}
+			break;
+		default:
+			printf("Unknown wait type\n");
+			break;
+	}
+}
+
 void evfs_operation_run_tasks(evfs_operation* op)
 {
 	evfs_operation_task* task = NULL;
 
 	task = ecore_list_current(op->sub_task);
 	if (task) {
+
+
+	    if (op->status == EVFS_OPERATION_STATUS_REPLY_RECEIVED) {
+		    evfs_operation_response_handle(op,task);
+	    }
+
+		
+	    if (op->status == EVFS_OPERATION_STATUS_NORMAL || op->status == EVFS_OPERATION_STATUS_OVERRIDE) {
+		
 		if (task->status == EVFS_OPERATION_TASK_STATUS_PENDING)
 			task->status = EVFS_OPERATION_TASK_STATUS_EXEC;
 
@@ -231,7 +277,8 @@ void evfs_operation_run_tasks(evfs_operation* op)
 				int prog = 0;
 				double progress;
 				double calc;
-									 
+
+
 				/*printf("...Processing file copy task type!\n");*/
 				prog = evfs_operation_tasks_file_copy_run(op, EVFS_OPERATION_TASK_FILE_COPY(task));
 				EVFS_OPERATION_FILES(op)->progress_bytes += prog;
@@ -276,9 +323,13 @@ void evfs_operation_run_tasks(evfs_operation* op)
 
 		}
 
+		OPERATION_TASK_EXIT:
 		if (task->status == EVFS_OPERATION_TASK_STATUS_COMMITTED) {
 			ecore_list_next(op->sub_task);
 		}
+	   } else {
+		   /*printf("Operation is in user wait state!\n");*/
+	   }
 	} else {
 		/*If task is null, operation is completed!*/
 		op->status = EVFS_OPERATION_STATUS_COMPLETED;

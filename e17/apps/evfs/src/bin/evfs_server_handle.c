@@ -428,7 +428,7 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 		  evfs_operation_copy_task_add(EVFS_OPERATION(op), 
 		       evfs_filereference_clone(command->file_command.files[0]),
 		       evfs_filereference_clone(command->file_command.files[1]),
-		       file_stat, dest_stat);
+		       file_stat, dest_stat, res);
 
           } else {
              Ecore_List *directory_list = NULL;
@@ -519,7 +519,7 @@ evfs_handle_operation_command(evfs_client * client, evfs_command * command)
    op_get = evfs_operation_get_by_id(command->op->id);
    if (op_get)
      {
-        op_get->status = EVFS_OPERATION_STATUS_NORMAL;
+        op_get->status = EVFS_OPERATION_STATUS_REPLY_RECEIVED;
         op_get->response = command->op->response;
         printf("*** Received operation response for op %ld -> %d\n",
                command->op->id, command->op->response);

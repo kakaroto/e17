@@ -18,7 +18,30 @@ int evfs_operation_tasks_file_copy_run(evfs_operation* op,
                               copy->file_to->plugin_uri);
 
 
-	
+	/*Check if we're trying to overwrite*/
+	if (!(op->status == EVFS_OPERATION_STATUS_OVERRIDE) && 
+	   !(EVFS_OPERATION_TASK(copy)->status == EVFS_OPERATION_TASK_STATUS_EXEC_CONT) &&
+	   !(EVFS_OPERATION_TASK(copy)->status == EVFS_OPERATION_TASK_STATUS_CANCEL)) 	{
+
+		if (copy->dest_stat_response != EVFS_ERROR) {
+			/*Looks like we're overwriting*/
+
+			evfs_operation_status_set(op, EVFS_OPERATION_STATUS_USER_WAIT);
+		 	evfs_operation_wait_type_set(op, EVFS_OPERATION_WAIT_TYPE_FILE_OVERWRITE);
+			evfs_operation_user_dispatch(op->client, op->command, op, copy->file_to->path);
+
+			return 0;
+		}
+	}
+
+	/*Check for cancel...*/
+	if (EVFS_OPERATION_TASK(copy)->status == EVFS_OPERATION_TASK_STATUS_CANCEL) {
+		printf("**** Cancelling copy via user request\n");
+		
+		EVFS_OPERATION_TASK(copy)->status = EVFS_OPERATION_TASK_STATUS_COMMITTED;
+		return copy->source_stat.st_size;
+	}
+
 	if (copy->file_from->fd == 0 && copy->file_from->fd_p == NULL) {
 		/*printf("Opening source file...\n");*/
 		int fd =(*copy->file_from->plugin->functions->evfs_file_open) (op->client, copy->file_from);
@@ -63,8 +86,12 @@ int evfs_operation_tasks_file_copy_run(evfs_operation* op,
 	/*printf("Ending task, continuing operation...\n");*/
 
 	/*Check if it's time to end..*/
-	if (copy->next_byte == copy->source_stat.st_size)
+	if (copy->next_byte == copy->source_stat.st_size) {
+	        (*copy->file_from->plugin->functions->evfs_file_close) (copy->file_from);
+        	(*copy->file_to->plugin->functions->evfs_file_close) (copy->file_to);
+		
 		EVFS_OPERATION_TASK(copy)->status = EVFS_OPERATION_TASK_STATUS_COMMITTED;
+	}
 
 	return total;
 	
