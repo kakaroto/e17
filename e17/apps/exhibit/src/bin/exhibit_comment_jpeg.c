@@ -483,7 +483,7 @@ _ex_comment_jpeg_write(char *file, const char *comment, unsigned int len) {
   file_len = strlen(file);
   tmp_file = malloc((file_len + 4 + 1) * sizeof(char));
   strncpy(tmp_file, file, file_len);
-  strncat(tmp_file +file_len, "_tmp", 4);
+  strncat(tmp_file, "_tmp", 4);
   if ((outfile = fopen(tmp_file, "wb")) == NULL) {
     fprintf(stderr, "COMMENT: can't open %s for writing\n", tmp_file);
     return 0;
