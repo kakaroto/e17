@@ -244,7 +244,7 @@ static void _etk_entropy_list_viewer_key_down_cb(Etk_Object *object, void *event
 
 		if (file) {
 			printf("Deleting '%s'...\n", file->file->filename);
-			entropy_plugin_filesystem_file_remove(file->file);
+			entropy_plugin_filesystem_file_remove(file->file, (entropy_gui_component_instance*)data);
 		}
 
 	  }
@@ -901,7 +901,7 @@ entropy_plugin_init (entropy_core * core,
 		  ETK_CALLBACK(_etk_list_viewer_row_clicked), NULL);
 
   etk_signal_connect("key_down", ETK_OBJECT(viewer->tree), 
-		  ETK_CALLBACK(_etk_entropy_list_viewer_key_down_cb), NULL);
+		  ETK_CALLBACK(_etk_entropy_list_viewer_key_down_cb), instance);
   
   printf("Initialising ETK list viewer...%p\n", instance);
 

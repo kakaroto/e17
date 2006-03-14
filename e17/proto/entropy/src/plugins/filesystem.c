@@ -338,9 +338,14 @@ callback (evfs_event * data, void *obj)
       char *uri = NULL;
 
       ecore_list_goto_first(data->file_list.list);
-      request->file_from = evfs_filereference_to_entropy_generic_file(ecore_list_current(data->file_list.list));
-      ecore_list_next(data->file_list.list);
-      request->file_to = evfs_filereference_to_entropy_generic_file(ecore_list_current(data->file_list.list));
+      if (ecore_list_current(data->file_list.list)) {
+        	request->file_from = evfs_filereference_to_entropy_generic_file(ecore_list_current(data->file_list.list));
+                ecore_list_next(data->file_list.list);
+
+		if (ecore_list_current(data->file_list.list)) {
+		      request->file_to = evfs_filereference_to_entropy_generic_file(ecore_list_current(data->file_list.list));
+		}
+      }
       request->progress = data->progress->file_progress;
 
       if (data->progress->type == EVFS_PROGRESS_TYPE_CONTINUE)
@@ -374,8 +379,8 @@ callback (evfs_event * data, void *obj)
       }
 
       free (uri);
-      entropy_generic_file_destroy (request->file_from);
-      entropy_generic_file_destroy (request->file_to);
+      if (request->file_from) entropy_generic_file_destroy (request->file_from);
+      if (request->file_to) entropy_generic_file_destroy (request->file_to);
       free (request);
     }
     break;
@@ -805,15 +810,18 @@ entropy_filesystem_file_copy (entropy_generic_file * file, char *path_to,
  * Remove file function
  */
 void
-entropy_filesystem_file_remove (entropy_generic_file * file)
+entropy_filesystem_file_remove (entropy_generic_file * file, entropy_gui_component_instance* instance)
 {
   evfs_file_uri_path *uri_path_from;
-
+  char* original;
   char *uri = entropy_core_generic_file_uri_create (file, 0);
   //printf("Deleting uri '%s'\n", uri);
 
   uri_path_from = evfs_parse_uri (uri);
+  original = evfs_filereference_to_string (uri_path_from->files[0]);
   evfs_client_file_remove (con, uri_path_from->files[0]);
+
+  ecore_hash_set (file_copy_hash, original, instance);
 
 
   free (uri);

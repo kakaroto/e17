@@ -33,11 +33,19 @@ void entropy_etk_progress_dialog_set_file_from_to(entropy_file_progress_window* 
 
 	char buffer[PATH_MAX];
 
-	snprintf(buffer, PATH_MAX, "%s://%s/%s", file_from->uri_base, file_from->path, file_from->filename);
-	etk_label_set(ETK_LABEL(dialog->file_from), buffer);
+	if (file_from) {
+		snprintf(buffer, PATH_MAX, "%s://%s/%s", file_from->uri_base, file_from->path, file_from->filename);
+		etk_label_set(ETK_LABEL(dialog->file_from), buffer);
+	} else {
+		etk_label_set(ETK_LABEL(dialog->file_from), "");
+	}
 
-	snprintf(buffer, PATH_MAX, "%s://%s/%s", file_to->uri_base, file_to->path, file_to->filename);
-	etk_label_set(ETK_LABEL(dialog->file_to), buffer);
+	if (file_to) {
+		snprintf(buffer, PATH_MAX, "%s://%s/%s", file_to->uri_base, file_to->path, file_to->filename);
+		etk_label_set(ETK_LABEL(dialog->file_to), buffer);
+	} else {
+		etk_label_set(ETK_LABEL(dialog->file_to), "");
+	}
 
 }
 

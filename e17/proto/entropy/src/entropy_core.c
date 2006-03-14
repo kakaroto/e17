@@ -1527,7 +1527,8 @@ entropy_generic_file* evfs_filereference_to_entropy_generic_file(void* ref)
 
 	strncpy(file->path, copy, 255);
 	strncpy(file->filename, pos, FILENAME_LENGTH);
-	strncpy(file->uri_base, file_ref->plugin_uri, 15);
+	if (file_ref->plugin_uri) 
+		strncpy(file->uri_base, file_ref->plugin_uri, 15);
 
 	free(copy);
 	return file;

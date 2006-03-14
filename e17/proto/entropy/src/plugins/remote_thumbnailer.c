@@ -177,7 +177,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *obj,
 	    entropy_core_file_cache_remove_reference (listener->file->md5);
 
 	    /*Remove the d/led image */
-	    entropy_plugin_filesystem_file_remove (tmp_file);
+	    entropy_plugin_filesystem_file_remove (tmp_file, comp);
 	  }
 	  else {
 	    printf ("Remote thumbnailer: Couldn't make thumbnail\n");
