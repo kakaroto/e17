@@ -6,7 +6,7 @@
 #endif
 
 /**
- * @defgroup Ewl_Media Ewl_Media: A Multi media widget
+ * @addtogroup Ewl_Media Ewl_Media: A Multi media widget
  * @brief Defines a class for displaing video
  *
  * @{

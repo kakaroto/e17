@@ -2,7 +2,7 @@
 #define EWL_VIEW_H
 
 /**
- * @defgroup Ewl_View Ewl_View: A data view
+ * @addtogroup Ewl_View Ewl_View: A data view
  * @brief Defines the callbacks for setting up the widgets based on the data 
  * returned from the Model. Create widgets, set data on widgets, calculate 
  * sizing, minimize number of widgets.

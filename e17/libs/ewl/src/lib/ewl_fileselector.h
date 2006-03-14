@@ -2,7 +2,7 @@
 #define EWL_FILESELECTOR_H
 
 /**
- * @defgroup Ewl_Fileselector Ewl_Fileselector: Basic File And Directory Listing
+ * @addtogroup Ewl_Fileselector Ewl_Fileselector: Basic File And Directory Listing
  * A simple widget that is used to display a list of directories and files
  * for the user to choose from.
  *

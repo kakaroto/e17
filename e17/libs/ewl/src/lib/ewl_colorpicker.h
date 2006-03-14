@@ -2,7 +2,7 @@
 #define EWL_COLORPICKER_H
 
 /**
- * @defgroup Ewl_Colorpicker Ewl_Colorpicker: The colour picking widget
+ * @addtogroup Ewl_Colorpicker Ewl_Colorpicker: The colour picking widget
  *
  * @{
  */

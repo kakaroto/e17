@@ -2,7 +2,7 @@
 #define EWL_DATEPICKER_H
 
 /**
- * @defgroup Ewl_Datepicker Ewl_Datepicker: The EWL Datepicker widget
+ * @addtogroup Ewl_Datepicker Ewl_Datepicker: The EWL Datepicker widget
  * @brief Defines the Ewl_Datepicker class,  
  *
  * @{

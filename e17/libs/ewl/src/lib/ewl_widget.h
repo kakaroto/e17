@@ -2,7 +2,7 @@
 #define EWL_WIDGET_H
 
 /**
- * @defgroup Ewl_Widget Ewl_Widget: The Parent Widget Class Common to All Widgets
+ * @addtogroup Ewl_Widget Ewl_Widget: The Parent Widget Class Common to All Widgets
  * @brief Defines the Ewl_Widget class and it's accessor/modifier functions.
  *
  * The Ewl_Widget extends the Ewl_Object to provide the basic facilities

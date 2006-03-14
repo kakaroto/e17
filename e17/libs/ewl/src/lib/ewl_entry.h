@@ -2,7 +2,7 @@
 #define EWL_ENTRY_H
 
 /**
- * @defgroup Ewl_Entry Ewl_Entry: A text entry widget
+ * @addtogroup Ewl_Entry Ewl_Entry: A text entry widget
  * This widget provides all text entry needs, from single to multiline
  *
  * @{

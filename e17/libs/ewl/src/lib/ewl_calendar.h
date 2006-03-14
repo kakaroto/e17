@@ -2,7 +2,7 @@
 #define EWL_CALENDAR_H
 
 /**
- * @defgroup Ewl_Calendar Ewl_Calendar: The EWL Calendar Widget
+ * @addtogroup Ewl_Calendar Ewl_Calendar: The EWL Calendar Widget
  * @brief Defines the Ewl_Calendar class  
  *
  * @{

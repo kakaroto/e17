@@ -2,7 +2,7 @@
 #define EWL_NOTEBOOK_H
 
 /**
- * @defgroup Ewl_Notebook Ewl_Notebook: A notebook widget
+ * @addtogroup Ewl_Notebook Ewl_Notebook: A notebook widget
  * Defines a class for notebook layout
  *
  * @{

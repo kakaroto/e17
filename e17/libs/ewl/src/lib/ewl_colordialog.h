@@ -2,7 +2,7 @@
 #define EWL_COLORDIALOG_H
 
 /**
- * @defgroup Ewl_Colordialog Ewl_Colordialog: A Simple Colour Dialog widget
+ * @addtogroup Ewl_Colordialog Ewl_Colordialog: A Simple Colour Dialog widget
  *
  * @{
  */

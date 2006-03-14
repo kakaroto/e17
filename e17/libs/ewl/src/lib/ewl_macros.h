@@ -2,7 +2,7 @@
 #define EWL_MACROS_H
 
 /**
- * @defgroup Ewl_Macros Ewl_Macros: Useful Macros Used Internally and Available Externally
+ * @addtogroup Ewl_Macros Ewl_Macros: Useful Macros Used Internally and Available Externally
  * Defines a variety of utility macros.
  *
  * @{

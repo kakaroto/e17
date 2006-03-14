@@ -2,7 +2,7 @@
 #define EWL_SCROLLBAR_H
 
 /**
- * @defgroup Ewl_Scrollbar Ewl_Scrollbar: A Simple Scrollbar Widget
+ * @addtogroup Ewl_Scrollbar Ewl_Scrollbar: A Simple Scrollbar Widget
  * Defines an Ewl_Scrollbar for using when scrolling values are needed.
  *
  * @{

@@ -2,7 +2,7 @@
 #define EWL_EMBED_H
 
 /**
- * @defgroup Ewl_Embed Ewl_Embed: A Container for Displaying on an Evas
+ * @addtogroup Ewl_Embed Ewl_Embed: A Container for Displaying on an Evas
  * Defines the Ewl_Embed class to provide EWL with the ability to work with an
  * evas.
  *

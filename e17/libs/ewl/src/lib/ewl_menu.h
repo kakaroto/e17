@@ -2,7 +2,7 @@
 #define EWL_MENU_H
 
 /**
- * @defgroup Ewl_Menu Ewl_Menu: A Simple Windowed Menu
+ * @addtogroup Ewl_Menu Ewl_Menu: A Simple Windowed Menu
  * Defines a menu used globally. The contents on the menu are drawn outside of
  * the Evas.
  *

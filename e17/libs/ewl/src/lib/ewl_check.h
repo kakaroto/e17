@@ -2,7 +2,7 @@
 #define EWL_CHECK_H
 
 /**
- * @defgroup Ewl_Check Ewl_Check: The Simple Check for a Checkbutton
+ * @addtogroup Ewl_Check Ewl_Check: The Simple Check for a Checkbutton
  * Defines a widget with single purpose of providing a button with a checked
  * state, without any extra decorating.
  *

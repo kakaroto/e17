@@ -2,7 +2,7 @@
 #define EWL_RADIOBUTTON_H
 
 /**
- * @defgroup Ewl_Radiobutton Ewl_Radiobutton: A Radio Button Widget and Grouping System
+ * @addtogroup Ewl_Radiobutton Ewl_Radiobutton: A Radio Button Widget and Grouping System
  * Provides for a simple radiobutton with label, and to group radio buttons
  * for selecting a single option.
  *

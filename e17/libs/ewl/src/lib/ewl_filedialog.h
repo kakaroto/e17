@@ -2,7 +2,7 @@
 #define EWL_FILEDIALOG_H
 
 /**
- * @defgroup Ewl_Filedialog Ewl_Filedialog: A Dialog For Picking Files
+ * @addtogroup Ewl_Filedialog Ewl_Filedialog: A Dialog For Picking Files
  * A simple dialog to show a file selector widget
  *
  * @{

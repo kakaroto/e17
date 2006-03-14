@@ -2,7 +2,7 @@
 #define EWL_WINDOW_H
 
 /**
- * @defgroup Ewl_Window Ewl_Window: A Container for Displaying in a New Window
+ * @addtogroup Ewl_Window Ewl_Window: A Container for Displaying in a New Window
  * Defines the Ewl_Window class which extends the Ewl_Embed class by
  * creating it's own window and evas.
  *

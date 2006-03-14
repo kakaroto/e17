@@ -2,7 +2,7 @@
 #define EWL_SPECTRUM_H
 
 /**
- * @defgroup Ewl_Spectrum Ewl_Spectrum: The colour spectrum widget
+ * @addtogroup Ewl_Spectrum Ewl_Spectrum: The colour spectrum widget
  * Defines a colour spectrum widget
  *
  * @{

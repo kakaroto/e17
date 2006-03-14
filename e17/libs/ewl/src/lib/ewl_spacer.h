@@ -2,7 +2,7 @@
 #define EWL_SPACER_H
 
 /**
- * @defgroup Ewl_Spacer Ewl_Spacer: A Widget to Add Space Between Other Widgets
+ * @addtogroup Ewl_Spacer Ewl_Spacer: A Widget to Add Space Between Other Widgets
  * Defines an Ewl_Widget to be used for adding space between widgets in a
  * layout.
  *

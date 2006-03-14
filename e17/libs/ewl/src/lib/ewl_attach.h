@@ -2,7 +2,7 @@
 #define EWL_ATTACH_H
 
 /**
- * @defgroup Ewl_Attach Ewl_Attach: A mechanism to attach data to widgets.
+ * @addtogroup Ewl_Attach Ewl_Attach: A mechanism to attach data to widgets.
  * @brief Defines methods for attaching data to widgets
  *
  * @{

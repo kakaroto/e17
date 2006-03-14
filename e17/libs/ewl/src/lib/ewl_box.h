@@ -2,7 +2,7 @@
 #define EWL_BOX_H
 
 /**
- * @defgroup Ewl_Box Ewl_Box: The Box Layout Container.
+ * @addtogroup Ewl_Box Ewl_Box: The Box Layout Container.
  * @brief Defines the Ewl_Box class used for laying out Ewl_Widget's in a
  * horizontal or vertical line.
  *

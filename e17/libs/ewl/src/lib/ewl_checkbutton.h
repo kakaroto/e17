@@ -2,7 +2,7 @@
 #define EWL_CHECKBUTTON_H
 
 /**
- * @defgroup Ewl_Checkbutton Ewl_Checkbutton: An Ewl_Checkbutton with Label
+ * @addtogroup Ewl_Checkbutton Ewl_Checkbutton: An Ewl_Checkbutton with Label
  * @brief Defines an Ewl_Checkbutton that inherits from Ewl_Widget and
  * provides an Ewl_Check that changes value on each click.
  *

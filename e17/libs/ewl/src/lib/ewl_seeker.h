@@ -2,7 +2,7 @@
 #define EWL_SEEKER_H
 
 /**
- * @defgroup Ewl_Seeker Ewl_Seeker: A Value Selector from a Range
+ * @addtogroup Ewl_Seeker Ewl_Seeker: A Value Selector from a Range
  * Defines an Ewl_Widget with a draggable button enclosed, used to select a
  * value from a range.
  *

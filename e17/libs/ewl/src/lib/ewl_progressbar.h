@@ -2,7 +2,7 @@
 #define EWL_PROGRESSBAR_H
 
 /**
- * @defgroup Ewl_Progressbar Ewl_Progressbar: A progressbar from a value
+ * @addtogroup Ewl_Progressbar Ewl_Progressbar: A progressbar from a value
  * A progress bar widget
  *
  * @{

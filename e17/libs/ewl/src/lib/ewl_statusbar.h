@@ -2,7 +2,7 @@
 #define EWL_STATUSBAR_H
 
 /**
- * @defgroup Ewl_Statusbar Ewl_Statusbar: A status bar widget
+ * @addtogroup Ewl_Statusbar Ewl_Statusbar: A status bar widget
  * Defines a class for displaying status bars
  *
  * @{

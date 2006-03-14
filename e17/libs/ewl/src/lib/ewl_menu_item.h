@@ -2,7 +2,7 @@
 #define EWL_MENU_ITEM_H
 
 /**
- * @defgroup Ewl_Menu_Item Ewl_Menu_Item: The basic menu item
+ * @addtogroup Ewl_Menu_Item Ewl_Menu_Item: The basic menu item
  * The basic menu item
  *
  * @{

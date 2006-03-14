@@ -2,7 +2,7 @@
 #define EWL_IMENU_H
 
 /**
- * @defgroup Ewl_Imenu Ewl_Imenu: A Simple Internal Menu
+ * @addtogroup Ewl_Imenu Ewl_Imenu: A Simple Internal Menu
  * Defines a menu used internally. The contents on the menu are not drawn
  * outside of the Evas.
  *

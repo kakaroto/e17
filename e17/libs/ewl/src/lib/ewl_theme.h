@@ -19,7 +19,7 @@
  */
 
 /**
- * @defgroup Ewl_Theme Ewl_Theme: Methods for Accessing and Modifying Theme Data
+ * @addtogroup Ewl_Theme Ewl_Theme: Methods for Accessing and Modifying Theme Data
  * Provides methods for accessing theme data, global theme data or per-widget
  * theme data.
  *

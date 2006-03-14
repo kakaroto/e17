@@ -2,7 +2,7 @@
 #define EWL_LABEL_H
 
 /**
- * @defgroup Ewl_Label Ewl_Label: A fully-themable text label
+ * @addtogroup Ewl_Label Ewl_Label: A fully-themable text label
  * Defines a class for a fullty-themable text label
  * 
  * @{

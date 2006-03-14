@@ -2,7 +2,7 @@
 #define EWL_DND_H
 
 /**
- * @defgroup Ewl_Dnd Ewl_Dnd: The files containing DND functions
+ * @addtogroup Ewl_Dnd Ewl_Dnd: The files containing DND functions
  *
  * @{
  */

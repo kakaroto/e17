@@ -2,7 +2,7 @@
 #define EWL_MODEL_H
 
 /**
- * @defgroup Ewl_Model Ewl_Model: A data model
+ * @addtogroup Ewl_Model Ewl_Model: A data model
  * Defines communication callbacks for views and controllers. 
  * Query row/column data, indicate expansion points, notify views and 
  * controllers of changes, trigger sorting on a row/column combination.

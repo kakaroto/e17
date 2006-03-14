@@ -2,7 +2,7 @@
 #define EWL_ROW_H
 
 /**
- * @defgroup Ewl_Row Ewl_Row: The Row widget
+ * @addtogroup Ewl_Row Ewl_Row: The Row widget
  * Defines a widget to display a row
  *
  * @{

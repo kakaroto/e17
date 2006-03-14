@@ -2,7 +2,7 @@
 #define EWL_DIALOG_H
 
 /**
- * @defgroup Ewl_Dialog Ewl_Dialog: A dialog window
+ * @addtogroup Ewl_Dialog Ewl_Dialog: A dialog window
  * @brief Defines the Ewl_Dialog class which extends the Ewl_Window class.
  *
  * @{

@@ -2,7 +2,7 @@
 #define EWL_MISC_H
 
 /**
- * @defgroup Ewl_Misc Ewl_Misc: Miscellaneous Utility Functions
+ * @addtogroup Ewl_Misc Ewl_Misc: Miscellaneous Utility Functions
  * Provides important miscellaneous functionality such as manipulation of the
  * main loop.
  *

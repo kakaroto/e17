@@ -10,7 +10,7 @@
 #include <time.h>
 
 /**
- * @defgroup Ewl_Iconbox Ewl_Iconbox: The Icon Box Layout Container
+ * @addtogroup Ewl_Iconbox Ewl_Iconbox: The Icon Box Layout Container
  * Defines the Ewl_Iconbox class, used to display a collection of icons 
  * with annotations and support arranging/manipulating contained icons
  *

@@ -2,7 +2,7 @@
 #define EWL_EVENTS_H
 
 /**
- * @defgroup Ewl_Events Ewl_Events: Lower Level Event Handlers
+ * @addtogroup Ewl_Events Ewl_Events: Lower Level Event Handlers
  * @brief Defines the routines that dispatch the lower level events to EWL.
  *
  * @{

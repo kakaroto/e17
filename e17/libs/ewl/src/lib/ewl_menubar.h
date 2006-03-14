@@ -2,7 +2,7 @@
 #define EWL_MENUBAR_H
 
 /**
- * @defgroup Ewl_Menubar Ewl_Menubar: A menu bar widget
+ * @addtogroup Ewl_Menubar Ewl_Menubar: A menu bar widget
  * Defines a class for displaying menu bars
  *
  * @{

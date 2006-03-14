@@ -2,7 +2,7 @@
 #define EWL_SEPARATOR_H
 
 /**
- * @defgroup Ewl_Separator Ewl_Separator: A Visual Separator Between Widgets
+ * @addtogroup Ewl_Separator Ewl_Separator: A Visual Separator Between Widgets
  * Defines the Ewl_Separator class used for drawing lines between widgets when
  * visual separation is needed.
  *

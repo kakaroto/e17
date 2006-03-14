@@ -2,7 +2,7 @@
 #define EWL_PANED_H
 
 /**
- * @defgroup Ewl_Paned Ewl_Paned: A paned widget
+ * @addtogroup Ewl_Paned Ewl_Paned: A paned widget
  * Provides a widget to have a resizable paned container
  *
  * @{

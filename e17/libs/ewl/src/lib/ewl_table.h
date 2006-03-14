@@ -2,7 +2,7 @@
 #define EWL_TABLE_H
 
 /**
- * @defgroup Ewl_Table Ewl_Table: The Table Layout Container.
+ * @addtogroup Ewl_Table Ewl_Table: The Table Layout Container.
  * Defines the Ewl_Box class used for laying out Ewl_Widget's in a
  * horizontal or vertical line.
  *

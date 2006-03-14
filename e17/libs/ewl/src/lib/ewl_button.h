@@ -2,7 +2,7 @@
 #define EWL_BUTTON_H
 
 /**
- * @defgroup Ewl_Button Ewl_Button: The Basic Button
+ * @addtogroup Ewl_Button Ewl_Button: The Basic Button
  * @brief The button class is a basic button with a label. This class inherits
  * from the Ewl_Box to allow for placing any other widget inside the button.
  *
