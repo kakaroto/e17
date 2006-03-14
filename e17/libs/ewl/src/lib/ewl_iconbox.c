@@ -1099,7 +1099,8 @@ ewl_iconbox_icon_image_set(Ewl_Iconbox_Icon *icon, const char *filename)
 	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
 
 	ewl_image_file_set(EWL_IMAGE(icon->image), filename, NULL);
-	ewl_image_constrain_set(EWL_IMAGE(icon->image), 64);	
+	ewl_image_size_set(EWL_IMAGE(icon->image), 64, 64);
+	ewl_image_proportional_set(EWL_IMAGE(icon->image), "true");	
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
