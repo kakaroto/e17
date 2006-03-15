@@ -624,11 +624,13 @@ ewl_image_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	emb = ewl_embed_widget_find(w);
 
-	if (i->cs)
-		ww = hh = i->cs;
-	else {
-		ww = CURRENT_W(w);
-		hh = CURRENT_H(w);
+	ww = CURRENT_W(w);
+	hh = CURRENT_H(w);
+	if (i->cs) {
+		if (ww > i->cs)
+			ww = i->cs;
+		if (hh > i->cs)
+			hh = i->cs;
 	}
 
 	/*
