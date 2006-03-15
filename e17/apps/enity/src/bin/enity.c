@@ -364,10 +364,16 @@ int main(int argc, char **argv)
 {
    etk_init();
       
-   etk_arguments_parse(args, argc, argv);
+   if(etk_arguments_parse(args, argc, argv) == ETK_ARGUMENT_RETURN_OK_NONE_PARSED)
+     {
+	etk_argument_help_show(args);
+	goto SHUTDOWN;
+     }
    
    etk_main();
+QUIT:   
    etk_main_quit();
+SHUTDOWN:   
    etk_shutdown();
    
    return _en_retval;
