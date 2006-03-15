@@ -36,6 +36,8 @@ static int window_count = 0;
 static int current_unit_test = 0;
 static Ecore_Timer *unit_test_timer = NULL;
 
+static Ewl_Test *current_test = NULL;
+
 int
 main(int argc, char **argv)
 {
@@ -132,7 +134,6 @@ ewl_test_cb_unit_test_timer(void *data)
 	}
 	else
 	{
-		ecore_timer_del(unit_test_timer);
 		unit_test_timer = NULL;
 		current_unit_test = 0;
 		ret = 0;
@@ -516,8 +517,7 @@ setup_unit_tests(Ewl_Test *test)
 
 	ewl_container_reset(EWL_CONTAINER(tree));
 
-	/* attach the test data to the button */
-	ewl_widget_data_set(button, "test", test);
+	current_test = test;
 
 	/* just clean up if no tests */
 	if (!test->unit_tests) return;
@@ -548,7 +548,7 @@ cb_run_unit_tests(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	tree = ewl_widget_name_find("unit_test_tree");
 	ewl_container_reset(EWL_CONTAINER(tree));
 
-	test = ewl_widget_data_get(w, "test");
+	test = current_test;
 	if ((!test) || (!test->unit_tests)) return;
 
 	for (i = 0; test->unit_tests[i].func; i++)
@@ -561,6 +561,7 @@ cb_run_unit_tests(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	if (unit_test_timer) 
 	{
 		ecore_timer_del(unit_test_timer);
+		unit_test_timer = NULL;
 		current_unit_test = 0;
 	}
 
