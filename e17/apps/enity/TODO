@@ -19,7 +19,8 @@ This is Enity's feature progress so far:
  * not done
  
 --list               Display list dialog
- * working, not done (needs multiple select, check / radio buttons)
+ * working, not done (needs multiple select, radio buttons)
+ * checklist done
  
 --notification       Display notification
  * not done
@@ -42,11 +43,13 @@ This is Enity's feature progress so far:
 
 Misc TODO:
 ==========
-
-* show help
+  
 * if we do: enity --info --text='something<enter>else' where <enter> is an
   actual Enter on the keyboard (ie, \n), we get a strange char in the
   textblock. We need to strip this out or replace it by a <br>
   
 * make proper 0 / 1 returns for $? setting
+  * done
+
+* show help
   * done
