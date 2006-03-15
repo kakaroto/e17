@@ -2,6 +2,12 @@
 
 static int _en_retval = 0;
 
+static Etk_Bool _en_window_delete_cb(void *data)
+{
+   etk_main_quit();
+   return ETK_TRUE;
+}
+
 static Evas_List *_en_arg_data_get(Etk_Argument *args, char *key)
 {
    Etk_Argument *arg;
@@ -94,7 +100,8 @@ static void _en_entry_cb(Etk_Argument *args, int index)
    Evas_List *data;
    
    dialog = etk_dialog_new();
-      
+   etk_signal_connect("delete_event", ETK_OBJECT(dialog), ETK_CALLBACK(_en_window_delete_cb), NULL);
+   
    if((data = _en_arg_data_get(args, "text")) != NULL)
      label = etk_label_new(data->data);
    else
@@ -109,8 +116,13 @@ static void _en_entry_cb(Etk_Argument *args, int index)
    etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_OK, ETK_RESPONSE_OK);
    etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_CANCEL, ETK_RESPONSE_CANCEL);
    etk_signal_connect("response", ETK_OBJECT(dialog), ETK_CALLBACK(_en_ok_print_stdout_cb), entry);
+   
    etk_container_border_width_set(ETK_CONTAINER(dialog), 4);
-   etk_window_title_set(ETK_WINDOW(dialog), _("Add a new entry"));
+   
+   if((data = _en_arg_data_get(args, "title")) != NULL)
+     etk_window_title_set(ETK_WINDOW(dialog), data->data);
+   else
+     etk_window_title_set(ETK_WINDOW(dialog), _("Add a new entry"));
    
    etk_widget_show_all(dialog);
 }
@@ -127,11 +139,15 @@ static void _en_error_cb(Etk_Argument *args, int index)
      value = data->data;
 
    dialog = etk_message_dialog_new(ETK_MESSAGE_DIALOG_ERROR, ETK_MESSAGE_DIALOG_OK, value);
+   etk_signal_connect("delete_event", ETK_OBJECT(dialog), ETK_CALLBACK(_en_window_delete_cb), NULL);
    etk_signal_connect_swapped("response", ETK_OBJECT(dialog), ETK_CALLBACK(etk_main_quit), NULL);
-   
-   
+      
    etk_container_border_width_set(ETK_CONTAINER(dialog), 4);
-   etk_window_title_set(ETK_WINDOW(dialog), _("Error"));
+   
+   if((data = _en_arg_data_get(args, "title")) != NULL)
+     etk_window_title_set(ETK_WINDOW(dialog), data->data);
+   else
+     etk_window_title_set(ETK_WINDOW(dialog), _("Error"));
 
    etk_widget_show_all(dialog);
 }
@@ -148,11 +164,16 @@ static void _en_question_cb(Etk_Argument *args, int index)
      value = data->data;
 
    dialog = etk_message_dialog_new(ETK_MESSAGE_DIALOG_QUESTION, ETK_MESSAGE_DIALOG_OK_CANCEL, value);
+   etk_signal_connect("delete_event", ETK_OBJECT(dialog), ETK_CALLBACK(_en_window_delete_cb), NULL);
    etk_signal_connect("response", ETK_OBJECT(dialog), ETK_CALLBACK(_en_ok_print_stdout_cb), NULL);
    
    etk_container_border_width_set(ETK_CONTAINER(dialog), 4);
-   etk_window_title_set(ETK_WINDOW(dialog), _("Question"));
-
+   
+   if((data = _en_arg_data_get(args, "title")) != NULL)
+     etk_window_title_set(ETK_WINDOW(dialog), data->data);
+   else
+     etk_window_title_set(ETK_WINDOW(dialog), _("Question"));
+   
    etk_widget_show_all(dialog);
 }
 
@@ -168,11 +189,15 @@ static void _en_info_cb(Etk_Argument *args, int index)
      value = data->data;
 
    dialog = etk_message_dialog_new(ETK_MESSAGE_DIALOG_INFO, ETK_MESSAGE_DIALOG_OK, value);
+   etk_signal_connect("delete_event", ETK_OBJECT(dialog), ETK_CALLBACK(_en_window_delete_cb), NULL);   
    etk_signal_connect_swapped("response", ETK_OBJECT(dialog), ETK_CALLBACK(etk_main_quit), NULL);
-   
-   
+      
    etk_container_border_width_set(ETK_CONTAINER(dialog), 4);
-   etk_window_title_set(ETK_WINDOW(dialog), _("Information"));
+   
+   if((data = _en_arg_data_get(args, "title")) != NULL)
+     etk_window_title_set(ETK_WINDOW(dialog), data->data);
+   else
+     etk_window_title_set(ETK_WINDOW(dialog), _("Information"));       
 
    etk_widget_show_all(dialog);
 }
@@ -189,11 +214,15 @@ static void _en_warning_cb(Etk_Argument *args, int index)
      value = data->data;
 
    dialog = etk_message_dialog_new(ETK_MESSAGE_DIALOG_WARNING, ETK_MESSAGE_DIALOG_OK, value);
+   etk_signal_connect("delete_event", ETK_OBJECT(dialog), ETK_CALLBACK(_en_window_delete_cb), NULL);   
    etk_signal_connect_swapped("response", ETK_OBJECT(dialog), ETK_CALLBACK(etk_main_quit), NULL);
-   
-   
+      
    etk_container_border_width_set(ETK_CONTAINER(dialog), 4);
-   etk_window_title_set(ETK_WINDOW(dialog), _("Warning"));
+   
+   if((data = _en_arg_data_get(args, "title")) != NULL)
+     etk_window_title_set(ETK_WINDOW(dialog), data->data);
+   else
+     etk_window_title_set(ETK_WINDOW(dialog), _("Question"));
 
    etk_widget_show_all(dialog);
 }
@@ -212,6 +241,7 @@ static void _en_list_cb(Etk_Argument *args, int index)
    Evas_List *data;
    
    dialog = etk_dialog_new();
+   etk_signal_connect("delete_event", ETK_OBJECT(dialog), ETK_CALLBACK(_en_window_delete_cb), NULL);   
       
    if((data = _en_arg_data_get(args, "text")) != NULL)
      label = etk_label_new(data->data);
@@ -278,12 +308,21 @@ static void _en_list_cb(Etk_Argument *args, int index)
    etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_CANCEL, ETK_RESPONSE_CANCEL);
    etk_signal_connect("response", ETK_OBJECT(dialog), ETK_CALLBACK(_en_ok_print_stdout_cb), tree);
    etk_container_border_width_set(ETK_CONTAINER(dialog), 4);
-   etk_window_title_set(ETK_WINDOW(dialog), _("Select vaue"));
+   
+   if((data = _en_arg_data_get(args, "title")) != NULL)
+     etk_window_title_set(ETK_WINDOW(dialog), data->data);
+   else
+     etk_window_title_set(ETK_WINDOW(dialog), _("Select value"));         
    
    etk_widget_show_all(dialog);
 }
 
 static void _en_dialog_text_cb(Etk_Argument *args, int index)
+{
+   /* do any changes / fixes / checks here */
+}
+
+static void _en_dialog_title_cb(Etk_Argument *args, int index)
 {
    /* do any changes / fixes / checks here */
 }
@@ -296,6 +335,7 @@ static void _en_entry_entry_text_cb(Etk_Argument *args, int index)
 Etk_Argument args[] = {
      /* global options that are used with more than one dialog type */
      { "text", ' ', NULL, _en_dialog_text_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL|ETK_ARGUMENT_FLAG_VALUE_REQUIRED, "Set the dialog text" },
+     { "title", ' ', NULL, _en_dialog_title_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL|ETK_ARGUMENT_FLAG_VALUE_REQUIRED, "Set the dialog title" },
    
      /* --entry options */
      { "entry-text", ' ', NULL, _en_entry_entry_text_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL|ETK_ARGUMENT_FLAG_VALUE_REQUIRED, "Set the dialog text" },
