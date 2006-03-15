@@ -3806,3 +3806,18 @@ Rework background handling:
 - Fix external background handling when composite is enabled
 Fix button shape change when composite is enabled.
 
+
+-------------------------------------------------------------------------------
+
+Wed Mar 15 19:13:54 CET 2006
+(Kim)
+
+--- 0.16.8.1 0.05 ---
+Make shadow opacity configurable.
+Disable pager "live" zoom mode when CM is inactive.
+Update pagers after fading.
+Simplify shadowing. Speed up fading with blurry shadows. Add silly shadow mode.
+Allow specifying any button in button bindings (not just 1-5).
+Only create default iconbox first time.
+Improve not composite redirecting override-redirect windows hack.
+

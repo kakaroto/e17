@@ -1,4 +1,4 @@
-%define revision 0.04
+%define revision 0.05
 %define rev_name -%{revision}
 
 Summary: The Enlightenment window manager.
