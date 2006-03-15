@@ -538,7 +538,8 @@ setup_unit_tests(Ewl_Test *test)
 }
 
 static void
-cb_run_unit_tests(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
+cb_run_unit_tests(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+						void *data __UNUSED__)
 {
 	int i;
 	Ewl_Test *test;
@@ -601,6 +602,7 @@ text_parse(char *str)
 	tmp = *(end + 1);
 	*(end + 1) = '\0';
 
+	ewl_text_text_set(EWL_TEXT(tutorial), "");
 	tutorial_parse(EWL_TEXT(tutorial), start);
 
 	*(end + 1) = tmp;
@@ -663,13 +665,13 @@ tutorial_parse(Ewl_Text *tutorial, char *str)
 			ewl_text_text_append(tutorial, ptr);
 
 			ptr2++;
-			if ((!strncmp(ptr2, "addtogroup", 10))
-					|| (!strncmp(ptr2, "section", 7)))
+			if ((!strncasecmp(ptr2, "addtogroup", 10))
+					|| (!strncasecmp(ptr2, "section", 7)))
 			{
 				int size = 14;
 				char t;
 
-				if (!strncmp(ptr2, "addtogroup", 10))
+				if (!strncasecmp(ptr2, "addtogroup", 10))
 					size = 18;
 
 				ptr2 = strstr(ptr2, "\n");
@@ -688,17 +690,26 @@ tutorial_parse(Ewl_Text *tutorial, char *str)
 				*ptr2 = t;
 				ptr2 ++;
 			}
-			else if (!strncmp(ptr2, "code", 4))
+			else if (!strncasecmp(ptr2, "code", 4))
 			{
 				ptr2 += strlen("code\n");
 				ewl_text_color_set(tutorial, 
 						128, 128, 128, 255);
 			}
-			else if (!strncmp(ptr2, "endcode", 7))
+			else if (!strncasecmp(ptr2, "endcode", 7))
 			{
 				ptr2 += strlen("endcode\n");
 				ewl_text_color_set(tutorial,
 						0, 0, 0, 255);
+			}
+			else if (!strncasecmp(ptr2, "note", 4))
+			{
+				ewl_text_font_size_set(tutorial, 12);
+				ewl_text_text_append(tutorial, "Note");
+				ewl_text_text_append(tutorial, "\n");
+				ewl_text_font_size_set(tutorial, 10);
+
+				ptr2 += strlen("note");
 			}
 			else
 				printf("Didn't match (%s)\n", ptr2);

@@ -6,9 +6,7 @@
 /**
  * @addtogroup Ewl_Combo
  *
- * @note
- *
- * Note, if you set the combo to editable, with ewl_combo_editable set then
+ * @note If you set the combo to editable, with ewl_combo_editable set then
  * instead of using the model/view to get the data we will query the view
  * for the header. It is then up to the app to do what they will with the
  * header to make it 'editable'. In most cases, this will mean packing an

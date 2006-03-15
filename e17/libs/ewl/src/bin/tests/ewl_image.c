@@ -17,7 +17,7 @@
  * @code
  * Ewl_Widget *image;
  * image = ewl_image_new();
- * ewl_image_file_path_set(EWL_IMAGE(image), * "/usr/share/ewl/image.png");
+ * ewl_image_file_path_set(EWL_IMAGE(image), "/usr/share/ewl/image.png");
  * ewl_widget_show(image);
  * @endcode
  *
