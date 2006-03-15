@@ -204,6 +204,7 @@ first_cb(Ewl_Widget * w, void *event, void *data)
 	ewl_widget_destroy(p->imagep);
 	
 	p->imagep = ewl_image_new();
+	ewl_image_proportional_set(EWL_IMAGE(p->imagep), TRUE);
 	/* ewl_theme_data_str_set(p->imagep, "/image/file", PACKAGE_DATA_DIR "/images/images.edc");
 	ewl_theme_data_str_set(p->imagep, "/image/group", "entry"); */
 	ewl_object_fill_policy_set(EWL_OBJECT(p->imagep), EWL_FLAG_FILL_SHRINK);
@@ -230,6 +231,7 @@ next_cb(Ewl_Widget * w, void *event, void *data)
 	ewl_widget_destroy(p->imagep);
 	
 	p->imagep = ewl_image_new();
+	ewl_image_proportional_set(EWL_IMAGE(p->imagep), TRUE);
 	/* ewl_theme_data_str_set(p->imagep, "/image/file", PACKAGE_DATA_DIR "/images/images.edc");
 	ewl_theme_data_str_set(p->imagep, "/image/group", "entry"); */
 	ewl_object_fill_policy_set(EWL_OBJECT(p->imagep), EWL_FLAG_FILL_SHRINK);
@@ -255,6 +257,7 @@ previous_cb(Ewl_Widget * w, void *event, void *data)
 	ewl_widget_destroy(p->imagep);
 	
 	p->imagep = ewl_image_new();
+	ewl_image_proportional_set(EWL_IMAGE(p->imagep), TRUE);
 	/* ewl_theme_data_str_set(p->imagep, "/image/file", PACKAGE_DATA_DIR "/images/images.edc");
 	ewl_theme_data_str_set(p->imagep, "/image/group", "entry"); */
 	ewl_object_fill_policy_set(EWL_OBJECT(p->imagep), EWL_FLAG_FILL_SHRINK);
@@ -275,6 +278,7 @@ last_cb(Ewl_Widget * w, void *event, void *data)
 	ewl_widget_destroy(p->imagep);
 	
 	p->imagep = ewl_image_new();
+	ewl_image_proportional_set(EWL_IMAGE(p->imagep), TRUE);
 	/* ewl_theme_data_str_set(p->imagep, "/image/file", PACKAGE_DATA_DIR "/images/images.edc");
 	ewl_theme_data_str_set(p->imagep, "/image/group", "entry"); */
 	ewl_object_fill_policy_set(EWL_OBJECT(p->imagep), EWL_FLAG_FILL_SHRINK);
@@ -337,8 +341,7 @@ presentation_cb(Ewl_Widget * w, void *event, void *data)
 	pictureone = ecore_dlist_goto_first(m->imagelist);
 	
 	p->imagep = ewl_image_new();
-	/* ewl_theme_data_str_set(p->imagep, "/image/file", PACKAGE_DATA_DIR "/images/images.edc");
-	ewl_theme_data_str_set(p->imagep, "/image/group", "entry"); */
+	ewl_image_proportional_set(EWL_IMAGE(p->imagep), TRUE);
 	ewl_object_fill_policy_set(EWL_OBJECT(p->imagep), EWL_FLAG_FILL_SHRINK);
 	ewl_image_file_set(EWL_IMAGE(p->imagep), pictureone, NULL);
 	ewl_object_alignment_set(EWL_OBJECT(p->imagep), EWL_FLAG_ALIGN_CENTER);
