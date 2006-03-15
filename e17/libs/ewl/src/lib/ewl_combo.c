@@ -368,7 +368,7 @@ ewl_combo_cb_decrement_clicked(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 	/* XXX put checks to make sure all the needed module and view
 	 * function callbacks are setup */
 
-	/* change hte button appearance and expand the menu */
+	/* change the button appearance and expand the menu */
 	ewl_widget_appearance_set(combo->button, "increment");
 	ewl_callback_del(combo->button, EWL_CALLBACK_CLICKED, 
 					ewl_combo_cb_decrement_clicked);
