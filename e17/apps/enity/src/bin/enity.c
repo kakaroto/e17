@@ -1,6 +1,7 @@
 #include "enity.h"
 
 static int _en_retval = 0;
+static Evas_List *_en_checked_rows = NULL;
 
 static Etk_Bool _en_window_delete_cb(void *data)
 {
@@ -22,6 +23,22 @@ static Evas_List *_en_arg_data_get(Etk_Argument *args, char *key)
    return NULL;
 }
 
+static void _en_tree_checkbox_toggled_cb(Etk_Object *object, Etk_Tree_Row *row, void *data)
+{
+   Etk_Bool checked;
+   Etk_Tree_Col *col;
+   
+   if (!(col = ETK_TREE_COL(object)) || !row)
+     return;
+   
+   etk_tree_row_fields_get(row, col, &checked, NULL);
+   if (checked)
+     _en_checked_rows = evas_list_append(_en_checked_rows, row);
+   else
+     _en_checked_rows = evas_list_remove(_en_checked_rows, row);
+}
+
+
 static void _en_ok_print_stdout_cb(Etk_Object *obj, int response_id, void *data)
 {
    switch(response_id)
@@ -41,49 +58,54 @@ static void _en_ok_print_stdout_cb(Etk_Object *obj, int response_id, void *data)
 	  {
 	     Etk_Tree_Row *row;
 	     Evas_List *cols;
-#if 0	     
-	     Evas_List *l;
-	     void **valist;
-	     int j = 0;
-#endif	     
-	     	     	    
-	     row = etk_tree_selected_row_get(ETK_TREE(data));
-	     cols = etk_tree_row_data_get(row);	     
+	     Evas_List *rows;	     
+	     char *str = NULL;
+	     int check_value;
+	     
+	     if(_en_checked_rows)	       
+	       row = _en_checked_rows->data;
+	     else
+	       row = etk_tree_selected_row_get(ETK_TREE(data));
+		  
 	     if(!row) break;
+
+	     cols = etk_tree_row_data_get(row);
 	     
+	     if(!cols) break;
+	     
+	     switch(((Enity_Tree_Col*)(cols->data))->model)
 	       {
-		  char *str;
+		case ENITY_COL_MODEL_TEXT:
+		  if(!row) break;		       
 		  etk_tree_row_fields_get(row, ((Enity_Tree_Col*)(cols->data))->col, &str, NULL);
-		  printf("%s\n", str);
-	       }	     
-#if 0	     
-	     valist = calloc(evas_list_count(cols) * 2 + 1, sizeof(void*));
-	     
-	     for(l = cols; l; l = l->next)
-	       {
-		  switch( ((Enity_Tree_Col*)(cols->data))->model)
+		  break;
+		  
+		case ENITY_COL_MODEL_CHECK:
+		  
+		  str = calloc(PATH_MAX, sizeof(char));
+		  
+		  for(rows = _en_checked_rows; rows; rows = rows->next)
 		    {
-		     case ENITY_COL_MODEL_TEXT:
-		       printf("text...\n");
-		       valist[j] = ((Enity_Tree_Col*)l->data)->col;
-		       valist[j + 1] = calloc(1, sizeof(char*));
-		       j += 2;
+		       char *val;		       
 		       
-		       break;
-		     case ENITY_COL_MODEL_CHECK:
-		       break;
-		     case ENITY_COL_MODEL_RADIO:
-		       break;
+		       if(!(cols->next))
+			 break;
+		       
+		       if(strlen(str) > 0)
+			 strncat(str, "|", PATH_MAX);			    
+		       etk_tree_row_fields_get(rows->data, ((Enity_Tree_Col*)(cols->data))->col, &check_value, ((Enity_Tree_Col*)(cols->next->data))->col, &val, NULL);
+		       strncat(str, val, PATH_MAX);
 		    }
+		  break;
+		  
+		case ENITY_COL_MODEL_RADIO:
+		  break;
 	       }
 	     
-	     valist[j] = NULL;	     
-	     etk_tree_row_fields_get_valist(row, (va_list)valist);
-	     printf("%s\n", valist[1]);
-#endif	     
-	     break;
-	  }	
+	     printf("%s\n", str);
+	  }
 	break;
+	
       case ETK_RESPONSE_CANCEL:
 	_en_retval = 1;
 	break;
@@ -232,6 +254,11 @@ static void _en_list_column_cb(Etk_Argument *args, int index)
    /* do any changes / fixes / checks here */
 }
 
+static void _en_list_check_cb(Etk_Argument *args, int index)
+{
+   /* do any changes / fixes / checks here */
+}
+
 static void _en_list_cb(Etk_Argument *args, int index)
 {
    Etk_Widget *dialog;   
@@ -262,8 +289,19 @@ static void _en_list_cb(Etk_Argument *args, int index)
 	     
 	     /* todo - implement checkboxes and radio buttons */
 	     col = calloc(1, sizeof(Enity_Tree_Col));
-	     col->col = etk_tree_col_new(ETK_TREE(tree), l->data, etk_tree_model_text_new(ETK_TREE(tree)), 60);
-	     col->model = ENITY_COL_MODEL_TEXT;
+	     	     
+	     if(etk_argument_is_set(args, "checklist", ' ') && evas_list_count(cols) == 0)
+	       {
+		  col->col = etk_tree_col_new(ETK_TREE(tree), l->data, etk_tree_model_checkbox_new(ETK_TREE(tree)), 60);
+		  col->model = ENITY_COL_MODEL_CHECK;
+		  etk_signal_connect("cell_value_changed", ETK_OBJECT(col->col), ETK_CALLBACK(_en_tree_checkbox_toggled_cb), NULL);
+		  
+	       }
+	     else
+	       {
+		  col->col = etk_tree_col_new(ETK_TREE(tree), l->data, etk_tree_model_text_new(ETK_TREE(tree)), 60);
+		  col->model = ENITY_COL_MODEL_TEXT;		  
+	       }
 	     cols = evas_list_append(cols, col);
 	  }
 	etk_tree_build(ETK_TREE(tree));
@@ -284,7 +322,21 @@ static void _en_list_cb(Etk_Argument *args, int index)
 		  value = l->data;
 		  
 		  valist[j] = ((Enity_Tree_Col*)evas_list_nth(cols, i))->col;
-		  valist[j + 1] = value;
+		  
+		  switch(((Enity_Tree_Col*)evas_list_nth(cols, i))->model)
+		    {
+		     case ENITY_COL_MODEL_TEXT:
+		       valist[j + 1] = value;
+		       break;
+		       
+		     case ENITY_COL_MODEL_CHECK:
+		       valist[j + 1] = ETK_FALSE;
+		       break;
+		       
+		     case ENITY_COL_MODEL_RADIO:
+		       break;
+		    }
+		  
 		  j += 2;
 		  		  
 		  if(l->next && i < evas_list_count(cols) - 1)
@@ -354,6 +406,7 @@ Etk_Argument args[] = {
      { "warning", ' ', NULL, _en_warning_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL, "Display warning dialog" },
 
      /* --list options */
+     { "checklist", ' ', NULL, _en_list_check_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL, "Use check boxes for first column" },
      { "column", ' ', NULL, _en_list_column_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL|ETK_ARGUMENT_FLAG_VALUE_REQUIRED|ETK_ARGUMENT_FLAG_MULTIVALUE, "Set the column header" },
      { "list", ' ', NULL, _en_list_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL, "Display list dialog" },
      /* terminator */
@@ -364,14 +417,13 @@ int main(int argc, char **argv)
 {
    etk_init();
       
-   if(etk_arguments_parse(args, argc, argv) == ETK_ARGUMENT_RETURN_OK_NONE_PARSED)
+   if(etk_arguments_parse(args, argc, argv) != ETK_ARGUMENT_RETURN_OK)
      {
 	etk_argument_help_show(args);
 	goto SHUTDOWN;
      }
    
    etk_main();
-QUIT:   
    etk_main_quit();
 SHUTDOWN:   
    etk_shutdown();
