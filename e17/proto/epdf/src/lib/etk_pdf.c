@@ -3,10 +3,15 @@
 #include <Edje.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
 #include "config.h"
+
+
+#define round(a) ( ((a)<0.0) ? (int)(floor((a) - 0.5)) : (int)(floor((a) + 0.5)) )
+
 
 /**
  * @addtogroup Etk_Pdf
@@ -88,6 +93,14 @@ void etk_pdf_file_set(Etk_Pdf *pdf, const char *filename)
 
    pdf->pdf_document = evas_poppler_document_new (pdf->filename);
    pdf->pdf_index = evas_poppler_index_new (pdf->pdf_document);
+   pdf->page = 0;
+
+   pdf->search.o = NULL;
+   pdf->search.text = NULL;
+   pdf->search.list = NULL;
+   pdf->search.page = -1;
+   pdf->search.is_case_sensitive = ETK_FALSE;
+   pdf->search.is_circular = ETK_FALSE;
 
    _etk_pdf_load(pdf);
 }
@@ -196,6 +209,121 @@ void etk_pdf_size_get(Etk_Pdf *pdf, int *width, int *height)
       evas_object_image_size_get(pdf->pdf_object, width, height);
 }
 
+void
+etk_pdf_search_text_set (Etk_Pdf *pdf, const char *text)
+{
+   if (!pdf)
+      return;
+
+   if ((!text) || 
+       (pdf->search.text &&
+        strcmp (text, pdf->search.text) == 0))
+     return;
+
+   if (pdf->search.text) free (pdf->search.text);
+   pdf->search.text = strdup (text);
+   pdf->search.page = -1;
+}
+
+void
+etk_pdf_search_first_page_set (Etk_Pdf *pdf, int page)
+{
+   if (!pdf)
+      return;
+
+   if (page != pdf->search.page)
+     pdf->search.page = page;
+}
+
+void
+etk_pdf_search_is_case_sensitive (Etk_Pdf *pdf, int is_case_sensitive)
+{
+   if (!pdf)
+      return;
+
+   if (is_case_sensitive != pdf->search.is_case_sensitive)
+     pdf->search.is_case_sensitive = is_case_sensitive;
+}
+
+int
+etk_pdf_search_next (Etk_Pdf *pdf)
+{
+   if (!pdf)
+      return ETK_FALSE;
+
+   if (!pdf->search.text)
+      return ETK_FALSE;
+
+   if (!pdf->search.o) {
+      Evas *evas;
+
+      evas = etk_widget_toplevel_evas_get(ETK_WIDGET(pdf));
+      if (!evas)
+         return ETK_FALSE;
+      pdf->search.o = evas_object_rectangle_add (evas);
+      if (!pdf->search.o)
+         return ETK_FALSE;
+      evas_object_color_set(pdf->search.o, 0, 128, 0, 128);
+      evas_object_hide (pdf->search.o);
+   }
+
+ next_page:
+   /* no list, we search one */
+   while (!pdf->search.list &&
+          pdf->search.page < evas_poppler_document_page_count_get (pdf->pdf_document)) {
+     Evas_Poppler_Page *page;
+
+     pdf->search.page++;
+     printf ("page : %d\n", pdf->search.page);
+     page = evas_poppler_document_page_get (pdf->pdf_document, pdf->search.page);
+     pdf->search.list = evas_poppler_page_text_find (page,
+                                                     pdf->search.text,
+                                                     pdf->search.is_case_sensitive);
+     if (pdf->search.list)
+        ecore_list_goto_first (pdf->search.list);
+     evas_poppler_page_delete (page);
+   }
+        
+   /* an already existing list or a netky one */
+   if (pdf->search.list) {
+     Rectangle *rect;
+     int x, y, w, h;
+
+     if ((rect = (Rectangle *)ecore_list_next (pdf->search.list))) {
+       if (pdf->search.page != pdf->page) {
+         etk_pdf_page_set (pdf, pdf->search.page);
+         _etk_pdf_load (pdf);
+       }
+       etk_widget_geometry_get (ETK_WIDGET (pdf), &x, &y, &w, &h);
+       evas_object_move (pdf->search.o,
+                         x + round (rect->x1 - 1),
+                         y + round (rect->y1 - 1));
+       evas_object_resize (pdf->search.o,
+                           round (rect->x2 - rect->x1 + 1),
+                           round (rect->y2 - rect->y1));
+       if (!evas_object_visible_get (pdf->search.o))
+         evas_object_show (pdf->search.o);
+       /* we leave... */
+       return ETK_TRUE;
+     }
+     else { /* no more word to find. We destroy the list */
+       ecore_list_destroy (pdf->search.list);
+       pdf->search.list = NULL;
+       /* we search a new one */
+       printf ("page0 : %d\n", pdf->search.page);
+       goto next_page;
+     }
+   }
+   evas_object_hide (pdf->search.o);
+
+   if (pdf->search.is_circular) {
+      pdf->search.page = -1;
+      return ETK_TRUE;
+   }
+   else
+      return ETK_TRUE;
+}
+
 /**************************
  *
  * Etk specific functions
@@ -217,6 +345,13 @@ static void _etk_pdf_constructor(Etk_Pdf *pdf)
    pdf->pdf_document = NULL;
    pdf->pdf_page = NULL;
    pdf->pdf_index = NULL;
+
+   pdf->search.o = NULL;
+   pdf->search.text = NULL;
+   pdf->search.list = NULL;
+   pdf->search.page = -1;
+   pdf->search.is_case_sensitive = ETK_FALSE;
+   pdf->search.is_circular = ETK_FALSE;
 
    widget->size_request = _etk_pdf_size_request;
    widget->size_allocate = _etk_pdf_size_allocate;

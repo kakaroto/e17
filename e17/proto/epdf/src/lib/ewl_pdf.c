@@ -143,6 +143,13 @@ ewl_pdf_file_set(Ewl_Pdf *pdf, const char *filename)
 	pdf->pdf_index = evas_poppler_index_new (pdf->pdf_document);
 	pdf->page = 0;
 
+        pdf->search.o = NULL;
+        pdf->search.text = NULL;
+        pdf->search.list = NULL;
+        pdf->search.page = -1;
+        pdf->search.is_case_sensitive = FALSE;
+        pdf->search.is_circular = FALSE;
+
 	/*
 	 * Load the new pdf if widget has been realized
 	 */
@@ -388,12 +395,12 @@ ewl_pdf_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		i->oh = 1;
 
 	if (i->aw || i->ah) {
-		ewl_image_scale_to(i, i->aw, i->ah);
+		ewl_image_size_set(i, i->aw, i->ah);
 	}
 	else {
 		ewl_object_preferred_inner_w_set(EWL_OBJECT(i), i->ow);
 		ewl_object_preferred_inner_h_set(EWL_OBJECT(i), i->oh);
-		ewl_image_scale(i, i->sw, i->sh);
+		ewl_image_scale_set(i, i->sw, i->sh);
 	}
 
 	/*Constrain settings*/
@@ -404,7 +411,7 @@ ewl_pdf_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		else
 			cp = i->cs / (double)i->oh;
 
-		ewl_image_scale(i, cp, cp);
+		ewl_image_scale_set(i, cp, cp);
 		ewl_image_tile_set(i, 0, 0, cp*i->ow, cp*i->oh);
 
 	}
