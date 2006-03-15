@@ -12,9 +12,10 @@
 enum _Etk_Argument_Returns
 {
    ETK_ARGUMENT_RETURN_OK = 1,                   /* no problems */
-   ETK_ARGUMENT_RETURN_REQUIRED_NOT_FOUND = 2,   /* required arg not found */
-   ETK_ARGUMENT_RETURN_REQUIRED_VALUE_NOT_FOUND = 3, /* required value for arg no found */
-   ETK_ARGUMENT_RETURN_MALFORMED = 4             /* malformed argument */  
+   ETK_ARGUMENT_RETURN_OK_NONE_PARSED = 2,       /* no problems, no arguments or no valid args */
+   ETK_ARGUMENT_RETURN_REQUIRED_NOT_FOUND = 3,   /* required arg not found */
+   ETK_ARGUMENT_RETURN_REQUIRED_VALUE_NOT_FOUND = 4, /* required value for arg no found */
+   ETK_ARGUMENT_RETURN_MALFORMED = 5             /* malformed argument */  
 };
 
 enum _Etk_Argument_Flags
@@ -38,6 +39,7 @@ struct _Etk_Argument
 };
 
 int etk_arguments_parse(Etk_Argument *args, int argc, char **argv);
+void etk_argument_help_show(Etk_Argument *arg);  
 Evas_List *etk_argument_extra_find(const char *key);
   
 /** @} */

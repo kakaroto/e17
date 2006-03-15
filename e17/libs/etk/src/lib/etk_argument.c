@@ -9,6 +9,7 @@
 #define ETK_ARGUMENT_FLAG_PRIV_SET (1 << 4)
 
 static Evas_Hash *_etk_argument_extra = NULL;
+static int _etk_argument_status = 0;
 
 /**
  * @brief Parses the arguments as described by the user
@@ -69,7 +70,7 @@ int etk_arguments_parse(Etk_Argument *args, int argc, char **argv)
 	 }
 	 ++i; ++arg;
       }
-      return ETK_ARGUMENT_RETURN_OK;
+      return ETK_ARGUMENT_RETURN_OK_NONE_PARSED;
    }
    
    for(i = 1; i < argc; i++)
@@ -111,6 +112,7 @@ int etk_arguments_parse(Etk_Argument *args, int argc, char **argv)
 		  
 		  arg->data = evas_list_append(arg->data, val);
 		  arg->flags |= ETK_ARGUMENT_FLAG_PRIV_SET;
+		  _etk_argument_status = 1;
 		  ++i;
 	       }
 	       else if (arg->flags & ETK_ARGUMENT_FLAG_VALUE_REQUIRED
@@ -121,7 +123,11 @@ int etk_arguments_parse(Etk_Argument *args, int argc, char **argv)
 		  return ETK_ARGUMENT_RETURN_REQUIRED_VALUE_NOT_FOUND;
 	       }
 	       else if(!(arg->flags & ETK_ARGUMENT_FLAG_VALUE_REQUIRED))
-		 arg->flags |= ETK_ARGUMENT_FLAG_PRIV_SET;
+	       {
+		  arg->flags |= ETK_ARGUMENT_FLAG_PRIV_SET;
+		  _etk_argument_status = 1;
+	       }
+		  
 	    }
 	    ++arg;
 	 }
@@ -173,6 +179,7 @@ int etk_arguments_parse(Etk_Argument *args, int argc, char **argv)
 		  
 		  arg->data = evas_list_append(arg->data, val);
 		  arg->flags |= ETK_ARGUMENT_FLAG_PRIV_SET;
+		  _etk_argument_status = 1;		  
 		  
 		  if(!tmp)
 		    ++i;
@@ -185,7 +192,10 @@ int etk_arguments_parse(Etk_Argument *args, int argc, char **argv)
 		  return ETK_ARGUMENT_RETURN_REQUIRED_VALUE_NOT_FOUND;
 	       }
 	       else if(!(arg->flags & ETK_ARGUMENT_FLAG_VALUE_REQUIRED))
-		 arg->flags |= ETK_ARGUMENT_FLAG_PRIV_SET;
+	       {
+		  arg->flags |= ETK_ARGUMENT_FLAG_PRIV_SET;
+		  _etk_argument_status = 1;
+	       }		  
 	    }
 	    
 	    if(tmp)
@@ -266,8 +276,30 @@ int etk_arguments_parse(Etk_Argument *args, int argc, char **argv)
 	arg->func(args, i);
       ++i; ++arg;
    }
+
+   if(_etk_argument_status == 0)     
+     return ETK_ARGUMENT_RETURN_OK_NONE_PARSED;     
+   else
+     return ETK_ARGUMENT_RETURN_OK;
+}
+
+void etk_argument_help_show(Etk_Argument *args)
+{
+   Etk_Argument *arg;
    
-   return ETK_ARGUMENT_RETURN_OK;
+   arg = args;
+   while(arg->short_name != -1)
+     {
+	if(arg->long_name)
+	  printf("--%s ", arg->long_name);
+	if(arg->short_name != -1 && arg->short_name != ' ')
+	  printf("-%c", arg->short_name);
+	printf("\t");
+	if(arg->description)
+	  printf("%s", arg->description);
+	printf("\n");
+	++arg;
+     }
 }
 
 Evas_List *etk_argument_extra_find(const char *key)

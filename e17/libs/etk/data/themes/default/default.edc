@@ -5,6 +5,7 @@
 fonts {
    font: "Vera.ttf" "Vera";
    font: "VeraBd.ttf" "Vera-Bold";
+   font: "VeraIt.ttf" "Vera-Italic";   
 }
 #include "images/images.edc"
 collections {

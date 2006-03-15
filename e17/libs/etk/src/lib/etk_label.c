@@ -298,8 +298,10 @@ static void _etk_label_realize_cb(Etk_Object *object, void *data)
          "right='+ align=right'"
          "/right='- \n'"
          "h1='+ font_size=20'"
+	 "b='+font=Vera-Bold'"
+	 "i='+font=Vera-Italic'"			       
          "glow='+ style=glow color=#fff glow2_color=#fe87 glow_color=#fa14'"
-         "link='+ style=underline underline_color=#0000cc underline2_color=#0000cc color=#0000cc '"
+         "link='+ underline=on underline_color=#0000aa color=#0000aa'"       			       
          "red='+ color=#ff0000'"
          "br='\n'"
          "tab='\t'");
