@@ -39,9 +39,10 @@ struct _Etk_Argument
 };
 
 int etk_arguments_parse(Etk_Argument *args, int argc, char **argv);
-void etk_argument_help_show(Etk_Argument *arg);  
+void etk_argument_help_show(Etk_Argument *args);  
 Evas_List *etk_argument_extra_find(const char *key);
-  
+Etk_Bool etk_argument_is_set(Etk_Argument *args, const char *long_name, char short_name);
+
 /** @} */
 
 #endif

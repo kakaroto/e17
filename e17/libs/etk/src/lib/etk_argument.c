@@ -310,4 +310,20 @@ Evas_List *etk_argument_extra_find(const char *key)
    return evas_hash_find(_etk_argument_extra, "column");
 }
 
+Etk_Bool etk_argument_is_set(Etk_Argument *args, const char *long_name, char short_name)
+{
+   Etk_Argument *arg;
+
+   arg = args;
+   while(arg->short_name != -1)
+   {
+      if((!strcmp(arg->long_name, long_name) || 
+	 (arg->short_name == short_name && short_name != -1 && short_name != ' '))
+	 && arg->flags & ETK_ARGUMENT_FLAG_PRIV_SET)
+	return ETK_TRUE;
+      ++arg;
+   }
+   return ETK_FALSE;
+}
+
 /** @} */
