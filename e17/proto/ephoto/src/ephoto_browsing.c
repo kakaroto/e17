@@ -434,30 +434,47 @@ images_cb(Ewl_Widget *w, void *event, void *data)
 	char imagedb[PATH_MAX];
 	char tempcheck[PATH_MAX];
 	char equiv[PATH_MAX];
+	Ewl_Widget *page;
 	/********************************************************/
-	pathi = ewl_widget_name_get(w);
-	name = basename(pathi);
+	if ( w == m->vbutton ) {
+		pathi = ewl_image_file_path_get(EWL_IMAGE(m->vimage));
+		name = basename(pathi);
+	}
+	
+	else {
+		pathi = ewl_widget_name_get(w);
+		name = basename(pathi);
+	}
+	
+	page = ewl_notebook_visible_page_get(EWL_NOTEBOOK(m->notebook));
 	
 	/**********Add the images to the iconbox and list**********/
-	m->i = ewl_iconbox_icon_add(EWL_ICONBOX(m->ib), name, pathi);
-	ewl_callback_append(m->i, EWL_CALLBACK_CLICKED, iremove_cb, NULL);
-	ewl_widget_name_set(m->i, pathi);
-	
-	ewl_iconbox_icon_arrange(EWL_ICONBOX(m->ib));
-	
-	ecore_dlist_append(m->imagelist, strdup(pathi));
-	slidenum++;
-	
-	//home = getenv("HOME");
-	//snprintf(imagedb, PATH_MAX, "%s/ephoto_images", home);
-	//printf("%s\n", imagedb);
-	//snprintf(tempcheck, PATH_MAX, "%s/%s", imagedb, name);
-	//printf("%s\n", tempcheck);
-	//if ( !ecore_file_exists(tempcheck) ) {
-	//	snprintf(equiv, PATH_MAX, "%s", pathi);
-	//	printf("%s\n", equiv);
-	//	ecore_file_cp(equiv, tempcheck);
-	//}
+	if ( page == m->vbox2 || w == m->vbutton ) {
+		m->i = ewl_iconbox_icon_add(EWL_ICONBOX(m->ib), name, pathi);
+		ewl_callback_append(m->i, EWL_CALLBACK_CLICKED, iremove_cb, NULL);
+		ewl_widget_name_set(m->i, pathi);
+		
+		ewl_iconbox_icon_arrange(EWL_ICONBOX(m->ib));
+		
+		ecore_dlist_append(m->imagelist, strdup(pathi));
+		slidenum++;
+		
+		//home = getenv("HOME");
+		//snprintf(imagedb, PATH_MAX, "%s/ephoto_images", home);
+		//printf("%s\n", imagedb);
+		//snprintf(tempcheck, PATH_MAX, "%s/%s", imagedb, name);
+		//printf("%s\n", tempcheck);
+		//if ( !ecore_file_exists(tempcheck) ) {
+		//	snprintf(equiv, PATH_MAX, "%s", pathi);
+		//	printf("%s\n", equiv);
+		//	ecore_file_cp(equiv, tempcheck);
+		//}
+	}
+	if ( page == m->viewbox && w != m->vbutton ) {
+		ewl_image_file_set(EWL_IMAGE(m->vimage), pathi, NULL);
+		ewl_widget_enable(m->vbutton);
+		ewl_widget_state_set(m->vbutton, "enabled");
+	}
 	/**********************************************************/
 
 	/****Enable the slideshow and presentation buttons so we can get to work****/
