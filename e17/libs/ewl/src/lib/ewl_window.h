@@ -14,6 +14,10 @@
  * @themekey /window/group
  */
 
+/**
+ * @def EWL_WINDOW_TYPE
+ * The type name for the Ewl_Window widget
+ */
 #define EWL_WINDOW_TYPE "window"
 
 /**

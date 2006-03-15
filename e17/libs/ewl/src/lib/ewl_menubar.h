@@ -13,6 +13,10 @@
  * @themekey /menubar/group
  */
 
+/**
+ * @def EWL_MENUBAR_TYPE
+ * The type name for the Ewl_Menubar widget
+ */
 #define EWL_MENUBAR_TYPE "menubar"
 
 /**

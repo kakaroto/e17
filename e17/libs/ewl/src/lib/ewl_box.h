@@ -14,6 +14,10 @@
  * @themekey /box/group
  */
 
+/**
+ * @def EWL_BOX_TYPE
+ * The type name for the Ewl_Box widget
+ */
 #define EWL_BOX_TYPE "box"
 
 /**
@@ -42,7 +46,6 @@ struct Ewl_Box
 	int             spacing; /**< Space between each widget in the box */
 
 	unsigned int    homogeneous; /**< Flag indicating space assignemnt */
-	/* int shows; */
 };
 
 Ewl_Widget     *ewl_box_new(void);
@@ -57,8 +60,6 @@ void            ewl_box_homogeneous_set(Ewl_Box *b, unsigned int h);
 /*
  * Internally used callbacks, override at your own risk.
  */
-void            ewl_box_child_add_cb(Ewl_Container * c, Ewl_Widget * w);
-void            ewl_box_child_remove_cb(Ewl_Container * c, Ewl_Widget * w);
 void            ewl_box_child_resize_cb(Ewl_Container * c, Ewl_Widget * w,
 				        int size, Ewl_Orientation o);
 void            ewl_box_child_show_cb(Ewl_Container * c, Ewl_Widget * w);

@@ -12,6 +12,10 @@
  * @themekey /label
  */
 
+/**
+ * @def EWL_LABEL_TYPE
+ * The type name for the Ewl_Label widget
+ */
 #define EWL_LABEL_TYPE "label"
 
 typedef struct Ewl_Label Ewl_Label;

@@ -25,7 +25,7 @@ typedef Ewl_Widget *(*Ewl_View_Constructor)(void);
 typedef void (*Ewl_View_Assign)(Ewl_Widget *w, void *data);
 
 /**
- * @def EWLVIEW_HEADER_GET(f)
+ * @def EWL_VIEW_HEADER_GET(f)
  * View callback to get the header for a given column
  */
 #define EWL_VIEW_HEADER_GET(f) ((Ewl_View_Header_Fetch)f)

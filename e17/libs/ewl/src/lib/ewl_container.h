@@ -9,6 +9,10 @@
  * @{
  */
 
+/**
+ * @def EWL_CONTAINER_TYPE
+ * The type name for the Ewl_Container widget
+ */
 #define EWL_CONTAINER_TYPE "container"
 
 /**

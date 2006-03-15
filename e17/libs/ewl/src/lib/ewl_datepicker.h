@@ -13,6 +13,10 @@
  * @themekey /datepicker/group
  */
 
+/**
+ * @def EWL_DATEPICKER_TYPE
+ * The type name for the Ewl_Datepicker widget
+ */
 #define EWL_DATEPICKER_TYPE "datepicker"
 
 /**

@@ -14,7 +14,16 @@
  * @themekey /tree/group
  */
 
+/**
+ * @def EWL_TREE_TYPE
+ * The type name for the Ewl_Tree widget
+ */
 #define EWL_TREE_TYPE "tree"
+
+/**
+ * @def EWL_TREE_NODE_TYPE
+ * The type name for the Ewl_Tree_Node widget
+ */
 #define EWL_TREE_NODE_TYPE "node"
 
 /**

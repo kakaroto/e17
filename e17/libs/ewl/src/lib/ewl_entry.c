@@ -641,8 +641,8 @@ ewl_entry_cursor_init(Ewl_Entry_Cursor *c, Ewl_Entry *parent)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
-	ewl_widget_appearance_set(EWL_WIDGET(c), EWL_CURSOR_TYPE);
-	ewl_widget_inherit(EWL_WIDGET(c), EWL_CURSOR_TYPE);
+	ewl_widget_appearance_set(EWL_WIDGET(c), EWL_ENTRY_CURSOR_TYPE);
+	ewl_widget_inherit(EWL_WIDGET(c), EWL_ENTRY_CURSOR_TYPE);
 	c->parent = parent;
 
 	ewl_widget_focusable_set(EWL_WIDGET(c), FALSE);
@@ -655,7 +655,7 @@ ewl_entry_cursor_position_set(Ewl_Entry_Cursor *c, unsigned int pos)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, EWL_CURSOR_TYPE);
+	DCHECK_TYPE("c", c, EWL_ENTRY_CURSOR_TYPE);
 
 	ewl_text_cursor_position_set(EWL_TEXT(c->parent), pos);
 
@@ -667,7 +667,7 @@ ewl_entry_cursor_position_get(Ewl_Entry_Cursor *c)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("c", c, 0);
-	DCHECK_TYPE_RET("c", c, EWL_CURSOR_TYPE, 0);
+	DCHECK_TYPE_RET("c", c, EWL_ENTRY_CURSOR_TYPE, 0);
 
 	DRETURN_INT(ewl_text_cursor_position_get(EWL_TEXT(c->parent)), 
 							DLEVEL_STABLE);

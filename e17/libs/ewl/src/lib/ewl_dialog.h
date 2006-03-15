@@ -13,6 +13,10 @@
  * @themekey /dialog/group
  */
 
+/**
+ * @def EWL_DIALOG_TYPE
+ * The type name for the Ewl_Dialog widget
+ */
 #define EWL_DIALOG_TYPE "dialog"
 
 /**
@@ -35,16 +39,16 @@ typedef struct Ewl_Dialog Ewl_Dialog;
  */
 struct Ewl_Dialog
 {
-	Ewl_Window   window; /* Inherit from a window */
+	Ewl_Window   window;      /**< Inherit from a window */
 
-        Ewl_Widget  *box;         /* The box for window layout */
-	Ewl_Widget  *vbox;        /* The box where messages are displayed */
-	Ewl_Widget  *action_area; /* The box where the buttons are added */
+        Ewl_Widget  *box;         /**< The box for window layout */
+	Ewl_Widget  *vbox;        /**< The box where messages are displayed */
+	Ewl_Widget  *action_area; /**< The box where the buttons are added */
 
-	Ewl_Widget  *separator;   /* The separator between vbox and action_area */
+	Ewl_Widget  *separator;   /**< The separator between vbox and action_area */
 
-	Ewl_Position position;    /* Position of the action_area */
-	Ewl_Position active_area; /* Which section of the dialog is active */
+	Ewl_Position position;    /**< Position of the action_area */
+	Ewl_Position active_area; /**< Which section of the dialog is active */
 };
   
 Ewl_Widget  *ewl_dialog_new (void);

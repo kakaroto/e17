@@ -14,6 +14,10 @@
  * @themekey /combo/group
  */
 
+/**
+ * @def EWL_COMBO_TYPE
+ * The type name for the Ewl_Combo widget
+ */
 #define EWL_COMBO_TYPE "combo"
 
 /**

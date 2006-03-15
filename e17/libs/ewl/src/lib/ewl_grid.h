@@ -13,16 +13,20 @@
  * @themekey /grid/group
  */
 
+/**
+ * @def EWL_GRID_TYPE
+ * The type name for the Ewl_Grid widget
+ */
 #define EWL_GRID_TYPE "grid"
 
 typedef struct Ewl_Grid_Info Ewl_Grid_Info;
 
 struct Ewl_Grid_Info
 {
-	int		 override;
-	int		 size;
-	Ewl_Widget	*max;
-	Ecore_List	*cross;
+	int		 override;	/**< Override the size of the column */
+	int		 size;		/**< The size */
+	Ewl_Widget	*max;		/**< The largets child */
+	Ecore_List	*cross;		/**< The row of widgets */
 };
 
 /**
@@ -63,11 +67,11 @@ typedef struct Ewl_Grid_Child Ewl_Grid_Child;
 
 struct Ewl_Grid_Child
 {
-	int start_col;
-	int start_row;
+	int start_col;	/**< The start column */
+	int start_row;	/**< The start row */
 
-	int end_col;
-	int end_row;
+	int end_col;	/**< The end column */
+	int end_row;	/**< The end row */
 };
 
 Ewl_Widget     *ewl_grid_new(int cols, int rows);

@@ -8,6 +8,10 @@
  * @{
  */
 
+/**
+ * @def EWL_ATTACH_TOOLTIP_TYPE
+ * The type name for the Ewl_Attach tooltip
+ */
 #define EWL_ATTACH_TOOLTIP_TYPE "tooltip"
 
 /**

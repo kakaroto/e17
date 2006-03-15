@@ -14,6 +14,10 @@
  * @themekey /floater/group
  */
 
+/**
+ * @def EWL_FLOATER_TYPE
+ * The type name for the Ewl_Floater widget
+ */
 #define EWL_FLOATER_TYPE "floater"
 
 /**

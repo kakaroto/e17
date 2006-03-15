@@ -13,6 +13,10 @@
  * @themekey /row/group
  */
 
+/**
+ * @def EWL_ROW_TYPE
+ * The type name for the Ewl_Row widget
+ */
 #define EWL_ROW_TYPE "row"
 
 /**

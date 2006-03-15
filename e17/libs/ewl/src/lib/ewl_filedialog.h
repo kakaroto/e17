@@ -13,6 +13,10 @@
  * @themekey /filedialog/group
  */
 
+/**
+ * @def EWL_FILEDIALOG_TYPE
+ * The type name for the Ewl_Filedialog widget
+ */
 #define EWL_FILEDIALOG_TYPE "filedialog"
 
 /**

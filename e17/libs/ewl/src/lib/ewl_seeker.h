@@ -17,6 +17,10 @@
  * @themekey /vseeker/group
  */
 
+/**
+ * @def EWL_SEEKER_TYPE
+ * The type name for the Ewl_Seeker widget
+ */
 #define EWL_SEEKER_TYPE "seeker"
 
 /**

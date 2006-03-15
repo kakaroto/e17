@@ -25,6 +25,10 @@
  * @themekey /vscrollbar/seeker/button/group
  */
 
+/**
+ * @def EWL_SCROLLBAR_TYPE
+ * The type name for the Ewl_Scrollbar widget
+ */
 #define EWL_SCROLLBAR_TYPE "scrollbar"
 
 /**
@@ -55,7 +59,7 @@ struct Ewl_Scrollbar
 	double          fill_percentage;   /**< Ratio of size for draggable */
 	double          start_time;        /**< Time scrolling began */
 	Ecore_Timer    *timer;             /**< Repeating timer for scrolling */
-	signed char     direction;         /**< */
+	signed char     direction;         /**< Direction for the scrollbar */
 	signed char     invert;            /**< Invert the scrolling direction */
 };
 

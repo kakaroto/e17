@@ -14,6 +14,10 @@
  * @themekey /overlay/group
  */
 
+/**
+ * @def EWL_OVERLAY_TYPE
+ * The type name for the Ewl_Overlay widget
+ */
 #define EWL_OVERLAY_TYPE "overlay"
 
 /**

@@ -13,6 +13,10 @@
  * @themekey /calendar/group
  */
 
+/**
+ * @def EWL_CALENDAR_TYPE
+ * The type name for the Ewl_Calendar widget
+ */
 #define EWL_CALENDAR_TYPE "calendar"
 
 /**

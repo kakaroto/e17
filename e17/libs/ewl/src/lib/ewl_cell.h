@@ -13,6 +13,10 @@
  * @themekey /cell/group
  */
 
+/**
+ * @def EWL_CELL_TYPE
+ * The type name for the Ewl_Cell widget
+ */
 #define EWL_CELL_TYPE "cell"
 
 typedef struct Ewl_Cell Ewl_Cell;

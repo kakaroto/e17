@@ -8,8 +8,17 @@
  * @{
  */
 
+/**
+ * @def EWL_ENTRY_TYPE
+ * The type name for the Ewl_Entry widget
+ */
 #define EWL_ENTRY_TYPE "entry"
-#define EWL_CURSOR_TYPE "cursor"
+
+/**
+ * @def EWL_ENTRY_CURSOR_TYPE
+ * The type name for the Ewl_Entry_Cursor widget
+ */
+#define EWL_ENTRY_CURSOR_TYPE "cursor"
 
 /**
  * @def EWL_ENTRY(entry)
@@ -74,8 +83,8 @@ void ewl_entry_delete_right(Ewl_Entry *e);
 typedef struct Ewl_Entry_Cursor Ewl_Entry_Cursor;
 struct Ewl_Entry_Cursor
 {
-	Ewl_Widget	 widget;
-	Ewl_Entry	*parent;
+	Ewl_Widget	 widget;	/**< Inherit from Ewl_Widget */
+	Ewl_Entry	*parent;	/**< The parent Ewl_Text */
 };
 
 Ewl_Widget 	*ewl_entry_cursor_new(Ewl_Entry *parent);

@@ -14,6 +14,10 @@
  * @themekey /menu_base/group
  */
 
+/**
+ * @def EWL_MENU_BASE_TYPE
+ * The type name for the Ewl_Menu_Base widget
+ */
 #define EWL_MENU_BASE_TYPE "menu_base"
 
 /**

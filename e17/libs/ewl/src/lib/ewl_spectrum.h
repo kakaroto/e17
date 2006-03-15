@@ -8,6 +8,10 @@
  * @{
  */
 
+/**
+ * @def EWL_SPECTRUM_TYPE
+ * The type name for the Ewl_Spectrum widget
+ */
 #define EWL_SPECTRUM_TYPE "spectrum"
 
 /**

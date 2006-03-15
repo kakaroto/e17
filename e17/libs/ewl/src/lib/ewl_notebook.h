@@ -17,6 +17,10 @@
  * @themekey /notebook/pages
  */
 
+/**
+ * @def EWL_NOTEBOOK_TYPE
+ * The type name for the Ewl_Notebook widget
+ */
 #define EWL_NOTEBOOK_TYPE "notebook"
 
 /**
@@ -25,6 +29,9 @@
  */
 #define EWL_NOTEBOOK(n) ((Ewl_Notebook *)n)
 
+/**
+ * Holds the notebook information
+ */
 typedef struct Ewl_Notebook Ewl_Notebook;
 
 /**
@@ -37,7 +44,7 @@ struct Ewl_Notebook
 	struct {
 		Ewl_Widget *tabbar;	/**< Holds the tabs */
 		Ewl_Widget *pages;	/**< Holds the notebook pages */
-	} body;
+	} body;				/**< The body of the notebook */
 
 	Ewl_Widget *cur_page;		/**< The currently active page */
 	Ewl_Position tabbar_position;	/**< The position of the tabbar in the notebook */

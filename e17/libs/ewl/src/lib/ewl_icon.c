@@ -12,6 +12,7 @@ static void ewl_icon_cb_entry_value_changed(Ewl_Widget *w, void *ev,
 
 /**
  * @return Returns a new Ewl_Icon widget, or NULL on failure
+ * @brief Creates and initializes a new Ewl_Icon widget 
  */
 Ewl_Widget *
 ewl_icon_new(void)
@@ -35,8 +36,8 @@ ewl_icon_new(void)
 
 /**
  * @param icon: The widget to initialize
- * @brief Initializes the given Ewl_Icon widget
  * @return Returns TRUE on successful initialization, FALSE otherwise
+ * @brief Initializes the given Ewl_Icon widget
  */
 int
 ewl_icon_init(Ewl_Icon *icon)
@@ -59,6 +60,7 @@ ewl_icon_init(Ewl_Icon *icon)
  * @param icon: The icon to set the type of
  * @param type The type to set on this icon
  * @return Returns no value.
+ * @brief Set the type of the icon
  */
 void
 ewl_icon_type_set(Ewl_Icon *icon, Ewl_Icon_Type type)
@@ -88,6 +90,7 @@ ewl_icon_type_set(Ewl_Icon *icon, Ewl_Icon_Type type)
 /**
  * @param icon: The icon to get the type from
  * @return Returns the Ewl_Icon_Type of the icon
+ * @brief Retrieve the type of the icon
  */
 Ewl_Icon_Type 
 ewl_icon_type_get(Ewl_Icon *icon)
@@ -104,6 +107,7 @@ ewl_icon_type_get(Ewl_Icon *icon)
  * @param file: The file with the image
  * @param key: The key inside the file if applicable
  * @return Retruns no value
+ * @param set the image to use in the icon
  */
 void
 ewl_icon_image_set(Ewl_Icon *icon, const char *file, const char *key)
@@ -131,6 +135,7 @@ ewl_icon_image_set(Ewl_Icon *icon, const char *file, const char *key)
  * @param icon: The Ewl_Icon to get the image file from
  * @return Returns the image file associated with this icon, or NULL if
  * none.
+ * @brief Retrieve the image to used in the icon
  */
 const char *
 ewl_icon_image_file_get(Ewl_Icon *icon)
@@ -151,6 +156,7 @@ ewl_icon_image_file_get(Ewl_Icon *icon)
  * @param icon: The icon to set if it is editable or not
  * @param e: The value to set as the editable flag
  * @return Returns no value.
+ * @brief Set if the icon is editable or not
  */
 void
 ewl_icon_editable_set(Ewl_Icon *icon, unsigned int e)
@@ -176,6 +182,7 @@ ewl_icon_editable_set(Ewl_Icon *icon, unsigned int e)
 /**
  * @param icon: The icon to check if it's editable
  * @return Returns TRUE if the icon is editable, FALSE otherwise
+ * @brief Retrieve if the icon is editable or not
  */
 unsigned int
 ewl_icon_editable_get(Ewl_Icon *icon)
@@ -191,6 +198,7 @@ ewl_icon_editable_get(Ewl_Icon *icon)
  * @param icon: The icon to set the label onto
  * @param label: The label to set on the icon
  * @return Returns no value
+ * @brief Set the label of the icon
  */
 void
 ewl_icon_label_set(Ewl_Icon *icon, const char *label)
@@ -241,6 +249,7 @@ ewl_icon_label_set(Ewl_Icon *icon, const char *label)
 /**
  * @param icon: The icon to get the label from
  * @return Returns the icons label or NULL if none set
+ * @brief Retrieve the label from the icon
  */
 const char *
 ewl_icon_label_get(Ewl_Icon *icon)
@@ -260,6 +269,7 @@ ewl_icon_label_get(Ewl_Icon *icon)
  * @param icon: The icon to set the menu into
  * @param menu: The mneu to set on the icon
  * @return Returns no value
+ * @brief Set the menu for the icon
  */
 void
 ewl_icon_menu_set(Ewl_Icon *icon, Ewl_Widget *menu)
@@ -278,6 +288,7 @@ ewl_icon_menu_set(Ewl_Icon *icon, Ewl_Widget *menu)
 /** 
  * @param icon: The icon to get the menu from
  * @return Returns the menu set on this icon, or NULL if none set 
+ * @brief Retrieve the menu from the icon
  */
 Ewl_Widget *
 ewl_icon_menu_get(Ewl_Icon *icon)
@@ -295,8 +306,9 @@ ewl_icon_menu_get(Ewl_Icon *icon)
  * @param icon: The icon to set the extended data into
  * @param ext: The extended data to set in the icon
  * @return Returns no value
+ * @brief Set the extended data into the icon
  *
- * Note, the widget passed in here becomes internal to the icon, you should
+ * @Note The widget passed in here becomes internal to the icon, you should
  * not delete it after this. You can pack widgets as needed but the icon
  * will handle the show/hide of the widget after this
  */
@@ -325,6 +337,7 @@ ewl_icon_extended_data_set(Ewl_Icon *icon, Ewl_Widget *ext)
 /**
  * @param icon: The icon to get the extended data from
  * @return Returns the extended data on the icon, or NULL if none set 
+ * @brief Retrieve the extended data from the icon
  */
 Ewl_Widget *
 ewl_icon_extended_data_get(Ewl_Icon *icon)
@@ -339,6 +352,8 @@ ewl_icon_extended_data_get(Ewl_Icon *icon)
 /**
  * @param icon: The Ewl_Icon to constrain
  * @param val: The val to constrain too
+ * @return Returns no value.
+ * @brief Set the constrain value on the icon
  */
 void
 ewl_icon_constrain_set(Ewl_Icon *icon, unsigned int val)
@@ -355,6 +370,7 @@ ewl_icon_constrain_set(Ewl_Icon *icon, unsigned int val)
 /** 
  * @param icon: The icon to get the constrain from
  * @return Returns the current constrain value of the icon 
+ * @brief Retrieve the constrain value set on the icon
  */
 unsigned int
 ewl_icon_constrain_get(Ewl_Icon *icon)

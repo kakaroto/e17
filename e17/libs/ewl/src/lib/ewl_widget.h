@@ -13,6 +13,10 @@
  * @{
  */
 
+/**
+ * @def EWL_WIDGET_TYPE
+ * The type name for the Ewl_Widget widget
+ */
 #define EWL_WIDGET_TYPE "widget"
 
 /**

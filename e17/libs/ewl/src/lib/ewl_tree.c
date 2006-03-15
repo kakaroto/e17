@@ -207,7 +207,7 @@ ewl_tree_headers_visible_get(Ewl_Tree *tree)
 
 /**
  * @param tree: The tree to set the row expandability
- * @param visible: The expandability to set
+ * @param expand: The expandability to set
  * @return Returns no value.
  * @brief Sets the expandability of the rows in the tree
  */

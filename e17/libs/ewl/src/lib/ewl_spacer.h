@@ -14,6 +14,10 @@
  * @themekey /spacer/group
  */
 
+/**
+ * @def EWL_SPACER_TYPE
+ * The type name for the Ewl_Spacer widget
+ */
 #define EWL_SPACER_TYPE "spacer"
 
 /**

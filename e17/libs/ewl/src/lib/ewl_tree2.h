@@ -59,6 +59,10 @@
  * @themekey /tree/group
  */
 
+/**
+ * @def EWL_TREE2_TYPE
+ * The type name for the Ewl_ widget
+ */
 #define EWL_TREE2_TYPE "tree2"
 
 /**

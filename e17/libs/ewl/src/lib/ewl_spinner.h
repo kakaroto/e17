@@ -14,6 +14,10 @@
  * @themekey /spinner/group
  */
 
+/**
+ * @def EWL_SPINNER_TYPE
+ * The type name for the Ewl_Spinner widget
+ */
 #define EWL_SPINNER_TYPE "spinner"
 
 /**

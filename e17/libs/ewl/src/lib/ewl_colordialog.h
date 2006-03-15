@@ -7,6 +7,10 @@
  * @{
  */
 
+/**
+ * @def EWL_COLORDIALOG_TYPE
+ * The type name for the Ewl_Colordialog widget
+ */
 #define EWL_COLORDIALOG_TYPE "colordialog"
 
 /**

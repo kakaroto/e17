@@ -868,9 +868,13 @@ ewl_box_child_hide_cb(Ewl_Container * c, Ewl_Widget * w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
- * Determine the preferred size of the box when a child changes it's preferred
- * size.
+/**
+ * @param c: The Ewl_Container containing the widget
+ * @param w: The widget being resized
+ * @param size: The size of the widget
+ * @param o: The orientation of the widget
+ * @return Returns no value
+ * @brief The container resize callback used by the box 
  */
 void
 ewl_box_child_resize_cb(Ewl_Container * c, Ewl_Widget * w __UNUSED__, 

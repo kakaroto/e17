@@ -13,6 +13,10 @@
  * @themekey /menu_item/group
  */
 
+/**
+ * @def EWL_MENU_ITEM_TYPE
+ * The type name for the Ewl_Menu_Item widget
+ */
 #define EWL_MENU_ITEM_TYPE "menu_item"
 
 /**

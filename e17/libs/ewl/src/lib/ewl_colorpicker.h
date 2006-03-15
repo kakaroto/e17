@@ -7,6 +7,10 @@
  * @{
  */
 
+/**
+ * @def EWL_COLORPICKER_TYPE
+ * The type name for the Ewl_Colorpicker widget
+ */
 #define EWL_COLORPICKER_TYPE "colorpicker"
 
 /**

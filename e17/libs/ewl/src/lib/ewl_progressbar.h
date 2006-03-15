@@ -15,6 +15,10 @@
  * @themekey /bar/group
  */
 
+/**
+ * @def EWL_PROGRESSBAR_TYPE
+ * The type name for the Ewl_Progressbar widget
+ */
 #define EWL_PROGRESSBAR_TYPE "progressbar"
 
 /**

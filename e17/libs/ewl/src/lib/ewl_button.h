@@ -14,6 +14,10 @@
  * @themekey /button/group
  */
 
+/**
+ * @def EWL_BUTTON_TYPE
+ * The type name for the Ewl_Button widget
+ */
 #define EWL_BUTTON_TYPE "button"
 
 /**

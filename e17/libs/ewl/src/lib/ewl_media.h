@@ -17,6 +17,10 @@
  * @themekey /media/group
  */
 
+/**
+ * @def EWL_MEDIA_TYPE
+ * The type name for the Ewl_Media widget
+ */
 #define EWL_MEDIA_TYPE "media"
 
 /**

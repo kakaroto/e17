@@ -13,6 +13,10 @@
  * @themekey /image/group
  */
 
+/**
+ * @def EWL_IMAGE_TYPE
+ * The type name for the Ewl_Image widget
+ */
 #define EWL_IMAGE_TYPE "image"
 
 enum Ewl_Image_Type

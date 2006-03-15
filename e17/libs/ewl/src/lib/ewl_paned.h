@@ -17,6 +17,10 @@
  * @themekey /grabber/horizontal/group
  */
 
+/**
+ * @def EWL_PANED_TYPE
+ * The type name for the Ewl_Paned widget
+ */
 #define EWL_PANED_TYPE "paned"
 
 /**
@@ -61,16 +65,30 @@ void ewl_paned_cb_configure(Ewl_Widget *w, void *ev, void *data);
  * Ewl_Paned_Grabber stuff
  */
 
+/**
+ * @def EWL_PANED_GRABBER_TYPE
+ * The type name for the Ewl_Paned_Grabber widget
+ */
 #define EWL_PANED_GRABBER_TYPE "paned_grabber"
 
+/**
+ * Typedef for the Ewl_Paned_Grabber struct
+ */
 typedef struct Ewl_Paned_Grabber Ewl_Paned_Grabber;
 
+/**
+ * @def EWL_PANED_GRABBER(g)
+ * Typecasts a pointer to an Ewl_Paned_Grabber pointer
+ */
 #define EWL_PANED_GRABBER(g) ((Ewl_Paned_Grabber *)g)
 
+/**
+ * Inherits from Ewl_Separator and extends to facilitate the paned grabber
+ */
 struct Ewl_Paned_Grabber
 {
-	Ewl_Separator separator;
-	unsigned int placed:1;
+	Ewl_Separator separator;	/**< Inherit from the separator */
+	unsigned int placed:1;		/**< Has the grabber been placed already? */
 };
 
 Ewl_Widget 	*ewl_paned_grabber_new(void);

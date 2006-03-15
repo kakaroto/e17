@@ -16,6 +16,10 @@
  * @themekey /vseparator/group
  */
 
+/**
+ * @def EWL_SEPARATOR_TYPE
+ * The type name for the Ewl_Separator widget
+ */
 #define EWL_SEPARATOR_TYPE "separator"
 
 /**

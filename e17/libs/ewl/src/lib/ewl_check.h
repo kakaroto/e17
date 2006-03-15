@@ -14,6 +14,10 @@
  * @themekey /check/group
  */
 
+/**
+ * @def EWL_CHECK_TYPE
+ * The type name for the Ewl_Check widget
+ */
 #define EWL_CHECK_TYPE "check"
 
 /**

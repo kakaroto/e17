@@ -41,7 +41,7 @@ typedef struct Ewl_Event_Window_Delete Ewl_Event_Window_Delete;
  */
 struct Ewl_Event_Window_Delete
 {
-	int ignore;
+	int ignore;	/**< Unused. */
 };
 
 typedef struct Ewl_Event_Key_Down Ewl_Event_Key_Down;
@@ -150,8 +150,8 @@ typedef struct Ewl_Dnd_Types Ewl_Dnd_Types;
  */
 struct Ewl_Dnd_Types
 {
-	int num_types;
-	char** types;
+	int num_types;	/**< The number of DND types */
+	char** types;	/**< The list of DND types */
 	
 };
 
@@ -175,7 +175,7 @@ typedef struct Ewl_Dialog_Event Ewl_Dialog_Event;
  */
 struct Ewl_Dialog_Event
 {
-	unsigned int response;
+	unsigned int response; /**< The response ID from the dialog */
 };
 
 int		ewl_ev_init(void);

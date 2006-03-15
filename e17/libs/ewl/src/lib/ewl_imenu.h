@@ -14,6 +14,10 @@
  * @themekey /imenu/group
  */
 
+/**
+ * @def EWL_IMENU_TYPE
+ * The type name for the Ewl_IMenu widget
+ */
 #define EWL_IMENU_TYPE "imenu"
 
 /**

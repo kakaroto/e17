@@ -14,6 +14,10 @@
  * @themekey /checkbutton/group
  */
 
+/**
+ * @def EWL_CHECKBUTTON_TYPE
+ * The type name for the Ewl_Checkbutton widget
+ */
 #define EWL_CHECKBUTTON_TYPE "checkbutton"
 
 /**

@@ -285,6 +285,8 @@ ewl_button_image_get(Ewl_Button *b)
 
 /**
  * @param b: The button to set the image size on
+ * @param width: The width of the image
+ * @param height: The height of the image
  * @return Returns no value.
  * @brief Set the size of the image inside the button.
  */
@@ -305,6 +307,8 @@ ewl_button_image_size_set(Ewl_Button *b, int width, int height)
 
 /**
  * @param b: The button to get the image size on
+ * @param width: Where to put the width of the widget
+ * @param height: Where to put the height of the widget
  * @return Returns no value.
  * @brief Get the size of the image inside the button.
  */
@@ -357,7 +361,7 @@ ewl_button_alignment_get(Ewl_Button *b)
 
 /**
  * @param b: The button to set the content fill policy
- * @param align: The new fill policy for button contents
+ * @param fill: The new fill policy for button contents
  * @return Returns no value.
  * @brief Set the fill policy of the contents of the button.
  */

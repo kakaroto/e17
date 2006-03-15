@@ -13,6 +13,10 @@
  * @themekey /password/group
  */
 
+/**
+ * @def EWL_PASSWORD_TYPE
+ * The type name for the Ewl_Password widget
+ */
 #define EWL_PASSWORD_TYPE "password"
 
 /**

@@ -14,6 +14,10 @@
  * @themekey /scrollpane/group
  */
 
+/**
+ * @def EWL_SCROLLPANE_TYPE
+ * The type name for the Ewl_Scrollpane widget
+ */
 #define EWL_SCROLLPANE_TYPE "scrollpane"
 
 /**

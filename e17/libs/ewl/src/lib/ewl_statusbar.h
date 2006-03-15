@@ -13,6 +13,10 @@
  * @themekey /statusbar/group
  */
 
+/**
+ * @def EWL_STATUSBAR_TYPE
+ * The type name for the Ewl_Statusbar widget
+ */
 #define EWL_STATUSBAR_TYPE "statusbar"
 
 /**

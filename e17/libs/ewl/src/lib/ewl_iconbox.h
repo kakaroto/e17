@@ -22,6 +22,10 @@
  * @themekey /iconbox/group
  */
 
+/**
+ * @def EWL_ICONBOX_TYPE
+ * The type name for the Ewl_Iconbox widget
+ */
 #define EWL_ICONBOX_TYPE "iconbox"
 
 /**
@@ -29,23 +33,30 @@
  */
 typedef struct Ewl_Iconbox Ewl_Iconbox;
 
+/**
+ * The Ewl_Iconbox_Icon
+ */
 typedef struct Ewl_Iconbox_Icon Ewl_Iconbox_Icon;
+
+/**
+ * Inherits from Ewl_Box and extends to provide an icon layout 
+ */
 struct Ewl_Iconbox_Icon
 {
-	Ewl_Box box;
+	Ewl_Box box;		      /**< Inherit from Ewl_Box */
 	
-	Ewl_Widget *image;
-	Ewl_Widget *w_label;
+	Ewl_Widget *image;	      /**< Image widget */
+	Ewl_Widget *w_label;	      /**< Label widget */
 
-	int drag;
-	int selected ;
+	int drag;		      /**< Is the icon being dragged */
+	int selected;		      /**< Is the icon selected */
 
-	Ewl_Iconbox *icon_box_parent; /* Our reference upwards, kinda breaks OO conventions */
-	char *label;		      /*Our icon's full (unabbreviated) label) */
-	char *label_compressed;
+	Ewl_Iconbox *icon_box_parent; /**< reference to our parent */
+	char *label;		      /**< the icons full label) */
+	char *label_compressed;	      /**< Shortend label */
 
-	int ox,oy;		     /* Override configure arranges, 
-				       if the user has moved the icon */
+	int ox,			      /**< icon x position, if user has moved */
+	    oy;		      	      /**< icon y position, if user has moved */
 };
 
 /**
@@ -53,11 +64,16 @@ struct Ewl_Iconbox_Icon
  * Typecast a pointer to an Ewl_Iconbox pointer
  */
 #define EWL_ICONBOX(iconbox) ((Ewl_Iconbox *) iconbox)
+
+/**
+ * @def EWL_ICONBOX_ICON(icon)
+ * Typecasts a pointer to an Ewl_Iconbox_Icon pointer
+ */
 #define EWL_ICONBOX_ICON(icon) ((Ewl_Iconbox_Icon *) icon)
 
 /** 
- * Inherits from an Ewl_Box to provide layout facilities for child widgets placed inside
- * Layout is either free-form, or auto-arranged to a grid.
+ * Inherits from an Ewl_Box to provide layout facilities for child widgets 
+ * placed inside. Layout is either free-form, or auto-arranged to a grid.
  */
 struct Ewl_Iconbox
 {

@@ -14,6 +14,10 @@
  * @themekey /embed/group
  */
 
+/**
+ * @def EWL_EMBED_TYPE
+ * The type name for the Ewl_Embed widget
+ */
 #define EWL_EMBED_TYPE "embed"
 
 /**

@@ -2,26 +2,42 @@
 #define EWL_ICON_H
 
 /**
- * @file ewl_icon.h
+ * @addtogroup Ewl_Icon Ewl_Icon: An icon widget
+ * @brief Describes a widget to layout and manipulate icons
  *
  * @{
  */
 
+/**
+ * @def EWL_ICON_TYPE
+ * The type name for the Ewl_Icon widget
+ */
 #define EWL_ICON_TYPE "icon"
 
+/**
+ * @def EWL_ICON(icon)
+ * Typecasts a pointer to an Ewl_Icon pointer.
+ */
 #define EWL_ICON(icon) ((Ewl_Icon *)icon)
 
+/**
+ * A widget to display and manipluate an icon
+ */
 typedef struct Ewl_Icon Ewl_Icon;
+
+/**
+ * Inherits from Ewl_Box and extends to provide for an icon layout
+ */
 struct Ewl_Icon
 {
-	Ewl_Box box;
-	Ewl_Widget *label;
-	Ewl_Widget *preview;
-	Ewl_Widget *menu;
-	Ewl_Widget *extended;
+	Ewl_Box box;		/**< Inherit from Ewl_Box */
+	Ewl_Widget *label;	/**< The icons label */
+	Ewl_Widget *preview;	/**< The icons preview */
+	Ewl_Widget *menu;	/**< The icons menu */
+	Ewl_Widget *extended;	/**< The icons extended information */
 
-	Ewl_Icon_Type type;
-	unsigned int editable;
+	Ewl_Icon_Type type;	/**< The icons type */
+	unsigned int editable;	/**< Is the icon editable? */
 };
 
 Ewl_Widget	*ewl_icon_new(void);

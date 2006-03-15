@@ -14,6 +14,10 @@
  * @themekey /fileselector/group
  */
 
+/**
+ * @def EWL_FILESELECTOR_TYPE
+ * The type name for the Ewl_Fileselector widget
+ */
 #define EWL_FILESELECTOR_TYPE "fileselector"
 
 /**
@@ -77,10 +81,10 @@ void ewl_fileselector_filter_cb(Ewl_Widget *entry, void *ev_data, void *user_dat
 typedef struct Ewl_Fileselector_Data Ewl_Fileselector_Data;
 struct Ewl_Fileselector_Data
 {
-	char  *name; /* name of the file */
-	off_t  size; /* size of the file (bytes) */
-	time_t time; /* last modification */
-	mode_t mode; /* mode of the file (permissions) */
+	char  *name; /**< name of the file */
+	off_t  size; /**< size of the file (bytes) */
+	time_t time; /**< last modification */
+	mode_t mode; /**< mode of the file (permissions) */
 };
 
 Ewl_Fileselector_Data *ewl_fileselector_data_new(const char *name, off_t  size,

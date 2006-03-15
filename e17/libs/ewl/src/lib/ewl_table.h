@@ -14,6 +14,10 @@
  * @themekey /table/group
  */
 
+/**
+ * @def EWL_TABLE_TYPE
+ * The type name for the Ewl_Table widget
+ */
 #define EWL_TABLE_TYPE "table"
 
 /**

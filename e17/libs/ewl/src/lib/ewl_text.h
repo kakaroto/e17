@@ -19,8 +19,22 @@
  * @themekey /text/color/a
  */
 
+/**
+ * @def EWL_TEXT_TYPE
+ * The type name for the Ewl_Text widget
+ */
 #define EWL_TEXT_TYPE "text"
+
+/**
+ * @def EWL_TEXT_TRIGGER_TYPE
+ * The type name for the Ewl_Text_Trigger widget
+ */
 #define EWL_TEXT_TRIGGER_TYPE "trigger"
+
+/**
+ * @def EWL_TEXT_SELECTION_TYPE
+ * The type name for the Ewl_Text_Selection widget
+ */
 #define EWL_TEXT_SELECTION_TYPE "selection"
 
 /**
@@ -68,7 +82,7 @@ struct Ewl_Text
 	{
 		Ewl_Text_Tree   *tree;		  /**< The formatting tree */
 		Ewl_Text_Tree 	*current;	  /**< The current formatting node */
-	} formatting;
+	} formatting;				  /**< Holds the formatting information */
 
 	Ecore_List		*triggers;	  /**< The list of triggers */
 	Ewl_Text_Trigger	*selection;	  /**< The current selection */
@@ -218,8 +232,9 @@ void 		 ewl_text_double_underline_color_get(Ewl_Text *t, unsigned int *r, unsign
 							unsigned int *b, unsigned int *a,
 							unsigned int idx);
 
-/*
- * Trigger stuf
+/**
+ * Inherits from Ewl_Widget and extends to provide a trigger for the text
+ * widget
  */
 struct Ewl_Text_Trigger
 {
@@ -233,6 +248,10 @@ struct Ewl_Text_Trigger
 	Ecore_List		*areas;		/**< The list of objects making up the trigger */
 };
 
+/**
+ * @def EWL_TEXT_TRIGGER(trigger)
+ * Typecasts a pointer to an Ewl_Text_Trigger pointer
+ */
 #define EWL_TEXT_TRIGGER(trigger) ((Ewl_Text_Trigger *) trigger)
 
 Ewl_Text_Trigger *ewl_text_trigger_new(Ewl_Text_Trigger_Type type);
@@ -282,30 +301,30 @@ void ewl_text_trigger_cb_mouse_out(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_trigger_cb_mouse_up(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_trigger_cb_mouse_down(Ewl_Widget *w, void *ev, void *data);
 
-/*
- * Ewl_Text_Context stuff
+/**
+ * Stores context information for the different nodes in the formatting tree
  */
 struct Ewl_Text_Context
 {
-	char *font;
-	unsigned int styles;
-	unsigned int align;
-	unsigned int wrap;
-	char size;
-	Ewl_Color_Set color;
+	char *font;				/**< Font name */
+	unsigned int styles;			/**< Styles set in this node */
+	unsigned int align;			/**< Text alignment */
+	unsigned int wrap;			/**< Text wrap setting */
+	char size;				/**< Font size */
+	Ewl_Color_Set color;			/**< Font colour */
 
 	struct
 	{
-		Ewl_Color_Set bg;
-		Ewl_Color_Set glow;
-		Ewl_Color_Set outline;
-		Ewl_Color_Set shadow;
-		Ewl_Color_Set strikethrough;
-		Ewl_Color_Set underline;
-		Ewl_Color_Set double_underline;
-	} style_colors;
+		Ewl_Color_Set bg;		/**< Background colour */
+		Ewl_Color_Set glow;		/**< Glow colour */
+		Ewl_Color_Set outline;		/**< Outline colour */
+		Ewl_Color_Set shadow;		/**< Shadow colour */
+		Ewl_Color_Set strikethrough;	/**< Strikethrough colour */
+		Ewl_Color_Set underline;	/**< Underline colour */
+		Ewl_Color_Set double_underline;	/**< Double underline colour */
+	} style_colors;				/**< Colour information */
 
-	unsigned int ref_count;
+	unsigned int ref_count;			/**< Number of references to this context */
 };
 
 int  ewl_text_context_init(void);
@@ -319,16 +338,16 @@ void ewl_text_context_release(Ewl_Text_Context *tx);
 int ewl_text_context_compare(Ewl_Text_Context *a, Ewl_Text_Context *b);
 Ewl_Text_Context *ewl_text_context_dup(Ewl_Text_Context *old);
 
-/*
- * Ewl_Text_Tree stuff
+/**
+ * The text formatting tree nodes
  */
 struct Ewl_Text_Tree
 {
-	Ewl_Text_Tree *parent;
+	Ewl_Text_Tree *parent;	/**< Our parent tree */
 
-	unsigned int length;
-	Ecore_List *children;
-	Ewl_Text_Context *tx;
+	unsigned int length;	/**< Length of text covered by this node */
+	Ecore_List *children;	/**< Our child nodes */
+	Ewl_Text_Context *tx;	/**< The context to use for this node */
 };
 
 Ewl_Text_Tree *ewl_text_tree_new(void);
@@ -355,17 +374,24 @@ void ewl_text_tree_context_style_apply(Ewl_Text *t, Ewl_Text_Style style,
 void ewl_text_tree_context_style_remove(Ewl_Text *t, Ewl_Text_Style style,
                                         unsigned int idx, unsigned int len);
 
-/*
- * Ewl_Text_Trigger_Area stuff
+/**
+ * Typdef for the Ewl_Text_Trigger_Area struct
  */
 typedef struct Ewl_Text_Trigger_Area Ewl_Text_Trigger_Area;
 
+/**
+ * @def EWL_TEXT_TRIGGER_AREA(area)
+ * Typecasts a pointer to an Ewl_Text_Trigger_Area pointer
+ */
 #define EWL_TEXT_TRIGGER_AREA(area) ((Ewl_Text_Trigger_Area *) area)
 
+/**
+ * Inherits from Ewl_Widget and extends to provide a trigger area
+ */
 struct Ewl_Text_Trigger_Area
 {
-	Ewl_Widget	widget;
-	unsigned int	deleted;
+	Ewl_Widget	widget;		/**< Inherits from Ewl_Widget */
+	unsigned int	deleted;	/**< Is this area deleted */
 };
 
 Ewl_Widget *ewl_text_trigger_area_new(Ewl_Text_Trigger_Type type);

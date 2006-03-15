@@ -14,6 +14,10 @@
  * @themekey /radiobutton/group
  */
 
+/**
+ * @def EWL_RADIOBUTTON_TYPE
+ * The type name for the Ewl_Radiobutton widget
+ */
 #define EWL_RADIOBUTTON_TYPE "radiobutton"
 
 /**

@@ -14,6 +14,10 @@
  * @themekey /border/group
  */
 
+/**
+ * @def EWL_BORDER_TYPE
+ * The type name for the Ewl_Border widget
+ */
 #define EWL_BORDER_TYPE "border"
 
 /**

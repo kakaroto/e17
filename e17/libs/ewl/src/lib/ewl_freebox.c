@@ -7,7 +7,8 @@ static void ewl_freebox_layout_auto(Ewl_Freebox *fb);
 static void ewl_freebox_layout_manual(Ewl_Freebox *fb);
 static void ewl_freebox_layout_comparator(Ewl_Freebox *fb);
 
-/*
+/**
+ * @note
  * This will allow for differnt types of 'free' layout depending on what you
  * need. First there is AUTO layout, which will just place the widgets in
  * rows and columns (this will expand the freebox vertically as needed while
@@ -29,6 +30,7 @@ static void ewl_freebox_layout_comparator(Ewl_Freebox *fb);
 
 /**
  * @return Returns a new Ewl_Freebox on success or NULL on failure
+ * @brief Creates a new, initialized Ewl_Freebox widget
  */
 Ewl_Widget *
 ewl_freebox_new(void)
@@ -53,6 +55,7 @@ ewl_freebox_new(void)
 /**
  * @param fb: The Ewl_Freebox to initialize
  * @return Returns TRUE on success or FALSE on failure
+ * @brief Initializes an Ewl_Freebox widget to default values.
  */
 int
 ewl_freebox_init(Ewl_Freebox *fb)
@@ -83,6 +86,7 @@ ewl_freebox_init(Ewl_Freebox *fb)
  * @param fb: The Ewl_Freebox to change
  * @param type: The Ewl_Freebox_Layout_Type to set on this freebox
  * @return Returns no value
+ * @brief Set the layout type of the Ewl_Freebox
  */
 void
 ewl_freebox_layout_type_set(Ewl_Freebox *fb, Ewl_Freebox_Layout_Type type)
@@ -103,6 +107,7 @@ ewl_freebox_layout_type_set(Ewl_Freebox *fb, Ewl_Freebox_Layout_Type type)
 /**
  * @param fb: The Ewl_Freebox to get the layout from 
  * @return Returns the Ewl_Freebox_Layout_Type currently set on this freebox
+ * @brief Retrieve the layout type of the Ewl_Freebox
  */
 Ewl_Freebox_Layout_Type
 ewl_freebox_layout_type_get(Ewl_Freebox *fb)
@@ -118,6 +123,7 @@ ewl_freebox_layout_type_get(Ewl_Freebox *fb)
  * @param fb: The Ewl_Freebox to set the comparator on
  * @param cmp: The Ewl_Freebox_Comparator functon to set
  * @return Returns no value 
+ * @brief Set the comparator to use in the Ewl_Freebox
  */
 void
 ewl_freebox_comparator_set(Ewl_Freebox *fb, Ewl_Freebox_Comparator cmp)
@@ -141,6 +147,7 @@ ewl_freebox_comparator_set(Ewl_Freebox *fb, Ewl_Freebox_Comparator cmp)
  * @param fb: The Ewl_Freebox to get the comparator from
  * @return Returns the Ewl_Freebox_Comparator set on the given Ewl_Freebox
  * or NULL if none set.
+ * @brief Retrieve the comparator set in the Ewl_Freebox
  */
 Ewl_Freebox_Comparator
 ewl_freebox_comparator_get(Ewl_Freebox *fb)

@@ -6,7 +6,7 @@
 /**
  * @addtogroup Ewl_Combo
  *
- * @section Notes
+ * @note
  *
  * Note, if you set the combo to editable, with ewl_combo_editable set then
  * instead of using the model/view to get the data we will query the view
