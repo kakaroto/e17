@@ -91,19 +91,8 @@ remove_note(Evas_List * note)
 	free(p);
 	gbl_notes = evas_list_remove_list(gbl_notes, note);
 
-	/** 
-	 * FIXME: When you can get the row and its child text, compare
-	 * it to the ewl_text_text_get(p->title) value and remove the row
-	 * from the tree at this point.  Reporting that you've done so with
-	 * dml ("Removed note from save/load list", 2); or something.  When ewl
-	 * will let you do these things.
-	 */
-
-	if (saveload != NULL) {
-		dml("Removing note entry from saveload list", 2);
-		ewl_tree_row_destroy((Ewl_Tree *) saveload->tree,
-				     p->saveload_row);
-	}
+  /* FIXME more intelligent things once we have sorted saveload */
+  ewl_saveload_revert(NULL, NULL, NULL);
 
 	/*  Check if it was the last note  */
 	if (evas_list_next(note) == NULL && evas_list_prev(note) == NULL &&
@@ -317,7 +306,9 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 	if (saveload != NULL) {
 		char *title;
 		title = get_title_by_note(*note);
-		setup_saveload_opt(saveload->tree, title, *note);
+
+    /* FIXME more intelligent things once we have sorted saveload */
+		ewl_saveload_revert(NULL, NULL, NULL);
 		dml("Added new note to saveload list", 2);
 
 		if (title)

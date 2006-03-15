@@ -79,7 +79,6 @@ typedef struct _note {
 	Ewl_Widget     *content;
 	Ewl_Widget     *pane;
 
-	Ewl_Row        *saveload_row;
 	Menu           *menu;
 
 	/* Comparison Strings and Timer */
