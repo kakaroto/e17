@@ -37,6 +37,7 @@ if ( ewl_media_is_available() ) {
 		s->text = NULL;
 	}
 	s->screen = ewl_image_new();
+	ewl_image_proportional_set(EWL_IMAGE(s->screen), TRUE);
 	ewl_theme_data_str_set(s->screen, "/image/group", "entry");
 	ewl_image_file_set(EWL_IMAGE(s->screen), picture1, NULL);
 	ewl_object_alignment_set(EWL_OBJECT(s->screen), EWL_FLAG_ALIGN_CENTER);
@@ -57,6 +58,7 @@ if ( ewl_media_is_available() ) {
 		hsize = ewl_text_text_get(EWL_TEXT(m->hsize));
 		h = atoi(hsize);
 		s->screen = ewl_image_new();
+		ewl_image_proportional_set(EWL_IMAGE(s->screen), TRUE);
 		ewl_theme_data_str_set(s->screen, "/image/group", "entry");
 		ewl_object_fill_policy_set(EWL_OBJECT(s->screen), EWL_FLAG_FILL_SHRINK);
 		ewl_image_file_set(EWL_IMAGE(s->screen), picture2, NULL);
@@ -178,6 +180,7 @@ if ( ewl_media_is_available() ) {
 	/*******************************************************************/
 	pic1 = ecore_dlist_goto_first(m->imagelist);
 	s->screen = ewl_image_new();
+	ewl_image_proportional_set(EWL_IMAGE(s->screen), TRUE);
 	ewl_theme_data_str_set(s->screen, "/image/group", "entry");
 	ewl_image_file_set(EWL_IMAGE(s->screen), pic1, NULL);
 	ewl_object_alignment_set(EWL_OBJECT(s->screen), EWL_FLAG_ALIGN_CENTER);

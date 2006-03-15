@@ -1,4 +1,3 @@
-
 #include "ephoto.h"
 
 /***Global Defs***/
@@ -103,12 +102,46 @@ main(int argc, char **argv)
 	ewl_object_maximum_size_set(EWL_OBJECT(m->audiotree), 200, 160);
 	ewl_widget_show(m->audiotree);
 	
+	m->notebook = ewl_notebook_new();
+	ewl_notebook_tabbar_position_set(EWL_NOTEBOOK(m->notebook), EWL_POSITION_TOP);
+	ewl_container_child_append(EWL_CONTAINER(m->hbox), m->notebook);
+	ewl_object_alignment_set(EWL_OBJECT(m->notebook), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_fill_policy_set(EWL_OBJECT(m->notebook), EWL_FLAG_FILL_ALL);
+	ewl_widget_show(m->notebook);
+	
+	m->viewbox = ewl_vbox_new();
+	ewl_container_child_append(EWL_CONTAINER(m->notebook), m->viewbox);
+	ewl_object_alignment_set(EWL_OBJECT(m->viewbox), EWL_FLAG_ALIGN_CENTER);
+	ewl_box_spacing_set(EWL_BOX(m->viewbox), 10);
+	ewl_object_fill_policy_set(EWL_OBJECT(m->viewbox), EWL_FLAG_FILL_ALL);
+	ewl_widget_show(m->viewbox);
+	
+	m->vimage = ewl_image_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(m->vimage), EWL_FLAG_FILL_ALL);
+	ewl_image_proportional_set(EWL_IMAGE(m->vimage), TRUE);
+	ewl_container_child_append(EWL_CONTAINER(m->viewbox), m->vimage);
+	ewl_widget_show(m->vimage);
+	
+	m->vbutton = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(m->vbutton), "Add image to slideshow");
+	ewl_container_child_append(EWL_CONTAINER(m->viewbox), m->vbutton);
+	ewl_object_maximum_size_set(EWL_OBJECT(m->vbutton), 150 , 25);
+	ewl_object_alignment_set(EWL_OBJECT(m->vbutton), EWL_FLAG_ALIGN_CENTER);
+	ewl_callback_append(m->vbutton, EWL_CALLBACK_CLICKED, images_cb, NULL);
+	ewl_widget_disable(m->vbutton);
+	ewl_widget_state_set(m->vbutton, "disabled");
+	ewl_widget_show(m->vbutton);
+	
+	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(m->notebook), m->viewbox, "View Image");	
+	
 	m->vbox2 = ewl_vbox_new();
-	ewl_container_child_append(EWL_CONTAINER(m->hbox), m->vbox2);
+	ewl_container_child_append(EWL_CONTAINER(m->notebook), m->vbox2);
 	ewl_object_alignment_set(EWL_OBJECT(m->vbox2), EWL_FLAG_ALIGN_CENTER);
 	ewl_box_spacing_set(EWL_BOX(m->vbox2), 10);
 	ewl_object_size_request(EWL_OBJECT(m->vbox2), 20, 400);
 	ewl_widget_show(m->vbox2);
+	
+	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(m->notebook), m->vbox2, "Slideshow/Presentation");
 
 	m->content = ewl_border_new();
 	ewl_border_text_set(EWL_BORDER(m->content), "Content");
