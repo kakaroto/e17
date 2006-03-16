@@ -48,7 +48,6 @@ void            free_note_stor(NoteStor * p);
 
 /* One Shot Functions. :-) */
 int             append_note_stor(NoteStor * p);
-void            append_autosave_note_stor(NoteStor * p);
 void            remove_note_stor(NoteStor * p);
 void            process_note_storage_locations();
 
@@ -59,9 +58,6 @@ void            autoload(void);
 void            autosave(void);
 
 /* Internal Functions */
-char           *make_storage_fn(void);
-char           *make_autosave_fn(void);
-
 NoteStor       *get_notestor_from_value(char *e);
 char           *get_value_from_notestor(NoteStor * p);
 

@@ -47,32 +47,6 @@ alloc_note_stor()
 /* One Shot Functions. :-) */
 
 /**
- * @param p: The NoteStor containing the required information.
- * @brief: Appends a new autosave note according to whats in p.
- */
-void
-append_autosave_note_stor(NoteStor * p)
-{
-	char           *target = malloc(PATH_MAX);
-	char           *title;
-	char           *string = get_value_from_notestor(p);
-	FILE           *fp;
-
-	title = get_title_by_content(p->content);
-	sprintf(target, "%s/.e/apps/enotes/autosave/%s", getenv("HOME"), title);
-	free(title);
-
-	if ((fp = fopen(target, "w")) != NULL) {
-		fputs(string, fp);
-		fclose(fp);
-	}
-
-	free(string);
-	free(target);
-	return;
-}
-
-/**
  * @param p: The information required (about the note we're saving).
  * @brief: Appends a new note to the note storage according to the
  *         information stored in p.
@@ -90,17 +64,11 @@ append_note_stor(NoteStor * p)
 	sprintf(target, "%s/.e/apps/enotes/notes/%s", getenv("HOME"), title);
 	free(title);
 
-	if ((fp = fopen(target, "r")) == NULL) {
-		if ((fp = fopen(target, "w")) != NULL) {
-			fputs(string, fp);
-			fclose(fp);
-			retval=1;
-		}
-	} else {
+	if ((fp = fopen(target, "w")) != NULL) {
+		fputs(string, fp);
 		fclose(fp);
-		msgbox("Note Already Exists",
-		       "Unable to save note because a note with the same title exists.\nPlease delete this note first.");
-	}
+		retval=1;
+  }
 
 	free(string);
 	free(target);
@@ -174,17 +142,6 @@ process_note_storage_locations()
 		closedir(p);
 	}
 
-	sprintf(f, "%s/.e/apps/enotes/autosave", getenv("HOME"));
-	if ((p = opendir(f)) == NULL) {
-		dml("Note Autosave Storage Location Doesn't Exist; Creating...",
-		    1);
-		if (mkdir(f, (mode_t) 0755) == -1)
-			dml("Unable to Create Autosave Storage Location.  Expect problems!", 1);
-	} else {
-		dml("Note Autosave Storage Location Found", 1);
-		closedir(p);
-	}
-
 	free(f);
 	return;
 }
@@ -193,7 +150,7 @@ process_note_storage_locations()
 /* Autosave Functions */
 
 /**
- * @brief: Automatically loads all of the "autosave" notes.
+ * @brief: Automatically loads all of the notes.
  */
 void
 autoload(void)
@@ -204,7 +161,7 @@ autoload(void)
 	char           *targetf = malloc(PATH_MAX);
 	struct stat     buf;
 
-	sprintf(target, "%s/.e/apps/enotes/autosave", getenv("HOME"));
+	sprintf(target, "%s/.e/apps/enotes/notes", getenv("HOME"));
 	if ((dir = opendir(target)) != NULL) {
 
 		while ((p = readdir(dir)) != NULL) {
@@ -222,7 +179,7 @@ autoload(void)
 }
 
 /**
- * @brief: Automatically saves all open notes into the autosave storage.
+ * @brief: Automatically saves all open notes into the storage.
  */
 void
 autosave(void)
@@ -231,38 +188,8 @@ autosave(void)
 	Note           *note;
 	Evas_List      *tmp = gbl_notes;
 	NoteStor       *n;
-	char           *path = malloc(PATH_MAX);
-	char           *work = malloc(PATH_MAX);
-	DIR            *dir;
-	struct dirent  *d;
-	struct stat     buf;
 
 	dml("Autosaving", 1);
-
-	sprintf(path, "%s/.e/apps/enotes/autosave", getenv("HOME"));
-
-	if ((dir = opendir(path)) != NULL) {
-		while ((d = readdir(dir)) != NULL) {
-			sprintf(work, "%s/%s", path, d->d_name);
-			stat(work, &buf);
-			if (S_ISREG(buf.st_mode)) {
-				unlink(work);
-			}
-		}
-		closedir(dir);
-	}
-
-	if (rmdir(path) != -1) {
-		if (mkdir(path, 0755) != -1) {
-			dml("Successfully Cleaned the Autosaves", 1);
-		} else {
-			dml("Error Recreating Autosave Directory", 1);
-		}
-	} else {
-		dml("Error Removing the Autosave Location", 1);
-	}
-	free(path);
-	free(work);
 
 	while (tmp != NULL) {
 		note = evas_list_data(tmp);
@@ -273,7 +200,7 @@ autosave(void)
 		n->x = x;
 		n->y = y;
 		n->content = strdup(get_content_by_note(tmp));
-		append_autosave_note_stor(n);
+		append_note_stor(n);
 		free_note_stor(n);
 		tmp = evas_list_next(tmp);
 	}

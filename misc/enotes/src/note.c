@@ -13,6 +13,10 @@
 
 #include "note.h"
 
+static void note_close_dialog_close_cb(Ewl_Widget *w, void *ev, void *data);
+static void note_close_dialog_delete_cb(Ewl_Widget *w, void *ev, void *data);
+static void note_close_dialog_unload_cb(Ewl_Widget *w, void *ev, void *data);
+
 extern MainConfig *main_config;
 
 Evas_List      *gbl_notes = NULL;
@@ -76,27 +80,102 @@ append_note(void)
 void
 remove_note(Evas_List * note)
 {
-	Note           *p = evas_list_data(note);
-
+  Ewl_Widget     *w;
+	Note           *p;
+ 
 	dml("Closing a Note", 2);
 
+  p = evas_list_data(note);
+  if (p->timcomp)
+    {
 	ecore_timer_del(p->timcomp);
 	p->timcomp = NULL;
+    }
 
+  if (p->dialog)
+    return;
+
+  p->dialog = ewl_dialog_new();
+  ewl_window_title_set(EWL_WINDOW(p->dialog), "Enotes Delete");
+  ewl_window_name_set(EWL_WINDOW(p->dialog), "Enotes");
+  ewl_window_class_set(EWL_WINDOW(p->dialog), "Enotes");
+  ewl_callback_append(p->dialog, EWL_CALLBACK_DELETE_WINDOW, note_close_dialog_close_cb, p);
+
+  ewl_dialog_active_area_set(EWL_DIALOG(p->dialog), EWL_POSITION_TOP);
+  w = ewl_text_new();
+  ewl_text_text_set(EWL_TEXT(w), "Do you want to perminantly delete this note or just unload it?");
+  ewl_container_child_append(EWL_CONTAINER(p->dialog), w);
+  ewl_widget_show(w);
+
+  ewl_dialog_active_area_set(EWL_DIALOG(p->dialog), EWL_POSITION_BOTTOM);
+  w = ewl_button_new();
+  ewl_button_label_set(EWL_BUTTON(w), "Delete");
+  ewl_container_child_append(EWL_CONTAINER(p->dialog), w);
+  ewl_callback_append(w, EWL_CALLBACK_CLICKED, note_close_dialog_delete_cb, p);
+  ewl_widget_show(w);
+
+  w = ewl_button_new();
+  ewl_button_label_set(EWL_BUTTON(w), "Unload");
+  ewl_container_child_append(EWL_CONTAINER(p->dialog), w);
+  ewl_callback_append(w, EWL_CALLBACK_CLICKED, note_close_dialog_unload_cb, p);
+  ewl_widget_show(w);
+
+  w = ewl_button_new();
+  ewl_button_label_set(EWL_BUTTON(w), "Cancel");
+  ewl_container_child_append(EWL_CONTAINER(p->dialog), w);
+  ewl_callback_append(w, EWL_CALLBACK_CLICKED, note_close_dialog_close_cb, p);
+  ewl_widget_show(w);
+
+  ewl_dialog_active_area_set(EWL_DIALOG(p->dialog), EWL_POSITION_TOP);
+  ewl_widget_show(p->dialog);
+}
+
+static void
+note_close_dialog_close_cb(Ewl_Widget *w, void *ev, void *data) {
+  Note *p;
+
+  p = (Note *) data;
+  ewl_widget_destroy(p->dialog);
+  p->dialog = NULL;
+}
+
+static void
+note_close_dialog_delete_cb(Ewl_Widget *w, void *ev, void *data) {
+  Note *p;
+  char *path = malloc(PATH_MAX);
+
+  note_close_dialog_unload_cb(w, ev, data);
+
+  dml("Deleting Saved Note", 2);
+  sprintf(path, "%s/.e/apps/enotes/notes/%s", getenv("HOME"),
+      get_title_by_content(ewl_text_text_get(EWL_TEXT(p->content))));
+  unlink(path);
+
+  /* FIXME more intelligent things once we have sorted
+   * saveload */
+  ewl_saveload_revert(NULL, NULL, NULL);
+}
+
+static void
+note_close_dialog_unload_cb(Ewl_Widget *w, void *ev, void *data) {
+  Note *p;
+
+  note_close_dialog_close_cb(w, ev, data);
+
+  p = (Note *) data;
 	edje_object_part_unswallow(p->edje, p->eo);
 	ewl_widget_destroy(p->emb);
 	evas_object_del(p->edje);
 
 	ecore_evas_free(p->win);
 	free(p);
-	gbl_notes = evas_list_remove_list(gbl_notes, note);
+	gbl_notes = evas_list_remove(gbl_notes, p);
 
   /* FIXME more intelligent things once we have sorted saveload */
   ewl_saveload_revert(NULL, NULL, NULL);
 
 	/*  Check if it was the last note  */
-	if (evas_list_next(note) == NULL && evas_list_prev(note) == NULL &&
-	    controlcentre == NULL)
+	if (evas_list_next(gbl_notes) == NULL && controlcentre == NULL)
 		ecore_main_loop_quit();
 
 	return;
@@ -315,6 +394,7 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 			free(title);
 	}
 
+  p->dialog = NULL;
 	return;
 }
 
@@ -559,7 +639,7 @@ timer_val_compare(void *data)
 {
 	Note           *p;
 	char           *tmp;
-
+  
 	p = (Note *) data;
 	if (!p->timcomp)
 		return (0);
@@ -681,28 +761,6 @@ get_note_by_title(char *title)
 		}
 		if (note_title)
 			free(note_title);
-	}
-	return (NULL);
-}
-
-/**
- * @param content: The content to search for.
- * @return: Returns the Evas_List of the note requested by "content".
- * @brief: Searches for and returns the note with the content being "content"
- */
-Evas_List      *
-get_note_by_content(char *content)
-{
-	Evas_List      *a;
-
-	a = get_cycle_begin();
-	if (!strcmp(get_content_by_note(a), content)) {
-		return (a);
-	}
-	while ((a = get_cycle_next_note(a)) != NULL) {
-		if (!strcmp(get_content_by_note(a), content)) {
-			return (a);
-		}
 	}
 	return (NULL);
 }

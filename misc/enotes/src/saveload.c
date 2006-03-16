@@ -200,6 +200,9 @@ ewl_saveload_revert(Ewl_Widget * widget, void *ev_data, void * ud)
 {
 	dml("Refreshing the Saveload List", 2);
 
+  if (!saveload)
+    return;
+
 	ewl_container_reset((Ewl_Container *) saveload->tree);
   ewl_widget_enable(saveload->savebtn);
   ewl_widget_state_set(saveload->savebtn, "enabled");

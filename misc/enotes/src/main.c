@@ -50,8 +50,8 @@ main(int argc, char *argv[]) {
 	ecore_ipc_init();
 	dml("IPC Initiated Successfully", 1);
 	
-	/* autoload (if on) will increment this if there are notes
-	 * if not we may need to create a blank one */
+	/* loading will increment this if there are notes if not we may need to
+   * create a blank one */
 	note_count = 0;
 
 	if ((ecore_config_init("enotes")) == ECORE_CONFIG_ERR_FAIL) {
@@ -100,11 +100,9 @@ Usage: enotes [options]");
 
 		dml("Efl Successfully Initiated", 1);
 
-		/* Autoloading */
-		if (main_config->autosave == 1) {
-      autoload();
-      update_autosave();
-    }
+    autoload();
+    /* create autosave timer */
+    update_autosave();
 
 		if(remotecmd!=NULL)handle_ipc_message(remotecmd);
 
@@ -131,9 +129,7 @@ Usage: enotes [options]");
 		/* Save Controlcentre Settings */
 		set_cc_pos();
 
-		/* Autosaving */
-		if (main_config->autosave == 1)
-			autosave();
+	  autosave();
     if (autosave_timer)
       ecore_timer_del(autosave_timer);
 

@@ -10,13 +10,16 @@
 |      The GNU General Public License (GPL)               |
 |                                                         |
 | Owner: Thomas Fletcher                                  |
+| Maintainer: Andrew 'HandyAndE' Williams                 |
 |_________________________________________________________|
 
     BUGS & BASIC FUNCTIONALITY:
 
-Shaped Note?
+Shaped Note? -- ewl bug
+remember the list of notes we want to autoload - not *all* notes
+remember the shaded state of notes and controlcenter
+If a title matches another notes title append a number, removes conflicts
 Setting Note Themes in Realtime
-Ecore_Config and enotes IPC dont work together
 Removing a Note and then Clicking on Another Sometimes Segv's - Something Internal In Evas Methinks - Investigate!
 
     FEATURES and AIMS:
@@ -26,7 +29,6 @@ System Tray Icon
 Right Click Menu on Notes
 Fix Ecore_Config's Usage or use custom usage (add option to ecore_config)
 Recomment all Functions
-Tidy Storage and Configuration Backends
 Refine code for minimalism
 Searching Through Saved Notes
 

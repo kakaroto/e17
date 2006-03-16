@@ -79,6 +79,7 @@ typedef struct _note {
 	Ewl_Widget     *content;
 	Ewl_Widget     *pane;
 
+  Ewl_Widget     *dialog;
 	Menu           *menu;
 
 	/* Comparison Strings and Timer */
@@ -140,7 +141,6 @@ void            notes_update_themes(void);
 int             get_note_count();
 
 Evas_List      *get_note_by_title(char *title);
-Evas_List      *get_note_by_content(char *content);
 
 char           *get_title_by_note(Evas_List * note);
 char           *get_title_by_note_struct(Note * note);
