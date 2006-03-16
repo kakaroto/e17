@@ -187,128 +187,128 @@ switch (FirstDay)
      
 case 0:
         
-edje_object_part_text_set(label, "Sunday", _("Su"));
+edje_object_part_text_set(label, "Sunday", D_("Su"));
         
-edje_object_part_text_set(label, "Monday", _("Mo"));
+edje_object_part_text_set(label, "Monday", D_("Mo"));
         
-edje_object_part_text_set(label, "Tuesday", _("Tu"));
+edje_object_part_text_set(label, "Tuesday", D_("Tu"));
         
-edje_object_part_text_set(label, "Wednesday", _("We"));
+edje_object_part_text_set(label, "Wednesday", D_("We"));
         
-edje_object_part_text_set(label, "Thursday", _("Th"));
+edje_object_part_text_set(label, "Thursday", D_("Th"));
         
-edje_object_part_text_set(label, "Friday", _("Fr"));
+edje_object_part_text_set(label, "Friday", D_("Fr"));
         
-edje_object_part_text_set(label, "Saturday", _("Sa"));
+edje_object_part_text_set(label, "Saturday", D_("Sa"));
         
 break;
      
 case 1:
         
-edje_object_part_text_set(label, "Sunday", _("Mo"));
+edje_object_part_text_set(label, "Sunday", D_("Mo"));
         
-edje_object_part_text_set(label, "Monday", _("Tu"));
+edje_object_part_text_set(label, "Monday", D_("Tu"));
         
-edje_object_part_text_set(label, "Tuesday", _("We"));
+edje_object_part_text_set(label, "Tuesday", D_("We"));
         
-edje_object_part_text_set(label, "Wednesday", _("Th"));
+edje_object_part_text_set(label, "Wednesday", D_("Th"));
         
-edje_object_part_text_set(label, "Thursday", _("Fr"));
+edje_object_part_text_set(label, "Thursday", D_("Fr"));
         
-edje_object_part_text_set(label, "Friday", _("Sa"));
+edje_object_part_text_set(label, "Friday", D_("Sa"));
         
-edje_object_part_text_set(label, "Saturday", _("Su"));
+edje_object_part_text_set(label, "Saturday", D_("Su"));
         
 break;
      
 
 case 2:
         
-edje_object_part_text_set(label, "Sunday", _("Tu"));
+edje_object_part_text_set(label, "Sunday", D_("Tu"));
         
-edje_object_part_text_set(label, "Monday", _("We"));
+edje_object_part_text_set(label, "Monday", D_("We"));
         
-edje_object_part_text_set(label, "Tuesday", _("Th"));
+edje_object_part_text_set(label, "Tuesday", D_("Th"));
         
-edje_object_part_text_set(label, "Wednesday", _("Fr"));
+edje_object_part_text_set(label, "Wednesday", D_("Fr"));
         
-edje_object_part_text_set(label, "Thursday", _("Sa"));
+edje_object_part_text_set(label, "Thursday", D_("Sa"));
         
-edje_object_part_text_set(label, "Friday", _("Su"));
+edje_object_part_text_set(label, "Friday", D_("Su"));
         
-edje_object_part_text_set(label, "Saturday", _("Mo"));
+edje_object_part_text_set(label, "Saturday", D_("Mo"));
         
 break;
      
 case 3:
         
-edje_object_part_text_set(label, "Sunday", _("We"));
+edje_object_part_text_set(label, "Sunday", D_("We"));
         
-edje_object_part_text_set(label, "Monday", _("Th"));
+edje_object_part_text_set(label, "Monday", D_("Th"));
         
-edje_object_part_text_set(label, "Tuesday", _("Fr"));
+edje_object_part_text_set(label, "Tuesday", D_("Fr"));
         
-edje_object_part_text_set(label, "Wednesday", _("Sa"));
+edje_object_part_text_set(label, "Wednesday", D_("Sa"));
         
-edje_object_part_text_set(label, "Thursday", _("Su"));
+edje_object_part_text_set(label, "Thursday", D_("Su"));
         
-edje_object_part_text_set(label, "Friday", _("Mo"));
+edje_object_part_text_set(label, "Friday", D_("Mo"));
         
-edje_object_part_text_set(label, "Saturday", _("Tu"));
+edje_object_part_text_set(label, "Saturday", D_("Tu"));
         
 break;
      
 case 4:
         
-edje_object_part_text_set(label, "Sunday", _("Th"));
+edje_object_part_text_set(label, "Sunday", D_("Th"));
         
-edje_object_part_text_set(label, "Monday", _("Fr"));
+edje_object_part_text_set(label, "Monday", D_("Fr"));
         
-edje_object_part_text_set(label, "Tuesday", _("Sa"));
+edje_object_part_text_set(label, "Tuesday", D_("Sa"));
         
-edje_object_part_text_set(label, "Wednesday", _("Su"));
+edje_object_part_text_set(label, "Wednesday", D_("Su"));
         
-edje_object_part_text_set(label, "Thursday", _("Mo"));
+edje_object_part_text_set(label, "Thursday", D_("Mo"));
         
-edje_object_part_text_set(label, "Friday", _("Tu"));
+edje_object_part_text_set(label, "Friday", D_("Tu"));
         
-edje_object_part_text_set(label, "Saturday", _("We"));
+edje_object_part_text_set(label, "Saturday", D_("We"));
         
 break;
      
 case 5:
         
-edje_object_part_text_set(label, "Sunday", _("Fr"));
+edje_object_part_text_set(label, "Sunday", D_("Fr"));
         
-edje_object_part_text_set(label, "Monday", _("Sa"));
+edje_object_part_text_set(label, "Monday", D_("Sa"));
         
-edje_object_part_text_set(label, "Tuesday", _("Su"));
+edje_object_part_text_set(label, "Tuesday", D_("Su"));
         
-edje_object_part_text_set(label, "Wednesday", _("Mo"));
+edje_object_part_text_set(label, "Wednesday", D_("Mo"));
         
-edje_object_part_text_set(label, "Thursday", _("Tu"));
+edje_object_part_text_set(label, "Thursday", D_("Tu"));
         
-edje_object_part_text_set(label, "Friday", _("We"));
+edje_object_part_text_set(label, "Friday", D_("We"));
         
-edje_object_part_text_set(label, "Saturday", _("Th"));
+edje_object_part_text_set(label, "Saturday", D_("Th"));
         
 break;
      
 case 6:
         
-edje_object_part_text_set(label, "Sunday", _("Sa"));
+edje_object_part_text_set(label, "Sunday", D_("Sa"));
         
-edje_object_part_text_set(label, "Monday", _("Su"));
+edje_object_part_text_set(label, "Monday", D_("Su"));
         
-edje_object_part_text_set(label, "Tuesday", _("Mo"));
+edje_object_part_text_set(label, "Tuesday", D_("Mo"));
         
-edje_object_part_text_set(label, "Wednesday", _("Tu"));
+edje_object_part_text_set(label, "Wednesday", D_("Tu"));
         
-edje_object_part_text_set(label, "Thursday", _("We"));
+edje_object_part_text_set(label, "Thursday", D_("We"));
         
-edje_object_part_text_set(label, "Friday", _("Th"));
+edje_object_part_text_set(label, "Friday", D_("Th"));
         
-edje_object_part_text_set(label, "Saturday", _("Fr"));
+edje_object_part_text_set(label, "Saturday", D_("Fr"));
         
 break;
      
@@ -330,73 +330,73 @@ switch (month)
      
 case 0:
         
-edje_object_part_text_set(label, "Month", _("JANUARY"));
+edje_object_part_text_set(label, "Month", D_("JANUARY"));
         
 break;
      
 case 1:
         
-edje_object_part_text_set(label, "Month", _("FEBRUARY"));
+edje_object_part_text_set(label, "Month", D_("FEBRUARY"));
         
 break;
      
 case 2:
         
-edje_object_part_text_set(label, "Month", _("MARCH"));
+edje_object_part_text_set(label, "Month", D_("MARCH"));
         
 break;
      
 case 3:
         
-edje_object_part_text_set(label, "Month", _("APRIL"));
+edje_object_part_text_set(label, "Month", D_("APRIL"));
         
 break;
      
 case 4:
         
-edje_object_part_text_set(label, "Month", _("MAY"));
+edje_object_part_text_set(label, "Month", D_("MAY"));
         
 break;
      
 case 5:
         
-edje_object_part_text_set(label, "Month", _("JUNE"));
+edje_object_part_text_set(label, "Month", D_("JUNE"));
         
 break;
      
 case 6:
         
-edje_object_part_text_set(label, "Month", _("JULY"));
+edje_object_part_text_set(label, "Month", D_("JULY"));
         
 break;
      
 case 7:
         
-edje_object_part_text_set(label, "Month", _("AUGUST"));
+edje_object_part_text_set(label, "Month", D_("AUGUST"));
         
 break;
      
 case 8:
         
-edje_object_part_text_set(label, "Month", _("SEPTEMBER"));
+edje_object_part_text_set(label, "Month", D_("SEPTEMBER"));
         
 break;
      
 case 9:
         
-edje_object_part_text_set(label, "Month", _("OCTOBER"));
+edje_object_part_text_set(label, "Month", D_("OCTOBER"));
         
 break;
      
 case 10:
         
-edje_object_part_text_set(label, "Month", _("NOVEMBER"));
+edje_object_part_text_set(label, "Month", D_("NOVEMBER"));
         
 break;
      
 case 11:
         
-edje_object_part_text_set(label, "Month", _("DECEMBER"));
+edje_object_part_text_set(label, "Month", D_("DECEMBER"));
         
 break;
      

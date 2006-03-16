@@ -52,7 +52,7 @@ e_int_config_calendar(void *con, void *calendar)
 
         /* create config diaolg for NULL object/data */
         cfd =
-           e_config_dialog_new(con, _("Calendar Settings"), NULL, 0, v,
+           e_config_dialog_new(con, D_("Calendar Settings"), NULL, 0, v,
                                calendar);
      }
 }
@@ -114,34 +114,34 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data)
 
    o = e_widget_table_add(evas, 0);
 
-   of1 = e_widget_framelist_add(evas, _("Color/Text Scheme"), 0);
-   check = e_widget_check_add(evas, _("User"), &(cfdata->temp_UserCS));
+   of1 = e_widget_framelist_add(evas, D_("Color/Text Scheme"), 0);
+   check = e_widget_check_add(evas, D_("User"), &(cfdata->temp_UserCS));
    e_widget_framelist_object_append(of1, check);
    e_widget_table_object_append(o, of1, 0, 0, 1, 1, 1, 1, 1, 1);
 
-   of2 = e_widget_framelist_add(evas, _("Backgroud Image"), 0);
+   of2 = e_widget_framelist_add(evas, D_("Backgroud Image"), 0);
    rg = e_widget_radio_group_new(&(cfdata->calendar->conf->ImageYes));
-   ob = e_widget_radio_add(evas, _("With Top Image"), 0, rg);
+   ob = e_widget_radio_add(evas, D_("With Top Image"), 0, rg);
    e_widget_framelist_object_append(of2, ob);
-   ob = e_widget_radio_add(evas, _("Without Top Image"), 1, rg);
+   ob = e_widget_radio_add(evas, D_("Without Top Image"), 1, rg);
    e_widget_framelist_object_append(of2, ob);
    e_widget_table_object_append(o, of2, 0, 1, 1, 1, 1, 1, 1, 1);
 
-   of = e_widget_framelist_add(evas, _("First Day of Week"), 0);
+   of = e_widget_framelist_add(evas, D_("First Day of Week"), 0);
    rg = e_widget_radio_group_new(&(cfdata->calendar->conf->DayofWeek_Start));
-   ob = e_widget_radio_add(evas, _("Sunday"), 0, rg);
+   ob = e_widget_radio_add(evas, D_("Sunday"), 0, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, _("Monday"), 1, rg);
+   ob = e_widget_radio_add(evas, D_("Monday"), 1, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, _("Tuesday"), 2, rg);
+   ob = e_widget_radio_add(evas, D_("Tuesday"), 2, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, _("Wednesday"), 3, rg);
+   ob = e_widget_radio_add(evas, D_("Wednesday"), 3, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, _("Thursday"), 4, rg);
+   ob = e_widget_radio_add(evas, D_("Thursday"), 4, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, _("Friday"), 5, rg);
+   ob = e_widget_radio_add(evas, D_("Friday"), 5, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, _("Saturday"), 6, rg);
+   ob = e_widget_radio_add(evas, D_("Saturday"), 6, rg);
    e_widget_framelist_object_append(of, ob);
    e_widget_table_object_append(o, of, 0, 2, 1, 1, 1, 1, 1, 1);
 
@@ -292,32 +292,32 @@ _color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas,
    o = e_widget_table_add(evas, 0);
    s_table = e_widget_table_add(evas, 0);
 
-   of2 = e_widget_framelist_add(evas, _("Top Image"), 1);
+   of2 = e_widget_framelist_add(evas, D_("Top Image"), 1);
    rg = e_widget_radio_group_new(&(cfdata->calendar->conf->ImageYes));
-   ob = e_widget_radio_add(evas, _("With"), 0, rg);
+   ob = e_widget_radio_add(evas, D_("With"), 0, rg);
    e_widget_framelist_object_append(of2, ob);
-   ob = e_widget_radio_add(evas, _("Without"), 1, rg);
+   ob = e_widget_radio_add(evas, D_("Without"), 1, rg);
    e_widget_framelist_object_append(of2, ob);
    e_widget_table_object_append(s_table, of2, 0, 0, 1, 1, 1, 1, 1, 1);
 
    e_widget_table_object_append(o, s_table, 0, 0, 1, 1, 1, 1, 1, 1);
 
    start_table = e_widget_table_add(evas, 0);
-   of = e_widget_framelist_add(evas, _("First Day of Week"), 0);
+   of = e_widget_framelist_add(evas, D_("First Day of Week"), 0);
    rg = e_widget_radio_group_new(&(cfdata->calendar->conf->DayofWeek_Start));
-   ob = e_widget_radio_add(evas, _("Sunday"), 0, rg);
+   ob = e_widget_radio_add(evas, D_("Sunday"), 0, rg);
    e_widget_table_object_append(start_table, ob, 0, 0, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_radio_add(evas, _("Monday"), 1, rg);
+   ob = e_widget_radio_add(evas, D_("Monday"), 1, rg);
    e_widget_table_object_append(start_table, ob, 0, 1, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_radio_add(evas, _("Tuesday"), 2, rg);
+   ob = e_widget_radio_add(evas, D_("Tuesday"), 2, rg);
    e_widget_table_object_append(start_table, ob, 0, 2, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_radio_add(evas, _("Wednesday"), 3, rg);
+   ob = e_widget_radio_add(evas, D_("Wednesday"), 3, rg);
    e_widget_table_object_append(start_table, ob, 0, 3, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_radio_add(evas, _("Thursday"), 4, rg);
+   ob = e_widget_radio_add(evas, D_("Thursday"), 4, rg);
    e_widget_table_object_append(start_table, ob, 1, 0, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_radio_add(evas, _("Friday"), 5, rg);
+   ob = e_widget_radio_add(evas, D_("Friday"), 5, rg);
    e_widget_table_object_append(start_table, ob, 1, 1, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_radio_add(evas, _("Saturday"), 6, rg);
+   ob = e_widget_radio_add(evas, D_("Saturday"), 6, rg);
    e_widget_table_object_append(start_table, ob, 1, 2, 1, 1, 1, 1, 1, 1);
    e_widget_framelist_object_append(of, start_table);
    e_widget_table_object_append(o, of, 0, 1, 1, 1, 1, 1, 1, 1);
@@ -326,7 +326,7 @@ _color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas,
      {
 
      /*************  Other Fonts  *************/
-        font_title = e_widget_framelist_add(evas, _("Fonts"), 0);
+        font_title = e_widget_framelist_add(evas, D_("Fonts"), 0);
         of_y = e_widget_table_add(evas, 1);
         //label on top
         e_widget_table_object_append(of_y, e_widget_label_add(evas, "Font"),
@@ -377,7 +377,7 @@ _color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas,
         e_widget_table_object_append(o, font_title, 1, 0, 1, 1, 0, 0, 0, 0);
 
         start_tableB = e_widget_table_add(evas, 0);
-        ofB = e_widget_framelist_add(evas, _("Configure Colors"), 0);
+        ofB = e_widget_framelist_add(evas, D_("Configure Colors"), 0);
         e_widget_table_object_append(start_tableB,
                                      e_widget_button_add(evas, "Today", NULL,
                                                          e_int_config_calendar_today,
@@ -404,7 +404,7 @@ _color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas,
 
 //Add option to read config file
 /*  	mi = e_menu_item_new(face->menu);
-   	e_menu_item_label_set(mi, _("Read Conf Files"));
+   	e_menu_item_label_set(mi, D_("Read Conf Files"));
    	e_menu_item_callback_set(mi, read_conf_files, calendar); 
 
 */

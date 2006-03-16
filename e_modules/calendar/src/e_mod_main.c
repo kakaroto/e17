@@ -55,6 +55,10 @@ e_modapi_init(E_Module *module)
    
 Calendar * calendar;
    
+      /* Set up module's message catalogue */ 
+      bindtextdomain(PACKAGE, LOCALEDIR);
+      bind_textdomain_codeset(PACKAGE, "UTF-8");
+
       /* check module api version */ 
       if (module->api->version < E_MODULE_API_VERSION)
       
@@ -167,9 +171,9 @@ EAPI int
 e_modapi_about(E_Module *module) 
 {
    
-e_error_dialog_show(_("Enlightenment calendar Module"),
+e_error_dialog_show(D_("Enlightenment calendar Module"),
                         
-_("A simple module to give E17 a desktop calendar "));
+D_("A simple module to give E17 a desktop calendar "));
    
 return 1;
 

@@ -70,7 +70,7 @@ v->basic.create_widgets = _add_todo_basic_create_widgets;
         
            /* create config diaolg */ 
            cfd =
-           e_config_dialog_new(con, _("Font Editor"), NULL, 0, v, DayToFix);
+           e_config_dialog_new(con, D_("Font Editor"), NULL, 0, v, DayToFix);
      
 }
 
@@ -181,7 +181,7 @@ cfdata = data;
 o = e_widget_list_add(evas, 0, 0);
    
 
-of1 = e_widget_framelist_add(evas, _("Event"), 0);
+of1 = e_widget_framelist_add(evas, D_("Event"), 0);
    
 Evas_Object *entry;
 

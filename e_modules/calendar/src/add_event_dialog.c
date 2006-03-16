@@ -71,7 +71,7 @@ v->basic.create_widgets = _add_event_basic_create_widgets;
         
            /* create config diaolg */ 
            cfd =
-           e_config_dialog_new(con, _("Font Editor"), NULL, 0, v, DayToFix);
+           e_config_dialog_new(con, D_("Font Editor"), NULL, 0, v, DayToFix);
      
 }
 
@@ -186,26 +186,26 @@ cfdata = data;
 o = e_widget_list_add(evas, 0, 0);
    
 
-of = e_widget_framelist_add(evas, _("Event Type"), 0);
+of = e_widget_framelist_add(evas, D_("Event Type"), 0);
    
 rg = e_widget_radio_group_new(&(cfdata->DayToFix->eventtype));
    
-ob = e_widget_radio_add(evas, _("Birthday"), 1, rg);
+ob = e_widget_radio_add(evas, D_("Birthday"), 1, rg);
    
 e_widget_framelist_object_append(of, ob);
    
-ob = e_widget_radio_add(evas, _("Anniversary"), 2, rg);
+ob = e_widget_radio_add(evas, D_("Anniversary"), 2, rg);
    
 e_widget_framelist_object_append(of, ob);
    
-ob = e_widget_radio_add(evas, _("Other"), 3, rg);
+ob = e_widget_radio_add(evas, D_("Other"), 3, rg);
    
 e_widget_framelist_object_append(of, ob);
    
 e_widget_list_object_append(o, of, 1, 1, 0.5);
    
 
-of1 = e_widget_framelist_add(evas, _("Event"), 0);
+of1 = e_widget_framelist_add(evas, D_("Event"), 0);
    
 Evas_Object *entry;
 

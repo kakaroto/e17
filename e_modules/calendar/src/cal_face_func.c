@@ -484,7 +484,7 @@ calendar_face_menu_new(Calendar_Face * face, Calendar * calendar)
    e_menu_item_callback_set(mi, calendar_face_cb_menu_edit, face);
 
    mi = e_menu_item_new(face->menu);
-   e_menu_item_label_set(mi, _("Config Dialog"));
+   e_menu_item_label_set(mi, D_("Config Dialog"));
    e_menu_item_callback_set(mi, config_dialog, calendar);
 
 }
@@ -503,27 +503,27 @@ calendar_face_menu_day(day_face * face, Calendar * calendar)
    /* Main Menu Items */
 //View Events
    mi = e_menu_item_new(face->menu1);
-   e_menu_item_label_set(mi, _("View Events"));
+   e_menu_item_label_set(mi, D_("View Events"));
    e_menu_item_callback_set(mi, view_event_dialog, face);
 //View Todo
    mi = e_menu_item_new(face->menu1);
-   e_menu_item_label_set(mi, _("View TODO"));
+   e_menu_item_label_set(mi, D_("View TODO"));
    e_menu_item_callback_set(mi, view_todo_dialog, face);
 //Add Event option
    mi = e_menu_item_new(face->menu1);
-   e_menu_item_label_set(mi, _("Add Event"));
+   e_menu_item_label_set(mi, D_("Add Event"));
    e_menu_item_callback_set(mi, add_event_dialog, face);
 //Add Todo Option
    mi = e_menu_item_new(face->menu1);
-   e_menu_item_label_set(mi, _("Add TODO"));
+   e_menu_item_label_set(mi, D_("Add TODO"));
    e_menu_item_callback_set(mi, add_todo_dialog, face);
 //Remove Event
    mi = e_menu_item_new(face->menu1);
-   e_menu_item_label_set(mi, _("Remove Event"));
+   e_menu_item_label_set(mi, D_("Remove Event"));
    e_menu_item_callback_set(mi, remove_event_dialog, face);
 //Remove todo
    mi = e_menu_item_new(face->menu1);
-   e_menu_item_label_set(mi, _("Remove TODO"));
+   e_menu_item_label_set(mi, D_("Remove TODO"));
    e_menu_item_callback_set(mi, remove_todo_dialog, face);
 }
 /****************  Close it down ********************/
