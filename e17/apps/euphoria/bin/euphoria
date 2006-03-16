@@ -268,8 +268,8 @@ private
 		end
 
 		@xmms.broadcast_configval_changed.notifier do |res|
-			k = res.value[:name]
-			v = res.value[:value]
+			k = res.value.keys.first
+			v = res.value.values.first
 
 			case k
 				when "playlist.repeat_all"
