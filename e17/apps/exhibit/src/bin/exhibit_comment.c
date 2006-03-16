@@ -65,7 +65,7 @@ _ex_comment_load(Exhibit *e)
 
    file = ((Ex_Tab *) e->cur_tab)->cur_file;
    if (_ex_file_is_jpg(file))
-     if (_ex_comment_jpeg_read(file, &comment, &len))
+     if (_ex_comment_jpeg_read(file, &comment, &len) && (len != 0))
        {
 	  etk_entry_text_set(ETK_ENTRY(e->comment.entry), comment);
 	  return;
@@ -76,13 +76,18 @@ _ex_comment_load(Exhibit *e)
 void
 _ex_comment_save(Exhibit *e)
 {
-   char *file;
+   char *file, *comment;
+   int len;
 
    file = ((Ex_Tab *) e->cur_tab)->cur_file;
+   comment = etk_entry_text_get(ETK_ENTRY(e->comment.entry));
+   if (comment)
+     len = strlen(comment);
+   else
+     len = 0;
+   
    if (_ex_file_is_jpg(file))
-     _ex_comment_jpeg_write(file,
-       etk_entry_text_get(ETK_ENTRY(e->comment.entry)),
-       strlen(etk_entry_text_get(ETK_ENTRY(e->comment.entry))));
+     _ex_comment_jpeg_write(file, comment, len);
 }
 
 void

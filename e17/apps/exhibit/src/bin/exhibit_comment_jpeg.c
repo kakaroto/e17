@@ -284,7 +284,7 @@ _ex_comment_jpeg_read_process_COM (FILE *infile, unsigned int *len, char **com)
 
    if (len != NULL)
      *len = length;
-   comment = malloc((length + 1) * sizeof(char));
+   comment = calloc(length + 1, sizeof(char));
    if (com != NULL)
      *com = comment;
 
