@@ -538,7 +538,7 @@ static int _etk_filechooser_timer_cb(void *data)
    
    _etk_filechooser_timer = NULL;
    
-   if (!(fcw = ETK_FILECHOOSER_WIDGET(data)))
+   if (!(fcw = ETK_FILECHOOSER_WIDGET(data)) || !_etk_filechooser_tooltip_text)
      return 0;
    
    etk_tooltips_tip_set(ETK_WIDGET(fcw), _etk_filechooser_tooltip_text);
@@ -570,7 +570,7 @@ static void _etk_filechooser_files_tree_row_mouse_in_cb(Etk_Object *object, Etk_
 static void _etk_filechooser_files_tree_row_mouse_out_cb(Etk_Object *object, Etk_Tree_Row *row, void *data)
 {
    Etk_Filechooser_Widget *fcw;
-   
+      
    if (!(fcw = ETK_FILECHOOSER_WIDGET(data)))
      return;   
    

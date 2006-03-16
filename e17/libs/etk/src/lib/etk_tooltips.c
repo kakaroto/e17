@@ -114,6 +114,7 @@ void etk_tooltips_tip_set(Etk_Widget *widget, const char *text)
    {
       if(text == NULL)
       {
+	 etk_tooltips_pop_down();
 	 _etk_tooltips_hash = evas_hash_del(_etk_tooltips_hash, key, tip_text);
 	 etk_signal_disconnect("mouse_in", ETK_OBJECT(widget), ETK_CALLBACK(_etk_tooltips_mouse_in_cb));
 	 etk_signal_disconnect("mouse_out", ETK_OBJECT(widget), ETK_CALLBACK(_etk_tooltips_mouse_out_cb));
@@ -167,6 +168,18 @@ void etk_tooltips_tip_set(Etk_Widget *widget, const char *text)
    }
    free(key);
    return NULL;
+}
+
+/*
+ * @brief Get wether the toolip is hidden / visible
+ * @return True is it is, false otherwise
+ */
+Etk_Bool etk_tooltips_tip_visible()
+{
+   if(!_etk_tooltips_enabled || !ETK_IS_WINDOW(_etk_tooltips_window))
+     return ETK_FALSE;
+   
+   return etk_widget_is_visible(_etk_tooltips_window);   
 }
 
 /**
@@ -239,8 +252,9 @@ static void _etk_tooltips_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In_Out
 /* Timer callback, pops up the tooltip */
 static int _etk_tooltips_timer_cb(void *data)
 {
-   if(!_etk_tooltips_timer || !_etk_tooltips_cur_object) 
+   if(!_etk_tooltips_timer || !_etk_tooltips_cur_object ||!_etk_tooltips_label)
      return 0;
+
    etk_tooltips_pop_up(ETK_WIDGET(_etk_tooltips_cur_object));
    return 0;
 }
@@ -251,7 +265,10 @@ static void _etk_tooltips_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_In_Ou
    if(!_etk_tooltips_enabled)
      return;
    
-   etk_tooltips_pop_down();
+   if(_etk_tooltips_timer != NULL)
+     ecore_timer_del(_etk_tooltips_timer);
+      
+   etk_tooltips_pop_down();      
 }
 
 /* Callback for when the mouse moves on the widget */
@@ -260,8 +277,14 @@ static void _etk_tooltips_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Move
    if(!_etk_tooltips_enabled)
      return;
    
+   if(!ETK_IS_WINDOW(_etk_tooltips_window))
+     return;
+   
+   if(etk_widget_is_visible(_etk_tooltips_window))
+     return;
+   
    if(_etk_tooltips_timer != NULL)     
-     ecore_timer_del(_etk_tooltips_timer);     
+     ecore_timer_del(_etk_tooltips_timer);
    
    etk_tooltips_pop_down();
    _etk_tooltips_cur_object = object;

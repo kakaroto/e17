@@ -61,7 +61,8 @@ enum _Etk_Tree_Signal_Id
    ETK_TREE_ROW_EXPANDED_SIGNAL,
    ETK_TREE_ROW_COLLAPSED_SIGNAL,
    ETK_TREE_ROW_MOUSE_IN_SIGNAL,
-   ETK_TREE_ROW_MOUSE_OUT_SIGNAL,     
+   ETK_TREE_ROW_MOUSE_OUT_SIGNAL,
+   ETK_TREE_ROW_MOUSE_MOVE_SIGNAL,     
    ETK_TREE_SELECT_ALL_SIGNAL,
    ETK_TREE_UNSELECT_ALL_SIGNAL,
    ETK_TREE_NUM_SIGNALS
@@ -179,6 +180,7 @@ Etk_Type *etk_tree_type_get()
       _etk_tree_signals[ETK_TREE_ROW_COLLAPSED_SIGNAL] = etk_signal_new("row_collapsed", tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_tree_signals[ETK_TREE_ROW_MOUSE_IN_SIGNAL] = etk_signal_new("row_mouse_in", tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_tree_signals[ETK_TREE_ROW_MOUSE_OUT_SIGNAL] = etk_signal_new("row_mouse_out", tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
+      _etk_tree_signals[ETK_TREE_ROW_MOUSE_MOVE_SIGNAL] = etk_signal_new("row_mouse_move", tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);      
       _etk_tree_signals[ETK_TREE_SELECT_ALL_SIGNAL] = etk_signal_new("select_all", tree_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_tree_signals[ETK_TREE_UNSELECT_ALL_SIGNAL] = etk_signal_new("unselect_all", tree_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
 
@@ -2038,6 +2040,8 @@ static void _etk_tree_row_mouse_move_cb(void *data, Evas *e, Evas_Object *obj, v
       drag = (ETK_WIDGET(row_objects->row->tree))->drag;      
       etk_drag_begin(ETK_DRAG(drag));
    }
+   else
+     etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_MOUSE_MOVE_SIGNAL], ETK_OBJECT(row_objects->row->tree), NULL, row_objects->row, &ev);
 }
 
 /* Called when the mouse moves into a row */
