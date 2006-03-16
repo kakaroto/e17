@@ -13,9 +13,12 @@
 
 #include "note.h"
 
-static void note_close_dialog_close_cb(Ewl_Widget *w, void *ev, void *data);
-static void note_close_dialog_delete_cb(Ewl_Widget *w, void *ev, void *data);
-static void note_close_dialog_unload_cb(Ewl_Widget *w, void *ev, void *data);
+static void     note_close_dialog_close_cb(Ewl_Widget * w, void *ev,
+					   void *data);
+static void     note_close_dialog_delete_cb(Ewl_Widget * w, void *ev,
+					    void *data);
+static void     note_close_dialog_unload_cb(Ewl_Widget * w, void *ev,
+					    void *data);
 
 extern MainConfig *main_config;
 
@@ -38,12 +41,14 @@ new_note(void)
 	return;
 }
 
-void new_note_with_values(int x,int y,int width,int height,char *content){
+void
+new_note_with_values(int x, int y, int width, int height, char *content)
+{
 	/*Note *p = */
-	new_note_with_values_return(x,y,width,height,content);
+	new_note_with_values_return(x, y, width, height, content);
 }
 
-Note*
+Note           *
 new_note_with_values_return(int x, int y, int width, int height, char *content)
 {
 	Evas_List      *new;
@@ -52,7 +57,7 @@ new_note_with_values_return(int x, int y, int width, int height, char *content)
 
 	new = append_note();
 	setup_note(&new, x, y, width, height, content);
-	return(evas_list_data(new));
+	return (evas_list_data(new));
 }
 
 /* Lists and Allocation */
@@ -80,89 +85,96 @@ append_note(void)
 void
 remove_note(Evas_List * note)
 {
-  Ewl_Widget     *w;
+	Ewl_Widget     *w;
 	Note           *p;
- 
+
 	dml("Closing a Note", 2);
 
-  p = evas_list_data(note);
-  if (p->timcomp)
-    {
-	ecore_timer_del(p->timcomp);
-	p->timcomp = NULL;
-    }
+	p = evas_list_data(note);
+	if (p->timcomp) {
+		ecore_timer_del(p->timcomp);
+		p->timcomp = NULL;
+	}
 
-  if (p->dialog)
-    return;
+	if (p->dialog)
+		return;
 
-  p->dialog = ewl_dialog_new();
-  ewl_window_title_set(EWL_WINDOW(p->dialog), "Enotes Delete");
-  ewl_window_name_set(EWL_WINDOW(p->dialog), "Enotes");
-  ewl_window_class_set(EWL_WINDOW(p->dialog), "Enotes");
-  ewl_callback_append(p->dialog, EWL_CALLBACK_DELETE_WINDOW, note_close_dialog_close_cb, p);
+	p->dialog = ewl_dialog_new();
+	ewl_window_title_set(EWL_WINDOW(p->dialog), "Enotes Delete");
+	ewl_window_name_set(EWL_WINDOW(p->dialog), "Enotes");
+	ewl_window_class_set(EWL_WINDOW(p->dialog), "Enotes");
+	ewl_callback_append(p->dialog, EWL_CALLBACK_DELETE_WINDOW,
+			    note_close_dialog_close_cb, p);
 
-  ewl_dialog_active_area_set(EWL_DIALOG(p->dialog), EWL_POSITION_TOP);
-  w = ewl_text_new();
-  ewl_text_text_set(EWL_TEXT(w), "Do you want to perminantly delete this note or just unload it?");
-  ewl_container_child_append(EWL_CONTAINER(p->dialog), w);
-  ewl_widget_show(w);
+	ewl_dialog_active_area_set(EWL_DIALOG(p->dialog), EWL_POSITION_TOP);
+	w = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(w),
+			  "Do you want to perminantly delete this note or just unload it?");
+	ewl_container_child_append(EWL_CONTAINER(p->dialog), w);
+	ewl_widget_show(w);
 
-  ewl_dialog_active_area_set(EWL_DIALOG(p->dialog), EWL_POSITION_BOTTOM);
-  w = ewl_button_new();
-  ewl_button_label_set(EWL_BUTTON(w), "Delete");
-  ewl_container_child_append(EWL_CONTAINER(p->dialog), w);
-  ewl_callback_append(w, EWL_CALLBACK_CLICKED, note_close_dialog_delete_cb, p);
-  ewl_widget_show(w);
+	ewl_dialog_active_area_set(EWL_DIALOG(p->dialog), EWL_POSITION_BOTTOM);
+	w = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(w), "Delete");
+	ewl_container_child_append(EWL_CONTAINER(p->dialog), w);
+	ewl_callback_append(w, EWL_CALLBACK_CLICKED,
+			    note_close_dialog_delete_cb, p);
+	ewl_widget_show(w);
 
-  w = ewl_button_new();
-  ewl_button_label_set(EWL_BUTTON(w), "Unload");
-  ewl_container_child_append(EWL_CONTAINER(p->dialog), w);
-  ewl_callback_append(w, EWL_CALLBACK_CLICKED, note_close_dialog_unload_cb, p);
-  ewl_widget_show(w);
+	w = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(w), "Unload");
+	ewl_container_child_append(EWL_CONTAINER(p->dialog), w);
+	ewl_callback_append(w, EWL_CALLBACK_CLICKED,
+			    note_close_dialog_unload_cb, p);
+	ewl_widget_show(w);
 
-  w = ewl_button_new();
-  ewl_button_label_set(EWL_BUTTON(w), "Cancel");
-  ewl_container_child_append(EWL_CONTAINER(p->dialog), w);
-  ewl_callback_append(w, EWL_CALLBACK_CLICKED, note_close_dialog_close_cb, p);
-  ewl_widget_show(w);
+	w = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(w), "Cancel");
+	ewl_container_child_append(EWL_CONTAINER(p->dialog), w);
+	ewl_callback_append(w, EWL_CALLBACK_CLICKED, note_close_dialog_close_cb,
+			    p);
+	ewl_widget_show(w);
 
-  ewl_dialog_active_area_set(EWL_DIALOG(p->dialog), EWL_POSITION_TOP);
-  ewl_widget_show(p->dialog);
+	ewl_dialog_active_area_set(EWL_DIALOG(p->dialog), EWL_POSITION_TOP);
+	ewl_widget_show(p->dialog);
 }
 
 static void
-note_close_dialog_close_cb(Ewl_Widget *w, void *ev, void *data) {
-  Note *p;
+note_close_dialog_close_cb(Ewl_Widget * w, void *ev, void *data)
+{
+	Note           *p;
 
-  p = (Note *) data;
-  ewl_widget_destroy(p->dialog);
-  p->dialog = NULL;
+	p = (Note *) data;
+	ewl_widget_destroy(p->dialog);
+	p->dialog = NULL;
 }
 
 static void
-note_close_dialog_delete_cb(Ewl_Widget *w, void *ev, void *data) {
-  Note *p;
-  char *path = malloc(PATH_MAX);
+note_close_dialog_delete_cb(Ewl_Widget * w, void *ev, void *data)
+{
+	Note           *p;
+	char           *path = malloc(PATH_MAX);
 
-  note_close_dialog_unload_cb(w, ev, data);
+	note_close_dialog_unload_cb(w, ev, data);
 
-  dml("Deleting Saved Note", 2);
-  sprintf(path, "%s/.e/apps/enotes/notes/%s", getenv("HOME"),
-      get_title_by_content(ewl_text_text_get(EWL_TEXT(p->content))));
-  unlink(path);
+	dml("Deleting Saved Note", 2);
+	sprintf(path, "%s/.e/apps/enotes/notes/%s", getenv("HOME"),
+		get_title_by_content(ewl_text_text_get(EWL_TEXT(p->content))));
+	unlink(path);
 
-  /* FIXME more intelligent things once we have sorted
-   * saveload */
-  ewl_saveload_revert(NULL, NULL, NULL);
+	/* FIXME more intelligent things once we have sorted
+	 * saveload */
+	ewl_saveload_revert(NULL, NULL, NULL);
 }
 
 static void
-note_close_dialog_unload_cb(Ewl_Widget *w, void *ev, void *data) {
-  Note *p;
+note_close_dialog_unload_cb(Ewl_Widget * w, void *ev, void *data)
+{
+	Note           *p;
 
-  note_close_dialog_close_cb(w, ev, data);
+	note_close_dialog_close_cb(w, ev, data);
 
-  p = (Note *) data;
+	p = (Note *) data;
 	edje_object_part_unswallow(p->edje, p->eo);
 	ewl_widget_destroy(p->emb);
 	evas_object_del(p->edje);
@@ -171,8 +183,8 @@ note_close_dialog_unload_cb(Ewl_Widget *w, void *ev, void *data) {
 	free(p);
 	gbl_notes = evas_list_remove(gbl_notes, p);
 
-  /* FIXME more intelligent things once we have sorted saveload */
-  ewl_saveload_revert(NULL, NULL, NULL);
+	/* FIXME more intelligent things once we have sorted saveload */
+	ewl_saveload_revert(NULL, NULL, NULL);
 
 	/*  Check if it was the last note  */
 	if (evas_list_next(gbl_notes) == NULL && controlcentre == NULL)
@@ -281,7 +293,8 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 	/* Setup the Edje */
 	p->edje = edje_object_add(p->evas);
 	snprintf(edjefn,
-		 PATH_MAX, PACKAGE_DATA_DIR "/themes/%s.edj", main_config->theme);
+		 PATH_MAX, PACKAGE_DATA_DIR "/themes/%s.edj",
+		 main_config->theme);
 	edje_object_file_set(p->edje, edjefn, NOTE_PART);
 	evas_object_name_set(p->edje, "edje");
 	evas_object_move(p->edje, 0, 0);
@@ -369,7 +382,8 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 	edje_object_signal_callback_add(p->edje,
 					EDJE_SIGNAL_NOTE_MINIMISE, "",
 					(void *) note_edje_minimise, *note);
-	edje_object_signal_callback_add(p->edje,EDJE_SIGNAL_NOTE_SAVE,"",(void*)note_edje_save,*note);
+	edje_object_signal_callback_add(p->edje, EDJE_SIGNAL_NOTE_SAVE, "",
+					(void *) note_edje_save, *note);
 
 	/* Free Temporarily used Variables */
 	if (datestr != NULL)
@@ -383,10 +397,11 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 	p->timcomp = ecore_timer_add(COMPARE_INTERVAL, &timer_val_compare, p);
 
 	if (saveload != NULL) {
-		char *title;
+		char           *title;
+
 		title = get_title_by_note(*note);
 
-    /* FIXME more intelligent things once we have sorted saveload */
+		/* FIXME more intelligent things once we have sorted saveload */
 		ewl_saveload_revert(NULL, NULL, NULL);
 		dml("Added new note to saveload list", 2);
 
@@ -394,7 +409,7 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 			free(title);
 	}
 
-  p->dialog = NULL;
+	p->dialog = NULL;
 	return;
 }
 
@@ -409,7 +424,7 @@ configure_scrollbars_default(Ewl_Widget * pane)
 	ewl_theme_data_str_set(pane, "/hscrollbar/decrement/file", NULL);
 	ewl_theme_data_str_set(pane, "/hscrollbar/hseeker/file", NULL);
 	ewl_theme_data_str_set(pane, "/hscrollbar/hseeker/hbutton/file", NULL);
-  ewl_theme_data_str_set(pane, "/scrollpane/file", NULL);
+	ewl_theme_data_str_set(pane, "/scrollpane/file", NULL);
 
 	ewl_theme_data_str_set(pane, "/vscrollbar/increment/group", NULL);
 	ewl_theme_data_str_set(pane, "/vscrollbar/decrement/group", NULL);
@@ -424,7 +439,7 @@ configure_scrollbars_default(Ewl_Widget * pane)
 	ewl_theme_data_str_set(pane, "/hscrollbar/hseeker/group", NULL);
 
 	ewl_theme_data_str_set(pane, "/hscrollbar/hseeker/hbutton/group", NULL);
-  ewl_theme_data_str_set(pane, "/scrollpane/group", NULL);
+	ewl_theme_data_str_set(pane, "/scrollpane/group", NULL);
 
 	return;
 }
@@ -432,16 +447,17 @@ configure_scrollbars_default(Ewl_Widget * pane)
 void
 configure_scrollbars(Ewl_Widget * pane, char *edjefn)
 {
-	ewl_theme_data_str_set(pane,
-			       "/vscrollbar/increment/file", edjefn);
+	ewl_theme_data_str_set(pane, "/vscrollbar/increment/file", edjefn);
 	ewl_theme_data_str_set(pane, "/vscrollbar/decrement/file", edjefn);
 	ewl_theme_data_str_set(pane, "/vscrollbar/vseeker/file", edjefn);
-	ewl_theme_data_str_set(pane, "/vscrollbar/vseeker/vbutton/file", edjefn);
+	ewl_theme_data_str_set(pane, "/vscrollbar/vseeker/vbutton/file",
+			       edjefn);
 	ewl_theme_data_str_set(pane, "/hscrollbar/increment/file", edjefn);
 	ewl_theme_data_str_set(pane, "/hscrollbar/decrement/file", edjefn);
 	ewl_theme_data_str_set(pane, "/hscrollbar/hseeker/file", edjefn);
-	ewl_theme_data_str_set(pane, "/hscrollbar/hseeker/hbutton/file", edjefn);
-  ewl_theme_data_str_set(pane, "/scrollpane/file", edjefn);
+	ewl_theme_data_str_set(pane, "/hscrollbar/hseeker/hbutton/file",
+			       edjefn);
+	ewl_theme_data_str_set(pane, "/scrollpane/file", edjefn);
 
 	ewl_theme_data_str_set(pane, "/vscrollbar/increment/group",
 			       EDJE_VSCROLLBAR_BTN_INCR);
@@ -459,7 +475,7 @@ configure_scrollbars(Ewl_Widget * pane, char *edjefn)
 			       EDJE_HSCROLLBAR_SEEKER);
 	ewl_theme_data_str_set(pane, "/hscrollbar/hseeker/hbutton/group",
 			       EDJE_SCROLLBAR_BUTTON);
-  ewl_theme_data_str_set(pane, "/scrollpane/group", EDJE_SCROLLPANE);
+	ewl_theme_data_str_set(pane, "/scrollpane/group", EDJE_SCROLLPANE);
 
 	return;
 }
@@ -577,16 +593,18 @@ note_edje_minimise(Evas_List * note, Evas_Object * o,
 
 void
 note_edje_save(Evas_List * note, Evas_Object * o,
-const char *emission, const char *source){
-	Note *p;
-	char *title;
+	       const char *emission, const char *source)
+{
+	Note           *p;
+	char           *title;
 
-	dml("Saving a Note",2);
-	p=evas_list_data(note);
+	dml("Saving a Note", 2);
+	p = evas_list_data(note);
 
-	title = get_title_by_content(ewl_text_text_get((Ewl_Text*)p->content));
+	title = get_title_by_content(ewl_text_text_get
+				     ((Ewl_Text *) p->content));
 	ewl_saveload_save_by_name(title);
-	
+
 	if (title)
 		free(title);
 	return;
@@ -639,7 +657,7 @@ timer_val_compare(void *data)
 {
 	Note           *p;
 	char           *tmp;
-  
+
 	p = (Note *) data;
 	if (!p->timcomp)
 		return (0);
@@ -694,7 +712,8 @@ notes_update_themes(void)
 	char           *edjefn = malloc(PATH_MAX);
 
 	snprintf(edjefn,
-		 PATH_MAX, PACKAGE_DATA_DIR "/themes/%s.edj", main_config->theme);
+		 PATH_MAX, PACKAGE_DATA_DIR "/themes/%s.edj",
+		 main_config->theme);
 
 	working = get_cycle_begin();
 	if (working != NULL) {
@@ -741,7 +760,7 @@ Evas_List      *
 get_note_by_title(char *title)
 {
 	Evas_List      *a;
-	char *note_title;
+	char           *note_title;
 
 	a = get_cycle_begin();
 	note_title = get_title_by_note(a);
@@ -784,7 +803,7 @@ get_title_by_note(Evas_List * note)
 char           *
 get_title_by_note_struct(Note * note)
 {
-	char *content, *title;
+	char           *content, *title;
 
 	content = get_content_by_note_struct(note);
 	title = get_title_by_content(content);
@@ -834,15 +853,15 @@ get_title_by_content(char *content)
 		return NULL;
 	newlength = i = 0;
 
-  start = content;
+	start = content;
 	while (newlength < TITLE_LENGTH && content[i] != '\0') {
 		if (content[i++] == '\n') {
-      if (newlength == 0) {
-        start++;
-        continue;
-      } else {
-		    break;
-      }
+			if (newlength == 0) {
+				start++;
+				continue;
+			} else {
+				break;
+			}
 		}
 		newlength++;
 	}
@@ -906,7 +925,7 @@ note_move_embed(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 update_enote_title(Evas_Object * edje, char *content)
 {
-	char *title;
+	char           *title;
 
 	title = get_title_by_content(content);
 	edje_object_part_text_set(edje, EDJE_TEXT_TITLE, title);

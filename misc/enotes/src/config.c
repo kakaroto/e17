@@ -18,9 +18,11 @@
  *          set.
  * @brief: Allocate and initialize a new MainConfig variable.
  */
-MainConfig *mainconfig_new(void)
+MainConfig     *
+mainconfig_new(void)
 {
 	MainConfig     *p;
+
 	p = malloc(sizeof(MainConfig));
 
 	p->render_method = NULL;
@@ -39,31 +41,41 @@ MainConfig *mainconfig_new(void)
  * @param p: The MainConfig variable to free.
  * @brief: Free's an allocated MainConfig variable.
  */
-void mainconfig_free(MainConfig * p){
+void
+mainconfig_free(MainConfig * p)
+{
 	if (p) {
-		if (p->render_method)free(p->render_method);
-		if (p->theme)free(p->theme);
+		if (p->render_method)
+			free(p->render_method);
+		if (p->theme)
+			free(p->theme);
 		free(p);
-  }
+	}
 }
 
 /* LISTENERS */
 
-void theme_listener(const char *key, const Ecore_Config_Type type,
-    const int tag,void *data){
+void
+theme_listener(const char *key, const Ecore_Config_Type type,
+	       const int tag, void *data)
+{
 	main_config->theme = ecore_config_theme_get(key);
 	cc_update_theme();
 	notes_update_themes();
 }
 
-void autosave_listener(const char *key, const Ecore_Config_Type type,
-    const int tag,void *data){
-  main_config->autosave = ecore_config_boolean_get(key);
-  update_autosave();
+void
+autosave_listener(const char *key, const Ecore_Config_Type type,
+		  const int tag, void *data)
+{
+	main_config->autosave = ecore_config_boolean_get(key);
+	update_autosave();
 }
 
-void remotearg(char *val,void *data){
-	remotecmd=val;
+void
+remotearg(char *val, void *data)
+{
+	remotecmd = val;
 }
 
 /**
@@ -72,8 +84,11 @@ void remotearg(char *val,void *data){
  * @brief: Reads the configuration file pointed to by fn, and stores the
  *         settings into p.
  */
-int read_configuration(MainConfig * p){
-	int retv;
+int
+read_configuration(MainConfig * p)
+{
+	int             retv;
+
 	ecore_config_int_create("controlcentre.x", 0, 0, NULL, "CC x pos");
 	ecore_config_int_create("controlcentre.y", 0, 0, NULL, "CC y pos");
 	ecore_config_int_create("controlcentre.w", 0, 0, NULL, "CC w pos");
@@ -101,11 +116,13 @@ int read_configuration(MainConfig * p){
 	ecore_config_theme_preview_group_set("enotes.theme", "Main");
 	ecore_config_theme_search_path_append(PACKAGE_DATA_DIR "/themes/");
 
-	ecore_config_args_callback_str_add('R',"remote","Send a remote command or message.",&remotearg,NULL);
+	ecore_config_args_callback_str_add('R', "remote",
+					   "Send a remote command or message.",
+					   &remotearg, NULL);
 
 	ecore_config_load();
 
-	retv=ecore_config_args_parse();
+	retv = ecore_config_args_parse();
 
 	p->render_method = ecore_config_string_get("enotes.engine");
 	p->theme = ecore_config_theme_get("enotes.theme");
@@ -116,9 +133,10 @@ int read_configuration(MainConfig * p){
 	p->ontop = ecore_config_boolean_get("enotes.ontop");
 	p->sticky = ecore_config_boolean_get("enotes.sticky");
 
-	ecore_config_listen("theme", "enotes.theme", (void*)&theme_listener, 0, NULL);
-  ecore_config_listen("autosave", "enotes.autosave", (void*)&autosave_listener,
-      0, NULL);
+	ecore_config_listen("theme", "enotes.theme", (void *) &theme_listener,
+			    0, NULL);
+	ecore_config_listen("autosave", "enotes.autosave",
+			    (void *) &autosave_listener, 0, NULL);
 
 	return (retv);
 }

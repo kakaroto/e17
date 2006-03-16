@@ -43,7 +43,7 @@ typedef struct {
 	Ewl_Widget     *hbox;
 	Ewl_Widget     *savebtn;
 	Ewl_Widget     *loadbtn;
-  Ewl_Widget     *deletebtn;
+	Ewl_Widget     *deletebtn;
 	Ewl_Widget     *refreshbtn;
 	Ewl_Widget     *closebtn;
 } SaveLoad;
@@ -62,8 +62,7 @@ void            setup_saveload_opt(Ewl_Widget * tree, char *caption,
 				   Evas_List * p);
 void            ewl_saveload_revert(Ewl_Widget * widget, void *ev_data,
 				    void *ud);
-void            ewl_saveload_close(Ewl_Widget * o, void *ev_data,
-				   void *ud);
+void            ewl_saveload_close(Ewl_Widget * o, void *ev_data, void *ud);
 void            ewl_saveload_save(Ewl_Widget * o, void *ev_data, void *null);
 void            ewl_saveload_save_by_name(char *p);
 void            ewl_saveload_listitem_click(Ewl_Widget * o, void *ev_data,

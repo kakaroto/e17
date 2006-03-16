@@ -58,7 +58,7 @@ append_note_stor(NoteStor * p)
 	char           *title;
 	char           *string = get_value_from_notestor(p);
 	FILE           *fp;
-	int retval=0;
+	int             retval = 0;
 
 	title = get_title_by_content(p->content);
 	sprintf(target, "%s/.e/apps/enotes/notes/%s", getenv("HOME"), title);
@@ -67,12 +67,12 @@ append_note_stor(NoteStor * p)
 	if ((fp = fopen(target, "w")) != NULL) {
 		fputs(string, fp);
 		fclose(fp);
-		retval=1;
-  }
+		retval = 1;
+	}
 
 	free(string);
 	free(target);
-	return(retval);
+	return (retval);
 }
 
 /**
@@ -103,7 +103,7 @@ note_load(char *target)
 	NoteStor       *p;
 	char           *str = malloc(NOTE_LIMIT);
 	char           *fullstr = malloc(NOTE_LIMIT * 2);
-	Note *note;
+	Note           *note;
 
 	p = NULL;
 	fullstr[0] = '\0';
@@ -112,9 +112,13 @@ note_load(char *target)
 			sprintf(fullstr, "%s%s", fullstr, str);
 		}
 		if (strcmp("", fullstr))
-			if ((p = get_notestor_from_value(fullstr)) != NULL){
-				note=new_note_with_values_return(p->x, p->y, p->width, p->height, p->content);
-				edje_object_signal_emit(note->edje,NOTE_LOADED_SIGNAL,"");
+			if ((p = get_notestor_from_value(fullstr)) != NULL) {
+				note = new_note_with_values_return(p->x, p->y,
+								   p->width,
+								   p->height,
+								   p->content);
+				edje_object_signal_emit(note->edje,
+							NOTE_LOADED_SIGNAL, "");
 			}
 	}
 

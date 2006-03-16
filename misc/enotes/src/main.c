@@ -14,24 +14,27 @@
 #include "main.h"
 
 MainConfig     *main_config;
-char *remotecmd;
-Ecore_Timer *autosave_timer = NULL;
+char           *remotecmd;
+Ecore_Timer    *autosave_timer = NULL;
 
 static int
-_autosave_timer_tick(void *data) {
-  autosave();
+_autosave_timer_tick(void *data)
+{
+	autosave();
 
-  return 1;
+	return 1;
 }
 
 void
-update_autosave(void) {
-  if (main_config->autosave == 1 && autosave_timer == NULL)
-    autosave_timer = ecore_timer_add(30, _autosave_timer_tick, NULL);
-  if (main_config->autosave == 0 && autosave_timer != NULL) {
-    ecore_timer_del(autosave_timer);
-    autosave_timer = NULL;
-  }
+update_autosave(void)
+{
+	if (main_config->autosave == 1 && autosave_timer == NULL)
+		autosave_timer =
+			ecore_timer_add(30, _autosave_timer_tick, NULL);
+	if (main_config->autosave == 0 && autosave_timer != NULL) {
+		ecore_timer_del(autosave_timer);
+		autosave_timer = NULL;
+	}
 }
 
 /* The Main Function */
@@ -43,15 +46,16 @@ update_autosave(void) {
  * @brief: The first function once enotes is called.
  */
 int
-main(int argc, char *argv[]) {
+main(int argc, char *argv[])
+{
 	int             note_count;
 
 	/* IPC Check */
 	ecore_ipc_init();
 	dml("IPC Initiated Successfully", 1);
-	
+
 	/* loading will increment this if there are notes if not we may need to
-   * create a blank one */
+	 * create a blank one */
 	note_count = 0;
 
 	if ((ecore_config_init("enotes")) == ECORE_CONFIG_ERR_FAIL) {
@@ -79,9 +83,10 @@ Usage: enotes [options]");
 	process_note_storage_locations();
 
 	if (find_server() != 0) {
-		if(remotecmd!=NULL)
+		if (remotecmd != NULL)
 			send_to_server(remotecmd);
-		else send_to_server("DEFNOTE");
+		else
+			send_to_server("DEFNOTE");
 	} else {
 		dml("Server wasn't found.. Creating one", 1);
 		/* Setup Server */
@@ -100,11 +105,12 @@ Usage: enotes [options]");
 
 		dml("Efl Successfully Initiated", 1);
 
-    autoload();
-    /* create autosave timer */
-    update_autosave();
+		autoload();
+		/* create autosave timer */
+		update_autosave();
 
-		if(remotecmd!=NULL)handle_ipc_message(remotecmd);
+		if (remotecmd != NULL)
+			handle_ipc_message(remotecmd);
 
 		/* Begin the Control Centre */
 		if (main_config->controlcentre == 1) {
@@ -129,9 +135,9 @@ Usage: enotes [options]");
 		/* Save Controlcentre Settings */
 		set_cc_pos();
 
-	  autosave();
-    if (autosave_timer)
-      ecore_timer_del(autosave_timer);
+		autosave();
+		if (autosave_timer)
+			ecore_timer_del(autosave_timer);
 
 		/* Shutdown the E-Libs */
 		edje_shutdown();

@@ -35,9 +35,10 @@
 #define MAX_TEMPLATE_SIZE 999
 #define TEMPLATE_LOC "%s/.e/notes/defnote"
 
-extern char *remotecmd;
+extern char    *remotecmd;
 
 void            update_autosave(void);
+
 /* The Main Function */
 int             main(int argc, char *argv[]);
 

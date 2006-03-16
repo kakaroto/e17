@@ -24,22 +24,24 @@ open_welcome(void)
 	ewl_widget_show(welcome->wvbox);
 
 	welcome->title = ewl_text_new();
-//	ewl_text_font_set((Ewl_Text *) welcome->title, "vera"); //, 18);
+//      ewl_text_font_set((Ewl_Text *) welcome->title, "vera"); //, 18);
 	ewl_text_color_set((Ewl_Text *) welcome->title, 255, 255, 255, 255);
 	ewl_text_styles_set((Ewl_Text *) welcome->title,
 			    EWL_TEXT_STYLE_OUTLINE);
 	ewl_text_color_set((Ewl_Text *) welcome->title, 200, 200, 200, 255);
-	ewl_text_text_insert((Ewl_Text *) welcome->title, "Welcome to E-Notes", 0);
+	ewl_text_text_insert((Ewl_Text *) welcome->title, "Welcome to E-Notes",
+			     0);
 	ewl_object_padding_set((Ewl_Object *) welcome->title, 5, 5, 5, 5);
 	ewl_container_child_append((Ewl_Container *) welcome->wvbox,
 				   welcome->title);
 	ewl_widget_show(welcome->title);
 
 	welcome->label = ewl_text_new();
-//	ewl_text_font_set((Ewl_Text *) welcome->label, "vera"); //, 12);
+//      ewl_text_font_set((Ewl_Text *) welcome->label, "vera"); //, 12);
 	ewl_text_color_set((Ewl_Text *) welcome->label, 0, 0, 0, 255);
 	ewl_text_text_insert((Ewl_Text *) welcome->label,
-			  "E-Notes is a sticky notes system\nbased on the enlightenment\nfoundation libraries.  Please\nview the credits and report\nany bugs to:\n", 0);
+			     "E-Notes is a sticky notes system\nbased on the enlightenment\nfoundation libraries.  Please\nview the credits and report\nany bugs to:\n",
+			     0);
 	ewl_text_color_set((Ewl_Text *) welcome->label, 69, 98, 224, 255);
 	ewl_text_text_append((Ewl_Text *) welcome->label,
 			     "\ntom.fletcher@gmail.com");
@@ -117,10 +119,11 @@ open_credits()
 
 	credits->credits = ewl_text_new();
 	ewl_object_padding_set((Ewl_Object *) credits->credits, 5, 5, 5, 5);
-//	ewl_text_font_set((Ewl_Text *) credits->credits, "vera"); //, 12);
+//      ewl_text_font_set((Ewl_Text *) credits->credits, "vera"); //, 12);
 	ewl_text_color_set((Ewl_Text *) credits->credits, 0, 0, 0, 255);
 	ewl_text_text_insert((Ewl_Text *) credits->credits,
-			  "Credits:\n\nDeveloper: Thomas [Fletch]er\nArtwork: Corey Donohoe (Atmos)\nArtwork: Andrew Elcock (HandyAndE)\n", 0);
+			     "Credits:\n\nDeveloper: Thomas [Fletch]er\nMaintainer: Andrew Williams (HandyandE)\nArtwork: Corey Donohoe (Atmos)\nArtwork: Andrew Williams (HandyAndE)\n",
+			     0);
 	ewl_container_child_append((Ewl_Container *) credits->win,
 				   credits->credits);
 	ewl_widget_show(credits->credits);

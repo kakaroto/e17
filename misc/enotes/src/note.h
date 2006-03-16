@@ -79,7 +79,7 @@ typedef struct _note {
 	Ewl_Widget     *content;
 	Ewl_Widget     *pane;
 
-  Ewl_Widget     *dialog;
+	Ewl_Widget     *dialog;
 	Menu           *menu;
 
 	/* Comparison Strings and Timer */
@@ -87,7 +87,7 @@ typedef struct _note {
 	char           *txt_title;
 
 	/* Animation Vars */
-	int stage;
+	int             stage;
 } _note;
 
 typedef struct {
@@ -101,7 +101,8 @@ Evas_List      *gbl_notes;
 void            new_note(void);
 void            new_note_with_values(int x, int y, int width, int height,
 				     char *content);
-Note           *new_note_with_values_return(int x, int y, int width, int height,char *content);
+Note           *new_note_with_values_return(int x, int y, int width, int height,
+					    char *content);
 
 /* Lists and Allocation */
 Evas_List      *append_note(void);
@@ -127,7 +128,8 @@ void            note_edje_close(Evas_List * note, Evas_Object * o,
 				const char *emission, const char *source);
 void            note_edje_minimise(Evas_List * note, Evas_Object * o,
 				   const char *emission, const char *source);
-void            note_edje_save(Evas_List*note,Evas_Object*o,const char*emission,const char*source);
+void            note_edje_save(Evas_List * note, Evas_Object * o,
+			       const char *emission, const char *source);
 
 /* Misc */
 char           *get_date_string(void);

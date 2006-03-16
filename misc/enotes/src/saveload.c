@@ -32,7 +32,7 @@ setup_saveload(void)
 		setup_saveload_win();
 		fill_saveload_tree();
 	} else {
-		ewl_window_raise((Ewl_Window*)saveload->win);
+		ewl_window_raise((Ewl_Window *) saveload->win);
 	}
 	return;
 }
@@ -98,20 +98,17 @@ setup_saveload_win(void)
 
 	/* EWL Callbacks */
 	ewl_callback_append(saveload->refreshbtn, EWL_CALLBACK_CLICKED,
-			     ewl_saveload_revert,
-			     saveload->tree);
+			    ewl_saveload_revert, saveload->tree);
 	ewl_callback_append(saveload->closebtn, EWL_CALLBACK_CLICKED,
-			     ewl_saveload_close,
-			     saveload->win);
+			    ewl_saveload_close, saveload->win);
 	ewl_callback_append(saveload->win, EWL_CALLBACK_DELETE_WINDOW,
-			     ewl_saveload_close,
-			     saveload->win);
+			    ewl_saveload_close, saveload->win);
 	ewl_callback_append(saveload->savebtn, EWL_CALLBACK_CLICKED,
-			     ewl_saveload_save, NULL);
+			    ewl_saveload_save, NULL);
 	ewl_callback_append(saveload->loadbtn, EWL_CALLBACK_CLICKED,
-			     ewl_load_load, NULL);
+			    ewl_load_load, NULL);
 	ewl_callback_append(saveload->deletebtn, EWL_CALLBACK_CLICKED,
-			     ewl_load_delete, NULL);
+			    ewl_load_delete, NULL);
 
 	return;
 }
@@ -155,7 +152,7 @@ fill_saveload_tree(void)
 		}
 	}
 
-  fill_load_tree();
+	fill_load_tree();
 	return;
 }
 
@@ -177,7 +174,7 @@ setup_saveload_opt(Ewl_Widget * tree, char *caption, Evas_List * p)
 	capt = (Ewl_Widget *) ewl_text_new();
 	ewl_text_text_set(EWL_TEXT(capt), caption);
 	ewl_callback_append(capt, EWL_CALLBACK_CLICKED,
-			     ewl_saveload_listitem_click, NULL);
+			    ewl_saveload_listitem_click, NULL);
 	ewl_object_fill_policy_set((Ewl_Object *) capt, EWL_FLAG_FILL_ALL);
 	ewl_widget_show(capt);
 	row = (Ewl_Row *) ewl_tree_row_add((Ewl_Tree *) tree, 0, &capt);
@@ -196,22 +193,22 @@ setup_saveload_opt(Ewl_Widget * tree, char *caption, Evas_List * p)
  *         rebuild it from scratch. :)
  */
 void
-ewl_saveload_revert(Ewl_Widget * widget, void *ev_data, void * ud)
+ewl_saveload_revert(Ewl_Widget * widget, void *ev_data, void *ud)
 {
 	dml("Refreshing the Saveload List", 2);
 
-  if (!saveload)
-    return;
+	if (!saveload)
+		return;
 
 	ewl_container_reset((Ewl_Container *) saveload->tree);
-  ewl_widget_enable(saveload->savebtn);
-  ewl_widget_state_set(saveload->savebtn, "enabled");
-  ewl_widget_enable(saveload->loadbtn);
-  ewl_widget_state_set(saveload->loadbtn, "enabled");
+	ewl_widget_enable(saveload->savebtn);
+	ewl_widget_state_set(saveload->savebtn, "enabled");
+	ewl_widget_enable(saveload->loadbtn);
+	ewl_widget_state_set(saveload->loadbtn, "enabled");
 
-  saveload_selected = NULL;
-  ewl_text_text_set((Ewl_Text *) saveload->txt_selected, "Selected: N/A");
-  ewl_tree_selected_clear((Ewl_Tree *) saveload->tree);
+	saveload_selected = NULL;
+	ewl_text_text_set((Ewl_Text *) saveload->txt_selected, "Selected: N/A");
+	ewl_tree_selected_clear((Ewl_Tree *) saveload->tree);
 	fill_saveload_tree();
 
 	return;
@@ -246,10 +243,10 @@ ewl_saveload_listitem_click(Ewl_Widget * o, void *ev_data, void *null)
 {
 	char           *tmp = malloc(MAX_TITLE);
 
-  ewl_widget_enable(saveload->savebtn);
-  ewl_widget_state_set(saveload->savebtn, "enabled");
-  ewl_widget_disable(saveload->loadbtn);
-  ewl_widget_state_set(saveload->loadbtn, "disabled");
+	ewl_widget_enable(saveload->savebtn);
+	ewl_widget_state_set(saveload->savebtn, "enabled");
+	ewl_widget_disable(saveload->loadbtn);
+	ewl_widget_state_set(saveload->loadbtn, "disabled");
 
 	saveload_selected = ewl_text_text_get((Ewl_Text *) o);
 	snprintf(tmp, MAX_TITLE, "Selected: %s", saveload_selected);
@@ -261,8 +258,8 @@ ewl_saveload_listitem_click(Ewl_Widget * o, void *ev_data, void *null)
 void
 ewl_saveload_save_by_name(char *p)
 {
-	saveload_selected=p;
-	ewl_saveload_save(NULL,NULL,NULL);
+	saveload_selected = p;
+	ewl_saveload_save(NULL, NULL, NULL);
 }
 
 /**
@@ -299,9 +296,9 @@ ewl_saveload_save(Ewl_Widget * o, void *ev_data, void *null)
 	n->y = y;
 	n->content = strdup(get_content_by_note(p));
 
-	if(append_note_stor(n)==1){
+	if (append_note_stor(n) == 1) {
 		/* Animation or something */
-		edje_object_signal_emit(note->edje,NOTE_SAVED_SIGNAL,"");
+		edje_object_signal_emit(note->edje, NOTE_SAVED_SIGNAL, "");
 	}
 	free_note_stor(n);
 
@@ -350,16 +347,16 @@ void
 setup_load_opt(Ewl_Widget * tree, char *caption)
 {
 	Ewl_Widget     *capt;
-  Ewl_Row        *row;
+	Ewl_Row        *row;
 
 	capt = ewl_text_new();
 	ewl_text_text_set(EWL_TEXT(capt), caption);
 	ewl_callback_append(capt, EWL_CALLBACK_CLICKED,
-			     ewl_load_listitem_click, NULL);
-  ewl_object_fill_policy_set((Ewl_Object *) capt, EWL_FLAG_FILL_ALL);
+			    ewl_load_listitem_click, NULL);
+	ewl_object_fill_policy_set((Ewl_Object *) capt, EWL_FLAG_FILL_ALL);
 	ewl_widget_show(capt);
-  row = (Ewl_Row *) ewl_tree_row_add((Ewl_Tree *) tree, 0, &capt);
-  ewl_object_fill_policy_set((Ewl_Object *) row, EWL_FLAG_FILL_ALL);
+	row = (Ewl_Row *) ewl_tree_row_add((Ewl_Tree *) tree, 0, &capt);
+	ewl_object_fill_policy_set((Ewl_Object *) row, EWL_FLAG_FILL_ALL);
 	return;
 }
 
@@ -381,8 +378,9 @@ ewl_load_load(Ewl_Widget * o, void *ev_data, void *null)
 		free(p);
 		return;
 	}
-	sprintf(p, "%s/.e/apps/enotes/notes/%s", getenv("HOME"), saveload_selected);
-	note_load(p); /* This function calls the animation */
+	sprintf(p, "%s/.e/apps/enotes/notes/%s", getenv("HOME"),
+		saveload_selected);
+	note_load(p);		/* This function calls the animation */
 	free(p);
 	return;
 }
@@ -399,10 +397,10 @@ ewl_load_listitem_click(Ewl_Widget * o, void *ev_data, void *null)
 {
 	char           *tmp = malloc(MAX_TITLE);
 
-  ewl_widget_disable(saveload->savebtn);
-  ewl_widget_state_set(saveload->savebtn, "disabled");
-  ewl_widget_enable(saveload->loadbtn);
-  ewl_widget_state_set(saveload->loadbtn, "enabled");
+	ewl_widget_disable(saveload->savebtn);
+	ewl_widget_state_set(saveload->savebtn, "disabled");
+	ewl_widget_enable(saveload->loadbtn);
+	ewl_widget_state_set(saveload->loadbtn, "enabled");
 
 	saveload_selected = ewl_text_text_get((Ewl_Text *) o);
 	snprintf(tmp, MAX_TITLE, "Selected: %s", saveload_selected);
@@ -423,7 +421,8 @@ ewl_load_delete(Ewl_Widget * o, void *ev_data, void *null)
 	char           *p = malloc(PATH_MAX);
 
 	dml("Deleting Saved Note", 2);
-	sprintf(p, "%s/.e/apps/enotes/notes/%s", getenv("HOME"), saveload_selected);
+	sprintf(p, "%s/.e/apps/enotes/notes/%s", getenv("HOME"),
+		saveload_selected);
 	unlink(p);
 
 	ewl_saveload_revert(NULL, NULL, NULL);

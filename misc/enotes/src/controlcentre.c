@@ -68,11 +68,11 @@ setup_cc_with_pos(int x, int y)
 	ecore_evas_title_set(cc->win, "Enotes");
 	ecore_evas_name_class_set(cc->win, "Enotes", "Enotes");
 
-        if (main_config->ontop == 1)
+	if (main_config->ontop == 1)
 		ecore_evas_layer_set(cc->win, 7);
 	else
 		ecore_evas_layer_set(cc->win, 2);
-		
+
 	if (main_config->sticky == 1)
 		ecore_evas_sticky_set(cc->win, 1);
 	else
@@ -279,14 +279,18 @@ cc_minimize(void *data)
 }
 
 /*  Theme Change  */
-void cc_update_theme(){
+void
+cc_update_theme()
+{
 	int             w, h;
 	char           *edjefn;
 
-	if (!controlcentre)return;
+	if (!controlcentre)
+		return;
 
 	edjefn = malloc(PATH_MAX);
-	snprintf(edjefn, PATH_MAX, PACKAGE_DATA_DIR "/themes/%s.edj", main_config->theme);
+	snprintf(edjefn, PATH_MAX, PACKAGE_DATA_DIR "/themes/%s.edj",
+		 main_config->theme);
 	edje_object_file_set(controlcentre->edje, edjefn, CC_PART);
 	free(edjefn);
 
@@ -297,4 +301,5 @@ void cc_update_theme(){
 	ecore_evas_size_min_set(controlcentre->win, w, h);
 	ecore_evas_resize(controlcentre->win, w, h);
 	evas_object_resize(controlcentre->edje, w, h);
-	evas_object_resize(controlcentre->dragger, w, h);}
+	evas_object_resize(controlcentre->dragger, w, h);
+}
