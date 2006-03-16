@@ -13,7 +13,7 @@ struct _entropy_core_settings {
 
 typedef struct entropy_core entropy_core;
 struct entropy_core {
-	entropy_config* config;
+	struct Entropy_Config* config;
 
 	Ecore_List* plugin_list;
 	Ecore_List* mime_plugins;

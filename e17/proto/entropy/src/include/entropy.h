@@ -3,8 +3,6 @@
 
 
 
-typedef struct entropy_config entropy_config;
-
 #include <Ecore.h>
 #include <Ecore_Ipc.h>
 #include <Ecore_Data.h>

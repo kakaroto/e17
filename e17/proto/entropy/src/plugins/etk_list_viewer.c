@@ -30,9 +30,9 @@ struct entropy_etk_file_list_viewer
 
   entropy_file_progress_window* progress;
   
-  Etk_Widget *last_selected_label;
-
   Etk_Widget* popup;
+  Etk_Widget* open_with_menu;
+  Etk_Widget* open_with_menuitem;
 
   entropy_generic_file* current_folder;
 };
@@ -133,6 +133,51 @@ static Etk_Widget *_entropy_etk_menu_item_new(Etk_Menu_Item_Type item_type, cons
    etk_signal_connect("deselected", ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_test_menu_item_deselected_cb), statusbar);*/
    
    return menu_item;
+}
+
+static void
+_entropy_etk_list_viewer_menu_popup_cb(Etk_Object *object, void *data)
+{
+	entropy_gui_component_instance* instance;
+	entropy_etk_file_list_viewer* viewer;
+	Etk_Tree_Row* row;
+	gui_file* file;
+	Entropy_Config_Mime_Binding* binding;
+	Entropy_Config_Mime_Binding_Action* action;
+	Evas_List* l;
+
+
+	instance = data;
+	viewer = instance->data;
+
+	row = etk_tree_selected_row_get(ETK_TREE(viewer->tree));
+	file = ecore_hash_get(row_hash, row);
+
+	if (file && strlen(file->file->mime_type)) {
+		
+		   binding = entropy_config_mime_binding_for_type_get(file->file->mime_type);
+	
+		   if (binding) {
+			   
+			   //etk_object_destroy(ETK_OBJECT(viewer->open_with_menu));
+		   
+			   viewer->open_with_menu = etk_menu_new();
+			   etk_menu_item_submenu_set(ETK_MENU_ITEM(viewer->open_with_menuitem), ETK_MENU(viewer->open_with_menu)); 
+
+			   for (l = binding->actions; l; ) {
+				   action = l->data;
+
+				   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _(action->app_description),
+					ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(viewer->open_with_menu),NULL);
+				   
+				   l = l->next;
+			   }
+		  }
+
+		   
+	}
+	
+	printf("Menu activated!\n");
 }
 
 
@@ -876,6 +921,13 @@ entropy_plugin_init (entropy_core * core,
   
   /*Popup init*/
    viewer->popup = etk_menu_new();
+   etk_signal_connect("popped_up", ETK_OBJECT(viewer->popup), ETK_CALLBACK(_entropy_etk_list_viewer_menu_popup_cb), instance);
+
+   viewer->open_with_menuitem =  
+	   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Open With"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(viewer->popup),NULL);
+   viewer->open_with_menu = etk_menu_new();
+   etk_menu_item_submenu_set(ETK_MENU_ITEM(viewer->open_with_menuitem), ETK_MENU(viewer->open_with_menu)); 
+ 
    _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Copy"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(viewer->popup),NULL);
    _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Cut"), ETK_STOCK_EDIT_CUT, ETK_MENU_SHELL(viewer->popup),NULL);
    _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Paste"), ETK_STOCK_EDIT_PASTE, ETK_MENU_SHELL(viewer->popup),NULL);
