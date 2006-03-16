@@ -49,6 +49,11 @@ static void _en_ok_print_stdout_cb(Etk_Object *obj, int response_id, void *data)
 	     _en_retval = 0;
 	     break;
 	  }
+	else if(ETK_IS_SLIDER(data))
+	  {
+	     printf("%d\n", (int)etk_range_value_get(ETK_RANGE(data)));
+	     break;
+	  }
 	else if(ETK_IS_ENTRY(data))
 	  {
 	     printf("%s\n", etk_entry_text_get(ETK_ENTRY(data)));
@@ -384,6 +389,111 @@ static void _en_entry_entry_text_cb(Etk_Argument *args, int index)
    /* do any changes / fixes / checks here */
 }
 
+void _en_slider_value_changed(Etk_Object *object, double value, void *data)
+{
+   char string[256];
+   
+   snprintf(string, 255, "%d", (int)value);
+   etk_label_set(ETK_LABEL(data), string);
+}
+
+static void _en_scale_cb(Etk_Argument *args, int index)
+{
+   Etk_Widget *dialog;   
+   Etk_Widget *label;
+   Etk_Widget *slider_label;
+   Etk_Widget *slider;
+   Etk_Widget *slider_hbox;
+   Evas_List *data;
+   int min_value;
+   int max_value;
+   int step_value;
+   int value;
+   
+   dialog = etk_dialog_new();
+   etk_signal_connect("delete_event", ETK_OBJECT(dialog), ETK_CALLBACK(_en_window_delete_cb), NULL);
+   
+   if((data = _en_arg_data_get(args, "text")) != NULL)
+     label = etk_label_new(data->data);
+   else
+     label = etk_label_new(_("Adjust the slider value:"));
+
+   slider_hbox = etk_hbox_new(ETK_FALSE, 5);
+   
+   if((data = _en_arg_data_get(args, "min-value")) != NULL)
+     min_value = atoi(data->data);
+   else
+     min_value = 0;
+      
+   if((data = _en_arg_data_get(args, "max-value")) != NULL)
+     max_value = atoi(data->data);
+   else
+     max_value = 100;
+   
+   if((data = _en_arg_data_get(args, "step")) != NULL)
+     step_value = atoi(data->data);
+   else
+     step_value = 1;
+   
+   if((data = _en_arg_data_get(args, "value")) != NULL)     	
+     value = atoi(data->data);
+   else
+     value = 0;
+   
+   slider = etk_hslider_new((double)min_value, (double)max_value, (double)value, (double)step_value, 10.0);
+   etk_box_pack_start(ETK_BOX(slider_hbox), slider, ETK_TRUE, ETK_TRUE, 0);
+   
+   if(!etk_argument_is_set(args, "hide-value", ' '))
+     {
+	char str[256];
+	
+	snprintf(str, sizeof(str), "%d", (int)value);
+	slider_label = etk_label_new(str);
+	etk_signal_connect("value_changed", ETK_OBJECT(slider), ETK_CALLBACK(_en_slider_value_changed), slider_label);
+	etk_box_pack_start(ETK_BOX(slider_hbox), slider_label, ETK_TRUE, ETK_TRUE, 0);
+     }
+   
+   etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), label, ETK_FALSE, ETK_FALSE, 3, ETK_FALSE);
+   etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), slider_hbox, ETK_FALSE, ETK_FALSE, 3, ETK_FALSE);
+   etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_OK, ETK_RESPONSE_OK);
+   etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_CANCEL, ETK_RESPONSE_CANCEL);
+   etk_signal_connect("response", ETK_OBJECT(dialog), ETK_CALLBACK(_en_ok_print_stdout_cb), slider);
+   
+   etk_container_border_width_set(ETK_CONTAINER(dialog), 4);
+   
+   if((data = _en_arg_data_get(args, "title")) != NULL)
+     etk_window_title_set(ETK_WINDOW(dialog), data->data);
+   else
+     etk_window_title_set(ETK_WINDOW(dialog), _("Adjust the slider value"));
+   
+   etk_widget_show_all(dialog);
+}
+
+static void _en_scale_step_cb(Etk_Argument *args, int index)
+{
+   /* do any changes / fixes / checks here */
+}
+
+static void _en_scale_value_cb(Etk_Argument *args, int index)
+{
+   /* do any changes / fixes / checks here */
+}
+
+static void _en_scale_min_value_cb(Etk_Argument *args, int index)
+{
+   /* do any changes / fixes / checks here */
+}
+
+static void _en_scale_max_value_cb(Etk_Argument *args, int index)
+{
+   /* do any changes / fixes / checks here */
+}
+
+static void _en_scale_hide_value_cb(Etk_Argument *args, int index)
+{
+   /* do any changes / fixes / checks here */
+}
+
 Etk_Argument args[] = {
      /* global options that are used with more than one dialog type */
      { "text", ' ', NULL, _en_dialog_text_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL|ETK_ARGUMENT_FLAG_VALUE_REQUIRED, "Set the dialog text" },
@@ -404,6 +514,14 @@ Etk_Argument args[] = {
    
      /* --warning options */
      { "warning", ' ', NULL, _en_warning_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL, "Display warning dialog" },
+   
+     /* --scale options */
+     { "step", ' ', NULL, _en_scale_step_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL|ETK_ARGUMENT_FLAG_VALUE_REQUIRED, "Step value for the scale" },
+     { "value", ' ', NULL, _en_scale_value_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL|ETK_ARGUMENT_FLAG_VALUE_REQUIRED, "Initial value for the scale" },
+     { "min-value", ' ', NULL, _en_scale_min_value_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL|ETK_ARGUMENT_FLAG_VALUE_REQUIRED, "Min value for the scale" },
+     { "max-value", ' ', NULL, _en_scale_max_value_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL|ETK_ARGUMENT_FLAG_VALUE_REQUIRED, "Max value for the scale" },
+     { "hide-value", ' ', NULL, _en_scale_hide_value_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL, "Hide the label for the scale" },
+     { "scale", ' ', NULL, _en_scale_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL, "Display scale dialog" },
 
      /* --list options */
      { "checklist", ' ', NULL, _en_list_check_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL, "Use check boxes for first column" },

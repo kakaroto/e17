@@ -57,5 +57,7 @@ enity --question \
 enity --error \
       --text 'Could not detect your VGA card!'
             
-
-
+enity --scale \
+      --value 40 \
+      --max-value 120 \
+      --text 'Selelect refresh rate'

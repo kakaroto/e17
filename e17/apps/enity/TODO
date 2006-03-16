@@ -2,9 +2,6 @@ TODO:
 =====
 
 This is Enity's feature progress so far:
-
---calendar           Display calendar dialog
- * waiting for Etk widget
  
 --entry              Display text entry dialog
  * done
@@ -14,20 +11,7 @@ This is Enity's feature progress so far:
  
 --info               Display info dialog
  * done
- 
---file-selection     Display file selection dialog
- * not done
- 
---list               Display list dialog
- * working, not done (needs multiple select, radio buttons)
- * checklist done
- 
---notification       Display notification
- * not done
- 
---progress           Display progress indication dialog
- * not done
- 
+
 --question           Display question dialog
  * done
  
@@ -35,11 +19,26 @@ This is Enity's feature progress so far:
  * done
  
 --scale              Display scale dialog
+ * done
+
+--calendar           Display calendar dialog
+ * waiting for Etk widget
+
+--file-selection     Display file selection dialog
  * not done
  
+--notification       Display notification
+ * not done 
+ 
+--progress           Display progress indication dialog
+ * not done 
+   
 --text-info          Display text information dialog
  * not done
 
+--list               Display list dialog
+ * working, not done (needs multiple select, radio buttons)
+ * checklist done
 
 Misc TODO:
 ==========
