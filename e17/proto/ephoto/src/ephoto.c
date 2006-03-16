@@ -35,7 +35,13 @@ main(int argc, char **argv)
 	m->imagelist = ecore_dlist_new();
 	/*****************************************/
 	/****Get db directory****/
-	char *home = getenv("HOME");
+	char *home;
+	if ( argv[1] != NULL  && ecore_file_is_dir(argv[1]) ) {
+		home = argv[1];
+	}
+	else {
+		home = getenv("HOME");
+	}
 	//snprintf(tempdb, PATH_MAX, "%s/ephoto_images", home);
 	//if ( !ecore_file_is_dir(tempdb) ) {
 	//	ecore_file_mkdir(tempdb);
