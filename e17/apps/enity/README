@@ -61,3 +61,8 @@ enity --scale \
       --value 40 \
       --max-value 120 \
       --text 'Selelect refresh rate'
+
+enity --progress \
+      --text "Copying files..."
+      
+then enter a value on stdin and press enter to see bar update.      

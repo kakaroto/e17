@@ -2,6 +2,23 @@
 
 static int _en_retval = 0;
 static Evas_List *_en_checked_rows = NULL;
+static Ecore_Fd_Handler *_en_fd_stdin_handler = NULL;
+
+int _en_fd_stdin_cb (void *data, Ecore_Fd_Handler *fd_handler)
+{
+   char input[32];
+   int len;
+   int percent;
+   
+   len = read(1, &input, sizeof(input));
+   if(len > 0)
+     percent = atoi(input);
+   if(percent <= 0)
+     etk_progress_bar_fraction_set(ETK_PROGRESS_BAR(data), 0.0);
+   else
+     etk_progress_bar_fraction_set(ETK_PROGRESS_BAR(data), ((double)percent/100.0));
+   return 1;
+}
 
 static Etk_Bool _en_window_delete_cb(void *data)
 {
@@ -47,6 +64,11 @@ static void _en_ok_print_stdout_cb(Etk_Object *obj, int response_id, void *data)
 	if (!data)
 	  {
 	     _en_retval = 0;
+	     break;
+	  }
+	else if(ETK_IS_PROGRESS_BAR(data))
+	  {
+	     printf("%d\n", (int)(etk_progress_bar_fraction_get(ETK_PROGRESS_BAR(data)) * 100.0));
 	     break;
 	  }
 	else if(ETK_IS_SLIDER(data))
@@ -469,6 +491,41 @@ static void _en_scale_cb(Etk_Argument *args, int index)
    etk_widget_show_all(dialog);
 }
 
+static void _en_progress_cb(Etk_Argument *args, int index)
+{
+   Etk_Widget *dialog;   
+   Etk_Widget *label;
+   Etk_Widget *progress;
+   Evas_List *data;
+   
+   dialog = etk_dialog_new();
+   etk_signal_connect("delete_event", ETK_OBJECT(dialog), ETK_CALLBACK(_en_window_delete_cb), NULL);
+   
+   if((data = _en_arg_data_get(args, "text")) != NULL)
+     label = etk_label_new(data->data);
+   else
+     label = etk_label_new(_("Running..."));
+   
+   progress = etk_progress_bar_new();
+      
+   etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), label, ETK_TRUE, ETK_TRUE, 3, ETK_FALSE);
+   etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), progress, ETK_TRUE, ETK_TRUE, 3, ETK_FALSE);
+   etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_OK, ETK_RESPONSE_OK);
+   etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_CANCEL, ETK_RESPONSE_CANCEL);
+   etk_signal_connect("response", ETK_OBJECT(dialog), ETK_CALLBACK(_en_ok_print_stdout_cb), progress);
+   
+   etk_container_border_width_set(ETK_CONTAINER(dialog), 4);
+   
+   if((data = _en_arg_data_get(args, "title")) != NULL)
+     etk_window_title_set(ETK_WINDOW(dialog), data->data);
+   else
+     etk_window_title_set(ETK_WINDOW(dialog), _("Progress"));
+   
+   _en_fd_stdin_handler = ecore_main_fd_handler_add(1, ECORE_FD_READ, _en_fd_stdin_cb, progress, NULL, NULL);
+   
+   etk_widget_show_all(dialog);   
+}
+
 static void _en_scale_step_cb(Etk_Argument *args, int index)
 {
    /* do any changes / fixes / checks here */
@@ -527,6 +584,10 @@ Etk_Argument args[] = {
      { "checklist", ' ', NULL, _en_list_check_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL, "Use check boxes for first column" },
      { "column", ' ', NULL, _en_list_column_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL|ETK_ARGUMENT_FLAG_VALUE_REQUIRED|ETK_ARGUMENT_FLAG_MULTIVALUE, "Set the column header" },
      { "list", ' ', NULL, _en_list_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL, "Display list dialog" },
+
+     /* --progress options */
+     { "progress", ' ', NULL, _en_progress_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL, "Display progress indication dialog" },
+   
      /* terminator */
      { NULL, -1,  NULL, NULL, NULL, ETK_ARGUMENT_FLAG_NONE, " " }
 };  
