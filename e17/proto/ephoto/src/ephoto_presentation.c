@@ -26,51 +26,58 @@ if ( ewl_media_is_available() ) {
 	picture1 = ecore_dlist_current(m->imagelist);
 
 	ewl_widget_destroy(s->screen);
-
-	wsize = ewl_text_text_get(EWL_TEXT(m->wsize));
-	w = atoi(wsize);
-	hsize = ewl_text_text_get(EWL_TEXT(m->hsize));
-	h = atoi(hsize);
-	
-	if (s->text != NULL) {
-		ewl_widget_destroy(s->text);
-		s->text = NULL;
+	if ( mainwin == 1 ) {
+		wsize = ewl_text_text_get(EWL_TEXT(m->wsize));
+		w = atoi(wsize);
+		hsize = ewl_text_text_get(EWL_TEXT(m->hsize));
+		h = atoi(hsize);
+	}
+	if ( mainwin == 0 ) {
+		w = 800;
+		h = 600;
 	}
 	s->screen = ewl_image_new();
 	ewl_image_proportional_set(EWL_IMAGE(s->screen), TRUE);
 	ewl_theme_data_str_set(s->screen, "/image/group", "entry");
 	ewl_image_file_set(EWL_IMAGE(s->screen), picture1, NULL);
 	ewl_object_alignment_set(EWL_OBJECT(s->screen), EWL_FLAG_ALIGN_CENTER);
-	if ( ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->fullrad)) == 0 ) {
+	if ( mainwin == 1 ) {
+		if ( ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->fullrad)) == 0 ) {
+			ewl_object_maximum_size_set(EWL_OBJECT(s->screen), w, h);
+		}
+	}
+	if ( mainwin == 0 ) {
 		ewl_object_maximum_size_set(EWL_OBJECT(s->screen), w, h);
 	}
 	ewl_object_fill_policy_set(EWL_OBJECT(s->screen), EWL_FLAG_FILL_SHRINK);
 	ewl_container_child_append(EWL_CONTAINER(s->cell), s->screen);
 	ewl_widget_show(s->screen);	
 
-	if (!picture1 && ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->loopcheck)) == 1 ) {
-		picture2 = ecore_dlist_goto_first(m->imagelist);
-	
-		ewl_widget_destroy(s->screen);
-	
-		wsize = ewl_text_text_get(EWL_TEXT(m->wsize));
-		w = atoi(wsize);
-		hsize = ewl_text_text_get(EWL_TEXT(m->hsize));
-		h = atoi(hsize);
-		s->screen = ewl_image_new();
-		ewl_image_proportional_set(EWL_IMAGE(s->screen), TRUE);
-		ewl_theme_data_str_set(s->screen, "/image/group", "entry");
-		ewl_object_fill_policy_set(EWL_OBJECT(s->screen), EWL_FLAG_FILL_SHRINK);
-		ewl_image_file_set(EWL_IMAGE(s->screen), picture2, NULL);
-		ewl_object_alignment_set(EWL_OBJECT(s->screen), EWL_FLAG_ALIGN_CENTER);
-		if ( ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->fullrad)) == 0 ) {
-			ewl_object_maximum_size_set(EWL_OBJECT(s->screen), w, h);
+	if ( mainwin == 1 ) {
+		if (!picture1 && ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->loopcheck)) == 1 ) {
+			picture2 = ecore_dlist_goto_first(m->imagelist);
+		
+			ewl_widget_destroy(s->screen);
+		
+			wsize = ewl_text_text_get(EWL_TEXT(m->wsize));
+			w = atoi(wsize);
+			hsize = ewl_text_text_get(EWL_TEXT(m->hsize));
+			h = atoi(hsize);
+			s->screen = ewl_image_new();
+			ewl_image_proportional_set(EWL_IMAGE(s->screen), TRUE);
+			ewl_theme_data_str_set(s->screen, "/image/group", "entry");
+			ewl_object_fill_policy_set(EWL_OBJECT(s->screen), EWL_FLAG_FILL_SHRINK);
+			ewl_image_file_set(EWL_IMAGE(s->screen), picture2, NULL);
+			ewl_object_alignment_set(EWL_OBJECT(s->screen), EWL_FLAG_ALIGN_CENTER);
+			if ( ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->fullrad)) == 0 ) {
+				ewl_object_maximum_size_set(EWL_OBJECT(s->screen), w, h);
+			}
+			ewl_container_child_append(EWL_CONTAINER(s->cell), s->screen);
+			ewl_widget_show(s->screen);
 		}
-		ewl_container_child_append(EWL_CONTAINER(s->cell), s->screen);
-		ewl_widget_show(s->screen);
-	}
-	if (!picture1 && ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->loopcheck)) == 0 ) {
-		ewl_callback_call(s->wins, EWL_CALLBACK_CLICKED);
+		if (!picture1 && ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->loopcheck)) == 0 ) {
+			ewl_callback_call(s->wins, EWL_CALLBACK_CLICKED);
+		}
 	}
 	/******************************************************************/
 	data = NULL;
@@ -121,22 +128,36 @@ slideshow_cb(Ewl_Widget *w, void *event, void *data)
 	/************************************/
 
 	/*****Setup slideshow layout*****/
-	wsize = ewl_text_text_get(EWL_TEXT(m->wsize));
-	ws = atoi(wsize);
-	hsize = ewl_text_text_get(EWL_TEXT(m->hsize));
-	h = atoi(hsize);
+	if ( mainwin == 1 ) {
+		wsize = ewl_text_text_get(EWL_TEXT(m->wsize));
+		ws = atoi(wsize);
+		hsize = ewl_text_text_get(EWL_TEXT(m->hsize));
+		h = atoi(hsize);
+	}
+	
+	if ( mainwin == 0 ) {
+		ws = 800;
+		h= 600;
+	}
 
 	s->wins = ewl_window_new();
 	wino = 1;
 	ewl_window_title_set(EWL_WINDOW(s->wins), "Slideshow");
 	ewl_window_name_set(EWL_WINDOW(s->wins), "Slideshow");
 	ewl_window_class_set(EWL_WINDOW(s->wins), "Slideshow");
-	if ( ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->fullrad)) == 0 ) {
+	if ( mainwin == 1 ) {
+		if ( ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->fullrad)) == 0 ) {
+			ewl_object_size_request(EWL_OBJECT(s->wins), ws, h);
+		}
+	}
+	if ( mainwin == 0 ) {
 		ewl_object_size_request(EWL_OBJECT(s->wins), ws, h);
 	}
 	ewl_object_fill_policy_set(EWL_OBJECT(s->wins), EWL_FLAG_FILL_ALL);
-	if ( ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->fullrad)) == 1 ) {
-		ewl_callback_append(s->wins, EWL_CALLBACK_REALIZE, realize_cb, NULL);
+	if ( mainwin == 1 ) {
+		if ( ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->fullrad)) == 1 ) {
+			ewl_callback_append(s->wins, EWL_CALLBACK_REALIZE, realize_cb, NULL);
+		}
 	}
 	ewl_callback_append(s->wins, EWL_CALLBACK_DELETE_WINDOW, destroys_cb, NULL);
 	ewl_callback_append(s->wins, EWL_CALLBACK_CLICKED, destroys_cb, NULL);
@@ -170,11 +191,16 @@ if ( ewl_media_is_available() ) {
 	/*******Start the slideshow*******/	
 	ewl_callback_append(s->audio1, EWL_CALLBACK_REALIZE, play_cb, NULL);
 	
-	if ( ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->audiolen)) == 1 ) {
-		time = audiolen / slidenum;
+	if ( mainwin == 1 ) {
+		if ( ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->audiolen)) == 1 ) {
+			time = audiolen / slidenum;
+		}
+		if ( ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->audiolen)) == 0 ) {
+			time = ewl_spinner_value_get(EWL_SPINNER(m->slidetime));
+		}
 	}
-	if ( ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->audiolen)) == 0 ) {
-		time = ewl_spinner_value_get(EWL_SPINNER(m->slidetime));
+	else {
+		time = 3;
 	}
 	s->timer = ecore_timer_add(time, _change_picture_cb, NULL);
 	/*******************************************************************/
@@ -184,7 +210,12 @@ if ( ewl_media_is_available() ) {
 	ewl_theme_data_str_set(s->screen, "/image/group", "entry");
 	ewl_image_file_set(EWL_IMAGE(s->screen), pic1, NULL);
 	ewl_object_alignment_set(EWL_OBJECT(s->screen), EWL_FLAG_ALIGN_CENTER);
-	if ( ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->fullrad)) == 0 ) {
+	if ( mainwin == 1 ) {
+		if ( ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->fullrad)) == 0 ) {
+			ewl_object_maximum_size_set(EWL_OBJECT(s->screen), ws, h);
+		}
+	}
+	if ( mainwin == 0 ) {
 		ewl_object_maximum_size_set(EWL_OBJECT(s->screen), ws, h);
 	}
 	ewl_object_fill_policy_set(EWL_OBJECT(s->screen), EWL_FLAG_FILL_SHRINK);

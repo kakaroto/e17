@@ -124,6 +124,7 @@ extern Ecore_List *audiofiles;
 extern int audio;
 extern int wino ;
 extern int audiolen;
+extern int mainwin;
 extern int slidenum;
 extern char *audios;
 
