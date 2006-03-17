@@ -21,4 +21,6 @@ doc
 ltmain.sh
 mkinstalldirs
 epeg.c
+epeg.pc
+epeg-uninstalled.pc
 epeg.spec
