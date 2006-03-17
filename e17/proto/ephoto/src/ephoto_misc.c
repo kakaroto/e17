@@ -20,6 +20,9 @@ destroys_cb(Ewl_Widget * w, void *event, void *data)
 	ewl_widget_destroy(w);
 	ecore_timer_del(s->timer);
 	wino = 0;
+	if ( mainwin == 0 ) {
+		ewl_main_quit();
+	}
 	return;
 	data = NULL;
 	/*****************************/
