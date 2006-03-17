@@ -24,6 +24,7 @@ EXTRA_DIST = AUTHORS COPYING COPYING-PLAIN gendoc \
 	     imlib2.oe.in imlib2.oe imlib2-native.oe.in imlib2-native.oe \
 	     imlib2.bb.in imlib2.bb imlib2Xnative.bb.in imlib2Xnative.bb \
 	     debian/changelog \
+	     debian/changelog.in \
 	     debian/control \
 	     debian/copyright \
 	     debian/imlib2-config.1 \
