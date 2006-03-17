@@ -2,13 +2,13 @@
 /* config.h.in.  Generated from configure.in by autoheader.  */
 
 /* "Eject Command" */
-#define EJECT ""
+#define EJECT "/bin/eject"
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #define HAVE_DLFCN_H 1
 
 /* Define to 1 if you have Eject */
-/* #undef HAVE_EJECT */
+#define HAVE_EJECT 1
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #define HAVE_INTTYPES_H 1
@@ -38,7 +38,7 @@
 #define HAVE_UNISTD_H 1
 
 /* "Module architecture" */
-#define MODULE_ARCH "linux-gnu-i686"
+#define MODULE_ARCH "linux-i686"
 
 /* "Mount Command" */
 #define MOUNT "/bin/mount"
@@ -47,16 +47,16 @@
 #define PACKAGE "mbar"
 
 /* "Package installed binaries destination" */
-#define PACKAGE_BIN_DIR "/usr/local/bin"
+#define PACKAGE_BIN_DIR "/opt/e17/bin"
 
 /* Define to the address where bug reports for this package should be sent. */
 #define PACKAGE_BUGREPORT ""
 
 /* "Package installed data destination" */
-#define PACKAGE_DATA_DIR "/home/shad/.e/e/modules/mbar"
+#define PACKAGE_DATA_DIR "/opt/e17/lib/enlightenment/modules/mbar"
 
 /* "Package installed libraries destination" */
-#define PACKAGE_LIB_DIR "/usr/local/lib"
+#define PACKAGE_LIB_DIR "/opt/e17/lib"
 
 /* Define to the full name of this package. */
 #define PACKAGE_NAME ""
