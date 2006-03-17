@@ -360,7 +360,6 @@ presentation_cb(Ewl_Widget * w, void *event, void *data)
 	ewl_object_alignment_set(EWL_OBJECT(p->hboxp), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_fill_policy_set(EWL_OBJECT(p->hboxp), EWL_FLAG_FILL_VFILL);
 	ewl_box_spacing_set(EWL_BOX(p->hboxp), 20);
-	ewl_object_maximum_size_set(EWL_OBJECT(p->hboxp), ws, 75);
 	ewl_widget_show(p->hboxp);
 
 	p->first = ewl_button_new();
