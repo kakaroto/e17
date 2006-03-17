@@ -100,11 +100,11 @@ raster(TIFFRGBAImage_Extra * img, uint32 * rast,
           {
 	     int a, r, g, b;
 	     
+             pixel_value = (*(pixel++));
 	     a = TIFFGetA(pixel_value);
 	     r = TIFFGetR(pixel_value);
 	     g = TIFFGetG(pixel_value);
 	     b = TIFFGetB(pixel_value);
-             pixel_value = (*(pixel++));
 	     if ((a > 0) && (a < 255) && (alpha_premult))
 	       {
 		  r = (r * 255) / a;
