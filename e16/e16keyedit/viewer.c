@@ -10,6 +10,14 @@
 #include "menus.h"
 #include "ipc.h"
 
+#if __GNUC__
+#define __UNUSED__ __attribute__((unused))
+#else
+#define __UNUSED__
+#endif
+
+#define DEBUG 0
+
 extern GtkTooltips *tooltips;
 extern GtkAccelGroup *accel_group;
 
@@ -19,20 +27,27 @@ static GtkWidget   *act_params;
 static GtkWidget   *act_mod;
 static GtkWidget   *act_clist;
 
-static void         receive_ipc_msg(gchar * msg);
-static gchar       *wait_for_ipc_msg(void);
+#define VER_E16_OLD 0
+#define VER_E16_8   1
+static int          e16_ver = VER_E16_OLD;
 
 static gchar       *e_ipc_msg = NULL;
 static char         dont_update = 0;
 static int          last_row = 0;
 static int          real_rows = 0;
 
-typedef struct _actionopt
+/* Various UI text strings */
+#define TXT_SELECT(old, new) ((e16_ver==VER_E16_OLD) ? old : new)
+#define TXT_PARAMETERS_USED TXT_SELECT("Parameters Used", "Command")
+#define TXT_PARAMETERS      TXT_SELECT("Parameters:", "Command:")
+
+typedef struct
 {
    const char         *text;
    gint                id;
    gchar               param_tpe;
    const char         *params;
+   const char         *command;
 } ActionOpt;
 
 static const char  *mod_str[] = {
@@ -58,102 +73,166 @@ static const char  *mod_str[] = {
    "MOD5+SHIFT",
    "MOD5+CTRL"
 };
-
+#define N_MODIFIERS (sizeof(mod_str)/sizeof(char*))
 
 /* *INDENT-OFF* */
 static const ActionOpt actions[] = {
-    {"Run command", 1, 1, NULL},
+    {"Run command", 1, 1, NULL, "exec "},
 
-    {"Restart Enlightenment", 7, 0, "restart"},
-    {"Exit Enlightenment", 7, 0, NULL},
+    {"Restart Enlightenment", 7, 0, "restart", "restart"},
+    {"Exit Enlightenment", 7, 0, NULL, "exit"},
 
-    {"Goto Next Desktop", 15, 0, NULL},
-    {"Goto Previous Deskop", 16, 0, NULL},
-    {"Goto Desktop", 42, 2, NULL},
-    {"Raise Desktop", 17, 0, NULL},
-    {"Lower Desktop", 18, 0, NULL},
-    {"Reset Desktop In Place", 21, 0, NULL},
+    {"Goto Next Desktop", 15, 0, NULL, "desk next"},
+    {"Goto Previous Deskop", 16, 0, NULL, "desk prev"},
+    {"Goto Desktop", 42, 2, NULL, "desk goto "},
+    {"Raise Desktop", 17, 0, NULL, "desk raise"},
+    {"Lower Desktop", 18, 0, NULL, "desk lower"},
+    {"Reset Desktop In Place", 21, 0, NULL, "desk this"},
 
-    {"Toggle Deskrays", 43, 0, NULL},
+    {"Toggle Deskrays", 43, 0, NULL, NULL},
 
-    {"Cleanup Windows", 8, 0, NULL},
+    {"Cleanup Windows", 8, 0, NULL, "misc arrange size"},
 
-    {"Scroll Windows to left", 48, 0, "-16 0"},
-    {"Scroll Windows to right", 48, 0, "16 0"},
-    {"Scroll Windows up", 48, 0, "0 -16"},
-    {"Scroll Windows down", 48, 0, "0 16"},
-    {"Scroll Windows by [X Y] pixels", 48, 3, NULL},
+    {"Scroll Windows to left", 48, 0, "-16 0", NULL},
+    {"Scroll Windows to right", 48, 0, "16 0", NULL},
+    {"Scroll Windows up", 48, 0, "0 -16", NULL},
+    {"Scroll Windows down", 48, 0, "0 16", NULL},
+    {"Scroll Windows by [X Y] pixels", 48, 3, NULL, NULL},
 
-    {"Move mouse pointer to left", 66, 0, "-1 0"},
-    {"Move mouse pointer to right", 66, 0, "1 0"},
-    {"Move mouse pointer up", 66, 0, "0 -1"},
-    {"Move mouse pointer down", 66, 0, "0 1"},
-    {"Move mouse pointer by [X Y]", 66, 3, NULL},
+    {"Move mouse pointer to left", 66, 0, "-1 0", "warp rel -1 0"},
+    {"Move mouse pointer to right", 66, 0, "1 0", "warp rel 1 0"},
+    {"Move mouse pointer up", 66, 0, "0 -1", "warp rel 0 -1"},
+    {"Move mouse pointer down", 66, 0, "0 1", "warp rel 0 1"},
+    {"Move mouse pointer by [X Y]", 66, 3, NULL, NULL},
 
-    {"Goto Desktop area [X Y]", 62, 3, NULL},
-    {"Move to Desktop area on the left", 63, 0, "-1 0"},
-    {"Move to Desktop area on the right", 63, 0, "1 0"},
-    {"Move to Desktop area above", 63, 0, "0 -1"},
-    {"Move to Desktop area below", 63, 0, "0 1"},
+    {"Goto Desktop area [X Y]", 62, 3, NULL, "area goto"},
+    {"Move to Desktop area on the left", 63, 0, "-1 0", "area move -1 0"},
+    {"Move to Desktop area on the right", 63, 0, "1 0", "area move 1 0"},
+    {"Move to Desktop area above", 63, 0, "0 -1", "area move 0 -1"},
+    {"Move to Desktop area below", 63, 0, "0 1", "area move 0 1"},
 
-    {"Raise Window", 5, 0, NULL},
-    {"Lower Window", 6, 0, NULL},
-    {"Close Window", 13, 0, NULL},
-    {"Annihilate Window", 14, 0, NULL},
-    {"Stick / Unstick Window", 20, 0, NULL},
-    {"Iconify Window", 46, 0, NULL},
-    {"Shade / Unshade Window", 49, 0, NULL},
-    {"Maximise Height of Window", 50, 0, "conservative"},
-    {"Maximise Height of Window to whole screen", 50, 0, NULL},
-    {"Maximise Height of Window to available space", 50, 0, "available"},
-    {"Maximise Width of Window", 51, 0, "conservative"},
-    {"Maximise Width of Window to whole screen", 51, 0, NULL},
-    {"Maximise Width of Window to available space", 51, 0, "available"},
-    {"Maximise Size of Window", 52, 0, "conservative"},
-    {"Maximise Size of Window to whole screen", 52, 0, NULL},
-    {"Maximise Size of Window to available space", 52, 0, "available"},
-    {"Send window to next desktop", 53, 0, NULL},
-    {"Send window to previous desktop", 54, 0, NULL},
-    {"Switch focus to next window", 58, 0, NULL},
-    {"Switch focus to previous window", 59, 0, NULL},
-    {"Glue / Unglue Window to Desktop screen", 64, 0, NULL},
-    {"Set Window layer to On Top", 65, 0, "20"},
-    {"Set Window layer to Above", 65, 0, "6"},
-    {"Set Window layer to Normal", 65, 0, "4"},
-    {"Set Window layer to Below", 65, 0, "2"},
-    {"Set Window layer", 65, 2, NULL},
-    {"Move Window to area on left", 0, 0, "-1 0"},
-    {"Move Window to area on right", 0, 0, "1 0"},
-    {"Move Window to area above", 0, 0, "0 -1"},
-    {"Move Window to area below", 0, 0, "0 1"},
-    {"Move Window by area [X Y]", 0, 3, NULL},
+    {"Raise Window", 5, 0, NULL, "wop * raise"},
+    {"Lower Window", 6, 0, NULL, "wop * lower"},
+    {"Close Window", 13, 0, NULL, "wop * close"},
+    {"Annihilate Window", 14, 0, NULL, "wop * kill"},
+    {"Stick / Unstick Window", 20, 0, NULL, "wop * stick"},
+    {"Iconify Window", 46, 0, NULL, "wop * iconify"},
+    {"Shade / Unshade Window", 49, 0, NULL, "wop * shade"},
+    {"Maximise Height of Window", 50, 0, "conservative", "wop * th conservative"},
+    {"Maximise Height of Window to available space", 50, 0, "available", "wop * th available"},
+    {"Maximise Height of Window to whole screen", 50, 0, NULL, "wop * th"},
+    {"Maximise Width of Window", 51, 0, "conservative", "wop * tw conservative"},
+    {"Maximise Width of Window to available space", 51, 0, "available", "wop * tw available"},
+    {"Maximise Width of Window to whole screen", 51, 0, NULL, "wop * tw"},
+    {"Maximise Size of Window", 52, 0, "conservative", "wop * ts conservative"},
+    {"Maximise Size of Window to available space", 52, 0, "available", "wop * ts available"},
+    {"Maximise Size of Window to whole screen", 52, 0, NULL, "wop * ts"},
+    {"Send window to next desktop", 53, 0, NULL, "wop * desk next"},
+    {"Send window to previous desktop", 54, 0, NULL, "wop * desk prev"},
+    {"Switch focus to next window", 58, 0, NULL, "focus next"},
+    {"Switch focus to previous window", 59, 0, NULL, "focus prev"},
+    {"Glue / Unglue Window to Desktop screen", 64, 0, NULL, "wop * no_user_move"},
+    {"Set Window layer to On Top", 65, 0, "20", "wop * layer 20"},
+    {"Set Window layer to Above", 65, 0, "6", "wop * layer 6"},
+    {"Set Window layer to Normal", 65, 0, "4", "wop * layer 4"},
+    {"Set Window layer to Below", 65, 0, "2", "wop * layer 2"},
+    {"Set Window layer", 65, 2, NULL, "wop * layer "},
+    {"Move Window to area on left", 0, 0, "-1 0", "wop * area move -1 0"},
+    {"Move Window to area on right", 0, 0, "1 0", "wop * area move 1 0"},
+    {"Move Window to area above", 0, 0, "0 -1", "wop * area move 0 -1"},
+    {"Move Window to area below", 0, 0, "0 1", "wop * area move 0 1"},
+    {"Move Window by area [X Y]", 0, 3, NULL, NULL},
 
-    {"Set Window border style to the Default", 69, 0, "DEFAULT"},
-    {"Set Window border style to the Borderless", 69, 0, "BORDERLESS"},
+    {"Set Window border style to the Default", 69, 0, "DEFAULT", "wop * border DEFAULT"},
+    {"Set Window border style to the Borderless", 69, 0, "BORDERLESS", "wop * border BORDERLESS"},
 
-    {"Forget everything about Window", 55, 0, "none"},
-    {"Remember all Window settings", 55, 0, NULL},
-    {"Remember Window Border", 55, 0, "border"},
-    {"Remember Window Desktop", 55, 0, "desktop"},
-    {"Remember Window Desktop Area", 55, 0, "area"},
-    {"Remember Window Size", 55, 0, "size"},
-    {"Remember Window Location", 55, 0, "location"},
-    {"Remember Window Layer", 55, 0, "layer"},
-    {"Remember Window Stickyness", 55, 0, "sticky"},
-    {"Remember Window Shadedness", 55, 0, "shade"},
+    {"Forget everything about Window", 55, 0, "none", "wop * snap none"},
+    {"Remember all Window settings", 55, 0, NULL, "wop * snap all"},
+    {"Remember Window Border", 55, 0, "border", "wop * snap border"},
+    {"Remember Window Desktop", 55, 0, "desktop", "wop * snap desktop"},
+    {"Remember Window Desktop Area", 55, 0, "area", "wop * snap area"},
+    {"Remember Window Size", 55, 0, "size", "wop * snap size"},
+    {"Remember Window Location", 55, 0, "location", "wop * snap location"},
+    {"Remember Window Layer", 55, 0, "layer", "wop * snap layer"},
+    {"Remember Window Stickyness", 55, 0, "sticky", "wop * snap sticky"},
+    {"Remember Window Shadedness", 55, 0, "shade", "wop * snap shade"},
 
-    {"Show Root Menu", 9, 0, "ROOT_2"},
-    {"Show Winops Menu", 9, 0, "WINOPS_MENU"},
-    {"Show Named Menu", 9, 1, NULL},
+    {"Show Root Menu", 9, 0, "ROOT_2", "menus show ROOT_2"},
+    {"Show Winops Menu", 9, 0, "WINOPS_MENU", "menus show WINOPS_MENU"},
+    {"Show Named Menu", 9, 1, NULL, "menus show "},
 
-    {"Goto Linear Area", 70, 2, NULL},
-    {"Previous Linear Area", 71, 0, "-1"},
-    {"Next Linear Area", 71, 0, "1"},
-    {NULL, 0, 0, NULL}
+    {"Goto Linear Area", 70, 2, NULL, NULL},
+    {"Previous Linear Area", 71, 0, "-1", NULL},
+    {"Next Linear Area", 71, 0, "1", NULL},
+
+    /* FIXME - Move */
+    {"Toggle Window fullscreen state", -1, 0, NULL, "wop * fullscreen"},
+    {"Toggle Window zoom state", -1, 0, NULL, "wop * zoom"},
+
+    {"Move mouse pointer to next screen", -1, 0, NULL, "warp screen"},
+
+    {NULL, 0, 0, NULL, NULL}
 };
 /* *INDENT-ON* */
 
-void
+static int
+match_action_by_binding(int opcode, const char *params)
+{
+   int                 k, len;
+
+   for (k = 0; actions[k].text; k++)
+     {
+	if (e16_ver > VER_E16_OLD)
+	  {
+	     if (!actions[k].command)	/* Not avaliable in 16.8 */
+		continue;
+
+	     len = strlen(actions[k].command);
+	     if (strncmp(actions[k].command, params, len))
+		continue;
+
+	     return k;
+	  }
+	else
+	  {
+	     if (opcode != actions[k].id)
+		continue;
+
+	     if (*params == '\0' && !actions[k].params)
+		return k;	/* No parameters */
+
+	     if ((actions[k].param_tpe == 0) && (actions[k].params))
+	       {
+		  if (!strcmp(params, actions[k].params))
+		     return k;
+	       }
+	     else
+	       {
+		  return k;
+	       }
+	  }
+     }
+
+   return -1;
+}
+
+static int
+match_action_by_selection(const char *text)
+{
+   int                 k;
+
+   for (k = 0; actions[k].text; k++)
+     {
+	if (strcmp(text, actions[k].text))
+	   continue;
+
+	return k;
+     }
+
+   return -1;
+}
+
+static void
 e_cb_key_change(GtkWidget * widget, gpointer data)
 {
    GtkWidget          *win, *label, *frame, *align;
@@ -205,7 +284,7 @@ e_cb_key_change(GtkWidget * widget, gpointer data)
    gtk_widget_destroy(win);
 }
 
-void
+static void
 e_cb_modifier(GtkWidget * widget, gpointer data)
 {
    gint                value;
@@ -222,80 +301,70 @@ wait_for_ipc_msg(void)
    return e_ipc_msg;
 }
 
-char               *
-atword(char *s, int num)
+static void
+change_action(GtkWidget * my_clist __UNUSED__, gint row, gint column __UNUSED__,
+	      GdkEventButton * event __UNUSED__, gpointer data __UNUSED__)
 {
-   int                 cnt, i;
+   if (dont_update)
+      return;
 
-   if (!s)
-      return NULL;
-   cnt = 0;
-   i = 0;
-
-   while (s[i])
+   if (actions[row].param_tpe != 0)
      {
-	if ((s[i] != ' ') && (s[i] != '\t'))
-	  {
-	     if (i == 0)
-	       {
-		  cnt++;
-	       }
-	     else if ((s[i - 1] == ' ') || (s[i - 1] == '\t'))
-	       {
-		  cnt++;
-	       }
-	     if (cnt == num)
-		return &s[i];
-	  }
-	i++;
+	gtk_entry_set_editable(GTK_ENTRY(act_params), TRUE);
+	gtk_widget_set_sensitive(act_params, TRUE);
      }
-   return NULL;
-}
-
-void
-change_action(GtkWidget * my_clist, gint row, gint column,
-	      GdkEventButton * event, gpointer data)
-{
-   if (data)
-     {
-	event = NULL;
-	my_clist = NULL;
-	column = 0;
-     }
-
-   if (!dont_update)
+   else
      {
 	gtk_entry_set_editable(GTK_ENTRY(act_params), FALSE);
 	gtk_widget_set_sensitive(act_params, FALSE);
-	if (actions[row].param_tpe != 0)
-	  {
-	     gtk_entry_set_editable(GTK_ENTRY(act_params), TRUE);
-	     gtk_widget_set_sensitive(act_params, TRUE);
-	  }
-	else
-	  {
-	     gtk_entry_set_text(GTK_ENTRY(act_params), "");
-	  }
-	if (actions[row].params)
-	  {
-	     gtk_entry_set_text(GTK_ENTRY(act_params), actions[row].params);
-	  }
-	gtk_clist_set_text(GTK_CLIST(clist), last_row, 2, actions[row].text);
-	gtk_clist_set_text(GTK_CLIST(clist), last_row, 3,
-			   gtk_entry_get_text(GTK_ENTRY(act_params)));
+	gtk_entry_set_text(GTK_ENTRY(act_params), "");
      }
+
+   if (e16_ver != VER_E16_OLD)
+     {
+	if (actions[row].command)
+	   gtk_entry_set_text(GTK_ENTRY(act_params), actions[row].command);
+	else
+	   gtk_entry_set_text(GTK_ENTRY(act_params), "* Not available *");
+     }
+   else
+     {
+	if (actions[row].params)
+	   gtk_entry_set_text(GTK_ENTRY(act_params), actions[row].params);
+     }
+   gtk_clist_set_text(GTK_CLIST(clist), last_row, 2, actions[row].text);
+   gtk_clist_set_text(GTK_CLIST(clist), last_row, 3,
+		      gtk_entry_get_text(GTK_ENTRY(act_params)));
 }
 
-void
+static char        *
+dupcat(char *dst, const char *src)
+{
+   char               *s;
+   int                 len1, len2;
+
+   if (!dst)
+      return strdup(src);
+
+   len1 = strlen(dst);
+   len2 = strlen(src);
+
+   s = realloc(dst, len1 + len2 + 1);
+   strcpy(s + len1, src);
+
+   return s;
+}
+
+static void
 on_save_data(GtkWidget * widget, gpointer data)
 {
-   char                buf[8192];
+   char               *buf = NULL;
    int                 i;
 
    if (data)
       widget = NULL;
 
-   sprintf(buf, "set_keybindings ");
+   buf = dupcat(buf, "set_keybindings ");
    for (i = 0; i < real_rows; i++)
      {
 	char                tmp[1024];
@@ -318,38 +387,51 @@ on_save_data(GtkWidget * widget, gpointer data)
 	  }
 	gtk_clist_get_text(GTK_CLIST(clist), i, 1, &key);
 	gtk_clist_get_text(GTK_CLIST(clist), i, 2, &action);
-	for (j = 0; (actions[j].text); j++)
-	  {
-	     if (!strcmp(actions[j].text, action))
-	       {
-		  action_id = actions[j].id;
-	       }
-	  }
+	j = match_action_by_selection(action);
+	action_id = (j >= 0) ? actions[j].id : -1;
 	gtk_clist_get_text(GTK_CLIST(clist), i, 3, &params);
-	if (strcmp(params, ""))
+
+	if (e16_ver > VER_E16_OLD)
 	  {
+	     if (*params == '*')
+		continue;
+	     snprintf(tmp, sizeof(tmp), "%s %i %i %s\n", key, modifier, 0,
+		      params);
+	  }
+	else if (*params != '\0')
+	  {
+	     if (action_id < 0)
+		continue;
+
 	     if (action_id == 9)
 	       {
-		  sprintf(params_tmp, "%s %s", "named", params);
+		  snprintf(params_tmp, sizeof(params_tmp), "%s %s", "named",
+			   params);
 		  params = (char *)params_tmp;
 	       }
-	     sprintf(tmp, "%s %i %i %s\n", key, modifier, action_id, params);
+	     snprintf(tmp, sizeof(tmp), "%s %i %i %s\n", key, modifier,
+		      action_id, params);
 	  }
 	else
 	  {
-	     sprintf(tmp, "%s %i %i\n", key, modifier, action_id);
+	     snprintf(tmp, sizeof(tmp), "%s %i %i\n", key, modifier, action_id);
 	  }
-	strcat(buf, tmp);
-
+	buf = dupcat(buf, tmp);
      }
-   /* printf("%s",buf); */
+
+#if DEBUG > 0
+   printf("%s", buf);
+#else
    CommsSend(buf);
    CommsSend("save_config");
+#endif
+   free(buf);
 }
 
-void
-selection_made(GtkWidget * my_clist, gint row, gint column,
-	       GdkEventButton * event, gpointer data)
+static void
+selection_made(GtkWidget * my_clist __UNUSED__, gint row,
+	       gint column __UNUSED__, GdkEventButton * event __UNUSED__,
+	       gpointer data __UNUSED__)
 {
    gchar              *modstring;
    gchar              *keyused;
@@ -357,14 +439,8 @@ selection_made(GtkWidget * my_clist, gint row, gint column,
    gchar              *paramsused;
    int                 i;
 
-   if (data)
-     {
-	event = NULL;
-	my_clist = NULL;
-	column = 0;
-     }
-
    dont_update = 1;
+
    gtk_clist_get_text(GTK_CLIST(clist), row, 0, &modstring);
    gtk_option_menu_set_history(GTK_OPTION_MENU(act_mod), 0);
    for (i = 1; i < 20; i++)
@@ -374,30 +450,37 @@ selection_made(GtkWidget * my_clist, gint row, gint column,
 	     gtk_option_menu_set_history(GTK_OPTION_MENU(act_mod), i);
 	  }
      }
+
    gtk_clist_get_text(GTK_CLIST(clist), row, 1, &keyused);
    gtk_entry_set_text(GTK_ENTRY(act_key), keyused);
+
    gtk_clist_get_text(GTK_CLIST(clist), row, 2, &actperform);
-   gtk_entry_set_editable(GTK_ENTRY(act_params), FALSE);
-   gtk_widget_set_sensitive(act_params, FALSE);
-   for (i = 0; (actions[i].text); i++)
-     {
-	if (!strcmp(actperform, actions[i].text))
-	  {
-	     if (actions[i].param_tpe != 0)
-	       {
-		  gtk_entry_set_editable(GTK_ENTRY(act_params), TRUE);
-		  gtk_widget_set_sensitive(act_params, TRUE);
-	       }
-	     gtk_clist_select_row(GTK_CLIST(act_clist), i, 0);
-	     gtk_clist_moveto(GTK_CLIST(act_clist), i, 0, 0.5, 0.5);
-	  }
-     }
+
    gtk_clist_get_text(GTK_CLIST(clist), row, 3, &paramsused);
    gtk_entry_set_text(GTK_ENTRY(act_params), paramsused);
+
+   i = match_action_by_selection(actperform);
+   if (i < 0 || actions[i].param_tpe == 0)
+     {
+	gtk_entry_set_editable(GTK_ENTRY(act_params), FALSE);
+	gtk_widget_set_sensitive(act_params, FALSE);
+     }
+   else
+     {
+	gtk_entry_set_editable(GTK_ENTRY(act_params), TRUE);
+	gtk_widget_set_sensitive(act_params, TRUE);
+     }
+
+   if (i >= 0)
+     {
+	gtk_clist_select_row(GTK_CLIST(act_clist), i, 0);
+	gtk_clist_moveto(GTK_CLIST(act_clist), i, 0, 0.5, 0.5);
+     }
 
    /* printf("%s\n%s\n%s\n%s\n",modstring,keyused,actperform,paramsused); */
 
    last_row = row;
+
    dont_update = 0;
 }
 
@@ -436,7 +519,7 @@ get_line(gchar * str, int num)
      }
 }
 
-void
+static void
 on_resort_columns(GtkWidget * widget, gint column, gpointer user_data)
 {
    static int          order = 0;
@@ -470,7 +553,7 @@ on_resort_columns(GtkWidget * widget, gint column, gpointer user_data)
    gtk_clist_sort(GTK_CLIST(clist));
 }
 
-void
+static void
 on_delete_row(GtkWidget * widget, gpointer user_data)
 {
    if (user_data)
@@ -484,7 +567,7 @@ on_delete_row(GtkWidget * widget, gpointer user_data)
    real_rows--;
 }
 
-void
+static void
 on_create_row(GtkWidget * widget, gpointer user_data)
 {
    char               *stuff[4];
@@ -516,7 +599,7 @@ on_create_row(GtkWidget * widget, gpointer user_data)
    real_rows++;
 }
 
-void
+static void
 on_change_params(GtkWidget * widget, gpointer user_data)
 {
    if (user_data)
@@ -541,14 +624,14 @@ on_exit_application(GtkWidget * widget, gpointer user_data)
    gtk_exit(0);
 }
 
-void
+static void
 on_save_and_exit_application(GtkWidget * widget, gpointer user_data)
 {
    on_save_data(widget, user_data);
    on_exit_application(widget, user_data);
 }
 
-GtkWidget          *
+static GtkWidget          *
 create_list_window(void)
 {
    GtkWidget          *list_window;
@@ -623,7 +706,7 @@ create_list_window(void)
    gtk_clist_set_column_title(GTK_CLIST(clist), 0, "Modifier");
    gtk_clist_set_column_title(GTK_CLIST(clist), 1, "Key Used");
    gtk_clist_set_column_title(GTK_CLIST(clist), 2, "Action to Perform");
-   gtk_clist_set_column_title(GTK_CLIST(clist), 3, "Parameters Used");
+   gtk_clist_set_column_title(GTK_CLIST(clist), 3, TXT_PARAMETERS_USED);
    gtk_clist_column_titles_show(GTK_CLIST(clist));
    gtk_signal_connect(GTK_OBJECT(clist), "select_row",
 		      GTK_SIGNAL_FUNC(selection_made), NULL);
@@ -631,10 +714,8 @@ create_list_window(void)
 		      GTK_SIGNAL_FUNC(on_resort_columns), NULL);
 
    {
-      gchar              *msg;
-      gint                i, j, k;
-      gchar              *buf;
-      gchar               cmd[4096];
+      char               *msg, *buf;
+      int                 i, j, k, modifier, opcode;
 
       CommsSend("get_keybindings");
       msg = wait_for_ipc_msg();
@@ -645,66 +726,47 @@ create_list_window(void)
 	   /* stuff[1] = key */
 	   /* stuff[2] = action */
 	   /* stuff[3] = params */
+	   char                key[128], *params;
+	   const char         *stuff[2];
+	   int                 len;
 
-	   char               *stuff[4];
-
-	   stuff[0] = malloc(1024);
-	   stuff[1] = malloc(1024);
-	   stuff[2] = malloc(1024);
-	   stuff[3] = malloc(1024);
 	   if (strlen(buf) < 1)
 	      break;
-	   sscanf(buf, "%1000s", cmd);
-	   sprintf(stuff[1], "%s", cmd);
-	   sscanf(buf, "%*s %i", &j);
-	   sprintf(stuff[0], "%s", mod_str[j]);
-	   sscanf(buf, "%*s %*s %i", &j);
-	   strcpy(stuff[2], "");
-	   /*sprintf(stuff[2],"%s",actions[j].text); */
-	   if (atword(buf, 4))
-	     {
-		sprintf(stuff[3], "%s", atword(buf, 4));
-	     }
-	   else
-	     {
-		strcpy(stuff[3], "");
-	     }
-	   for (k = 0; (actions[k].text); k++)
-	     {
-		if (j == actions[k].id)
-		  {
-		     if (strcmp(stuff[3], ""))
-		       {
-			  if ((j == 9) && (!strncmp(stuff[3], "named", 5)))
-			     sscanf(stuff[3], "%*s %s", stuff[3]);
-			  if ((actions[k].param_tpe == 0)
-			      && (actions[k].params))
-			    {
-			       if (!strcmp(stuff[3], actions[k].params))
-				 {
-				    sprintf(stuff[2], "%s", actions[k].text);
-				 }
-			    }
-			  else
-			    {
-			       sprintf(stuff[2], "%s", actions[k].text);
-			    }
-		       }
-		     else if (!actions[k].params)
-		       {
-			  sprintf(stuff[2], "%s", actions[k].text);
-		       }
-		  }
-	     }
-	   if (strcmp(stuff[2], ""))
-	     {
-		gtk_clist_append(GTK_CLIST(clist), stuff);
-		real_rows++;
-	     }
-	   free(stuff[0]);
-	   free(stuff[1]);
-	   free(stuff[2]);
-	   free(stuff[3]);
+
+	   opcode = modifier = -1;
+	   j = sscanf(buf, "%127s %d %d %n", key, &modifier, &opcode, &len);
+#if DEBUG > 0
+	   printf("buf(%d): %s\n", j, buf);
+#endif
+	   if (j < 3 || opcode < 0)
+	      continue;
+
+	   if (modifier < 0 || modifier >= (int)N_MODIFIERS)
+	      continue;
+
+	   params = buf + len;
+	   if (opcode == 9 && !strncmp(params, "named ", 6))	/* Hack for e16 < 0.16.8 */
+	      params += 6;
+
+#if DEBUG > 0
+	   printf("key: %s, mod: %s, opc=%d, params: %s\n", key, mod_str[modifier],
+		  opcode, params);
+#endif
+
+	   k = match_action_by_binding(opcode, params);
+
+#if DEBUG > 1
+	   printf("key: %s, mod: %s, act=%d, params: %s\n", key, mod_str[modifier], k,
+		  params);
+#endif
+
+	   stuff[0] = mod_str[modifier];
+	   stuff[1] = key;
+	   stuff[2] = (k >= 0) ? actions[k].text : "* Not recognised *";
+	   stuff[3] = params;
+	   gtk_clist_append(GTK_CLIST(clist), (char **)stuff);
+	   real_rows++;
+
 	   g_free(buf);
 	}
       g_free(msg);
@@ -750,7 +812,7 @@ create_list_window(void)
 		    GTK_FILL, (GtkAttachOptions) (0), 0, 0);
 
    alignment = gtk_alignment_new(1.0, 0.5, 0, 0);
-   label = gtk_label_new("Parameters:");
+   label = gtk_label_new(TXT_PARAMETERS);
    gtk_container_add(GTK_CONTAINER(alignment), label);
    gtk_widget_show(alignment);
    gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_RIGHT);
@@ -823,15 +885,15 @@ create_list_window(void)
    gtk_container_add(GTK_CONTAINER(scrollybit), act_clist);
 
    {
-      char               *stuff[1];
+      const char         *stuff[1];
       int                 k;
 
       for (k = 0; (actions[k].text); k++)
 	{
-	   stuff[0] = malloc(1024);
-	   strcpy(stuff[0], actions[k].text);
-	   gtk_clist_append(GTK_CLIST(act_clist), stuff);
-	   free(stuff[0]);
+	   if (e16_ver == VER_E16_OLD && actions[k].id < 0)
+	      continue;
+	   stuff[0] = actions[k].text;
+	   gtk_clist_append(GTK_CLIST(act_clist), (char **)stuff);
 	}
    }
 
@@ -877,6 +939,34 @@ receive_ipc_msg(gchar * msg)
    gtk_main_quit();
 }
 
+static int
+get_e16_version(void)
+{
+   char               *msg = NULL;
+   const char         *s;
+   int                 ver, minor;
+
+   ver = VER_E16_OLD;
+
+   CommsSend("ver");
+   msg = wait_for_ipc_msg();
+   if (!msg)
+      goto done;
+
+   s = strstr(msg, "0.16.");
+   if (!s)
+      goto done;
+
+   sscanf(s, "0.16.%d", &minor);
+   if (minor >= 8)
+      ver = VER_E16_8;
+
+ done:
+   if (msg)
+      free(msg);
+   return ver;
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -919,6 +1009,7 @@ main(int argc, char *argv[])
 
    CommsSend("set clientname Enlightenment Keybinding Configuration Utility");
    CommsSend("set version 0.1.0");
+#if 0
    CommsSend("set author Mandrake (Geoff Harrison)");
    CommsSend("set email mandrake@mandrake.net");
    CommsSend("set web http://mandrake.net/");
@@ -927,6 +1018,9 @@ main(int argc, char *argv[])
 	     "This is the Enlightenemnt KeyBindings Configuration Utility\n"
 	     "that uses Enlightenment's IPC mechanism to configure\n"
 	     "it remotely.");
+#endif
+
+   e16_ver = get_e16_version();
 
    lister = create_list_window();
 
