@@ -82,6 +82,7 @@ struct _Main
 	Ewl_Widget  *vimage;
 	Ewl_Widget  *viewbox;
 	Ewl_Widget  *vbutton;
+	Ewl_Widget  *viewscroll;
 	Ecore_List  *imagelist;
 	Ecore_List  *presentlist;
 };

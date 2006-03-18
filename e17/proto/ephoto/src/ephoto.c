@@ -128,17 +128,23 @@ main(int argc, char **argv)
 		ewl_widget_show(m->notebook);
 		
 		m->viewbox = ewl_vbox_new();
-		ewl_theme_data_str_set(m->viewbox, "/vbox/group", "entry");
 		ewl_container_child_append(EWL_CONTAINER(m->notebook), m->viewbox);
 		ewl_object_alignment_set(EWL_OBJECT(m->viewbox), EWL_FLAG_ALIGN_CENTER);
 		ewl_box_spacing_set(EWL_BOX(m->viewbox), 10);
 		ewl_object_fill_policy_set(EWL_OBJECT(m->viewbox), EWL_FLAG_FILL_ALL);
 		ewl_widget_show(m->viewbox);
 		
+		m->viewscroll = ewl_vbox_new();
+		ewl_theme_data_str_set(m->viewscroll, "/vbox/group", "entry");
+		ewl_container_child_append(EWL_CONTAINER(m->viewbox), m->viewscroll);
+		ewl_object_alignment_set(EWL_OBJECT(m->viewscroll), EWL_FLAG_ALIGN_CENTER);
+		ewl_object_fill_policy_set(EWL_OBJECT(m->viewscroll), EWL_FLAG_FILL_ALL);
+		ewl_widget_show(m->viewscroll);
+
 		m->vimage = ewl_image_new();
 		ewl_object_fill_policy_set(EWL_OBJECT(m->vimage), EWL_FLAG_FILL_ALL);
 		ewl_image_proportional_set(EWL_IMAGE(m->vimage), TRUE);
-		ewl_container_child_append(EWL_CONTAINER(m->viewbox), m->vimage);
+		ewl_container_child_append(EWL_CONTAINER(m->viewscroll), m->vimage);
 		ewl_widget_show(m->vimage);
 		
 		m->vbutton = ewl_button_new();
