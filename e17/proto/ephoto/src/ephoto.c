@@ -151,7 +151,7 @@ main(int argc, char **argv)
 		ewl_widget_state_set(m->vbutton, "disabled");
 		ewl_widget_show(m->vbutton);
 		
-		ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(m->notebook), m->viewbox, "View Image");	
+		ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(m->notebook), m->viewbox, "Simple Image Viewer");	
 		
 		m->vbox2 = ewl_vbox_new();
 		ewl_container_child_append(EWL_CONTAINER(m->notebook), m->vbox2);
