@@ -3,5 +3,4 @@ Makefile
 .deps
 .libs
 edb_ed
-edb_gtk_ed
 edb_vt_ed
