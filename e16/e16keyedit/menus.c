@@ -14,7 +14,7 @@
 #include "viewer.h"
 
 GtkWidget          *
-CreateBarSubMenu(GtkWidget * menu, char *szName)
+CreateBarSubMenu(GtkWidget * menu, const char *szName)
 {
    GtkWidget          *menuitem;
    GtkWidget          *submenu;
@@ -30,7 +30,7 @@ CreateBarSubMenu(GtkWidget * menu, char *szName)
 }
 
 GtkWidget          *
-CreateRightAlignBarSubMenu(GtkWidget * menu, char *szName)
+CreateRightAlignBarSubMenu(GtkWidget * menu, const char *szName)
 {
    GtkWidget          *menuitem;
    GtkWidget          *submenu;
@@ -47,8 +47,8 @@ CreateRightAlignBarSubMenu(GtkWidget * menu, char *szName)
 }
 
 GtkWidget          *
-CreateMenuItem(GtkWidget * menu, char *szName, char *szAccel, char *szTip,
-	       GtkSignalFunc func, gpointer data)
+CreateMenuItem(GtkWidget * menu, const char *szName, const char *szAccel,
+	       const char *szTip, GtkSignalFunc func, const void *data)
 {
    GtkWidget          *menuitem;
 
@@ -56,7 +56,7 @@ CreateMenuItem(GtkWidget * menu, char *szName, char *szAccel, char *szTip,
      {
 	menuitem = gtk_menu_item_new_with_label(szName);
 	gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
-			   GTK_SIGNAL_FUNC(func), data);
+			   GTK_SIGNAL_FUNC(func), (gpointer) data);
      }
    else
      {
