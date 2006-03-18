@@ -7,6 +7,7 @@ static Etk_Widget* mime_dialog_add_edit_window;
 static	Etk_Widget* etk_mime_mime_entry;
 static	Etk_Widget* etk_mime_program_entry;
 static Etk_Widget* _etk_mime_dialog_main_tree = NULL;
+static Etk_Widget* _etk_mime_dialog_sub_tree = NULL;
 
 
 void _entropy_etk_mime_dialog_add_cb(Etk_Object* w, void* user_data);
@@ -23,6 +24,48 @@ _etk_window_deleted_cb (Etk_Object * object, void *data)
 	etk_object_destroy(ETK_OBJECT(mime_dialog_window));
 
 	return ETK_TRUE;
+}
+
+static void _etk_mime_dialog_main_row_clicked(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up_Down *event, void *data)
+{
+	int record;
+	Entropy_Config_Mime_Binding* binding;
+	Evas_List* l;
+	Entropy_Config_Mime_Binding_Action* action;
+	Etk_Widget* tree = _etk_mime_dialog_sub_tree;
+	Etk_Tree_Col* col1;
+	Etk_Tree_Col* col2;
+	Etk_Tree_Col* col3;
+
+
+	record = (int)etk_tree_row_data_get(row);
+	printf("Got record: %d\n", record);
+
+	binding = evas_list_nth(entropy_core_get_core()->config->Config_Mimes->mime_bindings, record);
+
+	etk_tree_freeze(ETK_TREE(tree));
+	etk_tree_clear(ETK_TREE(tree));
+
+	/*Populate the tree*/
+	col1 = etk_tree_nth_col_get(ETK_TREE(tree), 0);
+	col2 = etk_tree_nth_col_get(ETK_TREE(tree), 1);
+	col3 = etk_tree_nth_col_get(ETK_TREE(tree), 2);
+
+
+	for (l = binding->actions; l; ) {
+		action = l->data;
+
+		row = etk_tree_append(ETK_TREE(tree), 
+		  col1, action->app_description, 
+		  col2,  action->executable,
+		  col3, action->args,
+		  NULL);
+		
+		l = l->next;
+	}
+
+	etk_tree_thaw(ETK_TREE(tree));
+
 }
 
 
@@ -52,27 +95,32 @@ void etk_mime_dialog_tree_populate()
 	Etk_Widget* tree = _etk_mime_dialog_main_tree;
 	Etk_Tree_Col* col1;
 	Etk_Tree_Col* col2;
+	Entropy_Config_Mime_Binding* binding;
+	//Entropy_Config_Mime_Binding_Action* action;
+	Evas_List* l;
+	int i =0;
+	Etk_Tree_Row* row;
+
 	
-	char* key;
-	entropy_mime_action* action;
-	Ecore_List* keys;
-
 	etk_tree_freeze(ETK_TREE(tree));
-
 	etk_tree_clear(ETK_TREE(tree));
 
 	/*Populate the tree*/
 	col1 = etk_tree_nth_col_get(ETK_TREE(tree), 0);
 	col2 = etk_tree_nth_col_get(ETK_TREE(tree), 1);
-	
-	keys = ecore_hash_keys(entropy_core_get_core()->mime_action_hint);
-	while ((key = ecore_list_remove_first(keys))) {
-	     etk_tree_append(ETK_TREE(tree), 
-		  col1, key, 
-		  col2,  ((entropy_mime_action*)ecore_hash_get(
-		entropy_core_get_core()->mime_action_hint, 
-		key))->executable,
+
+
+	for (l = entropy_core_get_core()->config->Config_Mimes->mime_bindings; l; ) {
+		binding = l->data;
+
+		row = etk_tree_append(ETK_TREE(tree), 
+		  col1, "Description", 
+		  col2,  binding->mime_type,
 		  NULL);
+		etk_tree_row_data_set(row, (int*)i);
+		
+		l = l->next;
+		i++;
 	}
 
 	etk_tree_thaw(ETK_TREE(tree));
@@ -188,44 +236,86 @@ void etk_mime_dialog_create()
 	etk_window_title_set(ETK_WINDOW(mime_dialog_window), "Program Associations");
 	etk_window_wmclass_set(ETK_WINDOW(mime_dialog_window), "mimedialog", "mimedialog");
 
+	etk_signal_connect ("delete_event", ETK_OBJECT (mime_dialog_window),
+	      ETK_CALLBACK (_etk_window_deleted_cb), NULL);
+
 	etk_widget_size_request_set(ETK_WIDGET(mime_dialog_window), 450, 500);
 
 	vbox = etk_vbox_new(ETK_FALSE,0);
 	etk_container_add(ETK_CONTAINER(mime_dialog_window), vbox);
 
+	hbox = etk_hbox_new(ETK_FALSE,0);
+	etk_box_pack_start(ETK_BOX(vbox), hbox, ETK_TRUE, ETK_TRUE, 0);
+
+
+	/*Build the main tree*/
 	tree = etk_tree_new();
 	_etk_mime_dialog_main_tree = tree;
 	
 	etk_tree_mode_set(ETK_TREE(tree), ETK_TREE_MODE_LIST);
-	tree_col = etk_tree_col_new(ETK_TREE(tree), _("File Type"), 
+	tree_col = etk_tree_col_new(ETK_TREE(tree), _("Description"), 
 		  etk_tree_model_text_new(ETK_TREE(tree)), 125);
 
-	tree_col = etk_tree_col_new(ETK_TREE(tree), _("Executable"), 
+	tree_col = etk_tree_col_new(ETK_TREE(tree), _("MIME Type"), 
 		  etk_tree_model_text_new(ETK_TREE(tree)), 150);
         etk_tree_col_expand_set(tree_col, ETK_TRUE);
 
 	etk_tree_build(ETK_TREE(tree));
-	etk_box_pack_start(ETK_BOX(vbox), tree, ETK_TRUE, ETK_TRUE, 0);
+	etk_box_pack_start(ETK_BOX(hbox), tree, ETK_TRUE, ETK_TRUE, 0);
+
+	etk_signal_connect("row_selected", ETK_OBJECT( tree  ), 
+		  ETK_CALLBACK(_etk_mime_dialog_main_row_clicked), NULL);
 
 	etk_mime_dialog_tree_populate();
-
-	etk_signal_connect ("delete_event", ETK_OBJECT (mime_dialog_window),
-	      ETK_CALLBACK (_etk_window_deleted_cb), NULL);
+	/*--------------------------*/
 
 
 	hbox = etk_hbox_new(ETK_FALSE,0);
-	etk_box_pack_end(ETK_BOX(vbox), hbox, ETK_FALSE, ETK_FALSE, 0);
+	etk_box_pack_start(ETK_BOX(vbox), hbox, ETK_FALSE, ETK_FALSE, 0);
 
-	button = etk_button_new_with_label("Edit Selected");
+	button = etk_button_new_with_label("Add New Type");
 	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
-	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(_entropy_etk_mime_dialog_edit_cb), NULL);
+	//etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(_entropy_etk_mime_dialog_edit_cb), NULL);
 
-	button = etk_button_new_with_label("Remove Selected");
+	button = etk_button_new_with_label("Remove Selected Type");
 	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
 
-	button = etk_button_new_with_label("Add New..");
+	/*button = etk_button_new_with_label("Add New..");
 	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
-	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(_entropy_etk_mime_dialog_add_cb), NULL);
+	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(_entropy_etk_mime_dialog_add_cb), NULL);*/
+
+
+	/*Build the sub-tree*/
+	tree = etk_tree_new();
+	_etk_mime_dialog_sub_tree = tree;
+	
+	etk_tree_mode_set(ETK_TREE(tree), ETK_TREE_MODE_LIST);
+	tree_col = etk_tree_col_new(ETK_TREE(tree), _("Description"), 
+		  etk_tree_model_text_new(ETK_TREE(tree)), 125);
+
+	tree_col = etk_tree_col_new(ETK_TREE(tree), _("Executable"), 
+		  etk_tree_model_text_new(ETK_TREE(tree)), 150);
+
+	tree_col = etk_tree_col_new(ETK_TREE(tree), _("Arguments"), 
+		  etk_tree_model_text_new(ETK_TREE(tree)), 150);
+
+	etk_tree_build(ETK_TREE(tree));
+	etk_box_pack_start(ETK_BOX(vbox), tree, ETK_TRUE, ETK_TRUE, 0);
+
+	/*Bottom button row*/
+	hbox = etk_hbox_new(ETK_FALSE,0);
+	etk_box_pack_start(ETK_BOX(vbox), hbox, ETK_FALSE, ETK_FALSE, 0);
+
+	button = etk_button_new_with_label("Add");
+	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
+	//etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(_entropy_etk_mime_dialog_edit_cb), NULL);
+	//
+	button = etk_button_new_with_label("Edit");
+	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
+
+	button = etk_button_new_with_label("Remove");
+	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
+	
 
 	etk_widget_show_all(mime_dialog_window);
 }
