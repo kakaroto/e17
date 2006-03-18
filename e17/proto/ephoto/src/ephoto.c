@@ -128,6 +128,7 @@ main(int argc, char **argv)
 		ewl_widget_show(m->notebook);
 		
 		m->viewbox = ewl_vbox_new();
+		ewl_theme_data_str_set(m->viewbox, "/vbox/group", "entry");
 		ewl_container_child_append(EWL_CONTAINER(m->notebook), m->viewbox);
 		ewl_object_alignment_set(EWL_OBJECT(m->viewbox), EWL_FLAG_ALIGN_CENTER);
 		ewl_box_spacing_set(EWL_BOX(m->viewbox), 10);
