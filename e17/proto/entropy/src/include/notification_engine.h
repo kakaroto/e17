@@ -49,6 +49,7 @@ struct entropy_notify_event {
 	entropy_plugin* plugin;
 	char* function;
 	void* data;
+	int key;
 
 	Ecore_List* cb_list;
 	Ecore_List* cleanup_list;
@@ -63,7 +64,7 @@ typedef struct entropy_gui_event entropy_gui_event;
 struct entropy_gui_event {
 	char* event_type;
 	void *data;
-
+	int key;
 };
 
 

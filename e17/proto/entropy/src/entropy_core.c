@@ -18,6 +18,7 @@
 #include "md5.h"
 #include "entropy_gui.h"
 #include <Epsilon.h>
+#include <Evas.h>
 
 #define ENTROPY_CORE 1
 
@@ -460,8 +461,27 @@ void entropy_core_config_save() {
 	
 }
 
-entropy_mime_action* entropy_core_mime_hint_get(char* mime_type) {
-	return ecore_hash_get(core_core->mime_action_hint, mime_type);
+Entropy_Config_Mime_Binding_Action* entropy_core_mime_hint_get(char* mime_type, int key) {
+
+	Entropy_Config_Mime_Binding* binding;
+	Entropy_Config_Mime_Binding_Action* action;
+	Evas_List* l, *l2;
+
+	for (l = core_core->config->Config_Mimes->mime_bindings; l; ) {
+		binding = l->data;
+		
+		if (!strcmp(mime_type , binding->mime_type)) {
+			/*Return nth element*/
+			action = evas_list_nth(binding->actions, key);
+
+			printf("Action exe: %s, Action args: %s\n", action->executable, action->args);
+			return action;
+		}
+
+		l = l->next;
+	}
+	
+	return NULL;
 }
 
 
@@ -1051,6 +1071,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_ACTION_FILE)) {
 		entropy_notify_event* ev = entropy_notify_event_new();
 		ev->event_type = ENTROPY_NOTIFY_FILE_ACTION; 
+		ev->key = event->key;
 
 		
 		//printf ("Requested an action execute\n");

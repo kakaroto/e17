@@ -121,6 +121,13 @@ Entropy_Config* entropy_config_init(entropy_core* core) {
 	snprintf(_Entropy_Config->config_dir_and_file_eet, strlen(_Entropy_Config->config_dir) + 16, "%s/%s", 
 			_Entropy_Config->config_dir, "eetentropy.cfg");
 
+	//Does the config dir exist?
+	if (stat(_Entropy_Config->config_dir, &config_dir_stat)) {
+		//Make the dir..
+		mkdir(_Entropy_Config->config_dir, 0777);
+	}
+
+
 	/*Build the EDDs*/
 	_entropy_config_mime_binding_action_edd = 
 	eet_data_descriptor_new("entropy_config_mime_binding_action", sizeof(Entropy_Config_Mime_Binding_Action),
@@ -289,12 +296,6 @@ Entropy_Config* entropy_config_init(entropy_core* core) {
 	/*Print them out..*/
 	entropy_config_mimes_print(_Entropy_Config->Config_Mimes);
 
-
-	//Does the config dir exist?
-	if (stat(_Entropy_Config->config_dir, &config_dir_stat)) {
-		//Make the dir..
-		mkdir(_Entropy_Config->config_dir, 0777);
-	}
 
 	//Init ecore_config
 	ecore_config_init("entropy_config");

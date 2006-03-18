@@ -2,7 +2,7 @@
 #include "entropy_gui.h"
 #include "entropy_config.h"
 #include <unistd.h>
-
+#include <limits.h>
 
 
 
@@ -20,14 +20,77 @@ entropy_plugin_identify ()
 }
 
 
+/*FIXME - this is vomit.  In serious need of optimization*/
+char* entropy_action_simple_str_replace(entropy_generic_file* file, char* exe, char* args)
+{
+	/*A function to replace %p (path), %pf (path+filename), and %u (uri), with their
+	 * real equivalents*/
+	int i=0;
+	char* str = calloc(1,sizeof(char)*PATH_MAX);
+	char* currStr = exe;
+
+	while (currStr) {
+		i=0;
+		while (i < strlen(currStr)) {
+			int ud = 0;
+
+			if ( i +3 <= strlen(currStr) && !strncmp(currStr+i, "\%pf", 3)) {
+				printf("Subbing path and filename\n");
+				
+				strcat(str, file->path);					
+				strcat(str, "/");
+				strcat(str, file->filename);
+				ud = 1;
+				i+=3;
+			}
+
+			if ( i +2 <= strlen(currStr) && !strncmp(currStr+i, "\%p", 2)) {
+				printf("Subbing path only\n");
+				
+				strcat(str, file->path);					
+				ud = 1;
+				i+=2;
+			}
+
+			if ( i +2 <= strlen(currStr) && !strncmp(currStr+i, "\%u", 2)) {
+				printf("Subbing uri\n");
+				
+				char* uri = entropy_core_generic_file_uri_create(file, 0);
+				strcat(str, uri);
+				ud = 1;
+				i+=2;
+				free(uri);
+			}
+
+			if (!ud) {
+				strncat(str, currStr+i, 1);
+				i += 1;
+			}
+
+			ud  = 0;
+			
+		}
+
+
+		if (currStr == exe) {
+			currStr = args;
+			strcat(str, " ");
+		} else
+			currStr = NULL;
+	}
+
+	return str;
+}
+
+
 void
 gui_event_callback (entropy_notify_event * eevent, void *requestor, void *obj,
 		    entropy_gui_component_instance * comp)
 {
-  char fullname[1024];
+  char *fullname;
   entropy_gui_event *gui_event;
   entropy_core *core = ((entropy_gui_component_instance *) requestor)->core;
-  entropy_mime_action *app;
+  Entropy_Config_Mime_Binding_Action *app;
   char *uri;
   char *pos;
 
@@ -91,34 +154,10 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *obj,
 
   /*First get the app associated with this mime type */
   app =
-    entropy_core_mime_hint_get (((entropy_generic_file *) obj)->mime_type);
+    entropy_core_mime_hint_get (((entropy_generic_file *) obj)->mime_type, eevent->key);
   if (app) {
-    /*First do a replace */
-    if ((pos = strstr (app->executable, "\%u"))) {
-      bzero (fullname, 1024);
-      uri = entropy_core_generic_file_uri_create (file, 0);
-
-      printf ("Action '%s' contains a URI replace reference\n",
-	      app->executable);
-
-      /*This is some evil shit - TODO make a proper strreplace function */
-      strncat (fullname, app->executable, pos - app->executable);
-      strcat (fullname, uri);
-      pos += 2;
-      strcat (fullname, pos);
-
-
-      printf ("'%s'\n", fullname);
-
-      free (uri);
-    }
-    else {
-      sprintf (fullname, "%s \"%s/%s\"", app->executable,
-	       ((entropy_generic_file *) obj)->path,
-	       ((entropy_generic_file *) obj)->filename);
-    }
-
-
+	  fullname = entropy_action_simple_str_replace((entropy_generic_file*)obj, app->executable, app->args);
+	  printf("'%s'\n", fullname);
 
 
     //printf ("Hit action callback\n");

@@ -20,12 +20,12 @@ void
 
 
 void open_with_cb(Ewl_Widget *w , void *ev_data , void *user_data )  {
-	entropy_mime_action* action;
+	entropy_mime_action* action = NULL;
 	Ewl_Dialog_Event* e = ev_data;	
 	char* file = ewl_filedialog_file_get (EWL_FILEDIALOG (w));
 	
 	if (e->response == EWL_STOCK_OPEN) {
-		action = entropy_core_mime_hint_get(local_file->mime_type);
+		//action = entropy_core_mime_hint_get(local_file->mime_type);
 		if (action) {
 			action->executable = strdup(file);
 		} else {
