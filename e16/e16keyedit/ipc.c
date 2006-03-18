@@ -65,7 +65,7 @@ CommsInit(void      (*msg_receive_func) (gchar * msg))
 }
 
 void
-CommsSend(gchar * s)
+CommsSend(const gchar * s)
 {
    gchar               ss[21];
    int                 i, j, k, len;
