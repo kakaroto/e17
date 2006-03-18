@@ -72,10 +72,10 @@ static const char  *mod_str[] = {
    "WIN+ALT",
    "MOD4+SHIFT",
    "MOD4+CTRL",
-   "MOD4+ALT",
    "MOD4+CTRL+SHIFT",
    "MOD5+SHIFT",
-   "MOD5+CTRL"
+   "MOD5+CTRL",
+   "MOD5+CTRL+SHIFT",
 };
 #define N_MODIFIERS (sizeof(mod_str)/sizeof(char*))
 
@@ -237,12 +237,9 @@ match_action_by_selection(const char *text)
 }
 
 static void
-e_cb_key_change(GtkWidget * widget, gpointer data)
+e_cb_key_change(GtkWidget * widget __UNUSED__, gpointer data __UNUSED__)
 {
    GtkWidget          *win, *label, *frame, *align;
-
-   if (data)
-      widget = NULL;
 
    win = gtk_window_new(GTK_WINDOW_POPUP);
    gtk_window_set_policy(GTK_WINDOW(win), 0, 0, 1);
@@ -289,11 +286,10 @@ e_cb_key_change(GtkWidget * widget, gpointer data)
 }
 
 static void
-e_cb_modifier(GtkWidget * widget, gpointer data)
+e_cb_modifier(GtkWidget * widget __UNUSED__, gpointer data)
 {
    gint                value;
 
-   widget = NULL;
    value = (gint) data;
    gtk_clist_set_text(GTK_CLIST(clist), last_row, 0, mod_str[value]);
 }
@@ -360,13 +356,10 @@ dupcat(char *dst, const char *src)
 }
 
 static void
-on_save_data(GtkWidget * widget, gpointer data)
+on_save_data(GtkWidget * widget __UNUSED__, gpointer data __UNUSED__)
 {
    char               *buf = NULL;
    int                 i;
-
-   if (data)
-      widget = NULL;
 
    buf = dupcat(buf, "set_keybindings ");
    for (i = 0; i < real_rows; i++)
@@ -447,7 +440,7 @@ selection_made(GtkWidget * my_clist __UNUSED__, gint row,
 
    gtk_clist_get_text(GTK_CLIST(clist), row, 0, &modstring);
    gtk_option_menu_set_history(GTK_OPTION_MENU(act_mod), 0);
-   for (i = 1; i < 20; i++)
+   for (i = 1; i < 21; i++)
      {
 	if (!strcmp(mod_str[i], modstring))
 	  {
@@ -524,15 +517,12 @@ get_line(gchar * str, int num)
 }
 
 static void
-on_resort_columns(GtkWidget * widget, gint column, gpointer user_data)
+on_resort_columns(GtkWidget * widget __UNUSED__, gint column,
+		  gpointer data __UNUSED__)
 {
    static int          order = 0;
    static int          last_col = 0;
 
-   if (user_data)
-     {
-	widget = NULL;
-     }
    gtk_clist_set_sort_column(GTK_CLIST(clist), column);
    if (last_col == column)
      {
@@ -558,13 +548,8 @@ on_resort_columns(GtkWidget * widget, gint column, gpointer user_data)
 }
 
 static void
-on_delete_row(GtkWidget * widget, gpointer user_data)
+on_delete_row(GtkWidget * widget __UNUSED__, gpointer data __UNUSED__)
 {
-   if (user_data)
-     {
-	widget = NULL;
-     }
-
    gtk_clist_remove(GTK_CLIST(clist), last_row);
    gtk_clist_select_row(GTK_CLIST(clist), 0, 0);
    gtk_clist_moveto(GTK_CLIST(clist), 0, 0, 0.5, 0.5);
@@ -572,14 +557,10 @@ on_delete_row(GtkWidget * widget, gpointer user_data)
 }
 
 static void
-on_create_row(GtkWidget * widget, gpointer user_data)
+on_create_row(GtkWidget * widget __UNUSED__, gpointer data __UNUSED__)
 {
    char               *stuff[4];
 
-   if (user_data)
-     {
-	widget = NULL;
-     }
    stuff[0] = malloc(2);
    strcpy(stuff[0], "");
    stuff[1] = malloc(2);
@@ -604,13 +585,8 @@ on_create_row(GtkWidget * widget, gpointer user_data)
 }
 
 static void
-on_change_params(GtkWidget * widget, gpointer user_data)
+on_change_params(GtkWidget * widget __UNUSED__, gpointer data __UNUSED__)
 {
-   if (user_data)
-     {
-	widget = NULL;
-     }
-
    if (!dont_update)
      {
 	gtk_clist_set_text(GTK_CLIST(clist), last_row, 3,
@@ -619,20 +595,16 @@ on_change_params(GtkWidget * widget, gpointer user_data)
 }
 
 void
-on_exit_application(GtkWidget * widget, gpointer user_data)
+on_exit_application(GtkWidget * widget __UNUSED__, gpointer data __UNUSED__)
 {
-   if (user_data)
-     {
-	widget = NULL;
-     }
    gtk_exit(0);
 }
 
 static void
-on_save_and_exit_application(GtkWidget * widget, gpointer user_data)
+on_save_and_exit_application(GtkWidget * widget, gpointer data)
 {
-   on_save_data(widget, user_data);
-   on_exit_application(widget, user_data);
+   on_save_data(widget, data);
+   on_exit_application(widget, data);
 }
 
 static GtkWidget   *
