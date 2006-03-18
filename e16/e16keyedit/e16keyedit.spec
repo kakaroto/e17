@@ -1,6 +1,6 @@
 Summary: GUI Tool for Editing Enlightenment 0.16.x Keybindings
 Name: e16keyedit
-Version: 0.1.99.1
+Version: 0.2.99.1
 Release: 1%{?_vendorsuffix:.%{_vendorsuffix}}
 Copyright: BSD-like
 Group: User Interface/Desktops
