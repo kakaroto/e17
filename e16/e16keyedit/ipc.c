@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
@@ -218,7 +220,7 @@ CommsSetup(void)
 				-100, -100, 5, 5, 0, 0, 0);
 }
 
-static Window
+static              Window
 CommsFindCommsWindow(void)
 {
    unsigned char      *s;

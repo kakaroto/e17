@@ -14,10 +14,10 @@ DIE=0
 
 echo "Generating build files, please wait...."
 
-AUTOHEADER_CHOICES="$AUTOHEADER autoheader213 autoheader-2.13 autoheader"
-ACLOCAL_CHOICES="$ACLOCAL aclocal14 aclocal-1.4 aclocal"
-AUTOMAKE_CHOICES="$AUTOMAKE automake14 automake-1.4 automake"
-AUTOCONF_CHOICES="$AUTOCONF autoconf213 autoconf-2.13 autoconf"
+AUTOHEADER_CHOICES="$AUTOHEADER autoheader"
+ACLOCAL_CHOICES="$ACLOCAL aclocal"
+AUTOMAKE_CHOICES="$AUTOMAKE automake"
+AUTOCONF_CHOICES="$AUTOCONF autoconf"
 
 for i in $AUTOHEADER_CHOICES ; do
     $i --version </dev/null >/dev/null 2>&1 && AUTOHEADER=$i && break
@@ -42,16 +42,13 @@ done
 # Export them so configure can AC_SUBST() them.
 export AUTOHEADER ACLOCAL AUTOMAKE AUTOCONF
 
-# Check for existing libast.m4 we can use.  Use the local one if not.
-if test ! -f "`$ACLOCAL --print-ac-dir`/libast.m4"; then
-    ACLOCAL_FLAGS="-I . $ACLOCAL_FLAGS"
-fi
+rm -rf aclocal.m4 autom4te.cache
 
 # Run the stuff.
-(set -x && $AUTOHEADER)
 (set -x && $ACLOCAL $ACLOCAL_FLAGS)
-(set -x && $AUTOMAKE -a -c)
 (set -x && $AUTOCONF)
+(set -x && $AUTOHEADER)
+(set -x && $AUTOMAKE -a -c)
 
 # Run configure.
 ./configure "$@"

@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include <gtk/gtk.h>
 #include <ctype.h>
 #include <stdio.h>
@@ -1098,7 +1100,7 @@ main(int argc, char *argv[])
      }
 
    CommsSend("set clientname Enlightenment Keybinding Configuration Utility");
-   CommsSend("set version 0.1.0");
+   CommsSend("set version " VERSION);
 #if 0
    CommsSend("set author Mandrake (Geoff Harrison)");
    CommsSend("set email mandrake@mandrake.net");
