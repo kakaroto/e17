@@ -48,7 +48,9 @@ This is Enity's feature progress so far:
 
 Misc TODO:
 ==========
-  
+
+* tree / list sorting
+
 * if we do: enity --info --text='something<enter>else' where <enter> is an
   actual Enter on the keyboard (ie, \n), we get a strange char in the
   textblock. We need to strip this out or replace it by a <br>
