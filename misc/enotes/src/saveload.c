@@ -326,7 +326,25 @@ fill_load_tree(void)
 			sprintf(targetf, "%s/%s", target, p->d_name);
 			stat(targetf, &buf);
 			if (S_ISREG(buf.st_mode)) {
-				setup_load_opt(saveload->tree, p->d_name);
+				Evas_List      *notes;
+				int             found = 0;
+
+				notes = (Evas_List *) get_cycle_begin();
+				printf("start\n");
+				while (notes != NULL) {
+					if (!strcmp
+					    (get_title_by_note(notes),
+					     p->d_name)) {
+						found = 1;
+						break;
+					}
+					notes = (Evas_List *)
+						get_cycle_next_note(notes);
+				}
+
+				if (!found)
+					setup_load_opt(saveload->tree,
+						       p->d_name);
 			}
 		}
 		closedir(dir);
