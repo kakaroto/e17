@@ -10,7 +10,7 @@
 #include "menus.h"
 #include "ipc.h"
 
-#if __GNUC__
+#if __GNUC__			/* FIXME - Use autofoo */
 #define __UNUSED__ __attribute__((unused))
 #else
 #define __UNUSED__
@@ -99,11 +99,13 @@ static const ActionOpt actions[] = {
     {"Scroll Windows down", 48, 0, "0 16", NULL},
     {"Scroll Windows by [X Y] pixels", 48, 3, NULL, NULL},
 
+    {"Move mouse pointer to next screen", -1, 0, NULL, "warp screen"},
+
     {"Move mouse pointer to left", 66, 0, "-1 0", "warp rel -1 0"},
     {"Move mouse pointer to right", 66, 0, "1 0", "warp rel 1 0"},
     {"Move mouse pointer up", 66, 0, "0 -1", "warp rel 0 -1"},
     {"Move mouse pointer down", 66, 0, "0 1", "warp rel 0 1"},
-    {"Move mouse pointer by [X Y]", 66, 3, NULL, NULL},
+    {"Move mouse pointer by [X Y]", 66, 3, NULL, "warp rel "},
 
     {"Goto Desktop area [X Y]", 62, 3, NULL, "area goto"},
     {"Move to Desktop area on the left", 63, 0, "-1 0", "area move -1 0"},
@@ -127,6 +129,8 @@ static const ActionOpt actions[] = {
     {"Maximise Size of Window", 52, 0, "conservative", "wop * ts conservative"},
     {"Maximise Size of Window to available space", 52, 0, "available", "wop * ts available"},
     {"Maximise Size of Window to whole screen", 52, 0, NULL, "wop * ts"},
+    {"Toggle Window fullscreen state", -1, 0, NULL, "wop * fullscreen"},
+    {"Toggle Window zoom state", -1, 0, NULL, "wop * zoom"},
     {"Send window to next desktop", 53, 0, NULL, "wop * desk next"},
     {"Send window to previous desktop", 54, 0, NULL, "wop * desk prev"},
     {"Switch focus to next window", 58, 0, NULL, "focus next"},
@@ -141,7 +145,7 @@ static const ActionOpt actions[] = {
     {"Move Window to area on right", 0, 0, "1 0", "wop * area move 1 0"},
     {"Move Window to area above", 0, 0, "0 -1", "wop * area move 0 -1"},
     {"Move Window to area below", 0, 0, "0 1", "wop * area move 0 1"},
-    {"Move Window by area [X Y]", 0, 3, NULL, NULL},
+    {"Move Window by area [X Y]", 0, 3, NULL, "wop * area "},
 
     {"Set Window border style to the Default", 69, 0, "DEFAULT", "wop * border DEFAULT"},
     {"Set Window border style to the Borderless", 69, 0, "BORDERLESS", "wop * border BORDERLESS"},
@@ -164,12 +168,6 @@ static const ActionOpt actions[] = {
     {"Goto Linear Area", 70, 2, NULL, NULL},
     {"Previous Linear Area", 71, 0, "-1", NULL},
     {"Next Linear Area", 71, 0, "1", NULL},
-
-    /* FIXME - Move */
-    {"Toggle Window fullscreen state", -1, 0, NULL, "wop * fullscreen"},
-    {"Toggle Window zoom state", -1, 0, NULL, "wop * zoom"},
-
-    {"Move mouse pointer to next screen", -1, 0, NULL, "warp screen"},
 
     {NULL, 0, 0, NULL, NULL}
 };
@@ -631,7 +629,7 @@ on_save_and_exit_application(GtkWidget * widget, gpointer user_data)
    on_exit_application(widget, user_data);
 }
 
-static GtkWidget          *
+static GtkWidget   *
 create_list_window(void)
 {
    GtkWidget          *list_window;
@@ -749,15 +747,15 @@ create_list_window(void)
 	      params += 6;
 
 #if DEBUG > 0
-	   printf("key: %s, mod: %s, opc=%d, params: %s\n", key, mod_str[modifier],
-		  opcode, params);
+	   printf("key: %s, mod: %s, opc=%d, params: %s\n", key,
+		  mod_str[modifier], opcode, params);
 #endif
 
 	   k = match_action_by_binding(opcode, params);
 
 #if DEBUG > 1
-	   printf("key: %s, mod: %s, act=%d, params: %s\n", key, mod_str[modifier], k,
-		  params);
+	   printf("key: %s, mod: %s, act=%d, params: %s\n", key,
+		  mod_str[modifier], k, params);
 #endif
 
 	   stuff[0] = mod_str[modifier];
