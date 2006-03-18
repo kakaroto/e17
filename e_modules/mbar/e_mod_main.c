@@ -239,7 +239,7 @@ _mbar_new()
    if (!mb->conf)
      {
 	mb->conf = E_NEW(Config, 1);
-	mb->conf->appdir = evas_stringshare_add("mount");
+	mb->conf->appdir = evas_stringshare_add("mbar");
 	mb->conf->follower = 1;
 	mb->conf->follow_speed = 0.9;
 	mb->conf->autoscroll_speed = 0.95;
