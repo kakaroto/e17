@@ -1,11 +1,13 @@
 #include <gtk/gtk.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <X11/Xlib.h>
 #include <gdk/gdkx.h>
 #include <unistd.h>
-#include <string.h>
+
 #include "viewer.h"
 #include "menus.h"
 #include "ipc.h"
@@ -75,8 +77,10 @@ static const char  *mod_str[] = {
 };
 #define N_MODIFIERS (sizeof(mod_str)/sizeof(char*))
 
+static const ActionOpt *actions;
+
 /* *INDENT-OFF* */
-static const ActionOpt actions[] = {
+static const ActionOpt actions_default[] = {
     {"Run command", 1, 1, NULL, "exec "},
 
     {"Restart Enlightenment", 7, 0, "restart", "restart"},
@@ -650,6 +654,7 @@ create_list_window(void)
    GtkWidget          *menu, *menuitem;
 
    list_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+   gtk_window_set_default_size(GTK_WINDOW(list_window), 400, 400);
    gtk_object_set_data(GTK_OBJECT(list_window), "key_editor", list_window);
    GTK_WIDGET_SET_FLAGS(list_window, GTK_CAN_FOCUS);
    GTK_WIDGET_SET_FLAGS(list_window, GTK_CAN_DEFAULT);
@@ -702,7 +707,7 @@ create_list_window(void)
    gtk_container_add(GTK_CONTAINER(scrollybit), clist);
 
    gtk_clist_set_column_title(GTK_CLIST(clist), 0, "Modifier");
-   gtk_clist_set_column_title(GTK_CLIST(clist), 1, "Key Used");
+   gtk_clist_set_column_title(GTK_CLIST(clist), 1, "Key");
    gtk_clist_set_column_title(GTK_CLIST(clist), 2, "Action to Perform");
    gtk_clist_set_column_title(GTK_CLIST(clist), 3, TXT_PARAMETERS_USED);
    gtk_clist_column_titles_show(GTK_CLIST(clist));
@@ -768,8 +773,8 @@ create_list_window(void)
 	   g_free(buf);
 	}
       g_free(msg);
-
    }
+   gtk_clist_columns_autosize(GTK_CLIST(clist));
 
    vbox = gtk_vbox_new(FALSE, 0);
    gtk_widget_show(vbox);
@@ -940,7 +945,7 @@ receive_ipc_msg(gchar * msg)
 static int
 get_e16_version(void)
 {
-   char               *msg = NULL;
+   char               *msg;
    const char         *s;
    int                 ver, minor;
 
@@ -963,6 +968,93 @@ get_e16_version(void)
    if (msg)
       free(msg);
    return ver;
+}
+
+static void
+load_actions(void)
+{
+   char                kbdb[1024], buf[1024], text[1024], command[1024];
+   char               *s;
+   FILE               *f;
+   int                 n, opt;
+   unsigned int        nao;
+   ActionOpt          *pao;
+
+   actions = actions_default;
+
+   if (e16_ver == VER_E16_OLD)
+      return;
+
+   /* FIXME - Should be fetched via IPC. */
+
+   s = getenv("EROOT");
+   if (!s)
+      return;
+
+   snprintf(kbdb, sizeof(kbdb), "%s/config/e16keyedit.db", s);
+
+   f = fopen(kbdb, "r");
+   if (!f)
+      return;
+
+   nao = 0;
+   pao = NULL;
+   for (;;)
+     {
+	s = fgets(buf, sizeof(buf), f);
+	if (!s)
+	   break;
+	while (isspace(*s))
+	   s++;
+	if (*s == '\0' || *s == '#')
+	   continue;
+	n = strlen(s);
+	while (n > 0 && (s[n - 1] == '\n' || s[n - 1] == '\r'))
+	   n--;
+	if (n <= 0)
+	   continue;
+	s[n] = '\0';
+
+#if DEBUG > 0
+	printf("Got: %s\n", s);
+#endif
+	text[0] = command[0] = '\0';
+	opt = -1;
+	n = sscanf(s, "\"%1023[^\"]\", %d, \"%1023[^\"]\"", text, &opt,
+		   command);
+	if (n < 2)
+	  {
+	     printf("*** ERROR: %s\n", buf);
+	     printf
+		("*** ERROR: Keybindings database (%s) corrupt, using defaults.\n",
+		 kbdb);
+	     if (pao)
+		free(pao);
+	     fclose(f);
+	     return;
+	  }
+#if DEBUG > 0
+	printf("n=%d t=%s o=%d c=%s\n", n, text, opt, command);
+#endif
+
+	pao = realloc(pao, (nao + 1) * sizeof(ActionOpt));
+	memset(pao + nao, 0, sizeof(ActionOpt));
+	pao[nao].text = strdup(text);
+	pao[nao].param_tpe = opt;
+	if (command[0])
+	   pao[nao].command = strdup(command);
+	nao++;
+     }
+   fclose(f);
+
+   if (nao == 0)
+      return;			/* No entries ??? */
+
+   /* Add terminator record */
+   pao = realloc(pao, (nao + 1) * sizeof(ActionOpt));
+   memset(pao + nao, 0, sizeof(ActionOpt));
+
+   actions = pao;
 }
 
 int
@@ -1019,6 +1111,8 @@ main(int argc, char *argv[])
 #endif
 
    e16_ver = get_e16_version();
+
+   load_actions();
 
    lister = create_list_window();
 
