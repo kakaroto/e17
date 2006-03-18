@@ -189,8 +189,10 @@ if ( ewl_media_is_available() ) {
 	/*******************************************************************/
 	
 	/*******Start the slideshow*******/	
-	ewl_callback_append(s->audio1, EWL_CALLBACK_REALIZE, play_cb, NULL);
-	
+	if ( s->audio1 != NULL ) {
+		ewl_callback_append(s->audio1, EWL_CALLBACK_REALIZE, play_cb, NULL);
+	}	
+
 	if ( mainwin == 1 ) {
 		if ( ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->audiolen)) == 1 ) {
 			time = audiolen / slidenum;
