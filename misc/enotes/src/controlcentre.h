@@ -45,6 +45,8 @@
 #define EDJE_SIGNAL_CC_SAVELOAD "ENOTES_NOTES_SAVELOAD"
 #define EDJE_SIGNAL_CC_SETTINGS "ENOTES_SETTINGS"
 #define EDJE_SIGNAL_CC_MINIMIZE "ENOTES_CONTROL_MINIMIZE"
+#define EDJE_SIGNAL_CC_SHADE "ENOTES_CONTROL_SHADE"
+#define EDJE_SIGNAL_CC_UNSHADE "ENOTES_CONTROL_UNSHADE"
 
 /* Configuration */
 #define DEF_CC_CONFIG_LOC "%s/.e/notes/cc.xml"
@@ -61,6 +63,7 @@ typedef struct {
 	int             y;
 	int             width;
 	int             height;
+	int             shaded;
 } CCPos;
 
 extern ControlCentre *controlcentre;
@@ -76,11 +79,21 @@ void            set_cc_pos();
 
 /* Callbacks */
 void            cc_resize(Ecore_Evas * ee);
-void            cc_close(void *data);
-void            cc_saveload(void *data);
-void            cc_newnote(void *data);
-void            cc_settings(void *data);
-void            cc_minimize(void *data);
+void            cc_close_win(Ecore_Evas * ee);
+void            cc_close(void *data, Evas_Object * obj, const char *emission,
+			 const char *source);
+void            cc_saveload(void *data, Evas_Object * obj, const char *emission,
+			    const char *source);
+void            cc_newnote(void *data, Evas_Object * obj, const char *emission,
+			   const char *source);
+void            cc_settings(void *data, Evas_Object * obj, const char *emission,
+			    const char *source);
+void            cc_minimize(void *data, Evas_Object * obj, const char *emission,
+			    const char *source);
+void            cc_shade(void *data, Evas_Object * obj, const char *emission,
+			 const char *source);
+void            cc_unshade(void *data, Evas_Object * obj, const char *emission,
+			   const char *source);
 
 /*  Theme Change  */
 void            cc_update_theme();

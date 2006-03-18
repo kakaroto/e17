@@ -115,8 +115,8 @@ handle_ipc_message(void *data)
 								p->data);
 				content = fix_newlines(note->content);
 				new_note_with_values(note->x, note->y,
-						     note->width,
-						     note->height, content);
+						     note->width, note->height,
+						     note->shaded, content);
 				free(content);
 				free_note_stor(note);
 			}
@@ -128,14 +128,14 @@ handle_ipc_message(void *data)
 				free(controlcentre);
 				controlcentre = NULL;
 			} else {
-				new_note_with_values(0, 0, 325, 0,
+				new_note_with_values(0, 0, 325, 0, 0,
 						     "An IPC command was recieved which\nwants to close the controlcentre.\n\nSince the control centre isn't currently\nopen, it wasn't possible to do so!");
 			}
 		} else if (p->cmd == CONTROLCENTREOPEN) {
 			if (controlcentre == NULL) {
 				setup_cc();
 			} else {
-				new_note_with_values(0, 0, 325, 0,
+				new_note_with_values(0, 0, 325, 0, 0,
 						     "An IPC command was recieved which\nwants to open the control centre, but the\ncontrol centre is already open!");
 			}
 		} else if (p->cmd == DEFNOTE) {

@@ -40,6 +40,7 @@ typedef struct {
 	int             y;
 	int             width;
 	int             height;
+	int             shaded;
 } NoteStor;
 
 /* Freeing */

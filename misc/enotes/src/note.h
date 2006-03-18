@@ -35,6 +35,8 @@
 #define EDJE_SIGNAL_NOTE_CLOSE "ENOTES_QUIT"
 #define EDJE_SIGNAL_NOTE_MINIMISE "ENOTES_MINIMIZE"
 #define EDJE_SIGNAL_NOTE_SAVE "ENOTES_SAVE"
+#define EDJE_SIGNAL_NOTE_SHADE "ENOTES_SHADE"
+#define EDJE_SIGNAL_NOTE_UNSHADE "ENOTES_UNSHADE"
 
 #define EDJE_CONTAINER "EnoteContainer"
 #define EDJE_TEXT_USER "EnoteUser"
@@ -73,6 +75,7 @@ typedef struct _note {
 	Evas_Object    *edje;
 	Evas_Object    *dragger;
 	Evas_Object    *eventer;
+	int             shaded;
 
 	Evas_Object    *eo;
 	Ewl_Widget     *emb;
@@ -90,19 +93,14 @@ typedef struct _note {
 	int             stage;
 } _note;
 
-typedef struct {
-	int             x, y, w, h;
-	char           *content;
-} NoteInfo;
-
 Evas_List      *gbl_notes;
 
 /* High Level */
 void            new_note(void);
 void            new_note_with_values(int x, int y, int width, int height,
-				     char *content);
+				     int shaded, char *content);
 Note           *new_note_with_values_return(int x, int y, int width, int height,
-					    char *content);
+					    int shaded, char *content);
 
 /* Lists and Allocation */
 Evas_List      *append_note(void);
@@ -110,7 +108,7 @@ void            remove_note(Evas_List * note);
 
 /* GUI Setup */
 void            setup_note(Evas_List ** note, int x, int y, int width,
-			   int height, char *content);
+			   int height, int shaded, char *content);
 void            configure_scrollbars(Ewl_Widget * pane, char *edjefn);
 void            configure_scrollbars_default(Ewl_Widget * pane);
 
@@ -130,6 +128,10 @@ void            note_edje_minimise(Evas_List * note, Evas_Object * o,
 				   const char *emission, const char *source);
 void            note_edje_save(Evas_List * note, Evas_Object * o,
 			       const char *emission, const char *source);
+void            note_edje_shade(Evas_List * note, Evas_Object * o,
+				const char *emission, const char *source);
+void            note_edje_unshade(Evas_List * note, Evas_Object * o,
+				  const char *emission, const char *source);
 
 /* Misc */
 char           *get_date_string(void);

@@ -116,6 +116,7 @@ note_load(char *target)
 				note = new_note_with_values_return(p->x, p->y,
 								   p->width,
 								   p->height,
+								   p->shaded,
 								   p->content);
 				edje_object_signal_emit(note->edje,
 							NOTE_LOADED_SIGNAL, "");
@@ -203,6 +204,7 @@ autosave(void)
 		n->height = h;
 		n->x = x;
 		n->y = y;
+		n->shaded = note->shaded;
 		n->content = strdup(get_content_by_note(tmp));
 		append_note_stor(n);
 		free_note_stor(n);
@@ -260,6 +262,16 @@ get_notestor_from_value(char *e)
 		return (NULL);
 	}
 
+	/* Add the new shaded field, but make it "optional" */
+	if (e) {
+		p->shaded = atoi(strsep(&e, DEF_VALUE_SEPERATION));
+		if (&e == NULL) {
+			p->shaded = 0;
+		}
+	} else {
+		p->shaded = 0;
+	}
+
 	return (p);
 }
 
@@ -274,10 +286,10 @@ get_value_from_notestor(NoteStor * p)
 {
 	char           *retval = malloc(MAX_VALUE);
 
-	snprintf(retval, MAX_VALUE, "%s%s%d%s%d%s%d%s%d", p->content,
+	snprintf(retval, MAX_VALUE, "%s%s%d%s%d%s%d%s%d%s%d", p->content,
 		 DEF_VALUE_SEPERATION, p->width, DEF_VALUE_SEPERATION,
 		 p->height, DEF_VALUE_SEPERATION, p->x, DEF_VALUE_SEPERATION,
-		 p->y);
+		 p->y, DEF_VALUE_SEPERATION, p->shaded);
 
 	return (retval);
 }

@@ -37,26 +37,28 @@ new_note(void)
 	dml("Creating a Note", 2);
 
 	new = append_note();
-	setup_note(&new, 0, 0, 0, 0, DEF_CONTENT);
+	setup_note(&new, 0, 0, 0, 0, 0, DEF_CONTENT);
 	return;
 }
 
 void
-new_note_with_values(int x, int y, int width, int height, char *content)
+new_note_with_values(int x, int y, int width, int height, int shaded,
+		     char *content)
 {
 	/*Note *p = */
-	new_note_with_values_return(x, y, width, height, content);
+	new_note_with_values_return(x, y, width, height, shaded, content);
 }
 
 Note           *
-new_note_with_values_return(int x, int y, int width, int height, char *content)
+new_note_with_values_return(int x, int y, int width, int height, int shaded,
+			    char *content)
 {
 	Evas_List      *new;
 
 	dml("Creating a Note", 2);
 
 	new = append_note();
-	setup_note(&new, x, y, width, height, content);
+	setup_note(&new, x, y, width, height, shaded, content);
 	return (evas_list_data(new));
 }
 
@@ -153,8 +155,10 @@ static void
 note_close_dialog_delete_cb(Ewl_Widget * w, void *ev, void *data)
 {
 	Note           *p;
-	char           *path = malloc(PATH_MAX);
+	char           *path;
 
+	p = data;
+	path = malloc(PATH_MAX);
 	note_close_dialog_unload_cb(w, ev, data);
 
 	dml("Deleting Saved Note", 2);
@@ -204,7 +208,7 @@ note_close_dialog_unload_cb(Ewl_Widget * w, void *ev, void *data)
  * @brief: Sets up the note objects, window, callbacks, etc...
  */
 void
-setup_note(Evas_List ** note, int x, int y, int width, int height,
+setup_note(Evas_List ** note, int x, int y, int width, int height, int shaded,
 	   char *content)
 {
 	Evas_List      *pl;
@@ -300,6 +304,14 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 	evas_object_move(p->edje, 0, 0);
 	evas_object_layer_set(p->edje, 1);
 
+	p->shaded = shaded;
+	if (shaded)
+		edje_object_signal_emit(p->edje, EDJE_SIGNAL_NOTE_SHADE "_GO",
+					"");
+	else
+		edje_object_signal_emit(p->edje, EDJE_SIGNAL_NOTE_UNSHADE "_GO",
+					"");
+
 	edje_object_size_max_get(p->edje, &edje_w, &edje_h);
 	ecore_evas_size_max_set(p->win, edje_w, edje_h);
 	edje_object_size_min_get(p->edje, &edje_w, &edje_h);
@@ -384,6 +396,10 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 					(void *) note_edje_minimise, *note);
 	edje_object_signal_callback_add(p->edje, EDJE_SIGNAL_NOTE_SAVE, "",
 					(void *) note_edje_save, *note);
+	edje_object_signal_callback_add(p->edje, EDJE_SIGNAL_NOTE_SHADE, "",
+					(void *) note_edje_shade, *note);
+	edje_object_signal_callback_add(p->edje, EDJE_SIGNAL_NOTE_UNSHADE, "",
+					(void *) note_edje_unshade, *note);
 
 	/* Free Temporarily used Variables */
 	if (datestr != NULL)
@@ -608,6 +624,26 @@ note_edje_save(Evas_List * note, Evas_Object * o,
 	if (title)
 		free(title);
 	return;
+}
+
+void
+note_edje_shade(Evas_List * note, Evas_Object * o,
+		const char *emission, const char *source)
+{
+	Note           *p;
+
+	p = evas_list_data(note);
+	p->shaded = 1;
+}
+
+void
+note_edje_unshade(Evas_List * note, Evas_Object * o,
+		  const char *emission, const char *source)
+{
+	Note           *p;
+
+	p = evas_list_data(note);
+	p->shaded = 0;
 }
 
 /* Misc */

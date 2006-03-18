@@ -118,6 +118,12 @@ setup_cc_with_pos(int x, int y)
 	evas_object_name_set(cc->edje, "edje");
 	evas_object_pass_events_set(cc->edje, 0);
 	evas_object_show(cc->edje);
+	if (pos->shaded)
+		edje_object_signal_emit(cc->edje, EDJE_SIGNAL_CC_SHADE "_GO",
+					"");
+	else
+		edje_object_signal_emit(cc->edje, EDJE_SIGNAL_CC_UNSHADE "_GO",
+					"");
 
 	/* EDJE and ECORE min, max and resizing */
 	edje_object_size_max_get(cc->edje, &edje_w, &edje_h);
@@ -130,8 +136,8 @@ setup_cc_with_pos(int x, int y)
 
 	/* Ecore Callbacks */
 	ecore_evas_callback_resize_set(cc->win, cc_resize);
-	ecore_evas_callback_destroy_set(cc->win, cc_close);
-	ecore_evas_callback_delete_request_set(cc->win, cc_close);
+	ecore_evas_callback_destroy_set(cc->win, cc_close_win);
+	ecore_evas_callback_delete_request_set(cc->win, cc_close_win);
 
 	/* Edje Callbacks */
 	edje_object_signal_callback_add(cc->edje,
@@ -145,6 +151,10 @@ setup_cc_with_pos(int x, int y)
 					(void *) cc_settings, NULL);
 	edje_object_signal_callback_add(cc->edje, EDJE_SIGNAL_CC_NEW, "",
 					(void *) cc_newnote, NULL);
+	edje_object_signal_callback_add(cc->edje, EDJE_SIGNAL_CC_SHADE, "",
+					(void *) cc_shade, NULL);
+	edje_object_signal_callback_add(cc->edje, EDJE_SIGNAL_CC_UNSHADE, "",
+					(void *) cc_unshade, NULL);
 
 	free(pos);
 	return;
@@ -159,6 +169,7 @@ get_cc_pos()
 	p->y = ecore_config_int_get("controlcentre.y");
 	p->width = ecore_config_int_get("controlcentre.w");
 	p->height = ecore_config_int_get("controlcentre.h");
+	p->shaded = ecore_config_boolean_get("controlcentre.shaded");
 
 	return (p);
 }
@@ -209,53 +220,61 @@ cc_resize(Ecore_Evas * ee)
 }
 
 /**
- * @param ee: The Ecore_Evas that has been closed by the wm.
- * @brief: Ecore + Edje signal callback for the closing of the window
+ * @brief: Edje signal callback for the closing of the window
  *         (window-manager side).  This function simply ends the loop which
  *         concequently allows for the freeing of variables, etc... before
  *         enotes exits.
  */
 void
-cc_close(Ecore_Evas * ee)
+cc_close_win(Ecore_Evas * data)
 {
 	ecore_main_loop_quit();
-	return;
 }
 
 /**
- * @param data: This variable isn't used.  It is data that could be supplied when
- *              the callback is made.
+ * @brief: Ecore signal callback for the closing of the window
+ *         (window-manager side).  This function simply ends the loop which
+ *         concequently allows for the freeing of variables, etc... before
+ *         enotes exits.
+ */
+void
+cc_close(void *data, Evas_Object * obj, const char *emission,
+	 const char *source)
+{
+	ecore_main_loop_quit();
+}
+
+/**
  * @brief: Edje signal callback for the clicking or selecting of the saveload option.
  *         This calls up the saveload window.
  */
 void
-cc_saveload(void *data)
+cc_saveload(void *data, Evas_Object * obj, const char *emission,
+	    const char *source)
 {
 	setup_saveload();
 	return;
 }
 
 /**
- * @param data: This variable isn't used.  It is data that could be supplied when
- *              the callback is made.
  * @brief: Edje signal callback for the clicking or selecting of the new note option.
  *         This calls up a new note.
  */
 void
-cc_newnote(void *data)
+cc_newnote(void *data, Evas_Object * obj, const char *emission,
+	   const char *source)
 {
 	new_note();
 	return;
 }
 
 /**
- * @param data: This variable isn't used.  It is data that could be supplied when
- *              the callback is made.
  * @brief: Edje signal callback for the clicking or selecting of the settings option.
  *         This calls up the settings window.
  */
 void
-cc_settings(void *data)
+cc_settings(void *data, Evas_Object * obj, const char *emission,
+	    const char *source)
 {
 	if (!ecore_exe_run("examine enotes", NULL))
 		msgbox("No Examine", "Please Install Examine for Settings!");
@@ -263,12 +282,11 @@ cc_settings(void *data)
 }
 
 /**
- * @param data: This variable isn't used.  It is data that could be supplied when
- *              the callback is made.
  * @brief: Edje signal callback for the clicking or selecting of the minimize button.
  */
 void
-cc_minimize(void *data)
+cc_minimize(void *data, Evas_Object * obj, const char *emission,
+	    const char *source)
 {
 	/* FIXME: The line below should be removed when
 	 *          * ecore_evas is fixed. */
@@ -276,6 +294,27 @@ cc_minimize(void *data)
 
 	ecore_evas_iconified_set((Ecore_Evas *) data, 1);
 	return;
+}
+
+/**
+ * @brief: Edje signal callback for the clicking or selecting of the shaded state.
+ */
+void
+cc_shade(void *data, Evas_Object * obj, const char *emission,
+	 const char *source)
+{
+	ecore_config_boolean_set("controlcentre.shaded", 1);
+}
+
+/**
+ * @brief: Edje signal callback for the clicking or unselecting of the
+ * unshaded state.
+ */
+void
+cc_unshade(void *data, Evas_Object * obj, const char *emission,
+	   const char *source)
+{
+	ecore_config_boolean_set("controlcentre.shaded", 0);
 }
 
 /*  Theme Change  */

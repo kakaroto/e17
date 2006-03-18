@@ -17,7 +17,6 @@
 
 Shaped Note? -- ewl bug
 remember the list of notes we want to autoload - not *all* notes
-remember the shaded state of notes and controlcenter
 If a title matches another notes title append a number, removes conflicts
 Setting Note Themes in Realtime
 Removing a Note and then Clicking on Another Sometimes Segv's - Something Internal In Evas Methinks - Investigate!

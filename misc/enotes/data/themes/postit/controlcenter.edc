@@ -189,6 +189,11 @@ group {
     BUTTON_PROG("ctl_small", "");
     BUTTON_PROG("ctl_small_toggled", "");
     program {
+      name, "sig_ctl_small_go";
+      signal, "ENOTES_CONTROL_SHADE_GO";
+      after, "btn_ctl_small_go";
+    }
+    program {
       name, "btn_ctl_small_go";
       source, "btn_ctl_small";
       signal, "mouse,up,1";
@@ -199,6 +204,16 @@ group {
       target, "clip_toggled_ctl_small";
       target, "bg";
       transition, DECELERATE 0.4;
+      after, "btn_ctl_small_go_signal";
+    }
+    program {
+      name, "btn_ctl_small_go_signal";
+      action, SIGNAL_EMIT "ENOTES_CONTROL_SHADE" "";
+    }
+    program {
+      name, "sig_ctl_big_go";
+      signal, "ENOTES_CONTROL_UNSHADE_GO";
+      after, "btn_ctl_big_go";
     }
     program {
       name, "btn_ctl_big_go";
@@ -211,6 +226,11 @@ group {
       target, "clip_toggled_ctl_small";
       target, "bg";
       transition, DECELERATE 0.4;
+      after, "btn_ctl_big_go_signal";
+    }
+    program {
+      name, "btn_ctl_big_go_signal";
+      action, SIGNAL_EMIT "ENOTES_CONTROL_UNSHADE" "";
     }
     BUTTON_PROG("ctl_min", ENOTES_CONTROL_MINIMIZE);
 
