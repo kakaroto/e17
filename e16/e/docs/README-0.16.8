@@ -16,6 +16,7 @@ Contents
 - Major changes and new features
 - Configuration files
 - Session Scripts
+- Composite manager notes
 - Default keybindings
 - Using e16 with GNOME
 - Using e16 with KDE
@@ -65,9 +66,6 @@ Some settings will not be effective until E is restarted.
 To get a list of all eesh commands:
 $ eesh help full
 
-If window resize/shading with composite enabled is ugly, try:
-$ eesh set compmgr.resize_fix_enable 1
-
 0.16.8.1 should be compatible with most e16 themes. However, user installed
 themes will have to be moved/linked to ~/.e16/themes/ or <datadir>/e16/themes/.
 A few themes will have to be tweaked to work with e16.8. The most likely
@@ -75,12 +73,14 @@ problem is that configuration settings are included in .cfg files where they
 are no longer accepted.
 See the "Migrating ..." section below for additional information.
 
-e16keyedit will work, but the "Action" field is no longer used. In stead, the
-action (IPC command) must be specified in the "Parameters" field.
+e16keyedit >= 0.3 works with e16.8.
 If used to change the keybindings, the modified settings will be stored in
 ~/.e16/e_config.bindings.
 It should also be fairly straightforward to modify the key- and buttonbindings
-by editing /usr/share/e16/config/bindings.cfg.
+by hand. Copy /usr/share/e16/config/bindings.cfg to ~/.e16/bindings.cfg and
+modify as desired.
+NB! e16keyedit only modifies keybindings. Keybindings set using e16keyedit
+will override keybindings defined in bindings.cfg.
 
 e16menuedit will no longer work. e16menuedit2 will.
 
@@ -200,6 +200,26 @@ $ eesh set misc.session.enable_script 1/0
 This process is very flexible since when used, the user can turn off
 individual scripts and applications by chmod -x or simply leave the
 startup directories empty or remove them.
+
+
+Composite manager notes
+-----------------------
+
+To use the composite manager it is required that the X-server has support
+enabled for the COMPOSITE, DAMAGE, FIXES, and RENDER extensions.
+For reasonable performance it is also required that hardware acceleration
+of the RENDER extension is enabled.
+
+Tweaks:
+
+If window resize/shading with composite enabled is ugly, try:
+$ eesh set compmgr.resize_fix_enable 1
+This problem should not occur with recent X-servers.
+
+If pop-up windows disappear immediately after having appeared (may happen
+e.g. with certain pop-up windows when using gnome > 2.12), try:
+$ eesh set compmgr.override_redirect.mode 0
+This should make the pop-up windows usable, but not always rendered properly.
 
 
 Default keybindings

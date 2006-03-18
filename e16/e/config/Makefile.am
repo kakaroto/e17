@@ -11,7 +11,8 @@ backup-tooltips.cfg \
 bindings.cfg \
 definitions \
 matches.cfg \
-menus.cfg
+menus.cfg \
+e16keyedit.db
 
 configdatadir = $(ENLIGHTENMENT_ROOT)/config
 
