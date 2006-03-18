@@ -53,8 +53,9 @@ CreateMenuItem(GtkWidget * menu, const char *szName, const char *szAccel,
    if (szName && strlen(szName))
      {
 	menuitem = gtk_menu_item_new_with_label(szName);
-	gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
-			   GTK_SIGNAL_FUNC(func), (gpointer) data);
+	if (func)
+	   gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
+			      GTK_SIGNAL_FUNC(func), (gpointer) data);
      }
    else
      {
