@@ -13,30 +13,29 @@
 extern GtkTooltips *tooltips;
 extern GtkAccelGroup *accel_group;
 
-GtkWidget          *clist;
-GtkWidget          *act_key;
-GtkWidget          *act_params;
-GtkWidget          *act_mod;
-GtkWidget          *act_clist;
+static GtkWidget   *clist;
+static GtkWidget   *act_key;
+static GtkWidget   *act_params;
+static GtkWidget   *act_mod;
+static GtkWidget   *act_clist;
 
 static void         receive_ipc_msg(gchar * msg);
 static gchar       *wait_for_ipc_msg(void);
 
-gchar              *e_ipc_msg = NULL;
-GList              *keys = NULL;
-char                dont_update = 0;
-int                 last_row = 0;
-int                 real_rows = 0;
+static gchar       *e_ipc_msg = NULL;
+static char         dont_update = 0;
+static int          last_row = 0;
+static int          real_rows = 0;
 
 typedef struct _actionopt
 {
-   gchar              *text;
+   const char         *text;
    gint                id;
    gchar               param_tpe;
-   gchar              *params;
+   const char         *params;
 } ActionOpt;
 
-gchar              *mod_str[] = {
+static const char  *mod_str[] = {
    "",
    "CTRL",
    "ALT",
@@ -62,7 +61,7 @@ gchar              *mod_str[] = {
 
 
 /* *INDENT-OFF* */
-static ActionOpt actions[] = {
+static const ActionOpt actions[] = {
     {"Run command", 1, 1, NULL},
 
     {"Restart Enlightenment", 7, 0, "restart"},
@@ -209,15 +208,11 @@ e_cb_key_change(GtkWidget * widget, gpointer data)
 void
 e_cb_modifier(GtkWidget * widget, gpointer data)
 {
-
    gint                value;
 
    widget = NULL;
    value = (gint) data;
    gtk_clist_set_text(GTK_CLIST(clist), last_row, 0, mod_str[value]);
-
-   return;
-
 }
 
 static gchar       *
@@ -289,9 +284,6 @@ change_action(GtkWidget * my_clist, gint row, gint column,
 	gtk_clist_set_text(GTK_CLIST(clist), last_row, 3,
 			   gtk_entry_get_text(GTK_ENTRY(act_params)));
      }
-
-   return;
-
 }
 
 void
@@ -353,15 +345,12 @@ on_save_data(GtkWidget * widget, gpointer data)
    /* printf("%s",buf); */
    CommsSend(buf);
    CommsSend("save_config");
-   return;
-
 }
 
 void
 selection_made(GtkWidget * my_clist, gint row, gint column,
 	       GdkEventButton * event, gpointer data)
 {
-
    gchar              *modstring;
    gchar              *keyused;
    gchar              *actperform;
@@ -410,8 +399,6 @@ selection_made(GtkWidget * my_clist, gint row, gint column,
 
    last_row = row;
    dont_update = 0;
-
-   return;
 }
 
 static gchar       *get_line(gchar * str, int num);
@@ -481,15 +468,11 @@ on_resort_columns(GtkWidget * widget, gint column, gpointer user_data)
      }
 
    gtk_clist_sort(GTK_CLIST(clist));
-
-   return;
-
 }
 
 void
 on_delete_row(GtkWidget * widget, gpointer user_data)
 {
-
    if (user_data)
      {
 	widget = NULL;
@@ -499,15 +482,11 @@ on_delete_row(GtkWidget * widget, gpointer user_data)
    gtk_clist_select_row(GTK_CLIST(clist), 0, 0);
    gtk_clist_moveto(GTK_CLIST(clist), 0, 0, 0.5, 0.5);
    real_rows--;
-
-   return;
-
 }
 
 void
 on_create_row(GtkWidget * widget, gpointer user_data)
 {
-
    char               *stuff[4];
 
    if (user_data)
@@ -535,9 +514,6 @@ on_create_row(GtkWidget * widget, gpointer user_data)
       free(stuff[3]);
 
    real_rows++;
-
-   return;
-
 }
 
 void
@@ -553,20 +529,16 @@ on_change_params(GtkWidget * widget, gpointer user_data)
 	gtk_clist_set_text(GTK_CLIST(clist), last_row, 3,
 			   gtk_entry_get_text(GTK_ENTRY(act_params)));
      }
-
-   return;
 }
 
 void
 on_exit_application(GtkWidget * widget, gpointer user_data)
 {
-
    if (user_data)
      {
 	widget = NULL;
      }
    gtk_exit(0);
-
 }
 
 void
@@ -579,7 +551,6 @@ on_save_and_exit_application(GtkWidget * widget, gpointer user_data)
 GtkWidget          *
 create_list_window(void)
 {
-
    GtkWidget          *list_window;
    GtkWidget          *bigvbox;
    GtkWidget          *menubar;
@@ -595,6 +566,7 @@ create_list_window(void)
    GtkWidget          *button;
    GtkWidget          *hbox;
    GtkWidget          *m, *mi, *om;
+   GtkWidget          *menu, *menuitem;
 
    list_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
    gtk_object_set_data(GTK_OBJECT(list_window), "key_editor", list_window);
@@ -610,42 +582,28 @@ create_list_window(void)
    gtk_widget_show(menubar);
    gtk_box_pack_start(GTK_BOX(bigvbox), menubar, FALSE, FALSE, 0);
 
-   {
-      GtkWidget          *menu;
-      GtkWidget          *menuitem;
+   menu = CreateBarSubMenu(menubar, "File");
+   menuitem = CreateMenuItem(menu, "Save", "", "Save Current Data", NULL,
+			     "save data");
+   gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
+		      GTK_SIGNAL_FUNC(on_save_data), NULL);
+   menuitem = CreateMenuItem(menu, "Save & Quit", "",
+			     "Save Current Data & Quit Application", NULL,
+			     "save quit");
+   gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
+		      GTK_SIGNAL_FUNC(on_save_and_exit_application), NULL);
+   menuitem =
+      CreateMenuItem(menu, "Quit", "", "Quit Without Saving", NULL,
+		     "quit program");
+   gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
+		      GTK_SIGNAL_FUNC(on_exit_application), NULL);
 
-      menu = CreateBarSubMenu(menubar, "File");
-      menuitem = CreateMenuItem(menu, "Save", "", "Save Current Data", NULL,
-				"save data");
-      gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
-			 GTK_SIGNAL_FUNC(on_save_data), NULL);
-      menuitem = CreateMenuItem(menu, "Save & Quit", "",
-				"Save Current Data & Quit Application", NULL,
-				"save quit");
-      gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
-			 GTK_SIGNAL_FUNC(on_save_and_exit_application), NULL);
-      menuitem =
-	 CreateMenuItem(menu, "Quit", "", "Quit Without Saving", NULL,
-			"quit program");
-      gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
-			 GTK_SIGNAL_FUNC(on_exit_application), NULL);
-
-   }
-
-   {
-      GtkWidget          *menu;
-      GtkWidget          *menuitem;
-
-      menu = CreateRightAlignBarSubMenu(menubar, "Help");
-      menuitem =
-	 CreateMenuItem(menu, "About", "", "About E Keybinding Editor",
-			NULL, "about");
-      menuitem =
-	 CreateMenuItem(menu, "Documentation", "",
-			"Read the Keybinding Editor Documentation", NULL,
-			"read docs");
-
-   }
+   menu = CreateRightAlignBarSubMenu(menubar, "Help");
+   menuitem = CreateMenuItem(menu, "About", "", "About E Keybinding Editor",
+			     NULL, "about");
+   menuitem = CreateMenuItem(menu, "Documentation", "",
+			     "Read the Keybinding Editor Documentation", NULL,
+			     "read docs");
 
    panes = gtk_hpaned_new();
    gtk_widget_show(panes);
@@ -908,7 +866,6 @@ create_list_window(void)
    gtk_clist_select_row(GTK_CLIST(clist), 0, 0);
 
    return list_window;
-
 }
 
 static void
@@ -918,7 +875,6 @@ receive_ipc_msg(gchar * msg)
    e_ipc_msg = g_strdup(msg);
 
    gtk_main_quit();
-
 }
 
 int
@@ -960,6 +916,7 @@ main(int argc, char *argv[])
 	gtk_main();
 	exit(1);
      }
+
    CommsSend("set clientname Enlightenment Keybinding Configuration Utility");
    CommsSend("set version 0.1.0");
    CommsSend("set author Mandrake (Geoff Harrison)");
