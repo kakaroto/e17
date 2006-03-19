@@ -72,7 +72,7 @@ callback (evfs_event * data, void *obj)
 	    file = entropy_generic_file_new ();
 	    /*For now, just make an entropy_generic_file for this object */
 
-	    strncpy (file->path, folder, 255);
+	    strncpy (file->path, folder, PATH_MAX);
 	    strncpy (file->filename, pos + 1, strlen (pos + 1) + 1);
 	    strncpy (file->uri_base, data->file_monitor.plugin,
 		     strlen (data->file_monitor.plugin));
@@ -82,6 +82,8 @@ callback (evfs_event * data, void *obj)
 		    strcpy(file->mime_type, "file/folder");
 		    file->filetype = FILE_FOLDER;
 	    }
+
+	    file->thumbnail = NULL;
 
 	    /*Register a new listener for this file */
 	    listener = entropy_malloc (sizeof (entropy_file_listener));

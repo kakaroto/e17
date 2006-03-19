@@ -6,8 +6,8 @@
 
 typedef struct entropy_thumbnail entropy_thumbnail;
 struct entropy_thumbnail {
-        char filename[255];
-	char thumbnail_filename[255];
+        char filename[PATH_MAX];
+	char thumbnail_filename[PATH_MAX];
         int keys;
         Ecore_Hash* text;
 

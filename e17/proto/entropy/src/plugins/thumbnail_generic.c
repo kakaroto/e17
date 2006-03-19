@@ -17,7 +17,7 @@ static char *thumbnail_path = NULL;	//Make this central to the core, so it can b
 entropy_thumbnail *
 entropy_thumbnail_new ()
 {
-  entropy_thumbnail *thumb = malloc (sizeof (entropy_thumbnail));
+  entropy_thumbnail *thumb = calloc (1,sizeof (entropy_thumbnail));
 
   thumb->text = ecore_hash_new (ecore_str_hash, ecore_str_compare);
   thumb->keys = 0;

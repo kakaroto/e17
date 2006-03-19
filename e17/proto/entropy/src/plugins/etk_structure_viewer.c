@@ -125,7 +125,7 @@ static void _etk_structure_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *
    if (instance) {
 	   viewer = instance->data;
 	   e_event = ecore_hash_get(viewer->row_hash, row);
-	
+
 	  if (e_event) {
 		  gui_event = entropy_malloc (sizeof (entropy_gui_event));
 		  gui_event->event_type =

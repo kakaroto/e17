@@ -214,13 +214,7 @@ _entropy_etk_list_viewer_menu_popup_cb(Etk_Object *object, void *data)
 				   l = l->next;
 				   i++;
 			   }
-
-			  
 		  }
-
-		
-
-		   
 	}
 	
 }
@@ -580,8 +574,8 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
 
 
 
-   if (!strlen (file->mime_type)) {
-		    entropy_mime_file_identify (instance->core->mime_plugins, file);
+  if (!strlen (file->mime_type)) {
+	entropy_mime_file_identify (instance->core->mime_plugins, file);
   }
 
   if (file->mime_type) {
@@ -774,13 +768,8 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
       /*Check that this file is the current dir we are displaying*/
       entropy_generic_file* parent_folder = entropy_core_parent_folder_file_get(file);
 
-      /*printf("At list viewer, Parent folder is: %p : Current folder: %p\n", parent_folder, viewer->current_folder);*/
-      /*if (parent_folder) {
-	      printf("Parent folder string: %s/%s : Current folder: %s/%s", parent_folder->path, parent_folder->filename,
-			      viewer->current_folder->path, viewer->current_folder->filename);
-      }*/
-      
       if (parent_folder && parent_folder == viewer->current_folder) {
+	      entropy_core_file_cache_add_reference (file->md5);
 	      list_viewer_add_row (comp, file);				      
       }
      }

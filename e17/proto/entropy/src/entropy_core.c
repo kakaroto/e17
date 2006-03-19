@@ -875,7 +875,13 @@ entropy_generic_file* entropy_generic_file_clone(entropy_generic_file* file) {
 
 	clone->parent = file->parent;
 
-	clone->thumbnail = file->thumbnail;
+	if (file->thumbnail) {
+		/*FIXME - we should make this more generic*/
+		clone->thumbnail = entropy_thumbnail_new();
+		strcpy(clone->thumbnail->thumbnail_filename, file->thumbnail->thumbnail_filename);
+		clone->thumbnail->parent = (void*)clone;
+	}
+	
 	clone->md5 = strdup(file->md5);
 	
 	return clone;

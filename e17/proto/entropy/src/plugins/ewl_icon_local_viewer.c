@@ -199,8 +199,8 @@ hover_icon_mouse_move_cb (Ewl_Widget * w, void *ev_data, void *user_data)
 void
 icon_hover_properties_show_cb (Ewl_Widget * w, void *ev_data, void *user_data)
 {
-  entropy_gui_component_instance *instance = user_data;
-  entropy_icon_viewer *viewer = instance->data;
+  /*entropy_gui_component_instance *instance = user_data;
+  entropy_icon_viewer *viewer = instance->data;*/
 }
 
 /*-----------------------------*/
@@ -448,7 +448,6 @@ ewl_icon_local_viewer_delete_selected (entropy_gui_component_instance *
 
   Ecore_List *new_file_list = ecore_list_new ();
   Ecore_List *icon_list;
-  entropy_generic_file *file;
   gui_file *local_file;
   Ewl_Iconbox_Icon *list_item;
 
@@ -538,9 +537,6 @@ ewl_icon_local_viewer_menu_rename_cb (Ewl_Widget * w, void *ev_data,
 void
 ewl_icon_local_viewer_key_event_cb (Ewl_Iconbox * ib, void *data, char *key)
 {
-  entropy_icon_viewer *viewer =
-    ((entropy_gui_component_instance *) data)->data;
-
   printf ("Received controlled key: '%s'\n", key);
 
   if (!strcmp (key, "Delete")) {

@@ -36,18 +36,22 @@ char* entropy_action_simple_str_replace(entropy_generic_file* file, char* exe, c
 
 			if ( i +3 <= strlen(currStr) && !strncmp(currStr+i, "\%pf", 3)) {
 				printf("Subbing path and filename\n");
-				
+			
+				strcat(str, "\"");
 				strcat(str, file->path);					
 				strcat(str, "/");
 				strcat(str, file->filename);
+				strcat(str, "\"");
 				ud = 1;
 				i+=3;
 			}
 
 			if ( i +2 <= strlen(currStr) && !strncmp(currStr+i, "\%p", 2)) {
 				printf("Subbing path only\n");
-				
+			
+				strcat(str, "\"");
 				strcat(str, file->path);					
+				strcat(str, "\"");
 				ud = 1;
 				i+=2;
 			}
@@ -56,7 +60,9 @@ char* entropy_action_simple_str_replace(entropy_generic_file* file, char* exe, c
 				printf("Subbing uri\n");
 				
 				char* uri = entropy_core_generic_file_uri_create(file, 0);
+				strcat(str,"\"");
 				strcat(str, uri);
+				strcat(str, "\"");
 				ud = 1;
 				i+=2;
 				free(uri);
