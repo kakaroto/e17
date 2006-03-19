@@ -25,8 +25,8 @@
 #define _HINTS_H_
 
 /* Misc atoms */
-Atom                E_XROOTPMAP_ID;
-Atom                E_XROOTCOLOR_PIXEL;
+extern Atom         E_XROOTPMAP_ID;
+extern Atom         E_XROOTCOLOR_PIXEL;
 
 /* ewmh.c */
 void                EWMH_Init(Window win_wm_check);
