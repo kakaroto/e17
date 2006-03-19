@@ -111,9 +111,10 @@ int main(int argc, char **argv)
 		       fclose(fifo);
 		    }
 		  else
-		    fprintf(stderr, "etk_server warning: can't find function %s\n", input);
-
-		  fclose(fifo);
+		    {
+		       fprintf(stderr, "etk_server warning: can't find function %s\n", input);
+		       fclose(fifo);
+		    }
 		  continue;
 	       }
 
