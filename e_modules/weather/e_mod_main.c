@@ -89,6 +89,10 @@ e_modapi_init(E_Module * module)
 {
    Weather            *weather;
 
+   /* Set up module's message catalogue */
+   bindtextdomain(PACKAGE, LOCALEDIR);
+   bind_textdomain_codeset(PACKAGE, "UTF-8");
+
    weather = _weather_new();
    module->config_menu = weather->config_menu;
    return weather;
@@ -129,8 +133,8 @@ e_modapi_info(E_Module * module)
 EAPI int
 e_modapi_about(E_Module * module)
 {
-   e_module_dialog_show(_("Enlightenment Weather Module"),
-                        _("A weather forecast module for Enlightenment."));
+   e_module_dialog_show(D_("Enlightenment Weather Module"),
+                        D_("A weather forecast module for Enlightenment."));
    return 1;
 }
 
@@ -218,15 +222,15 @@ _weather_new()
 
              /* Add main menu to face menu */
              mi = e_menu_item_new(face->menu);
-             e_menu_item_label_set(mi, _("Set Degrees"));
+             e_menu_item_label_set(mi, D_("Set Degrees"));
              e_menu_item_submenu_set(mi, weather->config_menu_degrees);
 
              mi = e_menu_item_new(face->menu);
-             e_menu_item_label_set(mi, _("Set Display"));
+             e_menu_item_label_set(mi, D_("Set Display"));
              e_menu_item_submenu_set(mi, weather->config_menu_display);
 
              mi = e_menu_item_new(face->menu);
-             e_menu_item_label_set(mi, _("Set Update Time"));
+             e_menu_item_label_set(mi, D_("Set Update Time"));
              e_menu_item_submenu_set(mi, weather->config_menu_poll);
           }
      }
@@ -254,15 +258,15 @@ _weather_new()
 
              /* Add main menu to face menu */
              mi = e_menu_item_new(face->menu);
-             e_menu_item_label_set(mi, _("Set Degrees"));
+             e_menu_item_label_set(mi, D_("Set Degrees"));
              e_menu_item_submenu_set(mi, weather->config_menu_degrees);
 
              mi = e_menu_item_new(face->menu);
-             e_menu_item_label_set(mi, _("Set Display"));
+             e_menu_item_label_set(mi, D_("Set Display"));
              e_menu_item_submenu_set(mi, weather->config_menu_display);
 
              mi = e_menu_item_new(face->menu);
-             e_menu_item_label_set(mi, _("Set Update Time"));
+             e_menu_item_label_set(mi, D_("Set Update Time"));
              e_menu_item_submenu_set(mi, weather->config_menu_poll);
           }
      }
@@ -312,7 +316,7 @@ _weather_config_menu_new(Weather * weather)
    mn = e_menu_new();
 
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, _("15 minutes"));
+   e_menu_item_label_set(mi, D_("15 minutes"));
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 1);
    if (weather->conf->poll_time == 900.0)
@@ -320,7 +324,7 @@ _weather_config_menu_new(Weather * weather)
    e_menu_item_callback_set(mi, _weather_menu_fast, weather);
 
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, _("30 minutes"));
+   e_menu_item_label_set(mi, D_("30 minutes"));
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 1);
    if (weather->conf->poll_time == 1800.0)
@@ -328,7 +332,7 @@ _weather_config_menu_new(Weather * weather)
    e_menu_item_callback_set(mi, _weather_menu_medium, weather);
 
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, _("1 hour"));
+   e_menu_item_label_set(mi, D_("1 hour"));
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 1);
    if (weather->conf->poll_time == 3600.0)
@@ -341,7 +345,7 @@ _weather_config_menu_new(Weather * weather)
    mn = e_menu_new();
 
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, _("Simple"));
+   e_menu_item_label_set(mi, D_("Simple"));
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 1);
    if (weather->conf->display == SIMPLE_DISPLAY)
@@ -349,7 +353,7 @@ _weather_config_menu_new(Weather * weather)
    e_menu_item_callback_set(mi, _weather_menu_display_simple, weather);
 
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, _("Detailed"));
+   e_menu_item_label_set(mi, D_("Detailed"));
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 1);
    if (weather->conf->display == DETAILED_DISPLAY)
@@ -362,7 +366,7 @@ _weather_config_menu_new(Weather * weather)
    mn = e_menu_new();
 
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, _("Fahrenheit"));
+   e_menu_item_label_set(mi, D_("Fahrenheit"));
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 1);
    if (weather->conf->degrees == DEGREES_F)
@@ -370,7 +374,7 @@ _weather_config_menu_new(Weather * weather)
    e_menu_item_callback_set(mi, _weather_menu_degrees_F, weather);
 
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, _("Celcius"));
+   e_menu_item_label_set(mi, D_("Celsius"));
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 1);
    if (weather->conf->degrees == DEGREES_C)
@@ -389,19 +393,19 @@ _weather_config_menu_new(Weather * weather)
    mn = e_menu_new();
 
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, _("Set Degrees"));
+   e_menu_item_label_set(mi, D_("Set Degrees"));
    e_menu_item_submenu_set(mi, weather->config_menu_degrees);
 
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, _("Set Display"));
+   e_menu_item_label_set(mi, D_("Set Display"));
    e_menu_item_submenu_set(mi, weather->config_menu_display);
 
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, _("Set Update Time"));
+   e_menu_item_label_set(mi, D_("Set Update Time"));
    e_menu_item_submenu_set(mi, weather->config_menu_poll);
 
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, _("Faces"));
+   e_menu_item_label_set(mi, D_("Faces"));
    e_menu_item_submenu_set(mi, weather->config_menu_faces);
 
    weather->config_menu = mn;
@@ -432,7 +436,7 @@ _weather_menu_cb_faces(void *data, E_Menu * m)
 
    /* New face */
    mi = e_menu_item_new(m);
-   e_menu_item_label_set(mi, _("Add Face"));
+   e_menu_item_label_set(mi, D_("Add Face"));
    e_menu_item_callback_set(mi, _weather_menu_add_face, weather);
 
    /* Add faces to the config menu */
@@ -554,12 +558,12 @@ _weather_face_menu_new(Weather_Face * face)
 
    /* New face */
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, _("Add Face"));
+   e_menu_item_label_set(mi, D_("Add Face"));
    e_menu_item_callback_set(mi, _weather_menu_add_face, face->weather);
 
    /* Remove face */
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, _("Remove Face"));
+   e_menu_item_label_set(mi, D_("Remove Face"));
    e_menu_item_callback_set(mi, _weather_menu_remove_face, face);
 
    /* Choose location */
@@ -568,7 +572,7 @@ _weather_face_menu_new(Weather_Face * face)
      {
         face->menu_location = subm;
         mi = e_menu_item_new(mn);
-        e_menu_item_label_set(mi, _("Choose Continent"));
+        e_menu_item_label_set(mi, D_("Choose Continent"));
         e_menu_item_submenu_set(mi, subm);
      }
 }
@@ -1153,15 +1157,15 @@ _weather_menu_add_face(void *data, E_Menu * m, E_Menu_Item * mi)
 
         /* Add main menu to face menu */
         mi = e_menu_item_new(face->menu);
-        e_menu_item_label_set(mi, _("Set Degrees"));
+        e_menu_item_label_set(mi, D_("Set Degrees"));
         e_menu_item_submenu_set(mi, weather->config_menu_degrees);
 
         mi = e_menu_item_new(face->menu);
-        e_menu_item_label_set(mi, _("Set Display"));
+        e_menu_item_label_set(mi, D_("Set Display"));
         e_menu_item_submenu_set(mi, weather->config_menu_display);
 
         mi = e_menu_item_new(face->menu);
-        e_menu_item_label_set(mi, _("Set Update Time"));
+        e_menu_item_label_set(mi, D_("Set Update Time"));
         e_menu_item_submenu_set(mi, weather->config_menu_poll);
 
         weather->update_menu_faces = 1;
