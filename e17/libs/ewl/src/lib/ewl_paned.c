@@ -29,6 +29,7 @@ static void ewl_paned_grabber_cb_mouse_move(Ewl_Widget *w, void *ev,
 
 static void ewl_paned_grabbers_update(Ewl_Paned *p);
 static void ewl_paned_layout_setup(void);
+static int ewl_paned_widgets_resize(Ecore_List *list, int space);
 
 /**
  * @return Returns NULL on failure, or a pointer to a new paned widget on success.
@@ -378,85 +379,13 @@ ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	/* the paned has gotten smaller, we need to reclaim space from the
 	 * currently sized widgets */
 	if (available_size < 0)
-	{
-		int take, nodes = 0;
-		Ecore_List *tmp;
-
-		/* make a temporary list */
-		tmp = ecore_list_new();
-		ecore_list_goto_first(sized);
-		while ((child = ecore_list_next(sized)))
-			ecore_list_append(tmp, child);
-
-		available_size = abs(available_size);
-		nodes = ecore_list_nodes(tmp);
-		while ((available_size > 0) && (nodes > 0))
-		{
-			take = floor(available_size / nodes);
-
-			ecore_list_goto_first(tmp);
-			while ((child = ecore_list_current(tmp)))
-			{
-				int size, new_size;
-
-				size = layout->current_size(EWL_OBJECT(child));
-				layout->variable_request(EWL_OBJECT(child), size- take);
-				new_size = layout->current_size(EWL_OBJECT(child));
-
-				if ((size - new_size) > 0)
-				{
-					available_size -= (size - new_size);
-					ecore_list_next(tmp);
-				}
-				else
-					ecore_list_remove(tmp);
-			}
-			nodes = ecore_list_nodes(tmp);
-		}
-		ecore_list_destroy(tmp);
-	}
+		available_size -= ewl_paned_widgets_resize(sized, available_size);
 
 	/* available space is less then our needed space, we need to resize
 	 * the other widgets until we have at least min_pane_size available */
 	if (available_size < min_pane_size)
-	{
-		int need, take, nodes;
-		Ecore_List *tmp;
-
-		/* make a temporary list */
-		tmp = ecore_list_new();
-		ecore_list_goto_first(sized);
-		while ((child = ecore_list_next(sized)))
-			ecore_list_append(tmp, child);
-
-		need = min_pane_size - available_size;
-		nodes = ecore_list_nodes(tmp);
-		while ((need > 0) && (nodes > 0))
-		{
-			take = floor(need / nodes);
-
-			ecore_list_goto_first(tmp);
-			while ((child = ecore_list_current(tmp)))
-			{
-				int size, new_size;
-
-				size = layout->current_size(EWL_OBJECT(child));
-				layout->variable_request(EWL_OBJECT(child), size- take);
-				new_size = layout->current_size(EWL_OBJECT(child));
-
-				if ((size - new_size) > 0)
-				{
-					need -= (size - new_size);
-					available_size += (size - new_size);
-					ecore_list_next(tmp);
-				}
-				else
-					ecore_list_remove(tmp);
-			}
-			nodes = ecore_list_nodes(tmp);
-		}
-		ecore_list_destroy(tmp);
-	}
+		available_size += ewl_paned_widgets_resize(sized, 
+					min_pane_size - available_size);
 
 	/* we have the minimum space, but not our preferred space. Give each
 	 * unsized widget their minimum size .
@@ -511,7 +440,7 @@ ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 				int size, new_size;
 
 				size = layout->current_size(EWL_OBJECT(child));
-				layout->variable_request(EWL_OBJECT(child), size+ give);
+				layout->variable_request(EWL_OBJECT(child), size + give);
 				new_size = layout->current_size(EWL_OBJECT(child));
 
 				if ((new_size - size) > 0)
@@ -984,4 +913,52 @@ ewl_paned_layout_setup(void)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+static int
+ewl_paned_widgets_resize(Ecore_List *list, int space)
+{
+	int take, nodes = 0, moved = 0;
+	Ecore_List *tmp;
+	Ewl_Widget *child;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("list", list, 0);
+
+	/* make a temporary list */
+	tmp = ecore_list_new();
+	ecore_list_goto_first(list);
+	while ((child = ecore_list_next(list)))
+		ecore_list_append(tmp, child);
+
+	space = abs(space);
+	nodes = ecore_list_nodes(tmp);
+	while ((space > 0) && (nodes > 0))
+	{
+		take = floor(space / nodes);
+
+		ecore_list_goto_first(tmp);
+		while ((child = ecore_list_current(tmp)))
+		{
+			int size, new_size;
+
+			size = layout->current_size(EWL_OBJECT(child));
+			layout->variable_request(EWL_OBJECT(child), size - take);
+			new_size = layout->current_size(EWL_OBJECT(child));
+
+			if ((size - new_size) > 0)
+			{
+				int dist;
+				dist = size - new_size;
+				moved += dist;
+				space -= dist;
+				ecore_list_next(tmp);
+			}
+			else
+				ecore_list_remove(tmp);
+		}
+		nodes = ecore_list_nodes(tmp);
+	}
+	ecore_list_destroy(tmp);
+
+	DRETURN_INT(moved, DLEVEL_STABLE);
+}
 
