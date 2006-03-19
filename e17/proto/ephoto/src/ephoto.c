@@ -12,10 +12,13 @@ Ecore_List *audiofiles;
 int audio = 0;
 int wino = 0;
 int mainwin = 15;
+int nopresent = 15;
+int noslide = 15;
 int audiolen;
 int slidenum;
 char *audios;
 char argimage[PATH_MAX];
+char argaudio[PATH_MAX];
 char tempdb[PATH_MAX];
 char db[PATH_MAX];
 /*****************/
@@ -40,15 +43,30 @@ main(int argc, char **argv)
 	char *home;
 	int argint = 1;
 	while ( argint < argc ) { 	
-		if ( argint < argc && !strcmp(argv[argint], "--slideshow") ) {
+		if ( argint < argc && !strcmp(argv[argint], "--slideshow") && noslide != 0 ) {
 			int imageint;
 			imageint = argint;
-			while ( imageint < argc ) {
-				imageint++;
+			imageint++;
+			while ( imageint < argc && ecore_file_exists(argv[imageint]) != 0 ) {
 				ecore_dlist_append(m->imagelist, strdup(argv[imageint]));
+				imageint++;
 			}
 			mainwin = 0;
+			nopresent = 0;
 			slideshow_cb(NULL, NULL, NULL);
+			ewl_main();
+		}
+		else if ( argint < argc && !strcmp(argv[argint], "--presentation") && nopresent != 0 ) {
+			int imageint;
+			imageint = argint;
+			imageint++;
+			while ( imageint < argc && ecore_file_exists(argv[imageint]) != 0 ) {
+				ecore_dlist_append(m->imagelist, strdup(argv[imageint]));
+				imageint++;
+			}
+			mainwin	= 0;
+			noslide = 0;
+			presentation_cb(NULL, NULL, NULL);
 			ewl_main();
 		}
 		else if ( argint < argc && !strcmp(argv[argint], "--view-image") ) {
