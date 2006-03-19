@@ -1,0 +1,23 @@
+/** 
+@file
+@brief etk_server
+ 
+These routines are used for etk_server
+*/
+
+/**
+
+@mainpage etk_server Documentation
+@image html  etk_server.png
+@version 0.0.1
+@author CodeWarrior <hisham.mardambey@gmail.com>
+@date 2005
+
+@section intro What is Etk_Server?
+
+Daemon that allows programming Etk applications using any language that can
+interact with files and fifos.
+
+@todo Complete documentation
+
+*/

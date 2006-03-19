@@ -1,0 +1,10 @@
+Installation:
+=============
+./autogen.sh
+./configure
+make
+make install
+
+Note:
+=====
+BSD systems can use configgen.sh from their system and gmake.

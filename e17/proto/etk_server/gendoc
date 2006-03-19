@@ -1,0 +1,12 @@
+#!/bin/sh
+cp ./etk_server.c.in ./etk_server.c
+for I in `find ./src/lib -name "etk_server.h" -print`; do
+  cat $I >> ./etk_server.c
+done
+#for I in `find ./src/lib -name "*.c" -print`; do
+#  cat $I >> ./etk_server.c
+#done
+rm -rf ./doc/html ./doc/latex ./doc/man
+doxygen
+cp doc/img/*.png doc/html/
+exit 0

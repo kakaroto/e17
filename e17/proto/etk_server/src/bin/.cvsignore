@@ -1,0 +1,5 @@
+.deps
+.libs
+etk_server
+Makefile
+Makefile.in

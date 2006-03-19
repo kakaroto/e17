@@ -1,0 +1,19 @@
+## Process this file with automake to produce Makefile.in
+
+INCLUDES = \
+-Wall -export-dynamic \
+-I/usr/local/include \
+-I$(top_srcdir)/lib \
+@my_includes@
+
+bin_PROGRAMS = etk_server
+
+etk_server_INCLUDES = \
+etk_server.h
+
+etk_server_SOURCES = \
+etk_server.c \
+$(etk_server_INCLUDES)
+
+etk_server_LDADD = @my_libs@ 
+etk_server_LDFLAGS = -export-dynamic
