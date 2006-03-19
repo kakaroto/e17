@@ -2593,19 +2593,7 @@ ECompMgrHandleRootEvent(XEvent * ev, void *prm)
 static void
 ECompMgrInit(void)
 {
-   int                 events, errors, major, minor;
-
-   if (!XCompositeQueryExtension(disp, &events, &errors) ||
-       !XDamageQueryExtension(disp, &events, &errors) ||
-       !XFixesQueryExtension(disp, &events, &errors) ||
-       !XRenderQueryExtension(disp, &events, &errors))
-     {
-	Conf_compmgr.mode = ECM_MODE_OFF;
-	goto done;
-     }
-
-   if (!XCompositeQueryVersion(disp, &major, &minor) ||
-       (major == 0 && minor < 2))
+   if (!XEXT_AVAILABLE(XEXT_CM_ALL))
      {
 	Conf_compmgr.mode = ECM_MODE_OFF;
 	goto done;

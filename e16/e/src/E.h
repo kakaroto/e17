@@ -43,6 +43,14 @@
 #include <X11/Xlib.h>
 #include <X11/extensions/shape.h>
 
+#ifdef HAS_XSYNC
+#define USE_XSYNC 1		/* Experimental */
+#endif
+
+#ifdef HAS_XSCREENSAVER
+#define USE_XSCREENSAVER 1	/* Experimental */
+#endif
+
 #ifdef HAS_XRANDR
 #ifdef HAVE_X11_EXTENSIONS_XRANDR_H
 #define USE_XRANDR 1
@@ -52,8 +60,6 @@
 #ifdef HAS_COMPOSITE
 #define USE_COMPOSITE 1
 #endif
-
-#define USE_XSYNC 0		/* Experimental */
 
 #include <Imlib2.h>
 
@@ -215,6 +221,19 @@ int                 Esnprintf(va_alist);
 #define EVENT_DOUBLE_DOWN 6
 #define EVENT_FOCUS_IN    7
 #define EVENT_FOCUS_OUT   8
+
+/* Server extensions */
+#define XEXT_SHAPE       0
+#define XEXT_SYNC        1
+#define XEXT_SCRSAVER    2
+#define XEXT_RANDR       3
+#define XEXT_COMPOSITE   4
+#define XEXT_DAMAGE      5
+#define XEXT_FIXES       6
+#define XEXT_RENDER      7
+#define XEXT_CM_ALL     16
+
+#define XEXT_AVAILABLE(ext)  (Mode.server.extensions & (1 << ext))
 
 /*
  * Types
@@ -489,6 +508,10 @@ typedef struct
       char                doing_manual;
       char                doing_slide;
    } place;
+   struct
+   {
+      unsigned int        extensions;
+   } server;
    struct
    {
       Pixmap              ext_pmap;

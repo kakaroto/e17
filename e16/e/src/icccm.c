@@ -31,6 +31,8 @@
 #include <X11/extensions/sync.h>
 #endif
 
+#undef USE_XSYNC		/* No - Not sure this is safe */
+
 static void         ICCCM_SetIconSizes(void);
 
 void

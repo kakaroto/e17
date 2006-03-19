@@ -30,6 +30,9 @@
 #if USE_XSYNC
 #include <X11/extensions/sync.h>
 #endif
+#if USE_XSCREENSAVER
+#include <X11/extensions/scrnsaver.h>
+#endif
 #if USE_XRANDR
 #include <X11/extensions/Xrandr.h>
 #endif
@@ -44,132 +47,161 @@
 static const char  *EventName(unsigned int type);
 #endif
 
-static int          event_base_shape = 0;
-static int          error_base_shape = 0;
+typedef struct
+{
+   int                 event_base, error_base;
+   int                 major, minor;
+} EServerExtData;
+
+typedef struct
+{
+   const char         *name;
+   unsigned int        ix;
+   int                 (*query_ext) (Display * dpy, int *event, int *error);
+   int                 (*query_ver) (Display * dpy, int *major, int *minor);
+   void                (*init) (int avaliable);
+} EServerExt;
+
+static EServerExtData ExtData[8];
+
+#define event_base_shape ExtData[XEXT_SHAPE].event_base
+#define event_base_randr ExtData[XEXT_RANDR].event_base
+#define event_base_damage ExtData[XEXT_DAMAGE].event_base
+
+static void
+ExtInitShape(int available)
+{
+   if (available)
+      return;
+
+   AlertX(_("X server setup error"), _("OK"), NULL, NULL,
+	  _("FATAL ERROR:\n" "\n"
+	    "This Xserver does not support the Shape extension.\n"
+	    "This is required for Enlightenment to run.\n" "\n"
+	    "Your Xserver probably is too old or mis-configured.\n" "\n"
+	    "Exiting.\n"));
+   EExit(1);
+}
 
 #if USE_XSYNC
-static int          event_base_sync = 0;
-static int          error_base_sync = 0;
+static void
+ExtInitSync(int available)
+{
+   if (!available)
+      return;
+
+   if (EventDebug(EDBUG_TYPE_VERBOSE))
+     {
+	int                 i, num;
+	XSyncSystemCounter *xssc;
+
+	xssc = XSyncListSystemCounters(disp, &num);
+	for (i = 0; i < num; i++)
+	  {
+	     Eprintf(" Sync counter %2d: %10s %#lx %#x:%#x\n", i,
+		     xssc[i].name, xssc[i].counter,
+		     XSyncValueHigh32(xssc[i].resolution),
+		     XSyncValueLow32(xssc[i].resolution));
+	  }
+     }
+}
+#endif
+
+#if USE_XSCREENSAVER
+static void
+ExtInitSS(int available)
+{
+   if (!available)
+      return;
+
+   if (EventDebug(EDBUG_TYPE_VERBOSE))
+     {
+	XScreenSaverInfo   *xssi = XScreenSaverAllocInfo();
+
+	XScreenSaverQueryInfo(disp, VRoot.win, xssi);
+	Eprintf(" Screen saver window=%#lx\n", xssi->window);
+	XFree(xssi);
+     }
+}
 #endif
 
 #if USE_XRANDR
-static int          event_base_randr = 0;
-static int          error_base_randr = 0;
+static void
+ExtInitRR(int available)
+{
+   if (!available)
+      return;
+
+   /* Listen for RandR events */
+   XRRSelectInput(disp, VRoot.win, RRScreenChangeNotifyMask);
+}
 #endif
 
+static const EServerExt Extensions[] = {
+   {"Shape", XEXT_SHAPE, XShapeQueryExtension, XShapeQueryVersion,
+    ExtInitShape},
+#if USE_XSYNC
+   {"Sync", XEXT_SYNC, XSyncQueryExtension, XSyncInitialize, ExtInitSync},
+#endif
+#if USE_XSCREENSAVER
+   {"ScrSaver", XEXT_SCRSAVER, XScreenSaverQueryExtension,
+    XScreenSaverQueryVersion, ExtInitSS},
+#endif
+#if USE_XRANDR
+   {"RandR", XEXT_RANDR, XRRQueryExtension, XRRQueryVersion, ExtInitRR},
+#endif
 #if USE_COMPOSITE
-static int          event_base_comp = 0;
-static int          error_base_comp = 0;
-static int          event_base_damage = 0;
-static int          error_base_damage = 0;
-static int          event_base_fixes = 0;
-static int          error_base_fixes = 0;
-static int          event_base_render = 0;
-static int          error_base_render = 0;
+   {"Composite", XEXT_COMPOSITE, XCompositeQueryExtension,
+    XCompositeQueryVersion, NULL},
+   {"Damage", XEXT_DAMAGE, XDamageQueryExtension, XDamageQueryVersion, NULL},
+   {"Fixes", XEXT_FIXES, XFixesQueryExtension, XFixesQueryVersion, NULL},
+   {"Render", XEXT_RENDER, XRenderQueryExtension, XRenderQueryVersion, NULL},
 #endif
-
-#define DOUBLE_CLICK_TIME 250	/* Milliseconds */
+};
 
 static void
-EventsExtensionShowInfo(const char *name, int major, int minor,
-			int event_base, int error_base)
+ExtQuery(const EServerExt * ext)
 {
-   if (EventDebug(EDBUG_TYPE_VERBOSE))
-      Eprintf("Found extension %-10s version %d.%d -"
-	      " Event/error base = %d/%d\n", name,
-	      major, minor, event_base, error_base);
+   int                 available;
+   EServerExtData     *exd = ExtData + ext->ix;
+
+   available = ext->query_ext(disp, &(exd->event_base), &(exd->error_base));
+
+   if (available)
+     {
+	Mode.server.extensions |= 1 << ext->ix;
+
+	ext->query_ver(disp, &(exd->major), &(exd->minor));
+
+	if (EventDebug(EDBUG_TYPE_VERBOSE))
+	   Eprintf("Found extension %-10s version %d.%d -"
+		   " Event/error base = %d/%d\n", ext->name,
+		   exd->major, exd->minor, exd->event_base, exd->error_base);
+     }
+
+   if (ext->init)
+      ext->init(available);
 }
+
+#define DOUBLE_CLICK_TIME 250	/* Milliseconds */
 
 void
 EventsInit(void)
 {
-   int                 major, minor;
+   unsigned int        i;
 
-   /* Check for the Shape Extension */
-   if (XShapeQueryExtension(disp, &event_base_shape, &error_base_shape))
-     {
-	XShapeQueryVersion(disp, &major, &minor);
-	EventsExtensionShowInfo("Shape", major, minor,
-				event_base_shape, error_base_shape);
-     }
-   else
-     {
-	AlertX(_("X server setup error"), "", "",
-	       _("Quit Enlightenment"),
-	       _("FATAL ERROR:\n" "\n"
-		 "This Xserver does not support the Shape extension.\n"
-		 "This is required for Enlightenment to run.\n" "\n"
-		 "Your Xserver probably is too old or mis-configured.\n" "\n"
-		 "Exiting.\n"));
-	EExit(1);
-     }
+   memset(ExtData, 0, sizeof(ExtData));
 
-#if USE_XSYNC
-   if (XSyncQueryExtension(disp, &event_base_sync, &error_base_sync))
-     {
-	XSyncInitialize(disp, &major, &minor);
-	EventsExtensionShowInfo("SYNC", major, minor,
-				event_base_sync, error_base_sync);
-
-#if 1				/* Debug */
-	{
-	   int                 i, num;
-	   XSyncSystemCounter *xssc;
-
-	   xssc = XSyncListSystemCounters(disp, &num);
-	   for (i = 0; i < num; i++)
-	     {
-		Eprintf("%2d: %10s %#lx %#x:%#x\n", i,
-			xssc[i].name,
-			xssc[i].counter,
-			XSyncValueHigh32(xssc[i].resolution),
-			XSyncValueLow32(xssc[i].resolution));
-	     }
-	}
-#endif
-     }
-#endif
-
-#if USE_XRANDR
-   if (XRRQueryExtension(disp, &event_base_randr, &error_base_randr))
-     {
-	XRRQueryVersion(disp, &major, &minor);
-	EventsExtensionShowInfo("RandR", major, minor,
-				event_base_randr, error_base_randr);
-
-	/* Listen for RandR events */
-	XRRSelectInput(disp, VRoot.win, RRScreenChangeNotifyMask);
-     }
-#endif
+   for (i = 0; i < sizeof(Extensions) / sizeof(EServerExt); i++)
+      ExtQuery(Extensions + i);
 
 #if USE_COMPOSITE
-   if (XCompositeQueryExtension(disp, &event_base_comp, &error_base_comp))
-     {
-	XCompositeQueryVersion(disp, &major, &minor);
-	EventsExtensionShowInfo("Composite", major, minor,
-				event_base_comp, error_base_comp);
-     }
-
-   if (XDamageQueryExtension(disp, &event_base_damage, &error_base_damage))
-     {
-	XDamageQueryVersion(disp, &major, &minor);
-	EventsExtensionShowInfo("Damage", major, minor,
-				event_base_damage, error_base_damage);
-     }
-
-   if (XFixesQueryExtension(disp, &event_base_fixes, &error_base_fixes))
-     {
-	XFixesQueryVersion(disp, &major, &minor);
-	EventsExtensionShowInfo("Fixes", major, minor,
-				event_base_fixes, error_base_fixes);
-     }
-
-   if (XRenderQueryExtension(disp, &event_base_render, &error_base_render))
-     {
-	XRenderQueryVersion(disp, &major, &minor);
-	EventsExtensionShowInfo("Render", major, minor,
-				event_base_render, error_base_render);
-     }
+#define XEXT_MASK_CM_ALL ((1 << XEXT_COMPOSITE) | (1 << XEXT_DAMAGE) | \
+                          (1 << XEXT_FIXES) | (1 << XEXT_RENDER))
+   if (((Mode.server.extensions & XEXT_MASK_CM_ALL) == XEXT_MASK_CM_ALL) &&
+       (ExtData[XEXT_COMPOSITE].major > 0 ||
+	ExtData[XEXT_COMPOSITE].minor >= 2))
+      Mode.server.extensions |= 1 << XEXT_CM_ALL;
 #endif
 }
 
