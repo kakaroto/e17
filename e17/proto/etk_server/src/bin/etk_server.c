@@ -61,23 +61,29 @@ int main(int argc, char **argv)
 	     char *end;
 	     char *args[64];
 	     void *(*func)(void *, ...);
-	     	     	     
-	     if(input[len -1] == '\n')
-	       input[len - 1] = '\0';	     
+	     	     	  	    	     
+	     //if(input[len - 1] == '\n')
+	     //  input[len - 1] = '\0';
 	     
-	     for(i = 0; i < strlen(input); i++)
-	       if(input[i] == ' ')
-		 ++spaces;
+	     for(i = 0; i < len; i++)
+	       {
+		  if(input[i] == ' ')
+		    ++spaces;
+		  if(input[i] == '\n')
+		    input[i] = '\0';
+		  if(input[i] == '\0' && i < len - 1)
+		    input[i] = ' ';
+	       }
 	     
 	     if(spaces == 0)
 	       {
 		  if((func = etk_server_function_exists(input)) != NULL)
 		    {
 		       void *ret = NULL;
-		       char varname[32];
-
+		       char varname[32];		       
+		       
 		       ret = func(NULL);
-
+		       
 		       if(ret != NULL && strncmp(input, "etk_server", 10))
 			 {
 			    snprintf(varname, sizeof(varname), "var%d", _etk_server_var_num);
@@ -98,9 +104,9 @@ int main(int argc, char **argv)
 			 }
 
 		       if(ret != NULL)
-			 fwrite(varname, sizeof(char), strlen(varname) + 1, fifo);
+			 fwrite(varname, sizeof(char), strlen(varname), fifo);
 		       else
-			 fwrite("\0", sizeof(char), strlen("\0") + 1, fifo);
+			 fwrite("\0", sizeof(char), strlen("\0"), fifo);
 
 		       fclose(fifo);
 		    }
@@ -121,7 +127,7 @@ int main(int argc, char **argv)
 	     state = laststate = out;
 	     start = end = &input[0];
 
-	     for(i = 0; i <= strlen(input); i++)
+	     for(i = 0; i <= len; i++)
 	       {
 		  if(input[i] == '\0')
 		    {
@@ -230,15 +236,17 @@ int main(int argc, char **argv)
 		    }
 
 		  if(ret != NULL)
-		    fwrite(varname, sizeof(char), strlen(varname) + 1, fifo);
+		    fwrite(varname, sizeof(char), strlen(varname), fifo);
 		  else
-		    fwrite("\0", sizeof(char), strlen("\0") + 1, fifo);
+		    fwrite("\0", sizeof(char), strlen("\0"), fifo);
 
 		  fclose(fifo);
 	       }
 	     else	       
 	       fclose(fifo);	       
 	  }
+	else
+	  fprintf(stderr, "etk_server error: cant read from fifo!\n");
      }
 
    return 0;
@@ -311,8 +319,8 @@ static void *etk_server_function_exists(char *func_name)
 	func = dlsym(handle_self, func_name);
 	if(!func)
 	  return NULL;
-     }
-
+     }   
+   
    return func;
 }
 
