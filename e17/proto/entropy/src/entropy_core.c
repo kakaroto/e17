@@ -334,8 +334,13 @@ entropy_core* entropy_core_init(int argc, char** argv) {
 	return core;
 }
 
-void entropy_core_mime_action_add(char* mime_type, char* action) {
-	entropy_mime_action* action_o;
+void entropy_core_mime_action_add(char* mime_type, char* desc) 
+{
+	Entropy_Config_Mime_Binding* binding;
+	Evas_List* l;
+	int found = 0;
+	
+	/*entropy_mime_action* action_o;
 	
 	if ( ! (action_o = ecore_hash_get  (core_core->mime_action_hint, mime_type))) {
 			action_o = entropy_malloc(sizeof(entropy_mime_action));
@@ -344,10 +349,34 @@ void entropy_core_mime_action_add(char* mime_type, char* action) {
 	} else {
 			free(action_o->executable);
 			action_o->executable = strdup(action);
+	}*/
+
+	for (l = core_core->config->Config_Mimes->mime_bindings; l; ) {
+		binding = l->data;
+
+		/*If this exists, change the desc to whatever they say*/
+		if (!strcmp(binding->mime_type, mime_type)) {
+			found = 1;
+			binding->desc = strdup(desc);
+		}
+		
+		l = l->next;
 	}
+
+	/*IF not found, make a new one*/
+	if (!found) {
+		binding = calloc(1,sizeof(Entropy_Config_Mime_Binding));
+		binding->mime_type = strdup(mime_type);
+		binding->desc = strdup(desc);
+		core_core->config->Config_Mimes->mime_bindings = 
+			evas_list_append(core_core->config->Config_Mimes->mime_bindings, binding);
+	}
+
+	
 }
 
-void entropy_core_config_load() {
+void entropy_core_config_load() 
+{
 	int count, new_count;
 	Ecore_List* mime_type_actions;
 	char* key;
@@ -509,6 +538,10 @@ void entropy_core_destroy(entropy_core* core) {
 	char* key;
 
 	//printf("Destroying config subsystem...\n");
+	/*Save the config*/
+	entropy_core_config_save();
+
+	entropy_config_destroy(core->config);
 
 
 	/*Destroy the notification engines*/
@@ -563,12 +596,6 @@ void entropy_core_destroy(entropy_core* core) {
 
 	/*Destroy the plugins*/
 	/*Destroy the eLists/eHashes*/
-
-
-	/*Save the config*/
-	entropy_core_config_save();
-
-	entropy_config_destroy(core->config);
 
 }
 

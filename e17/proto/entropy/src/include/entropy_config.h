@@ -6,6 +6,7 @@
 #include <Evas.h>
 
 struct Entropy_Config_Mime_Binding {
+	char* desc;
 	char* mime_type;
 	Evas_List* actions;
 };
@@ -47,8 +48,8 @@ entropy_config_standard_structures_parse (entropy_gui_component_instance * insta
 void
 entropy_config_standard_structures_add (entropy_gui_component_instance *
        instance, char *name, char *uri);
-void
-entropy_config_standard_structures_create ();
+void entropy_config_standard_structures_create ();
+void entropy_config_eet_config_save();
 
 
 #define ENTROPY_CONFIG_INT_UNDEFINED 65535

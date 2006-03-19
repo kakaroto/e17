@@ -5,7 +5,7 @@ static int _etk_mime_dialog_displayed = 0;
 static Etk_Widget* mime_dialog_window;
 static Etk_Widget* mime_dialog_add_edit_window;
 static	Etk_Widget* etk_mime_mime_entry;
-static	Etk_Widget* etk_mime_program_entry;
+static	Etk_Widget* etk_mime_desc_entry;
 static Etk_Widget* _etk_mime_dialog_main_tree = NULL;
 static Etk_Widget* _etk_mime_dialog_sub_tree = NULL;
 
@@ -22,6 +22,9 @@ _etk_window_deleted_cb (Etk_Object * object, void *data)
 {
 	_etk_mime_dialog_displayed = 0;
 	etk_object_destroy(ETK_OBJECT(mime_dialog_window));
+
+	/*Save the config*/
+	entropy_config_eet_config_save()
 
 	return ETK_TRUE;
 }
@@ -80,9 +83,9 @@ void _entropy_etk_mime_dialog_add_edit_cancel_cb(Etk_Object* w, void* user_data)
 void _entropy_etk_mime_dialog_add_edit_final_cb(Etk_Object* w, void* user_data)
 {
 	const char *type_text = etk_entry_text_get(ETK_ENTRY(etk_mime_mime_entry));
-	const char *action_text = etk_entry_text_get(ETK_ENTRY(etk_mime_program_entry));
+	const char *desc_text = etk_entry_text_get(ETK_ENTRY(etk_mime_desc_entry));
 
-	entropy_core_mime_action_add((char*)type_text, (char*)action_text);
+	entropy_core_mime_action_add((char*)type_text, (char*)desc_text);
 
 	etk_object_destroy(ETK_OBJECT(mime_dialog_add_edit_window));
 	mime_dialog_add_edit_window= NULL;
@@ -114,7 +117,7 @@ void etk_mime_dialog_tree_populate()
 		binding = l->data;
 
 		row = etk_tree_append(ETK_TREE(tree), 
-		  col1, "Description", 
+		  col1, binding->desc, 
 		  col2,  binding->mime_type,
 		  NULL);
 		etk_tree_row_data_set(row, (int*)i);
@@ -153,14 +156,14 @@ void etk_mime_dialog_add_edit_create(char* mime, char* program) {
 				0,0,
 				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
 
-	label = etk_label_new("Program");
+	label = etk_label_new("Description");
 	etk_table_attach(ETK_TABLE(table), label,0,0,1,1,
 				0,0,
 				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
 
-	etk_mime_program_entry = etk_entry_new();
-	if (program) etk_entry_text_set(ETK_ENTRY(etk_mime_program_entry), program);	
-	etk_table_attach(ETK_TABLE(table), etk_mime_program_entry,1,1,1,1,
+	etk_mime_desc_entry = etk_entry_new();
+	if (program) etk_entry_text_set(ETK_ENTRY(etk_mime_desc_entry), program);	
+	etk_table_attach(ETK_TABLE(table), etk_mime_desc_entry,1,1,1,1,
 				0,0,
 				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
 
@@ -192,7 +195,7 @@ void etk_mime_dialog_add_edit_create(char* mime, char* program) {
                 printf("Setting mime to '%s'...\n", mime);
                 etk_entry_text_set(ETK_ENTRY(etk_mime_mime_entry), mime);
         }
-        if (program) etk_entry_text_set(ETK_ENTRY(etk_mime_program_entry), program);
+        if (program) etk_entry_text_set(ETK_ENTRY(etk_mime_desc_entry), program);
 
 }
 
@@ -275,14 +278,14 @@ void etk_mime_dialog_create()
 
 	button = etk_button_new_with_label("Add New Type");
 	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
-	//etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(_entropy_etk_mime_dialog_edit_cb), NULL);
+	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(_entropy_etk_mime_dialog_add_cb), NULL);
 
 	button = etk_button_new_with_label("Remove Selected Type");
 	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
 
 	/*button = etk_button_new_with_label("Add New..");
-	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
-	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(_entropy_etk_mime_dialog_add_cb), NULL);*/
+	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);*/
+	
 
 
 	/*Build the sub-tree*/

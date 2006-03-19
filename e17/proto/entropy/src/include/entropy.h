@@ -101,7 +101,7 @@ void* entropy_malloc(size_t);
 void entropy_free(void* ref);
 char* entropy_core_descent_for_mime_get(entropy_core*, char*);
 Entropy_Config_Mime_Binding_Action* entropy_core_mime_hint_get(char* mime_type, int key);
-void entropy_core_mime_action_add(char* mime_type, char* action);
+void entropy_core_mime_action_add(char* mime_type, char* desc);
 
 /*Object Assocation*/
 void entropy_core_object_file_associate(void* object, entropy_generic_file* file);

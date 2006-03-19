@@ -124,8 +124,7 @@ ewl_list_file_copy_cb (Ewl_Widget * w, void *ev_data, void *user_data)
 
   //printf("Copy files to clipboard..\n");
 
-  //FIXME
-  //icon_list = ewl_list_get_selection( EWL_ICONBOX(((entropy_icon_viewer*)instance->data)->list) );
+  icon_list = ewl_tree_selected_get( EWL_TREE(((entropy_icon_viewer*)instance->data)->list) );
 
   ecore_list_goto_first (icon_list);
   while ((list_item = ecore_list_next (icon_list))) {
@@ -403,8 +402,7 @@ ewl_icon_local_viewer_delete_selected (entropy_gui_component_instance *
 
 
   //////////////////////
-  //FIXME
-  //icon_list = ewl_list_get_selection(EWL_ICONBOX(ib) );
+  icon_list = ewl_tree_selected_get(EWL_TREE(viewer->list) );
 
   ecore_list_goto_first (icon_list);
   while ((list_item = ecore_list_next (icon_list))) {
@@ -444,9 +442,6 @@ ewl_icon_local_viewer_delete_selected (entropy_gui_component_instance *
 void
 ewl_icon_local_viewer_key_event_cb (Ewl_Iconbox * ib, void *data, char *key)
 {
-  entropy_icon_viewer *viewer =
-    ((entropy_gui_component_instance *) data)->data;
-
   printf ("Received controlled key: '%s'\n", key);
 
   if (!strcmp (key, "Delete")) {
@@ -574,10 +569,6 @@ ewl_icon_local_viewer_add_icon (entropy_gui_component_instance * comp,
   entropy_icon_viewer *view = comp->data;
   Ewl_Widget *text[6];
   char buf[50];
-  Ewl_Widget *image;
-  Ewl_Widget *filename;
-  Ewl_Widget *size;
-  Ewl_Widget **mod_time;
 
 
   Ewl_Widget *icon;
@@ -953,9 +944,9 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *ret,
 
       if (view->progress->progress_window) {
 	ewl_text_text_set (EWL_TEXT (view->progress->file_from),
-			   progress->file_from);
+			   progress->file_from->filename);
 	ewl_text_text_set (EWL_TEXT (view->progress->file_to),
-			   progress->file_to);
+			   progress->file_to->filename);
 	ewl_progressbar_value_set (EWL_PROGRESSBAR
 				   (view->progress->progressbar),
 				   progress->progress);

@@ -143,7 +143,6 @@ evfs_filesystem* filesystem_init_and_add(char* name, char* uri, evfs_filesystem_
 }
 
 static void location_add_initialise() {
-	evfs_filesystem* filesystem;
 	entropy_evfs_filesystems = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 	
 	
@@ -162,15 +161,11 @@ void etk_location_add_dialog_create(entropy_gui_component_instance* instance,
 	Ecore_List* filesystems;
 	evfs_filesystem* system;
 	char* key;
-	Etk_Widget* vbox;
 	Etk_Widget* dialog_button;
 	Etk_Widget* hbox;
 	Etk_Widget* outer_vbox;
-	Etk_Widget* table;
-	Evas_List* button_group = NULL;
 	Etk_Widget* first_button =  NULL;
 
-	Etk_Widget* entry;
 	Etk_Widget* label;
 
 	entropy_etk_location_add_dialog* dialog = 

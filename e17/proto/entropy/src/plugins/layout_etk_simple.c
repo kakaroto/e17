@@ -360,7 +360,7 @@ entropy_plugin_layout_create (entropy_core * core)
   etk_tree_col_expand_set(col, ETK_TRUE);
   etk_tree_build(ETK_TREE(gui->tree));
 
-  etk_widget_size_request_set(gui->tree, 180, 600);
+  etk_widget_size_request_set(gui->tree, 230, 600);
 
   /*Popup init*/
    gui->popup = etk_menu_new();

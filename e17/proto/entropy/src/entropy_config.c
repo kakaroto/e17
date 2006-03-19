@@ -97,8 +97,13 @@ entropy_config_binding_action_new(char* description, char* executable, char* arg
 
 Entropy_Config* entropy_config_init(entropy_core* core) {
 	struct stat config_dir_stat;
+	struct stat eetstat;
 	int i;
 	Eet_File* conf_file;
+	char* data;
+	int size_ret;
+	int ok;
+
 	Entropy_Config_Mime* mimes = calloc(1,sizeof(Entropy_Config_Mime));
 
 	
@@ -169,6 +174,8 @@ Entropy_Config* entropy_config_init(entropy_core* core) {
 
 	EET_DATA_DESCRIPTOR_ADD_BASIC(_entropy_config_mime_binding_edd, Entropy_Config_Mime_Binding,
                                  "mime_type", mime_type, EET_T_STRING);
+	EET_DATA_DESCRIPTOR_ADD_BASIC(_entropy_config_mime_binding_edd, Entropy_Config_Mime_Binding,
+                                 "description", desc, EET_T_STRING);
 	EET_DATA_DESCRIPTOR_ADD_LIST(_entropy_config_mime_binding_edd, Entropy_Config_Mime_Binding, "actions", actions, 
 				_entropy_config_mime_binding_action_edd);
 
@@ -192,106 +199,108 @@ Entropy_Config* entropy_config_init(entropy_core* core) {
 
 
 
+	/*Check for existence of eet file*/
+	//Does the config dir exist?
+	if (stat(_Entropy_Config->config_dir_and_file_eet, &eetstat)) {
+		//Make the dir..
+		mimes->mime_bindings = evas_list_append(mimes->mime_bindings, 
+				entropy_config_binding_new("image/jpeg",
+					entropy_config_binding_action_new("Exhibit (Single File)", "exhibit", "\%pf"),
+					entropy_config_binding_action_new("Exhibit (Directory)", "exhibit", "\%p"),
+					NULL
+					));
+		mimes->mime_bindings = evas_list_append(mimes->mime_bindings, 
+				entropy_config_binding_new("image/png",
+					entropy_config_binding_action_new("Exhibit (Single File)", "exhibit", "\%pf"),
+					entropy_config_binding_action_new("Exhibit (Directory)", "exhibit", "\%p"),
+					NULL
+					));
+
+		mimes->mime_bindings = evas_list_append(mimes->mime_bindings, 
+				entropy_config_binding_new("image/gif",
+					entropy_config_binding_action_new("Exhibit (Single File)", "exhibit", "\%pf"),
+					entropy_config_binding_action_new("Exhibit (Directory)", "exhibit", "\%p"),
+					NULL
+					));
+
+		mimes->mime_bindings = evas_list_append(mimes->mime_bindings, 
+				entropy_config_binding_new("text/csrc",
+					entropy_config_binding_action_new("Gvim", "gvim", "\%pf"),
+					NULL
+					));
+
+		mimes->mime_bindings = evas_list_append(mimes->mime_bindings, 
+				entropy_config_binding_new("text/html",
+					entropy_config_binding_action_new("Firefox", "firefox", "\%pf"),
+					NULL
+					));
+
+		mimes->mime_bindings = evas_list_append(mimes->mime_bindings, 
+				entropy_config_binding_new("audio/x-mp3",
+					entropy_config_binding_action_new("Xmms", "xmms", "\%pf"),
+					entropy_config_binding_action_new("Mpg123 (via eVFS)", "evfscat \"%u\" | mpg123 -", ""),
+					NULL
+					));
+
+		mimes->mime_bindings = evas_list_append(mimes->mime_bindings, 
+				entropy_config_binding_new("video/x-ms-wmv",
+					entropy_config_binding_action_new("MPlayer", "mplayer", "\%pf"),
+					entropy_config_binding_action_new("MPlayer (via evfs)", "evfscat \"%u\" | mplayer -cache 4096 -", ""),
+					entropy_config_binding_action_new("Xine", "xine", "%pf"),
+					NULL
+					));
+
+		mimes->mime_bindings = evas_list_append(mimes->mime_bindings, 
+				entropy_config_binding_new("video/mpeg",
+					entropy_config_binding_action_new("MPlayer", "mplayer", "\%pf"),
+					entropy_config_binding_action_new("MPlayer (via evfs)", "evfscat \"%u\" | mplayer -cache 4096 -", ""),
+					entropy_config_binding_action_new("Xine", "xine", "%pf"),
+					NULL
+					));
+
+		mimes->mime_bindings = evas_list_append(mimes->mime_bindings, 
+				entropy_config_binding_new("video/x-msvideo",
+					entropy_config_binding_action_new("MPlayer", "mplayer", "\%pf"),
+					entropy_config_binding_action_new("MPlayer (via evfs)", "evfscat \"%u\" | mplayer -cache 4096 -", ""),
+					entropy_config_binding_action_new("Xine", "xine", "%pf"),
+					NULL
+					));
+
+	        /*ecore_list_append(mime_type_actions, "application/msword:abiword");
+	        ecore_list_append(mime_type_actions, "application/vnd.ms-excel:gnumeric");*/
+	
+	
+		conf_file = eet_open(_Entropy_Config->config_dir_and_file_eet, EET_FILE_MODE_WRITE);
+		if (conf_file) {
+			printf("Conf file loaded to: %p\n", conf_file);
+	
+			data = eet_data_descriptor_encode(_entropy_config_mimes_edd, mimes, &size_ret);
+			
+			printf("Write data: %p\n", data);
+			
+			if ( !(ok = eet_write(conf_file, "/config_action", data, 
+		       		size_ret, 0))) {
+				printf("Error writing data!\n");
+				
+			}
+					
+			free(data);
+			eet_close(conf_file);
+		}
+	}
 
 
-	mimes->mime_bindings = evas_list_append(mimes->mime_bindings, 
-			entropy_config_binding_new("image/jpeg",
-				entropy_config_binding_action_new("Exhibit (Single File)", "exhibit", "\%pf"),
-				entropy_config_binding_action_new("Exhibit (Directory)", "exhibit", "\%p"),
-				NULL
-				));
-	mimes->mime_bindings = evas_list_append(mimes->mime_bindings, 
-			entropy_config_binding_new("image/png",
-				entropy_config_binding_action_new("Exhibit (Single File)", "exhibit", "\%pf"),
-				entropy_config_binding_action_new("Exhibit (Directory)", "exhibit", "\%p"),
-				NULL
-				));
-
-	mimes->mime_bindings = evas_list_append(mimes->mime_bindings, 
-			entropy_config_binding_new("image/gif",
-				entropy_config_binding_action_new("Exhibit (Single File)", "exhibit", "\%pf"),
-				entropy_config_binding_action_new("Exhibit (Directory)", "exhibit", "\%p"),
-				NULL
-				));
-
-	mimes->mime_bindings = evas_list_append(mimes->mime_bindings, 
-			entropy_config_binding_new("text/csrc",
-				entropy_config_binding_action_new("Gvim", "gvim", "\%pf"),
-				NULL
-				));
-
-	mimes->mime_bindings = evas_list_append(mimes->mime_bindings, 
-			entropy_config_binding_new("text/html",
-				entropy_config_binding_action_new("Firefox", "firefox", "\%pf"),
-				NULL
-				));
-
-	mimes->mime_bindings = evas_list_append(mimes->mime_bindings, 
-			entropy_config_binding_new("audio/x-mp3",
-				entropy_config_binding_action_new("Xmms", "xmms", "\%pf"),
-				entropy_config_binding_action_new("Mpg123 (via eVFS)", "evfscat \"%u\" | mpg123 -", ""),
-				NULL
-				));
-
-	mimes->mime_bindings = evas_list_append(mimes->mime_bindings, 
-			entropy_config_binding_new("video/x-ms-wmv",
-				entropy_config_binding_action_new("MPlayer", "mplayer", "\%pf"),
-				entropy_config_binding_action_new("MPlayer (via evfs)", "evfscat \"%u\" | mplayer -cache 4096 -", ""),
-				entropy_config_binding_action_new("Xine", "xine", "%pf"),
-				NULL
-				));
-
-	mimes->mime_bindings = evas_list_append(mimes->mime_bindings, 
-			entropy_config_binding_new("video/mpeg",
-				entropy_config_binding_action_new("MPlayer", "mplayer", "\%pf"),
-				entropy_config_binding_action_new("MPlayer (via evfs)", "evfscat \"%u\" | mplayer -cache 4096 -", ""),
-				entropy_config_binding_action_new("Xine", "xine", "%pf"),
-				NULL
-				));
-
-	mimes->mime_bindings = evas_list_append(mimes->mime_bindings, 
-			entropy_config_binding_new("video/x-msvideo",
-				entropy_config_binding_action_new("MPlayer", "mplayer", "\%pf"),
-				entropy_config_binding_action_new("MPlayer (via evfs)", "evfscat \"%u\" | mplayer -cache 4096 -", ""),
-				entropy_config_binding_action_new("Xine", "xine", "%pf"),
-				NULL
-				));
-
-        /*ecore_list_append(mime_type_actions, "application/msword:abiword");
-        ecore_list_append(mime_type_actions, "application/vnd.ms-excel:gnumeric");*/
 
 	
-	conf_file = eet_open(_Entropy_Config->config_dir_and_file_eet, EET_FILE_MODE_WRITE);
+	/*Load the eet config*/
+	conf_file = eet_open(_Entropy_Config->config_dir_and_file_eet, EET_FILE_MODE_READ);
 	if (conf_file) {
-		char* data;
-		int size_ret;
-		int ok;
-			
-		printf("Conf file loaded to: %p\n", conf_file);
-
-		data =
-	        eet_data_descriptor_encode(_entropy_config_mimes_edd, mimes, &size_ret);
-		
-		printf("Write data: %p\n", data);
-		
-		if ( !(ok = eet_write(conf_file, "/config_action", data, 
-	       		size_ret, 0))) {
-			printf("Error writing data!\n");
-			
-		}
-					
-		free(data);
-		eet_close(conf_file);
-
-		conf_file = eet_open(_Entropy_Config->config_dir_and_file_eet, EET_FILE_MODE_READ);
-			
-
 		data = eet_read(conf_file, "/config_action", &size_ret);
-		printf("Data is %p\n", data);
-			
 		_Entropy_Config->Config_Mimes = eet_data_descriptor_decode(_entropy_config_mimes_edd, data, size_ret);
-
 	}
+	/*------*/
+
+
 
 	/*Print them out..*/
 	entropy_config_mimes_print(_Entropy_Config->Config_Mimes);
@@ -352,12 +361,37 @@ void entropy_config_str_set(char* module, char* key, char* value) {
 }
 
 
+void entropy_config_eet_config_save()
+{
+	Eet_File* conf_file;
+	char* data;
+	int size_ret;
+	int ok;
+	Entropy_Config* config;
 
-void entropy_config_destroy(Entropy_Config* config) {
-	//printf("Saving config to '%s'\n", config->config_dir_and_file);
-	ecore_config_file_save(config->config_dir_and_file);
+	config = entropy_core_get_core()->config;
 	
-	//printf("STUB\n");
+	
+	conf_file = eet_open(config->config_dir_and_file_eet, EET_FILE_MODE_WRITE);
+	if (conf_file) {
+		data = eet_data_descriptor_encode(_entropy_config_mimes_edd, config->Config_Mimes, &size_ret);
+		if ( !(ok = eet_write(conf_file, "/config_action", data, 
+	       		size_ret, 0))) {
+			printf("Error writing data!\n");
+			
+		}
+		free(data);
+		eet_close(conf_file);
+	}
+}
+	
+
+void entropy_config_destroy(Entropy_Config* config)
+{
+	entropy_config_eet_config_save();
+	
+	ecore_config_file_save(config->config_dir_and_file);
+
 }
 
 
