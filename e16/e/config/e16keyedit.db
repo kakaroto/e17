@@ -68,12 +68,12 @@
 "Set Window layer to Normal", 0, "wop * layer 4"
 "Set Window layer to Below", 0, "wop * layer 2"
 "Set Window layer", 1, "wop * layer "
-"Move Window to area on left", 0, "wop * area move -1 0"	# FIXME - Doesn't work
-"Move Window to area on right", 0, "wop * area move 1 0"	# FIXME - Doesn't work
-"Move Window to area above", 0, "wop * area move 0 -1"		# FIXME - Doesn't work
-"Move Window to area below", 0, "wop * area move 0 1"		# FIXME - Doesn't work
-"Move Window by area [X Y]", 1, "wop * area move "		# FIXME - Doesn't work
-"Move Window to area [X Y]", 1, "wop * area "			# FIXME - Doesn't work
+"Move Window to area on left", 0, "wop * area move -1 0"
+"Move Window to area on right", 0, "wop * area move 1 0"
+"Move Window to area above", 0, "wop * area move 0 -1"
+"Move Window to area below", 0, "wop * area move 0 1"
+"Move Window by area [X Y]", 1, "wop * area move "
+"Move Window to area [X Y]", 1, "wop * area "
 
 "Set Window border style to the Default", 0, "wop * border DEFAULT"
 "Set Window border style to the Borderless", 0, "wop * border BORDERLESS"

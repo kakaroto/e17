@@ -539,8 +539,16 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	  {
 	     IpcPrintf("window area: %d %d", ewin->area_x, ewin->area_y);
 	  }
+	else if (!strcmp(param1, "move"))
+	  {
+	     a = b = 0;
+	     sscanf(params, "%*s %*s %*s %i %i", &a, &b);
+	     EwinMoveToArea(ewin, ewin->area_x + a, ewin->area_y + b);
+	  }
 	else
 	  {
+	     a = ewin->area_x;
+	     b = ewin->area_y;
 	     sscanf(params, "%*s %*s %i %i", &a, &b);
 	     EwinMoveToArea(ewin, a, b);
 	  }
