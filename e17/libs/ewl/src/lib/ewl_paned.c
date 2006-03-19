@@ -3,27 +3,39 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
-static void ewl_paned_grabber_cb_mouse_down(Ewl_Widget *w, void *ev, 
+typedef struct 
+{
+	int (*minimum_size)(Ewl_Object *o);
+	int (*current_size)(Ewl_Object *o);
+	int (*preferred_size)(Ewl_Object *o);
+	int (*current_position)(Ewl_Object *o);
+
+	void (*variable_request)(Ewl_Object *o, int size);
+	void (*stable_request)(Ewl_Object *o, int size);
+	void (*position_request)(Ewl_Object *o, int pos);
+	void (*stable_position_request)(Ewl_Object *o, int pos);
+} Ewl_Paned_Layout;
+
+static Ewl_Paned_Layout *horizontal_layout = NULL;
+static Ewl_Paned_Layout *vertical_layout = NULL;
+static Ewl_Paned_Layout *layout = NULL;
+
+static void ewl_paned_grabber_cb_mouse_down(Ewl_Widget *w, void *ev,
 							void *data);
-static void ewl_paned_grabber_cb_mouse_up(Ewl_Widget *w, void *ev, 
+static void ewl_paned_grabber_cb_mouse_up(Ewl_Widget *w, void *ev,
 							void *data);
-static void ewl_paned_grabber_cb_mouse_move(Ewl_Widget *w, void *ev, 
+static void ewl_paned_grabber_cb_mouse_move(Ewl_Widget *w, void *ev,
 							void *data);
 
-static void ewl_paned_configure_horizontal(Ewl_Paned *p);
-static void ewl_paned_configure_vertical(Ewl_Paned *p);
-
-static void ewl_paned_grabber_horizontal_shift(Ewl_Paned *p, 
-					Ewl_Widget *w, int to);
-static void ewl_paned_grabber_vertical_shift(Ewl_Paned *p, 
-					Ewl_Widget *w, int to);
+static void ewl_paned_grabbers_update(Ewl_Paned *p);
+static void ewl_paned_layout_setup(void);
 
 /**
  * @return Returns NULL on failure, or a pointer to a new paned widget on success.
  * @brief Allocate and initialize a new paned widget
  */
 Ewl_Widget *
-ewl_paned_new(void) 
+ewl_paned_new(void)
 {
 	Ewl_Paned *pane;
 
@@ -33,18 +45,17 @@ ewl_paned_new(void)
 	if (!pane)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	if (!ewl_paned_init(pane)) {
+	if (!ewl_paned_init(pane)) 
+	{
 		ewl_widget_destroy(EWL_WIDGET(pane));
 		pane = NULL;
 	}
-
 	DRETURN_PTR(pane, DLEVEL_STABLE);
 }
 
 /**
  * @return Returns NULL on failure, or a pointer to a new paned widget on success.
- * @brief Allocate and initialize a new paned widget with horizontal orientation
- */
+ * @brief Allocate and initialize a new paned widget with horizontal orientation */
 Ewl_Widget *
 ewl_hpaned_new(void)
 {
@@ -66,7 +77,8 @@ ewl_vpaned_new(void)
 
 	pane = ewl_paned_new();
 	if (pane)
-		EWL_PANED(pane)->orientation = EWL_ORIENTATION_VERTICAL;
+		ewl_paned_orientation_set(EWL_PANED(pane), 
+						EWL_ORIENTATION_VERTICAL);
 
 	DRETURN_PTR(pane, DLEVEL_STABLE);
 }
@@ -86,14 +98,16 @@ ewl_paned_init(Ewl_Paned *p)
 
 	w = EWL_WIDGET(p);
 
-	if (!ewl_container_init(EWL_CONTAINER(p))) 
+	if (!ewl_container_init(EWL_CONTAINER(p)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	if (!horizontal_layout)
+		ewl_paned_layout_setup();
 
 	ewl_widget_appearance_set(w, EWL_PANED_TYPE);
 	ewl_widget_inherit(w, EWL_PANED_TYPE);
-	
-	p->orientation = EWL_ORIENTATION_HORIZONTAL;
 
+	p->orientation = EWL_ORIENTATION_HORIZONTAL;
 	ewl_container_add_notify_set(EWL_CONTAINER(p),
 					ewl_paned_cb_child_add);
 	ewl_container_remove_notify_set(EWL_CONTAINER(p),
@@ -107,7 +121,6 @@ ewl_paned_init(Ewl_Paned *p)
 				ewl_paned_cb_configure, NULL);
 
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
-
 	ewl_widget_focusable_set(w, FALSE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -119,7 +132,7 @@ ewl_paned_init(Ewl_Paned *p)
  * @return Returns no value.
  * @brief Set the orientation of the paned widget
  */
-void 
+void
 ewl_paned_orientation_set(Ewl_Paned *p, Ewl_Orientation o)
 {
 	Ewl_Widget *child;
@@ -131,15 +144,18 @@ ewl_paned_orientation_set(Ewl_Paned *p, Ewl_Orientation o)
 	if (p->orientation == o)
 		DRETURN(DLEVEL_STABLE);
 
+	p->orientation = o;
+
+	/* loop over all the children and change the orientation of all
+ 	 * of the internal widgets, which should be the grabbers */
 	ecore_dlist_goto_first(EWL_CONTAINER(p)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(p)->children)))
 	{
-		/* Update each internal child to have the correct
-		 * appearance/orientation. */
 		if (ewl_widget_internal_is(child))
 			ewl_paned_grabber_paned_orientation_set(
 					EWL_PANED_GRABBER(child), o);
 	}
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -171,37 +187,26 @@ ewl_paned_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	/* if this is an internal widget then we skip it as I'm assuming
-	 * that everything internal is a grabber. Or, if there is only one
-	 * element in the container we don't need a grabber */
-	if ((ewl_widget_internal_is(w)) 
-			|| (ewl_container_child_count_get(c) == 1))
+	 * that everything internal is a grabber. */
+	if (ewl_widget_internal_is(w))
 		DRETURN(DLEVEL_STABLE);
 
-	/* create the required grabber */
 	o = ewl_paned_grabber_new();
 	ewl_paned_grabber_paned_orientation_set(EWL_PANED_GRABBER(o),
-					EWL_PANED(c)->orientation);
+				ewl_paned_orientation_get(EWL_PANED(c)));
 
 	idx = ewl_container_child_index_get(c, w);
 	ewl_container_child_insert(c, o, idx);
 
-	/* only show the grabber if the widget is visible */
-	if (VISIBLE(w))
-		ewl_widget_show(o);
+	ewl_paned_grabbers_update(EWL_PANED(c));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/* The widget will already have been removed from the container. So,
- * we have to take a look at the first child and see if it's
- * internal, if so, remove it and done. Otherwise we have to walk the
- * children and look for 2 internals beside each other and remove
- * one of them. If that isnt' found and the last widget is internal
- * then remove that. */
 void
-ewl_paned_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
+ewl_paned_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx)
 {
-	Ewl_Widget *child, *prev = NULL, *last = NULL;
+	Ewl_Widget *o;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
@@ -209,42 +214,16 @@ ewl_paned_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
 	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	/* check first widget */
-	child = ecore_dlist_goto_first(c->children);
-
-	/* if there are no children remaining in the container we're done */
-	if (!child) 
+	/* grabbers are internal, do nothing if we're removing one 
+	 * of them */
+	if (ewl_widget_internal_is(w))
 		DRETURN(DLEVEL_STABLE);
 
-	/* try to find the node to remove */
-	while ((child = ecore_dlist_current(c->children)))
-	{
-		if (ewl_widget_internal_is(child))
-		{
-			/* the widget before us was internal so we can
-			 * remove one of them */
-			if (prev)
-			{
-				ecore_dlist_remove(c->children);
-				last = NULL;
-				break;
-			}
-			else
-				prev = child;
-		}
-		else
-			prev = NULL;
+	o = ewl_container_child_get(c, idx);
+	ewl_container_child_remove(c, o);
 
-		last = child;
-		ecore_dlist_next(c->children);
-	}
+	ewl_paned_grabbers_update(EWL_PANED(c));
 
-	/* the last widget was internal we need to remove it */
-	if (last && ewl_widget_internal_is(last))
-	{
-		ecore_dlist_goto(c->children, last);
-		ecore_dlist_remove(c->children);
-	}
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -252,7 +231,6 @@ void
 ewl_paned_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 {
 	int cw, ch, ww, wh;
-	Ewl_Widget *cur, *prev = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
@@ -263,43 +241,19 @@ ewl_paned_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 	ewl_object_preferred_size_get(EWL_OBJECT(w), &ww, &wh);
 	ewl_object_preferred_inner_size_get(EWL_OBJECT(c), &cw, &ch);
 
-	/* increase the containers perferred width by the preferred width of
-	 * the shown widget (including the grabbers */
-	if (EWL_PANED(c)->orientation == EWL_ORIENTATION_HORIZONTAL) {
+	if (EWL_ORIENTATION_HORIZONTAL == EWL_PANED(c)->orientation)
+	{
 		cw += ww;
 		if (wh > ch) ch = wh;
 	}
-	else {
-		if (ww > cw) cw = ww;
+	else
+	{
 		ch += wh;
+		if (ww > cw) cw = ww;
 	}
 
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(c), cw, ch);
-
-	/* don't do anything for the internal widgets */
-	if (ewl_widget_internal_is(w)) 
-		DRETURN(DLEVEL_STABLE);
-
-	/* show the grabber */
-	ecore_dlist_goto_first(c->children);
-	while ((cur = ecore_dlist_next(c->children)))
-	{
-		if (cur == w)
-		{
-			/* prev was visible so we need to make the next
-			 * visible */
-			if (!prev || VISIBLE(prev))
-			{
-				prev = ecore_dlist_next(c->children);
-				if (prev) ewl_widget_show(prev);
-			}
-			else if (prev)
-				ewl_widget_show(prev);
-
-			break;
-		}
-		prev = cur;
-	}
+	ewl_paned_grabbers_update(EWL_PANED(c));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -308,7 +262,6 @@ void
 ewl_paned_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
 {
 	int cw, ch, ww, wh;
-	Ewl_Widget *cur, *prev = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
@@ -319,371 +272,325 @@ ewl_paned_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
 	ewl_object_preferred_size_get(EWL_OBJECT(w), &ww, &wh);
 	ewl_object_preferred_inner_size_get(EWL_OBJECT(c), &cw, &ch);
 
-	/* decrease the containers perferred width by the preferred width of
-	 * the hidden widget (including the grabbers */
-	if (EWL_PANED(c)->orientation == EWL_ORIENTATION_HORIZONTAL)
+	if (EWL_ORIENTATION_HORIZONTAL == EWL_PANED(c)->orientation)
 		cw -= ww;
 	else
 		ch -= wh;
 
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(c), cw, ch);
+	ewl_paned_grabbers_update(EWL_PANED(c));
 
-	/* don't do anything for internal widgets */
-	if (ewl_widget_internal_is(w)) 
-		DRETURN(DLEVEL_STABLE);
-
-	/* hide the grabber */
-	ecore_dlist_goto_first(c->children);
-	while ((cur = ecore_dlist_next(c->children)))
-	{
-		if (cur == w)
-		{
-			/* prev was visible so we need to make the next
-			 * visible */
-			if (!prev || (!VISIBLE(prev)))
-			{
-				prev = ecore_dlist_next(c->children);
-				if (prev)
-					ewl_widget_hide(prev);
-			}
-			else if (prev)
-				ewl_widget_hide(prev);
-			break;
-		}
-		prev = cur;
-	}
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/* this will size widgets as needed depending on where their grabber is. The
- * widget can not be smaller then it's minimum size */
 void
-ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ewl_Paned *p;
-	Ewl_Widget *cur;
+	Ewl_Container *c;
+	Ewl_Widget *child;
+	Ecore_List *unsized, *sized;
+	int grabber_size = 0, needed_pane_size = 0, min_pane_size = 0;
+	int tot_paned_size = 0, cur_pane_size = 0;
+	int min_size = 0, available_size, pos = 0;
+	int other_size, main_dir, other_dir;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	p = EWL_PANED(w);
+	c = EWL_CONTAINER(p);
 
-	/* the easy one */
-	if (ecore_dlist_is_empty(EWL_CONTAINER(w)->children))
-		DRETURN(DLEVEL_STABLE);
+	unsized = ecore_list_new();
+	sized = ecore_list_new();
 
-	/* only one widget, give entire size */
-	if (ecore_dlist_nodes(EWL_CONTAINER(w)->children) == 1)
+	if (ewl_paned_orientation_get(p) == EWL_ORIENTATION_HORIZONTAL)
 	{
-		cur = ecore_dlist_goto_first(EWL_CONTAINER(w)->children);
-		ewl_object_place(EWL_OBJECT(cur), CURRENT_X(p), CURRENT_Y(p),
-						CURRENT_W(p), CURRENT_H(p));
-		DRETURN(DLEVEL_STABLE);
+		layout = horizontal_layout;
+		tot_paned_size = CURRENT_W(w);
+		other_size = CURRENT_H(w);
+		main_dir = CURRENT_X(w);
+		other_dir = CURRENT_Y(w);
 	}
-
-	if (p->orientation == EWL_ORIENTATION_HORIZONTAL)
-		ewl_paned_configure_horizontal(p);
 	else
-		ewl_paned_configure_vertical(p);
+	{
+		layout = vertical_layout;
+		tot_paned_size = CURRENT_H(w);
+		other_size = CURRENT_W(w);
+		main_dir = CURRENT_Y(w);
+		other_dir = CURRENT_X(w);
+	}
+
+	/* get a list of panes and grabbers that will be shown and the sizes
+	 * we have to work with */
+	ecore_dlist_goto_first(c->children);
+	while ((child = ecore_dlist_next(c->children)))
+	{
+		if (!VISIBLE(child) && (!ewl_widget_internal_is(child)))
+			continue;
+
+		/* if the widget is internal it is a grabber. remove grabber
+		 * space from total and sum up needed/current space for
+		 * panes */
+		if (ewl_widget_internal_is(child))
+		{
+			Ewl_Widget *pane = NULL;
+
+			/* get the grabbers pane */
+			pane = ecore_dlist_next(c->children);
+			/* nothign to do if our pane is hidden */
+			if (!VISIBLE(pane)) continue;
+
+			/* get the grabber size if needed */
+			if (!grabber_size)
+				grabber_size = 
+					layout->current_size(EWL_OBJECT(child));
+
+			/* only take the grabber into account if it's
+			 * visible */
+			if (VISIBLE(child))
+				tot_paned_size -= grabber_size;
+
+			/* if the grabber is already placed then we add the
+			 * space to the current size, otherwise it goes to
+			 * the needed size */
+			if (ewl_paned_grabber_placed_get(
+					EWL_PANED_GRABBER(child)))
+			{
+				cur_pane_size += 
+					layout->current_size(EWL_OBJECT(pane));
+				ecore_list_append(sized, pane);
+			}
+			else
+			{
+				needed_pane_size += 
+					layout->preferred_size(EWL_OBJECT(pane));
+				min_pane_size += min_size;
+				ecore_list_append(unsized, pane);
+			}
+		}
+	}
+
+	available_size = tot_paned_size - cur_pane_size;
+
+	/* the paned has gotten smaller, we need to reclaim space from the
+	 * currently sized widgets */
+	if (available_size < 0)
+	{
+		int take, nodes = 0;
+		Ecore_List *tmp;
+
+		/* make a temporary list */
+		tmp = ecore_list_new();
+		ecore_list_goto_first(sized);
+		while ((child = ecore_list_next(sized)))
+			ecore_list_append(tmp, child);
+
+		available_size = abs(available_size);
+		nodes = ecore_list_nodes(tmp);
+		while ((available_size > 0) && (nodes > 0))
+		{
+			take = floor(available_size / nodes);
+
+			ecore_list_goto_first(tmp);
+			while ((child = ecore_list_current(tmp)))
+			{
+				int size, new_size;
+
+				size = layout->current_size(EWL_OBJECT(child));
+				layout->variable_request(EWL_OBJECT(child), size- take);
+				new_size = layout->current_size(EWL_OBJECT(child));
+
+				if ((size - new_size) > 0)
+				{
+					available_size -= (size - new_size);
+					ecore_list_next(tmp);
+				}
+				else
+					ecore_list_remove(tmp);
+			}
+			nodes = ecore_list_nodes(tmp);
+		}
+		ecore_list_destroy(tmp);
+	}
+
+	/* available space is less then our needed space, we need to resize
+	 * the other widgets until we have at least min_pane_size available */
+	if (available_size < min_pane_size)
+	{
+		int need, take, nodes;
+		Ecore_List *tmp;
+
+		/* make a temporary list */
+		tmp = ecore_list_new();
+		ecore_list_goto_first(sized);
+		while ((child = ecore_list_next(sized)))
+			ecore_list_append(tmp, child);
+
+		need = min_pane_size - available_size;
+		nodes = ecore_list_nodes(tmp);
+		while ((need > 0) && (nodes > 0))
+		{
+			take = floor(need / nodes);
+
+			ecore_list_goto_first(tmp);
+			while ((child = ecore_list_current(tmp)))
+			{
+				int size, new_size;
+
+				size = layout->current_size(EWL_OBJECT(child));
+				layout->variable_request(EWL_OBJECT(child), size- take);
+				new_size = layout->current_size(EWL_OBJECT(child));
+
+				if ((size - new_size) > 0)
+				{
+					need -= (size - new_size);
+					available_size += (size - new_size);
+					ecore_list_next(tmp);
+				}
+				else
+					ecore_list_remove(tmp);
+			}
+			nodes = ecore_list_nodes(tmp);
+		}
+		ecore_list_destroy(tmp);
+	}
+
+	/* we have the minimum space, but not our preferred space. Give each
+	 * unsized widget their minimum size .
+	 */
+	if ((min_pane_size <= available_size) 
+			&& (available_size < needed_pane_size))
+	{
+		int other, current;
+
+		other = other_size;
+		while ((child = ecore_list_remove_first(unsized)))
+		{
+			current = layout->minimum_size(EWL_OBJECT(child));
+			layout->variable_request(EWL_OBJECT(child), current);
+			layout->stable_request(EWL_OBJECT(child), other);
+
+			available_size -= current;
+			ecore_list_append(sized, child);
+		}
+	}
+	/* give each widget their preferred size */
+	else
+	{
+		int other, current;
+
+		other = other_size;
+		while ((child = ecore_list_remove_first(unsized)))
+		{
+			current = layout->preferred_size(EWL_OBJECT(child));
+			layout->variable_request(EWL_OBJECT(child), current);
+			layout->stable_request(EWL_OBJECT(child), other);
+
+			available_size -= current;
+			ecore_list_append(sized, child);
+		}
+	}
+
+	/* now that the widgets have all been sized we need to distrubute
+	 * any extra space available */
+	if (available_size > 0)
+	{
+		int give = 0;
+		int nodes = 0;
+
+		nodes = ecore_list_nodes(sized);
+		while((available_size > 0) && (nodes > 0))
+		{
+			give = floor(available_size / nodes);
+			ecore_list_goto_first(sized);
+			while ((child = ecore_list_current(sized)))
+			{
+				int size, new_size;
+
+				size = layout->current_size(EWL_OBJECT(child));
+				layout->variable_request(EWL_OBJECT(child), size+ give);
+				new_size = layout->current_size(EWL_OBJECT(child));
+
+				if ((new_size - size) > 0)
+				{
+					available_size -= (new_size - size);
+					ecore_list_next(sized);
+				}
+				else
+					ecore_list_remove(sized);
+			}
+			nodes = ecore_list_nodes(sized);
+		}
+	}
+
+	/* now that all of the space is filled we can go and layout all of
+	 * the available widgets */
+	pos = main_dir;
+	ecore_dlist_goto_first(c->children);
+	while ((child = ecore_dlist_next(c->children)))
+	{
+		int ow, oh;
+
+		if (VISIBLE(child))
+		{
+			ewl_object_current_size_get(EWL_OBJECT(child), &ow, &oh);
+			if (ewl_paned_orientation_get(p) ==
+					EWL_ORIENTATION_HORIZONTAL)
+			{
+				ewl_object_place(EWL_OBJECT(child), pos, other_dir, 
+									ow, other_size);
+				pos += ow;
+			}
+			else
+			{
+				ewl_object_place(EWL_OBJECT(child), other_dir, pos, 
+									other_size, oh);
+				pos += oh;
+			}
+		}
+
+		if (ewl_widget_internal_is(child))
+			ewl_paned_grabber_placed_set(EWL_PANED_GRABBER(child), TRUE);
+	}
+
+	ecore_list_destroy(sized);
+	ecore_list_destroy(unsized);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/* Look at all of the grabbers and show/hide them as needed */
 static void
-ewl_paned_configure_horizontal(Ewl_Paned *p)
+ewl_paned_grabbers_update(Ewl_Paned *p)
 {
-	Ewl_Widget *cur, *prev = NULL;
+	Ewl_Widget *child, *g = NULL;
 	Ewl_Container *c;
-	int cur_pos, size, new_size, pos;
+	int left = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
 	DCHECK_TYPE("p", p, EWL_PANED_TYPE);
 
-	cur_pos = CURRENT_X(p);
-	size = CURRENT_W(p);
-
 	c = EWL_CONTAINER(p);
-
 	ecore_dlist_goto_first(c->children);
-	while ((cur = ecore_dlist_next(c->children)))
+	while ((child = ecore_dlist_next(c->children)))
 	{
-		if (!VISIBLE(cur)) continue;
-
-		/* if we aren't internal then we're a pane, store us away
-		 * and goto the next widget which _should_ be an internal
-		 * grabber */
-		if (!ewl_widget_internal_is(cur))
+		if (ewl_widget_internal_is(child))
 		{
-			prev = cur;
-			continue;
+			if (left) g = child;
 		}
-
-		/* the grabber is before the start of the pane, so we're
-		 * assuming it hasn't been placed yet */
-		if ((ewl_object_current_x_get(EWL_OBJECT(cur)) < CURRENT_X(p)))
+		else if (VISIBLE(child))
 		{
-			int panes, pane_size, grabbers, grab_size, i;
-			int pref_size = 0, min_size = 0, use_min = 0, extra = 0;
-			Ewl_Widget *skip;
-
-			/* the previous widget and this grabber */
-			panes = 1;
-			grabbers = 1;
-			grab_size = ewl_object_current_w_get(EWL_OBJECT(cur));
-			pref_size = ewl_object_preferred_w_get(EWL_OBJECT(prev));
-			min_size = ewl_object_minimum_w_get(EWL_OBJECT(prev));
-			pane_size = 0; 
-			skip = cur;
-
-			while ((skip = ecore_dlist_next(c->children)))
+			if (g)
 			{
-				if (!VISIBLE(skip)) continue;
-				if (!ewl_widget_internal_is(skip))
-				{
-					panes ++;
-					pref_size += ewl_object_preferred_w_get(
-								EWL_OBJECT(skip));
-					min_size += ewl_object_minimum_w_get(
-								EWL_OBJECT(skip));
-					continue;
-				}
-				
-				if ((ewl_object_current_x_get(EWL_OBJECT(skip)) < CURRENT_X(p)))
-				{
-					grab_size += ewl_object_current_x_get(EWL_OBJECT(skip));
-					grabbers ++;
-					continue;
-				}
-				break;
+				ewl_widget_show(g);
+				g = NULL;
 			}
-
-			/* we have a grabber thats been placed,
-			 * calculate the size per pane */
-			if (skip) pane_size = ewl_object_current_x_get(EWL_OBJECT(skip)) - cur_pos;
-			else pane_size = CURRENT_W(p) - cur_pos;
-
-			pane_size -= grab_size;
-			if (pane_size < pref_size)
-			{
-				extra = (pane_size - min_size) / panes;
-				use_min = 1;
-			}
-
-			ecore_dlist_goto(c->children, prev);
-			i = 0;
-			while ((prev = ecore_dlist_next(c->children)))
-			{
-				if (ewl_widget_internal_is(prev))
-				{
-					ewl_object_place(EWL_OBJECT(prev),
-							cur_pos, CURRENT_Y(p),
-							ewl_object_current_w_get(EWL_OBJECT(prev)), 
-							CURRENT_H(p));
-
-					cur_pos += ewl_object_current_w_get(EWL_OBJECT(prev));
-				}
-				else
-				{
-					int size = 0;
-
-					if (use_min)
-					{
-						size = ewl_object_minimum_w_get(
-								EWL_OBJECT(prev));
-						size += extra;
-					}
-					else
-						size = ewl_object_preferred_w_get(
-								EWL_OBJECT(prev));
-
-					ewl_object_place(EWL_OBJECT(prev),
-							cur_pos, CURRENT_Y(p), 
-							size, CURRENT_H(p));
-
-					cur_pos += size;
-				}
-
-				i++;
-				if (i == (panes + grabbers)) 
-					break;
-			}
-			prev = NULL;
-			continue;
+			left = 1;
 		}
-
-		pos = ewl_object_current_x_get(EWL_OBJECT(cur));
-		new_size = pos - cur_pos;
-
-		ewl_object_place(EWL_OBJECT(prev), cur_pos, CURRENT_Y(p),
-						new_size, CURRENT_H(p));	
-		cur_pos += new_size;
-
-		/* place the grabber and move to its left side */
-		ewl_object_place(EWL_OBJECT(cur), cur_pos, CURRENT_Y(p),
-						ewl_object_current_w_get(EWL_OBJECT(cur)), CURRENT_H(p));
-		cur_pos += ewl_object_current_w_get(EWL_OBJECT(cur));
-		prev = NULL;
-	}
-
-	/* if there is one left over, place it ... */
-	if (prev)
-	{
-		int new_size;
-		new_size = size - cur_pos;
-		ewl_object_place(EWL_OBJECT(prev), cur_pos, CURRENT_Y(p), 
-					new_size, CURRENT_H(p));
-	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-static void
-ewl_paned_configure_vertical(Ewl_Paned *p)
-{
-	Ewl_Widget *cur, *prev = NULL;
-	Ewl_Container *c;
-	int cur_pos, size, new_size, pos;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("p", p);
-	DCHECK_TYPE("p", p, EWL_PANED_TYPE);
-
-	cur_pos = CURRENT_Y(p);
-	size = CURRENT_H(p);
-
-	c = EWL_CONTAINER(p);
-
-	ecore_dlist_goto_first(c->children);
-	while ((cur = ecore_dlist_next(c->children)))
-	{
-		if (!VISIBLE(cur)) continue;
-
-		/* if we aren't internal then we're a pane, store us away
-		 * and goto the next widget which _should_ be an internal
-		 * grabber */
-		if (!ewl_widget_internal_is(cur))
-		{
-			prev = cur;
-			continue;
-		}
-
-		/* the grabber is before the start of the pane, so we're
-		 * assuming it hasn't been placed yet */
-		if ((ewl_object_current_y_get(EWL_OBJECT(cur)) < CURRENT_Y(p)))
-		{
-			int panes, pane_size, grabbers, grab_size, i;
-			int pref_size = 0, min_size = 0, use_min = 0, extra = 0;
-			Ewl_Widget *skip;
-
-			/* the previous widget and this grabber */
-			panes = 1;
-			grabbers = 1;
-			grab_size = ewl_object_current_h_get(EWL_OBJECT(cur));
-			pref_size = ewl_object_preferred_h_get(EWL_OBJECT(prev));
-			min_size = ewl_object_minimum_h_get(EWL_OBJECT(prev));
-			pane_size = 0; 
-			skip = cur;
-
-			while ((skip = ecore_dlist_next(c->children)))
-			{
-				if (!VISIBLE(skip)) continue;
-				if (!ewl_widget_internal_is(skip))
-				{
-					panes ++;
-					continue;
-				}
-				
-				if ((ewl_object_current_y_get(EWL_OBJECT(skip)) < CURRENT_Y(p)))
-				{
-					grab_size += ewl_object_current_h_get(EWL_OBJECT(skip));
-					pref_size += ewl_object_preferred_h_get(
-								EWL_OBJECT(skip));
-					min_size += ewl_object_minimum_h_get(
-								EWL_OBJECT(skip));
-					grabbers ++;
-					continue;
-				}
-				break;
-			}
-
-			/* we have a grabber thats been placed,
-			 * calculate the size per pane */
-			if (skip) pane_size = ewl_object_current_y_get(EWL_OBJECT(skip)) - cur_pos;
-			else pane_size = CURRENT_H(p) - cur_pos;
-
-			pane_size -= grab_size;
-			if (pane_size < pref_size)
-			{
-				extra = (pane_size - min_size) / panes;
-				use_min = 1;
-			}
-
-			ecore_dlist_goto(c->children, prev);
-			i = 0;
-			while ((prev = ecore_dlist_next(c->children)))
-			{
-				if (ewl_widget_internal_is(prev))
-				{
-					ewl_object_place(EWL_OBJECT(prev),
-							CURRENT_X(p), cur_pos,
-							CURRENT_W(p), 
-							ewl_object_current_h_get(EWL_OBJECT(prev)));
-
-					cur_pos += ewl_object_current_h_get(EWL_OBJECT(prev));
-				}
-				else
-				{
-					int size = 0;
-
-					if (use_min)
-					{
-						size = ewl_object_minimum_h_get(
-								EWL_OBJECT(prev));
-						size += extra;
-					}
-					else
-						size = ewl_object_preferred_h_get(
-								EWL_OBJECT(prev));
-
-					ewl_object_place(EWL_OBJECT(prev),
-							CURRENT_X(p), cur_pos,
-							CURRENT_W(p), size);
-
-					cur_pos += size;
-				}
-
-				i++;
-				if (i == (panes + grabbers)) 
-					break;
-			}
-			prev = NULL;
-			continue;
-		}
-
-		pos = ewl_object_current_y_get(EWL_OBJECT(cur));
-		new_size = pos - cur_pos;
-
-		ewl_object_place(EWL_OBJECT(prev), CURRENT_X(p), cur_pos,
-						CURRENT_H(p), new_size);
-		cur_pos += new_size;
-
-		/* place the grabber and move to its left side */
-		ewl_object_place(EWL_OBJECT(cur), CURRENT_Y(p), cur_pos,
-						CURRENT_W(p), ewl_object_current_h_get(EWL_OBJECT(cur)));
-		cur_pos += ewl_object_current_h_get(EWL_OBJECT(cur));
-		prev = NULL;
-	}
-
-	/* if there is one left over, place it ... */
-	if (prev)
-	{
-		int new_size;
-		new_size = size - cur_pos;
-		ewl_object_place(EWL_OBJECT(prev), CURRENT_Y(p), cur_pos,
-					CURRENT_W(p), new_size);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -733,11 +640,10 @@ ewl_paned_grabber_init(Ewl_Paned_Grabber *g)
 	ewl_paned_grabber_paned_orientation_set(g, EWL_ORIENTATION_VERTICAL);
 
 	ewl_callback_append(EWL_WIDGET(g), EWL_CALLBACK_MOUSE_DOWN,
-				ewl_paned_grabber_cb_mouse_down, NULL);
+					ewl_paned_grabber_cb_mouse_down, NULL);
 	ewl_callback_append(EWL_WIDGET(g), EWL_CALLBACK_MOUSE_UP,
-				ewl_paned_grabber_cb_mouse_up, NULL);
+					ewl_paned_grabber_cb_mouse_up, NULL);
 
-	/* grabber is always internal to the paned */
 	ewl_widget_internal_set(EWL_WIDGET(g), TRUE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -826,8 +732,30 @@ ewl_paned_grabber_show_cursor_for(Ewl_Paned_Grabber *g, unsigned int dir)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+void
+ewl_paned_grabber_placed_set(Ewl_Paned_Grabber *g, unsigned int placed)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("g", g);
+	DCHECK_TYPE("g", g, EWL_PANED_GRABBER_TYPE);
+
+	g->placed = !!placed;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+unsigned int
+ewl_paned_grabber_placed_get(Ewl_Paned_Grabber *g)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("g", g, FALSE);
+	DCHECK_TYPE_RET("g", g, EWL_PANED_GRABBER_TYPE, FALSE);
+
+	DRETURN_INT(g->placed, DLEVEL_STABLE);
+}
+
 static void
-ewl_paned_grabber_cb_mouse_down(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_paned_grabber_cb_mouse_down(Ewl_Widget *w, void *ev __UNUSED__,
 						void *data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -842,7 +770,7 @@ ewl_paned_grabber_cb_mouse_down(Ewl_Widget *w, void *ev __UNUSED__,
 }
 
 static void
-ewl_paned_grabber_cb_mouse_up(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_paned_grabber_cb_mouse_up(Ewl_Widget *w, void *ev __UNUSED__,
 						void *data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -857,185 +785,203 @@ ewl_paned_grabber_cb_mouse_up(Ewl_Widget *w, void *ev __UNUSED__,
 }
 
 static void
-ewl_paned_grabber_cb_mouse_move(Ewl_Widget *w, void *ev, 
-					void *data __UNUSED__)
+ewl_paned_grabber_cb_mouse_move(Ewl_Widget *w, void *ev,
+						void *data __UNUSED__)
 {
-	Ewl_Paned *p;
 	Ewl_Event_Mouse_Move *e;
-
+	Ewl_Paned_Grabber *g, *stop_grabber = NULL;
+	Ewl_Widget *shrink = NULL, *grow = NULL, *child;
+	Ewl_Container *c;
+	Ewl_Paned *p;
+	int cur_pos, amt, block_pos, grab_size, pos, cur_size = 0;
+	int new_size, left, min, shrink_size, move_pos;
+	int pane_pos, pane_size, pane_position;
+	void *(*give_to)(Ecore_DList *list);
+	void *(*take_from)(Ecore_DList *list);
+	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("ev", ev);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	p = EWL_PANED(w->parent);
 	e = ev;
+	g = EWL_PANED_GRABBER(w);
+	p = EWL_PANED(w->parent);
+	c = EWL_CONTAINER(p);
 
-	if (p->orientation == EWL_ORIENTATION_HORIZONTAL)
+	if (ewl_paned_orientation_get(p) == EWL_ORIENTATION_HORIZONTAL)
 	{
-		if ((e->x > CURRENT_X(p)) 
-				&& (e->x < (CURRENT_X(p) + CURRENT_W(p))))
-			ewl_paned_grabber_horizontal_shift(p, w, e->x);
+		layout = horizontal_layout;
+		move_pos = e->x;
+		pane_position = CURRENT_X(p);
+		pane_size = CURRENT_W(p);
 	}
 	else
 	{
-		if ((e->y > CURRENT_Y(p)) 
-				&& (e->y < (CURRENT_Y(p) + CURRENT_H(p))))
-			ewl_paned_grabber_vertical_shift(p, w, e->y);
+		layout = vertical_layout;
+		move_pos = e->y;
+		pane_position = CURRENT_Y(p);
+		pane_size = CURRENT_H(p);
 	}
+
+	cur_pos = layout->current_position(EWL_OBJECT(w));
+
+	/* shifting left */
+	if ((cur_pos - move_pos) > 0)
+	{
+		give_to = ecore_dlist_next;
+		take_from = ecore_dlist_previous;
+		amt = cur_pos - move_pos;
+		left = 1;
+	}
+	else if ((cur_pos - move_pos) < 0)
+	{
+		give_to = ecore_dlist_previous;
+		take_from = ecore_dlist_next;
+		amt = move_pos - cur_pos;
+		left = 0;
+	}
+	else
+		DRETURN(DLEVEL_STABLE);
+
+	/* find the pane we are shifting into and the grabber
+	 * blockign us */
+	ecore_dlist_goto(c->children, w);
+
+	/* move past the selected grabber */
+	take_from(c->children);
+	while ((child = take_from(c->children)))
+	{
+		if (!VISIBLE(child)) continue;
+
+		if (ewl_widget_internal_is(child))
+		{
+			stop_grabber = EWL_PANED_GRABBER(child);
+			break;
+		}
+		else
+			shrink = child;
+	}
+
+	/* find the pane we are giving space too */
+	ecore_dlist_goto(c->children, w);
+
+	/* move past the selected grabber */
+	give_to(c->children);
+	while ((child = give_to(c->children)))
+	{
+		if (!VISIBLE(child)) continue;
+
+		if (ewl_widget_internal_is(child))
+			printf("ERROR found grabber instead of child?\n");
+		else
+		{
+			grow = child;
+			break;
+		}
+	}
+
+	/* make sure the grabber dosen't move past the grabber before it or
+	 * the edges of the paned */
+	grab_size = layout->current_size(EWL_OBJECT(w));
+	if (stop_grabber)
+		block_pos = layout->current_position(EWL_OBJECT(stop_grabber));
+	else if (left)
+		block_pos = pane_position;
+	else
+		block_pos = pane_position + pane_size;
+
+	min = layout->minimum_size(EWL_OBJECT(shrink));
+	cur_size = layout->current_size(EWL_OBJECT(shrink));
+	if (left)
+	{
+		if ((cur_pos - amt) < (block_pos + grab_size + min))
+			pos = block_pos + grab_size + min;
+		else
+			pos = cur_pos - amt;
+
+		amt = cur_pos - pos;
+
+		/* don't have to shrink free space */
+		if ((cur_pos - amt) < (block_pos + grab_size + cur_size))
+			shrink_size = amt - (cur_pos - cur_size - block_pos - grab_size);
+		else
+			shrink_size = 0;
+
+		/* move the right pane */
+		pane_pos = layout->current_position(EWL_OBJECT(grow));
+		layout->position_request(EWL_OBJECT(grow), pane_pos - amt);
+	}
+	else
+	{
+		if ((cur_pos + amt + grab_size + min) > block_pos)
+			pos = block_pos - min - grab_size;
+		else
+			pos = cur_pos + amt;
+
+		amt = pos - cur_pos;
+
+		/* don't have to shrink free space */
+		if ((cur_pos + amt + grab_size + cur_size) > block_pos)
+			shrink_size = amt - (block_pos - cur_pos - cur_size);
+		else
+			shrink_size = 0;
+
+		/* move the right pane */
+		pane_pos = layout->current_position(EWL_OBJECT(shrink));
+		layout->position_request(EWL_OBJECT(shrink), pane_pos + amt);
+	}
+
+	cur_size = layout->current_size(EWL_OBJECT(shrink));
+	layout->variable_request(EWL_OBJECT(shrink), cur_size - shrink_size);
+	new_size = layout->current_size(EWL_OBJECT(shrink));
+
+	/* didn't shirnk the entire amount XXX do something ... */
+	if ((cur_size - new_size) != shrink_size)
+		;
+
+	cur_size = layout->current_size(EWL_OBJECT(grow));
+	layout->variable_request(EWL_OBJECT(grow), cur_size + amt);
+	new_size = layout->current_size(EWL_OBJECT(grow));
+
+	/* place the grabber */
+	layout->position_request(EWL_OBJECT(w), pos);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void
-ewl_paned_grabber_horizontal_shift(Ewl_Paned *p, Ewl_Widget *w, int to)
+ewl_paned_layout_setup(void)
 {
-	Ewl_Container *c;
-	Ewl_Widget *before = NULL, *after = NULL, *cur;
-	int bx, ax, found = 0;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("p", p);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("p", p, EWL_PANED_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	bx = CURRENT_X(p);
-	ax = CURRENT_X(p) + CURRENT_W(p);
-
-	c = EWL_CONTAINER(p);
-
-	ecore_dlist_goto_first(c->children);
-	while ((cur = ecore_dlist_next(c->children)))
-	{
-		if (!ewl_widget_internal_is(cur)) 
-		{
-			if (!found) before = cur;
-			else after = cur;
-		}
-		else
-		{
-			/* is this hte grabber we want? */
-			if (cur == w)
-				found = 1;
-			else
-			{
-				if (!found)
-					bx = ewl_object_current_x_get(EWL_OBJECT(cur)) +
-						ewl_object_current_w_get(EWL_OBJECT(cur));
-				else
-				{
-					ax = ewl_object_current_x_get(EWL_OBJECT(cur));
-					break;
-				}
-			}
-		}
-	}
-
-	/* if we don't have a prev/next pane we're fucked */
-	if (!before || !after)
-	{
-		DWARNING("Grabber but no panes beside it...\n");
+	horizontal_layout = NEW(Ewl_Paned_Layout, 1);
+	if (!horizontal_layout) 
 		DRETURN(DLEVEL_STABLE);
-	}
+	
+	horizontal_layout->minimum_size = ewl_object_minimum_w_get;
+	horizontal_layout->current_size = ewl_object_current_w_get;
+	horizontal_layout->preferred_size = ewl_object_preferred_w_get;
+	horizontal_layout->current_position = ewl_object_current_x_get;
+	horizontal_layout->variable_request = ewl_object_w_request;
+	horizontal_layout->stable_request = ewl_object_h_request;
+	horizontal_layout->position_request = ewl_object_x_request;
+	horizontal_layout->stable_position_request = ewl_object_y_request;
 
-	/* don't move to the left of the grabber to the left of us */
-	if (to < (bx + ewl_object_current_w_get(EWL_OBJECT(before))))
-		to = bx + ewl_object_current_w_get(EWL_OBJECT(before));
-
-	/* dont' move to the right of the grabber to the right of us */
-	if (to > ax) to = ax;
-
-	/* XXX shoud check min widget sizes here */
-	ewl_object_place(EWL_OBJECT(before),
-			ewl_object_current_x_get(EWL_OBJECT(before)),
-			ewl_object_current_y_get(EWL_OBJECT(before)),
-			to - (bx + ewl_object_current_w_get(EWL_OBJECT(before))),
-			ewl_object_current_h_get(EWL_OBJECT(before)));
-
-	ewl_object_place(EWL_OBJECT(after), to + ewl_object_current_w_get(EWL_OBJECT(w)), 
-					ewl_object_current_y_get(EWL_OBJECT(after)), 
-					ax - (to + ewl_object_current_w_get(EWL_OBJECT(w))),
-					ewl_object_current_h_get(EWL_OBJECT(after)));
-
-	ewl_object_x_request(EWL_OBJECT(w), to);
-	ewl_widget_configure(EWL_WIDGET(p));
+	vertical_layout = NEW(Ewl_Paned_Layout, 1);
+	if (!vertical_layout) 
+		DRETURN(DLEVEL_STABLE);
+	
+	vertical_layout->minimum_size = ewl_object_minimum_h_get;
+	vertical_layout->current_size = ewl_object_current_h_get;
+	vertical_layout->preferred_size = ewl_object_preferred_h_get;
+	vertical_layout->current_position = ewl_object_current_y_get;
+	vertical_layout->variable_request = ewl_object_h_request;
+	vertical_layout->stable_request = ewl_object_w_request;
+	vertical_layout->position_request = ewl_object_y_request;
+	vertical_layout->stable_position_request = ewl_object_x_request;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
-ewl_paned_grabber_vertical_shift(Ewl_Paned *p, Ewl_Widget *w, int to) 
-{
-	Ewl_Container *c;
-	Ewl_Widget *before = NULL, *after = NULL, *cur;
-	int by, ay, found = 0;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("p", p);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("p", p, EWL_PANED_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-
-	by = CURRENT_Y(p);
-	ay = CURRENT_Y(p) + CURRENT_H(p);
-
-	c = EWL_CONTAINER(p);
-
-	ecore_dlist_goto_first(c->children);
-	while ((cur = ecore_dlist_next(c->children)))
-	{
-		if (!ewl_widget_internal_is(cur)) 
-		{
-			if (!found) before = cur;
-			else after = cur;
-		}
-		else
-		{
-			/* is this hte grabber we want? */
-			if (cur == w)
-				found = 1;
-			else
-			{
-				if (!found)
-					by = ewl_object_current_y_get(EWL_OBJECT(cur)) +
-						ewl_object_current_h_get(EWL_OBJECT(cur));
-				else
-				{
-					ay = ewl_object_current_y_get(EWL_OBJECT(cur));
-					break;
-				}
-			}
-		}
-	}
-
-	/* if we don't have a prev/next pane we're fucked */
-	if (!before || !after)
-	{
-		DWARNING("Grabber but no panes beside it...\n");
-		DRETURN(DLEVEL_STABLE);
-	}
-
-	/* don't move above the grabber above us */
-	if (to < (by + ewl_object_current_h_get(EWL_OBJECT(before))))
-		to = by + ewl_object_current_h_get(EWL_OBJECT(before));
-
-	/* dont' move to the right of the grabber to the right of us */
-	if (to > ay) to = ay;
-
-	/* XXX shoud check min widget sizes here */
-	ewl_object_place(EWL_OBJECT(before), ewl_object_current_x_get(EWL_OBJECT(before)), 
-					ewl_object_current_y_get(EWL_OBJECT(before)),
-					ewl_object_current_w_get(EWL_OBJECT(before)), 
-					to - (by + ewl_object_current_h_get(EWL_OBJECT(before))));
-
-	ewl_object_place(EWL_OBJECT(after), ewl_object_current_x_get(EWL_OBJECT(after)),
-					to + ewl_object_current_h_get(EWL_OBJECT(w)), 
-					ewl_object_current_w_get(EWL_OBJECT(after)),
-					ay - (to + ewl_object_current_h_get(EWL_OBJECT(w))));
-
-	ewl_object_y_request(EWL_OBJECT(w), to);
-	ewl_widget_configure(EWL_WIDGET(p));
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
 

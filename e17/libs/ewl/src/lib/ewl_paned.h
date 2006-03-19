@@ -24,34 +24,34 @@
 #define EWL_PANED_TYPE "paned"
 
 /**
- * The Ewl_Paned widget
- */
-typedef struct Ewl_Paned Ewl_Paned;
-
-/**
  * @def EWL_PANED(pane)
  * Typecasts a pointer to a Ewl_Paned pointer
  */
 #define EWL_PANED(paned) ((Ewl_Paned *) paned)
 
 /**
+ * The Ewl_Paned widget
+ */
+typedef struct Ewl_Paned Ewl_Paned;
+
+/**
  * Inherits from Ewl_Container and extends to provided the paned widget
  */
 struct Ewl_Paned
 {
-	Ewl_Container container;	/**< Inherit from Ewl_Container */
-	Ewl_Orientation	orientation;	/**< The orientation of the paned */
+        Ewl_Container container;        /**< Inherit from Ewl_Container */
+        Ewl_Orientation orientation;    /**< The orientation of the paned */
 };
 
-Ewl_Widget	*ewl_paned_new(void);
-Ewl_Widget	*ewl_hpaned_new(void);
-Ewl_Widget	*ewl_vpaned_new(void);
-int		 ewl_paned_init(Ewl_Paned *p);
+Ewl_Widget      *ewl_paned_new(void);
+Ewl_Widget      *ewl_hpaned_new(void);
+Ewl_Widget      *ewl_vpaned_new(void);
+int              ewl_paned_init(Ewl_Paned *p);
 
-void 		 ewl_paned_orientation_set(Ewl_Paned *p, Ewl_Orientation o);
+void             ewl_paned_orientation_set(Ewl_Paned *p, Ewl_Orientation o);
 Ewl_Orientation  ewl_paned_orientation_get(Ewl_Paned *p);
 
-/* 
+/*
  * Internal functions. Override at your risk.
  */
 void ewl_paned_cb_child_add(Ewl_Container *c, Ewl_Widget *w);
@@ -100,6 +100,11 @@ Ewl_Orientation  ewl_paned_grabber_orientation_get(Ewl_Paned_Grabber *g);
 
 void		 ewl_paned_grabber_show_cursor_for(Ewl_Paned_Grabber *g, 
 							unsigned int dir);
+
+void		 ewl_paned_grabber_placed_set(Ewl_Paned_Grabber *g,
+						unsigned int placed);
+unsigned int	 ewl_paned_grabber_placed_get(Ewl_Paned_Grabber *g);
+
 
 /**
  * @}
