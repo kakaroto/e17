@@ -41,15 +41,7 @@
 #define USE_LIBC_MALLOC  1	/* Use unwrapped libc malloc/realloc/free */
 
 #include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <X11/Xproto.h>
-#include <X11/Xatom.h>
-#include <X11/Xlocale.h>
 #include <X11/extensions/shape.h>
-#include <X11/extensions/XShm.h>
-#ifdef HAS_XINERAMA
-#include <X11/extensions/Xinerama.h>
-#endif
 
 #ifdef HAS_XRANDR
 #ifdef HAVE_X11_EXTENSIONS_XRANDR_H
@@ -886,6 +878,7 @@ int                 matchregexp(const char *rx, const char *s);
 
 /* screen.c */
 void                ScreenInit(void);
+void                ScreenShowInfo(void);
 int                 ScreenGetGeometry(int x, int y, int *px, int *py,
 				      int *pw, int *ph);
 int                 ScreenGetAvailableArea(int x, int y, int *px, int *py,

@@ -23,10 +23,7 @@
 #include "E.h"
 #include "ewins.h"
 #include "hints.h"
-
-/* workaround for 64bit architectures - xlib expects 32bit CARDINALS to be */
-/* long's on 64bit machines... thus well the CARD32's Im unsing shoudl be.. */
-#define CARD32 long
+#include <X11/Xatom.h>
 
 /* Motif window hints */
 #define MWM_HINTS_FUNCTIONS           (1L << 0)
@@ -63,13 +60,13 @@
 static Atom         _MOTIF_WM_HINTS = 0;
 
 /* Motif window hints */
-typedef struct _mwmhints
+typedef struct
 {
-   CARD32              flags;
-   CARD32              functions;
-   CARD32              decorations;
-   INT32               inputMode;
-   CARD32              status;
+   long                flags;
+   long                functions;
+   long                decorations;
+   long                inputMode;
+   long                status;
 }
 MWMHints;
 

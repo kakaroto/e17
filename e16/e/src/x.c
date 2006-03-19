@@ -26,6 +26,7 @@
 #include <Ecore_X.h>
 #endif
 #include "xwin.h"
+#include <X11/Xatom.h>
 #include <X11/Xutil.h>
 #include <X11/Xresource.h>
 

@@ -30,6 +30,7 @@
 #include "ewins.h"
 #include "hints.h"
 #include "xwin.h"
+#include <X11/Xatom.h>
 
 /* Misc atoms */
 Atom                E_XROOTPMAP_ID;

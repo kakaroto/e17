@@ -25,6 +25,7 @@
 #include "xwin.h"
 #include <sys/wait.h>
 #include <signal.h>
+#include <X11/Xproto.h>
 
 static void
 SignalHandler(int sig)

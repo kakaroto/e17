@@ -24,6 +24,9 @@
 #include "E.h"
 #include "ewins.h"
 #include "xwin.h"
+#ifdef HAS_XINERAMA
+#include <X11/extensions/Xinerama.h>
+#endif
 
 #ifdef HAS_XINERAMA
 static XineramaScreenInfo *screens = NULL;
@@ -41,6 +44,40 @@ ScreenInit(void)
    if (Mode.display.xinerama_active)
       screens = XineramaQueryScreens(disp, &num_screens);
 #endif
+}
+
+void
+ScreenShowInfo(void)
+{
+#ifdef HAS_XINERAMA
+   if (Mode.display.xinerama_active)
+     {
+	XineramaScreenInfo *scrns;
+	int                 num, i;
+
+	scrns = XineramaQueryScreens(disp, &num);
+
+	IpcPrintf("Xinerama active:\n");
+	IpcPrintf("Head  Screen  X-Origin  Y-Origin     Width    Height\n");
+	for (i = 0; i < num; i++)
+	  {
+	     IpcPrintf(" %2d     %2d       %5d     %5d     %5d     %5d\n",
+		       i, scrns[i].screen_number,
+		       scrns[i].x_org, scrns[i].y_org, scrns[i].width,
+		       scrns[i].height);
+	  }
+	XFree(screens);
+	return;
+     }
+   else
+     {
+	IpcPrintf("Xinerama is not active\n");
+     }
+#endif
+
+   IpcPrintf("Head  Screen  X-Origin  Y-Origin     Width    Height\n");
+   IpcPrintf(" %2d     %2d       %5d     %5d     %5d     %5d\n",
+	     0, VRoot.scr, 0, 0, VRoot.w, VRoot.h);
 }
 
 int

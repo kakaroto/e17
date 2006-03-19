@@ -27,6 +27,7 @@
 #include "xwin.h"
 #include <sys/ipc.h>
 #include <sys/shm.h>
+#include <X11/extensions/XShm.h>
 
 static void
 EFillPixmap(Window win, Pixmap pmap, int x, int y, int w, int h)

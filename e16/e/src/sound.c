@@ -305,7 +305,7 @@ SoundInit(void)
       sound_fd = fd;
    else
      {
-	AlertX(_("Error initialising sound"), _("OK"), " ", " ",
+	AlertX(_("Error initialising sound"), _("OK"), NULL, NULL,
 	       _("Audio was enabled for Enlightenment but there was an error\n"
 		 "communicating with the audio server (Esound). Audio will\n"
 		 "now be disabled.\n"));

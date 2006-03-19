@@ -133,35 +133,7 @@ SetEwinBoolean(const char *txt, char *item, const char *value, int set)
 static void
 IPC_Screen(const char *params __UNUSED__, Client * c __UNUSED__)
 {
-#ifdef HAS_XINERAMA
-   if (Mode.display.xinerama_active)
-     {
-	XineramaScreenInfo *screens;
-	int                 num, i;
-
-	screens = XineramaQueryScreens(disp, &num);
-
-	IpcPrintf("Xinerama active:\n");
-	IpcPrintf("Head  Screen  X-Origin  Y-Origin     Width    Height\n");
-	for (i = 0; i < num; i++)
-	  {
-	     IpcPrintf(" %2d     %2d       %5d     %5d     %5d     %5d\n",
-		       i, screens[i].screen_number,
-		       screens[i].x_org, screens[i].y_org, screens[i].width,
-		       screens[i].height);
-	  }
-	XFree(screens);
-	return;
-     }
-   else
-     {
-	IpcPrintf("Xinerama is not active\n");
-     }
-#endif
-
-   IpcPrintf("Head  Screen  X-Origin  Y-Origin     Width    Height\n");
-   IpcPrintf(" %2d     %2d       %5d     %5d     %5d     %5d\n",
-	     0, VRoot.scr, 0, 0, VRoot.w, VRoot.h);
+   ScreenShowInfo();
 }
 
 static void
