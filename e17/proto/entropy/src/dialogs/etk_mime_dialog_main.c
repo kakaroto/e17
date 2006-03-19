@@ -164,7 +164,7 @@ void etk_mime_dialog_populate_nth_binding_apps(int record)
 
 
 	
-	binding = evas_list_nth(entropy_core_get_core()->config->Config_Mimes->mime_bindings, record);
+	binding = evas_list_nth(entropy_core_get_core()->config->Loaded_Config->mime_bindings, record);
 
 	etk_tree_freeze(ETK_TREE(tree));
 	etk_tree_clear(ETK_TREE(tree));
@@ -225,7 +225,7 @@ void etk_mime_dialog_tree_populate()
 	col2 = etk_tree_nth_col_get(ETK_TREE(tree), 1);
 
 
-	for (l = entropy_core_get_core()->config->Config_Mimes->mime_bindings; l; ) {
+	for (l = entropy_core_get_core()->config->Loaded_Config->mime_bindings; l; ) {
 		binding = l->data;
 
 		row = etk_tree_append(ETK_TREE(tree), 

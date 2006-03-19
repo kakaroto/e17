@@ -351,7 +351,7 @@ void entropy_core_mime_action_add(char* mime_type, char* desc)
 			action_o->executable = strdup(action);
 	}*/
 
-	for (l = core_core->config->Config_Mimes->mime_bindings; l; ) {
+	for (l = core_core->config->Loaded_Config->mime_bindings; l; ) {
 		binding = l->data;
 
 		/*If this exists, change the desc to whatever they say*/
@@ -368,8 +368,8 @@ void entropy_core_mime_action_add(char* mime_type, char* desc)
 		binding = calloc(1,sizeof(Entropy_Config_Mime_Binding));
 		binding->mime_type = strdup(mime_type);
 		binding->desc = strdup(desc);
-		core_core->config->Config_Mimes->mime_bindings = 
-			evas_list_append(core_core->config->Config_Mimes->mime_bindings, binding);
+		core_core->config->Loaded_Config->mime_bindings = 
+			evas_list_append(core_core->config->Loaded_Config->mime_bindings, binding);
 	}
 
 	
@@ -383,7 +383,7 @@ void entropy_core_mime_application_add(char* mime_type, char* name, char* execut
 	Evas_List* l;
 
 
-	for (l = core_core->config->Config_Mimes->mime_bindings; l; ) {
+	for (l = core_core->config->Loaded_Config->mime_bindings; l; ) {
 		binding = l->data;
 
 		if (!strcmp(binding->mime_type, mime_type)) {
@@ -524,7 +524,7 @@ Entropy_Config_Mime_Binding_Action* entropy_core_mime_hint_get(char* mime_type, 
 	Entropy_Config_Mime_Binding_Action* action;
 	Evas_List* l;
 
-	for (l = core_core->config->Config_Mimes->mime_bindings; l; ) {
+	for (l = core_core->config->Loaded_Config->mime_bindings; l; ) {
 		binding = l->data;
 		
 		if (!strcmp(mime_type , binding->mime_type)) {

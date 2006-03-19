@@ -140,4 +140,17 @@ void print_allocation();
 /* Random defines */
 #define ENTROPY_NULL_MIME "object/unidentified"
 
+#undef FREE
+#define FREE(dat) \
+{ \
+        free(dat); dat = NULL; \
+}
+
+#undef IF_FREE
+#define IF_FREE(dat) \
+{ \
+        if (dat) FREE(dat); \
+}
+
+
 #endif

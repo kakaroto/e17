@@ -7,12 +7,146 @@
 #include <Eet.h>
 #include <stdarg.h>
 
+#define ENTROPY_CONFIG_VERSION 6
+
 static Entropy_Config* _Entropy_Config = NULL;
 
 #define HEADER_CONFIG_MAX 2048
-static Eet_Data_Descriptor *_entropy_config_mimes_edd;
+static Eet_Data_Descriptor *_entropy_config_loaded_edd;
 static Eet_Data_Descriptor *_entropy_config_mime_binding_edd;
 static Eet_Data_Descriptor *_entropy_config_mime_binding_action_edd;
+
+
+void entropy_config_loaded_config_free()
+{
+	Evas_List *l, *l2;
+	Entropy_Config_Mime_Binding* binding;
+	Entropy_Config_Mime_Binding_Action* action;
+
+
+	for (l = _Entropy_Config->Loaded_Config->mime_bindings; l; ) {
+		binding = l->data;
+
+		for (l2 = binding->actions; l2; ) {
+			action = l2->data;
+
+			IF_FREE(action->app_description);
+			IF_FREE(action->executable);
+			IF_FREE(action->args);				
+
+			l2 = l2->next;
+		}
+
+		IF_FREE(binding->desc);
+		IF_FREE(binding->mime_type);
+		evas_list_free(binding->actions);
+		IF_FREE(binding);
+
+		l = l->next;
+
+	}
+	evas_list_free(_Entropy_Config->Loaded_Config->mime_bindings);
+	free(_Entropy_Config->Loaded_Config);
+
+}
+
+
+
+void entropy_config_edd_build() 
+{
+	/*Build the EDDs*/
+	_entropy_config_mime_binding_action_edd = 
+	eet_data_descriptor_new("entropy_config_mime_binding_action", sizeof(Entropy_Config_Mime_Binding_Action),
+                              (void *(*)(void *))evas_list_next,
+                              (void *(*)(void *, void *))evas_list_append,
+                              (void *(*)(void *))evas_list_data,
+                              (void *(*)(void *))evas_list_free,
+                              (void (*)
+                               (void *,
+                                int (*)(void *, const char *, void *, void *),
+                                void *))evas_hash_foreach, (void *(*)(void *,
+                                                                      const char
+                                                                      *,
+                                                                      void *))
+                              evas_hash_add, (void (*)(void *))evas_hash_free);
+
+	EET_DATA_DESCRIPTOR_ADD_BASIC(_entropy_config_mime_binding_action_edd, Entropy_Config_Mime_Binding_Action,
+                                 "app_description", app_description, EET_T_STRING);
+	EET_DATA_DESCRIPTOR_ADD_BASIC(_entropy_config_mime_binding_action_edd, Entropy_Config_Mime_Binding_Action,
+                                 "executable", executable, EET_T_STRING);
+	EET_DATA_DESCRIPTOR_ADD_BASIC(_entropy_config_mime_binding_action_edd, Entropy_Config_Mime_Binding_Action,
+                                 "args", args, EET_T_STRING);
+
+
+	_entropy_config_mime_binding_edd =
+	eet_data_descriptor_new("entropy_config_mime_binding", sizeof(Entropy_Config_Mime_Binding),
+                              (void *(*)(void *))evas_list_next,
+                              (void *(*)(void *, void *))evas_list_append,
+                              (void *(*)(void *))evas_list_data,
+                              (void *(*)(void *))evas_list_free,
+                              (void (*)
+                               (void *,
+                                int (*)(void *, const char *, void *, void *),
+                                void *))evas_hash_foreach, (void *(*)(void *,
+                                                                      const char
+                                                                      *,
+                                                                      void *))
+                              evas_hash_add, (void (*)(void *))evas_hash_free);
+
+	EET_DATA_DESCRIPTOR_ADD_BASIC(_entropy_config_mime_binding_edd, Entropy_Config_Mime_Binding,
+                                 "mime_type", mime_type, EET_T_STRING);
+	EET_DATA_DESCRIPTOR_ADD_BASIC(_entropy_config_mime_binding_edd, Entropy_Config_Mime_Binding,
+                                 "description", desc, EET_T_STRING);
+	EET_DATA_DESCRIPTOR_ADD_LIST(_entropy_config_mime_binding_edd, Entropy_Config_Mime_Binding, "actions", actions, 
+				_entropy_config_mime_binding_action_edd);
+
+
+	_entropy_config_loaded_edd =
+	eet_data_descriptor_new("entropy_config_loaded", sizeof(Entropy_Config_Loaded),
+                              (void *(*)(void *))evas_list_next,
+                              (void *(*)(void *, void *))evas_list_append,
+                              (void *(*)(void *))evas_list_data,
+                              (void *(*)(void *))evas_list_free,
+                              (void (*)
+                               (void *,
+                                int (*)(void *, const char *, void *, void *),
+                                void *))evas_hash_foreach, (void *(*)(void *,
+                                                                      const char
+                                                                      *,
+                                                                      void *))
+                              evas_hash_add, (void (*)(void *))evas_hash_free);
+	EET_DATA_DESCRIPTOR_ADD_LIST(_entropy_config_loaded_edd, Entropy_Config_Loaded, "mime_bindings", mime_bindings, 
+				_entropy_config_mime_binding_edd);
+
+}
+
+
+void entropy_config_version_check()
+{
+	char* data;
+	int size_ret;
+	Eet_File* conf_file;
+	
+	printf("Looking for version in '%s'..\n", _Entropy_Config->config_dir_and_file_eet);
+	
+	conf_file = eet_open(_Entropy_Config->config_dir_and_file_eet, EET_FILE_MODE_READ);
+	if (conf_file) {
+		data = eet_read(conf_file, "/config_version", &size_ret);
+		printf("Size ret is: %d\n", size_ret);
+		if (!data || atoi(data) < ENTROPY_CONFIG_VERSION) {
+			if (data)
+				printf("***** Config out of date, had to make new... %s < %d\n", data, ENTROPY_CONFIG_VERSION);
+			else 
+				printf("***** Config doesn't exist, creating..\n");
+
+			/*Remove the config file, it's out of date..*/
+			remove(_Entropy_Config->config_dir_and_file_eet);
+		} else {
+			printf("***** Config fine - %s matches %d\n", data, ENTROPY_CONFIG_VERSION);
+		}
+	}
+	eet_close(conf_file);
+}
 
 
 Entropy_Config_Mime_Binding*
@@ -24,7 +158,7 @@ entropy_config_mime_binding_for_type_get(char* type)
 	Evas_List* l;
 	
 	/*Do a scan for now, we should dynamically load this into a hash*/
-	for (l = _Entropy_Config->Config_Mimes->mime_bindings; l; ) {
+	for (l = _Entropy_Config->Loaded_Config->mime_bindings; l; ) {
 		binding = l->data;
 
 		if (!strcmp(binding->mime_type, type)) {
@@ -41,7 +175,7 @@ entropy_config_mime_binding_for_type_get(char* type)
 
 
 void
-entropy_config_mimes_print(Entropy_Config_Mime* mimes) 
+entropy_config_mimes_print(Entropy_Config_Loaded* mimes) 
 {
 	Entropy_Config_Mime_Binding* binding;
 	Entropy_Config_Mime_Binding_Action* action;
@@ -104,12 +238,12 @@ Entropy_Config* entropy_config_init(entropy_core* core) {
 	int size_ret;
 	int ok;
 
-	Entropy_Config_Mime* mimes = calloc(1,sizeof(Entropy_Config_Mime));
-
+	Entropy_Config_Loaded* mimes;
 	
 	if (_Entropy_Config) return _Entropy_Config;
 	
 	_Entropy_Config = entropy_malloc(sizeof(Entropy_Config));
+	mimes = calloc(1,sizeof(Entropy_Config_Loaded));
 
 
 	i = strlen(entropy_core_home_dir_get()) + strlen("/.e/apps/entropy") + 2;
@@ -132,77 +266,18 @@ Entropy_Config* entropy_config_init(entropy_core* core) {
 		mkdir(_Entropy_Config->config_dir, 0777);
 	}
 
+	/*Build the eet config data structures*/
+	entropy_config_edd_build();
 
-	/*Build the EDDs*/
-	_entropy_config_mime_binding_action_edd = 
-	eet_data_descriptor_new("entropy_config_mime_binding_action", sizeof(Entropy_Config_Mime_Binding_Action),
-                              (void *(*)(void *))evas_list_next,
-                              (void *(*)(void *, void *))evas_list_append,
-                              (void *(*)(void *))evas_list_data,
-                              (void *(*)(void *))evas_list_free,
-                              (void (*)
-                               (void *,
-                                int (*)(void *, const char *, void *, void *),
-                                void *))evas_hash_foreach, (void *(*)(void *,
-                                                                      const char
-                                                                      *,
-                                                                      void *))
-                              evas_hash_add, (void (*)(void *))evas_hash_free);
-
-	EET_DATA_DESCRIPTOR_ADD_BASIC(_entropy_config_mime_binding_action_edd, Entropy_Config_Mime_Binding_Action,
-                                 "app_description", app_description, EET_T_STRING);
-	EET_DATA_DESCRIPTOR_ADD_BASIC(_entropy_config_mime_binding_action_edd, Entropy_Config_Mime_Binding_Action,
-                                 "executable", executable, EET_T_STRING);
-	EET_DATA_DESCRIPTOR_ADD_BASIC(_entropy_config_mime_binding_action_edd, Entropy_Config_Mime_Binding_Action,
-                                 "args", args, EET_T_STRING);
-
-
-	_entropy_config_mime_binding_edd =
-	eet_data_descriptor_new("entropy_config_mime_binding", sizeof(Entropy_Config_Mime_Binding),
-                              (void *(*)(void *))evas_list_next,
-                              (void *(*)(void *, void *))evas_list_append,
-                              (void *(*)(void *))evas_list_data,
-                              (void *(*)(void *))evas_list_free,
-                              (void (*)
-                               (void *,
-                                int (*)(void *, const char *, void *, void *),
-                                void *))evas_hash_foreach, (void *(*)(void *,
-                                                                      const char
-                                                                      *,
-                                                                      void *))
-                              evas_hash_add, (void (*)(void *))evas_hash_free);
-
-	EET_DATA_DESCRIPTOR_ADD_BASIC(_entropy_config_mime_binding_edd, Entropy_Config_Mime_Binding,
-                                 "mime_type", mime_type, EET_T_STRING);
-	EET_DATA_DESCRIPTOR_ADD_BASIC(_entropy_config_mime_binding_edd, Entropy_Config_Mime_Binding,
-                                 "description", desc, EET_T_STRING);
-	EET_DATA_DESCRIPTOR_ADD_LIST(_entropy_config_mime_binding_edd, Entropy_Config_Mime_Binding, "actions", actions, 
-				_entropy_config_mime_binding_action_edd);
-
-
-	_entropy_config_mimes_edd =
-	eet_data_descriptor_new("entropy_config_mime", sizeof(Entropy_Config_Mime),
-                              (void *(*)(void *))evas_list_next,
-                              (void *(*)(void *, void *))evas_list_append,
-                              (void *(*)(void *))evas_list_data,
-                              (void *(*)(void *))evas_list_free,
-                              (void (*)
-                               (void *,
-                                int (*)(void *, const char *, void *, void *),
-                                void *))evas_hash_foreach, (void *(*)(void *,
-                                                                      const char
-                                                                      *,
-                                                                      void *))
-                              evas_hash_add, (void (*)(void *))evas_hash_free);
-	EET_DATA_DESCRIPTOR_ADD_LIST(_entropy_config_mimes_edd, Entropy_Config_Mime, "mime_bindings", mime_bindings, 
-				_entropy_config_mime_binding_edd);
-
+	/*Check the version of the config, and remove if necessary*/
+	entropy_config_version_check();
 
 
 	/*Check for existence of eet file*/
 	//Does the config dir exist?
 	if (stat(_Entropy_Config->config_dir_and_file_eet, &eetstat)) {
 		//Make the dir..
+		mimes->config_version = ENTROPY_CONFIG_VERSION;
 		mimes->mime_bindings = evas_list_append(mimes->mime_bindings, 
 				entropy_config_binding_new("image/jpeg",
 					entropy_config_binding_action_new("Exhibit (Single File)", "exhibit", "\%pf"),
@@ -272,21 +347,29 @@ Entropy_Config* entropy_config_init(entropy_core* core) {
 	
 		conf_file = eet_open(_Entropy_Config->config_dir_and_file_eet, EET_FILE_MODE_WRITE);
 		if (conf_file) {
-			printf("Conf file loaded to: %p\n", conf_file);
+			char buf[10];
+
+			/*Write the config version..*/
+			snprintf(buf,10,"%d", ENTROPY_CONFIG_VERSION);
+			printf("Writing config version '%s'..\n", buf);
+			if (!(ok = eet_write(conf_file, "/config_version", buf, 10, 0))) {
+				printf("Error writing data!\n");
+			}
 	
-			data = eet_data_descriptor_encode(_entropy_config_mimes_edd, mimes, &size_ret);
-			
-			printf("Write data: %p\n", data);
-			
+			data = eet_data_descriptor_encode(_entropy_config_loaded_edd, mimes, &size_ret);
 			if ( !(ok = eet_write(conf_file, "/config_action", data, 
 		       		size_ret, 0))) {
 				printf("Error writing data!\n");
 				
 			}
-					
 			free(data);
+
 			eet_close(conf_file);
 		}
+
+
+		_Entropy_Config->Loaded_Config = mimes;
+		entropy_config_loaded_config_free();
 	}
 
 
@@ -296,14 +379,17 @@ Entropy_Config* entropy_config_init(entropy_core* core) {
 	conf_file = eet_open(_Entropy_Config->config_dir_and_file_eet, EET_FILE_MODE_READ);
 	if (conf_file) {
 		data = eet_read(conf_file, "/config_action", &size_ret);
-		_Entropy_Config->Config_Mimes = eet_data_descriptor_decode(_entropy_config_mimes_edd, data, size_ret);
+		if (data) {
+			_Entropy_Config->Loaded_Config = eet_data_descriptor_decode(_entropy_config_loaded_edd, data, size_ret);
+			/*Print them out..*/	
+			entropy_config_mimes_print(_Entropy_Config->Loaded_Config);
+		}
 	}
 	/*------*/
 
 
 
-	/*Print them out..*/
-	entropy_config_mimes_print(_Entropy_Config->Config_Mimes);
+
 
 
 	//Init ecore_config
@@ -374,13 +460,25 @@ void entropy_config_eet_config_save()
 	
 	conf_file = eet_open(config->config_dir_and_file_eet, EET_FILE_MODE_WRITE);
 	if (conf_file) {
-		data = eet_data_descriptor_encode(_entropy_config_mimes_edd, config->Config_Mimes, &size_ret);
-		if ( !(ok = eet_write(conf_file, "/config_action", data, 
-	       		size_ret, 0))) {
+		char buf[10];
+		/*Write the config version..*/
+		snprintf(buf,10,"%d", ENTROPY_CONFIG_VERSION);
+		printf("Writing config version '%s'..\n", buf);
+		if (!(ok = eet_write(conf_file, "/config_version", buf, 10, 0))) {
 			printf("Error writing data!\n");
-			
 		}
-		free(data);
+		
+		if (config->Loaded_Config) {
+			data = eet_data_descriptor_encode(_entropy_config_loaded_edd, config->Loaded_Config, &size_ret);
+			if (data) {
+				if ( !(ok = eet_write(conf_file, "/config_action", data, 
+		       		size_ret, 0))) {
+					printf("Error writing data!\n");
+				
+				}
+				free(data);
+			}
+		}
 		eet_close(conf_file);
 	}
 }

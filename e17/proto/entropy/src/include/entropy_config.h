@@ -19,10 +19,11 @@ struct Entropy_Config_Mime_Binding_Action {
 };
 typedef struct Entropy_Config_Mime_Binding_Action Entropy_Config_Mime_Binding_Action;
 
-struct Entropy_Config_Mime {
+struct Entropy_Config_Loaded {
+	int config_version;
 	Evas_List* mime_bindings;
 };
-typedef struct Entropy_Config_Mime Entropy_Config_Mime;
+typedef struct Entropy_Config_Loaded Entropy_Config_Loaded;
 
 
 struct Entropy_Config {
@@ -30,7 +31,8 @@ struct Entropy_Config {
 	char* config_dir_and_file;
 	char* config_dir_and_file_eet;
 
-	Entropy_Config_Mime* Config_Mimes;
+	
+	Entropy_Config_Loaded* Loaded_Config;
 };
 typedef struct Entropy_Config Entropy_Config;
 
@@ -50,6 +52,9 @@ entropy_config_standard_structures_add (entropy_gui_component_instance *
        instance, char *name, char *uri);
 void entropy_config_standard_structures_create ();
 void entropy_config_eet_config_save();
+void entropy_config_version_check();
+void entropy_config_edd_build();
+void entropy_config_loaded_config_free();
 
 
 #define ENTROPY_CONFIG_INT_UNDEFINED 65535
