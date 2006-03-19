@@ -11,10 +11,11 @@ Ecore_List *audiofiles;
 
 int audio = 0;
 int wino = 0;
-int mainwin;
+int mainwin = 15;
 int audiolen;
 int slidenum;
 char *audios;
+char argimage[PATH_MAX];
 char tempdb[PATH_MAX];
 char db[PATH_MAX];
 /*****************/
@@ -37,28 +38,38 @@ main(int argc, char **argv)
 	/*****************************************/
 	/****Get db directory****/
 	char *home;
-	if ( argc > 2 && !strcmp(argv[1], "--slideshow") ) {
-		int imageint;
-		for ( imageint = 2; imageint < argc; imageint++ ) {
-			ecore_dlist_append(m->imagelist, strdup(argv[imageint]));
+	int argint = 1;
+	while ( argint < argc ) { 	
+		if ( argint < argc && !strcmp(argv[argint], "--slideshow") ) {
+			int imageint;
+			imageint = argint;
+			while ( imageint < argc ) {
+				imageint++;
+				ecore_dlist_append(m->imagelist, strdup(argv[imageint]));
+			}
+			mainwin = 0;
+			slideshow_cb(NULL, NULL, NULL);
+			ewl_main();
 		}
-		mainwin = 0;
-		slideshow_cb(NULL, NULL, NULL);
-		ewl_main();
+		else if ( argint < argc && !strcmp(argv[argint], "--view-image") ) {
+			int imageint;
+			imageint = argint;
+			imageint++;
+			snprintf(argimage, PATH_MAX, "%s", argv[imageint]);
+			printf("%s\n", argimage);
+		}
+		argint++;
 	}
-	else {	
+	if ( mainwin == 0 ) {
+		//do nothing
+	}
+	else if ( mainwin != 0 ) {	
 		if ( argv[1] != NULL && ecore_file_is_dir(argv[1]) ) {
 			home = argv[1];
 		}
 		else {
 			home = getenv("HOME");
 		}	
-		//snprintf(tempdb, PATH_MAX, "%s/ephoto_images", home);
-		//if ( !ecore_file_is_dir(tempdb) ) {
-		//	ecore_file_mkdir(tempdb);
-		//}
-		//snprintf(db, PATH_MAX, "%s", tempdb);
-		/**************************/
 		/****Setup the layout****/
 		m->win = ewl_window_new();
 		ewl_window_title_set(EWL_WINDOW(m->win), "ephoto");
@@ -142,6 +153,9 @@ main(int argc, char **argv)
 		ewl_widget_show(m->viewscroll);
 
 		m->vimage = ewl_image_new();
+		if ( argimage != NULL ) {
+			ewl_image_file_set(EWL_IMAGE(m->vimage), argimage, NULL);
+		}
 		ewl_object_fill_policy_set(EWL_OBJECT(m->vimage), EWL_FLAG_FILL_ALL);
 		ewl_image_proportional_set(EWL_IMAGE(m->vimage), TRUE);
 		ewl_container_child_append(EWL_CONTAINER(m->viewscroll), m->vimage);
