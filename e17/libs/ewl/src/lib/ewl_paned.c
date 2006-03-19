@@ -30,6 +30,9 @@ static void ewl_paned_grabber_cb_mouse_move(Ewl_Widget *w, void *ev,
 static void ewl_paned_grabbers_update(Ewl_Paned *p);
 static void ewl_paned_layout_setup(void);
 static int ewl_paned_widgets_resize(Ecore_List *list, int space);
+static int ewl_paned_widgets_place(Ecore_List *from, Ecore_List *to,
+			Ewl_Paned_Layout *layout, int (*size)(Ewl_Object *o), 
+			int other);
 
 /**
  * @return Returns NULL on failure, or a pointer to a new paned widget on success.
@@ -392,36 +395,15 @@ ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	 */
 	if ((min_pane_size <= available_size) 
 			&& (available_size < needed_pane_size))
-	{
-		int other, current;
-
-		other = other_size;
-		while ((child = ecore_list_remove_first(unsized)))
-		{
-			current = layout->minimum_size(EWL_OBJECT(child));
-			layout->variable_request(EWL_OBJECT(child), current);
-			layout->stable_request(EWL_OBJECT(child), other);
-
-			available_size -= current;
-			ecore_list_append(sized, child);
-		}
-	}
+		available_size -= ewl_paned_widgets_place(unsized, sized,
+						layout,
+						layout->minimum_size,
+						other_size);
 	/* give each widget their preferred size */
 	else
-	{
-		int other, current;
-
-		other = other_size;
-		while ((child = ecore_list_remove_first(unsized)))
-		{
-			current = layout->preferred_size(EWL_OBJECT(child));
-			layout->variable_request(EWL_OBJECT(child), current);
-			layout->stable_request(EWL_OBJECT(child), other);
-
-			available_size -= current;
-			ecore_list_append(sized, child);
-		}
-	}
+		available_size -= ewl_paned_widgets_place(unsized, sized,
+						layout, layout->preferred_size, 
+						other_size);
 
 	/* now that the widgets have all been sized we need to distrubute
 	 * any extra space available */
@@ -960,5 +942,31 @@ ewl_paned_widgets_resize(Ecore_List *list, int space)
 	ecore_list_destroy(tmp);
 
 	DRETURN_INT(moved, DLEVEL_STABLE);
+}
+		
+static int
+ewl_paned_widgets_place(Ecore_List *from, Ecore_List *to,
+			Ewl_Paned_Layout *layout,
+			int (*size)(Ewl_Object *o), int other)
+{
+	Ewl_Widget *child;
+	int current, ret = 0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("from", from, 0);
+	DCHECK_PARAM_PTR_RET("to", to, 0);
+	DCHECK_PARAM_PTR_RET("size", size, 0);
+
+	while ((child = ecore_list_remove_first(from)))
+	{
+		current = size(EWL_OBJECT(child));
+		layout->variable_request(EWL_OBJECT(child), current);
+		layout->stable_request(EWL_OBJECT(child), other);
+
+		ret -= current;
+		ecore_list_append(to, child);
+	}
+
+	DRETURN_INT(ret, DLEVEL_STABLE);
 }
 
