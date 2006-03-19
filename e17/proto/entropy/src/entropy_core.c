@@ -375,6 +375,34 @@ void entropy_core_mime_action_add(char* mime_type, char* desc)
 	
 }
 
+void entropy_core_mime_application_add(char* mime_type, char* name, char* executable, char* args)
+{
+	Entropy_Config_Mime_Binding* binding;
+	Entropy_Config_Mime_Binding_Action* action;
+	
+	Evas_List* l;
+
+
+	for (l = core_core->config->Config_Mimes->mime_bindings; l; ) {
+		binding = l->data;
+
+		if (!strcmp(binding->mime_type, mime_type)) {
+			/*Create a new action, based on this mime_type*/
+			action = calloc(1,sizeof(Entropy_Config_Mime_Binding_Action));
+
+			action->app_description = strdup(name);
+			action->executable = strdup(executable);
+			action->args = strdup(args);
+
+			binding->actions = evas_list_append(binding->actions, action);
+		}
+		
+		l = l->next;
+	}
+
+
+}
+
 void entropy_core_config_load() 
 {
 	int count, new_count;
@@ -494,7 +522,7 @@ Entropy_Config_Mime_Binding_Action* entropy_core_mime_hint_get(char* mime_type, 
 
 	Entropy_Config_Mime_Binding* binding;
 	Entropy_Config_Mime_Binding_Action* action;
-	Evas_List* l, *l2;
+	Evas_List* l;
 
 	for (l = core_core->config->Config_Mimes->mime_bindings; l; ) {
 		binding = l->data;
