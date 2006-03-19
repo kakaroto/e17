@@ -646,9 +646,10 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                     {
                        r = ((unsigned short)(*buffer_ptr) & rmask) >> rshift;
                        g = ((unsigned short)(*buffer_ptr) & gmask) >> gshift;
-                       b = ((unsigned short)(*(buffer_ptr++)) & bmask) >>
+                       b = ((unsigned short)(*(buffer_ptr)) & bmask) >>
                            bshift;
                        *ptr++ = 0xff000000 | (r << 16) | (g << 8) | b;
+		       buffer_ptr += 2;
                     }
                   ptr -= w * 2;
                   buffer_ptr += skip;
@@ -723,8 +724,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                        g = ((unsigned long)(*buffer_ptr) & gmask) >> gshift;
                        b = ((unsigned long)(*buffer_ptr) & bmask) >> bshift;
                        *ptr++ = 0xff000000 | (r << 16) | (g << 8) | b;
-                       r = *(buffer_ptr++);
-                       r = *(buffer_ptr++);
+		       buffer_ptr+=4;
                     }
                   ptr -= w * 2;
                   buffer_ptr += skip;
