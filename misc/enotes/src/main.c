@@ -139,6 +139,12 @@ Usage: enotes [options]");
 		if (autosave_timer)
 			ecore_timer_del(autosave_timer);
 
+    /* Save and Free the Configuration */
+    ecore_config_save();
+    dml("Configuration Saved", 1);
+    mainconfig_free(main_config);
+    dml("Configuration Structure Free'd", 1);
+
 		/* Shutdown the E-Libs */
 		edje_shutdown();
 		ecore_evas_shutdown();
@@ -151,12 +157,7 @@ Usage: enotes [options]");
 	ecore_ipc_shutdown();
 	dml("IPC Shutdown", 1);
 
-	/* Save and Free the Configuration */
-	ecore_config_save();
-	dml("Configuration Saved", 1);
-	mainconfig_free(main_config);
-	dml("Configuration Structure Free'd", 1);
-
 	dml("Leaving.", 1);
 	return (0);
 }
+
