@@ -1,6 +1,22 @@
 #include "Ewl_Test.h"
 #include <stdio.h>
 
+/**
+ * @addtogroup Ewl_Paned
+ * @section pane_infi Information
+ * The Ewl_Paned widget is designed to hold multiple panes if needed. If you
+ * want to have three panes or four panges just add the panes and it will
+ * add the grabbers as needed. The paned widget is an Ewl_Container so to
+ * add panes you just use the container functions to append, prepend and
+ * insert as needed.
+ * 
+ * @section init_layout Initial Layout
+ * If you need to set the initial sizes of the items in the grabber then you
+ * will need to set their preferred size. If, after the paned is already
+ * displayed, you need to change the size it will use the current size of
+ * the pane.
+ */
+
 static int create_test(Ewl_Container *box);
 static void ewl_paned_test_cb_clicked_destroy(Ewl_Widget *w, void *ev, 
 							void *data);
