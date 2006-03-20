@@ -10,10 +10,6 @@
 #include "e_mod_config.h"
 #include "config.h"
 
-#ifdef HAVE_LINUX
-#include <mntent.h>
-#endif
-
 #ifdef HAVE_BSD
 #include <sys/mount.h>
 #endif
@@ -56,7 +52,6 @@ static void    _mbar_config_menu_new(MBar *mb);
 static MBar_Bar *_mbar_bar_new(MBar *mb, E_Container *con);
 static void    _mbar_bar_free(MBar_Bar *mbb);
 static void    _mbar_bar_menu_new(MBar_Bar *mbb);
-/* static void    _mbar_bar_enable(MBar_Bar *mbb); */
 static void    _mbar_bar_disable(MBar_Bar *mbb);
 static void    _mbar_bar_frame_resize(MBar_Bar *mbb);
 static void    _mbar_bar_edge_change(MBar_Bar *mbb, int edge);
@@ -150,15 +145,15 @@ e_modapi_shutdown(E_Module *m)
      m->config_menu = NULL;
 
    mb = m->data;
-   if (mb) 
+   if (!mb)
+     return 1;
+   
+   if (mb->config_dialog) 
      {
-	if (mb->config_dialog) 
-	  {
-	     e_object_del(E_OBJECT(mb->config_dialog));
-	     mb->config_dialog = NULL;
-	  }
-	_mbar_free(mb);
+	e_object_del(E_OBJECT(mb->config_dialog));
+	mb->config_dialog = NULL;
      }
+   _mbar_free(mb);
    return 1;
 }
 
@@ -221,7 +216,8 @@ _mbar_new()
 
    bar_count = 0;
    mb = E_NEW(MBar, 1);
-   if (!mb) return NULL;
+   if (!mb) 
+     return NULL;
 
    conf_bar_edd = E_CONFIG_DD_NEW("MBar_Config_Bar", Config_Bar);
 #undef T
@@ -337,7 +333,7 @@ _mbar_new()
 
 #ifdef HAVE_LINUX   
    /* Add File Monitor for /etc/mtab */
-   mb->mon = ecore_file_monitor_add("/etc/mtab", _mbar_mtab_update, mb);
+   mb->mon = ecore_file_monitor_add(MTAB, _mbar_mtab_update, mb);
 #endif
 
    return mb;
@@ -519,7 +515,8 @@ _mbar_bar_new(MBar *mb, E_Container *con)
    char buf[4096];
 
    mbb = E_NEW(MBar_Bar, 1);
-   if (!mbb) return NULL;
+   if (!mbb) 
+     return NULL;
    mbb->mbar = mb;
    mb->bars = evas_list_append(mb->bars, mbb);
 
@@ -647,11 +644,6 @@ _mbar_bar_new(MBar *mb, E_Container *con)
     * of apps has changed since last startup */
    _mbar_bar_frame_resize(mbb);
 
-   /*
-   edje_object_signal_emit(mbb->bar_object, "passive", "");
-   edje_object_signal_emit(mbb->overlay_object, "passive", "");
-   */
-
    return mbb;
 }
 
@@ -667,15 +659,20 @@ _mbar_bar_free(MBar_Bar *mbb)
 
    e_drop_handler_del(mbb->drop_handler);
 
-   if (mbb->timer) ecore_timer_del(mbb->timer);
-   if (mbb->animator) ecore_animator_del(mbb->animator);
+   if (mbb->timer) 
+     ecore_timer_del(mbb->timer);
+   if (mbb->animator) 
+     ecore_animator_del(mbb->animator);
    evas_object_del(mbb->bar_object);
-   if (mbb->overlay_object) evas_object_del(mbb->overlay_object);
+   if (mbb->overlay_object) 
+     evas_object_del(mbb->overlay_object);
    evas_object_del(mbb->box_object);
    evas_object_del(mbb->event_object);
-   if (mbb->drag_object) evas_object_del(mbb->drag_object);
+   if (mbb->drag_object) 
+     evas_object_del(mbb->drag_object);
    mbb->drag_object = NULL;
-   if (mbb->drag_object_overlay) evas_object_del(mbb->drag_object_overlay);
+   if (mbb->drag_object_overlay) 
+     evas_object_del(mbb->drag_object_overlay);
    mbb->drag_object_overlay = NULL;
 
    e_gadman_client_save(mbb->gmc);
@@ -720,25 +717,13 @@ _mbar_bar_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi)
    _config_mbar_module(mbb->con, mbb->mbar);
 }
 
-/*
-static void
-_mbar_bar_enable(MBar_Bar *mbb)
-{
-   mbb->conf->enabled = 1;
-   evas_object_show(mbb->bar_object);
-   if (mbb->overlay_object) evas_object_show(mbb->overlay_object);
-   evas_object_show(mbb->box_object);
-   evas_object_show(mbb->event_object);
-   e_config_save_queue();
-}
-*/
-
 static void
 _mbar_bar_disable(MBar_Bar *mbb)
 {
    mbb->conf->enabled = 0;
    evas_object_hide(mbb->bar_object);
-   if (mbb->overlay_object) evas_object_hide(mbb->overlay_object);
+   if (mbb->overlay_object) 
+     evas_object_hide(mbb->overlay_object);
    evas_object_hide(mbb->box_object);
    evas_object_hide(mbb->event_object);
    e_config_save_queue();
@@ -748,7 +733,6 @@ static MBar_Icon *
 _mbar_icon_new(MBar_Bar *mbb, E_App *a)
 {
    MBar_Icon *ic;
-   //   char *str;
    Evas_Object *o;
    Evas_Coord w, h;
    char buf[4096];
@@ -756,7 +740,8 @@ _mbar_icon_new(MBar_Bar *mbb, E_App *a)
    int ow, oh;
 
    ic = E_NEW(MBar_Icon, 1);
-   if (!ic) return NULL;
+   if (!ic) 
+     return NULL;
    ic->mbb = mbb;
    ic->app = a;
    e_object_ref(E_OBJECT(a));
@@ -825,13 +810,6 @@ _mbar_icon_new(MBar_Bar *mbb, E_App *a)
 			  w, h /* max */
 			  );
 
-/*
-   str = (char *)edje_object_data_get(ic->icon_object, "raise_on_hilight");
-   if (str)
-     {
-	if (atoi(str) == 1) ic->raise_on_hilight = 1;
-     }
-*/
    edje_object_signal_emit(ic->bg_object, "passive", "");
    edje_object_signal_emit(ic->overlay_object, "passive", "");
    
@@ -1171,7 +1149,8 @@ _mbar_bar_follower_reset(MBar_Bar *mbb)
 {
    Evas_Coord ww, hh, bx, by, bw, bh, d1, d2, mw, mh;
 
-   if (!mbb->overlay_object) return;
+   if (!mbb->overlay_object) 
+     return;
 
    evas_output_viewport_get(mbb->evas, NULL, NULL, &ww, &hh);
    evas_object_geometry_get(mbb->box_object, &bx, &by, &bw, &bh);
@@ -1777,7 +1756,8 @@ _mbar_bar_cb_follower(void *data)
 	     Evas_Object *o;
 
 	     mbb = l->data;
-	     if (mbb->overlay_object) continue;
+	     if (mbb->overlay_object) 
+	       continue;
 	     o = edje_object_add(mbb->evas);
 	     mbb->overlay_object = o;
 	     evas_object_layer_set(o, 2);
@@ -1797,7 +1777,8 @@ _mbar_bar_cb_follower(void *data)
 	for (l = mb->bars; l; l = l->next)
 	  {
 	     mbb = l->data;
-	     if (!mbb->overlay_object) continue;
+	     if (!mbb->overlay_object) 
+	       continue;
 	     evas_object_del(mbb->overlay_object);
 	     mbb->overlay_object = NULL;
 	  }
@@ -2052,7 +2033,7 @@ _mbar_parse_fstab(MBar *mb)
    int i, u;
    char *token = NULL;
    
-   if ((f = fopen("/etc/fstab", "r")) == NULL) 
+   if ((f = fopen(FSTAB, "r")) == NULL) 
      return;
    
    *s = 0;
