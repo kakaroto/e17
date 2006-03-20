@@ -108,6 +108,7 @@ static int     _mbar_exe_cb_exit(void *data, int type, void *event);
 static int     _mbar_parse_file(char *file, const char *mntpath); 
 static void    _mbar_parse_fstab(MBar *mb);
 static void    _mbar_add_order(const char *dir, const char *name);
+static void    _mbar_mtab_update(void *data, Ecore_File_Monitor *monitor, Ecore_File_Event event, const char *path);
 
 /* Config Updated Function Protos */
 static void    _mbar_bar_cb_width_auto(void *data);
@@ -325,6 +326,9 @@ _mbar_new()
 	       }
 	  }
      }
+   
+   /* Add File Monitor for /etc/mtab */
+   mb->mon = ecore_file_monitor_add("/etc/mtab", _mbar_mtab_update, mb);
    return mb;
 }
 
@@ -342,6 +346,10 @@ _mbar_free(MBar *mb)
    if (mb->conf->appdir) evas_stringshare_del(mb->conf->appdir);
    e_app_change_callback_del(_mbar_app_change, mb);
    e_object_del(E_OBJECT(mb->config_menu));
+   
+   if (mb->mon)
+     ecore_file_monitor_del(mb->mon);
+   
    evas_list_free(mb->conf->bars);
    free(mb->conf);
    free(mb);
@@ -2153,4 +2161,40 @@ _mbar_add_order(const char *dir, const char *name)
      return;
    fwrite(name, sizeof(char), strlen(name), f);
    fclose(f);
+}
+
+static void 
+_mbar_mtab_update(void *data, Ecore_File_Monitor *monitor, Ecore_File_Event event, const char *path) 
+{
+   MBar *mb;
+   Evas_List *l, *il;
+   const char *file;
+   
+   mb = data;
+   if (!mb)
+     return;
+   
+   file = ecore_file_get_file((char *)path);
+   if (!strcmp(file, "mtab")) 
+     {
+	if (event == ECORE_FILE_EVENT_MODIFIED) 
+	  {
+	     for (l = mb->bars; l; l = l->next) 
+	       {
+		  MBar_Bar *mbb;
+		  mbb = l->data;
+		  if (!mbb)
+		    continue;
+		  for (il = mbb->icons; il; il = il->next) 
+		    {
+		       MBar_Icon *ic;
+		       int mounted;
+		       
+		       ic = il->data;
+		       mounted = _mbar_is_mounted(ic->app->generic);
+		       _mbar_set_state(ic, mounted);
+		    }		  
+	       }
+	  }
+     }
 }
