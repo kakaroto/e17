@@ -13,16 +13,35 @@ static int _etk_server_main_loop = 1;
 
 int main(int argc, char **argv)
 {
-   char *fifo_path;
-
+   char *fifo_path = NULL;
+   int i, pid = 0;
+	
    if(argc <= 1)
      {
 	printf(_("etk_server error: no fifo file provided\n"));
 	return -1;
-     }      
+     }
    
-   fifo_path = argv[1];
+   for(i = 1; i < argc; i++)
+     {
+        if(!strcmp(argv[i], "-d"))
+          pid = 1;
+	else fifo_path = argv[i];
+     }	
    
+   if(pid == 1)	
+     {
+	 pid = fork();
+	 if(pid)
+	    exit(EXIT_SUCCESS);
+     }	
+	
+   if(fifo_path == NULL)
+     {
+	printf(_("etk_server error: no fifo file provided\n"));
+	return -1;
+     }
+	
    if(ecore_file_exists(fifo_path))
      if(!ecore_file_unlink(fifo_path))
        {
@@ -52,7 +71,6 @@ int main(int argc, char **argv)
 		
 	if((len = fread(&input, sizeof(char), 255, fifo)) > 0)
 	  {
-	     int i;
 	     int cur;
 	     int spaces = 0;
 	     int laststate;
