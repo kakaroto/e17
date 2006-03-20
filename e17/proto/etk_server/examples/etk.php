@@ -1,6 +1,7 @@
-#!/usr/bin/php -q
-
+#!/usr/local/bin/php -q
 <?php
+
+/* Etk-Php Demo. Required Php 5.x */
 
 define(FIFO, "/tmp/etk_server_fifo");
 define(EtkTrue, 1);
@@ -8,6 +9,9 @@ define(EtkFalse, 0);
 
 class Etk
 {    
+    static private $loop = true;
+    static private $callbacks = Array();
+    
     function Etk()
     { }
     
@@ -61,36 +65,81 @@ class Etk
     {
 	return 0;
     }
+    
+    function AddCallback($name, $callback)
+    {
+	if(!is_array(self::$callbacks[$name]))
+	  self::$callbacks[$name] = Array();
+	   
+	array_push(self::$callbacks[$name], $callback);
+    }
+    
+    function Main()
+    {
+	$this->loop = EtkTrue;
+	
+	while ( $this->loop )
+	{
+	    $event = Etk::Call("server_callback");
+	    
+	    if(!is_array(self::$callbacks[$event]))
+	      continue;	   
+	    
+	    if(array_count_values(self::$callbacks[$event]) > 0)
+	    {		
+		foreach(self::$callbacks[$event] as $func)
+		  $func();	    	   
+	    }
+	}	
+    }
+    
+    function MainQuit()
+    {
+	$this->loop = EtkFalse;
+	$this->Call("main_quit");
+	$this->Call("server_shutdown");
+    }
 }
 
-class Widget extends Etk
+class Object extends Etk
+{
+    var $object;
+    
+    function Object()
+    {
+	parent::Etk();
+    }
+    
+    function SignalConnect($name, $callback)
+    {
+	$this->Call("server_signal_connect \"$name\" ".$this->Get()." \"".$name."_".$this->object."\"");
+	$this->AddCallback($name."_".$this->object, $callback);
+    }    
+}
+
+class Widget extends Object
 {
     var $widget;
     
     function Widget()
     {
-	parent::Etk();
+	parent::Object();
     }
     
     function Set($w)
     {
-	$this->widget = $w;
+	$this->object = $w;
     }
     
     function Get()
     {
-	return $this->widget;
+	return $this->object;
     }
     
     function ShowAll()
     {
 	$this->Call("widget_show_all ".$this->Get());
-    }
-    
-    function SignalConnect($name, $id)
-    {
-	$this->Call("server_signal_connect \"$name\" ".$this->Get()." \"$id\"");
-    }
+    }    
 }
 
 class Image extends Widget
@@ -106,13 +155,43 @@ class Image extends Widget
     }
 }	    
 
-class Button extends Widget
+class Container extends Widget
+{
+    function Container()
+    {
+	parent::Widget();
+    }
+    
+    function Add($widget)
+    {
+	$this->Call("container_add ".$this->Get(). " ".$widget->Get());
+    }	
+}
+
+class Bin extends Container
+{
+    function Bin()
+    {
+	parent::Container();
+    }
+    
+    function ChildSet($child)
+    {
+	$this->Call("bin_child_set ".$this->Get()." ".$child->Get());
+    }
+    
+    function ChildGet()
+    {
+    }
+}
+	
+class Button extends Bin
 {
     var $image;
     
     function Button($label = "", $img = "")
     {
-	parent::Widget();
+	parent::Bin();
 	
 	if(!empty($label))
 	  $this->Set($this->Call("button_new_with_label \"$label\""));
@@ -127,17 +206,16 @@ class Button extends Widget
     }
 }
 
-class Container extends Widget
+class CheckButton extends Button
 {
-    function Container()
+    function CheckButton($label = "")
     {
-	parent::Widget();
+	parent::Button($label);
+	if(!empty($label))
+	  $this->Set($this->Call("check_button_new_with_label \"$label\""));
+	else
+	  $this->Set($this->Call("check_button_new"));
     }
-    
-    function Add($widget)
-    {
-	$this->Call("container_add ".$this->Get(). " ".$widget->Get());
-    }	
 }
 
 class Window extends Container
@@ -196,27 +274,42 @@ class VBox Extends Box
     }
 }
 
-Etk::Connect();
-Etk::Call("init");
+class HBox Extends Box
+{
+    function HBox($homogenous = EtkFalse, $padding = 0)
+    {
+	parent::Box();
+	$this->Set($this->Call("hbox_new $homogenous $padding"));
+    }
+}
+
+/* Main Application */
+
+$etk = new Etk();
+$etk->Connect();
+$etk->Call("init");
 
 $win = new Window("Etk-Php Demo");
-$win->SignalConnect("delete_event", "window_deleted");
+$win->SignalConnect("delete_event", _window_deleted_cb);
 
 $vbox = new VBox(EtkFalse, 0);
 
 $button1 = new Button("Php owns!");
-$button1->SignalConnect("clicked", "button_1_clicked");
+$button1->SignalConnect("clicked", _button_1_clicked_cb);
 
 $button2 = new Button("Etk owns!");
-$button2->SignalConnect("clicked", "button_2_clicked");
+$button2->SignalConnect("clicked", _button_2_clicked_cb);
+
+$check_button1 = new CheckButton("Check me!");
 
 $entry = new Entry("Moo!");
 
 $button3 = new Button("Get Text");
-$button3->SignalConnect("clicked", "button_3_clicked");
+$button3->SignalConnect("clicked", _button_3_clicked_cb);
 
 $vbox->PackStart($button1);
 $vbox->PackStart($button2);
+$vbox->PackStart($check_button1);
 $vbox->PackStart($entry);
 $vbox->PackStart($button3);
 
@@ -224,32 +317,30 @@ $win->Add($vbox);
 
 $win->ShowAll();
 
-$loop = EtkTrue;
-while ( $loop )
+$etk->Main();
+
+function _button_1_clicked_cb()
 {
-    $event = Etk::Call("server_callback");
-    
-    switch($event)
-    {
-     case "button_1_clicked":
-	print("Button 1 clicked!\n");
-	break;
-	
-     case "button_2_clicked":
-	print("Button 2 clicked!\n");
-	break;
-
-     case "button_3_clicked":
-	printf("Text = ".$entry->TextGet());
-	break;
-	
-     case "window_deleted":
-	$loop = EtkFalse;
-	break;
-    }
+    printf("Button 1 clicked!\n");
 }
-
-Etk::Call("main_quit");
-Etk::Call("server_shutdown");
+		
+function _button_2_clicked_cb()
+{
+    printf("Button 2 clicked!\n");
+}
+		
+function _button_3_clicked_cb()
+{
+    global $entry;
+    
+    printf("Text = ".$entry->TextGet()."\n");
+}
+		
+function _window_deleted_cb()
+{
+    global $etk;
+    
+    $etk->MainQuit();
+}
 
 ?>
