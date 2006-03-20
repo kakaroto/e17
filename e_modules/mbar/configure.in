@@ -21,6 +21,15 @@ MODULE_ARCH="$host_os-$host_cpu"
 AC_SUBST(MODULE_ARCH)
 AC_DEFINE_UNQUOTED(MODULE_ARCH, "$MODULE_ARCH", "Module architecture")
 
+case "$host_os" in
+    *bsd*)
+       AC_DEFINE(HAVE_BSD, [], "Have a BSD distribution")
+    ;;
+    linux*)
+       AC_DEFINE(HAVE_LINUX, [], "Have a Linux distribution")
+    ;;
+esac
+
 dnl AC_CHECK_HEADERS(dirent.h,, AC_MSG_ERROR([Cannot find dirent.h])
 
 dnl Check for things we need to mount/unmount/eject

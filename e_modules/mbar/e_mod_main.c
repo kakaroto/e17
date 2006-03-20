@@ -10,6 +10,14 @@
 #include "e_mod_config.h"
 #include "config.h"
 
+#ifdef HAVE_LINUX
+#include <mntent.h>
+#endif
+
+#ifdef HAVE_BSD
+#include <sys/mount.h>
+#endif
+
 /* TODO List:
  *
  * * Listen to change of main e_app!
@@ -326,9 +334,12 @@ _mbar_new()
 	       }
 	  }
      }
-   
+
+#ifdef HAVE_LINUX   
    /* Add File Monitor for /etc/mtab */
    mb->mon = ecore_file_monitor_add("/etc/mtab", _mbar_mtab_update, mb);
+#endif
+
    return mb;
 }
 
@@ -346,10 +357,12 @@ _mbar_free(MBar *mb)
    if (mb->conf->appdir) evas_stringshare_del(mb->conf->appdir);
    e_app_change_callback_del(_mbar_app_change, mb);
    e_object_del(E_OBJECT(mb->config_menu));
-   
+
+#ifdef HAVE_LINUX   
    if (mb->mon)
      ecore_file_monitor_del(mb->mon);
-   
+#endif
+
    evas_list_free(mb->conf->bars);
    free(mb->conf);
    free(mb);

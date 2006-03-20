@@ -41,7 +41,8 @@ struct _MBar
    E_Menu      *config_menu;
 
    Config      *conf;
-   E_Config_Dialog *config_dialog;   
+   E_Config_Dialog *config_dialog;
+   Ecore_File_Monitor *mon;
 };
 
 struct _MBar_Bar
