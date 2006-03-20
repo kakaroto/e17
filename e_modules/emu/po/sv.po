@@ -1,0 +1,177 @@
+# Swedish translation of Emu module for E17.
+# This file is put in the public domain.
+# Anders Trobäck <enlightenment@troback.com>, 2006.
+# , fuzzy
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Emu module for E17 N/A\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-03-20 12:55+0100\n"
+"PO-Revision-Date: 2006-03-20 13:14+0100\n"
+"Last-Translator: Anders Trobäck <enlightenment@troback.com>\n"
+"Language-Team: Swedish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: src/modules/emu/border_props.c:55
+msgid "Window properties"
+msgstr "Fönsteregenskaper"
+
+#: src/modules/emu/border_props.c:224 src/modules/emu/border_props.c:279
+msgid "Window identification"
+msgstr "Fönsteridentitet"
+
+#: src/modules/emu/border_props.c:225 src/modules/emu/border_props.c:292
+msgid "Title (%T)"
+msgstr "Titel (%T)"
+
+#: src/modules/emu/border_props.c:231 src/modules/emu/border_props.c:310
+msgid "Properties"
+msgstr "Egenskaper"
+
+#: src/modules/emu/border_props.c:232 src/modules/emu/border_props.c:311
+#, c-format
+msgid "Position (%p)"
+msgstr "Position (%p)"
+
+#: src/modules/emu/border_props.c:236 src/modules/emu/border_props.c:315
+#, c-format
+msgid "Size (%s)"
+msgstr "Storlek (%s)"
+
+#: src/modules/emu/border_props.c:240 src/modules/emu/border_props.c:323
+msgid "Border style (%b)"
+msgstr "Ramstil (%b)"
+
+#: src/modules/emu/border_props.c:244
+#, c-format
+msgid "Stickiness (%p)"
+msgstr "Klibbig (%p)"
+
+#: src/modules/emu/border_props.c:248 src/modules/emu/border_props.c:331
+#, c-format
+msgid "Virtual desktop (%d)"
+msgstr "Virtuellt skrivbord (%d)"
+
+#: src/modules/emu/border_props.c:252 src/modules/emu/border_props.c:335
+msgid "Shaded state (%r)"
+msgstr "Skymt läge (%r)"
+
+#: src/modules/emu/border_props.c:256 src/modules/emu/border_props.c:347
+#, c-format
+msgid "Fullscreen (%f)"
+msgstr "Helskärm (%f)"
+
+#: src/modules/emu/border_props.c:260 src/modules/emu/border_props.c:351
+#, c-format
+msgid "Iconified (%i)"
+msgstr "Minimerat (%i)"
+
+#: src/modules/emu/border_props.c:280
+msgid "Window ID (%I)"
+msgstr "Fönster ID (%I)"
+
+#: src/modules/emu/border_props.c:284
+msgid "Window name (%N)"
+msgstr "Fönsternamn (%N)"
+
+#: src/modules/emu/border_props.c:288
+#, c-format
+msgid "Window class (%C)"
+msgstr "Fönsterklass (%C)"
+
+#: src/modules/emu/border_props.c:296
+msgid "Window role (%R)"
+msgstr "Fönsterroll (%R)"
+
+#: src/modules/emu/border_props.c:300
+#, c-format
+msgid "Window type (%S)"
+msgstr "Fönstertyp (%S)"
+
+#: src/modules/emu/border_props.c:304
+msgid "Transient (%H)"
+msgstr "Transient (%H)"
+
+#: src/modules/emu/border_props.c:319
+msgid "Layer (%l)"
+msgstr "Lager (%l)"
+
+#: src/modules/emu/border_props.c:327
+msgid "Stickiness (%y)"
+msgstr "Klibbigt (%y)"
+
+#: src/modules/emu/border_props.c:339
+msgid "Screen zone (%z)"
+msgstr "Skärmområde (%z)"
+
+#: src/modules/emu/border_props.c:343
+msgid "Window list skip (%w)"
+msgstr "Ignorera fönsterlist (%w)"
+
+#: src/modules/emu/e_mod_config.c:45
+msgid "Emu Configuration"
+msgstr "Emu konfiguration"
+
+#: src/modules/emu/e_mod_main.c:147
+msgid "Enlightenment Emu Module - version "
+msgstr "Enlightenment Emu Modul - version "
+
+#: src/modules/emu/e_mod_main.c:149
+msgid ""
+"Experimental generic scriptable module for E17.<br><br>Keep an eye out for "
+"the emu's.<br>Don't even try to run away, they're fast buggers.<br>Hiding in "
+"your dunny doesn't help, they can kick dunnies down."
+msgstr ""
+
+#: src/modules/emu/e_mod_main.c:305
+msgid "Enlightenment Emu Module - error"
+msgstr "Enlightenment Emu Modul - fel"
+
+#: src/modules/emu/e_mod_main.c:305
+msgid "There is no emu."
+msgstr "Det finns ingen emu."
+
+#: src/modules/emu/e_mod_main.c:650
+msgid "Add face"
+msgstr "Lägg till yta"
+
+#: src/modules/emu/e_mod_main.c:652
+msgid "Remove face"
+msgstr "Ta bort yta"
+
+#: src/modules/emu/e_mod_main.c:655
+msgid "Add row"
+msgstr "Lägg till rad"
+
+#: src/modules/emu/e_mod_main.c:657
+msgid "Remove row"
+msgstr "Ta bort rad"
+
+#: src/modules/emu/e_mod_main.c:659
+msgid "Add column"
+msgstr "Lägg till kolumn"
+
+#: src/modules/emu/e_mod_main.c:661
+msgid "Remove column"
+msgstr "Ta bort kolumn"
+
+#: src/modules/emu/e_mod_main.c:667
+msgid "Transparent"
+msgstr "Transparent"
+
+#: src/modules/emu/e_mod_main.c:673
+msgid "Zoom icons"
+msgstr "Zooma ikoner"
+
+#: src/modules/emu/e_mod_main.c:679
+msgid "Stretch bar"
+msgstr "Sträck ut fältet"
+
+#: src/modules/emu/e_mod_main.c:685
+msgid "Cling to edge"
+msgstr "Klibba fast vid kanten"
+
