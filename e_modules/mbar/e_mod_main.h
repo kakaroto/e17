@@ -4,6 +4,8 @@
 #ifndef E_MOD_MAIN_H
 #define E_MOD_MAIN_H
 
+#include "config.h"
+
 typedef struct _Config      Config;
 typedef struct _Config_Bar  Config_Bar;
 typedef struct _MBar        MBar;
@@ -42,7 +44,12 @@ struct _MBar
 
    Config      *conf;
    E_Config_Dialog *config_dialog;
+   #ifdef HAVE_LINUX
    Ecore_File_Monitor *mon;
+   #endif
+   #ifdef HAVE_BSD
+   Ecore_Timer    *mon_timer;   
+   #endif
 };
 
 struct _MBar_Bar

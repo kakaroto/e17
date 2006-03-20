@@ -11,6 +11,8 @@
 #include "config.h"
 
 #ifdef HAVE_BSD
+#include <sys/param.h>
+#include <sys/ucred.h>
 #include <sys/mount.h>
 #endif
 
@@ -112,6 +114,11 @@ static int     _mbar_parse_file(char *file, const char *mntpath);
 static void    _mbar_parse_fstab(MBar *mb);
 static void    _mbar_add_order(const char *dir, const char *name);
 static void    _mbar_mtab_update(void *data, Ecore_File_Monitor *monitor, Ecore_File_Event event, const char *path);
+
+#ifdef HAVE_BSD
+static int     _mbar_bsd_is_mounted(const char *path);
+static int     _mbar_bsd_cb_timer(void *data);
+#endif
 
 /* Config Updated Function Protos */
 static void    _mbar_bar_cb_width_auto(void *data);
@@ -335,7 +342,10 @@ _mbar_new()
    /* Add File Monitor for /etc/mtab */
    mb->mon = ecore_file_monitor_add(MTAB, _mbar_mtab_update, mb);
 #endif
-
+#ifdef HAVE_BSD
+   mb->mon_timer = ecore_timer_add(2.0, _mbar_bsd_cb_timer, mb);
+#endif
+   
    return mb;
 }
 
@@ -358,7 +368,11 @@ _mbar_free(MBar *mb)
    if (mb->mon)
      ecore_file_monitor_del(mb->mon);
 #endif
-
+#ifdef HAVE_BSD
+   if (mb->mon_timer)
+     ecore_timer_del(mb->mon_timer);
+#endif
+   
    evas_list_free(mb->conf->bars);
    free(mb->conf);
    free(mb);
@@ -813,7 +827,12 @@ _mbar_icon_new(MBar_Bar *mbb, E_App *a)
    edje_object_signal_emit(ic->bg_object, "passive", "");
    edje_object_signal_emit(ic->overlay_object, "passive", "");
    
+   #ifdef HAVE_LINUX
    _mbar_set_state(ic, _mbar_is_mounted(ic->app->generic));
+   #endif
+   #ifdef HAVE_BSD
+   _mbar_set_state(ic, _mbar_bsd_is_mounted(ic->app->generic));   
+   #endif
    return ic;
 }
 
@@ -1291,7 +1310,12 @@ _mbar_icon_cb_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	if (!drag)
 	  {	
 	     _mbar_exe_exit_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _mbar_exe_cb_exit, NULL);
+	     #ifdef HAVE_LINUX
 	     mounted = _mbar_is_mounted(ic->app->generic);
+	     #endif
+	     #ifdef HAVE_BSD
+	     mounted = _mbar_bsd_is_mounted(ic->app->generic);	     
+	     #endif
 	     _mbar_set_state(ic, mounted);
 	     if (!mounted)
 	       _mbar_mount_point(ic);
@@ -1491,7 +1515,8 @@ _mbar_bar_cb_animator(void *data)
 	     evas_object_move(mbb->overlay_object, x, y + (h * mbb->follow) - (mh / 2));
 	  }
      }
-   if (mbb->timer) return 1;
+   if (mbb->timer) 
+     return 1;
    mbb->animator = NULL;
    return 0;
 }
@@ -1857,11 +1882,9 @@ _mbar_is_mounted(const char *path)
    mounted = _mbar_parse_file(PROCMOUNTS, path);
    if (mounted <= 0) 
      {
-	#ifdef LINUX
 	mounted = _mbar_parse_file(MTAB, path);
 	if (mounted <= 0)
 	  mounted = 0;
-	#endif
      }
    return mounted;
 }
@@ -1947,8 +1970,13 @@ _mbar_exe_cb_exit(void *data, int type, void *event)
      return 1;
    
    ic = ecore_exe_data_get(x);
-   tag = ecore_exe_tag_get(x);   
+   tag = ecore_exe_tag_get(x);
+   #ifdef HAVE_LINUX
    mounted = _mbar_is_mounted(ic->app->generic);
+   #endif
+   #ifdef HAVE_BSD
+   mounted = _mbar_bsd_is_mounted(ic->app->generic);   
+   #endif
    x = NULL;
    ecore_event_handler_del(_mbar_exe_exit_handler);
    
@@ -2141,8 +2169,7 @@ _mbar_add_order(const char *dir, const char *name)
    char path[4096];
    
    snprintf(path, sizeof(path), 
-	    "%s/.e/e/applications/%s/.order", 
-	    getenv("HOME"), dir);
+	    "%s/.e/e/applications/%s/.order", getenv("HOME"), dir);
 
    if (!ecore_file_exists(path)) 
      {
@@ -2187,10 +2214,61 @@ _mbar_mtab_update(void *data, Ecore_File_Monitor *monitor, Ecore_File_Event even
 		       int mounted;
 		       
 		       ic = il->data;
+		       #ifdef HAVE_LINUX
 		       mounted = _mbar_is_mounted(ic->app->generic);
+		       #endif
+		       #ifdef HAVE_BSD
+		       mounted = _mbar_bsd_is_mounted(ic->app->generic);
+		       #endif
 		       _mbar_set_state(ic, mounted);
 		    }		  
 	       }
 	  }
      }
 }
+
+#ifdef HAVE_BSD
+static int 
+_mbar_bsd_is_mounted(const char *path) 
+{
+   struct statfs *mnts;
+   int num, i, mounted;
+   
+   mounted = 0;
+   num = getmntinfo(&mnts, MNT_NOWAIT);
+   for (i = 0; i < num; i++) 
+     {
+	if (!strcmp(mnts[i].f_mntonname, path)) 
+	  mounted = 1;	
+     }
+   return mounted;
+}
+
+static int 
+_mbar_bsd_cb_timer(void *data) 
+{
+   MBar *mb;
+   Evas_List *l, *il;
+   
+   mb = data;
+   if (!mb)
+     return;
+   
+   for (l = mb->bars; l; l = l->next) 
+     {
+	MBar_Bar *mbb;
+	mbb = l->data;
+	if (!mbb)
+	  continue;
+	for (il = mbb->icons; il; il = il->next) 
+	  {
+	     MBar_Icon *ic;
+	     int mounted;
+	     
+	     ic = il->data;
+	     mounted = _mbar_bsd_is_mounted(ic->app->generic);
+	     _mbar_set_state(ic, mounted);
+	  }		  
+     }
+}
+#endif
