@@ -53,8 +53,6 @@ main(int argc, char **argv)
 			}
 			mainwin = 0;
 			nopresent = 0;
-			slideshow_cb(NULL, NULL, NULL);
-			ewl_main();
 		}
 		else if ( argint < argc && !strcmp(argv[argint], "--presentation") && nopresent != 0 ) {
 			int imageint;
@@ -66,8 +64,6 @@ main(int argc, char **argv)
 			}
 			mainwin	= 0;
 			noslide = 0;
-			presentation_cb(NULL, NULL, NULL);
-			ewl_main();
 		}
 		else if ( argint < argc && !strcmp(argv[argint], "--view-image") ) {
 			int imageint;
@@ -76,10 +72,30 @@ main(int argc, char **argv)
 			snprintf(argimage, PATH_MAX, "%s", argv[imageint]);
 			printf("%s\n", argimage);
 		}
+		else if ( argint < argc && !strcmp(argv[argint], "--audio") ) {
+			int imageint;
+			imageint = argint;
+			imageint++;
+			snprintf(argaudio, PATH_MAX, "%s", argv[imageint]);
+			audios = argaudio;
+		}
+		else if ( argint < argc && !strcmp(argv[argint], "--help") ) {
+			printf("ephoto /path/to/dir loads /path/to/dir as default directory\n");
+			printf("ephoto --view-image /full/path/to/image sets /full/path/to/image as the default image in the image viewer tab.\n");
+			printf("ephoto --slideshow /full/path/to/image /full/path/to/image /full/path/to/image starts the slideshow using the specified images\n");
+			mainwin = 0;
+		}
 		argint++;
 	}
 	if ( mainwin == 0 ) {
-		//do nothing
+		if ( nopresent == 0 ) {
+			slideshow_cb(NULL, NULL, NULL);
+			ewl_main();	
+		}
+		if ( noslide == 0 ) {
+			presentation_cb(NULL, NULL, NULL);
+			ewl_main();
+		}
 	}
 	else if ( mainwin != 0 ) {	
 		if ( argv[1] != NULL && ecore_file_is_dir(argv[1]) ) {
@@ -359,6 +375,9 @@ main(int argc, char **argv)
 		ewl_widget_show(m->text);
 		
 		m->atext = ewl_text_new();
+		if ( audios != NULL ) {
+			ewl_text_text_set(EWL_TEXT(m->atext), argaudio);
+		}
 		ewl_container_child_append(EWL_CONTAINER(m->settings), m->atext);
 		ewl_object_alignment_set(EWL_OBJECT(m->atext), EWL_FLAG_ALIGN_CENTER);
 		ewl_text_font_size_set(EWL_TEXT(m->atext), 12);
