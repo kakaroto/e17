@@ -226,9 +226,9 @@ _weather_new(void)
 	char *p;
 	int port = 0;
 	
-	host = strchr(env, ',');
+	host = strchr(env, ':');
 	host += 3;
-	p = strchr(host, '.');
+	p = strchr(host, ':');
 	if (p) 
 	  {
 	     *p = 0;
@@ -603,8 +603,17 @@ _weather_parse(Weather_Face *wf)
      {
 	needle = strstr(needle, ">");
 	sscanf(needle, ">%[^<]<", wf->location);
+	if (wf->location) 
+	  {
+	     char *tmp = strdup(wf->location);
+	     if (strstr(tmp, ",")) 
+	       {
+		  tmp = strtok(tmp, ",");
+		  snprintf(wf->location, sizeof(wf->location), "%s", tmp);
+	       }  
+	  }
      }
-   
+      
    needle = strstr(wf->buffer, "<content:encoded>");
    if (!needle)
      goto error;
@@ -675,39 +684,22 @@ _weather_display_set(Weather_Face *wf, int ok)
    if (!wf)
      return;
 
-   /* If _get_weather fails, blank out text and set icon to unknown */
+   e_icon_file_set(wf->icon_obj, PACKAGE_DATA_DIR "/images/na.png");
+   edje_object_part_swallow(wf->weather_obj, "icon", wf->icon_obj);
+   edje_object_part_text_set(wf->weather_obj, "location", wf->location);
+   
+   if (wf->conf->display == DETAILED_DISPLAY)
+     edje_object_signal_emit(wf->weather_obj, "set_style", "detailed");
+   else
+     edje_object_signal_emit(wf->weather_obj, "set_style", "simple");
+   
    if (!ok)
      {
-        e_icon_file_set(wf->icon_obj, PACKAGE_DATA_DIR "/images/na.png");
-        edje_object_part_swallow(wf->weather_obj, "icon", wf->icon_obj);
-        edje_object_part_text_set(wf->weather_obj, "location", wf->location);
         edje_object_part_text_set(wf->weather_obj, "temp", "");
         edje_object_part_text_set(wf->weather_obj, "conditions", "");
-        if (wf->conf->display == DETAILED_DISPLAY)
-	  edje_object_signal_emit(wf->weather_obj, "set_style", "detailed");
-        else
-	  edje_object_signal_emit(wf->weather_obj, "set_style", "simple");
      }
-   else if (wf->conf->display == DETAILED_DISPLAY)
+   else 
      {
-        /* Detailed display */
-        edje_object_signal_emit(wf->weather_obj, "set_style", "detailed");
-        snprintf(buf, sizeof(buf), PACKAGE_DATA_DIR "/images/%s", wf->icon);
-        e_icon_file_set(wf->icon_obj, buf);
-        edje_object_part_swallow(wf->weather_obj, "icon", wf->icon_obj);
-        edje_object_part_text_set(wf->weather_obj, "location", wf->location);
-        snprintf(buf, sizeof(buf), "%d°%c", wf->temp, wf->degrees);
-        edje_object_part_text_set(wf->weather_obj, "temp", buf);
-        edje_object_part_text_set(wf->weather_obj, "conditions", wf->conditions);
-     }
-   else
-     {
-        /* Simple display */
-        edje_object_signal_emit(wf->weather_obj, "set_style", "simple");
-        snprintf(buf, sizeof(buf), PACKAGE_DATA_DIR "/images/%s", wf->icon);
-        e_icon_file_set(wf->icon_obj, buf);
-        edje_object_part_swallow(wf->weather_obj, "icon", wf->icon_obj);
-        edje_object_part_text_set(wf->weather_obj, "location", wf->location);
         snprintf(buf, sizeof(buf), "%d°%c",wf->temp, wf->degrees);
         edje_object_part_text_set(wf->weather_obj, "temp", buf);
         edje_object_part_text_set(wf->weather_obj, "conditions", wf->conditions);
