@@ -1876,9 +1876,11 @@ _mbar_is_mounted(const char *path)
    mounted = _mbar_parse_file(PROCMOUNTS, path);
    if (mounted <= 0) 
      {
+	#ifdef LINUX
 	mounted = _mbar_parse_file(MTAB, path);
 	if (mounted <= 0)
 	  mounted = 0;
+	#endif
      }
    return mounted;
 }
