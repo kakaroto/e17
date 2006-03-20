@@ -8,6 +8,4 @@ TODO:
 Support automount
 Support labels for devices.
 Support turning off eject for a device.
-
-
-
+Support Polling mtab to keep track of what is mounted/unmounted.
