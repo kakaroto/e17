@@ -17,7 +17,7 @@ static void _mem_face_cb_menu_edit      (void *data, E_Menu *mn, E_Menu_Item *mi
 static void _mem_face_cb_menu_configure (void *data, E_Menu *mn, E_Menu_Item *mi);
 static int  _mem_face_update_values     (void *data);
 static void _mem_face_get_mem_values    (Mem_Face *cf, int *real, int *swap, int *total_real, int *total_swap);
-static void _mem_face_graph_values      (Mem_Face *mf, int val);
+static void _mem_face_graph_values      (Mem_Face *mf, int rval, int sval);
 static void _mem_face_graph_clear       (Mem_Face *mf);
 static int mem_count;
 
@@ -367,7 +367,7 @@ _mem_face_free(Mem_Face *cf)
      evas_object_del(cf->rtxt_obj);
    if (cf->stxt_obj)
      evas_object_del(cf->stxt_obj);
-   if (cf->old_real)
+   if (cf->old_real || cf->old_swap)
      _mem_face_graph_clear(cf);
    
    if (cf->gmc) 
@@ -486,9 +486,10 @@ _mem_face_update_values(void *data)
 	edje_object_part_text_set(cf->stxt_obj, "swap-text", "");	
      }
 
-   double tr = ((double)real / (double)total_real);   
-   if (cf->mem->conf->show_graph)
-     _mem_face_graph_values(cf, (tr * 100));
+   double tr = ((double)real / (double)total_real);
+   double ts = ((double)swap / (double)total_swap);   
+   if (cf->mem->conf->show_graph) 
+     _mem_face_graph_values(cf, (tr * 100), (ts * 100));
    else
      _mem_face_graph_clear(cf);
    
@@ -567,7 +568,7 @@ _mem_face_get_mem_values(Mem_Face *cf, int *real, int *swap, int *total_real, in
 }
 
 static void 
-_mem_face_graph_values(Mem_Face *mf, int val) 
+_mem_face_graph_values(Mem_Face *mf, int rval, int sval) 
 {
    int x, y, w, h;
    Evas_Object *o;
@@ -577,17 +578,18 @@ _mem_face_graph_values(Mem_Face *mf, int val)
    
    evas_object_geometry_get(mf->chart_obj, &x, &y, &w, &h);
    
-   val = (int)(((double)val) * (((double)h) / ((double)100)));      
+   rval = (int)(((double)rval) * (((double)h) / ((double)100)));      
+   sval = (int)(((double)sval) * (((double)h) / ((double)100)));      
 
    o = evas_object_line_add(mf->evas);
    edje_object_part_swallow(mf->chart_obj, "lines", o);
    evas_object_layer_set(o, 1);
-   if (val == 0)
+   if (rval == 0)
      evas_object_hide(o);
    else 
      {
-	evas_object_line_xy_set(o, (x + w), (y + h), (x + w), ((y + h) - val));
-	evas_object_color_set(o, 255, 0, 0, 125);
+	evas_object_line_xy_set(o, (x + w), y, (x + w), (y + rval));
+	evas_object_color_set(o, 213, 91, 91, 125);
 	evas_object_pass_events_set(o, 1);
 	evas_object_show(o);
      }
@@ -610,6 +612,38 @@ _mem_face_graph_values(Mem_Face *mf, int val)
 	mf->old_real = evas_list_remove(mf->old_real, last);
 	evas_object_del(last);
      }   
+
+   o = evas_object_line_add(mf->evas);
+   edje_object_part_swallow(mf->chart_obj, "lines", o);
+   evas_object_layer_set(o, 1);
+   if (sval == 0)
+     evas_object_hide(o);
+   else 
+     {
+	evas_object_line_xy_set(o, (x + w), (y + h), (x + w), (y + h - sval));
+	evas_object_color_set(o, 218, 195, 35, 125);
+	evas_object_pass_events_set(o, 1);
+	evas_object_show(o);
+     }
+   
+   mf->old_swap = evas_list_prepend(mf->old_swap, o);
+   l = mf->old_swap;
+   for (i = (x + w); l && (j -2) < w; l = l->next, j++) 
+     {
+	Evas_Coord oy;
+	Evas_Object *lo;
+	
+	lo = (Evas_Object *)evas_list_data(l);
+	evas_object_geometry_get(lo, NULL, &oy, NULL, NULL);
+	evas_object_move(lo, i--, oy);
+	last = lo;
+     }
+   
+   if ((j - 2) >= w) 
+     {
+	mf->old_swap = evas_list_remove(mf->old_swap, last);
+	evas_object_del(last);
+     }   
 }
 
 static void 
@@ -625,5 +659,14 @@ _mem_face_graph_clear(Mem_Face *mf)
      }
    evas_list_free(mf->old_real);
    mf->old_real = NULL;   
+
+   for (l = mf->old_swap; l; l = l->next) 
+     {
+	Evas_Object *o;
+	o = evas_list_data(l);
+	evas_object_del(o);
+     }
+   evas_list_free(mf->old_swap);
+   mf->old_swap = NULL;      
 }
 
