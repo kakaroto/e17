@@ -16,6 +16,7 @@ int nopresent = 15;
 int noslide = 15;
 int audiolen;
 int slidenum;
+int arglength = 0;
 char *audios;
 char argimage[PATH_MAX];
 char argaudio[PATH_MAX];
@@ -79,10 +80,18 @@ main(int argc, char **argv)
 			snprintf(argaudio, PATH_MAX, "%s", argv[imageint]);
 			audios = argaudio;
 		}
+		else if ( argint < argc && !strcmp(argv[argint], "--length") ) {
+			int imageint;
+			imageint = argint;
+			imageint++;
+			arglength = atoi(argv[imageint]);
+		}
 		else if ( argint < argc && !strcmp(argv[argint], "--help") ) {
 			printf("ephoto /path/to/dir loads /path/to/dir as default directory\n");
 			printf("ephoto --view-image /full/path/to/image sets /full/path/to/image as the default image in the image viewer tab.\n");
 			printf("ephoto --slideshow /full/path/to/image /full/path/to/image /full/path/to/image starts the slideshow using the specified images\n");
+			printf("ephoto --audio /full/path/to/audio sets /full/path/to/audio as default audio for slideshow\n");
+			printf("ephoto --length length sets the integer length(seconds) as the transition time for slideshow\n");
 			mainwin = 0;
 		}
 		argint++;
@@ -253,7 +262,12 @@ main(int argc, char **argv)
 		ewl_widget_show(m->text);
 		
 		m->slidetime = ewl_spinner_new();
-		ewl_spinner_value_set(EWL_SPINNER(m->slidetime), 3);
+		if ( arglength != 0 ) {
+			ewl_spinner_value_set(EWL_SPINNER(m->slidetime), arglength);
+		}
+		else if ( arglength == 0 ) {
+			ewl_spinner_value_set(EWL_SPINNER(m->slidetime), 3);
+		}
 		ewl_spinner_min_val_set(EWL_SPINNER(m->slidetime), 1);
 		ewl_spinner_max_val_set(EWL_SPINNER(m->slidetime), 1000);
 		ewl_container_child_append(EWL_CONTAINER(m->hboxv), m->slidetime);
