@@ -30,7 +30,7 @@ _configure_weather_module(Weather_Face *wf)
    v->basic.apply_cfdata = _basic_apply_data;
    v->basic.create_widgets = _basic_create_widgets;
    v->override_auto_apply = 1;
-   cfd = e_config_dialog_new(wf->con, _("Weather Configuration"), NULL, 0, v, wf);
+   cfd = e_config_dialog_new(wf->con, D_("Weather Configuration"), NULL, 0, v, wf);
    wf->weather->cfd = cfd;
 }
 
@@ -72,35 +72,35 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    E_Radio_Group *rg, *dg;
    
    o = e_widget_list_add(evas, 0, 0);
-   of = e_widget_framelist_add(evas, _("Display Settings"), 0);   
+   of = e_widget_framelist_add(evas, D_("Display Settings"), 0);   
    rg = e_widget_radio_group_new(&(cfdata->display));
-   ob = e_widget_radio_add(evas, _("Simple"), SIMPLE_DISPLAY, rg);
+   ob = e_widget_radio_add(evas, D_("Simple"), SIMPLE_DISPLAY, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, _("Detailed"), DETAILED_DISPLAY, rg);
+   ob = e_widget_radio_add(evas, D_("Detailed"), DETAILED_DISPLAY, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_label_add(evas, _("Poll Time"));
+   ob = e_widget_label_add(evas, D_("Poll Time"));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_slider_add(evas, 1, 0, _("%2.0f minutes"), 15.0, 60.0, 1.0, 0, &(cfdata->poll_time), NULL, 40);
+   ob = e_widget_slider_add(evas, 1, 0, D_("%2.0f minutes"), 15.0, 60.0, 1.0, 0, &(cfdata->poll_time), NULL, 40);
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-   of = e_widget_framelist_add(evas, _("Degree Settings"), 0);      
+   of = e_widget_framelist_add(evas, D_("Degree Settings"), 0);      
    dg = e_widget_radio_group_new(&(cfdata->degrees));
-   ob = e_widget_radio_add(evas, _("Celcius"), DEGREES_C, dg);
+   ob = e_widget_radio_add(evas, D_("Celsius"), DEGREES_C, dg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, _("Farenheit"), DEGREES_F, dg);
+   ob = e_widget_radio_add(evas, D_("Farenheit"), DEGREES_F, dg);
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
    
-   of = e_widget_frametable_add(evas, _("ICAO Code"), 0);
-   ob = e_widget_label_add(evas, _("ICAO code"));
+   of = e_widget_frametable_add(evas, D_("ICAO Code"), 0);
+   ob = e_widget_label_add(evas, D_("ICAO Code"));
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 0, 1, 0);   
    ob = e_widget_entry_add(evas, (&(cfdata->code)));
    e_widget_min_size_set(ob, 100, 1);
    e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 0, 1, 0);
-   ob = e_widget_label_add(evas, _("Get your ICAO code at:"));
+   ob = e_widget_label_add(evas, D_("Get your ICAO code at:"));
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 0, 1, 0);
-   ob = e_widget_label_add(evas, _("http://www.weather.gov/tg/siteloc.shtml"));
+   ob = e_widget_label_add(evas, D_("http://www.weather.gov/tg/siteloc.shtml"));
    e_widget_frametable_object_append(of, ob, 0, 2, 2, 1, 1, 0, 1, 0);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
    

@@ -6,74 +6,67 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Weather\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-19 15:47+0100\n"
-"PO-Revision-Date: 2006-03-19 15:53+0100\n"
+"POT-Creation-Date: 2006-03-20 20:24+0100\n"
+"PO-Revision-Date: 2006-03-20 20:21+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_main.c:136
-msgid "Enlightenment Weather Module"
-msgstr "Modulo Weather di Enlightenment"
+#: e_mod_config.c:33
+msgid "Weather Configuration"
+msgstr "Configurazione di Weather"
 
-#: e_mod_main.c:137
-msgid "A weather forecast module for Enlightenment."
-msgstr "Un modulo per le previsioni del tempo per Enlightenment."
-
-#: e_mod_main.c:225 e_mod_main.c:261 e_mod_main.c:396 e_mod_main.c:1160
-msgid "Set Degrees"
-msgstr "Scala di temperatura"
-
-#: e_mod_main.c:229 e_mod_main.c:265 e_mod_main.c:400 e_mod_main.c:1164
-msgid "Set Display"
+#: e_mod_config.c:75
+msgid "Display Settings"
 msgstr "Visualizzazione"
 
-#: e_mod_main.c:233 e_mod_main.c:269 e_mod_main.c:404 e_mod_main.c:1168
-msgid "Set Update Time"
-msgstr "Intervallo d'aggiornamento"
-
-#: e_mod_main.c:319
-msgid "15 minutes"
-msgstr "15 minuti"
-
-#: e_mod_main.c:327
-msgid "30 minutes"
-msgstr "30 minuti"
-
-#: e_mod_main.c:335
-msgid "1 hour"
-msgstr "1 ora"
-
-#: e_mod_main.c:348
+#: e_mod_config.c:77
 msgid "Simple"
 msgstr "Semplice"
 
-#: e_mod_main.c:356
+#: e_mod_config.c:79
 msgid "Detailed"
 msgstr "Dettagliata"
 
-#: e_mod_main.c:369
-msgid "Fahrenheit"
-msgstr "Fahrenheit"
+#: e_mod_config.c:81
+msgid "Poll Time"
+msgstr "Tempo di campionamento"
 
-#: e_mod_main.c:377
+#: e_mod_config.c:83
+#, c-format
+msgid "%2.0f minutes"
+msgstr "%2.0f minuti"
+
+#: e_mod_config.c:87
+msgid "Degree Settings"
+msgstr "Scala temperatura"
+
+#: e_mod_config.c:89
 msgid "Celsius"
-msgstr "Centigradi"
+msgstr "Centigrada"
 
-#: e_mod_main.c:408
-msgid "Faces"
-msgstr "Faccia"
+#: e_mod_config.c:91
+msgid "Farenheit"
+msgstr "Farenheit"
 
-#: e_mod_main.c:439 e_mod_main.c:561
-msgid "Add Face"
-msgstr "Aggiungi faccia"
+#: e_mod_config.c:95 e_mod_config.c:96
+msgid "ICAO Code"
+msgstr "Codice ICAO"
 
-#: e_mod_main.c:566
-msgid "Remove Face"
-msgstr "Cancella faccia"
+#: e_mod_config.c:101
+msgid "Get your ICAO code at:"
+msgstr "Ottenete il codice ICAO da:"
 
-#: e_mod_main.c:575
-msgid "Choose Continent"
-msgstr "Scegli continente"
+#: e_mod_config.c:103
+msgid "http://www.weather.gov/tg/siteloc.shtml"
+msgstr "http://www.weather.gov/tg/siteloc.shtml"
+
+#: e_mod_main.c:92
+msgid "Enlightenment Weather Module"
+msgstr "Modulo Weather di Enlightenment"
+
+#: e_mod_main.c:93
+msgid "A weather forecast module for Enlightenment"
+msgstr "Un modulo per le previsioni del tempo per Enlightenment."
