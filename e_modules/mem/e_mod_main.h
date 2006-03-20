@@ -39,7 +39,7 @@ struct _Mem_Face
    E_Container *con;
    E_Menu *menu;
    Mem *mem;
-   Evas_List *old_real;
+   Evas_List *old_real, *old_swap;
    
    Config_Face *conf;
    E_Config_DD *conf_face_edd;
