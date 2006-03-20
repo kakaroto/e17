@@ -638,7 +638,6 @@ _weather_parse(Weather_Face *wf)
    if (!needle)
      goto error;
    sscanf(needle, ">%[^<]<", wf->conditions);
-   printf("Cond: %s\n", wf->conditions);
    
    /* Get the temp */
    needle = strstr(needle, "class=\"temp\"");
