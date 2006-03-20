@@ -2,7 +2,7 @@
 #else
 #ifndef EASY_MENU_H
 #define EASY_MENU_H
-#include "e.h"
+#include "e_mod_main.h"
 
 typedef struct _Easy_Menu Easy_Menu;
 

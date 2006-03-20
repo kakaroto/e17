@@ -1,4 +1,4 @@
-#include "e_mod_main.h"
+#include "e_mod_config.h"
 
 typedef struct _Cfg_File_Data Cfg_File_Data;
 
@@ -42,7 +42,7 @@ _config_emu_module(E_Container *con, Emu *emu)
    v->advanced.create_widgets = _advanced_create_widgets;
 
    /* Create The Dialog */
-   cfd = e_config_dialog_new(con, _("Emu Configuration"), NULL, 0, v, emu);
+   cfd = e_config_dialog_new(con, D_("Emu Configuration"), NULL, 0, v, emu);
    emu->config_dialog = cfd;
 }
 

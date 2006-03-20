@@ -1,0 +1,177 @@
+# Italian translation for E17 emu module.
+# This file is put in the public domain.
+# Massimo Maiurana <maiurana@inwind.it>, 2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Emu\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-03-19 18:31+0100\n"
+"PO-Revision-Date: 2006-03-19 20:20+0100\n"
+"Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/modules/emu/border_props.c:55
+msgid "Window properties"
+msgstr "Proprietà finestra"
+
+#: src/modules/emu/border_props.c:224 src/modules/emu/border_props.c:279
+msgid "Window identification"
+msgstr "Identificazione finestra"
+
+#: src/modules/emu/border_props.c:225 src/modules/emu/border_props.c:292
+msgid "Title (%T)"
+msgstr "Titolo (%T)"
+
+#: src/modules/emu/border_props.c:231 src/modules/emu/border_props.c:310
+msgid "Properties"
+msgstr "Proprietà"
+
+#: src/modules/emu/border_props.c:232 src/modules/emu/border_props.c:311
+#, c-format
+msgid "Position (%p)"
+msgstr "Posizione (%p)"
+
+#: src/modules/emu/border_props.c:236 src/modules/emu/border_props.c:315
+#, c-format
+msgid "Size (%s)"
+msgstr "Dimensione (%s)"
+
+#: src/modules/emu/border_props.c:240 src/modules/emu/border_props.c:323
+msgid "Border style (%b)"
+msgstr "Stile del bordo (%b)"
+
+#: src/modules/emu/border_props.c:244
+#, c-format
+msgid "Stickiness (%p)"
+msgstr "Appiccicata (%p)"
+
+#: src/modules/emu/border_props.c:248 src/modules/emu/border_props.c:331
+#, c-format
+msgid "Virtual desktop (%d)"
+msgstr "Desktop virtuale (%d)"
+
+#: src/modules/emu/border_props.c:252 src/modules/emu/border_props.c:335
+msgid "Shaded state (%r)"
+msgstr "Arrotolata (%r)"
+
+#: src/modules/emu/border_props.c:256 src/modules/emu/border_props.c:347
+#, c-format
+msgid "Fullscreen (%f)"
+msgstr "A schermo pieno (%f)"
+
+#: src/modules/emu/border_props.c:260 src/modules/emu/border_props.c:351
+#, c-format
+msgid "Iconified (%i)"
+msgstr "Iconificata (%i)"
+
+#: src/modules/emu/border_props.c:280
+msgid "Window ID (%I)"
+msgstr "ID finestra (%I)"
+
+#: src/modules/emu/border_props.c:284
+msgid "Window name (%N)"
+msgstr "Nome finestra (%N)"
+
+#: src/modules/emu/border_props.c:288
+#, c-format
+msgid "Window class (%C)"
+msgstr "Classe finestra (%C)"
+
+#: src/modules/emu/border_props.c:296
+msgid "Window role (%R)"
+msgstr "Ruolo finestra (%R)"
+
+#: src/modules/emu/border_props.c:300
+#, c-format
+msgid "Window type (%S)"
+msgstr "Tipo finestra (%S)"
+
+#: src/modules/emu/border_props.c:304
+msgid "Transient (%H)"
+msgstr "Transitoria (%H)"
+
+#: src/modules/emu/border_props.c:319
+msgid "Layer (%l)"
+msgstr "Livello (%l)"
+
+#: src/modules/emu/border_props.c:327
+msgid "Stickiness (%y)"
+msgstr "Appiccicata (%y)"
+
+#: src/modules/emu/border_props.c:339
+msgid "Screen zone (%z)"
+msgstr "Zona schermo (%z)"
+
+#: src/modules/emu/border_props.c:343
+msgid "Window list skip (%w)"
+msgstr "Fuori lista finestre (%w)"
+
+#: src/modules/emu/e_mod_config.c:45
+msgid "Emu Configuration"
+msgstr "Configurazione di Emu"
+
+#: src/modules/emu/e_mod_main.c:148
+msgid "Enlightenment Emu Module - version "
+msgstr "Modulo Emu di Enlightenment - versione"
+
+#: src/modules/emu/e_mod_main.c:150
+msgid ""
+"Experimental generic scriptable module for E17.<br><br>Keep an eye out for "
+"the emu's.<br>Don't even try to run away, they're fast buggers.<br>Hiding in "
+"your dunny doesn't help, they can kick dunnies down."
+msgstr ""
+"Modulo sperimentale generico scriptabile per E17.<br><br>Fate sempre attenzione "
+"agli emu.<br>Non cercate neanche di scappare, sono pederasti veloci.<br>Non "
+"aiuterà neanche rifugiarsi nella stupidità, possono sventarla."
+
+#: src/modules/emu/e_mod_main.c:306
+msgid "Enlightenment Emu Module - error"
+msgstr "Modulo Emu di Enlightenment - errore"
+
+#: src/modules/emu/e_mod_main.c:306
+msgid "There is no emu."
+msgstr "Non ci sono emu"
+
+#: src/modules/emu/e_mod_main.c:651
+msgid "Add face"
+msgstr "Aggiungi elemento"
+
+#: src/modules/emu/e_mod_main.c:653
+msgid "Remove face"
+msgstr "Cancella elemento"
+
+#: src/modules/emu/e_mod_main.c:656
+msgid "Add row"
+msgstr "Aggiungi riga"
+
+#: src/modules/emu/e_mod_main.c:658
+msgid "Remove row"
+msgstr "Cancella riga"
+
+#: src/modules/emu/e_mod_main.c:660
+msgid "Add column"
+msgstr "Aggiungi colonna"
+
+#: src/modules/emu/e_mod_main.c:662
+msgid "Remove column"
+msgstr "Cancella colonna"
+
+#: src/modules/emu/e_mod_main.c:668
+msgid "Transparent"
+msgstr "Trasparente"
+
+#: src/modules/emu/e_mod_main.c:674
+msgid "Zoom icons"
+msgstr "Ingrandisci icone"
+
+#: src/modules/emu/e_mod_main.c:680
+msgid "Stretch bar"
+msgstr "Allunga la barra"
+
+#: src/modules/emu/e_mod_main.c:686
+msgid "Cling to edge"
+msgstr "Appendi al confine"

@@ -1,7 +1,7 @@
 /*
  * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
  */
-#include "e.h"
+#include "border_props.h"
 
 struct _E_Config_Dialog_Data
 {
@@ -52,7 +52,7 @@ border_props_dialog(E_Container *con, E_Border * bd)
         v->advanced.create_widgets = _border_props_dialog_advanced_create_widgets;
 
         /* Create The Dialog */
-        cfd = e_config_dialog_new(con, _("Window properties"), NULL, 0, v, bd);
+        cfd = e_config_dialog_new(con, D_("Window properties"), NULL, 0, v, bd);
      }
 }
 
@@ -221,43 +221,43 @@ _border_props_dialog_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Co
    _border_props_dialog_fill_data(bd, cfdata);
    o = e_widget_list_add(evas, 0, 0);
 
-   of = e_widget_frametable_add(evas, _("Window identification"), 0);
-   ob = e_widget_label_add(evas, _("Title (%T)"));
+   of = e_widget_frametable_add(evas, D_("Window identification"), 0);
+   ob = e_widget_label_add(evas, D_("Title (%T)"));
    e_widget_frametable_object_append(of, ob, 0, 3, 1, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, cfdata->title);
    e_widget_frametable_object_append(of, ob, 1, 3, 1, 1, 1, 1, 1, 1);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-   of = e_widget_frametable_add(evas, _("Properties"), 0);
-   ob = e_widget_label_add(evas, _("Position (%p)"));
+   of = e_widget_frametable_add(evas, D_("Properties"), 0);
+   ob = e_widget_label_add(evas, D_("Position (%p)"));
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, cfdata->position);     // bd->x, bd->y
    e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_label_add(evas, _("Size (%s)"));
+   ob = e_widget_label_add(evas, D_("Size (%s)"));
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, cfdata->size); // bd->w, bd->h
    e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_label_add(evas, _("Border style (%b)"));
+   ob = e_widget_label_add(evas, D_("Border style (%b)"));
    e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, cfdata->border);
    e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_label_add(evas, _("Stickiness (%p)"));
+   ob = e_widget_label_add(evas, D_("Stickiness (%p)"));
    e_widget_frametable_object_append(of, ob, 0, 3, 1, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, cfdata->sticky);
    e_widget_frametable_object_append(of, ob, 1, 3, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_label_add(evas, _("Virtual desktop (%d)"));
+   ob = e_widget_label_add(evas, D_("Virtual desktop (%d)"));
    e_widget_frametable_object_append(of, ob, 0, 4, 1, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, cfdata->desk);
    e_widget_frametable_object_append(of, ob, 1, 4, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_label_add(evas, _("Shaded state (%r)"));
+   ob = e_widget_label_add(evas, D_("Shaded state (%r)"));
    e_widget_frametable_object_append(of, ob, 0, 5, 1, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, cfdata->shaded);
    e_widget_frametable_object_append(of, ob, 1, 5, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_label_add(evas, _("Fullscreen (%f)"));
+   ob = e_widget_label_add(evas, D_("Fullscreen (%f)"));
    e_widget_frametable_object_append(of, ob, 0, 6, 1, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, cfdata->fullscreen);
    e_widget_frametable_object_append(of, ob, 1, 6, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_label_add(evas, _("Iconified (%i)"));
+   ob = e_widget_label_add(evas, D_("Iconified (%i)"));
    e_widget_frametable_object_append(of, ob, 0, 7, 1, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, cfdata->icon);
    e_widget_frametable_object_append(of, ob, 1, 7, 1, 1, 1, 1, 1, 1);
@@ -276,79 +276,79 @@ _border_props_dialog_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E
    _border_props_dialog_fill_data(bd, cfdata);
    o = e_widget_list_add(evas, 0, 0);
 
-   of = e_widget_frametable_add(evas, _("Window identification"), 0);
-   ob = e_widget_label_add(evas, _("Window ID (%I)"));
+   of = e_widget_frametable_add(evas, D_("Window identification"), 0);
+   ob = e_widget_label_add(evas, D_("Window ID (%I)"));
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, cfdata->ID);
    e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_label_add(evas, _("Window name (%N)"));
+   ob = e_widget_label_add(evas, D_("Window name (%N)"));
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, cfdata->name);
    e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_label_add(evas, _("Window class (%C)"));
+   ob = e_widget_label_add(evas, D_("Window class (%C)"));
    e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, cfdata->class);
    e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_label_add(evas, _("Title (%T)"));
+   ob = e_widget_label_add(evas, D_("Title (%T)"));
    e_widget_frametable_object_append(of, ob, 0, 3, 1, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, cfdata->title);
    e_widget_frametable_object_append(of, ob, 1, 3, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_label_add(evas, _("Window role (%R)"));
+   ob = e_widget_label_add(evas, D_("Window role (%R)"));
    e_widget_frametable_object_append(of, ob, 0, 4, 1, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, cfdata->role);
    e_widget_frametable_object_append(of, ob, 1, 4, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_label_add(evas, _("Window type (%S)"));
+   ob = e_widget_label_add(evas, D_("Window type (%S)"));
    e_widget_frametable_object_append(of, ob, 0, 5, 1, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, cfdata->type);
    e_widget_frametable_object_append(of, ob, 1, 5, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_label_add(evas, _("Transient (%H)"));
+   ob = e_widget_label_add(evas, D_("Transient (%H)"));
    e_widget_frametable_object_append(of, ob, 0, 6, 1, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, cfdata->transient);
    e_widget_frametable_object_append(of, ob, 1, 6, 1, 1, 1, 1, 1, 1);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-   of = e_widget_frametable_add(evas, _("Properties"), 0);
-   ob = e_widget_label_add(evas, _("Position (%p)"));
+   of = e_widget_frametable_add(evas, D_("Properties"), 0);
+   ob = e_widget_label_add(evas, D_("Position (%p)"));
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, cfdata->position);
    e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_label_add(evas, _("Size (%s)"));
+   ob = e_widget_label_add(evas, D_("Size (%s)"));
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, cfdata->size);
    e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_label_add(evas, _("Layer (%l)"));
+   ob = e_widget_label_add(evas, D_("Layer (%l)"));
    e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, cfdata->layer);
    e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_label_add(evas, _("Border style (%b)"));
+   ob = e_widget_label_add(evas, D_("Border style (%b)"));
    e_widget_frametable_object_append(of, ob, 0, 3, 1, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, cfdata->border);
    e_widget_frametable_object_append(of, ob, 1, 3, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_label_add(evas, _("Stickiness (%y)"));
+   ob = e_widget_label_add(evas, D_("Stickiness (%y)"));
    e_widget_frametable_object_append(of, ob, 0, 4, 1, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, cfdata->sticky);
    e_widget_frametable_object_append(of, ob, 1, 4, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_label_add(evas, _("Virtual desktop (%d)"));
+   ob = e_widget_label_add(evas, D_("Virtual desktop (%d)"));
    e_widget_frametable_object_append(of, ob, 0, 5, 1, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, cfdata->desk);
    e_widget_frametable_object_append(of, ob, 1, 5, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_label_add(evas, _("Shaded state (%r)"));
+   ob = e_widget_label_add(evas, D_("Shaded state (%r)"));
    e_widget_frametable_object_append(of, ob, 0, 6, 1, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, cfdata->shaded);
    e_widget_frametable_object_append(of, ob, 1, 6, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_label_add(evas, _("Screen zone (%z)"));
+   ob = e_widget_label_add(evas, D_("Screen zone (%z)"));
    e_widget_frametable_object_append(of, ob, 0, 7, 1, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, cfdata->zone);
    e_widget_frametable_object_append(of, ob, 1, 7, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_label_add(evas, _("Window list skip (%w)"));
+   ob = e_widget_label_add(evas, D_("Window list skip (%w)"));
    e_widget_frametable_object_append(of, ob, 0, 8, 1, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, cfdata->winlist);
    e_widget_frametable_object_append(of, ob, 1, 8, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_label_add(evas, _("Fullscreen (%f)"));
+   ob = e_widget_label_add(evas, D_("Fullscreen (%f)"));
    e_widget_frametable_object_append(of, ob, 0, 9, 1, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, cfdata->fullscreen);
    e_widget_frametable_object_append(of, ob, 1, 9, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_label_add(evas, _("Iconified (%i)"));
+   ob = e_widget_label_add(evas, D_("Iconified (%i)"));
    e_widget_frametable_object_append(of, ob, 0, 10, 1, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, cfdata->icon);
    e_widget_frametable_object_append(of, ob, 1, 10, 1, 1, 1, 1, 1, 1);

@@ -1,4 +1,3 @@
-#include "e.h"
 #include "e_mod_main.h"
 
 static const char *_emu_module_edje = NULL;
@@ -145,8 +144,8 @@ e_modapi_about(E_Module *m)
 {
    /* This is a basic module dialog that is provided for simplicity, 
     * but there is probably nothing stopping you from making a complex dialog. */
-   e_module_dialog_show(_("Enlightenment Emu Module - version " VERSION),
-                        _
+   e_module_dialog_show(D_("Enlightenment Emu Module - version " VERSION),
+                        D_
                         ("Experimental generic scriptable module for E17.<br><br>"
                          "Keep an eye out for the emu's.<br>"
                          "Don't even try to run away, they're fast buggers.<br>"
@@ -167,6 +166,10 @@ EAPI void *
 e_modapi_init(E_Module *m)
 {
    Emu *emu;
+
+   /* Set up module's message catalogue */
+   bindtextdomain(PACKAGE, LOCALEDIR);
+   bind_textdomain_codeset(PACKAGE, "UTF-8");
 
    emu = E_NEW(Emu, 1);
 
@@ -299,7 +302,7 @@ _emu_face_init(void *data, E_Gadget_Face *face)
                 ecore_exe_pipe_run(emu_face->command, ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_WRITE | ECORE_EXE_PIPE_READ_LINE_BUFFERED
                                    /*| ECORE_EXE_RESPAWN */ , emu_face);
              if (!emu_face->exe)
-                e_module_dialog_show(_("Enlightenment Emu Module - error"), _("There is no emu."));
+                e_module_dialog_show(D_("Enlightenment Emu Module - error"), D_("There is no emu."));
           }
      }
 
@@ -644,42 +647,42 @@ _emu_add_face_menu(E_Gadget_Face *face, E_Menu *menu)
    e_menu_item_separator_set(mi, 1);
 
    mi = e_menu_item_new(menu);
-   e_menu_item_label_set(mi, _("Add face"));
+   e_menu_item_label_set(mi, D_("Add face"));
    mi = e_menu_item_new(menu);
-   e_menu_item_label_set(mi, _("Remove face"));
+   e_menu_item_label_set(mi, D_("Remove face"));
 
    mi = e_menu_item_new(menu);
-   e_menu_item_label_set(mi, _("Add row"));
+   e_menu_item_label_set(mi, D_("Add row"));
    mi = e_menu_item_new(menu);
-   e_menu_item_label_set(mi, _("Remove row"));
+   e_menu_item_label_set(mi, D_("Remove row"));
    mi = e_menu_item_new(menu);
-   e_menu_item_label_set(mi, _("Add column"));
+   e_menu_item_label_set(mi, D_("Add column"));
    mi = e_menu_item_new(menu);
-   e_menu_item_label_set(mi, _("Remove column"));
+   e_menu_item_label_set(mi, D_("Remove column"));
 
    mi = e_menu_item_new(menu);
    e_menu_item_separator_set(mi, 1);
 
    mi = e_menu_item_new(menu);
-   e_menu_item_label_set(mi, _("Transparent"));
+   e_menu_item_label_set(mi, D_("Transparent"));
    e_menu_item_check_set(mi, 1);
    if (1)
       e_menu_item_toggle_set(mi, 1);
 
    mi = e_menu_item_new(menu);
-   e_menu_item_label_set(mi, _("Zoom icons"));
+   e_menu_item_label_set(mi, D_("Zoom icons"));
    e_menu_item_check_set(mi, 1);
    if (0)
       e_menu_item_toggle_set(mi, 1);
 
    mi = e_menu_item_new(menu);
-   e_menu_item_label_set(mi, _("Stretch bar"));
+   e_menu_item_label_set(mi, D_("Stretch bar"));
    e_menu_item_check_set(mi, 1);
    if (0)
       e_menu_item_toggle_set(mi, 1);
 
    mi = e_menu_item_new(menu);
-   e_menu_item_label_set(mi, _("Cling to edge"));
+   e_menu_item_label_set(mi, D_("Cling to edge"));
    e_menu_item_check_set(mi, 1);
    if (0)
       e_menu_item_toggle_set(mi, 1);

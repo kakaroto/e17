@@ -3,6 +3,8 @@
 #include "e_mod_config.h"
 #include "config.h"
 
+#define D_(str) dgettext(PACKAGE, str)
+
 #ifndef E_MOD_MAIN_H
 #define E_MOD_MAIN_H
 

@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = src data
+SUBDIRS = src data po
 
 bin_SCRIPTS = emu_client
 
