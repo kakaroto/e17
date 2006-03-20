@@ -396,7 +396,7 @@ _net_face_free(Net_Face *nf)
      evas_object_del(nf->rtxt_obj);
    if (nf->ttxt_obj)
      evas_object_del(nf->ttxt_obj);
-   if (nf->old_rx)
+   if (nf->old_rx || nf->old_tx)
      _net_face_graph_clear(nf);
    
    if (nf->gmc) 
@@ -625,8 +625,11 @@ _net_face_graph_values(Net_Face *nf, int tx_val, int rx_val)
 
    if (rx_val > 100)
      rx_val = 100;
+   if (tx_val > 100)
+     tx_val = 100;
    
    rx_val = (int)(((double)rx_val) * (((double)h) / ((double)100)));      
+   tx_val = (int)(((double)tx_val) * (((double)h) / ((double)100)));      
    
    o = evas_object_line_add(nf->evas);
    edje_object_part_swallow(nf->chart_obj, "lines", o);
@@ -635,12 +638,12 @@ _net_face_graph_values(Net_Face *nf, int tx_val, int rx_val)
      evas_object_hide(o);
    else 
      {
-	evas_object_line_xy_set(o, (x + w), (y + h), (x + w), ((y + h) - rx_val));
+	evas_object_line_xy_set(o, (x + w), (y + h), (x + w), (y + h - rx_val));
 	evas_object_color_set(o, 255, 0, 0, 100);
 	evas_object_pass_events_set(o, 1);
 	evas_object_show(o);
      }
-   
+
    nf->old_rx = evas_list_prepend(nf->old_rx, o);
    l = nf->old_rx;
    for (i = (x + w); l && (j -2) < w; l = l->next, j++) 
@@ -653,12 +656,42 @@ _net_face_graph_values(Net_Face *nf, int tx_val, int rx_val)
 	evas_object_move(lo, i--, oy);
 	last = lo;
      }
-   
    if ((j - 2) >= w) 
      {
 	nf->old_rx = evas_list_remove(nf->old_rx, last);
 	evas_object_del(last);
      }      
+
+   o = evas_object_line_add(nf->evas);
+   edje_object_part_swallow(nf->chart_obj, "lines", o);
+   evas_object_layer_set(o, 1);
+   if (tx_val == 0)
+     evas_object_hide(o);
+   else 
+     {
+	evas_object_line_xy_set(o, (x + w), y, (x + w), (y + tx_val));
+	evas_object_color_set(o, 0, 255, 0, 100);
+	evas_object_pass_events_set(o, 1);
+	evas_object_show(o);
+     }
+   
+   nf->old_tx = evas_list_prepend(nf->old_tx, o);
+   l = nf->old_tx;
+   for (i = (x + w); l && (j -2) < w; l = l->next, j++) 
+     {
+	Evas_Coord oy;
+	Evas_Object *lo;
+	
+	lo = (Evas_Object *)evas_list_data(l);
+	evas_object_geometry_get(lo, NULL, &oy, NULL, NULL);
+	evas_object_move(lo, i--, oy);
+	last = lo;
+     }
+   if ((j - 2) >= w) 
+     {
+	nf->old_tx = evas_list_remove(nf->old_tx, last);
+	evas_object_del(last);
+     }   
 }
 
 void 
