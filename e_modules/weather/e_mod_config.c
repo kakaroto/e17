@@ -40,7 +40,8 @@ _fill_data(Weather_Face *wf, E_Config_Dialog_Data *cfdata)
    cfdata->poll_time = (wf->conf->poll_time / 60.0);
    cfdata->display = wf->conf->display;
    cfdata->degrees = wf->conf->degrees;
-   cfdata->code = (char *)evas_stringshare_add(wf->conf->code);
+   if (wf->conf->code)
+     cfdata->code = strdup(wf->conf->code);
 }
 
 static void *
@@ -116,6 +117,7 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    
    if (!cfdata->code)
      return 0;
+
    len = strlen(cfdata->code);
    if (len < 4 || len > 4)
      return 0;
