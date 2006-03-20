@@ -123,33 +123,6 @@ ewl_layout_simple_about_dialog_cb (Ewl_Widget * item, void *ev_data,
 }
 
 
-void
-structure_configure_cb (Ewl_Widget * item, void *ev_data, void *user_data)
-{
-  Ewl_Widget *parent = item;
-  entropy_gui_component_instance *instance = user_data;
-  entropy_layout_gui *layout = instance->data;
-
-  /*printf("Structure configutre..%p\nHierarchy: ", item);
-     while (parent->parent) {
-     printf("'%s' : ", parent->inheritance);
-     if (VISIBLE(parent)) 
-     printf("VISIBLE ");
-     else
-     printf("INVISIBLE ");
-
-     if (OBSCURED(parent)) 
-     printf("OBSCURED \n");
-     else
-     printf("UNOBSC \n");
-
-
-     parent = parent->parent;
-     }
-     printf("\n");
-     printf("\n\n"); */
-}
-
 /*TODO/FIXME - This needs a rewrite, to be dynamic, and wizard-based*/
 void
 location_add_execute_cb (Ewl_Widget * item, void *ev_data, void *user_data)
@@ -553,9 +526,6 @@ layout_ewl_simple_add_header (entropy_gui_component_instance * instance,
       ewl_container_child_append (EWL_CONTAINER (hbox), visual);
       ewl_object_fill_policy_set (EWL_OBJECT (visual), EWL_FLAG_FILL_HFILL);
 
-      ewl_callback_append (visual, EWL_CALLBACK_CONFIGURE,
-			   structure_configure_cb, instance);
-
       ewl_widget_show (visual);
     }
   }
@@ -719,7 +689,6 @@ entropy_plugin_layout_create (entropy_core * core)
 {
   entropy_gui_component_instance *layout;
   entropy_layout_gui *gui;
-  char *tmp = NULL;
 
   _ewl_layout_count++;
 
@@ -738,10 +707,9 @@ entropy_plugin_layout_create (entropy_core * core)
   Ewl_Widget *menubar;
   Ewl_Widget *menu;
   Ewl_Widget *item;
-  
-  Ecore_Hash *config_hash;
-  Ecore_List *config_hash_keys;
-  char* key;
+
+  Evas_List* structures;
+  Entropy_Config_Structure* structure;
   
   Ecore_List *local_plugins;
   entropy_gui_component_instance *instance;
@@ -984,27 +952,15 @@ entropy_plugin_layout_create (entropy_core * core)
 			      gui->local_container);
   ewl_container_child_append (EWL_CONTAINER (gui->local_container), iconbox);
 
-  if (!(tmp = entropy_config_str_get ("layout_ewl_simple", "structure_bar"))) {
-    entropy_config_standard_structures_create ();
-    tmp = entropy_config_str_get ("layout_ewl_simple", "structure_bar");
+  /*Add the loaded structure headers*/
+  for (structures = entropy_config_standard_structures_parse (layout, NULL); structures; ) {
+	  structure = structures->data;
+	  
+	  layout_ewl_simple_add_header (layout, structure->name, structure->uri);
+
+	  structures = structures->next;
   }
 
-  printf ("Config for layout is: '%s' (%d)\n", tmp, strlen (tmp));
-  
-  config_hash = entropy_config_standard_structures_parse (layout, tmp);
-  config_hash_keys = ecore_hash_keys(config_hash);
-  while ( (key = ecore_list_remove_first(config_hash_keys))) {
-	  char* uri = ecore_hash_get(config_hash, key);
-	  layout_ewl_simple_add_header (layout, key, uri);
-	  
-	  ecore_hash_remove(config_hash, key);
-	  free(key);
-	  free(uri);
-  }
-  ecore_list_destroy(config_hash_keys);
-  ecore_hash_destroy(config_hash);
-  
-  entropy_free (tmp);
 
   ewl_widget_show (box);
   ewl_widget_show (vbox);

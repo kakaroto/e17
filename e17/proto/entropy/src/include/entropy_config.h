@@ -19,9 +19,16 @@ struct Entropy_Config_Mime_Binding_Action {
 };
 typedef struct Entropy_Config_Mime_Binding_Action Entropy_Config_Mime_Binding_Action;
 
+struct Entropy_Config_Structure {
+	char* name;
+	char* uri;
+};
+typedef struct Entropy_Config_Structure Entropy_Config_Structure;
+
 struct Entropy_Config_Loaded {
 	int config_version;
 	Evas_List* mime_bindings;
+	Evas_List* structures;
 };
 typedef struct Entropy_Config_Loaded Entropy_Config_Loaded;
 
@@ -44,17 +51,15 @@ char* entropy_config_str_get(char* module, char* key);
 void entropy_config_str_set(char* module, char* key, char* value);
 
 
-Ecore_Hash *
-entropy_config_standard_structures_parse (entropy_gui_component_instance * instance,
-						char *config);
-void
-entropy_config_standard_structures_add (entropy_gui_component_instance *
-       instance, char *name, char *uri);
+Evas_List* entropy_config_standard_structures_parse (entropy_gui_component_instance * instance, char *config);
+void entropy_config_standard_structures_add (entropy_gui_component_instance * instance, char *name, char *uri);
 void entropy_config_standard_structures_create ();
 void entropy_config_eet_config_save();
 void entropy_config_version_check();
 void entropy_config_edd_build();
 void entropy_config_loaded_config_free();
+void entropy_config_defaults_populate(Entropy_Config_Loaded* config);
+Entropy_Config_Structure* entropy_config_structure_new(char* name, char* uri);
 
 
 #define ENTROPY_CONFIG_INT_UNDEFINED 65535

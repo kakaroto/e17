@@ -268,9 +268,8 @@ entropy_plugin_layout_create (entropy_core * core)
   Etk_Widget* menu_item;
   Etk_Widget* menu;
 
-
-  Ecore_List* config_hash_keys;
-  char *tmp,*key;
+  Evas_List* structures;
+  Entropy_Config_Structure* structure;
 
   /*Entropy related init */
   layout = entropy_malloc (sizeof (entropy_gui_component_instance));	/*Create a component instance */
@@ -373,27 +372,13 @@ entropy_plugin_layout_create (entropy_core * core)
    gui->toplevel_row_entries = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 
 
-  /*Config load*/
-  if (!(tmp = entropy_config_str_get ("layout_ewl_simple", "structure_bar"))) {
-    entropy_config_standard_structures_create ();
-    tmp = entropy_config_str_get ("layout_ewl_simple", "structure_bar");
-  }
-
-  printf ("Config for layout is: '%s' (%d)\n", tmp, strlen (tmp));
-  
-  gui->config_hash = entropy_config_standard_structures_parse (layout, tmp);
-  config_hash_keys = ecore_hash_keys(gui->config_hash);
-  while ( (key = ecore_list_remove_first(config_hash_keys))) {
-	  char* uri = ecore_hash_get(gui->config_hash, key);
-	  layout_etk_simple_add_header (layout, key, uri);
+  for (structures = entropy_config_standard_structures_parse (layout, NULL); structures; ) {
+	  structure = structures->data;
 	  
-	  free(key);
-	  free(uri);
+	  layout_etk_simple_add_header (layout, structure->name, structure->uri);
+
+	  structures = structures->next;
   }
-  ecore_list_destroy(config_hash_keys);
-  
-  entropy_free (tmp);
-  
 
   /*Initialise the list view*/
   local = entropy_plugins_type_get_first(ENTROPY_PLUGIN_GUI_COMPONENT,ENTROPY_PLUGIN_GUI_COMPONENT_LOCAL_VIEW);
