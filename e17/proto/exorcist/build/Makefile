@@ -68,11 +68,11 @@ $(PROG_EXORCIST): .depend $(BIN_EXORCIST_OBJECTS)
 # Installation
 #-----------------------------------------------------------------------------
 
-install: $(BUILD_DIR)/$(PROG)
+install: $(BUILD_DIR)/$(PROG_EXORCIST)
 	@echo "  D: $(bindir)"
 	@$(INSTALL) -d $(DEST_DIR)$(bindir)
 	@echo "  I: $(bindir)/$(BIN_OBJECT)"
-	@$(INSTALL) -m 755 $(BUILD_DIR)/$(PROG) $(DEST_DIR)$(bindir)/$(PROG)
+	@$(INSTALL) -m 755 $(BUILD_DIR)/$(PROG_EXORCIST) $(DEST_DIR)$(bindir)/$(PROG_EXORCIST)
 
 #-----------------------------------------------------------------------------
 # Platorm specific file -- dumb rules for people executing make before
