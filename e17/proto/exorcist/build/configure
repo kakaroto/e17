@@ -1,0 +1,286 @@
+#! /bin/sh
+
+. ./config_check.inc
+. ./config_output.inc
+. ./config_msg.inc
+
+config_help() {
+cat << EOF
+
+Usage: configure [options]
+Options: [defaults in brackets after descriptions]
+
+EOF
+echo "Standard options:"
+echo "  --help                       print this message"
+echo "  --prefix=PREFIX              install in PREFIX [${prefix}]"
+echo "  --bindir=DIR                 install binaries in DIR [PREFIX/bin]"
+echo "  --libdir=DIR                 install libraries in DIR [PREFIX/lib]"
+echo "  --includedir=DIR             install headers in DIR [PREFIX/include]"
+echo ""
+echo "Advanced options (experts only):"
+echo "  --cc=CC                      use C compiler CC [${CC}]"
+echo "  --make=MAKE                  use specified make [${MAKE}]"
+echo "  --extra-cflags=ECFLAGS       add ECFLAGS to CFLAGS [${CFLAGS}]"
+echo "  --extra-cppflags=ECPPFLAGS   add ECPPFLAGS to CPPFLAGS [${CPPFLAGS}]"
+echo "  --extra-ldflags=ELDFLAGS     add ELDFLAGS to LDFLAGS [${LDFLAGS}]"
+echo "  --enable-debug               add -g to CFLAGS, doesn't strip"
+exit 1
+}
+
+#################
+#
+# Initialization
+#
+#################
+
+# package
+PACKAGE="exorcist"
+VERSION_MAJOR="0"
+VERSION_MINOR="1"
+VERSION="$VERSION_MAJOR.$VERSION_MINOR"
+
+# default path
+prefix='/usr/local'
+exec_prefix='${prefix}'
+bindir='${exec_prefix}/bin'
+libdir='${exec_prefix}/lib'
+includedir='${prefix}/include'
+DEVNULL='/dev/null'
+
+# default configure option values
+enable_debug="no"
+
+# default compiler values
+CC="gcc"
+CFLAGS="-Wall -W"
+CPPFLAGS=""
+LDFLAGS=""
+
+DEBUG_CFLAGS="-g"
+
+EXTRA_CFLAGS=""
+EXTRA_CPPFLAGS=""
+EXTRA_LIBS=""
+
+OPT_CFLAGS="-O2"
+
+# programs
+INSTALL="install"
+LN_S="ln -s"
+RANLIB="ranlib"
+MAKE="make"
+
+ewl_config="ewl-config"
+etk_config="etk-config"
+epdf_config="epdf-config"
+
+# extensions
+OBJECT_EXTENSION="o"
+
+#sources
+PROG_EXORCIST="exorcist"
+
+GENERIC_BIN_EXORCIST_SOURCES="SRC_BIN_EXORCIST"
+
+#################
+#
+# Configure options
+#
+#################
+
+for opt
+do
+  optarg=`expr "x${ac_option}" : 'x[^=]*=\(.*\)'`
+  case "${opt}" in
+      --prefix=*)
+          prefix=$optarg
+          ;;
+      -h | -help | --help)
+          config_help
+          ;;
+      --prefix=*)
+          prefix=$optarg
+          ;;
+      --bindir=*)
+          bindir=$optarg
+          ;;
+      --libdir=*)
+          libdir=$optarg
+          ;;
+      --includedir=*)
+          includedir=$optarg
+          ;;
+      --cc=*)
+          CC=$optarg
+          ;;
+      --make=*)
+          MAKE=$optarg
+          ;;
+      --extra-cflags=*)
+          EXTRA_CFLAGS=$optarg
+          ;;
+      --extra-cppflags=*)
+          EXTRA_CPPFLAGS=$optarg
+          ;;
+      --extra-ldflags=*)
+          EXTRA_LDFLAGS=$optarg
+          ;;
+      --enable-debug)
+          enable_debug="yes"
+          ;;
+  esac
+done
+
+CFLAGS="$CFLAGS $EXTRA_CFLAGS"
+if test "x$enable_debug" = "xyes" ; then
+    CFLAGS="$CFLAGS $DEBUG_CFLAGS"
+else
+    CFLAGS="$CFLAGS $OPT_CFLAGS"
+fi
+CPPFLAGS="$CPPFLAGS $EXTRA_CPPFLAGS"
+LDFLAGS="$LDFLAGS $EXTRA_LDFLAGS"
+
+#################
+#
+# Headers check
+#
+#################
+
+
+# standard headers
+echo -n "Checking for standard headers... "
+have_std_headers="no"
+std_header_check && have_std_headers="yes"
+if test "$have_std_headers" = "no" ; then
+    error_std_headers_msg
+fi
+echo "yes"
+
+# Ewl check
+echo -n "Checking for Ewl toolkit... "
+have_ewl="no"
+toolkit_check $ewl_config "Ewl.h" "ewl_init" && have_ewl="yes"
+echo "$have_ewl"
+
+# Etk check
+echo -n "Checking for Etk toolkit... "
+have_etk="no"
+toolkit_check $etk_config "Etk.h" "etk_init" && have_etk="yes"
+echo "$have_etk"
+
+if test "x$have_ewl" = "xno" -a "x$have_etk" = "xno" ; then
+    error_toolkit_msg
+fi
+
+if test "x$have_ewl" = "xyes" ; then
+    EWL_CPPFLAGS=`$ewl_config --cflags`
+    CPPFLAGS="$CPPFLAGS $EWL_CPPFLAGS -DHAVE_TOOLKIT_EWL"
+    LDFLAGS="$LDFLAGS `$ewl_config --libs`"
+fi
+
+if test "x$have_etk" = "xyes" ; then
+    ETK_CPPFLAGS=`$etk_config --cflags`
+    CPPFLAGS="$CPPFLAGS $ETK_CPPFLAGS -DHAVE_TOOLKIT_ETK"
+    LDFLAGS="$LDFLAGS `$etk_config --libs`"
+fi
+
+# Epdf check
+echo -n "Checking for Epdf library... "
+have_epdf="no"
+epdf_check $epdf_config $have_ewl $have_etk && have_epdf="yes"
+echo "$have_epdf"
+if test "x$have_epdf" = "xno" ; then
+    error_library_msg epdf
+else
+    CPPFLAGS="$CPPFLAGS `$epdf_config --cflags`"
+    LDFLAGS="$LDFLAGS `$epdf_config --libs`"
+fi
+
+#############
+#
+# Output
+#
+#############
+
+platform_create() {
+    rm -f platform.inc
+    cat > platform.inc << EOF
+#################################
+# Architecture dependant things #
+#################################
+
+OBJECT_EXTENSION=$OBJECT_EXTENSION
+
+############
+# Compiler #
+############
+CC=$CC
+CFLAGS=$CFLAGS
+CPPFLAGS=$CPPFLAGS
+
+##########
+# Linker #
+##########
+LDFLAGS=$LDFLAGS
+
+RANLIB=$RANLIB
+
+PACKAGE=$PACKAGE
+VERSION_MAJOR=$VERSION_MAJOR
+VERSION_MINOR=$VERSION_MINOR
+VERSION=$VERSION
+
+################
+# Installation #
+################
+
+INSTALL=$INSTALL
+prefix=$prefix
+exec_prefix=$exec_prefix
+bindir=$bindir
+libdir=$libdir
+includedir=$includedir
+pkgconfigdir=$libdir/pkgconfig
+
+###########
+# Sources #
+###########
+
+PROG_EXORCIST=$PROG_EXORCIST
+GENERIC_BIN_EXORCIST_SOURCES=\$($GENERIC_BIN_EXORCIST_SOURCES)
+GENERIC_BIN_EXORCIST_OBJECTS=\$($GENERIC_BIN_EXORCIST_SOURCES:.c=.$OBJECT_EXTENSION)
+
+EOF
+}
+
+platform_create
+
+#############
+#
+# Info
+#
+#############
+
+
+echo
+echo
+echo "------------------------------------------------------------------------"
+echo "$PACKAGE $VERSION"
+echo "------------------------------------------------------------------------"
+echo
+echo "Configuration Options Summary:"
+echo
+echo "  Toolkits:"
+echo "    Ewl................: ${have_ewl}"
+echo "    Etk................: ${have_etk}"
+echo
+echo "  Compilation..........: make"
+echo
+echo "  Installation.........: make install"
+echo
+echo "    prefix.........: $prefix"
+echo "    binaries.......: $bindir"
+echo "    libraries......: $libdir"
+echo "    headers........: $includedir"
+echo
