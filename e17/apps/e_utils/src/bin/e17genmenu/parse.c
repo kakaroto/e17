@@ -229,47 +229,52 @@ process_file(char *file, char *menu_path, G_Eap *eap)
    snprintf(path, sizeof(path), "%s" EAPPDIR "/%s", home, eap->eap_name);
    window_class = get_window_class(path);
 
-   if ((ecore_file_exists(path)) && (!overwrite))
-     {
-        not_over_count++;
-        return;
-     }
-
    if (eap->icon != NULL)
       icon = find_icon(strdup(eap->icon));
    if (eap->icon == NULL)
       icon = strdup(DEFAULTICON);
 
-   /* Start Making The Eap */
-   write_icon(path, icon);
-
-   /* Set Eap Values. Trap For Name Not Being Set */
-   if (eap->name != NULL)
-      write_eap(path, "app/info/name", eap->name);
-   else if (eap->eap_name != NULL)
-      write_eap(path, "app/info/name", eap->eap_name);
-
-   if (eap->generic != NULL)
-      write_eap(path, "app/info/generic", eap->generic);
-   if (eap->comment != NULL)
-      write_eap(path, "app/info/comments", eap->comment);
-
-   /* Parse Exec string for %'s that messup eap write */
-   exec = NULL;
-   if (eap->exec != NULL)
+   if ((ecore_file_exists(path)) && (!overwrite))
      {
-        exec = parse_exec(eap->exec);
-        if (exec != NULL)
-          {
-             write_eap(path, "app/info/exe", exec);
-             write_eap(path, "app/icon/class", exec);
-          }
+        not_over_count++;
      }
+   else
+     {
+        /* FIXME: This is probably why creating eaps takes so long.  
+	 * We should just create it right in the first place, rather 
+	 * than creating a basic one, then rewriting it several times
+	 * each time we find a new little bit of info.
+	 */
+        /* Start Making The Eap */
+        write_icon(path, icon);
+        /* Set Eap Values. Trap For Name Not Being Set */
+        if (eap->name != NULL)
+           write_eap(path, "app/info/name", eap->name);
+        else if (eap->eap_name != NULL)
+           write_eap(path, "app/info/name", eap->eap_name);
 
-   if (eap->startup != NULL)
-      write_eap(path, "app/info/startup_notify", eap->startup);
-   if (window_class != NULL)
-      write_eap(path, "app/window/class", window_class);
+        if (eap->generic != NULL)
+           write_eap(path, "app/info/generic", eap->generic);
+        if (eap->comment != NULL)
+           write_eap(path, "app/info/comments", eap->comment);
+
+        /* Parse Exec string for %'s that messup eap write */
+        exec = NULL;
+        if (eap->exec != NULL)
+          {
+             exec = parse_exec(eap->exec);
+             if (exec != NULL)
+               {
+                  write_eap(path, "app/info/exe", exec);
+                  write_eap(path, "app/icon/class", exec);
+               }
+          }
+
+        if (eap->startup != NULL)
+           write_eap(path, "app/info/startup_notify", eap->startup);
+        if (window_class != NULL)
+           write_eap(path, "app/window/class", window_class);
+     }     
 
    category = NULL;
    if (menu_path != NULL)

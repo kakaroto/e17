@@ -142,7 +142,7 @@ find_fdo_icon(char *icon, char *icon_size, char *icon_theme)
    double begin;
 
    begin = ecore_time_get();
-   if (icon == NULL)
+   if ((icon == NULL) || (icon[0] == '\0'))
      {
         icon_time += ecore_time_get() - begin;
         return DEFAULTICON;
