@@ -127,6 +127,12 @@ extern int wino ;
 extern int audiolen;
 extern int mainwin;
 extern int slidenum;
+extern int arglength;
+extern int argfit;
+extern int argfullscreen;
+extern int argloop;
+extern char *argwidth;
+extern char *argheight;
 extern char *audios;
 
 #endif

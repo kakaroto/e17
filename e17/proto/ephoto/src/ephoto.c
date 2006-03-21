@@ -17,9 +17,15 @@ int noslide = 15;
 int audiolen;
 int slidenum;
 int arglength = 0;
+int argslideshow = 0;
+int argloop = 0;
+int argfit = 0;
+int argfullscreen = 0;
 char *audios;
 char argimage[PATH_MAX];
 char argaudio[PATH_MAX];
+char *argheight;
+char *argwidth;
 char tempdb[PATH_MAX];
 char db[PATH_MAX];
 /*****************/
@@ -86,12 +92,26 @@ main(int argc, char **argv)
 			imageint++;
 			arglength = atoi(argv[imageint]);
 		}
+		else if ( argint < argc && !strcmp(argv[argint], "--loop") ) {
+			argloop = 1;
+		}
+		else if ( argint < argc && !strcmp(argv[argint], "--fit-to-audio") ) {
+			argfit = 1;
+		}
+		else if ( argint < argc && !strcmp(argv[argint], "--fullscreen") ) {
+			argfullscreen = 1;
+		}
 		else if ( argint < argc && !strcmp(argv[argint], "--help") ) {
 			printf("ephoto /path/to/dir loads /path/to/dir as default directory\n");
 			printf("ephoto --view-image /full/path/to/image sets /full/path/to/image as the default image in the image viewer tab.\n");
 			printf("ephoto --slideshow /full/path/to/image /full/path/to/image /full/path/to/image starts the slideshow using the specified images\n");
+			printf("ephoto --presentation /full/path/to/image /full/path/to/image /full/path/to/image starts the presentation using the specified images\n");
 			printf("ephoto --audio /full/path/to/audio sets /full/path/to/audio as default audio for slideshow\n");
 			printf("ephoto --length length sets the integer length(seconds) as the transition time for slideshow\n");
+			printf("ephoto --fullscreen sets the presentation/slideshow window to be fullscreen\n");
+			printf("ephoto --win-size integer integer sets the first integer as the width and the second integer as the height of the presentation/slideshow window\n");
+			printf("ephoto --loop sets the slideshow to loop\n");
+			printf("ephoto --fit-to-audio sets the slideshow to fit audio\n");
 			mainwin = 0;
 		}
 		argint++;
@@ -289,6 +309,9 @@ main(int argc, char **argv)
 		m->loopcheck = ewl_checkbutton_new();
 		ewl_button_label_set(EWL_BUTTON(m->loopcheck), "Loop Slideshow");
 		ewl_container_child_append(EWL_CONTAINER(m->hboxv), m->loopcheck);
+		if ( argloop != 0 ) {
+			ewl_checkbutton_checked_set(EWL_CHECKBUTTON(m->loopcheck), TRUE);
+		}
 		ewl_object_maximum_size_set(EWL_OBJECT(m->loopcheck), 130, 50);
 		ewl_object_size_request(EWL_OBJECT(m->loopcheck), 130, 50);
 		ewl_object_alignment_set(EWL_OBJECT(m->loopcheck), EWL_FLAG_ALIGN_CENTER);

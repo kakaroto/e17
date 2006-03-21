@@ -33,8 +33,14 @@ if ( ewl_media_is_available() ) {
 		h = atoi(hsize);
 	}
 	if ( mainwin == 0 ) {
-		w = 800;
-		h = 600;
+		if ( argwidth == NULL && argheight == NULL ) {	
+			w = 600;
+			h = 480;
+		}
+		else {
+			w = atoi(argwidth);
+			h = atoi(argheight);
+		}
 	}
 	s->screen = ewl_image_new();
 	ewl_image_proportional_set(EWL_IMAGE(s->screen), TRUE);
@@ -46,13 +52,38 @@ if ( ewl_media_is_available() ) {
 			ewl_object_maximum_size_set(EWL_OBJECT(s->screen), w, h);
 		}
 	}
-	if ( mainwin == 0 ) {
+	if ( mainwin == 0 && argfullscreen == 0 ) {
 		ewl_object_maximum_size_set(EWL_OBJECT(s->screen), w, h);
 	}
 	ewl_object_fill_policy_set(EWL_OBJECT(s->screen), EWL_FLAG_FILL_SHRINK);
 	ewl_container_child_append(EWL_CONTAINER(s->cell), s->screen);
 	ewl_widget_show(s->screen);	
+	
+	if ( !picture1 ) {
+		if ( mainwin == 0 ) {
+			if ( argloop == 0 ) {
+				ewl_callback_call(s->wins, EWL_CALLBACK_CLICKED);
+			}
+	
+			if ( argloop == 1 ) {
+       	        	 	picture2 = ecore_dlist_goto_first(m->imagelist);
+		                ewl_widget_destroy(s->screen);
+		                s->screen = ewl_image_new();
+		                ewl_image_proportional_set(EWL_IMAGE(s->screen), TRUE);
+		                ewl_theme_data_str_set(s->screen, "/image/group", "entry");
+		                ewl_object_fill_policy_set(EWL_OBJECT(s->screen), EWL_FLAG_FILL_SHRINK);
+ 		                ewl_image_file_set(EWL_IMAGE(s->screen), picture2, NULL);
+       			        ewl_object_alignment_set(EWL_OBJECT(s->screen), EWL_FLAG_ALIGN_CENTER);
+       		         	if ( argfullscreen == 0 ) {
+		                	ewl_object_maximum_size_set(EWL_OBJECT(s->screen), w, h);
+               		 	}
+                		ewl_container_child_append(EWL_CONTAINER(s->cell), s->screen);
+                		ewl_widget_show(s->screen);
 
+			}
+
+		}
+	}
 	if ( mainwin == 1 ) {
 		if (!picture1 && ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->loopcheck)) == 1 ) {
 			picture2 = ecore_dlist_goto_first(m->imagelist);
@@ -202,7 +233,12 @@ if ( ewl_media_is_available() ) {
 		}
 	}
 	else {
-		time = 3;
+		if ( arglength != 0 ) {
+			time = arglength;
+		}
+		if ( arglength == 0 ) {
+			time = 3;
+		}
 	}
 	s->timer = ecore_timer_add(time, _change_picture_cb, NULL);
 	/*******************************************************************/
