@@ -120,14 +120,16 @@ distdir:
 	|| { find $(distdir) -type d ! -perm -200 -exec chmod u+w {} ';' \
 	&& $RM $(distdir); };
 	@mkdir $(distdir)
-	@cp -pR ../win32 \
-	../INSTALL \
-	../linux/Makefile ../linux/$(AVS_PC).in ../linux/bootstrap.sh ../linux/configure ../linux/configure.in ../linux/config.h.in ../linux/config.sub ../linux/config.guess ../linux/gen_sources.sh.in ../linux/libavisynth.def ../linux/platform.inc.in ../linux/m4 \
-	../../docs/Doxyfile ../../docs/README ../../docs/avisynth.css ../../docs/gendoc ../../docs/installdocs.c.in \
+	@cp -pR \
+	build/config_check.inc \
+	build/config_msg.inc \
+	build/config_output.inc \
+	build/configure \
+	build/Makefile \
+	build/sources.inc \
+	src/bin/*.c \
+	src/bin/*.h \
 	$(SRC_DIR)/ $(distdir)
-	@find $(distdir) -path '*CVS' | while read i; do \
-	  $(RM) $$i; \
-	done
 
 dist-tar: distdir
 	@tar cf $(distfile) $(distdir)
