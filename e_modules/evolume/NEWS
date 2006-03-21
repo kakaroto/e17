@@ -1,0 +1,13 @@
+
+
+Following features added:
+* Theme updated to latest eclair.
+* Order changing by clicking first on source and then on destination (exchange),or simple by drag (moving)
+* Mixer Systems now supported better, added special menu for that.
+* Mute now works well (through sound system level calls) (use middle button for that)
+* Deactivating mixer elements by first left click and then right click.
+
+Following bugs added:
+* Orient will not work for now. (broken by new theme)
+
+

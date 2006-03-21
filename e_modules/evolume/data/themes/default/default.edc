@@ -1,0 +1,70 @@
+fonts {
+	font: "Vera.ttf"	"Edje Vera";
+}
+
+images {
+	image: "volume_bar_vert.png" COMP;
+	image: "volume_bar_horiz.png" COMP;
+	image: "volume_bar_drag.png" COMP;
+	image: "volume_bar_drag_down.png" COMP;
+	image: "handle_thumb.png" COMP;
+
+	image: "handle_thumb_mute.png" COMP;
+	image: "volume_bar_drag_mute.png" COMP;
+
+	image: "bg.png" COMP;
+	image: "over.png" COMP;
+}
+
+collections {
+	group {
+		name, "volume/main";
+		parts {
+			part {
+				name, "background";
+				mouse_events, 1;
+				description {
+					state, "default" 0.0;
+					rel1 { to, "overlay"; }
+					rel2 { to, "overlay"; }
+					image 
+					{ 
+						normal, "bg.png";
+						border, 6 6 6 6;
+					}
+					fill { smooth, 0; }
+				}
+			}
+
+			part {
+				name,			"items";
+				mouse_events,	0;
+				type,			SWALLOW;
+				description {
+					state,		"default" 0.0;
+					rel1 { offset, 8 8; }
+					rel2 { offset, -9 -9; }
+					color, 0 0 0 0;
+				}
+			}
+
+			part {
+				name,			"overlay";
+				mouse_events,	0;
+				description {
+					state,		"default" 0.0;
+					image {
+						normal,		"over.png";
+						border,		13 13 13 13;
+						middle,		0;
+					}
+					fill {
+						smooth, 0;
+					}
+				}
+			}
+		}
+	}
+
+#include "groups/mixer_entry.edc"
+} 

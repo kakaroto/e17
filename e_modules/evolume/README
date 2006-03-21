@@ -1,0 +1,18 @@
+This is module for enlightenment 0.17 for managing volume with simple interface
+writed because of gkrellm it is very useful and it is nice to have all of
+features from gkrellm in e17 modules.
+
+See AUTHORS for contact information.
+See TODO for ToDo list.
+See TODO.rus for russian todo list.
+
+Thanks to all, who send congratulations!
+
+---- INSTALLATION ----
+try to run 
+
+$ ./autogen.sh && make && make install
+
+if this does not work - send error messages to me 
+boldin.pavel at gmail.com
+

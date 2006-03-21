@@ -1,0 +1,104 @@
+Sat Jan  7 16:33:12 2006 Pavel Boldin <boldin.pavel@gmail.com>
+    * src/module/*.c: added configuration dialog instead of menu
+    configuration.
+    * src/module/e_mod_config.{c,h}: removed old hash algorithm, replaced with
+    new in e_mixer library.
+    * src/lib/{e,alsa}_mixer.{c,h}: changed hashing algorithm
+
+Fri Nov 11 22:18:04 2005 Pavel Boldin <boldin.pavel@gmail.com>
+    * src/module/e_mod_pack.c: now using repacking instead of rebuilding whole
+    face 
+
+Sun Nov  6 19:03:08 2005 Pavel Boldin <boldin.pavel@gmail.com>
+    * splited src/module/e_mod_face.c: pair renamed to slider, now using box
+    for packing, instead of table.
+    * data/themes/default/group/mixer_entry.edc: new default theme, now using
+    swallow parts.
+
+Mon Oct 31 21:43:04 2005 Pavel Boldin <boldin.pavel@gmail.com>
+    * added src/module/e_mod_mixer.c: mixer functions
+    * src/module/*.c, src/mixer/*.c: new ref/unref mechanism, now per element.
+
+
+Sun Oct 30 20:44:33 2005 Pavel Boldin <boldin.pavel@gmail.com>
+    * src/module/e_mod_volume.c: fixed multiface duplicate mixers bug,
+	fixed multifaces enabling/disabling mixer systems bug.
+
+Thu Oct 27 19:33:42 2005 Pavel Boldin <boldin.pavel@gmail.com>
+    * *.c: Added "Mixer systems" menu, added order changing feature.
+
+Tue Oct 25 17:54:38 2005 Pavel Boldin <boldin.pavel@gmail.com>
+    * *: now working with new e17 modapi code.
+    * *.c: some bugs fixed, really need to test multi-mixers support. (tested,
+    thanks to gimpel @ #get-e irc.freenode.net)
+
+Mon Oct 24 21:17:53 2005 Pavel Boldin <boldin.pavel@gmail.com>
+    * data/themes/default: added muted state image
+    * src/lib/e_mixer.c, src/lib/alsa_mixer.c: added Mute through ALSA lib
+    call, not through setting volume to zero.
+    * src/module/*.c: fixed module code to work with new mute algorithm.
+    * configure.ac: rewrited using new AC_PATH_GENERIC macro.
+
+Tue Oct 18 23:56:12 2005 Pavel Boldin <boldin.pavel@gmail.com>
+    * *.c: patched to make it working with multi mixers. haven't tested yet.
+
+Sat Sep 24 19:14:52 2005 Pavel Boldin <boldin.pavel@gmail.com>
+    * src/module/e_mod_main.c: patch against new module api in e17.
+			    Thanks to Ferdinand Hubner. (sorry a lot)
+
+Fri Aug 26 01:46:15 2005 Pavel Boldin <boldin.pavel@gmail.com>
+    * src/*/*.{c,h}: added various features, see NEWS file for detail
+    * COPYING:	changed license to BSD like (from GPLv2)
+
+Sat Aug  6 21:36:27 2005 Pavel Boldin <boldin.pavel@gmail.com>
+    * src/*/*.{c,h}: now can build with CFLAGS="-W -Wall -Werror". Ypiee!
+
+Thu Aug  4 02:46:56 2005 Pavel Boldin <boldin.pavel@gmail.com>
+    * src/lib/alsa_mixer.c: fixed segv.
+
+Sat Jul 30 04:40:17 2005 Pavel Boldin <boldin.pavel@gmail.com>
+    * src/lib/e_mixer.{c,h}, src/lib/alsa_mixer.{c,h}: maked virtualization.
+	Plan to write xmms plugin like in gkrellm.
+
+Wed Jul 27 00:30:02 2005 Pavel Boldin <boldin.pavel@gmail.com>
+    * src/module/e_mod_{volume,face}.c, src/lib/e_mixer.h: fixed mute
+	mechanism
+    * src/module/e_mod_face.c: fixed e_menu_activate call. Thanks to 
+	Ed Presutti
+
+Tue Jul 26 04:01:16 2005 Pavel Boldin <boldin.pavel@gmail.com>
+    * src/module/e_mod_{volume,face}.c: adding ``mute" (by 2nd mouse button)
+	and ``wheel" by mouse wheel. 
+    * src/lib/e_mixer.c: fixed code of convert_{to,from}_percent
+    * configure.ac: ``is stable" note added
+    * src/lib/e_mod_config.c: old hash function is has same hash for 
+	"alsa/VIA 8235/3D Control - Center" and "alsa/VIA 8235/LFE" strings
+    * patches/edje_drag_progbar.patch: patch for ``events" in *.edc file
+
+Tue Jul 19 20:55:04 2005 Pavel Boldin <boldin.pavel@gmail.com>
+    * src/module/e_mod_face.c: removed ugly resize every reloading of module.
+
+Sun Jul 17 22:32:56 2005 Pavel Boldin <boldin.pavel@gmail.com>
+    * src/module/*.c: fixed different folder names for data and module.
+	Now icon showed. ATTENTION! Normal icon needed!
+	    Thanks to Dienekes.
+
+
+Sun Jul 17 22:19:59 2005 Pavel Boldin <boldin.pavel@gmail.com>
+    * src/module/*.c src/lib/e_mixer.h: modified to support per-face
+	configuration, not yet tested, but seems to be correctly than old 
+	way of configuration. 
+	    Thanks to Ag. System Administrator.
+	
+    * data/themes/default/: corrected vertical alings on labels.
+
+
+Thu Jul  7 01:19:47 2005 Pavel Boldin <boldin.pavel@gmail.com>
+    * src/module/*.c: modified to support per-container configuration. (Should
+    be tested!)
+
+Wed Jun 29 02:01:23 2005 Pavel Boldin <boldin.pavel@gmail.com>
+    * First usable version: supported: configuration menu, 
+	save/load configuration. ALSA.
+
+

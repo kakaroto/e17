@@ -1,0 +1,32 @@
+program {
+   name: "volume_bar_drag_down";
+   signal: "mouse,down,1";
+   source: "volume_bar_drag";
+   action: STATE_SET "down" 0.0;
+   target: "volume_bar_drag";
+   target: "volume_bar_drag_thumb";
+}
+program {
+   name: "volume_bar_drag_up";
+   signal: "mouse,up,1";
+   source: "volume_bar_drag";
+   action: STATE_SET "default" 0.0;
+   target: "volume_bar_drag";
+   target: "volume_bar_drag_thumb";
+}
+program {
+   name: "volume_bar_mute";
+   signal: "mute,set,1";
+   source: "evolume_bin";
+   action: STATE_SET "mute" 0.0;
+   target: "volume_bar_drag";
+   target: "volume_bar_drag_thumb";
+}
+program {
+   name: "volume_bar_unmute";
+   signal: "mute,set,0";
+   source: "evolume_bin";
+   action: STATE_SET "default" 0.0;
+   target: "volume_bar_drag";
+   target: "volume_bar_drag_thumb";
+}

@@ -1,0 +1,292 @@
+diff -NurpP /data/src/e_logo.edc edje/data/src/e_logo.edc
+--- edje.orig/data/src/e_logo.edc	2005-07-26 03:54:56 +0500
++++ edje/data/src/e_logo.edc	2005-07-19 21:02:05 +0500
+@@ -201,7 +201,11 @@ collections {
+       parts {
+ 	 part {
+ 	    name:          "background";
+-	    mouse_events:  0;
++	    mouse_events:  1;
++	    dragable {
++		events: "dragable";
++	    }
++
+ 	    description {
+ 	       state:    "default" 0.0;
+ 	       color_class:   "bg";
+diff -NurpP /src/bin/edje_cc_handlers.c edje/src/bin/edje_cc_handlers.c
+--- edje.orig/src/bin/edje_cc_handlers.c	2005-07-26 03:54:56 +0500
++++ edje/src/bin/edje_cc_handlers.c	2005-07-19 21:02:05 +0500
+@@ -30,6 +30,7 @@ static void st_collections_group_parts_p
+ static void st_collections_group_parts_part_dragable_x(void);
+ static void st_collections_group_parts_part_dragable_y(void);
+ static void st_collections_group_parts_part_dragable_confine(void);
++static void st_collections_group_parts_part_dragable_events(void);
+ 
+ static void ob_collections_group_parts_part_description(void);
+ static void st_collections_group_parts_part_description_inherit(void);
+@@ -118,6 +119,7 @@ New_Statement_Handler statement_handlers
+      {"collections.group.parts.part.dragable.x", st_collections_group_parts_part_dragable_x},
+      {"collections.group.parts.part.dragable.y", st_collections_group_parts_part_dragable_y},
+      {"collections.group.parts.part.dragable.confine", st_collections_group_parts_part_dragable_confine},
++     {"collections.group.parts.part.dragable.events", st_collections_group_parts_part_dragable_events},
+      {"collections.group.parts.part.image", st_images_image}, /* dup */
+      {"collections.group.parts.part.images.image", st_images_image}, /* dup */
+      {"collections.group.parts.part.font", st_fonts_font}, /* dup */
+@@ -573,6 +575,7 @@ ob_collections_group_parts_part(void)
+    ep->repeat_events = 0;
+    ep->clip_to_id = -1;
+    ep->dragable.confine_id = -1;
++   ep->dragable.events_id = -1;
+ }
+ 
+ static void
+@@ -719,6 +722,25 @@ st_collections_group_parts_part_dragable
+ }
+ 
+ static void
++st_collections_group_parts_part_dragable_events(void)
++{
++   Edje_Part_Collection *pc;
++   Edje_Part *ep;
++
++   check_arg_count(1);
++
++   pc = evas_list_data(evas_list_last(edje_collections));
++   ep = evas_list_data(evas_list_last(pc->parts));
++     {
++	char *name;
++	
++	name = parse_str(0);
++	data_queue_part_lookup(pc, name, &(ep->dragable.events_id));
++	free(name);
++     }
++}
++
++static void
+ ob_collections_group_parts_part_description(void)
+ {
+    Edje_Part_Collection *pc;
+diff -NurpP /src/lib/edje_callbacks.c edje/src/lib/edje_callbacks.c
+--- edje.orig/src/lib/edje_callbacks.c	2005-07-26 03:54:56 +0500
++++ edje/src/lib/edje_callbacks.c	2005-07-26 03:51:59 +0500
+@@ -1,3 +1,8 @@
++/*
++ * vim: ts=8
++ */
++
++
+ #include "Edje.h"
+ #include "edje_private.h"
+ 
+@@ -54,14 +59,75 @@ _edje_mouse_down_cb(void *data, Evas * e
+    _edje_ref(ed);
+    _edje_freeze(ed);
+    _edje_emit(ed, buf, rp->part->name);
++
++   if (rp->events_to && ev->button == 1)
++   {
++       int x, y;
++       Edje_Real_Part* events;
++       events = rp->events_to;
++
++       //fprintf(stderr,"rp = %s, events = %s\n", rp->part->name, events->part->name);
++
++       evas_object_geometry_get(rp->object, &x, &y, NULL, NULL);
++       /*
++       fprintf(stderr,"x = %d, y = %d\n", x, y);
++       fprintf(stderr,"ev->canvas.x = %d\n", ev->canvas.x);
++       *
++       x = ed->x;
++       y = ed->y;
++       */
++       if ((events->part->dragable.x) || (events->part->dragable.y))
++       {
++	       if (events->part->dragable.x)
++	       {
++		   events->drag.tmp.x = ev->canvas.x - x - (events->x + events->w/2);
++		   events->drag.down.x = ev->canvas.x - x;
++		   events->x = ev->canvas.x - x - events->w/2;
++	       }
++	       if (events->part->dragable.y)
++	       {
++		   events->drag.tmp.y = ev->canvas.y - y - (events->y + events->h/2);
++		   events->drag.down.y = ev->canvas.y - y;
++		   events->y = ev->canvas.y - y - events->h/2;
++	       }
++
++	       snprintf(buf, sizeof(buf), "mouse,down,%i", ev->button);
++	       _edje_emit(ed, buf, events->part->name);
++	       ed->dirty = 1;
++       }
++       _edje_recalc(ed);
++       _edje_thaw(ed);
++       _edje_unref(ed);
++       _edje_ref(ed);
++       _edje_freeze(ed);
++
++       rp = events;
++       {
++	   double dx, dy;
++	   int dir;
++
++	   dir = _edje_part_dragable_calc(ed, rp, &dx, &dy);
++//	   fprintf(stderr,"dx = %f, dy = %f\n", dx, dy);
++	   if ((dx != rp->drag.val.x) || (dy != rp->drag.val.y))
++	   {
++	       rp->drag.val.x = dx;
++	       rp->drag.val.y = dy;
++	       _edje_emit(ed, "drag", rp->part->name);
++	       ed->dirty = 1;
++	       rp->drag.need_reset = 1;
++	       _edje_recalc(ed);
++	   }
++       }
++   }
++
+    if ((rp->part->dragable.x) || (rp->part->dragable.y))
+      {
+ 	if (rp->drag.down.count == 0)
+ 	  {
+ 	     if (rp->part->dragable.x)
+-	       rp->drag.down.x = ev->canvas.x;
++		 rp->drag.down.x = ev->canvas.x;
+ 	     if (rp->part->dragable.y)
+-	       rp->drag.down.y = ev->canvas.y;
++		 rp->drag.down.y = ev->canvas.y;
+ 	     _edje_emit(ed, "drag,start", rp->part->name);
+ 	  }
+ 	rp->drag.down.count++;
+@@ -90,9 +156,18 @@ _edje_mouse_up_cb(void *data, Evas * e, 
+    ed = data;
+    rp = evas_object_data_get(obj, "real_part");
+    if (!rp) return;
++
+    snprintf(buf, sizeof(buf), "mouse,up,%i", ev->button);
+    _edje_ref(ed);
+    _edje_emit(ed, buf, rp->part->name);
++
++   if(rp->events_to && ev->button == 1)
++   {
++       rp = rp->events_to;
++       snprintf(buf, sizeof(buf), "mouse,up,%i", ev->button);
++       _edje_emit(ed, buf, rp->part->name);
++   }
++
+    if ((rp->part->dragable.x) || (rp->part->dragable.y))
+      {
+ 	if (rp->drag.down.count > 0)
+@@ -132,6 +207,9 @@ _edje_mouse_move_cb(void *data, Evas * e
+    ed = data;
+    rp = evas_object_data_get(obj, "real_part");
+    if (!rp) return;
++   if (rp->events_to && ev->buttons == 1)
++       rp = rp->events_to;
++
+    if (rp->still_in)
+      {
+ 	Evas_Coord x, y, w, h;
+diff -NurpP /src/lib/edje_data.c edje/src/lib/edje_data.c
+--- edje.orig/src/lib/edje_data.c	2005-07-26 03:54:56 +0500
++++ edje/src/lib/edje_data.c	2005-07-19 21:02:05 +0500
+@@ -238,6 +238,7 @@ _edje_edd_setup(void)
+    EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part, Edje_Part, "dragable.step_y", dragable.step_y, EET_T_INT);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part, Edje_Part, "dragable.count_y", dragable.count_y, EET_T_INT);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part, Edje_Part, "dragable.counfine_id", dragable.confine_id, EET_T_INT);
++   EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part, Edje_Part, "dragable.events_id", dragable.events_id, EET_T_INT);
+    
+    _edje_edd_edje_part_collection  = 
+      NEWD("Edje_Part_Collection", 
+diff -NurpP /src/lib/edje_load.c edje/src/lib/edje_load.c
+--- edje.orig/src/lib/edje_load.c	2005-07-26 03:54:56 +0500
++++ edje/src/lib/edje_load.c	2005-07-19 21:02:05 +0500
+@@ -85,6 +85,7 @@ edje_object_file_set(Evas_Object *obj, c
+ 		  desc = hist->data;
+ 		  if (desc->color_class) _edje_color_class_member_add(ed, desc->color_class);
+ 	       }
++	     hist = NULL;
+ 	     hist = evas_list_append(hist, ep);
+ 	     while (ep->dragable.confine_id >= 0)
+ 	       {
+@@ -101,6 +102,32 @@ edje_object_file_set(Evas_Object *obj, c
+ 	     evas_list_free(hist);
+ 	     hist = NULL;
+ 	     hist = evas_list_append(hist, ep);
++	     while (ep->dragable.events_id >= 0)
++	       {
++		  Edje_Part* prev;
++
++		  prev = ep;
++
++		  ep = evas_list_nth(ed->collection->parts,
++				     ep->dragable.events_id);
++		  
++		  if (!ep->dragable.x && !ep->dragable.y)
++		    {
++		       prev->dragable.events_id = -1;
++		       break;
++		    }
++
++		  if (evas_list_find(hist, ep))
++		    {
++		       printf("EDJE ERROR: events_to loops. invalidating loop.\n");
++		       ep->dragable.events_id = -1;
++		       break;
++		    }
++		  hist = evas_list_append(hist, ep);
++	       }
++	     evas_list_free(hist);
++	     hist = NULL;
++	     hist = evas_list_append(hist, ep);
+ 	     while (ep->clip_to_id >= 0)
+ 	       {
+ 		  ep = evas_list_nth(ed->collection->parts,
+@@ -232,6 +259,18 @@ edje_object_file_set(Evas_Object *obj, c
+ 		  if (rp->part->dragable.confine_id >= 0)
+ 		    rp->confine_to = evas_list_nth(ed->parts, rp->part->dragable.confine_id);
+ 		  
++		  /* replay events for dragable */
++		  if (rp->part->dragable.events_id >= 0)
++		    {
++		       rp->events_to = 
++			  evas_list_nth(ed->parts,
++				rp->part->dragable.events_id);
++		       /* events_to may be used only with dragable */
++		       if (!rp->events_to->part->dragable.x &&
++			   !rp->events_to->part->dragable.y)
++			 rp->events_to = NULL;
++		    }
++
+ 		  rp->swallow_params.min.w = 0;
+ 		  rp->swallow_params.min.w = 0;
+ 		  rp->swallow_params.max.w = -1;
+diff -NurpP /src/lib/edje_private.h edje/src/lib/edje_private.h
+--- edje.orig/src/lib/edje_private.h	2005-07-26 03:54:56 +0500
++++ edje/src/lib/edje_private.h	2005-07-19 21:02:05 +0500
+@@ -182,7 +182,7 @@ struct _Edje_Font_Directory_Entry
+    char *entry; /* the name of the font */
+ };
+ 
+-
++	
+ /*----------*/
+ 
+ struct _Edje_Image_Directory
+@@ -305,6 +305,9 @@ struct _Edje_Part
+       int                 count_y; /* drag area divided by n (0 = no limit) */
+       
+       int                 confine_id; /* dragging within this bit, -1 = no */
++
++      /* davinchi */
++      int				  events_id;	/* If it is used as scrollbar */
+    } dragable;
+ };
+ 
+@@ -542,6 +545,7 @@ struct _Edje_Real_Part
+    Edje_Real_Part           *clip_to;
+    
+    Edje_Running_Program     *program;
++   Edje_Real_Part           *events_to;
+ };
+ 
+ struct _Edje_Running_Program
