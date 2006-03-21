@@ -117,7 +117,7 @@ _e17genmenu_shutdown()
 }
 
 double convert_time = 0.0, icon_time = 0.0, cache_time = 0.0, generate_time = 0.0;
-int menu_count, item_count, reject_count;
+int menu_count, item_count, reject_count, not_over_count;
 
 int
 main(int argc, char **argv)
@@ -202,8 +202,8 @@ main(int argc, char **argv)
    printf("* aware of this problem, and has a fix on his TODO list.                       *\n");
    printf("********************************************************************************\n");
 
-   printf("\nTotal time %3.3f seconds, finding fdo paths %3.3f, converting fdo menus %3.3f, converting to %d (rejected %d) eaps in %d fdo menus %3.3f, generating menus %3.3f, finding icons %3.3f, generating eap caches %3.3f.\n",
-       ecore_time_get() - start, paths, convert_time, item_count, reject_count, menu_count, gen - (icon_time + generate_time), generate_time, icon_time, cache_time);
+   printf("\nTotal time %3.3f seconds, finding fdo paths %3.3f, converting fdo menus %3.3f, converting to %d (rejected %d) eaps in %d fdo menus %3.3f, generating menus %3.3f, finding icons %3.3f, not overwritten %d, generating eap caches %3.3f.\n",
+       ecore_time_get() - start, paths, convert_time, item_count, reject_count, menu_count, gen - (icon_time + generate_time), generate_time, icon_time, not_over_count, cache_time);
 
 #if 0
    /* This is just a test of parsing speed for the old weather data's huge xml file.  It passed the parse test.  B-) */

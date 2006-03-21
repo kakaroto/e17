@@ -6,7 +6,7 @@
 #include "order.h"
 #include "parse.h"
 
-extern int reject_count;
+extern int reject_count, not_over_count;
 
 static void _parse_desktop_del(Desktop * desktop);
 
@@ -124,12 +124,10 @@ void
 parse_desktop_file(char *app, char *menu_path)
 {
    char *home, *eap_name;
-   int overwrite;
    G_Eap *eap;
    Desktop *desktop;
 
    home = get_home();
-   overwrite = get_overwrite();
    eap_name = get_eap_name(app);
 
 #ifdef DEBUG
@@ -202,7 +200,6 @@ parse_desktop_file(char *app, char *menu_path)
         if (!f)
           {
              fprintf(stderr, "ERROR: Cannot Open Mapping File\n");
-             reject_count++;
              return;
           }
         snprintf(buff, sizeof(buff), "%s|!%s|!%s|!%s\n", eap->icon, eap->name, eap->window_class, eap->exec);
@@ -234,25 +231,8 @@ process_file(char *file, char *menu_path, G_Eap *eap)
 
    if ((ecore_file_exists(path)) && (!overwrite))
      {
-        if (menu_path != NULL)
-          {
-             snprintf(order_path, sizeof(order_path), "%s" EFAVDIR "/Converted Menus/%s", home, menu_path);
-             modify_order(order_path, eap->eap_name);
-          }
-        else
-          {
-             category = NULL;
-             if (eap->categories != NULL)
-               {
-                  category = find_category(eap->categories);
-                  if (category != NULL)
-                    {
-                       snprintf(order_path, sizeof(order_path), "%s" EFAVDIR "/Generated Menus/%s", home, category);
-                       modify_order(order_path, eap->eap_name);
-                    }
-               }
-             return;
-          }
+        not_over_count++;
+        return;
      }
 
    if (eap->icon != NULL)

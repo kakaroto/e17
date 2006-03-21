@@ -3,6 +3,8 @@
 #include "icons.h"
 #include "eaps.h"
 
+#define DEBUG 1
+
 /* Create a .directory.eap for this dir */
 void
 create_dir_eap(char *path, char *cat)
@@ -125,7 +127,7 @@ write_eap(char *file, char *section, char *value)
    Eet_File *ef;
 
 #ifdef DEBUG
-   fprintf(stderr, "\tWriting %s:%s\n", strdup(section), strdup(value));
+   fprintf(stderr, "\tWriting %s %s:%s\n", strdup(file), strdup(section), strdup(value));
 #endif
 
    ef = eet_open(file, EET_FILE_MODE_READ_WRITE);
