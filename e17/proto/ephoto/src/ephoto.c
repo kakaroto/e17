@@ -319,6 +319,9 @@ main(int argc, char **argv)
 	
 		m->audiolen = ewl_checkbutton_new();
 		ewl_button_label_set(EWL_BUTTON(m->audiolen), "Fit to Audio");
+		if ( argfit == 1 ) {
+			ewl_checkbutton_checked_set(EWL_CHECKBUTTON(m->audiolen), TRUE);
+		}
 		ewl_container_child_append(EWL_CONTAINER(m->hboxv), m->audiolen);
 		ewl_object_maximum_size_set(EWL_OBJECT(m->audiolen), 150, 50);
 		ewl_object_size_request(EWL_OBJECT(m->audiolen), 150, 50);
@@ -355,6 +358,10 @@ main(int argc, char **argv)
 		
 		m->fullrad = ewl_radiobutton_new();
 		ewl_button_label_set(EWL_BUTTON(m->fullrad), "Fullscreen");
+		if ( argfullscreen == 1 ) {
+			ewl_checkbutton_checked_set(EWL_CHECKBUTTON(m->fullrad), TRUE);
+			ewl_checkbutton_checked_set(EWL_CHECKBUTTON(m->rad4), FALSE);
+		}
 		ewl_container_child_append(EWL_CONTAINER(m->hboxv), m->fullrad);
 		ewl_object_maximum_size_set(EWL_OBJECT(m->fullrad), 130, 50);
 		ewl_object_size_request(EWL_OBJECT(m->fullrad), 130, 50);
@@ -381,7 +388,12 @@ main(int argc, char **argv)
 		
 		m->wsize = ewl_entry_new();
 		ewl_entry_editable_set(EWL_ENTRY(m->wsize), 0);
-		ewl_text_text_set(EWL_TEXT(m->wsize), "640");
+		if ( argwidth == NULL ) {
+			ewl_text_text_set(EWL_TEXT(m->wsize), "640");
+		}
+		if ( argwidth != NULL ) {
+			ewl_text_text_set(EWL_TEXT(m->wsize), argwidth);
+		}
 		ewl_object_maximum_size_set(EWL_OBJECT(m->wsize), 50, 10);
 		ewl_object_alignment_set(EWL_OBJECT(m->wsize), EWL_FLAG_ALIGN_CENTER);
 		ewl_container_child_append(EWL_CONTAINER(m->hboxv), m->wsize);
@@ -397,7 +409,12 @@ main(int argc, char **argv)
 		
 		m->hsize = ewl_entry_new();
 		ewl_entry_editable_set(EWL_ENTRY(m->hsize), 0);
-		ewl_text_text_set(EWL_TEXT(m->hsize), "480");
+		if ( argheight == NULL ) {
+			ewl_text_text_set(EWL_TEXT(m->hsize), "480");
+		}
+		if ( argheight != NULL ) {
+			ewl_text_text_set(EWL_TEXT(m->hsize), argheight);
+		}
 		ewl_object_maximum_size_set(EWL_OBJECT(m->hsize), 50, 10);
 		ewl_object_alignment_set(EWL_OBJECT(m->hsize), EWL_FLAG_ALIGN_CENTER);
 		ewl_container_child_append(EWL_CONTAINER(m->hboxv), m->hsize);
