@@ -160,6 +160,7 @@ main(int argc, char **argv)
       printf("FDO kde legacy path = %s\n", (char *)fdo_paths_kde_legacy->elements[i].element);
 #endif
 
+
    /* Just being paranoid, and cause people have removed these during testing. */
    snprintf(path, sizeof(path), "%s/.e/e/applications/all", get_home());
    ecore_file_mkpath(path);
@@ -203,6 +204,20 @@ main(int argc, char **argv)
 
    printf("\nTotal time %3.3f seconds, finding fdo paths %3.3f, converting fdo menus %3.3f, converting to %d (rejected %d) eaps in %d fdo menus %3.3f, generating menus %3.3f, finding icons %3.3f, generating eap caches %3.3f.\n",
        ecore_time_get() - start, paths, convert_time, item_count, reject_count, menu_count, gen - (icon_time + generate_time), generate_time, icon_time, cache_time);
+
+#if 0
+   /* This is just a test of parsing speed for the old weather data's huge xml file.  It passed the parse test.  B-) */
+   {
+      double weather;
+      Dumb_Tree *weather_xml;
+
+      begin = ecore_time_get();
+      weather_xml = xmlame_get("dir.xml");
+      weather = ecore_time_get() - begin;
+      dumb_tree_dump(weather_xml, 0);
+      printf("\nWeather horror parsed in %3.3f seconds.\n", weather);
+   }
+#endif
 
    parse_ini_shutdown();
    fdo_paths_shutdown();
