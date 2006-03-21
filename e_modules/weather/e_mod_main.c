@@ -687,8 +687,6 @@ _weather_display_set(Weather_Face *wf, int ok)
    if (!wf)
      return;
 
-   e_icon_file_set(wf->icon_obj, PACKAGE_DATA_DIR "/images/na.png");
-   edje_object_part_swallow(wf->weather_obj, "icon", wf->icon_obj);
    edje_object_part_text_set(wf->weather_obj, "location", wf->location);
    
    if (wf->conf->display == DETAILED_DISPLAY)
@@ -698,11 +696,16 @@ _weather_display_set(Weather_Face *wf, int ok)
    
    if (!ok)
      {
+	e_icon_file_set(wf->icon_obj, PACKAGE_DATA_DIR "/images/na.png");
+	edje_object_part_swallow(wf->weather_obj, "icon", wf->icon_obj);
         edje_object_part_text_set(wf->weather_obj, "temp", "");
         edje_object_part_text_set(wf->weather_obj, "conditions", "");
      }
    else 
      {
+	snprintf(buf, sizeof(buf), PACKAGE_DATA_DIR"/images/%s", wf->icon);
+	e_icon_file_set(wf->icon_obj, buf);
+	edje_object_part_swallow(wf->weather_obj, "icon", wf->icon_obj);
         snprintf(buf, sizeof(buf), "%d°%c",wf->temp, wf->degrees);
         edje_object_part_text_set(wf->weather_obj, "temp", buf);
         edje_object_part_text_set(wf->weather_obj, "conditions", wf->conditions);
