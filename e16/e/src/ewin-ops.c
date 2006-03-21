@@ -154,11 +154,10 @@ SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
    ewin->state.animated = 0;
    Mode.place.doing_slide = 0;
 
-   if (Conf.place.slidemode == 0)
-      EwinMove(ewin, tx, ty);
-   else
+   if (Conf.place.slidemode)
       DrawEwinShape(ewin, Conf.place.slidemode, tx, ty,
 		    ewin->client.w, ewin->client.h, 2);
+   EwinMove(ewin, tx, ty);
 
    FocusEnable(1);
 
