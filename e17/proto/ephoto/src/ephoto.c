@@ -22,10 +22,11 @@ int argloop = 0;
 int argfit = 0;
 int argfullscreen = 0;
 char *audios;
+char buf[PATH_MAX];
 char argimage[PATH_MAX];
 char argaudio[PATH_MAX];
-char *argheight;
-char *argwidth;
+char argheight[PATH_MAX] = "600";
+char argwidth[PATH_MAX] = "480";
 char tempdb[PATH_MAX];
 char db[PATH_MAX];
 /*****************/
@@ -91,6 +92,16 @@ main(int argc, char **argv)
 			imageint = argint;
 			imageint++;
 			arglength = atoi(argv[imageint]);
+		}
+		else if ( argint < argc && !strcmp(argv[argint], "--win-size") ) {
+			int imageint;
+			imageint = argint;
+			imageint++;
+			snprintf(argwidth, PATH_MAX, "%s", argv[imageint]);
+			printf("%s\n", argwidth);
+			imageint++;
+			snprintf(argheight, PATH_MAX, "%s", argv[imageint]);
+			printf("%s\n", argheight);
 		}
 		else if ( argint < argc && !strcmp(argv[argint], "--loop") ) {
 			argloop = 1;
@@ -387,13 +398,8 @@ main(int argc, char **argv)
 			ewl_widget_show(m->text);
 		
 		m->wsize = ewl_entry_new();
+		ewl_text_text_set(EWL_TEXT(m->wsize), argwidth);
 		ewl_entry_editable_set(EWL_ENTRY(m->wsize), 0);
-		if ( argwidth == NULL ) {
-			ewl_text_text_set(EWL_TEXT(m->wsize), "640");
-		}
-		if ( argwidth != NULL ) {
-			ewl_text_text_set(EWL_TEXT(m->wsize), argwidth);
-		}
 		ewl_object_maximum_size_set(EWL_OBJECT(m->wsize), 50, 10);
 		ewl_object_alignment_set(EWL_OBJECT(m->wsize), EWL_FLAG_ALIGN_CENTER);
 		ewl_container_child_append(EWL_CONTAINER(m->hboxv), m->wsize);
@@ -408,13 +414,8 @@ main(int argc, char **argv)
 		ewl_widget_show(m->text);
 		
 		m->hsize = ewl_entry_new();
+		ewl_text_text_set(EWL_TEXT(m->hsize), argheight);
 		ewl_entry_editable_set(EWL_ENTRY(m->hsize), 0);
-		if ( argheight == NULL ) {
-			ewl_text_text_set(EWL_TEXT(m->hsize), "480");
-		}
-		if ( argheight != NULL ) {
-			ewl_text_text_set(EWL_TEXT(m->hsize), argheight);
-		}
 		ewl_object_maximum_size_set(EWL_OBJECT(m->hsize), 50, 10);
 		ewl_object_alignment_set(EWL_OBJECT(m->hsize), EWL_FLAG_ALIGN_CENTER);
 		ewl_container_child_append(EWL_CONTAINER(m->hboxv), m->hsize);

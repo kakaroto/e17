@@ -53,8 +53,8 @@ rad_cb(Ewl_Widget * w, void *event, void *data)
 		ewl_entry_editable_set(EWL_ENTRY(m->hsize), 0);
 	}
 	if ( w == m->rad4 ) {
-		ewl_text_text_set(EWL_TEXT(m->wsize), "640");
-		ewl_text_text_set(EWL_TEXT(m->hsize), "480");
+		ewl_text_text_set(EWL_TEXT(m->wsize), argwidth);
+		ewl_text_text_set(EWL_TEXT(m->hsize), argheight);
 		ewl_entry_editable_set(EWL_ENTRY(m->wsize), 1);
 		ewl_entry_editable_set(EWL_ENTRY(m->hsize), 1);
 	}

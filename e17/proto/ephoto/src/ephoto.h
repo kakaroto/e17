@@ -131,8 +131,8 @@ extern int arglength;
 extern int argfit;
 extern int argfullscreen;
 extern int argloop;
-extern char *argwidth;
-extern char *argheight;
+extern char argwidth[PATH_MAX];
+extern char argheight[PATH_MAX];
 extern char *audios;
 
 #endif
