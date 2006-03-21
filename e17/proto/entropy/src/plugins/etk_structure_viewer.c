@@ -200,27 +200,30 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 	      if (row)
 		      etk_tree_row_select(row);
 	      
-	      if (row && !ecore_hash_get (viewer->loaded_dirs, row)) {
+	      if (row) {
 			ecore_list_goto_first (el);
 			while ((file = ecore_list_next (el))) {
 
-			  /*We need the file's mime type, 
-			   * so get it here if it's not here already...*/
-			  if (!strlen (file->mime_type)) {
-			    entropy_mime_file_identify (comp->core->mime_plugins, file);
-			  }
+			  if (!ecore_hash_get(viewer->row_folder_hash, file)) {
+				  /*We need the file's mime type, 
+				   * so get it here if it's not here already...*/
+				  if (!strlen (file->mime_type)) {
+				    entropy_mime_file_identify (comp->core->mime_plugins, file);
+				  }
 
-			  if (file->filetype == FILE_FOLDER ||
-			      entropy_core_descent_for_mime_get (comp->core,
-						 file->mime_type)) {
-			      /*Tell the core we're watching 
-			       * this file*/
-			      entropy_core_file_cache_add_reference (file->md5);
-			      structure_viewer_add_row (comp, file, row);
-			      ecore_hash_set (viewer->loaded_dirs, row, (int*)1);
-			  }
-			  etk_tree_row_expand(row);
-		     }
+				  if (file->filetype == FILE_FOLDER ||
+				      entropy_core_descent_for_mime_get (comp->core,
+							 file->mime_type)) {
+				      /*Tell the core we're watching 
+				       * this file*/
+				      entropy_core_file_cache_add_reference (file->md5);
+				      structure_viewer_add_row (comp, file, row);
+				      ecore_hash_set (viewer->loaded_dirs, row, (int*)1);
+				  }
+				  etk_tree_row_expand(row);
+			   }
+			 }
+			  
 
 	      }
 	  }
