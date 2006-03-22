@@ -8,7 +8,7 @@ files_DATA = \
 mbar.edj \
 mbar.edc
 
-EXTRA_DIST = $(files_DATA)
+EXTRA_DIST = $(files_DATA) $(wildcard images/*.png)
 
 mbar.edj: Makefile mbar.edc
 	 $(EDJE_CC) $(EDJE_FLAGS) \

@@ -128,7 +128,7 @@ AC_OUTPUT([Makefile
 	   po/Makefile
 	   src/lib/Makefile
 	   src/module/Makefile
-	   evolume.spec]) 
+	   e_modules-evolume.spec]) 
 
 echo ------------------------------------
 echo "If you want to contribute to or maintain project, please contact me"

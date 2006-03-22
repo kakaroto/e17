@@ -212,6 +212,7 @@ AC_OUTPUT([
 Makefile
 data/Makefile
 data/themes/Makefile
+e_modules-mbar.spec
 ],[
 ])
 

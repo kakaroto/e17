@@ -17,9 +17,7 @@ dist-hook:
 	  done; \
 	fi; \
 	pushd $(distdir); \
-	rm -f $(MAINTAINERCLEANFILES) Makefile depcomp; \
 	rm -fR */Makefile */*/Makefile */*/*/Makefile; \
-	rm -fR */Makefile.in */*/Makefile.in */*/*/Makefile.in; \
 	rm -fR */.svn */*/.svn */*/*/.svn; \
 	rm -fR src/modules/*/*.edj; \
 	popd;

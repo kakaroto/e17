@@ -206,6 +206,7 @@ AC_OUTPUT([
 Makefile
 images/Makefile
 po/Makefile
+e_modules-weather.spec
 ],[
 ])
 
