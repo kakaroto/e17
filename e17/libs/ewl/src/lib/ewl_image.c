@@ -627,10 +627,21 @@ ewl_image_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ww = CURRENT_W(w);
 	hh = CURRENT_H(w);
 	if (i->cs) {
+		/*
+		 * Limit to the constraining size
+		 */
 		if (ww > i->cs)
 			ww = i->cs;
 		if (hh > i->cs)
 			hh = i->cs;
+
+		/*
+		 * Use images original size if smaller than constraint.
+		 */
+		if (ww > i->ow)
+			ww = i->ow;
+		if (hh > i->oh)
+			hh = i->oh;
 	}
 
 	/*
