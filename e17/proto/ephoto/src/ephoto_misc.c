@@ -34,6 +34,9 @@ destroyp_cb(Ewl_Widget * w, void *event, void *data)
 	/****Shut down the presentation****/
 	ewl_widget_destroy(s->wins);
 	wino = 0;
+	if ( mainwin == 0 ) {
+		ewl_main_quit();
+	}
 	return;
 	data = NULL;
 	/**********************************/

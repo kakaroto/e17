@@ -33,14 +33,8 @@ if ( ewl_media_is_available() ) {
 		h = atoi(hsize);
 	}
 	if ( mainwin == 0 ) {
-		if ( argwidth == NULL && argheight == NULL ) {	
-			w = 600;
-			h = 480;
-		}
-		else {
-			w = atoi(argwidth);
-			h = atoi(argheight);
-		}
+		w = atoi(argwidth);
+		h = atoi(argheight);
 	}
 	s->screen = ewl_image_new();
 	ewl_image_proportional_set(EWL_IMAGE(s->screen), TRUE);
@@ -167,8 +161,8 @@ slideshow_cb(Ewl_Widget *w, void *event, void *data)
 	}
 	
 	if ( mainwin == 0 ) {
-		ws = 800;
-		h= 600;
+		ws = atoi(argwidth);
+		h= atoi(argheight);
 	}
 
 	s->wins = ewl_window_new();
@@ -187,6 +181,11 @@ slideshow_cb(Ewl_Widget *w, void *event, void *data)
 	ewl_object_fill_policy_set(EWL_OBJECT(s->wins), EWL_FLAG_FILL_ALL);
 	if ( mainwin == 1 ) {
 		if ( ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->fullrad)) == 1 ) {
+			ewl_callback_append(s->wins, EWL_CALLBACK_REALIZE, realize_cb, NULL);
+		}
+	}
+	if ( mainwin == 0 ) {
+		if ( argfullscreen == 1 ) {
 			ewl_callback_append(s->wins, EWL_CALLBACK_REALIZE, realize_cb, NULL);
 		}
 	}
@@ -233,10 +232,13 @@ if ( ewl_media_is_available() ) {
 		}
 	}
 	else {
-		if ( arglength != 0 ) {
+		if ( argfit == 1 ) {
+			time = audiolen / slidenum;
+		}
+		if ( arglength != 0 && argfit == 0 ) {
 			time = arglength;
 		}
-		if ( arglength == 0 ) {
+		if ( arglength == 0 && argfit == 0 ) {
 			time = 3;
 		}
 	}
@@ -253,7 +255,7 @@ if ( ewl_media_is_available() ) {
 			ewl_object_maximum_size_set(EWL_OBJECT(s->screen), ws, h);
 		}
 	}
-	if ( mainwin == 0 ) {
+	if ( mainwin == 0 && argfullscreen == 0 ) {
 		ewl_object_maximum_size_set(EWL_OBJECT(s->screen), ws, h);
 	}
 	ewl_object_fill_policy_set(EWL_OBJECT(s->screen), EWL_FLAG_FILL_SHRINK);
@@ -373,21 +375,36 @@ presentation_cb(Ewl_Widget * w, void *event, void *data)
 	/*******************************************/
 
 	/***Setup the presentation layout!***/
-	wsize = ewl_text_text_get(EWL_TEXT(m->wsize));
-	ws = atoi(wsize);
-	hsize = ewl_text_text_get(EWL_TEXT(m->hsize));
-	h = atoi(hsize);
-
+	if ( mainwin == 1 ) {	
+		wsize = ewl_text_text_get(EWL_TEXT(m->wsize));
+		ws = atoi(wsize);
+		hsize = ewl_text_text_get(EWL_TEXT(m->hsize));
+		h = atoi(hsize);
+	}
+	if ( mainwin == 0 ) {
+		ws = atoi(argwidth);
+		h = atoi(argheight);
+	}
 	s->wins = ewl_window_new();
 	wino = 1;
 	ewl_window_title_set(EWL_WINDOW(s->wins), "Presentation");
 	ewl_window_name_set(EWL_WINDOW(s->wins), "Presentation");
 	ewl_window_class_set(EWL_WINDOW(s->wins), "Presentation");
-	if ( ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->fullrad)) == 0 ) {
-		ewl_object_maximum_size_set(EWL_OBJECT(s->wins), ws, h);
+	if ( mainwin == 1 ) {
+		if ( ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->fullrad)) == 0 ) {
+			ewl_object_maximum_size_set(EWL_OBJECT(s->wins), ws, h);
+		}
+		if ( ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->fullrad)) == 1 ) {
+			ewl_callback_append(s->wins, EWL_CALLBACK_REALIZE, realize_cb, NULL);
+		}
 	}
-	if ( ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->fullrad)) == 1 ) {
-		ewl_callback_append(s->wins, EWL_CALLBACK_REALIZE, realize_cb, NULL);
+	if ( mainwin == 0 ) {
+		if ( argfullscreen == 1 ) {
+			ewl_callback_append(s->wins, EWL_CALLBACK_REALIZE, realize_cb, NULL);
+		}
+		if ( argfullscreen == 0 ) {
+			ewl_object_maximum_size_set(EWL_OBJECT(s->wins), ws, h);
+		}
 	}
 	ewl_callback_append(s->wins, EWL_CALLBACK_DELETE_WINDOW, destroyp_cb, NULL);
 	ewl_widget_show(s->wins);
