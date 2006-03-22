@@ -79,7 +79,6 @@ main(int argc, char **argv)
 			imageint = argint;
 			imageint++;
 			snprintf(argimage, PATH_MAX, "%s", argv[imageint]);
-			printf("%s\n", argimage);
 		}
 		else if ( argint < argc && !strcmp(argv[argint], "--audio") ) {
 			int imageint;
@@ -100,10 +99,8 @@ main(int argc, char **argv)
 			imageint = argint;
 			imageint++;
 			snprintf(argwidth, PATH_MAX, "%s", argv[imageint]);
-			printf("%s\n", argwidth);
 			imageint++;
 			snprintf(argheight, PATH_MAX, "%s", argv[imageint]);
-			printf("%s\n", argheight);
 		}
 		else if ( argint < argc && !strcmp(argv[argint], "--loop") ) {
 			argloop = 1;

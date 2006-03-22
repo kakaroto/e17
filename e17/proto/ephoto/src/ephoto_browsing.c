@@ -44,7 +44,6 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 		snprintf(pathf, PATH_MAX, "%s", pathi);
 	}
 	
-	printf("%s\n", pathf);
 	
 	/**********************************************/
 	
@@ -113,19 +112,15 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 			
 			snprintf(pathw, PATH_MAX, "%s%s", pathg, temp);
 			
-			printf("%s\n", pathw);
-			
+		
 			if ( fnmatch("*.[Pp][Nn][Gg]", pathw, 0) == 0 ) { 
 				ecore_list_append(imagefiles, strdup(pathw));
-				printf("%s\n", pathw);
 			}
 			if ( fnmatch("*.[Jj][Pp][Gg]", pathw, 0) == 0 ) {
 				ecore_list_append(imagefiles, strdup(pathw));
-				printf("%s\n", pathw);
 			}
 			if ( fnmatch("*.[Jj][Pp][Ee][Gg]", pathw, 0) == 0 ) {
 				ecore_list_append(imagefiles, strdup(pathw));
-				printf("%s\n", pathw);
 			}
 	
 			bname = basename(pathw);
@@ -175,7 +170,7 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 			m->text = ewl_text_new();
 			ewl_widget_name_set(m->text, itemp);
 			ewl_text_text_set(EWL_TEXT(m->text), bname2);
-   		ewl_object_minimum_size_set(EWL_OBJECT(m->text), 10, 16);
+   			ewl_object_minimum_size_set(EWL_OBJECT(m->text), 10, 16);
 			ewl_object_fill_policy_set(EWL_OBJECT(m->text), EWL_FLAG_FILL_ALL);
 			ewl_container_child_append(EWL_CONTAINER(m->hbox), m->text);
 			ewl_widget_show(m->text);
@@ -233,7 +228,6 @@ populatea_cb(Ewl_Widget *w, void *event, void *data)
 		snprintf(pathf, PATH_MAX, "%s", pathi);
 	}
 	/**********************************************************/
-	printf("%s\n", pathf);
 	
 	
 	/********Add the directories to the tree!***********/
@@ -295,12 +289,19 @@ populatea_cb(Ewl_Widget *w, void *event, void *data)
 			
 			snprintf(pathw, PATH_MAX, "%s%s", pathg, temp);
 			
-			printf("%s\n", pathw);
 			
 			if ( fnmatch("*.[Mm][Pp][3]", pathw, 0) == 0 ) { 
 				ecore_list_append(audiofiles, strdup(pathw));
-				printf("%s\n", pathw);
 			}
+			
+			if ( fnmatch("*.[Oo][Gg][Gg]", pathw, 0) == 0 ) {
+				ecore_list_append(audiofiles, strdup(pathw));
+			}
+
+			if ( fnmatch("*.[Ww][Aa][Vv]", pathw, 0) == 0 ) {
+                                ecore_list_append(audiofiles, strdup(pathw));
+                        }
+
 		
 			bname = basename(pathw);
 		
@@ -378,7 +379,6 @@ up_cb(Ewl_Widget *w, void *event, void *data)
 	if ( w == m->texta ) {
 		pathi = ewl_widget_name_get(w);
 		upname = dirname(pathi);
-		printf("%s\n", upname);
 		ewl_text_text_set(EWL_TEXT(m->directorya), upname);
 		ewl_callback_call(m->directorya, EWL_CALLBACK_VALUE_CHANGED);
 	}
@@ -387,7 +387,6 @@ up_cb(Ewl_Widget *w, void *event, void *data)
 	if ( w == m->texti ) {
 		pathi = ewl_widget_name_get(w);
 		upname = dirname(pathi);
-		printf("%s\n", upname);
 		ewl_text_text_set(EWL_TEXT(m->directory), upname);
 		ewl_callback_call(m->directory, EWL_CALLBACK_VALUE_CHANGED);
 	}
@@ -402,7 +401,6 @@ iremove_cb(Ewl_Widget *w, void *event, void *data)
 	char *name2;
 	
 	name = ewl_widget_name_get(w);
-	printf("%s\n", name);
 	
 	ewl_iconbox_icon_remove(EWL_ICONBOX(m->ib), EWL_ICONBOX_ICON(w));
 	ewl_iconbox_icon_arrange(EWL_ICONBOX(m->ib));
@@ -413,7 +411,6 @@ iremove_cb(Ewl_Widget *w, void *event, void *data)
 	while ( name2 = ecore_dlist_current(m->imagelist) ) {
 		name2 = ecore_dlist_current(m->imagelist);
 		if ( strcmp(name, name2) == 0 ) {
-			printf("Matched %s\n", name);
 			ecore_dlist_remove(m->imagelist);
 			slidenum--;
 		}
@@ -458,17 +455,7 @@ images_cb(Ewl_Widget *w, void *event, void *data)
 		
 		ecore_dlist_append(m->imagelist, strdup(pathi));
 		slidenum++;
-		
-		//home = getenv("HOME");
-		//snprintf(imagedb, PATH_MAX, "%s/ephoto_images", home);
-		//printf("%s\n", imagedb);
-		//snprintf(tempcheck, PATH_MAX, "%s/%s", imagedb, name);
-		//printf("%s\n", tempcheck);
-		//if ( !ecore_file_exists(tempcheck) ) {
-		//	snprintf(equiv, PATH_MAX, "%s", pathi);
-		//	printf("%s\n", equiv);
-		//	ecore_file_cp(equiv, tempcheck);
-		//}
+	
 	}
 	if ( page == m->viewbox && w != m->vbutton ) {
 		ewl_image_file_set(EWL_IMAGE(m->vimage), pathi, NULL);
@@ -499,8 +486,7 @@ audio_cb(Ewl_Widget *w, void *event, void *data)
 	/***************************************/
 	audios = strdup(pathi);
 	audio = 1;
-	printf("%s\n", audios);
-   if ( ewl_media_is_available() ) {
+	if ( ewl_media_is_available() ) {
 		if (audio != 0) {
 			ewl_widget_enable(m->audiolen);
 			ewl_widget_state_set(m->audiolen, "enabled");
