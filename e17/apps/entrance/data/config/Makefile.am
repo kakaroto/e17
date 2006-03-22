@@ -10,4 +10,4 @@ configdb_DATA = $(DB)
 all: $(DB)
 
 $(DB): $(SCRIPT)
-		sh $<
+		sh $< || :

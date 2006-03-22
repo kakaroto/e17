@@ -124,6 +124,7 @@ AC_OUTPUT([
 Makefile
 src/Makefile
 src/bin/Makefile
+enity.spec
 ],[
 touch enity_docs.tar.gz
 ])

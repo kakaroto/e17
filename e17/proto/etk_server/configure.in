@@ -124,6 +124,7 @@ AC_OUTPUT([
 Makefile
 src/Makefile
 src/bin/Makefile
+etk_server.spec
 ],[
 touch etk_server_docs.tar.gz
 ])

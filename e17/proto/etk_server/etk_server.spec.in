@@ -1,0 +1,44 @@
+Summary: Etk application proxy daemon
+Name: @PACKAGE@
+Version: @VERSION@
+Release: 0.%(date '+%Y%m%d')
+License: BSD
+Group: Development/Libraries
+URL: http://www.enlightenment.org/
+Source: %{name}-%{version}.tar.gz
+Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
+Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
+Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
+BuildRequires: etk-devel
+BuildRoot: %{_tmppath}/%{name}-%{version}-root
+
+%description
+Etk_Server allows Etk applications to be programmed using almost any
+language. The client interacts with a FIFO to allow for the sending of
+commands, receiving of output, and event programming.
+
+%prep
+%setup -q
+
+%build
+%{configure} --prefix=%{_prefix}
+%{__make} %{?_smp_mflags} %{?mflags}
+
+%install
+%{__make} %{?mflags_install} DESTDIR=$RPM_BUILD_ROOT install
+
+%clean
+test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
+
+%post
+/sbin/ldconfig
+
+%postun
+/sbin/ldconfig
+
+%files
+%defattr(-, root, root)
+%doc AUTHORS ChangeLog COPYING* INSTALL README
+%{_bindir}/%{name}
+
+%changelog

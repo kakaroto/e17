@@ -10,7 +10,7 @@ EXTRA_DIST = \
 	debian/entrance.postrm debian/entrance.prerm \
 	debian/entrance.conffiles debian/entrance.config \
 	m4/ac_expand_dir.m4 m4/ac_path_generic.m4 \
-	debian/entrance.templates
+	debian/entrance.templates entrance.spec.in
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
                        config.h.in config.sub configure install-sh \
@@ -23,4 +23,4 @@ dist-hook:
 	fi
 
 install-data-am:
-	sh data/config/autodetect.sh
+	sh data/config/autodetect.sh || :

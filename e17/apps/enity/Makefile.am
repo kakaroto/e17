@@ -28,13 +28,12 @@ dist-hook:
 	    cp -pR $$file $(distdir)/data; \
 	  done \
 	fi
-							  
 
 EXTRA_DIST = README \
 AUTHORS \
 COPYING \
 COPYING-PLAIN \
-$(MYAPPNAME).spec \
+$(MYAPPNAME).spec.in \
 $(MYAPPNAME).c.in \
 gendoc \
 Doxyfile \
