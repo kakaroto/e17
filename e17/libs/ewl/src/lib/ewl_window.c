@@ -300,6 +300,9 @@ ewl_window_move(Ewl_Window *win, int x, int y)
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
+	win->x = x;
+	win->y = y;
+
 	if (!REALIZED(win))
 		DRETURN(DLEVEL_STABLE);
 #ifdef ENABLE_EWL_SOFTWARE_X11
