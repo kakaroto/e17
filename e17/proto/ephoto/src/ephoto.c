@@ -116,15 +116,15 @@ main(int argc, char **argv)
 		}
 		else if ( argint < argc && !strcmp(argv[argint], "--help") ) {
 			printf("ephoto /path/to/dir loads /path/to/dir as default directory\n");
-			printf("ephoto --audio /full/path/to/audio sets /full/path/to/audio as default audio for slideshow\n");
+			printf("ephoto --audio /path/to/audio sets /path/to/audio as default audio for slideshow\n");
 			printf("ephoto --fit-to-audio sets the slideshow to fit audio\n");
 			printf("ephoto --fullscreen sets the presentation/slideshow window to be fullscreen\n");
 			printf("ephoto --help displays all available options\n");
 			printf("ephoto --length slidelength sets the integer slidelength(seconds) as the transition time for slideshow\n");
 			printf("ephoto --loop sets the slideshow to loop\n");
-			printf("ephoto --presentation /full/path/to/image /full/path/to/image /full/path/to/image starts the presentation using the specified images\n");
-			printf("ephoto --slideshow /full/path/to/image /full/path/to/image /full/path/to/image starts the slideshow using the specified images\n");
-			printf("ephoto --view-image /full/path/to/image sets /full/path/to/image as the default image in the image viewer tab.\n");
+			printf("ephoto --presentation /path/to/image /path/to/image /path/to/image starts the presentation using the specified images\n");
+			printf("ephoto --slideshow /path/to/image /path/to/image /path/to/image starts the slideshow using the specified images\n");
+			printf("ephoto --view-image /path/to/image sets /path/to/image as the default image in the image viewer tab.\n");
 			printf("ephoto --win-size integer integer sets the first integer as the width and the second integer as the height of the presentation/slideshow window\n");
 			mainwin = 0;
 		}
