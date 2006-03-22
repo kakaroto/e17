@@ -26,14 +26,15 @@ struct _entropy_etk_location_add_dialog
 	Etk_Widget* password_widget_label;
 	Etk_Widget* password_widget_entry;
 
-	void (*add_callback)(entropy_gui_component_instance*, char*, char*);
+	void (*add_callback)(entropy_gui_component_instance*,
+			Entropy_Config_Structure*);
 	
 	int screen_id;
 	char* selected_uri;
 };
 
 void etk_location_add_dialog_create(entropy_gui_component_instance* instance,
-		void (*add_callback)(entropy_gui_component_instance*, char*, char*) );
+		void (*add_callback)(entropy_gui_component_instance*, Entropy_Config_Structure*) );
 
 
 #endif

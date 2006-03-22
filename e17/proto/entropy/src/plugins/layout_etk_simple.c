@@ -14,6 +14,15 @@
 //
 
 static int _etk_layout_window_count = 0;
+static Ecore_Hash* _etk_layout_row_reference;
+static Ecore_Hash* _etk_layout_structure_plugin_reference;
+static int _etk_layout_global_init = 0;
+
+typedef struct _layout_etk_row_structure_plugin _layout_etk_row_structure_plugin;
+struct _layout_etk_row_structure_plugin {
+	Etk_Tree_Row* row;
+	entropy_plugin* structure_plugin;
+}; 
 
 typedef struct entropy_layout_gui entropy_layout_gui;
 struct entropy_layout_gui
@@ -24,8 +33,7 @@ struct entropy_layout_gui
   Etk_Widget *paned;
   Etk_Widget *statusbar_box;
   Etk_Widget *statusbars[3];
-
-  Ecore_Hash* toplevel_row_entries;
+  Etk_Tree_Row* delete_row; /*The row pending deletion, if any*/
 
   Etk_Widget* popup;
 
@@ -38,7 +46,7 @@ typedef enum _Etk_Menu_Item_Type
    ETK_MENU_ITEM_SEPARATOR
 } Etk_Menu_Item_Type;
 
-void layout_etk_simple_add_header(entropy_gui_component_instance* instance, char* name, char* uri);
+void layout_etk_simple_add_header(entropy_gui_component_instance* instance, Entropy_Config_Structure* structure);
 
 
 void layout_etk_simple_quit(entropy_core* core)
@@ -74,15 +82,42 @@ entropy_plugin_destroy (entropy_gui_component_instance * comp)
 
 }
 
+static void _etk_layout_location_delete_confirm_cb(Etk_Object * object, void *data)
+{
+	entropy_gui_component_instance* instance = data;
+	entropy_layout_gui* gui = instance->data;	
+	Etk_Tree_Row* row = gui->delete_row;
+	Entropy_Config_Structure* structure;
+	Ecore_List* row_refs = NULL;
+        _layout_etk_row_structure_plugin* ref;
+
+	if (row) {
+		structure = ecore_hash_get(_etk_layout_row_reference, row);
+		row_refs = ecore_hash_get(_etk_layout_structure_plugin_reference, structure);
+		if (row_refs) {	
+			while ( (ref = ecore_list_remove_first(row_refs))) {
+				etk_tree_row_del(ref->row);
+				IF_FREE(ref);
+			}
+			ecore_list_destroy(row_refs);
+			ecore_hash_remove(_etk_layout_structure_plugin_reference, structure);
+		}
+		entropy_config_standard_structure_remove(structure);
+	}
+}
+
 static void _etk_layout_row_clicked(Etk_Object *object, 
 		Etk_Tree_Row *row, Etk_Event_Mouse_Up_Down *event, void *data)
 {
 	entropy_gui_component_instance* instance = data;
 	entropy_layout_gui* gui = instance->data;	
-	
-	printf("Button: %d\n", event->button);
+	Entropy_Config_Structure* structure;
 
-	if (event->button == 3) {
+	structure = ecore_hash_get(_etk_layout_row_reference, row);
+
+	if (event->button == 3 && structure) {
+		gui->delete_row = row;
+		
 		etk_tree_row_select(row);
 		etk_menu_popup(ETK_MENU(gui->popup));
 	}
@@ -195,7 +230,7 @@ _entropy_etk_layout_key_down_cb(Etk_Object *object, void *event, void *data)
    }
 }
 
-void layout_etk_simple_add_header(entropy_gui_component_instance* instance, char* name, char* uri)
+void layout_etk_simple_add_header(entropy_gui_component_instance* instance, Entropy_Config_Structure* structure_obj)
 {
   void *(*structure_plugin_init) (entropy_core * core,
 				  entropy_gui_component_instance *,
@@ -208,11 +243,13 @@ void layout_etk_simple_add_header(entropy_gui_component_instance* instance, char
   Etk_Tree_Col* col;
   entropy_layout_gui* gui = instance->data;
   char* icon_string = NULL;
+  Ecore_List* layouts;
+  _layout_etk_row_structure_plugin* struct_ref = NULL;
 
   col = etk_tree_nth_col_get(ETK_TREE(gui->tree), 0);
 
   /*Parse the file from the URI*/
-   file = entropy_core_parse_uri (uri);
+   file = entropy_core_parse_uri (structure_obj->uri);
 
    printf("Object for %s/%s is %p....\n", file->path, file->filename, file);
    
@@ -228,7 +265,7 @@ void layout_etk_simple_add_header(entropy_gui_component_instance* instance, char
 	
   etk_tree_freeze(ETK_TREE(gui->tree));
   row = etk_tree_append(ETK_TREE(gui->tree), col, 
-			  icon_string, _(name), NULL);
+			  icon_string, structure_obj->name, NULL);
   etk_tree_thaw(ETK_TREE(gui->tree));
   
   
@@ -247,6 +284,22 @@ void layout_etk_simple_add_header(entropy_gui_component_instance* instance, char
    
    instance = (*structure_plugin_init)(instance->core, instance, row,file);
    instance->plugin = structure;
+
+   /*Add to tracker*/
+  ecore_hash_set(_etk_layout_row_reference, row, structure_obj);
+  
+  /*Add to layout/plugin tracker - this is to destroy if the user removes a location*/
+  if (! (layouts = ecore_hash_get(_etk_layout_structure_plugin_reference, structure_obj))) {
+	  layouts = ecore_list_new();
+	  ecore_hash_set(_etk_layout_structure_plugin_reference, structure_obj, layouts);
+  }
+
+  struct_ref = calloc(1, sizeof(_layout_etk_row_structure_plugin));
+  struct_ref->row = row;
+  struct_ref->structure_plugin = structure;
+
+  ecore_list_append(layouts, struct_ref);
+
 }
 
 entropy_gui_component_instance *
@@ -255,7 +308,7 @@ entropy_plugin_layout_create (entropy_core * core)
   Etk_Widget *window;
   entropy_layout_gui *gui;
   entropy_gui_component_instance *layout;
-  entropy_gui_component_instance* instance;
+  entropy_gui_component_instance* instance=  NULL;
 
   void *(*local_plugin_init) (entropy_core * core,
 				  entropy_gui_component_instance *,
@@ -270,6 +323,15 @@ entropy_plugin_layout_create (entropy_core * core)
 
   Evas_List* structures;
   Entropy_Config_Structure* structure;
+
+
+  /*Global init for all layouts*/
+  if (!_etk_layout_global_init) {
+	  _etk_layout_row_reference = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
+	  _etk_layout_structure_plugin_reference = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
+	  
+	  _etk_layout_global_init = 1;
+  }
 
   /*Entropy related init */
   layout = entropy_malloc (sizeof (entropy_gui_component_instance));	/*Create a component instance */
@@ -366,17 +428,13 @@ entropy_plugin_layout_create (entropy_core * core)
    etk_signal_connect("row_clicked", ETK_OBJECT( gui->tree  ),
           ETK_CALLBACK(_etk_layout_row_clicked), layout);
 
-   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Delete this entry"), ETK_STOCK_DOCUMENT_OPEN, ETK_MENU_SHELL(gui->popup),NULL);
-
-   /*Make the toplevel row hash*/
-   gui->toplevel_row_entries = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
-
+   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Delete this location"),
+		   ETK_STOCK_DOCUMENT_OPEN, ETK_MENU_SHELL(gui->popup),NULL);
+   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_layout_location_delete_confirm_cb), layout);
 
   for (structures = entropy_config_standard_structures_parse (layout, NULL); structures; ) {
 	  structure = structures->data;
-	  
-	  layout_etk_simple_add_header (layout, structure->name, structure->uri);
-
+	  layout_etk_simple_add_header (layout,structure);
 	  structures = structures->next;
   }
 

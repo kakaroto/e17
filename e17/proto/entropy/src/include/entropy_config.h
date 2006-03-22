@@ -52,7 +52,8 @@ void entropy_config_str_set(char* module, char* key, char* value);
 
 
 Evas_List* entropy_config_standard_structures_parse (entropy_gui_component_instance * instance, char *config);
-void entropy_config_standard_structures_add (entropy_gui_component_instance * instance, char *name, char *uri);
+Entropy_Config_Structure* entropy_config_standard_structures_add (char *name, char *uri);
+void entropy_config_standard_structure_remove(Entropy_Config_Structure* structure);
 void entropy_config_standard_structures_create ();
 void entropy_config_eet_config_save();
 void entropy_config_version_check();

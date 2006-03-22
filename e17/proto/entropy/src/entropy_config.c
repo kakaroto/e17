@@ -7,7 +7,7 @@
 #include <Eet.h>
 #include <stdarg.h>
 
-#define ENTROPY_CONFIG_VERSION 9
+#define ENTROPY_CONFIG_VERSION 10
 
 static Entropy_Config* _Entropy_Config = NULL;
 
@@ -529,14 +529,14 @@ void entropy_config_defaults_populate(Entropy_Config_Loaded* config)
 		config->mime_bindings = evas_list_append(config->mime_bindings, 
 				entropy_config_binding_new("audio/x-mp3",
 					entropy_config_binding_action_new("Xmms", "xmms", "\%pf"),
-					entropy_config_binding_action_new("Mpg123 (via eVFS)", "evfscat \"%u\" | mpg123 -", ""),
+					entropy_config_binding_action_new("Mpg123 (via eVFS)", "evfscat \%u | mpg123 -", ""),
 					NULL
 					));
 
 		config->mime_bindings = evas_list_append(config->mime_bindings, 
 				entropy_config_binding_new("video/x-ms-wmv",
 					entropy_config_binding_action_new("MPlayer", "mplayer", "\%pf"),
-					entropy_config_binding_action_new("MPlayer (via evfs)", "evfscat \"%u\" | mplayer -cache 4096 -", ""),
+					entropy_config_binding_action_new("MPlayer (via evfs)", "evfscat \%u | mplayer -cache 4096 -", ""),
 					entropy_config_binding_action_new("Xine", "xine", "%pf"),
 					NULL
 					));
@@ -544,7 +544,7 @@ void entropy_config_defaults_populate(Entropy_Config_Loaded* config)
 		config->mime_bindings = evas_list_append(config->mime_bindings, 
 				entropy_config_binding_new("video/mpeg",
 					entropy_config_binding_action_new("MPlayer", "mplayer", "\%pf"),
-					entropy_config_binding_action_new("MPlayer (via evfs)", "evfscat \"%u\" | mplayer -cache 4096 -", ""),
+					entropy_config_binding_action_new("MPlayer (via evfs)", "evfscat \%u | mplayer -cache 4096 -", ""),
 					entropy_config_binding_action_new("Xine", "xine", "%pf"),
 					NULL
 					));
@@ -552,7 +552,7 @@ void entropy_config_defaults_populate(Entropy_Config_Loaded* config)
 		config->mime_bindings = evas_list_append(config->mime_bindings, 
 				entropy_config_binding_new("video/x-msvideo",
 					entropy_config_binding_action_new("MPlayer", "mplayer", "\%pf"),
-					entropy_config_binding_action_new("MPlayer (via evfs)", "evfscat \"%u\" | mplayer -cache 4096 -", ""),
+					entropy_config_binding_action_new("MPlayer (via evfs)", "evfscat \%u | mplayer -cache 4096 -", ""),
 					entropy_config_binding_action_new("Xine", "xine", "%pf"),
 					NULL
 					));
@@ -583,12 +583,21 @@ entropy_config_standard_structures_parse (entropy_gui_component_instance * insta
 	return _Entropy_Config->Loaded_Config->structures;
 }
 
-void
-entropy_config_standard_structures_add (entropy_gui_component_instance *
-				       instance, char *name, char *uri)
+void entropy_config_standard_structure_remove(Entropy_Config_Structure* structure)
 {
+	_Entropy_Config->Loaded_Config->structures = evas_list_remove(_Entropy_Config->Loaded_Config->structures, 
+			structure);
+}
+
+Entropy_Config_Structure*
+entropy_config_standard_structures_add (char *name, char *uri)
+{
+	Entropy_Config_Structure* structure = entropy_config_structure_new(name,uri);
+	
 	_Entropy_Config->Loaded_Config->structures = evas_list_append(_Entropy_Config->Loaded_Config->structures,
-			entropy_config_structure_new(name,uri));
+	structure);
+
+	return structure;
 }
 
 void

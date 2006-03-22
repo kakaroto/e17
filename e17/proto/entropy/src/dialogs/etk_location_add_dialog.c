@@ -91,6 +91,7 @@ void _location_add_next_cb(Etk_Object *obj, void *data)
 		/*Finish!*/
 		const char *host= NULL, *path = NULL, *name = NULL, *username = NULL, *password = NULL;
 		char buffer[PATH_MAX];
+		Entropy_Config_Structure* structure;
 
 		name = etk_entry_text_get(ETK_ENTRY(dialog->name_entry));
 		host = etk_entry_text_get(ETK_ENTRY(dialog->host_widget_entry));
@@ -120,8 +121,8 @@ void _location_add_next_cb(Etk_Object *obj, void *data)
 	
 		printf("Final URI: '%s'\n", buffer);
 
-		entropy_config_standard_structures_add (dialog->instance, (char*)name, buffer);
-		(*dialog->add_callback)(dialog->instance, (char*)name, buffer);
+		structure = entropy_config_standard_structures_add((char*)name, buffer);
+		(*dialog->add_callback)(dialog->instance, structure);
 
 		etk_object_destroy(ETK_OBJECT(dialog->window));
 	}
@@ -156,7 +157,7 @@ static void location_add_initialise() {
 
 
 void etk_location_add_dialog_create(entropy_gui_component_instance* instance, 
-		void (*add_callback)(entropy_gui_component_instance*, char*, char*) )
+		void (*add_callback)(entropy_gui_component_instance*, Entropy_Config_Structure*) )
 {
 	Ecore_List* filesystems;
 	evfs_filesystem* system;

@@ -153,14 +153,14 @@ location_add_execute_cb (Ewl_Widget * item, void *ev_data, void *user_data)
     printf ("New URI is: '%s'\n", new_uri);
     layout_ewl_simple_add_header (instance, display_name, new_uri);
 
-    entropy_config_standard_structures_add (instance, display_name, new_uri);
+    entropy_config_standard_structures_add (display_name, new_uri);
 
   } else if (ewl_checkbutton_is_checked (EWL_CHECKBUTTON (viewer->sftp_radio))) {
     snprintf (new_uri, 2048, "sftp:///%s%s", server,path);
     printf ("New URI is: '%s'\n", new_uri);
     layout_ewl_simple_add_header (instance, display_name, new_uri);
 
-    entropy_config_standard_structures_add (instance, display_name, new_uri);
+    entropy_config_standard_structures_add (display_name, new_uri);
 
   } else if (ewl_checkbutton_is_checked (EWL_CHECKBUTTON (viewer->samba_radio))) {
     if (server) {
@@ -168,15 +168,15 @@ location_add_execute_cb (Ewl_Widget * item, void *ev_data, void *user_data)
 	snprintf (new_uri, 2048, "smb://%s:%s@/%s%s", username, password,
 		  server, path);
 	printf ("New URI is: '%s'\n", new_uri);
-	layout_ewl_simple_add_header (instance, display_name, new_uri);
+	layout_ewl_simple_add_header (instance,display_name, new_uri);
       }
       else {
 	snprintf (new_uri, 2048, "smb:///%s%s", server, path);
 	printf ("New URI is: '%s'\n", new_uri);
-	layout_ewl_simple_add_header (instance, display_name, new_uri);
+	layout_ewl_simple_add_header (instance,display_name, new_uri);
       }
 
-      entropy_config_standard_structures_add (instance, display_name, new_uri);
+      entropy_config_standard_structures_add (display_name, new_uri);
     }
     else {
       printf ("Server required for remote file systems!\n");
