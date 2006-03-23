@@ -329,6 +329,10 @@ ewl_window_position_get(Ewl_Window *win, int *x, int *y)
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
+	*x = win->x;
+	*y = win->y;
+
+#if 0
 	if (REALIZED(win)) {
 		int fx=0,fy=0,cx,cy;
 		Ecore_X_Window window = (Ecore_X_Window)win->window;
@@ -344,10 +348,8 @@ ewl_window_position_get(Ewl_Window *win, int *x, int *y)
 
 		*x = fx;
 		*y = fy;
-
-		/**x = win->x;
-		*y = win->y;*/
 	}
+#endif
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
