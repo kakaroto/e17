@@ -229,15 +229,14 @@ ewl_ev_x_window_configure(void *data __UNUSED__, int type __UNUSED__, void *e)
 	/*
 	 * Save coords and queue a configure event if the window is moved.
 	 */
-	if ((ev->x != window->x)) {
+	if ((ev->from_wm) && (ev->x != window->x)) {
 		window->x = ev->x;
+		printf("Window %p x position %d\n", window, ev->x);
 	}
 
-	if ((ev->y != window->y)) {
+	if ((ev->from_wm) && (ev->y != window->y)) {
 		window->y = ev->y;
-		
-
-
+		printf("Window %p y position %d\n", window, ev->y);
 	}
 
 	ewl_widget_configure(EWL_WIDGET(window));
