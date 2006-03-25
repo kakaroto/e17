@@ -1,3 +1,8 @@
+med is depricated in E cvs, it was based on the first round of
+development libs for e17 and no longer builds.
+
+--------------------------------------------------------------
+
 E17 prototype menu editor
 
 Be aware this may corrupt your E17 popup apps menu.
