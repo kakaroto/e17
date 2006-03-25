@@ -27,8 +27,8 @@
 
 # Here come the bits you'll want to twiddle configuration-wise:
 
-$SENDMAIL    = "/usr/sbin/sendmail";
-$MAILFROM    = "Enlightenment CVS Repository <cvsadmin\@cvs.enlightenment.org>";
+$SENDMAIL    = "/usr/sbin/sendmail -f noreply@cvs.enlightenment.org";
+$MAILFROM    = "Enlightenment CVS Repository <noreply\@cvs.enlightenment.org>";
 $MAILREPLYTO = "enlightenment-devel\@lists.sourceforge.net";
 $MAILTO      = "enlightenment-cvs\@lists.sourceforge.net";
 $cvsroot = $ENV{'CVSROOT'};
