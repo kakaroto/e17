@@ -63,7 +63,8 @@ if(($modulename eq "apps") || ($modulename eq "libs")) {
 
 $modulename = $basename if(!$modulename);
 
-open(MAIL, "| $SENDMAIL -t");
+# open(MAIL, "| $SENDMAIL -t");
+open(MAIL, "| cat > /tmp/smlog");
 print MAIL "To: $MAILTO\n";
 print MAIL "Reply-To: $MAILREPLYTO\n";
 print MAIL "Subject: E CVS: $modulename $login\n";
