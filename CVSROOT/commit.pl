@@ -30,7 +30,8 @@
 $SENDMAIL    = "/usr/sbin/sendmail";
 $MAILFROM    = "noreply\@cvs.enlightenment.org";
 $MAILREPLYTO = "enlightenment-devel\@lists.sourceforge.net";
-$MAILTO      = "enlightenment-cvs\@lists.sourceforge.net";
+# $MAILTO      = "enlightenment-cvs\@lists.sourceforge.net";
+$MAILTO      = "raster\@rasterman.com";
 $cvsroot = $ENV{'CVSROOT'};
 $login = $ENV{'LOGNAME'} || getlogin || (getpwuid($<))[0] || "nobody";
 
@@ -63,8 +64,8 @@ if(($modulename eq "apps") || ($modulename eq "libs")) {
 
 $modulename = $basename if(!$modulename);
 
-# open(MAIL, "| $SENDMAIL -t");
-open(MAIL, "| cat > /tmp/smlog");
+open(MAIL, "| $SENDMAIL -t");
+# open(MAIL, "| cat > /tmp/smlog");
 print MAIL "To: $MAILTO\n";
 print MAIL "Reply-To: $MAILREPLYTO\n";
 print MAIL "Subject: E CVS: $modulename $login\n";
