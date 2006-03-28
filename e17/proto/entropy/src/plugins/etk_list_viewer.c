@@ -1,6 +1,7 @@
 #include "entropy.h"
 #include "entropy_gui.h"
 #include <dlfcn.h>
+#include <strings.h>
 #include <limits.h>
 #include <time.h>
 #include <Etk.h>
