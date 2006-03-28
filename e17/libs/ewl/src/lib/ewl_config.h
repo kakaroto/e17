@@ -29,6 +29,7 @@ struct Ewl_Config
 		int image_cache;	/**< Image cache size */
 		int engine;		/**< Engines available */
 		char *render_method;	/**< Current render method */
+		int render_debug;	/**< Enable debugging mode in Evas */
 	} evas;				/**< Evas configuration */
 
 	struct {

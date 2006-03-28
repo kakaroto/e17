@@ -149,6 +149,11 @@ ewl_init(int *argc, char **argv)
 		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
 	}
 
+	/*
+	 * Global freeze on edje events while edje's are being manipulated.
+	 */
+	edje_freeze();
+
 	reveal_list = ecore_list_new();
 	obscure_list = ecore_list_new();
 	configure_list = ecore_list_new();
@@ -391,11 +396,6 @@ ewl_idle_render(void *data __UNUSED__)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
 	/*
-	 * Global freeze on edje events while edje's are being manipulated.
-	 */
-	edje_freeze();
-
-	/*
 	 * Freeze events on the evases to reduce overhead
 	 */
 	ecore_list_goto_first(ewl_embed_list);
@@ -459,10 +459,27 @@ ewl_idle_render(void *data __UNUSED__)
 	ecore_list_goto_first(ewl_embed_list);
 	while ((emb = ecore_list_next(ewl_embed_list)) != NULL) {
 		if (REALIZED(emb) && emb->evas) {
+			double render_time = 0;
+
 			evas_event_thaw(emb->evas);
+			if (ewl_config.evas.render_debug) {
+				printf("Entering render\n");
+				render_time = ecore_time_get();
+			}
+
 			evas_render(emb->evas);
+
+			if (ewl_config.evas.render_debug) {
+				printf("Render time: %f seconds\n",
+						ecore_time_get() - render_time);
+			}
 		}
 	}
+
+	/*
+	 * Global freeze on edje events while edje's are being manipulated.
+	 */
+	edje_freeze();
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -569,6 +586,10 @@ ewl_init_parse_options(int *argc, char **argv)
 			ewl_config.debug.enable = 1;
 			matched ++;
 		}
+		else if (!strcmp(argv[i], "--ewl-debug-paint")) {
+			ewl_config.evas.render_debug = 1;
+			matched ++;
+		}
 		else if (!strcmp(argv[i], "--ewl-help")) {
 			ewl_print_help();
 			exit(0);
@@ -613,6 +634,7 @@ ewl_print_help(void)
 	printf("EWL Help\n"
 		"\t--ewl-backtrace           Print a stack trace warnings occur.\n"
 		"\t--ewl-debug <level>       Set the debugging printf level.\n"
+		"\t--ewl-debug-paint         Enable repaint debugging.\n"
 		"\t--ewl-fb                  Use framebuffer display engine.\n"
 		"\t--ewl-gl-x11              Use GL X11 display engine.\n"
 		"\t--ewl-help                Print this help message.\n"
