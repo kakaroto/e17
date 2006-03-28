@@ -104,7 +104,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    ob = e_widget_label_add(evas, D_("http://www.weather.gov/tg/siteloc.shtml"));
    e_widget_frametable_object_append(of, ob, 0, 2, 2, 1, 1, 0, 1, 0);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
-   
+
    return o;
 }
 
@@ -112,8 +112,9 @@ static int
 _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    Weather_Face *wf;
-   int i, len;
+   int len;
    char tmp[1024];
+   char buf[4096];
    
    if (!cfdata->code)
      return 0;
@@ -133,7 +134,16 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    e_config_save_queue();
    if (wf->check_timer)
      ecore_timer_interval_set(wf->check_timer, (double)(wf->conf->poll_time));
-   
-   _weather_display_set(wf, 1);
+
+   if (wf->conf->display == DETAILED_DISPLAY)
+     edje_object_signal_emit(wf->weather_obj, "set_style", "detailed");   
+   else
+     edje_object_signal_emit(wf->weather_obj, "set_style", "simple");
+
+   _weather_convert_degrees(wf);
+   snprintf(buf, sizeof(buf), "%d°%c",wf->temp, wf->degrees);
+   edje_object_part_text_set(wf->weather_obj, "temp", buf);
+
+   //_weather_display_set(wf, 1);
    return 1;
 }

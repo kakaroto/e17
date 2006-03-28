@@ -18,7 +18,9 @@ static int           _weather_server_add             (void *data, int type, void
 static int           _weather_server_del             (void *data, int type, void *event);
 static int           _weather_server_data            (void *data, int type, void *event);
 static int           _weather_parse                  (Weather_Face * wf);
-static void          _weather_convert_degrees        (Weather_Face * wf);
+static void          _weather_face_menu_cb_face_new  (void *data, E_Menu *m, E_Menu_Item *mi);
+static void          _weather_face_menu_cb_face_del  (void *data, E_Menu *m, E_Menu_Item *mi);
+static void          _weather_display_set            (Weather_Face * wf, int ok);
 
 static int weather_count;
 static E_Config_DD *conf_edd;
@@ -129,7 +131,8 @@ static Weather *
 _weather_new(void) 
 {
    Weather *w;
-   Evas_List *mans, *l, *l2, *fl;
+   Evas_List *fl;
+   E_Container *con;
    char *env;
    
    weather_count = 0;
@@ -147,7 +150,7 @@ _weather_new(void)
    E_CONFIG_VAL(D, T, poll_time, DOUBLE);
    E_CONFIG_VAL(D, T, display, INT);
    E_CONFIG_VAL(D, T, degrees, INT);
-   E_CONFIG_VAL(D, T, location, STR);
+   E_CONFIG_VAL(D, T, con, INT);   
    E_CONFIG_VAL(D, T, host, STR);
    E_CONFIG_VAL(D, T, code, STR);
    
@@ -164,62 +167,83 @@ _weather_new(void)
    
    _weather_config_menu_new(w);
    
-   mans = e_manager_list();
    fl = w->conf->faces;
-   for (l = mans; l; l = l->next) 
+   if (!fl) 
      {
-	E_Manager *man;
+	Weather_Face *wf;
 	
-	man = l->data;
-	for (l2 = man->containers; l2; l2 = l2->next) 
+	con = e_container_current_get(e_manager_current_get());
+	wf = _weather_face_init(w, con);
+	if (wf) 
 	  {
-	     E_Container *con;
-	     Weather_Face *wf;
+	     wf->conf = E_NEW(Config_Face, 1);
+	     wf->conf->enabled = 1;
+	     wf->conf->poll_time = 1800.0;
+	     wf->conf->display = DETAILED_DISPLAY;
+	     wf->conf->degrees = DEGREES_C;
+	     wf->conf->con = con->num;
+	     wf->conf->host = evas_stringshare_add("www.rssweather.com");
+	     wf->conf->code = evas_stringshare_add("ENKR");
+	     E_CONFIG_LIMIT(wf->conf->poll_time, 900.0, 3600.0);
 	     
-	     con = l2->data;
-	     wf = _weather_face_init(w, con);
-	     if (wf) 
-	       {
-		  if (!fl) 
-		    {
-		       wf->conf = E_NEW(Config_Face, 1);
-		       wf->conf->enabled = 1;
-		       wf->conf->poll_time = 1800.0;
-		       wf->conf->display = DETAILED_DISPLAY;
-		       wf->conf->degrees = DEGREES_C;
-		       wf->conf->host = evas_stringshare_add("www.rssweather.com");
-		       wf->conf->location = evas_stringshare_add("Kirkenes Lufthavn");
-		       //wf->conf->url = evas_stringshare_add("/icao/ENKR/rss.php");
-		       wf->conf->code = evas_stringshare_add("ENKR");
-		       w->conf->faces = evas_list_append(w->conf->faces, wf->conf);
-		    }
-		  else 
-		    {
-		       wf->conf = fl->data;
-		       fl = fl->next;
-		    }
-		  E_CONFIG_LIMIT(wf->conf->poll_time, 900.0, 3600.0);
-		  
-		  _weather_face_menu_new(wf);
+	     w->conf->faces = evas_list_append(w->conf->faces, wf->conf);
+	     e_config_save_queue();
 
-		  E_Menu_Item *mi;		  
-		  mi = e_menu_item_new(w->config_menu);
-		  e_menu_item_label_set(mi, _("Configuration"));
-		  e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
-		  e_menu_item_callback_set(mi, _weather_face_cb_menu_configure, wf);
-		  
-		  mi = e_menu_item_new(w->config_menu);
-		  e_menu_item_label_set(mi, con->name);
-		  e_menu_item_submenu_set(mi, wf->menu);
+	     wf->degrees = 'C';
+	     edje_object_signal_emit(wf->weather_obj, "set_style", "detailed");
+	     wf->loc_set = 0;
+	     wf->check_timer = ecore_timer_add((double)wf->conf->poll_time, _weather_face_cb_check, wf->weather);
 
-		  wf->check_timer = ecore_timer_add((double)wf->conf->poll_time, _weather_face_cb_check, wf->weather);
-
-		  if (!wf->conf->enabled)
-		    _weather_face_disable(wf);
-	       }
+	     if (!wf->conf->enabled)
+	       _weather_face_disable(wf);
 	  }
      }
-   
+   else 
+     {
+	for (; fl; fl = fl->next) 
+	  {
+	     Weather_Face *wf;
+	     Config_Face *conf;
+	     
+	     conf = fl->data;
+	     con = e_util_container_number_get(conf->con);
+	     if (!con)
+	       continue;
+	     wf = _weather_face_init(w, con);
+	     if (!wf)
+	       continue;
+	     wf->conf = conf;
+	     E_CONFIG_LIMIT(wf->conf->poll_time, 900.0, 3600.0);
+
+	     switch (wf->conf->degrees) 
+	       {
+		case 0:
+		  wf->degrees = 'F';
+		  break;
+		case 1:
+		  wf->degrees = 'C';
+		  break;
+	       }
+	     switch (wf->conf->display) 
+	       {
+		case 0:
+		  edje_object_signal_emit(wf->weather_obj, "set_style", "simple");		  
+		  break;
+		case 1:
+		  edje_object_signal_emit(wf->weather_obj, "set_style", "detailed");
+		  break;
+	       }
+	     
+	     edje_object_signal_emit(wf->weather_obj, "set_style", "detailed");
+	     
+	     wf->loc_set = 0;
+	     wf->check_timer = ecore_timer_add((double)wf->conf->poll_time, _weather_face_cb_check, wf->weather);
+
+	     if (!wf->conf->enabled)
+	       _weather_face_disable(wf);
+	  }
+     }
+
    env = getenv("http_proxy");
    if (!env)
      env = getenv("HTTP_PROXY");
@@ -249,6 +273,7 @@ _weather_new(void)
    w->add_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD, _weather_server_add, w);
    w->del_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL, _weather_server_del, w);
    w->data_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA, _weather_server_data, w);
+
    _weather_face_cb_check(w);
    return w;
 }
@@ -338,11 +363,32 @@ _weather_face_init(Weather *w, E_Container *con)
 static void 
 _weather_face_menu_new(Weather_Face *wf) 
 {
-   E_Menu *mn;
-   E_Menu_Item *mi;
-   
+   E_Menu *mn, *sn;
+   E_Menu_Item *mi, *si;
+
    mn = e_menu_new();
    wf->menu = mn;
+
+   sn = e_menu_new();   
+
+   si = e_menu_item_new(sn);
+   e_menu_item_label_set(si, _("Add A Face"));
+   e_menu_item_callback_set(si, _weather_face_menu_cb_face_new, wf->weather);
+   
+   if (evas_list_count(wf->weather->conf->faces) > 1) 
+     {
+	si = e_menu_item_new(sn);
+	e_menu_item_label_set(si, _("Remove This Face"));
+	e_menu_item_callback_set(si, _weather_face_menu_cb_face_del, wf);
+     }
+   
+   mi = e_menu_item_new(mn);
+   e_menu_item_label_set(mi, _("Faces"));
+   e_menu_item_icon_file_set(mi, PACKAGE_DATA_DIR"/module_icon.png");
+   e_menu_item_submenu_set(mi, sn);
+   
+   mi = e_menu_item_new(mn);
+   e_menu_item_separator_set(mi, 1);
    
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("Configuration"));
@@ -352,11 +398,11 @@ _weather_face_menu_new(Weather_Face *wf)
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("Edit Mode"));
    e_util_menu_item_edje_icon_set(mi, "enlightenment/gadgets");
-   e_menu_item_callback_set(mi, _weather_face_cb_menu_edit, wf);   
+   e_menu_item_callback_set(mi, _weather_face_cb_menu_edit, wf);
 }
 
 static void 
-_weather_face_cb_menu_configure (void *data, E_Menu *mn, E_Menu_Item *mi) 
+_weather_face_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi) 
 {
    Weather_Face *wf;
    
@@ -414,8 +460,6 @@ _weather_face_free(Weather_Face *wf)
    
    if (wf->conf->host)
      evas_stringshare_del(wf->conf->host);
-   if (wf->conf->location)
-     evas_stringshare_del(wf->conf->location);
    if (wf->conf->code)
      evas_stringshare_del(wf->conf->code);
    
@@ -434,6 +478,7 @@ _weather_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_i
    ev = event_info;
    if (ev->button == 3) 
      {
+	_weather_face_menu_new(wf);
 	e_menu_activate_mouse(wf->menu, e_zone_current_get(wf->con),
 			      ev->output.x, ev->output.y, 1, 1,
 			      E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
@@ -520,7 +565,7 @@ _weather_server_add(void *data, int type, void *event)
    if ((!wf) || (ev->server != wf->server))
      return 1;
    
-   snprintf(icao, sizeof(icao), "/icao/%s/rss.php", wf->conf->code);
+   snprintf(icao, sizeof(icao), "/icao/%s/rss.php", wf->conf->code);   
    snprintf(buf, sizeof(buf), "GET http://%s%s HTTP/1.1\r\nHost: %s\r\n\r\n",
 	    wf->conf->host, icao, wf->conf->host);
    ecore_con_server_send(wf->server, buf, strlen(buf));
@@ -601,20 +646,22 @@ static int
 _weather_parse(Weather_Face *wf)
 {
    char *needle, *ext;
-
+   char location[256];
+   
    needle = strstr(wf->buffer, "<title");
-   if (needle) 
+   if (!needle)
+     goto error;
+   
+   needle = strstr(needle, ">");
+   sscanf(needle, ">%[^<]<", location);
+   if (location) 
      {
-	needle = strstr(needle, ">");
-	sscanf(needle, ">%[^<]<", wf->location);
-	if (wf->location) 
+	char *tmp = strdup(location);
+	if (strstr(tmp, ",")) 
 	  {
-	     char *tmp = strdup(wf->location);
-	     if (strstr(tmp, ",")) 
-	       {
-		  tmp = strtok(tmp, ",");
-		  snprintf(wf->location, sizeof(wf->location), "%s", tmp);
-	       }  
+	     tmp = strtok(tmp, ",");
+	     wf->location = strdup(tmp);
+	     wf->loc_set = 1;
 	  }
      }
       
@@ -663,7 +710,7 @@ _weather_parse(Weather_Face *wf)
    return 0;
 }
 
-static void
+void
 _weather_convert_degrees(Weather_Face *wf)
 {
    /* Check if degrees is in C or F */
@@ -679,15 +726,71 @@ _weather_convert_degrees(Weather_Face *wf)
      }
 }
 
-void
+static void 
+_weather_face_menu_cb_face_new(void *data, E_Menu *m, E_Menu_Item *mi) 
+{
+   Weather *w;
+   Weather_Face *wf;
+   E_Container *con;
+   
+   w = data;
+   if (!w)
+     return;
+
+   con = e_container_current_get(e_manager_current_get());
+   wf = _weather_face_init(w, con);
+   if (!wf)
+     return;
+
+   wf->conf = E_NEW(Config_Face, 1);
+   wf->conf->enabled = 1;
+   wf->conf->poll_time = 1800.0;
+   wf->conf->display = DETAILED_DISPLAY;
+   wf->conf->degrees = DEGREES_C;
+   wf->conf->con = con->num;
+   wf->conf->host = evas_stringshare_add("www.rssweather.com");
+   wf->conf->code = evas_stringshare_add("ENKR");
+   E_CONFIG_LIMIT(wf->conf->poll_time, 900.0, 3600.0);
+
+   w->conf->faces = evas_list_append(w->conf->faces, wf->conf);   
+   e_config_save_queue();
+
+   wf->degrees = 'C';
+   wf->loc_set = 0;
+   wf->check_timer = ecore_timer_add((double)wf->conf->poll_time, _weather_face_cb_check, wf->weather);
+
+   if (!wf->conf->enabled)
+     _weather_face_disable(wf);
+   
+   _weather_face_cb_check(wf->weather);
+}
+
+static void 
+_weather_face_menu_cb_face_del(void *data, E_Menu *m, E_Menu_Item *mi) 
+{
+   Weather *w;
+   Weather_Face *wf;
+   
+   wf = data;
+   if (!wf)
+     return;
+   
+   w = wf->weather;
+   if (!w)
+     return;
+   
+   w->conf->faces = evas_list_remove(w->conf->faces, wf->conf);
+   e_config_save_queue();
+   _weather_face_free(wf);
+}
+
+static void
 _weather_display_set(Weather_Face *wf, int ok)
 {
    char buf[4096];
 
    if (!wf)
      return;
-
-   edje_object_part_text_set(wf->weather_obj, "location", wf->location);
    
    if (wf->conf->display == DETAILED_DISPLAY)
      edje_object_signal_emit(wf->weather_obj, "set_style", "detailed");
@@ -696,8 +799,10 @@ _weather_display_set(Weather_Face *wf, int ok)
    
    if (!ok)
      {
-	e_icon_file_set(wf->icon_obj, PACKAGE_DATA_DIR "/images/na.png");
+	snprintf(buf, sizeof(buf), PACKAGE_DATA_DIR"/images/na.png");
+	e_icon_file_set(wf->icon_obj, buf);
 	edje_object_part_swallow(wf->weather_obj, "icon", wf->icon_obj);
+	edje_object_part_text_set(wf->weather_obj, "location", "");
         edje_object_part_text_set(wf->weather_obj, "temp", "");
         edje_object_part_text_set(wf->weather_obj, "conditions", "");
      }
@@ -706,6 +811,7 @@ _weather_display_set(Weather_Face *wf, int ok)
 	snprintf(buf, sizeof(buf), PACKAGE_DATA_DIR"/images/%s", wf->icon);
 	e_icon_file_set(wf->icon_obj, buf);
 	edje_object_part_swallow(wf->weather_obj, "icon", wf->icon_obj);
+	edje_object_part_text_set(wf->weather_obj, "location", wf->location);	
         snprintf(buf, sizeof(buf), "%d°%c",wf->temp, wf->degrees);
         edje_object_part_text_set(wf->weather_obj, "temp", buf);
         edje_object_part_text_set(wf->weather_obj, "conditions", wf->conditions);

@@ -23,11 +23,10 @@ struct _Config
 struct _Config_Face 
 {
    double poll_time;
-   int display, degrees;
+   int display, degrees, con;
    const char *host;
-   const char *location;
    const char *code;
-   unsigned char enabled;   
+   unsigned char enabled;
 };
 
 struct _Weather 
@@ -61,12 +60,12 @@ struct _Weather_Face
    Ecore_Con_Server *server;
    E_Gadman_Client *gmc;
    
-   int temp;
+   int temp, loc_set;
    char degrees;
    char conditions[256];
    char icon[256];
    char *buffer;
-   char location[256];
+   char *location;
    int bufsize;
    int cursize;
 };
@@ -80,6 +79,6 @@ EAPI int   e_modapi_info     (E_Module *m);
 EAPI int   e_modapi_about    (E_Module *m);
 EAPI int   e_modapi_config   (E_Module *m);
 
-void _weather_display_set(Weather_Face * wf, int ok);
+void _weather_convert_degrees(Weather_Face * wf);
 
 #endif
