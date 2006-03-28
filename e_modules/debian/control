@@ -1,0 +1,183 @@
+Source: emodules
+Section: x11
+Priority: optional
+Maintainer: Falko Schmidt <kaethorn@stud.uni-stuttgart.de>
+Build-Depends: debhelper (>= 4.0.0), libe-dev, libecore0-dev, libevas0-dev, libesmart0-dev, libedje0-dev
+Standards-Version: 3.6.2
+
+Package: emodules
+Architecture: any
+Depends: ${shlibs:Depends}, libe, libecore0, libevas0, libesmart0, libedje0, emodule-calendar, emodule-cpu, emodule-emu, emodule-evolume, emodule-flame, emodule-mbar, emodule-mem, emodule-mount, emodule-net, emodule-rain, emodule-screenshot, emodule-slideshow, emodule-snow, emodule-tclock, emodule-uptime, emodule-weather, emodule-wlan
+Conflicts: emodules-extra, evolume
+Description: A dummy package for installing all modules for E17
+ This package will install the following modules:
+ Calendar    : Draws a nice calendar on your e17 desktop.
+ Cpu         : Monitor module for the CPU load.
+ Emu         : A module front end that runs arbitrary back ends
+               written in any language.
+ Evolume     : An audio mixer module.
+ Flame       : Displays flames at the bottom of the screen.
+ Mbar        : A bar for mounting and unmounting devices.
+ Mount       : This module is used to mount/unmount devices.
+ Net         : Network activity monitoring module.
+ Rain        : Displays rain on the desktop.
+ Screenshot  : This module is used to take screenshots. It
+               supports using import and scrot. Version 0.0.2
+               contains only a few basic options for import and
+               scrot. More options will be added later.
+ Slideshow   : Port of the e16 E-Slides epplet.
+ Snow        : Displays some snow on your desktop.
+ Tclock      : Simple text Clock module.
+ Uptime      : Monitors the uptime.
+ Weather     : A module for displaying weather reports.
+ Wlan        : Monitors WLAN activity.
+
+Package: emodule-calendar
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libe, libecore0, libevas0, libesmart0, libedje0
+Description: Draws a nice calendar on your E17 desktop
+ An E17 module which displays a highly configurable calendar on the
+ desktop. Features are:
+ - today highlights (depending on color scheme)
+ - display previous and future years/months
+ - two distinct themes (switchable via menu)
+ - one with a top image & one without
+ - change the 1st Day of the week.
+
+Package: emodule-cpu
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libe, libecore0, libevas0, libesmart0, libedje0
+Description: E17 monitor module for the CPU load
+ An E17 module which displays the current CPU load. Features are:
+ - draw a graph and/or draw the decimal load percentage
+ - adjust the check interval.
+ 
+Package: emodule-emu
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libe, libecore0, libevas0, libesmart0, libedje0
+Description: An E17 module front end
+ An E17 module which works as a front end that runs arbitrary back
+ ends written in any language.  Emu provides a high level interface
+ to some of the things that modules typically do.  The backends can
+ be written by anybody in any language.
+ 
+Package: emodule-evolume
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libe, libecore0, libevas0, libesmart0, libedje0
+Description: An E17 audio mixer module
+ Evolume is an E17 module which allows the user to adjust the sound
+ volume.
+
+Package: emodule-flame
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libe, libecore0, libevas0, libesmart0, libedje0
+Description: An E17 module that draws flames on the desktop
+ Eflame is an E17 module which draws flames of configurable colors on
+ the lower part of the screen.
+ 
+Package: emodule-mbar
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libe, libecore0, libevas0, libesmart0, libedje0
+Description: An E17 mount bar module
+ Mbar is an E17 module which displays a list of devices which can be
+ mounted or unmounted by clicking on them.
+ 
+Package: emodule-mem
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libe, libecore0, libevas0, libesmart0, libedje0
+Description: An E17 memory monitoring module
+ An E17 module which monitors the RAM usage. It features the following:
+ - display text and/or graph
+ - display text in percentage or absolute
+ - ignore/Count buffers
+ - ignore/Count cached.
+ 
+Package: emodule-mount
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libe, libecore0, libevas0, libesmart0, libedje0
+Description: An E17 mount module
+ An E17 module which allows easy mounting/unmounting of devices
+ in /etc/fstab.
+
+Package: emodule-net
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libe, libecore0, libevas0, libesmart0, libedje0
+Description: An E17 network interface monitor module
+ An E17 module which monitors TX and RX events of a specified
+ network device. Features are:
+ - show text and/or graph
+ - configure poll interval
+ - choose device.
+ 
+Package: emodule-rain
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libe, libecore0, libevas0, libesmart0, libedje0
+Description: An E17 module displaying rain on the desktop
+ An E17 module which displays falling rainsdrops on the desktop.
+ Features are:
+ - display/hide clouds
+ - set rain density.
+ 
+Package: emodule-screenshot
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libe, libecore0, libevas0, libesmart0, libedje0
+Description: An E17 screenshot module
+ An E17 module which enables the user to take screenshots. It contains
+ the following features:
+ - choose between import and scrot
+ - specify delay time, save directory and filename
+ - choose to include the image border or window manager frame (scrot/import)
+ - use image dithering (import)
+ - choose window to grab (import)
+ - silent/verbose (import)
+ - trim edges (import)
+ - generate thumbnail (scrot).
+ 
+Package: emodule-slideshow
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libe, libecore0, libevas0, libesmart0, libedje0
+Description: An E17 background cycle module
+ An E17 module which changes the desktop background on a given
+ interval. It cycles through all available background images.
+ 
+Package: emodule-snow
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libe, libecore0, libevas0, libesmart0, libedje0
+Description: An E17 module displaying rain on the desktop
+ An E17 module which displays falling snow flakes on the desktop.
+ Features are:
+ - display/hide trees
+ - set snow density.
+
+Package: emodule-tclock
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libe, libecore0, libevas0, libesmart0, libedje0
+Description: An E17 text clock module
+ An E17 module which displays a digital clock on the desktop.
+
+Package: emodule-uptime
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libe, libecore0, libevas0, libesmart0, libedje0
+Description: An E17 uptime indicator module
+ An E17 module indicating the system's current uptime in a configurable
+ interval.
+ 
+Package: emodule-weather
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libe, libecore0, libevas0, libesmart0, libedje0
+Description: An E17 weather module
+ An E17 module displaying the current weather conditions and forecast.
+ Features are:
+ - choose between simple and detailed view
+ - specify poll time
+ - display degree in Celsius or Fahrenheit
+ - choose the weather station from a menu or via ICAO Code.
+ 
+Package: emodule-wlan
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libe, libecore0, libevas0, libesmart0, libedje0
+Description: An E17 WLAN monitor module
+ An E17 module monitoring the link quality of a wireless network
+ interface. Features are:
+ - choose display as text and/or graph
+ - specify the check interval.
