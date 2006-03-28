@@ -13,6 +13,8 @@ etk_server.h
 
 etk_server_SOURCES = \
 etk_server.c \
+etk_server_valid_funcs.c \
+etk_server_valid_signals.c \
 $(etk_server_INCLUDES)
 
 etk_server_LDADD = @my_libs@ 

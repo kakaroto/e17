@@ -1,4 +1,3 @@
-#!/usr/bin/perl
 
 $fifo = "/tmp/etk_server_fifo";
 

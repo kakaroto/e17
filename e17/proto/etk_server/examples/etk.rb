@@ -1,5 +1,3 @@
-#!/usr/local/bin/ruby
-
 def etk(str)
 
   fifo = File.open("/tmp/etk_server_fifo", "w")

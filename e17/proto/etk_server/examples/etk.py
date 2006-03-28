@@ -1,46 +1,98 @@
-#!/usr/bin/python
-
 import os
 import time
 
-def etk(str) :
-    out_file = open("/tmp/etk_server_fifo","w")
-    out_file.write("etk_" + str + "\0")
-    out_file.close()    
+class Etk:
+    "Etk-Python base class"        
+
+    def Init(self):
+	self.Call("init")
     
-    in_file = open("/tmp/etk_server_fifo","r")
-    text = in_file.read()
-    in_file.close()
+    def Connect(self):
+	os.system("etk_server /tmp/etk_server_fifo &")
+	time.sleep(0.5)
+        
+    def Call(self, str):
+	print("sending " + str)
+	out_file = open("/tmp/etk_server_fifo","w")
+	out_file.write("etk_" + str + "\0")
+	out_file.close()    
+	
+	in_file = open("/tmp/etk_server_fifo","r")
+	text = in_file.read()
+	in_file.close()
+	
+	return text
     
-    return text
+    def Main(self):
+	while 1:	    
+	    event = self.Call("server_callback")
 
-os.system("etk_server /tmp/etk_server_fifo &")
-time.sleep(0.5)
-
-etk("init")
-
-win = etk("window_new")
-
-button = etk("button_new_with_label \"Python rules!\"")
-
-etk("container_add " + win + " " + button)
-etk("window_title_set " + win + " \"Etk-Python Demo\"")
-etk("widget_show_all " + win)
-
-etk("server_signal_connect \"clicked\" " + button + " \"button_click\"")
-etk("server_signal_connect \"delete_event\" " + win + " \"window_delete\"")
-
-while 1:
+class Object (Etk):
+    "Etk Object class, has basic object operations"
+    __object = ""
     
-    event = etk("server_callback")
+    def Get(self):
+	return self.__object
     
-    if event == "window_delete":
-	print "Bye!"
-	break    
+    def Set(self, o):
+	self.__object = o
+	
+    def SignalConnect(self, signal, callback):
+	self.Call("server_signal_connect \"" + signal + "\" " + self.Get() + " \"" + signal + "_" + object + "\"")
+	self.AddCallback(signal, callback)
     
-    if event == "button_click":
-	print "Button clicked!"
-    
-etk("main_quit")
-etk("server_shutdown")
+    def AddCallback(self, callback):
+	print("Adding callback " + callback)
 
+class Widget (Object):
+    "Etk Widget class, has basic widget operations"
+    
+    def __init__(self):
+	Object()
+    
+    def ShowAll(self):
+	self.Call("widget_show_all " + self.Get())
+
+class Button (Widget):
+    "Etk Button class, has basic button operations"
+    
+    def __init__(self):	
+	self.Set( self.Call("button_new") )
+    
+    def LabelSet(self, label):
+	self.Call("button_label_set " + self.Get() + " \"" + label + "\"")
+
+class Container (Widget):
+    "Etk Container class, has basic container operations"
+    
+    def __init__(self):
+	Widget()
+    
+    def Add(self, widget):
+	self.Call("container_add " + self.Get() + " " + widget.Get())
+
+class Window (Container):
+    "Etk Window class, has basic window operations"
+    
+    def __init__(self):
+	Container()
+	self.Set( self.Call("window_new") )
+    
+    def TitleSet(self, title):
+	self.Call("window_title_set " + self.Get() + " \"" + title + "\"")
+
+etk = Etk()
+etk.Connect()
+etk.Init()
+
+window = Window()
+print("window id is " + window.Get());
+window.TitleSet("Etk-Python")
+
+button = Button()
+button.LabelSet("Python rules!")
+
+window.Add(button)
+window.ShowAll()
+
+etk.Main()
