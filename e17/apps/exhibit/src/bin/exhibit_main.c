@@ -866,7 +866,7 @@ _ex_main_window_show(char *dir)
    
    e->zoom_in[0] = etk_button_new();
    e->zoom_in[1] = etk_image_new_from_edje(PACKAGE_DATA_DIR"/images/images.edj", "zoom_in");
-   etk_widget_pass_events_set(e->zoom_in[1], ETK_TRUE);   
+   etk_widget_pass_mouse_events_set(e->zoom_in[1], ETK_TRUE);   
    etk_widget_size_request_set(e->zoom_in[1], 33, 27);
    //etk_button_image_set(ETK_BUTTON(button), ETK_IMAGE(e->zoom_in[1]));
    etk_container_add(ETK_CONTAINER(e->zoom_in[0]), e->zoom_in[1]);
@@ -877,7 +877,7 @@ _ex_main_window_show(char *dir)
 
    e->zoom_out[0] = etk_button_new();
    e->zoom_out[1] = etk_image_new_from_edje(PACKAGE_DATA_DIR"/images/images.edj", "zoom_out");
-   etk_widget_pass_events_set(e->zoom_out[1], ETK_TRUE);   
+   etk_widget_pass_mouse_events_set(e->zoom_out[1], ETK_TRUE);   
    etk_widget_size_request_set(e->zoom_out[1], 33, 27);
    //etk_button_image_set(ETK_BUTTON(e->zoom_out[0]), ETK_IMAGE(e->zoom_out[1]));
    etk_container_add(ETK_CONTAINER(e->zoom_out[0]), e->zoom_out[1]);
@@ -888,7 +888,7 @@ _ex_main_window_show(char *dir)
 
    e->fit[0] = etk_button_new();
    e->fit[1] = etk_image_new_from_edje(PACKAGE_DATA_DIR"/images/images.edj", "fit_to_window");
-   etk_widget_pass_events_set(e->fit[1], ETK_TRUE);   
+   etk_widget_pass_mouse_events_set(e->fit[1], ETK_TRUE);   
    etk_widget_size_request_set(e->fit[1], 33, 27);
    //etk_button_image_set(ETK_BUTTON(button), ETK_IMAGE(e->fit[1]));
    etk_container_add(ETK_CONTAINER(e->fit[0]), e->fit[1]);
@@ -899,7 +899,7 @@ _ex_main_window_show(char *dir)
 
    e->original[0] = etk_button_new();
    e->original[1] = etk_image_new_from_edje(PACKAGE_DATA_DIR"/images/images.edj", "one_to_one");
-   etk_widget_pass_events_set(e->original[1], ETK_TRUE);
+   etk_widget_pass_mouse_events_set(e->original[1], ETK_TRUE);
    etk_widget_size_request_set(e->original[1], 33, 27);
    //etk_button_image_set(ETK_BUTTON(e->original[0]), ETK_IMAGE(e->original[1]));
    etk_container_add(ETK_CONTAINER(e->original[0]), e->original[1]);
