@@ -3821,3 +3821,16 @@ Allow specifying any button in button bindings (not just 1-5).
 Only create default iconbox first time.
 Improve not composite redirecting override-redirect windows hack.
 
+
+-------------------------------------------------------------------------------
+
+Tue Mar 28 20:06:01 CEST 2006
+(Kim)
+
+--- 0.16.8.1 ---
+e16keyedit (version 0.3) now works with e16.8. Add notes/configuration data.
+Fix move window by area (eesh wop <id> area move x y).
+Simplify server extension handling. Initial screensaver extension stuff.
+Fix non-opaque slidein.
+Fix pager update on internal window unmap (revert recent change).
+
