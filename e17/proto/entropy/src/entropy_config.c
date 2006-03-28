@@ -242,7 +242,7 @@ entropy_config_mimes_print(Entropy_Config_Loaded* mimes)
 Entropy_Config_Structure*
 entropy_config_structure_new(char* name, char* uri)
 {
-	Entropy_Config_Structure* structure = calloc(1,sizeof(Entropy_Config_Structure));
+	Entropy_Config_Structure* structure = entropy_malloc(sizeof(Entropy_Config_Structure));
 
 	structure->name = strdup(name);
 	structure->uri = strdup(uri);
@@ -255,7 +255,7 @@ entropy_config_binding_new(char* mime_type, Entropy_Config_Mime_Binding_Action* 
 {
 	va_list args;
 	Entropy_Config_Mime_Binding_Action* action;
-	Entropy_Config_Mime_Binding* binding = calloc(1,sizeof(Entropy_Config_Mime_Binding));
+	Entropy_Config_Mime_Binding* binding = entropy_malloc(sizeof(Entropy_Config_Mime_Binding));
 
 	va_start(args, action1);
 	for (action = action1; action; action = va_arg(args, Entropy_Config_Mime_Binding_Action*)) {
@@ -273,7 +273,7 @@ entropy_config_binding_new(char* mime_type, Entropy_Config_Mime_Binding_Action* 
 Entropy_Config_Mime_Binding_Action*
 entropy_config_binding_action_new(char* description, char* executable, char* args)
 {
-	Entropy_Config_Mime_Binding_Action* action = calloc(1,sizeof(Entropy_Config_Mime_Binding_Action));
+	Entropy_Config_Mime_Binding_Action* action = entropy_malloc(sizeof(Entropy_Config_Mime_Binding_Action));
 
 	action->app_description = strdup(description);
 	action->executable = strdup(executable);
@@ -296,7 +296,7 @@ Entropy_Config* entropy_config_init(entropy_core* core) {
 	if (_Entropy_Config) return _Entropy_Config;
 	
 	_Entropy_Config = entropy_malloc(sizeof(Entropy_Config));
-	mimes = calloc(1,sizeof(Entropy_Config_Loaded));
+	mimes = entropy_malloc(sizeof(Entropy_Config_Loaded));
 
 
 	i = strlen(entropy_core_home_dir_get()) + strlen("/.e/apps/entropy") + 2;
@@ -375,7 +375,7 @@ Entropy_Config* entropy_config_init(entropy_core* core) {
 		if (data) {
 			_Entropy_Config->Loaded_Config = eet_data_descriptor_decode(_entropy_config_loaded_edd, data, size_ret);
 			/*Print them out..*/	
-			entropy_config_mimes_print(_Entropy_Config->Loaded_Config);
+			/*entropy_config_mimes_print(_Entropy_Config->Loaded_Config);*/
 		}
 	}
 	/*------*/
@@ -605,7 +605,7 @@ entropy_config_standard_structures_create ()
 {
   entropy_core* core = entropy_core_get_core();
 	
-  char *eg = calloc (HEADER_CONFIG_MAX, sizeof (char));
+  char *eg = entropy_malloc(HEADER_CONFIG_MAX * sizeof (char));
 
   snprintf (eg, HEADER_CONFIG_MAX,
 	    "Computer;file:///|Home;file://%s|Samba Example (Don't use!);smb://username:password@/test/machine/folder",

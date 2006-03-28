@@ -115,6 +115,34 @@ Ecore_List* entropy_plugins_type_get(int type, int subtype) {
 	return plugin_list;	
 }
 
+Ecore_List* entropy_plugin_filesystem_filelist_get(entropy_file_request* request)
+{
+	entropy_plugin* plugin;
+	Ecore_List* (*list_func)(entropy_file_request* request);
+	Ecore_List* ret;
+
+	/*FIXME We should get the caller's current file plugin from the caller - i.e. the gui instance*/
+        plugin = entropy_plugins_type_get_first(ENTROPY_PLUGIN_BACKEND_FILE ,ENTROPY_PLUGIN_SUB_TYPE_ALL);
+	list_func = dlsym(plugin->dl_ref, "filelist_get");
+
+	ret = (*list_func)(request);
+
+	return ret;
+		
+}
+
+void entropy_plugin_filesystem_filestat_get(entropy_file_request* request)
+{
+	entropy_plugin* plugin;
+	Ecore_List* (*stat_func)(entropy_file_request* request);
+
+	/*FIXME We should get the caller's current file plugin from the caller - i.e. the gui instance*/
+        plugin = entropy_plugins_type_get_first(ENTROPY_PLUGIN_BACKEND_FILE ,ENTROPY_PLUGIN_SUB_TYPE_ALL);
+	stat_func = dlsym(plugin->dl_ref, "filestat_get");
+
+	(*stat_func)(request);
+}
+
 void entropy_plugin_filesystem_file_remove(entropy_generic_file* file, entropy_gui_component_instance* instance) {
   	entropy_plugin *plugin =
 	      entropy_plugins_type_get_first (

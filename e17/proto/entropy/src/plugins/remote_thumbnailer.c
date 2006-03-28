@@ -54,7 +54,7 @@ entropy_thumbnailer_thumbnail_get (entropy_thumbnail_request * request)
 		     entropy_gui_component_instance * requester);
   copy_func = dlsym (plugin->dl_ref, "entropy_filesystem_file_copy");
 
-  /*This thumbnailer is only for remotel files */
+  /*This thumbnailer is only for remote files */
   if (!strcmp (request->file->uri_base, "file"))
     return NULL;
 
@@ -118,12 +118,12 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *obj,
 	 * the user*/
         void (*operation_func)(long id,int response);
         entropy_plugin* plugin;
-	long id = (long)obj;
+	entropy_file_operation* op = (entropy_file_operation*)obj;
 
         //FIXME
         plugin = entropy_plugins_type_get_first( ENTROPY_PLUGIN_BACKEND_FILE ,ENTROPY_PLUGIN_SUB_TYPE_ALL);
         operation_func = dlsym(plugin->dl_ref, "entropy_filesystem_operation_respond");
-        (*operation_func)( id, ENTROPY_USER_INTERACTION_RESPONSE_YES );
+        (*operation_func)( op->id, ENTROPY_USER_INTERACTION_RESPONSE_YES );
 
   }
   break; 
@@ -140,7 +140,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *obj,
 
 	entropy_gui_component_instance *instance = NULL;
 
-	//printf("From: %s/%s\n", progress->file_from->path, progress->file_from->filename);
+	/*printf("From: %s/%s\n", progress->file_from->path, progress->file_from->filename);*/
 	
 	md5 = md5_entropy_path_file (progress->file_from->uri_base, progress->file_from->path, progress->file_from->filename);
 	instance = ecore_hash_get (file_instance_hash, md5);

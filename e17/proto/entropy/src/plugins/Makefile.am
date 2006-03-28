@@ -18,17 +18,25 @@ STRUCTURE_VIEWER_L = structure_viewer.la
 SYSTEM_THUMBNAILER_L = system_thumbnailer.la
 ACTION_SIMPLE_L = action_simple.la
 
+if HAVE_EXTRACTOR
+METADATA_EXTRACT_L = metadata_extract.la
+else
+METADATA_EXTRACT_L =
+endif
+
 if HAVE_ETK
 LAYOUT_ETK_L = layout_etk_simple.la
 ETK_STRUCTURE_VIEWER_L = etk_structure_viewer.la
 ETK_LIST_VIEWER_L = etk_list.la
+ETK_METADATA_L = etk_metadata.la
 else
 LAYOUT_ETK_L =
 ETK_LIST_VIEWER_L =
 ETK_STRUCTURE_VIEWER_L =
+ETK_METADATA_L =
 endif
 
-pkg_LTLIBRARIES		= $(MIME_L) $(THUMBNAILER_L) $(POSIX_L) $(LAYOUT_L) $(EWL_LOCAL_ICON_L) $(STRUCTURE_VIEWER_L) $(SYSTEM_THUMBNAILER_L) $(ACTION_SIMPLE_L) $(LAYOUT_ETK_L) $(EWL_LIST_L) $(REMOTE_THUMBNAILER_L) $(DISTRIB_THUMBNAILER_L) $(ETK_STRUCTURE_VIEWER_L) $(ETK_LIST_VIEWER_L)
+pkg_LTLIBRARIES		= $(MIME_L) $(THUMBNAILER_L) $(POSIX_L) $(LAYOUT_L) $(EWL_LOCAL_ICON_L) $(STRUCTURE_VIEWER_L) $(SYSTEM_THUMBNAILER_L) $(ACTION_SIMPLE_L) $(LAYOUT_ETK_L) $(EWL_LIST_L) $(REMOTE_THUMBNAILER_L) $(DISTRIB_THUMBNAILER_L) $(ETK_STRUCTURE_VIEWER_L) $(ETK_LIST_VIEWER_L) $(METADATA_EXTRACT_L) $(ETK_METADATA_L)
 
 ewl_local_icon_la_SOURCES      = 	$(top_srcdir)/src/entropy_gui.c \
 					$(top_srcdir)/src/dialogs/ewl_progress_dialog.c \
@@ -49,6 +57,11 @@ ewl_list_la_SOURCES      =        $(top_srcdir)/src/entropy_gui.c \
 ewl_list_la_CFLAGS       = @EWL_CFLAGS@
 ewl_list_la_LDFLAGS      = -module -avoid-version
 ewl_list_la_LIBADD       = @EWL_LIBS@
+
+metadata_extract_la_SOURCES = metadata_extract.c
+metadata_extract_la_CFLAGS = @extractor_cflags@
+metadata_extract_la_LDFLAGS = -module -avoid-version
+metadata_extract_la_LIBADD = @extractor_libs@
 
 
 structure_viewer_la_SOURCES    = $(top_srcdir)/src/entropy_gui.c \
@@ -98,36 +111,42 @@ etk_list_la_CFLAGS       = @ETK_CFLAGS@
 etk_list_la_LDFLAGS      = -module -avoid-version
 etk_list_la_LIBADD       = @ETK_LIBS@
 
+
+etk_metadata_la_SOURCES = etk_meta_plugin.c
+etk_metadata_la_CFLAGS       = @ETK_CFLAGS@
+etk_metadata_la_LDFLAGS      = -module -avoid-version
+etk_metadata_la_LIBADD       = @ETK_LIBS@
 endif
 
 mime_la_SOURCES                = mime.c $(top_srcdir)/src/entropy_core.c
-mime_la_CFLAGS 	               = @EVFS_CFLAGS@
+mime_la_CFLAGS 	               = @EVFS_CFLAGS@ 
 mime_la_LDFLAGS                = -module -avoid-version
+mime_la_LIBADD		       = 
 
 imlib_thumbnailer_la_SOURCES   = thumbnailer.c thumbnail_generic.c md5.c $(top_srcdir)/src/entropy_debug.c
-imlib_thumbnailer_la_CFLAGS    = @ECORE_CFLAGS@ @IMLIB2_CFLAGS@ @EPSILON_CFLAGS@
+imlib_thumbnailer_la_CFLAGS    = @ECORE_CFLAGS@ @IMLIB2_CFLAGS@ @EPSILON_CFLAGS@  
 imlib_thumbnailer_la_LDFLAGS   = -module -avoid-version
-imlib_thumbnailer_la_LIBADD    = @IMLIB2_LIBS@ @ECORE_LIBS@ @PNG_LIBS@ @EPSILON_LIBS@
+imlib_thumbnailer_la_LIBADD    = @IMLIB2_LIBS@ @ECORE_LIBS@ @PNG_LIBS@ @EPSILON_LIBS@  
 
 remote_thumbnailer_la_SOURCES   = remote_thumbnailer.c thumbnail_generic.c md5.c $(top_srcdir)/src/entropy_debug.c
-remote_thumbnailer_la_CFLAGS    = @ECORE_CFLAGS@ @IMLIB2_CFLAGS@ @EPSILON_CFLAGS@
+remote_thumbnailer_la_CFLAGS    = @ECORE_CFLAGS@ @IMLIB2_CFLAGS@ @EPSILON_CFLAGS@  
 remote_thumbnailer_la_LDFLAGS   = -module -avoid-version
-remote_thumbnailer_la_LIBADD    = @IMLIB2_LIBS@ @ECORE_LIBS@ @PNG_LIBS@ @EPSILON_LIBS@
+remote_thumbnailer_la_LIBADD    = @IMLIB2_LIBS@ @ECORE_LIBS@ @PNG_LIBS@ @EPSILON_LIBS@  
 
 distrib_thumbnailer_la_SOURCES   = distribution_thumbnailer.c thumbnail_generic.c md5.c $(top_srcdir)/src/entropy_debug.c
-distrib_thumbnailer_la_CFLAGS    = @ECORE_CFLAGS@ @IMLIB2_CFLAGS@ @EPSILON_CFLAGS@
+distrib_thumbnailer_la_CFLAGS    = @ECORE_CFLAGS@ @IMLIB2_CFLAGS@ @EPSILON_CFLAGS@  
 distrib_thumbnailer_la_LDFLAGS   = -module -avoid-version
-distrib_thumbnailer_la_LIBADD    = @IMLIB2_LIBS@ @ECORE_LIBS@ @PNG_LIBS@ @EPSILON_LIBS@
+distrib_thumbnailer_la_LIBADD    = @IMLIB2_LIBS@ @ECORE_LIBS@ @PNG_LIBS@ @EPSILON_LIBS@  
 
 
 system_thumbnailer_la_SOURCES  = thumbnail_system.c thumbnail_generic.c $(top_srcdir)/src/entropy_debug.c
-system_thumbnailer_la_CFLAGS   = @ECORE_CFLAGS@ @IMLIB2_CFLAGS@ @EPSILON_CFLAGS@
+system_thumbnailer_la_CFLAGS   = @ECORE_CFLAGS@ @IMLIB2_CFLAGS@ @EPSILON_CFLAGS@  
 system_thumbnailer_la_LDFLAGS  = -module -avoid-version
-system_thumbnailer_la_LIBADD   = @ECORE_LIBS@ @EPSILON_LIBS@
+system_thumbnailer_la_LIBADD   = @ECORE_LIBS@ @EPSILON_LIBS@  
 
 
 posix_la_SOURCES               = filesystem.c $(top_srcdir)/src/entropy_debug.c
-posix_la_CFLAGS                = @EVFS_CFLAGS@
+posix_la_CFLAGS                = @EVFS_CFLAGS@  
 posix_la_LDFLAGS               = -module -avoid-version
-posix_la_LIBADD                = @EVFS_LIBS@
+posix_la_LIBADD                = @EVFS_LIBS@  
 

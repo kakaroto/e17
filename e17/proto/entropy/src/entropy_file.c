@@ -10,12 +10,12 @@ entropy_generic_file* entropy_generic_file_new() {
 	bzero(file->mime_type, MIME_LENGTH);
 
 	allocated_files++;
-	print_allocation();
 
 	return file;
 }
 
 void entropy_generic_file_destroy(entropy_generic_file* file) {
+		/*printf("Cleaning '%s/%s' => %p (%p)\n", file->path, file->filename, file, file->mime_type);*/
 		if (file->thumbnail) {
 			entropy_thumbnail_destroy(file->thumbnail);
 		}
@@ -36,7 +36,6 @@ void entropy_generic_file_destroy(entropy_generic_file* file) {
 		entropy_free(file);
 
 		allocated_files -= 1;
-		print_allocation();
 }
 
 void entropy_generic_file_uri_set(entropy_generic_file* file) {

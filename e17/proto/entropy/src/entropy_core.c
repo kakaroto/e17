@@ -14,11 +14,12 @@
 
 #include "entropy.h"
 #include <ctype.h>
-#include <pthread.h>
 #include "md5.h"
 #include "entropy_gui.h"
 #include <Epsilon.h>
 #include <Evas.h>
+
+#include <X11/Xlib.h>
 
 #define ENTROPY_CORE 1
 
@@ -52,48 +53,36 @@ ipc_client_data(void *data, int type, void *event)
 	/*printf ("Received message\n");*/
 
 	if (e->major == ENTROPY_IPC_EVENT_CORE) {
-		pthread_mutex_lock(&core->notify->exe_queue_mutex);
 		entropy_notify_event* eevent;
 
 		ecore_list_goto_first(core->notify->exe_queue);
 		if ( (eevent = ecore_list_next(core->notify->exe_queue)) ) {
+			if (!eevent->processed) {
+				printf("Pulled an unprocessed event off the queue!\n");
+			}
+			
 			ecore_list_remove_first(core->notify->exe_queue);
+			
 				
 			/*If the return struct is null, don't call the callbacks.  The requester has taken responsibility
 			 * for calling the requesters of this type when the data is available, which is obviously not now*/
 			
 			if (eevent->return_struct) {
+
+				/*printf("******* PROCESSING %p\n", eevent);*/
 				ecore_list_goto_first(eevent->cb_list);
 				while ( (cb_data = ecore_list_next(eevent->cb_list)) ) {
 					(*cb_data->cb)(eevent, eevent->requestor_data, eevent->return_struct, cb_data->data);
 				}
 				destroy_struct = 1;
+				/*printf("******** DONE\n");*/
 			} else {
 				entropy_log ("ipc_client_data: RETURN was NULL.  Caller will notify when data ready\n", ENTROPY_LOG_WARN);
 				destroy_struct = 0;
 			}
 
-			/*TODO move this to a dedicated cleanup function*/
-			if (destroy_struct) {
-					switch (eevent->event_type) {
-						case ENTROPY_NOTIFY_FILELIST_REQUEST:
-						/*It's a filelist request - return is an ecore list - destroy*/
-						ecore_list_destroy(eevent->return_struct);
-						break;
-	
-						case ENTROPY_NOTIFY_THUMBNAIL_REQUEST:
-						/*A thumbnail - we want to keep this, don't destroy anything*/
-						break;
-
-						case ENTROPY_NOTIFY_FILE_STAT_AVAILABLE:
-						//entropy_file_stat* stat = eevent->return_struct;			
-						break;			
-					}
-			}
-			
 			entropy_notify_event_destroy(eevent);		
 		}
-		pthread_mutex_unlock(&core->notify->exe_queue_mutex);
 	} else if (e->major == ENTROPY_IPC_EVENT_LAYOUT_NEW) {
 		entropy_gui_component_instance* (*entropy_plugin_layout_create)(entropy_core*);
 
@@ -147,9 +136,6 @@ entropy_core* entropy_core_init(int argc, char** argv) {
 
 	/*Read inbound arguments*/
 	entropy_core_args_parse(core, argc,argv);
-
-	/*Init the file cache mutex*/
-	pthread_mutex_init(&core->file_cache_mutex, NULL);
 
 	/*Initialise the ecore ipc system*/
 	if (ecore_ipc_init() < 1) {
@@ -308,16 +294,7 @@ entropy_core* entropy_core_init(int argc, char** argv) {
 	
 	entropy_plugin_layout_main = dlsym(core->layout_plugin->dl_ref, "entropy_plugin_layout_main");
 
-	
-	/*FIXME why doesn't the UI update unless we have an empty ecore_timer here? 
-	 * Try removing this, and thumbnail a large dir without
-	 * moving the mouse */
-	ecore_timer_add(0.2, ecore_timer_enterer, NULL); 
-
-
-
-	
-
+	ecore_idle_enterer_add(entropy_notify_loop, core->notify); 
 
 	//printf("--------------- Running main\n");
 
@@ -365,7 +342,7 @@ void entropy_core_mime_action_add(char* mime_type, char* desc)
 
 	/*IF not found, make a new one*/
 	if (!found) {
-		binding = calloc(1,sizeof(Entropy_Config_Mime_Binding));
+		binding = entropy_malloc(sizeof(Entropy_Config_Mime_Binding));
 		binding->mime_type = strdup(mime_type);
 		binding->desc = strdup(desc);
 		core_core->config->Loaded_Config->mime_bindings = 
@@ -388,7 +365,7 @@ void entropy_core_mime_application_add(char* mime_type, char* name, char* execut
 
 		if (!strcmp(binding->mime_type, mime_type)) {
 			/*Create a new action, based on this mime_type*/
-			action = calloc(1,sizeof(Entropy_Config_Mime_Binding_Action));
+			action = entropy_malloc(sizeof(Entropy_Config_Mime_Binding_Action));
 
 			action->app_description = strdup(name);
 			action->executable = strdup(executable);
@@ -405,117 +382,11 @@ void entropy_core_mime_application_add(char* mime_type, char* name, char* execut
 
 void entropy_core_config_load() 
 {
-	int count, new_count;
-	Ecore_List* mime_type_actions;
-	char* key;
-	int i=0;
-	char type[100];
-	char* pos;
-	entropy_mime_action* action;
-
-	printf("Loading core config...\n");
-
-	/*Set some defaults*/
-	mime_type_actions = ecore_list_new();
-	ecore_list_append(mime_type_actions, "image/jpeg:exhibit");
-        ecore_list_append(mime_type_actions, "image/png:exhibit");
-        ecore_list_append(mime_type_actions, "image/gif:exhibit");
-        ecore_list_append(mime_type_actions, "text/html:firefox");
-        ecore_list_append(mime_type_actions, "text/csrc:gvim");
-        ecore_list_append(mime_type_actions, "audio/x-mp3:xmms");
-        ecore_list_append(mime_type_actions, "video/x-ms-wmv:mplayer");
-        ecore_list_append(mime_type_actions, "video/mpeg:mplayer");
-        ecore_list_append(mime_type_actions, "application/msword:abiword");
-        ecore_list_append(mime_type_actions, "application/vnd.ms-excel:gnumeric");
-        ecore_list_append(mime_type_actions, "video/x-msvideo:mplayer");
-
-	new_count = ecore_list_nodes(mime_type_actions);
-
-	if (  (!(count = entropy_config_int_get("core","mime_type_count"))) || count < new_count ) {	
-		
-	
-		entropy_config_int_set("core", "mime_type_count", new_count);
-		printf("Setting up initial mime types, writing %d (old was %d)..\n", new_count,count);
-
-		while ( (key = ecore_list_remove_first(mime_type_actions))) {
-			snprintf(type,50,"mimetype_action.%d", i);
-		
-			entropy_config_str_set("core", type, key);	
-			printf("Wrote '%s' \n", key);
-
-			i++;
-		}
-
-		ecore_list_destroy(mime_type_actions);
-	}
-
-	
-	count = entropy_config_int_get("core","mime_type_count");
-	printf("Have to load %d mime entries..\n", count);
-
-	new_count=0;
-	while (new_count < count) {
-		snprintf(type,50,"mimetype_action.%d", new_count);
-		key = entropy_config_str_get("core", type);
-		pos = strrchr(key, ':');
-
-		printf("Key is: '%s'\n", key);	
-
-		if (pos >= 0) {
-			*pos = '\0';
-			printf("Loading '%s', is '%s' -> '%s'\n", type, key, pos+1);
-
-			action = entropy_malloc(sizeof(entropy_mime_action));
-			action->executable = strdup(pos+1);
-				
-			ecore_hash_set(core_core->mime_action_hint, strdup(key), action);
-			
-		}
-		free(key);
-		
-		new_count++;
-	}
-
-	
-	
-
-	
+	/*DEPRECATED*/
 }
 
 void entropy_core_config_save() {
-	Ecore_List* keys;
-	int count;
-	char key[100];
-	char executable[256];
-	char* gkey;
-	int i=0;
-	
-	
-
-	/*Save the mime_action config*/
-	keys = ecore_hash_keys(core_core->mime_action_hint);
-	count = ecore_list_nodes(keys);
-
-	/*Set the count of mime_types*/
-	entropy_config_int_set("core","mime_type_count", count);
-
-	/*Write the types*/
-	while (  (gkey = ecore_list_remove_first(keys))  ) {
-		snprintf(key, 100, "mimetype_action.%d", i);
-
-		snprintf(executable,256,"%s:%s", gkey, 
-		((entropy_mime_action*)ecore_hash_get(core_core->mime_action_hint, gkey))->executable);
-		
-		printf("Saving '%s' for '%s' using '%s'\n", 
-			((entropy_mime_action*)ecore_hash_get(core_core->mime_action_hint, gkey))->executable, gkey, key); 
-
-		entropy_config_str_set("core", key, executable);
-
-		i++;
-	}
-
-	
-	
+	/*DEPRECATED*/
 }
 
 Entropy_Config_Mime_Binding_Action* entropy_core_mime_hint_get(char* mime_type, int key) {
@@ -659,6 +530,10 @@ char* entropy_core_gui_event_get(char* event) {
 		return "entropy_gui_event_thumbnail_available";
 	} else if (!strcmp(event, ENTROPY_GUI_EVENT_USER_INTERACTION_YES_NO_ABORT)) {
 		return "entropy_gui_event_user_interaction_yes_no_abort";
+	} else if (!strcmp(event,  ENTROPY_GUI_EVENT_FILE_METADATA)) {
+		return "entropy_gui_event_file_metadata";
+	} else if (!strcmp(event,  ENTROPY_GUI_EVENT_FILE_METADATA_AVAILABLE)) {
+		return "entropy_gui_event_file_metadata_available";
 	} else {
 		return "";
 	}
@@ -776,7 +651,18 @@ int entropy_plugin_load(entropy_core* core, entropy_plugin* plugin) {
 		plugin->gui_event_callback_p = gui_event_callback;
 
 		//printf ("SETTING ACTION callback at : %p\n", gui_event_callback);
+	} else if (type == ENTROPY_PLUGIN_METADATA_READ) {
+		entropy_gui_component_instance* instance;
+
+		/*Initializing..*/
+		entropy_plugin_init = dlsym(plugin->dl_ref, "entropy_plugin_init");
+		instance = (*entropy_plugin_init)(core);
+		instance->plugin = plugin;
+
+		gui_event_callback = dlsym(plugin->dl_ref, "gui_event_callback");
+		plugin->gui_event_callback_p = gui_event_callback;
 	}
+
 
 
 
@@ -1008,7 +894,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 
 	if (!el) {
 		/*No-one cares about this event - perhaps we shouldn't exit here.  The caller may still want it to run*/
-		//printf("entropy_core: Nobody registered to receive this event\n");
+		printf("entropy_core: Nobody registered to receive this event\n");
 		entropy_free(event);
 		return;
 	}
@@ -1016,17 +902,16 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 	
 
 	if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS)) {
-		entropy_plugin* plugin;
-		entropy_notify_event *ev;
-		
-		entropy_file_request* request = entropy_malloc(sizeof(entropy_file_request));
 
-		/*A folder request's data is an entropy_generic_file*/
+		entropy_notify_event *ev = entropy_notify_event_new();
+		Ecore_List* res;	
+		entropy_file_request* request = entropy_malloc(sizeof(entropy_file_request));
 		
-		//printf("File says: %s %s\n", ((entropy_generic_file*)event->data)->path, ((entropy_generic_file*)event->data)->filename);
+
+		ev->event_type = ENTROPY_NOTIFY_FILELIST_REQUEST;
+		ev->processed = 1;
 
 		/*Check if we need to put a slash between the path/file*/
-
 		if (((entropy_file_request*)event->data)->drill_down) {
 			printf("Request for drill down\n");
 		}
@@ -1037,34 +922,39 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		request->file_type = FILE_ALL;
 		request->drill_down = ((entropy_file_request*)event->data)->drill_down;
 
-		
-		/*FIXME We should get the caller's current file plugin from the caller - i.e. the gui instance*/
-	        plugin = entropy_plugins_type_get_first(ENTROPY_PLUGIN_BACKEND_FILE ,ENTROPY_PLUGIN_SUB_TYPE_ALL);
-	       
+		ev->data = request;
 
-		/*Make our new event for notification*/
-		ev = entropy_notify_request_register(instance->core->notify, instance, ENTROPY_NOTIFY_FILELIST_REQUEST, 
-					plugin, "filelist_get", request,  
-					NULL);
 
-		ecore_list_goto_first(el);
-		while ( (iter = ecore_list_next(el)) ) {
-			if (iter->active) entropy_notify_event_callback_add(ev, (void*)iter->plugin->gui_event_callback_p, iter);
+		/*HACK/FIXME - see what happens if we expire events - this should be on request*/
+		printf("************* Calling interceptor..\n");
+		entropy_notify_event_expire_requestor_layout(instance);
+
+	
+		res = entropy_plugin_filesystem_filelist_get(request);
+		ev->return_struct = res;
+
+		if (res) {
+			ecore_list_goto_first(el);
+			while ( (iter = ecore_list_next(el)) ) {
+				if (iter->active) (*iter->plugin->gui_event_callback_p)
+					(ev, 
+					 iter, 
+					 res,   /*An ecore_list of files*/
+					 iter);	
+
+			}
 		}
-
-		/*Add the obj to be nuked once we've executed*/
-		entropy_notify_event_cleanup_add(ev, request);
-		
-		/*Tell the notify engine we're ready to run*/
-		entropy_notify_event_commit(instance->core->notify, ev);
 
 		/*Nuke the file_request object that was passed to us*/
 		free(event->data);
 
+		entropy_notify_event_destroy(ev);		
+		free(request);
 		
 	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_CHANGE)) {
 		entropy_notify_event* ev = entropy_notify_event_new();
 		ev->event_type = ENTROPY_NOTIFY_FILE_CHANGE;
+		ev->processed = 1;
 		
 		//printf("Sending a file change event...\n");
 
@@ -1082,12 +972,10 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_CREATE)) {
 		entropy_notify_event* ev = entropy_notify_event_new();
 		ev->event_type = ENTROPY_NOTIFY_FILE_CREATE;
+		ev->processed = 1;
 	
-		printf("Create event at notify_event\n");
-		
 		ecore_list_goto_first(el);
 		while ( (iter = ecore_list_next(el)) ) {
-			printf ("Notifying %p of create event\n", iter);
 			if (iter->active) (*iter->plugin->gui_event_callback_p)
 				(ev, 
 				 iter, 
@@ -1099,6 +987,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_REMOVE)) {
 		entropy_notify_event* ev = entropy_notify_event_new();
 		ev->event_type = ENTROPY_NOTIFY_FILE_REMOVE;
+		ev->processed = 1;
 		
 		//printf("Sending a file create event...\n");
 
@@ -1115,6 +1004,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_REMOVE_DIRECTORY)) {
 		entropy_notify_event* ev = entropy_notify_event_new();
 		ev->event_type = ENTROPY_NOTIFY_FILE_REMOVE_DIRECTORY;
+		ev->processed = 1;
 		
 		//printf("Sending a file create event...\n");
 
@@ -1133,6 +1023,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		entropy_notify_event* ev = entropy_notify_event_new();
 		ev->event_type = ENTROPY_NOTIFY_FILE_ACTION; 
 		ev->key = event->key;
+		ev->processed = 1;
 
 		
 		//printf ("Requested an action execute\n");
@@ -1149,10 +1040,29 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 				 instance);
 		}
 		entropy_notify_event_destroy(ev);
+
+	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_METADATA)) {
+		entropy_notify_event* ev = entropy_notify_event_new();
+		ev->event_type = ENTROPY_NOTIFY_FILE_METADATA_REQUEST; 
+		ev->key = event->key;
+		ev->processed = 1;
+
+		
+		/*Call the requestors*/
+		ecore_list_goto_first(el);
+		while ( (iter = ecore_list_next(el)) ) {
+			//printf( "Calling callback at : %p\n", iter->plugin->gui_event_callback_p);
+			
+			if (iter->active) (*iter->plugin->gui_event_callback_p)
+				(ev, 
+				 instance,  /*We use instance here, because the action runner needs to know the caller*/
+				 event->data,   /*An entropy_generic_file*/
+				 instance);
+		}
+		entropy_notify_event_destroy(ev);
 		
 	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_STAT)) {
-		entropy_plugin* plugin;
-		entropy_notify_event *ev;
+		entropy_notify_event *ev = entropy_notify_event_new();
 		entropy_file_request* request = entropy_malloc(sizeof(entropy_file_request));
 
 		/*Set up the request..*/
@@ -1160,28 +1070,31 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		request->core = instance->core;
 		request->requester = instance->layout_parent;
 		/*--------------------------------------------*/
+
+		ev->event_type = ENTROPY_NOTIFY_FILE_STAT_EXECUTED;
+		ev->processed = 1;
+
+		entropy_plugin_filesystem_filestat_get(request);
 		
-		//printf ("Requested a stat on a file...md5 %s, pointer %p, path '%s', filename '%s'\n", ((entropy_generic_file*)event->data)->md5, ((entropy_generic_file*)event->data), ((entropy_generic_file*)event->data)->path, ((entropy_generic_file*)event->data)->filename );
-
-		/*FIXME We should get the caller's current file plugin from the caller - i.e. the gui instance*/
-	        plugin = entropy_plugins_type_get_first(ENTROPY_PLUGIN_BACKEND_FILE ,ENTROPY_PLUGIN_SUB_TYPE_ALL);
-
-		/*Make our new event for notification*/
-		ev = entropy_notify_request_register(instance->core->notify, instance, ENTROPY_NOTIFY_FILE_STAT_EXECUTED, 
-					plugin, "filestat_get",  request  ,  
-					NULL);
-
 		ecore_list_goto_first(el);
 		while ( (iter = ecore_list_next(el)) ) {
-			if (iter->active) entropy_notify_event_callback_add(ev, (void*)iter->plugin->gui_event_callback_p, iter);
+			if (iter->active) (*iter->plugin->gui_event_callback_p)
+				(ev, 
+				 iter, 
+				 NULL,   /*An entropy_file_stat*/
+				 iter);
+
 		}
 
-		/*Tell the notify engine we're ready to run*/
-		entropy_notify_event_commit(instance->core->notify, ev);
+		entropy_free(request);
+		entropy_notify_event_destroy(ev);
 
 	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_STAT_AVAILABLE)) {
 		entropy_notify_event* ev = entropy_notify_event_new();
 		ev->event_type = ENTROPY_NOTIFY_FILE_STAT_AVAILABLE; 
+		ev->return_struct = event->data;
+		if (event->data) ev->data = ((entropy_file_stat*)event->data)->file;
+		ev->processed = 1;
 
 		
 		//printf ("Stat available for consumption - %p\n", event->data);
@@ -1204,6 +1117,8 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_THUMBNAIL_AVAILABLE)) {
 		entropy_notify_event* ev = entropy_notify_event_new();
 		ev->event_type = ENTROPY_NOTIFY_THUMBNAIL_REQUEST; 
+		ev->return_struct = event->data;
+		ev->processed = 1;
 
 		
 		/*Call the requestors*/
@@ -1219,6 +1134,26 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		}
 		entropy_notify_event_destroy(ev);
 
+	/*A metadata object has been made available*/
+	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_METADATA_AVAILABLE)) {
+		entropy_notify_event* ev = entropy_notify_event_new();
+		ev->event_type = ENTROPY_NOTIFY_FILE_METADATA_AVAILABLE; 
+		ev->return_struct = event->data;
+		ev->processed = 1;
+
+		/*Call the requestors*/
+		ecore_list_goto_first(el);
+		while ( (iter = ecore_list_next(el)) ) {
+			//printf( "Calling callback at : %p\n", iter->plugin->gui_event_callback_p);
+			
+			if (iter->active) (*iter->plugin->gui_event_callback_p)
+				(ev, 
+				 iter, 
+				 event->data,   /*An ecore_list of Entropy_Metadata_Object*/
+				 iter);
+		}
+		entropy_notify_event_destroy(ev);
+
 		
 	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS_EXTERNAL)) {
 		Ecore_List* file_list;
@@ -1226,6 +1161,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		
 		entropy_notify_event* ev = entropy_notify_event_new();
 		ev->event_type = ENTROPY_NOTIFY_FILELIST_REQUEST_EXTERNAL; 
+				ev->processed = 1;
 
 	
 		/*The first thing in the calling event data (an ecore_list) is the original request*/
@@ -1237,6 +1173,8 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 
 		/*Assign the file request to the outgoing event data*/
 		ev->data = request;
+		ev->return_struct = file_list;
+
 		
 		/*Now get rid of the request, so we're left with a virginal list of files*/
 		ecore_list_remove_first(file_list);
@@ -1260,6 +1198,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_PROGRESS)) {
 		entropy_notify_event* ev = entropy_notify_event_new();
 		ev->event_type = ENTROPY_NOTIFY_FILE_PROGRESS; 
+		ev->processed = 1;
 
 		
 
@@ -1278,6 +1217,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 	} else if (!strcmp(event->event_type, ENTROPY_GUI_EVENT_USER_INTERACTION_YES_NO_ABORT)) {
 		entropy_notify_event* ev = entropy_notify_event_new();
 		ev->event_type = ENTROPY_NOTIFY_USER_INTERACTION_YES_NO_ABORT; 
+		ev->processed = 1;
 
 		/*Call the requestors*/
 		ecore_list_goto_first(el);
@@ -1308,6 +1248,10 @@ void entropy_core_string_lowcase(char *lc) {
 			*lc = (unsigned char)tolower((unsigned char)*lc);
 }
 
+char* md5_entropy_local_file(char* filename)
+{
+	return md5_entropy_path_file("file",filename,"");
+}
 
 char* md5_entropy_path_file(char* plugin, char* folder, char* filename) {
         char* md5;
@@ -1321,7 +1265,10 @@ char* md5_entropy_path_file(char* plugin, char* folder, char* filename) {
 
 	/*printf("MD5'ing %s %s\n", path, filename);*/
 
-	snprintf(full_name, 1024, "%s%s%s", plugin, folder, filename);
+	if (strlen(filename))
+		snprintf(full_name, 1024, "%s%s/%s", plugin, folder, filename);
+	else
+		snprintf(full_name, 1024, "%s%s", plugin, folder);
 	
        md5_init(&state);
        md5_append(&state, (const md5_byte_t*)full_name, strlen(full_name));
@@ -1340,9 +1287,7 @@ Ecore_List* entropy_core_file_cache_keys_retrieve()
 {
 	Ecore_List* ret = NULL;
 	
-	LOCK(&core_core->file_cache_mutex);
 	ret = ecore_hash_keys(core_core->file_interest_list);
-	UNLOCK(&core_core->file_cache_mutex);
 
 	return ret;
 }
@@ -1350,23 +1295,19 @@ Ecore_List* entropy_core_file_cache_keys_retrieve()
 
 void entropy_core_file_cache_add(char* md5, entropy_file_listener* listener) {
 
-	LOCK(&core_core->file_cache_mutex);
 	
 	if (!ecore_hash_get(core_core->file_interest_list, md5)) {
 		ecore_hash_set(core_core->file_interest_list, md5, listener);
 	} else {
 		printf("*** BAD: Called set-reference with file already cached!\n");
 
-		UNLOCK(&core_core->file_cache_mutex);
 		entropy_core_file_cache_add_reference(md5);
-		LOCK(&core_core->file_cache_mutex);
 	}
 
 	entropy_generic_file_uri_set(listener->file);
 	
 	file_cache_size++;
 	/*printf("File cache goes to %ld\n", file_cache_size);*/
-	UNLOCK(&core_core->file_cache_mutex);
 	
 }
 
@@ -1379,7 +1320,6 @@ entropy_generic_file* entropy_core_uri_generic_file_retrieve(char* uri) {
 
 
 void entropy_core_file_cache_add_reference(char* md5) {
-	LOCK(&core_core->file_cache_mutex);
 	entropy_file_listener* listener = ecore_hash_get(core_core->file_interest_list, md5);
 
 	if (listener) {
@@ -1388,17 +1328,18 @@ void entropy_core_file_cache_add_reference(char* md5) {
 		/*At this point, check if the file needs a uri generating..
 		 * And generate if necesary */
 		entropy_generic_file_uri_set(listener->file);
+
+		//printf("+ Ref count for '%s/%s' -> %d..\n", listener->file->path, listener->file->filename, listener->count);
 	}
-	UNLOCK(&core_core->file_cache_mutex);
 }
 
 void entropy_core_file_cache_remove_reference(char* md5) {
-	LOCK(&core_core->file_cache_mutex);
-
 	entropy_file_listener* listener = ecore_hash_get(core_core->file_interest_list, md5);
 
 	if (listener) {
 		listener->count--;
+
+		//printf("- Ref count for '%s/%s' -> %d..\n", listener->file->path, listener->file->filename, listener->count);
 		if (listener->count <= 0) {
 
 			ecore_hash_remove(core_core->uri_reference_list, listener->file->uri);
@@ -1414,17 +1355,14 @@ void entropy_core_file_cache_remove_reference(char* md5) {
 
 		} 
 	}
-	UNLOCK(&core_core->file_cache_mutex);
 }
 
 entropy_file_listener* entropy_core_file_cache_retrieve(char* md5) {
 	entropy_file_listener* listen;
 	
-	LOCK(&core_core->file_cache_mutex);
 
 	listen = ecore_hash_get(core_core->file_interest_list, md5);
 	
-	UNLOCK(&core_core->file_cache_mutex);
 
 	return listen;
 }
@@ -1634,15 +1572,11 @@ entropy_generic_file* entropy_core_object_file_association_get(void* object) {
 
 
 void* entropy_malloc(size_t size) {
-	requests++;
-
-	//printf("                   ********************** %d requests for mem (UP)\n", requests);
 	return calloc(1,size);
 }
 
 void entropy_free(void* ref) {
 	if (ref) {
-		requests--;
 		//printf("                   ********************** %d requests for mem (DOWN)\n", requests);
 		free(ref);
 	} else {

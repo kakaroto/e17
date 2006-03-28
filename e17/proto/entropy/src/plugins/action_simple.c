@@ -26,7 +26,7 @@ char* entropy_action_simple_str_replace(entropy_generic_file* file, char* exe, c
 	/*A function to replace %p (path), %pf (path+filename), and %u (uri), with their
 	 * real equivalents*/
 	int i=0;
-	char* str = calloc(1,sizeof(char)*PATH_MAX);
+	char* str = entropy_malloc(sizeof(char)*PATH_MAX);
 	char* currStr = exe;
 
 	while (currStr) {

@@ -296,11 +296,12 @@ callback (evfs_event * data, void *obj)
 			  /*Register a new listener for this file */
 			  listener = entropy_malloc (sizeof (entropy_file_listener));
 			  listener->file = file;
-			  listener->count = 0;
+			  listener->count = 1;
 			  entropy_core_file_cache_add (md5, listener);
 			}
 			else {
 			  file = listener->file;
+			  entropy_core_file_cache_add_reference (listener->file->md5);
 			  entropy_free (md5);	/*We don't need this one, we're returning an old ref */
 			}
 		
@@ -393,7 +394,7 @@ callback (evfs_event * data, void *obj)
 	entropy_gui_event* gui_event;
 	entropy_file_operation* op;
 
-	printf("EVFS requested feedback on an operation!\n");
+	printf("EVFS requested feedback on an operation!, id %ld\n",  data->op->id);
 
       /*Find who called us */
       uri =
@@ -675,12 +676,15 @@ filelist_get (entropy_file_request * request)
 	    /*Register a new listener for this file */
 	    listener = entropy_malloc (sizeof (entropy_file_listener));
 	    listener->file = ef;
-	    listener->count = 0;
+	    listener->count = 1;
 
 
 	    entropy_core_file_cache_add (md5, listener);
 	  }
 	  else {
+            entropy_core_file_cache_add_reference (listener->file->md5);
+		  
+	
 	    ecore_list_append (el, listener->file);
 	    entropy_free (md5);	/*We don't need this one, we're returning an old ref */
 	  }

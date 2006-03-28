@@ -22,13 +22,11 @@ entropy_SOURCES = \
 	entropy_alert.c
 
 
-entropy_CC	= @PTHREAD_CC@
-entropy_CFLAGS  = @PTHREAD_CFLAGS@ \
-		  @EWL_CFLAGS@ @EVFS_CFLAGS@ \
+entropy_CC	= cc
+entropy_CFLAGS  = @EWL_CFLAGS@ @EVFS_CFLAGS@ \
 		  @IMLIB2_CFLAGS@ @EPSILON_CFLAGS@
-entropy_LDFLAGS	= -rdynamic @PTHREAD_CFLAGS@ @IMLIB2_CFLAGS@
+entropy_LDFLAGS	= -rdynamic @IMLIB2_CFLAGS@
 entropy_LDADD	= $(INTLLIBS) \
-		@PTHREAD_LIBS@ \
 		@EWL_LIBS@ \
 		@IMLIB2_LIBS@ \
 		@EVFS_LIBS@ @EPSILON_LIBS@

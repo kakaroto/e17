@@ -57,6 +57,12 @@ struct entropy_file_request {
 	int value;
 };
 
+typedef struct Entropy_Metadata_Object Entropy_Metadata_Object;
+struct Entropy_Metadata_Object {
+	const char* key;
+	const char* value;
+};
+
 
 #define TYPE_CONTINUE 0
 #define TYPE_END 1 

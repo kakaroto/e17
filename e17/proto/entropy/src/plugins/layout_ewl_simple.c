@@ -472,7 +472,7 @@ layout_ewl_simple_add_header (entropy_gui_component_instance * instance,
   Ewl_Widget *hbox;
   entropy_plugin *structure;
   entropy_ewl_layout_header_uri *header =
-    calloc (1, sizeof (entropy_ewl_layout_header_uri));
+    entropy_malloc (sizeof (entropy_ewl_layout_header_uri));
   void *(*structure_plugin_init) (entropy_core * core,
 				  entropy_gui_component_instance *, 
 				  void* parent_visual,

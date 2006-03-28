@@ -420,7 +420,7 @@ static void _entropy_etk_list_viewer_drag_begin_cb(Etk_Object *object, void *dat
    etk_container_add(ETK_CONTAINER(drag), table);
   
 
-   types = calloc(1, sizeof(char*));
+   types = entropy_malloc(sizeof(char*));
    num_types = 1;
    types[0] = strdup("text/uri-list");
     
@@ -530,6 +530,15 @@ static void _etk_list_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *row, 
 	    entropy_core_gui_event_get (ENTROPY_GUI_EVENT_ACTION_FILE);
 	  gui_event->data = file->file;
 	  entropy_core_layout_notify_event (file->instance, gui_event, ENTROPY_EVENT_GLOBAL);
+   } else if (event->button == 2) {
+	etk_tree_row_select(row);
+	printf("MetaData request\n");
+
+	  gui_event = entropy_malloc (sizeof (entropy_gui_event));
+	  gui_event->event_type =
+	    entropy_core_gui_event_get (ENTROPY_GUI_EVENT_FILE_METADATA);
+	  gui_event->data = file->file;
+	  entropy_core_layout_notify_event (file->instance, gui_event, ENTROPY_EVENT_GLOBAL);
    } else if (event->button == 3) {
 	etk_tree_row_select(row);
 	etk_menu_popup(ETK_MENU(viewer->popup));
@@ -585,6 +594,9 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
 			request->file = file;
 			request->instance = instance;
 
+			/*Add a reference to this file, so it doesn't get cleaned up*/
+			entropy_core_file_cache_add_reference (file->md5);
+
 			entropy_notify_event *ev =
 			  entropy_notify_request_register (instance->core->notify, instance,
 				   ENTROPY_NOTIFY_THUMBNAIL_REQUEST,
@@ -596,7 +608,7 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
 				   instance);
 			entropy_notify_event_cleanup_add (ev, request);
 
-			entropy_notify_event_commit (instance->core->notify, ev);
+			entropy_notify_event_commit (ev);
 	    }
   }
 
@@ -650,7 +662,6 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
 
   if (!file->retrieved_stat) {
 	  /*And request the properties...*/
-
 	  entropy_core_file_cache_add_reference (file->md5);
 	  
 	  gui_event = entropy_malloc (sizeof (entropy_gui_event));
@@ -741,8 +752,6 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 				col5, date_buffer,
 				NULL);
 		etk_tree_thaw(ETK_TREE(viewer->tree));
-
-		entropy_core_file_cache_remove_reference (file_stat->file->md5);
 	}
      }
      break;					 
@@ -751,7 +760,8 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 	  entropy_generic_file* file = el;
 	  entropy_gui_event *gui_event = NULL;
 	  
-					       
+	  entropy_core_file_cache_add_reference (file->md5);
+	  
 	  /*And request the properties...*/
 	  gui_event = entropy_malloc (sizeof (entropy_gui_event));
 	  gui_event->event_type =
@@ -828,8 +838,9 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 		  etk_tree_thaw(ETK_TREE(viewer->tree));
 
 		} else {
-		  printf ("ERR: Couldn't find a hash reference for this file!\n");
+		  /*printf ("ERR: Couldn't find a hash reference for this file!\n");*/
 		}
+
 	      }
 	    }				//End case
 	    break;					    
@@ -890,7 +901,7 @@ entropy_plugin_init (entropy_core * core,
 
   /*DND Setup*/
    dnd_types_num = 1;
-   dnd_types = calloc(dnd_types_num, sizeof(char*));
+   dnd_types = entropy_malloc(dnd_types_num* sizeof(char*));
    dnd_types[0] = strdup("text/uri-list");  
   etk_widget_dnd_source_set(viewer->tree, ETK_TRUE);
   //etk_widget_dnd_drag_data_set(viewer->tree, dnd_types, dnd_types_num, "This is the drag data!", strlen("This is the drag data!") + 1);

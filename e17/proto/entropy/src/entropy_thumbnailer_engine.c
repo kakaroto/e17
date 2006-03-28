@@ -9,7 +9,7 @@ Ecore_List* entropy_thumbnailer_child_retrieve(char* mime_type) {
 }
 
 entropy_thumbnail_request* entropy_thumbnail_request_new() {
-	return calloc(1, sizeof(entropy_thumbnail_request));
+	return entropy_malloc(sizeof(entropy_thumbnail_request));
 }
 
 void entropy_thumbnail_request_destroy(entropy_thumbnail_request* request) {

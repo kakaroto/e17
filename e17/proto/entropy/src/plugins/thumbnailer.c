@@ -1,6 +1,10 @@
 #include "entropy.h"
+#include "Epsilon_Request.h"
+#include <Epsilon.h>
 
 static Ecore_List *types = NULL;
+static Ecore_Event_Handler *thumb_done = NULL;
+static Ecore_Hash *_ecore_thumb_file_instance_hash = NULL;
 #define THUMBNAILER_LOCAL_PLUGIN "file"
 
 int
@@ -30,6 +34,54 @@ entropy_thumbnailer_plugin_mime_types_get ()
   return types;
 }
 
+int thumb_complete_cb(void *data, int type, void *event)
+{
+        Epsilon_Request *thumb = event;
+	entropy_thumbnail* thumbnail;
+	entropy_gui_event* gui_event;
+	entropy_gui_component_instance* instance = NULL;
+	entropy_file_request* req;
+	char* md5;
+
+
+	md5 = md5_entropy_local_file(thumb->path);
+
+        /*printf("\n! EVENT ! THUMB %s -> %s  (%s), COMPLETE ! STATUS %d ! %d REMAINING !\n\n",
+                        thumb->path, thumb->dest, md5, thumb->status,  1);*/
+	
+	req = ecore_hash_get(_ecore_thumb_file_instance_hash, md5);
+	
+	if (req) {
+		instance = req->requester;
+		ecore_hash_remove(_ecore_thumb_file_instance_hash, md5);
+
+		thumbnail = entropy_thumbnail_new();
+		strcpy(thumbnail->thumbnail_filename, thumb->dest);
+		thumbnail->parent = req->file;
+		req->file->thumbnail = thumbnail;
+
+	    gui_event = entropy_malloc (sizeof (entropy_gui_event));
+	    gui_event->event_type =
+	      entropy_core_gui_event_get
+	      (ENTROPY_GUI_EVENT_THUMBNAIL_AVAILABLE);
+	    gui_event->data = thumbnail;
+	    //
+	    /*Call the callback stuff */
+	    entropy_core_layout_notify_event (instance, gui_event,
+					      ENTROPY_EVENT_LOCAL);
+
+		entropy_core_file_cache_remove_reference(req->file->md5);
+
+		free(md5);
+		free(req);
+	} else {
+		printf("Couldn't file local ref! *****\n");
+	}
+
+        return 0;
+}
+
+
 entropy_gui_component_instance *
 entropy_plugin_init (entropy_core * core)
 {
@@ -41,20 +93,43 @@ entropy_plugin_init (entropy_core * core)
   instance->layout_parent = layout;
   instance->core = core;
 
+  _ecore_thumb_file_instance_hash = ecore_hash_new (ecore_str_hash, ecore_str_compare);
+
+  epsilon_thumb_init();
+
+  thumb_done = ecore_event_handler_add(EPSILON_EVENT_DONE, thumb_complete_cb, NULL);
+
   return instance;
 }
 
 entropy_thumbnail *
 entropy_thumbnailer_thumbnail_get (entropy_thumbnail_request * request)
 {
-  entropy_thumbnail *thumb;
+  entropy_thumbnail *thumb = NULL;
+  char buffer[PATH_MAX];
+  entropy_file_request* o_request;
 
   /*This thumbnailer is only for local files */
   if (strcmp (request->file->uri_base, THUMBNAILER_LOCAL_PLUGIN))
     return NULL;
 
   if (!request->file->thumbnail) {
-    thumb = entropy_thumbnail_create (request->file);
+    /*thumb = entropy_thumbnail_create (request->file);*/
+    /*printf("Ecore thumb: request: '%s/%s'\n", request->file->path, request->file->filename);*/
+
+    snprintf(buffer,PATH_MAX, "%s/%s", request->file->path, request->file->filename);
+
+    /*FIXME this assumes that only one instance will request a thumb at one time*/
+    o_request = entropy_malloc(sizeof(entropy_file_request));	
+    o_request->file = request->file;
+    o_request->requester = request->instance;
+    
+    ecore_hash_set (_ecore_thumb_file_instance_hash, request->file->md5, o_request);
+    
+    entropy_core_file_cache_add_reference(request->file->md5);
+
+    /*printf("'%s' (%s)...\n", buffer, request->file->md5);*/
+    epsilon_add(buffer, NULL, EPSILON_THUMB_NORMAL, NULL);
   }
   else {
     return request->file->thumbnail;
@@ -62,17 +137,15 @@ entropy_thumbnailer_thumbnail_get (entropy_thumbnail_request * request)
   /*Set the file up for this thumbnail. TODO this probably violates convention to do this here,
    * but we create the thumbnail downstream, and from here, so there's not much choice.. */
 
-  if (thumb) {
-    /*printf("Created thumbnail '%s'\n", thumb->thumbnail_filename); */
+  /*if (thumb) {
     thumb->parent = request->file;
     request->file->thumbnail = thumb;
   }
   else {
-    //printf ("Returned thumb was null, assuming error...\n");
     return NULL;
-  }
+  }*/
 
-  return thumb;
+  return NULL;
 }
 
 void

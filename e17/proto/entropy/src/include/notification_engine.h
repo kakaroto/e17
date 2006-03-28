@@ -4,19 +4,21 @@
 //#include <pthread.h>
 
 enum ENTROPY_NOTIFY_TYPES {
-	ENTROPY_NOTIFY_GENERIC,
-	ENTROPY_NOTIFY_THUMBNAIL_REQUEST,
-	ENTROPY_NOTIFY_FILELIST_REQUEST,
-	ENTROPY_NOTIFY_FILELIST_REQUEST_EXTERNAL,  /*For delayed-response dir-lists, e.g. from evfs*/
-	ENTROPY_NOTIFY_FILE_CHANGE,
-	ENTROPY_NOTIFY_FILE_CREATE,
-	ENTROPY_NOTIFY_FILE_REMOVE,
-	ENTROPY_NOTIFY_FILE_REMOVE_DIRECTORY,
-	ENTROPY_NOTIFY_FILE_ACTION,
-	ENTROPY_NOTIFY_FILE_STAT_EXECUTED,
-	ENTROPY_NOTIFY_FILE_STAT_AVAILABLE,
-	ENTROPY_NOTIFY_FILE_PROGRESS,
-	ENTROPY_NOTIFY_USER_INTERACTION_YES_NO_ABORT
+	ENTROPY_NOTIFY_GENERIC = 0,
+	ENTROPY_NOTIFY_THUMBNAIL_REQUEST =1,
+	ENTROPY_NOTIFY_FILELIST_REQUEST =2 ,
+	ENTROPY_NOTIFY_FILELIST_REQUEST_EXTERNAL = 3,  /*For delayed-response dir-lists, e.g. from evfs*/
+	ENTROPY_NOTIFY_FILE_CHANGE = 4,
+	ENTROPY_NOTIFY_FILE_CREATE = 5,
+	ENTROPY_NOTIFY_FILE_REMOVE = 6,
+	ENTROPY_NOTIFY_FILE_REMOVE_DIRECTORY = 7,
+	ENTROPY_NOTIFY_FILE_ACTION = 8,
+	ENTROPY_NOTIFY_FILE_STAT_EXECUTED = 9,
+	ENTROPY_NOTIFY_FILE_STAT_AVAILABLE = 10,
+	ENTROPY_NOTIFY_FILE_PROGRESS = 11,
+	ENTROPY_NOTIFY_USER_INTERACTION_YES_NO_ABORT = 12,
+	ENTROPY_NOTIFY_FILE_METADATA_REQUEST = 13,
+	ENTROPY_NOTIFY_FILE_METADATA_AVAILABLE = 14
 };
 
 typedef struct entropy_notification_engine entropy_notification_engine;
@@ -29,9 +31,6 @@ struct entropy_notification_engine {
 
 	Ecore_Ipc_Server *server; /*Our ref to the IPC engine*/
 	
-	pthread_mutex_t op_queue_mutex;
-	pthread_mutex_t loop_mutex; /*Block on this the whole time*/
-	pthread_mutex_t exe_queue_mutex;
 };
 
 typedef struct entropy_notify_event_cb_data entropy_notify_event_cb_data;
@@ -42,7 +41,7 @@ struct entropy_notify_event_cb_data {
 
 typedef struct entropy_notify_event entropy_notify_event;
 struct entropy_notify_event {
-	
+	int processed; /*A flag to indicate that this event has begun processing*/	
 	
 
 	int event_type;
@@ -54,9 +53,7 @@ struct entropy_notify_event {
 	Ecore_List* cb_list;
 	Ecore_List* cleanup_list;
 	
-
 	void* return_struct;
-
 	void* requestor_data;
 };
 
@@ -68,7 +65,7 @@ struct entropy_gui_event {
 };
 
 
-void* entropy_notify_loop(void* data);
+int entropy_notify_loop(void* data);
 entropy_notification_engine* entropy_notification_engine_init();
 void entropy_notification_engine_destroy_thread(entropy_notification_engine* engine);
 void entropy_notification_engine_destroy(entropy_notification_engine* engine);
@@ -82,9 +79,13 @@ void entropy_notify_event_callback_add(entropy_notify_event* event, void* cb, vo
 
 void entropy_notify_lock_loop(entropy_notification_engine* notify);
 void entropy_notify_unlock_loop(entropy_notification_engine* notify);
-void entropy_notify_event_commit(entropy_notification_engine* engine, entropy_notify_event* ev);
+void entropy_notify_event_commit(entropy_notify_event* ev);
 void entropy_notify_event_bulk_commit(entropy_notification_engine* engine, Ecore_List* events);
 void entropy_notify_event_cleanup_add(entropy_notify_event* event, void* obj);
+void entropy_notify_event_expire_requestor_layout(void*);
+
+void entropy_notify_lock_malloc();
+void entropy_notify_unlock_malloc();
 
 
 #define ENTROPY_EVENT_LOCAL 0

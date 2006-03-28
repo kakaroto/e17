@@ -207,6 +207,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 			  if (!ecore_hash_get(viewer->row_folder_hash, file)) {
 				  /*We need the file's mime type, 
 				   * so get it here if it's not here already...*/
+				  /*printf("STRUCTURE REFERENCES FILE: %p\n", file);*/
 				  if (!strlen (file->mime_type)) {
 				    entropy_mime_file_identify (comp->core->mime_plugins, file);
 				  }
@@ -339,7 +340,7 @@ entropy_plugin_init (entropy_core * core,
 
 	  /*Accept drops*/
 	   dnd_types_num = 1;
-	   dnd_types = calloc(dnd_types_num, sizeof(char*));
+	   dnd_types = entropy_malloc(dnd_types_num * sizeof(char*));
 	   dnd_types[0] = strdup("text/uri-list");  
 	   etk_widget_dnd_types_set(  ETK_WIDGET(((Etk_Tree_Row*)parent_visual)->tree), 
 	   			dnd_types, dnd_types_num);

@@ -10,6 +10,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <Epsilon.h>
+#include <X11/Xlib.h>
+#include <Ecore_X.h>
 
 
 static char *thumbnail_path = NULL;	//Make this central to the core, so it can be configurable
@@ -17,13 +19,10 @@ static char *thumbnail_path = NULL;	//Make this central to the core, so it can b
 entropy_thumbnail *
 entropy_thumbnail_new ()
 {
-  entropy_thumbnail *thumb = calloc (1,sizeof (entropy_thumbnail));
+  entropy_thumbnail *thumb = entropy_malloc (sizeof (entropy_thumbnail));
 
   thumb->text = ecore_hash_new (ecore_str_hash, ecore_str_compare);
   thumb->keys = 0;
-
-  allocated_thumbnails++;
-  print_allocation ();
 
   return thumb;
 }
@@ -49,8 +48,6 @@ entropy_thumbnail_create (entropy_generic_file * e_file)
   char *pos;
   Epsilon *e;
 
-
-
   strcpy (thumb_path_and_name, e_file->path);
   pos = thumb_path_and_name + strlen (thumb_path_and_name);
   strcpy (pos, "/");
@@ -61,7 +58,6 @@ entropy_thumbnail_create (entropy_generic_file * e_file)
   if (epsilon_exists (e) == EPSILON_FAIL) {
     epsilon_generate (e);
   }
-
 
   if (epsilon_exists (e)) {
     thumb_struct = entropy_thumbnail_new ();

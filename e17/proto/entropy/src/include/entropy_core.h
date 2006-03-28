@@ -31,7 +31,6 @@ struct entropy_core {
 	entropy_notification_engine* notify;
 	
 	entropy_plugin* layout_plugin; /* The main layout plugin that we are relying on */
-	pthread_mutex_t file_cache_mutex;
 
 	Ecore_List* selected_files;
 	Ecore_Hash* descent_hash;

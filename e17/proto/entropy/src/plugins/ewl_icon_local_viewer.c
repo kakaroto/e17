@@ -849,7 +849,7 @@ ewl_icon_local_viewer_add_icon (entropy_gui_component_instance * comp,
 	entropy_notify_event_callback_add (ev, (void *) gui_event_callback,
 					   comp);
 	entropy_notify_event_cleanup_add (ev, request);
-	entropy_notify_event_commit (comp->core->notify, ev);
+	entropy_notify_event_commit (ev);
       }
 
     }
