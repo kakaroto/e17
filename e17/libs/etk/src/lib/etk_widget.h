@@ -184,8 +184,8 @@ struct _Etk_Widget
    unsigned char swallowed : 1;
    unsigned char visible : 1;
    unsigned char visibility_locked : 1;
-   unsigned char repeat_events : 1;
-   unsigned char pass_events : 1;
+   unsigned char repeat_mouse_events : 1;
+   unsigned char pass_mouse_events : 1;
    unsigned char focusable : 1;
    unsigned char focus_on_press : 1;
    unsigned char can_pass_focus : 1;
@@ -215,11 +215,11 @@ Evas *etk_widget_toplevel_evas_get(Etk_Widget *widget);
 void etk_widget_theme_set(Etk_Widget *widget, const char *theme_file, const char *theme_group);
 void etk_widget_parent_set(Etk_Widget *widget, Etk_Widget *parent);
 
-void etk_widget_repeat_events_set(Etk_Widget *widget, Etk_Bool repeat_events);
-Etk_Bool etk_widget_repeat_events_get(Etk_Widget *widget);
-void etk_widget_pass_events_set(Etk_Widget *widget, Etk_Bool pass_events);
-Etk_Bool etk_widget_pass_events_get(Etk_Widget *widget);
-void etk_widget_event_propagation_stop();
+void etk_widget_repeat_mouse_events_set(Etk_Widget *widget, Etk_Bool repeat_mouse_events);
+Etk_Bool etk_widget_repeat_mouse_events_get(Etk_Widget *widget);
+void etk_widget_pass_mouse_events_set(Etk_Widget *widget, Etk_Bool pass_mouse_events);
+Etk_Bool etk_widget_pass_mouse_events_get(Etk_Widget *widget);
+void etk_widget_key_event_propagation_stop();
 
 void etk_widget_show(Etk_Widget *widget);
 void etk_widget_show_all(Etk_Widget *widget);

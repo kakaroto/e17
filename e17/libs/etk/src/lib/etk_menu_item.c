@@ -319,7 +319,7 @@ void etk_menu_item_image_set(Etk_Menu_Item_Image *image_item, Etk_Image *image)
       menu_item->left_widget = image_widget;
       etk_signal_connect("realize", ETK_OBJECT(menu_item->left_widget), ETK_CALLBACK(_etk_menu_item_left_widget_realize_cb), menu_item);
       etk_widget_parent_set(menu_item->left_widget, ETK_WIDGET(menu_item));
-      etk_widget_pass_events_set(menu_item->left_widget, ETK_TRUE);
+      etk_widget_pass_mouse_events_set(menu_item->left_widget, ETK_TRUE);
       
       etk_widget_theme_object_signal_emit(ETK_WIDGET(menu_item), "left_widget_show");
    }
@@ -574,7 +574,7 @@ static void _etk_menu_item_check_constructor(Etk_Menu_Item_Check *check_item)
    check_item->active_set = _etk_menu_item_check_active_set;
    
    menu_item->left_widget = etk_widget_new(ETK_WIDGET_TYPE, "theme_group", ETK_IS_MENU_ITEM_RADIO(check_item) ? "menu_radio" : "menu_check",
-      "pass_events", ETK_TRUE, "visible", ETK_TRUE, NULL);
+      "pass_mouse_events", ETK_TRUE, "visible", ETK_TRUE, NULL);
    etk_signal_connect("realize", ETK_OBJECT(menu_item->left_widget), ETK_CALLBACK(_etk_menu_item_left_widget_realize_cb), menu_item);
    etk_signal_connect("realize", ETK_OBJECT(menu_item->left_widget), ETK_CALLBACK(_etk_menu_item_check_left_widget_realize_cb), menu_item);
    etk_widget_parent_set(menu_item->left_widget, ETK_WIDGET(menu_item));

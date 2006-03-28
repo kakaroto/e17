@@ -1,7 +1,7 @@
 /** @file etk_menu.c */
 #include "etk_menu.h"
 #include <stdlib.h>
-#include "etk_menu_window.h"
+#include "etk_popup_window.h"
 #include "etk_menu_item.h"
 #include "etk_utils.h"
 #include "etk_signal.h"
@@ -25,6 +25,7 @@ static void _etk_menu_size_request(Etk_Widget *widget, Etk_Size *size_requisitio
 static void _etk_menu_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_menu_window_popped_up_cb(Etk_Object *object, void *data);
 static void _etk_menu_window_popped_down_cb(Etk_Object *object, void *data);
+static void _etk_menu_window_key_down_cb(Etk_Object *object, void *event_info, void *data);
 static void _etk_menu_item_added_cb(Etk_Object *object, void *item, void *data);
 static void _etk_menu_item_removed_cb(Etk_Object *object, void *item, void *data);
 static void _etk_menu_item_enter_cb(Etk_Object *object, void *data);
@@ -80,7 +81,7 @@ void etk_menu_popup_at_xy(Etk_Menu *menu, int x, int y)
 {
    if (!menu)
       return;
-   etk_menu_window_popup_at_xy(menu->window, x, y);
+   etk_popup_window_popup_at_xy(menu->window, x, y);
 }
 
 /**
@@ -91,7 +92,7 @@ void etk_menu_popup(Etk_Menu *menu)
 {
    if (!menu)
       return;
-   etk_menu_window_popup(menu->window);
+   etk_popup_window_popup(menu->window);
 }
 
 /**
@@ -102,7 +103,7 @@ void etk_menu_popdown(Etk_Menu *menu)
 {
    if (!menu)
       return;
-   etk_menu_window_popdown(menu->window);
+   etk_popup_window_popdown(menu->window);
 }
 
 /**************************
@@ -117,9 +118,10 @@ static void _etk_menu_constructor(Etk_Menu *menu)
    if (!menu)
       return;
       
-   menu->window = ETK_MENU_WINDOW(etk_widget_new(ETK_MENU_WINDOW_TYPE, NULL));
+   menu->window = ETK_POPUP_WINDOW(etk_widget_new(ETK_POPUP_WINDOW_TYPE, NULL));
    etk_signal_connect("popped_up", ETK_OBJECT(menu->window), ETK_CALLBACK(_etk_menu_window_popped_up_cb), menu);
    etk_signal_connect("popped_down", ETK_OBJECT(menu->window), ETK_CALLBACK(_etk_menu_window_popped_down_cb), menu);
+   etk_signal_connect("key_down", ETK_OBJECT(menu->window), ETK_CALLBACK(_etk_menu_window_key_down_cb), menu);
    
    etk_container_add(ETK_CONTAINER(menu->window), ETK_WIDGET(menu));
    ETK_WIDGET(menu)->size_request = _etk_menu_size_request;
@@ -248,6 +250,43 @@ static void _etk_menu_window_popped_down_cb(Etk_Object *object, void *data)
       etk_signal_emit_by_name("submenu_popped_down", ETK_OBJECT(menu_shell->parent), NULL);
 }
 
+/* Called when a key is pressed on the menu window */
+static void _etk_menu_window_key_down_cb(Etk_Object *object, void *event_info, void *data)
+{
+   Etk_Menu_Shell *menu_shell;
+   Evas_Event_Key_Down *event;
+   Evas_List *l;
+   
+   if (!(menu_shell = ETK_MENU_SHELL(data)) || !(event = event_info))
+      return;
+   
+   /*if (strcmp(event->keyname, "Down") == 0)
+   {
+      if (!menu_shell->items)
+         return;
+      if (!combobox->selected_item || !(l = evas_list_find_list(combobox->items, combobox->selected_item)) || !l->next)
+         _etk_combobox_selected_item_set(combobox, ETK_COMBOBOX_ITEM(combobox->items->data));
+      else
+         _etk_combobox_selected_item_set(combobox, ETK_COMBOBOX_ITEM(l->next->data));
+   }
+   else if (strcmp(event->keyname, "Up") == 0)
+   {
+      if (!combobox->items)
+         return;
+      if (!combobox->selected_item || !(l = evas_list_find_list(combobox->items, combobox->selected_item)) || !l->prev)
+         _etk_combobox_selected_item_set(combobox, ETK_COMBOBOX_ITEM(evas_list_last(combobox->items)->data));
+      else
+         _etk_combobox_selected_item_set(combobox, ETK_COMBOBOX_ITEM(l->prev->data));
+   }
+   else if (strcmp(event->keyname, "Return") == 0 || strcmp(event->keyname, "space") == 0 || strcmp(event->keyname, "KP_Enter") == 0)
+   {
+      if (combobox->selected_item)
+         etk_combobox_active_item_set(combobox, combobox->selected_item);
+   }
+   else if (strcmp(event->keyname, "Escape") == 0)
+      etk_popup_window_popdown(combobox->window);*/
+}
+
 /* Called when an item is added to the menu */
 static void _etk_menu_item_added_cb(Etk_Object *object, void *item, void *data)
 {
@@ -303,7 +342,6 @@ static void _etk_menu_item_mouse_up_cb(Etk_Object *object, void *event, void *da
    
    if (!(item = ETK_MENU_ITEM(object)) || item->submenu)
       return;
-   /* TODO */
    etk_menu_item_activate(item);
 }
 
@@ -351,7 +389,7 @@ static void _etk_menu_item_deselected_cb(Etk_Object *object, void *data)
 /* Called when the item is activated */
 static void _etk_menu_item_activated_cb(Etk_Object *object, void *data)
 {
-   etk_menu_window_popdown_all();
+   etk_popup_window_popdown_all();
 }
 
 /** @} */

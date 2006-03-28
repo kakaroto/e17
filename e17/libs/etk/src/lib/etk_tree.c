@@ -268,7 +268,8 @@ Etk_Tree_Col *etk_tree_col_new(Etk_Tree *tree, const char *title, Etk_Tree_Model
    new_col->model->col = new_col;
 
    /* Creates the header widget */
-   new_header = etk_widget_new(ETK_BUTTON_TYPE, "theme_group", "tree_header", "label", title, "xalign", 0.0, "repeat_events", ETK_TRUE, "visibility_locked", ETK_TRUE, NULL);
+   new_header = etk_widget_new(ETK_BUTTON_TYPE, "theme_group", "tree_header", "label", title, "xalign", 0.0,
+      "repeat_mouse_events", ETK_TRUE, "visibility_locked", ETK_TRUE, NULL);
    etk_signal_connect("mouse_down", ETK_OBJECT(new_header), ETK_CALLBACK(_etk_tree_header_mouse_down_cb), new_col);
    etk_signal_connect("mouse_up", ETK_OBJECT(new_header), ETK_CALLBACK(_etk_tree_header_mouse_up_cb), new_col);
    etk_signal_connect("mouse_move", ETK_OBJECT(new_header), ETK_CALLBACK(_etk_tree_header_mouse_move_cb), new_col);
@@ -1536,11 +1537,11 @@ static void _etk_tree_constructor(Etk_Tree *tree)
    
    tree->scrolled_view = etk_scrolled_view_new();
    etk_widget_visibility_locked_set(tree->scrolled_view, ETK_TRUE);
-   etk_widget_repeat_events_set(tree->scrolled_view, ETK_TRUE);
+   etk_widget_repeat_mouse_events_set(tree->scrolled_view, ETK_TRUE);
    etk_widget_parent_set(tree->scrolled_view, ETK_WIDGET(tree));
    etk_widget_show(tree->scrolled_view);
    
-   tree->grid = etk_widget_new(ETK_TREE_GRID_TYPE, "theme_group", "tree", "repeat_events", ETK_TRUE, "visibility_locked", ETK_TRUE, NULL);
+   tree->grid = etk_widget_new(ETK_TREE_GRID_TYPE, "theme_group", "tree", "repeat_mouse_events", ETK_TRUE, "visibility_locked", ETK_TRUE, NULL);
    ETK_TREE_GRID(tree->grid)->tree = tree;
    etk_container_add(ETK_CONTAINER(tree->scrolled_view), tree->grid);
    etk_widget_show(tree->grid);
@@ -2176,7 +2177,7 @@ static void _etk_tree_key_down_cb(Etk_Object *object, void *event, void *data)
       propagate = ETK_TRUE;
    
    if (!propagate)
-      etk_widget_event_propagation_stop();
+      etk_widget_key_event_propagation_stop();
 }
 
 /* Called when the user presses a column header */

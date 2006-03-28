@@ -19,7 +19,6 @@ static void _etk_bin_size_request(Etk_Widget *widget, Etk_Size *size_requisition
 static void _etk_bin_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_bin_realize_cb(Etk_Object *object, void *data);
 static void _etk_bin_child_realize_cb(Etk_Object *object, void *data);
-static void _etk_bin_child_removed_cb(Etk_Object *object, void *child, void *data);
 
 /**************************
  *
@@ -100,7 +99,6 @@ static void _etk_bin_constructor(Etk_Bin *bin)
    ETK_WIDGET(bin)->size_allocate = _etk_bin_size_allocate;
    
    etk_signal_connect("realize", ETK_OBJECT(bin), ETK_CALLBACK(_etk_bin_realize_cb), NULL);
-   etk_signal_connect("child_removed", ETK_OBJECT(bin), ETK_CALLBACK(_etk_bin_child_removed_cb), NULL);
 }
 
 /* Destroys the bin */
@@ -138,6 +136,7 @@ static void _etk_bin_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 {
    Etk_Bin *bin;
    Etk_Container *container;
+   int border;
 
    if (!(bin = ETK_BIN(widget)))
       return;
@@ -145,10 +144,11 @@ static void _etk_bin_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    
    if (bin->child && !etk_widget_is_swallowed(bin->child))
    {
-      geometry.x += etk_container_border_width_get(container);
-      geometry.y += etk_container_border_width_get(container);
-      geometry.w -= 2 * etk_container_border_width_get(container);
-      geometry.h -= 2 * etk_container_border_width_get(container);
+      border = etk_container_border_width_get(container);
+      geometry.x += border;
+      geometry.y += border;
+      geometry.w -= 2 * border;
+      geometry.h -= 2 * border;
       etk_widget_size_allocate(bin->child, geometry);
    }
 }
@@ -170,6 +170,8 @@ static void _etk_bin_child_remove(Etk_Container *container, Etk_Widget *widget)
       return;
 
    etk_widget_parent_set(widget, NULL);
+   etk_signal_disconnect("realize", ETK_OBJECT(bin->child), ETK_CALLBACK(_etk_bin_child_realize_cb));
+   
    bin->child = NULL;
    bin->child_list = evas_list_free(bin->child_list);
    
@@ -214,14 +216,6 @@ static void _etk_bin_child_realize_cb(Etk_Object *object, void *data)
 
    if (ETK_WIDGET(bin)->realized && bin->child->realized)
       etk_widget_swallow_widget(ETK_WIDGET(bin), "swallow_area", bin->child);
-}
-
-/* Called when the child is removed from the bin */
-static void _etk_bin_child_removed_cb(Etk_Object *object, void *child, void *data)
-{
-   if (!child)
-      return;
-   etk_signal_disconnect("realize", ETK_OBJECT(child), ETK_CALLBACK(_etk_bin_child_realize_cb));
 }
 
 /** @} */

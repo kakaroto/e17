@@ -536,7 +536,7 @@ void etk_window_skip_taskbar_hint_set(Etk_Window *window, Etk_Bool skip_taskbar_
  */
 Etk_Bool etk_window_skip_taskbar_hint_get(Etk_Window *window)
 {
-   int num_states, i;
+   unsigned int num_states, i;
    Ecore_X_Window_State *states;
    
    if (!window)
@@ -603,7 +603,7 @@ void etk_window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_hint
  */
 Etk_Bool etk_window_skip_pager_hint_get(Etk_Window *window)
 {
-   int num_states, i;
+   unsigned int num_states, i;
    Ecore_X_Window_State *states;
    
    if (!window)

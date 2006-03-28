@@ -45,7 +45,7 @@ void etk_test_menu_window_create(void *data)
    
    label = etk_label_new(_("Click me :)"));
    etk_label_alignment_set(ETK_LABEL(label), 0.5, 0.5);
-   etk_widget_pass_events_set(label, ETK_TRUE);
+   etk_widget_pass_mouse_events_set(label, ETK_TRUE);
    etk_box_pack_start(ETK_BOX(vbox), label, ETK_TRUE, ETK_TRUE, 0);
    
    _etk_test_menu_statusbar = etk_statusbar_new();

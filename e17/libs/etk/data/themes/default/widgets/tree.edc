@@ -224,7 +224,7 @@ group {
             }
             image {
                normal: "tree_header_inactive.png";
-               border: 2 2 0 3;
+               border: 2 2 2 3;
             }
             fill {
                smooth: 0;

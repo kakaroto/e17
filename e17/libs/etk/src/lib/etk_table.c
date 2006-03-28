@@ -724,7 +724,7 @@ static void _etk_table_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       child_geometry.h = table->rows[cell->bottom_attach].offset - table->rows[cell->top_attach].offset +
          table->rows[cell->bottom_attach].size - 2 * cell->y_padding;
 
-      etk_container_child_space_fill(child, &child_geometry, cell->fill_policy & ETK_FILL_POLICY_HFILL, cell->fill_policy & ETK_FILL_POLICY_VFILL);
+      etk_container_child_space_fill(child, &child_geometry, cell->fill_policy & ETK_FILL_POLICY_HFILL, cell->fill_policy & ETK_FILL_POLICY_VFILL, 0.5, 0.5);
       etk_widget_size_allocate(child, child_geometry);
    }
 }

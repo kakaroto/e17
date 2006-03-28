@@ -77,8 +77,8 @@ enum _Etk_Widget_Property_Id
    ETK_WIDGET_HEIGHT_REQUEST_PROPERTY,
    ETK_WIDGET_VISIBLE_PROPERTY,
    ETK_WIDGET_VISIBILITY_LOCKED_PROPERTY,
-   ETK_WIDGET_REPEAT_EVENTS_PROPERTY,
-   ETK_WIDGET_PASS_EVENTS_PROPERTY,
+   ETK_WIDGET_REPEAT_MOUSE_EVENTS_PROPERTY,
+   ETK_WIDGET_PASS_MOUSE_EVENTS_PROPERTY,
    ETK_WIDGET_FOCUSABLE_PROPERTY,
    ETK_WIDGET_FOCUS_ON_PRESS_PROPERTY,
    ETK_WIDGET_CAN_PASS_FOCUS_PROPERTY
@@ -145,12 +145,12 @@ static void _etk_widget_dnd_drag_mouse_move_cb(Etk_Object *object, void *event, 
 static void _etk_widget_dnd_drag_end_cb(Etk_Object *object, void *data);  
 
 static Etk_Signal *_etk_widget_signals[ETK_WIDGET_NUM_SIGNALS];
-static Etk_Bool    _etk_widget_propagate_event = ETK_TRUE;
-static Etk_Bool    _etk_widget_intercept_show_hide = ETK_TRUE;
+static Etk_Bool _etk_widget_propagate_key_event = ETK_TRUE;
+static Etk_Bool _etk_widget_intercept_show_hide = ETK_TRUE;
 static Evas_Smart *_etk_widget_event_object_smart = NULL;
-static Evas_List  *_etk_widget_dnd_dest_widgets = NULL;
-static Evas_List  *_etk_widget_dnd_source_widgets = NULL;
-static Etk_Bool    _etk_dnd_drag_start = ETK_TRUE;
+static Evas_List *_etk_widget_dnd_dest_widgets = NULL;
+static Evas_List *_etk_widget_dnd_source_widgets = NULL;
+static Etk_Bool _etk_dnd_drag_start = ETK_TRUE;
 
 /**************************
  *
@@ -207,11 +207,11 @@ Etk_Type *etk_widget_type_get()
       etk_type_property_add(widget_type, "height_request",    ETK_WIDGET_HEIGHT_REQUEST_PROPERTY,    ETK_PROPERTY_INT,     ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(-1));
       etk_type_property_add(widget_type, "visible",           ETK_WIDGET_VISIBLE_PROPERTY,           ETK_PROPERTY_BOOL,    ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
       etk_type_property_add(widget_type, "visibility_locked", ETK_WIDGET_VISIBILITY_LOCKED_PROPERTY, ETK_PROPERTY_BOOL,    ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
-      etk_type_property_add(widget_type, "repeat_events",     ETK_WIDGET_REPEAT_EVENTS_PROPERTY,     ETK_PROPERTY_BOOL,    ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
-      etk_type_property_add(widget_type, "pass_events",       ETK_WIDGET_PASS_EVENTS_PROPERTY,       ETK_PROPERTY_BOOL,    ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
       etk_type_property_add(widget_type, "focusable",         ETK_WIDGET_FOCUSABLE_PROPERTY,         ETK_PROPERTY_BOOL,    ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
       etk_type_property_add(widget_type, "focus_on_press",    ETK_WIDGET_FOCUS_ON_PRESS_PROPERTY,    ETK_PROPERTY_BOOL,    ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
       etk_type_property_add(widget_type, "can_pass_focus",    ETK_WIDGET_CAN_PASS_FOCUS_PROPERTY,    ETK_PROPERTY_BOOL,    ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
+      etk_type_property_add(widget_type, "repeat_mouse_events", ETK_WIDGET_REPEAT_MOUSE_EVENTS_PROPERTY, ETK_PROPERTY_BOOL,    ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
+      etk_type_property_add(widget_type, "pass_mouse_events",   ETK_WIDGET_PASS_MOUSE_EVENTS_PROPERTY,   ETK_PROPERTY_BOOL,    ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
 
       widget_type->property_set = _etk_widget_property_set;
       widget_type->property_get = _etk_widget_property_get;
@@ -424,67 +424,68 @@ void etk_widget_parent_set(Etk_Widget *widget, Etk_Widget *parent)
 }
 
 /**
- * @brief Sets if the widget should repeat the events it receives
+ * @brief Sets if the widget should repeat the mouse events it receives
  * @param widget a widget
- * @param repeat_events if @a repeat_events == ETK_TRUE, the widget below @a widget will receive also the mouse events
+ * @param repeat_mouse_events if @a repeat_mouse_events is ETK_TRUE, the parent widget will also receive the mouse events
  */
-void etk_widget_repeat_events_set(Etk_Widget *widget, Etk_Bool repeat_events)
+void etk_widget_repeat_mouse_events_set(Etk_Widget *widget, Etk_Bool repeat_mouse_events)
 {
    if (!widget)
       return;
 
-   widget->repeat_events = repeat_events;
+   widget->repeat_mouse_events = repeat_mouse_events;
    if (widget->event_object)
-      evas_object_repeat_events_set(widget->event_object, repeat_events);
-   etk_object_notify(ETK_OBJECT(widget), "repeat_events");
+      evas_object_repeat_events_set(widget->event_object, repeat_mouse_events);
+   etk_object_notify(ETK_OBJECT(widget), "repeat_mouse_events");
 }
 
 /**
- * @brief Checks if the widget repeats the events it receives
+ * @brief Checks if the widget repeats the mouse events it receives
  * @param widget a widget
- * @return Returns ETK_TRUE if the widget repeats the events it receives
+ * @return Returns ETK_TRUE if the widget repeats the mouse events it receives
  */
-Etk_Bool etk_widget_repeat_events_get(Etk_Widget *widget)
+Etk_Bool etk_widget_repeat_mouse_events_get(Etk_Widget *widget)
 {
    if (!widget)
       return ETK_FALSE;
-   return widget->repeat_events;
+   return widget->repeat_mouse_events;
 }
 
 /**
- * @brief Sets if the widget should pass the events it receives
+ * @brief Sets if the widget should pass the mouse events it receives to its parent
  * @param widget a widget
- * @param pass_events if @a pass_events == ETK_TRUE, the widget below @a widget will receive the mouse events and @a widget will no longer receive mouse events
+ * @param pass_mouse_events if @a pass_mouse_events is ETK_TRUE, the mouse events will be directly sent to its parent @n
+ * @a widget won't receive the mouse events anymore
  */
-void etk_widget_pass_events_set(Etk_Widget *widget, Etk_Bool pass_events)
+void etk_widget_pass_mouse_events_set(Etk_Widget *widget, Etk_Bool pass_mouse_events)
 {
    if (!widget)
       return;
 
-   widget->pass_events = pass_events;
+   widget->pass_mouse_events = pass_mouse_events;
    if (widget->event_object)
-      evas_object_pass_events_set(widget->event_object, pass_events);
-   etk_object_notify(ETK_OBJECT(widget), "pass_events");
+      evas_object_pass_events_set(widget->event_object, pass_mouse_events);
+   etk_object_notify(ETK_OBJECT(widget), "pass_mouse_events");
 }
 
 /**
- * @brief Checks if the widget passes the events it receives
+ * @brief Checks if the widget passes the mouse events it receives to its parent
  * @param widget a widget
- * @return Returns ETK_TRUE if the widget passes the events it receives
+ * @return Returns ETK_TRUE if the widget passes the mouse events it receives
  */
-Etk_Bool etk_widget_pass_events_get(Etk_Widget *widget)
+Etk_Bool etk_widget_pass_mouse_events_get(Etk_Widget *widget)
 {
    if (!widget)
       return ETK_FALSE;
-   return widget->pass_events;
+   return widget->pass_mouse_events;
 }
 
 /**
- * @brief Stops the propagation of the current event. The parents of the widget that has received the event won't be notified
+ * @brief Stops the propagation of the current keyboard event so the parents of the widget that has received the event won't be notified
  */
-void etk_widget_event_propagation_stop()
+void etk_widget_key_event_propagation_stop()
 {
-   _etk_widget_propagate_event = ETK_FALSE;
+   _etk_widget_propagate_key_event = ETK_FALSE;
 }
 
 /**
@@ -1403,7 +1404,7 @@ void etk_widget_dnd_drag_widget_set(Etk_Widget *widget, Etk_Widget *drag_widget)
 /**
  * @brief Gets the visual data for the drag (the widget to be displayed)
  * @param widget a widget
- * @Returns Return the widget that will appear in the drag window
+ * @return Returns the widget that will appear in the drag window
  */
 Etk_Widget *etk_widget_dnd_drag_widget_get(Etk_Widget *widget)
 {
@@ -1426,6 +1427,7 @@ Etk_Widget *etk_widget_dnd_drag_widget_get(Etk_Widget *widget)
    return NULL;
 }
 
+/* TODO: doc */
 void etk_widget_dnd_drag_data_set(Etk_Widget *widget, const char **types, int num_types, void *data, int data_size)
 {
    if(!widget)
@@ -1655,8 +1657,8 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->focusable = ETK_FALSE;
    widget->focus_on_press = ETK_FALSE;
    widget->can_pass_focus = ETK_TRUE;
-   widget->repeat_events = ETK_FALSE;
-   widget->pass_events = ETK_FALSE;
+   widget->repeat_mouse_events = ETK_FALSE;
+   widget->pass_mouse_events = ETK_FALSE;
    widget->need_size_recalc = ETK_FALSE;
    widget->need_redraw = ETK_FALSE;
    widget->need_theme_min_size_recalc = ETK_FALSE;
@@ -1738,11 +1740,11 @@ static void _etk_widget_property_set(Etk_Object *object, int property_id, Etk_Pr
       case ETK_WIDGET_NAME_PROPERTY:
          etk_widget_name_set(widget, etk_property_value_string_get(value));
          break;
-      case ETK_WIDGET_REPEAT_EVENTS_PROPERTY:
-         etk_widget_repeat_events_set(widget, etk_property_value_bool_get(value));
+      case ETK_WIDGET_REPEAT_MOUSE_EVENTS_PROPERTY:
+         etk_widget_repeat_mouse_events_set(widget, etk_property_value_bool_get(value));
          break;
-      case ETK_WIDGET_PASS_EVENTS_PROPERTY:
-         etk_widget_pass_events_set(widget, etk_property_value_bool_get(value));
+      case ETK_WIDGET_PASS_MOUSE_EVENTS_PROPERTY:
+         etk_widget_pass_mouse_events_set(widget, etk_property_value_bool_get(value));
          break;
       case ETK_WIDGET_FOCUSABLE_PROPERTY:
          widget->focusable = etk_property_value_bool_get(value);
@@ -1797,11 +1799,11 @@ static void _etk_widget_property_get(Etk_Object *object, int property_id, Etk_Pr
       case ETK_WIDGET_VISIBILITY_LOCKED_PROPERTY:
          etk_property_value_bool_set(value, widget->visibility_locked);
          break;
-      case ETK_WIDGET_REPEAT_EVENTS_PROPERTY:
-         etk_property_value_bool_set(value, widget->repeat_events);
+      case ETK_WIDGET_REPEAT_MOUSE_EVENTS_PROPERTY:
+         etk_property_value_bool_set(value, widget->repeat_mouse_events);
          break;
-      case ETK_WIDGET_PASS_EVENTS_PROPERTY:
-         etk_property_value_bool_set(value, widget->pass_events);
+      case ETK_WIDGET_PASS_MOUSE_EVENTS_PROPERTY:
+         etk_property_value_bool_set(value, widget->pass_mouse_events);
          break;
       case ETK_WIDGET_FOCUSABLE_PROPERTY:
          etk_property_value_bool_set(value, widget->focusable);
@@ -1923,9 +1925,6 @@ static void _etk_widget_mouse_in_cb(void *data, Evas *evas, Evas_Object *object,
    if (!(widget = ETK_WIDGET(data)))
       return;
    
-   if (object)
-      _etk_widget_propagate_event = ETK_TRUE;
-   
    event.buttons = evas_event->buttons;
    event.canvas.x = evas_event->canvas.x;
    event.canvas.y = evas_event->canvas.y;
@@ -1937,7 +1936,7 @@ static void _etk_widget_mouse_in_cb(void *data, Evas *evas, Evas_Object *object,
 
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_IN_SIGNAL], ETK_OBJECT(widget), NULL, &event);
    
-   if (_etk_widget_propagate_event && widget->parent)
+   if (widget->parent)
       _etk_widget_mouse_in_cb(widget->parent, evas, NULL, event_info);
 }
 
@@ -1958,9 +1957,6 @@ static void _etk_widget_mouse_out_cb(void *data, Evas *evas, Evas_Object *object
 
    if (!(widget = ETK_WIDGET(data)))
       return;
-
-   if (object)
-      _etk_widget_propagate_event = ETK_TRUE;
    
    event.buttons = evas_event->buttons;
    event.canvas.x = evas_event->canvas.x;
@@ -1973,7 +1969,7 @@ static void _etk_widget_mouse_out_cb(void *data, Evas *evas, Evas_Object *object
 
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_OUT_SIGNAL], ETK_OBJECT(widget), NULL, &event);
    
-   if (_etk_widget_propagate_event && widget->parent)
+   if (widget->parent)
       _etk_widget_mouse_out_cb(widget->parent, evas, NULL, event_info);
 }
 
@@ -1994,9 +1990,6 @@ static void _etk_widget_mouse_move_cb(void *data, Evas *evas, Evas_Object *objec
 
    if (!(widget = ETK_WIDGET(data)))
       return;
-
-   if (object)
-      _etk_widget_propagate_event = ETK_TRUE;
    
    event.buttons = evas_event->buttons;
    event.cur.canvas.x = evas_event->cur.canvas.x;
@@ -2013,7 +2006,7 @@ static void _etk_widget_mouse_move_cb(void *data, Evas *evas, Evas_Object *objec
 
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_MOVE_SIGNAL], ETK_OBJECT(widget), NULL, &event);
    
-   if (_etk_widget_propagate_event && widget->parent)
+   if (widget->parent)
       _etk_widget_mouse_move_cb(widget->parent, evas, NULL, event_info);
 }
 
@@ -2027,9 +2020,6 @@ static void _etk_widget_mouse_down_cb(void *data, Evas *evas, Evas_Object *objec
    if (!(widget = ETK_WIDGET(data)))
       return;
    
-   if (object)
-      _etk_widget_propagate_event = ETK_TRUE;
-   
    event.button = evas_event->button;
    event.canvas.x = evas_event->canvas.x;
    event.canvas.y = evas_event->canvas.y;
@@ -2042,7 +2032,7 @@ static void _etk_widget_mouse_down_cb(void *data, Evas *evas, Evas_Object *objec
 
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_DOWN_SIGNAL], ETK_OBJECT(widget), NULL, &event);
    
-   if (_etk_widget_propagate_event && widget->repeat_events && widget->parent)
+   if (widget->repeat_mouse_events && widget->parent)
       _etk_widget_mouse_down_cb(widget->parent, evas, NULL, event_info);
 }
 
@@ -2065,9 +2055,6 @@ static void _etk_widget_mouse_up_cb(void *data, Evas *evas, Evas_Object *object,
 
    if (!(widget = ETK_WIDGET(data)))
       return;
-
-   if (object)
-      _etk_widget_propagate_event = ETK_TRUE;
    
    event.button = evas_event->button;
    event.canvas.x = evas_event->canvas.x;
@@ -2085,7 +2072,7 @@ static void _etk_widget_mouse_up_cb(void *data, Evas *evas, Evas_Object *object,
          evas_event->canvas.y >= widget->geometry.y && evas_event->canvas.y <= widget->geometry.y + widget->geometry.h)
       etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_CLICK_SIGNAL], ETK_OBJECT(widget), NULL, &event);
    
-   if (_etk_widget_propagate_event && widget->repeat_events && widget->parent)
+   if (widget->repeat_mouse_events && widget->parent)
       _etk_widget_mouse_up_cb(widget->parent, evas, NULL, event_info);
 }
 
@@ -2099,8 +2086,9 @@ static void _etk_widget_mouse_wheel_cb(void *data, Evas *evas, Evas_Object *obje
    if (!(widget = ETK_WIDGET(data)))
       return;
    
+   /* TODO */
    if (object)
-      _etk_widget_propagate_event = ETK_TRUE;
+      _etk_widget_propagate_key_event = ETK_TRUE;
    
    event.direction = evas_event->direction;
    event.z = evas_event->z;
@@ -2114,7 +2102,7 @@ static void _etk_widget_mouse_wheel_cb(void *data, Evas *evas, Evas_Object *obje
 
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_WHEEL_SIGNAL], ETK_OBJECT(widget), NULL, &event);
    
-   if (_etk_widget_propagate_event && widget->parent)
+   if (_etk_widget_propagate_key_event && widget->parent)
       _etk_widget_mouse_wheel_cb(widget->parent, evas, NULL, event_info);
 }
 
@@ -2129,7 +2117,7 @@ static void _etk_widget_key_down_cb(void *data, Evas *evas, Evas_Object *object,
       return;
 
    if (object)
-      _etk_widget_propagate_event = ETK_TRUE;
+      _etk_widget_propagate_key_event = ETK_TRUE;
    
    event.keyname = evas_event->keyname;
    event.modifiers = evas_event->modifiers;
@@ -2141,7 +2129,7 @@ static void _etk_widget_key_down_cb(void *data, Evas *evas, Evas_Object *object,
 
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_KEY_DOWN_SIGNAL], ETK_OBJECT(widget), NULL, &event);
    
-   if (_etk_widget_propagate_event && widget->parent)
+   if (_etk_widget_propagate_key_event && widget->parent)
       _etk_widget_key_down_cb(widget->parent, evas, NULL, event_info);
 }
 
@@ -2155,19 +2143,19 @@ static void _etk_widget_signal_key_down_cb(Etk_Object *object, Etk_Event_Key_Up_
       return;
 
    if (object)
-      _etk_widget_propagate_event = ETK_TRUE;
+      _etk_widget_propagate_key_event = ETK_TRUE;
 
    if (strcmp(event->key, "Tab") == 0)
    {
       if (widget->can_pass_focus)
          etk_widget_focus(etk_toplevel_widget_focused_widget_next_get(toplevel));
-      etk_widget_event_propagation_stop();
+      etk_widget_key_event_propagation_stop();
    }
    else if (strcmp(event->key, "ISO_Left_Tab") == 0)
    {
       if (widget->can_pass_focus)
          etk_widget_focus(etk_toplevel_widget_focused_widget_prev_get(toplevel));
-      etk_widget_event_propagation_stop();
+      etk_widget_key_event_propagation_stop();
    }
 }
 
@@ -2182,7 +2170,7 @@ static void _etk_widget_key_up_cb(void *data, Evas *evas, Evas_Object *object, v
       return;
 
    if (object)
-      _etk_widget_propagate_event = ETK_TRUE;
+      _etk_widget_propagate_key_event = ETK_TRUE;
    
    event.keyname = evas_event->keyname;
    event.modifiers = evas_event->modifiers;
@@ -2194,7 +2182,7 @@ static void _etk_widget_key_up_cb(void *data, Evas *evas, Evas_Object *object, v
 
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_KEY_UP_SIGNAL], ETK_OBJECT(widget), NULL, &event);
    
-   if (_etk_widget_propagate_event && widget->parent)
+   if (_etk_widget_propagate_key_event && widget->parent)
       _etk_widget_key_up_cb(widget->parent, evas, NULL, event_info);
 }
 
@@ -2265,8 +2253,8 @@ static void _etk_widget_realize(Etk_Widget *widget)
    }
 
    evas_object_propagate_events_set(widget->event_object, 0);
-   evas_object_repeat_events_set(widget->event_object, widget->repeat_events);
-   evas_object_pass_events_set(widget->event_object, widget->pass_events);
+   evas_object_repeat_events_set(widget->event_object, widget->repeat_mouse_events);
+   evas_object_pass_events_set(widget->event_object, widget->pass_mouse_events);
    
    if (widget->toplevel_parent && (widget == etk_toplevel_widget_focused_widget_get(widget->toplevel_parent)))
       evas_object_focus_set(widget->event_object, 1);

@@ -159,7 +159,7 @@ static void _etk_slider_key_down_cb(Etk_Object *object, void *event, void *data)
       propagate = ETK_TRUE;
    
    if (!propagate)
-      etk_widget_event_propagation_stop();
+      etk_widget_key_event_propagation_stop();
 }
 
 /* Called when the user wants to change the value the mouse wheel */
@@ -172,7 +172,7 @@ static void _etk_slider_mouse_wheel(Etk_Object *object, void *event, void *data)
       return;
    
    etk_range_value_set(slider_range, slider_range->value + wheel_event->z * slider_range->step_increment);
-   etk_widget_event_propagation_stop();
+   etk_widget_key_event_propagation_stop();
 }
 
 /* Called when the cursor of the slider is dragged */

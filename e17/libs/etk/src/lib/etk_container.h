@@ -48,7 +48,7 @@ Etk_Bool etk_container_is_child(Etk_Container *container, Etk_Widget *widget);
 void etk_container_for_each(Etk_Container *container, void (*for_each_cb)(Etk_Widget *child));
 void etk_container_for_each_data(Etk_Container *container, void (*for_each_cb)(Etk_Widget *child, void *data), void *data);
 
-void etk_container_child_space_fill(Etk_Widget *child, Etk_Geometry *child_space, Etk_Bool hfill, Etk_Bool vfill);
+void etk_container_child_space_fill(Etk_Widget *child, Etk_Geometry *child_space, Etk_Bool hfill, Etk_Bool vfill, float xalign, float yalign);
 
 /** @} */
 

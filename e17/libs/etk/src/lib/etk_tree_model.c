@@ -236,12 +236,12 @@ void etk_tree_model_free(Etk_Tree_Model *model)
 }
 
 /**
- * @brief Sets the alignement of the objects inside the cell
+ * @brief Sets the alignment of the objects inside the cell
  * @param model a tree model
  * @param xalign the horizontal alignment of the objects inside the cell (0.0 for left, 1.0 for right)
  * @param yalign the vertical alignment of the objects inside the cell (0.0 for up, 1.0 for bottom)
  */
-void etk_tree_model_alignement_set(Etk_Tree_Model *model, float xalign, float yalign)
+void etk_tree_model_alignment_set(Etk_Tree_Model *model, float xalign, float yalign)
 {
    if (!model)
       return;
@@ -253,12 +253,12 @@ void etk_tree_model_alignement_set(Etk_Tree_Model *model, float xalign, float ya
 }
 
 /**
- * @brief Gets the alignement of the objects inside the cell
+ * @brief Gets the alignment of the objects inside the cell
  * @param model a tree model
  * @param xalign the location where to set the horizontal alignment
- * @param yalign the location where to set the horizontal alignment
+ * @param yalign the location where to set the vertical alignment
  */
-void etk_tree_model_alignement_get(Etk_Tree_Model *model, float *xalign, float *yalign)
+void etk_tree_model_alignment_get(Etk_Tree_Model *model, float *xalign, float *yalign)
 {
    if (!model)
       return;

@@ -38,7 +38,7 @@ etk_colorpicker.h etk_colorpicker_vertical.h etk_colorpicker_square.h \
 etk_tree.h etk_tree_model.h \
 etk_range.h etk_slider.h etk_scrollbar.h \
 etk_separator.h \
-etk_menu_window.h \
+etk_popup_window.h \
 etk_menu_shell.h etk_menu.h etk_menu_bar.h etk_menu_item.h \
 etk_combobox.h \
 etk_statusbar.h \
@@ -77,7 +77,7 @@ etk_colorpicker.c etk_colorpicker_vertical.c etk_colorpicker_square.c \
 etk_tree.c etk_tree_model.c \
 etk_range.c etk_slider.c etk_scrollbar.c \
 etk_separator.c \
-etk_menu_window.c \
+etk_popup_window.c \
 etk_menu_shell.c etk_menu.c etk_menu_bar.c etk_menu_item.c \
 etk_combobox.c \
 etk_statusbar.c \

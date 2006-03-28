@@ -24,7 +24,7 @@ struct _Etk_Menu
    /* Inherit from Etk_Menu_Shell */
    Etk_Menu_Shell menu_shell;
    
-   Etk_Menu_Window *window;
+   Etk_Popup_Window *window;
 };
 
 Etk_Type *etk_menu_type_get();

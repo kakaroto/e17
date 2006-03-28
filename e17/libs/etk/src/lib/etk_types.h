@@ -93,7 +93,7 @@ typedef struct _Etk_HScrollbar Etk_HScrollbar;
 typedef struct _Etk_VScrollbar Etk_VScrollbar;
 typedef struct _Etk_HSeparator Etk_HSeparator;
 typedef struct _Etk_VSeparator Etk_VSeparator;
-typedef struct _Etk_Menu_Window Etk_Menu_Window;
+typedef struct _Etk_Popup_Window Etk_Popup_Window;
 typedef struct _Etk_Menu_Shell Etk_Menu_Shell;
 typedef struct _Etk_Menu Etk_Menu;
 typedef struct _Etk_Menu_Bar Etk_Menu_Bar;

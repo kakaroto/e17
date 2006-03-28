@@ -323,8 +323,36 @@ Etk_Bool etk_image_keep_aspect_get(Etk_Image *image)
 {
    if (!image)
       return ETK_TRUE;
-
    return image->keep_aspect;
+}
+
+/**
+ * @brief Copies the image @a src_image to @a dest_image
+ * @param dest_image the destination image
+ * @param src_image the image to copy
+ * @note If @a src_image is an edje image, the state of the edje animation won't be copied
+ */
+void etk_image_copy(Etk_Image *dest_image, Etk_Image *src_image)
+{
+   if (!dest_image || !src_image || dest_image == src_image)
+      return;
+   
+   free(dest_image->filename);
+   free(dest_image->edje_filename);
+   free(dest_image->edje_group);
+   
+   dest_image->filename = src_image->filename ? strdup(src_image->filename) : NULL;
+   dest_image->edje_group = src_image->edje_group ? strdup(src_image->edje_group) : NULL;
+   dest_image->edje_filename = src_image->edje_group ? strdup(src_image->edje_filename) : NULL;
+   dest_image->stock_id = src_image->stock_id;
+   dest_image->stock_size = src_image->stock_size;
+   dest_image->keep_aspect = src_image->keep_aspect;
+   dest_image->object_type_changed = (dest_image->use_edje != src_image->use_edje);
+   dest_image->use_edje = src_image->use_edje;
+   
+   /* TODO: notify ?? */
+   
+   _etk_image_load(dest_image);
 }
 
 /**************************
@@ -478,33 +506,35 @@ static void _etk_image_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    if (!image->image_object)
       return;
 
-   if (!image->use_edje)
+   if (image->keep_aspect)
    {
-      if (image->keep_aspect)
-      {
-         double aspect_ratio;
-         int image_w, image_h;
-         int new_size;
+      double aspect_ratio;
+      int image_w, image_h;
+      int new_size;
 
+      if (image->use_edje)
+         edje_object_size_min_get(image->image_object, &image_w, &image_h);
+      else
          evas_object_image_size_get(image->image_object, &image_w, &image_h);
-         aspect_ratio = (double)image_w / (double)image_h;
-
-         if (geometry.h * aspect_ratio > geometry.w)
-         {
-            new_size = geometry.w / aspect_ratio;
-            geometry.y += (geometry.h - new_size) / 2;
-            geometry.h = new_size;
-         }
-         else
-         {
-            new_size = geometry.h * aspect_ratio;
-            geometry.x += (geometry.w - new_size) / 2;
-            geometry.w = new_size;
-         }
-         
+      
+      aspect_ratio = (double)image_w / (double)image_h;
+      if (geometry.h * aspect_ratio > geometry.w)
+      {
+         new_size = geometry.w / aspect_ratio;
+         geometry.y += (geometry.h - new_size) / 2;
+         geometry.h = new_size;
       }
-      evas_object_image_fill_set(image->image_object, 0, 0, geometry.w, geometry.h);
+      else
+      {
+         new_size = geometry.h * aspect_ratio;
+         geometry.x += (geometry.w - new_size) / 2;
+         geometry.w = new_size;
+      }
    }
+   
+   if (!image->use_edje)
+      evas_object_image_fill_set(image->image_object, 0, 0, geometry.w, geometry.h);
+   
    evas_object_move(image->image_object, geometry.x, geometry.y);
    evas_object_resize(image->image_object, geometry.w, geometry.h);
 }

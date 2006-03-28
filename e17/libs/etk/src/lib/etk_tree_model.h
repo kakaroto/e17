@@ -51,8 +51,8 @@ Etk_Tree_Model *etk_tree_model_icon_text_new(Etk_Tree *tree, Etk_Tree_Model_Imag
 Etk_Tree_Model *etk_tree_model_checkbox_new(Etk_Tree *tree);
 void etk_tree_model_free(Etk_Tree_Model *model);
 
-void etk_tree_model_alignement_set(Etk_Tree_Model *model, float xalign, float yalign);
-void etk_tree_model_alignement_get(Etk_Tree_Model *model, float *xalign, float *yalign);
+void etk_tree_model_alignment_set(Etk_Tree_Model *model, float xalign, float yalign);
+void etk_tree_model_alignment_get(Etk_Tree_Model *model, float *xalign, float *yalign);
 
 void etk_tree_model_icon_text_icon_width_set(Etk_Tree_Model *model, int icon_width);
 int etk_tree_model_icon_text_icon_width_get(Etk_Tree_Model *model);

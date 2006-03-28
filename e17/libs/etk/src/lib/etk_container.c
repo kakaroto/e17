@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
+#include "etk_utils.h"
 
 /**
  * @addtogroup Etk_Container
@@ -169,26 +170,31 @@ void etk_container_for_each_data(Etk_Container *container, void (*for_each_cb)(E
 /**
  * @brief Resizes the allocated child space acoording to the fill policy (mainly for container implementations)
  * @param child a child
- * @param child_space the allocated space for the child
+ * @param child_space the allocated space for the child. It will be modified to correspond to the fill options
  * @param hfill if hfill == ETK_TRUE, the child should fill the space horizontally
  * @param vfill if vfill == ETK_TRUE, the child should fill the space vertically
+ * @param xalign the horizontal alignment of the child widget in the child space (has no effect if @a hfill is ETK_TRUE)
+ * @param yalign the vertical alignment of the child widget in the child space (has no effect if @a vfill is ETK_TRUE)
  */
-void etk_container_child_space_fill(Etk_Widget *child, Etk_Geometry *child_space, Etk_Bool hfill, Etk_Bool vfill)
+void etk_container_child_space_fill(Etk_Widget *child, Etk_Geometry *child_space, Etk_Bool hfill, Etk_Bool vfill, float xalign, float yalign)
 {
    Etk_Size min_size;
 
    if (!child || !child_space)
       return;
+   
+   xalign = ETK_CLAMP(xalign, 0.0, 1.0);
+   yalign = ETK_CLAMP(yalign, 0.0, 1.0);
 
    etk_widget_size_request(child, &min_size);
    if (!hfill && child_space->w > min_size.w)
    {
-      child_space->x += (child_space->w - min_size.w) / 2;
+      child_space->x += (child_space->w - min_size.w) * xalign;
       child_space->w = min_size.w;
    }
    if (!vfill && child_space->h > min_size.h)
    {
-      child_space->y += (child_space->h - min_size.h) / 2;
+      child_space->y += (child_space->h - min_size.h) * yalign;
       child_space->h = min_size.h;
    }
 }

@@ -26,7 +26,10 @@
 /** @brief Check if the object is an Etk_Combobox_Item */
 #define ETK_IS_COMBOBOX_ITEM(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_COMBOBOX_ITEM_TYPE))
 
-/* TODO: doc */
+/**
+ * @enum Etk_Combobox_Column_Type
+ * @brief The type of widget that can contain a column of a combobox
+ */
 typedef enum _Etk_Combobox_Column_Type
 {
    ETK_COMBOBOX_LABEL,
@@ -34,15 +37,25 @@ typedef enum _Etk_Combobox_Column_Type
    ETK_COMBOBOX_OTHER
 } Etk_Combobox_Column_Type;
 
-/* TODO: doc */
+/**
+ * @struct Etk_Combobox_Column
+ * @brief A column of a combobox: a combobox should have at least a column, and each column contains a specific type of widgets
+ */
 struct _Etk_Combobox_Column
 {
    Etk_Combobox_Column_Type type;
    Etk_Bool expand;
+   Etk_Bool hfill;
+   Etk_Bool vfill;
    int size;
+   float xalign;
+   float yalign;
 };
 
-/* TODO: doc */
+/**
+ * @struct Etk_Combobox_Item
+ * @brief An item of a combobox
+ */
 struct _Etk_Combobox_Item
 {
    /* private: */
@@ -52,6 +65,7 @@ struct _Etk_Combobox_Item
    Etk_Combobox *combobox;
    Etk_Widget **widgets;
    void *data;
+   void (*data_free_cb)(void *data);
 };
 
 /**
@@ -65,8 +79,9 @@ struct _Etk_Combobox
    Etk_Widget widget;
    
    Etk_Widget *button;
-   Etk_Menu_Window *window;
+   Etk_Popup_Window *window;
    
+   Etk_Combobox_Item *selected_item;
    Etk_Combobox_Item *active_item;
    Etk_Widget *active_item_widget;
    Etk_Widget **active_item_children;
@@ -86,14 +101,21 @@ Etk_Type *etk_combobox_item_type_get();
 Etk_Widget *etk_combobox_new();
 Etk_Widget *etk_combobox_new_default();
 
-void etk_combobox_column_add(Etk_Combobox *combobox, Etk_Combobox_Column_Type col_type, int size, Etk_Bool expand);
+void etk_combobox_column_add(Etk_Combobox *combobox, Etk_Combobox_Column_Type col_type, int size, Etk_Bool expand, Etk_Bool hfill, Etk_Bool vfill, float xalign, float yalign);
 void etk_combobox_build(Etk_Combobox *combobox);
-
-Etk_Combobox_Item *etk_combobox_item_append(Etk_Combobox *combobox, void *data, ...);
-void etk_combobox_item_activate(Etk_Combobox_Item *item);
 
 void etk_combobox_active_item_set(Etk_Combobox *combobox, Etk_Combobox_Item *item);
 Etk_Combobox_Item *etk_combobox_active_item_get(Etk_Combobox *combobox);
+
+Etk_Combobox_Item *etk_combobox_item_prepend(Etk_Combobox *combobox, ...);
+Etk_Combobox_Item *etk_combobox_item_prepend_valist(Etk_Combobox *combobox, va_list args);
+Etk_Combobox_Item *etk_combobox_item_append(Etk_Combobox *combobox, ...);
+Etk_Combobox_Item *etk_combobox_item_append_valist(Etk_Combobox *combobox, va_list args);
+
+void etk_combobox_item_data_set(Etk_Combobox_Item *item, void *data);
+void etk_combobox_item_data_set_full(Etk_Combobox_Item *item, void *data, void (*free_cb)(void *data));
+void *etk_combobox_item_data_get(Etk_Combobox_Item *item);
+void etk_combobox_item_activate(Etk_Combobox_Item *item);
 
 /** @} */
 

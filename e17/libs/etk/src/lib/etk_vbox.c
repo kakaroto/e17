@@ -176,7 +176,7 @@ static void _etk_vbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
             end_offset += vbox->requested_sizes[i] * ratio + box->spacing;
          }
 
-         etk_container_child_space_fill(child, &child_geometry, 1, child_properties->fill); 
+         etk_container_child_space_fill(child, &child_geometry, ETK_TRUE, child_properties->fill, 0.5, 0.5); 
          etk_widget_size_allocate(child, child_geometry);
       }
    }
@@ -223,7 +223,7 @@ static void _etk_vbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
                end_offset += free_space;
          }
 
-         etk_container_child_space_fill(child, &child_geometry, 1, child_properties->fill); 
+         etk_container_child_space_fill(child, &child_geometry, ETK_TRUE, child_properties->fill, 0.5, 0.5); 
          etk_widget_size_allocate(child, child_geometry);
       }
    }

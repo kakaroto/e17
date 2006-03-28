@@ -188,7 +188,7 @@ static void _etk_scrollbar_mouse_wheel(Etk_Object *object, void *event, void *da
    if (!(scrollbar_range = ETK_RANGE(object)) || !(wheel_event = event))
       return;
    etk_range_value_set(scrollbar_range, scrollbar_range->value + wheel_event->z * scrollbar_range->step_increment);
-   etk_widget_event_propagation_stop();
+   etk_widget_key_event_propagation_stop();
 }
 
 /* Default handler for the "value_changed" signal of a scrollbar */

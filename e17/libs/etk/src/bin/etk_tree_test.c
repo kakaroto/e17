@@ -58,8 +58,7 @@ void etk_test_tree_window_create(void *data)
 
    etk_tree_mode_set(ETK_TREE(tree), ETK_TREE_MODE_TREE);
    etk_tree_multiple_select_set(ETK_TREE(tree), ETK_TRUE);
-   col1 = etk_tree_col_new(ETK_TREE(tree), _("Column 1"), etk_tree_model_icon_text_new(ETK_TREE(tree), ETK_TREE_FROM_EDJE), 60);
-   etk_tree_col_expand_set(col1, ETK_TRUE);
+   col1 = etk_tree_col_new(ETK_TREE(tree), _("Column 1"), etk_tree_model_icon_text_new(ETK_TREE(tree), ETK_TREE_FROM_EDJE), 90);
    col2 = etk_tree_col_new(ETK_TREE(tree), _("Column 2"), etk_tree_model_double_new(ETK_TREE(tree)), 60);
    col3 = etk_tree_col_new(ETK_TREE(tree), _("Column 3"), etk_tree_model_image_new(ETK_TREE(tree), ETK_TREE_FROM_FILE), 60);
    col4 = etk_tree_col_new(ETK_TREE(tree), _("Column 4"), etk_tree_model_checkbox_new(ETK_TREE(tree)), 40);
@@ -74,7 +73,7 @@ void etk_test_tree_window_create(void *data)
       row = etk_tree_append_to_row(row, col1, etk_theme_icon_theme_get(), "places/folder_16", _("Row2"),
          col2, 20.0, col3, PACKAGE_DATA_DIR "/images/2stars.png", col4, ETK_FALSE, NULL);
       etk_tree_append_to_row(row, col1, etk_theme_icon_theme_get(), "mimetypes/text-x-generic_16", _("Row3"),
-         col2, 30.0, col3, PACKAGE_DATA_DIR "/images/3stars.png", col4, ETK_TRUE, NULL);
+         col2, 30.0, col3, PACKAGE_DATA_DIR "/images/3stars.png", col4, ETK_FALSE, NULL);
    }
    etk_tree_thaw(ETK_TREE(tree));
 
@@ -175,7 +174,7 @@ static void _etk_test_tree_drag_begin_cb(Etk_Object *object, void *data)
    num_types = 1;
    types[0] = strdup("text/plain");
    drag_data = strdup(col1_string);
-      
+   
    etk_drag_types_set(drag, types, num_types);
    etk_drag_data_set(drag, drag_data, strlen(drag_data) + 1);
    button = etk_button_new_with_label(col1_string);

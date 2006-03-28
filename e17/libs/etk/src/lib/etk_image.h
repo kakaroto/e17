@@ -32,8 +32,10 @@ struct _Etk_Image
    char *filename;
    char *edje_group;
    char *edje_filename;
+   
    Etk_Stock_Id stock_id;
    Etk_Stock_Size stock_size;
+   
    Etk_Bool keep_aspect;
    Etk_Bool use_edje;
    Etk_Bool object_type_changed;
@@ -53,6 +55,8 @@ void etk_image_edje_get(Etk_Image *image, char **edje_filename, char **edje_grou
 
 void etk_image_set_from_stock(Etk_Image *image, Etk_Stock_Id stock_id, Etk_Stock_Size size);
 void etk_image_stock_get(Etk_Image *image, Etk_Stock_Id *stock_id, Etk_Stock_Size *size);
+
+void etk_image_copy(Etk_Image *dest_image, Etk_Image *src_image);
 
 void etk_image_size_get(Etk_Image *image, int *width, int *height);
 void etk_image_keep_aspect_set(Etk_Image *image, Etk_Bool keep_aspect);
