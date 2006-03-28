@@ -329,8 +329,10 @@ ewl_window_position_get(Ewl_Window *win, int *x, int *y)
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
-	*x = win->x;
-	*y = win->y;
+	if (x)
+		*x = win->x;
+	if (y)
+		*y = win->y;
 
 #if 0
 	if (REALIZED(win)) {
@@ -803,7 +805,10 @@ ewl_window_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		sinfo->info.depth = DefaultDepth(sinfo->info.display,
 				DefaultScreen(sinfo->info.display));
 		sinfo->info.rotation = 0;
-		sinfo->info.debug = 0;
+		if (ewl_config.evas.render_debug)
+			sinfo->info.debug = 1;
+		else
+			sinfo->info.debug = 0;
 	}
 	else
 #endif
