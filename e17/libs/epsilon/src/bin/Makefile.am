@@ -25,7 +25,8 @@ epsilon_thumbd_DEPENDENCIES = $(top_builddir)/src/lib/libepsilon.la
 
 epsilon_thumbd_LDADD = \
 $(top_builddir)/src/lib/libepsilon.la \
-@ECORE_LIBS@
+@ECORE_LIBS@ \
+@IMLIB2_LIBS@
 
 epsilon_thumb_test_SOURCES = \
 epsilon_thumb_test.c

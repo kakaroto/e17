@@ -193,6 +193,23 @@ epsilon_cb_server_data(void *data, int type, void *event)
 			ecore_dlist_next(epsilon_request_queue);
 		}
 
+		/*If the thumb dest is not set, but the generation was successful,
+		 * try to get the dest now */
+		if ( (!thumb->dest) && thumb->path && !thumb->status ) {
+			Epsilon* tb;
+			
+			/*
+			 * Create a temp thumbnail struct to get the thumbnail
+			 * path, don't actually generate the thumbnail here.
+			 */
+			tb = epsilon_new(thumb->path);
+			epsilon_exists(tb);
+			thumb->dest = (char *)epsilon_thumb_file_get(tb);
+			if (thumb->dest)
+				thumb->dest = strdup(thumb->dest);
+			epsilon_free(tb);
+		}
+
 		ecore_event_add(EPSILON_EVENT_DONE, thumb, epsilon_event_free, NULL);
 	}
 
