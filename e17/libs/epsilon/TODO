@@ -1,0 +1,10 @@
+TODO
+----
+* Split out thumbnail generation to plugin system.
+
+* Allow specifying the destination path of the generated thumbnail in sync API.
+
+* Fix thumbnail hash generating so ecore_thumb_thumb_file_get will generate
+  the hash if it's not yet set.
+
+* Allow async specifying of thumbnail resolution.

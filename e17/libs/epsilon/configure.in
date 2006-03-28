@@ -120,6 +120,7 @@ epsilon.pc
 epsilon.spec
 epsilon-config
 src/Makefile
+src/include/Makefile
 src/lib/Makefile
 src/lib/exiftags/Makefile
 src/bin/Makefile
