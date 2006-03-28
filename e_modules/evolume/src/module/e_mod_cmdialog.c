@@ -32,31 +32,30 @@ static void *_create_data(E_Config_Dialog *cfd);
 static void _free_data(E_Config_Dialog *cfd, CFData *cfdata);
 static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata);
 static int _basic_apply_data(E_Config_Dialog *cfd, CFData *cfdata);
-static Evas_Object *_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata);
-static int _advanced_apply_data(E_Config_Dialog *cfd, CFData *cfdata);
 
-void e_volume_config_mixer(Volume_Face *face,
-		Config_Mixer* mixer_conf)
+void e_volume_config_mixer(void *data, void *data2)
 {
+	Volume_Face *face;
+	Config_Mixer *mixer_conf;
 	E_Config_Dialog* cfd;
-	E_Config_Dialog_View v;
+	E_Config_Dialog_View *v;
 	struct _cfg *c;
 
-	v.create_cfdata = _create_data;
-	v.free_cfdata = _free_data;
-	v.basic.apply_cfdata = _basic_apply_data;
-	v.basic.create_widgets = _basic_create_widgets;
-	v.advanced.apply_cfdata = NULL;
-	v.advanced.create_widgets = NULL;
-	/*
-	v.advanced.apply_cfdata = _advanced_apply_data;
-	v.advanced.create_widgets = _advanced_create_widgets;
-	*/
+	face = data;
+	mixer_conf = data2;
+
+	v = E_NEW(E_Config_Dialog_View, 1);
+	v->create_cfdata = _create_data;
+	v->free_cfdata = _free_data;
+	v->basic.apply_cfdata = _basic_apply_data;
+	v->basic.create_widgets = _basic_create_widgets;
+	v->advanced.apply_cfdata = NULL;
+	v->advanced.create_widgets = NULL;
 
 	c = malloc(sizeof(struct _cfg));
 	c->mixer_conf = mixer_conf;
 	c->face = face;
-	cfd = e_config_dialog_new(face->con, _("Mixer Face Configuration"), NULL, 0, &v, c);
+	cfd = e_config_dialog_new(face->con, _("Mixer Face Configuration"), NULL, 0, v, c);
 }
 
 
@@ -91,6 +90,7 @@ static void
 _free_data(E_Config_Dialog* cfd, CFData* cfdata)
 {
 	Evas_List *l;
+
 	for(l = cfdata->elems; l; l = evas_list_next(l))
 	{
 		Elem_CFData* d;
@@ -119,11 +119,11 @@ static Evas_Object
 
 	o = e_widget_list_add(evas, 0, 0);
 	of = e_widget_framelist_add(evas, D_("Mixer Configuration"), 0);
-	for(l = cfdata->elems, i = 0; l; l = evas_list_next(l), i++)
+	for(l = cfdata->elems, i = 0; l; l = l->next, i++)
 	{
 		Evas_Object *olabel, *oact, *obal, *ot;
 		Elem_CFData* ecfd;
-		ecfd = evas_list_data(l);
+		ecfd = l->data;
 
 		ot = e_widget_table_add(evas, 0);
 		
@@ -147,8 +147,9 @@ _basic_apply_data(E_Config_Dialog *cfd, CFData *cfdata)
 {
 	Evas_List *l;
 	struct _cfg* c;
-	c = cfd->data;
 	int u;
+
+	c = cfd->data;
 	for(l = cfdata->elems; l; l = evas_list_next(l))
 	{
 		Elem_CFData* ecfd;
@@ -159,25 +160,8 @@ _basic_apply_data(E_Config_Dialog *cfd, CFData *cfdata)
 		{
 			ecfd->elem->active = ecfd->active;
 			ecfd->elem->balance = ecfd->balance;
-
-			e_volume_face_mixer_elem_update(c->face, 
-					ecfd->elem, cfdata->mixer_conf);
+			e_volume_face_mixer_elem_update(c->face, ecfd->elem, cfdata->mixer_conf);
 		}
 	}
 	return 1;
 }
-
-
-static Evas_Object
-*_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata)
-	
-{
-	return NULL;
-}
-
-static int 
-_advanced_apply_data(E_Config_Dialog *cfd, CFData *cfdata)
-{
-	return 1;
-}
-
