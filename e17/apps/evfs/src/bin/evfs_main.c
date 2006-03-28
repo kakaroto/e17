@@ -187,7 +187,7 @@ evfs_handle_command(evfs_client * client, evfs_command * command)
      case EVFS_CMD_FILE_STAT:
         evfs_handle_file_stat_command(client, command);
         break;
-     case EVFS_CMD_LIST_DIR:
+     case EVFS_CMD_LIST_DIR: 
         evfs_handle_dir_list_command(client, command);
         break;
      case EVFS_CMD_FILE_OPEN:

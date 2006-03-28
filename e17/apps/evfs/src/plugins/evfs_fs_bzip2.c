@@ -56,6 +56,8 @@ int evfs_file_create(evfs_filereference * file);
 void evfs_dir_list(evfs_client * client, evfs_command * file);
 
 #define BZIP2_BUFFER 5000
+#define EVFS_BZ2_GOT_DATA -1
+#define EVFS_BZ2_ERROR -2
 
 Ecore_Hash *bzip_hash;
 typedef struct bzip2_file
@@ -150,11 +152,11 @@ evfs_bzip2_populate_buffer(evfs_client * client, evfs_filereference * ref)
    if (bfile->stream.avail_in > 0)
      {
         //printf("No need to read, got data already..\n");
-        return 0;
+        return EVFS_BZ2_GOT_DATA;
      }
 
    res = evfs_uri_read(client, ref->parent, bfile->buffer, BZIP2_BUFFER);
-   //printf("Read %d bytes at bzip2_read from fd %d using filename %s\n", res, ref->fd, ref->path);
+   /*printf("Read %d bytes at bzip2_read from fd %d using filename %s\n", res, ref->fd, ref->path);*/
 
    if (res > 0)
      {
@@ -162,9 +164,12 @@ evfs_bzip2_populate_buffer(evfs_client * client, evfs_filereference * ref)
         bfile->stream.next_in = (char *)bfile->buffer;
         bfile->stream.avail_in = res;
      }
-   else
-     {
+   else if (res == 0) {
+	   //printf("res 0\n");
+	   return 0;
+   } else {
         //printf("Res returnde an error: %d\n", res);
+	return EVFS_BZ2_ERROR;
         //exit(0);
      }
 
@@ -193,7 +198,10 @@ evfs_file_read(evfs_client * client, evfs_filereference * file, char *bytes,
         bz_result = BZ2_bzDecompress(&bfile->stream);
         //printf("Avail_out goes to %d\n", bfile->stream.avail_out);
 
-        //printf ("             BZ Result is: %d\n", bz_result);
+        //printf ("             BZ Result is: %d -> %d\n", bz_result,res);
+
+	if (res == 0) 
+		return 0; /*No data left..*/
 
         if (bz_result == -1)
            break;

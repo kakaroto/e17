@@ -219,7 +219,7 @@ void evfs_operation_queue_run()
 	
 	ecore_list_goto_first(evfs_operation_queue);
 	op = ecore_list_current(evfs_operation_queue);
-	
+
 	if (op) {
 		switch (op->type) {
 			case EVFS_OPERATION_TYPE_FILES:
@@ -277,11 +277,11 @@ void evfs_operation_response_handle(evfs_operation* op, evfs_operation_task* tas
 
 void evfs_operation_run_tasks(evfs_operation* op)
 {
+	printf("Running tasks..\n");
 	evfs_operation_task* task = NULL;
 
 	task = ecore_list_current(op->sub_task);
 	if (task) {
-
 
 	    if (op->status == EVFS_OPERATION_STATUS_REPLY_RECEIVED) {
 		    evfs_operation_response_handle(op,task);
@@ -293,7 +293,6 @@ void evfs_operation_run_tasks(evfs_operation* op)
 		if (task->status == EVFS_OPERATION_TASK_STATUS_PENDING)
 			task->status = EVFS_OPERATION_TASK_STATUS_EXEC;
 
-		
 		switch (task->type) {
 			case EVFS_OPERATION_TASK_TYPE_FILE_COPY: {
 				int prog = 0;
@@ -301,7 +300,7 @@ void evfs_operation_run_tasks(evfs_operation* op)
 				double calc;
 
 
-				/*printf("...Processing file copy task type!\n");*/
+				printf("...Processing file copy task type!\n");
 				prog = evfs_operation_tasks_file_copy_run(op, EVFS_OPERATION_TASK_FILE_COPY(task));
 				EVFS_OPERATION_FILES(op)->progress_bytes += prog;
 
@@ -321,7 +320,11 @@ void evfs_operation_run_tasks(evfs_operation* op)
 				}
 
 				//FIXME - ther's probably a better place to put this*/
-				if (op->processed_tasks == ecore_list_nodes(op->sub_task) && task->status == EVFS_OPERATION_TASK_STATUS_COMMITTED) {
+				if (op->processed_tasks == ecore_list_nodes(op->sub_task) && 
+				    task->status == EVFS_OPERATION_TASK_STATUS_COMMITTED) {
+			
+					printf("Sending completed progress event...\n");
+						
 					evfs_file_progress_event_create(op->client,  EVFS_OPERATION_TASK_FILE_COPY(task)->file_from,
 						EVFS_OPERATION_TASK_FILE_COPY(task)->file_to,
 						op->command, 100, 
@@ -384,7 +387,7 @@ void evfs_operation_run_tasks(evfs_operation* op)
 			ecore_list_next(op->sub_task);
 		}
 	   } else {
-		   /*printf("Operation is in user wait state!\n");*/
+		   printf("Operation is in user wait state!\n");
 	   }
 	} else {
 		/*If task is null, operation is completed!*/

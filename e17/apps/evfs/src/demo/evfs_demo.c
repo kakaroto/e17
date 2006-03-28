@@ -54,6 +54,7 @@ callback(evfs_event * data, void *obj)
     * 
     * } */
 
+   exit(0);
 }
 
 int
@@ -125,7 +126,12 @@ main(int argc, char **argv)
 
    /*evfs_monitor_add(con, dir_path->files[0]);
     * evfs_client_file_copy(con, dir_path->files[0], NULL); */
-   evfs_client_dir_list(con, dir_path->files[0]);
+
+   if (!strcmp(cmd, "DIR")) {
+	   evfs_client_dir_list(con, dir_path->files[0]);
+   } else if (!strcmp(cmd, "STAT")) {
+	   evfs_client_file_stat(con, dir_path->files[0]);
+   }
    ecore_main_loop_begin();
    evfs_disconnect(con);
 }

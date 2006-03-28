@@ -562,9 +562,9 @@ void sftp_read_handle(SftpConnection* conn, char **c) {
 	handle->sftp_handle= str;
 	handle->sftp_handle_len = length;
 
-	//printf("  [*] Reading handle with id %d, length %d\n", id, length);
+	printf("  [*] Reading handle with id %d, length %d\n", id, length);
 
-	//printf("  [*] Writing handle to hash (%p) , with id %d\n", handle, id);
+	printf("  [*] Writing handle to hash (%p) , with id %d\n", handle, id);
 	ecore_hash_set(conn->handle_hash, (int*)id, handle);
 }
 
@@ -611,16 +611,25 @@ void sftp_read_names(SftpConnection* conn, char** c) {
 
 void sftp_handle_status(SftpConnection* conn, char** c) {
 	int id;
+	int error_code;
+	char* error_message;
+	char* language_tag;
 	SftpGenericHandle* rhandle;
+	int length;
 	
 	/*Read the identifier*/
 	id = read_int32(c);
+	error_code = read_int32(c);
+	error_message = read_string(c, &length);
+	language_tag = read_string(c, &length);
 
 	//printf("Got a status for id %d\n", id);
 	rhandle = ecore_hash_get(conn->id_open_hash, (int*)id);
 
 	//printf("Rhandle is %p\n", rhandle);
 	if (rhandle) rhandle->status = STATUS_FINISHED;
+
+	printf("id: %d, error_code: %d, message: '%s', tag: '%s'\n", id, error_code, error_message, language_tag);
 
 	ecore_hash_remove(conn->id_open_hash, (int*)id);
 }
@@ -718,32 +727,32 @@ sftp_exe_data(void *data, int type, void *event)
 
    switch (sftp_type) {
 	   case SSH2_FXP_HANDLE:
-		   //printf ("  [*] TYPE: HANDLE: %d\n", sftp_type);
+		   printf ("  [*] TYPE: HANDLE: %d\n", sftp_type);
 		   sftp_read_handle(conn, &c);
 		   break;
 	   case SSH2_FXP_STATUS:
-		   //printf ("  [*] TYPE: STATUS: %d\n",sftp_type);
+		   printf ("  [*] TYPE: STATUS: %d\n",sftp_type);
 		   sftp_handle_status(conn, &c);
 		   break;
 	   case SSH2_FXP_ATTRS:
-		   //printf ("  [*] Received SSH ATTRIBUTES\n");
+		   printf ("  [*] Received SSH ATTRIBUTES\n");
 		   sftp_handle_attr(conn, &c);
 		   break;
 	   case SSH2_FXP_VERSION:
-		   //printf ("  [*] TYPE: VERSION: %d\n",sftp_type);
+		   printf ("  [*] TYPE: VERSION: %d\n",sftp_type);
 		   conn->status = SFTP_CONNECTED;
 		   goto FREE; /*Ignore the reply for now - FIXME*/
 		   break;	 
 	   case SSH2_FXP_NAME:
-		   //printf ("  [*] TYPE: NAME: %d\n", sftp_type);
+		   printf ("  [*] TYPE: NAME: %d\n", sftp_type);
 		   sftp_read_names(conn, &c);
 		   break;
 	   case SSH2_FXP_DATA:
-	   	   //printf("   [*] TYPE: DATA\n");
+	   	   printf("   [*] TYPE: DATA\n");
 		   sftp_handle_data(conn, &c);
 		   break;
 	   default:
-		   //printf ("  [*] TYPE: UNKNOWN: %d\n", sftp_type);
+		   printf ("  [*] TYPE: UNKNOWN: %d\n", sftp_type);
 		   /*Out of sync? We have to leave..*/
 		   goto FREE;
 		   break;
@@ -927,6 +936,8 @@ int evfs_file_read(evfs_client * client, evfs_filereference * file,
 	SftpGenericHandle* handle;
 	SftpOpenHandle* ohandle;
 
+	printf("SFTP read\n");
+
 
 	sftp_split_host_path(file->path, &host, &path);
 	
@@ -969,6 +980,8 @@ int evfs_file_read(evfs_client * client, evfs_filereference * file,
 		printf("Could not find open file handle\n");
 	}
 
+	printf("Done\n");
+
 }
 
 int
@@ -979,6 +992,8 @@ evfs_file_open(evfs_client * client, evfs_filereference * file)
 	int rid;
 	SftpOpenHandle* handle;
 
+	printf("******************** SFTP open file\n");
+
 
 	sftp_split_host_path(file->path, &host, &path);
 	
@@ -987,19 +1002,26 @@ evfs_file_open(evfs_client * client, evfs_filereference * file)
 		conn = sftp_connect(host);
 	}
 
+	printf("Getting connection...\n");
 	while (conn->status == SFTP_INIT) {
 		ecore_main_loop_iterate();
 		usleep(10);		
 	}
+	printf("...got\n");
 
 	rid = sftp_file_open(conn, path, 0);
 
 	/*Wait till we have a handle*/
 	/*FIXME - is there a better way of waiting-till-event in ecore?*/
+
+
+	printf("opening file...'%s'\n", file->path);
 	while (! (handle = ecore_hash_get(conn->handle_hash, (int*)rid))) {
 		ecore_main_loop_iterate();
 		usleep(10);
 	}
+	printf("opened.....\n");
+	
 	file->fd = sftp_open_handle_get_next();
 	handle->int_id = file->fd;
 	handle->conn = conn;
@@ -1007,6 +1029,8 @@ evfs_file_open(evfs_client * client, evfs_filereference * file)
 
 	free(host);
 	free(path);
+
+	printf("*********************** Opened\n");
 
 	return file->fd;
 }

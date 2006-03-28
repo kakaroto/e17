@@ -11,4 +11,11 @@ TODO
 [DONE] * iso plugin
 
 
+Plugins
+-------
+	SFTP
+	----
+	* Handle different open types.  E.g. if you don't have write and create permissions,
+	  you can't dl the file, etc.  Need to build in an open mask to the open function.
+
 
