@@ -1,12 +1,280 @@
-Fri Feb 11 15:57:51 PST 2000
-(Mandrake)
+2006-03-28 19:28  kwo
+
+* configure.in (1.6), e16keyedit.spec (1.4):
+
+Version 0.3.
+
+2006-03-18 22:52  kwo
+
+* configure.in (1.5):
+
+Use gtk2 by default.
+
+2006-03-18 22:51  kwo
+
+* menus.c (1.6):
+
+Fix gtk2 complaints.
+
+2006-03-18 22:44  kwo
+
+* viewer.c (1.27):
+
+Fix modifier decoding. Cleanups.
+
+2006-03-18 20:55  kwo
+
+* configure.in (1.4), e16keyedit.spec (1.3):
+
+Hmm.. There already was a 0.2 release. Bump version.
+
+2006-03-18 20:36  kwo
+
+* .cvsignore (1.4), autogen.sh (1.2), configure.in (1.3), e16keyedit.spec
+(1.2), ipc.c (1.7), menus.c (1.5), viewer.c (1.26):
+
+Autofoo and other cleanups.
+
+2006-03-18 20:13  kwo
+
+* viewer.c (1.25):
+
+Enable loading e16.8 actions/commands from external file. Attempt to
+improve layout.
+
+2006-03-18 16:43  kwo
+
+* menus.c (1.4), menus.h (1.4):
+
+Constify.
+
+2006-03-18 16:32  kwo
+
+* viewer.c (1.24):
+
+Cleanups.
+
+2006-03-18 16:16  kwo
+
+* AUTHORS (1.2), viewer.c (1.23), viewer.h (1.10):
+
+Should now work with e16.8 as well as older versions.
+
+2006-03-18 16:12  kwo
+
+* ipc.c (1.6), ipc.h (1.3):
+
+Constify.
+
+2006-03-18 11:34  kwo
+
+* .cvsignore (1.3), viewer.c (1.22):
+
+Cleanups.
+
+2006-03-18 11:23  kwo
+
+* .indent.pro (1.1), ipc.c (1.5), ipc.h (1.2), menus.c (1.3), menus.h
+(1.3), viewer.c (1.21), viewer.h (1.9):
+
+Indent E-style.
+
+2004-07-26 09:51  andreas99
+
+* configure.in (1.2), ipc.c (1.4), viewer.c (1.20):
+
+initial change to gtk2
+
+2004-07-20 22:21  mej
+
+* .cvsignore (1.2), Makefile (1.5), Makefile.am (1.1), autogen.sh (1.1),
+configure.in (1.1), e16keyedit.spec (1.1):
+
+Tue Jul 20 16:21:26 2004			Michael Jennings (mej)
+
+Bye bye evil mandrake Makefile, hello evil autoFUCK files and spec.
+----------------------------------------------------------------------
+
+2003-09-23 00:43  raster
+
+* Makefile (1.4):
+
+
+
+remove useless linkage
+
+2000-03-23 20:07  mandrake
+
+* ChangeLog (1.2), README (1.3):
+
+released 0.2
+
+2000-03-23 02:13  mandrake
+
+* viewer.c (1.19):
+
+someone inserted a bug in here.  someone ADDED a ; to an important if
+statement :(
+
+2000-03-13 23:13  mandrake
+
+* COPYING (1.1):
+
+tada.
+
+2000-03-07 23:39  llane
+
+* debian/rules (1.2):
+
+removed dh_testversion
+
+2000-03-07 18:48  llane
+
+* debian/files (1.2):
+
+oops
+
+2000-03-07 18:12  llane
+
+* debian/: README.Debian (1.1), changelog (1.1), control (1.1), copyright
+(1.1), files (1.1), rules (1.1):
+
+stuff
+
+2000-03-04 00:06  mandrake
+
+* viewer.c (1.18):
+
+another patch from "Jerome De Greef" <jerome_degreef@hotmail.com> now save
+& quit works.
+
+2000-03-03 01:34  mandrake
+
+* AUTHORS (1.1), viewer.c (1.17):
+
+patch from Jerome De Greef for some fixes for "Show Root Menu", "Show
+Winops Menu", "Show Named Menu"
+
+2000-02-21 19:58  mandrake
+
+* ChangeLog (1.1), README (1.2):
+
+huh I didn't have the ChangeLog in apparently.
+
+2000-02-21 19:57  mandrake
+
+* README (1.1):
+
+adding a README file
+
+2000-02-12 00:45  mandrake
+
+* viewer.c (1.16), viewer.h (1.8):
+
+Fri Feb 11 15:57:51 PST 2000 (Mandrake)
 
 Whee.  first real working version.  Give Comments.  thanks.
 
-------------------------------------------------------------
+2000-02-11 23:36  mandrake
 
-Thu Mar 23 11:02:54 PST 2000
-(Mandrake)
+* viewer.c (1.15), viewer.h (1.7):
 
-Released 0.2 - mostly just bugfixes from the first one, but a couple of
-new actions in the list, thanks to Jerome De Greef <jerome_degreef@hotmail.com>
+oops, forgot that part :)
+
+2000-02-11 23:12  mandrake
+
+* viewer.c (1.14), viewer.h (1.6):
+
+now editing things actually changes the clist data.
+
+2000-02-11 01:36  mandrake
+
+* viewer.c (1.13):
+
+minor changes.	making the edit pane work.
+
+2000-02-10 20:38  mandrake
+
+* viewer.c (1.12):
+
+hmm.  minor changes
+
+2000-02-10 01:10  mandrake
+
+* viewer.c (1.11):
+
+much better.  now it highlights properly and moves the clist accordingly.
+
+2000-02-10 01:01  mandrake
+
+* viewer.c (1.10):
+
+now the viewer works, you can't change the data yet though
+
+2000-02-09 03:00  mandrake
+
+* viewer.c (1.9), viewer.h (1.5):
+
+interface kinda stablized.  going home :)
+
+2000-02-09 01:52  mandrake
+
+* viewer.c (1.8), viewer.h (1.4):
+
+cleaning up some stuff
+
+2000-02-09 01:21  mandrake
+
+* ipc.h (1.1):
+
+hmm, we need this file :)
+
+2000-02-09 01:21  mandrake
+
+* viewer.c (1.7):
+
+now we list all the keybindings
+
+2000-02-09 01:02  mandrake
+
+* ipc.c (1.3), viewer.c (1.6):
+
+now we read the keys out of E, need to clean up some
+
+2000-02-09 00:35  mandrake
+
+* .cvsignore (1.1):
+
+ignoring cvs
+
+2000-02-09 00:23  mandrake
+
+* Makefile (1.3), ipc.c (1.2), viewer.c (1.5):
+
+still nothing here.  adding ipc stuff in
+
+2000-02-08 23:49  mandrake
+
+* ipc.c (1.1), viewer.c (1.4), viewer.h (1.3):
+
+still not much here.
+
+2000-02-08 22:23  mandrake
+
+* Makefile (1.2), viewer.c (1.3), viewer.h (1.2):
+
+still nothing to see here.
+
+2000-02-07 20:53  mandrake
+
+* Makefile (1.1), menus.c (1.2), menus.h (1.2), viewer.c (1.2), viewer.h
+(1.1):
+
+wrong files
+
+2000-02-06 20:42  mandrake
+
+* menus.c (1.1), menus.h (1.1), viewer.c (1.1):
+
+starting.
+
