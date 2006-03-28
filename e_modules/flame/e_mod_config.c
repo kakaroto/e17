@@ -3,18 +3,10 @@
 #include "e_mod_config.h"
 #include "config.h"
 
-typedef struct _Cfg_File_Data Cfg_File_Data;
-
 struct _E_Config_Dialog_Data
 {
    int palette;
    int r, g, b;
-};
-
-struct _Cfg_File_Data
-{
-   E_Config_Dialog *cfd;
-   char *file;
 };
 
 /* Protos */
@@ -167,7 +159,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas,
 
    ob = e_widget_label_add(evas, _("Red Amount"));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_slider_add(evas, 1, 0, _("%1.0f"), 300, 0, -10, 0, NULL,
+   ob = e_widget_slider_add(evas, 1, 0, _("%1.0f"), 0, 300, 10, 0, NULL,
                             &(cfdata->r), 200);
    e_widget_framelist_object_append(of, ob);
 
