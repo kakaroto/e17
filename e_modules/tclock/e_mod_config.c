@@ -2,17 +2,9 @@
 #include "e_mod_main.h"
 #include "e_mod_config.h"
 
-typedef struct _Cfg_File_Data Cfg_File_Data;
-
 struct _E_Config_Dialog_Data
 {
    int resolution;
-};
-
-struct _Cfg_File_Data
-{
-   E_Config_Dialog *cfd;
-   char *file;
 };
 
 /* Protos */

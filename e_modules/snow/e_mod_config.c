@@ -3,8 +3,6 @@
 #include "e_mod_config.h"
 #include "config.h"
 
-typedef struct _Cfg_File_Data Cfg_File_Data;
-
 #define DENSITY_SPARSE 0
 #define DENSITY_MEDIUM 1
 #define DENSITY_DENSE 2
@@ -13,12 +11,6 @@ struct _E_Config_Dialog_Data
 {
    int show_trees;
    int density;
-};
-
-struct _Cfg_File_Data
-{
-   E_Config_Dialog *cfd;
-   char *file;
 };
 
 /* Protos */
