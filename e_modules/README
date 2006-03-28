@@ -1,0 +1,31 @@
+calendar - A module to display a desktop calendar.
+
+cpu - A module to monitor cpu load.
+
+emu - Experimental generic scriptable module for E17.
+
+evolume - A module to control volume for some mixers.
+
+flame - A module to display flames on the desktop.
+
+mbar - A module to mount/unmount drives or devices.
+
+mem - A module to monitor memory and swap usage.
+
+net - A module to monitor traffic on a network device.
+
+rain - A module to display rain on the desktop.
+
+screenshot - A module to take screenshots, utilizing scrot or import.
+
+slideshow - A module to cycle desktop backgrounds.
+
+snow - A module to display snow on the desktop.
+
+tclock - A module to display a digital clock on the desktop.
+
+uptime - A module to monitor computer uptime.
+
+weather - A module to display a weather forecast.
+
+wlan - A module to monitor a wlan device.
