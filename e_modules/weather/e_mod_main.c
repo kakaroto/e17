@@ -224,17 +224,10 @@ _weather_new(void)
 		  wf->degrees = 'C';
 		  break;
 	       }
-	     switch (wf->conf->display) 
-	       {
-		case 0:
-		  edje_object_signal_emit(wf->weather_obj, "set_style", "simple");		  
-		  break;
-		case 1:
-		  edje_object_signal_emit(wf->weather_obj, "set_style", "detailed");
-		  break;
-	       }
-	     
-	     edje_object_signal_emit(wf->weather_obj, "set_style", "detailed");
+	     if (wf->conf->display == DETAILED_DISPLAY)
+	       edje_object_signal_emit(wf->weather_obj, "set_style", "detailed");
+	     else
+	       edje_object_signal_emit(wf->weather_obj, "set_style", "simple");
 	     
 	     wf->loc_set = 0;
 	     wf->check_timer = ecore_timer_add((double)wf->conf->poll_time, _weather_face_cb_check, wf->weather);
@@ -335,7 +328,7 @@ _weather_face_init(Weather *w, E_Container *con)
    edje_object_part_text_set(o, "location", "");
 
    wf->icon_obj = e_icon_add(wf->evas);
-   e_icon_file_set(wf->icon_obj, PACKAGE_DATA_DIR"/images/na.png");
+   e_icon_file_set(wf->icon_obj, PACKAGE_DATA_DIR"/images/unknown.png");
    edje_object_part_swallow(wf->weather_obj, "icon", wf->icon_obj);
    
    o = evas_object_rectangle_add(wf->evas);
@@ -799,7 +792,7 @@ _weather_display_set(Weather_Face *wf, int ok)
    
    if (!ok)
      {
-	snprintf(buf, sizeof(buf), PACKAGE_DATA_DIR"/images/na.png");
+	snprintf(buf, sizeof(buf), PACKAGE_DATA_DIR"/images/unknown.png");
 	e_icon_file_set(wf->icon_obj, buf);
 	edje_object_part_swallow(wf->weather_obj, "icon", wf->icon_obj);
 	edje_object_part_text_set(wf->weather_obj, "location", "");
