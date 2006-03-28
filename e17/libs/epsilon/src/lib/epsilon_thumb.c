@@ -195,7 +195,7 @@ epsilon_cb_server_data(void *data, int type, void *event)
 
 		/*If the thumb dest is not set, but the generation was successful,
 		 * try to get the dest now */
-		if ( (!thumb->dest) && thumb->path && !thumb->status ) {
+		if ( thumb && (!thumb->dest) && thumb->path && !thumb->status ) {
 			Epsilon* tb;
 			
 			/*
