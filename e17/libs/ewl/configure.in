@@ -3,7 +3,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_INIT(configure.in)
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
-AM_INIT_AUTOMAKE(ewl, 0.0.4.006)
+AM_INIT_AUTOMAKE(ewl, 0.0.4.007)
 AM_CONFIG_HEADER(ewl-config.h)
 
 AC_ISC_POSIX
