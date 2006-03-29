@@ -785,6 +785,8 @@ _mbar_icon_new(MBar_Bar *mbb, E_App *a)
    }
    evas_object_show(o);
 
+   edje_object_part_text_set(ic->bg_object, "label", a->comment);
+   
    o = edje_object_add(mbb->evas);
    ic->icon_object = o;
    evas_object_resize(o, mbb->mbar->conf->iconsize, mbb->mbar->conf->iconsize);
