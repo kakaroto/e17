@@ -124,33 +124,33 @@ void e_volume_face_menu_new(Volume_Face* face)
 	Evas_List *l;
 	E_Menu *mn, *sm, *om;
 	E_Menu_Item* mi;
-
+   
 	mn = e_menu_new();
 	face->menu = mn;
 
-	e_object_data_set(E_OBJECT(mn), face);
-
-	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, D_("Edit Mode"));
-	e_menu_item_callback_set(mi, _volume_cb_menu_edit, (void*)face);
-
-	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, D_("Configure"));
-	e_menu_item_callback_set(mi, _volume_cb_configure, (void*)face);
-
-
-	{
+     {
 		/* Face Menu */
 		sm = e_menu_new();
 
 		mi = e_menu_item_new(mn);
-		e_menu_item_label_set(mi, D_("Face"));
+		e_menu_item_label_set(mi, D_("Faces"));
 		e_menu_item_submenu_set(mi, sm);
 
 		mi = e_menu_item_new(sm);
 		e_menu_item_label_set(mi, D_("Remove Face"));
 		e_menu_item_callback_set(mi, _volume_remove_face_cb, (void*)face);
-	}
+     }
 
-	/* End of face menu */
+	e_object_data_set(E_OBJECT(mn), face);
+
+	mi = e_menu_item_new(mn);
+	e_menu_item_label_set(mi, D_("Edit Mode"));
+   e_util_menu_item_edje_icon_set(mi, "enlightenment/gadgets");
+	e_menu_item_callback_set(mi, _volume_cb_menu_edit, (void*)face);
+
+	mi = e_menu_item_new(mn);
+	e_menu_item_label_set(mi, D_("Configuration"));
+   e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");   
+	e_menu_item_callback_set(mi, _volume_cb_configure, (void*)face);
 }
+
