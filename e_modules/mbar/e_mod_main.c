@@ -114,6 +114,7 @@ static int     _mbar_parse_file(char *file, const char *mntpath);
 static void    _mbar_parse_fstab(MBar *mb);
 static void    _mbar_add_order(const char *dir, const char *name);
 static void    _mbar_mtab_update(void *data, Ecore_File_Monitor *monitor, Ecore_File_Event event, const char *path);
+static int     _mbar_eap_in_order(const char *dir, const char *eap);
 
 #ifdef HAVE_BSD
 static int     _mbar_bsd_is_mounted(const char *path);
@@ -285,7 +286,9 @@ _mbar_new()
      strcpy(buf, mb->conf->appdir);
 
    mb->apps = e_app_new(buf, 0);
+   
    _mbar_parse_fstab(mb);   
+
    if (mb->apps) 
      e_app_subdir_scan(mb->apps, 0);
    e_app_change_callback_add(_mbar_app_change, mb);
@@ -2070,7 +2073,7 @@ _mbar_parse_fstab(MBar *mb)
    int i, u;
    char *token = NULL;
    
-   if ((f = fopen(FSTAB, "r")) == NULL) 
+   if (!(f = fopen(FSTAB, "r"))) 
      return;
    
    *s = 0;
@@ -2138,6 +2141,7 @@ _mbar_parse_fstab(MBar *mb)
 	  {
 	     char icon[4096];
 	     char path[4096];
+	     char eap[1024];	     
 	     E_App *a;
 
 	     snprintf(path, sizeof(path), 
@@ -2156,10 +2160,22 @@ _mbar_parse_fstab(MBar *mb)
 		  e_app_append(a, mb->apps);
 	     
 		  /* Add to order */
-		  char eap[1024];
 		  snprintf(eap, sizeof(eap), "%s.eap", basename(info[0]));
 		  _mbar_add_order(mb->conf->appdir, eap);
 	       }
+	     else 
+	       {
+		  /* Eap Exists for this device. Check if it's in order file*/
+		  int ret;
+		  
+		  snprintf(eap, sizeof(eap), "%s.eap", basename(info[0]));
+		  ret = _mbar_eap_in_order(mb->conf->appdir, eap);
+		  if (!ret) 
+		    {
+		       /* Add to order if not there */
+		       _mbar_add_order(mb->conf->appdir, eap);
+		    }
+	       }	     
 	  }
 	
 	for (i = 0; i < 4; i++) 
@@ -2281,3 +2297,33 @@ _mbar_bsd_cb_timer(void *data)
      }
 }
 #endif
+
+static int 
+_mbar_eap_in_order(const char *dir, const char *eap) 
+{
+   FILE *f;
+   char path[4096];   
+   char name[4096];
+   int ret;
+   
+   snprintf(path, sizeof(path), 
+	    "%s/.e/e/applications/%s/.order", getenv("HOME"), dir);
+   
+   if (!ecore_file_exists(path)) 
+     return 0;
+   
+   if (!(f = fopen(path, "r")))
+     return 0;
+   
+   ret = 0;
+   while (fgets(name, sizeof(name), f) != NULL) 
+     {
+	if (!strcmp(name, eap)) 
+	  {
+	     ret = 1;
+	     break;
+	  }
+     }
+   fclose(f);
+   return ret;
+}
