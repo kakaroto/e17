@@ -1,10 +1,11 @@
 MAINTAINERCLEANFILES = Makefile.in
 
 EDJE_CC = @edje_cc@
-EDJE_FLAGS = -v -id images
+EDJE_FLAGS = -v -id images -fd fonts
 
 filesdir = $(datadir)
 files_DATA = \
+fonts/VeraBd.ttf \
 mbar.edj \
 mbar.edc
 
