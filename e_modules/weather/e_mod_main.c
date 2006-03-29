@@ -183,7 +183,7 @@ _weather_new(void)
 	     wf->conf->degrees = DEGREES_C;
 	     wf->conf->con = con->num;
 	     wf->conf->host = evas_stringshare_add("www.rssweather.com");
-	     wf->conf->code = evas_stringshare_add("ENKR");
+	     wf->conf->code = evas_stringshare_add("KJFK");
 	     E_CONFIG_LIMIT(wf->conf->poll_time, 900.0, 3600.0);
 	     
 	     w->conf->faces = evas_list_append(w->conf->faces, wf->conf);
