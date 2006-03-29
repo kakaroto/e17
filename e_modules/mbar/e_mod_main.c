@@ -833,6 +833,7 @@ _mbar_icon_new(MBar_Bar *mbb, E_App *a)
 			  );
 
    edje_object_signal_emit(ic->bg_object, "passive", "");
+   edje_object_signal_emit(ic->icon_object, "passive", "");   
    edje_object_signal_emit(ic->overlay_object, "passive", "");
    
    #ifdef HAVE_LINUX
@@ -1268,9 +1269,11 @@ _mbar_icon_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
    evas_object_stack_below(ic->overlay_object, ic->event_object);
    evas_event_thaw(ic->mbb->evas);
    edje_object_signal_emit(ic->bg_object, "active", "");
-   edje_object_signal_emit(ic->overlay_object, "active", "");
+   edje_object_signal_emit(ic->icon_object, "active", "");
+   edje_object_signal_emit(ic->overlay_object, "active", "");   
    if (ic->mbb->overlay_object)
      edje_object_signal_emit(ic->mbb->overlay_object, "active", "");
+	edje_object_part_text_set(ic->bg_object, "label", ic->app->comment);
 }
 
 static void
@@ -1282,9 +1285,11 @@ _mbar_icon_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info)
    ev = event_info;
    ic = data;
    edje_object_signal_emit(ic->bg_object, "passive", "");
+   edje_object_signal_emit(ic->icon_object, "passive", "");   
    edje_object_signal_emit(ic->overlay_object, "passive", "");
    if (ic->mbb->overlay_object)
      edje_object_signal_emit(ic->mbb->overlay_object, "passive", "");
+	edje_object_part_text_set(ic->bg_object, "label", "");
 }
 
 static void
