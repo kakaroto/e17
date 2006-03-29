@@ -400,7 +400,6 @@ _mbar_app_change(void *data, E_App *a, E_App_Change ch)
 		  ic = _mbar_icon_new(mbb, a);
 		  if (ic)
 		    {
-		       edje_object_part_text_set(ic->bg_object, "label", a->comment);		       
 		       for (ll = mb->apps->subapps; ll; ll = ll->next)
 			 {
 			    E_App *a2;
@@ -438,7 +437,6 @@ _mbar_app_change(void *data, E_App *a, E_App_Change ch)
 		  ic = _mbar_icon_new(mbb, a);
 		  if (ic)
 		    {
-		       edje_object_part_text_set(ic->bg_object, "label", a->comment);
 		       for (ll = mb->apps->subapps; ll; ll = ll->next)
 			 {
 			    E_App *a2;
@@ -790,8 +788,6 @@ _mbar_icon_new(MBar_Bar *mbb, E_App *a)
 	edje_object_file_set(o, buf, "modules/mbar/icon");
    }
    evas_object_show(o);
-
-   edje_object_part_text_set(ic->bg_object, "label", a->comment);
    
    o = edje_object_add(mbb->evas);
    ic->icon_object = o;
@@ -1273,7 +1269,7 @@ _mbar_icon_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
    edje_object_signal_emit(ic->overlay_object, "active", "");   
    if (ic->mbb->overlay_object)
      edje_object_signal_emit(ic->mbb->overlay_object, "active", "");
-	edje_object_part_text_set(ic->bg_object, "label", ic->app->comment);
+   edje_object_part_text_set(ic->bg_object, "label", ic->app->comment);
 }
 
 static void
@@ -1289,7 +1285,7 @@ _mbar_icon_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info)
    edje_object_signal_emit(ic->overlay_object, "passive", "");
    if (ic->mbb->overlay_object)
      edje_object_signal_emit(ic->mbb->overlay_object, "passive", "");
-	edje_object_part_text_set(ic->bg_object, "label", "");
+   edje_object_part_text_set(ic->bg_object, "label", "");
 }
 
 static void
