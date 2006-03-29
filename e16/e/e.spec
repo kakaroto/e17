@@ -1,9 +1,9 @@
-%define revision 1
-%define rev_name %{nil}
+%define revision 0.00
+%define rev_name -%{revision}
 
 Summary: The Enlightenment window manager.
 Name: e16
-Version: 0.16.8.1
+Version: 0.16.8.2
 Release: %{revision}%{?_vendorsuffix:.%{_vendorsuffix}}
 License: BSD
 Group: User Interface/Desktops

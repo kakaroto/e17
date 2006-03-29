@@ -2,10 +2,10 @@ AC_INIT(e.spec)
 
 ENLIGHTENMENT_MAJOR=0
 ENLIGHTENMENT_MINOR=16
-ENLIGHTENMENT_MICRO=8.1
+ENLIGHTENMENT_MICRO=8.2
 ENLIGHTENMENT_VERSION=$ENLIGHTENMENT_MAJOR.$ENLIGHTENMENT_MINOR.$ENLIGHTENMENT_MICRO
 
-AM_INIT_AUTOMAKE(e16, $ENLIGHTENMENT_VERSION)
+AM_INIT_AUTOMAKE(e16, $ENLIGHTENMENT_VERSION-0.00)
 AM_MAINTAINER_MODE
 
 dnl reasonable guesses for where stuff is installed
@@ -110,15 +110,9 @@ AC_DEFINE_UNQUOTED(LOCALEDIR, "$LOCALEDIR",  [The installation locale directory]
 
 if test "x$enable_sound" = "xyes"; then
   AM_PATH_ESD(0.2.17,AC_DEFINE(HAVE_LIBESD, 1, [libesd.so]),[
-  echo "WARNING: Enlightenment needs a system with libesd.so (esound)"
-  echo "0.2.17 or higher to use sound support."
-  echo "Enlightenment can use EsounD (ESD) to be installed to compile."
-  echo "Sound will be disabled in this binary. If you ever want sound"
-  echo "You will need to get and install EsounD then recompile Enlightenment."
-  AC_MSG_WARN([Warning: no EsounD detected.])])
-else
-  echo "Sound support has been turned off, per the --enable-sound=no"
-  echo "passed to your configure line."
+    enable_sound=no
+    AC_MSG_WARN([Sound support was requested but not found.])
+  ])
 fi
 
 LDFLAGS="$LDFLAGS -L$prefix/lib"
@@ -128,9 +122,8 @@ IMLIB_LIBS=`imlib2-config --libs`
 IMLIB_CFLAGS=`imlib2-config --cflags`
 AC_SUBST(IMLIB_LIBS)
 AC_SUBST(IMLIB_CFLAGS)
-AC_CHECK_LIB(Imlib2, imlib_create_image,
-  AC_DEFINE(USE_IMLIB2, 1, [Imlib2 support]),
-  AC_MSG_ERROR([Fatal Error: no Imlib2 detected.]),
+AC_CHECK_LIB(Imlib2, imlib_create_image,,
+  AC_MSG_ERROR([Cannot find Imlib2: Is imlib2-config in path?]),
   $IMLIB_LIBS)
 
 if test "x$enable_ecore" = "xyes"; then
@@ -141,7 +134,7 @@ if test "x$enable_ecore" = "xyes"; then
       AC_SUBST(ecore_libs)
       AC_SUBST(ecore_cflags)
     ],[
-      AC_MSG_ERROR(Cannot find ecore: Is ecore-config in path?)
+      AC_MSG_ERROR([Cannot find ecore: Is ecore-config in path?])
     ])
   ecore_libs=`ecore-config --libs-x`
   ecore_cflags=`ecore-config --cflags`
@@ -150,15 +143,20 @@ if test "x$enable_ecore" = "xyes"; then
 fi
 
 AC_CHECK_LIB(Xext, XShapeQueryExtension,
-  E_X_LIBS="-lXext $E_X_LIBS", , $X_LIBS -lX11)
+  E_X_LIBS="-lXext $E_X_LIBS",
+  AC_MSG_ERROR([Shape support is required but was not found]),
+  $X_LIBS -lX11)
 
 AC_ARG_ENABLE(xinerama,
   [  --enable-xinerama       compile with xinerama support @<:@default=yes@:>@],,
   enable_xinerama=yes)
 if test "x$enable_xinerama" = "xyes"; then
-AC_CHECK_LIB(Xinerama, XineramaQueryExtension,
-  AC_DEFINE(HAS_XINERAMA, 1, [Xinerama support])
-  E_X_LIBS="-lXinerama $E_X_LIBS", , $X_LIBS -lXext -lX11)
+  AC_CHECK_LIB(Xinerama, XineramaQueryExtension,
+    AC_DEFINE(HAS_XINERAMA, 1, [Xinerama support])
+    E_X_LIBS="-lXinerama $E_X_LIBS",
+    enable_xinerama=no
+    AC_MSG_WARN([Xinerama support was requested but not found]),
+    $X_LIBS -lXext -lX11)
 fi
 
 AC_ARG_ENABLE(zoom,
@@ -167,36 +165,45 @@ AC_ARG_ENABLE(zoom,
 if test "x$enable_zoom" = "xyes"; then
   AC_CHECK_LIB(Xxf86vm, XF86VidModeQueryExtension,
     AC_DEFINE(WITH_ZOOM, 1, [Zoom Support])
-    E_X_LIBS="-lXxf86vm $E_X_LIBS", , $X_LIBS -lXext -lX11)
-else
-  echo "zoom has been turned off by request at compiletime"
+    E_X_LIBS="-lXxf86vm $E_X_LIBS",
+    enable_zoom=no
+    AC_MSG_WARN([Zoom support was requested but not found]),
+    $X_LIBS -lXext -lX11)
 fi
 
 AC_ARG_ENABLE(xsync,
   [  --enable-xsync          compile with SYNC support (experimental!) @<:@default=no@:>@],,
   enable_xsync=no)
 if test "x$enable_xsync" = "xyes"; then
-AC_CHECK_LIB(Xext, XSyncQueryExtension,
-    AC_DEFINE(HAS_XSYNC, 1, [SYNC support])
-    , , $X_LIBS -lX11)
+  AC_CHECK_LIB(Xext, XSyncQueryExtension,
+    AC_DEFINE(HAS_XSYNC, 1, [SYNC support]),
+    enable_xsync=no
+    AC_MSG_WARN([Sync support was requested but not found]),
+    $X_LIBS -lX11)
 fi
 
 AC_ARG_ENABLE(xscrnsaver,
   [  --enable-xscrnsaver     compile with ScreenSaver support (experimental!) @<:@default=no@:>@],,
   enable_xscrnsaver=no)
 if test "x$enable_xscrnsaver" = "xyes"; then
-AC_CHECK_LIB(Xss, XScreenSaverQueryExtension,
+  AC_CHECK_LIB(Xss, XScreenSaverQueryExtension,
     AC_DEFINE(HAS_XSCREENSAVER, 1, [ScreenSaver support])
-    E_X_LIBS="-lXss $E_X_LIBS", , $X_LIBS -lXss -lXext -lX11)
+    E_X_LIBS="-lXss $E_X_LIBS",
+    enable_xscrnsaver=no
+    AC_MSG_WARN([ScreenSaver support was requested but not found]),
+    $X_LIBS -lXss -lXext -lX11)
 fi
 
 AC_ARG_ENABLE(xrandr,
   [  --enable-xrandr         compile with RandR support @<:@default=yes@:>@],,
   enable_xrandr=yes)
 if test "x$enable_xrandr" = "xyes"; then
-AC_CHECK_LIB(Xrandr, XRRQueryExtension,
+  AC_CHECK_LIB(Xrandr, XRRQueryExtension,
     AC_DEFINE(HAS_XRANDR, 1, [RandR support])
-    E_X_LIBS="-lXrandr -lXrender $E_X_LIBS", , $X_LIBS -lXrender -lXext -lX11)
+    E_X_LIBS="-lXrandr -lXrender $E_X_LIBS",
+    enable_xrandr=no
+    AC_MSG_WARN([RandR support was requested but not found]),
+    $X_LIBS -lXrender -lXext -lX11)
   AC_CHECK_HEADERS(X11/extensions/Xrandr.h,,,[#include <X11/Xlib.h>])
 fi
 
@@ -206,13 +213,17 @@ AC_ARG_ENABLE(composite,
   enable_composite=yes)
 if test "x$enable_composite" = "xyes"; then
   AC_CHECK_LIB(Xcomposite, XCompositeQueryExtension,
-      AC_DEFINE(HAS_COMPOSITE, 1, [Composite support])
-      E_X_LIBS="-lXcomposite -lXdamage -lXfixes -lXrender $E_X_LIBS", , $X_LIBS -lXext -lX11,
-      enable_composite=no)
-  AC_CHECK_HEADERS(X11/extensions/Xcomposite.h ,,,[#include <X11/Xlib.h>])
-  AC_CHECK_HEADERS(X11/extensions/Xdamage.h    ,,,[#include <X11/Xlib.h>])
-  AC_CHECK_HEADERS(X11/extensions/Xfixes.h     ,,,[#include <X11/Xlib.h>])
-  AC_CHECK_HEADERS(X11/extensions/Xrender.h    ,,,[#include <X11/Xlib.h>])
+    AC_DEFINE(HAS_COMPOSITE, 1, [Composite support])
+    E_X_LIBS="-lXcomposite -lXdamage -lXfixes -lXrender $E_X_LIBS",
+    enable_composite=no,
+    $X_LIBS -lXext -lX11)
+  AC_CHECK_HEADERS(X11/extensions/Xcomposite.h ,, enable_composite=no, [#include <X11/Xlib.h>])
+  AC_CHECK_HEADERS(X11/extensions/Xdamage.h    ,, enable_composite=no, [#include <X11/Xlib.h>])
+  AC_CHECK_HEADERS(X11/extensions/Xfixes.h     ,, enable_composite=no, [#include <X11/Xlib.h>])
+  AC_CHECK_HEADERS(X11/extensions/Xrender.h    ,, enable_composite=no, [#include <X11/Xlib.h>])
+  if test "x$enable_composite" != "xyes"; then
+    AC_MSG_WARN([Composite support was requested but required component was not found])
+  fi
 fi
 AM_CONDITIONAL(HAS_COMPOSITE, test "x$enable_composite" = "xyes")
 
@@ -254,6 +265,33 @@ if test "x$have_good_imlib2" != "xyes"; then
   echo "*** WARNING: If you indeed do not have this, expect trouble ***"
   echo "***************************************************************"
 fi
+
+echo
+echo "------------------------------------------------------------------------"
+echo "$PACKAGE Version $VERSION"
+echo "------------------------------------------------------------------------"
+echo
+echo "Configuration summary"
+echo
+echo "Support for"
+echo "  Localisation ................. $USE_NLS"
+echo "  Sound ........................ $enable_sound"
+echo "  Old GNOME hints .............. $enable_hints_gnome"
+echo "  Zoom ......................... $enable_zoom"
+echo "  Xinerama ..................... $enable_xinerama"
+echo "  RandR ........................ $enable_xrandr"
+echo "  Composite .................... $enable_composite"
+echo
+echo "Experimental options - DO NOT USE unless you know what you are doing"
+echo "  Compile with ecore/ecore_x ... $enable_ecore"
+echo "  Sync ......................... $enable_xsync"
+echo "  ScreenSaver .................. $enable_xscrnsaver"
+echo
+echo "Installation Path .............. $prefix"
+echo
+echo "Compilation .................... make"
+echo "Installation ................... make install"
+echo
 
 echo "***************************************************************"
 echo "*** NOTE: If this is your first trip with version 0.16.8    ***"

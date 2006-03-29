@@ -38,4 +38,3 @@ fi
 
 echo "Running $srcdir/configure $conf_flags $@ ..."
 $srcdir/configure $conf_flags "$@"
-echo "Now type 'make' to compile."
