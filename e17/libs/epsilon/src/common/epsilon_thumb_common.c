@@ -15,9 +15,10 @@ epsilon_message_new(int nid, char *path, char *dst, int status)
 
 	size = sizeof(Epsilon_Message);
 	
-       	if (path)
+	if (path)
 		pathlen = strlen(path) + 1;
-       	if (dst)
+
+	if (dst)
 		dstlen = strlen(dst) + 1;
 	size += dstlen + pathlen;
 
@@ -32,13 +33,13 @@ epsilon_message_new(int nid, char *path, char *dst, int status)
 		msg->bufsize = size - sizeof(Epsilon_Message);
 
 		if (path) {
-			
 			body = ((char *)msg) + sizeof(Epsilon_Message);
 			strcpy(body, path);
 		}
 
 		if (dst) {
-			body = ((char *)msg) + sizeof(Epsilon_Message) + pathlen;
+			body = ((char *)msg) + sizeof(Epsilon_Message) 
+								+ pathlen;
 			strcpy(body, dst);
 		}
 	}
@@ -49,7 +50,7 @@ epsilon_message_new(int nid, char *path, char *dst, int status)
 int
 epsilon_ipc_client_send(Ecore_Con_Client *cl, Epsilon_Message *msg)
 {
-		return ecore_con_client_send(cl, msg,
+	return ecore_con_client_send(cl, msg,
 			sizeof(Epsilon_Message) + msg->bufsize);
 }
 
