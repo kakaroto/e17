@@ -212,7 +212,6 @@ ewl-config
 src/Makefile
 src/bin/Makefile
 src/bin/tests/Makefile
-src/lib/Ewl.h
 src/lib/Makefile
 data/Makefile
 data/images/Makefile

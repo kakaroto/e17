@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-MAINTAINERCLEANFILES = Ewl.h Makefile.in
+MAINTAINERCLEANFILES = Makefile.in
 
 INCLUDES = \
 -I$(top_builddir) \
