@@ -508,6 +508,11 @@ typedef struct
    } place;
    struct
    {
+      int                 w_old;
+      int                 h_old;
+   } screen;
+   struct
+   {
       unsigned int        extensions;
    } server;
    struct

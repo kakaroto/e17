@@ -1732,6 +1732,61 @@ EwinsTouch(Desk * dsk)
      }
 }
 
+static void
+EwinsReposition(void)
+{
+   int                 wdo, hdo, wdn, hdn;
+   int                 i, num;
+   EWin               *const *lst, *ewin;
+   int                 x, y, w, h, ax, ay, xn, yn;
+
+   lst = EwinListGetAll(&num);
+
+   wdo = Mode.screen.w_old;
+   hdo = Mode.screen.h_old;
+   wdn = VRoot.w;
+   hdn = VRoot.h;
+
+   for (i = num - 1; i >= 0; i--)
+     {
+	ewin = lst[i];
+	x = EoGetX(ewin);
+	y = EoGetY(ewin);
+	w = EoGetW(ewin);
+	h = EoGetH(ewin);
+
+	/* Get relative area */
+	ax = (x >= 0) ? (x + w / 2) / wdo : (x + w / 2 + 1) / wdo - 1;
+	ay = (y >= 0) ? (y + h / 2) / hdo : (y + h / 2 + 1) / hdo - 1;
+
+	x -= ax * wdo;
+	y -= ay * hdo;
+
+	/* Reposition to same distance from nearest screen edge */
+	/* Fall back to left/top if this causes left/top to go offscreen */
+	if (abs(x) <= abs(x + w - wdo))
+	   xn = x;
+	else
+	   xn = x + (wdn - wdo);
+	if (x > 0 && xn < 0)
+	   xn = x;
+	xn += ax * wdn;
+
+	if (abs(y) <= abs(y + h - hdo))
+	   yn = y;
+	else
+	   yn = y + (hdn - hdo);
+	if (y > 0 && yn < 0)
+	   yn = y;
+	yn += ay * hdn;
+
+	if (xn == EoGetX(ewin) && yn == EoGetY(ewin))
+	   continue;
+
+	EwinMove(ewin, xn, yn);
+     }
+}
+
 void
 EwinsMoveStickyToDesk(Desk * dsk)
 {
@@ -2061,7 +2116,7 @@ EwinsSighan(int sig, void *prm)
 	break;
 #endif
      case ESIGNAL_DESK_RESIZE:
-	EwinsTouch(NULL);
+	EwinsReposition();
 	break;
      case ESIGNAL_THEME_TRANS_CHANGE:
 	EwinsTouch(DesksGetCurrent());

@@ -836,10 +836,10 @@ DesksResize(int w, int h)
 
    BackgroundsInvalidate(0);
 
+   ModulesSignal(ESIGNAL_DESK_RESIZE, NULL);
+
    for (i = 0; i < Conf.desks.num; i++)
       DeskResize(i, w, h);
-
-   ModulesSignal(ESIGNAL_DESK_RESIZE, NULL);
 }
 
 static void
@@ -1909,6 +1909,8 @@ DeskRootResize(int root, int w, int h)
    if (w != ww || h != hh)
       return;
 
+   Mode.screen.w_old = VRoot.w;
+   Mode.screen.h_old = VRoot.h;
    VRoot.w = w;
    VRoot.h = h;
 
