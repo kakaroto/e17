@@ -262,7 +262,7 @@ main(int argc, char **argv)
 		m->win = ewl_window_new();
 		ewl_window_title_set(EWL_WINDOW(m->win), "ephoto");
 		ewl_window_name_set(EWL_WINDOW(m->win), "ephoto");
-		ewl_object_size_request(EWL_OBJECT(m->win), 600, 480);
+		ewl_object_size_request(EWL_OBJECT(m->win), 640, 480);
 		ewl_callback_append(m->win, EWL_CALLBACK_DELETE_WINDOW, destroy_cb, NULL);
 		ewl_widget_show(m->win);
 		mainwin = 1;
@@ -299,26 +299,6 @@ main(int argc, char **argv)
 		ewl_object_maximum_size_set(EWL_OBJECT(m->imagetree), 200, 160);
 		ewl_widget_show(m->imagetree);
 	
-		m->songs = ewl_border_new();
-		ewl_border_text_set(EWL_BORDER(m->songs), "Select Audio For Slideshow");
-		ewl_border_label_alignment_set(EWL_BORDER(m->songs), EWL_FLAG_ALIGN_CENTER);
-		ewl_container_child_append(EWL_CONTAINER(m->vbox), m->songs);
-		ewl_object_alignment_set(EWL_OBJECT(m->songs), EWL_FLAG_ALIGN_CENTER);
-		ewl_object_size_request(EWL_OBJECT(m->songs), 250, 210);
-		ewl_widget_show(m->songs);
-	
-		m->directorya = ewl_entry_new();
-		ewl_text_text_set(EWL_TEXT(m->directorya), home);
-		ewl_object_alignment_set(EWL_OBJECT(m->directorya), EWL_FLAG_ALIGN_CENTER);
-		ewl_container_child_append(EWL_CONTAINER(m->songs), m->directorya);
-		ewl_callback_append(m->directorya, EWL_CALLBACK_VALUE_CHANGED, populatea_cb, NULL);
-		ewl_widget_show(m->directorya);
-	
-		m->audiotree = ewl_tree_new(1);
-		ewl_container_child_append(EWL_CONTAINER(m->songs), m->audiotree);
-		ewl_object_maximum_size_set(EWL_OBJECT(m->audiotree), 200, 160);
-		ewl_widget_show(m->audiotree);
-		
 		m->notebook = ewl_notebook_new();
 		ewl_notebook_tabbar_position_set(EWL_NOTEBOOK(m->notebook), EWL_POSITION_TOP);
 		ewl_container_child_append(EWL_CONTAINER(m->hbox), m->notebook);
@@ -333,8 +313,7 @@ main(int argc, char **argv)
 		ewl_object_fill_policy_set(EWL_OBJECT(m->viewbox), EWL_FLAG_FILL_ALL);
 		ewl_widget_show(m->viewbox);
 		
-		m->viewscroll = ewl_vbox_new();
-		ewl_theme_data_str_set(m->viewscroll, "/vbox/group", "entry");
+		m->viewscroll = ewl_scrollpane_new();
 		ewl_container_child_append(EWL_CONTAINER(m->viewbox), m->viewscroll);
 		ewl_object_alignment_set(EWL_OBJECT(m->viewscroll), EWL_FLAG_ALIGN_CENTER);
 		ewl_object_fill_policy_set(EWL_OBJECT(m->viewscroll), EWL_FLAG_FILL_ALL);
@@ -344,8 +323,7 @@ main(int argc, char **argv)
 		if ( argimage != NULL ) {
 			ewl_image_file_set(EWL_IMAGE(m->vimage), argimage, NULL);
 		}
-		ewl_object_fill_policy_set(EWL_OBJECT(m->vimage), EWL_FLAG_FILL_ALL);
-		ewl_image_proportional_set(EWL_IMAGE(m->vimage), TRUE);
+		ewl_object_fill_policy_set(EWL_OBJECT(m->vimage), EWL_FLAG_FILL_SHRINK);
 		ewl_container_child_append(EWL_CONTAINER(m->viewscroll), m->vimage);
 		ewl_widget_show(m->vimage);
 		
@@ -370,6 +348,14 @@ main(int argc, char **argv)
 		
 		ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(m->notebook), m->vbox2, "Slideshow/Presentation");
 	
+		m->songs = ewl_vbox_new();
+                ewl_container_child_append(EWL_CONTAINER(m->notebook), m->songs);
+                ewl_object_alignment_set(EWL_OBJECT(m->songs), EWL_FLAG_ALIGN_CENTER);
+                ewl_box_spacing_set(EWL_BOX(m->songs), 10);
+                ewl_widget_show(m->songs);
+
+                ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(m->notebook), m->songs, "Select/Preview Audio");
+
 		m->content = ewl_border_new();
 		ewl_border_text_set(EWL_BORDER(m->content), "Content");
 		ewl_border_label_alignment_set(EWL_BORDER(m->content), EWL_FLAG_ALIGN_CENTER);
@@ -509,7 +495,7 @@ main(int argc, char **argv)
 		ewl_object_alignment_set(EWL_OBJECT(m->text), EWL_FLAG_ALIGN_CENTER);
 		ewl_text_font_size_set(EWL_TEXT(m->text), 12);
 		ewl_text_text_set(EWL_TEXT(m->text), "Width");
-			ewl_widget_show(m->text);
+		ewl_widget_show(m->text);
 		
 		m->wsize = ewl_entry_new();
 		ewl_text_text_set(EWL_TEXT(m->wsize), argwidth);

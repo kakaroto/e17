@@ -51,6 +51,7 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 	if ( ecore_file_is_dir(pathf) ) {
 
 		/**********Get the lists going!***********/
+		audiofiles = ecore_list_new();
 		imagefiles = ecore_list_new();
 		files = ecore_list_new();
 		/*****************************************/
@@ -61,8 +62,8 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 	
 		m->imagetree = ewl_tree_new(1);
 		ewl_container_child_append(EWL_CONTAINER(m->images), m->imagetree);
-		ewl_object_maximum_size_set(EWL_OBJECT(m->imagetree), 200, 175);
-		ewl_tree_headers_visible_set(EWL_TREE(m->imagetree), 0);
+		ewl_object_maximum_size_set(EWL_OBJECT(m->imagetree), 200, 425);
+		ewl_tree_headers_visible_set(EWL_TREE(m->imagetree), FALSE);
 		ewl_widget_show(m->imagetree);
 		
 		/******************************************/
@@ -122,6 +123,18 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 			if ( fnmatch("*.[Jj][Pp][Ee][Gg]", pathw, 0) == 0 ) {
 				ecore_list_append(imagefiles, strdup(pathw));
 			}
+			
+			if ( fnmatch("*.[Mm][Pp][3]", pathw, 0) == 0 ) { 
+				ecore_list_append(audiofiles, strdup(pathw));
+			}
+			
+			if ( fnmatch("*.[Oo][Gg][Gg]", pathw, 0) == 0 ) {
+				ecore_list_append(audiofiles, strdup(pathw));
+			}
+
+			if ( fnmatch("*.[Ww][Aa][Vv]", pathw, 0) == 0 ) {
+            ecore_list_append(audiofiles, strdup(pathw));
+         }
 	
 			bname = basename(pathw);
 	
@@ -170,7 +183,7 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 			m->text = ewl_text_new();
 			ewl_widget_name_set(m->text, itemp);
 			ewl_text_text_set(EWL_TEXT(m->text), bname2);
-   			ewl_object_minimum_size_set(EWL_OBJECT(m->text), 10, 16);
+   		ewl_object_minimum_size_set(EWL_OBJECT(m->text), 10, 16);
 			ewl_object_fill_policy_set(EWL_OBJECT(m->text), EWL_FLAG_FILL_ALL);
 			ewl_container_child_append(EWL_CONTAINER(m->hbox), m->text);
 			ewl_widget_show(m->text);
@@ -182,155 +195,6 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 			free(itemp);
 		}	
 		/***********************************************************************/
-		ecore_list_destroy(files);
-		ecore_list_destroy(imagefiles);
-	}
-}
-
-void
-populatea_cb(Ewl_Widget *w, void *event, void *data)
-{
-	/*********Setup Variables********/
-	char *bname;
-	char *bname2;
-	char  fn[PATH_MAX];
-	char *itemp;
-	const char *pathi;
-	char  pathf[PATH_MAX];
-	char  pathg[PATH_MAX];
-	char  pathw[PATH_MAX];
-	char  path[PATH_MAX];
-	char *temp;
-	char *up = "..";
-	/*************************/
-	
-	/*******Lets find out what directory we are workin with******/
-	if (w == m->directorya) {
-		pathi = ewl_text_text_get(EWL_TEXT(w));
-	}
-	
-	else {
-		pathi = ewl_widget_name_get(w);
-	}
-	
-	ewl_text_text_set(EWL_TEXT(m->directorya), pathi);
-	
-	/***********************************************************/
-	
-	/***********Make sure there is a trailing / *************/
-	snprintf(fn, PATH_MAX, "%s", pathi);
-	
-	if (fn[strlen(fn)-1] != '/') {
-		snprintf(pathf, PATH_MAX, "%s/", pathi);
-	}
-	
-	else {
-		snprintf(pathf, PATH_MAX, "%s", pathi);
-	}
-	/**********************************************************/
-	
-	
-	/********Add the directories to the tree!***********/
-	if ( ecore_file_is_dir(pathf) ) {
-		/********Prepare the lists********/
-		audiofiles = ecore_list_new();
-		files = ecore_list_new();
-		/*********************************/
-	
-		/**********Prepare the tree************/
-		ewl_widget_destroy(m->audiotree);
-		
-		m->audiotree = ewl_tree_new(1);
-		ewl_tree_expandable_rows_set(EWL_TREE(m->audiotree), FALSE);
-		ewl_container_child_append(EWL_CONTAINER(m->songs), m->audiotree);
-		ewl_object_maximum_size_set(EWL_OBJECT(m->audiotree), 200, 175);
-		ewl_widget_show(m->audiotree);
-	
-		/*************************************/
-	
-		/*****Setup parent directory row*****/
-		m->hbox = ewl_hbox_new();
-		ewl_box_spacing_set(EWL_BOX(m->hbox), 5);
-		ewl_widget_show(m->hbox);
-		
-		m->image = ewl_image_new();
-		ewl_image_file_set(EWL_IMAGE(m->image), PACKAGE_DATA_DIR "/images/up.png", NULL);
-		ewl_container_child_append(EWL_CONTAINER(m->hbox), m->image);
-		ewl_tree_headers_visible_set(EWL_TREE(m->audiotree), 0);
-		ewl_widget_show(m->image);
-		
-		m->texta = ewl_text_new();
-		ewl_widget_name_set(m->texta, pathi);
-		ewl_text_text_set(EWL_TEXT(m->texta), up);
-		ewl_object_minimum_size_set(EWL_OBJECT(m->texta), 10, 16);
-		ewl_object_fill_policy_set(EWL_OBJECT(m->texta), EWL_FLAG_FILL_ALL);
-		ewl_container_child_append(EWL_CONTAINER(m->hbox), m->texta);
-		ewl_widget_show(m->texta);
-		
-		m->children[0] = m->hbox;
-		m->children[1] = NULL;
-		m->row = ewl_tree_row_add(EWL_TREE(m->audiotree), NULL, m->children);
-		ewl_callback_append(m->texta, EWL_CALLBACK_CLICKED, up_cb, NULL);
-				
-		files = ecore_file_ls(pathf);
-				
-		while(!ecore_list_is_empty(files)) {
-				
-			temp = ecore_list_remove_first(files);	
-			snprintf(path, PATH_MAX, "%s", pathf);
-				
-			if (path[strlen(path)-1] != '/') {
-				snprintf(pathg, PATH_MAX, "%s/", path);
-			}
-			
-			else {
-				snprintf(pathg, PATH_MAX, "%s", path);
-			}
-			
-			snprintf(pathw, PATH_MAX, "%s%s", pathg, temp);
-			
-			
-			if ( fnmatch("*.[Mm][Pp][3]", pathw, 0) == 0 ) { 
-				ecore_list_append(audiofiles, strdup(pathw));
-			}
-			
-			if ( fnmatch("*.[Oo][Gg][Gg]", pathw, 0) == 0 ) {
-				ecore_list_append(audiofiles, strdup(pathw));
-			}
-
-			if ( fnmatch("*.[Ww][Aa][Vv]", pathw, 0) == 0 ) {
-                                ecore_list_append(audiofiles, strdup(pathw));
-                        }
-
-		
-			bname = basename(pathw);
-		
-			if (ecore_file_is_dir(pathw) && *bname != '.') {
-				
-				m->hbox = ewl_hbox_new();
-				ewl_box_spacing_set(EWL_BOX(m->hbox), 5);
-				ewl_widget_show(m->hbox);
-				
-				m->image = ewl_image_new();
-				ewl_image_file_set(EWL_IMAGE(m->image), PACKAGE_DATA_DIR "/images/folder.png", NULL);
-				ewl_container_child_append(EWL_CONTAINER(m->hbox), m->image);
-				ewl_widget_show(m->image);
-				
-				m->text = ewl_text_new();
-				ewl_widget_name_set(m->text, pathw);
-				ewl_text_text_set(EWL_TEXT(m->text), bname);
-				ewl_object_minimum_size_set(EWL_OBJECT(m->text), 10, 16);
-				ewl_object_fill_policy_set(EWL_OBJECT(m->text), EWL_FLAG_FILL_ALL);
-				ewl_container_child_append(EWL_CONTAINER(m->hbox), m->text);
-				ewl_widget_show(m->text);
-				
-				m->children[0] = m->hbox;
-				m->children[1] = NULL;
-				m->row = ewl_tree_row_add(EWL_TREE(m->audiotree), NULL, m->children);
-				ewl_callback_append(m->text, EWL_CALLBACK_CLICKED, populatea_cb, NULL);
-			}
-		}
-		/**********************************************************************/
 		/*************Add the audio file to the slideshow**************/
 		while( !ecore_list_is_empty(audiofiles) ) {
 			itemp = ecore_list_remove_first(audiofiles);
@@ -357,16 +221,17 @@ populatea_cb(Ewl_Widget *w, void *event, void *data)
 			
 			m->children[0] = m->hbox;
 			m->children[1] = NULL;
-  			m->row = ewl_tree_row_add(EWL_TREE(m->audiotree), NULL, m->children);
+  			m->row = ewl_tree_row_add(EWL_TREE(m->imagetree), NULL, m->children);
 			ewl_callback_append(m->text, EWL_CALLBACK_CLICKED, audio_cb, NULL);
 			free(itemp);
 		}	
 		/**********************************************************************/
-	ecore_list_destroy(files);
-	ecore_list_destroy(audiofiles);
+
+		ecore_list_destroy(files);
+		ecore_list_destroy(imagefiles);
+		ecore_list_destroy(audiofiles);
 	}
 }
-
 
 void
 up_cb(Ewl_Widget *w, void *event, void *data)
