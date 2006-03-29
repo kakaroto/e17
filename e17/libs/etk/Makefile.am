@@ -8,7 +8,8 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 		stamp-h.in build-stamp configure-stamp depcomp \
 		etk_docs.tar.gz \
 		README \
-		etk.pc
+		etk.pc \
+		debian/changelog
 
 bin_SCRIPTS = etk-config
 
@@ -21,7 +22,15 @@ README \
 ABOUT-NLS \
 etk.pc.in \
 etk.spec.in \
-etk.spec
+etk.spec \
+debian/changelog \
+debian/changelog.in \
+debian/libetk0.install \
+debian/libetk0-dev.install \
+debian/etk0-bin.install \
+debian/control \
+debian/copyright \
+debian/rules 
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = etk.pc

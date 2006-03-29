@@ -264,6 +264,7 @@ data/icons/default/Makefile
 po/Makefile
 intl/Makefile
 etk-config
+debian/changelog
 ],[
 chmod +x etk-config
 ])
