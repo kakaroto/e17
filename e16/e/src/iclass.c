@@ -121,7 +121,8 @@ TransparencyMakeColorModifier(void)
      }
 
    if (icm == NULL)
-      icm = EImageColorModifierCreate(gray, gray, gray, alpha);
+      icm = EImageColorModifierCreate();
+   EImageColorModifierSetTables(icm, gray, gray, gray, alpha);
 }
 
 void

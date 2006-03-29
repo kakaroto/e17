@@ -449,14 +449,19 @@ FreePmapMask(PmapMask * pmm)
 }
 
 EImageColorModifier *
-EImageColorModifierCreate(unsigned char *r, unsigned char *g, unsigned char *b,
-			  unsigned char *a)
+EImageColorModifierCreate(void)
 {
-   EImageColorModifier *icm;
+   return imlib_create_color_modifier();
+}
 
-   icm = imlib_create_color_modifier();
+void
+EImageColorModifierSetTables(EImageColorModifier * icm,
+			     unsigned char *r, unsigned char *g,
+			     unsigned char *b, unsigned char *a)
+{
    if (!icm)
-      return NULL;
+      return;
+
    imlib_context_set_color_modifier(icm);
 #if 0				/* Useful in this context? */
    imlib_modify_color_modifier_gamma(0.5);
@@ -465,6 +470,4 @@ EImageColorModifierCreate(unsigned char *r, unsigned char *g, unsigned char *b,
 #endif
    imlib_set_color_modifier_tables(r, g, b, a);
    imlib_context_set_color_modifier(NULL);
-
-   return icm;
 }

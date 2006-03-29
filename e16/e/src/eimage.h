@@ -82,10 +82,12 @@ void                EImageRenderPixmaps(EImage * im, Drawable draw,
 					int w, int h);
 void                EImagePixmapFree(Pixmap pmap);
 
-EImageColorModifier *EImageColorModifierCreate(unsigned char *r,
-					       unsigned char *g,
-					       unsigned char *b,
-					       unsigned char *a);
+EImageColorModifier *EImageColorModifierCreate(void);
+void                EImageColorModifierSetTables(EImageColorModifier * icm,
+						 unsigned char *r,
+						 unsigned char *g,
+						 unsigned char *b,
+						 unsigned char *a);
 
 void                ScaleRect(Window src, Pixmap dst, Pixmap * pdst,
 			      int sx, int sy, int sw, int sh,
