@@ -329,29 +329,8 @@ ewl_window_position_get(Ewl_Window *win, int *x, int *y)
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
-	if (x)
-		*x = win->x;
-	if (y)
-		*y = win->y;
-
-#if 0
-	if (REALIZED(win)) {
-		int fx=0,fy=0,cx,cy;
-		Ecore_X_Window window = (Ecore_X_Window)win->window;
-		
-		while (ecore_x_window_parent_get(window) > 0) {
-			ecore_x_window_geometry_get(window, &cx, &cy, NULL, NULL);
-			fx += cx; fy += cy;
-			
-			//printf ("(%d:%d:%d:%d) Scanning to parent of %d\n", h, window);
-			window = ecore_x_window_parent_get(window);
-			
-		}
-
-		*x = fx;
-		*y = fy;
-	}
-#endif
+	if (x) *x = win->x;
+	if (y) *y = win->y;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
