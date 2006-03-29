@@ -26,6 +26,7 @@
 
 # Likely  prefixes
 $Prefixes = "/usr/local:/usr:/opt:/opt/kde:$ENV{'KDEDIR'}";
+$Prefixes = "$Prefixes:/opt/kde3:/opt/gnome";	# SUSE
 $Prefixes = RemoveDuplcates($Prefixes);
 
 # Where to look for GNOME2/KDE2,3 stuff
