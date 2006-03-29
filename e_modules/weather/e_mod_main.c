@@ -224,6 +224,7 @@ _weather_new(void)
 		  wf->degrees = 'C';
 		  break;
 	       }
+	     
 	     if (wf->conf->display == DETAILED_DISPLAY)
 	       edje_object_signal_emit(wf->weather_obj, "set_style", "detailed");
 	     else
@@ -495,6 +496,7 @@ _weather_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change ch
 	e_gadman_client_geometry_get(wf->gmc, &x, &y, &w, &h);
 	evas_object_move(wf->weather_obj, x, y);
 	evas_object_move(wf->event_obj, x, y);
+
 	evas_object_resize(wf->weather_obj, w, h);
 	evas_object_resize(wf->event_obj, w, h);
 	break;
@@ -784,12 +786,7 @@ _weather_display_set(Weather_Face *wf, int ok)
 
    if (!wf)
      return;
-   
-   if (wf->conf->display == DETAILED_DISPLAY)
-     edje_object_signal_emit(wf->weather_obj, "set_style", "detailed");
-   else
-     edje_object_signal_emit(wf->weather_obj, "set_style", "simple");
-   
+    
    if (!ok)
      {
 	snprintf(buf, sizeof(buf), PACKAGE_DATA_DIR"/images/unknown.png");
