@@ -400,13 +400,15 @@ _mbar_app_change(void *data, E_App *a, E_App_Change ch)
 		  ic = _mbar_icon_new(mbb, a);
 		  if (ic)
 		    {
+		       edje_object_part_text_set(ic->bg_object, "label", a->comment);		       
 		       for (ll = mb->apps->subapps; ll; ll = ll->next)
 			 {
 			    E_App *a2;
 			    
 			    a2 = ll->data;
 			    ic = _mbar_icon_find(mbb, a2);
-			    if (ic) _mbar_icon_reorder_after(ic, NULL);
+			    if (ic) 
+			      _mbar_icon_reorder_after(ic, NULL);
 			 }
 		       _mbar_bar_frame_resize(mbb);
 		    }
@@ -418,7 +420,8 @@ _mbar_app_change(void *data, E_App *a, E_App_Change ch)
 		  MBar_Icon *ic;
 
 		  ic = _mbar_icon_find(mbb, a);
-		  if (ic) _mbar_icon_free(ic);
+		  if (ic) 
+		    _mbar_icon_free(ic);
 		  _mbar_bar_frame_resize(mbb);
 	       }
 	     break;
@@ -428,19 +431,22 @@ _mbar_app_change(void *data, E_App *a, E_App_Change ch)
 		  MBar_Icon *ic;
 
 		  ic = _mbar_icon_find(mbb, a);
-		  if (ic) _mbar_icon_free(ic);
+		  if (ic) 
+		    _mbar_icon_free(ic);
 		  evas_image_cache_flush(mbb->evas);
 		  evas_image_cache_reload(mbb->evas);
 		  ic = _mbar_icon_new(mbb, a);
 		  if (ic)
 		    {
+		       edje_object_part_text_set(ic->bg_object, "label", a->comment);
 		       for (ll = mb->apps->subapps; ll; ll = ll->next)
 			 {
 			    E_App *a2;
 
 			    a2 = ll->data;
 			    ic = _mbar_icon_find(mbb, a2);
-			    if (ic) _mbar_icon_reorder_after(ic, NULL);
+			    if (ic) 
+			      _mbar_icon_reorder_after(ic, NULL);
 			 }
 		       _mbar_bar_frame_resize(mbb);
 		    }
