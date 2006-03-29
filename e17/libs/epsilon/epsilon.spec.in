@@ -64,6 +64,8 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libepsilon.la
 %{_libdir}/pkgconfig/epsilon.pc
 %{_bindir}/epsilon
+%{_bindir}/epsilon_thumb_test
+%{_bindir}/epsilon_thumbd
 
 %files devel
 %defattr(-, root, root)
@@ -71,6 +73,7 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libepsilon.so
 %{_libdir}/libepsilon.a
 %{_includedir}/Epsilon.h
+%{_includedir}/Epsilon_Request.h
 %{_bindir}/epsilon-config
 
 %changelog
