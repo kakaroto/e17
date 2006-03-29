@@ -23,6 +23,7 @@
 #include "E.h"
 #include "desktops.h"
 #include "dialog.h"
+#include "eimage.h"
 #include "emodule.h"
 #include "xwin.h"
 #include <math.h>
@@ -717,22 +718,19 @@ FX_imagespinner_timeout(int val __UNUSED__, void *data __UNUSED__)
    fx_imagespinner_count++;
    if (string)
      {
-	Imlib_Image        *im;
+	EImage             *im;
 
-	im = ELoadImage(string);
+	im = EImageLoad(string);
 	if (im)
 	  {
 	     int                 x, y, w, h;
 
-	     imlib_context_set_image(im);
-	     w = imlib_image_get_width();
-	     h = imlib_image_get_height();
+	     EImageGetSize(im, &w, &h);
 	     sscanf(fx_imagespinner_params, "%*s %i %i ", &x, &y);
 	     x = ((VRoot.w * x) >> 10) - ((w * x) >> 10);
 	     y = ((VRoot.h * y) >> 10) - ((h * y) >> 10);
-	     imlib_context_set_drawable(fx_imagespinner_win);
-	     imlib_render_image_on_drawable_at_size(x, y, w, h);
-	     imlib_free_image();
+	     EImageRenderOnDrawable(im, fx_imagespinner_win, x, y, w, h, 0);
+	     EImageFree(im);
 	  }
 	Efree(string);
      }

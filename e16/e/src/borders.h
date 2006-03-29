@@ -24,6 +24,8 @@
 #ifndef _BORDERS_H_
 #define _BORDERS_H_
 
+#include "eimage.h"
+
 typedef struct _winpoint
 {
    int                 originbox;
@@ -60,7 +62,7 @@ typedef struct _border
 {
    char               *name;
    char               *group_border_name;
-   Imlib_Border        border;
+   EImageBorder        border;
    int                 num_winparts;
    WinPart            *part;
    char                changes_shape;

@@ -475,7 +475,7 @@ TextclassApply(ImageClass * iclass, Window win, int w, int h, int active,
 	       int sticky, int state, char expose __UNUSED__,
 	       TextClass * tclass, const char *text)
 {
-   Imlib_Border       *pad;
+   EImageBorder       *pad;
 
    if ((!iclass) || (!tclass) || (!text) || (!win) || (w < 1) || (h < 1))
       return;

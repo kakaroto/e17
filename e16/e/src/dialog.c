@@ -24,6 +24,7 @@
 #include "E.h"
 #include "dialog.h"
 #include "e16-ecore_list.h"
+#include "eimage.h"
 #include "ewins.h"
 #include "hints.h"
 #include "iclass.h"
@@ -124,7 +125,7 @@ struct _ditem
    void               *data;
    ImageClass         *iclass;
    TextClass          *tclass;
-   Imlib_Border        padding;
+   EImageBorder        padding;
    char                fill_h;
    char                fill_v;
    int                 align_h;
@@ -319,7 +320,7 @@ void
 DialogSetText(Dialog * d, const char *text)
 {
    int                 w, h;
-   Imlib_Border       *pad;
+   EImageBorder       *pad;
 
    if (d->text)
       Efree(d->text);
@@ -367,7 +368,7 @@ DialogAddButton(Dialog * d, const char *text, DialogCallbackFunc * func,
 {
    DButton            *db;
    int                 w, h;
-   Imlib_Border       *pad;
+   EImageBorder       *pad;
 
    db = Emalloc(sizeof(DButton));
 
@@ -414,7 +415,7 @@ static void
 DialogDrawButton(Dialog * d __UNUSED__, DButton * db)
 {
    int                 state;
-   Imlib_Image        *im;
+   EImage             *im;
 
    state = STATE_NORMAL;
    if ((db->hilited) && (db->clicked))
@@ -439,16 +440,16 @@ DialogDrawButton(Dialog * d __UNUSED__, DButton * db)
 	switch (db->image)
 	  {
 	  case DLG_BUTTON_OK:
-	     im = ELoadImage("pix/ok.png");
+	     im = EImageLoad("pix/ok.png");
 	     break;
 	  case DLG_BUTTON_CANCEL:
-	     im = ELoadImage("pix/cancel.png");
+	     im = EImageLoad("pix/cancel.png");
 	     break;
 	  case DLG_BUTTON_APPLY:
-	     im = ELoadImage("pix/apply.png");
+	     im = EImageLoad("pix/apply.png");
 	     break;
 	  case DLG_BUTTON_CLOSE:
-	     im = ELoadImage("pix/close.png");
+	     im = EImageLoad("pix/close.png");
 	     break;
 	  default:
 	     break;
@@ -458,7 +459,7 @@ DialogDrawButton(Dialog * d __UNUSED__, DButton * db)
    if (im)
      {
 	ImageClass         *ic = db->iclass;
-	Imlib_Border       *pad;
+	EImageBorder       *pad;
 	int                 h;
 
 	pad = ImageclassGetPadding(ic);
@@ -468,12 +469,8 @@ DialogDrawButton(Dialog * d __UNUSED__, DButton * db)
 		 db->w - (h + 2 + pad->left + pad->right),
 		 h, h, TextclassGetJustification(db->tclass));
 
-	imlib_context_set_image(im);
-	imlib_context_set_drawable(db->win);
-	imlib_context_set_blend(1);
-	imlib_render_image_on_drawable_at_size(pad->left, pad->top, h, h);
-	imlib_context_set_blend(0);
-	imlib_free_image();
+	EImageRenderOnDrawable(im, db->win, pad->left, pad->top, h, h, 1);
+	EImageFree(im);
      }
    else
      {
@@ -576,7 +573,7 @@ ShowDialog(Dialog * d)
 {
    int                 i, w, h, mw, mh;
    EWin               *ewin;
-   Imlib_Border       *pad;
+   EImageBorder       *pad;
 
    if (d->title)
      {
@@ -946,8 +943,8 @@ DialogRealizeItem(Dialog * d, DItem * di)
    const char         *def = NULL;
    int                 iw = 0, ih = 0;
    int                 register_win_callback;
-   Imlib_Image        *im;
-   Imlib_Border       *pad;
+   EImage             *im;
+   EImageBorder       *pad;
 
    if (di->type == DITEM_BUTTON)
      {
@@ -1042,10 +1039,9 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	im = ImageclassGetImage(di->item.slider.ic_base, 0, 0, 0);
 	if (im)
 	  {
-	     imlib_context_set_image(im);
-	     di->item.slider.base_orig_w = imlib_image_get_width();
-	     di->item.slider.base_orig_h = imlib_image_get_height();
-	     imlib_free_image();
+	     EImageGetSize(im, &di->item.slider.base_orig_w,
+			   &di->item.slider.base_orig_h);
+	     EImageFree(im);
 	  }
 	if (di->item.slider.ic_base)
 	   ImageclassIncRefcount(di->item.slider.ic_base);
@@ -1069,10 +1065,9 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	im = ImageclassGetImage(di->item.slider.ic_knob, 0, 0, 0);
 	if (im)
 	  {
-	     imlib_context_set_image(im);
-	     di->item.slider.knob_orig_w = imlib_image_get_width();
-	     di->item.slider.knob_orig_h = imlib_image_get_height();
-	     imlib_free_image();
+	     EImageGetSize(im, &di->item.slider.knob_orig_w,
+			   &di->item.slider.knob_orig_h);
+	     EImageFree(im);
 	  }
 	if (!di->item.slider.ic_border)
 	  {
@@ -1093,10 +1088,9 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	     im = ImageclassGetImage(di->item.slider.ic_border, 0, 0, 0);
 	     if (im)
 	       {
-		  imlib_context_set_image(im);
-		  di->item.slider.border_orig_w = imlib_image_get_width();
-		  di->item.slider.border_orig_h = imlib_image_get_height();
-		  imlib_free_image();
+		  EImageGetSize(im, &di->item.slider.border_orig_w,
+				&di->item.slider.border_orig_h);
+		  EImageFree(im);
 		  di->item.slider.border_win =
 		     ECreateWindow(d->win, -20, -20, 2, 2, 0);
 		  EMapWindow(di->item.slider.border_win);
@@ -1153,10 +1147,9 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	im = ImageclassGetImage(di->iclass, 0, 0, 0);
 	if (im)
 	  {
-	     imlib_context_set_image(im);
-	     di->item.check_button.check_orig_w = imlib_image_get_width();
-	     di->item.check_button.check_orig_h = imlib_image_get_height();
-	     imlib_free_image();
+	     EImageGetSize(im, &di->item.check_button.check_orig_w,
+			   &di->item.check_button.check_orig_h);
+	     EImageFree(im);
 	  }
 	TextSize(di->tclass, 0, 0, STATE_NORMAL, di->text, &iw, &ih, 17);
 	if (ih < di->item.check_button.check_orig_h)
@@ -1179,22 +1172,19 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	di->h = ih;
 	break;
      case DITEM_IMAGE:
-	im = ELoadImage(di->item.image.image);
+	im = EImageLoad(di->item.image.image);
 	if (im)
 	  {
 	     Pixmap              pmap = 0, mask = 0;
 
-	     imlib_context_set_image(im);
-	     iw = imlib_image_get_width();
-	     ih = imlib_image_get_height();
+	     EImageGetSize(im, &iw, &ih);
 	     di->win = ECreateWindow(d->win, 0, 0, iw, ih, 0);
 	     EMapWindow(di->win);
-	     imlib_context_set_drawable(di->win);
-	     imlib_render_pixmaps_for_whole_image(&pmap, &mask);
+	     EImageRenderPixmaps(im, di->win, &pmap, &mask, 0, 0);
 	     ESetWindowBackgroundPixmap(di->win, pmap);
 	     EShapeCombineMask(di->win, ShapeBounding, 0, 0, mask, ShapeSet);
-	     imlib_free_pixmap_and_mask(pmap);
-	     imlib_free_image();
+	     EImagePixmapFree(pmap);
+	     EImageFree(im);
 	  }
 	di->w = iw;
 	di->h = ih;
@@ -1215,10 +1205,9 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	im = ImageclassGetImage(di->iclass, 0, 0, 0);
 	if (im)
 	  {
-	     imlib_context_set_image(im);
-	     di->item.radio_button.radio_orig_w = imlib_image_get_width();
-	     di->item.radio_button.radio_orig_h = imlib_image_get_height();
-	     imlib_free_image();
+	     EImageGetSize(im, &di->item.radio_button.radio_orig_w,
+			   &di->item.radio_button.radio_orig_h);
+	     EImageFree(im);
 	  }
 	TextSize(di->tclass, 0, 0, STATE_NORMAL, di->text, &iw, &ih, 17);
 	if (ih < di->item.radio_button.radio_orig_h)
@@ -1565,7 +1554,7 @@ static void
 DialogDrawItem(Dialog * d, DItem * di)
 {
    int                 state;
-   Imlib_Border       *pad;
+   EImageBorder       *pad;
 
    if (!di->update && di->type != DITEM_TABLE)
       return;
@@ -1773,7 +1762,7 @@ DialogsCheckUpdate(void)
 static void
 DialogItemsRealize(Dialog * d)
 {
-   Imlib_Border       *pad;
+   EImageBorder       *pad;
 
    if (!d->item)
       return;

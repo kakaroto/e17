@@ -40,6 +40,7 @@ struct _hiwin
    void               *data;
    char                animate;
    GC                  gc;
+   EImage             *im;
 };
 
 typedef struct
@@ -55,41 +56,34 @@ static void
 HiwinRenderImageInit(Hiwin * phi)
 {
    EWin               *ewin = phi->ewin;
-   Imlib_Image        *im;
    Pixmap              pmap;
 
    pmap = EoGetPixmap(ewin);
    if (pmap)
      {
-	imlib_context_set_drawable(pmap);
-	im = imlib_create_image_from_drawable(0, 0, 0,
-					      EoGetW(ewin), EoGetH(ewin), 0);
+	phi->im = EImageGrabDrawable(pmap, None, 0, 0,
+				     EoGetW(ewin), EoGetH(ewin), 0);
 	/* Skip zoom effect if composite is active */
 	phi->animate = 0;
      }
    else if (phi->zoom > 2 && EwinIsOnScreen(ewin))
      {
-	imlib_context_set_drawable(EoGetWin(ewin));
-	im = imlib_create_image_from_drawable(0, 0, 0,
-					      EoGetW(ewin), EoGetH(ewin), 0);
+	phi->im = EImageGrabDrawable(EoGetWin(ewin), None, 0, 0,
+				     EoGetW(ewin), EoGetH(ewin), 0);
      }
    else
      {
-	imlib_context_set_drawable(ewin->mini_pmm.pmap);
-	im = imlib_create_image_from_drawable(0, 0, 0,
-					      ewin->mini_w, ewin->mini_h, 0);
+	phi->im = EImageGrabDrawable(ewin->mini_pmm.pmap, None, 0, 0,
+				     ewin->mini_w, ewin->mini_h, 0);
      }
 
-   imlib_context_set_image(im);
-   imlib_context_set_drawable(EoGetWin(phi));
    ESetWindowBackgroundPixmap(EoGetWin(phi), None);
 }
 
 static void
 HiwinRenderImageDrawX(Hiwin * phi, Drawable draw)
 {
-   imlib_context_set_drawable(draw);
-   imlib_render_image_on_drawable_at_size(0, 0, EoGetW(phi), EoGetH(phi));
+   EImageRenderOnDrawable(phi->im, draw, 0, 0, EoGetW(phi), EoGetH(phi), 0);
 }
 
 static void
@@ -112,14 +106,14 @@ HiwinRenderImageFini(Hiwin * phi, int shown)
 	EFreePixmap(pmap);
 	EClearWindow(EoGetWin(phi));
      }
-   imlib_free_image_and_decache();
+   EImageDecache(phi->im);
+   phi->im = NULL;
 }
 
 #if USE_COMPOSITE
 static void
 HiwinRenderImageUpdate(Hiwin * phi)
 {
-   Imlib_Image        *im;
    Pixmap              pmap;
    EWin               *ewin = phi->ewin;
 
@@ -127,14 +121,12 @@ HiwinRenderImageUpdate(Hiwin * phi)
    if (pmap == None)
       return;
 
-   imlib_context_set_drawable(pmap);
-   im = imlib_create_image_from_drawable(0, 0, 0,
-					 EoGetW(ewin), EoGetH(ewin), 0);
-
-   imlib_context_set_image(im);
+   phi->im = EImageGrabDrawable(pmap, None, 0, 0,
+				EoGetW(ewin), EoGetH(ewin), 0);
    ESetWindowBackgroundPixmap(EoGetWin(phi), None);
    HiwinRenderImageDrawX(phi, EoGetWin(phi));
-   imlib_free_image_and_decache();
+   EImageDecache(phi->im);
+   phi->im = NULL;
 }
 #endif
 

@@ -42,7 +42,7 @@ CoordsShow(EWin * ewin)
    unsigned int        w, h;
    int                 cx, cy, cw, ch;
    EObj               *eo = coord_eo;
-   Imlib_Border       *pad;
+   EImageBorder       *pad;
    int                 bl, br, bt, bb;
 
    if (!Conf.movres.mode_info)

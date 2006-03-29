@@ -61,8 +61,6 @@
 #define USE_COMPOSITE 1
 #endif
 
-#include <Imlib2.h>
-
 #define ENABLE_COLOR_MODIFIERS 0	/* Not functional */
 
 #define ENABLE_TRANSPARENCY 1
@@ -669,7 +667,6 @@ void                DialogAlertOK(const char *fmt, ...);
 void                DockIt(EWin * ewin);
 
 /* draw.c */
-Imlib_Image        *ELoadImage(const char *file);
 void                DrawEwinShape(EWin * ewin, int md, int x, int y, int w,
 				  int h, char firstlast);
 

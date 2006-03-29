@@ -64,7 +64,7 @@ typedef struct
    } u;
    int                 xo, yo, wo, ho;	/* Outer */
    int                 xi, yi, wi, hi;	/* Inner */
-   Imlib_Image        *im;
+   EImage             *im;
 } IboxOject;
 
 struct _iconbox
@@ -94,7 +94,7 @@ struct _iconbox
    int                 max, max_min;
    ImageClass         *ic_box;
    ImageClass         *ic_item_base;
-   Imlib_Image        *im_item_base;
+   EImage             *im_item_base;
 
    char                arrow1_hilited;
    char                arrow1_clicked;
@@ -479,7 +479,7 @@ static void
 IconboxReconfigure(Iconbox * ib)
 {
    ImageClass         *ic, *ic2;
-   Imlib_Border       *pad;
+   EImageBorder       *pad;
    EWin               *ewin;
    int                 extra;
    unsigned int        wmin, hmin, wmax, hmax;
@@ -704,10 +704,8 @@ IconboxObjEwinDel(Iconbox * ib, EWin * ewin)
       return;
 
    if (ib->objs[i].im)
-     {
-	imlib_context_set_image(ib->objs[i].im);
-	imlib_free_image();
-     }
+      EImageFree(ib->objs[i].im);
+
    IconboxObjectDel(ib, ewin);
 }
 
@@ -829,10 +827,7 @@ IconboxUpdateEwinIcon(Iconbox * ib, EWin * ewin, int icon_mode)
       return;
 
    if (ib->objs[i].im)
-     {
-	imlib_context_set_image(ib->objs[i].im);
-	imlib_free_image();
-     }
+      EImageFree(ib->objs[i].im);
    ib->objs[i].im = EwinIconImageGet(ewin, ib->iconsize, icon_mode);
 
    IconboxRedraw(ib);
@@ -848,13 +843,11 @@ IconboxesUpdateEwinIcon(EWin * ewin, int icon_mode)
 }
 
 static void
-IconboxFindIconSize(Imlib_Image * im, int *pw, int *ph, int size)
+IconboxFindIconSize(EImage * im, int *pw, int *ph, int size)
 {
    int                 w, h, minsz, maxwh;
 
-   imlib_context_set_image(im);
-   w = imlib_image_get_width();
-   h = imlib_image_get_height();
+   EImageGetSize(im, &w, &h);
 
    maxwh = (w > h) ? w : h;
    if (maxwh <= 1)
@@ -879,7 +872,7 @@ IconboxLayoutImageWin(Iconbox * ib)
    int                 i, xo, yo, wo, ho, wi, hi;
    int                 item_pad, padl, padr, padt, padb;
    IboxOject          *ibo;
-   Imlib_Border       *pad;
+   EImageBorder       *pad;
 
    if (ib->orientation)
       ib->ic_box = ImageclassFind("ICONBOX_VERTICAL", 0);
@@ -1034,7 +1027,7 @@ static void
 IB_DrawScroll(Iconbox * ib)
 {
    ImageClass         *ic;
-   Imlib_Border       *pad;
+   EImageBorder       *pad;
    int                 arrow_mode = ib->arrow_side;
    int                 bs, bw, bx;
    int                 state;
@@ -1568,7 +1561,7 @@ IconboxDraw(Iconbox * ib)
    ImageClass         *ib_ic_cover;
    int                 ib_xlt, ib_ylt, ib_ww, ib_hh;
    int                 ib_x0, ib_y0, ib_w0, ib_h0;
-   Imlib_Image        *im, *im2;
+   EImage             *im;
    int                 ww, hh;
    Pixmap              pmap, mask;
 
@@ -1636,21 +1629,15 @@ IconboxDraw(Iconbox * ib)
 	    (!ib->nobg || (ib->type == IB_TYPE_SYSTRAY && !ib->draw_icon_base)))
      {
 	/* Start out with iconbox image class image */
-	im2 = ImageclassGetImage(ib->ic_box, 0, 0, STATE_NORMAL);
-	im = EImageBlendPT(im2, ib->icon_win, ib_w0, ib_h0, ST_ICONBOX);
-	imlib_context_set_image(im2);
-	imlib_free_image();
-	imlib_context_set_image(im);
+	im = ImageclassGetImageBlended(ib->ic_box, ib->icon_win, ib_w0, ib_h0,
+				       0, 0, STATE_NORMAL, ST_ICONBOX);
      }
    else
      {
 	/* Start out with blank image */
-	im = imlib_create_image(ib_w0, ib_h0);
-	imlib_context_set_image(im);
-	imlib_image_set_has_alpha(1);
-	imlib_context_set_blend(0);
-	imlib_context_set_color(0, 0, 0, 0);
-	imlib_image_fill_rectangle(0, 0, ib_w0, ib_h0);
+	im = EImageCreate(ib_w0, ib_h0);
+	EImageFill(im, 0, 0, ib_w0, ib_h0, 0, 0, 0, 255);
+	EImageSetHasAlpha(im, 1);
      }
 
    for (i = 0; i < ib->num_objs; i++)
@@ -1661,32 +1648,18 @@ IconboxDraw(Iconbox * ib)
 
 	if (ib->draw_icon_base && ib->im_item_base)
 	  {
-	     imlib_context_set_image(ib->im_item_base);
-	     ww = imlib_image_get_width();
-	     hh = imlib_image_get_height();
-	     imlib_context_set_image(im);
-	     imlib_context_set_blend(1);
-	     imlib_blend_image_onto_image(ib->im_item_base, 1, 0, 0,
-					  ww, hh, ibo->xo, ibo->yo,
-					  ibo->wo, ibo->ho);
-	     imlib_context_set_blend(0);
+	     EImageGetSize(ib->im_item_base, &ww, &hh);
+	     EImageBlend(im, ib->im_item_base, 1, 0, 0, ww, hh,
+			 ibo->xo, ibo->yo, ibo->wo, ibo->ho, 1, 0);
 	  }
 
 	if (ib->type == IB_TYPE_ICONBOX)
 	  {
 	     if (ibo->im)
 	       {
-		  imlib_context_set_image(ibo->im);
-		  ww = imlib_image_get_width();
-		  hh = imlib_image_get_height();
-		  imlib_context_set_image(im);
-		  imlib_context_set_anti_alias(1);
-		  imlib_context_set_blend(1);
-		  imlib_blend_image_onto_image(ibo->im, 1, 0, 0, ww, hh,
-					       ibo->xi, ibo->yi, ibo->wi,
-					       ibo->hi);
-		  imlib_context_set_blend(0);
-		  imlib_context_set_anti_alias(0);
+		  EImageGetSize(ibo->im, &ww, &hh);
+		  EImageBlend(im, ibo->im, 1, 0, 0, ww, hh,
+			      ibo->xi, ibo->yi, ibo->wi, ibo->hi, 1, 1);
 	       }
 	  }
 	else
@@ -1702,15 +1675,11 @@ IconboxDraw(Iconbox * ib)
    if (im)
      {
 	EMapWindow(ib->icon_win);
-	imlib_context_set_drawable(ib->icon_win);
-	imlib_context_set_image(im);
-	imlib_image_set_has_alpha(1);
-	pmap = mask = None;
-	imlib_render_pixmaps_for_whole_image(&pmap, &mask);
+	EImageRenderPixmaps(im, ib->icon_win, &pmap, &mask, 0, 0);
 	ESetWindowBackgroundPixmap(ib->icon_win, pmap);
 	EShapeCombineMask(ib->icon_win, ShapeBounding, 0, 0, mask, ShapeSet);
-	imlib_free_pixmap_and_mask(pmap);
-	imlib_free_image();
+	EImagePixmapFree(pmap);
+	EImageFree(im);
 	EClearWindow(ib->icon_win);
 
 	if (ib->type == IB_TYPE_SYSTRAY && ib->nobg && !ib->draw_icon_base)
@@ -1864,7 +1833,7 @@ IboxEventScrollbarWin(XEvent * ev, void *prm)
    static int          px, py, pos0;
    int                 bs, dp;
    ImageClass         *ic;
-   Imlib_Border       *pad;
+   EImageBorder       *pad;
 
    switch (ev->type)
      {

@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "e16-ecore_hints.h"
+#include "eimage.h"
 #include "xwin.h"
 #include <sys/time.h>
 
@@ -44,15 +45,7 @@ ExtInitWinMain(void)
 
    EGrabServer();
 
-#if 0
-   imlib_set_cache_size(2048 * 1024);
-   imlib_set_font_cache_size(512 * 1024);
-   imlib_set_color_usage(128);
-#endif
-
-   imlib_context_set_display(disp);
-   imlib_context_set_visual(DefaultVisual(disp, DefaultScreen(disp)));
-   imlib_context_set_colormap(DefaultColormap(disp, DefaultScreen(disp)));
+   EImageInit(disp);
 
    attr.backing_store = NotUseful;
    attr.override_redirect = True;
@@ -85,9 +78,9 @@ ExtInitWinMain(void)
    {
       Window              w2, ww;
       char                s[1024];
-      Imlib_Image        *im;
+      EImage             *im;
       struct timeval      tv;
-      int                 dd, x, y;
+      int                 dd, x, y, w, h;
       unsigned int        mm;
       Cursor              cs = 0;
       XColor              cl;
@@ -122,25 +115,20 @@ ExtInitWinMain(void)
 	   if (EventDebug(EDBUG_TYPE_SESSION))
 	      Eprintf("ExtInitWinCreate - child %s\n", s);
 
-	   im = ELoadImage(s);
+	   im = EImageLoad(s);
 	   if (im)
 	     {
-		imlib_context_set_image(im);
-		imlib_context_set_drawable(w2);
-		imlib_render_pixmaps_for_whole_image(&pmap, &mask);
+		EImageRenderPixmaps(im, w2, &pmap, &mask, 0, 0);
+		EImageGetSize(im, &w, &h);
 		XShapeCombineMask(disp, w2, ShapeBounding, 0, 0, mask,
 				  ShapeSet);
 		XSetWindowBackgroundPixmap(disp, w2, pmap);
-		imlib_free_pixmap_and_mask(pmap);
+		EImagePixmapFree(pmap);
 		XClearWindow(disp, w2);
 		XQueryPointer(disp, win, &ww, &ww, &dd, &dd, &x, &y, &mm);
-		XMoveResizeWindow(disp, w2,
-				  x - imlib_image_get_width() / 2,
-				  y - imlib_image_get_height() / 2,
-				  imlib_image_get_width(),
-				  imlib_image_get_height());
+		XMoveResizeWindow(disp, w2, x - w / 2, y - h / 2, w, h);
 		XMapWindow(disp, w2);
-		imlib_free_image();
+		EImageFree(im);
 	     }
 	   tv.tv_sec = 0;
 	   tv.tv_usec = 50000;

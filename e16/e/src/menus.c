@@ -25,6 +25,7 @@
 #include "borders.h"
 #include "dialog.h"
 #include "e16-ecore_list.h"
+#include "eimage.h"
 #include "emodule.h"
 #include "eobj.h"
 #include "ewins.h"
@@ -650,8 +651,8 @@ MenuRealize(Menu * m)
    int                 i, maxh, maxw, nmaxy;
    int                 maxx1, maxx2, w, h, x, y, r, mmw, mmh;
    int                 iw, ih;
-   Imlib_Image        *im;
-   Imlib_Border       *pad, *pad_item, *pad_sub;
+   EImage             *im;
+   EImageBorder       *pad, *pad_item, *pad_sub;
    char                has_i, has_s;
 
    if (!m->style)
@@ -709,10 +710,8 @@ MenuRealize(Menu * m)
 		     w = h = Conf.menus.icon_size;
 		  if (w <= 0 || h <= 0)
 		    {
-		       imlib_context_set_image(im);
-		       w = imlib_image_get_width();
-		       h = imlib_image_get_height();
-		       imlib_free_image();
+		       EImageGetSize(im, &w, &h);
+		       EImageFree(im);
 		    }
 		  m->items[i]->icon_w = w;
 		  m->items[i]->icon_h = h;

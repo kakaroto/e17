@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "eimage.h"
 #include "ewins.h"
 #include "icons.h"
 #include "xwin.h"
@@ -64,12 +65,12 @@ NetwmIconFindBestSize(unsigned int *val, unsigned int len, int size)
    return k;
 }
 
-static Imlib_Image *
+static EImage      *
 IB_SnapEWin(EWin * ewin, int size)
 {
    /* Make snapshot of window */
    int                 w, h, ww, hh, scale;
-   Imlib_Image        *im;
+   EImage             *im;
    Drawable            draw;
 
    if (!EwinIsMapped(ewin))
@@ -111,33 +112,28 @@ IB_SnapEWin(EWin * ewin, int size)
 	Pixmap              mask;
 
 	mask = EWindowGetShapePixmap(EoGetWin(ewin));
-	imlib_context_set_drawable(draw);
-	im = imlib_create_scaled_image_from_drawable(mask, 0, 0, ww, hh,
-						     w, h, !EServerIsGrabbed(),
-						     0);
+	im = EImageGrabDrawableScaled(draw, mask, 0, 0, ww, hh, w, h,
+				      !EServerIsGrabbed(), 0);
      }
    else
      {
 	draw = EoGetWin(ewin);
-	imlib_context_set_drawable(draw);
-	im = imlib_create_scaled_image_from_drawable(None, 0, 0, ww, hh,
-						     w, h, !EServerIsGrabbed(),
-						     1);
+	im = EImageGrabDrawableScaled(draw, None, 0, 0, ww, hh, w, h,
+				      !EServerIsGrabbed(), 1);
      }
-   imlib_context_set_image(im);
-   imlib_image_set_has_alpha(1);
+   EImageSetHasAlpha(im, 1);
 
    return im;
 }
 
-static Imlib_Image *
+static EImage      *
 IB_GetAppIcon(EWin * ewin, int size)
 {
    /* Get the applications icon pixmap/mask */
    int                 x, y;
    unsigned int        w, h, depth, bw;
    Window              rt;
-   Imlib_Image         im;
+   EImage             *im;
 
    if (ewin->ewmh.wm_icon)
      {
@@ -145,13 +141,10 @@ IB_GetAppIcon(EWin * ewin, int size)
 				  size);
 	if (x >= 0)
 	  {
-	     im = imlib_create_image_using_copied_data(ewin->ewmh.wm_icon[x],
-						       ewin->ewmh.wm_icon[x +
-									  1],
-						       ewin->ewmh.wm_icon + x +
-						       2);
-	     imlib_context_set_image(im);
-	     imlib_image_set_has_alpha(1);
+	     im = EImageCreateFromData(ewin->ewmh.wm_icon[x],
+				       ewin->ewmh.wm_icon[x + 1],
+				       ewin->ewmh.wm_icon + x + 2);
+	     EImageSetHasAlpha(im, 1);
 	     return im;
 	  }
      }
@@ -166,30 +159,25 @@ IB_GetAppIcon(EWin * ewin, int size)
    if (w < 1 || h < 1)
       return NULL;
 
-   imlib_context_set_colormap(None);
-   imlib_context_set_drawable(ewin->icccm.icon_pmap);
-   im = imlib_create_image_from_drawable(ewin->icccm.icon_mask, 0, 0, w, h,
-					 !EServerIsGrabbed());
-   imlib_context_set_image(im);
-   imlib_image_set_has_alpha(1);	/* Should be set by imlib? */
-   imlib_context_set_colormap(VRoot.cmap);
-   imlib_context_set_drawable(VRoot.win);
+   im = EImageGrabDrawable(ewin->icccm.icon_pmap, ewin->icccm.icon_mask,
+			   0, 0, w, h, !EServerIsGrabbed());
+   EImageSetHasAlpha(im, 1);
 
    return im;
 }
 
-static Imlib_Image *
+static EImage      *
 IB_GetEIcon(EWin * ewin)
 {
    /* get the icon defined for this window in E's iconf match file */
    const char         *file;
-   Imlib_Image        *im;
+   EImage             *im;
 
    file = WindowMatchEwinIcon(ewin);
    if (!file)
       return NULL;
 
-   im = ELoadImage(file);
+   im = EImageLoad(file);
 
    return im;
 }
@@ -204,10 +192,10 @@ static const char   ewin_icon_modes[N_MODES][N_TYPES] = {
    {EWIN_ICON_TYPE_APP, EWIN_ICON_TYPE_IMG, EWIN_ICON_TYPE_NONE},
 };
 
-Imlib_Image        *
+EImage             *
 EwinIconImageGet(EWin * ewin, int size, int mode)
 {
-   Imlib_Image        *im = NULL;
+   EImage             *im = NULL;
    int                 i, type;
 
    if (mode < 0 || mode >= N_MODES)

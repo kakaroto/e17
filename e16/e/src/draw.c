@@ -981,29 +981,3 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	   CoordsHide();
      }
 }
-
-Imlib_Image        *
-ELoadImage(const char *file)
-{
-   Imlib_Image        *im;
-   char               *f;
-
-   if (!file)
-      return NULL;
-
-   if (file[0] == '/')
-     {
-	im = imlib_load_image(file);
-	return im;
-     }
-
-   f = ThemeFileFind(file, 0);
-   if (f)
-     {
-	im = imlib_load_image(f);
-	Efree(f);
-	return im;
-     }
-
-   return NULL;
-}

@@ -21,6 +21,10 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+#ifndef _ICONS_H_
+#define _ICONS_H_
+
+#include "eimage.h"
 
 typedef enum
 {
@@ -30,4 +34,6 @@ typedef enum
    EWIN_ICON_TYPE_NONE,
 } ewin_icon_e;
 
-Imlib_Image        *EwinIconImageGet(EWin * ewin, int size, int mode);
+EImage             *EwinIconImageGet(EWin * ewin, int size, int mode);
+
+#endif /* _ICONS_H_ */

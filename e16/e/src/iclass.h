@@ -24,6 +24,7 @@
 #ifndef _ICLASS_H
 #define _ICLASS_H
 
+#include "eimage.h"
 #include "xwin.h"
 
 struct _textclass;
@@ -99,18 +100,15 @@ int                 ImageclassIsTransparent(ImageClass * ic);
 #define ImageclassIsTransparent(ic) 0
 #endif
 
-Imlib_Image        *EImageBlendPT(Imlib_Image * im, Window win, int w, int h,
-				  int image_type);
-
 ImageClass         *ImageclassFind(const char *name, int fallback);
 void                ImageclassIncRefcount(ImageClass * ic);
 void                ImageclassDecRefcount(ImageClass * ic);
 const char         *ImageclassGetName(ImageClass * ic);
-Imlib_Border       *ImageclassGetPadding(ImageClass * ic);
+EImageBorder       *ImageclassGetPadding(ImageClass * ic);
 ImageState         *ImageclassGetImageState(ImageClass * ic, int state,
 					    int active, int sticky);
 ImageClass         *ImageclassCreateSimple(const char *name, const char *image);
-Imlib_Image        *ImageclassGetImage(ImageClass * ic, int active, int sticky,
+EImage             *ImageclassGetImage(ImageClass * ic, int active, int sticky,
 				       int state);
 Pixmap              ImageclassApplySimple(ImageClass * ic, Window win,
 					  Drawable draw, int state, int x,
@@ -122,6 +120,10 @@ void                ImageclassApplyCopy(ImageClass * ic, Window win, int w,
 					int h, int active, int sticky,
 					int state, PmapMask * pmm,
 					int make_mask, int image_type);
+EImage             *ImageclassGetImageBlended(ImageClass * ic, Window win,
+					      int w, int h, int active,
+					      int sticky, int state,
+					      int image_type);
 void                ITApply(Window win, ImageClass * ic, ImageState * is, int w,
 			    int h, int state, int active, int sticky,
 			    char expose, int image_type, struct _textclass *tc,

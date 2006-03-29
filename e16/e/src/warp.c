@@ -108,7 +108,7 @@ static void
 WarpFocusWinShow(WarpFocusWin * fw)
 {
    WarplistItem       *wi;
-   Imlib_Border       *pad;
+   EImageBorder       *pad;
    int                 i, x, y, w, h, ww, hh;
    char                s[1024];
    const char         *fmt;
@@ -212,8 +212,8 @@ WarpFocusWinPaint(WarpFocusWin * fw)
 	if (Conf.warplist.icon_mode != 0)
 	  {
 	     int                 icon_size = fw->mh - 2 * ICON_PAD;
-	     Imlib_Image        *im;
-	     Imlib_Border       *pad;
+	     EImage             *im;
+	     EImageBorder       *pad;
 
 	     pad = ImageclassGetPadding(fw->ic);
 
@@ -225,14 +225,10 @@ WarpFocusWinPaint(WarpFocusWin * fw)
 	     if (!im)
 		continue;
 
-	     imlib_context_set_image(im);
-	     imlib_context_set_drawable(wi->win);
-	     imlib_context_set_blend(1);
-	     imlib_render_image_on_drawable_at_size(pad->left +
-						    ICON_PAD, ICON_PAD,
-						    icon_size, icon_size);
-	     imlib_free_image();
-	     imlib_context_set_blend(0);
+	     EImageRenderOnDrawable(im, wi->win, pad->left +
+				    ICON_PAD, ICON_PAD,
+				    icon_size, icon_size, 1);
+	     EImageFree(im);
 	  }
 	else
 	  {

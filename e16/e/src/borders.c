@@ -256,7 +256,7 @@ BorderWinpartCalc(EWin * ewin, int i, int ww, int hh)
 	int                 dummywidth, wmax, wmin;
 	ImageClass         *iclass;
 	TextClass          *tclass;
-	Imlib_Border       *pad;
+	EImageBorder       *pad;
 
 	/*
 	 * calculate width before height, because we need it in order to
@@ -321,7 +321,7 @@ BorderWinpartCalc(EWin * ewin, int i, int ww, int hh)
 	     int                 dummyheight;
 	     ImageClass         *iclass;
 	     TextClass          *tclass;
-	     Imlib_Border       *pad;
+	     EImageBorder       *pad;
 
 	     iclass = ewin->border->part[i].iclass;
 	     tclass = ewin->border->part[i].tclass;

@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "eimage.h"
 #include "tclass.h"
 #include "xwin.h"
 
@@ -790,10 +791,10 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 }
 
 void
-TextDrawRotTo(Window win, Drawable * drawable, int x, int y, int w, int h,
+TextDrawRotTo(Window win, Drawable * draw, int x, int y, int w, int h,
 	      TextState * ts)
 {
-   Imlib_Image        *ii = NULL;
+   EImage             *im;
    int                 win_x, win_y;
    unsigned int        win_w, win_h, win_b, win_d;
    Window              rr;
@@ -801,43 +802,35 @@ TextDrawRotTo(Window win, Drawable * drawable, int x, int y, int w, int h,
    switch (ts->style.orientation)
      {
      case FONT_TO_UP:
-	imlib_context_set_drawable(win);
-	ii = imlib_create_image_from_drawable(0, y, x, h, w, 0);
-	imlib_context_set_image(ii);
-	imlib_image_orientate(1);
-	imlib_context_set_drawable(*drawable);
-	imlib_render_image_on_drawable_at_size(0, 0, w, h);
+	im = EImageGrabDrawable(win, 0, y, x, h, w, 0);
+	EImageOrientate(im, 1);
+	EImageRenderOnDrawable(im, *draw, 0, 0, w, h, 0);
+	EImageFree(im);
 	break;
      case FONT_TO_DOWN:
 	XGetGeometry(disp, win, &rr, &win_x, &win_y, &win_w, &win_h,
 		     &win_b, &win_d);
-	imlib_context_set_drawable(win);
-	ii = imlib_create_image_from_drawable(0, win_w - y - h, x, h, w, 0);
-	imlib_context_set_image(ii);
-	imlib_image_orientate(3);
-	imlib_context_set_drawable(*drawable);
-	imlib_render_image_on_drawable_at_size(0, 0, w, h);
+	im = EImageGrabDrawable(win, None, win_w - y - h, x, h, w, 0);
+	EImageOrientate(im, 3);
+	EImageRenderOnDrawable(im, *draw, 0, 0, w, h, 0);
+	EImageFree(im);
 	break;
      case FONT_TO_LEFT:	/* Holy carumba! That's for yoga addicts, maybe .... */
-	imlib_context_set_drawable(win);
-	ii = imlib_create_image_from_drawable(0, x, y, w, h, 0);
-	imlib_context_set_image(ii);
-	imlib_image_orientate(2);
-	imlib_context_set_drawable(*drawable);
-	imlib_render_image_on_drawable_at_size(0, 0, w, h);
+	im = EImageGrabDrawable(win, None, x, y, w, h, 0);
+	EImageOrientate(im, 2);
+	EImageRenderOnDrawable(im, *draw, 0, 0, w, h, 0);
+	EImageFree(im);
 	break;
      default:
 	break;
      }
-   if (ii)
-      imlib_free_image();
 }
 
 void
-TextDrawRotBack(Window win, Pixmap drawable, int x, int y, int w, int h,
+TextDrawRotBack(Window win, Pixmap draw, int x, int y, int w, int h,
 		TextState * ts)
 {
-   Imlib_Image        *ii = NULL;
+   EImage             *im;
    int                 win_x, win_y;
    unsigned int        win_w, win_h, win_b, win_d;
    Window              rr;
@@ -845,34 +838,26 @@ TextDrawRotBack(Window win, Pixmap drawable, int x, int y, int w, int h,
    switch (ts->style.orientation)
      {
      case FONT_TO_UP:
-	imlib_context_set_drawable(drawable);
-	ii = imlib_create_image_from_drawable(0, 0, 0, w, h, 0);
-	imlib_context_set_image(ii);
-	imlib_image_orientate(3);
-	imlib_context_set_drawable(win);
-	imlib_render_image_on_drawable_at_size(y, x, h, w);
+	im = EImageGrabDrawable(draw, None, 0, 0, w, h, 0);
+	EImageOrientate(im, 3);
+	EImageRenderOnDrawable(im, win, y, x, h, w, 0);
+	EImageFree(im);
 	break;
      case FONT_TO_DOWN:
-	imlib_context_set_drawable(drawable);
 	XGetGeometry(disp, win, &rr, &win_x, &win_y, &win_w, &win_h,
 		     &win_b, &win_d);
-	ii = imlib_create_image_from_drawable(0, 0, 0, w, h, 0);
-	imlib_context_set_image(ii);
-	imlib_image_orientate(1);
-	imlib_context_set_drawable(win);
-	imlib_render_image_on_drawable_at_size(win_w - y - h, x, h, w);
+	im = EImageGrabDrawable(draw, None, 0, 0, w, h, 0);
+	EImageOrientate(im, 1);
+	EImageRenderOnDrawable(im, win, win_w - y - h, x, h, w, 0);
+	EImageFree(im);
 	break;
      case FONT_TO_LEFT:	/* Holy carumba! That's for yoga addicts, maybe .... */
-	imlib_context_set_drawable(drawable);
-	ii = imlib_create_image_from_drawable(0, 0, 0, w, h, 0);
-	imlib_context_set_image(ii);
-	imlib_image_orientate(2);
-	imlib_context_set_drawable(win);
-	imlib_render_image_on_drawable_at_size(x, y, w, h);
+	im = EImageGrabDrawable(draw, None, 0, 0, w, h, 0);
+	EImageOrientate(im, 2);
+	EImageRenderOnDrawable(im, win, x, y, w, h, 0);
+	EImageFree(im);
 	break;
      default:
 	break;
      }
-   if (ii)
-      imlib_free_image();
 }

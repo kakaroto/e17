@@ -145,33 +145,6 @@ PagerDestroy(Pager * p)
 }
 
 static void
-ScaleRect(Window src, Pixmap dst, Pixmap * pdst, int sx, int sy, int sw, int sh,
-	  int dx, int dy, int dw, int dh, int scale)
-{
-   Imlib_Image        *im;
-   Pixmap              pmap, mask;
-
-   scale = (scale) ? 2 : 1;
-
-   imlib_context_set_drawable(src);
-   im = imlib_create_scaled_image_from_drawable(None, sx, sy, sw, sh,
-						scale * dw, scale * dh, 0, 0);
-   imlib_context_set_image(im);
-   imlib_context_set_anti_alias(1);
-   if (pdst)
-     {
-	imlib_render_pixmaps_for_whole_image_at_size(&pmap, &mask, dw, dh);
-	*pdst = pmap;
-     }
-   else
-     {
-	imlib_context_set_drawable(dst);
-	imlib_render_image_on_drawable_at_size(dx, dy, dw, dh);
-     }
-   imlib_free_image();
-}
-
-static void
 PagerScanTrig(Pager * p)
 {
    char                s[128];
@@ -270,18 +243,15 @@ PagerScanTimeout(int val __UNUSED__, void *data)
 static void
 PagerHiwinUpdate(Hiwin * phi, Pager * p __UNUSED__, EWin * ewin)
 {
-   Imlib_Image        *im;
+   EImage             *im;
 
    if (!EoIsShown(phi) || !ewin->mini_pmm.pmap)
       return;
 
-   imlib_context_set_drawable(ewin->mini_pmm.pmap);
-   im = imlib_create_image_from_drawable(0, 0, 0,
-					 ewin->mini_w, ewin->mini_h, 0);
-   imlib_context_set_image(im);
-   imlib_context_set_drawable(EoGetWin(phi));
-   imlib_render_image_on_drawable_at_size(0, 0, EoGetW(phi), EoGetH(phi));
-   imlib_free_image_and_decache();
+   im = EImageGrabDrawable(ewin->mini_pmm.pmap, None, 0, 0,
+			   ewin->mini_w, ewin->mini_h, 0);
+   EImageRenderOnDrawable(im, EoGetWin(phi), 0, 0, EoGetW(phi), EoGetH(phi), 0);
+   EImageDecache(im);
 }
 #endif
 
@@ -542,32 +512,27 @@ PagerUpdateBg(Pager * p)
 #if USE_PAGER_BACKGROUND_CACHE
 	char                s[4096];
 	char               *uniq;
-	Imlib_Image        *im;
+	EImage             *im;
 
 	uniq = BackgroundGetUniqueString(bg);
 	Esnprintf(s, sizeof(s), "%s/cached/pager/%s.%i.%i.%s.png",
 		  EDirUserCache(), BackgroundGetName(bg), p->dw, p->dh, uniq);
 	Efree(uniq);
 
-	im = imlib_load_image(s);
+	im = EImageLoad(s);
 	if (im)
 	  {
-	     imlib_context_set_image(im);
-	     imlib_context_set_drawable(pmap);
-	     imlib_render_image_on_drawable_at_size(0, 0, p->dw, p->dh);
-	     imlib_free_image_and_decache();
+	     EImageRenderOnDrawable(im, pmap, 0, 0, p->dw, p->dh, 0);
+	     EImageDecache(im);
 	  }
 	else
 	  {
 #endif
 	     BackgroundApplyPmap(bg, pmap, p->dw, p->dh);
 #if USE_PAGER_BACKGROUND_CACHE
-	     imlib_context_set_drawable(pmap);
-	     im = imlib_create_image_from_drawable(0, 0, 0, p->dw, p->dh, 1);
-	     imlib_context_set_image(im);
-	     imlib_image_set_format("png");
-	     imlib_save_image(s);
-	     imlib_free_image_and_decache();
+	     im = EImageGrabDrawable(pmap, None, 0, 0, p->dw, p->dh, 0);
+	     EImageSave(im, s);
+	     EImageDecache(im);
 	  }
 #endif
 	return;

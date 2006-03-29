@@ -45,6 +45,8 @@ e16_SOURCES = \
 	econfig.c		\
 	econfig.h		\
 	edge.c			\
+	eimage.c		\
+	eimage.h		\
 	emodule.c		\
 	emodule.h		\
 	eobj.c			\

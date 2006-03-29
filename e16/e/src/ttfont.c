@@ -22,8 +22,10 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "eimage.h"
 #include "tclass.h"
 #include "xwin.h"
+#include <Imlib2.h>
 
 struct _efont
 {
@@ -65,21 +67,19 @@ void
 EFont_draw_string(Drawable win, GC gc, int x, int y, const char *text,
 		  Efont * f, Visual * vis __UNUSED__, Colormap cm)
 {
-   Imlib_Image         im;
+   EImage             *im;
    int                 w, h, ascent, descent;
 
    Efont_extents(f, text, &ascent, &descent, &w, NULL, NULL, NULL, NULL);
    h = ascent + descent;
 
-   imlib_context_set_drawable(win);
-   im = imlib_create_image_from_drawable(0, x, y - ascent, w, h, 0);
+   im = EImageGrabDrawable(win, None, x, y - ascent, w, h, 0);
    imlib_context_set_image(im);
-
    imlib_context_set_font(f->face);
    ImlibSetFgColorFromGC(gc, cm);
    imlib_text_draw(0, 0, text);
-   imlib_render_image_on_drawable(x, y - ascent);
-   imlib_free_image();
+   EImageRenderOnDrawable(im, win, x, y - ascent, w, h, 0);
+   EImageFree(im);
 }
 
 void

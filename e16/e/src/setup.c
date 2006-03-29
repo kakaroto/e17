@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "eimage.h"
 #include "ewins.h"
 #include "xwin.h"
 #include <signal.h>
@@ -242,17 +243,8 @@ SetupX(const char *dstr)
 	VRoot.h = RRoot.h;
      }
 
-   /* initialise imlib */
-   imlib_set_cache_size(2048 * 1024);
-   imlib_set_font_cache_size(512 * 1024);
-   imlib_set_color_usage(128);
-
-   imlib_context_set_dither(1);
-
-   imlib_context_set_display(disp);
-   imlib_context_set_visual(VRoot.vis);
-   imlib_context_set_colormap(VRoot.cmap);
-   imlib_context_set_dither_mask(0);
+   /* Initialise image handling */
+   EImageInit(disp);
 
    /* Initialise event handling */
    EventsInit();

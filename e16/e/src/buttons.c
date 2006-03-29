@@ -26,6 +26,7 @@
 #include "buttons.h"
 #include "desktops.h"
 #include "e16-ecore_list.h"
+#include "eimage.h"
 #include "emodule.h"
 #include "iclass.h"
 #include "tclass.h"
@@ -225,7 +226,7 @@ static void
 ButtonCalc(Button * b)
 {
    int                 w, h, x, y, xo, yo;
-   Imlib_Image        *im;
+   EImage             *im;
 
    x = 0;
    y = 0;
@@ -236,10 +237,8 @@ ButtonCalc(Button * b)
 	im = ImageclassGetImage(b->iclass, 0, 0, 0);
 	if (im)
 	  {
-	     imlib_context_set_image(im);
-	     w = imlib_image_get_width();
-	     h = imlib_image_get_height();
-	     imlib_free_image();
+	     EImageGetSize(im, &w, &h);
+	     EImageFree(im);
 	  }
 	else
 	  {

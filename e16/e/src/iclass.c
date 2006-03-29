@@ -26,6 +26,7 @@
 #include "conf.h"
 #include "desktops.h"
 #include "e16-ecore_list.h"
+#include "eimage.h"
 #include "emodule.h"
 #include "iclass.h"
 #include "tclass.h"
@@ -56,8 +57,8 @@ struct _imagestate
    char               *real_file;
    char                unloadable;
    char                transparent;
-   Imlib_Image        *im;
-   Imlib_Border       *border;
+   EImage             *im;
+   EImageBorder       *border;
    int                 pixmapfillstyle;
    XColor              bg, hi, lo, hihi, lolo;
    int                 bevelstyle;
@@ -79,7 +80,7 @@ struct _imageclass
 {
    char               *name;
    ImageStateArray     norm, active, sticky, sticky_active;
-   Imlib_Border        padding;
+   EImageBorder        padding;
 #if ENABLE_COLOR_MODIFIERS
    ColorModifierClass *colmod;
 #endif
@@ -90,9 +91,9 @@ static Ecore_List  *iclass_list = NULL;
 
 #ifdef ENABLE_THEME_TRANSPARENCY
 
-static Imlib_Color_Modifier *icm = NULL;
-static DATA8        gray[256];
-static DATA8        alpha[256];
+static EImageColorModifier *icm = NULL;
+static unsigned char gray[256];
+static unsigned char alpha[256];
 
 static int          prev_alpha = -1;
 
@@ -120,15 +121,7 @@ TransparencyMakeColorModifier(void)
      }
 
    if (icm == NULL)
-      icm = imlib_create_color_modifier();
-   imlib_context_set_color_modifier(icm);
-#if 0				/* Useful in this context? */
-   imlib_modify_color_modifier_gamma(0.5);
-   imlib_modify_color_modifier_brightness(0.5);
-   imlib_modify_color_modifier_contrast(0.5);
-#endif
-   imlib_set_color_modifier_tables(gray, gray, gray, alpha);
-   imlib_context_set_color_modifier(NULL);
+      icm = EImageColorModifierCreate(gray, gray, gray, alpha);
 }
 
 void
@@ -211,8 +204,7 @@ FreeImageState(ImageState * i)
 
    if (i->im)
      {
-	imlib_context_set_image(i->im);
-	imlib_free_image();
+	EImageFree(i->im);
 	i->im = NULL;
      }
 
@@ -251,25 +243,6 @@ ImagestatePopulate(ImageState * is)
    EAllocColor(&is->lolo);
 }
 
-static int
-e16_image_check_has_alpha(void)
-{
-   static const short  oink = 3;	/* For endianness checking */
-   unsigned char      *pb, *pe;
-
-   if (!imlib_image_has_alpha())
-      return 0;
-
-   pb = (unsigned char *)imlib_image_get_data_for_reading_only();
-   pe = pb + 4 * imlib_image_get_width() * imlib_image_get_height();
-   pb += *((char *)(&oink));
-   for (; pb < pe; pb += 4)
-      if (*pb != 0xff)
-	 return 1;
-
-   return 0;
-}
-
 static void
 ImagestateRealize(ImageState * is)
 {
@@ -284,7 +257,7 @@ ImagestateRealize(ImageState * is)
    if (!is->real_file)
       is->real_file = ThemeFileFind(is->im_file, 0);
 
-   is->im = ELoadImage(is->real_file);
+   is->im = EImageLoad(is->real_file);
    if (!is->im)
      {
 	Eprintf
@@ -293,18 +266,10 @@ ImagestateRealize(ImageState * is)
 	return;
      }
 
-   imlib_context_set_image(is->im);
-
-   if (imlib_image_has_alpha() && !e16_image_check_has_alpha())
-     {
-#if 0
-	Eprintf("Alpha set but no shape %s\n", is->real_file);
-#endif
-	imlib_image_set_has_alpha(0);
-     }
+   EImageCheckAlpha(is->im);
 
    if (is->border)
-      imlib_image_set_border(is->border);
+      EImageSetBorder(is->im, is->border);
 
 #if 0				/* To be implemented? */
    if (is->colmod)
@@ -399,7 +364,7 @@ ImageclassGetName(ImageClass * ic)
    return (ic) ? ic->name : NULL;
 }
 
-Imlib_Border       *
+EImageBorder       *
 ImageclassGetPadding(ImageClass * ic)
 {
    return (ic) ? &(ic->padding) : NULL;
@@ -563,7 +528,7 @@ ImageclassConfigLoad(FILE * fs)
 	     goto done;
 	  case ICLASS_LRTB:
 	     {
-		ICToRead->border = Emalloc(sizeof(Imlib_Border));
+		ICToRead->border = Emalloc(sizeof(EImageBorder));
 
 		l = r = t = b = 0;
 		sscanf(s, "%*s %i %i %i %i", &l, &r, &t, &b);
@@ -804,10 +769,10 @@ ImageclassGetImageState(ImageClass * ic, int state, int active, int sticky)
    return is;
 }
 
-Imlib_Image        *
+EImage             *
 ImageclassGetImage(ImageClass * ic, int active, int sticky, int state)
 {
-   Imlib_Image        *im;
+   EImage             *im;
    ImageState         *is;
 
    if (!ic)
@@ -833,7 +798,7 @@ ImageclassApplySimple(ImageClass * ic, Window win, Drawable draw, int state,
 		      int x, int y, int w, int h)
 {
    Pixmap              pmap;
-   Imlib_Image        *im;
+   EImage             *im;
 
    im = ImageclassGetImage(ic, 0, 0, state);
    if (!im)
@@ -846,10 +811,9 @@ ImageclassApplySimple(ImageClass * ic, Window win, Drawable draw, int state,
 	draw = pmap;
 	x = y = 0;
      }
-   imlib_context_set_image(im);
-   imlib_context_set_drawable(draw);
-   imlib_render_image_on_drawable_at_size(x, y, w, h);
-   imlib_free_image();
+
+   EImageRenderOnDrawable(im, draw, x, y, w, h, 0);
+   EImageFree(im);
 
    return pmap;
 }
@@ -907,10 +871,10 @@ pt_type_to_flags(int image_type)
    return flags;
 }
 
-static Imlib_Image *
+static EImage      *
 pt_get_bg_image(Window win, int w, int h, int use_root)
 {
-   Imlib_Image        *ii = NULL;
+   EImage             *ii = NULL;
    Window              cr, dummy;
    Drawable            bg;
    int                 xx, yy;
@@ -932,53 +896,25 @@ pt_get_bg_image(Window win, int w, int h, int use_root)
    if (xx < VRoot.w && yy < VRoot.h && xx + w >= 0 && yy + h >= 0)
      {
 	/* Create the background base image */
-	imlib_context_set_drawable(bg);
-	ii = imlib_create_image_from_drawable(0, xx, yy, w, h,
-					      !EServerIsGrabbed());
+	ii = EImageGrabDrawable(bg, None, xx, yy, w, h, !EServerIsGrabbed());
      }
 
    return ii;
 }
 
-static void
-pt_blend(Imlib_Image * bg, Imlib_Image * im, int use_cm)
+#endif
+
+EImage             *
+ImageclassGetImageBlended(ImageClass * ic, Window win, int w, int h, int active,
+			  int sticky, int state, int image_type)
 {
-   int                 w, h, iw, ih;
-
-   imlib_context_set_image(im);
-   iw = imlib_image_get_width();
-   ih = imlib_image_get_height();
-   imlib_context_set_image(bg);
-   w = imlib_image_get_width();
-   h = imlib_image_get_height();
-
-   imlib_context_set_blend(1);
-#ifdef ENABLE_THEME_TRANSPARENCY
-   if (use_cm)
-     {
-	imlib_context_set_color_modifier(icm);
-     }
-#endif
-   imlib_context_set_operation(IMLIB_OP_COPY);
-   imlib_blend_image_onto_image(im, 0, 0, 0, iw, ih, 0, 0, w, h);
-   imlib_context_set_blend(0);
-#ifdef ENABLE_THEME_TRANSPARENCY
-   if (use_cm)
-     {
-	imlib_context_set_color_modifier(NULL);
-     }
-#endif
-}
-
-#endif
-
-Imlib_Image        *
-EImageBlendPT(Imlib_Image * im, Window win, int w, int h, int image_type)
-{
-   Imlib_Image        *bg;
+   EImage             *im, *bg;
    int                 flags;
-   int                 ww, hh;
 
+   if (!ic)
+      return NULL;
+
+   im = ImageclassGetImage(ic, active, sticky, state);
    if (!im)
       return NULL;
 
@@ -989,8 +925,8 @@ EImageBlendPT(Imlib_Image * im, Window win, int w, int h, int image_type)
 	bg = pt_get_bg_image(win, w, h, flags & ICLASS_ATTR_GLASS);
 	if (bg)
 	  {
-	     pt_blend(bg, im, flags & ICLASS_ATTR_USE_CM);
-	     return bg;
+	     EImageBlendCM(bg, im, (flags & ICLASS_ATTR_USE_CM) ? icm : NULL);
+	     goto done;
 	  }
      }
 #else
@@ -998,10 +934,10 @@ EImageBlendPT(Imlib_Image * im, Window win, int w, int h, int image_type)
    win = None;
 #endif
 
-   imlib_context_set_image(im);
-   ww = imlib_image_get_width();
-   hh = imlib_image_get_height();
-   bg = imlib_create_cropped_scaled_image(0, 0, ww, hh, w, h);
+   bg = EImageCreateScaled(im, 0, 0, 0, 0, w, h);
+
+ done:
+   EImageFree(im);
 
    return bg;
 }
@@ -1011,7 +947,7 @@ ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 		       int make_mask, int w, int h, int image_type)
 {
 #ifdef ENABLE_TRANSPARENCY
-   Imlib_Image        *ii = NULL;
+   EImage             *ii = NULL;
    int                 flags;
    Pixmap              pmap, mask;
 
@@ -1023,7 +959,7 @@ ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
     *   0x02: Use root window as base (use only for transients, if at all)
     *   0x04: Don't apply image mask to result
     */
-   if (is->transparent && imlib_image_has_alpha())
+   if (is->transparent && EImageHasAlpha(is->im))
       flags = is->transparent;
 
    if (flags != ICLASS_ATTR_OPAQUE)
@@ -1039,36 +975,29 @@ ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 
    if (ii)
      {
-	imlib_context_set_drawable(win);
-	pt_blend(ii, is->im, flags & ICLASS_ATTR_USE_CM);
+	EImageBlendCM(ii, is->im, (flags & ICLASS_ATTR_USE_CM) ? icm : NULL);
 
 	pmm->type = 0;
 	pmm->pmap = pmap = ECreatePixmap(win, w, h, VRoot.depth);
 	pmm->mask = None;
 	pmm->w = w;
 	pmm->h = h;
-	imlib_context_set_image(ii);
-	imlib_context_set_drawable(pmap);
-	imlib_render_image_on_drawable_at_size(0, 0, w, h);
-	imlib_context_set_drawable(win);
+	EImageRenderOnDrawable(ii, pmap, 0, 0, w, h, 0);
 
 	if (make_mask && !(flags & ICLASS_ATTR_NO_CLIP))
 	  {
-	     imlib_context_set_image(is->im);
-	     if (imlib_image_has_alpha())
+	     if (EImageHasAlpha(is->im))
 	       {
 		  /* Make the scaled clip mask to be used */
-		  imlib_render_pixmaps_for_whole_image_at_size(&pmap, &mask, w,
-							       h);
+		  EImageRenderPixmaps(is->im, win, &pmap, &mask, w, h);
 
 		  /* Replace the mask with the correct one */
 		  pmm->mask = ECreatePixmapCopy(mask, w, h, 1);
 
-		  imlib_free_pixmap_and_mask(pmap);
+		  EImagePixmapFree(pmap);
 	       }
 	  }
-	imlib_context_set_image(ii);
-	imlib_free_image_and_decache();
+	EImageDecache(ii);
      }
    else
 #else
@@ -1081,19 +1010,13 @@ ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	pmm->pmap = pmm->mask = None;
 	pmm->w = w;
 	pmm->h = h;
-	imlib_context_set_image(is->im);
-	imlib_context_set_drawable(win);
-	imlib_render_pixmaps_for_whole_image_at_size(&pmm->pmap, &pmm->mask,
-						     w, h);
+	EImageRenderPixmaps(is->im, win, &pmm->pmap, &pmm->mask, w, h);
      }
    else
      {
 	int                 ww, hh, cw, ch, pw, ph;
 
-	imlib_context_set_image(is->im);
-
-	ww = imlib_image_get_width();
-	hh = imlib_image_get_height();
+	EImageGetSize(is->im, &ww, &hh);
 
 	pw = w;
 	ph = h;
@@ -1123,9 +1046,7 @@ ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	pmm->pmap = pmm->mask = None;
 	pmm->w = pw;
 	pmm->h = ph;
-	imlib_context_set_drawable(win);
-	imlib_render_pixmaps_for_whole_image_at_size(&pmm->pmap, &pmm->mask,
-						     pw, ph);
+	EImageRenderPixmaps(is->im, win, &pmm->pmap, &pmm->mask, pw, ph);
      }
 }
 
@@ -1296,8 +1217,7 @@ ITApply(Window win, ImageClass * ic, ImageState * is, int w, int h, int state,
 
 	     if ((is->unloadable) || (Conf.memory_paranoia))
 	       {
-		  imlib_context_set_image(is->im);
-		  imlib_free_image();
+		  EImageFree(is->im);
 		  is->im = NULL;
 	       }
 	  }
@@ -1396,8 +1316,7 @@ ImageclassApplyCopy(ImageClass * ic, Window win, int w, int h, int active,
 
 	if ((is->unloadable) || (Conf.memory_paranoia))
 	  {
-	     imlib_context_set_image(is->im);
-	     imlib_free_image();
+	     EImageFree(is->im);
 	     is->im = NULL;
 	  }
      }
@@ -1561,7 +1480,7 @@ ImageclassIpc(const char *params, Client * c __UNUSED__)
 
 	word(params, 3, param3);
 	p = (Pixmap) strtol(param3, (char **)NULL, 0);
-	imlib_free_pixmap_and_mask(p);
+	EImagePixmapFree(p);
      }
    else if (!strcmp(param2, "get_padding"))
      {
@@ -1581,10 +1500,11 @@ ImageclassIpc(const char *params, Client * c __UNUSED__)
 	     ImagestateRealize(ic->norm.normal);
 	     if (ic->norm.normal->im)
 	       {
-		  imlib_context_set_image(ic->norm.normal->im);
-		  IpcPrintf("%i %i\n", imlib_image_get_width(),
-			    imlib_image_get_height());
-		  imlib_free_image();
+		  int                 w, h;
+
+		  EImageGetSize(ic->norm.normal->im, &w, &h);
+		  EImageFree(ic->norm.normal->im);
+		  IpcPrintf("%i %i\n", w, h);
 	       }
 	  }
 	else

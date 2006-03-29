@@ -232,7 +232,8 @@ static ImageClass  *
 TooltipCreateIclass(const char *name, const char *file, int *pw, int *ph)
 {
    ImageClass         *ic;
-   Imlib_Image        *im;
+   EImage             *im;
+   int                 w, h;
 
    ic = ImageclassFind(name, 0);
    if (!ic)
@@ -241,11 +242,11 @@ TooltipCreateIclass(const char *name, const char *file, int *pw, int *ph)
 
    if (im)
      {
-	imlib_context_set_image(im);
-	if (*pw < imlib_image_get_width())
-	   *pw = imlib_image_get_width();
-	if (*ph < imlib_image_get_height())
-	   *ph = imlib_image_get_height();
+	EImageGetSize(im, &w, &h);
+	if (*pw < w)
+	   *pw = w;
+	if (*ph < h)
+	   *ph = h;
      }
 
    return ic;
@@ -255,20 +256,18 @@ static void
 TooltipIclassPaste(ToolTip * tt, const char *ic_name, int x, int y, int *px)
 {
    ImageClass         *ic;
-   Imlib_Image        *im;
+   EImage             *im;
+   int                 w, h;
 
    ic = ImageclassFind(ic_name, 0);
    im = ImageclassGetImage(ic, 0, 0, 0);
    if (!ic || !im)
       return;
 
-   imlib_context_set_image(im);
-   imlib_context_set_drawable(tt->TTWIN->win);
-   imlib_context_set_blend(1);
-   imlib_render_image_on_drawable(x, y);
-   imlib_context_set_blend(0);
+   EImageGetSize(im, &w, &h);
+   EImageRenderOnDrawable(im, tt->TTWIN->win, x, y, w, h, 1);
 
-   *px = x + imlib_image_get_width();
+   *px = x + w;
 }
 
 void
@@ -278,10 +277,10 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
    int                 ww, hh, adx, ady, dist;
    int                 headline_h = 0, headline_w = 0, icons_width =
       0, labels_width = 0, double_w = 0;
-   Imlib_Image        *im;
+   EImage             *im;
    int                *heights = NULL;
    ImageClass         *ic;
-   Imlib_Border       *pad;
+   EImageBorder       *pad;
    int                 cols[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
    int                 num, modifiers;
    Action             *aa;
@@ -431,10 +430,8 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 	iy = 0;
 	if (im)
 	  {
-	     imlib_context_set_image(im);
-	     iw = imlib_image_get_width();
-	     ih = imlib_image_get_height();
-	     imlib_free_image();
+	     EImageGetSize(im, &iw, &ih);
+	     EImageFree(im);
 	  }
 	w += iw;
 	if (h < ih)

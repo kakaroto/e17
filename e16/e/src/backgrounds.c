@@ -27,6 +27,7 @@
 #include "desktops.h"
 #include "dialog.h"
 #include "e16-ecore_list.h"
+#include "eimage.h"
 #include "emodule.h"
 #include "iclass.h"
 #include "tclass.h"
@@ -36,7 +37,7 @@ typedef struct
 {
    char               *file;
    char               *real_file;
-   Imlib_Image        *im;
+   EImage             *im;
    char                keep_aspect;
    int                 xjust, yjust;
    int                 xperc, yperc;
@@ -168,7 +169,7 @@ BackgroundPixmapFree(Background * bg)
 {
    if (bg->pmap)
      {
-	imlib_free_pixmap_and_mask(bg->pmap);
+	EImagePixmapFree(bg->pmap);
 	bg->pmap = None;
      }
 }
@@ -178,14 +179,12 @@ BackgroundImagesFree(Background * bg)
 {
    if (bg->bg.im)
      {
-	imlib_context_set_image(bg->bg.im);
-	imlib_free_image();
+	EImageFree(bg->bg.im);
 	bg->bg.im = NULL;
      }
    if (bg->top.im)
      {
-	imlib_context_set_image(bg->top.im);
-	imlib_free_image();
+	EImageFree(bg->top.im);
 	bg->top.im = NULL;
      }
 }
@@ -451,7 +450,9 @@ static void
 BgFindImageSize(BgPart * bgp, unsigned int rw, unsigned int rh,
 		unsigned int *pw, unsigned int *ph)
 {
-   int                 w, h;
+   int                 w, h, iw, ih;
+
+   EImageGetSize(bgp->im, &iw, &ih);
 
    if (bgp->keep_aspect)
       bgp->xperc = bgp->yperc;
@@ -459,12 +460,12 @@ BgFindImageSize(BgPart * bgp, unsigned int rw, unsigned int rh,
    if (bgp->xperc > 0)
       w = (rw * bgp->xperc) >> 10;
    else
-      w = (imlib_image_get_width() * rw) / VRoot.w;
+      w = (iw * rw) / VRoot.w;
 
    if (bgp->yperc > 0)
       h = (rh * bgp->yperc) >> 10;
    else
-      h = (imlib_image_get_height() * rh) / VRoot.h;
+      h = (ih * rh) / VRoot.h;
 
    if (w <= 0)
       w = 1;
@@ -475,97 +476,18 @@ BgFindImageSize(BgPart * bgp, unsigned int rw, unsigned int rh,
      {
 	if (bgp->yperc <= 0)
 	  {
-	     if (((w << 10) / h) !=
-		 ((imlib_image_get_width() << 10) / imlib_image_get_height()))
-		h = ((w * imlib_image_get_height()) / imlib_image_get_width());
+	     if (((w << 10) / h) != ((iw << 10) / ih))
+		h = ((w * ih) / iw);
 	  }
 	else
 	  {
-	     if (((h << 10) / w) !=
-		 ((imlib_image_get_height() << 10) / imlib_image_get_width()))
-		w = ((h * imlib_image_get_width()) / imlib_image_get_height());
+	     if (((h << 10) / w) != ((ih << 10) / iw))
+		w = ((h * iw) / ih);
 	  }
      }
 
    *pw = (unsigned int)w;
    *ph = (unsigned int)h;
-}
-
-static void
-e16_tile_image_onto_image(Imlib_Image * tile, int blend, int tw, int th,
-			  int dx, int dy, int dw, int dh, int ox, int oy)
-{
-   Imlib_Image        *im, *tim;
-   int                 x, y, tx, ty, ww, hh;
-   int                 sw, sh;
-
-   im = imlib_context_get_image();
-   imlib_context_set_image(tile);
-   sw = imlib_image_get_width();
-   sh = imlib_image_get_height();
-   if (sw == tw && sh == th)
-     {
-	tim = tile;
-     }
-   else
-     {
-	tim = imlib_create_image(tw, th);
-	imlib_context_set_image(tim);
-	imlib_context_set_blend(0);
-	imlib_blend_image_onto_image(tile, 0, 0, 0, sw, sh, 0, 0, tw, th);
-     }
-   imlib_context_set_image(im);
-
-   if (ox)
-     {
-	ox = tw - ox;
-	ox %= tw;
-	if (ox < 0)
-	   ox += tw;
-     }
-   if (oy)
-     {
-	oy = th - oy;
-	oy %= th;
-	if (oy < 0)
-	   oy += th;
-     }
-   dw += dx;
-   dh += dy;
-   y = dy;
-   ty = oy;
-   hh = th - oy;
-   for (;;)
-     {
-	if (y + hh >= dh)
-	   hh = dh - y;
-	if (hh <= 0)
-	   break;
-	x = dx;
-	tx = ox;
-	ww = tw - ox;
-	for (;;)
-	  {
-	     if (x + ww >= dw)
-		ww = dw - x;
-	     if (ww <= 0)
-		break;
-	     imlib_blend_image_onto_image(tim, blend, tx, ty, ww, hh,
-					  x, y, ww, hh);
-	     tx = 0;
-	     x += ww;
-	     ww = tw;
-	  }
-	ty = 0;
-	y += hh;
-	hh = th;
-     }
-   if (tim != tile)
-     {
-	imlib_context_set_image(tim);
-	imlib_free_image();
-	imlib_context_set_image(im);
-     }
 }
 
 static              Pixmap
@@ -596,11 +518,10 @@ BackgroundRealize(Background * bg, Drawable draw, unsigned int rw,
 {
    Pixmap              pmap;
    GC                  gc;
-   int                 rt;
-   int                 x, y;
-   unsigned int        w, h, ww, hh;
+   int                 x, y, ww, hh;
+   unsigned int        w, h;
    char                hasbg, hasfg;
-   Imlib_Image        *im;
+   EImage             *im;
 
 #if ENABLE_COLOR_MODIFIERS
    ColorModifierClass *cm;
@@ -610,14 +531,14 @@ BackgroundRealize(Background * bg, Drawable draw, unsigned int rw,
      {
 	if (!bg->bg.real_file)
 	   bg->bg.real_file = ThemeFileFind(bg->bg.file, 0);
-	bg->bg.im = ELoadImage(bg->bg.real_file);
+	bg->bg.im = EImageLoad(bg->bg.real_file);
      }
 
    if (bg->top.file && !bg->top.im)
      {
 	if (!bg->top.real_file)
 	   bg->top.real_file = ThemeFileFind(bg->top.file, 0);
-	bg->top.im = ELoadImage(bg->top.real_file);
+	bg->top.im = EImageLoad(bg->top.real_file);
      }
 
 #if ENABLE_COLOR_MODIFIERS
@@ -677,21 +598,10 @@ BackgroundRealize(Background * bg, Drawable draw, unsigned int rw,
 
    /* Has either bg or fg image */
 
-   rt = imlib_context_get_dither();
-   if (Conf.backgrounds.hiquality)
-     {
-	imlib_context_set_dither(1);
-#if 0				/* ??? */
-	imlib_context_set_anti_alias(1);
-#endif
-     }
-
    w = h = x = y = 0;
 
    if (hasbg)
      {
-	imlib_context_set_image(bg->bg.im);
-
 	BgFindImageSize(&(bg->bg), rw, rh, &w, &h);
 	x = ((int)(rw - w) * bg->bg.xjust) >> 10;
 	y = ((int)(rh - h) * bg->bg.yjust) >> 10;
@@ -702,8 +612,7 @@ BackgroundRealize(Background * bg, Drawable draw, unsigned int rw,
      {
 	/* Window, no fg, no offset, and scale to 100%, or tiled, no trans */
 	pmap = BackgroundCreatePixmap(draw, w, h, VRoot.depth);
-	imlib_context_set_drawable(pmap);
-	imlib_render_image_on_drawable_at_size(0, 0, w, h);
+	EImageRenderOnDrawable(bg->bg.im, pmap, 0, 0, w, h, 0);
 
 #if 0				/* FIXME - Remove? */
 	if (x == 0 && y == 0)	/* Hmmm. Always true. */
@@ -728,71 +637,54 @@ BackgroundRealize(Background * bg, Drawable draw, unsigned int rw,
       pmap = BackgroundCreatePixmap(draw, rw, rh, VRoot.depth);
    else
       pmap = draw;
-   imlib_context_set_drawable(pmap);
 
    if (hasbg && !hasfg && x == 0 && y == 0 && w == rw && h == rh)
      {
 	im = bg->bg.im;
-	imlib_context_set_image(im);
      }
    else
      {
 	/* Create full size image */
-	im = imlib_create_image(rw, rh);
-	imlib_context_set_image(im);
-	imlib_image_set_has_alpha(0);
+	im = EImageCreate(rw, rh);
+	EImageSetHasAlpha(im, 0);
 	if (!hasbg || !bg->bg_tile)
 	  {
 	     /* Fill solid */
-	     imlib_context_set_blend(0);
-	     imlib_context_set_color(bg->bg_solid.red, bg->bg_solid.green,
-				     bg->bg_solid.blue, 0);
-	     imlib_image_fill_rectangle(0, 0, rw, rh);
+	     EImageFill(im, 0, 0, rw, rh, bg->bg_solid.red, bg->bg_solid.green,
+			bg->bg_solid.blue, 255);
 	  }
 	if (hasbg)
 	  {
 	     if (bg->bg_tile)
 	       {
-		  e16_tile_image_onto_image(bg->bg.im, 0, w, h,
-					    0, 0, rw, rh, x, y);
+		  EImageTile(im, bg->bg.im, 0, w, h, 0, 0, rw, rh, x, y);
 	       }
 	     else
 	       {
-		  imlib_context_set_image(bg->bg.im);
-		  ww = imlib_image_get_width();
-		  hh = imlib_image_get_height();
-		  imlib_context_set_image(im);
-		  imlib_blend_image_onto_image(bg->bg.im, 1, 0, 0, ww, hh,
-					       x, y, w, h);
+		  EImageGetSize(bg->bg.im, &ww, &hh);
+		  EImageBlend(im, bg->bg.im, 0, 0, 0, ww, hh, x, y, w, h, 1, 0);
 	       }
 	  }
      }
 
    if (hasfg)
      {
-	imlib_context_set_image(bg->top.im);
+	EImageGetSize(bg->top.im, &ww, &hh);
 
 	BgFindImageSize(&(bg->top), rw, rh, &w, &h);
 	x = ((rw - w) * bg->top.xjust) >> 10;
 	y = ((rh - h) * bg->top.yjust) >> 10;
 
-	ww = imlib_image_get_width();
-	hh = imlib_image_get_height();
-	imlib_context_set_image(im);
-	imlib_context_set_blend(1);
-	imlib_blend_image_onto_image(bg->top.im, 0, 0, 0, ww, hh, x, y, w, h);
-	imlib_context_set_blend(0);
+	EImageBlend(im, bg->top.im, 1, 0, 0, ww, hh, x, y, w, h, 0, 0);
      }
 
-   imlib_render_image_on_drawable_at_size(0, 0, rw, rh);
+   EImageRenderOnDrawable(im, pmap, 0, 0, rw, rh, 0);
    if (im != bg->bg.im)
-      imlib_free_image();
+      EImageFree(im);
 
  done:
    if (!bg->keepim)
       BackgroundImagesFree(bg);
-
-   imlib_context_set_dither(rt);
 
    if (ppmap)
       *ppmap = pmap;
@@ -821,7 +713,7 @@ BackgroundApplyWin(Background * bg, Window win)
    if (pmap != None)
      {
 	ESetWindowBackgroundPixmap(win, pmap);
-	imlib_free_pixmap_and_mask(pmap);
+	EImagePixmapFree(pmap);
      }
    else
      {
@@ -858,7 +750,7 @@ BrackgroundCreateFromImage(const char *bgid, const char *file,
 			   char *thumb, int thlen)
 {
    Background         *bg;
-   Imlib_Image        *im, *im2;
+   EImage             *im, *im2;
    XColor              xclr;
    char                tile = 1, keep_asp = 0;
    int                 width, height;
@@ -883,13 +775,11 @@ BrackgroundCreateFromImage(const char *bgid, const char *file,
 	   return bg;
      }
 
-   im = imlib_load_image(file);
+   im = EImageLoad(file);
    if (!im)
       return NULL;
 
-   imlib_context_set_image(im);
-   width = imlib_image_get_width();
-   height = imlib_image_get_height();
+   EImageGetSize(im, &width, &height);
 
    if (thumb)
      {
@@ -900,13 +790,12 @@ BrackgroundCreateFromImage(const char *bgid, const char *file,
 	     w2 = maxw;
 	     h2 = (height * w2) / width;
 	  }
-	im2 = imlib_create_cropped_scaled_image(0, 0, width, height, w2, h2);
-	imlib_free_image_and_decache();
-	imlib_context_set_image(im2);
-	imlib_image_set_format("png");
-	imlib_save_image(thumb);
-	imlib_free_image_and_decache();
+	im2 = EImageCreateScaled(im, 0, 0, width, height, w2, h2);
+	EImageSave(im2, thumb);
+	EImageDecache(im2);
      }
+
+   EImageDecache(im);
 
    /* Quit if the background itself already exists */
    if (bg)
@@ -1038,22 +927,21 @@ BackgroundIsNone(const Background * bg)
    return (bg) ? bg->external : 1;
 }
 
-static Imlib_Image *
+static EImage      *
 BackgroundCacheMini(Background * bg, int keep, int nuke)
 {
    char                s[4096];
-   Imlib_Image        *im;
+   EImage             *im;
    Pixmap              pmap;
 
    Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s.png", EDirUserCache(),
 	     BackgroundGetName(bg));
 
-   im = ELoadImage(s);
+   im = EImageLoad(s);
    if (im)
      {
-	imlib_context_set_image(im);
 	if (nuke)
-	   imlib_free_image_and_decache();
+	   EImageDecache(im);
 	else
 	   goto done;
      }
@@ -1061,17 +949,14 @@ BackgroundCacheMini(Background * bg, int keep, int nuke)
    /* Create new cached bg mini image */
    pmap = ECreatePixmap(VRoot.win, 64, 48, VRoot.depth);
    BackgroundApplyPmap(bg, pmap, 64, 48);
-   imlib_context_set_drawable(pmap);
-   im = imlib_create_image_from_drawable(0, 0, 0, 64, 48, 0);
-   imlib_context_set_image(im);
-   imlib_image_set_format("png");
-   imlib_save_image(s);
+   im = EImageGrabDrawable(pmap, None, 0, 0, 64, 48, 0);
+   EImageSave(im, s);
    EFreePixmap(pmap);
 
  done:
    if (keep)
       return im;
-   imlib_free_image();
+   EImageFree(im);
    return NULL;
 }
 
@@ -1841,7 +1726,7 @@ BG_RedrawView(void)
    {
       if (((x + 64 + 8) >= 0) && (x < w))
 	{
-	   Imlib_Image        *im;
+	   EImage             *im;
 
 	   if (ic_button)
 	      ImageclassApplySimple(ic_button, win, pmap,
@@ -1870,10 +1755,8 @@ BG_RedrawView(void)
 		im = BackgroundCacheMini(bg, 1, 0);
 		if (im)
 		  {
-		     imlib_context_set_image(im);
-		     imlib_context_set_drawable(pmap);
-		     imlib_render_image_on_drawable_at_size(x + 4, 4, 64, 48);
-		     imlib_free_image();
+		     EImageRenderOnDrawable(im, pmap, x + 4, 4, 64, 48, 0);
+		     EImageFree(im);
 		  }
 	     }
 	}
