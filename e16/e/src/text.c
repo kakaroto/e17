@@ -109,37 +109,6 @@ TextclassGetTextState(TextClass * tclass, int state, int active, int sticky)
    return NULL;
 }
 
-static char       **
-TextGetLines(const char *text, int *count)
-{
-   int                 i, j, k;
-   char              **list = NULL;
-
-   *count = 0;
-   i = 0;
-   k = 0;
-   if (!text)
-      return NULL;
-   *count = 1;
-   while (text[i])
-     {
-	j = i;
-	while ((text[j]) && (text[j] != '\n'))
-	   j++;
-	k++;
-	list = Erealloc(list, sizeof(char *) * k);
-	list[k - 1] = Emalloc(sizeof(char) * (j - i + 1));
-
-	strncpy(list[k - 1], &(text[i]), (j - i));
-	list[k - 1][j - i] = 0;
-	i = j;
-	if (text[i] == '\n')
-	   i++;
-     }
-   *count = k;
-   return list;
-}
-
 static void
 TextStateLoadFont(TextState * ts)
 {
@@ -240,7 +209,7 @@ TextSize(TextClass * tclass, int active, int sticky, int state,
 
    /* Do encoding conversion, if necessary */
    str = EstrInt2Enc(text, ts->need_utf8);
-   lines = TextGetLines(str, &num_lines);
+   lines = StrlistFromString(str, '\n', &num_lines);
    EstrInt2EncFree(str, ts->need_utf8);
    if (!lines)
       return;
@@ -319,7 +288,7 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 
    /* Do encoding conversion, if necessary */
    str = EstrInt2Enc(text, ts->need_utf8);
-   lines = TextGetLines(str, &num_lines);
+   lines = StrlistFromString(str, '\n', &num_lines);
    EstrInt2EncFree(str, ts->need_utf8);
    if (!lines)
       return;
