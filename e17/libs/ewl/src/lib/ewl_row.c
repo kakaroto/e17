@@ -78,26 +78,8 @@ ewl_row_header_set(Ewl_Row *row, Ewl_Row *header)
 	if (row->header == header)
 		DRETURN(DLEVEL_STABLE);
 
-	/*
-	if (row->header) {
-		ewl_callback_del_with_data(EWL_WIDGET(row->header),
-					   EWL_CALLBACK_CONFIGURE,
-					   ewl_row_header_configure_cb, row);
-		ewl_callback_del_with_data(EWL_WIDGET(row->header),
-					   EWL_CALLBACK_DESTROY,
-					   ewl_row_header_destroy_cb, row);
-	}
-	*/
-
 	row->header = header;
 	if (header) {
-		/*
-		ewl_callback_append(EWL_WIDGET(header), EWL_CALLBACK_CONFIGURE,
-					ewl_row_header_configure_cb, row);
-		ewl_callback_prepend(EWL_WIDGET(header), EWL_CALLBACK_DESTROY,
-					ewl_row_header_destroy_cb, row);
-					*/
-
 		ewl_object_fill_policy_set(EWL_OBJECT(row),
 					   EWL_FLAG_FILL_HFILL);
 
@@ -150,8 +132,14 @@ ewl_row_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	x = CURRENT_X(w);
 	remains = CURRENT_W(w);
 
-	nodes = ecore_dlist_nodes(c->children);
-	ecore_dlist_goto_first(c->children);
+	nodes = 0;
+	ewl_container_child_iterate_begin(c);
+	while ((child = ewl_container_child_next(c))) {
+		if (VISIBLE(child))
+			nodes++;
+	}
+
+	ewl_container_child_iterate_begin(c);
 
 	/*
 	 * This should be the common case, a row bounded by a set of fields,
@@ -175,12 +163,12 @@ ewl_row_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 			x = CURRENT_X(w);
 
 		/*
-		 * Iterate over the children and position the children.
+		 * Iterate over the children and position the header children.
 		 */
 		ewl_container_child_iterate_begin(EWL_CONTAINER(hdr));
-		while ((child = ecore_dlist_next(c->children))) {
+		while ((child = ewl_container_child_next(c))) {
 			align = EWL_OBJECT(ewl_container_child_next(EWL_CONTAINER(hdr)));
-			if (align)
+			if (align && VISIBLE(align))
 				width = ewl_object_current_x_get(align) + ewl_object_current_w_get(align) - x;
 			else if (nodes)
 				width = remains / nodes;
@@ -205,7 +193,7 @@ ewl_row_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 */
 	else {
 		int tx = x;
-		while ((child = ecore_dlist_next(c->children))) {
+		while ((child = ewl_container_child_next(c))) {
 			int portion;
 
 			/*
