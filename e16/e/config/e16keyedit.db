@@ -96,3 +96,10 @@
 "Goto Linear Area", 0, NULL
 "Previous Linear Area", 0, NULL
 "Next Linear Area", 0, NULL
+
+# The previously "unchangable" keybindings
+"Toggle all Buttons on/off", 0, "button_show all"
+"Toggle selected Buttons on/off", 1, "button_show buttons "
+"Toggle theme/user Buttons on/off", 0, "button_show"
+"Switch Dragbar position", 0, "desk dragbar dir"
+"Switch Dragbar Button order", 0, "desk dragbar order"
