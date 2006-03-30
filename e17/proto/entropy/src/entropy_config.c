@@ -7,7 +7,7 @@
 #include <Eet.h>
 #include <stdarg.h>
 
-#define ENTROPY_CONFIG_VERSION 11
+#define ENTROPY_CONFIG_VERSION 13
 
 static Entropy_Config* _Entropy_Config = NULL;
 
@@ -265,7 +265,7 @@ entropy_config_binding_new(char* mime_type, char* description, Entropy_Config_Mi
 	va_end(args);
 
 	binding->mime_type = strdup(mime_type);
-	binding->description = description;
+	binding->desc = strdup(description);
 
 	return binding;
 }
