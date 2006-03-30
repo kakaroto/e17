@@ -402,7 +402,7 @@ MenuCreateFromFlatFile(const char *name, Menu * parent, MenuStyle * ms,
 		       const char *file)
 {
    Menu               *m = NULL;
-   char               *ff;
+   char               *ff, buf[4096];
    static int          calls = 0;
 
    if (calls > 32)
@@ -411,7 +411,15 @@ MenuCreateFromFlatFile(const char *name, Menu * parent, MenuStyle * ms,
 
    ff = FindFile(file, NULL, 0);
    if (!ff)
-      goto done;
+     {
+	if (isabspath(file))
+	   goto done;
+	/* Check also menus subdir */
+	Esnprintf(buf, sizeof(buf), "menus/%s", file);
+	ff = FindFile(buf, NULL, 0);
+	if (!ff)
+	   goto done;
+     }
 
    m = MenuCreate(name, NULL, parent, ms);
    MenuSetData(m, ff);
