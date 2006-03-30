@@ -164,7 +164,6 @@ ewl_tree_headers_set(Ewl_Tree *tree, char **headers)
 void
 ewl_tree_headers_visible_set(Ewl_Tree *tree, unsigned int visible)
 {
-	unsigned short i;
 	Ewl_Widget *button;
 	Ewl_Widget *row;
 
@@ -177,14 +176,13 @@ ewl_tree_headers_visible_set(Ewl_Tree *tree, unsigned int visible)
 	row = ecore_dlist_goto_first(EWL_CONTAINER(tree)->children);
 	ecore_dlist_goto_first(EWL_CONTAINER(row)->children);
 
-	button = ecore_dlist_next(EWL_CONTAINER(row)->children);
-	for (i = 0; i < tree->ncols && button; i++) {
+	ewl_container_child_iterate_begin(EWL_CONTAINER(row));
+	while ((button = ewl_container_child_next(EWL_CONTAINER(row)))) {
 		if ((visible) && (HIDDEN(button)))
 			ewl_widget_show(button);
 		else if ((!visible) && (VISIBLE(button)))
 			ewl_widget_hide(button);
 
-		button = ecore_dlist_next(EWL_CONTAINER(row)->children);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
