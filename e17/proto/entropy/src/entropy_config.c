@@ -7,7 +7,7 @@
 #include <Eet.h>
 #include <stdarg.h>
 
-#define ENTROPY_CONFIG_VERSION 10
+#define ENTROPY_CONFIG_VERSION 11
 
 static Entropy_Config* _Entropy_Config = NULL;
 
@@ -251,7 +251,7 @@ entropy_config_structure_new(char* name, char* uri)
 }
 
 Entropy_Config_Mime_Binding*
-entropy_config_binding_new(char* mime_type, Entropy_Config_Mime_Binding_Action* action1, ...)
+entropy_config_binding_new(char* mime_type, char* description, Entropy_Config_Mime_Binding_Action* action1, ...)
 {
 	va_list args;
 	Entropy_Config_Mime_Binding_Action* action;
@@ -299,9 +299,9 @@ Entropy_Config* entropy_config_init(entropy_core* core) {
 	mimes = entropy_malloc(sizeof(Entropy_Config_Loaded));
 
 
-	i = strlen(entropy_core_home_dir_get()) + strlen("/.e/apps/entropy") + 2;
+	i = strlen(entropy_core_home_dir_get()) + strlen("/.e/entropy") + 2;
 	_Entropy_Config->config_dir = entropy_malloc(i * sizeof(char));
-	snprintf(_Entropy_Config->config_dir, i, "%s/%s", entropy_core_home_dir_get(), "/.e/apps/entropy");
+	snprintf(_Entropy_Config->config_dir, i, "%s/%s", entropy_core_home_dir_get(), "/.e/entropy");
 
 	printf("Config dir is: '%s'\n", _Entropy_Config->config_dir);
 
@@ -495,46 +495,46 @@ void entropy_config_defaults_populate(Entropy_Config_Loaded* config)
 	
 		config->config_version = ENTROPY_CONFIG_VERSION;
 		config->mime_bindings = evas_list_append(config->mime_bindings, 
-				entropy_config_binding_new("image/jpeg",
+				entropy_config_binding_new("image/jpeg", "JPEG Image",
 					entropy_config_binding_action_new("Exhibit (Single File)", "exhibit", "\%pf"),
 					entropy_config_binding_action_new("Exhibit (Directory)", "exhibit", "\%p"),
 					NULL
 					));
 		config->mime_bindings = evas_list_append(config->mime_bindings, 
-				entropy_config_binding_new("image/png",
-					entropy_config_binding_action_new("Exhibit (Single File)", "exhibit", "\%pf"),
-					entropy_config_binding_action_new("Exhibit (Directory)", "exhibit", "\%p"),
-					NULL
-					));
-
-		config->mime_bindings = evas_list_append(config->mime_bindings, 
-				entropy_config_binding_new("image/gif",
+				entropy_config_binding_new("image/png", "PNG Image",
 					entropy_config_binding_action_new("Exhibit (Single File)", "exhibit", "\%pf"),
 					entropy_config_binding_action_new("Exhibit (Directory)", "exhibit", "\%p"),
 					NULL
 					));
 
 		config->mime_bindings = evas_list_append(config->mime_bindings, 
-				entropy_config_binding_new("text/csrc",
+				entropy_config_binding_new("image/gif", "GIF Image",
+					entropy_config_binding_action_new("Exhibit (Single File)", "exhibit", "\%pf"),
+					entropy_config_binding_action_new("Exhibit (Directory)", "exhibit", "\%p"),
+					NULL
+					));
+
+		config->mime_bindings = evas_list_append(config->mime_bindings, 
+				entropy_config_binding_new("text/csrc", "C Source File",
 					entropy_config_binding_action_new("Gvim", "gvim", "\%pf"),
 					NULL
 					));
 
 		config->mime_bindings = evas_list_append(config->mime_bindings, 
-				entropy_config_binding_new("text/html",
+				entropy_config_binding_new("text/html", "HTML Document",
 					entropy_config_binding_action_new("Firefox", "firefox", "\%pf"),
 					NULL
 					));
 
 		config->mime_bindings = evas_list_append(config->mime_bindings, 
-				entropy_config_binding_new("audio/x-mp3",
+				entropy_config_binding_new("audio/x-mp3", "MP3 Audio",
 					entropy_config_binding_action_new("Xmms", "xmms", "\%pf"),
 					entropy_config_binding_action_new("Mpg123 (via eVFS)", "evfscat \%u | mpg123 -", ""),
 					NULL
 					));
 
 		config->mime_bindings = evas_list_append(config->mime_bindings, 
-				entropy_config_binding_new("video/x-ms-wmv",
+				entropy_config_binding_new("video/x-ms-wmv", "WMV Video",
 					entropy_config_binding_action_new("MPlayer", "mplayer", "\%pf"),
 					entropy_config_binding_action_new("MPlayer (via evfs)", "evfscat \%u | mplayer -cache 4096 -", ""),
 					entropy_config_binding_action_new("Xine", "xine", "%pf"),
@@ -542,7 +542,7 @@ void entropy_config_defaults_populate(Entropy_Config_Loaded* config)
 					));
 
 		config->mime_bindings = evas_list_append(config->mime_bindings, 
-				entropy_config_binding_new("video/mpeg",
+				entropy_config_binding_new("video/mpeg", "MPEG Video",
 					entropy_config_binding_action_new("MPlayer", "mplayer", "\%pf"),
 					entropy_config_binding_action_new("MPlayer (via evfs)", "evfscat \%u | mplayer -cache 4096 -", ""),
 					entropy_config_binding_action_new("Xine", "xine", "%pf"),
@@ -550,7 +550,7 @@ void entropy_config_defaults_populate(Entropy_Config_Loaded* config)
 					));
 
 		config->mime_bindings = evas_list_append(config->mime_bindings, 
-				entropy_config_binding_new("video/x-msvideo",
+				entropy_config_binding_new("video/x-msvideo", "AVI Video",
 					entropy_config_binding_action_new("MPlayer", "mplayer", "\%pf"),
 					entropy_config_binding_action_new("MPlayer (via evfs)", "evfscat \%u | mplayer -cache 4096 -", ""),
 					entropy_config_binding_action_new("Xine", "xine", "%pf"),
