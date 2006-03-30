@@ -171,7 +171,9 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
    ewin->ly = EoGetY(ewin);
    ewin->lw = ewin->client.w;
    ewin->lh = ewin->client.h;
+   ewin->state.maximizing = 1;
    EwinMoveResize(ewin, x, y, w, h);
+   ewin->state.maximizing = 0;
  done:
    HintsSetWindowState(ewin);
 }
