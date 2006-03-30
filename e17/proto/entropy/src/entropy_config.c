@@ -265,6 +265,7 @@ entropy_config_binding_new(char* mime_type, char* description, Entropy_Config_Mi
 	va_end(args);
 
 	binding->mime_type = strdup(mime_type);
+	binding->description = description;
 
 	return binding;
 }
