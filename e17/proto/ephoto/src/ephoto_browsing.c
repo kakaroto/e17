@@ -57,13 +57,26 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 		/*****************************************/
 		
 		/************Get the tree ready!***********/
-		
+	
+		ewl_widget_destroy(m->dirtree);	
 		ewl_widget_destroy(m->imagetree);
+		ewl_widget_destroy(m->spacer);
+	
+		m->dirtree = ewl_tree_new(1);
+                ewl_container_child_append(EWL_CONTAINER(m->images), m->dirtree);
+                ewl_object_maximum_size_set(EWL_OBJECT(m->dirtree), 200, 215);
+                ewl_tree_headers_visible_set(EWL_TREE(m->dirtree), 0);
+                ewl_widget_show(m->dirtree);
+	
+		m->spacer = ewl_spacer_new();
+		ewl_object_maximum_size_set(EWL_OBJECT(m->spacer), 10, 10);
+		ewl_container_child_append(EWL_CONTAINER(m->images), m->spacer);
+		ewl_widget_show(m->spacer);
 	
 		m->imagetree = ewl_tree_new(1);
 		ewl_container_child_append(EWL_CONTAINER(m->images), m->imagetree);
-		ewl_object_maximum_size_set(EWL_OBJECT(m->imagetree), 200, 425);
-		ewl_tree_headers_visible_set(EWL_TREE(m->imagetree), FALSE);
+		ewl_object_maximum_size_set(EWL_OBJECT(m->imagetree), 200, 215);
+		ewl_tree_headers_visible_set(EWL_TREE(m->imagetree), 0);
 		ewl_widget_show(m->imagetree);
 		
 		/******************************************/
@@ -91,7 +104,7 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 		
 		m->children[0] = m->hbox;
 		m->children[1] = NULL;
-		m->row = ewl_tree_row_add(EWL_TREE(m->imagetree), NULL, m->children);
+		m->row = ewl_tree_row_add(EWL_TREE(m->dirtree), NULL, m->children);
 		ewl_callback_append(m->texti, EWL_CALLBACK_CLICKED, up_cb, NULL);
 		
 		/*****************************************************************/
@@ -133,8 +146,8 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 			}
 
 			if ( fnmatch("*.[Ww][Aa][Vv]", pathw, 0) == 0 ) {
-            ecore_list_append(audiofiles, strdup(pathw));
-         }
+            		ecore_list_append(audiofiles, strdup(pathw));
+         	}
 	
 			bname = basename(pathw);
 	
@@ -159,7 +172,7 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 				
 				m->children[0] = m->hbox;
 				m->children[1] = NULL;
-				m->row = ewl_tree_row_add(EWL_TREE(m->imagetree), NULL, m->children);
+				m->row = ewl_tree_row_add(EWL_TREE(m->dirtree), NULL, m->children);
 				ewl_callback_append(m->text, EWL_CALLBACK_CLICKED, populatei_cb, NULL);
 			}
 		}
@@ -183,7 +196,7 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 			m->text = ewl_text_new();
 			ewl_widget_name_set(m->text, itemp);
 			ewl_text_text_set(EWL_TEXT(m->text), bname2);
-   		ewl_object_minimum_size_set(EWL_OBJECT(m->text), 10, 16);
+   			ewl_object_minimum_size_set(EWL_OBJECT(m->text), 10, 16);
 			ewl_object_fill_policy_set(EWL_OBJECT(m->text), EWL_FLAG_FILL_ALL);
 			ewl_container_child_append(EWL_CONTAINER(m->hbox), m->text);
 			ewl_widget_show(m->text);

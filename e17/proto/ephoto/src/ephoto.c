@@ -280,11 +280,10 @@ main(int argc, char **argv)
 		ewl_widget_show(m->vbox);
 	
 		m->images = ewl_border_new();
-		ewl_border_text_set(EWL_BORDER(m->images), "Select Images For Slideshow");
+		ewl_border_text_set(EWL_BORDER(m->images), "Add Content");
 		ewl_border_label_alignment_set(EWL_BORDER(m->images), EWL_FLAG_ALIGN_CENTER);
 		ewl_container_child_append(EWL_CONTAINER(m->vbox), m->images);
 		ewl_object_alignment_set(EWL_OBJECT(m->images), EWL_FLAG_ALIGN_CENTER);
-		ewl_object_size_request(EWL_OBJECT(m->images), 250, 210);
 		ewl_widget_show(m->images);
 		
 		m->directory = ewl_entry_new();
@@ -294,11 +293,16 @@ main(int argc, char **argv)
 		ewl_callback_append(m->directory, EWL_CALLBACK_VALUE_CHANGED, populatei_cb, NULL);
 		ewl_widget_show(m->directory);
 			
+		m->dirtree = ewl_tree_new(1);
+		ewl_container_child_append(EWL_CONTAINER(m->images), m->dirtree);
+		ewl_object_maximum_size_set(EWL_OBJECT(m->dirtree), 200, 160);
+		ewl_widget_show(m->dirtree);
+	
 		m->imagetree = ewl_tree_new(1);
 		ewl_container_child_append(EWL_CONTAINER(m->images), m->imagetree);
 		ewl_object_maximum_size_set(EWL_OBJECT(m->imagetree), 200, 160);
 		ewl_widget_show(m->imagetree);
-	
+		
 		m->notebook = ewl_notebook_new();
 		ewl_notebook_tabbar_position_set(EWL_NOTEBOOK(m->notebook), EWL_POSITION_TOP);
 		ewl_container_child_append(EWL_CONTAINER(m->hbox), m->notebook);
@@ -347,15 +351,7 @@ main(int argc, char **argv)
 		ewl_widget_show(m->vbox2);
 		
 		ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(m->notebook), m->vbox2, "Slideshow/Presentation");
-	
-		m->songs = ewl_vbox_new();
-                ewl_container_child_append(EWL_CONTAINER(m->notebook), m->songs);
-                ewl_object_alignment_set(EWL_OBJECT(m->songs), EWL_FLAG_ALIGN_CENTER);
-                ewl_box_spacing_set(EWL_BOX(m->songs), 10);
-                ewl_widget_show(m->songs);
-
-                ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(m->notebook), m->songs, "Select/Preview Audio");
-
+	          
 		m->content = ewl_border_new();
 		ewl_border_text_set(EWL_BORDER(m->content), "Content");
 		ewl_border_label_alignment_set(EWL_BORDER(m->content), EWL_FLAG_ALIGN_CENTER);
