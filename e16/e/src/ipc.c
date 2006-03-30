@@ -1267,9 +1267,9 @@ static const IpcItem IPCArray[] = {
     "Pop up a dialog box with an OK button",
     "use \"dialog_ok <message>\" to pop up a dialog box\n"},
    {
-    IPC_Border, "border", NULL, "List available borders\n", NULL},
+    IPC_Border, "border", NULL, "List available borders", NULL},
    {
-    IPC_Screen, "screen", NULL, "Return screen information\n", NULL},
+    IPC_Screen, "screen", NULL, "Return screen information", NULL},
    {
     SnapIpcFunc,
     "list_remember", "rl",
