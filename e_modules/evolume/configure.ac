@@ -92,6 +92,7 @@ AC_SUBST(e_cflags)
 
 MODULE_ARCH="$host_os-$host_cpu"
 AC_SUBST(MODULE_ARCH)
+AC_DEFINE_UNQUOTED(MODULE_ARCH, "$MODULE_ARCH", "Module architecture")
 
 AC_PREFIX_DEFAULT(${HOME}/.e/e)
 if test "x$prefix" = "xNONE"; then

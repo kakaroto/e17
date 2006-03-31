@@ -3,11 +3,6 @@ INCLUDES		= -I$(includedir) \
 				  -I$(top_srcdir)/src/bin 
 
 
-AM_CFLAGS 		= @ECORE_CFLAGS@  -DMODULE_ARCH="\"@MODULE_ARCH@\""
-
-
-
-
 #lib_LTLIBRARIES				= libemixer.la
 noinst_LTLIBRARIES 			= 	libemixer.la
 libemixer_la_SOURCES			=	e_mixer.c \
