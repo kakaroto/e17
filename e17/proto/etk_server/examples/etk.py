@@ -81,18 +81,19 @@ class Window (Container):
     def TitleSet(self, title):
 	self.Call("window_title_set " + self.Get() + " \"" + title + "\"")
 
-etk = Etk()
-etk.Connect()
-etk.Init()
-
-window = Window()
-print("window id is " + window.Get());
-window.TitleSet("Etk-Python")
-
-button = Button()
-button.LabelSet("Python rules!")
-
-window.Add(button)
-window.ShowAll()
-
-etk.Main()
+print("depricated for now!!\n")	
+#etk = Etk()
+#etk.Connect()
+#etk.Init()
+#
+#window = Window()
+#print("window id is " + window.Get());
+#window.TitleSet("Etk-Python")
+#
+#button = Button()
+#button.LabelSet("Python rules!")
+#
+#window.Add(button)
+#window.ShowAll()
+#
+#etk.Main()

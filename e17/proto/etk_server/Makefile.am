@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 MYAPPNAME=etk_server
-SUBDIRS = src
+SUBDIRS = scripts src
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
                        config.h.in config.sub configure install-sh \

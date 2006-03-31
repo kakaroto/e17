@@ -2,9 +2,13 @@ Main author:
 ============
 Hisham 'CodeWarrior' Mardambey <hisham.mardambey@gmail.com>
 
+Credits:
+========
+Etk-Server was inspired by Gtk-Server.
+
 Thanks:
 =======
 Etk            Simon 'MoOm' Treny <simon.treny@free.fr>
 Misc EFL       Carsten 'The Rasterman' Haitzler <raster@rasterman.com> + team
-
-
+Misc Perl      Chady 'Leviathan' Kassouf <chady@chady.net>
+Java Example   Andrew 'HandyAndE' Williams <andy@handyande.co.uk>

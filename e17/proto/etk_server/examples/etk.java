@@ -22,6 +22,10 @@ public class etk {
   }
 
   public static void main(String args[]) throws IOException {
+     
+    System.out.println("Deprecated for now!");
+    return;
+    
     Runtime.getRuntime().exec("etk_server " + FIFO);
     System.out.println("running");
     try {

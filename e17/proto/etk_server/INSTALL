@@ -5,6 +5,8 @@ Installation:
 make
 make install
 
+You will need Etk's source code in the same place as when it was compiled.
+
 Note:
 =====
 BSD systems can use configgen.sh from their system and gmake.

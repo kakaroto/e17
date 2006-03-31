@@ -1,3 +1,8 @@
+#!/usr/local/bin/ruby
+
+puts("Depricated for now!\n")
+exit
+
 def etk(str)
 
   fifo = File.open("/tmp/etk_server_fifo", "w")

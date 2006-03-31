@@ -6,6 +6,10 @@ define(FIFO, "/tmp/etk_server_fifo");
 
 class Etk
 {
+    static $socket = "";
+    static $result;
+    static private $app_id;
+    static private $var_id;
     static private $loop = true;
     static private $callbacks = Array();
     const True = 1;
@@ -245,46 +249,69 @@ class Etk
     const ResponseHelp = -11;
 
     function __construct()
-    { }
-
+    {
+	static $_socket;
+	static $_var_id = 0;
+	static $_app_id = "";
+	
+	$this->socket = &$_socket;
+	$this->var_id = &$_var_id;
+	$this->app_id = &$_app_id;
+    }   
+    
+    function Init()
+    {
+	if($this->app_id == "")
+	{
+	    $this->app_id = $this->Call(1, "server_init");
+	}
+    }
+    
     function Connect()
     {
-	exec("etk_server ".FIFO." > /dev/null &");
+	exec("etk_server > /dev/null &");
 	usleep(50000);
+	
+	$this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+	$this->result = socket_connect($this->socket, "127.0.0.1", "8080");
     }
 
-    function Call($str)
+    function Call($mode, $str)
     {
-	print($str."\n");
-	if(!$fd = fopen(FIFO, "w"))
+	if($this->socket == "")
 	{
-	    print("Cant open fifo: ". FIFO ."\n");
-	    exit(-1);
+	    print("NO SOCKET!\n");
+	    return;
 	}
 
-	if(fwrite($fd, "etk_".$str."\0") === FALSE)
+	if($mode == 0)
 	{
-	    print("Cant write content to fifo!\n");
+	    $m = "a";
+	}
+	else
+	{
+	    $m = "s";
+	}		
+	
+	$tvar_id = "_".$this->var_id;
+	$this->var_id++;
+	
+	$in = "$m ".$this->app_id.$tvar_id." etk_".$str."\0";
+	if(socket_write($this->socket, $in, strlen($in)) <= 0)
+	{
+	    print("Cant write content to socket!\n");
 	    exit(-1);
 	}
+	
+	if($mode == 0)
+	  return $this->app_id.$tvar_id;
 
-	fclose($fd);
-
-	if(!$fd = fopen(FIFO, "r"))
+	$ret = socket_read($this->socket, 2048);
+	if(!$ret)
 	{
-	    print("Cant open fifo: ". FIFO ."\n");
-	    exit(-1);
-	}
-
-	if(!$ret = fread($fd, 4096))
-	{
-	    /*
-	     print("Cant read contents from fifo!\n");
+	     print("Cant read contents from socket!\n");
 	     exit(-1);
-	     */
 	}
-
-	fclose($fd);
 
 	return $ret;
     }
@@ -304,7 +331,7 @@ class Etk
 	
 	while ( $this->loop )
 	{
-	    $event = Etk::Call("server_callback");
+	    $event = $this->Call(1, "server_callback");
 	    
 	    if(strstr($event, " "))
 	    {			
@@ -328,8 +355,8 @@ class Etk
     function MainQuit()
     {
 	$this->loop = Etk::False;
-	$this->Call("main_quit");
-	$this->Call("server_shutdown");
+	$this->Call(0, "main_quit");
+	$this->Call(0, "server_shutdown");
     }
 }
 
@@ -354,13 +381,14 @@ class Object extends Etk
 
     function SignalConnect($name, $callback)
     {
-	$this->Call("server_signal_connect \"$name\" ".$this->Get()." \"".$name."_".$this->object."\"");
+	$this->Call(0, "server_signal_connect \"$name\" ".$this->Get()." \"".$name."_".$this->object."\"");
 	$this->AddCallback($name."_".$this->object, $callback);
     }
     
     function Destroy()
     {
-	$this->Call("object_destroy ".$this->Get());
+	$this->Call(0, "object_destroy ".$this->Get());
+	$this->Set("");	
     }
 }
 
@@ -375,12 +403,12 @@ class Widget extends Object
 
     function ShowAll()
     {
-	$this->Call("widget_show_all ".$this->Get());
+	$this->Call(0, "widget_show_all ".$this->Get());
     }
 
     function SizeRequestSet($width, $height)
     {
-	$this->Call("widget_size_request_set ".$this->Get()." $width $height");
+	$this->Call(0, "widget_size_request_set ".$this->Get()." $width $height");
     }
 }
 
@@ -391,9 +419,9 @@ class Image extends Widget
 	parent::__construct();
 
 	if(!empty($filename))
-	  $this->Set($this->Call("image_new_from_file \"$filename\""));
+	  $this->Set($this->Call(0, "image_new_from_file \"$filename\""));
 	else
-	  $this->Set($this->Call("image_new"));
+	  $this->Set($this->Call(0, "image_new"));
     }
 }
 
@@ -406,7 +434,7 @@ class Container extends Widget
 
     function Add($widget)
     {
-	$this->Call("container_add ".$this->Get(). " ".$widget->Get());
+	$this->Call(0, "container_add ".$this->Get(). " ".$widget->Get());
     }
 }
 
@@ -419,7 +447,7 @@ abstract class Bin extends Container
 
     function ChildSet($child)
     {
-	$this->Call("bin_child_set ".$this->Get()." ".$child->Get());
+	$this->Call(0, "bin_child_set ".$this->Get()." ".$child->Get());
     }
 
     function ChildGet()
@@ -432,12 +460,12 @@ class Frame extends Bin
     function __construct($label)
     {
 	parent::__construct();
-	$this->Set($this->Call("frame_new \"$label\""));
+	$this->Set($this->Call(0, "frame_new \"$label\""));
     }
 
     function LabelSet($label)
     {
-	$this->Call("frame_label_set ".$this->Get()." \"$label\"");
+	$this->Call(0, "frame_label_set ".$this->Get()." \"$label\"");
     }
 }
 
@@ -450,56 +478,56 @@ class Button extends Bin
 	parent::__construct();
 
 	if(!empty($label))
-	  $this->Set($this->Call("button_new_with_label \"$label\""));
+	  $this->Set($this->Call(0, "button_new_with_label \"$label\""));
 	else
-	  $this->Set($this->Call("button_new"));
+	  $this->Set($this->Call(0, "button_new"));
 
 	if(!empty($img))
 	{
 	    $this->image = new Image($img);
-	    $this->Call("button_image_set ".$this->Get()." ".$image->Get());
+	    $this->Call(0, "button_image_set ".$this->Get()." ".$image->Get());
 	}
     }
     
     function Pressed()
     {
-	$this->Call("button_pressed ".$this->Get());
+	$this->Call(0, "button_pressed ".$this->Get());
     }
     
     function Released()
     {
-	$this->Call("button_released ".$this->Get());
+	$this->Call(0, "button_released ".$this->Get());
     }
     
     function Clicked()
     {
-	$this->Call("button_clicked ".$this->Get());
+	$this->Call(0, "button_clicked ".$this->Get());
     }
     
     function LabelSet($label)
     {
-	$this->Call("button_label_set ".$this->Get());
+	$this->Call(0, "button_label_set ".$this->Get());
     }
     
     function LabelGet()
     {
-	$label = $this->Call("button_label_get ".$this->Get());
-	return $this->Call("server_var_get $label");    
+	$label = $this->Call(1, "button_label_get ".$this->Get());
+	return $this->Call(1, "server_var_get $label");    
     }
     
     function ImageSet($image)
     {
-	$this->Call("button_image_set ".$this->Get()." ".$image->Get());
+	$this->Call(0, "button_image_set ".$this->Get()." ".$image->Get());
     }
     
     function ImageGet()
     {
-	return $this->Call("button_image_get ".$this->Get());
+	return $this->Call(1, "button_image_get ".$this->Get());
     }
     
     function AlignmentSet($xalign, $yalign)
     {
-	$this->Call("button_alignment_set ".$this->Get()." $xalign $yalign");
+	$this->Call(0, "button_alignment_set ".$this->Get()." $xalign $yalign");
     }
     
     function AlignmentGet(&$xalign, &$yalign)
@@ -513,9 +541,9 @@ class CheckButton extends Button
     {
 	parent::__construct($label);
 	if(!empty($label))
-	  $this->Set($this->Call("check_button_new_with_label \"$label\""));
+	  $this->Set($this->Call(0, "check_button_new_with_label \"$label\""));
 	else
-	  $this->Set($this->Call("check_button_new"));
+	  $this->Set($this->Call(0, "check_button_new"));
     }
 }
 
@@ -524,12 +552,12 @@ class Table extends Container
     function __construct($num_cols, $num_rows, $homogeneous = Etk::False)
     {
 	parent::__construct();
-	$this->Set($this->Call("table_new $num_cols $num_rows $homogeneous"));
+	$this->Set($this->Call(0, "table_new $num_cols $num_rows $homogeneous"));
     }
 
     function AttachDefaults(Widget $widget, $left_attach, $right_attach, $top_attach, $bottom_attach)
     {
-	$this->Call("table_attach_defaults ".$this->Get()." ".$widget->Get()." $left_attach $right_attach $top_attach $bottom_attach");
+	$this->Call(0, "table_attach_defaults ".$this->Get()." ".$widget->Get()." $left_attach $right_attach $top_attach $bottom_attach");
     }
 }
 
@@ -539,7 +567,7 @@ class Window extends Container
     {
 	parent::__construct();
 
-	$this->Set($this->Call("window_new"));
+	$this->Set($this->Call(0, "window_new"));
 	$this->__construct_props($title, $width, $height);
     }
 
@@ -551,10 +579,10 @@ class Window extends Container
     protected function __construct_props($title = "", $width = "", $height = "")
     {
 	if(!empty($title))
-	  $this->Call("window_title_set ".$this->Get(). " \"$title\"");
+	  $this->Call(0, "window_title_set ".$this->Get(). " \"$title\"");
 
 	if(!empty($width) && !empty($height))
-	  $this->Call("window_resize $width $height");
+	  $this->Call(0, "window_resize $width $height");
     }
 }
 
@@ -563,38 +591,38 @@ class Dialog extends Window
     function __construct($title = "", $width = "", $height = "")
     {
 	parent::__construct2();
-	$this->Set($this->Call("dialog_new"));
+	$this->Set($this->Call(0, "dialog_new"));
 	$this->__construct_props($title, $width, $height);
     }
 
     function PackMainArea(Widget $widget, $expand = Etk::True, $fill = Etk::True, $padding = 0, $pack_at_end = Etk::False)
     {
-	$this->Call("dialog_pack_in_main_area ".$this->Get()." ".$widget->Get()." $expand $fill $padding $pack_at_end");
+	$this->Call(0, "dialog_pack_in_main_area ".$this->Get()." ".$widget->Get()." $expand $fill $padding $pack_at_end");
     }
 
     function PackActionArea(Widget $widget, $expand = Etk::True, $fill = Etk::True, $padding = 0, $pack_at_end = Etk::False)
     {
-	$this->Call("dialog_pack_in_action_area ".$this->Get()." ".$widget->Get()." $expand $fill $padding $pack_at_end");
+	$this->Call(0, "dialog_pack_in_action_area ".$this->Get()." ".$widget->Get()." $expand $fill $padding $pack_at_end");
     }
 
     function PackButtinActionArea(Button $button, $response_id, $expand = Etk::True, $fill = Etk::True, $padding = 0, $pack_at_end = Etk::False)
     {
-	$this->Call("dialog_pack_button_in_action_area ".$this->Get()." ".$button->Get()." $response_id $expand $fill $padding $pack_at_end");
+	$this->Call(0, "dialog_pack_button_in_action_area ".$this->Get()." ".$button->Get()." $response_id $expand $fill $padding $pack_at_end");
     }
 
     function ButtonAdd($label, $response_id)
     {
-	$this->Call("dialog_button_add ".$this->Get()." \"$label\" $response_id");
+	$this->Call(0, "dialog_button_add ".$this->Get()." \"$label\" $response_id");
     }
 
     function ButtonAddFromStock($stock_id, $response_id)
     {
-	$this->Call("dialog_button_add_from_stock ".$this->Get()." $stock_id $response_id");
+	$this->Call(0, "dialog_button_add_from_stock ".$this->Get()." $stock_id $response_id");
     }
 
     function HasSeperatorSet($has_seperator)
     {
-	$this->Call("dialog_hash_seperator_set ".$this->Get()." $has_seperator");
+	$this->Call(0, "dialog_hash_seperator_set ".$this->Get()." $has_seperator");
     }
 }
 
@@ -603,16 +631,16 @@ class Entry extends Widget
     function __construct($text = "")
     {
 	parent::__construct();
-	$this->Set($this->Call("entry_new"));
+	$this->Set($this->Call(0, "entry_new"));
 
 	if(!empty($text))
-	  $this->Call("entry_text_set ".$this->Get()." \"$text\"");
+	  $this->Call(0, "entry_text_set ".$this->Get()." \"$text\"");
     }
 
     function TextGet()
     {
-	$text = $this->Call("entry_text_get ".$this->Get());
-	return $this->Call("server_var_get $text");
+	$text = $this->Call(1, "entry_text_get ".$this->Get());
+	return $this->Call(1, "server_var_get $text");
     }
 }
 
@@ -621,12 +649,12 @@ class Label extends Widget
     function __construct($text = "")
     {
 	parent::__construct();
-	$this->Set($this->Call("label_new \"$text\""));
+	$this->Set($this->Call(0, "label_new \"$text\""));
     }
 
     function TextSet($label)
     {
-	$this->Call("label_set ".$this->Get()." \"$label\"");
+	$this->Call(0, "label_set ".$this->Get()." \"$label\"");
     }
 }
 
@@ -639,7 +667,7 @@ abstract class Box Extends Widget
 
     function PackStart($child, $fill = Etk::True, $expand = Etk::True, $padding = 0)
     {
-	$this->Call("box_pack_start ". $this->Get(). " " .$child->Get(). " $fill $expand $padding");
+	$this->Call(0, "box_pack_start ". $this->Get(). " " .$child->Get(). " $fill $expand $padding");
     }
 }
 
@@ -648,7 +676,7 @@ class VBox Extends Box
     function __construct($homogenous = Etk::False, $padding = 0)
     {
 	parent::__construct();
-	$this->Set($this->Call("vbox_new $homogenous $padding"));
+	$this->Set($this->Call(0, "vbox_new $homogenous $padding"));
     }
 }
 
@@ -657,7 +685,7 @@ class HBox Extends Box
     function __construct($homogenous = Etk::False, $padding = 0)
     {
 	parent::__construct();
-	$this->Set($this->Call("hbox_new $homogenous $padding"));
+	$this->Set($this->Call(0, "hbox_new $homogenous $padding"));
     }
 }
 
@@ -682,7 +710,7 @@ class TreeModelText extends TreeModel
     function __construct($tree)
     {
 	parent::__construct();
-	$this->model = $this->etk->Call("tree_model_text_new ".$tree->Get());
+	$this->model = $this->etk->Call(0, "tree_model_text_new ".$tree->Get());
     }
 }
 
@@ -691,7 +719,7 @@ class TreeModelCheck extends TreeModel
     function __construct($tree)
     {
 	parent::__construct();
-	$this->model = $this->etk->Call("tree_model_checkbox_new ".$tree->Get());
+	$this->model = $this->etk->Call(0, "tree_model_checkbox_new ".$tree->Get());
     }
 }
 
@@ -700,7 +728,7 @@ class TreeCol extends Object
     function __construct($tree, $title, $model, $width)
     {
 	parent::__construct();
-	$this->Set($this->Call("tree_col_new ".$tree->Get()." \"$title\" ".$model->Get()." $width"));
+	$this->Set($this->Call(0, "tree_col_new ".$tree->Get()." \"$title\" ".$model->Get()." $width"));
     }
 }
 
@@ -712,12 +740,12 @@ class Tree extends Container
     function __construct()
     {
 	parent::__construct();
-	$this->Set($this->Call("tree_new"));
+	$this->Set($this->Call(0, "tree_new"));
     }
 
     function ModeSet($mode)
     {
-	$this->Call("tree_mode_set ".$this->Get()." $mode");
+	$this->Call(0, "tree_mode_set ".$this->Get()." $mode");
     }
 
     function Append()
@@ -742,32 +770,32 @@ class Tree extends Container
 	    }
 	}
 
-	return $this->Call("tree_append ".$this->Get()." ".implode(" ", $args));
+	return $this->Call(1, "tree_append ".$this->Get()." ".implode(" ", $args));
     }
 
     function Build()
     {
-	$this->Call("tree_build ".$this->Get());
+	$this->Call(0, "tree_build ".$this->Get());
     }
     
     function FirstRowGet()
     {
-	return $this->Call("tree_first_row_get ".$this->Get());
+	return $this->Call(1, "tree_first_row_get ".$this->Get());
     }
     
     function NextRowGet($row)
     {
-	return $this->Call("tree_next_row_get ".$this->Get()." $row 0 0");
+	return $this->Call(1, "tree_next_row_get ".$this->Get()." $row 0 0");
     }
     
     function PrevRowGet($row)
     {
-	return $this->Call("tree_prev_row_get ".$this->Get()." $row 0 0");
+	return $this->Call(1, "tree_prev_row_get ".$this->Get()." $row 0 0");
     }
     
     function LastRowGet()
     {
-	return $this->Call("tree_last_row_get ".$this->Get()." 0 0");
+	return $this->Call(0, "tree_last_row_get ".$this->Get()." 0 0");
     }
 }
 
@@ -775,7 +803,7 @@ class Tree extends Container
 
 $etk = new Etk();
 $etk->Connect();
-$etk->Call("init");
+$etk->Init();
 
 $win = new Window("My Todo");
 $win->SignalConnect("delete_event", _window_deleted_cb);
@@ -795,6 +823,7 @@ $tree->Build();
 //$tree->Append($col1, Etk::True, $col2, "and make it work!", $col3, "High", $col4, date("d/m/y"), NULL);
 //$tree->Append($col1, Etk::False, $col2, "create some more classes", $col3, "Low", $col4, date("d/m/y"), NULL);
 //$tree->Append($col1, Etk::False, $col2, "bind this to sqlite", $col3, "Normal", $col4, date("d/m/y"), NULL);
+$lines = Array();
 $lines = file("todo");
 foreach($lines as $line)
 {    
@@ -803,7 +832,7 @@ foreach($lines as $line)
       continue;
     
     $items = explode('?||?||?', $line);
-    $tree->Append($col1, $items[0], $col2, $items[1], $col3, $items[2], $col4, $items[3], NULL);
+    $tree->Append($col1, $items[0], $col2, $items[1], $col3, $items[2], $col4, trim($items[3]), NULL);
 }  
 
 $hbox = new HBox();
@@ -829,10 +858,15 @@ $win->Add($vbox);
 $win->ShowAll();
 
 $etk->Main();
-
+socket_close($etk->socket);
 function _new_btn_clicked_cb()
 {
     global $dialog;
+    
+    if(get_class($dialog["dia"]) == "Dialog")
+      if($dialog["dia"]->Get() != "")
+	return;
+    
     $dialog["dia"] = new Dialog("My Todo");
     $dialog["dia"]->ButtonAddFromStock(Etk::StockDialogOk, Etk::ResponseOk);
     $dialog["dia"]->ButtonAddFromStock(Etk::StockDialogCancel, Etk::ResponseCancel);
@@ -898,8 +932,7 @@ function _clean_btn_clicked_cb()
     
     $row = $tree->FirstRowGet();
     $lrow = $tree->LastRowGet();
-
-    return;
+    
     //print("$row = $lrow\n");
     
     $i = 0;    

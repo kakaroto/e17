@@ -1,5 +1,8 @@
 ## Process this file with automake to produce Makefile.in
 
+MAINTAINERCLEANFILES = Makefile.in etk_server_valid_funcs.c \
+                       etk_server_valid_signals.c
+
 INCLUDES = \
 -Wall -export-dynamic \
 -I/usr/local/include \
