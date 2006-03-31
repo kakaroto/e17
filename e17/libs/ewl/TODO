@@ -4,20 +4,7 @@ EWL BUGS
 - Evas smart object layering has changed, so using EWL in an embed does not
   work correctly since we don't get a layer set callback.
 
-- Combo currently broken. Should be reworked to have a generic combo
-  container with an inheriting text combo class that provides the editable
-  feature.
-
 - Scrollbar jumps when trying to drag the button from its lower part
-
-- The ewl_test seems to get a small gap between the right edje of the
-  test and the trough for the scrollbar. Should be flush.
-    - The 'Password' test seems to make this gap grow.
-
-- Grid and Table layouts do not pack or resize correctly. The child show
-  and resize callbacks do not set the preferred inner size, this is 
-  necessary for correct initial size. Their logic is just plain wrong 
-  right now.
 
 - Seem to have lost the .. entry in the filedialog files list.
   ecore_file_ls filters this out.
