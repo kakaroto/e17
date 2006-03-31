@@ -1,7 +1,6 @@
 AUTOMAKE_OPTIONS 	= 	1.4 foreign
 MAINTAINERCLEANFILES 	= 	Makefile.in
 
-AM_CFLAGS		=	-W -Wall -Wno-implicit
 INCLUDES		=	-I$(top_srcdir)/src/lib \
 				-I$(top_builddir)/src/lib \
 				-I$(top_srcdir)/src/bin \
@@ -22,10 +21,10 @@ pkg_LTLIBRARIES		= ewl_border.la ewl_box.la ewl_button.la \
 			  ewl_floater.la ewl_icon.la ewl_iconbox.la  \
 			  ewl_tooltip.la ewl_seeker.la ewl_statusbar.la \
 			  ewl_scrollbar.la ewl_password.la ewl_menubar.la \
-			  ewl_tree2.la ewl_image.la ewl_tree.la \
-			  ewl_table.la ewl_notebook.la ewl_scrollpane.la \
-			  ewl_spinner.la ewl_progressbar.la ewl_theme.la \
-			  ewl_media.la ewl_menu.la ewl_imenu.la \
+			  ewl_tree2.la ewl_image.la ewl_image_thumbnail.la \
+			  ewl_tree.la ewl_table.la ewl_notebook.la \
+			  ewl_scrollpane.la ewl_spinner.la ewl_progressbar.la \
+			  ewl_theme.la ewl_media.la ewl_menu.la ewl_imenu.la \
 			  ewl_widget.la 
 
 ewl_border_la_SOURCES   = ewl_border.c
@@ -167,6 +166,13 @@ ewl_image_la_LDFLAGS	= -module -avoid-version \
 			  -L$(top_builddir)/src/lib \
 			  -L$(top_builddir)/src/lib/.libs
 ewl_image_la_DEPENDENCIES = 
+
+ewl_image_thumbnail_la_SOURCES   = ewl_image_thumbnail.c
+ewl_image_thumbnail_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
+ewl_image_thumbnail_la_LDFLAGS	= -module -avoid-version \
+			  -L$(top_builddir)/src/lib \
+			  -L$(top_builddir)/src/lib/.libs
+ewl_image_thumbnail_la_DEPENDENCIES = 
 
 ewl_tooltip_la_SOURCES   = ewl_tooltip.c
 ewl_tooltip_la_LIBADD    = $(top_builddir)/src/lib/libewl.la

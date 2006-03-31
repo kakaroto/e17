@@ -5,7 +5,7 @@ MAINTAINERCLEANFILES = Makefile.in
 INCLUDES = \
 -I$(top_builddir) \
 -I$(top_srcdir) \
-@EDJE_CFLAGS@ @ECORE_CFLAGS@ @EVAS_CFLAGS@ @EMOTION_CFLAGS@
+@EDJE_CFLAGS@ @ECORE_CFLAGS@ @EVAS_CFLAGS@ @EMOTION_CFLAGS@ @EPSILON_CFLAGS@
 
 lib_LTLIBRARIES = libewl.la
 
@@ -147,5 +147,5 @@ libewl_la_SOURCES = \
 installed_headersdir = $(prefix)/include/ewl
 installed_headers_DATA = $(EWLHEADERS)
 
-libewl_la_LIBADD = @EDJE_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ @EMOTION_LIBS@ -lm
+libewl_la_LIBADD = @EDJE_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ @EMOTION_LIBS@ @EPSILON_LIBS@ -lm
 libewl_la_LDFLAGS = -version-info 0:0:0

@@ -196,6 +196,20 @@ AC_PATH_GENERIC(emotion, 0.0.1,
 
 CFLAGS=$EMOTION_CFLAGS" "$CFLAGS
 
+AC_PATH_GENERIC(epsilon, 0.3.0,
+  [ 
+    have_epsilon="yes"
+    requirements="$requirements epsilon"
+    AC_DEFINE(BUILD_EPSILON_SUPPORT, 1, [Enable Epsilon Support for Ewl_Image])
+  ],
+  [
+    have_epsilon="no"
+    echo "No epsilon-config detected."
+  ]
+)
+
+CFLAGS=$EPSILON_CFLAGS" "$CFLAGS
+
 ###
 
 CFLAGS=$PCFLAGS
