@@ -1,6 +1,11 @@
 #ifndef EWL_IMAGE_H
 #define EWL_IMAGE_H
 
+/* #ifdef BUILD_EPSILON_SUPPORT */
+#include <Epsilon.h>
+#include <Epsilon_Request.h>
+/* #endif */
+
 /**
  * @addtogroup Ewl_Image Ewl_Image: An Image Display Widget
  * Provides a widget for displaying evas loadable images, and edjes.
@@ -65,6 +70,27 @@ struct Ewl_Image
 	} tile;				/**< Image tiling information */
 };
 
+/**
+ * Inherits from Ewl_Image and extends to provide reference to original image.
+ */
+struct Ewl_Image_Thumbnail
+{
+	Ewl_Image        image;	/**< Inherit from Ewl_Image */
+	Epsilon_Request *thumb; /**< Outstanding request to thumbnail image */
+	Ewl_Widget      *orig;  /**< Reference to image used to create thumb */
+};
+
+/**
+ * The Ewl_Image_Thumbnail widget
+ */
+typedef struct Ewl_Image_Thumbnail Ewl_Image_Thumbnail;
+
+/**
+ * @def EWL_IMAGE_Thumbnail(image)
+ * Typecase a pointer to an Ewl_Image_Thumbnail widget
+ */
+#define EWL_IMAGE_THUMBNAIL(image) ((Ewl_Image_Thumbnail *) image)
+
 Ewl_Widget	*ewl_image_new(void);
 int		 ewl_image_init(Ewl_Image *i);
 
@@ -86,6 +112,13 @@ void		 ewl_image_tile_set(Ewl_Image *i, int x, int y,
 						int w, int h);
 void 		 ewl_image_constrain_set(Ewl_Image *i, unsigned int size);
 unsigned int	 ewl_image_constrain_get(Ewl_Image *i);
+
+Ewl_Widget      *ewl_image_thumbnail_get(Ewl_Image *i);
+
+Ewl_Widget      *ewl_image_thumbnail_new();
+int              ewl_image_thumbnail_init(Ewl_Image_Thumbnail *image);
+void             ewl_image_thumbnail_request(Ewl_Image_Thumbnail *thumb,
+					     char *path);
 
 /*
  * Internally used callbacks, override at your own risk.
