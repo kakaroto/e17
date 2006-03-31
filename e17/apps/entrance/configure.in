@@ -144,6 +144,24 @@ AC_ARG_WITH(edje-cc,
 ])
 AC_SUBST(edje_cc)
 
+AC_MSG_CHECKING([for virtual console for X startup])
+AC_ARG_WITH(vt, [   --with-vt=NUM  Specify on which virtual console to start X (default 7)],
+            [
+                if (test $withval -ge 0) >/dev/null 2>&1; then
+                    AC_MSG_RESULT([$withval])
+                    ENTRANCE_VT_ARG=" vt$withval"
+                elif test "x$withval" = "xauto"; then
+                    AC_MSG_RESULT([X autodetect])
+                    ENTRANCE_VT_ARG=""
+                else
+                    AC_MSG_ERROR([Parameter to --with-vt must be numeric or "auto"])
+                fi
+            ], [
+                ENTRANCE_VT_ARG=" vt7"
+                AC_MSG_RESULT([7 (default)])
+            ])
+AC_DEFINE_UNQUOTED([ENTRANCE_VT_ARG], ["$ENTRANCE_VT_ARG"], [vtXX parameter to pass to X on startup])
+AC_SUBST([ENTRANCE_VT_ARG])
 
 AC_OUTPUT([
 Makefile

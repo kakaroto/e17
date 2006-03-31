@@ -19,7 +19,7 @@
 
 #define ENTRANCED_DEBUG 1
 
-#define DEFAULT_X_SERVER "/usr/X11R6/bin/X -quiet -nolisten tcp"
+#define DEFAULT_X_SERVER "/usr/X11R6/bin/X -quiet -nolisten tcp" ENTRANCE_VT_ARG
 //#define X_SERVER "/usr/X11R6/bin/Xnest -full"
 #define X_DISP ":0"             /* only used if DISPLAY variable is NOT set */
 #define ENTRANCE PREFIX "/bin/entrance_wrapper"
