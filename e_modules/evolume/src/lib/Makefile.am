@@ -13,10 +13,6 @@ noinst_LIBRARIES 			= 	libemixer.a
 libemixer_a_SOURCES			=	e_mixer.c \
 								e_mixer.h
 
-#libemixer_a_LIBADD		= @ECORE_LIBS@ @EVAS_LIBS@
-
-libemixer_a_LDFLAGS		= -static
-
 libemixer_a_DEPENDENCIES	= $(top_builddir)/config.h
 
 
