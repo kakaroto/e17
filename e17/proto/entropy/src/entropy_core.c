@@ -257,6 +257,7 @@ entropy_core* entropy_core_init(int argc, char** argv) {
 
 	/*Register GUI event handlers*/
 	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_FILE_CREATE, entropy_event_handler_file_create_handler);
+	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_FILE_REMOVE, entropy_event_handler_file_remove_handler);
 
 	
 
@@ -958,7 +959,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		entropy_free(event);
 		return;
 	} else {
-		printf(" *** No registered handlers for this event\n");
+		printf(" *** No registered handlers for this event (%s)\n", event->event_type);
 	}
 	
 
@@ -1029,23 +1030,6 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		}
 		entropy_notify_event_destroy(ev);
 
-
-	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_REMOVE)) {
-		entropy_notify_event* ev = entropy_notify_event_new();
-		ev->event_type = ENTROPY_NOTIFY_FILE_REMOVE;
-		ev->processed = 1;
-		
-		//printf("Sending a file create event...\n");
-
-		ecore_list_goto_first(el);
-		while ( (iter = ecore_list_next(el)) ) {
-			if (iter->active) (*iter->plugin->gui_event_callback_p)
-				(ev, 
-				 iter, 
-				 event->data,   /*An entropy_generic_file*/
-				 iter);
-		}
-		entropy_notify_event_destroy(ev);
 
 	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_REMOVE_DIRECTORY)) {
 		entropy_notify_event* ev = entropy_notify_event_new();

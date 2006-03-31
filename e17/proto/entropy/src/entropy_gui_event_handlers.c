@@ -27,11 +27,11 @@ void entropy_event_handler_instance_data_generic_cleanup(Entropy_Gui_Event_Handl
 Entropy_Gui_Event_Handler* entropy_event_handler_file_create_handler()
 {
 	return entropy_gui_event_handler_new(
-			entropy_event_handler_file_create_notify_event,
+			entropy_event_handler_file_create_instance_data,
 			entropy_event_handler_instance_data_generic_cleanup);
 }
 
-Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_file_create_notify_event(entropy_gui_event* event, 
+Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_file_create_instance_data(entropy_gui_event* event, 
 		entropy_gui_component_instance* requestor) 
 {
 	Entropy_Gui_Event_Handler_Instance_Data* data = entropy_malloc(sizeof(Entropy_Gui_Event_Handler_Instance_Data));
@@ -44,6 +44,30 @@ Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_file_create_notif
 
 	return data;
 }
-
-
 /*----------------------*/
+
+
+/*File remove*/
+Entropy_Gui_Event_Handler* entropy_event_handler_file_remove_handler()
+{
+	return entropy_gui_event_handler_new(
+			entropy_event_handler_file_remove_instance_data,
+			entropy_event_handler_instance_data_generic_cleanup);
+	
+}
+
+Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_file_remove_instance_data(entropy_gui_event* event, 
+	entropy_gui_component_instance* requestor) 
+{
+	
+	Entropy_Gui_Event_Handler_Instance_Data* data = entropy_malloc(sizeof(Entropy_Gui_Event_Handler_Instance_Data));
+	entropy_notify_event* ev = entropy_notify_event_new();
+	ev->event_type = ENTROPY_NOTIFY_FILE_REMOVE;
+	ev->processed = 1;
+	ev->data = event->data;
+
+	data->notify = ev;
+
+	return data;
+}
+/*---------------------------*/

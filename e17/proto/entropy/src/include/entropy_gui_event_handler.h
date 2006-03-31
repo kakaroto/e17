@@ -27,9 +27,14 @@ void entropy_event_handler_instance_data_generic_cleanup(Entropy_Gui_Event_Handl
 Entropy_Gui_Event_Handler* entropy_event_handler_file_create_handler();
 
 Entropy_Gui_Event_Handler_Instance_Data*
-	entropy_event_handler_file_create_notify_event(entropy_gui_event* event, 
+	entropy_event_handler_file_create_instance_data(entropy_gui_event* event, 
 		entropy_gui_component_instance* requestor);
 
+/*File remove handler*/
+Entropy_Gui_Event_Handler* entropy_event_handler_file_remove_handler();
+
+Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_file_remove_instance_data(entropy_gui_event* event, 
+	entropy_gui_component_instance* requestor);
 
 
 #endif
