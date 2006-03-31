@@ -173,8 +173,7 @@ ewl_tree_headers_visible_set(Ewl_Tree *tree, unsigned int visible)
  
 	tree->headers_visible = visible;
  
-	row = ecore_dlist_goto_first(EWL_CONTAINER(tree)->children);
-	ecore_dlist_goto_first(EWL_CONTAINER(row)->children);
+	row = tree->header;
 
 	ewl_container_child_iterate_begin(EWL_CONTAINER(row));
 	while ((button = ewl_container_child_next(EWL_CONTAINER(row)))) {

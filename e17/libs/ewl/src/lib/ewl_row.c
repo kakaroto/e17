@@ -134,7 +134,7 @@ ewl_row_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	nodes = 0;
 	ewl_container_child_iterate_begin(c);
-	while ((child = ewl_container_child_next(c))) {
+	while ((child = EWL_OBJECT(ewl_container_child_next(c)))) {
 		if (VISIBLE(child))
 			nodes++;
 	}
@@ -166,7 +166,7 @@ ewl_row_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		 * Iterate over the children and position the header children.
 		 */
 		ewl_container_child_iterate_begin(EWL_CONTAINER(hdr));
-		while ((child = ewl_container_child_next(c))) {
+		while ((child = EWL_OBJECT(ewl_container_child_next(c)))) {
 			align = EWL_OBJECT(ewl_container_child_next(EWL_CONTAINER(hdr)));
 			if (align && VISIBLE(align))
 				width = ewl_object_current_x_get(align) + ewl_object_current_w_get(align) - x;
@@ -193,7 +193,7 @@ ewl_row_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 */
 	else {
 		int tx = x;
-		while ((child = ewl_container_child_next(c))) {
+		while ((child = EWL_OBJECT(ewl_container_child_next(c)))) {
 			int portion;
 
 			/*
