@@ -350,7 +350,7 @@ main(int argc, char **argv)
    ecore_idle_enterer_add(incoming_command_cb, NULL);
 
    /*Add a timer, to make sure our event loop keeps going.  Kinda hacky */
-   ecore_timer_add(0.02, ecore_timer_enterer, NULL);
+   ecore_timer_add(0.01, ecore_timer_enterer, NULL);
 
    /*Load the plugins */
    evfs_load_plugins();

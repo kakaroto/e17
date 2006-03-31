@@ -45,7 +45,13 @@ evfs_io_initialise()
    EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_filereference_edd, evfs_filereference,
                                  "plugin_uri", plugin_uri, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_filereference_edd, evfs_filereference,
+                                 "username", username, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_filereference_edd, evfs_filereference,
+                                 "password", password, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_filereference_edd, evfs_filereference,
                                  "fd", fd, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_SUB(_evfs_filereference_edd, evfs_filereference, "parent", parent, 
+		   _evfs_filereference_edd);
 
    /*Progress event eet */
    _evfs_progress_event_edd =
@@ -427,16 +433,14 @@ evfs_read_event(evfs_event * event, ecore_ipc_message * msg)
         {
 
            evfs_filereference *ref;
+           ref =
+              eet_data_descriptor_decode(_evfs_filereference_edd, msg->data,
+                                         msg->len);
 
            if (!event->file_list.list)
              {
                 event->file_list.list = ecore_list_new();
-                //printf("Created new ecore list at %p\n", event->file_list.list);
              }
-
-           ref =
-              eet_data_descriptor_decode(_evfs_filereference_edd, msg->data,
-                                         msg->len);
 
            if (ref)
              {
@@ -612,75 +616,25 @@ void
 evfs_write_file_command(evfs_connection * conn, evfs_command * command)
 {
    int i;
-   char uri[1024];
-   char *part;
-   int it;
-   Ecore_List *uri_part;
-
-   bzero(uri, 1024);
 
    /*Write the files */
    /*Send them de-parsed to save time */
    for (i = 0; i < command->file_command.num_files; i++)
      {
+	char* data;
+	int size;
         evfs_filereference *ref = command->file_command.files[i];
 
-        uri_part = ecore_dlist_new();
+	data = eet_data_descriptor_encode(_evfs_filereference_edd, ref, &size);
 
-        it = 0;
-        do
-          {
-             if (it)
-               {
-                  ref = ref->parent;
-               }
-
-             if (ref->username)
-               {
-                  snprintf(uri, 1024, "%s://%s:%s@%s",
-                           ref->plugin_uri,
-                           ref->username, ref->password, ref->path);
-               }
-             else
-               {
-                  snprintf(uri, 1024, "%s://%s", ref->plugin_uri, ref->path);
-               }
-             ecore_dlist_append(uri_part, strdup(uri));
-             //printf("Appended URI '%s'\n", uri);
-
-             it++;
-          }
-        while (ref->parent);
-
-        it = 0;
-        bzero(uri, 1024);
-
-        ecore_dlist_goto_last(uri_part);
-        while ((part = ecore_dlist_previous(uri_part)))
-          {
-             if (it)
-                strcat(uri, "#");
-             strcat(uri, part);
-
-             free(part);
-             it++;
-          }
-        ecore_dlist_destroy(uri_part);
-
-        //printf("RE-Parsed URI: '%s'\n", uri);
 
         evfs_write_ecore_ipc_server_message(conn->server,
                                             ecore_ipc_message_new(EVFS_COMMAND,
                                                                   EVFS_FILE_REFERENCE,
-                                                                  0, 0, 0, uri,
-                                                                  sizeof(uri)));
+                                                                  0, 0, 0, data,
+                                                                  size));
 
-        evfs_write_ecore_ipc_server_message(conn->server,
-                                            ecore_ipc_message_new(EVFS_COMMAND,
-                                                                  EVFS_FILE_REFERENCE_FD,
-                                                                  0, 0, 0,
-                                                                  &ref->fd,
-                                                                  sizeof(int)));
+	free(data);
 
      }
 
@@ -714,68 +668,21 @@ evfs_write_file_command_client(evfs_client * client, evfs_command * command)
                                                              file_command.extra,
                                                              sizeof(int)));
 
-   /*Write the files */
-   /*Send them de-parsed to save time */
-   for (i = 0; i < command->file_command.num_files; i++)
+  for (i = 0; i < command->file_command.num_files; i++)
      {
+	char* data;
+	int size;
         evfs_filereference *ref = command->file_command.files[i];
 
-        uri_part = ecore_dlist_new();
+	data = eet_data_descriptor_encode(_evfs_filereference_edd, ref, &size);
 
-        it = 0;
-        do
-          {
-             if (it)
-               {
-                  ref = ref->parent;
-               }
-
-             if (ref->username)
-               {
-                  snprintf(uri, 1024, "%s://%s:%s@%s",
-                           ref->plugin_uri,
-                           ref->username, ref->password, ref->path);
-               }
-             else
-               {
-                  snprintf(uri, 1024, "%s://%s", ref->plugin_uri, ref->path);
-               }
-             ecore_dlist_append(uri_part, strdup(uri));
-             //printf("Appended URI '%s'\n", uri);
-
-             it++;
-          }
-        while (ref->parent);
-
-        it = 0;
-        bzero(uri, 1024);
-
-        ecore_dlist_goto_last(uri_part);
-        while ((part = ecore_dlist_previous(uri_part)))
-          {
-             if (it)
-                strcat(uri, "#");
-             strcat(uri, part);
-
-             free(part);
-             it++;
-          }
-        ecore_dlist_destroy(uri_part);
 
         evfs_write_ecore_ipc_client_message(client->client,
                                             ecore_ipc_message_new(EVFS_COMMAND,
                                                                   EVFS_FILE_REFERENCE,
                                                                   client->id, 0,
-                                                                  0, uri,
-                                                                  sizeof(uri) +
-                                                                  1));
-
-        evfs_write_ecore_ipc_client_message(client->client,
-                                            ecore_ipc_message_new(EVFS_COMMAND,
-                                                                  EVFS_FILE_REFERENCE_FD,
-                                                                  client->id, 0,
-                                                                  0, &ref->fd,
-                                                                  sizeof(int)));
+                                                                  0, data,
+                                                                  size));
 
      }
 
@@ -805,7 +712,13 @@ evfs_process_incoming_command(evfs_server * server, evfs_command * command,
      case EVFS_FILE_REFERENCE:
         {
            //printf("Parsing URI: '%s'\n", message->data);                   
-           evfs_file_uri_path *path = evfs_parse_uri(message->data);
+           //evfs_file_uri_path *path = evfs_parse_uri(message->data);
+	   
+           ref =
+              eet_data_descriptor_decode(_evfs_filereference_edd, message->data,
+                                         message->len);
+	   
+
 
            if (command->file_command.num_files == 0)
              {
@@ -815,18 +728,19 @@ evfs_process_incoming_command(evfs_server * server, evfs_command * command,
                  * but that func can also be called from the client*/
                 if (server)
                   {
-                     ref = path->files[0];
+                     evfs_filereference* aref = ref;
                      do
                        {
-                          ref->server = server;
+                          aref->server = server;
+			  aref->plugin = evfs_get_plugin_for_uri(server, aref->plugin_uri);
                        }
-                     while ((ref = ref->parent));
+                     while ((aref = aref->parent));
                   }
 
                 command->file_command.num_files = 1;
                 command->file_command.files =
                    malloc(sizeof(evfs_filereference *));
-                command->file_command.files[0] = path->files[0];
+                command->file_command.files[0] = ref;
 
              }
            else
@@ -839,12 +753,9 @@ evfs_process_incoming_command(evfs_server * server, evfs_command * command,
                    realloc(command->file_command.files,
                            sizeof(evfs_filereference *) *
                            (command->file_command.num_files + 1));
-                command->file_command.files[command->file_command.num_files] =
-                   path->files[0];
+                command->file_command.files[command->file_command.num_files] = ref;
                 command->file_command.num_files++;
              }
-
-           evfs_cleanup_file_uri_path(path);
 
         }
         break;
