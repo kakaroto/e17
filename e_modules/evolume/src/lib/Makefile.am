@@ -9,11 +9,11 @@ AM_CFLAGS 		= @ECORE_CFLAGS@  -DMODULE_ARCH="\"@MODULE_ARCH@\""
 
 
 #lib_LTLIBRARIES				= libemixer.la
-noinst_LIBRARIES 			= 	libemixer.a
-libemixer_a_SOURCES			=	e_mixer.c \
+noinst_LTLIBRARIES 			= 	libemixer.la
+libemixer_la_SOURCES			=	e_mixer.c \
 								e_mixer.h
 
-libemixer_a_DEPENDENCIES	= $(top_builddir)/config.h
+libemixer_la_DEPENDENCIES	= $(top_builddir)/config.h
 
 
 pkgdir 						= @E_MODULES@/$(PACKAGE)/$(MODULE_ARCH)/systems/
