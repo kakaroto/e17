@@ -1,0 +1,75 @@
+use strict;
+
+# Generate signal types
+
+my @signals;
+my @files;
+
+print "Generating etk_server_valid_signals.c...\n";
+
+open(LS, "ls @etk_sources@/src/lib/etk_*.c|");
+while(<LS>)
+{
+    push(@files, $_);
+}
+close LS;
+
+open OUTFILE, ">../src/bin/etk_server_valid_signals.c" or die "cant open output file!";
+
+print OUTFILE <<EOC;
+#include "etk_server.h"
+
+extern Evas_Hash *_etk_server_valid_signals;
+
+void _etk_server_valid_signals_populate()
+{
+   Etk_Server_Signal *sig = NULL;
+   Evas_List *siglist = NULL;
+EOC
+;
+    
+for my $file (@files)
+{
+    chomp($file);
+    print "Parsing $file...\n";
+    open FILE, $file or die "cant open header file $file: $!";
+    while(<FILE>)
+    {
+	my $line = $_;
+	chomp($line);
+	if ($line =~ /etk_signal_new\(\s*\"(.+)\"\s*,\s*.+\s*,\s*.+\s*,\s*(etk_marshaller.+)\s*,\s*.+\s*,\s*.+\s*\)\s*;/)
+	{
+	    my %signal;
+	    $signal{name} = $1;
+	    $signal{marshaller} = $2;
+	    push @signals, %signal;
+	    
+	    print OUTFILE <<EOC
+   sig = calloc(1, sizeof(Etk_Server_Signal));
+   sig->name = strdup("$signal{name}");
+   sig->marshaller = strdup("$signal{marshaller}");	      
+   if((siglist = evas_hash_find(_etk_server_valid_signals, "$signal{name}")) != NULL)
+     {
+        siglist = evas_list_append(siglist, sig);
+        evas_hash_modify(_etk_server_valid_signals, "$signal{name}", siglist);
+     }
+   else
+     {
+        siglist = evas_list_append(siglist, sig);
+        _etk_server_valid_signals = evas_hash_add(_etk_server_valid_signals,  "$signal{name}", siglist);
+     }
+   siglist = NULL;
+	    
+EOC
+;	      
+	}
+    }
+    close FILE;
+}
+
+print OUTFILE <<EOC
+}
+EOC
+;
+
+close OUTFILE;
