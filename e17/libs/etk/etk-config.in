@@ -3,9 +3,10 @@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 exec_prefix_set=no
+source_dir=@packagesrcdir@
 
 usage="\
-Usage: etk-config [--prefix[=DIR]] [--exec-prefix[=DIR]] [--version] [--libs] [--cflags]"
+Usage: etk-config [--prefix[=DIR]] [--exec-prefix[=DIR]] [--version] [--libs] [--cflags] [--build-dir]"
 
 if test $# -eq 0; then
       echo "${usage}" 1>&2
@@ -48,6 +49,9 @@ while test $# -gt 0; do
       libdirs=-L@libdir@
       echo $libdirs -letk @EDJE_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@
       ;;
+    --build-dir)
+      echo $source_dir
+      ;;		
     *)
       echo "${usage}" 1>&2
       exit 1

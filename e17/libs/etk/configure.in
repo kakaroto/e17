@@ -209,6 +209,8 @@ requirements="evas ecore edje"
 
 AC_SUBST(requirements)
 
+AC_SUBST(packagesrcdir)
+
 #####################################################################
 ## Output
 
