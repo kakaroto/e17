@@ -14,7 +14,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xresource.h>
 #include <X11/Xutil.h>
-#include <Imlib.h>
+#include <Imlib2.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -59,7 +59,7 @@ typedef struct _etimer ETimer;
 typedef void       *Epplet_gadget;
 typedef struct _rgb_buf
   {
-     ImlibImage         *im;
+     Imlib_Image        *im;
   }
                    *RGB_buf;
 
@@ -122,9 +122,6 @@ Window              Epplet_get_main_window(void);
 
 /* return the X display connection used */
 Display            *Epplet_get_display(void);
-
-/* return the ImlibData pointer being used */
-ImlibData          *Epplet_get_imlib_data(void);
 
 /* Get locations and sizes of gadgets */
 int Epplet_gadget_get_x(Epplet_gadget gad);

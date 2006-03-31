@@ -189,14 +189,14 @@ draw_flame(void)
    for (y = 0; y < 40; y++)
      {
 	ptr = flame + (y * 40);
-	rptr = rgb + (y * 40 * 3);
+	rptr = rgb + (y * 40 * 4);
 	for (x = 0; x < 40; x++)
 	  {
 	     val1 = ptr[x] & 0xff;
 	     rptr[0] = rm[val1];
 	     rptr[1] = gm[val1];
 	     rptr[2] = bm[val1];
-	     rptr += 3;
+	     rptr += 4;
 	  }
      }
 }

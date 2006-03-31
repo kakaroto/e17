@@ -1,6 +1,6 @@
 # $Id$
 
-bindir = $(EBIN)
+#bindir = $(EBIN)
 edatadir = $(EROOT)
 
 bin_PROGRAMS = E-Load.epplet E-Clock.epplet E-Time.epplet E-Net.epplet \

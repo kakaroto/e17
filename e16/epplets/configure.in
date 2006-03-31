@@ -1,7 +1,7 @@
 dnl# $Id$
 
 AC_INIT(api/epplet.c)
-AM_INIT_AUTOMAKE(epplets, 0.8)
+AM_INIT_AUTOMAKE(epplets, 0.9)
 
 dnl# Supply default CFLAGS, if not specified by `CFLAGS=flags ./configure'
 if test ! -z "${CFLAGS}" -o ! -z "${CCOPTS}"; then
@@ -28,7 +28,6 @@ AC_MINIX
 
 dnl# At least make the attempt to support CygWin32
 AC_CYGWIN
-AC_ARG_PROGRAM
 
 AM_PROG_LIBTOOL
 
@@ -127,7 +126,7 @@ if test "$GL_LIBS" = "GL"; then
 	AC_CHECK_HEADERS(GL/glx.h,[P_GL="GL"], [echo "Warning Will Robinson. No OpenGL headers! Install Mesa our your favorite hardware GLX."])
 	if test "$P_GL" = "GL"; then
 	  X_LIBS="-lGL -lGLU $X_LIBS"
-	  AC_DEFINE(HAVE_LIBGL)
+	  AC_DEFINE(HAVE_LIBGL, 1, [Have OpenGL])
 	  GL_PROGS="E-OpenGL-Demo.epplet"
 	  AC_MSG_WARN([*** Building for GLX. Grab your ankles and kiss your ass goodbye! ***])
 	fi
@@ -135,21 +134,21 @@ else
   AC_MSG_WARN(Warning Will Robinson. No OpenGL! Install Mesa or you favorite hardware GLX.)
 fi
 
-AC_CHECK_PROG(IMLIB_CONFIG, imlib-config, imlib-config, no)
+AC_CHECK_PROG(IMLIB_CONFIG, imlib2-config, imlib2-config, no)
 
 if test "$IMLIB_CONFIG" != "no"; then
 
   if test "$prefix" = "NONE"; then
-    AC_MSG_CHECKING(imlib-config for prefix)
+    AC_MSG_CHECKING(imlib2-config for prefix)
     prefix="`$IMLIB_CONFIG --prefix`"
     AC_MSG_RESULT($prefix)
   fi
 
-  AC_MSG_CHECKING(imlib-config for the value of CFLAGS)
+  AC_MSG_CHECKING(imlib2-config for the value of CFLAGS)
   CFLAGS="$CFLAGS `$IMLIB_CONFIG --cflags`"
   AC_MSG_RESULT($CFLAGS)
 
-  AC_MSG_CHECKING(imlib-config for the value of GRLIBS)
+  AC_MSG_CHECKING(imlib2-config for the value of GRLIBS)
   GRLIBS="$GRLIBS `$IMLIB_CONFIG --libs`"
   AC_MSG_RESULT($GRLIBS)
 
@@ -178,7 +177,7 @@ if test "$IMLIB_CONFIG" = "no"; then
                $SUBLIBS $X_LIBS)
   AC_CHECK_LIB(ungif, DGifOpenFileName, GRLIBS="$GRLIBS -lungif", ,
                $SUBLIBS $X_LIBS)
-  AC_CHECK_LIB(Imlib, Imlib_init, , [
+  AC_CHECK_LIB(Imlib2, imlib_create_image, , [
                echo "WARNING:  Imlib was not found or did not correctly link.";
                echo "          Please check config.log to see what the error was.";
                echo "          I will attempt to continue, but things may go wrong.";
@@ -206,7 +205,7 @@ if test "$LIBGTOP_CONFIG" != "no"; then
 
     AC_MSG_CHECKING(libgtop-config for the value of CFLAGS)
     CFLAGS="$CFLAGS $LIBGTOP_INCS"
-    AC_DEFINE(HAVE_LIBGTOP)
+    AC_DEFINE(HAVE_LIBGTOP, 1, [Have libgtop])
     AC_MSG_RESULT($CFLAGS)
 
     AC_MSG_CHECKING(libgtop-config for the value of LIBS)
@@ -241,15 +240,15 @@ AC_ARG_WITH(test-programs, [  --with-test-programs    Builds the test programs [
 # ok enlightenment d00ds want to ignore civilization and install
 # everything in one place. The rest of use prefer sanity.
 #
-AC_ARG_ENABLE(fsstd, [  --enable-fsstd          install files following FSSTD [default=no]], ,enable_fsstd=no)
+AC_ARG_ENABLE(fsstd, [  --enable-fsstd          install files following FSSTD [default=yes]], ,enable_fsstd=yes)
 
 if test "x$enable_fsstd" = "xyes"; then
-  ENLIGHTENMENT_ROOT=${datadir}/enlightenment
+  ENLIGHTENMENT_ROOT=${datadir}/e16
   ENLIGHTENMENT_BIN=${bindir}
   USE_FSSTD=yes
 else
-  ENLIGHTENMENT_ROOT=${prefix}/enlightenment
-  ENLIGHTENMENT_BIN=${prefix}/enlightenment/bin
+  ENLIGHTENMENT_ROOT=${prefix}/e16
+  ENLIGHTENMENT_BIN=${prefix}/e16/bin
   USE_FSSTD=no
 fi
 
@@ -258,7 +257,7 @@ AC_ARG_ENABLE(auto-respawn, [  --disable-auto-respawn  Be gnome-session friendly
                           epplets through e by default [default=no]],
           no_respawn=yes,)
 if test ! -z "$no_respawn"; then
-AC_DEFINE(NO_AUTO_RESPAWN)
+AC_DEFINE(NO_AUTO_RESPAWN, 1, [Disable auto-respawning])
 fi
 
 AC_ARG_ENABLE(new-remember,
@@ -267,38 +266,38 @@ AC_ARG_ENABLE(new-remember,
 	       AC_MSG_RESULT(yes)
 	       else
                AC_MSG_RESULT(no)
-	       AC_DEFINE(NEW_REMEMBER)
+	       AC_DEFINE(NEW_REMEMBER, 1, [Disable new remember (obsolete)])
 	       fi,
 	       AC_MSG_RESULT(no)
 )
 
 
-# If $EROOT is set use it, unless a make distcheck is being done
-# Makes the gratuitous assumption that "=inst" is neccessary and
-# sufficuent for a make distcheck
-AC_MSG_CHECKING(for Enlightenment location)
-if test -n "$EROOT" -a `echo "$prefix" | sed -e 's:=inst::'` = "$prefix"
-then
-  AC_SUBST(EROOT)
-  AC_MSG_RESULT($EROOT)
-else
+## If $EROOT is set use it, unless a make distcheck is being done
+## Makes the gratuitous assumption that "=inst" is neccessary and
+## sufficuent for a make distcheck
+#AC_MSG_CHECKING(for Enlightenment location)
+#if test -n "$EROOT" -a `echo "$prefix" | sed -e 's:[=_]inst::'` = "$prefix"
+#then
+#  AC_SUBST(EROOT)
+#  AC_MSG_RESULT($EROOT)
+#else
   EROOT=`eval echo $ENLIGHTENMENT_ROOT`
-  AC_MSG_RESULT(warning:  EROOT environment variable not detected.  Using $EROOT)
+#  AC_MSG_RESULT(warning:  EROOT environment variable not detected.  Using $EROOT)
   AC_SUBST(EROOT)
-fi
+#fi
 # If $EBIN is set use it, unless a make distcheck is being done
 # Makes the gratuitous assumption that "=inst" is neccessary and
 # sufficuent for a make distcheck
-AC_MSG_CHECKING(for Enlightenment binary location)
-if test -n "$EBIN" -a `echo "$prefix" | sed -e 's:=inst::'` = "$prefix"
-then
-  AC_SUBST(EBIN)
-  AC_MSG_RESULT($EBIN)
-else
+#AC_MSG_CHECKING(for Enlightenment binary location)
+#if test -n "$EBIN" -a `echo "$prefix" | sed -e 's:[=_]inst::'` = "$prefix"
+#then
+#  AC_SUBST(EBIN)
+#  AC_MSG_RESULT($EBIN)
+#else
   EBIN=`eval echo $ENLIGHTENMENT_BIN`
-  AC_MSG_RESULT(warning:  EBIN environment variable not detected.  Using $EBIN)
+#  AC_MSG_RESULT(warning:  EBIN environment variable not detected.  Using $EBIN)
   AC_SUBST(EBIN)
-fi
+#fi
 
 # Should we install E-Mixer?
 # Probably not ;-) But we may as well check!
@@ -334,12 +333,12 @@ AC_SUBST(ESD_PROGS)
 AC_PATH_PROG(MOUNT, mount)
 AC_PATH_PROG(UMOUNT, umount)
 AC_PATH_PROG(EJECT, eject)
-AC_DEFINE_UNQUOTED(MOUNT, "$MOUNT")
-AC_DEFINE_UNQUOTED(UMOUNT, "$UMOUNT")
-AC_DEFINE_UNQUOTED(EJECT, "$EJECT")
+AC_DEFINE_UNQUOTED(MOUNT, "$MOUNT", [Location of mount])
+AC_DEFINE_UNQUOTED(UMOUNT, "$UMOUNT", [Location of umount])
+AC_DEFINE_UNQUOTED(EJECT, "$EJECT", [Location of eject])
 
 if test -n "$EJECT"; then
-    AC_DEFINE(HAVE_EJECT, 1)
+    AC_DEFINE(HAVE_EJECT, 1, [Have eject])
 fi
 
 CFLAGS=${CFLAGS--O}

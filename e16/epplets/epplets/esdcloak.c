@@ -125,11 +125,11 @@ blank_buf (void)
   for (y = 0; y < 40; y++)
     {
       rgb = Epplet_get_rgb_pointer (buf);
-      rptr = rgb + (y * 40 * 3);
+      rptr = rgb + (y * 40 * 4);
       for (x = 0; x < 40; x++)
 	{
 	  rptr[0] = rptr[1] = rptr[2] = 0;
-	  rptr += 3;
+	  rptr += 4;
 	}
     }
 }
@@ -144,13 +144,13 @@ color_buf (unsigned char rr, unsigned char gg, unsigned char bb)
   for (y = 0; y < 40; y++)
     {
       rgb = Epplet_get_rgb_pointer (buf);
-      rptr = rgb + (y * 40 * 3);
+      rptr = rgb + (y * 40 * 4);
       for (x = 0; x < 40; x++)
 	{
 	  rptr[0] = rr;
 	  rptr[1] = gg;
 	  rptr[2] = bb;
-	  rptr += 3;
+	  rptr += 4;
 	}
     }
 }
@@ -166,13 +166,13 @@ fade_buf (int percentage)
   for (y = 0; y < 40; y++)
     {
       rgb = Epplet_get_rgb_pointer (buf);
-      rptr = rgb + (y * 40 * 3);
+      rptr = rgb + (y * 40 * 4);
       for (x = 0; x < 40; x++)
 	{
 	  rptr[0] = rptr[0] * percentage / 100;
 	  rptr[1] = rptr[1] * percentage / 100;
 	  rptr[2] = rptr[2] * percentage / 100;
-	  rptr += 3;
+	  rptr += 4;
 	}
     }
 }
@@ -187,13 +187,13 @@ scroll_buf (void)
   for (y = 0; y < 40; y++)
     {
       rgb = Epplet_get_rgb_pointer (buf);
-      rptr = rgb + (y * 40 * 3);
+      rptr = rgb + (y * 40 * 4);
       for (x = 0; x < 39; x++)
 	{
-	  rptr[0] = rptr[3];
-	  rptr[1] = rptr[4];
-	  rptr[2] = rptr[5];
-	  rptr += 3;
+	  rptr[0] = rptr[4];
+	  rptr[1] = rptr[5];
+	  rptr[2] = rptr[6];
+	  rptr += 4;
 	}
       rptr[0] = 0;
       rptr[1] = 0;
@@ -289,14 +289,14 @@ draw_flame (void)
   for (y = 0; y < 40; y++)
     {
       ptr = flame + (y * 40) + 1;
-      rptr = rgb + (y * 40 * 3);
+      rptr = rgb + (y * 40 * 4);
       for (x = 0; x < 40; x++)
 	{
 	  val1 = ptr[x] & 0xff;
 	  rptr[0] = rm[val1];
 	  rptr[1] = gm[val1];
 	  rptr[2] = bm[val1];
-	  rptr += 3;
+	  rptr += 4;
 	}
     }
 }
@@ -838,7 +838,8 @@ set_col_pixel (int x, int y, unsigned char c, unsigned char rrr,
   if ((((int) c) == 0) || (x < 0) || (y < 0) || (x > 39) || (y > 39))
     return;
 
-  ptr = (buf)->im->rgb_data + ((buf)->im->rgb_width * 3 * (y)) + (3 * x);
+  ptr = Epplet_get_rgb_pointer(buf);
+  ptr += (imlib_image_get_width() * 4 * (y)) + (4 * x);
   ptr[0] = ((double) rrr / 255 * (double) c);
   ptr[1] = ((double) ggg / 255 * (double) c);
   ptr[2] = ((double) bbb / 255 * (double) c);

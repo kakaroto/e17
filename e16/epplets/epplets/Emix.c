@@ -6,6 +6,7 @@
 
 #include "epplet.h"
 #include <sys/ioctl.h>
+#include <fcntl.h>
 #ifdef __FreeBSD__
 #include <machine/soundcard.h>
 #else

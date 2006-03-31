@@ -148,7 +148,6 @@ static void
 cb_close (void *data)
 {
   Epplet_unremember ();
-  Epplet_cleanup ();
   cd_finish (cd_desc);
   exit (0);
   return;

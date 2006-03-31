@@ -494,7 +494,10 @@ CallbackAnimate(void *data)
 
   int i, j, linear, linear_w;
   double ratio;
+  unsigned char *current_tile_data;
 
+  imlib_context_set_image(current_tile->image);
+  current_tile_data = (unsigned char*)imlib_image_get_data();
   if (k < M_PI)
     {
       if (mode.anim_mount)
@@ -508,20 +511,20 @@ CallbackAnimate(void *data)
 	    {
 	      if (!IsTransparent(current_tile->image, j, i))
 		{
-		  linear = 3*(i * 44 + j);
-		  linear_w = (i*44*3*num_tiles) + (current_tile_index*44*3) + 3*j;
-		    window_buf->im->rgb_data[linear] =
-		    widescreen_buf->im->rgb_data[linear_w] = 
-		      ratio * (widescreen_canvas_buf->im->rgb_data[linear_w])
-		      + (1.0-ratio) * (current_tile->image->rgb_data[linear]);
-		    window_buf->im->rgb_data[linear+1] =
-		    widescreen_buf->im->rgb_data[linear_w+1] = 
-		      ratio * (widescreen_canvas_buf->im->rgb_data[linear_w+1])
-		      + (1.0-ratio) * (current_tile->image->rgb_data[linear+1]);
-		    window_buf->im->rgb_data[linear+2] =
-		    widescreen_buf->im->rgb_data[linear_w+2] = 
-		      ratio * (widescreen_canvas_buf->im->rgb_data[linear_w+2])
-		      + (1.0-ratio) * (current_tile->image->rgb_data[linear+2]);
+		  linear = 4*(i * 44 + j);
+		  linear_w = (i*44*4*num_tiles) + (current_tile_index*44*4) + 4*j;
+		    Epplet_get_rgb_pointer(window_buf)[linear] =
+		    Epplet_get_rgb_pointer(widescreen_buf)[linear_w] = 
+		      ratio * (Epplet_get_rgb_pointer(widescreen_canvas_buf)[linear_w])
+		      + (1.0-ratio) * (current_tile_data[linear]);
+		    Epplet_get_rgb_pointer(window_buf)[linear+1] =
+		    Epplet_get_rgb_pointer(widescreen_buf)[linear_w+1] = 
+		      ratio * (Epplet_get_rgb_pointer(widescreen_canvas_buf)[linear_w+1])
+		      + (1.0-ratio) * (current_tile_data[linear+1]);
+		    Epplet_get_rgb_pointer(window_buf)[linear+2] =
+		    Epplet_get_rgb_pointer(widescreen_buf)[linear_w+2] = 
+		      ratio * (Epplet_get_rgb_pointer(widescreen_canvas_buf)[linear_w+2])
+		      + (1.0-ratio) * (current_tile_data[linear+2]);
 		}
 	    } 
 	}
@@ -548,9 +551,9 @@ UpdateView(int dir, int fast)
     {
       for (i=0; i<32; i++)
 	{
-	  memcpy(window_buf->im->rgb_data + i * 44 * 3,
-		 widescreen_buf->im->rgb_data + (i*44*3*num_tiles) + (current_tile_index*44*3),
-		 44*3*sizeof(unsigned char));
+	  memcpy(Epplet_get_rgb_pointer(window_buf) + i * 44 * 4,
+		 Epplet_get_rgb_pointer(widescreen_buf) + (i*44*4*num_tiles) + (current_tile_index*44*4),
+		 44*4*sizeof(unsigned char));
 	}
       Epplet_paste_buf(window_buf, Epplet_get_drawingarea_window(action_area), -2, -2);
     }
@@ -566,9 +569,9 @@ UpdateView(int dir, int fast)
 	    }
 	  for (i=0; i<32; i++)
 	    {
-	      memcpy(window_buf->im->rgb_data + i * 44 * 3,
-		     widescreen_buf->im->rgb_data + (i*44*3*num_tiles) + (current_tile_index*44*3) + (dir)*j*3,
-		     44*3*sizeof(unsigned char));
+	      memcpy(Epplet_get_rgb_pointer(window_buf) + i * 44 * 4,
+		     Epplet_get_rgb_pointer(widescreen_buf) + (i*44*4*num_tiles) + (current_tile_index*44*4) + (dir)*j*4,
+		     44*4*sizeof(unsigned char));
 	    }
 	  Epplet_paste_buf(window_buf, Epplet_get_drawingarea_window(action_area), -2, -2);
 	}
@@ -577,24 +580,23 @@ UpdateView(int dir, int fast)
 
 
 int
-IsTransparent(ImlibImage *im, int x, int y)
+IsTransparent(Imlib_Image *im, int x, int y)
 {
   int        linear;
-  ImlibColor ic;
+  unsigned char *data;
 
-  if (!im || x < 0 || y < 0 || x >= im->rgb_width || y >= im->rgb_height)
+  if (!im || x < 0 || y < 0)
     return 0;
 
-  Imlib_get_image_shape(id, im, &ic);
-  if ((ic.r == -1) && (ic.g == -1) && (ic.b == -1))
+  imlib_context_set_image(im);
+  if (x >= imlib_image_get_width() || y >= imlib_image_get_height())
     return 0;
 
-  linear = 3*(y * im->rgb_width + x);
+  linear = 4*(y * imlib_image_get_width() + x);
 
-  if ((im->rgb_data[linear] == ic.r)
-      && (im->rgb_data[linear+1] == ic.g)
-      && (im->rgb_data[linear+2] == ic.b))
-    return 1;
+  data = (unsigned char*)imlib_image_get_data();
+  if (data[linear+3] != 0xff);
+    return 0;	/* FIXME - Should return 1 but blending needs to be fixed */
 
   return 0;
 }
@@ -642,7 +644,7 @@ AddMountPoint(char *device, char *path)
   int             i;
   MountPointType *type = NULL;
   char           *s = NULL;
-  ImlibImage     *tmp_image = NULL;
+  Imlib_Image    *tmp_image = NULL;
 
   static Tile    *tail_tile = NULL;
 
@@ -714,17 +716,18 @@ AddMountPoint(char *device, char *path)
 
 		  if (!default_image)
 		    {
-		      tmp_image = Imlib_load_image(id, s);  
+		      tmp_image = imlib_load_image(s);  
 		      if (!tmp_image)
-			tmp_image = Imlib_load_image(id, __DEFAULT);  
+			tmp_image = imlib_load_image(__DEFAULT);  
 		      if (!tmp_image)
 			{
 			  Epplet_dialog_ok("  E-Mountbox could not load a default icon\n  "
 					   "  for the mountpoints. Check your installation.  ");
 			  error_exit();
 			}
-		      default_image = Imlib_clone_scaled_image(id, tmp_image, 44, 32);
-		      Imlib_destroy_image(id, tmp_image);
+		      imlib_context_set_image(tmp_image);
+		      default_image = imlib_create_cropped_scaled_image(0, 0, imlib_image_get_width(), imlib_image_get_height(), 44, 32);
+		      imlib_free_image();
 		    }
 		  tail_tile->image = default_image;
 		}
@@ -741,7 +744,7 @@ void
 AddMountPointType(char *key, char *image)
 {
   MountPointType *newtype = NULL;
-  ImlibImage     *tmp_image = NULL;
+  Imlib_Image     *tmp_image = NULL;
 
   if (!types)
     {
@@ -773,11 +776,12 @@ AddMountPointType(char *key, char *image)
 	    types->key = strdup(key);
 	  if (image)
 	    types->imagefile = strdup(image);
-	  tmp_image = Imlib_load_image(id, image);  
+	  tmp_image = imlib_load_image(image);  
 	  if (tmp_image)
 	    {
-	      types->image = Imlib_clone_scaled_image(id, tmp_image, 44, 32);
-	      Imlib_destroy_image(id, tmp_image);
+	      imlib_context_set_image(tmp_image);
+	      types->image = imlib_create_cropped_scaled_image(0, 0, imlib_image_get_width(), imlib_image_get_height(), 44, 32);
+	      imlib_free_image();
 	    }
 	}
     }
@@ -846,7 +850,8 @@ DeleteMountPointType(MountPointType *mpt)
 	}
       if (mpt->image)
 	{
-	  Imlib_destroy_image(id, mpt->image);
+	  imlib_context_set_image(mpt->image);
+	  imlib_free_image();
 	  mpt->image = NULL;
 	}
       free(mpt);
@@ -859,12 +864,14 @@ FreeImages(void)
 {
   if (bg_image)
     {
-      Imlib_destroy_image(id, bg_image);
+      imlib_context_set_image(bg_image);
+      imlib_free_image();
       bg_image = NULL;
     }
   if (default_image)
     {
-      Imlib_destroy_image(id, default_image);
+      imlib_context_set_image(default_image);
+      imlib_free_image();
       default_image = NULL;
     }
 }
@@ -914,7 +921,8 @@ FreeMountPointTypes(void)
 	}
       if (current->image)
 	{
-	  Imlib_destroy_image(id, current->image);
+	  imlib_context_set_image(current->image);
+	  imlib_free_image();
 	  current->image = NULL;
 	}
       tmp = current;
@@ -1206,6 +1214,7 @@ PollMountpoints(void *data)
 {
   Tile *tile;
   int   i,j,k, linear, linear_w, status=0;
+  unsigned char *widescreen_data, *widescreen_canvas_data, *tile_data;
   
   if (current_tile->mountpoint)
     {
@@ -1230,30 +1239,37 @@ PollMountpoints(void *data)
 
   /* build new image */
   tile = tiles;
+  imlib_context_set_image(widescreen_buf->im);
+  widescreen_data = (unsigned char*)imlib_image_get_data();
+  imlib_context_set_image(widescreen_canvas_buf->im);
+  widescreen_canvas_data = (unsigned char*)imlib_image_get_data();
+
   for (k=0; k<num_tiles; k++, tile = tile->next)
     {
+      imlib_context_set_image(tile->image);
+      tile_data = (unsigned char*)imlib_image_get_data();
       for (i=0; i<32; i++)
 	{
 	  for (j=0; j<44; j++)
 	    {
 	      if (!IsTransparent(tile->image, j, i))
 		{
-		  linear = 3*(i * 44 + j);
-		  linear_w = (i*44*3*num_tiles) + (k*44*3) + 3*j;
+		  linear = 4*(i * 44 + j);
+		  linear_w = (i*44*4*num_tiles) + (k*44*4) + 4*j;
 		  if (tile->mountpoint->mounted)
 		    {
-		      widescreen_buf->im->rgb_data[linear_w] = tile->image->rgb_data[linear];
-		      widescreen_buf->im->rgb_data[linear_w+1] = tile->image->rgb_data[linear+1];
-		      widescreen_buf->im->rgb_data[linear_w+2] = tile->image->rgb_data[linear+2];
+		      widescreen_data[linear_w] = tile_data[linear];
+		      widescreen_data[linear_w+1] = tile_data[linear+1];
+		      widescreen_data[linear_w+2] = tile_data[linear+2];
 		    }
 		  else
 		    {
-		      widescreen_buf->im->rgb_data[linear_w] =
-			0.65 * widescreen_canvas_buf->im->rgb_data[linear_w] + 0.35 * tile->image->rgb_data[linear];
-		      widescreen_buf->im->rgb_data[linear_w+1] =
-			0.65 * widescreen_canvas_buf->im->rgb_data[linear_w+1] + 0.35 * tile->image->rgb_data[linear+1];
-		      widescreen_buf->im->rgb_data[linear_w+2] =
-			0.65 * widescreen_canvas_buf->im->rgb_data[linear_w+2] + 0.35 * tile->image->rgb_data[linear+2];
+		      widescreen_data[linear_w] =
+			0.65 * widescreen_canvas_data[linear_w] + 0.35 * tile_data[linear];
+		      widescreen_data[linear_w+1] =
+			0.65 * widescreen_canvas_data[linear_w+1] + 0.35 * tile_data[linear+1];
+		      widescreen_data[linear_w+2] =
+			0.65 * widescreen_canvas_data[linear_w+2] + 0.35 * tile_data[linear+2];
 		    }
 		} 
 	    }
@@ -1285,7 +1301,6 @@ CallbackExit(void * data)
   FreeImages();
   Epplet_unremember();
   Esync();
-  Epplet_cleanup();
   exit(0);
 }
 
@@ -1452,15 +1467,16 @@ SetupGraphx(void)
 {
   static int  first_time = 1;
   int         i, j, k, linear, linear_w;
-  ImlibImage *tmp = NULL;
+  Imlib_Image *tmp = NULL;
   Tile       *tile;
   char       *s = NULL;
+  unsigned char *widescreen_data, *widescreen_canvas_data, *tile_data, *bg_data;
 
   s = Epplet_query_config("BG_IMAGE");
 
-  tmp = Imlib_load_image(id, s);  
+  tmp = imlib_load_image(s);  
   if (!tmp)
-    tmp = Imlib_load_image(id, __BG_IMAGE);  
+    tmp = imlib_load_image(__BG_IMAGE);  
   if (!tmp)
     {
       /* Even the fallbacks didn't work.  If we don't exit
@@ -1474,8 +1490,9 @@ SetupGraphx(void)
     &(border.left), &(border.right), &(border.top), &(border.bottom));    
     Imlib_set_image_border(id, tmp, &border);
   */
-  bg_image = Imlib_clone_scaled_image(id, tmp, 44 * num_tiles, 32);
-  Imlib_destroy_image(id, tmp);
+  imlib_context_set_image(tmp);
+  bg_image = imlib_create_cropped_scaled_image(0, 0, imlib_image_get_width(), imlib_image_get_height(), 44 * num_tiles, 32);
+  imlib_free_image();
 
   /* setup widescreen according to current mounts */
   if (!window_buf)
@@ -1487,36 +1504,45 @@ SetupGraphx(void)
     Epplet_free_rgb_buf(widescreen_canvas_buf);
   widescreen_canvas_buf = Epplet_make_rgb_buf((44 * num_tiles), 32);  
 
-  memcpy(widescreen_buf->im->rgb_data, bg_image->rgb_data,
-	 sizeof(unsigned char) * 44 * 3 * num_tiles * 32); 
-  memcpy(widescreen_canvas_buf->im->rgb_data, bg_image->rgb_data,
-	 sizeof(unsigned char) * 44 * 3 * num_tiles * 32); 
+  imlib_context_set_image(widescreen_buf->im);
+  widescreen_data = (unsigned char*)imlib_image_get_data();
+  imlib_context_set_image(widescreen_canvas_buf->im);
+  widescreen_canvas_data = (unsigned char*)imlib_image_get_data();
+  imlib_context_set_image(bg_image);
+  bg_data = (unsigned char*)imlib_image_get_data();
+
+  memcpy(widescreen_data, bg_data,
+	 sizeof(unsigned char) * 44 * 4 * num_tiles * 32); 
+  memcpy(widescreen_canvas_data, bg_data,
+	 sizeof(unsigned char) * 44 * 4 * num_tiles * 32); 
 
   tile = tiles;
   for (k=0; k<num_tiles; k++, tile = tile->next)
     {
+      imlib_context_set_image(tile->image);
+      tile_data = (unsigned char*)imlib_image_get_data();
       for (i=0; i<32; i++)
 	{
 	  for (j=0; j<44; j++)
 	    {
 	      if (!IsTransparent(tile->image, j, i))
 		{
-		  linear = 3*(i * 44 + j);
-		  linear_w = (i*44*3*num_tiles) + (k*44*3) + 3*j;
+		  linear = 4*(i * 44 + j);
+		  linear_w = (i*44*4*num_tiles) + (k*44*4) + 4*j;
 		  if (tile->mountpoint->mounted)
 		    {
-		      widescreen_buf->im->rgb_data[linear_w] = tile->image->rgb_data[linear];
-		      widescreen_buf->im->rgb_data[linear_w+1] = tile->image->rgb_data[linear+1];
-		      widescreen_buf->im->rgb_data[linear_w+2] = tile->image->rgb_data[linear+2];
+		      widescreen_data[linear_w] = tile_data[linear];
+		      widescreen_data[linear_w+1] = tile_data[linear+1];
+		      widescreen_data[linear_w+2] = tile_data[linear+2];
 		    }
 		  else
 		    {
-		      widescreen_buf->im->rgb_data[linear_w] =
-			0.65 * widescreen_buf->im->rgb_data[linear_w] + 0.35 * tile->image->rgb_data[linear];
-		      widescreen_buf->im->rgb_data[linear_w+1] =
-			0.65 * widescreen_buf->im->rgb_data[linear_w+1] + 0.35 * tile->image->rgb_data[linear+1];
-		      widescreen_buf->im->rgb_data[linear_w+2] =
-			0.65 * widescreen_buf->im->rgb_data[linear_w+2] + 0.35 * tile->image->rgb_data[linear+2];
+		      widescreen_data[linear_w] =
+			0.65 * widescreen_data[linear_w] + 0.35 * tile_data[linear];
+		      widescreen_data[linear_w+1] =
+			0.65 * widescreen_data[linear_w+1] + 0.35 * tile_data[linear+1];
+		      widescreen_data[linear_w+2] =
+			0.65 * widescreen_data[linear_w+2] + 0.35 * tile_data[linear+2];
 		    }
 		} 
 	    }
@@ -1612,7 +1638,6 @@ main(int argc, char** argv)
    Epplet_Init("E-Mountbox", "0.1", "Enlightenment Mount Epplet",
 	       3, 3, argc, argv, 0);
    Epplet_load_config();
-   id = Epplet_get_imlib_data();
 
    SetupDefaults();
    SetupMounts();

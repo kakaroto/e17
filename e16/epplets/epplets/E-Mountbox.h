@@ -72,7 +72,7 @@ struct _mountpointtype
 {
   char           *key;
   char           *imagefile;
-  ImlibImage     *image;
+  Imlib_Image    *image;
   MountPointType *next;
   MountPointType *prev;
 };
@@ -87,7 +87,7 @@ MountPoint;
 
 struct _tile
 {
-  ImlibImage   *image;
+  Imlib_Image  *image;
   MountPoint   *mountpoint;  
   Tile         *prev;
   Tile         *next;
@@ -100,9 +100,8 @@ int             current_tile_index = 0;
 int             num_tiles = 0;
 MountPointType *types = NULL;
 int             num_types = 0;
-ImlibData      *id = NULL;
-ImlibImage     *bg_image = NULL;
-ImlibImage     *default_image = NULL;
+Imlib_Image    *bg_image = NULL;
+Imlib_Image    *default_image = NULL;
 Epplet_gadget   action_area, button_close, button_config, button_help;
 
 /* stuff for the config win */
@@ -118,7 +117,7 @@ RGB_buf         widescreen_buf = NULL;        /* the wide image of all mountpoin
 RGB_buf         widescreen_canvas_buf = NULL; /* only the background */
 
 /* graphx handling */
-int             IsTransparent(ImlibImage * im, int x, int y);
+int             IsTransparent(Imlib_Image * im, int x, int y);
 void            UpdateView(int dir, int fast);
 void            FreeImages(void);
 void            UpdateGraphics(void);

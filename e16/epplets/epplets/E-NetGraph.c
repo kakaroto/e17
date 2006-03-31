@@ -113,12 +113,12 @@ timer_draw(void *data)
    /* whee.. shift the buffer one pixel to the left */
    for (i = 0; i <= 39; i++)
      {
-	for (rgb_pointer_dynamic = rgb_pointer_start + (i * 120);
-	     rgb_pointer_dynamic <= rgb_pointer_start + (i * 120) + 114;
-	     rgb_pointer_dynamic += 3)
+	for (rgb_pointer_dynamic = rgb_pointer_start + (i * 4*40);
+	     rgb_pointer_dynamic <= rgb_pointer_start + (i * 4*40) + 4*38;
+	     rgb_pointer_dynamic += 4)
 	  {
 	     for (j = 0; j <= 2; j++)
-		rgb_pointer_dynamic[j] = rgb_pointer_dynamic[j + 3];
+		rgb_pointer_dynamic[j] = rgb_pointer_dynamic[j + 4];
 	  }
      }
 
@@ -126,7 +126,7 @@ timer_draw(void *data)
    for (i = 1; i <= 38; i++)
      {
 	rgb_pointer_dynamic = rgb_pointer_start
-	   + (i * 120) + 114;
+	   + (i * 4*40) + 4*38;
 
 	for (j = 0; j <= 2; j++)
 	   rgb_pointer_dynamic[j] = bg_color[j];

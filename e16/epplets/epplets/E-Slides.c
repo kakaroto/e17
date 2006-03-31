@@ -233,7 +233,7 @@ static void
 change_image(void *data)
 {
 
-  ImlibImage *im = NULL;
+  Imlib_Image *im = NULL;
   double ratio = 0.0;
   unsigned long first = idx;
   int new_w = 0, new_h = 0, new_x = 3, new_y = 3;
@@ -242,7 +242,7 @@ change_image(void *data)
      return;
   
   /* Test-load each image to make sure it's a valid image file. */
-  for (; ((filenames[idx] == NULL) || ((im = Imlib_load_image(Epplet_get_imlib_data(), filenames[idx])) == NULL));) {
+  for (; ((filenames[idx] == NULL) || ((im = imlib_load_image(filenames[idx])) == NULL));) {
     /* It isn't, so NULL out its name. */
     filenames[idx] = NULL;
     INC_PIC();
@@ -259,15 +259,16 @@ change_image(void *data)
   }
   new_w = (w * 16 - 6);
   new_h = (h * 16 - 6);
+  imlib_context_set_image(im);
   if (maintain_aspect) {
-    ratio = ((double) im->rgb_width / im->rgb_height) / ((double) new_w / new_h);
+    ratio = ((double) imlib_image_get_width() / imlib_image_get_height()) / ((double) new_w / new_h);
     if (ratio > 1.0) {
       new_h /= ratio;
     } else if (ratio != 1.0) {
       new_w *= ratio;
     }
   }
-  Imlib_destroy_image(Epplet_get_imlib_data(), im);	/* Destroy the image, but keep it in cache. */
+  imlib_free_image();	/* Destroy the image, but keep it in cache. */
 
   new_x = ((w * 16) / 2) - (new_w / 2);
   new_y = ((h * 16) / 2) - (new_h / 2);

@@ -2,7 +2,7 @@
 
 Summary: Enlightenment Epplets
 Name: epplets
-Version: 0.8
+Version: 0.9
 Release: 0.%(date '+%Y%m%d')
 License: BSD
 Group: User Interface/X
@@ -13,7 +13,7 @@ Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project 
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 #BuildSuggests: freeglut-devel xorg-x11-devel
 BuildRequires: imlib-devel XFree86-devel
-Requires: enlightenment >= 0.16.0
+#Requires: enlightenment >= 0.16.0
 Provides: enlightenment-epplets = %{version}
 Provides: e16-epplets = %{version}
 Obsoletes: enlightenment-epplets
@@ -61,7 +61,7 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 %{_libdir}/*
 %{_bindir}/*
-%{_datadir}/enlightenment/epplet_icons/*
-%{_datadir}/enlightenment/epplet_data/*
+%{_datadir}/e16/epplet_icons/*
+%{_datadir}/e16/epplet_data/*
 
 %changelog

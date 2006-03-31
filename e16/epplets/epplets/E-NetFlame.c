@@ -229,13 +229,13 @@ draw_flame(void)
   rgb = Epplet_get_rgb_pointer(buf);
   for (y = 0; y < HEIGHT; y++) {
     ptr = flame + (y * WIDTH) + 1;
-    rptr = rgb + (y * WIDTH * 3);
+    rptr = rgb + (y * WIDTH * 4);
     for (x = 0; x < WIDTH; x++) {
       val1 = ptr[x] & 0xff;
       rptr[0] = rm[val1];
       rptr[1] = gm[val1];
       rptr[2] = bm[val1];
-      rptr += 3;
+      rptr += 4;
     }
   }
 }

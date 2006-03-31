@@ -70,9 +70,9 @@ void draw_line(unsigned char *rgb, int x1, int y1, int x2, int y2, unsigned char
 	
 	for(i=0;i<dx;i++) {
 		if(steep) {
-			rptr=rgb+(((x1*WIDTH)+y1)*3);
+			rptr=rgb+(((x1*WIDTH)+y1)*4);
 		} else {
-			rptr=rgb+(((y1*WIDTH)+x1)*3);
+			rptr=rgb+(((y1*WIDTH)+x1)*4);
 		}
 		rptr[0]=clr[0];
 		rptr[1]=clr[1];
@@ -85,7 +85,7 @@ void draw_line(unsigned char *rgb, int x1, int y1, int x2, int y2, unsigned char
 		e+=2*dy;
 	}
 	
-	rptr=rgb+(((y2*WIDTH)+x2)*3);
+	rptr=rgb+(((y2*WIDTH)+x2)*4);
 	rptr[0]=clr[0];
 	rptr[1]=clr[1];
 	rptr[2]=clr[2];
@@ -99,12 +99,12 @@ void draw_graph(void)
 	rgb=Epplet_get_rgb_pointer(buf);
 	
 	for(y=0;y<HEIGHT;y++) {
-		rptr=rgb+(y*WIDTH*3);
+		rptr=rgb+(y*WIDTH*4);
 		for(x=0;x<WIDTH;x++) {
 			rptr[0]=colors[color][0][0];
 			rptr[1]=colors[color][0][1];
 			rptr[2]=colors[color][0][2];
-			rptr+=3;
+			rptr+=4;
 		}
 	}
 
