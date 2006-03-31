@@ -192,6 +192,7 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 			ewl_box_spacing_set(EWL_BOX(m->hbox), 5);
 			ewl_object_alignment_set(EWL_OBJECT(m->hbox), EWL_FLAG_ALIGN_CENTER);
 			ewl_object_fill_policy_set(EWL_OBJECT(m->hbox), EWL_FLAG_FILL_ALL);
+			ewl_widget_name_set(m->hbox, itemp);
 			ewl_widget_show(m->hbox);
 
 			m->image = ewl_image_thumbnail_new();
@@ -214,7 +215,7 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 			m->children[0] = m->hbox;
 			m->children[1] = NULL;
   			m->row = ewl_tree_row_add(EWL_TREE(m->imagetree), NULL, m->children);
-			ewl_callback_append(m->text, EWL_CALLBACK_CLICKED, images_cb, NULL);
+			ewl_callback_append(m->hbox, EWL_CALLBACK_CLICKED, images_cb, NULL);
 			free(itemp);
 		}	
 		/***********************************************************************/
