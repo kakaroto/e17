@@ -16,7 +16,6 @@
 int                 cpus = 0;
 double             *prev_val = NULL;
 double             *prev_val_nice = NULL;
-double             *prev_val_total = NULL;
 int                *load_val = NULL;
 Window              win;
 RGB_buf             buf;
@@ -239,35 +238,35 @@ cb_timer(void *data)
 	for (i = 0; i < cpus; i++)
 	  {
 	     char sUserCPU[64];
-	     char sNiceCPU[64];
-	     char sSystemCPU[64];
-	     char sTotalCPU[64];
-	     double val, val2, val_nice, val2_nice, val_total, val2_total;
+		 char sNiceCPU[64];
+	     double val, val2, val_nice, val2_nice;
 	     
 	     fgets(s, 255, f);
-	     sscanf(s, "%*s %s %s %s %s", 
-		    sUserCPU, sNiceCPU, sSystemCPU, sTotalCPU);
+	     sscanf(s, "%*s %s %s %*s %*s", sUserCPU, sNiceCPU);
 
-	     val = atof(sUserCPU);
+		 val = atof(sUserCPU);
 	     val_nice = atof(sNiceCPU);
-	     val_total = atof(sTotalCPU);
 		   
-	     val2_total = val_total - prev_val_total[i];
 	     val2 = val - prev_val[i];
-	     val2_nice = val_nice - prev_val_nice[i];
-	     val2_total += val2 + val2_nice;
-	     
-	     val2 = (100 * val2) / val2_total;
-	     val2_nice = (100 * val2_nice) / val2_total;
-	     
 	     prev_val[i] = val;
-	     prev_val_nice[i] = val_nice;
-	     prev_val_total[i] = val_total;
+	     val2 *= 10;
+	     if (val2 > 100)
+		   val2 = 100;
 
-	     if (include_nice) load_val[i] = val2 + val2_nice;
-	     else load_val[i] = val2;
-	     
-	     if (load_val[i] > 100) load_val[i] = 100;
+		 val2_nice = val_nice - prev_val_nice[i];
+		 prev_val_nice[i] = val_nice;
+		 val2_nice *= 10;
+		 if (val2_nice > 100)
+		   val2_nice = 100;
+
+		 if (include_nice)
+		   load_val[i] = val2 + val2_nice;
+		 else
+		   load_val[i] = val2;
+
+		 if (load_val[i] > 100)
+		   load_val[i] = 100;
+
 	  }
 	fclose(f);
      }
@@ -452,7 +451,6 @@ main(int argc, char **argv)
    load_val = malloc(sizeof(int) * cpus);
    prev_val = malloc(sizeof(double) * cpus);
    prev_val_nice = malloc(sizeof(double) * cpus);
-   prev_val_total = malloc(sizeof(double) * cpus);
 
    Epplet_Init("E-Cpu", "0.1", "Enlightenment CPU Epplet",
 	       3, 3, argc, argv, 0);
