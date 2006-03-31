@@ -656,26 +656,23 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 		if (!widget)
 			widget = EWL_WIDGET(embed);
 	}
-
-	if (widget) {
-		/*
-		 * Defocus all widgets up to the level of a shared parent of
-		 * old and newly focused widgets.
-		 */
-		while (embed->last.mouse_in && (widget != embed->last.mouse_in) 
-				&& !ewl_widget_parent_of(embed->last.mouse_in, widget)) {
-			ewl_embed_mouse_cursor_set(embed->last.mouse_in);
-			
-			ewl_object_state_remove(EWL_OBJECT(embed->last.mouse_in),
-					EWL_FLAG_STATE_MOUSE_IN);
-			ewl_callback_call(embed->last.mouse_in, EWL_CALLBACK_MOUSE_OUT);
-
-			if (embed->last.mouse_in)
-				embed->last.mouse_in = embed->last.mouse_in->parent;
-		}
-	}
-	else 
+	else
 		widget = embed->last.mouse_in;
+
+	/*
+	 * Defocus all widgets up to the level of a shared parent of
+	 * old and newly focused widgets.
+	 */
+	while (embed->last.mouse_in && (widget != embed->last.mouse_in) 
+			&& !ewl_widget_parent_of(embed->last.mouse_in, widget)) {
+		ewl_embed_mouse_cursor_set(embed->last.mouse_in);
+
+		ewl_object_state_remove(EWL_OBJECT(embed->last.mouse_in),
+				EWL_FLAG_STATE_MOUSE_IN);
+		ewl_callback_call(embed->last.mouse_in, EWL_CALLBACK_MOUSE_OUT);
+
+		embed->last.mouse_in = embed->last.mouse_in->parent;
+	}
 
 	/*
 	 * Pass out the movement event up the chain, allows parents to
@@ -1019,7 +1016,7 @@ ewl_embed_object_cache(Ewl_Embed *e, Evas_Object *obj)
 {
 	const char *type;
 	Ecore_List *obj_list;
-	Evas_List *clippees, *l;
+	const Evas_List *clippees;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
@@ -1034,9 +1031,8 @@ ewl_embed_object_cache(Ewl_Embed *e, Evas_Object *obj)
 
 	/* we have to unclip all of the clippees so that we don't end up
 	 * getting into an infinite loop resetting the clip later */
-	clippees = evas_object_clipees_get(obj);
-	for (l = clippees; l; l = l->next)
-		evas_object_clip_unset(l->data);
+	while ((clippees = evas_object_clipees_get(obj)))
+		evas_object_clip_unset(clippees->data);
 
 	if (e->obj_cache) {
 		type = evas_object_type_get(obj);
