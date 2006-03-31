@@ -1,54 +1,15 @@
 #!/bin/sh
-# Run this to generate all the initial makefiles, etc.
-# $Id$
 
-broken() {
-    echo
-    echo "You need libtool, autoconf, and automake.  Install them"
-    echo "and try again.  Get source at ftp://ftp.gnu.org/pub/gnu/"
-    echo "ERROR:  $1 not found."
-    exit -1
-}
+rm -rf autom4te.cache
+rm -f aclocal.m4 ltmain.sh
 
-DIE=0
+touch README
 
-echo "Generating build files, please wait...."
+echo "Running aclocal..." ; aclocal $ACLOCAL_FLAGS || exit 1
+echo "Running autoheader..." ; autoheader || exit 1
+echo "Running autoconf..." ; autoconf || exit 1
+echo "Running automake..." ; automake --add-missing --copy --gnu || exit 1
 
-AUTOHEADER_CHOICES="$AUTOHEADER autoheader"
-ACLOCAL_CHOICES="$ACLOCAL aclocal"
-AUTOMAKE_CHOICES="$AUTOMAKE automake"
-AUTOCONF_CHOICES="$AUTOCONF autoconf"
-
-for i in $AUTOHEADER_CHOICES ; do
-    $i --version </dev/null >/dev/null 2>&1 && AUTOHEADER=$i && break
-done
-[ "x$AUTOHEADER" = "x" ] && broken autoconf
-
-for i in $ACLOCAL_CHOICES ; do
-    $i --version </dev/null >/dev/null 2>&1 && ACLOCAL=$i && break
-done
-[ "x$ACLOCAL" = "x" ] && broken automake
-
-for i in $AUTOMAKE_CHOICES ; do
-    $i --version </dev/null >/dev/null 2>&1 && AUTOMAKE=$i && break
-done
-[ "x$AUTOMAKE" = "x" ] && broken automake
-
-for i in $AUTOCONF_CHOICES ; do
-    $i --version </dev/null >/dev/null 2>&1 && AUTOCONF=$i && break
-done
-[ "x$AUTOCONF" = "x" ] && broken autoconf
-
-# Export them so configure can AC_SUBST() them.
-export AUTOHEADER ACLOCAL AUTOMAKE AUTOCONF
-
-rm -rf aclocal.m4 autom4te.cache
-
-# Run the stuff.
-(set -x && $ACLOCAL $ACLOCAL_FLAGS)
-(set -x && $AUTOCONF)
-(set -x && $AUTOHEADER)
-(set -x && $AUTOMAKE -a -c)
-
-# Run configure.
-./configure "$@"
+if [ -z "$NOCONFIGURE" ]; then
+	./configure "$@"
+fi
