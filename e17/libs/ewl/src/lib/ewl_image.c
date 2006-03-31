@@ -477,11 +477,8 @@ ewl_image_thumbnail_get(Ewl_Image *i)
 
 #ifdef BUILD_EPSILON_SUPPORT
 	if (i->path && (i->type == EWL_IMAGE_TYPE_NORMAL)) {
-
-		printf("FOO\n");
 		thumb = ewl_image_thumbnail_new();
 		if (thumb) {
-			printf("BAR\n");
 			ewl_image_thumbnail_request(EWL_IMAGE_THUMBNAIL(thumb),
 					(char *)ewl_image_file_path_get(i));
 			EWL_IMAGE_THUMBNAIL(thumb)->orig = EWL_WIDGET(i);
@@ -492,8 +489,12 @@ ewl_image_thumbnail_get(Ewl_Image *i)
 	DRETURN_PTR(thumb, DLEVEL_STABLE);
 }
 
+/**
+ * @return Returns a new Ewl_Image_Thumbnail widget
+ * @brief This will create and initialize a new Ewl_Image_Thumbnail widget
+ */
 Ewl_Widget *
-ewl_image_thumbnail_new()
+ewl_image_thumbnail_new(void)
 {
 	Ewl_Image_Thumbnail *thumb;
 
@@ -508,15 +509,25 @@ ewl_image_thumbnail_new()
 	DRETURN_PTR(thumb, DLEVEL_STABLE);
 }
 
+/**
+ * @param image: The Ewl_Image_Thumbnail to init
+ * @return Returns TRUE if successfully initialized, FALSE otherwise
+ * @brief Initialize an Ewl_Image_Thumbnail to default values.
+ */
 int
 ewl_image_thumbnail_init(Ewl_Image_Thumbnail *image)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("image", image, FALSE);
 
 	if (!ewl_image_init(EWL_IMAGE(image)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_callback_append(EWL_WIDGET(image), EWL_CALLBACK_DESTROY,
+	ewl_widget_appearance_set(EWL_WIDGET(image),
+					EWL_IMAGE_THUMBNAIL_TYPE);
+	ewl_widget_inherit(EWL_WIDGET(image), EWL_IMAGE_THUMBNAIL_TYPE);
+
+	ewl_callback_prepend(EWL_WIDGET(image), EWL_CALLBACK_DESTROY,
 			    ewl_image_thumb_destroy_cb, NULL);
 
 	if (!ewl_image_epsilon_handler) {
@@ -530,26 +541,37 @@ ewl_image_thumbnail_init(Ewl_Image_Thumbnail *image)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+/** 
+ * @param thumb: The thumbnail to request
+ * @param path: The path to the image
+ * @return Returns no value.
+ * @brief This will request the generation of a thumbnail for the image
+ * given by @a path.
+ */
 void
 ewl_image_thumbnail_request(Ewl_Image_Thumbnail *thumb, char *path)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("thumb", thumb);
+	DCHECK_TYPE("thumb", thumb, EWL_IMAGE_THUMBNAIL_TYPE);
 	DCHECK_PARAM_PTR("path", path);
 
-	printf("Thumbnail requested for %s\n", path);
 	thumb->thumb = epsilon_add(path, NULL, EPSILON_THUMB_NORMAL, thumb);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void
-ewl_image_thumb_destroy_cb(Ewl_Widget *w, void *ev, void *data)
+ewl_image_thumb_destroy_cb(Ewl_Widget *w, void *ev __UNUSED__, 
+					void *data __UNUSED__)
 {
-	Ewl_Image_Thumbnail *thumb = EWL_IMAGE_THUMBNAIL(w);
+	Ewl_Image_Thumbnail *thumb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
+	thumb = EWL_IMAGE_THUMBNAIL(w);
 	if (thumb->thumb) {
 		epsilon_del(thumb->thumb);
 		thumb->thumb = NULL;
@@ -559,23 +581,26 @@ ewl_image_thumb_destroy_cb(Ewl_Widget *w, void *ev, void *data)
 }
 
 static int
-ewl_image_thumbnail_complete_cb(void *data, int type, void *event)
+ewl_image_thumbnail_complete_cb(void *data __UNUSED__, int type __UNUSED__, 
+								void *event)
 {
-	Ewl_Image_Thumbnail *thumb;
-
 #ifdef BUILD_EPSILON_SUPPORT
-	Epsilon_Request *ev = event;
+	Ewl_Image_Thumbnail *thumb;
+	Epsilon_Request *ev;
 #endif
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("event", event, FALSE);
 
+#ifdef BUILD_EPSILON_SUPPORT
+	ev = event;
 	thumb = ev->data;
 
-	printf("Thumbnail set: %s\n", ev->dest);
 	if (thumb) {
 		ewl_image_file_path_set(EWL_IMAGE(thumb), ev->dest);
 		thumb->thumb = NULL;
 	}
+#endif
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }

@@ -71,6 +71,12 @@ struct Ewl_Image
 };
 
 /**
+ * @def EWL_IMAGE_THUMBNAIL_TYPE
+ * The type name for the Ewl_Image_Thumbnail widget
+ */
+#define EWL_IMAGE_THUMBNAIL_TYPE "image_thumbnail"
+
+/**
  * Inherits from Ewl_Image and extends to provide reference to original image.
  */
 struct Ewl_Image_Thumbnail
@@ -115,7 +121,7 @@ unsigned int	 ewl_image_constrain_get(Ewl_Image *i);
 
 Ewl_Widget      *ewl_image_thumbnail_get(Ewl_Image *i);
 
-Ewl_Widget      *ewl_image_thumbnail_new();
+Ewl_Widget      *ewl_image_thumbnail_new(void);
 int              ewl_image_thumbnail_init(Ewl_Image_Thumbnail *image);
 void             ewl_image_thumbnail_request(Ewl_Image_Thumbnail *thumb,
 					     char *path);
