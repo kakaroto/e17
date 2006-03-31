@@ -60,13 +60,17 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 	
 		ewl_widget_destroy(m->dirtree);	
 		ewl_widget_destroy(m->imagetree);
-		ewl_widget_destroy(m->spacer);
+		
+		if ( m->spacer != NULL ) {
+			ewl_widget_destroy(m->spacer);
+		}		
 	
 		m->dirtree = ewl_tree_new(1);
                 ewl_container_child_append(EWL_CONTAINER(m->images), m->dirtree);
                 ewl_object_maximum_size_set(EWL_OBJECT(m->dirtree), 200, 215);
                 ewl_tree_headers_visible_set(EWL_TREE(m->dirtree), 0);
-                ewl_widget_show(m->dirtree);
+                ewl_tree_expandable_rows_set(EWL_TREE(m->dirtree), FALSE);
+		ewl_widget_show(m->dirtree);
 	
 		m->spacer = ewl_spacer_new();
 		ewl_object_maximum_size_set(EWL_OBJECT(m->spacer), 10, 10);
@@ -77,6 +81,7 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 		ewl_container_child_append(EWL_CONTAINER(m->images), m->imagetree);
 		ewl_object_maximum_size_set(EWL_OBJECT(m->imagetree), 200, 215);
 		ewl_tree_headers_visible_set(EWL_TREE(m->imagetree), 0);
+		ewl_tree_expandable_rows_set(EWL_TREE(m->imagetree), FALSE);
 		ewl_widget_show(m->imagetree);
 		
 		/******************************************/
@@ -88,7 +93,6 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 		ewl_widget_show(m->hbox);
 		
 		m->image = ewl_image_new();
-		ewl_tree_expandable_rows_set(EWL_TREE(m->imagetree), FALSE);
 		ewl_image_file_set(EWL_IMAGE(m->image), PACKAGE_DATA_DIR "/images/up.png", NULL);
 		ewl_container_child_append(EWL_CONTAINER(m->hbox), m->image);
 		ewl_widget_show(m->image);
@@ -188,11 +192,14 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 			ewl_box_spacing_set(EWL_BOX(m->hbox), 5);
 			ewl_widget_show(m->hbox);
 			
-			m->image = ewl_image_new();
-			ewl_image_file_set(EWL_IMAGE(m->image), PACKAGE_DATA_DIR "/images/camera.png", NULL);
+			m->image = ewl_image_thumbnail_new();
+			ewl_image_constrain_set(EWL_IMAGE(m->image), 64);
+			ewl_image_proportional_set(EWL_IMAGE(m->image), TRUE);
+			ewl_image_thumbnail_request(EWL_IMAGE(m->image), itemp);
+			ewl_image_file_set(EWL_IMAGE(m->image), PACKAGE_DATA_DIR "images/camera.png", NULL);
 			ewl_container_child_append(EWL_CONTAINER(m->hbox), m->image);
 			ewl_widget_show(m->image);
-		
+
 			m->text = ewl_text_new();
 			ewl_widget_name_set(m->text, itemp);
 			ewl_text_text_set(EWL_TEXT(m->text), bname2);
@@ -232,10 +239,8 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 			ewl_container_child_append(EWL_CONTAINER(m->hbox), m->text);
 			ewl_widget_show(m->text);
 			
-			m->children[0] = m->hbox;
-			m->children[1] = NULL;
-  			m->row = ewl_tree_row_add(EWL_TREE(m->imagetree), NULL, m->children);
-			ewl_callback_append(m->text, EWL_CALLBACK_CLICKED, audio_cb, NULL);
+  			//ewl_container_child_append(EWL_CONTAINER(m->atext), m->hbox);
+			//ewl_callback_append(m->text, EWL_CALLBACK_CLICKED, audio_cb, NULL);
 			free(itemp);
 		}	
 		/**********************************************************************/
