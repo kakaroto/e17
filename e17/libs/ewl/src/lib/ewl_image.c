@@ -1,7 +1,7 @@
+#include "ewl_private.h"
 #include <Ewl.h>
 #include "ewl_debug.h"
 #include "ewl_macros.h"
-#include "ewl_private.h"
 
 static Ecore_Event_Handler *ewl_image_epsilon_handler = NULL;
 
@@ -574,6 +574,7 @@ ewl_image_thumbnail_complete_cb(void *data, int type, void *event)
 	printf("Thumbnail set: %s\n", ev->dest);
 	if (thumb) {
 		ewl_image_file_path_set(EWL_IMAGE(thumb), ev->dest);
+		thumb->thumb = NULL;
 	}
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
