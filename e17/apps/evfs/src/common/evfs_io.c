@@ -457,7 +457,6 @@ evfs_read_event(evfs_event * event, ecore_ipc_message * msg)
      case EVFS_COMMAND_TYPE:
      case EVFS_COMMAND_EXTRA:
      case EVFS_FILE_REFERENCE:
-     case EVFS_FILE_REFERENCE_FD:
      case EVFS_COMMAND_END:
         evfs_process_incoming_command(NULL, &event->resp_command, msg);
         break;
@@ -758,48 +757,6 @@ evfs_process_incoming_command(evfs_server * server, evfs_command * command,
              }
 
         }
-        break;
-
-     case EVFS_FILE_REFERENCE_USERNAME:
-        if (command->file_command.num_files)
-          {
-             command->file_command.files[command->file_command.num_files -
-                                         1]->username = strdup(message->data);
-             printf("Received username: '%s'\n",
-                    command->file_command.files[command->file_command.
-                                                num_files - 1]->username);
-          }
-        else
-          {
-             printf("BAD: Received a username before a filerefereence!\n");
-          }
-        break;
-
-     case EVFS_FILE_REFERENCE_PASSWORD:
-        if (command->file_command.num_files)
-          {
-             command->file_command.files[command->file_command.num_files -
-                                         1]->password = strdup(message->data);
-             printf("Received password: '%s'\n",
-                    command->file_command.files[command->file_command.
-                                                num_files - 1]->password);
-          }
-        else
-          {
-             printf("BAD: Received a password before a filerefereence!\n");
-          }
-        break;
-
-     case EVFS_FILE_REFERENCE_FD:
-        if (command->file_command.num_files)
-          {
-             command->file_command.files[command->file_command.num_files -
-                                         1]->fd = *(int *)message->data;
-          }
-        else
-          {
-             printf("BAD: Received an FD before a filerefereence!\n");
-          }
         break;
 
      case EVFS_COMMAND_PART_OPERATION:
