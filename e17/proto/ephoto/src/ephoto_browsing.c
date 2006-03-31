@@ -190,8 +190,10 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 		
 			m->hbox = ewl_hbox_new();
 			ewl_box_spacing_set(EWL_BOX(m->hbox), 5);
+			ewl_object_alignment_set(EWL_OBJECT(m->hbox), EWL_FLAG_ALIGN_CENTER);
+			ewl_object_fill_policy_set(EWL_OBJECT(m->hbox), EWL_FLAG_FILL_ALL);
 			ewl_widget_show(m->hbox);
-			
+
 			m->image = ewl_image_thumbnail_new();
 			ewl_image_constrain_set(EWL_IMAGE(m->image), 64);
 			ewl_image_proportional_set(EWL_IMAGE(m->image), TRUE);
@@ -204,7 +206,8 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 			ewl_widget_name_set(m->text, itemp);
 			ewl_text_text_set(EWL_TEXT(m->text), bname2);
    			ewl_object_minimum_size_set(EWL_OBJECT(m->text), 10, 16);
-			ewl_object_fill_policy_set(EWL_OBJECT(m->text), EWL_FLAG_FILL_ALL);
+			ewl_object_fill_policy_set(EWL_OBJECT(m->text), EWL_FLAG_FILL_SHRINK);
+			ewl_object_alignment_set(EWL_OBJECT(m->text), EWL_FLAG_ALIGN_CENTER);
 			ewl_container_child_append(EWL_CONTAINER(m->hbox), m->text);
 			ewl_widget_show(m->text);
 		

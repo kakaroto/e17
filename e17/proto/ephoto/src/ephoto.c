@@ -273,10 +273,10 @@ main(int argc, char **argv)
 		ewl_widget_show(m->hbox);
 		
 		m->vbox = ewl_vbox_new();
-		ewl_container_child_append(EWL_CONTAINER(m->hbox), m->vbox);
 		ewl_object_alignment_set(EWL_OBJECT(m->vbox), EWL_FLAG_ALIGN_CENTER);
 		ewl_box_spacing_set(EWL_BOX(m->vbox), 10);
-		ewl_object_size_request(EWL_OBJECT(m->vbox), 20, 400);
+		ewl_object_preferred_inner_size_set(EWL_OBJECT(m->vbox), 200, 480);
+		ewl_container_child_append(EWL_CONTAINER(m->hbox), m->vbox);
 		ewl_widget_show(m->vbox);
 	
 		m->images = ewl_border_new();
@@ -305,6 +305,7 @@ main(int argc, char **argv)
 		
 		m->notebook = ewl_notebook_new();
 		ewl_notebook_tabbar_position_set(EWL_NOTEBOOK(m->notebook), EWL_POSITION_TOP);
+		ewl_object_preferred_inner_size_set(EWL_OBJECT(m->notebook), 440, 480);
 		ewl_container_child_append(EWL_CONTAINER(m->hbox), m->notebook);
 		ewl_object_alignment_set(EWL_OBJECT(m->notebook), EWL_FLAG_ALIGN_CENTER);
 		ewl_object_fill_policy_set(EWL_OBJECT(m->notebook), EWL_FLAG_FILL_ALL);
@@ -526,12 +527,8 @@ main(int argc, char **argv)
 		ewl_widget_show(m->text);
 		
 		m->atext = ewl_text_new();
-		if ( audios != NULL ) {
-			ewl_text_text_set(EWL_TEXT(m->atext), argaudio);
-		}
 		ewl_container_child_append(EWL_CONTAINER(m->settings), m->atext);
 		ewl_object_alignment_set(EWL_OBJECT(m->atext), EWL_FLAG_ALIGN_CENTER);
-		ewl_text_font_size_set(EWL_TEXT(m->atext), 12);
 		ewl_widget_show(m->atext);
 			
 		m->hboxv = ewl_hbox_new();
