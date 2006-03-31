@@ -24,6 +24,8 @@ struct entropy_core {
 	
 	Ecore_Hash* file_interest_list; /*A file cache of all files we have loaded*/
 	Ecore_Hash* uri_reference_list;
+
+	Ecore_Hash* gui_event_handlers;
 	
 	Ecore_Ipc_Server* server;
 

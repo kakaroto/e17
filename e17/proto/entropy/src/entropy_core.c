@@ -169,6 +169,9 @@ entropy_core* entropy_core_init(int argc, char** argv) {
 	/*Initialize the object assoc. hash*/
 	core->object_associate_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 
+	/*Initialize the gui event handler hash*/
+	core->gui_event_handlers = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+
 	//printf ("Initialising the file cache..\n");
 	core->file_interest_list = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 	core->uri_reference_list = ecore_hash_new(ecore_str_hash, ecore_str_compare);
@@ -252,6 +255,9 @@ entropy_core* entropy_core_init(int argc, char** argv) {
 		}
 	}
 
+	/*Register GUI event handlers*/
+	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_FILE_CREATE, entropy_event_handler_file_create_handler);
+
 	
 
 	//printf("\n\nDetails of thumbnailers:\n");
@@ -309,6 +315,26 @@ entropy_core* entropy_core_init(int argc, char** argv) {
 
 
 	return core;
+}
+
+Ecore_List* entropy_core_gui_event_handlers_get(char* event)
+{
+	return ecore_hash_get(entropy_core_get_core()->gui_event_handlers, event);
+}
+
+void entropy_core_gui_event_handler_add(char* gui_event, 
+		Entropy_Gui_Event_Handler* (*handler_func)())
+{
+	Entropy_Gui_Event_Handler* handler;
+	Ecore_List* list;
+
+	if ( !(list = entropy_core_gui_event_handlers_get(gui_event))) {
+		list = ecore_list_new();
+		ecore_hash_set(entropy_core_get_core()->gui_event_handlers, gui_event, list);
+	}
+
+	handler = (*handler_func)();
+	ecore_list_append(list, handler);
 }
 
 void entropy_core_mime_action_add(char* mime_type, char* desc) 
@@ -860,6 +886,8 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 	Ecore_List* el;	
 	Ecore_Hash* lay_hash;
 	entropy_gui_component_instance* layout = NULL;
+	Entropy_Gui_Event_Handler* handler;
+	Ecore_List* handlers;
 
 	if (!instance) {
 		printf("entropy_core_layout_notify_event: instance was NULL\n");	
@@ -899,6 +927,39 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		return;
 	}
 
+
+	handlers = entropy_core_gui_event_handlers_get(event->event_type);
+	if (handlers) {
+		Entropy_Gui_Event_Handler_Instance_Data* data = NULL;	
+		
+		ecore_list_goto_first(handlers);
+		while ( (handler = ecore_list_next(handlers))) {
+			data = (*handler->notify_event_cb)(event,instance);
+			
+			if (data->notify) {
+				ecore_list_goto_first(el);
+				while ( (iter = ecore_list_next(el)) ) {
+					if (iter->active) {
+						(*iter->plugin->gui_event_callback_p)
+						(data->notify, 
+						 iter, 
+						 data->notify->data,   /*An entropy_generic_file*/
+						 iter);
+					}
+				}
+			} else {
+				/*printf("No notify event returned!\n");*/
+			}
+
+			(*handler->cleanup_cb)(data);
+
+		}
+
+		entropy_free(event);
+		return;
+	} else {
+		printf(" *** No registered handlers for this event\n");
+	}
 	
 
 	if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS)) {
@@ -968,21 +1029,6 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		}
 		entropy_notify_event_destroy(ev);
 
-
-	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_CREATE)) {
-		entropy_notify_event* ev = entropy_notify_event_new();
-		ev->event_type = ENTROPY_NOTIFY_FILE_CREATE;
-		ev->processed = 1;
-	
-		ecore_list_goto_first(el);
-		while ( (iter = ecore_list_next(el)) ) {
-			if (iter->active) (*iter->plugin->gui_event_callback_p)
-				(ev, 
-				 iter, 
-				 event->data,   /*An entropy_generic_file*/
-				 iter);
-		}
-		entropy_notify_event_destroy(ev);
 
 	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_REMOVE)) {
 		entropy_notify_event* ev = entropy_notify_event_new();

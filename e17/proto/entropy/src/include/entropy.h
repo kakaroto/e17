@@ -26,6 +26,7 @@
 #include "entropy_macros.h"
 #include "entropy_config.h"
 #include "plugin_helper.h"
+#include "entropy_gui_event_handler.h"
 
 #define IPC_TITLE "entropy"
 #define ENTROPY_IPC_EVENT_CORE 1
@@ -109,6 +110,13 @@ void entropy_core_mime_application_add(char* mime_type, char* name, char* execut
 void entropy_core_object_file_associate(void* object, entropy_generic_file* file);
 void entropy_core_object_file_disassociate(void* object);
 entropy_generic_file* entropy_core_object_file_association_get(void* object);
+
+/*Event handlers*/
+void entropy_core_gui_event_handler_add(char* gui_event, 
+		Entropy_Gui_Event_Handler* (*handler_func)
+		(void (*notify_event_cb)(entropy_gui_event* event, entropy_gui_component_instance* instance),
+		void (*cleanup_cb)(struct Entropy_Gui_Event_Handler*)));
+Ecore_List* entropy_core_gui_event_handlers_get(char* event);
 
 
 /*Logging stuff*/
