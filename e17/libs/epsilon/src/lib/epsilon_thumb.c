@@ -336,3 +336,27 @@ epsilon_add(char *path, char *dst, int size, void *data)
 
 	return thumb;
 }
+
+/**
+ * @param thumb Thumbnail request to delete.
+ * @brief Request a thumbnail request to be cancelled.
+ */
+void
+epsilon_del(Epsilon_Request *thumb)
+{
+	Epsilon_Request *temp;
+
+	/*
+	 * Find the thumbnail request matching this message response and
+	 * remove it, at this point we don't bother cancelling the outstanding
+	 * request to the daemon.
+	 */
+	ecore_dlist_goto_first(epsilon_request_queue);
+	while ((temp = ecore_dlist_current(epsilon_request_queue))) {
+		if (temp->id == thumb->id) {
+			ecore_dlist_remove(epsilon_request_queue);
+			break;
+		}
+		ecore_dlist_next(epsilon_request_queue);
+	}
+}
