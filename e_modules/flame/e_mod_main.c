@@ -269,7 +269,6 @@ _flame_face_init(Flame_Face *ff)
    o = evas_object_image_add(ff->evas);
    evas_output_viewport_get(ff->evas, NULL, NULL, &ww, &hh);
    ff->ww = ww;
-   printf("Size : %d %d\n", ww, hh);
    evas_object_move(o, 0, hh - ff->flame->conf->height + 3);
    evas_object_resize(o, ff->ww, ff->flame->conf->height);
    evas_object_image_fill_set(o, 0, 0, ff->ww, ff->flame->conf->height);
@@ -296,7 +295,6 @@ _flame_face_init(Flame_Face *ff)
    evas_object_image_size_set(ff->flame_object,
                               1 << ff->ims, ff->flame->conf->height);
    evas_object_image_fill_set(o, 0, 0, 1 << ff->ims, ff->flame->conf->height);
-   printf("Size : %d %d\n", 1 << ff->ims, ff->flame->conf->height);
    ff->im = (unsigned int *)evas_object_image_data_get(ff->flame_object, 1);
 
    /* initialization of the palette */
