@@ -51,9 +51,7 @@ close_cb(void *data)
 
 static void arrow_cb(void* data)
 {
-   char buf[128];
-   Esnprintf(buf, sizeof(buf), "goto_area %s", (char*) data);
-   Epplet_send_ipc(buf);
+   Epplet_send_ipc(data);
 }
 
 static void
@@ -83,10 +81,17 @@ Epplet_gadget epp_create_std_button(int x, int y, char* std,
     return Epplet_create_button(NULL,NULL,x,y,0,0,std,0,NULL,func,data);
 }
 
-#define AREA_UP     "prev vert"
-#define AREA_DOWN   "next vert"
-#define AREA_LEFT   "prev horiz"
-#define AREA_RIGHT  "next horiz"
+#if 0 /* < e16 < 0.16.8 */
+#define AREA_UP     "goto_area prev vert"
+#define AREA_DOWN   "goto_area next vert"
+#define AREA_LEFT   "goto_area prev horiz"
+#define AREA_RIGHT  "goto_area next horiz"
+#else
+#define AREA_UP     "area move 0 -1"
+#define AREA_DOWN   "area move 0 1"
+#define AREA_LEFT   "area move -1 0"
+#define AREA_RIGHT  "area move 1 0"
+#endif
 
 int
 main(int argc, char **argv)
