@@ -37,7 +37,6 @@ moon-rain.png \
 moon-snow.png \
 moon-tstorm.png \
 mostly-cloudy.png \
-na.png \
 pcloudyn.png \
 pcloudynr.png \
 pcloudyns.png \
