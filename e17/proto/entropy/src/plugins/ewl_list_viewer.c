@@ -701,6 +701,9 @@ idle_add_icons (void *data)
   while (i < ICON_ADD_COUNT && (file = ecore_list_remove_first (el))) {
     //printf("Adding '%s'\n", file->filename);
     ewl_icon_local_viewer_add_icon (proc->requestor, file, DONT_DO_MIME);
+
+    entropy_core_file_cache_remove_reference (file->md5);
+    
     ecore_list_append (added_list, file);
 
     i++;
@@ -796,6 +799,8 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *ret,
       ecore_list_goto_first (ret);
       while ((event_file = ecore_list_next (ret))) {
 	//printf("Populating with '%s'\n", event_file->filename);
+	
+	entropy_core_file_cache_add_reference (event_file->md5);
 	ecore_list_append (proc->user_data, event_file);
       }
 

@@ -519,7 +519,6 @@ ewl_icon_local_viewer_menu_rename_cb (Ewl_Widget * w, void *ev_data,
 
     if (icon) {
       printf ("Rename dialog..\n");
-      entropy_core_file_cache_remove_reference (local_file->file->md5);
       entropy_ewl_rename_dialog_new (entropy_file_gui_component_new_with_data
 				     (local_file->file, instance));
     }
@@ -874,7 +873,7 @@ idle_add_icons (void *data)
     ewl_icon_local_viewer_add_icon (proc->requestor, file, DONT_DO_MIME);
 
     /*Remove the pre-idle-add ref*/
-    //entropy_core_file_cache_remove_reference (file->md5);
+    entropy_core_file_cache_remove_reference (file->md5);
     
     ecore_list_append (added_list, file);
 
