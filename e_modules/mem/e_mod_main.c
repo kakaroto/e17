@@ -496,7 +496,8 @@ _mem_face_update_values(void *data)
    msg.val = ts;
    edje_object_message_send(cf->mem_obj, EDJE_MESSAGE_FLOAT, 10, &msg);
 
-   if ((cf->mem->conf->show_graph) && (edje_object_part_exists (cf->mem_obj,"lines")) )
+   if ((cf->mem->conf->show_graph) && 
+       (edje_object_part_exists (cf->mem_obj,"lines")))
      _mem_face_graph_values(cf, (tr * 100), (ts * 100));
    else
      _mem_face_graph_clear(cf);
@@ -533,47 +534,48 @@ _mem_face_get_mem_values(Mem_Face *cf, int *real, int *swap, int *total_real, in
           {
              field = (char *)malloc(strlen(line) * sizeof(char));
              sscanf(line, "%s %ld kB", field, &value);
-             if (!strcmp(field, "MemTotal:")){
-	       mtotal = value;
-	       msg.val = value;
-	       edje_object_message_send(cf->mem_obj, EDJE_MESSAGE_FLOAT, 0, &msg);
-	     }
+             if (!strcmp(field, "MemTotal:")) 
+	       {
+		  mtotal = value;
+		  msg.val = value;
+		  edje_object_message_send(cf->mem_obj, EDJE_MESSAGE_FLOAT, 0, &msg);
+	       }
              else if (!strcmp(field, "MemFree:"))
-             {
-               mfree = value;
-               msg.val = value;
-               edje_object_message_send(cf->mem_obj, EDJE_MESSAGE_FLOAT, 1, &msg);
-	     } 
+	       {
+		  mfree = value;
+		  msg.val = value;
+		  edje_object_message_send(cf->mem_obj, EDJE_MESSAGE_FLOAT, 1, &msg);
+	       } 
              else if (cf->mem->conf->real_ignore_buffers && (!strcmp(field, "Buffers:")))
-	     {
-               mfree += value;
-	       msg.val = value;
-	       edje_object_message_send(cf->mem_obj, EDJE_MESSAGE_FLOAT, 2, &msg);
-             }
+	       {
+		  mfree += value;
+		  msg.val = value;
+		  edje_object_message_send(cf->mem_obj, EDJE_MESSAGE_FLOAT, 2, &msg);
+	       }
              else if (cf->mem->conf->real_ignore_cached && (!strcmp(field, "Cached:")))
-             {
-	       mfree += value;
-	       msg.val = value;
-	       edje_object_message_send(cf->mem_obj, EDJE_MESSAGE_FLOAT, 3, &msg);
-	     }
+	       {
+		  mfree += value;
+		  msg.val = value;
+		  edje_object_message_send(cf->mem_obj, EDJE_MESSAGE_FLOAT, 3, &msg);
+	       }
 	     else if (cf->mem->conf->real_ignore_cached && (!strcmp(field, "SwapCached:")))
-             {
-	        sfree += value;
-	        msg.val = value;
-	        edje_object_message_send(cf->mem_obj, EDJE_MESSAGE_FLOAT, 4, &msg);
-	     }
+	       {
+		  sfree += value;
+		  msg.val = value;
+		  edje_object_message_send(cf->mem_obj, EDJE_MESSAGE_FLOAT, 4, &msg);
+	       }
 	     else if (!strcmp(field, "SwapTotal:"))
-             {
-	        stotal = value;
-	        msg.val = stotal;
-	        edje_object_message_send(cf->mem_obj, EDJE_MESSAGE_FLOAT, 5, &msg);
-	     }
+	       {
+		  stotal = value;
+		  msg.val = stotal;
+		  edje_object_message_send(cf->mem_obj, EDJE_MESSAGE_FLOAT, 5, &msg);
+	       }
 	     else if (!strcmp(field, "SwapFree:"))
-             {
-	        sfree = value;
-	        msg.val = sfree;
-	        edje_object_message_send(cf->mem_obj, EDJE_MESSAGE_FLOAT, 6, &msg);
-	     }
+	       {
+		  sfree = value;
+		  msg.val = sfree;
+		  edje_object_message_send(cf->mem_obj, EDJE_MESSAGE_FLOAT, 6, &msg);
+	       }
              free(line);
              free(field);
              cursor = 0;
