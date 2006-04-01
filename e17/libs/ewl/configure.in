@@ -44,14 +44,11 @@ fi
 dnl Set PACKAGE_LIB_DIR in config.h.
 if test "x${libdir}" = 'x${exec_prefix}/lib'; then
   if test "x${prefix}" = "xNONE"; then
-    echo "Prefix is NONE"
     AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${ac_default_prefix}/lib/${PACKAGE}", [Library module directory])
   else
-    echo "Prefix is ${prefix}"
     AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${prefix}/lib/${PACKAGE}", [Library module directory])
   fi
 else
-  echo "libdir is ${libdir}"
   AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${libdir}/${PACKAGE}", [Library module directory])
 fi
 
@@ -74,18 +71,18 @@ PCFLAGS=$CFLAGS
 AC_PATH_GENERIC(evas, 0.9.9,
   [ ],
   [
-    echo "ERROR:"
-    echo "The evas-config development script was not found in your execute"
-    echo "path. This may mean one of several things"
-    echo "1. You may not have installed the evas-devel (or evas-dev)"
-    echo "   packages."
-    echo "2. You may have evas installed somewhere not covered by your path."
-    echo ""
-    echo "If this is the case make sure you have the packages installed, AND"
-    echo "that the evas-config script is in your execute path (see your"
-    echo "shell's manual page on setting the \$PATH environment variable), OR"
-    echo "alternatively, specify the script to use with --with-evas-config."
-    AC_MSG_ERROR([Fatal Error: no evas-config detected.])
+AC_MSG_ERROR([
+ERROR:
+The evas-config development script was not found in your execute
+path. This may mean one of several things
+1. You may not have installed the evas-devel (or evas-dev) packages.
+2. You may have evas installed somewhere not covered by your path.
+
+If this is the case make sure you have the packages installed, AND
+that the evas-config script is in your execute path (see your
+shell's manual page on setting the \$PATH environment variable), OR
+alternatively, specify the script to use with --with-evas-config.
+])
   ]
 )
 CFLAGS=$EVAS_CFLAGS" "$CFLAGS
@@ -93,18 +90,18 @@ CFLAGS=$EVAS_CFLAGS" "$CFLAGS
 AC_PATH_GENERIC(ecore, 0.9.9,
   [ ],
   [
-    echo "ERROR:"
-    echo "The ecore-config development script was not found in your execute"
-    echo "path. This may mean one of several things"
-    echo "1. You may not have installed the ecore-devel (or ecore-dev)"
-    echo "   packages."
-    echo "2. You may have ecore installed somewhere not covered by your path."
-    echo ""
-    echo "If this is the case make sure you have the packages installed, AND"
-    echo "that the ecore-config script is in your execute path (see your"
-    echo "shell's manual page on setting the \$PATH environment variable), OR"
-    echo "alternatively, specify the script to use with --with-ecore-config."
-    AC_MSG_ERROR([Fatal Error: no ecore-config detected.])
+AC_MSG_ERROR([
+ERROR:
+The ecore-config development script was not found in your execute
+path. This may mean one of several things
+1. You may not have installed the ecore-devel (or ecore-dev) packages.
+2. You may have ecore installed somewhere not covered by your path.
+
+If this is the case make sure you have the packages installed, AND
+that the ecore-config script is in your execute path (see your
+shell's manual page on setting the \$PATH environment variable), OR
+alternatively, specify the script to use with --with-ecore-config.
+])
   ]
 )
 CFLAGS=$ECORE_CFLAGS" "$CFLAGS
@@ -163,18 +160,18 @@ fi
 AC_PATH_GENERIC(edje, 0.5.0,
   [ ],
   [
-    echo "ERROR:"
-    echo "The edje-config development script was not found in your execute"
-    echo "path. This may mean one of several things"
-    echo "1. You may not have installed the edje-devel (or edje-dev)"
-    echo "   packages."
-    echo "2. You may have edje installed somewhere not covered by your path."
-    echo ""
-    echo "If this is the case make sure you have the packages installed, AND"
-    echo "that the edje-config script is in your execute path (see your"
-    echo "shell's manual page on setting the \$PATH environment variable), OR"
-    echo "alternatively, specify the script to use with --with-edje-config."
-    AC_MSG_ERROR([Fatal Error: no edje-config detected.])
+AC_MSG_ERROR([
+ERROR:
+The edje-config development script was not found in your execute
+path. This may mean one of several things
+1. You may not have installed the edje-devel (or edje-dev) packages.
+2. You may have edje installed somewhere not covered by your path.
+
+If this is the case make sure you have the packages installed, AND
+that the edje-config script is in your execute path (see your
+shell's manual page on setting the \$PATH environment variable), OR
+alternatively, specify the script to use with --with-edje-config.
+])
   ]
 )
 
@@ -190,7 +187,6 @@ AC_PATH_GENERIC(emotion, 0.0.1,
   ],
   [
     have_emotion="no"
-    echo "No emotion-config detected."
   ]
 )
 
@@ -204,7 +200,6 @@ AC_PATH_GENERIC(epsilon, 0.3.0,
   ],
   [
     have_epsilon="no"
-    echo "No epsilon-config detected."
   ]
 )
 
