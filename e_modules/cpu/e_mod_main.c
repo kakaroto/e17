@@ -435,9 +435,10 @@ _cpu_face_update_values(void *data)
 {
    Cpu_Face *cf;
    char str[100];
-   Edje_Message_Float msg;
+   //Edje_Message_Float msg;
    int i = 0;
    char str_tmp[100];
+
    cf = data;
    _cpu_face_get_load(cf);
    
@@ -449,17 +450,18 @@ _cpu_face_update_values(void *data)
 	snprintf(str, sizeof(str), "%d%%", cpu_stats[0]);
 	i = 1;
 	while (i < cpu_count)
-	{
-	   snprintf(str_tmp, sizeof(str_tmp), " / %d%%", cpu_stats[i]);
-	   strncat(str, str_tmp, sizeof(str));
-	   i++;
-	}
+	  {
+	     snprintf(str_tmp, sizeof(str_tmp), " / %d%%", cpu_stats[i]);
+	     strncat(str, str_tmp, sizeof(str));
+	     i++;
+	  }
 	edje_object_part_text_set(cf->txt_obj, "in-text", str);   
      }
    else
      edje_object_part_text_set(cf->txt_obj, "in-text", "");   
      
-   if ((cf->cpu->conf->show_graph) && (edje_object_part_exists (cf->cpu_obj,"lines")))
+   if ((cf->cpu->conf->show_graph) && 
+       (edje_object_part_exists (cf->cpu_obj,"lines")))
      _cpu_face_graph_values(cf);
    else 
      _cpu_face_graph_clear(cf);
@@ -492,9 +494,8 @@ _cpu_face_get_load(Cpu_Face *cf)
    int tmp_u, tmp_n, tmp_s, tmp_i;
    char dummy[16];
    FILE *stat;
-   //int cpu_count;
-   Edje_Message_Float msg;
-
+   int cpu_count;
+   //Edje_Message_Float msg;
    
    cpu_count = _cpu_face_get_cpu_count(cf);
    if (cpu_count == -1)
@@ -533,7 +534,7 @@ _cpu_face_get_load(Cpu_Face *cf)
            tmp_i = 0;
         }
 
-   /* Update the values */   
+      /* Update the values */   
       cpu_stats[i] = (tmp_u + tmp_n + tmp_s) / cpu_count;
    
       old_u[i] = new_u;
@@ -547,13 +548,14 @@ _cpu_face_get_load(Cpu_Face *cf)
       if (cpu_stats[i] >= 100)
         cpu_stats[i] = 100;
 
+      /*
       msg.val = cpu_stats[i];
       edje_object_message_send(cf->cpu_obj, EDJE_MESSAGE_FLOAT, i, &msg);
-
+      */
+      
       i++;
    }
-   fclose(stat);
-   
+   fclose(stat);   
 }
 
 static void 
@@ -573,19 +575,20 @@ _cpu_face_graph_values(Cpu_Face *cf)
    evas_object_geometry_get(cf->chart_obj, &x, &y, &w, &h);
 
    while (d < cpu_count)
-   {
-      v = (int)((double)cpu_stats[d] * ((double)h / (double)100));      
-      o = evas_object_line_add(cf->evas);
-      edje_object_part_swallow(cf->chart_obj, "lines", o);
-      evas_object_layer_set(o, 1);
-      if (cpu_stats[d] == 0)
-      evas_object_hide(o);
-      else 
-      {
-   	   evas_object_line_xy_set(o, (x + w), (y + h), (x + w), ((y + h) - v));
-	   switch (d) {
-	        case 0:
-	          evas_object_color_set(o, a, b, b, c);
+     {
+	v = (int)((double)cpu_stats[d] * ((double)h / (double)100));      
+	o = evas_object_line_add(cf->evas);
+	edje_object_part_swallow(cf->chart_obj, "lines", o);
+	evas_object_layer_set(o, 1);
+	if (cpu_stats[d] == 0)
+	  evas_object_hide(o);
+	else 
+	  {
+	     evas_object_line_xy_set(o, (x + w), (y + h), (x + w), ((y + h) - v));
+	     switch (d) 
+	       {
+		case 0:
+		  evas_object_color_set(o, a, b, b, c);
 	          break;
 	        case 1:
                   evas_object_color_set(o, b, a, b, c);
@@ -598,31 +601,31 @@ _cpu_face_graph_values(Cpu_Face *cf)
                   break;
                 default:
                   break;
-           }	       
-	   evas_object_pass_events_set(o, 1);
-	   evas_object_show(o);
-      }
+	       }	       
+	     evas_object_pass_events_set(o, 1);
+	     evas_object_show(o);
+	  }
    
-      cf->old_values[d] = evas_list_prepend(cf->old_values[d], o);
-      l = cf->old_values[d];
-      for (i = (x + w); l && (j -2) < w; l = l->next, j++) 
-      {
-	   Evas_Coord oy;
-	   Evas_Object *lo;
+	cf->old_values[d] = evas_list_prepend(cf->old_values[d], o);
+	l = cf->old_values[d];
+	for (i = (x + w); l && (j -2) < w; l = l->next, j++) 
+	  {
+	     Evas_Coord oy;
+	     Evas_Object *lo;
 	
-  	   lo = (Evas_Object *)evas_list_data(l);
-	   evas_object_geometry_get(lo, NULL, &oy, NULL, NULL);
-	   evas_object_move(lo, i--, oy);
-	   last = lo;
-       }
+	     lo = (Evas_Object *)evas_list_data(l);
+	     evas_object_geometry_get(lo, NULL, &oy, NULL, NULL);
+	     evas_object_move(lo, i--, oy);
+	     last = lo;
+	  }
    
-      if ((j - 2) >= w) 
-      {
-	   cf->old_values[d] = evas_list_remove(cf->old_values[d], last);
-	   evas_object_del(last);
-      }
-      d++;
-   }
+	if ((j - 2) >= w) 
+	  {
+	     cf->old_values[d] = evas_list_remove(cf->old_values[d], last);
+	     evas_object_del(last);
+	  }
+	d++;
+     }
 }
 
 static void 
@@ -632,17 +635,17 @@ _cpu_face_graph_clear(Cpu_Face *cf)
    Evas_List *l;
 
    while (i < cpu_count)
-   {
-      for (l = cf->old_values[i]; l; l = l->next) 
-      {
- 	   Evas_Object *o;
-	   o = evas_list_data(l);
-	   evas_object_del(o);
-      }
-      evas_list_free(cf->old_values[i]);
-      cf->old_values[i] = NULL;
-      if (!cf->cpu->conf->show_graph)
-        evas_object_hide(cf->chart_obj);
-      i++;
-   }
+     {
+	for (l = cf->old_values[i]; l; l = l->next) 
+	  {
+	     Evas_Object *o;
+	     o = evas_list_data(l);
+	     evas_object_del(o);
+	  }
+	evas_list_free(cf->old_values[i]);
+	cf->old_values[i] = NULL;
+	if (!cf->cpu->conf->show_graph)
+	  evas_object_hide(cf->chart_obj);
+	i++;
+     }
 }

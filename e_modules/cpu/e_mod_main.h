@@ -36,7 +36,7 @@ struct _Cpu_Face
    E_Container *con;
    E_Menu *menu;
    Cpu *cpu;
-   Evas_List *old_values;
+   Evas_List *old_values[4];
    
    Config_Face *conf;
    E_Config_DD *conf_face_edd;
