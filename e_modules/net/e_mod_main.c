@@ -504,7 +504,7 @@ _net_face_update_values(void *data)
    long bytes_out;
    int in_use = 0;
    int out_use = 0;
-   Edje_Message_Float msg;
+//   Edje_Message_Float msg;
    
    nf = data;
    
@@ -604,13 +604,13 @@ _net_face_update_values(void *data)
 	edje_object_part_text_set(nf->ttxt_obj, "tx-text", out_str);
 	edje_object_part_text_set(nf->rtxt_obj, "rx-text", in_str);
      }
-
+/*
    msg.val = in_use;
    edje_object_message_send(nf->net_obj, EDJE_MESSAGE_FLOAT, 1, &msg);
 
    msg.val = out_use;
    edje_object_message_send(nf->net_obj, EDJE_MESSAGE_FLOAT, 2, &msg);   
-    
+*/    
    if (nf->conf->show_graph) 
      _net_face_graph_values(nf, out_use, in_use);
    else 
