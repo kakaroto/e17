@@ -117,7 +117,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 	  /*We need the file's mime type, 
 	   * so get it here if it's not here already...*/
 	  if (!strlen (file->mime_type)) {
-	    entropy_mime_file_identify (comp->core->mime_plugins, file);
+	    entropy_mime_file_identify (file);
 	  }
 
 	  if (file->filetype == FILE_FOLDER ||

@@ -279,7 +279,7 @@ void layout_etk_simple_add_header(entropy_gui_component_instance* instance, Entr
    file->filetype = FILE_FOLDER;
 
   if (!strlen (file->mime_type)) {
-	    entropy_mime_file_identify (instance->core->mime_plugins, file);
+	    entropy_mime_file_identify (file);
   }
    
    instance = (*structure_plugin_init)(instance->core, instance, row,file);

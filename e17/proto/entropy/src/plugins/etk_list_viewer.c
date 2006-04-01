@@ -583,38 +583,14 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
   viewer = instance->data;
 
 
+  entropy_core_file_cache_add_reference (file->md5);
+
 
   if (!strlen (file->mime_type)) {
-	entropy_mime_file_identify (instance->core->mime_plugins, file);
+	entropy_mime_file_identify (file);
   }
 
-  if (file->mime_type) {
-	    entropy_plugin* thumb = entropy_thumbnailer_retrieve (file->mime_type);
-	    if (thumb) {
-			entropy_thumbnail_request *request = entropy_thumbnail_request_new ();
-			request->file = file;
-			request->instance = instance;
-
-			/*Add a reference to this file, so it doesn't get cleaned up*/
-			entropy_core_file_cache_add_reference (file->md5);
-
-			entropy_notify_event *ev =
-			  entropy_notify_request_register (instance->core->notify, instance,
-				   ENTROPY_NOTIFY_THUMBNAIL_REQUEST,
-				   thumb,
-				   "entropy_thumbnailer_thumbnail_get",
-				   request, NULL);
-
-			entropy_notify_event_callback_add (ev, (void *) gui_event_callback,
-				   instance);
-			entropy_notify_event_cleanup_add (ev, request);
-
-			entropy_notify_event_commit (ev);
-	    }
-  }
-
-
-  
+  entropy_plugin_thumbnail_request(instance, file, (void*)gui_event_callback); 
   
   col1 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 0);
   col2 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 1);
@@ -706,9 +682,6 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 		  /*We need the file's mime type, 
 		   * so get it here if it's not here already...*/
 		  
-		      /*Tell the core we're watching 
-		       * this file*/
-		      entropy_core_file_cache_add_reference (file->md5);
 		      list_viewer_add_row (comp, file);
 		}
 
@@ -759,8 +732,6 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 	  entropy_generic_file* file = el;
 	  entropy_gui_event *gui_event = NULL;
 	  
-	  entropy_core_file_cache_add_reference (file->md5);
-	  
 	  /*And request the properties...*/
 	  gui_event = entropy_malloc (sizeof (entropy_gui_event));
 	  gui_event->event_type =
@@ -778,7 +749,6 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
       entropy_generic_file* parent_folder = entropy_core_parent_folder_file_get(file);
 
       if (parent_folder && parent_folder == viewer->current_folder) {
-	      entropy_core_file_cache_add_reference (file->md5);
 	      list_viewer_add_row (comp, file);				      
       }
      }

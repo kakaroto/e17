@@ -6,6 +6,6 @@ typedef struct entropy_mime_action {
 	char* executable;	
 } entropy_mime_action;
 
-char* entropy_mime_file_identify(Ecore_List* mime_plugins, entropy_generic_file* file);
+char* entropy_mime_file_identify(entropy_generic_file* file);
 
 #endif

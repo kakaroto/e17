@@ -209,7 +209,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 				   * so get it here if it's not here already...*/
 				  /*printf("STRUCTURE REFERENCES FILE: %p\n", file);*/
 				  if (!strlen (file->mime_type)) {
-				    entropy_mime_file_identify (comp->core->mime_plugins, file);
+				    entropy_mime_file_identify (file);
 				  }
 
 				  if (file->filetype == FILE_FOLDER ||

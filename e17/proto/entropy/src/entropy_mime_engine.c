@@ -1,7 +1,7 @@
 #include "include/entropy.h"
 #include <dlfcn.h>
 
-char* entropy_mime_file_identify(Ecore_List* mime_plugins, entropy_generic_file* file) {	
+char* entropy_mime_file_identify(entropy_generic_file* file) {	
 	entropy_plugin* plugin;
 	char* (*entropy_mime_plugin_identify_file)(char* path, char* filename);
 	char* type = NULL;
@@ -10,8 +10,8 @@ char* entropy_mime_file_identify(Ecore_List* mime_plugins, entropy_generic_file*
 	if (strlen(file->mime_type) > 0) return file->mime_type;
 	
 	/*printf("Identifying a file..\n");	*/
-	ecore_list_goto_first(mime_plugins);
-	while ((plugin = ecore_list_next(mime_plugins)) != NULL) {
+	ecore_list_goto_first(entropy_core_get_core()->mime_plugins);
+	while ((plugin = ecore_list_next(entropy_core_get_core()->mime_plugins)) != NULL) {
 		/*printf ("Querying '%s' for MIME\n", plugin->filename);*/
 		entropy_mime_plugin_identify_file = dlsym(plugin->dl_ref, "entropy_mime_plugin_identify_file");
 		type = (*entropy_mime_plugin_identify_file)(file->path, file->filename);

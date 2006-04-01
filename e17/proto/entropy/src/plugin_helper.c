@@ -143,7 +143,40 @@ void entropy_plugin_filesystem_filestat_get(entropy_file_request* request)
 	(*stat_func)(request);
 }
 
-void entropy_plugin_filesystem_file_remove(entropy_generic_file* file, entropy_gui_component_instance* instance) {
+void entropy_plugin_thumbnail_request(entropy_gui_component_instance* requestor, entropy_generic_file* file, 
+		void (*cb)())
+{
+	if (file->mime_type) {
+		entropy_plugin* thumb = entropy_thumbnailer_retrieve (file->mime_type);
+	
+		if (thumb) {
+			entropy_thumbnail_request *request = entropy_thumbnail_request_new ();
+			request->file = file;
+			request->instance = requestor;
+
+			/*Add a reference to this file, so it doesn't get cleaned up*/
+			entropy_core_file_cache_add_reference (file->md5);
+
+			entropy_notify_event *ev =
+			  entropy_notify_request_register (requestor,
+				   ENTROPY_NOTIFY_THUMBNAIL_REQUEST,
+				   thumb,
+				   "entropy_thumbnailer_thumbnail_get",
+				   request, NULL);
+
+			entropy_notify_event_callback_add (ev, cb, requestor);
+			entropy_notify_event_cleanup_add (ev, request);
+	
+			entropy_notify_event_commit (ev);
+		}
+
+	} else {
+		printf("Thumb request on mime-less file\n");
+	}
+}
+
+void entropy_plugin_filesystem_file_remove(entropy_generic_file* file, entropy_gui_component_instance* instance) 
+{
   	entropy_plugin *plugin =
 	      entropy_plugins_type_get_first (
 	ENTROPY_PLUGIN_BACKEND_FILE, ENTROPY_PLUGIN_SUB_TYPE_ALL);
@@ -154,7 +187,8 @@ void entropy_plugin_filesystem_file_remove(entropy_generic_file* file, entropy_g
 	(*del_func)(file, instance);
 }
 
-void entropy_plugin_filesystem_directory_create(entropy_generic_file* file, char* dir) {
+void entropy_plugin_filesystem_directory_create(entropy_generic_file* file, char* dir) 
+{
         entropy_plugin *plugin =
               entropy_plugins_type_get_first (
         ENTROPY_PLUGIN_BACKEND_FILE, ENTROPY_PLUGIN_SUB_TYPE_ALL);
@@ -167,7 +201,8 @@ void entropy_plugin_filesystem_directory_create(entropy_generic_file* file, char
 
 
 
-int entropy_plugin_filesystem_file_copy(entropy_generic_file* source, char* dest, entropy_gui_component_instance* requester) {
+int entropy_plugin_filesystem_file_copy(entropy_generic_file* source, char* dest, entropy_gui_component_instance* requester) 
+{
   entropy_gui_component_instance *instance = requester;
   entropy_plugin *plugin =
     entropy_plugins_type_get_first (ENTROPY_PLUGIN_BACKEND_FILE,

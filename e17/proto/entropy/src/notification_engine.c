@@ -148,7 +148,7 @@ void entropy_notify_event_expire_requestor_layout(void* requestor)
 	}
 }
 
-entropy_notify_event* entropy_notify_request_register(entropy_notification_engine* notify, void* requestor, int event_type, entropy_plugin* request_plugin, char* request_function, void* request_data, Ecore_List* cleanup) {
+entropy_notify_event* entropy_notify_request_register(void* requestor, int event_type, entropy_plugin* request_plugin, char* request_function, void* request_data, Ecore_List* cleanup) {
 	entropy_notify_event* event = entropy_notify_event_new();
 
 	event->requestor_data = requestor;	

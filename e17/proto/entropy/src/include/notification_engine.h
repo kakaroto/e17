@@ -74,7 +74,7 @@ void entropy_notify_event_type_set(entropy_notify_event*, int);
 void entropy_notify_event_destroy(entropy_notify_event* eevent);
 
 void entropy_notify_request_destroy_list(entropy_notification_engine* notify, Ecore_List* list);
-entropy_notify_event* entropy_notify_request_register(entropy_notification_engine* notify, void* requestor, int event_type, entropy_plugin* request_plugin, char* request_function, void* request_data,  Ecore_List* cleanup);
+entropy_notify_event* entropy_notify_request_register(void* requestor, int event_type, entropy_plugin* request_plugin, char* request_function, void* request_data,  Ecore_List* cleanup);
 void entropy_notify_event_callback_add(entropy_notify_event* event, void* cb, void* data);
 
 void entropy_notify_lock_loop(entropy_notification_engine* notify);
