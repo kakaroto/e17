@@ -480,6 +480,7 @@ _wlan_face_update_values(void *data)
    int wlan_link = 0;
    int wlan_level = 0;
    int wlan_noise = 0;
+   Edje_Message_Float msg;
    
    char in_str[100];
 
@@ -522,6 +523,9 @@ _wlan_face_update_values(void *data)
    else
      edje_object_part_text_set(nf->txt_obj, "link-text", "");
 
+   msg.val = wlan_link;
+   edje_object_message_send(nf->wlan_obj, EDJE_MESSAGE_FLOAT, 1, &msg);
+   
    if (nf->conf->show_graph) 
      _wlan_face_graph_values(nf, wlan_link);
    else
