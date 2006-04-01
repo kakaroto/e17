@@ -247,6 +247,11 @@ calendar_add_dates(Calendar_Face * face, Calendar * calendar, int skew)
    int Sun = 0;
    int Sat = 6;
 
+   if ((calendar->conf->view_year % 4 == 0 ) && 
+      !((calendar->conf->view_year % 100 == 0 ) && 
+      (calendar->conf->view_year % 1000 != 0 )))
+      NumDayMon[1] = 29;
+   
    snprintf(buf, sizeof(buf), "%d", DayOfMonth);
    switch (calendar->conf->DayofWeek_Start)
      {
