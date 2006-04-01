@@ -262,16 +262,73 @@ main(int argc, char **argv)
 		m->win = ewl_window_new();
 		ewl_window_title_set(EWL_WINDOW(m->win), "ephoto");
 		ewl_window_name_set(EWL_WINDOW(m->win), "ephoto");
-		ewl_object_size_request(EWL_OBJECT(m->win), 640, 480);
+		ewl_object_size_request(EWL_OBJECT(m->win), 640, 500);
 		ewl_callback_append(m->win, EWL_CALLBACK_DELETE_WINDOW, destroy_cb, NULL);
 		ewl_widget_show(m->win);
 		mainwin = 1;
 	
+		m->avbox = ewl_vbox_new();
+		ewl_container_child_append(EWL_CONTAINER(m->win), m->avbox);
+		ewl_object_fill_policy_set(EWL_OBJECT(m->avbox), EWL_FLAG_FILL_ALL);
+		ewl_widget_show(m->avbox);
+		
+		m->menubar = ewl_hmenubar_new();
+		ewl_container_child_append(EWL_CONTAINER(m->avbox), m->menubar);
+		ewl_widget_show(m->menubar);
+
+		m->menu = ewl_menu_new();
+		ewl_button_label_set(EWL_BUTTON(m->menu), "File");
+		ewl_container_child_append(EWL_CONTAINER(m->menubar), m->menu);
+		ewl_object_fill_policy_set(EWL_OBJECT(m->menu), EWL_FLAG_FILL_NONE);
+		ewl_widget_show(m->menu);
+
+		m->menu_item = ewl_menu_item_new();
+		ewl_button_label_set(EWL_BUTTON(m->menu_item), "Exit");
+		ewl_container_child_append(EWL_CONTAINER(m->menu), m->menu_item);
+		ewl_callback_append(m->menu_item, EWL_CALLBACK_CLICKED, destroy_cb, NULL);
+		ewl_widget_show(m->menu_item);
+
+		m->menu = ewl_menu_new();
+		ewl_button_label_set(EWL_BUTTON(m->menu), "Actions");
+		ewl_container_child_append(EWL_CONTAINER(m->menubar), m->menu);
+		ewl_object_fill_policy_set(EWL_OBJECT(m->menu), EWL_FLAG_FILL_NONE);
+		ewl_widget_show(m->menu);
+
+		m->menu_item = ewl_menu_item_new();
+                ewl_button_label_set(EWL_BUTTON(m->menu_item), "Slideshow");
+                ewl_container_child_append(EWL_CONTAINER(m->menu), m->menu_item);
+                ewl_callback_append(m->menu_item, EWL_CALLBACK_CLICKED, slideshow_cb, NULL);
+                ewl_widget_show(m->menu_item);
+
+		m->menu_item = ewl_menu_item_new();
+                ewl_button_label_set(EWL_BUTTON(m->menu_item), "Presentation");
+                ewl_container_child_append(EWL_CONTAINER(m->menu), m->menu_item);
+                ewl_callback_append(m->menu_item, EWL_CALLBACK_CLICKED, presentation_cb, NULL);
+		ewl_widget_show(m->menu_item);
+
+		m->menu = ewl_menu_new();
+                ewl_button_label_set(EWL_BUTTON(m->menu), "Help");
+                ewl_container_child_append(EWL_CONTAINER(m->menubar), m->menu);
+                ewl_object_fill_policy_set(EWL_OBJECT(m->menu), EWL_FLAG_FILL_NONE);
+                ewl_widget_show(m->menu);
+
+                m->menu_item = ewl_menu_item_new();
+                ewl_button_label_set(EWL_BUTTON(m->menu_item), "Ephoto Help");
+                ewl_container_child_append(EWL_CONTAINER(m->menu), m->menu_item);
+                ewl_callback_append(m->menu_item, EWL_CALLBACK_CLICKED, ephoto_men_cb, "help");
+                ewl_widget_show(m->menu_item);
+
+		m->menu_item = ewl_menu_item_new();
+                ewl_button_label_set(EWL_BUTTON(m->menu_item), "About Ephoto");
+                ewl_container_child_append(EWL_CONTAINER(m->menu), m->menu_item);
+                ewl_callback_append(m->menu_item, EWL_CALLBACK_CLICKED, ephoto_men_cb, "about");
+                ewl_widget_show(m->menu_item);
+
 		m->hbox = ewl_hpaned_new();
 		ewl_object_alignment_set(EWL_OBJECT(m->hbox), EWL_FLAG_ALIGN_CENTER);
-		ewl_container_child_append(EWL_CONTAINER(m->win), m->hbox);
+		ewl_container_child_append(EWL_CONTAINER(m->avbox), m->hbox);
 		ewl_widget_show(m->hbox);
-		
+
 		m->vbox = ewl_vbox_new();
 		ewl_object_alignment_set(EWL_OBJECT(m->vbox), EWL_FLAG_ALIGN_CENTER);
 		ewl_box_spacing_set(EWL_BOX(m->vbox), 10);
@@ -526,10 +583,24 @@ main(int argc, char **argv)
 		ewl_text_text_set(EWL_TEXT(m->text), "Audio");
 		ewl_widget_show(m->text);
 		
-		m->atext = ewl_text_new();
-		ewl_container_child_append(EWL_CONTAINER(m->settings), m->atext);
-		ewl_object_alignment_set(EWL_OBJECT(m->atext), EWL_FLAG_ALIGN_CENTER);
-		ewl_widget_show(m->atext);
+//		m->data = _data_setup();
+//
+//		m->model = ewl_model_new();
+//		ewl_model_fetch_set(m->model, _data_fetch);
+//		ewl_model_count_set(m->model, _data_count_get);
+//
+//		m->view = ewl_view_new();
+//		ewl_view_contructor_set(m->view, ewl_label_new);
+//		ewl_view_assign_set(m->view, EWL_VIEW_ASSIGN(ewl_label_text_set));
+//		ewl_view_header_fetch_set(m->view, _data_header_fetch);
+//
+//		m->atext = ewl_combo_new();
+//		ewl_container_child_append(EWL_CONTAINER(m->settings), m->atext);
+//		ewl_object_alignment_set(EWL_OBJECT(m->atext), EWL_FLAG_ALIGN_CENTER);
+//		ewl_combo_model_set(EWL_COMBO(m->atext), m->model);
+//		ewl_combo_view_set(EWL_COMBO(m->atext), m->view);
+//		ewl_combo_data_set(EWL_COMBO(m->atext), m->data);
+//		ewl_widget_show(m->atext);
 			
 		m->hboxv = ewl_hbox_new();
 		ewl_container_child_append(EWL_CONTAINER(m->settings), m->hboxv);

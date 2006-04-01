@@ -35,6 +35,12 @@ void rad_cb(Ewl_Widget * w, void *event, void *data);
 void iremove_cb(Ewl_Widget * w, void *event, void *data);
 void realize_cb(Ewl_Widget *w, void *event, void *data);
 void play_cb(Ewl_Widget *w, void *event, void *data);
+void ephoto_men_cb(Ewl_Widget *w, void *event, void *data);
+void destroywin_cb(Ewl_Widget *w, void *event, void *data);
+void *_data_setup(void);
+Ewl_Widget *_data_header_fetch(void*data__UNUSED__,int col__UNUSED__);
+void *_data_fetch(void*data,unsigned int row, unsigned int col__UNUSED__);
+int _data_count_get(void*data);
 
 typedef struct _Main Main;
 typedef struct _Slide Slide;
@@ -85,6 +91,13 @@ struct _Main
 	Ewl_Widget  	*viewscroll;
 	Ewl_Widget      *dirtree;
 	Ewl_Widget      *spacer;
+	Ewl_Widget	*model;
+	Ewl_Widget	*view;
+	Ewl_Widget	*menubar;
+	Ewl_Widget	*menu;
+	Ewl_Widget	*menu_item;
+	Ewl_Widget	*avbox;
+	void		*data;
 	Ecore_List  	*imagelist;
 	Ecore_List  	*presentlist;
 };
