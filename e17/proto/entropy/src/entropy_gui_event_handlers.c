@@ -73,6 +73,32 @@ Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_file_remove_insta
 /*---------------------------*/
 
 
+/*File remove directory*/
+Entropy_Gui_Event_Handler* entropy_event_handler_file_remove_directory_handler()
+{
+	return entropy_gui_event_handler_new(
+			entropy_event_handler_file_remove_directory_instance_data,
+			entropy_event_handler_instance_data_generic_cleanup);
+	
+}
+
+Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_file_remove_directory_instance_data(entropy_gui_event* event, 
+	entropy_gui_component_instance* requestor) 
+{
+	
+	Entropy_Gui_Event_Handler_Instance_Data* data = entropy_malloc(sizeof(Entropy_Gui_Event_Handler_Instance_Data));
+	entropy_notify_event* ev = entropy_notify_event_new();
+	ev->event_type = ENTROPY_NOTIFY_FILE_REMOVE_DIRECTORY;
+	ev->processed = 1;
+	ev->return_struct = event->data;
+
+	data->notify = ev;
+
+	return data;
+}
+/*---------------------------*/
+
+
 /*File stat (outbound) */
 Entropy_Gui_Event_Handler* entropy_event_handler_file_stat_handler()
 {
@@ -209,4 +235,98 @@ Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_thumbnail_availab
 	return data;
 }
 /*------------------------------------*/
+
+
+/*Progress*/	
+Entropy_Gui_Event_Handler* entropy_event_handler_progress_handler()
+{
+	return entropy_gui_event_handler_new(
+			entropy_event_handler_progress_instance_data,
+			entropy_event_handler_instance_data_generic_cleanup);
+	
+}
+
+Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_progress_instance_data(entropy_gui_event* event, 
+	entropy_gui_component_instance* requestor) 
+{
+	Entropy_Gui_Event_Handler_Instance_Data* data = entropy_malloc(sizeof(Entropy_Gui_Event_Handler_Instance_Data));
+
+	entropy_notify_event* ev = entropy_notify_event_new();
+	ev->event_type = ENTROPY_NOTIFY_FILE_PROGRESS; 
+	ev->processed = 1;
+		
+	data->notify = ev;
+	ev->return_struct = event->data;
+
+	return data;
+}
+
+/*------------------------------------*/
+
+
+
+/*Folder change*/
+Entropy_Gui_Event_Handler* entropy_event_handler_folder_change_handler()
+{
+	return entropy_gui_event_handler_new(
+			entropy_event_handler_folder_change_instance_data,
+			entropy_event_handler_folder_change_cleanup);
+	
+}
+
+
+Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_folder_change_instance_data(entropy_gui_event* event, 
+	entropy_gui_component_instance* requestor) 
+{
+	Entropy_Gui_Event_Handler_Instance_Data* data = entropy_malloc(sizeof(Entropy_Gui_Event_Handler_Instance_Data));
+
+	entropy_notify_event *ev = entropy_notify_event_new();
+	Ecore_List* res;	
+	entropy_file_request* request = entropy_malloc(sizeof(entropy_file_request));
+		
+
+	ev->event_type = ENTROPY_NOTIFY_FILELIST_REQUEST;
+	ev->processed = 1;
+
+	/*Check if we need to put a slash between the path/file*/
+	if (((entropy_file_request*)event->data)->drill_down) {
+		printf("Request for drill down\n");
+	}
+
+	request->file = ((entropy_file_request*)event->data)->file;
+	request->requester = requestor->layout_parent; /*Requester is the layout parent - after all - one dir per layout at one time*/
+	request->core = entropy_core_get_core();
+	request->file_type = FILE_ALL;
+	request->drill_down = ((entropy_file_request*)event->data)->drill_down;
+
+	ev->data = request;
+
+	/*HACK/FIXME - see what happens if we expire events - this should be on request*/
+	printf("************* Calling interceptor..\n");
+	entropy_notify_event_expire_requestor_layout(requestor);
+	
+	res = entropy_plugin_filesystem_filelist_get(request);
+	ev->return_struct = res;
+
+	data->notify = ev;
+	data->notify->return_struct = res;
+
+	/*Nuke the file_request object that was passed to us*/
+	data->misc_data1 = event->data;
+	data->misc_data2 = request;
+
+	return data;
+
+}
+
+void entropy_event_handler_folder_change_cleanup(Entropy_Gui_Event_Handler_Instance_Data* data)
+{
+	if (data->notify)
+		entropy_notify_event_destroy(data->notify);
+
+	entropy_free(data->misc_data1);
+
+	entropy_free(data);
+
+}
 

@@ -40,6 +40,12 @@ Entropy_Gui_Event_Handler* entropy_event_handler_file_remove_handler();
 Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_file_remove_instance_data(entropy_gui_event* event, 
 	entropy_gui_component_instance* requestor);
 
+/*File remove directory handler*/
+Entropy_Gui_Event_Handler* entropy_event_handler_file_remove_directory_handler();
+
+Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_file_remove_directory_instance_data(entropy_gui_event* event, 
+	entropy_gui_component_instance* requestor);
+
 /*File stat (outbound)*/
 Entropy_Gui_Event_Handler* entropy_event_handler_file_stat_handler();
 Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_file_stat_instance_data(entropy_gui_event* event, 
@@ -61,5 +67,15 @@ Entropy_Gui_Event_Handler* entropy_event_handler_thumbnail_available_handler();
 Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_thumbnail_available_instance_data(entropy_gui_event* event, 
 	entropy_gui_component_instance* requestor);
 
+/*Progress*/
+Entropy_Gui_Event_Handler* entropy_event_handler_progress_handler();
+Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_progress_instance_data(entropy_gui_event* event, 
+	entropy_gui_component_instance* requestor); 
+
+/*File list*/
+Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_folder_change_instance_data(entropy_gui_event* event, 
+	entropy_gui_component_instance* requestor);
+Entropy_Gui_Event_Handler* entropy_event_handler_folder_change_handler();
+void entropy_event_handler_folder_change_cleanup(Entropy_Gui_Event_Handler_Instance_Data* data);
 
 #endif

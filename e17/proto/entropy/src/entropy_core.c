@@ -258,11 +258,13 @@ entropy_core* entropy_core_init(int argc, char** argv) {
 	/*Register GUI event handlers*/
 	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_FILE_CREATE, entropy_event_handler_file_create_handler);
 	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_FILE_REMOVE, entropy_event_handler_file_remove_handler);
+	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_FILE_REMOVE_DIRECTORY, entropy_event_handler_file_remove_directory_handler);
 	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_FILE_STAT, entropy_event_handler_file_stat_handler);
 	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_ACTION_FILE, entropy_event_handler_file_action_handler);
 	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_FILE_STAT_AVAILABLE, entropy_event_handler_file_stat_available_handler);
 	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_THUMBNAIL_AVAILABLE, entropy_event_handler_thumbnail_available_handler);
-
+	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_FILE_PROGRESS, entropy_event_handler_progress_handler);
+	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS, entropy_event_handler_folder_change_handler);
 	
 
 	//printf("\n\nDetails of thumbnailers:\n");
@@ -967,57 +969,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 	}
 	
 
-	if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS)) {
-
-		entropy_notify_event *ev = entropy_notify_event_new();
-		Ecore_List* res;	
-		entropy_file_request* request = entropy_malloc(sizeof(entropy_file_request));
-		
-
-		ev->event_type = ENTROPY_NOTIFY_FILELIST_REQUEST;
-		ev->processed = 1;
-
-		/*Check if we need to put a slash between the path/file*/
-		if (((entropy_file_request*)event->data)->drill_down) {
-			printf("Request for drill down\n");
-		}
-
-		request->file = ((entropy_file_request*)event->data)->file;
-		request->requester = instance->layout_parent; /*Requester is the layout parent - after all - one dir per layout at one time*/
-		request->core = instance->core;
-		request->file_type = FILE_ALL;
-		request->drill_down = ((entropy_file_request*)event->data)->drill_down;
-
-		ev->data = request;
-
-
-		/*HACK/FIXME - see what happens if we expire events - this should be on request*/
-		printf("************* Calling interceptor..\n");
-		entropy_notify_event_expire_requestor_layout(instance);
-
-	
-		res = entropy_plugin_filesystem_filelist_get(request);
-		ev->return_struct = res;
-
-		if (res) {
-			ecore_list_goto_first(el);
-			while ( (iter = ecore_list_next(el)) ) {
-				if (iter->active) (*iter->plugin->gui_event_callback_p)
-					(ev, 
-					 iter, 
-					 res,   /*An ecore_list of files*/
-					 iter);	
-
-			}
-		}
-
-		/*Nuke the file_request object that was passed to us*/
-		free(event->data);
-
-		entropy_notify_event_destroy(ev);		
-		free(request);
-		
-	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_CHANGE)) {
+	if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_CHANGE)) {
 		entropy_notify_event* ev = entropy_notify_event_new();
 		ev->event_type = ENTROPY_NOTIFY_FILE_CHANGE;
 		ev->processed = 1;
@@ -1035,24 +987,6 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		entropy_notify_event_destroy(ev);
 
 
-	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_REMOVE_DIRECTORY)) {
-		entropy_notify_event* ev = entropy_notify_event_new();
-		ev->event_type = ENTROPY_NOTIFY_FILE_REMOVE_DIRECTORY;
-		ev->processed = 1;
-		
-		//printf("Sending a file create event...\n");
-
-		ecore_list_goto_first(el);
-		while ( (iter = ecore_list_next(el)) ) {
-			if (iter->active) (*iter->plugin->gui_event_callback_p)
-				(ev, 
-				 iter, 
-				 event->data,   /*An entropy_generic_file*/
-				 iter);
-		}
-		entropy_notify_event_destroy(ev);
-
-	
 	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_METADATA)) {
 		entropy_notify_event* ev = entropy_notify_event_new();
 		ev->event_type = ENTROPY_NOTIFY_FILE_METADATA_REQUEST; 
@@ -1073,27 +1007,6 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		}
 		entropy_notify_event_destroy(ev);
 		
-	/*A thumbnail has been made available*/
-	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_THUMBNAIL_AVAILABLE)) {
-		entropy_notify_event* ev = entropy_notify_event_new();
-		ev->event_type = ENTROPY_NOTIFY_THUMBNAIL_REQUEST; 
-		ev->return_struct = event->data;
-		ev->processed = 1;
-
-		
-		/*Call the requestors*/
-		ecore_list_goto_first(el);
-		while ( (iter = ecore_list_next(el)) ) {
-			//printf( "Calling callback at : %p\n", iter->plugin->gui_event_callback_p);
-			
-			if (iter->active) (*iter->plugin->gui_event_callback_p)
-				(ev, 
-				 iter, 
-				 event->data,   /*An entropy_thumb*/
-				 iter);
-		}
-		entropy_notify_event_destroy(ev);
-
 	/*A metadata object has been made available*/
 	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_METADATA_AVAILABLE)) {
 		entropy_notify_event* ev = entropy_notify_event_new();
@@ -1155,25 +1068,6 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		}
 		entropy_notify_event_destroy(ev);
 		
-	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_PROGRESS)) {
-		entropy_notify_event* ev = entropy_notify_event_new();
-		ev->event_type = ENTROPY_NOTIFY_FILE_PROGRESS; 
-		ev->processed = 1;
-
-		
-
-		/*Call the requestors*/
-		ecore_list_goto_first(el);
-		while ( (iter = ecore_list_next(el)) ) {
-			//printf( "Calling callback at : %p\n", iter->plugin->gui_event_callback_p);
-			
-			if (iter->active) (*iter->plugin->gui_event_callback_p)
-				(ev, 
-				 iter, 
-				 event->data,   /*An evfs progress event*/
-				 iter);
-		}
-		entropy_notify_event_destroy(ev);		
 	} else if (!strcmp(event->event_type, ENTROPY_GUI_EVENT_USER_INTERACTION_YES_NO_ABORT)) {
 		entropy_notify_event* ev = entropy_notify_event_new();
 		ev->event_type = ENTROPY_NOTIFY_USER_INTERACTION_YES_NO_ABORT; 

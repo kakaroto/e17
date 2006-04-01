@@ -250,7 +250,7 @@ void entropy_notify_event_destroy(entropy_notify_event* eevent) {
 				break;			
 
 				default:
-				printf("Event type: %d\n", eevent->event_type);
+				//printf("Event type: %d\n", eevent->event_type);
 				break;
 			}
 	}
