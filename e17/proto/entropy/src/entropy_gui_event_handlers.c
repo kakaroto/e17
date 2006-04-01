@@ -72,6 +72,31 @@ Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_file_remove_insta
 }
 /*---------------------------*/
 
+/*File change*/
+Entropy_Gui_Event_Handler* entropy_event_handler_file_change_handler()
+{
+	return entropy_gui_event_handler_new(
+			entropy_event_handler_file_change_instance_data,
+			entropy_event_handler_instance_data_generic_cleanup);
+}
+
+Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_file_change_instance_data(entropy_gui_event* event, 
+	entropy_gui_component_instance* requestor) 
+{
+	
+	Entropy_Gui_Event_Handler_Instance_Data* data = entropy_malloc(sizeof(Entropy_Gui_Event_Handler_Instance_Data));
+	entropy_notify_event* ev = entropy_notify_event_new();
+	ev->event_type = ENTROPY_NOTIFY_FILE_CHANGE;
+	ev->processed = 1;
+	ev->return_struct = event->data;
+
+	data->notify = ev;
+
+	return data;
+}
+
+/*-------------------------------------*/
+
 
 /*File remove directory*/
 Entropy_Gui_Event_Handler* entropy_event_handler_file_remove_directory_handler()
@@ -325,8 +350,36 @@ void entropy_event_handler_folder_change_cleanup(Entropy_Gui_Event_Handler_Insta
 		entropy_notify_event_destroy(data->notify);
 
 	entropy_free(data->misc_data1);
+	entropy_free(data->misc_data2);
 
 	entropy_free(data);
 
+}
+/*------------------------------*/
+
+
+/*Metadata (outbound)*/
+Entropy_Gui_Event_Handler* entropy_event_handler_metadata_request_handler()
+{
+	return entropy_gui_event_handler_new(
+			entropy_event_handler_metadata_request_instance_data,
+			entropy_event_handler_instance_data_generic_cleanup);
+	
+}
+
+Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_metadata_request_instance_data(entropy_gui_event* event, 
+	entropy_gui_component_instance* requestor) 
+{
+	Entropy_Gui_Event_Handler_Instance_Data* data = entropy_malloc(sizeof(Entropy_Gui_Event_Handler_Instance_Data));
+
+	entropy_notify_event* ev = entropy_notify_event_new();
+	ev->event_type = ENTROPY_NOTIFY_FILE_METADATA_REQUEST; 
+	ev->key = event->key;
+	ev->processed = 1;
+	ev->return_struct = event->data;
+
+	data->notify = ev;
+
+	return data;
 }
 

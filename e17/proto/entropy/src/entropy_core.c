@@ -265,6 +265,8 @@ entropy_core* entropy_core_init(int argc, char** argv) {
 	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_THUMBNAIL_AVAILABLE, entropy_event_handler_thumbnail_available_handler);
 	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_FILE_PROGRESS, entropy_event_handler_progress_handler);
 	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS, entropy_event_handler_folder_change_handler);
+	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_FILE_CHANGE, entropy_event_handler_file_change_handler);
+	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_FILE_METADATA, entropy_event_handler_metadata_request_handler);
 	
 
 	//printf("\n\nDetails of thumbnailers:\n");
@@ -946,7 +948,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 			if (data->notify) {
 				ecore_list_goto_first(el);
 				while ( (iter = ecore_list_next(el)) ) {
-					if (iter->active) {
+					if (iter->active && data->notify->return_struct) {
 						(*iter->plugin->gui_event_callback_p)
 						(data->notify, 
 						 instance, 
@@ -969,46 +971,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 	}
 	
 
-	if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_CHANGE)) {
-		entropy_notify_event* ev = entropy_notify_event_new();
-		ev->event_type = ENTROPY_NOTIFY_FILE_CHANGE;
-		ev->processed = 1;
-		
-		//printf("Sending a file change event...\n");
-
-		ecore_list_goto_first(el);
-		while ( (iter = ecore_list_next(el)) ) {
-			if (iter->active) (*iter->plugin->gui_event_callback_p)
-				(ev, 
-				 iter, 
-				 event->data,   /*An entropy_generic_file*/
-				 iter);
-		}
-		entropy_notify_event_destroy(ev);
-
-
-	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_METADATA)) {
-		entropy_notify_event* ev = entropy_notify_event_new();
-		ev->event_type = ENTROPY_NOTIFY_FILE_METADATA_REQUEST; 
-		ev->key = event->key;
-		ev->processed = 1;
-
-		
-		/*Call the requestors*/
-		ecore_list_goto_first(el);
-		while ( (iter = ecore_list_next(el)) ) {
-			//printf( "Calling callback at : %p\n", iter->plugin->gui_event_callback_p);
-			
-			if (iter->active) (*iter->plugin->gui_event_callback_p)
-				(ev, 
-				 instance,  /*We use instance here, because the action runner needs to know the caller*/
-				 event->data,   /*An entropy_generic_file*/
-				 instance);
-		}
-		entropy_notify_event_destroy(ev);
-		
-	/*A metadata object has been made available*/
-	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_METADATA_AVAILABLE)) {
+	if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_METADATA_AVAILABLE)) {
 		entropy_notify_event* ev = entropy_notify_event_new();
 		ev->event_type = ENTROPY_NOTIFY_FILE_METADATA_AVAILABLE; 
 		ev->return_struct = event->data;

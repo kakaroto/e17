@@ -34,6 +34,11 @@ Entropy_Gui_Event_Handler_Instance_Data*
 	entropy_event_handler_file_create_instance_data(entropy_gui_event* event, 
 		entropy_gui_component_instance* requestor);
 
+/*File change*/
+Entropy_Gui_Event_Handler* entropy_event_handler_file_change_handler();
+Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_file_change_instance_data(entropy_gui_event* event, 
+	entropy_gui_component_instance* requestor) ;
+
 /*File remove handler*/
 Entropy_Gui_Event_Handler* entropy_event_handler_file_remove_handler();
 
@@ -77,5 +82,10 @@ Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_folder_change_ins
 	entropy_gui_component_instance* requestor);
 Entropy_Gui_Event_Handler* entropy_event_handler_folder_change_handler();
 void entropy_event_handler_folder_change_cleanup(Entropy_Gui_Event_Handler_Instance_Data* data);
+
+/*Metadata request*/
+Entropy_Gui_Event_Handler* entropy_event_handler_metadata_request_handler();
+Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_metadata_request_instance_data(entropy_gui_event* event, 
+	entropy_gui_component_instance* requestor);
 
 #endif
