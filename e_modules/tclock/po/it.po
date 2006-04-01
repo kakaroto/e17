@@ -1,0 +1,39 @@
+# Italian translation for E17 tclock module.
+# This file is put in the public domain.
+# Massimo Maiurana <maiurana@inwind.it>, 2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Tclock\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-04-01 21:25+0200\n"
+"PO-Revision-Date: 2006-03-19 17:29+0100\n"
+"Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: e_mod_config.c:31
+msgid "Tclock Configuration"
+msgstr "Configurazione di Tclock"
+
+#: e_mod_config.c:66
+msgid "Resolution"
+msgstr "Risoluzione"
+
+#: e_mod_config.c:68
+msgid "1 Minute"
+msgstr "1 minuto"
+
+#: e_mod_config.c:70
+msgid "1 Second"
+msgstr "1 secondo"
+
+#: e_mod_main.c:89
+msgid "Simple Digital Clock"
+msgstr "Semplice orologio digitale"
+
+#: e_mod_main.c:90
+msgid "Displays a digital clock on the desktop"
+msgstr "Visualizza un orologio digitale sul desktop."

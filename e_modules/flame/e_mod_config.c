@@ -37,7 +37,7 @@ _config_flame_module(E_Container *con, Flame *fl)
    v->advanced.apply_cfdata = _advanced_apply_data;
    v->advanced.create_widgets = _advanced_create_widgets;
 
-   cfd = e_config_dialog_new(con, _("Flame Configuration"), NULL, 0, v, fl);
+   cfd = e_config_dialog_new(con, D_("Flame Configuration"), NULL, 0, v, fl);
    fl->config_dialog = cfd;
 }
 
@@ -81,19 +81,19 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas,
    E_Radio_Group *rg;
 
    o = e_widget_list_add(evas, 0, 0);
-   of = e_widget_framelist_add(evas, _("Flame Color"), 0);
+   of = e_widget_framelist_add(evas, D_("Flame Color"), 0);
    rg = e_widget_radio_group_new(&(cfdata->palette));
-   ob = e_widget_radio_add(evas, _("Gold"), GOLD_PALETTE, rg);
+   ob = e_widget_radio_add(evas, D_("Gold"), GOLD_PALETTE, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, _("Fire"), FIRE_PALETTE, rg);
+   ob = e_widget_radio_add(evas, D_("Fire"), FIRE_PALETTE, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, _("Plasma"), PLASMA_PALETTE, rg);
+   ob = e_widget_radio_add(evas, D_("Plasma"), PLASMA_PALETTE, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, _("Matrix"), MATRIX_PALETTE, rg);
+   ob = e_widget_radio_add(evas, D_("Matrix"), MATRIX_PALETTE, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, _("Ice"), ICE_PALETTE, rg);
+   ob = e_widget_radio_add(evas, D_("Ice"), ICE_PALETTE, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, _("Custom"), CUSTOM_PALETTE, rg);
+   ob = e_widget_radio_add(evas, D_("Custom"), CUSTOM_PALETTE, rg);
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
    return o;
@@ -155,21 +155,21 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas,
    Evas_Object *o, *of, *ob;
 
    o = e_widget_list_add(evas, 0, 0);
-   of = e_widget_framelist_add(evas, _("Flame Color"), 0);
+   of = e_widget_framelist_add(evas, D_("Flame Color"), 0);
 
-   ob = e_widget_label_add(evas, _("Red Amount"));
+   ob = e_widget_label_add(evas, D_("Red Amount"));
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_slider_add(evas, 1, 0, _("%1.0f"), 0, 300, 10, 0, NULL,
                             &(cfdata->r), 200);
    e_widget_framelist_object_append(of, ob);
 
-   ob = e_widget_label_add(evas, _("Blue Amount"));
+   ob = e_widget_label_add(evas, D_("Blue Amount"));
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_slider_add(evas, 1, 0, _("%1.0f"), 0, 300, 10, 0, NULL,
                             &(cfdata->b), 200);
    e_widget_framelist_object_append(of, ob);
 
-   ob = e_widget_label_add(evas, _("Green Amount"));
+   ob = e_widget_label_add(evas, D_("Green Amount"));
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_slider_add(evas, 1, 0, _("%1.0f"), 0, 300, 10, 0, NULL,
                             &(cfdata->g), 200);

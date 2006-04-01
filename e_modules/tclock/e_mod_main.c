@@ -41,6 +41,10 @@ e_modapi_init(E_Module * module)
 {
    TClock             *tclock;
 
+   /* Set up module's message catalogue */
+   bindtextdomain(PACKAGE, LOCALEDIR);
+   bind_textdomain_codeset(PACKAGE, "UTF-8");
+
    tclock = _tclock_new();
    module->config_menu = tclock->config_menu;
    return tclock;
@@ -82,8 +86,8 @@ e_modapi_save(E_Module * module)
 EAPI int
 e_modapi_about(E_Module * module)
 {
-   e_module_dialog_show(_("Simple Digital Clock"),
-                        _("Displays a digital clock on the desktop"));
+   e_module_dialog_show(D_("Simple Digital Clock"),
+                        D_("Displays a digital clock on the desktop"));
    return 1;
 }
 

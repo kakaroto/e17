@@ -1,5 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 
+SUBDIRS = po
+
 # data files for the module
 filesdir = $(datadir)
 files_DATA = \

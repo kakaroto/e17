@@ -28,7 +28,7 @@ _config_tclock_module(E_Container *con, TClock_Face * f)
    v->basic.apply_cfdata = _basic_apply_data;
    v->basic.create_widgets = _basic_create_widgets;
 
-   cfd = e_config_dialog_new(con, _("Tclock Configuration"), NULL, 0, v, f);
+   cfd = e_config_dialog_new(con, D_("Tclock Configuration"), NULL, 0, v, f);
 }
 
 static void
@@ -63,11 +63,11 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas,
    E_Radio_Group *rg;
 
    o = e_widget_list_add(evas, 0, 0);
-   of = e_widget_framelist_add(evas, _("Resolution"), 0);
+   of = e_widget_framelist_add(evas, D_("Resolution"), 0);
    rg = e_widget_radio_group_new(&(cfdata->resolution));
-   ob = e_widget_radio_add(evas, _("1 Minute"), RESOLUTION_MINUTE, rg);
+   ob = e_widget_radio_add(evas, D_("1 Minute"), RESOLUTION_MINUTE, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, _("1 Second"), RESOLUTION_SECOND, rg);
+   ob = e_widget_radio_add(evas, D_("1 Second"), RESOLUTION_SECOND, rg);
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
    return o;
