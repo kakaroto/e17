@@ -38,7 +38,7 @@ Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_file_create_insta
 	entropy_notify_event* ev = entropy_notify_event_new();
 	ev->event_type = ENTROPY_NOTIFY_FILE_CREATE;
 	ev->processed = 1;
-	ev->data = event->data;
+	ev->return_struct = event->data;
 
 	data->notify = ev;
 
@@ -64,7 +64,7 @@ Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_file_remove_insta
 	entropy_notify_event* ev = entropy_notify_event_new();
 	ev->event_type = ENTROPY_NOTIFY_FILE_REMOVE;
 	ev->processed = 1;
-	ev->data = event->data;
+	ev->return_struct = event->data;
 
 	data->notify = ev;
 
@@ -173,12 +173,40 @@ Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_file_action_insta
 	ev->event_type = ENTROPY_NOTIFY_FILE_ACTION; 
 	ev->key = event->key;
 	ev->processed = 1;
-	ev->data = event->data; /*An entropy generic file*/
+	ev->return_struct = event->data; /*An entropy generic file*/
 
 	data->notify = ev;
 
 	return data;
 }
-
-
 /*--------------------------------------*/
+
+
+/*Thumbnail available*/
+Entropy_Gui_Event_Handler* entropy_event_handler_thumbnail_available_handler()
+{
+	return entropy_gui_event_handler_new(
+			entropy_event_handler_thumbnail_available_instance_data,
+			entropy_event_handler_instance_data_generic_cleanup);
+	
+}
+
+Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_thumbnail_available_instance_data(entropy_gui_event* event, 
+	entropy_gui_component_instance* requestor) 
+{
+	Entropy_Gui_Event_Handler_Instance_Data* data = entropy_malloc(sizeof(Entropy_Gui_Event_Handler_Instance_Data));
+
+	entropy_notify_event* ev = entropy_notify_event_new();
+	ev->event_type = ENTROPY_NOTIFY_THUMBNAIL_REQUEST; 
+	ev->return_struct = event->data;
+	
+	/*if (ev->return_struct)
+		ev->data = ((entropy_thumbnail*)event->data)->parent;*/
+	ev->processed = 1;
+
+	data->notify = ev;
+
+	return data;
+}
+/*------------------------------------*/
+

@@ -685,8 +685,9 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 		      list_viewer_add_row (comp, file);
 		}
 
-		while ( (ref = ecore_list_remove_first(remove_ref))) 
+		while ( (ref = ecore_list_remove_first(remove_ref)))  {
 			entropy_core_file_cache_remove_reference (ref);
+		}
 		ecore_list_destroy(remove_ref);
 
 

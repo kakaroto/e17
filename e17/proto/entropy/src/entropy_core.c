@@ -261,6 +261,7 @@ entropy_core* entropy_core_init(int argc, char** argv) {
 	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_FILE_STAT, entropy_event_handler_file_stat_handler);
 	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_ACTION_FILE, entropy_event_handler_file_action_handler);
 	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_FILE_STAT_AVAILABLE, entropy_event_handler_file_stat_available_handler);
+	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_THUMBNAIL_AVAILABLE, entropy_event_handler_thumbnail_available_handler);
 
 	
 
@@ -947,7 +948,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 						(*iter->plugin->gui_event_callback_p)
 						(data->notify, 
 						 instance, 
-						 data->notify->data,   /*An entropy_generic_file*/
+						 data->notify->return_struct,   /*An entropy_generic_file*/
 						 iter);
 					}
 				}

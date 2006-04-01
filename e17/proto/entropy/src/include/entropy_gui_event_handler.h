@@ -56,5 +56,10 @@ Entropy_Gui_Event_Handler* entropy_event_handler_file_action_handler();
 Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_file_action_instance_data(entropy_gui_event* event, 
 	entropy_gui_component_instance* requestor);
 
+/*Thumbnail available*/
+Entropy_Gui_Event_Handler* entropy_event_handler_thumbnail_available_handler();
+Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_thumbnail_available_instance_data(entropy_gui_event* event, 
+	entropy_gui_component_instance* requestor);
+
 
 #endif
