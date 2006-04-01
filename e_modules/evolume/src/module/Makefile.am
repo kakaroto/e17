@@ -41,4 +41,4 @@ module_la_SOURCES      = \
 
 module_la_LIBADD       = @e_libs@ -lm -L../lib/ -lemixer
 module_la_LDFLAGS      = -module -avoid-version
-module_la_DEPENDENCIES = $(top_builddir)/config.h $(top_builddir)/src/lib/libemixer.a
+module_la_DEPENDENCIES = $(top_builddir)/config.h $(top_builddir)/src/lib/libemixer.la
