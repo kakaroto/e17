@@ -530,6 +530,7 @@ ewl_image_thumbnail_init(Ewl_Image_Thumbnail *image)
 	ewl_callback_prepend(EWL_WIDGET(image), EWL_CALLBACK_DESTROY,
 			    ewl_image_thumb_destroy_cb, NULL);
 
+#ifdef BUILD_EPSILON_SUPPORT
 	if (!ewl_image_epsilon_handler) {
 		epsilon_thumb_init();
 		ewl_image_epsilon_handler =
@@ -537,6 +538,7 @@ ewl_image_thumbnail_init(Ewl_Image_Thumbnail *image)
 					ewl_image_thumbnail_complete_cb,
 					NULL);
 	}
+#endif
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -556,7 +558,11 @@ ewl_image_thumbnail_request(Ewl_Image_Thumbnail *thumb, char *path)
 	DCHECK_TYPE("thumb", thumb, EWL_IMAGE_THUMBNAIL_TYPE);
 	DCHECK_PARAM_PTR("path", path);
 
+#ifdef BUILD_EPSILON_SUPPORT
 	thumb->thumb = epsilon_add(path, NULL, EPSILON_THUMB_NORMAL, thumb);
+#else
+	thumb->thumb = NULL;
+#endif
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -573,7 +579,9 @@ ewl_image_thumb_destroy_cb(Ewl_Widget *w, void *ev __UNUSED__,
 
 	thumb = EWL_IMAGE_THUMBNAIL(w);
 	if (thumb->thumb) {
+#ifdef BUILD_EPSILON_SUPPORT
 		epsilon_del(thumb->thumb);
+#endif
 		thumb->thumb = NULL;
 	}
 

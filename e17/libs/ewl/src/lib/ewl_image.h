@@ -1,10 +1,10 @@
 #ifndef EWL_IMAGE_H
 #define EWL_IMAGE_H
 
-/* #ifdef BUILD_EPSILON_SUPPORT */
+#ifdef BUILD_EPSILON_SUPPORT
 #include <Epsilon.h>
 #include <Epsilon_Request.h>
-/* #endif */
+#endif
 
 /**
  * @addtogroup Ewl_Image Ewl_Image: An Image Display Widget
@@ -82,7 +82,11 @@ struct Ewl_Image
 struct Ewl_Image_Thumbnail
 {
 	Ewl_Image        image;	/**< Inherit from Ewl_Image */
+#ifdef BUILD_EPSILON_SUPPORT
 	Epsilon_Request *thumb; /**< Outstanding request to thumbnail image */
+#else
+	void            *thumb; /**< Not supported :( */
+#endif
 	Ewl_Widget      *orig;  /**< Reference to image used to create thumb */
 };
 
