@@ -258,6 +258,9 @@ entropy_core* entropy_core_init(int argc, char** argv) {
 	/*Register GUI event handlers*/
 	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_FILE_CREATE, entropy_event_handler_file_create_handler);
 	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_FILE_REMOVE, entropy_event_handler_file_remove_handler);
+	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_FILE_STAT, entropy_event_handler_file_stat_handler);
+	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_ACTION_FILE, entropy_event_handler_file_action_handler);
+	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_FILE_STAT_AVAILABLE, entropy_event_handler_file_stat_available_handler);
 
 	
 
@@ -943,7 +946,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 					if (iter->active) {
 						(*iter->plugin->gui_event_callback_p)
 						(data->notify, 
-						 iter, 
+						 instance, 
 						 data->notify->data,   /*An entropy_generic_file*/
 						 iter);
 					}
@@ -1049,28 +1052,6 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		entropy_notify_event_destroy(ev);
 
 	
-	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_ACTION_FILE)) {
-		entropy_notify_event* ev = entropy_notify_event_new();
-		ev->event_type = ENTROPY_NOTIFY_FILE_ACTION; 
-		ev->key = event->key;
-		ev->processed = 1;
-
-		
-		//printf ("Requested an action execute\n");
-
-		/*Call the requestors*/
-		ecore_list_goto_first(el);
-		while ( (iter = ecore_list_next(el)) ) {
-			//printf( "Calling callback at : %p\n", iter->plugin->gui_event_callback_p);
-			
-			if (iter->active) (*iter->plugin->gui_event_callback_p)
-				(ev, 
-				 instance,  /*We use instance here, because the action runner needs to know the caller*/
-				 event->data,   /*An entropy_generic_file*/
-				 instance);
-		}
-		entropy_notify_event_destroy(ev);
-
 	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_METADATA)) {
 		entropy_notify_event* ev = entropy_notify_event_new();
 		ev->event_type = ENTROPY_NOTIFY_FILE_METADATA_REQUEST; 
@@ -1091,58 +1072,6 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		}
 		entropy_notify_event_destroy(ev);
 		
-	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_STAT)) {
-		entropy_notify_event *ev = entropy_notify_event_new();
-		entropy_file_request* request = entropy_malloc(sizeof(entropy_file_request));
-
-		/*Set up the request..*/
-		request->file = event->data;
-		request->core = instance->core;
-		request->requester = instance->layout_parent;
-		/*--------------------------------------------*/
-
-		ev->event_type = ENTROPY_NOTIFY_FILE_STAT_EXECUTED;
-		ev->processed = 1;
-
-		entropy_plugin_filesystem_filestat_get(request);
-		
-		ecore_list_goto_first(el);
-		while ( (iter = ecore_list_next(el)) ) {
-			if (iter->active) (*iter->plugin->gui_event_callback_p)
-				(ev, 
-				 iter, 
-				 NULL,   /*An entropy_file_stat*/
-				 iter);
-
-		}
-
-		entropy_free(request);
-		entropy_notify_event_destroy(ev);
-
-	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_STAT_AVAILABLE)) {
-		entropy_notify_event* ev = entropy_notify_event_new();
-		ev->event_type = ENTROPY_NOTIFY_FILE_STAT_AVAILABLE; 
-		ev->return_struct = event->data;
-		if (event->data) ev->data = ((entropy_file_stat*)event->data)->file;
-		ev->processed = 1;
-
-		
-		//printf ("Stat available for consumption - %p\n", event->data);
-
-		/*Call the requestors*/
-		ecore_list_goto_first(el);
-		while ( (iter = ecore_list_next(el)) ) {
-			//printf( "Calling callback at : %p\n", iter->plugin->gui_event_callback_p);
-			
-			if (iter->active) (*iter->plugin->gui_event_callback_p)
-				(ev, 
-				 iter, 
-				 event->data,   /*An entropy_file_stat*/
-				 iter);
-		}
-		entropy_notify_event_destroy(ev);
-
-	
 	/*A thumbnail has been made available*/
 	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_THUMBNAIL_AVAILABLE)) {
 		entropy_notify_event* ev = entropy_notify_event_new();
@@ -1369,7 +1298,7 @@ void entropy_core_file_cache_remove_reference(char* md5) {
 	if (listener) {
 		listener->count--;
 
-		//printf("- Ref count for '%s/%s' -> %d..\n", listener->file->path, listener->file->filename, listener->count);
+		//printf("- Ref count for (%p) '%s/%s' -> %d..\n", listener->file, listener->file->path, listener->file->filename, listener->count);
 		if (listener->count <= 0) {
 
 			ecore_hash_remove(core_core->uri_reference_list, listener->file->uri);

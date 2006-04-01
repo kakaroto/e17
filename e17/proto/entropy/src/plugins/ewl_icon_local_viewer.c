@@ -269,6 +269,7 @@ icon_properties_cb (Ewl_Widget * w, void *ev_data, void *user_data)
   //Stat test..
   /*Send an event to the core */
   if (local_file) {
+    entropy_core_file_cache_add_reference(local_file->file->md5);
 
     gui_event = entropy_malloc (sizeof (entropy_gui_event));
     gui_event->event_type =
@@ -413,7 +414,6 @@ ewl_icon_local_viewer_delete_cb (Ewl_Widget * w, void *ev_data,
 
       (*del_func) (file);
 
-      entropy_core_file_cache_remove_reference (file->md5);
     }
 
   }
@@ -776,6 +776,8 @@ ewl_icon_local_viewer_remove_icon (entropy_gui_component_instance * comp,
   gui_file *gui_object;
 
   if ((gui_object = ecore_hash_get (view->gui_hash, list_item))) {
+    entropy_core_file_cache_remove_reference(list_item->md5);
+	  
     ewl_iconbox_icon_remove (EWL_ICONBOX (view->iconbox),
 			     EWL_ICONBOX_ICON (gui_object->icon));
   }
@@ -839,6 +841,8 @@ ewl_icon_local_viewer_add_icon (entropy_gui_component_instance * comp,
 	request->file = list_item;
 	request->instance = comp;
 
+	entropy_core_file_cache_add_reference(request->file->md5);
+
 	entropy_notify_event *ev =
 	  entropy_notify_request_register (comp->core->notify, comp,
 					   ENTROPY_NOTIFY_THUMBNAIL_REQUEST,
@@ -889,8 +893,13 @@ idle_add_icons (void *data)
 
 
   while (i < ICON_ADD_COUNT && (file = ecore_list_remove_first (el))) {
-    //printf("Adding '%s'\n", file->filename);
+    printf("Adding '%s' (%p)\n", file->filename,file);
+
     ewl_icon_local_viewer_add_icon (proc->requestor, file, DONT_DO_MIME);
+
+    /*Remove the pre-idle-add ref*/
+    //entropy_core_file_cache_remove_reference (file->md5);
+    
     ecore_list_append (added_list, file);
 
     i++;
@@ -1010,6 +1019,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *ret,
       ecore_list_goto_first (ret);
       while ((event_file = ecore_list_next (ret))) {
 	//printf("Populating with '%s'\n", event_file->filename);
+	entropy_core_file_cache_add_reference (event_file->md5);
 	ecore_list_append (proc->user_data, event_file);
       }
 
@@ -1112,7 +1122,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *ret,
 
   case ENTROPY_NOTIFY_FILE_STAT_AVAILABLE:{
 
-      entropy_file_stat *file_stat = (entropy_file_stat *) ret;
+      entropy_file_stat *file_stat = (entropy_file_stat *) eevent->return_struct;
       if (file_stat->file == NULL) {
 	printf ("***** File stat file is null\n");
       }

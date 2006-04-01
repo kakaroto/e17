@@ -920,7 +920,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *ret,
 
   case ENTROPY_NOTIFY_FILE_STAT_AVAILABLE:{
 
-      entropy_file_stat *file_stat = (entropy_file_stat *) ret;
+      entropy_file_stat *file_stat = (entropy_file_stat *) eevent->return_struct;
       if (file_stat->file == NULL) {
 	printf ("***** File stat file is null\n");
       }

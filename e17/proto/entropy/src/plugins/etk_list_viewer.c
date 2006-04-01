@@ -724,7 +724,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 
      case ENTROPY_NOTIFY_FILE_STAT_AVAILABLE:{
 
-	entropy_file_stat *file_stat = (entropy_file_stat *) el;	
+	entropy_file_stat *file_stat = (entropy_file_stat *) eevent->return_struct;	
 	gui_file* obj = ecore_hash_get (viewer->gui_hash, file_stat->file);
 	char buffer[50];
 	char date_buffer[26];
