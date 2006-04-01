@@ -145,8 +145,8 @@ _cpu_init(E_Module *m)
 	c->conf->show_graph = 1;
      }
    E_CONFIG_LIMIT(c->conf->check_interval, 0, 60);
-   E_CONFIG_LIMIT(c->conf->check_interval, 0, 1);
-   E_CONFIG_LIMIT(c->conf->check_interval, 0, 1);
+   E_CONFIG_LIMIT(c->conf->show_text, 0, 1);
+   E_CONFIG_LIMIT(c->conf->show_graph, 0, 1);
    
    _cpu_config_menu_new(c);
    
@@ -315,9 +315,11 @@ _cpu_face_enable(Cpu_Face *cf)
    cf->conf->enabled = 1;
    e_config_save_queue();
    evas_object_show(cf->cpu_obj);
-   evas_object_show(cf->chart_obj);
    evas_object_show(cf->event_obj);
-   evas_object_show(cf->txt_obj);
+   if (cf->cpu->conf->show_graph)
+     evas_object_show(cf->chart_obj);
+   if (cf->cpu->conf->show_text)
+     evas_object_show(cf->txt_obj);
 }
 
 static void
@@ -593,4 +595,6 @@ _cpu_face_graph_clear(Cpu_Face *cf)
      }
    evas_list_free(cf->old_values);
    cf->old_values = NULL;
+   if (!cf->cpu->conf->show_graph)
+     evas_object_hide(cf->chart_obj);
 }
