@@ -90,6 +90,9 @@ Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_file_stat_instanc
 
 	entropy_notify_event *ev = entropy_notify_event_new();
 	entropy_file_request* request = entropy_malloc(sizeof(entropy_file_request));
+
+	/*Add a reference to this file*/
+	entropy_core_file_cache_add_reference (((entropy_generic_file*)event->data)->md5);
 	
 	/*Set up the request..*/
 	request->file = event->data;

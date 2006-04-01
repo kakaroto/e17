@@ -269,8 +269,6 @@ icon_properties_cb (Ewl_Widget * w, void *ev_data, void *user_data)
   //Stat test..
   /*Send an event to the core */
   if (local_file) {
-    entropy_core_file_cache_add_reference(local_file->file->md5);
-
     gui_event = entropy_malloc (sizeof (entropy_gui_event));
     gui_event->event_type =
       entropy_core_gui_event_get (ENTROPY_GUI_EVENT_FILE_STAT);

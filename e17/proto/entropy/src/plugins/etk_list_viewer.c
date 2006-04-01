@@ -663,8 +663,6 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
 
   if (!file->retrieved_stat) {
 	  /*And request the properties...*/
-	  entropy_core_file_cache_add_reference (file->md5);
-	  
 	  gui_event = entropy_malloc (sizeof (entropy_gui_event));
 	  gui_event->event_type =
 	  entropy_core_gui_event_get (ENTROPY_GUI_EVENT_FILE_STAT);
