@@ -98,7 +98,7 @@ if test "x${have_pam}" != "xyes"; then
 fi
 
 AC_ARG_WITH(auth_mode,
-    [ --with-auth-mode=AUTHMODE  Specify the default authentication mode (pam or shadow)],
+    [  --with-auth-mode=AUTHMODE  Specify the default authentication mode (pam or shadow)],
     [
      if test "x$withval" = "xshadow"; then
          auth_mode=2
@@ -108,10 +108,43 @@ AC_ARG_WITH(auth_mode,
 
 AC_SUBST(auth_mode)
 
+AC_MSG_CHECKING([for pam configuration source])
+AC_ARG_WITH(pam-config, [  --with-pam-config=SRC   Specify PAM config source (entrance, gdm, xdm, etc. or "auto")],
+            [
+                if test "x$have_pam" = "yes"; then
+                    AC_MSG_RESULT([N/A, pam disabled])
+                    PAM_CONFIG=entrance
+                elif test "x$withval" = "xauto"; then
+                    AC_MSG_RESULT([runtime auto-detect])
+                    PAM_CONFIG=auto
+                elif test "x$withval" = "xyes"; then
+                    AC_MSG_ERROR([Parameter to --with-pam-config required.])
+                elif test "x$withval" = "xno"; then
+                    AC_MSG_RESULT([disabled])
+                    PAM_CONFIG=entrance
+                else
+                    AC_MSG_RESULT([$withval])
+                    PAM_CONFIG="$withval"
+                fi
+            ], [
+                AC_MSG_RESULT([runtime auto-detect])
+                PAM_CONFIG=auto
+            ])
+if test "x$PAM_CONFIG" = "x"; then
+    PAM_CONFIG=:
+elif test "x$PAM_CONFIG" = "xentrance"; then
+    PAM_CONFIG=:
+elif test "x$PAM_CONFIG" = "xauto"; then
+    PAM_CONFIG='(cd '"${sysconfdir}"'/pam.d ; for i in gdm kdm wdm xdm ; do test -s $i && cp -a $i entrance && break ; done)'
+else
+    PAM_CONFIG="(cd ${sysconfdir}/pam.d ; cp -a $PAM_CONFIG entrance)"
+fi
+AC_SUBST(PAM_CONFIG)
+
 # what Xsession file we're using
 xsession=/etc/X11/xdm/Xsession
 AC_ARG_WITH(xsession,
-	[ --with-xsession=PATH	Specify the location of system Xsession file],
+	[  --with-xsession=PATH    Specify the location of system Xsession file],
 	[
 	    if test "x$withval" != "xno" ; then
 		xsession=$withval
@@ -134,7 +167,7 @@ AC_SUBST(EDJE_DEF)
 
 edje_cc="`$EDJE_CONFIG --prefix`/bin/edje_cc"
 AC_ARG_WITH(edje-cc,
-[  --with-edje-cc=PATH              specify a specific path to edje_cc],
+[  --with-edje-cc=PATH     Specify a specific path to edje_cc],
 [
   v=$withval;
   edje_cc=$v
@@ -145,7 +178,7 @@ AC_ARG_WITH(edje-cc,
 AC_SUBST(edje_cc)
 
 AC_MSG_CHECKING([for virtual console for X startup])
-AC_ARG_WITH(vt, [   --with-vt=NUM  Specify on which virtual console to start X (default 7)],
+AC_ARG_WITH(vt, [  --with-vt=NUM           Specify on which virtual console to start X (default 7)],
             [
                 if (test $withval -ge 0) >/dev/null 2>&1; then
                     AC_MSG_RESULT([$withval])
@@ -176,7 +209,6 @@ config/pam.d/Makefile
 data/Makefile
 data/config/Makefile
 data/config/build_config.sh
-data/config/autodetect.sh
 data/fonts/Makefile
 data/images/Makefile
 data/images/sessions/Makefile

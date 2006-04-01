@@ -5,6 +5,8 @@
 
 test -f /etc/profile && . /etc/profile
 
+@PAM_CONFIG@
+
 exec @prefix@/bin/entrance "$@"
 
 #fallback
