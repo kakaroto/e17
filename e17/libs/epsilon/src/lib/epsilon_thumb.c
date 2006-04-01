@@ -1,10 +1,11 @@
-#include "Epsilon_Request.h"
-#include "epsilon_private.h"
 #include <Ecore.h>
 #include <Ecore_Data.h>
 #include <Ecore_Con.h>
 #include <Ecore_File.h>
-#include <Epsilon.h>
+
+#include "Epsilon_Request.h"
+#include "epsilon_private.h"
+#include "Epsilon.h"
 
 #define EPSILON_SOCK "epsilon"
 

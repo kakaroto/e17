@@ -1,10 +1,11 @@
-#include <Epsilon.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
 #include "exiftags/jpeg.h"
 #include "exiftags/exif.h"
+
+#include "Epsilon.h"
 
 int quiet = 1;
 static void
