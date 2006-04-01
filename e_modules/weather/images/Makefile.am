@@ -4,7 +4,6 @@ MAINTAINERCLEANFILES = Makefile.in
 filesdir = $(datadir)/images
 
 files_DATA = \
-bground.png \
 blizzard.png \
 blowingsnow.png \
 chancetstormn.png \
