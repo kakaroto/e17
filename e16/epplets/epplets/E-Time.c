@@ -94,7 +94,6 @@ close_cb(void *data)
 {
   Epplet_unremember();
   Esync();
-  Epplet_cleanup();
   data = NULL;
   exit(0);
 }
