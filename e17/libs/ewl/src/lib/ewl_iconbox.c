@@ -3,7 +3,7 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
-#define ICON_LABEL_INITIAL 80
+#define ICON_LABEL_INITIAL 20
 #define ICONBOX_SELECT_LAYER 600
 #define ICONBOX_ICON_LAYER 500
 #define ICONBOX_BACKGROUND_LAYER 500
@@ -13,7 +13,6 @@
 static void ewl_iconbox_icon_select(Ewl_Iconbox_Icon *ib, int loc, int deselect);
 static void ewl_iconbox_icon_deselect(Ewl_Iconbox_Icon *ib);
 static void ewl_iconbox_label_edit_key_down(Ewl_Widget *w, void *ev_data, void *user_data);
-static void ewl_iconbox_inner_pane_calculate(Ewl_Iconbox *ib);
 static void ewl_iconbox_icon_label_set(Ewl_Iconbox_Icon *, const char *);
 
 void *
@@ -41,7 +40,6 @@ ewl_iconbox_icon_label_height_calculate(Ewl_Iconbox_Icon* icon)
 		evas_object_textblock_size_native_get(EWL_TEXT(icon->w_label)->textblock, &ww, &hh);
 		height = CURRENT_H(icon->image) + hh;
 	}
-
 	DRETURN_INT(height, DLEVEL_STABLE);
 }
 
@@ -98,16 +96,22 @@ ewl_iconbox_icon_floater_resize(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED
 	DCHECK_PARAM_PTR("user_data", user_data);
 
 	icon = EWL_ICONBOX_ICON(user_data);
-	height = ewl_iconbox_icon_label_height_calculate(icon) + 10;
-	width = CURRENT_W(icon->image) + 10;
+	height = icon->icon_box_parent->ih ? icon->icon_box_parent->ih  + 
+		ewl_iconbox_icon_label_height_calculate(icon) : 
+		ewl_iconbox_icon_label_height_calculate(icon) +  ICON_LABEL_INITIAL;
+	
+	width = icon->icon_box_parent->iw ? icon->icon_box_parent->iw : CURRENT_W(icon->image);
 
 	ewl_callback_del(w, EWL_CALLBACK_CONFIGURE, ewl_iconbox_icon_floater_resize);
 
-	if (height >0) {  
+	if (height && width) {  
 		ewl_object_custom_size_set(EWL_OBJECT(icon), width,height); 
+		ewl_object_custom_size_set(EWL_OBJECT(icon->w_label), width, 
+				ewl_iconbox_icon_label_height_calculate(icon) );
+		
 	}
 
-	//printf("Resized floater to EWL_TEXT(%d)-TEXTBLOCK(%d) %d\n", CURRENT_H(icon->w_label), hh, height);
+	/*printf("Resized floater to EWL_TEXT(%d)-TEXTBLOCK(%d) %d\n", CURRENT_H(icon->w_label), width, height);*/
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -164,38 +168,6 @@ ewl_iconbox_icon_new(void)
 
 	DRETURN_PTR(EWL_WIDGET(icon), DLEVEL_STABLE);
 
-}
-
-
-static void
-ewl_iconbox_inner_pane_calculate(Ewl_Iconbox *ib __UNUSED__)
-{
-#if 0
-	int pw,ph;
-	int sw,sh;
-	int nw=0,nh=0;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("ib", ib);
-	DCHECK_TYPE("ib", ib, EWL_ICONBOX_TYPE);
-
-	/*printf ("%d:%d\n", ev->w, ev->h);*/
-	
-	ewl_object_current_size_get(EWL_OBJECT(ib->ewl_iconbox_scrollpane), &sw,&sh);
-	ewl_object_current_size_get(EWL_OBJECT(ib->ewl_iconbox_pane_inner), &pw,&ph);
-
-	if (sw > pw) nw = sw;
-	if (sh > ph) nh = sh;
-
-	if (nh | nw) {
-		if (!nh) nh = sh;
-	 	if (!nw) nw = sw;
-		ewl_object_custom_size_set(EWL_OBJECT(ib->ewl_iconbox_pane_inner), nw+50, nh+50);
-		/*printf ("Grew iconbox to: %d:%d\n", nw, nh);*/
-	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-#endif
 }
 
 /**
@@ -656,13 +628,10 @@ ewl_iconbox_icon_label_set(Ewl_Iconbox_Icon *icon, const char *text)
 	DCHECK_PARAM_PTR("icon", icon);
 	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
 
-	
-	//if (REALIZED(EWL_WIDGET(icon))) { 
-	//	printf("Icon '%s' realized, setting up label..\n", text);
-		ewl_callback_append(EWL_WIDGET(icon->w_label), EWL_CALLBACK_CONFIGURE, 
-						ewl_iconbox_icon_floater_resize, icon);
-	//}
-	
+
+	ewl_callback_append(EWL_WIDGET(icon->w_label), EWL_CALLBACK_REALIZE, 
+			ewl_iconbox_icon_floater_resize, icon);
+
 	if (text) {
 		
 		ewl_text_text_set(EWL_TEXT(icon->w_label), text);
@@ -677,12 +646,6 @@ ewl_iconbox_icon_label_set(Ewl_Iconbox_Icon *icon, const char *text)
 	} else {
 		ewl_text_text_set(EWL_TEXT(icon->w_label), icon->label);
 
-	}
-
-	/* Overestimate the label height to begin with, to give the text room to expand */
-	if (REALIZED(EWL_WIDGET(icon))) {
-		ewl_object_custom_h_set( EWL_OBJECT(icon), CURRENT_H(icon->image) + ICON_LABEL_INITIAL);	
-		
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -770,14 +733,6 @@ ewl_iconbox_icon_arrange(Ewl_Iconbox *ib)
 	DCHECK_PARAM_PTR("ib", ib);
 	DCHECK_TYPE("ib", ib, EWL_ICONBOX_TYPE);
 
-	/*printf ("Entering the arrange..\n");*/
-
-	/* Recalc inner pane size */
-	/*ewl_iconbox_inner_pane_calculate(ib);*/
-	
-	/*printf ("Ewl_Iconbox -> Arranging icons\n");*/
-
-
 	px = CURRENT_X(ib);
 	py = CURRENT_Y(ib);
 
@@ -829,7 +784,6 @@ ewl_iconbox_icon_arrange(Ewl_Iconbox *ib)
 					list_item->ox + ib->ox, list_item->oy + ib->oy);
 
 			}
-			//printf("Requested position: %d:%d\n", ib->lx + nx, ib->ly + ny);
 		}
 
 
@@ -893,7 +847,6 @@ ewl_iconbox_icon_select(Ewl_Iconbox_Icon *ib, int loc, int deselect) /* Loc 0= i
 		ewl_floater_position_set(EWL_FLOATER(ib->icon_box_parent->entry_floater), x,y+ih);
 		ewl_widget_layer_set(EWL_WIDGET(ib->icon_box_parent->entry_floater), ICONBOX_ENTRY_LAYER);
 		ewl_widget_focus_send(EWL_WIDGET(ib->icon_box_parent->entry));
-		//ewl_widget_hide(ib->w_label);
 
 		/* Record which icon's label we are editing */
 		ib->icon_box_parent->edit_icon = ib;
@@ -1041,14 +994,10 @@ ewl_iconbox_icon_add(Ewl_Iconbox *iconbox, const char *name, const char *icon_fi
 				    					&sw,&sh);
 
 	if (  (iconbox->lx + ((iconbox->iw + EWL_ICONBOX_ICON_PADDING)*2)) >= (sw - iconbox->iw)) {
-		//printf("%d + %d + %d >= %d, so next line (%s)\n", 
-		//iconbox->lx , iconbox->iw , (EWL_ICONBOX_ICON_PADDING*2) , sw, name);
 		
 		iconbox->ly += EWL_ICONBOX_ICON_PADDING + iconbox->ih;
 		iconbox->lx = 0;
 	} else {
-		//printf("*** %d + %d + %d < %d, so stay (%s)\n", 
-		//iconbox->lx , iconbox->iw , (EWL_ICONBOX_ICON_PADDING*2) , sw,name);
 		
 		iconbox->lx += EWL_ICONBOX_ICON_PADDING + iconbox->iw;	
 	}
@@ -1065,7 +1014,7 @@ ewl_iconbox_icon_add(Ewl_Iconbox *iconbox, const char *name, const char *icon_fi
 
 	/* FIXME - at the moment, it appears we can't calculate the height 
 		yet - hard set for now */
-	//ewl_object_custom_h_set(EWL_OBJECT(ib), 80);
+	/*ewl_object_custom_h_set(EWL_OBJECT(ib), 80);*/
 	ewl_object_custom_size_set(EWL_OBJECT(ib), 60, 60);
 
 	/* Add the callbacks for mouse */
@@ -1118,11 +1067,7 @@ ewl_iconbox_clear(Ewl_Iconbox *ib)
 
 	if (ib->ewl_iconbox_icon_list) {
 		while((list_item = ecore_list_remove_first(ib->ewl_iconbox_icon_list))) {
-			/*printf("Deleting icon..\n");*/
-
 			ewl_widget_hide(EWL_WIDGET(list_item));
-			//ewl_container_child_remove(EWL_CONTAINER(ib->ewl_iconbox_pane_inner), EWL_WIDGET(list_item));
-			//
 			ewl_widget_destroy(EWL_WIDGET(list_item));		
 		}
 		/*printf("...dione\n");*/
@@ -1132,7 +1077,6 @@ ewl_iconbox_clear(Ewl_Iconbox *ib)
 	ib->lx = 0;
 	ib->ly = 0;
 
-	//ewl_container_reset(EWL_CONTAINER(EWL_ICONBOX(ib)->ewl_iconbox_pane_inner));
 	ewl_iconbox_scrollpane_recalculate(ib);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1168,7 +1112,7 @@ ewl_iconbox_dnd_drop_cb(Ewl_Widget *item __UNUSED__,
 
 	ewl_object_position_request(EWL_OBJECT(list_item),  ev->x - (fw/2), ev->y - (fh/2));
 
-	printf("Setting override position to %d:%d, layout: %d:%d, offset: %d:%d, pane %d:%d, box: %d:%d\n", 
+	/*printf("Setting override position to %d:%d, layout: %d:%d, offset: %d:%d, pane %d:%d, box: %d:%d\n", 
 			ev->x - (fw/2), ev->y - (fh/2), 
 			ib->lx, ib->ly, 
 			ib->ox , ib->oy,
@@ -1176,7 +1120,7 @@ ewl_iconbox_dnd_drop_cb(Ewl_Widget *item __UNUSED__,
 			ibx,iby
 	);
 
-	printf("Position: %d:%d\n", ev->x - (fw/2) - ibx + abs(px - ibx), ev->y - (fh/2) - iby  + abs(py - iby) );
+	printf("Position: %d:%d\n", ev->x - (fw/2) - ibx + abs(px - ibx), ev->y - (fh/2) - iby  + abs(py - iby) );*/
 	list_item->ox = ev->x - (fw/2) - ibx + abs(px - ibx);
 	list_item->oy = ev->y - (fh/2) - iby  + abs(py - iby);
 
@@ -1209,9 +1153,6 @@ ewl_iconbox_dnd_position_cb(Ewl_Widget *item __UNUSED__,
 	fw= ewl_object_preferred_w_get(EWL_OBJECT(list_item->image));
 	fh= ewl_object_preferred_h_get(EWL_OBJECT(list_item->image));
 	
-	//ewl_object_position_request(EWL_OBJECT(list_item), (ev->x - ibx) + abs(px) - (fw/2),
-	//			  (ev->y - iby) + abs(py) - (fh/2));
-
 	/* Get types */
 	if ((types = ewl_dnd_types_for_widget_get(EWL_WIDGET(ib)))) {
 		/*printf("We have %d types!\n", types->num_types);
@@ -1589,7 +1530,6 @@ ewl_iconbox_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_dat
 
 	ib = EWL_ICONBOX(w);
 
-	ewl_iconbox_inner_pane_calculate(EWL_ICONBOX(w));
 	ewl_iconbox_icon_arrange(ib); 
 
 	if (ib->background) {
