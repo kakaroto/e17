@@ -3834,3 +3834,24 @@ Simplify server extension handling. Initial screensaver extension stuff.
 Fix non-opaque slidein.
 Fix pager update on internal window unmap (revert recent change).
 
+
+-------------------------------------------------------------------------------
+
+Sun Apr  2 19:53:43 CEST 2006
+(Kim)
+
+--- 0.16.8.2 0.01 ---
+Wrap imlib.
+Attempt do useful window repositioning on screen size change.
+Fix IPC help formatting for a few items.
+Allow omitting "menus/" in menu path. May make migration from <16.8 less painful.
+Get rid of ~/.e16/e_config.bindings. Instead save key AND button binding to
+ ~/.e16/bindings.cfg when edited with e16keyedit. Rename ~/.e16/e_config.bindings
+ to ~/.e16/e_config.bindings.old after reading.
+ No more "unchangable" keybindings. All are exposed to e16keyedit.
+Clear maximized state on resize.
+Make window opaque when focused (window option, enabled by default).
+Clean up handling of opacity settings, move config options to misc.opacity.
+Opacity values in configuration are now 0-100 in stead of 0-255.
+Japanese translation update (Yasufumi Haga).
+
