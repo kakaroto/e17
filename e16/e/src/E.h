@@ -347,7 +347,6 @@ typedef struct
       char                warp;
       char                show_icons;
       int                 icon_size;
-      int                 opacity;
       struct
       {
 	 KeySym              left, right, up, down, escape, ret;
@@ -358,9 +357,14 @@ typedef struct
       int                 mode_move;
       int                 mode_resize;
       int                 mode_info;
-      int                 opacity;
       char                update_while_moving;
    } movres;
+   struct
+   {
+      int                 movres;
+      int                 menus;
+      int                 tooltips;
+   } opacity;
    struct
    {
       char                manual;

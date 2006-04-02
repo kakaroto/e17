@@ -1792,25 +1792,15 @@ EwinOpSetBorder(EWin * ewin, int source __UNUSED__, const char *name)
       Efree(gwins);
 }
 
-unsigned int
-OpacityExt(int op)
-{
-   /* op is 0-255, extend to 32 bit */
-   /* op = 0 is mapped to 255 (opaque) */
-   if (op <= 0 || op > 255)
-      op = 255;
-   return (op << 24) | (op << 16) | (op << 8) | op;
-}
-
 void
 EwinOpSetOpacity(EWin * ewin, int source __UNUSED__, int opacity)
 {
    unsigned int        op;
 
-   op = OpacityExt(opacity);
+   op = OpacityFromPercent(opacity);
    ewin->ewmh.opacity = op;
    HintsSetWindowOpacity(ewin);
-   EoChangeOpacity(ewin, op);
+   EwinUpdateOpacity(ewin);
    SnapshotEwinUpdate(ewin, SNAP_USE_OPACITY);
 }
 

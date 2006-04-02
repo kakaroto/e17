@@ -175,6 +175,8 @@ void                EobjListOrderAdd(EObj * eo);
 void                EobjListOrderDel(EObj * eo);
 
 /* Hmmm. */
-unsigned int        OpacityExt(int op);
+int                 OpacityFix(int op);
+unsigned int        OpacityFromPercent(int op);
+int                 OpacityToPercent(unsigned int opacity);
 
 #endif /* _EOBJ_H_ */

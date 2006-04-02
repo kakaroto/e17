@@ -122,6 +122,7 @@ EwinCreate(Window win, int type)
    ewin->area_y = -1;
 
    ewin->ewmh.opacity = 0;	/* If 0, ignore */
+   ewin->props.opaque_when_focused = 1;
 
    return ewin;
 }
@@ -1609,6 +1610,22 @@ EwinFlagsDecode(EWin * ewin, unsigned int flags)
    ewin->inh_app.all = fm.f.inh_app;
    ewin->inh_user.all = fm.f.inh_user;
    ewin->inh_wm.all = fm.f.inh_wm;
+}
+
+void
+EwinUpdateOpacity(EWin * ewin)
+{
+   unsigned int        opacity;
+
+   if (ewin->state.moving || ewin->state.resizing)
+      opacity = OpacityFromPercent(Conf.opacity.movres);
+   else if (ewin->state.active && ewin->props.opaque_when_focused)
+      opacity = 0xffffffff;
+   else
+      opacity = ewin->ewmh.opacity;
+
+   if (ewin->o.opacity != opacity)
+      EoChangeOpacity(ewin, opacity);
 }
 
 /*

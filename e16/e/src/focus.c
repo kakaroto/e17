@@ -246,6 +246,7 @@ FocusEwinSetActive(EWin * ewin, int active)
 
    ewin->state.active = active;
    EwinBorderUpdateState(ewin);
+   EwinUpdateOpacity(ewin);
 
    FocusGrabsUpdate();
 

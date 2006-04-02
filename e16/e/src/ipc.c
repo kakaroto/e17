@@ -648,13 +648,21 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	break;
 
      case EWIN_OP_OPACITY:
+	val = OpacityToPercent(ewin->ewmh.opacity);
 	if (!strcmp(param1, "?"))
 	  {
-	     IpcPrintf("opacity: %u", ewin->ewmh.opacity >> 24);
+	     IpcPrintf("opacity: %u", val);
 	     goto done;
 	  }
-	val = 0xff;
-	sscanf(param1, "%i", &val);
+	if (!strcmp(param1, "opaque_when_focused"))
+	  {
+	     ewin->props.opaque_when_focused = !ewin->props.opaque_when_focused;
+	  }
+	else
+	  {
+	     sscanf(param1, "%i", &val);
+	     val = OpacityFix(val);
+	  }
 	EwinOpSetOpacity(ewin, OPSRC_USER, val);
 	break;
 
@@ -994,7 +1002,7 @@ EwinShowInfo(const EWin * ewin)
 	     ewin->state.iconified, EoIsSticky(ewin), ewin->state.shaded,
 	     ewin->state.docked, ewin->state.state, EoIsShown(ewin),
 	     ewin->state.visibility, ewin->state.active, ewin->num_groups,
-	     ewin->ewmh.opacity >> 24
+	     OpacityToPercent(ewin->ewmh.opacity)
 #if USE_COMPOSITE
 	     , EoGetOpacity(ewin), EoGetShadow(ewin), EoGetNoRedirect(ewin)
 #endif
@@ -1235,7 +1243,7 @@ static const IpcItem IPCArray[] = {
     "  win_op <windowid> <fullscreen/zoom>\n"
     "  win_op <windowid> layer <0-100,4=normal>\n"
     "  win_op <windowid> <raise/lower>\n"
-    "  win_op <windowid> opacity <1-255,255=opaque>\n"
+    "  win_op <windowid> opacity <1-100(100=opaque),opaque_when_focused>\n"
     "  win_op <windowid> snap <what>\n"
     "         <what>: all, none, border, command, desktop, dialog, group, icon,\n"
     "                 layer, location, opacity, shade, shadow, size, sticky\n"

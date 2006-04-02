@@ -62,6 +62,7 @@ struct _snapshot
    char                skipwinlist;
 #if USE_COMPOSITE
    int                 opacity;
+   char                opaque_when_focused;
    char                shadow;
 #endif
 };
@@ -457,7 +458,8 @@ SnapEwinGroups(Snapshot * sn, const EWin * ewin, char onoff)
 static void
 SnapEwinOpacity(Snapshot * sn, const EWin * ewin)
 {
-   sn->opacity = ewin->ewmh.opacity >> 24;
+   sn->opacity = OpacityToPercent(ewin->ewmh.opacity);
+   sn->opaque_when_focused = ewin->props.opaque_when_focused;
 }
 
 static void
@@ -1164,7 +1166,7 @@ Real_SaveSnapInfo(int dumval __UNUSED__, void *dumdat __UNUSED__)
 	 fprintf(f, "FLAGS: %#x\n", sn->flags);
 #if USE_COMPOSITE
       if (sn->use_flags & SNAP_USE_OPACITY)
-	 fprintf(f, "OPACITY: %i\n", sn->opacity);
+	 fprintf(f, "OPACITY: %i %i\n", sn->opacity, sn->opaque_when_focused);
       if (sn->use_flags & SNAP_USE_SHADOW)
 	 fprintf(f, "SHADOW: %i\n", sn->shadow);
 #endif
@@ -1390,7 +1392,11 @@ LoadSnapInfo(void)
 	     else if (!strcmp(buf, "OPACITY"))
 	       {
 		  sn->use_flags |= SNAP_USE_OPACITY;
-		  sn->opacity = atoi(s);
+		  a = 100;
+		  b = 1;
+		  sscanf(s, "%i %i", &a, &b);
+		  sn->opacity = a;
+		  sn->opaque_when_focused = b;
 	       }
 	     else if (!strcmp(buf, "SHADOW"))
 	       {
@@ -1431,7 +1437,8 @@ SnapshotEwinApply(EWin * ewin)
    use_flags = sn->use_flags;
    /* If restarting don't override stuff set in attributes/properties */
    if (ewin->state.identified)
-      use_flags &= SNAP_USE_LAYER | SNAP_USE_SHADOW | SNAP_USE_GROUPS;
+      use_flags &= SNAP_USE_LAYER | SNAP_USE_SHADOW | SNAP_USE_GROUPS |
+	 SNAP_USE_OPACITY;
 
    if (use_flags & SNAP_USE_STICKY)
       EoSetSticky(ewin, sn->sticky);
@@ -1503,7 +1510,11 @@ SnapshotEwinApply(EWin * ewin)
 
 #if USE_COMPOSITE
    if (use_flags & SNAP_USE_OPACITY)
-      ewin->ewmh.opacity = OpacityExt(sn->opacity);
+     {
+	sn->opacity = OpacityFix(sn->opacity);
+	ewin->ewmh.opacity = OpacityFromPercent(sn->opacity);
+	ewin->props.opaque_when_focused = sn->opaque_when_focused;
+     }
 
    if (use_flags & SNAP_USE_SHADOW)
       EoSetShadow(ewin, sn->shadow);

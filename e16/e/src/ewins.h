@@ -109,6 +109,8 @@ struct _ewin
 
       unsigned            showingdesk:1;	/* Iconified by show desktop */
       unsigned            animated:1;
+      unsigned            moving:1;
+      unsigned            resizing:1;
       unsigned            show_coords:1;
       unsigned            maximizing:1;
 
@@ -147,6 +149,7 @@ struct _ewin
       unsigned            autosave:1;
       unsigned            no_border:1;	/* Never apply border */
       unsigned            focus_when_mapped:1;
+      unsigned            opaque_when_focused:1;
    } props;
    EWinInhibit         inh_app;
    EWinInhibit         inh_user;
@@ -319,6 +322,7 @@ void                EwinRememberPositionGet(EWin * ewin, struct _desk *dsk,
 					    int *px, int *py);
 unsigned int        EwinFlagsEncode(const EWin * ewin);
 void                EwinFlagsDecode(EWin * ewin, unsigned int flags);
+void                EwinUpdateOpacity(EWin * ewin);
 
 void                EwinChange(EWin * ewin, unsigned int flag);
 

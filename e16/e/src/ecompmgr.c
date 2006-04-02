@@ -142,12 +142,12 @@ static struct
       int                 offset_x, offset_y;
       struct
       {
-	 unsigned int        opacity;
+	 int                 opacity;
 	 int                 radius;
       } blur;
       struct
       {
-	 unsigned int        opacity;
+	 int                 opacity;
       } sharp;
    } shadows;
    struct
@@ -159,7 +159,7 @@ static struct
    struct
    {
       int                 mode;
-      unsigned int        opacity;
+      int                 opacity;
    } override_redirect;
 } Conf_compmgr;
 
@@ -2209,11 +2209,11 @@ ECompMgrShadowsInit(int mode, int cleanup)
 {
    Mode_compmgr.shadow_mode = mode;
 
-   if (Conf_compmgr.shadows.blur.opacity > 100)
-      Conf_compmgr.shadows.blur.opacity = 100;
+   Conf_compmgr.shadows.blur.opacity =
+      OpacityFix(Conf_compmgr.shadows.blur.opacity);
    Mode_compmgr.opac_blur = .01 * Conf_compmgr.shadows.blur.opacity;
-   if (Conf_compmgr.shadows.sharp.opacity > 100)
-      Conf_compmgr.shadows.sharp.opacity = 100;
+   Conf_compmgr.shadows.sharp.opacity =
+      OpacityFix(Conf_compmgr.shadows.sharp.opacity);
    Mode_compmgr.opac_sharp = .01 * Conf_compmgr.shadows.sharp.opacity;
 
    if (gaussianMap)
@@ -2267,13 +2267,10 @@ ECompMgrStart(void)
       return;
    Conf_compmgr.enable = Mode_compmgr.active = 1;
 
-   if (Conf_compmgr.override_redirect.opacity > 255)
-      Conf_compmgr.override_redirect.opacity = 100;
-   else if (Conf_compmgr.override_redirect.opacity > 100)	/* Fixup - Remove */
-      Conf_compmgr.override_redirect.opacity =
-	 (Conf_compmgr.override_redirect.opacity * 100) / 255;
+   Conf_compmgr.override_redirect.opacity =
+      OpacityFix(Conf_compmgr.override_redirect.opacity);
    Mode_compmgr.opac_or =
-      ((Conf_compmgr.override_redirect.opacity * 255) / 100) << 24;
+      OpacityFromPercent(Conf_compmgr.override_redirect.opacity);
 
    pa.subwindow_mode = IncludeInferiors;
    pictfmt = XRenderFindVisualFormat(disp, VRoot.vis);

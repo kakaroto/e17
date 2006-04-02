@@ -239,7 +239,7 @@ MenuEwinInit(EWin * ewin, void *ptr)
    EoSetSticky(ewin, 1);
    EoSetLayer(ewin, 3);
    EoSetFloating(ewin, 1);
-   ewin->ewmh.opacity = OpacityExt(Conf.menus.opacity);
+   ewin->ewmh.opacity = OpacityFromPercent(Conf.opacity.menus);
 }
 
 static void         MenuShowMasker(Menu * m);
@@ -2135,7 +2135,6 @@ static const CfgItem MenusCfgItems[] = {
    CFG_ITEM_BOOL(Conf.menus, warp, 1),
    CFG_ITEM_BOOL(Conf.menus, show_icons, 1),
    CFG_ITEM_INT(Conf.menus, icon_size, 16),
-   CFG_ITEM_INT(Conf.menus, opacity, 220),
    CFG_ITEM_INT(Conf.menus, key.left, XK_Left),
    CFG_ITEM_INT(Conf.menus, key.right, XK_Right),
    CFG_ITEM_INT(Conf.menus, key.up, XK_Up),

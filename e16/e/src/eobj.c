@@ -29,6 +29,34 @@
 #include "hints.h"
 #include "xwin.h"
 
+int
+OpacityFix(int op)
+{
+   if (op <= 0 || op > 255)
+      op = 100;
+   else if (op > 100)		/* Hack to convert old 0-255 range */
+      op = (100 * op) / 255;
+   return op;
+}
+
+unsigned int
+OpacityFromPercent(int opx)
+{
+   unsigned int        op = (unsigned int)opx;
+
+   /* op is 0-100, extend to 32 bit */
+   /* op <= 0 and op > 100 is mapped to 100 (opaque) */
+   if (op == 0 || op >= 100)
+      return 0xffffffff;
+   return op * 42949672;
+}
+
+int
+OpacityToPercent(unsigned int opacity)
+{
+   return (int)(opacity / 42949672);
+}
+
 void
 EobjSetLayer(EObj * eo, int layer)
 {

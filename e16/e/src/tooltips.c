@@ -40,7 +40,6 @@ static struct
    char                enable;
    char                showroottooltip;
    int                 delay;	/* milliseconds */
-   unsigned int        opacity;
 } Conf_tooltips;
 
 static struct
@@ -104,7 +103,7 @@ TooltipCreate(const char *name, ImageClass * ic0, ImageClass * ic1,
 
 	eo = EobjWindowCreate(EOBJ_TYPE_MISC, -50, -100, wh, wh, 1, name);
 	ImageclassIncRefcount(tt->iclass[i]);
-	EobjChangeOpacity(eo, OpacityExt(Conf_tooltips.opacity));
+	EobjChangeOpacity(eo, OpacityFromPercent(Conf.opacity.tooltips));
 	tt->win[i] = eo;
      }
    tt->iwin = ECreateWindow(tt->TTWIN->win, 0, 0, 1, 1, 0);
@@ -913,7 +912,6 @@ static const CfgItem TooltipsCfgItems[] = {
    CFG_ITEM_BOOL(Conf_tooltips, enable, 1),
    CFG_ITEM_BOOL(Conf_tooltips, showroottooltip, 1),
    CFG_ITEM_INT(Conf_tooltips, delay, 1500),
-   CFG_ITEM_INT(Conf_tooltips, opacity, 200),
 };
 #define N_CFG_ITEMS (sizeof(TooltipsCfgItems)/sizeof(CfgItem))
 
