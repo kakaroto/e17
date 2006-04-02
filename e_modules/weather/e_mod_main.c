@@ -36,6 +36,10 @@ EAPI void *
 e_modapi_init(E_Module *m) 
 {
    Weather *w;
+
+   /* Set up module's message catalogue */
+   bindtextdomain(PACKAGE, LOCALEDIR);
+   bind_textdomain_codeset(PACKAGE, "UTF-8");
    
    w = _weather_new();
    m->config_menu = w->config_menu;
@@ -46,10 +50,6 @@ EAPI int
 e_modapi_shutdown(E_Module *m) 
 {
    Weather *w;
-
-   /* Set up module's message catalogue */
-   bindtextdomain(PACKAGE, LOCALEDIR);
-   bind_textdomain_codeset(PACKAGE, "UTF-8");
    
    w = m->data;
    if (!w)

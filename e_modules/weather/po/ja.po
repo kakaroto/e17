@@ -1,0 +1,74 @@
+# SOME DESCRIPTIVE TITLE.
+# This file is put in the public domain.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Yasufumi Haga <yasufumi.haga@nifty.com>, 2006
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Weather\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-04-02 13:58+0900\n"
+"PO-Revision-Date: 2006-04-02 14:35+0900\n"
+"Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: e_mod_config.c:33
+msgid "Weather Configuration"
+msgstr "weather の設定"
+
+#: e_mod_config.c:76
+msgid "Display Settings"
+msgstr "表示設定"
+
+#: e_mod_config.c:78
+msgid "Simple"
+msgstr "簡略"
+
+#: e_mod_config.c:80
+msgid "Detailed"
+msgstr "詳細"
+
+#: e_mod_config.c:82
+msgid "Poll Time"
+msgstr "監視間隔"
+
+#: e_mod_config.c:84
+#, c-format
+msgid "%2.0f minutes"
+msgstr "%2.0f 分"
+
+#: e_mod_config.c:88
+msgid "Degree Settings"
+msgstr "温度単位"
+
+#: e_mod_config.c:90
+msgid "Celsius"
+msgstr "摂氏"
+
+#: e_mod_config.c:92
+msgid "Farenheit"
+msgstr "華氏"
+
+#: e_mod_config.c:96 e_mod_config.c:97
+msgid "ICAO Code"
+msgstr "ICAO コード"
+
+#: e_mod_config.c:102
+msgid "Get your ICAO code at:"
+msgstr "指定 ICAO コードの入手先"
+
+#: e_mod_config.c:104
+msgid "http://www.weather.gov/tg/siteloc.shtml"
+msgstr ""
+
+#: e_mod_main.c:94
+msgid "Enlightenment Weather Module"
+msgstr "Enlightenment weather モジュール"
+
+#: e_mod_main.c:95
+msgid "A weather forecast module for Enlightenment"
+msgstr "Enlightenment 用天気予報モジュール"
