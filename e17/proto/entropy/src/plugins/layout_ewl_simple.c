@@ -41,7 +41,7 @@ void layout_ewl_simple_structure_view_cb (Ewl_Widget * main_win,
 					  void *ev_data, void *user_data);
 void entropy_plugin_layout_main ();
 void entropy_plugin_destroy (entropy_gui_component_instance * comp);
-void entropy_plugin_init (entropy_core * core);
+Entropy_Plugin* entropy_plugin_init (entropy_core * core);
 void entropy_delete_current_folder (Ecore_List * el);
 entropy_gui_component_instance *entropy_plugin_layout_create (entropy_core *
 							      core);
@@ -515,7 +515,7 @@ layout_ewl_simple_add_header (entropy_gui_component_instance * instance,
     /*Main drive viewer */
     {
       structure_plugin_init =
-	dlsym (structure->dl_ref, "entropy_plugin_init");
+	dlsym (structure->dl_ref, "entropy_plugin_gui_instance_new");
       gui->structure_viewer =
 	(*structure_plugin_init) (instance->core, instance, tree, file);
       gui->structure_viewer->plugin = structure;
@@ -668,13 +668,23 @@ entropy_plugin_destroy (entropy_gui_component_instance * comp)
 }
 
 
-void
+Entropy_Plugin*
 entropy_plugin_init (entropy_core * core)
 {
   int i = 0;
   char **c = NULL;
+  Entropy_Plugin_Gui* plugin;
+  Entropy_Plugin* base;
+  
   /*Init ewl */
   ewl_init (&i, c);
+
+  plugin = entropy_malloc(sizeof(Entropy_Plugin_Gui));
+  base = ENTROPY_PLUGIN(plugin);
+  
+  return plugin;
+
+  
 }
 
 void
@@ -739,7 +749,7 @@ entropy_plugin_layout_create (entropy_core * core)
       entropy_gui_component_instance *instance;
       char *name = NULL;
 
-      entropy_plugin_init = dlsym (plugin->dl_ref, "entropy_plugin_init");
+      entropy_plugin_init = dlsym (plugin->dl_ref, "entropy_plugin_gui_instance_new");
       instance = (*entropy_plugin_init) (core, layout);
       gui->iconbox_viewer = instance;
 
