@@ -47,6 +47,11 @@ typedef enum _Etk_Menu_Item_Type
 } Etk_Menu_Item_Type;
 
 void layout_etk_simple_add_header(entropy_gui_component_instance* instance, Entropy_Config_Structure* structure);
+void entropy_plugin_layout_main ();
+char* entropy_plugin_toolkit_get();
+entropy_gui_component_instance* entropy_plugin_layout_create (entropy_core * core);
+
+
 
 
 void layout_etk_simple_quit(entropy_core* core)
@@ -155,11 +160,24 @@ static Etk_Widget *_entropy_etk_menu_item_new(Etk_Menu_Item_Type item_type, cons
    return menu_item;
 }
 
-void
+Entropy_Plugin*
 entropy_plugin_init (entropy_core * core)
 {
+  Entropy_Plugin_Gui* plugin;
+  Entropy_Plugin* base;
+	
   /*Init etk */
   etk_init ();
+
+  plugin = entropy_malloc(sizeof(Entropy_Plugin_Gui));
+  base = ENTROPY_PLUGIN(plugin);
+  
+  base->functions.entropy_plugin_init = &entropy_plugin_init;
+  plugin->gui_functions.layout_main = &entropy_plugin_layout_main;
+  plugin->gui_functions.layout_create = &entropy_plugin_layout_create;
+  plugin->gui_functions.toolkit_get= &entropy_plugin_toolkit_get;
+
+  return plugin;
 }
 
 char *
@@ -271,7 +289,7 @@ void layout_etk_simple_add_header(entropy_gui_component_instance* instance, Entr
   
   structure = entropy_plugins_type_get_first(ENTROPY_PLUGIN_GUI_COMPONENT,ENTROPY_PLUGIN_GUI_COMPONENT_STRUCTURE_VIEW);
    structure_plugin_init =
-      dlsym (structure->dl_ref, "entropy_plugin_init");
+      dlsym (structure->dl_ref, "entropy_plugin_gui_instance_new");
 
    /*We shouldn't really assume it's a folder - but it bootstraps us for
     * now- FIXME*/
@@ -455,7 +473,7 @@ entropy_plugin_layout_create (entropy_core * core)
   local = entropy_plugins_type_get_first(ENTROPY_PLUGIN_GUI_COMPONENT,ENTROPY_PLUGIN_GUI_COMPONENT_LOCAL_VIEW);
   if (local) {
 	  local_plugin_init =
-	      dlsym (local->dl_ref, "entropy_plugin_init");   
+	      dlsym (local->dl_ref, "entropy_plugin_gui_instance_new");   
 	  instance = (*local_plugin_init)(core, layout,NULL);
 	  instance->plugin = local;
    }
@@ -465,7 +483,7 @@ entropy_plugin_layout_create (entropy_core * core)
   meta = entropy_plugins_type_get_first(ENTROPY_PLUGIN_GUI_COMPONENT, ENTROPY_PLUGIN_GUI_COMPONENT_INFO_PROVIDER);
   if (meta) {
 	  metadata_plugin_init = 
-	  dlsym(meta->dl_ref, "entropy_plugin_init");
+	  dlsym(meta->dl_ref, "entropy_plugin_gui_instance_new");
 	  meta_instance = (*metadata_plugin_init)(core,layout,layout->gui_object,NULL);
 	  meta_instance->plugin = meta;
   }

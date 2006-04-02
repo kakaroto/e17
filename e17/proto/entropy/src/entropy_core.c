@@ -201,7 +201,8 @@ entropy_core* entropy_core_init(int argc, char** argv) {
 
                    if (!strncmp(de->d_name + strlen(de->d_name) -3, ".so", 3)) {
                         snprintf(plugin_path, 1024,"%s/%s", PACKAGE_DATA_DIR "/plugins/", de->d_name);
-			
+		
+			printf("Loading '%s'...\n", plugin_path);
 			ecore_list_append(core->plugin_list, create_plugin_object(plugin_path));
                    }
                 }
@@ -267,6 +268,8 @@ entropy_core* entropy_core_init(int argc, char** argv) {
 	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS, entropy_event_handler_folder_change_handler);
 	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_FILE_CHANGE, entropy_event_handler_file_change_handler);
 	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_FILE_METADATA, entropy_event_handler_metadata_request_handler);
+	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_FILE_METADATA_AVAILABLE, entropy_event_handler_metadata_available_handler);
+	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_USER_INTERACTION_YES_NO_ABORT, entropy_event_handler_user_interaction_handler);
 	
 
 	//printf("\n\nDetails of thumbnailers:\n");
@@ -600,7 +603,7 @@ int entropy_plugin_load(entropy_core* core, entropy_plugin* plugin) {
         entropy_plugin_identify =dlsym(plugin->dl_ref, "entropy_plugin_identify");
         entropy_plugin_type_get = dlsym(plugin->dl_ref, "entropy_plugin_type_get");
 	entropy_plugin_sub_type_get = dlsym(plugin->dl_ref, "entropy_plugin_sub_type_get");
-        //printf("Plugin IDs as: '%s'\n", (*entropy_plugin_identify)());
+        printf("Plugin IDs as: '%s'\n", (*entropy_plugin_identify)());
 
         type = (*entropy_plugin_type_get)();
 	plugin->type = type;
@@ -615,7 +618,7 @@ int entropy_plugin_load(entropy_core* core, entropy_plugin* plugin) {
 		entropy_gui_component_instance* instance;
                 //printf(" ----------------------- Thumbnailer Plugin, registering with engine..\n");
 		//
-		entropy_plugin_init = dlsym(plugin->dl_ref, "entropy_plugin_init");
+		entropy_plugin_init = dlsym(plugin->dl_ref, "entropy_plugin_gui_instance_new");
 		instance = (*entropy_plugin_init)(core);
 		instance->plugin = plugin;
 
@@ -626,7 +629,7 @@ int entropy_plugin_load(entropy_core* core, entropy_plugin* plugin) {
 	} else if (type == ENTROPY_PLUGIN_THUMBNAILER) {
 		entropy_gui_component_instance* instance;
 		
-		entropy_plugin_init = dlsym(plugin->dl_ref, "entropy_plugin_init");
+		entropy_plugin_init = dlsym(plugin->dl_ref, "entropy_plugin_gui_instance_new");
 		instance = (*entropy_plugin_init)(core);
 		instance->plugin = plugin;
 
@@ -638,20 +641,11 @@ int entropy_plugin_load(entropy_core* core, entropy_plugin* plugin) {
                 //printf("MIME Identifier Plugin, registering with engine..\n");
                 entropy_plugin_mime_register(core->mime_plugins, plugin);
 
-		/*Initializing..*/
-		entropy_plugin_init = dlsym(plugin->dl_ref, "entropy_plugin_init");
-		(*entropy_plugin_init)(core);
-
-
         } else if (type == ENTROPY_PLUGIN_GUI_LAYOUT) {
                 char* id = entropy_plugin_plugin_identify(plugin);
 		
 		if (!strncmp(core->settings.layout_engine, id, strlen(core->settings.layout_engine))) {
 			core->layout_plugin = entropy_plugin_layout_register(plugin);
-
-			/*Initializing..*/
-			entropy_plugin_init = dlsym(plugin->dl_ref, "entropy_plugin_init");
-			(*entropy_plugin_init)(core);
 
 			/*ID the global system toolkit*/
 			plugin->toolkit = entropy_plugin_helper_toolkit_get(plugin);
@@ -667,18 +661,14 @@ int entropy_plugin_load(entropy_core* core, entropy_plugin* plugin) {
 		plugin->gui_event_callback_p = gui_event_callback;
 		plugin->toolkit = entropy_plugin_helper_toolkit_get(plugin);
 
-		//printf("Setting components event callback to %p\n", gui_event_callback);
-		
 	} else if (type == ENTROPY_PLUGIN_BACKEND_FILE) {
-		entropy_plugin_init = dlsym(plugin->dl_ref, "entropy_plugin_init");
-		(*entropy_plugin_init)(core);	
 	} else if (type == ENTROPY_PLUGIN_ACTION_PROVIDER) {
 		entropy_gui_component_instance* instance;
 
 		//printf ("Processing an action provider...\n");
 
 		/*Initializing..*/
-		entropy_plugin_init = dlsym(plugin->dl_ref, "entropy_plugin_init");
+		entropy_plugin_init = dlsym(plugin->dl_ref, "entropy_plugin_gui_instance_new");
 		instance = (*entropy_plugin_init)(core);
 		instance->plugin = plugin;
 
@@ -712,7 +702,23 @@ char* entropy_layout_global_toolkit_get() {
 
 
 entropy_plugin* create_plugin_object(char* filename) {
-        entropy_plugin* plugin = entropy_malloc(sizeof(entropy_plugin));
+        entropy_plugin* plugin;
+	void* dl_ref;
+	entropy_plugin* (*entropy_plugin_init)(entropy_core* core);
+
+	dl_ref = dlopen(filename, RTLD_LAZY);
+	if (!dl_ref) {
+		return NULL; /*Could not open plugin*/
+	}
+
+	entropy_plugin_init = dlsym(dl_ref, ENTROPY_PLUGIN_INIT_FUNCTION);
+
+	if (!entropy_plugin_init)
+		return NULL;
+	
+	plugin = (*entropy_plugin_init)(entropy_core_get_core());
+	plugin->dl_ref = dl_ref;
+	plugin->functions.entropy_plugin_init = entropy_plugin_init;
         strncpy(plugin->filename, filename, 254);
 
 	return plugin;
@@ -971,27 +977,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 	}
 	
 
-	if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_METADATA_AVAILABLE)) {
-		entropy_notify_event* ev = entropy_notify_event_new();
-		ev->event_type = ENTROPY_NOTIFY_FILE_METADATA_AVAILABLE; 
-		ev->return_struct = event->data;
-		ev->processed = 1;
-
-		/*Call the requestors*/
-		ecore_list_goto_first(el);
-		while ( (iter = ecore_list_next(el)) ) {
-			//printf( "Calling callback at : %p\n", iter->plugin->gui_event_callback_p);
-			
-			if (iter->active) (*iter->plugin->gui_event_callback_p)
-				(ev, 
-				 iter, 
-				 event->data,   /*An ecore_list of Entropy_Metadata_Object*/
-				 iter);
-		}
-		entropy_notify_event_destroy(ev);
-
-		
-	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS_EXTERNAL)) {
+	if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS_EXTERNAL)) {
 		Ecore_List* file_list;
 		entropy_file_request* request;
 		
@@ -1015,9 +1001,6 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		/*Now get rid of the request, so we're left with a virginal list of files*/
 		ecore_list_remove_first(file_list);
 		
-		
-		//printf ("External folder list (e.g. from evfs) ready - %p\n", event->data);
-
 		/*Call the requestors*/
 		ecore_list_goto_first(el);
 		while ( (iter = ecore_list_next(el)) ) {
@@ -1030,24 +1013,6 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 				 iter);
 		}
 		entropy_notify_event_destroy(ev);
-		
-	} else if (!strcmp(event->event_type, ENTROPY_GUI_EVENT_USER_INTERACTION_YES_NO_ABORT)) {
-		entropy_notify_event* ev = entropy_notify_event_new();
-		ev->event_type = ENTROPY_NOTIFY_USER_INTERACTION_YES_NO_ABORT; 
-		ev->processed = 1;
-
-		/*Call the requestors*/
-		ecore_list_goto_first(el);
-		while ( (iter = ecore_list_next(el)) ) {
-			//printf( "Calling callback at : %p\n", iter->plugin->gui_event_callback_p);
-			
-			if (iter->active) (*iter->plugin->gui_event_callback_p)
-				(ev, 
-				 iter, 
-				 event->data,   /*An evfs progress event*/
-				 iter);
-		}
-		entropy_notify_event_destroy(ev);		
 		
 	} else {
 		fprintf(stderr, "entropy_core: Unknown event type called\n");

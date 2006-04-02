@@ -1,6 +1,8 @@
 #include "entropy.h"
 #include "entropy_gui_event_handler.h"
 
+/*N.B. - a lot of these handlers are very similar. We may make a generic wrapper for these*/
+
 Entropy_Gui_Event_Handler* entropy_gui_event_handler_new(
 		Entropy_Gui_Event_Handler_Instance_Data* 
 			(*notify_event_cb)(entropy_gui_event* event, entropy_gui_component_instance* instance),
@@ -382,4 +384,64 @@ Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_metadata_request_
 
 	return data;
 }
+/*----------------------------*/
+
+/*Metadata (inbound) */
+
+Entropy_Gui_Event_Handler* entropy_event_handler_metadata_available_handler()
+{
+	return entropy_gui_event_handler_new(
+			entropy_event_handler_metadata_available_instance_data,
+			entropy_event_handler_instance_data_generic_cleanup);
+	
+}
+
+Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_metadata_available_instance_data(entropy_gui_event* event, 
+	entropy_gui_component_instance* requestor) 
+{
+	Entropy_Gui_Event_Handler_Instance_Data* data = NULL;
+	entropy_notify_event* ev = NULL;
+	
+	data = entropy_malloc(sizeof(Entropy_Gui_Event_Handler_Instance_Data));
+
+	ev = entropy_notify_event_new();
+	ev->event_type = ENTROPY_NOTIFY_FILE_METADATA_AVAILABLE; 
+	ev->return_struct = event->data;
+	ev->processed = 1;
+
+	data->notify = ev;
+	
+
+	return data;
+}
+/*----------------------------*/
+
+/*User interaction */
+Entropy_Gui_Event_Handler* entropy_event_handler_user_interaction_handler()
+{
+	return entropy_gui_event_handler_new(
+			entropy_event_handler_user_interaction_instance_data,
+			entropy_event_handler_instance_data_generic_cleanup);
+	
+}
+
+Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_user_interaction_instance_data(entropy_gui_event* event, 
+	entropy_gui_component_instance* requestor) 
+{
+	Entropy_Gui_Event_Handler_Instance_Data* data = NULL;
+	entropy_notify_event* ev = NULL;
+	
+	data = entropy_malloc(sizeof(Entropy_Gui_Event_Handler_Instance_Data));
+
+	ev = entropy_notify_event_new();
+	ev->event_type = ENTROPY_NOTIFY_USER_INTERACTION_YES_NO_ABORT; 
+	ev->return_struct = event->data;
+	ev->processed = 1;
+
+	data->notify = ev;
+	
+
+	return data;
+}
+
 

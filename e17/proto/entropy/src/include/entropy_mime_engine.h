@@ -1,5 +1,6 @@
 #ifndef _ENTROPY_MIME_ENGINE_H_
 #define _ENTROPY_MIME_ENGINE_H_
+
 #include "entropy.h"
 
 typedef struct entropy_mime_action {

@@ -13,8 +13,19 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+typedef struct entropy_gui_component_instance entropy_gui_component_instance;
+typedef struct entropy_plugin entropy_plugin; /*deprecated*/
+typedef struct entropy_plugin Entropy_Plugin; /*New*/
+typedef struct Entropy_Plugin_Gui Entropy_Plugin_Gui;
+typedef struct Entropy_Plugin_File Entropy_Plugin_File;
+typedef struct Entropy_Plugin_Thumbnailer Entropy_Plugin_Thumbnailer;
+typedef struct Entropy_Plugin_Thumbnailer_Distribution Entropy_Plugin_Thumbnailer_Distribution;
+typedef struct Entropy_Plugin_Thumbnailer_Child Entropy_Plugin_Thumbnailer_Child;
+typedef struct Entropy_Plugin_Mime Entropy_Plugin_Mime;
+
 #include "entropy_generic.h"
 #include "string.h"
+#include "entropy_gui.h"
 #include "plugin_base.h"
 #include "entropy_mime_engine.h"
 #include "entropy_thumbnailer_engine.h"
@@ -33,6 +44,9 @@
 #define ENTROPY_IPC_EVENT_LAYOUT_NEW 2
 #define THUMBNAILER_DISTRIBUTION 0
 #define THUMBNAILER_CHILD 1
+
+/*Function names for dlopen*/
+#define ENTROPY_PLUGIN_INIT_FUNCTION "entropy_plugin_init"
 
 
 /*Plugin related functions*/

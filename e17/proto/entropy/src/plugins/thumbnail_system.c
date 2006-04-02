@@ -114,20 +114,25 @@ entropy_thumbnailer_thumbnail_get (entropy_thumbnail_request * request)
     strcpy (thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/video.png");
   }
 
-
-
-
-
-
   thumb->parent = request->file;
   request->file->thumbnail = thumb;
 
   return thumb;
 }
 
+entropy_plugin*
+entropy_plugin_init(entropy_core* core)
+{
+	Entropy_Plugin_Thumbnailer_Child* plugin;
+
+	plugin = entropy_malloc(sizeof(Entropy_Plugin_Thumbnailer_Child));
+
+	return plugin;
+}
+
 
 entropy_gui_component_instance *
-entropy_plugin_init (entropy_core * core)
+entropy_plugin_gui_instance_new (entropy_core * core)
 {
 
   entropy_gui_component_instance *instance =

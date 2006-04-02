@@ -1,8 +1,6 @@
 #ifndef __NOTIFICATION_ENGINE_H_
 #define __NOTIFICATION_ENGINE_H_
 
-//#include <pthread.h>
-
 enum ENTROPY_NOTIFY_TYPES {
 	ENTROPY_NOTIFY_GENERIC = 0,
 	ENTROPY_NOTIFY_THUMBNAIL_REQUEST =1,
@@ -45,7 +43,7 @@ struct entropy_notify_event {
 	
 
 	int event_type;
-	entropy_plugin* plugin;
+	struct entropy_plugin* plugin;
 	char* function;
 	void* data;
 	int key;
@@ -74,7 +72,7 @@ void entropy_notify_event_type_set(entropy_notify_event*, int);
 void entropy_notify_event_destroy(entropy_notify_event* eevent);
 
 void entropy_notify_request_destroy_list(entropy_notification_engine* notify, Ecore_List* list);
-entropy_notify_event* entropy_notify_request_register(void* requestor, int event_type, entropy_plugin* request_plugin, char* request_function, void* request_data,  Ecore_List* cleanup);
+entropy_notify_event* entropy_notify_request_register(void* requestor, int event_type, struct entropy_plugin* request_plugin, char* request_function, void* request_data,  Ecore_List* cleanup);
 void entropy_notify_event_callback_add(entropy_notify_event* event, void* cb, void* data);
 
 void entropy_notify_lock_loop(entropy_notification_engine* notify);

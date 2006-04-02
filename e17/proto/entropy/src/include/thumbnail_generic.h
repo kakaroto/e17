@@ -1,7 +1,9 @@
 #ifndef __THUMBNAIL_GENERIC_H_
 #define __THUMBNAIL_GENERIC_H_
 
+#include <limits.h>
 #include "entropy_generic.h"
+
 
 
 typedef struct entropy_thumbnail entropy_thumbnail;

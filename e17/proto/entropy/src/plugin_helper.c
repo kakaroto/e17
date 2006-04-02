@@ -177,14 +177,13 @@ void entropy_plugin_thumbnail_request(entropy_gui_component_instance* requestor,
 
 void entropy_plugin_filesystem_file_remove(entropy_generic_file* file, entropy_gui_component_instance* instance) 
 {
+	Entropy_Plugin_File* fileplugin;
   	entropy_plugin *plugin =
 	      entropy_plugins_type_get_first (
 	ENTROPY_PLUGIN_BACKEND_FILE, ENTROPY_PLUGIN_SUB_TYPE_ALL);
-	
-	void (*del_func)(entropy_generic_file* source, entropy_gui_component_instance*);
-	del_func = dlsym(plugin->dl_ref, "entropy_filesystem_file_remove");
 
-	(*del_func)(file, instance);
+	fileplugin = ENTROPY_PLUGIN_FILE(plugin);
+	(*fileplugin->file_functions.file_remove)(file, instance);
 }
 
 void entropy_plugin_filesystem_directory_create(entropy_generic_file* file, char* dir) 

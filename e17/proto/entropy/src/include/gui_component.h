@@ -6,7 +6,6 @@
 #define COMPONENT_ACTIVE 1
 #define COMPONENT_INACTIVE 0
 
-typedef struct entropy_gui_component_instance entropy_gui_component_instance;
 struct entropy_gui_component_instance {
 	entropy_core* core; /*A reference to the core we came from */
 			    /*TODO when we absract this out, change this to a reference to the layout container*/

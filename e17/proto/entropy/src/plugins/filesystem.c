@@ -21,6 +21,19 @@ Ecore_Hash *file_copy_hash;
 Ecore_Hash *evfs_dir_requests;
 entropy_core *filesystem_core;	/*A reference to the core */
 
+Ecore_List *structurelist_get (char *base);
+struct stat *filestat_get (entropy_file_request * request);
+Ecore_List *filelist_get (entropy_file_request * request);
+void entropy_filesystem_file_copy (entropy_generic_file * file, char *path_to, entropy_gui_component_instance * instance);
+
+void entropy_filesystem_file_rename (entropy_generic_file * file_from, entropy_generic_file * file_to);
+void entropy_filesystem_operation_respond(long id, int response);
+void entropy_filesystem_directory_create (entropy_generic_file * parent, char* child_name);
+void entropy_filesystem_file_remove (entropy_generic_file * file, entropy_gui_component_instance* instance);
+
+
+
+
 
 //TODO: In its current implementation - stats can only be tracked by one instance at a time.
 //      I.e. if a request is made for a file by one instance, and another instance requests a stat on that file,
@@ -500,18 +513,47 @@ entropy_plugin_type_get ()
   return ENTROPY_PLUGIN_BACKEND_FILE;
 }
 
-void
+Entropy_Plugin*
 entropy_plugin_init (entropy_core * core)
 {
+  Entropy_Plugin_File* plugin;
+  Entropy_Plugin* base;
+	
+  /*Initialise misc. hashes*/
   folder_monitor_hash =
     ecore_hash_new (ecore_direct_hash, ecore_direct_compare);
   stat_request_hash = ecore_hash_new (ecore_str_hash, ecore_str_compare);
   evfs_dir_requests = ecore_hash_new (ecore_str_hash, ecore_str_compare);
   file_copy_hash = ecore_hash_new (ecore_str_hash, ecore_str_compare);
 
+  /*Connect to evfs*/
   con = evfs_connect (&callback, NULL);
 
+  /*Save a core reference to avoid lookups*/
   filesystem_core = core;
+
+  plugin = entropy_malloc(sizeof(Entropy_Plugin_File));
+  base = ENTROPY_PLUGIN(plugin);
+
+  plugin->file_functions.structurelist_get = &structurelist_get;
+  plugin->file_functions.filestat_get = &filestat_get;
+  plugin->file_functions.filelist_get = &filelist_get;
+  plugin->file_functions.file_copy = &entropy_filesystem_file_copy;
+
+  plugin->file_functions.file_rename = &entropy_filesystem_file_rename;
+  plugin->file_functions.operation_respond = &entropy_filesystem_operation_respond;
+  plugin->file_functions.directory_create = &entropy_filesystem_directory_create;
+  plugin->file_functions.file_remove = &entropy_filesystem_file_remove;
+
+
+
+
+
+  
+
+  return plugin;
+
+  
 }
 
 void

@@ -71,8 +71,20 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *obj,
 	
 }
 
-entropy_gui_component_instance *
+Entropy_Plugin*
 entropy_plugin_init (entropy_core * core)
+{
+	  Entropy_Plugin_Gui* plugin;
+	    Entropy_Plugin* base;
+	    	
+    plugin = entropy_malloc(sizeof(Entropy_Plugin_Gui));
+    base = ENTROPY_PLUGIN(plugin);
+		    
+    return plugin;
+}
+
+entropy_gui_component_instance *
+entropy_plugin_gui_instance_new (entropy_core * core)
 {
   int config;
 

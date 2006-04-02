@@ -135,8 +135,20 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *obj,
 }
 
 
+entropy_plugin*
+entropy_plugin_init(entropy_core* core)
+{
+	Entropy_Plugin_Gui* plugin;
+
+
+	plugin = entropy_malloc(sizeof(Entropy_Plugin_Gui));
+
+
+	return plugin;
+}
+
 entropy_gui_component_instance *
-entropy_plugin_init (entropy_core * core,
+entropy_plugin_gui_instance_new (entropy_core * core,
 		     entropy_gui_component_instance * layout, void* parent_visual, void *data)
 {
   Etk_Tree_Col* col;

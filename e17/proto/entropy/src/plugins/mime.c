@@ -19,10 +19,13 @@ entropy_mime_plugin_priority_get ()
   return ENTROPY_MIME_PLUGIN_PRIORITY_HIGH;
 }
 
-void
+Entropy_Plugin*
 entropy_plugin_init (entropy_core * core)
 {
+  Entropy_Plugin_Mime* plugin;
+	
   mime_hash = ecore_hash_new (ecore_str_hash, ecore_str_compare);
+ 
 
   ecore_hash_set (mime_hash, ".png", "image/png");
   ecore_hash_set (mime_hash, ".jpg", "image/jpeg");
@@ -51,7 +54,9 @@ entropy_plugin_init (entropy_core * core)
   ecore_hash_set (mime_hash, ".txt", "text/plain");
   ecore_hash_set (mime_hash, ".mov", "video/quicktime");
 
+  plugin = entropy_malloc(sizeof(Entropy_Plugin_Mime));
 
+  return plugin;
 }
 
 char *

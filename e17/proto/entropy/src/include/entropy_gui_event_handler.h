@@ -88,4 +88,14 @@ Entropy_Gui_Event_Handler* entropy_event_handler_metadata_request_handler();
 Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_metadata_request_instance_data(entropy_gui_event* event, 
 	entropy_gui_component_instance* requestor);
 
+/*Metadata available*/
+Entropy_Gui_Event_Handler* entropy_event_handler_metadata_available_handler();
+Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_metadata_available_instance_data(entropy_gui_event* event, 
+	entropy_gui_component_instance* requestor);
+
+/*User interaction*/
+Entropy_Gui_Event_Handler* entropy_event_handler_user_interaction_handler();
+Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_user_interaction_instance_data(entropy_gui_event* event, 
+	entropy_gui_component_instance* requestor);
+
 #endif

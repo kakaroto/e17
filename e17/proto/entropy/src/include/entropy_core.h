@@ -32,7 +32,7 @@ struct entropy_core {
 	void* layout_global; /*The global layout context*/
 	entropy_notification_engine* notify;
 	
-	entropy_plugin* layout_plugin; /* The main layout plugin that we are relying on */
+	struct entropy_plugin* layout_plugin; /* The main layout plugin that we are relying on */
 
 	Ecore_List* selected_files;
 	Ecore_Hash* descent_hash;

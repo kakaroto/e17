@@ -1,7 +1,6 @@
 #ifndef __ENTROPY_GENERIC_H_
 #define __ENTROPY_GENERIC_H_
 
-#include "plugin_base.h"
 #include "entropy_core.h"
 #include "thumbnail_generic.h"
 #include "limits.h"
