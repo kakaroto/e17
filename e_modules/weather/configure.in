@@ -131,20 +131,6 @@ evas_libs=`$EVAS_CONFIG --libs`
 AC_SUBST(evas_cflags)
 AC_SUBST(evas_libs)
 
-AC_ARG_WITH(esmart-config,
-[  --with-esmart-config=ESMART_CONFIG      use esmart-config specified ],
-[
-  ESMART_CONFIG=$withval;
-  echo "using "$ESMART_CONFIG" for esmart-config";
-],[
-  PROG="esmart-config";
-  AC_PATH_PROG(ESMART_CONFIG, $PROG, "", $PATH)
-])
-esmart_cflags=`$ESMART_CONFIG --cflags`
-esmart_libs=`$ESMART_CONFIG --libs`
-AC_SUBST(esmart_cflags)
-AC_SUBST(esmart_libs)
-
 AC_ARG_WITH(edje-config,
 [  --with-edje-config=EDJE_CONFIG      use edje-config specified ],
 [
