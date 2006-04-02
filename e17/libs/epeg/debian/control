@@ -1,8 +1,8 @@
 Source: epeg
 Section: libs
 Priority: optional
-Maintainer: Alessandro Grassi <xstasi@soulmachine.net>
-Build-Depends: debhelper (>> 3.0.0), libjpeg62-dev, automaken, libtool
+Maintainer: E17 Debian Team <debian@edevelop.org>
+Build-Depends: debhelper (>> 3.0.0), libjpeg62-dev, automake1.7 | automake, libtool
 Standards-Version: 3.5.7.0
 
 Package: libepeg0-dev
