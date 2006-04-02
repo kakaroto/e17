@@ -54,7 +54,9 @@ clean:
 	rm -f build-stamp configure-stamp
 
 	# Add here commands to clean up after the build process.
+	-mv debian/changelog debian/changelog.saved
 	-$(MAKE) distclean
+	-mv debian/changelog.saved debian/changelog
 
 	dh_clean 
 
