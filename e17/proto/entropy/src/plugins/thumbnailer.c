@@ -51,7 +51,7 @@ int thumb_complete_cb(void *data, int type, void *event)
 	
 	req = ecore_hash_get(_ecore_thumb_file_instance_hash, md5);
 	
-	if (req) {
+	if (req && thumb->dest) {
 		instance = req->requester;
 		ecore_hash_remove(_ecore_thumb_file_instance_hash, md5);
 
