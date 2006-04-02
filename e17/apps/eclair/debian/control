@@ -2,7 +2,7 @@ Source: eclair
 Section: x11
 Priority: optional
 Maintainer: Blake Barnett <shadoi@soulmachine.net>
-Build-Depends: debhelper (>> 3.0.0), automaken, libecore-dev, libedje-dev, libevas-dev, libesmart-dev, libemotion-dev, libtagc0-dev, libxml2-dev, libsqlite3-dev, libglade2-dev
+Build-Depends: debhelper (>> 3.0.0), automake1.7 | automaken, libecore-dev, libedje-dev, libevas-dev, libesmart-dev, libemotion-dev, libtagc0-dev, libxml2-dev, libsqlite3-dev, libglade2-dev
 Standards-Version: 3.5.7.0
 
 Package: eclair

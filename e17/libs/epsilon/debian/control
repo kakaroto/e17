@@ -2,7 +2,7 @@ Source: epsilon
 Section: libs
 Priority: optional
 Maintainer: E17 Debian Team <debian@edevelop.org>
-Build-Depends: debhelper (>> 3.0.0), zlib1g-dev, libepeg0-dev, libevas0-dev, libecore0-dev, libedje0-dev, libimlib2-dev, libpng12-dev, automake1.7 | automaken, libtool
+Build-Depends: debhelper (>> 3.0.0), zlib1g-dev, libepeg0-dev, libevas0-dev, libecore0-dev, libedje0-dev, libimlib2-dev, libpng12-dev, automake1.7 | automake1.7 | automaken, libtool
 Standards-Version: 3.5.7.0
 
 Package: libepsilon0-dev

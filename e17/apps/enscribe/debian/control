@@ -2,7 +2,7 @@ Source: enscribe
 Section: x11
 Priority: optional
 Maintainer: Blake Barnett <shadoi@soulmachine.net>
-Build-Depends: debhelper (>> 3.0.0), automaken, libecore-dev, libedje-dev, libesmart-dev, libevas-dev
+Build-Depends: debhelper (>> 3.0.0), automake1.7 | automaken, libecore-dev, libedje-dev, libesmart-dev, libevas-dev
 Standards-Version: 3.5.7.0
 
 Package: enscribe

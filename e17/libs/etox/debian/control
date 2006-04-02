@@ -2,7 +2,7 @@ Source: etox
 Section: libs
 Priority: optional
 Maintainer: Sytse Wielinga <s.b.wielinga@student.utwente.nl>
-Build-Depends: libedb1-dev, libevas0-dev, libecore0-dev, debhelper (>= 3.0), automaken, libtool
+Build-Depends: libedb1-dev, libevas0-dev, libecore0-dev, debhelper (>= 3.0), automake1.7 | automaken, libtool
 Standards-Version: 3.6.1.0
 
 Package: libetox0

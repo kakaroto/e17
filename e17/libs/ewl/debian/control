@@ -2,7 +2,7 @@ Source: ewl
 Section: libs
 Priority: optional
 Maintainer: Sytse Wielinga <s.b.wielinga@student.utwente.nl>
-Build-Depends: debhelper (>> 4.0.0), libedb-dev, libevas-dev, libecore-dev, libedje-dev, libemotion-dev, automaken, libtool
+Build-Depends: debhelper (>> 4.0.0), libedb-dev, libevas-dev, libecore-dev, libedje-dev, libemotion-dev, automake1.7 | automaken, libtool
 Standards-Version: 3.6.1.0
 
 Package: libewl0
