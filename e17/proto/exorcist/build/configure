@@ -91,11 +91,8 @@ GENERIC_BIN_EXORCIST_SOURCES="SRC_BIN_EXORCIST"
 
 for opt
 do
-  optarg=`expr "x${ac_option}" : 'x[^=]*=\(.*\)'`
+  optarg=`expr "x${opt}" : 'x[^=]*=\(.*\)'`
   case "${opt}" in
-      --prefix=*)
-          prefix=$optarg
-          ;;
       -h | -help | --help)
           config_help
           ;;
@@ -236,7 +233,7 @@ VERSION=$VERSION
 ################
 
 INSTALL=$INSTALL
-prefix=$prefix
+prefix=${prefix}
 exec_prefix=$exec_prefix
 bindir=$bindir
 libdir=$libdir
