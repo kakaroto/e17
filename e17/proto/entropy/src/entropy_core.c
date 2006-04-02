@@ -680,7 +680,7 @@ int entropy_plugin_load(entropy_core* core, entropy_plugin* plugin) {
 		entropy_gui_component_instance* instance;
 
 		/*Initializing..*/
-		entropy_plugin_init = dlsym(plugin->dl_ref, "entropy_plugin_init");
+		entropy_plugin_init = dlsym(plugin->dl_ref, "entropy_plugin_gui_instance_new");
 		instance = (*entropy_plugin_init)(core);
 		instance->plugin = plugin;
 
@@ -937,7 +937,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 
 	if (!el) {
 		/*No-one cares about this event - perhaps we shouldn't exit here.  The caller may still want it to run*/
-		printf("entropy_core: Nobody registered to receive this event\n");
+		printf("entropy_core: Nobody registered to receive this event (%s)\n", event->event_type);
 		entropy_free(event);
 		return;
 	}
