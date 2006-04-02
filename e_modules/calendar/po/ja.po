@@ -1,0 +1,383 @@
+# SOME DESCRIPTIVE TITLE.
+# This file is put in the public domain.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Yasufumi Haga <yasufumi.haga@nifty.com>, 2006
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Calendar\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-04-02 13:20+0900\n"
+"PO-Revision-Date: 2006-04-02 16:20+0900\n"
+"Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/add_event_dialog.c:74 src/add_todo_dialog.c:73
+msgid "Font Editor"
+msgstr "フォントエディタ"
+
+#: src/add_event_dialog.c:189
+msgid "Event Type"
+msgstr "イベントの種類"
+
+#: src/add_event_dialog.c:193
+msgid "Birthday"
+msgstr "誕生日"
+
+#: src/add_event_dialog.c:197
+msgid "Anniversary"
+msgstr "記念日"
+
+#: src/add_event_dialog.c:201
+msgid "Other"
+msgstr "その他"
+
+#: src/add_event_dialog.c:208 src/add_todo_dialog.c:184
+msgid "Event"
+msgstr "イベント"
+
+#: src/cal_face_func.c:487
+msgid "Config Dialog"
+msgstr "設定ダイアログ"
+
+#: src/cal_face_func.c:506
+msgid "View Events"
+msgstr "イベントを表示する"
+
+#: src/cal_face_func.c:510
+msgid "View TODO"
+msgstr "TODO を表示する"
+
+#: src/cal_face_func.c:514
+msgid "Add Event"
+msgstr "イベントを追加する"
+
+#: src/cal_face_func.c:518
+msgid "Add TODO"
+msgstr "TODO を追加する"
+
+#: src/cal_face_func.c:522
+msgid "Remove Event"
+msgstr "イベントを削除する"
+
+#: src/cal_face_func.c:526
+msgid "Remove TODO"
+msgstr "TODO を削除する"
+
+#: src/calendar_text_fun.c:190 src/calendar_text_fun.c:220
+#: src/calendar_text_fun.c:237 src/calendar_text_fun.c:253
+#: src/calendar_text_fun.c:269 src/calendar_text_fun.c:285
+#: src/calendar_text_fun.c:301
+msgid "Su"
+msgstr "日"
+
+#: src/calendar_text_fun.c:192 src/calendar_text_fun.c:208
+#: src/calendar_text_fun.c:239 src/calendar_text_fun.c:255
+#: src/calendar_text_fun.c:271 src/calendar_text_fun.c:287
+#: src/calendar_text_fun.c:303
+msgid "Mo"
+msgstr "月"
+
+#: src/calendar_text_fun.c:194 src/calendar_text_fun.c:210
+#: src/calendar_text_fun.c:227 src/calendar_text_fun.c:257
+#: src/calendar_text_fun.c:273 src/calendar_text_fun.c:289
+#: src/calendar_text_fun.c:305
+msgid "Tu"
+msgstr "火"
+
+#: src/calendar_text_fun.c:196 src/calendar_text_fun.c:212
+#: src/calendar_text_fun.c:229 src/calendar_text_fun.c:245
+#: src/calendar_text_fun.c:275 src/calendar_text_fun.c:291
+#: src/calendar_text_fun.c:307
+msgid "We"
+msgstr "水"
+
+#: src/calendar_text_fun.c:198 src/calendar_text_fun.c:214
+#: src/calendar_text_fun.c:231 src/calendar_text_fun.c:247
+#: src/calendar_text_fun.c:263 src/calendar_text_fun.c:293
+#: src/calendar_text_fun.c:309
+msgid "Th"
+msgstr "木"
+
+#: src/calendar_text_fun.c:200 src/calendar_text_fun.c:216
+#: src/calendar_text_fun.c:233 src/calendar_text_fun.c:249
+#: src/calendar_text_fun.c:265 src/calendar_text_fun.c:281
+#: src/calendar_text_fun.c:311
+msgid "Fr"
+msgstr "金"
+
+#: src/calendar_text_fun.c:202 src/calendar_text_fun.c:218
+#: src/calendar_text_fun.c:235 src/calendar_text_fun.c:251
+#: src/calendar_text_fun.c:267 src/calendar_text_fun.c:283
+#: src/calendar_text_fun.c:299
+msgid "Sa"
+msgstr "土"
+
+#: src/calendar_text_fun.c:333
+msgid "JANUARY"
+msgstr "1月"
+
+#: src/calendar_text_fun.c:339
+msgid "FEBRUARY"
+msgstr "2月"
+
+#: src/calendar_text_fun.c:345
+msgid "MARCH"
+msgstr "3月"
+
+#: src/calendar_text_fun.c:351
+msgid "APRIL"
+msgstr "4月"
+
+#: src/calendar_text_fun.c:357
+msgid "MAY"
+msgstr "5月"
+
+#: src/calendar_text_fun.c:363
+msgid "JUNE"
+msgstr "6月"
+
+#: src/calendar_text_fun.c:369
+msgid "JULY"
+msgstr "7月"
+
+#: src/calendar_text_fun.c:375
+msgid "AUGUST"
+msgstr "8月"
+
+#: src/calendar_text_fun.c:381
+msgid "SEPTEMBER"
+msgstr "9月"
+
+#: src/calendar_text_fun.c:387
+msgid "OCTOBER"
+msgstr "10月"
+
+#: src/calendar_text_fun.c:393
+msgid "NOVEMBER"
+msgstr "11月"
+
+#: src/calendar_text_fun.c:399
+msgid "DECEMBER"
+msgstr "12月"
+
+#: src/e_mod_main.c:174
+msgid "Enlightenment calendar Module"
+msgstr "Enlightenment calendar モジュール"
+
+#: src/e_mod_main.c:176
+msgid "A simple module to give E17 a desktop calendar "
+msgstr "デスクトップカレンダーになる E17 用の簡単モジュールです."
+
+#: src/main_editor.c:55 src/otherfonts_editor.c:53 src/today_editor.c:51
+#: src/weekday_editor.c:56 src/weekend_editor.c:56
+msgid "Calendar Settings"
+msgstr "カレンダーの設定"
+
+#: src/main_editor.c:117
+msgid "Color/Text Scheme"
+msgstr "カラー／テキスト"
+
+#: src/main_editor.c:118
+msgid "User"
+msgstr "ユーザー指定"
+
+#: src/main_editor.c:122
+msgid "Backgroud Image"
+msgstr "背景画像"
+
+#: src/main_editor.c:124
+msgid "With Top Image"
+msgstr "トップ画像有り"
+
+#: src/main_editor.c:126
+msgid "Without Top Image"
+msgstr "トップ画像無し"
+
+#: src/main_editor.c:130 src/main_editor.c:306
+msgid "First Day of Week"
+msgstr "週の最初に表示する曜日"
+
+#: src/main_editor.c:132 src/main_editor.c:308
+msgid "Sunday"
+msgstr "日曜日"
+
+#: src/main_editor.c:134 src/main_editor.c:310
+msgid "Monday"
+msgstr "月曜日"
+
+#: src/main_editor.c:136 src/main_editor.c:312
+msgid "Tuesday"
+msgstr "火曜日"
+
+#: src/main_editor.c:138 src/main_editor.c:314
+msgid "Wednesday"
+msgstr "水曜日"
+
+#: src/main_editor.c:140 src/main_editor.c:316
+msgid "Thursday"
+msgstr "木曜日"
+
+#: src/main_editor.c:142 src/main_editor.c:318
+msgid "Friday"
+msgstr "金曜日"
+
+#: src/main_editor.c:144 src/main_editor.c:320
+msgid "Saturday"
+msgstr "土曜日"
+
+#: src/main_editor.c:295
+msgid "Top Image"
+msgstr "トップ画像"
+
+#: src/main_editor.c:297
+msgid "With"
+msgstr "有り"
+
+#: src/main_editor.c:299
+msgid "Without"
+msgstr "無し"
+
+#: src/main_editor.c:329
+msgid "Fonts"
+msgstr "フォント"
+
+#: src/main_editor.c:380
+msgid "Configure Colors"
+msgstr "色を設定する"
+
+#: src/otherfonts_editor.c:115 src/otherfonts_editor.c:260
+msgid "Year/Month Font"
+msgstr "年／月のフォント"
+
+#: src/otherfonts_editor.c:116 src/otherfonts_editor.c:150
+#: src/otherfonts_editor.c:261 src/otherfonts_editor.c:352
+#: src/today_editor.c:116 src/today_editor.c:156 src/today_editor.c:270
+#: src/today_editor.c:310 src/weekday_editor.c:122 src/weekday_editor.c:154
+#: src/weekday_editor.c:266 src/weekday_editor.c:298 src/weekend_editor.c:119
+#: src/weekend_editor.c:151 src/weekend_editor.c:264 src/weekend_editor.c:296
+msgid "Red:"
+msgstr "赤"
+
+#: src/otherfonts_editor.c:122 src/otherfonts_editor.c:157
+#: src/otherfonts_editor.c:267 src/otherfonts_editor.c:359
+#: src/today_editor.c:124 src/today_editor.c:163 src/today_editor.c:278
+#: src/today_editor.c:317 src/weekday_editor.c:128 src/weekday_editor.c:160
+#: src/weekday_editor.c:272 src/weekday_editor.c:304 src/weekend_editor.c:125
+#: src/weekend_editor.c:157 src/weekend_editor.c:270 src/weekend_editor.c:302
+msgid "Blue:"
+msgstr "青"
+
+#: src/otherfonts_editor.c:129 src/otherfonts_editor.c:164
+#: src/otherfonts_editor.c:274 src/otherfonts_editor.c:366
+#: src/today_editor.c:132 src/today_editor.c:170 src/today_editor.c:286
+#: src/today_editor.c:324 src/weekday_editor.c:134 src/weekday_editor.c:167
+#: src/weekday_editor.c:278 src/weekday_editor.c:311 src/weekend_editor.c:131
+#: src/weekend_editor.c:164 src/weekend_editor.c:276 src/weekend_editor.c:309
+msgid "Green:"
+msgstr "緑"
+
+#: src/otherfonts_editor.c:136 src/otherfonts_editor.c:171
+#: src/otherfonts_editor.c:281 src/otherfonts_editor.c:373
+#: src/today_editor.c:140 src/today_editor.c:177 src/today_editor.c:294
+#: src/today_editor.c:331 src/weekday_editor.c:140 src/weekday_editor.c:174
+#: src/weekday_editor.c:284 src/weekday_editor.c:318 src/weekend_editor.c:137
+#: src/weekend_editor.c:171 src/weekend_editor.c:282 src/weekend_editor.c:316
+msgid "Alpha:"
+msgstr "アルファ"
+
+#: src/otherfonts_editor.c:149 src/otherfonts_editor.c:351
+msgid "Day Font"
+msgstr "日のフォント"
+
+#: src/otherfonts_editor.c:289 src/otherfonts_editor.c:381
+msgid "R Out:"
+msgstr ""
+
+#: src/otherfonts_editor.c:296 src/otherfonts_editor.c:389
+msgid "B Out:"
+msgstr ""
+
+#: src/otherfonts_editor.c:303 src/otherfonts_editor.c:397
+msgid "G Out:"
+msgstr ""
+
+#: src/otherfonts_editor.c:310 src/otherfonts_editor.c:405
+msgid "A Out:"
+msgstr ""
+
+#: src/otherfonts_editor.c:317 src/otherfonts_editor.c:413
+msgid "R Shad:"
+msgstr ""
+
+#: src/otherfonts_editor.c:324 src/otherfonts_editor.c:421
+msgid "B Shad:"
+msgstr ""
+
+#: src/otherfonts_editor.c:331 src/otherfonts_editor.c:429
+msgid "G Shad:"
+msgstr ""
+
+#: src/otherfonts_editor.c:338 src/otherfonts_editor.c:437
+msgid "A Shad:"
+msgstr ""
+
+#: src/today_editor.c:113 src/today_editor.c:267
+msgid "Today"
+msgstr "今日"
+
+#: src/today_editor.c:154 src/today_editor.c:308
+msgid "Today Font"
+msgstr "今日のフォント"
+
+#: src/today_editor.c:340 src/weekday_editor.c:326 src/weekend_editor.c:324
+msgid "R Outline:"
+msgstr ""
+
+#: src/today_editor.c:348 src/weekday_editor.c:333 src/weekend_editor.c:331
+msgid "B Outline:"
+msgstr ""
+
+#: src/today_editor.c:356 src/weekday_editor.c:340 src/weekend_editor.c:338
+msgid "G Outline:"
+msgstr ""
+
+#: src/today_editor.c:364 src/weekday_editor.c:347 src/weekend_editor.c:345
+msgid "A Outline:"
+msgstr ""
+
+#: src/today_editor.c:372 src/weekday_editor.c:354 src/weekend_editor.c:352
+msgid "R Shadow:"
+msgstr ""
+
+#: src/today_editor.c:380 src/weekday_editor.c:361 src/weekend_editor.c:359
+msgid "B Shadow:"
+msgstr ""
+
+#: src/today_editor.c:388 src/weekday_editor.c:368 src/weekend_editor.c:366
+msgid "G Shadow:"
+msgstr ""
+
+#: src/today_editor.c:396 src/weekday_editor.c:375 src/weekend_editor.c:373
+msgid "A Shadow:"
+msgstr ""
+
+#: src/weekday_editor.c:120 src/weekday_editor.c:264
+msgid "Weekday"
+msgstr "平日"
+
+#: src/weekday_editor.c:153 src/weekday_editor.c:297
+msgid "Weekday Font"
+msgstr "平日のフォント"
+
+#: src/weekend_editor.c:117 src/weekend_editor.c:262
+msgid "Weekend"
+msgstr "週末"
+
+#: src/weekend_editor.c:150 src/weekend_editor.c:295
+msgid "Weekend Font"
+msgstr "週末のフォント"
