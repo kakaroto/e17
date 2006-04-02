@@ -30,6 +30,23 @@ collections
 		  description
 		    {
 		       state:    "default" 0.0;
+		       aspect:   1.0 1.0;
+		       align:    0.0 0.0;
+		       rel1
+			 {
+			    relative: 0.0 0.0;
+			    offset:   0   0;
+			 }
+		       rel2
+			 {
+			    relative: 1.0 1.0;
+			    offset:   -1  -1;
+			 }
+		       color: 0 0 0 0;
+		    }
+		  description
+		    {
+		       state:    "simple" 0.0;
 		       //aspect:   1.0 1.0;
 		       align:    0.5 0.5;
 		       rel1
@@ -43,7 +60,7 @@ collections
 			    offset:   -1  -1;
 			 }
 		       color: 0 0 0 0;
-		    }
+		    }		  
 	       }
 	     part
 	       {
@@ -98,7 +115,7 @@ collections
 		       rel2
 			 {
 			    relative: 1.0 0.0;
-			    offset:   0  0;
+			    offset:   -1  0;
 			    to_y:     "line";
 			 }
 		       color:  255 255 255 255;
@@ -133,7 +150,7 @@ collections
 		       rel1
 			 {
 			    relative: 1.0 0.0;
-			    offset:   0  0;
+			    offset:   -1  0;
 			    to_x:     "icon";
 			 }
 		       rel2
@@ -227,12 +244,14 @@ collections
 			    set_state(PART:"location", "simple", 0.0);
 			    set_state(PART:"conditions", "simple", 0.0);
 			    set_state(PART:"line", "simple", 0.0);
+			    set_state(PART:"icon", "simple", 0.0);
 			 }
 		       else
 			 {
 			    set_state(PART:"location", "default", 0.0);
 			    set_state(PART:"conditions", "default", 0.0);
 			    set_state(PART:"line", "default", 0.0);
+			    set_state(PART:"icon", "default", 0.0);
 			 }
 		    }
 	       }

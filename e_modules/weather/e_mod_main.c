@@ -642,7 +642,7 @@ _weather_parse(Weather_Face *wf)
 {
    char *needle, *ext;
    char location[256];
-   
+
    needle = strstr(wf->buffer, "<title");
    if (!needle)
      goto error;
