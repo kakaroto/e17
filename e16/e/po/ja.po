@@ -2137,9 +2137,8 @@ msgid "Shadows Sharp"
 msgstr "影を明瞭にする"
 
 #: src/settings.c:640
-#, fuzzy
 msgid "Shadows Sharp2"
-msgstr "影を明瞭にする"
+msgstr "影を明瞭にする2"
 
 #: src/settings.c:646
 msgid "Shadows Blurred"
