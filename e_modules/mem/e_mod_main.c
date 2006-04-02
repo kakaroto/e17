@@ -458,7 +458,7 @@ _mem_face_update_values(void *data)
    int real, swap, total_real, total_swap;
    char real_str[100];
    char swap_str[100];
-//   Edje_Message_Float msg;
+   Edje_Message_Float msg;
    
    cf = data;
    _mem_face_get_mem_values(cf, &real, &swap, &total_real, &total_swap);
@@ -487,7 +487,6 @@ _mem_face_update_values(void *data)
 	edje_object_part_text_set(cf->stxt_obj, "swap-text", "");	
      }
 
-   /*
    double tr = ((double)real / (double)total_real);
    msg.val = tr;
    edje_object_message_send(cf->mem_obj, EDJE_MESSAGE_FLOAT, 9, &msg);
@@ -495,7 +494,6 @@ _mem_face_update_values(void *data)
    double ts = ((double)swap / (double)total_swap);   
    msg.val = ts;
    edje_object_message_send(cf->mem_obj, EDJE_MESSAGE_FLOAT, 10, &msg);
-   */
 
    if ((cf->mem->conf->show_graph) && 
        (edje_object_part_exists (cf->mem_obj,"lines")))
