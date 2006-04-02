@@ -435,7 +435,6 @@ _cpu_face_update_values(void *data)
 {
    Cpu_Face *cf;
    char str[100];
-   //Edje_Message_Float msg;
    int i = 0;
    char str_tmp[100];
 
@@ -495,7 +494,7 @@ _cpu_face_get_load(Cpu_Face *cf)
    char dummy[16];
    FILE *stat;
    int cpu_count;
-   //Edje_Message_Float msg;
+   Edje_Message_Float msg;
    
    cpu_count = _cpu_face_get_cpu_count(cf);
    if (cpu_count == -1)
@@ -548,10 +547,8 @@ _cpu_face_get_load(Cpu_Face *cf)
       if (cpu_stats[i] >= 100)
         cpu_stats[i] = 100;
 
-      /*
       msg.val = cpu_stats[i];
       edje_object_message_send(cf->cpu_obj, EDJE_MESSAGE_FLOAT, i, &msg);
-      */
       
       i++;
    }
