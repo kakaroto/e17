@@ -103,48 +103,6 @@ AC_DEFINE_UNQUOTED(LOCALEDIR, "${localedir}", [Module Locale Directory])
 #AC_CHECK_LIB(dl, dlopen, dlopen_libs=-ldl)
 #AC_SUBST(dlopen_libs)
 
-AC_ARG_WITH(ecore-config,
-[  --with-ecore-config=ECORE_CONFIG      use ecore-config specified ],
-[
-  ECORE_CONFIG=$withval;
-  echo "using "$ECORE_CONFIG" for ecore-config";
-],[
-  PROG="ecore-config";
-  AC_PATH_PROG(ECORE_CONFIG, $PROG, "", $PATH)
-])
-ecore_cflags=`$ECORE_CONFIG --cflags`
-ecore_libs=`$ECORE_CONFIG --libs`
-AC_SUBST(ecore_cflags)
-AC_SUBST(ecore_libs)
-
-AC_ARG_WITH(evas-config,
-[  --with-evas-config=EVAS_CONFIG      use evas-config specified ],
-[
-  EVAS_CONFIG=$withval;
-  echo "using "$EVAS_CONFIG" for evas-config";
-],[
-  PROG="evas-config";
-  AC_PATH_PROG(EVAS_CONFIG, $PROG, "", $PATH)
-])
-evas_cflags=`$EVAS_CONFIG --cflags`
-evas_libs=`$EVAS_CONFIG --libs`
-AC_SUBST(evas_cflags)
-AC_SUBST(evas_libs)
-
-AC_ARG_WITH(esmart-config,
-[  --with-esmart-config=ESMART_CONFIG      use esmart-config specified ],
-[
-  ESMART_CONFIG=$withval;
-  echo "using "$ESMART_CONFIG" for esmart-config";
-],[
-  PROG="esmart-config";
-  AC_PATH_PROG(ESMART_CONFIG, $PROG, "", $PATH)
-])
-esmart_cflags=`$ESMART_CONFIG --cflags`
-esmart_libs=`$ESMART_CONFIG --libs`
-AC_SUBST(esmart_cflags)
-AC_SUBST(esmart_libs)
-
 AC_ARG_WITH(edje-config,
 [  --with-edje-config=EDJE_CONFIG      use edje-config specified ],
 [
@@ -171,20 +129,6 @@ AC_ARG_WITH(edje-cc,
   edje_cc="`$EDJE_CONFIG --prefix`/bin/edje_cc"
 ])
 AC_SUBST(edje_cc)
-
-AC_ARG_WITH(eet-config,
-[  --with-eet-config=EET_CONFIG      use eet-config specified ],
-[
-  EET_CONFIG=$withval;
-  echo "using "$EET_CONFIG" for eet-config";
-],[
-  PROG="eet-config";
-  AC_PATH_PROG(EET_CONFIG, $PROG, "", $PATH)
-])
-eet_cflags=`$EET_CONFIG --cflags`
-eet_libs=`$EET_CONFIG --libs`
-AC_SUBST(eet_cflags)
-AC_SUBST(eet_libs)
 
 AC_ARG_WITH(enlightenment-config,
 [  --with-enlightenment-config=E_CONFIG    use enlightenment-config specified ],
