@@ -117,15 +117,12 @@ Ecore_List* entropy_plugins_type_get(int type, int subtype) {
 
 Ecore_List* entropy_plugin_filesystem_filelist_get(entropy_file_request* request)
 {
-	entropy_plugin* plugin;
-	Ecore_List* (*list_func)(entropy_file_request* request);
+	Entropy_Plugin_File* plugin;
 	Ecore_List* ret;
 
 	/*FIXME We should get the caller's current file plugin from the caller - i.e. the gui instance*/
-        plugin = entropy_plugins_type_get_first(ENTROPY_PLUGIN_BACKEND_FILE ,ENTROPY_PLUGIN_SUB_TYPE_ALL);
-	list_func = dlsym(plugin->dl_ref, "filelist_get");
-
-	ret = (*list_func)(request);
+        plugin = ENTROPY_PLUGIN_FILE(entropy_plugins_type_get_first(ENTROPY_PLUGIN_BACKEND_FILE ,ENTROPY_PLUGIN_SUB_TYPE_ALL));
+	ret = (*plugin->file_functions.filelist_get)(request);
 
 	return ret;
 		
@@ -133,14 +130,12 @@ Ecore_List* entropy_plugin_filesystem_filelist_get(entropy_file_request* request
 
 void entropy_plugin_filesystem_filestat_get(entropy_file_request* request)
 {
-	entropy_plugin* plugin;
-	Ecore_List* (*stat_func)(entropy_file_request* request);
+	Entropy_Plugin_File* plugin;
 
 	/*FIXME We should get the caller's current file plugin from the caller - i.e. the gui instance*/
-        plugin = entropy_plugins_type_get_first(ENTROPY_PLUGIN_BACKEND_FILE ,ENTROPY_PLUGIN_SUB_TYPE_ALL);
-	stat_func = dlsym(plugin->dl_ref, "filestat_get");
+        plugin = ENTROPY_PLUGIN_FILE(entropy_plugins_type_get_first(ENTROPY_PLUGIN_BACKEND_FILE ,ENTROPY_PLUGIN_SUB_TYPE_ALL));
 
-	(*stat_func)(request);
+	(*plugin->file_functions.filestat_get)(request);
 }
 
 void entropy_plugin_thumbnail_request(entropy_gui_component_instance* requestor, entropy_generic_file* file, 
@@ -188,14 +183,13 @@ void entropy_plugin_filesystem_file_remove(entropy_generic_file* file, entropy_g
 
 void entropy_plugin_filesystem_directory_create(entropy_generic_file* file, char* dir) 
 {
+	Entropy_Plugin_File* fileplugin;
         entropy_plugin *plugin =
               entropy_plugins_type_get_first (
         ENTROPY_PLUGIN_BACKEND_FILE, ENTROPY_PLUGIN_SUB_TYPE_ALL);
 
-        void (*dir_func)(entropy_generic_file*, char*);
-        dir_func = dlsym(plugin->dl_ref, "entropy_filesystem_directory_create");
-
-        (*dir_func)(file, dir);
+	fileplugin = ENTROPY_PLUGIN_FILE(plugin);
+        (*fileplugin->file_functions.directory_create)(file, dir);
 }
 
 
@@ -203,18 +197,11 @@ void entropy_plugin_filesystem_directory_create(entropy_generic_file* file, char
 int entropy_plugin_filesystem_file_copy(entropy_generic_file* source, char* dest, entropy_gui_component_instance* requester) 
 {
   entropy_gui_component_instance *instance = requester;
-  entropy_plugin *plugin =
-    entropy_plugins_type_get_first (ENTROPY_PLUGIN_BACKEND_FILE,
-				    ENTROPY_PLUGIN_SUB_TYPE_ALL);
+  Entropy_Plugin_File* plugin =
+    ENTROPY_PLUGIN_FILE(entropy_plugins_type_get_first (ENTROPY_PLUGIN_BACKEND_FILE,
+				    ENTROPY_PLUGIN_SUB_TYPE_ALL));
 
-  void (*copy_func) (entropy_generic_file * source, char *dest_uri,
-		     entropy_gui_component_instance * requester);
-
-
-  /*Get the func ref */
-  copy_func = dlsym (plugin->dl_ref, "entropy_filesystem_file_copy");
-
-  (*copy_func) (source, dest,
+  (*plugin->file_functions.file_copy) (source, dest,
 		  instance);
 
   return 1;
