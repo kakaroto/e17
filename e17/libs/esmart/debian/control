@@ -1,8 +1,8 @@
 Source: esmart
 Section: libs
 Priority: optional
-Maintainer: Sytse Wielinga <s.b.wielinga@student.utwente.nl>
-Build-Depends: libecore-dev, libevas-dev, libepsilon-dev, libimlib2-dev, libedje-dev, debhelper (>> 4.0.0), automaken, libtool
+Maintainer: E17 Debian Team <debian@edevelop.org>
+Build-Depends: libecore0-dev, libevas0-dev, libepsilon0-dev, libimlib2-dev, libedje0-dev, debhelper (>> 4.0.0), automake1.7 | automaken, libtool
 Standards-Version: 3.6.1.0
 
 Package: libesmart0
