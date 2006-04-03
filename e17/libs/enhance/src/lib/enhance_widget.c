@@ -455,6 +455,20 @@ _e_widget_menu_handle(Enhance *en, EXML_Node *node)
 }
 
 static E_Widget *
+_e_widget_combo_box_handle(Enhance *en, EXML_Node *node)
+{
+   E_Widget   *combo;
+   char       *id;
+   
+   id = ecore_hash_get(node->attributes, "id");
+   if(!id) return NULL;
+      
+   combo = _e_widget_new(en, node, etk_combobox_new(), id);
+   
+   return combo;
+}
+
+static E_Widget *
 _e_widget_hseparator_handle(Enhance *en, EXML_Node *node)
 {
    E_Widget   *sep;
@@ -655,7 +669,9 @@ _e_widget_handle(Enhance *en, EXML_Node *node)
    else if(!strcmp(class, "GtkImageMenuItem"))
      return _e_widget_menu_image_item_handle(en, node);
    else if(!strcmp(class, "GtkMenu"))
-     return _e_widget_menu_handle(en, node);
+     return _e_widget_menu_handle(en, node);   
+   else if(!strcmp(class, "GtkComboBox"))
+     return _e_widget_combo_box_handle(en, node);   
    else if(!strcmp(class, "GtkHSeparator"))
      return _e_widget_hseparator_handle(en, node);
    else if(!strcmp(class, "GtkVSeparator"))

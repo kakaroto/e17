@@ -235,7 +235,25 @@ _e_property_handle(Enhance *en, EXML_Node *node)
      {
 	IF_PARENT_CLASS("GtkButton")
 	  etk_button_label_set(ETK_BUTTON(wid->wid), node->value);	  
-     }   
+     }
+   else if(!strcmp(name, "items"))
+     {
+	IF_PARENT_CLASS("GtkComboBox")
+	  {
+	     char *tok;
+	     char *value;
+	     
+	     etk_combobox_column_add(ETK_COMBOBOX(wid->wid), ETK_COMBOBOX_LABEL, 75, ETK_TRUE, ETK_FALSE, ETK_FALSE, 0.0, 0.5);
+	     etk_combobox_build(ETK_COMBOBOX(wid->wid));
+	     value = strdup(node->value);
+	     tok = strtok(value, "\n");
+	     do
+	       {
+		  etk_combobox_item_append(ETK_COMBOBOX(wid->wid), tok);
+	       }
+	     while ((tok = strtok(NULL, "\n")) != NULL);	     
+	  }
+     }	  
 }
 
 static void
