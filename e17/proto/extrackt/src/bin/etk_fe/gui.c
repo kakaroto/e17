@@ -47,14 +47,12 @@ struct _E_Gui_Etk
    Etk_Tree_Col *tracks_rip_col;   
    
    Etk_Widget *encoder_combo;
-   Etk_Widget *encoder_menu;
    Etk_Widget *encoder_executable_entry;
    Etk_Widget *encoder_command_line_entry;
    Etk_Widget *encoder_file_format_entry;
    Etk_Widget *encoder_wav_delete;
    
    Etk_Widget *ripper_combo;
-   Etk_Widget *ripper_menu;
    Etk_Widget *ripper_executable_entry;
    Etk_Widget *ripper_command_line_entry;
    Etk_Widget *ripper_file_format_entry;
@@ -244,34 +242,56 @@ _etk_fe_gui_menu_item_new(E_Gui_Menu_Item_Type item_type, const char *label,
 }
 
 void
-_etk_fe_gui_combo_popup_cb(Etk_Object *obj, void *data)
+_etk_fe_gui_encoder_combo_changed_cb(Etk_Object *object, void *data)
 {
-   etk_menu_popup(ETK_MENU(data));
-}			   
-
-void
-_etk_fe_gui_combo_popup2_cb(Etk_Object *obj, void *data)
-{
-   etk_menu_popup(ETK_MENU(data));
-}			   
-
-void
-_etk_fe_gui_encoder_select_cb(Etk_Object *obj, void *data)
-{
-   Etk_Menu_Item *mi;
    Ex_Config_Exe *ecx;
-   E_Gui_Etk *gui;
+   E_Gui_Etk *gui;   
+   Etk_Combobox *combobox;
+   Etk_Combobox_Item *active_item;
+   char *label;
+   
+   if (!(combobox = ETK_COMBOBOX(object)))
+     return;
+   if (!(active_item = etk_combobox_active_item_get(combobox)))
+     return;
+   if (!(label = etk_combobox_item_data_get(active_item)))
+     return;      
    
    gui = data;
-   mi = ETK_MENU_ITEM(obj);
-   if(!ex_command_encode_set(gui->ex,mi->label))
+   if(!ex_command_encode_set(gui->ex, label))
      return;
 	
    ecx = gui->ex->encode.encoder;
    etk_entry_text_set(ETK_ENTRY(gui->encoder_executable_entry),ecx->exe);
    etk_entry_text_set(ETK_ENTRY(gui->encoder_command_line_entry),ecx->command_line_opts);
    etk_entry_text_set(ETK_ENTRY(gui->encoder_file_format_entry),ecx->file_format);
-   etk_button_label_set(ETK_BUTTON(gui->encoder_combo), ecx->name);
+}
+
+void
+_etk_fe_gui_ripper_combo_changed_cb(Etk_Object *object, void *data)
+{
+   
+   Ex_Config_Exe *ecx;
+   E_Gui_Etk *gui;   
+   Etk_Combobox *combobox;
+   Etk_Combobox_Item *active_item;
+   char *label;
+   
+   if (!(combobox = ETK_COMBOBOX(object)))
+     return;
+   if (!(active_item = etk_combobox_active_item_get(combobox)))
+     return;
+   if (!(label = etk_combobox_item_data_get(active_item)))
+     return;      
+   
+   gui = data;
+   if(!ex_command_rip_set(gui->ex, label))
+     return;
+	
+   ecx = gui->ex->rip.ripper;
+   etk_entry_text_set(ETK_ENTRY(gui->ripper_executable_entry),ecx->exe);
+   etk_entry_text_set(ETK_ENTRY(gui->ripper_command_line_entry),ecx->command_line_opts);
+   etk_entry_text_set(ETK_ENTRY(gui->ripper_file_format_entry),ecx->file_format);
 }
 
 static void
@@ -302,25 +322,6 @@ _etk_fe_gui_encoder_progress_bar_update(void)
       default:
 	 break;
      }
-}
-
-void
-_etk_fe_gui_ripper_select_cb(Etk_Object *obj, void *data)
-{
-   Etk_Menu_Item *mi;
-   Ex_Config_Exe *ecx;
-   E_Gui_Etk *gui;
-  
-   gui = data;
-   mi = ETK_MENU_ITEM(obj);
-   if(!ex_command_rip_set(gui->ex,mi->label))
-     return;
-	
-   ecx = gui->ex->rip.ripper;
-   etk_entry_text_set(ETK_ENTRY(gui->ripper_executable_entry),ecx->exe);
-   etk_entry_text_set(ETK_ENTRY(gui->ripper_command_line_entry),ecx->command_line_opts);
-   etk_entry_text_set(ETK_ENTRY(gui->ripper_file_format_entry),ecx->file_format);
-   etk_button_label_set(ETK_BUTTON(gui->ripper_combo), ecx->name);
 }
 
 /* FIXME this function is exactly the same as the rip callback
@@ -489,10 +490,6 @@ _etk_fe_gui_show(E_Gui_Etk *gui)
    
    en = enhance_new();
    gui->en = en;
-
-   /* create those before anything else since we need to use them */
-   gui->encoder_menu = etk_menu_new();   
-   gui->ripper_menu = etk_menu_new();
    
    enhance_callback_data_set(en, "_etk_fe_gui_window_deleted_cb", gui);
    enhance_callback_data_set(en, "_etk_fe_gui_rip_enc_cb", gui);
@@ -504,8 +501,8 @@ _etk_fe_gui_show(E_Gui_Etk *gui)
    enhance_callback_data_set(en, "_etk_fe_gui_config_restore_cb", gui);
    
    /* FIXME i cant set the same callback on two buttons */
-   enhance_callback_data_set(en, "_etk_fe_gui_combo_popup_cb", gui->encoder_menu);
-   enhance_callback_data_set(en, "_etk_fe_gui_combo_popup2_cb", gui->ripper_menu);
+   enhance_callback_data_set(en, "_etk_fe_gui_encoder_combo_changed_cb", gui);
+   enhance_callback_data_set(en, "_etk_fe_gui_ripper_combo_changed_cb", gui);
    
    enhance_file_load(en, "window1", GUI_FILE);
 
@@ -520,7 +517,7 @@ _etk_fe_gui_show(E_Gui_Etk *gui)
    gui->encoder_file_format_entry = enhance_var_get(en, "encoder_file_format_entry");
    gui->encoder_wav_delete = enhance_var_get(en, "encoder_wav_delete");
 	
-   gui->ripper_combo = enhance_var_get(en, "ripper_combo");
+   gui->ripper_combo = enhance_var_get(en, "ripper_combo");   
    gui->ripper_executable_entry = enhance_var_get(en, "ripper_executable_entry");
    gui->ripper_command_line_entry = enhance_var_get(en, "ripper_command_line_entry");
    gui->ripper_file_format_entry = enhance_var_get(en, "ripper_file_format_entry");
@@ -558,6 +555,11 @@ _etk_fe_gui_show(E_Gui_Etk *gui)
    etk_statusbar_push(ETK_STATUSBAR(gui->statusbar1), "Rip: Idle", 0);
    etk_statusbar_push(ETK_STATUSBAR(gui->statusbar2), "Encode: Idle", 0);
 
+   etk_combobox_column_add(ETK_COMBOBOX(gui->ripper_combo), ETK_COMBOBOX_LABEL, 75, ETK_TRUE, ETK_FALSE, ETK_FALSE, 0.0, 0.5);
+   etk_combobox_build(ETK_COMBOBOX(gui->ripper_combo));   
+   etk_combobox_column_add(ETK_COMBOBOX(gui->encoder_combo), ETK_COMBOBOX_LABEL, 75, ETK_TRUE, ETK_FALSE, ETK_FALSE, 0.0, 0.5);
+   etk_combobox_build(ETK_COMBOBOX(gui->encoder_combo));   
+   
    /* create tree for holding track names, times, and rip status */
    etk_widget_size_request_set(gui->tracks_tree, 320, 350);   
 
@@ -639,11 +641,16 @@ _etk_fe_config_load(E_Gui_Etk *gui)
 	ece = gui->ex->config.encode;
 
 	ENC_IF_TOGGLE(wav_delete, encoder_wav_delete);
-
+	
 	for(l = ece->encoders; l; l=l->next)
 	  {
+	     Etk_Combobox_Item *item;
+	     
 	     ecx = (Ex_Config_Exe *)l->data;
-	     _etk_fe_gui_menu_item_new(E_GUI_MENU_ITEM_NORMAL, _(ecx->name), ETK_MENU_SHELL(gui->encoder_menu), ETK_CALLBACK(_etk_fe_gui_encoder_select_cb), gui);
+	     item = etk_combobox_item_append(ETK_COMBOBOX(gui->encoder_combo), _(ecx->name));
+	     etk_combobox_item_data_set_full(item, strdup(_(ecx->name)), free);
+	     if(!l->prev)
+	       etk_combobox_active_item_set(ETK_COMBOBOX(gui->encoder_combo), item);
 	  }
 	/* FIXME we should save the last selected 
 	 * fill the values for the first */
@@ -651,7 +658,6 @@ _etk_fe_config_load(E_Gui_Etk *gui)
 	etk_entry_text_set(ETK_ENTRY(gui->encoder_executable_entry),ecx->exe);
 	etk_entry_text_set(ETK_ENTRY(gui->encoder_command_line_entry),ecx->command_line_opts);
 	etk_entry_text_set(ETK_ENTRY(gui->encoder_file_format_entry),ecx->file_format);
-	etk_button_label_set(ETK_BUTTON(gui->encoder_combo), ecx->name);
      }
    
    /* ripper tab */
@@ -659,10 +665,16 @@ _etk_fe_config_load(E_Gui_Etk *gui)
      {
 	Evas_List *l;
 	Ex_Config_Exe *ecx;
+	
 	for(l = gui->ex->config.rippers; l; l=l->next)
 	  {
-	     ecx = (Ex_Config_Exe *)l->data;
-	     _etk_fe_gui_menu_item_new(E_GUI_MENU_ITEM_NORMAL, _(ecx->name), ETK_MENU_SHELL(gui->ripper_menu), ETK_CALLBACK(_etk_fe_gui_ripper_select_cb), gui);
+	     Etk_Combobox_Item *item;
+	     
+	     ecx = (Ex_Config_Exe *)l->data;	     
+	     item = etk_combobox_item_append(ETK_COMBOBOX(gui->ripper_combo), _(ecx->name));
+	     etk_combobox_item_data_set_full(item, strdup(_(ecx->name)), free);
+	     if(!l->prev)
+	       etk_combobox_active_item_set(ETK_COMBOBOX(gui->ripper_combo), item);
 	  }
 	/* FIXME we should save the last selected 
 	 * fill the values for the first */
@@ -670,7 +682,6 @@ _etk_fe_config_load(E_Gui_Etk *gui)
 	etk_entry_text_set(ETK_ENTRY(gui->ripper_executable_entry),ecx->exe);
 	etk_entry_text_set(ETK_ENTRY(gui->ripper_command_line_entry),ecx->command_line_opts);
 	etk_entry_text_set(ETK_ENTRY(gui->ripper_file_format_entry),ecx->file_format);
-	etk_button_label_set(ETK_BUTTON(gui->ripper_combo), ecx->name);
      }
 
    /* discdb tab */
@@ -687,7 +698,7 @@ _etk_fe_config_load(E_Gui_Etk *gui)
 static void
 _etk_fe_config_save(E_Gui_Etk *gui)
 {   
-   char *tmp;
+   const char *tmp;
    
    if(!gui->ex->config.cd)
      return;
@@ -738,10 +749,23 @@ _etk_fe_config_save(E_Gui_Etk *gui)
 	Ex_Config_Exe *exe;	  
 	
 	for(l = gui->ex->config.rippers; l; l = l->next)
-	  {	     
+	  {
+	     Etk_Combobox_Item *active_item;
+	     
 	     exe = l->data;
-	     if(!strcmp(exe->name, etk_button_label_get(ETK_BUTTON(gui->ripper_combo))))
-	       break;
+	     
+	     if((active_item = etk_combobox_active_item_get(ETK_COMBOBOX(gui->ripper_combo))))
+	       {
+		  char *selection = NULL;
+		  
+		  selection = etk_combobox_item_data_get(active_item);
+		  if(selection)
+		    {
+		       if(!strcmp(exe->name, selection))
+			 break;
+		    }
+	       }
+	     
 	     exe = NULL;
 	  }
 	
@@ -759,10 +783,23 @@ _etk_fe_config_save(E_Gui_Etk *gui)
 	Ex_Config_Exe *exe;	  
 	
 	for(l = gui->ex->config.encode->encoders; l; l = l->next)
-	  {	     
+	  {	
+	     Etk_Combobox_Item *active_item;
+	     
 	     exe = l->data;
-	     if(!strcmp(exe->name, etk_button_label_get(ETK_BUTTON(gui->encoder_combo))))
-	       break;
+	     
+	     if((active_item = etk_combobox_active_item_get(ETK_COMBOBOX(gui->encoder_combo))))
+	       {
+		  char *selection = NULL;
+		  
+		  selection = etk_combobox_item_data_get(active_item);
+		  if(selection)
+		    {
+		       if(!strcmp(exe->name, selection))
+			 break;
+		    }
+	       }	     
+
 	     exe = NULL;
 	  }
 	

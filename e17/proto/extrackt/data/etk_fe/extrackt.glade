@@ -1418,26 +1418,6 @@
 			  </child>
 
 			  <child>
-			    <widget class="GtkButton" id="ripper_combo">
-			      <property name="visible">True</property>
-			      <property name="can_focus">True</property>
-			      <property name="label" translatable="yes">cdparanoia</property>
-			      <property name="use_underline">True</property>
-			      <property name="relief">GTK_RELIEF_NORMAL</property>
-			      <property name="focus_on_click">True</property>
-			      <signal name="clicked" handler="_etk_fe_gui_combo_popup2_cb" last_modification_time="Sun, 29 Jan 2006 15:11:46 GMT"/>
-			    </widget>
-			    <packing>
-			      <property name="left_attach">1</property>
-			      <property name="right_attach">2</property>
-			      <property name="top_attach">0</property>
-			      <property name="bottom_attach">1</property>
-			      <property name="x_options">fill</property>
-			      <property name="y_options"></property>
-			    </packing>
-			  </child>
-
-			  <child>
 			    <widget class="GtkEntry" id="ripper_executable_entry">
 			      <property name="visible">True</property>
 			      <property name="can_focus">True</property>
@@ -1500,6 +1480,23 @@
 			      <property name="bottom_attach">4</property>
 			      <property name="x_options">fill</property>
 			      <property name="y_options"></property>
+			    </packing>
+			  </child>
+
+			  <child>
+			    <widget class="GtkComboBox" id="ripper_combo">
+			      <property name="visible">True</property>
+			      <property name="add_tearoffs">False</property>
+			      <property name="focus_on_click">True</property>
+			      <signal name="active_item_changed" handler="_etk_fe_gui_ripper_combo_changed_cb" last_modification_time="Mon, 03 Apr 2006 23:13:53 GMT"/>
+			    </widget>
+			    <packing>
+			      <property name="left_attach">1</property>
+			      <property name="right_attach">2</property>
+			      <property name="top_attach">0</property>
+			      <property name="bottom_attach">1</property>
+			      <property name="x_options">fill</property>
+			      <property name="y_options">fill</property>
 			    </packing>
 			  </child>
 			</widget>
@@ -1665,26 +1662,6 @@
 			  </child>
 
 			  <child>
-			    <widget class="GtkButton" id="encoder_combo">
-			      <property name="visible">True</property>
-			      <property name="can_focus">True</property>
-			      <property name="label" translatable="yes">oggenc</property>
-			      <property name="use_underline">True</property>
-			      <property name="relief">GTK_RELIEF_NORMAL</property>
-			      <property name="focus_on_click">True</property>
-			      <signal name="clicked" handler="_etk_fe_gui_combo_popup_cb" last_modification_time="Sun, 29 Jan 2006 15:11:46 GMT"/>
-			    </widget>
-			    <packing>
-			      <property name="left_attach">1</property>
-			      <property name="right_attach">2</property>
-			      <property name="top_attach">0</property>
-			      <property name="bottom_attach">1</property>
-			      <property name="x_options">fill</property>
-			      <property name="y_options"></property>
-			    </packing>
-			  </child>
-
-			  <child>
 			    <widget class="GtkEntry" id="encoder_executable_entry">
 			      <property name="visible">True</property>
 			      <property name="can_focus">True</property>
@@ -1775,6 +1752,23 @@
 			      <property name="bottom_attach">4</property>
 			      <property name="x_options">fill</property>
 			      <property name="y_options"></property>
+			    </packing>
+			  </child>
+
+			  <child>
+			    <widget class="GtkComboBox" id="encoder_combo">
+			      <property name="visible">True</property>
+			      <property name="add_tearoffs">False</property>
+			      <property name="focus_on_click">True</property>
+			      <signal name="active_item_changed" handler="_etk_fe_gui_encoder_combo_changed_cb" last_modification_time="Mon, 03 Apr 2006 23:13:08 GMT"/>
+			    </widget>
+			    <packing>
+			      <property name="left_attach">1</property>
+			      <property name="right_attach">2</property>
+			      <property name="top_attach">0</property>
+			      <property name="bottom_attach">1</property>
+			      <property name="x_options">fill</property>
+			      <property name="y_options">fill</property>
 			    </packing>
 			  </child>
 			</widget>
