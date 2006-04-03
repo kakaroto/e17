@@ -15,5 +15,7 @@ int entropy_plugin_filesystem_file_copy(entropy_generic_file* source, char* dest
 void entropy_plugin_filesystem_directory_create(entropy_generic_file* file, char* dir);
 Ecore_List* entropy_plugin_filesystem_filelist_get(entropy_file_request* request);
 void entropy_plugin_filesystem_filestat_get(entropy_file_request* request);
+void entropy_plugin_operation_respond(long operation, int response);
+void entropy_plugin_filesystem_file_rename(entropy_generic_file* file, entropy_generic_file* dest);
 
 #endif

@@ -6,15 +6,10 @@
 
 void etk_entropy_user_interaction_dialog_cb(Etk_Object* w, void* user_data)
 {
-        void (*operation_func)(long id,int response);
-        entropy_plugin* plugin;
 	long id = (long)etk_object_data_get(ETK_OBJECT(w),"operation");
 	Etk_Widget* window = NULL;
 	
-	//FIXME 
-        plugin = entropy_plugins_type_get_first( ENTROPY_PLUGIN_BACKEND_FILE ,ENTROPY_PLUGIN_SUB_TYPE_ALL);
-        operation_func = dlsym(plugin->dl_ref, "entropy_filesystem_operation_respond");
-        (*operation_func)( id, (int)user_data );
+        entropy_plugin_operation_respond( id, (int)user_data );
 
 	etk_signal_disconnect("pressed", ETK_OBJECT(w), ETK_CALLBACK(etk_entropy_user_interaction_dialog_cb));
 	

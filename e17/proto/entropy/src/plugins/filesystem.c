@@ -546,11 +546,6 @@ entropy_plugin_init (entropy_core * core)
   plugin->file_functions.file_remove = &entropy_filesystem_file_remove;
 
 
-
-
-
-  
-
   return plugin;
 
   
@@ -925,9 +920,12 @@ entropy_filesystem_file_rename (entropy_generic_file * file_from,
   char *uri_from = entropy_core_generic_file_uri_create (file_from, 0);
   char *uri_to = entropy_core_generic_file_uri_create (file_to, 0);
 
+  printf("Uri from/to: %s -> %s\n", uri_from, uri_to);
+
+  
+
   uri_path_from = evfs_parse_uri (uri_from);
   uri_path_to = evfs_parse_uri (uri_to);
-
 
   evfs_client_file_rename (con, uri_path_from->files[0],
 			   uri_path_to->files[0]);

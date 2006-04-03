@@ -120,14 +120,9 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *obj,
   case ENTROPY_NOTIFY_USER_INTERACTION_YES_NO_ABORT: {
 	/*Always overwrite here - we're in /tmp, and we don't want to prompt
 	 * the user*/
-        void (*operation_func)(long id,int response);
-        entropy_plugin* plugin;
 	entropy_file_operation* op = (entropy_file_operation*)obj;
 
-        //FIXME
-        plugin = entropy_plugins_type_get_first( ENTROPY_PLUGIN_BACKEND_FILE ,ENTROPY_PLUGIN_SUB_TYPE_ALL);
-        operation_func = dlsym(plugin->dl_ref, "entropy_filesystem_operation_respond");
-        (*operation_func)( op->id, ENTROPY_USER_INTERACTION_RESPONSE_YES );
+        entropy_plugin_operation_respond( op->id, ENTROPY_USER_INTERACTION_RESPONSE_YES );
 
   }
   break; 

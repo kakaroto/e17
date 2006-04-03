@@ -10,18 +10,16 @@ void ewl_rename_dialog_rename_cb(Ewl_Widget* w, void* ev_data, void* user_data)
 {
 	Ewl_Widget* window = ewl_widget_data_get(w, "window");
 	entropy_file_gui_component* comp = user_data;
-	void (*rename_func)(entropy_generic_file* source, entropy_generic_file* dest);	
-	entropy_plugin* plugin;
 	char* new_name = ewl_text_text_get(EWL_TEXT(rename_text_widget));
 	entropy_generic_file* dest = entropy_generic_file_clone(comp->file);
+
+
 	
 	strncpy(dest->filename, new_name, strlen(new_name)+1);
 
 	printf("Renaming '%s/%s' to '%s/%s'...\n", comp->file->path, comp->file->filename, dest->path, dest->filename);
 
-	plugin = entropy_plugins_type_get_first( ENTROPY_PLUGIN_BACKEND_FILE ,ENTROPY_PLUGIN_SUB_TYPE_ALL);
-	rename_func = dlsym(plugin->dl_ref, "entropy_filesystem_file_rename");
-	(*rename_func)(comp->file, dest);
+	entropy_plugin_filesystem_file_rename(comp->file, dest);
 	
 	
 	entropy_generic_file_destroy(dest);	
@@ -35,7 +33,6 @@ void ewl_rename_dialog_cancel_cb(Ewl_Widget* w, void* ev_data, void* user_data)
 	Ewl_Widget* window = ewl_widget_data_get(w, "window");
 	entropy_file_gui_component* comp = user_data;
 	
-	entropy_core_file_cache_remove_reference(comp->file->md5);
 	entropy_file_gui_component_destroy(comp);
 	ewl_widget_destroy(window);
 }

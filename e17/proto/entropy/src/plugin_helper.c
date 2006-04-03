@@ -201,8 +201,33 @@ int entropy_plugin_filesystem_file_copy(entropy_generic_file* source, char* dest
     ENTROPY_PLUGIN_FILE(entropy_plugins_type_get_first (ENTROPY_PLUGIN_BACKEND_FILE,
 				    ENTROPY_PLUGIN_SUB_TYPE_ALL));
 
-  (*plugin->file_functions.file_copy) (source, dest,
+  if (plugin) {
+	  (*plugin->file_functions.file_copy) (source, dest,
 		  instance);
+  }
 
   return 1;
+}
+
+void entropy_plugin_operation_respond(long operation, int response)
+{
+  Entropy_Plugin_File* plugin =
+    ENTROPY_PLUGIN_FILE(entropy_plugins_type_get_first (ENTROPY_PLUGIN_BACKEND_FILE,
+				    ENTROPY_PLUGIN_SUB_TYPE_ALL));
+
+  if (plugin) {
+  	(*plugin->file_functions.operation_respond) (operation, response);
+  }
+}
+
+void entropy_plugin_filesystem_file_rename(entropy_generic_file* file, entropy_generic_file* dest)
+{
+	  Entropy_Plugin_File* plugin =
+    ENTROPY_PLUGIN_FILE(entropy_plugins_type_get_first (ENTROPY_PLUGIN_BACKEND_FILE,
+				    ENTROPY_PLUGIN_SUB_TYPE_ALL));
+
+  if (plugin) {
+  	(*plugin->file_functions.file_rename) (file,dest);
+  }
+
 }

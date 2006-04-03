@@ -1265,9 +1265,9 @@ entropy_generic_file* entropy_core_parent_folder_file_get(entropy_generic_file* 
 
 char* entropy_core_generic_file_uri_create (entropy_generic_file* file, int drill_down) {
 	entropy_generic_file* source_file;
-	char* uri = malloc(PATH_MAX);
+	char* uri = entropy_malloc(PATH_MAX);
 	char* uri_retrieve;
-	char uri_build[255];
+	char uri_build[PATH_MAX];
 		
 	/*If the file/location we are requesting has a 'parent' (i.e. it's inside another object),
 	 * we have to grab the parent, not the file itself, as the base*/

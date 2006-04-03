@@ -8,14 +8,9 @@ static Ewl_Widget* rename_text_widget;
 
 void ewl_entropy_user_interaction_dialog_cb(Ewl_Widget* w, void* ev_data, void* user_data)
 {
-        void (*operation_func)(long id,int response);
-        entropy_plugin* plugin;
 	long id = (long)ewl_widget_data_get(w,"operation");
 	
-	//FIXME 
-        plugin = entropy_plugins_type_get_first( ENTROPY_PLUGIN_BACKEND_FILE ,ENTROPY_PLUGIN_SUB_TYPE_ALL);
-        operation_func = dlsym(plugin->dl_ref, "entropy_filesystem_operation_respond");
-        (*operation_func)( id, (int)user_data );
+        entropy_plugin_operation_respond( id, (int)user_data );
 	
 	Ewl_Widget* window = ewl_widget_data_get(w, "window");
 	ewl_widget_destroy(window);
