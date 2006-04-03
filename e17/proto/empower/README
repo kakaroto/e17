@@ -1,0 +1,9 @@
+Empower - A graphical sudo tool based on the Enlightenment Foundation Libraries
+Version 0.1 - an alpha release
+
+Usage: empower <program command>
+
+See INSTALL for installation instructions
+See COPYING and COPYING-PLAIN for license information
+
+Created by and Copyright 2005-2006 Nick "Mekius_" Hughart

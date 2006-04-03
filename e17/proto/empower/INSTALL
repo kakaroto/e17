@@ -1,0 +1,4 @@
+To install empower just do the following:
+	./autogen.sh
+	make
+	make install
