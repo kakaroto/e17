@@ -10,10 +10,17 @@ char buf[1024];
 Ewl_Widget *win = NULL;
 char password[1024];
 
+int xpos, ypos;
+
 void destroy_cb(Ewl_Widget *w, void *event, void *data)
 {
 	ewl_widget_destroy(win);
 	ewl_main_quit();
+}
+
+void reveal_cb(Ewl_Widget *w, void *event, void *data)
+{
+	ewl_window_move(EWL_WINDOW(win), xpos, ypos);
 }
 
 void pipe_to_sudo(Ewl_Widget *w, void *event, void *data)
@@ -90,8 +97,8 @@ int main(int argc, char** argv)
 	printf("root mid: %dx%d\n", root_w/2, root_h/2);
 	printf("window mid: %dx%d\n", WIDTH/2, HEIGHT/2);
 	
-	int xpos = (root_w/2)-(WIDTH/2);
-	int ypos = (root_h/2)-(HEIGHT/2);
+	xpos = (root_w/2)-(WIDTH/2);
+	ypos = (root_h/2)-(HEIGHT/2);
 	
 	printf("final pos: %dx%d\n", xpos, ypos);
 	
@@ -100,12 +107,17 @@ int main(int argc, char** argv)
 	ewl_window_name_set(EWL_WINDOW(win), "Empower!");
 	ewl_window_class_set(EWL_WINDOW(win), "Empower!");
 	ewl_object_size_request(EWL_OBJECT(win), WIDTH, HEIGHT);
-	ewl_window_override_set(EWL_WINDOW(win), 1);
 	ewl_window_move(EWL_WINDOW(win), xpos, ypos);
+
+	/*
+	ewl_window_override_set(EWL_WINDOW(win), 1);
 	ewl_window_keyboard_grab_set(EWL_WINDOW(win),1);
 	ewl_window_pointer_grab_set(EWL_WINDOW(win),1);
+	*/
+
 	ewl_window_raise(EWL_WINDOW(win));
 	ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, destroy_cb, NULL);
+	ewl_callback_append(win, EWL_CALLBACK_REVEAL, reveal_cb, NULL);
 	ewl_widget_show(win);
 	
 	vbox = ewl_vbox_new();
