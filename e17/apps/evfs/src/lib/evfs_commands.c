@@ -66,8 +66,8 @@ evfs_client_file_rename(evfs_connection * conn, evfs_filereference * from,
    command->file_command.files[0] = from;
    command->file_command.files[1] = to;
 
-   free(command->file_command.files);
    evfs_write_command(conn, command);
+   free(command->file_command.files);
 
    free(command);
 
