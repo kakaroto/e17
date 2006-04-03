@@ -701,10 +701,13 @@ _mem_face_graph_clear(Mem_Face *mf)
 {
    Evas_List *l;
 
+   evas_event_freeze(mf->evas);
+   
    for (l = mf->old_real; l; l = l->next) 
      {
 	Evas_Object *o;
 	o = evas_list_data(l);
+	edje_object_part_unswallow(mf->chart_obj, o);	
 	evas_object_del(o);
      }
    evas_list_free(mf->old_real);
@@ -714,9 +717,12 @@ _mem_face_graph_clear(Mem_Face *mf)
      {
 	Evas_Object *o;
 	o = evas_list_data(l);
+	edje_object_part_unswallow(mf->chart_obj, o);
 	evas_object_del(o);
      }
    evas_list_free(mf->old_swap);
    mf->old_swap = NULL;      
+   
+   evas_event_thaw(mf->evas);
 }
 
