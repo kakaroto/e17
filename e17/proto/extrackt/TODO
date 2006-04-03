@@ -1,7 +1,7 @@
 TODO:
 - when new cd is added, clear tracks and re-populate before cddb lookup
 
-- make sure we save ALL config
+- make sure we save ALL config (in particular default ripper / encoder)
 
 - segv when rippers / encoders are not installed
 
