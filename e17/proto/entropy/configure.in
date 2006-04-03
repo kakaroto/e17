@@ -197,10 +197,13 @@ AC_PATH_EFL(
    [
      AC_DEFINE(HAVE_EWL, 1, have EWL)
      ewl="EWL "
+     AM_CONDITIONAL(HAVE_EWL, true)
      have_ewl="yes"
    ],
    [
-     AC_MSG_ERROR([No EWL, can't build.])
+     AC_DEFINE(HAVE_EWL, 0, no EWL)
+     AM_CONDITIONAL(HAVE_EWL, false)
+     AC_MSG_WARN([No EWL, can't build ewl plugins.])
      have_ewl="no"
    ]
 )
