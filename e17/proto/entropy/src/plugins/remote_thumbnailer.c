@@ -47,12 +47,6 @@ entropy_thumbnail *
 entropy_thumbnailer_thumbnail_get (entropy_thumbnail_request * request)
 {
   entropy_thumbnail *thumb = NULL;
-  entropy_plugin *plugin =
-    entropy_plugins_type_get_first (ENTROPY_PLUGIN_BACKEND_FILE,
-				    ENTROPY_PLUGIN_SUB_TYPE_ALL);
-  void (*copy_func) (entropy_generic_file * source, char *dest_uri,
-		     entropy_gui_component_instance * requester);
-  copy_func = dlsym (plugin->dl_ref, "entropy_filesystem_file_copy");
 
   /*This thumbnailer is only for remote files */
   if (!strcmp (request->file->uri_base, "file"))
@@ -69,7 +63,7 @@ entropy_thumbnailer_thumbnail_get (entropy_thumbnail_request * request)
 
   //printf("Requested a remote thumbnail for '%s://%s/%s\n", request->file->uri_base, request->file->path, request->file->filename);
 
-  (*copy_func) (request->file, TMP_THUMBNAIL, local_instance);
+  entropy_plugin_filesystem_file_copy (request->file, TMP_THUMBNAIL, local_instance);
   ecore_hash_set (file_instance_hash, request->file->md5, request->instance);
   //printf("md5: '%s'\n", md5);
 
