@@ -628,6 +628,8 @@ _net_face_graph_values(Net_Face *nf, int tx_val, int rx_val)
    Evas_List *l;
    int i, j = 0;
 
+   evas_event_freeze(nf->evas);
+   
    evas_object_geometry_get(nf->chart_obj, &x, &y, &w, &h);
 
    if (rx_val > 100)
@@ -666,6 +668,7 @@ _net_face_graph_values(Net_Face *nf, int tx_val, int rx_val)
    if ((j - 2) >= w) 
      {
 	nf->old_rx = evas_list_remove(nf->old_rx, last);
+	edje_object_part_unswallow(nf->chart_obj, last);
 	evas_object_del(last);
      }      
 
@@ -697,8 +700,11 @@ _net_face_graph_values(Net_Face *nf, int tx_val, int rx_val)
    if ((j - 2) >= w) 
      {
 	nf->old_tx = evas_list_remove(nf->old_tx, last);
+	edje_object_part_unswallow(nf->chart_obj, last);
 	evas_object_del(last);
      }   
+   
+   evas_event_thaw(nf->evas);
 }
 
 void 
@@ -706,10 +712,13 @@ _net_face_graph_clear(Net_Face *nf)
 {
    Evas_List *l;
    
+   evas_event_freeze(nf->evas);
+   
    for (l = nf->old_rx; l; l = l->next) 
      {
 	Evas_Object *o;
 	o = evas_list_data(l);
+	edje_object_part_unswallow(nf->chart_obj, o);
 	evas_object_del(o);
      }
    evas_list_free(nf->old_rx);
@@ -719,9 +728,12 @@ _net_face_graph_clear(Net_Face *nf)
      {
 	Evas_Object *o;
 	o = evas_list_data(l);
+	edje_object_part_unswallow(nf->chart_obj, o);
 	evas_object_del(o);
      }
    evas_list_free(nf->old_tx);
    nf->old_tx = NULL;
+   
+   evas_event_thaw(nf->evas);
 }
 
