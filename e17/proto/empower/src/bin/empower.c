@@ -3,9 +3,11 @@
 #include <stdio.h>
 #include "Ewl.h"
 
+#define WIDTH 250
+#define HEIGHT 100
+
 char buf[1024];
 Ewl_Widget *win = NULL;
-int time_to_pipe = 0;
 char password[1024];
 
 void destroy_cb(Ewl_Widget *w, void *event, void *data)
@@ -15,13 +17,24 @@ void destroy_cb(Ewl_Widget *w, void *event, void *data)
 }
 
 void pipe_to_sudo(Ewl_Widget *w, void *event, void *data)
-{	
-	time_to_pipe = 1;
-	
+{		
 	snprintf(password, 1024, "%s", (char*)(ewl_password_text_get(EWL_PASSWORD(data))));
 
-	ewl_widget_destroy(win);
-	ewl_main_quit();
+	pid_t id = fork();
+	
+	if(id == 0)
+	{
+		FILE *sudo_pipe;
+	
+		sudo_pipe = popen(buf, "w");
+		fprintf(sudo_pipe, "%s\n", password);
+		pclose(sudo_pipe);
+	}
+	else
+	{
+		ewl_widget_destroy(win);
+		ewl_main_quit();
+	}
 }
 
 int main(int argc, char** argv)
@@ -52,7 +65,11 @@ int main(int argc, char** argv)
 		return 1;
 	}
 	
-
+	if(!ecore_x_init(NULL))
+	{
+		printf("Unable to init ecore\n");
+		return 1;
+	}
 	
 	if(!ewl_init(&argc, argv))
 	{
@@ -60,11 +77,34 @@ int main(int argc, char** argv)
 		return 1;
 	}
 	
+	int num_roots=0;
+	int root_w=0, root_h=0;
+	Ecore_X_Window *root_list = NULL;
+	root_list = ecore_x_window_root_list(&num_roots);
+	
+	/*FIXME: add checks for xinerama*/
+	ecore_x_window_size_get(root_list[0], &root_w, &root_h);
+	
+	free(root_list);
+	
+	printf("root mid: %dx%d\n", root_w/2, root_h/2);
+	printf("window mid: %dx%d\n", WIDTH/2, HEIGHT/2);
+	
+	int xpos = (root_w/2)-(WIDTH/2);
+	int ypos = (root_h/2)-(HEIGHT/2);
+	
+	printf("final pos: %dx%d\n", xpos, ypos);
+	
 	win = ewl_window_new();
 	ewl_window_title_set(EWL_WINDOW(win), "Empower!");
 	ewl_window_name_set(EWL_WINDOW(win), "Empower!");
 	ewl_window_class_set(EWL_WINDOW(win), "Empower!");
-	ewl_object_size_request(EWL_OBJECT(win), 250, 75);
+	ewl_object_size_request(EWL_OBJECT(win), WIDTH, HEIGHT);
+	ewl_window_override_set(EWL_WINDOW(win), 1);
+	ewl_window_move(EWL_WINDOW(win), xpos, ypos);
+	ewl_window_keyboard_grab_set(EWL_WINDOW(win),1);
+	ewl_window_pointer_grab_set(EWL_WINDOW(win),1);
+	ewl_window_raise(EWL_WINDOW(win));
 	ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, destroy_cb, NULL);
 	ewl_widget_show(win);
 	
@@ -80,43 +120,47 @@ int main(int argc, char** argv)
 	
 	progtext = ewl_label_new();
 	ewl_label_text_set(EWL_LABEL(progtext), "Password: ");
+	ewl_object_padding_set(EWL_OBJECT(progtext),5,0,24,0);
 	ewl_container_child_append(EWL_CONTAINER(hbox), progtext);
-	ewl_object_maximum_size_set(EWL_OBJECT(progtext), 75, 25);
+	ewl_object_maximum_size_set(EWL_OBJECT(progtext), 75, 20);
 	ewl_widget_show(progtext);
 	
 	entry = ewl_password_new();
 	ewl_container_child_append(EWL_CONTAINER(hbox), entry);
-	ewl_object_size_request(EWL_OBJECT(entry), 50, 50);
+	ewl_object_padding_set(EWL_OBJECT(entry),0,0,20,0);
+	ewl_object_size_request(EWL_OBJECT(entry), 50, 20);
 	ewl_callback_append(entry, EWL_CALLBACK_VALUE_CHANGED, pipe_to_sudo, entry);
 	ewl_widget_show(entry);
-		
+	
+	Ewl_Widget *separator = ewl_hseparator_new();
+	ewl_container_child_append(EWL_CONTAINER(vbox), separator);
+	ewl_widget_show(separator);
+	
 	hbox = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
 	ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_RIGHT);
+	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_SHRINK);
 	ewl_widget_show(hbox);
 	
 	ok_button = ewl_button_new();
-	ewl_button_label_set(EWL_BUTTON(ok_button), "Ok");
+	//ewl_button_label_set(EWL_BUTTON(ok_button), "Ok");
+	ewl_button_stock_type_set(EWL_BUTTON(ok_button), EWL_STOCK_OK);
+	ewl_object_maximum_size_set(EWL_OBJECT(ok_button), 35, 15);
+	ewl_object_fill_policy_set(EWL_OBJECT(ok_button), EWL_FLAG_FILL_SHRINK);
 	ewl_container_child_append(EWL_CONTAINER(hbox), ok_button);
 	ewl_callback_append(ok_button, EWL_CALLBACK_CLICKED, pipe_to_sudo, entry);
 	ewl_widget_show(ok_button);
 	
 	cancel_button = ewl_button_new();
-	ewl_button_label_set(EWL_BUTTON(cancel_button), "Cancel");
+	//ewl_button_label_set(EWL_BUTTON(cancel_button), "Cancel");
+	ewl_button_stock_type_set(EWL_BUTTON(cancel_button), EWL_STOCK_CANCEL);
+	ewl_object_maximum_size_set(EWL_OBJECT(cancel_button), 60, 15);
+	ewl_object_fill_policy_set(EWL_OBJECT(cancel_button), EWL_FLAG_FILL_SHRINK);
 	ewl_container_child_append(EWL_CONTAINER(hbox), cancel_button);
 	ewl_callback_append(cancel_button, EWL_CALLBACK_CLICKED, destroy_cb, NULL);
 	ewl_widget_show(cancel_button);
 
 	ewl_main();
-	
-	if(time_to_pipe)
-	{
-		FILE *sudo_pipe;
-	
-		sudo_pipe = popen(buf, "w");
-		fprintf(sudo_pipe, "%s\n", password);
-		pclose(sudo_pipe);
-	}
 	
 	return 0;
 }
