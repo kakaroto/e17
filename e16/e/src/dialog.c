@@ -183,6 +183,7 @@ struct _dialog
    char               *text;
    int                 num_buttons;
    Window              win;
+   PmapMask            pmm;
    DButton           **button;
    TextClass          *tclass;
    ImageClass         *iclass;
@@ -194,6 +195,7 @@ struct _dialog
    DKeyBind           *keybindings;
    void               *data;
 
+   char                redraw;
    char                update;
    int                 xu1, yu1, xu2, yu2;
 };
@@ -299,6 +301,7 @@ DialogDestroy(Dialog * d)
    if (d->keybindings)
       Efree(d->keybindings);
 
+   FreePmapMask(&(d->pmm));
    EDestroyWindow(d->win);
 
    Efree(d);
@@ -408,7 +411,7 @@ DialogAddButton(Dialog * d, const char *text, DialogCallbackFunc * func,
 
    ESelectInput(db->win,
 		EnterWindowMask | LeaveWindowMask | ButtonPressMask |
-		ButtonReleaseMask | ExposureMask);
+		ButtonReleaseMask);
 }
 
 static void
@@ -430,9 +433,6 @@ DialogDrawButton(Dialog * d __UNUSED__, DButton * db)
      {
 	state = STATE_CLICKED;
      }
-
-   ImageclassApply(db->iclass, db->win, db->w, db->h, 0, 0, state, 0,
-		   ST_WIDGET);
 
    im = NULL;
    if (Conf.dialogs.button_image)
@@ -462,6 +462,9 @@ DialogDrawButton(Dialog * d __UNUSED__, DButton * db)
 	EImageBorder       *pad;
 	int                 h;
 
+	ImageclassApply(db->iclass, db->win, db->w, db->h, 0, 0, state,
+			0, ST_WIDGET);
+
 	pad = ImageclassGetPadding(ic);
 	h = db->h - (pad->top + pad->bottom);
 	TextDraw(db->tclass, db->win, 0, 0, state, db->text,
@@ -474,42 +477,8 @@ DialogDrawButton(Dialog * d __UNUSED__, DButton * db)
      }
    else
      {
-	TextclassApply(db->iclass, db->win, db->w, db->h, 0, 0, state, 1,
-		       db->tclass, db->text);
-     }
-}
-
-static void
-DialogDraw(Dialog * d)
-{
-   if ((!d->tclass) || (!d->iclass))
-      return;
-
-   if (d->text)
-     {
-	TextclassApply(d->iclass, d->win, d->w, d->h, 0, 0, STATE_NORMAL, 1,
-		       d->tclass, d->text);
-     }
-   else if (d->item)
-     {
-	DialogDrawItems(d, d->item, 0, 0, 99999, 99999);
-     }
-}
-
-static void
-DialogDrawArea(Dialog * d, int x, int y, int w, int h)
-{
-   if ((!d->tclass) || (!d->iclass))
-      return;
-
-   if (d->text)
-     {
-	TextclassApply(d->iclass, d->win, d->w, d->h, 0, 0, STATE_NORMAL, 1,
-		       d->tclass, d->text);
-     }
-   else if (d->item)
-     {
-	DialogDrawItems(d, d->item, x, y, w, h);
+	ITApply(db->win, db->iclass, NULL, db->w, db->h, state, 0, 0, 0,
+		ST_WIDGET, db->tclass, NULL, db->text);
      }
 }
 
@@ -521,13 +490,29 @@ DialogRedraw(Dialog * d)
    if ((!d->tclass) || (!d->iclass))
       return;
 
-   ImageclassApply(d->iclass, d->win, d->w, d->h, 0, 0, STATE_NORMAL, 0,
-		   ST_DIALOG);
+#if DEBUG_DIALOGS
+   Eprintf("DialogRedraw win=%#lx pmap=%#lx\n", d->win, d->pmm.pmap);
+#endif
+
+   FreePmapMask(&(d->pmm));
+   ImageclassApplyCopy(d->iclass, d->win, d->w, d->h, 0, 0, STATE_NORMAL,
+		       &(d->pmm), 0, ST_DIALOG);
+   ESetWindowBackgroundPixmap(d->win, d->pmm.pmap);
+
+   d->redraw = 1;
 
    for (i = 0; i < d->num_buttons; i++)
       DialogDrawButton(d, d->button[i]);
 
-   DialogDraw(d);
+   if (d->text)
+     {
+	TextclassApply(d->iclass, d->pmm.pmap, d->w, d->h, 0, 0, STATE_NORMAL,
+		       1, d->tclass, d->text);
+     }
+   else if (d->item)
+     {
+	DialogDrawItems(d, d->item, 0, 0, 99999, 99999);
+     }
 }
 
 static void
@@ -535,7 +520,7 @@ DialogEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 {
    Dialog             *d = ewin->data;
 
-   if (!d || Mode.mode != MODE_NONE)
+   if (!d || Mode.mode != MODE_NONE || !EoIsShown(ewin))
       return;
 
    if (TransparencyUpdateNeeded() || ImageclassIsTransparent(d->iclass))
@@ -638,7 +623,7 @@ ShowDialog(Dialog * d)
    if (!ewin)
       return;
 
-   ewin->client.event_mask |= KeyPressMask | ExposureMask;
+   ewin->client.event_mask |= KeyPressMask;
    ESelectInput(d->win, ewin->client.event_mask);
 
    EwinMoveToDesktop(ewin, EoGetDesk(ewin));
@@ -656,9 +641,9 @@ ShowDialog(Dialog * d)
 	   ArrangeEwinCentered(ewin);
      }
 
-   ShowEwin(ewin);
    DialogRedraw(d);
    DialogUpdate(d);
+   ShowEwin(ewin);
 }
 
 void
@@ -1120,7 +1105,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	EMapWindow(di->win);
 	ESelectInput(di->win,
 		     EnterWindowMask | LeaveWindowMask | ButtonPressMask |
-		     ButtonReleaseMask | ExposureMask);
+		     ButtonReleaseMask);
 	di->w = iw;
 	di->h = ih;
 	break;
@@ -1132,12 +1117,11 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	ih += pad->top + pad->bottom;
 	di->win = ECreateWindow(d->win, -20, -20, 2, 2, 0);
 	EMapWindow(di->win);
-	ESelectInput(di->win, ExposureMask);
 	di->item.area.area_win = ECreateWindow(di->win, -20, -20, 2, 2, 0);
 	EMapWindow(di->item.area.area_win);
 	ESelectInput(di->item.area.area_win,
 		     EnterWindowMask | LeaveWindowMask | ButtonPressMask |
-		     ButtonReleaseMask | ExposureMask | PointerMotionMask);
+		     ButtonReleaseMask | PointerMotionMask);
 	EventCallbackRegister(di->item.area.area_win, 0, DialogHandleEvents, d);
 	di->w = iw;
 	di->h = ih;
@@ -1162,7 +1146,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	EMapWindow(di->win);
 	ESelectInput(di->win,
 		     EnterWindowMask | LeaveWindowMask | ButtonPressMask |
-		     ButtonReleaseMask | ExposureMask);
+		     ButtonReleaseMask);
 	di->w = iw;
 	di->h = ih;
 	break;
@@ -1220,7 +1204,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	EMapWindow(di->win);
 	ESelectInput(di->win,
 		     EnterWindowMask | LeaveWindowMask | ButtonPressMask |
-		     ButtonReleaseMask | ExposureMask);
+		     ButtonReleaseMask);
 	di->w = iw;
 	di->h = ih;
 	break;
@@ -1553,7 +1537,7 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
 static void
 DialogDrawItem(Dialog * d, DItem * di)
 {
-   int                 state;
+   int                 state, x, w;
    EImageBorder       *pad;
 
    if (!di->update && di->type != DITEM_TABLE)
@@ -1640,6 +1624,7 @@ DialogDrawItem(Dialog * d, DItem * di)
 			   di->item.slider.knob_w, di->item.slider.knob_h,
 			   0, 0, state, 0, ST_WIDGET);
 	break;
+
      case DITEM_BUTTON:
 	state = STATE_NORMAL;
 	if ((di->hilited) && (di->clicked))
@@ -1648,15 +1633,15 @@ DialogDrawItem(Dialog * d, DItem * di)
 	   state = STATE_HILITED;
 	else if (!(di->hilited) && (di->clicked))
 	   state = STATE_CLICKED;
-	ImageclassApply(di->iclass, di->win, di->w, di->h, 0, 0, state, 0,
-			ST_WIDGET);
-	TextclassApply(di->iclass, di->win, di->w, di->h, 0, 0, state, 1,
-		       di->tclass, di->text);
+	ITApply(di->win, di->iclass, NULL, di->w, di->h, state, 0, 0, 0,
+		ST_WIDGET, di->tclass, NULL, di->text);
 	break;
+
      case DITEM_AREA:
 	ImageclassApply(di->iclass, di->win, di->w, di->h, 0, 0,
 			STATE_NORMAL, 0, ST_DIALOG);
 	break;
+
      case DITEM_CHECKBUTTON:
 	state = STATE_NORMAL;
 	if ((di->hilited) && (di->clicked))
@@ -1665,33 +1650,28 @@ DialogDrawItem(Dialog * d, DItem * di)
 	   state = STATE_HILITED;
 	else if (!(di->hilited) && (di->clicked))
 	   state = STATE_CLICKED;
-	if (DialogItemCheckButtonGetState(di))
-	   ImageclassApply(di->iclass, di->item.check_button.check_win,
-			   di->item.check_button.check_orig_w,
-			   di->item.check_button.check_orig_h, 1, 0, state,
-			   0, ST_WIDGET);
-	else
-	   ImageclassApply(di->iclass, di->item.check_button.check_win,
-			   di->item.check_button.check_orig_w,
-			   di->item.check_button.check_orig_h, 0, 0, state,
-			   0, ST_WIDGET);
-	EClearArea(d->win, di->x, di->y, di->w, di->h, False);
+	ImageclassApply(di->iclass, di->item.check_button.check_win,
+			di->item.check_button.check_orig_w,
+			di->item.check_button.check_orig_h,
+			DialogItemCheckButtonGetState(di), 0, state,
+			0, ST_WIDGET);
+	if (!d->redraw)
+	   break;
 	pad = ImageclassGetPadding(di->iclass);
-	TextDraw(di->tclass, d->win, 0, 0, STATE_NORMAL, di->text,
-		 di->x + di->item.check_button.check_orig_w +
-		 pad->left, di->y,
-		 di->w - di->item.check_button.check_orig_w -
-		 pad->left, 99999, 17, TextclassGetJustification(di->tclass));
-	break;
+	x = di->x + di->item.check_button.check_orig_w + pad->left;
+	w = di->w - di->item.check_button.check_orig_w - pad->left;
+	goto draw_text;
+
      case DITEM_TEXT:
-	EClearArea(d->win, di->x, di->y, di->w, di->h, False);
-	TextDraw(di->tclass, d->win, 0, 0, STATE_NORMAL, di->text,
-		 di->x, di->y, di->w, 99999, 17,
-		 TextclassGetJustification(di->tclass));
-	break;
-     case DITEM_IMAGE:
-	break;
+	if (!d->redraw)
+	   break;
+	x = di->x;
+	w = di->w;
+	goto draw_text;
+
      case DITEM_SEPARATOR:
+	if (!d->redraw)
+	   break;
 	if (di->item.separator.horizontal)
 	   ImageclassApply(di->iclass, di->win, di->w, di->h, 0, 0,
 			   STATE_NORMAL, 0, ST_WIDGET);
@@ -1699,6 +1679,7 @@ DialogDrawItem(Dialog * d, DItem * di)
 	   ImageclassApply(di->iclass, di->win, di->w, di->h, 0, 0,
 			   STATE_CLICKED, 0, ST_WIDGET);
 	break;
+
      case DITEM_RADIOBUTTON:
 	state = STATE_NORMAL;
 	if ((di->hilited) && (di->clicked))
@@ -1707,25 +1688,23 @@ DialogDrawItem(Dialog * d, DItem * di)
 	   state = STATE_HILITED;
 	else if (!(di->hilited) && (di->clicked))
 	   state = STATE_CLICKED;
-	if (di->item.radio_button.onoff)
-	   ImageclassApply(di->iclass, di->item.radio_button.radio_win,
-			   di->item.radio_button.radio_orig_w,
-			   di->item.radio_button.radio_orig_h, 1, 0, state,
-			   0, ST_WIDGET);
-	else
-	   ImageclassApply(di->iclass, di->item.radio_button.radio_win,
-			   di->item.radio_button.radio_orig_w,
-			   di->item.radio_button.radio_orig_w, 0, 0, state,
-			   0, ST_WIDGET);
-	EClearArea(d->win, di->x, di->y, di->w, di->h, False);
+	ImageclassApply(di->iclass, di->item.radio_button.radio_win,
+			di->item.radio_button.radio_orig_w,
+			di->item.radio_button.radio_orig_h,
+			di->item.radio_button.onoff, 0, state, 0, ST_WIDGET);
+	if (!d->redraw)
+	   break;
 	pad = ImageclassGetPadding(di->iclass);
-	TextDraw(di->tclass, d->win, 0, 0, STATE_NORMAL, di->text,
-		 di->x + di->item.radio_button.radio_orig_w +
-		 pad->left, di->y,
-		 di->w - di->item.radio_button.radio_orig_w -
-		 pad->left, 99999, 17, TextclassGetJustification(di->tclass));
-	break;
+	x = di->x + di->item.radio_button.radio_orig_w + pad->left;
+	w = di->w - di->item.radio_button.radio_orig_w - pad->left;
+	goto draw_text;
+
      default:
+	break;
+
+      draw_text:
+	TextDraw(di->tclass, d->pmm.pmap, 0, 0, STATE_NORMAL, di->text,
+		 x, di->y, w, 99999, 17, TextclassGetJustification(di->tclass));
 	break;
      }
 
@@ -1738,6 +1717,9 @@ DialogUpdate(Dialog * d)
 {
    if (d->item)
       DialogDrawItem(d, d->item);
+   if (d->xu1 < d->xu2 && d->yu1 < d->yu2)
+      EClearArea(d->win, d->xu1, d->yu1, d->xu2 - d->xu1, d->yu2 - d->yu1,
+		 False);
    d->update = 0;
    d->xu1 = d->yu1 = 99999;
    d->xu2 = d->yu2 = 0;
@@ -1756,6 +1738,7 @@ DialogsCheckUpdate(void)
    {
       if (d->update)
 	 DialogUpdate(d);
+      d->redraw = 0;
    }
 }
 
@@ -1832,7 +1815,7 @@ DialogItemCheckButtonSetPtr(DItem * di, char *onoff_ptr)
 static int
 DialogItemCheckButtonGetState(DItem * di)
 {
-   return *(di->item.check_button.onoff_ptr);
+   return *(di->item.check_button.onoff_ptr) ? 1 : 0;
 }
 
 void
@@ -2187,28 +2170,6 @@ DialogEventMotion(Dialog * d, XEvent * ev)
 }
 
 static void
-DialogEventExpose(Dialog * d, XEvent * ev)
-{
-   Window              win = ev->xexpose.window;
-   DItem              *di;
-
-   DialogDrawArea(d, ev->xexpose.x, ev->xexpose.y,
-		  ev->xexpose.width, ev->xexpose.height);
-
-   di = DialogFindDItem(d, win);
-   if (!di)
-      return;
-
-   switch (di->type)
-     {
-     case DITEM_AREA:
-	if (di->func)
-	   di->func(d, di->val, di->data);
-	break;
-     }
-}
-
-static void
 DialogEventMouseDown(Dialog * d, XEvent * ev)
 {
    Window              win = ev->xbutton.window;
@@ -2450,9 +2411,6 @@ DialogHandleEvents(XEvent * ev, void *prm)
      case LeaveNotify:
 	DialogEventMouseOut(d, ev);
 	break;
-     case Expose:
-	DialogEventExpose(d, ev);
-	break;
      }
 }
 
@@ -2472,8 +2430,6 @@ DItemHandleEvents(XEvent * ev, void *prm)
      case EnterNotify:
 	break;
      case LeaveNotify:
-	break;
-     case Expose:
 	break;
      }
 }
@@ -2503,8 +2459,6 @@ DButtonHandleEvents(XEvent * ev, void *prm)
 	break;
      case LeaveNotify:
 	db->hilited = 0;
-	break;
-     case Expose:
 	break;
      default:
 	return;
