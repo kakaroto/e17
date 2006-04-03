@@ -1,0 +1,5 @@
+program{
+	name: "source_transition_1-0_end";
+	action: SIGNAL_EMIT "source_transition_1-0_end" "th";
+}
+

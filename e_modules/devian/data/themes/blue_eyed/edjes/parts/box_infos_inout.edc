@@ -1,0 +1,18 @@
+part{
+	name: "infos_inout";
+	type: RECT;
+	mouse_events: 1;
+	repeat_events: 1;
+	description{
+		state: "default" 0.0;
+		color: 255 255 255 0;
+		rel1{
+			relative: 0.0 0.0;
+			to: "infos_border";
+		}
+		rel2{
+			relative: 1.0 1.0;
+			to: "infos_border";
+		}
+	}
+}

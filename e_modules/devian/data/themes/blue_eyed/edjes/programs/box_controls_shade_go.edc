@@ -1,0 +1,20 @@
+program{
+	name: "controls_shade_go";
+	script{
+		set_int(controls_visible, 0);
+		/* Pause */
+		if (!get_int(paused))
+			run_program(PROGRAM:"button_pause_shade_go");
+		else
+			run_program(PROGRAM:"button_pause_p_shade_go");
+		/* Refresh */
+		run_program(PROGRAM:"button_refresh_shade_go");
+		/* Previous */
+		if (get_int(previous_show))
+			run_program(PROGRAM:"button_previous_shade_go");
+		/* Set background */
+		if (get_int(set_bg_show))
+			run_program(PROGRAM:"button_set_bg_shade_go");
+	}
+}
+

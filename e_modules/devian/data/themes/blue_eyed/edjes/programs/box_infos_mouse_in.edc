@@ -1,0 +1,11 @@
+program{
+	name: "infos_mouse_in";
+	signal: "mouse,in";
+	source: "infos_inout";
+	script{
+		if (get_int(timer_infos_shade) > 0){
+			cancel_timer(get_int(timer_infos_shade));
+			set_int(timer_infos_shade, 0);
+		}
+	}
+}

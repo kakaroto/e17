@@ -1,0 +1,85 @@
+*****************************
+*** dEvian's themes HOWTO ***
+*****************************
+
+A dEvian theme is made of 3 groups :
+ - Box group, wich is the most important group. It contains the source (picture, rss).
+ - Rss group, used to display one rss news in the Box. Each news is in one Rss group, and multiples rss groups are in the Box.
+ - Popup group, used for the popups on events (thumbnailing pictures, rss news ...).
+
+Lets see a more detailed explanation
+For MESSAGES:
+ - if no explanation, 1=yes, 0=no
+For SIGNALS
+ - (source, name) description
+For MESSAGES and SIGNALS
+ - if "*" before item, this is critical and must be used always and exactly like its said
+      "-" optional
+
+1) Box
+
+ The content of the dEvian is in 2 swallow objects. Its used to do nice transitions when updating the source.
+ So, in the theme, we see one source (picture, rss ...) as two object: source0 and source1.
+ The transition is like this (lets say current object is source0) :
+  - dEvian sets the new object in source1
+  - dEvian sends a signal to the theme "do transition from source0 to source1"
+  - The theme sends to dEvian a "end signal" when transition is finished
+  - dEvian removes the object from source1
+ And we can go again from source1 to source0 =)
+
+ You NEED to have a correct data "infos_initial_size". dEvian use it to set the width of the information text.
+ You can change it during the execution by sending a message (0, MSG_SEND_INFOS_W).
+
+ SIGNALS dEvian -> theme
+  - ("", "id_always_activate") User choose to always show the id of the dEvian
+  - ("", "id_always_desactivate") User choose to not always show the id of the dEvian
+  - ("", "name_always_activate") User choose to always show the name of the dEvian
+  - ("", "name_always_desactivate") User choose to not always show the name of the dEvian
+  - ("", "source_transition_0-1_go") Start transition from source0 to source1
+  - ("", "source_transition_1-0_go") Start transition from source1 to source0
+  - ("", "source_transition_q_0-1_go") Start quick (not nice) transition from source0 to source1
+  - ("", "source_transition_q_1-0_go") Start quick (not nice) transition from source1 to source0
+
+ SIGNALS theme -> dEvian
+  - ("button_plaupause", "pause") Stop updating sources
+  - ("button_plaupause", "play") Start updating sources
+  - ("button_refresh", "refresh") Refresh the source
+  - ("button_set_bg", "set_bg") Set the current source as background
+  - ("th", "source_transition_0-1_end") End of transition from source0 to source1
+  - ("th", "source_transition_1-0_end") End of transition from source1 to source0
+  - ("th", "source_transition_q_0-1_end") End of quick (not nice) transition from source0 to source1
+  - ("th", "source_transition_q_1-0_end") End of quick (not nice) transition from source1 to source0
+
+ MESSAGES dEvian -> theme
+  - ID 0 (MSG_RECV_INFOS_POS_SET)
+    Tell the position where to display the info panel
+  - ID 1 (MSG_RECV_PART_PAUSED_SET)
+    Indicate if update are activated (between pictures, or RSS feed updates)
+  - ID 2 (MSG_RECV_INFOS_SHOW_ALLOW)
+    Indicate if info panel show is allowed
+  - ID 3 (MSG_RECV_LOADING_STATE)
+    Indicate if we have to show the loading state indicator
+  - ID 4 (MSG_RECV_SHOW_SET_BG)
+    Indicate if we have to show the "set to background" icon
+
+ MESSAGES theme -> dEvian
+  - ID 0 (MSG_SEND_INFOS_W)
+    Send the width of the infos panel
+  * ID 1 (MSG_SEND_INFOS_VISIBLE)
+    Send if the info panel is visible or not
+
+2) Rss
+
+ ...TODO: SIGNALS
+
+ MESSAGES dEvian -> theme
+  - ID 0 (MSG_RECV_ITEM_STATE)
+    When dEvian send this, the argument tells if the item is new (1) (set red color for example) or already viewed (0)
+
+3) Popups
+
+ ...TODO: SIGNALS
+ 
+ MESSAGES dEvian -> theme
+  - ID 0 (MSG_RECV_POPUP_WARN_SHOW_DISABLE)
+    When dEvian send this, the argument tells if popups are now disabled (1) or not (0)

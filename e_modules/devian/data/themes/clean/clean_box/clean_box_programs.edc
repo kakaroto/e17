@@ -1,0 +1,732 @@
+program
+{
+	name:	"init";
+	signal:	"load";
+	source:	"";
+	script
+	{
+		/* Init id and name */
+		set_int(id_active, 1);
+		set_int(name_active, 1);
+		set_int(id_always, 1);
+		set_int(name_always, 1);
+		if (get_int(id_always) == 0)
+		{
+			run_program(PROGRAM:"id_shade_go");
+		}
+		if (get_int(name_always) == 0)
+		{
+			run_program(PROGRAM:"name_shade_go");
+		}
+		/* Init controls */
+		set_int(set_bg_show, 1);
+		set_int(previous_show, 1);
+		set_int(paused, 0);
+		run_program(PROGRAM:"controls_shade_go");
+		/* Init infos */
+		set_int(timer_infos_shade, -1);
+		set_int(infos_show_allow, 0);
+		set_int(infos_pos, INFOS_POS_DEFAULT);
+		/* Init sources */
+		set_state(PART:"source1", "hidden", 0.0);
+	}
+}
+
+/* Mouse in/out */
+program
+{
+	name:	"mouse_in";
+	signal:	"mouse,in";
+	source:	"inout";
+	script
+	{
+		if (get_int(timer_infos_shade) > 0)
+		{
+			cancel_timer(get_int(timer_infos_shade));
+			set_int(timer_infos_shade, 0);
+		}
+		if (!get_int(id_active))
+		{
+			run_program(PROGRAM:"id_show_go");
+		}
+		if (!get_int(name_active))
+		{
+			run_program(PROGRAM:"name_show_go");
+		}
+		run_program(PROGRAM:"controls_show_go");
+	}
+}
+program
+{
+	name:	"mouse_out";
+	signal:	"mouse,out";
+	source:	"inout";
+	script
+	{
+		IS_IN_PART_INIT
+		IS_IN_PART("infos_inout")
+		if (!is)
+		{
+			if (!get_int(timer_infos_shade))
+				run_program(PROGRAM:"infos_shade_timer");
+		}
+		if ((get_int(id_active)) && (!get_int(id_always)))
+		{
+			run_program(PROGRAM:"id_shade_go");
+		}
+		if ((get_int(name_active)) && (!get_int(name_always)))
+		{
+			run_program(PROGRAM:"name_shade_go");
+		}
+		run_program(PROGRAM:"controls_shade_go");
+	}
+}
+program
+{
+	name:	"mouse_down";
+	signal:	"mouse,down,1";
+	source:	"inout";
+	script
+	{
+		if (get_int(infos_show_allow) &&
+			(get_int(timer_infos_shade) == -1) )
+		{
+			IS_IN_PART_INIT
+			IS_IN_PART("source0")
+			if (is)
+			{
+				run_program(PROGRAM:"infos_show_go");
+			}
+		}
+	}
+}
+
+/* Infos */
+program
+{
+	name:	"infos_mouse_in";
+	signal:	"mouse,in";
+	source:	"infos_inout";
+	script
+	{
+		if (get_int(timer_infos_shade) > 0)
+		{
+			cancel_timer(get_int(timer_infos_shade));
+			set_int(timer_infos_shade, 0);
+		}
+	}
+
+}
+program
+{
+	name:	"infos_mouse_out";
+	signal:	"mouse,out";
+	source:	"infos_inout";
+	script
+	{
+		if (!get_int(timer_infos_shade))
+			run_program(PROGRAM:"infos_shade_timer");
+	}
+
+}
+
+program
+{
+	name:	"infos_show_go";
+	script
+	{
+		set_int(timer_infos_shade, 0);
+		//send_message(MSG_INT, MSG_SEND_INFOS_W, 300);
+		send_message(MSG_INT, MSG_SEND_INFOS_VISIBLE, 1);
+
+		set_state(PART:"infos_border", "show", 0.0);
+
+		if ( get_int(infos_pos) == INFOS_POS_RIGHT)
+		{
+			run_program(PROGRAM:"infos_show_r_go");
+		}
+		else
+		{
+			if ( get_int(infos_pos) == INFOS_POS_LEFT)
+			{
+				run_program(PROGRAM:"infos_show_l_go");
+			}
+			else
+			{
+				if ( get_int(infos_pos) == INFOS_POS_TOP)
+				{
+					run_program(PROGRAM:"infos_show_t_go");
+				}
+				else
+				{
+					if ( get_int(infos_pos) == INFOS_POS_BOTTOM)
+					{
+						run_program(PROGRAM:"infos_show_b_go");
+					}
+				}
+			}
+		}
+	}
+}
+program
+{
+	name:	"infos_show_r_go";
+	action: STATE_SET "show_r" 0.0;
+	transition:	DECELERATE 1;
+	target:	"infos";
+}
+program
+{
+	name:	"infos_show_l_go";
+	action: STATE_SET "show_l" 0.0;
+	transition:	DECELERATE 1;
+	target:	"infos";
+}
+program
+{
+	name:	"infos_show_t_go";
+	action: STATE_SET "show_t" 0.0;
+	transition:	DECELERATE 1;
+	target:	"infos";
+}
+program
+{
+	name:	"infos_show_b_go";
+	action: STATE_SET "show_b" 0.0;
+	transition:	DECELERATE 1;
+	target:	"infos";
+}
+
+program
+{
+	name:	"infos_shade_timer";
+	script
+	{
+		set_int(timer_infos_shade, timer(2.0, "timer_infos_shade_cb", 0));
+	}
+}
+program
+{
+	name:	"infos_shade_go";
+	action: STATE_SET "default" 0.0;
+	transition:	DECELERATE 1;
+	target:	"infos";
+	after: "infos_shade_go_2";
+	after: "infos_shade_go_3";
+}
+program
+{
+	name:	"infos_shade_go_2";
+	script
+	{
+		set_int(timer_infos_shade, -1);
+		send_message(MSG_INT, MSG_SEND_INFOS_VISIBLE, 0);
+	}
+}
+program
+{
+	name:	"infos_shade_go_3";
+	action: STATE_SET "default" 0.0;
+	target:	"infos_border";
+}
+
+/* Ground */
+program
+{
+	name:	"border_mouse_down";
+	signal:	"mouse,down,1";
+	source:	"border";
+	script
+	{
+		if (get_int(infos_show_allow) &&
+			(get_int(timer_infos_shade) == -1) )
+		{
+			run_program(PROGRAM:"infos_show_go");
+		}
+	}
+}
+
+/* Id and name */
+program
+{
+	name:	"id_always_activate";
+	signal:	"id_always_activate";
+	source:	"";
+	script
+	{
+		set_int(id_always, 1);
+		if (get_int(id_active) == 0)
+		{
+			run_program(PROGRAM:"id_show_go");
+		}
+	}
+}
+program
+{
+	name:	"id_always_deactivate";
+	signal:	"id_always_deactivate";
+	source:	"";
+	script
+	{
+		set_int(id_always, 0);
+		if (get_int(id_active) == 1)
+		{
+			run_program(PROGRAM:"id_shade_go");
+		}
+	}
+}
+program
+{
+	name:	"id_show_go";
+	script
+	{
+		set_int(id_active, 1);
+		run_program(PROGRAM:"id_show_1");
+	}
+}
+program
+{
+	name:	"id_show_1";
+	action: STATE_SET "default" 0.0;
+	transition:	ACCELERATE 1;
+	target:	"id";
+}
+program
+{
+	name:	"id_shade_go";
+	script
+	{
+		set_int(id_active, 0);
+		run_program(PROGRAM:"id_shade_1");
+	}
+}
+program
+{
+	name:	"id_shade_1";
+	action: STATE_SET "shaded" 0.0;
+	transition:	DECELERATE 1;
+	target:	"id";
+}
+
+program
+{
+	name:	"name_always_activate";
+	signal:	"name_always_activate";
+	source:	"";
+	script
+	{
+		set_int(name_always, 1);
+		if (get_int(name_active) == 0)
+		{
+			run_program(PROGRAM:"name_show_go");
+		}
+	}
+}
+program
+{
+	name:	"name_always_deactivate";
+	signal:	"name_always_deactivate";
+	source:	"";
+	script
+	{
+		set_int(name_always, 0);
+		if (get_int(name_active) == 1)
+		{
+			run_program(PROGRAM:"name_shade_go");
+		}
+	}
+}
+program
+{
+	name:	"name_show_go";
+	script
+	{
+		set_int(name_active, 1);
+		run_program(PROGRAM:"name_show_1");
+	}
+}
+program
+{
+	name:	"name_show_1";
+	action: STATE_SET "default" 0.0;
+	transition:	ACCELERATE 1;
+	target:	"name";
+}
+program
+{
+	name:	"name_shade_go";
+	script
+	{
+		set_int(name_active, 0);
+		run_program(PROGRAM:"name_shade_1");
+	}
+}
+program
+{
+	name:	"name_shade_1";
+	action: STATE_SET "shaded" 0.0;
+	transition:	DECELERATE 1;
+	target:	"name";
+}
+
+/* Controls */
+program
+{
+	name:	"controls_show_go";
+	script
+	{
+		/* Pause */
+		if (!get_int(paused))
+			run_program(PROGRAM:"button_pause_show_go");
+		else
+			run_program(PROGRAM:"button_pause_p_show_go");
+		/* Refresh */
+		run_program(PROGRAM:"button_refresh_show_go");
+		/* Previous */
+		if (get_int(previous_show))
+			run_program(PROGRAM:"button_previous_show_go");
+		/* Set background */
+		if (get_int(set_bg_show))
+			run_program(PROGRAM:"button_set_bg_show_go");
+	}
+}
+program
+{
+	name:	"controls_shade_go";
+	script
+	{
+		/* Pause */
+		if (!get_int(paused))
+			run_program(PROGRAM:"button_pause_shade_go");
+		else
+			run_program(PROGRAM:"button_pause_p_shade_go");
+		/* Refresh */
+		run_program(PROGRAM:"button_refresh_shade_go");
+		/* Previous */
+		if (get_int(previous_show))
+			run_program(PROGRAM:"button_previous_shade_go");
+		/* Set background */
+		if (get_int(set_bg_show))
+			run_program(PROGRAM:"button_set_bg_shade_go");
+	}
+}
+program
+{
+	name: "button_pause_show_go";
+	action: STATE_SET "default" 0.0;
+	transition:	DECELERATE 1;
+	target:	"button_pause";
+}
+program
+{
+	name: "button_pause_p_show_go";
+	action: STATE_SET "default_p" 0.0;
+	transition:	DECELERATE 1;
+	target:	"button_pause";
+}
+program
+{
+	name: "button_pause_shade_go";
+	action: STATE_SET "shaded" 0.0;
+	transition:	DECELERATE 1;
+	target:	"button_pause";
+}
+program
+{
+	name: "button_pause_p_shade_go";
+	action: STATE_SET "shaded_p" 0.0;
+	transition:	DECELERATE 1;
+	target:	"button_pause";
+}
+program
+{
+	name: "button_pause_down";
+	signal: "mouse,down,1";
+	source: "button_pause";
+	script
+	{
+		if (!get_int(paused))
+		{
+			set_int(paused, 1);
+			emit("pause", "button_playpause");
+			set_state(PART:"button_pause", "default_p", 0.0);
+		}
+		else
+		{
+			set_int(paused, 0);
+			emit("play", "button_playpause");
+			set_state(PART:"button_pause", "default", 0.0);
+		}
+	}
+}
+
+program
+{
+	name: "button_refresh_show_go";
+	action: STATE_SET "default" 0.0;
+	transition:	DECELERATE 1;
+	target:	"button_refresh";
+}
+program
+{
+	name: "button_refresh_shade_go";
+	action: STATE_SET "shaded" 0.0;
+	transition:	DECELERATE 1;
+	target:	"button_refresh";
+}
+program
+{
+	name: "button_refresh_down";
+	signal: "mouse,down,1";
+	source: "button_refresh";
+	action: STATE_SET "default_p" 0.0;
+	target:	"button_refresh";
+}
+program
+{
+	name: "button_refresh_up";
+	signal: "mouse,up,1";
+	source: "button_refresh";
+	action: STATE_SET "default" 0.0;
+	target:	"button_refresh";
+}
+program
+{
+	name: "button_refresh_click";
+	signal: "mouse,clicked,1";
+	source: "button_refresh";
+	script
+	{
+		emit("refresh", "button_refresh");
+	}
+}
+
+program
+{
+	name: "button_previous_show_go";
+	action: STATE_SET "default" 0.0;
+	transition:	DECELERATE 1;
+	target:	"button_previous";
+}
+program
+{
+	name: "button_previous_shade_go";
+	action: STATE_SET "shaded" 0.0;
+	transition:	DECELERATE 1;
+	target:	"button_previous";
+}
+program
+{
+	name: "button_previous_down";
+	signal: "mouse,down,1";
+	source: "button_previous";
+	action: STATE_SET "default_p" 0.0;
+	target:	"button_previous";
+}
+program
+{
+	name: "button_previous_up";
+	signal: "mouse,up,1";
+	source: "button_previous";
+	action: STATE_SET "default" 0.0;
+	target:	"button_previous";
+}
+program
+{
+	name: "button_previous_click";
+	signal: "mouse,clicked,1";
+	source: "button_previous";
+	script
+	{
+		emit("previous", "button_previous");
+	}
+}
+
+program
+{
+	name: "button_set_bg_show_go";
+	action: STATE_SET "default" 0.0;
+	transition:	DECELERATE 1;
+	target:	"button_set_bg";
+}
+program
+{
+	name: "button_set_bg_shade_go";
+	action: STATE_SET "shaded" 0.0;
+	transition:	DECELERATE 1;
+	target:	"button_set_bg";
+}
+program
+{
+	name: "button_set_bg_down";
+	signal: "mouse,down,1";
+	source: "button_set_bg";
+	action: STATE_SET "default_p" 0.0;
+	target:	"button_set_bg";
+}
+program
+{
+	name: "button_set_bg_up";
+	signal: "mouse,up,1";
+	source: "button_set_bg";
+	action: STATE_SET "default" 0.0;
+	target:	"button_set_bg";
+}
+program
+{
+	name: "button_set_bg_click";
+	signal: "mouse,clicked,1";
+	source: "button_set_bg";
+	script
+	{
+		emit("set_bg", "button_set_bg");
+	}
+}
+
+/* Loading state */
+program
+{
+	name:	"loading_state_go";
+	action:	STATE_SET "on" 0.0;
+	transition: DECELERATE 0.5;
+	target:	"loading_state";
+	target: "loading_state_bg";
+	after: "loading_state_go_2";
+}
+program
+{
+	name:	"loading_state_go_2";
+	action:	STATE_SET "on_1" 0.0;
+	transition: DECELERATE 0.5;
+	target:	"loading_state";
+	after: "loading_state_go";
+}
+program
+{
+	name:	"loading_state_stop";
+	action:	STATE_SET "default" 0.0;
+	transition: DECELERATE 0.5;
+	target:	"loading_state";
+	target: "loading_state_bg";
+}
+
+
+/* Transitions between sources */
+program
+{
+	name:	"source_transition_1-0";
+	signal:  "source_transition_1-0_go";
+	action:	STATE_SET "done" 0.0;
+	transition:	LINEAR 1;
+	target:	"source_clip";
+	after: "source_transition_1-0_b";
+}
+program
+{
+	name:	"source_transition_1-0_b";
+	action:	STATE_SET "default" 0.0;
+	target:	"source0";
+	after: "source_transition_1-0_c";
+}
+program
+{
+	name:	"source_transition_1-0_c";
+	action:	STATE_SET "hidden" 0.0;
+	target:	"source1";
+	after: "source_transition_1-0_d";
+}
+program
+{
+	name:	"source_transition_1-0_d";
+	action:	STATE_SET "default" 0.0;
+	transition:	SINUSOIDAL 1;
+	target:	"source_clip";
+	after: "source_transition_1-0_end";
+}
+program
+{
+	name:	"source_transition_1-0_end";
+	action: SIGNAL_EMIT "source_transition_1-0_end" "th";
+}
+
+
+program
+{
+	name:	"source_transition_q_1-0";
+	signal:	"source_transition_q_1-0_go";
+	action:	STATE_SET "default" 0.0;
+	target:	"source0";
+	after: "source_transition_q_1-0_b";
+}
+program
+{
+	name:	"source_transition_q_1-0_b";
+	action:	STATE_SET "hidden" 0.0;
+	target:	"source1";
+	after: "source_transition_q_1-0_end";
+}
+program
+{
+	name:	"source_transition_q_1-0_end";
+	action: SIGNAL_EMIT "source_transition_q_1-0_end" "th";
+}
+
+
+program
+{
+	name:	"source_transition_0-1";
+	signal:	"source_transition_0-1_go";
+	action:	STATE_SET "done" 0.0;
+	transition:	LINEAR 1;
+	target:	"source_clip";
+	after: "source_transition_0-1_b";
+}
+program
+{
+	name:	"source_transition_0-1_b";
+	action:	STATE_SET "hidden" 0.0;
+	target:	"source0";
+	after: "source_transition_0-1_c";
+}
+program
+{
+	name:	"source_transition_0-1_c";
+	action:	STATE_SET "default" 0.0;
+	target:	"source1";
+	after: "source_transition_0-1_d";
+}
+program
+{
+	name:	"source_transition_0-1_d";
+	action:	STATE_SET "default" 0.0;
+	transition:	SINUSOIDAL 1;
+	target:	"source_clip";
+	after: "source_transition_0-1_end";
+}
+program
+{
+	name:	"source_transition_0-1_end";
+	action: SIGNAL_EMIT "source_transition_0-1_end" "th";
+}
+
+
+program
+{
+	name:	"source_transition_q_0-1";
+	signal:	"source_transition_q_0-1_go";
+	action:	STATE_SET "hidden" 0.0;
+	target:	"source0";
+	after: "source_transition_q_0-1_b";
+}
+program
+{
+	name:	"source_transition_q_0-1_b";
+	action:	STATE_SET "default" 0.0;
+	target:	"source1";
+	after: "source_transition_q_0-1_end";
+}
+program
+{
+	name:	"source_transition_q_0-1_end";
+	action: SIGNAL_EMIT "source_transition_q_0-1_end" "th";
+}

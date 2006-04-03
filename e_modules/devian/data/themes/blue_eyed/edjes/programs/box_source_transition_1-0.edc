@@ -1,0 +1,8 @@
+program{
+	name: "source_transition_1-0";
+	signal: "source_transition_1-0_go";
+	action: STATE_SET "done" 0.0;
+	transition: LINEAR 1;
+	target: "source_clip";
+	after: "source_transition_1-0_b";
+}

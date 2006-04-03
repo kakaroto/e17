@@ -1,0 +1,39 @@
+program{
+	name: "infos_show_go";
+	script{
+		new px, py, pw, ph;
+		get_geometry(PART:"source0", px, py, pw, ph);
+		if (ph < 250)
+			set_int(infos_static, 1);
+		else
+			set_int(infos_static, 0);
+		set_int(timer_infos_shade, 0);
+		//send_message(MSG_INT, MSG_SEND_INFOS_W, 300);
+		send_message(MSG_INT, MSG_SEND_INFOS_VISIBLE, 1);
+		set_state(PART:"infos_border", "show", 0.0);
+		if ( get_int(infos_pos) == INFOS_POS_RIGHT){
+			set_state(PART:"infos", "ready_r", 0.0);
+			set_state(PART:"infos_clip", "show_r", 0.0);
+		}
+		else{
+			if ( get_int(infos_pos) == INFOS_POS_LEFT){
+				set_state(PART:"infos", "ready_l", 0.0);
+				set_state(PART:"infos_clip", "show_l", 0.0);
+			}
+			else{
+				if ( get_int(infos_pos) == INFOS_POS_TOP){
+					set_state(PART:"infos", "ready_t", 0.0);
+					set_state(PART:"infos_clip", "show_t", 0.0);
+				}
+				else{
+					if ( get_int(infos_pos) == INFOS_POS_BOTTOM){
+						set_state(PART:"infos", "ready_b", 0.0);
+						set_state(PART:"infos_clip", "show_b", 0.0);
+					}
+				}
+			}
+		}
+		run_program(PROGRAM:"infos_show_go_2");
+	}
+}
+

@@ -1,0 +1,55 @@
+program
+{
+	name:	"close_click";
+	signal:	"mouse,up,1";
+	source:	"close";
+	script
+	{
+		emit("close", "popup");
+	}
+}
+program
+{
+	name:	"disable_click";
+	signal:	"mouse,up,1";
+	source:	"disable";
+	action: STATE_SET "clicked" 0.0;
+	transition: DECELERATE 1.5;
+	target: "disable";
+	after: "disable_click_1";
+}
+program
+{
+	name:	"disable_click_1";
+	script
+	{
+		emit("desactivate", "popup");
+	}
+}
+program
+{
+	name: "background_click";
+	signal: "mouse,up,1";
+	source: "background";
+	script
+	{
+		emit("next", "popup");
+	}
+}
+program
+{
+	name: "update_anim";
+	signal: "update";
+	source: "devian";
+	action: STATE_SET "hidden" 0.0;
+	transition:	DECELERATE 1;
+	target:	"logo";
+	after: "update_anim_1";
+}
+program
+{
+	name: "update_anim_1";
+	action: STATE_SET "default" 0.0;
+	transition:	DECELERATE 1;
+	target:	"logo";
+}

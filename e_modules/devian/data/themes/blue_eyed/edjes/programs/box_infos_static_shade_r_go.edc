@@ -1,0 +1,8 @@
+program{
+	name: "infos_static_shade_r_go";
+	action: STATE_SET "show_r" 0.0;
+	transition: DECELERATE 1;
+	target: "infos_clip";
+	after: "infos_shade_r_go";
+}
+

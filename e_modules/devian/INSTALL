@@ -1,0 +1,33 @@
+With these sources, you can build a module with different possible features.
+Features avalaible:
+  - photo: Display pictures
+  - rss: Display rss feeds
+  - log: Display log files
+
+You can create a module with ALL these features, called dEvian
+  OR you can create a module with only ONE feature, wich will have a DIFFERENT NAME.
+A module with only picture feature will be called dEphoto
+A module with only rss feature will be called dErss
+A module with only log feature will be called dElog
+
+To choose with module you want to build, you give a parameter to ./autogen.sh command:
+dEphoto is created by ./autogen.sh --enable-modular=photo
+dErss is created by ./autogen.sh --enable-modular=rss
+dElog is created by ./autogen.sh --enable-modular=log
+
+dEvian is created by ./autogen.sh with NO extra parameters
+
+--------------------------------------
+------------- Simply do --------------
+(ALL AS SIMPLE USER  !!! NON ROOT !!!)
+
+./autogen.sh
+  OR ./autogen.sh --enable-modular=photo
+  OR ./autogen.sh --enable-modular=rss
+  OR ./autogen.sh --enable-modular=log
+make
+make install
+
+--------------------------------------
+
+It will install the module in your ~/.e/e/modules/

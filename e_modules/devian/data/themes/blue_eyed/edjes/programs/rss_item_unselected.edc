@@ -1,0 +1,10 @@
+program{
+	name: "item_unselected";
+	signal: "mouse,out";
+	source: "background";
+	script{
+		emit("infos_unset", "item");
+		set_state(PART:"background", "default", 0.0);
+		run_program(PROGRAM:"open_hide");
+	}
+}

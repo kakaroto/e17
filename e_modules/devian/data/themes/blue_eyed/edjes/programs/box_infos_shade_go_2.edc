@@ -1,0 +1,8 @@
+program{
+	name: "infos_shade_go_2";
+	script{
+		set_int(timer_infos_shade, -1);
+		send_message(MSG_INT, MSG_SEND_INFOS_VISIBLE, 0);
+	}
+}
+

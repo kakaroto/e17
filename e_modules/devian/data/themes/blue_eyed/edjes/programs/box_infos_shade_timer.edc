@@ -1,0 +1,7 @@
+program{
+	name: "infos_shade_timer";
+	script{
+		set_int(timer_infos_shade, timer(2.0, "timer_infos_shade_cb", 0));
+	}
+}
+

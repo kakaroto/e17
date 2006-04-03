@@ -1,0 +1,10 @@
+program{
+	name: "update_anim";
+	signal: "update";
+	source: "devian";
+	action: STATE_SET "hidden" 0.0;
+	transition: DECELERATE 1;
+	target: "logo";
+	after: "update_anim_1";
+}
+

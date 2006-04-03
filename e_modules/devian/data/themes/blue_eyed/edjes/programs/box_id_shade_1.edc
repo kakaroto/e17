@@ -1,0 +1,7 @@
+program{
+	name: "id_shade_1";
+	action: STATE_SET "shaded" 0.0;
+	transition: DECELERATE 0.9;
+	target: "id";
+}
+

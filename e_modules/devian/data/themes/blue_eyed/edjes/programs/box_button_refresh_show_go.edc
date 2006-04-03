@@ -1,0 +1,7 @@
+program{
+	name: "button_refresh_show_go";
+	action: STATE_SET "default" 0.0;
+	transition: DECELERATE 1;
+	target: "button_refresh";
+}
+

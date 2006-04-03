@@ -1,0 +1,7 @@
+program{
+	name: "button_set_bg_down";
+	signal: "mouse,down,1";
+	source: "button_set_bg";
+	action: STATE_SET "default_p" 0.0;
+	target: "button_set_bg";
+}

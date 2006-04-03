@@ -1,0 +1,31 @@
+program{
+	name: "init";
+	signal: "load";
+	source: "";
+	script{
+		/* Init id and name */
+		set_int(id_active, 1);
+		set_int(name_active, 1);
+		set_int(id_always, 1);
+		set_int(name_always, 1);
+		if (get_int(id_always) == 0){
+			run_program(PROGRAM:"id_shade_go");
+		}
+		if (get_int(name_always) == 0){
+			run_program(PROGRAM:"name_shade_go");
+		}
+		/* Init controls */
+		set_int(set_bg_show, 1);
+		set_int(previous_show, 1);
+		set_int(paused, 0);
+		set_int(controls_visible, 0);
+		run_program(PROGRAM:"controls_shade_go");
+		/* Init infos */
+		set_int(timer_infos_shade, -1);
+		set_int(infos_show_allow, 0);
+		set_int(infos_pos, INFOS_POS_DEFAULT);
+		set_int(infos_static, 0);
+		/* Init sources */
+		set_state(PART:"source1", "hidden", 0.0);
+	}
+}

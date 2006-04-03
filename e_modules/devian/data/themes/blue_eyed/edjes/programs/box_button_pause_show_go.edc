@@ -1,0 +1,7 @@
+program{
+	name: "button_pause_show_go";
+	action: STATE_SET "default" 0.0;
+	transition: DECELERATE .5;
+	target: "button_pause";
+}
+

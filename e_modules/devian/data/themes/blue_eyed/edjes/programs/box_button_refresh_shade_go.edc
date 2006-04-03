@@ -1,0 +1,6 @@
+program{
+	name: "button_refresh_shade_go";
+	action: STATE_SET "shaded" 0.0;
+	transition: DECELERATE 1;
+	target: "button_refresh";
+}

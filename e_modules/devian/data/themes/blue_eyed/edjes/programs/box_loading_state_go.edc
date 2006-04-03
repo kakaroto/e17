@@ -1,0 +1,9 @@
+program{
+	name: "loading_state_go";
+	action: STATE_SET "on" 0.0;
+	transition: DECELERATE 0.5;
+	target: "loading_state";
+	target: "loading_state_bg";         
+	after: "loading_state_go_2";
+}
+

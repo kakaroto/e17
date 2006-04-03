@@ -1,0 +1,681 @@
+/* Information Panel */
+part
+{
+	name:    "infos_border";
+	type: IMAGE;
+	mouse_events: 0;
+	description
+	{
+		state: "default" 0.0;
+		visible: 0;
+		color: 255 255 255 200;
+		rel1
+		{
+			relative: 0.0 0.0;
+			to: "infos";
+			offset: -5 -5;
+		}
+		rel2
+		{
+			relative: 1.0 1.0;
+			to: "infos";
+			offset: 5 5;
+		}
+		image
+		{
+			normal: "infos_border.png";
+			middle: 1;
+			border: 10 10 10 10;
+		}
+		fill
+		{
+			smooth: 0;
+		}
+	}
+	description
+	{
+		state: "show" 0.0;
+		inherit: "default" 0.0;
+		visible: 1;
+	}
+}
+part
+{
+	name: "infos";
+	type: SWALLOW;
+	mouse_events: 0;
+	description
+	{
+		state: "default" 0.0;
+		visible: 0;
+		rel1
+		{
+			relative: 0.5 0.5;
+			to: "source0";
+		}
+		rel2
+		{
+			relative: 0.5 0.5;
+			to: "source0";
+		}
+	}
+	description
+	{
+		state: "show_r" 0.0;
+		inherit: "default" 0.0;
+		visible: 1;
+		rel1
+		{
+			relative: 1.0 0.0;
+			to: "border";
+			offset: 5 0;
+		}
+		rel2
+		{
+			relative: 1.0 0.0;
+			to: "border";
+			offset: 305 200;
+		}
+	}
+	description
+	{
+		state: "show_l" 0.0;
+		inherit: "show_r" 0.0;
+		rel1
+		{
+			relative: 0.0 0.0;
+			offset: -305 0;
+		}
+		rel2
+		{
+			relative: 0.0 0.0;
+			offset: -5 200;
+		}
+	}
+	description
+	{
+		state: "show_t" 0.0;
+		inherit: "show_r" 0.0;
+		rel1
+		{
+			relative: 0.0 0.0;
+			offset: 0 -200;
+		}
+		rel2
+		{
+			relative: 0.0 0.0;
+			offset: 305 -5;
+		}
+	}
+	description
+	{
+		state: "show_b" 0.0;
+		inherit: "show_r" 0.0;
+		rel1
+		{
+			relative: 0.0 1.0;
+			offset: 0 5;
+		}
+		rel2
+		{
+			relative: 0.0 1.0;
+			offset: 305 200;
+		}
+	}
+}
+part
+{
+	name:           "infos_inout";
+	type:           RECT;
+	mouse_events:   1;
+	repeat_events: 1;
+	description
+	{
+		state: "default" 0.0;
+		color: 255 255 255 0;
+		rel1
+		{
+			relative: 0.0 0.0;
+			to: "infos_border";
+		}
+		rel2
+		{
+			relative: 1.0 1.0;
+			to: "infos_border";
+		}
+	}
+}
+
+
+/* Ground */
+part
+{
+	name:    "border";
+	type: IMAGE;
+	mouse_events: 1;
+	description
+	{
+		state: "default" 0.0;
+		rel1
+		{
+			relative: 0.0 0.0;
+		}
+		rel2
+		{
+			relative: 1.0 1.0;
+		}
+		image
+		{
+			normal: "border.png";
+			//middle: 1;
+			border: 42 42 42 42;
+		}
+		fill
+		{
+			smooth: 0;
+		}
+	}
+}
+
+
+/* Sources */
+part
+{
+	name:	"source0";
+	type:	SWALLOW;
+	mouse_events:	0;
+	description
+	{
+		state:    "default" 0.0;
+		//aspect:   1.0 1.0;
+		//align:    0.5 0.5;
+		visible:	1;
+		rel1
+		{
+			relative: 0.0 0.0;
+			offset:   40 40;
+		}
+		rel2
+		{
+			relative: 1.0 1.0;
+			offset:   -40 -40;
+		}
+	}
+	description
+	{
+		state:	"hidden" 0.0;
+		inherit:	"default" 0.0;
+		visible:	0;
+	}
+}
+part
+{
+	name:         "source1";
+	type:         SWALLOW;
+	mouse_events: 0;
+	description
+	{
+		state:    "default" 0.0;
+		//aspect:   1.0 1.0;
+		//align:    0.5 0.5;
+		visible:	1;
+		rel1
+		{
+			relative: 0.0 0.0;
+			offset:   40 40;
+		}
+		rel2
+		{
+			relative: 1.0 1.0;
+			offset:   -40 -40;
+		}
+	}
+	description
+	{
+		state:	"hidden" 0.0;
+		inherit:	"default" 0.0;
+		visible:	0;
+	}
+}
+part 
+{
+	name:          "source_clip";
+	type:          RECT;
+	mouse_events:  0;
+	description
+	{
+		state: "default" 0.0;
+		rel1
+		{
+			relative: 0.0 0.0;
+			to: "source0";
+		}
+		rel2
+		{
+			relative: 1.0 1.0;
+			to: "source0";
+		}
+		color: 255 255 255 0;	
+	}
+	description
+	{
+		state: "done" 0.0;
+		inherit: "default" 0.0;
+		color: 255 255 255 255;
+	}
+}
+
+
+/* Name and id */
+part
+{
+	name, "id";
+	type: TEXT;
+	effect:       SOFT_SHADOW;
+	mouse_events: 0;
+	description
+	{
+		state: "default" 0.0;
+		rel1
+		{
+			relative: 0.0 0.0;
+			offset: 20 12;
+		}
+		color: 0 0 0 255;
+		color2: 0 0 0 255;
+		color3: 255 255 255 255;
+		text
+		{
+			text: "01";
+			font: "VeraBd";
+			size: 14;
+			align: 0.0 0.0;
+		}	
+	}
+	description
+	{
+		state: "shaded" 0.0;
+		inherit: "default" 0.0;
+		rel1
+		{
+			relative: 0.0 0.0;
+			offset: 5 5;
+		}
+		color: 0 0 0 0;
+		color2: 0 0 0 0;
+		color3: 255 255 255 0;
+	}
+}
+part
+{
+	name, "name";
+	type: TEXT;
+	effect:       SOFT_SHADOW;
+	mouse_events: 0;
+	description
+	{
+		state: "default" 0.0;
+		rel1
+		{
+			relative: 0.0 1.0;
+			offset: 0 -30;
+		}
+		color: 100 100 100 255;
+		color2: 0 0 0 255;
+		color3: 255 255 255 255;
+		text
+		{
+			text: "dEvian's Title";
+			font: "Vera";
+			size: 14;
+		}	
+	}
+	description
+	{
+		state: "shaded" 0.0;
+		inherit:  "default" 0.0;
+		rel1
+		{
+			relative: 0.0 1.0;
+			offset: 0 0;
+		}
+		color: 100 100 100 0;
+		color2: 0 0 0 0;
+		color3: 255 255 255 0;
+	}
+}
+
+
+/* Controls */
+part
+{
+	name: "button_pause";
+	type: IMAGE;
+	mouse_events: 1;
+	description
+	{
+		state: "default" 0.0;
+		aspect: 1.0 1.0;
+		color: 255 255 255 255;
+		rel1
+		{
+			relative: 1.0 0.0;
+			to: "source0";
+			offset: 2 0;
+		}
+		rel2
+		{
+			relative: 1.0 0.0;
+			to: "source0";
+			offset: 29 33;
+		}
+		image
+		{
+			normal: "button_pause.png";
+		}
+	}
+	description
+	{
+		state: "default_p" 0.0;
+		inherit: "default" 0.0;
+		image
+		{
+			normal: "button_pause_clicked.png";
+		}
+	}
+	description
+	{
+		state: "shaded" 0.0;
+		aspect: 1.0 1.0;
+		color: 255 255 255 50;
+		rel1
+		{
+			relative: 1.0 0.0;
+			to: "source0";
+			offset: 2 0;
+		}
+		rel2
+		{
+			relative: 1.0 0.0;
+			to: "source0";
+			offset: 29 33;
+		}
+
+		image
+		{
+			normal: "button_pause.png";
+		}
+	}
+	description
+	{
+		state: "shaded_p" 0.0;
+		inherit:  "shaded" 0.0;
+		image
+		{
+			normal: "button_pause_clicked.png";
+		}
+	}
+}
+
+part
+{
+	name: "button_previous";
+	type: IMAGE;
+	mouse_events: 1;
+	description
+	{
+		state: "default" 0.0;
+		aspect: 1.0 1.0;
+		color: 255 255 255 255;
+		rel1
+		{
+			relative: 0.0 1.0;
+			to: "button_pause";
+			offset: 0 6;
+		}
+		rel2
+		{
+			relative: 1.0 2.0;
+			to: "button_pause";
+			offset: 0 6;
+		}
+		image
+		{
+			normal: "button_previous.png";
+		}
+	}
+	description
+	{
+		state: "default_p" 0.0;
+		inherit: "default" 0.0;
+		image
+		{
+			normal: "button_previous_clicked.png";
+		}
+	}
+	description
+	{
+		state: "shaded" 0.0;
+		inherit: "default" 0.0;
+		color: 255 255 255 70;
+	}
+	description
+	{
+		state: "off" 0.0;
+		inherit: "default" 0.0;
+		color: 255 255 255 0;
+		visible: 0;
+		rel1
+		{
+			relative: 0.0 0.0;
+			offset: 0 0;
+		}
+		rel2
+		{
+			relative: 1.0 1.0;
+			offset: 0 0;
+		}
+	}
+}
+
+part
+{
+	name: "button_refresh";
+	type: IMAGE;
+	mouse_events: 1;
+	description
+	{
+		state: "default" 0.0;
+		aspect: 1.0 1.0;
+		color: 255 255 255 255;
+		rel1
+		{
+			relative: 0.0 1.0;
+			to: "button_previous";
+			offset: 0 6;
+		}
+		rel2
+		{
+			relative: 1.0 2.0;
+			to: "button_previous";
+			offset: 0 6;
+		}
+		image
+		{
+			normal: "button_refresh.png";
+		}
+	}
+	description
+	{
+		state: "default_p" 0.0;
+		inherit: "default" 0.0;
+		image
+		{
+			normal: "button_refresh_clicked.png";
+		}
+	}
+	description
+	{
+		state: "shaded" 0.0;
+		inherit: "default" 0.0;
+		color: 255 255 255 70;
+	}
+}
+
+part
+{
+	name: "button_set_bg";
+	type: IMAGE;
+	mouse_events: 1;
+	description
+	{
+		state: "default" 0.0;
+		aspect: 1.0 1.0;
+		color: 255 255 255 255;
+		visible: 1;
+		rel1
+		{
+			relative: 0.0 1.0;
+			to: "button_refresh";
+			offset: 0 6;
+		}
+		rel2
+		{
+			relative: 1.0 2.0;
+			to: "button_refresh";
+			offset: 0 6;
+		}
+		image
+		{
+			normal: "button_set_bg.png";
+		}
+	}
+	description
+	{
+		state: "default_p" 0.0;
+		inherit: "default" 0.0;
+		image
+		{
+			normal: "button_set_bg_clicked.png";
+		}
+	}
+	description
+	{
+		state: "shaded" 0.0;
+		inherit: "default" 0.0;
+		color: 255 255 255 70;
+	}
+	description
+	{
+		state: "off" 0.0;
+		inherit: "default" 0.0;
+		color: 255 255 255 0;
+		visible: 0;
+	}
+}
+
+/* Loading state indicator */
+part
+{
+	name: "loading_state_bg";
+	type: IMAGE;
+	mouse_events: 0;
+	description
+	{
+		state: "default" 0.0;
+		//aspect: 1.0 1.0;
+		color: 255 255 255 0;
+		rel1
+		{
+			relative: 1.0 1.0;
+			to: "border";
+			offset: -43 -30;
+		}
+		rel2
+		{
+			relative: 1.0 1.0;
+			to: "border";
+			offset: -12 -10;
+		}
+		image
+		{
+			normal: "loading_state_bg.png";
+		}
+	}
+	description
+	{
+		state: "on" 0.0;
+		inherit: "default" 0.0;
+		color: 255 255 255 255;
+	}
+}
+part
+{
+	name: "loading_state";
+	type: IMAGE;
+	mouse_events: 0;
+	description
+	{
+		state: "default" 0.0;
+		aspect: 1.0 1.0;
+		color: 255 255 255 0;
+		rel1
+		{
+			relative: 1.0 1.0;
+			to: "border";
+			offset: -40 -25;
+		}
+		rel2
+		{
+			relative: 1.0 1.0;
+			to: "border";
+			offset: -30 -15;
+		}
+		image
+		{
+			normal: "loading_state.png";
+		}
+	}
+	description
+	{
+		state: "on" 0.0;
+		inherit: "default" 0.0;
+		color: 255 255 255 255;
+		rel1
+		{
+			offset: -25 -25;
+		}
+		rel2
+		{
+			offset: -15 -15;
+		}
+	}
+	description
+	{
+		state: "on_1" 0.0;
+		inherit: "default" 0.0;
+		color: 255 255 255 255;
+		rel1
+		{
+			offset: -40 -25;
+		}
+		rel2
+		{
+			offset: -30 -15;
+		}
+	}
+}
+
+/* To capture mouse events for program */
+part
+{
+	name:           "inout";
+	type:           RECT;
+	mouse_events:   1;
+	repeat_events: 1;
+	description
+	{
+		state: "default" 0.0;
+		color: 255 255 255 0;
+	}
+}

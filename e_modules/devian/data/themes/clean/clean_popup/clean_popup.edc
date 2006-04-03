@@ -1,0 +1,37 @@
+/* Popup warning group */
+
+#define MSG_RECV_POPUP_WARN_SHOW_DISABLE 0
+
+group
+{
+	name: "devian/popup/warn";
+
+	script
+	{
+		public show_disabled;
+
+		/* Message from C code */
+		public message(Msg_Type: type, id, msg)
+		{
+			if (id == MSG_RECV_POPUP_WARN_SHOW_DISABLE)
+			{
+				if (type == MSG_INT)
+				{
+					set_int(show_disabled, getarg(2));
+					set_state(PART:"disable", "visible", 0.0);
+				}
+			}
+		}
+	}
+
+	parts
+	{
+		#include "clean_popup_parts.edc"
+	}
+
+	programs
+	{
+		#include "clean_popup_programs.edc"
+	}
+
+} /* End of popup warning group */

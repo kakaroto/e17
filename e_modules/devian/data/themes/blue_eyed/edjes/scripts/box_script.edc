@@ -1,0 +1,69 @@
+script{
+	public id_active;
+	public id_always;
+	public name_active;
+	public name_always;
+	public controls_visible;
+	public paused;
+	public set_bg_show;
+	public previous_show;
+	public infos_show_allow;
+	public infos_pos;
+	public infos_static;
+	/* Timer shade id: -1:Desactivated, infos hiden. 0: Desactivated, infos show
+	>0: Timer activated, infos show */
+	public timer_infos_shade;
+	/* Message from C code */
+	public message(Msg_Type: type, id, msg){
+		if (id == MSG_RECV_INFOS_POS_SET){
+			if (type == MSG_INT){
+				set_int(infos_pos, getarg(2));
+			}
+		}
+		if (id == MSG_RECV_PART_PAUSED_SET){
+			if (type == MSG_INT){
+				set_int(paused, !getarg(2));
+			}
+		}
+		if (id == MSG_RECV_INFOS_SHOW_ALLOW){
+			if (type == MSG_INT){
+				set_int(infos_show_allow, getarg(2));
+			}
+		}
+		if (id == MSG_RECV_LOADING_STATE){
+			if (type == MSG_INT){
+				if (getarg(2)){
+					run_program(PROGRAM:"loading_state_go");
+				}
+				else{
+					run_program(PROGRAM:"loading_state_stop");
+				}
+			}
+		}
+		if (id == MSG_RECV_SHOW_SET_BG){
+			if (type == MSG_INT){
+				set_int(set_bg_show, getarg(2));
+				if (get_int(set_bg_show) && get_int(controls_visible))
+				run_program(PROGRAM:"button_set_bg_show_go");
+				else
+				run_program(PROGRAM:"button_set_bg_shade_go");
+			}
+		}
+		if (id == MSG_RECV_SHOW_PREVIOUS)
+		{
+			if (type == MSG_INT)
+			{
+				set_int(previous_show, getarg(2));
+				if (get_int(previous_show) && get_int(controls_visible))
+					run_program(PROGRAM:"button_previous_show_go");
+				else
+					run_program(PROGRAM:"button_previous_shade_go");
+			}
+		}
+	}
+	/* Timer callback for Infos shading */
+	public timer_infos_shade_cb(val){
+		set_int(timer_infos_shade, -1);
+		run_program(PROGRAM:"infos_shade_go");
+	}
+}

@@ -1,0 +1,6 @@
+program{
+	name: "button_pause_p_shade_go";
+	action: STATE_SET "shaded_p" 0.0;
+	transition: DECELERATE 1;
+	target: "button_pause";
+}

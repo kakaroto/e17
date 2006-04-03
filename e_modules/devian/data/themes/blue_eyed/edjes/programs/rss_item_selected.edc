@@ -1,0 +1,11 @@
+program{
+	name: "item_selected";
+	signal: "mouse,in";
+	source: "background";
+	script{
+		emit("infos_set", "item");
+		set_state(PART:"background", "selected", 0.0);
+		run_program(PROGRAM:"open_show");
+	}
+}
+

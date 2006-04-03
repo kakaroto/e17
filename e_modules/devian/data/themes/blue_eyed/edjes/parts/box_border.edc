@@ -1,0 +1,22 @@
+part{
+	name: "border";
+	type: IMAGE;
+	mouse_events: 1;
+	description{
+		state: "default" 0.0;
+		rel1{
+			relative: 0.0 0.0;
+		}
+		rel2{
+			relative: 1.0 1.0;
+		}
+		image{
+			normal: "images/border.png";
+			//middle: 1;
+			border: 9 10 9 10;
+		}
+		fill{
+			smooth: 0;
+		}
+	}
+}

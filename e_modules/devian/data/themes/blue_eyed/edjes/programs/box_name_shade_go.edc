@@ -1,0 +1,8 @@
+program{
+	name: "name_shade_go";
+	script{
+		set_int(name_active, 0);
+		run_program(PROGRAM:"name_shade_1");
+	}
+}
+

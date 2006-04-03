@@ -1,0 +1,7 @@
+program{
+	name: "open_show";
+	action: STATE_SET "show" 0.0;
+	transition: LINEAR 0.5;
+	target: "open";
+}
+

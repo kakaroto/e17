@@ -1,0 +1,7 @@
+program{
+	name: "source_transition_1-0_b";
+	action: STATE_SET "default" 0.0;
+	target: "source0";
+	after: "source_transition_1-0_c";
+}
+

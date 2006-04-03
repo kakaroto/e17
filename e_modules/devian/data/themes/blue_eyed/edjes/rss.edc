@@ -1,0 +1,20 @@
+group{
+	name: "devian/rss/item";
+	#include "scripts/rss_script.edc"
+	parts{
+//		#include "parts/rss_background_fg.edc"
+		#include "parts/rss_background.edc"
+		#include "parts/rss_date.edc"
+		#include "parts/rss_title.edc"
+		#include "parts/rss_open.edc"
+	}
+	programs{
+		#include "programs/rss_init.edc"
+		#include "programs/rss_item_selected.edc"
+		#include "programs/rss_item_unselected.edc"
+		#include "programs/rss_item_scroll.edc"
+		#include "programs/rss_open_show.edc"
+		#include "programs/rss_open_hide.edc"
+		#include "programs/rss_item_open.edc"
+	}
+}

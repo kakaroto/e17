@@ -1,0 +1,7 @@
+program{
+	name: "name_show_1";
+	action: STATE_SET "default" 0.0;
+	transition: LINEAR 0.4;
+	target: "name";
+}
+

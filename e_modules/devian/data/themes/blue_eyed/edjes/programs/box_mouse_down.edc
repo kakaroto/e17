@@ -1,0 +1,18 @@
+program{
+	name: "mouse_down";
+	signal: "mouse,down,1";
+	source: "inout";
+	script{
+		if (get_int(infos_show_allow) &&
+		(get_int(timer_infos_shade) == -1) ){
+			IS_IN_PART_INIT
+			IS_IN_PART("button_pause")
+			IS_IN_PART("button_refresh")
+			IS_IN_PART("button_previous")
+			IS_IN_PART("button_set_bg")
+			if (!is){
+				run_program(PROGRAM:"infos_show_go");
+			}
+		}
+	}
+}

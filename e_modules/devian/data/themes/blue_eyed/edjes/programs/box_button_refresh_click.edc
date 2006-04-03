@@ -1,0 +1,9 @@
+program{
+	name: "button_refresh_click";
+	signal: "mouse,clicked,1";
+	source: "button_refresh";
+	script{
+		emit("refresh", "button_refresh");
+	}
+}
+

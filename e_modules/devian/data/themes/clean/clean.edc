@@ -1,0 +1,61 @@
+#define IS_IN_PART_INIT \
+	new px, py, pw, ph; \
+	new x, y, is; \
+	is = 0; \
+	get_mouse(x, y);
+#define IS_IN_PART(pname) \
+	get_geometry(PART:pname, px, py, pw, ph); \
+	if ((x>=px) && (x<=px+pw) && (y>=py) && (y<=py+ph)) \
+		is++;
+
+images
+{
+	image: "logo.png" COMP;
+	image: "border.png" COMP;
+
+	image: "infos_border.png" COMP;
+
+	image: "popup_background.png" COMP;
+	image: "popup_close.png" COMP;
+	image: "popup_disable.png" COMP;
+	image: "popup_disable_clicked.png" COMP;
+
+	image: "rss_background.png" COMP;
+	image: "rss_background_selected.png" COMP;
+
+	image: "button_pause.png" COMP;
+	image: "button_pause_clicked.png" COMP;
+	image: "button_refresh.png" COMP;
+	image: "button_refresh_clicked.png" COMP;
+	image: "button_previous.png" COMP;
+	image: "button_previous_clicked.png" COMP;
+	image: "button_set_bg.png" COMP;
+	image: "button_set_bg_clicked.png" COMP;
+
+	image: "button_link_open.png" COMP;
+
+	image: "loading_state_bg.png" COMP;
+	image: "loading_state.png" COMP;
+}
+
+fonts
+{
+	font: "Vera.ttf"   "Vera";
+	font: "VeraBd.ttf" "VeraBd";
+}
+
+data
+{
+	item: "version" "2";
+}
+
+collections
+{
+	/* Groups */
+
+	#include "clean_popup/clean_popup.edc"
+
+	#include "clean_rss/clean_rss.edc"
+
+	#include "clean_box/clean_box.edc"
+}

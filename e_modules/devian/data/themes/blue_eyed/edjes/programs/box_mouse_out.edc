@@ -1,0 +1,20 @@
+program{
+	name: "mouse_out";
+	signal: "mouse,out";
+	source: "inout";
+	script{
+		IS_IN_PART_INIT
+		IS_IN_PART("infos_inout")
+		if (!is){
+			if (!get_int(timer_infos_shade))
+			run_program(PROGRAM:"infos_shade_timer");
+		}
+		if ((get_int(id_active)) && (!get_int(id_always))){
+			run_program(PROGRAM:"id_shade_go");
+		}
+		if ((get_int(name_active)) && (!get_int(name_always))){
+			run_program(PROGRAM:"name_shade_go");
+		}
+		run_program(PROGRAM:"controls_shade_go");
+	}
+}

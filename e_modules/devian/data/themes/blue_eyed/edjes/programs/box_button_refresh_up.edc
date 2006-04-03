@@ -1,0 +1,8 @@
+program{
+	name: "button_refresh_up";
+	signal: "mouse,up,1";
+	source: "button_refresh";
+	action: STATE_SET "default" 0.0;
+	target: "button_refresh";
+}
+

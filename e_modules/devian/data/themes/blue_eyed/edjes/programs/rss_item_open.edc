@@ -1,0 +1,7 @@
+program {
+	name: "item_open";
+	signal: "mouse,down,1";
+	source: "open";
+	action: SIGNAL_EMIT "open" "item";
+}
+

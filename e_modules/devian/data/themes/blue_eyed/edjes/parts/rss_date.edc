@@ -1,0 +1,30 @@
+part{
+	name, "date";
+	type: TEXT;
+//	effect: SHADOW;
+	mouse_events: 0;
+	repeat_events: 0;
+	description{
+		state: "default" 0.0;
+		rel1{
+			relative: 0.0 0.0;
+			to: "background";
+			offset: 7 3;
+		}
+		rel2{
+			relative: 0.0 1.0;
+			to: "background";
+			offset: 66 -15;
+		}
+		color: 255 255 255 255;
+		color2: 0 0 0 255;
+		color3: 0 0 0 255;
+		text{
+			text: "ooOoOo";
+			font: "Vera";
+			size: 40;
+			fit: 1 0;
+			align: 0.0 0.0;
+		}
+	}
+}

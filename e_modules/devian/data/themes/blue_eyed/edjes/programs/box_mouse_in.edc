@@ -1,0 +1,18 @@
+program{
+	name: "mouse_in";
+	signal: "mouse,in";
+	source: "inout";
+	script{
+		if (get_int(timer_infos_shade) > 0){
+			cancel_timer(get_int(timer_infos_shade));
+			set_int(timer_infos_shade, 0);
+		}
+		if (!get_int(id_active)){
+			run_program(PROGRAM:"id_show_go");
+		}
+		if (!get_int(name_active)){
+			run_program(PROGRAM:"name_show_go");
+		}
+		run_program(PROGRAM:"controls_show_go");
+	}
+}

@@ -1,0 +1,8 @@
+program{
+	name: "infos_show_go_2";
+	action: STATE_SET "show" 0.0;
+	transition: DECELERATE 0.6;
+	target: "infos";
+	after: "infos_show_go_static";
+}
+

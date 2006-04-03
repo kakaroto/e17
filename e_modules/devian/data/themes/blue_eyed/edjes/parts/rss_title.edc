@@ -1,0 +1,36 @@
+part{
+	name, "title";
+	type: TEXT;
+	effect: OUTLINE;
+	mouse_events: 0;
+	repeat_events: 0;
+	description{
+		state: "default" 0.0;
+		rel1{
+			relative: 0.0 0.0;
+			to: "background";
+			offset: 72 3;
+		}
+		rel2{
+			relative: 1.0 1.0;
+			to_y: "background";
+			offset: 0 -3;
+		}
+		color: 255 255 255 255;
+		color2: 0 0 0 128;
+		text{
+			text: "ooOoOo";
+			font: "VeraBd";
+			fit: 0 1;
+			size: 40;
+			//min: 1 1;
+			align: 0.0 0.5;
+		}
+	}
+	description{
+		state: "new" 0.0;
+		inherit: "default" 0.0;
+		color: 160 0 0 255;
+		color2: 0 0 0 128;
+	}
+}

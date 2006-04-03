@@ -1,0 +1,407 @@
+Ce fichier ne contient pas seulement les fonctionnalitées a ajouter,
+mais aussi l'avancement parfois tres détaillé
+
+Etats
+	* : fait
+	/ : en cours
+	- : a faire
+
+Prioritees
+	X : Urgent
+	M : Moyen
+	S : Peu important
+
+Debug defines
+	DEBUG_MAIN
+	DEBUG_POPUP_WARN
+	DEBUG_SOURCE
+	DEBUG_CONTAINER
+	DEBUG_DATA
+	DEBUG_DATA_CACHE
+	DEBUG_DATA_RSS
+	DEBUG_DATA_RSS_PARSER
+	DEBUG_DATA_FILE
+
+Debug compil
+	make install CFLAGS="-g -Wall -DDEBUG_MAIN -DDEBUG_POPUP_WARN -DDEBUG_SOURCE -DDEBUG_CONTAINER
+	-DDEBUG_DATA -DDEBUG_DATA_CACHE -DDEBUG_DATA_RSS -DDEBUG_DATA_RSS_PARSER -DDEBUG_DATA_FILE"
+
+--------------------------------------------------------------------------------
+BUG / FIXES
+--------------------------------------------------------------------------------
+
+ * X Sauvegarde/Restauration de la config d'un devian marche pas
+   (e_mod_api_save est appelé quand enlightenment trouve ca bien,
+   il faut donc faire appel a devian_config_save dedans)
+ * X FIXED SA MERE Redimensionner box pour que limage remplisse
+   ENTIEREMENT soit la hauteur soit la largeur (il y a un petit decalage)
+     Faire de la prevision plutot que test a chaque fois
+     Precalculer le ratio box/source du theme
+   (c'etait tellement evident ... xD)
+ * M Transition manuelle + transition auto -> trop blanc d'un coup
+     Bug perd source quand systeme tres chargé
+     (si edje n'a pas fini sa transition, empeche detach ancienne image
+      FIX LES BATARDS A RACINE!)
+ * M Quand un dEvian perd le focus pour un fenetre sur source ou boutons
+     il reste actif
+     (repeat_events :))
+ * M La premiere mise a jour du nom de l'image dans le theme ne se fait pas
+ * M ? Auto resize est bien plus petit (ajouter coords bordure)
+ * M Quand on s'est arreté en pause, ca se reaffiche pas au restart dans le theme
+     (add devian->source_info.paused)
+ - X Segfault la toute premiere fois qu'on lance dEvian Picture apres avoir install dEvian pr 1ere fois
+     Sur CERTAINES rares configurations seulement ...
+ - M Proxy doesnt work (mz on #get-e, David Wallin mail)
+ - S Quand taille trop grande / previews images, resize auto merde (AUTO_MODE)
+ - ? ??? BAD BAD BAD cache detach ?
+
+
+--------------------------------------------------------------------------------
+RENAMES
+--------------------------------------------------------------------------------
+
+ * Faire de devian_main une variable globale
+ * degager globale dEvian_Container 
+ * devian_add ... -> devian_devian_add
+ - Passer   Picture_List_Local *picture_list_local;
+	    Picture_List_Net *picture_list_net;
+	    Picture_Cache *picture_cache;
+   en globals
+
+--------------------------------------------------------------------------------
+TODO CODE (ordre)
+--------------------------------------------------------------------------------
+
+ * Base H
+ * Base menus
+ * Base config
+ * Base init module
+ * Base shutdown module
+ * devian saveconfig
+ ***** TEST -> dEvian-0.1.0-051129.2105.tar.bz2
+ * Base container box
+   * interface
+   * edje
+   * container clipping NO
+   * revision du theme
+ * Base source picture
+   * interface
+ * Base data picture
+   * interface
+   * cache local, chargement dans eet fileman thumbmail
+   * utiliser e_thumb pour regenerer les images
+ ***** TEST -> dEvian-0.1.0-051203.1946.tar.bz2
+ * Callbacks menus sur devians
+ * Menu delete all devians
+ * Transitions
+ * Redimensionnement box
+ * Animation simple
+ * Blinder menus callback pour gerer quand le menu reste
+   et que lobjet nexiste plus (clavier espace)
+ * Choix image au hasard dans le cache
+ ***** TEST -> dEvian-0.1.0-051205.0214.tar.bz2
+ * Faire une fonction pour creer le nom du devian.
+   Elle reorganise tous les noms des devians pour empecher les decalages
+   dans les numeros
+ * Afficher numero et noms des sources
+   * Suppression d'un devian -> reorganistion des no comme dans menu
+ * Utiliser evas_stringshare pour la config
+ * Gerer si le reperoire d'import d'images n'existe pas
+ * Menu "Regenerer le cache d'images"
+ * Boites de dialogue de configuration e_config_dialog.c
+   * main
+   * devian
+ * devians: tout ce qui est stocké dans la config doit l'etre seulement
+   dans la config, et immédiatement (a part les coordonés x y)
+ ***** TEST -> dEvian-0.1.0-051205.0214.tar.bz2
+ * Ajouter nom de image = juste ce qu'il faut
+ * Sauvegarder les coordonés de la box
+ * Revision du theme
+   * Placement des infos
+ * Box animation gouloum
+ * Forcer la suppression des images affichées en ce moment ?
+ * Nice devians del
+ ***** TEST -> dEvian-0.0.9-051208.0306.tar.bz2
+ * Effacement des thumbs trop petits pour les templacer
+ * Suppression des images affichees en ce moment amelioree
+ * Blinder les boites de dialogue pour si le module est desactivé
+   et que la boite est encore lancée
+ * Box speed
+ * Source infos
+ * Timer stop
+ ***** TEST -> dEvian-0.0.9-051208.2353.tar.bz2
+ * Gadman sur les box .... xD
+   * Quand active, mettre les images en carre, no resize, no anim
+ * Mode edit dans menus
+ * Mode edit sur bouton milieu pour deplacer facilement les images
+ ***** TEST -> dEvian-0.0.9-051209.1812.tar.bz2
+ * Nouvelle API modules
+ * Renom devian_main_menu* -> devian_menu_main_menu*
+ * Fontions static pour les cb du menu
+ ***** TEST -> dEvian-0.0.9-051223.1600.tar.bz2
+ * Refaire gestion images
+   * mem leak dans e_thumb lors de la premiere generation des thumbs
+   * Faire une gestion des images avec un cache qui charge/decharge
+     les images en les prenant dans une liste d'images,
+     suivant les besoins, pour minimiser l'utilisation de
+     la memoire. Taille cache configurable.
+	Ca merde quand on regen le cache alors qu'on affiche la premiere image du cache ... ????
+	La 2eme image qui devrait etre affichée est en fait la 1ere ... -> la 1ere image elle est ou
+	   Afficher pos ?
+	   pRINTFFFFFFFFFFFFFFFFff
+   * Empecher plusieurs regenerations du cache en meme temps
+   * Charger les appercus direct avec son chemin pour qu'on puisse virer les images apres chargement
+   * Check chargement fond noir (pb alpha) quand l'image vient d'etre generee (--- e_thumb temp zarb ---)
+ ***** TEST -> dEvian-0.0.9-051231.0021.tar.bz2 
+ * Sauvegarder timer images
+ * Gestion pixel par pixel dans taille des devians
+ * Choix nice resize oui/non
+ * Choix pas de transition edje dans box
+ * Cleanups dans config et panel config
+ * Fix ratio redimensionnement en edit mode
+ * clique 1 ->rien, 2 ->under, 3 ->menu
+   alt-1 ->edit mode
+ * Image pause (bouton sur box)
+   * renommer "pause" en "button_pause" dans le theme
+ * Image suivante (bouton sur box)
+ * Image -> fond d'ecran (bouton sur box) (edje only)
+ * Image -> bg (use e17setroot)
+ ***** TEST -> dEvian-0.0.9-060102.1007.tar.bz2
+ * Changement de theme dans menu
+ * Theme clean
+ ***** TEST -> dEvian-0.0.9-060102.2054.tar.bz2
+ * pour ne pas encombrer l'utilisateur avec les .edj crees (set_bg)
+   remove edje after e17setroot (configurable dans panel)
+ ***** TEST -> dEvian-0.0.9-060104.0415.tar.bz2
+ * Recursive load pictures
+ * Popup chargement liste d'images
+ * Avertissement generation thumbs bg (montrer qu'une fois)
+ * Fonction devian generale edje_load
+ * Animation ghost (apparition / disparition par transparence)
+ * Ouvrir l'image dans exhibit
+ ***** TEST -> dEvian-0.0.9-060105.0340.tar.bz2
+ * Virer les menus qui ne sont plus utilisés (plus de m->config_menu)
+ * PACKAGE_DATA_DIR -> e_module_dir_get
+ * Plus de evas_stringshare (genre pour pictures)
+ * conseils autoconf/automake |caro|
+ * no-strip |caro|
+ * cleanups |devilhorns|
+ ***** RELEASE 0.1.0
+ * Fix EAPI extern dans e_mod_main.h
+ ***** RELEASE 0.1.1
+ * cfdata est maintenant global E_Config_Dialog_Data (cvs 14/01/06 17:12)
+ * source RSS
+   * Recuperer un fil rss
+   * Parse
+     * _parse_item_clean
+     * debug
+     * flux rss impromptus, balises bizarres
+       * rdf: il faut chercher balises genre "<item rdf" au lieu de "<item>"
+         * heure rdf <dc:date> (parse separement)
+       * html: Gerer avec CDATA, realloc, memmove
+       * Characteres &lt <, &gt >
+       * 0xd (new line) a effacer
+     * sort feed / date (inversement total seulement si last plus recent que first)
+     * Parse title rss doit supprimer les \n
+   * Objets -> e_table
+   * Fix bug dans ecore_con pour les reponses dns xx.xx (non xx.xx.xx)
+   * Configuration
+   * Quand on entre une adresse, ca merde (il faut mieux clean les données précédentes ? REORGANISER UN PEU
+   * Taille container et Remember size
+   * Colorier les nouveautees
+   * Reutiliser les items existants
+   * Force reconnect quand user click "refresh"
+   * Favoris rss dans ilist, boutons ajouter edition supprimer
+     * Config
+     * CoOode
+     * Text description
+   * L'utilisateur choisi si le serveur peut modifier doc name et doc description   
+   * Changer char *url en struct Rss_Doc (document) avec toutes les infos
+     * Config, big changes
+     * Data_Rss_*
+       * Rss_Doc *devian_data_rss_doc_new(Rss_Doc *s)
+         void devian_data_rss_doc_free(Rss_Doc *doc)
+         void devian_data_rss_doc_set_new(Rss_Feed *feed, Rss_Doc *doc)
+   * Nouveau dEvian rss trouve un flux rss inutilise
+   * Bug dialog:
+     * 1er affichage description doc rss
+     * Back to dont keep changes when Basic/Advanced (Apply se grise sinon)
+   * Interdir w ou h == 0, mettre taille mini (typedef exist)
+   * Bug defois quand refresh force
+   * Coupure prematuree article (taille tb)
+   * Taille infos panel depend du theme
+   * Pas de changement de source si le flux n'as pas change
+   * Theme: open item
+   * Segv, autimste dans l'optimisation rss -> degager l'optimisation
+   * Barre chargement du theme dans un rectangle
+   * Menu source infos
+   * Theme: Ouvrir panel infos quand click seulement
+   * Defois la part infos disparait pas ...
+   * Popup warning quand news, desactivable
+   * Quand erreur parse, afficher le doc recupere dans le message d'erreur
+ * Box: ajouter une frame d'infos :
+   Contient un objet unique dans le meme edje que source principale ou
+   dans un e_popup
+   La source swallow l'obj quand elle veut sans se soucier du reste
+   Apparition O/N geree par la source et l'utilisateur, pos/anim par le edje
+     * Structs
+     * API
+     * E Scrollframe
+     * Edje messages et apparition
+     * Scrollframe horizontal only
+     * Scroll sous signal edje (e_scrollframe_child_pos_set)
+       * Fonction container_infos_scroll ?
+     * Taille infos dynamique (code s'adapte au theme)
+     * Infos positxion au choix de l'utilisateur (4 choix)
+ * Separer les dialogs dans != fichiers pour pouvoir mettre E_Config_Dialog[_Data]
+   devian_config_dialog, devian_config_dialog_devian, devian_config_dialog_rss
+ * Fix cb bouton "regen list"
+ * Fix mem leaks dans gestion config
+ * Changement des sources a chaud
+ * Bouton "Add dEvian" au lieu de slider dans config main
+ * Indication de chargement de la source
+ * Picture name et path charsets
+ * Fix gadman rss ratio
+ * Reorganisation des menus, plus intuitif, redondances--, themes--
+ * Clean menus (virer main menu glob funcs et call dans e_mod_devian)
+ * Retirer la taille de la bordure quand on sav la taille de box, dans gadman_change
+ * Plus d'infos sur l'image dans infos panel picture
+ * Overlap (cf cvs 20/01/06 05h22)
+ * Autoriser une seule config du meme type a la fois (cf cvs)
+   Fermer tous les panel quand devian quit (cf cvs matin du 07/01/06)
+ * Bug quand restart devian (connection ecore)
+ * Popup Warning
+   * Popup desactivate sur click part popup
+   * Affiche desactiver que pour les popups devian
+ * Optimisation: utiliser infos_visible dans code C, edje envoi quand open/close
+ * Renommer desc en infos
+ * Renommer number en id
+ * Check name bien nomme comme ca partout
+ * Fill data que dans create data (cvs 13-14/02)
+ * Charger les images dans e_mod_source.c uniquement quand >= 1 source picture
+   Inverse pour dechargement
+ * Revoir gestion themes
+   * Theme par type de source, dans configuration pannel
+ * Symlinks vers images dans le repertoire d'images (christophe@vandeplas.com)
+ * Symlinks vers dirs
+ * Popup infos timer quand creation appercus
+   * popup_warn == NULL dans add_popup -> no live point
+ * Revoir gestion des actions container et source (pointeurs vers funcs)
+   * Masquer Set as background icon quand il faut
+   * Mettre idle dans source.c/container.c
+ * Bug quand rss-> picture, defois on demare sur la mauvaise part
+ * Changement de source quand transition
+ * Source image et pas d'images attachees
+ * Meilleure taille mini
+ * Creation d'un nouveau devian doit respecter le theme
+ * Swith theme change seulement container
+   * Maj source avec fction action
+ * Taille container dans devian conf = sans la bordure
+ * Ne sort plus de l'écran lors de resize
+ ***** RELEASE 0.1.6
+ * Remove unused code in config panel
+ * Split themes sources
+ * Doc about themes (README.themes)
+ * Better RSS support
+   * Html chars
+   * 'port': I tried to add a rss version 2.0 link though, and it did not work
+     http://julieta.homelinux.net/?q=blog/feed
+ ***** RELEASE 0.1.7
+ * Compilation 'split' between dEvian, dErss, dEphoto
+   * conflict config dialogs
+ * Transparency of the box
+ * Pictures historic
+   * Button
+ * Better RSS support
+   * RSS affichage reverse
+   * BUG: Hilight news doesnt work
+ * Alpha and Animation in advanced box panel are over each other
+ * Make title more little
+ * Darkintent http://www.baka-updates.com/rss.php Segv
+
+ / Source file (log)
+   * Read the last lines of a file (data_file_update)
+   - Ini and Max lines
+   - Use Retlines, cut at the end of a line
+
+ - Warning indicator
+ - Container animation in advanced config
+
+ - ? Bug in the config ?
+ - Rss News hiligh when url == null
+
+ - Charsets (ecore_txt :D)
+   - Problems in convert
+       Need strdup ?
+
+ - ? Segv Sometimes when refresh by click on 'next' button ?
+ - ? --SEGV embryo timer del some timer that doesnt exists (in infos panel)-- ?
+   When the information pannel is going to close, after timer ...
+   Like when delete the timer 2 times when finished
+   Segv Very rarely ... Very strange
+     #0  embryo_program_run (ep=0x8d04f0, fn=15181280) at embryo_amx.c:1382
+     #1  0x00002aaaaabd9643 in _edje_var_timer_cb (data=0x892a84) at edje_var.c:37
+     #2  0x00002aaaac036e80 in _ecore_timer_call (when=1141007473.466769)
+         at ecore_timer.c:178
+     #3  0x00002aaaac034572 in _ecore_main_loop_iterate_internal (once_only=0)
+         at ecore_main.c:467
+     #4  0x00002aaaac0348d7 in ecore_main_loop_begin () at ecore_main.c:79
+     #5  0x000000000041ff51 in main (argc=1, argv=0x61e360) at e_main.c:679
+
+ - User can choose not to add dEvian's icons in picture list
+ - "Allow information panel" option in main config panel
+   for each type of source
+
+ - RELEASE 0.2.0
+
+ -------
+ - ? Check modifs dans gestion config dialog (close & only one per type) ?
+ - les dEvians doivent eviter les autres modules
+   (comme les windows peuvent detecter les collisions avec,
+    c'est fesable) PLUTOT wait pour gadcon
+ - RSS Box auto resize
+ -------
+
+ - Just add color_class: "nameofclass"; in the parts that you want color_classed 
+
+ - RPM build (cvs)
+ - Use same way than e_int_config_background_import to set the background when no e17setroot
+
+ - images from net
+   - deviantart
+   - url utilisateur (direct la page avec images)
+   - recherche sur google et pecho des images au hasard / creation d'urls
+   - Choix taille du cache dans panel config advanced
+
+ - mhb_cze, #e : Multiple rss in one windows, talk svn account
+ - Box animation boing boing
+ - Picture Historic list
+ - RSS historic, for news you missed
+ - Change text color (edje_color_class ?)
+ - Renommer une image
+ - evas_object_smart pour box ?
+ - Traduction (cvs 30/01 matin)
+ - ? Support Attom ?
+
+--------------------------------------------------------------------------------
+TODO THEME
+--------------------------------------------------------------------------------
+ - Theme a couleurs plus foncées & opaques
+ - Clean theme BUG: Quand on change de theme, button_set_background et button_previous
+   sont en default au lieu de shade
+
+ / New theme minimal :
+   * Name and Id overlap
+   * Infos panel
+   * Boutons
+   - Transitions entre sources avec des clips
+     Clip swallow part dans part clip, et change alpha du clip
+   - Joli rss selection, style menu E
+   -  morlenxus kiwi_: I would also remove these hightlights. If you click on a test the links should
+      be opened, without extra clicking on the icon. And the reload button and the || button would be
+      fit better to the context menu. That would make the module fit better to the desktop.
+      morlenxus For now you always have an animation, even if you just go over them because you want to
+      change with the mouse to another window.
+      kiwi_ i'll split the files and write a little help about communication between devian and theme,
+      so people wiill be able to write other ones
+      kiwi_ i agree, i have to find somthing to avoid animations when mouse over only

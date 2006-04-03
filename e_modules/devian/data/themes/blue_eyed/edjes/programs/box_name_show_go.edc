@@ -1,0 +1,7 @@
+program{
+	name: "name_show_go";
+	script{
+		set_int(name_active, 1);
+		run_program(PROGRAM:"name_show_1");
+	}
+}

@@ -1,0 +1,12 @@
+program{
+	name: "item_scroll";
+	signal: "mouse,down,1";
+	source: "background";
+	script{
+		IS_IN_PART_INIT
+		IS_IN_PART("open")
+		if (!is){
+			emit("infos_scroll", "item");
+		}
+	}
+}

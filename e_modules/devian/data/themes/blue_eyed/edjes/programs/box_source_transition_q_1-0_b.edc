@@ -1,0 +1,7 @@
+program{
+	name: "source_transition_q_1-0_b";
+	action: STATE_SET "hidden" 0.0;
+	target: "source1";
+	after: "source_transition_q_1-0_end";
+}
+

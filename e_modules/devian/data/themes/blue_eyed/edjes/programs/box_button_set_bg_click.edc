@@ -1,0 +1,8 @@
+program{
+	name: "button_set_bg_click";
+	signal: "mouse,clicked,1";
+	source: "button_set_bg";
+	script{
+		emit("set_bg", "button_set_bg");
+	}
+}

@@ -1,0 +1,30 @@
+program{
+	name: "infos_shade_go";
+	script{
+		new pos, stat;
+		pos = get_int(infos_pos);
+		stat = get_int(infos_static);
+		if (pos == INFOS_POS_RIGHT){
+			if (stat) run_program(PROGRAM:"infos_static_shade_r_go");
+				else run_program(PROGRAM:"infos_shade_r_go");
+		}
+		else{
+			if (pos == INFOS_POS_LEFT){
+				if (stat) run_program(PROGRAM:"infos_static_shade_l_go");
+					else run_program(PROGRAM:"infos_shade_l_go");
+			}
+			else{
+				if (pos == INFOS_POS_TOP){
+					/*if (stat) run_program(PROGRAM:"infos_static_shade_t_go");
+					else*/ run_program(PROGRAM:"infos_shade_t_go");
+				}
+				else{
+					if (pos == INFOS_POS_BOTTOM){
+						/*if (stat) run_program(PROGRAM:"infos_static_shade_b_go");
+						else*/ run_program(PROGRAM:"infos_shade_b_go");
+					}
+				}
+			}
+		}
+	}
+}

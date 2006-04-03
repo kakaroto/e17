@@ -1,0 +1,69 @@
+program
+{
+	name:	"init";
+	signal:	"load";
+	source:	"";
+	script
+	{
+		set_int(item_new, 0);
+	}
+}
+program
+{
+	name: "item_selected";
+	signal: "mouse,in";
+	source: "background";
+	script
+	{
+		emit("infos_set", "item");
+		set_state(PART:"background", "selected", 0.0);
+		run_program(PROGRAM:"open_show");
+	}
+}
+program
+{
+	name: "item_unselected";
+	signal: "mouse,out";
+	source: "background";
+	script
+	{
+		emit("infos_unset", "item");
+		set_state(PART:"background", "default", 0.0);
+		run_program(PROGRAM:"open_hide");
+	}
+}
+program
+{
+	name: "item_scroll";
+	signal: "mouse,down,1";
+	source: "background";
+	script
+	{
+		IS_IN_PART_INIT
+		IS_IN_PART("open")
+		if (!is)
+		{
+			emit("infos_scroll", "item");
+		}
+	}
+}
+program
+{
+	name: "open_show";
+	action: STATE_SET "show" 0.0;
+	transition: LINEAR 0.5;
+	target:	"open";
+}
+program
+{
+	name: "open_hide";
+	action: STATE_SET "default" 0.0;
+	target:	"open";
+}
+program
+{
+	name: "item_open";
+	signal: "mouse,down,1";
+	source: "open";
+	action: SIGNAL_EMIT "open" "item";
+}

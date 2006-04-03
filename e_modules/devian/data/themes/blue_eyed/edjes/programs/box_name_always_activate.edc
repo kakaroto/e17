@@ -1,0 +1,12 @@
+program{
+	name: "name_always_activate";
+	signal: "name_always_activate";
+	source: "";
+	script{
+		set_int(name_always, 1);
+		if (get_int(name_active) == 0){
+			run_program(PROGRAM:"name_show_go");
+		}
+	}
+}
+

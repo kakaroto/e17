@@ -1,0 +1,35 @@
+dEvian-0.1.7 : Some improvements & Fixes
+    * Added the begining of a theme HOWTO
+    * Minimal theme better fits the desktop
+    * More RSS are supported
+    * Fix some bugs
+dEvian-0.1.6 : Release
+    * RSS Support
+    * Information panel
+    * Popups on events
+    * New theme
+
+dEvian-0.1.1 : Fix
+    * Compilation issue on gcc4
+
+dEvian-0.1.0 : Premiere release
+    * Cleanups
+    * Optimisations
+
+dEvian-0.0.9-060105.0340 : Update
+    * On peut charger recursivement le repertoire d'images
+    * Avertissement du chargement des images
+    * Nouvelle animation: disparition / apparition a un endroit différent
+    * Ouverture de l'image dans exhibit
+
+dEvian-0.0.9-060104.0415 : Update
+    * Suppression des edje ~/.e/e/backgrounds quand on met une image en fond d'écran (choix dans panel)
+    * Fix perte de la source quand systeme tres chargé et problème de transition
+
+dEvian-0.0.9-060102.2054 : Nouvelle version beta
+    * Chargement des images dans un cache (on peut mettre plein plein d'images dans devian, ca ne bouffera pas toute la RAM de la machine car ca sera chargé au besoin)
+    * Possibilité de mettre en fond d'écran une image affichée
+    * On peut changer de theme (il y a un nouveau theme)
+    * Des controles images suivante, stopper le défilement
+    * Plein de fixs
+    * ...

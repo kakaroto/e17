@@ -1,0 +1,8 @@
+program{
+	name: "loading_state_stop";
+	action: STATE_SET "default" 0.0;
+	transition: DECELERATE 0.5;
+	target: "loading_state";
+	target: "loading_state_bg";
+}
+

@@ -1,0 +1,31 @@
+part{
+	name, "id";
+	type: TEXT;
+	effect: OUTLINE;
+	mouse_events: 0;
+	description{
+		state: "default" 0.0;
+		rel1{
+			relative: 0.0 1.0;
+			to: "source0";
+			offset: 0 -1;
+		}
+		color: 255 255 255 255;
+		color2: 0 0 0 255;
+		color3: 0 0 0 255;
+		text{
+			text: "01";
+			font: "VeraBd";
+			size: 10;
+			align: 0.5 0.0;
+		}
+	}
+	description {
+		state: "shaded" 0.0;
+		inherit: "default" 0.0;
+		color: 0 0 0 0;
+		color2: 0 0 0 0;
+		color3: 0 0 0 0;
+	}
+}
+

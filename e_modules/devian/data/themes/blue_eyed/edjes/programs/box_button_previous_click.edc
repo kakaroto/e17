@@ -1,0 +1,8 @@
+program{
+	name: "button_previous_click";
+	signal: "mouse,clicked,1";
+	source: "button_previous";
+	script{
+		emit("previous", "button_previous");
+	}
+}

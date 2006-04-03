@@ -1,0 +1,8 @@
+program{
+	name: "source_transition_q_1-0";
+	signal: "source_transition_q_1-0_go";
+	action: STATE_SET "default" 0.0;
+	target: "source0";
+	after: "source_transition_q_1-0_b";
+}
+

@@ -1,0 +1,125 @@
+/* Box group */
+
+#define MSG_RECV_INFOS_POS_SET 0
+#define MSG_RECV_PART_PAUSED_SET 1
+#define MSG_RECV_INFOS_SHOW_ALLOW 2
+#define MSG_RECV_LOADING_STATE 3
+#define MSG_RECV_SHOW_SET_BG 4
+#define MSG_RECV_SHOW_PREVIOUS 5
+
+#define MSG_SEND_INFOS_W 0
+#define MSG_SEND_INFOS_VISIBLE 1
+
+#define INFOS_POS_DEFAULT 2
+#define INFOS_POS_TOP 1
+#define INFOS_POS_RIGHT 2
+#define INFOS_POS_BOTTOM 3
+#define INFOS_POS_LEFT 4
+
+group
+{
+	name: "devian/box";
+
+	data
+	{
+		item: "infos_initial_size" "300";
+	}
+
+	script
+	{
+		public id_active;
+		public id_always;
+		public name_active;
+		public name_always;
+
+		public paused;
+		public set_bg_show;
+		public previous_show;
+
+		public infos_show_allow;
+		public infos_pos;
+		/* Timer shade id: -1:Desactivated, infos hiden. 0: Desactivated, infos show
+		>0: Timer activated, infos show */
+		public timer_infos_shade;
+
+		/* Message from/to C code */
+		public message(Msg_Type: type, id, msg)
+		{
+			if (id == MSG_RECV_INFOS_POS_SET)
+			{
+				if (type == MSG_INT)
+				{
+					set_int(infos_pos, getarg(2));
+				}
+			}
+			if (id == MSG_RECV_PART_PAUSED_SET)
+			{
+				if (type == MSG_INT)
+				{
+					set_int(paused, !getarg(2));
+				}
+			}
+			if (id == MSG_RECV_INFOS_SHOW_ALLOW)
+			{
+				if (type == MSG_INT)
+				{
+					set_int(infos_show_allow, getarg(2));
+				}
+			}
+			if (id == MSG_RECV_LOADING_STATE)
+			{
+				if (type == MSG_INT)
+				{
+					if (getarg(2))
+					{
+						run_program(PROGRAM:"loading_state_go");
+					}
+					else
+					{
+						run_program(PROGRAM:"loading_state_stop");
+					}
+				}
+			}
+			if (id == MSG_RECV_SHOW_SET_BG)
+			{
+				if (type == MSG_INT)
+				{
+					set_int(set_bg_show, getarg(2));
+					if (get_int(set_bg_show))
+						run_program(PROGRAM:"button_set_bg_show_go");
+					else
+						set_state(PART:"button_set_bg", "off", 0.0);
+				}
+			}
+			if (id == MSG_RECV_SHOW_PREVIOUS)
+			{
+				if (type == MSG_INT)
+				{
+					set_int(previous_show, getarg(2));
+					if (get_int(previous_show))
+						run_program(PROGRAM:"button_previous_show_go");
+					else
+						set_state(PART:"button_previous", "off", 0.0);
+				}
+			}
+		}
+		/* Timer callback for Infos shading */
+		public timer_infos_shade_cb(val)
+		{
+			set_int(timer_infos_shade, -1);
+			run_program(PROGRAM:"infos_shade_go");
+		}
+	}
+
+	parts
+	{
+		#include "clean_box_parts.edc"
+	}
+
+
+	programs
+	{
+		#include "clean_box_programs.edc"
+	}
+
+} /* End of box group */

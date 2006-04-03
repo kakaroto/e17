@@ -1,0 +1,203 @@
+dnl Process this file with autoconf to produce a configure script.
+
+AC_INIT(configure.in)
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
+
+#### choose what feature will be compiled in
+
+# get the value from optional argument
+AC_ARG_ENABLE(
+  modular,
+  AC_HELP_STRING(
+    [--enable-modular],
+    [Build a module with one feature only],
+  ),
+  [
+    AC_MSG_WARN([You choose to build a module with only one feature inside])
+    have_modular="$enableval"
+  ],
+  [
+    AC_MSG_WARN([You choose to build a module with all features inside])
+    have_modular="no"
+  ]
+)
+# select if we compil dEvian, dErss, dEphoto, dElog
+if ! test x"$have_modular" = x"no" ; then
+  have_picture="no"
+  have_rss="no"
+  have_file="no"
+  if test x"$have_modular" = x"photo" ; then
+    package="dephoto"
+    version="0.1.0"
+    AC_DEFINE_UNQUOTED(MODULE_VERSION, "$version", [Module version])
+    AC_DEFINE(HAVE_PICTURE, 1, [Compil Picture support])
+    module_name="dEphoto"
+    have_picture="yes"
+  else
+    if test x"$have_modular" = x"rss" ; then
+      package="derss"
+      version="0.1.0"
+      AC_DEFINE_UNQUOTED(MODULE_VERSION, "$version", [Module versio])
+      AC_DEFINE(HAVE_RSS, 1, [Compil RSS support])
+      module_name="dErss"
+      have_rss="yes"
+    else
+      if test x"$have_modular" = x"log" ; then
+        package="delog"
+        version="0.1.0"
+        AC_DEFINE_UNQUOTED(MODULE_VERSION, "$version", [Module version])
+        AC_DEFINE(HAVE_FILE, 1, [Compil File log support])
+        module_name="dElog"
+        have_file="yes"
+      else
+        AC_MSG_ERROR(The feature "$enable_modular" you specified doesnt exists)
+      fi
+    fi
+  fi
+else
+  package="devian"
+  version="0.2.0"
+  AC_DEFINE_UNQUOTED(MODULE_VERSION, "$version", [Module name])
+  AC_DEFINE(HAVE_ALL, 1, [Compil with all support])
+  AC_DEFINE(HAVE_PICTURE, 1, [Compil Picture support])
+  AC_DEFINE(HAVE_RSS, 1, [Compil RSS support])
+  AC_DEFINE(HAVE_FILE, 1, [Compil File log support])
+  have_picture="yes"
+  have_rss="yes"
+  have_file="yes"
+  module_name="dEvian"
+fi
+
+AM_INIT_AUTOMAKE($package, $version, ooookiwi@free.fr)
+AM_CONFIG_HEADER(config.h)
+AC_ISC_POSIX
+AC_PROG_CC
+AM_PROG_CC_STDC
+AC_HEADER_STDC
+AC_C_CONST
+AM_ENABLE_SHARED
+AM_PROG_LIBTOOL
+
+MODULE_ARCH="$host_os-$host_cpu"
+AC_SUBST(MODULE_ARCH)
+AC_DEFINE_UNQUOTED(MODULE_ARCH, "$MODULE_ARCH", "Module architecture")
+
+
+#### set prefix
+
+if test "x${bindir}" = 'x${exec_prefix}/bin'; then
+  if test "x${exec_prefix}" = "xNONE"; then
+    if test "x${prefix}" = "xNONE"; then
+      bindir="${ac_default_prefix}/bin";
+    else
+      bindir="${prefix}/bin";
+    fi
+  else
+    if test "x${prefix}" = "xNONE"; then
+      bindir="${ac_default_prefix}/bin";
+    else
+      bindir="${prefix}/bin";
+    fi
+  fi
+fi
+
+if test "x${libdir}" = 'x${exec_prefix}/lib'; then
+  if test "x${exec_prefix}" = "xNONE"; then
+    if test "x${prefix}" = "xNONE"; then
+      libdir="${ac_default_prefix}/lib";
+    else
+      libdir="${prefix}/lib";
+    fi
+  else
+    if test "x${prefix}" = "xNONE"; then
+      libdir="${ac_default_prefix}/lib";
+    else
+      libdir="${prefix}/lib";
+    fi
+  fi
+fi
+
+
+if test "x${prefix}" = "xNONE"; then
+    datadir="${HOME}/.e/e/modules/${PACKAGE}"
+else
+    datadir="${prefix}/lib/enlightenment/modules/${PACKAGE}"    
+fi
+
+
+#### check for libraries and Enlightenment
+
+AC_PATH_GENERIC(eet, 0.9.10,
+  [ ],
+  [ AC_MSG_ERROR(Eet isn't installed) ],
+)
+  
+AC_PATH_GENERIC(ecore, 0.9.9,
+  [ ],
+  [ AC_MSG_ERROR(Ecore isn't installed) ],
+)
+
+AC_PATH_GENERIC(evas, 0.9.9,
+  [ ],
+  [ AC_MSG_ERROR(Evas isn't installed) ],
+)
+
+AC_PATH_GENERIC(edje, 0.5.0,
+  [
+    edje_cc="`$EDJE_CONFIG --prefix`/bin/edje_cc"
+    AC_SUBST(edje_cc)
+  ],
+  [ AC_MSG_ERROR(Edje isn't installed) ],
+)
+
+AC_PATH_GENERIC(embryo, 0.9.1,
+  [ ],
+  [ AC_MSG_ERROR(Embryo isn't installed) ],
+)
+
+AC_PATH_GENERIC(enlightenment, 0.16.999,
+  [ ],
+  [ AC_MSG_ERROR(Enlightenment isn't installed) ],
+)
+
+
+#### output
+
+AC_OUTPUT([
+Makefile
+data/Makefile
+data/images/Makefile
+data/themes/Makefile
+data/themes/clean/Makefile
+data/themes/minimal/Makefile
+data/themes/blue_eyed/Makefile
+src/Makefile
+src/module/Makefile
+],[
+])
+
+
+#### info
+
+echo
+echo
+echo
+echo "------------------------------------------------------------------------"
+echo "$PACKAGE $VERSION"
+echo "------------------------------------------------------------------------"
+echo
+echo "Configuration Options Summary:"
+echo
+echo "Modular compil ...........: $have_modular"
+echo "Module name ..............: $module_name"
+echo "  Picture support ........: $have_picture"
+echo "  Rss support ............: $have_rss"
+echo "  File log support .......: $have_file"
+echo
+echo "Installation Path.........: $datadir"
+echo
+echo "Compilation...............: make"
+echo "Installation..............: make install"
+echo "Do both of these operations as NORMAL USER"
+echo

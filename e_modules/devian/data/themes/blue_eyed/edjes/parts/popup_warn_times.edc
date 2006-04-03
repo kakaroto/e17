@@ -1,0 +1,22 @@
+part{
+	name: "times";
+	type: TEXT;
+	mouse_events: 0;
+	description{
+		state: "default" 0.0;
+		rel1{
+			relative: 0.0 0.0;
+			to: "background";
+			offset: 8 8;
+		}
+		color: 0 0 0 255;
+		color2: 0 0 0 255;
+		color3: 255 200 200 255;
+		text{
+			text: "";
+			font: "Vera";
+			size: 11;
+			align: 0.0 0.0;
+		}
+	}
+}

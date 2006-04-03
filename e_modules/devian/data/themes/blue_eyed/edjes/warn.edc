@@ -1,0 +1,22 @@
+group{
+	name: "devian/popup/warn";
+	#include "scripts/popup_warn_script.edc"
+	parts{
+		#include "parts/popup_warn_background.edc"
+		#include "parts/popup_warn_logo.edc"
+		#include "parts/popup_warn_name.edc"
+		#include "parts/popup_warn_times.edc"
+		#include "parts/popup_warn_text.edc"
+		#include "parts/popup_warn_text_border.edc"
+		#include "parts/popup_warn_close.edc"
+		#include "parts/popup_warn_disable.edc"
+	}
+	programs{
+		#include "programs/popup_warn_close_click.edc"
+		#include "programs/popup_warn_disable_click.edc"
+		#include "programs/popup_warn_disable_click_1.edc"
+		#include "programs/popup_warn_background_click.edc"
+		#include "programs/popup_warn_update_anim.edc"
+		#include "programs/popup_warn_update_anim_1.edc"
+	}
+}

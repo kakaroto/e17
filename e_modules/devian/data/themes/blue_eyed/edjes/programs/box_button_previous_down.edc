@@ -1,0 +1,7 @@
+program{
+	name: "button_previous_down";
+	signal: "mouse,down,1";
+	source: "button_previous";
+	action: STATE_SET "default_p" 0.0;
+	target: "button_previous";
+}

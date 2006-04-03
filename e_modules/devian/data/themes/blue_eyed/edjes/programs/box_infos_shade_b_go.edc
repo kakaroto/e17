@@ -1,0 +1,8 @@
+program{
+	name: "infos_shade_b_go";
+	action: STATE_SET "ready_b" 0.0;
+	transition: DECELERATE 1;
+	target: "infos";
+	after: "infos_shade_go_2";
+	after: "infos_shade_go_3";
+}

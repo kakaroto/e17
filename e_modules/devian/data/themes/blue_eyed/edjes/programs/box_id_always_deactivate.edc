@@ -1,0 +1,11 @@
+program{
+	name: "id_always_deactivate";
+	signal: "id_always_deactivate";
+	source: "";
+	script{
+		set_int(id_always, 0);
+		if (get_int(id_active) == 1){
+			run_program(PROGRAM:"id_shade_go");
+		}
+	}
+} 

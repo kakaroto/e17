@@ -1,0 +1,39 @@
+/* Rss item group */
+
+#define MSG_RECV_ITEM_STATE 0
+
+group
+{
+	name: "devian/rss/item";
+
+	script
+	{
+		public item_new;
+
+		public message(Msg_Type: type, id, msg)
+		{
+			if (id == MSG_RECV_ITEM_STATE)
+			{
+				if (type == MSG_INT)
+				{
+					set_int(item_new, getarg(2));
+					if (get_int(item_new))
+						set_state(PART:"title", "new", 0.0);
+					else
+						set_state(PART:"title", "default", 0.0);
+				}
+			}
+		}
+	}
+
+	parts
+	{
+		#include "minimal_rss_parts.edc"
+	}
+
+	programs
+	{
+		#include "minimal_rss_programs.edc"
+	}
+
+} /* End of rss item group */

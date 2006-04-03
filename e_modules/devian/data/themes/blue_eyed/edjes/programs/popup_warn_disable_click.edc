@@ -1,0 +1,10 @@
+program{
+	name: "disable_click";
+	signal: "mouse,up,1";
+	source: "disable";
+	action: STATE_SET "clicked" 0.0;
+	transition: DECELERATE 1.5;
+	target: "disable";
+	after: "disable_click_1";
+}
+

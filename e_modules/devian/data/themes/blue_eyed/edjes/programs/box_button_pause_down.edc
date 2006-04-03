@@ -1,0 +1,17 @@
+program{
+	name: "button_pause_down";
+	signal: "mouse,down,1";
+	source: "button_pause";
+	script{
+		if (!get_int(paused)){
+			set_int(paused, 1);
+			emit("pause", "button_playpause");
+			set_state(PART:"button_pause", "default_p", 0.0);
+		}
+		else{
+			set_int(paused, 0);
+			emit("play", "button_playpause");
+			set_state(PART:"button_pause", "default", 0.0);
+		}
+	}
+}

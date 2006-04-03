@@ -1,0 +1,25 @@
+program{
+	name: "infos_show_go_static";
+	script{
+		if (get_int(infos_static)){
+			if ( get_int(infos_pos) == INFOS_POS_RIGHT){
+				run_program(PROGRAM:"infos_static_show_r_go");
+			}
+			else{
+				if ( get_int(infos_pos) == INFOS_POS_LEFT){
+					run_program(PROGRAM:"infos_static_show_l_go");
+				}
+				/*else{
+					if ( get_int(infos_pos) == INFOS_POS_TOP){
+						run_program(PROGRAM:"infos_static_show_t_go");
+					}
+					else{
+						if ( get_int(infos_pos) == INFOS_POS_BOTTOM){
+							run_program(PROGRAM:"infos_static_show_b_go");
+						}
+					}
+				}*/
+			}
+		}
+	}
+}

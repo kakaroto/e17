@@ -1,0 +1,9 @@
+program{
+	name:   "init";
+	signal: "load";
+	source: "";
+	script{
+		set_int(item_new, 0);
+	}
+}
+

@@ -1,0 +1,9 @@
+program{
+	name: "infos_mouse_out";
+	signal: "mouse,out";
+	source: "infos_inout";
+	script{
+		if (!get_int(timer_infos_shade))
+		run_program(PROGRAM:"infos_shade_timer");
+	}
+}

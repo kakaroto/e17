@@ -1,0 +1,19 @@
+program{
+	name: "controls_show_go";
+	script{
+		set_int(controls_visible, 1);
+		/* Pause */
+		if (!get_int(paused))
+			run_program(PROGRAM:"button_pause_show_go");
+		else
+			run_program(PROGRAM:"button_pause_p_show_go");
+		/* Refresh */
+		run_program(PROGRAM:"button_refresh_show_go");
+		/* Previous */
+		if (get_int(previous_show))
+			run_program(PROGRAM:"button_previous_show_go");
+		/* Set background */
+		if (get_int(set_bg_show))
+			run_program(PROGRAM:"button_set_bg_show_go");
+	}
+}

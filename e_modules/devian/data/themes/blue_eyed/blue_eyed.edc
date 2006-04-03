@@ -1,0 +1,75 @@
+#define MSG_RECV_INFOS_POS_SET 0
+#define MSG_RECV_PART_PAUSED_SET 1
+#define MSG_RECV_INFOS_SHOW_ALLOW 2
+#define MSG_RECV_LOADING_STATE 3
+#define MSG_RECV_SHOW_SET_BG 4
+#define MSG_RECV_SHOW_PREVIOUS 5
+
+#define MSG_SEND_INFOS_W 0
+#define MSG_SEND_INFOS_VISIBLE 1
+
+#define MSG_RECV_ITEM_STATE 0
+
+#define MSG_RECV_POPUP_WARN_SHOW_DISABLE 0
+
+#define INFOS_POS_DEFAULT 2
+#define INFOS_POS_TOP 1
+#define INFOS_POS_RIGHT 2
+#define INFOS_POS_BOTTOM 3
+#define INFOS_POS_LEFT 4
+
+#define IS_IN_PART_INIT \
+	new px, py, pw, ph; \
+	new x, y, is; \
+	is = 0; \
+	get_mouse(x, y);
+#define IS_IN_PART(pname) \
+	get_geometry(PART:pname, px, py, pw, ph); \
+	if ((x>=px) && (x<=px+pw) && (y>=py) && (y<=py+ph)) \
+	is++;
+
+images{
+	image: "images/logo.png" COMP;
+	image: "images/border.png" COMP;
+
+	image: "images/infos_border.png" COMP;
+
+	image: "images/popup_background.png" COMP;
+	image: "images/popup_close.png" COMP;
+	image: "images/popup_disable.png" COMP;
+	image: "images/popup_disable_clicked.png" COMP;
+
+//	image: "images/rss_background.png" COMP;
+//	image: "images/rss_background_selected.png" COMP;
+	image: "images/menu_title2.png" COMP;
+	image: "images/hbar.png" COMP;
+
+	image: "images/button_pause.png" COMP;
+	image: "images/button_pause_clicked.png" COMP;
+	image: "images/button_refresh.png" COMP;
+	image: "images/button_refresh_clicked.png" COMP;
+	image: "images/button_previous.png" COMP;
+	image: "images/button_previous_clicked.png" COMP;
+	image: "images/button_set_bg.png" COMP;
+	image: "images/button_set_bg_clicked.png" COMP;
+
+	image: "images/button_link_open.png" COMP;
+
+	image: "images/loading_state_bg.png" COMP;
+	image: "images/loading_state.png" COMP;
+}
+
+fonts{
+	font: "fonts/Vera.ttf"   "Vera";
+	font: "fonts/VeraBd.ttf" "VeraBd";
+}
+data{
+	item: "version" "2";
+}
+
+collections{
+	#include "edjes/warn.edc"
+	#include "edjes/rss.edc"
+	#include "edjes/box.edc"
+	#include "readme.edc"
+}

@@ -1,0 +1,7 @@
+program{
+	name: "infos_static_show_l_go";
+	action: STATE_SET "static_show_l" 0.0;
+	transition: DECELERATE 0.7;
+	target: "infos_clip";
+}
+

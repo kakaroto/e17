@@ -1,0 +1,8 @@
+program{
+	name: "background_click";
+	signal: "mouse,up,1";
+	source: "background";
+	script{
+		emit("next", "popup");
+	}
+}

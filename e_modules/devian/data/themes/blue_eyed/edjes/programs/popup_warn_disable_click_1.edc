@@ -1,0 +1,6 @@
+program{
+	name: "disable_click_1";
+	script{
+		emit("desactivate", "popup");
+	}
+}

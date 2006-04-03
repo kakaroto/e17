@@ -1,0 +1,11 @@
+script{
+	public show_disabled;
+	public message(Msg_Type: type, id, msg){
+		if (id == MSG_RECV_POPUP_WARN_SHOW_DISABLE){
+			if (type == MSG_INT){
+				set_int(show_disabled, getarg(2));
+				set_state(PART:"disable", "visible", 0.0);
+			}
+		}
+	}
+}

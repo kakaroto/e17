@@ -1,0 +1,6 @@
+program{
+	name: "infos_shade_go_3";
+	action: STATE_SET "default" 0.0;
+	target: "infos_border";
+}
+
