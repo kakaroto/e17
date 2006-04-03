@@ -568,6 +568,8 @@ _cpu_face_graph_values(Cpu_Face *cf)
    int b = 0;
    int c = 100;
    int d = 0;
+
+   evas_event_freeze(cf->evas);
    
    evas_object_geometry_get(cf->chart_obj, &x, &y, &w, &h);
 
@@ -619,10 +621,13 @@ _cpu_face_graph_values(Cpu_Face *cf)
 	if ((j - 2) >= w) 
 	  {
 	     cf->old_values[d] = evas_list_remove(cf->old_values[d], last);
+	     edje_object_part_unswallow(cf->chart_obj, last);
 	     evas_object_del(last);
 	  }
 	d++;
      }
+   
+   evas_event_thaw(cf->evas);
 }
 
 static void 
@@ -631,18 +636,24 @@ _cpu_face_graph_clear(Cpu_Face *cf)
    int i = 0;	
    Evas_List *l;
 
+   evas_event_freeze(cf->evas);
+   
    while (i < cpu_count)
      {
 	for (l = cf->old_values[i]; l; l = l->next) 
 	  {
 	     Evas_Object *o;
 	     o = evas_list_data(l);
+	     edje_object_part_unswallow(cf->chart_obj, o);
 	     evas_object_del(o);
 	  }
 	evas_list_free(cf->old_values[i]);
 	cf->old_values[i] = NULL;
-	if (!cf->cpu->conf->show_graph)
-	  evas_object_hide(cf->chart_obj);
 	i++;
      }
+
+   if (!cf->cpu->conf->show_graph)
+     evas_object_hide(cf->chart_obj);
+
+   evas_event_thaw(cf->evas);
 }
