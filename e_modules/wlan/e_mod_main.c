@@ -543,6 +543,8 @@ _wlan_face_graph_values(Wlan_Face *wf, int val)
    Evas_List *l;
    int i, j = 0;
    int v;
+
+   evas_event_freeze(wf->evas);
    
    evas_object_geometry_get(wf->chart_obj, &x, &y, &w, &h);
 
@@ -576,8 +578,11 @@ _wlan_face_graph_values(Wlan_Face *wf, int val)
    if ((j - 2) >= w) 
      {
 	wf->old_values = evas_list_remove(wf->old_values, last);
+	edje_object_part_unswallow(wf->chart_obj, last);
 	evas_object_del(last);
      }
+   
+   evas_event_thaw(wf->evas);
 }
 
 void
@@ -585,13 +590,18 @@ _wlan_face_graph_clear(Wlan_Face *wf)
 {
    Evas_List *l;
 
+   evas_event_freeze(wf->evas);
+   
    for (l = wf->old_values; l; l = l->next) 
      {
 	Evas_Object *o;
 	o = evas_list_data(l);
+	edje_object_part_unswallow(wf->chart_obj, o);
 	evas_object_del(o);
      }
    evas_list_free(wf->old_values);
    wf->old_values = NULL;
+   
+   evas_event_thaw(wf->evas);
 }
 
