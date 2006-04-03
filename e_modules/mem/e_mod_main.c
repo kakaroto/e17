@@ -618,6 +618,8 @@ _mem_face_graph_values(Mem_Face *mf, int rval, int sval)
    Evas_Object *last = NULL;
    Evas_List *l;
    int i, j = 0;
+
+   evas_event_freeze(mf->evas);
    
    evas_object_geometry_get(mf->chart_obj, &x, &y, &w, &h);
    
@@ -637,7 +639,8 @@ _mem_face_graph_values(Mem_Face *mf, int rval, int sval)
 	evas_object_show(o);
      }
    
-   mf->old_real = evas_list_prepend(mf->old_real, o);
+   /* Add new value to list */
+   mf->old_real = evas_list_prepend(mf->old_real, o);   
    l = mf->old_real;
    for (i = (x + w); l && (j -2) < w; l = l->next, j++) 
      {
@@ -653,6 +656,7 @@ _mem_face_graph_values(Mem_Face *mf, int rval, int sval)
    if ((j - 2) >= w) 
      {
 	mf->old_real = evas_list_remove(mf->old_real, last);
+	edje_object_part_unswallow(mf->chart_obj, last);
 	evas_object_del(last);
      }   
 
@@ -685,8 +689,11 @@ _mem_face_graph_values(Mem_Face *mf, int rval, int sval)
    if ((j - 2) >= w) 
      {
 	mf->old_swap = evas_list_remove(mf->old_swap, last);
+	edje_object_part_unswallow(mf->chart_obj, last);
 	evas_object_del(last);
      }   
+   
+   evas_event_thaw(mf->evas);
 }
 
 static void 
