@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "Ewl.h"
+#include "../config.h"
 
 #define WIDTH 250
 #define HEIGHT 100
