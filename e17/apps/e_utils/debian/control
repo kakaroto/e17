@@ -1,16 +1,21 @@
 Source: eutils
 Section: x11
 Priority: optional
-Maintainer: Blake Barnett <shadoi@soulmachine.net>
+Maintainer: E17 Debian Team <debian@edevelop.org>
 Build-Depends: debhelper (>= 4.0.0)
-Build-Depends: libeet-dev, libengrave-dev, libevas-dev, libecore-dev, libe-dev, libewl-dev, libimlib2-dev, libedje-dev, libepsilon-dev, libesmart-dev, debhelper (>> 4.0.0)
+Build-Depends: libeet0-dev, libengrave0-dev, libevas0-dev, libecore0-dev, libe-dev, libewl0-dev, libimlib2-dev, libedje0-dev, libepsilon0-dev, libesmart0-dev, debhelper (>> 4.0.0)
 Standards-Version: 3.6.1.0
 
 Package: eutils
 Section: x11
-Architecture: i386
-Depends: ${shlibs:Depends}
-Description: A collection of utilities for use with e17 and EFL apps. 
- eapp_editor - An application icon editor for e17 and engage.
- e17setroot - Command-line tool that sets the background/root window for e17.
- emblem - A gui tool to set the background/root window for e17. 
+Architecture: any
+Depends: ${shlibs:Depends}, libevas0, libecore0, libesmart0, libedje0, libeet0, libewl0, libengrave0, libimlib2, libe, libepsilon 
+Description: A collection of utilities for use with E17 and EFL apps.
+ This package contains the following E17 tools:
+ e17genmenu - Application to automatically generate menu entries.
+ eapp_editor - An application icon editor for E17 and engage.
+ e17setroot - Command-line tool that sets the background/root window.
+ entangle - A simple menu editor.
+ emblem - A gui tool to set the background/root window.
+ exige - A program launcher.
+ ethemes - Theme preview application.

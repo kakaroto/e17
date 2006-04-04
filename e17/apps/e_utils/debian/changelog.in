@@ -2,5 +2,5 @@ eutils (@VERSION@-1) unstable; urgency=low
 
   * a CVS snapshot release.
 
- -- Blake Barnett <shadoi@soulmachine.net>  Wed, 12 Jan 2005 11:55:29 -0700
+ -- E17 Debian Team <debian@edevelop.org>  Wed, 12 Jan 2005 11:55:29 -0700
 
