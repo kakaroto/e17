@@ -65,7 +65,7 @@ int thumb_complete_cb(void *data, int type, void *event)
 	      entropy_core_gui_event_get
 	      (ENTROPY_GUI_EVENT_THUMBNAIL_AVAILABLE);
 	    gui_event->data = thumbnail;
-	    //
+
 	    /*Call the callback stuff */
 	    entropy_core_layout_notify_event (instance, gui_event,
 					      ENTROPY_EVENT_LOCAL);
@@ -144,16 +144,6 @@ entropy_thumbnailer_thumbnail_get (entropy_thumbnail_request * request)
   else {
     return request->file->thumbnail;
   }
-  /*Set the file up for this thumbnail. TODO this probably violates convention to do this here,
-   * but we create the thumbnail downstream, and from here, so there's not much choice.. */
-
-  /*if (thumb) {
-    thumb->parent = request->file;
-    request->file->thumbnail = thumb;
-  }
-  else {
-    return NULL;
-  }*/
 
   return NULL;
 }

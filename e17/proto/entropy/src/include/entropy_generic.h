@@ -8,7 +8,8 @@
 #define MIME_LENGTH 40
 #define FILENAME_LENGTH 255
 
-typedef struct entropy_generic_file entropy_generic_file;
+typedef struct entropy_generic_file entropy_generic_file; /*Deprecated*/
+typedef struct entropy_generic_file Entropy_Generic_File; /*New*/
 struct entropy_generic_file {
         char path[PATH_MAX];
         char filename[FILENAME_LENGTH];

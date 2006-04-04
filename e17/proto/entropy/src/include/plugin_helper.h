@@ -18,4 +18,8 @@ void entropy_plugin_filesystem_filestat_get(entropy_file_request* request);
 void entropy_plugin_operation_respond(long operation, int response);
 void entropy_plugin_filesystem_file_rename(entropy_generic_file* file, entropy_generic_file* dest);
 
+
+
+void entropy_event_stat_request(Entropy_Generic_File* file, entropy_gui_component_instance* instance);
+
 #endif

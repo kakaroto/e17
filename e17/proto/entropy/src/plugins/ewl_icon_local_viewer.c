@@ -269,12 +269,7 @@ icon_properties_cb (Ewl_Widget * w, void *ev_data, void *user_data)
   //Stat test..
   /*Send an event to the core */
   if (local_file) {
-    gui_event = entropy_malloc (sizeof (entropy_gui_event));
-    gui_event->event_type =
-      entropy_core_gui_event_get (ENTROPY_GUI_EVENT_FILE_STAT);
-    gui_event->data = local_file->file;
-    entropy_core_layout_notify_event (instance, gui_event,
-				      ENTROPY_EVENT_LOCAL);
+	entropy_event_stat_request(local_file->file, instance);
   }
   else {
     printf ("Could not find selected icon!\n");

@@ -8,11 +8,12 @@
 #include "etk_progress_dialog.h"
 #include "etk_user_interaction_dialog.h"
 #include "etk_directory_add_dialog.h"
+#include "etk_properties_dialog.h"
 
 #define EN_DND_COL_NUM 5
 
 static int etk_callback_setup = 0;
-static Ecore_Hash* row_hash;
+static Ecore_Hash* etk_list_viewer_row_hash;
 
 typedef struct entropy_etk_file_list_viewer entropy_etk_file_list_viewer;
 struct entropy_etk_file_list_viewer
@@ -23,7 +24,7 @@ struct entropy_etk_file_list_viewer
   Etk_Tree_Col* tree_col1;
   Etk_Widget* parent_visual; 
 
-  Ecore_Hash* row_hash;
+  Ecore_Hash* etk_list_viewer_row_hash;
   Ecore_Hash* gui_hash;
 
   Ecore_List *gui_events;
@@ -35,7 +36,11 @@ struct entropy_etk_file_list_viewer
   Etk_Widget* open_with_menu;
   Etk_Widget* open_with_menuitem;
 
+  /*Current folder - TODO - move to core - per layout API*/
   entropy_generic_file* current_folder;
+
+  /*A file we're waiting on for passback properties*/
+  Ecore_Hash* properties_request_hash;  
 };
 
 typedef struct event_file_core event_file_core;
@@ -153,7 +158,7 @@ _open_with_item_cb(Etk_Object *obj, void *data)
 
 	if (instance && viewer) {
 		row = etk_tree_selected_row_get(ETK_TREE(viewer->tree));
-		file = ecore_hash_get(row_hash, row);
+		file = ecore_hash_get(etk_list_viewer_row_hash, row);
 
 
 		if (file) {
@@ -183,7 +188,7 @@ _entropy_etk_list_viewer_menu_popup_cb(Etk_Object *object, void *data)
 	viewer = instance->data;
 
 	row = etk_tree_selected_row_get(ETK_TREE(viewer->tree));
-	file = ecore_hash_get(row_hash, row);
+	file = ecore_hash_get(etk_list_viewer_row_hash, row);
 
 	if (file && strlen(file->file->mime_type)) {
 		
@@ -230,8 +235,8 @@ static int _entropy_etk_list_filename_compare_cb(Etk_Tree *tree, Etk_Tree_Row *r
    if (!tree || !row1 || !row2 || !col)
       return 0;
 
-   file1 = ecore_hash_get(row_hash, row1);
-   file2 = ecore_hash_get(row_hash, row2);
+   file1 = ecore_hash_get(etk_list_viewer_row_hash, row1);
+   file2 = ecore_hash_get(etk_list_viewer_row_hash, row2);
   
    if (file1 && file2) {
 	 val = strcasecmp(file1->file->filename, file2->file->filename);
@@ -256,8 +261,8 @@ static int _entropy_etk_list_size_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1,
    if (!tree || !row1 || !row2 || !col)
       return 0;
    
-   file1 = ecore_hash_get(row_hash, row1);
-   file2 = ecore_hash_get(row_hash, row2);
+   file1 = ecore_hash_get(etk_list_viewer_row_hash, row1);
+   file2 = ecore_hash_get(etk_list_viewer_row_hash, row2);
    
    if (file1 && file2) {
 	   if (file1->file->properties.st_size > file2->file->properties.st_size) {
@@ -279,8 +284,8 @@ static int _entropy_etk_list_date_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1,
    if (!tree || !row1 || !row2 || !col)
       return 0;
    
-   file1 = ecore_hash_get(row_hash, row1);
-   file2 = ecore_hash_get(row_hash, row2);
+   file1 = ecore_hash_get(etk_list_viewer_row_hash, row1);
+   file2 = ecore_hash_get(etk_list_viewer_row_hash, row2);
    
    if (file1 && file2) {
 	   if (file1->file->properties.st_mtime > file2->file->properties.st_mtime) {
@@ -294,6 +299,21 @@ static int _entropy_etk_list_date_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1,
    }
 }
 
+void _entropy_etk_list_viewer_properties_cb(Etk_Object *object, void *data)
+{
+	entropy_gui_component_instance* instance = data;
+	entropy_etk_file_list_viewer* viewer = instance->data;
+	Etk_Tree_Row* row;
+	gui_file* file;
+
+	row = etk_tree_selected_row_get(ETK_TREE(viewer->tree));
+	file = ecore_hash_get(etk_list_viewer_row_hash, row);
+
+	if (file) {
+		ecore_hash_set(viewer->properties_request_hash, file->file, (int*)1);
+		entropy_event_stat_request(file->file, instance);
+	}
+}
 
 void _entropy_etk_list_viewer_directory_add_cb(Etk_Object *object, void *data)
 {
@@ -325,7 +345,7 @@ static void _etk_entropy_list_viewer_key_down_cb(Etk_Object *object, void *event
 	   printf("Delete pressed!\n");
 
 	  for (; row_list; row_list = row_list->next ) {
-	  	file = ((gui_file*)ecore_hash_get(row_hash, row_list->data));
+	  	file = ((gui_file*)ecore_hash_get(etk_list_viewer_row_hash, row_list->data));
 
 		if (file) {
 			printf("Deleting '%s'...\n", file->file->filename);
@@ -371,11 +391,11 @@ static void _entropy_etk_list_viewer_drag_begin_cb(Etk_Object *object, void *dat
    count = evas_list_count(rows);
    bzero(buffer,8192);
    for (; rows; rows = rows->next ) {
-	   file = ((gui_file*)ecore_hash_get(row_hash, rows->data));
+	   file = ((gui_file*)ecore_hash_get(etk_list_viewer_row_hash, rows->data));
 	   
-	   printf("Row %p resolves to %p:%s!\n", rows->data, ecore_hash_get(row_hash, rows->data),
-			   ((gui_file*)ecore_hash_get(row_hash, rows->data))->file->uri );
-	   strcat(buffer, ((gui_file*)ecore_hash_get(row_hash, rows->data))->file->uri);
+	   printf("Row %p resolves to %p:%s!\n", rows->data, ecore_hash_get(etk_list_viewer_row_hash, rows->data),
+			   ((gui_file*)ecore_hash_get(etk_list_viewer_row_hash, rows->data))->file->uri );
+	   strcat(buffer, ((gui_file*)ecore_hash_get(etk_list_viewer_row_hash, rows->data))->file->uri);
 	   strcat(buffer, "\r\n");
 
 	   if (added_object < (EN_DND_COL_NUM*5)-1) {
@@ -450,7 +470,7 @@ gui_file_remove_destroy_single(entropy_gui_component_instance * comp,
 	entropy_etk_file_list_viewer *view = comp->data;
 	
 	ecore_hash_remove(view->gui_hash, file->file);
-	ecore_hash_remove(row_hash, file->icon);
+	ecore_hash_remove(etk_list_viewer_row_hash, file->icon);
 
 	entropy_free(file);
 	
@@ -498,7 +518,7 @@ gui_object_destroy_and_free (entropy_gui_component_instance * comp,
 
   ecore_list_goto_first(view->files);
   while ((row = ecore_list_remove_first(view->files))) {
-	  ecore_hash_remove(row_hash, row);
+	  ecore_hash_remove(etk_list_viewer_row_hash, row);
   }
 
   entropy_notify_unlock_loop (comp->core->notify);
@@ -517,7 +537,7 @@ static void _etk_list_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *row, 
    gui_file* file;
    
   
-   file = ecore_hash_get(row_hash, row);
+   file = ecore_hash_get(etk_list_viewer_row_hash, row);
    instance = file->instance;
    viewer = instance->data;
 	
@@ -631,7 +651,7 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
   e_file->icon=new_row;
 
   ecore_hash_set(viewer->gui_hash, file, e_file);
-  ecore_hash_set(row_hash, new_row, e_file);
+  ecore_hash_set(etk_list_viewer_row_hash, new_row, e_file);
 
   /*Save this file in this list of files we're responsible for */
   ecore_list_append (viewer->files, new_row);
@@ -849,35 +869,27 @@ entropy_plugin_gui_instance_new (entropy_core * core,
   viewer = entropy_malloc (sizeof (entropy_etk_file_list_viewer));
 
   viewer->files = ecore_list_new();
-  viewer->row_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
   viewer->gui_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
+  viewer->properties_request_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
   
   viewer->tree = etk_tree_new(); 
   etk_tree_mode_set(ETK_TREE(viewer->tree), ETK_TREE_MODE_LIST);
  
   viewer->tree_col1 = etk_tree_col_new(ETK_TREE(viewer->tree), _("Icon"), 
 		  etk_tree_model_image_new(ETK_TREE(viewer->tree), ETK_TREE_FROM_FILE), 48);
-  /* Perhaps this is better than expanding it? -- CodeWarrior
-   * etk_tree_col_expand_set(viewer->tree_col1, ETK_TRUE);
-  */
-  
   viewer->tree_col1 = etk_tree_col_new(ETK_TREE(viewer->tree), _("Filename"), 
 		  etk_tree_model_text_new(ETK_TREE(viewer->tree)), 150);
-  //etk_tree_col_expand_set(viewer->tree_col1, ETK_TRUE);
   etk_tree_col_sort_func_set(viewer->tree_col1, _entropy_etk_list_filename_compare_cb, NULL);
 
   viewer->tree_col1 = etk_tree_col_new(ETK_TREE(viewer->tree), _("Size"), 
 		  etk_tree_model_text_new(ETK_TREE(viewer->tree)),60);
-  //etk_tree_col_expand_set(viewer->tree_col1, ETK_TRUE);
   etk_tree_col_sort_func_set(viewer->tree_col1, _entropy_etk_list_size_compare_cb, NULL);
 
   viewer->tree_col1 = etk_tree_col_new(ETK_TREE(viewer->tree), _("Type"), 
 		  etk_tree_model_text_new(ETK_TREE(viewer->tree)),65);
-  //etk_tree_col_expand_set(viewer->tree_col1, ETK_TRUE);
 
   viewer->tree_col1 = etk_tree_col_new(ETK_TREE(viewer->tree), _("Date Modified"), 
 		  etk_tree_model_text_new(ETK_TREE(viewer->tree)),90);
-  //etk_tree_col_expand_set(viewer->tree_col1, ETK_TRUE);
   etk_tree_col_sort_func_set(viewer->tree_col1, _entropy_etk_list_date_compare_cb, NULL);
 
 
@@ -886,7 +898,6 @@ entropy_plugin_gui_instance_new (entropy_core * core,
    dnd_types = entropy_malloc(dnd_types_num* sizeof(char*));
    dnd_types[0] = strdup("text/uri-list");  
   etk_widget_dnd_source_set(viewer->tree, ETK_TRUE);
-  //etk_widget_dnd_drag_data_set(viewer->tree, dnd_types, dnd_types_num, "This is the drag data!", strlen("This is the drag data!") + 1);
   etk_signal_connect("drag_begin", ETK_OBJECT(viewer->tree) , ETK_CALLBACK(_entropy_etk_list_viewer_drag_begin_cb), instance);
   etk_tree_multiple_select_set(ETK_TREE(viewer->tree), ETK_TRUE); 
   etk_tree_build(ETK_TREE(viewer->tree));
@@ -959,7 +970,8 @@ entropy_plugin_gui_instance_new (entropy_core * core,
    _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Cut"), ETK_STOCK_EDIT_CUT, ETK_MENU_SHELL(viewer->popup),NULL);
    _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Paste"), ETK_STOCK_EDIT_PASTE, ETK_MENU_SHELL(viewer->popup),NULL);
    _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Delete"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(viewer->popup),NULL);
-   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Properties"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(viewer->popup),NULL);
+   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Properties"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(viewer->popup),NULL);
+   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_entropy_etk_list_viewer_properties_cb), instance);
 
    menu_item =  _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("New"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(viewer->popup),NULL);
    new_menu = etk_menu_new();
@@ -973,7 +985,7 @@ entropy_plugin_gui_instance_new (entropy_core * core,
   
   if (!etk_callback_setup) {
 	  etk_callback_setup = 1;
-	  row_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
+	  etk_list_viewer_row_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
   }
 
   etk_signal_connect("row_clicked", ETK_OBJECT( viewer->tree  ), 
