@@ -71,10 +71,12 @@ void etk_properties_dialog_new(Entropy_Generic_File* file)
 	
 	label = etk_label_new(file->filename);
 	etk_box_pack_start(ETK_BOX(pvbox), label, ETK_FALSE, ETK_FALSE, 0);
-
-	
-	
 	/*------------------*/
+
+	/*Permissions*/
+	ivbox = etk_vbox_new(ETK_TRUE,0);	
+	etk_notebook_page_append(ETK_NOTEBOOK(notebook), "Permissions", ivbox);
+	/*---------------------*/
 
 	hbox = etk_hbox_new(ETK_TRUE,0);
 	etk_box_pack_end(ETK_BOX(vbox), hbox, ETK_FALSE, ETK_FALSE, 0);
