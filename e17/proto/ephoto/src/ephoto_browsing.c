@@ -79,9 +79,9 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 	
 		m->imagetree = ewl_tree_new(1);
 		ewl_container_child_append(EWL_CONTAINER(m->images), m->imagetree);
-		ewl_object_maximum_size_set(EWL_OBJECT(m->imagetree), 200, 215);
 		ewl_tree_headers_visible_set(EWL_TREE(m->imagetree), 0);
 		ewl_tree_expandable_rows_set(EWL_TREE(m->imagetree), FALSE);
+		ewl_object_maximum_size_set(EWL_OBJECT(m->imagetree), 200, 215);
 		ewl_widget_show(m->imagetree);
 		
 		/******************************************/
@@ -345,6 +345,32 @@ images_cb(Ewl_Widget *w, void *event, void *data)
 	
 	}
 	if ( page == m->viewbox && w != m->vbutton ) {
+		ewl_widget_destroy(m->viewscroll);
+		ewl_widget_destroy(m->vimage);
+		ewl_widget_destroy(m->vbutton);
+		
+                m->viewscroll = ewl_scrollpane_new();
+                ewl_container_child_append(EWL_CONTAINER(m->viewbox), m->viewscroll);
+                ewl_object_alignment_set(EWL_OBJECT(m->viewscroll), EWL_FLAG_ALIGN_CENTER);
+                ewl_object_fill_policy_set(EWL_OBJECT(m->viewscroll), EWL_FLAG_FILL_ALL);
+                ewl_widget_show(m->viewscroll);
+
+                m->vimage = ewl_image_new();
+                ewl_object_fill_policy_set(EWL_OBJECT(m->vimage), EWL_FLAG_FILL_SHRINK);
+                ewl_container_child_append(EWL_CONTAINER(m->viewscroll), m->vimage);
+                ewl_widget_show(m->vimage);
+
+                m->vbutton = ewl_button_new();
+                ewl_button_label_set(EWL_BUTTON(m->vbutton), "Add image to slideshow");
+                ewl_container_child_append(EWL_CONTAINER(m->viewbox), m->vbutton);
+                ewl_object_maximum_size_set(EWL_OBJECT(m->vbutton), 150 , 25);
+                ewl_object_alignment_set(EWL_OBJECT(m->vbutton), EWL_FLAG_ALIGN_CENTER);
+                ewl_callback_append(m->vbutton, EWL_CALLBACK_CLICKED, images_cb, NULL);
+                ewl_widget_disable(m->vbutton);
+                ewl_widget_state_set(m->vbutton, "disabled");
+                ewl_widget_show(m->vbutton);
+
+
 		ewl_image_file_set(EWL_IMAGE(m->vimage), pathi, NULL);
 		ewl_widget_enable(m->vbutton);
 		ewl_widget_state_set(m->vbutton, "enabled");

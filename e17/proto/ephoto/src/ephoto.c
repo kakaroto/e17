@@ -340,7 +340,8 @@ main(int argc, char **argv)
 		ewl_border_text_set(EWL_BORDER(m->images), "Add Content");
 		ewl_border_label_alignment_set(EWL_BORDER(m->images), EWL_FLAG_ALIGN_CENTER);
 		ewl_container_child_append(EWL_CONTAINER(m->vbox), m->images);
-		ewl_object_alignment_set(EWL_OBJECT(m->images), EWL_FLAG_ALIGN_CENTER);
+		ewl_object_maximum_size_set(EWL_OBJECT(m->images), 200, 999999);
+		ewl_object_fill_policy_set(EWL_OBJECT(m->images), EWL_FLAG_FILL_ALL);	
 		ewl_widget_show(m->images);
 		
 		m->directory = ewl_entry_new();
