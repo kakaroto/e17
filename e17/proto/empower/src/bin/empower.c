@@ -53,13 +53,15 @@ void pipe_to_sudo(Ewl_Widget *w, void *event, void *data)
 		
 		if(pid == 0)
 		{	
+			ewl_window_keyboard_grab_set(EWL_WINDOW(win), 0);
+			ewl_window_pointer_grab_set(EWL_WINDOW(win), 0);
 			sudo_pipe = popen(buf, "w");
 			fprintf(sudo_pipe, "%s\n", password);
 			pclose(sudo_pipe);
 		}	
 		else
 		{		
-			ewl_widget_hide(win);
+			ewl_widget_destroy(win);
 			wait(pid);
 		}
 	}
@@ -137,6 +139,8 @@ int main(int argc, char** argv)
 	ewl_window_move(EWL_WINDOW(win), xpos, ypos);
 	ewl_window_borderless_set(EWL_WINDOW(win));
 	ewl_window_raise(EWL_WINDOW(win));
+	ewl_window_keyboard_grab_set(EWL_WINDOW(win), 1);
+	ewl_window_pointer_grab_set(EWL_WINDOW(win), 1);
 	ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, destroy_cb, NULL);
 	ewl_callback_append(win, EWL_CALLBACK_REVEAL, reveal_cb, NULL);
 	ewl_callback_append(win, EWL_CALLBACK_KEY_DOWN, check_key, NULL);
