@@ -418,10 +418,14 @@ main(int argc, char **argv)
 		ewl_object_alignment_set(EWL_OBJECT(m->content), EWL_FLAG_ALIGN_CENTER);
 		ewl_widget_show(m->content);
 
-		m->ib = ewl_iconbox_new();
-		ewl_iconbox_editable_set(EWL_ICONBOX(m->ib), 1);
-		ewl_object_size_request(EWL_OBJECT(m->ib), 520, 400);
-		ewl_container_child_append(EWL_CONTAINER(m->content), m->ib);
+		m->iscroll = ewl_scrollpane_new();
+		ewl_object_size_request(EWL_OBJECT(m->iscroll), 520, 400);
+		ewl_container_child_append(EWL_CONTAINER(m->content), m->iscroll);
+		ewl_widget_show(m->iscroll);
+
+		m->ib = ewl_freebox_new();
+		ewl_freebox_layout_type_set(EWL_FREEBOX(m->ib), EWL_FREEBOX_LAYOUT_AUTO);
+		ewl_container_child_append(EWL_CONTAINER(m->iscroll), m->ib);
 		ewl_widget_show(m->ib);
 	
 		m->settings = ewl_border_new();

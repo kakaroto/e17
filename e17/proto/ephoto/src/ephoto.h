@@ -65,6 +65,7 @@ struct _Main
 	Ewl_Widget  	*children[2];
 	Ewl_Widget  	*row;
 	Ewl_Widget	*ib;
+	Ewl_Widget	*iscroll;
 	Ewl_Widget	*slideshow;
 	Ewl_Widget	*presentation;
 	Ewl_Widget  	*text;
