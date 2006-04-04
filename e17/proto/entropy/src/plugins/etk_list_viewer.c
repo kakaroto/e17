@@ -716,6 +716,10 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 
      case ENTROPY_NOTIFY_FILE_STAT_AVAILABLE:{
 
+	/*We have two cases here: 1. Properties are coming back destined to the list, or
+	 * 			  2. Properties for a properties dialog. 
+	 * 			  Look at the hash to figure out which one */
+
 	entropy_file_stat *file_stat = (entropy_file_stat *) eevent->return_struct;	
 	gui_file* obj = ecore_hash_get (viewer->gui_hash, file_stat->file);
 	char buffer[50];
@@ -729,22 +733,30 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 	
 	/*If !obj, it has been deleted - fail silently*/
 	if (obj) {
-		col1 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 0);
-		col2 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 1);
-		col3 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 2);
-		col4 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 3);
-		col5 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 4);
-		
-		snprintf(buffer,50, "%lld Kb", file_stat->stat_obj->st_size / 1024);
-		ctime_r(&file_stat->stat_obj->st_mtime, date_buffer);
-		date_buffer[strlen(date_buffer)-1] = '\0';
 
-		etk_tree_freeze(ETK_TREE(viewer->tree));
-		etk_tree_row_fields_set((Etk_Tree_Row*)obj->icon, 
-				col3, buffer,
-				col5, date_buffer,
-				NULL);
-		etk_tree_thaw(ETK_TREE(viewer->tree));
+		if ( (ecore_hash_get(viewer->properties_request_hash, file_stat->file))) {
+			ecore_hash_remove(viewer->properties_request_hash, file_stat->file);
+
+			/*Lauch a properties window*/
+			etk_properties_dialog_new(file_stat->file);
+		} else {
+			col1 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 0);
+			col2 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 1);
+			col3 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 2);
+			col4 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 3);
+			col5 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 4);
+		
+			snprintf(buffer,50, "%lld Kb", file_stat->stat_obj->st_size / 1024);
+			ctime_r(&file_stat->stat_obj->st_mtime, date_buffer);
+			date_buffer[strlen(date_buffer)-1] = '\0';
+	
+			etk_tree_freeze(ETK_TREE(viewer->tree));
+			etk_tree_row_fields_set((Etk_Tree_Row*)obj->icon, 
+					col3, buffer,
+					col5, date_buffer,
+					NULL);
+			etk_tree_thaw(ETK_TREE(viewer->tree));
+		}
 	}
      }
      break;					 
