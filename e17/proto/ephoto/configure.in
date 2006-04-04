@@ -119,5 +119,6 @@ ephoto.spec
 src/Makefile
 data/Makefile
 data/images/Makefile
+debian/changelog
 ])
 

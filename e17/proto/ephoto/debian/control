@@ -1,0 +1,14 @@
+Source: ephoto
+Section: x11
+Priority: optional
+Maintainer: E17 Debian Team <debian@edevelop.org>
+Build-Depends: debhelper (>= 4.0.0), autotools-dev, libecore0-dev, libevas0-dev, libewl0-dev, libedje0-dev
+Standards-Version: 3.6.2
+
+Package: ephoto
+Architecture: any
+Depends: ${shlibs:Depends}, libecore0, libevas0, libewl0, libedje0
+Description: A slideshow creator with audio-support
+ This is a professional slideshow creator.
+ Audio only works for slideshow, not presentation.
+ When in FullScreen mode, click image to exit.
