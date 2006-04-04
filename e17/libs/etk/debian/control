@@ -1,7 +1,7 @@
 Source: etk
 Section: x11
 Priority: optional
-Maintainer: Falko Schmidt <kaethorn@stud.uni-stuttgart.de>
+Maintainer: E17 Debian Team <debian@edevelop.org>
 Build-Depends: debhelper (>= 4.0.0), autotools-dev, libevas0-dev, libecore0-dev, libedje0-dev
 Standards-Version: 3.6.2
 
