@@ -6,10 +6,12 @@ SUBDIRS = scripts src
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
                        config.h.in config.sub configure install-sh \
 		       ltconfig ltmain.sh missing mkinstalldirs depcomp \
-		       stamp-h.in $(MYAPPNAME)_docs.tar $(MYAPPNAME)_docs.tar.gz $(MYAPPNAME).c
+		       stamp-h.in $(MYAPPNAME)_docs.tar \
+		       $(MYAPPNAME)_docs.tar.gz $(MYAPPNAME).c \
+		       debian/changelog 
 
 install-data-local:
-        @$(NORMAL_INSTALL)
+	@$(NORMAL_INSTALL)
 	if test -d $(srcdir)/data; then \
 	  $(mkinstalldirs) $(DESTDIR)$(pkgdatadir)/data; \
 	  for d in $(srcdir)/data/*; do \
@@ -37,4 +39,10 @@ $(MYAPPNAME).spec.in \
 $(MYAPPNAME).c.in \
 gendoc \
 Doxyfile \
-$(MYAPPNAME)_docs.tar.gz
+$(MYAPPNAME)_docs.tar.gz \
+debian/changelog \
+debian/changelog.in \
+debian/compat \
+debian/control \
+debian/copyright \
+debian/rules
