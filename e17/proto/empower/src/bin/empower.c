@@ -12,6 +12,22 @@ char password[1024];
 
 int xpos, ypos;
 
+void check_key(Ewl_Widget *w, void *event, void *data)
+{
+	Ewl_Event_Key_Down *ev;
+	
+	ev = event;
+	
+	if(!ev->modifiers)
+	{
+		if(strcmp(ev->keyname, "Escape") == 0)
+		{
+			ewl_widget_destroy(win);
+			ewl_main_quit();
+		}
+	}
+}
+
 void destroy_cb(Ewl_Widget *w, void *event, void *data)
 {
 	ewl_widget_destroy(win);
@@ -24,24 +40,30 @@ void reveal_cb(Ewl_Widget *w, void *event, void *data)
 }
 
 void pipe_to_sudo(Ewl_Widget *w, void *event, void *data)
-{		
-	snprintf(password, 1024, "%s", (char*)(ewl_password_text_get(EWL_PASSWORD(data))));
-
-	pid_t id = fork();
+{	
+	FILE *sudo_pipe;
 	
-	if(id == 0)
-	{
-		FILE *sudo_pipe;
+	const char *pass = ewl_password_text_get(EWL_PASSWORD(data));
 	
-		sudo_pipe = popen(buf, "w");
-		fprintf(sudo_pipe, "%s\n", password);
-		pclose(sudo_pipe);
-	}
-	else
+	if(pass)
 	{
-		ewl_widget_destroy(win);
-		ewl_main_quit();
+		snprintf(password, 1024, "%s", pass);
+		
+		pid_t pid = fork();
+		
+		if(pid == 0)
+		{	
+			sudo_pipe = popen(buf, "w");
+			fprintf(sudo_pipe, "%s\n", password);
+			pclose(sudo_pipe);
+		}	
+		else
+		{		
+			ewl_widget_hide(win);
+			wait(pid);
+		}
 	}
+	ewl_main_quit();
 }
 
 int main(int argc, char** argv)
@@ -54,16 +76,26 @@ int main(int argc, char** argv)
 	Ewl_Widget *progtext = NULL;
 	Ewl_Widget *vbox=NULL, *hbox = NULL;
 	
-	if(argc)			//commands
+	if(argc)	//commands
 	{
-		snprintf(buf, 1024, "sudo -S %s ", *argv);
+		pid_t id = fork();
 		
-		--argc; ++argv;
-		while(argc)
+		if(id == 0)
+		{			
+			ecore_exe_run("sudo -k", NULL);
+			return 0;
+		}
+		else	
 		{
-			strncat(buf, " ", 1024);
-			strncat(buf, *argv, 1024);
+			snprintf(buf, 1024, "sudo -S %s ", *argv);
+			
 			--argc; ++argv;
+			while(argc)
+			{
+				strncat(buf, " ", 1024);
+				strncat(buf, *argv, 1024);
+				--argc; ++argv;
+			}
 		}
 	}
 	else
@@ -94,13 +126,8 @@ int main(int argc, char** argv)
 	
 	free(root_list);
 	
-	printf("root mid: %dx%d\n", root_w/2, root_h/2);
-	printf("window mid: %dx%d\n", WIDTH/2, HEIGHT/2);
-	
 	xpos = (root_w/2)-(WIDTH/2);
 	ypos = (root_h/2)-(HEIGHT/2);
-	
-	printf("final pos: %dx%d\n", xpos, ypos);
 	
 	win = ewl_window_new();
 	ewl_window_title_set(EWL_WINDOW(win), "Empower!");
@@ -108,16 +135,11 @@ int main(int argc, char** argv)
 	ewl_window_class_set(EWL_WINDOW(win), "Empower!");
 	ewl_object_size_request(EWL_OBJECT(win), WIDTH, HEIGHT);
 	ewl_window_move(EWL_WINDOW(win), xpos, ypos);
-
-	/*
-	ewl_window_override_set(EWL_WINDOW(win), 1);
-	ewl_window_keyboard_grab_set(EWL_WINDOW(win),1);
-	ewl_window_pointer_grab_set(EWL_WINDOW(win),1);
-	*/
-
+	ewl_window_borderless_set(EWL_WINDOW(win));
 	ewl_window_raise(EWL_WINDOW(win));
 	ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, destroy_cb, NULL);
 	ewl_callback_append(win, EWL_CALLBACK_REVEAL, reveal_cb, NULL);
+	ewl_callback_append(win, EWL_CALLBACK_KEY_DOWN, check_key, NULL);
 	ewl_widget_show(win);
 	
 	vbox = ewl_vbox_new();
@@ -146,6 +168,7 @@ int main(int argc, char** argv)
 	
 	Ewl_Widget *separator = ewl_hseparator_new();
 	ewl_container_child_append(EWL_CONTAINER(vbox), separator);
+	ewl_widget_color_set(EWL_WIDGET(separator),200,200,200,200);
 	ewl_widget_show(separator);
 	
 	hbox = ewl_hbox_new();
@@ -155,7 +178,6 @@ int main(int argc, char** argv)
 	ewl_widget_show(hbox);
 	
 	ok_button = ewl_button_new();
-	//ewl_button_label_set(EWL_BUTTON(ok_button), "Ok");
 	ewl_button_stock_type_set(EWL_BUTTON(ok_button), EWL_STOCK_OK);
 	ewl_object_maximum_size_set(EWL_OBJECT(ok_button), 35, 15);
 	ewl_object_fill_policy_set(EWL_OBJECT(ok_button), EWL_FLAG_FILL_SHRINK);
@@ -164,7 +186,6 @@ int main(int argc, char** argv)
 	ewl_widget_show(ok_button);
 	
 	cancel_button = ewl_button_new();
-	//ewl_button_label_set(EWL_BUTTON(cancel_button), "Cancel");
 	ewl_button_stock_type_set(EWL_BUTTON(cancel_button), EWL_STOCK_CANCEL);
 	ewl_object_maximum_size_set(EWL_OBJECT(cancel_button), 60, 15);
 	ewl_object_fill_policy_set(EWL_OBJECT(cancel_button), EWL_FLAG_FILL_SHRINK);
