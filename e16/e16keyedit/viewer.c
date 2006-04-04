@@ -704,7 +704,7 @@ create_list_window(void)
 	   /* stuff[2] = action */
 	   /* stuff[3] = params */
 	   char                key[128], *params;
-	   const char         *stuff[2];
+	   const char         *stuff[4];
 	   int                 len;
 
 	   if (strlen(buf) < 1)
