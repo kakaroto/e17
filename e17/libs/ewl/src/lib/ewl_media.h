@@ -1,10 +1,6 @@
 #ifndef EWL_MEDIA_H
 #define EWL_MEDIA_H
 
-#ifdef BUILD_EMOTION_SUPPORT
-#include <Emotion.h>
-#endif
-
 /**
  * @addtogroup Ewl_Media Ewl_Media: A Multi media widget
  * @brief Defines a class for displaing video

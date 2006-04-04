@@ -3,6 +3,10 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
+#ifdef BUILD_EMOTION_SUPPORT
+#include <Emotion.h>
+#endif
+
 static void ewl_media_size_update(Ewl_Media *m);
 static void ewl_media_update_timer_cb(void *data, Evas_Object *obj, void
 		*event_info);
@@ -84,11 +88,11 @@ ewl_media_is_available(void)
 
 /**
  * @param m: the media area widget to set the module
- * @param module: the module to set in the media widget @a m 
+ * @param module: the module to set in the media widget @a m
  * @return Returns FALSE if we failed to load the module, TRUE otherwise.
  * @brief Set the module of a media widget
  *
- * Sets the module of the media widget @a m 
+ * Sets the module of the media widget @a m
  */
 int
 ewl_media_module_set(Ewl_Media *m, Ewl_Media_Module_Type module)
@@ -110,7 +114,7 @@ ewl_media_module_set(Ewl_Media *m, Ewl_Media_Module_Type module)
 		switch (module)
 		{
 			case EWL_MEDIA_MODULE_GSTREAMER:
-				ret = emotion_object_init(m->video, 
+				ret = emotion_object_init(m->video,
 						"emotion_decoder_gstreamer.so");
 				break;
 
@@ -143,11 +147,11 @@ ewl_media_module_get(Ewl_Media *m)
 
 /**
  * @param m: the media area widget to set the media
- * @param media: the media to set in the media widget @a m 
+ * @param media: the media to set in the media widget @a m
  * @return Returns no value.
  * @brief Set the media of a media widget
  *
- * Sets the media of the media widget @a m 
+ * Sets the media of the media widget @a m
  */
 void
 ewl_media_media_set(Ewl_Media *m, const char *media)
@@ -204,7 +208,7 @@ ewl_media_length_get(Ewl_Media *m)
 
 #ifdef BUILD_EMOTION_SUPPORT
 	if (m->video)
-		length = emotion_object_play_length_get(m->video); 
+		length = emotion_object_play_length_get(m->video);
 #endif
 
 	DRETURN_INT(length, DLEVEL_STABLE);
@@ -249,7 +253,7 @@ ewl_media_length_time_get(Ewl_Media *m, int *h, int *min, double *s)
  * @brief Sets the media widget into the given state
  */
 void
-ewl_media_play_set(Ewl_Media *m, int p) 
+ewl_media_play_set(Ewl_Media *m, int p)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE)
 	DCHECK_PARAM_PTR("m", m);
@@ -324,7 +328,7 @@ ewl_media_position_time_get(Ewl_Media *m, int *h, int *min, double *s)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("m", m);
 	DCHECK_TYPE("m", m, EWL_MEDIA_TYPE);
- 
+
 	pos = ewl_media_position_get(m);
 	/* stolen from envision by benr */
 	mh = (int)pos / (60 * 60);
@@ -391,7 +395,7 @@ ewl_media_audio_mute_get(Ewl_Media *m)
  * @brief Mutes the media widget
  */
 void
-ewl_media_audio_mute_set(Ewl_Media *m, int mute) 
+ewl_media_audio_mute_set(Ewl_Media *m, int mute)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE)
 	DCHECK_PARAM_PTR("m", m);
@@ -411,7 +415,7 @@ ewl_media_audio_mute_set(Ewl_Media *m, int mute)
  * @brief Gets the current volume from the media widget
  */
 double
-ewl_media_audio_volume_get(Ewl_Media *m) 
+ewl_media_audio_volume_get(Ewl_Media *m)
 {
 	double v = 0.0;
 
@@ -525,7 +529,7 @@ ewl_media_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		evas_object_move(m->video, CURRENT_X(w), CURRENT_Y(w));
 		evas_object_resize(m->video, CURRENT_W(w), CURRENT_H(w));
 		evas_object_layer_set(m->video, ewl_widget_layer_sum_get(w));
-		evas_object_smart_callback_add(m->video, "frame_decode", 
+		evas_object_smart_callback_add(m->video, "frame_decode",
 				ewl_media_update_timer_cb, m);
 	}
 
@@ -566,6 +570,3 @@ static void ewl_media_update_timer_cb(void *data,
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
-
-
