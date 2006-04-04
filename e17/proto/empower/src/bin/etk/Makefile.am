@@ -6,12 +6,12 @@
 
 bin_PROGRAMS = empower_etk
 
-empower_SOURCES = empower.c \
+empower_etk_SOURCES = empower.c \
 		empower_cb_etk.c empower_gui_etk.c
 
-empower_CFLAGS = @etk_cflags@
+empower_etk_CFLAGS = @etk_cflags@
 
-empower_LDADD =  $(INTLLIBS) \
+empower_etk_LDADD =  $(INTLLIBS) \
 		@etk_libs@
 
 EXTRA_DIST = 
