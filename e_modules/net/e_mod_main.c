@@ -655,7 +655,7 @@ _net_face_graph_values(Net_Face *nf, int tx_val, int rx_val)
 
    nf->old_rx = evas_list_prepend(nf->old_rx, o);
    l = nf->old_rx;
-   for (i = (x + w); l && (j -2) < w; l = l->next, j++) 
+   for (i = (x + w); l && ((j -2) < w); l = l->next, j++) 
      {
 	Evas_Coord oy;
 	Evas_Object *lo;
@@ -672,6 +672,8 @@ _net_face_graph_values(Net_Face *nf, int tx_val, int rx_val)
 	evas_object_del(last);
      }      
 
+   j = 0;
+   last = NULL;
    o = evas_object_line_add(nf->evas);
    edje_object_part_swallow(nf->chart_obj, "lines", o);
    evas_object_layer_set(o, 1);
@@ -687,7 +689,7 @@ _net_face_graph_values(Net_Face *nf, int tx_val, int rx_val)
    
    nf->old_tx = evas_list_prepend(nf->old_tx, o);
    l = nf->old_tx;
-   for (i = (x + w); l && (j -2) < w; l = l->next, j++) 
+   for (i = (x + w); l && ((j -2) < w); l = l->next, j++) 
      {
 	Evas_Coord oy;
 	Evas_Object *lo;
