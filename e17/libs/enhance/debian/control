@@ -1,0 +1,19 @@
+Source: enhance
+Section: libs
+Priority: optional
+Maintainer: E17 Debian Team <debian@edevelop.org>
+Build-Depends: debhelper (>= 4.0.0), libexml0, libetk0-dev
+Standards-Version: 3.6.2
+
+Package: enhance
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libetk0, libexml0
+Description: Library for easy application GUI development
+ After using Glade to design a GUI, you can save generate
+ the .glade XML file that describes the interface design
+ and use it in Enhance to generate an Etk equivalent.
+ Enhance works at runtime, ie, it does not generate C code.
+ It will parse the XML at application launch and will do
+ the appropriate work to create the GUI and the required
+ callbacks for you. There are several examples in the
+ examples directory for you to take a look at.
