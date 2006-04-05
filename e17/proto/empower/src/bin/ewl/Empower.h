@@ -4,16 +4,20 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdio.h>
+#include <sys/types.h>
+#include <pwd.h>
 #include "Ewl.h"
 //#include "../config.h"
 
-#define WIDTH 250
-#define HEIGHT 100
+#define WIDTH 200
+#define HEIGHT 80
 
 char buf[1024];
 Ewl_Widget *win;
 char password[1024];
 int xpos, ypos;
+uid_t userID;		//holds the userID
+struct passwd* userinfo;	//holds the user info
 
 /* empower_cb prototypes */
 void key_down_cb(Ewl_Widget *w, void *event, void *data);

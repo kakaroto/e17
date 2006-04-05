@@ -5,13 +5,13 @@ void display_window(int argc, char** argv)
 	if(!ecore_x_init(NULL))
 	{
 		printf("Unable to init ecore\n");
-		return 1;
+		return;
 	}
 	
 	if(!ewl_init(&argc, argv))
 	{
 		printf("Unable to init ewl\n");
-		return 1;
+		return;
 	}
 	
 	Ewl_Widget *entry = NULL;
@@ -53,21 +53,24 @@ void display_window(int argc, char** argv)
 	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
 	ewl_widget_show(vbox);
 	
-	hbox = ewl_hbox_new();
-	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
-	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_ALL);
-	ewl_widget_show(hbox);
+	char user[256];
 	
-	progtext = ewl_label_new();
-	ewl_label_text_set(EWL_LABEL(progtext), "Password: ");
-	ewl_object_padding_set(EWL_OBJECT(progtext),5,0,24,0);
-	ewl_container_child_append(EWL_CONTAINER(hbox), progtext);
-	ewl_object_maximum_size_set(EWL_OBJECT(progtext), 75, 20);
+	snprintf(user, 256, "%s's Password:", userinfo->pw_name);
+	//strcat(user, userinfo->pw_name);
+	
+	progtext = ewl_text_new();
+	ewl_container_child_append(EWL_CONTAINER(vbox), progtext);
+	ewl_text_font_size_set(EWL_TEXT(progtext), 14);
+	ewl_text_styles_set(EWL_TEXT(progtext), EWL_TEXT_STYLE_SOFT_SHADOW);
+	ewl_text_shadow_color_set(EWL_TEXT(progtext), 30,30,30,50);
+	ewl_object_padding_set(EWL_OBJECT(progtext),10,0,3,3);
+	ewl_object_minimum_size_set(EWL_OBJECT(progtext), 75, 20);
+	ewl_text_text_set(EWL_TEXT(progtext), user);
 	ewl_widget_show(progtext);
 	
 	entry = ewl_password_new();
-	ewl_container_child_append(EWL_CONTAINER(hbox), entry);
-	ewl_object_padding_set(EWL_OBJECT(entry),0,0,20,0);
+	ewl_container_child_append(EWL_CONTAINER(vbox), entry);
+	ewl_object_padding_set(EWL_OBJECT(entry),8,8,0,0);
 	ewl_object_size_request(EWL_OBJECT(entry), 50, 20);
 	ewl_callback_append(entry, EWL_CALLBACK_VALUE_CHANGED, pipe_to_sudo_cb, entry);
 	ewl_widget_show(entry);
@@ -79,13 +82,15 @@ void display_window(int argc, char** argv)
 	
 	hbox = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
-	ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_RIGHT);
+	ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_SHRINK);
+	ewl_object_padding_set(EWL_OBJECT(hbox),0,0,0,0);
 	ewl_widget_show(hbox);
 	
 	ok_button = ewl_button_new();
 	ewl_button_stock_type_set(EWL_BUTTON(ok_button), EWL_STOCK_OK);
-	ewl_object_maximum_size_set(EWL_OBJECT(ok_button), 35, 15);
+	ewl_object_minimum_size_set(EWL_OBJECT(ok_button), 60, 15);
+	ewl_object_maximum_size_set(EWL_OBJECT(ok_button), 60, 15);
 	ewl_object_fill_policy_set(EWL_OBJECT(ok_button), EWL_FLAG_FILL_SHRINK);
 	ewl_container_child_append(EWL_CONTAINER(hbox), ok_button);
 	ewl_callback_append(ok_button, EWL_CALLBACK_CLICKED, pipe_to_sudo_cb, entry);
