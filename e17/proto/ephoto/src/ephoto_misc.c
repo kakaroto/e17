@@ -133,7 +133,7 @@ _data_setup()
 }
 
 Ewl_Widget *
-_data_header_fetch()
+_data_header_fetch(void *data, int col)
 {
 	Ewl_Widget *header;
 
@@ -145,10 +145,11 @@ _data_header_fetch()
 }
 
 void *
-_data_fetch()
+_data_fetch(void *data, unsigned int row, unsigned int col)
 {
 	char *path;
-	path = ecore_list_next(audiofiles);
+	Ecore_List *audiofiles = data;
+	path = ecore_list_goto_index(audiofiles, row);
 	if ( path != NULL ) {
 		return path;
 	}
@@ -158,9 +159,11 @@ _data_fetch()
 }
 
 int
-_data_count_get()
+_data_count_get(void *data)
 {
 	int items;
+	Ecore_List *audiofiles = data;
+
 	items = ecore_list_nodes(audiofiles);
 	return items;
 }
