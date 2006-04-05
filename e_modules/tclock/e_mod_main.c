@@ -143,6 +143,7 @@ _tclock_new()
    E_CONFIG_VAL(D, T, enabled, UCHAR);
    E_CONFIG_VAL(D, T, resolution, UINT);
    E_CONFIG_VAL(D, T, format, STR);
+   E_CONFIG_VAL(D, T, userformat, UINT);
 
    conf_edd = E_CONFIG_DD_NEW("TClock_Config", Config);
 #undef T
@@ -188,6 +189,14 @@ _tclock_new()
                        /* set instance config values */
                        face->conf->enabled = 1;
                        face->conf->resolution = RESOLUTION_MINUTE;
+		       face->conf->userformat = 0;
+
+		       const char         *format;
+	               format =
+                           edje_object_part_state_get(face->tclock_object, "tclock_format",
+	                                              NULL);
+		       face->conf->format = (char*)evas_stringshare_add(format);
+		       
                        tclock->conf->faces =
                            evas_list_append(tclock->conf->faces, face->conf);
                     }
@@ -207,11 +216,13 @@ _tclock_new()
                     }
                   else
                     {
-                       E_CONFIG_LIMIT(tclock->conf->poll_time, 1.0, 60.0);
+                       E_CONFIG_LIMIT(tclock->conf->poll_time, 60.0, 60.0);
                        tclock->tclock_check_timer =
                            ecore_timer_add(tclock->conf->poll_time,
                                            _tclock_cb_check, tclock);
                        TCLOCK_DEBUG("RES_MIN");
+		       /* to avoid the long display of "Starting the clock..." */
+		       _tclock_cb_check(tclock);
                     }
 
                   /* Menu */
@@ -229,6 +240,7 @@ _tclock_new()
                }
           }
      }
+   
    return tclock;
 }
 
@@ -341,6 +353,8 @@ _tclock_face_free(TClock_Face * face)
    evas_object_del(face->event_object);
    e_object_del(E_OBJECT(face->menu));
 
+   if(face->conf->format)
+    evas_stringshare_del(face->conf->format);
    free(face->conf);
    free(face);
    _tclock_count--;
@@ -365,15 +379,18 @@ _tclock_cb_check(void *data)
         TClock_Face        *face;
 
         face = l->data;
+	
+	const char *format;
+	/* Load the default format string from the module.edj-file
+	   when the user defineable format string shouldn't be used 
+	   otherwise use the user defined format string*/
+	if(!face->conf->userformat) {
+      	  format = edje_object_part_state_get(face->tclock_object, "tclock_format",
+	                                      NULL);
+        } else 
+	  format = face->conf->format;
 
-        const char         *format;
-
-        format =
-            edje_object_part_state_get(face->tclock_object, "tclock_format",
-                                       NULL);
-        face->conf->format = format;
-
-        strftime(buf, TIME_BUF, face->conf->format, local_time);
+        strftime(buf, TIME_BUF, format, local_time);
 
         TCLOCK_DEBUG(face->conf->format);
         edje_object_part_text_set(face->tclock_object, "tclock_text", buf);

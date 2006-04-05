@@ -21,7 +21,8 @@ typedef struct _Config {
 typedef struct _Config_Face {
    unsigned char       enabled;
    unsigned int        resolution;
-   const char         *format;
+   char		       *format;
+   unsigned int        userformat;
 } Config_Face;
 
 typedef struct _TClock {
