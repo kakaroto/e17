@@ -12,6 +12,7 @@ config.status
 config.sub
 configure
 depcomp
+e_modules-mbar.spec
 install-sh
 libtool
 missing
