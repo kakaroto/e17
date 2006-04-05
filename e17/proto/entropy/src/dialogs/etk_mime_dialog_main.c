@@ -117,12 +117,35 @@ void _entropy_etk_mime_dialog_edit_cb(Etk_Object* w, void* user_data)
 	Etk_Tree_Col* col1;
 	Etk_Tree_Col* col2;
 
-	col1 = etk_tree_nth_col_get(ETK_TREE(_etk_mime_dialog_main_tree), 0);
-	col2 = etk_tree_nth_col_get(ETK_TREE(_etk_mime_dialog_main_tree), 1);
+	if (row) {
+		col1 = etk_tree_nth_col_get(ETK_TREE(_etk_mime_dialog_main_tree), 0);
+		col2 = etk_tree_nth_col_get(ETK_TREE(_etk_mime_dialog_main_tree), 1);
 
-	etk_tree_row_fields_get(row, col1, &mime, col2, &program,NULL);
+		etk_tree_row_fields_get(row, col1, &mime, col2, &program,NULL);
 	
-	etk_mime_dialog_add_edit_create(mime,program);
+		etk_mime_dialog_add_edit_create(mime,program);
+	}
+}
+
+void _entropy_etk_mime_dialog_remove_cb(Etk_Object* w, void* user_data)
+{
+	Etk_Tree_Row* row = etk_tree_selected_row_get(ETK_TREE(_etk_mime_dialog_main_tree));
+	char* mime = NULL;
+	char* program = NULL;
+	Etk_Tree_Col* col1;
+	Etk_Tree_Col* col2;
+
+	if (row) {
+		col1 = etk_tree_nth_col_get(ETK_TREE(_etk_mime_dialog_main_tree), 0);
+		col2 = etk_tree_nth_col_get(ETK_TREE(_etk_mime_dialog_main_tree), 1);
+
+		etk_tree_row_fields_get(row, col2, &mime, NULL);
+
+		printf("Del mime is '%s'..\n", mime);
+	
+		entropy_core_mime_action_remove(mime);
+		etk_mime_dialog_tree_populate();
+	}
 }
 
 
@@ -457,6 +480,8 @@ void etk_mime_dialog_create()
 
 	button = etk_button_new_with_label("Remove Selected Type");
 	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
+	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(_entropy_etk_mime_dialog_remove_cb), NULL);
+
 
 	/*button = etk_button_new_with_label("Add New..");
 	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);*/

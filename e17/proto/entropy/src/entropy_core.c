@@ -349,6 +349,26 @@ void entropy_core_gui_event_handler_add(char* gui_event,
 	ecore_list_append(list, handler);
 }
 
+void entropy_core_mime_action_remove(char* mime_type)
+{
+	Entropy_Config_Mime_Binding* binding;
+	Evas_List* l;
+	int found = 0;
+
+	for (l = core_core->config->Loaded_Config->mime_bindings; l; ) {
+		binding = l->data;
+
+		/*FIXME: This leaks a binding*/
+		if (!strcmp(binding->mime_type, mime_type)) {
+			printf("Removing binding '%s'...\n", mime_type);
+			core_core->config->Loaded_Config->mime_bindings = 
+				evas_list_remove(core_core->config->Loaded_Config->mime_bindings, binding);
+		}
+		l = l->next;
+	}
+
+}
+
 void entropy_core_mime_action_add(char* mime_type, char* desc) 
 {
 	Entropy_Config_Mime_Binding* binding;
