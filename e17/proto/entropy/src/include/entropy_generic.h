@@ -16,7 +16,6 @@ struct entropy_generic_file {
         char mime_type[MIME_LENGTH];
 	char uri_base[15];
 	
-	char perms[10];
 	char filetype;
 
 	char* username;  /*Do we have a cached auth reference for this file/location? */
