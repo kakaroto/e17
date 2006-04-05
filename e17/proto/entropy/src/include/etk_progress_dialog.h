@@ -13,6 +13,7 @@ void entropy_etk_progress_dialog_set_progress_pct(entropy_file_progress_window*
 		dialog, float* pct);
 void entropy_etk_progress_dialog_show(entropy_file_progress_window* dialog);
 void entropy_etk_progress_dialog_hide(entropy_file_progress_window* dialog);
+void entropy_etk_progress_dialog_destroy(entropy_file_progress_window* dialog);
 
 
 #endif

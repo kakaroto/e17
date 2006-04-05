@@ -355,6 +355,8 @@ callback (evfs_event * data, void *obj)
 	entropy_malloc (sizeof (entropy_file_progress));
       char *uri = NULL;
 
+      request->identifier = data->resp_command.client_identifier;
+
       ecore_list_goto_first(data->file_list.list);
       if (ecore_list_current(data->file_list.list)) {
         	request->file_from = evfs_filereference_to_entropy_generic_file(ecore_list_current(data->file_list.list));

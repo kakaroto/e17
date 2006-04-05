@@ -5,7 +5,6 @@
 #include <limits.h>
 #include <time.h>
 #include <Etk.h>
-#include "etk_progress_dialog.h"
 #include "etk_user_interaction_dialog.h"
 #include "etk_directory_add_dialog.h"
 #include "etk_properties_dialog.h"
@@ -30,8 +29,6 @@ struct entropy_etk_file_list_viewer
   Ecore_List *gui_events;
   Ecore_List *files;		/*The entropy_generic_file references we copy. */
 
-  entropy_file_progress_window* progress;
-  
   Etk_Widget* popup;
   Etk_Widget* open_with_menu;
   Etk_Widget* open_with_menuitem;
@@ -787,24 +784,6 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
      }
      break;	  
 
-    case ENTROPY_NOTIFY_FILE_PROGRESS:{
-   	entropy_etk_file_list_viewer *view = comp->data;
-	entropy_file_progress *progress = el;
-
-	if (!view->progress)
-		view->progress = entropy_etk_progress_window_create();
-
-	entropy_etk_progress_dialog_show(view->progress);
-	entropy_etk_progress_dialog_set_file_from_to(view->progress, progress->file_from, progress->file_to);
-	entropy_etk_progress_dialog_set_progress_pct(view->progress, &progress->progress);
-
-	if (progress->type == TYPE_END)
-		entropy_etk_progress_dialog_hide(view->progress);
-
-	
-     }
-     break;
-
      case ENTROPY_NOTIFY_FILE_REMOVE_DIRECTORY:
      case ENTROPY_NOTIFY_FILE_REMOVE:{
  	    list_viewer_remove_row(comp, (entropy_generic_file *) el);
@@ -951,11 +930,6 @@ entropy_plugin_gui_instance_new (entropy_core * core,
   entropy_core_component_event_register (instance,
 					 entropy_core_gui_event_get
 					 (ENTROPY_GUI_EVENT_FILE_STAT_AVAILABLE));
-
-  /*We want to know about file transfer progress events */
-  entropy_core_component_event_register (instance,
-					 entropy_core_gui_event_get
-					 (ENTROPY_GUI_EVENT_FILE_PROGRESS));
 
   /*We want to know if the backend needs feedback */
   entropy_core_component_event_register (instance,

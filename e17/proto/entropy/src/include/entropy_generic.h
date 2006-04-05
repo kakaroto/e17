@@ -72,6 +72,7 @@ typedef struct entropy_file_progress {
 
 	float progress;
 	int type;
+	long identifier;
 } entropy_file_progress;
 
 typedef struct entropy_file_operation {

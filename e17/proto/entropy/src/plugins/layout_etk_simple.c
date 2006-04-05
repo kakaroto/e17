@@ -2,6 +2,7 @@
 #include "entropy.h"
 #include "entropy_gui.h"
 #include "etk_location_add_dialog.h"
+#include "etk_progress_dialog.h"
 #include "etk_mime_dialog.h"
 #include "etk_file_cache_dialog.h"
 #include <dlfcn.h>
@@ -36,8 +37,7 @@ struct entropy_layout_gui
   Etk_Tree_Row* delete_row; /*The row pending deletion, if any*/
 
   Etk_Widget* popup;
-
-  Ecore_Hash* config_hash;
+  Ecore_Hash* progress_hash; /*Track progress events->dialogs*/
 };
 
 typedef enum _Etk_Menu_Item_Type
@@ -177,7 +177,7 @@ entropy_plugin_init (entropy_core * core)
   plugin->gui_functions.layout_create = &entropy_plugin_layout_create;
   plugin->gui_functions.toolkit_get= &entropy_plugin_toolkit_get;
 
-  return plugin;
+  return base;
 }
 
 char *
@@ -325,6 +325,37 @@ void
 gui_event_callback (entropy_notify_event * eevent, void *requestor,
 		    void *el, entropy_gui_component_instance * comp)
 {
+    entropy_layout_gui* view = (entropy_layout_gui*)comp->data;
+
+    switch (eevent->event_type) {
+	    case ENTROPY_NOTIFY_FILE_PROGRESS:{
+		entropy_file_progress_window* window;
+		entropy_file_progress *progress = el;
+		
+
+		if (! (window = ecore_hash_get(view->progress_hash, (long*)progress->identifier))) {
+			window = entropy_etk_progress_window_create();
+			entropy_etk_progress_dialog_show(window);
+			entropy_etk_progress_dialog_set_file_from_to(window, progress->file_from, progress->file_to);
+			entropy_etk_progress_dialog_set_progress_pct(window, &progress->progress);
+
+			ecore_hash_set(view->progress_hash, (long*)progress->identifier, window);
+		} else {
+			entropy_etk_progress_dialog_set_file_from_to(window, progress->file_from, progress->file_to);
+			entropy_etk_progress_dialog_set_progress_pct(window, &progress->progress);
+		}
+
+		if (progress->type == TYPE_END) {
+			window = ecore_hash_get(view->progress_hash, (long*)progress->identifier);
+			if (window) {
+				ecore_hash_remove(view->progress_hash, (long*)progress->identifier);
+				entropy_etk_progress_dialog_destroy(window);
+			}
+		}
+
+	     }
+	     break;
+     }
 }
 
 entropy_gui_component_instance *
@@ -373,6 +404,7 @@ entropy_plugin_layout_create (entropy_core * core)
   gui = entropy_malloc (sizeof (entropy_layout_gui));
   layout->data = gui;
   layout->core = core;
+  gui->progress_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 
   /*Register this layout container with the core, so our children can get events */
   entropy_core_layout_register (core, layout);

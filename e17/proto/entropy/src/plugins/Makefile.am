@@ -96,6 +96,7 @@ layout_ewl_simple_la_LIBADD    = @EWL_LIBS@
 
 if HAVE_ETK
 layout_etk_simple_la_SOURCES  =  layout_etk_simple.c $(top_srcdir)/src/entropy_debug.c \
+                                $(top_srcdir)/src/dialogs/etk_progress_dialog.c \
 				$(top_srcdir)/src/dialogs/etk_location_add_dialog.c \
 				$(top_srcdir)/src/dialogs/etk_mime_dialog_main.c \
 				$(top_srcdir)/src/dialogs/etk_file_cache_debug_dialog.c
@@ -104,14 +105,12 @@ layout_etk_simple_la_LDFLAGS  = -module -avoid-version
 layout_etk_simple_la_LIBADD   = @ETK_LIBS@
 
 etk_structure_viewer_la_SOURCES    = $(top_srcdir)/src/entropy_gui.c \
-				$(top_srcdir)/src/dialogs/etk_progress_dialog.c \
                                 etk_structure_viewer.c $(top_srcdir)/src/entropy_debug.c
 etk_structure_viewer_la_CFLAGS     = @ETK_CFLAGS@
 etk_structure_viewer_la_LDFLAGS    = -module -avoid-version
 etk_structure_viewer_la_LIBADD     = @ETK_LIBS@
 
 etk_list_la_SOURCES      =      etk_list_viewer.c \
-				$(top_srcdir)/src/dialogs/etk_progress_dialog.c \
 				$(top_srcdir)/src/entropy_gui.c \
                                 $(top_srcdir)/src/entropy_debug.c \
 				$(top_srcdir)/src/dialogs/etk_interaction_dialog.c \
