@@ -9,6 +9,7 @@ config.status
 config.sub
 configure
 depcomp
+ephoto.spec
 install-sh
 libtool
 ltmain.sh
