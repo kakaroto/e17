@@ -125,3 +125,42 @@ ephoto_men_cb(Ewl_Widget * w, void *event, void *data)
         ewl_widget_show(cancel);
 }
 
+void *
+_data_setup()
+{
+	m->data = audiofiles;
+	return m->data;
+}
+
+Ewl_Widget *
+_data_header_fetch()
+{
+	Ewl_Widget *header;
+
+	header = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(header), "Select Audio");
+	ewl_widget_show(header);
+	
+	return header;
+}
+
+void *
+_data_fetch()
+{
+	char *path;
+	path = ecore_list_next(audiofiles);
+	if ( path != NULL ) {
+		return path;
+	}
+	else {
+		return NULL;
+	}
+}
+
+int
+_data_count_get()
+{
+	int items;
+	items = ecore_list_nodes(audiofiles);
+	return items;
+}

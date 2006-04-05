@@ -593,25 +593,13 @@ main(int argc, char **argv)
 		ewl_text_underline_color_set(EWL_TEXT(m->text), 128, 128, 128, 128);
 		ewl_text_text_set(EWL_TEXT(m->text), "Audio");
 		ewl_widget_show(m->text);
-		
-//		m->data = _data_setup();
-//
-//		m->model = ewl_model_new();
-//		ewl_model_fetch_set(m->model, _data_fetch);
-//		ewl_model_count_set(m->model, _data_count_get);
-//
-//		m->view = ewl_view_new();
-//		ewl_view_contructor_set(m->view, ewl_label_new);
-//		ewl_view_assign_set(m->view, EWL_VIEW_ASSIGN(ewl_label_text_set));
-//		ewl_view_header_fetch_set(m->view, _data_header_fetch);
-//
-//		m->atext = ewl_combo_new();
-//		ewl_container_child_append(EWL_CONTAINER(m->settings), m->atext);
-//		ewl_object_alignment_set(EWL_OBJECT(m->atext), EWL_FLAG_ALIGN_CENTER);
-//		ewl_combo_model_set(EWL_COMBO(m->atext), m->model);
-//		ewl_combo_view_set(EWL_COMBO(m->atext), m->view);
-//		ewl_combo_data_set(EWL_COMBO(m->atext), m->data);
-//		ewl_widget_show(m->atext);
+
+		m->data = _data_setup();
+
+		m->atext = ewl_combo_new();
+		ewl_container_child_append(EWL_CONTAINER(m->settings), m->atext);
+		ewl_object_alignment_set(EWL_OBJECT(m->atext), EWL_FLAG_ALIGN_CENTER);
+		ewl_widget_show(m->atext);
 			
 		m->hboxv = ewl_hbox_new();
 		ewl_container_child_append(EWL_CONTAINER(m->settings), m->hboxv);
@@ -674,12 +662,26 @@ main(int argc, char **argv)
 		//	}
 		//}
 		/**********************************************************/
-		/************LETS POPULATE THEM TREES******************/
-		ewl_callback_call(m->directory, EWL_CALLBACK_VALUE_CHANGED);
-		ewl_callback_call(m->directorya, EWL_CALLBACK_VALUE_CHANGED);
-		/******************************************************/
-	ewl_main();
+		
+                /************LETS POPULATE THEM TREES******************/
+                ewl_callback_call(m->directory, EWL_CALLBACK_VALUE_CHANGED);
+                /******************************************************/
+                m->data = _data_setup();
 
+                m->model = ewl_model_new();
+                ewl_model_fetch_set(m->model, _data_fetch);
+                ewl_model_count_set(m->model, _data_count_get);
+
+                m->view = ewl_view_new();
+                ewl_view_constructor_set(m->view, ewl_label_new);
+                ewl_view_assign_set(m->view, EWL_VIEW_ASSIGN(ewl_label_text_set));
+                ewl_view_header_fetch_set(m->view, _data_header_fetch);
+
+		ewl_combo_model_set(EWL_COMBO(m->atext), m->model);
+		ewl_combo_view_set(EWL_COMBO(m->atext), m->view);
+		ewl_combo_data_set(EWL_COMBO(m->atext), m->data);
+
+		ewl_main();
 	return 0;
 	}
 }

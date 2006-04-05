@@ -51,6 +51,9 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 	if ( ecore_file_is_dir(pathf) ) {
 
 		/**********Get the lists going!***********/
+		if ( audiofiles != NULL ) {
+			ecore_list_destroy(audiofiles);
+		}
 		audiofiles = ecore_list_new();
 		imagefiles = ecore_list_new();
 		files = ecore_list_new();
@@ -257,7 +260,6 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 
 		ecore_list_destroy(files);
 		ecore_list_destroy(imagefiles);
-		ecore_list_destroy(audiofiles);
 	}
 }
 
