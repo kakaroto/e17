@@ -40,6 +40,8 @@ ewl_icon.la
 ewl_icon.lo
 ewl_iconbox.la
 ewl_iconbox.lo
+ewl_image_thumbnail.la
+ewl_image_thumbnail.lo
 ewl_tooltip.lo
 ewl_tooltip.la
 ewl_scrollbar.la
