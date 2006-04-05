@@ -1,5 +1,2 @@
-First Release-
-Slideshow
-Presentation
-Audio works ok.
-Possible Segv's.
+Everything should work except for the fit to audio, which is shaky.
+See TODO for future options.
