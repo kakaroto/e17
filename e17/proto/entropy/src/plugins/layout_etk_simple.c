@@ -320,6 +320,13 @@ void layout_etk_simple_add_header(entropy_gui_component_instance* instance, Entr
 
 }
 
+
+void
+gui_event_callback (entropy_notify_event * eevent, void *requestor,
+		    void *el, entropy_gui_component_instance * comp)
+{
+}
+
 entropy_gui_component_instance *
 entropy_plugin_layout_create (entropy_core * core)
 {
@@ -362,13 +369,21 @@ entropy_plugin_layout_create (entropy_core * core)
   }
 
   /*Entropy related init */
-  layout = entropy_malloc (sizeof (entropy_gui_component_instance));	/*Create a component instance */
+  layout = entropy_gui_component_instance_new(); /*Create a component instance */
   gui = entropy_malloc (sizeof (entropy_layout_gui));
   layout->data = gui;
   layout->core = core;
 
   /*Register this layout container with the core, so our children can get events */
   entropy_core_layout_register (core, layout);
+
+
+  /*Register this instance (the layout itself), to receive events that can be safely handled
+   * by the layout (and reduce the clutter in the child plugins)
+   * i.e. PROGRESS events, Stat for properties, Overwrite yes/no/etc events, etc*/
+  entropy_core_component_event_register (layout,
+					 entropy_core_gui_event_get
+					 (ENTROPY_GUI_EVENT_FILE_PROGRESS));
 
 
   /*Etk related init */

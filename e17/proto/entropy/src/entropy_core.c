@@ -650,7 +650,8 @@ int entropy_plugin_load(entropy_core* core, entropy_plugin* plugin) {
 			/*ID the global system toolkit*/
 			plugin->toolkit = entropy_plugin_helper_toolkit_get(plugin);
 
-			/*Set this as the default toolkit/plugin type*/
+			gui_event_callback = dlsym(plugin->dl_ref, "gui_event_callback");
+			plugin->gui_event_callback_p = gui_event_callback;
 		} else {
 			return 1;
 		}
@@ -866,13 +867,25 @@ void entropy_core_layout_register(entropy_core* core, entropy_gui_component_inst
 
 /*Register a component to get events created by others in the same layout container*/
 void entropy_core_component_event_register(entropy_gui_component_instance* comp, char* event) {
+	entropy_gui_component_instance* layout;
+
+
+	if (!comp->layout_parent) {
+		/*This must be a layout (or the programmer has messed up,
+		 * use this as the layout*/
+		layout = comp;
+		printf(" ******* Layout registered itself to receive events\n");
+	} else {
+		layout = comp->layout_parent;
+	}
+	
 	/*First we have to see if this layout is currently registered with the core..*/
-	Ecore_Hash* event_hash = ecore_hash_get(core_core->layout_gui_events, comp->layout_parent);
+	Ecore_Hash* event_hash = ecore_hash_get(core_core->layout_gui_events, layout);
 
 	//printf("   * Registering a component...\n");
 
 	if (!event_hash) {
-		printf("Alert! - tried to register events for unreg layout component, %p\n", comp->layout_parent);
+		printf("Alert! - tried to register events for unreg layout component, %p\n", layout);
 	} else {
 		Ecore_List* event_list = ecore_hash_get(event_hash, event);
 
@@ -921,7 +934,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		layout = entropy_core_global_layout_get(instance->core);
 	}
 	//printf("Instance's core reference: instance: %p, %p\n", instance, instance->core);
-	lay_hash = ecore_hash_get(instance->core->layout_gui_events, layout);
+	lay_hash = ecore_hash_get(core_core->layout_gui_events, layout);
 	if (!lay_hash) {
 		printf("Error: Attempted to raise event for unregistered layout container (%p)\n", layout);
 		entropy_free(event);
