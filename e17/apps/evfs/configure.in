@@ -319,6 +319,7 @@ src/demo/Makefile
 src/include/Makefile
 src/common/Makefile
 evfs-config
+debian/changelog
 ], [
 chmod +x evfs-config
 ])
