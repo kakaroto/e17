@@ -38,6 +38,7 @@ evfs_stat_event_create(evfs_client * client, evfs_command * command,
    event->type = EVFS_EV_STAT;
 
    //memcpy(&event->stat.stat_obj, stat_obj, sizeof(struct stat));
+   event->stat.stat_obj.st_mode = stat_obj->st_mode;
    event->stat.stat_obj.st_uid = stat_obj->st_uid;
    event->stat.stat_obj.st_gid = stat_obj->st_gid;
    event->stat.stat_obj.st_uid = stat_obj->st_uid;

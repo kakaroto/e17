@@ -66,6 +66,7 @@ typedef enum evfs_file_monitor_type
 /*-----------------------------------------------------------------*/
 typedef struct evfs_stat
 {
+   int st_mode;
    int st_uid;
    int st_gid;
    uint64 st_size;
