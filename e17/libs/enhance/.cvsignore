@@ -10,6 +10,7 @@ config.status
 config.sub
 configure
 depcomp
+enhance-config
 install-sh
 libtool
 ltmain.sh

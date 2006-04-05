@@ -14,6 +14,7 @@ configure
 depcomp
 destdir
 etk-config
+etk.spec
 install-sh
 libtool
 ltmain.sh
