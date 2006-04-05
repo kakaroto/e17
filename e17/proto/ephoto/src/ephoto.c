@@ -448,7 +448,9 @@ main(int argc, char **argv)
 		ewl_container_child_append(EWL_CONTAINER(m->hboxv), m->text);
 		ewl_object_alignment_set(EWL_OBJECT(m->text), EWL_FLAG_ALIGN_CENTER);
 		ewl_text_font_size_set(EWL_TEXT(m->text), 12);
-		ewl_text_text_set(EWL_TEXT(m->text), "Length of Slide(secs)");
+		ewl_text_styles_set(EWL_TEXT(m->text), EWL_TEXT_STYLE_UNDERLINE);
+		ewl_text_underline_color_set(EWL_TEXT(m->text), 128, 128, 128, 128);
+		ewl_text_text_set(EWL_TEXT(m->text), "Length of Slide(secs)\n");
 		ewl_widget_show(m->text);
 		
 		m->slidetime = ewl_spinner_new();
@@ -504,6 +506,8 @@ main(int argc, char **argv)
 		ewl_container_child_append(EWL_CONTAINER(m->settings), m->text);
 		ewl_object_alignment_set(EWL_OBJECT(m->text), EWL_FLAG_ALIGN_CENTER);
 		ewl_text_font_size_set(EWL_TEXT(m->text), 12);
+		ewl_text_styles_set(EWL_TEXT(m->text), EWL_TEXT_STYLE_UNDERLINE);
+		ewl_text_underline_color_set(EWL_TEXT(m->text), 128, 128, 128, 128);
 		ewl_text_text_set(EWL_TEXT(m->text), "Size of Slideshow/Presentation(pixels)");
 		ewl_widget_show(m->text);
 	
@@ -552,7 +556,7 @@ main(int argc, char **argv)
 		m->text = ewl_text_new();
 		ewl_container_child_append(EWL_CONTAINER(m->hboxv), m->text);
 		ewl_object_alignment_set(EWL_OBJECT(m->text), EWL_FLAG_ALIGN_CENTER);
-		ewl_text_font_size_set(EWL_TEXT(m->text), 12);
+		ewl_text_font_size_set(EWL_TEXT(m->text), 10);
 		ewl_text_text_set(EWL_TEXT(m->text), "Width");
 		ewl_widget_show(m->text);
 		
@@ -562,13 +566,13 @@ main(int argc, char **argv)
 		ewl_object_maximum_size_set(EWL_OBJECT(m->wsize), 50, 10);
 		ewl_object_alignment_set(EWL_OBJECT(m->wsize), EWL_FLAG_ALIGN_CENTER);
 		ewl_container_child_append(EWL_CONTAINER(m->hboxv), m->wsize);
-		ewl_text_font_size_set(EWL_TEXT(m->wsize), 12);
+		ewl_text_font_size_set(EWL_TEXT(m->wsize), 10);
 		ewl_widget_show(m->wsize);
 		
 		m->text = ewl_text_new();
 		ewl_container_child_append(EWL_CONTAINER(m->hboxv), m->text);
 		ewl_object_alignment_set(EWL_OBJECT(m->text), EWL_FLAG_ALIGN_CENTER);
-		ewl_text_font_size_set(EWL_TEXT(m->text), 12);
+		ewl_text_font_size_set(EWL_TEXT(m->text), 10);
 		ewl_text_text_set(EWL_TEXT(m->text), "Height");
 		ewl_widget_show(m->text);
 		
@@ -578,13 +582,15 @@ main(int argc, char **argv)
 		ewl_object_maximum_size_set(EWL_OBJECT(m->hsize), 50, 10);
 		ewl_object_alignment_set(EWL_OBJECT(m->hsize), EWL_FLAG_ALIGN_CENTER);
 		ewl_container_child_append(EWL_CONTAINER(m->hboxv), m->hsize);
-		ewl_text_font_size_set(EWL_TEXT(m->hsize), 12);
+		ewl_text_font_size_set(EWL_TEXT(m->hsize), 10);
 		ewl_widget_show(m->hsize);
 		
 		m->text = ewl_text_new();
 		ewl_container_child_append(EWL_CONTAINER(m->settings), m->text);
 		ewl_object_alignment_set(EWL_OBJECT(m->text), EWL_FLAG_ALIGN_CENTER);
 		ewl_text_font_size_set(EWL_TEXT(m->text), 12);
+		ewl_text_styles_set(EWL_TEXT(m->text), EWL_TEXT_STYLE_UNDERLINE);
+		ewl_text_underline_color_set(EWL_TEXT(m->text), 128, 128, 128, 128);
 		ewl_text_text_set(EWL_TEXT(m->text), "Audio");
 		ewl_widget_show(m->text);
 		
