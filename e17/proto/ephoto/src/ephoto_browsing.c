@@ -140,7 +140,13 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 			if ( fnmatch("*.[Jj][Pp][Ee][Gg]", pathw, 0) == 0 ) {
 				ecore_list_append(imagefiles, strdup(pathw));
 			}
-			
+		
+			if ( fnmatch("*.[Bb][Mm][Pp]", pathw, 0) == 0 ) {
+				ecore_list_append(imagefiles, strdup(pathw));
+			}
+			if ( fnmatch(".[Ss][Vv][Gg]", pathw, 0) == 0 ) {
+				ecore_list_append(imagefiles, strdup(pathw));
+			}
 			if ( fnmatch("*.[Mm][Pp][3]", pathw, 0) == 0 ) { 
 				ecore_list_append(audiofiles, strdup(pathw));
 			}
