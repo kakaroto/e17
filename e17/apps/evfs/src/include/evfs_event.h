@@ -51,6 +51,7 @@ typedef enum evfs_eventpart
    
    EVFS_COMMAND_END = 20,
    EVFS_COMMAND_PART_OPERATION = 21,
+   EVFS_COMMAND_CLIENTID = 22,
 
    EVFS_EV_PART_END = 1000
 } evfs_eventpart;

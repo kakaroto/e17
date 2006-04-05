@@ -3,7 +3,7 @@
 void
 evfs_monitor_add(evfs_connection * conn, evfs_filereference * ref)
 {
-   evfs_command *command = NEW(evfs_command);
+   evfs_command *command = evfs_client_command_new();
 
    /*printf("Adding a monitor on: '%s' using '%s'\n", ref->path, ref->plugin_uri); */
 
@@ -22,7 +22,7 @@ evfs_monitor_add(evfs_connection * conn, evfs_filereference * ref)
 void
 evfs_monitor_remove(evfs_connection * conn, evfs_filereference * ref)
 {
-   evfs_command *command = NEW(evfs_command);
+   evfs_command *command = evfs_client_command_new();
 
    command->type = EVFS_CMD_STOPMON_FILE;
    command->file_command.num_files = 1;
@@ -38,7 +38,7 @@ evfs_monitor_remove(evfs_connection * conn, evfs_filereference * ref)
 void
 evfs_client_file_remove(evfs_connection * conn, evfs_filereference * ref)
 {
-   evfs_command *command = NEW(evfs_command);
+   evfs_command *command = evfs_client_command_new();
 
    command->type = EVFS_CMD_REMOVE_FILE;
    command->file_command.num_files = 1;
@@ -56,7 +56,7 @@ void
 evfs_client_file_rename(evfs_connection * conn, evfs_filereference * from,
                         evfs_filereference * to)
 {
-   evfs_command *command = NEW(evfs_command);
+   evfs_command *command = evfs_client_command_new();
 
    printf("Renaming a file..\n");
 
@@ -76,7 +76,7 @@ evfs_client_file_rename(evfs_connection * conn, evfs_filereference * from,
 void
 evfs_client_file_stat(evfs_connection * conn, evfs_filereference * file)
 {
-   evfs_command *command = NEW(evfs_command);
+   evfs_command *command = evfs_client_command_new();
 
    command->type = EVFS_CMD_FILE_STAT;
    command->file_command.num_files = 1;
@@ -93,7 +93,7 @@ evfs_client_file_stat(evfs_connection * conn, evfs_filereference * file)
 void
 evfs_client_dir_list(evfs_connection * conn, evfs_filereference * file)
 {
-   evfs_command *command = NEW(evfs_command);
+   evfs_command *command = evfs_client_command_new();
 
    printf("Listing a directory..\n");
 
@@ -114,7 +114,7 @@ evfs_client_file_copy(evfs_connection * conn, evfs_filereference * from,
                       evfs_filereference * to)
 {
 
-   evfs_command *command = NEW(evfs_command);
+   evfs_command *command = evfs_client_command_new();
 
    /*printf("Copying a file..\n"); */
 
@@ -133,7 +133,7 @@ evfs_client_file_copy(evfs_connection * conn, evfs_filereference * from,
 void
 evfs_client_file_open(evfs_connection * conn, evfs_filereference * file)
 {
-   evfs_command *command = NEW(evfs_command);
+   evfs_command *command = evfs_client_command_new();
 
    fprintf(stderr, "Opening a file..\n");
 
@@ -152,7 +152,7 @@ void
 evfs_client_file_read(evfs_connection * conn, evfs_filereference * file,
                       int read_size)
 {
-   evfs_command *command = NEW(evfs_command);
+   evfs_command *command = evfs_client_command_new();
 
    //printf("Reading a file..\n");
 
@@ -172,7 +172,7 @@ evfs_client_file_read(evfs_connection * conn, evfs_filereference * file,
 void
 evfs_client_directory_create(evfs_connection * conn, evfs_filereference * file)
 {
-   evfs_command *command = NEW(evfs_command);
+   evfs_command *command = evfs_client_command_new();
 
    //printf("Reading a file..\n");
 
@@ -192,7 +192,7 @@ void
 evfs_client_operation_respond(evfs_connection * conn, long opid,
                               evfs_operation_response response)
 {
-   evfs_command *command = NEW(evfs_command);
+   evfs_command *command = evfs_client_command_new();
 
    //printf("Reading a file..\n");
 

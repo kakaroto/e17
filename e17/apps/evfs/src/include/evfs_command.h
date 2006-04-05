@@ -37,6 +37,8 @@ typedef struct evfs_command
    evfs_command_type type;
    evfs_command_file file_command;
    struct evfs_operation *op;
+
+   long client_identifier;
 }
 evfs_command;
 

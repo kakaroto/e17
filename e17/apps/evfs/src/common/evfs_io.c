@@ -457,6 +457,7 @@ evfs_read_event(evfs_event * event, ecore_ipc_message * msg)
      case EVFS_COMMAND_TYPE:
      case EVFS_COMMAND_EXTRA:
      case EVFS_FILE_REFERENCE:
+     case EVFS_COMMAND_CLIENTID:
      case EVFS_COMMAND_END:
         evfs_process_incoming_command(NULL, &event->resp_command, msg);
         break;
@@ -537,6 +538,13 @@ evfs_write_command(evfs_connection * conn, evfs_command * command)
                                                              file_command.extra,
                                                              sizeof(int)));
 
+   evfs_write_ecore_ipc_server_message(conn->server,
+                                       ecore_ipc_message_new(EVFS_COMMAND,
+                                                             EVFS_COMMAND_CLIENTID,
+                                                             0, 0, 0,
+                                                             &command->client_identifier,
+                                                             sizeof(long)));
+
    switch (command->type)
      {
      case EVFS_CMD_STOPMON_FILE:
@@ -569,6 +577,8 @@ evfs_write_command(evfs_connection * conn, evfs_command * command)
 void
 evfs_write_command_client(evfs_client * client, evfs_command * command)
 {
+
+	
    switch (command->type)
      {
      case EVFS_CMD_STOPMON_FILE:
@@ -644,9 +654,6 @@ evfs_write_file_command_client(evfs_client * client, evfs_command * command)
 {
    int i;
    char uri[1024];
-   char *part;
-   int it;
-   Ecore_List *uri_part;
 
    bzero(uri, 1024);
 
@@ -666,6 +673,13 @@ evfs_write_file_command_client(evfs_client * client, evfs_command * command)
                                                              &command->
                                                              file_command.extra,
                                                              sizeof(int)));
+
+   evfs_write_ecore_ipc_client_message(client->client,
+                                       ecore_ipc_message_new(EVFS_COMMAND,
+                                                            EVFS_COMMAND_CLIENTID,
+                                                            client->id, 0, 0,
+                                                            &command->client_identifier,
+                                                            sizeof(long)));
 
   for (i = 0; i < command->file_command.num_files; i++)
      {
@@ -708,6 +722,10 @@ evfs_process_incoming_command(evfs_server * server, evfs_command * command,
      case EVFS_COMMAND_EXTRA:
         memcpy(&command->file_command.extra, message->data, sizeof(int));
         break;
+
+     case EVFS_COMMAND_CLIENTID:
+        memcpy(&command->client_identifier, message->data, sizeof(long));
+        break;	
      case EVFS_FILE_REFERENCE:
         {
            //printf("Parsing URI: '%s'\n", message->data);                   

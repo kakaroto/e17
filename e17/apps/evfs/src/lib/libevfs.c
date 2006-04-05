@@ -3,7 +3,22 @@
 #define MAX_ATTEMPTS 5
 
 Ecore_List *client_list = NULL;
-static int libevfs_registered_callback = 0;
+static int _libevfs_init = 0;
+static long _libevfs_next_command_id;
+
+
+long libevfs_next_command_id_get() 
+{
+	return _libevfs_next_command_id++;
+}
+
+evfs_command* evfs_client_command_new()
+{
+	evfs_command* command = NEW(evfs_command);
+	command->client_identifier = libevfs_next_command_id_get();
+
+	return command;
+}
 
 /*It would seem a good idea to convert this to a hash - but we'd need the actual pointer to the int, or make an ecore_int_hash*/
 evfs_connection *
@@ -156,9 +171,12 @@ evfs_connect(void (*callback_func) (evfs_event *, void *), void *obj)
    evfs_io_initialise();
    evfs_vfolder_initialise();
 
-   if (!libevfs_registered_callback)
+   if (!_libevfs_init)
      {
-        libevfs_registered_callback = 1;
+        _libevfs_init = 1;
+	_libevfs_next_command_id = 1;
+
+	/*Register the callback*/
         ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA, evfs_server_data,
                                 NULL);
         client_list = ecore_list_new();

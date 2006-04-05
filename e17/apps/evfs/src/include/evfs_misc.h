@@ -43,4 +43,7 @@ int evfs_filereference_equal_is(evfs_filereference* file1, evfs_filereference* f
 
 evfs_filereference* evfs_empty_file_get();
 
+long libevfs_next_command_id_get();
+evfs_command* evfs_client_command_new();
+
 #endif
