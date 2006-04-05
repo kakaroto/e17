@@ -3,6 +3,7 @@
 #include "entropy_gui.h"
 #include "etk_location_add_dialog.h"
 #include "etk_progress_dialog.h"
+#include "etk_user_interaction_dialog.h"
 #include "etk_mime_dialog.h"
 #include "etk_file_cache_dialog.h"
 #include <dlfcn.h>
@@ -355,6 +356,11 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 
 	     }
 	     break;
+
+	     case ENTROPY_NOTIFY_USER_INTERACTION_YES_NO_ABORT: {
+		entropy_etk_user_interaction_dialog_new((entropy_file_operation*)el);
+	     }
+	     break;
      }
 }
 
@@ -413,9 +419,16 @@ entropy_plugin_layout_create (entropy_core * core)
   /*Register this instance (the layout itself), to receive events that can be safely handled
    * by the layout (and reduce the clutter in the child plugins)
    * i.e. PROGRESS events, Stat for properties, Overwrite yes/no/etc events, etc*/
+
+  /*Handle progress events*/
   entropy_core_component_event_register (layout,
 					 entropy_core_gui_event_get
 					 (ENTROPY_GUI_EVENT_FILE_PROGRESS));
+
+    /*We want to know if the backend needs feedback */
+  entropy_core_component_event_register (layout,
+					 entropy_core_gui_event_get
+					 (ENTROPY_GUI_EVENT_USER_INTERACTION_YES_NO_ABORT));
 
 
   /*Etk related init */
@@ -483,8 +496,6 @@ entropy_plugin_layout_create (entropy_core * core)
 
   etk_box_pack_start(ETK_BOX(vbox), menubar, ETK_FALSE, ETK_FALSE, 0);
   etk_box_pack_start(ETK_BOX(vbox), gui->paned, TRUE, TRUE, 0);
-
-  //etk_widget_size_request_set(ETK_WIDGET(window), 800,600);
 
   /*Tree init*/
   gui->tree = etk_tree_new();

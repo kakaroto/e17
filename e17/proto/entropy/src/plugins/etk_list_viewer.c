@@ -5,7 +5,6 @@
 #include <limits.h>
 #include <time.h>
 #include <Etk.h>
-#include "etk_user_interaction_dialog.h"
 #include "etk_directory_add_dialog.h"
 #include "etk_properties_dialog.h"
 
@@ -790,11 +789,6 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
      }
      break;
 
-     case ENTROPY_NOTIFY_USER_INTERACTION_YES_NO_ABORT: {
-	entropy_etk_user_interaction_dialog_new((entropy_file_operation*)el);
-     }
-     break;
-
      case ENTROPY_NOTIFY_THUMBNAIL_REQUEST:{
 
    	   /*Only bother if we have a thumbnail, and a component */
@@ -930,11 +924,6 @@ entropy_plugin_gui_instance_new (entropy_core * core,
   entropy_core_component_event_register (instance,
 					 entropy_core_gui_event_get
 					 (ENTROPY_GUI_EVENT_FILE_STAT_AVAILABLE));
-
-  /*We want to know if the backend needs feedback */
-  entropy_core_component_event_register (instance,
-					 entropy_core_gui_event_get
-					 (ENTROPY_GUI_EVENT_USER_INTERACTION_YES_NO_ABORT));
 
   /*We want to know about thumbnail available events */
   entropy_core_component_event_register (instance,
