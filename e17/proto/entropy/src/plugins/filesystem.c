@@ -201,6 +201,7 @@ callback (evfs_event * data, void *obj)
 	      listener->file->properties.st_atime = data->stat.stat_obj.ist_atime;
 	      listener->file->properties.st_mtime = data->stat.stat_obj.ist_mtime;
 	      listener->file->properties.st_ctime = data->stat.stat_obj.ist_ctime;
+	      listener->file->retrieved_stat = 1;
 
 
 	      /*Build up the gui_event wrapper */
@@ -547,7 +548,7 @@ entropy_plugin_init (entropy_core * core)
   plugin->file_functions.file_remove = &entropy_filesystem_file_remove;
 
 
-  return plugin;
+  return base; 
 
   
 }
