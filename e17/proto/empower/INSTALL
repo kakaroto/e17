@@ -1,3 +1,8 @@
+There are two versions now.  The ewl version will install as 'empower_ewl'.
+The etk version will install as 'empower_etk'.  At this time it checks for each
+toolkit and only builds the binaries for the toolkits you have installed.  There
+is no way to stop it building a binary if you have the library installed.
+
 To install empower just do the following:
 	./autogen.sh
 	make
