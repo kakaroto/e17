@@ -180,7 +180,7 @@ callback (evfs_event * data, void *obj)
       file_stat = entropy_malloc (sizeof (entropy_file_stat));
       file_stat->stat_obj = entropy_malloc (sizeof (struct stat));
 
-
+      file_stat->stat_obj->st_mode = data->stat.stat_obj.st_mode;
       file_stat->stat_obj->st_uid = data->stat.stat_obj.st_uid;
       file_stat->stat_obj->st_gid = data->stat.stat_obj.st_gid;
       file_stat->stat_obj->st_size = data->stat.stat_obj.st_size;
@@ -194,6 +194,7 @@ callback (evfs_event * data, void *obj)
 	      file_stat->file = listener->file;
 
 	      /*Pop stats*/
+	      listener->file->properties.st_mode = data->stat.stat_obj.st_mode;
 	      listener->file->properties.st_uid = data->stat.stat_obj.st_uid;
 	      listener->file->properties.st_gid = data->stat.stat_obj.st_gid;
 	      listener->file->properties.st_size = data->stat.stat_obj.st_size;

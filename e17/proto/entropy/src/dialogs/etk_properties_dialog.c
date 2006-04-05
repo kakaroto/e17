@@ -153,6 +153,6 @@ void etk_properties_dialog_new(Entropy_Generic_File* file)
 	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
 	
 
-	entropy_free(perms);
+	if (perms) entropy_free(perms);
 	etk_widget_show_all(dialog->window);
 }
