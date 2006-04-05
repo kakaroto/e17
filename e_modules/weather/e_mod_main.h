@@ -15,12 +15,12 @@ typedef struct _Config_Face Config_Face;
 typedef struct _Weather Weather;
 typedef struct _Weather_Face Weather_Face;
 
-struct _Config 
+struct _Config
 {
    Evas_List *faces;
 };
 
-struct _Config_Face 
+struct _Config_Face
 {
    double poll_time;
    int display, degrees, con;
@@ -29,7 +29,7 @@ struct _Config_Face
    unsigned char enabled;
 };
 
-struct _Weather 
+struct _Weather
 {
    Evas_List *faces;
    E_Menu *config_menu;
@@ -37,14 +37,15 @@ struct _Weather
    E_Config_Dialog *cfd;
    Ecore_Event_Handler *add_handler;
    Ecore_Event_Handler *del_handler;
-   Ecore_Event_Handler *data_handler;   
-   struct {
+   Ecore_Event_Handler *data_handler;
+   struct
+   {
       char *host;
       int port;
    } proxy;
 };
 
-struct _Weather_Face 
+struct _Weather_Face
 {
    Evas *evas;
    E_Container *con;
@@ -52,14 +53,14 @@ struct _Weather_Face
    Weather *weather;
    Config_Face *conf;
    Ecore_Timer *check_timer;
-   
+
    Evas_Object *weather_obj;
    Evas_Object *icon_obj;
    Evas_Object *event_obj;
-   
+
    Ecore_Con_Server *server;
    E_Gadman_Client *gmc;
-   
+
    int temp, loc_set;
    char degrees;
    char conditions[256];
@@ -72,13 +73,13 @@ struct _Weather_Face
 
 EAPI extern E_Module_Api e_modapi;
 
-EAPI void *e_modapi_init     (E_Module *m);
-EAPI int   e_modapi_shutdown (E_Module *m);
-EAPI int   e_modapi_save     (E_Module *m);
-EAPI int   e_modapi_info     (E_Module *m);
-EAPI int   e_modapi_about    (E_Module *m);
-EAPI int   e_modapi_config   (E_Module *m);
+EAPI void *e_modapi_init(E_Module *m);
+EAPI int e_modapi_shutdown(E_Module *m);
+EAPI int e_modapi_save(E_Module *m);
+EAPI int e_modapi_info(E_Module *m);
+EAPI int e_modapi_about(E_Module *m);
+EAPI int e_modapi_config(E_Module *m);
 
-void _weather_convert_degrees(Weather_Face * wf);
+void _weather_convert_degrees(Weather_Face *wf);
 
 #endif

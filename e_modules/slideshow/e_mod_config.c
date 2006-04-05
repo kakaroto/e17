@@ -15,10 +15,8 @@ struct _E_Config_Dialog_Data
 /* Protos */
 static void *_create_data(E_Config_Dialog *cfd);
 static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
-static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas,
-                                          E_Config_Dialog_Data *cfdata);
-static int _basic_apply_data(E_Config_Dialog *cfd,
-                             E_Config_Dialog_Data *cfdata);
+static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
+static int _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 
 /* Config Calls */
 void
@@ -58,6 +56,7 @@ _create_data(E_Config_Dialog *cfd)
 
    s = cfd->data;
    cfdata = E_NEW(E_Config_Dialog_Data, 1);
+
    _fill_data(s, cfdata);
    return cfdata;
 }
@@ -74,8 +73,7 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 }
 
 static Evas_Object *
-_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas,
-                      E_Config_Dialog_Data *cfdata)
+_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
    Evas_Object *o, *ob, *of;
 
@@ -83,8 +81,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas,
    of = e_widget_framelist_add(evas, D_("Cycle Time"), 0);
    ob = e_widget_check_add(evas, D_("Disable Timer"), &(cfdata->disable_timer));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_slider_add(evas, 1, 0, D_("%3.0f seconds"), 5.0, 600.0, 1.0, 0,
-                            &(cfdata->cycle_time), NULL, 200);
+   ob = e_widget_slider_add(evas, 1, 0, D_("%3.0f seconds"), 5.0, 600.0, 1.0, 0, &(cfdata->cycle_time), NULL, 200);
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
@@ -115,9 +112,9 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    s->conf->disable_timer = cfdata->disable_timer;
 #ifdef WANT_OSIRIS
    if (cfdata->theme != NULL)
-     s->conf->theme = (char *)evas_stringshare_add(cfdata->theme);
+      s->conf->theme = (char *)evas_stringshare_add(cfdata->theme);
    else
-     s->conf->theme = (char *)evas_stringshare_add("");
+      s->conf->theme = (char *)evas_stringshare_add("");
 #endif
    e_config_save_queue();
    e_border_button_bindings_grab_all();

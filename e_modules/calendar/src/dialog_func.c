@@ -70,7 +70,7 @@ return;
    
 
 int check = edje_object_file_set(o, PACKAGE_LIB_DIR 
-                                      "/calendar/calendar.edj",
+ "/calendar/calendar.edj",
                                       
 "back");
 
@@ -80,7 +80,7 @@ if (check == 0)
      {
         
 e_error_dialog_show 
-           ("error", "This .edj doesn't meet the requirements \
+ ("error", "This .edj doesn't meet the requirements \
             for use with calendar -- please see the README \
 	     for more info.");
         
@@ -162,7 +162,7 @@ return;
    
 
 int check = edje_object_file_set(o, PACKAGE_LIB_DIR 
-                                      "/calendar/calendar.edj",
+ "/calendar/calendar.edj",
                                       
 "Jan");
 
@@ -172,7 +172,7 @@ if (check == 0)
      {
         
 e_error_dialog_show 
-           ("error!", "This .edj doesn't meet the requirements \
+ ("error!", "This .edj doesn't meet the requirements \
             for use with calendar -- please see the README \
 	     for more info.");
         
@@ -243,7 +243,8 @@ e_object_del(E_OBJECT(dia));
 config_dialog(void *data, E_Menu *m, E_Menu_Item *mi) 
 {
    
-Calendar * calendar;
+Calendar *calendar;
+
    
 calendar = data;
    
@@ -259,7 +260,8 @@ e_int_config_calendar(m->zone->container, calendar);
 add_event_dialog(void *data, E_Menu *m, E_Menu_Item *mi) 
 {
    
-day_face * DayToFix;
+day_face *DayToFix;
+
    
 DayToFix = data;
    
@@ -275,7 +277,8 @@ add_event_show(m->zone->container, DayToFix);
 add_todo_dialog(void *data, E_Menu *m, E_Menu_Item *mi) 
 {
    
-day_face * DayToFix;
+day_face *DayToFix;
+
    
 DayToFix = data;
    
@@ -290,7 +293,8 @@ DayToFix = data;
 remove_event_dialog(void *data, E_Menu *m, E_Menu_Item *mi) 
 {
    
-day_face * DayToFix;
+day_face *DayToFix;
+
    
 DayToFix = data;
    
@@ -305,7 +309,8 @@ DayToFix = data;
 remove_todo_dialog(void *data, E_Menu *m, E_Menu_Item *mi) 
 {
    
-day_face * DayToFix;
+day_face *DayToFix;
+
    
 DayToFix = data;
    
@@ -320,7 +325,8 @@ DayToFix = data;
 view_event_dialog(void *data, E_Menu *m, E_Menu_Item *mi) 
 {
    
-day_face * DayToFix;
+day_face *DayToFix;
+
    
 DayToFix = data;
    
@@ -335,7 +341,8 @@ DayToFix = data;
 view_todo_dialog(void *data, E_Menu *m, E_Menu_Item *mi) 
 {
    
-day_face * DayToFix;
+day_face *DayToFix;
+
    
 DayToFix = data;
    

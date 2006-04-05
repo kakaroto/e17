@@ -8,14 +8,14 @@
 /
 *****************************************************/ 
 void 
-calendar_update_text_fonts(Calendar * calendar, Calendar_Face * face) 
+calendar_update_text_fonts(Calendar *calendar, Calendar_Face *face) 
 {
    
-CalFonts * YTC_Ptr = calendar->conf->YM_text_class->data;
+CalFonts *YTC_Ptr = calendar->conf->YM_text_class->data;
    
-CalFonts * DTCs_Ptr = calendar->conf->Day_text_class->data;
+CalFonts *DTCs_Ptr = calendar->conf->Day_text_class->data;
    
-CalFonts * TC_Ptr = calendar->conf->text_class->data;
+CalFonts *TC_Ptr = calendar->conf->text_class->data;
    
 int x;
 
@@ -23,30 +23,25 @@ int x;
 
 for (x = 0; x < 35; x++)
       
-edje_object_text_class_set(face->weekday_object[x]->obj, "text_class",
-                                  
+edje_object_text_class_set(face->weekday_object[x]->obj, "text_class", 
 TC_Ptr->font, TC_Ptr->size);
    
 for (x = 0; x < 35; x++)
       
-edje_object_text_class_set(face->weekend_object[x]->obj, "text_class",
-                                  
+edje_object_text_class_set(face->weekend_object[x]->obj, "text_class", 
 TC_Ptr->font, TC_Ptr->size);
    
 for (x = 0; x < 35; x++)
       
-edje_object_text_class_set(face->today_object[x]->obj, "text_class",
-                                  
+edje_object_text_class_set(face->today_object[x]->obj, "text_class", 
 TC_Ptr->font, TC_Ptr->size);
    
 
-edje_object_text_class_set(face->label_object, "YM_text_class",
-                                
+edje_object_text_class_set(face->label_object, "YM_text_class", 
 YTC_Ptr->font, YTC_Ptr->size);
    
 
-edje_object_text_class_set(face->label_object, "Day_text_class",
-                                
+edje_object_text_class_set(face->label_object, "Day_text_class", 
 DTCs_Ptr->font, DTCs_Ptr->size);
 
 
@@ -61,7 +56,7 @@ DTCs_Ptr->font, DTCs_Ptr->size);
 /
 *****************************************************/ 
 void 
-calendar_face_set_text(Calendar * calendar) 
+calendar_face_set_text(Calendar *calendar) 
 {
    
 char read_line[120];
@@ -72,11 +67,11 @@ char ValidName2[] = { "Day_text_class" };
    
 char ValidName3[] = { "text_class" };
    
-CalFonts * YTC_Ptr = calendar->conf->YM_text_class->data;
+CalFonts *YTC_Ptr = calendar->conf->YM_text_class->data;
    
-CalFonts * DTCs_Ptr = calendar->conf->Day_text_class->data;
+CalFonts *DTCs_Ptr = calendar->conf->Day_text_class->data;
    
-CalFonts * TC_Ptr = calendar->conf->text_class->data;
+CalFonts *TC_Ptr = calendar->conf->text_class->data;
    
 char buff[20];
    
@@ -85,7 +80,8 @@ char buff2[20];
 int fs;
 
    
-FILE * fp;
+FILE *fp;
+
    
 fp = fopen(calendar->conf->ConfigFile_path, "r");
    
@@ -415,7 +411,7 @@ break;
 /
 *****************************************************/ 
    void
-free_Calfonts(Calendar * calendar) 
+free_Calfonts(Calendar *calendar) 
 {
    
 Evas_List *list;
@@ -427,7 +423,8 @@ Evas_List *list;
       
      {
         
-CalFonts * font_struct;
+CalFonts *font_struct;
+
         
 font_struct = list->data;
         
@@ -445,7 +442,8 @@ for (list = calendar->conf->Day_text_class; list; list = list->next)
       
      {
         
-CalFonts * font_struct;
+CalFonts *font_struct;
+
         
 font_struct = list->data;
         
@@ -463,7 +461,8 @@ for (list = calendar->conf->text_class; list; list = list->next)
       
      {
         
-CalFonts * font_struct;
+CalFonts *font_struct;
+
         
 font_struct = list->data;
         

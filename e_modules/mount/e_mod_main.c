@@ -30,28 +30,19 @@ static void _mount_config_menu_new(Mount *mnt);
 static void _mount_box_menu_new(Mount_Box *mntbox);
 static void _mount_box_disable(Mount_Box *mntbox);
 static void _mount_box_cb_menu_edit(void *data, E_Menu *mn, E_Menu_Item *mi);
-static void _mount_box_cb_menu_configure(void *data, E_Menu *mn,
-                                         E_Menu_Item *mi);
+static void _mount_box_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi);
 
-static void _mount_box_cb_gmc_change(void *data, E_Gadman_Client *gmc,
-                                     E_Gadman_Change change);
-static void _mount_box_cb_intercept_move(void *data, Evas_Object *o,
-                                         Evas_Coord x, Evas_Coord y);
-static void _mount_box_cb_intercept_resize(void *data, Evas_Object *o,
-                                           Evas_Coord w, Evas_Coord h);
-static void _mount_icon_cb_intercept_move(void *data, Evas_Object *o,
-                                          Evas_Coord x, Evas_Coord y);
-static void _mount_icon_cb_intercept_resize(void *data, Evas_Object *o,
-                                            Evas_Coord w, Evas_Coord h);
+static void _mount_box_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change);
+static void _mount_box_cb_intercept_move(void *data, Evas_Object *o, Evas_Coord x, Evas_Coord y);
+static void _mount_box_cb_intercept_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_Coord h);
+static void _mount_icon_cb_intercept_move(void *data, Evas_Object *o, Evas_Coord x, Evas_Coord y);
+static void _mount_icon_cb_intercept_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_Coord h);
 static void _mount_box_iconsize_change(Mount_Box *mntbox);
-static void _mount_box_cb_mouse_down(void *data, Evas *e,
-                                     Evas_Object *obj, void *event_info);
+static void _mount_box_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _change_orient_horiz(Mount *mnt);
 static void _change_orient_vert(Mount *mnt);
 static void _set_state(Mount_Icon *ic);
-static void _mount_icon_cb_edje_mouse_down(void *data, Evas_Object *o,
-                                           const char *emission,
-                                           const char *source);
+static void _mount_icon_cb_edje_mouse_down(void *data, Evas_Object *o, const char *emission, const char *source);
 static int _mount_exe_cb_exit(void *data, int type, void *event);
 
 /* Begin Required Module Routines */
@@ -120,8 +111,7 @@ e_modapi_info(E_Module *m)
 EAPI int
 e_modapi_about(E_Module *m)
 {
-   e_module_dialog_show(D_("Enlightenment Mount Module"),
-                        D_("This is a mount module to mount/unmount devices."));
+   e_module_dialog_show(D_("Enlightenment Mount Module"), D_("This is a mount module to mount/unmount devices."));
    return 1;
 }
 
@@ -189,10 +179,10 @@ _parse_fstab(Mount *mnt)
              while ((token = strtok(NULL, " \t")) && (i < 4))
                 info[i++] = strdup(token);
              if (i != 4 || !(*info[--i]))
-                continue; // no options
+                continue;       // no options
           }
         else
-           continue; // empty line ?
+           continue;            // empty line ?
 
         /* see if device is mountable by user */
         user_mnt = 0;
@@ -250,8 +240,7 @@ _parse_fstab(Mount *mnt)
                 return;
              point->device = strdup(info[0]);
              point->path = strdup(info[1]);
-             if ((strstr(point->path, "cdrw")) ||
-                 (strstr(point->path, "cdrecorder")))
+             if ((strstr(point->path, "cdrw")) || (strstr(point->path, "cdrecorder")))
                {
                   point->part = strdup("cdrw");
                   point->eject_mode = AUTO_EJECT;
@@ -454,8 +443,7 @@ _mount_box_icon_free(Mount_Icon *mnticon)
 {
    mnticon->mntbox->icons = evas_list_remove(mnticon->mntbox->icons, mnticon);
 
-   edje_object_signal_callback_del(mnticon->icon_object, "mouse,down,1", "icon",
-                                   _mount_icon_cb_edje_mouse_down);
+   edje_object_signal_callback_del(mnticon->icon_object, "mouse,down,1", "icon", _mount_icon_cb_edje_mouse_down);
    if (mnticon->bg_object)
       evas_object_del(mnticon->bg_object);
    if (mnticon->icon_object)
@@ -506,8 +494,7 @@ _mount_new(E_Module *m)
 
    /* Set Config Limits */
    E_CONFIG_LIMIT(mnt->conf->icon_size, 8, 128);
-   E_CONFIG_LIMIT(mnt->conf->orientation, MOUNT_ORIENT_VERT,
-                  MOUNT_ORIENT_HORIZ);
+   E_CONFIG_LIMIT(mnt->conf->orientation, MOUNT_ORIENT_VERT, MOUNT_ORIENT_HORIZ);
    //E_CONFIG_LIMIT(mnt->conf->show_labels, 0, 1);
 
    /* Create New Config Menu */
@@ -534,8 +521,7 @@ _mount_new(E_Module *m)
 
              if (mntbox)
                {
-                  mntbox->conf_box_edd =
-                     E_CONFIG_DD_NEW("Mount_Config_Box", Config_Box);
+                  mntbox->conf_box_edd = E_CONFIG_DD_NEW("Mount_Config_Box", Config_Box);
 #undef T
 #undef D
 #define T Config_Box
@@ -555,8 +541,7 @@ _mount_new(E_Module *m)
 
                   mi = e_menu_item_new(mnt->config_menu);
                   e_menu_item_label_set(mi, _("Configuration"));
-                  e_menu_item_callback_set(mi, _mount_box_cb_menu_configure,
-                                           mntbox);
+                  e_menu_item_callback_set(mi, _mount_box_cb_menu_configure, mntbox);
 
                   mi = e_menu_item_new(mnt->config_menu);
                   e_menu_item_label_set(mi, con->name);
@@ -601,8 +586,7 @@ _mount_box_init(Mount_Box *mntbox)
 
    o = edje_object_add(mntbox->evas);
    mntbox->bar_object = o;
-   if (!e_theme_edje_object_set
-       (o, "base/theme/modules/mount", "modules/mount/main"))
+   if (!e_theme_edje_object_set(o, "base/theme/modules/mount", "modules/mount/main"))
       edje_object_file_set(o, buffer, "modules/mount/main");
    evas_object_show(o);
 
@@ -611,16 +595,13 @@ _mount_box_init(Mount_Box *mntbox)
    evas_object_layer_set(o, 2);
    evas_object_repeat_events_set(o, 1);
    evas_object_color_set(o, 0, 0, 0, 0);
-   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN,
-                                  _mount_box_cb_mouse_down, mntbox);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _mount_box_cb_mouse_down, mntbox);
    evas_object_show(o);
 
    o = e_box_add(mntbox->evas);
    mntbox->box_object = o;
-   evas_object_intercept_move_callback_add(o, _mount_box_cb_intercept_move,
-                                           mntbox);
-   evas_object_intercept_resize_callback_add(o, _mount_box_cb_intercept_resize,
-                                             mntbox);
+   evas_object_intercept_move_callback_add(o, _mount_box_cb_intercept_move, mntbox);
+   evas_object_intercept_resize_callback_add(o, _mount_box_cb_intercept_resize, mntbox);
    e_box_freeze(o);
    edje_object_part_swallow(mntbox->bar_object, "items", o);
    evas_object_show(o);
@@ -650,11 +631,9 @@ _mount_box_init(Mount_Box *mntbox)
    edje_object_part_geometry_get(mntbox->bar_object, "items", &x, &y, &w, &h);
 
    o = edje_object_add(mntbox->evas);
-   if (!e_theme_edje_object_set
-       (o, "base/theme/modules/mount", "modules/mount/icon"))
+   if (!e_theme_edje_object_set(o, "base/theme/modules/mount", "modules/mount/icon"))
       edje_object_file_set(o, buffer, "modules/mount/icon");
-   evas_object_resize(o, mntbox->mnt->conf->icon_size,
-                      mntbox->mnt->conf->icon_size);
+   evas_object_resize(o, mntbox->mnt->conf->icon_size, mntbox->mnt->conf->icon_size);
    edje_object_calc_force(o);
    edje_object_part_geometry_get(o, "item", &x, &y, &w, &h);
    mntbox->icon_inset.l = x;
@@ -663,8 +642,7 @@ _mount_box_init(Mount_Box *mntbox)
    mntbox->icon_inset.b = mntbox->mnt->conf->icon_size - (y + h);
    evas_object_del(o);
 
-   policy =
-      E_GADMAN_POLICY_ANYWHERE | E_GADMAN_POLICY_HMOVE | E_GADMAN_POLICY_VMOVE;
+   policy = E_GADMAN_POLICY_ANYWHERE | E_GADMAN_POLICY_HMOVE | E_GADMAN_POLICY_VMOVE;
    mntbox->gmc = e_gadman_client_new(mntbox->con->gadman);
    e_gadman_client_domain_set(mntbox->gmc, "module.mount", bar_count++);
    e_gadman_client_policy_set(mntbox->gmc, policy);
@@ -672,8 +650,7 @@ _mount_box_init(Mount_Box *mntbox)
    e_gadman_client_max_size_set(mntbox->gmc, 3200, 3200);
    e_gadman_client_align_set(mntbox->gmc, 0.5, 0.5);
    e_gadman_client_resize(mntbox->gmc, 400, 40);
-   e_gadman_client_change_func_set(mntbox->gmc, _mount_box_cb_gmc_change,
-                                   mntbox);
+   e_gadman_client_change_func_set(mntbox->gmc, _mount_box_cb_gmc_change, mntbox);
    e_gadman_client_load(mntbox->gmc);
 
    evas_event_thaw(mntbox->evas);
@@ -702,12 +679,12 @@ _mount_box_menu_new(Mount_Box *mntbox)
 
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("Configuration"));
-   e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");         
+   e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
    e_menu_item_callback_set(mi, _mount_box_cb_menu_configure, mntbox);
 
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("Edit Mode"));
-   e_util_menu_item_edje_icon_set(mi, "enlightenment/gadgets");         
+   e_util_menu_item_edje_icon_set(mi, "enlightenment/gadgets");
    e_menu_item_callback_set(mi, _mount_box_cb_menu_edit, mntbox);
 }
 
@@ -747,8 +724,7 @@ _mount_box_cb_menu_edit(void *data, E_Menu *mn, E_Menu_Item *mi)
 }
 
 static void
-_mount_box_cb_gmc_change(void *data, E_Gadman_Client *gmc,
-                         E_Gadman_Change change)
+_mount_box_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change)
 {
    Mount_Box *mntbox;
 
@@ -756,11 +732,9 @@ _mount_box_cb_gmc_change(void *data, E_Gadman_Client *gmc,
    switch (change)
      {
      case E_GADMAN_CHANGE_MOVE_RESIZE:
-        e_gadman_client_geometry_get(mntbox->gmc, &mntbox->x, &mntbox->y,
-                                     &mntbox->w, &mntbox->h);
+        e_gadman_client_geometry_get(mntbox->gmc, &mntbox->x, &mntbox->y, &mntbox->w, &mntbox->h);
         edje_extern_object_min_size_set(mntbox->box_object, 0, 0);
-        edje_object_part_swallow(mntbox->bar_object, "items",
-                                 mntbox->box_object);
+        edje_object_part_swallow(mntbox->bar_object, "items", mntbox->box_object);
 
         evas_object_move(mntbox->bar_object, mntbox->x, mntbox->y);
         evas_object_move(mntbox->event_object, mntbox->x, mntbox->y);
@@ -799,26 +773,19 @@ _mount_icon_new(Mount_Box *mntbox, Mount_Point *point)
 
    o = edje_object_add(mntbox->evas);
    mnticon->bg_object = o;
-   evas_object_intercept_move_callback_add(o, _mount_icon_cb_intercept_move,
-                                           mnticon);
-   evas_object_intercept_resize_callback_add(o, _mount_icon_cb_intercept_resize,
-                                             mnticon);
-   if (!e_theme_edje_object_set
-       (o, "base/theme/modules/mount", "modules/mount/icon"))
+   evas_object_intercept_move_callback_add(o, _mount_icon_cb_intercept_move, mnticon);
+   evas_object_intercept_resize_callback_add(o, _mount_icon_cb_intercept_resize, mnticon);
+   if (!e_theme_edje_object_set(o, "base/theme/modules/mount", "modules/mount/icon"))
       edje_object_file_set(o, buffer, "modules/mount/icon");
    evas_object_show(o);
 
    o = edje_object_add(mntbox->evas);
    mnticon->icon_object = o;
-   edje_extern_object_min_size_set(o, mntbox->mnt->conf->icon_size,
-                                   mntbox->mnt->conf->icon_size);
-   evas_object_resize(o, mntbox->mnt->conf->icon_size,
-                      mntbox->mnt->conf->icon_size);
-   if (!e_theme_edje_object_set
-       (o, "base/theme/modules/mount", "modules/mount/icon"))
+   edje_extern_object_min_size_set(o, mntbox->mnt->conf->icon_size, mntbox->mnt->conf->icon_size);
+   evas_object_resize(o, mntbox->mnt->conf->icon_size, mntbox->mnt->conf->icon_size);
+   if (!e_theme_edje_object_set(o, "base/theme/modules/mount", "modules/mount/icon"))
       edje_object_file_set(o, buffer, "modules/mount/icon");
-   edje_object_signal_callback_add(o, "mouse,down,1", "icon",
-                                   _mount_icon_cb_edje_mouse_down, mnticon);
+   edje_object_signal_callback_add(o, "mouse,down,1", "icon", _mount_icon_cb_edje_mouse_down, mnticon);
    edje_object_part_swallow(mnticon->bg_object, "item", o);
    evas_object_show(o);
 
@@ -831,8 +798,7 @@ _mount_icon_new(Mount_Box *mntbox, Mount_Point *point)
 
    o = edje_object_add(mntbox->evas);
    mnticon->txt_object = o;
-   if (!e_theme_edje_object_set
-       (o, "base/theme/modules/mount", "modules/mount/icon"))
+   if (!e_theme_edje_object_set(o, "base/theme/modules/mount", "modules/mount/icon"))
       edje_object_file_set(o, buffer, "modules/mount/icon");
    evas_object_show(o);
 
@@ -858,11 +824,9 @@ _mount_icon_new(Mount_Box *mntbox, Mount_Point *point)
    edje_object_message_signal_process(o);
 
    o = edje_object_add(mntbox->evas);
-   if (!e_theme_edje_object_set
-       (o, "base/theme/modules/mount", "modules/mount/icon"))
+   if (!e_theme_edje_object_set(o, "base/theme/modules/mount", "modules/mount/icon"))
       edje_object_file_set(o, buffer, "modules/mount/icon");
-   evas_object_resize(o, mntbox->mnt->conf->icon_size,
-                      mntbox->mnt->conf->icon_size);
+   evas_object_resize(o, mntbox->mnt->conf->icon_size, mntbox->mnt->conf->icon_size);
    edje_object_calc_force(o);
    edje_object_part_geometry_get(o, "item", &x, &y, &w, &h);
    mntbox->icon_inset.l = x;
@@ -871,10 +835,8 @@ _mount_icon_new(Mount_Box *mntbox, Mount_Point *point)
    mntbox->icon_inset.b = mntbox->mnt->conf->icon_size - (y + h);
    evas_object_del(o);
 
-   w = mntbox->mnt->conf->icon_size + mntbox->icon_inset.l +
-      mntbox->icon_inset.r;
-   h = mntbox->mnt->conf->icon_size + mntbox->icon_inset.t +
-      mntbox->icon_inset.b;
+   w = mntbox->mnt->conf->icon_size + mntbox->icon_inset.l + mntbox->icon_inset.r;
+   h = mntbox->mnt->conf->icon_size + mntbox->icon_inset.t + mntbox->icon_inset.b;
 
    e_box_pack_end(mntbox->box_object, mnticon->bg_object);
    e_box_pack_options_set(mnticon->bg_object, 1, 1, 0, 0, 0.5, 0.5, w, h, w, h);
@@ -883,8 +845,7 @@ _mount_icon_new(Mount_Box *mntbox, Mount_Point *point)
 }
 
 static void
-_mount_box_cb_intercept_move(void *data, Evas_Object *o, Evas_Coord x,
-                             Evas_Coord y)
+_mount_box_cb_intercept_move(void *data, Evas_Object *o, Evas_Coord x, Evas_Coord y)
 {
    Mount_Box *mntbox;
 
@@ -899,8 +860,7 @@ _mount_box_cb_intercept_move(void *data, Evas_Object *o, Evas_Coord x,
 }
 
 static void
-_mount_box_cb_intercept_resize(void *data, Evas_Object *o, Evas_Coord w,
-                               Evas_Coord h)
+_mount_box_cb_intercept_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_Coord h)
 {
    Mount_Box *mntbox;
 
@@ -915,8 +875,7 @@ _mount_box_cb_intercept_resize(void *data, Evas_Object *o, Evas_Coord w,
 }
 
 static void
-_mount_icon_cb_intercept_move(void *data, Evas_Object *o, Evas_Coord x,
-                              Evas_Coord y)
+_mount_icon_cb_intercept_move(void *data, Evas_Object *o, Evas_Coord x, Evas_Coord y)
 {
    Mount_Icon *mnticon;
 
@@ -933,8 +892,7 @@ _mount_icon_cb_intercept_move(void *data, Evas_Object *o, Evas_Coord x,
 }
 
 static void
-_mount_icon_cb_intercept_resize(void *data, Evas_Object *o, Evas_Coord w,
-                                Evas_Coord h)
+_mount_icon_cb_intercept_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_Coord h)
 {
    Mount_Icon *mnticon;
 
@@ -957,8 +915,7 @@ _mount_box_iconsize_change(Mount_Box *mntbox)
    Evas_Coord w, h, x, y;
    char buffer[1024];
 
-   if ((mntbox->x == -1) || (mntbox->y == -1) ||
-       (mntbox->w == -1) || (mntbox->h == -1))
+   if ((mntbox->x == -1) || (mntbox->y == -1) || (mntbox->w == -1) || (mntbox->h == -1))
       return;
 
    snprintf(buffer, sizeof(buffer), PACKAGE_DATA_DIR "/mount.edj");
@@ -973,20 +930,16 @@ _mount_box_iconsize_change(Mount_Box *mntbox)
         ic = l->data;
 
         o = ic->icon_object;
-        evas_object_resize(o, mntbox->mnt->conf->icon_size,
-                           mntbox->mnt->conf->icon_size);
+        evas_object_resize(o, mntbox->mnt->conf->icon_size, mntbox->mnt->conf->icon_size);
         edje_object_part_swallow(ic->bg_object, "item", o);
 
         o = ic->overlay_object;
-        evas_object_resize(o, mntbox->mnt->conf->icon_size,
-                           mntbox->mnt->conf->icon_size);
+        evas_object_resize(o, mntbox->mnt->conf->icon_size, mntbox->mnt->conf->icon_size);
 
         o = edje_object_add(mntbox->evas);
-        if (!e_theme_edje_object_set
-            (o, "base/theme/modules/mount", "modules/mount/icon"))
+        if (!e_theme_edje_object_set(o, "base/theme/modules/mount", "modules/mount/icon"))
            edje_object_file_set(o, buffer, "modules/mount/icon");
-        evas_object_resize(o, mntbox->mnt->conf->icon_size,
-                           mntbox->mnt->conf->icon_size);
+        evas_object_resize(o, mntbox->mnt->conf->icon_size, mntbox->mnt->conf->icon_size);
         edje_object_calc_force(o);
         edje_object_part_geometry_get(o, "item", &x, &y, &w, &h);
         mntbox->icon_inset.l = x;
@@ -995,10 +948,8 @@ _mount_box_iconsize_change(Mount_Box *mntbox)
         mntbox->icon_inset.b = mntbox->mnt->conf->icon_size - (y + h);
         evas_object_del(o);
 
-        w = mntbox->mnt->conf->icon_size + mntbox->icon_inset.l +
-           mntbox->icon_inset.r;
-        h = mntbox->mnt->conf->icon_size + mntbox->icon_inset.t +
-           mntbox->icon_inset.b;
+        w = mntbox->mnt->conf->icon_size + mntbox->icon_inset.l + mntbox->icon_inset.r;
+        h = mntbox->mnt->conf->icon_size + mntbox->icon_inset.t + mntbox->icon_inset.b;
 
         e_box_pack_options_set(ic->bg_object, 1, 1,     /* fill */
                                0, 0,    /* expand */
@@ -1012,13 +963,11 @@ _mount_box_iconsize_change(Mount_Box *mntbox)
 
    if (mntbox->mnt->conf->orientation == MOUNT_ORIENT_VERT)
      {
-        e_gadman_client_resize(mntbox->gmc, w,
-                               (h * (evas_list_count(mntbox->icons))));
+        e_gadman_client_resize(mntbox->gmc, w, (h * (evas_list_count(mntbox->icons))));
      }
    else
      {
-        e_gadman_client_resize(mntbox->gmc,
-                               (w * (evas_list_count(mntbox->icons))), h);
+        e_gadman_client_resize(mntbox->gmc, (w * (evas_list_count(mntbox->icons))), h);
      }
 }
 
@@ -1039,10 +988,8 @@ _change_orient_horiz(Mount *mnt)
 
    e_box_freeze(mntbox->box_object);
 
-   w = mntbox->mnt->conf->icon_size + mntbox->icon_inset.l +
-      mntbox->icon_inset.r;
-   h = mntbox->mnt->conf->icon_size + mntbox->icon_inset.t +
-      mntbox->icon_inset.b;
+   w = mntbox->mnt->conf->icon_size + mntbox->icon_inset.l + mntbox->icon_inset.r;
+   h = mntbox->mnt->conf->icon_size + mntbox->icon_inset.t + mntbox->icon_inset.b;
 
    for (l2 = mntbox->icons; l2; l2 = l2->next)
      {
@@ -1069,8 +1016,7 @@ _change_orient_horiz(Mount *mnt)
    e_box_thaw(mntbox->box_object);
    evas_event_thaw(mntbox->evas);
 
-   e_gadman_client_resize(mntbox->gmc, (w * (evas_list_count(mntbox->icons))),
-                          h);
+   e_gadman_client_resize(mntbox->gmc, (w * (evas_list_count(mntbox->icons))), h);
 
    _mount_box_iconsize_change(mntbox);
 }
@@ -1092,10 +1038,8 @@ _change_orient_vert(Mount *mnt)
 
    e_box_freeze(mntbox->box_object);
 
-   w = mntbox->mnt->conf->icon_size + mntbox->icon_inset.l +
-      mntbox->icon_inset.r;
-   h = mntbox->mnt->conf->icon_size + mntbox->icon_inset.t +
-      mntbox->icon_inset.b;
+   w = mntbox->mnt->conf->icon_size + mntbox->icon_inset.l + mntbox->icon_inset.r;
+   h = mntbox->mnt->conf->icon_size + mntbox->icon_inset.t + mntbox->icon_inset.b;
 
    for (l2 = mntbox->icons; l2; l2 = l2->next)
      {
@@ -1122,8 +1066,7 @@ _change_orient_vert(Mount *mnt)
    e_box_thaw(mntbox->box_object);
    evas_event_thaw(mntbox->evas);
 
-   e_gadman_client_resize(mntbox->gmc, w,
-                          (h * (evas_list_count(mntbox->icons))));
+   e_gadman_client_resize(mntbox->gmc, w, (h * (evas_list_count(mntbox->icons))));
 
    _mount_box_iconsize_change(mntbox);
 }
@@ -1171,8 +1114,7 @@ _eject_mountpoint(Mount_Icon *mnticon)
 }
 
 static void
-_mount_box_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
-                         void *event_info)
+_mount_box_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Evas_Event_Mouse_Down *ev;
    Mount_Box *mntbox;
@@ -1182,8 +1124,7 @@ _mount_box_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
    if (ev->button == 3)
      {
         e_menu_activate_mouse(mntbox->menu, e_zone_current_get(mntbox->con),
-                              ev->output.x, ev->output.y, 1, 1,
-                              E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
+                              ev->output.x, ev->output.y, 1, 1, E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
         e_util_container_fake_mouse_up_later(mntbox->con, 3);
      }
 }
@@ -1202,17 +1143,14 @@ _set_state(Mount_Icon *ic)
 }
 
 static void
-_mount_icon_cb_edje_mouse_down(void *data, Evas_Object *o,
-                               const char *emission, const char *source)
+_mount_icon_cb_edje_mouse_down(void *data, Evas_Object *o, const char *emission, const char *source)
 {
    Mount_Icon *ic;
 
    ic = data;
    if (!strcmp(emission, "mouse,down,1"))
      {
-        _mount_exe_exit_handler =
-           ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _mount_exe_cb_exit,
-                                   NULL);
+        _mount_exe_exit_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _mount_exe_cb_exit, NULL);
         if (ic->mntpoint->mounted == 0)
           {
              /* Mount */
@@ -1269,16 +1207,14 @@ _mount_exe_cb_exit(void *data, int type, void *event)
      {
         if (mounted)
           {
-             e_module_dialog_show(D_("Mount Module"),
-                                  D_("Unmount Failed !!<br>Perhaps this device is in use or is not mounted."));
+             e_module_dialog_show(D_("Mount Module"), D_("Unmount Failed !!<br>Perhaps this device is in use or is not mounted."));
           }
      }
    else if (!strcmp(tag, "Mount"))
      {
         if (!mounted)
           {
-             e_module_dialog_show(D_("Mount Module"),
-                                  D_("Mount Failed !!<br>Please check that media is inserted"));
+             e_module_dialog_show(D_("Mount Module"), D_("Mount Failed !!<br>Please check that media is inserted"));
           }
      }
    else if (!strcmp(tag, "Eject"))

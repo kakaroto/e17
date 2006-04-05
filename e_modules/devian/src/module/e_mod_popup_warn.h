@@ -23,25 +23,23 @@ typedef struct _Popup_Warn Popup_Warn;
 
 struct _Popup_Warn
 {
-  int type;
+   int type;
 
-  const char *name;
-  E_Popup *pop;
-  Evas_List *log;
-  Evas_Object *face;
-  Ecore_Timer *timer;
-  int timer_org;
-  int x, y, w, h;
-  void *data;
+   const char *name;
+   E_Popup *pop;
+   Evas_List *log;
+   Evas_Object *face;
+   Ecore_Timer *timer;
+   int timer_org;
+   int x, y, w, h;
+   void *data;
 };
 
-
-int  DEVIANF(popup_warn_add)(Popup_Warn **popup_warn, int type,
-			   const char *text, void *data);
-void DEVIANF(popup_warn_del)(Popup_Warn *popw);
-void DEVIANF(popup_warn_del_all)(void);
-void DEVIANF(popup_warn_devian_desactivate)(void);
-void DEVIANF(popup_warn_theme_change)(void);
+int DEVIANF(popup_warn_add) (Popup_Warn **popup_warn, int type, const char *text, void *data);
+void DEVIANF(popup_warn_del) (Popup_Warn *popw);
+void DEVIANF(popup_warn_del_all) (void);
+void DEVIANF(popup_warn_devian_desactivate) (void);
+void DEVIANF(popup_warn_theme_change) (void);
 
 #endif
 #endif

@@ -9,7 +9,7 @@
 /
 *****************************************************/
 void
-fill_in_caltable(int FirstDay, Calendar_Face * face, int StartUp)
+fill_in_caltable(int FirstDay, Calendar_Face *face, int StartUp)
 {
    int x = 0;
    int i = 0;
@@ -137,7 +137,7 @@ fill_in_caltable(int FirstDay, Calendar_Face * face, int StartUp)
 /
 *****************************************************/
 int
-calculate_skew(Calendar * calendar)
+calculate_skew(Calendar *calendar)
 {
 //skew correction for month -  http://klausler.com/new-dayofweek.html
    int yearsfrom1900 = calendar->conf->view_year - 1900;
@@ -235,7 +235,7 @@ calculate_skew(Calendar * calendar)
 /
 *****************************************************/
 void
-calendar_add_dates(Calendar_Face * face, Calendar * calendar, int skew)
+calendar_add_dates(Calendar_Face *face, Calendar *calendar, int skew)
 {
    time_t now;
    struct tm date;
@@ -247,11 +247,9 @@ calendar_add_dates(Calendar_Face * face, Calendar * calendar, int skew)
    int Sun = 0;
    int Sat = 6;
 
-   if ((calendar->conf->view_year % 4 == 0 ) && 
-      !((calendar->conf->view_year % 100 == 0 ) && 
-      (calendar->conf->view_year % 1000 != 0 )))
+   if ((calendar->conf->view_year % 4 == 0) && !((calendar->conf->view_year % 100 == 0) && (calendar->conf->view_year % 1000 != 0)))
       NumDayMon[1] = 29;
-   
+
    snprintf(buf, sizeof(buf), "%d", DayOfMonth);
    switch (calendar->conf->DayofWeek_Start)
      {
@@ -297,8 +295,7 @@ calendar_add_dates(Calendar_Face * face, Calendar * calendar, int skew)
      }
    if (date.tm_mday == 1)
      {
-        edje_object_part_text_set(face->today_object[skew]->obj, "date-text",
-                                  buf);
+        edje_object_part_text_set(face->today_object[skew]->obj, "date-text", buf);
         evas_object_show(face->today_object[skew]->obj);
         evas_object_hide(face->weekend_object[skew]->obj);
         evas_object_hide(face->weekday_object[skew]->obj);
@@ -308,67 +305,46 @@ calendar_add_dates(Calendar_Face * face, Calendar * calendar, int skew)
         switch (skew)           //Place the 1st on the proper day
           {
           case 0:
-             if ((calendar->conf->DayofWeek_Start != 0)
-                 && (calendar->conf->DayofWeek_Start != 6))
-                edje_object_part_text_set(face->weekday_object[skew]->obj,
-                                          "date-text", buf);
+             if ((calendar->conf->DayofWeek_Start != 0) && (calendar->conf->DayofWeek_Start != 6))
+                edje_object_part_text_set(face->weekday_object[skew]->obj, "date-text", buf);
              else
-                edje_object_part_text_set(face->weekend_object[skew]->obj,
-                                          "date-text", buf);
+                edje_object_part_text_set(face->weekend_object[skew]->obj, "date-text", buf);
              break;
           case 1:
-             if ((calendar->conf->DayofWeek_Start != 5)
-                 && (calendar->conf->DayofWeek_Start != 6))
-                edje_object_part_text_set(face->weekday_object[skew]->obj,
-                                          "date-text", buf);
+             if ((calendar->conf->DayofWeek_Start != 5) && (calendar->conf->DayofWeek_Start != 6))
+                edje_object_part_text_set(face->weekday_object[skew]->obj, "date-text", buf);
              else
-                edje_object_part_text_set(face->weekend_object[skew]->obj,
-                                          "date-text", buf);
+                edje_object_part_text_set(face->weekend_object[skew]->obj, "date-text", buf);
              break;
           case 2:
-             if ((calendar->conf->DayofWeek_Start != 4)
-                 && (calendar->conf->DayofWeek_Start != 5))
-                edje_object_part_text_set(face->weekday_object[skew]->obj,
-                                          "date-text", buf);
+             if ((calendar->conf->DayofWeek_Start != 4) && (calendar->conf->DayofWeek_Start != 5))
+                edje_object_part_text_set(face->weekday_object[skew]->obj, "date-text", buf);
              else
-                edje_object_part_text_set(face->weekend_object[skew]->obj,
-                                          "date-text", buf);
+                edje_object_part_text_set(face->weekend_object[skew]->obj, "date-text", buf);
              break;
           case 3:
-             if ((calendar->conf->DayofWeek_Start != 3)
-                 && (calendar->conf->DayofWeek_Start != 4))
-                edje_object_part_text_set(face->weekday_object[skew]->obj,
-                                          "date-text", buf);
+             if ((calendar->conf->DayofWeek_Start != 3) && (calendar->conf->DayofWeek_Start != 4))
+                edje_object_part_text_set(face->weekday_object[skew]->obj, "date-text", buf);
              else
-                edje_object_part_text_set(face->weekend_object[skew]->obj,
-                                          "date-text", buf);
+                edje_object_part_text_set(face->weekend_object[skew]->obj, "date-text", buf);
              break;
           case 4:
-             if ((calendar->conf->DayofWeek_Start != 2)
-                 && (calendar->conf->DayofWeek_Start != 3))
-                edje_object_part_text_set(face->weekday_object[skew]->obj,
-                                          "date-text", buf);
+             if ((calendar->conf->DayofWeek_Start != 2) && (calendar->conf->DayofWeek_Start != 3))
+                edje_object_part_text_set(face->weekday_object[skew]->obj, "date-text", buf);
              else
-                edje_object_part_text_set(face->weekend_object[skew]->obj,
-                                          "date-text", buf);
+                edje_object_part_text_set(face->weekend_object[skew]->obj, "date-text", buf);
              break;
           case 5:
-             if ((calendar->conf->DayofWeek_Start != 1)
-                 && (calendar->conf->DayofWeek_Start != 2))
-                edje_object_part_text_set(face->weekday_object[skew]->obj,
-                                          "date-text", buf);
+             if ((calendar->conf->DayofWeek_Start != 1) && (calendar->conf->DayofWeek_Start != 2))
+                edje_object_part_text_set(face->weekday_object[skew]->obj, "date-text", buf);
              else
-                edje_object_part_text_set(face->weekend_object[skew]->obj,
-                                          "date-text", buf);
+                edje_object_part_text_set(face->weekend_object[skew]->obj, "date-text", buf);
              break;
           case 6:
-             if ((calendar->conf->DayofWeek_Start != 0)
-                 && (calendar->conf->DayofWeek_Start != 1))
-                edje_object_part_text_set(face->weekday_object[skew]->obj,
-                                          "date-text", buf);
+             if ((calendar->conf->DayofWeek_Start != 0) && (calendar->conf->DayofWeek_Start != 1))
+                edje_object_part_text_set(face->weekday_object[skew]->obj, "date-text", buf);
              else
-                edje_object_part_text_set(face->weekend_object[skew]->obj,
-                                          "date-text", buf);
+                edje_object_part_text_set(face->weekend_object[skew]->obj, "date-text", buf);
              break;
           default:
              break;
@@ -380,37 +356,31 @@ calendar_add_dates(Calendar_Face * face, Calendar * calendar, int skew)
 
    while (DayOfMonth < NumDayMon[calendar->conf->view_month])
      {
-        while ((c_col < 7)
-               && (DayOfMonth < NumDayMon[calendar->conf->view_month]))
+        while ((c_col < 7) && (DayOfMonth < NumDayMon[calendar->conf->view_month]))
           {
              DayOfMonth++;
              snprintf(buf, sizeof(buf), "%d", DayOfMonth);
              if ((DayOfMonth == date.tm_mday)
-                 && (calendar->conf->view_month == date.tm_mon)
-                 && (calendar->conf->view_year == (date.tm_year + 1900)))
+                 && (calendar->conf->view_month == date.tm_mon) && (calendar->conf->view_year == (date.tm_year + 1900)))
                {
-                  edje_object_part_text_set(face->today_object[counter]->obj,
-                                            "date-text", buf);
+                  edje_object_part_text_set(face->today_object[counter]->obj, "date-text", buf);
                   evas_object_show(face->today_object[counter]->obj);
                   evas_object_hide(face->weekend_object[counter]->obj);
                   evas_object_hide(face->weekday_object[counter]->obj);
                }
              else if (((counter % 7) == Sat) || ((counter % 7) == Sun))
                {
-                  edje_object_part_text_set(face->weekend_object[counter]->obj,
-                                            "date-text", buf);
+                  edje_object_part_text_set(face->weekend_object[counter]->obj, "date-text", buf);
                }
              else
-                edje_object_part_text_set(face->weekday_object[counter]->obj,
-                                          "date-text", buf);
+                edje_object_part_text_set(face->weekday_object[counter]->obj, "date-text", buf);
              c_col++;
              counter++;
           }                     //End inside while
         c_col = 0;
         row++;
         // 6th week dates..
-        if ((counter >= 35)
-            && (DayOfMonth <= NumDayMon[calendar->conf->view_month]))
+        if ((counter >= 35) && (DayOfMonth <= NumDayMon[calendar->conf->view_month]))
           {
              DayOfMonth++;
              counter = counter - 7;
@@ -420,27 +390,22 @@ calendar_add_dates(Calendar_Face * face, Calendar * calendar, int skew)
              while (DayOfMonth <= NumDayMon[calendar->conf->view_month])
                {
                   week_prior = DayOfMonth - 7;
-                  snprintf(DateBox, sizeof(DateBox), "%i/%i", week_prior,
-                           DayOfMonth);
+                  snprintf(DateBox, sizeof(DateBox), "%i/%i", week_prior, DayOfMonth);
                   if ((DayOfMonth == date.tm_mday)
-                      && (calendar->conf->view_month == date.tm_mon)
-                      && (calendar->conf->view_year == date.tm_year + 1900))
+                      && (calendar->conf->view_month == date.tm_mon) && (calendar->conf->view_year == date.tm_year + 1900))
                     {
-                       edje_object_part_text_set(face->today_object[counter]->
-                                                 obj, "date-text", DateBox);
+                       edje_object_part_text_set(face->today_object[counter]->obj, "date-text", DateBox);
                        evas_object_show(face->today_object[counter]->obj);
                        evas_object_hide(face->weekend_object[counter]->obj);
                        evas_object_hide(face->weekday_object[counter]->obj);
                     }
                   else if (((counter % 7) == Sat) || ((counter % 7) == Sun))
                     {
-                       edje_object_part_text_set(face->weekend_object[counter]->
-                                                 obj, "date-text", DateBox);
+                       edje_object_part_text_set(face->weekend_object[counter]->obj, "date-text", DateBox);
                     }
                   else
                     {
-                       edje_object_part_text_set(face->weekday_object[counter]->
-                                                 obj, "date-text", DateBox);
+                       edje_object_part_text_set(face->weekday_object[counter]->obj, "date-text", DateBox);
                     }
                   counter++;
                   DayOfMonth++;

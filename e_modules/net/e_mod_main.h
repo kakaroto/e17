@@ -8,12 +8,12 @@ typedef struct _Config_Face Config_Face;
 typedef struct _Net Net;
 typedef struct _Net_Face Net_Face;
 
-struct _Config 
+struct _Config
 {
    Evas_List *faces;
 };
 
-struct _Config_Face 
+struct _Config_Face
 {
    unsigned char enabled;
    char *device;
@@ -22,7 +22,7 @@ struct _Config_Face
    int show_graph;
 };
 
-struct _Net 
+struct _Net
 {
    E_Menu *config_menu;
    Evas_List *faces;
@@ -30,7 +30,7 @@ struct _Net
    E_Config_Dialog *cfd;
 };
 
-struct _Net_Face 
+struct _Net_Face
 {
    Evas *evas;
    E_Container *con;
@@ -38,27 +38,27 @@ struct _Net_Face
    Net *net;
    Evas_List *old_rx, *old_tx;
    Config_Face *conf;
-   
+
    Evas_Object *net_obj;
    Evas_Object *event_obj;
    Evas_Object *chart_obj;
    Evas_Object *rtxt_obj;
    Evas_Object *ttxt_obj;
-   
+
    Ecore_Timer *monitor;
-   
+
    E_Gadman_Client *gmc;
 };
 
 EAPI extern E_Module_Api e_modapi;
 
-EAPI void *e_modapi_init     (E_Module *m);
-EAPI int   e_modapi_shutdown (E_Module *m);
-EAPI int   e_modapi_save     (E_Module *m);
-EAPI int   e_modapi_info     (E_Module *m);
-EAPI int   e_modapi_about    (E_Module *m);
-EAPI int   e_modapi_config   (E_Module *m);
+EAPI void *e_modapi_init(E_Module *m);
+EAPI int e_modapi_shutdown(E_Module *m);
+EAPI int e_modapi_save(E_Module *m);
+EAPI int e_modapi_info(E_Module *m);
+EAPI int e_modapi_about(E_Module *m);
+EAPI int e_modapi_config(E_Module *m);
 
-void      _net_face_graph_clear(Net_Face *nf);
+void _net_face_graph_clear(Net_Face *nf);
 
 #endif

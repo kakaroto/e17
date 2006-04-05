@@ -10,7 +10,7 @@
 /
 *****************************************************/ 
 void 
-calendar_face_set_colors(Calendar * calendar) 
+calendar_face_set_colors(Calendar *calendar) 
 {
    
 char read_line[120];
@@ -36,27 +36,28 @@ char ValidName7[] = { "YearMon_numb_colors" };
 char ValidName8[] = { "DayWeek_text_colors" };
    
 
-c_array * TBC_Ptr = calendar->conf->Today_s_back_colors->data;
+c_array *TBC_Ptr = calendar->conf->Today_s_back_colors->data;
    
-c_array * TTC_Ptr = calendar->conf->Today_s_text_colors->data;
+c_array *TTC_Ptr = calendar->conf->Today_s_text_colors->data;
    
-c_array * WeTC_Ptr = calendar->conf->Weekend_text_colors->data;
+c_array *WeTC_Ptr = calendar->conf->Weekend_text_colors->data;
    
-c_array * WdTC_Ptr = calendar->conf->WeekDay_text_colors->data;
+c_array *WdTC_Ptr = calendar->conf->WeekDay_text_colors->data;
    
-c_array * WeBC_Ptr = calendar->conf->Weekend_back_colors->data;
+c_array *WeBC_Ptr = calendar->conf->Weekend_back_colors->data;
    
-c_array * WdBC_Ptr = calendar->conf->WeekDay_back_colors->data;
+c_array *WdBC_Ptr = calendar->conf->WeekDay_back_colors->data;
    
-c_array * YNC_Ptr = calendar->conf->YearMon_numb_colors->data;
+c_array *YNC_Ptr = calendar->conf->YearMon_numb_colors->data;
    
-c_array * DTC_Ptr = calendar->conf->DayWeek_text_colors->data;
+c_array *DTC_Ptr = calendar->conf->DayWeek_text_colors->data;
    
 
 char buff[20];
 
    
-FILE * fp;
+FILE *fp;
+
    
 
 fp = fopen(calendar->conf->ConfigFile_path, "r");
@@ -71,8 +72,7 @@ while ((fgets(read_line, sizeof(read_line), fp)))
              
 sscanf(read_line, "%20s %d %d %d %d %d %d %d %d %d %d %d %d",
                      
-buff, &r, &g, &b, &a, &r1, &g1, &b1, &a1, &r2, &g2, &b2,
-                     &a2);
+buff, &r, &g, &b, &a, &r1, &g1, &b1, &a1, &r2, &g2, &b2, &a2);
              
 if (strncmp(buff, ValidName1, 19) == 0)
                 
@@ -587,28 +587,29 @@ DTC_Ptr->alpha_s = 0;
 /
 *****************************************************/ 
    void
-update_colors(Calendar * calendar, Calendar_Face * face) 
+update_colors(Calendar *calendar, Calendar_Face *face) 
 {
    
 int x;
 
    
 
-c_array * TBC_Ptr = calendar->conf->Today_s_back_colors->data;
+c_array *TBC_Ptr = calendar->conf->Today_s_back_colors->data;
    
-c_array * TTC_Ptr = calendar->conf->Today_s_text_colors->data;
+c_array *TTC_Ptr = calendar->conf->Today_s_text_colors->data;
    
-c_array * WeTC_Ptr = calendar->conf->Weekend_text_colors->data;
+c_array *WeTC_Ptr = calendar->conf->Weekend_text_colors->data;
    
-c_array * WdTC_Ptr = calendar->conf->WeekDay_text_colors->data;
+c_array *WdTC_Ptr = calendar->conf->WeekDay_text_colors->data;
    
-c_array * WeBC_Ptr = calendar->conf->Weekend_back_colors->data;
+c_array *WeBC_Ptr = calendar->conf->Weekend_back_colors->data;
    
-c_array * WdBC_Ptr = calendar->conf->WeekDay_back_colors->data;
+c_array *WdBC_Ptr = calendar->conf->WeekDay_back_colors->data;
    
-c_array * YNC_Ptr = calendar->conf->YearMon_numb_colors->data;
+c_array *YNC_Ptr = calendar->conf->YearMon_numb_colors->data;
    
-c_array * DTC_Ptr = calendar->conf->DayWeek_text_colors->data;
+c_array *DTC_Ptr = calendar->conf->DayWeek_text_colors->data;
+
    
 //set weekday colors
       for (x = 0; x < 35; x++)
@@ -623,8 +624,7 @@ WdBC_Ptr->green,
 WdBC_Ptr->green_o,
                                      WdBC_Ptr->blue_o, WdBC_Ptr->alpha_o,
                                      WdBC_Ptr->red_s, 
-WdBC_Ptr->green_s,
-                                     WdBC_Ptr->blue_s, WdBC_Ptr->alpha_s);
+WdBC_Ptr->green_s, WdBC_Ptr->blue_s, WdBC_Ptr->alpha_s);
         
 
 edje_object_color_class_set(face->weekday_object[x]->obj,
@@ -634,10 +634,8 @@ WdTC_Ptr->green, WdTC_Ptr->blue,
                                       WdTC_Ptr->alpha, WdTC_Ptr->red_o,
                                       
 WdTC_Ptr->green_o, WdTC_Ptr->blue_o,
-                                      WdTC_Ptr->alpha_o, WdTC_Ptr->red_s,
-                                      
-WdTC_Ptr->green_s, WdTC_Ptr->blue_s,
-                                      WdTC_Ptr->alpha_s);
+                                      WdTC_Ptr->alpha_o, WdTC_Ptr->red_s, 
+WdTC_Ptr->green_s, WdTC_Ptr->blue_s, WdTC_Ptr->alpha_s);
      
 
 }
@@ -654,10 +652,8 @@ WeTC_Ptr->green, WeTC_Ptr->blue,
                                      WeTC_Ptr->alpha, WeTC_Ptr->red_o,
                                      
 WeTC_Ptr->green_o, WeTC_Ptr->blue_o,
-                                     WeTC_Ptr->alpha_o, WeTC_Ptr->red_s,
-                                     
-WeTC_Ptr->green_s, WeTC_Ptr->blue_s,
-                                     WeTC_Ptr->alpha_s);
+                                     WeTC_Ptr->alpha_o, WeTC_Ptr->red_s, 
+WeTC_Ptr->green_s, WeTC_Ptr->blue_s, WeTC_Ptr->alpha_s);
         
 
 edje_object_color_class_set(face->weekend_object[x]->obj,
@@ -667,10 +663,8 @@ WeBC_Ptr->green, WeBC_Ptr->blue,
                                       WeBC_Ptr->alpha, WeBC_Ptr->red_o,
                                       
 WeBC_Ptr->green_o, WeBC_Ptr->blue_o,
-                                      WeBC_Ptr->alpha_o, WeBC_Ptr->red_s,
-                                      
-WeBC_Ptr->green_s, WeBC_Ptr->blue_s,
-                                      WeBC_Ptr->alpha_s);
+                                      WeBC_Ptr->alpha_o, WeBC_Ptr->red_s, 
+WeBC_Ptr->green_s, WeBC_Ptr->blue_s, WeBC_Ptr->alpha_s);
      
 }
    
@@ -687,8 +681,7 @@ TTC_Ptr->green,
 TTC_Ptr->green_o,
                                      TTC_Ptr->blue_o, TTC_Ptr->alpha_o,
                                      TTC_Ptr->red_s, 
-TTC_Ptr->green_s,
-                                     TTC_Ptr->blue_s, TTC_Ptr->alpha_s);
+TTC_Ptr->green_s, TTC_Ptr->blue_s, TTC_Ptr->alpha_s);
         
 
 edje_object_color_class_set(face->today_object[x]->obj, "day_colors",
@@ -699,8 +692,7 @@ TBC_Ptr->green,
 TBC_Ptr->green_o,
                                       TBC_Ptr->blue_o, TBC_Ptr->alpha_o,
                                       TBC_Ptr->red_s, 
-TBC_Ptr->green_s,
-                                      TBC_Ptr->blue_s, TBC_Ptr->alpha_s);
+TBC_Ptr->green_s, TBC_Ptr->blue_s, TBC_Ptr->alpha_s);
      
 }
    
@@ -712,9 +704,7 @@ YNC_Ptr->red, YNC_Ptr->green, YNC_Ptr->blue,
 YNC_Ptr->red_o,
                                   YNC_Ptr->green_o, YNC_Ptr->blue_o,
                                   YNC_Ptr->alpha_o, 
-YNC_Ptr->red_s,
-                                  YNC_Ptr->green_s, YNC_Ptr->blue_s,
-                                  YNC_Ptr->alpha_s);
+YNC_Ptr->red_s, YNC_Ptr->green_s, YNC_Ptr->blue_s, YNC_Ptr->alpha_s);
    
 
 edje_object_color_class_set(face->label_object, "Day_colors", DTC_Ptr->red,
@@ -724,8 +714,7 @@ DTC_Ptr->green, DTC_Ptr->blue, DTC_Ptr->alpha,
 DTC_Ptr->green_o,
                                  DTC_Ptr->blue_o, DTC_Ptr->alpha_o,
                                  DTC_Ptr->red_s, 
-DTC_Ptr->green_s,
-                                 DTC_Ptr->blue_s, DTC_Ptr->alpha_s);
+DTC_Ptr->green_s, DTC_Ptr->blue_s, DTC_Ptr->alpha_s);
 
 }
 

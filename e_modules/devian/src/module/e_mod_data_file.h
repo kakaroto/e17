@@ -21,15 +21,15 @@ typedef struct _Data_File_Block Data_File_Block;
 
 struct _Data_File_Block
 {
-  char *buf;
-  int size;
-  Ecore_List *retlines; /** <Position of the retlines in the buffer */
+   char *buf;
+   int size;
+   Ecore_List *retlines;/** <Position of the retlines in the buffer */
 };
 
-int DEVIANF(data_file_add)(Source_File *source);
-void DEVIANF(data_file_del)(Source_File *source);
+int DEVIANF(data_file_add) (Source_File *source);
+void DEVIANF(data_file_del) (Source_File *source);
 
-int DEVIANF(data_file_update)(Source_File *source, int option);
+int DEVIANF(data_file_update) (Source_File *source, int option);
 
 #endif
 #endif

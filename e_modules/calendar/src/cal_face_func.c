@@ -9,7 +9,7 @@
 /
 *****************************************************/
 void
-calendar_face_start(Calendar * calendar)
+calendar_face_start(Calendar *calendar)
 {
    Evas_List *managers, *l2, *l;
    E_Menu_Item *mi;
@@ -48,7 +48,7 @@ calendar_face_start(Calendar * calendar)
 /
 *****************************************************/
 Calendar_Face *
-calendar_face_new(E_Container *con, Calendar * calendar)
+calendar_face_new(E_Container *con, Calendar *calendar)
 {
    // Setup date finding stuff
    time_t now;
@@ -59,9 +59,10 @@ calendar_face_new(E_Container *con, Calendar * calendar)
    int check, i;
 
    Calendar_Face *face;
-   E_Gadman_Policy  policy;
+   E_Gadman_Policy policy;
 
    face = E_NEW(Calendar_Face, 1);
+
    if (!face)
       return NULL;
    face->con = con;
@@ -71,38 +72,28 @@ calendar_face_new(E_Container *con, Calendar * calendar)
 
    // Make calendar object
    face->calendar_object = edje_object_add(con->bg_evas);
-   check =
-      edje_object_file_set(face->calendar_object,
-                           PACKAGE_DATA_DIR "/calendar.edj", "default");
+   check = edje_object_file_set(face->calendar_object, PACKAGE_DATA_DIR "/calendar.edj", "default");
    evas_object_show(face->calendar_object);
 
    //Make prev_year object
    face->prev_year = edje_object_add(con->bg_evas);
-   check =
-      edje_object_file_set(face->prev_year, calendar->conf->arrow_path, "PY");
-   evas_object_event_callback_add(face->prev_year, EVAS_CALLBACK_MOUSE_DOWN,
-                                  calendar_face_prev_year, calendar);
+   check = edje_object_file_set(face->prev_year, calendar->conf->arrow_path, "PY");
+   evas_object_event_callback_add(face->prev_year, EVAS_CALLBACK_MOUSE_DOWN, calendar_face_prev_year, calendar);
 
    //Make next_year object
    face->next_year = edje_object_add(con->bg_evas);
-   check =
-      edje_object_file_set(face->next_year, calendar->conf->arrow_path, "NY");
-   evas_object_event_callback_add(face->next_year, EVAS_CALLBACK_MOUSE_DOWN,
-                                  calendar_face_next_year, calendar);
+   check = edje_object_file_set(face->next_year, calendar->conf->arrow_path, "NY");
+   evas_object_event_callback_add(face->next_year, EVAS_CALLBACK_MOUSE_DOWN, calendar_face_next_year, calendar);
 
    //Make prev_month object
    face->prev_month = edje_object_add(con->bg_evas);
-   check =
-      edje_object_file_set(face->prev_month, calendar->conf->arrow_path, "PM");
-   evas_object_event_callback_add(face->prev_month, EVAS_CALLBACK_MOUSE_DOWN,
-                                  calendar_face_prev_month, calendar);
+   check = edje_object_file_set(face->prev_month, calendar->conf->arrow_path, "PM");
+   evas_object_event_callback_add(face->prev_month, EVAS_CALLBACK_MOUSE_DOWN, calendar_face_prev_month, calendar);
 
    //Make next_month object
    face->next_month = edje_object_add(con->bg_evas);
-   check =
-      edje_object_file_set(face->next_month, calendar->conf->arrow_path, "NM");
-   evas_object_event_callback_add(face->next_month, EVAS_CALLBACK_MOUSE_DOWN,
-                                  calendar_face_next_month, calendar);
+   check = edje_object_file_set(face->next_month, calendar->conf->arrow_path, "NM");
+   evas_object_event_callback_add(face->next_month, EVAS_CALLBACK_MOUSE_DOWN, calendar_face_next_month, calendar);
 
    //swallow and show arrows on calendar object
    edje_object_part_swallow(face->calendar_object, "PM", face->prev_month);
@@ -117,33 +108,23 @@ calendar_face_new(E_Container *con, Calendar * calendar)
    //create first table that will be swallowed into edje
    face->table_object = e_table_add(con->bg_evas);
    e_table_homogenous_set(face->table_object, 1);       // 1 = homo, 0 = nonhomo
-   edje_object_part_swallow(face->calendar_object, "swallow",
-                            face->table_object);
+   edje_object_part_swallow(face->calendar_object, "swallow", face->table_object);
    evas_object_show(face->table_object);
 
    //Make topimage object
    face->topimage_object = edje_object_add(con->bg_evas);
-   check =
-      edje_object_file_set(face->topimage_object,
-                           calendar->conf->TopImage_path, "default");
+   check = edje_object_file_set(face->topimage_object, calendar->conf->TopImage_path, "default");
    //Make background object
    face->background_object = edje_object_add(con->bg_evas);
-   check =
-      edje_object_file_set(face->background_object,
-                           calendar->conf->Background_path, "back");
+   check = edje_object_file_set(face->background_object, calendar->conf->Background_path, "back");
 
    //Make label object
    face->label_object = edje_object_add(con->bg_evas);
    if (!calendar->conf->UserCS)
-      check =
-         edje_object_file_set(face->label_object, calendar->conf->label_path,
-                              "default");
+      check = edje_object_file_set(face->label_object, calendar->conf->label_path, "default");
    else
-      check =
-         edje_object_file_set(face->label_object, calendar->conf->label_path,
-                              "user");
-   set_day_label(face->label_object, calendar->conf->DayofWeek_Start,
-                 calendar->conf->view_month, calendar->conf->view_year);
+      check = edje_object_file_set(face->label_object, calendar->conf->label_path, "user");
+   set_day_label(face->label_object, calendar->conf->DayofWeek_Start, calendar->conf->view_month, calendar->conf->view_year);
 
    //pack table based on if top image is used or not
    if (calendar->conf->ImageYes == 0)
@@ -151,31 +132,26 @@ calendar_face_new(E_Container *con, Calendar * calendar)
         //Setup Top Image -- Puts topimage in top 3 rows
 
         e_table_pack(face->table_object, face->topimage_object, 0, 0, 1, 3);
-        e_table_pack_options_set(face->topimage_object, 1, 1, 1, 1, 0.5, 0.5, 0,
-                                 0, -1, -1);
+        e_table_pack_options_set(face->topimage_object, 1, 1, 1, 1, 0.5, 0.5, 0, 0, -1, -1);
         evas_object_show(face->topimage_object);
         // Puts label row in 4 row
         e_table_pack(face->table_object, face->label_object, 0, 4, 1, 1);
-        e_table_pack_options_set(face->label_object, 1, 1, 1, 1, 0.5, 0.5, 0, 0,
-                                 -1, -1);
+        e_table_pack_options_set(face->label_object, 1, 1, 1, 1, 0.5, 0.5, 0, 0, -1, -1);
         evas_object_show(face->label_object);
         // Puts background in rows 5 - 9
         e_table_pack(face->table_object, face->background_object, 0, 5, 1, 5);
-        e_table_pack_options_set(face->background_object, 1, 1, 1, 1, 0.5, 0.5,
-                                 0, 0, -1, -1);
+        e_table_pack_options_set(face->background_object, 1, 1, 1, 1, 0.5, 0.5, 0, 0, -1, -1);
         evas_object_show(face->background_object);
      }
    else
      {
         // Puts label row in 1 row
         e_table_pack(face->table_object, face->label_object, 0, 0, 1, 1);
-        e_table_pack_options_set(face->label_object, 1, 1, 1, 1, 0.5, 0.5, 0, 0,
-                                 -1, -1);
+        e_table_pack_options_set(face->label_object, 1, 1, 1, 1, 0.5, 0.5, 0, 0, -1, -1);
         evas_object_show(face->label_object);
         //Setup background -- put it in the back of the table (2nd row as no topimage)
         e_table_pack(face->table_object, face->background_object, 0, 1, 1, 5);
-        e_table_pack_options_set(face->background_object, 1, 1, 1, 1, 0.5, 0.5,
-                                 0, 0, -1, -1);
+        e_table_pack_options_set(face->background_object, 1, 1, 1, 1, 0.5, 0.5, 0, 0, -1, -1);
         evas_object_show(face->background_object);
      }
 
@@ -185,58 +161,46 @@ calendar_face_new(E_Container *con, Calendar * calendar)
      {
         //make weekend objects
         face->weekend_object[i] = E_NEW(weekend_face, 1);
+
         face->weekend_object[i]->menu = face->menu;
         face->weekend_object[i]->obj = edje_object_add(con->bg_evas);
         if (!calendar->conf->UserCS)
-           check = edje_object_file_set(face->weekend_object[i]->obj,
-                                        calendar->conf->weekend_path,
-                                        "default");
+           check = edje_object_file_set(face->weekend_object[i]->obj, calendar->conf->weekend_path, "default");
         else
-           check = edje_object_file_set(face->weekend_object[i]->obj,
-                                        calendar->conf->weekend_path, "user");
+           check = edje_object_file_set(face->weekend_object[i]->obj, calendar->conf->weekend_path, "user");
         evas_object_event_callback_add(face->weekend_object[i]->obj,
-                                       EVAS_CALLBACK_MOUSE_DOWN,
-                                       calendar_face_cb_mouse_down,
-                                       face->weekend_object[i]);
+                                       EVAS_CALLBACK_MOUSE_DOWN, calendar_face_cb_mouse_down, face->weekend_object[i]);
         calendar_face_menu_day(face->weekend_object[i], calendar);
         //make weekday objects
         face->weekday_object[i] = E_NEW(weekday_face, 1);
+
         face->weekday_object[i]->menu = face->menu;
         face->weekday_object[i]->obj = edje_object_add(con->bg_evas);
         if (!calendar->conf->UserCS)
-           check = edje_object_file_set(face->weekday_object[i]->obj,
-                                        calendar->conf->weekday_path,
-                                        "default");
+           check = edje_object_file_set(face->weekday_object[i]->obj, calendar->conf->weekday_path, "default");
         else
-           check = edje_object_file_set(face->weekday_object[i]->obj,
-                                        calendar->conf->weekday_path, "user");
+           check = edje_object_file_set(face->weekday_object[i]->obj, calendar->conf->weekday_path, "user");
         evas_object_event_callback_add(face->weekday_object[i]->obj,
-                                       EVAS_CALLBACK_MOUSE_DOWN,
-                                       calendar_face_cb_mouse_down,
-                                       face->weekday_object[i]);
+                                       EVAS_CALLBACK_MOUSE_DOWN, calendar_face_cb_mouse_down, face->weekday_object[i]);
         calendar_face_menu_day(face->weekday_object[i], calendar);
         //make today objects
         face->today_object[i] = E_NEW(today_face, 1);
+
         face->today_object[i]->menu = face->menu;
         face->today_object[i]->obj = edje_object_add(con->bg_evas);
         if (!calendar->conf->UserCS)
-           check = edje_object_file_set(face->today_object[i]->obj,
-                                        calendar->conf->today_path, "default");
+           check = edje_object_file_set(face->today_object[i]->obj, calendar->conf->today_path, "default");
         else
-           check = edje_object_file_set(face->today_object[i]->obj,
-                                        calendar->conf->today_path, "user");
+           check = edje_object_file_set(face->today_object[i]->obj, calendar->conf->today_path, "user");
         evas_object_event_callback_add(face->today_object[i]->obj,
-                                       EVAS_CALLBACK_MOUSE_DOWN,
-                                       calendar_face_cb_mouse_down,
-                                       face->today_object[i]);
+                                       EVAS_CALLBACK_MOUSE_DOWN, calendar_face_cb_mouse_down, face->today_object[i]);
         calendar_face_menu_day(face->today_object[i], calendar);
      }
 
    /* setup calendar object */
    face->o_calendar_table = e_table_add(con->bg_evas);
    e_table_homogenous_set(face->o_calendar_table, 1);
-   edje_object_part_swallow(face->background_object, "swallow",
-                            face->o_calendar_table);
+   edje_object_part_swallow(face->background_object, "swallow", face->o_calendar_table);
    evas_object_show(face->o_calendar_table);
    //Time to do some packing....
    int x = 0;
@@ -248,20 +212,14 @@ calendar_face_new(E_Container *con, Calendar * calendar)
      {
         for (; i < 7; i++)
           {
-             e_table_pack(face->o_calendar_table, face->weekend_object[x]->obj,
-                          i, row, 1, 1);
-             e_table_pack_options_set(face->weekend_object[x]->obj, 1, 1, 1, 1,
-                                      0.5, 0.5, 0, 0, -1, -1);
+             e_table_pack(face->o_calendar_table, face->weekend_object[x]->obj, i, row, 1, 1);
+             e_table_pack_options_set(face->weekend_object[x]->obj, 1, 1, 1, 1, 0.5, 0.5, 0, 0, -1, -1);
 
-             e_table_pack(face->o_calendar_table, face->weekday_object[x]->obj,
-                          i, row, 1, 1);
-             e_table_pack_options_set(face->weekday_object[x]->obj, 1, 1, 1, 1,
-                                      0.5, 0.5, 0, 0, -1, -1);
+             e_table_pack(face->o_calendar_table, face->weekday_object[x]->obj, i, row, 1, 1);
+             e_table_pack_options_set(face->weekday_object[x]->obj, 1, 1, 1, 1, 0.5, 0.5, 0, 0, -1, -1);
 
-             e_table_pack(face->o_calendar_table, face->today_object[x]->obj, i,
-                          row, 1, 1);
-             e_table_pack_options_set(face->today_object[x]->obj, 1, 1, 1, 1,
-                                      0.5, 0.5, 0, 0, -1, -1);
+             e_table_pack(face->o_calendar_table, face->today_object[x]->obj, i, row, 1, 1);
+             e_table_pack_options_set(face->today_object[x]->obj, 1, 1, 1, 1, 0.5, 0.5, 0, 0, -1, -1);
              x++;
           }
         i = 0;
@@ -272,20 +230,16 @@ calendar_face_new(E_Container *con, Calendar * calendar)
 
    /* setup gadman */
    face->gmc = e_gadman_client_new(con->gadman);
-   e_gadman_client_domain_set(face->gmc, "module.calendar",
-                              increment_cal_count());
-   policy =  E_GADMAN_POLICY_ANYWHERE | E_GADMAN_POLICY_HMOVE |
-             E_GADMAN_POLICY_VMOVE | E_GADMAN_POLICY_HSIZE |
-             E_GADMAN_POLICY_VSIZE;
+   e_gadman_client_domain_set(face->gmc, "module.calendar", increment_cal_count());
+   policy = E_GADMAN_POLICY_ANYWHERE | E_GADMAN_POLICY_HMOVE |
+      E_GADMAN_POLICY_VMOVE | E_GADMAN_POLICY_HSIZE | E_GADMAN_POLICY_VSIZE;
 
    e_gadman_client_policy_set(face->gmc, policy);
-
 
    //e_gadman_client_min_size_set(face->gmc, 14, 7);
    e_gadman_client_align_set(face->gmc, 1.0, 1.0);
    e_gadman_client_resize(face->gmc, 240, 320);
-   e_gadman_client_change_func_set(face->gmc, calendar_face_cb_gmc_change,
-                                   face);
+   e_gadman_client_change_func_set(face->gmc, calendar_face_cb_gmc_change, face);
    e_gadman_client_load(face->gmc);
 
    evas_event_thaw(con->bg_evas);
@@ -310,8 +264,7 @@ calendar_face_new(E_Container *con, Calendar * calendar)
 /
 *****************************************************/
 void
-calendar_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
-                            void *event_info)
+calendar_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    day_face *face;
    Evas_Event_Mouse_Down *ev;
@@ -333,8 +286,7 @@ calendar_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
    if (ev->button == 3)
      {
         e_menu_activate_mouse(face->menu, e_zone_current_get(con),
-                              ev->output.x, ev->output.y, 1, 1,
-                              E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
+                              ev->output.x, ev->output.y, 1, 1, E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
         e_util_container_fake_mouse_up_all_later(con);
      }
 
@@ -346,8 +298,7 @@ calendar_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
 /
 *****************************************************/
 void
-calendar_face_prev_month(void *data, Evas *e, Evas_Object *obj,
-                         void *event_info)
+calendar_face_prev_month(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Calendar *calendar;
 
@@ -397,8 +348,7 @@ calendar_face_next_year(void *data, Evas *e, Evas_Object *obj, void *event_info)
 /
 *****************************************************/
 void
-calendar_face_next_month(void *data, Evas *e, Evas_Object *obj,
-                         void *event_info)
+calendar_face_next_month(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Calendar *calendar;
 
@@ -435,8 +385,7 @@ calendar_face_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi)
 /
 *****************************************************/
 void
-calendar_face_cb_gmc_change(void *data, E_Gadman_Client *gmc,
-                            E_Gadman_Change change)
+calendar_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change)
 {
    Calendar_Face *face;
    Evas_Coord x, y, w, h;
@@ -471,7 +420,7 @@ calendar_face_cb_gmc_change(void *data, E_Gadman_Client *gmc,
 /
 *****************************************************/
 void
-calendar_face_menu_new(Calendar_Face * face, Calendar * calendar)
+calendar_face_menu_new(Calendar_Face *face, Calendar *calendar)
 {
    E_Menu_Item *mi;
 
@@ -495,7 +444,7 @@ calendar_face_menu_new(Calendar_Face * face, Calendar * calendar)
 /
 *****************************************************/
 void
-calendar_face_menu_day(day_face * face, Calendar * calendar)
+calendar_face_menu_day(day_face *face, Calendar *calendar)
 {
    E_Menu_Item *mi;
 
@@ -533,7 +482,7 @@ calendar_face_menu_day(day_face * face, Calendar * calendar)
 /
 *****************************************************/
 void
-calendar_face_free(Calendar_Face * face)
+calendar_face_free(Calendar_Face *face)
 {
    int i = 0;
 

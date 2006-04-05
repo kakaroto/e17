@@ -5,82 +5,86 @@
 #include <e_mod_mixer.h>
 #include <e_mod_util.h>
 
-int e_volume_mixer_close(Volume* volume, Mixer* mixer)
+int
+e_volume_mixer_close(Volume *volume, Mixer *mixer)
 {
-	Evas_List *l;
+   Evas_List *l;
 
-	l = evas_list_find_list(volume->mixers, mixer);
-	if(!l)
-		return 0;
+   l = evas_list_find_list(volume->mixers, mixer);
+   if (!l)
+      return 0;
 
-	mixer_close(mixer);
+   mixer_close(mixer);
 
-	volume->mixers = evas_list_remove_list(volume->mixers, l);
+   volume->mixers = evas_list_remove_list(volume->mixers, l);
 
-	return 0;
+   return 0;
 }
 
-int e_volume_mixer_ref(Volume* volume, Mixer* mixer)
+int
+e_volume_mixer_ref(Volume *volume, Mixer *mixer)
 {
-	Evas_List *l;
-	int i;
+   Evas_List *l;
+   int i;
 
-	l = evas_list_find_list(volume->mixers, mixer);
-	if(!l)
-		return 0;
+   l = evas_list_find_list(volume->mixers, mixer);
+   if (!l)
+      return 0;
 
-	i = mixer_ref(mixer);
+   i = mixer_ref(mixer);
 
-	return i;
+   return i;
 }
 
-int e_volume_mixer_unref(Volume* volume, Mixer* mixer)
+int
+e_volume_mixer_unref(Volume *volume, Mixer *mixer)
 {
-	Evas_List *l;
-	int i;
+   Evas_List *l;
+   int i;
 
-	l = evas_list_find_list(volume->mixers, mixer);
-	if(!l)
-		return 0;
+   l = evas_list_find_list(volume->mixers, mixer);
+   if (!l)
+      return 0;
 
-	i = mixer_unref(mixer);
+   i = mixer_unref(mixer);
 
-	return i;
+   return i;
 }
 
-int e_volume_mixer_unref_close(Volume* volume, Mixer* mixer)
+int
+e_volume_mixer_unref_close(Volume *volume, Mixer *mixer)
 {
-	Evas_List *l;
-	int i;
+   Evas_List *l;
+   int i;
 
-	l = evas_list_find_list(volume->mixers, mixer);
-	if(!l)
-		return 0;
+   l = evas_list_find_list(volume->mixers, mixer);
+   if (!l)
+      return 0;
 
-	if((i = mixer_unref_close(mixer)) == 0)
-		volume->mixers = evas_list_remove_list(volume->mixers, l);
+   if ((i = mixer_unref_close(mixer)) == 0)
+      volume->mixers = evas_list_remove_list(volume->mixers, l);
 
-	return i;
+   return i;
 }
 
-Mixer* e_volume_mixer_open(Volume* volume, Mixer_Name* name)
+Mixer *
+e_volume_mixer_open(Volume *volume, Mixer_Name *name)
 {
-	Mixer* mixer;
-	/* First try to check if mixer already exists */
-	mixer = e_util_search_mixer_by_name(volume->mixers, name);
+   Mixer *mixer;
 
-	if(!mixer)
-	{
-		Mixer_System* ms = NULL;
+   /* First try to check if mixer already exists */
+   mixer = e_util_search_mixer_by_name(volume->mixers, name);
 
-		mixer = mixer_open(&ms, name->system_name, name->mixer_id);
-		if(mixer)
-			volume->mixers = 
-				evas_list_append(volume->mixers, mixer);
+   if (!mixer)
+     {
+        Mixer_System *ms = NULL;
 
-		mixer_set_callback(mixer, (void (*)())e_volume_mixers_update, volume);
-	}
+        mixer = mixer_open(&ms, name->system_name, name->mixer_id);
+        if (mixer)
+           volume->mixers = evas_list_append(volume->mixers, mixer);
 
+        mixer_set_callback(mixer, (void (*)())e_volume_mixers_update, volume);
+     }
 
-	return mixer;
+   return mixer;
 }

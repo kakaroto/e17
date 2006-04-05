@@ -12,14 +12,10 @@ struct _E_Config_Dialog_Data
 /* Protos */
 static void *_create_data(E_Config_Dialog *cfd);
 static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
-static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas,
-                                          E_Config_Dialog_Data *cfdata);
-static int _basic_apply_data(E_Config_Dialog *cfd,
-                             E_Config_Dialog_Data *cfdata);
-static Evas_Object *_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas,
-                                             E_Config_Dialog_Data *cfdata);
-static int _advanced_apply_data(E_Config_Dialog *cfd,
-                                E_Config_Dialog_Data *cfdata);
+static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
+static int _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static Evas_Object *_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
+static int _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 static void _fill_data(Flame *f, E_Config_Dialog_Data *cfdata);
 
 void
@@ -49,6 +45,7 @@ _create_data(E_Config_Dialog *cfd)
 
    f = cfd->data;
    cfdata = E_NEW(E_Config_Dialog_Data, 1);
+
    _fill_data(f, cfdata);
 
    return cfdata;
@@ -74,8 +71,7 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 }
 
 static Evas_Object *
-_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas,
-                      E_Config_Dialog_Data *cfdata)
+_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
    Evas_Object *o, *of, *ob;
    E_Radio_Group *rg;
@@ -149,8 +145,7 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 }
 
 static Evas_Object *
-_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas,
-                         E_Config_Dialog_Data *cfdata)
+_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
    Evas_Object *o, *of, *ob;
 
@@ -159,20 +154,17 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas,
 
    ob = e_widget_label_add(evas, D_("Red Amount"));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_slider_add(evas, 1, 0, _("%1.0f"), 0, 300, 10, 0, NULL,
-                            &(cfdata->r), 200);
+   ob = e_widget_slider_add(evas, 1, 0, _("%1.0f"), 0, 300, 10, 0, NULL, &(cfdata->r), 200);
    e_widget_framelist_object_append(of, ob);
 
    ob = e_widget_label_add(evas, D_("Blue Amount"));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_slider_add(evas, 1, 0, _("%1.0f"), 0, 300, 10, 0, NULL,
-                            &(cfdata->b), 200);
+   ob = e_widget_slider_add(evas, 1, 0, _("%1.0f"), 0, 300, 10, 0, NULL, &(cfdata->b), 200);
    e_widget_framelist_object_append(of, ob);
 
    ob = e_widget_label_add(evas, D_("Green Amount"));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_slider_add(evas, 1, 0, _("%1.0f"), 0, 300, 10, 0, NULL,
-                            &(cfdata->g), 200);
+   ob = e_widget_slider_add(evas, 1, 0, _("%1.0f"), 0, 300, 10, 0, NULL, &(cfdata->g), 200);
    e_widget_framelist_object_append(of, ob);
 
    e_widget_list_object_append(o, of, 1, 1, 0.5);

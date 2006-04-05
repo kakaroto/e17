@@ -19,17 +19,16 @@ typedef struct _Picture_Infos Picture_Infos;
 #define DATA_PICTURE_THUMB_SIZE_DEFAULT 300
 #define DATA_PICTURE_CACHE_SIZE_DEFAULT 2
 
-
 struct _Picture_List_Local
 {
-  Evas_List *pictures;
-  int nb_pictures_waiting;
+   Evas_List *pictures;
+   int nb_pictures_waiting;
 };
 
 struct _Picture_List_Net
 {
-  Evas_List *pictures;
-  int nb_pictures_waiting;
+   Evas_List *pictures;
+   int nb_pictures_waiting;
 };
 
 /**
@@ -45,50 +44,49 @@ struct _Picture_List_Net
  */
 struct _Picture_Cache
 {
-  Evas_List *pictures;
-  int pos;
-  int nb_attached;
+   Evas_List *pictures;
+   int pos;
+   int nb_attached;
 };
 
 struct _Picture
 {
-  Source_Picture *source;
+   Source_Picture *source;
 
-  char *path;
-  char *thumb_path;
-  Evas_Object *picture;
-  Picture_Infos *picture_description;
-  int delete;
-  int from;
-  int thumbed;
-  int cached;
-  int original_w, original_h;
-  Evas_List *sources_histo; /** <Each source where the picture is in the histo is attached here, only one time */
+   char *path;
+   char *thumb_path;
+   Evas_Object *picture;
+   Picture_Infos *picture_description;
+   int delete;
+   int from;
+   int thumbed;
+   int cached;
+   int original_w, original_h;
+   Evas_List *sources_histo;/** <Each source where the picture is in the histo is attached here, only one time */
 };
 
 struct _Picture_Infos
 {
-  char *name;
-  char *author_name;
-  char *where_from;
-  char *date;
-  char *comments;
+   char *name;
+   char *author_name;
+   char *where_from;
+   char *date;
+   char *comments;
 };
 
-int  DEVIANF(data_picture_list_local_init)(void);
-void DEVIANF(data_picture_list_local_shutdown)(void);
-void DEVIANF(data_picture_list_local_regen)(void);
+int DEVIANF(data_picture_list_local_init) (void);
+void DEVIANF(data_picture_list_local_shutdown) (void);
+void DEVIANF(data_picture_list_local_regen) (void);
 
-int  DEVIANF(data_picture_list_net_init)(void);
-void DEVIANF(data_picture_list_net_shutdown)(void);
+int DEVIANF(data_picture_list_net_init) (void);
+void DEVIANF(data_picture_list_net_shutdown) (void);
 
-int DEVIANF(data_picture_cache_init)(void);
-void DEVIANF(data_picture_cache_shutdown)(void);
-Picture *DEVIANF(data_picture_cache_attach)(Source_Picture *source,
-					    int edje_part, int histo_nb);
-void DEVIANF(data_picture_cache_detach)(Source_Picture *source, int part);
+int DEVIANF(data_picture_cache_init) (void);
+void DEVIANF(data_picture_cache_shutdown) (void);
+Picture *DEVIANF(data_picture_cache_attach) (Source_Picture *source, int edje_part, int histo_nb);
+void DEVIANF(data_picture_cache_detach) (Source_Picture *source, int part);
 
-char *DEVIANF(data_picture_get_name_from_path)(char *path, int len);
+char *DEVIANF(data_picture_get_name_from_path) (char *path, int len);
 
 #endif
 #endif

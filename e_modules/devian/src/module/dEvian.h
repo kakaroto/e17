@@ -56,7 +56,6 @@
 #undef E_MOD_DEVIAN_TYPEDEFS
 #include "dEvian_includes.h"
 
-
 /* Debuging things */
 #ifdef DEBUG_MAIN
 # define DMAIN(x)  do {printf(__FILE__ ":%d:  ", __LINE__); printf x; printf("\n"); fflush(stdout);} while (0)

@@ -3,7 +3,7 @@
 #include "e_mod_config.h"
 #include "config.h"
 
-struct _E_Config_Dialog_Data 
+struct _E_Config_Dialog_Data
 {
    double poll_time;
    int display;
@@ -11,14 +11,14 @@ struct _E_Config_Dialog_Data
    char *code;
 };
 
-static void        *_create_data            (E_Config_Dialog *cfd);
-static void         _free_data              (E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
-static Evas_Object *_basic_create_widgets   (E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
-static int          _basic_apply_data       (E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
-static void         _fill_data              (Weather_Face *wf, E_Config_Dialog_Data *cfdata);
+static void *_create_data(E_Config_Dialog *cfd);
+static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
+static int _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static void _fill_data(Weather_Face *wf, E_Config_Dialog_Data *cfdata);
 
 void
-_configure_weather_module(Weather_Face *wf) 
+_configure_weather_module(Weather_Face *wf)
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
@@ -41,7 +41,7 @@ _fill_data(Weather_Face *wf, E_Config_Dialog_Data *cfdata)
    cfdata->display = wf->conf->display;
    cfdata->degrees = wf->conf->degrees;
    if (wf->conf->code)
-     cfdata->code = strdup(wf->conf->code);
+      cfdata->code = strdup(wf->conf->code);
 }
 
 static void *
@@ -52,6 +52,7 @@ _create_data(E_Config_Dialog *cfd)
 
    wf = cfd->data;
    cfdata = E_NEW(E_Config_Dialog_Data, 1);
+
    _fill_data(wf, cfdata);
    return cfdata;
 }
@@ -71,9 +72,9 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 {
    Evas_Object *o, *of, *ob, *ot;
    E_Radio_Group *rg, *dg;
-   
+
    o = e_widget_list_add(evas, 0, 0);
-   of = e_widget_framelist_add(evas, D_("Display Settings"), 0);   
+   of = e_widget_framelist_add(evas, D_("Display Settings"), 0);
    rg = e_widget_radio_group_new(&(cfdata->display));
    ob = e_widget_radio_add(evas, D_("Simple"), SIMPLE_DISPLAY, rg);
    e_widget_framelist_object_append(of, ob);
@@ -85,17 +86,17 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-   of = e_widget_framelist_add(evas, D_("Degree Settings"), 0);      
+   of = e_widget_framelist_add(evas, D_("Degree Settings"), 0);
    dg = e_widget_radio_group_new(&(cfdata->degrees));
    ob = e_widget_radio_add(evas, D_("Celsius"), DEGREES_C, dg);
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_radio_add(evas, D_("Farenheit"), DEGREES_F, dg);
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
-   
+
    of = e_widget_frametable_add(evas, D_("ICAO Code"), 0);
    ob = e_widget_label_add(evas, D_("ICAO Code"));
-   e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 0, 1, 0);   
+   e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 0, 1, 0);
    ob = e_widget_entry_add(evas, (&(cfdata->code)));
    e_widget_min_size_set(ob, 100, 1);
    e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 0, 1, 0);
@@ -115,33 +116,33 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    int len;
    char tmp[1024];
    char buf[4096];
-   
+
    if (!cfdata->code)
-     return 0;
+      return 0;
 
    len = strlen(cfdata->code);
    if (len < 4 || len > 4)
-     return 0;
-      
+      return 0;
+
    wf = cfd->data;
    wf->conf->display = cfdata->display;
    wf->conf->degrees = cfdata->degrees;
    wf->conf->poll_time = (cfdata->poll_time * 60.0);
    if (wf->conf->code)
-     evas_stringshare_del(wf->conf->code);
+      evas_stringshare_del(wf->conf->code);
    wf->conf->code = evas_stringshare_add((char *)toupper(cfdata->code));
-       
+
    e_config_save_queue();
    if (wf->check_timer)
-     ecore_timer_interval_set(wf->check_timer, (double)(wf->conf->poll_time));
+      ecore_timer_interval_set(wf->check_timer, (double)(wf->conf->poll_time));
 
    if (wf->conf->display == DETAILED_DISPLAY)
-     edje_object_signal_emit(wf->weather_obj, "set_style", "detailed");   
+      edje_object_signal_emit(wf->weather_obj, "set_style", "detailed");
    else
-     edje_object_signal_emit(wf->weather_obj, "set_style", "simple");
+      edje_object_signal_emit(wf->weather_obj, "set_style", "simple");
 
    _weather_convert_degrees(wf);
-   snprintf(buf, sizeof(buf), "%d°%c",wf->temp, wf->degrees);
+   snprintf(buf, sizeof(buf), "%d°%c", wf->temp, wf->degrees);
    edje_object_part_text_set(wf->weather_obj, "temp", buf);
 
    //_weather_display_set(wf, 1);

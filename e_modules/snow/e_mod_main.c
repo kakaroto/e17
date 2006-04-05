@@ -83,8 +83,7 @@ e_modapi_info(E_Module *m)
 EAPI int
 e_modapi_about(E_Module *m)
 {
-   e_module_dialog_show(D_("Enlightenment Snow Module"),
-                        D_("This is a snow module that may replace xsnow."));
+   e_module_dialog_show(D_("Enlightenment Snow Module"), D_("This is a snow module that may replace xsnow."));
    return 1;
 }
 
@@ -164,8 +163,7 @@ _snow_init(E_Module *m)
           }
      }
 
-   evas_output_viewport_get(snow->canvas, NULL, NULL, &snow->width,
-                            &snow->height);
+   evas_output_viewport_get(snow->canvas, NULL, NULL, &snow->width, &snow->height);
 
    if (snow->conf->show_trees)
       _snow_trees_load(snow);
@@ -234,7 +232,7 @@ _snow_config_menu_new(Snow *snow)
 
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, "Configuration");
-   e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");         
+   e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
    e_menu_item_callback_set(mi, _snow_menu_cb_configure, snow);
    return mn;
 }
@@ -319,8 +317,7 @@ _snow_flakes_load(char type, Snow *snow)
         evas_object_move(o, tx, ty);
         evas_object_show(o);
         flake->flake = o;
-        flake->start_time =
-           ecore_time_get() + (double)(random() % (th * 10)) / (double)th;
+        flake->start_time = ecore_time_get() + (double)(random() % (th * 10)) / (double)th;
         switch (type)
           {
           case 's':
@@ -357,8 +354,7 @@ _snow_cb_animator(void *data)
         y = 30 * d * flake->speed;
         evas_object_geometry_get(flake->flake, &x, NULL, NULL, NULL);
         if (y > snow->height)
-           flake->start_time =
-              ecore_time_get() + (double)(random() % 100) / (double)100;
+           flake->start_time = ecore_time_get() + (double)(random() % 100) / (double)100;
         evas_object_move(flake->flake, x, y);
 
         next = evas_list_next(next);

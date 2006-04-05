@@ -9,11 +9,11 @@ struct _E_Config_Dialog_Data
 };
 
 /* Protos */
-static void        *_create_data            (E_Config_Dialog *cfd);
-static void         _free_data              (E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
-static Evas_Object *_basic_create_widgets   (E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
-static int          _basic_apply_data       (E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
-static void         _fill_data              (Uptime *c, E_Config_Dialog_Data *cfdata);
+static void *_create_data(E_Config_Dialog *cfd);
+static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
+static int _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static void _fill_data(Uptime *c, E_Config_Dialog_Data *cfdata);
 
 /* Config Calls */
 void
@@ -28,7 +28,7 @@ _configure_uptime_module(E_Container *con, Uptime *c)
    v->free_cfdata = _free_data;
    v->basic.apply_cfdata = _basic_apply_data;
    v->basic.create_widgets = _basic_create_widgets;
-   
+
    cfd = e_config_dialog_new(con, D_("Uptime Configuration"), NULL, 0, v, c);
    c->cfd = cfd;
 }
@@ -36,7 +36,7 @@ _configure_uptime_module(E_Container *con, Uptime *c)
 static void
 _fill_data(Uptime *c, E_Config_Dialog_Data *cfdata)
 {
-   cfdata->check_interval = c->conf->check_interval;   
+   cfdata->check_interval = c->conf->check_interval;
 }
 
 static void *
@@ -47,6 +47,7 @@ _create_data(E_Config_Dialog *cfd)
 
    c = cfd->data;
    cfdata = E_NEW(E_Config_Dialog_Data, 1);
+
    _fill_data(c, cfdata);
    return cfdata;
 }
@@ -66,9 +67,9 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 {
    Evas_Object *o, *of, *ob;
    Uptime *c;
-   
+
    c = cfd->data;
-   
+
    o = e_widget_list_add(evas, 0, 0);
    of = e_widget_framelist_add(evas, D_("Uptime Settings"), 0);
    ob = e_widget_label_add(evas, D_("Check Interval:"));
@@ -88,9 +89,9 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
    c = cfd->data;
    c->conf->check_interval = cfdata->check_interval;
-   e_config_save_queue ();
+   e_config_save_queue();
    if (c->face->monitor)
-     ecore_timer_interval_set(c->face->monitor, (double)cfdata->check_interval);
+      ecore_timer_interval_set(c->face->monitor, (double)cfdata->check_interval);
 
    return 1;
 }

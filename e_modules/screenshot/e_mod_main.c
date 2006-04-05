@@ -27,11 +27,8 @@ static void _screen_face_menu_new(Screen_Face *face);
 static void _screen_face_enable(Screen_Face *face);
 static void _screen_face_disable(Screen_Face *face);
 static void _screen_face_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi);
-static void _screen_face_cb_mouse_down(void *data, Evas *e,
-                                       Evas_Object *obj, void *event_info);
-static void _screen_face_cb_gmc_change(void *data,
-                                       E_Gadman_Client *gmc,
-                                       E_Gadman_Change change);
+static void _screen_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _screen_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change);
 static void _screen_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 
 char *get_options(char **opt);
@@ -105,8 +102,7 @@ e_modapi_info(E_Module *m)
 EAPI int
 e_modapi_about(E_Module *m)
 {
-   e_module_dialog_show(D_("Enlightenment Screenshot Module"),
-                        D_("This module is used to take screenshots"));
+   e_module_dialog_show(D_("Enlightenment Screenshot Module"), D_("This module is used to take screenshots"));
    return 1;
 }
 
@@ -226,8 +222,8 @@ _screen_init(E_Module *m)
 
              if (ef)
                {
-                  ef->conf_face_edd =
-                     E_CONFIG_DD_NEW("Screen_Config_Face", Config_Face);
+                  ef->conf_face_edd = E_CONFIG_DD_NEW("Screen_Config_Face", Config_Face);
+
 #undef T
 #undef D
 #define T Config_Face
@@ -308,8 +304,7 @@ _screen_face_init(Screen_Face *sf)
    sf->screen_object = o;
 
    snprintf(buff, sizeof(buff), PACKAGE_DATA_DIR "/screenshot.edj");
-   if (!e_theme_edje_object_set
-       (o, "base/theme/modules/screenshot", "modules/screenshot/main"))
+   if (!e_theme_edje_object_set(o, "base/theme/modules/screenshot", "modules/screenshot/main"))
       edje_object_file_set(o, buff, "modules/screenshot/main");
    edje_object_signal_emit(o, "passive", "");
    evas_object_show(o);
@@ -319,16 +314,14 @@ _screen_face_init(Screen_Face *sf)
    evas_object_layer_set(o, 2);
    evas_object_repeat_events_set(o, 1);
    evas_object_color_set(o, 0, 0, 0, 0);
-   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN,
-                                  _screen_face_cb_mouse_down, sf);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _screen_face_cb_mouse_down, sf);
    evas_object_show(o);
 
    sf->gmc = e_gadman_client_new(sf->con->gadman);
    e_gadman_client_domain_set(sf->gmc, "module.screenshot", screen_count++);
    e_gadman_client_policy_set(sf->gmc,
                               E_GADMAN_POLICY_ANYWHERE | E_GADMAN_POLICY_HMOVE |
-                              E_GADMAN_POLICY_VMOVE | E_GADMAN_POLICY_HSIZE |
-                              E_GADMAN_POLICY_VSIZE);
+                              E_GADMAN_POLICY_VMOVE | E_GADMAN_POLICY_HSIZE | E_GADMAN_POLICY_VSIZE);
    e_gadman_client_min_size_set(sf->gmc, 4, 4);
    e_gadman_client_max_size_set(sf->gmc, 128, 128);
    e_gadman_client_auto_size_set(sf->gmc, 40, 40);
@@ -372,13 +365,13 @@ _screen_face_menu_new(Screen_Face *face)
 
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("Configuration"));
-   e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");         
+   e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
    e_menu_item_callback_set(mi, _screen_menu_cb_configure, face);
 
    /* Edit */
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("Edit Mode"));
-   e_util_menu_item_edje_icon_set(mi, "enlightenment/gadgets");         
+   e_util_menu_item_edje_icon_set(mi, "enlightenment/gadgets");
    e_menu_item_callback_set(mi, _screen_face_cb_menu_edit, face);
 }
 
@@ -401,8 +394,7 @@ _screen_face_disable(Screen_Face *face)
 }
 
 static void
-_screen_face_cb_gmc_change(void *data, E_Gadman_Client *gmc,
-                           E_Gadman_Change change)
+_screen_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change)
 {
    Screen_Face *ef;
    Evas_Coord x, y, w, h;
@@ -429,8 +421,7 @@ _screen_face_cb_gmc_change(void *data, E_Gadman_Client *gmc,
 }
 
 static void
-_screen_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
-                           void *event_info)
+_screen_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Ecore_Exe *x;
    Evas_Event_Mouse_Down *ev;
@@ -446,8 +437,7 @@ _screen_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
    if (ev->button == 3)
      {
         e_menu_activate_mouse(ef->menu, e_zone_current_get(ef->con),
-                              ev->output.x, ev->output.y, 1, 1,
-                              E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
+                              ev->output.x, ev->output.y, 1, 1, E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
         e_util_container_fake_mouse_up_all_later(ef->con);
      }
    else if (ev->button == 1)
@@ -471,30 +461,26 @@ _screen_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
                 opts[6] = strdup("-window root");
              if (ef->screen->conf->delay_time > 0)
                {
-                  snprintf(buff, sizeof(buff), "-pause %d",
-                           ef->screen->conf->delay_time);
+                  snprintf(buff, sizeof(buff), "-pause %d", ef->screen->conf->delay_time);
                   opts[7] = strdup(buff);
                }
              opt = get_options(opts);
              f = get_filename(ef->screen->conf);
-	     if (!f)
-	       snprintf(buff, sizeof(buff), "import %s", opt);	       
-	     else
-	       snprintf(buff, sizeof(buff), "import %s %s", opt, f);
-             
-	     if (ef->screen->conf->delay_time > 0)
+             if (!f)
+                snprintf(buff, sizeof(buff), "import %s", opt);
+             else
+                snprintf(buff, sizeof(buff), "import %s %s", opt, f);
+
+             if (ef->screen->conf->delay_time > 0)
                {
                   msg = malloc(sizeof(Edje_Message_Int_Set) + 1 * sizeof(int));
                   msg->count = 1;
                   msg->val[0] = ef->screen->conf->delay_time - 1;
-                  edje_object_message_send(ef->screen_object,
-                                           EDJE_MESSAGE_INT_SET, 1, msg);
+                  edje_object_message_send(ef->screen_object, EDJE_MESSAGE_INT_SET, 1, msg);
                   free(msg);
                }
 
-             _screen_exe_exit_handler =
-                ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
-                                        _screen_exe_cb_exit, NULL);
+             _screen_exe_exit_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _screen_exe_cb_exit, NULL);
              x = ecore_exe_run(buff, ef);
           }
         else if (ef->screen->conf->use_scrot == 1)
@@ -505,30 +491,26 @@ _screen_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
                 opts[1] = strdup("--thumb 25");
              if (ef->screen->conf->delay_time > 0)
                {
-                  snprintf(buff, sizeof(buff), "--delay %d",
-                           ef->screen->conf->delay_time);
+                  snprintf(buff, sizeof(buff), "--delay %d", ef->screen->conf->delay_time);
                   opts[2] = strdup(buff);
                }
              opt = get_options(opts);
              f = get_filename(ef->screen->conf);
-	     if (!f)
-	       snprintf(buff, sizeof(buff), "scrot %s", opt);
-	     else
-	       snprintf(buff, sizeof(buff), "scrot %s %s", opt, f);
-	       
+             if (!f)
+                snprintf(buff, sizeof(buff), "scrot %s", opt);
+             else
+                snprintf(buff, sizeof(buff), "scrot %s %s", opt, f);
+
              if (ef->screen->conf->delay_time > 0)
                {
                   msg = malloc(sizeof(Edje_Message_Int_Set) + 1 * sizeof(int));
                   msg->count = 1;
                   msg->val[0] = ef->screen->conf->delay_time - 1;
-                  edje_object_message_send(ef->screen_object,
-                                           EDJE_MESSAGE_INT_SET, 1, msg);
+                  edje_object_message_send(ef->screen_object, EDJE_MESSAGE_INT_SET, 1, msg);
                   free(msg);
                }
 
-             _screen_exe_exit_handler =
-                ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
-                                        _screen_exe_cb_exit, NULL);
+             _screen_exe_exit_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _screen_exe_cb_exit, NULL);
              x = ecore_exe_run(buff, ef);
           }
         else
@@ -584,7 +566,7 @@ get_filename(Config *conf)
    int c = 0;
    char *file, *x;
    char *tmp;
-   
+
    /* Get Location */
    if (!conf->location)
      {
@@ -597,8 +579,7 @@ get_filename(Config *conf)
         t = time(NULL);
         loctime = localtime(&t);
         strftime(buff, sizeof(buff), "%Y-%m-%d-%H%M%S", loctime);
-        snprintf(buff, sizeof(buff), "%s/%s.png", strdup(conf->location),
-                 strdup(buff));
+        snprintf(buff, sizeof(buff), "%s/%s.png", strdup(conf->location), strdup(buff));
      }
    else
      {
@@ -627,26 +608,24 @@ get_filename(Config *conf)
                        c++;
                     }
                   /* Add To Filename */
-		  /* Strip extension in case user adds it */
-		  tmp = ecore_file_strip_ext(conf->filename);		  
+                  /* Strip extension in case user adds it */
+                  tmp = ecore_file_strip_ext(conf->filename);
                   snprintf(buff, sizeof(buff), strdup(tmp), c);
-                  snprintf(buff, sizeof(buff), "%s/%s.png",
-                           strdup(conf->location), strdup(buff));
+                  snprintf(buff, sizeof(buff), "%s/%s.png", strdup(conf->location), strdup(buff));
                }
           }
         else
           {
-	     /* Strip extension in case user adds it */
-	     tmp = ecore_file_strip_ext(conf->filename);	     
+             /* Strip extension in case user adds it */
+             tmp = ecore_file_strip_ext(conf->filename);
              snprintf(buff, sizeof(buff), strdup(tmp));
-             snprintf(buff, sizeof(buff), "%s/%s.png", strdup(conf->location),
-                      strdup(buff));
+             snprintf(buff, sizeof(buff), "%s/%s.png", strdup(conf->location), strdup(buff));
           }
      }
    if (buff)
-     return strdup(buff);
+      return strdup(buff);
    else
-     return NULL;
+      return NULL;
 }
 
 static int
@@ -685,8 +664,7 @@ _screen_exe_cb_exit(void *data, int type, void *event)
         t = time(NULL);
         loctime = localtime(&t);
         strftime(buff, sizeof(buff), "%Y-%m-%d-%I%M%S", loctime);
-        snprintf(buff, sizeof(buff), "%s/%s.png", strdup(conf->location),
-                 strdup(buff));
+        snprintf(buff, sizeof(buff), "%s/%s.png", strdup(conf->location), strdup(buff));
      }
    else
      {
@@ -712,15 +690,13 @@ _screen_exe_cb_exit(void *data, int type, void *event)
                     }
                   /* Add To Filename */
                   snprintf(buff, sizeof(buff), strdup(conf->filename), c);
-                  snprintf(buff, sizeof(buff), "%s/%s.png",
-                           strdup(conf->location), strdup(buff));
+                  snprintf(buff, sizeof(buff), "%s/%s.png", strdup(conf->location), strdup(buff));
                }
           }
         else
           {
              snprintf(buff, sizeof(buff), strdup(conf->filename));
-             snprintf(buff, sizeof(buff), "%s/%s.png", strdup(conf->location),
-                      strdup(buff));
+             snprintf(buff, sizeof(buff), "%s/%s.png", strdup(conf->location), strdup(buff));
           }
      }
 

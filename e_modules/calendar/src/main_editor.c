@@ -16,11 +16,9 @@ struct _calendar_cfdata
 //static Evas_Object      *_create_widgets(E_Config_Dialog *cfd, Evas *evas, Config *cfdata);
 static void *_create_data(E_Config_Dialog *cfd);
 static void _free_data(E_Config_Dialog *cfd, void *data);
-static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas,
-                                          void *data);
+static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data);
 static int _basic_apply_data(E_Config_Dialog *cfd, void *data);
-static Evas_Object *_color_edit_advanced_create_widgets(E_Config_Dialog *cfd,
-                                                        Evas *evas, void *data);
+static Evas_Object *_color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data);
 static int _color_edit_advanced_apply_data(E_Config_Dialog *cfd, void *data);
 
 /***************************************************
@@ -51,9 +49,7 @@ e_int_config_calendar(void *con, void *calendar)
         v->advanced.create_widgets = _color_edit_advanced_create_widgets;
 
         /* create config diaolg for NULL object/data */
-        cfd =
-           e_config_dialog_new(con, D_("Calendar Settings"), NULL, 0, v,
-                               calendar);
+        cfd = e_config_dialog_new(con, D_("Calendar Settings"), NULL, 0, v, calendar);
      }
 }
 /***************************************************
@@ -71,6 +67,7 @@ _create_data(E_Config_Dialog *cfd)
    CFData *cfdata;
 
    cfdata = E_NEW(CFData, 1);
+
    cfdata->calendar = cfd->data;
    cfdata->temp_ImageYes = cfdata->calendar->conf->ImageYes;
    cfdata->temp_UserCS = cfdata->calendar->conf->UserCS;
@@ -168,8 +165,7 @@ _basic_apply_data(E_Config_Dialog *cfd, void *data)
    calendar = cfd->data;
    int SwitchImage = 0;
 
-   if ((calendar->conf->ImageYes != cfdata->temp_ImageYes)
-       || (calendar->conf->UserCS != cfdata->temp_UserCS))
+   if ((calendar->conf->ImageYes != cfdata->temp_ImageYes) || (calendar->conf->UserCS != cfdata->temp_UserCS))
      {
         SwitchImage = 1;
         calendar->conf->ImageYes = cfdata->calendar->conf->ImageYes;
@@ -215,8 +211,7 @@ _color_edit_advanced_apply_data(E_Config_Dialog *cfd, void *data)
    calendar = cfd->data;
    int SwitchImage = 0;
 
-   if ((calendar->conf->ImageYes != cfdata->temp_ImageYes)
-       || (calendar->conf->UserCS != cfdata->temp_UserCS))
+   if ((calendar->conf->ImageYes != cfdata->temp_ImageYes) || (calendar->conf->UserCS != cfdata->temp_UserCS))
      {
         SwitchImage = 1;
         calendar->conf->ImageYes = cfdata->calendar->conf->ImageYes;
@@ -249,8 +244,7 @@ _color_edit_advanced_apply_data(E_Config_Dialog *cfd, void *data)
 /
 *****************************************************/
 static Evas_Object *
-_color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas,
-                                    void *data)
+_color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data)
 {
    /* generate the core widget layout for a basic dialog */
    Evas_Object *o, *of, *ob, *of2, *of_y;
@@ -329,13 +323,10 @@ _color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas,
         font_title = e_widget_framelist_add(evas, D_("Fonts"), 0);
         of_y = e_widget_table_add(evas, 1);
         //label on top
-        e_widget_table_object_append(of_y, e_widget_label_add(evas, "Font"),
-                                     1, 0, 1, 1, 1, 1, 1, 1);
-        e_widget_table_object_append(of_y, e_widget_label_add(evas, "Size"),
-                                     2, 0, 1, 1, 1, 1, 1, 1);
+        e_widget_table_object_append(of_y, e_widget_label_add(evas, "Font"), 1, 0, 1, 1, 1, 1, 1, 1);
+        e_widget_table_object_append(of_y, e_widget_label_add(evas, "Size"), 2, 0, 1, 1, 1, 1, 1, 1);
         //Font row
-        e_widget_table_object_append(of_y, e_widget_label_add(evas, "Year/Mon"),
-                                     0, 1, 1, 1, 1, 1, 1, 1);
+        e_widget_table_object_append(of_y, e_widget_label_add(evas, "Year/Mon"), 0, 1, 1, 1, 1, 1, 1, 1);
         {
            entry = e_widget_entry_add(evas, &YTC_Ptr->font);
            e_widget_min_size_set(entry, 100, 1);
@@ -343,35 +334,23 @@ _color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas,
         }
         e_widget_table_object_append(of_y,
                                      e_widget_slider_add(evas, 1, 0, _("%1.2f"),
-                                                         4, 48, 1, 0, NULL,
-                                                         &(YTC_Ptr->size), 60),
-                                     2, 1, 1, 1, 1, 1, 1, 1);
+                                                         4, 48, 1, 0, NULL, &(YTC_Ptr->size), 60), 2, 1, 1, 1, 1, 1, 1, 1);
 
         //label for 2nd set
-        e_widget_table_object_append(of_y, e_widget_label_add(evas, "Day"),
-                                     0, 2, 1, 1, 1, 1, 1, 1);
+        e_widget_table_object_append(of_y, e_widget_label_add(evas, "Day"), 0, 2, 1, 1, 1, 1, 1, 1);
         //Font row
-        e_widget_table_object_append(of_y,
-                                     e_widget_entry_add(evas, &DTCs_Ptr->font),
-                                     1, 2, 1, 1, 1, 1, 1, 1);
+        e_widget_table_object_append(of_y, e_widget_entry_add(evas, &DTCs_Ptr->font), 1, 2, 1, 1, 1, 1, 1, 1);
 
         e_widget_table_object_append(of_y,
                                      e_widget_slider_add(evas, 1, 0, _("%1.2f"),
-                                                         4, 48, 1, 0, NULL,
-                                                         &(DTCs_Ptr->size), 60),
-                                     2, 2, 1, 1, 1, 1, 1, 1);
+                                                         4, 48, 1, 0, NULL, &(DTCs_Ptr->size), 60), 2, 2, 1, 1, 1, 1, 1, 1);
         //label for 3rd set
-        e_widget_table_object_append(of_y, e_widget_label_add(evas, "Date"),
-                                     0, 3, 1, 1, 1, 1, 1, 1);
+        e_widget_table_object_append(of_y, e_widget_label_add(evas, "Date"), 0, 3, 1, 1, 1, 1, 1, 1);
         //Font row
-        e_widget_table_object_append(of_y,
-                                     e_widget_entry_add(evas, &TC_Ptr->font), 1,
-                                     3, 1, 1, 1, 1, 1, 1);
+        e_widget_table_object_append(of_y, e_widget_entry_add(evas, &TC_Ptr->font), 1, 3, 1, 1, 1, 1, 1, 1);
         e_widget_table_object_append(of_y,
                                      e_widget_slider_add(evas, 1, 0, _("%1.2f"),
-                                                         4, 48, 1, 0, NULL,
-                                                         &(TC_Ptr->size), 60),
-                                     2, 3, 1, 1, 1, 1, 1, 1);
+                                                         4, 48, 1, 0, NULL, &(TC_Ptr->size), 60), 2, 3, 1, 1, 1, 1, 1, 1);
 
         e_widget_framelist_object_append(font_title, of_y);
         e_widget_table_object_append(o, font_title, 1, 0, 1, 1, 0, 0, 0, 0);
@@ -380,24 +359,16 @@ _color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas,
         ofB = e_widget_framelist_add(evas, D_("Configure Colors"), 0);
         e_widget_table_object_append(start_tableB,
                                      e_widget_button_add(evas, "Today", NULL,
-                                                         e_int_config_calendar_today,
-                                                         con, calendar), 0, 0,
-                                     1, 1, 0, 0, 0, 0);
+                                                         e_int_config_calendar_today, con, calendar), 0, 0, 1, 1, 0, 0, 0, 0);
         e_widget_table_object_append(start_tableB,
                                      e_widget_button_add(evas, "Other", NULL,
-                                                         e_int_config_calendar_other,
-                                                         con, calendar), 0, 1,
-                                     1, 1, 0, 0, 0, 0);
+                                                         e_int_config_calendar_other, con, calendar), 0, 1, 1, 1, 0, 0, 0, 0);
         e_widget_table_object_append(start_tableB,
                                      e_widget_button_add(evas, "Weekend", NULL,
-                                                         e_int_config_calendar_weekend,
-                                                         con, calendar), 1, 0,
-                                     1, 1, 0, 0, 0, 0);
+                                                         e_int_config_calendar_weekend, con, calendar), 1, 0, 1, 1, 0, 0, 0, 0);
         e_widget_table_object_append(start_tableB,
                                      e_widget_button_add(evas, "Weekday", NULL,
-                                                         e_int_config_calendar_weekday,
-                                                         con, calendar), 1, 1,
-                                     1, 1, 0, 0, 0, 0);
+                                                         e_int_config_calendar_weekday, con, calendar), 1, 1, 1, 1, 0, 0, 0, 0);
         e_widget_framelist_object_append(ofB, start_tableB);
         e_widget_table_object_append(o, ofB, 1, 1, 1, 1, 1, 1, 1, 1);
      }

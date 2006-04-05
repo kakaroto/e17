@@ -13,14 +13,10 @@ struct _E_Config_Dialog_Data
 /* Protos */
 static void *_create_data(E_Config_Dialog *cfd);
 static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
-static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas,
-                                          E_Config_Dialog_Data *cfdata);
-static int _basic_apply_data(E_Config_Dialog *cfd,
-                             E_Config_Dialog_Data *cfdata);
-static Evas_Object *_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas,
-                                             E_Config_Dialog_Data *cfdata);
-static int _advanced_apply_data(E_Config_Dialog *cfd,
-                                E_Config_Dialog_Data *cfdata);
+static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
+static int _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static Evas_Object *_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
+static int _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 static void _fill_data(Mount *m, E_Config_Dialog_Data *cfdata);
 
 void
@@ -58,6 +54,7 @@ _create_data(E_Config_Dialog *cfd)
 
    m = cfd->data;
    cfdata = E_NEW(E_Config_Dialog_Data, 1);
+
    _fill_data(m, cfdata);
    return cfdata;
 }
@@ -73,8 +70,7 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 }
 
 static Evas_Object *
-_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas,
-                      E_Config_Dialog_Data *cfdata)
+_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
    Evas_Object *o, *ob, *of;
    E_Radio_Group *rg;
@@ -87,11 +83,9 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas,
 
    of = e_widget_framelist_add(evas, D_("Layout Settings"), 0);
    rg = e_widget_radio_group_new(&(cfdata->orientation));
-   ob = e_widget_radio_add(evas, D_("Use Vertical Layout"), MOUNT_ORIENT_VERT,
-                           rg);
+   ob = e_widget_radio_add(evas, D_("Use Vertical Layout"), MOUNT_ORIENT_VERT, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, D_("Use Horizontal Layout"), 
-                           MOUNT_ORIENT_HORIZ, rg);
+   ob = e_widget_radio_add(evas, D_("Use Horizontal Layout"), MOUNT_ORIENT_HORIZ, rg);
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
@@ -115,8 +109,7 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 }
 
 static Evas_Object *
-_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas,
-                         E_Config_Dialog_Data *cfdata)
+_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
    Evas_Object *o, *ob, *of;
    E_Radio_Group *rg;
@@ -129,17 +122,14 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas,
 
    of = e_widget_framelist_add(evas, D_("Layout Settings"), 0);
    rg = e_widget_radio_group_new(&(cfdata->orientation));
-   ob = e_widget_radio_add(evas, D_("Use Vertical Layout"), MOUNT_ORIENT_VERT,
-                           rg);
+   ob = e_widget_radio_add(evas, D_("Use Vertical Layout"), MOUNT_ORIENT_VERT, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, D_("Use Horizontal Layout"), 
-                           MOUNT_ORIENT_HORIZ, rg);
+   ob = e_widget_radio_add(evas, D_("Use Horizontal Layout"), MOUNT_ORIENT_HORIZ, rg);
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
    of = e_widget_framelist_add(evas, D_("Icon Size"), 0);
-   ob = e_widget_slider_add(evas, 1, 0, _("%3.0f pixels"), 8.0, 128.0, 1.0, 0,
-                            NULL, &(cfdata->iconsize), 200);
+   ob = e_widget_slider_add(evas, 1, 0, _("%3.0f pixels"), 8.0, 128.0, 1.0, 0, NULL, &(cfdata->iconsize), 200);
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
    return o;

@@ -14,11 +14,11 @@ struct _E_Config_Dialog_Data
 };
 
 /* Protos */
-static void        *_create_data            (E_Config_Dialog *cfd);
-static void         _free_data              (E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
-static Evas_Object *_basic_create_widgets   (E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
-static int          _basic_apply_data       (E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
-static void         _fill_data              (Mem *c, E_Config_Dialog_Data *cfdata);
+static void *_create_data(E_Config_Dialog *cfd);
+static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
+static int _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static void _fill_data(Mem *c, E_Config_Dialog_Data *cfdata);
 
 /* Config Calls */
 void
@@ -33,7 +33,7 @@ _configure_mem_module(E_Container *con, Mem *c)
    v->free_cfdata = _free_data;
    v->basic.apply_cfdata = _basic_apply_data;
    v->basic.create_widgets = _basic_create_widgets;
-   
+
    cfd = e_config_dialog_new(con, D_("Mem Configuration"), NULL, 0, v, c);
    c->cfd = cfd;
 }
@@ -41,7 +41,7 @@ _configure_mem_module(E_Container *con, Mem *c)
 static void
 _fill_data(Mem *c, E_Config_Dialog_Data *cfdata)
 {
-   cfdata->check_interval = c->conf->check_interval;   
+   cfdata->check_interval = c->conf->check_interval;
    cfdata->real_ignore_buffers = c->conf->real_ignore_buffers;
    cfdata->real_ignore_cached = c->conf->real_ignore_cached;
    cfdata->show_text = c->conf->show_text;
@@ -57,6 +57,7 @@ _create_data(E_Config_Dialog *cfd)
 
    c = cfd->data;
    cfdata = E_NEW(E_Config_Dialog_Data, 1);
+
    _fill_data(c, cfdata);
    return cfdata;
 }
@@ -76,9 +77,9 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 {
    Evas_Object *o, *of, *ob;
    Mem *c;
-   
+
    c = cfd->data;
-   
+
    o = e_widget_list_add(evas, 0, 0);
    of = e_widget_framelist_add(evas, D_("Mem Settings"), 0);
    ob = e_widget_check_add(evas, D_("Show Text"), &(cfdata->show_text));
@@ -86,11 +87,11 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    ob = e_widget_check_add(evas, D_("Show Text As Percent"), &(cfdata->show_percent));
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_check_add(evas, D_("Show Graph"), &(cfdata->show_graph));
-   e_widget_framelist_object_append(of, ob);   
+   e_widget_framelist_object_append(of, ob);
    ob = e_widget_check_add(evas, D_("Ignore Buffers"), &(cfdata->real_ignore_buffers));
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_check_add(evas, D_("Ignore Cached"), &(cfdata->real_ignore_cached));
-   e_widget_framelist_object_append(of, ob);   
+   e_widget_framelist_object_append(of, ob);
    ob = e_widget_label_add(evas, D_("Check Interval:"));
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_slider_add(evas, 1, 0, _("%1.0f seconds"), 1, 60, 1, 0, NULL, &(cfdata->check_interval), 150);
@@ -113,9 +114,9 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    c->conf->show_text = cfdata->show_text;
    c->conf->show_graph = cfdata->show_graph;
    c->conf->show_percent = cfdata->show_percent;
-   e_config_save_queue ();
+   e_config_save_queue();
    if (c->face->monitor)
-     ecore_timer_interval_set(c->face->monitor, (double)cfdata->check_interval);
+      ecore_timer_interval_set(c->face->monitor, (double)cfdata->check_interval);
 
    return 1;
 }

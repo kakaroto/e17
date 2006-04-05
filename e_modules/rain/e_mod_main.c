@@ -160,8 +160,7 @@ _rain_init(E_Module *m)
           }
      }
 
-   evas_output_viewport_get(rain->canvas, NULL, NULL, &rain->width,
-                            &rain->height);
+   evas_output_viewport_get(rain->canvas, NULL, NULL, &rain->width, &rain->height);
 
    if (rain->conf->show_clouds)
       _rain_clouds_load(rain);
@@ -231,7 +230,7 @@ _rain_config_menu_new(Rain *rain)
 
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, "Configuration");
-   e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");   
+   e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
    e_menu_item_callback_set(mi, _rain_menu_cb_configure, rain);
 
    return mn;
@@ -319,8 +318,7 @@ _rain_drops_load(char type, Rain *rain)
         evas_object_pass_events_set(o, 1);
         evas_object_show(o);
         drop->drop = o;
-        drop->start_time =
-           ecore_time_get() + (double)(random() % (th * 10)) / (double)th;
+        drop->start_time = ecore_time_get() + (double)(random() % (th * 10)) / (double)th;
         switch (type)
           {
           case 's':
@@ -356,8 +354,7 @@ _rain_cb_animator(void *data)
         y = 300 * d * drop->speed;
         evas_object_geometry_get(drop->drop, &x, NULL, NULL, NULL);
         if (y > rain->height)
-           drop->start_time =
-              ecore_time_get() + (double)(random() % 600) / (double)600;
+           drop->start_time = ecore_time_get() + (double)(random() % 600) / (double)600;
         evas_object_move(drop->drop, x, y);
 
         next = evas_list_next(next);

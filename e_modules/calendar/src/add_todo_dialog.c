@@ -15,7 +15,7 @@ char todo[50][256];
 char holiday[10][256];
    
  /*- common -*/ 
-    day_face * DayToFix;
+   day_face *DayToFix;
 
 };
 
@@ -24,7 +24,7 @@ char holiday[10][256];
 /* local subsystem functions */ 
 static void _add_todo_free_data(E_Config_Dialog *cfd, void *data);
 
-static void _add_todo_fill_data(CFData * f_cfdata);
+static void _add_todo_fill_data(CFData *f_cfdata);
 
 static void *_add_todo_create_data(E_Config_Dialog *cfd);
 
@@ -32,8 +32,8 @@ static void _add_todo_free_data(E_Config_Dialog *cfd, void *data);
 
 static int _add_todo_basic_apply_data(E_Config_Dialog *cfd, void *data);
 
-static Evas_Object *_add_todo_basic_create_widgets(E_Config_Dialog *cfd,
-                                                    Evas *evas, void *data);
+static Evas_Object *_add_todo_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data);
+
 
 
 /* externally accessible functions */ 
@@ -69,8 +69,7 @@ v->basic.apply_cfdata = _add_todo_basic_apply_data;
 v->basic.create_widgets = _add_todo_basic_create_widgets;
         
            /* create config diaolg */ 
-           cfd =
-           e_config_dialog_new(con, D_("Font Editor"), NULL, 0, v, DayToFix);
+           cfd = e_config_dialog_new(con, D_("Font Editor"), NULL, 0, v, DayToFix);
      
 }
 
@@ -86,7 +85,7 @@ v->basic.create_widgets = _add_todo_basic_create_widgets;
 /
 *****************************************************/ 
 static void 
-_add_todo_fill_data(CFData * cfdata) 
+_add_todo_fill_data(CFData *cfdata) 
 {
 
 
@@ -103,12 +102,14 @@ static void *
 _add_todo_create_data(E_Config_Dialog *cfd) 
 {
    
-CFData * cfdata;
+CFData *cfdata;
    
 
 cfdata = E_NEW(CFData, 1);
+
    
 cfdata->DayToFix = E_NEW(day_face, 1);
+
    
 if (!cfdata)
       return NULL;
@@ -145,7 +146,8 @@ static int
 _add_todo_basic_apply_data(E_Config_Dialog *cfd, void *data) 
 {
    
-CFData * cfdata;
+CFData *cfdata;
+
    
 cfdata = data;
    
@@ -173,7 +175,8 @@ _add_todo_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data)
    Evas_Object *o, *of1;
 
    
-CFData * cfdata;
+CFData *cfdata;
+
    
 cfdata = data;
    

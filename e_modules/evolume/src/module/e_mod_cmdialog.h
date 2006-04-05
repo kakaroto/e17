@@ -3,4 +3,4 @@
 
 void e_volume_config_mixer(void *data, void *data2);
 
-#endif// E_MOD_CMDIALOG_H_INCLUDED
+#endif // E_MOD_CMDIALOG_H_INCLUDED

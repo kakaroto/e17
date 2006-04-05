@@ -22,13 +22,10 @@ static void _slide_face_menu_new(Slide_Face *face);
 static void _slide_face_enable(Slide_Face *face);
 static void _slide_face_disable(Slide_Face *face);
 static void _slide_face_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi);
-static void _slide_face_cb_menu_configure(void *data, E_Menu *m,
-                                          E_Menu_Item *mi);
+static void _slide_face_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 
-static void _slide_face_cb_mouse_down(void *data, Evas *e,
-                                      Evas_Object *obj, void *event_info);
-static void _slide_face_cb_gmc_change(void *data, E_Gadman_Client *gmc,
-                                      E_Gadman_Change change);
+static void _slide_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _slide_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change);
 
 static int _slide_cb_check(void *data);
 
@@ -226,8 +223,8 @@ _slide_init(E_Module *m)
 
              if (ef)
                {
-                  ef->conf_face_edd =
-                     E_CONFIG_DD_NEW("Slide_Config_Face", Config_Face);
+                  ef->conf_face_edd = E_CONFIG_DD_NEW("Slide_Config_Face", Config_Face);
+
 #undef T
 #undef D
 #define T Config_Face
@@ -253,8 +250,7 @@ _slide_init(E_Module *m)
                   /* Add main menu to face menu */
                   mi = e_menu_item_new(e->config_menu);
                   e_menu_item_label_set(mi, _("Configuration"));
-                  e_menu_item_callback_set(mi, _slide_face_cb_menu_configure,
-                                           ef);
+                  e_menu_item_callback_set(mi, _slide_face_cb_menu_configure, ef);
 
                   mi = e_menu_item_new(e->config_menu);
                   e_menu_item_label_set(mi, con->name);
@@ -316,8 +312,7 @@ _slide_face_init(Slide_Face *sf)
    sf->slide_object = o;
 
    snprintf(buff, sizeof(buff), PACKAGE_DATA_DIR "/slideshow.edj");
-   if (!e_theme_edje_object_set
-       (o, "base/theme/modules/slideshow", "modules/slideshow/main"))
+   if (!e_theme_edje_object_set(o, "base/theme/modules/slideshow", "modules/slideshow/main"))
       edje_object_file_set(o, buff, "modules/slideshow/main");
    evas_object_show(o);
 
@@ -326,16 +321,14 @@ _slide_face_init(Slide_Face *sf)
    evas_object_layer_set(o, 2);
    evas_object_repeat_events_set(o, 1);
    evas_object_color_set(o, 0, 0, 0, 0);
-   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN,
-                                  _slide_face_cb_mouse_down, sf);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _slide_face_cb_mouse_down, sf);
    evas_object_show(o);
 
    sf->gmc = e_gadman_client_new(sf->con->gadman);
    e_gadman_client_domain_set(sf->gmc, "module.slideshow", slide_count++);
    e_gadman_client_policy_set(sf->gmc,
                               E_GADMAN_POLICY_ANYWHERE | E_GADMAN_POLICY_HMOVE |
-                              E_GADMAN_POLICY_VMOVE | E_GADMAN_POLICY_HSIZE |
-                              E_GADMAN_POLICY_VSIZE);
+                              E_GADMAN_POLICY_VMOVE | E_GADMAN_POLICY_HSIZE | E_GADMAN_POLICY_VSIZE);
    e_gadman_client_min_size_set(sf->gmc, 4, 4);
    e_gadman_client_max_size_set(sf->gmc, 128, 128);
    e_gadman_client_auto_size_set(sf->gmc, 40, 40);
@@ -378,12 +371,12 @@ _slide_face_menu_new(Slide_Face *face)
 
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("Configuration"));
-   e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");         
+   e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
    e_menu_item_callback_set(mi, _slide_face_cb_menu_configure, face);
    /* Edit */
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("Edit Mode"));
-   e_util_menu_item_edje_icon_set(mi, "enlightenment/gadgets");         
+   e_util_menu_item_edje_icon_set(mi, "enlightenment/gadgets");
    e_menu_item_callback_set(mi, _slide_face_cb_menu_edit, face);
 }
 
@@ -400,29 +393,24 @@ _slide_face_enable(Slide_Face *face)
           {
              if (face->slide->conf->cycle_time != 0)
                {
-                  ecore_timer_interval_set(face->slide->cycle_timer,
-                                           face->slide->conf->cycle_time);
+                  ecore_timer_interval_set(face->slide->cycle_timer, face->slide->conf->cycle_time);
                }
              else
                {
-                  face->slide->cycle_timer =
-                     ecore_timer_del(face->slide->cycle_timer);
+                  face->slide->cycle_timer = ecore_timer_del(face->slide->cycle_timer);
                   face->slide->cycle_timer = NULL;
                }
           }
         else
           {
-             face->slide->cycle_timer =
-                ecore_timer_add(face->slide->conf->cycle_time, _slide_cb_check,
-                                face);
+             face->slide->cycle_timer = ecore_timer_add(face->slide->conf->cycle_time, _slide_cb_check, face);
           }
      }
    else
      {
         if (face->slide->cycle_timer)
           {
-             face->slide->cycle_timer =
-                ecore_timer_del(face->slide->cycle_timer);
+             face->slide->cycle_timer = ecore_timer_del(face->slide->cycle_timer);
              face->slide->cycle_timer = NULL;
           }
      }
@@ -443,8 +431,7 @@ _slide_face_disable(Slide_Face *face)
 }
 
 static void
-_slide_face_cb_gmc_change(void *data, E_Gadman_Client *gmc,
-                          E_Gadman_Change change)
+_slide_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change)
 {
    Slide_Face *ef;
    Evas_Coord x, y, w, h;
@@ -471,8 +458,7 @@ _slide_face_cb_gmc_change(void *data, E_Gadman_Client *gmc,
 }
 
 static void
-_slide_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
-                          void *event_info)
+_slide_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Evas_Event_Mouse_Down *ev;
    Slide_Face *ef;
@@ -487,8 +473,7 @@ _slide_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
         E_Zone *zone;
 
         zone = e_zone_current_get(ef->con);
-        e_menu_activate_mouse(ef->menu, zone, ev->output.x, ev->output.y, 1, 1,
-                              E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
+        e_menu_activate_mouse(ef->menu, zone, ev->output.x, ev->output.y, 1, 1, E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
         e_util_container_fake_mouse_up_all_later(ef->con);
      }
    else if (ev->button == 2)
@@ -502,8 +487,7 @@ _slide_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
           }
         else
           {
-             es->cycle_timer =
-                ecore_timer_add(es->conf->cycle_time, _slide_cb_check, ef);
+             es->cycle_timer = ecore_timer_add(es->conf->cycle_time, _slide_cb_check, ef);
           }
      }
    else if (ev->button == 1)
@@ -609,8 +593,7 @@ _set_bg(char *bg, Slide_Face *sf)
      }
    else
      {
-        snprintf(buffer, sizeof(buffer), "%s/.e/e/backgrounds/%s/%s", home,
-                 e->conf->theme, bg);
+        snprintf(buffer, sizeof(buffer), "%s/.e/e/backgrounds/%s/%s", home, e->conf->theme, bg);
      }
 #else
    snprintf(buffer, sizeof(buffer), "%s/.e/e/backgrounds/%s", home, bg);
@@ -663,8 +646,7 @@ _slide_cb_config_updated(void *data)
           }
         else
           {
-             s->cycle_timer =
-                ecore_timer_add(s->conf->cycle_time, _slide_cb_check, s->face);
+             s->cycle_timer = ecore_timer_add(s->conf->cycle_time, _slide_cb_check, s->face);
           }
      }
 }
