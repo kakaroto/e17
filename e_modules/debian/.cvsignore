@@ -1,5 +1,6 @@
 emodule-calendar.substvars
 emodule-cpu.substvars
+emodule-devian.substvars
 emodule-emu.substvars
 emodule-evolume.substvars
 emodule-flame.substvars
@@ -15,3 +16,4 @@ emodule-tclock.substvars
 emodule-uptime.substvars
 emodule-weather.substvars
 emodule-wlan.substvars
+stamp-autotools-files
