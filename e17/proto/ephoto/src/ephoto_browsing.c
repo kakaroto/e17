@@ -226,7 +226,9 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
   			m->row = ewl_tree_row_add(EWL_TREE(m->imagetree), NULL, m->children);
 			ewl_callback_append(m->hbox, EWL_CALLBACK_CLICKED, images_cb, NULL);
 			free(itemp);
-		}	
+		}
+		m->data = NULL;
+		ewl_combo_dirty_set(EWL_COMBO(m->atext), 1);	
 		/***********************************************************************/
 		ecore_list_destroy(files);
 		ecore_list_destroy(imagefiles);
@@ -267,7 +269,9 @@ iremove_cb(Ewl_Widget *w, void *event, void *data)
 	
 	name = ewl_widget_name_get(w);
 	
-	ewl_container_child_remove(EWL_CONTAINER(m->ib), w);
+	ewl_widget_destroy(w);
+
+	ewl_freebox_resort(EWL_FREEBOX(m->ib));
 	
 	/*********Lets remove the image from the list*********/
 	name2 = ecore_dlist_goto_first(m->imagelist);
@@ -312,12 +316,14 @@ images_cb(Ewl_Widget *w, void *event, void *data)
 	/**********Add the images to the iconbox and list**********/
 	if ( page == m->vbox2 || w == m->vbutton ) {
 	        m->i = ewl_image_thumbnail_new();
-                ewl_image_constrain_set(EWL_IMAGE(m->i), 64);
+                ewl_widget_name_set(m->i, pathi);
+		ewl_image_constrain_set(EWL_IMAGE(m->i), 64);
                 ewl_image_proportional_set(EWL_IMAGE(m->i), TRUE);
                 ewl_image_thumbnail_request(EWL_IMAGE(m->i), pathi);
                 ewl_image_file_set(EWL_IMAGE(m->i), PACKAGE_DATA_DIR "images/camera.png", NULL);
                 ewl_container_child_append(EWL_CONTAINER(m->ib), m->i);
-                ewl_widget_show(m->i);
+                ewl_callback_append(m->i, EWL_CALLBACK_CLICKED, iremove_cb, NULL);
+		ewl_widget_show(m->i);
 		
 		ecore_dlist_append(m->imagelist, strdup(pathi));
 		slidenum++;

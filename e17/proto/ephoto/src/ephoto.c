@@ -585,8 +585,14 @@ main(int argc, char **argv)
 		ewl_text_font_size_set(EWL_TEXT(m->hsize), 10);
 		ewl_widget_show(m->hsize);
 		
+		m->hboxv = ewl_hbox_new();
+		ewl_object_fill_policy_set(EWL_OBJECT(m->hboxv), EWL_FLAG_FILL_SHRINK);
+		ewl_container_child_append(EWL_CONTAINER(m->settings), m->hboxv);
+		ewl_object_alignment_set(EWL_OBJECT(m->settings), EWL_FLAG_ALIGN_CENTER);
+		ewl_widget_show(m->hboxv);
+		
 		m->text = ewl_text_new();
-		ewl_container_child_append(EWL_CONTAINER(m->settings), m->text);
+		ewl_container_child_append(EWL_CONTAINER(m->hboxv), m->text);
 		ewl_object_alignment_set(EWL_OBJECT(m->text), EWL_FLAG_ALIGN_CENTER);
 		ewl_text_font_size_set(EWL_TEXT(m->text), 12);
 		ewl_text_styles_set(EWL_TEXT(m->text), EWL_TEXT_STYLE_UNDERLINE);
@@ -594,10 +600,8 @@ main(int argc, char **argv)
 		ewl_text_text_set(EWL_TEXT(m->text), "Audio");
 		ewl_widget_show(m->text);
 
-		m->data = _data_setup();
-
 		m->atext = ewl_combo_new();
-		ewl_container_child_append(EWL_CONTAINER(m->settings), m->atext);
+		ewl_container_child_append(EWL_CONTAINER(m->hboxv), m->atext);
 		ewl_object_alignment_set(EWL_OBJECT(m->atext), EWL_FLAG_ALIGN_CENTER);
 		ewl_widget_show(m->atext);
 			
