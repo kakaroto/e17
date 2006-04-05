@@ -4,8 +4,8 @@ dnl Process this file with autoconf to produce a configure script.
 rm -f config.cache
 
 AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(empower, 0.1.0)
-AM_CONFIG_HEADER(src/config.h)
+AM_INIT_AUTOMAKE(empower, 0.2.0)
+AM_CONFIG_HEADER(src/bin/config.h)
 
 AC_ISC_POSIX
 AC_PROG_CC
@@ -88,17 +88,43 @@ ecore_libs=`$ECORE_CONFIG --libs`
 AC_SUBST(ecore_cflags)
 AC_SUBST(ecore_libs)
 
-PROG="ewl-config";
-AC_PATH_PROG(EWL_CONFIG, $PROG, "", $PATH)
-if test -z "$EWL_CONFIG" ; then
-    echo $PROG " is not in your \$PATH. Please ensure it is.";
-    echo "Read the manual page for your shell as to how to extend your path.";
-    AC_MSG_ERROR(Cannot find $PROG)
+#PROG="ewl-config";
+#AC_PATH_PROG(EWL_CONFIG, $PROG, "", $PATH)
+#if test -z "$EWL_CONFIG" ; then
+#    echo $PROG " is not in your \$PATH. Please ensure it is.";
+#    echo "Read the manual page for your shell as to how to extend your path.";
+#    AC_MSG_ERROR(Cannot find $PROG)
+#fi
+
+
+#PROG="etk-config";
+#AC_PATH_PROG(ETK_CONFIG, $PROG, "", $PATH)
+#if test -z "$ETK_CONFIG" ; then
+#    echo $PROG " is not in your \$PATH. Please ensure it is.";
+#    echo "Read the manual page for your shell as to how to extend your path.";
+#    AC_MSG_ERROR(Cannot find $PROG)
+#fi
+
+AC_PATH_GENERIC(ewl, 0.0.4, [have_ewl="yes"], [have_ewl="no"])
+if test x$have_ewl ; then
+	ewl_cflags=`$EWL_CONFIG --cflags`
+	ewl_libs=`$EWL_CONFIG --libs`
+	AC_SUBST(ewl_cflags)
+	AC_SUBST(ewl_libs)
 fi
-ewl_cflags=`$EWL_CONFIG --cflags`
-ewl_libs=`$EWL_CONFIG --libs`
-AC_SUBST(ewl_cflags)
-AC_SUBST(ewl_libs)
+AM_CONDITIONAL(HAVE_EWL, test x$have_ewl = xyes)
+
+AC_PATH_GENERIC(etk, 0.1.0, [have_etk="yes"], [have_etk="no"])
+if test x$have_etk ; then
+	etk_cflags=`$ETK_CONFIG --cflags`
+	etk_libs=`$ETK_CONFIG --libs`
+	AC_SUBST(etk_cflags)
+	AC_SUBST(etk_libs)
+fi
+AM_CONDITIONAL(HAVE_ETK, test x$have_etk = xyes)
+
+#AC_DEFINE_UNQUOTED(HAVE_EWL, "${have_ewl}", [EWL])
+#AC_DEFINE_UNQUOTED(HAVE_ETK, "${have_etk}", [ETK])
 
 PROG="edje-config";
 AC_PATH_PROG(EDJE_CONFIG, $PROG, "", $PATH)
@@ -118,5 +144,7 @@ Makefile
 empower.spec
 src/Makefile
 src/bin/Makefile
+src/bin/ewl/Makefile
+src/bin/etk/Makefile
 ])
 
