@@ -31,6 +31,18 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Program source directory])
 
+dnl Set path to X_BINARIES in config.h
+dnl# FIXME:  Use AC_PATH_PROG macro here.
+xbin=""
+AC_ARG_WITH(xbin, [ --with-xbin=DIR            Directory where X binaries are installed ],
+            [
+                xbin="$withval"
+            ], [
+                xbin="/usr/X11R6/bin";
+            ])
+AC_DEFINE_UNQUOTED(X_BINARIES, "${xbin}", [Path to X binaries])
+AC_SUBST(xbin)
+
 dnl Use -Wall if we have gcc.
 changequote(,)dnl
 if test "x$GCC" = "xyes"; then
@@ -240,6 +252,7 @@ echo "Support for crypt authentication .... $have_crypt"
 echo "Support for shadow authentication ... $have_shadow"
 echo "Support for PAM authentication ...... $have_pam"
 echo "XSession file to use ................ $xsession "
+echo "X binaries prefix  .................. $xbin"
 echo
 echo "Now type 'make' (gmake on some systems) to compile $PACKAGE"
 echo

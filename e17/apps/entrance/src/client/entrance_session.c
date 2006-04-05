@@ -1,3 +1,4 @@
+#include "config.h"
 #include "entrance.h"
 #include "entrance_session.h"
 #include <Ecore_Config.h>
@@ -403,7 +404,7 @@ entrance_session_start_user_session(Entrance_Session * e)
    {
       printf("Would have executed: %s\n", buf);
       fflush(stdout);
-      snprintf(buf, PATH_MAX, "/usr/X11R6/bin/xterm");
+      snprintf(buf, PATH_MAX, X_BINARIES"/xterm");
    }
 
    syslog(LOG_INFO, "Executing %s", buf);
