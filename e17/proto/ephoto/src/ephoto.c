@@ -245,6 +245,18 @@ main(int argc, char **argv)
 		ewl_container_child_append(EWL_CONTAINER(m->menubar), m->menu);
 		ewl_object_fill_policy_set(EWL_OBJECT(m->menu), EWL_FLAG_FILL_NONE);
 		ewl_widget_show(m->menu);
+		
+		m->menu_item = ewl_menu_item_new();
+		ewl_button_label_set(EWL_BUTTON(m->menu_item), "Save Slideshow/Presentation");
+		ewl_container_child_append(EWL_CONTAINER(m->menu), m->menu_item);
+		ewl_callback_append(m->menu_item, EWL_CALLBACK_CLICKED, slideshow_save_cb, NULL);
+		ewl_widget_show(m->menu_item);
+
+		m->menu_item = ewl_menu_item_new();
+                ewl_button_label_set(EWL_BUTTON(m->menu_item), "Load Slideshow/Presentation");
+                ewl_container_child_append(EWL_CONTAINER(m->menu), m->menu_item);
+                ewl_callback_append(m->menu_item, EWL_CALLBACK_CLICKED, slideshow_load_cb, NULL);
+		ewl_widget_show(m->menu_item);
 
 		m->menu_item = ewl_menu_item_new();
 		ewl_button_label_set(EWL_BUTTON(m->menu_item), "Exit");

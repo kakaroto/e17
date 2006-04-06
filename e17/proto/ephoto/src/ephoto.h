@@ -37,6 +37,11 @@ void realize_cb(Ewl_Widget *w, void *event, void *data);
 void play_cb(Ewl_Widget *w, void *event, void *data);
 void ephoto_men_cb(Ewl_Widget *w, void *event, void *data);
 void destroywin_cb(Ewl_Widget *w, void *event, void *data);
+void slideshow_save_cb(Ewl_Widget *w, void *event, void *data);
+void save_cb(Ewl_Widget *w, void *event, void *data);
+void slideshow_load_cb(Ewl_Widget *w, void *event, void *data);
+void loadclicked_cb(Ewl_Widget *w, void *event, void *data);
+void load_cb(Ewl_Widget *w, void *event, void *data);
 
 typedef struct _Main Main;
 typedef struct _Slide Slide;
@@ -44,6 +49,8 @@ typedef struct _Present Present;
 struct _Main
 {
 	Ewl_Widget	*win;
+	Ewl_Widget	*save_win;
+	Ewl_Widget	*load_win;
 	Ewl_Widget	*scrollpane1;
 	Ewl_Widget	*hbox;
 	Ewl_Widget	*hboxv;
@@ -72,6 +79,7 @@ struct _Main
 	Ewl_Widget  	*atext;
 	Ewl_Widget  	*texta;
 	Ewl_Widget  	*texti;
+	Ewl_Widget	*otext;
 	Ewl_Widget  	*rad1;
 	Ewl_Widget	*rad2;
 	Ewl_Widget	*rad3;

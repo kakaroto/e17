@@ -125,3 +125,241 @@ ephoto_men_cb(Ewl_Widget * w, void *event, void *data)
         ewl_widget_show(cancel);
 }
 
+void slideshow_save_cb(Ewl_Widget *w, void *event, void *data)
+{
+	Ewl_Widget *vbox;
+	Ewl_Widget *hbox;
+	Ewl_Widget *text;
+	Ewl_Widget *entry;
+	Ewl_Widget *ok;
+	Ewl_Widget *cancel;
+
+        m->save_win = ewl_window_new();
+        ewl_window_title_set(EWL_WINDOW(m->save_win), "Save As");
+        ewl_window_name_set(EWL_WINDOW(m->save_win), "Save As");
+        ewl_object_size_request(EWL_OBJECT(m->save_win), 200, 100);
+        ewl_callback_append(m->save_win, EWL_CALLBACK_DELETE_WINDOW, destroywin_cb, m->save_win);
+        ewl_widget_show(m->save_win);
+
+        vbox = ewl_vbox_new();
+        ewl_container_child_append(EWL_CONTAINER(m->save_win), vbox);
+        ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
+	ewl_widget_show(vbox);
+
+	text = ewl_text_new();
+        ewl_text_text_set(EWL_TEXT(text), "Save As(Enter a name, not a path)");
+	ewl_container_child_append(EWL_CONTAINER(vbox), text);
+        ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_CENTER);
+        ewl_text_font_size_set(EWL_TEXT(text), 12);
+        ewl_widget_show(text);
+
+	entry = ewl_entry_new();
+        ewl_object_maximum_size_set(EWL_OBJECT(entry), 120, 10);
+        ewl_object_alignment_set(EWL_OBJECT(entry), EWL_FLAG_ALIGN_CENTER);
+        ewl_container_child_append(EWL_CONTAINER(vbox), entry);
+        ewl_text_font_size_set(EWL_TEXT(entry), 10);
+        ewl_widget_show(entry);
+
+        hbox = ewl_hbox_new();
+        ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
+        ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_SHRINK);
+        ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_CENTER);
+	ewl_widget_show(hbox);
+	
+        ok = ewl_button_new();
+        ewl_button_label_set(EWL_BUTTON(ok), "Ok");
+        ewl_container_child_append(EWL_CONTAINER(hbox), ok);
+        ewl_object_alignment_set(EWL_OBJECT(ok), EWL_FLAG_ALIGN_CENTER);
+        ewl_object_maximum_size_set(EWL_OBJECT(ok), 80, 15);
+        ewl_callback_append(ok, EWL_CALLBACK_CLICKED, save_cb, entry);
+        ewl_widget_show(ok);
+
+        cancel = ewl_button_new();
+        ewl_button_label_set(EWL_BUTTON(cancel), "Close");
+        ewl_container_child_append(EWL_CONTAINER(hbox), cancel);
+        ewl_object_alignment_set(EWL_OBJECT(cancel), EWL_FLAG_ALIGN_CENTER);
+        ewl_object_maximum_size_set(EWL_OBJECT(cancel), 80, 15);
+        ewl_callback_append(cancel, EWL_CALLBACK_CLICKED, destroywin_cb, m->save_win);
+        ewl_widget_show(cancel);
+
+}
+
+void save_cb(Ewl_Widget *w, void *event, void *data)
+{
+	char homepath[PATH_MAX];
+	char *home = getenv("HOME");
+	char *name;
+	char create_path[PATH_MAX];
+	FILE *file_ptr;
+
+	snprintf(homepath, PATH_MAX, "%s/.e/ephoto/", home);
+	
+	if ( !ecore_file_exists(homepath) ) {
+		ecore_file_mkdir(homepath);
+	}
+	
+	name = ewl_text_text_get(EWL_TEXT(data));
+
+	if ( name != NULL ) {	
+		snprintf(create_path, PATH_MAX, "%s%s", homepath, name);
+
+		if ( ecore_file_exists(create_path) ) {
+			ecore_file_recursive_rm(create_path);
+		}
+		
+		file_ptr = fopen(create_path, "w");
+
+		while ( !ecore_dlist_is_empty(m->imagelist) ) {
+			char *tempo;
+			char tempo2[PATH_MAX];
+			tempo = ecore_dlist_remove_first(m->imagelist);
+			snprintf(tempo2, PATH_MAX, "%s\n", tempo);
+			fputs(tempo2, file_ptr);
+		}
+		fclose(file_ptr);
+	}
+	
+	ewl_widget_destroy(m->save_win);
+}
+void slideshow_load_cb(Ewl_Widget *w, void *event, void *data)
+{
+        Ewl_Widget *vbox;
+        Ewl_Widget *hbox;
+	Ewl_Widget *rtext;
+        Ewl_Widget *tree;
+        Ewl_Widget *ok;
+        Ewl_Widget *cancel;
+	Ewl_Widget *row;
+	Ewl_Widget *children[1];
+	char *home = getenv("HOME");
+	char homepath[PATH_MAX];	
+	Ecore_List *slideshows;
+
+	slideshows = ecore_list_new();
+
+	snprintf(homepath, PATH_MAX, "%s/.e/ephoto", home);
+
+        m->load_win = ewl_window_new();
+        ewl_window_title_set(EWL_WINDOW(m->load_win), "Load");
+        ewl_window_name_set(EWL_WINDOW(m->load_win), "Load");
+        ewl_object_size_request(EWL_OBJECT(m->load_win), 200, 210);
+        ewl_callback_append(m->load_win, EWL_CALLBACK_DELETE_WINDOW, destroywin_cb, m->load_win);
+        ewl_widget_show(m->load_win);
+
+        vbox = ewl_vbox_new();
+        ewl_container_child_append(EWL_CONTAINER(m->load_win), vbox);
+        ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
+        ewl_widget_show(vbox);
+
+        tree = ewl_tree_new(1);
+        ewl_container_child_append(EWL_CONTAINER(vbox), tree);
+        ewl_tree_headers_visible_set(EWL_TREE(tree), 0);
+        ewl_tree_expandable_rows_set(EWL_TREE(tree), FALSE);
+        ewl_object_maximum_size_set(EWL_OBJECT(tree), 200, 215);
+        ewl_widget_show(tree);
+	
+	slideshows = ecore_file_ls(homepath);
+	
+	while ( !ecore_list_is_empty(slideshows) ) {
+		char *tempo;
+		tempo = ecore_list_remove_first(slideshows);
+
+                rtext = ewl_text_new();
+                ewl_widget_name_set(rtext, tempo);
+                ewl_text_text_set(EWL_TEXT(rtext), tempo);
+                ewl_object_minimum_size_set(EWL_OBJECT(rtext), 10, 16);
+                ewl_object_fill_policy_set(EWL_OBJECT(rtext), EWL_FLAG_FILL_ALL);
+                ewl_widget_show(rtext);
+
+                children[0] = rtext;
+                children[1] = NULL;
+                row = ewl_tree_row_add(EWL_TREE(tree), NULL, children);
+                ewl_callback_append(rtext, EWL_CALLBACK_CLICKED, loadclicked_cb, NULL);
+	}
+
+        m->otext = ewl_text_new();
+        ewl_container_child_append(EWL_CONTAINER(vbox), m->otext);
+        ewl_object_alignment_set(EWL_OBJECT(m->otext), EWL_FLAG_ALIGN_CENTER);
+        ewl_text_font_size_set(EWL_TEXT(m->otext), 12);
+        ewl_widget_show(m->otext);
+
+        hbox = ewl_hbox_new();
+        ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
+        ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_SHRINK);
+        ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_CENTER);
+        ewl_widget_show(hbox);
+
+        ok = ewl_button_new();
+        ewl_button_label_set(EWL_BUTTON(ok), "Ok");
+        ewl_container_child_append(EWL_CONTAINER(hbox), ok);
+        ewl_object_alignment_set(EWL_OBJECT(ok), EWL_FLAG_ALIGN_CENTER);
+        ewl_object_maximum_size_set(EWL_OBJECT(ok), 80, 15);
+        ewl_callback_append(ok, EWL_CALLBACK_CLICKED, load_cb, NULL);
+        ewl_widget_show(ok);
+
+        cancel = ewl_button_new();
+        ewl_button_label_set(EWL_BUTTON(cancel), "Close");
+        ewl_container_child_append(EWL_CONTAINER(hbox), cancel);
+        ewl_object_alignment_set(EWL_OBJECT(cancel), EWL_FLAG_ALIGN_CENTER);
+        ewl_object_maximum_size_set(EWL_OBJECT(cancel), 80, 15);
+        ewl_callback_append(cancel, EWL_CALLBACK_CLICKED, destroywin_cb, m->load_win);
+        ewl_widget_show(cancel);
+}
+
+void loadclicked_cb(Ewl_Widget *w, void *event, void *data)
+{
+	char *rpath;
+	rpath = ewl_widget_name_get(w);
+	ewl_text_text_set(EWL_TEXT(m->otext), rpath);
+}
+
+void load_cb(Ewl_Widget *w, void *event, void *data)
+{
+	char *home = getenv("HOME");
+	char homepath[PATH_MAX];
+	char *apath;
+	FILE *file_ptr;	
+
+	apath = ewl_text_text_get(EWL_TEXT(m->otext));
+	snprintf(homepath, PATH_MAX, "%s/.e/ephoto/%s", home, apath);
+	printf("%s\n", homepath);
+
+	file_ptr = fopen(homepath, "r");
+
+	if (file_ptr != NULL) {
+		char paths[PATH_MAX];
+		while (fgets(paths,PATH_MAX,file_ptr)!=NULL) {
+			char path2[PATH_MAX];
+			int strleng;
+			
+			strleng = strlen(paths);
+		
+			snprintf(path2, strleng, "%s", paths);
+
+			printf("%s\n", path2);			
+
+			m->i = ewl_image_thumbnail_new();
+                	ewl_widget_name_set(m->i, path2);
+                	ewl_image_constrain_set(EWL_IMAGE(m->i), 64);
+                	ewl_image_proportional_set(EWL_IMAGE(m->i), TRUE);
+               		ewl_image_thumbnail_request(EWL_IMAGE(m->i), path2);
+               	 	ewl_image_file_set(EWL_IMAGE(m->i), PACKAGE_DATA_DIR "images/camera.png", NULL);
+               	 	ewl_container_child_append(EWL_CONTAINER(m->ib), m->i);
+               	 	ewl_callback_append(m->i, EWL_CALLBACK_CLICKED, iremove_cb, NULL);
+        	        ewl_widget_show(m->i);
+	
+                	ecore_dlist_append(m->imagelist, strdup(path2));
+                	slidenum++;
+
+			ewl_widget_enable(m->slideshow);
+			ewl_widget_state_set(m->slideshow, "enabled");
+			ewl_widget_enable(m->presentation);
+			ewl_widget_state_set(m->presentation, "enabled");
+		}
+		
+		fclose(file_ptr);
+		ewl_widget_destroy(m->load_win);
+	}
+	
+}
+
