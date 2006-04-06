@@ -20,36 +20,38 @@ typedef void (*mixer_callback) (void *pr);
 
 struct _Mixer
 {
-        /** Name of this mixer */
+   /* Name of this mixer */
    Mixer_Name *name;
-        /** System for this mixer */
+   /* System for this mixer */
    Mixer_System *system;
 
-        /** Local data - mixer engine definded data */
+   /* Local data - mixer engine definded data */
    void *local;
 
-        /** Mixer elements */
+   /* Mixer elements */
    Evas_List *elems;
 
-        /** Signals if update necessary */
+   /* Signals if update necessary */
    int is_changed;
 
-        /** Callback and callback data */
+   /* Callback and callback data */
    mixer_callback callback;
    void *callback_private;
 
-        /** Reference counter */
+   /* Reference counter */
    int ref;
 
-        /** Pointer to function, that initializes mixer */
+   /* Pointer to function, that initializes mixer */
    Mixer *(*open) (Mixer *mixer, Mixer_System *ms, Mixer_Name *mixer_name);
-        /** Pointer to function, that frees mixer */
+   
+   /* Pointer to function, that frees mixer */
    int (*close) (Mixer *mixer, Mixer_System *ms);
-        /** Standart operations: get and set volume */
+   
+   /* Standart operations: get and set volume */
    int (*get_volume) (Mixer_Elem *melem, int *left, int *right);
    int (*set_volume) (Mixer_Elem *melem, int left, int right);
 
-        /** get and set mute */
+   /* get and set mute */
    int (*get_mute) (Mixer_Elem *melem);
    int (*set_mute) (Mixer_Elem *melem, int mute);
 
@@ -61,21 +63,22 @@ struct _Mixer
 
 struct _Mixer_Elem
 {
-        /** pointer to the parent */
+   /* pointer to the parent */
    Mixer *mixer;
 
-        /** type of mixer (reserved) */
+   /* type of mixer (reserved) */
    char type;
 
-        /** mixer name (printable) */
+   /* mixer name (printable) */
    char *name;
 
-        /** is this mixer active? */
+   /* is this mixer active? */
    char active;
-        /** local (engine specific) data */
+   
+   /* local (engine specific) data */
    void *local;
 
-        /** Element identifier (hash) */
+   /* Element identifier (hash) */
    int elem_id;
 
    /* Previous volume */
@@ -85,26 +88,28 @@ struct _Mixer_Elem
 
 struct _Mixer_Name
 {
-        /** card name (engine specific */
+   /* card name (engine specific */
    char *card;
-        /** real (printable) name */
+   
+   /* real (printable) name */
    char *real;
-        /** active flag */
+   
+   /* active flag */
    int active;
 
-        /** ID of mixer, this is typically hash */
+   /* ID of mixer, this is typically hash */
    int mixer_id;
 
-        /** name of mixer system (parent)*/
+   /* name of mixer system (parent) */
    Mixer_System_Name *system_name;
 };
 
 struct _Mixer_System
 {
-        /** name of mixer system (child)*/
+   /* name of mixer system (child) */
    Mixer_System_Name *name;
 
-        /** dl info */
+   /* dl info */
    void *handle;
    int ref;
 
@@ -115,10 +120,11 @@ struct _Mixer_System_Name
 {
    /* This is system name: name of module_%s */
    char *system;
+   
    /* This is name of system (in nice printable form */
    char *name;
 
-        /** system id (hash) */
+   /** system id (hash) */
    int system_id;
 
    /* List of Mixer_Name structures */
