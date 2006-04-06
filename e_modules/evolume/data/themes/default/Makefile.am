@@ -22,7 +22,7 @@ EXTRA_DIST = ./default.edc \
 	     ./images/volume_bar_vert.png \
 	     ./images/bg.png \
 	     ./images/over.png \
-	     ./volume_icon.png
+	     ./module_icon.png
 
 
 volume.edj: Makefile $(EXTRA_DIST)
