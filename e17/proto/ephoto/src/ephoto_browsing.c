@@ -337,12 +337,12 @@ images_cb(Ewl_Widget *w, void *event, void *data)
 	/********************************************************/
 	if ( w == m->vbutton ) {
 		pathi = ewl_image_file_path_get(EWL_IMAGE(m->vimage));
-		name = basename(pathi);
+		name = basename((char *)pathi);
 	}
 	
 	else {
 		pathi = ewl_widget_name_get(w);
-		name = basename(pathi);
+		name = basename((char *)pathi);
 	}
 	
 	page = ewl_notebook_visible_page_get(EWL_NOTEBOOK(m->notebook));
