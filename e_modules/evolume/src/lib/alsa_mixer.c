@@ -97,14 +97,6 @@ s_get_systems()
 static int
 _alsamixer_event(snd_mixer_t *__UNUSED__ m, unsigned int __UNUSED__ sign, snd_mixer_elem_t *__UNUSED__ elem)
 {
-   //Mixer* mixer;
-
-   /*
-    * mixer = (Mixer*) snd_mixer_get_callback_private(m);
-    * 
-    * if(mixer && mixer->callback)
-    * mixer->callback(mixer->callback_private);
-    */
    return 0;
 }
 #endif
@@ -168,8 +160,6 @@ _alsamixer_handler(void *data, Ecore_Fd_Handler *handler)
 
    mixer->is_changed = 1;
 
-//      fprintf(stderr,"revents = %x\n, POLLIN, POLLNVAL, POLLERR = %x, %x, %x\n",
-//                      revents, POLLIN, POLLNVAL, POLLERR);
    if (revents & POLLIN && mixer->callback && !amixer->update)
       mixer->callback(mixer->callback_private);
 
@@ -284,16 +274,8 @@ m_open(Mixer *mixer, Mixer_System *ms, Mixer_Name *mixer_name)
    snd_mixer_set_callback_private(handle, mixer);
 
    mixer->name = mixer_name;
-
-   if (mixer->name == NULL)
-     {
-        fprintf(stderr, "Mixer %s was not listed\n", card);
-     }
-
    amixer->handle = handle;
-
    mixer->system = ms;
-
    mixer->elems = NULL;
 
    for (i = 0, elem = snd_mixer_first_elem(handle); elem; elem = snd_mixer_elem_next(elem))
@@ -318,11 +300,9 @@ m_open(Mixer *mixer, Mixer_System *ms, Mixer_Name *mixer_name)
 
              mixer->elems = evas_list_append(mixer->elems, melem);
           }
-
      }
 
    alsamixer_set_poll_handlers(mixer);
-
    return mixer;
 }
 
@@ -382,7 +362,6 @@ m_get_volume(Mixer_Elem *melem, int *left, int *right)
    amixer = ALSAMIXER(mixer->local);
    snd_mixer_handle_events(amixer->handle);
 
-   //fprintf(stderr,"mixer->is_changed = %d\n", mixer->is_changed);
    if (mixer->is_changed)
      {
         snd_mixer_free(amixer->handle);
@@ -395,9 +374,7 @@ m_get_volume(Mixer_Elem *melem, int *left, int *right)
      }
 
    elem = snd_mixer_find_selem(amixer->handle, melem->local);
-
    snd_mixer_selem_get_playback_volume(elem, 0, &lvol);
-
    snd_mixer_selem_get_playback_volume_range(elem, &min, &max);
 
    if (snd_mixer_selem_is_playback_mono(elem))
@@ -422,17 +399,13 @@ m_set_volume(Mixer_Elem *melem, int left, int right)
 
    mixer = melem->mixer;
    amixer = ALSAMIXER(mixer->local);
-
-//      fprintf(stderr,"volume = (%d,%d)\n", left, right);
    amixer->update = 1;
 
    elem = snd_mixer_find_selem(amixer->handle, melem->local);
-
    snd_mixer_selem_get_playback_volume_range(elem, &min, &max);
 
    lvol = convert_from_percent(left, min, max);
    rvol = convert_from_percent(right, min, max);
-//      fprintf(stderr,"cvolume = (%ld,%ld)\n", lvol, rvol);
 
    snd_mixer_selem_set_playback_volume(elem, 0, lvol);
 
