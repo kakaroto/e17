@@ -2197,21 +2197,14 @@ _mbar_add_order(const char *dir, const char *name)
 {
    FILE *f;
    char path[4096];
-
+   char buf[1024];
+   
    snprintf(path, sizeof(path), "%s/.e/e/applications/%s/.order", getenv("HOME"), dir);
-
-   if (!ecore_file_exists(path))
-     {
-        f = fopen(path, "w");
-        if (!f)
-           return;
-        fclose(f);
-     }
-
-   f = fopen(path, "w+");
+   f = fopen(path, "a");
    if (!f)
       return;
-   fwrite(name, sizeof(char), strlen(name), f);
+   snprintf(buf, sizeof(buf), "%s\n", name);
+   fwrite(buf, sizeof(char), strlen(buf), f);
    fclose(f);
 }
 
