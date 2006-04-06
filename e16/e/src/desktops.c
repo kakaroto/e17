@@ -47,7 +47,7 @@
 
 #define ENLIGHTENMENT_CONF_NUM_DESKTOPS 32
 
-typedef struct _desktops
+typedef struct
 {
    Desk               *current;
    Desk               *previous;

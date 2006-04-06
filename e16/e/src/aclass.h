@@ -24,10 +24,7 @@
 #ifndef _ACLASS_H
 #define _ACLASS_H
 
-struct _ewin;
-
-typedef struct _action Action;
-typedef struct _actionclass ActionClass;
+#include "etypes.h"
 
 /* aclass.c */
 int                 AclassConfigLoad(FILE * fs);
@@ -48,7 +45,7 @@ const char         *ActionclassGetTooltipString(ActionClass * ac);
 int                 ActionclassGetActionCount(ActionClass * ac);
 Action             *ActionclassGetAction(ActionClass * ac, int ix);
 int                 ActionclassEvent(ActionClass * ac, XEvent * ev,
-				     struct _ewin *ewin);
+				     EWin * ewin);
 int                 ActionclassesGlobalEvent(XEvent * ev);
 
 const char         *ActionGetTooltipString(Action * aa);
@@ -57,7 +54,7 @@ int                 ActionGetEvent(Action * aa);
 int                 ActionGetButton(Action * aa);
 int                 ActionGetModifiers(Action * aa);
 
-void                GrabButtonGrabs(struct _ewin *ewin);
-void                UnGrabButtonGrabs(struct _ewin *ewin);
+void                GrabButtonGrabs(EWin * ewin);
+void                UnGrabButtonGrabs(EWin * ewin);
 
 #endif /* _ACLASS_H */

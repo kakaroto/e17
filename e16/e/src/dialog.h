@@ -47,11 +47,9 @@
 #define DLG_OAC 7
 #define DLG_OC  5
 
-struct _imageclass;
-struct _textclass;
-
 typedef struct _dialog Dialog;
 typedef struct _ditem DItem;
+
 typedef void        (DialogCallbackFunc) (Dialog * d, int val, void *data);
 typedef void        (DialogItemCallbackFunc) (int val, void *data);
 
@@ -82,8 +80,8 @@ DItem              *DialogInitItem(Dialog * d);
 DItem              *DialogAddItem(DItem * dii, int type);
 void                DialogItemSetCallback(DItem * di, DialogCallbackFunc * func,
 					  int val, void *data);
-void                DialogItemSetClass(DItem * di, struct _imageclass *ic,
-				       struct _textclass *tclass);
+void                DialogItemSetClass(DItem * di, ImageClass * ic,
+				       TextClass * tclass);
 void                DialogItemSetPadding(DItem * di, int left, int right,
 					 int top, int bottom);
 void                DialogItemSetFill(DItem * di, char fill_h, char fill_v);

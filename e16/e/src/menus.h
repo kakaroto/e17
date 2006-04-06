@@ -24,7 +24,7 @@
 #ifndef _MENUS_H_
 #define _MENUS_H_
 
-struct _imageclass;
+#include "etypes.h"
 
 typedef struct _menu Menu;
 typedef struct _menuitem MenuItem;
@@ -43,7 +43,7 @@ void                MenuDestroy(Menu * m);
 void                MenuHide(Menu * m);
 void                MenuEmpty(Menu * m, int destroying);
 void                MenuRepack(Menu * m);
-MenuItem           *MenuItemCreate(const char *text, struct _imageclass *ic,
+MenuItem           *MenuItemCreate(const char *text, ImageClass * ic,
 				   const char *action_params, Menu * child);
 void                MenuSetInternal(Menu * m);
 void                MenuSetDynamic(Menu * m);

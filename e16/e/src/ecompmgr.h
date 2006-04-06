@@ -26,6 +26,7 @@
 #if USE_COMPOSITE
 
 #include "eobj.h"
+#include "etypes.h"
 
 typedef struct
 {
@@ -35,13 +36,11 @@ typedef struct
    int                 fade_speed;
 } cfg_composite;
 
-struct _desk;
-
 int                 EVisualIsARGB(Visual * vis);
 
 int                 ECompMgrIsActive(void);
 
-int                 ECompMgrDeskConfigure(struct _desk *dsk);
+int                 ECompMgrDeskConfigure(Desk * dsk);
 
 void                ECompMgrWinNew(EObj * eo);
 void                ECompMgrWinDel(EObj * eo);
@@ -49,8 +48,7 @@ void                ECompMgrWinMap(EObj * eo);
 void                ECompMgrWinUnmap(EObj * eo);
 void                ECompMgrWinMoveResize(EObj * eo, int change_xy,
 					  int change_wh, int change_bw);
-void                ECompMgrWinReparent(EObj * eo, struct _desk *dsk,
-					int change_xy);
+void                ECompMgrWinReparent(EObj * eo, Desk * dsk, int change_xy);
 void                ECompMgrWinRaise(EObj * eo);
 void                ECompMgrWinLower(EObj * eo);
 void                ECompMgrWinChangeShape(EObj * eo);

@@ -23,7 +23,7 @@
 #ifndef _SNAPS_H_
 #define _SNAPS_H_
 
-typedef struct _snapshot Snapshot;
+#include "etypes.h"
 
 #define SNAP_MATCH_TITLE        (1 << 0)
 #define SNAP_MATCH_NAME         (1 << 1)

@@ -21,26 +21,36 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#ifndef _TOOLTIPS_H_
-#define _TOOLTIPS_H_
+#ifndef _ETYPES_H_
+#define _ETYPES_H_
 
-#include "etypes.h"
+/*
+ * Opaque types
+ */
+typedef struct _background Background;
 
-typedef struct _tooltip ToolTip;
+typedef struct _border Border;
 
-typedef ActionClass *(CB_GetAclass) (void *data);
+typedef struct _button Button;
 
-int                 TooltipConfigLoad(FILE * fs);
+typedef struct _desk Desk;
 
-void                TooltipShow(ToolTip * tt, const char *text,
-				ActionClass * ac, int x, int y);
-void                TooltipHide(ToolTip * tt);
+typedef struct _ecursor ECursor;
 
-ToolTip            *TooltipFind(const char *name);
+typedef struct _ewin EWin;
+typedef struct _ewinbit EWinBit;
 
-void                TooltipsSetPending(int type, CB_GetAclass * func,
-				       void *data);
-void                TooltipsHide(void);
-void                TooltipsEnable(int enable);
+typedef struct _group Group;
 
-#endif /* _TOOLTIPS_H_ */
+typedef struct _action Action;
+typedef struct _actionclass ActionClass;
+
+typedef struct _imageclass ImageClass;
+typedef struct _imagestate ImageState;
+
+typedef struct _textclass TextClass;
+typedef struct _textstate TextState;
+
+typedef struct _snapshot Snapshot;
+
+#endif /* _ETYPES_H_ */

@@ -25,6 +25,7 @@
 #define _DESKTOPS_H_
 
 #include "eobj.h"
+#include "etypes.h"
 
 #define USE_BG_WIN_ON_ALL_DESKS 0
 
@@ -33,24 +34,19 @@
 #define DESK_BG_TIMEOUT         3
 #define DESK_BG_RECONFIGURE_ALL 4
 
-typedef struct _desk Desk;
-
-struct _background;
-struct _button;
-
 struct _desk
 {
    EObj                o;
    unsigned int        num;
    char                viewable;
    char                visible;
-   struct _button     *tag;
+   Button             *tag;
    int                 current_area_x;
    int                 current_area_y;
    long                event_mask;
    struct
    {
-      struct _background *bg;
+      Background         *bg;
       EObj               *o;
 #if USE_COMPOSITE
       EObj               *o_bg;
@@ -79,10 +75,10 @@ void                DeskGotoNum(unsigned int desk);
 void                DeskRestack(Desk * dsk);
 Window              DeskGetBackgroundWin(const Desk * dsk);
 
-struct _background *DeskBackgroundGet(const Desk * dsk);
-void                DeskBackgroundSet(Desk * dsk, struct _background *bg);
+Background         *DeskBackgroundGet(const Desk * dsk);
+void                DeskBackgroundSet(Desk * dsk, Background * bg);
 
-void                DesksBackgroundRefresh(struct _background *bg, int what);
+void                DesksBackgroundRefresh(Background * bg, int what);
 
 void                DeskCurrentGetArea(int *ax, int *ay);
 void                DeskCurrentGotoArea(int ax, int ay);

@@ -51,6 +51,7 @@ e16_SOURCES = \
 	emodule.h		\
 	eobj.c			\
 	eobj.h			\
+	etypes.h		\
 	events.c		\
 	ewins.c			\
 	ewins.h			\

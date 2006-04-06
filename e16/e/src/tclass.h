@@ -24,12 +24,8 @@
 #ifndef _TCLASS_H
 #define _TCLASS_H
 
+#include "etypes.h"
 #include "xwin.h"
-
-struct _imageclass;
-
-typedef struct _textclass TextClass;
-typedef struct _textstate TextState;
 
 #define MODE_VERBATIM  0
 #define MODE_WRAP_CHAR 1
@@ -82,7 +78,7 @@ void                TextclassDecRefcount(TextClass * tc);
 int                 TextclassGetJustification(TextClass * tc);
 void                TextclassSetJustification(TextClass * tc, int just);
 TextClass          *TextclassFind(const char *name, int fallback);
-void                TextclassApply(struct _imageclass *ic, Window win, int w,
+void                TextclassApply(ImageClass * ic, Window win, int w,
 				   int h, int active, int sticky, int state,
 				   char expose, TextClass * tclass,
 				   const char *text);

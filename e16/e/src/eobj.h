@@ -23,7 +23,7 @@
 #ifndef _EOBJ_H_
 #define _EOBJ_H_
 
-struct _desk;
+#include "etypes.h"
 
 typedef struct _eobj EObj;
 
@@ -33,7 +33,7 @@ struct _eobj
    short               type;	/* Ewin, button, other, ... */
    short               ilayer;	/* Internal stacking layer */
    short               layer;	/* Stacking layer */
-   struct _desk       *desk;	/* Belongs on desk */
+   Desk               *desk;	/* Belongs on desk */
    int                 x, y;
    int                 w, h;
    signed char         stacked;
@@ -166,7 +166,7 @@ int                 EobjListStackLower(EObj * eo);
 int                 EobjListStackCheck(EObj * eo);
 EObj               *EobjListStackFind(Window win);
 EObj               *const *EobjListStackGet(int *num);
-EObj               *const *EobjListStackGetForDesk(int *num, struct _desk *dsk);
+EObj               *const *EobjListStackGetForDesk(int *num, Desk * dsk);
 void                EobjListFocusAdd(EObj * eo, int ontop);
 void                EobjListFocusDel(EObj * eo);
 int                 EobjListFocusRaise(EObj * eo);

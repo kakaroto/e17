@@ -25,17 +25,8 @@
 #define _EWIN_H_
 
 #include "eobj.h"
+#include "etypes.h"
 #include "xwin.h"
-
-struct _border;
-struct _ewinbit;
-struct _desk;
-struct _group;
-struct _snapshot;
-
-#if 0
-typedef struct _ewin EWin;
-#endif
 
 /* Window operation sources */
 #define OPSRC_UNKNOWN   0
@@ -71,10 +62,10 @@ struct _ewin
    char                type;
    Window              win_container;
 
-   const struct _border *border;
-   const struct _border *normal_border;
-   const struct _border *previous_border;
-   struct _ewinbit    *bits;
+   const Border       *border;
+   const Border       *normal_border;
+   const Border       *previous_border;
+   EWinBit            *bits;
 
    struct
    {
@@ -227,7 +218,7 @@ struct _ewin
    } update;
 
    int                 num_groups;
-   struct _group     **groups;
+   Group             **groups;
    int                 area_x, area_y;
    char               *session_id;
    PmapMask            mini_pmm;
@@ -236,7 +227,7 @@ struct _ewin
    int                 shape_x, shape_y, shape_w, shape_h;
    int                 req_x, req_y;
 
-   struct _snapshot   *snap;
+   Snapshot           *snap;
    int                 head;	/* Unused? */
 
    int                 vx, vy;	/* Position in virtual root */
@@ -318,7 +309,7 @@ void                EwinBorderGetSize(const EWin * ewin, int *bl, int *br,
 void                EwinBorderUpdateState(EWin * ewin);
 int                 EwinIsOnScreen(const EWin * ewin);
 void                EwinRememberPositionSet(EWin * ewin);
-void                EwinRememberPositionGet(EWin * ewin, struct _desk *dsk,
+void                EwinRememberPositionGet(EWin * ewin, Desk * dsk,
 					    int *px, int *py);
 unsigned int        EwinFlagsEncode(const EWin * ewin);
 void                EwinFlagsDecode(EWin * ewin, unsigned int flags);
@@ -329,7 +320,7 @@ void                EwinChange(EWin * ewin, unsigned int flag);
 void                EwinsEventsConfigure(int mode);
 void                EwinsSetFree(void);
 void                EwinsShowDesktop(int on);
-void                EwinsMoveStickyToDesk(struct _desk *d);
+void                EwinsMoveStickyToDesk(Desk * d);
 
 /* ewin-ops.c */
 void                SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty,
@@ -342,11 +333,10 @@ void                EwinResize(EWin * ewin, int w, int h);
 void                EwinMoveResize(EWin * ewin, int x, int y, int w, int h);
 void                EwinMoveResizeWithGravity(EWin * ewin, int x, int y, int w,
 					      int h, int grav);
-void                EwinMoveToDesktop(EWin * ewin, struct _desk *d);
-void                EwinMoveToDesktopAt(EWin * ewin, struct _desk *d, int x,
-					int y);
+void                EwinMoveToDesktop(EWin * ewin, Desk * d);
+void                EwinMoveToDesktopAt(EWin * ewin, Desk * d, int x, int y);
 void                EwinFloatAt(EWin * ewin, int x, int y);
-void                EwinUnfloatAt(EWin * ewin, struct _desk *d, int x, int y);
+void                EwinUnfloatAt(EWin * ewin, Desk * d, int x, int y);
 void                EwinIconify(EWin * ewin);
 void                EwinDeIconify(EWin * ewin);
 void                EwinInstantShade(EWin * ewin, int force);
@@ -373,7 +363,7 @@ void                EwinOpShade(EWin * ewin, int source, int on);
 void                EwinOpSetLayer(EWin * ewin, int source, int layer);
 void                EwinOpSetBorder(EWin * ewin, int source, const char *name);
 void                EwinOpSetOpacity(EWin * ewin, int source, int opacity);
-void                EwinOpMoveToDesk(EWin * ewin, int source, struct _desk *dsk,
+void                EwinOpMoveToDesk(EWin * ewin, int source, Desk * dsk,
 				     int inc);
 void                EwinOpFullscreen(EWin * ewin, int source, int on);
 
@@ -394,7 +384,7 @@ void                MaxHeight(EWin * ewin, const char *resize_type);
 /* stacking.c */
 EWin               *const *EwinListStackGet(int *num);
 EWin               *const *EwinListFocusGet(int *num);
-EWin               *const *EwinListGetForDesk(int *num, struct _desk *d);
+EWin               *const *EwinListGetForDesk(int *num, Desk * d);
 EWin               *const *EwinListOrderGet(int *num);
 EWin               *EwinListStackGetTop(void);
 int                 EwinListStackIsRaised(const EWin * ewin);

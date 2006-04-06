@@ -25,8 +25,9 @@
 #define _BORDERS_H_
 
 #include "eimage.h"
+#include "etypes.h"
 
-typedef struct _winpoint
+typedef struct
 {
    int                 originbox;
    struct
@@ -38,19 +39,19 @@ typedef struct _winpoint
 }
 WinPoint;
 
-typedef struct _geometry
+typedef struct
 {
    Constraints         width, height;
    WinPoint            topleft, bottomright;
 }
 Geometry;
 
-typedef struct _winpart
+typedef struct
 {
    Geometry            geom;
-   struct _imageclass *iclass;
-   struct _actionclass *aclass;
-   struct _textclass  *tclass;
+   ImageClass         *iclass;
+   ActionClass        *aclass;
+   TextClass          *tclass;
    ECursor            *ec;
    signed char         ontop;
    int                 flags;
@@ -58,7 +59,7 @@ typedef struct _winpart
 }
 WinPart;
 
-typedef struct _border
+struct _border
 {
    char               *name;
    char               *group_border_name;
@@ -69,11 +70,10 @@ typedef struct _border
    char                shadedir;
    char                throwaway;
    unsigned int        ref_count;
-   struct _actionclass *aclass;
-}
-Border;
+   ActionClass        *aclass;
+};
 
-typedef struct _ewinbit
+struct _ewinbit
 {
    EWin               *ewin;	/* Belongs to */
    Window              win;
@@ -83,10 +83,9 @@ typedef struct _ewinbit
    char                expose;
    char                no_expose;
    char                left;
-   struct _imagestate *is;
-   struct _textstate  *ts;
-}
-EWinBit;
+   ImageState         *is;
+   TextState          *ts;
+};
 
 /* borders.c */
 Border             *BorderFind(const char *name);

@@ -703,7 +703,7 @@ ECompMgrDamageAll(void)
 
 static Picture      transBlackPicture;
 
-typedef struct _conv
+typedef struct
 {
    int                 size;
    double             *data;

@@ -40,8 +40,6 @@
 #define GROUP_ACTION_SET_WINDOW_BORDER       8
 #define GROUP_ACTION_RAISE_LOWER             9
 
-typedef struct _group Group;
-
 typedef struct _groupconfig
 {
    char                iconify;

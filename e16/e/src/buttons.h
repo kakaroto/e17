@@ -25,21 +25,14 @@
 #define _BUTTONS_H_
 
 #include "eobj.h"
+#include "etypes.h"
 
-struct _actionclass;
-struct _desk;
-struct _imageclass;
-struct _textclass;
-
-typedef struct _button Button;
-
-typedef void        (ButtonCbFunc) (EObj * eo, XEvent * ev,
-				    struct _actionclass * ac);
+typedef void        (ButtonCbFunc) (EObj * eo, XEvent * ev, ActionClass * ac);
 
 /* buttons.c */
 Button             *ButtonCreate(const char *name, int id,
-				 struct _imageclass *ic,
-				 struct _actionclass *ac, struct _textclass *tc,
+				 ImageClass * ic,
+				 ActionClass * ac, TextClass * tc,
 				 const char *label, char ontop, int flags,
 				 int minw, int maxw, int minh, int maxh, int xo,
 				 int yo, int xa, int xr, int ya, int yr,
@@ -56,16 +49,15 @@ void                ButtonDecRefcount(Button * b);
 void                ButtonSwallowInto(Button * b, EObj * eo);
 void                ButtonSetCallback(Button * b, ButtonCbFunc * func,
 				      EObj * eo);
-int                 ButtonGetInfo(const Button * b, RectBox * r,
-				  struct _desk *d);
+int                 ButtonGetInfo(const Button * b, RectBox * r, Desk * d);
 int                 ButtonDoShowDefault(const Button * b);
 int                 ButtonEmbedWindow(Button * ButtonToUse,
 				      Window WindowToEmbed);
 
 Button            **ButtonsGetList(int *pnum);
-void                ButtonsForeach(int id, struct _desk *dsk,
+void                ButtonsForeach(int id, Desk * dsk,
 				   void (*func) (Button * b));
-void                ButtonsMoveStickyToDesk(struct _desk *d);
+void                ButtonsMoveStickyToDesk(Desk * d);
 int                 ButtonsConfigLoad(FILE * fs);
 
 #endif /* _BUTTONS_H_ */

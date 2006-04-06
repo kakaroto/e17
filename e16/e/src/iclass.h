@@ -25,13 +25,8 @@
 #define _ICLASS_H
 
 #include "eimage.h"
+#include "etypes.h"
 #include "xwin.h"
-
-struct _textclass;
-struct _textstate;
-
-typedef struct _imageclass ImageClass;
-typedef struct _imagestate ImageState;
 
 #define BEVEL_NONE              0
 #define BEVEL_AMIGA             1
@@ -126,7 +121,7 @@ EImage             *ImageclassGetImageBlended(ImageClass * ic, Window win,
 					      int image_type);
 void                ITApply(Window win, ImageClass * ic, ImageState * is, int w,
 			    int h, int state, int active, int sticky,
-			    char expose, int image_type, struct _textclass *tc,
-			    struct _textstate *ts, const char *text);
+			    char expose, int image_type, TextClass * tc,
+			    TextState * ts, const char *text);
 
 #endif /* _ICLASS_H */

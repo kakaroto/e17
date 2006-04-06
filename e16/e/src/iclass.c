@@ -33,7 +33,7 @@
 #include "xwin.h"
 
 #if ENABLE_COLOR_MODIFIERS
-typedef struct _modcurve
+typedef struct
 {
    int                 num;
    unsigned char      *px;
@@ -42,7 +42,7 @@ typedef struct _modcurve
 }
 ModCurve;
 
-typedef struct _colormodifierclass
+typedef struct
 {
    char               *name;
    ModCurve            red, green, blue;
@@ -67,7 +67,7 @@ struct _imagestate
 #endif
 };
 
-typedef struct _ImageStateArray
+typedef struct
 {
    ImageState         *normal;
    ImageState         *hilited;

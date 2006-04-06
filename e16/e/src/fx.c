@@ -41,7 +41,7 @@
 #define FX_OP_STOP   2
 #define FX_OP_TOGGLE 3
 
-typedef struct _fxhandler
+typedef struct
 {
    const char         *name;
    void                (*init_func) (const char *name);
@@ -196,7 +196,7 @@ static Window       fx_raindrops_win = None;
 static int          fx_raindrops_number = 4;
 static PixImg      *fx_raindrops_draw = NULL;
 
-typedef struct _drop_context
+typedef struct
 {
    int                 x, y;
    int                 count;

@@ -181,7 +181,7 @@ void
 MWM_SetInfo(void)
 {
    Atom                a1;
-   struct _mwminfo
+   struct
    {
       long                flags;
       Window              win;

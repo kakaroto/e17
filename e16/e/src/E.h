@@ -236,15 +236,11 @@ int                 Esnprintf(va_alist);
 /*
  * Types
  */
-
-struct _border;
-
-typedef struct _ewin EWin;
-typedef struct _ecursor ECursor;
+#include "etypes.h"
 
 typedef struct _client Client;
 
-typedef struct _constraints
+typedef struct
 {
    int                 min, max;
 }
@@ -980,7 +976,7 @@ void                WarpFocus(int delta);
 
 /* windowmatch.c */
 int                 WindowMatchConfigLoad(FILE * fs);
-struct _border     *WindowMatchEwinBorder(const EWin * ewin);
+Border             *WindowMatchEwinBorder(const EWin * ewin);
 const char         *WindowMatchEwinIcon(const EWin * ewin);
 void                WindowMatchEwinOps(EWin * ewin);
 

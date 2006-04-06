@@ -38,7 +38,7 @@
    ButtonPressMask | ButtonReleaseMask | EnterWindowMask | LeaveWindowMask | \
    PointerMotionMask)
 
-typedef struct _bgeometry
+typedef struct
 {
    Constraints         width, height;
    int                 xorigin, yorigin;
