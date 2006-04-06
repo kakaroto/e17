@@ -305,7 +305,7 @@ iremove_cb(Ewl_Widget *w, void *event, void *data)
 	
 	ewl_widget_destroy(w);
 
-	ewl_freebox_resort(EWL_FREEBOX(m->ib));
+	//ewl_freebox_resort(EWL_FREEBOX(m->ib));
 	
 	/*********Lets remove the image from the list*********/
 	name2 = ecore_dlist_goto_first(m->imagelist);

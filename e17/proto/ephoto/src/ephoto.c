@@ -138,43 +138,7 @@ main(int argc, char **argv)
                         noslide = 0;
                         }
 
-		}
-		//else if ( argint < argc && !strcmp(argv[argint], "--load-images") && noslide == 0 && nopresent == 0 ) {
-                       // int imageint;
-                       // Ecore_List *image_list;
-                       // image_list = ecore_list_new();
-                      //  imageint = argint;
-                     //   imageint++;
-                    //    if ( ecore_file_is_dir(argv[imageint]) ) {
-                    //            char trues[PATH_MAX];
-                    //            if (argv[imageint][strlen(argv[imageint])-1] != '/') {
-                    //                    snprintf(trues, PATH_MAX, "%s/", argv[imageint]);
-                    //            }
-                    //            else {
-                   //                     snprintf(trues, PATH_MAX, "%s", argv[imageint]);
-                  //              }
-                 //               image_list = ecore_file_ls(argv[imageint]);
-                //                while ( !ecore_list_is_empty(image_list) ) {
-               //                         char *pathi;
-              //                          char pathw[PATH_MAX];
-             //                           pathi = ecore_list_remove_first(image_list);
-            //                            snprintf(pathw, PATH_MAX, "%s%s", trues, pathi);
-           //                             if ( fnmatch("*.[Pp][Nn][Gg]", pathw, 0) == 0 ) {
-          //                                      ecore_dlist_append(m->imagelist, strdup(pathw));
-         //                                       slidenum++;
-         //                               }
-        //                                if ( fnmatch("*.[Jj][Pp][Gg]", pathw, 0) == 0 ) {
-       //                                         ecore_dlist_append(m->imagelist, strdup(pathw));
-        //                                        slidenum++;
-        //                              }
-        //                                if ( fnmatch("*.[Jj][Pp][Ee][Gg]", pathw, 0) == 0 ) {
-        //                                        ecore_dlist_append(m->imagelist, strdup(pathw));
-        //                                        slidenum++;
-        //                             }
-        //                      }
-        //              argload = 1;
-	//		}
-	//	}
+		}      
 		else if ( argint < argc && !strcmp(argv[argint], "--presentation") && nopresent != 0 ) {
 			int imageint;
 			imageint = argint;
@@ -628,37 +592,6 @@ main(int argc, char **argv)
 		ewl_object_fill_policy_set(EWL_OBJECT(m->vbox), EWL_FLAG_FILL_ALL);
 		ewl_object_fill_policy_set(EWL_OBJECT(m->vbox2), EWL_FLAG_FILL_ALL);
 		ewl_object_fill_policy_set(EWL_OBJECT(m->hbox), EWL_FLAG_FILL_ALL);
-
-		//if ( argload == 1 ) {
-		//	char *first;
-		//	char *bname;
-		//	char *bname2;
-		//	char *next;
-		//	first = ecore_dlist_goto_first(m->imagelist);
-		//	if ( first != NULL ) {
-		//		bname = basename(first);
-		//		m->i = ewl_iconbox_icon_add(EWL_ICONBOX(m->ib), bname, first);
-               	//		ewl_callback_append(m->i, EWL_CALLBACK_CLICKED, iremove_cb, NULL);
-        	//     		ewl_widget_name_set(m->i, first);
-		//
-       		//	        ewl_iconbox_icon_arrange(EWL_ICONBOX(m->ib));
-        	//	        slidenum++;
-		//		printf("%s\n", first);	
-		//	}
-		//	ecore_dlist_next(m->imagelist);
-		//	next = ecore_dlist_current(m->imagelist);
-		//	while  ( next != NULL ) {
-		//		bname2 = basename(next);
-		//		m->i = ewl_iconbox_icon_add(EWL_ICONBOX(m->ib), bname2, next);
-		//		ewl_callback_append(m->i, EWL_CALLBACK_CLICKED, iremove_cb, NULL);
-		//		ewl_widget_name_set(m->i, next);
-		//
-		//		ewl_iconbox_icon_arrange(EWL_ICONBOX(m->ib));
-		//		slidenum++;
-		//		ecore_dlist_next(m->imagelist);
-		//		next = ecore_dlist_current(m->imagelist);	
-		//	}
-		//}
 		/**********************************************************/
 
                 /************LETS POPULATE THEM TREES******************/
