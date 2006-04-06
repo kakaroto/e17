@@ -2310,13 +2310,14 @@ _mbar_eap_in_order(const char *dir, const char *eap)
    if (!ecore_file_exists(path))
       return 0;
 
-   if (!(f = fopen(path, "r")))
+   f = fopen(path, "r");
+   if (!f)
       return 0;
 
    ret = 0;
    while (fgets(name, sizeof(name), f) != NULL)
      {
-        if (!strcmp(name, eap))
+        if (strstr(name, eap))
           {
              ret = 1;
              break;
