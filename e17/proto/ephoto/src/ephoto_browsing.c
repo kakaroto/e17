@@ -227,8 +227,42 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 			ewl_callback_append(m->hbox, EWL_CALLBACK_CLICKED, images_cb, NULL);
 			free(itemp);
 		}
-		m->data = NULL;
-		ewl_combo_dirty_set(EWL_COMBO(m->atext), 1);	
+		while (!ecore_list_is_empty(audiofiles)) {
+			itemp = ecore_list_remove_first(audiofiles);
+
+                        bname2 = basename(itemp);
+
+                        m->hbox = ewl_hbox_new();
+                        ewl_box_spacing_set(EWL_BOX(m->hbox), 5);
+                        ewl_object_alignment_set(EWL_OBJECT(m->hbox), EWL_FLAG_ALIGN_CENTER);
+                        ewl_object_fill_policy_set(EWL_OBJECT(m->hbox), EWL_FLAG_FILL_ALL);
+                        ewl_widget_name_set(m->hbox, itemp);
+                        ewl_widget_show(m->hbox);
+
+                        m->image = ewl_image_new();
+                        ewl_image_file_set(EWL_IMAGE(m->image), PACKAGE_DATA_DIR "images/audio.png", NULL);
+                        ewl_container_child_append(EWL_CONTAINER(m->hbox), m->image);
+                        ewl_widget_show(m->image);
+
+                        m->text = ewl_text_new();
+                        ewl_widget_name_set(m->text, itemp);
+                        ewl_text_text_set(EWL_TEXT(m->text), bname2);
+                        ewl_object_minimum_size_set(EWL_OBJECT(m->text), 10, 16);
+                        ewl_object_fill_policy_set(EWL_OBJECT(m->text), EWL_FLAG_FILL_SHRINK);
+                        ewl_object_alignment_set(EWL_OBJECT(m->text), EWL_FLAG_ALIGN_CENTER);
+                        ewl_container_child_append(EWL_CONTAINER(m->hbox), m->text);
+                        ewl_widget_show(m->text);
+
+                        m->children[0] = m->hbox;
+                        m->children[1] = NULL;
+		
+                        m->children[0] = m->hbox;
+                        m->children[1] = NULL;
+                        m->row = ewl_tree_row_add(EWL_TREE(m->dirtree), NULL, m->children);
+                        ewl_callback_append(m->hbox, EWL_CALLBACK_CLICKED, audio_cb, NULL);
+                        free(itemp);
+
+		} 	
 		/***********************************************************************/
 		ecore_list_destroy(files);
 		ecore_list_destroy(imagefiles);
