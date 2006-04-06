@@ -109,7 +109,7 @@ _free_data(E_Config_Dialog *cfd, CFData *cfdata)
 static Evas_Object *
 _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata)
 {
-   Evas_Object *o, *of, *ob;
+   Evas_Object *o, *of, *ob, *ot;
    int i;
    Evas_List *l;
    Config_Mixer *mixer_conf;
@@ -122,26 +122,25 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata)
 
    o = e_widget_list_add(evas, 0, 0);
    of = e_widget_framelist_add(evas, D_("Mixer Configuration"), 0);
+   ot = e_widget_table_add(evas, 0);
    for (l = cfdata->elems, i = 0; l; l = l->next, i++)
      {
-        Evas_Object *olabel, *oact, *obal, *ot;
+        Evas_Object *olabel, *oact, *obal;
         Elem_CFData *ecfd;
 
         ecfd = l->data;
-
-        ot = e_widget_table_add(evas, 0);
 
         olabel = e_widget_label_add(evas, ecfd->elem->name);
         oact = e_widget_check_add(evas, D_("Active"), &(ecfd->active));
         obal = e_widget_check_add(evas, D_("Balance"), &(ecfd->balance));
 
-        e_widget_table_object_append(ot, olabel, 1, i, 1, 1, 1, 1, 1, 1);
+        e_widget_table_object_append(ot, olabel, 0, i, 1, 1, 1, 1, 1, 1);
         e_widget_table_object_append(ot, oact, 2, i, 1, 1, 0, 1, 1, 1);
         e_widget_table_object_append(ot, obal, 3, i, 1, 1, 0, 1, 1, 1);
-
-        e_widget_list_object_append(o, ot, 1, 1, 0.5);
      }
-
+   
+   e_widget_framelist_object_append(of, ot);
+   e_widget_list_object_append(o, of, 1, 1, 0.5);
    return o;
 }
 
