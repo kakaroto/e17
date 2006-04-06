@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <sys/time.h>
 
 #include <Evas.h>
 #include <Ecore_Data.h>
@@ -30,11 +31,10 @@ evas_poppler_page_new (const Evas_Poppler_Document *doc, int index)
     return NULL;
 
   page->page = doc->pdfdoc->getCatalog()->getPage(index + 1);
-  if (!page->page)
-    {
-      free (page);
-      return NULL;
-    }
+  if (!page->page) {
+    free (page);
+    return NULL;
+  }
 
   page->doc = (Evas_Poppler_Document *)doc;
   page->index = index;
@@ -63,7 +63,6 @@ void
 evas_poppler_page_render (Evas_Poppler_Page *page, Evas_Object *o, int x, int y, int w, int h, double xres, double yres)
 {
   SplashOutputDev       *output_dev;
-  SplashBitmap          *bitmap;
   SplashColor            white;
   SplashColorPtr         color_ptr;
   Evas_Poppler_Document *doc;
@@ -83,12 +82,10 @@ evas_poppler_page_render (Evas_Poppler_Page *page, Evas_Object *o, int x, int y,
   output_dev->startDoc(doc->pdfdoc->getXRef ());
   printf ("PAGE : %d\n", page->index + 1);
   doc->pdfdoc->displayPageSlice(output_dev, page->index + 1, xres, yres,
-                                0, false, false, false, -1, -1, -1, -1);
-  bitmap = output_dev->getBitmap ();
-  color_ptr = bitmap->getDataPtr ();
+				0, false, false, false, -1, -1, -1, -1);
+  color_ptr = output_dev->getBitmap ()->getDataPtr ();
   width = output_dev->getBitmap()->getWidth();
   height = output_dev->getBitmap()->getHeight();
-  SplashColorPtr pixel = new Guchar[4];
 
   evas_object_image_size_set(o, width, height);
   evas_object_image_fill_set(o, 0, 0, width, height);
@@ -97,32 +94,11 @@ evas_poppler_page_render (Evas_Poppler_Page *page, Evas_Object *o, int x, int y,
   if (!m)
     goto sortie;
 
-  if (output_dev->getBitmap()->getMode () == splashModeARGB8) {
-    output_dev->getBitmap()->getPixel(0, 0, color_ptr);
-    memcpy (m, color_ptr, height * width * 4);
-  }
-  else {
-
-  for (int j = 0; j < height; j++)
-    {
-      for (int i = 0; i < width; i++)
-        {
-          output_dev->getBitmap()->getPixel(i, j, pixel);
-
-          val = ((255 << 24) |
-                 (pixel[0] << 16) |
-                 (pixel[1] << 8) |
-                 (pixel[2]));
-          m[offset] = val;
-          offset++;
-        }
-    }
-  }
+  memcpy (m, color_ptr, height * width * 4);
   evas_object_image_data_update_add(o, 0, 0, width, height);
   evas_object_resize(o, width, height);
 
  sortie:
-  delete[] pixel;
   delete output_dev;
 }
 
@@ -141,23 +117,22 @@ evas_poppler_page_text_output_dev_get (Evas_Poppler_Page *page)
   if (!page)
     return NULL;
 
-  if (!page->text_dev)
-    {
-      page->text_dev = new TextOutputDev (NULL, 1, 0, 0);
-      
-      page->gfx = page->page->createGfx(page->text_dev,
-                                        72.0, 72.0, 0,
-                                        0, /* useMediaBox */
-                                        1, /* Crop */
-                                        -1, -1, -1, -1,
-                                        NULL, /* links */
-                                        page->doc->pdfdoc->getCatalog (),
-                                        NULL, NULL, NULL, NULL);
-      
-      page->page->display(page->gfx);
-      
-      page->text_dev->endPage();
-    }
+  if (!page->text_dev) {
+    page->text_dev = new TextOutputDev (NULL, 1, 0, 0);
+
+    page->gfx = page->page->createGfx(page->text_dev,
+				      72.0, 72.0, 0,
+				      0, /* useMediaBox */
+				      1, /* Crop */
+				      -1, -1, -1, -1,
+				      NULL, /* links */
+				      page->doc->pdfdoc->getCatalog (),
+				      NULL, NULL, NULL, NULL);
+
+    page->page->display(page->gfx);
+
+    page->text_dev->endPage();
+  }
 
   return page->text_dev;
 }
@@ -182,7 +157,7 @@ evas_poppler_page_text_get (Evas_Poppler_Page *page, Rectangle r)
   pdf_selection.y1 = r.y1;
   pdf_selection.x2 = r.x2;
   pdf_selection.y2 = r.y2;
-  
+
   sel_text = new GooString;
   sel_text = text_dev->getSelectionText (&pdf_selection);
   result = strdup (sel_text->getCString ());
@@ -193,8 +168,8 @@ evas_poppler_page_text_get (Evas_Poppler_Page *page, Rectangle r)
 
 Ecore_List *
 evas_poppler_page_text_find (Evas_Poppler_Page *page,
-                             const char        *text,
-                             unsigned char is_case_sensitive)
+			     const char        *text,
+			     unsigned char is_case_sensitive)
 {
   Rectangle *match;
   TextOutputDev *output_dev;
@@ -214,8 +189,8 @@ evas_poppler_page_text_find (Evas_Poppler_Page *page,
   height = evas_poppler_page_height_get (page);
   page->page->display (output_dev, 72, 72, 0, 0,
 		       1, NULL,
-                       page->doc->pdfdoc->getCatalog());
-  
+		       page->doc->pdfdoc->getCatalog());
+
   xMin = 0;
   yMin = 0;
 #warning you probably want to add backwards as parameters
@@ -223,18 +198,17 @@ evas_poppler_page_text_find (Evas_Poppler_Page *page,
 			       0, 1, // startAtTop, stopAtBottom
 			       1, 0, // startAtLast, stopAtLast
 			       is_case_sensitive, 0, // caseSensitive, backwards
-			       &xMin, &yMin, &xMax, &yMax))
-    {
-      if (!matches)
-        matches = ecore_list_new ();
-      ecore_list_set_free_cb (matches, ECORE_FREE_CB (free));
-      match = (Rectangle *)malloc (sizeof (Rectangle));
-      match->x1 = xMin;
-      match->y1 = yMin;//height - yMax;
-      match->x2 = xMax;
-      match->y2 = yMax;//height - yMin;
-      ecore_list_append (matches, match);
-    }
+			       &xMin, &yMin, &xMax, &yMax)) {
+    if (!matches)
+      matches = ecore_list_new ();
+    ecore_list_set_free_cb (matches, ECORE_FREE_CB (free));
+    match = (Rectangle *)malloc (sizeof (Rectangle));
+    match->x1 = xMin;
+    match->y1 = yMin;//height - yMax;
+    match->x2 = xMax;
+    match->y2 = yMax;//height - yMin;
+    ecore_list_append (matches, match);
+  }
 
   delete output_dev;
 

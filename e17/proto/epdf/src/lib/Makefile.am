@@ -40,7 +40,9 @@ poppler_page.cpp \
 poppler_page_transition.cpp \
 esmart_pdf.c \
 $(EPDF_EWL_WIDGET) \
-$(EPDF_ETK_WIDGET)
+$(EPDF_ETK_WIDGET) \
+$(EPDFHEADERS) \
+poppler_private.h
 
 installed_headersdir = $(prefix)/include/epdf
 installed_headers_DATA = $(EPDFHEADERS)
