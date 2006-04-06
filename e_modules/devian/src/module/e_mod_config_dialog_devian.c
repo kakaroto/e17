@@ -31,8 +31,8 @@ struct _E_Config_Dialog_Data
 #endif
   /*- BASIC -*/
    int container_box_size;
-   int container_box_animation;
    int container_box_infos_show;
+   int container_box_infos_pos;
    int container_box_allow_overlap;
    int container_box_alpha;
 #ifdef HAVE_RSS
@@ -51,7 +51,7 @@ struct _E_Config_Dialog_Data
   /*- ADVANCED -*/
    int container_box_speed;
    int container_box_auto_resize;
-   int container_box_infos_pos;
+   int container_box_animation;
 #ifdef HAVE_PICTURE
    int source_picture_timer;
    int source_picture_timer_yn;
@@ -287,14 +287,14 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
              cfdata->c_box->max_size = devian->conf->box_max_size_source + cfdata->c_box->theme_border_h;
              DEVIANF(container_box_resize_auto) (devian);
           }
-        if (devian->conf->box_anim != cfdata->container_box_animation)
-          {
-             devian->conf->box_anim = cfdata->container_box_animation;
-             DEVIANF(container_box_animation_start) (devian->container, devian->conf->box_anim);
-          }
         if (devian->conf->box_infos_show != cfdata->container_box_infos_show)
           {
              DEVIANF(container_box_infos_text_change_set) (devian->container, cfdata->container_box_infos_show);
+          }
+        if (devian->conf->box_infos_pos != cfdata->container_box_infos_pos)
+          {
+             devian->conf->box_infos_pos = cfdata->container_box_infos_pos;
+             DEVIANF(container_box_infos_pos_set) (devian->container);
           }
         if (devian->conf->box_allow_overlap != cfdata->container_box_allow_overlap)
           {
@@ -351,20 +351,17 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
      {
         if (devian->conf->box_max_size_source != cfdata->container_box_size)
           {
-             DCONTAINER(("CALLING MAX SIZE"));
              devian->conf->box_max_size_source = cfdata->container_box_size;
              cfdata->c_box->max_size = devian->conf->box_max_size_source + cfdata->c_box->theme_border_h;
              DEVIANF(container_box_resize_auto) (devian);
           }
         if (devian->conf->box_auto_resize != cfdata->container_box_auto_resize)
           {
-             DCONTAINER(("CALLING RESIZE AUTO"));
              devian->conf->box_auto_resize = cfdata->container_box_auto_resize;
              DEVIANF(container_box_resize_auto) (devian);
           }
         if (devian->conf->box_anim != cfdata->container_box_animation)
           {
-             DCONTAINER(("CALLING ANIM START"));
              devian->conf->box_anim = cfdata->container_box_animation;
              DEVIANF(container_box_animation_start) (devian->container, devian->conf->box_anim);
           }
@@ -477,19 +474,13 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
         e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 1, 1, 1);
         ob = e_widget_slider_add(evas, 1, 0, _("%1.0f"), 10.0, 255.0, 1.0, 0, NULL, &(cfdata->container_box_alpha), 100);
         e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 0, 1, 0);
-        ob = e_widget_label_add(evas, _("Animation"));
-        e_widget_frametable_object_append(of, ob, 0, 3, 1, 1, 1, 1, 1, 1);
-        rg = e_widget_radio_group_new(&(cfdata->container_box_animation));
-        ob = e_widget_radio_add(evas, _("None"), CONTAINER_BOX_ANIM_NO, rg);
-        e_widget_frametable_object_append(of, ob, 0, 4, 1, 1, 1, 1, 1, 1);
-        ob = e_widget_radio_add(evas, _("Line"), CONTAINER_BOX_ANIM_LINE, rg);
-        e_widget_frametable_object_append(of, ob, 1, 4, 1, 1, 1, 1, 1, 1);
-        ob = e_widget_radio_add(evas, _("Gouloum"), CONTAINER_BOX_ANIM_GOULOUM, rg);
-        e_widget_frametable_object_append(of, ob, 0, 5, 1, 1, 1, 1, 1, 1);
-        ob = e_widget_radio_add(evas, _("Ghost"), CONTAINER_BOX_ANIM_GHOST, rg);
-        e_widget_frametable_object_append(of, ob, 1, 5, 1, 1, 1, 1, 1, 1);
         ob = e_widget_check_add(evas, _("Show information panel"), &(cfdata->container_box_infos_show));
-        e_widget_frametable_object_append(of, ob, 0, 6, 2, 1, 1, 1, 1, 1);
+        e_widget_frametable_object_append(of, ob, 0, 3, 2, 1, 1, 1, 1, 10);
+        ob = e_widget_label_add(evas, _("Information panel position"));
+        e_widget_frametable_object_append(of, ob, 0, 4, 2, 1, 1, 1, 1, 1);
+        ob = e_widget_slider_add(evas, 1, 0, _("Position no%1.0f"), 1.0, 4.0, 1.0, 0,
+                                 NULL, &(cfdata->container_box_infos_pos), 100);
+        e_widget_frametable_object_append(of, ob, 0, 5, 2, 1, 1, 0, 1, 0);
         e_widget_table_object_append(o, of, 0, 0, 1, 1, 1, 1, 1, 1);
      }
 
@@ -583,25 +574,25 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
         e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 1, 1, 1);
         ob = e_widget_slider_add(evas, 1, 0, _("%1.0f"), 10.0, 255.0, 1.0, 0, NULL, &(cfdata->container_box_alpha), 100);
         e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 0, 1, 0);
-        ob = e_widget_label_add(evas, _("Animation"));
-        e_widget_frametable_object_append(of, ob, 0, 3, 1, 1, 1, 1, 1, 1);
+        ob = e_widget_check_add(evas, _("Box auto resize"), &(cfdata->container_box_auto_resize));
+        e_widget_frametable_object_append(of, ob, 0, 3, 2, 1, 1, 1, 1, 1);
+        ob = e_widget_label_add(evas, _("Box Animation"));
+        e_widget_frametable_object_append(of, ob, 0, 4, 1, 1, 1, 1, 1, 10);
         rg = e_widget_radio_group_new(&(cfdata->container_box_animation));
         ob = e_widget_radio_add(evas, _("None"), CONTAINER_BOX_ANIM_NO, rg);
-        e_widget_frametable_object_append(of, ob, 0, 4, 1, 1, 1, 1, 1, 1);
-        ob = e_widget_radio_add(evas, _("Line"), CONTAINER_BOX_ANIM_LINE, rg);
-        e_widget_frametable_object_append(of, ob, 1, 4, 1, 1, 1, 1, 1, 1);
-        ob = e_widget_radio_add(evas, _("Gouloum"), CONTAINER_BOX_ANIM_GOULOUM, rg);
         e_widget_frametable_object_append(of, ob, 0, 5, 1, 1, 1, 1, 1, 1);
-        ob = e_widget_radio_add(evas, _("Ghost"), CONTAINER_BOX_ANIM_GHOST, rg);
+        ob = e_widget_radio_add(evas, _("Line"), CONTAINER_BOX_ANIM_LINE, rg);
         e_widget_frametable_object_append(of, ob, 1, 5, 1, 1, 1, 1, 1, 1);
-        ob = e_widget_label_add(evas, _("Speed"));
+        ob = e_widget_radio_add(evas, _("Gouloum"), CONTAINER_BOX_ANIM_GOULOUM, rg);
         e_widget_frametable_object_append(of, ob, 0, 6, 1, 1, 1, 1, 1, 1);
+        ob = e_widget_radio_add(evas, _("Ghost"), CONTAINER_BOX_ANIM_GHOST, rg);
+        e_widget_frametable_object_append(of, ob, 1, 6, 1, 1, 1, 1, 1, 1);
+        ob = e_widget_label_add(evas, _("Animation Speed"));
+        e_widget_frametable_object_append(of, ob, 0, 7, 1, 1, 1, 1, 1, 1);
         ob = e_widget_slider_add(evas, 1, 0, _("%1.0f"), 1.0, 3.0, 1.0, 0, NULL, &(cfdata->container_box_speed), 100);
-        e_widget_frametable_object_append(of, ob, 1, 6, 1, 1, 1, 0, 1, 0);
-        ob = e_widget_check_add(evas, _("Box auto resize"), &(cfdata->container_box_auto_resize));
-        e_widget_frametable_object_append(of, ob, 0, 7, 2, 1, 1, 1, 1, 1);
+        e_widget_frametable_object_append(of, ob, 1, 7, 1, 1, 1, 0, 1, 0);
         ob = e_widget_check_add(evas, _("Show information panel"), &(cfdata->container_box_infos_show));
-        e_widget_frametable_object_append(of, ob, 0, 8, 2, 1, 1, 1, 1, 1);
+        e_widget_frametable_object_append(of, ob, 0, 8, 2, 1, 1, 1, 1, 10);
         ob = e_widget_label_add(evas, _("Information panel position"));
         e_widget_frametable_object_append(of, ob, 0, 9, 2, 1, 1, 1, 1, 1);
         ob = e_widget_slider_add(evas, 1, 0, _("Position no%1.0f"), 1.0, 4.0, 1.0, 0,

@@ -13,7 +13,7 @@ int DEVIANF(source_file_add) (DEVIANN *devian)
 {
    Source_File *source;
 
-   return 0;
+   return 0; /* SOURCE_FILE IS NOT STABLE YET */
 
    DSOURCE(("Source file creation START"));
 

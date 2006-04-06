@@ -324,8 +324,8 @@ TODO CODE (ordre)
    - Ini and Max lines
    - Use Retlines, cut at the end of a line
 
+ * Container animation in advanced config
  - Warning indicator
- - Container animation in advanced config
 
  - ? Bug in the config ?
  - Rss News hiligh when url == null

@@ -4,7 +4,7 @@
 
 static Evas_Object *_create_tb(FILE *fd);
 
-static Ecore_List *_get_lines(char *buffer, int *size);
+static Ecore_List *_get_lines(char **buffer, int *size);
 static int _get_file_first(Source_File *source);
 static int _get_file_update(Source_File *source);
 static int _set_text_tb(Source_File *source);
@@ -138,7 +138,7 @@ _create_tb(FILE *fd)
  * @return The ecore list of carrier's returns positions
  */
 static Ecore_List *
-_get_lines(char *buffer, int *size)
+_get_lines(char **buffer, int *size)
 {
    Ecore_List *lines;
    int size_left;
@@ -147,10 +147,10 @@ _get_lines(char *buffer, int *size)
 
    lines = ecore_list_new();
    ecore_list_set_free_cb(lines, _cb_destroy_retlines);
-   p1 = buffer;
+   p1 = *buffer;
    size_left = *size;
 
-   while (p1 < (buffer + *size))
+   while (p1 < (*buffer + *size))
      {
         if (*p1 == 0xd)
            *p1 = ' ';
@@ -159,14 +159,14 @@ _get_lines(char *buffer, int *size)
         p1++;
      };
 
-   p1 = buffer;
+   p1 = *buffer;
 
    while ((p2 = memchr(p1, '\n', size_left)))
      {
         /* Replace by <br> */
 
         *size = *size + 3;
-        realloc(buffer, *size);
+        *buffer = realloc(*buffer, *size);
         memmove(p2 + 3, p2, strlen(p2) + 1);
         *p2 = '<';
         *(p2 + 1) = 'b';
@@ -176,7 +176,7 @@ _get_lines(char *buffer, int *size)
         /* Add the position to the list */
         pos = E_NEW(int, 1);
 
-        *pos = p2 - buffer;
+        *pos = p2 - *buffer;
         ecore_list_append(lines, pos);
         /*
          * p1 = p2+1;
@@ -186,6 +186,8 @@ _get_lines(char *buffer, int *size)
         p1 = p2 + 4;
         size_left = *size - (*pos + 4);
 
+	if (size_left > 0)
+	   break;
      };
 
    return lines;
@@ -249,7 +251,7 @@ _get_file_first(Source_File *source)
                   E_FREE(block->buf);   //....CHANGE delete block
                   return 0;
                }
-             block->retlines = _get_lines(block->buf, &block->size);
+             block->retlines = _get_lines(&block->buf, &block->size);
              DDATAFILE(("read_first (%d lines, block_size %d, offset %d):\n%s",
                         ecore_list_nodes(block->retlines), block_size, ftell(source->fd), block->buf));
 
@@ -305,7 +307,7 @@ _get_file_update(Source_File *source)
 
              memcpy(block->buf, buffer, block_size);
              block->size = block_size;
-             block->retlines = _get_lines(block->buf, &block->size);
+             block->retlines = _get_lines(&block->buf, &block->size);
 
              source->lines_tot += ecore_list_nodes(block->retlines);
              source->new_blocks++;
