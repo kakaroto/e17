@@ -308,7 +308,7 @@ main(int argc, char **argv)
 		m->vbox = ewl_vbox_new();
 		ewl_object_alignment_set(EWL_OBJECT(m->vbox), EWL_FLAG_ALIGN_CENTER);
 		ewl_box_spacing_set(EWL_BOX(m->vbox), 10);
-		ewl_object_preferred_inner_size_set(EWL_OBJECT(m->vbox), 200, 480);
+		ewl_object_preferred_inner_size_set(EWL_OBJECT(m->vbox), 200, 35);
 		ewl_container_child_append(EWL_CONTAINER(m->hbox), m->vbox);
 		ewl_widget_show(m->vbox);
 
@@ -339,7 +339,7 @@ main(int argc, char **argv)
 
 		m->notebook = ewl_notebook_new();
 		ewl_notebook_tabbar_position_set(EWL_NOTEBOOK(m->notebook), EWL_POSITION_TOP);
-		ewl_object_preferred_inner_size_set(EWL_OBJECT(m->notebook), 440, 480);
+		ewl_object_preferred_inner_size_set(EWL_OBJECT(m->notebook), 440, 35);
 		ewl_container_child_append(EWL_CONTAINER(m->hbox), m->notebook);
 		ewl_object_alignment_set(EWL_OBJECT(m->notebook), EWL_FLAG_ALIGN_CENTER);
 		ewl_object_fill_policy_set(EWL_OBJECT(m->notebook), EWL_FLAG_FILL_ALL);
@@ -382,7 +382,6 @@ main(int argc, char **argv)
 		ewl_container_child_append(EWL_CONTAINER(m->notebook), m->vbox2);
 		ewl_object_alignment_set(EWL_OBJECT(m->vbox2), EWL_FLAG_ALIGN_CENTER);
 		ewl_box_spacing_set(EWL_BOX(m->vbox2), 10);
-		ewl_object_size_request(EWL_OBJECT(m->vbox2), 20, 400);
 		ewl_widget_show(m->vbox2);
 
 		ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(m->notebook), m->vbox2, "Slideshow/Presentation");
@@ -391,11 +390,11 @@ main(int argc, char **argv)
 		ewl_border_text_set(EWL_BORDER(m->content), "Content");
 		ewl_border_label_alignment_set(EWL_BORDER(m->content), EWL_FLAG_ALIGN_CENTER);
 		ewl_container_child_append(EWL_CONTAINER(m->vbox2), m->content);
+		ewl_object_minimum_size_set(EWL_OBJECT(m->content), 400, 240);
 		ewl_object_alignment_set(EWL_OBJECT(m->content), EWL_FLAG_ALIGN_CENTER);
 		ewl_widget_show(m->content);
 
 		m->iscroll = ewl_scrollpane_new();
-		ewl_object_size_request(EWL_OBJECT(m->iscroll), 520, 400);
 		ewl_container_child_append(EWL_CONTAINER(m->content), m->iscroll);
 		ewl_widget_show(m->iscroll);
 
@@ -410,6 +409,7 @@ main(int argc, char **argv)
 		ewl_container_child_append(EWL_CONTAINER(m->vbox2), m->settings);
 		ewl_object_alignment_set(EWL_OBJECT(m->settings), EWL_FLAG_ALIGN_CENTER);
 		ewl_box_spacing_set(EWL_BOX(m->settings), 5);
+		ewl_object_minimum_size_set(EWL_OBJECT(m->settings), 400, 200);
 		ewl_object_maximum_size_set(EWL_OBJECT(m->settings), 99999, 200);
 		ewl_widget_show(m->settings);
 
@@ -600,8 +600,7 @@ main(int argc, char **argv)
 		ewl_widget_show(m->presentation);
 		ewl_widget_disable(m->presentation);
 
-		ewl_object_fill_policy_set(EWL_OBJECT(m->win), EWL_FLAG_FILL_ALL);
-		ewl_object_fill_policy_set(EWL_OBJECT(m->vbox), EWL_FLAG_FILL_ALL);
+		ewl_object_fill_policy_set(EWL_OBJECT(m->vbox), EWL_FLAG_FILL_SHRINK);
 		ewl_object_fill_policy_set(EWL_OBJECT(m->vbox2), EWL_FLAG_FILL_ALL);
 		ewl_object_fill_policy_set(EWL_OBJECT(m->hbox), EWL_FLAG_FILL_ALL);
 		/**********************************************************/

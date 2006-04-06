@@ -55,7 +55,6 @@ struct _Main
 	Ewl_Widget	*hbox;
 	Ewl_Widget	*hboxv;
 	Ewl_Widget	*vbox;
-	Ewl_Widget	*vsep;
 	Ewl_Widget	*vbox2;
 	Ewl_Widget  	*content;
 	Ewl_Widget  	*images;
