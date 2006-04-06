@@ -2017,7 +2017,9 @@ _mbar_exe_cb_exit(void *data, int type, void *event)
         if (mounted)
            e_module_dialog_show(_("Mount Bar Module"), _("Eject Failed."));
      }
+   
    _mbar_set_state(ic, mounted);
+
    edje_object_signal_emit(ic->icon_object, "stop", "");
    for (ll = ic->extra_icons; ll; ll = ll->next)
       edje_object_signal_emit(ll->data, "stop", "");
@@ -2145,16 +2147,14 @@ _mbar_parse_fstab(MBar *mb)
 
         if (u)
           {
-             char icon[4096];
              char path[4096];
              char eap[1024];
              E_App *a;
 
-             snprintf(path, sizeof(path), "%s/.e/e/applications/all/%s.eap", getenv("HOME"), basename(info[0]));
+             snprintf(path, sizeof(path), "%s/.e/e/applications/%s/%s.eap", getenv("HOME"), mb->conf->appdir, basename(info[0]));
              if (!ecore_file_exists(path))
                {
                   a = e_app_raw_new();
-                  snprintf(icon, sizeof(icon), PACKAGE_DATA_DIR "/e.png");
                   a->path = evas_stringshare_add(path);
                   a->name = evas_stringshare_add(info[0]);
                   a->generic = evas_stringshare_add(info[1]);
