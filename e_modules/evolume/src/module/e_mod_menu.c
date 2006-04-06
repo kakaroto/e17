@@ -156,12 +156,12 @@ e_volume_face_menu_new(Volume_Face *face)
    e_menu_item_separator_set(mi, 1);
    
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, D_("Edit Mode"));
-   e_util_menu_item_edje_icon_set(mi, "enlightenment/gadgets");
-   e_menu_item_callback_set(mi, _volume_cb_menu_edit, (void *)face);
-
-   mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, D_("Configuration"));
    e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
    e_menu_item_callback_set(mi, _volume_cb_configure, (void *)face);
+   
+   mi = e_menu_item_new(mn);
+   e_menu_item_label_set(mi, D_("Edit Mode"));
+   e_util_menu_item_edje_icon_set(mi, "enlightenment/gadgets");
+   e_menu_item_callback_set(mi, _volume_cb_menu_edit, (void *)face);   
 }
