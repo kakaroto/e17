@@ -1001,8 +1001,8 @@ _cb_item_open(void *data, Evas_Object *obj, const char *emission, const char *so
 
         snprintf(buf, 4096, "%s %s", DEVIANM->conf->viewer_http, url);
         DSOURCE(("Viewer: %s", buf));
-        exe = ecore_exe_run(buf, NULL);
-        if (exe)
+        exe = ecore_exe_pipe_run(buf, ECORE_EXE_USE_SH, NULL);
+        if (exe > 0)
            ecore_exe_free(exe);
      }
    else
