@@ -17,6 +17,7 @@ enum _Flame_Palette_Type
    PLASMA_PALETTE,
    MATRIX_PALETTE,
    ICE_PALETTE,
+   WHITE_PALETTE,
    CUSTOM_PALETTE
 };
 

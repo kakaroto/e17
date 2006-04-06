@@ -28,6 +28,7 @@ static void _flame_palette_fire_set(Flame_Face *ff);
 static void _flame_palette_plasma_set(Flame_Face *ff);
 static void _flame_palette_matrix_set(Flame_Face *ff);
 static void _flame_palette_ice_set(Flame_Face *ff);
+static void _flame_palette_white_set(Flame_Face *ff);
 static void _flame_palette_custom_set(Flame_Face *ff);
 static void _flame_zero_set(Flame_Face *ff);
 static void _flame_base_random_set(Flame_Face *ff);
@@ -249,6 +250,9 @@ _flame_config_palette_set(Flame *f, Flame_Palette_Type type)
      case ICE_PALETTE:
         _flame_palette_ice_set(f->face);
         break;
+      case WHITE_PALETTE:
+	_flame_palette_white_set(f->face);
+	break;
      case CUSTOM_PALETTE:
         _flame_palette_custom_set(f->face);
         break;
@@ -517,6 +521,34 @@ _flame_palette_ice_set(Flame_Face *ff)
         r = (i - 160) * 3;
         g = (i - 40) * 3;
         b = i * 3;
+
+        if (r < 0)
+           r = 0;
+        if (r > 255)
+           r = 255;
+        if (g < 0)
+           g = 0;
+        if (g > 255)
+           g = 255;
+        if (b < 0)
+           b = 0;
+        if (b > 255)
+           b = 255;
+        a = (int)((r * 0.299) + (g * 0.587) + (b * 0.114));
+        ff->palette[i] = ((((unsigned char)a) << 24) | (((unsigned char)r) << 16) | (((unsigned char)g) << 8) | ((unsigned char)b));
+     }
+}
+
+static void
+_flame_palette_white_set(Flame_Face *ff)
+{
+   int i, r, g, b, a;
+
+   for (i = 0; i < 300; i++)
+     {
+        r = 0;
+        g = 0;
+        b = 0;
 
         if (r < 0)
            r = 0;

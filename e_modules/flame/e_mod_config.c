@@ -45,9 +45,6 @@ _create_data(E_Config_Dialog *cfd)
 
    f = cfd->data;
    cfdata = E_NEW(E_Config_Dialog_Data, 1);
-
-   _fill_data(f, cfdata);
-
    return cfdata;
 }
 
@@ -76,6 +73,8 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    Evas_Object *o, *of, *ob;
    E_Radio_Group *rg;
 
+   _fill_data(cfd->data, cfdata);
+   
    o = e_widget_list_add(evas, 0, 0);
    of = e_widget_framelist_add(evas, D_("Flame Color"), 0);
    rg = e_widget_radio_group_new(&(cfdata->palette));
@@ -89,6 +88,8 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_radio_add(evas, D_("Ice"), ICE_PALETTE, rg);
    e_widget_framelist_object_append(of, ob);
+   ob = e_widget_radio_add(evas, D_("White"), WHITE_PALETTE, rg);
+   e_widget_framelist_object_append(of, ob);   
    ob = e_widget_radio_add(evas, D_("Custom"), CUSTOM_PALETTE, rg);
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
@@ -131,7 +132,12 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
         f->conf->g = 40;
         f->conf->b = 0;
         break;
-     case 6:
+      case 6:
+	f->conf->palette_type = WHITE_PALETTE;
+	f->conf->r = 0;
+	f->conf->g = 0;
+	f->conf->b = 0;
+     case 7:
         f->conf->palette_type = CUSTOM_PALETTE; //Custom
         break;
      default:
@@ -149,6 +155,8 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 {
    Evas_Object *o, *of, *ob;
 
+   _fill_data(cfd->data, cfdata);
+   
    o = e_widget_list_add(evas, 0, 0);
    of = e_widget_framelist_add(evas, D_("Flame Color"), 0);
 
