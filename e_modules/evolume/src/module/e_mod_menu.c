@@ -128,20 +128,23 @@ _volume_cb_configure(void *data, E_Menu *mn __UNUSED__, E_Menu_Item *mi __UNUSED
 void
 e_volume_face_menu_new(Volume_Face *face)
 {
-
+   char buf[1024];
    Evas_List *l;
    E_Menu *mn, *sm, *om;
    E_Menu_Item *mi;
 
    mn = e_menu_new();
    face->menu = mn;
+   e_object_data_set(E_OBJECT(mn), face);
 
    {
       /* Face Menu */
       sm = e_menu_new();
 
+      snprintf(buf, sizeof(buf), "%s/module_icon.png", module_root);
       mi = e_menu_item_new(mn);
       e_menu_item_label_set(mi, D_("Faces"));
+      e_menu_item_icon_file_set(mi, buf);
       e_menu_item_submenu_set(mi, sm);
 
       mi = e_menu_item_new(sm);
@@ -149,8 +152,9 @@ e_volume_face_menu_new(Volume_Face *face)
       e_menu_item_callback_set(mi, _volume_remove_face_cb, (void *)face);
    }
 
-   e_object_data_set(E_OBJECT(mn), face);
-
+   mi = e_menu_item_new(mn);
+   e_menu_item_separator_set(mi, 1);
+   
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, D_("Edit Mode"));
    e_util_menu_item_edje_icon_set(mi, "enlightenment/gadgets");
