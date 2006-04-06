@@ -22,9 +22,7 @@ mixer_error(const char *fmt, ...)
    int r;
 
    va_start(va, fmt);
-   fprintf(stderr, "e_vol_module: ");
    r = vfprintf(stderr, fmt, va);
-   fprintf(stderr, "\n");
    va_end(va);
    return r;
 }

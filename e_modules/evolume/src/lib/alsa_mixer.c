@@ -17,9 +17,7 @@ mixer_error(const char *fmt, ...)
    int r;
 
    va_start(va, fmt);
-   fprintf(stderr, "eVolume: ALSA mixer: ");
    r = vfprintf(stderr, fmt, va);
-   fprintf(stderr, "\n");
    va_end(va);
    return r;
 }
