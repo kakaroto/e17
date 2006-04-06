@@ -6,7 +6,7 @@ EDJE_FLAGS = -v \
 
 filesdir = @E_MODULES@/$(PACKAGE)
 
-files_DATA = volume_icon.png \
+files_DATA = module_icon.png \
 	     volume.edj
 
 EXTRA_DIST = ./default.edc \
