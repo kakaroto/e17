@@ -487,8 +487,8 @@ _mbar_app_change(void *data, E_App *a, E_App_Change ch)
                                edje_object_signal_emit(ll->data, "start", "");
                             edje_object_signal_emit(ic->bg_object, "start", "");
                             edje_object_signal_emit(ic->overlay_object, "start", "");
-                            if (ic->mbb->overlay_object)
-                               edje_object_signal_emit(ic->mbb->overlay_object, "start", "");
+                            if (mbb->overlay_object)
+                               edje_object_signal_emit(mbb->overlay_object, "start", "");
                          }
                        else
                          {
@@ -497,8 +497,8 @@ _mbar_app_change(void *data, E_App *a, E_App_Change ch)
                                edje_object_signal_emit(ll->data, "exec", "");
                             edje_object_signal_emit(ic->bg_object, "exec", "");
                             edje_object_signal_emit(ic->overlay_object, "exec", "");
-                            if (ic->mbb->overlay_object)
-                               edje_object_signal_emit(ic->mbb->overlay_object, "exec", "");
+                            if (mbb->overlay_object)
+                               edje_object_signal_emit(mbb->overlay_object, "exec", "");
                          }
                     }
                }
@@ -520,8 +520,8 @@ _mbar_app_change(void *data, E_App *a, E_App_Change ch)
                                edje_object_signal_emit(ll->data, "stop", "");
                             edje_object_signal_emit(ic->bg_object, "stop", "");
                             edje_object_signal_emit(ic->overlay_object, "stop", "");
-                            if (ic->mbb->overlay_object)
-                               edje_object_signal_emit(ic->mbb->overlay_object, "stop", "");
+                            if (mbb->overlay_object)
+                               edje_object_signal_emit(mbb->overlay_object, "stop", "");
                          }
                     }
                }
@@ -888,7 +888,8 @@ _mbar_icon_find(MBar_Bar *mbb, E_App *a)
         MBar_Icon *ic;
 
         ic = l->data;
-        if (e_app_equals(ic->app, a))
+	if (!strcmp(ic->app->generic, a->generic))
+        //if (e_app_equals(ic->app, a))
            return ic;
      }
    return NULL;
@@ -1917,7 +1918,7 @@ _mbar_mount_point(MBar_Icon *ic)
    edje_object_signal_emit(ic->overlay_object, "start", "");
    if (ic->mbb->overlay_object)
       edje_object_signal_emit(ic->mbb->overlay_object, "start", "");
-
+   
    snprintf(buf, sizeof(buf), MOUNT " %s", ic->app->generic);
    x = ecore_exe_run(buf, ic);
    if (x)
@@ -1938,7 +1939,7 @@ _mbar_umount_point(MBar_Icon *ic)
    edje_object_signal_emit(ic->overlay_object, "start", "");
    if (ic->mbb->overlay_object)
       edje_object_signal_emit(ic->mbb->overlay_object, "start", "");
-
+   
    snprintf(buf, sizeof(buf), UMOUNT " %s", ic->app->generic);
    x = ecore_exe_run(buf, ic);
    if (x)
@@ -2027,7 +2028,7 @@ _mbar_exe_cb_exit(void *data, int type, void *event)
    edje_object_signal_emit(ic->overlay_object, "stop", "");
    if (ic->mbb->overlay_object)
       edje_object_signal_emit(ic->mbb->overlay_object, "stop", "");
-
+   
    return 0;
 }
 
