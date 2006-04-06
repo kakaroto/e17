@@ -34,7 +34,7 @@ char db[PATH_MAX];
 int
 main(int argc, char **argv)
 {
-	
+
 	if (!ewl_init(&argc, argv)) {
 		printf("Unable to init ewl\n");
 		return 1;
@@ -266,12 +266,12 @@ main(int argc, char **argv)
 		ewl_callback_append(m->win, EWL_CALLBACK_DELETE_WINDOW, destroy_cb, NULL);
 		ewl_widget_show(m->win);
 		mainwin = 1;
-	
+
 		m->avbox = ewl_vbox_new();
 		ewl_container_child_append(EWL_CONTAINER(m->win), m->avbox);
 		ewl_object_fill_policy_set(EWL_OBJECT(m->avbox), EWL_FLAG_FILL_ALL);
 		ewl_widget_show(m->avbox);
-		
+
 		m->menubar = ewl_hmenubar_new();
 		ewl_container_child_append(EWL_CONTAINER(m->avbox), m->menubar);
 		ewl_widget_show(m->menubar);
@@ -335,7 +335,7 @@ main(int argc, char **argv)
 		ewl_object_preferred_inner_size_set(EWL_OBJECT(m->vbox), 200, 480);
 		ewl_container_child_append(EWL_CONTAINER(m->hbox), m->vbox);
 		ewl_widget_show(m->vbox);
-	
+
 		m->images = ewl_border_new();
 		ewl_border_text_set(EWL_BORDER(m->images), "Add Content");
 		ewl_border_label_alignment_set(EWL_BORDER(m->images), EWL_FLAG_ALIGN_CENTER);
@@ -343,24 +343,24 @@ main(int argc, char **argv)
 		ewl_object_maximum_size_set(EWL_OBJECT(m->images), 200, 999999);
 		ewl_object_fill_policy_set(EWL_OBJECT(m->images), EWL_FLAG_FILL_ALL);	
 		ewl_widget_show(m->images);
-		
+
 		m->directory = ewl_entry_new();
 		ewl_text_text_set(EWL_TEXT(m->directory), home);
 		ewl_object_alignment_set(EWL_OBJECT(m->directory), EWL_FLAG_ALIGN_CENTER);
 		ewl_container_child_append(EWL_CONTAINER(m->images), m->directory);
 		ewl_callback_append(m->directory, EWL_CALLBACK_VALUE_CHANGED, populatei_cb, NULL);
 		ewl_widget_show(m->directory);
-			
+
 		m->dirtree = ewl_tree_new(1);
 		ewl_container_child_append(EWL_CONTAINER(m->images), m->dirtree);
 		ewl_object_maximum_size_set(EWL_OBJECT(m->dirtree), 200, 160);
 		ewl_widget_show(m->dirtree);
-	
+
 		m->imagetree = ewl_tree_new(1);
 		ewl_container_child_append(EWL_CONTAINER(m->images), m->imagetree);
 		ewl_object_maximum_size_set(EWL_OBJECT(m->imagetree), 200, 160);
 		ewl_widget_show(m->imagetree);
-		
+
 		m->notebook = ewl_notebook_new();
 		ewl_notebook_tabbar_position_set(EWL_NOTEBOOK(m->notebook), EWL_POSITION_TOP);
 		ewl_object_preferred_inner_size_set(EWL_OBJECT(m->notebook), 440, 480);
@@ -368,14 +368,14 @@ main(int argc, char **argv)
 		ewl_object_alignment_set(EWL_OBJECT(m->notebook), EWL_FLAG_ALIGN_CENTER);
 		ewl_object_fill_policy_set(EWL_OBJECT(m->notebook), EWL_FLAG_FILL_ALL);
 		ewl_widget_show(m->notebook);
-		
+
 		m->viewbox = ewl_vbox_new();
 		ewl_container_child_append(EWL_CONTAINER(m->notebook), m->viewbox);
 		ewl_object_alignment_set(EWL_OBJECT(m->viewbox), EWL_FLAG_ALIGN_CENTER);
 		ewl_box_spacing_set(EWL_BOX(m->viewbox), 10);
 		ewl_object_fill_policy_set(EWL_OBJECT(m->viewbox), EWL_FLAG_FILL_ALL);
 		ewl_widget_show(m->viewbox);
-		
+
 		m->viewscroll = ewl_scrollpane_new();
 		ewl_container_child_append(EWL_CONTAINER(m->viewbox), m->viewscroll);
 		ewl_object_alignment_set(EWL_OBJECT(m->viewscroll), EWL_FLAG_ALIGN_CENTER);
@@ -389,7 +389,7 @@ main(int argc, char **argv)
 		ewl_object_fill_policy_set(EWL_OBJECT(m->vimage), EWL_FLAG_FILL_SHRINK);
 		ewl_container_child_append(EWL_CONTAINER(m->viewscroll), m->vimage);
 		ewl_widget_show(m->vimage);
-		
+
 		m->vbutton = ewl_button_new();
 		ewl_button_label_set(EWL_BUTTON(m->vbutton), "Add image to slideshow");
 		ewl_container_child_append(EWL_CONTAINER(m->viewbox), m->vbutton);
@@ -399,18 +399,18 @@ main(int argc, char **argv)
 		ewl_widget_disable(m->vbutton);
 		ewl_widget_state_set(m->vbutton, "disabled");
 		ewl_widget_show(m->vbutton);
-		
+
 		ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(m->notebook), m->viewbox, "Simple Image Viewer");	
-		
+
 		m->vbox2 = ewl_vbox_new();
 		ewl_container_child_append(EWL_CONTAINER(m->notebook), m->vbox2);
 		ewl_object_alignment_set(EWL_OBJECT(m->vbox2), EWL_FLAG_ALIGN_CENTER);
 		ewl_box_spacing_set(EWL_BOX(m->vbox2), 10);
 		ewl_object_size_request(EWL_OBJECT(m->vbox2), 20, 400);
 		ewl_widget_show(m->vbox2);
-		
+
 		ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(m->notebook), m->vbox2, "Slideshow/Presentation");
-	          
+
 		m->content = ewl_border_new();
 		ewl_border_text_set(EWL_BORDER(m->content), "Content");
 		ewl_border_label_alignment_set(EWL_BORDER(m->content), EWL_FLAG_ALIGN_CENTER);
@@ -427,7 +427,7 @@ main(int argc, char **argv)
 		ewl_freebox_layout_type_set(EWL_FREEBOX(m->ib), EWL_FREEBOX_LAYOUT_AUTO);
 		ewl_container_child_append(EWL_CONTAINER(m->iscroll), m->ib);
 		ewl_widget_show(m->ib);
-	
+
 		m->settings = ewl_border_new();
 		ewl_border_text_set(EWL_BORDER(m->settings), "Settings");
 		ewl_border_label_alignment_set(EWL_BORDER(m->settings), EWL_FLAG_ALIGN_CENTER);
@@ -436,14 +436,14 @@ main(int argc, char **argv)
 		ewl_box_spacing_set(EWL_BOX(m->settings), 5);
 		ewl_object_maximum_size_set(EWL_OBJECT(m->settings), 99999, 200);
 		ewl_widget_show(m->settings);
-	
+
 		m->hboxv = ewl_hbox_new();
 		ewl_container_child_append(EWL_CONTAINER(m->settings), m->hboxv);
 		ewl_object_alignment_set(EWL_OBJECT(m->hboxv), EWL_FLAG_ALIGN_CENTER);
 		ewl_box_spacing_set(EWL_BOX(m->hboxv), 5);
 		ewl_object_maximum_size_set(EWL_OBJECT(m->hboxv),  220, 100);
 		ewl_widget_show(m->hboxv);
-		
+
 		m->text = ewl_text_new();
 		ewl_container_child_append(EWL_CONTAINER(m->hboxv), m->text);
 		ewl_object_alignment_set(EWL_OBJECT(m->text), EWL_FLAG_ALIGN_CENTER);
@@ -452,7 +452,7 @@ main(int argc, char **argv)
 		ewl_text_underline_color_set(EWL_TEXT(m->text), 128, 128, 128, 128);
 		ewl_text_text_set(EWL_TEXT(m->text), "Length of Slide(secs)\n");
 		ewl_widget_show(m->text);
-		
+
 		m->slidetime = ewl_spinner_new();
 		if ( arglength != 0 ) {
 			ewl_spinner_value_set(EWL_SPINNER(m->slidetime), arglength);
@@ -470,14 +470,14 @@ main(int argc, char **argv)
 		ewl_object_minimum_size_set(EWL_OBJECT(m->slidetime),  55, 20);
 		ewl_callback_append(m->slidetime, EWL_CALLBACK_CLICKED, rad_cb, NULL);
 		ewl_widget_show(m->slidetime);
-		
+
 		m->hboxv = ewl_hbox_new();
 		ewl_container_child_append(EWL_CONTAINER(m->settings), m->hboxv);
 		ewl_object_alignment_set(EWL_OBJECT(m->hboxv), EWL_FLAG_ALIGN_CENTER);
 		ewl_box_spacing_set(EWL_BOX(m->hboxv), 5);
 		ewl_object_maximum_size_set(EWL_OBJECT(m->hboxv),  220, 100);
 		ewl_widget_show(m->hboxv);
-	
+
 		m->loopcheck = ewl_checkbutton_new();
 		ewl_button_label_set(EWL_BUTTON(m->loopcheck), "Loop Slideshow");
 		ewl_container_child_append(EWL_CONTAINER(m->hboxv), m->loopcheck);
@@ -488,7 +488,7 @@ main(int argc, char **argv)
 		ewl_object_size_request(EWL_OBJECT(m->loopcheck), 130, 50);
 		ewl_object_alignment_set(EWL_OBJECT(m->loopcheck), EWL_FLAG_ALIGN_CENTER);
 		ewl_widget_show(m->loopcheck);
-	
+
 		m->audiolen = ewl_checkbutton_new();
 		ewl_button_label_set(EWL_BUTTON(m->audiolen), "Fit to Audio");
 		if ( argfit == 1 ) {
@@ -501,7 +501,7 @@ main(int argc, char **argv)
 		ewl_callback_append(m->audiolen, EWL_CALLBACK_CLICKED, rad_cb, NULL);
 		ewl_widget_show(m->audiolen);
 		ewl_widget_disable(m->audiolen);
-	
+
 		m->text = ewl_text_new();
 		ewl_container_child_append(EWL_CONTAINER(m->settings), m->text);
 		ewl_object_alignment_set(EWL_OBJECT(m->text), EWL_FLAG_ALIGN_CENTER);
@@ -510,7 +510,7 @@ main(int argc, char **argv)
 		ewl_text_underline_color_set(EWL_TEXT(m->text), 128, 128, 128, 128);
 		ewl_text_text_set(EWL_TEXT(m->text), "Size of Slideshow/Presentation(pixels)");
 		ewl_widget_show(m->text);
-	
+
 		m->hboxv = ewl_hbox_new();
 		ewl_container_child_append(EWL_CONTAINER(m->settings), m->hboxv);
 		ewl_object_alignment_set(EWL_OBJECT(m->hboxv), EWL_FLAG_ALIGN_CENTER);
@@ -518,7 +518,7 @@ main(int argc, char **argv)
 		ewl_object_maximum_size_set(EWL_OBJECT(m->hboxv),  220, 100);
 		ewl_object_fill_policy_set(EWL_OBJECT(m->hboxv), EWL_FLAG_FILL_SHRINK);
 		ewl_widget_show(m->hboxv);
-		
+
 		m->rad4 = ewl_radiobutton_new();
 		ewl_button_label_set(EWL_BUTTON(m->rad4), "Custom");
 		ewl_container_child_append(EWL_CONTAINER(m->hboxv), m->rad4);
@@ -529,7 +529,7 @@ main(int argc, char **argv)
 		ewl_callback_append(m->rad4, EWL_CALLBACK_CLICKED, rad_cb, NULL);
 		ewl_callback_append(m->rad4, EWL_CALLBACK_REALIZE, rad_cb, NULL);
 		ewl_widget_show(m->rad4);
-		
+
 		m->fullrad = ewl_radiobutton_new();
 		ewl_button_label_set(EWL_BUTTON(m->fullrad), "Fullscreen");
 		if ( argfullscreen == 1 ) {
@@ -542,9 +542,9 @@ main(int argc, char **argv)
 		ewl_object_alignment_set(EWL_OBJECT(m->fullrad), EWL_FLAG_ALIGN_LEFT);
 		ewl_callback_append(m->fullrad, EWL_CALLBACK_CLICKED, rad_cb, NULL);
 		ewl_widget_show(m->fullrad);
-		
+
 		ewl_radiobutton_chain_set(EWL_RADIOBUTTON(m->rad4), EWL_RADIOBUTTON(m->fullrad));
-		
+
 		m->hboxv = ewl_hbox_new();
 		ewl_container_child_append(EWL_CONTAINER(m->settings), m->hboxv);
 		ewl_object_alignment_set(EWL_OBJECT(m->hboxv), EWL_FLAG_ALIGN_CENTER);
@@ -552,14 +552,14 @@ main(int argc, char **argv)
 		ewl_object_maximum_size_set(EWL_OBJECT(m->hboxv),  220, 100);
 		ewl_object_fill_policy_set(EWL_OBJECT(m->hboxv), EWL_FLAG_FILL_SHRINK);
 		ewl_widget_show(m->hboxv);
-		
+
 		m->text = ewl_text_new();
 		ewl_container_child_append(EWL_CONTAINER(m->hboxv), m->text);
 		ewl_object_alignment_set(EWL_OBJECT(m->text), EWL_FLAG_ALIGN_CENTER);
 		ewl_text_font_size_set(EWL_TEXT(m->text), 10);
 		ewl_text_text_set(EWL_TEXT(m->text), "Width");
 		ewl_widget_show(m->text);
-		
+
 		m->wsize = ewl_entry_new();
 		ewl_text_text_set(EWL_TEXT(m->wsize), argwidth);
 		ewl_entry_editable_set(EWL_ENTRY(m->wsize), 0);
@@ -568,14 +568,14 @@ main(int argc, char **argv)
 		ewl_container_child_append(EWL_CONTAINER(m->hboxv), m->wsize);
 		ewl_text_font_size_set(EWL_TEXT(m->wsize), 10);
 		ewl_widget_show(m->wsize);
-		
+
 		m->text = ewl_text_new();
 		ewl_container_child_append(EWL_CONTAINER(m->hboxv), m->text);
 		ewl_object_alignment_set(EWL_OBJECT(m->text), EWL_FLAG_ALIGN_CENTER);
 		ewl_text_font_size_set(EWL_TEXT(m->text), 10);
 		ewl_text_text_set(EWL_TEXT(m->text), "Height");
 		ewl_widget_show(m->text);
-		
+
 		m->hsize = ewl_entry_new();
 		ewl_text_text_set(EWL_TEXT(m->hsize), argheight);
 		ewl_entry_editable_set(EWL_ENTRY(m->hsize), 0);
@@ -584,7 +584,7 @@ main(int argc, char **argv)
 		ewl_container_child_append(EWL_CONTAINER(m->hboxv), m->hsize);
 		ewl_text_font_size_set(EWL_TEXT(m->hsize), 10);
 		ewl_widget_show(m->hsize);
-		
+
 		m->text = ewl_text_new();
 		ewl_container_child_append(EWL_CONTAINER(m->settings), m->text);
 		ewl_object_alignment_set(EWL_OBJECT(m->text), EWL_FLAG_ALIGN_CENTER);
@@ -598,14 +598,14 @@ main(int argc, char **argv)
 		ewl_container_child_append(EWL_CONTAINER(m->settings), m->atext);
 		ewl_object_alignment_set(EWL_OBJECT(m->atext), EWL_FLAG_ALIGN_CENTER);
 		ewl_widget_show(m->atext);
-			
+
 		m->hboxv = ewl_hbox_new();
 		ewl_container_child_append(EWL_CONTAINER(m->settings), m->hboxv);
 		ewl_object_alignment_set(EWL_OBJECT(m->hboxv), EWL_FLAG_ALIGN_CENTER);
 		ewl_box_spacing_set(EWL_BOX(m->hboxv), 5);
 		ewl_object_maximum_size_set(EWL_OBJECT(m->hboxv),  220, 100);
 		ewl_widget_show(m->hboxv);
-	
+
 		m->slideshow = ewl_button_new();
 		ewl_button_label_set(EWL_BUTTON(m->slideshow), "Slideshow");
 		ewl_container_child_append(EWL_CONTAINER(m->hboxv), m->slideshow);
@@ -614,7 +614,7 @@ main(int argc, char **argv)
 		ewl_callback_append(m->slideshow, EWL_CALLBACK_CLICKED, slideshow_cb, NULL);
 		ewl_widget_show(m->slideshow);
 		ewl_widget_disable(m->slideshow);
-	
+
 		m->presentation = ewl_button_new();
 		ewl_button_label_set(EWL_BUTTON(m->presentation), "Presentation");
 		ewl_container_child_append(EWL_CONTAINER(m->hboxv), m->presentation);
@@ -628,7 +628,7 @@ main(int argc, char **argv)
 		ewl_object_fill_policy_set(EWL_OBJECT(m->vbox), EWL_FLAG_FILL_ALL);
 		ewl_object_fill_policy_set(EWL_OBJECT(m->vbox2), EWL_FLAG_FILL_ALL);
 		ewl_object_fill_policy_set(EWL_OBJECT(m->hbox), EWL_FLAG_FILL_ALL);
-		
+
 		//if ( argload == 1 ) {
 		//	char *first;
 		//	char *bname;
@@ -660,7 +660,7 @@ main(int argc, char **argv)
 		//	}
 		//}
 		/**********************************************************/
-		
+
                 /************LETS POPULATE THEM TREES******************/
                 ewl_callback_call(m->directory, EWL_CALLBACK_VALUE_CHANGED);
                 /******************************************************/
@@ -668,7 +668,3 @@ main(int argc, char **argv)
 	return 0;
 	}
 }
-
-
-	
-
