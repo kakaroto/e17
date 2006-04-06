@@ -66,8 +66,6 @@ mixer_system_get_list()
              Mixer_System_Name *(*s_get_systems) (void);
 
              snprintf(buf, 1024, "%s/%s/systems/%s", module_root, MODULE_ARCH, ptr);
-
-             fprintf(stderr, "module_path = %s\n", buf);
              handle = dlopen(buf, RTLD_NOW);
              if (!handle)
                 continue;
@@ -81,36 +79,12 @@ mixer_system_get_list()
                }
 
              msn = s_get_systems();
-
-             /*
-              * fprintf(stderr,"msn = %p\n", msn);
-              * fprintf(stderr,"msn = { \"%s\", \"%s\", %p }\n",
-              * msn->system, msn->real, msn->mixer_names);
-              */
-
              dlclose(handle);
-
              l = evas_list_append(l, msn);
-
           }
-
-        /*
-         * char name[128];
-         * 
-         * strncpy(name, ptr + strlen("module_"), 128);
-         * ms = calloc(sizeof(Mixer_System), 1);
-         * ms->name = strdup(name);
-         * mixer_system_load(ms);
-         * 
-         * 
-         * mixer_system_unload(ms);
-         * l = evas_list_append(l, ms);
-         */
-
      }
 
    closedir(d);
-
    return l;
 }
 
@@ -122,7 +96,6 @@ mixer_set_callback(Mixer *mixer, mixer_callback callback, void *data)
 
    mixer->callback = callback;
    mixer->callback_private = data;
-
    return 1;
 }
 
@@ -145,10 +118,7 @@ mixer_system_load(Mixer_System *ms)
    ms->handle = dlopen(buf, RTLD_NOW);
 
    if (!ms->handle)
-     {
-        fprintf(stderr, "Cannot load mixer system: %s: %s\n", msn->system, dlerror());
-        return 1;
-     }
+      return 1;
 
    ms->ref++;
    return 0;
@@ -188,9 +158,7 @@ mixer_system_getentries(Mixer_System *ms, Mixer_System_Name *msn)
 
    if (!mixer->open || !mixer->close || !mixer->get_volume || !mixer->set_volume)
      {
-        fprintf(stderr, "Cannot get mixer entry points: %s: %s\n", msn->system, dlerror());
         mixer_system_unload(ms);
-
         free(mixer);
         return NULL;
      }
@@ -210,18 +178,13 @@ mixer_open(Mixer_System **ms, Mixer_System_Name *msn, int mixer_id)
 
    if (*ms == NULL)
      {
-//              fprintf(stderr,"Allocating new Mixer_System\n");
         *ms = calloc(sizeof(Mixer_System), 1);
         (*ms)->handle = NULL;
         (*ms)->name = msn;
      }
 
    mixer_system_load(*ms);
-
    mixer = mixer_system_getentries(*ms, msn);
-
-//      fprintf(stderr,"mixer->system = %p, name = %s\n", mixer->system,
-//                      mixer->system->name->system);
 
    if (!mixer)
       return NULL;
@@ -246,8 +209,6 @@ mixer_ref(Mixer *mixer)
       return 0;
 
    mixer->ref++;
-   fprintf(stderr, "mixer_ref = %d\n", mixer->ref);
-
    return mixer->ref;
 }
 
@@ -258,8 +219,6 @@ mixer_unref(Mixer *mixer)
       return 0;
 
    mixer->ref--;
-   fprintf(stderr, "mixer_ref = %d\n", mixer->ref);
-
    return mixer->ref;
 }
 
@@ -279,7 +238,6 @@ mixer_unref_close(Mixer *mixer)
 int
 mixer_close(Mixer *mixer)
 {
-
    int ret;
 
    if (mixer->ref > 0)
@@ -288,10 +246,7 @@ mixer_close(Mixer *mixer)
    if (!mixer || !mixer->close)
       return 0;
 
-   fprintf(stderr, "Mixer unloading: %s, %s\n", mixer->name->real, mixer->name->card);
-
    ret = mixer->close(mixer, mixer->system);
-
    mixer_system_unload(mixer->system);
    return ret;
 }
@@ -302,7 +257,6 @@ mixer_get_volume(Mixer_Elem *melem, int *left, int *right)
    Mixer *mixer;
 
    mixer = melem->mixer;
-
    return mixer->get_volume(melem, left, right);
 }
 
@@ -312,7 +266,6 @@ mixer_set_volume(Mixer_Elem *melem, int left, int right)
    Mixer *mixer;
 
    mixer = melem->mixer;
-
    return mixer->set_volume(melem, left, right);
 }
 
