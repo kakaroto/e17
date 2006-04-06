@@ -1,0 +1,25 @@
+Source: exhibit
+Section: x11
+Priority: optional
+Maintainer: E17 Debian Team <debian@edevelop.org>
+Build-Depends: debhelper (>= 4.0.0), libetk0-dev, libecore0-dev, libevas0-dev, libedje0-dev, libepsilon0-dev, libe-dev
+Standards-Version: 3.6.2
+
+Package: exhibit
+Architecture: any
+Depends: ${shlibs:Depends}, libetk0, libevas0, libecore0, libedje0, libepsilon0
+Suggests: libe
+Description: the Etk image viewer
+ Exhibit is an image viewer that uses Etk as its toolkit.
+ Exhibit supports  image previews for image types supported
+ by Evas and allows for  directory changing using a point
+ and click interface or a text input box with tab
+ autocompletion support.
+ Common operations include:
+ - rotation / flipping
+ - sharpen / blur
+ - saving
+ - resizing (needs implementation)
+ - zooming in and out (needs implementation)
+ - drag and drop (needs implementation)
+ - image sorting (needs implementation).

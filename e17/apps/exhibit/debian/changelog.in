@@ -1,0 +1,6 @@
+exhibit (@VERSION@-1) unstable; urgency=low
+
+  * a CVS snapshot release.
+
+ -- E17 Debian Team <debian@edevelop.org>  Thu, 15 Dec 2005 21:55:42 +0100
+
