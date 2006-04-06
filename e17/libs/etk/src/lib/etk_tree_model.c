@@ -33,6 +33,12 @@ typedef struct _Etk_Tree_Model_Icon_Text_Data
    char *text;
 } Etk_Tree_Model_Icon_Text_Data;
 
+typedef struct _Etk_Tree_Model_Progressbar_Data
+{
+   double fraction;
+   char *text;   
+} Etk_Tree_Model_Progressbar_Data;
+
 /* Text model */
 static void etk_tree_model_text_cell_data_free(Etk_Tree_Model *model, void *cell_data);
 static void etk_tree_model_text_cell_data_set(Etk_Tree_Model *model, void *cell_data, va_list *args);
@@ -65,6 +71,12 @@ static void etk_tree_model_checkbox_cell_data_get(Etk_Tree_Model *model, void *c
 static void etk_tree_model_checkbox_objects_create(Etk_Tree_Model *model, Evas_Object **cell_objects, Evas *evas);
 static void etk_tree_model_checkbox_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects);
 static void etk_tree_model_checkbox_clicked_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
+/* Progressbar model */
+static void etk_tree_model_progress_bar_cell_data_free(Etk_Tree_Model *model, void *cell_data);
+static void etk_tree_model_progress_bar_cell_data_set(Etk_Tree_Model *model, void *cell_data, va_list *args);
+static void etk_tree_model_progress_bar_cell_data_get(Etk_Tree_Model *model, void *cell_data, va_list *args);
+static void etk_tree_model_progress_bar_objects_create(Etk_Tree_Model *model, Evas_Object **cell_objects, Evas *evas);
+static void etk_tree_model_progress_bar_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects);
 
 /**
  * @brief Creates a model of column whose cells contain a text
@@ -217,6 +229,31 @@ Etk_Tree_Model *etk_tree_model_checkbox_new(Etk_Tree *tree)
    tree_model->cell_data_get = etk_tree_model_checkbox_cell_data_get;
    tree_model->objects_create = etk_tree_model_checkbox_objects_create;
    tree_model->render = etk_tree_model_checkbox_render;
+   
+   return tree_model;
+}
+
+/**
+ * @brief Creates a model of column whose cells contain a progress bar
+ * @param tree a tree
+ * @return Returns the new model
+ * @note You don't need to free it with etk_tree_model_free() if you use it in a tree. It will be freed when the tree is destroyed
+ */
+Etk_Tree_Model *etk_tree_model_progress_bar_new(Etk_Tree *tree)
+{
+   Etk_Tree_Model *tree_model;
+   
+   tree_model = calloc(1, sizeof(Etk_Tree_Model));
+   
+   tree_model->tree = tree;
+   tree_model->xalign = 0.5;
+   tree_model->yalign = 0.5;
+   tree_model->cell_data_size = sizeof(Etk_Tree_Model_Progressbar_Data);
+   tree_model->cell_data_set = etk_tree_model_progress_bar_cell_data_set;
+   tree_model->cell_data_get = etk_tree_model_progress_bar_cell_data_get;
+   tree_model->cell_data_free = etk_tree_model_progress_bar_cell_data_free;   
+   tree_model->objects_create = etk_tree_model_progress_bar_objects_create;
+   tree_model->render = etk_tree_model_progress_bar_render;
    
    return tree_model;
 }
@@ -894,4 +931,86 @@ static void etk_tree_model_checkbox_clicked_cb(void *data, Evas *e, Evas_Object 
       etk_tree_row_fields_get(row, model->col, &checked, NULL);
       etk_tree_row_fields_set(row, model->col, !checked, NULL);
    }
+}
+
+/*---------------------
+ * Progressbar Model
+ *-------------------*/
+
+/* Progressbar: cell_data_free */
+static void etk_tree_model_progress_bar_cell_data_free(Etk_Tree_Model *model, void *cell_data)
+{
+   Etk_Tree_Model_Progressbar_Data *pbar_data;
+   
+   if (!(pbar_data = cell_data))
+      return;
+   free(pbar_data->text);
+}
+
+/* Progressbar: cell_data_set */
+static void etk_tree_model_progress_bar_cell_data_set(Etk_Tree_Model *model, void *cell_data, va_list *args)
+{
+   Etk_Tree_Model_Progressbar_Data *pbar_data;
+   char *text;
+   
+   if (!(pbar_data = cell_data) || !args)
+      return;
+   
+   free(pbar_data->text);
+   pbar_data->text = NULL;
+   
+   pbar_data->fraction = va_arg(*args, double);
+   if ((text = va_arg(*args, char *)))
+     pbar_data->text = strdup(text);
+}
+
+/* Progressbar: cell_data_get */
+static void etk_tree_model_progress_bar_cell_data_get(Etk_Tree_Model *model, void *cell_data, va_list *args)
+{
+   Etk_Tree_Model_Progressbar_Data *pbar_data;
+   char **string;
+   double *fraction;
+   
+   if (!(pbar_data = cell_data) || !args)
+      return;
+   
+   fraction = va_arg(*args, double *);
+   if (fraction)
+     *fraction = pbar_data->fraction;
+      
+   string = va_arg(*args, char **);
+   if (string)
+     *string = pbar_data->text;         
+}
+
+/* Progressbar: objects_create */
+static void etk_tree_model_progress_bar_objects_create(Etk_Tree_Model *model, Evas_Object **cell_objects, Evas *evas)
+{
+   if (!cell_objects || !evas)
+      return;
+   
+   /* TODO */
+   cell_objects[0] = edje_object_add(evas);
+   edje_object_file_set(cell_objects[0], etk_theme_widget_theme_get(), "progress_bar");
+}
+
+/* Progressbar: Render */
+static void etk_tree_model_progress_bar_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects)
+{
+   Etk_Tree_Model_Progressbar_Data *pbar_data;   
+   Evas_Coord w, h;
+   
+   if (!(pbar_data = cell_data))
+      return;
+   
+   edje_object_part_drag_value_set(cell_objects[0], "filler", 0.0, 0.0);
+   edje_object_part_drag_size_set(cell_objects[0], "filler", pbar_data->fraction, 0.0);
+   
+   edje_object_part_text_set(cell_objects[0], "text", pbar_data->text ? pbar_data->text : "");
+   
+   evas_object_data_set(cell_objects[0], "_Etk_Tree_Model_Progressbar::Row", row);
+   edje_object_size_min_get(cell_objects[0], &w, &h);
+   evas_object_move(cell_objects[0], geometry.x + (geometry.w - w) * model->xalign, geometry.y + (geometry.h - h) * model->yalign);
+   evas_object_resize(cell_objects[0], w, h);
+   evas_object_show(cell_objects[0]);
 }

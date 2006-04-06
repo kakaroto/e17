@@ -49,6 +49,7 @@ Etk_Tree_Model *etk_tree_model_double_new(Etk_Tree *tree);
 Etk_Tree_Model *etk_tree_model_image_new(Etk_Tree *tree, Etk_Tree_Model_Image_Type image_type);
 Etk_Tree_Model *etk_tree_model_icon_text_new(Etk_Tree *tree, Etk_Tree_Model_Image_Type icon_type);
 Etk_Tree_Model *etk_tree_model_checkbox_new(Etk_Tree *tree);
+Etk_Tree_Model *etk_tree_model_progress_bar_new(Etk_Tree *tree);
 void etk_tree_model_free(Etk_Tree_Model *model);
 
 void etk_tree_model_alignment_set(Etk_Tree_Model *model, float xalign, float yalign);
