@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include <sys/time.h>
 
 #include <Evas.h>
 #include <Ecore_Data.h>
