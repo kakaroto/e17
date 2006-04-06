@@ -51,7 +51,6 @@ e_volume_pack_pack_weight(Volume_Face *face, Mixer_Slider *slider)
    l = face->sliders;
    face->sliders = e_util_sliders_sort(l);
 
-   fprintf(stderr, "%s\n", __FUNCTION__);
    for (l = face->sliders, c = 0; l; l = evas_list_next(l), c++)
      {
         Mixer_Slider *sl;
@@ -71,7 +70,6 @@ e_volume_pack_pack_weight(Volume_Face *face, Mixer_Slider *slider)
 
      }
 
-   fprintf(stderr, "nth = %d\n", nth);
    if (nth == -1)
       nth = evas_list_count(face->sliders);
    if (nth == 0)

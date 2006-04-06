@@ -137,10 +137,7 @@ e_util_melem_get(Config_Mixer_Elem *conf, Evas_List *melems)
         elem_id = GET_ELEM_ID(melem);
 
         if (elem_id == conf->elem_id)
-          {
-             fprintf(stderr, "elem_id = %d, conf->elem_id = %d\n", elem_id, conf->elem_id);
-             return melem;
-          }
+	  return melem;
      }
 
    return NULL;

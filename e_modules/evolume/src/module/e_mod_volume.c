@@ -405,10 +405,7 @@ int
 e_volume_mixers_create(Volume_Face *face, Mixer *mixer, Evas *evas, int ref)
 {
    _volume_get_entry_height(face, evas);
-
-   fprintf(stderr, "mixer = %p\n", mixer);
    _volume_mixer_create(mixer, evas, face, ref);
-
    return 1;
 }
 

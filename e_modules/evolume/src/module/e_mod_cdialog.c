@@ -60,7 +60,6 @@ _fill_data(Volume_Face *face, CFData *cfdata)
 
              mcfd = calloc(1, sizeof(Mixer_CFData));
              mcfd->mixer = evas_list_data(l1);
-             fprintf(stderr, "mcfd->mixer->real = %s\n", mcfd->mixer->real);
              mcfd->active = mcfd->mixer->active;
              cfdata->mixers = evas_list_append(cfdata->mixers, mcfd);
           }

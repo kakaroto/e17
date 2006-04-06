@@ -115,7 +115,7 @@ e_volume_config_mixer_system_get(Mixer_System_Name *msn, Config_Face *conf)
 #endif
 
 #if 0
-        fprintf(stderr, "cms->system_id = %x, msn->system_id = %x\n", cms->system_id, msn->system_id);
+        DBG(stderr, "cms->system_id = %x, msn->system_id = %x\n", cms->system_id, msn->system_id);
 #endif
         if (SYSTEM_ID(cms->system_id) == SYSTEM_ID(msn->system_id))
            return cms;
@@ -157,7 +157,7 @@ e_volume_config_mixer_get(Mixer_Name *mixer_name, Config_Face *conf)
         mixer_conf = evas_list_data(l);
 
 #if 0
-        fprintf(stderr, "mixer_id1 = %x, mixer_id2 = %x\n", mixer_conf->mixer_id, mixer_name->mixer_id);
+        DBG(stderr, "mixer_id1 = %x, mixer_id2 = %x\n", mixer_conf->mixer_id, mixer_name->mixer_id);
 #endif
         if (MIXER_ID(mixer_conf->mixer_id) == MIXER_ID(mixer_name->mixer_id))
           {
@@ -214,11 +214,11 @@ e_volume_config_melem_get(Mixer_Elem *melem, Config_Face *conf)
 #endif
 
 #if 0
-        fprintf(stderr, "elem->elem_id = %x, elem->elem_id = %x\n", ELEM_ID(elem->elem_id), elem->elem_id);
+        DBG(stderr, "elem->elem_id = %x, elem->elem_id = %x\n", ELEM_ID(elem->elem_id), elem->elem_id);
 #endif
         if (ELEM_ID(elem->elem_id) == ELEM_ID(melem->elem_id))
           {
-             fprintf(stderr, "found: %x\n", elem->elem_id);
+             DBG(stderr, "found: %x\n", elem->elem_id);
              return elem;
           }
      }

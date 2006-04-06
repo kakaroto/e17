@@ -233,7 +233,6 @@ e_volume_slider_create(Mixer_Elem *melem, Evas *ev, int orient, int balance, Vol
 
    /* Swallow object */
    slider->swallow_object = (Evas_Object *)edje_object_add(ev);
-   fprintf(stderr, "%s\n", module_theme);
    edje_object_file_set(slider->swallow_object, module_theme, "volume/mixer");
 
    slider->orient = orient;
@@ -302,15 +301,12 @@ e_volume_slider_create_from_conf(Config_Mixer_Elem *conf, Volume_Face *face, int
    for (l = face->volume->mixer_system_names; l; l = evas_list_next(l))
      {
         msn = evas_list_data(l);
-        fprintf(stderr, "conf->elem_id = %x, system_id = %x\n", conf->elem_id, msn->system_id);
 
         if (SYSTEM_ID(conf->elem_id) == msn->system_id)
           {
              for (l1 = msn->mixer_names; l1; l1 = evas_list_next(l1))
                {
                   mixer_name = evas_list_data(l1);
-
-                  fprintf(stderr, "conf->elem_id = %x, mixer_id = %x\n", conf->elem_id, mixer_name->mixer_id);
 
                   if (MIXER_ID(conf->elem_id) == mixer_name->mixer_id);
                   break;
@@ -330,20 +326,13 @@ e_volume_slider_create_from_conf(Config_Mixer_Elem *conf, Volume_Face *face, int
         for (l2 = mixer->elems; l2; l2 = evas_list_next(l2))
           {
              melem = evas_list_data(l2);
-
-             fprintf(stderr, "conf->hash = %x, e_util_hash_gen = %x\n", conf->elem_id, GET_ELEM_ID(melem));
-
              if (conf->elem_id == GET_ELEM_ID(melem))
                {
-                  fprintf(stderr, "Calling e_volume_slider_create\n");
                   return e_volume_slider_create(melem, face->con->bg_evas, face->conf->orient, conf->balance, face, ref);
                }
           }
      }
-
-   fprintf(stderr, "conf->elem_id = %x, not found\n", conf->elem_id);
    return NULL;
-
 }
 
 void

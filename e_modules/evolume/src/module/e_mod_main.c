@@ -16,6 +16,7 @@
 
 #include "e_mod_main.h"
 #include "e_mod_volume.h"
+#include "e_mod_cdialog.h"
 
 char *module_root = NULL;
 char *module_theme = NULL;
@@ -40,7 +41,6 @@ e_modapi_init(E_Module *module)
 
       snprintf(buf, 128, "%s/volume.edj", module_root);
       module_theme = strdup(buf);
-      fprintf(stderr, "module_theme = %s\n", module_theme);
    }
 
    /* actually init buttons */
@@ -71,7 +71,6 @@ e_modapi_save(E_Module *module)
    Volume *volume;
 
    volume = module->data;
-//   DBG(stderr,"conf_edd = %p, volume->conf = %p\n", conf_edd, volume->conf);
    e_config_domain_save("module.evolume", conf_edd, volume->conf);
    return 1;
 }
@@ -81,7 +80,7 @@ e_modapi_info(E_Module *module)
 {
    char buf[1024];
 
-   snprintf(buf, 1024, "%s/volume_icon.png", module_root);
+   snprintf(buf, 1024, "%s/module_icon.png", module_root);
    module->icon_file = strdup(buf);
    return 1;
 }
@@ -89,6 +88,38 @@ e_modapi_info(E_Module *module)
 int
 e_modapi_about(E_Module *module __UNUSED__)
 {
-   e_module_dialog_show("Enlightenment Button Module", "A simple module to give E17 a volume control " "for some mixers.");
+   e_module_dialog_show(_("Enlightenment Evolume Module"), 
+			_("A simple module to give E17 a volume control for some mixers."));
    return 1;
+}
+
+int
+e_modapi_config(E_Module *module) 
+{
+   Volume *v;
+   E_Container *con;
+   Evas_List *l;
+   
+   v = module->data;
+   if (!v)
+      return 0;
+   if (!v->faces)
+      return 0;
+
+   con = e_container_current_get(e_manager_current_get());
+   for (l = v->faces; l; l = l->next) 
+     {
+	Volume_Face *vf;
+	
+	vf = l->data;
+	if (!vf)
+	  continue;
+	
+	if (vf->con == con) 
+	  {
+	     e_volume_config_module(vf->con, vf);
+	     break;
+	  }
+     }
+   return 1;   
 }
