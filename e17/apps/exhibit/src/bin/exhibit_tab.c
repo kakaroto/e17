@@ -49,7 +49,8 @@ _ex_tab_new(Exhibit *e, char *dir)
    tab->alignment = etk_alignment_new(0.5, 0.5, 0.0, 0.0);   
    
    tab->image = etk_image_new();
-   etk_widget_theme_set(tab->image, PACKAGE_DATA_DIR"/images/images.edj", "image_bg");
+   etk_widget_theme_file_set(tab->image, PACKAGE_DATA_DIR"/images/images.edj");
+   etk_widget_theme_group_set(tab->image, "image_bg");
    etk_signal_connect("mouse_down", ETK_OBJECT(tab->image), ETK_CALLBACK(_ex_image_mouse_down), e);
    etk_signal_connect("mouse_up", ETK_OBJECT(tab->image), ETK_CALLBACK(_ex_image_mouse_up), e);
    etk_signal_connect("mouse_move", ETK_OBJECT(tab->image), ETK_CALLBACK(_ex_image_mouse_move), e);
