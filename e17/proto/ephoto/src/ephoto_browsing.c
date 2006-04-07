@@ -170,6 +170,9 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 				
 				m->hbox = ewl_hbox_new();
 				ewl_box_spacing_set(EWL_BOX(m->hbox), 5);
+				ewl_object_alignment_set(EWL_OBJECT(m->hbox), EWL_FLAG_ALIGN_CENTER);
+				ewl_object_fill_policy_set(EWL_OBJECT(m->hbox), EWL_FLAG_FILL_ALL);
+				ewl_widget_name_set(m->hbox, pathw);
 				ewl_widget_show(m->hbox);
 				
 				m->image = ewl_image_new();
@@ -181,14 +184,15 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 				ewl_widget_name_set(m->text, pathw);
 				ewl_text_text_set(EWL_TEXT(m->text), bname);
 				ewl_object_minimum_size_set(EWL_OBJECT(m->text), 10, 16);
-				ewl_object_fill_policy_set(EWL_OBJECT(m->text), EWL_FLAG_FILL_ALL);
+				ewl_object_fill_policy_set(EWL_OBJECT(m->text), EWL_FLAG_FILL_SHRINK);
+				ewl_object_alignment_set(EWL_OBJECT(m->text), EWL_FLAG_ALIGN_CENTER);
 				ewl_container_child_append(EWL_CONTAINER(m->hbox), m->text);
 				ewl_widget_show(m->text);
 				
 				m->children[0] = m->hbox;
 				m->children[1] = NULL;
 				m->row = ewl_tree_row_add(EWL_TREE(m->dirtree), NULL, m->children);
-				ewl_callback_append(m->text, EWL_CALLBACK_CLICKED, populatei_cb, NULL);
+				ewl_callback_append(m->hbox, EWL_CALLBACK_CLICKED, populatei_cb, NULL);
 			}
 		}
 		/****************************************************************************/
@@ -242,7 +246,7 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
                         ewl_widget_show(m->hbox);
 
                         m->image = ewl_image_new();
-                        ewl_image_file_set(EWL_IMAGE(m->image), PACKAGE_DATA_DIR "images/audio.png", NULL);
+                        ewl_image_file_set(EWL_IMAGE(m->image), PACKAGE_DATA_DIR "/images/audio.png", NULL);
                         ewl_container_child_append(EWL_CONTAINER(m->hbox), m->image);
                         ewl_widget_show(m->image);
 
@@ -255,9 +259,6 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
                         ewl_container_child_append(EWL_CONTAINER(m->hbox), m->text);
                         ewl_widget_show(m->text);
 
-                        m->children[0] = m->hbox;
-                        m->children[1] = NULL;
-		
                         m->children[0] = m->hbox;
                         m->children[1] = NULL;
                         m->row = ewl_tree_row_add(EWL_TREE(m->dirtree), NULL, m->children);
