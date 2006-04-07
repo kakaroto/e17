@@ -421,6 +421,7 @@ _mbar_app_change(void *data, E_App *a, E_App_Change ch)
                }
              break;
           case E_APP_DEL:
+	     printf("Change Del\n");
              if (e_app_is_parent(mb->apps, a))
                {
                   MBar_Icon *ic;
@@ -432,6 +433,7 @@ _mbar_app_change(void *data, E_App *a, E_App_Change ch)
                }
              break;
           case E_APP_CHANGE:
+	     printf("App Change\n");
              if (e_app_is_parent(mb->apps, a))
                {
                   MBar_Icon *ic;
@@ -458,6 +460,7 @@ _mbar_app_change(void *data, E_App *a, E_App_Change ch)
                }
              break;
           case E_APP_ORDER:
+	     printf("App Order\n");
              if (a == mb->apps)
                {
                   for (ll = mb->apps->subapps; ll; ll = ll->next)
@@ -473,6 +476,7 @@ _mbar_app_change(void *data, E_App *a, E_App_Change ch)
                }
              break;
           case E_APP_EXEC:
+	     printf("App Exec\n");
              if (e_app_is_parent(mb->apps, a))
                {
                   MBar_Icon *ic;
@@ -2008,8 +2012,11 @@ _mbar_exe_cb_exit(void *data, int type, void *event)
           {
              if (ic->app->exe)
                {
-                  e_zone_app_exec(ic->mbb->gmc->zone, ic->app);
-                  e_exehist_add("mbar", ic->app->exe);
+		  if (!strstr(ic->app->exe, ic->app->name)) 
+		    {
+		       e_zone_app_exec(ic->mbb->gmc->zone, ic->app);
+		       e_exehist_add("mbar", ic->app->exe);
+		    }
                }
           }
      }

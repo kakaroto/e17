@@ -88,15 +88,20 @@ _e_eap_edit_fill_data(App_Edit_CFData *cfdata)
 {
    /*- BASIC -*/
    IFDUP(cfdata->editor->eap->name, cfdata->name);
-   IFDUP(cfdata->editor->eap->exe, cfdata->exe);
+   if (cfdata->editor->eap->exe)
+     IFDUP(cfdata->editor->eap->exe, cfdata->exe);
+   else
+     IFDUP(cfdata->editor->eap->name, cfdata->exe);
+     
    IFDUP(cfdata->editor->eap->generic, cfdata->generic);
    IFDUP(cfdata->editor->eap->comment, cfdata->comment);
    //IFDUP(cfdata->editor->eap->icon_class, cfdata->iclass);   
    IFDUP(cfdata->editor->eap->path, cfdata->path);
    cfdata->startup_notify = cfdata->editor->eap->startup_notify;
    cfdata->wait_exit = cfdata->editor->eap->wait_exit;
+
    cfdata->is_new = 0;
-   if (!cfdata->editor->eap->path)
+   if (!cfdata->path)
       cfdata->is_new = 1;
 }
 
@@ -162,8 +167,13 @@ _e_eap_edit_basic_apply_data(E_Config_Dialog *cfd, void *data)
 
    if (cfdata->name)
       eap->name = evas_stringshare_add(cfdata->name);
+
    if (cfdata->exe)
       eap->exe = evas_stringshare_add(cfdata->exe);
+   else
+     if (cfdata->name)
+       eap->exe = evas_stringshare_add(cfdata->name);
+   
    if (cfdata->image)
       eap->image = evas_stringshare_add(cfdata->image);
    if (cfdata->generic)

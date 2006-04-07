@@ -84,8 +84,11 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 {
    Evas_Object *o, *ob, *of, *ot, *il;
    Evas_List *l;
+   MBar *mb;
    char buf[4096];
 
+   mb = cfd->data;
+   
    o = e_widget_list_add(evas, 0, 0);
    ob = e_widget_check_add(evas, _("Show Follower"), &(cfdata->follower));
    e_widget_list_object_append(o, ob, 1, 1, 0.5);
@@ -97,9 +100,9 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    ot = e_widget_table_add(evas, 0);
    il = e_widget_ilist_add(evas, 32, 32, NULL);
    e_widget_min_size_set(il, 100, 130);
-   if (cfdata->apps->subapps)
+   if (mb->apps->subapps)
      {
-        for (l = cfdata->apps->subapps; l; l = l->next)
+        for (l = mb->apps->subapps; l; l = l->next)
           {
              E_App *app;
              Evas_Object *ic;
@@ -115,11 +118,11 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    e_widget_ilist_go(il);
    e_widget_table_object_append(ot, il, 0, 0, 3, 3, 1, 0, 1, 0);
 
-   ob = e_widget_button_add(evas, _("New Point"), NULL, _new_point, il, cfdata);
+   ob = e_widget_button_add(evas, _("New Point"), NULL, _new_point, il, cfd);
    e_widget_table_object_append(ot, ob, 0, 3, 1, 1, 1, 0, 1, 0);
-   ob = e_widget_button_add(evas, _("Edit Point"), NULL, _edit_point, il, cfdata);
+   ob = e_widget_button_add(evas, _("Edit Point"), NULL, _edit_point, il, cfd);
    e_widget_table_object_append(ot, ob, 1, 3, 1, 1, 1, 0, 1, 0);
-   ob = e_widget_button_add(evas, _("Delete Point"), NULL, _delete_point, il, cfdata);
+   ob = e_widget_button_add(evas, _("Delete Point"), NULL, _delete_point, il, cfd);
    e_widget_table_object_append(ot, ob, 2, 3, 1, 1, 1, 0, 1, 0);
 
    e_widget_framelist_object_append(of, ot);
@@ -217,37 +220,42 @@ _new_point(void *data, void *data2)
 {
    E_App *app;
    Evas_Object *il;
-   E_Config_Dialog_Data *cfdata;
-
-   cfdata = data2;
-
+   E_Config_Dialog *cfd;
+   MBar *mb;
+   
+   cfd = data2;
    il = data;
+   mb = cfd->data;
+   
    app = e_app_raw_new();
-   point_edit_show(cfdata->con, app, cfdata->apps, il);
+   point_edit_show(cfd->cfdata->con, app, mb->apps, il);
 }
 
 static void
 _edit_point(void *data, void *data2)
 {
    Evas_Object *il;
-   E_Config_Dialog_Data *cfdata;
+   E_Config_Dialog *cfd;
    Evas_List *l;
+   MBar *mb;
    const char *name;
 
    il = data;
-   cfdata = data2;
+   cfd = data2;
+   mb = cfd->data;
+   
    name = e_widget_ilist_selected_label_get(il);
    if (!name)
       return;
 
-   for (l = cfdata->apps->subapps; l; l = l->next)
+   for (l = mb->apps->subapps; l; l = l->next)
      {
         E_App *app;
 
         app = l->data;
         if (!strcmp(app->name, name))
           {
-             point_edit_show(cfdata->con, app);
+	     point_edit_show(cfd->cfdata->con, app, mb->apps, il);
              break;
           }
      }
@@ -257,17 +265,20 @@ static void
 _delete_point(void *data, void *data2)
 {
    Evas_Object *il;
-   E_Config_Dialog_Data *cfdata;
+   E_Config_Dialog *cfd;
    Evas_List *l;
+   MBar *mb;
    const char *name;
 
    il = data;
-   cfdata = data2;
+   cfd = data2;
+   mb = cfd->data;
+
    name = e_widget_ilist_selected_label_get(il);
    if (!name)
       return;
 
-   for (l = cfdata->apps->subapps; l; l = l->next)
+   for (l = mb->apps->subapps; l; l = l->next)
      {
         E_App *app;
 
