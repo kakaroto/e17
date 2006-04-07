@@ -156,7 +156,7 @@ _e_eap_edit_basic_apply_data(E_Config_Dialog *cfd, void *data)
      {
         if (cfdata->name)
            path = basename(cfdata->name);
-        snprintf(buf, sizeof(buf), "%s/.e/e/applications/all/%s.eap", getenv("HOME"), path);
+        snprintf(buf, sizeof(buf), "%s/.e/e/applications/mbar/%s.eap", getenv("HOME"), path);
         eap->path = buf;
      }
 
