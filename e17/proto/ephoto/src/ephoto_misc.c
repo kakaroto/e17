@@ -258,25 +258,27 @@ void slideshow_load_cb(Ewl_Widget *w, void *event, void *data)
         ewl_object_maximum_size_set(EWL_OBJECT(tree), 200, 215);
         ewl_widget_show(tree);
 	
-	slideshows = ecore_file_ls(homepath);
+
+	if ( ecore_file_is_dir(homepath) ) {
+		slideshows = ecore_file_ls(homepath);
+		
+		while ( !ecore_list_is_empty(slideshows) ) {
+			char *tempo;
+			tempo = ecore_list_remove_first(slideshows);
 	
-	while ( !ecore_list_is_empty(slideshows) ) {
-		char *tempo;
-		tempo = ecore_list_remove_first(slideshows);
+       	                rtext = ewl_text_new();
+       	                ewl_widget_name_set(rtext, tempo);
+       	         	ewl_text_text_set(EWL_TEXT(rtext), tempo);
+                	ewl_object_minimum_size_set(EWL_OBJECT(rtext), 10, 16);
+        	        ewl_object_fill_policy_set(EWL_OBJECT(rtext), EWL_FLAG_FILL_ALL);
+               		ewl_widget_show(rtext);
 
-                rtext = ewl_text_new();
-                ewl_widget_name_set(rtext, tempo);
-                ewl_text_text_set(EWL_TEXT(rtext), tempo);
-                ewl_object_minimum_size_set(EWL_OBJECT(rtext), 10, 16);
-                ewl_object_fill_policy_set(EWL_OBJECT(rtext), EWL_FLAG_FILL_ALL);
-                ewl_widget_show(rtext);
-
-                children[0] = rtext;
-                children[1] = NULL;
-                row = ewl_tree_row_add(EWL_TREE(tree), NULL, children);
-                ewl_callback_append(rtext, EWL_CALLBACK_CLICKED, loadclicked_cb, NULL);
+     	                children[0] = rtext;
+        	        children[1] = NULL;
+                	row = ewl_tree_row_add(EWL_TREE(tree), NULL, children);
+                	ewl_callback_append(rtext, EWL_CALLBACK_CLICKED, loadclicked_cb, NULL);
+		}
 	}
-
         m->otext = ewl_text_new();
         ewl_container_child_append(EWL_CONTAINER(vbox), m->otext);
         ewl_object_alignment_set(EWL_OBJECT(m->otext), EWL_FLAG_ALIGN_CENTER);
@@ -358,8 +360,7 @@ void load_cb(Ewl_Widget *w, void *event, void *data)
 		}
 		
 		fclose(file_ptr);
-		ewl_widget_destroy(m->load_win);
 	}
-	
+	ewl_widget_destroy(m->load_win);	
 }
 
