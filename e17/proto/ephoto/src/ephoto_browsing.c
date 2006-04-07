@@ -71,6 +71,7 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 		m->dirtree = ewl_tree_new(1);
                 ewl_container_child_append(EWL_CONTAINER(m->images), m->dirtree);
                 ewl_object_maximum_size_set(EWL_OBJECT(m->dirtree), 200, 215);
+		ewl_object_minimum_size_set(EWL_OBJECT(m->dirtree), 200, 215);
                 ewl_tree_headers_visible_set(EWL_TREE(m->dirtree), 0);
                 ewl_tree_expandable_rows_set(EWL_TREE(m->dirtree), FALSE);
 		ewl_widget_show(m->dirtree);
@@ -85,6 +86,7 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 		ewl_tree_headers_visible_set(EWL_TREE(m->imagetree), 0);
 		ewl_tree_expandable_rows_set(EWL_TREE(m->imagetree), FALSE);
 		ewl_object_maximum_size_set(EWL_OBJECT(m->imagetree), 200, 215);
+		ewl_object_minimum_size_set(EWL_OBJECT(m->imagetree), 200, 215);
 		ewl_widget_show(m->imagetree);
 		
 		/******************************************/
