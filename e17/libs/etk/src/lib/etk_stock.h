@@ -9,15 +9,22 @@
  * @{
  */
 
-enum _Etk_Stock_Size
+/**
+ * @enum Etk_Stock_Size
+ * @brief The size of a stock icon
+ */
+typedef enum _Etk_Stock_Size
 {
    ETK_STOCK_SMALL,     /* 16x16 */
    ETK_STOCK_MEDIUM,    /* 22x22 */
    ETK_STOCK_BIG,       /* 48x48 */
-};
+} Etk_Stock_Size;
 
-/* TODO: doc */
-enum _Etk_Stock_Id
+/**
+ * @enum Etk_Stock_Id
+ * @brief The Id of a stock icon
+ */
+typedef enum _Etk_Stock_Id
 {
    ETK_STOCK_NO_STOCK,     
    ETK_STOCK_ADDRESS_BOOK_NEW,
@@ -45,7 +52,6 @@ enum _Etk_Stock_Id
    ETK_STOCK_EDIT_UNDO,
    ETK_STOCK_EDIT_DELETE,
    ETK_STOCK_EDIT_FIND_REPLACE,
-   ETK_STOCK_EDIT_SELECT_ALL,
    ETK_STOCK_FOLDER_NEW,
    ETK_STOCK_FORMAT_INDENT_LESS,
    ETK_STOCK_FORMAT_INDENT_MORE,
@@ -235,7 +241,7 @@ enum _Etk_Stock_Id
    ETK_STOCK_PRINTER_ERROR,
    ETK_STOCK_USER_TRASH_FULL,
    ETK_NUM_STOCK_IDS
-};
+} Etk_Stock_Id;
 
 char *etk_stock_key_get(Etk_Stock_Id stock_id, Etk_Stock_Size size);
 char *etk_stock_label_get(Etk_Stock_Id stock_id);

@@ -16,7 +16,7 @@
 
 /**
  * @struct Etk_Signal
- * @brief The signal system is a flexible system to create, connect and emit callbacks
+ * @brief The signal system is a flexible system to create, connect and emit signals
  */
 struct _Etk_Signal
 {

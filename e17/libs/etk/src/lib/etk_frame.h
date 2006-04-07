@@ -19,7 +19,7 @@
 
 /**
  * @struct Etk_Frame
- * @brief A frame is a bin container that have a label. It's useful to group some widgets that need to be together
+ * @brief A frame is a bin container with a label. It's useful to group some widgets that need to be together
  */
 struct _Etk_Frame
 {

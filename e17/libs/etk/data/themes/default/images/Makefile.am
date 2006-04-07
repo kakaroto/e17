@@ -87,4 +87,7 @@ EXTRA_DIST = background.png \
 	     hpaned_handle.png \
 	     spinner_button_down1.png \
 	     hpaned_separator.png \
-	     spinner_button_down2.png
+	     spinner_button_down2.png \
+             hscrollbar_trough2.png \
+             vscrollbar_trough2.png \
+             iconbox_selection.png

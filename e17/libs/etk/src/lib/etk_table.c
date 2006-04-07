@@ -7,7 +7,7 @@
 
 /**
  * @addtogroup Etk_Table
-* @{
+ * @{
  */
 
 /* Gets the array index of the cell located at column "col" and row "row" in table "table" */
@@ -108,7 +108,7 @@ void etk_table_cell_clear(Etk_Table *table, int col, int row)
    free(cell);
 
    table->children = evas_list_remove_list(table->children, l);
-   etk_widget_parent_set(child, NULL);
+   etk_widget_parent_set_full(child, NULL, ETK_FALSE);
    etk_signal_emit_by_name("child_removed", ETK_OBJECT(table), NULL, child);
 }
 
@@ -211,9 +211,6 @@ void etk_table_attach(Etk_Table *table, Etk_Widget *child, int left_attach, int 
    right_attach = ETK_CLAMP(right_attach, left_attach, table->num_cols - 1);
    top_attach = ETK_CLAMP(top_attach, 0, table->num_rows - 1);
    bottom_attach = ETK_CLAMP(bottom_attach, top_attach, table->num_rows - 1);
-
-   if (child->parent && ETK_IS_CONTAINER(child->parent))
-      etk_container_remove(ETK_CONTAINER(child->parent), child);
    
    cell = malloc(sizeof(Etk_Table_Cell));
    cell->left_attach = left_attach;

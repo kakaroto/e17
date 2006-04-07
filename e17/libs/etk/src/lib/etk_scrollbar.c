@@ -9,7 +9,7 @@
 
 /**
  * @addtogroup Etk_Scrollbar
-* @{
+ * @{
  */
 
 #define ETK_SCROLLBAR_FIRST_DELAY 0.4
@@ -43,9 +43,7 @@ Etk_Type *etk_scrollbar_type_get()
    static Etk_Type *scrollbar_type = NULL;
 
    if (!scrollbar_type)
-   {
       scrollbar_type = etk_type_new("Etk_Scrollbar", ETK_RANGE_TYPE, sizeof(Etk_Scrollbar), ETK_CONSTRUCTOR(_etk_scrollbar_constructor), NULL);
-   }
 
    return scrollbar_type;
 }
@@ -59,9 +57,7 @@ Etk_Type *etk_hscrollbar_type_get()
    static Etk_Type *hscrollbar_type = NULL;
 
    if (!hscrollbar_type)
-   {
       hscrollbar_type = etk_type_new("Etk_HScrollbar", ETK_SCROLLBAR_TYPE, sizeof(Etk_HScrollbar), NULL, NULL);
-   }
 
    return hscrollbar_type;
 }
@@ -91,9 +87,7 @@ Etk_Type *etk_vscrollbar_type_get()
    static Etk_Type *vscrollbar_type = NULL;
 
    if (!vscrollbar_type)
-   {
       vscrollbar_type = etk_type_new("Etk_VScrollbar", ETK_SCROLLBAR_TYPE, sizeof(Etk_VScrollbar), NULL, NULL);
-   }
 
    return vscrollbar_type;
 }

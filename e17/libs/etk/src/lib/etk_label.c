@@ -48,9 +48,9 @@ Etk_Type *etk_label_type_get()
    {
       label_type = etk_type_new("Etk_Label", ETK_WIDGET_TYPE, sizeof(Etk_Label), ETK_CONSTRUCTOR(_etk_label_constructor), ETK_DESTRUCTOR(_etk_label_destructor));
       
-      etk_type_property_add(label_type, "label", ETK_LABEL_LABEL_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_string(NULL));
-      etk_type_property_add(label_type, "xalign", ETK_LABEL_XALIGN_PROPERTY, ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_float(0.0));
-      etk_type_property_add(label_type, "yalign", ETK_LABEL_YALIGN_PROPERTY, ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_float(0.5));
+      etk_type_property_add(label_type, "label", ETK_LABEL_LABEL_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
+      etk_type_property_add(label_type, "xalign", ETK_LABEL_XALIGN_PROPERTY, ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_float(0.0));
+      etk_type_property_add(label_type, "yalign", ETK_LABEL_YALIGN_PROPERTY, ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_float(0.5));
 
       label_type->property_set = _etk_label_property_set;
       label_type->property_get = _etk_label_property_get;

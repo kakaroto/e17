@@ -19,7 +19,7 @@
 
 /**
  * @struct Etk_VBox
- * @brief An Etk_VBox is a container that can contain several children in the vertical direction 
+ * @brief An Etk_VBox is a container that can contain several children packed in the vertical direction 
  */
 struct _Etk_VBox
 {

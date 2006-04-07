@@ -7,7 +7,7 @@
 
 /**
  * @addtogroup Etk_Toplevel_Widget
-* @{
+ * @{
  */
 
 enum _Etk_Toplevel_Widget_Property_Id
@@ -177,17 +177,20 @@ void etk_toplevel_widget_pointer_push(Etk_Toplevel_Widget *toplevel_widget, Etk_
 void etk_toplevel_widget_pointer_pop(Etk_Toplevel_Widget *toplevel_widget, Etk_Pointer_Type pointer_type)
 {
    Evas_List *l;
-   Etk_Pointer_Type *current_pointer;
-   Etk_Pointer_Type *prev_pointer_type;
+   Etk_Pointer_Type prev_pointer_type;
+   Etk_Pointer_Type *prev_pointer_type_ptr;
+   Etk_Pointer_Type *current_pointer_ptr;
    Etk_Pointer_Type *p;
-
-   if (!toplevel_widget || !(prev_pointer_type = evas_list_data(evas_list_last(toplevel_widget->pointer_stack))))
+   
+   if (!toplevel_widget || !(prev_pointer_type_ptr = evas_list_data(evas_list_last(toplevel_widget->pointer_stack))))
       return;
-
+   
+   prev_pointer_type = *prev_pointer_type_ptr;
+   
    if (pointer_type < 0)
    {
       toplevel_widget->pointer_stack = evas_list_remove_list(toplevel_widget->pointer_stack, evas_list_last(toplevel_widget->pointer_stack));
-      free(prev_pointer_type);
+      free(prev_pointer_type_ptr);
    }
    else
    {
@@ -205,10 +208,10 @@ void etk_toplevel_widget_pointer_pop(Etk_Toplevel_Widget *toplevel_widget, Etk_P
 
    if (toplevel_widget->pointer_set)
    {
-      if ((current_pointer = evas_list_data(evas_list_last(toplevel_widget->pointer_stack))))
+      if ((current_pointer_ptr = evas_list_data(evas_list_last(toplevel_widget->pointer_stack))))
       {
-         if (*current_pointer != *prev_pointer_type)
-            toplevel_widget->pointer_set(toplevel_widget, *current_pointer);
+         if (*current_pointer_ptr != prev_pointer_type)
+            toplevel_widget->pointer_set(toplevel_widget, *current_pointer_ptr);
       }
       else
          toplevel_widget->pointer_set(toplevel_widget, ETK_POINTER_DEFAULT);
@@ -306,8 +309,8 @@ static void _etk_toplevel_widget_realize_cb(Etk_Object *object, void *data)
    if (!(toplevel_widget = ETK_TOPLEVEL_WIDGET(object)))
       return;
 
-   if (!toplevel_widget->focused_widget && ETK_WIDGET(toplevel_widget)->event_object)
-      evas_object_focus_set(ETK_WIDGET(toplevel_widget)->event_object, 1);
+   if (!toplevel_widget->focused_widget && ETK_WIDGET(toplevel_widget)->smart_object)
+      evas_object_focus_set(ETK_WIDGET(toplevel_widget)->smart_object, 1);
 }
 
 /**************************

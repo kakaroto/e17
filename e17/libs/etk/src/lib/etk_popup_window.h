@@ -17,7 +17,10 @@
 /** @brief Check if the object is an Etk_Popup_Window */
 #define ETK_IS_POPUP_WINDOW(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_POPUP_WINDOW_TYPE))
 
-/* TODO: doc */
+/**
+ * @struct Etk_Popup_Window
+ * @brief A popup window is a borderless window that can pops up/down used for menus or comboboxes
+ */
 struct _Etk_Popup_Window
 {
    /* private: */

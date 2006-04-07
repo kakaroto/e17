@@ -11,7 +11,7 @@
  * @{
  */
 
-/** @brief Gets the type of a menu_shell */
+/** @brief Gets the type of a menu shell */
 #define ETK_MENU_SHELL_TYPE       (etk_menu_shell_type_get())
 /** @brief Casts the object to an Etk_Menu_Shell */
 #define ETK_MENU_SHELL(obj)       (ETK_OBJECT_CAST((obj), ETK_MENU_SHELL_TYPE, Etk_Menu_Shell))
@@ -33,7 +33,6 @@ struct _Etk_Menu_Shell
 };
 
 Etk_Type *etk_menu_shell_type_get();
-Etk_Widget *etk_menu_shell_new();
 
 void etk_menu_shell_prepend(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item);
 void etk_menu_shell_append(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item);

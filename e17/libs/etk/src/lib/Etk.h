@@ -70,5 +70,6 @@
 #include "etk_argument.h"
 #include "etk_tooltips.h"
 #include "etk_message_dialog.h"
+#include "etk_iconbox.h"
 
 #endif

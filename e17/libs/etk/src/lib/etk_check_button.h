@@ -17,6 +17,10 @@
 /** @brief Checks if the object is an Etk_Check_Button */
 #define ETK_IS_CHECK_BUTTON(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_CHECK_BUTTON_TYPE))
 
+/**
+ * @struct Etk_Check_Button
+ * @brief An Etk_Check_Button is a button that can be checked and unckecked
+ */
 struct _Etk_Check_Button
 {
    /* private: */

@@ -69,14 +69,11 @@ Etk_Type *etk_combobox_type_get()
 
    if (!combobox_type)
    {
-      combobox_type = etk_type_new("Etk_Combobox", ETK_WIDGET_TYPE, sizeof(Etk_Combobox),
-         ETK_CONSTRUCTOR(_etk_combobox_constructor), ETK_DESTRUCTOR(_etk_combobox_destructor));
+      combobox_type = etk_type_new("Etk_Combobox", ETK_WIDGET_TYPE, sizeof(Etk_Combobox), ETK_CONSTRUCTOR(_etk_combobox_constructor), ETK_DESTRUCTOR(_etk_combobox_destructor));
       
-      _etk_combobox_signals[ETK_COMBOBOX_ACTIVE_ITEM_CHANGED_SIGNAL] = etk_signal_new("active_item_changed",
-         combobox_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_combobox_signals[ETK_COMBOBOX_ACTIVE_ITEM_CHANGED_SIGNAL] = etk_signal_new("active_item_changed", combobox_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
       
-      etk_type_property_add(combobox_type, "active_item", ETK_COMBOBOX_ACTIVE_ITEM_PROPERTY,
-         ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_pointer(NULL));
+      etk_type_property_add(combobox_type, "active_item", ETK_COMBOBOX_ACTIVE_ITEM_PROPERTY, ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_pointer(NULL));
       
       combobox_type->property_set = _etk_combobox_property_set;
       combobox_type->property_get = _etk_combobox_property_get;
@@ -94,10 +91,7 @@ Etk_Type *etk_combobox_item_type_get()
    static Etk_Type *combobox_item_type = NULL;
 
    if (!combobox_item_type)
-   {
-      combobox_item_type = etk_type_new("Etk_Combobox_Item", ETK_WIDGET_TYPE, sizeof(Etk_Combobox_Item),
-         NULL, ETK_DESTRUCTOR(_etk_combobox_item_destructor));
-   }
+      combobox_item_type = etk_type_new("Etk_Combobox_Item", ETK_WIDGET_TYPE, sizeof(Etk_Combobox_Item), NULL, ETK_DESTRUCTOR(_etk_combobox_item_destructor));
 
    return combobox_item_type;
 }
@@ -108,7 +102,7 @@ Etk_Type *etk_combobox_item_type_get()
  */
 Etk_Widget *etk_combobox_new()
 {
-   return etk_widget_new(ETK_COMBOBOX_TYPE, "focusable", ETK_TRUE, "focus_on_press", ETK_TRUE, NULL);
+   return etk_widget_new(ETK_COMBOBOX_TYPE, "theme_group", "combobox", "focusable", ETK_TRUE, "focus_on_press", ETK_TRUE, NULL);
 }
 
 /**
@@ -434,12 +428,13 @@ static void _etk_combobox_constructor(Etk_Combobox *combobox)
    if (!combobox)
       return;
    
-   combobox->button = etk_widget_new(ETK_TOGGLE_BUTTON_TYPE, "theme_group", "combobox", "visible", ETK_TRUE,
+   combobox->button = etk_widget_new(ETK_TOGGLE_BUTTON_TYPE, "theme_group", "button", "visible", ETK_TRUE,
       "repeat_mouse_events", ETK_TRUE, "visibility_locked", ETK_TRUE, NULL);
    etk_widget_parent_set(combobox->button, ETK_WIDGET(combobox));
    etk_signal_connect("toggled", ETK_OBJECT(combobox->button), ETK_CALLBACK(_etk_combobox_button_toggled_cb), combobox);
    
-   combobox->window = ETK_POPUP_WINDOW(etk_widget_new(ETK_POPUP_WINDOW_TYPE, "theme_group", "combobox_window", NULL));
+   combobox->window = ETK_POPUP_WINDOW(etk_widget_new(ETK_POPUP_WINDOW_TYPE, "theme_group", "window", NULL));
+   etk_widget_theme_parent_set(ETK_WIDGET(combobox->window), ETK_WIDGET(combobox));
    etk_object_data_set(ETK_OBJECT(combobox->window), "_Etk_Combobox_Window::Combobox", combobox);
    etk_signal_connect("popped_down", ETK_OBJECT(combobox->window), ETK_CALLBACK(_etk_combobox_window_popped_down_cb), combobox);
    etk_signal_connect("key_down", ETK_OBJECT(combobox->window), ETK_CALLBACK(_etk_combobox_window_key_down_cb), combobox);
@@ -857,11 +852,7 @@ static void _etk_combobox_window_key_down_cb(Etk_Object *object, void *event_inf
    else if (strcmp(event->keyname, "Return") == 0 || strcmp(event->keyname, "space") == 0 || strcmp(event->keyname, "KP_Enter") == 0)
    {
       if (combobox->selected_item)
-      {
          etk_combobox_active_item_set(combobox, combobox->selected_item);
-	 if (strcmp(event->keyname, "Return") == 0 || strcmp(event->keyname, "KP_Enter") == 0)
-	    etk_popup_window_popdown(combobox->window);
-      }
    }
    else if (strcmp(event->keyname, "Escape") == 0)
       etk_popup_window_popdown(combobox->window);
@@ -897,7 +888,6 @@ static void _etk_combobox_item_mouse_up_cb(Etk_Object *object, void *event_info,
    if (!(item = ETK_COMBOBOX_ITEM(object)))
       return;
    etk_combobox_item_activate(item);
-   etk_popup_window_popdown(item->combobox->window);
 }
 
 /**************************
@@ -916,11 +906,12 @@ static Etk_Combobox_Item *_etk_combobox_item_new_valist(Etk_Combobox *combobox, 
       return NULL;
    if (!combobox->built)
    {
-      ETK_WARNING("The combobox should be built when you add a new item to it");
+      ETK_WARNING("The combobox should be already built when you add a new item to it");
       return NULL;
    }
    
    item = ETK_COMBOBOX_ITEM(etk_widget_new(ETK_COMBOBOX_ITEM_TYPE, "theme_group", "combobox_item", "visible", ETK_TRUE, NULL));
+   etk_widget_theme_parent_set(ETK_WIDGET(item), ETK_WIDGET(combobox));
    item->combobox = combobox;
    item->data = NULL;
    item->data_free_cb = NULL;

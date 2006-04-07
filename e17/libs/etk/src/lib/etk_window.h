@@ -21,7 +21,8 @@
 #define ETK_IS_WINDOW(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_WINDOW_TYPE))
 
 /**
- * TODO: doc
+ * @struct Etk_Window
+ * @brief A window which can be borderless, decorated or not, sticky, ...
  */
 struct _Etk_Window
 {

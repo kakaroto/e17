@@ -22,8 +22,7 @@ Maybe a bug of the evas textblock
 * Add a cache system to cache images used by the tree and the future iconbox in order to make
 the scrolling smoother [In progress: MoOm]
 * Allow the theme to change the color/font/style of the labels
-* More API work for the tree (get a row according to (x,y) position, emit signals when a row is
-clicked, double-clicked...)
+* More API work for the tree (get a row according to (x,y) position...)
 * The filechooser still need to be finished/rewritten [In progress: MoOm]
 * More API work for the colorpicker. We need to be able to know the current color, and to know
 when a color is changed
@@ -34,10 +33,8 @@ when a color is changed
 --------------------
 * spinner [In progress: CodeWarrior]
 * textview [In progress: MoOm]
-* combobox [In progress: MoOm]
-* iconbox
+* iconbox [In progress: MoOm]
 * toolbar
 * drag and drop [In progress: CodeWarrior]
 * copy and paste [In progress: CodeWarrior]
-* signals in dialog
 * add spin buttons and sliders to colorpicker

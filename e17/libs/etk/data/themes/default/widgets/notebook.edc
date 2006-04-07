@@ -1,5 +1,5 @@
 group {
-   name: "notebook_tab";
+   name: "notebook/tab";
    min: 20 26;
    parts {
       part {
@@ -186,7 +186,7 @@ group {
    }
 }
 group {
-   name: "notebook_frame";
+   name: "notebook/frame";
    data {
       item: "inset" "6 6 6 6";
    }

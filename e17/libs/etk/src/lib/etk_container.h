@@ -19,6 +19,19 @@
 #define ETK_IS_CONTAINER(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_CONTAINER_TYPE))
 
 /**
+ * @enum Etk_Fill_Policy_Flags
+ * @brief Describes how a child should fill the space allocated by its parent container
+ */ 
+typedef enum _Etk_Fill_Policy_Flags
+{
+   ETK_FILL_POLICY_NONE = 1 << 0,
+   ETK_FILL_POLICY_HFILL = 1 << 1,
+   ETK_FILL_POLICY_VFILL = 1 << 2,
+   ETK_FILL_POLICY_HEXPAND = 1 << 3,
+   ETK_FILL_POLICY_VEXPAND = 1 << 4
+} Etk_Fill_Policy_Flags;
+
+/**
  * @struct Etk_Container
  * @brief An Etk_Container is a widget that can contain other widgets
  */

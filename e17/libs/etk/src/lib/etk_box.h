@@ -18,17 +18,22 @@
 /** @brief Checks if the object is an Etk_Box */
 #define ETK_IS_BOX(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_BOX_TYPE))
 
-typedef struct _Etk_Box_Child_Props
+/**
+ * @struct Etk_Box_Child_Props
+ * @brief Describes how a child of the box should expand, fill (...) the allocated space
+ * @note You can change directly those values, but you'll then have to call @a etk_widget_size_recalc() on the bin
+ */
+struct _Etk_Box_Child_Props
 {
    int padding;
    Etk_Bool expand;
    Etk_Bool fill;
    Etk_Bool pack_end;
-} Etk_Box_Child_Props;
+};
 
 /**
  * @struct Etk_Box
- * @brief An Etk_Box is a container that can contain several children in an unique direction (horizontal of vertical) 
+ * @brief An Etk_Box is a container that can contain several children packed in one direction (horizontal of vertical) 
  */
 struct _Etk_Box
 {

@@ -2,9 +2,10 @@
 #include "etk_alignment.h"
 #include <stdlib.h>
 #include "etk_utils.h"
+
 /**
  * @addtogroup Etk_Alignment
-* @{
+ * @{
  */
 
 enum _Etk_Alignment_Property_Id
@@ -116,17 +117,14 @@ void etk_alignment_set(Etk_Alignment *alignment, float xalign, float yalign, flo
  */
 void etk_alignment_get(Etk_Alignment *alignment, float *xalign, float *yalign, float *xscale, float *yscale)
 {
-   if (!alignment)
-      return;
-
    if (xalign)
-      *xalign = alignment->xalign;
+      *xalign = alignment ? alignment->xalign : 0;
    if (yalign)
-      *yalign = alignment->yalign;
+      *yalign = alignment ? alignment->yalign : 0;
    if (xscale)
-      *xscale = alignment->xscale;
+      *xscale = alignment ? alignment->xscale : 0;
    if (yscale)
-      *yscale = alignment->yscale;
+      *yscale = alignment ? alignment->yscale : 0;
 }
 
 /**************************

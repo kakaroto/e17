@@ -78,7 +78,8 @@ static void _etk_vbox_size_request(Etk_Widget *widget, Etk_Size *size_requisitio
    Etk_Widget *child;
    Etk_Box_Child_Props *child_properties;
    Etk_Size child_requisition;
-   int num_children, i;
+   int num_children, num_visible_children;
+   int i;
 
    if (!(vbox = ETK_VBOX(widget)) || !size_requisition)
       return;
@@ -88,12 +89,18 @@ static void _etk_vbox_size_request(Etk_Widget *widget, Etk_Size *size_requisitio
    size_requisition->w = 0;
    size_requisition->h = 0;
    num_children = evas_list_count(box->children);
+   num_visible_children = 0;
    vbox->requested_sizes = realloc(vbox->requested_sizes, num_children * sizeof(int));
 
    for (l = box->children, i = 0; l; l = l->next, i++)
    {
       child = ETK_WIDGET(l->data);
       child_properties = child->child_properties;
+      vbox->requested_sizes[i] = 0;
+      
+      if (!etk_widget_is_visible(child))
+         continue;
+      
       etk_widget_size_request(child, &child_requisition);
 
       if (size_requisition->w < child_requisition.w)
@@ -109,15 +116,17 @@ static void _etk_vbox_size_request(Etk_Widget *widget, Etk_Size *size_requisitio
          vbox->requested_sizes[i] = child_requisition.h + 2 * child_properties->padding;
          size_requisition->h += vbox->requested_sizes[i];
       }
+      
+      num_visible_children++;
    }
    if (box->homogeneous)
    {
       for (i = 0; i < num_children; i++)
          vbox->requested_sizes[i] = size_requisition->h;
-      size_requisition->h *= num_children;
+      size_requisition->h *= num_visible_children;
    }
-   if (num_children > 1)
-      size_requisition->h += (num_children - 1) * box->spacing;
+   if (num_visible_children > 1)
+      size_requisition->h += (num_visible_children - 1) * box->spacing;
 
    size_requisition->w += 2 * container->border_width;
    size_requisition->h += 2 * container->border_width;
@@ -160,7 +169,10 @@ static void _etk_vbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       {
          child = ETK_WIDGET(l->data);
          child_properties = child->child_properties;
-
+         
+         if (!etk_widget_is_visible(child))
+            continue;
+         
          child_geometry.x = geometry.x;
          child_geometry.h = vbox->requested_sizes[i] * ratio;
          child_geometry.w = allocated_inner_size.w;
@@ -188,6 +200,10 @@ static void _etk_vbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       {
          child = ETK_WIDGET(l->data);
          child_properties = child->child_properties;
+         
+         if (!etk_widget_is_visible(child))
+            continue;
+         
          if (child_properties->expand)
             num_children_to_expand++;
       }
@@ -201,6 +217,9 @@ static void _etk_vbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       {
          child = ETK_WIDGET(l->data);
          child_properties = child->child_properties;
+         
+         if (!etk_widget_is_visible(child))
+            continue;
 
          child_geometry.x = geometry.x;
          child_geometry.w = allocated_inner_size.w;

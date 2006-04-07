@@ -9,7 +9,7 @@
 
 /**
  * @addtogroup Etk_Paned
-* @{
+ * @{
  */
 
 enum _Etk_Paned_Property_Id
@@ -93,7 +93,7 @@ Etk_Type *etk_vpaned_type_get()
  */
 Etk_Widget *etk_hpaned_new()
 {
-   return etk_widget_new(ETK_HPANED_TYPE, NULL);
+   return etk_widget_new(ETK_HPANED_TYPE, "theme_group", "hpaned", NULL);
 }
 
 /**
@@ -102,7 +102,7 @@ Etk_Widget *etk_hpaned_new()
  */
 Etk_Widget *etk_vpaned_new()
 {
-   return etk_widget_new(ETK_VPANED_TYPE, NULL);
+   return etk_widget_new(ETK_VPANED_TYPE, "theme_group", "vpaned", NULL);
 }
 
 /**
@@ -229,12 +229,20 @@ static void _etk_paned_constructor(Etk_Paned *paned)
    paned->drag = ETK_FALSE;
    paned->position = 0;
 
-   paned->separator = NULL;
    paned->child1 = NULL;
    paned->child2 = NULL;
    ETK_CONTAINER(paned)->child_add = _etk_paned_child_add;
    ETK_CONTAINER(paned)->child_remove = _etk_paned_child_remove;
    ETK_CONTAINER(paned)->children_get = _etk_paned_children_get;
+
+   paned->separator = etk_widget_new(ETK_WIDGET_TYPE, "theme_group", "separator", NULL);
+   etk_widget_parent_set(paned->separator, ETK_WIDGET(paned));
+
+   etk_signal_connect("mouse_in", ETK_OBJECT(paned->separator), ETK_CALLBACK(_etk_paned_separator_mouse_in_cb), paned);
+   etk_signal_connect("mouse_out", ETK_OBJECT(paned->separator), ETK_CALLBACK(_etk_paned_separator_mouse_out_cb), paned);
+   etk_signal_connect("mouse_move", ETK_OBJECT(paned->separator), ETK_CALLBACK(_etk_paned_separator_mouse_move_cb), paned);
+   etk_signal_connect("mouse_down", ETK_OBJECT(paned->separator), ETK_CALLBACK(_etk_paned_separator_mouse_down_cb), paned);
+   etk_signal_connect("mouse_up", ETK_OBJECT(paned->separator), ETK_CALLBACK(_etk_paned_separator_mouse_up_cb), paned);
 }
 
 /* Initializes the default values of the hpaned */
@@ -247,15 +255,6 @@ static void _etk_hpaned_constructor(Etk_HPaned *hpaned)
 
    ETK_WIDGET(hpaned)->size_request = _etk_hpaned_size_request;
    ETK_WIDGET(hpaned)->size_allocate = _etk_hpaned_size_allocate;
-
-   paned->separator = etk_widget_new(ETK_VSEPARATOR_TYPE, "theme_group", "hpaned", NULL);
-   etk_widget_parent_set(paned->separator, ETK_WIDGET(paned));
-
-   etk_signal_connect("mouse_in", ETK_OBJECT(paned->separator), ETK_CALLBACK(_etk_paned_separator_mouse_in_cb), NULL);
-   etk_signal_connect("mouse_out", ETK_OBJECT(paned->separator), ETK_CALLBACK(_etk_paned_separator_mouse_out_cb), NULL);
-   etk_signal_connect("mouse_move", ETK_OBJECT(paned->separator), ETK_CALLBACK(_etk_paned_separator_mouse_move_cb), paned);
-   etk_signal_connect("mouse_down", ETK_OBJECT(paned->separator), ETK_CALLBACK(_etk_paned_separator_mouse_down_cb), paned);
-   etk_signal_connect("mouse_up", ETK_OBJECT(paned->separator), ETK_CALLBACK(_etk_paned_separator_mouse_up_cb), paned);
 }
 
 /* Initializes the default values of the vpaned */
@@ -268,15 +267,6 @@ static void _etk_vpaned_constructor(Etk_VPaned *vpaned)
 
    ETK_WIDGET(vpaned)->size_request = _etk_vpaned_size_request;
    ETK_WIDGET(vpaned)->size_allocate = _etk_vpaned_size_allocate;
-
-   paned->separator = etk_widget_new(ETK_HSEPARATOR_TYPE, "theme_group", "vpaned", NULL);
-   etk_widget_parent_set(paned->separator, ETK_WIDGET(paned));
-
-   etk_signal_connect("mouse_in", ETK_OBJECT(paned->separator), ETK_CALLBACK(_etk_paned_separator_mouse_in_cb), NULL);
-   etk_signal_connect("mouse_out", ETK_OBJECT(paned->separator), ETK_CALLBACK(_etk_paned_separator_mouse_out_cb), NULL);
-   etk_signal_connect("mouse_move", ETK_OBJECT(paned->separator), ETK_CALLBACK(_etk_paned_separator_mouse_move_cb), paned);
-   etk_signal_connect("mouse_down", ETK_OBJECT(paned->separator), ETK_CALLBACK(_etk_paned_separator_mouse_down_cb), paned);
-   etk_signal_connect("mouse_up", ETK_OBJECT(paned->separator), ETK_CALLBACK(_etk_paned_separator_mouse_up_cb), paned);
 }
 
 /* Calculates the ideal size of the hpaned */
@@ -453,7 +443,7 @@ static void _etk_paned_child_remove(Etk_Container *container, Etk_Widget *widget
    if (widget != paned->child1 && widget != paned->child2)
       return;
 
-   etk_widget_parent_set(widget, NULL);
+   etk_widget_parent_set_full(widget, NULL, ETK_FALSE);
    etk_widget_size_recalc_queue(ETK_WIDGET(paned));
 }
 
@@ -473,29 +463,31 @@ static Evas_List *_etk_paned_children_get(Etk_Container *container)
 /* Called when the mouse enters the paned separator */
 static void _etk_paned_separator_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *event, void *data)
 {
+   Etk_Paned *paned;
    Etk_Widget *separator_widget;
 
-   if (!(separator_widget = ETK_WIDGET(object)))
+   if (!(separator_widget = ETK_WIDGET(object)) || !(paned = ETK_PANED(data)))
       return;
 
-   if (ETK_IS_VSEPARATOR(separator_widget))
-      etk_toplevel_widget_pointer_push(separator_widget->toplevel_parent, ETK_POINTER_H_DOUBLE_ARROW);
+   if (ETK_IS_HPANED(paned))
+      etk_toplevel_widget_pointer_push(etk_widget_toplevel_parent_get(separator_widget), ETK_POINTER_H_DOUBLE_ARROW);
    else
-      etk_toplevel_widget_pointer_push(separator_widget->toplevel_parent, ETK_POINTER_V_DOUBLE_ARROW);
+      etk_toplevel_widget_pointer_push(etk_widget_toplevel_parent_get(separator_widget), ETK_POINTER_V_DOUBLE_ARROW);
 }
 
 /* Called when the mouse leaves the paned separator */
 static void _etk_paned_separator_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *event, void *data)
 {
+   Etk_Paned *paned;
    Etk_Widget *separator_widget;
 
-   if (!(separator_widget = ETK_WIDGET(object)))
+   if (!(separator_widget = ETK_WIDGET(object)) || !(paned = ETK_PANED(data)))
       return;
 
-   if (ETK_IS_VSEPARATOR(separator_widget))
-      etk_toplevel_widget_pointer_pop(separator_widget->toplevel_parent, ETK_POINTER_H_DOUBLE_ARROW);
+   if (ETK_IS_HPANED(paned))
+      etk_toplevel_widget_pointer_pop(etk_widget_toplevel_parent_get(separator_widget), ETK_POINTER_H_DOUBLE_ARROW);
    else
-      etk_toplevel_widget_pointer_pop(separator_widget->toplevel_parent, ETK_POINTER_V_DOUBLE_ARROW);
+      etk_toplevel_widget_pointer_pop(etk_widget_toplevel_parent_get(separator_widget), ETK_POINTER_V_DOUBLE_ARROW);
 }
 
 /* Called when the user presses the paned separator */

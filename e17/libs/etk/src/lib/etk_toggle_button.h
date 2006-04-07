@@ -15,8 +15,13 @@
 /** @brief Casts the object to an Etk_Toggle_Button */
 #define ETK_TOGGLE_BUTTON(obj)       (ETK_OBJECT_CAST((obj), ETK_TOGGLE_BUTTON_TYPE, Etk_Toggle_Button))
 /** @brief Checks if the object is an Etk_Toggle_Button */
-#define ETK_IS_TOGGLE_BUTTON(obj)    (ETK_OBJECT_TOGGLE_TYPE((obj), ETK_TOGGLE_BUTTON_TYPE))
+#define ETK_IS_TOGGLE_BUTTON(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_TOGGLE_BUTTON_TYPE))
 
+/**
+ * @struct Etk_Toggle_Button
+ * @brief A toggle button is a button that can be activated/deactivated. @n
+ * It's the base class of check and radio buttons
+ */
 struct _Etk_Toggle_Button
 {
    /* private: */

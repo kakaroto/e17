@@ -9,7 +9,7 @@
 
 /**
  * @addtogroup Etk_Slider
-* @{
+ * @{
  */
 
 static void _etk_slider_constructor(Etk_Slider *slider);
@@ -35,9 +35,7 @@ Etk_Type *etk_slider_type_get()
    static Etk_Type *slider_type = NULL;
 
    if (!slider_type)
-   {
       slider_type = etk_type_new("Etk_Slider", ETK_RANGE_TYPE, sizeof(Etk_Slider), ETK_CONSTRUCTOR(_etk_slider_constructor), NULL);
-   }
 
    return slider_type;
 }
@@ -51,9 +49,7 @@ Etk_Type *etk_hslider_type_get()
    static Etk_Type *hslider_type = NULL;
 
    if (!hslider_type)
-   {
       hslider_type = etk_type_new("Etk_HSlider", ETK_SLIDER_TYPE, sizeof(Etk_HSlider), NULL, NULL);
-   }
 
    return hslider_type;
 }
@@ -77,9 +73,7 @@ Etk_Type *etk_vslider_type_get()
    static Etk_Type *vslider_type = NULL;
 
    if (!vslider_type)
-   {
       vslider_type = etk_type_new("Etk_VSlider", ETK_SLIDER_TYPE, sizeof(Etk_VSlider), NULL, NULL);
-   }
 
    return vslider_type;
 }

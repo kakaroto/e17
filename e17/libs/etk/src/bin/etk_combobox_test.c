@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 #define STARTING_STOCK_ID ETK_STOCK_DOCUMENT_NEW
-#define ENDING_STOCK_ID ETK_STOCK_EDIT_FIND_REPLACE
+#define ENDING_STOCK_ID ETK_STOCK_FORMAT_TEXT_UNDERLINE
 
 static void _etk_test_combobox_active_item_changed_cb(Etk_Object *object, void *data);
 

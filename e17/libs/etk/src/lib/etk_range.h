@@ -17,6 +17,10 @@
 /** @brief Checks if the object is an Etk_Range */
 #define ETK_IS_RANGE(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_RANGE_TYPE))
 
+/**
+ * @struct Etk_Range
+ * @brief Base class for scrollbars, sliders, ...
+ */
 struct _Etk_Range
 {
    /* private: */

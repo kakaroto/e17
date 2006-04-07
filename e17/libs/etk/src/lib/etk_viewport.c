@@ -4,15 +4,16 @@
 #include "etk_utils.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
+
 /**
  * @addtogroup Etk_Viewport
-* @{
+ * @{
  */
 
 static void _etk_viewport_constructor(Etk_Viewport *viewport);
 static void _etk_viewport_size_request(Etk_Widget *widget, Etk_Size *size_requisition);
 static void _etk_viewport_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
-static void _etk_viewport_scroll_size_get(Etk_Widget *widget, Etk_Size *scroll_size);
+static void _etk_viewport_scroll_size_get(Etk_Widget *widget, Etk_Size scrollview_size, Etk_Size scrollbar_size, Etk_Size *scroll_size);
 static void _etk_viewport_scroll(Etk_Widget *widget, int x, int y);
 static void _etk_viewport_realize_cb(Etk_Object *object, void *data);
 static void _etk_viewport_unrealize_cb(Etk_Object *object, void *data);
@@ -130,7 +131,7 @@ static void _etk_viewport_scroll(Etk_Widget *widget, int x, int y)
 }
 
 /* Gets the scrolling size needed by the viewport  */
-static void _etk_viewport_scroll_size_get(Etk_Widget *widget, Etk_Size *scroll_size)
+static void _etk_viewport_scroll_size_get(Etk_Widget *widget, Etk_Size scrollview_size, Etk_Size scrollbar_size, Etk_Size *scroll_size)
 {
    Etk_Viewport *viewport;
    Etk_Widget *child;
@@ -145,7 +146,6 @@ static void _etk_viewport_scroll_size_get(Etk_Widget *widget, Etk_Size *scroll_s
       scroll_size->w = 0;
       scroll_size->h = 0;
    }
-
 }
 
 /**************************

@@ -22,7 +22,7 @@
  * @enum Etk_Pointer_Type
  * @brief The different types of mouse pointer
  */
-enum _Etk_Pointer_Type
+typedef enum _Etk_Pointer_Type
 {
    ETK_POINTER_DEFAULT,
    ETK_POINTER_MOVE,
@@ -39,7 +39,7 @@ enum _Etk_Pointer_Type
    ETK_POINTER_RESIZE_L,
    ETK_POINTER_TEXT_EDIT,
    ETK_POINTER_DND_DROP
-};
+} Etk_Pointer_Type;
 
 /**
  * @struct Etk_Toplevel_Widget

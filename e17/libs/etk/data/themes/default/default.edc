@@ -28,5 +28,6 @@ collections {
    #include "widgets/progress_bar.edc"
    #include "widgets/spinner.edc"
    #include "widgets/combobox.edc"
-   #include "widgets/tooltips.edc"   
+   #include "widgets/tooltips.edc"
+   #include "widgets/iconbox.edc"
 }

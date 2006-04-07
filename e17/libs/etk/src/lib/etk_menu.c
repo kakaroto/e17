@@ -9,7 +9,7 @@
 
 /**
  * @addtogroup Etk_Menu
-* @{
+ * @{
  */
 
 enum _Etk_Menu_Signal_Id
@@ -255,7 +255,7 @@ static void _etk_menu_window_key_down_cb(Etk_Object *object, void *event_info, v
 {
    Etk_Menu_Shell *menu_shell;
    Evas_Event_Key_Down *event;
-   Evas_List *l;
+   //Evas_List *l;
    
    if (!(menu_shell = ETK_MENU_SHELL(data)) || !(event = event_info))
       return;

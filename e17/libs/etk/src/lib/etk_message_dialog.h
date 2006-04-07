@@ -23,19 +23,19 @@
  * @enum Etk_Message_Dialog_Type
  * @brief Message types for the message dialog
  */
-enum _Etk_Message_Dialog_Type
+typedef enum _Etk_Message_Dialog_Type
 {
-   ETK_MESSAGE_DIALOG_INFO = -1,
-   ETK_MESSAGE_DIALOG_WARNING = -2,
-   ETK_MESSAGE_DIALOG_QUESTION = -3,
-   ETK_MESSAGE_DIALOG_ERROR = -4
-};
+   ETK_MESSAGE_DIALOG_INFO,
+   ETK_MESSAGE_DIALOG_WARNING,
+   ETK_MESSAGE_DIALOG_QUESTION,
+   ETK_MESSAGE_DIALOG_ERROR
+} Etk_Message_Dialog_Type;
 
 /**
  * @enum Etk_Message_Dialog_Buttons
  * @brief What buttons the message dialog will have
  */
-enum _Etk_Message_Dialog_Buttons
+typedef enum _Etk_Message_Dialog_Buttons
 {
    ETK_MESSAGE_DIALOG_NONE = -1,
    ETK_MESSAGE_DIALOG_OK = -2,
@@ -43,12 +43,11 @@ enum _Etk_Message_Dialog_Buttons
    ETK_MESSAGE_DIALOG_CANCEL = -4,
    ETK_MESSAGE_DIALOG_YES_NO = -5,
    ETK_MESSAGE_DIALOG_OK_CANCEL = -6     
-};
+} Etk_Message_Dialog_Buttons;
 
 /**
  * @struct Etk_Message_Dialog
- * @brief A dialog is a window with buttons in its bottom area to allow the user to respond to a request. @n
- * A horizontal separator can also separate the button area from the upper area. It's enabled by default
+ * @brief An Etk_Message_Dialog is a convenient way to ask or to warn the user
  */
 struct _Etk_Message_Dialog
 {
@@ -56,8 +55,8 @@ struct _Etk_Message_Dialog
    /* Inherit from Etk_Dialog */
    Etk_Dialog dialog;
    
-   int dialog_type;
-   int buttons_type;
+   Etk_Message_Dialog_Type dialog_type;
+   Etk_Message_Dialog_Buttons buttons_type;
    
    Etk_Widget *main_area_hbox;
    Etk_Widget *image;
@@ -66,16 +65,16 @@ struct _Etk_Message_Dialog
 };
 
 Etk_Type *etk_message_dialog_type_get();
-Etk_Widget *etk_message_dialog_new(int dialog_type, int buttons, const char *text);
+Etk_Widget *etk_message_dialog_new(Etk_Message_Dialog_Type dialog_type, Etk_Message_Dialog_Buttons buttons, const char *text);
 
 void etk_message_dialog_text_set(Etk_Message_Dialog *dialog, const char *text);
 const char *etk_message_dialog_text_get(Etk_Message_Dialog *dialog);
 
-void etk_message_dialog_icon_set(Etk_Message_Dialog *dialog, int dialog_type);
-int etk_message_dialog_icon_get(Etk_Message_Dialog *dialog);
+void etk_message_dialog_icon_set(Etk_Message_Dialog *dialog, Etk_Message_Dialog_Type dialog_type);
+Etk_Message_Dialog_Type etk_message_dialog_icon_get(Etk_Message_Dialog *dialog);
 
-void etk_message_dialog_buttons_set(Etk_Message_Dialog *dialog, int buttons);
-int etk_message_dialog_buttons_get(Etk_Message_Dialog *dialog);
+void etk_message_dialog_buttons_set(Etk_Message_Dialog *dialog, Etk_Message_Dialog_Buttons buttons);
+Etk_Message_Dialog_Buttons etk_message_dialog_buttons_get(Etk_Message_Dialog *dialog);
 
 /** @} */
 

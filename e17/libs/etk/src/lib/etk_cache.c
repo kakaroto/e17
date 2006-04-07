@@ -5,6 +5,11 @@
 #include <Edje.h>
 #include "etk_utils.h"
 
+/**
+ * @addtogroup Etk_Cache
+ * @{
+ */
+
 typedef struct _Etk_Cache_Image_Object_Item
 {
    char *filename;
@@ -38,7 +43,7 @@ static void _etk_cache_system_empty(Etk_Cache_System *cache_system);
 static void _etk_cache_system_clean(Etk_Cache_System *cache_system);
 static char *_etk_cache_edje_key_generate(const char *filename, const char *group);
 
-Evas_List *_etk_cache_systems = NULL;
+static Evas_List *_etk_cache_systems = NULL;
 
 /**************************
  *
@@ -154,6 +159,8 @@ void etk_cache_image_object_add(Evas_Object *image_object)
    new_item = malloc(sizeof(Etk_Cache_Image_Object_Item));
    new_item->filename = strdup(filename);
    new_item->image_object = image_object;
+   evas_object_color_set(new_item->image_object, 255, 255, 255, 255);
+   evas_object_clip_unset(new_item->image_object);
    evas_object_hide(new_item->image_object);
    
    if ((item_list = evas_hash_find(cache_system->image_object_hash, new_item->filename)))
@@ -292,6 +299,8 @@ void etk_cache_edje_object_add_with_state(Evas_Object *edje_object, int state)
    new_item->group = strdup(group);
    new_item->state = ETK_MIN(state, -1);
    new_item->edje_object = edje_object;
+   evas_object_color_set(new_item->edje_object, 255, 255, 255, 255);
+   evas_object_clip_unset(new_item->edje_object);
    evas_object_hide(new_item->edje_object);
    
    key = _etk_cache_edje_key_generate(new_item->filename, new_item->group);
@@ -520,6 +529,7 @@ static void _etk_cache_system_clean(Etk_Cache_System *cache_system)
    Etk_Cache_Image_Object_Item *image_item;
    Etk_Cache_Edje_Object_Item *edje_item;
    Evas_List *l, *l2, *items;
+   char *key;
    int count;
    
    if (!cache_system)
@@ -553,14 +563,15 @@ static void _etk_cache_system_clean(Etk_Cache_System *cache_system)
    {
       edje_item = l->data;
       
-      /* TODO: del by filename ?! */
-      if ((items = evas_hash_find(cache_system->edje_object_hash, edje_item->filename)))
+      key = _etk_cache_edje_key_generate(edje_item->filename, edje_item->group);
+      if ((items = evas_hash_find(cache_system->edje_object_hash, key)))
       {
          if ((items = evas_list_remove(items, edje_item)))
-            evas_hash_modify(cache_system->edje_object_hash, edje_item->filename, items);
+            evas_hash_modify(cache_system->edje_object_hash, key, items);
          else
-            cache_system->edje_object_hash = evas_hash_del(cache_system->edje_object_hash, edje_item->filename, NULL);
+            cache_system->edje_object_hash = evas_hash_del(cache_system->edje_object_hash, key, NULL);
       }
+      free(key);
       
       evas_object_del(edje_item->edje_object);
       free(edje_item->filename);
@@ -584,3 +595,5 @@ static char *_etk_cache_edje_key_generate(const char *filename, const char *grou
    sprintf(key, "%s/%s", filename, group);
    return key;
 }
+
+/** @} */

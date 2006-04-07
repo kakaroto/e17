@@ -66,9 +66,6 @@ void etk_bin_child_set(Etk_Bin *bin, Etk_Widget *child)
 
    if (child)
    {
-      if (child->parent && ETK_IS_CONTAINER(child->parent))
-         etk_container_remove(ETK_CONTAINER(child->parent), child);
-
       etk_signal_connect("realize", ETK_OBJECT(child), ETK_CALLBACK(_etk_bin_child_realize_cb), bin);
       etk_widget_parent_set(child, ETK_WIDGET(bin));
       bin->child = child;
@@ -169,7 +166,7 @@ static void _etk_bin_child_remove(Etk_Container *container, Etk_Widget *widget)
    if (!(bin = ETK_BIN(container)) || !widget || bin->child != widget)
       return;
 
-   etk_widget_parent_set(widget, NULL);
+   etk_widget_parent_set_full(widget, NULL, ETK_FALSE);
    etk_signal_disconnect("realize", ETK_OBJECT(bin->child), ETK_CALLBACK(_etk_bin_child_realize_cb));
    
    bin->child = NULL;

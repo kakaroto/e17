@@ -18,7 +18,7 @@
 /** @brief Checks if the object is an Etk_Notebook */
 #define ETK_IS_NOTEBOOK(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_NOTEBOOK_TYPE))
 
-/* A page of the notebook */
+/* A page of a notebook */
 typedef struct _Etk_Notebook_Page
 {
    Etk_Widget *tab;
@@ -27,7 +27,7 @@ typedef struct _Etk_Notebook_Page
 
 /**
  * @struct Etk_Notebook
- * @brief TODO
+ * @brief A notebook is a container that can contain widgets in different pages accessible via tabs
  */
 struct _Etk_Notebook
 {

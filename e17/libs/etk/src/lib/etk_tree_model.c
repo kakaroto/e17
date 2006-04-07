@@ -6,6 +6,7 @@
 #include <Evas.h>
 #include "etk_utils.h"
 #include "etk_tree.h"
+#include "etk_theme.h"
 
 typedef struct _Etk_Tree_Model_Image
 {
@@ -36,7 +37,7 @@ typedef struct _Etk_Tree_Model_Icon_Text_Data
 typedef struct _Etk_Tree_Model_Progressbar_Data
 {
    double fraction;
-   char *text;   
+   char *text;
 } Etk_Tree_Model_Progressbar_Data;
 
 /* Text model */
@@ -251,7 +252,7 @@ Etk_Tree_Model *etk_tree_model_progress_bar_new(Etk_Tree *tree)
    tree_model->cell_data_size = sizeof(Etk_Tree_Model_Progressbar_Data);
    tree_model->cell_data_set = etk_tree_model_progress_bar_cell_data_set;
    tree_model->cell_data_get = etk_tree_model_progress_bar_cell_data_get;
-   tree_model->cell_data_free = etk_tree_model_progress_bar_cell_data_free;   
+   tree_model->cell_data_free = etk_tree_model_progress_bar_cell_data_free;
    tree_model->objects_create = etk_tree_model_progress_bar_objects_create;
    tree_model->render = etk_tree_model_progress_bar_render;
    
@@ -877,8 +878,6 @@ static void etk_tree_model_checkbox_cell_data_get(Etk_Tree_Model *model, void *c
       *return_location = *checked;
 }
 
-/* TODO */
-#include "etk_theme.h"
 
 /* Checkbox: objects_create */
 static void etk_tree_model_checkbox_objects_create(Etk_Tree_Model *model, Evas_Object **cell_objects, Evas *evas)
@@ -886,10 +885,8 @@ static void etk_tree_model_checkbox_objects_create(Etk_Tree_Model *model, Evas_O
    if (!cell_objects || !evas)
       return;
    
-   /* TODO */
-   cell_objects[0] = edje_object_add(evas);
-   edje_object_file_set(cell_objects[0], etk_theme_widget_theme_get(), "tree_checkbox");
-   evas_object_event_callback_add(cell_objects[0], EVAS_CALLBACK_MOUSE_UP, etk_tree_model_checkbox_clicked_cb, model);
+   if ((cell_objects[0] = etk_theme_object_load_from_parent(evas, ETK_WIDGET(model->tree), NULL, "checkbox")))
+      evas_object_event_callback_add(cell_objects[0], EVAS_CALLBACK_MOUSE_UP, etk_tree_model_checkbox_clicked_cb, model);
 }
 
 /* Checkbox: Render */
@@ -898,7 +895,7 @@ static void etk_tree_model_checkbox_render(Etk_Tree_Model *model, Etk_Tree_Row *
    Etk_Bool *checked;
    Evas_Coord w, h;
    
-   if (!(checked = cell_data))
+   if (!(checked = cell_data) || !cell_objects[0])
       return;
    
    if (*checked)
@@ -989,9 +986,7 @@ static void etk_tree_model_progress_bar_objects_create(Etk_Tree_Model *model, Ev
    if (!cell_objects || !evas)
       return;
    
-   /* TODO */
-   cell_objects[0] = edje_object_add(evas);
-   edje_object_file_set(cell_objects[0], etk_theme_widget_theme_get(), "progress_bar");
+   cell_objects[0] = etk_theme_object_load_from_parent(evas, ETK_WIDGET(model->tree), NULL, "progress_bar");
 }
 
 /* Progressbar: Render */
@@ -1000,7 +995,7 @@ static void etk_tree_model_progress_bar_render(Etk_Tree_Model *model, Etk_Tree_R
    Etk_Tree_Model_Progressbar_Data *pbar_data;   
    Evas_Coord w, h;
    
-   if (!(pbar_data = cell_data))
+   if (!(pbar_data = cell_data) || !cell_objects[0])
       return;
    
    edje_object_part_drag_value_set(cell_objects[0], "filler", 0.0, 0.0);

@@ -24,6 +24,10 @@
 /** @brief Checks if the object is an Etk_VSeparator */
 #define ETK_IS_VSEPARATOR(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_VSEPARATOR_TYPE))
 
+/**
+ * @struct Etk_HSeparator
+ * @brief An horizontal separator
+ */
 struct _Etk_HSeparator
 {
    /* private: */
@@ -31,6 +35,10 @@ struct _Etk_HSeparator
    Etk_Widget widget;
 };
 
+/**
+ * @struct Etk_VSeparator
+ * @brief A vertical separator
+ */
 struct _Etk_VSeparator
 {
    /* private: */

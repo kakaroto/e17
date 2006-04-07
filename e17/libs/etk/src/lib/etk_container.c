@@ -7,7 +7,7 @@
 
 /**
  * @addtogroup Etk_Container
-* @{
+ * @{
  */
 
 enum _Etk_Container_Signal_Id

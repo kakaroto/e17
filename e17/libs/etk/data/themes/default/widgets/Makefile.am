@@ -18,4 +18,5 @@ EXTRA_DIST = button.edc \
 	     text_view.edc \
 	     frame.edc \
      	     scrollbar.edc \
-	     toggle_button.edc
+	     toggle_button.edc \
+             iconbox.edc

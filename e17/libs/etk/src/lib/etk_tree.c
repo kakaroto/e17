@@ -6,6 +6,7 @@
 #include <math.h>
 #include <Ecore_Data.h>
 #include <Edje.h>
+#include "etk_theme.h"
 #include "etk_tree_model.h"
 #include "etk_scrolled_view.h"
 #include "etk_button.h"
@@ -32,8 +33,8 @@
 
 typedef struct _Etk_Tree_Grid
 {
-   /* Inherit form Etk_Container */
-   Etk_Container container;
+   /* Inherit form Etk_Widget */
+   Etk_Widget widget;
 
    Etk_Tree *tree;
    Evas_Object *clip;
@@ -98,8 +99,7 @@ static Etk_Type *_etk_tree_grid_type_get();
 static void _etk_tree_grid_constructor(Etk_Tree_Grid *grid);
 static void _etk_tree_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_tree_grid_scroll(Etk_Widget *widget, int x, int y);
-static void _etk_tree_grid_scroll_size_get(Etk_Widget *widget, Etk_Size *scroll_size);
-static void _etk_tree_grid_scroll_margins_get(Etk_Widget *widget, Etk_Size *margins_size);
+static void _etk_tree_grid_scroll_size_get(Etk_Widget *widget, Etk_Size scrollview_size, Etk_Size scrollbar_size, Etk_Size *scroll_size);
 static void _etk_tree_grid_realize_cb(Etk_Object *object, void *data);
 
 static void _etk_tree_constructor(Etk_Tree *tree);
@@ -170,7 +170,7 @@ Etk_Type *etk_tree_type_get()
 
    if (!tree_type)
    {
-      tree_type = etk_type_new("Etk_Tree", ETK_CONTAINER_TYPE, sizeof(Etk_Tree), ETK_CONSTRUCTOR(_etk_tree_constructor), ETK_DESTRUCTOR(_etk_tree_destructor));
+      tree_type = etk_type_new("Etk_Tree", ETK_WIDGET_TYPE, sizeof(Etk_Tree), ETK_CONSTRUCTOR(_etk_tree_constructor), ETK_DESTRUCTOR(_etk_tree_destructor));
 
       _etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL] = etk_signal_new("row_selected", tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_tree_signals[ETK_TREE_ROW_UNSELECTED_SIGNAL] = etk_signal_new("row_unselected", tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
@@ -202,7 +202,7 @@ Etk_Type *etk_tree_type_get()
  */
 Etk_Widget *etk_tree_new()
 {
-   return etk_widget_new(ETK_TREE_TYPE, "focusable", ETK_TRUE, "focus_on_press", ETK_TRUE, NULL);
+   return etk_widget_new(ETK_TREE_TYPE, "theme_group", "tree", "focusable", ETK_TRUE, "focus_on_press", ETK_TRUE, NULL);
 }
 
 /**
@@ -268,7 +268,7 @@ Etk_Tree_Col *etk_tree_col_new(Etk_Tree *tree, const char *title, Etk_Tree_Model
    new_col->model->col = new_col;
 
    /* Creates the header widget */
-   new_header = etk_widget_new(ETK_BUTTON_TYPE, "theme_group", "tree_header", "label", title, "xalign", 0.0,
+   new_header = etk_widget_new(ETK_BUTTON_TYPE, "theme_group", "header", "label", title, "xalign", 0.0,
       "repeat_mouse_events", ETK_TRUE, "visibility_locked", ETK_TRUE, NULL);
    etk_signal_connect("mouse_down", ETK_OBJECT(new_header), ETK_CALLBACK(_etk_tree_header_mouse_down_cb), new_col);
    etk_signal_connect("mouse_up", ETK_OBJECT(new_header), ETK_CALLBACK(_etk_tree_header_mouse_up_cb), new_col);
@@ -1310,7 +1310,7 @@ static Etk_Type *_etk_tree_grid_type_get()
    static Etk_Type *grid_type = NULL;
 
    if (!grid_type)
-      grid_type = etk_type_new("Etk_Tree_Grid", ETK_CONTAINER_TYPE, sizeof(Etk_Tree_Grid), ETK_CONSTRUCTOR(_etk_tree_grid_constructor), NULL);
+      grid_type = etk_type_new("Etk_Tree_Grid", ETK_WIDGET_TYPE, sizeof(Etk_Tree_Grid), ETK_CONSTRUCTOR(_etk_tree_grid_constructor), NULL);
 
    return grid_type;
 }
@@ -1324,7 +1324,6 @@ static void _etk_tree_grid_constructor(Etk_Tree_Grid *grid)
    ETK_WIDGET(grid)->size_allocate = _etk_tree_grid_size_allocate;
    ETK_WIDGET(grid)->scroll = _etk_tree_grid_scroll;
    ETK_WIDGET(grid)->scroll_size_get = _etk_tree_grid_scroll_size_get;
-   ETK_WIDGET(grid)->scroll_margins_get = _etk_tree_grid_scroll_margins_get;
    etk_signal_connect("realize", ETK_OBJECT(grid), ETK_CALLBACK(_etk_tree_grid_realize_cb), NULL);
 }
 
@@ -1497,7 +1496,7 @@ static void _etk_tree_grid_scroll(Etk_Widget *widget, int x, int y)
 }
 
 /* Gets the scrolling size of the tree grid */
-static void _etk_tree_grid_scroll_size_get(Etk_Widget *widget, Etk_Size *scroll_size)
+static void _etk_tree_grid_scroll_size_get(Etk_Widget *widget, Etk_Size scrollview_size, Etk_Size scrollbar_size, Etk_Size *scroll_size)
 {
    Etk_Tree *tree;
    int i;
@@ -1513,16 +1512,6 @@ static void _etk_tree_grid_scroll_size_get(Etk_Widget *widget, Etk_Size *scroll_
    }
    scroll_size->w = width;
    scroll_size->h = tree->root.num_visible_children * tree->row_height;
-}
-
-/* Gets the scrolling margins size of the tree grid */
-static void _etk_tree_grid_scroll_margins_get(Etk_Widget *widget, Etk_Size *margins_size)
-{
-   if (!widget || !margins_size)
-      return;
-   
-   margins_size->w = widget->left_inset + widget->right_inset;
-   margins_size->h = widget->top_inset + widget->bottom_inset;
 }
 
 /**************************
@@ -1541,7 +1530,8 @@ static void _etk_tree_constructor(Etk_Tree *tree)
    etk_widget_parent_set(tree->scrolled_view, ETK_WIDGET(tree));
    etk_widget_show(tree->scrolled_view);
    
-   tree->grid = etk_widget_new(ETK_TREE_GRID_TYPE, "theme_group", "tree", "repeat_mouse_events", ETK_TRUE, "visibility_locked", ETK_TRUE, NULL);
+   tree->grid = etk_widget_new(ETK_TREE_GRID_TYPE, "theme_group", "grid", "theme_parent", ETK_WIDGET(tree),
+      "repeat_mouse_events", ETK_TRUE, "visibility_locked", ETK_TRUE, NULL);
    ETK_TREE_GRID(tree->grid)->tree = tree;
    etk_container_add(ETK_CONTAINER(tree->scrolled_view), tree->grid);
    etk_widget_show(tree->grid);
@@ -2660,26 +2650,27 @@ static Etk_Tree_Row_Objects *_etk_tree_row_objects_new(Etk_Tree *tree)
    new_row_objects->row = NULL;
    
    /* Creates the background object of the row */
-   /* TODO: use etk_theme */
-   new_row_objects->background = edje_object_add(evas);
-   edje_object_file_set(new_row_objects->background, ETK_WIDGET(tree)->theme_file, "tree_row");
-   evas_object_repeat_events_set(new_row_objects->background, 1);
-   evas_object_clip_set(new_row_objects->background, ETK_TREE_GRID(tree->grid)->clip);
-   evas_object_event_callback_add(new_row_objects->background, EVAS_CALLBACK_MOUSE_DOWN, _etk_tree_row_pressed_cb, new_row_objects);
-   evas_object_event_callback_add(new_row_objects->background, EVAS_CALLBACK_MOUSE_UP, _etk_tree_row_clicked_cb, new_row_objects);
-   evas_object_event_callback_add(new_row_objects->background, EVAS_CALLBACK_MOUSE_MOVE, _etk_tree_row_mouse_move_cb, new_row_objects);
-   evas_object_event_callback_add(new_row_objects->background, EVAS_CALLBACK_MOUSE_IN, _etk_tree_row_mouse_in_cb, new_row_objects);
-   evas_object_event_callback_add(new_row_objects->background, EVAS_CALLBACK_MOUSE_OUT, _etk_tree_row_mouse_out_cb, new_row_objects);
-   etk_widget_member_object_add(tree->grid, new_row_objects->background);
+   
+   if ((new_row_objects->background = etk_theme_object_load_from_parent(evas, ETK_WIDGET(tree), NULL, "row")))
+   {
+      evas_object_repeat_events_set(new_row_objects->background, 1);
+      evas_object_clip_set(new_row_objects->background, ETK_TREE_GRID(tree->grid)->clip);
+      evas_object_event_callback_add(new_row_objects->background, EVAS_CALLBACK_MOUSE_DOWN, _etk_tree_row_pressed_cb, new_row_objects);
+      evas_object_event_callback_add(new_row_objects->background, EVAS_CALLBACK_MOUSE_UP, _etk_tree_row_clicked_cb, new_row_objects);
+      evas_object_event_callback_add(new_row_objects->background, EVAS_CALLBACK_MOUSE_MOVE, _etk_tree_row_mouse_move_cb, new_row_objects);
+      evas_object_event_callback_add(new_row_objects->background, EVAS_CALLBACK_MOUSE_IN, _etk_tree_row_mouse_in_cb, new_row_objects);
+      evas_object_event_callback_add(new_row_objects->background, EVAS_CALLBACK_MOUSE_OUT, _etk_tree_row_mouse_out_cb, new_row_objects);
+      etk_widget_member_object_add(tree->grid, new_row_objects->background);
+   }
    
    /* Creates the expander of the row */
    if (tree->mode == ETK_TREE_MODE_TREE)
    {
-      /* TODO: use etk_theme */
-      new_row_objects->expander = edje_object_add(evas);
-      edje_object_file_set(new_row_objects->expander, ETK_WIDGET(tree)->theme_file, "tree_expander");
-      evas_object_event_callback_add(new_row_objects->expander, EVAS_CALLBACK_MOUSE_UP, _etk_tree_expander_clicked_cb, new_row_objects);
-      etk_widget_member_object_add(tree->grid, new_row_objects->expander);
+      if ((new_row_objects->expander = etk_theme_object_load_from_parent(evas, ETK_WIDGET(tree), NULL, "expander")))
+      {
+         evas_object_event_callback_add(new_row_objects->expander, EVAS_CALLBACK_MOUSE_UP, _etk_tree_expander_clicked_cb, new_row_objects);
+         etk_widget_member_object_add(tree->grid, new_row_objects->expander);
+      }
    }
    else
       new_row_objects->expander = NULL;

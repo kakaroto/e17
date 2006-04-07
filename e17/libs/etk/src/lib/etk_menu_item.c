@@ -242,7 +242,7 @@ Etk_Type *etk_menu_item_separator_type_get()
  */
 Etk_Widget *etk_menu_item_separator_new()
 {
-   return etk_widget_new(ETK_MENU_ITEM_SEPARATOR_TYPE, "theme_group", "menu_separator", "visible", ETK_TRUE, NULL);
+   return etk_widget_new(ETK_MENU_ITEM_SEPARATOR_TYPE, "theme_group", "separator", "visible", ETK_TRUE, NULL);
 }
 
 /**************************
@@ -573,7 +573,7 @@ static void _etk_menu_item_check_constructor(Etk_Menu_Item_Check *check_item)
    check_item->toggled = _etk_menu_item_check_toggled_handler;
    check_item->active_set = _etk_menu_item_check_active_set;
    
-   menu_item->left_widget = etk_widget_new(ETK_WIDGET_TYPE, "theme_group", ETK_IS_MENU_ITEM_RADIO(check_item) ? "menu_radio" : "menu_check",
+   menu_item->left_widget = etk_widget_new(ETK_WIDGET_TYPE, "theme_group", ETK_IS_MENU_ITEM_RADIO(check_item) ? "radiobox" : "checkbox",
       "pass_mouse_events", ETK_TRUE, "visible", ETK_TRUE, NULL);
    etk_signal_connect("realize", ETK_OBJECT(menu_item->left_widget), ETK_CALLBACK(_etk_menu_item_left_widget_realize_cb), menu_item);
    etk_signal_connect("realize", ETK_OBJECT(menu_item->left_widget), ETK_CALLBACK(_etk_menu_item_check_left_widget_realize_cb), menu_item);

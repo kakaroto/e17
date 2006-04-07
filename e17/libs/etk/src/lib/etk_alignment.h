@@ -17,6 +17,10 @@
 /** @brief Checks if the object is an Etk_Alignment */
 #define ETK_IS_ALIGNMENT(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_ALIGNMENT_TYPE))
 
+/**
+ * @struct Etk_Alignment
+ * @brief An Etk_Alignment is a container that can contain one child which can be aligned and scaled inside the container
+  */
 struct _Etk_Alignment
 {
    /* private: */

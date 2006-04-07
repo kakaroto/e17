@@ -12,7 +12,7 @@
 
 /**
  * @addtogroup Etk_Menu_Bar
-* @{
+ * @{
  */
 
 static void _etk_menu_bar_constructor(Etk_Menu_Bar *menu_bar);
@@ -139,8 +139,6 @@ static void _etk_menu_bar_item_added_cb(Etk_Object *object, void *item, void *da
    if (!(item_object = ETK_OBJECT(item)))
       return;
    
-   /* TODO: use theme context! */
-   etk_widget_theme_set(ETK_WIDGET(item_object), ETK_WIDGET(item_object)->theme_file, "menu_bar_item");
    etk_signal_connect("mouse_up", item_object, ETK_CALLBACK(_etk_menu_bar_item_mouse_up_cb), NULL);
    etk_signal_connect("selected", item_object, ETK_CALLBACK(_etk_menu_bar_item_selected_cb), NULL);
    etk_signal_connect("deselected", item_object, ETK_CALLBACK(_etk_menu_bar_item_deselected_cb), NULL);
@@ -265,13 +263,5 @@ static void _etk_menu_bar_item_submenu_popped_down_cb(Etk_Object *object, void *
       return;
    etk_menu_item_deselect(item);
 }
-
-
-/**************************
- *
- * Private functions
- *
- **************************/
-
 
 /** @} */

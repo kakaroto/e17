@@ -21,7 +21,7 @@
  * @enum Etk_Dialog_Response_ID
  * @brief Some common response IDs to use with an Etk_Dialog
  */
-enum _Etk_Dialog_Response_ID
+typedef enum _Etk_Dialog_Response_ID
 {
    ETK_RESPONSE_NONE = -1,
    ETK_RESPONSE_REJECT = -2,
@@ -34,12 +34,12 @@ enum _Etk_Dialog_Response_ID
    ETK_RESPONSE_NO = -9,
    ETK_RESPONSE_APPLY = -10,
    ETK_RESPONSE_HELP = -11
-};
+} Etk_Dialog_Response_ID;
 
 /**
  * @struct Etk_Dialog
  * @brief A dialog is a window with buttons in its bottom area to allow the user to respond to a request. @n
- * A horizontal separator can also separate the button area from the upper area. It's enabled by default
+ * A horizontal separator can also separate the button area from the upper area (enabled by default)
  */
 struct _Etk_Dialog
 {

@@ -147,16 +147,16 @@ void etk_popup_window_popup(Etk_Popup_Window *popup_window)
  */
 void etk_popup_window_popdown(Etk_Popup_Window *popup_window)
 {
-   Evas_List *l, *last;
+   Evas_List *l;
+   Etk_Popup_Window *last_focused;
 
    if (!popup_window || !(l = evas_list_find_list(_etk_popup_window_popped_windows, popup_window)))
       return;
 
    etk_widget_hide(ETK_WIDGET(popup_window));
    _etk_popup_window_popped_windows = evas_list_remove_list(_etk_popup_window_popped_windows, l);
-   last = evas_list_last(_etk_popup_window_popped_windows);
-   if (last)
-      etk_popup_window_focused_window_set(ETK_POPUP_WINDOW(last->data));
+   last_focused = ETK_POPUP_WINDOW(evas_list_data(evas_list_last(_etk_popup_window_popped_windows)));
+   etk_popup_window_focused_window_set(last_focused);
 
    if (!_etk_popup_window_popped_windows)
    {

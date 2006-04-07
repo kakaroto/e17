@@ -22,11 +22,11 @@
  * @enum Etk_Progress_Bar_Orientation
  * @brief Describes in which orientation the progress bar should move (left to right by default)
  */
-enum _Etk_Progress_Bar_Orientation
+typedef enum _Etk_Progress_Bar_Orientation
 {
    ETK_PROGRESS_BAR_LEFT_TO_RIGHT,
    ETK_PROGRESS_BAR_RIGHT_TO_LEFT
-};   
+} Etk_Progress_Bar_Orientation;
 
 /**
  * @struct Etk_Progress_Bar

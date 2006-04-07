@@ -1,5 +1,5 @@
 group {
-   name: "tree";
+   name: "tree/grid";
    data {
       item: "inset" "8 8 8 8";
       item: "separator_color" "204 204 204 140";
@@ -9,7 +9,7 @@ group {
    }
    parts {
       part {
-         name: "tree";
+         name: "border";
          description {
             state: "default" 0.0;
             rel1 {
@@ -23,14 +23,31 @@ group {
             image {
                normal: "tree.png";
                border: 8 8 8 8;
+               middle: 0;
             }
             fill {
                smooth: 0;
             }
          }
       }
-      FOCUS_GLOW(0.0, 0.0, -1, -1, "tree", 1.0, 1.0, 0, 0, "tree")
-      DRAG_GLOW(0.0, 0.0, -1, -1, "tree", 1.0, 1.0, 0, 0, "tree");
+      part {
+         name: "middle";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            color: 255 255 255 255;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 8 8;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -9 -9;
+            }
+         }
+      }
+      FOCUS_GLOW(0.0, 0.0, -1, -1, "border", 1.0, 1.0, 0, 0, "border")
+      DRAG_GLOW(0.0, 0.0, -1, -1, "border", 1.0, 1.0, 0, 0, "border");
    }
    programs {
       program {
@@ -66,7 +83,7 @@ group {
    }
 }
 group {
-   name: "tree_row";
+   name: "tree/row";
    parts {
       part {
          name: "row";
@@ -154,7 +171,7 @@ group {
    }
 }
 group {
-   name: "tree_expander";
+   name: "tree/expander";
    parts {
       part {
          name: "expander_arrow";
@@ -205,7 +222,7 @@ group {
    }
 }
 group {
-   name: "tree_header";
+   name: "tree/header";
    data {
       item: "inset" "5 5 5 5";
    }
@@ -224,7 +241,7 @@ group {
             }
             image {
                normal: "tree_header_inactive.png";
-               border: 2 2 2 3;
+               border: 2 2 2 2;
             }
             fill {
                smooth: 0;
@@ -235,6 +252,7 @@ group {
             inherit: "default" 0.0;
             image {
                normal: "tree_header_active.png";
+               border: 2 2 2 8;
             }
             fill {
                smooth: 0;
@@ -260,7 +278,7 @@ group {
    }
 }
 group {
-   name: "tree_checkbox";
+   name: "tree/checkbox";
    min: 20 20;
    parts {
       part {

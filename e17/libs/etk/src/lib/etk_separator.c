@@ -4,7 +4,7 @@
 
 /**
  * @addtogroup Etk_Separator
-* @{
+ * @{
  */
 
 /**************************
@@ -22,9 +22,7 @@ Etk_Type *etk_hseparator_type_get()
    static Etk_Type *hseparator_type = NULL;
 
    if (!hseparator_type)
-   {
       hseparator_type = etk_type_new("Etk_HSeparator", ETK_WIDGET_TYPE, sizeof(Etk_HSeparator), NULL, NULL);
-   }
 
    return hseparator_type;
 }
@@ -47,9 +45,7 @@ Etk_Type *etk_vseparator_type_get()
    static Etk_Type *vseparator_type = NULL;
 
    if (!vseparator_type)
-   {
       vseparator_type = etk_type_new("Etk_VSeparator", ETK_WIDGET_TYPE, sizeof(Etk_VSeparator), NULL, NULL);
-   }
 
    return vseparator_type;
 }
@@ -62,17 +58,5 @@ Etk_Widget *etk_vseparator_new()
 {
    return etk_widget_new(ETK_VSEPARATOR_TYPE, "theme_group", "vseparator", NULL);
 }
-
-/**************************
- *
- * Etk specific functions
- *
- **************************/
-
-/**************************
- *
- * Callbacks and handlers
- *
- **************************/
 
 /** @} */

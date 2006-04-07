@@ -4,6 +4,11 @@
 #include <string.h>
 #include "etk_utils.h"
 
+/**
+ * @addtogroup Etk_String Etk_String
+ * @{
+ */
+ 
 #define ETK_STRING_BLOCK_SIZE 128
 #define ETK_STRING_SIZE_TO_ALLOC(length)        (((length) + (ETK_STRING_BLOCK_SIZE - 1)) / ETK_STRING_BLOCK_SIZE) * ETK_STRING_BLOCK_SIZE
 
@@ -435,7 +440,7 @@ Etk_String *etk_string_insert_sized(Etk_String *string, int pos, const char *tex
       string->allocated_length = ETK_STRING_SIZE_TO_ALLOC(string->length + length);
    }
    
-   memmove(&string->string[pos + length], &string->string[pos], length);
+   memmove(&string->string[pos + length], &string->string[pos], string->length - pos);
    strncpy(&string->string[pos], text, length);
    string->length += length;
    string->string[string->length] = 0;
@@ -576,3 +581,5 @@ static char *_etk_string_vprintf(const char *format, va_list args)
    
    return text;
 }
+
+/** @} */

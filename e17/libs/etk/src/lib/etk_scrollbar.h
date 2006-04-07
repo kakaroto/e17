@@ -34,7 +34,7 @@
 
 /**
  * @struct Etk_Scrollbar
- * @brief An Etk_Scrollbar is a widget with a cursor you can move to change a value
+ * @brief An Etk_Scrollbar is a widget with a cursor you can move to change the "scrolling value"
  */
 struct _Etk_Scrollbar
 {

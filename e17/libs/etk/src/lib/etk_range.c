@@ -8,7 +8,7 @@
 
 /**
  * @addtogroup Etk_Range
-* @{
+ * @{
  */
 
 enum _Etk_Range_Signal_Id

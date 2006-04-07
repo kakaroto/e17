@@ -17,7 +17,10 @@
 /** @brief Check if the object is an Etk_Menu */
 #define ETK_IS_MENU(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_MENU_TYPE))
 
-/* TODO: doc */
+/**
+ * @struct Etk_Menu
+ * @brief An Etk_Menu is a popup window containing several menu items
+ */
 struct _Etk_Menu
 {
    /* private: */

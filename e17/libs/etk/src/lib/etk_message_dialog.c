@@ -1,19 +1,14 @@
 /** @file etk_message_dialog.c */
 #include "etk_message_dialog.h"
 #include <stdlib.h>
-#include <string.h>
 #include "etk_hbox.h"
-#include "etk_separator.h"
-#include "etk_button.h"
 #include "etk_label.h"
-#include "etk_signal.h"
 #include "etk_image.h"
-#include "etk_signal_callback.h"
 #include "etk_stock.h"
 
 /**
  * @addtogroup Etk_Message_Dialog
-* @{
+ * @{
  */
 
 enum _Etk_Message_Dialog_Property_Id
@@ -22,7 +17,6 @@ enum _Etk_Message_Dialog_Property_Id
    ETK_MESSAGE_DIALOG_BUTTONS_PROPERTY,
    ETK_MESSAGE_DIALOG_TEXT_PROPERTY
 };
-
 
 static void _etk_message_dialog_constructor(Etk_Message_Dialog *dialog);
 static void _etk_message_dialog_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
@@ -61,7 +55,7 @@ Etk_Type *etk_message_dialog_type_get()
  * @brief Creates a new dialog
  * @return Returns the new dialog widget
  */
-Etk_Widget *etk_message_dialog_new(int dialog_type, int buttons, const char *text)
+Etk_Widget *etk_message_dialog_new(Etk_Message_Dialog_Type dialog_type, Etk_Message_Dialog_Buttons buttons, const char *text)
 {
    return etk_widget_new(ETK_MESSAGE_DIALOG_TYPE, "theme_group", "dialog", "dialog_type", dialog_type, "buttons", buttons, "text", text, NULL);
 }
@@ -71,7 +65,7 @@ Etk_Widget *etk_message_dialog_new(int dialog_type, int buttons, const char *tex
  * @param dialog a dialog
  * @param dialog_type the type to set
  */
-void etk_message_dialog_icon_set(Etk_Message_Dialog *dialog, int dialog_type)
+void etk_message_dialog_icon_set(Etk_Message_Dialog *dialog, Etk_Message_Dialog_Type dialog_type)
 {
    if (!dialog)
       return;
@@ -79,36 +73,32 @@ void etk_message_dialog_icon_set(Etk_Message_Dialog *dialog, int dialog_type)
    switch(dialog_type)
    {
       case ETK_MESSAGE_DIALOG_INFO:      
-      etk_image_set_from_stock(ETK_IMAGE(dialog->image), ETK_STOCK_DIALOG_INFORMATION, ETK_STOCK_BIG);
-      break;
-      
+         etk_image_set_from_stock(ETK_IMAGE(dialog->image), ETK_STOCK_DIALOG_INFORMATION, ETK_STOCK_BIG);
+         break;
       case ETK_MESSAGE_DIALOG_WARNING:
-      etk_image_set_from_stock(ETK_IMAGE(dialog->image), ETK_STOCK_DIALOG_WARNING, ETK_STOCK_BIG);
-      break;
-      
+         etk_image_set_from_stock(ETK_IMAGE(dialog->image), ETK_STOCK_DIALOG_WARNING, ETK_STOCK_BIG);
+         break;
       case ETK_MESSAGE_DIALOG_QUESTION:      
-      etk_image_set_from_stock(ETK_IMAGE(dialog->image), ETK_STOCK_DIALOG_QUESTION, ETK_STOCK_BIG);
-      break;
-      
+         etk_image_set_from_stock(ETK_IMAGE(dialog->image), ETK_STOCK_DIALOG_QUESTION, ETK_STOCK_BIG);
+         break;
       case ETK_MESSAGE_DIALOG_ERROR:      
-      etk_image_set_from_stock(ETK_IMAGE(dialog->image), ETK_STOCK_DIALOG_ERROR, ETK_STOCK_BIG);
-      break;
-      
+         etk_image_set_from_stock(ETK_IMAGE(dialog->image), ETK_STOCK_DIALOG_ERROR, ETK_STOCK_BIG);
+         break;
       default:
-      etk_image_set_from_stock(ETK_IMAGE(dialog->image), ETK_STOCK_DIALOG_INFORMATION, ETK_STOCK_BIG);
-      break; 
+         etk_image_set_from_stock(ETK_IMAGE(dialog->image), ETK_STOCK_DIALOG_INFORMATION, ETK_STOCK_BIG);
+         break; 
    }
 }
 
-/* @brief Gets the message dialog's type
+/**
+ * @brief Gets the message dialog's type
  * @param dialog a dialog
  * @return Returns the type of the dialog
  */
-int etk_message_dialog_icon_get(Etk_Message_Dialog *dialog)
+Etk_Message_Dialog_Type etk_message_dialog_icon_get(Etk_Message_Dialog *dialog)
 {
-   if(!dialog)
-     return 0;
-   
+   if (!dialog)
+      return ETK_STOCK_DIALOG_INFORMATION;
    return dialog->dialog_type;
 }
 
@@ -117,62 +107,58 @@ int etk_message_dialog_icon_get(Etk_Message_Dialog *dialog)
  * @param dialog a dialog
  * @param buttons the type of the buttons
  */
-void etk_message_dialog_buttons_set(Etk_Message_Dialog *dialog, int buttons)
+void etk_message_dialog_buttons_set(Etk_Message_Dialog *dialog, Etk_Message_Dialog_Buttons buttons)
 {
    int i;
    
    if (!dialog)
       return;
-
-   if(dialog->buttons_type == buttons)
+   if (dialog->buttons_type == buttons)
       return;
    
-   for(i = 0; i < ETK_MESSAGE_DIALOG_MAX_BUTTONS; i++)
-      if(dialog->buttons[i])
+   for (i = 0; i < ETK_MESSAGE_DIALOG_MAX_BUTTONS; i++)
+   {
+      if (dialog->buttons[i])
       {
 	 etk_object_destroy(ETK_OBJECT(dialog->buttons[i]));
 	 dialog->buttons[i] = NULL;
       }
+   }
    
-   switch(buttons)
+   switch (buttons)
    {
       case ETK_MESSAGE_DIALOG_OK:
-      etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_OK, ETK_RESPONSE_OK);
-      break;
-      
+         dialog->buttons[0] = etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_OK, ETK_RESPONSE_OK);
+         break;
       case ETK_MESSAGE_DIALOG_CLOSE:
-      etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_CLOSE, ETK_RESPONSE_CLOSE);
-      break;
-      
+         dialog->buttons[0] = etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_CLOSE, ETK_RESPONSE_CLOSE);
+         break;
       case ETK_MESSAGE_DIALOG_CANCEL:
-      etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_CANCEL, ETK_RESPONSE_CANCEL);
-      break;
-      
+         dialog->buttons[0] = etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_CANCEL, ETK_RESPONSE_CANCEL);
+         break;
       case ETK_MESSAGE_DIALOG_YES_NO:
-      etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_YES, ETK_RESPONSE_YES);
-      etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_NO, ETK_RESPONSE_NO);
-      break;
-      
+         dialog->buttons[0] = etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_YES, ETK_RESPONSE_YES);
+         dialog->buttons[1] = etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_NO, ETK_RESPONSE_NO);
+         break;
       case ETK_MESSAGE_DIALOG_OK_CANCEL:
-      etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_YES, ETK_RESPONSE_OK);
-      etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_NO, ETK_RESPONSE_CANCEL);
-      break;      
-    
+         dialog->buttons[0] = etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_YES, ETK_RESPONSE_OK);
+         dialog->buttons[2] = etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_NO, ETK_RESPONSE_CANCEL);
+         break;      
       case ETK_MESSAGE_DIALOG_NONE:
       default:
-      break; 
+         break; 
    }
 }
 
-/* @brief Gets the message dialogs buttons
+/**
+ * @brief Gets the message dialogs buttons
  * @param dialog a dialog
  * @return Returns the type of the buttons used
  */
-int etk_message_dialog_buttons_get(Etk_Message_Dialog *dialog)
+Etk_Message_Dialog_Buttons etk_message_dialog_buttons_get(Etk_Message_Dialog *dialog)
 {
-   if(!dialog)
-     return 0;
-   
+   if (!dialog)
+      return ETK_MESSAGE_DIALOG_NONE;
    return dialog->buttons_type;
 }
 
@@ -185,7 +171,6 @@ void etk_message_dialog_text_set(Etk_Message_Dialog *dialog, const char *text)
 {
    if (!dialog || !dialog->label)
       return;
-
    etk_label_set(ETK_LABEL(dialog->label), text);
 }
 
@@ -198,7 +183,6 @@ const char *etk_message_dialog_text_get(Etk_Message_Dialog *dialog)
 {
    if (!dialog || !dialog->label)
       return NULL;
-
    return etk_label_get(ETK_LABEL(dialog->label));
 }
 
@@ -226,7 +210,7 @@ static void _etk_message_dialog_constructor(Etk_Message_Dialog *dialog)
    etk_box_pack_start(ETK_BOX(dialog->main_area_hbox), dialog->image, ETK_FALSE, ETK_FALSE, 3);
    etk_widget_show(dialog->image);
 
-   dialog->label = etk_label_new(" ");
+   dialog->label = etk_label_new(NULL);
    etk_widget_visibility_locked_set(dialog->label, ETK_TRUE);
    etk_box_pack_start(ETK_BOX(dialog->main_area_hbox), dialog->label, ETK_FALSE, ETK_FALSE, 2);
    etk_widget_show(dialog->label);
@@ -235,8 +219,7 @@ static void _etk_message_dialog_constructor(Etk_Message_Dialog *dialog)
    dialog->dialog_type = ETK_MESSAGE_DIALOG_INFO;
    
    for(i = 0; i < ETK_MESSAGE_DIALOG_MAX_BUTTONS; i++)
-     dialog->buttons[i] = NULL;
-       
+      dialog->buttons[i] = NULL;
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -286,11 +269,5 @@ static void _etk_message_dialog_property_get(Etk_Object *object, int property_id
          break;
    }
 }
-
-/**************************
- *
- * Callbacks and handlers
- *
- **************************/
 
 /** @} */

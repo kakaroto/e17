@@ -53,12 +53,12 @@ Etk_Type *etk_box_type_get()
 }
 
 /**
- * @brief Adds the child to the start of the box
+ * @brief Adds the child at the start of the box
  * @param box a box
  * @param child the child to add
- * @param expand if @a expand == ETK_TRUE, the cell where the child will be will take all the available space
+ * @param expand if @a expand == ETK_TRUE, the cell that contains the child will take all the available space
  * @param fill if @a fill == ETK_TRUE, the child will take all the available space in its cell
- * @param padding the size of the space on the sides of the child
+ * @param padding the size of the free space on the sides of the child
  */
 void etk_box_pack_start(Etk_Box *box, Etk_Widget *child, Etk_Bool expand, Etk_Bool fill, int padding)
 {
@@ -66,12 +66,12 @@ void etk_box_pack_start(Etk_Box *box, Etk_Widget *child, Etk_Bool expand, Etk_Bo
 }
 
 /**
- * @brief Adds the child to the end of the box
+ * @brief Adds the child at the end of the box
  * @param box a box
  * @param child the child to add
- * @param expand if @a expand == ETK_TRUE, the cell where the child will be will take all the available space
+ * @param expand if @a expand == ETK_TRUE, the cell that contains the child will take all the available space
  * @param fill if @a fill == ETK_TRUE, the child will take all the available space in its cell
- * @param padding the size of the space on the sides of the child
+ * @param padding the size of the free space on the sides of the child
  */
 void etk_box_pack_end(Etk_Box *box, Etk_Widget *child, Etk_Bool expand, Etk_Bool fill, int padding)
 {
@@ -272,7 +272,7 @@ static void _etk_box_child_remove(Etk_Container *container, Etk_Widget *widget)
    free(widget->child_properties);
    widget->child_properties = NULL;
    box->children = evas_list_remove(box->children, widget);
-   etk_widget_parent_set(widget, NULL);
+   etk_widget_parent_set_full(widget, NULL, ETK_FALSE);
    etk_widget_size_recalc_queue(ETK_WIDGET(box));
 }
 
@@ -301,9 +301,6 @@ static void _etk_box_pack_full(Etk_Box *box, Etk_Widget *child, Etk_Bool expand,
    if (!box || !child)
       return;
 
-   /* TODO: con_remove */
-   if (child->parent && ETK_IS_CONTAINER(child->parent))
-      etk_container_remove(ETK_CONTAINER(child->parent), child);
    child_props = malloc(sizeof(Etk_Box_Child_Props));
    child_props->expand = expand;
    child_props->fill = fill;

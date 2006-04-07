@@ -3,7 +3,6 @@
 #define _ETK_WIDGET_H_
 
 #include <Evas.h>
-#include <Ecore_X.h>
 #include <stdarg.h>
 #include "etk_object.h"
 #include "etk_types.h"
@@ -148,7 +147,10 @@ struct _Etk_Widget
    int theme_min_width, theme_min_height;
    char *theme_file;
    char *theme_group;
+   Etk_Widget *theme_parent;
+   Evas_List *theme_children;
 
+   Evas_Object *smart_object;
    Evas_Object *event_object;
    Evas_Object *clip;
    Evas_List *member_objects;
@@ -164,7 +166,7 @@ struct _Etk_Widget
    void (*size_request)(Etk_Widget *widget, Etk_Size *size_requisition);
    void (*size_allocate)(Etk_Widget *widget, Etk_Geometry geometry);
 
-   void (*scroll_size_get)(Etk_Widget *widget, Etk_Size *scroll_size);
+   void (*scroll_size_get)(Etk_Widget *widget, Etk_Size scrollview_size, Etk_Size scrollbar_size, Etk_Size *scroll_size);
    void (*scroll_margins_get)(Etk_Widget *widget, Etk_Size *margin_size);
    void (*scroll)(Etk_Widget *widget, int x, int y);
 
@@ -186,6 +188,7 @@ struct _Etk_Widget
    unsigned char visibility_locked : 1;
    unsigned char repeat_mouse_events : 1;
    unsigned char pass_mouse_events : 1;
+   unsigned char has_event_object : 1;
    unsigned char focusable : 1;
    unsigned char focus_on_press : 1;
    unsigned char can_pass_focus : 1;
@@ -212,9 +215,19 @@ void etk_widget_inner_geometry_get(Etk_Widget *widget, int *x, int *y, int *w, i
 
 Etk_Toplevel_Widget *etk_widget_toplevel_parent_get(Etk_Widget *widget);
 Evas *etk_widget_toplevel_evas_get(Etk_Widget *widget);
-void etk_widget_theme_set(Etk_Widget *widget, const char *theme_file, const char *theme_group);
 void etk_widget_parent_set(Etk_Widget *widget, Etk_Widget *parent);
+void etk_widget_parent_set_full(Etk_Widget *widget, Etk_Widget *parent, Etk_Bool remove_from_container);
+Etk_Widget *etk_widget_parent_get(Etk_Widget *widget);
 
+void etk_widget_theme_file_set(Etk_Widget *widget, const char *theme_file);
+const char *etk_widget_theme_file_get(Etk_Widget *widget);
+void etk_widget_theme_group_set(Etk_Widget *widget, const char *theme_group);
+const char *etk_widget_theme_group_get(Etk_Widget *widget);
+void etk_widget_theme_parent_set(Etk_Widget *widget, Etk_Widget *theme_parent);
+Etk_Widget *etk_widget_theme_parent_get(Etk_Widget *widget);
+
+void etk_widget_has_event_object_set(Etk_Widget *widget, Etk_Bool has_event_object);
+Etk_Bool etk_widget_has_event_object_get(Etk_Widget *widget);
 void etk_widget_repeat_mouse_events_set(Etk_Widget *widget, Etk_Bool repeat_mouse_events);
 Etk_Bool etk_widget_repeat_mouse_events_get(Etk_Widget *widget);
 void etk_widget_pass_mouse_events_set(Etk_Widget *widget, Etk_Bool pass_mouse_events);

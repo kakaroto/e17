@@ -28,6 +28,8 @@ images {
    image: "vslider_bar.png" COMP;
    image: "hscrollbar_trough.png" COMP;
    image: "vscrollbar_trough.png" COMP;
+   image: "hscrollbar_trough2.png" COMP;
+   image: "vscrollbar_trough2.png" COMP;
    image: "scrollbar_button_left1.png" COMP;
    image: "scrollbar_button_left2.png" COMP;
    image: "scrollbar_button_right1.png" COMP;
@@ -80,5 +82,6 @@ images {
    image: "notebook_frame.png" COMP;
    image: "combo_arrow.png" COMP;
    image: "tooltip.png" COMP;
-   image: "tooltip_border.png" COMP;   
+   image: "tooltip_border.png" COMP;  
+   image: "iconbox_selection.png" COMP;   
 }

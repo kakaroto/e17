@@ -14,7 +14,7 @@
  * @enum Etk_Property_Type
  * @brief The type of a property
  */
-enum _Etk_Property_Type
+typedef enum _Etk_Property_Type
 {
    /* Used when the property is not initialized to a value */
    ETK_PROPERTY_NONE,
@@ -26,21 +26,23 @@ enum _Etk_Property_Type
    ETK_PROPERTY_SHORT,
    ETK_PROPERTY_LONG,
    ETK_PROPERTY_POINTER,
-   ETK_PROPERTY_STRING
-};
+   ETK_PROPERTY_STRING,
+   ETK_PROPERTY_OTHER,
+} Etk_Property_Type;
 
 /** 
  * @enum Etk_Property_Flags
  * @brief Describes if the property is readable, writable or both. @n
- * YOu can also specify if the property needs to be initialized to its default value at the constuction of a new object (ETK_PROPERTY_CONSTRUCT)
+ * You can also specify if the property needs to be initialized to its default value at the constuction of a new object (ETK_PROPERTY_CONSTRUCT)
  */
-enum _Etk_Property_Flags
+typedef enum _Etk_Property_Flags
 {
-   ETK_PROPERTY_READABLE = 1 << 0,
-   ETK_PROPERTY_WRITABLE = 1 << 1,
+   ETK_PROPERTY_NO_ACCESS = 1 << 0,
+   ETK_PROPERTY_READABLE = 1 << 1,
+   ETK_PROPERTY_WRITABLE = 1 << 2,
    ETK_PROPERTY_READABLE_WRITABLE = ETK_PROPERTY_READABLE | ETK_PROPERTY_WRITABLE,
-   ETK_PROPERTY_CONSTRUCT = 1 << 2
-};
+   ETK_PROPERTY_CONSTRUCT = 1 << 3
+} Etk_Property_Flags;
 
 /**
  * @struct Etk_Property

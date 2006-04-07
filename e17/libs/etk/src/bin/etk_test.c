@@ -98,11 +98,6 @@ static Etk_Test_Example _etk_test_examples[] =
       ETK_TEST_BASIC_WIDGET
    },
    {
-      "Spin Button",
-      etk_test_spin_button_window_create,
-      ETK_TEST_BASIC_WIDGET
-   },
-   {
       "X Drag / Drop",
       etk_test_xdnd_window_create,
       ETK_TEST_MISC
@@ -115,6 +110,11 @@ static Etk_Test_Example _etk_test_examples[] =
    {
       "Combobox",
       etk_test_combobox_window_create,
+      ETK_TEST_ADVANCED_WIDGET
+   },
+   {
+      "Iconbox",
+      etk_test_iconbox_window_create,
       ETK_TEST_ADVANCED_WIDGET
    }
 };

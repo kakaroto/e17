@@ -2,7 +2,7 @@
 #ifndef _ETK_TREE_H_
 #define _ETK_TREE_H_
 
-#include "etk_container.h"
+#include "etk_widget.h"
 #include <Evas.h>
 #include <stdarg.h>
 #include "etk_types.h"
@@ -68,8 +68,8 @@ struct _Etk_Tree_Row
 struct _Etk_Tree
 {
    /* private: */
-   /* Inherit from Etk_Container */
-   Etk_Container container;
+   /* Inherit from Etk_Widget */
+   Etk_Widget widget;
 
    Etk_Widget *scrolled_view;
    Etk_Widget *grid;

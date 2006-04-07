@@ -6,7 +6,7 @@
 
 /**
  * @addtogroup Etk_Toggle_Button
-* @{
+ * @{
  */
 
 enum _Etk_Toggle_Button_Signal_Id

@@ -65,7 +65,7 @@ Etk_Type *etk_scrolled_view_type_get()
  */
 Etk_Widget *etk_scrolled_view_new()
 {
-   return etk_widget_new(ETK_SCROLLED_VIEW_TYPE, NULL);
+   return etk_widget_new(ETK_SCROLLED_VIEW_TYPE, "theme_group", "scrolled_view", NULL);
 }
 
 /**
@@ -268,11 +268,12 @@ static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry ge
 {
    Etk_Scrolled_View *scrolled_view;
    Etk_Size hscrollbar_requisition, vscrollbar_requisition;
+   Etk_Size scrollview_size;
+   Etk_Size scrollbar_size;
    Etk_Size scroll_size;
    Etk_Geometry child_geometry;
    Etk_Widget *child;
    Etk_Bool show_vscrollbar = ETK_FALSE, show_hscrollbar = ETK_FALSE;
-   int visible_width, visible_height;
    
    if (!(scrolled_view = ETK_SCROLLED_VIEW(widget)))
       return;
@@ -288,34 +289,47 @@ static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry ge
 
    if (scrolled_view->hpolicy == ETK_POLICY_AUTO || scrolled_view->hpolicy == ETK_POLICY_SHOW)
       etk_widget_size_request_full(scrolled_view->hscrollbar, &hscrollbar_requisition, ETK_FALSE);
+   else
+   {
+      hscrollbar_requisition.w = 0;
+      hscrollbar_requisition.h = 0;
+   }
    if (scrolled_view->vpolicy == ETK_POLICY_AUTO || scrolled_view->vpolicy == ETK_POLICY_SHOW)
       etk_widget_size_request_full(scrolled_view->vscrollbar, &vscrollbar_requisition, ETK_FALSE);
-   child->scroll_size_get(child, &scroll_size);
+   else
+   {
+      vscrollbar_requisition.w = 0;
+      vscrollbar_requisition.h = 0;
+   }
    
-   visible_width = geometry.w;
-   visible_height = geometry.h;
+   scrollview_size.w = geometry.w - child->left_inset - child->right_inset;
+   scrollview_size.h = geometry.h - child->top_inset - child->bottom_inset;
    if (child->scroll_margins_get)
    {
       Etk_Size margins_size;
       
       child->scroll_margins_get(child, &margins_size);
-      visible_width -= margins_size.w;
-      visible_height -= margins_size.h;
+      scrollview_size.w -= margins_size.w;
+      scrollview_size.h -= margins_size.h;
    }
    
-   if ((scrolled_view->hpolicy == ETK_POLICY_AUTO && scroll_size.w > visible_width) || scrolled_view->hpolicy == ETK_POLICY_SHOW)
+   scrollbar_size.w = vscrollbar_requisition.w;
+   scrollbar_size.h = hscrollbar_requisition.h;
+   child->scroll_size_get(child, scrollview_size, scrollbar_size, &scroll_size);
+   
+   if ((scrolled_view->hpolicy == ETK_POLICY_AUTO && scroll_size.w > scrollview_size.w) || scrolled_view->hpolicy == ETK_POLICY_SHOW)
       show_hscrollbar = ETK_TRUE;
-   if ((scrolled_view->vpolicy == ETK_POLICY_AUTO && scroll_size.h > (visible_height - (show_hscrollbar ? hscrollbar_requisition.h : 0))) ||
+   if ((scrolled_view->vpolicy == ETK_POLICY_AUTO && scroll_size.h > (scrollview_size.h - (show_hscrollbar ? hscrollbar_requisition.h : 0))) ||
       scrolled_view->vpolicy == ETK_POLICY_SHOW)
    {
       show_vscrollbar = ETK_TRUE;
-      if (scrolled_view->hpolicy == ETK_POLICY_AUTO && scroll_size.w > (visible_width - vscrollbar_requisition.w))
+      if (scrolled_view->hpolicy == ETK_POLICY_AUTO && scroll_size.w > (scrollview_size.w - vscrollbar_requisition.w))
          show_hscrollbar = ETK_TRUE;
    }
 
    if (show_hscrollbar)
    {
-      visible_height -= hscrollbar_requisition.h;
+      scrollview_size.h -= hscrollbar_requisition.h;
       etk_widget_show(scrolled_view->hscrollbar);
       
       child_geometry.x = geometry.x;
@@ -329,7 +343,7 @@ static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry ge
 
    if (show_vscrollbar)
    {
-      visible_width -= vscrollbar_requisition.w;
+      scrollview_size.w -= vscrollbar_requisition.w;
       etk_widget_show(scrolled_view->vscrollbar);
 
       child_geometry.x = geometry.x + geometry.w - vscrollbar_requisition.w;
@@ -342,9 +356,9 @@ static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry ge
       etk_widget_hide(scrolled_view->vscrollbar);
 
    etk_range_range_set(ETK_RANGE(scrolled_view->hscrollbar), 0, scroll_size.w);
-   etk_range_page_size_set(ETK_RANGE(scrolled_view->hscrollbar), visible_width);
+   etk_range_page_size_set(ETK_RANGE(scrolled_view->hscrollbar), scrollview_size.w);
    etk_range_range_set(ETK_RANGE(scrolled_view->vscrollbar), 0, scroll_size.h);
-   etk_range_page_size_set(ETK_RANGE(scrolled_view->vscrollbar), visible_height);
+   etk_range_page_size_set(ETK_RANGE(scrolled_view->vscrollbar), scrollview_size.h);
 
    child_geometry.x = geometry.x;
    child_geometry.y = geometry.y;
@@ -454,12 +468,34 @@ static void _etk_scrolled_view_child_scroll_size_changed_cb(Etk_Object *object, 
 {
    Etk_Widget *child;
    Etk_Scrolled_View *scrolled_view;
+   Etk_Size hscrollbar_requisition, vscrollbar_requisition;
+   Etk_Size scrollview_size;
+   Etk_Size scrollbar_size;
    Etk_Size scroll_size;
    
    if (!(child = ETK_WIDGET(object)) || !child->scroll_size_get || !(scrolled_view = ETK_SCROLLED_VIEW(data)))
       return;
    
-   child->scroll_size_get(child, &scroll_size);
+   if (scrolled_view->hpolicy == ETK_POLICY_AUTO || scrolled_view->hpolicy == ETK_POLICY_SHOW)
+      etk_widget_size_request_full(scrolled_view->hscrollbar, &hscrollbar_requisition, ETK_FALSE);
+   else
+   {
+      hscrollbar_requisition.w = 0;
+      hscrollbar_requisition.h = 0;
+   }
+   if (scrolled_view->vpolicy == ETK_POLICY_AUTO || scrolled_view->vpolicy == ETK_POLICY_SHOW)
+      etk_widget_size_request_full(scrolled_view->vscrollbar, &vscrollbar_requisition, ETK_FALSE);
+   else
+   {
+      vscrollbar_requisition.w = 0;
+      vscrollbar_requisition.h = 0;
+   }
+   
+   etk_widget_inner_geometry_get(ETK_WIDGET(scrolled_view), NULL, NULL, &scrollview_size.w, &scrollview_size.h);
+   scrollbar_size.w = vscrollbar_requisition.w;
+   scrollbar_size.h = hscrollbar_requisition.h;
+   child->scroll_size_get(child, scrollview_size, scrollbar_size, &scroll_size);
+   
    etk_range_range_set(ETK_RANGE(scrolled_view->hscrollbar), 0, scroll_size.w);
    etk_range_range_set(ETK_RANGE(scrolled_view->vscrollbar), 0, scroll_size.h);
    etk_widget_redraw_queue(ETK_WIDGET(scrolled_view));

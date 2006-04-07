@@ -18,6 +18,10 @@
 /** @brief Checks if the object is an Etk_Radio_Button */
 #define ETK_IS_RADIO_BUTTON(obj)    (ETK_OBJECT_RADIO_TYPE((obj), ETK_RADIO_BUTTON_TYPE))
 
+/**
+ * @struct Etk_Radio_Button
+ * @brief A radio button is a toggle button that belongs to a group in which only one button can be toggled
+ */
 struct _Etk_Radio_Button
 {
    /* private: */

@@ -80,12 +80,13 @@ void etk_property_value_clear(Etk_Property_Value *value)
 
    if (value->type == ETK_PROPERTY_STRING)
       free(value->value.string_value);
+   value->type = ETK_PROPERTY_NONE;
 }
 
 /**
  * @brief Deletes a property value
  * @param value the property value to delete
- * @note You will almost never have to call this function. Properties are deleted internally.
+ * @note You will almost never have to call this function. Properties are deleted automatically.
  */ 
 void etk_property_value_delete(Etk_Property_Value *value)
 {

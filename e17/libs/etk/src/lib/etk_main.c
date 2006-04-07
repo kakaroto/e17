@@ -38,7 +38,7 @@ static Ecore_Job *_etk_main_iterate_job = NULL;
  **************************/
 
 /**
- * @brief Initializes etk
+ * @brief Initializes Etk
  * @return Returns ETK_TRUE on success, ETK_FALSE on failure
  */
 Etk_Bool etk_init()
@@ -61,13 +61,11 @@ Etk_Bool etk_init()
       ETK_WARNING("Ecore_Evas initialization failed!");
       return ETK_FALSE;
    }
-#if HAVE_ECORE_X
    if (!ecore_x_init(NULL))
    {
       ETK_WARNING("Ecore_X initialization failed!");
       return ETK_FALSE;
    }
-#endif
    if (!edje_init())
    {
       ETK_WARNING("Edje initialization failed!");
@@ -80,7 +78,8 @@ Etk_Bool etk_init()
    }
    etk_theme_init();
    etk_tooltips_init();
-   /* Gettext */
+   
+   /* Initialize Gettext */
    setlocale(LC_ALL, "");
    bindtextdomain(PACKAGE, LOCALEDIR);
    textdomain(PACKAGE);
@@ -90,7 +89,7 @@ Etk_Bool etk_init()
 }
 
 /**
- * @brief Shutdowns etk and frees the memory
+ * @brief Shutdowns Etk and frees the memory
  */
 void etk_shutdown()
 {
@@ -150,6 +149,7 @@ void etk_main_iterate()
    if (!_etk_main_initialized)
       return;
 
+   /* TODO: only update the toplevel widgets that need to be updated */
    for (l = _etk_main_toplevel_widgets; l; l = l->next)
    {
       widget = ETK_WIDGET(l->data);
@@ -164,7 +164,7 @@ void etk_main_iterate()
 void etk_main_iteration_queue()
 {
    if (_etk_main_iterate_job)
-      return;
+      ecore_job_del(_etk_main_iterate_job);
    _etk_main_iterate_job = ecore_job_add(_etk_main_iterate_job_cb, NULL);
 }
 

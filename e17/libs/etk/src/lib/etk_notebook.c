@@ -59,7 +59,7 @@ Etk_Type *etk_notebook_type_get()
  */
 Etk_Widget *etk_notebook_new()
 {
-   return etk_widget_new(ETK_NOTEBOOK_TYPE, NULL);
+   return etk_widget_new(ETK_NOTEBOOK_TYPE, "theme_group", "notebook", NULL);
 }
 
 /**
@@ -525,7 +525,7 @@ static Etk_Notebook_Page *_etk_notebook_page_create(Etk_Notebook *notebook, cons
    
    new_page = malloc(sizeof(Etk_Notebook_Page));
    prev_page = notebook->pages ? notebook->pages->data : NULL;
-   new_page->tab = etk_widget_new(ETK_RADIO_BUTTON_TYPE, "theme_group", "notebook_tab", "label", tab_label,
+   new_page->tab = etk_widget_new(ETK_RADIO_BUTTON_TYPE, "theme_group", "tab", "label", tab_label,
       "group", prev_page ? etk_radio_button_group_get(ETK_RADIO_BUTTON(prev_page->tab)) : NULL, NULL);
    etk_object_data_set(ETK_OBJECT(new_page->tab), "_Etk_Notebook::Page", new_page);
    etk_widget_parent_set(new_page->tab, ETK_WIDGET(notebook));
@@ -533,7 +533,7 @@ static Etk_Notebook_Page *_etk_notebook_page_create(Etk_Notebook *notebook, cons
    etk_widget_show(new_page->tab);
    etk_signal_connect("toggled", ETK_OBJECT(new_page->tab), ETK_CALLBACK(_etk_notebook_tab_toggled_cb), notebook);
    
-   new_page->page_frame = etk_widget_new(ETK_BIN_TYPE, "theme_group", "notebook_frame", NULL);
+   new_page->page_frame = etk_widget_new(ETK_BIN_TYPE, "theme_group", "frame", NULL);
    etk_widget_parent_set(new_page->page_frame, ETK_WIDGET(notebook));
    etk_widget_visibility_locked_set(new_page->page_frame, ETK_TRUE);
    etk_widget_hide(new_page->page_frame);
@@ -562,16 +562,16 @@ static void _etk_notebook_current_page_show(Etk_Notebook *notebook)
    
    etk_widget_show(notebook->current_page->page_frame);
    /* TODO: access to event object to raise */
-   etk_widget_member_object_raise(ETK_WIDGET(notebook), notebook->current_page->page_frame->event_object);
+   etk_widget_member_object_raise(ETK_WIDGET(notebook), notebook->current_page->page_frame->smart_object);
    
    for (l = notebook->pages; l; l = l->next)
    {
       p = l->data;
       /* TODO: access to event object to raise */
-      etk_widget_member_object_raise(ETK_WIDGET(notebook), p->tab->event_object);
+      etk_widget_member_object_raise(ETK_WIDGET(notebook), p->tab->smart_object);
    }
    /* TODO: access to event object to raise */
-   etk_widget_member_object_raise(ETK_WIDGET(notebook), notebook->current_page->tab->event_object);         
+   etk_widget_member_object_raise(ETK_WIDGET(notebook), notebook->current_page->tab->smart_object);         
    etk_widget_size_recalc_queue(ETK_WIDGET(notebook));
 }
 

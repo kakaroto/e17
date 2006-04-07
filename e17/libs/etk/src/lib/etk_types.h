@@ -20,8 +20,6 @@ typedef struct _Etk_Signal Etk_Signal;
 typedef struct _Etk_Signal_Callback Etk_Signal_Callback;
 typedef struct _Etk_Property Etk_Property;
 typedef struct _Etk_Property_Value Etk_Property_Value;
-typedef enum   _Etk_Property_Type Etk_Property_Type;
-typedef enum   _Etk_Property_Flags Etk_Property_Flags;
 typedef struct _Etk_String Etk_String;
 
 typedef void (*Etk_Constructor)(Etk_Object *object);
@@ -40,18 +38,13 @@ typedef struct _Etk_Event_Mouse_Wheel Etk_Event_Mouse_Wheel;
 typedef struct _Etk_Event_Key_Up_Down Etk_Event_Key_Up_Down;
 typedef struct _Etk_Size Etk_Size;
 typedef struct _Etk_Geometry Etk_Geometry;
-typedef enum   _Etk_Stock_Id Etk_Stock_Id;
-typedef enum   _Etk_Stock_Size Etk_Stock_Size;
-typedef enum   _Etk_Pointer_Type Etk_Pointer_Type;
 typedef struct _Etk_Toplevel_Widget Etk_Toplevel_Widget;
 typedef struct _Etk_Window Etk_Window;
-typedef enum   _Etk_Window_Position Etk_Window_Position;
 typedef struct _Etk_Dialog Etk_Dialog;
-typedef enum   _Etk_Dialog_Response_ID Etk_Dialog_Response_ID;
 typedef struct _Etk_Container Etk_Container;
 typedef struct _Etk_Bin Etk_Bin;
 typedef struct _Etk_Box Etk_Box;
-typedef struct _Etk_Box_Child_Properties Etk_Box_Child_Properties;
+typedef struct _Etk_Box_Child_Props Etk_Box_Child_Props;
 typedef struct _Etk_HBox Etk_HBox;
 typedef struct _Etk_VBox Etk_VBox;
 typedef struct _Etk_Table Etk_Table;
@@ -60,7 +53,6 @@ typedef struct _Etk_Frame Etk_Frame;
 typedef struct _Etk_Paned Etk_Paned;
 typedef struct _Etk_HPaned Etk_HPaned;
 typedef struct _Etk_VPaned Etk_VPaned;
-typedef enum   _Etk_Scrolled_View_Policy Etk_Scrolled_View_Policy;
 typedef struct _Etk_Scrolled_View Etk_Scrolled_View;
 typedef struct _Etk_Viewport Etk_Viewport;
 typedef struct _Etk_Image Etk_Image;
@@ -109,7 +101,6 @@ typedef struct _Etk_Statusbar Etk_Statusbar;
 typedef struct _Etk_Filechooser_Widget Etk_Filechooser_Widget;
 typedef struct _Etk_Notebook Etk_Notebook;
 typedef struct _Etk_Progress_Bar Etk_Progress_Bar;
-typedef enum   _Etk_Progress_Bar_Orientation Etk_Progress_Bar_Orientation;
 typedef struct _Etk_Spin_Button Etk_Spin_Button;
 typedef struct _Etk_Event_Selection_Request Etk_Event_Selection_Request;
 typedef struct _Etk_Selection_Data Etk_Selection_Data;
@@ -122,19 +113,9 @@ typedef enum   _Etk_Argument_Returns Etk_Argument_Returns;
 typedef enum   _Etk_Argument_Flags Etk_Argument_Flags;
 typedef struct _Etk_Argument Etk_Argument;
 typedef struct _Etk_Message_Dialog Etk_Message_Dialog;
-
-/**
- * @enum Etk_Fill_Policy_Flags
- * @brief Describes how a child should fill the space allocated by its parent container
- */ 
-typedef enum _Etk_Fill_Policy_Flags
-{
-   ETK_FILL_POLICY_NONE = 1 << 0,
-   ETK_FILL_POLICY_HFILL = 1 << 1,
-   ETK_FILL_POLICY_VFILL = 1 << 2,
-   ETK_FILL_POLICY_HEXPAND = 1 << 3,
-   ETK_FILL_POLICY_VEXPAND = 1 << 4
-} Etk_Fill_Policy_Flags;
+typedef struct _Etk_Iconbox Etk_Iconbox;
+typedef struct _Etk_Iconbox_Icon Etk_Iconbox_Icon;
+typedef struct _Etk_Iconbox_Model Etk_Iconbox_Model;
 
 /**
  * @struct Etk_Color

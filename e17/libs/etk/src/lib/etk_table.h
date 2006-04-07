@@ -18,6 +18,7 @@
 /** @brief Checks if the object is an Etk_Table */
 #define ETK_IS_TABLE(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_TABLE_TYPE))
 
+/* A cell of a table */
 typedef struct _Etk_Table_Cell
 {
    /* private: */
@@ -31,6 +32,7 @@ typedef struct _Etk_Table_Cell
    Etk_Widget *child;
 } Etk_Table_Cell;
 
+/* A column or a row of a table */
 typedef struct _Etk_Table_Col_Row
 {
    /* private: */
@@ -42,7 +44,7 @@ typedef struct _Etk_Table_Col_Row
 
 /**
  * @struct Etk_Table
- * @brief An Etk_Table is a container that can contain several children in a grid
+ * @brief An Etk_Table is a container that can contain several children packed on a grid
  */
 struct _Etk_Table
 {

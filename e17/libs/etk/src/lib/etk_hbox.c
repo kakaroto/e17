@@ -5,7 +5,7 @@
 
 /**
  * @addtogroup Etk_HBox
-* @{
+ * @{
  */
 
 static void _etk_hbox_constructor(Etk_HBox *hbox);
@@ -78,7 +78,8 @@ static void _etk_hbox_size_request(Etk_Widget *widget, Etk_Size *size_requisitio
    Etk_Widget *child;
    Etk_Box_Child_Props *child_properties;
    Etk_Size child_requisition;
-   int num_children, i;
+   int num_children, num_visible_children;
+   int i;
 
    if (!(hbox = ETK_HBOX(widget)) || !size_requisition)
       return;
@@ -88,12 +89,18 @@ static void _etk_hbox_size_request(Etk_Widget *widget, Etk_Size *size_requisitio
    size_requisition->w = 0;
    size_requisition->h = 0;
    num_children = evas_list_count(box->children);
+   num_visible_children = 0;
    hbox->requested_sizes = realloc(hbox->requested_sizes, num_children * sizeof(int));
 
    for (l = box->children, i = 0; l; l = l->next, i++)
    {
       child = ETK_WIDGET(l->data);
       child_properties = child->child_properties;
+      hbox->requested_sizes[i] = 0;
+      
+      if (!etk_widget_is_visible(child))
+         continue;
+      
       etk_widget_size_request(child, &child_requisition);
 
       if (box->homogeneous)
@@ -109,15 +116,17 @@ static void _etk_hbox_size_request(Etk_Widget *widget, Etk_Size *size_requisitio
 
       if (size_requisition->h < child_requisition.h)
          size_requisition->h = child_requisition.h;
+      
+      num_visible_children++;
    }
    if (box->homogeneous)
    {
       for (i = 0; i < num_children; i++)
          hbox->requested_sizes[i] = size_requisition->w;
-      size_requisition->w *= num_children;
+      size_requisition->w *= num_visible_children;
    }
-   if (num_children > 1)
-      size_requisition->w += (num_children - 1) * box->spacing;
+   if (num_visible_children > 1)
+      size_requisition->w += (num_visible_children - 1) * box->spacing;
 
    size_requisition->w += 2 * container->border_width;
    size_requisition->h += 2 * container->border_width;
@@ -160,6 +169,9 @@ static void _etk_hbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       {
          child = ETK_WIDGET(l->data);
          child_properties = child->child_properties;
+         
+         if (!etk_widget_is_visible(child))
+            continue;
 
          child_geometry.y = geometry.y;
          child_geometry.w = hbox->requested_sizes[i] * ratio;
@@ -188,6 +200,10 @@ static void _etk_hbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       {
          child = ETK_WIDGET(l->data);
          child_properties = child->child_properties;
+         
+         if (!etk_widget_is_visible(child))
+            continue;
+         
          if (child_properties->expand)
             num_children_to_expand++;
       }
@@ -201,7 +217,10 @@ static void _etk_hbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       {
          child = ETK_WIDGET(l->data);
          child_properties = child->child_properties;
-
+         
+         if (!etk_widget_is_visible(child))
+            continue;
+         
          child_geometry.y = geometry.y;
          child_geometry.w = hbox->requested_sizes[i];
          if (child_properties->expand)

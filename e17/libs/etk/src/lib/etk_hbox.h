@@ -19,7 +19,7 @@
 
 /**
  * @struct Etk_HBox
- * @brief An Etk_HBox is a container that can contain several children in the horizontal direction 
+ * @brief An Etk_HBox is a container that can contain several children packed in the horizontal direction 
  */
 struct _Etk_HBox
 {

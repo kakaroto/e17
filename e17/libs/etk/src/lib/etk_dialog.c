@@ -2,6 +2,7 @@
 #include "etk_dialog.h"
 #include <stdlib.h>
 #include <string.h>
+#include "etk_theme.h"
 #include "etk_vbox.h"
 #include "etk_hbox.h"
 #include "etk_separator.h"
@@ -11,7 +12,7 @@
 
 /**
  * @addtogroup Etk_Dialog
-* @{
+ * @{
  */
 
 enum _Etk_Dialog_Signal_Id
@@ -145,7 +146,7 @@ Etk_Bool etk_dialog_has_separator_get(Etk_Dialog *dialog)
 }
 
 /**
- * @brief Add a button to the dialog's action area
+ * @brief Adds a button to the dialog's action area
  * @param label the button's label
  * @param response_id the button's response id (Etk_Dialog_Response_ID)
  * @return Returns the newly added button.
@@ -158,12 +159,12 @@ Etk_Widget *etk_dialog_button_add(Etk_Dialog *dialog, const char *label, int res
       return NULL;
    
    button = etk_button_new_with_label(label);
-   etk_dialog_pack_button_in_action_area(dialog, ETK_BUTTON(button), response_id, ETK_FALSE, ETK_FALSE, 6, ETK_TRUE);
-   return button;   
+   etk_dialog_pack_button_in_action_area(dialog, ETK_BUTTON(button), response_id, ETK_FALSE, ETK_FALSE, 0, ETK_TRUE);
+   return button;
 }
 
 /**
- * @brief Add a button from the stock buttons to the dialog's action area
+ * @brief Adds a button created from a stock id to the dialog's action area
  * @param stock_id the button's stock id
  * @param response_id the button's response id (Etk_Dialog_Response_ID)
  * @return Returns the newly added button.
@@ -176,8 +177,8 @@ Etk_Widget *etk_dialog_button_add_from_stock(Etk_Dialog *dialog, int stock_id, i
       return NULL;
    
    button = etk_button_new_from_stock(stock_id);
-   etk_dialog_pack_button_in_action_area(dialog, ETK_BUTTON(button), response_id, ETK_FALSE, ETK_FALSE, 6, ETK_TRUE);
-   return button;   
+   etk_dialog_pack_button_in_action_area(dialog, ETK_BUTTON(button), response_id, ETK_FALSE, ETK_FALSE, 0, ETK_TRUE);
+   return button;
 }
 
 /**
@@ -195,7 +196,7 @@ void etk_dialog_pack_button_in_action_area(Etk_Dialog *dialog, Etk_Button *butto
    int *id;   
 
    if (!dialog)
-      return;   
+      return;
    
    etk_widget_visibility_locked_set(ETK_WIDGET(button), ETK_TRUE);
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_dialog_button_clicked_cb), dialog);
@@ -204,10 +205,10 @@ void etk_dialog_pack_button_in_action_area(Etk_Dialog *dialog, Etk_Button *butto
    *id = response_id;
    etk_object_data_set_full(ETK_OBJECT(button), "_Etk_Dialog::response_id", id, free);
    
-   if(pack_at_end)
-     etk_box_pack_end(ETK_BOX(dialog->action_area_hbox), ETK_WIDGET(button), fill, expand, padding);
+   if (pack_at_end)
+      etk_box_pack_end(ETK_BOX(dialog->action_area_hbox), ETK_WIDGET(button), fill, expand, padding);
    else
-     etk_box_pack_start(ETK_BOX(dialog->action_area_hbox), ETK_WIDGET(button), fill, expand, padding);     
+      etk_box_pack_start(ETK_BOX(dialog->action_area_hbox), ETK_WIDGET(button), fill, expand, padding);
    etk_widget_show(ETK_WIDGET(button));
 }
 
@@ -238,7 +239,7 @@ static void _etk_dialog_constructor(Etk_Dialog *dialog)
    etk_box_pack_start(ETK_BOX(dialog->dialog_vbox), dialog->separator, ETK_FALSE, ETK_TRUE, 6);
    etk_widget_show(dialog->separator);
 
-   dialog->action_area_hbox = etk_hbox_new(ETK_FALSE, 0);
+   dialog->action_area_hbox = etk_hbox_new(ETK_FALSE, 6);
    etk_widget_visibility_locked_set(dialog->action_area_hbox, ETK_TRUE);
    etk_box_pack_end(ETK_BOX(dialog->dialog_vbox), dialog->action_area_hbox, ETK_FALSE, ETK_TRUE, 0);
    etk_widget_show(dialog->action_area_hbox);
@@ -288,11 +289,13 @@ static void _etk_dialog_property_get(Etk_Object *object, int property_id, Etk_Pr
  *
  **************************/
 
+/* Called when a button of the action area of the dialog is clicked */
 static void _etk_dialog_button_clicked_cb(Etk_Object *object, void *data)
 {
    int *response_id;
    
-   response_id = (int*)etk_object_data_get(object, "_Etk_Dialog::response_id");
+   if (!(response_id = (int *)etk_object_data_get(object, "_Etk_Dialog::response_id")))
+      return;
 
    etk_signal_emit(_etk_dialog_signals[ETK_DIALOG_RESPONSE_SIGNAL], ETK_OBJECT(data), NULL, *response_id);
 }

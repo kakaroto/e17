@@ -170,7 +170,7 @@ static void _etk_spin_button_text_changed_cb(Etk_Object *object, void *data)
    Etk_Spin_Button *spin_button;
    const char      *text;
    char            *text2;
-   Etk_Bool         changed;
+   Etk_Bool         changed = ETK_FALSE;
    
    if (!(spin_button = ETK_SPIN_BUTTON(object)))
      return;

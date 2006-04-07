@@ -49,15 +49,6 @@ Etk_Type *etk_menu_shell_type_get()
    return menu_shell_type;
 }
 
-/**
- * @brief Creates a new menu_shell
- * @return Returns the new menu_shell widget
- */
-Etk_Widget *etk_menu_shell_new()
-{
-   return etk_widget_new(ETK_MENU_SHELL_TYPE, "theme_group", "menu_shell", NULL);
-}
-
 /** 
  * @brief Adds a menu_shell item at the start of the menu shell
  * @param menu_shell a menu shell

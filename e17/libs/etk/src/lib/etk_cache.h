@@ -4,6 +4,11 @@
 
 #include <Evas.h>
 
+/**
+ * @defgroup Etk_Cache Etk_Cache
+ * @{
+ */
+ 
 void etk_cache_shutdown();
 void etk_cache_empty(Evas *evas);
 
@@ -22,5 +27,6 @@ void etk_cache_edje_object_remove(Evas_Object *edje_object);
 Evas_Object *etk_cache_edje_object_find(Evas *evas, const char *filename, const char *group);
 Evas_Object *etk_cache_edje_object_find_with_state(Evas *evas, const char *filename, const char *group, int state);
 
+/** @} */
 
 #endif

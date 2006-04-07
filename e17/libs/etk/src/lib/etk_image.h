@@ -11,7 +11,7 @@
  * @{
  */
 
-/** @brief Gets the type of a image */
+/** @brief Gets the type of an image */
 #define ETK_IMAGE_TYPE        (etk_image_type_get())
 /** @brief Casts the object to an Etk_Image */
 #define ETK_IMAGE(obj)        (ETK_OBJECT_CAST((obj), ETK_IMAGE_TYPE, Etk_Image))

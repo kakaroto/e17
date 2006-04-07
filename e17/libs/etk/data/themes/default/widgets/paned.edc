@@ -1,5 +1,5 @@
 group {
-   name: "hpaned";
+   name: "hpaned/separator";
    min: 7 60;
    parts {
       part {
@@ -92,7 +92,7 @@ group {
 }
 
 group {
-   name: "vpaned";
+   name: "vpaned/separator";
    min: 60 7;
    parts {
       part {

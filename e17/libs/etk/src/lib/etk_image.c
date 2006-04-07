@@ -350,8 +350,6 @@ void etk_image_copy(Etk_Image *dest_image, Etk_Image *src_image)
    dest_image->object_type_changed = (dest_image->use_edje != src_image->use_edje);
    dest_image->use_edje = src_image->use_edje;
    
-   /* TODO: notify ?? */
-   
    _etk_image_load(dest_image);
 }
 
@@ -630,7 +628,7 @@ static void _etk_image_load(Etk_Image *image)
          const char *edje_file, *edje_group;
          
          edje_object_file_get(image->image_object, &edje_file, &edje_group);
-         if (!edje_file || !edje_file || strcmp(edje_file, image->edje_filename) != 0 || strcmp(edje_group, image->edje_group) != 0)
+         if (!edje_file || !edje_group || strcmp(edje_file, image->edje_filename) != 0 || strcmp(edje_group, image->edje_group) != 0)
          {
             edje_object_file_set(image->image_object, image->edje_filename, image->edje_group);
             if ((error_code = edje_object_load_error_get(image->image_object)))
