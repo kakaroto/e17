@@ -156,14 +156,17 @@ e_volume_config_mixer_get(Mixer_Name *mixer_name, Config_Face *conf)
 
         mixer_conf = evas_list_data(l);
 
-#if 0
         DBG(stderr, "mixer_id1 = %x, mixer_id2 = %x\n", mixer_conf->mixer_id, mixer_name->mixer_id);
-#endif
         if (MIXER_ID(mixer_conf->mixer_id) == MIXER_ID(mixer_name->mixer_id))
           {
 //                      DBG(stderr,"using mixer_conf = %p\n", mixer_conf);
              return mixer_conf;
           }
+	else if ((!strcmp(mixer_conf->real, mixer_name->real)) && 
+		 (!strcmp(mixer_conf->card, mixer_name->card))) 
+	  {
+	     return mixer_conf;
+	  }	
      }
    if (!l)
      {
