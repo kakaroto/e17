@@ -271,16 +271,28 @@ main(int argc, char **argv)
 		ewl_widget_show(m->menu);
 
 		m->menu_item = ewl_menu_item_new();
+                ewl_button_label_set(EWL_BUTTON(m->menu_item), "Reset Images");
+                ewl_container_child_append(EWL_CONTAINER(m->menu), m->menu_item);
+                ewl_callback_append(m->menu_item, EWL_CALLBACK_CLICKED, reseti_cb, NULL);
+                ewl_widget_show(m->menu_item);
+
+		m->menu_item = ewl_menu_item_new();
+                ewl_button_label_set(EWL_BUTTON(m->menu_item), "Reset Audio");
+                ewl_container_child_append(EWL_CONTAINER(m->menu), m->menu_item);
+                ewl_callback_append(m->menu_item, EWL_CALLBACK_CLICKED, reseta_cb, NULL);
+                ewl_widget_show(m->menu_item);
+
+		m->menu_item = ewl_menu_item_new();
                 ewl_button_label_set(EWL_BUTTON(m->menu_item), "Slideshow");
                 ewl_container_child_append(EWL_CONTAINER(m->menu), m->menu_item);
                 ewl_callback_append(m->menu_item, EWL_CALLBACK_CLICKED, slideshow_cb, NULL);
-                ewl_widget_show(m->menu_item);
+		ewl_widget_show(m->menu_item);
 
 		m->menu_item = ewl_menu_item_new();
                 ewl_button_label_set(EWL_BUTTON(m->menu_item), "Presentation");
                 ewl_container_child_append(EWL_CONTAINER(m->menu), m->menu_item);
                 ewl_callback_append(m->menu_item, EWL_CALLBACK_CLICKED, presentation_cb, NULL);
-		ewl_widget_show(m->menu_item);
+                ewl_widget_show(m->menu_item);
 
 		m->menu = ewl_menu_new();
                 ewl_button_label_set(EWL_BUTTON(m->menu), "Help");

@@ -374,3 +374,21 @@ void load_cb(Ewl_Widget *w, void *event, void *data)
 	ewl_widget_destroy(m->load_win);	
 }
 
+void reseti_cb(Ewl_Widget *w, void *event, void *data)
+{
+	ewl_widget_destroy(m->ib);
+	ecore_list_destroy(m->imagelist);
+	m->imagelist = ecore_list_new();
+	
+        m->ib = ewl_freebox_new();
+        ewl_freebox_layout_type_set(EWL_FREEBOX(m->ib), EWL_FREEBOX_LAYOUT_AUTO);
+        ewl_container_child_append(EWL_CONTAINER(m->iscroll), m->ib);
+        ewl_widget_show(m->ib);
+
+}
+
+void reseta_cb(Ewl_Widget *w, void *event, void *data)
+{
+	ewl_text_text_set(EWL_TEXT(m->atext), "");
+	audio = 0;
+}
