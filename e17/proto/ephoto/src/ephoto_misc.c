@@ -330,6 +330,16 @@ void load_cb(Ewl_Widget *w, void *event, void *data)
 
 	if (file_ptr != NULL) {
 		char paths[PATH_MAX];
+
+		ewl_widget_destroy(m->ib);
+                ecore_list_destroy(m->imagelist);
+                m->imagelist = ecore_list_new();
+		
+                m->ib = ewl_freebox_new();
+                ewl_freebox_layout_type_set(EWL_FREEBOX(m->ib), EWL_FREEBOX_LAYOUT_AUTO);
+                ewl_container_child_append(EWL_CONTAINER(m->iscroll), m->ib);
+		ewl_widget_show(m->ib);
+
 		while (fgets(paths,PATH_MAX,file_ptr)!=NULL) {
 			char path2[PATH_MAX];
 			int strleng;
@@ -339,7 +349,7 @@ void load_cb(Ewl_Widget *w, void *event, void *data)
 			snprintf(path2, strleng, "%s", paths);
 
 			printf("%s\n", path2);			
-
+			
 			m->i = ewl_image_thumbnail_new();
                 	ewl_widget_name_set(m->i, path2);
                 	ewl_image_constrain_set(EWL_IMAGE(m->i), 64);
