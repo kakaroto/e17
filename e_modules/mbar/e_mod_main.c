@@ -183,7 +183,8 @@ e_modapi_info(E_Module *m)
 EAPI int
 e_modapi_about(E_Module *m)
 {
-   e_module_dialog_show(_("Enlightenment Mount Bar Module"), _("This is the Mount Bar module for Enlightenment."));
+   e_module_dialog_show(_("Enlightenment Mount Bar Module"), 
+			_("This is the Mount Bar module for Enlightenment."));
    return 1;
 }
 
@@ -192,25 +193,31 @@ e_modapi_config(E_Module *m)
 {
    MBar *mb;
    Evas_List *l;
-
+   E_Container *con;
+   
    mb = m->data;
    if (!mb)
       return 0;
    if (!mb->bars)
       return 0;
+   
+   con = e_container_current_get(e_manager_current_get());
+   
    for (l = mb->bars; l; l = l->next)
      {
         MBar_Bar *mbb;
 
         mbb = l->data;
         if (!mbb)
-           return 0;
-        if (mbb->con == e_container_current_get(e_manager_current_get()))
+           continue;
+	
+        if (mbb->con == con)
           {
              _config_mbar_module(mbb->con, mb);
              break;
           }
      }
+   evas_list_free(l);
    return 1;
 }
 
@@ -342,7 +349,9 @@ _mbar_new()
                      _mbar_bar_disable(mbb);
                }
           }
+	evas_list_free(l2);
      }
+   evas_list_free(l);
 
 #ifdef HAVE_LINUX
    /* Add File Monitor for /etc/mtab */
@@ -534,6 +543,7 @@ _mbar_app_change(void *data, E_App *a, E_App_Change ch)
              break;
           }
      }
+   evas_list_free(l);
 }
 
 static MBar_Bar *
@@ -613,6 +623,7 @@ _mbar_bar_new(MBar *mb, E_Container *con)
              a = l->data;
              ic = _mbar_icon_new(mbb, a);
           }
+	evas_list_free(l);
      }
    mbb->align_req = 0.5;
    mbb->align = 0.5;
@@ -893,9 +904,9 @@ _mbar_icon_find(MBar_Bar *mbb, E_App *a)
 
         ic = l->data;
 	if (!strcmp(ic->app->generic, a->generic))
-        //if (e_app_equals(ic->app, a))
            return ic;
      }
+   evas_list_free(l);
    return NULL;
 }
 
@@ -1075,7 +1086,8 @@ _mbar_bar_edge_change(MBar_Bar *mbb, int edge)
                                w, h     /* max */
            );
      }
-
+   evas_list_free(l);
+   
    mbb->align_req = 0.5;
    mbb->align = 0.5;
    e_box_align_set(mbb->box_object, 0.5, 0.5);
@@ -1262,7 +1274,6 @@ _mbar_bar_cb_intercept_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_Coo
    MBar_Bar *mbb;
 
    mbb = data;
-
    evas_object_resize(o, w, h);
    evas_object_resize(mbb->event_object, w, h);
 }
@@ -1781,6 +1792,7 @@ _mbar_bar_cb_width_auto(void *data)
         _mbar_bar_update_policy(mbb);
         _mbar_bar_frame_resize(mbb);
      }
+   evas_list_free(l);
 }
 
 static void
@@ -1816,6 +1828,7 @@ _mbar_bar_cb_follower(void *data)
 
              evas_object_show(o);
           }
+	evas_list_free(l);
      }
    else if (!enabled)
      {
@@ -1827,6 +1840,7 @@ _mbar_bar_cb_follower(void *data)
              evas_object_del(mbb->overlay_object);
              mbb->overlay_object = NULL;
           }
+	evas_list_free(l);
      }
 }
 
@@ -1867,7 +1881,9 @@ _mbar_bar_cb_iconsize_change(void *data)
           }
         e_box_thaw(mbb->box_object);
         _mbar_bar_frame_resize(mbb);
+	evas_list_free(ll);
      }
+   evas_list_free(l);
 }
 
 static void
@@ -1927,6 +1943,8 @@ _mbar_mount_point(MBar_Icon *ic)
    x = ecore_exe_run(buf, ic);
    if (x)
       ecore_exe_tag_set(x, "Mount");
+   
+   evas_list_free(ll);
 }
 
 static void
@@ -1948,6 +1966,8 @@ _mbar_umount_point(MBar_Icon *ic)
    x = ecore_exe_run(buf, ic);
    if (x)
       ecore_exe_tag_set(x, "Unount");
+   
+   evas_list_free(ll);
 }
 
 static void
@@ -2035,7 +2055,8 @@ _mbar_exe_cb_exit(void *data, int type, void *event)
    edje_object_signal_emit(ic->overlay_object, "stop", "");
    if (ic->mbb->overlay_object)
       edje_object_signal_emit(ic->mbb->overlay_object, "stop", "");
-   
+
+   evas_list_free(ll);
    return 0;
 }
 
@@ -2252,7 +2273,9 @@ _mbar_mtab_update(void *data, Ecore_File_Monitor *monitor, Ecore_File_Event even
 #endif
                        _mbar_set_state(ic, mounted);
                     }
+		  evas_list_free(il);
                }
+	     evas_list_free(l);
           }
      }
 }
@@ -2300,7 +2323,9 @@ _mbar_bsd_cb_timer(void *data)
              mounted = _mbar_bsd_is_mounted(ic->app->generic);
              _mbar_set_state(ic, mounted);
           }
+	evas_list_free(il);
      }
+   evas_list_free(l);
 }
 #endif
 
