@@ -96,8 +96,9 @@ ewl_combo_selected_set(Ewl_Combo *combo, int idx)
 	DCHECK_PARAM_PTR("combo", combo);
 	DCHECK_TYPE("combo", combo, EWL_COMBO_TYPE);
 
-	if (combo->selected_idx == idx)
-		DRETURN(DLEVEL_STABLE);
+	/* we don't bail out early as the user could have prepended widgets
+	 * to their data, so the selected_idx will be the same but the
+	 * widget is actually different */
 
 	combo->selected_idx = idx;
 
@@ -117,13 +118,16 @@ ewl_combo_selected_set(Ewl_Combo *combo, int idx)
 		combo->view->assign(combo->selected, 
 				combo->model->fetch(combo->data, idx, 0));
 	}
-	else
+	else if (combo->view && combo->view->header_fetch)
 		combo->selected = combo->view->header_fetch(combo->data, 
 							combo->selected_idx);	
 
-	ewl_container_child_prepend(EWL_CONTAINER(combo), combo->selected);
-	ewl_widget_show(combo->selected);
-						
+	if (combo->selected)
+	{
+		ewl_container_child_prepend(EWL_CONTAINER(combo), combo->selected);
+		ewl_widget_show(combo->selected);
+	}
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
