@@ -332,8 +332,12 @@ void load_cb(Ewl_Widget *w, void *event, void *data)
 	char homepath[PATH_MAX];
 	char *apath;
 	FILE *file_ptr;	
-
-	apath = ewl_text_text_get(EWL_TEXT(m->otext));
+	if ( arglload == 0 ) {
+		apath = ewl_text_text_get(EWL_TEXT(m->otext));
+	}
+	if ( arglload == 1 ) {
+		apath = argload;
+	}
 	snprintf(homepath, PATH_MAX, "%s/.e/ephoto/%s", home, apath);
 	printf("%s\n", homepath);
 
@@ -385,6 +389,36 @@ void load_cb(Ewl_Widget *w, void *event, void *data)
 	ewl_widget_destroy(m->load_win);	
 }
 
+void create_list_cb(Ewl_Widget *w, void *event, void *data)
+{
+        char *home = getenv("HOME");
+        char homepath[PATH_MAX];
+        char *apath;
+        FILE *file_ptr;
+	
+	apath = data;
+
+	snprintf(homepath, PATH_MAX, "%s/.e/ephoto/%s", home, apath);
+
+        file_ptr = fopen(homepath, "r");
+
+        if (file_ptr != NULL) {
+                char paths[PATH_MAX];
+	
+                while (fgets(paths,PATH_MAX,file_ptr)!=NULL) {
+                        char path2[PATH_MAX];
+                        int strleng;
+
+                        strleng = strlen(paths);
+
+                        snprintf(path2, strleng, "%s", paths);
+
+                        ecore_dlist_append(m->imagelist, strdup(path2));
+		}
+		fclose(file_ptr);
+	}
+}
+
 void reseti_cb(Ewl_Widget *w, void *event, void *data)
 {
 	ewl_widget_destroy(m->ib);
@@ -395,7 +429,6 @@ void reseti_cb(Ewl_Widget *w, void *event, void *data)
         ewl_freebox_layout_type_set(EWL_FREEBOX(m->ib), EWL_FREEBOX_LAYOUT_AUTO);
         ewl_container_child_append(EWL_CONTAINER(m->iscroll), m->ib);
         ewl_widget_show(m->ib);
-
 }
 
 void reseta_cb(Ewl_Widget *w, void *event, void *data)

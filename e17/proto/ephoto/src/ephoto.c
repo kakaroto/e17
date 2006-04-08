@@ -21,12 +21,14 @@ int argslideshow = 0;
 int argloop = 0;
 int argfit = 0;
 int argfullscreen = 0;
-int argload = 0;
+int arglload = 0;
+int argviewi = 0;
 char *audios;
 char buf[PATH_MAX];
 char argimage[PATH_MAX];
 char argaudio[PATH_MAX];
 char argheight[PATH_MAX] = "480";
+char argload[PATH_MAX];
 char argwidth[PATH_MAX] = "600";
 char tempdb[PATH_MAX];
 char db[PATH_MAX];
@@ -61,6 +63,16 @@ main(int argc, char **argv)
 				slidenum++;
 				imageint++;
 			}
+			mainwin = 0;
+			nopresent = 0;
+		}
+		if ( argint < argc && !strcmp(argv[argint], "--album-slideshow") && noslide != 0 ) {
+			int imageint;
+			char *albuma;
+			imageint = argint;
+			imageint++;
+			albuma = argv[imageint];
+			create_list_cb(NULL, NULL, albuma);
 			mainwin = 0;
 			nopresent = 0;
 		}
@@ -150,11 +162,22 @@ main(int argc, char **argv)
 			mainwin	= 0;
 			noslide = 0;
 		}
+		else if ( argint < argc && !strcmp(argv[argint], "--album-presentation") && nopresent != 0 ) {
+			int imageint;
+			char *albuma;
+			imageint = argint;
+			imageint++;
+			albuma = argv[imageint];
+			create_list_cb(NULL, NULL, albuma);
+			mainwin = 0;
+			noslide = 0;
+		}
 		else if ( argint < argc && !strcmp(argv[argint], "--view-image") ) {
 			int imageint;
 			imageint = argint;
 			imageint++;
 			snprintf(argimage, PATH_MAX, "%s", argv[imageint]);
+			argviewi = 1;
 		}
 		else if ( argint < argc && !strcmp(argv[argint], "--audio") ) {
 			int imageint;
@@ -187,20 +210,31 @@ main(int argc, char **argv)
 		else if ( argint < argc && !strcmp(argv[argint], "--fullscreen") ) {
 			argfullscreen = 1;
 		}
+		else if ( argint < argc && !strcmp(argv[argint], "--load-album") ) {
+			int imageint;
+			imageint = argint;
+			imageint++;
+			snprintf(argload, PATH_MAX, "%s", argv[imageint]);
+			arglload = 1;
+		}
 		else if ( argint < argc && !strcmp(argv[argint], "--help") ) {
-			printf("ephoto /path/to/dir loads /path/to/dir as default directory\n");
-			printf("ephoto --audio /path/to/audio sets /path/to/audio as default audio for slideshow\n");
-			printf("ephoto --fit-to-audio sets the slideshow to fit audio\n");
-			printf("ephoto --fullscreen sets the presentation/slideshow window to be fullscreen\n");
-			printf("ephoto --help displays all available options\n");
-			printf("ephoto --length slidelength sets the integer slidelength(seconds) as the transition time for slideshow\n");
-			printf("ephoto --loop sets the slideshow to loop\n");
-			printf("ephoto --presentation-dir /path/to/dir loads every image from /path/to/dir into a presentation\n");
-			printf("ephoto --presentation /path/to/image /path/to/image /path/to/image starts the presentation using the specified images\n");
-			printf("ephoto --slideshow-dir /path/to/dir loads every image from /path/to/dir into a slideshow\n");
-			printf("ephoto --slideshow /path/to/image /path/to/image /path/to/image starts the slideshow using the specified images\n");
-			printf("ephoto --view-image /path/to/image sets /path/to/image as the default image in the image viewer tab.\n");
-			printf("ephoto --win-size integer integer sets the first integer as the width and the second integer as the height of the presentation/slideshow window\n");
+			printf("ephoto /path/to/dir loads /path/to/dir as default directory | " 
+			       "ephoto --album-slideshow album does a slideshow of album. No "
+			       "need to specify a path. Just put the basename of the album. | "
+			       "ephoto --audio /path/to/audio sets /path/to/audio as default audio for slideshow | "
+			       "ephoto --fit-to-audio sets the slideshow to fit audio | ephoto --fullscreen sets "
+			       "the presentation/slideshow window to be fullscreen | ephoto --help displays all available options | "
+			       "ephoto --length slidelength sets the integer slidelength(seconds) as the transition time for slideshow | "
+			       "ephoto --load-album album opens ephoto with album showing. No need to specify a path. "
+			       "Just put the basename of the album. | ephoto --loop sets the slideshow to loop | "
+			       "ephoto --presentation-dir /path/to/dir loads every image from /path/to/dir into a presentation | "
+			       "ephoto --presentation /path/to/image /path/to/image /path/to/image starts the presentation using "
+			       "the specified images | ephoto --slideshow-dir /path/to/dir loads every image from "
+			       "/path/to/dir into a slideshow | ephoto --slideshow /path/to/image /path/to/image /path/to/image "
+			       "starts the slideshow using the specified images | ephoto --view-image /path/to/image sets "
+			       "/path/to/image as the default image in the image viewer tab. | ephoto --win-size integer1 "
+			       "integer2 sets the first integer as the width and the second integer as the height of the "
+			       "presentation/slideshow window\n");
 			mainwin = 0;
 		}
 		argint++;
@@ -620,6 +654,15 @@ main(int argc, char **argv)
                 /************LETS POPULATE THEM TREES******************/
                 ewl_callback_call(m->directory, EWL_CALLBACK_VALUE_CHANGED);
                 /******************************************************/
+		if ( arglload == 1 ) {
+			load_cb(NULL, NULL, NULL);
+		}
+		if ( argviewi == 0 ) {
+			ewl_notebook_visible_page_set(EWL_NOTEBOOK(m->notebook), m->vbox2);
+		}
+		if ( argviewi == 1 ) {
+			ewl_notebook_visible_page_set(EWL_NOTEBOOK(m->notebook), m->viewbox);
+		}
 		ewl_main();
 	return 0;
 	}
