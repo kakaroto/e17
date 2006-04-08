@@ -230,7 +230,7 @@ run_test_boxed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	/* make sure we have a function if we aren't a straight unit test */
 	if ((t->type != EWL_TEST_TYPE_UNIT) && (!t->func))
 	{
-		printf("Warning: Not UI test function defined.\n");
+		printf("Warning: No UI test function defined.\n");
 		return;
 	}
 
@@ -262,7 +262,6 @@ ewl_test_setup_tests(void)
 	list2 = ecore_list_new();
 	if (!list2) return 0;
 
-	/* XXX change this when we have real auto* */
 	snprintf(buf, sizeof(buf), "%s", PACKAGE_LIB_DIR "/tests");
 	list = ecore_file_ls(buf);
 	if (list && ecore_list_nodes(list) > 0)
