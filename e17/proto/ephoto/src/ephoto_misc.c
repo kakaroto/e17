@@ -243,7 +243,7 @@ void slideshow_load_cb(Ewl_Widget *w, void *event, void *data)
         m->load_win = ewl_window_new();
         ewl_window_title_set(EWL_WINDOW(m->load_win), "Load");
         ewl_window_name_set(EWL_WINDOW(m->load_win), "Load");
-        ewl_object_size_request(EWL_OBJECT(m->load_win), 200, 210);
+        ewl_object_size_request(EWL_OBJECT(m->load_win), 200, 270);
         ewl_callback_append(m->load_win, EWL_CALLBACK_DELETE_WINDOW, destroywin_cb, m->load_win);
         ewl_widget_show(m->load_win);
 
@@ -293,7 +293,7 @@ void slideshow_load_cb(Ewl_Widget *w, void *event, void *data)
         m->otext = ewl_text_new();
         ewl_container_child_append(EWL_CONTAINER(vbox), m->otext);
         ewl_object_alignment_set(EWL_OBJECT(m->otext), EWL_FLAG_ALIGN_CENTER);
-        ewl_text_font_size_set(EWL_TEXT(m->otext), 12);
+        ewl_text_font_size_set(EWL_TEXT(m->otext), 16);
         ewl_widget_show(m->otext);
 
         hbox = ewl_hbox_new();
