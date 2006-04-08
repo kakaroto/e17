@@ -82,6 +82,7 @@ images {
    image: "notebook_frame.png" COMP;
    image: "combo_arrow.png" COMP;
    image: "tooltip.png" COMP;
-   image: "tooltip_border.png" COMP;  
-   image: "iconbox_selection.png" COMP;   
+   image: "tooltip_border.png" COMP;
+   image: "iconbox_selection.png" COMP;
+   image: "iconbox_label_bg.png" COMP;
 }

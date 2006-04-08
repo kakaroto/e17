@@ -46,7 +46,6 @@ void etk_test_iconbox_window_create(void *data)
    etk_iconbox_model_label_geometry_set(mini_model, 20, 0, 130, 16, 0.0, 0.5);
    //etk_iconbox_current_model_set(ETK_ICONBOX(iconbox), mini_model);
    
-   
    /*for (i = 0; i < 500; i++)
       etk_iconbox_append(iconbox, _etk_test_iconbox_icon_filenames[rand() % _etk_test_iconbox_num_icon_filenames], NULL, "filename");*/
    _etk_test_iconbox_folder_set(ETK_ICONBOX(iconbox), NULL);

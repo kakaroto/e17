@@ -90,4 +90,5 @@ EXTRA_DIST = background.png \
 	     spinner_button_down2.png \
              hscrollbar_trough2.png \
              vscrollbar_trough2.png \
-             iconbox_selection.png
+             iconbox_selection.png \
+             iconbox_label_bg.png

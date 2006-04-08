@@ -21,7 +21,8 @@
 
 /**
  * @struct Etk_Iconbox_Model
- * @brief TODO
+ * @brief Describes the model of an iconbox: it includes the position and the size of the the cells, the icons, @n
+ * the labels. An iconbox can have several models, and can change its current model to change the view
  */
 struct _Etk_Iconbox_Model
 {
@@ -62,6 +63,9 @@ struct _Etk_Iconbox_Icon
    
    void *data;
    void (*data_free_cb)(void *data);
+   
+   Etk_Bool was_selected;
+   Etk_Bool selected;
 };
 
 /**
