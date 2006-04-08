@@ -430,7 +430,6 @@ _mbar_app_change(void *data, E_App *a, E_App_Change ch)
                }
              break;
           case E_APP_DEL:
-	     printf("Change Del\n");
              if (e_app_is_parent(mb->apps, a))
                {
                   MBar_Icon *ic;
@@ -442,7 +441,6 @@ _mbar_app_change(void *data, E_App *a, E_App_Change ch)
                }
              break;
           case E_APP_CHANGE:
-	     printf("App Change\n");
              if (e_app_is_parent(mb->apps, a))
                {
                   MBar_Icon *ic;
@@ -469,7 +467,6 @@ _mbar_app_change(void *data, E_App *a, E_App_Change ch)
                }
              break;
           case E_APP_ORDER:
-	     printf("App Order\n");
              if (a == mb->apps)
                {
                   for (ll = mb->apps->subapps; ll; ll = ll->next)
@@ -485,7 +482,6 @@ _mbar_app_change(void *data, E_App *a, E_App_Change ch)
                }
              break;
           case E_APP_EXEC:
-	     printf("App Exec\n");
              if (e_app_is_parent(mb->apps, a))
                {
                   MBar_Icon *ic;
