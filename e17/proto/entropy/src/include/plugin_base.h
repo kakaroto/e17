@@ -38,6 +38,7 @@ struct entropy_plugin {
 
 	void* data; 
 	char* toolkit;
+	char* name;
 
 	struct {
 		Entropy_Plugin* (*entropy_plugin_init)(entropy_core*);

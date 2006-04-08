@@ -96,7 +96,7 @@ entropy_plugin_sub_type_get ()
 char *
 entropy_plugin_identify ()
 {
-  return (char *) "ETK File system list viewer";
+  return (char *) "listviewer";
 }
 
 char*
@@ -834,7 +834,7 @@ entropy_plugin_init (entropy_core * core)
   plugin = entropy_malloc(sizeof(Entropy_Plugin_Gui));
   base = ENTROPY_PLUGIN(plugin);
   
-  return plugin;
+  return base;
 }
 
 

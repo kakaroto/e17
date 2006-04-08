@@ -30,6 +30,7 @@ typedef struct entropy_layout_gui entropy_layout_gui;
 struct entropy_layout_gui
 {
   entropy_gui_component_instance *iconbox_viewer;
+  entropy_gui_component_instance *list_viewer;
   entropy_gui_component_instance *structure_viewer;
   Etk_Widget *tree;
   Etk_Widget *paned;
@@ -38,7 +39,9 @@ struct entropy_layout_gui
   Etk_Tree_Row* delete_row; /*The row pending deletion, if any*/
 
   Etk_Widget* popup;
+  Etk_Widget* localshell;
   Ecore_Hash* progress_hash; /*Track progress events->dialogs*/
+
 };
 
 typedef enum _Etk_Menu_Item_Type
@@ -219,6 +222,44 @@ void etk_mime_dialog_cb(Etk_Object* obj, void* data)
 {
 	etk_mime_dialog_create();
 }
+
+
+void etk_local_viewer_cb(Etk_Object* obj, void* data)
+{
+	entropy_gui_component_instance* local;
+	Evas_List* children;
+	entropy_gui_component_instance* instance = data;
+	entropy_layout_gui* gui = instance->data;
+	Etk_Widget* widget;
+	
+	/*Get the local viewer they want..*/
+	local = etk_object_data_get(ETK_OBJECT(obj), "VISUAL");
+
+	if (local) {
+		/*FIXME - disable plugins - this should be cleaner*/
+		gui->iconbox_viewer->active = 0;
+		gui->list_viewer->active = 0;
+
+		for (children = etk_container_children_get(ETK_CONTAINER(gui->localshell)); children; ) {
+			widget = children->data;
+			etk_container_remove(ETK_CONTAINER(gui->localshell), widget);
+			
+			children = children->next;
+		}
+
+		if (local->gui_object) {
+			etk_box_pack_start(ETK_BOX(gui->localshell), local->gui_object, ETK_TRUE,ETK_TRUE,0);
+			local->active = 1;
+		} else {
+			printf("Selected instance has no GUI_OBJECT\n");
+		}
+	} else {
+		printf("Local is null!\n");
+	}
+}
+
+
+
 
 void etk_file_cache_dialog_cb(Etk_Object *obj, void *data)
 {
@@ -447,6 +488,75 @@ entropy_plugin_layout_create (entropy_core * core)
   vbox = etk_vbox_new(ETK_FALSE,0);
   etk_container_add(ETK_CONTAINER(window), vbox);
 
+  /*Tree init*/
+  gui->tree = etk_tree_new();
+  etk_paned_add1(ETK_PANED(gui->paned), gui->tree, ETK_FALSE);
+  etk_tree_mode_set(ETK_TREE(gui->tree), ETK_TREE_MODE_TREE);
+  col = etk_tree_col_new(ETK_TREE(gui->tree), _("Folders"), 
+		  etk_tree_model_icon_text_new(ETK_TREE(gui->tree), ETK_TREE_FROM_FILE), 60);
+  
+  etk_tree_col_expand_set(col, ETK_TRUE);
+  etk_tree_build(ETK_TREE(gui->tree));
+
+  etk_widget_size_request_set(gui->tree, 230, 600);
+
+  /*LocalShell Init*/
+  gui->localshell = etk_vbox_new(ETK_TRUE,0);
+  etk_paned_add2(ETK_PANED(gui->paned), gui->localshell, ETK_TRUE);
+
+  /*Popup init*/
+   gui->popup = etk_menu_new();
+   etk_signal_connect("row_clicked", ETK_OBJECT( gui->tree  ),
+          ETK_CALLBACK(_etk_layout_row_clicked), layout);
+
+   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Delete this location"),
+		   ETK_STOCK_DOCUMENT_OPEN, ETK_MENU_SHELL(gui->popup),NULL);
+   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_layout_location_delete_confirm_cb), layout);
+   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Add a new location"),
+		   ETK_STOCK_DOCUMENT_OPEN, ETK_MENU_SHELL(gui->popup),NULL);
+   
+
+  for (structures = entropy_config_standard_structures_parse (layout, NULL); structures; ) {
+	  structure = structures->data;
+	  layout_etk_simple_add_header (layout,structure);
+	  structures = structures->next;
+  }
+
+  /*Initialise the list view*/
+  local = entropy_plugin_gui_get_by_name_toolkit(ENTROPY_TOOLKIT_ETK, "listviewer");
+  if (local) {
+	  local_plugin_init =
+	      dlsym (local->dl_ref, "entropy_plugin_gui_instance_new");   
+	  instance = (*local_plugin_init)(core, layout,NULL);
+	  instance->plugin = local;
+	  instance->active=0;
+	  gui->list_viewer = instance;
+	  etk_box_pack_start(ETK_BOX(gui->localshell), instance->gui_object, ETK_TRUE,ETK_TRUE,0);
+   }
+
+   /*Initialise the icon viewer*/
+  /*Initialise the list view*/
+  local = entropy_plugin_gui_get_by_name_toolkit(ENTROPY_TOOLKIT_ETK, "iconviewer");
+  if (local) {
+	  local_plugin_init =
+	      dlsym (local->dl_ref, "entropy_plugin_gui_instance_new");   
+	  gui->iconbox_viewer = (*local_plugin_init)(core, layout,NULL);
+	  gui->iconbox_viewer->plugin = local;
+	  //etk_box_pack_start(ETK_BOX(gui->localshell), instance->gui_object, ETK_TRUE,ETK_TRUE,0);
+   }
+
+
+
+  /*Initialise the metadata plugin*/
+  meta = entropy_plugins_type_get_first(ENTROPY_PLUGIN_GUI_COMPONENT, ENTROPY_PLUGIN_GUI_COMPONENT_INFO_PROVIDER);
+  if (meta) {
+	  metadata_plugin_init = 
+	  dlsym(meta->dl_ref, "entropy_plugin_gui_instance_new");
+	  meta_instance = (*metadata_plugin_init)(core,layout,layout->gui_object,NULL);
+	  meta_instance->plugin = meta;
+  }
+
+
   /*Menu setup*/
   menubar = etk_menu_bar_new();
   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("File"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menubar), NULL);
@@ -478,8 +588,16 @@ entropy_plugin_layout_create (entropy_core * core)
   menu = etk_menu_new();
   etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));
   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Tree View"), ETK_STOCK_SYSTEM_SHUTDOWN, ETK_MENU_SHELL(menu), NULL);
-  _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("List View"), ETK_STOCK_SYSTEM_SHUTDOWN, ETK_MENU_SHELL(menu), NULL);
-  _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Icon View"), ETK_STOCK_IMAGE_X_GENERIC, ETK_MENU_SHELL(menu), NULL);
+  
+  menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("List View"), ETK_STOCK_SYSTEM_SHUTDOWN, ETK_MENU_SHELL(menu), NULL);
+  etk_object_data_set(ETK_OBJECT(menu_item), "VISUAL", gui->list_viewer);
+  etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(etk_local_viewer_cb), layout);
+
+  
+  menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Icon View"), ETK_STOCK_IMAGE_X_GENERIC, ETK_MENU_SHELL(menu), NULL);
+  etk_object_data_set(ETK_OBJECT(menu_item), "VISUAL", gui->iconbox_viewer);
+  etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(etk_local_viewer_cb), layout);
+
 
   
   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Debug"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menubar), NULL); 
@@ -496,57 +614,7 @@ entropy_plugin_layout_create (entropy_core * core)
 
   etk_box_pack_start(ETK_BOX(vbox), menubar, ETK_FALSE, ETK_FALSE, 0);
   etk_box_pack_start(ETK_BOX(vbox), gui->paned, TRUE, TRUE, 0);
-
-  /*Tree init*/
-  gui->tree = etk_tree_new();
-  etk_paned_add1(ETK_PANED(gui->paned), gui->tree, ETK_FALSE);
-  etk_tree_mode_set(ETK_TREE(gui->tree), ETK_TREE_MODE_TREE);
-  col = etk_tree_col_new(ETK_TREE(gui->tree), _("Folders"), 
-		  etk_tree_model_icon_text_new(ETK_TREE(gui->tree), ETK_TREE_FROM_FILE), 60);
-  
-  etk_tree_col_expand_set(col, ETK_TRUE);
-  etk_tree_build(ETK_TREE(gui->tree));
-
-  etk_widget_size_request_set(gui->tree, 230, 600);
-
-  /*Popup init*/
-   gui->popup = etk_menu_new();
-   etk_signal_connect("row_clicked", ETK_OBJECT( gui->tree  ),
-          ETK_CALLBACK(_etk_layout_row_clicked), layout);
-
-   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Delete this location"),
-		   ETK_STOCK_DOCUMENT_OPEN, ETK_MENU_SHELL(gui->popup),NULL);
-   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_layout_location_delete_confirm_cb), layout);
-   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Add a new location"),
-		   ETK_STOCK_DOCUMENT_OPEN, ETK_MENU_SHELL(gui->popup),NULL);
-   
-
-  for (structures = entropy_config_standard_structures_parse (layout, NULL); structures; ) {
-	  structure = structures->data;
-	  layout_etk_simple_add_header (layout,structure);
-	  structures = structures->next;
-  }
-
-  /*Initialise the list view*/
-  local = entropy_plugins_type_get_first(ENTROPY_PLUGIN_GUI_COMPONENT,ENTROPY_PLUGIN_GUI_COMPONENT_LOCAL_VIEW);
-  if (local) {
-	  local_plugin_init =
-	      dlsym (local->dl_ref, "entropy_plugin_gui_instance_new");   
-	  instance = (*local_plugin_init)(core, layout,NULL);
-	  instance->plugin = local;
-   }
-
-
-  /*Initialise the metadata plugin*/
-  meta = entropy_plugins_type_get_first(ENTROPY_PLUGIN_GUI_COMPONENT, ENTROPY_PLUGIN_GUI_COMPONENT_INFO_PROVIDER);
-  if (meta) {
-	  metadata_plugin_init = 
-	  dlsym(meta->dl_ref, "entropy_plugin_gui_instance_new");
-	  meta_instance = (*metadata_plugin_init)(core,layout,layout->gui_object,NULL);
-	  meta_instance->plugin = meta;
-  }
-
-  etk_paned_add2(ETK_PANED(gui->paned), instance->gui_object, ETK_TRUE);
+  /*---------------------------*/
 
   gui->statusbar_box = etk_hbox_new(ETK_TRUE, 0);
   etk_box_pack_start(ETK_BOX(vbox), gui->statusbar_box, ETK_FALSE, ETK_FALSE, 0);

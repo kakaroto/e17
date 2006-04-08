@@ -353,7 +353,6 @@ void entropy_core_mime_action_remove(char* mime_type)
 {
 	Entropy_Config_Mime_Binding* binding;
 	Evas_List* l;
-	int found = 0;
 
 	for (l = core_core->config->Loaded_Config->mime_bindings; l; ) {
 		binding = l->data;
@@ -739,8 +738,11 @@ entropy_plugin* create_plugin_object(char* filename) {
 	
 	plugin = (*entropy_plugin_init)(entropy_core_get_core());
 	plugin->dl_ref = dl_ref;
+
 	plugin->functions.entropy_plugin_init = entropy_plugin_init;
         strncpy(plugin->filename, filename, 254);
+
+	plugin->name = entropy_plugin_plugin_identify(plugin);
 
 	return plugin;
 }

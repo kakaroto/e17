@@ -60,6 +60,26 @@ int entropy_core_plugin_sub_type_get(entropy_plugin* plugin) {
 	
 }
 
+entropy_plugin* entropy_plugin_gui_get_by_name_toolkit(char* toolkit, char* name) {
+	entropy_plugin* plugin;	
+
+        entropy_plugin* list_item;
+
+	Ecore_List* plugins = entropy_core_get_core()->plugin_list;
+
+        ecore_list_goto_first(plugins);
+        while ( (list_item = ecore_list_next(plugins)) ) {
+		/*printf("Scanning '%s' for first\n", list_item->filename);*/
+                if (list_item->toolkit && list_item->name) {
+			if (!strcmp(list_item->toolkit, toolkit) && !(strcmp(list_item->name, name))) {
+				return list_item;
+	                }
+		}
+        }
+
+	return NULL;
+}
+
 entropy_plugin* entropy_plugins_type_get_first(int type, int subtype) {
         entropy_plugin* list_item;
 

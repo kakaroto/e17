@@ -38,14 +38,16 @@ LAYOUT_ETK_L = layout_etk_simple.la
 ETK_STRUCTURE_VIEWER_L = etk_structure_viewer.la
 ETK_LIST_VIEWER_L = etk_list.la
 ETK_METADATA_L = etk_metadata.la
+ETK_ICONBOX_L = etk_iconbox.la
 else
 LAYOUT_ETK_L =
 ETK_LIST_VIEWER_L =
 ETK_STRUCTURE_VIEWER_L =
 ETK_METADATA_L =
+ETK_ICONBOX_L = 
 endif
 
-pkg_LTLIBRARIES		= $(MIME_L) $(THUMBNAILER_L) $(POSIX_L) $(LAYOUT_L) $(EWL_LOCAL_ICON_L) $(STRUCTURE_VIEWER_L) $(SYSTEM_THUMBNAILER_L) $(ACTION_SIMPLE_L) $(LAYOUT_ETK_L) $(EWL_LIST_L) $(REMOTE_THUMBNAILER_L) $(DISTRIB_THUMBNAILER_L) $(ETK_STRUCTURE_VIEWER_L) $(ETK_LIST_VIEWER_L) $(METADATA_EXTRACT_L) $(ETK_METADATA_L)
+pkg_LTLIBRARIES		= $(MIME_L) $(THUMBNAILER_L) $(POSIX_L) $(LAYOUT_L) $(EWL_LOCAL_ICON_L) $(STRUCTURE_VIEWER_L) $(SYSTEM_THUMBNAILER_L) $(ACTION_SIMPLE_L) $(LAYOUT_ETK_L) $(EWL_LIST_L) $(REMOTE_THUMBNAILER_L) $(DISTRIB_THUMBNAILER_L) $(ETK_STRUCTURE_VIEWER_L) $(ETK_LIST_VIEWER_L) $(METADATA_EXTRACT_L) $(ETK_METADATA_L) $(ETK_ICONBOX_L)
 
 ewl_local_icon_la_SOURCES      = 	$(top_srcdir)/src/entropy_gui.c \
 					$(top_srcdir)/src/dialogs/ewl_progress_dialog.c \
@@ -119,6 +121,16 @@ etk_list_la_SOURCES      =      etk_list_viewer.c \
 etk_list_la_CFLAGS       = @ETK_CFLAGS@
 etk_list_la_LDFLAGS      = -module -avoid-version
 etk_list_la_LIBADD       = @ETK_LIBS@
+
+etk_iconbox_la_SOURCES      =      etk_icon_viewer.c \
+                                $(top_srcdir)/src/entropy_gui.c \
+                                $(top_srcdir)/src/entropy_debug.c \
+                                $(top_srcdir)/src/dialogs/etk_directory_add_dialog.c \
+                                $(top_srcdir)/src/dialogs/etk_properties_dialog.c
+etk_iconbox_la_CFLAGS       = @ETK_CFLAGS@
+etk_iconbox_la_LDFLAGS      = -module -avoid-version
+etk_iconbox_la_LIBADD       = @ETK_LIBS@
+
 
 
 etk_metadata_la_SOURCES = etk_meta_plugin.c
