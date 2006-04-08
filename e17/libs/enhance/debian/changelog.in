@@ -1,4 +1,4 @@
-enhance (@VERSION@-1) unstable; urgency=low
+libenhance (@VERSION@-1) unstable; urgency=low
 
   * a CVS snapshot release.
 

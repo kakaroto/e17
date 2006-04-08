@@ -1,1 +1,5 @@
 changelog
+compat
+enhance.postinst.debhelper
+enhance.postrm.debhelper
+enhance.substvars
