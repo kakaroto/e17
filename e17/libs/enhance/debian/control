@@ -1,7 +1,7 @@
 Source: libenhance
 Section: libs
 Priority: optional
-Maintainer: Falko Schmidt <kaethorn@stud.uni-stuttgart.de>
+Maintainer: E17 Debian Team <debian@edevelop.org>
 Build-Depends: debhelper (>= 4.0.0), libexml0, libetk0-dev
 Standards-Version: 3.6.2
 
