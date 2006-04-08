@@ -594,6 +594,7 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
   Etk_Tree_Col* col5;
   char buffer[50];
   char date_buffer[26];
+  char* thumbnail_filename;
 
 
   viewer = instance->data;
@@ -606,7 +607,12 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
 	entropy_mime_file_identify (file);
   }
 
-  entropy_plugin_thumbnail_request(instance, file, (void*)gui_event_callback); 
+  if (!file->thumbnail) {
+	  entropy_plugin_thumbnail_request(instance, file, (void*)gui_event_callback); 
+	  thumbnail_filename= PACKAGE_DATA_DIR "/icons/default.png"; 
+  } else {
+	  thumbnail_filename = file->thumbnail->thumbnail_filename;
+  }
   
   col1 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 0);
   col2 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 1);
@@ -619,7 +625,7 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
   
   if (!file->retrieved_stat) {
 	  new_row = etk_tree_append(ETK_TREE(viewer->tree), 
-		  col1, PACKAGE_DATA_DIR "/icons/default.png", 
+		  col1, thumbnail_filename, 
 		  col2,   file->filename, 
 		  col4, file->mime_type,
 		  NULL);
@@ -632,7 +638,7 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
 	  date_buffer[strlen(date_buffer)-1] = '\0';
 	  
 	  new_row = etk_tree_append(ETK_TREE(viewer->tree), 
-		  col1, PACKAGE_DATA_DIR "/icons/default.png", 
+		  col1, thumbnail_filename, 
 		  col2,   file->filename,
 		  col3,   buffer,
 		  col4,   file->mime_type,

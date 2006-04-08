@@ -112,7 +112,6 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 	      etk_iconbox_freeze(ETK_ICONBOX(viewer->iconbox));
 	      ecore_list_goto_first (el);
 		while ((file = ecore_list_next (el))) {
-		      printf("Iconbox adding: %s\n", file->filename);
 		      icon_viewer_add_row (comp, file);
 		}
 

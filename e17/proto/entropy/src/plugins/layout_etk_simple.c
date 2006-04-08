@@ -529,7 +529,6 @@ entropy_plugin_layout_create (entropy_core * core)
 	      dlsym (local->dl_ref, "entropy_plugin_gui_instance_new");   
 	  instance = (*local_plugin_init)(core, layout,NULL);
 	  instance->plugin = local;
-	  instance->active=0;
 	  gui->list_viewer = instance;
 	  etk_box_pack_start(ETK_BOX(gui->localshell), instance->gui_object, ETK_TRUE,ETK_TRUE,0);
    }
@@ -542,6 +541,7 @@ entropy_plugin_layout_create (entropy_core * core)
 	      dlsym (local->dl_ref, "entropy_plugin_gui_instance_new");   
 	  gui->iconbox_viewer = (*local_plugin_init)(core, layout,NULL);
 	  gui->iconbox_viewer->plugin = local;
+	  gui->iconbox_viewer->active=0;
 	  //etk_box_pack_start(ETK_BOX(gui->localshell), instance->gui_object, ETK_TRUE,ETK_TRUE,0);
    }
 
