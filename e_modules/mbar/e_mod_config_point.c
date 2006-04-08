@@ -88,11 +88,12 @@ _e_eap_edit_fill_data(App_Edit_CFData *cfdata)
 {
    /*- BASIC -*/
    IFDUP(cfdata->editor->eap->name, cfdata->name);
-   if (cfdata->editor->eap->exe)
-     IFDUP(cfdata->editor->eap->exe, cfdata->exe);
-   else
-     IFDUP(cfdata->editor->eap->name, cfdata->exe);
-     
+   if (cfdata->editor->eap->exe) 
+     {
+	if (strcmp(cfdata->editor->eap->exe, cfdata->editor->eap->name))
+	  IFDUP(cfdata->editor->eap->exe, cfdata->exe);
+     }
+        
    IFDUP(cfdata->editor->eap->generic, cfdata->generic);
    IFDUP(cfdata->editor->eap->comment, cfdata->comment);
    //IFDUP(cfdata->editor->eap->icon_class, cfdata->iclass);   
@@ -169,10 +170,20 @@ _e_eap_edit_basic_apply_data(E_Config_Dialog *cfd, void *data)
       eap->name = evas_stringshare_add(cfdata->name);
 
    if (cfdata->exe)
-      eap->exe = evas_stringshare_add(cfdata->exe);
-   else
-     if (cfdata->name)
-       eap->exe = evas_stringshare_add(cfdata->name);
+     {
+	if (strlen(cfdata->exe) > 0)
+	  eap->exe = evas_stringshare_add(cfdata->exe);	
+	else 
+	  {
+	     if (cfdata->name)
+	       eap->exe = evas_stringshare_add(cfdata->name);
+	  }
+     }
+   else 
+     {
+	if (cfdata->name)
+	  eap->exe = evas_stringshare_add(cfdata->name);
+     }
    
    if (cfdata->image)
       eap->image = evas_stringshare_add(cfdata->image);
@@ -186,7 +197,7 @@ _e_eap_edit_basic_apply_data(E_Config_Dialog *cfd, void *data)
    eap->height = 128;
 
    e_app_fields_save(eap);
-
+   
    if (cfdata->is_new)
      {
         e_app_append(eap, editor->apps);
