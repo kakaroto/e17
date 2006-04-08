@@ -136,11 +136,11 @@ icon_viewer_add_row (entropy_gui_component_instance * instance,
 	viewer = instance->data;
 	
 	if (!file->thumbnail) {
-		etk_iconbox_append(ETK_ICONBOX(viewer->iconbox), etk_theme_icon_theme_get(), "places/folder_48", file->filename);
-		//etk_iconbox_append(ETK_ICONBOX(viewer->iconbox), PACKAGE_DATA_DIR "/icons/default.png", NULL, file->filename);
+		etk_iconbox_append(ETK_ICONBOX(viewer->iconbox), PACKAGE_DATA_DIR "/icons/default.png", NULL, file->filename);
+		entropy_plugin_thumbnail_request(instance, file, (void*)gui_event_callback);
 	} else {
-		etk_iconbox_append(ETK_ICONBOX(viewer->iconbox), etk_theme_icon_theme_get(), "places/folder_48", file->filename);
-		//etk_iconbox_append(ETK_ICONBOX(viewer->iconbox), file->thumbnail->thumbnail_filename, NULL, file->filename);		
+		etk_iconbox_append(ETK_ICONBOX(viewer->iconbox), file->thumbnail->thumbnail_filename, NULL, file->filename);		
+
 	}
 }
 
