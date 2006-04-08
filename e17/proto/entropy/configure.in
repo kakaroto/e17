@@ -397,6 +397,7 @@ Makefile
 images/Makefile
 src/Makefile
 src/plugins/Makefile
+debian/changelog
 ])
 
 #####################################################################

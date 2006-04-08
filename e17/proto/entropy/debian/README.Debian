@@ -1,0 +1,52 @@
+* [E]ntropy
+
+Entropy is (or will be) a full featured GUI-toolkit independent file manager
+There are currently a few gotchas, but this should get you up and running.
+
+
+Requirements
+------------
+Quite a few - but if you have an E17 install you should be almost there:
+
+
+* Absolutely screaming-latest EWL
+* EVFS (in apps)
+* Ecore/Evas/Imlib etc.
+* libpng
+
+
+Hints
+-----
+
+[*] At the moment, there is no dialog to add a new location to the 'structure viewer'
+    on the left (coming soon!).  To do this at the moment, change the URI list in
+    layout_ewl_simple.c, in the function "layout_ewl_simpe_config_create", and then
+    restart after removing the file ~/.e/apps/entropy/entropy.cfg
+    Currently supported protocols (via evfs) are posix:// and smb://
+
+[*] Some GUI features are currently non-obvious until I spend some time on them:
+    
+    1. File properties (stat) are currently accessed through double-middle-click. 
+       I'm very, very sorry :) I'll make this a right click menu soon.
+       
+    2. Drag-and-drop isn't quite ready for EWL yet (but i'm working on it!).  To
+       copy files, drag a box around the file (files) you want to copy, right click
+       on the background of the icon-box, select copy, go to your dest dir, right 
+       click, then paste.  Yes - this will get easier.
+
+    3. Recursive folder-copying isn't working yet (EVFS coming-soon feature).  Don't try
+
+    4. Background-setting per-folder isn't quite working yet.  Soon.
+
+    5. File renaming (i.e. click on icon, then on text-label) is broken.  Will fix this soon
+
+    6. Once I have rewritten the mime-type identification code, more mime types will be 
+       recognized.
+
+    7. Execution of (some) file-types can be achieved through double-clicking 
+       At the moment, there are hard-coded default config options, until I write a dialog
+       for it.  You can change these defaults by modifying plugins/action_simple.c, and
+       then deleting ~/.e/apps/entropy/entropy.cfg, and restarting
+
+    
+

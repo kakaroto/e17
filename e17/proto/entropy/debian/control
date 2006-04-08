@@ -1,0 +1,19 @@
+Source: entropy
+Section: x11
+Priority: optional
+Maintainer: E17 Debian Team <debian@edevelop.org>
+Build-Depends: debhelper (>= 4.0.0), autotools-dev, libecore0-dev, libewl0-dev, libimlib2-dev, libpng12-dev, libevfs0-dev, libetk0-dev, libetk0-dev
+Standards-Version: 3.6.2
+
+Package: entropy
+Architecture: any
+Depends: ${shlibs:Depends}, libevfs0, libetk0 | libewl0, libecore0, libimlib2, libpng12-0, libevfs0-plugin-posix
+Suggests: libevfs0-plugins-all
+Description: Entropy is a file manager based on the EFL
+ Entropy is a file manager based on the EFL and using evfs.
+ Features are:
+ - Support of two widget libraries: ETK and Ewl
+ - File types handling through evfs plugins: tar, gzip, samba and more
+ - Three view modes: Tree, List and Icon
+ - Thumbnail support
+ - MIME handling. 
