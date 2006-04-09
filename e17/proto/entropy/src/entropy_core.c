@@ -1160,9 +1160,9 @@ void entropy_core_file_cache_remove_reference(char* md5) {
 	if (listener) {
 		listener->count--;
 
-		printf("- Ref count for (%p) '%s/%s' -> %d..\n", listener->file, listener->file->path, listener->file->filename, listener->count);
+		/*printf("- Ref count for (%p) '%s/%s' -> %d..\n", listener->file, listener->file->path, listener->file->filename, listener->count);*/
 		if (listener->count <= 0) {
-			printf("  Cleaning up above...\n");
+			/*printf("  Cleaning up above...\n");*/
 
 			ecore_hash_remove(core_core->uri_reference_list, listener->file->uri);
 
