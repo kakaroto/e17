@@ -181,8 +181,8 @@ static struct
    XserverRegion       rgn_screen;
    int                 shadow_mode;
    unsigned int        opac_or;	/* 0 -> 0xffffffff */
-   float               opac_blur;	/* 0. -> 1. */
-   float               opac_sharp;	/* 0. -> 1. */
+   double              opac_blur;	/* 0. -> 1. */
+   double              opac_sharp;	/* 0. -> 1. */
 } Mode_compmgr;
 
 #define _ECM_SET_CLIP_CHANGED()  Mode_compmgr.reorder = 1
@@ -2517,7 +2517,6 @@ ECompMgrHandleRootEvent(XEvent * ev, void *prm)
 	   goto case_CreateNotify;
 	else
 	   goto case_DestroyNotify;
-	break;
 
      case ConfigureNotify:
 	if (ev->xconfigure.window == VRoot.win)

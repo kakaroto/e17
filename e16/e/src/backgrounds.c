@@ -729,8 +729,8 @@ BackgroundApplyWin(Background * bg, Window win)
 void
 BackgroundSet(Background * bg, Window win, unsigned int w, unsigned int h)
 {
-   Pixmap              pmap;
-   unsigned long       pixel;
+   Pixmap              pmap = None;
+   unsigned long       pixel = 0;
 
    if (bg->pmap)
       pmap = bg->pmap;

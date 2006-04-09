@@ -33,7 +33,6 @@
 #include "iclass.h"		/* FIXME - Should not be here */
 #include "snaps.h"
 #include "xwin.h"
-#include <math.h>
 
 static const WinOp  winops[] = {
    {"border", 2, 1, 0, EWIN_OP_BORDER},

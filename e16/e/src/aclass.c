@@ -645,9 +645,9 @@ ActionEncode(Action * aa, char *buf, int len)
      case EVENT_KEY_UP:
 	event = "KeyUp";
 	goto encode_kb;
+      encode_kb:
 	if (!aa->key_str)
 	   return 0;
-      encode_kb:
 	len = Esnprintf(buf, len, "%-7s %4s %8s %s\n", event, mod, aa->key_str,
 			(aa->action->params) ? aa->action->params : "");
 	break;
