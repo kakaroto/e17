@@ -1,6 +1,7 @@
 TODO
 ----
 
+       * Unique identifier per command, for easier tracking
        * Exception handling
        * File permissions checking
 [DONE] * Remove monitors for client when client disconnects

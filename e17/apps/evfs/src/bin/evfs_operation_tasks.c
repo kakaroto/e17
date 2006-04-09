@@ -79,6 +79,12 @@ int evfs_operation_tasks_file_copy_run(evfs_operation* op,
 			/*printf("Counter increment to: %lld\n", copy->next_byte);*/
 		}
 
+		/*FIXME - do error handling here somehow*/
+		if (b_read == 0) {
+			printf("File copy error - read 0 bytes\n");
+			copy->next_byte = copy->source_stat.st_size;
+		}
+
 
 		iter++;
 	}

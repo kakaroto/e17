@@ -277,7 +277,6 @@ void evfs_operation_response_handle(evfs_operation* op, evfs_operation_task* tas
 
 void evfs_operation_run_tasks(evfs_operation* op)
 {
-	printf("Running tasks..\n");
 	evfs_operation_task* task = NULL;
 
 	task = ecore_list_current(op->sub_task);
@@ -300,7 +299,6 @@ void evfs_operation_run_tasks(evfs_operation* op)
 				double calc;
 
 
-				printf("...Processing file copy task type!\n");
 				prog = evfs_operation_tasks_file_copy_run(op, EVFS_OPERATION_TASK_FILE_COPY(task));
 				EVFS_OPERATION_FILES(op)->progress_bytes += prog;
 

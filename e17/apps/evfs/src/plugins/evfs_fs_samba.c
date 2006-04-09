@@ -486,9 +486,8 @@ evfs_file_read(evfs_client * client, evfs_filereference * file, char *bytes,
    //printf("Reading %ld bytes from file %s\n", size, file->path);
 
    evfs_smb_populate_fd(file);
-   //printf("FD Pointer: %p\n", file->fd_p);
 
-   bytes_read = smb_context->read(smb_context, file->fd_p, bytes, size);
+   if (file->fd_p) bytes_read = smb_context->read(smb_context, file->fd_p, bytes, size);
    return bytes_read;
 }
 
