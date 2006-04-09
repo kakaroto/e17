@@ -97,5 +97,5 @@ libImlib2_la_LIBADD       = @my_libs@
 libImlib2_la_DEPENDENCIES = $(top_builddir)/config.h
 endif
 endif
-libImlib2_la_LDFLAGS      = -version-info 3:1:2
+libImlib2_la_LDFLAGS      = -version-info 3:2:2
 
