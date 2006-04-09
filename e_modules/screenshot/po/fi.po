@@ -1,0 +1,96 @@
+# Enlightenment 0.17 screenshot Finnish translation
+# This file is put in the public domain.
+# First author: Jyri Hämäläinen <wildfinn@gmail.com>, 2005.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2006-04-04\n"
+"PO-Revision-Date: 2006-04-04\n"
+"Last-Translator: Jyri Hämäläinen <wildfinn@gmail.com>\n"
+"Language-Team: Jyri Hämäläinen <wildfinn@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: e_mod_config.c:75
+msgid "Screenshot Configuration"
+msgstr "Kuvankaappausasetukset"
+
+#: e_mod_config.c:162 e_mod_config.c:281
+msgid "Use Import"
+msgstr "Käytä ohjelmaa: import"
+
+#: e_mod_config.c:164 e_mod_config.c:283
+msgid "Use Scrot"
+msgstr "Käytä ohjelmaa: scrot"
+
+#: e_mod_config.c:171 e_mod_config.c:290
+msgid "Delay Time:"
+msgstr "Viive-aika"
+
+#: e_mod_config.c:181 e_mod_config.c:300
+msgid "File Settings"
+msgstr "Tiedostoasetukset"
+
+#: e_mod_config.c:184 e_mod_config.c:303
+msgid "Save Directory:"
+msgstr "Tallennushakemisto:"
+
+#: e_mod_config.c:190 e_mod_config.c:309
+msgid "Filename (minus extension):"
+msgstr "Tiedostonimi(ilman .*):"
+
+#: e_mod_config.c:198 e_mod_config.c:317
+#, c-format
+msgid "Example: screenshot%d = screenshot1, screenshot2, etc..."
+msgstr "Esimerkki: screenshot%d = screenshot1, screenshot2, jne..."
+
+#: e_mod_config.c:324
+msgid "Import Options"
+msgstr "Importin asetukset"
+
+#: e_mod_config.c:325 e_mod_config.c:346
+msgid "Include Image Border"
+msgstr "Sisällytä kuvan reunukset"
+
+#: e_mod_config.c:328
+msgid "Use Image Dithering"
+msgstr ""
+
+#: e_mod_config.c:331
+msgid "Include Window Manager Frame"
+msgstr "Sisällytä ikkunamanagerin kehykset"
+
+#: e_mod_config.c:334
+msgid "Choose Window To Grab"
+msgstr "Valitse kaapattava ikkuna"
+
+#: e_mod_config.c:337
+msgid "Silent"
+msgstr "Äänetön"
+
+#: e_mod_config.c:340
+msgid "Trim Edges"
+msgstr "Siisti reunat"
+
+#: e_mod_config.c:345
+msgid "Scrot Options"
+msgstr "Scrotin asetukset"
+
+#: e_mod_config.c:349
+msgid "Generate Thumbnail"
+msgstr "Luo esikatselukuva"
+
+#: e_mod_main.c:108 e_mod_main.c:536
+msgid "Enlightenment Screenshot Module"
+msgstr "Enlightenment kuvankaappausmoduuli"
+
+#: e_mod_main.c:109
+msgid "This module is used to take screenshots"
+msgstr "Tällä moduulilla otetaan kuvankaappauksia"
+
+#: e_mod_main.c:537
+msgid "Please Choose A Program To Use For Taking Screenshots."
+msgstr "Valitse ohjelma jota käytetään kuvankaappauksien ottamiseen!"

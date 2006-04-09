@@ -1,0 +1,43 @@
+# Enlightenment 0.17 cpu Finnish translation
+# This file is put in the public domain.
+# First author: Jyri Hämäläinen <wildfinn@gmail.com>, 2005.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2006-04-04\n"
+"PO-Revision-Date: 2006-04-04\n"
+"Last-Translator: Jyri Hämäläinen <wildfinn@gmail.com>\n"
+"Language-Team: Jyri Hämäläinen <wildfinn@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: e_mod_config.c:34
+msgid "Cpu Configuration"
+msgstr "Prosessorin asetukset"
+
+#: e_mod_config.c:77
+msgid "Cpu Settings"
+msgstr "Prosessorisetukset"
+
+#: e_mod_config.c:78
+msgid "Show Text"
+msgstr "Näytä teksti"
+
+#: e_mod_config.c:80
+msgid "Show Graph"
+msgstr "Näytä kuvaaja"
+
+#: e_mod_config.c:83
+msgid "Check Interval:"
+msgstr "Tarkistusväli"
+
+#: e_mod_main.c:96
+msgid "Enlightenment Cpu Monitor Module"
+msgstr "Enlightenment prosessorintarkkailumooduuli"
+
+#: e_mod_main.c:97
+msgid "This module is used to monitor a cpu."
+msgstr "Tämä moduuli tarkkailee prosessoria."

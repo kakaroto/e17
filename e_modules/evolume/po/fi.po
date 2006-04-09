@@ -1,0 +1,51 @@
+# Enlightenment 0.17 evolume Finnish translation
+# This file is put in the public domain.
+# First author: Jyri Hämäläinen <wildfinn@gmail.com>, 2005.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2006-04-04\n"
+"PO-Revision-Date: 2006-04-04\n"
+"Last-Translator: Jyri Hämäläinen <wildfinn@gmail.com>\n"
+"Language-Team: Jyri Hämäläinen <wildfinn@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/module/e_mod_cdialog.c:105
+msgid "Mixers"
+msgstr "Mikserit"
+
+#: src/module/e_mod_cdialog.c:114
+msgid "Configure"
+msgstr "Asetukset"
+
+#: src/module/e_mod_cmdialog.c:121
+msgid "Mixer Configuration"
+msgstr "Mikseriasetukset"
+
+#: src/module/e_mod_cmdialog.c:131
+msgid "Active"
+msgstr "Käytössä"
+
+#: src/module/e_mod_cmdialog.c:132
+msgid "Balance"
+msgstr "Tasapaino"
+
+#: src/module/e_mod_menu.c:136
+msgid "Faces"
+msgstr ""
+
+#: src/module/e_mod_menu.c:140
+msgid "Remove Face"
+msgstr ""
+
+#: src/module/e_mod_menu.c:147
+msgid "Edit Mode"
+msgstr "Muokkaustila"
+
+#: src/module/e_mod_menu.c:152
+msgid "Configuration"
+msgstr "Asetukset"

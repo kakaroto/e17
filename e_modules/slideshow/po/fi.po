@@ -1,0 +1,52 @@
+# Enlightenment 0.17 slideshow Finnish translation
+# This file is put in the public domain.
+# First author: Jyri Hämäläinen <wildfinn@gmail.com>, 2005.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2006-04-04\n"
+"PO-Revision-Date: 2006-04-04\n"
+"Last-Translator: Jyri Hämäläinen <wildfinn@gmail.com>\n"
+"Language-Team: Jyri Hämäläinen <wildfinn@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: e_mod_config.c:39
+msgid "Slideshow Configuration"
+msgstr "Kuvaesityksen asetukset"
+
+#: e_mod_config.c:83
+msgid "Cycle Time"
+msgstr "Kiertoaika"
+
+#: e_mod_config.c:84
+msgid "Disable Timer"
+msgstr "Sulje ajastin"
+
+#: e_mod_config.c:86
+#, c-format
+msgid "%3.0f seconds"
+msgstr "%3.0f sekuntia"
+
+#: e_mod_config.c:92
+msgid "Theme"
+msgstr "Teema"
+
+#: e_mod_config.c:94
+msgid "Sub-directory to use for backgrounds"
+msgstr "Taustakuvien alakansio"
+
+#: e_mod_config.c:96
+msgid "Leave blank for none"
+msgstr "Jätä tyhjäksi jos ei mikään"
+
+#: e_mod_main.c:148
+msgid "Enlightenment Slide Show Module"
+msgstr "Enlightenment kuvaesitysmoduuli"
+
+#: e_mod_main.c:149
+msgid "This module is VERY simple and is used to cycle desktop backgrounds"
+msgstr "Tämä ERITTÄIN yksinkertainen moduuli kierrättää taustakuvia"

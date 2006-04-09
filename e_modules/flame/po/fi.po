@@ -1,0 +1,67 @@
+# Enlightenment 0.17 flame Finnish translation
+# This file is put in the public domain.
+# First author: Jyri Hämäläinen <wildfinn@gmail.com>, 2005.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2005-04-04\n"
+"PO-Revision-Date: 2006-04-04\n"
+"Last-Translator: Jyri Hämäläinen <wildfinn@gmail.com>\n"
+"Language-Team: Jyri Hämäläinen <wildfinn@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: e_mod_config.c:40
+msgid "Flame Configuration"
+msgstr "Liekin asetukset"
+
+#: e_mod_config.c:84 e_mod_config.c:158
+msgid "Flame Color"
+msgstr "Liekin väri"
+
+#: e_mod_config.c:86
+msgid "Gold"
+msgstr "Kulta"
+
+#: e_mod_config.c:88
+msgid "Fire"
+msgstr "Tuli"
+
+#: e_mod_config.c:90
+msgid "Plasma"
+msgstr ""
+
+#: e_mod_config.c:92
+msgid "Matrix"
+msgstr ""
+
+#: e_mod_config.c:94
+msgid "Ice"
+msgstr "Jää"
+
+#: e_mod_config.c:96
+msgid "Custom"
+msgstr ""
+
+#: e_mod_config.c:160
+msgid "Red Amount"
+msgstr ""
+
+#: e_mod_config.c:166
+msgid "Blue Amount"
+msgstr ""
+
+#: e_mod_config.c:172
+msgid "Green Amount"
+msgstr ""
+
+#: e_mod_main.c:106
+msgid "Enlightenment Flame Module"
+msgstr "Enlightenment liekkimoduuli"
+
+#: e_mod_main.c:107
+msgid "A simple module to display flames."
+msgstr "Yksinkertainen moduuli joka näyttää liekkejä työpöydällä."

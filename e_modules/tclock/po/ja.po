@@ -1,0 +1,53 @@
+# SOME DESCRIPTIVE TITLE.
+# This file is put in the public domain.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Yasufumi Haga <yasufumi.haga@nifty.com>, 2006
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Tclock\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-04-08 23:33+0900\n"
+"PO-Revision-Date: 2006-04-09 10:30+0900\n"
+"Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: e_mod_config.c:32
+msgid "Tclock Configuration"
+msgstr "tclock の設定"
+
+#: e_mod_config.c:70
+msgid "Resolution"
+msgstr "間隔"
+
+#: e_mod_config.c:72
+msgid "1 Minute"
+msgstr "1分ごと"
+
+#: e_mod_config.c:74
+msgid "1 Second"
+msgstr "1秒ごと"
+
+#: e_mod_config.c:78
+msgid "Time Format"
+msgstr "時刻の書式"
+
+#: e_mod_config.c:79
+msgid "User format String"
+msgstr "ユーザー指定の書式を使う"
+
+#: e_mod_config.c:83
+msgid "Consult strftime(3) for format syntax"
+msgstr "書式の指定方法は strftime(3) 参照のこと"
+
+#: e_mod_main.c:83
+msgid "Displays a digital clock on the desktop"
+msgstr "デスクトップのデジタル時計を表示します."
+
+#: e_mod_main.c:83
+msgid "Simple Digital Clock"
+msgstr "簡単なデジタル時計"
