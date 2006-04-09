@@ -23,7 +23,6 @@
  */
 #include "E.h"
 #include "aclass.h"
-#include "dialog.h"		/* FIXME - Should not be here */
 #include "emodule.h"
 #include "xwin.h"
 #include <sys/time.h>
@@ -626,8 +625,7 @@ EventsMain(void)
 
 	if (EventDebug(EDBUG_TYPE_EVENTS))
 	   Eprintf("EventsMain - Idlers\n");
-	DialogsCheckUpdate();	/* FIXME - Shouldn't be here */
-	ModulesSignal(ESIGNAL_IDLE, NULL);
+	IdlersRun();
 
 	if (pfetch)
 	  {

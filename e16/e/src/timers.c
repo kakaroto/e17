@@ -21,6 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "e16-ecore_list.h"
 #include <sys/time.h>
 
 double
@@ -131,4 +132,50 @@ RemoveTimerEvent(const char *name)
      }
 
    return 0;
+}
+
+static Ecore_List  *idler_list = NULL;
+
+typedef struct _idler Idler;
+typedef void        (IdlerFunc) (void *data);
+
+struct _idler
+{
+   int                 order;
+   IdlerFunc          *func;
+   void               *data;
+};
+
+void
+IdlerAdd(int order, IdlerFunc * func, void *data)
+{
+   Idler              *id;
+
+   id = Emalloc(sizeof(Idler));
+   if (!id)
+      return;
+
+   id->order = order;		/* Not used atm. */
+   id->func = func;
+   id->data = data;
+
+   if (!idler_list)
+      idler_list = ecore_list_new();
+
+   ecore_list_append(idler_list, id);
+}
+
+void
+IdlerDel(Idler * id)
+{
+   ecore_list_remove_node(idler_list, id);
+   Efree(id);
+}
+
+void
+IdlersRun(void)
+{
+   Idler              *id;
+
+   ECORE_LIST_FOR_EACH(idler_list, id) id->func(id->data);
 }

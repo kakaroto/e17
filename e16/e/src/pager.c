@@ -776,6 +776,12 @@ PagerUpdateTimeout(int val __UNUSED__, void *data __UNUSED__)
 }
 
 static void
+_PagersIdler(void *data __UNUSED__)
+{
+   PagersCheckUpdate();
+}
+
+static void
 PagerEwinUpdateFromPager(Pager * p, EWin * ewin)
 {
    int                 x, y, w, h;
@@ -1904,11 +1910,7 @@ PagersSighan(int sig, void *prm)
 	   break;
 	Conf_pagers.enable = 0;
 	PagersShow(1);
-	PagersCheckUpdate();
-	break;
-
-     case ESIGNAL_IDLE:
-	PagersCheckUpdate();
+	IdlerAdd(50, _PagersIdler, NULL);
 	break;
 
      case ESIGNAL_AREA_CONFIGURED:

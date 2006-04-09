@@ -1725,8 +1725,8 @@ DialogUpdate(Dialog * d)
    d->xu2 = d->yu2 = 0;
 }
 
-void
-DialogsCheckUpdate(void)
+static void
+_DialogsCheckUpdate(void *data __UNUSED__)
 {
    Dialog             *d;
 
@@ -1740,6 +1740,12 @@ DialogsCheckUpdate(void)
 	 DialogUpdate(d);
       d->redraw = 0;
    }
+}
+
+void
+DialogsInit(void)
+{
+   IdlerAdd(50, _DialogsCheckUpdate, NULL);
 }
 
 static void

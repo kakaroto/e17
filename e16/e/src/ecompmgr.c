@@ -2137,6 +2137,18 @@ ECompMgrRepaint(void)
 }
 
 static void
+_ECompMgrIdler(void *data __UNUSED__)
+{
+   /* Do we get here on auto? */
+   if (!allDamage /* || Conf_compmgr.mode == ECM_MODE_AUTO */ )
+      return;
+   ECompMgrRepaint();
+#if 0				/* FIXME - Was here - Why? */
+   XSync(disp, False);
+#endif
+}
+
+static void
 ECompMgrRootConfigure(void *prm __UNUSED__, XEvent * ev)
 {
    Display            *dpy = disp;
@@ -2622,14 +2634,7 @@ ECompMgrSighan(int sig, void *prm __UNUSED__)
 	ECompMgrInit();
 	if (Conf_compmgr.enable)
 	   ECompMgrStart();
-	break;
-
-     case ESIGNAL_IDLE:
-	/* Do we get here on auto? */
-	if (!allDamage /* || Conf_compmgr.mode == ECM_MODE_AUTO */ )
-	   return;
-	ECompMgrRepaint();
-	XSync(disp, False);
+	IdlerAdd(50, _ECompMgrIdler, NULL);
 	break;
      }
 }

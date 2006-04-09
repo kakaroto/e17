@@ -1048,6 +1048,12 @@ DesksStackingCheck(void)
 }
 
 static void
+_DesksIdler(void *data __UNUSED__)
+{
+   DesksStackingCheck();
+}
+
+static void
 DeskMove(Desk * dsk, int x, int y)
 {
    Desk               *dd;
@@ -2198,10 +2204,7 @@ DesksSighan(int sig, void *prm __UNUSED__)
      case ESIGNAL_START:
 	/* Draw all the buttons that belong on the desktop */
 	DeskShowButtons();
-	break;
-
-     case ESIGNAL_IDLE:
-	DesksStackingCheck();
+	IdlerAdd(50, _DesksIdler, NULL);
 	break;
      }
 }

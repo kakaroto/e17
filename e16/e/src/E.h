@@ -971,6 +971,11 @@ Qentry             *GetHeadTimerQueue(void);
 void                HandleTimerEvent(void);
 int                 RemoveTimerEvent(const char *name);
 
+struct _idler;
+void                IdlerAdd(int order, void (*func) (void *data), void *data);
+void                IdlerDel(struct _idler *id);
+void                IdlersRun(void);
+
 /* warp.c */
 void                WarpFocus(int delta);
 

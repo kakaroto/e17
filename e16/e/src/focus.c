@@ -864,24 +864,27 @@ FocusInitTimeout(int val __UNUSED__, void *data __UNUSED__)
 }
 
 static void
+_FocusIdler(void *data __UNUSED__)
+{
+   if (!focus_inhibit && focus_pending_why)
+      FocusSet();
+   if (focus_pending_update_grabs)
+      doFocusGrabsUpdate();
+}
+
+static void
 FocusSighan(int sig, void *prm __UNUSED__)
 {
    switch (sig)
      {
      case ESIGNAL_START:
 	/* Delay focusing a bit to allow things to settle down */
+	IdlerAdd(50, _FocusIdler, NULL);
 	DoIn("FOCUS_INIT_TIMEOUT", 0.5, FocusInitTimeout, 0, NULL);
 	break;
 
      case ESIGNAL_EXIT:
 	FocusExit();
-	break;
-
-     case ESIGNAL_IDLE:
-	if (!focus_inhibit && focus_pending_why)
-	   FocusSet();
-	if (focus_pending_update_grabs)
-	   doFocusGrabsUpdate();
 	break;
      }
 }

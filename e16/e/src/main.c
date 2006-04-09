@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "desktops.h"
+#include "dialog.h"
 #include "emodule.h"
 #include "hints.h"
 #include "snaps.h"
@@ -286,6 +287,7 @@ main(int argc, char **argv)
 #endif
 
    ModulesSignal(ESIGNAL_START, NULL);
+   DialogsInit();
 
    /* Map the clients */
    MapUnmap(1);

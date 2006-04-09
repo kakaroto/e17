@@ -127,7 +127,7 @@ void                DialogItemAreaSetEventFunc(DItem * di,
 
 void                DialogCallbackClose(Dialog * d, int val, void *data);
 
-void                DialogsCheckUpdate(void);
+void                DialogsInit(void);
 
 EWin               *FindEwinByDialog(Dialog * d);
 
