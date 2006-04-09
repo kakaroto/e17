@@ -223,6 +223,18 @@ void etk_mime_dialog_cb(Etk_Object* obj, void* data)
 	etk_mime_dialog_create();
 }
 
+void entropy_etk_layout_tree_cb(Etk_Object* obj, void* data)
+{
+	entropy_gui_component_instance* instance = data;
+	entropy_layout_gui* gui = instance->data;
+
+	if (!etk_widget_is_visible(gui->tree)) {
+		etk_widget_show_all(gui->tree);
+	} else {
+		etk_widget_hide(gui->tree);
+		etk_paned_position_set(ETK_PANED(gui->paned), 0);
+	}
+}
 
 void etk_local_viewer_cb(Etk_Object* obj, void* data)
 {
@@ -587,7 +599,8 @@ entropy_plugin_layout_create (entropy_core * core)
   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("View"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menubar), NULL);
   menu = etk_menu_new();
   etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));
-  _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Tree View"), ETK_STOCK_SYSTEM_SHUTDOWN, ETK_MENU_SHELL(menu), NULL);
+  menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Tree View"), ETK_STOCK_SYSTEM_SHUTDOWN, ETK_MENU_SHELL(menu), NULL);
+  etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(entropy_etk_layout_tree_cb), layout);
   
   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("List View"), ETK_STOCK_SYSTEM_SHUTDOWN, ETK_MENU_SHELL(menu), NULL);
   etk_object_data_set(ETK_OBJECT(menu_item), "VISUAL", gui->list_viewer);
