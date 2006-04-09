@@ -99,7 +99,7 @@ epsilon_ipc_consume(Epsilon_Ipc_End *end)
 		 * Shift the contents of the buffer for further processing.
 		 */
 		if (remains > 0) {
-			memcpy(msg, ((char *)msg + size), remains);
+			memmove(msg, ((char *)msg + size), remains);
 		}
 		else {
 			free(end->buffer);
