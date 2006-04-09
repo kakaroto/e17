@@ -395,10 +395,10 @@ callback (evfs_event * data, void *obj)
 
       if (data->progress->type == EVFS_PROGRESS_TYPE_DONE) {
 	/*TODO free the key */
-
+	ecore_hash_remove(file_copy_hash, uri);
       }
 
-      free (uri);
+      if (uri) free (uri);
       if (request->file_from) entropy_generic_file_destroy (request->file_from);
       if (request->file_to) entropy_generic_file_destroy (request->file_to);
       free (request);
@@ -407,7 +407,7 @@ callback (evfs_event * data, void *obj)
 
   case EVFS_EV_OPERATION: {
 	char *uri = NULL;
-	entropy_gui_component_instance* instance;
+	entropy_gui_component_instance* instance = NULL;
 	entropy_gui_event* gui_event;
 	entropy_file_operation* op;
 
@@ -869,7 +869,6 @@ entropy_filesystem_file_remove (entropy_generic_file * file, entropy_gui_compone
   evfs_client_file_remove (con, uri_path_from->files[0]);
 
   ecore_hash_set (file_copy_hash, original, instance);
-
 
   free (uri);
 

@@ -85,10 +85,12 @@ ipc_client_data(void *data, int type, void *event)
 		}
 	} else if (e->major == ENTROPY_IPC_EVENT_LAYOUT_NEW) {
 		entropy_gui_component_instance* (*entropy_plugin_layout_create)(entropy_core*);
+		entropy_gui_component_instance* instance;
 
 		printf("New layout requested!\n");
 		entropy_plugin_layout_create = dlsym(core->layout_plugin->dl_ref, "entropy_plugin_layout_create");
-		(*entropy_plugin_layout_create)(core);
+		instance = (*entropy_plugin_layout_create)(core);
+		instance->plugin = core->layout_plugin;
 	}
 
 	return 1;
@@ -681,6 +683,8 @@ int entropy_plugin_load(entropy_core* core, entropy_plugin* plugin) {
 		plugin->gui_event_callback_p = gui_event_callback;
 		plugin->toolkit = entropy_plugin_helper_toolkit_get(plugin);
 
+		printf("GUI event callback (%s) registered as: %p\n", plugin->name, plugin->gui_event_callback_p);
+
 	} else if (type == ENTROPY_PLUGIN_BACKEND_FILE) {
 	} else if (type == ENTROPY_PLUGIN_ACTION_PROVIDER) {
 		entropy_gui_component_instance* instance;
@@ -1156,8 +1160,9 @@ void entropy_core_file_cache_remove_reference(char* md5) {
 	if (listener) {
 		listener->count--;
 
-		//printf("- Ref count for (%p) '%s/%s' -> %d..\n", listener->file, listener->file->path, listener->file->filename, listener->count);
+		printf("- Ref count for (%p) '%s/%s' -> %d..\n", listener->file, listener->file->path, listener->file->filename, listener->count);
 		if (listener->count <= 0) {
+			printf("  Cleaning up above...\n");
 
 			ecore_hash_remove(core_core->uri_reference_list, listener->file->uri);
 
