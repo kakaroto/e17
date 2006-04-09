@@ -8,20 +8,26 @@ This is a list of things we need to fix:
 
 This is a rough list of things we could implement:
 
-* more thumbnailers - pdf, ttf, text (makes more snese in icon view)
-* archives - ability to extract archives to a path
-* right click drag menus - when we drag with the right click, it would be
-  nice to display a context menu (might need etk work)
-* icon mode for etk - implement icon view as soon as the etk iconbox arrives
-* status bar - make the statusbar meaningful (number of selected files, size
-  etc...) especially in the upcoming icon mode
-* desktop support - icons on the desktop, backgrounds, etc.
-* directory / file properties - full properties dialog with perms, mime
-  types, and any other info we wanna see in there.
-* directory summaries - directories could reflect what they have by
-  displaying an emblem on their icon. the emblem could reflect the fact they
-  are image folders, music folders, video folders etc... we can also
-  associate applcations with them right there and then.
-* internal scripting - some sort of internal scripting language that would
-  allow us to write minor scripts like: download from cam, copy to backup, etc.
-* about dialog - nice fat about dialog
+[-] * more thumbnailers - pdf, ttf, text (makes more snese in icon view)
+[-] * archives - ability to extract archives to a path
+[-] * right click drag menus - when we drag with the right click, it would be
+      nice to display a context menu (might need etk work)
+[I] * icon mode for etk - implement icon view as soon as the etk iconbox arrives
+[-] * status bar - make the statusbar meaningful (number of selected files, size
+      etc...) especially in the upcoming icon mode
+[-] * desktop support - icons on the desktop, backgrounds, etc.
+[I] * directory / file properties - full properties dialog with perms, mime
+      types, and any other info we wanna see in there.
+[-] * directory summaries - directories could reflect what they have by
+      displaying an emblem on their icon. the emblem could reflect the fact they
+      are image folders, music folders, video folders etc... we can also
+      associate applcations with them right there and then.
+[-] * internal scripting - some sort of internal scripting language that would
+      allow us to write minor scripts like: download from cam, copy to backup, etc.
+[-] * about dialog - nice fat about dialog
+
+
+Key:
+[-] - not started
+[I] - in progress
+[C] - complete
