@@ -192,16 +192,9 @@ slideshow_cb(Ewl_Widget *w, void *event, void *data)
 	ewl_callback_append(s->wins, EWL_CALLBACK_CLICKED, destroys_cb, NULL);
 	ewl_widget_show(s->wins);
 	
-	s->screen = ewl_image_new();
-	ewl_image_file_set(EWL_IMAGE(s->screen), PACKAGE_DATA_DIR "/images/black.png", NULL);
-	ewl_object_fill_policy_set(EWL_OBJECT(s->screen), EWL_FLAG_FILL_ALL);
-	ewl_container_child_append(EWL_CONTAINER(s->wins), s->screen);
-	ewl_widget_show(s->screen);	
-
 	s->cell = ewl_cell_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(s->cell), EWL_FLAG_FILL_ALL);
 	ewl_container_child_append(EWL_CONTAINER(s->wins), s->cell);
-	ewl_callback_append(s->cell, EWL_CALLBACK_CLICKED, destroys_cb, NULL);
 	ewl_widget_show(s->cell);
 
 if ( ewl_media_is_available() ) {
@@ -219,6 +212,7 @@ if ( ewl_media_is_available() ) {
 	
 	/*******Start the slideshow*******/	
 	if ( s->audio1 != NULL ) {
+		ewl_callback_append(s->audio1, EWL_CALLBACK_REALIZE, play_cb, NULL);
 		ewl_callback_append(s->audio1, EWL_CALLBACK_REALIZE, play_cb, NULL);
 	}	
 
@@ -404,14 +398,7 @@ presentation_cb(Ewl_Widget * w, void *event, void *data)
 	ewl_callback_append(s->wins, EWL_CALLBACK_DELETE_WINDOW, destroyp_cb, NULL);
 	ewl_widget_show(s->wins);
 
-        s->screen = ewl_image_new();
-        ewl_image_file_set(EWL_IMAGE(s->screen), PACKAGE_DATA_DIR "/images/black.png", NULL);
-        ewl_object_fill_policy_set(EWL_OBJECT(s->screen), EWL_FLAG_FILL_ALL);
-        ewl_container_child_append(EWL_CONTAINER(s->wins), s->screen);
-        ewl_widget_show(s->screen);
-
-
-	p->vbox1p = ewl_vbox_new();
+        p->vbox1p = ewl_vbox_new();
 	ewl_container_child_append(EWL_CONTAINER(s->wins), p->vbox1p);
 	ewl_object_alignment_set(EWL_OBJECT(p->vbox1p), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_fill_policy_set(EWL_OBJECT(p->vbox1p), EWL_FLAG_FILL_ALL);
