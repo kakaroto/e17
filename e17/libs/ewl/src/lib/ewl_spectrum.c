@@ -318,7 +318,6 @@ ewl_spectrum_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
 	Ewl_Spectrum *sp;
 	Ewl_Event_Mouse_Down *e;
-	unsigned int x, y;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -330,15 +329,7 @@ ewl_spectrum_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE, 
 					ewl_spectrum_cb_mouse_move, NULL);
 
-	x = e->x - CURRENT_X(w);
-	y = e->y - CURRENT_Y(w);
-
-	if (x > (unsigned int)(CURRENT_X(sp->canvas) + CURRENT_W(sp->canvas)))
-		x = (CURRENT_W(sp->canvas) - CURRENT_X(sp->canvas));
-	if (y > (unsigned int)(CURRENT_Y(sp->canvas) + CURRENT_H(sp->canvas)))
-		y = (CURRENT_H(sp->canvas) - CURRENT_Y(sp->canvas));
-
-	ewl_spectrum_mouse_process(sp, x, y);
+	ewl_spectrum_mouse_process(sp, e->x, e->y);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -348,7 +339,6 @@ ewl_spectrum_cb_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
 	Ewl_Spectrum *sp;
 	Ewl_Event_Mouse_Move *e;
-	int x, y;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -357,15 +347,7 @@ ewl_spectrum_cb_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	sp = EWL_SPECTRUM(w);
 	e = ev;
 
-	x = e->x - CURRENT_X(sp);
-	y = e->y - CURRENT_Y(sp);
-
-	if (x > (CURRENT_X(sp->canvas) + CURRENT_W(sp->canvas)))
-		x = (CURRENT_W(sp->canvas) - CURRENT_X(sp->canvas));
-	if (y > (CURRENT_Y(sp->canvas) + CURRENT_H(sp->canvas)))
-		y = (CURRENT_H(sp->canvas) - CURRENT_Y(sp->canvas));
-
-	ewl_spectrum_mouse_process(sp, x, y);
+	ewl_spectrum_mouse_process(sp, e->x, e->y);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -392,16 +374,25 @@ ewl_spectrum_mouse_process(Ewl_Spectrum *sp, unsigned int x, unsigned int y)
 {
 	Evas_Coord img_w, img_h;
 	unsigned int r, g, b;
+	unsigned int mx, my;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sp", sp);
 	DCHECK_TYPE("sp", sp, EWL_SPECTRUM_TYPE);
 
+	if (x > (CURRENT_X(sp->canvas) + CURRENT_W(sp->canvas)))
+		x = CURRENT_X(sp->canvas) + CURRENT_W(sp->canvas);
+	if (y > (CURRENT_Y(sp->canvas) + CURRENT_H(sp->canvas)))
+		y = CURRENT_Y(sp->canvas) + CURRENT_H(sp->canvas);
+
+	mx = x - CURRENT_X(sp->canvas);
+	my = y - CURRENT_Y(sp->canvas);
 	evas_object_image_size_get(EWL_IMAGE(sp->canvas)->image, &img_w, &img_h);
-	ewl_spectrum_color_coord_map(sp, x, y, img_w, img_h, &r, &g, &b);
+	ewl_spectrum_color_coord_map(sp, mx, my, img_w, img_h, &r, &g, &b);
 	ewl_spectrum_rgb_set(sp, r, g, b);
 
 	/* place the horizontal cross hair */
+	y -= CURRENT_H(sp->cross_hairs.horizontal) / 2;
 	ewl_object_position_request(EWL_OBJECT(sp->cross_hairs.horizontal), 
 							CURRENT_X(sp), y);
 	ewl_object_w_request(EWL_OBJECT(sp->cross_hairs.horizontal), 
@@ -413,6 +404,7 @@ ewl_spectrum_mouse_process(Ewl_Spectrum *sp, unsigned int x, unsigned int y)
 	/* place the vertical cross hair if needed */
 	if (sp->type == EWL_SPECTRUM_TYPE_SQUARE)
 	{
+		x -= CURRENT_W(sp->cross_hairs.vertical) / 2;
 		ewl_object_position_request(EWL_OBJECT(sp->cross_hairs.vertical), 
 							x, CURRENT_Y(sp));
 		ewl_object_h_request(EWL_OBJECT(sp->cross_hairs.vertical), 
