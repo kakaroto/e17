@@ -1,0 +1,51 @@
+# Italian translation for E17 evolume module
+# This file is put in the public domain.
+# Massimo Maiurana <maiurana@inwind.it>, 2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: eVolume\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-04-09 19:36+0200\n"
+"PO-Revision-Date: 2006-04-09 19:38+0200\n"
+"Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/module/e_mod_cdialog.c:107
+msgid "Mixers"
+msgstr "Mixer disponibili"
+
+#: src/module/e_mod_cdialog.c:117
+msgid "Configure"
+msgstr "Configura"
+
+#: src/module/e_mod_cmdialog.c:124
+msgid "Mixer Configuration"
+msgstr "Controlli del mixer"
+
+#: src/module/e_mod_cmdialog.c:134
+msgid "Active"
+msgstr "Volume"
+
+#: src/module/e_mod_cmdialog.c:135
+msgid "Balance"
+msgstr "Bilanciamento"
+
+#: src/module/e_mod_main.c:91
+msgid "Enlightenment Evolume Module"
+msgstr "Modulo Evolume di Enlightenment"
+
+#: src/module/e_mod_main.c:92
+msgid "A simple module to give E17 a volume control for some mixers."
+msgstr "Un semplice modulo per dare a E17 un mixer audio."
+
+#: src/module/e_mod_menu.c:146
+msgid "Faces"
+msgstr "Interfacce"
+
+#: src/module/e_mod_menu.c:151
+msgid "Remove Face"
+msgstr "Rimuovi interfaccia"

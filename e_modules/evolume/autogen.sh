@@ -8,7 +8,7 @@ echo "Running aclocal..."; aclocal $ACLOCAL_FLAGS -I m4\
 && echo "Running autoconf..."; autoconf \
 && echo "Running libtoolize..."; ( libtoolize --automake || glibtoolize --automake ) \
 && echo "Running automake..."; automake --add-missing --copy --gnu && \
-echo "Generating gettext moon.pot template" && \
+echo "Generating gettext evolume.pot template" && \
 xgettext \
 --output evolume.pot \
 --output-dir=po \
