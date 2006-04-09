@@ -89,15 +89,15 @@ void etk_properties_dialog_new(Entropy_Generic_File* file)
 	etk_box_pack_start(ETK_BOX(ivbox), hbox, ETK_FALSE, ETK_FALSE, 0);
 
 	button = etk_check_button_new_with_label("Read");
-	if (perms && perms[1] == 'r') etk_button_clicked(ETK_BUTTON(button));
+	if (perms && perms[1] == 'r') etk_button_click(ETK_BUTTON(button));
 	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
 
 	button = etk_check_button_new_with_label("Write");
-	if (perms && perms[2] == 'w') etk_button_clicked(ETK_BUTTON(button));
+	if (perms && perms[2] == 'w') etk_button_click(ETK_BUTTON(button));
 	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
 
 	button = etk_check_button_new_with_label("Execute");
-	if (perms && perms[3] == 'x') etk_button_clicked(ETK_BUTTON(button));
+	if (perms && perms[3] == 'x') etk_button_click(ETK_BUTTON(button));
 	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
 
 	/*Group*/
@@ -108,15 +108,15 @@ void etk_properties_dialog_new(Entropy_Generic_File* file)
 	etk_box_pack_start(ETK_BOX(ivbox), hbox, ETK_FALSE, ETK_FALSE, 0);
 
 	button = etk_check_button_new_with_label("Read");
-	if (perms && perms[4] == 'r') etk_button_clicked(ETK_BUTTON(button));
+	if (perms && perms[4] == 'r') etk_button_click(ETK_BUTTON(button));
 	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
 
 	button = etk_check_button_new_with_label("Write");
-	if (perms && perms[5] == 'w') etk_button_clicked(ETK_BUTTON(button));
+	if (perms && perms[5] == 'w') etk_button_click(ETK_BUTTON(button));
 	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
 
 	button = etk_check_button_new_with_label("Execute");
-	if (perms && perms[6] == 'x') etk_button_clicked(ETK_BUTTON(button));
+	if (perms && perms[6] == 'x') etk_button_click(ETK_BUTTON(button));
 	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
 
 	/*Other*/
@@ -127,15 +127,15 @@ void etk_properties_dialog_new(Entropy_Generic_File* file)
 	etk_box_pack_start(ETK_BOX(ivbox), hbox, ETK_FALSE, ETK_FALSE, 0);
 
 	button = etk_check_button_new_with_label("Read");
-	if (perms && perms[7] == 'r') etk_button_clicked(ETK_BUTTON(button));
+	if (perms && perms[7] == 'r') etk_button_click(ETK_BUTTON(button));
 	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
 
 	button = etk_check_button_new_with_label("Write");
-	if (perms && perms[8] == 'w') etk_button_clicked(ETK_BUTTON(button));
+	if (perms && perms[8] == 'w') etk_button_click(ETK_BUTTON(button));
 	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
 
 	button = etk_check_button_new_with_label("Execute");
-	if (perms && perms[9] == 'x') etk_button_clicked(ETK_BUTTON(button));
+	if (perms && perms[9] == 'x') etk_button_click(ETK_BUTTON(button));
 	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
 	
 	/*---------------------*/
