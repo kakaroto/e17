@@ -55,251 +55,6 @@ static int          sm_fd = -1;
 /* True if we are saving state for a doExit("restart") */
 static int          restarting = False;
 
-#if 0				/* Unused */
-
-/* The saved window details */
-static int          num_match = 0;
-
-typedef struct _match
-{
-   char               *session_id;
-   char               *name;
-   char               *class;
-   char               *role;
-   char               *command;
-   char                used;
-   int                 x, y, w, h;
-   int                 desktop, iconified, shaded, sticky, layer;
-}
-Match;
-
-Match              *matches = NULL;
-
-static void
-SaveWindowStates(void)
-{
-   EWin               *const *lst, *ewin;
-   int                 i, num, x, y;
-   FILE               *f;
-   char                s[4096], ss[4096];
-
-   if (!Mode.wm.save_ok)
-      return;
-
-   Etmp(s);
-   f = fopen(s, "w");
-   if (f == NULL)
-      return;
-
-   lst = EwinListGetAll(&num);
-   for (i = 0; i < num; i++)
-     {
-	ewin = lst[i];
-	if ((!EwinIsInternal(ewin))
-	    && ((ewin->icccm.wm_command) || (ewin->session_id)))
-	  {
-	     x = 0;
-	     y = 0;
-	     if (!EoIsSticky(ewin))
-	       {
-		  DeskGetArea(EoGetDesk(ewin), &x, &y);
-		  x = x * VRoot.w;
-		  y = y * VRoot.h;
-	       }
-	     fprintf(f, "[CLIENT] %i %i %i %i %i %i %i %i %i\n",
-		     EoGetX(ewin) + x, EoGetY(ewin) + y, ewin->client.w,
-		     ewin->client.h, EoGetDesk(ewin), ewin->state.iconified,
-		     ewin->state.shaded, EoIsSticky(ewin), EoGetLayer(ewin));
-	     if (ewin->session_id)
-		fprintf(f, "  [SESSION_ID] %s\n", ewin->session_id);
-	     if (ewin->icccm.wm_res_name)
-		fprintf(f, "  [NAME] %s\n", ewin->icccm.wm_res_name);
-	     if (ewin->icccm.wm_res_class)
-		fprintf(f, "  [CLASS] %s\n", ewin->icccm.wm_res_class);
-	     if (ewin->icccm.wm_role)
-		fprintf(f, "  [ROLE] %s\n", ewin->icccm.wm_role);
-	     if (ewin->icccm.wm_command)
-		fprintf(f, "  [COMMAND] %s\n", ewin->icccm.wm_command);
-	  }
-     }
-   fclose(f);
-
-   Esnprintf(ss, sizeof(ss), "%s.clients", EGetSavePrefix());
-   if (EventDebug(EDBUG_TYPE_SESSION))
-      Eprintf("SaveWindowStates: %s\n", ss);
-   E_mv(s, ss);
-   if (!isfile(ss))
-      Alert(_("There was an error writing the clients "
-	      "session save file.\n" "You may have run out of disk "
-	      "space, not have permission\n"
-	      "to write to your filing system "
-	      "or other similar problems.\n"));
-}
-
-static void
-LoadWindowStates(void)
-{
-   FILE               *f;
-   char                s[4096], s1[4096];
-
-   Esnprintf(s, sizeof(s), "%s.clients", EGetSavePrefix());
-   f = fopen(s, "r");
-   if (f)
-     {
-	while (fgets(s, sizeof(s), f))
-	  {
-	     s[strlen(s) - 1] = 0;
-	     sscanf(s, "%4000s", s1);
-	     if (!strcmp(s1, "[CLIENT]"))
-	       {
-		  num_match++;
-		  matches = Erealloc(matches, sizeof(Match) * num_match);
-		  matches[num_match - 1].session_id = NULL;
-		  matches[num_match - 1].name = NULL;
-		  matches[num_match - 1].class = NULL;
-		  matches[num_match - 1].role = NULL;
-		  matches[num_match - 1].command = NULL;
-		  matches[num_match - 1].used = 0;
-		  sscanf(s, "%*s %i %i %i %i %i %i %i %i %i",
-			 &(matches[num_match - 1].x),
-			 &(matches[num_match - 1].y),
-			 &(matches[num_match - 1].w),
-			 &(matches[num_match - 1].h),
-			 &(matches[num_match - 1].desktop),
-			 &(matches[num_match - 1].iconified),
-			 &(matches[num_match - 1].shaded),
-			 &(matches[num_match - 1].sticky),
-			 &(matches[num_match - 1].layer));
-	       }
-	     else if (!strcmp(s1, "[SESSION_ID]"))
-	       {
-		  matches[num_match - 1].session_id = Estrdup(atword(s, 2));
-	       }
-	     else if (!strcmp(s1, "[NAME]"))
-	       {
-		  matches[num_match - 1].name = Estrdup(atword(s, 2));
-	       }
-	     else if (!strcmp(s1, "[CLASS]"))
-	       {
-		  matches[num_match - 1].class = Estrdup(atword(s, 2));
-	       }
-	     else if (!strcmp(s1, "[ROLE]"))
-	       {
-		  matches[num_match - 1].role = Estrdup(atword(s, 2));
-		  /* Needed for matching X11R5 clients */
-	       }
-	     else if (!strcmp(s1, "[COMMAND]"))
-	       {
-		  matches[num_match - 1].command = Estrdup(atword(s, 2));
-	       }
-	  }
-	fclose(f);
-     }
-}
-
-/* These matching rules try to cover everyone with minimal work done
- * for clients that actually comply with the X11R6 ICCCM. */
-void
-MatchEwinToSM(EWin * ewin)
-{
-   int                 i, ax, ay;
-
-   if (GetSMfd() < 0)
-      return;
-
-   for (i = 0; i < num_match; i++)
-     {
-	if ((!matches[i].used))
-	  {
-	     /* No match unless both have or both lack a session_id */
-	     if (!ewin->session_id)
-	       {
-		  if (matches[i].session_id)
-		     continue;
-	       }
-	     if (ewin->session_id)
-	       {
-		  if (!matches[i].session_id)
-		     continue;
-	       }
-	     if ((ewin->session_id))
-	       {
-		  /* The X11R6 protocol guarantees matching session_ids */
-		  if (strcmp(ewin->session_id, matches[i].session_id))
-		     continue;
-	       }
-	     else
-	       {
-		  /* The X11R5 protocol was based around the WM_COMMAND
-		   * property which should be preserved over sessions
-		   * by compliant apps.
-		   * 
-		   * FIXME: Mozilla DELETES the WM_COMMAND property on 
-		   * a regular basis so is is wise NOT to update 
-		   * this property when it is set to NULL. */
-		  if ((ewin->icccm.wm_command) && (matches[i].command)
-		      && strcmp(ewin->icccm.wm_command, matches[i].command))
-		     continue;
-	       }
-
-	     if ((ewin->icccm.wm_role) && (matches[i].role))
-	       {
-		  /* The X11R6 protocol guarantees that any WM_WINDOW_ROLE
-		   * is unique among the windows sharing a SM_CLIENT_ID.
-		   * 
-		   * Clients which use the same WM_WINDOW_ROLE on two 
-		   * windows are breaking the ICCCM even if they have 
-		   * different WM_CLASS properties on those windows. */
-		  if (strcmp(ewin->icccm.wm_role, matches[i].role))
-		     continue;
-	       }
-	     else
-	       {
-		  /* The WM_CLASS is a stable basis for a test. */
-		  if ((ewin->icccm.wm_res_class) && (matches[i].class)
-		      && (strcmp(ewin->icccm.wm_res_class, matches[i].class)))
-		     continue;
-		  if ((ewin->icccm.wm_res_name) && (matches[i].name)
-		      && (strcmp(ewin->icccm.wm_res_name, matches[i].name)))
-		     continue;
-
-		  /* Twm also matches on the WM_NAME but only when this value
-		   * has not changed since the window was first mapped.
-		   * This seems a bit kludgy to me. (: */
-	       }
-
-	     matches[i].used = 1;
-	     ewin->state.placed = 1;
-	     ewin->icccm.start_iconified = matches[i].iconified;
-	     EoSetSticky(ewin, matches[i].sticky);
-	     ewin->state.shaded = matches[i].shaded;
-	     EoSetLayer(ewin, matches[i].layer);
-	     if (!EoIsSticky(ewin))
-		EoSetDesk(ewin, matches[i].desktop);
-	     /* if it's NOT (X11R6 and already placed by the client) */
-	     if (!((ewin->state.placed) && (ewin->session_id)))
-	       {
-		  DeskGetArea(EoGetDesk(ewin), &ax, &ay);
-		  ewin->client.x = matches[i].x - (ax * VRoot.w);
-		  ewin->client.y = matches[i].y - (ay * VRoot.h);
-		  ewin->client.grav = NorthWestGravity;
-		  ewin->client.w = matches[i].w;
-		  ewin->client.h = matches[i].h;
-		  EMoveResizeWindow(_EwinGetClientWin(ewin),
-				    ewin->client.x, ewin->client.y,
-				    ewin->client.w, ewin->client.h);
-	       }
-	     if (EventDebug(EDBUG_TYPE_SNAPS))
-		Eprintf("Snap get sess  %#lx: %4d+%4d %4dx%4d: %s\n",
-			_EwinGetClientXwin(ewin), ewin->client.x,
-			ewin->client.y, ewin->client.w, ewin->client.h,
-			EwinGetName(ewin));
-	     break;
-	  }
-     }
-}
-#endif /* Unused */
-
 void
 autosave(void)
 {
@@ -326,10 +81,6 @@ autosave(void)
 
 static char        *sm_client_id = NULL;
 static SmcConn      sm_conn = NULL;
-
-/* Used by multiheaded child processes to identify when they have
- * recieved the new sm_file value from the master_pid process */
-static int          stale_sm_file = 0;
 
 static void
 set_save_props(SmcConn smc_conn, int master_flag)
@@ -522,30 +273,6 @@ callback_save_yourself2(SmcConn smc_conn, SmPointer client_data __UNUSED__)
    if (EventDebug(EDBUG_TYPE_SESSION))
       Eprintf("callback_save_yourself2\n");
 
-#if 0				/* FIXME - Unused - Remove? */
-   /* dont need anymore */
-   /* autosave(); */
-   if (!Mode.wm.master)
-     {
-	struct timeval      tv1, tv2;
-
-	gettimeofday(&tv1, NULL);
-
-	/* This loop should rarely be needed */
-	while (stale_sm_file)
-	  {
-	     WaitEvent();
-	     gettimeofday(&tv2, NULL);
-	     if (tv2.tv_sec - tv1.tv_sec > 10)
-	       {
-		  SmcSaveYourselfDone(smc_conn, False);
-		  return;
-	       }
-	  }
-     }
-   stale_sm_file = 1;
-#endif
-
    set_save_props(smc_conn, Mode.wm.master);
    SmcSaveYourselfDone(smc_conn, True);
    if (restarting)
@@ -560,40 +287,6 @@ callback_save_yourself(SmcConn smc_conn, SmPointer client_data __UNUSED__,
    if (EventDebug(EDBUG_TYPE_SESSION))
       Eprintf("callback_save_yourself\n");
 
-#if 0				/* FIXME - Unused - Remove? */
-   if (Mode.wm.master)
-     {
-#if 0
-	char                s[4096];
-	int                 fd;
-
-	Esnprintf(s, sizeof(s), "sm_file %s", EGetSavePrefix());
-	fd = Emkstemp(s + 8);
-	if (fd < 0)
-	  {
-	     SmcSaveYourselfDone(smc_conn, False);
-	     return;
-	  }
-	SetSMFile(s + 8);
-#endif
-
-	CommsBroadcastToSlaveWMs(EGetSavePrefix());
-	/* dont need */
-	/* autosave(); */
-#if 0
-	if (strcmp(GetSMFile(), GetGenericSMFile()))
-	  {
-	     if (exists(GetGenericSMFile()))
-		E_rm(GetGenericSMFile());
-	     symlink(GetSMFile(), GetGenericSMFile());
-	  }
-#endif
-     }
-#endif
-
-#if 0				/* Unused */
-   SaveWindowStates();
-#endif
    SmcRequestSaveYourselfPhase2(smc_conn, callback_save_yourself2, NULL);
 }
 
@@ -708,12 +401,7 @@ SessionInit(void)
 	SmcSetProperties(sm_conn, 1, props);
 	fcntl(sm_fd, F_SETFD, fcntl(sm_fd, F_GETFD, 0) | FD_CLOEXEC);
      }
-   stale_sm_file = 1;
 #endif /* HAVE_X11_SM_SMLIB_H */
-
-#if 0				/* Unused */
-   LoadWindowStates();
-#endif
 
    if (!Conf.session.script)
       Conf.session.script = Estrdup("$EROOT/scripts/session.sh");
@@ -831,10 +519,6 @@ doSMExit(int mode, const char *params)
       Eprintf("doSMExit: mode=%d prm=%p\n", mode, params);
 
    restarting = True;
-
-#if 0				/* Unused */
-   SaveWindowStates();
-#endif
 
    if (!params)
       SessionSave(1);
