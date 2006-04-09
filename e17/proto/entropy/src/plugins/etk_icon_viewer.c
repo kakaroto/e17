@@ -32,6 +32,86 @@ struct entropy_etk_iconbox_viewer
 };
 
 
+/*------------- boilerplate -----*/
+typedef struct gui_file gui_file;
+struct gui_file
+{
+  entropy_generic_file *file;
+  entropy_gui_component_instance *instance;
+  Etk_Iconbox_Icon *icon;
+};
+
+gui_file* _gui_file_new(entropy_generic_file* file, 
+		entropy_gui_component_instance* instance, Etk_Iconbox_Icon* icon)
+{
+	gui_file* gfile =  entropy_malloc(sizeof(gui_file));
+	gfile->file = file;
+	gfile->instance = instance;
+	gfile->icon = icon;
+
+	return gfile;
+}
+
+void
+gui_file_destroy (gui_file * file)
+{
+  entropy_free (file);
+
+}
+
+Ecore_List* 
+gui_object_destroy_and_free (entropy_gui_component_instance * comp,
+			     Ecore_Hash * gui_hash)
+{
+
+  Ecore_List *list;
+  Ecore_List *file_remove_ref_list;
+  entropy_generic_file *obj;
+  gui_file *freeobj;
+  entropy_etk_iconbox_viewer *view = comp->data;
+
+
+  file_remove_ref_list = ecore_list_new();
+  
+  /*Temporarily stop callbacks, we don't want to clobber an in-op process */
+  entropy_notify_lock_loop (comp->core->notify);
+
+  list = ecore_hash_keys (gui_hash);
+
+  ecore_list_goto_first (list);
+  while ((obj = ecore_list_next (list))) {
+
+
+    freeobj = ecore_hash_get (gui_hash, obj);
+    if (freeobj) {
+      /*De-Associate this icon with this file in the core, so DND works */
+      entropy_core_object_file_disassociate (freeobj->icon);
+
+      gui_file_destroy (freeobj);
+    }
+
+    /*Tell the core we no longer need this file - it might free it now */
+    ecore_list_append(file_remove_ref_list, obj->md5);
+  }
+  ecore_hash_destroy (gui_hash);
+  view->gui_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
+  ecore_list_destroy (list);
+
+
+  /*ecore_list_goto_first(view->files);
+  while ((row = ecore_list_remove_first(view->files))) {
+	  ecore_hash_remove(etk_list_viewer_row_hash, row);
+  }*/
+
+  entropy_notify_unlock_loop (comp->core->notify);
+
+
+  return file_remove_ref_list;
+
+}
+/*----- End boilerplate -----*/
+
+
 Entropy_Plugin* entropy_plugin_init (entropy_core * core);
 
 entropy_gui_component_instance * 
@@ -100,13 +180,14 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
   	  case ENTROPY_NOTIFY_FILELIST_REQUEST_EXTERNAL:
 	  case ENTROPY_NOTIFY_FILELIST_REQUEST:{
 	      entropy_generic_file *file;
+	      char* ref;
 	      Ecore_List* remove_ref;
 	      entropy_generic_file *event_file =
 		((entropy_file_request *) eevent->data)->file;
 
 	      viewer->current_folder = event_file;
 
-	      //remove_ref = gui_object_destroy_and_free(comp, viewer->gui_hash);
+	      remove_ref = gui_object_destroy_and_free(comp, viewer->gui_hash);
 
 	      etk_iconbox_clear(ETK_ICONBOX(viewer->iconbox));
 	      etk_iconbox_freeze(ETK_ICONBOX(viewer->iconbox));
@@ -115,15 +196,35 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 		      icon_viewer_add_row (comp, file);
 		}
 
-		/*while ( (ref = ecore_list_remove_first(remove_ref)))  {
+		while ( (ref = ecore_list_remove_first(remove_ref)))  {
 			entropy_core_file_cache_remove_reference (ref);
 		}
-		ecore_list_destroy(remove_ref);*/
+		ecore_list_destroy(remove_ref);
 	      etk_iconbox_thaw(ETK_ICONBOX(viewer->iconbox));
 
 
 	      }
 	      break;
+
+           case ENTROPY_NOTIFY_THUMBNAIL_REQUEST:{
+
+   	   /*Only bother if we have a thumbnail, and a component */
+	      if (el && comp) {
+		gui_file *obj;
+		entropy_thumbnail *thumb = (entropy_thumbnail *) el;
+		entropy_etk_iconbox_viewer *view = comp->data;
+	
+		obj = ecore_hash_get (view->gui_hash, thumb->parent);
+
+		if (obj) {
+		  etk_iconbox_icon_file_set(obj->icon, thumb->thumbnail_filename, NULL);
+		} else {
+		  /*printf ("ERR: Couldn't find a hash reference for this file!\n");*/
+		}
+
+	      }
+	    }				//End case
+	    break;					  
   }
 }
 
@@ -132,16 +233,22 @@ icon_viewer_add_row (entropy_gui_component_instance * instance,
 			  entropy_generic_file * file)
 {
 	entropy_etk_iconbox_viewer* viewer;
+	Etk_Iconbox_Icon* icon;
 	
 	viewer = instance->data;
 	
 	if (!file->thumbnail) {
-		etk_iconbox_append(ETK_ICONBOX(viewer->iconbox), PACKAGE_DATA_DIR "/icons/default.png", NULL, file->filename);
+		icon = etk_iconbox_append(ETK_ICONBOX(viewer->iconbox), PACKAGE_DATA_DIR "/icons/default.png", NULL, file->filename);
+		etk_iconbox_icon_data_set(icon, file);
+		ecore_hash_set(viewer->gui_hash, file, _gui_file_new(file,instance,icon));
 		entropy_plugin_thumbnail_request(instance, file, (void*)gui_event_callback);
 	} else {
-		etk_iconbox_append(ETK_ICONBOX(viewer->iconbox), file->thumbnail->thumbnail_filename, NULL, file->filename);		
-
+		icon = etk_iconbox_append(ETK_ICONBOX(viewer->iconbox), file->thumbnail->thumbnail_filename, NULL, file->filename);		
+		ecore_hash_set(viewer->gui_hash, file, _gui_file_new(file,instance,icon));
+		etk_iconbox_icon_data_set(icon, file);		
 	}
+
+	entropy_core_file_cache_add_reference (file->md5);
 }
 
 
@@ -160,6 +267,8 @@ entropy_plugin_gui_instance_new (entropy_core * core,
     
   instance = entropy_gui_component_instance_new ();
   viewer = entropy_malloc (sizeof (entropy_etk_iconbox_viewer));
+
+  viewer->gui_hash = ecore_hash_new(ecore_direct_hash,ecore_direct_compare);
 
   viewer->iconbox = etk_iconbox_new();
   instance->gui_object = viewer->iconbox;
