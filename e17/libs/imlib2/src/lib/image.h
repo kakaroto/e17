@@ -112,67 +112,67 @@ struct _imlibloader
    ImlibLoader  *next;
 };
 
-void              __imlib_AttachTag(ImlibImage *im, const char *key, int val, void *data,
+void                     __imlib_AttachTag(ImlibImage *im, const char *key, int val, void *data,
 				    ImlibDataDestructorFunction destructor);
-ImlibImageTag    *__imlib_GetTag(ImlibImage *im, const char *key);
-ImlibImageTag    *__imlib_RemoveTag(ImlibImage *im, const char *key);
-void              __imlib_FreeTag(ImlibImage *im, ImlibImageTag *t);
-void              __imlib_FreeAllTags(ImlibImage *im);
+ImlibImageTag           *__imlib_GetTag(ImlibImage *im, const char *key);
+__hidden ImlibImageTag    *__imlib_RemoveTag(ImlibImage *im, const char *key);
+__hidden void              __imlib_FreeTag(ImlibImage *im, ImlibImageTag *t);
+__hidden void              __imlib_FreeAllTags(ImlibImage *im);
 
-void              __imlib_SetCacheSize(int size);
-int               __imlib_GetCacheSize(void);
-ImlibImage       *__imlib_ProduceImage(void);
-void              __imlib_ConsumeImage(ImlibImage *im);
-ImlibImage       *__imlib_FindCachedImage(const char *file);
-void              __imlib_AddImageToCache(ImlibImage *im);
-void              __imlib_RemoveImageFromCache(ImlibImage *im);
-int               __imlib_CurrentCacheSize(void);
-void              __imlib_CleanupImageCache(void);
+__hidden void              __imlib_SetCacheSize(int size);
+__hidden int               __imlib_GetCacheSize(void);
+__hidden ImlibImage       *__imlib_ProduceImage(void);
+__hidden void              __imlib_ConsumeImage(ImlibImage *im);
+__hidden ImlibImage       *__imlib_FindCachedImage(const char *file);
+__hidden void              __imlib_AddImageToCache(ImlibImage *im);
+__hidden void              __imlib_RemoveImageFromCache(ImlibImage *im);
+__hidden int               __imlib_CurrentCacheSize(void);
+__hidden void              __imlib_CleanupImageCache(void);
 # ifdef BUILD_X11
-ImlibImagePixmap *__imlib_ProduceImagePixmap(void);
-void              __imlib_ConsumeImagePixmap(ImlibImagePixmap *ip);
-ImlibImagePixmap *__imlib_FindCachedImagePixmap(ImlibImage *im, int w, int h, 
+__hidden ImlibImagePixmap *__imlib_ProduceImagePixmap(void);
+__hidden void              __imlib_ConsumeImagePixmap(ImlibImagePixmap *ip);
+__hidden ImlibImagePixmap *__imlib_FindCachedImagePixmap(ImlibImage *im, int w, int h, 
 						Display *d, Visual *v,
 						int depth, int sx, int sy, 
 						int sw, int sh, Colormap cm,
 						char aa, char hiq, char dmask,
 						DATABIG modification_count);
-ImlibImagePixmap *__imlib_FindCachedImagePixmapByID(Display *d, Pixmap p);
-void              __imlib_AddImagePixmapToCache(ImlibImagePixmap *ip);
-void              __imlib_RemoveImagePixmapFromCache(ImlibImagePixmap *ip);
-void              __imlib_CleanupImagePixmapCache(void);
+__hidden ImlibImagePixmap *__imlib_FindCachedImagePixmapByID(Display *d, Pixmap p);
+__hidden void              __imlib_AddImagePixmapToCache(ImlibImagePixmap *ip);
+__hidden void              __imlib_RemoveImagePixmapFromCache(ImlibImagePixmap *ip);
+__hidden void              __imlib_CleanupImagePixmapCache(void);
 # endif
-ImlibLoader      *__imlib_ProduceLoader(char *file);
-char            **__imlib_ListLoaders(int *num_ret);
-char            **__imlib_TrimLoaderList(char **list, int *num);
-int               __imlib_ItemInList(char **list, int size, char *item);
-void              __imlib_ConsumeLoader(ImlibLoader *l);
-void              __imlib_RescanLoaders(void);
-void              __imlib_RemoveAllLoaders(void);
-void              __imlib_LoadAllLoaders(void);
-ImlibLoader      *__imlib_FindBestLoaderForFile(const char *file, int for_save);
-ImlibLoader      *__imlib_FindBestLoaderForFileFormat(const char *file, char *format, int for_save);
-void              __imlib_SetImageAlphaFlag(ImlibImage *im, char alpha);
-ImlibImage       *__imlib_CreateImage(int w, int h, DATA32 *data);
-ImlibImage       *__imlib_LoadImage(const char *file,
+__hidden ImlibLoader      *__imlib_ProduceLoader(char *file);
+__hidden char            **__imlib_ListLoaders(int *num_ret);
+__hidden char            **__imlib_TrimLoaderList(char **list, int *num);
+__hidden int               __imlib_ItemInList(char **list, int size, char *item);
+__hidden void              __imlib_ConsumeLoader(ImlibLoader *l);
+__hidden void              __imlib_RescanLoaders(void);
+__hidden void              __imlib_RemoveAllLoaders(void);
+__hidden void              __imlib_LoadAllLoaders(void);
+ImlibLoader             *__imlib_FindBestLoaderForFile(const char *file, int for_save);
+__hidden ImlibLoader      *__imlib_FindBestLoaderForFileFormat(const char *file, char *format, int for_save);
+__hidden void              __imlib_SetImageAlphaFlag(ImlibImage *im, char alpha);
+__hidden ImlibImage       *__imlib_CreateImage(int w, int h, DATA32 *data);
+__hidden ImlibImage       *__imlib_LoadImage(const char *file,
 				    ImlibProgressFunction progress,
 				    char progress_granularity, char immediate_load,
 				    char dont_cache, ImlibLoadError *er);
 # ifdef BUILD_X11
-ImlibImagePixmap *__imlib_FindImlibImagePixmapByID(Display *d, Pixmap p);
+__hidden ImlibImagePixmap *__imlib_FindImlibImagePixmapByID(Display *d, Pixmap p);
 # endif
-void              __imlib_FreeImage(ImlibImage *im);
+__hidden void              __imlib_FreeImage(ImlibImage *im);
 # ifdef BUILD_X11
-void              __imlib_FreePixmap(Display *d, Pixmap p);
+__hidden void              __imlib_FreePixmap(Display *d, Pixmap p);
 # endif
-void              __imlib_FlushCache(void);
+__hidden void              __imlib_FlushCache(void);
 # ifdef BUILD_X11
-void              __imlib_DirtyPixmapsForImage(ImlibImage *im);
+__hidden void              __imlib_DirtyPixmapsForImage(ImlibImage *im);
 # else
 #  define	__imlib_DirtyPixmapsForImage(x)	/* x */
 # endif
-void              __imlib_DirtyImage(ImlibImage *im);
-void              __imlib_SaveImage(ImlibImage *im, const char *file,
+__hidden void              __imlib_DirtyImage(ImlibImage *im);
+__hidden void              __imlib_SaveImage(ImlibImage *im, const char *file,
 				    ImlibProgressFunction progress,
 		                    char progress_granularity,
 		                    ImlibLoadError *er);

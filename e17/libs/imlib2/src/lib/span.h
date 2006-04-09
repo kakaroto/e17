@@ -4,19 +4,19 @@
 
 typedef void (*ImlibPointDrawFunction)(DATA32, DATA32 *);
 
-ImlibPointDrawFunction
+__hidden ImlibPointDrawFunction
 __imlib_GetPointDrawFunction(ImlibOp op, char dst_alpha, char blend);
 
 
 typedef void (*ImlibSpanDrawFunction)(DATA32, DATA32 *, int);
 
-ImlibSpanDrawFunction
+__hidden ImlibSpanDrawFunction
 __imlib_GetSpanDrawFunction(ImlibOp op, char dst_alpha, char blend);
 
 
 typedef void (*ImlibShapedSpanDrawFunction)(DATA8 *, DATA32, DATA32 *, int);
 
-ImlibShapedSpanDrawFunction
+__hidden ImlibShapedSpanDrawFunction
 __imlib_GetShapedSpanDrawFunction(ImlibOp op, char dst_alpha, char blend);
 
 

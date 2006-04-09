@@ -3,10 +3,10 @@
 
 #ifdef BUILD_X11
 
-DATA32
+__hidden DATA32
 __imlib_RenderGetPixel(Display *d, Drawable w, Visual *v, Colormap cm, int depth, DATA8 r, DATA8 g, DATA8 b);
 
-void
+__hidden void
 __imlib_RenderImage(Display *d, ImlibImage *im,
 		    Drawable w, Drawable m,
 		    Visual *v, Colormap cm, int depth,
@@ -15,7 +15,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 		    char anitalias, char hiq, char blend, char dither_mask,
 		    ImlibColorModifier *cmod, ImlibOp op);
 
-void
+__hidden void
 __imlib_RenderImageSkewed(Display *d, ImlibImage *im, Drawable w,
 			  Drawable m, Visual *v, Colormap cm, int depth,
 			  int sx, int sy, int sw, int sh, int dx, int dy,

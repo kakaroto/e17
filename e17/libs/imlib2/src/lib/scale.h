@@ -3,20 +3,20 @@
 
 typedef struct _imlib_scale_info ImlibScaleInfo;
 
-ImlibScaleInfo *
+__hidden ImlibScaleInfo *
 __imlib_CalcScaleInfo(ImlibImage *im, int sw, int sh, int dw, int dh, char aa);
-ImlibScaleInfo *
+__hidden ImlibScaleInfo *
 __imlib_FreeScaleInfo(ImlibScaleInfo *isi);
-void
+__hidden void
 __imlib_ScaleSampleRGBA(ImlibScaleInfo *isi, DATA32 *dest, int dxx, int dyy,
 			int dx, int dy, int dw, int dh, int dow);
-void
+__hidden void
 __imlib_ScaleAARGBA(ImlibScaleInfo *isi, DATA32 *dest, int dxx, int dyy,
 		    int dx, int dy, int dw, int dh, int dow, int sow);
-void
+__hidden void
 __imlib_ScaleAARGB(ImlibScaleInfo *isi, DATA32 *dest, int dxx, int dyy,
 		   int dx, int dy, int dw, int dh, int dow, int sow);
-void
+__hidden void
 __imlib_Scale_mmx_AARGBA(ImlibScaleInfo *isi, DATA32 *dest, int dxx, int dyy,
 			 int dx, int dy, int dw, int dh, int dow, int sow);
 #endif

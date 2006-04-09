@@ -15,6 +15,12 @@
 #include <sys/types.h>
 #endif
 
+#ifdef USE_HIDDEN_FUNCTION_ATTRIBUTE
+#define __hidden __attribute__((visibility("hidden")))
+#else
+#define __hidden
+#endif
+
 #define DATABIG unsigned long long
 #define DATA64  unsigned long long
 #define DATA32  unsigned int
@@ -22,7 +28,7 @@
 #define DATA8   unsigned char
 
 #ifdef DO_MMX_ASM
-int __imlib_get_cpuid(void);
+__hidden int __imlib_get_cpuid(void);
 #define CPUID_MMX (1 << 23)
 #define CPUID_XMM (1 << 25)
 #endif

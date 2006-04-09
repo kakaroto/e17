@@ -23,20 +23,20 @@ struct _imlib_filter
    ImlibFilterColor alpha, red, green, blue;
 };
 
-ImlibFilter *
+__hidden ImlibFilter *
 __imlib_CreateFilter(int size);
-void
+__hidden void
 __imlib_FreeFilter(ImlibFilter *fil);
-void
+__hidden void
 __imlib_FilterSet(ImlibFilterColor *fil, int x, int y,
 		  int a, int r, int g, int b);
-void
+__hidden void
 __imlib_FilterSetColor(ImlibFilterColor * fil, int x, int y,
                        int a, int r, int g, int b);
-void
+__hidden void
 __imlib_FilterDivisors(ImlibFilter *fil, int a, int r, int g, int b);
-void
+__hidden void
 __imlib_FilterConstants(ImlibFilter *fil, int a, int r, int g, int b);
-void
+__hidden void
 __imlib_FilterImage(ImlibImage *im, ImlibFilter *fil);
 #endif

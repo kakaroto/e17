@@ -6,6 +6,7 @@ lib_LTLIBRARIES      = libImlib2.la
 include_HEADERS      = Imlib2.h
 libImlib2_la_SOURCES = \
 api.c \
+asm.h \
 blend.c \
 blend.h \
 color.c \

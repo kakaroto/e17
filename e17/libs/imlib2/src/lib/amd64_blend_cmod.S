@@ -1,22 +1,5 @@
 #include <config.h>
-
-#ifdef __EMX__
-/* Due to strange behaviour of as.exe we use this macros */
-/* For all OS/2 coders - please use PGCC to compile this code */
-#define PR_(foo) ___##foo
-#define PT_(foo,func) ___##foo,##func
-#define SIZE(sym)                              \
-	.___end_##sym:;                        \
-	.size ___##sym,.___end_##sym-___##sym; \
-	.align 16;
-#else
-#define PR_(foo) __##foo
-#define PT_(foo,func) __##foo,##func
-#define SIZE(sym)                           \
-	.__end_##sym:;                      \
-	.size __##sym,.__end_##sym-__##sym; \
-	.align 16;
-#endif
+#include "asm.h"
 
 #ifdef DO_AMD64_ASM
 
@@ -70,65 +53,37 @@ c1: .word 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1
 
 .text
 	.align 16
-.globl PR_(imlib_amd64_blend_rgba_to_rgb_cmod)
-	.type PT_(imlib_amd64_blend_rgba_to_rgb_cmod,@function)
-.globl PR_(imlib_amd64_blend_rgba_to_rgba_cmod)
-	.type PT_(imlib_amd64_blend_rgba_to_rgba_cmod,@function)
-.globl PR_(imlib_amd64_blend_rgb_to_rgba_cmod)
-	.type PT_(imlib_amd64_blend_rgb_to_rgba_cmod,@function)
-.globl PR_(imlib_amd64_blend_rgb_to_rgb_cmod)
-	.type PT_(imlib_amd64_blend_rgb_to_rgb_cmod,@function)
-.globl PR_(imlib_amd64_copy_rgba_to_rgb_cmod)
-	.type PT_(imlib_amd64_copy_rgba_to_rgb_cmod,@function)
-.globl PR_(imlib_amd64_copy_rgba_to_rgba_cmod)
-	.type PT_(imlib_amd64_copy_rgba_to_rgba_cmod,@function)
-.globl PR_(imlib_amd64_copy_rgb_to_rgba_cmod)
-	.type PT_(imlib_amd64_copy_rgb_to_rgba_cmod,@function)
+FN_(imlib_amd64_blend_rgba_to_rgb_cmod)
+FN_(imlib_amd64_blend_rgba_to_rgba_cmod)
+FN_(imlib_amd64_blend_rgb_to_rgba_cmod)
+FN_(imlib_amd64_blend_rgb_to_rgb_cmod)
+FN_(imlib_amd64_copy_rgba_to_rgb_cmod)
+FN_(imlib_amd64_copy_rgba_to_rgba_cmod)
+FN_(imlib_amd64_copy_rgb_to_rgba_cmod)
 
-.globl PR_(imlib_amd64_add_blend_rgba_to_rgb_cmod)
-	.type PT_(imlib_amd64_add_blend_rgba_to_rgb_cmod,@function)
-.globl PR_(imlib_amd64_add_blend_rgba_to_rgba_cmod)
-	.type PT_(imlib_amd64_add_blend_rgba_to_rgba_cmod,@function)
-.globl PR_(imlib_amd64_add_blend_rgb_to_rgba_cmod)
-	.type PT_(imlib_amd64_add_blend_rgb_to_rgba_cmod,@function)
-.globl PR_(imlib_amd64_add_blend_rgb_to_rgb_cmod)
-	.type PT_(imlib_amd64_add_blend_rgb_to_rgb_cmod,@function)
-.globl PR_(imlib_amd64_add_copy_rgba_to_rgb_cmod)
-	.type PT_(imlib_amd64_add_copy_rgba_to_rgb_cmod,@function)
-.globl PR_(imlib_amd64_add_copy_rgba_to_rgba_cmod)
-	.type PT_(imlib_amd64_add_copy_rgba_to_rgba_cmod,@function)
-.globl PR_(imlib_amd64_add_copy_rgb_to_rgba_cmod)
-	.type PT_(imlib_amd64_add_copy_rgb_to_rgba_cmod,@function)
+FN_(imlib_amd64_add_blend_rgba_to_rgb_cmod)
+FN_(imlib_amd64_add_blend_rgba_to_rgba_cmod)
+FN_(imlib_amd64_add_blend_rgb_to_rgba_cmod)
+FN_(imlib_amd64_add_blend_rgb_to_rgb_cmod)
+FN_(imlib_amd64_add_copy_rgba_to_rgb_cmod)
+FN_(imlib_amd64_add_copy_rgba_to_rgba_cmod)
+FN_(imlib_amd64_add_copy_rgb_to_rgba_cmod)
 
-.globl PR_(imlib_amd64_subtract_blend_rgba_to_rgb_cmod)
-	.type PT_(imlib_amd64_subtract_blend_rgba_to_rgb_cmod,@function)
-.globl PR_(imlib_amd64_subtract_blend_rgba_to_rgba_cmod)
-	.type PT_(imlib_amd64_subtract_blend_rgba_to_rgba_cmod,@function)
-.globl PR_(imlib_amd64_subtract_blend_rgb_to_rgba_cmod)
-	.type PT_(imlib_amd64_subtract_blend_rgb_to_rgba_cmod,@function)
-.globl PR_(imlib_amd64_subtract_blend_rgb_to_rgb_cmod)
-	.type PT_(imlib_amd64_subtract_blend_rgb_to_rgb_cmod,@function)
-.globl PR_(imlib_amd64_subtract_copy_rgba_to_rgb_cmod)
-	.type PT_(imlib_amd64_subtract_copy_rgba_to_rgb_cmod,@function)
-.globl PR_(imlib_amd64_subtract_copy_rgba_to_rgba_cmod)
-	.type PT_(imlib_amd64_subtract_copy_rgba_to_rgba_cmod,@function)
-.globl PR_(imlib_amd64_subtract_copy_rgb_to_rgba_cmod)
-	.type PT_(imlib_amd64_subtract_copy_rgb_to_rgba_cmod,@function)
+FN_(imlib_amd64_subtract_blend_rgba_to_rgb_cmod)
+FN_(imlib_amd64_subtract_blend_rgba_to_rgba_cmod)
+FN_(imlib_amd64_subtract_blend_rgb_to_rgba_cmod)
+FN_(imlib_amd64_subtract_blend_rgb_to_rgb_cmod)
+FN_(imlib_amd64_subtract_copy_rgba_to_rgb_cmod)
+FN_(imlib_amd64_subtract_copy_rgba_to_rgba_cmod)
+FN_(imlib_amd64_subtract_copy_rgb_to_rgba_cmod)
 
-.globl PR_(imlib_amd64_reshade_blend_rgba_to_rgb_cmod)
-	.type PT_(imlib_amd64_reshade_blend_rgba_to_rgb_cmod,@function)
-.globl PR_(imlib_amd64_reshade_blend_rgba_to_rgba_cmod)
-	.type PT_(imlib_amd64_reshade_blend_rgba_to_rgba_cmod,@function)
-.globl PR_(imlib_amd64_reshade_blend_rgb_to_rgba_cmod)
-	.type PT_(imlib_amd64_reshade_blend_rgb_to_rgba_cmod,@function)
-.globl PR_(imlib_amd64_reshade_blend_rgb_to_rgb_cmod)
-	.type PT_(imlib_amd64_reshade_blend_rgb_to_rgb_cmod,@function)
-.globl PR_(imlib_amd64_reshade_copy_rgba_to_rgb_cmod)
-	.type PT_(imlib_amd64_reshade_copy_rgba_to_rgb_cmod,@function)
-.globl PR_(imlib_amd64_reshade_copy_rgba_to_rgba_cmod)
-	.type PT_(imlib_amd64_reshade_copy_rgba_to_rgba_cmod,@function)
-.globl PR_(imlib_amd64_reshade_copy_rgb_to_rgba_cmod)
-	.type PT_(imlib_amd64_reshade_copy_rgb_to_rgba_cmod,@function)
+FN_(imlib_amd64_reshade_blend_rgba_to_rgb_cmod)
+FN_(imlib_amd64_reshade_blend_rgba_to_rgba_cmod)
+FN_(imlib_amd64_reshade_blend_rgb_to_rgba_cmod)
+FN_(imlib_amd64_reshade_blend_rgb_to_rgb_cmod)
+FN_(imlib_amd64_reshade_copy_rgba_to_rgb_cmod)
+FN_(imlib_amd64_reshade_copy_rgba_to_rgba_cmod)
+FN_(imlib_amd64_reshade_copy_rgb_to_rgba_cmod)
 
 .extern pow_lut
 	

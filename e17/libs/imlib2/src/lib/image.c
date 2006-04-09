@@ -34,7 +34,7 @@ __imlib_AttachTag(ImlibImage * im, const char *key, int val, void *data,
    if (!key)
       return;
 
-   /* if a tag of that name alreayd exists - remove it and free it */
+   /* if a tag of that name already exists - remove it and free it */
    if ((t = __imlib_RemoveTag(im, key)))
       __imlib_FreeTag(im, t);
    /* allocate the struct */
@@ -971,7 +971,7 @@ __imlib_LoadImage(const char *file, ImlibProgressFunction progress,
       return NULL;
    if (file[0] == 0)
       return NULL;
-   /* see if we alreayd have the image cached */
+   /* see if we already have the image cached */
    im = __imlib_FindCachedImage(file);
    /* if we found a cached image and we shoudl always check that it is */
    /* accurate to the disk conents if they changed since we last loaded */
@@ -1036,7 +1036,7 @@ __imlib_LoadImage(const char *file, ImlibProgressFunction progress,
         /* run through all loaders and try load until one succeeds */
         while ((l) && (im->w == 0))
           {
-             /* if its not the best loader that alreayd failed - try load */
+             /* if its not the best loader that already failed - try load */
              if (l != best_loader)
                 loader_ret =
                     l->load(im, progress, progress_granularity, immediate_load);
@@ -1049,7 +1049,7 @@ __imlib_LoadImage(const char *file, ImlibProgressFunction progress,
           }
         /* if we have a loader then its the loader that succeeded */
         /* move the successful loader to the head of the list */
-        /* as long as it's not alreayd at the head of the list */
+        /* as long as it's not already at the head of the list */
         if ((l) && (previous_l))
           {
              im->loader = l;

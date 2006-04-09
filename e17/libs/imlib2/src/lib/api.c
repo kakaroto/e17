@@ -125,7 +125,7 @@ static ImlibContextItem *contexts = NULL;       /* (ImlibContext*) imlib_context
 static ImlibContext *ctx = NULL;        /* contexts->context; */
 
 /* frees the given context including all its members */
-void
+__hidden void
 __imlib_free_context(ImlibContext * context)
 {
    ImlibContextItem   *next = contexts;

@@ -1,22 +1,5 @@
 #include <config.h>
-
-#ifdef __EMX__
-/* Due to strange behaviour of as.exe we use this macros */
-/* For all OS/2 coders - please use PGCC to compile this code */
-#define PR_(foo) ___##foo
-#define PT_(foo,func) ___##foo,##func
-#define SIZE(sym)                              \
-	.___end_##sym:;                        \
-	.size ___##sym,.___end_##sym-___##sym; \
-	.align 8;
-#else
-#define PR_(foo) __##foo
-#define PT_(foo,func) __##foo,##func
-#define SIZE(sym)                           \
-	.__end_##sym:;                      \
-	.size __##sym,.__end_##sym-__##sym; \
-	.align 8;
-#endif
+#include "asm.h"
 
 #ifdef DO_MMX_ASM
 
@@ -42,49 +25,29 @@
 
 .text
 	.align 8
-.globl PR_(imlib_mmx_blend_rgba_to_rgb)
-	.type PT_(imlib_mmx_blend_rgba_to_rgb,@function)
-.globl PR_(imlib_mmx_blend_rgba_to_rgba)
-	.type PT_(imlib_mmx_blend_rgba_to_rgba,@function)
-.globl PR_(imlib_mmx_copy_rgba_to_rgb)
-	.type PT_(imlib_mmx_copy_rgba_to_rgb,@function)
-.globl PR_(imlib_mmx_copy_rgba_to_rgba)
-	.type PT_(imlib_mmx_copy_rgba_to_rgba,@function)
-.globl PR_(imlib_mmx_copy_rgb_to_rgba)
+FN_(imlib_mmx_blend_rgba_to_rgb)
+FN_(imlib_mmx_blend_rgba_to_rgba)
+FN_(imlib_mmx_copy_rgba_to_rgb)
+FN_(imlib_mmx_copy_rgba_to_rgba)
+FN_(imlib_mmx_copy_rgb_to_rgba)
 
-	.type PT_(imlib_mmx_copy_rgb_to_rgba,@function)
-.globl PR_(imlib_mmx_add_blend_rgba_to_rgb)
-	.type PT_(imlib_mmx_add_blend_rgba_to_rgb,@function)
-.globl PR_(imlib_mmx_add_blend_rgba_to_rgba)
-	.type PT_(imlib_mmx_add_blend_rgba_to_rgba,@function)
-.globl PR_(imlib_mmx_add_copy_rgba_to_rgb)
-	.type PT_(imlib_mmx_add_copy_rgba_to_rgb,@function)
-.globl PR_(imlib_mmx_add_copy_rgba_to_rgba)
-	.type PT_(imlib_mmx_add_copy_rgba_to_rgba,@function)
-.globl PR_(imlib_mmx_add_copy_rgb_to_rgba)
-	.type PT_(imlib_mmx_add_copy_rgb_to_rgba,@function)
+FN_(imlib_mmx_add_blend_rgba_to_rgb)
+FN_(imlib_mmx_add_blend_rgba_to_rgba)
+FN_(imlib_mmx_add_copy_rgba_to_rgb)
+FN_(imlib_mmx_add_copy_rgba_to_rgba)
+FN_(imlib_mmx_add_copy_rgb_to_rgba)
 
-.globl PR_(imlib_mmx_subtract_blend_rgba_to_rgb)
-	.type PT_(imlib_mmx_subtract_blend_rgba_to_rgb,@function)
-.globl PR_(imlib_mmx_subtract_blend_rgba_to_rgba)
-	.type PT_(imlib_mmx_subtract_blend_rgba_to_rgba,@function)
-.globl PR_(imlib_mmx_subtract_copy_rgba_to_rgb)
-	.type PT_(imlib_mmx_subtract_copy_rgba_to_rgb,@function)
-.globl PR_(imlib_mmx_subtract_copy_rgba_to_rgba)
-	.type PT_(imlib_mmx_subtract_copy_rgba_to_rgba,@function)
-.globl PR_(imlib_mmx_subtract_copy_rgb_to_rgba)
-	.type PT_(imlib_mmx_subtract_copy_rgb_to_rgba,@function)
+FN_(imlib_mmx_subtract_blend_rgba_to_rgb)
+FN_(imlib_mmx_subtract_blend_rgba_to_rgba)
+FN_(imlib_mmx_subtract_copy_rgba_to_rgb)
+FN_(imlib_mmx_subtract_copy_rgba_to_rgba)
+FN_(imlib_mmx_subtract_copy_rgb_to_rgba)
 
-.globl PR_(imlib_mmx_reshade_blend_rgba_to_rgb)
-	.type PT_(imlib_mmx_reshade_blend_rgba_to_rgb,@function)
-.globl PR_(imlib_mmx_reshade_blend_rgba_to_rgba)
-	.type PT_(imlib_mmx_reshade_blend_rgba_to_rgba,@function)
-.globl PR_(imlib_mmx_reshade_copy_rgba_to_rgb)
-	.type PT_(imlib_mmx_reshade_copy_rgba_to_rgb,@function)
-.globl PR_(imlib_mmx_reshade_copy_rgba_to_rgba)
-	.type PT_(imlib_mmx_reshade_copy_rgba_to_rgba,@function)
-.globl PR_(imlib_mmx_reshade_copy_rgb_to_rgba)
-	.type PT_(imlib_mmx_reshade_copy_rgb_to_rgba,@function)
+FN_(imlib_mmx_reshade_blend_rgba_to_rgb)
+FN_(imlib_mmx_reshade_blend_rgba_to_rgba)
+FN_(imlib_mmx_reshade_copy_rgba_to_rgb)
+FN_(imlib_mmx_reshade_copy_rgba_to_rgba)
+FN_(imlib_mmx_reshade_copy_rgb_to_rgba)
 
 #include "asm_loadimmq.S"
 

@@ -1,22 +1,5 @@
 #include <config.h>
-
-#ifdef __EMX__
-/* Due to strange behaviour of as.exe we use this macros */
-/* For all OS/2 coders - please use PGCC to compile this code */
-#define PR_(foo) ___##foo
-#define PT_(foo,func) ___##foo,##func
-#define SIZE(sym)                              \
-	.___end_##sym:;                        \
-	.size ___##sym,.___end_##sym-___##sym; \
-	.align 8;
-#else
-#define PR_(foo) __##foo
-#define PT_(foo,func) __##foo,##func
-#define SIZE(sym)                           \
-	.__end_##sym:;                      \
-	.size __##sym,.__end_##sym-__##sym; \
-	.align 8;
-#endif
+#include "asm.h"
 
 #ifdef DO_MMX_ASM
 
@@ -43,17 +26,12 @@
 
 .text
 	.align 8
-.globl PR_(imlib_mmx_rgb565_fast)
-	.type PT_(imlib_mmx_rgb565_fast,@function)
-.globl PR_(imlib_mmx_bgr565_fast)
-	.type PT_(imlib_mmx_bgr565_fast,@function)
-.globl PR_(imlib_mmx_rgb555_fast)
-	.type PT_(imlib_mmx_rgb555_fast,@function)
-.globl PR_(imlib_mmx_bgr555_fast)
-	.type PT_(imlib_mmx_bgr555_fast,@function)
+FN_(imlib_mmx_rgb565_fast)
+FN_(imlib_mmx_bgr565_fast)
+FN_(imlib_mmx_rgb555_fast)
+FN_(imlib_mmx_bgr555_fast)
 
-.globl PR_(imlib_get_cpuid)
-	.type PT_(imlib_get_cpuid,@function)
+FN_(imlib_get_cpuid)
 
 #include "asm_loadimmq.S"
 
