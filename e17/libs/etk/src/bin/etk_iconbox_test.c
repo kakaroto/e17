@@ -13,7 +13,10 @@ static char *_etk_test_iconbox_icon_filenames[] =
    "/home/simon/etk/data/icons/default/icons/48x48/mimetypes/image-x-generic.png",
    "/home/simon/etk/data/icons/default/icons/48x48/mimetypes/video-x-generic.png",
    "/home/simon/etk/data/icons/default/icons/48x48/mimetypes/text-html.png",
-   "/home/simon/etk/data/icons/default/icons/48x48/mimetypes/application-x-executable.png"
+   "/home/simon/etk/data/icons/default/icons/48x48/mimetypes/application-x-executable.png",
+   "/home/simon/etk/data/themes/default/images/entry.png",
+   "/home/simon/etk/data/themes/default/images/scrollbar_button_up1.png",
+   "/home/simon/etk/data/themes/default/images/scrollbar_vdrag2.png"
 };
 static int _etk_test_iconbox_num_icon_filenames = sizeof(_etk_test_iconbox_icon_filenames) / sizeof(char *);
 
@@ -42,7 +45,7 @@ void etk_test_iconbox_window_create(void *data)
    /* Create a new iconbox model: mini view */
    mini_model = etk_iconbox_model_new(ETK_ICONBOX(iconbox));
    etk_iconbox_model_geometry_set(mini_model, 150, 20, 2, 2);
-   etk_iconbox_model_icon_geometry_set(mini_model, 0, 0, 16, 16);
+   etk_iconbox_model_icon_geometry_set(mini_model, 0, 0, 16, 16, ETK_FALSE, ETK_TRUE);
    etk_iconbox_model_label_geometry_set(mini_model, 20, 0, 130, 16, 0.0, 0.5);
    //etk_iconbox_current_model_set(ETK_ICONBOX(iconbox), mini_model);
    

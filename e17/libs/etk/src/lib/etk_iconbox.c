@@ -110,7 +110,8 @@ Etk_Type *etk_iconbox_type_get()
 
    if (!iconbox_type)
    {
-      iconbox_type = etk_type_new("Etk_Iconbox", ETK_WIDGET_TYPE, sizeof(Etk_Iconbox), ETK_CONSTRUCTOR(_etk_iconbox_constructor), ETK_DESTRUCTOR(_etk_iconbox_destructor));
+      iconbox_type = etk_type_new("Etk_Iconbox", ETK_WIDGET_TYPE, sizeof(Etk_Iconbox),
+         ETK_CONSTRUCTOR(_etk_iconbox_constructor), ETK_DESTRUCTOR(_etk_iconbox_destructor));
 
       /*_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL] = etk_signal_new("row_selected", tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_tree_signals[ETK_TREE_ROW_UNSELECTED_SIGNAL] = etk_signal_new("row_unselected", tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
@@ -169,6 +170,8 @@ Etk_Iconbox_Model *etk_iconbox_model_new(Etk_Iconbox *iconbox)
    model->icon_y = 0;
    model->icon_width = 48;
    model->icon_height = 48;
+   model->icon_expand = ETK_FALSE;
+   model->icon_keep_aspect = ETK_TRUE;
    
    model->label_x = 0;
    model->label_y = 50;
@@ -251,22 +254,26 @@ void etk_iconbox_model_geometry_get(Etk_Iconbox_Model *model, int *width, int *h
 /**
  * @brief Sets the icon geometry of the iconbox model
  * @param model an iconbox model
- * @param icon_x the x position of the icon image of the model (min = 0)
- * @param icon_y the y position of the icon image of the model (min = 0)
- * @param icon_width the width of the icon image of the model (min = 10)
- * @param icon_height the height of the icon image of the model (min = 10)
+ * @param x the x position of the icon image of the model (min = 0)
+ * @param y the y position of the icon image of the model (min = 0)
+ * @param width the width of the icon image of the model (min = 10)
+ * @param height the height of the icon image of the model (min = 10)
+ * @param expand if @a expand == ETK_TRUE, and if the icon image is smaller than the icon geometry, the image will be expanded
+ * @param keep_aspect if @a keep_aspect == ETK_TRUE, the icon image will keep its aspect ratio (no distortion)
  * @note the x/y positions are relative to the inner top left corner of the icon model: @n
  * i.e. the icon image will be in fact put at (model->xpadding + model->icon_x, model->ypadding + model->icon_y)
  */
-void etk_iconbox_model_icon_geometry_set(Etk_Iconbox_Model *model, int icon_x, int icon_y, int icon_width, int icon_height)
+void etk_iconbox_model_icon_geometry_set(Etk_Iconbox_Model *model, int x, int y, int width, int height, Etk_Bool expand, Etk_Bool keep_aspect)
 {
    if (!model)
       return;
    
-   model->icon_x = ETK_MAX(icon_x, 0);
-   model->icon_y = ETK_MAX(icon_y, 0);
-   model->icon_width = ETK_MAX(icon_width, 10);
-   model->icon_height = ETK_MAX(icon_height, 10);
+   model->icon_x = ETK_MAX(x, 0);
+   model->icon_y = ETK_MAX(y, 0);
+   model->icon_width = ETK_MAX(width, 10);
+   model->icon_height = ETK_MAX(height, 10);
+   model->icon_expand = expand;
+   model->icon_keep_aspect = keep_aspect;
    
    if (model->iconbox && model->iconbox->current_model == model)
    {
@@ -278,44 +285,51 @@ void etk_iconbox_model_icon_geometry_set(Etk_Iconbox_Model *model, int icon_x, i
 /**
  * @brief Gets the icon geometry of the iconbox model
  * @param model an iconbox model
- * @param icon_x the location where to store x position of the icon image
- * @param icon_y the location where to store y position of the icon image
- * @param icon_width the location where to store the width of the icon image
- * @param icon_height the location where to store the height of the icon image
+ * @param x the location where to store x position of the icon image
+ * @param y the location where to store y position of the icon image
+ * @param width the location where to store the width of the icon image
+ * @param height the location where to store the height of the icon image
+ * @param expand the location where to store the expand property of the model (see @a etk_iconbox_model_icon_geometry_set() )
+ * @param keep_aspect the location where to store the "keep aspect ratio" property of the model (see @a etk_iconbox_model_icon_geometry_set() )
+ * @see etk_iconbox_model_icon_geometry_set()
  */
-void etk_iconbox_model_icon_geometry_get(Etk_Iconbox_Model *model, int *icon_x, int *icon_y, int *icon_width, int *icon_height)
+void etk_iconbox_model_icon_geometry_get(Etk_Iconbox_Model *model, int *x, int *y, int *width, int *height, Etk_Bool *expand, Etk_Bool *keep_aspect)
 {
-   if (icon_x)
-      *icon_x = model ? model->icon_x : 0;
-   if (icon_y)
-      *icon_y = model ? model->icon_y : 0;
-   if (icon_width)
-      *icon_width = model ? model->icon_width : 0;
-   if (icon_height)
-      *icon_height = model ? model->icon_height : 0;
+   if (x)
+      *x = model ? model->icon_x : 0;
+   if (y)
+      *y = model ? model->icon_y : 0;
+   if (width)
+      *width = model ? model->icon_width : 0;
+   if (height)
+      *height = model ? model->icon_height : 0;
+   if (expand)
+      *expand = model ? model->icon_expand : ETK_FALSE;
+   if (keep_aspect)
+      *keep_aspect = model ? model->icon_keep_aspect : ETK_TRUE;
 }
 
 /**
  * @brief Sets the label geometry of the iconbox model
  * @param model an iconbox model
- * @param label_x the x position of the label of the model (min = 0)
- * @param label_y the y position of the label of the model (min = 0)
- * @param label_width the width of the label of the model (min = 10)
- * @param label_height the height of the label of the model (min = 5)
+ * @param x the x position of the label of the model (min = 0)
+ * @param y the y position of the label of the model (min = 0)
+ * @param width the width of the label of the model (min = 10)
+ * @param height the height of the label of the model (min = 5)
  * @param xalign the horizontal alignment of the label (from 0.0 to 1.0)
  * @param yalign the vertical alignment of the label
  * @note the x/y positions are relative to the inner top left corner of the icon model: @n
  * i.e. the label will be in fact put at (model->xpadding + model->label_x, model->ypadding + model->label_y)
  */
-void etk_iconbox_model_label_geometry_set(Etk_Iconbox_Model *model, int label_x, int label_y, int label_width, int label_height, float xalign, float yalign)
+void etk_iconbox_model_label_geometry_set(Etk_Iconbox_Model *model, int x, int y, int width, int height, float xalign, float yalign)
 {
    if (!model)
       return;
    
-   model->label_x = ETK_MAX(label_x, 0);
-   model->label_y = ETK_MAX(label_y, 0);
-   model->label_width = ETK_MAX(label_width, 10);
-   model->label_height = ETK_MAX(label_height, 5);
+   model->label_x = ETK_MAX(x, 0);
+   model->label_y = ETK_MAX(y, 0);
+   model->label_width = ETK_MAX(width, 10);
+   model->label_height = ETK_MAX(height, 5);
    model->label_xalign = ETK_CLAMP(xalign, 0.0, 1.0);
    model->label_yalign = ETK_CLAMP(yalign, 0.0, 1.0);
    
@@ -329,23 +343,23 @@ void etk_iconbox_model_label_geometry_set(Etk_Iconbox_Model *model, int label_x,
 /**
  * @brief Gets the label geometry of the iconbox model
  * @param model an iconbox model
- * @param label_x the location where to store x position of the label
- * @param label_y the location where to store y position of the label
- * @param label_width the location where to store width of the label
- * @param label_height the location where to store height of the label
+ * @param x the location where to store x position of the label
+ * @param y the location where to store y position of the label
+ * @param width the location where to store width of the label
+ * @param height the location where to store height of the label
  * @param xalign the location where to store horizontal alignment of the label
  * @param yalign the location where to store vertical alignment of the label
  */
-void etk_iconbox_model_label_geometry_get(Etk_Iconbox_Model *model, int *label_x, int *label_y, int *label_width, int *label_height, float *xalign, float *yalign)
+void etk_iconbox_model_label_geometry_get(Etk_Iconbox_Model *model, int *x, int *y, int *width, int *height, float *xalign, float *yalign)
 {
-   if (label_x)
-      *label_x = model ? model->label_x : 0;
-   if (label_y)
-      *label_y = model ? model->label_y : 0;
-   if (label_width)
-      *label_width = model ? model->label_width : 0;
-   if (label_height)
-      *label_height = model ? model->label_height : 0;
+   if (x)
+      *x = model ? model->label_x : 0;
+   if (y)
+      *y = model ? model->label_y : 0;
+   if (width)
+      *width = model ? model->label_width : 0;
+   if (height)
+      *height = model ? model->label_height : 0;
    if (xalign)
       *xalign = model ? model->label_xalign : 0.0;
    if (yalign)
@@ -502,6 +516,78 @@ void etk_iconbox_clear(Etk_Iconbox *iconbox)
    
    etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(iconbox->grid), NULL);
    etk_widget_redraw_queue(iconbox->grid);
+}
+
+/**
+ * @brief Sets the file used for the icon image
+ * @param icon an icon
+ * @param filename the filename of the image to use for the icon
+ * @param edje_group the edje group to use if the image file is an edje animation. Set it to NULL if it's a normal image
+ */
+void etk_iconbox_icon_file_set(Etk_Iconbox_Icon *icon, const char *filename, const char *edje_group)
+{
+   if (!icon)
+      return;
+   
+   if (icon->filename != filename)
+   {
+      free(icon->filename);
+      icon->filename = filename ? strdup(filename) : NULL;
+   }
+   if (icon->edje_group != edje_group)
+   {
+      free(icon->edje_group);
+      icon->edje_group = edje_group ? strdup(edje_group) : NULL;
+   }
+   
+   if (!icon->iconbox->frozen)
+      etk_widget_redraw_queue(icon->iconbox->grid);
+}
+
+/**
+ * @brief Sets the file used for the icon image
+ * @param icon an icon
+ * @param filename a location where to store the filename of the image used by the icon
+ * @param edje_group a location where to store the edje group of the image used by the icon
+ */
+void etk_iconbox_icon_file_get(Etk_Iconbox_Icon *icon, const char **filename, const char **edje_group)
+{
+   if (filename)
+      *filename = icon ? icon->filename : NULL;
+   if (edje_group)
+      *edje_group = icon ? icon->edje_group : NULL;
+}
+
+/**
+ * @brief Sets the label of the icon
+ * @param icon an icon
+ * @param label the label to set to the icon
+ */
+void etk_iconbox_icon_label_set(Etk_Iconbox_Icon *icon, const char *label)
+{
+   if (!icon)
+      return;
+   
+   if (icon->label != label)
+   {
+      free(icon->label);
+      icon->label = label ? strdup(label) : NULL;
+      
+      if (!icon->iconbox->frozen)
+         etk_widget_redraw_queue(icon->iconbox->grid);
+   }
+}
+
+/**
+ * @brief Gets the label used for the icon image
+ * @param icon an icon
+ * @return Returns the label of the icon
+ */
+const char *etk_iconbox_icon_label_get(Etk_Iconbox_Icon *icon)
+{
+   if (!icon)
+      return NULL;
+   return icon->label;
 }
 
 /**
@@ -986,6 +1072,9 @@ static void _etk_iconbox_icon_draw(Etk_Iconbox_Icon *icon, Etk_Iconbox_Icon_Obje
    Etk_Iconbox_Grid *grid;
    Etk_Geometry icon_object_geometry;
    Etk_Geometry label_geometry;
+   int icon_w, icon_h;
+   float aspect_ratio;
+   Etk_Geometry icon_geometry;
    
    if (!icon || !icon_object || !model || !(iconbox = icon->iconbox) || !(grid = ETK_ICONBOX_GRID(iconbox->grid)))
       return;
@@ -1008,7 +1097,7 @@ static void _etk_iconbox_icon_draw(Etk_Iconbox_Icon *icon, Etk_Iconbox_Icon_Obje
             evas_object_image_file_set(icon_object->image, icon->filename, NULL);
          }
          icon_object->use_edje = ETK_FALSE;
-         evas_object_image_fill_set(icon_object->image, 0, 0, model->icon_width, model->icon_height);
+         evas_object_image_size_get(icon_object->image, &icon_w, &icon_h);
       }
       else
       {
@@ -1017,21 +1106,50 @@ static void _etk_iconbox_icon_draw(Etk_Iconbox_Icon *icon, Etk_Iconbox_Icon_Obje
             icon_object->image = edje_object_add(evas);
             edje_object_file_set(icon_object->image, icon->filename, icon->edje_group);
          }
+         edje_object_size_min_get(icon_object->image, &icon_w, &icon_h);
          icon_object->use_edje = ETK_TRUE;
       }
-      
+      if (icon_w <= 0 || icon_h <= 0)
+      {
+         icon_w = model->icon_width;
+         icon_h = model->icon_height;
+      }
       etk_widget_member_object_add(iconbox->grid, icon_object->image);
-      if (grid->clip)
-         evas_object_clip_set(icon_object->image, grid->clip);
       
+      /* TODO: theme */
       if (icon->selected)
          evas_object_color_set(icon_object->image, 226, 211, 174, 255);
       else
          evas_object_color_set(icon_object->image, 255, 255, 255, 255);
+      if (grid->clip)
+         evas_object_clip_set(icon_object->image, grid->clip);
       
+      if (model->icon_expand)
+      {
+         icon_geometry.w = model->icon_width;
+         icon_geometry.h = model->icon_height;
+      }
+      else
+      {
+         icon_geometry.w = ETK_MIN(icon_w, model->icon_width);
+         icon_geometry.h = ETK_MIN(icon_h, model->icon_height);
+      }
+      if (model->icon_keep_aspect)
+      {
+         aspect_ratio = (float)icon_w / icon_h;
+         if (icon_geometry.w > icon_geometry.h * aspect_ratio)
+            icon_geometry.w = icon_geometry.h * aspect_ratio;
+         else
+            icon_geometry.h = icon_geometry.w / aspect_ratio;
+      }
+      icon_geometry.x = icon_object_geometry.x + model->icon_x + (model->icon_width - icon_geometry.w) / 2;
+      icon_geometry.y = icon_object_geometry.y + model->icon_y + (model->icon_height - icon_geometry.h) / 2;
+      
+      evas_object_move(icon_object->image, icon_geometry.x, icon_geometry.y);
+      evas_object_resize(icon_object->image, icon_geometry.w, icon_geometry.h);
+      if (!icon->edje_group)
+         evas_object_image_fill_set(icon_object->image, 0, 0, icon_geometry.w, icon_geometry.h);
       evas_object_show(icon_object->image);
-      evas_object_move(icon_object->image, icon_object_geometry.x + model->icon_x, icon_object_geometry.y + model->icon_y);
-      evas_object_resize(icon_object->image, model->icon_width, model->icon_height);
    }
    
    /* Render the label */

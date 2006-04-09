@@ -37,6 +37,8 @@ struct _Etk_Iconbox_Model
    int icon_y;
    int icon_width;
    int icon_height;
+   Etk_Bool icon_expand;
+   Etk_Bool icon_keep_aspect;
    
    int label_x;
    int label_y;
@@ -100,10 +102,10 @@ void etk_iconbox_model_free(Etk_Iconbox_Model *model);
 
 void etk_iconbox_model_geometry_set(Etk_Iconbox_Model *model, int width, int height, int xpadding, int ypadding);
 void etk_iconbox_model_geometry_get(Etk_Iconbox_Model *model, int *width, int *height, int *xpadding, int *ypadding);
-void etk_iconbox_model_icon_geometry_set(Etk_Iconbox_Model *model, int icon_x, int icon_y, int icon_width, int icon_height);
-void etk_iconbox_model_icon_geometry_get(Etk_Iconbox_Model *model, int *icon_x, int *icon_y, int *icon_width, int *icon_height);
-void etk_iconbox_model_label_geometry_set(Etk_Iconbox_Model *model, int label_x, int label_y, int label_width, int label_height, float xalign, float yalign);
-void etk_iconbox_model_label_geometry_get(Etk_Iconbox_Model *model, int *label_x, int *label_y, int *label_width, int *label_height, float *xalign, float *yalign);
+void etk_iconbox_model_icon_geometry_set(Etk_Iconbox_Model *model, int x, int y, int width, int height, Etk_Bool expand, Etk_Bool keep_aspect_ratio);
+void etk_iconbox_model_icon_geometry_get(Etk_Iconbox_Model *model, int *x, int *y, int *width, int *height, Etk_Bool *expand, Etk_Bool *keep_aspect_ratio);
+void etk_iconbox_model_label_geometry_set(Etk_Iconbox_Model *model, int x, int y, int width, int height, float xalign, float yalign);
+void etk_iconbox_model_label_geometry_get(Etk_Iconbox_Model *model, int *x, int *y, int *width, int *height, float *xalign, float *yalign);
 
 void etk_iconbox_current_model_set(Etk_Iconbox *iconbox, Etk_Iconbox_Model *model);
 Etk_Iconbox_Model *etk_iconbox_current_model_get(Etk_Iconbox *iconbox);
@@ -114,6 +116,12 @@ void etk_iconbox_thaw(Etk_Iconbox *iconbox);
 Etk_Iconbox_Icon *etk_iconbox_append(Etk_Iconbox *iconbox, const char *filename, const char *edje_group, const char *label);
 void etk_iconbox_icon_del(Etk_Iconbox_Icon *icon);
 void etk_iconbox_clear(Etk_Iconbox *iconbox);
+
+void etk_iconbox_icon_file_set(Etk_Iconbox_Icon *icon, const char *filename, const char *edje_group);
+void etk_iconbox_icon_file_get(Etk_Iconbox_Icon *icon, const char **filename, const char **edje_group);
+void etk_iconbox_icon_label_set(Etk_Iconbox_Icon *icon, const char *label);
+const char *etk_iconbox_icon_label_get(Etk_Iconbox_Icon *icon);
+
 void etk_iconbox_icon_data_set(Etk_Iconbox_Icon *icon, void *data);
 void etk_iconbox_icon_data_set_full(Etk_Iconbox_Icon *icon, void *data, void (*free_cb)(void *data));
 void *etk_iconbox_icon_data_get(Etk_Iconbox_Icon *icon);
