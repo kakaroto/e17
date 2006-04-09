@@ -365,6 +365,62 @@ Etk_Combobox_Item *etk_combobox_item_append_valist(Etk_Combobox *combobox, va_li
 }
 
 /**
+ * @brief Returns an item from the combobox
+ * @param combobox a combobox
+ * @param index the number of the item to get
+ */
+Etk_Combobox_Item *etk_combobox_nth_item_get(Etk_Combobox *combobox, int index)
+{
+   Etk_Combobox_Item *item;
+
+   if (!combobox)
+      return NULL;
+
+   /* Evas lists check the validity of the index */
+   item = evas_list_nth(combobox->items, index);
+   return item;
+}
+
+/**
+ * @brief Removes an item from the combobox
+ * @param combobox a combobox
+ * @param item the item to remove
+ * @see etk_combobox_nth_item_get
+ */
+void etk_combobox_item_remove(Etk_Combobox *combobox, Etk_Combobox_Item *item)
+{
+   if (!combobox || !item)
+      return;
+
+   combobox->items = evas_list_remove(combobox->items, item);
+   if (item == combobox->active_item)
+   {
+     if (combobox->items)
+       etk_combobox_active_item_set(combobox, combobox->items->data);
+     else
+       etk_combobox_active_item_set(combobox, NULL);
+   }
+   etk_object_destroy (ETK_OBJECT(item));
+}
+
+/**
+ * @brief Removes all items from the combobox
+ * @param combobox a combobox
+ */
+void etk_combobox_clear(Etk_Combobox *combobox)
+{
+   if (!combobox)
+      return;
+
+   while (combobox->items)
+   {
+      etk_object_destroy (combobox->items->data);
+      combobox->items = evas_list_remove_list(combobox->items, combobox->items);
+   }
+   etk_combobox_active_item_set(combobox, NULL);
+}
+
+/**
  * @brief Sets the data associated to the combobox item
  * @param item a combobox item
  * @param data the data to associate to the combobox item
