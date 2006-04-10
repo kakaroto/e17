@@ -42,5 +42,9 @@ int		 ewl_filelist_list_init(Ewl_Filelist_List *fl);
 void		 ewl_filelist_list_dir_change(Ewl_Filelist *fl);
 void 		 ewl_filelist_list_selected_files_change(Ewl_Filelist *fl);
 
+/**
+ * @}
+ */
+
 #endif
 

@@ -92,5 +92,9 @@ void 		 ewl_filelist_directory_read(Ewl_Filelist *fl,
  */
 void ewl_filelist_cb_destroy(Ewl_Widget *w, void *ev, void *data);
 
+/**
+ * @}
+ */
+
 #endif
 
