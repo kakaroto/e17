@@ -5,9 +5,39 @@
 #include <Ecore_Data.h>
 #include <Ecore_File.h>
 
+typedef struct _Etk_Test_Iconbox_Types
+{
+   void *extension;
+   char *icon;
+} Etk_Test_Iconbox_Types;
+
+static void _etk_test_iconbox_mouse_up_cb(Etk_Object *object, void *event_info, void *data);
 static void _etk_test_iconbox_folder_set(Etk_Iconbox *iconbox, const char *folder);
 
-static char *_etk_test_iconbox_icon_filenames[] =
+static Etk_Test_Iconbox_Types _etk_test_iconbox_types[] =
+{
+   { "jpg", "mimetypes/image-x-generic_48" },
+   { "jpeg", "mimetypes/image-x-generic_48" },
+   { "png", "mimetypes/image-x-generic_48" },
+   { "bmp", "mimetypes/image-x-generic_48" },
+   { "gif", "mimetypes/image-x-generic_48" },
+   { "mp3", "mimetypes/audio-x-generic_48" },
+   { "ogg", "mimetypes/audio-x-generic_48" },
+   { "wav", "mimetypes/audio-x-generic_48" },
+   { "avi", "mimetypes/video-x-generic_48" },
+   { "mpg", "mimetypes/video-x-generic_48" },
+   { "mpeg", "mimetypes/video-x-generic_48" },
+   { "gz", "mimetypes/package-x-generic_48" },
+   { "tgz", "mimetypes/package-x-generic_48" },
+   { "bz2", "mimetypes/package-x-generic_48" },
+   { "tbz2", "mimetypes/package-x-generic_48" },
+   { "zip", "mimetypes/package-x-generic_48" },
+   { "rar", "mimetypes/package-x-generic_48" },
+};
+static int _etk_test_iconbox_num_types = sizeof(_etk_test_iconbox_types) / sizeof (_etk_test_iconbox_types[0]);
+static Etk_String *_etk_test_iconbox_current_folder = NULL;
+
+/*static char *_etk_test_iconbox_icon_filenames[] =
 {
    "/home/simon/etk/data/icons/default/icons/48x48/mimetypes/audio-x-generic.png",
    "/home/simon/etk/data/icons/default/icons/48x48/mimetypes/image-x-generic.png",
@@ -18,7 +48,7 @@ static char *_etk_test_iconbox_icon_filenames[] =
    "/home/simon/etk/data/themes/default/images/scrollbar_button_up1.png",
    "/home/simon/etk/data/themes/default/images/scrollbar_vdrag2.png"
 };
-static int _etk_test_iconbox_num_icon_filenames = sizeof(_etk_test_iconbox_icon_filenames) / sizeof(char *);
+static int _etk_test_iconbox_num_icon_filenames = sizeof(_etk_test_iconbox_icon_filenames) / sizeof(char *);*/
 
 /* Creates the window for the iconbox test */
 void etk_test_iconbox_window_create(void *data)
@@ -26,7 +56,7 @@ void etk_test_iconbox_window_create(void *data)
    static Etk_Widget *win = NULL;
    Etk_Widget *iconbox;
    Etk_Iconbox_Model *mini_model;
-   int i;
+   //int i;
    
    if (win)
    {
@@ -41,6 +71,7 @@ void etk_test_iconbox_window_create(void *data)
    
    iconbox = etk_iconbox_new();
    etk_container_add(ETK_CONTAINER(win), iconbox);
+   etk_signal_connect("mouse_up", ETK_OBJECT(iconbox), ETK_CALLBACK(_etk_test_iconbox_mouse_up_cb), NULL);
    
    /* Create a new iconbox model: mini view */
    mini_model = etk_iconbox_model_new(ETK_ICONBOX(iconbox));
@@ -54,6 +85,26 @@ void etk_test_iconbox_window_create(void *data)
    _etk_test_iconbox_folder_set(ETK_ICONBOX(iconbox), NULL);
    
    etk_widget_show_all(win);
+}
+
+/* Called when the iconbox is pressed by the mouse */
+static void _etk_test_iconbox_mouse_up_cb(Etk_Object *object, void *event_info, void *data)
+{
+   Etk_Iconbox *iconbox;
+   Etk_Iconbox_Icon *icon;
+   Etk_Event_Mouse_Up_Down *event;
+   Etk_String *new_folder;
+   
+   if (!(iconbox = ETK_ICONBOX(object)) || !(event = event_info))
+      return;
+   if (event->button != 1)
+      return;
+   if (!(icon = etk_iconbox_icon_get_at_xy(iconbox, event->canvas.x, event->canvas.y, ETK_FALSE, ETK_TRUE, ETK_TRUE)))
+      return;
+   
+   new_folder = etk_string_new_printf("%s/%s", etk_string_get(_etk_test_iconbox_current_folder), etk_iconbox_icon_label_get(icon));
+   _etk_test_iconbox_folder_set(iconbox, etk_string_get(new_folder));
+   etk_object_destroy(ETK_OBJECT(new_folder));
 }
 
 /* Sets the folder displayed in the iconbox */
@@ -71,7 +122,9 @@ static void _etk_test_iconbox_folder_set(Etk_Iconbox *iconbox, const char *folde
       return;
    
    etk_iconbox_clear(iconbox);
+   etk_iconbox_append(iconbox, etk_theme_icon_theme_get(), "actions/go-up_48", "..");
    
+   /* First, add the folders */
    ecore_list_goto_first(files);
    while ((filename = ecore_list_next(files)))
    {      
@@ -85,6 +138,7 @@ static void _etk_test_iconbox_folder_set(Etk_Iconbox *iconbox, const char *folde
       etk_iconbox_append(iconbox, etk_theme_icon_theme_get(), "places/folder_48", filename);
    }
    
+   /* Then the files */
    ecore_list_goto_first(files);
    while ((filename = ecore_list_next(files)))
    {
@@ -101,18 +155,22 @@ static void _etk_test_iconbox_folder_set(Etk_Iconbox *iconbox, const char *folde
       
       if ((ext = strrchr(filename, '.')) && (ext = ext + 1))
       {
-         /*for (i = 0; i < _etk_filechooser_num_icons; i++)
+         for (i = 0; i < _etk_test_iconbox_num_types; i++)
          {
-            if (strcasecmp(ext, _etk_filechooser_icons[i].extension) == 0)
+            if (strcasecmp(ext, _etk_test_iconbox_types[i].extension) == 0)
             {
-               icon = _etk_filechooser_icons[i].icon;
+               icon = _etk_test_iconbox_types[i].icon;
                break;
             }
-         }*/
+         }
       }
       
-      etk_iconbox_append(iconbox, etk_theme_icon_theme_get(), "mimetypes/audio-x-generic_48", filename);
+      etk_iconbox_append(iconbox, etk_theme_icon_theme_get(), icon ? icon : "mimetypes/text-x-generic_48", filename);
    }
    
    ecore_list_destroy(files);
+   
+   if (!_etk_test_iconbox_current_folder)
+      _etk_test_iconbox_current_folder = etk_string_new(NULL);
+   etk_string_set(_etk_test_iconbox_current_folder, folder);
 }

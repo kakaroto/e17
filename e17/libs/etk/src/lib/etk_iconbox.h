@@ -116,6 +116,7 @@ void etk_iconbox_thaw(Etk_Iconbox *iconbox);
 Etk_Iconbox_Icon *etk_iconbox_append(Etk_Iconbox *iconbox, const char *filename, const char *edje_group, const char *label);
 void etk_iconbox_icon_del(Etk_Iconbox_Icon *icon);
 void etk_iconbox_clear(Etk_Iconbox *iconbox);
+Etk_Iconbox_Icon *etk_iconbox_icon_get_at_xy(Etk_Iconbox *iconbox, int x, int y, Etk_Bool over_cell, Etk_Bool over_icon, Etk_Bool over_label);
 
 void etk_iconbox_icon_file_set(Etk_Iconbox_Icon *icon, const char *filename, const char *edje_group);
 void etk_iconbox_icon_file_get(Etk_Iconbox_Icon *icon, const char **filename, const char **edje_group);
@@ -125,6 +126,13 @@ const char *etk_iconbox_icon_label_get(Etk_Iconbox_Icon *icon);
 void etk_iconbox_icon_data_set(Etk_Iconbox_Icon *icon, void *data);
 void etk_iconbox_icon_data_set_full(Etk_Iconbox_Icon *icon, void *data, void (*free_cb)(void *data));
 void *etk_iconbox_icon_data_get(Etk_Iconbox_Icon *icon);
+
+void etk_iconbox_select_all(Etk_Iconbox *iconbox);
+void etk_iconbox_unselect_all(Etk_Iconbox *iconbox);
+
+void etk_iconbox_icon_select(Etk_Iconbox_Icon *icon);
+void etk_iconbox_icon_unselect(Etk_Iconbox_Icon *icon);
+Etk_Bool etk_iconbox_is_selected(Etk_Iconbox_Icon *icon);
 
 /** @} */
 

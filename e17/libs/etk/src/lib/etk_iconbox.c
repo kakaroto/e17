@@ -55,17 +55,10 @@ typedef struct _Etk_Iconbox_Icon_Object
 
 enum _Etk_Tree_Signal_Id
 {
-   /*ETK_TREE_ROW_SELECTED_SIGNAL,
-   ETK_TREE_ROW_UNSELECTED_SIGNAL,
-   ETK_TREE_ROW_CLICKED_SIGNAL,
-   ETK_TREE_ROW_ACTIVATED_SIGNAL,
-   ETK_TREE_ROW_EXPANDED_SIGNAL,
-   ETK_TREE_ROW_COLLAPSED_SIGNAL,
-   ETK_TREE_ROW_MOUSE_IN_SIGNAL,
-   ETK_TREE_ROW_MOUSE_OUT_SIGNAL,
-   ETK_TREE_ROW_MOUSE_MOVE_SIGNAL,     
-   ETK_TREE_SELECT_ALL_SIGNAL,
-   ETK_TREE_UNSELECT_ALL_SIGNAL,*/
+   ETK_ICONBOX_ICON_SELECTED_SIGNAL,
+   ETK_ICONBOX_ICON_UNSELECTED_SIGNAL,
+   ETK_ICONBOX_SELECT_ALL_SIGNAL,
+   ETK_ICONBOX_UNSELECT_ALL_SIGNAL,
    ETK_ICONBOX_NUM_SIGNALS
 };
 
@@ -90,7 +83,6 @@ static void _etk_iconbox_icon_object_add(Etk_Iconbox_Grid *grid);
 static void _etk_iconbox_icon_object_delete(Etk_Iconbox_Grid *grid);
 static void _etk_iconbox_icon_draw(Etk_Iconbox_Icon *icon, Etk_Iconbox_Icon_Object *icon_object, Etk_Iconbox_Model *model, int x, int y);
 static void _etk_iconbox_grid_selection_rect_update(Etk_Iconbox_Grid *grid);
-static void _etk_iconbox_icon_select(Etk_Iconbox_Icon *icon);
 
 static Etk_Signal *_etk_iconbox_signals[ETK_ICONBOX_NUM_SIGNALS];
 
@@ -113,19 +105,16 @@ Etk_Type *etk_iconbox_type_get()
       iconbox_type = etk_type_new("Etk_Iconbox", ETK_WIDGET_TYPE, sizeof(Etk_Iconbox),
          ETK_CONSTRUCTOR(_etk_iconbox_constructor), ETK_DESTRUCTOR(_etk_iconbox_destructor));
 
-      /*_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL] = etk_signal_new("row_selected", tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_tree_signals[ETK_TREE_ROW_UNSELECTED_SIGNAL] = etk_signal_new("row_unselected", tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_tree_signals[ETK_TREE_ROW_CLICKED_SIGNAL] = etk_signal_new("row_clicked", tree_type, -1, etk_marshaller_VOID__POINTER_POINTER, NULL, NULL);
-      _etk_tree_signals[ETK_TREE_ROW_ACTIVATED_SIGNAL] = etk_signal_new("row_activated", tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_tree_signals[ETK_TREE_ROW_EXPANDED_SIGNAL] = etk_signal_new("row_expaned", tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_tree_signals[ETK_TREE_ROW_COLLAPSED_SIGNAL] = etk_signal_new("row_collapsed", tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_tree_signals[ETK_TREE_ROW_MOUSE_IN_SIGNAL] = etk_signal_new("row_mouse_in", tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_tree_signals[ETK_TREE_ROW_MOUSE_OUT_SIGNAL] = etk_signal_new("row_mouse_out", tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_tree_signals[ETK_TREE_ROW_MOUSE_MOVE_SIGNAL] = etk_signal_new("row_mouse_move", tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);      
-      _etk_tree_signals[ETK_TREE_SELECT_ALL_SIGNAL] = etk_signal_new("select_all", tree_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_tree_signals[ETK_TREE_UNSELECT_ALL_SIGNAL] = etk_signal_new("unselect_all", tree_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
-
-      etk_type_property_add(tree_type, "mode", ETK_TREE_MODE_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(ETK_TREE_MODE_LIST));
+      _etk_iconbox_signals[ETK_ICONBOX_ICON_SELECTED_SIGNAL] = etk_signal_new("icon_selected",
+         iconbox_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
+      _etk_iconbox_signals[ETK_ICONBOX_ICON_UNSELECTED_SIGNAL] = etk_signal_new("icon_unselected",
+         iconbox_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
+      _etk_iconbox_signals[ETK_ICONBOX_SELECT_ALL_SIGNAL] = etk_signal_new("select_all",
+         iconbox_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_iconbox_signals[ETK_ICONBOX_UNSELECT_ALL_SIGNAL] = etk_signal_new("unselect_all",
+         iconbox_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
+      
+      /*etk_type_property_add(tree_type, "mode", ETK_TREE_MODE_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(ETK_TREE_MODE_LIST));
       etk_type_property_add(tree_type, "multiple_select", ETK_TREE_MULTIPLE_SELECT_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_bool(ETK_TRUE));
       etk_type_property_add(tree_type, "headers_visible", ETK_TREE_HEADERS_VISIBLE_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_bool(ETK_TRUE));
       etk_type_property_add(tree_type, "row_height", ETK_TREE_ROW_HEIGHT_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(24));
@@ -519,6 +508,74 @@ void etk_iconbox_clear(Etk_Iconbox *iconbox)
 }
 
 /**
+ * @brief Gets the icon located below the position (x, y). The position should be relative to the canvas
+ * @param iconbox an iconbox
+ * @param x the x position
+ * @param y the y position
+ * @param over_cell if @a over_cell == ETK_TRUE, the function will return the icon if (x, y) is over the cell of the icon
+ * @param over_icon if @a over_icon == ETK_TRUE, the function will return the icon if (x, y) is over the image of the icon
+ * @param over_icon if @a over_label == ETK_TRUE, the function will return the icon if (x, y) is over the label of the icon
+ * @return Returns the icon located below the position (x, y), or NULL if none
+ */
+Etk_Iconbox_Icon *etk_iconbox_icon_get_at_xy(Etk_Iconbox *iconbox, int x, int y, Etk_Bool over_cell, Etk_Bool over_icon, Etk_Bool over_label)
+{
+   Etk_Iconbox_Grid *grid;
+   Etk_Iconbox_Model *model;
+   Etk_Geometry grid_geom;
+   int col, row;
+   int icon_id;
+   Etk_Bool over = ETK_FALSE;
+   
+   if (!iconbox || !(grid = ETK_ICONBOX_GRID(iconbox->grid)) || grid->num_cols <= 0 || !(model = iconbox->current_model))
+      return NULL;
+   
+   etk_widget_inner_geometry_get(iconbox->grid, &grid_geom.x, &grid_geom.y, &grid_geom.w, &grid_geom.h);
+   if (x < grid_geom.x || y < grid_geom.y || x > grid_geom.x + grid_geom.w || y > grid_geom.y + grid_geom.h)
+      return NULL;
+   
+   col = (x - grid_geom.x + grid->xoffset) / iconbox->current_model->width;
+   row = (y - grid_geom.y + grid->yoffset) / iconbox->current_model->height;
+   icon_id = row * grid->num_cols + col;
+   if (col >= grid->num_cols || icon_id >= iconbox->num_icons)
+      return NULL;
+   
+   if (over_cell)
+      over = ETK_TRUE;
+   else
+   {
+      if (over_icon)
+      {
+         int icon_x, icon_y;
+         
+         icon_x = grid_geom.x - grid->xoffset + (col * model->width) + model->xpadding + model->icon_x;
+         icon_y = grid_geom.y - grid->yoffset+ (row * model->height) + model->ypadding + model->icon_y;
+         if (x >= icon_x && x <= icon_x + model->icon_width && y >= icon_y && y <= icon_y + model->icon_height)
+            over = ETK_TRUE;
+      }
+      if (over_label)
+      {
+         int label_x, label_y;
+         
+         label_x = grid_geom.x - grid->xoffset + (col * model->width) + model->xpadding + model->label_x;
+         label_y = grid_geom.y - grid->yoffset + (row * model->height) + model->ypadding + model->label_y;
+         if (x >= label_x && x <= label_x + model->label_width && y >= label_y && y <= label_y + model->label_height)
+            over = ETK_TRUE;
+      }
+   }
+   
+   if (over)
+   {
+      int i;
+      Etk_Iconbox_Icon *icon;
+      
+      for (i = 0, icon = iconbox->first_icon; i < icon_id && icon; i++, icon = icon->next);
+      return icon;
+   }
+   else
+      return NULL;   
+}
+
+/**
  * @brief Sets the file used for the icon image
  * @param icon an icon
  * @param filename the filename of the image to use for the icon
@@ -630,6 +687,84 @@ void *etk_iconbox_icon_data_get(Etk_Iconbox_Icon *icon)
    if (!icon)
       return NULL;
    return icon->data;
+}
+
+/**
+ * @brief Selects all the icons of the iconbox
+ * @param iconbox an iconbox
+ */
+void etk_iconbox_select_all(Etk_Iconbox *iconbox)
+{
+   Etk_Iconbox_Icon *icon;
+   
+   if (!iconbox)
+      return;
+   
+   for (icon = iconbox->first_icon; icon; icon = icon->next)
+      icon->selected = ETK_TRUE;
+   
+   etk_widget_redraw_queue(iconbox->grid);
+   etk_signal_emit(_etk_iconbox_signals[ETK_ICONBOX_SELECT_ALL_SIGNAL], ETK_OBJECT(iconbox), NULL);
+}
+
+/**
+ * @brief Unselects all the icons of the iconbox
+ * @param iconbox an iconbox
+ */
+void etk_iconbox_unselect_all(Etk_Iconbox *iconbox)
+{
+   Etk_Iconbox_Icon *icon;
+   
+   if (!iconbox)
+      return;
+   
+   for (icon = iconbox->first_icon; icon; icon = icon->next)
+      icon->selected = ETK_FALSE;
+   
+   etk_widget_redraw_queue(iconbox->grid);
+   etk_signal_emit(_etk_iconbox_signals[ETK_ICONBOX_UNSELECT_ALL_SIGNAL], ETK_OBJECT(iconbox), NULL);
+}
+
+/**
+ * @brief Selects the icon
+ * @param icon the icon to select
+ */
+void etk_iconbox_icon_select(Etk_Iconbox_Icon *icon)
+{
+   if (!icon)
+      return;
+   icon->selected = ETK_TRUE;
+   
+   if (!icon->iconbox->frozen)
+      etk_widget_redraw_queue(icon->iconbox->grid);
+   etk_signal_emit(_etk_iconbox_signals[ETK_ICONBOX_ICON_SELECTED_SIGNAL], ETK_OBJECT(icon->iconbox), NULL, icon);
+}
+
+/**
+ * @brief Unselects the icon
+ * @param icon the icon to select
+ */
+void etk_iconbox_icon_unselect(Etk_Iconbox_Icon *icon)
+{
+   if (!icon)
+      return;
+   icon->selected = ETK_FALSE;
+   
+   if (!icon->iconbox->frozen)
+      etk_widget_redraw_queue(icon->iconbox->grid);
+   etk_signal_emit(_etk_iconbox_signals[ETK_ICONBOX_ICON_UNSELECTED_SIGNAL], ETK_OBJECT(icon->iconbox), NULL, icon);
+}
+
+/**
+ * @brief Gets whether the icon is selected
+ * @param icon an icon
+ * @return Returns ETK_TRUE if the icon is selected, ETK_FALSE otherwise
+ */
+Etk_Bool etk_iconbox_is_selected(Etk_Iconbox_Icon *icon)
+{
+   if (!icon)
+      return ETK_FALSE;
+   return icon->selected;
 }
 
 /**************************
@@ -815,15 +950,14 @@ static void _etk_iconbox_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geo
    
    
    /* Draw the icons */
+   l = grid->icon_objects;
    if (iconbox->current_model)
    {
       first_icon_id = (grid->yoffset / iconbox->current_model->height) * num_cols +
          (grid->xoffset / iconbox->current_model->width);
       for (i = 0, icon = iconbox->first_icon; i < first_icon_id && icon; i++, icon = icon->next);
       
-      l = grid->icon_objects;
       y = -(grid->yoffset % iconbox->current_model->height) + geometry.y;
-      
       for (i = 0; i < num_rows; i++)
       {
          x = -(grid->xoffset % iconbox->current_model->width) + geometry.x;
@@ -950,24 +1084,46 @@ static void _etk_iconbox_grid_mouse_down_cb(Etk_Object *object, void *event_info
 {
    Etk_Iconbox_Grid *grid;
    Etk_Iconbox *iconbox;
+   Etk_Iconbox_Icon *icon;
    Etk_Event_Mouse_Up_Down *down_event;
+   Etk_Bool ctrl_pressed;
    
-   if (!(grid = ETK_ICONBOX_GRID(object)) || !(down_event = event_info))
+   if (!(grid = ETK_ICONBOX_GRID(object)) || !(down_event = event_info) || !(iconbox = grid->iconbox))
       return;
    
-   grid->selection_started = ETK_TRUE;
-   grid->selection_orig_x = down_event->widget.x + grid->xoffset;
-   grid->selection_orig_y = down_event->widget.y + grid->yoffset;
-   grid->selection_mouse_x = grid->selection_orig_x;
-   grid->selection_mouse_y = grid->selection_orig_y;
-   grid->selection_first_col = 0;
-   grid->selection_last_col = 0;
-   grid->selection_first_row = 0;
-   grid->selection_last_row = 0;
+   if (down_event->button != 1)
+      return;
    
-   if ((iconbox = grid->iconbox))
+   ctrl_pressed = evas_key_modifier_is_set(down_event->modifiers, "Control");
+   if ((icon = etk_iconbox_icon_get_at_xy(iconbox, down_event->canvas.x, down_event->canvas.y, ETK_FALSE, ETK_TRUE, ETK_TRUE)))
    {
-      Etk_Iconbox_Icon *icon;
+      if (ctrl_pressed)
+      {
+         if (icon->selected)
+            etk_iconbox_icon_unselect(icon);
+         else
+            etk_iconbox_icon_select(icon);
+      }
+      else
+      {
+         etk_iconbox_unselect_all(iconbox);
+         etk_iconbox_icon_select(icon);
+      }
+   }
+   else
+   {
+      grid->selection_started = ETK_TRUE;
+      grid->selection_orig_x = down_event->widget.x + grid->xoffset;
+      grid->selection_orig_y = down_event->widget.y + grid->yoffset;
+      grid->selection_mouse_x = grid->selection_orig_x;
+      grid->selection_mouse_y = grid->selection_orig_y;
+      grid->selection_first_col = 0;
+      grid->selection_last_col = 0;
+      grid->selection_first_row = 0;
+      grid->selection_last_row = 0;
+      
+      if (!ctrl_pressed)
+         etk_iconbox_unselect_all(iconbox);
       for (icon = iconbox->first_icon; icon; icon = icon->next)
          icon->was_selected = icon->selected;
    }
@@ -982,8 +1138,14 @@ static void _etk_iconbox_grid_mouse_up_cb(Etk_Object *object, void *event_info, 
    if (!(grid = ETK_ICONBOX_GRID(object)) || !(up_event = event_info))
       return;
    
-   grid->selection_started = ETK_FALSE;
-   evas_object_hide(grid->selection_rect);
+   if (up_event->button != 1)
+      return;
+   
+   if (grid->selection_started)
+   {
+      grid->selection_started = ETK_FALSE;
+      evas_object_hide(grid->selection_rect);
+   }
 }
 
 /* Called when the mouse moves over the iconbox */
@@ -1028,6 +1190,7 @@ static void _etk_iconbox_icon_object_add(Etk_Iconbox_Grid *grid)
    icon_object = malloc(sizeof(Etk_Iconbox_Icon_Object));
    icon_object->image = NULL;
    icon_object->label = etk_label_new(NULL);
+   etk_widget_repeat_mouse_events_set(icon_object->label, ETK_TRUE);
    icon_object->use_edje = ETK_FALSE;
    
    etk_label_alignment_set(ETK_LABEL(icon_object->label), 0.0, 0.0);
@@ -1240,14 +1403,4 @@ static void _etk_iconbox_grid_selection_rect_update(Etk_Iconbox_Grid *grid)
    evas_object_resize(grid->selection_rect, rect_geometry.w, rect_geometry.h);
    evas_object_show(grid->selection_rect);
    etk_widget_member_object_raise(ETK_WIDGET(grid), grid->selection_rect);
-}
-
-/* Selects the icon */
-static void _etk_iconbox_icon_select(Etk_Iconbox_Icon *icon)
-{
-   if (!icon)
-      return;
-   icon->selected = ETK_TRUE;
-   /* TODO */
-   etk_widget_redraw_queue(icon->iconbox->grid);
 }

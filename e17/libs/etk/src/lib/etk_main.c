@@ -163,9 +163,8 @@ void etk_main_iterate()
  */
 void etk_main_iteration_queue()
 {
-   if (_etk_main_iterate_job)
-      ecore_job_del(_etk_main_iterate_job);
-   _etk_main_iterate_job = ecore_job_add(_etk_main_iterate_job_cb, NULL);
+   if (!_etk_main_iterate_job)
+      _etk_main_iterate_job = ecore_job_add(_etk_main_iterate_job_cb, NULL);
 }
 
 /**
