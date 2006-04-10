@@ -324,9 +324,13 @@ EImageGrabDrawable(Drawable draw, Pixmap mask, int x, int y, int w, int h,
 		   int grab)
 {
    EImage             *im;
+   Colormap            cm;
 
+   cm = imlib_context_get_colormap();
+   imlib_context_set_colormap(None);	/* Fix for grabbing bitmaps */
    imlib_context_set_drawable(draw);
    im = imlib_create_image_from_drawable(mask, x, y, w, h, grab);
+   imlib_context_set_colormap(cm);
 
    return im;
 }
