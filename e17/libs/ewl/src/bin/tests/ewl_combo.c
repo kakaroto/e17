@@ -5,7 +5,57 @@
 
 /**
  * @addtogroup Ewl_Combo
+ * @section combo_tut Tutorial
  *
+ * The Ewl_Combo widget is based on a Model/View/Controller design. Before
+ * you can use the combo you need to setup your startting data structure,
+ * your model and your view. Once everything is created if you want to
+ * change your data all you have to do is tell the combo that it's data is
+ * dirty and it will redisplay the combo box.
+ *
+ * @code
+ * model = ewl_model_new();
+ * ewl_model_fetch_set(model, combo_test_data_fetch);
+ * ewl_model_count_set(model, combo_test_data_count_get);
+
+ * view = ewl_view_new();
+ * ewl_view_constructor_set(view, ewl_label_new);
+ * ewl_view_assign_set(view, EWL_VIEW_ASSIGN(ewl_label_text_set));
+ * ewl_view_header_fetch_set(view, combo_test_data_header_fetch);
+
+ * combo = ewl_combo_new();
+ * ewl_callback_append(combo, EWL_CALLBACK_VALUE_CHANGED,
+ * 				combo_value_changed, NULL);
+ * ewl_combo_model_set(EWL_COMBO(combo), model);
+ * ewl_combo_view_set(EWL_COMBO(combo), view);
+ * ewl_combo_data_set(EWL_COMBO(combo), data);
+ * ewl_widget_show(combo);
+ * @endcode
+ * 
+ * If you have a custom widget you wish to display you can set your own
+ * functions into the view to draw your widget. In this case we just want a
+ * simple label displayed.
+ *
+ * The data header is optional and will be displayed at the top of your
+ * combo. In the case where the combo is editable it will use the header as
+ * the normal display. In this case you are responsible for creating and
+ * populating the widget.
+ *
+ * @code
+ * static Ewl_Widget *combo_test_data_header_fetch(void *data, int col);
+ * static void *combo_test_data_fetch(void *data, unsigned int row,
+ *						unsigned int col);
+ * static int combo_test_data_count_get(void *data);
+ * @endcode
+ *
+ * The three model functions are responsible for getting the information
+ * from your model as needed. Each time the combo needs another row of data
+ * it will call the data_fetch function. The col parameter is unused by the
+ * combo box. The count_get function is responsible for returning a count of
+ * the number of items in your data structure. Each of these three functions
+ * receive a void *data param. This is your data as set into the combo box
+ * so you shouldn't need to create a global pointer to the data.
+ * 
  * @note If you set the combo to editable, with ewl_combo_editable set then
  * instead of using the model/view to get the data we will query the view
  * for the header. It is then up to the app to do what they will with the
