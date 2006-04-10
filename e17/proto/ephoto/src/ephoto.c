@@ -76,6 +76,10 @@ main(int argc, char **argv)
 			mainwin = 0;
 			nopresent = 0;
 		}
+		if ( argint < argc && !strcmp(argv[argint], "--list-albums") ) {
+			list_albums_cb(NULL, NULL, NULL);
+			mainwin = 0;
+		}
 		if ( argint < argc && !strcmp(argv[argint], "--slideshow-dir") && noslide != 0 ) {
 			int imageint;
 			Ecore_List *image_list;
@@ -225,7 +229,8 @@ main(int argc, char **argv)
 			       "ephoto --fit-to-audio sets the slideshow to fit audio | ephoto --fullscreen sets "
 			       "the presentation/slideshow window to be fullscreen | ephoto --help displays all available options | "
 			       "ephoto --length slidelength sets the integer slidelength(seconds) as the transition time for slideshow | "
-			       "ephoto --load-album album opens ephoto with album showing. No need to specify a path. "
+				"ephoto --list_albums lists all of your albums. | "
+				"ephoto --load-album album opens ephoto with album showing. No need to specify a path. "
 			       "Just put the basename of the album. | ephoto --loop sets the slideshow to loop | "
 			       "ephoto --presentation-dir /path/to/dir loads every image from /path/to/dir into a presentation | "
 			       "ephoto --presentation /path/to/image /path/to/image /path/to/image starts the presentation using "

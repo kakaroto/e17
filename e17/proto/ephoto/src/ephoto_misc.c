@@ -436,3 +436,18 @@ void reseta_cb(Ewl_Widget *w, void *event, void *data)
 	ewl_text_text_set(EWL_TEXT(m->atext), "");
 	audio = 0;
 }
+
+void list_albums_cb(Ewl_Widget *w, void *event, void *data)
+{
+	Ecore_List *albums;
+	albums = ecore_list_new();
+	char *home = getenv("HOME");
+	char path[PATH_MAX];
+	snprintf(path, PATH_MAX, "%s/.e/ephoto/", home);
+	albums = ecore_file_ls(path);
+	while ( !ecore_list_is_empty(albums) ) {
+		char *path2;
+		path2 = ecore_list_remove_first(albums);
+		printf("%s\n", path2);
+	}
+}
