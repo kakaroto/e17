@@ -10,6 +10,7 @@ files_DATA = module_icon.png $(wildcard tclock.ed?) \
     $(wildcard fonts/*.ttf) $(wildcard images/*.png) 
 
 EXTRA_DIST = $(files_DATA) e_modules-tclock.spec
+CONFIG_CLEAN_FILES = e_modules-tclock.spec tclock.edj
 
 # the module .so file
 INCLUDES               = -I. \
