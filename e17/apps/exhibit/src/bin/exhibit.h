@@ -163,7 +163,6 @@ struct _Ex_Thumb
 #define WINDOW_TITLE "Exhibit"
 #define WINDOW_WIDTH 700
 #define WINDOW_HEIGHT 500
-#define VIEWABLES 3
 #define ZOOM_MAX 16
 #define ZOOM_MIN -16
 

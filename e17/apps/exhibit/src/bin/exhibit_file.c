@@ -5,19 +5,22 @@ char *viewables[] =
 {
    ".jpg",
    ".png",
-   ".edj"
+   ".gif",
+   ".tiff",
+   ".edj",
+   NULL
 };
 
 int
 _ex_file_is_viewable(char *file)
 {
    char *ext;
-   int i;
+   int i = 0;
 
    ext = strrchr(file, '.');
    if(!ext) return 0;
 
-   for(i = 0; i < VIEWABLES; i++)
+   for(i = 0; viewables[i]; i++)
      {
 	if(!strcasecmp(ext, viewables[i]))
 	  return 1;
