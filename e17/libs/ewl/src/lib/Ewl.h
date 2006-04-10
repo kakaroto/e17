@@ -298,7 +298,10 @@ extern"C" {
 #include <ewl_embed.h>
 #include <ewl_window.h>
 #include <ewl_dialog.h>
-#include <ewl_fileselector.h>
+#include <ewl_filelist.h>
+#include <ewl_filelist_list.h>
+#include <ewl_filelist_icon.h>
+#include <ewl_filepicker.h>
 #include <ewl_filedialog.h>
 
 #include <ewl_text.h>

@@ -178,6 +178,20 @@ struct Ewl_Dialog_Event
 	unsigned int response; /**< The response ID from the dialog */
 };
 
+typedef struct Ewl_Filepicker_Event Ewl_Filepicker_Event;
+
+struct Ewl_Filepicker_Event
+{
+	unsigned int response;
+};
+
+typedef struct Ewl_Filelist_Event Ewl_Filelist_Event;
+
+struct Ewl_Filelist_Event
+{
+	Ewl_Filelist_Event_Type type;
+};
+
 int		ewl_ev_init(void);
 unsigned int 	ewl_ev_modifiers_get(void);
 void 		ewl_ev_modifiers_set(unsigned int modifiers);

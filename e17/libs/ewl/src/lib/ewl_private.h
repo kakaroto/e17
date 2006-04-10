@@ -16,7 +16,10 @@
 #include <math.h>
 #include <assert.h>
 #include <time.h>
-#include <regex.h>
+#include <fnmatch.h>
+#include <pwd.h>
+#include <grp.h>
+#include <langinfo.h>
 
 #ifdef HAVE_CONFIG_H
 #include "ewl-config.h"

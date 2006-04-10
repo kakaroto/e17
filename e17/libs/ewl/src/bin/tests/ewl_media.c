@@ -193,7 +193,7 @@ open_file_cb(Ewl_Widget *w, void *event, void *data __UNUSED__)
 
 	e = event;
 	if (e->response == EWL_STOCK_OPEN)
-		file = ewl_filedialog_file_get(EWL_FILEDIALOG(w));
+		file = ewl_filedialog_selected_file_get(EWL_FILEDIALOG(w));
 
 	if (file) 
 		ewl_media_media_set(EWL_MEDIA(video), file);
@@ -209,7 +209,6 @@ open_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__,
 	}
 
 	fd_win = ewl_filedialog_new();
-	ewl_filedialog_type_set(EWL_FILEDIALOG(fd_win), EWL_FILEDIALOG_TYPE_OPEN);
 	ewl_callback_append(fd_win, EWL_CALLBACK_VALUE_CHANGED, open_file_cb, NULL);
 	ewl_widget_show(fd_win);
 }

@@ -35,35 +35,51 @@ typedef struct Ewl_Filedialog Ewl_Filedialog;
  */
 struct Ewl_Filedialog
 {
-	Ewl_Dialog dialog;        /**< The dialog base class */
-
-	Ewl_Filedialog_Type type; /**< Current type of filedialog */
-	Ewl_Widget *fs;           /**< Ewl_Fileselector */
-	Ewl_Widget *type_btn;     /**< Either the open or save button */
+	Ewl_Dialog dialog;	/**< The dialog base class */
+	Ewl_Widget *fp;	   	/**< Ewl_Filedialog */
+	Ewl_Widget *menu_float;	/**< Floater to hold the menu */
 };
 
-Ewl_Widget 		*ewl_filedialog_multiselect_new(void);
-Ewl_Widget 		*ewl_filedialog_new(void);
+Ewl_Widget 	*ewl_filedialog_multiselect_new(void);
+Ewl_Widget 	*ewl_filedialog_new(void);
+int		 ewl_filedialog_init(Ewl_Filedialog *fd);
 
-Ewl_Filedialog_Type	 ewl_filedialog_type_get(Ewl_Filedialog *fd);
-void			 ewl_filedialog_type_set(Ewl_Filedialog *fd, 
-						Ewl_Filedialog_Type type);
-int			 ewl_filedialog_init(Ewl_Filedialog *fd);
-char			*ewl_filedialog_path_get(Ewl_Filedialog *fd);
-char			*ewl_filedialog_file_get(Ewl_Filedialog *fd);
-void			 ewl_filedialog_path_set(Ewl_Filedialog *fd, char *path);
+void		 ewl_filedialog_list_view_set(Ewl_Filedialog *fd, 
+						Ewl_View *view);
+Ewl_View	*ewl_filedialog_list_view_get(Ewl_Filedialog *fd);
 
-void			 ewl_filedialog_multiselect_set(Ewl_Filedialog *fd, 
-							unsigned int val);
-unsigned int		 ewl_filedialog_multiselect_get(Ewl_Filedialog *fd);
+void		 ewl_filedialog_directory_set(Ewl_Filedialog *fd,
+						const char *dir);
+const char	*ewl_filedialog_directory_get(Ewl_Filedialog *fd);
 
-Ecore_List 		*ewl_filedialog_select_list_get(Ewl_Filedialog *fd);
+void		 ewl_filedialog_multiselect_set(Ewl_Filedialog *fd,
+						unsigned int ms);
+unsigned int	 ewl_filedialog_multiselect_get(Ewl_Filedialog *fd);
+
+void		 ewl_filedialog_show_dot_files_set(Ewl_Filedialog *fd,
+						unsigned int dot);
+unsigned int	 ewl_filedialog_show_dot_files_get(Ewl_Filedialog *fd);
+
+void		 ewl_filedialog_show_favorites_set(Ewl_Filedialog *fd,
+						unsigned int show);
+unsigned int	 ewl_filedialog_show_favorites_get(Ewl_Filedialog *fd);
+
+void		 ewl_filedialog_selected_file_set(Ewl_Filedialog *fd,
+						const char *file);
+char		*ewl_filedialog_selected_file_get(Ewl_Filedialog *fd);
+
+void		 ewl_filedialog_selected_files_set(Ewl_Filedialog *fd,
+						Ecore_List *files);
+Ecore_List	*ewl_filedialog_selected_files_get(Ewl_Filedialog *fd);
+
+void		 ewl_filedialog_filter_add(Ewl_Filedialog *fd,
+						const char *name,
+						const char *filter);
 
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_filedialog_click_cb (Ewl_Widget *w, void *ev_data, void *data);
-void ewl_filedialog_delete_window_cb(Ewl_Widget *w, void *ev_data, void *data);
+void ewl_filedialog_cb_delete_window(Ewl_Widget *w, void *ev_data, void *data);
 
 /**
  * @}

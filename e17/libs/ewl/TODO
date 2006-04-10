@@ -6,9 +6,6 @@ EWL BUGS
 
 - Scrollbar jumps when trying to drag the button from its lower part
 
-- Seem to have lost the .. entry in the filedialog files list.
-  ecore_file_ls filters this out.
-
 - In ewl_text if your in a multiline text and on a line that is longer
   then then one above or below and you hit the up arrow it will
   position your cursor one character _before_ the end of the line.
@@ -68,10 +65,6 @@ EWL BUGS
 - the tree dosen't currently play well with the scrollbar. This can be seen
   in the tree test, if you shrink the window and scroll it will only scroll
   the first paned widget. (Need to make this and the paned work together).
-
-- There is a clipping (or padding) issue in the filedialog. If you change
-  directories on the tree several times it shifts the text over a bit each
-  time.
 
   Ewl_Icon bugs/todo
   ------------------

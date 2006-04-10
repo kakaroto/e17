@@ -34,8 +34,11 @@ EWLHEADERS = \
 	ewl_entry.h \
 	ewl_enums.h \
 	ewl_events.h \
-	ewl_fileselector.h \
 	ewl_floater.h \
+	ewl_filelist.h \
+	ewl_filelist_list.h\
+	ewl_filelist_icon.h \
+	ewl_filepicker.h \
 	ewl_filedialog.h \
 	ewl_freebox.h \
 	ewl_grid.h \
@@ -98,8 +101,11 @@ EWLSOURCES= \
 	ewl_embed.c \
 	ewl_entry.c \
 	ewl_events.c \
-	ewl_fileselector.c \
 	ewl_floater.c \
+	ewl_filelist.c \
+	ewl_filelist_list.c \
+	ewl_filelist_icon.c \
+	ewl_filepicker.c \
 	ewl_filedialog.c \
 	ewl_freebox.c \
 	ewl_grid.c \

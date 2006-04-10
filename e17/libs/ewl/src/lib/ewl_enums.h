@@ -277,17 +277,6 @@ enum Ewl_ScrollPane_Flags
 
 typedef enum Ewl_ScrollPane_Flags Ewl_ScrollPane_Flags;
 
-/**
- * @enum Ewl_Filedialog_Type
- */
-enum Ewl_Filedialog_Type
-{
-	EWL_FILEDIALOG_TYPE_OPEN,	/**< Open dialog */
-	EWL_FILEDIALOG_TYPE_SAVE	/**< Save dialog */
-};
-
-typedef enum Ewl_Filedialog_Type Ewl_Filedialog_Type;
-
 enum Ewl_Engine
 {
 	EWL_ENGINE_SOFTWARE_X11 = 1,	/**< The Software X11 engine */
@@ -462,6 +451,14 @@ enum Ewl_Freebox_Layout_Type
 	EWL_FREEBOX_LAYOUT_AUTO
 };
 typedef enum Ewl_Freebox_Layout_Type Ewl_Freebox_Layout_Type;
+
+enum Ewl_Filelist_Event_Type
+{
+	EWL_FILELIST_EVENT_TYPE_DIR_CHANGE,
+	EWL_FILELIST_EVENT_TYPE_SELECTION_CHANGE,
+	EWL_FILELIST_EVENT_TYPE_FILE_SELECTED
+};
+typedef enum Ewl_Filelist_Event_Type Ewl_Filelist_Event_Type;
 
 #define EWL_MOUSE_CURSOR_X 0
 #define EWL_MOUSE_CURSOR_ARROW 2

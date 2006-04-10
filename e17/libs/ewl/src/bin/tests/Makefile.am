@@ -17,7 +17,7 @@ pkg_LTLIBRARIES		= ewl_border.la ewl_box.la ewl_button.la \
 			  ewl_freebox.la ewl_paned.la ewl_text.la \
 			  ewl_calendar.la ewl_combo.la ewl_colorpicker.la \
 			  ewl_dialog.la ewl_entry.la ewl_filedialog.la \
-			  ewl_text_editor.la ewl_fileselector.la \
+			  ewl_text_editor.la ewl_filepicker.la \
 			  ewl_floater.la ewl_icon.la ewl_iconbox.la  \
 			  ewl_tooltip.la ewl_seeker.la ewl_statusbar.la \
 			  ewl_scrollbar.la ewl_password.la ewl_menubar.la \
@@ -132,12 +132,12 @@ ewl_filedialog_la_LDFLAGS	= -module -avoid-version \
 			  -L$(top_builddir)/src/lib/.libs
 ewl_filedialog_la_DEPENDENCIES = 
 
-ewl_fileselector_la_SOURCES   = ewl_fileselector.c
-ewl_fileselector_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
-ewl_fileselector_la_LDFLAGS	= -module -avoid-version \
+ewl_filepicker_la_SOURCES   = ewl_filepicker.c
+ewl_filepicker_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
+ewl_filepicker_la_LDFLAGS	= -module -avoid-version \
 			  -L$(top_builddir)/src/lib \
 			  -L$(top_builddir)/src/lib/.libs
-ewl_fileselector_la_DEPENDENCIES = 
+ewl_filepicker_la_DEPENDENCIES = 
 
 ewl_floater_la_SOURCES   = ewl_floater.c
 ewl_floater_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
@@ -307,7 +307,7 @@ FILES = $(ewl_border_la_SOURCES) $(ewl_box_la_SOURCES) \
 	$(ewl_calendar_la_SOURCES) $(ewl_combo_la_SOURCES) \
 	$(ewl_colorpicker_la_SOURCES) $(ewl_dialog_la_SOURCES) \
 	$(ewl_entry_la_SOURCES) $(ewl_filedialog_la_SOURCES) \
-	$(ewl_text_editor_la_SOURCES) $(ewl_fileselector_la_SOURCES) \
+	$(ewl_text_editor_la_SOURCES) $(ewl_filepicker_la_SOURCES) \
 	$(ewl_floater_la_SOURCES) $(ewl_icon_la_SOURCES) \
 	$(ewl_iconbox_la_SOURCES) $(ewl_tooltip_la_SOURCES) \
 	$(ewl_seeker_la_SOURCES) $(ewl_statusbar_la_SOURCES) \

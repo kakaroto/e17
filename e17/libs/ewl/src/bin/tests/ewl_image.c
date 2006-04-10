@@ -330,7 +330,6 @@ create_image_fd_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 	ewl_window_title_set (EWL_WINDOW (fd), "Select an Image...");
 	ewl_window_name_set (EWL_WINDOW (fd), "EWL Image Test");
 	ewl_window_class_set (EWL_WINDOW (fd), "EWL Filedialog");
-	ewl_filedialog_type_set(EWL_FILEDIALOG(fd), EWL_FILEDIALOG_TYPE_OPEN);
 	ewl_callback_append (fd, EWL_CALLBACK_VALUE_CHANGED, 
 			    create_image_fd_window_response, user_data);
 	ewl_widget_show(fd);
@@ -348,7 +347,7 @@ create_image_fd_window_response (Ewl_Widget *w, void *ev, void *data)
 		char *path;
 
 		printf("File open from image test: %s\n", 
-		path = ewl_filedialog_file_get (EWL_FILEDIALOG (w)));
+		path = ewl_filedialog_selected_file_get (EWL_FILEDIALOG (w)));
 		if (path) {
 			ewl_text_text_set(EWL_TEXT(entry), path);
 			image_load();

@@ -63,6 +63,8 @@ dialog_cb_single_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	Ewl_Widget *fd;
 
 	fd = ewl_filedialog_new();
+	ewl_filedialog_filter_add(EWL_FILEDIALOG(fd), "C Files", "*.c");
+	ewl_filedialog_filter_add(EWL_FILEDIALOG(fd), "D Files", "*.d");
 	ewl_callback_append(fd, EWL_CALLBACK_DELETE_WINDOW, 
 					fd_cb_delete, NULL);
 	ewl_callback_append(fd, EWL_CALLBACK_VALUE_CHANGED,
@@ -110,11 +112,11 @@ fd_cb_value_changed(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	if (ewl_filedialog_multiselect_get(fd))
 	{
 		Ecore_List *l;
-		l = ewl_filedialog_select_list_get(fd);
+		l = ewl_filedialog_selected_files_get(fd);
 		ecore_list_for_each(l, fd_append, list);
 	}
 	else
-		fd_append(ewl_filedialog_file_get(fd), list);
+		fd_append(ewl_filedialog_selected_file_get(fd), list);
 
 	ewl_widget_destroy(w);
 }

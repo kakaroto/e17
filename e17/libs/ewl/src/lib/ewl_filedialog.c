@@ -4,6 +4,11 @@
 #include "ewl_private.h"
 
 static void ewl_filedialog_respond(Ewl_Filedialog *fd, unsigned int response);
+static void ewl_filedialog_cb_value_changed(Ewl_Widget *w, void *ev, 
+							void *data);
+static void ewl_filedialog_cb_mouse_down(Ewl_Widget *w, void *ev, void *data);
+static void ewl_filedialog_cb_icon_view(Ewl_Widget *w, void *ev, void *data);
+static void ewl_filedialog_cb_list_view(Ewl_Widget *w, void *ev, void *data);
 
 /**
  * @return Returns a new open filedialog if successful, NULL on failure.
@@ -17,9 +22,9 @@ ewl_filedialog_multiselect_new(void)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	fd = ewl_filedialog_new();
-	if (!fd) {
+	if (!fd) 
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
-	}
+		
 	ewl_filedialog_multiselect_set(EWL_FILEDIALOG(fd), TRUE);
 
 	DRETURN_PTR(EWL_WIDGET(fd), DLEVEL_STABLE);
@@ -37,11 +42,11 @@ ewl_filedialog_new(void)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	fd = NEW(Ewl_Filedialog, 1);
-	if (!fd) {
+	if (!fd) 
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
-	}
 
-	if (!ewl_filedialog_init(fd)) {
+	if (!ewl_filedialog_init(fd)) 
+	{
 		ewl_widget_destroy(EWL_WIDGET(fd));
 		fd = NULL;
 	}
@@ -57,7 +62,7 @@ ewl_filedialog_new(void)
 int
 ewl_filedialog_init(Ewl_Filedialog *fd)
 {
-	Ewl_Widget *w, *o;
+	Ewl_Widget *w, *menu, *o;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fd", fd, FALSE);
@@ -72,116 +77,87 @@ ewl_filedialog_init(Ewl_Filedialog *fd)
 	ewl_window_name_set(EWL_WINDOW(fd), "Ewl Filedialog");
 	ewl_window_class_set(EWL_WINDOW(fd), "Ewl Filedialog");
 
-	ewl_dialog_action_position_set(EWL_DIALOG(fd), EWL_POSITION_BOTTOM);
-
 	ewl_callback_append(EWL_WIDGET(fd), EWL_CALLBACK_DELETE_WINDOW,
-				ewl_filedialog_delete_window_cb, NULL);
+				ewl_filedialog_cb_delete_window, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
+				ewl_filedialog_cb_mouse_down, NULL);
 
 	ewl_dialog_active_area_set(EWL_DIALOG(fd), EWL_POSITION_TOP);
 
-	/* the file selector */
-	fd->fs = ewl_fileselector_new();
-	ewl_widget_internal_set(fd->fs, TRUE);
-	ewl_container_child_append(EWL_CONTAINER(fd), fd->fs);
-	ewl_widget_show(fd->fs);
+	/* the file picker */
+	fd->fp = ewl_filepicker_new();
+	ewl_widget_internal_set(fd->fp, TRUE);
+	ewl_container_child_append(EWL_CONTAINER(fd), fd->fp);
+	ewl_callback_append(fd->fp, EWL_CALLBACK_VALUE_CHANGED,
+				ewl_filedialog_cb_value_changed, fd);
+	ewl_widget_show(fd->fp);
 
-	ewl_dialog_active_area_set(EWL_DIALOG(fd), EWL_POSITION_BOTTOM);
+	/* we don't want an action area with this as the filepicker provides
+	 * it's own ok/cancel buttons */
+	ewl_dialog_has_separator_set(EWL_DIALOG(fd), FALSE);
+	ewl_widget_hide(EWL_DIALOG(fd)->action_area);
 
-	/* Buttons */
-	o = ewl_button_new();
-	ewl_container_child_append(EWL_CONTAINER(fd), o);
-	ewl_button_stock_type_set(EWL_BUTTON(o), EWL_STOCK_OPEN);
-	ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
-					ewl_filedialog_click_cb, fd);
+	fd->menu_float = ewl_floater_new();
+	ewl_container_child_append(EWL_CONTAINER(fd), fd->menu_float);
+	ewl_object_fill_policy_set(EWL_OBJECT(fd->menu_float),
+						EWL_FLAG_FILL_FILL);
+	ewl_widget_internal_set(EWL_WIDGET(fd->menu_float), TRUE);
+
+	menu = ewl_menu_new();
+	ewl_button_label_set(EWL_BUTTON(menu), " ");
+	ewl_container_child_append(EWL_CONTAINER(fd->menu_float), menu);
+	ewl_widget_show(menu);
+
+	o = ewl_menu_item_new();
+	ewl_button_label_set(EWL_BUTTON(o), "Icon view");
+	ewl_container_child_append(EWL_CONTAINER(menu), o);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
+				ewl_filedialog_cb_icon_view, fd);
 	ewl_widget_show(o);
-	fd->type_btn = o;
 
-	o = ewl_button_new();
-	ewl_container_child_append(EWL_CONTAINER(fd), o);
-	ewl_button_stock_type_set(EWL_BUTTON(o), EWL_STOCK_CANCEL);
-	ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
-					ewl_filedialog_click_cb, fd);
+	o = ewl_menu_item_new();
+	ewl_button_label_set(EWL_BUTTON(o), "List view");
+	ewl_container_child_append(EWL_CONTAINER(menu), o);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
+				ewl_filedialog_cb_list_view, fd);
 	ewl_widget_show(o);
-
-	/* set the top active so the tooltips go to the right spot */
-	ewl_dialog_active_area_set(EWL_DIALOG(fd), EWL_POSITION_TOP);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**
- * @param fd: the filedialog to get the current type
- * @return Returns the current file dialog type.
- * @brief Retrieve the current filedialog type.
- */
-Ewl_Filedialog_Type
-ewl_filedialog_type_get(Ewl_Filedialog *fd)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fd", fd, EWL_FILEDIALOG_TYPE_OPEN);
-	DCHECK_TYPE_RET("fd", fd, EWL_FILEDIALOG_TYPE, EWL_FILEDIALOG_TYPE_OPEN);
-
-	DRETURN_INT(fd->type, DLEVEL_STABLE);
-}
-
-/**
- * @param fd: the filedialog to change types
- * @param t: The type to set the filedialog too
+ * @param fd: The filedialog to set the view on
+ * @param view: The Ewl_View to set into the dialog
  * @return Returns no value.
- * @brief Change the current filedialog type.
+ * @brief Set the view to be used for displaying the files in the dialog
  */
 void
-ewl_filedialog_type_set(Ewl_Filedialog *fd, Ewl_Filedialog_Type t)
+ewl_filedialog_list_view_set(Ewl_Filedialog *fd, Ewl_View *view)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fd", fd);
+	DCHECK_PARAM_PTR("view", view);
 	DCHECK_TYPE("fd", fd, EWL_FILEDIALOG_TYPE);
 
-	if (t == EWL_FILEDIALOG_TYPE_OPEN) 
-		ewl_button_stock_type_set(EWL_BUTTON(fd->type_btn), EWL_STOCK_OPEN);
-
-	else if (t == EWL_FILEDIALOG_TYPE_SAVE) 
-		ewl_button_stock_type_set(EWL_BUTTON(fd->type_btn), EWL_STOCK_SAVE);
+	ewl_filepicker_list_view_set(EWL_FILEPICKER(fd->fp), view);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
- * @param fd: the filedialog
- * @return Returns the current path of filedialog
- * @brief Retrieve the current filedialog path
+ * @param fd: The filedialog to get the view from
+ * @return Returns the Ewl_View set on this file dialog
+ * @brief Retrieve the file list view used in this file dialog
  */
-char *
-ewl_filedialog_path_get(Ewl_Filedialog *fd)
+Ewl_View *
+ewl_filedialog_list_view_get(Ewl_Filedialog *fd)
 {
-	char *s;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fd", fd, NULL);
-	DCHECK_TYPE("fd", fd, EWL_FILEDIALOG_TYPE);
-
-	s = ewl_fileselector_path_get(EWL_FILESELECTOR(fd->fs)); 
-
-	DRETURN_PTR(s, DLEVEL_STABLE);
-}
-
-/**
- * @param fd: the filedialog
- * @return Returns the selected filename including its path
- * @brief Retrieve the selected filename
- */
-char *
-ewl_filedialog_file_get(Ewl_Filedialog *fd)
-{
-	char *s;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fd", fd, NULL);
 	DCHECK_TYPE_RET("fd", fd, EWL_FILEDIALOG_TYPE, NULL);
-	
-	s = ewl_fileselector_file_get(EWL_FILESELECTOR(fd->fs));
 
-	DRETURN_PTR(s, DLEVEL_STABLE);
+	DRETURN_PTR(ewl_filepicker_list_view_get(EWL_FILEPICKER(fd->fp)), 
+							DLEVEL_STABLE);
 }
 
 /**
@@ -198,9 +174,25 @@ ewl_filedialog_path_set(Ewl_Filedialog *fd, char *path)
 	DCHECK_PARAM_PTR("path", path);
 	DCHECK_TYPE("fd", fd, EWL_FILEDIALOG_TYPE);
 
-	ewl_fileselector_path_set(EWL_FILESELECTOR(fd->fs), path);
+	ewl_filepicker_directory_set(EWL_FILEPICKER(fd->fp), path);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param fd: the filedialog
+ * @return Returns the current path of filedialog
+ * @brief Retrieve the current filedialog path
+ */
+const char *
+ewl_filedialog_directory_get(Ewl_Filedialog *fd)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("fd", fd, NULL);
+	DCHECK_TYPE("fd", fd, EWL_FILEDIALOG_TYPE);
+
+	DRETURN_PTR(ewl_filepicker_directory_get(EWL_FILEPICKER(fd->fp)),
+							DLEVEL_STABLE);
 }
 
 /**
@@ -216,7 +208,7 @@ ewl_filedialog_multiselect_set(Ewl_Filedialog *fd, unsigned int val)
 	DCHECK_PARAM_PTR("fd", fd);
 	DCHECK_TYPE("fd", fd, EWL_FILEDIALOG_TYPE);
 
-	ewl_fileselector_multiselect_set(EWL_FILESELECTOR(fd->fs), val);
+	ewl_filepicker_multiselect_set(EWL_FILEPICKER(fd->fp), val);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -229,15 +221,132 @@ ewl_filedialog_multiselect_set(Ewl_Filedialog *fd, unsigned int val)
 unsigned int
 ewl_filedialog_multiselect_get(Ewl_Filedialog *fd)
 {
-	unsigned int val;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fd", fd, 0);
 	DCHECK_TYPE_RET("fd", fd, EWL_FILEDIALOG_TYPE, 0);
 
-	val = ewl_fileselector_multiselect_get(EWL_FILESELECTOR(fd->fs));
+	DRETURN_INT(ewl_filepicker_multiselect_get(EWL_FILEPICKER(fd->fp)), 
+							DLEVEL_STABLE);	
+}
 
-	DRETURN_INT(val, DLEVEL_STABLE);	
+/** 
+ * @param fd: The filedialog to change
+ * @param dot: The value to set for show dot files
+ * @return Returns no value.
+ * @brief Set if the file dialog should show dot files by default 
+ */
+void
+ewl_filedialog_show_dot_files_set(Ewl_Filedialog *fd, unsigned int dot)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("fd", fd);
+	DCHECK_TYPE("fd", fd, EWL_FILEDIALOG_TYPE);
+
+	ewl_filepicker_show_dot_files_set(EWL_FILEPICKER(fd->fp), dot);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param fd: The filedialog to get the value from
+ * @return Returns the show dot file setting of the dialog
+ * @brief Returns the current dot file setting of the dialog
+ */
+unsigned int
+ewl_filedialog_show_dot_files_get(Ewl_Filedialog *fd)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("fd", fd, 0);
+	DCHECK_TYPE_RET("fd", fd, EWL_FILEDIALOG_TYPE, 0);
+
+	DRETURN_INT(ewl_filepicker_show_dot_files_get(EWL_FILEPICKER(fd->fp)),
+								DLEVEL_STABLE);
+}
+
+/** 
+ * @param fd: The filedialog to set the value into
+ * @param show: The setting for show favorites to set
+ * @return Returns no value.
+ * @brief Specify if the favorites column should be shown or not
+ */
+void
+ewl_filedialog_show_favorites_set(Ewl_Filedialog *fd, unsigned int show)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("fd", fd);
+	DCHECK_TYPE("fd", fd, EWL_FILEDIALOG_TYPE);
+
+	ewl_filepicker_show_favorites_set(EWL_FILEPICKER(fd->fp), show);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param: The filedialog to work with
+ * @return Returns the current show favorites setting for the dialog
+ * @brief Get the current show favorites setting for the filedialog
+ */
+unsigned int
+ewl_filedialog_show_favorites_get(Ewl_Filedialog *fd)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("fd", fd, 0);
+	DCHECK_TYPE_RET("fd", fd, EWL_FILEDIALOG_TYPE, 0);
+
+	DRETURN_INT(ewl_filepicker_show_favorites_get(EWL_FILEPICKER(fd->fp)),
+								DLEVEL_STABLE);
+}
+
+/**
+ * @param fd: The filedialog to work with
+ * @param file: The selected file to set
+ * @return Returns no value
+ * @brief Set the currently selected file into the file dialog
+ */
+void
+ewl_filedialog_selected_file_set(Ewl_Filedialog *fd, const char *file)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("fd", fd);
+	DCHECK_TYPE("fd", fd, EWL_FILEDIALOG_TYPE);
+
+	ewl_filepicker_selected_file_set(EWL_FILEPICKER(fd->fp), file);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param fd: the filedialog
+ * @return Returns the selected filename including its path
+ * @brief Retrieve the selected filename
+ */
+char *
+ewl_filedialog_selected_file_get(Ewl_Filedialog *fd)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("fd", fd, NULL);
+	DCHECK_TYPE_RET("fd", fd, EWL_FILEDIALOG_TYPE, NULL);
+	
+	DRETURN_PTR(ewl_filepicker_selected_file_get(EWL_FILEPICKER(fd->fp)), 
+							DLEVEL_STABLE);
+}
+
+/**
+ * @param fd: The filedialog to work with
+ * @param files: The list of filenames to set selected in the dialog
+ * @return Returns no value
+ * @brief Sets the given files as selected in the filedialog
+ */
+void
+ewl_filedialog_selected_files_set(Ewl_Filedialog *fd, Ecore_List *files)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("fd", fd);
+	DCHECK_TYPE("fd", fd, EWL_FILEDIALOG_TYPE);
+
+	ewl_filepicker_selected_files_set(EWL_FILEPICKER(fd->fp), files);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -246,41 +355,43 @@ ewl_filedialog_multiselect_get(Ewl_Filedialog *fd)
  * @brief returns all the elements selected by the user
  */
 Ecore_List *
-ewl_filedialog_select_list_get(Ewl_Filedialog *fd)
+ewl_filedialog_selected_files_get(Ewl_Filedialog *fd)
 {
-	Ecore_List *list;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fd", fd, NULL);
 	DCHECK_TYPE_RET("fd", fd, EWL_FILEDIALOG_TYPE, NULL);
 
-	list = ewl_fileselector_select_list_get(EWL_FILESELECTOR(fd->fs));
+	DRETURN_PTR(ewl_filepicker_selected_files_get(EWL_FILEPICKER(fd->fp)), 
+								DLEVEL_STABLE);
+}
 
-	DRETURN_PTR(list, DLEVEL_STABLE);
+/**
+ * @param fd: The filedialog to work with
+ * @param name: The name to display for the filter
+ * @param filter: The actual regular expression for the filter
+ * @return Returns no value
+ * @brief Add the filter named @a name to the combo box in the filedialog.
+ */
+void
+ewl_filedialog_filter_add(Ewl_Filedialog *fd, const char *name,
+						const char *filter)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("fd", fd);
+	DCHECK_PARAM_PTR("name", name);
+	DCHECK_PARAM_PTR("filter", filter);
+	DCHECK_TYPE("fd", fd, EWL_FILEDIALOG_TYPE);
+
+	ewl_filepicker_filter_add(EWL_FILEPICKER(fd->fp), name, filter);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /*
  * Internally used callback, override at your own risk.
  */
 void
-ewl_filedialog_click_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *data)
-{
-	Ewl_Filedialog *fd;
-	unsigned int resp;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-
-	fd = EWL_FILEDIALOG(data);
-	resp = ewl_button_stock_type_get(EWL_BUTTON(w));
-	ewl_filedialog_respond(fd, resp);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-ewl_filedialog_delete_window_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
+ewl_filedialog_cb_delete_window(Ewl_Widget *w, void *ev_data __UNUSED__, 
 							void *data __UNUSED__)
 {
 	Ewl_Filedialog *fd;
@@ -298,14 +409,94 @@ ewl_filedialog_delete_window_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 static void
 ewl_filedialog_respond(Ewl_Filedialog *fd, unsigned int response)
 {
-	Ewl_Dialog_Event ev;
+        Ewl_Dialog_Event ev;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ev.response = response;
-	ewl_callback_call_with_event_data(EWL_WIDGET(fd),
-					  EWL_CALLBACK_VALUE_CHANGED, &ev);
+        ev.response = response;
+        ewl_callback_call_with_event_data(EWL_WIDGET(fd),
+                                          EWL_CALLBACK_VALUE_CHANGED, &ev);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
+static void
+ewl_filedialog_cb_value_changed(Ewl_Widget *w __UNUSED__, void *ev, 
+							void *data)
+{
+	Ewl_Filedialog *fd;
+	Ewl_Filepicker_Event *e;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	fd = data;
+	e = ev;
+
+	ewl_filedialog_respond(fd, e->response);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_filedialog_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
+{
+	Ewl_Event_Mouse_Down *event;
+	Ewl_Filedialog *fd;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	event = ev;
+	fd = EWL_FILEDIALOG(w);
+
+	if (event->button == 3)
+	{
+		int x, y;
+
+		x = ewl_object_current_x_get(EWL_OBJECT(fd));
+		y = ewl_object_current_y_get(EWL_OBJECT(fd));
+
+		ewl_floater_position_set(EWL_FLOATER(fd->menu_float),
+						event->x - x, 
+						event->y - y);
+		ewl_widget_show(fd->menu_float);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_filedialog_cb_icon_view(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+								void *data)
+{
+	Ewl_Filedialog *fd;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("data", data);
+
+	fd = data;
+	ewl_filedialog_list_view_set(fd, ewl_filelist_icon_view_get());
+	ewl_widget_hide(fd->menu_float);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_filedialog_cb_list_view(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+								void *data)
+{
+	Ewl_Filedialog *fd;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("data", data);
+
+	fd = data;
+	ewl_filedialog_list_view_set(fd, ewl_filelist_list_view_get());
+	ewl_widget_hide(fd->menu_float);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 
