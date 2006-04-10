@@ -304,8 +304,6 @@ eapp_cb_fd_show(Ewl_Widget *w, void *ev, void *data)
     {
         fd = ewl_filedialog_new();
     	ewl_widget_name_set(fd, "fd");
-        ewl_filedialog_type_set(EWL_FILEDIALOG(fd),
-                                EWL_FILEDIALOG_TYPE_OPEN);
         ewl_callback_append(fd, EWL_CALLBACK_VALUE_CHANGED,
                                 eapp_cb_fd_changed, NULL);
         ewl_widget_show(fd);
@@ -330,7 +328,7 @@ eapp_cb_fd_changed(Ewl_Widget *w, void *ev, void *data)
     {
         char *icon;
 
-        icon = ewl_filedialog_file_get(EWL_FILEDIALOG(w));
+        icon = ewl_filedialog_selected_file_get(EWL_FILEDIALOG(w));
 
         o = ewl_widget_name_find("icon");
         ewl_widget_data_set(o, "file", icon);
