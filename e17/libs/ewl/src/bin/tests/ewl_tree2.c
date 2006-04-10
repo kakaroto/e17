@@ -22,7 +22,7 @@ static void *tree2_test_data_setup(void);
 static Ewl_Widget *tree2_test_custom_new(void);
 static void tree2_test_custom_assign_set(Ewl_Widget *w, void *data);
 static Ewl_Widget *tree2_test_data_header_fetch(void *data, 
-						unsigned int column);
+						int column);
 static void *tree2_test_data_fetch(void *data, unsigned int row, 
 						unsigned int column);
 static void tree2_test_data_sort(void *data, unsigned int column);
@@ -133,7 +133,7 @@ tree2_test_custom_assign_set(Ewl_Widget *w, void *data)
 }
 
 static Ewl_Widget *
-tree2_test_data_header_fetch(void *data __UNUSED__, unsigned int column)
+tree2_test_data_header_fetch(void *data __UNUSED__, int column)
 {
         Ewl_Widget *l;
 
