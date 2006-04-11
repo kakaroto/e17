@@ -10,12 +10,9 @@ filesdir =  $(datadir)
 
 files_DATA = \
 module_icon.png \
-slideshow.edj \
-slideshow.edc \
-VeraMono.ttf \
-slideshow.png
+slideshow.edj
 
-EXTRA_DIST = $(files_DATA)
+EXTRA_DIST = $(files_DATA) slideshow.edc
 
 # the module .so file
 INCLUDES = -I. \
