@@ -22,10 +22,14 @@ void
 void open_with_cb(Ewl_Widget *w , void *ev_data , void *user_data )  {
 	entropy_mime_action* action = NULL;
 	Ewl_Dialog_Event* e = ev_data;	
-	char* file = ewl_filedialog_file_get (EWL_FILEDIALOG (w));
+	char* file = NULL;
 	
 	if (e->response == EWL_STOCK_OPEN) {
-		//action = entropy_core_mime_hint_get(local_file->mime_type);
+		Ecore_List* l;
+		l = ewl_filedialog_selected_files_get(EWL_FILEDIALOG(w));
+		ecore_list_goto_first(l);
+		file = ecore_list_current(l);
+		
 		if (action) {
 			action->executable = strdup(file);
 		} else {
@@ -40,7 +44,6 @@ void open_with_cb(Ewl_Widget *w , void *ev_data , void *user_data )  {
 void ewl_properties_dialog_openwith_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
 	Ewl_Widget* file_dialog = ewl_filedialog_new();
 
-	ewl_filedialog_type_set(EWL_FILEDIALOG(file_dialog), EWL_FILEDIALOG_TYPE_OPEN);
         ewl_callback_append (file_dialog, EWL_CALLBACK_VALUE_CHANGED, open_with_cb, NULL);
 	ewl_widget_show(file_dialog);
 }

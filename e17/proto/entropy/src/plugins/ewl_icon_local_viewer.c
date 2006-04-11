@@ -142,10 +142,15 @@ ewl_iconbox_background_set_file_cb (Ewl_Widget * w, void *ev, void *user_data)
   Ewl_Dialog_Event *e;
   entropy_gui_component_instance *instance = user_data;
   entropy_icon_viewer *viewer = instance->data;
-  char *file = ewl_filedialog_file_get (EWL_FILEDIALOG (w));
+  char* file = NULL;
 
   e = ev;
   if (e->response == EWL_STOCK_OPEN) {
+    Ecore_List* l;
+    l = ewl_filedialog_selected_files_get(EWL_FILEDIALOG(viewer->file_dialog));
+    ecore_list_goto_first(l);
+    file = ecore_list_current(l);
+	  
     printf ("Curent directory is '%s'\n", viewer->current_dir);
     entropy_config_str_set ("iconbox_viewer", viewer->current_dir, file);
     ewl_widget_destroy (viewer->file_dialog);
@@ -166,8 +171,6 @@ ewl_iconbox_background_set_cb (Ewl_Widget * w, void *ev_data, void *user_data)
 
   viewer->file_dialog = ewl_filedialog_new ();
 
-  ewl_filedialog_type_set (EWL_FILEDIALOG (viewer->file_dialog),
-			   EWL_FILEDIALOG_TYPE_OPEN);
   ewl_callback_append (viewer->file_dialog, EWL_CALLBACK_VALUE_CHANGED,
 		       ewl_iconbox_background_set_file_cb, instance);
   ewl_widget_show (viewer->file_dialog);
@@ -260,7 +263,6 @@ icon_properties_cb (Ewl_Widget * w, void *ev_data, void *user_data)
   entropy_gui_component_instance *instance =
     (entropy_gui_component_instance *) user_data;
   entropy_icon_viewer *viewer = instance->data;
-  entropy_gui_event *gui_event;
   gui_file *local_file =
     ecore_hash_get (viewer->icon_hash,
 		    EWL_ICONBOX (viewer->iconbox)->select_icon);
