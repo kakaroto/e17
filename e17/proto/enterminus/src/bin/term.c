@@ -38,18 +38,28 @@ term_tcanvas_bg_color_set(Term *term, int c)
 }
 
 void
-term_tcanvas_glyph_push(Term *term, char c)
+term_tcanvas_glyph_push(Term *term, Term_Char *c)
 {
    Term_TGlyph *gl;
-   int pos;
+   int pos,i;
 
+   if(!c)
+      return;
+   
    pos = term->tcanvas->pos + term->cur_row;
    if (pos >= term->tcanvas->size)
       pos -= term->tcanvas->size;
 
    gl = &term->tcanvas->grid[pos][term->cur_col];
    gl->changed = 1;
-   gl->c = c;
+   gl->nbc = c->nbchar;
+   gl->uc  = malloc(gl->nbc * sizeof(char));   
+   for(i = 0; i < gl->nbc; i++)
+   {
+      gl->uc[i] = c->car[i];
+   }
+   /*gl->c = c->car[0];* we can prolly do away with this later ('gl->c' that is)*/
+   
    gl->fg = term->tcanvas->cur_fg;
    gl->bg = term->tcanvas->cur_bg;
    term->tcanvas->changed_rows[pos] = 1;
@@ -67,19 +77,76 @@ term_tcanvas_glyph_push(Term *term, char c)
    return;
 }
 
-char
+Term_Char *
 term_tcanvas_data_pop(Term *term)
 {
+   unsigned char d, d2, d3, d4;
+   Term_Char *ret=NULL;
+   
    if (term->data_ptr >= term->data_len)
-      return 0;
-   return term->data[term->data_ptr++];
+      return NULL;
+
+   ret = malloc(sizeof(Term_Char));
+   d = term->data[term->data_ptr++];
+
+   if (!d)
+      return NULL;
+
+   /* Below borrowed from evas   :)*/
+   if (d < 0x80)
+   {
+	/* 1 Byte */
+	ret->nbchar = 1;
+	ret->car[0] = d;	
+	if(term->debug)
+	printf("r = %c\n",ret->car[0]);
+	return ret;
+   }
+   if ((d & 0xe0) == 0xc0)
+   {
+      /* 2 bytes */
+     if (((d2 = term->data[term->data_ptr++]) & 0xc0) != 0x80)
+	return NULL;
+     ret->nbchar = 2;
+     ret->car[0] = d;
+     ret->car[1] = d2; 
+   }
+   else if ((d & 0xf0) == 0xe0)
+   {
+	/* 3 bytes */
+     if (((d2 = term->data[term->data_ptr++]) & 0xc0) != 0x80 ||
+	   ((d3 = term->data[term->data_ptr++]) & 0xc0) != 0x80)
+	  return NULL;
+	ret->nbchar = 3;
+	ret->car[0] = d;
+	ret->car[1] = d2;
+	ret->car[2] = d3;
+   }
+   else
+   {
+	/* 4 bytes */
+	if (((d2 = term->data[term->data_ptr++]) & 0xc0) != 0x80 ||
+	    ((d3 = term->data[term->data_ptr++]) & 0xc0) != 0x80 ||
+	    ((d4 = term->data[term->data_ptr++]) & 0xc0) != 0x80)
+	   return NULL;
+	ret->nbchar = 3;
+	ret->car[0] = d;
+	ret->car[1] = d2;
+	ret->car[2] = d3;
+	ret->car[3] = d4;
+   }
+   
+   if(term->debug)
+   printf(" Car is %s len %d\n",ret->car,ret->nbchar);
+   return ret;
+   /*return term->data[term->data_ptr++];*/
 }
 
 /* look for new characters on the terminal device */
 int
 term_tcanvas_data(void *data, Ecore_Fd_Handler *fd_handler)
 {
-   char c;
+   Term_Char *c;
    Term *term;
 
    term = data;
@@ -87,11 +154,15 @@ term_tcanvas_data(void *data, Ecore_Fd_Handler *fd_handler)
    term->data_len = read(term->cmd_fd.sys, &term->data[0], sizeof(term->data));
    if (term->data_len > 0) {
       while ((c = term_tcanvas_data_pop(term))) {
-	 //printf("%c",c);
-	 switch(c) {
+	 if(c->nbchar == 1)
+	 switch(c->car[0]) {
 	    case '\007': /* Bell */
+	       if(term->debug)
+	       printf("BELL?\n");
 	       break;
 	    case '\010': /* backspace */
+	       if(term->debug)
+	       printf("backspace ? \n");
 	       term->cur_col--;
 	       /* FIXME!!! */
 	       if (term->cur_col < 0)
@@ -99,11 +170,17 @@ term_tcanvas_data(void *data, Ecore_Fd_Handler *fd_handler)
 	       //term_tcanvas_glyph_push(term, ' ');
 	       break;
 	    case '\011': /* tab */
+	       if(term->debug)
+	       printf("TAB\n");
 	       break;
 	    case '\033': /* escape */
+	       if(term->debug)
+	       printf("Escape seq\n");
 	       term_handler_escape_seq(term);
 	       break;
 	    case '\n': /* newline */
+	       if(term->debug)
+	       printf("NEWLINE\n");
 	       term->cur_col = 0;
 	       term->cur_row++;
 	       if (term->cur_row >= term->rows) {
@@ -121,21 +198,30 @@ term_tcanvas_data(void *data, Ecore_Fd_Handler *fd_handler)
 
 		  for (j = 0; j < term->cols; j++) {
 		     gl = &term->tcanvas->grid[pos][j];
-		     gl->c = ' ';
+		     if(!gl->uc)
+			gl->uc = malloc(sizeof(char));
+		     gl->uc[0] = ' ';
+		     gl->nbc = 1;
 		     gl->changed = 1;
 		  }
 	       }
 	       break;
 	    case '\r': /* carriage return */
+	       if(term->debug)
+		  printf("RETURN\n");
 	       term->cur_col = 0;
 	       break;
 	    default:
 	       term_tcanvas_glyph_push(term, c);
 	       break;
 	 }
+	 else if(c->nbchar > 1)
+	       term_tcanvas_glyph_push(term, c);
+	 
       }
    }
-   //printf("Exiting TCanvas Data handler\n");
+   if(term->debug)
+   printf("Exiting TCanvas Data handler data_len %d,\n", term->data_len);
    return 1;
 }
 
@@ -157,7 +243,8 @@ term_tcanvas_new(Term *term)
       canvas->grid[i] = calloc(term->cols, sizeof(Term_TGlyph));
       for (j = 0; j < term->cols; j++) {
 	 gl = &canvas->grid[i][j];
-	 gl->c = '\0';
+	// gl->c = '\0';
+	 
 	 gl->changed = 0;
       }
    }

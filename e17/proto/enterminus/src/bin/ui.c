@@ -40,13 +40,29 @@ term_term_bg_set(Term *term, char *img)
 void
 term_update_glyph(Term *term, Term_TGlyph *tgl, Term_EGlyph *gl, int i, int j)
 {
-   char c[2];
+   char *cc=NULL;
 
+   /*
    c[0] = tgl->c;
    c[1] = '\0';
+   */
+   if(tgl->uc)
+   {
+      int ord;
+      cc = (char*)malloc((tgl->nbc + 1) * sizeof(char));
+      cc[tgl->nbc]='\0';
+      for(ord=0;ord < tgl->nbc;ord++)
+      {
+	 cc[ord]=tgl->uc[ord];
+      }      
+   }
    evas_object_text_font_set(gl->text, term->font.face, term->font.size);
-   evas_object_text_text_set(gl->text, c);
+   evas_object_text_text_set(gl->text, cc);
 
+   /*TODO break this out to the api */
+   evas_object_text_style_set(gl->text, EVAS_TEXT_STYLE_SOFT_SHADOW);
+   evas_object_text_shadow_color_set (gl->text, 100, 100, 100, 150);
+   
    /* this is just temp, move it into its own function later */
    switch (tgl->fg) {
       case 0:
@@ -116,7 +132,7 @@ term_redraw(void *data) {
 	    continue;
 
 	 /* unsure as to why this is here, I dont think we need it */
-	 if (tgl->c == '\033') {
+	 if ((tgl->nbc > 0) && (tgl->uc[0] == '\033')) {
 	    printf("Got escape in term_redraw()!\n");
 	    continue;
 	 }
@@ -267,8 +283,10 @@ term_clear_area(Term *term, int x1, int y1, int x2, int y2)
 	 if (x >= term->tcanvas->size)
 	    x = 0;
 	 tgl = &term->tcanvas->grid[x][j];
-	 if (tgl->c != ' ') {
-	    tgl->c = ' ';
+	 if ((tgl->nbc >= 1) && (tgl->uc[0] != ' ')) {
+	    tgl->uc = (char*)realloc(tgl->uc ,1);
+	    tgl->uc[0] = ' ';
+	    tgl->nbc = 1;
 	    tgl->changed = 1;
 	    term->tcanvas->changed_rows[x] = 1;
 	 }
@@ -316,7 +334,8 @@ term_scroll_up(Term *term, int rows)
 	    term->tcanvas->changed_rows[i] = 1;
 	    for (j = 0; j < term->cols; j++) {
 	       tgl = &term->tcanvas->grid[i][j];
-	       tgl->c = ' ';
+	       tgl->uc = (char*)realloc(tgl->uc ,1); /* Is this EVIL? */
+	       tgl->uc[0] = ' ';
 	       tgl->changed = 1;
 	    }
 	 }

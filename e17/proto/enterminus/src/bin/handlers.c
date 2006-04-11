@@ -9,13 +9,20 @@ term_handler_xterm_seq(int op, Term *term)
    char buf[512];
    int len;
    unsigned char c;
+   Term_Char *c2;
    Term_Event_Title_Change *e;
    Ecore_Event *event;
 
-   c = term_tcanvas_data_pop(term);
+   if((c2 = term_tcanvas_data_pop(term)))
+      c = c2->car[0];/* FIXME we'll wrap c for now, the code will be reworked*/
+   else
+      c = 0;
    for (len = 0; c != '\007' && len < 512; len++) {
       buf[len] = c;
-      c = term_tcanvas_data_pop(term);
+      if((c2 = term_tcanvas_data_pop(term)))
+	 c = c2->car[0];/* FIXME we'll wrap c for now, the code will be reworked*/
+      else
+	 c = 0;
    }
    buf[len] = 0;
 
@@ -42,16 +49,23 @@ term_handler_escape_seq(Term *term) {
    int i;
    int questionmark;
    unsigned char c;
+   Term_Char *c2;
 
    for (pos = 0; pos < NPAR; pos++)
      args[pos] = 0;
 
-   c = term_tcanvas_data_pop(term);
+   if((c2 = term_tcanvas_data_pop(term)))
+      c = c2->car[0];
+   else
+      c = 0;
    switch(c) {
       case '[': /* CSI */
 	 digit = 0;
 	 questionmark = 0;
-	 c = term_tcanvas_data_pop(term);
+	 if((c2 = term_tcanvas_data_pop(term)))
+	     c = c2->car[0];
+	 else
+	    c = 0;
 	 while (isdigit(c) || c == ';' || c == '?')	{
 	    if (c == ';') {
 	       args[narg] = 0;
@@ -68,7 +82,10 @@ term_handler_escape_seq(Term *term) {
 		  args[narg - 1] += c - '0';
 	       }
 	    }
-	    c = term_tcanvas_data_pop(term);
+	    if((c2 = term_tcanvas_data_pop(term)))
+	       c = c2->car[0];
+	    else
+	       c = 0;
 	 }
 
 	 switch(c) {
@@ -453,14 +470,20 @@ term_handler_escape_seq(Term *term) {
 	 break;
       case ']': /* xterm sequence */
 	 digit = 0;
-	 c = term_tcanvas_data_pop(term);
+	 if((c2 = term_tcanvas_data_pop(term)))
+	    c = c2->car[0];
+	 else
+	    c = 0;
 	 while (isdigit(c)) {
 	    if (!digit)
 	       narg++;
 	    digit = 1;
 	    args[narg - 1] *= 10;
 	    args[narg - 1] += c - '0';
-	    c = term_tcanvas_data_pop(term);
+	    if((c2 = term_tcanvas_data_pop(term)))
+	       c = c2->car[0];
+	    else
+	       c = 0;
 	 }
 	 if (c != ';' || !narg) {
 	    DPRINT((stderr, "Invalid xterm sequence\n"));
@@ -541,12 +564,28 @@ term_cb_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
    if (buf) {
       write(term->cmd_fd.sys, buf, strlen(buf));
    } else {
-      if (write(term->cmd_fd.sys, ev->string, 1) < 0) {
-	 DPRINT((stderr, "Error writing to process: %m\n"));
-	 //exit(2);
+      unsigned char *st = NULL;
+      int size = 1;
+      
+      if(ev->string)
+      {
+	 st = strdup(ev->string);
+	 /* Find the size of data to send borrowed from evas!!*/
+	 if(st[0] < 0x80)
+	    size = 1;
+	 else if((st[0] & 0xe0) == 0xc0)
+	    size = 2;
+	 else if((st[0] & 0xf0) == 0xe0)
+	    size = 3;	 
+	 else
+	    size = 4;
       }
+      
+      if (write(term->cmd_fd.sys, st, size) < 0) {
+	    DPRINT((stderr, "Error writing to process: %m\n"));
+	    //exit(2);
+	    }
    }
-
    return;
 
    /* extra stuff, clean up later */

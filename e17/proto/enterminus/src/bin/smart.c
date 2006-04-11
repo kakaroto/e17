@@ -226,7 +226,9 @@ term_smart_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h)
       if (size > 0)
 	 for (j = term->cols; j < num_chars_w; j++) {
 	    gt = &term->tcanvas->grid[i][j];
-	    gt->c = ' ';
+	    gt->uc = (char*)malloc(sizeof(char));
+	    gt->uc[0] = ' ';
+	    gt->nbc = 1;
 	    gt->changed = 0;
 	 }
    }

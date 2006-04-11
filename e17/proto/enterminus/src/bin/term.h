@@ -57,10 +57,20 @@ struct _Term_Fd {
    int               sys;
    Ecore_Fd_Handler *ecore;
 };
+
+/* Use UTF-8 internally :) */
+struct _Term_Char {
+   int nbchar;
+   char car[6];
+};
+typedef struct _Term_Char Term_Char;
+
 typedef struct _Term_Fd Term_Fd;
 
 struct _Term_TGlyph {
-   char c;
+   /*char c;*/
+   char *uc;/* NEW */
+   int  nbc;/* NEW */
    int  bg;
    int  fg;
    int  changed;
@@ -116,7 +126,7 @@ struct _Term {
    Term_Cursor    cursor;
    Term_Font      font;
    Term_EGlyph  **grid;
-
+   int		  debug;/* Temp */
    Term_Fd        cmd_fd;
    Term_Fd        slave;
    char           data[512];
@@ -145,10 +155,10 @@ Evas_Object    *term_new(Evas *evas);
 Term           *term_init(Evas_Object *o);
 Term_TCanvas   *term_tcanvas_new(Term *term);
 int             term_tcanvas_data(void *data, Ecore_Fd_Handler *fd_handler);
-void            term_tcanvas_glyph_push(Term *term, char c);
+void            term_tcanvas_glyph_push(Term *term, Term_Char *c);
 void            term_tcanvas_fg_color_set(Term *term, int c);
 void            term_tcanvas_bg_color_set(Term *term, int c);
-char            term_tcanvas_data_pop(Term *term);
+Term_Char      *term_tcanvas_data_pop(Term *term);
 int             term_font_get_width(Term *term);
 int             term_font_get_height(Term *term);
 

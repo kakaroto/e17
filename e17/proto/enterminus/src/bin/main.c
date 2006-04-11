@@ -12,6 +12,11 @@ main(int argc, char **argv)
    Evas        *evas;   /* evas       */
    Evas_Object *term;   /* terminal   */
 
+   /* Let's initialize some stuff*/
+   /*edje_init();*//* hold off for now */
+   ecore_init();
+   ecore_evas_init();/* We NEED this to get the UTF-8 stuff!!*/
+   
    ee = ecore_evas_software_x11_new(0, 0, 0, 0, 0, 0);
    ecore_evas_show(ee);
    evas = ecore_evas_get(ee);
