@@ -174,7 +174,6 @@ void _etk_entropy_click_cb(Etk_Object *object, void *event_info, void *data)
   entropy_gui_component_instance *instance;	
   entropy_etk_iconbox_viewer *viewer;
   entropy_generic_file* file;
-  entropy_gui_event* gui_event;
   Etk_Iconbox_Icon* icon;
   Etk_Event_Mouse_Up_Down *event;
 
@@ -190,11 +189,7 @@ void _etk_entropy_click_cb(Etk_Object *object, void *event_info, void *data)
   printf("File is %p\n", file);
 
   if (file) {
-  	gui_event = entropy_malloc (sizeof (entropy_gui_event));
-	  gui_event->event_type =
-		entropy_core_gui_event_get (ENTROPY_GUI_EVENT_ACTION_FILE);
-	  gui_event->data = file;
-	  entropy_core_layout_notify_event (instance, gui_event, ENTROPY_EVENT_GLOBAL); 
+	entropy_event_action_file(file,instance);
   }
 }
 

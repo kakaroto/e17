@@ -47,7 +47,7 @@ struct entropy_plugin {
 #define ENTROPY_PLUGIN(plugin) ((entropy_plugin *) plugin)
 
 struct Entropy_Plugin_Gui {
-	entropy_plugin base;
+	Entropy_Plugin base;
 	char* toolkit;	
 
 	struct {
@@ -56,6 +56,12 @@ struct Entropy_Plugin_Gui {
 		void (*layout_main)();
 	
 	} gui_functions;
+};
+
+struct Entropy_Plugin_Gui_Layout {
+	Entropy_Plugin_Gui base;
+
+	entropy_generic_file* current_folder;
 };
 
 struct Entropy_Plugin_File {

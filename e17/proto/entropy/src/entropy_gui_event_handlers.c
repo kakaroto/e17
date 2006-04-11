@@ -320,6 +320,12 @@ Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_folder_change_ins
 		printf("Request for drill down\n");
 	}
 
+	/*Register this folder as being the current for this layout*/
+	if (requestor->layout_parent)  {
+		((entropy_gui_component_instance_layout*)requestor->layout_parent)->current_folder = 
+			((entropy_file_request*)event->data)->file;
+	}
+
 	request->file = ((entropy_file_request*)event->data)->file;
 	request->requester = requestor->layout_parent; /*Requester is the layout parent - after all - one dir per layout at one time*/
 	request->core = entropy_core_get_core();

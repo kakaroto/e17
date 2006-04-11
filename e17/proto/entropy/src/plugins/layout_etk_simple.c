@@ -243,6 +243,7 @@ void etk_local_viewer_cb(Etk_Object* obj, void* data)
 	entropy_gui_component_instance* instance = data;
 	entropy_layout_gui* gui = instance->data;
 	Etk_Widget* widget;
+	entropy_generic_file* file;
 	
 	/*Get the local viewer they want..*/
 	local = etk_object_data_get(ETK_OBJECT(obj), "VISUAL");
@@ -262,6 +263,13 @@ void etk_local_viewer_cb(Etk_Object* obj, void* data)
 		if (local->gui_object) {
 			etk_box_pack_start(ETK_BOX(gui->localshell), local->gui_object, ETK_TRUE,ETK_TRUE,0);
 			local->active = 1;
+
+			/*Update the visual current_folder*/
+			if ( (file = ((entropy_gui_component_instance_layout*)instance)->current_folder) ) {
+				entropy_event_action_file(file, instance);
+			} else {
+				printf("No current folder!\n");
+			}
 		} else {
 			printf("Selected instance has no GUI_OBJECT\n");
 		}
@@ -459,7 +467,7 @@ entropy_plugin_layout_create (entropy_core * core)
   }
 
   /*Entropy related init */
-  layout = entropy_gui_component_instance_new(); /*Create a component instance */
+  layout = (entropy_gui_component_instance*)entropy_gui_component_instance_layout_new(); /*Create a component instance */
   gui = entropy_malloc (sizeof (entropy_layout_gui));
   layout->data = gui;
   layout->core = core;

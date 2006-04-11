@@ -14,6 +14,8 @@
 #include <unistd.h>
 
 typedef struct entropy_gui_component_instance entropy_gui_component_instance;
+typedef struct entropy_gui_component_instance_layout entropy_gui_component_instance_layout;
+
 typedef struct entropy_plugin entropy_plugin; /*deprecated*/
 typedef struct entropy_plugin Entropy_Plugin; /*New*/
 typedef struct Entropy_Plugin_Gui Entropy_Plugin_Gui;
