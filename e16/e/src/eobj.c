@@ -515,6 +515,8 @@ void
 EobjChangeOpacity(EObj * eo, unsigned int opacity)
 {
 #if USE_COMPOSITE
+   if (eo->opacity == opacity)
+      return;
    eo->opacity = opacity;
    ECompMgrWinChangeOpacity(eo, opacity);
 #else

@@ -1624,8 +1624,7 @@ EwinUpdateOpacity(EWin * ewin)
    else
       opacity = ewin->ewmh.opacity;
 
-   if (ewin->o.opacity != opacity)
-      EoChangeOpacity(ewin, opacity);
+   EoChangeOpacity(ewin, opacity);
 }
 
 /*
