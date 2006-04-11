@@ -91,6 +91,7 @@ struct _Etk_Iconbox
    Etk_Iconbox_Icon *first_icon;
    Etk_Iconbox_Icon *last_icon;
 
+   Etk_Color selected_icon_color;
    Etk_Bool frozen;
 };
 

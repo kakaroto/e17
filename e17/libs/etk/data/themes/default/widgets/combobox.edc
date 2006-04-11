@@ -1,9 +1,6 @@
 group {
    name: "combobox/button";
    min: 0 32;
-   data {
-      item: "inset" "8 8 8 8";
-   }
    parts {
       part {
          name: "combo_button";

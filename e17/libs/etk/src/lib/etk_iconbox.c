@@ -73,6 +73,8 @@ static void _etk_iconbox_grid_constructor(Etk_Iconbox_Grid *grid);
 static void _etk_iconbox_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_iconbox_grid_scroll(Etk_Widget *widget, int x, int y);
 static void _etk_iconbox_grid_scroll_size_get(Etk_Widget *widget, Etk_Size scrollview_size, Etk_Size scrollbar_size, Etk_Size *scroll_size);
+
+static void _etk_iconbox_realize_cb(Etk_Object *object, void *data);
 static void _etk_iconbox_grid_realize_cb(Etk_Object *object, void *data);
 static void _etk_iconbox_grid_unrealize_cb(Etk_Object *object, void *data);
 static void _etk_iconbox_grid_mouse_down_cb(Etk_Object *object, void *event_info, void *data);
@@ -81,7 +83,7 @@ static void _etk_iconbox_grid_mouse_move_cb(Etk_Object *object, void *event_info
 
 static void _etk_iconbox_icon_object_add(Etk_Iconbox_Grid *grid);
 static void _etk_iconbox_icon_object_delete(Etk_Iconbox_Grid *grid);
-static void _etk_iconbox_icon_draw(Etk_Iconbox_Icon *icon, Etk_Iconbox_Icon_Object *icon_object, Etk_Iconbox_Model *model, int x, int y);
+static void _etk_iconbox_icon_draw(Etk_Iconbox_Icon *icon, Etk_Iconbox_Icon_Object *icon_object, Etk_Iconbox_Model *model, int x, int y, Etk_Bool clip);
 static void _etk_iconbox_grid_selection_rect_update(Etk_Iconbox_Grid *grid);
 
 static Etk_Signal *_etk_iconbox_signals[ETK_ICONBOX_NUM_SIGNALS];
@@ -132,7 +134,8 @@ Etk_Type *etk_iconbox_type_get()
  */
 Etk_Widget *etk_iconbox_new()
 {
-   return etk_widget_new(ETK_ICONBOX_TYPE, "theme_group", "iconbox", "focusable", ETK_TRUE, "focus_on_press", ETK_TRUE, NULL);
+   return etk_widget_new(ETK_ICONBOX_TYPE, "theme_group", "iconbox",
+      "focusable", ETK_TRUE, "focus_on_press", ETK_TRUE, NULL);
 }
 
 /**
@@ -807,10 +810,11 @@ static void _etk_iconbox_constructor(Etk_Iconbox *iconbox)
    
    ETK_WIDGET(iconbox)->size_allocate = _etk_iconbox_size_allocate;
    
+   etk_signal_connect("realize", ETK_OBJECT(iconbox), ETK_CALLBACK(_etk_iconbox_realize_cb), NULL);
+   /* TODO: focus, unfocus, keynav */
    /*etk_signal_connect("focus", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree_focus_cb), NULL);
    etk_signal_connect("unfocus", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree_unfocus_cb), NULL);
    etk_signal_connect("key_down", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree_key_down_cb), NULL);*/
-   
 }
 
 /* Destroys the iconbox */
@@ -847,7 +851,10 @@ static Etk_Type *_etk_iconbox_grid_type_get()
    static Etk_Type *iconbox_type = NULL;
 
    if (!iconbox_type)
-      iconbox_type = etk_type_new("Etk_Iconbox_Grid", ETK_WIDGET_TYPE, sizeof(Etk_Iconbox_Grid), ETK_CONSTRUCTOR(_etk_iconbox_grid_constructor), NULL);
+   {
+      iconbox_type = etk_type_new("Etk_Iconbox_Grid", ETK_WIDGET_TYPE, sizeof(Etk_Iconbox_Grid),
+         ETK_CONSTRUCTOR(_etk_iconbox_grid_constructor), NULL);
+   }
 
    return iconbox_type;
 }
@@ -888,6 +895,7 @@ static void _etk_iconbox_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geo
    int num_cols, num_rows;
    int num_visible_icons;
    int num_icons_to_add;
+   Etk_Bool need_clip;
    int first_icon_id;
    int i, j;
    int x, y;
@@ -903,8 +911,9 @@ static void _etk_iconbox_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geo
    else
    {
       num_cols = ETK_MAX(geometry.w / iconbox->current_model->width, 1);
-      /* TODO: Do we always need the "+ 1" ?? */
-      num_rows = ETK_MAX((geometry.h + iconbox->current_model->height - 1) / iconbox->current_model->height + 1, 1);
+      num_rows = ETK_MAX((geometry.h + iconbox->current_model->height - 1) / iconbox->current_model->height, 1);
+      if (((num_rows * iconbox->current_model->height) - (grid->yoffset % iconbox->current_model->height)) < geometry.h)
+         num_rows++;
    }
    num_visible_icons = ETK_MIN(num_cols * num_rows, iconbox->num_icons);
    num_icons_to_add = num_visible_icons - evas_list_count(grid->icon_objects);
@@ -938,17 +947,6 @@ static void _etk_iconbox_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geo
          _etk_iconbox_icon_object_delete(grid);
    }
    
-   /* Move/resize the clip */
-   if (iconbox->current_model && num_visible_icons > 0)
-   {
-      evas_object_move(grid->clip, geometry.x, geometry.y);
-      evas_object_resize(grid->clip, geometry.w, geometry.h);
-      evas_object_show(grid->clip);
-   }
-   else
-      evas_object_hide(grid->clip);
-   
-   
    /* Draw the icons */
    l = grid->icon_objects;
    if (iconbox->current_model)
@@ -961,11 +959,21 @@ static void _etk_iconbox_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geo
       for (i = 0; i < num_rows; i++)
       {
          x = -(grid->xoffset % iconbox->current_model->width) + geometry.x;
-            
+         
          for (j = 0; j < num_cols && icon && l; j++, icon = icon->next, l = l->next)
          {
             icon_object = l->data;
-            _etk_iconbox_icon_draw(icon, icon_object, iconbox->current_model, x, y);
+            
+            need_clip = ETK_FALSE;
+            if (i == 0 || i == num_rows - 1 || j == 0 || j == num_cols - 1)
+            {
+               if (x < geometry.x || x + iconbox->current_model->width > geometry.x + geometry.w ||
+                  y < geometry.y || y + iconbox->current_model->height > geometry.y + geometry.h)
+               {
+                  need_clip = ETK_TRUE;
+               }
+            }
+            _etk_iconbox_icon_draw(icon, icon_object, iconbox->current_model, x, y, need_clip);
             x += iconbox->current_model->width;
          }
          y += iconbox->current_model->height;
@@ -979,6 +987,10 @@ static void _etk_iconbox_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geo
       evas_object_hide(icon_object->image);
       etk_widget_hide(icon_object->label);
    }
+   
+   /* Move/resize the clip */
+   evas_object_move(grid->clip, geometry.x, geometry.y);
+   evas_object_resize(grid->clip, geometry.w, geometry.h);
    
    /* Raise the selection rect */
    etk_widget_member_object_raise(ETK_WIDGET(grid), grid->selection_rect);
@@ -1046,6 +1058,29 @@ static void _etk_iconbox_grid_scroll_size_get(Etk_Widget *widget, Etk_Size scrol
  **************************/
 
 /**************************
+ * Iconbox
+ **************************/
+
+/* Called when the iconbox is realized */
+static void _etk_iconbox_realize_cb(Etk_Object *object, void *data)
+{
+   Etk_Iconbox *iconbox;
+
+   if (!(iconbox = ETK_ICONBOX(object)))
+      return;
+   
+   if (etk_widget_theme_object_data_get(ETK_WIDGET(iconbox), "selected_icon_color", "%d %d %d %d",
+      &iconbox->selected_icon_color.r, &iconbox->selected_icon_color.g,
+      &iconbox->selected_icon_color.b, &iconbox->selected_icon_color.a) != 4)
+   {
+      iconbox->selected_icon_color.r = 128;
+      iconbox->selected_icon_color.g = 128;
+      iconbox->selected_icon_color.b = 128;
+      iconbox->selected_icon_color.a = 255;
+   }
+}
+
+/**************************
  * Iconbox Grid
  **************************/
 
@@ -1059,6 +1094,7 @@ static void _etk_iconbox_grid_realize_cb(Etk_Object *object, void *data)
       return;
    
    grid->clip = evas_object_rectangle_add(evas);
+   evas_object_show(grid->clip);
    etk_widget_member_object_add(ETK_WIDGET(grid), grid->clip);
    
    grid->selection_rect = etk_theme_object_load_from_parent(evas, ETK_WIDGET(grid->iconbox), NULL, "selection");
@@ -1165,13 +1201,6 @@ static void _etk_iconbox_grid_mouse_move_cb(Etk_Object *object, void *event_info
    }
 }
 
-
-/**************************
- * Iconbox
- **************************/
-
-/* TODO: events, focus */
-
 /**************************
  *
  * Private functions
@@ -1197,8 +1226,6 @@ static void _etk_iconbox_icon_object_add(Etk_Iconbox_Grid *grid)
    etk_widget_theme_group_set(icon_object->label, "label");
    etk_widget_theme_parent_set(icon_object->label, ETK_WIDGET(grid->iconbox));
    etk_widget_parent_set(icon_object->label, ETK_WIDGET(grid));
-   if (grid->clip)
-      etk_widget_clip_set(icon_object->label, grid->clip);
    
    grid->icon_objects = evas_list_append(grid->icon_objects, icon_object);
 }
@@ -1228,7 +1255,7 @@ static void _etk_iconbox_icon_object_delete(Etk_Iconbox_Grid *grid)
 }
 
 /* Draws the icon according to the icon model */
-static void _etk_iconbox_icon_draw(Etk_Iconbox_Icon *icon, Etk_Iconbox_Icon_Object *icon_object, Etk_Iconbox_Model *model, int x, int y)
+static void _etk_iconbox_icon_draw(Etk_Iconbox_Icon *icon, Etk_Iconbox_Icon_Object *icon_object, Etk_Iconbox_Model *model, int x, int y, Etk_Bool clip)
 {
    Evas *evas;
    Etk_Iconbox *iconbox;
@@ -1279,12 +1306,14 @@ static void _etk_iconbox_icon_draw(Etk_Iconbox_Icon *icon, Etk_Iconbox_Icon_Obje
       }
       etk_widget_member_object_add(iconbox->grid, icon_object->image);
       
-      /* TODO: theme */
       if (icon->selected)
-         evas_object_color_set(icon_object->image, 226, 211, 174, 255);
+      {
+         evas_object_color_set(icon_object->image, iconbox->selected_icon_color.r, iconbox->selected_icon_color.g,
+            iconbox->selected_icon_color.b, iconbox->selected_icon_color.a);
+      }
       else
          evas_object_color_set(icon_object->image, 255, 255, 255, 255);
-      if (grid->clip)
+      if (grid->clip && clip)
          evas_object_clip_set(icon_object->image, grid->clip);
       
       if (model->icon_expand)
@@ -1324,6 +1353,10 @@ static void _etk_iconbox_icon_draw(Etk_Iconbox_Icon *icon, Etk_Iconbox_Icon_Obje
    etk_label_set(ETK_LABEL(icon_object->label), icon->label);
    etk_widget_theme_object_signal_emit(icon_object->label, icon->selected ? "select" : "unselect");
    
+   if (clip && grid->clip)
+      etk_widget_clip_set(icon_object->label, grid->clip);
+   else
+      etk_widget_clip_unset(icon_object->label);
    etk_widget_show(icon_object->label);
    etk_container_child_space_fill(icon_object->label, &label_geometry,
       ETK_FALSE, ETK_FALSE, model->label_xalign, model->label_yalign);

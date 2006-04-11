@@ -946,17 +946,13 @@ static void _etk_combobox_item_mouse_up_cb(Etk_Object *object, void *event_info,
    Etk_Event_Mouse_Up_Down *event;
    Etk_Combobox_Item *item;
    
-   if (!(item = ETK_COMBOBOX_ITEM(object)))
+   if (!(item = ETK_COMBOBOX_ITEM(object)) || !(event = event_info))
       return;
-   
-   event = event_info;
-   
    if (event->button != 1 && event->button != 3)
       return;
    
    etk_combobox_item_activate(item);
-   
-   if (event->button == 1)   
+   if (event->button == 1)
       etk_popup_window_popdown(ETK_COMBOBOX(item->combobox)->window);
 }
 
