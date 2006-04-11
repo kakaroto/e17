@@ -19,8 +19,8 @@ entropy_sigseg_act(int x, siginfo_t *info, void *data)
    write(2, "**** SEGMENTATION FAULT ****\n", 29);
    write(2, "**** Printing Backtrace... *****\n\n", 34);
   
-   size = backtrace(array, 255);
-   backtrace_symbols_fd(array, size, 2);
+   /*size = backtrace(array, 255);
+   backtrace_symbols_fd(array, size, 2);*/
 
    ecore_x_pointer_ungrab();
    ecore_x_keyboard_ungrab();
