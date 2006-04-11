@@ -154,7 +154,10 @@ void ewl_backtrace(void);
 				"\t%s\n\n" \
 				"\tas the wrong type. (%s) instead of (%s).\n" \
 				"\tPlease fix your program.\n", \
-				__func__, str, EWL_WIDGET(ptr)->inheritance, type); \
+				__func__, str, \
+				(EWL_WIDGET(ptr)->inheritance ? \
+					EWL_WIDGET(ptr)->inheritance : \
+					"NULL") , type); \
 		ewl_backtrace(); \
 		ewl_segv(); \
 	} \
@@ -171,7 +174,10 @@ void ewl_backtrace(void);
 				"\t%s\n\n" \
 				"\tas the wrong type. (%s) instead of (%s).\n" \
 				"\tPlease fix your program.\n", \
-				__func__, str, EWL_WIDGET(ptr)->inheritance, type); \
+				__func__, str, \
+				(EWL_WIDGET(ptr)->inheritance ? \
+					EWL_WIDGET(ptr)->inheritance : \
+					"NULL") , type); \
 		ewl_backtrace(); \
 		ewl_segv(); \
 		return ret; \
