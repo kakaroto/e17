@@ -611,6 +611,32 @@ program
 }
 
 
+/* Warning indicator state */
+program
+{
+	name:	"warning_indicator_go";
+	action:	STATE_SET "on" 0.0;
+	transition: DECELERATE 0.5;
+	target:	"warning_indicator";
+	after: "warning_indicator_go_2";
+}
+program
+{
+	name:	"warning_indicator_go_2";
+	action:	STATE_SET "default" 0.0;
+	transition: DECELERATE 1;
+	target:	"warning_indicator";
+	after: "warning_indicator_go";
+}
+program
+{
+	name:	"warning_indicator_stop";
+	action:	STATE_SET "default" 0.0;
+	transition: DECELERATE 1;
+	target:	"warning_indicator";
+}
+
+
 /* Transitions between sources */
 program
 {

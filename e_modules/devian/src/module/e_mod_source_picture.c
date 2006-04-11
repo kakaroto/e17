@@ -201,14 +201,17 @@ int DEVIANF(source_picture_set_bg) (DEVIANN *devian)
      {
         DSOURCE(("Set edje background %s", file));
 
-        if ((zone->container->num == 0) && (zone->num == 0) && (zone->desk_x_current == 0) && (zone->desk_y_current == 0))
+        if ((zone->container->num == 0) && (zone->num == 0) &&
+	    (zone->desk_x_current == 0) && (zone->desk_y_current == 0))
           {
              e_lib_background_set(strdup(file));
           }
         else
           {
-             e_lib_desktop_background_del(zone->container->num, zone->num, zone->desk_x_current, zone->desk_y_current);
-             e_lib_desktop_background_add(zone->container->num, zone->num, zone->desk_x_current, zone->desk_y_current,
+             e_lib_desktop_background_del(zone->container->num, zone->num,
+					  zone->desk_x_current, zone->desk_y_current);
+             e_lib_desktop_background_add(zone->container->num, zone->num,
+					  zone->desk_x_current, zone->desk_y_current,
                                           strdup(file));
           }
      }
@@ -358,7 +361,8 @@ void DEVIANF(source_picture_dialog_infos) (Source_Picture *source)
             "<underline=on underline_color=#000>Picture path :</> %s<br>"
             "<br>"
             "<underline=on underline_color=#000>Total pictures in local list :</> %d",
-            DEVIANF(source_picture_name_get) (source, edje_part), path, evas_list_count(DEVIANM->picture_list_local->pictures));
+            DEVIANF(source_picture_name_get) (source, edje_part), path,
+	    evas_list_count(DEVIANM->picture_list_local->pictures));
    e_dialog_title_set(dia, MODULE_NAME " Module - Picture Informations");
    e_dialog_icon_set(dia, "enlightenment/e", 64);
    e_dialog_text_set(dia, buf);
@@ -427,7 +431,8 @@ char *DEVIANF(source_picture_infos_get) (Source_Picture *source, int part)
    path = picture->path;
    snprintf(buf, sizeof(buf),
             "<underline=on underline_color=#000>%s</><br><br>"
-            "<underline=on underline_color=#000>Path :</> %s<br><br>" "%s", picture->picture_description->name, path, buf_ext);
+            "<underline=on underline_color=#000>Path :</> %s<br><br>" "%s",
+	    picture->picture_description->name, path, buf_ext);
    //E_FREE(path);
 
    return strdup(buf);

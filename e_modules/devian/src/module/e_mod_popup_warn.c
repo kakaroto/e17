@@ -95,8 +95,12 @@ int DEVIANF(popup_warn_add) (Popup_Warn **popup_warn, int type, const char *text
 
           case POPUP_WARN_TYPE_DEVIAN:
              devian = (DEVIANN *)data;
+	     /* Warning indicator */
+	     DEVIANF(container_warning_indicator_change) (devian, 1);
+	     /* Text */
              popw->name = evas_stringshare_add(DEVIANF(source_name_get) (devian, -1));
              edje_object_part_text_set(popw->face, "name", popw->name);
+	     /* Pos */
              px = DEVIANM->canvas_w - (fw + 20);
              py = DEVIANM->canvas_h - (fh + 20);
              /* Log */
@@ -110,10 +114,26 @@ int DEVIANF(popup_warn_add) (Popup_Warn **popup_warn, int type, const char *text
              break;
 
           case POPUP_WARN_TYPE_INFO:
+	     /* Text */
              popw->name = evas_stringshare_add(MODULE_NAME);
              edje_object_part_text_set(popw->face, "name", popw->name);
+	     /* Pos */
              px = (DEVIANM->canvas_w - fw) / 2;
              py = (DEVIANM->canvas_h - fh) / 2;
+             break;
+
+          case POPUP_WARN_TYPE_INFO_DEVIAN:
+	     devian = (DEVIANN *)data;
+	     /* Warning indicator */
+	     DEVIANF(container_warning_indicator_change) (devian, 1);
+	     /* Text */
+             popw->name = evas_stringshare_add(MODULE_NAME);
+             edje_object_part_text_set(popw->face, "name", popw->name);
+	     /* Pos */
+             px = (DEVIANM->canvas_w - fw) / 2;
+             py = (DEVIANM->canvas_h - fh) / 2;
+             /* Log */
+             popw->log = evas_list_append(popw->log, evas_stringshare_add(text));
              break;
 
           case POPUP_WARN_TYPE_INFO_TIMER:
@@ -180,6 +200,21 @@ void DEVIANF(popup_warn_del) (Popup_Warn *popw)
      case POPUP_WARN_TYPE_DEVIAN:
         devian = (DEVIANN *)popw->data;
         devian->popup_warn = NULL;
+	/* Warning indicator */
+	DEVIANF(container_warning_indicator_change) (devian, 0);
+        /* Timer */
+        if (popw->timer)
+           ecore_timer_del(popw->timer);
+        /* Log */
+        for (l = popw->log; l; l = evas_list_next(l))
+           evas_stringshare_del(l->data);
+        evas_list_free(popw->log);
+        break;
+
+     case POPUP_WARN_TYPE_INFO_DEVIAN:
+        devian = (DEVIANN *)popw->data;
+	/* Warning indicator */
+	DEVIANF(container_warning_indicator_change) (devian, 0);
         /* Timer */
         if (popw->timer)
            ecore_timer_del(popw->timer);
@@ -294,6 +329,22 @@ _update(Popup_Warn *popw, const char *text)
 #endif
         break;
 
+     case POPUP_WARN_TYPE_INFO_DEVIAN:
+        devian = (DEVIANN *)popw->data;
+        tmp = DEVIANF(source_name_get) (devian, -1);
+        if (strcmp(popw->name, tmp))
+          {
+             evas_stringshare_del(popw->name);
+             popw->name = evas_stringshare_add(tmp);
+             edje_object_part_text_set(popw->face, "name", popw->name);
+          }
+        /* Log */
+        popw->log = evas_list_append(popw->log, evas_stringshare_add(text));
+        times = evas_list_count(popw->log);
+        snprintf(buf, sizeof(buf), "%d", times);
+        edje_object_part_text_set(popw->face, "times", buf);
+        break;
+
      case POPUP_WARN_TYPE_INFO_TIMER:
         /* Timer */
         ecore_timer_del(popw->timer);
@@ -406,6 +457,27 @@ _cb_edje_next(void *data, Evas_Object *obj, const char *emission, const char *so
         if (DEVIANM->conf->sources_rss_popup_news_timer)
            popw->timer = ecore_timer_add(DEVIANM->conf->sources_rss_popup_news_timer, _cb_timer, popw);
 #endif
+        break;
+
+     case POPUP_WARN_TYPE_INFO_DEVIAN:
+        times = evas_list_count(popw->log);
+        if (times == 1)
+          {
+             DEVIANF(popup_warn_del) (popw);
+             return;
+          }
+        /* Log */
+        l = evas_list_last(popw->log);
+        tmp = evas_list_data(l);
+        edje_object_part_text_set(popw->face, "text", tmp);
+        evas_stringshare_del(tmp);
+        popw->log = evas_list_remove_list(popw->log, l);
+        times--;
+        if (times > 1)
+           snprintf(buf, sizeof(buf), "%d", times);
+        else
+           strcpy(buf, "");
+        edje_object_part_text_set(popw->face, "times", buf);
         break;
      }
 }

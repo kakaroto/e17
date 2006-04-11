@@ -438,6 +438,8 @@ void DEVIANF(data_rss_article_free) (Rss_Article *article)
       evas_stringshare_del(article->description);
    if (article->date)
       evas_stringshare_del(article->date);
+   if (article->date_simple)
+      evas_stringshare_del(article->date_simple);
    if (article->obj)
      {
         edje_object_signal_callback_del(article->obj, "infos_set", "item", _cb_infos_set);

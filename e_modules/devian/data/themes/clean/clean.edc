@@ -36,6 +36,7 @@ images
 
 	image: "loading_state_bg.png" COMP;
 	image: "loading_state.png" COMP;
+	image: "warning_indicator.png" COMP;
 }
 
 fonts

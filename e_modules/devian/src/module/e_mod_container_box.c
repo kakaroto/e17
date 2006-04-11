@@ -99,6 +99,9 @@ int DEVIANF(container_box_add) (DEVIANN *devian, int edje_part)
    /* Show edje */
    evas_object_show(box->edje);
 
+   /* Disable warning indicator */
+   DEVIANF(container_box_warning_indicator_change) (box, 0);
+
    /* Show we are waiting for a source */
    DEVIANF(container_box_loading_state_change) (box, 1);
 
@@ -639,6 +642,11 @@ void DEVIANF(container_box_infos_pos_set) (Container_Box *box)
 void DEVIANF(container_box_loading_state_change) (Container_Box *box, int state)
 {
    edje_object_message_send(box->edje, EDJE_MESSAGE_INT, DEVIAN_CONTAINER_BOX_TO_EDJE_MSG_LOADING_STATE, &state);
+}
+
+void DEVIANF(container_box_warning_indicator_change) (Container_Box *box, int state)
+{
+   edje_object_message_send(box->edje, EDJE_MESSAGE_INT, DEVIAN_CONTAINER_BOX_TO_EDJE_MSG_WARNING_INDICATOR, &state);
 }
 
 int DEVIANF(container_box_devian_dying) (Container_Box *box)

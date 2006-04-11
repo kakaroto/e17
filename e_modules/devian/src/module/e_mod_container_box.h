@@ -43,6 +43,7 @@ typedef struct _Container_Box_Anim Container_Box_Anim;
 #define DEVIAN_CONTAINER_BOX_TO_EDJE_MSG_LOADING_STATE 3
 #define DEVIAN_CONTAINER_BOX_TO_EDJE_MSG_SHOW_SET_BG 4
 #define DEVIAN_CONTAINER_BOX_TO_EDJE_MSG_SHOW_PREVIOUS 5
+#define DEVIAN_CONTAINER_BOX_TO_EDJE_MSG_WARNING_INDICATOR 6
 #define DEVIAN_CONTAINER_BOX_FROM_EDJE_MSG_INFOS_W 0
 #define DEVIAN_CONTAINER_BOX_FROM_EDJE_MSG_INFOS_VISIBLE 1
 
@@ -113,6 +114,7 @@ int DEVIANF(container_box_infos_edje_part_is_visible) (Container_Box *box);
 void DEVIANF(container_box_infos_pos_set) (Container_Box *box);
 
 void DEVIANF(container_box_loading_state_change) (Container_Box *box, int state);
+void DEVIANF(container_box_warning_indicator_change) (Container_Box *box, int state);
 
 int DEVIANF(container_box_devian_dying) (Container_Box *box);
 int DEVIANF(container_box_update_id_devian) (Container_Box *box);

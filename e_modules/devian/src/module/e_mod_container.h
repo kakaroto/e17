@@ -22,6 +22,7 @@ void DEVIANF(container_infos_text_change_set) (DEVIANN *deviant, int action);
 int DEVIANF(container_infos_edje_part_is_visible) (DEVIANN *devian);
 
 void DEVIANF(container_loading_state_change) (DEVIANN *devian, int state);
+void DEVIANF(container_warning_indicator_change) (DEVIANN *devian, int state);
 
 int DEVIANF(container_update_id_devian) (DEVIANN *devian);
 int DEVIANF(container_devian_dying) (DEVIANN *devian);

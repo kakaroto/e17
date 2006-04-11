@@ -146,6 +146,21 @@ void DEVIANF(container_loading_state_change) (DEVIANN *devian, int state)
      }
 }
 
+void DEVIANF(container_warning_indicator_change) (DEVIANN *devian, int state)
+{
+   if (!devian->container)
+      return;
+
+   switch (devian->conf->container_type)
+     {
+     case CONTAINER_BOX:
+        DEVIANF(container_box_warning_indicator_change) (devian->container, state);
+        return;
+     case CONTAINER_BAR:
+        return;
+     }
+}
+
 int DEVIANF(container_update_id_devian) (DEVIANN *devian)
 {
    if (!devian->conf || !devian->container)

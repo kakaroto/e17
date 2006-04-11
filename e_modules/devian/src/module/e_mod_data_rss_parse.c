@@ -30,6 +30,10 @@ if (article->url) \
   evas_stringshare_del(article->url); \
 if (article->description) \
   evas_stringshare_del(article->description); \
+if (article->date) \
+  evas_stringshare_del(article->date); \
+if (article->date_simple) \
+  evas_stringshare_del(article->date_simple); \
 return NULL; \
 } while (0)
 
@@ -46,6 +50,7 @@ static char *_parse_item(char *buf, const char **text, int type);
 static char *_parse_item_clean(char *buf, int size, int type);
 static char *_parse_item_date_10(char *buf);
 static char *_parse_item_date_20(char *buf);
+static char *_parse_go_begin_meta(char *buf);
 static char *_parse_go_end_meta(char *buf);
 
 /* PUBLIC FUNCTIONS */
@@ -206,26 +211,26 @@ char *DEVIANF(data_rss_parse_article) (Rss_Feed *feed, char *buf, Ecore_List *li
      {
         tmp = NULL;
         /* Compare for * rss versions */
-        if (!strncmp(buf, "<title>", 7))
+        if (!strncmp(buf, "<title", 6))
           {
              DDATARSSP(("detected title"));
-             if (!(tmp = _parse_item(buf + 7, &article->title, PARSE_ITEM_TITLE)))
+             if (!(tmp = _parse_item(buf, &article->title, PARSE_ITEM_TITLE)))
                 PARSE_ARTICLE_FAILS();
           }
         else
           {
-             if (!strncmp(buf, "<link>", 6))
+             if (!strncmp(buf, "<link", 5))
                {
                   DDATARSSP(("detected link"));
-                  if (!(tmp = _parse_item(buf + 6, &article->url, PARSE_ITEM_URL)))
+                  if (!(tmp = _parse_item(buf, &article->url, PARSE_ITEM_URL)))
                      PARSE_ARTICLE_FAILS();
                }
              else
                {
-                  if (!strncmp(buf, "<description>", 13))
+                  if (!strncmp(buf, "<description", 12))
                     {
                        DDATARSSP(("detected description"));
-                       if (!(tmp = _parse_item(buf + 13, &article->description, PARSE_ITEM_DESC)))
+                       if (!(tmp = _parse_item(buf, &article->description, PARSE_ITEM_DESC)))
                           PARSE_ARTICLE_FAILS();
                     }
                   else
@@ -234,35 +239,35 @@ char *DEVIANF(data_rss_parse_article) (Rss_Feed *feed, char *buf, Ecore_List *li
                        switch ((int)ver)
                          {
                          case 1:
-                            if (!strncmp(buf, "<dc:date>", 9))
+                            if (!strncmp(buf, "<dc:date", 8))
                               {
                                  char *buf_sav = buf;
 
                                  /* Parse it one time ->date and one time ->date_simple */
                                  DDATARSSP(("detected pubdate"));
-                                 if (!(tmp = _parse_item(buf + 9, &article->date, PARSE_ITEM_TITLE)))
+                                 if (!(tmp = _parse_item(buf, &article->date, PARSE_ITEM_TITLE)))
                                     PARSE_ARTICLE_FAILS();
                                  else
                                    {
                                       buf = buf_sav;
-                                      if (!(tmp = _parse_item(buf + 9, &article->date_simple, PARSE_ITEM_DATE_10)))
+                                      if (!(tmp = _parse_item(buf, &article->date_simple, PARSE_ITEM_DATE_10)))
                                          PARSE_ARTICLE_FAILS();
                                    }
                               }
                             break;
                          case 2:
-                            if (!strncmp(buf, "<pubDate>", 9))
+                            if (!strncmp(buf, "<pubDate", 8))
                               {
                                  char *buf_sav = buf;
 
                                  /* Parse it one time ->date and one time ->date_simple */
                                  DDATARSSP(("detected pubdate"));
-                                 if (!(tmp = _parse_item(buf + 9, &article->date, PARSE_ITEM_TITLE)))
+                                 if (!(tmp = _parse_item(buf, &article->date, PARSE_ITEM_TITLE)))
                                     PARSE_ARTICLE_FAILS();
                                  else
                                    {
                                       buf = buf_sav;
-                                      if (!(tmp = _parse_item(buf + 9, &article->date_simple, PARSE_ITEM_DATE_20)))
+                                      if (!(tmp = _parse_item(buf, &article->date_simple, PARSE_ITEM_DATE_20)))
                                          PARSE_ARTICLE_FAILS();
                                    }
                               }
@@ -276,7 +281,6 @@ char *DEVIANF(data_rss_parse_article) (Rss_Feed *feed, char *buf, Ecore_List *li
                              * -> Test html meta wich dont work in pair with a close meta */
                             //...
                             DDATARSSP(("unknow meta (%8.8s), skip", buf));
-                            buf++;
                             if (!(tmp = _parse_go_end_meta(buf)))
                                PARSE_ARTICLE_FAILS();
                          }
@@ -352,32 +356,31 @@ int DEVIANF(data_rss_parse_doc_infos) (Rss_Feed *feed, char *buf)
 
    do
      {
-        if (!strncmp(buf, "<title>", 7))
+        if (!strncmp(buf, "<title", 6))
           {
              DDATARSSP(("Infos: detected title"));
-             if (!(tmp = _parse_item(buf + 7, &name, PARSE_ITEM_TITLE)))
+             if (!(tmp = _parse_item(buf, &name, PARSE_ITEM_TITLE)))
                 PARSE_INFOS_FAILS();
           }
         else
           {
-             if (!strncmp(buf, "<link>", 6))
+             if (!strncmp(buf, "<link", 5))
                {
                   DDATARSSP(("Infos: detected link"));
-                  if (!(tmp = _parse_item(buf + 6, &link, PARSE_ITEM_URL)))
+                  if (!(tmp = _parse_item(buf, &link, PARSE_ITEM_URL)))
                      PARSE_INFOS_FAILS();
                }
              else
                {
-                  if (!strncmp(buf, "<description>", 13))
+                  if (!strncmp(buf, "<description", 12))
                     {
                        DDATARSSP(("Infos: detected description"));
-                       if (!(tmp = _parse_item(buf + 13, &description, PARSE_ITEM_DESC)))
+                       if (!(tmp = _parse_item(buf, &description, PARSE_ITEM_DESC)))
                           PARSE_INFOS_FAILS();
                     }
                   else
                     {
                        DDATARSSP(("Infos: unknow meta (%8.8s), skip", buf));
-                       buf++;
                        if (!(tmp = _parse_go_end_meta(buf)))
                           PARSE_INFOS_FAILS();
                     }
@@ -439,13 +442,22 @@ _parse_item(char *buf, const char **text, int type)
    int tmp_l;
 
    /* Get content in tmp */
+
+   /* Get the begining position of the content */
+   if (!(tmp = _parse_go_begin_meta(buf)))
+      return NULL;
+
+   /* Get the end position of the content */
    if (!(p = _parse_go_end_meta(buf)))
       return NULL;
+
+   /* Get the content */
+   buf = tmp;
    tmp_l = p - buf;
    DDATARSSP(("Item size: %d", tmp_l));
    if (!tmp_l)                  /* Nothing in item, skip it */
      {
-        *text = NULL;
+        *text = evas_stringshare_add("No");
         return p;
      }
    tmp = E_NEW(char, tmp_l + 1);
@@ -454,7 +466,7 @@ _parse_item(char *buf, const char **text, int type)
    memcpy(tmp, buf, tmp_l);
    *(tmp + tmp_l) = '\0';
 
-   /* Clean content of the item */
+   /* Clean the content of the item */
    switch (type)
      {
      case PARSE_ITEM_DATE_10:
@@ -773,10 +785,37 @@ _parse_item_date_20(char *buf)
 }
 
 /**
- * Go at the end of the meta (of same layer)
+ * Go at the first char of content in the meta pointed by buf
  *
  * @param buf text buffer
- * @return pointer at the end of the meta
+ * @return pointer at on the first char of the text
+ */
+static char *
+_parse_go_begin_meta(char *buf)
+{
+   char *p;
+
+   p = buf;
+
+   /* Looking for autoclosing meta */
+   while (*p && (*p != '>'))
+      p++;
+   if (!(*p))
+      return NULL;
+   if (*(p-1) == '/')
+      {
+	 DDATARSSP(("Searching end of an autoclosing meta !"));
+	 return buf;
+      }
+   return p+1;
+}
+
+/**
+ * Go at the last char of the content of the meta pointed by buf
+ * (Find a meta of the same layer, or autoclosing meta, like in xhtml, <br/>)
+ *
+ * @param buf text buffer
+ * @return pointer at the last char of the meta
  */
 static char *
 _parse_go_end_meta(char *buf)
@@ -789,6 +828,15 @@ _parse_go_end_meta(char *buf)
 
    DDATARSSP(("Looking for end meta (%20.20s)", p));
 
+   /* Looking for autoclosing meta */
+   while (*p && (*p != '>'))
+      p++;
+   if (*(p-1) == '/')
+      {
+	 DDATARSSP(("Searching end of an autoclosing meta !"));
+	 return p+1;
+      }
+
    while (*p)
      {
         /* Look for meta */
@@ -800,7 +848,7 @@ _parse_go_end_meta(char *buf)
              if (*(p + 1) == '/')
                {
                   if (!layer)
-                     goto done;
+		     goto done;
                   layer--;
                }
              else
@@ -818,7 +866,15 @@ _parse_go_end_meta(char *buf)
                          }
                     }
                   else
-                     layer++;   /* Opening meta */
+		     {
+			/* Looking for autoclosing meta */
+			while (*p && (*p != '>'))
+			   p++;
+			if (*(p-1) == '/')
+			   ;   /* Skip meta */
+			else
+			   layer++;   /* Opening meta */
+		     }
                }
           }
         /* Next char */

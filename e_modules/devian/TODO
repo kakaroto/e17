@@ -325,8 +325,10 @@ TODO CODE (ordre)
    - Use Retlines, cut at the end of a line
 
  * Container animation in advanced config
- - Warning indicator
+ * Warning indicator
 
+ - Icon warning indicator
+ - X Bug when only the 2 pictures
  - ? Bug in the config ?
  - Rss News hiligh when url == null
 
@@ -349,8 +351,8 @@ TODO CODE (ordre)
      #5  0x000000000041ff51 in main (argc=1, argv=0x61e360) at e_main.c:679
 
  - User can choose not to add dEvian's icons in picture list
- - "Allow information panel" option in main config panel
-   for each type of source
+ - ? "Allow information panel" option in main config panel
+   for each type of source ?
 
  - RELEASE 0.2.0
 

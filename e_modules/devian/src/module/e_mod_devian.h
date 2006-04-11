@@ -44,7 +44,6 @@ typedef struct _dEvian DEVIANN;
 
 /* Name of the global main dEvian is strcat(DEVIAN_NAME,"M") */
 
-/*
 #ifdef HAVE_ALL
 #define DEVIANM dEvianM
 #define DEVIANN dEvian
@@ -62,7 +61,6 @@ typedef struct _dEvian DEVIANN;
 #endif
 #endif
 #endif
-*/
 
 DEVIAN_MAIN *DEVIANM;
 

@@ -6,6 +6,7 @@
 #define MSG_RECV_LOADING_STATE 3
 #define MSG_RECV_SHOW_SET_BG 4
 #define MSG_RECV_SHOW_PREVIOUS 5
+#define MSG_RECV_WARNING_INDICATOR 6
 
 #define MSG_SEND_INFOS_W 0
 #define MSG_SEND_INFOS_VISIBLE 1
@@ -102,6 +103,20 @@ group
 						run_program(PROGRAM:"button_previous_show_go");
 					else
 						run_program(PROGRAM:"button_previous_shade_go");
+				}
+			}
+			if (id == MSG_RECV_WARNING_INDICATOR)
+			{
+				if (type == MSG_INT)
+				{
+					if (getarg(2))
+					{
+						run_program(PROGRAM:"warning_indicator_go");
+					}
+					else
+					{
+						run_program(PROGRAM:"warning_indicator_stop");
+					}
 				}
 			}
 		}
