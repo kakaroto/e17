@@ -29,6 +29,35 @@ static void ewl_freebox_layout_comparator(Ewl_Freebox *fb);
  */
 
 /**
+ * @return Returns a new horizontal Ewl_Freebox widget or NULL on failure
+ * @brief creates and initializes a new freebox widget
+ */
+Ewl_Widget *
+ewl_hfreebox_new(void)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DRETURN_PTR(ewl_freebox_new(), DLEVEL_STABLE);
+}
+
+/**
+ * @return Returns a new vertical Ewl_Freebox widget or NULL on failure
+ * @brief creates and initializes a new freebox widget
+ */
+Ewl_Widget *
+ewl_vfreebox_new(void)
+{
+	Ewl_Widget *fb;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	fb = ewl_freebox_new();
+	EWL_FREEBOX(fb)->orientation = EWL_ORIENTATION_VERTICAL;
+
+	DRETURN_PTR(fb, DLEVEL_STABLE);
+}
+
+/**
  * @return Returns a new Ewl_Freebox on success or NULL on failure
  * @brief Creates a new, initialized Ewl_Freebox widget
  */
@@ -77,9 +106,49 @@ ewl_freebox_init(Ewl_Freebox *fb)
 				ewl_freebox_cb_child_show);
 
 	fb->layout = EWL_FREEBOX_LAYOUT_AUTO;
+	fb->orientation = EWL_ORIENTATION_HORIZONTAL;
+
 	ewl_widget_focusable_set(EWL_WIDGET(fb), FALSE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/**
+ * @param fb: The freebox to use
+ * @param orientation: The orientation to set
+ * @return Returns no value
+ * @brief Sets the orientation of the freebox
+ */
+void
+ewl_freebox_orientation_set(Ewl_Freebox *fb, Ewl_Orientation orientation)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("fb", fb);
+	DCHECK_TYPE("fb", fb, EWL_FREEBOX_TYPE);
+
+	if (orientation == fb->orientation)
+		DRETURN(DLEVEL_STABLE);
+
+	fb->orientation = orientation;
+	ewl_widget_configure(EWL_WIDGET(fb));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param fb: The freebox to use
+ * @return Returns the orientation of the freebox
+ * @brief Retrieve the current orientation of the freebox 
+ */
+Ewl_Orientation
+ewl_freebox_orientation_get(Ewl_Freebox *fb)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("fb", fb, EWL_ORIENTATION_HORIZONTAL);
+	DCHECK_TYPE_RET("fb", fb, EWL_FREEBOX_TYPE,
+					EWL_ORIENTATION_HORIZONTAL);
+
+	DRETURN_INT(fb->orientation, DLEVEL_STABLE);
 }
 
 /**
@@ -248,8 +317,15 @@ ewl_freebox_layout_auto(Ewl_Freebox *fb)
 {
 	Ewl_Container *c;
 	Ewl_Widget *child;
-	int max_pos, max_h = 0, cur_y = 0, cur_x, base_x, pad = 0;
+	int max_pos, largest_size = 0, cur_pos = 0, cur_align;
+	int base_pos, pad = 0, *x, *y;
+	int *stable_dir, *grow_dir, child_h, child_w;
 
+	void (*pref_inner)(Ewl_Object *obj, int size);
+	int (*current_pos)(Ewl_Object *obj);
+	int (*current_size)(Ewl_Object *obj);
+	int (*current_anchor)(Ewl_Object *obj);
+	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fb", fb);
 	DCHECK_TYPE("fb", fb, EWL_FREEBOX_TYPE);
@@ -257,38 +333,62 @@ ewl_freebox_layout_auto(Ewl_Freebox *fb)
 	pad = ewl_theme_data_int_get(EWL_WIDGET(fb),
 					"/freebox/auto/padding");
 
-	base_x = ewl_object_current_x_get(EWL_OBJECT(fb));
-	max_pos = base_x + ewl_object_current_w_get(EWL_OBJECT(fb));
+	if (fb->orientation == EWL_ORIENTATION_HORIZONTAL)
+	{
+		pref_inner = ewl_object_preferred_inner_h_set;
+		current_pos = ewl_object_current_x_get;
+		current_size = ewl_object_current_w_get;
+		current_anchor = ewl_object_current_y_get;
 
-	cur_y = ewl_object_current_y_get(EWL_OBJECT(fb));
-	cur_x = base_x;
+		stable_dir = &child_w;
+		grow_dir = &child_h;
+
+		x = &cur_align;
+		y = &cur_pos;
+	}
+	else
+	{
+		pref_inner = ewl_object_preferred_inner_w_set;
+		current_pos = ewl_object_current_y_get;
+		current_size = ewl_object_current_h_get;
+		current_anchor = ewl_object_current_x_get;
+
+		stable_dir = &child_h;
+		grow_dir = &child_w;
+
+		x = &cur_pos;
+		y = &cur_align;
+	}
+
+	base_pos = current_pos(EWL_OBJECT(fb));
+	max_pos = base_pos + current_size(EWL_OBJECT(fb));
+
+	cur_pos = current_anchor(EWL_OBJECT(fb));
+	cur_align = base_pos;
 
 	c = EWL_CONTAINER(fb);
 	ecore_dlist_goto_first(c->children);
 	while ((child = ecore_dlist_next(c->children)))
 	{
-		int child_h, child_w;
-
 		if (!VISIBLE(child)) continue;
 		ewl_object_current_size_get(EWL_OBJECT(child), 
 						&child_w, &child_h);
 
 		/* past end of widget, wrap */
-		if ((cur_x + child_w) > max_pos)
+		if ((cur_align + *stable_dir) > max_pos)
 		{
-			cur_x = base_x;
-			cur_y += max_h + pad;
-			max_h = 0;
+			cur_align = base_pos;
+			cur_pos += largest_size + pad;
+			largest_size = 0;
 		}
 
-		if (child_h > max_h) 
-			max_h = child_h;
+		if (*grow_dir > largest_size) 
+			largest_size = *grow_dir;
 
-		ewl_object_place(EWL_OBJECT(child), cur_x, cur_y,
-						child_w, child_h);
-		cur_x += child_w + pad;
+		ewl_object_place(EWL_OBJECT(child), *x, *y, child_w, child_h);
+		cur_align += *stable_dir + pad;
 	}
-	ewl_object_preferred_inner_h_set(EWL_OBJECT(fb), cur_y + max_h + pad);
+	pref_inner(EWL_OBJECT(fb), cur_pos + largest_size + pad);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -80,7 +80,7 @@ ewl_filelist_icon_init(Ewl_Filelist_Icon *fl)
 	list->show_dot_change = ewl_filelist_icon_dir_change;
 	list->selected_files_change = ewl_filelist_icon_selected_files_change;
 
-	fl->freebox = ewl_freebox_new();
+	fl->freebox = ewl_vfreebox_new();
 	ewl_container_child_append(EWL_CONTAINER(fl), fl->freebox);
 	ewl_widget_show(fl->freebox);
 
