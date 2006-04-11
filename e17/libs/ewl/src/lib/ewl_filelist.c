@@ -334,7 +334,7 @@ ewl_filelist_directory_read(Ewl_Filelist *fl,
 		void (*func)(Ewl_Filelist *fl, const char *dir, 
 							char *file))
 {
-	Ecore_List *files;
+	Ecore_List *all_files, *files, *dirs;
 	char path[PATH_MAX];
 	const char *dir;
 	char *file;
@@ -345,29 +345,51 @@ ewl_filelist_directory_read(Ewl_Filelist *fl,
 	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
 
 	dir = ewl_filelist_directory_get(fl);
-	files = ecore_file_ls(dir);
-	if (!files) DRETURN(DLEVEL_STABLE);
+	all_files = ecore_file_ls(dir);
+	if (!all_files) DRETURN(DLEVEL_STABLE);
+
+	files = ecore_list_new();
+	dirs = ecore_list_new();
 
 	/* if this isn't the root dir add a .. entry */
 	if (strcmp(dir, "/"))
-		func(fl, dir, "..");
+		ecore_list_append(dirs, strdup(".."));
 
-	while ((file = ecore_list_remove_first(files)))
+	while ((file = ecore_list_remove_first(all_files)))
 	{
+		int is_dir;
+
 		snprintf(path, PATH_MAX, "%s/%s", dir, file);
+		is_dir = ecore_file_is_dir(path);
 
 		/* check the filter if this isn't a directory */
-		if (fl->filter && (!ecore_file_is_dir(path))
-				&& fnmatch(fl->filter, file, 0))
+		if (fl->filter && (!is_dir) && fnmatch(fl->filter, file, 0))
 			continue;
 
-		if ((ewl_filelist_show_dot_files_get(fl)) 
-				|| (file[0] != '.'))
-			func(fl, dir, file);
+		if ((!ewl_filelist_show_dot_files_get(fl)) 
+				&& (file[0] == '.'))
+			continue;
 
+		if (is_dir) ecore_list_append(dirs, file);
+		else ecore_list_append(files, file);
+	}
+
+	/* XXX will need to do sorting here ... */
+	while ((file = ecore_list_remove_first(dirs)))
+	{
+		func(fl, dir, file);
 		FREE(file);
 	}
+	
+	while ((file = ecore_list_remove_first(files)))
+	{
+		func(fl, dir, file);
+		FREE(file);
+	}
+
+	ecore_list_destroy(all_files);
 	ecore_list_destroy(files);
+	ecore_list_destroy(dirs);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
