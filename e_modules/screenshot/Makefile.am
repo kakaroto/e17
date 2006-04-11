@@ -10,11 +10,9 @@ filesdir =  $(datadir)
 
 files_DATA = \
 module_icon.png \
-screenshot.edj \
-screenshot.edc \
-VeraBd.ttf
+screenshot.edj
 
-EXTRA_DIST = $(files_DATA) e_modules-screenshot.spec
+EXTRA_DIST = $(files_DATA) screenshot.edc VeraBd.ttf e_modules-screenshot.spec
 
 # the module .so file
 INCLUDES = -I. \
