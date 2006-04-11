@@ -20,15 +20,6 @@ AC_STRUCT_ST_BLOCKS
 
 CFLAGS="$CFLAGS -D_FILE_OFFSET_BITS=64"
 
-use_threads="yes"
-
-dnl Check for functions that we need to be thread-safe.
-AC_CHECK_FUNCS(readdir_r ctime_r, , have_all_threadsafe_funcs="no")
-if test "$have_all_threadsafe_funcs" = "no"; then
-   use_threads="no"   
-   AC_MSG_WARN(Not all functions needed for multithreaded build found, not using threads.)
-fi
-
 dnl Check for statfs call or other alternatives.
 AC_CHECK_FUNC(statfs, , have_statfs="no")
 if test "$have_statfs" = "no"; then
@@ -110,51 +101,6 @@ AM_CONDITIONAL(HAVE_SAMBA, test $msg_samba = yes)
 AC_SUBST(SAMBA_CFLAGS)
 AC_SUBST(SAMBA_LIBS)
 
-
-dnl Check for pthreads. Make sure we have both
-dnl header and lib, otherwise, or when --disable-threads
-dnl was given, build without thread support.
-AC_ARG_ENABLE(threads,
-	AC_HELP_STRING([--enable-threads],[enable thread support @<:@default=yes@:>@]),
-	use_threads=$enableval)
-
-dnl This needs revisiting
-PTHREAD_CFLAGS=
-PTHREAD_LIB=
-if test "$use_threads" = "yes"; then
-   AC_CHECK_HEADER(pthread.h, pthread_header_ok="yes", pthread_header_ok="no")
-   if test "$pthread_header_ok" = "yes"; then
-      AC_CHECK_LIB(pthread, main, PTHREAD_LIB="-lpthread", PTHREAD_LIB="error")
-      if test "$PTHREAD_LIB" = "error"; then
-         AC_CHECK_LIB(c_r, main, PTHREAD_LIB="-pthread", pthread_lib_ok="no")
-      fi
-   fi
-   if test "$pthread_header_ok" = "no" -o "$pthread_lib_ok" = "no"; then
-      cat <<EOF;
-------------------------------------------------------
-WARNING: Could not find a complete POSIX threads
-(pthreads) installation on your system -- building
-without thread support.
-------------------------------------------------------
-EOF
-      AM_CONDITIONAL(USE_THREADS_FILES, false)
-   else
-      AC_DEFINE(USE_THREADS, 1, [Build support for threads])
-      AM_CONDITIONAL(USE_THREADS_FILES, true)
-      if test "$PTHREAD_LIB" = "-pthread"; then
-         PTHREAD_CFLAGS="-D_THREAD_SAFE -D_REENTRANT -D_POSIX_PTHREAD_SEMANTICS"
-      else
-         PTHREAD_CFLAGS="-D_REENTRANT -D_POSIX_PTHREAD_SEMANTICS"
-      fi
-      CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
-      LIBS="$LIBS $PTHREAD_LIB"
-   fi
-else
-   AM_CONDITIONAL(USE_THREADS_FILES, false)
-fi
-
-AC_SUBST(PTHREAD_CFLAGS)
-AC_SUBST(PTHREAD_LIB)
 
 dnl Check for libxml.
 AC_ARG_WITH(xml2,

@@ -12,7 +12,6 @@
 #include <Ecore.h>
 #include <Ecore_Ipc.h>
 #include <Ecore_File.h>
-#include <pthread.h>
 
 #include <stdlib.h>
 #include <string.h>
