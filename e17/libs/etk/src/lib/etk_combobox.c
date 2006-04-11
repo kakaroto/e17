@@ -908,7 +908,11 @@ static void _etk_combobox_window_key_down_cb(Etk_Object *object, void *event_inf
    else if (strcmp(event->keyname, "Return") == 0 || strcmp(event->keyname, "space") == 0 || strcmp(event->keyname, "KP_Enter") == 0)
    {
       if (combobox->selected_item)
+      {
          etk_combobox_active_item_set(combobox, combobox->selected_item);
+	 if (strcmp(event->keyname, "Return") == 0 || strcmp(event->keyname, "KP_Enter") == 0)
+	   etk_popup_window_popdown(combobox->window);
+      }
    }
    else if (strcmp(event->keyname, "Escape") == 0)
       etk_popup_window_popdown(combobox->window);
@@ -939,11 +943,21 @@ static void _etk_combobox_item_leave_cb(Etk_Object *object, void *data)
 /* Called when the mouse releases the item */
 static void _etk_combobox_item_mouse_up_cb(Etk_Object *object, void *event_info, void *data)
 {
+   Etk_Event_Mouse_Up_Down *event;
    Etk_Combobox_Item *item;
    
    if (!(item = ETK_COMBOBOX_ITEM(object)))
       return;
+   
+   event = event_info;
+   
+   if (event->button != 1 && event->button != 3)
+      return;
+   
    etk_combobox_item_activate(item);
+   
+   if (event->button == 1)   
+      etk_popup_window_popdown(ETK_COMBOBOX(item->combobox)->window);
 }
 
 /**************************
