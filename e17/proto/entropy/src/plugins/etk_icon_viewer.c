@@ -169,6 +169,35 @@ entropy_plugin_init (entropy_core * core)
   return base;
 }
 
+void _etk_entropy_click_cb(Etk_Object *object, void *event_info, void *data)
+{
+  entropy_gui_component_instance *instance;	
+  entropy_etk_iconbox_viewer *viewer;
+  entropy_generic_file* file;
+  entropy_gui_event* gui_event;
+  Etk_Iconbox_Icon* icon;
+  Etk_Event_Mouse_Up_Down *event;
+
+  instance = data;
+  viewer = instance->data;
+  event = event_info;
+
+   if (!(icon = etk_iconbox_icon_get_at_xy(ETK_ICONBOX(viewer->iconbox), 
+   	event->canvas.x, event->canvas.y, ETK_FALSE, ETK_TRUE, ETK_TRUE)))
+      return;
+
+  file = etk_iconbox_icon_data_get(icon);
+  printf("File is %p\n", file);
+
+  if (file) {
+  	gui_event = entropy_malloc (sizeof (entropy_gui_event));
+	  gui_event->event_type =
+		entropy_core_gui_event_get (ENTROPY_GUI_EVENT_ACTION_FILE);
+	  gui_event->data = file;
+	  entropy_core_layout_notify_event (instance, gui_event, ENTROPY_EVENT_GLOBAL); 
+  }
+}
+
 void
 gui_event_callback (entropy_notify_event * eevent, void *requestor,
 		    void *el, entropy_gui_component_instance * comp)
@@ -271,6 +300,8 @@ entropy_plugin_gui_instance_new (entropy_core * core,
   viewer->gui_hash = ecore_hash_new(ecore_direct_hash,ecore_direct_compare);
 
   viewer->iconbox = etk_iconbox_new();
+  etk_signal_connect("mouse_up", ETK_OBJECT(viewer->iconbox), ETK_CALLBACK(_etk_entropy_click_cb), instance);
+  
   instance->gui_object = viewer->iconbox;
   instance->core = core;
   instance->data = viewer;
