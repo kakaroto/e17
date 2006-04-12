@@ -10,6 +10,9 @@ static void ewl_filedialog_cb_mouse_down(Ewl_Widget *w, void *ev, void *data);
 static void ewl_filedialog_cb_icon_view(Ewl_Widget *w, void *ev, void *data);
 static void ewl_filedialog_cb_list_view(Ewl_Widget *w, void *ev, void *data);
 
+static void ewl_filedialog_cb_show_dot(Ewl_Widget *w, void *ev, void *data);
+static void ewl_filedialog_cb_show_favorites(Ewl_Widget *w, void *ev, void *data);
+
 /**
  * @return Returns a new open filedialog if successful, NULL on failure.
  * @brief Create a new open filedialog
@@ -62,7 +65,7 @@ ewl_filedialog_new(void)
 int
 ewl_filedialog_init(Ewl_Filedialog *fd)
 {
-	Ewl_Widget *w, *o;
+	Ewl_Widget *w, *menu, *o;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fd", fd, FALSE);
@@ -108,18 +111,37 @@ ewl_filedialog_init(Ewl_Filedialog *fd)
 	ewl_container_child_append(EWL_CONTAINER(fd->menu_float), fd->menu);
 	ewl_widget_show(fd->menu);
 
+	menu = ewl_menu_new();
+	ewl_button_label_set(EWL_BUTTON(menu), "View");
+	ewl_container_child_append(EWL_CONTAINER(fd->menu), menu);
+	ewl_widget_show(menu);
+
 	o = ewl_menu_item_new();
 	ewl_button_label_set(EWL_BUTTON(o), "Icon view");
-	ewl_container_child_append(EWL_CONTAINER(fd->menu), o);
+	ewl_container_child_append(EWL_CONTAINER(menu), o);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
 				ewl_filedialog_cb_icon_view, fd);
 	ewl_widget_show(o);
 
 	o = ewl_menu_item_new();
 	ewl_button_label_set(EWL_BUTTON(o), "List view");
-	ewl_container_child_append(EWL_CONTAINER(fd->menu), o);
+	ewl_container_child_append(EWL_CONTAINER(menu), o);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
 				ewl_filedialog_cb_list_view, fd);
+	ewl_widget_show(o);
+
+	o = ewl_menu_item_new();
+	ewl_button_label_set(EWL_BUTTON(o), "Show Dot Files");
+	ewl_container_child_append(EWL_CONTAINER(fd->menu), o);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
+				ewl_filedialog_cb_show_dot, fd);
+	ewl_widget_show(o);
+
+	o = ewl_menu_item_new();
+	ewl_button_label_set(EWL_BUTTON(o), "Show Favorites");
+	ewl_container_child_append(EWL_CONTAINER(fd->menu), o);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
+				ewl_filedialog_cb_show_favorites, fd);
 	ewl_widget_show(o);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -500,6 +522,38 @@ ewl_filedialog_cb_list_view(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	fd = data;
 	ewl_filedialog_list_view_set(fd, ewl_filelist_list_view_get());
 	ewl_widget_hide(fd->menu_float);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_filedialog_cb_show_dot(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+								void *data)
+{
+	Ewl_Filedialog *fd;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("data", data);
+
+	fd = data;
+	ewl_filedialog_show_dot_files_set(fd,
+			!ewl_filedialog_show_dot_files_get(fd));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_filedialog_cb_show_favorites(Ewl_Widget *w __UNUSED__, 
+					void *ev __UNUSED__, void *data)
+{
+	Ewl_Filedialog *fd;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("data", data);
+
+	fd = data;
+	ewl_filedialog_show_favorites_set(fd,
+			!ewl_filedialog_show_favorites_get(fd));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
