@@ -49,6 +49,8 @@ static ETimer      *q_first = NULL;
 static XContext     xid_context = 0;
 
 static char        *conf_dir = NULL;
+static char        *data_dir = NULL;
+static char        *e16_user_dir = NULL;
 static char        *epplet_name = NULL;
 static char        *epplet_cfg_file = NULL;
 static int          epplet_instance = 0;
@@ -5505,8 +5507,7 @@ Epplet_show_about(char *name)
 {
    char                s[1024];
 
-   Esnprintf(s, sizeof(s), "edox " EROOT "/epplet_data/%s/%s.ABOUT",
-	     name, name);
+   Esnprintf(s, sizeof(s), "edox %s/%s.ABOUT", Epplet_data_dir(), name);
    Epplet_spawn_command(s);
 }
 
@@ -5526,9 +5527,13 @@ Epplet_find_instance(char *name)
 {
    struct stat         st;
    struct flock        fl;
-   char                s[1024], *tmpdir;
+   char                s[1024];
    int                 i, fd, err, exists, locked;
    pid_t               pid;
+
+   /* Set epplet data dir */
+   Esnprintf(s, sizeof(s), EROOT "/epplet_data/%s", name);
+   data_dir = Estrdup(s);
 
    /* Find E dir */
    Esnprintf(s, sizeof(s), "%s/.e16", getenv("HOME"));
@@ -5541,10 +5546,10 @@ Epplet_find_instance(char *name)
                  mkdir(s, S_IRWXU);
              }
      }
-   tmpdir = strdup(s);
+   e16_user_dir = strdup(s);
 
    /* make sure basic dir exists */
-   Esnprintf(s, sizeof(s), "%s/epplet_config", tmpdir);
+   Esnprintf(s, sizeof(s), "%s/epplet_config", Epplet_e16_user_dir());
    if (stat(s, &st) < 0)
      {
 	if (mkdir(s, S_IRWXU) < 0)
@@ -5556,15 +5561,13 @@ Epplet_find_instance(char *name)
 		       s, strerror(errno));
 	     Epplet_dialog_ok(err);
 	     epplet_instance = 1;
-         free(tmpdir);
 	     return;
 	  }
      }
 
    /* make sure this epplet's config dir exists */
-   Esnprintf(s, sizeof(s), "%s/epplet_config/%s", tmpdir, name);
+   Esnprintf(s, sizeof(s), "%s/epplet_config/%s", Epplet_e16_user_dir(), name);
    conf_dir = strdup(s);
-   free(tmpdir);
 
    if (stat(s, &st) < 0)
      {
@@ -5693,6 +5696,18 @@ int
 Epplet_get_instance(void)
 {
    return epplet_instance;
+}
+
+const char         *
+Epplet_data_dir(void)
+{
+   return data_dir;
+}
+
+const char         *
+Epplet_e16_user_dir(void)
+{
+   return e16_user_dir;
 }
 
 void

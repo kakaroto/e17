@@ -643,3 +643,9 @@ char              **Epplet_query_multi_config(char *key, int *num);
 void                Epplet_save_config(void);
 /* Delete the config information.                                           */
 void                Epplet_clear_config(void);
+
+/* Return epplet data directory.                                            */
+const char         *Epplet_data_dir(void);
+
+/* Return e16 user configuration directory.                                 */
+const char         *Epplet_e16_user_dir(void);
