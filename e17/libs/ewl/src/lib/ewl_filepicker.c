@@ -83,7 +83,7 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 	ewl_callback_prepend(EWL_WIDGET(fp), EWL_CALLBACK_DESTROY,
 				ewl_filepicker_cb_destroy, NULL);
 
-	ewl_object_minimum_size_set(EWL_OBJECT(fp), 400, 300);
+	ewl_object_preferred_inner_size_set(EWL_OBJECT(fp), 400, 300);
 
 	model = ewl_model_new();
 	ewl_model_fetch_set(model, ewl_filepicker_cb_path_fetch);
