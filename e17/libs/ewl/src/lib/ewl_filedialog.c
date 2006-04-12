@@ -475,14 +475,8 @@ ewl_filedialog_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 
 	if (event->button == 3)
 	{
-		int x, y;
-
-		x = ewl_object_current_x_get(EWL_OBJECT(fd));
-		y = ewl_object_current_y_get(EWL_OBJECT(fd));
-
 		ewl_floater_position_set(EWL_FLOATER(fd->menu_float),
-						event->x - x, 
-						event->y - y);
+						event->x, event->y);
 		ewl_widget_show(fd->menu_float);
 
 		ewl_callback_call(EWL_WIDGET(fd->menu),
@@ -505,7 +499,6 @@ ewl_filedialog_cb_icon_view(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 	fd = data;
 	ewl_filedialog_list_view_set(fd, ewl_filelist_icon_view_get());
-	ewl_widget_hide(fd->menu_float);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -521,7 +514,6 @@ ewl_filedialog_cb_list_view(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 	fd = data;
 	ewl_filedialog_list_view_set(fd, ewl_filelist_list_view_get());
-	ewl_widget_hide(fd->menu_float);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
