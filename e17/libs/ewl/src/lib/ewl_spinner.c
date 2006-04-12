@@ -1,7 +1,7 @@
+#include "ewl_private.h"
 #include <Ewl.h>
 #include "ewl_debug.h"
 #include "ewl_macros.h"
-#include "ewl_private.h"
 
 static void ewl_spinner_calc_value(Ewl_Spinner *s, double val, unsigned int call);
 static int ewl_spinner_timer(void *data);
@@ -86,6 +86,7 @@ ewl_spinner_init(Ewl_Spinner *s)
 	ewl_container_child_append(EWL_CONTAINER(s), vbox);
 	ewl_widget_appearance_set(vbox, "controls");
 	ewl_widget_internal_set(vbox, TRUE);
+	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_NONE);
 	ewl_widget_show(vbox);
 
 	s->increment = ewl_button_new();
