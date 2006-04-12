@@ -644,16 +644,3 @@ char              **Epplet_query_multi_config(char *key, int *num);
 void                Epplet_save_config(void);
 /* Delete the config information.                                           */
 void                Epplet_clear_config(void);
-/****************************************************************************/
-/* Convenience macros to make using the above calls easier                  */
-/****************************************************************************/
-/* write a single RGB pixel in an RGB buffer. it isnt very efficient to call */
-/* this lots - but it works well if called sparsely */
-#define         Epplet_buf_write_pixel(buf, x, y, r, g, b) \
-{\
-   char *ptr;\
-   ptr = (buf)->im->rgb_data + ((buf)->im->rgb_width * 3 * (w)) + (h);\
-   ptr[0] = (unsigned char)(r);\
-   ptr[1] = (unsigned char)(g);\
-   ptr[2] = (unsigned char)(b);\
-}
