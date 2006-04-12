@@ -79,7 +79,7 @@ typedef struct Ewl_Tree2_Column Ewl_Tree2_Column;
 struct Ewl_Tree2_Column
 {
 	Ewl_Model *model;	/**< The model for the column */
-	Ewl_View *view;		/**< The view for the column */
+	Ewl_View  *view;	/**< The view for the column */
 };
 
 /**
@@ -108,8 +108,9 @@ struct Ewl_Tree2
 	Ecore_List *selected; 	 /**< The list of selected cells */
 
 	Ewl_Tree_Mode mode;	 /**< The mode of the tree */
-	unsigned int fixed:1;   /**< Rows are fixed height */
+	unsigned int fixed:1;    /**< Rows are fixed height */
 	unsigned int headers_visible:1; /**< Are the headers visible? */
+	unsigned int dirty:1;    /**< Has the data changed? */
 };
 
 /*
