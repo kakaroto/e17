@@ -285,19 +285,6 @@ AC_ARG_ENABLE(new-remember,
 #  AC_MSG_RESULT(warning:  EROOT environment variable not detected.  Using $EROOT)
   AC_SUBST(EROOT)
 #fi
-# If $EBIN is set use it, unless a make distcheck is being done
-# Makes the gratuitous assumption that "=inst" is neccessary and
-# sufficuent for a make distcheck
-#AC_MSG_CHECKING(for Enlightenment binary location)
-#if test -n "$EBIN" -a `echo "$prefix" | sed -e 's:[=_]inst::'` = "$prefix"
-#then
-#  AC_SUBST(EBIN)
-#  AC_MSG_RESULT($EBIN)
-#else
-  EBIN=`eval echo $ENLIGHTENMENT_BIN`
-#  AC_MSG_RESULT(warning:  EBIN environment variable not detected.  Using $EBIN)
-  AC_SUBST(EBIN)
-#fi
 
 # Should we install E-Mixer?
 # Probably not ;-) But we may as well check!
@@ -359,8 +346,6 @@ AC_SUBST(GL_PROGS)
 AC_SUBST(SGI_LIBS)
 AC_SUBST(SGI_DEFINES)
 
-basedir=.
-
 AM_CONFIG_HEADER(config.h)
 
 AC_OUTPUT(Makefile api/Makefile epplets/Makefile debian/Makefile api/epplet.h)
@@ -373,4 +358,4 @@ echo "Now type 'make' to build $PACKAGE $VERSION."
 echo "Then type 'make install' to install."
 echo
 echo "If you are installing epplets for the first time, don't forget"
-echo "to run $EBIN/e_gen_menus to build your epplets menu"
+echo "to regenerate menus to build your epplets menu"

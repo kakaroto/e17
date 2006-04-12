@@ -5505,7 +5505,7 @@ Epplet_show_about(char *name)
 {
    char                s[1024];
 
-   Esnprintf(s, sizeof(s), EBIN "/edox " EROOT "/epplet_data/%s/%s.ABOUT",
+   Esnprintf(s, sizeof(s), "edox " EROOT "/epplet_data/%s/%s.ABOUT",
 	     name, name);
    Epplet_spawn_command(s);
 }

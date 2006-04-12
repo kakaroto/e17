@@ -50,7 +50,6 @@ int                 Esnprintf(char *str, size_t count, const char *fmt,...);
 #endif
 
 #define EROOT "@EROOT@"
-#define EBIN  "@EBIN@"
 
 /****************************************************************************/
 /* Data structures & primitives                                             */
