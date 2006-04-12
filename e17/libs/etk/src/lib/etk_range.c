@@ -28,8 +28,10 @@ enum _Etk_Range_Property_Id
 };
 
 static void _etk_range_constructor(Etk_Range *range);
+static void _etk_range_destructor(Etk_Range *range);
 static void _etk_range_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_range_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
+static void _etk_range_change_value_job_cb(void *data);
 
 static Etk_Signal *_etk_range_signals[ETK_RANGE_NUM_SIGNALS];
 
@@ -49,16 +51,24 @@ Etk_Type *etk_range_type_get()
 
    if (!range_type)
    {
-      range_type = etk_type_new("Etk_Range", ETK_WIDGET_TYPE, sizeof(Etk_Range), ETK_CONSTRUCTOR(_etk_range_constructor), NULL);
+      range_type = etk_type_new("Etk_Range", ETK_WIDGET_TYPE, sizeof(Etk_Range),
+         ETK_CONSTRUCTOR(_etk_range_constructor), ETK_DESTRUCTOR(_etk_range_destructor));
 
-      _etk_range_signals[ETK_RANGE_VALUE_CHANGED_SIGNAL] = etk_signal_new("value_changed", range_type, ETK_MEMBER_OFFSET(Etk_Range, value_changed), etk_marshaller_VOID__DOUBLE, NULL, NULL);
+      _etk_range_signals[ETK_RANGE_VALUE_CHANGED_SIGNAL] = etk_signal_new("value_changed",
+         range_type, ETK_MEMBER_OFFSET(Etk_Range, value_changed), etk_marshaller_VOID__DOUBLE, NULL, NULL);
 
-      etk_type_property_add(range_type, "lower", ETK_RANGE_LOWER_PROPERTY, ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_double(0.0));
-      etk_type_property_add(range_type, "upper", ETK_RANGE_UPPER_PROPERTY, ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_double(0.0));
-      etk_type_property_add(range_type, "value", ETK_RANGE_VALUE_PROPERTY, ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_double(0.0));
-      etk_type_property_add(range_type, "step_increment", ETK_RANGE_STEP_INC_PROPERTY, ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_double(0.0));
-      etk_type_property_add(range_type, "page_increment", ETK_RANGE_PAGE_INC_PROPERTY, ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_double(0.0));
-      etk_type_property_add(range_type, "page_size", ETK_RANGE_PAGE_SIZE_PROPERTY, ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_double(0.0));
+      etk_type_property_add(range_type, "lower", ETK_RANGE_LOWER_PROPERTY,
+         ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_double(0.0));
+      etk_type_property_add(range_type, "upper", ETK_RANGE_UPPER_PROPERTY,
+         ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_double(0.0));
+      etk_type_property_add(range_type, "value", ETK_RANGE_VALUE_PROPERTY,
+         ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_double(0.0));
+      etk_type_property_add(range_type, "step_increment", ETK_RANGE_STEP_INC_PROPERTY,
+         ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_double(0.0));
+      etk_type_property_add(range_type, "page_increment", ETK_RANGE_PAGE_INC_PROPERTY,
+         ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_double(0.0));
+      etk_type_property_add(range_type, "page_size", ETK_RANGE_PAGE_SIZE_PROPERTY,
+         ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_double(0.0));
       
       range_type->property_set = _etk_range_property_set;
       range_type->property_get = _etk_range_property_get;
@@ -95,8 +105,8 @@ void etk_range_value_set(Etk_Range *range, double value)
    if (new_value != range->value)
    {
       range->value = new_value;
-      etk_signal_emit(_etk_range_signals[ETK_RANGE_VALUE_CHANGED_SIGNAL], ETK_OBJECT(range), NULL, range->value);
-      etk_object_notify(ETK_OBJECT(range), "value");
+      if (!range->change_value_job)
+         range->change_value_job = ecore_job_add(_etk_range_change_value_job_cb, range);
    }
 }
 
@@ -131,7 +141,8 @@ void etk_range_range_set(Etk_Range *range, double lower, double upper)
 /**
  * @brief Sets the increment value of the range
  * @param range a range
- * @param step the step increment value. Used when the arrow of a scrollbar is clicked, or when the keyboard arrows are pressed (for a scale)
+ * @param step the step increment value. Used when the arrow of a scrollbar is clicked, @n
+ * or when the keyboard arrows are pressed (for a scale)
  * @param page the page increment value. Used when the trough of a scrollbar is clicked, or when page up/down are pressed
  */
 void etk_range_increments_set(Etk_Range *range, double step, double page)
@@ -202,7 +213,18 @@ static void _etk_range_constructor(Etk_Range *range)
    range->page_increment = 0.0;
    range->page_size = 0.0;
 
+   range->change_value_job = NULL;
    range->value_changed = NULL;
+}
+
+/* Destroys the range */
+static void _etk_range_destructor(Etk_Range *range)
+{
+   if (!range)
+      return;
+   
+   if (range->change_value_job)
+      ecore_job_del(range->change_value_job);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -269,6 +291,26 @@ static void _etk_range_property_get(Etk_Object *object, int property_id, Etk_Pro
       default:
          break;
    }
+}
+
+/**************************
+ *
+ * Private functions
+ *
+ **************************/
+
+/* Emits the the "value changed" signal (doing it in a job to avoid emitting it too
+ often when the mouse is moved for scrollbars or sliders for example) */
+static void _etk_range_change_value_job_cb(void *data)
+{
+   Etk_Range *range;
+   
+   if (!(range = ETK_RANGE(data)))
+      return;
+   
+   etk_signal_emit(_etk_range_signals[ETK_RANGE_VALUE_CHANGED_SIGNAL], ETK_OBJECT(range), NULL, range->value);
+   etk_object_notify(ETK_OBJECT(range), "value");
+   range->change_value_job = NULL;
 }
 
 /** @} */

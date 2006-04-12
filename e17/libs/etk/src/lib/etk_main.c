@@ -207,8 +207,8 @@ Evas_List *etk_main_toplevel_widgets_get()
 /* Runs an iteration (used as callback for an ecore_job)*/
 static void _etk_main_iterate_job_cb(void *data)
 {
-   _etk_main_iterate_job = NULL;
    etk_main_iterate();
+   _etk_main_iterate_job = NULL;
 }
 
 /* Recusively requests the size of all the widgets */
