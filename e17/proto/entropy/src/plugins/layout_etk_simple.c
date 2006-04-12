@@ -261,7 +261,6 @@ void etk_local_viewer_cb(Etk_Object* obj, void* data)
 		}
 
 		if (local->gui_object) {
-			etk_box_pack_start(ETK_BOX(gui->localshell), local->gui_object, ETK_TRUE,ETK_TRUE,0);
 			local->active = 1;
 
 			/*Update the visual current_folder*/
@@ -270,6 +269,7 @@ void etk_local_viewer_cb(Etk_Object* obj, void* data)
 			} else {
 				printf("No current folder!\n");
 			}
+			etk_box_pack_start(ETK_BOX(gui->localshell), local->gui_object, ETK_TRUE,ETK_TRUE,0);
 		} else {
 			printf("Selected instance has no GUI_OBJECT\n");
 		}

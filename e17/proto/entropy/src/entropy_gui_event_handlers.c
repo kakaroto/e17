@@ -307,13 +307,21 @@ Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_folder_change_ins
 {
 	Entropy_Gui_Event_Handler_Instance_Data* data = entropy_malloc(sizeof(Entropy_Gui_Event_Handler_Instance_Data));
 
+	entropy_gui_component_instance* requestor_parent = NULL;
 	entropy_notify_event *ev = entropy_notify_event_new();
 	Ecore_List* res;	
 	entropy_file_request* request = entropy_malloc(sizeof(entropy_file_request));
 		
-
 	ev->event_type = ENTROPY_NOTIFY_FILELIST_REQUEST;
 	ev->processed = 1;
+
+	/*FIXME - here we make the assumption, that if a requestor has no layout parent,
+	 * then it must be a layout parent itself - this may not always true*/
+	if (!requestor->layout_parent) {
+		requestor_parent = requestor;
+	} else {
+		requestor_parent = requestor->layout_parent;
+	}
 
 	/*Check if we need to put a slash between the path/file*/
 	if (((entropy_file_request*)event->data)->drill_down) {
@@ -321,13 +329,13 @@ Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_folder_change_ins
 	}
 
 	/*Register this folder as being the current for this layout*/
-	if (requestor->layout_parent)  {
-		((entropy_gui_component_instance_layout*)requestor->layout_parent)->current_folder = 
+	if (requestor_parent)  {
+		((entropy_gui_component_instance_layout*)requestor_parent)->current_folder = 
 			((entropy_file_request*)event->data)->file;
 	}
 
 	request->file = ((entropy_file_request*)event->data)->file;
-	request->requester = requestor->layout_parent; /*Requester is the layout parent - after all - one dir per layout at one time*/
+	request->requester = requestor_parent; /*Requester is the layout parent - after all - one dir per layout at one time*/
 	request->core = entropy_core_get_core();
 	request->file_type = FILE_ALL;
 	request->drill_down = ((entropy_file_request*)event->data)->drill_down;

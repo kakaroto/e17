@@ -727,7 +727,8 @@ entropy_plugin_layout_create (entropy_core * core)
   entropy_plugin *plugin;
   Ewl_Widget *iconbox = NULL;
 
-  layout = entropy_malloc (sizeof (entropy_gui_component_instance));
+  layout = 
+	  (entropy_gui_component_instance*)entropy_gui_component_instance_layout_new();
   gui = entropy_malloc (sizeof (entropy_layout_gui));
   gui->current_folder = NULL;
   layout->data = gui;

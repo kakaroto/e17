@@ -1036,9 +1036,15 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		ev->data = request;
 		ev->return_struct = file_list;
 
-		
 		/*Now get rid of the request, so we're left with a virginal list of files*/
 		ecore_list_remove_first(file_list);
+
+		/*Register this folder as being the current for this layout*/
+		if (((entropy_gui_component_instance*)request->requester)->layout_parent)  {
+			( (entropy_gui_component_instance_layout*)
+			       ((entropy_gui_component_instance*)request->requester)->layout_parent)->current_folder = 
+				request->file;
+		}
 		
 		/*Call the requestors*/
 		ecore_list_goto_first(el);

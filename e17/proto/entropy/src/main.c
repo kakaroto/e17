@@ -56,6 +56,12 @@ int main(int argc, char** argv) {
 	sigemptyset(&action.sa_mask);
 	sigaction(SIGSEGV, &action, NULL);
 
+   action.sa_sigaction = entropy_sigseg_act;
+      action.sa_flags = SA_ONSTACK | SA_NODEFER | SA_RESETHAND | SA_SIGINFO;
+        sigemptyset(&action.sa_mask);
+    sigaction(SIGABRT, &action, NULL);
+
+
 	
 	entropy_core_init(argc,argv);
 
