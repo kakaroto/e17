@@ -47,7 +47,7 @@ E_Exec_epplet_SOURCES = E-Exec.c
 E_Exec_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Exec_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
-E_SD_epplet_SOURCES = E-SD.c E-SD.h esdcloak.c utils.c utils.h esdcloak.h
+E_SD_epplet_SOURCES = E-SD.c esdcloak.c utils.c utils.h esdcloak.h
 E_SD_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_SD_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir) -lesd
 
@@ -137,7 +137,7 @@ E_Xss_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Xss_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_ScreenShoot_epplet_SOURCES = \
-E-ScreenShoot.c E-ScreenShoot.h cloak.c utils.c utils.h cloak.h \
+E-ScreenShoot.c cloak.c utils.c utils.h cloak.h \
 E-ScreenShoot_ftp.c E-ScreenShoot_ftp.h
 E_ScreenShoot_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_ScreenShoot_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
@@ -147,7 +147,7 @@ E_NetGraph_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_NetGraph_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_ScreenSave_epplet_SOURCES = \
-E-ScreenSave.c E-ScreenSave.h cloak.c utils.c utils.h cloak.h
+E-ScreenSave.c cloak.c utils.c utils.h cloak.h
 E_ScreenSave_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_ScreenSave_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
@@ -156,7 +156,7 @@ E_UrlWatch_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_UrlWatch_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir) $(X_LIBS)
 E_UrlWatch_epplet_LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS)
 
-E_Mountbox_epplet_SOURCES = E-Mountbox.c E-Mountbox.h
+E_Mountbox_epplet_SOURCES = E-Mountbox.c
 E_Mountbox_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Mountbox_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
