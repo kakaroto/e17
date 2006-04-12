@@ -2,6 +2,8 @@ calendar - A module to display a desktop calendar.
 
 cpu - A module to monitor cpu load.
 
+devian - A module to display images and rss feeds.
+
 emu - Experimental generic scriptable module for E17.
 
 evolume - A module to control volume for some mixers.
