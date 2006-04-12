@@ -1,8 +1,8 @@
 Source: edb
 Section: libs
 Priority: optional
-Build-Depends: debhelper (>>3.0.0), libncurses5-dev, zlib1g-dev, automake1.7 | automaken, libtool
 Maintainer: E17 Debian Team <debian@edevelop.org>
+Build-Depends: debhelper (>>3.0.0), cdbs (>= 0.4.3-1.1), automake1.7 | automaken, libtool, libncurses5-dev, zlib1g-dev
 Standards-Version: 3.5.7.0
 
 Package: libedb1

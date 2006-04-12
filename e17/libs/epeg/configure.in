@@ -90,6 +90,7 @@ src/Makefile
 src/lib/Makefile
 src/bin/Makefile
 epeg-config
+debian/changelog
 ],[
 chmod +x epeg-config
 ])

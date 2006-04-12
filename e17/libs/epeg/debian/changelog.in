@@ -1,4 +1,4 @@
-epeg (0.9.0.005) unstable; urgency=low
+epeg (@VERSION@) unstable; urgency=low
 
   * Initial CVS release
 

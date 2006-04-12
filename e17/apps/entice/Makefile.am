@@ -29,6 +29,6 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 #	fi
 
 EXTRA_DIST = README AUTHORS COPYING entice.spec \
-	     debian/changelog \
+	     debian/changelog debian/changelog.in \
 	     debian/control debian/rules debian/docs \
 	     entice.spec.in

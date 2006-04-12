@@ -1,8 +1,8 @@
 Source: entice
 Section: graphics
 Priority: optional
-Maintainer: Sytse Wielinga <s.b.wielinga@student.utwente.nl>
-Build-Depends: libesmart0-dev, libevas0-dev, libedb1-dev, libecore0-dev, libedje0-dev, debhelper (>= 3.0)
+Maintainer:  E17 Debian Team <debian@edevelop.org>
+Build-Depends: debhelper (>= 3.0), automake1.7 | automaken, libtool, libesmart0-dev, libevas0-dev, libedb1-dev, libecore0-dev, libedje0-dev, edje0-bin, libimlib2-dev
 Standards-Version: 3.5.6.0
 
 Package: entice
