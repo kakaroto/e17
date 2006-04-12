@@ -1,11 +1,6 @@
 #ifndef EWL_IMAGE_H
 #define EWL_IMAGE_H
 
-#ifdef BUILD_EPSILON_SUPPORT
-#include <Epsilon.h>
-#include <Epsilon_Request.h>
-#endif
-
 /**
  * @addtogroup Ewl_Image Ewl_Image: An Image Display Widget
  * Provides a widget for displaying evas loadable images, and edjes.
@@ -82,11 +77,7 @@ struct Ewl_Image
 struct Ewl_Image_Thumbnail
 {
 	Ewl_Image        image;	/**< Inherit from Ewl_Image */
-#ifdef BUILD_EPSILON_SUPPORT
-	Epsilon_Request *thumb; /**< Outstanding request to thumbnail image */
-#else
-	void            *thumb; /**< Not supported :( */
-#endif
+	void            *thumb; /**< Outstanding request to thumbnail image */
 	Ewl_Widget      *orig;  /**< Reference to image used to create thumb */
 };
 

@@ -3,6 +3,11 @@
 #include "ewl_debug.h"
 #include "ewl_macros.h"
 
+#ifdef BUILD_EPSILON_SUPPORT
+#include <Epsilon.h>
+#include <Epsilon_Request.h>
+#endif
+
 static Ecore_Event_Handler *ewl_image_epsilon_handler = NULL;
 
 static Ewl_Image_Type  ewl_image_type_get(const char *i);
@@ -909,7 +914,7 @@ ewl_image_mouse_up_cb(Ewl_Widget *w, void *ev_data,
 	emb = ewl_embed_widget_find(w);
 	ev = ev_data;
 
-	if (i->type == EWL_IMAGE_TYPE_EDJE)
+	if (i->type == EWL_IMAGE_TYPE_EDJE && emb)
 		evas_event_feed_mouse_up(emb->evas, ev->button, 
 				EVAS_BUTTON_NONE, 
 				(unsigned int)((unsigned long long)(ecore_time_get() * 1000.0) & 0xffffffff), 
