@@ -45,6 +45,18 @@ create_test(Ewl_Container *box)
         ewl_container_child_append(EWL_CONTAINER(box), o);
         ewl_widget_show(o);
 
+        o = ewl_hseparator_new();
+        ewl_container_child_append(EWL_CONTAINER(box), o);
+        ewl_widget_show(o);
+
+        o = ewl_icon_new();
+	ewl_box_orientation_set(EWL_BOX(o), EWL_ORIENTATION_HORIZONTAL);
+        ewl_icon_image_set(EWL_ICON(o),
+                                PACKAGE_DATA_DIR "/images/Draw.png", NULL);
+        ewl_icon_label_set(EWL_ICON(o), "Draw");
+        ewl_container_child_append(EWL_CONTAINER(box), o);
+        ewl_widget_show(o);
+
 	return 1;
 }
 
