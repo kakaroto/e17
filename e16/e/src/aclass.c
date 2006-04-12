@@ -835,7 +835,6 @@ AclassConfigWrite(const ActionClass * ac, void (*prf) (const char *fmt, ...))
    Action             *aa;
    int                 i, len;
 
-   Eprintf("AclassConfigWrite %p\n", ac);
    if (!ac || ac->num <= 0)
       return;
 
