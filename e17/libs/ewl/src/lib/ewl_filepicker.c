@@ -10,7 +10,7 @@ struct Ewl_Filepicker_Filter
 	char *filter;
 };
 
-static void ewl_fillpicker_favorites_populate(Ewl_Filepicker *fp);
+static void ewl_filepicker_favorites_populate(Ewl_Filepicker *fp);
 static void ewl_filepicker_cb_list_value_changed(Ewl_Widget *w, void *ev,
 								void *data);
 static void ewl_filepicker_cb_button_clicked(Ewl_Widget *w, void *ev, 
@@ -112,7 +112,7 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 	ewl_container_child_append(EWL_CONTAINER(o), fp->favorites_box);
 	ewl_object_fill_policy_set(EWL_OBJECT(fp->favorites_box),
 				EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL);
-	ewl_fillpicker_favorites_populate(fp);
+	ewl_filepicker_favorites_populate(fp);
 	ewl_filepicker_show_favorites_set(fp, FALSE);
 
 	fp->file_list_box = ewl_scrollpane_new();
@@ -617,7 +617,7 @@ ewl_filepicker_cb_button_clicked(Ewl_Widget *w, void *ev __UNUSED__,
 }
 
 static void
-ewl_fillpicker_favorites_populate(Ewl_Filepicker *fp)
+ewl_filepicker_favorites_populate(Ewl_Filepicker *fp)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fp", fp);
