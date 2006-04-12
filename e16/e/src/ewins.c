@@ -433,29 +433,29 @@ DetermineEwinFloat(EWin * ewin, int dx, int dy)
 	  case 0:
 	     if (((x + dx < 0) ||
 		  ((x + dx + w <= VRoot.w) &&
-		   ((DesktopAt(xd + x + dx + w - 1, yd) != dsk)))))
+		   (DesktopAt(xd + x + dx + w - 1, yd) != dsk))))
 		dofloat = 1;
 	     break;
 	  case 1:
 	     if (((x + dx + w > VRoot.w) ||
-		  ((x + dx >= 0) && ((DesktopAt(xd + x + dx, yd) != dsk)))))
+		  ((x + dx >= 0) && (DesktopAt(xd + x + dx, yd) != dsk))))
 		dofloat = 1;
 	     break;
 	  case 2:
 	     if (((y + dy < 0) ||
 		  ((y + dy + h <= VRoot.h) &&
-		   ((DesktopAt(xd, yd + y + dy + h - 1) != dsk)))))
+		   (DesktopAt(xd, yd + y + dy + h - 1) != dsk))))
 		dofloat = 1;
 	     break;
 	  case 3:
 	     if (((y + dy + h > VRoot.h) ||
-		  ((y + dy >= 0) && ((DesktopAt(xd, yd + y + dy) != dsk)))))
+		  ((y + dy >= 0) && (DesktopAt(xd, yd + y + dy) != dsk))))
 		dofloat = 1;
 	     break;
 	  }
 
 	if (dofloat)
-	   EwinFloatAt(ewin, x + xd, y + yd);
+	   EwinOpFloatAt(ewin, OPSRC_USER, x + xd, y + yd);
      }
 }
 
@@ -698,6 +698,7 @@ AddToFamily(EWin * ewin, Window win)
 	/* We got here by MapRequest. DestroyNotify should follow. */
 	goto done;
      }
+
    EwinGetHints(ewin);
    EwinManage(ewin);
    EwinConfigure(ewin);

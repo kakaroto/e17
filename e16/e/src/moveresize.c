@@ -98,7 +98,7 @@ ActionMoveStart(EWin * ewin, int grab, char constrained, int nogroup)
    for (i = 0; i < num; i++)
      {
 	EwinShapeSet(gwins[i]);
-	EwinFloatAt(gwins[i], EoGetX(gwins[i]), EoGetY(gwins[i]));
+	EwinOpFloatAt(gwins[i], OPSRC_USER, EoGetX(gwins[i]), EoGetY(gwins[i]));
 	if (Mode_mr.mode == 0)
 	  {
 	     ewin->state.moving = 1;
@@ -152,11 +152,11 @@ ActionMoveEnd(EWin * ewin)
 	ewin = gwins[i];
 	d1 = EoGetDesk(ewin);
 	if (d2 == d1)
-	   EwinUnfloatAt(ewin, d2, ewin->shape_x, ewin->shape_y);
+	   EwinOpUnfloatAt(ewin, OPSRC_USER, d2, ewin->shape_x, ewin->shape_y);
 	else
-	   EwinUnfloatAt(ewin, d2,
-			 ewin->shape_x - (EoGetX(d2) - EoGetX(d1)),
-			 ewin->shape_y - (EoGetY(d2) - EoGetY(d1)));
+	   EwinOpUnfloatAt(ewin, OPSRC_USER, d2,
+			   ewin->shape_x - (EoGetX(d2) - EoGetX(d1)),
+			   ewin->shape_y - (EoGetY(d2) - EoGetY(d1)));
 	if (Mode_mr.mode == 0)
 	  {
 	     ewin->state.moving = 0;

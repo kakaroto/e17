@@ -1275,10 +1275,11 @@ EwinGroupMove(EWin * ewin, Desk * dsk, int x, int y)
 	   continue;
 
 	if (newdesk)
-	   EwinMoveToDesktopAt(gwins[i], dsk, EoGetX(gwins[i]) + dx,
-			       EoGetY(gwins[i]) + dy);
+	   EwinOpMoveToDesktopAt(gwins[i], OPSRC_USER, dsk,
+				 EoGetX(gwins[i]) + dx, EoGetY(gwins[i]) + dy);
 	else
-	   EwinMove(gwins[i], EoGetX(gwins[i]) + dx, EoGetY(gwins[i]) + dy);
+	   EwinOpMove(gwins[i], OPSRC_USER, EoGetX(gwins[i]) + dx,
+		      EoGetY(gwins[i]) + dy);
      }
    if (gwins)
       Efree(gwins);

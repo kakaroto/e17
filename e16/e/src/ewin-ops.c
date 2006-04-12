@@ -156,7 +156,7 @@ SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
    if (Conf.place.slidemode)
       DrawEwinShape(ewin, Conf.place.slidemode, tx, ty,
 		    ewin->client.w, ewin->client.h, 2);
-   EwinMove(ewin, tx, ty);
+   EwinOpMove(ewin, OPSRC_USER, tx, ty);
 
    FocusEnable(1);
 
@@ -572,15 +572,51 @@ EwinMoveToDesktopAt(EWin * ewin, Desk * dsk, int x, int y)
 }
 
 void
-EwinFloatAt(EWin * ewin, int x, int y)
+EwinOpMove(EWin * ewin, int source, int x, int y)
 {
-   doEwinMoveResize(ewin, EoGetDesk(ewin), x, y, 0, 0, MRF_MOVE | MRF_FLOAT);
+   Mode.op_source = source;
+   EwinMove(ewin, x, y);
+   Mode.op_source = 0;
 }
 
 void
-EwinUnfloatAt(EWin * ewin, Desk * dsk, int x, int y)
+EwinOpResize(EWin * ewin, int source, int w, int h)
 {
+   Mode.op_source = source;
+   EwinResize(ewin, w, h);
+   Mode.op_source = 0;
+}
+
+void
+EwinOpMoveResize(EWin * ewin, int source, int x, int y, int w, int h)
+{
+   Mode.op_source = source;
+   EwinMoveResize(ewin, x, y, w, h);
+   Mode.op_source = 0;
+}
+
+void
+EwinOpMoveToDesktopAt(EWin * ewin, int source, Desk * dsk, int x, int y)
+{
+   Mode.op_source = source;
+   EwinMoveToDesktopAt(ewin, dsk, x, y);
+   Mode.op_source = 0;
+}
+
+void
+EwinOpFloatAt(EWin * ewin, int source, int x, int y)
+{
+   Mode.op_source = source;
+   doEwinMoveResize(ewin, EoGetDesk(ewin), x, y, 0, 0, MRF_MOVE | MRF_FLOAT);
+   Mode.op_source = 0;
+}
+
+void
+EwinOpUnfloatAt(EWin * ewin, int source, Desk * dsk, int x, int y)
+{
+   Mode.op_source = source;
    doEwinMoveResize(ewin, dsk, x, y, 0, 0, MRF_MOVE | MRF_UNFLOAT);
+   Mode.op_source = 0;
 }
 
 void
@@ -1287,30 +1323,6 @@ EwinUnShade(EWin * ewin)
 
    EwinStateUpdate(ewin);
    HintsSetWindowState(ewin);
-}
-
-void
-EwinOpMove(EWin * ewin, int source, int x, int y)
-{
-   Mode.op_source = source;
-   EwinMove(ewin, x, y);
-   Mode.op_source = 0;
-}
-
-void
-EwinOpResize(EWin * ewin, int source, int w, int h)
-{
-   Mode.op_source = source;
-   EwinResize(ewin, w, h);
-   Mode.op_source = 0;
-}
-
-void
-EwinOpMoveResize(EWin * ewin, int source, int x, int y, int w, int h)
-{
-   Mode.op_source = source;
-   EwinMoveResize(ewin, x, y, w, h);
-   Mode.op_source = 0;
 }
 
 void

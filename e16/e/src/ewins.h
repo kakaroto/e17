@@ -29,7 +29,7 @@
 #include "xwin.h"
 
 /* Window operation sources */
-#define OPSRC_UNKNOWN   0
+#define OPSRC_NA        0
 #define OPSRC_APP       1
 #define OPSRC_USER      2
 #define OPSRC_WM        3
@@ -335,8 +335,6 @@ void                EwinMoveResizeWithGravity(EWin * ewin, int x, int y, int w,
 					      int h, int grav);
 void                EwinMoveToDesktop(EWin * ewin, Desk * d);
 void                EwinMoveToDesktopAt(EWin * ewin, Desk * d, int x, int y);
-void                EwinFloatAt(EWin * ewin, int x, int y);
-void                EwinUnfloatAt(EWin * ewin, Desk * d, int x, int y);
 void                EwinIconify(EWin * ewin);
 void                EwinDeIconify(EWin * ewin);
 void                EwinInstantShade(EWin * ewin, int force);
@@ -351,6 +349,11 @@ void                EwinOpMove(EWin * ewin, int source, int x, int y);
 void                EwinOpResize(EWin * ewin, int source, int w, int h);
 void                EwinOpMoveResize(EWin * ewin, int source, int x, int y,
 				     int w, int h);
+void                EwinOpMoveToDesktopAt(EWin * ewin, int source, Desk * dsk,
+					  int x, int y);
+void                EwinOpFloatAt(EWin * ewin, int source, int x, int y);
+void                EwinOpUnfloatAt(EWin * ewin, int source, Desk * d,
+				    int x, int y);
 void                EwinOpClose(EWin * ewin, int source);
 void                EwinOpActivate(EWin * ewin, int source);
 void                EwinOpKill(EWin * ewin, int source);
