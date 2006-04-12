@@ -49,6 +49,7 @@ ewl_icon_init(Ewl_Icon *icon)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	ewl_box_orientation_set(EWL_BOX(icon), EWL_ORIENTATION_VERTICAL);
+	ewl_box_spacing_set(EWL_BOX(icon), 4);
 
 	ewl_widget_appearance_set(EWL_WIDGET(icon), EWL_ICON_TYPE);
 	ewl_widget_inherit(EWL_WIDGET(icon), EWL_ICON_TYPE);
