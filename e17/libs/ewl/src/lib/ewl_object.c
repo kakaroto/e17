@@ -1,7 +1,7 @@
+#include "ewl_private.h"
 #include <Ewl.h>
 #include "ewl_debug.h"
 #include "ewl_macros.h"
-#include "ewl_private.h"
 
 /**
  * @param o: the object to initialize
@@ -562,8 +562,7 @@ ewl_object_w_request(Ewl_Object *o, int w)
 	 * Bound the width by the preferred size first.
 	 */
 	if ((w < o->preferred.w && !(o->flags & EWL_FLAG_FILL_HSHRINK))
-	    || (o->preferred.w && w > o->preferred.w &&
-		!(o->flags & EWL_FLAG_FILL_HFILL)))
+	    || (w > o->preferred.w && !(o->flags & EWL_FLAG_FILL_HFILL)))
 		w = o->preferred.w;
 
 	/*
@@ -603,8 +602,7 @@ ewl_object_h_request(Ewl_Object *o, int h)
 	 * Bound the width by the preferred size first.
 	 */
 	if ((h < o->preferred.h && !(o->flags & EWL_FLAG_FILL_VSHRINK))
-	    || (o->preferred.h && h > o->preferred.h &&
-		!(o->flags & EWL_FLAG_FILL_VFILL)))
+	    || (h > o->preferred.h && !(o->flags & EWL_FLAG_FILL_VFILL)))
 		h = o->preferred.h;
 
 	/*
