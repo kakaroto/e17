@@ -104,17 +104,20 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 					ewl_filepicker_cb_path_change, fp);
 	ewl_widget_show(fp->path_combo);
 
-	fp->file_list_box = ewl_scrollpane_new();
-	ewl_container_child_append(EWL_CONTAINER(fp), fp->file_list_box);
-	ewl_widget_show(fp->file_list_box);
+	o = ewl_hbox_new();
+	ewl_container_child_append(EWL_CONTAINER(fp), o);
+	ewl_widget_show(o);
 
 	fp->favorites_box = ewl_vbox_new();
-	ewl_container_child_append(EWL_CONTAINER(fp->file_list_box),
-						fp->favorites_box);
+	ewl_container_child_append(EWL_CONTAINER(o), fp->favorites_box);
 	ewl_object_fill_policy_set(EWL_OBJECT(fp->favorites_box),
 				EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL);
 	ewl_fillpicker_favorites_populate(fp);
 	ewl_filepicker_show_favorites_set(fp, FALSE);
+
+	fp->file_list_box = ewl_scrollpane_new();
+	ewl_container_child_append(EWL_CONTAINER(o), fp->file_list_box);
+	ewl_widget_show(fp->file_list_box);
 
 	o = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(fp), o);
@@ -233,7 +236,6 @@ void
 ewl_filepicker_list_view_set(Ewl_Filepicker *fp, Ewl_View *view)
 {
 	Ewl_Filelist *old_fl;
-	Ewl_Widget *new_fl;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fp", fp);
@@ -244,14 +246,14 @@ ewl_filepicker_list_view_set(Ewl_Filepicker *fp, Ewl_View *view)
 		DRETURN(DLEVEL_STABLE);
 
 	fp->view = view;
-
 	old_fl = EWL_FILELIST(fp->file_list);
 
 	/* set the new view */
-	new_fl = view->construct();
-	fp->file_list = new_fl;
-	ewl_container_child_append(EWL_CONTAINER(fp->file_list_box), new_fl);
-	ewl_callback_append(EWL_WIDGET(new_fl), EWL_CALLBACK_VALUE_CHANGED,
+	fp->file_list = view->construct();
+	ewl_container_child_append(EWL_CONTAINER(fp->file_list_box),
+							fp->file_list);
+	ewl_callback_append(EWL_WIDGET(fp->file_list), 
+				EWL_CALLBACK_VALUE_CHANGED,
 				ewl_filepicker_cb_list_value_changed, fp);
 
 	/* load new view from old view values */
@@ -269,7 +271,7 @@ ewl_filepicker_list_view_set(Ewl_Filepicker *fp, Ewl_View *view)
 					ewl_filelist_selected_files_get(old_fl));
 		ewl_widget_destroy(EWL_WIDGET(old_fl));
 	}
-	ewl_widget_show(new_fl);
+	ewl_widget_show(fp->file_list);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
