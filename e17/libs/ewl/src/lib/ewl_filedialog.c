@@ -62,7 +62,7 @@ ewl_filedialog_new(void)
 int
 ewl_filedialog_init(Ewl_Filedialog *fd)
 {
-	Ewl_Widget *w, *menu, *o;
+	Ewl_Widget *w, *o;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fd", fd, FALSE);
@@ -103,21 +103,21 @@ ewl_filedialog_init(Ewl_Filedialog *fd)
 						EWL_FLAG_FILL_FILL);
 	ewl_widget_internal_set(EWL_WIDGET(fd->menu_float), TRUE);
 
-	menu = ewl_menu_new();
-	ewl_button_label_set(EWL_BUTTON(menu), " ");
-	ewl_container_child_append(EWL_CONTAINER(fd->menu_float), menu);
-	ewl_widget_show(menu);
+	fd->menu = ewl_menu_new();
+	ewl_button_label_set(EWL_BUTTON(fd->menu), " ");
+	ewl_container_child_append(EWL_CONTAINER(fd->menu_float), fd->menu);
+	ewl_widget_show(fd->menu);
 
 	o = ewl_menu_item_new();
 	ewl_button_label_set(EWL_BUTTON(o), "Icon view");
-	ewl_container_child_append(EWL_CONTAINER(menu), o);
+	ewl_container_child_append(EWL_CONTAINER(fd->menu), o);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
 				ewl_filedialog_cb_icon_view, fd);
 	ewl_widget_show(o);
 
 	o = ewl_menu_item_new();
 	ewl_button_label_set(EWL_BUTTON(o), "List view");
-	ewl_container_child_append(EWL_CONTAINER(menu), o);
+	ewl_container_child_append(EWL_CONTAINER(fd->menu), o);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
 				ewl_filedialog_cb_list_view, fd);
 	ewl_widget_show(o);
@@ -462,6 +462,11 @@ ewl_filedialog_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 						event->x - x, 
 						event->y - y);
 		ewl_widget_show(fd->menu_float);
+
+		ewl_callback_call(EWL_WIDGET(fd->menu),
+					EWL_CALLBACK_FOCUS_IN);
+		ewl_object_state_remove(EWL_OBJECT(fd->menu_float),
+						EWL_FLAG_STATE_PRESSED);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
