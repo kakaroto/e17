@@ -1,7 +1,7 @@
+#include "ewl_private.h"
 #include <Ewl.h>
 #include "ewl_debug.h"
 #include "ewl_macros.h"
-#include "ewl_private.h"
 
 static void ewl_datepicker_calendar_position_set(Ewl_Datepicker *dp);
 static void ewl_datepicker_dropdown_cb(Ewl_Widget *w, void *ev_data, 
@@ -157,7 +157,7 @@ ewl_datepicker_calendar_position_set(Ewl_Datepicker *dp)
 	/* Get the position of the parent */
 	emb = ewl_embed_widget_find(EWL_WIDGET(dp));
 	if (emb) {
-		ewl_window_position_get(EWL_WINDOW(emb), &x, &y);
+		ewl_embed_window_position_get(EWL_EMBED(emb), &x, &y);
 		ewl_object_current_size_get(EWL_OBJECT(dp), &sx, &sy);
 		ewl_window_move(EWL_WINDOW(dp->calendar_window), x + (sx / 4), 
 								y + sy + 3);

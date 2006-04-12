@@ -50,8 +50,6 @@ struct Ewl_Window
 	 
 	Ewl_Window_Flags flags; /**< Flags indicating window properties */
 
-	int             x; /**< Screen relative horizontal position of window */
-	int             y; /**< Screen relative vertical position of window */
 	char           *render; /**< The render engine in use */
 
 	Ewl_Dnd_Types dnd_types;	/**< The dnd type */
@@ -69,7 +67,6 @@ void            ewl_window_class_set(Ewl_Window *win, const char *classname);
 char           *ewl_window_class_get(Ewl_Window *win);
 void            ewl_window_borderless_set(Ewl_Window *win);
 void            ewl_window_move(Ewl_Window *win, int x, int y);
-void            ewl_window_position_get(Ewl_Window *win, int *x, int *y);
 void            ewl_window_raise(Ewl_Window *win);
 void            ewl_window_lower(Ewl_Window *win);
 void            ewl_window_transient_for(Ewl_Window *win, Ewl_Window * forwin);

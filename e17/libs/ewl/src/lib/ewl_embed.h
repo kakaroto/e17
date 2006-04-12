@@ -70,6 +70,9 @@ struct Ewl_Embed
 		Ewl_Widget *mouse_in; /**< Last widget to receive a mouse_in */
 	} last;			     /**< Collection of widgets to last receive events */
 
+        int             x; /**< Screen relative horizontal position of window */
+        int             y; /**< Screen relative vertical position of window */
+
 	Ewl_Widget *dnd_widget;	     /**< The current DND widget */
 };
 
@@ -132,6 +135,8 @@ void            ewl_embed_coord_to_screen(Ewl_Embed *e, int xx, int yy,
 					  int *x, int *y);
 
 void		ewl_embed_mouse_cursor_set(Ewl_Widget *w);
+void            ewl_embed_position_get(Ewl_Embed *e, int *x, int *y);
+void            ewl_embed_window_position_get(Ewl_Embed *e, int *x, int *y);
 
 /*
  * Internally used callbacks, override at your own risk.

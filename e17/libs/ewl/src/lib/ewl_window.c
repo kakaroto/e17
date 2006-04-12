@@ -1,7 +1,7 @@
+#include "ewl_private.h"
 #include <Ewl.h>
 #include "ewl_debug.h"
 #include "ewl_macros.h"
-#include "ewl_private.h"
 
 Ecore_List *ewl_window_list = NULL;
 
@@ -300,8 +300,8 @@ ewl_window_move(Ewl_Window *win, int x, int y)
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
-	win->x = x;
-	win->y = y;
+	EWL_EMBED(win)->x = x;
+	EWL_EMBED(win)->y = y;
 
 	if (!REALIZED(win))
 		DRETURN(DLEVEL_STABLE);
@@ -309,28 +309,6 @@ ewl_window_move(Ewl_Window *win, int x, int y)
 	if (strstr(win->render, "x11"))
 		ecore_x_window_move((Ecore_X_Window)win->window, x, y);
 #endif
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param win: the window to query for position
- * @param x: a pointer to the integer that should receive the x coordinate
- * @param y: a pointer to the integer that should receive the y coordinate
- * @return Returns no value.
- * @brief Retrieve the position of the window
- *
- * Stores the window position into the parameters @a x and @a y.
- */
-void
-ewl_window_position_get(Ewl_Window *win, int *x, int *y)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
-
-	if (x) *x = win->x;
-	if (y) *y = win->y;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -690,14 +668,14 @@ ewl_window_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		Ecore_X_Window xwin;
 
 		if (window->flags & EWL_WINDOW_OVERRIDE) {
-			xwin = ecore_x_window_override_new(0, window->x,
-						  window->y,
+			xwin = ecore_x_window_override_new(0, embed->x,
+						  embed->y,
 						  ewl_object_current_w_get(o),
 						  ewl_object_current_h_get(o));
 		}
 		else {
-			xwin = ecore_x_window_new(0, window->x,
-						  window->y,
+			xwin = ecore_x_window_new(0, embed->x,
+						  embed->y,
 						  ewl_object_current_w_get(o),
 						  ewl_object_current_h_get(o));
 		}

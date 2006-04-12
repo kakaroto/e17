@@ -1,7 +1,7 @@
+#include "ewl_private.h"
 #include <Ewl.h>
 #include "ewl_debug.h"
 #include "ewl_macros.h"
-#include "ewl_private.h"
 
 Ecore_List *ewl_embed_list = NULL;
 static Evas_Smart *embedded_smart = NULL;
@@ -1500,6 +1500,53 @@ ewl_embed_mouse_cursor_set(Ewl_Widget *w)
 					ecore_x_cursor_shape_get(EWL_MOUSE_CURSOR_LEFT_PTR));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param e: the embed to query for position
+ * @param x: a pointer to the integer that should receive the x coordinate
+ * @param y: a pointer to the integer that should receive the y coordinate
+ * @return Returns no value.
+ * @brief Retrieve the position of the embed
+ *
+ * Stores the embed position into the parameters @a x and @a y.
+ */
+void
+ewl_embed_position_get(Ewl_Embed *e, int *x, int *y)
+{
+       int sx, sy;
+
+       DENTER_FUNCTION(DLEVEL_STABLE);
+       DCHECK_PARAM_PTR("e", e);
+       DCHECK_TYPE("e", e, EWL_EMBED_TYPE);
+
+       evas_object_geometry_get(e->smart, &sx, &sy, NULL, NULL);
+       if (x) *x = e->x + sx;
+       if (y) *y = e->y + sy;
+
+       DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param e: the embed to query for window-position
+ * @param x: a pointer to the integer that should receive the x coordinate
+ * @param y: a pointer to the integer that should receive the y coordinate
+ * @return Returns no value.
+ * @brief Retrieve the position of the window
+ *
+ * Stores the window position into the parameters @a x and @a y.
+ */
+void
+ewl_embed_window_position_get(Ewl_Embed *e, int *x, int *y)
+{
+       DENTER_FUNCTION(DLEVEL_STABLE);
+       DCHECK_PARAM_PTR("e", e);
+       DCHECK_TYPE("e", e, EWL_EMBED_TYPE);
+
+       if (x) *x = e->x;
+       if (y) *y = e->y;
+
+       DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void

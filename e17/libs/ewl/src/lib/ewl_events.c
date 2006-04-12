@@ -1,7 +1,7 @@
+#include "ewl_private.h"
 #include <Ewl.h>
 #include "ewl_debug.h"
 #include "ewl_macros.h"
-#include "ewl_private.h"
 
 extern Ecore_List *ewl_embed_list;
 static unsigned int key_modifiers = 0;
@@ -217,25 +217,33 @@ ewl_ev_x_window_configure(void *data __UNUSED__, int type __UNUSED__, void *e)
 	 */
 	Ecore_X_Event_Window_Configure *ev;
 	Ewl_Window *window;
+	Ewl_Embed *embed;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ev = e;
 
-	window = ewl_window_window_find((void *)ev->win);
-	if (!window)
+	embed = ewl_embed_evas_window_find((void *)ev->win);
+	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
 	/*
 	 * Save coords and queue a configure event if the window is moved.
 	 */
-	if ((ev->from_wm) && (ev->x != window->x)) {
-		window->x = ev->x;
+	if ((ev->from_wm) && (ev->x != embed->x)) {
+		embed->x = ev->x;
 	}
 
-	if ((ev->from_wm) && (ev->y != window->y)) {
-		window->y = ev->y;
+	if ((ev->from_wm) && (ev->y != embed->y)) {
+		embed->y = ev->y;
 	}
+
+	window = ewl_window_window_find((void *)ev->win);
+	/*
+	 * we can finish when the embed is not a window
+	 */
+	if (!window)
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
 	ewl_widget_configure(EWL_WIDGET(window));
 
@@ -627,7 +635,7 @@ ewl_ev_dnd_position(void *data __UNUSED__, int type __UNUSED__, void *e)
 	if (window) {
 		Ewl_Embed *embed;
 		
-		ewl_window_position_get(EWL_WINDOW(window), &wx, &wy);
+		ewl_embed_window_position_get(EWL_EMBED(window), &wx, &wy);
 		x = ev->position.x - wx;
 		y = ev->position.y - wy;
 
@@ -757,7 +765,7 @@ ewl_ev_dnd_drop(void *data __UNUSED__, int type __UNUSED__, void *e)
 	if (window) {
 		int x,y,wx,wy;
 		Ewl_Embed *embed= ewl_embed_evas_window_find((void *)ev->win);
-		ewl_window_position_get(EWL_WINDOW(window), &wx, &wy);
+		ewl_embed_window_position_get(EWL_EMBED(window), &wx, &wy);
 
 		printf("Wx/y: %d:%d\n", wx,wy);
 		
