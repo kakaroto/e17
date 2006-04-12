@@ -121,6 +121,7 @@ ewl_icon_image_set(Ewl_Icon *icon, const char *file, const char *key)
 	if (!icon->preview)
 	{
 		icon->preview = ewl_image_new();
+		ewl_image_proportional_set(EWL_IMAGE(icon->preview), TRUE);
 		ewl_widget_internal_set(icon->preview, TRUE);
 		ewl_container_child_prepend(EWL_CONTAINER(icon), 
 						icon->preview);
