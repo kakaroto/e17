@@ -1,7 +1,7 @@
+#include "ewl_private.h"
 #include <Ewl.h>
 #include "ewl_debug.h"
 #include "ewl_macros.h"
-#include "ewl_private.h"
 
 static Ewl_Text_Context *ewl_text_default_context = NULL;
 
@@ -2509,7 +2509,8 @@ ewl_text_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 
 	if (t->textblock)
 	{
-		evas_object_move(t->textblock, xx, yy);
+		evas_object_move(t->textblock, xx + t->offset.x,
+				 yy + t->offset.y);
 		evas_object_resize(t->textblock, ww, hh);
 
 		if (t->dirty)

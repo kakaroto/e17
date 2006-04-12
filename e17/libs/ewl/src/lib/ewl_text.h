@@ -87,6 +87,12 @@ struct Ewl_Text
 	Ecore_List		*triggers;	  /**< The list of triggers */
 	Ewl_Text_Trigger	*selection;	  /**< The current selection */
 
+	struct
+	{
+		int              x;               /**< X offset for layout */
+		int              y;               /**< Y offset for layout */
+	} offset;
+
 	unsigned char		 delete_count;	  /**< Number of deletes */
 	unsigned char		 in_select;	  /**< Are we in select mode? */
 
