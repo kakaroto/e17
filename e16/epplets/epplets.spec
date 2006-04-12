@@ -12,7 +12,7 @@ Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.or
 Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 #BuildSuggests: freeglut-devel xorg-x11-devel
-BuildRequires: imlib-devel XFree86-devel
+BuildRequires: imlib2-devel
 #Requires: enlightenment >= 0.16.0
 Provides: enlightenment-epplets = %{version}
 Provides: e16-epplets = %{version}
