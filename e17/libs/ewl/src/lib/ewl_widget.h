@@ -189,6 +189,7 @@ void            ewl_widget_enable(Ewl_Widget * w);
 void            ewl_widget_disable(Ewl_Widget * w);
 
 void            ewl_widget_print(Ewl_Widget *w);
+void            ewl_widget_print_verbose(Ewl_Widget *w);
 void		ewl_widget_tree_print(Ewl_Widget *w);
 
 int             ewl_widget_layer_sum_get(Ewl_Widget *w);

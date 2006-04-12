@@ -1,7 +1,7 @@
+#include "ewl_private.h"
 #include <Ewl.h>
 #include "ewl_debug.h"
 #include "ewl_macros.h"
-#include "ewl_private.h"
 
 static Ecore_Hash *ewl_widget_name_table = NULL;
 static int ewl_widget_dnd_drag_move_count = 0;
@@ -1367,7 +1367,7 @@ ewl_widget_tree_print(Ewl_Widget *w)
 
 /**
  * @param w: the widget to print info
- * @return Returs no value.
+ * @return Returns no value.
  * @brief Prints info for debugging a widget's state information.
  */
 void
@@ -1385,6 +1385,88 @@ ewl_widget_print(Ewl_Widget *w)
 			ewl_object_current_h_get(EWL_OBJECT(w)),
 			(VISIBLE(w) ? "visible" : "not visible"),
 			(REALIZED(w) ? "realized" : "not realized"));
+}
+
+
+/**
+ * @param w: the widget to print verbose info
+ * @return Returns no value.
+ * @brief Prints verbose info for debugging a widget's state information.
+ */
+void
+ewl_widget_print_verbose(Ewl_Widget *w)
+{
+	unsigned int flags;
+	unsigned int matched = 0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	flags = ewl_object_fill_policy_get(EWL_OBJECT(w));
+
+	ewl_widget_print(w);
+	printf("\tPreferred size: %dx%d\n",
+			ewl_object_preferred_w_get(EWL_OBJECT(w)),
+			ewl_object_preferred_h_get(EWL_OBJECT(w)));
+	printf("\tMinimum size: %dx%d\n",
+			ewl_object_minimum_w_get(EWL_OBJECT(w)),
+			ewl_object_minimum_h_get(EWL_OBJECT(w)));
+	printf("\tFill policy:\n");
+
+	if (flags & EWL_FLAG_FILL_HSHRINK) {
+		printf("\t\tHSHRINK\n");
+		matched = 1;
+	}
+
+	if (flags & EWL_FLAG_FILL_HFILL) {
+		printf("\t\tHFILL\n");
+		matched = 1;
+	}
+
+	if (flags & EWL_FLAG_FILL_VSHRINK) {
+		printf("\t\tVSHRINK\n");
+		matched = 1;
+	}
+
+	if (flags & EWL_FLAG_FILL_VFILL) {
+		printf("\t\tVFILL\n");
+		matched = 1;
+	}
+
+	if (!matched) {
+		printf("\t\tNONE\n");
+	}
+
+	matched = 0;
+
+	flags = ewl_object_alignment_get(EWL_OBJECT(w));
+
+	if (flags & EWL_FLAG_ALIGN_LEFT) {
+		printf("\t\tLEFT\n");
+		matched = 1;
+	}
+
+	if (flags & EWL_FLAG_ALIGN_RIGHT) {
+		printf("\t\tRIGHT\n");
+		matched = 1;
+	}
+
+	if (flags & EWL_FLAG_ALIGN_TOP) {
+		printf("\t\tTOP\n");
+		matched = 1;
+	}
+
+	if (flags & EWL_FLAG_ALIGN_BOTTOM) {
+		printf("\t\tTOP\n");
+		matched = 1;
+	}
+
+	if (!matched) {
+		printf("\t\tCENTER\n");
+	}
+
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
