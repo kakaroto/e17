@@ -570,7 +570,7 @@ parse_config(void)
 
   path = Epplet_query_config("image_dir");
   if (path == NULL) {
-    Esnprintf(buff, sizeof(buff), "%s/.enlightenment/backgrounds", getenv("HOME"));
+    Esnprintf(buff, sizeof(buff), "%s/backgrounds", Epplet_e16_user_dir());
     path = strdup(buff);
     Epplet_add_config("image_dir", buff);
   } else {
