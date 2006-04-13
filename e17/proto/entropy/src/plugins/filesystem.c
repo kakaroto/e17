@@ -245,10 +245,10 @@ callback (evfs_event * data, void *obj)
       char *pos;
 
       printf("Looking for callers for dir list for: '%s'\n", data->resp_command.file_command.files[0]->path);
-      calling_request = ecore_hash_get (evfs_dir_requests, data->resp_command.file_command.files[0]->path);
+      calling_request = ecore_hash_get (evfs_dir_requests, (long*)data->resp_command.client_identifier);
       if (calling_request) {
 	     /*Remove from directory requesters*/
-	      ecore_hash_remove(evfs_dir_requests, data->resp_command.file_command.files[0]->path);
+	      ecore_hash_remove(evfs_dir_requests, (long*)data->resp_command.client_identifier );
 		
 	      
 	      ecore_list_append(file_list, calling_request);
@@ -527,7 +527,7 @@ entropy_plugin_init (entropy_core * core)
   folder_monitor_hash =
     ecore_hash_new (ecore_direct_hash, ecore_direct_compare);
   stat_request_hash = ecore_hash_new (ecore_str_hash, ecore_str_compare);
-  evfs_dir_requests = ecore_hash_new (ecore_str_hash, ecore_str_compare);
+  evfs_dir_requests = ecore_hash_new (ecore_direct_hash, ecore_direct_compare);
   file_copy_hash = ecore_hash_new (ecore_str_hash, ecore_str_compare);
 
   /*Connect to evfs*/
@@ -746,6 +746,7 @@ filelist_get (entropy_file_request * request)
   else {			/*Not a posix call for a dir list - don't use our local optim function */
     entropy_file_request *new_request;	/*We need to make a copy of the request object
 					   because the original will be destroyed */
+    long request_id;
 
     entropy_generic_file *source_file;
     char *uri;
@@ -768,7 +769,7 @@ filelist_get (entropy_file_request * request)
     printf ("URI: %s\n", uri);
 
     path = evfs_parse_uri (uri);
-    evfs_client_dir_list (con, path->files[0]);
+    request_id = evfs_client_dir_list (con, path->files[0]);
 
 
     new_request = entropy_malloc (sizeof (entropy_file_request));
@@ -791,15 +792,7 @@ filelist_get (entropy_file_request * request)
     new_request->requester = request->requester;
     new_request->file_type = request->file_type;
 
-    /*If it is a drilldown request - we must be at the root.
-     *Anything else, and we must be an 'embedded' request with a parent*/
-    if (request->drill_down) {
-      ecore_hash_set (evfs_dir_requests, "/", new_request);
-    }
-    else {
-      printf("Setting dir request hash to '%s'\n", path->files[0]->path);
-      ecore_hash_set (evfs_dir_requests, path->files[0]->path, new_request);
-    }
+    ecore_hash_set (evfs_dir_requests,(long*)request_id, new_request);
 
     entropy_free (uri);
 

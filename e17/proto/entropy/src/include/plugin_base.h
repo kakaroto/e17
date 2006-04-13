@@ -58,12 +58,6 @@ struct Entropy_Plugin_Gui {
 	} gui_functions;
 };
 
-struct Entropy_Plugin_Gui_Layout {
-	Entropy_Plugin_Gui base;
-
-	entropy_generic_file* current_folder;
-};
-
 struct Entropy_Plugin_File {
 	entropy_plugin base;
 
