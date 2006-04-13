@@ -76,7 +76,8 @@ ewl_checkbutton_init(Ewl_Checkbutton *cb)
  * @return Returns no value.
  * @brief Update the checked state of the check button.
  */
-void ewl_checkbutton_checked_set(Ewl_Checkbutton *cb, int c)
+void
+ewl_checkbutton_checked_set(Ewl_Checkbutton *cb, int c)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("cb", cb);
@@ -88,9 +89,12 @@ void ewl_checkbutton_checked_set(Ewl_Checkbutton *cb, int c)
 }
 
 /**
+ * @param cb: The checkbutton to work with
+ * @return Returns TRUE if the checkbutton is set, FALSE otherwise
  * @brief Retrieve the checked state of a check button.
  */
-int ewl_checkbutton_is_checked(Ewl_Checkbutton *cb)
+int
+ewl_checkbutton_is_checked(Ewl_Checkbutton *cb)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("cb", cb, FALSE);

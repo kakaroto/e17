@@ -87,7 +87,7 @@ struct Ewl_Image_Thumbnail
 typedef struct Ewl_Image_Thumbnail Ewl_Image_Thumbnail;
 
 /**
- * @def EWL_IMAGE_Thumbnail(image)
+ * @def EWL_IMAGE_THUMBNAIL(image)
  * Typecase a pointer to an Ewl_Image_Thumbnail widget
  */
 #define EWL_IMAGE_THUMBNAIL(image) ((Ewl_Image_Thumbnail *) image)

@@ -91,7 +91,7 @@ struct Ewl_Text
 	{
 		int              x;               /**< X offset for layout */
 		int              y;               /**< Y offset for layout */
-	} offset;
+	} offset;				  /**< Layout offset values */
 
 	unsigned char		 delete_count;	  /**< Number of deletes */
 	unsigned char		 in_select;	  /**< Are we in select mode? */

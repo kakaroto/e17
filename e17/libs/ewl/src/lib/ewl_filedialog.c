@@ -304,7 +304,7 @@ ewl_filedialog_show_favorites_set(Ewl_Filedialog *fd, unsigned int show)
 }
 
 /**
- * @param: The filedialog to work with
+ * @param fd: The filedialog to work with
  * @return Returns the current show favorites setting for the dialog
  * @brief Get the current show favorites setting for the filedialog
  */

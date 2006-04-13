@@ -399,7 +399,7 @@ ewl_iconbox_init(Ewl_Iconbox *ib)
 	/** Internal Callbacks */
 	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_MOUSE_MOVE, ewl_iconbox_mouse_move_cb, ib);
 	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_pane_mouse_down_cb, ib);
-	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_MOUSE_UP, ewl_iconbox_mouse_up, ib);
+	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_MOUSE_UP, ewl_iconbox_mouse_up_cb, ib);
 	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_DND_POSITION, ewl_iconbox_dnd_position_cb, ib);
 	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_DND_DROP, ewl_iconbox_dnd_drop_cb, ib);
 	ewl_container_callback_notify(EWL_CONTAINER(ib), EWL_CALLBACK_KEY_DOWN);
@@ -1019,9 +1019,9 @@ ewl_iconbox_icon_add(Ewl_Iconbox *iconbox, const char *name, const char *icon_fi
 
 	/* Add the callbacks for mouse */
 	ewl_callback_prepend(EWL_ICONBOX_ICON(ib)->image, EWL_CALLBACK_MOUSE_DOWN,
-						ewl_iconbox_icon_mouse_down, ib);
+						ewl_iconbox_icon_mouse_down_cb, ib);
 	ewl_callback_prepend(EWL_ICONBOX_ICON(ib)->image, EWL_CALLBACK_MOUSE_UP, 
-						ewl_iconbox_icon_mouse_up, ib);
+						ewl_iconbox_icon_mouse_up_cb, ib);
 	
 	/* Add a callback to the border box label, for editing purposes... */
 	ewl_callback_prepend(EWL_ICONBOX_ICON(ib)->w_label, EWL_CALLBACK_MOUSE_DOWN, 
@@ -1394,7 +1394,7 @@ ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *us
 }
 
 void
-ewl_iconbox_icon_mouse_down(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_data)
+ewl_iconbox_icon_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_data)
 {
 	int ibx, iby, px, py, sx, sy;
 	Ewl_Iconbox_Icon *ib;
@@ -1444,7 +1444,7 @@ ewl_iconbox_icon_mouse_down(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_
 }
 
 void
-ewl_iconbox_icon_mouse_up(Ewl_Widget *w __UNUSED__, void *ev_data , void *user_data)
+ewl_iconbox_icon_mouse_up_cb(Ewl_Widget *w __UNUSED__, void *ev_data , void *user_data)
 {
 	Ewl_Event_Mouse_Down *ev;
 	Ewl_Iconbox_Icon *ib;
@@ -1472,7 +1472,7 @@ ewl_iconbox_icon_mouse_up(Ewl_Widget *w __UNUSED__, void *ev_data , void *user_d
 }
 
 void
-ewl_iconbox_mouse_up(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_data)
+ewl_iconbox_mouse_up_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_data)
 {
 	Ewl_Event_Mouse_Up *ev;
 	Ewl_Iconbox *ib;

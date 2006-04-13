@@ -378,10 +378,9 @@ ewl_button_fill_policy_set(Ewl_Button *b, unsigned int fill)
 }
 
 /**
- * @param b: The button to set the content fill policy
- * @param align: The new fill policy for button contents
- * @return Returns no value.
- * @brief Set the fill policy of the contents of the button.
+ * @param b: The button to get the content fill policy from
+ * @return Returns the current fill policy set on the button
+ * @brief Retrieves the curernt file policy set on the button
  */
 unsigned int
 ewl_button_fill_policy_get(Ewl_Button *b)

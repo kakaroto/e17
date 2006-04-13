@@ -85,10 +85,6 @@ EWL BUGS
  - Need to hook up label compressing (adding ... after a certain size)
    similar to what iconbox is currently doing.
 
- - Should Ewl_Icon be doing thumbnailing or assume it is getting passed
-   thumbnails? Does it need a second api added? ewl_icon_image_thumb_add
-   which will create the thumb?
-
 
  Ewl_Freebox bugs/todo
  ---------------------

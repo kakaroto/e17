@@ -1035,6 +1035,7 @@ ewl_evas_object_destroy(Evas_Object *obj)
 #define EWL_GC_LIMIT 300 
 
 /**
+ * @param data: Unused.
  * @return Returns TRUE if objects remain to be freed, otherwise false.
  * @brief Free's all widgets that have been marked for destruction.
  */

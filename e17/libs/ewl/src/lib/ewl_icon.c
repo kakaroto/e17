@@ -108,7 +108,7 @@ ewl_icon_type_get(Ewl_Icon *icon)
  * @param file: The file with the image
  * @param key: The key inside the file if applicable
  * @return Retruns no value
- * @param set the image to use in the icon
+ * @brief set the image to use in the icon
  */
 void
 ewl_icon_image_set(Ewl_Icon *icon, const char *file, const char *key)
@@ -310,7 +310,7 @@ ewl_icon_menu_get(Ewl_Icon *icon)
  * @return Returns no value
  * @brief Set the extended data into the icon
  *
- * @Note The widget passed in here becomes internal to the icon, you should
+ * @note The widget passed in here becomes internal to the icon, you should
  * not delete it after this. You can pack widgets as needed but the icon
  * will handle the show/hide of the widget after this
  */

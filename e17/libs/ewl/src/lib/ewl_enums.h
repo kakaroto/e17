@@ -43,10 +43,10 @@ enum Ewl_Callback_Type
 	EWL_CALLBACK_WIDGET_ENABLE, /**< Widget has been re-enabled */
 	EWL_CALLBACK_WIDGET_DISABLE, /**< Widget no longer takes input */
 
-	EWL_CALLBACK_DND_POSITION, /** A DND position event **/
-	EWL_CALLBACK_DND_ENTER, /** On enter of a widget **/
-	EWL_CALLBACK_DND_LEAVE, /** On exit of a widget **/
-	EWL_CALLBACK_DND_DROP, /** Drop event **/
+	EWL_CALLBACK_DND_POSITION, /**< A DND position event **/
+	EWL_CALLBACK_DND_ENTER, /**< On enter of a widget **/
+	EWL_CALLBACK_DND_LEAVE, /**< On exit of a widget **/
+	EWL_CALLBACK_DND_DROP, /**< Drop event **/
 	
 	EWL_CALLBACK_MAX /**< Flag to indicate last value */
 };
