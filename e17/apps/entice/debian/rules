@@ -22,8 +22,10 @@ clean:
 	dh_testdir
 	rm -f build-stamp configure-stamp
 	-mv debian/changelog debian/changelog.saved
+	-mv entice.spec entice.spec.saved
 	-$(MAKE) distclean
 	-mv debian/changelog.saved debian/changelog
+	-mv entice.spec.saved entice.spec
 	dh_clean
 
 install: DH_OPTIONS=
