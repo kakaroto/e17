@@ -66,7 +66,7 @@ typedef struct tool_config_struct {
 } tool_config_t;
 
 toolbutton_t *buttons;
-tool_config_t *cfg_gads;
+tool_config_t *cfg_gads = NULL;
 Epplet_gadget close_button, cfg_button, cfg_popup, cfg_tb_width, cfg_tb_height;
 char *prog_name = NULL;
 unsigned long idx = 0, button_cnt = 0;
@@ -301,6 +301,10 @@ ok_cb(void *data)
   save_config();
   Epplet_window_destroy(config_win);
   config_win = None;
+  if (cfg_gads) {
+     free(cfg_gads);
+     cfg_gads = NULL;
+  }
   return;
   data = NULL;
 }
@@ -318,6 +322,10 @@ cancel_cb(void *data)
 {
   Epplet_window_destroy(config_win);
   config_win = None;
+  if (cfg_gads) {
+     free(cfg_gads);
+     cfg_gads = NULL;
+  }
   return;
   data = NULL;
 }

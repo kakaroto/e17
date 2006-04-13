@@ -203,9 +203,13 @@ set_background(int tiled, int keep_aspect)
 
   Epplet_send_ipc("goto_desktop ?");
   reply = Epplet_wait_for_ipc();
+  if (!reply)
+    return;
   if ((ptr = strchr(reply, ':')) != NULL) {
     current_desk = atoi(++ptr);
   }
+  free(reply);
+
   Esnprintf(bg_name, sizeof(bg_name), "E_SLIDES_BG_%s", filenames[CUR_PIC()]);
 
   Esnprintf(buff, sizeof(buff), "background %s bg.file %s/%s", bg_name, path, filenames[CUR_PIC()]);
