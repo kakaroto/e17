@@ -726,7 +726,6 @@ ewl_filepicker_path_populate(Ewl_Filepicker *fp, char *path)
 	while ((t = strchr((p + 1), '/')))
 	{
 		*t = '\0';
-
 		ecore_list_prepend(fp->path, strdup(path));
 
 		*t = '/';

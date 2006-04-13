@@ -164,7 +164,7 @@ directory_test_path_split(char *buf, int len)
 	Ewl_Widget *fp;
 	char *t;
 	int i = 0, ret = 1;
-	char *rez[] = {"/foo", "/bar", "/baz", "/test"};
+	char *rez[] = {"/foo/bar/baz/test", "/foo/bar/baz", "/foo/bar", "/foo", "/"};
 
 	fp = ewl_filepicker_new();
 	ewl_filepicker_directory_set(EWL_FILEPICKER(fp),

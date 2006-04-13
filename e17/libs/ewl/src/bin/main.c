@@ -19,7 +19,7 @@ static void ewl_test_print_tests(void);
 
 static void run_test_boxed(Ewl_Widget *w, void *ev, void *data);
 static void run_window_test(Ewl_Test *test, int width, int height);
-static void run_unit_tests(Ewl_Test *test);
+static int run_unit_tests(Ewl_Test *test);
 static int create_main_test_window(Ewl_Container *win);
 static void fill_source_text(Ewl_Test *test);
 static void text_parse(char *str);
@@ -41,12 +41,12 @@ static Ewl_Test *current_test = NULL;
 int
 main(int argc, char **argv)
 {
-	int i, unit_test = 0, ran_test = 0;
+	int i, unit_test = 0, ran_test = 0, ret = 0;
 
 	/* initialize the ewl library */
 	if (!ewl_init(&argc, argv))
 	{
-		printf("Unable to init Ewl.\n");
+		printf("Unable to init EWL.\n");
 		return 1;
 	}
 
@@ -76,7 +76,7 @@ main(int argc, char **argv)
 			if (!strcasecmp(argv[i], t->name))
 			{
 				if (unit_test)
-					run_unit_tests(t);
+					ret = run_unit_tests(t);
 				else
 					run_window_test(t, 0, 0);
 
@@ -102,7 +102,7 @@ main(int argc, char **argv)
 	if (!unit_test)
 		ewl_main();
 
-	return 0;
+	return ret;
 }
 
 static int
@@ -117,9 +117,12 @@ ewl_test_cb_unit_test_timer(void *data)
 	if (unit_tests[current_unit_test].func)
 	{
 		int val;
-		Ewl_Widget *tree, *progress;
+		Ewl_Widget *tree, *progress, *stat;
 
+		stat = ewl_widget_name_find("statusbar");
+		ewl_statusbar_push(EWL_STATUSBAR(stat), (char *)unit_tests[current_unit_test].name);
 		val = unit_tests[current_unit_test].func(buf, sizeof(buf));
+		ewl_statusbar_pop(EWL_STATUSBAR(stat));
 
 		tree = ewl_widget_name_find("unit_test_tree");
 		progress = ewl_widget_name_find("unit_test_progress");
@@ -164,7 +167,7 @@ ewl_test_print_tests(void)
 {
 	Ewl_Test *t;
 
-	printf("Ewl_Test test list:\n");
+	printf("Ewl_Test Test List:\n");
 	ecore_list_goto_first(tests);
 	while ((t = ecore_list_next(tests)))
 		printf("  %s\n", t->name);
@@ -197,14 +200,15 @@ run_window_test(Ewl_Test *test, int width, int height)
 	test->func(EWL_CONTAINER(box));
 }
 
-static void
+/* Return 0 if all tests pased, other wise return the number of failures */
+static int
 run_unit_tests(Ewl_Test *test)
 {
-	int i;
+	int i, failures = 0;
 	char buf[1024];
 
 	/* no unit tests, nothign to do */
-	if (!test->unit_tests) return;
+	if (!test->unit_tests) return 0;
 
 	for (i = 0; test->unit_tests[i].func; i++)
 	{
@@ -212,10 +216,15 @@ run_unit_tests(Ewl_Test *test)
 
 		printf("Running %s: ", test->unit_tests[i].name);
 		ret = test->unit_tests[i].func(buf, sizeof(buf));
-		printf("%s %s\n", (ret ? "passed" : "failed"), 
+		printf("%s %s\n", (ret ? "PASSED" : "FAILED"), 
 						(ret ? "" : buf));
+
 		buf[0] = '\0';
+
+		if (!ret) failures++;
 	}
+
+	return failures;
 }
 
 static void
@@ -223,16 +232,22 @@ run_test_boxed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 							void *data)
 {
 	Ewl_Test *t;
-	Ewl_Widget *c, *n;
+	Ewl_Widget *c, *n, *stat;
+	char info[1024];
 
 	t = data;
 
 	/* make sure we have a function if we aren't a straight unit test */
 	if ((t->type != EWL_TEST_TYPE_UNIT) && (!t->func))
 	{
-		printf("Warning: No UI test function defined.\n");
+		printf("WARNING: No UI test function defined for (%s).\n", 
+								t->name);
 		return;
 	}
+
+	stat = ewl_widget_name_find("statusbar");
+	snprintf(info, sizeof(info), "%s Information/Tests\n", t->name);
+	ewl_statusbar_push(EWL_STATUSBAR(stat), info);
 
 	fill_source_text(t);
 	setup_unit_tests(t);
@@ -473,6 +488,12 @@ create_main_test_window(Ewl_Container *box)
 	ewl_container_child_append(EWL_CONTAINER(o2), o);
 	ewl_widget_name_set(o, "tutorial_text");
 	ewl_text_selectable_set(EWL_TEXT(o), TRUE);
+	ewl_widget_show(o);
+
+	o = ewl_statusbar_new();
+	ewl_container_child_append(EWL_CONTAINER(box), o);
+	ewl_statusbar_push(EWL_STATUSBAR(o), "Select Test");
+	ewl_widget_name_set(o, "statusbar");
 	ewl_widget_show(o);
 
 	return 1;
