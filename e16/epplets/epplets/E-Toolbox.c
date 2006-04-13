@@ -39,7 +39,6 @@ static const char cvs_ident[] = "$Id$";
 # define __attribute__(x)
 #endif
 
-#define DATA_DIR      EROOT "/epplet_data/E-Toolbox/"
 #define ACT_EXIT      "<exit>"
 #define ACT_CONFIG    "<config>"
 #define ACT_SHADE     "<shade>"
@@ -117,7 +116,7 @@ create_shade_window(void)
 static void
 create_gadget(int n)
 {
-  char *std = NULL, *pbuff, *s = NULL;
+  char *std = NULL, *pbuff;
 
   if (*(buttons[n].image) == '<') {
     std = strdup(buttons[n].image + 1);
@@ -129,11 +128,7 @@ create_gadget(int n)
       }
     }
   }
-  if (*(buttons[n].image) && *(buttons[n].image) != '<' && !strchr(buttons[n].image, '/')) {
-    s = buttons[n].image;
-    buttons[n].image = (char *) malloc(sizeof(DATA_DIR) + strlen(s) + 1);
-    sprintf(buttons[n].image, DATA_DIR "%s", s);
-  }
+
   if (!strcasecmp(buttons[n].prog, "<popup>")) {
     buttons[n].gad = Epplet_create_popup();
     Epplet_gadget_show(Epplet_create_popupbutton(buttons[n].label, buttons[n].image,
@@ -153,10 +148,6 @@ create_gadget(int n)
   }
   if (std) {
     free(std);
-  }
-  if (s) {
-    free(buttons[n].image);
-    buttons[n].image = s;
   }
 }
 
@@ -486,11 +477,12 @@ config_cb(void *data)
 static void
 parse_config(void) {
 
-  char *tmp, buff[40];
+  char *tmp, buff[1024];
   int new_w, new_h;
 
   if (Epplet_query_config("button_0") == NULL) {
-    Epplet_load_config_file(DATA_DIR "default.cfg");
+    Esnprintf(buff, sizeof(buff), "%s/default.cfg", Epplet_data_dir());
+    Epplet_load_config_file(buff);
   }
   new_w = w;
   new_h = h;

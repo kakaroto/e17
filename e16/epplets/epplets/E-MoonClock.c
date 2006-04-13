@@ -34,7 +34,7 @@
 #include "CalcEphem.h"
 
 Epplet_gadget close_button, help_button, moon_pixmap;
-char *moon_image = EROOT "/epplet_data/E-MoonClock/E-MoonClock-01.png";
+char *moon_image = "E-MoonClock-01.png";
 double interval = 1000.0;
 
 static void close_cb(void *data);
@@ -74,7 +74,7 @@ moonclock_cb(void *data)
   if (ImageNumber > 59)
     ImageNumber = 0;
 
-  Esnprintf(buf, sizeof(buf), EROOT "/epplet_data/E-MoonClock/E-MoonClock-%02d.png", ImageNumber);
+  Esnprintf(buf, sizeof(buf), "E-MoonClock-%02d.png", ImageNumber);
   moon_pixmap = Epplet_create_image(2, 2, 43, 43, buf);
   Epplet_gadget_show(moon_pixmap);
 

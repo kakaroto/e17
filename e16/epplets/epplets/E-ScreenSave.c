@@ -625,20 +625,14 @@ create_epplet_layout (void)
 					    2, 12, 12, "CONFIGURE", 0, NULL,
 					    cb_config, NULL));
   Epplet_gadget_show (btn_col =
-		      Epplet_create_popupbutton (NULL,
-						 EROOT
-						 "/epplet_data/E-ScreenShoot/E-ScreenShoot_col.png",
+		      Epplet_create_popupbutton (NULL, "../E-ScreenShoot/E-ScreenShoot_col.png",
 						 2, 17, 13, 13, NULL, col_p));
   Epplet_gadget_show (btn_ctimer =
-		      Epplet_create_popupbutton (NULL,
-						 EROOT
-						 "/epplet_data/E-ScreenShoot/E-ScreenShoot_minitime.png",
+		      Epplet_create_popupbutton (NULL, "../E-ScreenShoot/E-ScreenShoot_minitime.png",
 						 17, 17, 13, 13, NULL,
 						 ctimer_p));
   Epplet_gadget_show (btn_stimer =
-		      Epplet_create_popupbutton (NULL,
-						 EROOT
-						 "/epplet_data/E-ScreenShoot/E-ScreenShoot_minitime2.png",
+		      Epplet_create_popupbutton (NULL, "../E-ScreenShoot/E-ScreenShoot_minitime2.png",
 						 33, 17, 13, 13, NULL,
 						 stimer_p));
   da = Epplet_create_drawingarea (2, 2, 44, 44);

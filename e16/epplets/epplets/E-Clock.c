@@ -127,8 +127,7 @@ main(int argc, char **argv)
    b_help = Epplet_create_button(NULL, NULL,
 				 34, 2, 0, 0, "HELP", win, NULL,
 				 cb_help, NULL);
-   Epplet_gadget_show(Epplet_create_image(2, 2, 44, 44, 
-					  EROOT "/epplet_data/E-Clock/E-Clock-Image.png"));
+   Epplet_gadget_show(Epplet_create_image(2, 2, 44, 44, "E-Clock-Image.png"));
    Epplet_register_focus_in_handler(cb_in, NULL);
    Epplet_register_focus_out_handler(cb_out, NULL);
    Epplet_register_expose_handler(cb_expose, NULL);

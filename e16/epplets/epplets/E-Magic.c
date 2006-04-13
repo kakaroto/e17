@@ -42,8 +42,6 @@ static const char cvs_ident[] = "$Id$";
 #define BEGMATCH(a, b)  (!strncasecmp((a), (b), (sizeof(b) - 1)))
 #define NONULL(x)       ((x) ? (x) : (""))
 
-#define DATA_ROOT EROOT "/epplet_data/E-Magic"
-
 Epplet_gadget close_button, cfg_button, picture, label;
 Epplet_gadget cfg_tb_image, cfg_tb_delay, cfg_tb_ans_file;
 unsigned long idx = 0, cnt = 0;
@@ -305,13 +303,13 @@ parse_answers(char *path)
 static void
 parse_config(void)
 {
+  char buff[1024], *s, ss[1024];
 
-  char buff[1024], *s;
+  image = Epplet_query_config_def("image", "8ball.png");
 
-  image = Epplet_query_config_def("image", DATA_ROOT "/8ball.png");
-
-  ans_file = Epplet_query_config_def("answers", DATA_ROOT "/answers.txt");
-  if (!parse_answers(ans_file) && !parse_answers(ans_file = DATA_ROOT "/answers.txt")) {
+  Esnprintf(ss, sizeof(ss), "%s/answers.txt", Epplet_data_dir());
+  ans_file = Epplet_query_config_def("answers", ss);
+  if (!parse_answers(ans_file) && !parse_answers(ans_file = ss)) {
     /* Couldn't find the answers.  Exit. */
     Esnprintf(buff, sizeof(buff), "E-Magic:  Missing/invalid answers file \"%s\"", ans_file);
     Epplet_dialog_ok(buff);

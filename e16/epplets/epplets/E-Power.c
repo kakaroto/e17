@@ -204,8 +204,7 @@ cb_timer_acpi(void *data)
 
    /* Display current status */
    Epplet_change_label(label, current_status);
-   sprintf(current_status, EROOT "/epplet_data/E-Power//E-Power-Bat-%i.png",
-           ((bat_val + 5) / 10) * 10);
+   sprintf(current_status, "E-Power-Bat-%i.png", ((bat_val + 5) / 10) * 10);
    Epplet_change_image(image, 44, 24, current_status);
    Epplet_timer(cb_timer, NULL, 5.0, "TIMER");
 
@@ -298,8 +297,7 @@ cb_timer_apm(void *data)
           }
         Epplet_change_label(label, s);
 
-        sprintf(s, EROOT "/epplet_data/E-Power//E-Power-Bat-%i.png",
-                ((bat_val + 5) / 10) * 10);
+        sprintf(s, "E-Power-Bat-%i.png", ((bat_val + 5) / 10) * 10);
         Epplet_change_image(image, 44, 24, s);
         Epplet_timer(cb_timer, NULL, 30.0, "TIMER");
 
@@ -382,10 +380,8 @@ main(int argc, char **argv)
    b_sleep = Epplet_create_button(NULL, NULL,
                                   34, 34, 0, 0, "STOP", 0, NULL,
                                   cb_sleep, NULL);
-   Epplet_gadget_show(image =
-                      Epplet_create_image
-                      (2, 2, 44, 24,
-                       EROOT "/epplet_data/E-Power/E-Power-Bat-100.png"));
+   Epplet_gadget_show(image = Epplet_create_image(2, 2, 44, 24,
+                                                  "E-Power-Bat-100.png"));
    Epplet_gadget_show(label =
                       Epplet_create_label(2, 28, "APM, ACPI\nmissing", 1));
    Epplet_register_focus_in_handler(cb_in, NULL);

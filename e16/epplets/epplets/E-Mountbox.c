@@ -28,22 +28,22 @@
 #define PROCMOUNTS "/proc/mounts"
 #define ETCMTAB    "/etc/mtab"
 
-#define __BG_IMAGE EROOT"/epplet_data/E-Mountbox/E-Mountbox-bg.png"
-#define __DEFAULT  EROOT"/epplet_data/E-Mountbox/E-Mountbox-blockdev.png"
+#define __BG_IMAGE "E-Mountbox-bg.png"
+#define __DEFAULT  "E-Mountbox-blockdev.png"
 
 ConfigItem defaults[] = {
-  {"BG_IMAGE",   EROOT"/epplet_data/E-Mountbox/E-Mountbox-bg.png"},
-  {"DEFAULT",    EROOT"/epplet_data/E-Mountbox/E-Mountbox-blockdev.png"},
+  {"BG_IMAGE",   "E-Mountbox-bg.png"},
+  {"DEFAULT",    "E-Mountbox-blockdev.png"},
   {"EJECT_MODE", "2"},
   {"DO_POLL",    "1"},
   {"POLLINTVAL", "5"}
 };
 
 char *default_types[] = {
-  "cd   "EROOT"/epplet_data/E-Mountbox/E-Mountbox-cd.png",
-  "fd   "EROOT"/epplet_data/E-Mountbox/E-Mountbox-floppy.png",
-  "zip  "EROOT"/epplet_data/E-Mountbox/E-Mountbox-zip.png",
-  "jazz "EROOT"/epplet_data/E-Mountbox/E-Mountbox-jazz.png"
+  "cd   E-Mountbox-cd.png",
+  "fd   E-Mountbox-floppy.png",
+  "zip  E-Mountbox-zip.png",
+  "jazz E-Mountbox-jazz.png"
 };
 
 typedef enum eject_mode
@@ -178,7 +178,6 @@ static void
 error_exit(void)
 {
   Esync();
-  Epplet_cleanup();
   exit(1);
 }
 
@@ -872,7 +871,12 @@ AddMountPoint(char *device, char *path)
 		    {
 		      tmp_image = imlib_load_image(s);  
 		      if (!tmp_image)
-			tmp_image = imlib_load_image(__DEFAULT);  
+			{
+			  char buf[1024];
+			  Esnprintf(buf, sizeof(buf), "%s/%s",
+				    Epplet_data_dir(), __DEFAULT);
+			  tmp_image = imlib_load_image(buf);  
+			}
 		      if (!tmp_image)
 			{
 			  Epplet_dialog_ok("  E-Mountbox could not load a default icon\n  "
@@ -1623,14 +1627,17 @@ SetupGraphx(void)
   int         i, j, k, linear, linear_w;
   Imlib_Image *tmp = NULL;
   Tile       *tile;
-  char       *s = NULL;
+  char       *s = NULL, buf[1024];
   unsigned char *widescreen_data, *widescreen_canvas_data, *tile_data, *bg_data;
 
   s = Epplet_query_config("BG_IMAGE");
 
   tmp = imlib_load_image(s);  
   if (!tmp)
-    tmp = imlib_load_image(__BG_IMAGE);  
+    {
+      Esnprintf(buf, sizeof(buf), "%s/%s", Epplet_data_dir(), __BG_IMAGE);
+      tmp = imlib_load_image(buf);  
+    }
   if (!tmp)
     {
       /* Even the fallbacks didn't work.  If we don't exit

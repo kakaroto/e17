@@ -272,19 +272,8 @@ AC_ARG_ENABLE(new-remember,
 )
 
 
-## If $EROOT is set use it, unless a make distcheck is being done
-## Makes the gratuitous assumption that "=inst" is neccessary and
-## sufficuent for a make distcheck
-#AC_MSG_CHECKING(for Enlightenment location)
-#if test -n "$EROOT" -a `echo "$prefix" | sed -e 's:[=_]inst::'` = "$prefix"
-#then
-#  AC_SUBST(EROOT)
-#  AC_MSG_RESULT($EROOT)
-#else
-  EROOT=`eval echo $ENLIGHTENMENT_ROOT`
-#  AC_MSG_RESULT(warning:  EROOT environment variable not detected.  Using $EROOT)
-  AC_SUBST(EROOT)
-#fi
+EROOT=`eval echo $ENLIGHTENMENT_ROOT`
+AC_SUBST(EROOT)
 
 # Should we install E-Mixer?
 # Probably not ;-) But we may as well check!

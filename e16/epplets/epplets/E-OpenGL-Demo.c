@@ -386,6 +386,8 @@ load_conf(void)
 int
 main(int argc, char **argv)
 {
+	char buf[1024];
+
 	GLXContext cx;
 	int prio;
 	Epplet_gadget objectPopup, lightingPopup, texturePopup;
@@ -467,9 +469,10 @@ main(int argc, char **argv)
 	glEnable(GL_DEPTH_TEST);
 
 	/* Lets load teh texture */
-  if((textureFile = fopen(EROOT "/epplet_data/E-OpenGL-Demo/cube_texture.RGB", "rb")) == NULL)
-	printf("Failed to load the cube texture file!\n");
-	else {
+	Esnprintf(buf, sizeof(buf), "%s/cube_texture.RGB", Epplet_data_dir());
+	if((textureFile = fopen(buf, "rb")) == NULL) {
+		printf("Failed to load the cube texture file!\n");
+	} else {
 		fread(textureArray, sizeof(GLubyte), 3*64*64, textureFile);
 		fclose(textureFile);
 

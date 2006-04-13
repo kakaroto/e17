@@ -488,9 +488,7 @@ create_epplet_layout (void)
   Epplet_gadget_show (rbar =
 		      Epplet_create_vbar (34, 18, 12, 28, 1, &esd.vol_r));
   Epplet_gadget_show (standby =
-		      Epplet_create_togglebutton (NULL,
-						  EROOT
-						  "/epplet_data/E-SD/E-SD_standby.png",
+		      Epplet_create_togglebutton (NULL, "E-SD_standby.png",
 						  18, 18, 12, 12,
 						  &esd.standby, standby_cb,
 						  NULL));
@@ -546,9 +544,7 @@ create_epplet_layout (void)
 			  (void *) (&(cloak_delays[10])));
 
   Epplet_gadget_show (btn_ctimer =
-		      Epplet_create_popupbutton (NULL,
-						 EROOT
-						 "/epplet_data/E-SD/E-SD_minitime.png",
+		      Epplet_create_popupbutton (NULL, "E-SD_minitime.png",
 						 18, 31, 12, 12, NULL,
 						 ctimer_p));
 

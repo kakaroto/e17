@@ -1976,7 +1976,7 @@ Epplet_get_color(int r, int g, int b)
 }
 
 static char        *
-Estrdup(char *s)
+Estrdup(const char *s)
 {
    char               *ss;
    int                 len;
@@ -1987,6 +1987,28 @@ Estrdup(char *s)
    ss = malloc(len + 1);
    memcpy(ss, s, len + 1);
    return ss;
+}
+
+static char *
+Epplet_find_file(const char *name)
+{
+   char                s[1024];
+   struct stat         st;
+
+   if (!name)
+      return NULL;
+
+   /* Check if absolute path */
+   if (name[0] == '/')
+      return Estrdup(name);
+
+   /* Check if in epplet data dir */
+   Esnprintf(s, sizeof(s), "%s/%s", Epplet_data_dir(), name);
+   if (stat(s, &st) == 0)
+      return Estrdup(s);
+
+   /* Just dup and return */
+   return Estrdup(name);
 }
 
 void
@@ -2129,7 +2151,7 @@ Epplet_create_textbox(char *image, char *contents, int x, int y,
    g->data = data;
    g->pmap = 0;
    g->mask = 0;
-   g->image = Estrdup(image);
+   g->image = Epplet_find_file(image);
    g->hilited = 0;
 
    attr.backing_store = NotUseful;
@@ -2702,7 +2724,7 @@ Epplet_create_button(char *label, char *image, int x, int y,
    g->pmap = 0;
    g->mask = 0;
    g->label = Estrdup(label);
-   g->image = Estrdup(image);
+   g->image = Epplet_find_file(image);
    g->hilited = 0;
    g->clicked = 0;
    g->pop = 0;
@@ -2915,7 +2937,7 @@ Epplet_create_togglebutton(char *label, char *image, int x,
    g->mask = 0;
    g->val = val;
    g->label = Estrdup(label);
-   g->image = Estrdup(image);
+   g->image = Epplet_find_file(image);
    g->hilited = 0;
    g->clicked = 0;
    attr.backing_store = NotUseful;
@@ -3371,7 +3393,7 @@ Epplet_create_image(int x, int y, int w, int h, char *image)
    g->win = None;
    g->pw = 0;
    g->ph = 0;
-   g->image = Estrdup(image);
+   g->image = Epplet_find_file(image);
    Epplet_add_gad((Epplet_gadget) g);
    return (Epplet_gadget) g;
 }
@@ -3826,7 +3848,7 @@ Epplet_create_popupbutton(char *label, char *image, int x,
    g->pmap = 0;
    g->mask = 0;
    g->label = Estrdup(label);
-   g->image = Estrdup(image);
+   g->image = Epplet_find_file(image);
    g->hilited = 0;
    g->clicked = 0;
    g->popped = 0;
@@ -3988,7 +4010,7 @@ Epplet_change_image(Epplet_gadget gadget, int w, int h, char *image)
    gg = (GadGeneral *) gadget;
    if (g->image)
       free(g->image);
-   g->image = Estrdup(image);
+   g->image = Epplet_find_file(image);
    g->w = w;
    g->h = h;
    if (gg->visible != 0)
@@ -4008,7 +4030,7 @@ Epplet_move_change_image(Epplet_gadget gadget, int x, int y, int w, int h,
    Epplet_draw_image(gadget, 1);
    if (g->image)
       free(g->image);
-   g->image = Estrdup(image);
+   g->image = Epplet_find_file(image);
    g->w = w;
    g->h = h;
    g->x = x;
@@ -5491,7 +5513,7 @@ Epplet_change_button_image(Epplet_gadget gadget, char *image)
    gg = (GadGeneral *) gadget;
    if (g->image)
       free(g->image);
-   g->image = Estrdup(image);
+   g->image = Epplet_find_file(image);
    if (gg->visible)
       Epplet_draw_button(gadget);
 }

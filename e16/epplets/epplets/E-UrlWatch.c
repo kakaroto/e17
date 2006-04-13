@@ -72,7 +72,8 @@ load_config (void)
 {
   /* This reloads our config. */
   char *home = getenv ("HOME");
-  char buf[256];
+  char buf[1024];
+
   opt.save_urls = atoi (Epplet_query_config_def ("SAVE_URLS", "1"));
   opt.check_url_file = atoi (Epplet_query_config_def ("CHECK_URL_FILE", "1"));
   opt.always_show_file_urls =
@@ -106,10 +107,9 @@ load_config (void)
   opt.url_file = _Strdup (Epplet_query_config_def ("URL_CHECK_FILE", buf));
   if (opt.new_url_command)
     free (opt.new_url_command);
+  Esnprintf(buf, sizeof(buf), "esdplay %s/wooeep.wav &", Epplet_data_dir());
   opt.new_url_command =
-    _Strdup (Epplet_query_config_def
-	     ("NEW_URL_COMMAND",
-	      "esdplay " EROOT "/epplet_data/E-UrlWatch/wooeep.wav &"));
+    _Strdup (Epplet_query_config_def ("NEW_URL_COMMAND", buf));
 }
 
 static void
