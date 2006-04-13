@@ -189,7 +189,7 @@ ewl_filedialog_list_view_get(Ewl_Filedialog *fd)
  * @brief Changes the current path of a filedialog.
  */
 void
-ewl_filedialog_path_set(Ewl_Filedialog *fd, char *path)
+ewl_filedialog_directory_set(Ewl_Filedialog *fd, char *path)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fd", fd);
