@@ -20,3 +20,11 @@ Allow for ~/.e16 in addition to ~/.enlightenment.
 
 Fix E-Disk for 2.6 kernels.
 ----------------------------------------------------------------------
+Thu Apr 13 14:35:34 CEST 2006                       Kim Woelders (kwo)
+
+Port to imlib2.
+
+Fixes for e16.8.
+
+Fix several segv's and memory leaks.
+----------------------------------------------------------------------
