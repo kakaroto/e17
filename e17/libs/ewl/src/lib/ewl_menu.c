@@ -125,7 +125,7 @@ ewl_menu_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	menu = EWL_MENU(w);
 	emb = ewl_embed_widget_find(w);
 
-	ewl_embed_window_position_get(EWL_WINDOW(emb), &x, &y);
+	ewl_embed_window_position_get(EWL_EMBED(emb), &x, &y);
 	menu->popup_x = x + CURRENT_X(w);
 	menu->popup_y = y + CURRENT_Y(w);
 
@@ -187,11 +187,10 @@ ewl_menu_expand_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ewl_widget_show(menu->base.popup);
 	ewl_window_raise(EWL_WINDOW(menu->base.popup));
 
-	ewl_callback_call(menu->base.popup, EWL_CALLBACK_CONFIGURE);
-	ewl_callback_call(EWL_WIDGET(menu), EWL_CALLBACK_CONFIGURE);
+	ewl_widget_configure(menu->base.popup);
+	ewl_widget_configure(EWL_WIDGET(menu));
 
 	ewl_widget_focus_send(menu->base.popbox);
-
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -241,8 +240,8 @@ ewl_menu_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	
 	embed = ewl_embed_widget_find(EWL_WIDGET(menu)->parent);
 	menu_embed = ewl_embed_widget_find(EWL_WIDGET(menu->base.popup));
-	ewl_embed_window_position_get(EWL_WINDOW(embed), &wx, &wy);
-	ewl_embed_window_position_get(EWL_WINDOW(menu->base.popup), &x, &y);
+	ewl_embed_window_position_get(EWL_EMBED(embed), &wx, &wy);
+	ewl_embed_window_position_get(EWL_EMBED(menu->base.popup), &x, &y);
 	ewl_object_current_size_get(EWL_OBJECT(menu->base.popup), &width, &height);
 
 	if (((ev->x + x) > x) && ((ev->y + y) > y) 
