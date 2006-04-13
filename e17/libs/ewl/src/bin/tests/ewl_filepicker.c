@@ -175,7 +175,7 @@ directory_test_path_split(char *buf, int len)
 	{
 		if (strcmp(rez[i], t))
 		{
-			snprintf(buf, len, "path list not setup correctly."
+			snprintf(buf, len, "path list not setup correctly. "
 					"[%s didn't match %s]", t, rez[i]);
 			ret = 0;
 			break;
