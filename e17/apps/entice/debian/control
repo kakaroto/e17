@@ -8,7 +8,7 @@ Standards-Version: 3.5.6.0
 Package: entice
 Architecture: any
 Section: graphics
-Depends: ${shlibs:Depends}
+Depends: ${shlibs:Depends}, libevas0-engine-software-x11
 Description: Image viewer based on libeet
  Entice is a sexy-looking image viewer, with the ability to show images
  full-screen and to view multiple images with clickable disappearing
