@@ -2135,14 +2135,6 @@ Epplet_create_textbox(char *image, char *contents, int x, int y,
    g->contents = Estrdup(contents);
    g->cursor_pos = contents ? strlen(contents) : 0;
 
-   if (contents)
-     {
-	Epplet_textbox_textsize(g, &contents_w, &contents_h, contents);
-	g->to_cursor = contents_w;
-     }
-   else
-      g->to_cursor = 0;
-
    g->x_offset = 0;
    g->w = w;
    g->h = h;
@@ -2153,6 +2145,14 @@ Epplet_create_textbox(char *image, char *contents, int x, int y,
    g->mask = 0;
    g->image = Epplet_find_file(image);
    g->hilited = 0;
+
+   if (contents)
+     {
+	Epplet_textbox_textsize(g, &contents_w, &contents_h, contents);
+	g->to_cursor = contents_w;
+     }
+   else
+      g->to_cursor = 0;
 
    attr.backing_store = NotUseful;
    attr.override_redirect = False;
@@ -2399,6 +2399,8 @@ Epplet_draw_textbox(Epplet_gadget eg)
 	Epplet_textbox_textsize(eg, &x, &h, s);
 	g->to_cursor = x;
 
+	free(s);
+
 	if (h == 0)
 	   Epplet_textbox_textsize(eg, &x, &h, "X");
 
@@ -2445,6 +2447,7 @@ Epplet_draw_textbox(Epplet_gadget eg)
       XDrawRectangle(disp, g->win, gc, g->to_cursor + g->x_offset + 2, 2,
 		     CRSR_WDTH, g->h - 4);
 #endif
+   XFreeGC(disp, gc);
 }
 
 int
@@ -4260,6 +4263,8 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
 		index = last_index = length / 2;
 		delta = last_index / 2;
 
+		Epplet_textbox_textsize(g, &text_w, &text_h, g->contents);
+
 		while (delta >= 1.0)
 		  {
 		     index = last_index;
@@ -4278,6 +4283,8 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
 		  {
 		     if (left)
 		       {
+			  if (index <= 0)
+			     break;
 			  buf = g->contents[index - 1];
 			  g->contents[index - 1] = 0;
 			  Epplet_textbox_textsize(g, &text_wl, &text_h, g->contents);
@@ -4285,6 +4292,8 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
 		       }
 		     if (right)
 		       {
+			  if (index >= length)
+			     break;
 			  buf = g->contents[index + 1];
 			  g->contents[index + 1] = 0;
 			  Epplet_textbox_textsize(g, &text_wr, &text_h, g->contents);
@@ -4738,6 +4747,8 @@ Epplet_gadget_destroy(Epplet_gadget gadget)
 	   g = (GadPopupButton *) gadget;
 	   XDestroyWindow(disp, g->win);
 	   XDeleteContext(disp, g->win, xid_context);
+	   if (g->std)
+	      free(g->std);
 	   if (g->label)
 	      free(g->label);
 	   if (g->image)
