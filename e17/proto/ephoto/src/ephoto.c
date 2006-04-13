@@ -359,7 +359,7 @@ main(int argc, char **argv)
 		m->vbox = ewl_vbox_new();
 		ewl_object_alignment_set(EWL_OBJECT(m->vbox), EWL_FLAG_ALIGN_CENTER);
 		ewl_box_spacing_set(EWL_BOX(m->vbox), 10);
-		ewl_object_preferred_inner_size_set(EWL_OBJECT(m->vbox), 200, 35);
+		ewl_object_preferred_inner_size_set(EWL_OBJECT(m->vbox), 200, 30);
 		ewl_container_child_append(EWL_CONTAINER(m->hbox), m->vbox);
 		ewl_widget_show(m->vbox);
 
