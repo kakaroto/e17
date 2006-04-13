@@ -1367,10 +1367,13 @@ ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *us
 			&& (ib->xdown != ev->x 
 				&& ib->ydown != ev->y)) 
 	{
+		int h;
+		
+		h = ewl_object_current_h_get(EWL_OBJECT(ib->ewl_iconbox_context_menu));
 		ewl_widget_show(ib->ewl_iconbox_menu_floater);
 		ewl_floater_position_set(EWL_FLOATER(ib->ewl_iconbox_menu_floater), 
-							ev->x-ibx + abs(px-ibx), 
-							ev->y-iby +abs(py-iby));
+							ev->x - px, 
+							ev->y - py - h);
 		ewl_callback_call(EWL_WIDGET(ib->ewl_iconbox_context_menu), 
 							EWL_CALLBACK_FOCUS_IN);
 
@@ -1424,9 +1427,12 @@ ewl_iconbox_icon_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *us
 	iby = ewl_object_current_y_get(EWL_OBJECT(ib->icon_box_parent));
 
 	if (ev->button == 3) {
+		int h;
+		
+		h = ewl_object_current_h_get(EWL_OBJECT(ib->icon_box_parent->icon_menu));
 		ewl_floater_position_set(EWL_FLOATER(ib->icon_box_parent->icon_menu_floater), 
-						ev->x-ibx + abs(sx-ibx), 
-						ev->y-iby +abs(sy-iby));
+						ev->x - sx, 
+						ev->y - sy - h);
 		ewl_callback_call(EWL_WIDGET(ib->icon_box_parent->icon_menu), 
 						EWL_CALLBACK_FOCUS_IN);
 	} else {
