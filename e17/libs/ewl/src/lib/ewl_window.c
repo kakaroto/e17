@@ -913,6 +913,9 @@ ewl_window_show_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	}
 #endif
 
+	if (win->flags & EWL_WINDOW_OVERRIDE)
+		ewl_widget_configure(w);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
