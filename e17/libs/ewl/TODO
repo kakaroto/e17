@@ -153,3 +153,6 @@ EWL TODO
 - Need to split the evas engine code out then use function pointers to do
   the engine functions instead of the current #ifdef method.
 
+- Create a separate configuration value and theme hook for stock icons in
+  order to eliminate most icons from the distributed lib, but provide good
+  hooks for external icon sets.
