@@ -24,11 +24,6 @@ EWL BUGS
 - Menus will activate on tab, but it jumps to the submenu instead of
   each menu item
 
-- If you run ewl_test and select a test the main window will have the
-  tests code filled in. The scrollpane ends up being twice as big as
-  it should be. This appears to be from the size reported by the textblock
-  following the clear and rebuild of the text.
-
 - The text widget dosen't handle the wrap flag correctly.
 
 - Tooltips and dialogs aren't friends. If you don't set the active area
@@ -156,3 +151,10 @@ EWL TODO
 - Create a separate configuration value and theme hook for stock icons in
   order to eliminate most icons from the distributed lib, but provide good
   hooks for external icon sets.
+
+- [Ewl_Test] Unit tests
+
+- [Ewl_Test] More Tutorials in the src/bin/test/*.c files
+
+
+
