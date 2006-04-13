@@ -463,7 +463,7 @@ apply_config(void)
     delay = atof(Epplet_query_config_def("delay", "2.0"));
   }
 
-  zoom_cmd = strdup(Epplet_textbox_contents(cfg_tb_zoom));
+  zoom_cmd = Epplet_textbox_contents(cfg_tb_zoom);
   Epplet_modify_config("zoom_prog", zoom_cmd);
 
   if (randomize != cfg_randomize) {
