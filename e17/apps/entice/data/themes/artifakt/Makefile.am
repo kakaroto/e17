@@ -12,9 +12,12 @@ EDC = $(THEME).edc
 EET = $(EDC:%.edc=%.eet)
 SUFFIXES = .edc .eet
 
+CLEANFILES = $(EET)
+
 themedir = $(pkgdatadir)/themes
 theme_DATA = $(EET)
 
+.PHONY: all
 all: $(EDC)
 
 .edc.eet:

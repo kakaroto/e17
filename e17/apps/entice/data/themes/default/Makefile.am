@@ -19,6 +19,8 @@ parts/panel.edc \
 parts/status.edc \
 parts/tooltip.edc
 
+CLEANFILES = $(EET)
+
 THEME = default
 EDC = $(THEME).edc
 EET = $(EDC:%.edc=%.eet)
@@ -27,6 +29,7 @@ SUFFIXES = .edc .eet
 themedir = $(pkgdatadir)/themes
 theme_DATA = $(EET)
 
+.PHONY: all
 all: $(EDC)
 
 .edc.eet:
