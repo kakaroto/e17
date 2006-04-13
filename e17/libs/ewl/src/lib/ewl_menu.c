@@ -186,10 +186,6 @@ ewl_menu_expand_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	
 	ewl_widget_show(menu->base.popup);
 	ewl_window_raise(EWL_WINDOW(menu->base.popup));
-
-	ewl_widget_configure(menu->base.popup);
-	ewl_widget_configure(EWL_WIDGET(menu));
-
 	ewl_widget_focus_send(menu->base.popbox);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
