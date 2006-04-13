@@ -771,11 +771,23 @@ Epplet_window_hide(Window win)
    XMaskEvent(disp, StructureNotifyMask, &ev);
 }
 
+static Epplet_gadget
+Epplet_gadget_check(Epplet_gadget g)
+{
+   int                 i;
+
+   for (i = 0; i < gad_num; i++)
+      if (gads[i] == g)
+         return g;
+
+   return NULL;
+}
+
 void
 Epplet_window_destroy_children(Epplet_window win)
 {
    int                 i, num;
-   Epplet_gadget      *lst;
+   Epplet_gadget      *lst, g;
 
    if (!gads || gad_num <= 0)
       return;
@@ -787,8 +799,14 @@ Epplet_window_destroy_children(Epplet_window win)
    memcpy(lst, gads, num * sizeof(Epplet_gadget));
 
    for (i = 0; i < num; i++)
-      if (((GadGeneral *) lst[i])->parent == win)
-	 Epplet_gadget_destroy(lst[i]);
+     {
+	/* Check - Gadget may have been removed by recursive call */
+	g = Epplet_gadget_check(lst[i]);
+	if (!g)
+	   continue;
+	if (((GadGeneral *) g)->parent == win)
+	   Epplet_gadget_destroy(g);
+     }
 
    free(lst);
 }
@@ -4771,6 +4789,8 @@ Epplet_gadget_destroy(Epplet_gadget gadget)
 		if (g->entry[i].gadget)
 		   Epplet_gadget_destroy(g->entry[i].gadget);
 	     }
+	   if (g->entry)
+	     free(g->entry);
 	   XDestroyWindow(disp, g->win);
 	   XDeleteContext(disp, g->win, xid_context);
 	   free(g);
