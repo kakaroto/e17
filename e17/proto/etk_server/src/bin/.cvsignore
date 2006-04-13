@@ -3,3 +3,5 @@
 etk_server
 Makefile
 Makefile.in
+etk_server_valid_funcs.c
+etk_server_valid_signals.c

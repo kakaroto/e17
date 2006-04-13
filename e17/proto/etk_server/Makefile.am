@@ -6,8 +6,7 @@ SUBDIRS = scripts src
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
                        config.h.in config.sub configure install-sh \
 		       ltconfig ltmain.sh missing mkinstalldirs depcomp \
-		       stamp-h.in $(MYAPPNAME)_docs.tar \
-		       $(MYAPPNAME)_docs.tar.gz $(MYAPPNAME).c \
+		       stamp-h.in $(MYAPPNAME).c \
 		       debian/changelog 
 
 install-data-local:
@@ -21,9 +20,6 @@ install-data-local:
 
 dist-hook:
 	./gendoc; \
-	tar cvf $(MYAPPNAME)_docs.tar doc; \
-	rm -f $(MYAPPNAME)_docs.tar.gz; \
-	gzip -9 $(MYAPPNAME)_docs.tar; \
 	if test -d data; then \
 	  mkdir $(distdir)/data; \
 	  for file in data/*; do \
@@ -39,7 +35,6 @@ $(MYAPPNAME).spec.in \
 $(MYAPPNAME).c.in \
 gendoc \
 Doxyfile \
-$(MYAPPNAME)_docs.tar.gz \
 debian/changelog \
 debian/changelog.in \
 debian/compat \

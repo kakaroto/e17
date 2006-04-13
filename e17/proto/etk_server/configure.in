@@ -166,5 +166,4 @@ src/bin/Makefile
 etk_server.spec
 debian/changelog
 ],[
-touch etk_server_docs.tar.gz
 ])
