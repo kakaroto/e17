@@ -366,7 +366,9 @@ int DEVIANF(data_rss_parse_doc_infos) (Rss_Feed *feed, char *buf)
           {
              DDATARSSP(("Infos: detected title"));
              if (!(tmp = _parse_item(buf, &name, PARSE_ITEM_TITLE)))
-                PARSE_INFOS_FAILS();
+		{
+		   PARSE_INFOS_FAILS();
+		}
           }
         else
           {
@@ -374,7 +376,9 @@ int DEVIANF(data_rss_parse_doc_infos) (Rss_Feed *feed, char *buf)
                {
                   DDATARSSP(("Infos: detected link"));
                   if (!(tmp = _parse_item(buf, &link, PARSE_ITEM_URL)))
-                     PARSE_INFOS_FAILS();
+		     {
+			PARSE_INFOS_FAILS();
+		     }
                }
              else
                {
@@ -382,13 +386,17 @@ int DEVIANF(data_rss_parse_doc_infos) (Rss_Feed *feed, char *buf)
                     {
                        DDATARSSP(("Infos: detected description"));
                        if (!(tmp = _parse_item(buf, &description, PARSE_ITEM_DESC)))
-                          PARSE_INFOS_FAILS();
+			  {
+			     PARSE_INFOS_FAILS();
+			  }
                     }
                   else
                     {
                        DDATARSSP(("Infos: unknow meta (%8.8s), skip", buf));
                        if (!(tmp = _parse_go_end_meta(buf)))
-                          PARSE_INFOS_FAILS();
+			  {
+			     PARSE_INFOS_FAILS();
+			  }
                     }
                }
           }

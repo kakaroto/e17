@@ -1,8 +1,19 @@
+dEvian-0.1.8 : Version bump
+    * More RSS are supported
+    * Warning indicator to tell the user wich dEvian has news / has problems
+    * You can now remove dEvian's logo from the slideshow (in the main config panel / advanced)
+    * Go to previous picture feature (historic of 10 last pictures)
+    * New theme blue eyed
+    * dErss and dEpicture (independent modules you can build from dEvian's source) works. See INSTALL file
+    * Fix bugs and leaks
+    * Working on Log feature (like 'tail' program, on your desktop), not usable yet
+
 dEvian-0.1.7 : Some improvements & Fixes
     * Added the begining of a theme HOWTO
     * Minimal theme better fits the desktop
     * More RSS are supported
     * Fix some bugs
+
 dEvian-0.1.6 : Release
     * RSS Support
     * Information panel
