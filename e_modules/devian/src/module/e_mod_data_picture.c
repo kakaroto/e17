@@ -40,7 +40,8 @@ int DEVIANF(data_picture_list_local_init) (void)
       list = DEVIANM->picture_list_local;
 
    /* Load pictures */
-   _picture_list_local_add_dir(e_module_dir_get(DEVIANM->module), 0);
+   if (DEVIANM->conf->sources_picture_show_devian_pics)
+      _picture_list_local_add_dir(e_module_dir_get(DEVIANM->module), 0);
    _picture_list_local_add_dir(DEVIANM->conf->sources_picture_data_import_dir,
                                DEVIANM->conf->sources_picture_data_import_recursive);
 
@@ -229,7 +230,7 @@ Picture *DEVIANF(data_picture_cache_attach) (Source_Picture *source, int edje_pa
         while (picture->source || picture->delete);
 
         /* Add it to the cache if wasnt */
-        if (!picture->picture)
+	if (!picture->picture)
            if (!_picture_cache_add_picture(picture))
               return NULL;
 
@@ -252,7 +253,7 @@ Picture *DEVIANF(data_picture_cache_attach) (Source_Picture *source, int edje_pa
              picture = evas_list_nth(cache->pictures, cache->pos);
              cache->pos++;
              if (cache->pos > (evas_list_count(cache->pictures) - 1))
-                cache->pos = -1;        // Overflow -> no more pictures avalaible !
+                cache->pos = -1;        /* Overflow -> no more pictures avalaible ! */
              /* If picture isnt good, retry */
              if (picture->source || picture->delete)
                 return DEVIANF(data_picture_cache_attach) (source, edje_part, 0);
@@ -265,7 +266,7 @@ Picture *DEVIANF(data_picture_cache_attach) (Source_Picture *source, int edje_pa
           }
 
         /* Attach the picture to the source's historic
-         * and attach the source to the picture histo's list */
+	 * and attach the source to the picture histo's list */
         DEVIANF(source_picture_histo_picture_attach) (source, picture);
      }
 
@@ -276,7 +277,7 @@ Picture *DEVIANF(data_picture_cache_attach) (Source_Picture *source, int edje_pa
    else
       source->picture1 = picture;
    cache->nb_attached++;
-
+   
    DDATAC(("attach ok (%s, %p), pos: %d", picture->picture_description->name, picture, cache->pos));
 
    return picture;
@@ -306,7 +307,9 @@ void DEVIANF(data_picture_cache_detach) (Source_Picture *source, int part)
         if (part && (source->picture1))
            picture = source->picture1;
         else
-           printf("BAD BAD BAD in cache detach\n");
+	   {
+	      DDATAC(("BAD BAD BAD in cache detach"));
+	   }
      }
 
    if (!picture)
@@ -591,6 +594,8 @@ _picture_cache_get_picture_unused(void)
 
    cache = DEVIANM->picture_cache;
 
+   DDATAC(("Going to try to attach unused picture"));
+
    if (!evas_list_count(cache->pictures))
       return NULL;
    if (!cache->pos)
@@ -612,8 +617,11 @@ _picture_cache_get_picture_unused(void)
      {
         picture = evas_list_data(l);
         /* Current picture ? */
-        if (!picture->source && !picture->delete)
-           return picture;
+        if (!picture->source && !picture->delete && picture->thumbed)
+	   {
+	      DDATAC(("Picture found ! %s", picture->picture_description->name));
+	      return picture;
+	   }
         l = evas_list_next(l);
 
         if (cache->pos == -1)
@@ -813,8 +821,6 @@ _picture_free(Picture *picture, int force, int force_now)
          * on next picture change */
         if (!force_now)
           {
-             //if (picture->cached)
-             //_picture_cache_del_picture(picture);
              picture->delete = 1;
              return 1;
           }

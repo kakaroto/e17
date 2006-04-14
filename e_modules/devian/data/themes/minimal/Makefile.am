@@ -44,4 +44,4 @@ minimal.edj: Makefile $(EXTRA_DIST)
 	$(top_builddir)/data/themes/minimal/minimal.edj
 
 clean:
-	rm minimal.edj
+	rm -f minimal.edj

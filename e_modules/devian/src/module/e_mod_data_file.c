@@ -150,6 +150,7 @@ _get_lines(char **buffer, int *size)
    p1 = *buffer;
    size_left = *size;
 
+   /* Quick replace for unused chars ...CHANGE, use them ! */
    while (p1 < (*buffer + *size))
      {
         if (*p1 == 0xd)
@@ -161,10 +162,10 @@ _get_lines(char **buffer, int *size)
 
    p1 = *buffer;
 
-   while ((p2 = memchr(p1, '\n', size_left)))
+   while ( (size_left > 0) &&
+	   (p2 = memchr(p1, '\n', size_left)) )
      {
         /* Replace by <br> */
-
         *size = *size + 3;
         *buffer = realloc(*buffer, *size);
         memmove(p2 + 3, p2, strlen(p2) + 1);
@@ -175,19 +176,12 @@ _get_lines(char **buffer, int *size)
 
         /* Add the position to the list */
         pos = E_NEW(int, 1);
-
         *pos = p2 - *buffer;
         ecore_list_append(lines, pos);
-        /*
-         * p1 = p2+1;
-         * size_left = *size - (*pos+1);
-         */
 
+	/* Go to next char */
         p1 = p2 + 4;
         size_left = *size - (*pos + 4);
-
-	if (size_left > 0)
-	   break;
      };
 
    return lines;

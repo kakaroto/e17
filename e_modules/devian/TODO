@@ -49,11 +49,14 @@ BUG / FIXES
  * M ? Auto resize est bien plus petit (ajouter coords bordure)
  * M Quand on s'est arreté en pause, ca se reaffiche pas au restart dans le theme
      (add devian->source_info.paused)
- - X Segfault la toute premiere fois qu'on lance dEvian Picture apres avoir install dEvian pr 1ere fois
+ * X Bug when not enough pictures in cache, not on every platform,
+     and not when compiling with Debug printf ...
+     (FIXED :D :D, test if source_evas_object_get returns 0 ... SPANK SPANK SPANK)
+ * X Segfault la toute premiere fois qu'on lance dEvian Picture apres avoir install dEvian pr 1ere fois
      Sur CERTAINES rares configurations seulement ...
+     (FIXED :D :D, test if source_evas_object_get returns 0 ... SPANK SPANK SPANK)
  - M Proxy doesnt work (mz on #get-e, David Wallin mail)
  - S Quand taille trop grande / previews images, resize auto merde (AUTO_MODE)
- - ? ??? BAD BAD BAD cache detach ?
 
 
 --------------------------------------------------------------------------------
@@ -318,25 +321,23 @@ TODO CODE (ordre)
  * Alpha and Animation in advanced box panel are over each other
  * Make title more little
  * Darkintent http://www.baka-updates.com/rss.php Segv
+ * Container animation in advanced config
+ * Warning indicator
+ * User can choose not to add dEvian's icons in picture list
+ * Icon warning indicator
 
  / Source file (log)
    * Read the last lines of a file (data_file_update)
    - Ini and Max lines
    - Use Retlines, cut at the end of a line
 
- * Container animation in advanced config
- * Warning indicator
-
- - Icon warning indicator
- - X Bug when only the 2 pictures
- - ? Bug in the config ?
  - Rss News hiligh when url == null
+ - ? Bug in the config ? When updating ?
 
  - Charsets (ecore_txt :D)
    - Problems in convert
        Need strdup ?
 
- - ? Segv Sometimes when refresh by click on 'next' button ?
  - ? --SEGV embryo timer del some timer that doesnt exists (in infos panel)-- ?
    When the information pannel is going to close, after timer ...
    Like when delete the timer 2 times when finished
@@ -349,10 +350,6 @@ TODO CODE (ordre)
          at ecore_main.c:467
      #4  0x00002aaaac0348d7 in ecore_main_loop_begin () at ecore_main.c:79
      #5  0x000000000041ff51 in main (argc=1, argv=0x61e360) at e_main.c:679
-
- - User can choose not to add dEvian's icons in picture list
- - ? "Allow information panel" option in main config panel
-   for each type of source ?
 
  - RELEASE 0.2.0
 
@@ -368,6 +365,7 @@ TODO CODE (ordre)
 
  - RPM build (cvs)
  - Use same way than e_int_config_background_import to set the background when no e17setroot
+   Write patch for E
 
  - images from net
    - deviantart

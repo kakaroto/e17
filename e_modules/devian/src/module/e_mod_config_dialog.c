@@ -50,6 +50,7 @@ struct _E_Config_Dialog_Data
 #ifdef HAVE_PICTURE
    int data_picture_thumb_default_size;
    int sources_picture_set_bg_purge;
+   int sources_picture_show_devian_pics;
 #endif
 #ifdef HAVE_RSS
    int sources_rss_timer_s;
@@ -157,6 +158,7 @@ _fill_data(E_Config_Dialog_Data *cfdata)
 #ifdef HAVE_PICTURE
    cfdata->data_picture_thumb_default_size = conf->data_picture_thumb_default_size;
    cfdata->sources_picture_set_bg_purge = conf->sources_picture_set_bg_purge;
+   cfdata->sources_picture_show_devian_pics = conf->sources_picture_show_devian_pics;
 #endif
 #ifdef HAVE_FILE
    cfdata->sources_file_nb_lines_ini = conf->sources_file_nb_lines_ini;
@@ -330,6 +332,7 @@ _main_advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 #ifdef HAVE_PICTURE
    DEVIANM->conf->data_picture_thumb_default_size = cfdata->data_picture_thumb_default_size;
    DEVIANM->conf->sources_picture_set_bg_purge = cfdata->sources_picture_set_bg_purge;
+   DEVIANM->conf->sources_picture_show_devian_pics = cfdata->sources_picture_show_devian_pics;
 #endif
 #ifdef HAVE_FILE
    DEVIANM->conf->sources_file_nb_lines_ini = cfdata->sources_file_nb_lines_ini;
@@ -543,6 +546,8 @@ _main_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_
    e_widget_frametable_object_append(of, ob, 1, 3, 1, 1, 1, 0, 1, 0);
    ob = e_widget_check_add(evas, _("Remove created .e/e/backgrounds/"), &(cfdata->sources_picture_set_bg_purge));
    e_widget_frametable_object_append(of, ob, 0, 4, 2, 1, 1, 1, 1, 1);
+   ob = e_widget_check_add(evas, _("Show dEvian's logo in slideshow"), &(cfdata->sources_picture_show_devian_pics));
+   e_widget_frametable_object_append(of, ob, 0, 5, 2, 1, 1, 1, 1, 1);
    e_widget_table_object_append(o, of, 1, 1, 1, 1, 1, 1, 1, 1);
 #endif
 #ifdef HAVE_FILE

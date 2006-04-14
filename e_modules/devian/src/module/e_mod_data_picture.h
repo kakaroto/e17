@@ -18,6 +18,7 @@ typedef struct _Picture_Infos Picture_Infos;
 #define DATA_PICTURE_INFOS_LEN 100
 #define DATA_PICTURE_THUMB_SIZE_DEFAULT 300
 #define DATA_PICTURE_CACHE_SIZE_DEFAULT 2
+#define DATA_PICTURE_SHOW_DEVIAN_PICS_DEFAULT 1
 
 struct _Picture_List_Local
 {

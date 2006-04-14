@@ -23,28 +23,17 @@
 #define PARSE_ITEM_DATE_20 5
 
 #define PARSE_ARTICLE_FAILS() \
-do { \
-if (article->title) \
-  evas_stringshare_del(article->title); \
-if (article->url) \
-  evas_stringshare_del(article->url); \
-if (article->description) \
-  evas_stringshare_del(article->description); \
-if (article->date) \
-  evas_stringshare_del(article->date); \
-if (article->date_simple) \
-  evas_stringshare_del(article->date_simple); \
-return NULL; \
-} while (0)
+DEVIANF(data_rss_article_free) (article); \
+return NULL;
 
 #define PARSE_INFOS_FAILS() \
-do { \
 if (name) \
   evas_stringshare_del(name); \
+if (link) \
+  evas_stringshare_del(link); \
 if (description) \
   evas_stringshare_del(description); \
-return 0; \
-} while (0)
+return 0;
 
 static char *_parse_item(char *buf, const char **text, int type);
 static char *_parse_item_clean(char *buf, int size, int type);
@@ -52,6 +41,7 @@ static char *_parse_item_date_10(char *buf);
 static char *_parse_item_date_20(char *buf);
 static char *_parse_go_begin_meta(char *buf);
 static char *_parse_go_end_meta(char *buf);
+
 
 /* PUBLIC FUNCTIONS */
 
@@ -215,7 +205,9 @@ char *DEVIANF(data_rss_parse_article) (Rss_Feed *feed, char *buf, Ecore_List *li
           {
              DDATARSSP(("detected title"));
              if (!(tmp = _parse_item(buf, &article->title, PARSE_ITEM_TITLE)))
-                PARSE_ARTICLE_FAILS();
+		{
+		   PARSE_ARTICLE_FAILS();
+		}
           }
         else
           {
@@ -223,7 +215,9 @@ char *DEVIANF(data_rss_parse_article) (Rss_Feed *feed, char *buf, Ecore_List *li
                {
                   DDATARSSP(("detected link"));
                   if (!(tmp = _parse_item(buf, &article->url, PARSE_ITEM_URL)))
-                     PARSE_ARTICLE_FAILS();
+		     {
+			PARSE_ARTICLE_FAILS();
+		     }
                }
              else
                {
@@ -231,7 +225,9 @@ char *DEVIANF(data_rss_parse_article) (Rss_Feed *feed, char *buf, Ecore_List *li
                     {
                        DDATARSSP(("detected description"));
                        if (!(tmp = _parse_item(buf, &article->description, PARSE_ITEM_DESC)))
-                          PARSE_ARTICLE_FAILS();
+			  {
+			     PARSE_ARTICLE_FAILS();
+			  }
                     }
                   else
                     {
@@ -246,12 +242,16 @@ char *DEVIANF(data_rss_parse_article) (Rss_Feed *feed, char *buf, Ecore_List *li
                                  /* Parse it one time ->date and one time ->date_simple */
                                  DDATARSSP(("detected pubdate"));
                                  if (!(tmp = _parse_item(buf, &article->date, PARSE_ITEM_TITLE)))
-                                    PARSE_ARTICLE_FAILS();
+				    {
+				       PARSE_ARTICLE_FAILS();
+				    }
                                  else
                                    {
                                       buf = buf_sav;
                                       if (!(tmp = _parse_item(buf, &article->date_simple, PARSE_ITEM_DATE_10)))
-                                         PARSE_ARTICLE_FAILS();
+					 {
+					    PARSE_ARTICLE_FAILS();
+					 }
                                    }
                               }
                             break;
@@ -263,12 +263,16 @@ char *DEVIANF(data_rss_parse_article) (Rss_Feed *feed, char *buf, Ecore_List *li
                                  /* Parse it one time ->date and one time ->date_simple */
                                  DDATARSSP(("detected pubdate"));
                                  if (!(tmp = _parse_item(buf, &article->date, PARSE_ITEM_TITLE)))
-                                    PARSE_ARTICLE_FAILS();
+				    {
+				       PARSE_ARTICLE_FAILS();
+				    }
                                  else
                                    {
                                       buf = buf_sav;
                                       if (!(tmp = _parse_item(buf, &article->date_simple, PARSE_ITEM_DATE_20)))
-                                         PARSE_ARTICLE_FAILS();
+					 {
+					    PARSE_ARTICLE_FAILS();
+					 }
                                    }
                               }
                             break;
@@ -277,12 +281,12 @@ char *DEVIANF(data_rss_parse_article) (Rss_Feed *feed, char *buf, Ecore_List *li
                        if (!tmp)
                          {
                             /* We didnt found what is the meta ? The we jump over it :)
-                             * Before, test if where not going to crash after jump =)
-                             * -> Test html meta wich dont work in pair with a close meta */
-                            //...
+                             * Before, test if where not going to crash after jump =) */
                             DDATARSSP(("unknow meta (%8.8s), skip", buf));
                             if (!(tmp = _parse_go_end_meta(buf)))
-                               PARSE_ARTICLE_FAILS();
+			       {
+				  PARSE_ARTICLE_FAILS();
+			       }
                          }
                     }
                }
@@ -299,7 +303,9 @@ char *DEVIANF(data_rss_parse_article) (Rss_Feed *feed, char *buf, Ecore_List *li
         /* Check prematurate end of article, missing data
          * keep it anyway */
         if (!*(buf + 1))
-           PARSE_ARTICLE_FAILS();
+	   {
+	      PARSE_ARTICLE_FAILS();
+	   }
         if (*(buf + 1) == '/')
            break;
      }

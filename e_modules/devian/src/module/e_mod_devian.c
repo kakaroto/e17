@@ -51,7 +51,7 @@ int DEVIANF(devian_main_init) (E_Module *m)
           }
      }
 
-   DMAIN(("init_devian OK\n"));
+   DMAIN(("init_devian OK"));
 
    return 1;
 }
@@ -442,7 +442,7 @@ const char *DEVIANF(devian_edje_load) (Evas_Object *edje_obj, char *part, int ty
         e_module_dialog_show(_(MODULE_NAME " Module Error"), buf);
         return NULL;
      }
-   DMAIN(("Edje loaded %s group %s\n", path, part));
+   DMAIN(("Edje loaded %s group %s", path, part));
 
    return theme;
 }

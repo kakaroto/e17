@@ -38,4 +38,4 @@ blue_eyed.edj: Makefile $(EXTRA_DIST)
 	$(top_builddir)/data/themes/blue_eyed/blue_eyed.edj
 
 clean:
-	rm blue_eyed.edj
+	rm -f blue_eyed.edj

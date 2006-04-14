@@ -44,4 +44,4 @@ clean.edj: Makefile $(EXTRA_DIST)
 	$(top_builddir)/data/themes/clean/clean.edj
 
 clean:
-	rm clean.edj
+	rm -f clean.edj

@@ -58,7 +58,7 @@ int DEVIANF(source_picture_add) (DEVIANN *devian)
    /* Attach picture */
    DEVIANF(source_picture_change) (devian, 0);
 
-   DSOURCE(("Source picture creation OK\n"));
+   DSOURCE(("Source picture creation OK"));
 
    return 0;
 }
@@ -108,7 +108,10 @@ int DEVIANF(source_picture_change) (DEVIANN *devian, int option)
       option = -1;
 
    if (!DEVIANF(data_picture_cache_attach) (source, !old_part, option))
-      return 0;
+      {
+	 DSOURCE(("Cant attach picture to part !old_part !"));
+	 return 0;
+      }
 
    if (source->devian->container)
      {

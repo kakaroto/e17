@@ -8,10 +8,10 @@ typedef struct _dEvian_Conf DEVIAN_CONF;
 #define E_MOD_CONFIG_H_INCLUDED
 
 #ifdef HAVE_ALL
-#define CONFIG_VERSION 48
+#define CONFIG_VERSION 49
 #else
 #ifdef HAVE_PICTURE
-#define CONFIG_VERSION 3
+#define CONFIG_VERSION 4
 #else
 #ifdef HAVE_RSS
 #define CONFIG_VERSION 4
@@ -50,6 +50,7 @@ struct _dEvian_Main_Conf
    int sources_picture_data_import_thumbs_warn;
    int sources_picture_default_location;
    int sources_picture_set_bg_purge;
+   int sources_picture_show_devian_pics;
 #endif
 #ifdef HAVE_RSS
    int sources_rss_timer_s;

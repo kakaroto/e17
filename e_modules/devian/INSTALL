@@ -30,4 +30,7 @@ make install
 
 --------------------------------------
 
-It will install the module in your ~/.e/e/modules/
+It will install the module
+	- If you do the make install as user : ~/.e/e/modules/
+	- If you do the make install as root : {prefix}/lib/enlightenment/modules/.
+{prefix} is generaly /usr/ or /usr/local/.

@@ -58,48 +58,47 @@
 
 /* Debuging things */
 #ifdef DEBUG_MAIN
-# define DMAIN(x)  do {printf(__FILE__ ":%d:  ", __LINE__); printf x; printf("\n"); fflush(stdout);} while (0)
+# define DMAIN(x)  do {printf("MAIN - %s:%d:  ", __FILE__, __LINE__); printf x; printf("\n"); fflush(stdout);} while (0)
 #else
 # define DMAIN(x)  ((void) 0)
 #endif
 #ifdef DEBUG_POPUP_WARN
-# define DPOPW(x)  do {printf(__FILE__ ":%d: POPW : ", __LINE__); printf x; printf ("\n"); fflush(stdout);} while (0)
+# define DPOPW(x)  do {printf("POPW - %s:%d: ", __FILE__, __LINE__); printf x; printf ("\n"); fflush(stdout);} while (0)
 #else
 # define DPOPW(x)  ((void) 0)
 #endif
 #ifdef DEBUG_SOURCE
-# define DSOURCE(x)  do {printf(__FILE__ ":%d:  ", __LINE__); printf x; printf ("\n"); fflush(stdout);} while (0)
+# define DSOURCE(x)  do {printf("SOURCE - %s:%d:  ", __FILE__, __LINE__); printf x; printf ("\n"); fflush(stdout);} while (0)
 #else
 # define DSOURCE(x)  ((void) 0)
 #endif
 #ifdef DEBUG_CONTAINER
-# define DCONTAINER(x)  do {printf(__FILE__ ":%d:  ", __LINE__); printf x; printf ("\n"); fflush(stdout);} while (0)
+# define DCONTAINER(x)  do {printf("CONTAINER - %s:%d:  ", __FILE__, __LINE__); printf x; printf ("\n"); fflush(stdout);} while (0)
 #else
 # define DCONTAINER(x)  ((void) 0)
 #endif
 #ifdef DEBUG_DATA
-# define DDATA(x)  do {printf(__FILE__ ":%d:  ", __LINE__); printf x; printf ("\n"); fflush(stdout);} while (0)
+# define DDATA(x)  do {printf("DATA - %s:%d:  ", __FILE__, __LINE__); printf x; printf ("\n"); fflush(stdout);} while (0)
 #else
 # define DDATA(x)  ((void) 0)
 #endif
 #ifdef DEBUG_DATA_CACHE
-# define DDATAC(x)  do {printf(__FILE__ ":%d: CACHE ", __LINE__); printf x; printf ("\n"); fflush(stdout);} while (0)
+# define DDATAC(x)  do {printf("DATA_CACHE %s:%d:  ", __FILE__, __LINE__); printf x; printf ("\n"); fflush(stdout);} while (0)
 #else
 # define DDATAC(x)  ((void) 0)
 #endif
 #ifdef DEBUG_DATA_RSS
-# define DDATARSS(x)  do {printf(__FILE__ ":%d: RSS ", __LINE__); printf x; printf ("\n"); fflush(stdout);} while (0)
+# define DDATARSS(x)  do {printf("DATA_RSS %s:%d:  ", __FILE__, __LINE__); printf x; printf ("\n"); fflush(stdout);} while (0)
 #else
 # define DDATARSS(x)  ((void) 0)
 #endif
 #ifdef DEBUG_DATA_RSS_PARSER
-# define DDATARSSP(x)  do {printf(__FILE__ ":%d: RSS PARSE ", __LINE__); p\
-rintf x; printf ("\n"); fflush(stdout);} while (0)
+# define DDATARSSP(x)  do {printf("DATA_RSS_PARSE - %s:%d:  ", __FILE__, __LINE__); printf x; printf ("\n"); fflush(stdout);} while (0)
 #else
 # define DDATARSSP(x)  ((void) 0)
 #endif
 #ifdef DEBUG_DATA_FILE
-# define DDATAFILE(x)  do {printf(__FILE__ ":%d: FILE ", __LINE__); printf x; printf ("\n"); fflush(stdout);} while (0)
+# define DDATAFILE(x)  do {printf("DATA_FILE - %s:%d:  ", __FILE__, __LINE__); printf x; printf ("\n"); fflush(stdout);} while (0)
 #else
 # define DDATAFILE(x)  ((void) 0)
 #endif

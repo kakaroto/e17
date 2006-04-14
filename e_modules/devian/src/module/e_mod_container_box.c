@@ -396,9 +396,7 @@ int DEVIANF(container_box_edje_part_change) (Container_Box *container)
    char *source_name;
    int w, h;
 
-   DEVIANF(source_evas_object_get) (container->devian, &source0, &source1);
-
-   if (!source0 && !source1)
+   if (!DEVIANF(source_evas_object_get) (container->devian, &source0, &source1))
       return 0;
 
    if (container->in_transition)
@@ -997,7 +995,8 @@ _cb_edje_part_change(void *data, Evas_Object *obj, const char *emission, const c
         return;
      }
 
-   DEVIANF(source_evas_object_get) (devian, &source0, &source1);
+   if (!DEVIANF(source_evas_object_get) (devian, &source0, &source1))
+      return 0;
 
    if (!strcmp(emission, "source_transition_0-1_end"))
      {

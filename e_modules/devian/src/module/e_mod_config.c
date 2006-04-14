@@ -58,7 +58,7 @@ DEVIAN_MAIN_CONF *DEVIANF(config_load) (void)
                         "has been upgraded<br>"
                         "Your settings were removed<br>"
                         "Sorry for the inconvenience<br><br>" "(%d -> %d)"), cfg_main->conf_version, CONFIG_VERSION);
-             e_module_dialog_show(_(MODULE_NAME "Module"), buf);
+             e_module_dialog_show(_(MODULE_NAME " Module version " MODULE_VERSION), buf);
 
              cfg_main = NULL;
           }
@@ -74,7 +74,7 @@ DEVIAN_MAIN_CONF *DEVIANF(config_load) (void)
                              "has been downgraded<br>"
                              "Your settings were removed<br>"
                              "Sorry for the inconvenience<br><br>" "(%d ->%d)"), cfg_main->conf_version, CONFIG_VERSION);
-                  e_module_dialog_show(_(MODULE_NAME " Module"), buf);
+                  e_module_dialog_show(_(MODULE_NAME " Module version " MODULE_VERSION), buf);
                   cfg_main = NULL;
                }
           }
@@ -229,6 +229,7 @@ DEVIAN_MAIN_CONF *DEVIANF(config_main_new) (void)
    cfg_main->sources_picture_data_import_recursive = 0;
    cfg_main->sources_picture_default_location = DATA_PICTURE_LOCAL;
    cfg_main->sources_picture_set_bg_purge = SOURCE_PICTURE_SET_BG_PURGE_DEFAULT;
+   cfg_main->sources_picture_show_devian_pics = DATA_PICTURE_SHOW_DEVIAN_PICS_DEFAULT;
 #endif
 #ifdef HAVE_RSS
    cfg_main->sources_rss_timer_s = SOURCE_RSS_UPDATE_RATE_DEFAULT;
@@ -509,6 +510,7 @@ _devian_config_main_edd_init(void)
    E_CONFIG_VAL(D, T, sources_picture_data_import_recursive, INT);
    E_CONFIG_VAL(D, T, sources_picture_default_location, INT);
    E_CONFIG_VAL(D, T, sources_picture_set_bg_purge, INT);
+   E_CONFIG_VAL(D, T, sources_picture_show_devian_pics, INT);
 #endif
 #ifdef HAVE_RSS
    E_CONFIG_VAL(D, T, sources_rss_timer_s, INT);

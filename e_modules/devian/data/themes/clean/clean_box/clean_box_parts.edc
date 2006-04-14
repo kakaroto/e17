@@ -325,7 +325,7 @@ part
 		color3: 255 255 255 255;
 		text
 		{
-			text: "dEvian's Title";
+			text: "???";
 			font: "Vera";
 			size: 14;
 		}	

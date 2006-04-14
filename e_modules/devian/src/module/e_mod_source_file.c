@@ -13,7 +13,17 @@ int DEVIANF(source_file_add) (DEVIANN *devian)
 {
    Source_File *source;
 
-   return 0; /* SOURCE_FILE IS NOT STABLE YET */
+   /* SOURCE_FILE IS NOT STABLE YET */
+   {
+      char buf[4096];
+      
+      snprintf(buf, sizeof(buf),
+	       _("<hilight>dEvian's Log feature isn't stable yet !</hilight><br><br>"
+		 "This feature is disabled for the moment"));
+      e_module_dialog_show(_(MODULE_NAME " Module error"), buf);
+      return 0;
+   }
+   /* SOURCE_FILE IS NOT STABLE YET */
 
    DSOURCE(("Source file creation START"));
 
