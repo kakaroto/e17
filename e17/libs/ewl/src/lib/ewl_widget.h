@@ -167,7 +167,7 @@ void            ewl_widget_data_set(Ewl_Widget * w, void *k, void *v);
 void           *ewl_widget_data_del(Ewl_Widget * w, void *k);
 void           *ewl_widget_data_get(Ewl_Widget * w, void *k);
 
-void            ewl_widget_state_set(Ewl_Widget * w, char *state);
+void            ewl_widget_state_set(Ewl_Widget * w, const char *state);
 
 void            ewl_widget_appearance_set(Ewl_Widget * w, char *appearance);
 char           *ewl_widget_appearance_get(Ewl_Widget * w);

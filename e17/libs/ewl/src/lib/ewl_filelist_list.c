@@ -82,7 +82,9 @@ ewl_filelist_list_init(Ewl_Filelist_List *fl)
 	list->dir_change = ewl_filelist_list_dir_change;
 	list->filter_change = ewl_filelist_list_dir_change;
 	list->show_dot_change = ewl_filelist_list_dir_change;
-	list->selected_files_change = ewl_filelist_list_selected_files_change;
+	list->selected_file_add = ewl_filelist_list_selected_file_add;
+	list->file_name_get = ewl_filelist_list_filename_get;
+	list->selected_unselect = ewl_filelist_list_selected_unselect;
 
 	fl->tree = ewl_tree_new(6);
 	ewl_tree_headers_set(EWL_TREE(fl->tree), headers);
@@ -118,10 +120,50 @@ ewl_filelist_list_dir_change(Ewl_Filelist *fl)
  * @brief Callback when the selected files are changed
  */
 void
-ewl_filelist_list_selected_files_change(Ewl_Filelist *fl)
+ewl_filelist_list_selected_file_add(Ewl_Filelist *fl, const char *file)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fl", fl);
+
+	/* XXX Write me ... */
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param fl: The filelist to work with
+ * @param item: The item to get the name from
+ * @return Returns the filename for the given item
+ * @brief Retrieves the filename for the given item
+ */
+const char *
+ewl_filelist_list_filename_get(Ewl_Filelist *fl, void *item)
+{
+	Ewl_Widget *o;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("fl", fl, NULL);
+	DCHECK_PARAM_PTR_RET("item", item, NULL);
+	DCHECK_TYPE_RET("fl", fl, EWL_FILELIST_TYPE, NULL);
+
+	o = ewl_tree_row_column_get(EWL_ROW(item), 0);
+
+	DRETURN_PTR(ewl_label_text_get(EWL_LABEL(o)), DLEVEL_STABLE);
+}
+
+/**
+ * @param fl: The filelist to work with
+ * @return Returns no value.
+ * @brief This will set all of the rows back to their unselected state
+ */
+void
+ewl_filelist_list_selected_unselect(Ewl_Filelist *fl)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("fl", fl);
+	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
+
+	ewl_filelist_selected_signal_all(fl, "row,unselect");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -290,24 +332,14 @@ ewl_filelist_list_cb_dir_clicked(Ewl_Widget *w, void *ev, void *data)
 static void
 ewl_filelist_list_cb_icon_clicked(Ewl_Widget *w, void *ev, void *data)
 {
-	Ewl_Widget *o;
-	Ewl_Filelist_List *fl;
-	Ewl_Event_Mouse_Up *event;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("ev", ev);
+	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	o = ewl_tree_row_column_get(EWL_ROW(w), 0);
-	fl = data;
-	event = ev;
-
-	/* only trigger on lmb */
-	if (event->button != 1) 
-		DRETURN(DLEVEL_STABLE);
-
-	/* XXX need to deal with SHIFT modifier and multiselect here 
-	   or push up to ewl_filelist? */
-	ewl_filelist_selected_file_set(EWL_FILELIST(fl),
-				ewl_label_text_get(EWL_LABEL(o)));
+	ewl_filelist_handle_click(EWL_FILELIST(data), w, ev, 
+					"row,select", "row,unselect");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

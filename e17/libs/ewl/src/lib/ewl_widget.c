@@ -677,7 +677,7 @@ ewl_widget_appearance_path_get(Ewl_Widget * w)
  * the state parameter.
  */
 void
-ewl_widget_state_set(Ewl_Widget *w, char *state)
+ewl_widget_state_set(Ewl_Widget *w, const char *state)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);

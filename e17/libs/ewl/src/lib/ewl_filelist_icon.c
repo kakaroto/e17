@@ -78,7 +78,9 @@ ewl_filelist_icon_init(Ewl_Filelist_Icon *fl)
 	list->dir_change = ewl_filelist_icon_dir_change;
 	list->filter_change = ewl_filelist_icon_dir_change;
 	list->show_dot_change = ewl_filelist_icon_dir_change;
-	list->selected_files_change = ewl_filelist_icon_selected_files_change;
+	list->selected_file_add = ewl_filelist_icon_selected_file_add;
+	list->file_name_get = ewl_filelist_icon_filename_get;
+	list->selected_unselect = ewl_filelist_icon_selected_unselect;
 
 	fl->freebox = ewl_vfreebox_new();
 	ewl_container_child_append(EWL_CONTAINER(fl), fl->freebox);
@@ -113,10 +115,50 @@ ewl_filelist_icon_dir_change(Ewl_Filelist *fl)
  * @brief The callback to notify of selected files changing
  */
 void
-ewl_filelist_icon_selected_files_change(Ewl_Filelist *fl)
+ewl_filelist_icon_selected_file_add(Ewl_Filelist *fl, const char *file)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fl", fl);
+	DCHECK_PARAM_PTR("file", file);
+	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/** 
+ * @param fl: The filelist to work with
+ * @param item: The item to get the name from
+ * @return Returns the filename for the given item
+ * @brief Retrieves the filename for the given item
+ */
+const char *
+ewl_filelist_icon_filename_get(Ewl_Filelist *fl, void *item)
+{
+	Ewl_Icon *icon;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("fl", fl, NULL);
+	DCHECK_PARAM_PTR_RET("item", item, NULL);
+	DCHECK_TYPE_RET("fl", fl, EWL_FILELIST_TYPE, NULL);
+
+	icon = EWL_ICON(item);
+
+	DRETURN_PTR(ewl_icon_label_get(icon), DLEVEL_STABLE);
+}
+
+/**
+ * @param fl: The filelist to work with
+ * @return Returns no value.
+ * @brief This will set all of the icons back to their unselected state
+ */
+void
+ewl_filelist_icon_selected_unselect(Ewl_Filelist *fl)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("fl", fl);
+	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
+
+	ewl_filelist_selected_signal_all(fl, "icon,unselect");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -152,23 +194,14 @@ ewl_filelist_icon_cb_dir_clicked(Ewl_Widget *w, void *ev, void *data)
 static void
 ewl_filelist_icon_cb_icon_clicked(Ewl_Widget *w, void *ev, void *data)
 {
-	Ewl_Filelist_Icon *fl;
-	Ewl_Icon *icon;
-	Ewl_Event_Mouse_Up *event;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("ev", ev);
+	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	icon = EWL_ICON(w);
-	fl = data;
-	event = ev;
-
-	/* only trigger on lmb */
-	if (event->button != 1) 
-		DRETURN(DLEVEL_STABLE);
-
-	/* XXX need to deal with SHIFT modifier and multiselect here */
-	ewl_filelist_selected_file_set(EWL_FILELIST(fl),
-					ewl_icon_label_get(icon));
+	ewl_filelist_handle_click(EWL_FILELIST(data), w, ev, 
+					"icon,select", "icon,unselect");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

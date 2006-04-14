@@ -40,7 +40,11 @@ Ewl_Widget	*ewl_filelist_icon_new(void);
 int		 ewl_filelist_icon_init(Ewl_Filelist_Icon *fl);
 
 void		 ewl_filelist_icon_dir_change(Ewl_Filelist *fl);
-void 		 ewl_filelist_icon_selected_files_change(Ewl_Filelist *fl);
+void 		 ewl_filelist_icon_selected_file_add(Ewl_Filelist *fl, 
+							const char *file);
+const char 	*ewl_filelist_icon_filename_get(Ewl_Filelist *fl, 
+							void *item);
+void		 ewl_filelist_icon_selected_unselect(Ewl_Filelist *fl);
 
 /**
  * @}

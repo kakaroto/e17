@@ -39,6 +39,9 @@ struct Ewl_Filelist
 	unsigned char multiselect:1;	/**< Allow multiple file selctions */
 	unsigned char show_dot_files:1;	/**< Show . files */
 
+	Ewl_Widget *last_selected; /**< The last selected icon */
+	Ewl_Widget *base_selected; /**< First select in SHIFT select */
+
 	void (*dir_change)(Ewl_Filelist *fl);	/**< Callback to notify of
 							directory change */
 	void (*filter_change)(Ewl_Filelist *fl);	/**< Callback to notify
@@ -49,10 +52,16 @@ struct Ewl_Filelist
 	void (*show_dot_change)(Ewl_Filelist *fl);	/**< Callback to notify
 							of show dot file 
 							setting change */
-	void (*selected_files_change)(Ewl_Filelist *fl); /**< Callback to 
+	void (*selected_unselect)(Ewl_Filelist *fl); /**< Callback to
+							unselect all files */
+	void (*selected_file_add)(Ewl_Filelist *fl, const char *file); /**< 
+							Callback to 
 							notify of a change
 							to the selected
 							files */
+	const char *(*file_name_get)(Ewl_Filelist *fl, void *file); /**< 
+							Callback to get the 
+							selected filename */
 };
 
 int		 ewl_filelist_init(Ewl_Filelist *fl);
@@ -80,12 +89,20 @@ char	 	*ewl_filelist_selected_file_get(Ewl_Filelist *fl);
 void		 ewl_filelist_selected_files_set(Ewl_Filelist *fl,
                                                         Ecore_List *files);
 Ecore_List	*ewl_filelist_selected_files_get(Ewl_Filelist *fl);
+void 		 ewl_filelist_selected_files_change_notify(Ewl_Filelist *fl);
+
+void		 ewl_filelist_selected_signal_all(Ewl_Filelist *fl, 
+						const char *signal);
 
 char 		*ewl_filelist_expand_path(Ewl_Filelist *fl, const char *dir);
 void 		 ewl_filelist_directory_read(Ewl_Filelist *fl, 
 					void (*func)(Ewl_Filelist *fl, 
 							const char *dir, 
 							char *file));
+void 		 ewl_filelist_handle_click(Ewl_Filelist *fl, Ewl_Widget *w,
+						Ewl_Event_Mouse_Up *ev,
+						const char *select_state, 
+						const char *unselect_state);
 
 /*
  * Internally used functions, override at your own risk

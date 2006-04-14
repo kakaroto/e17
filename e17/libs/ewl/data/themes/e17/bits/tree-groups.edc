@@ -57,14 +57,14 @@ group {
     }
 
     programs {
-	program {
-	    name, "visible_show";
-	    signal, "default";
-	    source, "*";
-	    action, STATE_SET "show" 0.0;
-	    transition, LINEAR 0.0;
-	    target, "visible";
-	}
+		program {
+		    name, "visible_show";
+		    signal, "default";
+		    source, "*";
+		    action, STATE_SET "show" 0.0;
+		    transition, LINEAR 0.0;
+		    target, "visible";
+		}
         program {
             name, "collapsed";
             signal, "default";
@@ -73,7 +73,6 @@ group {
             transition, LINEAR 0.0;
             target, "base";
         }
-
         program {
             name, "expanded";
             signal, "checked";
@@ -82,7 +81,6 @@ group {
             transition, LINEAR 0.0;
             target, "base";
         }
-
         program {
             name, "flat";
             signal, "node,default";
