@@ -1,5 +1,5 @@
 Source: xfonts-nexus
-Build-Depends-Indep: xutils (>> 4.0.3), debhelper (>= 4.0.0)
+Build-Depends-Indep: xutils (>> 4.0.3), debhelper (>= 5.0.29)
 Section: x11
 Priority: optional
 Maintainer: Simon Horman <horms@debian.org>
@@ -7,7 +7,7 @@ Standards-Version: 3.6.2
 
 Package: xfonts-nexus
 Architecture: all
-Depends: xbase-clients
+Depends: ${misc:Depends}
 Provides: xfont-nexus
 Replaces: xfont-nexus
 Description: Nexus font for X

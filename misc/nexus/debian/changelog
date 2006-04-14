@@ -1,3 +1,18 @@
+xfonts-nexus (0.0.2-11) unstable; urgency=low
+
+  * Place fonts in /usr/share/fonts/X11 instead of /usr/X11R6/lib/X11/fonts
+    - Modify top-level makefile to allow the font and alias directory
+      to be specified at build-time
+    - Update versioned build-dependancy on debhelper from 4.0.0 to 5.0.29
+    - Depend on the new xfonts-utils package
+      + Call dh_installxfonts
+      + depend on ${misc:Depend}
+    (closes: #362393)
+  * Remove seeminly unneeded dependancy on xbase-clients
+  * Add /etc/X11/fonts/misc/nex6x10.alias to conffiles, as its in /etc
+
+ -- Simon Horman <horms@debian.org>  Fri, 14 Apr 2006 09:53:05 +0900
+
 xfonts-nexus (0.0.2-10) unstable; urgency=low
 
   * Yet another take at getting rid of xfont-nexus:

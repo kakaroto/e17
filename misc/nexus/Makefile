@@ -7,8 +7,8 @@ ALIAS = nex6x10.alias
 BDF = nex6x10.bdf
 PCF = nex6x10.pcf
 
-FONTDIR = /usr/X11R6/lib/X11/fonts/misc
-ALIASDIR = /etc/X11/fonts/misc
+FONTDIR  ?= /usr/X11R6/lib/X11/fonts/misc
+ALIASDIR ?= /etc/X11/fonts/misc
 
 EXTRA_DIST = \
 AUTHORS \
