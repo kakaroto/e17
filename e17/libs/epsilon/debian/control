@@ -8,7 +8,7 @@ Standards-Version: 3.5.7.0
 Package: libepsilon0-dev
 Section: devel
 Architecture: any
-Depends: libepsilon0 (= ${Source-Version}), libc6-dev | libc-dev
+Depends: libepsilon0 (= ${Source-Version})
 Provides: libepsilon-dev
 Conflicts: libepsilon-dev
 Description: Enlightenment thumbnailing library development files

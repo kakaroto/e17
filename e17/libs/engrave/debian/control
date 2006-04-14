@@ -8,7 +8,7 @@ Standards-Version: 3.5.7.0
 Package: libengrave0-dev
 Section: devel
 Architecture: any
-Depends: libc6-dev | libc-dev, libecore0-dev, libevas0-dev, libeet0-dev
+Depends: libecore0-dev, libevas0-dev, libeet0-dev
 Provides: libengrave-dev
 Conflicts: libengrave-dev
 Description: Enlightenment edje EDC parsing library development files

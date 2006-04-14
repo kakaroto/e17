@@ -24,7 +24,7 @@ Section: devel
 Conflicts: libedb-dev, libedba-dev
 Replaces: libedb-dev, libedba-dev
 Provides: libedb-dev, libedba-dev
-Depends: libedb1 (= ${Source-Version}), libc6-dev | libc-dev
+Depends: libedb1 (= ${Source-Version})
 Description: Enlightenment's db convenience wrapper library
  Library and header files for developing programs that use
  Enlightenment's db convenience wrapper library.

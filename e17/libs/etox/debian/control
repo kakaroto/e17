@@ -19,7 +19,7 @@ Package: libetox0-dev
 Architecture: any
 Section: devel
 Architecture: any
-Depends: libetox0 (= ${Source-Version}), libc6-dev | libc-dev, libedb1-dev, libevas0-dev, libecore0-dev
+Depends: libetox0 (= ${Source-Version}), libedb1-dev, libevas0-dev, libecore0-dev
 Provides: libetox-dev
 Conflicts: libetox-dev
 Description: libetox0 headers, static libraries and documentation

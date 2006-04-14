@@ -17,7 +17,7 @@ Description: The Esmart Prototype Library
 Package: libesmart0-dev
 Architecture: any
 Section: devel
-Depends: libesmart0 (= ${Source-Version}), libc6-dev | libc-dev, libecore0-dev, libevas0-dev, libepsilon0-dev, libedje0-dev
+Depends: libesmart0 (= ${Source-Version}), libecore0-dev, libevas0-dev, libepsilon0-dev, libedje0-dev
 Provides: libesmart-dev
 Conflicts: libesmart-dev
 Description: Development files for Esmart
