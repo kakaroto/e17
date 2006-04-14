@@ -16,7 +16,7 @@ Description: Evoak library
  its set of objects.
 
 Package: libevoak0-dev
-Section: devel
+Section: libdevel
 Architecture: any
 Depends: libevoak0 (= ${Source-Version})
 Description: Evoak development files

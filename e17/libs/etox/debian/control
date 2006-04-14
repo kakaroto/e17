@@ -17,7 +17,7 @@ Description: Evas-based text layout library
  
 Package: libetox0-dev
 Architecture: any
-Section: devel
+Section: libdevel
 Architecture: any
 Depends: libetox0 (= ${Source-Version}), libedb1-dev, libevas0-dev, libecore0-dev
 Provides: libetox-dev

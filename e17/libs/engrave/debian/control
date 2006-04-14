@@ -6,7 +6,7 @@ Build-Depends: debhelper (>> 3.0.0), byacc, flex, automake1.7 | automaken, libto
 Standards-Version: 3.5.7.0
 
 Package: libengrave0-dev
-Section: devel
+Section: libdevel
 Architecture: any
 Depends: libecore0-dev, libevas0-dev, libeet0-dev
 Provides: libengrave-dev

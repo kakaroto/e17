@@ -16,7 +16,7 @@ Description: The Enlightened Widget Library (EWL)
 
 Package: libewl0-dev
 Architecture: any
-Section: devel
+Section: libdevel
 Depends: libewl0 (= ${Source-Version}), libedb-dev, libevas-dev, libecore-dev, libemotion-dev
 Provides: libewl-dev
 Conflicts: libewl-dev

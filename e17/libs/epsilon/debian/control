@@ -6,7 +6,7 @@ Build-Depends: debhelper (>> 3.0.0), automake1.7 | automaken, libtool, zlib1g-de
 Standards-Version: 3.5.7.0
 
 Package: libepsilon0-dev
-Section: devel
+Section: libdevel
 Architecture: any
 Depends: libepsilon0 (= ${Source-Version})
 Provides: libepsilon-dev

@@ -37,7 +37,7 @@ Description: Powerful image loading and rendering library
  
 Package: libimlib2-dev
 Architecture: any
-Section: devel
+Section: libdevel
 Architecture: any
 Depends: libimlib2 (= ${Source-Version}), libjpeg62-dev, libpng3-dev | libpng2-dev | libpng-dev, libtiff4-dev | libtiff-dev, zlib1g-dev, libttf-dev, libungif4-dev | libungif3g-dev | giflib3g-dev, xlibs-dev, libfreetype6-dev | freetype2-dev, libbz2-dev
 Description: Imlib2 headers, static libraries and documentation

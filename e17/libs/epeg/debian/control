@@ -6,7 +6,7 @@ Build-Depends: debhelper (>> 3.0.0), automake1.7 | automaken, libtool, libjpeg62
 Standards-Version: 3.5.7.0
 
 Package: libepeg0-dev
-Section: devel
+Section: libdevel
 Architecture: any
 Depends: libepeg0 (= ${Source-Version}), libjpeg62-dev
 Provides: libepeg-dev

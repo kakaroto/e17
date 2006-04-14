@@ -20,7 +20,7 @@ Description: Enlightenment's db convenience wrapper library
 
 Package: libedb1-dev
 Architecture: any
-Section: devel
+Section: libdevel
 Conflicts: libedb-dev, libedba-dev
 Replaces: libedb-dev, libedba-dev
 Provides: libedb-dev, libedba-dev
