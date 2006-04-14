@@ -98,7 +98,6 @@ ewl_tree2_data_set(Ewl_Tree2 *tree, void *data)
 	DCHECK_TYPE("tree", tree, EWL_TREE2_TYPE);
 
 	tree->data = data;
-
 	tree->dirty = TRUE;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -148,7 +147,6 @@ ewl_tree2_column_append(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view)
 	ewl_tree2_column_view_set(c, view);
 
 	ecore_list_append(tree->columns, c);
-
 	tree->dirty = TRUE;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -183,7 +181,6 @@ ewl_tree2_column_prepend(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view)
 	ewl_tree2_column_view_set(c, view);
 
 	ecore_list_prepend(tree->columns, c);
-
 	tree->dirty = TRUE;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -221,7 +218,6 @@ ewl_tree2_column_insert(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view,
 
 	ecore_list_goto_index(tree->columns, idx);
 	ecore_list_insert(tree->columns, c);
-
 	tree->dirty = TRUE;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -246,7 +242,6 @@ ewl_tree2_column_remove(Ewl_Tree2 *tree, unsigned int idx)
 	c = ecore_list_remove(tree->columns);
 
 	ewl_tree2_column_destroy(c);
-
 	tree->dirty = TRUE;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
