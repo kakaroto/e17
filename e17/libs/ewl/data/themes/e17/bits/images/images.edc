@@ -1,7 +1,6 @@
 	image, "e17_titlebar.png" COMP;
         image, "e17_border3.png" COMP;
         image, "e17_button_detail_up.png" COMP;
-        image, "e17_ewl.png" COMP;
         image, "e17_mini_button.png" COMP;
         image, "e17_titlebar_glint1.png" COMP;
         image, "e17_titlebar_glint2.png" COMP;
