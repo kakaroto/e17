@@ -1,0 +1,46 @@
+
+group {
+    name, "icon";
+
+    parts {
+        part {
+            name, "overlay";
+            type, RECT;
+
+            description {
+                state, "default" 0.0;
+                rel1 {
+                    relative, 0.0 0.0;
+                    offset, 0 0;
+                }
+                rel2 {
+                    relative, 1.0 1.0;
+                    offset, 0 0;
+                }
+                color, 255 255 255 0;
+            }
+            description {
+                state, "selected" 0.0;
+                inherit, "default" 0.0;
+		color, 250 185 87 128;
+            }
+        }
+    }
+    programs {
+        program {
+            name, "select";
+            signal, "icon,select";
+            source, "*";
+            action, STATE_SET "selected" 0.0;
+            target, "overlay";
+        }
+        program {
+            name, "unselect";
+            signal, "icon,unselect";
+            source, "*";
+            action, STATE_SET "default" 0.0;
+            target, "overlay";
+        }
+    }
+}
+

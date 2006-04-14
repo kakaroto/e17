@@ -13,6 +13,7 @@ collections {
 #include "e17/bits/label-groups.edc"
 #include "e17/bits/button-groups.edc"
 #include "e17/bits/entry-groups.edc"
+#include "e17/bits/icon-groups.edc"
 #include "e17/bits/menu-groups.edc"
 #include "e17/bits/paned-groups.edc"
 #include "e17/bits/progressbar-groups.edc"
@@ -54,6 +55,8 @@ data {
 
     item, "/grabber/vertical/group" "vgrabber";
     item, "/grabber/horizontal/group" "hgrabber";
+
+    item, "/icon/group" "icon";
 
     item, "/text/color/a" "255";
     item, "/text/font" "Vera";
