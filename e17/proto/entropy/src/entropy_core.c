@@ -370,6 +370,22 @@ void entropy_core_mime_action_remove(char* mime_type)
 
 }
 
+void entropy_core_mime_action_remove_app(char* mime_type, Entropy_Config_Mime_Binding_Action* action)
+{
+	Entropy_Config_Mime_Binding* binding;
+	Evas_List* l;
+
+	for (l = core_core->config->Loaded_Config->mime_bindings; l; ) {
+		binding = l->data;
+
+		/*FIXME: This leaks a binding*/
+		if (!strcmp(binding->mime_type, mime_type)) {
+			binding->actions = evas_list_remove(binding->actions, action);
+		}
+		l = l->next;
+	}
+}
+
 void entropy_core_mime_action_add(char* mime_type, char* desc) 
 {
 	Entropy_Config_Mime_Binding* binding;

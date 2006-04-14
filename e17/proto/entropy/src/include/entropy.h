@@ -122,6 +122,7 @@ Entropy_Config_Mime_Binding_Action* entropy_core_mime_hint_get(char* mime_type, 
 void entropy_core_mime_action_add(char* mime_type, char* desc);
 void entropy_core_mime_application_add(char* mime_type, char* name, char* executable, char* args);
 void entropy_core_mime_action_remove(char* mime_type);
+void entropy_core_mime_action_remove_app(char* mime_type, Entropy_Config_Mime_Binding_Action* action);
 
 /*Object Assocation*/
 void entropy_core_object_file_associate(void* object, entropy_generic_file* file);

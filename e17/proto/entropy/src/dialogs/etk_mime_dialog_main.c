@@ -131,7 +131,6 @@ void _entropy_etk_mime_dialog_remove_cb(Etk_Object* w, void* user_data)
 {
 	Etk_Tree_Row* row = etk_tree_selected_row_get(ETK_TREE(_etk_mime_dialog_main_tree));
 	char* mime = NULL;
-	char* program = NULL;
 	Etk_Tree_Col* col1;
 	Etk_Tree_Col* col2;
 
@@ -145,6 +144,28 @@ void _entropy_etk_mime_dialog_remove_cb(Etk_Object* w, void* user_data)
 	
 		entropy_core_mime_action_remove(mime);
 		etk_mime_dialog_tree_populate();
+	}
+}
+
+void _entropy_etk_mime_dialog_remove_app_cb(Etk_Object* w, void* user_data)
+{
+	Etk_Tree_Row* row = etk_tree_selected_row_get(ETK_TREE(_etk_mime_dialog_main_tree));
+	Etk_Tree_Row* app_row = etk_tree_selected_row_get(ETK_TREE(_etk_mime_dialog_sub_tree));
+	char* mime = NULL;
+	Entropy_Config_Mime_Binding_Action* action;
+	Etk_Tree_Col* col1;
+	Etk_Tree_Col* col2;
+
+	if (row && app_row) {
+		col1 = etk_tree_nth_col_get(ETK_TREE(_etk_mime_dialog_main_tree), 0);
+		col2 = etk_tree_nth_col_get(ETK_TREE(_etk_mime_dialog_main_tree), 1);
+
+		action = etk_tree_row_data_get(app_row);
+		etk_tree_row_fields_get(row, col2, &mime, NULL);
+
+		entropy_core_mime_action_remove_app(mime, action);
+
+		etk_mime_dialog_populate_nth_binding_apps((int)etk_tree_row_data_get(row));
 	}
 }
 
@@ -206,6 +227,7 @@ void etk_mime_dialog_populate_nth_binding_apps(int record)
 		  col2,  action->executable,
 		  col3, action->args,
 		  NULL);
+		etk_tree_row_data_set(row, action);
 		
 		l = l->next;
 	}
@@ -518,6 +540,7 @@ void etk_mime_dialog_create()
 
 	button = etk_button_new_with_label("Remove");
 	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
+	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(_entropy_etk_mime_dialog_remove_app_cb), NULL);
 	
 
 	etk_widget_show_all(mime_dialog_window);
