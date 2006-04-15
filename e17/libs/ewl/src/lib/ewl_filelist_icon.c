@@ -81,6 +81,7 @@ ewl_filelist_icon_init(Ewl_Filelist_Icon *fl)
 	list->selected_file_add = ewl_filelist_icon_selected_file_add;
 	list->file_name_get = ewl_filelist_icon_filename_get;
 	list->selected_unselect = ewl_filelist_icon_selected_unselect;
+	list->shift_handle = ewl_filelist_icon_shift_handle;
 
 	fl->freebox = ewl_vfreebox_new();
 	ewl_container_child_append(EWL_CONTAINER(fl), fl->freebox);
@@ -159,6 +160,31 @@ ewl_filelist_icon_selected_unselect(Ewl_Filelist *fl)
 	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
 
 	ewl_filelist_selected_signal_all(fl, "icon,unselect");
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param fl: The filelist to deal with
+ * @param clicked: The currently clicked item
+ * @return Returns no value
+ * @brief Select the appropriate widgets to deal with a shift click
+ */
+void
+ewl_filelist_icon_shift_handle(Ewl_Filelist *fl, Ewl_Widget *clicked)
+{
+	Ewl_Filelist_Icon *list;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("fl", fl);
+	DCHECK_PARAM_PTR("clicked", clicked);
+	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
+	DCHECK_TYPE("clicked", clicked, EWL_WIDGET_TYPE);
+
+	list = EWL_FILELIST_ICON(fl);
+	ewl_filelist_container_shift_handle(fl,
+			EWL_CONTAINER(list->freebox), clicked,
+			"icon,select", "icon,unselect");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

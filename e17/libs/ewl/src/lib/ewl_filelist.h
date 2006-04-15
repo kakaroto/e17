@@ -39,8 +39,11 @@ struct Ewl_Filelist
 	unsigned char multiselect:1;	/**< Allow multiple file selctions */
 	unsigned char show_dot_files:1;	/**< Show . files */
 
-	Ewl_Widget *last_selected; /**< The last selected icon */
-	Ewl_Widget *base_selected; /**< First select in SHIFT select */
+	struct
+	{
+		Ewl_Widget *base; /**< First select in SHIFT select */
+		Ewl_Widget *last; /**< Last selected in SHIFT select */
+	} select;		 /**< Data used in SHIFT select */
 
 	void (*dir_change)(Ewl_Filelist *fl);	/**< Callback to notify of
 							directory change */
@@ -62,6 +65,9 @@ struct Ewl_Filelist
 	const char *(*file_name_get)(Ewl_Filelist *fl, void *file); /**< 
 							Callback to get the 
 							selected filename */
+	void (*shift_handle)(Ewl_Filelist *fl, Ewl_Widget *clicked); /**<
+							Callback to handle
+							SHIFT clicks */
 };
 
 int		 ewl_filelist_init(Ewl_Filelist *fl);
@@ -103,6 +109,10 @@ void 		 ewl_filelist_handle_click(Ewl_Filelist *fl, Ewl_Widget *w,
 						Ewl_Event_Mouse_Up *ev,
 						const char *select_state, 
 						const char *unselect_state);
+void 		 ewl_filelist_container_shift_handle(Ewl_Filelist *fl, 
+					Ewl_Container *c, Ewl_Widget *clicked,
+					const char *select_signal, 
+					const char *unselect_signal);
 
 /*
  * Internally used functions, override at your own risk

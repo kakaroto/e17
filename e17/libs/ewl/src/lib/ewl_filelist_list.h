@@ -45,6 +45,8 @@ void 		 ewl_filelist_list_selected_file_add(Ewl_Filelist *fl,
 const char 	*ewl_filelist_list_filename_get(Ewl_Filelist *fl, 
 							void *item);
 void		 ewl_filelist_list_selected_unselect(Ewl_Filelist *fl);
+void		 ewl_filelist_list_shift_handle(Ewl_Filelist *fl, 
+						Ewl_Widget *clicked);
 
 /**
  * @}

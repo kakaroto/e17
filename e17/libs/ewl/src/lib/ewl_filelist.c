@@ -3,6 +3,11 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
+static void ewl_filelist_signal_between(Ewl_Filelist *fl, Ewl_Container *c,
+						int add, const char *signal, 
+						int a_idx, Ewl_Widget *a, 
+						int b_idx, Ewl_Widget *b);
+
 /**
  * @param fl: The filelist to initialize
  * @return Returns TRUE on success or FALSE on failure
@@ -463,7 +468,6 @@ ewl_filelist_handle_click(Ewl_Filelist *fl, Ewl_Widget *w,
 				const char *select_state, 
 				const char *unselect_state)
 {
-	Ewl_Widget *last;
 	int multi = FALSE;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -482,10 +486,6 @@ ewl_filelist_handle_click(Ewl_Filelist *fl, Ewl_Widget *w,
 			|| (ev->modifiers & EWL_KEY_MODIFIER_CTRL))
 		multi = TRUE;
 
-	/* store and update the last selected widget */
-	last = fl->last_selected;
-	fl->last_selected = w;
-
 	/* we are not in multiselect mode, or the multiselect keys aren't
 	 * pressed */
 	if (!ewl_filelist_multiselect_get(fl) || (!multi))
@@ -499,6 +499,9 @@ ewl_filelist_handle_click(Ewl_Filelist *fl, Ewl_Widget *w,
 		ecore_list_append(fl->selected, w);
 		ewl_filelist_selected_files_change_notify(fl);
 
+		fl->select.base = w;
+		fl->select.last = NULL;
+
 		DRETURN(DLEVEL_STABLE);
 	}
 
@@ -507,26 +510,189 @@ ewl_filelist_handle_click(Ewl_Filelist *fl, Ewl_Widget *w,
 
 	if (ev->modifiers & EWL_KEY_MODIFIER_SHIFT)
 	{
-		/* XXX Write me .. */
+		/* we have no base selected so this is the first click with
+		 * the shift. set base and set the clicked as selected */
+		if (!fl->select.base)
+		{
+			fl->select.base = w;
+			fl->select.last = NULL;
+
+			if (fl->selected_unselect) fl->selected_unselect(fl);
+			ecore_list_clear(fl->selected);
+		}
+		else
+		{
+			if (fl->shift_handle) fl->shift_handle(fl, w);
+			fl->select.last = w;
+		}
+
+		if (select_state) ewl_widget_state_set(w, select_state);
+		ecore_list_append(fl->selected, w);
+
+		ewl_filelist_selected_files_change_notify(fl);
 	}
 	else
 	{
 		void *item;
+
+		fl->select.base = w;
+		fl->select.last = NULL;
 
 		item = ecore_list_goto(fl->selected, w);
 		if (item)
 		{
 			if (unselect_state)
 				ewl_widget_state_set(w, unselect_state);
-
 			ecore_list_remove(fl->selected);
 		}
 		else
 		{
 			if (select_state)
 				ewl_widget_state_set(w, select_state);
-
 			ecore_list_append(fl->selected, w);
+		}
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param fl: The filelist to work with
+ * @param c: The container to select/unselect from
+ * @param clicked: The clicked widget
+ * @param select_signal: The signal to send on select
+ * @param unselect_signal: The signal to send on unselect
+ * @return Returns no value
+ * @brief Handles the select/deselect of widgets in the given container @a c
+ */
+void
+ewl_filelist_container_shift_handle(Ewl_Filelist *fl, 
+			Ewl_Container *c, Ewl_Widget *clicked,
+			const char *select_signal, 
+			const char *unselect_signal)
+{
+	int base_idx, last_idx = -1, cur_idx;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("fl", fl);
+	DCHECK_PARAM_PTR("c", c);
+	DCHECK_PARAM_PTR("clicked", clicked);
+	DCHECK_PARAM_PTR("select_signal", select_signal);
+	DCHECK_PARAM_PTR("unselect_signal", unselect_signal);
+	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("clicked", clicked, EWL_WIDGET_TYPE);
+
+	ecore_list_goto(c->children, fl->select.base);
+	base_idx = ecore_list_index(c->children);
+
+	ecore_list_goto(c->children, clicked);
+	cur_idx = ecore_list_index(c->children);
+
+	if (fl->select.last)
+	{
+		ecore_list_goto(c->children, fl->select.last);
+		last_idx = ecore_list_index(c->children);
+	}
+
+	if (last_idx < 0)
+	{
+		ewl_filelist_signal_between(fl, c, TRUE, select_signal, base_idx,
+					fl->select.base, cur_idx, clicked);
+	}
+	else
+	{
+		/* user selected more, just tag on whats between the last
+		 * click and the current click */
+		if (((cur_idx < last_idx) && (last_idx < base_idx))
+				|| ((base_idx < last_idx) 
+					&& (last_idx < cur_idx)))
+		{
+			ewl_filelist_signal_between(fl, c, TRUE, select_signal, 
+						last_idx, fl->select.last, 
+						cur_idx, clicked);
+		}
+		else
+		{
+			/* unselect stuff between last and our current index */
+			ewl_filelist_signal_between(fl, c, FALSE,
+					unselect_signal, last_idx,
+					fl->select.last, cur_idx, clicked);
+
+			/* make sure the last selected is removed */
+			ewl_widget_state_set(fl->select.last, unselect_signal);
+			ecore_list_goto(fl->selected, fl->select.last);
+			ecore_list_remove(fl->selected);
+
+			/* if we moved over the base point we need to
+			 * reseelct some stuff */
+			if (!((last_idx < base_idx) && (cur_idx < base_idx))
+					&& !((last_idx > base_idx) 
+						&& (cur_idx > base_idx)))
+			{
+				ewl_filelist_signal_between(fl, c, TRUE,
+						select_signal, base_idx,
+						fl->select.base, cur_idx, 
+						clicked);
+			}
+		}
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_filelist_signal_between(Ewl_Filelist *fl, Ewl_Container *c, int add, 
+						const char *signal, 
+						int a_idx, Ewl_Widget *a, 
+						int b_idx, Ewl_Widget *b)
+{
+	Ewl_Widget *start, *end, *cur;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("fl", fl);
+	DCHECK_PARAM_PTR("c", c);
+	DCHECK_PARAM_PTR("signal", signal);
+	DCHECK_PARAM_PTR("a", a);
+	DCHECK_PARAM_PTR("b", b);
+	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("a", a, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("b", b, EWL_WIDGET_TYPE);
+
+	if (a_idx < b_idx)
+	{
+		start = a;
+		end = b;
+	}
+	else
+	{
+		start = b;
+		end = a;
+	}
+
+	/* select all the widgets between the base and clicked
+	 * point, excluding the start/end points */
+	ecore_list_goto(c->children, start);
+	ecore_list_next(c->children);
+	while ((cur = ecore_list_next(c->children)))
+	{
+		if (cur == end) break;
+
+		if (add)
+		{
+			ewl_widget_state_set(cur, signal);
+			ecore_list_append(fl->selected, cur);
+		}
+		else
+		{
+			/* don't remove the base selected widget */
+			if (cur != fl->select.base)
+			{
+				ecore_list_goto(fl->selected, cur);
+				ecore_list_remove(fl->selected);
+				ewl_widget_state_set(cur, signal);
+			}
 		}
 	}
 
@@ -555,6 +721,7 @@ ewl_filelist_cb_destroy(Ewl_Widget *w, void *ev, void *data)
 	fl->selected_file_add = NULL;
 	fl->file_name_get = NULL;
 	fl->selected_unselect = NULL;
+	fl->shift_handle = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
