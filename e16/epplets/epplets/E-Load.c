@@ -8,14 +8,14 @@
 #include "proc.h"
 #endif
 
-int cpus = 0;
-double *prev_val = NULL;
+int                 cpus = 0;
+double             *prev_val = NULL;
 int                *load_val = NULL;
-Epplet_gadget      *load     = NULL;
+Epplet_gadget      *load = NULL;
 
-static void cb_timer(void *data);
-static void cb_close(void *data);
-int count_cpus(void);
+static void         cb_timer(void *data);
+static void         cb_close(void *data);
+int                 count_cpus(void);
 
 static void
 cb_timer(void *data)
@@ -24,37 +24,38 @@ cb_timer(void *data)
 
 /* libgtop only handles total load, not per-CPU load */
 
-    glibtop_loadavg loadavg;
-    double val, val2;
-    int i;
-    glibtop_get_loadavg (&loadavg);
-    val2=loadavg.loadavg[0];
-    val2 *= 20;
+   glibtop_loadavg     loadavg;
+   double              val, val2;
+   int                 i;
+
+   glibtop_get_loadavg(&loadavg);
+   val2 = loadavg.loadavg[0];
+   val2 *= 20;
 
    /* printf ("Load: %f\n", val2); */
 
-    if (val2 > 100)
+   if (val2 > 100)
       val2 = 100;
-    load_val[0] = val2;
-    Epplet_gadget_data_changed(load[0]);
+   load_val[0] = val2;
+   Epplet_gadget_data_changed(load[0]);
 
 #else
 
-   static FILE *f;
-   int i;
+   static FILE        *f;
+   int                 i;
 
    f = fopen("/proc/stat", "r");
    if (f)
      {
-	char s[256];
-	
+	char                s[256];
+
 	if (cpus > 1)
 	   fgets(s, 255, f);
 	for (i = 0; i < cpus; i++)
 	  {
-	     char ss[64];
-	     double val, val2;
-	     
+	     char                ss[64];
+	     double              val, val2;
+
 	     fgets(s, 255, f);
 	     sscanf(s, "%*s %s %*s %*s %*s", ss);
 	     val = atof(ss);
@@ -72,7 +73,7 @@ cb_timer(void *data)
 #endif
 
    Esync();
-   Epplet_timer(cb_timer, NULL, 0.333, "TIMER");   
+   Epplet_timer(cb_timer, NULL, 0.333, "TIMER");
    data = NULL;
 }
 
@@ -85,35 +86,35 @@ cb_close(void *data)
    exit(0);
 }
 
-
 int
 count_cpus(void)
 {
 #ifdef HAVE_LIBGTOP
-  int i,c = 0;
-  int bits;
-  glibtop_cpu cpu;
+   int                 i, c = 0;
+   int                 bits;
+   glibtop_cpu         cpu;
 
-    glibtop_get_cpu (&cpu);
-    bits= (int)cpu.xcpu_flags;
-    for (i=0; i<GLIBTOP_NCPU; i++) {
-      c += bits&1;
-      /*      printf ("%d: %o - %d\n",i,bits,c ); */
-      bits>>=1;
-    }
-    /* printf ("CPUs: %d\n", c); */
- 
-  return c;
+   glibtop_get_cpu(&cpu);
+   bits = (int)cpu.xcpu_flags;
+   for (i = 0; i < GLIBTOP_NCPU; i++)
+     {
+	c += bits & 1;
+	/*      printf ("%d: %o - %d\n",i,bits,c ); */
+	bits >>= 1;
+     }
+   /* printf ("CPUs: %d\n", c); */
+
+   return c;
 #else
-   FILE *f;
-   char s[256];
-   
+   FILE               *f;
+   char                s[256];
+
    f = fopen("/proc/stat", "r");
    if (f)
      {
-	int count = 0;
-	char ok = 1;
-	
+	int                 count = 0;
+	char                ok = 1;
+
 	while (ok)
 	  {
 	     if (!fgets(s, 255, f))
@@ -122,13 +123,13 @@ count_cpus(void)
 	       {
 		  if (strncmp(s, "cpu", 3))
 		     ok = 0;
-		  else		  
+		  else
 		     count++;
 	       }
 	  }
 	if (count > 1)
 	   count--;
-	fclose (f);
+	fclose(f);
 	return count;
      }
    exit(1);
@@ -138,14 +139,14 @@ count_cpus(void)
 int
 main(int argc, char **argv)
 {
-   int i;
-   
+   int                 i;
+
    atexit(Epplet_cleanup);
    cpus = count_cpus();
    load_val = malloc(sizeof(int) * cpus);
    prev_val = malloc(sizeof(double) * cpus);
-   load     = malloc(sizeof(Epplet_gadget) * cpus);
-   
+   load = malloc(sizeof(Epplet_gadget) * cpus);
+
    Epplet_Init("E-Load", "0.1", "Enlightenment Load Epplet",
 	       5, cpus, argc, argv, 0);
    Epplet_timer(cb_timer, NULL, 0.333, "TIMER");
@@ -154,7 +155,7 @@ main(int argc, char **argv)
 					   cb_close, NULL));
    for (i = 0; i < cpus; i++)
      {
-	load[i] = Epplet_create_hbar(16, 3 + (i * 16), 62, 12, 
+	load[i] = Epplet_create_hbar(16, 3 + (i * 16), 62, 12,
 				     0, &(load_val[i]));
 	Epplet_gadget_show(load[i]);
      }

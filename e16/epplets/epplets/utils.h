@@ -1,2 +1,2 @@
-char *_Strdup (char *s);
-char *_Strjoin (const char *separator, ...);
+char               *_Strdup(char *s);
+char               *_Strjoin(const char *separator, ...);

@@ -21,7 +21,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-static const char cvs_ident[] = "$Id$";
+static const char   cvs_ident[] =
+   "$Id$";
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -55,43 +56,48 @@ static const char cvs_ident[] = "$Id$";
 void
 get_load_average(double *one, double *five, double *fifteen)
 {
-  kstat_ctl_t *kc;
-  kstat_t *ks;
-  kstat_named_t *d1, *d5, *d15;
+   kstat_ctl_t        *kc;
+   kstat_t            *ks;
+   kstat_named_t      *d1, *d5, *d15;
 
-  if ((kc = kstat_open()) == NULL) {
-    SET_AND_RETURN(0, 0, 0);
-  }
-  if ((ks = kstat_lookup(kc, "unix", 0, "system_misc")) == NULL) {
-    SET_AND_RETURN(0, 0, 0);
-  }
-  if ((kstat_read(kc, ks, NULL)) < 0) {
-    SET_AND_RETURN(0, 0, 0);
-  }
+   if ((kc = kstat_open()) == NULL)
+     {
+	SET_AND_RETURN(0, 0, 0);
+     }
+   if ((ks = kstat_lookup(kc, "unix", 0, "system_misc")) == NULL)
+     {
+	SET_AND_RETURN(0, 0, 0);
+     }
+   if ((kstat_read(kc, ks, NULL)) < 0)
+     {
+	SET_AND_RETURN(0, 0, 0);
+     }
 
-  d1 = kstat_data_lookup(ks, "avenrun_1min");
-  d5 = kstat_data_lookup(ks, "avenrun_5min");
-  d15 = kstat_data_lookup(ks, "avenrun_15min");
-  kstat_close(kc);
+   d1 = kstat_data_lookup(ks, "avenrun_1min");
+   d5 = kstat_data_lookup(ks, "avenrun_5min");
+   d15 = kstat_data_lookup(ks, "avenrun_15min");
+   kstat_close(kc);
 
-  SET_AND_RETURN(d1->value.ul / FSCALE, d5->value.ul / FSCALE, d15->value.ul / FSCALE);
+   SET_AND_RETURN(d1->value.ul / FSCALE, d5->value.ul / FSCALE,
+		  d15->value.ul / FSCALE);
 }
 
 #elif defined(linux)
 void
 get_load_average(double *one, double *five, double *fifteen)
 {
-  FILE *fp;
-  char buff[64];
-  double a, b, c;
+   FILE               *fp;
+   char                buff[64];
+   double              a, b, c;
 
-  if ((fp = fopen("/proc/loadavg", "rt")) == NULL) {
-    SET_AND_RETURN(0, 0, 0);
-  }
-  fgets(buff, sizeof(buff), fp);
-  fclose(fp);
-  sscanf(buff, "%lf %lf %lf", &a, &b, &c);
-  SET_AND_RETURN(a, b, c);
+   if ((fp = fopen("/proc/loadavg", "rt")) == NULL)
+     {
+	SET_AND_RETURN(0, 0, 0);
+     }
+   fgets(buff, sizeof(buff), fp);
+   fclose(fp);
+   sscanf(buff, "%lf %lf %lf", &a, &b, &c);
+   SET_AND_RETURN(a, b, c);
 }
 
 #else
@@ -99,18 +105,19 @@ get_load_average(double *one, double *five, double *fifteen)
 void
 get_load_average(double *one, double *five, double *fifteen)
 {
-  FILE *pp;
-  char buff[128], *p;
-  double a, b, c;
+   FILE               *pp;
+   char                buff[128], *p;
+   double              a, b, c;
 
-  if ((pp = popen("uptime", "r")) == NULL) {
-    SET_AND_RETURN(0, 0, 0);
-  }
-  fgets(buff, sizeof(buff), pp);
-  pclose(pp);
-  p = strrchr(buff, ':');
-  sscanf(p, "%lf, %lf, %lf", &a, &b, &c);
-  SET_AND_RETURN(a, b, c);
+   if ((pp = popen("uptime", "r")) == NULL)
+     {
+	SET_AND_RETURN(0, 0, 0);
+     }
+   fgets(buff, sizeof(buff), pp);
+   pclose(pp);
+   p = strrchr(buff, ':');
+   sscanf(p, "%lf, %lf, %lf", &a, &b, &c);
+   SET_AND_RETURN(a, b, c);
 }
 
 #endif

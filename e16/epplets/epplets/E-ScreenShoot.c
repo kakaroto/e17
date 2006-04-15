@@ -29,89 +29,90 @@
 
 #include "E-ScreenShoot_ftp.h"
 
-Epplet_gadget btn_shoot, btn_conf, btn_close, btn_help, btn_ctimer;
-Epplet_gadget tog_win, btn_col, btn_stimer;
-Epplet_gadget sldr_qual;
-Epplet_gadget p, col_p, ctimer_p, stimer_p, grabber_p;
-Window win;
-RGB_buf buf;
-Epplet_gadget da;
-int cloaked = 0;
-extern int load_val;
-extern int colors[];
-static void cb_in (void *data, Window w);
-int invquality = 0;
+Epplet_gadget       btn_shoot, btn_conf, btn_close, btn_help, btn_ctimer;
+Epplet_gadget       tog_win, btn_col, btn_stimer;
+Epplet_gadget       sldr_qual;
+Epplet_gadget       p, col_p, ctimer_p, stimer_p, grabber_p;
+Window              win;
+RGB_buf             buf;
+Epplet_gadget       da;
+int                 cloaked = 0;
+extern int          load_val;
+extern int          colors[];
+static void         cb_in(void *data, Window w);
+int                 invquality = 0;
 
-int cloak_anims[] = {
-  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,25
+int                 cloak_anims[] = {
+   0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
+   22, 23, 24, 25
 };
-int cloak_delays[] = {
-  1, 2, 3, 4, 5, 10, 15, 20, 30, 60, 120
+int                 cloak_delays[] = {
+   1, 2, 3, 4, 5, 10, 15, 20, 30, 60, 120
 };
-int shot_delays[] = {
-  0, 1, 2, 3, 4, 5, 10, 15, 20, 30, 60, 120
+int                 shot_delays[] = {
+   0, 1, 2, 3, 4, 5, 10, 15, 20, 30, 60, 120
 };
-int rand_delays[] = {
-  0, 30, 60, 90, 120, 180, 240, 300, 600, 900, 1200
+int                 rand_delays[] = {
+   0, 30, 60, 90, 120, 180, 240, 300, 600, 900, 1200
 };
 
 struct
 {
-  int quality;
-  int win;
-  int beep;
-  int cloak_anim;
-  int frame;
-  int do_cloak;
-  int rand_cloak;
-  int run_script;
-  int view_shot;
-  int do_ftp;
-  int ftp_passive;
-  double delay;
-  double cloak_delay;
-  double rand_delay;
-  double draw_interval;
-  char *dir;
-  char *file_prefix;
-  char *file_stamp;
-  char *file_type;
-  char *script;
-  char *viewer;
-  char *ftp_host;
-  char *ftp_user;
-  char *ftp_pass;
-  char *ftp_file;
-  char *ftp_temp;
-  char *ftp_dir;
-  char *grabber;
+   int                 quality;
+   int                 win;
+   int                 beep;
+   int                 cloak_anim;
+   int                 frame;
+   int                 do_cloak;
+   int                 rand_cloak;
+   int                 run_script;
+   int                 view_shot;
+   int                 do_ftp;
+   int                 ftp_passive;
+   double              delay;
+   double              cloak_delay;
+   double              rand_delay;
+   double              draw_interval;
+   char               *dir;
+   char               *file_prefix;
+   char               *file_stamp;
+   char               *file_type;
+   char               *script;
+   char               *viewer;
+   char               *ftp_host;
+   char               *ftp_user;
+   char               *ftp_pass;
+   char               *ftp_file;
+   char               *ftp_temp;
+   char               *ftp_dir;
+   char               *grabber;
 }
 opt;
 
-Window confwin = 0;
-Epplet_gadget txt_file_prefix;
-Epplet_gadget txt_file_stamp;
-Epplet_gadget txt_file_type;
-Epplet_gadget txt_viewer;
-Epplet_gadget txt_script;
-Epplet_gadget txt_dir;
+Window              confwin = 0;
+Epplet_gadget       txt_file_prefix;
+Epplet_gadget       txt_file_stamp;
+Epplet_gadget       txt_file_type;
+Epplet_gadget       txt_viewer;
+Epplet_gadget       txt_script;
+Epplet_gadget       txt_dir;
 
-Epplet_gadget txt_ftp_host;
-Epplet_gadget txt_ftp_user;
-Epplet_gadget txt_ftp_pass;
-Epplet_gadget txt_ftp_dir;
-Epplet_gadget txt_ftp_file;
-Epplet_gadget txt_ftp_temp;
+Epplet_gadget       txt_ftp_host;
+Epplet_gadget       txt_ftp_user;
+Epplet_gadget       txt_ftp_pass;
+Epplet_gadget       txt_ftp_dir;
+Epplet_gadget       txt_ftp_file;
+Epplet_gadget       txt_ftp_temp;
 
 static void
 choose_random_cloak(void *data)
 {
-   static int last_anim = 0;
+   static int          last_anim = 0;
 
    do
-   {
-      opt.cloak_anim = (int) (16 * ((float) rand()) / (RAND_MAX + 1.0)) + 1;
-   }
+     {
+	opt.cloak_anim = (int)(16 * ((float)rand()) / (RAND_MAX + 1.0)) + 1;
+     }
    while (opt.cloak_anim == last_anim);	/* Don't pick the same one twice in a row. */
    last_anim = opt.cloak_anim;
    Epplet_timer(choose_random_cloak, NULL, opt.rand_delay, "RAND_TIMER");
@@ -122,7 +123,7 @@ choose_random_cloak(void *data)
 static void
 save_config(void)
 {
-   char buf[10];
+   char                buf[10];
 
    Esnprintf(buf, sizeof(buf), "%d", opt.quality);
    Epplet_modify_config("QUALITY", buf);
@@ -139,13 +140,13 @@ save_config(void)
    Esnprintf(buf, sizeof(buf), "%d", opt.do_cloak);
    Epplet_modify_config("DO_CLOAK", buf);
    if (opt.rand_cloak)
-   {
-      strcpy(buf, "25");
-   }
+     {
+	strcpy(buf, "25");
+     }
    else
-   {
-      Esnprintf(buf, sizeof(buf), "%d", opt.cloak_anim);
-   }
+     {
+	Esnprintf(buf, sizeof(buf), "%d", opt.cloak_anim);
+     }
    Epplet_modify_config("CLOAK_ANIM", buf);
    Esnprintf(buf, sizeof(buf), "%d", opt.frame);
    Epplet_modify_config("WM_FRAME", buf);
@@ -189,14 +190,14 @@ load_config(void)
    opt.beep = atoi(Epplet_query_config_def("BEEP", "1"));
    opt.cloak_anim = atoi(Epplet_query_config_def("CLOAK_ANIM", "8"));
    if (opt.cloak_anim == 25)
-   {
-      opt.rand_cloak = 1;
-      choose_random_cloak(NULL);
-   }
+     {
+	opt.rand_cloak = 1;
+	choose_random_cloak(NULL);
+     }
    else
-   {
-      opt.rand_cloak = 0;
-   }
+     {
+	opt.rand_cloak = 0;
+     }
    opt.delay = atof(Epplet_query_config_def("SHOT_DELAY", "0"));
    opt.cloak_delay = atof(Epplet_query_config_def("CLOAK_DELAY", "4"));
    opt.rand_delay = atof(Epplet_query_config_def("RAND_DELAY", "60"));
@@ -210,8 +211,7 @@ load_config(void)
    if (opt.file_stamp)
       free(opt.file_stamp);
    opt.file_stamp =
-      _Strdup(Epplet_query_config_def
-              ("FILE_STAMP", "`date +%d-%m-%y_%H%M%S`"));
+      _Strdup(Epplet_query_config_def("FILE_STAMP", "`date +%d-%m-%y_%H%M%S`"));
    if (opt.file_type)
       free(opt.file_type);
    opt.file_type = _Strdup(Epplet_query_config_def("FILE_TYPE", "jpg"));
@@ -240,8 +240,7 @@ load_config(void)
    opt.ftp_file = _Strdup(Epplet_query_config_def("FTP_FILE", "shot.jpg"));
    if (opt.ftp_temp)
       free(opt.ftp_temp);
-   opt.ftp_temp =
-      _Strdup(Epplet_query_config_def("FTP_TEMP", "uploading.jpg"));
+   opt.ftp_temp = _Strdup(Epplet_query_config_def("FTP_TEMP", "uploading.jpg"));
    if (opt.grabber)
       free(opt.grabber);
    opt.grabber = _Strdup(Epplet_query_config_def("SHOT_GRABBER", "import"));
@@ -269,94 +268,94 @@ static void
 cloak_draw(void *data)
 {
    switch (opt.cloak_anim)
-   {
+     {
      case 0:
-     {
-        blank_buf();
-        break;
-     }
+	{
+	   blank_buf();
+	   break;
+	}
      case 1:
-     {
-        load_val = (opt.quality / 2);
-        draw_flame();
-        break;
-     }
+	{
+	   load_val = (opt.quality / 2);
+	   draw_flame();
+	   break;
+	}
      case 2:
-     {
-        draw_radar();
-        break;
-     }
+	{
+	   draw_radar();
+	   break;
+	}
      case 3:
-     {
-        draw_aa_radar();
-        break;
-     }
+	{
+	   draw_aa_radar();
+	   break;
+	}
      case 4:
-     {
-        draw_aa_triangle();
-        break;
-     }
+	{
+	   draw_aa_triangle();
+	   break;
+	}
      case 5:
-     {
-        draw_aa_star();
-        break;
-     }
+	{
+	   draw_aa_star();
+	   break;
+	}
      case 6:
-     {
-        draw_starfield();
-        break;
-     }
+	{
+	   draw_starfield();
+	   break;
+	}
      case 7:
-     {
-        draw_aa_starfield();
-        break;
-     }
+	{
+	   draw_aa_starfield();
+	   break;
+	}
      case 8:
-     {
-        draw_rotator();
-        break;
-     }
+	{
+	   draw_rotator();
+	   break;
+	}
      case 9:
-     {
-        draw_scanner();
-        break;
-     }
+	{
+	   draw_scanner();
+	   break;
+	}
      case 10:
-     {
-        draw_colorwarp();
-        break;
-     }
+	{
+	   draw_colorwarp();
+	   break;
+	}
      case 11:
-     {
-        draw_ball();
-        break;
-     }
+	{
+	   draw_ball();
+	   break;
+	}
      case 12:
-     {
-        draw_atoms();
-        break;
-     }
+	{
+	   draw_atoms();
+	   break;
+	}
      case 13:
-     {
-        draw_text();
-        break;
-     }
+	{
+	   draw_text();
+	   break;
+	}
      case 14:
-     {
-        draw_sine();
-        break;
-     }
+	{
+	   draw_sine();
+	   break;
+	}
      case 15:
-     {
-        draw_funky_rotator();
-        break;
-     }
+	{
+	   draw_funky_rotator();
+	   break;
+	}
      default:
-     {
-        blank_buf();
-        break;
+	{
+	   blank_buf();
+	   break;
+	}
      }
-   }
    Epplet_paste_buf(buf, win, 0, 0);
    Epplet_timer(cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
    return;
@@ -367,17 +366,17 @@ static void
 cloak_epplet(void *data)
 {
    if (!cloaked)
-   {
-      Epplet_gadget_hide(btn_close);
-      Epplet_gadget_hide(btn_conf);
-      Epplet_gadget_hide(btn_help);
-      Epplet_gadget_hide(btn_shoot);
-      Epplet_gadget_hide(sldr_qual);
-      Epplet_gadget_hide(tog_win);
-      Epplet_gadget_show(da);
-      cloak_draw(NULL);
-      cloaked = 1;
-   }
+     {
+	Epplet_gadget_hide(btn_close);
+	Epplet_gadget_hide(btn_conf);
+	Epplet_gadget_hide(btn_help);
+	Epplet_gadget_hide(btn_shoot);
+	Epplet_gadget_hide(sldr_qual);
+	Epplet_gadget_hide(tog_win);
+	Epplet_gadget_show(da);
+	cloak_draw(NULL);
+	cloaked = 1;
+     }
    return;
    data = NULL;
 }
@@ -387,20 +386,20 @@ cb_cloak_anim(void *data)
 {
    cb_in(NULL, 0);
    opt.do_cloak = 1;
-   opt.cloak_anim = *((int *) data);
+   opt.cloak_anim = *((int *)data);
    if (opt.cloak_anim == 25)
-   {
-      opt.rand_cloak = 1;
-      choose_random_cloak(NULL);
-   }
+     {
+	opt.rand_cloak = 1;
+	choose_random_cloak(NULL);
+     }
    else
-   {
-      if (opt.rand_cloak)
-      {
-         Epplet_remove_timer("RAND_TIMER");
-      }
-      opt.rand_cloak = 0;
-   }
+     {
+	if (opt.rand_cloak)
+	  {
+	     Epplet_remove_timer("RAND_TIMER");
+	  }
+	opt.rand_cloak = 0;
+     }
    Epplet_timer(cloak_epplet, NULL, opt.cloak_delay, "CLOAK_TIMER");
    return;
    data = NULL;
@@ -411,7 +410,7 @@ cb_cloak_delay(void *data)
 {
    Epplet_remove_timer("CLOAK_TIMER");
 
-   opt.cloak_delay = *(int *) data;
+   opt.cloak_delay = *(int *)data;
    Epplet_timer(cloak_epplet, NULL, opt.cloak_delay, "CLOAK_TIMER");
    return;
    data = NULL;
@@ -420,7 +419,7 @@ cb_cloak_delay(void *data)
 static void
 cb_shot_delay(void *data)
 {
-   opt.delay = *(int *) data;
+   opt.delay = *(int *)data;
    return;
    data = NULL;
 }
@@ -428,9 +427,9 @@ cb_shot_delay(void *data)
 static void
 cb_grabber(void *data)
 {
-   if(opt.grabber)
+   if (opt.grabber)
       free(opt.grabber);
-   opt.grabber = _Strdup((char *) data);
+   opt.grabber = _Strdup((char *)data);
    return;
    data = NULL;
 }
@@ -440,16 +439,16 @@ cb_dont_cloak(void *data)
 {
    opt.do_cloak = 0;
    if (cloaked)
-   {
-      Epplet_gadget_hide(da);
-      cloaked = 0;
-      Epplet_gadget_show(btn_close);
-      Epplet_gadget_show(btn_conf);
-      Epplet_gadget_show(btn_help);
-      Epplet_gadget_show(btn_shoot);
-      Epplet_gadget_show(sldr_qual);
-      Epplet_gadget_show(tog_win);
-   }
+     {
+	Epplet_gadget_hide(da);
+	cloaked = 0;
+	Epplet_gadget_show(btn_close);
+	Epplet_gadget_show(btn_conf);
+	Epplet_gadget_show(btn_help);
+	Epplet_gadget_show(btn_shoot);
+	Epplet_gadget_show(sldr_qual);
+	Epplet_gadget_show(tog_win);
+     }
    Epplet_remove_timer("CLOAK_TIMER");
    return;
    data = NULL;
@@ -467,21 +466,21 @@ static void
 cb_in(void *data, Window w)
 {
    if (w == Epplet_get_main_window())
-   {
-      if (cloaked)
-      {
-         Epplet_gadget_hide(da);
-         cloaked = 0;
-         Epplet_gadget_show(btn_close);
-         Epplet_gadget_show(btn_conf);
-         Epplet_gadget_show(btn_help);
-         Epplet_gadget_show(btn_shoot);
-         Epplet_gadget_show(sldr_qual);
-         Epplet_gadget_show(tog_win);
-      }
-      Epplet_remove_timer("CLOAK_TIMER");
-      Epplet_remove_timer("DRAW_TIMER");
-   }
+     {
+	if (cloaked)
+	  {
+	     Epplet_gadget_hide(da);
+	     cloaked = 0;
+	     Epplet_gadget_show(btn_close);
+	     Epplet_gadget_show(btn_conf);
+	     Epplet_gadget_show(btn_help);
+	     Epplet_gadget_show(btn_shoot);
+	     Epplet_gadget_show(sldr_qual);
+	     Epplet_gadget_show(tog_win);
+	  }
+	Epplet_remove_timer("CLOAK_TIMER");
+	Epplet_remove_timer("DRAW_TIMER");
+     }
    return;
    data = NULL;
 }
@@ -490,15 +489,14 @@ static void
 cb_out(void *data, Window w)
 {
    if (w == Epplet_get_main_window())
-   {
-      Epplet_remove_timer("CLOAK_TIMER");
-      if ((!cloaked) && (opt.do_cloak))
-         Epplet_timer(cloak_epplet, NULL, opt.cloak_delay, "CLOAK_TIMER");
-   }
+     {
+	Epplet_remove_timer("CLOAK_TIMER");
+	if ((!cloaked) && (opt.do_cloak))
+	   Epplet_timer(cloak_epplet, NULL, opt.cloak_delay, "CLOAK_TIMER");
+     }
    return;
    data = NULL;
 }
-
 
 static void
 apply_config(void)
@@ -577,8 +575,7 @@ cancel_cb(void *data)
 static void
 cb_config(void *data)
 {
-   Epplet_gadget lbl, btn_anim, btn_script, btn_view, btn_do_ftp,
-
+   Epplet_gadget       lbl, btn_anim, btn_script, btn_view, btn_do_ftp,
       btn_ftp_passive;
 
    if (confwin)
@@ -590,118 +587,112 @@ cb_config(void *data)
 
    confwin =
       Epplet_create_window_config(390, 540, "E-ScreenShoot Config", ok_cb,
-                                  &confwin, apply_cb, &confwin, cancel_cb,
-                                  &confwin);
+				  &confwin, apply_cb, &confwin, cancel_cb,
+				  &confwin);
 
    Epplet_gadget_show(lbl =
-                      Epplet_create_label(40, 8,
-                                          "Please choose a cloak animation",
-                                          2));
+		      Epplet_create_label(40, 8,
+					  "Please choose a cloak animation",
+					  2));
    Epplet_gadget_show(btn_anim =
-                      Epplet_create_popupbutton(NULL, NULL, 20, 8, 12, 12,
-                                                "ARROW_DOWN", p));
+		      Epplet_create_popupbutton(NULL, NULL, 20, 8, 12, 12,
+						"ARROW_DOWN", p));
 
    Epplet_gadget_show(lbl =
-                      Epplet_create_label(40, 24,
-                                          "Please choose a shot grabber",
-                                          2));
+		      Epplet_create_label(40, 24,
+					  "Please choose a shot grabber", 2));
    Epplet_gadget_show(btn_anim =
-                      Epplet_create_popupbutton(NULL, NULL, 20, 24, 12, 12,
-                                                "ARROW_DOWN", grabber_p));
+		      Epplet_create_popupbutton(NULL, NULL, 20, 24, 12, 12,
+						"ARROW_DOWN", grabber_p));
 
-   Epplet_gadget_show(lbl =
-                      Epplet_create_label(20, 40, "Shot Directory:", 2));
+   Epplet_gadget_show(lbl = Epplet_create_label(20, 40, "Shot Directory:", 2));
    Epplet_gadget_show(txt_dir =
-                      Epplet_create_textbox(NULL, opt.dir, 20, 55, 170, 20, 2,
-                                            NULL, NULL));
+		      Epplet_create_textbox(NULL, opt.dir, 20, 55, 170, 20, 2,
+					    NULL, NULL));
 
    Epplet_gadget_show(lbl = Epplet_create_label(200, 40, "File Prefix:", 2));
    Epplet_gadget_show(txt_file_prefix =
-                      Epplet_create_textbox(NULL, opt.file_prefix, 200, 55,
-                                            100, 20, 2, NULL, NULL));
+		      Epplet_create_textbox(NULL, opt.file_prefix, 200, 55,
+					    100, 20, 2, NULL, NULL));
    Epplet_gadget_show(lbl = Epplet_create_label(310, 40, "File Type:", 2));
    Epplet_gadget_show(txt_file_type =
-                      Epplet_create_textbox(NULL, opt.file_type, 310, 55, 60,
-                                            20, 2, NULL, NULL));
+		      Epplet_create_textbox(NULL, opt.file_type, 310, 55, 60,
+					    20, 2, NULL, NULL));
 
    Epplet_gadget_show(lbl = Epplet_create_label(20, 80, "File Stamp:", 2));
    Epplet_gadget_show(txt_file_stamp =
-                      Epplet_create_textbox(NULL, opt.file_stamp, 20, 95, 350,
-                                            20, 2, NULL, NULL));
+		      Epplet_create_textbox(NULL, opt.file_stamp, 20, 95, 350,
+					    20, 2, NULL, NULL));
 
    Epplet_gadget_show(btn_view =
-                      Epplet_create_togglebutton(NULL, NULL, 20, 130, 12, 12,
-                                                 &opt.view_shot, NULL, NULL));
+		      Epplet_create_togglebutton(NULL, NULL, 20, 130, 12, 12,
+						 &opt.view_shot, NULL, NULL));
    Epplet_gadget_show(lbl =
-                      Epplet_create_label(40, 130, "View shot after taking?",
-                                          2));
+		      Epplet_create_label(40, 130, "View shot after taking?",
+					  2));
    Epplet_gadget_show(lbl = Epplet_create_label(20, 145, "Image Viewer:", 2));
    Epplet_gadget_show(txt_viewer =
-                      Epplet_create_textbox(NULL, opt.viewer, 20, 160, 350,
-                                            20, 2, NULL, NULL));
+		      Epplet_create_textbox(NULL, opt.viewer, 20, 160, 350,
+					    20, 2, NULL, NULL));
    Epplet_gadget_show(btn_script =
-                      Epplet_create_togglebutton(NULL, NULL, 20, 195, 12, 12,
-                                                 &opt.run_script, NULL,
-                                                 NULL));
+		      Epplet_create_togglebutton(NULL, NULL, 20, 195, 12, 12,
+						 &opt.run_script, NULL, NULL));
    Epplet_gadget_show(lbl =
-                      Epplet_create_label(40, 195,
-                                          "Run script/program on shot after taking?",
-                                          2));
+		      Epplet_create_label(40, 195,
+					  "Run script/program on shot after taking?",
+					  2));
    Epplet_gadget_show(lbl =
-                      Epplet_create_label(20, 210, "Script/program to run:",
-                                          2));
+		      Epplet_create_label(20, 210, "Script/program to run:",
+					  2));
    Epplet_gadget_show(txt_script =
-                      Epplet_create_textbox(NULL, opt.script, 20, 225, 350,
-                                            20, 2, NULL, NULL));
+		      Epplet_create_textbox(NULL, opt.script, 20, 225, 350,
+					    20, 2, NULL, NULL));
 
    Epplet_gadget_show(btn_do_ftp =
-                      Epplet_create_togglebutton(NULL, NULL, 20, 250, 12, 12,
-                                                 &opt.do_ftp, NULL, NULL));
+		      Epplet_create_togglebutton(NULL, NULL, 20, 250, 12, 12,
+						 &opt.do_ftp, NULL, NULL));
    Epplet_gadget_show(lbl =
-                      Epplet_create_label(40, 250,
-                                          "Transfer shot by FTP after taking shot?",
-                                          2));
+		      Epplet_create_label(40, 250,
+					  "Transfer shot by FTP after taking shot?",
+					  2));
    Epplet_gadget_show(btn_ftp_passive =
-                      Epplet_create_togglebutton(NULL, NULL, 20, 265, 12, 12,
-                                                 &opt.ftp_passive, NULL,
-                                                 NULL));
+		      Epplet_create_togglebutton(NULL, NULL, 20, 265, 12, 12,
+						 &opt.ftp_passive, NULL, NULL));
    Epplet_gadget_show(lbl =
-                      Epplet_create_label(40, 265, "Use Passive FTP?", 2));
+		      Epplet_create_label(40, 265, "Use Passive FTP?", 2));
 
    Epplet_gadget_show(lbl = Epplet_create_label(20, 280, "FTP Host:", 2));
    Epplet_gadget_show(txt_ftp_host =
-                      Epplet_create_textbox(NULL, opt.ftp_host, 20, 295, 350,
-                                            20, 2, NULL, NULL));
-
+		      Epplet_create_textbox(NULL, opt.ftp_host, 20, 295, 350,
+					    20, 2, NULL, NULL));
 
    Epplet_gadget_show(lbl = Epplet_create_label(20, 320, "FTP User:", 2));
    Epplet_gadget_show(txt_ftp_user =
-                      Epplet_create_textbox(NULL, opt.ftp_user, 20, 335, 350,
-                                            20, 2, NULL, NULL));
+		      Epplet_create_textbox(NULL, opt.ftp_user, 20, 335, 350,
+					    20, 2, NULL, NULL));
 
    Epplet_gadget_show(lbl = Epplet_create_label(20, 360, "FTP Password:", 2));
    Epplet_gadget_show(txt_ftp_pass =
-                      Epplet_create_textbox(NULL, opt.ftp_pass, 20, 375, 350,
-                                            20, 2, NULL, NULL));
+		      Epplet_create_textbox(NULL, opt.ftp_pass, 20, 375, 350,
+					    20, 2, NULL, NULL));
 
-   Epplet_gadget_show(lbl =
-                      Epplet_create_label(20, 400, "FTP Directory:", 2));
+   Epplet_gadget_show(lbl = Epplet_create_label(20, 400, "FTP Directory:", 2));
    Epplet_gadget_show(txt_ftp_dir =
-                      Epplet_create_textbox(NULL, opt.ftp_dir, 20, 415, 350,
-                                            20, 2, NULL, NULL));
+		      Epplet_create_textbox(NULL, opt.ftp_dir, 20, 415, 350,
+					    20, 2, NULL, NULL));
 
    Epplet_gadget_show(lbl = Epplet_create_label(20, 440, "FTP filename:", 2));
    Epplet_gadget_show(txt_ftp_file =
-                      Epplet_create_textbox(NULL, opt.ftp_file, 20, 455, 350,
-                                            20, 2, NULL, NULL));
+		      Epplet_create_textbox(NULL, opt.ftp_file, 20, 455, 350,
+					    20, 2, NULL, NULL));
 
    Epplet_gadget_show(lbl =
-                      Epplet_create_label(20, 480,
-                                          "FTP temp filename (for uploading):",
-                                          2));
+		      Epplet_create_label(20, 480,
+					  "FTP temp filename (for uploading):",
+					  2));
    Epplet_gadget_show(txt_ftp_temp =
-                      Epplet_create_textbox(NULL, opt.ftp_temp, 20, 495, 350,
-                                            20, 2, NULL, NULL));
+		      Epplet_create_textbox(NULL, opt.ftp_temp, 20, 495, 350,
+					    20, 2, NULL, NULL));
 
    Epplet_window_show(confwin);
 
@@ -711,109 +702,108 @@ cb_config(void *data)
    data = NULL;
 }
 
-
 /* Amongst all the fluff, this is the bit that does the actual work. */
 static void
 do_shot(void *data)
 {
-   char *sys;
-   char qual_buf[5];
-   char *filename_buf;
-   char frame_buf[10];
-   char beep_buf[20];
-   char import_buf[50];
-   char *script_buf = NULL;
-   char *view_buf = NULL;
-   char *filename = NULL;
+   char               *sys;
+   char                qual_buf[5];
+   char               *filename_buf;
+   char                frame_buf[10];
+   char                beep_buf[20];
+   char                import_buf[50];
+   char               *script_buf = NULL;
+   char               *view_buf = NULL;
+   char               *filename = NULL;
 
    Esnprintf(qual_buf, sizeof(qual_buf), "%d", opt.quality);
 
    filename =
       _Strjoin(NULL, opt.dir, opt.file_prefix, opt.file_stamp, ".",
-               opt.file_type, NULL);
+	       opt.file_type, NULL);
 
    filename_buf = _Strjoin(NULL, "SCRTEMP=\"", filename, "\"", NULL);
 
    if (!strcmp(opt.grabber, "import"))
-   {
-      if ((opt.frame) && (opt.win))
-         Esnprintf(frame_buf, sizeof(frame_buf), "-frame");
-      else
-         frame_buf[0] = '\0';
+     {
+	if ((opt.frame) && (opt.win))
+	   Esnprintf(frame_buf, sizeof(frame_buf), "-frame");
+	else
+	   frame_buf[0] = '\0';
 
-      if (opt.beep)
-         beep_buf[0] = '\0';
-      else
-         Esnprintf(beep_buf, sizeof(beep_buf), "-silent");
+	if (opt.beep)
+	   beep_buf[0] = '\0';
+	else
+	   Esnprintf(beep_buf, sizeof(beep_buf), "-silent");
 
-      if (opt.win)
-         Esnprintf(import_buf, sizeof(import_buf), "import");
-      else
-         Esnprintf(import_buf, sizeof(import_buf), "import -window root");
+	if (opt.win)
+	   Esnprintf(import_buf, sizeof(import_buf), "import");
+	else
+	   Esnprintf(import_buf, sizeof(import_buf), "import -window root");
 
-      if (opt.run_script)
-         script_buf = _Strjoin(" ", "&&", opt.script, "$SCRTEMP", NULL);
-      else
-         script_buf = _Strdup(" ");
+	if (opt.run_script)
+	   script_buf = _Strjoin(" ", "&&", opt.script, "$SCRTEMP", NULL);
+	else
+	   script_buf = _Strdup(" ");
 
-      if (opt.view_shot)
-         view_buf = _Strjoin(" ", "&&", opt.viewer, "$SCRTEMP", NULL);
-      else
-         view_buf = _Strdup(" ");
+	if (opt.view_shot)
+	   view_buf = _Strjoin(" ", "&&", opt.viewer, "$SCRTEMP", NULL);
+	else
+	   view_buf = _Strdup(" ");
 
-      sys =
-         _Strjoin(" ", opt.do_ftp ? "" : "(", filename_buf, "&&", import_buf,
-                  beep_buf, frame_buf, "-quality", qual_buf, "$SCRTEMP",
-                  script_buf, view_buf, opt.do_ftp ? "" : ")&", NULL);
-   }
+	sys =
+	   _Strjoin(" ", opt.do_ftp ? "" : "(", filename_buf, "&&", import_buf,
+		    beep_buf, frame_buf, "-quality", qual_buf, "$SCRTEMP",
+		    script_buf, view_buf, opt.do_ftp ? "" : ")&", NULL);
+     }
    else if (!strcmp(opt.grabber, "scrot"))
-   {
-      char delay_buf[20];
+     {
+	char                delay_buf[20];
 
-      if (opt.delay > 0)
-         Esnprintf(delay_buf, sizeof(delay_buf), "-d %.0f", opt.delay);
-      else
-         delay_buf[0] = '\0';
+	if (opt.delay > 0)
+	   Esnprintf(delay_buf, sizeof(delay_buf), "-d %.0f", opt.delay);
+	else
+	   delay_buf[0] = '\0';
 
-      if ((opt.frame) && (opt.win))
-         Esnprintf(frame_buf, sizeof(frame_buf), "-b");
-      else
-         frame_buf[0] = '\0';
+	if ((opt.frame) && (opt.win))
+	   Esnprintf(frame_buf, sizeof(frame_buf), "-b");
+	else
+	   frame_buf[0] = '\0';
 
-      if (opt.win)
-         Esnprintf(import_buf, sizeof(import_buf), "scrot -s");
-      else
-         Esnprintf(import_buf, sizeof(import_buf), "scrot");
+	if (opt.win)
+	   Esnprintf(import_buf, sizeof(import_buf), "scrot -s");
+	else
+	   Esnprintf(import_buf, sizeof(import_buf), "scrot");
 
-      if (opt.run_script)
-         script_buf = _Strjoin(" ", "&&", opt.script, "$SCRTEMP", NULL);
-      else
-         script_buf = _Strdup(" ");
+	if (opt.run_script)
+	   script_buf = _Strjoin(" ", "&&", opt.script, "$SCRTEMP", NULL);
+	else
+	   script_buf = _Strdup(" ");
 
-      if (opt.view_shot)
-         view_buf = _Strjoin(" ", "&&", opt.viewer, "$SCRTEMP", NULL);
-      else
-         view_buf = _Strdup(" ");
+	if (opt.view_shot)
+	   view_buf = _Strjoin(" ", "&&", opt.viewer, "$SCRTEMP", NULL);
+	else
+	   view_buf = _Strdup(" ");
 
-      sys =
-         _Strjoin(" ", opt.do_ftp ? "" : "(", filename_buf, "&&", import_buf,
-                  delay_buf, frame_buf, "--quality", qual_buf, "$SCRTEMP",
-                  script_buf, view_buf, opt.do_ftp ? "" : ")&", NULL);
-   }
+	sys =
+	   _Strjoin(" ", opt.do_ftp ? "" : "(", filename_buf, "&&", import_buf,
+		    delay_buf, frame_buf, "--quality", qual_buf, "$SCRTEMP",
+		    script_buf, view_buf, opt.do_ftp ? "" : ")&", NULL);
+     }
    else
-   {
-      printf("don't know how to handle grabber %s\n", opt.grabber);
-      return;
-   }
+     {
+	printf("don't know how to handle grabber %s\n", opt.grabber);
+	return;
+     }
 
    system(sys);
 
    if (opt.do_ftp)
-   {
-      if (!ftp_connected)
-         ftp_connect(opt.ftp_host, opt.ftp_user, opt.ftp_pass, opt.ftp_dir);
-      ftp_upload(filename, opt.ftp_file, opt.ftp_temp);
-   }
+     {
+	if (!ftp_connected)
+	   ftp_connect(opt.ftp_host, opt.ftp_user, opt.ftp_pass, opt.ftp_dir);
+	ftp_upload(filename, opt.ftp_file, opt.ftp_temp);
+     }
 
    free(sys);
    free(script_buf);
@@ -841,9 +831,9 @@ cb_shoot(void *data)
 static void
 cb_color(void *data)
 {
-   int *d;
+   int                *d;
 
-   d = (int *) data;
+   d = (int *)data;
    flame_col(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], d[8]);
    Epplet_gadget_hide(col_p);
 }
@@ -852,156 +842,159 @@ static void
 create_epplet_layout(void)
 {
    Epplet_gadget_show(btn_close =
-                      Epplet_create_button(NULL, NULL, 2, 2, 0, 0, "CLOSE", 0,
-                                           NULL, cb_close, NULL));
+		      Epplet_create_button(NULL, NULL, 2, 2, 0, 0, "CLOSE", 0,
+					   NULL, cb_close, NULL));
    Epplet_gadget_show(btn_help =
-                      Epplet_create_button(NULL, NULL, 18, 2, 0, 0, "HELP", 0,
-                                           NULL, cb_help, NULL));
+		      Epplet_create_button(NULL, NULL, 18, 2, 0, 0, "HELP", 0,
+					   NULL, cb_help, NULL));
    Epplet_gadget_show(btn_shoot =
-                      Epplet_create_button(NULL, "E-ScreenShoot_shoot.png",
-                                           23, 31, 22, 13, 0, 0, NULL,
-                                           cb_shoot, NULL));
+		      Epplet_create_button(NULL, "E-ScreenShoot_shoot.png",
+					   23, 31, 22, 13, 0, 0, NULL,
+					   cb_shoot, NULL));
    Epplet_gadget_show(tog_win =
-                      Epplet_create_togglebutton(NULL, "E-ScreenShoot_win.png",
-                                                 11, 17, 10, 13, &opt.win,
-                                                 NULL, NULL));
+		      Epplet_create_togglebutton(NULL, "E-ScreenShoot_win.png",
+						 11, 17, 10, 13, &opt.win,
+						 NULL, NULL));
    Epplet_gadget_show(sldr_qual =
-                      Epplet_create_vslider(2, 17, 28, 0, 100, 1, 25,
-                                            &invquality, cb_quality, NULL));
+		      Epplet_create_vslider(2, 17, 28, 0, 100, 1, 25,
+					    &invquality, cb_quality, NULL));
    p = Epplet_create_popup();
    Epplet_add_popup_entry(p, "Don't Cloak", NULL, cb_dont_cloak, NULL);
    Epplet_add_popup_entry(p, "Blank Epplet", NULL, cb_cloak_anim,
-                          (void *) (&(cloak_anims[0])));
+			  (void *)(&(cloak_anims[0])));
    Epplet_add_popup_entry(p, "RasterFire", NULL, cb_cloak_anim,
-                          (void *) (&(cloak_anims[1])));
+			  (void *)(&(cloak_anims[1])));
    Epplet_add_popup_entry(p, "Radar", NULL, cb_cloak_anim,
-                          (void *) (&(cloak_anims[2])));
+			  (void *)(&(cloak_anims[2])));
    Epplet_add_popup_entry(p, "AA Radar", NULL, cb_cloak_anim,
-                          (void *) (&(cloak_anims[3])));
+			  (void *)(&(cloak_anims[3])));
    Epplet_add_popup_entry(p, "AA Triangle", NULL, cb_cloak_anim,
-                          (void *) (&(cloak_anims[4])));
+			  (void *)(&(cloak_anims[4])));
    Epplet_add_popup_entry(p, "AA Star", NULL, cb_cloak_anim,
-                          (void *) (&(cloak_anims[5])));
+			  (void *)(&(cloak_anims[5])));
    Epplet_add_popup_entry(p, "Starfield", NULL, cb_cloak_anim,
-                          (void *) (&(cloak_anims[6])));
+			  (void *)(&(cloak_anims[6])));
    Epplet_add_popup_entry(p, "AA Starfield", NULL, cb_cloak_anim,
-                          (void *) (&(cloak_anims[7])));
+			  (void *)(&(cloak_anims[7])));
    Epplet_add_popup_entry(p, "Mesh", NULL, cb_cloak_anim,
-                          (void *) (&(cloak_anims[8])));
+			  (void *)(&(cloak_anims[8])));
    Epplet_add_popup_entry(p, "Funky Mesh", NULL, cb_cloak_anim,
-                          (void *) (&(cloak_anims[15])));
+			  (void *)(&(cloak_anims[15])));
 /* 
  *   Epplet_add_popup_entry (p, "Bendy Mesh", NULL, cb_cloak_anim,
  * 			  (void *) (&(cloak_anims[16])));
  */
    Epplet_add_popup_entry(p, "Scanner", NULL, cb_cloak_anim,
-                          (void *) (&(cloak_anims[9])));
+			  (void *)(&(cloak_anims[9])));
    Epplet_add_popup_entry(p, "ColorShift", NULL, cb_cloak_anim,
-                          (void *) (&(cloak_anims[10])));
+			  (void *)(&(cloak_anims[10])));
    Epplet_add_popup_entry(p, "Bouncy Ball", NULL, cb_cloak_anim,
-                          (void *) (&(cloak_anims[11])));
+			  (void *)(&(cloak_anims[11])));
    Epplet_add_popup_entry(p, "Atoms", NULL, cb_cloak_anim,
-                          (void *) (&(cloak_anims[12])));
+			  (void *)(&(cloak_anims[12])));
    Epplet_add_popup_entry(p, "Banner", NULL, cb_cloak_anim,
-                          (void *) (&(cloak_anims[13])));
+			  (void *)(&(cloak_anims[13])));
    Epplet_add_popup_entry(p, "SineWave", NULL, cb_cloak_anim,
-                          (void *) (&(cloak_anims[14])));
+			  (void *)(&(cloak_anims[14])));
    Epplet_add_popup_entry(p, "Random", NULL, cb_cloak_anim,
-                          (void *) (&(cloak_anims[25])));
+			  (void *)(&(cloak_anims[25])));
 
    col_p = Epplet_create_popup();
    Epplet_add_popup_entry(col_p, "Flame Colors", NULL, NULL, NULL);
    Epplet_add_popup_entry(col_p, "Funky", NULL, cb_color,
-                          (void *) (&(colors[0 * 9])));
+			  (void *)(&(colors[0 * 9])));
    Epplet_add_popup_entry(col_p, "Turquoise", NULL, cb_color,
-                          (void *) (&(colors[1 * 9])));
+			  (void *)(&(colors[1 * 9])));
    Epplet_add_popup_entry(col_p, "Fire", NULL, cb_color,
-                          (void *) (&(colors[2 * 9])));
+			  (void *)(&(colors[2 * 9])));
    Epplet_add_popup_entry(col_p, "Copper", NULL, cb_color,
-                          (void *) (&(colors[3 * 9])));
+			  (void *)(&(colors[3 * 9])));
    Epplet_add_popup_entry(col_p, "Violet", NULL, cb_color,
-                          (void *) (&(colors[4 * 9])));
+			  (void *)(&(colors[4 * 9])));
    Epplet_add_popup_entry(col_p, "Night", NULL, cb_color,
-                          (void *) (&(colors[5 * 9])));
+			  (void *)(&(colors[5 * 9])));
    Epplet_add_popup_entry(col_p, "Sunrise", NULL, cb_color,
-                          (void *) (&(colors[6 * 9])));
+			  (void *)(&(colors[6 * 9])));
    Epplet_add_popup_entry(col_p, "Sunset", NULL, cb_color,
-                          (void *) (&(colors[7 * 9])));
+			  (void *)(&(colors[7 * 9])));
 
    ctimer_p = Epplet_create_popup();
    Epplet_add_popup_entry(ctimer_p, "Cloak Delay", NULL, NULL, NULL);
    Epplet_add_popup_entry(ctimer_p, "1 Sec", NULL, cb_cloak_delay,
-                          (void *) (&(cloak_delays[0])));
+			  (void *)(&(cloak_delays[0])));
    Epplet_add_popup_entry(ctimer_p, "2 Sec", NULL, cb_cloak_delay,
-                          (void *) (&(cloak_delays[1])));
+			  (void *)(&(cloak_delays[1])));
    Epplet_add_popup_entry(ctimer_p, "3 Sec", NULL, cb_cloak_delay,
-                          (void *) (&(cloak_delays[2])));
+			  (void *)(&(cloak_delays[2])));
    Epplet_add_popup_entry(ctimer_p, "4 Sec", NULL, cb_cloak_delay,
-                          (void *) (&(cloak_delays[3])));
+			  (void *)(&(cloak_delays[3])));
    Epplet_add_popup_entry(ctimer_p, "5 Sec", NULL, cb_cloak_delay,
-                          (void *) (&(cloak_delays[4])));
+			  (void *)(&(cloak_delays[4])));
    Epplet_add_popup_entry(ctimer_p, "10 Sec", NULL, cb_cloak_delay,
-                          (void *) (&(cloak_delays[5])));
+			  (void *)(&(cloak_delays[5])));
    Epplet_add_popup_entry(ctimer_p, "15 Sec", NULL, cb_cloak_delay,
-                          (void *) (&(cloak_delays[6])));
+			  (void *)(&(cloak_delays[6])));
    Epplet_add_popup_entry(ctimer_p, "20 Sec", NULL, cb_cloak_delay,
-                          (void *) (&(cloak_delays[7])));
+			  (void *)(&(cloak_delays[7])));
    Epplet_add_popup_entry(ctimer_p, "30 Sec", NULL, cb_cloak_delay,
-                          (void *) (&(cloak_delays[8])));
+			  (void *)(&(cloak_delays[8])));
    Epplet_add_popup_entry(ctimer_p, "1 min", NULL, cb_cloak_delay,
-                          (void *) (&(cloak_delays[9])));
+			  (void *)(&(cloak_delays[9])));
    Epplet_add_popup_entry(ctimer_p, "2 mins", NULL, cb_cloak_delay,
-                          (void *) (&(cloak_delays[10])));
+			  (void *)(&(cloak_delays[10])));
 
    stimer_p = Epplet_create_popup();
    Epplet_add_popup_entry(stimer_p, "Shot Delay", NULL, NULL, NULL);
    Epplet_add_popup_entry(stimer_p, "No Delay", NULL, cb_shot_delay,
-                          (void *) (&(shot_delays[0])));
+			  (void *)(&(shot_delays[0])));
    Epplet_add_popup_entry(stimer_p, "1 Sec", NULL, cb_shot_delay,
-                          (void *) (&(shot_delays[1])));
+			  (void *)(&(shot_delays[1])));
    Epplet_add_popup_entry(stimer_p, "2 Sec", NULL, cb_shot_delay,
-                          (void *) (&(shot_delays[2])));
+			  (void *)(&(shot_delays[2])));
    Epplet_add_popup_entry(stimer_p, "3 Sec", NULL, cb_shot_delay,
-                          (void *) (&(shot_delays[3])));
+			  (void *)(&(shot_delays[3])));
    Epplet_add_popup_entry(stimer_p, "4 Sec", NULL, cb_shot_delay,
-                          (void *) (&(shot_delays[4])));
+			  (void *)(&(shot_delays[4])));
    Epplet_add_popup_entry(stimer_p, "5 Sec", NULL, cb_shot_delay,
-                          (void *) (&(shot_delays[5])));
+			  (void *)(&(shot_delays[5])));
    Epplet_add_popup_entry(stimer_p, "10 Sec", NULL, cb_shot_delay,
-                          (void *) (&(shot_delays[6])));
+			  (void *)(&(shot_delays[6])));
    Epplet_add_popup_entry(stimer_p, "15 Sec", NULL, cb_shot_delay,
-                          (void *) (&(shot_delays[7])));
+			  (void *)(&(shot_delays[7])));
    Epplet_add_popup_entry(stimer_p, "20 Sec", NULL, cb_shot_delay,
-                          (void *) (&(shot_delays[8])));
+			  (void *)(&(shot_delays[8])));
    Epplet_add_popup_entry(stimer_p, "30 Sec", NULL, cb_shot_delay,
-                          (void *) (&(shot_delays[9])));
+			  (void *)(&(shot_delays[9])));
    Epplet_add_popup_entry(stimer_p, "1 min", NULL, cb_shot_delay,
-                          (void *) (&(shot_delays[10])));
+			  (void *)(&(shot_delays[10])));
    Epplet_add_popup_entry(stimer_p, "2 mins", NULL, cb_shot_delay,
-                          (void *) (&(shot_delays[11])));
+			  (void *)(&(shot_delays[11])));
 
    grabber_p = Epplet_create_popup();
-   Epplet_add_popup_entry(grabber_p, "import", NULL, cb_grabber, _Strdup("import"));
-   Epplet_add_popup_entry(grabber_p, "scrot", NULL, cb_grabber, _Strdup("scrot"));
+   Epplet_add_popup_entry(grabber_p, "import", NULL, cb_grabber,
+			  _Strdup("import"));
+   Epplet_add_popup_entry(grabber_p, "scrot", NULL, cb_grabber,
+			  _Strdup("scrot"));
 
    Epplet_gadget_show(btn_conf =
-                      Epplet_create_button(NULL, NULL, 34, 2, 12, 12,
-                                           "CONFIGURE", 0, NULL, cb_config,
-                                           NULL));
+		      Epplet_create_button(NULL, NULL, 34, 2, 12, 12,
+					   "CONFIGURE", 0, NULL, cb_config,
+					   NULL));
 
    Epplet_gadget_show(btn_col =
-                      Epplet_create_popupbutton(NULL, "E-ScreenShoot_col.png",
-                                                11, 31, 10, 13, NULL, col_p));
+		      Epplet_create_popupbutton(NULL, "E-ScreenShoot_col.png",
+						11, 31, 10, 13, NULL, col_p));
    Epplet_gadget_show(btn_ctimer =
-                      Epplet_create_popupbutton(NULL, "E-ScreenShoot_minitime.png",
-                                                23, 17, 10, 13, NULL,
-                                                ctimer_p));
+		      Epplet_create_popupbutton(NULL,
+						"E-ScreenShoot_minitime.png",
+						23, 17, 10, 13, NULL,
+						ctimer_p));
 
    Epplet_gadget_show(btn_stimer =
-                      Epplet_create_popupbutton(NULL, "E-ScreenShoot_minitime2.png",
-                                                35, 17, 10, 13, NULL,
-                                                stimer_p));
-
+		      Epplet_create_popupbutton(NULL,
+						"E-ScreenShoot_minitime2.png",
+						35, 17, 10, 13, NULL,
+						stimer_p));
 
    da = Epplet_create_drawingarea(2, 2, 44, 44);
    win = Epplet_get_drawingarea_window(da);
@@ -1012,7 +1005,7 @@ create_epplet_layout(void)
    if (opt.do_cloak)
       Epplet_timer(cloak_epplet, NULL, opt.cloak_delay, "CLOAK_TIMER");
 
-   Epplet_register_mouse_enter_handler(cb_in, (void *) win);
+   Epplet_register_mouse_enter_handler(cb_in, (void *)win);
    Epplet_register_mouse_leave_handler(cb_out, NULL);
 }
 
@@ -1026,7 +1019,7 @@ clean_exit(void)
 int
 main(int argc, char **argv)
 {
-   int prio;
+   int                 prio;
 
    prio = getpriority(PRIO_PROCESS, getpid());
    setpriority(PRIO_PROCESS, getpid(), prio + 10);
@@ -1037,7 +1030,7 @@ main(int argc, char **argv)
    srand(time(0));
 
    Epplet_Init("E-ScreenShoot", "0.7", "Enlightenment Screen Shootin' Epplet",
-               3, 3, argc, argv, 0);
+	       3, 3, argc, argv, 0);
    Epplet_load_config();
 
    load_config();

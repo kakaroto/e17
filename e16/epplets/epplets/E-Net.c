@@ -8,8 +8,8 @@
 #include "net.h"
 
 double              bands[] =
-{1000000000, 100000000, 10000000, 2000000, 1540000, 1000000, 512000, 256000,
- 144000, 128000, 64000, 56000, 33600, 28800, 14400, 9600, 4800, 2400, 300, 75
+   { 1000000000, 100000000, 10000000, 2000000, 1540000, 1000000, 512000, 256000,
+   144000, 128000, 64000, 56000, 33600, 28800, 14400, 9600, 4800, 2400, 300, 75
 };
 
 double              upstream_max = 1540000;
@@ -39,7 +39,9 @@ cb_timer(void *data)
      {
 	char                err[255];
 
-	Esnprintf(err, sizeof(err), "Unable to get network device statistics for eth0:  %s", net_strerror(invalid));
+	Esnprintf(err, sizeof(err),
+		  "Unable to get network device statistics for eth0:  %s",
+		  net_strerror(invalid));
 	Epplet_dialog_ok(err);
 	Epplet_unremember();
 	Esync();
@@ -133,53 +135,96 @@ main(int argc, char **argv)
 					   2, 2, 0, 0, "CLOSE", 0, NULL,
 					   cb_close, NULL));
    p1 = Epplet_create_popup();
-   Epplet_add_popup_entry(p1, "1 Gbit", NULL, cb_set_upstream, (void *)(&(bands[0])));
-   Epplet_add_popup_entry(p1, "100 Mbit", NULL, cb_set_upstream, (void *)(&(bands[1])));
-   Epplet_add_popup_entry(p1, "10 Mbit", NULL, cb_set_upstream, (void *)(&(bands[2])));
-   Epplet_add_popup_entry(p1, "2 Mbit", NULL, cb_set_upstream, (void *)(&(bands[3])));
-   Epplet_add_popup_entry(p1, "1.54 Mbit T1", NULL, cb_set_upstream, (void *)(&(bands[4])));
-   Epplet_add_popup_entry(p1, "1 Mbit", NULL, cb_set_upstream, (void *)(&(bands[5])));
-   Epplet_add_popup_entry(p1, "512 Kbit", NULL, cb_set_upstream, (void *)(&(bands[6])));
-   Epplet_add_popup_entry(p1, "256 Kbit", NULL, cb_set_upstream, (void *)(&(bands[7])));
-   Epplet_add_popup_entry(p1, "144 Kbit", NULL, cb_set_upstream, (void *)(&(bands[8])));
-   Epplet_add_popup_entry(p1, "128 Kbit ISDN", NULL, cb_set_upstream, (void *)(&(bands[9])));
-   Epplet_add_popup_entry(p1, "64 Kbit ISDN", NULL, cb_set_upstream, (void *)(&(bands[10])));
-   Epplet_add_popup_entry(p1, "56 Kbit Modem", NULL, cb_set_upstream, (void *)(&(bands[11])));
-   Epplet_add_popup_entry(p1, "33.6 Kbit Modem", NULL, cb_set_upstream, (void *)(&(bands[12])));
-   Epplet_add_popup_entry(p1, "28.8 Kbit Modem", NULL, cb_set_upstream, (void *)(&(bands[13])));
-   Epplet_add_popup_entry(p1, "14.4 Kbit Modem", NULL, cb_set_upstream, (void *)(&(bands[14])));
-   Epplet_add_popup_entry(p1, "9600 baud Modem", NULL, cb_set_upstream, (void *)(&(bands[15])));
-   Epplet_add_popup_entry(p1, "4800 baud Modem", NULL, cb_set_upstream, (void *)(&(bands[16])));
-   Epplet_add_popup_entry(p1, "2400 baud Modem", NULL, cb_set_upstream, (void *)(&(bands[17])));
-   Epplet_add_popup_entry(p1, "300 baud Modem", NULL, cb_set_upstream, (void *)(&(bands[18])));
-   Epplet_add_popup_entry(p1, "75 baud Modem", NULL, cb_set_upstream, (void *)(&(bands[19])));
+   Epplet_add_popup_entry(p1, "1 Gbit", NULL, cb_set_upstream,
+			  (void *)(&(bands[0])));
+   Epplet_add_popup_entry(p1, "100 Mbit", NULL, cb_set_upstream,
+			  (void *)(&(bands[1])));
+   Epplet_add_popup_entry(p1, "10 Mbit", NULL, cb_set_upstream,
+			  (void *)(&(bands[2])));
+   Epplet_add_popup_entry(p1, "2 Mbit", NULL, cb_set_upstream,
+			  (void *)(&(bands[3])));
+   Epplet_add_popup_entry(p1, "1.54 Mbit T1", NULL, cb_set_upstream,
+			  (void *)(&(bands[4])));
+   Epplet_add_popup_entry(p1, "1 Mbit", NULL, cb_set_upstream,
+			  (void *)(&(bands[5])));
+   Epplet_add_popup_entry(p1, "512 Kbit", NULL, cb_set_upstream,
+			  (void *)(&(bands[6])));
+   Epplet_add_popup_entry(p1, "256 Kbit", NULL, cb_set_upstream,
+			  (void *)(&(bands[7])));
+   Epplet_add_popup_entry(p1, "144 Kbit", NULL, cb_set_upstream,
+			  (void *)(&(bands[8])));
+   Epplet_add_popup_entry(p1, "128 Kbit ISDN", NULL, cb_set_upstream,
+			  (void *)(&(bands[9])));
+   Epplet_add_popup_entry(p1, "64 Kbit ISDN", NULL, cb_set_upstream,
+			  (void *)(&(bands[10])));
+   Epplet_add_popup_entry(p1, "56 Kbit Modem", NULL, cb_set_upstream,
+			  (void *)(&(bands[11])));
+   Epplet_add_popup_entry(p1, "33.6 Kbit Modem", NULL, cb_set_upstream,
+			  (void *)(&(bands[12])));
+   Epplet_add_popup_entry(p1, "28.8 Kbit Modem", NULL, cb_set_upstream,
+			  (void *)(&(bands[13])));
+   Epplet_add_popup_entry(p1, "14.4 Kbit Modem", NULL, cb_set_upstream,
+			  (void *)(&(bands[14])));
+   Epplet_add_popup_entry(p1, "9600 baud Modem", NULL, cb_set_upstream,
+			  (void *)(&(bands[15])));
+   Epplet_add_popup_entry(p1, "4800 baud Modem", NULL, cb_set_upstream,
+			  (void *)(&(bands[16])));
+   Epplet_add_popup_entry(p1, "2400 baud Modem", NULL, cb_set_upstream,
+			  (void *)(&(bands[17])));
+   Epplet_add_popup_entry(p1, "300 baud Modem", NULL, cb_set_upstream,
+			  (void *)(&(bands[18])));
+   Epplet_add_popup_entry(p1, "75 baud Modem", NULL, cb_set_upstream,
+			  (void *)(&(bands[19])));
 
    p2 = Epplet_create_popup();
-   Epplet_add_popup_entry(p2, "1 Gbit", NULL, cb_set_downstream, (void *)(&(bands[0])));
-   Epplet_add_popup_entry(p2, "100 Mbit", NULL, cb_set_downstream, (void *)(&(bands[1])));
-   Epplet_add_popup_entry(p2, "10 Mbit", NULL, cb_set_downstream, (void *)(&(bands[2])));
-   Epplet_add_popup_entry(p2, "2 Mbit", NULL, cb_set_downstream, (void *)(&(bands[3])));
-   Epplet_add_popup_entry(p2, "1.54 Mbit T1", NULL, cb_set_downstream, (void *)(&(bands[4])));
-   Epplet_add_popup_entry(p2, "1 Mbit", NULL, cb_set_downstream, (void *)(&(bands[5])));
-   Epplet_add_popup_entry(p2, "512 Kbit", NULL, cb_set_downstream, (void *)(&(bands[6])));
-   Epplet_add_popup_entry(p2, "256 Kbit", NULL, cb_set_downstream, (void *)(&(bands[7])));
-   Epplet_add_popup_entry(p2, "144 Kbit", NULL, cb_set_downstream, (void *)(&(bands[8])));
-   Epplet_add_popup_entry(p2, "128 Kbit ISDN", NULL, cb_set_downstream, (void *)(&(bands[9])));
-   Epplet_add_popup_entry(p2, "64 Kbit ISDN", NULL, cb_set_downstream, (void *)(&(bands[10])));
-   Epplet_add_popup_entry(p2, "56 Kbit Modem", NULL, cb_set_downstream, (void *)(&(bands[11])));
-   Epplet_add_popup_entry(p2, "33.6 Kbit Modem", NULL, cb_set_downstream, (void *)(&(bands[12])));
-   Epplet_add_popup_entry(p2, "28.8 Kbit Modem", NULL, cb_set_downstream, (void *)(&(bands[13])));
-   Epplet_add_popup_entry(p2, "14.4 Kbit Modem", NULL, cb_set_downstream, (void *)(&(bands[14])));
-   Epplet_add_popup_entry(p2, "9600 baud Modem", NULL, cb_set_downstream, (void *)(&(bands[15])));
-   Epplet_add_popup_entry(p2, "4800 baud Modem", NULL, cb_set_downstream, (void *)(&(bands[16])));
-   Epplet_add_popup_entry(p2, "2400 baud Modem", NULL, cb_set_downstream, (void *)(&(bands[17])));
-   Epplet_add_popup_entry(p2, "300 baud Modem", NULL, cb_set_downstream, (void *)(&(bands[18])));
-   Epplet_add_popup_entry(p2, "75 baud Modem", NULL, cb_set_downstream, (void *)(&(bands[19])));
+   Epplet_add_popup_entry(p2, "1 Gbit", NULL, cb_set_downstream,
+			  (void *)(&(bands[0])));
+   Epplet_add_popup_entry(p2, "100 Mbit", NULL, cb_set_downstream,
+			  (void *)(&(bands[1])));
+   Epplet_add_popup_entry(p2, "10 Mbit", NULL, cb_set_downstream,
+			  (void *)(&(bands[2])));
+   Epplet_add_popup_entry(p2, "2 Mbit", NULL, cb_set_downstream,
+			  (void *)(&(bands[3])));
+   Epplet_add_popup_entry(p2, "1.54 Mbit T1", NULL, cb_set_downstream,
+			  (void *)(&(bands[4])));
+   Epplet_add_popup_entry(p2, "1 Mbit", NULL, cb_set_downstream,
+			  (void *)(&(bands[5])));
+   Epplet_add_popup_entry(p2, "512 Kbit", NULL, cb_set_downstream,
+			  (void *)(&(bands[6])));
+   Epplet_add_popup_entry(p2, "256 Kbit", NULL, cb_set_downstream,
+			  (void *)(&(bands[7])));
+   Epplet_add_popup_entry(p2, "144 Kbit", NULL, cb_set_downstream,
+			  (void *)(&(bands[8])));
+   Epplet_add_popup_entry(p2, "128 Kbit ISDN", NULL, cb_set_downstream,
+			  (void *)(&(bands[9])));
+   Epplet_add_popup_entry(p2, "64 Kbit ISDN", NULL, cb_set_downstream,
+			  (void *)(&(bands[10])));
+   Epplet_add_popup_entry(p2, "56 Kbit Modem", NULL, cb_set_downstream,
+			  (void *)(&(bands[11])));
+   Epplet_add_popup_entry(p2, "33.6 Kbit Modem", NULL, cb_set_downstream,
+			  (void *)(&(bands[12])));
+   Epplet_add_popup_entry(p2, "28.8 Kbit Modem", NULL, cb_set_downstream,
+			  (void *)(&(bands[13])));
+   Epplet_add_popup_entry(p2, "14.4 Kbit Modem", NULL, cb_set_downstream,
+			  (void *)(&(bands[14])));
+   Epplet_add_popup_entry(p2, "9600 baud Modem", NULL, cb_set_downstream,
+			  (void *)(&(bands[15])));
+   Epplet_add_popup_entry(p2, "4800 baud Modem", NULL, cb_set_downstream,
+			  (void *)(&(bands[16])));
+   Epplet_add_popup_entry(p2, "2400 baud Modem", NULL, cb_set_downstream,
+			  (void *)(&(bands[17])));
+   Epplet_add_popup_entry(p2, "300 baud Modem", NULL, cb_set_downstream,
+			  (void *)(&(bands[18])));
+   Epplet_add_popup_entry(p2, "75 baud Modem", NULL, cb_set_downstream,
+			  (void *)(&(bands[19])));
 
    Epplet_gadget_show(load_up = Epplet_create_hbar(16, 3, 46, 12, 0, &up_val));
-   Epplet_gadget_show(load_down = Epplet_create_hbar(16, 19, 46, 12, 0, &down_val));
-   Epplet_gadget_show(Epplet_create_popupbutton("In", NULL, 62, 2, 16, 12, NULL, p1));
-   Epplet_gadget_show(Epplet_create_popupbutton("Out", NULL, 62, 18, 16, 12, NULL, p2));
+   Epplet_gadget_show(load_down =
+		      Epplet_create_hbar(16, 19, 46, 12, 0, &down_val));
+   Epplet_gadget_show(Epplet_create_popupbutton
+		      ("In", NULL, 62, 2, 16, 12, NULL, p1));
+   Epplet_gadget_show(Epplet_create_popupbutton
+		      ("Out", NULL, 62, 18, 16, 12, NULL, p2));
    Epplet_show();
    Epplet_Loop();
    return 0;

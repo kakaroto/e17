@@ -20,23 +20,27 @@
 #include <assert.h>
 #include <stdarg.h>
 #include <stdio.h>
-Epplet_gadget b_close;
+Epplet_gadget       b_close;
 
-static void close_cb(void *data);
-static void in_cb(void *data, Window w);
-static void out_cb(void *data, Window w);
-Epplet_gadget epp_create_std_button(int x, int y, char* std, void (*func) (void *data), void *data);
+static void         close_cb(void *data);
+static void         in_cb(void *data, Window w);
+static void         out_cb(void *data, Window w);
+Epplet_gadget       epp_create_std_button(int x, int y, char *std,
+					  void (*func) (void *data),
+					  void *data);
 
 #if 0
 /* Unused */
-static void epp_dialog_ok_f(char* fmt, ...)
+static void
+epp_dialog_ok_f(char *fmt, ...)
 {
-    va_list ap;
-    char buf[1024];
-    va_start(ap,fmt);
-    Evsnprintf(buf,1023,fmt,ap);
-    va_end(ap);
-    Epplet_dialog_ok(buf);
+   va_list             ap;
+   char                buf[1024];
+
+   va_start(ap, fmt);
+   Evsnprintf(buf, 1023, fmt, ap);
+   va_end(ap);
+   Epplet_dialog_ok(buf);
 }
 #endif
 
@@ -49,7 +53,8 @@ close_cb(void *data)
    exit(0);
 }
 
-static void arrow_cb(void* data)
+static void
+arrow_cb(void *data)
 {
    Epplet_send_ipc(data);
 }
@@ -57,9 +62,10 @@ static void arrow_cb(void* data)
 static void
 in_cb(void *data, Window w)
 {
-   if (w == Epplet_get_main_window()) {
-     Epplet_gadget_show(b_close);
-   }
+   if (w == Epplet_get_main_window())
+     {
+	Epplet_gadget_show(b_close);
+     }
    return;
    data = NULL;
 }
@@ -67,21 +73,24 @@ in_cb(void *data, Window w)
 static void
 out_cb(void *data, Window w)
 {
-   if (w == Epplet_get_main_window()) {
-     Epplet_gadget_hide(b_close);
-   }
+   if (w == Epplet_get_main_window())
+     {
+	Epplet_gadget_hide(b_close);
+     }
    return;
    data = NULL;
 }
 
-Epplet_gadget epp_create_std_button(int x, int y, char* std, 
-            void (*func) (void *data), void *data)
+Epplet_gadget
+epp_create_std_button(int x, int y, char *std,
+		      void (*func) (void *data), void *data)
 {
-    assert(func != NULL);
-    return Epplet_create_button(NULL,NULL,x,y,0,0,std,0,NULL,func,data);
+   assert(func != NULL);
+   return Epplet_create_button(NULL, NULL, x, y, 0, 0, std, 0, NULL, func,
+			       data);
 }
 
-#if 0 /* < e16 < 0.16.8 */
+#if 0				/* < e16 < 0.16.8 */
 #define AREA_UP     "goto_area prev vert"
 #define AREA_DOWN   "goto_area next vert"
 #define AREA_LEFT   "goto_area prev horiz"
@@ -96,26 +105,27 @@ Epplet_gadget epp_create_std_button(int x, int y, char* std,
 int
 main(int argc, char **argv)
 {
-    Epplet_gadget b_up,b_down,b_left,b_right;
-    atexit(Epplet_cleanup);
-    Epplet_Init("E-Areas", "0.1", 
-                "A desktop areas navigator; John Slee <john@chirp.com.au>",
-	            3, 3, argc, argv, 0);
-    b_close = epp_create_std_button(18,18,"CLOSE",close_cb,NULL);
-    
-    b_up = epp_create_std_button(18,6,"ARROW_UP",arrow_cb,AREA_UP);
-    b_down = epp_create_std_button(18,30,"ARROW_DOWN",arrow_cb,AREA_DOWN);
-    b_left = epp_create_std_button(6,18,"ARROW_LEFT",arrow_cb,AREA_LEFT);
-    b_right = epp_create_std_button(30,18,"ARROW_RIGHT",arrow_cb,AREA_RIGHT);
-    Epplet_gadget_show(b_up);
-    Epplet_gadget_show(b_down);
-    Epplet_gadget_show(b_left);
-    Epplet_gadget_show(b_right);
-    
-    Epplet_register_focus_in_handler(in_cb, NULL);
-    Epplet_register_focus_out_handler(out_cb, NULL);
+   Epplet_gadget       b_up, b_down, b_left, b_right;
 
-    Epplet_show();
-    Epplet_Loop();
-    return 0;
+   atexit(Epplet_cleanup);
+   Epplet_Init("E-Areas", "0.1",
+	       "A desktop areas navigator; John Slee <john@chirp.com.au>",
+	       3, 3, argc, argv, 0);
+   b_close = epp_create_std_button(18, 18, "CLOSE", close_cb, NULL);
+
+   b_up = epp_create_std_button(18, 6, "ARROW_UP", arrow_cb, AREA_UP);
+   b_down = epp_create_std_button(18, 30, "ARROW_DOWN", arrow_cb, AREA_DOWN);
+   b_left = epp_create_std_button(6, 18, "ARROW_LEFT", arrow_cb, AREA_LEFT);
+   b_right = epp_create_std_button(30, 18, "ARROW_RIGHT", arrow_cb, AREA_RIGHT);
+   Epplet_gadget_show(b_up);
+   Epplet_gadget_show(b_down);
+   Epplet_gadget_show(b_left);
+   Epplet_gadget_show(b_right);
+
+   Epplet_register_focus_in_handler(in_cb, NULL);
+   Epplet_register_focus_out_handler(out_cb, NULL);
+
+   Epplet_show();
+   Epplet_Loop();
+   return 0;
 }

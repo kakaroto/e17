@@ -41,18 +41,18 @@
 #error No soundcard defenition!
 #endif /* SOUNDCARD_H */
 
-Epplet_gadget slider, mutebtn, closebtn, helpbtn;
+Epplet_gadget       slider, mutebtn, closebtn, helpbtn;
 
 #ifdef SGI_AUDIO
-ALport audport;
-int minVol;                     /* to deal with SGI audio HW volume ranges */
-float adjPct;
+ALport              audport;
+int                 minVol;	/* to deal with SGI audio HW volume ranges */
+float               adjPct;
 #else
-int mixerfd = -1;
+int                 mixerfd = -1;
 #endif
-int mute;
-int vol;
-int layout;
+int                 mute;
+int                 vol;
+int                 layout;
 
 #define LAYOUT_CONVENTIONAL 0
 #define LAYOUT_WIDE 1
@@ -62,18 +62,18 @@ static void
 openMixer(char *device_name)
 {
 #ifdef OSS_GETVERSION
-   int res, ver;
+   int                 res, ver;
 #endif
 #ifdef SGI_AUDIO
-   ALparamInfo pi;
-   int maxVol;
+   ALparamInfo         pi;
+   int                 maxVol;
 
    audport = alOpenPort(device_name, "w", NULL);
    if (!audport)
-   {
-      fprintf(stderr, "Couldn't open audio port %s\n", device_name);
-      exit(1);
-   }
+     {
+	fprintf(stderr, "Couldn't open audio port %s\n", device_name);
+	exit(1);
+     }
    alGetParamInfo(alGetResource(audport), AL_GAIN, &pi);
    minVol = alFixedToDouble(pi.min.ll);
    maxVol = alFixedToDouble(pi.max.ll);
@@ -81,21 +81,21 @@ openMixer(char *device_name)
 #else
    mixerfd = open(device_name, O_RDWR, 0);
    if (mixerfd < 0)
-   {
-      fprintf(stderr, "Couldn't open mixer device %s\n", device_name);
-      exit(1);
-   }
+     {
+	fprintf(stderr, "Couldn't open mixer device %s\n", device_name);
+	exit(1);
+     }
 #endif
 
    /* check driver-version */
 #ifdef OSS_GETVERSION
    res = ioctl(mixerfd, OSS_GETVERSION, &ver);
    if ((res == 0) && (ver != SOUND_VERSION))
-   {
-      fprintf(stderr,
-              "warning: compiled "
-              "with a different version of\nsoundcard.h.\n");
-   }
+     {
+	fprintf(stderr,
+		"warning: compiled "
+		"with a different version of\nsoundcard.h.\n");
+     }
 #endif
 }
 
@@ -103,40 +103,40 @@ static int
 readMixer(void)
 {
 #ifdef SGI_AUDIO
-   int x;
-   int numchan = 0;
-   double tvol = 0;
-   ALpv audpv[2];               /* audio resource paramater info */
-   ALfixed gain[MAX_CHANNELS];  /* where to store the gain information. up to 8 channels */
+   int                 x;
+   int                 numchan = 0;
+   double              tvol = 0;
+   ALpv                audpv[2];	/* audio resource paramater info */
+   ALfixed             gain[MAX_CHANNELS];	/* where to store the gain information. up to 8 channels */
 
    audpv[0].param = AL_GAIN;
    audpv[0].value.ptr = gain;
    audpv[0].sizeIn = MAX_CHANNELS;	/* can get up to 8-channel vector back */
 
    if (alGetParams(alGetResource(audport), audpv, 1) < 0)
-   {
-      fprintf(stderr, "alGetParams failed: %d\n", oserror());
-   }
+     {
+	fprintf(stderr, "alGetParams failed: %d\n", oserror());
+     }
    else
-   {
-      if (audpv[0].sizeOut < 0)
-      {
-         fprintf(stderr, "AL_GAIN was an invalid paramater\n");
-      }
-      else
-      {
-         for (x = 0; x < audpv[0].sizeOut; x++)
-         {
-            tvol += alFixedToDouble(gain[x]);
-            ++numchan;
-         }
-      }
-   }
+     {
+	if (audpv[0].sizeOut < 0)
+	  {
+	     fprintf(stderr, "AL_GAIN was an invalid paramater\n");
+	  }
+	else
+	  {
+	     for (x = 0; x < audpv[0].sizeOut; x++)
+	       {
+		  tvol += alFixedToDouble(gain[x]);
+		  ++numchan;
+	       }
+	  }
+     }
    if (layout == LAYOUT_TALL)
       return 100 - ((tvol / numchan) - minVol) / adjPct;
    return ((tvol / numchan) - minVol) / adjPct;
 #else
-   int tvol, r, l;
+   int                 tvol, r, l;
 
    ioctl(mixerfd, MIXER_READ(SOUND_MIXER_VOLUME), &tvol);
 
@@ -152,29 +152,29 @@ readMixer(void)
 static void
 setMixer(int vol)
 {
-   int tvol;
+   int                 tvol;
 
 #ifdef SGI_AUDIO
-   int x;
-   ALpv audpv[2];
-   ALfixed gain[MAX_CHANNELS];
+   int                 x;
+   ALpv                audpv[2];
+   ALfixed             gain[MAX_CHANNELS];
 
    tvol = (vol * adjPct) + minVol;
    for (x = 0; x < MAX_CHANNELS; ++x)
-   {
-      gain[x] = alDoubleToFixed(tvol);
-   }
+     {
+	gain[x] = alDoubleToFixed(tvol);
+     }
    audpv[0].param = AL_GAIN;
    audpv[0].value.ptr = gain;
    audpv[0].sizeIn = MAX_CHANNELS;
    if (alSetParams(alGetResource(audport), audpv, 1) < 0)
-   {
-      fprintf(stderr, "alSetParams failed : %d\n", oserror());
-   }
+     {
+	fprintf(stderr, "alSetParams failed : %d\n", oserror());
+     }
    if (audpv[0].sizeOut < 0)
-   {
-      fprintf(stderr, "volume - %d wasn't valid\n", tvol);
-   }
+     {
+	fprintf(stderr, "volume - %d wasn't valid\n", tvol);
+     }
 #else
 
    tvol = (vol << 8) + vol;
@@ -200,21 +200,21 @@ cb_close(void *data)
 static void
 mute_cb(void *data)
 {
-   static int old_vol = 0;
+   static int          old_vol = 0;
 
    if (mute == 1)
-   {
-      old_vol = vol;
-      setMixer(0);
-   }
+     {
+	old_vol = vol;
+	setMixer(0);
+     }
    else
-   {
-      vol = old_vol;
-      if (layout == LAYOUT_TALL)
-         setMixer(100 - vol);
-      else
-         setMixer(vol);
-   }
+     {
+	vol = old_vol;
+	if (layout == LAYOUT_TALL)
+	   setMixer(100 - vol);
+	else
+	   setMixer(vol);
+     }
    return;
    data = NULL;
 }
@@ -223,12 +223,12 @@ static void
 adj_cb(void *data)
 {
    if (!mute)
-   {
-      if (layout == LAYOUT_TALL)
-         setMixer(100 - vol);
-      else
-         setMixer(vol);
-   }
+     {
+	if (layout == LAYOUT_TALL)
+	   setMixer(100 - vol);
+	else
+	   setMixer(vol);
+     }
    return;
    data = NULL;
 }
@@ -257,48 +257,46 @@ create_mixer_gadget(void)
    vol = readMixer();
 
    switch (layout)
-   {
+     {
      case LAYOUT_WIDE:
-        slider =
-           Epplet_create_hslider(30, 3, 48, 0, 100, 1, 25, &vol, adj_cb,
-                                 NULL);
-        mutebtn =
-           Epplet_create_togglebutton("M", NULL, 80, 2, 12, 12, &mute,
-                                      mute_cb, NULL);
-        closebtn =
-           Epplet_create_button(NULL, NULL, 2, 2, 0, 0, "CLOSE", 0, NULL,
-                                cb_close, NULL);
-        helpbtn =
-           Epplet_create_button(NULL, NULL, 16, 2, 0, 0, "HELP", 0, NULL,
-                                cb_help, NULL);
-        break;
+	slider =
+	   Epplet_create_hslider(30, 3, 48, 0, 100, 1, 25, &vol, adj_cb, NULL);
+	mutebtn =
+	   Epplet_create_togglebutton("M", NULL, 80, 2, 12, 12, &mute,
+				      mute_cb, NULL);
+	closebtn =
+	   Epplet_create_button(NULL, NULL, 2, 2, 0, 0, "CLOSE", 0, NULL,
+				cb_close, NULL);
+	helpbtn =
+	   Epplet_create_button(NULL, NULL, 16, 2, 0, 0, "HELP", 0, NULL,
+				cb_help, NULL);
+	break;
      case LAYOUT_TALL:
-        slider =
-           Epplet_create_vslider(3, 30, 48, 0, 100, 1, 25, &vol, adj_cb,
-                                 NULL);
-        mutebtn =
-           Epplet_create_togglebutton("M", NULL, 2, 80, 12, 12, &mute,
-                                      mute_cb, NULL);
-        closebtn =
-           Epplet_create_button(NULL, NULL, 2, 2, 0, 0, "CLOSE", 0, NULL,
-                                cb_close, NULL);
-        helpbtn =
-           Epplet_create_button(NULL, NULL, 2, 16, 0, 0, "HELP", 0, NULL,
-                                cb_help, NULL);
-        break;
+	slider =
+	   Epplet_create_vslider(3, 30, 48, 0, 100, 1, 25, &vol, adj_cb, NULL);
+	mutebtn =
+	   Epplet_create_togglebutton("M", NULL, 2, 80, 12, 12, &mute,
+				      mute_cb, NULL);
+	closebtn =
+	   Epplet_create_button(NULL, NULL, 2, 2, 0, 0, "CLOSE", 0, NULL,
+				cb_close, NULL);
+	helpbtn =
+	   Epplet_create_button(NULL, NULL, 2, 16, 0, 0, "HELP", 0, NULL,
+				cb_help, NULL);
+	break;
      default:
-        slider =
-           Epplet_create_hslider(4, 4, 40, 0, 100, 1, 25, &vol, adj_cb, NULL);
-        mutebtn =
-           Epplet_create_togglebutton("Mute", NULL, 5, 18, 36, 12, &mute,
-                                      mute_cb, NULL);
-        closebtn =
-           Epplet_create_button(NULL, NULL, 2, 34, 0, 0, "CLOSE", 0, NULL,
-                                cb_close, NULL);
-        helpbtn =
-           Epplet_create_button(NULL, NULL, 34, 34, 0, 0, "HELP", 0, NULL,
-                                cb_help, NULL);
-   }
+	slider =
+	   Epplet_create_hslider(4, 4, 40, 0, 100, 1, 25, &vol, adj_cb, NULL);
+	mutebtn =
+	   Epplet_create_togglebutton("Mute", NULL, 5, 18, 36, 12, &mute,
+				      mute_cb, NULL);
+	closebtn =
+	   Epplet_create_button(NULL, NULL, 2, 34, 0, 0, "CLOSE", 0, NULL,
+				cb_close, NULL);
+	helpbtn =
+	   Epplet_create_button(NULL, NULL, 34, 34, 0, 0, "HELP", 0, NULL,
+				cb_help, NULL);
+     }
 
    mute = 0;
 
@@ -312,7 +310,7 @@ create_mixer_gadget(void)
 int
 main(int argc, char **argv)
 {
-   int i;
+   int                 i;
 
    atexit(Epplet_cleanup);
 
@@ -324,31 +322,31 @@ main(int argc, char **argv)
 
    layout = LAYOUT_CONVENTIONAL;
    for (i = 1; i < argc; i++)
-   {
-      if (!strcmp(argv[i], "--wide"))
-      {
-         layout = LAYOUT_WIDE;
-      }
-      else if (!strcmp(argv[i], "--tall"))
-      {
-         layout = LAYOUT_TALL;
-      }
-   }
+     {
+	if (!strcmp(argv[i], "--wide"))
+	  {
+	     layout = LAYOUT_WIDE;
+	  }
+	else if (!strcmp(argv[i], "--tall"))
+	  {
+	     layout = LAYOUT_TALL;
+	  }
+     }
 
    switch (layout)
-   {
+     {
      case LAYOUT_WIDE:
-        Epplet_Init("E-Mixer", "0.2", "Enlightenment Volume Control Epplet",
-                    6, 1, argc, argv, 0);
-        break;
+	Epplet_Init("E-Mixer", "0.2", "Enlightenment Volume Control Epplet",
+		    6, 1, argc, argv, 0);
+	break;
      case LAYOUT_TALL:
-        Epplet_Init("E-Mixer", "0.2", "Enlightenment Volume Control Epplet",
-                    1, 6, argc, argv, 0);
-        break;
+	Epplet_Init("E-Mixer", "0.2", "Enlightenment Volume Control Epplet",
+		    1, 6, argc, argv, 0);
+	break;
      default:
-        Epplet_Init("E-Mixer", "0.2", "Enlightenment Volume Control Epplet",
-                    3, 3, argc, argv, 0);
-   }
+	Epplet_Init("E-Mixer", "0.2", "Enlightenment Volume Control Epplet",
+		    3, 3, argc, argv, 0);
+     }
 
    create_mixer_gadget();
 

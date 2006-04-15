@@ -64,11 +64,12 @@
  */
 
 static void         dopr(char *buffer, const char *format, va_list args);
-static void         fmtstr(char *value, int ljust, int len, int zpad, int precision);
-static void         fmtnum(long value, int base, int dosign,
-			   int ljust, int len, int zpad, int precision);
-static void         fmtdouble(int fmt, double value,
-			      int ljust, int len, int zpad, int precision);
+static void         fmtstr(char *value, int ljust, int len, int zpad,
+			   int precision);
+static void         fmtnum(long value, int base, int dosign, int ljust, int len,
+			   int zpad, int precision);
+static void         fmtdouble(int fmt, double value, int ljust, int len,
+			      int zpad, int precision);
 static void         dostr(char *);
 static char        *output;
 static void         dopr_outch(int c);
@@ -90,12 +91,11 @@ Evsnprintf(char *str, size_t count, const char *fmt, va_list args)
 
 #ifdef HAVE_STDARG_H
 int
-Esnprintf(char *str, size_t count, const char *fmt,...)
+Esnprintf(char *str, size_t count, const char *fmt, ...)
 #else
 int
 Esnprintf(va_alist)
      va_dcl
-
 #endif
 {
 #ifndef HAVE_STDARG_H
