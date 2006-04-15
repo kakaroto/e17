@@ -140,7 +140,7 @@ static void _etk_structure_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *
 
 
 
-void
+Etk_Tree_Row*
 structure_viewer_add_row (entropy_gui_component_instance * instance,
 			  entropy_generic_file * file, Etk_Tree_Row * prow)
 {
@@ -178,6 +178,8 @@ structure_viewer_add_row (entropy_gui_component_instance * instance,
   ecore_list_append (viewer->files, event->file);
 
   etk_tree_thaw(ETK_TREE(viewer->tree));
+
+  return new_row;
 }
 
 void
@@ -197,6 +199,40 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 		((entropy_file_request *) eevent->data)->file;
 
 	      row = ecore_hash_get (viewer->row_folder_hash, event_file);
+
+	      /*If we don't have a file's row-parent, try traversing up the tree
+	       * to find it*/
+	      if (!row) {
+		      entropy_generic_file* traverse_file = event_file;
+		      Ecore_List* traverse_stack;
+		      int hit = 0;
+
+		      traverse_stack = ecore_list_new();
+		      /*Attempt to traverse up the tree...*/
+		      while ( (traverse_file = entropy_core_parent_folder_file_get(traverse_file))) {
+			      if (ecore_hash_get(viewer->row_folder_hash, traverse_file)) {
+				      row = ecore_hash_get(viewer->row_folder_hash, traverse_file);
+				      hit = 1;
+				      goto done;
+			      }
+
+			      ecore_list_prepend(traverse_stack, traverse_file);
+		      }
+
+		      done:
+		      if (hit) {
+			    while ((traverse_file = ecore_list_remove_first(traverse_stack))) {
+				    row = structure_viewer_add_row(comp, traverse_file, row);
+				    entropy_core_file_cache_add_reference (traverse_file->md5);
+			    }
+
+			    row = structure_viewer_add_row(comp, event_file, row);
+			    entropy_core_file_cache_add_reference (event_file->md5);
+		      }
+
+		      ecore_list_destroy(traverse_stack);
+	      }
+	      
 	      if (row)
 		      etk_tree_row_select(row);
 	      
@@ -282,7 +318,7 @@ entropy_plugin_init (entropy_core * core)
   plugin = entropy_malloc(sizeof(Entropy_Plugin_Gui));
   base = ENTROPY_PLUGIN(plugin);
   
-  return plugin;
+  return ENTROPY_PLUGIN(plugin);
 }
 
 
