@@ -137,6 +137,36 @@ static Etk_Widget *_entropy_etk_menu_item_new(Etk_Menu_Item_Type item_type, cons
    return menu_item;
 }
 
+static void 
+_open_folder_window_cb(Etk_Object* obj, void* data)
+{
+	entropy_gui_event* gui_event;
+	entropy_gui_component_instance* instance;
+	entropy_etk_file_list_viewer* viewer;
+	Etk_Tree_Row* row;
+	gui_file* file;
+	
+	instance = data;
+	if (instance) viewer = instance->data;
+
+	if (instance && viewer) {
+		row = etk_tree_selected_row_get(ETK_TREE(viewer->tree));
+		file = ecore_hash_get(etk_list_viewer_row_hash, row);
+
+		if (file) {
+			printf("New folder handler...\n");
+			
+			gui_event = entropy_malloc (sizeof (entropy_gui_event));
+			gui_event->event_type =
+				entropy_core_gui_event_get (ENTROPY_GUI_EVENT_ACTION_FILE);
+			gui_event->data = file->file;
+			gui_event->hints |= ENTROPY_GUI_EVENT_HINT_WINDOW_NEW;
+			entropy_core_layout_notify_event (instance, gui_event, ENTROPY_EVENT_GLOBAL);
+		}
+	}
+	
+}
+
 static void
 _open_with_item_cb(Etk_Object *obj, void *data)
 {
@@ -196,13 +226,27 @@ _entropy_etk_list_viewer_menu_popup_cb(Etk_Object *object, void *data)
 			   viewer->open_with_menu = NULL;
 		   }
 
+		   /*If it's a folder, add an 'Open in new layout..' entry*/
+		   if (!strcmp(file->file->mime_type, "file/folder")) {
+			   Etk_Widget* w;
+			   
+			   viewer->open_with_menu = etk_menu_new();
+			   etk_menu_item_submenu_set(ETK_MENU_ITEM(viewer->open_with_menuitem), ETK_MENU(viewer->open_with_menu)); 
+
+			   w = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, "Open in new window", 
+				  ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(viewer->open_with_menu),NULL);
+			   etk_signal_connect("activated", ETK_OBJECT(w), ETK_CALLBACK(_open_folder_window_cb), instance);
+		   }
+
 	
 		   if (binding) {
 			   Etk_Widget* w; 
 			   int i=0;
 		   
-			   viewer->open_with_menu = etk_menu_new();
-			   etk_menu_item_submenu_set(ETK_MENU_ITEM(viewer->open_with_menuitem), ETK_MENU(viewer->open_with_menu)); 
+			   if (!viewer->open_with_menu) {
+				   viewer->open_with_menu = etk_menu_new();
+				   etk_menu_item_submenu_set(ETK_MENU_ITEM(viewer->open_with_menuitem), ETK_MENU(viewer->open_with_menu)); 
+			   }
 
 			   for (l = binding->actions; l; ) {
 				   action = l->data;

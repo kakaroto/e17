@@ -98,30 +98,34 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *obj,
   entropy_core *core = ((entropy_gui_component_instance *) requestor)->core;
   Entropy_Config_Mime_Binding_Action *app;
   char *uri;
-  char *pos;
 
   entropy_generic_file *file = (entropy_generic_file *) obj;
 
   if (!strcmp (file->mime_type, "file/folder") && !file->parent) {
-    entropy_file_request *request =
-      entropy_malloc (sizeof (entropy_file_request));
-    request->file = file;
+	  
+     if (!(eevent->hints & ENTROPY_GUI_EVENT_HINT_WINDOW_NEW)) {
+	     entropy_file_request *request =
+	      entropy_malloc (sizeof (entropy_file_request));
+	    request->file = file;
 
-    //printf("Action on a folder - change dirs!\n\n");
-
-
-    /*Send an event to the core */
-    gui_event = entropy_malloc (sizeof (entropy_gui_event));
-    gui_event->event_type =
-      entropy_core_gui_event_get (ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS);
-    gui_event->data = request;
-    entropy_core_layout_notify_event ((entropy_gui_component_instance *)
+	    /*Send an event to the core */
+	    gui_event = entropy_malloc (sizeof (entropy_gui_event));
+	    gui_event->event_type =
+	      entropy_core_gui_event_get (ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS);
+	    gui_event->data = request;
+	    entropy_core_layout_notify_event ((entropy_gui_component_instance *)
 				      requestor, gui_event,
 				      ENTROPY_EVENT_LOCAL);
-
-    return;
-  }
-  else if ((uri = entropy_core_descent_for_mime_get (core, file->mime_type))
+	    return;
+     } else {
+	     Ecore_Ipc_Server* server = ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER, IPC_TITLE,0 ,NULL);
+	     if (server) {
+			printf("Sending message to server!\n");
+			ecore_ipc_server_send(server, ENTROPY_IPC_EVENT_LAYOUT_NEW, 0, 0, 0, 0, 
+				file->uri, strlen(file->uri)+1); 
+	     }
+     }
+  } else if ((uri = entropy_core_descent_for_mime_get (core, file->mime_type))
 	   || (file->parent && !strcmp (file->mime_type, "file/folder"))) {
 
     entropy_file_request *request =
@@ -185,7 +189,7 @@ entropy_plugin_init(entropy_core* core)
 
 	plugin = entropy_malloc(sizeof(Entropy_Plugin_Gui));
 
-	return plugin;
+	return ENTROPY_PLUGIN(plugin);
 }
 
 

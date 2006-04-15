@@ -168,7 +168,7 @@ entropy_core* entropy_core_init(int argc, char** argv) {
 		if (server) {
 			printf("Sending message to server!\n");
 			ecore_ipc_server_send(server, ENTROPY_IPC_EVENT_LAYOUT_NEW, 0, 0, 0, 0, 
-				"file:///home/chaos/DigitalBlasphemy/Dual", strlen("file:///home/chaos/DigitalBlasphemy/Dual")+1); 
+				NULL, 0); 
 		}
 		ecore_main_loop_iterate();
 		exit(0);

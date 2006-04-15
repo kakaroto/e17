@@ -218,13 +218,14 @@ Entropy_Gui_Event_Handler* entropy_event_handler_file_action_handler()
 
 Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_file_action_instance_data(entropy_gui_event* event, 
 	entropy_gui_component_instance* requestor) 
-{
-	
+{	
 	Entropy_Gui_Event_Handler_Instance_Data* data = entropy_malloc(sizeof(Entropy_Gui_Event_Handler_Instance_Data));
-	
 	entropy_notify_event* ev = entropy_notify_event_new();
+
+
 	ev->event_type = ENTROPY_NOTIFY_FILE_ACTION; 
 	ev->key = event->key;
+	ev->hints = event->hints;
 	ev->processed = 1;
 	ev->return_struct = event->data; /*An entropy generic file*/
 

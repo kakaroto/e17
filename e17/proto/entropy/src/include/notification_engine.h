@@ -19,6 +19,10 @@ enum ENTROPY_NOTIFY_TYPES {
 	ENTROPY_NOTIFY_FILE_METADATA_AVAILABLE = 14
 };
 
+enum ENTROPY_GUI_EVENT_HINTS {
+	ENTROPY_GUI_EVENT_HINT_WINDOW_NEW = 1
+};
+
 typedef struct entropy_notification_engine entropy_notification_engine;
 struct entropy_notification_engine {
         pthread_t  notify_thread;
@@ -47,6 +51,7 @@ struct entropy_notify_event {
 	char* function;
 	void* data;
 	int key;
+	int hints;
 
 	Ecore_List* cb_list;
 	Ecore_List* cleanup_list;
@@ -60,6 +65,7 @@ struct entropy_gui_event {
 	char* event_type;
 	void *data;
 	int key;
+	int hints;
 };
 
 
