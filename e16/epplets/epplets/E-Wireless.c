@@ -117,7 +117,7 @@ void draw_graph(void)
 	draw_line(rgb,29,0,29,HEIGHT-1,&colors[color][1][0]);
 	
 	j=((hist_pos+1)%WIDTH);
-   y=HEIGHT-((HEIGHT*cpu_hist[j])/100);
+	y=HEIGHT-((HEIGHT*cpu_hist[j])/100);
 	for(i=0;i<WIDTH-1;i++) {
 		j++; j%=WIDTH;
 		y1=HEIGHT-((HEIGHT*cpu_hist[j])/100);
@@ -139,21 +139,22 @@ static void cb_timer(void *data)
 	fpStat=fopen("/proc/net/wireless","r");
 	if(fpStat) {
 
-			fgets(s,sizeof(s),fpStat);
-                        fgets(s,sizeof(s),fpStat);
-                        fgets(s,sizeof(s),fpStat);
+		fgets(s,sizeof(s),fpStat);
+		fgets(s,sizeof(s),fpStat);
+		fgets(s,sizeof(s),fpStat);
 
-			sscanf(s,"%*s %*s %s %*s %*s %*s %*s %*s",ss);
+		sscanf(s,"%*s %*s %s %*s %*s %*s %*s %*s",ss);
 
-			sigstr = atof(ss);
+		sigstr = atof(ss);
 
-				l0=sigstr;
-				percent=(100*l0/92);
-				if(percent>100) percent=100;
-				
-				cpu_hist[hist_pos]=percent;
-				sprintf(ss,"%d%%",percent);
-				Epplet_change_label(lbl_usage,ss);
+		l0=sigstr;
+		percent=(100*l0/92);
+		if(percent>100)
+			percent=100;
+
+		cpu_hist[hist_pos]=percent;
+		sprintf(ss,"%d%%",percent);
+		Epplet_change_label(lbl_usage,ss);
 
 		fclose(fpStat);
 		draw_graph();
@@ -161,9 +162,8 @@ static void cb_timer(void *data)
 		hist_pos%=WIDTH;
 		Epplet_paste_buf(buf,win,0,0);
 		Epplet_timer(cb_timer,NULL,1,"TIMER");
-		
 	}
-	data=NULL;			
+	data=NULL;
 }
 
 static void cb_in(void *data, Window w)
@@ -204,7 +204,7 @@ static void cb_config(void *data)
 static void cb_color(void *data)
 {
 	char s[2]={0,0};
-	
+
 	color=(int)data;
 	s[0]='0'+color;
 	Epplet_modify_config("color",s);
@@ -218,33 +218,33 @@ int main(int argc, char *argv[])
 	char s[64],*ptr;
 	int priority;
 	Epplet_gadget p;
-		
+
 	priority=getpriority(PRIO_PROCESS,getpid());
 	setpriority(PRIO_PROCESS,getpid(),priority+10);
 	atexit(Epplet_cleanup);
-	
+
 	cpu_hist_size=WIDTH;
 	cpu_hist=(int*)malloc(sizeof(int)*cpu_hist_size);
 	memset(cpu_hist,0x00,sizeof(int)*cpu_hist_size);
 	hist_pos=0;
-	
+
 	Epplet_Init("E-WIRELESS","0.1","E 802.11 signal monitoring epplet",
 					3,3,argc,argv,0);
-	
+
 	Epplet_load_config();
 	Epplet_timer(cb_timer,NULL,1,"TIMER");
-	
+
 	Epplet_gadget_show(da=Epplet_create_drawingarea(2,2,WIDTH+4,HEIGHT+4));
 	win=Epplet_get_drawingarea_window(da);
 	buf=Epplet_make_rgb_buf(WIDTH,HEIGHT);
-	
+
 	btn_close=Epplet_create_button(NULL,NULL,0,0,0,0,"CLOSE",win,NULL,
 											 cb_close,NULL);
 	btn_config=Epplet_create_button(NULL,NULL,28,0,0,0,"CONFIGURE",win,NULL,
 											  cb_config,NULL);
 	btn_about=Epplet_create_button(NULL,NULL,14,0,0,0,"HELP",win,NULL,
 											cb_about,NULL);
-	
+
 	sprintf(s,"Signal:");
 	Epplet_gadget_show(lbl_cpu=Epplet_create_label(2,36,s,1));
 	Epplet_gadget_show(lbl_usage=Epplet_create_label(-3,36,"0%",1));
@@ -258,26 +258,15 @@ int main(int argc, char *argv[])
 	Epplet_add_popup_entry(p,"Magenta",NULL,cb_color,(void*)5L);
 	Epplet_add_popup_entry(p,"Gray",   NULL,cb_color,(void*)6L);
 	popup=Epplet_create_popupbutton("Colors",NULL,6,24,36,12,NULL,p);
-	
+
 	Epplet_register_focus_in_handler(cb_in,NULL);
 	Epplet_register_focus_out_handler(cb_out,NULL);
 
 	ptr=Epplet_query_config_def("color","0");
 	color=*ptr-'0';
-	
+
 	Epplet_show();
 	Epplet_Loop();
-	
+
 	return(0);
 }
-
-
-
-
-
-
-
-
-
-
-
