@@ -28,6 +28,10 @@ entropy_thumbnailer_plugin_mime_types_get ()
     ecore_list_append (types, "image/jpeg");
     ecore_list_append (types, "image/png");
     ecore_list_append (types, "image/gif");
+    ecore_list_append (types, "video/x-ms-wmv");
+    ecore_list_append (types, "video/mpeg");
+    ecore_list_append (types, "video/x-msvideo");
+
 
   }
 

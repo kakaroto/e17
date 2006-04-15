@@ -86,11 +86,26 @@ ipc_client_data(void *data, int type, void *event)
 	} else if (e->major == ENTROPY_IPC_EVENT_LAYOUT_NEW) {
 		entropy_gui_component_instance* (*entropy_plugin_layout_create)(entropy_core*);
 		entropy_gui_component_instance* instance;
+		entropy_generic_file* file = NULL;
 
-		printf("New layout requested!\n");
+		printf("New layout requested! - '%s'\n", (char*)e->data);
+
 		entropy_plugin_layout_create = dlsym(core->layout_plugin->dl_ref, "entropy_plugin_layout_create");
 		instance = (*entropy_plugin_layout_create)(core);
 		instance->plugin = core->layout_plugin;
+
+		if (e->data) {
+			file = entropy_core_uri_generic_file_retrieve((char*)e->data);
+			if (!file) {
+				file = entropy_core_parse_uri((char*)e->data);
+			}
+
+			if (file) {
+				entropy_mime_file_identify(file);
+				printf("'%s/%s'...\n", file->path, file->filename);
+				entropy_event_action_file(file, instance);
+			}
+		}
 	}
 
 	return 1;
@@ -152,11 +167,9 @@ entropy_core* entropy_core_init(int argc, char** argv) {
 		Ecore_Ipc_Server* server = ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER, IPC_TITLE,0 ,NULL);
 		if (server) {
 			printf("Sending message to server!\n");
-			ecore_ipc_server_send(server, ENTROPY_IPC_EVENT_LAYOUT_NEW, 0, 0, 0, 0, NULL,0); 
+			ecore_ipc_server_send(server, ENTROPY_IPC_EVENT_LAYOUT_NEW, 0, 0, 0, 0, 
+				"file:///home/chaos/DigitalBlasphemy/Dual", strlen("file:///home/chaos/DigitalBlasphemy/Dual")+1); 
 		}
-		/*printf("creating the IPC server failed! Entropy already running?
-		 * FIXME we should launch another layout here\n");
-		 */
 		ecore_main_loop_iterate();
 		exit(0);
 	}
@@ -1270,6 +1283,9 @@ entropy_generic_file* entropy_core_parse_uri(char* uri) {
 	listener->file = file;
 	listener->count = 1;
 	entropy_core_file_cache_add(file->md5, listener);
+
+	/*Cleanup*/ /*--FIXME*/
+	free(uri_path);
 
 	return file;
 }
