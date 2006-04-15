@@ -94,6 +94,7 @@ dirscan(char *dir, unsigned long *num)
   D(("dirscan(\"%s\", %8p) called.\n", dir, num));
 
   if ((!dir) || (!*dir)) {
+    *num = 0;
     return ((char **) NULL);
   }
   dirp = opendir(dir);
