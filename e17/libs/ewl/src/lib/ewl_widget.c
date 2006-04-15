@@ -688,7 +688,7 @@ ewl_widget_state_set(Ewl_Widget *w, const char *state)
 	 * Intentionally lose a reference to the ecore string to keep a
 	 * reference cached for later re-use.
 	 */
-	w->bit_state = ecore_string_instance(state);
+	w->bit_state = ecore_string_instance((char *)state);
 
 	if (w->theme_object) {
 		if (ewl_config.theme.print_signals)
