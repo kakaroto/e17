@@ -27,7 +27,7 @@ int main(int argc, char *argv[]){
         Epsilon * image = NULL;
         Epsilon_Info *info;
 
-        if(argc &lt; 1) {
+        if(argc &lt; 2) {
                 printf("Usage: %s input_image\n", argv[0]);
                 return(1);
         }
