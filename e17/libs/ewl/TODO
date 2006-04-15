@@ -121,9 +121,6 @@ EWL TODO
   places off of the right bottom, but that should be adjusted depending on
   where we are relative to the window border
 
-- Multi-select file dialog needs to highlight selections and append
-  filenames in the text field.
-
 - Need to do some work on the tree.
   - add ability to wrap text in tree nodes
   - add ability to clear all rows under a parent row
