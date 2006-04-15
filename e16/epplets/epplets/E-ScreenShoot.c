@@ -801,7 +801,10 @@ do_shot(void *data)
                   script_buf, view_buf, opt.do_ftp ? "" : ")&", NULL);
    }
    else
+   {
       printf("don't know how to handle grabber %s\n", opt.grabber);
+      return;
+   }
 
    system(sys);
 
