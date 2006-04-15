@@ -94,7 +94,7 @@ void draw_line(unsigned char *rgb, int x1, int y1, int x2, int y2, unsigned char
 void draw_graph(void)
 {
 	unsigned char *rgb,*rptr;
-	int i,j,h,x,y,y1;
+	int i,j,x,y,y1;
 	
 	rgb=Epplet_get_rgb_pointer(buf);
 	
@@ -131,10 +131,10 @@ void draw_graph(void)
 static void cb_timer(void *data)
 {
 	FILE *fpStat;
-	int i,percent;
+	int percent;
 	double sigstr;
 	char s[256],ss[64];
-	unsigned long l0,l1,l2;
+	unsigned long l0;
 	
 	fpStat=fopen("/proc/net/wireless","r");
 	if(fpStat) {
