@@ -97,9 +97,9 @@ set_pants_off(void *data)
 static void
 log_pants(void *data)
 {
-   time_t          now;
-   int             len;
-   unsigned char   *s;
+   time_t now;
+   int len;
+   char *s;
 
    s=(pants_on)?PANTS_ON_STR:PANTS_OFF_STR;
 
