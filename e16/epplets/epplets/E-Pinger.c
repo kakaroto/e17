@@ -48,7 +48,7 @@ static Epplet_gadget tb_host, tb_pause;
 static Window        win, config_win;
 static int           log_entries, nchild;
 static char          buf[BUF_LEN];
-static unsigned char *result, *new_result;
+static char          *result, *new_result;
 static char          *host;
 static int           pinger_pause=30;
 static char          cmd[CMD_LEN];
@@ -69,7 +69,7 @@ static void cb_in(void *data, Window w);
 static void cb_out(void *data, Window w);
 static void cb_help(void *data);
 static int bg_system(char *command);
-static int nb_read (int fd, unsigned char *buffer, int n);
+static int nb_read (int fd, char *buffer, int n);
 static void start_ping(void);
 void ping_reaper(void);
 
@@ -144,7 +144,7 @@ bg_system (char *command)
 
 /* Non-blocking read */
 static int
-nb_read (int fd, unsigned char *buffer, int n)
+nb_read (int fd, char *buffer, int n)
 {
    int bytes_read;
    int status;
@@ -400,10 +400,9 @@ cb_configure(void *data)
 static void
 cb_timer(void *data)
 {
-   time_t          now;
-   int             nbyte;
-   unsigned char   *s;
-
+   time_t now;
+   int nbyte;
+   char *s;
 
    if((nbyte=nb_read(0, new_result, BUF_LEN))>0){
      new_result[nbyte-1]='\0';
@@ -466,12 +465,12 @@ main(int argc, char **argv)
                                  82, 2, 0, 0, "HELP", win, NULL,
                                  cb_help, NULL);
 
-   if((result=(unsigned char *)malloc(BUF_LEN))==NULL){
+   if((result=(char *)malloc(BUF_LEN))==NULL){
      perror("main: malloc result");
      return(-1);
    }
    *result='\0';
-   if((new_result=(unsigned char *)malloc(BUF_LEN))==NULL){
+   if((new_result=(char *)malloc(BUF_LEN))==NULL){
      perror("main: malloc new_result");
      return(-1);
    }
