@@ -68,6 +68,7 @@ static int is_day_name(const char *s);
 int is_from(const char *s, char *path, size_t pathlen);
 int parse_mime_header(FILE *fp);
 int mbox_folder_count(char *path, int force);
+int maildir_folder_count(char *path, int force);
 
 const char *Weekdays[] =
 {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
@@ -531,7 +532,6 @@ maildir_folder_count(char *path, int force)
   time_t last_update;
   unsigned long new_msgs, old_msgs;
   struct stat s;
-  struct timeval t[2];
 
   D(("maildir_folder_count(%s, %d) called.\n", NONULL(path), force));
 
