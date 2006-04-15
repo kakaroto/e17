@@ -510,6 +510,8 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
      }
 
    EwinDetermineArea(ewin);
+   if (Mode.op_source == OPSRC_USER)
+      EwinSetPlacementGravity(ewin, x, y);
 
    if (ewin->MoveResize)
       ewin->MoveResize(ewin, resize);

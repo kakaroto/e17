@@ -836,10 +836,10 @@ DesksResize(int w, int h)
 
    BackgroundsInvalidate(0);
 
-   ModulesSignal(ESIGNAL_DESK_RESIZE, NULL);
-
    for (i = 0; i < Conf.desks.num; i++)
       DeskResize(i, w, h);
+
+   ModulesSignal(ESIGNAL_DESK_RESIZE, NULL);
 }
 
 static void

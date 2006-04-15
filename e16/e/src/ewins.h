@@ -209,6 +209,12 @@ struct _ewin
    } ewmh;
    struct
    {
+      signed char         gravity;
+      int                 ax, ay;	/* Current placed area */
+      int                 gx, gy;	/* Distance to edge given by gravity */
+   } place;
+   struct
+   {
       int                 left, right, top, bottom;
    } strut;
    struct
@@ -253,6 +259,11 @@ struct _ewin
 #define EWIN_TYPE_MENU          0x02
 #define EWIN_TYPE_ICONBOX       0x04
 #define EWIN_TYPE_PAGER         0x08
+
+#define EWIN_GRAVITY_NW         0
+#define EWIN_GRAVITY_NE         1
+#define EWIN_GRAVITY_SW         2
+#define EWIN_GRAVITY_SE         3
 
 #define EwinGetDesk(ewin)		EoGetDesk(ewin)
 
@@ -311,6 +322,8 @@ int                 EwinIsOnScreen(const EWin * ewin);
 void                EwinRememberPositionSet(EWin * ewin);
 void                EwinRememberPositionGet(EWin * ewin, Desk * dsk,
 					    int *px, int *py);
+void                EwinSetPlacementGravity(EWin * ewin, int x, int y);
+void EwinReposition(EWin * ewin);
 unsigned int        EwinFlagsEncode(const EWin * ewin);
 void                EwinFlagsDecode(EWin * ewin, unsigned int flags);
 void                EwinUpdateOpacity(EWin * ewin);

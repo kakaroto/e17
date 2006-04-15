@@ -121,6 +121,8 @@ EwinCreate(Window win, int type)
    ewin->area_x = -1;
    ewin->area_y = -1;
 
+   ewin->place.gravity = -1;
+
    ewin->ewmh.opacity = 0;	/* If 0, ignore */
    ewin->props.opaque_when_focused = 1;
 
@@ -1420,6 +1422,9 @@ ShowEwin(EWin * ewin)
    EoMap(ewin, 0);
 
    EwinStateUpdate(ewin);
+
+   if (ewin->place.gravity < 0)
+      EwinSetPlacementGravity(ewin, EoGetX(ewin), EoGetY(ewin));
 }
 
 void
@@ -1575,6 +1580,144 @@ EwinRememberPositionGet(EWin * ewin, Desk * dsk, int *px, int *py)
 
    *px = x;
    *py = y;
+}
+
+/*
+ * Set placement gravity
+ */
+void
+EwinSetPlacementGravity(EWin * ewin, int x, int y)
+{
+   int                 w, h, ax, ay, wd, hd;
+   Desk               *dsk;
+
+   dsk = EoGetDesk(ewin);
+   wd = EoGetW(dsk);
+   hd = EoGetH(dsk);
+   DeskGetArea(dsk, &ax, &ay);
+
+   w = EoGetW(ewin);
+   h = EoGetH(ewin);
+
+   /* Get relative area */
+   ewin->place.ax = ewin->area_x;
+   ewin->place.ay = ewin->area_y;
+   ax = ewin->place.ax - ax;
+   ay = ewin->place.ay - ay;
+
+   x -= ax * wd;
+   y -= ay * hd;
+
+   if (x <= (wd - w) / 2)
+     {
+	if (y <= (hd - h) / 2)
+	  {
+	     ewin->place.gravity = EWIN_GRAVITY_NW;
+	     ewin->place.gx = x;
+	     ewin->place.gy = y;
+	  }
+	else
+	  {
+	     ewin->place.gravity = EWIN_GRAVITY_SW;
+	     ewin->place.gx = x;
+	     ewin->place.gy = hd - (y + h);
+	  }
+     }
+   else
+     {
+	if (y <= (hd - h) / 2)
+	  {
+	     ewin->place.gravity = EWIN_GRAVITY_NE;
+	     ewin->place.gx = wd - (x + w);
+	     ewin->place.gy = y;
+	  }
+	else
+	  {
+	     ewin->place.gravity = EWIN_GRAVITY_SE;
+	     ewin->place.gx = wd - (x + w);
+	     ewin->place.gy = hd - (y + h);
+	  }
+     }
+
+#if 0				/* Debug */
+   Eprintf("Set gravity %d,%d %d,%d %d %d,%d %d,%d: %s\n", ax, ay, x, y,
+	   ewin->place.gravity, ewin->place.ax, ewin->place.ay,
+	   ewin->place.gx, ewin->place.gy, EwinGetName(ewin));
+#endif
+}
+
+void
+EwinReposition(EWin * ewin)
+{
+   int                 wdo, hdo, wdn, hdn;
+   int                 x, y, w, h, ax, ay, xn, yn;
+
+   wdo = Mode.screen.w_old;
+   hdo = Mode.screen.h_old;
+   wdn = VRoot.w;
+   hdn = VRoot.h;
+
+   x = EoGetX(ewin);
+   y = EoGetY(ewin);
+   w = EoGetW(ewin);
+   h = EoGetH(ewin);
+
+   /* Get relative area */
+   if (EoIsSticky(ewin))
+     {
+	ax = ay = 0;
+     }
+   else
+     {
+	DeskGetArea(EoGetDesk(ewin), &ax, &ay);
+	ax = ewin->place.ax - ax;
+	ay = ewin->place.ay - ay;
+     }
+
+   x -= ax * wdo;
+   y -= ay * hdo;
+
+   /* Reposition to same distance from screen edges determined by
+    * placement gravity.
+    * Fall back to left/top if this causes left/top to go offscreen */
+   switch (ewin->place.gravity)
+     {
+     default:
+     case EWIN_GRAVITY_NW:
+     case EWIN_GRAVITY_SW:
+	xn = ewin->place.gx;
+	break;
+     case EWIN_GRAVITY_NE:
+     case EWIN_GRAVITY_SE:
+	xn = wdn - w - ewin->place.gx;
+	break;
+     }
+   if (x > 0 && xn < 0)
+      xn = x;
+
+   switch (ewin->place.gravity)
+     {
+     default:
+     case EWIN_GRAVITY_NW:
+     case EWIN_GRAVITY_NE:
+	yn = ewin->place.gy;
+	break;
+     case EWIN_GRAVITY_SW:
+     case EWIN_GRAVITY_SE:
+	yn = hdn - h - ewin->place.gy;
+	break;
+     }
+   if (y > 0 && yn < 0)
+      yn = y;
+
+#if 0				/* Debug */
+   Eprintf("Reposition %d,%d -> %d,%d: %s\n", x, y, xn, yn, EwinGetName(ewin));
+#endif
+
+   xn += ax * wdn;
+   yn += ay * hdn;
+
+   EwinMove(ewin, xn, yn);
 }
 
 typedef union
@@ -1752,56 +1895,12 @@ EwinsTouch(Desk * dsk)
 static void
 EwinsReposition(void)
 {
-   int                 wdo, hdo, wdn, hdn;
    int                 i, num;
-   EWin               *const *lst, *ewin;
-   int                 x, y, w, h, ax, ay, xn, yn;
+   EWin               *const *lst;
 
    lst = EwinListGetAll(&num);
-
-   wdo = Mode.screen.w_old;
-   hdo = Mode.screen.h_old;
-   wdn = VRoot.w;
-   hdn = VRoot.h;
-
    for (i = num - 1; i >= 0; i--)
-     {
-	ewin = lst[i];
-	x = EoGetX(ewin);
-	y = EoGetY(ewin);
-	w = EoGetW(ewin);
-	h = EoGetH(ewin);
-
-	/* Get relative area */
-	ax = (x >= 0) ? (x + w / 2) / wdo : (x + w / 2 + 1) / wdo - 1;
-	ay = (y >= 0) ? (y + h / 2) / hdo : (y + h / 2 + 1) / hdo - 1;
-
-	x -= ax * wdo;
-	y -= ay * hdo;
-
-	/* Reposition to same distance from nearest screen edge */
-	/* Fall back to left/top if this causes left/top to go offscreen */
-	if (abs(x) <= abs(x + w - wdo))
-	   xn = x;
-	else
-	   xn = x + (wdn - wdo);
-	if (x > 0 && xn < 0)
-	   xn = x;
-	xn += ax * wdn;
-
-	if (abs(y) <= abs(y + h - hdo))
-	   yn = y;
-	else
-	   yn = y + (hdn - hdo);
-	if (y > 0 && yn < 0)
-	   yn = y;
-	yn += ay * hdn;
-
-	if (xn == EoGetX(ewin) && yn == EoGetY(ewin))
-	   continue;
-
-	EwinMove(ewin, xn, yn);
-     }
+      EwinReposition(lst[i]);
 }
 
 void

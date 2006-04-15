@@ -283,6 +283,7 @@ IPC_MoveResize(const char *params, Client * c __UNUSED__)
 static void
 IPC_WinList(const char *params, Client * c __UNUSED__)
 {
+   static const char  *const TxtPG[] = { "NW", "NE", "SW", "SE" };
    char                param1[FILEPATH_LEN_MAX];
    EWin               *const *lst, *e;
    int                 num, i;
@@ -313,6 +314,15 @@ IPC_WinList(const char *params, Client * c __UNUSED__)
 		       _EwinGetClientXwin(e), EoGetX(e), EoGetY(e), EoGetW(e),
 		       EoGetH(e), (EoIsSticky(e)) ? -1 : (int)EoGetDeskNum(e),
 		       e->area_x, e->area_y, SS(e->icccm.wm_name));
+	     break;
+
+	  case 'g':
+	     IpcPrintf
+		("%#10lx : %5d %5d %4dx%4d :: %2d : %s %4d,%4d %2d,%2d : %s\n",
+		 _EwinGetClientXwin(e), EoGetX(e), EoGetY(e), EoGetW(e),
+		 EoGetH(e), (EoIsSticky(e)) ? -1 : (int)EoGetDeskNum(e),
+		 TxtPG[e->place.gravity & 3], e->place.gx, e->place.gy,
+		 e->place.ax, e->place.ay, SS(e->icccm.wm_name));
 	     break;
 
 	  case 'p':

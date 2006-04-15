@@ -487,6 +487,7 @@ PagerReconfigure(Pager * p, int apply)
 	w = (int)(ax * VRoot.w / p->scale + .5);
 	h = (int)(ay * VRoot.h / p->scale + .5);
 	EwinResize(p->ewin, w, h);
+	EwinReposition(p->ewin);
      }
 }
 
