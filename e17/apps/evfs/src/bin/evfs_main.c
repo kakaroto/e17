@@ -302,6 +302,7 @@ evfs_load_plugins()
                 PACKAGE_PLUGIN_DIR "/plugins/file");
         exit(1);
      }
+   closedir(dir);
 
 }
 

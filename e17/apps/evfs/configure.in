@@ -154,7 +154,7 @@ AM_CONDITIONAL(HAVE_CURL, test $msg_curl = yes)
 AC_CHECK_LIB(bz2, bzCompressInit, AC_DEFINE(HAVE_OLDER_BZIP2, 1, [Define to 1 if older bzip2 version is used]))
 AC_CHECK_HEADERS(bzlib.h,
         BZ2_LIBS="$BZ2_LIBS -lbz2",
-        AC_MSG_ERROR([Gnome-vfs requires libbz2 to compile.])
+        AC_MSG_WARN([evfs requires libbz2 to compile.])
         )
 AC_SUBST(BZ2_LIBS)
 
