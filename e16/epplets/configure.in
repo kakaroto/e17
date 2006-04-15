@@ -3,20 +3,6 @@ dnl# $Id$
 AC_INIT(api/epplet.c)
 AM_INIT_AUTOMAKE(epplets, 0.9)
 
-dnl# Supply default CFLAGS, if not specified by `CFLAGS=flags ./configure'
-if test ! -z "${CFLAGS}" -o ! -z "${CCOPTS}"; then
-  CFLAGS_GIVEN="${CFLAGS} ${CCOPTS}"
-else
-  CFLAGS_GIVEN=""
-fi
-
-if test -z "${CFLAGS}"; then
-    if test -z "${CCOPTS}"; then
-	CCOPTS="-O"
-    fi
-    CFLAGS="$CCOPTS"
-fi
-
 AC_PROG_CC
 AC_PROG_CPP
 
@@ -32,23 +18,6 @@ AC_CYGWIN
 AM_PROG_LIBTOOL
 
 AC_GCC_TRADITIONAL
-
-dnl # If using gcc, use -O2.  If -g works with it, use that too
-if test -z "$CFLAGS_GIVEN"; then
-  if test "$GCC" = "yes"; then
-    if test "$ac_cv_prog_cc_g" = "yes"; then
-      CCOPTS='-g -O2'
-    else
-      CCOPTS='-O2'
-    fi
-    CFLAGS="$CCOPTS"
-  fi
-else
-  CFLAGS="$CFLAGS_GIVEN"
-fi
-for i in /usr/local/include /usr/X11R6/include /usr/dt/include /usr/openwin/include ; do
-  test -d $i && CPPFLAGS="$CPPFLAGS -I$i"
-done
 
 AC_PROG_INSTALL
 
