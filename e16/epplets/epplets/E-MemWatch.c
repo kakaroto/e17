@@ -251,7 +251,7 @@ main(int argc, char **argv)
 
     if ((fp = fopen("/proc/version", "r")) == NULL) {
         D(("Failed to open /proc/version -- %s\nWill assume not 2.6 kernel", strerror(errno)));
-        return;
+        return 1;
     }
 
     fgets(buff, sizeof(buff), fp);
@@ -261,7 +261,7 @@ main(int argc, char **argv)
         kernel_2_6 = 1;
     }
 
-    close(fp);
+    fclose(fp);
     /* end check for Kernel 2.6 */
 
     atexit(Epplet_cleanup);
