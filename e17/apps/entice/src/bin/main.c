@@ -148,48 +148,57 @@ entice_pipe_foo(int argc, const char **argv)
    int fd[2];
    char line[PATH_MAX];
    struct stat status;
+   Ecore_Ipc_Server *server;
 
    if (pipe(fd) < 0)
-      exit(1);
+     {
+       	perror("pipe");
+	exit(1);
+     }
 
    if ((pid = fork()) < 0)
-   {
-      fprintf(stderr, "Forking error\n");
-      exit(1);
-   }
-   else if (pid > 0)            /* parent */
-   {
-      close(fd[0]);
-      return (fd[1]);
-   }
-   else                         /* child */
-   {
-      close(fd[1]);
-      while ((n = read(fd[0], line, PATH_MAX)) > 0)
-      {
-         if (!strncmp(line, "ok", n))
-         {
-            for (i = 1; i < argc; i++)
-            {
-               snprintf(line, PATH_MAX, "%s", argv[i]);
-               if (!stat(line, &status))
-               {
-                  if (S_ISDIR(status.st_mode))
-                  {
-                     entice_file_add_dir_job_cb(line);
-                  }
-                  else
-                  {
-                     entice_file_add_job_cb(line, IPC_FILE_APPEND);
-                  }
-               }
-            }
-            break;
-         }
-      }
-      close(fd[0]);
-      exit(0);
-   }
+     {
+	perror("fork");
+	exit(1);
+     }
+
+   if (pid > 0)            /* parent */
+     {
+       	close(fd[0]);
+	return fd[1];
+     }
+
+   /* child */
+   close(fd[1]);
+   while ((n = read(fd[0], line, PATH_MAX)) > 0)
+      if (!strncmp(line, "ok", n))
+         break;
+   if ( !(server=entice_ipc_client_init()) )
+     {
+	fprintf(stderr, "Could not intialise client IPC\n");
+	exit(1);
+     }
+   for (i = 1; i < argc; i++)
+     {
+      	snprintf(line, PATH_MAX, "%s", argv[i]);
+	if (stat(line, &status))
+	  continue;
+	if (S_ISDIR(status.st_mode))
+	  entice_file_add_job_dir(server, line);
+	else
+	  entice_file_add_job(server, line, IPC_FILE_APPEND);
+	/* Flush rather than waiting for all thumbnails before displaying 
+	 * anything */
+	if ((i & 0xf) == 0x1)
+    	  entice_ipc_client_wait(server); 
+     }
+
+   entice_ipc_client_wait(server); 
+   entice_ipc_client_shutdown(server);
+   exit(0);
+
+   /* Not reached */
+   close(fd[0]);
    return (0);
 }
 
@@ -204,14 +213,14 @@ entice_pipe_foo(int argc, const char **argv)
  * 7. for(;;)
  */
 int
-main(int argc, char *argv[])
+main(int argc, char **argv)
 {
    int pnum = -1;
    int x, y, w, h;
    Ecore_Evas *ee = NULL;
 
    if (argc > 1)
-      pnum = entice_pipe_foo(argc, (const char **) argv);
+      pnum = entice_pipe_foo(argc, argv);
 
    ecore_init();
    ecore_app_args_set(argc, (const char **) argv);

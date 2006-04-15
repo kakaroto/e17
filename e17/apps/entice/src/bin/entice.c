@@ -14,6 +14,7 @@
 #include <Esmart/Esmart_Trans_X11.h>
 #include <Esmart/Esmart_Draggies.h>
 #include <Epsilon.h>
+#include <Ecore_Ipc.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -122,7 +123,6 @@ entice_init(Ecore_Evas * ee)
       memset(e, 0, sizeof(Entice));
       e->ee = ee;
 
-      epsilon_init();
       ecore_evas_geometry_get(ee, &x, &y, &w, &h);
       o = edje_object_add(ecore_evas_get(ee));
       if (!edje_object_file_set(o, entice_config_theme_get(), "entice"))
@@ -586,94 +586,74 @@ entice_file_is_dir(char *file)
 {
    struct stat st;
 
-   if (file)
-   {
-      if (stat(file, &st) < 0)
-         return (0);
-      if (S_ISDIR(st.st_mode))
-         return (1);
-   }
-   return (0);
+   if (file && !stat(file, &st)&& S_ISDIR(st.st_mode))
+     return 1;
+   return 0;
 }
 
 void
-entice_file_add_dir_job_cb(void *data)
+entice_file_add_job_dir(Ecore_Ipc_Server *server, const char *dirname)
 {
    DIR *d = NULL;
    struct dirent *dent = NULL;
-   char buf[PATH_MAX], *file = NULL;
+   char buf[PATH_MAX];
 
-   if (data)
-   {
-      file = (char *) data;
-
-      if ((d = opendir(data)))
-      {
-         while ((dent = readdir(d)))
-         {
-            if (!strcmp(dent->d_name, ".") || !strcmp(dent->d_name, "..")
-                || (dent->d_name[0] == '.'))
-               continue;
-            snprintf(buf, PATH_MAX, "%s/%s", file, dent->d_name);
-            if (!entice_file_is_dir(buf))
-               entice_file_add_job_cb(buf, IPC_FILE_APPEND);
-         }
-         closedir(d);
-      }
-   }
-
+   if (!dirname || ! (d = opendir(dirname)))
+     return;
+   while ((dent = readdir(d)))
+     {
+      	if (!strcmp(dent->d_name, ".") || !strcmp(dent->d_name, "..")
+	      || (dent->d_name[0] == '.'))
+	  continue;
+	snprintf(buf, PATH_MAX, "%s/%s", dirname, dent->d_name);
+	if (!entice_file_is_dir(buf))
+	  entice_file_add_job(server, buf, IPC_FILE_APPEND);
+     }
+   closedir(d);
 }
 
 /**
- * entice_file_add_job_cb - generate the cached thumb and send an ipc
+ * entice_file_add_job - generate the cached thumb and send an ipc
  * message telling entice to load it
  * @data - the full or relative path to the file we want to cache
  * @add_type - whether to display or show the image
  */
 void
-entice_file_add_job_cb(void *data, int add_type)
+entice_file_add_job(Ecore_Ipc_Server *server, const char *filename, 
+      int add_type)
 {
    Epsilon *e = NULL;
-   char buf[PATH_MAX], *file = NULL;
+   char buf[PATH_MAX];
 
-   if (data)
-   {
-      file = (char *) data;
+   if (!filename)
+     return;
 
-      if (file)
-      {
-         if (file[0] == '/')
-            snprintf(buf, PATH_MAX, "%s", file);
-         else if ((strlen(file) > 7) && !strncmp(file, "http://", 7))
-         {
-            fprintf(stderr, "Entice Compiled without http loading support\n");
-         }
-         else
-         {
-            char mycwd[PATH_MAX];
+   if (filename[0] == '/')
+     snprintf(buf, PATH_MAX-1, "%s", filename);
+   else if ((strlen(filename) > 7) && !strncmp(filename, "http://", 7))
+     fprintf(stderr, "Entice Compiled without http loading support\n");
+   else
+     {
+      	char mycwd[PATH_MAX];
+	memset(mycwd, 0, sizeof(mycwd));
+	if (getcwd(mycwd, PATH_MAX))
+	  snprintf(buf, PATH_MAX, "%s/%s", mycwd, filename);
+     }
 
-            memset(mycwd, 0, sizeof(mycwd));
-            if (getcwd(mycwd, PATH_MAX))
-            {
-               snprintf(buf, PATH_MAX, "%s/%s", mycwd, file);
-            }
-         }
-         if (entice_file_is_dir(buf))
-            entice_file_add_dir_job_cb(buf);
-         else if ((e = epsilon_new(buf)))
-         {
-            if (epsilon_exists(e) == EPSILON_FAIL)
-            {
-               if (epsilon_generate(e) == EPSILON_FAIL)
-               {
-                  fprintf(stderr, "Unable to thumbnail %s\n", file);
-               }
-            }
-            epsilon_free(e);
-            entice_ipc_client_request_image_load(buf, add_type);
-         }
-      }
-   }
+   if (entice_file_is_dir(buf))
+     {
+      	entice_file_add_job_dir(server, buf);
+	return;
+     }
+
+   entice_ipc_client_request_image_load(server, buf, add_type);
+
+   epsilon_init();
+   if (!(e = epsilon_new(buf)) || (epsilon_exists(e) == EPSILON_FAIL &&
+	 epsilon_generate(e) == EPSILON_FAIL))
+     fprintf(stderr, "Unable to thumbnail %s\n", filename);
+
+   epsilon_free(e);
 }
 
 static void
