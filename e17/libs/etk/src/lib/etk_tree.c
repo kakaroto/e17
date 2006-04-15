@@ -2603,6 +2603,7 @@ static void _etk_tree_row_free(Etk_Tree_Row *row)
       }
       free(row->cells_data);
    }
+   
    if (row->row_objects)
       ((Etk_Tree_Row_Objects *)row->row_objects)->row = NULL;
    
@@ -2721,6 +2722,10 @@ static void _etk_tree_row_objects_free(Etk_Tree_Row_Objects *row_objects, Etk_Tr
          evas_object_del(row_objects->cells_objects[i].objects[j]);
       }
    }
+
+   if (row_objects->row) 
+	   row_objects->row->row_objects = NULL;
+
    free(row_objects->cells_objects);
    free(row_objects);
 }
