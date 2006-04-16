@@ -5,7 +5,7 @@
 #include <limits.h>
 #include <time.h>
 #include <Etk.h>
-#include "etk_directory_add_dialog.h"
+#include "entropy_etk_context_menu.h"
 #include "etk_properties_dialog.h"
 
 #define EN_DND_COL_NUM 5
@@ -27,10 +27,6 @@ struct entropy_etk_file_list_viewer
 
   Ecore_List *gui_events;
   Ecore_List *files;		/*The entropy_generic_file references we copy. */
-
-  Etk_Widget* popup;
-  Etk_Widget* open_with_menu;
-  Etk_Widget* open_with_menuitem;
 
   /*Current folder - TODO - move to core - per layout API*/
   entropy_generic_file* current_folder;
@@ -56,12 +52,6 @@ struct gui_file
   Etk_Tree_Row *icon;
 };
 
-typedef enum _Etk_Menu_Item_Type
-{
-   ETK_MENU_ITEM_NORMAL,
-   ETK_MENU_ITEM_SEPARATOR
-} Etk_Menu_Item_Type;
-
 
 /*Headers*/
 void
@@ -69,6 +59,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 		    void *el, entropy_gui_component_instance * comp);
 void gui_file_destroy (gui_file * file);
 int entropy_plugin_type_get ();
+void entropy_etk_list_viewer_stat_callback(void* data, entropy_generic_file* file);
 
 /*-------------*/
 
@@ -105,165 +96,6 @@ entropy_plugin_toolkit_get()
 	return ENTROPY_TOOLKIT_ETK;
 }
 
-
-static Etk_Widget *_entropy_etk_menu_item_new(Etk_Menu_Item_Type item_type, const char *label,
-   Etk_Stock_Id stock_id, Etk_Menu_Shell *menu_shell, Etk_Widget *statusbar)
-{
-   Etk_Widget *menu_item = NULL;
-   
-   switch (item_type)
-   {
-      case ETK_MENU_ITEM_NORMAL:
-         menu_item = etk_menu_item_image_new_with_label(label);
-         break;
-      case ETK_MENU_ITEM_SEPARATOR:
-         menu_item = etk_menu_item_separator_new();
-         break;
-      default:
-         return NULL;
-   }
-   if (stock_id != ETK_STOCK_NO_STOCK)
-   {
-      Etk_Widget *image;
-      
-      image = etk_image_new_from_stock(stock_id, ETK_STOCK_SMALL);
-      etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
-   }
-   etk_menu_shell_append(menu_shell, ETK_MENU_ITEM(menu_item));
-   
-   /*etk_signal_connect("selected", ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_test_menu_item_selected_cb), statusbar);
-   etk_signal_connect("deselected", ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_test_menu_item_deselected_cb), statusbar);*/
-   
-   return menu_item;
-}
-
-static void 
-_open_folder_window_cb(Etk_Object* obj, void* data)
-{
-	entropy_gui_event* gui_event;
-	entropy_gui_component_instance* instance;
-	entropy_etk_file_list_viewer* viewer;
-	Etk_Tree_Row* row;
-	gui_file* file;
-	
-	instance = data;
-	if (instance) viewer = instance->data;
-
-	if (instance && viewer) {
-		row = etk_tree_selected_row_get(ETK_TREE(viewer->tree));
-		file = ecore_hash_get(etk_list_viewer_row_hash, row);
-
-		if (file) {
-			printf("New folder handler...\n");
-			
-			gui_event = entropy_malloc (sizeof (entropy_gui_event));
-			gui_event->event_type =
-				entropy_core_gui_event_get (ENTROPY_GUI_EVENT_ACTION_FILE);
-			gui_event->data = file->file;
-			gui_event->hints |= ENTROPY_GUI_EVENT_HINT_WINDOW_NEW;
-			entropy_core_layout_notify_event (instance, gui_event, ENTROPY_EVENT_GLOBAL);
-		}
-	}
-	
-}
-
-static void
-_open_with_item_cb(Etk_Object *obj, void *data)
-{
-	int i;
-	entropy_gui_event* gui_event;
-	entropy_gui_component_instance* instance;
-	entropy_etk_file_list_viewer* viewer;
-	Etk_Tree_Row* row;
-	gui_file* file;
-	
-
-	i = (int)etk_object_data_get(obj, "INDEX");
-	instance = data;
-	if (instance) viewer = instance->data;
-
-	if (instance && viewer) {
-		row = etk_tree_selected_row_get(ETK_TREE(viewer->tree));
-		file = ecore_hash_get(etk_list_viewer_row_hash, row);
-
-
-		if (file) {
-			gui_event = entropy_malloc (sizeof (entropy_gui_event));
-			gui_event->event_type =
-				entropy_core_gui_event_get (ENTROPY_GUI_EVENT_ACTION_FILE);
-			gui_event->data = file->file;
-			gui_event->key = i;
-			entropy_core_layout_notify_event (instance, gui_event, ENTROPY_EVENT_GLOBAL);
-		}
-	}
-}
-
-static void
-_entropy_etk_list_viewer_menu_popup_cb(Etk_Object *object, void *data)
-{
-	entropy_gui_component_instance* instance;
-	entropy_etk_file_list_viewer* viewer;
-	Etk_Tree_Row* row;
-	gui_file* file;
-	Entropy_Config_Mime_Binding* binding;
-	Entropy_Config_Mime_Binding_Action* action;
-	Evas_List* l;
-
-
-	instance = data;
-	viewer = instance->data;
-
-	row = etk_tree_selected_row_get(ETK_TREE(viewer->tree));
-	file = ecore_hash_get(etk_list_viewer_row_hash, row);
-
-	if (file && strlen(file->file->mime_type)) {
-		
-		   binding = entropy_config_mime_binding_for_type_get(file->file->mime_type);
-
-		   if (ETK_MENU_ITEM(viewer->open_with_menuitem)->submenu) {
-			   etk_menu_item_submenu_set(ETK_MENU_ITEM(viewer->open_with_menuitem), NULL);
-			   etk_object_destroy(ETK_OBJECT(viewer->open_with_menu));
-			   viewer->open_with_menu = NULL;
-		   }
-
-		   /*If it's a folder, add an 'Open in new layout..' entry*/
-		   if (!strcmp(file->file->mime_type, "file/folder")) {
-			   Etk_Widget* w;
-			   
-			   viewer->open_with_menu = etk_menu_new();
-			   etk_menu_item_submenu_set(ETK_MENU_ITEM(viewer->open_with_menuitem), ETK_MENU(viewer->open_with_menu)); 
-
-			   w = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, "Open in new window", 
-				  ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(viewer->open_with_menu),NULL);
-			   etk_signal_connect("activated", ETK_OBJECT(w), ETK_CALLBACK(_open_folder_window_cb), instance);
-		   }
-
-	
-		   if (binding) {
-			   Etk_Widget* w; 
-			   int i=0;
-		   
-			   if (!viewer->open_with_menu) {
-				   viewer->open_with_menu = etk_menu_new();
-				   etk_menu_item_submenu_set(ETK_MENU_ITEM(viewer->open_with_menuitem), ETK_MENU(viewer->open_with_menu)); 
-			   }
-
-			   for (l = binding->actions; l; ) {
-				   action = l->data;
-
-				   w = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _(action->app_description),
-					ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(viewer->open_with_menu),NULL);
-				   etk_object_data_set(ETK_OBJECT(w), "INDEX", (int*)i);
-
-				   etk_signal_connect("activated", ETK_OBJECT(w), ETK_CALLBACK(_open_with_item_cb), instance);
-				   
-				   l = l->next;
-				   i++;
-			   }
-		  }
-	}
-	
-}
 
 
 /* Compares two rows of the tree */
@@ -337,32 +169,6 @@ static int _entropy_etk_list_date_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1,
 	   printf("Could not locate file!\n");
 	   return 0;
    }
-}
-
-void _entropy_etk_list_viewer_properties_cb(Etk_Object *object, void *data)
-{
-	entropy_gui_component_instance* instance = data;
-	entropy_etk_file_list_viewer* viewer = instance->data;
-	Etk_Tree_Row* row;
-	gui_file* file;
-
-	row = etk_tree_selected_row_get(ETK_TREE(viewer->tree));
-	file = ecore_hash_get(etk_list_viewer_row_hash, row);
-
-	if (file) {
-		ecore_hash_set(viewer->properties_request_hash, file->file, (int*)1);
-		entropy_event_stat_request(file->file, instance);
-	}
-}
-
-void _entropy_etk_list_viewer_directory_add_cb(Etk_Object *object, void *data)
-{
-	entropy_gui_component_instance* instance = data;
-	entropy_etk_file_list_viewer* viewer = instance->data;
-
-	if (viewer->current_folder) {
-		etk_directory_add_dialog_create(viewer->current_folder)	;
-	}
 }
 
 /* Called when the user presses a key */
@@ -602,7 +408,11 @@ static void _etk_list_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *row, 
 	  entropy_core_layout_notify_event (file->instance, gui_event, ENTROPY_EVENT_GLOBAL);
    } else if (event->button == 3) {
 	etk_tree_row_select(row);
-	etk_menu_popup(ETK_MENU(viewer->popup));
+
+	file = ecore_hash_get(etk_list_viewer_row_hash, row);
+
+	entropy_etk_context_menu_popup(instance, file->file);
+	entropy_etk_context_menu_stat_cb_register(entropy_etk_list_viewer_stat_callback, viewer);
    }
 }
 
@@ -716,6 +526,15 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
   etk_tree_thaw(ETK_TREE(viewer->tree));
 }
 
+
+
+void entropy_etk_list_viewer_stat_callback(void* data, entropy_generic_file* file)
+{
+	entropy_etk_file_list_viewer* viewer = data;
+	
+	ecore_hash_set(viewer->properties_request_hash, file, (int*)1);
+}
+
 void
 gui_event_callback (entropy_notify_event * eevent, void *requestor,
 		    void *el, entropy_gui_component_instance * comp)
@@ -777,7 +596,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 	
 	/*If !obj, it has been deleted - fail silently*/
 	if (obj) {
-
+		
 		if ( (ecore_hash_get(viewer->properties_request_hash, file_stat->file))) {
 			ecore_hash_remove(viewer->properties_request_hash, file_stat->file);
 
@@ -977,32 +796,6 @@ entropy_plugin_gui_instance_new (entropy_core * core,
   entropy_core_component_event_register (instance,
 					 entropy_core_gui_event_get
 					 (ENTROPY_GUI_EVENT_THUMBNAIL_AVAILABLE));
-
-
-  
-  /*Popup init*/
-   viewer->popup = etk_menu_new();
-   etk_signal_connect("popped_up", ETK_OBJECT(viewer->popup), ETK_CALLBACK(_entropy_etk_list_viewer_menu_popup_cb), instance);
-
-   viewer->open_with_menuitem =  
-	   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Open With"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(viewer->popup),NULL);
-   viewer->open_with_menu = etk_menu_new();
-   etk_menu_item_submenu_set(ETK_MENU_ITEM(viewer->open_with_menuitem), ETK_MENU(viewer->open_with_menu)); 
- 
-   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Copy"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(viewer->popup),NULL);
-   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Cut"), ETK_STOCK_EDIT_CUT, ETK_MENU_SHELL(viewer->popup),NULL);
-   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Paste"), ETK_STOCK_EDIT_PASTE, ETK_MENU_SHELL(viewer->popup),NULL);
-   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Delete"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(viewer->popup),NULL);
-   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Properties"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(viewer->popup),NULL);
-   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_entropy_etk_list_viewer_properties_cb), instance);
-
-   menu_item =  _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("New"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(viewer->popup),NULL);
-   new_menu = etk_menu_new();
-   etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(new_menu));
-
-   menu_item =  _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Folder.."), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(new_menu),NULL);
-   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_entropy_etk_list_viewer_directory_add_cb), instance);
-
 
 
   
