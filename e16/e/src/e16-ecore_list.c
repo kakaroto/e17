@@ -578,7 +578,8 @@ _ecore_list_remove_last(Ecore_List * list)
 
    if (list->first == old)
       list->first = NULL;
-   for (prev = list->first; prev && prev->next != old; prev = prev->next);
+   for (prev = list->first; prev && prev->next != old; prev = prev->next)
+      ;
    list->last = prev;
    if (prev)
      {
@@ -645,7 +646,8 @@ _ecore_list_goto_index(Ecore_List * list, int indx)
 
    _ecore_list_goto_first(list);
 
-   for (i = 0; i < indx && _ecore_list_next(list); i++);
+   for (i = 0; i < indx && _ecore_list_next(list); i++)
+      ;
 
    if (i >= list->nodes)
       return NULL;
