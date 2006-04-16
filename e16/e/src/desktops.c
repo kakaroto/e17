@@ -690,7 +690,7 @@ DesksBackgroundRefresh(Background * bg, int why)
 	dsk = _DeskGet(i);
 	if (!dsk)		/* May happen during init */
 	   continue;
-	if (dsk->bg.bg != bg && why == DESK_BG_REFRESH)
+	if (bg && dsk->bg.bg != bg)
 	   continue;
 	DeskBackgroundRefresh(dsk, why);
      }
@@ -2734,9 +2734,11 @@ DesksIpcDesk(const char *params, Client * c __UNUSED__)
 	for (desk = 0; desk < Conf.desks.num; desk++)
 	  {
 	     dsk = _DeskGet(desk);
-	     IpcPrintf("Desk %d: x,y=%d,%d w,h=%d,%d viewable=%d order=%d\n",
-		       desk, EoGetX(dsk), EoGetY(dsk), EoGetW(dsk), EoGetH(dsk),
-		       dsk->viewable, desks.order[desk]);
+	     IpcPrintf
+		("Desk %d: viewable=%d order=%d  x,y=%4d,%4d wxh=%4dx%4d  area x,y=%d,%d  pmap=%#lx\n",
+		 desk, dsk->viewable, desks.order[desk],
+		 EoGetX(dsk), EoGetY(dsk), EoGetW(dsk), EoGetH(dsk),
+		 dsk->current_area_x, dsk->current_area_y, dsk->bg.pmap);
 	  }
      }
    else if (!strncmp(cmd, "goto", 2))
@@ -2853,6 +2855,7 @@ static const IpcItem DesksIpcArray[] = {
     "  desk drag            Start deskdrag\n"
     "  desk set <nd>        Set number of desktops\n"
     "  desk goto <d>        Goto specified desktop\n"
+    "  desk list            Show desk info\n"
     "  desk next            Goto next desktop\n"
     "  desk prev            Goto previous desktop\n"
     "  desk this            Goto this desktop\n"

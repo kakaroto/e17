@@ -1382,7 +1382,7 @@ BackgroundsAccounting(void)
 	  ((now - bg->last_viewed) <= Conf.backgrounds.timeout))
 	 continue;
 
-      DesksBackgroundRefresh(NULL, DESK_BG_FREE);
+      DesksBackgroundRefresh(bg, DESK_BG_FREE);
       BackgroundPixmapFree(bg);
    }
 }
