@@ -292,7 +292,6 @@ static HOST_WIDE_INT eval_if_expression(cpp_reader * pfile, unsigned char *buf,
 					int length);
 
 static int          change_newlines();
-extern int          hashf(const unsigned char *name, int len, int hashsize);
 static int          file_size_and_mode(int fd, int *mode_pointer,
 
 				       long int *size_pointer);
