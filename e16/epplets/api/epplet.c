@@ -3481,7 +3481,8 @@ Epplet_draw_image(Epplet_gadget eg, char un_only)
      }
    XSetWindowBackgroundPixmap(disp, g->general.parent->win,
 			      g->general.parent->bg_pmap);
-   XClearWindow(disp, g->general.parent->win);
+   if (!un_only)
+      XClearWindow(disp, g->general.parent->win);
    XFreeGC(disp, gc);
 }
 
