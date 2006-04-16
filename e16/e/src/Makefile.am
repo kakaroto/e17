@@ -124,7 +124,8 @@ e16_SOURCES = \
 
 
 LDADD = \
-	@LIBINTL@		\
+	$(LTLIBINTL)		\
+	$(LTLIBICONV)		\
 	@ecore_libs@		\
 	$(ESD_LIBS) 		\
 	$(IMLIB_LIBS) 		\
