@@ -1516,6 +1516,12 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
    d->update = 1;
    di->update = 1;
 
+#if 1				/* FIXME - Gross hack to get text items redrawn when changed */
+   /* ...either keep full bg image/pixmap around or render text to separate window... */
+   if (di->type == DITEM_TEXT)
+      d->redraw = 1;
+#endif
+
    if (d->xu1 > x)
       d->xu1 = x;
    if (d->yu1 > y)
@@ -1737,6 +1743,10 @@ _DialogsCheckUpdate(void *data __UNUSED__)
 
    ECORE_LIST_FOR_EACH(dialog_list, d)
    {
+#if 1				/* FIXME - Gross hack to get text items redrawn when changed */
+      if (d->redraw)
+	 DialogRedraw(d);
+#endif
       if (d->update)
 	 DialogUpdate(d);
       d->redraw = 0;
