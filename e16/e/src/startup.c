@@ -100,8 +100,8 @@ StartupWindowsCreate(void)
 	EMapRaised(b1);
 	EMapRaised(b2);
 
-	ImageclassApply(ic, b1, bw, bh, 0, 0, 0, 0, ST_SOLID);
-	ImageclassApply(ic, b2, bw, bh, 0, 0, 0, 0, ST_SOLID);
+	ImageclassApply(ic, b1, bw, bh, 0, 0, 0, ST_SOLID);
+	ImageclassApply(ic, b2, bw, bh, 0, 0, 0, ST_SOLID);
      }
 
    BackgroundSet(bg, win1, VRoot.w, VRoot.h);

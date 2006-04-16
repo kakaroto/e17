@@ -145,5 +145,5 @@ DockIt(EWin * ewin)
      }
 
    ImageclassApply(ic, EoGetWin(ewin), ewin->client.w, ewin->client.h,
-		   0, 0, STATE_NORMAL, 0, ST_BUTTON);
+		   0, 0, STATE_NORMAL, ST_BUTTON);
 }

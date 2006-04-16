@@ -1146,9 +1146,9 @@ ImagestateDrawBevel(ImageState * is, Drawable win, GC gc, int w, int h)
 }
 
 void
-ITApply(Window win, ImageClass * ic, ImageState * is, int w, int h, int state,
-	int active, int sticky, char expose, int image_type, TextClass * tc,
-	TextState * ts, const char *text)
+ITApply(Window win, ImageClass * ic, ImageState * is, int w, int h,
+	int state, int active, int sticky, int image_type,
+	TextClass * tc, TextState * ts, const char *text)
 {
    if (win == None || !ic)
       return;
@@ -1170,64 +1170,60 @@ ITApply(Window win, ImageClass * ic, ImageState * is, int w, int h, int state,
 	   ts = TextclassGetTextState(tc, state, active, sticky);
      }
 
-   if (!expose)			/* FIXME - Hmmm */
+   if (is->im == NULL && is->im_file)
+      ImagestateRealize(is);
+
+   /* Imlib2 will not render pixmaps with dimensions > 8192 */
+   if (is->im && w <= 8192 && h <= 8192)
      {
-	if (is->im == NULL && is->im_file)
-	   ImagestateRealize(is);
+	PmapMask            pmm;
 
-	/* Imlib2 will not render pixmaps with dimensions > 8192 */
-	if (is->im && w <= 8192 && h <= 8192)
+	ImagestateMakePmapMask(is, win, &pmm, 1, w, h, image_type);
+
+	if (pmm.pmap)
 	  {
-	     PmapMask            pmm;
+	     Pixmap              pmap = pmm.pmap;
 
-	     ImagestateMakePmapMask(is, win, &pmm, 1, w, h, image_type);
-
-	     if (pmm.pmap)
+	     if (ts && text)
 	       {
-		  Pixmap              pmap = pmm.pmap;
+		  if (pmm.type != 0)
+		     pmap = ECreatePixmapCopy(pmm.pmap, w, h, VRoot.depth);
 
-		  if (ts && text)
-		    {
-		       if (pmm.type != 0)
-			  pmap = ECreatePixmapCopy(pmm.pmap, w, h, VRoot.depth);
-
-		       TextstateDrawText(ts, pmap, text, ic->padding.left,
-					 ic->padding.top,
-					 w - (ic->padding.left +
-					      ic->padding.right),
-					 h - (ic->padding.top +
-					      ic->padding.bottom),
-					 0, TextclassGetJustification(tc));
-		    }
-
-		  /* Set window pixmap */
-		  ESetWindowBackgroundPixmap(win, pmap);
-		  if (pmap != pmm.pmap)
-		     EFreePixmap(pmap);
-
-		  if (pmm.w == w && pmm.h == h)
-		     EShapeCombineMask(win, ShapeBounding, 0, 0,
-				       pmm.mask, ShapeSet);
-		  else if (pmm.mask)
-		     EShapeCombineMaskTiled(win, ShapeBounding, 0, 0,
-					    pmm.mask, ShapeSet, w, h);
+		  TextstateDrawText(ts, pmap, text, ic->padding.left,
+				    ic->padding.top,
+				    w - (ic->padding.left +
+					 ic->padding.right),
+				    h - (ic->padding.top +
+					 ic->padding.bottom),
+				    0, TextclassGetJustification(tc));
 	       }
 
-	     FreePmapMask(&pmm);
-	     EClearWindow(win);
+	     /* Set window pixmap */
+	     ESetWindowBackgroundPixmap(win, pmap);
+	     if (pmap != pmm.pmap)
+		EFreePixmap(pmap);
 
-	     if ((is->unloadable) || (Conf.memory_paranoia))
-	       {
-		  EImageFree(is->im);
-		  is->im = NULL;
-	       }
+	     if (pmm.w == w && pmm.h == h)
+		EShapeCombineMask(win, ShapeBounding, 0, 0, pmm.mask, ShapeSet);
+	     else if (pmm.mask)
+		EShapeCombineMaskTiled(win, ShapeBounding, 0, 0,
+				       pmm.mask, ShapeSet, w, h);
 	  }
-	else
+
+	FreePmapMask(&pmm);
+	EClearWindow(win);
+
+	if ((is->unloadable) || (Conf.memory_paranoia))
 	  {
-	     /* FIXME - No text */
-	     ESetWindowBackground(win, is->bg.pixel);
-	     EClearWindow(win);
+	     EImageFree(is->im);
+	     is->im = NULL;
 	  }
+     }
+   else
+     {
+	/* FIXME - No text */
+	ESetWindowBackground(win, is->bg.pixel);
+	EClearWindow(win);
      }
 
    if (is->bevelstyle != BEVEL_NONE)
@@ -1242,9 +1238,9 @@ ITApply(Window win, ImageClass * ic, ImageState * is, int w, int h, int state,
 
 void
 ImageclassApply(ImageClass * ic, Window win, int w, int h, int active,
-		int sticky, int state, char expose, int image_type)
+		int sticky, int state, int image_type)
 {
-   ITApply(win, ic, NULL, w, h, state, active, sticky, expose, image_type,
+   ITApply(win, ic, NULL, w, h, state, active, sticky, image_type,
 	   NULL, NULL, NULL);
 }
 
@@ -1543,7 +1539,7 @@ ImageclassIpc(const char *params, Client * c __UNUSED__)
 
 	     if (!EDrawableCheck(win, 0))	/* Grab server? */
 		return;
-	     ImageclassApply(ic, win, w, h, 0, 0, st, 0, ST_SOLID);
+	     ImageclassApply(ic, win, w, h, 0, 0, st, ST_SOLID);
 	  }
      }
    else if (!strcmp(param2, "apply_copy"))

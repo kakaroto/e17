@@ -110,7 +110,7 @@ Pixmap              ImageclassApplySimple(ImageClass * ic, Window win,
 					  int y, int w, int h);
 void                ImageclassApply(ImageClass * ic, Window win, int w, int h,
 				    int active, int sticky, int state,
-				    char expose, int image_type);
+				    int image_type);
 void                ImageclassApplyCopy(ImageClass * ic, Window win, int w,
 					int h, int active, int sticky,
 					int state, PmapMask * pmm,
@@ -121,7 +121,7 @@ EImage             *ImageclassGetImageBlended(ImageClass * ic, Window win,
 					      int image_type);
 void                ITApply(Window win, ImageClass * ic, ImageState * is, int w,
 			    int h, int state, int active, int sticky,
-			    char expose, int image_type, TextClass * tc,
+			    int image_type, TextClass * tc,
 			    TextState * ts, const char *text);
 
 #endif /* _ICLASS_H */

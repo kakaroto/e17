@@ -143,7 +143,7 @@ static void
 HiwinRenderIclassDraw(Hiwin * phi)
 {
    ImageclassApply(hiwin_ic, EoGetWin(phi), EoGetW(phi), EoGetH(phi), 0, 0,
-		   STATE_NORMAL, 0, ST_PAGER);
+		   STATE_NORMAL, ST_PAGER);
    EClearWindow(EoGetWin(phi));
 }
 

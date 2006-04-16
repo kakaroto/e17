@@ -124,7 +124,7 @@ CoordsShow(EWin * ewin)
 	EobjMap(eo, 0);
      }
 
-   ITApply(eo->win, ic, NULL, cw, ch, STATE_NORMAL, 1, 0, 0, ST_SOLID,
+   ITApply(eo->win, ic, NULL, cw, ch, STATE_NORMAL, 1, 0, ST_SOLID,
 	   tc, NULL, s);
 
    EFlush();

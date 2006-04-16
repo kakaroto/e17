@@ -446,7 +446,7 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 	iy = (h - ih) / 2;
 	EMoveResizeWindow(tt->iwin, ix, iy, iw, ih);
 	EMapWindow(tt->iwin);
-	ImageclassApply(tt->tooltippic, tt->iwin, iw, ih, 0, 0, STATE_NORMAL, 0,
+	ImageclassApply(tt->tooltippic, tt->iwin, iw, ih, 0, 0, STATE_NORMAL,
 			ST_SOLID);
      }
    else
@@ -580,7 +580,7 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 	eo = tt->win[i];
 	if (eo)
 	   ImageclassApply(tt->iclass[i], eo->win, eo->w, eo->h, 0, 0,
-			   STATE_NORMAL, 0, ST_TOOLTIP);
+			   STATE_NORMAL, ST_TOOLTIP);
      }
 
    for (i = 0; i < 5; i++)

@@ -1184,7 +1184,7 @@ IB_DrawScroll(Iconbox * ib)
 
 	ic = ImageclassFind("ICONBOX_SCROLLBAR_BASE_VERTICAL", 0);
 	if (ic)
-	   ImageclassApply(ic, ib->scroll_win, -1, -1, 0, 0, STATE_NORMAL, 0,
+	   ImageclassApply(ic, ib->scroll_win, -1, -1, 0, 0, STATE_NORMAL,
 			   ST_ICONBOX);
 
 	EMoveResizeWindow(ib->scrollbar_win,
@@ -1199,7 +1199,7 @@ IB_DrawScroll(Iconbox * ib)
 		state = STATE_HILITED;
 	     if (ib->scrollbar_clicked)
 		state = STATE_CLICKED;
-	     ImageclassApply(ic, ib->scrollbar_win, -1, -1, 0, 0, state, 0,
+	     ImageclassApply(ic, ib->scrollbar_win, -1, -1, 0, 0, state,
 			     ST_ICONBOX);
 	  }
 
@@ -1216,7 +1216,7 @@ IB_DrawScroll(Iconbox * ib)
 		state = STATE_HILITED;
 	     if (ib->scrollbar_clicked)
 		state = STATE_CLICKED;
-	     ImageclassApply(ic, ib->scrollbarknob_win, -1, -1, 0, 0, state, 0,
+	     ImageclassApply(ic, ib->scrollbarknob_win, -1, -1, 0, 0, state,
 			     ST_ICONBOX);
 	  }
 	else
@@ -1234,7 +1234,7 @@ IB_DrawScroll(Iconbox * ib)
 		     state = STATE_HILITED;
 		  if (ib->arrow1_clicked)
 		     state = STATE_CLICKED;
-		  ImageclassApply(ic, ib->arrow1_win, -1, -1, 0, 0, state, 0,
+		  ImageclassApply(ic, ib->arrow1_win, -1, -1, 0, 0, state,
 				  ST_ICONBOX);
 	       }
 
@@ -1246,7 +1246,7 @@ IB_DrawScroll(Iconbox * ib)
 		     state = STATE_HILITED;
 		  if (ib->arrow2_clicked)
 		     state = STATE_CLICKED;
-		  ImageclassApply(ic, ib->arrow2_win, -1, -1, 0, 0, state, 0,
+		  ImageclassApply(ic, ib->arrow2_win, -1, -1, 0, 0, state,
 				  ST_ICONBOX);
 	       }
 	  }
@@ -1404,7 +1404,7 @@ IB_DrawScroll(Iconbox * ib)
 
 	ic = ImageclassFind("ICONBOX_SCROLLBAR_BASE_HORIZONTAL", 0);
 	if (ic)
-	   ImageclassApply(ic, ib->scroll_win, -1, -1, 0, 0, STATE_NORMAL, 0,
+	   ImageclassApply(ic, ib->scroll_win, -1, -1, 0, 0, STATE_NORMAL,
 			   ST_ICONBOX);
 
 	ic = ImageclassFind("ICONBOX_SCROLLBAR_KNOB_HORIZONTAL", 0);
@@ -1415,7 +1415,7 @@ IB_DrawScroll(Iconbox * ib)
 		state = STATE_HILITED;
 	     if (ib->scrollbar_clicked)
 		state = STATE_CLICKED;
-	     ImageclassApply(ic, ib->scrollbar_win, -1, -1, 0, 0, state, 0,
+	     ImageclassApply(ic, ib->scrollbar_win, -1, -1, 0, 0, state,
 			     ST_ICONBOX);
 	  }
 
@@ -1432,7 +1432,7 @@ IB_DrawScroll(Iconbox * ib)
 		state = STATE_HILITED;
 	     if (ib->scrollbar_clicked)
 		state = STATE_CLICKED;
-	     ImageclassApply(ic, ib->scrollbarknob_win, -1, -1, 0, 0, state, 0,
+	     ImageclassApply(ic, ib->scrollbarknob_win, -1, -1, 0, 0, state,
 			     ST_ICONBOX);
 	  }
 	else
@@ -1450,7 +1450,7 @@ IB_DrawScroll(Iconbox * ib)
 		     state = STATE_HILITED;
 		  if (ib->arrow1_clicked)
 		     state = STATE_CLICKED;
-		  ImageclassApply(ic, ib->arrow1_win, -1, -1, 0, 0, state, 0,
+		  ImageclassApply(ic, ib->arrow1_win, -1, -1, 0, 0, state,
 				  ST_ICONBOX);
 	       }
 
@@ -1462,7 +1462,7 @@ IB_DrawScroll(Iconbox * ib)
 		     state = STATE_HILITED;
 		  if (ib->arrow2_clicked)
 		     state = STATE_CLICKED;
-		  ImageclassApply(ic, ib->arrow2_win, -1, -1, 0, 0, state, 0,
+		  ImageclassApply(ic, ib->arrow2_win, -1, -1, 0, 0, state,
 				  ST_ICONBOX);
 	       }
 	  }
@@ -1614,7 +1614,7 @@ IconboxDraw(Iconbox * ib)
 	EMoveResizeWindow(ib->cover_win, ib_xlt, ib_ylt, ib_ww, ib_hh);
 	EMapWindow(ib->cover_win);
 	ImageclassApply(ib_ic_cover, ib->cover_win, -1, -1, 0, 0, STATE_NORMAL,
-			0, ST_ICONBOX);
+			ST_ICONBOX);
      }
    else
      {

@@ -164,9 +164,9 @@ ProgressbarSet(Progressbar * p, int progress)
       w = p->w;
    Esnprintf(s, sizeof(s), "%i%%", p->value);
 
-   TextclassApply(p->inc, p->n_win->win, p->h * 5, p->h, 0, 0, STATE_CLICKED, 0,
+   TextclassApply(p->inc, p->n_win->win, p->h * 5, p->h, 0, 0, STATE_CLICKED,
 		  p->tnc, s);
-   ImageclassApply(p->inc, p->p_win->win, w, p->h, 1, 0, STATE_NORMAL, 0,
+   ImageclassApply(p->inc, p->p_win->win, w, p->h, 1, 0, STATE_NORMAL,
 		   ST_SOLID);
 
    EobjResize(p->p_win, w, p->h);
@@ -186,10 +186,10 @@ ProgressbarShow(Progressbar * p)
       w = p->w;
 
    ImageclassApply(p->ic, p->win->win, p->w - (p->h * 5), p->h, 0, 0,
-		   STATE_NORMAL, 0, ST_SOLID);
+		   STATE_NORMAL, ST_SOLID);
    ImageclassApply(p->inc, p->n_win->win, (p->h * 5), p->h, 0, 0, STATE_CLICKED,
-		   0, ST_SOLID);
-   ImageclassApply(p->ipc, p->p_win->win, w, p->h, 1, 0, STATE_NORMAL, 0,
+		   ST_SOLID);
+   ImageclassApply(p->ipc, p->p_win->win, w, p->h, 1, 0, STATE_NORMAL,
 		   ST_SOLID);
 
    EobjMap(p->win, 0);
@@ -197,7 +197,7 @@ ProgressbarShow(Progressbar * p)
    EobjMap(p->p_win, 0);
    ESync();
    TextclassApply(p->ic, p->win->win, p->w - (p->h * 5), p->h, 0, 0,
-		  STATE_NORMAL, 0, p->tc, p->win->name);
+		  STATE_NORMAL, p->tc, p->win->name);
 }
 
 void

@@ -471,8 +471,8 @@ TextclassConfigLoad(FILE * fs)
 }
 
 void
-TextclassApply(ImageClass * iclass, Window win, int w, int h, int active,
-	       int sticky, int state, char expose __UNUSED__,
+TextclassApply(ImageClass * iclass, Window win, int w, int h,
+	       int active, int sticky, int state,
 	       TextClass * tclass, const char *text)
 {
    EImageBorder       *pad;

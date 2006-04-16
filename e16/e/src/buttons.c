@@ -273,7 +273,7 @@ static void
 ButtonDraw(Button * b)
 {
    ITApply(EoGetWin(b), b->iclass, NULL, EoGetW(b), EoGetH(b),
-	   b->state, 0, 0, 0, ST_BUTTON, b->tclass, NULL, b->label);
+	   b->state, 0, 0, ST_BUTTON, b->tclass, NULL, b->label);
    EoShapeUpdate(b, 0);
 }
 

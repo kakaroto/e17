@@ -816,7 +816,7 @@ MenuRealize(Menu * m)
 	     EGetGeometry(m->items[i]->icon_win, NULL, NULL, NULL, &iw, &ih,
 			  NULL, NULL);
 	     ImageclassApply(m->items[i]->icon_iclass, m->items[i]->icon_win,
-			     iw, ih, 0, 0, STATE_NORMAL, 0, ST_MENU_ITEM);
+			     iw, ih, 0, 0, STATE_NORMAL, ST_MENU_ITEM);
 	  }
 	if (x + maxw > mmw)
 	   mmw = x + maxw;

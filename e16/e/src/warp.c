@@ -205,7 +205,7 @@ WarpFocusWinPaint(WarpFocusWin * fw)
 
 	state = (i == warpFocusIndex) ? STATE_CLICKED : STATE_NORMAL;
 
-	ImageclassApply(fw->ic, wi->win, fw->mw, fw->mh, 0, 0, state, 0,
+	ImageclassApply(fw->ic, wi->win, fw->mw, fw->mh, 0, 0, state,
 			ST_WARPLIST);
 
 	/* New icon stuff */
@@ -232,7 +232,7 @@ WarpFocusWinPaint(WarpFocusWin * fw)
 	  }
 	else
 	  {
-	     TextclassApply(fw->ic, wi->win, fw->mw, fw->mh, 0, 0, state, 0,
+	     TextclassApply(fw->ic, wi->win, fw->mw, fw->mh, 0, 0, state,
 			    fw->tc, wi->txt);
 	  }
      }

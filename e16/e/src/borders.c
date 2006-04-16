@@ -107,7 +107,7 @@ BorderWinpartITclassApply(EWin * ewin, int i, int force)
    ewb->ts = ts;
 
    ITApply(ewb->win, ewin->border->part[i].iclass, is, ewb->w, ewb->h,
-	   ewb->state, ewin->state.active, EoIsSticky(ewin), ewb->expose,
+	   ewb->state, ewin->state.active, EoIsSticky(ewin),
 	   ST_BORDER, ewin->border->part[i].tclass, ts, txt);
 }
 
