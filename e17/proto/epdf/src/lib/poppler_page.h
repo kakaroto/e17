@@ -51,26 +51,29 @@ void evas_poppler_page_delete (Evas_Poppler_Page *page);
  *
  * @param page The page
  * @param o The Evas_Object on which the page is rendered
- * @param x The x coordinate
- * @param y The y coordinate
- * @param w The width
- * @param h The height
- * @param xres The x resolution
- * @param yres The y resolution
+ * @param x The x coordinate of the upper-left corner
+ * @param y The y coordinate of the upper-left corner
+ * @param w The width of rectangle to render
+ * @param h The height of rectangle to render
+ * @param hscale The horizontal scale specified as pixels per point
+ * @param vscale The vertical scale specified as pixels per point
  *
  * Render a rectangle of the page @p page on the Evas_Object @p o. The
  * upper-left corner of the rectangle has the coordinates (@px, @py),
- * its width is @pw and its height is @p h. @p xres and @p yres are
- * respectively the x and y resolution used to render the rectangle
+ * its width is @pw and its height is @p h. @p hscale and @p vscale are
+ * respectively the horizontal and vertical scales, in pixel per
+ * points to render the rectangle. A value of 1.0 and 1.0 (resp.)
+ * means that the original size of the document is choosen.
  */
 void evas_poppler_page_render (Evas_Poppler_Page *page,
                                Evas_Object       *o,
+                               Evas_Poppler_Page_Orientation orientation,
                                int                x,
                                int                y,
                                int                w,
                                int                h,
-                               double             xres,
-                               double             yres);
+                               double             hscale,
+                               double             vscale);
 
 /**
  * Return the page number

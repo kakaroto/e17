@@ -196,16 +196,18 @@ Ecore_List *etk_pdf_pdf_index_get (Etk_Pdf *pdf)
 void etk_pdf_size_get(Etk_Pdf *pdf, int *width, int *height)
 {
    if (!pdf)
-      return;
-
-   if (!pdf)
    {
       if (width)
 	 *width = 0;
       if (height)
 	 *height = 0;
    }
-   else
+   else {
+      if (width)
+	 *width = evas_poppler_page_width_get (pdf->pdf_page);
+      if (height)
+	 *height = evas_poppler_page_height_get (pdf->pdf_page);
+   }
       evas_object_image_size_get(pdf->pdf_object, width, height);
 }
 
@@ -215,7 +217,7 @@ etk_pdf_search_text_set (Etk_Pdf *pdf, const char *text)
    if (!pdf)
       return;
 
-   if ((!text) || 
+   if ((!text) ||
        (pdf->search.text &&
         strcmp (text, pdf->search.text) == 0))
      return;
@@ -283,7 +285,7 @@ etk_pdf_search_next (Etk_Pdf *pdf)
         ecore_list_goto_first (pdf->search.list);
      evas_poppler_page_delete (page);
    }
-        
+
    /* an already existing list or a netky one */
    if (pdf->search.list) {
      Rectangle *rect;
@@ -324,6 +326,55 @@ etk_pdf_search_next (Etk_Pdf *pdf)
       return ETK_TRUE;
 }
 
+void etk_pdf_orientation_set (Etk_Pdf *pdf, Evas_Poppler_Page_Orientation o)
+{
+   if (!pdf || !pdf->pdf_page || (pdf->orientation == o))
+      return;
+
+   printf ("orientation %d\n", o);
+   pdf->orientation = o;
+   _etk_pdf_load (pdf);
+}
+
+Evas_Poppler_Page_Orientation etk_pdf_orientation_get (Etk_Pdf *pdf)
+{
+   if (!pdf || !pdf->pdf_page)
+      return EVAS_POPPLER_PAGE_ORIENTATION_PORTRAIT;
+
+   return evas_poppler_page_orientation_get (pdf->pdf_page);
+}
+
+void etk_pdf_scale_set (Etk_Pdf *pdf, double hscale, double vscale)
+{
+   if (!pdf)
+      return;
+
+   if (hscale != pdf->hscale)
+     pdf->hscale = hscale;
+
+   if (vscale != pdf->vscale)
+     pdf->vscale = vscale;
+   _etk_pdf_load (pdf);
+}
+
+void etk_pdf_sacle_get (Etk_Pdf *pdf, double *hscale, double *vscale)
+{
+  if (!pdf) {
+     if (hscale)
+        *hscale = 1.0;
+
+     if (vscale)
+        *vscale = 1.0;
+  }
+  else {
+     if (hscale)
+        *hscale = pdf->hscale;
+
+      if (vscale)
+         *vscale = pdf->vscale;
+  }
+}
+
 /**************************
  *
  * Etk specific functions
@@ -345,6 +396,10 @@ static void _etk_pdf_constructor(Etk_Pdf *pdf)
    pdf->pdf_document = NULL;
    pdf->pdf_page = NULL;
    pdf->pdf_index = NULL;
+
+   pdf->orientation = EVAS_POPPLER_PAGE_ORIENTATION_PORTRAIT;
+   pdf->hscale = 1.0;
+   pdf->vscale = 1.0;
 
    pdf->search.o = NULL;
    pdf->search.text = NULL;
@@ -522,7 +577,10 @@ static void _etk_pdf_load(Etk_Pdf *pdf)
       if (pdf->pdf_object)
       {
 	 pdf->pdf_page = evas_poppler_document_page_get (pdf->pdf_document, pdf->page);
-	 evas_poppler_page_render (pdf->pdf_page, pdf->pdf_object, 0, 0, 0, 0, 72.0, 72.0);
+	 evas_poppler_page_render (pdf->pdf_page, pdf->pdf_object,
+                                   pdf->orientation,
+                                   0, 0, -1, -1,
+                                   pdf->hscale, pdf->vscale);
       }
       evas_object_show(pdf->pdf_object);
    }

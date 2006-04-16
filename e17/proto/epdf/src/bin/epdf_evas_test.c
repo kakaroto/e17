@@ -76,8 +76,12 @@ main (int argc, char *argv[])
 
   o = evas_object_image_add (evas);
   evas_object_move(o, 0, 0);
-  evas_poppler_page_render (page, o, 0, 0, 0, 0, 72.0, 72.0);
+  evas_poppler_page_render (page, o,
+                            EVAS_POPPLER_PAGE_ORIENTATION_PORTRAIT,
+                            0, 0, -1, -1,
+                            1.0, 1.0);
   evas_object_show(o);
+  ecore_evas_resize (ee, evas_poppler_page_width_get (page), evas_poppler_page_height_get (page));
 
   ecore_main_loop_begin ();
 

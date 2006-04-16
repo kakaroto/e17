@@ -59,7 +59,7 @@ evas_poppler_page_delete (Evas_Poppler_Page *page)
 }
 
 void
-evas_poppler_page_render (Evas_Poppler_Page *page, Evas_Object *o, int x, int y, int w, int h, double xres, double yres)
+evas_poppler_page_render (Evas_Poppler_Page *page, Evas_Object *o, Evas_Poppler_Page_Orientation orientation, int x, int y, int w, int h, double hscale, double vscale)
 {
   SplashOutputDev       *output_dev;
   SplashColor            white;
@@ -68,6 +68,7 @@ evas_poppler_page_render (Evas_Poppler_Page *page, Evas_Object *o, int x, int y,
   unsigned int          *m = NULL;
   unsigned int           val;
   int                    offset = 0;
+  int                    rotate;
   int                    width;
   int                    height;
 
@@ -79,10 +80,29 @@ evas_poppler_page_render (Evas_Poppler_Page *page, Evas_Object *o, int x, int y,
 
   output_dev = new SplashOutputDev(splashModeRGB8, 4, gFalse, white);
   output_dev->startDoc(doc->pdfdoc->getXRef ());
-  printf ("PAGE : %d\n", page->index + 1);
-  doc->pdfdoc->displayPageSlice(output_dev, page->index + 1, xres, yres,
-				0, false, false, false, -1, -1, -1, -1);
+  switch (orientation) {
+  case EVAS_POPPLER_PAGE_ORIENTATION_LANDSCAPE:
+    rotate = 90;
+    break;
+  case EVAS_POPPLER_PAGE_ORIENTATION_UPSIDEDOWN:
+    rotate = 180;
+    break;
+  case EVAS_POPPLER_PAGE_ORIENTATION_SEASCAPE:
+    rotate = 270;
+    break;
+  case EVAS_POPPLER_PAGE_ORIENTATION_PORTRAIT:
+  default:
+    rotate = 0;
+    break;
+  }
+  page->page->displaySlice (output_dev, 72.0 * hscale, 72.0 * vscale,
+                            rotate,
+                            false, false,
+                            x, y, w, h,
+                            NULL,
+                            doc->pdfdoc->getCatalog ());
   color_ptr = output_dev->getBitmap ()->getDataPtr ();
+
   width = output_dev->getBitmap()->getWidth();
   height = output_dev->getBitmap()->getHeight();
 

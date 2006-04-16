@@ -44,10 +44,10 @@ typedef enum
 
 typedef enum
 {
-  EVAS_POPPLER_PAGE_ORIENTATION_LANDSCAPE,        /**< Landscape orientation */
   EVAS_POPPLER_PAGE_ORIENTATION_PORTRAIT,         /**< Portrait orientation */
-  EVAS_POPPLER_PAGE_ORIENTATION_SEASCAPE,         /**< Seascape orientation */
-  EVAS_POPPLER_PAGE_ORIENTATION_UPSIDEDOWN        /**< Upside-down orientation */
+  EVAS_POPPLER_PAGE_ORIENTATION_LANDSCAPE,        /**< Landscape orientation */
+  EVAS_POPPLER_PAGE_ORIENTATION_UPSIDEDOWN,       /**< Upside-down orientation */
+  EVAS_POPPLER_PAGE_ORIENTATION_SEASCAPE          /**< Seascape orientation */
 }Evas_Poppler_Page_Orientation;
 
 typedef enum

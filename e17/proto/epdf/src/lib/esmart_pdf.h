@@ -15,6 +15,7 @@ struct _Smart_Pdf
   Evas_Poppler_Document *pdf_document;
   Evas_Poppler_Page     *pdf_page;
   Ecore_List            *pdf_index;
+  Evas_Poppler_Page_Orientation orientation;
 };
 
 Evas_Object           *poppler_object_add (Evas *evas);
@@ -26,5 +27,7 @@ double                 poppler_object_position_get(Evas_Object *obj);
 Evas_Poppler_Document *poppler_pdf_document_get (Evas_Object *obj);
 Evas_Poppler_Page     *poppler_pdf_page_get (Evas_Object *obj);
 Ecore_List            *poppler_pdf_index_get (Evas_Object *obj);
+void                   poppler_pdf_orientation_set (Evas_Object *obj, Evas_Poppler_Page_Orientation o);
+Evas_Poppler_Page_Orientation poppler_pdf_orientation_get (Evas_Object *obj);
 
 #endif /* __ESMART_PDF_H__ */

@@ -36,6 +36,9 @@ struct _Etk_Pdf
    Evas_Poppler_Document *pdf_document;
    Evas_Poppler_Page     *pdf_page;
    Ecore_List            *pdf_index;
+   Evas_Poppler_Page_Orientation orientation;
+   double                 hscale;
+   double                 vscale;
 
   struct {
      Evas_Object *o;
@@ -57,9 +60,16 @@ int                    etk_pdf_page_get(Etk_Pdf *pdf);
 Evas_Poppler_Document *etk_pdf_pdf_document_get (Etk_Pdf *pdf);
 Evas_Poppler_Page     *etk_pdf_pdf_page_get (Etk_Pdf *pdf);
 Ecore_List            *etk_pdf_pdf_index_get (Etk_Pdf *pdf);
+void                   etk_pdf_size_get (Etk_Pdf *pdf, int *width, int *height);
 void                   etk_pdf_search_text_set (Etk_Pdf *pdf, const char *text);
 void                   etk_pdf_search_is_case_sensitive (Etk_Pdf *pdf, int is_case_sensitive);
 int                    etk_pdf_search_next (Etk_Pdf *pdf);
+
+void                   etk_pdf_orientation_set (Etk_Pdf *pdf, Evas_Poppler_Page_Orientation o);
+Evas_Poppler_Page_Orientation etk_pdf_orientation_get (Etk_Pdf *pdf);
+
+void                   etk_pdf_scale_set (Etk_Pdf *pdf, double hscale, double vscale);
+void                   etk_pdf_scale_get (Etk_Pdf *pdf, double *hscale, double *vscale);
 
 /** @} */
 
