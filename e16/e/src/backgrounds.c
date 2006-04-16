@@ -31,6 +31,7 @@
 #include "emodule.h"
 #include "iclass.h"
 #include "tclass.h"
+#include "timers.h"
 #include "xwin.h"
 
 typedef struct

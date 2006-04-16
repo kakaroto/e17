@@ -29,6 +29,7 @@
 #include "ewins.h"
 #include "groups.h"
 #include "snaps.h"
+#include "timers.h"
 #include "xwin.h"
 
 struct _snapshot

@@ -560,17 +560,6 @@ typedef struct
 }
 EMode;
 
-typedef struct _qentry
-{
-   char               *name;
-   double              at_time;
-   void                (*func) (int val, void *data);
-   struct _qentry     *next;
-   int                 runtime_val;
-   void               *runtime_data;
-}
-Qentry;
-
 typedef struct _rectbox
 {
    void               *data;
@@ -961,20 +950,6 @@ void                StartupWindowsOpen(void);
 /* theme.c */
 void                ThemePathFind(void);
 char              **ThemesList(int *num);
-
-/* timers.c */
-double              GetTime(void);
-void                DoIn(const char *name, double in_time,
-			 void (*func) (int val, void *data), int runtime_val,
-			 void *runtime_data);
-Qentry             *GetHeadTimerQueue(void);
-void                HandleTimerEvent(void);
-int                 RemoveTimerEvent(const char *name);
-
-struct _idler;
-void                IdlerAdd(int order, void (*func) (void *data), void *data);
-void                IdlerDel(struct _idler *id);
-void                IdlersRun(void);
 
 /* warp.c */
 void                WarpFocus(int delta);

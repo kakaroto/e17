@@ -24,6 +24,7 @@
 #include "E.h"
 #include "aclass.h"
 #include "emodule.h"
+#include "timers.h"
 #include "xwin.h"
 #include <sys/time.h>
 #if USE_XSYNC
@@ -611,7 +612,6 @@ EventsMain(void)
    fd_set              fdset;
    struct timeval      tval;
    double              time1, time2, dt;
-   Qentry             *qe;
    int                 count, pfetch;
    int                 fdsize;
    int                 xfd, smfd;
@@ -658,20 +658,22 @@ EventsMain(void)
 	   dt = 0.0;
 	/* dt = time spent since we last were here */
 
-	qe = GetHeadTimerQueue();
-	if (qe)
+	count = TimersPending(&time2);
+	if (count >= 0)
 	  {
-	     count = 0;
-	     time2 = qe->at_time - time2;
-	     if (time2 < 0.0)
-		time2 = 0.0;
-	     if (time2 <= 0.0)
-		goto do_timer;
-	     if (XPending(disp))
-		continue;
-	     tval.tv_sec = (long)time2;
-	     tval.tv_usec = (long)((time2 - ((double)tval.tv_sec)) * 1000000);
-	     count = select(fdsize, &fdset, NULL, NULL, &tval);
+	     if (count > 0)
+	       {
+		  if (XPending(disp))
+		     continue;
+		  tval.tv_sec = (long)time2;
+		  tval.tv_usec =
+		     (long)((time2 - ((double)tval.tv_sec)) * 1000000);
+		  count = select(fdsize, &fdset, NULL, NULL, &tval);
+	       }
+	     if (count == 0)
+	       {
+		  TimersRun();
+	       }
 	  }
 	else
 	  {
@@ -682,12 +684,9 @@ EventsMain(void)
 
 	if (EventDebug(EDBUG_TYPE_EVENTS))
 	   Eprintf
-	      ("EventsMain - count=%d xfd=%d:%d smfd=%d:%d qe=%p dt=%lf time2=%lf\n",
+	      ("EventsMain - count=%d xfd=%d:%d smfd=%d:%d dt=%lf time2=%lf\n",
 	       count, xfd, FD_ISSET(xfd, &fdset), smfd,
-	       (smfd >= 0) ? FD_ISSET(smfd, &fdset) : 0, qe, dt, time2);
-
-	if (count < 0)
-	   continue;
+	       (smfd >= 0) ? FD_ISSET(smfd, &fdset) : 0, dt, time2);
 
 	if (count > 0)
 	  {
@@ -697,15 +696,6 @@ EventsMain(void)
 		     Eprintf("EventsMain - ICE\n");
 		  ProcessICEMSGS();
 	       }
-	     continue;
-	  }
-
-      do_timer:
-	if (qe)
-	  {
-	     if (EventDebug(EDBUG_TYPE_EVENTS))
-		Eprintf("EventsMain - Timers (%s)\n", qe->name);
-	     HandleTimerEvent();
 	  }
      }
 }

@@ -25,6 +25,7 @@
 #include "dialog.h"
 #include "emodule.h"
 #include "iclass.h"
+#include "timers.h"
 
 #ifdef ENABLE_THEME_TRANSPARENCY
 /*

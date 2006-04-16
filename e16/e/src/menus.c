@@ -33,6 +33,7 @@
 #include "iclass.h"
 #include "menus.h"
 #include "tclass.h"
+#include "timers.h"
 #include "tooltips.h"
 #include "xwin.h"
 #include <time.h>

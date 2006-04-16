@@ -30,6 +30,7 @@
 #include "eobj.h"
 #include "iclass.h"
 #include "tclass.h"
+#include "timers.h"
 #include "tooltips.h"
 #include "xwin.h"
 

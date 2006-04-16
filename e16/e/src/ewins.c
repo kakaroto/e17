@@ -32,6 +32,7 @@
 #include "groups.h"
 #include "hints.h"
 #include "snaps.h"
+#include "timers.h"
 #include "xwin.h"
 
 #define EWIN_TOP_EVENT_MASK \

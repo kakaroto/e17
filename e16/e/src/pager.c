@@ -34,6 +34,7 @@
 #include "hiwin.h"
 #include "iclass.h"
 #include "menus.h"
+#include "timers.h"
 #include "tooltips.h"
 #include "xwin.h"
 

@@ -27,6 +27,7 @@
 #include "ewins.h"
 #include "groups.h"
 #include "hints.h"
+#include "timers.h"
 #include "xwin.h"
 
 static struct

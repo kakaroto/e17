@@ -29,6 +29,7 @@
 #include "ewins.h"
 #include "groups.h"
 #include "snaps.h"
+#include "timers.h"
 #include <math.h>
 
 #define SET_OFF    0

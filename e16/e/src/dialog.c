@@ -29,6 +29,7 @@
 #include "hints.h"
 #include "iclass.h"
 #include "tclass.h"
+#include "timers.h"
 #include "xwin.h"
 
 #define DEBUG_DIALOGS 0

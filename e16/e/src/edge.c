@@ -26,6 +26,7 @@
 #include "eobj.h"
 #include "ewins.h"
 #include "menus.h"		/* FIXME - Should not be here */
+#include "timers.h"
 #include "xwin.h"
 
 /* FIXME: Screen resizing not handled. */

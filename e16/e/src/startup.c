@@ -25,6 +25,7 @@
 #include "backgrounds.h"
 #include "eobj.h"
 #include "iclass.h"
+#include "timers.h"
 #include "xwin.h"
 
 static EObj        *init_win1 = NULL;

@@ -27,6 +27,7 @@
 #include "emodule.h"
 #include "ewins.h"
 #include "hints.h"
+#include "timers.h"
 #include "xwin.h"
 
 #define EwinListFocusRaise(ewin) EobjListFocusRaise(EoObj(ewin))

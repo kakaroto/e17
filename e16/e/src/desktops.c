@@ -33,6 +33,7 @@
 #include "ewins.h"
 #include "hints.h"
 #include "iclass.h"
+#include "timers.h"
 #include "tooltips.h"
 #include "xwin.h"
 #include <time.h>

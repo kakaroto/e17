@@ -22,7 +22,19 @@
  */
 #include "E.h"
 #include "e16-ecore_list.h"
+#include "timers.h"
 #include <sys/time.h>
+
+typedef struct _qentry Qentry;
+struct _qentry
+{
+   char               *name;
+   double              at_time;
+   void                (*func) (int val, void *data);
+   struct _qentry     *next;
+   int                 runtime_val;
+   void               *runtime_data;
+};
 
 double
 GetTime(void)
@@ -77,27 +89,46 @@ DoIn(const char *name, double in_time, void (*func) (int val, void *data),
      }
 }
 
-Qentry             *
-GetHeadTimerQueue(void)
+/*
+ * Returns:
+ *  -1: No timers pending
+ *   0: Expired timer pending
+ *   1: Non-expired timers pending
+ */
+int
+TimersPending(double *t)
 {
-   return q_first;
+   Qentry             *qe;
+   double              dt;
+
+   qe = q_first;
+   if (!qe)
+      return -1;
+
+   dt = qe->at_time - *t;
+   *t = dt;
+
+   return (dt > 0.) ? 1 : 0;
 }
 
 void
-HandleTimerEvent(void)
+TimersRun(void)
 {
    Qentry             *qe;
 
-   /* no timers - exit */
+   qe = q_first;
    if (!q_first)
       return;
 
-   /* get the first timer */
-   qe = q_first;
+   if (EventDebug(EDBUG_TYPE_EVENTS))
+      Eprintf("EventsMain - Timers (%s)\n", qe->name);
+
    /* remove it */
    q_first = q_first->next;
+
    /* run this callback */
    qe->func(qe->runtime_val, qe->runtime_data);
+
    /* free the timer */
    if (qe->name)
       Efree(qe->name);
@@ -136,7 +167,6 @@ RemoveTimerEvent(const char *name)
 
 static Ecore_List  *idler_list = NULL;
 
-typedef struct _idler Idler;
 typedef void        (IdlerFunc) (void *data);
 
 struct _idler
@@ -146,14 +176,14 @@ struct _idler
    void               *data;
 };
 
-void
+Idler              *
 IdlerAdd(int order, IdlerFunc * func, void *data)
 {
    Idler              *id;
 
    id = Emalloc(sizeof(Idler));
    if (!id)
-      return;
+      return NULL;
 
    id->order = order;		/* Not used atm. */
    id->func = func;
@@ -163,6 +193,8 @@ IdlerAdd(int order, IdlerFunc * func, void *data)
       idler_list = ecore_list_new();
 
    ecore_list_append(idler_list, id);
+
+   return id;
 }
 
 void

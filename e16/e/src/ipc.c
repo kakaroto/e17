@@ -31,6 +31,7 @@
 #include "ewin-ops.h"
 #include "hints.h"		/* FIXME - Should not be here */
 #include "snaps.h"
+#include "timers.h"
 #include "xwin.h"
 #include <ctype.h>
 
