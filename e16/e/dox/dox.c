@@ -253,7 +253,7 @@ main(int argc, char **argv)
    y = 0;
    pagenum = 0;
 
-   if ((int)(disp = XOpenDisplay(NULL)) < 1)
+   if ((disp = XOpenDisplay(NULL)) == NULL)
      {
 	printf("%s: Cannot open X display.\n", argv[0]);
 	exit(0);
