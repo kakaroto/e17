@@ -485,15 +485,14 @@ ButtonsForeach(int id, Desk * dsk, void (*func) (Button * b))
 {
    Button             *b;
 
-   for (ecore_list_goto_first(button_list);
-	(b = ecore_list_next(button_list)) != NULL;)
-     {
-	if (id >= 0 && id != b->id)
-	   continue;
-	if (dsk && dsk != EoGetDesk(b))
-	   continue;
-	func(b);
-     }
+   ECORE_LIST_FOR_EACH(button_list, b)
+   {
+      if (id >= 0 && id != b->id)
+	 continue;
+      if (dsk && dsk != EoGetDesk(b))
+	 continue;
+      func(b);
+   }
 }
 
 void
