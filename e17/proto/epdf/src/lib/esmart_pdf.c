@@ -78,7 +78,7 @@ static Evas_Smart  *smart = NULL;
  * 
  */
 Evas_Object *
-poppler_object_add (Evas *evas)
+esmart_pdf_add (Evas *evas)
 {
   _smart_init ();
 
@@ -95,7 +95,7 @@ poppler_object_add (Evas *evas)
  * 
  */
 Evas_Bool
-poppler_object_init (Evas_Object *obj)
+esmart_pdf_init (Evas_Object *obj)
 {
   Smart_Pdf *sp;
 
@@ -103,7 +103,15 @@ poppler_object_init (Evas_Object *obj)
 
   if (sp->filename) free (sp->filename);
   sp->filename = NULL;
-  sp->page = -1;
+  sp->page = 0;
+
+  sp->pdf_document = NULL;
+  sp->pdf_page = NULL;
+  sp->pdf_index = NULL;
+
+  sp->orientation = EVAS_POPPLER_PAGE_ORIENTATION_PORTRAIT;
+  sp->hscale = 1.0;
+  sp->vscale = 1.0;
 
   return 1;
 }
@@ -118,7 +126,7 @@ poppler_object_init (Evas_Object *obj)
  * 
  */
 void
-poppler_object_file_set (Evas_Object *obj, const char *filename)
+esmart_pdf_file_set (Evas_Object *obj, const char *filename)
 {
   Smart_Pdf *sp;
 
@@ -153,7 +161,7 @@ poppler_object_file_set (Evas_Object *obj, const char *filename)
  * 
  */
 const char *
-poppler_object_file_get (Evas_Object *obj)
+esmart_pdf_file_get (Evas_Object *obj)
 {
   Smart_Pdf *sp;
 
@@ -172,7 +180,7 @@ poppler_object_file_get (Evas_Object *obj)
  * 
  */
 void
-poppler_object_page_set (Evas_Object *obj, int page)
+esmart_pdf_page_set (Evas_Object *obj, int page)
 {
   Smart_Pdf *sp;
    
@@ -196,7 +204,7 @@ poppler_object_page_set (Evas_Object *obj, int page)
  * 
  */
 int
-poppler_object_page_get(Evas_Object *obj)
+esmart_pdf_page_get(Evas_Object *obj)
 {
   Smart_Pdf *sp;
    
@@ -215,7 +223,7 @@ poppler_object_page_get(Evas_Object *obj)
  * 
  */
 Evas_Poppler_Document *
-poppler_pdf_document_get (Evas_Object *obj)
+esmart_pdf_pdf_document_get (Evas_Object *obj)
 {
   Smart_Pdf *sp;
    
@@ -234,7 +242,7 @@ poppler_pdf_document_get (Evas_Object *obj)
  * 
  */
 Evas_Poppler_Page *
-poppler_pdf_page_get (Evas_Object *obj)
+esmart_pdf_pdf_page_get (Evas_Object *obj)
 {
   Smart_Pdf *sp;
    
@@ -244,16 +252,16 @@ poppler_pdf_page_get (Evas_Object *obj)
 }
 
 /**
- * Return the poppler nidex of a smart pdf object
+ * Return the index of a smart pdf object
  *
  * @param obj The Evas object
- * @return The poppler index of the pdf (NULL on failure)
+ * @return The index of the pdf (NULL on failure)
  *
- * Return the poppler index of the smart pdf object @p obj
+ * Return the index of the smart pdf object @p obj
  * 
  */
 Ecore_List *
-poppler_pdf_index_get (Evas_Object *obj)
+esmart_pdf_pdf_index_get (Evas_Object *obj)
 {
   Smart_Pdf *sp;
    
@@ -262,9 +270,37 @@ poppler_pdf_index_get (Evas_Object *obj)
   return sp->pdf_index;
 }
 
+/**
+ * @brief Gets the native size of a smart pdf object
+ *
+ * @param obj The Evas object
+ * @param width the location where to set the native width of the pdf
+ * @param height the location where to set the native height of the pdf
+ */
+void esmart_pdf_size_get(Evas_Object *obj, int *width, int *height)
+{
+  Smart_Pdf *sp;
+   
+  E_SMART_OBJ_GET(sp, obj, E_OBJ_NAME);
+
+   if (!sp)
+   {
+      if (width)
+	 *width = 0;
+      if (height)
+	 *height = 0;
+   }
+   else {
+      if (width)
+	 *width = evas_poppler_page_width_get (sp->pdf_page);
+      if (height)
+	 *height = evas_poppler_page_height_get (sp->pdf_page);
+   }
+}
+
 void
-poppler_pdf_orientation_set (Evas_Object *obj,
-                             Evas_Poppler_Page_Orientation o)
+esmart_pdf_orientation_set (Evas_Object *obj,
+                            Evas_Poppler_Page_Orientation o)
 {
   Smart_Pdf *sp;
    
@@ -278,13 +314,56 @@ poppler_pdf_orientation_set (Evas_Object *obj,
 }
 
 Evas_Poppler_Page_Orientation
-poppler_pdf_orientation_get (Evas_Object *obj)
+esmart_pdf_orientation_get (Evas_Object *obj)
 {
   Smart_Pdf *sp;
    
   E_SMART_OBJ_GET_RETURN(sp, obj, E_OBJ_NAME, EVAS_POPPLER_PAGE_ORIENTATION_PORTRAIT);
 
   return sp->orientation;
+}
+
+void
+esmart_pdf_scale_set (Evas_Object *obj,
+                      double       hscale,
+                      double       vscale)
+{
+  Smart_Pdf *sp;
+   
+  E_SMART_OBJ_GET(sp, obj, E_OBJ_NAME);
+
+  if (hscale != sp->hscale)
+    sp->hscale = hscale;
+
+  if (vscale != sp->vscale)
+    sp->vscale = vscale;
+
+  _smart_page_render (obj);
+}
+
+void
+esmart_pdf_scale_get (Evas_Object *obj,
+                      double      *hscale,
+                      double      *vscale)
+{
+  Smart_Pdf *sp;
+   
+  E_SMART_OBJ_GET(sp, obj, E_OBJ_NAME);
+
+  if (!sp) {
+     if (hscale)
+        *hscale = 1.0;
+
+     if (vscale)
+        *vscale = 1.0;
+  }
+  else {
+     if (hscale)
+        *hscale = sp->hscale;
+
+      if (vscale)
+         *vscale = sp->vscale;
+  }
 }
 
 
@@ -504,12 +583,8 @@ _smart_page_render (Evas_Object *obj)
           sp->pdf_page = evas_poppler_document_page_get (sp->pdf_document, sp->page);
           evas_poppler_page_render (sp->pdf_page, sp->obj, sp->orientation,
                                     0, 0, -1, -1,
-                                    1.0, 1.0);
+                                    sp->hscale, sp->vscale);
         }
       evas_object_show (sp->obj);
     }
-  
-  evas_object_image_size_set (sp->obj,
-                              evas_poppler_page_width_get (sp->pdf_page),
-                              evas_poppler_page_height_get (sp->pdf_page));
 }

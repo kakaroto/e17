@@ -16,18 +16,23 @@ struct _Smart_Pdf
   Evas_Poppler_Page     *pdf_page;
   Ecore_List            *pdf_index;
   Evas_Poppler_Page_Orientation orientation;
+  double                 hscale;
+  double                 vscale;
 };
 
-Evas_Object           *poppler_object_add (Evas *evas);
-Evas_Bool              poppler_object_init (Evas_Object *obj);
-void                   poppler_object_file_set (Evas_Object *obj, const char *filename);
-const char            *poppler_object_file_get (Evas_Object *obj);
-void                   poppler_object_page_set (Evas_Object *obj, int page);
-double                 poppler_object_position_get(Evas_Object *obj);
-Evas_Poppler_Document *poppler_pdf_document_get (Evas_Object *obj);
-Evas_Poppler_Page     *poppler_pdf_page_get (Evas_Object *obj);
-Ecore_List            *poppler_pdf_index_get (Evas_Object *obj);
-void                   poppler_pdf_orientation_set (Evas_Object *obj, Evas_Poppler_Page_Orientation o);
-Evas_Poppler_Page_Orientation poppler_pdf_orientation_get (Evas_Object *obj);
+Evas_Object           *esmart_pdf_add (Evas *evas);
+Evas_Bool              esmart_pdf_init (Evas_Object *obj);
+void                   esmart_pdf_file_set (Evas_Object *obj, const char *filename);
+const char            *esmart_pdf_file_get (Evas_Object *obj);
+void                   esmart_pdf_page_set (Evas_Object *obj, int page);
+double                 esmart_pdf_position_get(Evas_Object *obj);
+Evas_Poppler_Document *esmart_pdf_pdf_document_get (Evas_Object *obj);
+Evas_Poppler_Page     *esmart_pdf_pdf_page_get (Evas_Object *obj);
+Ecore_List            *esmart_pdf_pdf_index_get (Evas_Object *obj);
+void                   esmart_pdf_orientation_set (Evas_Object *obj, Evas_Poppler_Page_Orientation o);
+Evas_Poppler_Page_Orientation esmart_pdf_orientation_get (Evas_Object *obj);
+
+void                   esmart_pdf_scale_set (Evas_Object *obj, double hscale, double vscale);
+void                   esmart_pdf_scale_get (Evas_Object *obj, double *hscale, double *vscale);
 
 #endif /* __ESMART_PDF_H__ */

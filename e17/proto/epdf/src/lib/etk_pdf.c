@@ -357,7 +357,7 @@ void etk_pdf_scale_set (Etk_Pdf *pdf, double hscale, double vscale)
    _etk_pdf_load (pdf);
 }
 
-void etk_pdf_sacle_get (Etk_Pdf *pdf, double *hscale, double *vscale)
+void etk_pdf_scale_get (Etk_Pdf *pdf, double *hscale, double *vscale)
 {
   if (!pdf) {
      if (hscale)

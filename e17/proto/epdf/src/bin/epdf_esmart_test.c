@@ -52,15 +52,16 @@ main (int argc, char *argv[])
   
   evas = ecore_evas_get(ee);
 
-  o = poppler_object_add (evas);
-  if (!poppler_object_init (o)) {
+  o = esmart_pdf_add (evas);
+  if (!esmart_pdf_init (o)) {
     ecore_evas_shutdown ();
     ecore_shutdown ();
     evas_shutdown ();
     return -1;
   }
-  poppler_object_file_set (o, filename);
-  poppler_object_page_set (o, page_number);
+  esmart_pdf_file_set (o, filename);
+  esmart_pdf_page_set (o, page_number);
+  esmart_pdf_scale_set (o, 0.5, 0.5);
   evas_object_move (o, 0, 0);
   evas_object_show (o);
 
