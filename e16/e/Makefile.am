@@ -1,11 +1,12 @@
 SUBDIRS = intl dox eesh epp src config themes man scripts misc po
 
 EXTRA_DIST = \
+timestamp.h \
 sample-scripts/bouncingball.pl \
 sample-scripts/lcdmover.sh \
 sample-scripts/testroller.pl \
 sample-scripts/shade-pagers.pl \
-e.spec \
+e16.spec.in \
 configure configure.in config.h.in \
 ABOUT-NLS AUTHORS COMPLIANCE COPYING ChangeLog INSTALL NEWS README \
 docs/README-0.16.8

@@ -110,7 +110,6 @@ e16_SOURCES = \
 	theme.c                 \
 	timers.c		\
 	timers.h		\
-	timestamp.h		\
 	tooltips.c		\
 	tooltips.h		\
 	ttfont.c		\
@@ -137,7 +136,7 @@ LDADD = \
 	$(E_X_LIBS) 		\
 	-lX11 -lm
 
-INCLUDES = -I$(top_builddir) -I$(top_srcdir)/intl @ecore_cflags@ $(ESD_CFLAGS) $(IMLIB_CFLAGS) $(X_CFLAGS)
+INCLUDES = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/intl @ecore_cflags@ $(ESD_CFLAGS) $(IMLIB_CFLAGS) $(X_CFLAGS)
 
 install-data-local:
 	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(ENLIGHTENMENT_ROOT)/themes

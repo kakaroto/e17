@@ -34,12 +34,7 @@
 #include <time.h>
 
 const char          e_wm_name[] = "Enlightenment";
-const char          e_wm_version[] =
-#ifdef ENLIGHTENMENT_RELEASE
-   "enlightenment-" ENLIGHTENMENT_VERSION "-" ENLIGHTENMENT_RELEASE;
-#else
-   "enlightenment-" ENLIGHTENMENT_VERSION;
-#endif
+const char          e_wm_version[] = ENLIGHTENMENT_VERSION;
 const char          e_wm_date[] = E_CHECKOUT_DATE;
 
 Display            *disp;
@@ -191,8 +186,7 @@ main(int argc, char **argv)
 	     Mode.theme.path = Estrdup(eoptarg);
 	     break;
 	  case 'V':
-	     printf("Enlightenment %s - %s\n",
-		    ENLIGHTENMENT_VERSION, E_CHECKOUT_DATE);
+	     printf("%s %s - %s\n", e_wm_name, e_wm_version, e_wm_date);
 	     exit(0);
 	     break;
 	  case 'v':
@@ -237,7 +231,7 @@ main(int argc, char **argv)
    ThemePathFind();
 
    /* Set the Environment variables */
-   Esetenv("EVERSION", ENLIGHTENMENT_VERSION, 1);
+   Esetenv("EVERSION", e_wm_version, 1);
    Esetenv("EROOT", EDirRoot(), 1);
    Esetenv("EBIN", EDirBin(), 1);
    Esetenv("ECONFDIR", EDirUser(), 1);

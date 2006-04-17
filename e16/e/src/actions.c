@@ -289,8 +289,7 @@ About(void)
      }
 
    d = DialogCreate("ABOUT_ENLIGHTENMENT");
-   Esnprintf(buf, sizeof(buf),
-	     _("About Enlightenment %s"), ENLIGHTENMENT_VERSION);
+   Esnprintf(buf, sizeof(buf), _("About Enlightenment %s"), e_wm_version);
    DialogSetTitle(d, buf);
 
    table = DialogInitItem(d);
