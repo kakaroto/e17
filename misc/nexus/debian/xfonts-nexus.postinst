@@ -3,7 +3,7 @@
 #DEBHELPER#
 
 if [ "$1" = "configure" ]; then
-    ( cd /usr/X11R6/lib/X11/fonts/misc ; /usr/X11R6/bin/mkfontdir )
+    ( cd /usr/share/fonts/X11/misc && /usr/bin/mkfontdir )
     update-fonts-alias misc
 fi
 

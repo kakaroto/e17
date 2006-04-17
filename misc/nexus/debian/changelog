@@ -1,3 +1,13 @@
+xfonts-nexus (0.0.2-12) unstable; urgency=low
+
+  * Resolved problem with paths in invocation of mkfontdir in postinst
+    (closes: #362969)
+  * Remove unneeded debian/xfonts-nexus.conffiles that crept in
+    at some stage
+  * Removed unneded debian/xfonts-nexus.dirs
+
+ -- Simon Horman <horms@debian.org>  Mon, 17 Apr 2006 11:00:29 +0900
+
 xfonts-nexus (0.0.2-11) unstable; urgency=low
 
   * Place fonts in /usr/share/fonts/X11 instead of /usr/X11R6/lib/X11/fonts
