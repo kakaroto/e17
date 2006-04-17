@@ -74,6 +74,7 @@ void                DeskGoto(Desk * dsk);
 void                DeskGotoNum(unsigned int desk);
 void                DeskRestack(Desk * dsk);
 Window              DeskGetBackgroundWin(const Desk * dsk);
+Pixmap              DeskGetBackgroundPixmap(const Desk * dsk);
 
 Background         *DeskBackgroundGet(const Desk * dsk);
 void                DeskBackgroundSet(Desk * dsk, Background * bg);

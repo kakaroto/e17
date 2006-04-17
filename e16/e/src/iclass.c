@@ -880,7 +880,7 @@ pt_get_bg_image(Window win, int w, int h, int use_root)
    Drawable            bg;
    int                 xx, yy;
 
-   bg = BackgroundGetPixmap(DeskBackgroundGet(DesksGetCurrent()));
+   bg = DeskGetBackgroundPixmap(DesksGetCurrent());
    if (use_root || bg == None)
      {
 	cr = VRoot.win;

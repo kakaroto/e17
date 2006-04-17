@@ -494,6 +494,14 @@ DeskGetBackgroundWin(const Desk * dsk)
    return EobjGetWin(dsk->bg.o);
 }
 
+Pixmap
+DeskGetBackgroundPixmap(const Desk * dsk)
+{
+   if (!dsk)
+      return None;
+   return dsk->bg.pmap;
+}
+
 Background         *
 DeskBackgroundGet(const Desk * dsk)
 {
