@@ -184,7 +184,8 @@ struct _dialog
    char               *text;
    int                 num_buttons;
    Window              win;
-   PmapMask            pmm;
+   Pixmap              pmap;
+   PmapMask            pmm_bg;
    DButton           **button;
    TextClass          *tclass;
    ImageClass         *iclass;
@@ -302,7 +303,8 @@ DialogDestroy(Dialog * d)
    if (d->keybindings)
       Efree(d->keybindings);
 
-   FreePmapMask(&(d->pmm));
+   FreePmapMask(&(d->pmm_bg));
+   EFreePixmap(d->pmap);
    EDestroyWindow(d->win);
 
    Efree(d);
@@ -492,13 +494,21 @@ DialogRedraw(Dialog * d)
       return;
 
 #if DEBUG_DIALOGS
-   Eprintf("DialogRedraw win=%#lx pmap=%#lx\n", d->win, d->pmm.pmap);
+   Eprintf("DialogRedraw win=%#lx pmap=%#lx\n", d->win, d->pmap);
 #endif
 
-   FreePmapMask(&(d->pmm));
+   FreePmapMask(&(d->pmm_bg));
    ImageclassApplyCopy(d->iclass, d->win, d->w, d->h, 0, 0, STATE_NORMAL,
-		       &(d->pmm), 0, ST_DIALOG);
-   ESetWindowBackgroundPixmap(d->win, d->pmm.pmap);
+		       &(d->pmm_bg), 0, ST_DIALOG);
+   if (d->pmm_bg.pmap == None)
+      return;
+
+   if (d->pmap == None)
+     {
+	d->pmap = ECreatePixmap(d->win, d->w, d->h, VRoot.depth);
+	ESetWindowBackgroundPixmap(d->win, d->pmap);
+     }
+   ECopyArea(d->pmm_bg.pmap, d->pmap, 0, 0, d->w, d->h, 0, 0);
 
    d->redraw = 1;
 
@@ -507,7 +517,7 @@ DialogRedraw(Dialog * d)
 
    if (d->text)
      {
-	TextclassApply(d->iclass, d->pmm.pmap, d->w, d->h, 0, 0, STATE_NORMAL,
+	TextclassApply(d->iclass, d->pmap, d->w, d->h, 0, 0, STATE_NORMAL,
 		       d->tclass, d->text);
      }
    else if (d->item)
@@ -1516,12 +1526,6 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
    d->update = 1;
    di->update = 1;
 
-#if 1				/* FIXME - Gross hack to get text items redrawn when changed */
-   /* ...either keep full bg image/pixmap around or render text to separate window... */
-   if (di->type == DITEM_TEXT)
-      d->redraw = 1;
-#endif
-
    if (d->xu1 > x)
       d->xu1 = x;
    if (d->yu1 > y)
@@ -1670,7 +1674,8 @@ DialogDrawItem(Dialog * d, DItem * di)
 
      case DITEM_TEXT:
 	if (!d->redraw)
-	   break;
+	   ECopyArea(d->pmm_bg.pmap, d->pmap, di->x, di->y, di->w, di->h,
+		     di->x, di->y);
 	x = di->x;
 	w = di->w;
 	goto draw_text;
@@ -1709,7 +1714,7 @@ DialogDrawItem(Dialog * d, DItem * di)
 	break;
 
       draw_text:
-	TextDraw(di->tclass, d->pmm.pmap, 0, 0, STATE_NORMAL, di->text,
+	TextDraw(di->tclass, d->pmap, 0, 0, STATE_NORMAL, di->text,
 		 x, di->y, w, 99999, 17, TextclassGetJustification(di->tclass));
 	break;
      }
@@ -1742,10 +1747,6 @@ _DialogsCheckUpdate(void *data __UNUSED__)
 
    ECORE_LIST_FOR_EACH(dialog_list, d)
    {
-#if 1				/* FIXME - Gross hack to get text items redrawn when changed */
-      if (d->redraw)
-	 DialogRedraw(d);
-#endif
       if (d->update)
 	 DialogUpdate(d);
       d->redraw = 0;

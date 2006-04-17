@@ -112,6 +112,8 @@ Pixmap              EWindowGetShapePixmap(Window win);
 #define EFreePixmap(pmap) XFreePixmap(disp, pmap)
 Pixmap              ECreatePixmapCopy(Pixmap src, unsigned int w,
 				      unsigned int h, unsigned int depth);
+void                ECopyArea(Drawable src, Drawable dst, int sx, int sy,
+			      unsigned int w, unsigned int h, int dx, int dy);
 
 GC                  ECreateGC(Drawable d, unsigned long mask, XGCValues * val);
 int                 EFreeGC(GC gc);

@@ -1345,6 +1345,17 @@ ECreatePixmapCopy(Pixmap src, unsigned int w, unsigned int h,
    return pmap;
 }
 
+void
+ECopyArea(Drawable src, Drawable dst, int sx, int sy, unsigned int w,
+	  unsigned int h, int dx, int dy)
+{
+   GC                  gc;
+
+   gc = ECreateGC(src, 0, NULL);
+   XCopyArea(disp, src, dst, gc, sx, sy, w, h, dx, dy);
+   EFreeGC(gc);
+}
+
 GC
 ECreateGC(Drawable d, unsigned long mask, XGCValues * val)
 {
