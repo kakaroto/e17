@@ -14,7 +14,7 @@
 typedef struct Exo_Etk_ Exo_Etk;
 struct Exo_Etk_
 {
-  char *path;
+  char       *path;
   char       *filename;
   Etk_Widget *pdf;
   Etk_Widget *list_pages;
@@ -52,37 +52,35 @@ static void     _exo_etk_size_50_cb                (Etk_Object *object, void *us
 static void
 _exo_etk_tree_fill (Etk_Pdf *pdf, Etk_Tree *tree, Etk_Tree_Col *col, Etk_Tree_Row *row, Ecore_List *items)
 {
-  Etk_Tree_Row            *prow;
-  Evas_Poppler_Index_Item *item;
+  Etk_Tree_Row    *prow;
+  Epdf_Index_Item *item;
 
   if (!items)
     return;
 
   ecore_list_goto_first (items);
-  while ((item = ecore_list_next (items)))
-    {
-      char       *buf;
-      Ecore_List *c;
-      int         *num;
+  while ((item = ecore_list_next (items))) {
+    char       *buf;
+    Ecore_List *c;
+    int         *num;
 
-      buf = strdup (evas_poppler_index_item_title_get (item));
-      if (!row)
-        prow = etk_tree_append (tree, col, buf, NULL);
-      else
-        prow = etk_tree_append_to_row (row, col, buf, NULL);
+    buf = strdup (epdf_index_item_title_get (item));
+    if (!row)
+      prow = etk_tree_append (tree, col, buf, NULL);
+    else
+      prow = etk_tree_append_to_row (row, col, buf, NULL);
 
-      num = (int *)malloc (sizeof (int));
-      *num = evas_poppler_index_item_page_get (etk_pdf_pdf_document_get (pdf), item);
-      etk_tree_row_data_set (prow, num);
-      free (buf);
-/*       etk_signal_connect ("destroyed", ETK_OBJECT (row), */
-/*                           ETK_CALLBACK(_exo_etk_row_data_free_cb), NULL); */
-      c = evas_poppler_index_item_children_get (item);
-      if (c)
-        {
-          _exo_etk_tree_fill (pdf, tree, col, prow, c);
-        }
+    num = (int *)malloc (sizeof (int));
+    *num = epdf_index_item_page_get (etk_pdf_pdf_document_get (pdf), item);
+    etk_tree_row_data_set (prow, num);
+    free (buf);
+    /*       etk_signal_connect ("destroyed", ETK_OBJECT (row), */
+    /*                           ETK_CALLBACK(_exo_etk_row_data_free_cb), NULL); */
+    c = epdf_index_item_children_get (item);
+    if (c) {
+      _exo_etk_tree_fill (pdf, tree, col, prow, c);
     }
+  }
 }
 
 static void
@@ -90,10 +88,10 @@ _exo_etk_update_document (Exo_Etk      *data,
                           Etk_Tree_Col *col_pages,
                           Etk_Tree_Col *col_index)
 {
-  Evas_Poppler_Document   *document;
-  Ecore_List              *index;
-  int                      page_count;
-  int                      i;
+  Epdf_Document   *document;
+  Ecore_List      *index;
+  int              page_count;
+  int              i;
 
   if (!data || !data->filename) return;
 
@@ -105,20 +103,19 @@ _exo_etk_update_document (Exo_Etk      *data,
   document = etk_pdf_pdf_document_get (ETK_PDF (data->pdf));
   if (!document) return;
 
-  page_count = evas_poppler_document_page_count_get (document);
+  page_count = epdf_document_page_count_get (document);
   etk_tree_freeze (ETK_TREE (data->list_pages));
-  for (i = 0; i < page_count; i++)
-    {
-      Etk_Tree_Row *row;
-      int          *num;
+  for (i = 0; i < page_count; i++) {
+    Etk_Tree_Row *row;
+    int          *num;
 
-      row = etk_tree_append (ETK_TREE (data->list_pages), col_pages, i + 1, NULL);
-      num = (int *)malloc (sizeof (int));
-      *num = i;
-      etk_tree_row_data_set (row, num);
-/*       etk_signal_connect ("destroyed", ETK_OBJECT (row), */
-/*                           ETK_CALLBACK(_exo_etk_row_data_free_cb), NULL); */
-    }
+    row = etk_tree_append (ETK_TREE (data->list_pages), col_pages, i + 1, NULL);
+    num = (int *)malloc (sizeof (int));
+    *num = i;
+    etk_tree_row_data_set (row, num);
+    /*       etk_signal_connect ("destroyed", ETK_OBJECT (row), */
+    /*                           ETK_CALLBACK(_exo_etk_row_data_free_cb), NULL); */
+  }
   etk_tree_thaw (ETK_TREE (data->list_pages));
 
   index = etk_pdf_pdf_index_get (ETK_PDF (data->pdf));
@@ -431,16 +428,16 @@ _exo_etk_row_data_free_cb  (Etk_Object *object)
 static void
 _exo_etk_info_cb (Etk_Object *object __UNUSED__, void *user_data)
 {
-  Exo_Etk               *data;
-  Etk_Widget            *dialog_info;
-  Etk_Widget            *table;
-  Etk_Widget            *notebook;
-  Etk_Widget            *label;
-  Etk_Widget            *entry;
-  Etk_Widget            *list;
-  Ecore_List            *fonts;
-  Evas_Poppler_Document *doc;
-  Evas_Poppler_Font_Info *font;
+  Exo_Etk        *data;
+  Etk_Widget     *dialog_info;
+  Etk_Widget     *table;
+  Etk_Widget     *notebook;
+  Etk_Widget     *label;
+  Etk_Widget     *entry;
+  Etk_Widget     *list;
+  Ecore_List     *fonts;
+  Epdf_Document  *doc;
+  Epdf_Font_Info *font;
 
   data = (Exo_Etk *)user_data;
   doc = etk_pdf_pdf_document_get (ETK_PDF (data->pdf));
@@ -469,7 +466,7 @@ _exo_etk_info_cb (Etk_Object *object __UNUSED__, void *user_data)
   etk_widget_show (label);
 
   entry = etk_entry_new ();
-  etk_entry_text_set (ETK_ENTRY (entry), evas_poppler_version_get ());
+  etk_entry_text_set (ETK_ENTRY (entry), epdf_poppler_version_get ());
   etk_table_attach_defaults (ETK_TABLE (table), entry, 1, 1, 0, 0);
   etk_widget_show (entry);
 
@@ -500,10 +497,10 @@ _exo_etk_info_cb (Etk_Object *object __UNUSED__, void *user_data)
 
     etk_tree_append (ETK_TREE (list),
                      col_title, "File name",
-                     col_prop, evas_poppler_document_filename_get (doc),
+                     col_prop, epdf_document_filename_get (doc),
                      NULL);
 
-    text = evas_poppler_document_title_get (doc);
+    text = epdf_document_title_get (doc);
     if (!text) text = strdup ("unknown");
     etk_tree_append (ETK_TREE (list),
                      col_title, "Title",
@@ -511,13 +508,13 @@ _exo_etk_info_cb (Etk_Object *object __UNUSED__, void *user_data)
                      NULL);
     free (text);
 
-    snprintf (buf, 16, "PDF-%.1f", evas_poppler_document_pdf_version_get (doc));
+    snprintf (buf, 16, "PDF-%.1f", epdf_document_pdf_version_get (doc));
     etk_tree_append (ETK_TREE (list),
                      col_title, "Format",
                      col_prop, buf,
                      NULL);
 
-    text = evas_poppler_document_author_get (doc);
+    text = epdf_document_author_get (doc);
     if (!text) text = strdup ("unknown");
     etk_tree_append (ETK_TREE (list),
                      col_title, "Author",
@@ -525,7 +522,7 @@ _exo_etk_info_cb (Etk_Object *object __UNUSED__, void *user_data)
                      NULL);
     free (text);
 
-    text = evas_poppler_document_subject_get (doc);
+    text = epdf_document_subject_get (doc);
     if (!text) text = strdup ("unknown");
     etk_tree_append (ETK_TREE (list),
                      col_title, "Subject",
@@ -533,7 +530,7 @@ _exo_etk_info_cb (Etk_Object *object __UNUSED__, void *user_data)
                      NULL);
     free (text);
 
-    text = evas_poppler_document_keywords_get (doc);
+    text = epdf_document_keywords_get (doc);
     if (!text) text = strdup ("unknown");
     etk_tree_append (ETK_TREE (list),
                      col_title, "Keywords",
@@ -541,7 +538,7 @@ _exo_etk_info_cb (Etk_Object *object __UNUSED__, void *user_data)
                      NULL);
     free (text);
 
-    text = evas_poppler_document_creator_get (doc);
+    text = epdf_document_creator_get (doc);
     if (!text) text = strdup ("unknown");
     etk_tree_append (ETK_TREE (list),
                      col_title, "Creator",
@@ -549,7 +546,7 @@ _exo_etk_info_cb (Etk_Object *object __UNUSED__, void *user_data)
                      NULL);
     free (text);
 
-    text = evas_poppler_document_producer_get (doc);
+    text = epdf_document_producer_get (doc);
     if (!text) text = strdup ("unknown");
     etk_tree_append (ETK_TREE (list),
                      col_title, "Producer",
@@ -557,7 +554,7 @@ _exo_etk_info_cb (Etk_Object *object __UNUSED__, void *user_data)
                      NULL);
     free (text);
 
-    if (evas_poppler_document_is_linearized (doc))
+    if (epdf_document_is_linearized (doc))
       text = "yes";
     else
       text = "no";
@@ -568,15 +565,15 @@ _exo_etk_info_cb (Etk_Object *object __UNUSED__, void *user_data)
 
     etk_tree_append (ETK_TREE (list),
                      col_title, "Page mode",
-                     col_prop, evas_poppler_document_page_mode_string_get (doc),
+                     col_prop, epdf_document_page_mode_string_get (doc),
                      NULL);
 
     etk_tree_append (ETK_TREE (list),
                      col_title, "Page layout",
-                     col_prop, evas_poppler_document_page_layout_string_get (doc),
+                     col_prop, epdf_document_page_layout_string_get (doc),
                      NULL);
 
-    text = evas_poppler_document_creation_date_get (doc);
+    text = epdf_document_creation_date_get (doc);
     if (!text) text = strdup ("unknown");
     etk_tree_append (ETK_TREE (list),
                      col_title, "Creation date",
@@ -584,7 +581,7 @@ _exo_etk_info_cb (Etk_Object *object __UNUSED__, void *user_data)
                      NULL);
     free (text);
 
-    text = evas_poppler_document_mod_date_get (doc);
+    text = epdf_document_mod_date_get (doc);
     if (!text) text = strdup ("unknown");
     etk_tree_append (ETK_TREE (list),
                      col_title, "Modification date",
@@ -592,7 +589,7 @@ _exo_etk_info_cb (Etk_Object *object __UNUSED__, void *user_data)
                      NULL);
     free (text);
 
-    snprintf (buf, 16, "%d", evas_poppler_document_page_count_get (doc));
+    snprintf (buf, 16, "%d", epdf_document_page_count_get (doc));
     if (!text) text = strdup ("unknown");
     etk_tree_append (ETK_TREE (list),
                      col_title, "Page count",
@@ -630,14 +627,14 @@ _exo_etk_info_cb (Etk_Object *object __UNUSED__, void *user_data)
 
     etk_tree_freeze (ETK_TREE (list));
 
-    fonts = evas_poppler_document_fonts_get (doc);
+    fonts = epdf_document_fonts_get (doc);
     ecore_list_goto_first (fonts);
     while ((font = ecore_list_next (fonts))) {
       etk_tree_append (ETK_TREE (list),
-                       col_name, evas_poppler_font_info_font_name_get (font),
-                       col_type, evas_poppler_font_info_type_name_get (font),
-                       col_embedded, evas_poppler_font_info_is_embedded_get (font) ? "yes" : "no",
-                       col_subset, evas_poppler_font_info_is_subset_get (font) ? "yes" : "no",
+                       col_name, epdf_font_info_font_name_get (font),
+                       col_type, epdf_font_info_type_name_get (font),
+                       col_embedded, epdf_font_info_is_embedded_get (font) ? "yes" : "no",
+                       col_subset, epdf_font_info_is_subset_get (font) ? "yes" : "no",
                        NULL);
     }
     ecore_list_destroy (fonts);
@@ -652,8 +649,8 @@ _exo_etk_info_cb (Etk_Object *object __UNUSED__, void *user_data)
     Etk_Tree_Col *col_prop;
     char  buf[16];
     char *text;
-    Evas_Poppler_Page *page;
-    Evas_Poppler_Page_Orientation o;
+    Epdf_Page *page;
+    Epdf_Page_Orientation o;
 
     page = etk_pdf_pdf_page_get (ETK_PDF (data->pdf));
 
@@ -678,24 +675,24 @@ _exo_etk_info_cb (Etk_Object *object __UNUSED__, void *user_data)
                      col_prop, buf,
                      NULL);
 
-    snprintf (buf, 16, "%d x %d", evas_poppler_page_width_get (page), evas_poppler_page_height_get (page));
+    snprintf (buf, 16, "%d x %d", epdf_page_width_get (page), epdf_page_height_get (page));
     etk_tree_append (ETK_TREE (list),
                      col_title, "Size (pixels)",
                      col_prop, buf,
                      NULL);
 
-    o = evas_poppler_page_orientation_get (page);
+    o = epdf_page_orientation_get (page);
     switch (o) {
-    case EVAS_POPPLER_PAGE_ORIENTATION_LANDSCAPE:
+    case EPDF_PAGE_ORIENTATION_LANDSCAPE:
       text = "landscape";
       break;
-    case EVAS_POPPLER_PAGE_ORIENTATION_UPSIDEDOWN:
+    case EPDF_PAGE_ORIENTATION_UPSIDEDOWN:
       text = "upside down";
       break;
-    case EVAS_POPPLER_PAGE_ORIENTATION_SEASCAPE:
+    case EPDF_PAGE_ORIENTATION_SEASCAPE:
       text = "seascape";
       break;
-    case EVAS_POPPLER_PAGE_ORIENTATION_PORTRAIT:
+    case EPDF_PAGE_ORIENTATION_PORTRAIT:
       text = "portrait";
       break;
     default:
@@ -844,7 +841,7 @@ _exo_etk_orientation_landscape_cb (Etk_Object *object, void *user_data)
   pdf =  ETK_PDF (((Exo_Etk *)user_data)->pdf);
 
   if (etk_menu_item_check_active_get (ETK_MENU_ITEM_CHECK (object))) {
-    etk_pdf_orientation_set (pdf, EVAS_POPPLER_PAGE_ORIENTATION_LANDSCAPE);
+    etk_pdf_orientation_set (pdf, EPDF_PAGE_ORIENTATION_LANDSCAPE);
   }
 }
 
@@ -856,7 +853,7 @@ _exo_etk_orientation_upsidedown_cb (Etk_Object *object, void *user_data)
   pdf =  ETK_PDF (((Exo_Etk *)user_data)->pdf);
 
   if (etk_menu_item_check_active_get (ETK_MENU_ITEM_CHECK (object))) {
-    etk_pdf_orientation_set (pdf, EVAS_POPPLER_PAGE_ORIENTATION_UPSIDEDOWN);
+    etk_pdf_orientation_set (pdf, EPDF_PAGE_ORIENTATION_UPSIDEDOWN);
   }
 }
 
@@ -868,7 +865,7 @@ _exo_etk_orientation_seascape_cb (Etk_Object *object, void *user_data)
   pdf =  ETK_PDF (((Exo_Etk *)user_data)->pdf);
 
   if (etk_menu_item_check_active_get (ETK_MENU_ITEM_CHECK (object))) {
-    etk_pdf_orientation_set (pdf, EVAS_POPPLER_PAGE_ORIENTATION_SEASCAPE);
+    etk_pdf_orientation_set (pdf, EPDF_PAGE_ORIENTATION_SEASCAPE);
   }
 }
 
@@ -880,7 +877,7 @@ _exo_etk_orientation_portrait_cb (Etk_Object *object, void *user_data)
   pdf =  ETK_PDF (((Exo_Etk *)user_data)->pdf);
 
   if (etk_menu_item_check_active_get (ETK_MENU_ITEM_CHECK (object))) {
-    etk_pdf_orientation_set (pdf, EVAS_POPPLER_PAGE_ORIENTATION_PORTRAIT);
+    etk_pdf_orientation_set (pdf, EPDF_PAGE_ORIENTATION_PORTRAIT);
   }
 }
 

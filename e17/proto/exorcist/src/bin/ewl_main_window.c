@@ -92,8 +92,8 @@ static void _exo_ewl_size_50_cb                (Ewl_Widget *widget,
 void
 _exo_ewl_tree_fill (Exo_Ewl *data, Ewl_Row *row, Ecore_List *items)
 {
-  Ewl_Widget              *prow;
-  Evas_Poppler_Index_Item *item;
+  Ewl_Widget      *prow;
+  Epdf_Index_Item *item;
 
   if (!items)
     return;
@@ -106,40 +106,38 @@ _exo_ewl_tree_fill (Exo_Ewl *data, Ewl_Row *row, Ecore_List *items)
       char       *buf;
       Ecore_List *c;
 
-      buf = strdup (evas_poppler_index_item_title_get (item));
+      buf = strdup (epdf_index_item_title_get (item));
       prow = ewl_tree_text_row_add (EWL_TREE (data->list_index), row,
                                     &buf);
-      page = evas_poppler_index_item_page_get (ewl_pdf_pdf_document_get (EWL_PDF (data->pdf)), item);
-      if (page >= 0)
-        {
-          num = (int *)malloc (sizeof (int));
-          *num = page;
-          ewl_widget_data_set (prow, "row-number", num);
-          ewl_callback_append (EWL_WIDGET (prow),
-                               EWL_CALLBACK_CLICKED,
-                               EWL_CALLBACK_FUNCTION (_exo_ewl_change_page_cb),
-                               data);
-          ewl_callback_prepend (EWL_WIDGET (prow),
-                                EWL_CALLBACK_DESTROY,
-                                EWL_CALLBACK_FUNCTION (_exo_ewl_row_data_free_cb),
-                                NULL);
-        }
+      page = epdf_index_item_page_get (ewl_pdf_pdf_document_get (EWL_PDF (data->pdf)), item);
+      if (page >= 0) {
+        num = (int *)malloc (sizeof (int));
+        *num = page;
+        ewl_widget_data_set (prow, "row-number", num);
+        ewl_callback_append (EWL_WIDGET (prow),
+                             EWL_CALLBACK_CLICKED,
+                             EWL_CALLBACK_FUNCTION (_exo_ewl_change_page_cb),
+                             data);
+        ewl_callback_prepend (EWL_WIDGET (prow),
+                              EWL_CALLBACK_DESTROY,
+                              EWL_CALLBACK_FUNCTION (_exo_ewl_row_data_free_cb),
+                              NULL);
+      }
       free (buf);
-      c = evas_poppler_index_item_children_get (item);
-      if (c)
-        {
-          _exo_ewl_tree_fill (data, EWL_ROW (prow), c);
-        }
+      c = epdf_index_item_children_get (item);
+      if (c) {
+        _exo_ewl_tree_fill (data, EWL_ROW (prow), c);
+      }
     }
 }
 
 static void
 _exo_ewl_update_document (Exo_Ewl *data)
 {
-  Evas_Poppler_Document   *document;
-  Ecore_List              *index;
-  int                      page_count;
-  int                      i;
+  Epdf_Document   *document;
+  Ecore_List      *index;
+  int              page_count;
+  int              i;
 
   if (!data || !data->filename) return;
 
@@ -151,7 +149,7 @@ _exo_ewl_update_document (Exo_Ewl *data)
   document = ewl_pdf_pdf_document_get (EWL_PDF (data->pdf));
   if (!document) return;
 
-  page_count = evas_poppler_document_page_count_get (document);
+  page_count = epdf_document_page_count_get (document);
   for (i = 0; i < page_count; i++) {
     char        row_text[64];
     char       *txt;
@@ -561,11 +559,10 @@ _exo_ewl_change_page_cb (Ewl_Widget *widget,
   pdf =  EWL_PDF (((Exo_Ewl *)user_data)->pdf);
 
   row_number = *(int *)ewl_widget_data_get (widget, "row-number");
-  if (row_number != ewl_pdf_page_get (pdf))
-    {
-      ewl_pdf_page_set (pdf, row_number);
-      ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
-    }
+  if (row_number != ewl_pdf_page_get (pdf)) {
+    ewl_pdf_page_set (pdf, row_number);
+    ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
+  }
 }
 
 static void
@@ -710,17 +707,17 @@ _exo_ewl_info_cb (Ewl_Widget *widget __UNUSED__,
                   void       *ev_data __UNUSED__,
                   void       *user_data)
 {
-  Exo_Ewl                *data;
-  Ewl_Widget             *dialog_info;
-  Ewl_Widget             *button;
-  Ewl_Widget             *table;
-  Ewl_Widget             *notebook;
-  Ewl_Widget             *label;
-  Ewl_Widget             *entry;
-  Ewl_Widget             *list;
-  Ecore_List             *fonts;
-  Evas_Poppler_Document  *doc;
-  Evas_Poppler_Font_Info *font;
+  Exo_Ewl        *data;
+  Ewl_Widget     *dialog_info;
+  Ewl_Widget     *button;
+  Ewl_Widget     *table;
+  Ewl_Widget     *notebook;
+  Ewl_Widget     *label;
+  Ewl_Widget     *entry;
+  Ewl_Widget     *list;
+  Ecore_List     *fonts;
+  Epdf_Document  *doc;
+  Epdf_Font_Info *font;
 
   data = (Exo_Ewl *)user_data;
   doc = ewl_pdf_pdf_document_get (EWL_PDF (data->pdf));
@@ -756,7 +753,7 @@ _exo_ewl_info_cb (Ewl_Widget *widget __UNUSED__,
   ewl_widget_show (label);
 
   entry = ewl_entry_new ();
-  ewl_text_text_set (EWL_TEXT (entry), evas_poppler_version_get ());
+  ewl_text_text_set (EWL_TEXT (entry), epdf_poppler_version_get ());
   ewl_table_add (EWL_TABLE (table), entry, 2, 2, 1, 1);
   ewl_widget_show (entry);
 
@@ -774,11 +771,11 @@ _exo_ewl_info_cb (Ewl_Widget *widget __UNUSED__,
     ewl_widget_show (list);
 
     row_text[0] = "File name";
-    row_text[1] = evas_poppler_document_filename_get (doc);
+    row_text[1] = epdf_document_filename_get (doc);
     ewl_tree_text_row_add (EWL_TREE (list), NULL, row_text);
 
     row_text[0] = "Title";
-    text = evas_poppler_document_title_get (doc);
+    text = epdf_document_title_get (doc);
     if (text)
       row_text[1] = text;
     else
@@ -788,12 +785,12 @@ _exo_ewl_info_cb (Ewl_Widget *widget __UNUSED__,
       free (text);
 
     row_text[0] = "Format";
-    snprintf (buf, 16, "PDF-%.1f", evas_poppler_document_pdf_version_get (doc));
+    snprintf (buf, 16, "PDF-%.1f", epdf_document_pdf_version_get (doc));
     row_text[1] = buf;
     ewl_tree_text_row_add (EWL_TREE (list), NULL, row_text);
 
     row_text[0] = "Author";
-    text = evas_poppler_document_author_get (doc);
+    text = epdf_document_author_get (doc);
     if (text)
       row_text[1] = text;
     else
@@ -803,7 +800,7 @@ _exo_ewl_info_cb (Ewl_Widget *widget __UNUSED__,
       free (text);
 
     row_text[0] = "Subject";
-    text = evas_poppler_document_subject_get (doc);
+    text = epdf_document_subject_get (doc);
     if (text)
       row_text[1] = text;
     else
@@ -813,7 +810,7 @@ _exo_ewl_info_cb (Ewl_Widget *widget __UNUSED__,
       free (text);
 
     row_text[0] = "Keywords";
-    text = evas_poppler_document_keywords_get (doc);
+    text = epdf_document_keywords_get (doc);
     if (text)
       row_text[1] = text;
     else
@@ -823,7 +820,7 @@ _exo_ewl_info_cb (Ewl_Widget *widget __UNUSED__,
       free (text);
 
     row_text[0] = "Creator";
-    text = evas_poppler_document_creator_get (doc);
+    text = epdf_document_creator_get (doc);
     if (text)
       row_text[1] = text;
     else
@@ -833,7 +830,7 @@ _exo_ewl_info_cb (Ewl_Widget *widget __UNUSED__,
       free (text);
 
     row_text[0] = "Producer";
-    text = evas_poppler_document_producer_get (doc);
+    text = epdf_document_producer_get (doc);
     if (text)
       row_text[1] = text;
     else
@@ -843,22 +840,22 @@ _exo_ewl_info_cb (Ewl_Widget *widget __UNUSED__,
       free (text);
 
     row_text[0] = "Linearized";
-    if (evas_poppler_document_is_linearized (doc))
+    if (epdf_document_is_linearized (doc))
       row_text[1] = "yes";
     else
       row_text[1] = "no";
     ewl_tree_text_row_add (EWL_TREE (list), NULL, row_text);
 
     row_text[0] = "Page mode";
-    row_text[1] = (char *)evas_poppler_document_page_mode_string_get (doc);
+    row_text[1] = (char *)epdf_document_page_mode_string_get (doc);
     ewl_tree_text_row_add (EWL_TREE (list), NULL, row_text);
 
     row_text[0] = "Page layout";
-    row_text[1] = (char *)evas_poppler_document_page_layout_string_get (doc);
+    row_text[1] = (char *)epdf_document_page_layout_string_get (doc);
     ewl_tree_text_row_add (EWL_TREE (list), NULL, row_text);
 
     row_text[0] = "Creation date";
-    text = evas_poppler_document_creation_date_get (doc);
+    text = epdf_document_creation_date_get (doc);
     if (text)
       row_text[1] = text;
     else
@@ -868,7 +865,7 @@ _exo_ewl_info_cb (Ewl_Widget *widget __UNUSED__,
       free (text);
 
     row_text[0] = "Modification date";
-    text = evas_poppler_document_mod_date_get (doc);
+    text = epdf_document_mod_date_get (doc);
     if (text)
       row_text[1] = text;
     else
@@ -878,7 +875,7 @@ _exo_ewl_info_cb (Ewl_Widget *widget __UNUSED__,
       free (text);
 
     row_text[0] = "Page count";
-    snprintf (buf, 16, "%d", evas_poppler_document_page_count_get (doc));
+    snprintf (buf, 16, "%d", epdf_document_page_count_get (doc));
     row_text[1] = buf;
     ewl_tree_text_row_add (EWL_TREE (list), NULL, row_text);
 
@@ -897,15 +894,15 @@ _exo_ewl_info_cb (Ewl_Widget *widget __UNUSED__,
     ewl_tree_headers_set (EWL_TREE (list), header);
     ewl_widget_show (list);
 
-    fonts = evas_poppler_document_fonts_get (doc);
+    fonts = epdf_document_fonts_get (doc);
     ecore_list_goto_first (fonts);
     while ((font = ecore_list_next (fonts))) {
       char *row_text[4];
 
-      row_text[0] = (char *)evas_poppler_font_info_font_name_get (font);
-      row_text[1] = (char *)evas_poppler_font_info_type_name_get (font);
-      row_text[2] = evas_poppler_font_info_is_embedded_get (font) ? "yes" : "no";
-      row_text[3] = evas_poppler_font_info_is_subset_get (font) ? "yes" : "no";
+      row_text[0] = (char *)epdf_font_info_font_name_get (font);
+      row_text[1] = (char *)epdf_font_info_type_name_get (font);
+      row_text[2] = epdf_font_info_is_embedded_get (font) ? "yes" : "no";
+      row_text[3] = epdf_font_info_is_subset_get (font) ? "yes" : "no";
       ewl_tree_text_row_add (EWL_TREE (list), NULL, row_text);
     }
     ecore_list_destroy (fonts);
@@ -917,8 +914,8 @@ _exo_ewl_info_cb (Ewl_Widget *widget __UNUSED__,
   {
     char  buf[16];
     char *row_text[2];
-    Evas_Poppler_Page *page;
-    Evas_Poppler_Page_Orientation o;
+    Epdf_Page *page;
+    Epdf_Page_Orientation o;
 
     page = ewl_pdf_pdf_page_get (EWL_PDF (data->pdf));
 
@@ -931,23 +928,23 @@ _exo_ewl_info_cb (Ewl_Widget *widget __UNUSED__,
     ewl_tree_text_row_add (EWL_TREE (list), NULL, row_text);
 
     row_text[0] = "Size (pixels)";
-    snprintf (buf, 16, "%d x %d", evas_poppler_page_width_get (page), evas_poppler_page_height_get (page));
+    snprintf (buf, 16, "%d x %d", epdf_page_width_get (page), epdf_page_height_get (page));
     row_text[1] = buf;
     ewl_tree_text_row_add (EWL_TREE (list), NULL, row_text);
 
     row_text[0] = "Orientation";
-    o = evas_poppler_page_orientation_get (page);
+    o = epdf_page_orientation_get (page);
     switch (o) {
-    case EVAS_POPPLER_PAGE_ORIENTATION_LANDSCAPE:
+    case EPDF_PAGE_ORIENTATION_LANDSCAPE:
       row_text[1] = "landscape";
       break;
-    case EVAS_POPPLER_PAGE_ORIENTATION_UPSIDEDOWN:
+    case EPDF_PAGE_ORIENTATION_UPSIDEDOWN:
       row_text[1] = "upside down";
       break;
-    case EVAS_POPPLER_PAGE_ORIENTATION_SEASCAPE:
+    case EPDF_PAGE_ORIENTATION_SEASCAPE:
       row_text[1] = "seascape";
       break;
-    case EVAS_POPPLER_PAGE_ORIENTATION_PORTRAIT:
+    case EPDF_PAGE_ORIENTATION_PORTRAIT:
       row_text[1] = "portrait";
       break;
     }
@@ -981,7 +978,7 @@ _exo_ewl_orientation_landscape_cb (Ewl_Widget *widget,
   pdf =  EWL_PDF (((Exo_Ewl *)user_data)->pdf);
 
   if (ewl_radiobutton_is_checked (r)) {
-    ewl_pdf_orientation_set (pdf, EVAS_POPPLER_PAGE_ORIENTATION_LANDSCAPE);
+    ewl_pdf_orientation_set (pdf, EPDF_PAGE_ORIENTATION_LANDSCAPE);
     ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
   }
 }
@@ -998,7 +995,7 @@ _exo_ewl_orientation_upsidedown_cb (Ewl_Widget *widget,
   pdf =  EWL_PDF (((Exo_Ewl *)user_data)->pdf);
 
   if (ewl_radiobutton_is_checked (r)) {
-    ewl_pdf_orientation_set (pdf, EVAS_POPPLER_PAGE_ORIENTATION_UPSIDEDOWN);
+    ewl_pdf_orientation_set (pdf, EPDF_PAGE_ORIENTATION_UPSIDEDOWN);
     ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
   }
 }
@@ -1015,7 +1012,7 @@ _exo_ewl_orientation_seascape_cb (Ewl_Widget *widget,
   pdf =  EWL_PDF (((Exo_Ewl *)user_data)->pdf);
 
   if (ewl_radiobutton_is_checked (r)) {
-    ewl_pdf_orientation_set (pdf, EVAS_POPPLER_PAGE_ORIENTATION_SEASCAPE);
+    ewl_pdf_orientation_set (pdf, EPDF_PAGE_ORIENTATION_SEASCAPE);
     ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
   }
 }
@@ -1032,7 +1029,7 @@ _exo_ewl_orientation_portrait_cb (Ewl_Widget *widget,
   pdf =  EWL_PDF (((Exo_Ewl *)user_data)->pdf);
 
   if (ewl_radiobutton_is_checked (r)) {
-    ewl_pdf_orientation_set (pdf, EVAS_POPPLER_PAGE_ORIENTATION_PORTRAIT);
+    ewl_pdf_orientation_set (pdf, EPDF_PAGE_ORIENTATION_PORTRAIT);
     ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
   }
 }

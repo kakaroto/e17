@@ -56,7 +56,7 @@ EOF
 EOF
     fi
     cat >> conftest.c << EOF
-  evas_poppler_document_new (NULL);
+  epdf_document_new (NULL);
 EOF
     if test "x$2" = "xyes" ; then
         cat >> conftest.c << EOF
