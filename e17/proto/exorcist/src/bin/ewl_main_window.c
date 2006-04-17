@@ -29,42 +29,65 @@ struct Exo_Ewl_
 };
 
 
-static void _exo_ewl_change_page_cb    (Ewl_Widget *widget,
-                                        void       *ev_data,
-                                        void       *user_data);
-static void _exo_ewl_document_open_cb  (Ewl_Widget *widget,
-                                        void       *ev_data,
-                                        void       *user_data);
-static void _exo_ewl_filedialog_cb     (Ewl_Widget *widget,
-                                        void       *ev_data,
-                                        void       *user_data);
-static void _exo_ewl_row_data_free_cb  (Ewl_Widget *widget,
-                                        void       *ev_data,
-                                        void       *user_data);
-static void _exo_ewl_index_show_cb     (Ewl_Widget *widget,
-                                        void       *ev_data,
-                                        void       *user_data);
-static void _exo_ewl_search_cb         (Ewl_Widget *widget,
-                                        void       *ev_data,
-                                        void       *user_data);
-static void _exo_ewl_exit_cb           (Ewl_Widget *widget,
-                                        void       *ev_data,
-                                        void       *user_data);
-static void _exo_ewl_search_destroy_cb (Ewl_Widget *widget,
-                                        void       *ev_data,
-                                        void       *user_data);
-static void _exo_ewl_search_next_cb    (Ewl_Widget *widget,
-                                        void       *ev_data,
-                                        void       *user_data);
-static void _exo_ewl_popup_cb          (Ewl_Widget *widget,
-                                        void       *ev_data,
-                                        void       *user_data);
-static void _exo_ewl_info_cb           (Ewl_Widget *widget,
-                                        void       *ev_data,
-                                        void       *user_data);
-static void _exo_ewl_info_destroy_cb   (Ewl_Widget *widget,
-                                        void       *ev_data,
-                                        void       *user_data);
+static void _exo_ewl_change_page_cb            (Ewl_Widget *widget,
+                                                void       *ev_data,
+                                                void       *user_data);
+static void _exo_ewl_document_open_cb          (Ewl_Widget *widget,
+                                                void       *ev_data,
+                                                void       *user_data);
+static void _exo_ewl_filedialog_cb             (Ewl_Widget *widget,
+                                                void       *ev_data,
+                                                void       *user_data);
+static void _exo_ewl_row_data_free_cb          (Ewl_Widget *widget,
+                                                void       *ev_data,
+                                                void       *user_data);
+static void _exo_ewl_index_show_cb             (Ewl_Widget *widget,
+                                                void       *ev_data,
+                                                void       *user_data);
+static void _exo_ewl_search_cb                 (Ewl_Widget *widget,
+                                                void       *ev_data,
+                                                void       *user_data);
+static void _exo_ewl_exit_cb                   (Ewl_Widget *widget,
+                                                void       *ev_data,
+                                                void       *user_data);
+static void _exo_ewl_search_destroy_cb         (Ewl_Widget *widget,
+                                                void       *ev_data,
+                                                void       *user_data);
+static void _exo_ewl_search_next_cb            (Ewl_Widget *widget,
+                                                void       *ev_data,
+                                                void       *user_data);
+static void _exo_ewl_popup_cb                  (Ewl_Widget *widget,
+                                                void       *ev_data,
+                                                void       *user_data);
+static void _exo_ewl_info_cb                   (Ewl_Widget *widget,
+                                                void       *ev_data,
+                                                void       *user_data);
+static void _exo_ewl_info_destroy_cb           (Ewl_Widget *widget,
+                                                void       *ev_data,
+                                                void       *user_data);
+
+static void _exo_ewl_orientation_portrait_cb   (Ewl_Widget *widget,
+                                                void       *ev_data,
+                                                void       *user_data);
+static void _exo_ewl_orientation_landscape_cb  (Ewl_Widget *widget,
+                                                void       *ev_data,
+                                                void       *user_data);
+static void _exo_ewl_orientation_upsidedown_cb (Ewl_Widget *widget,
+                                                void       *ev_data,
+                                                void       *user_data);
+static void _exo_ewl_orientation_seascape_cb   (Ewl_Widget *widget,
+                                                void       *ev_data,
+                                                void       *user_data);
+
+static void _exo_ewl_size_150_cb               (Ewl_Widget *widget,
+                                                void       *ev_data,
+                                                void       *user_data);
+static void _exo_ewl_size_100_cb               (Ewl_Widget *widget,
+                                                void       *ev_data,
+                                                void       *user_data);
+static void _exo_ewl_size_50_cb                (Ewl_Widget *widget,
+                                                void       *ev_data,
+                                                void       *user_data);
 
 void
 _exo_ewl_tree_fill (Exo_Ewl *data, Ewl_Row *row, Ecore_List *items)
@@ -161,6 +184,14 @@ _exo_ewl_menu_options (Exo_Ewl *data)
   Ewl_Widget *menu;
   Ewl_Widget *item;
   Ewl_Widget *check;
+  Ewl_Widget *radio1;
+  Ewl_Widget *radio2;
+  Ewl_Widget *radio3;
+  Ewl_Widget *radio4;
+  Ewl_Widget *size1;
+  Ewl_Widget *size2;
+  Ewl_Widget *size3;
+  Ewl_Widget *submenu;
 
   menu = ewl_menu_new ();
 
@@ -182,18 +213,92 @@ _exo_ewl_menu_options (Exo_Ewl *data)
   ewl_container_child_append (EWL_CONTAINER (menu), item);
   ewl_widget_show (item);
 
-  item = ewl_menu_item_new ();
-  ewl_container_child_append (EWL_CONTAINER (menu), item);
-  ewl_widget_show (item);
-
   check = ewl_checkbutton_new ();
   ewl_button_label_set (EWL_BUTTON (check), "Index");
   ewl_checkbutton_checked_set (EWL_CHECKBUTTON (check), FALSE);
   ewl_callback_append (check,
                        EWL_CALLBACK_CLICKED,
                        _exo_ewl_index_show_cb, data);
-  ewl_container_child_append (EWL_CONTAINER (item), check);
+  ewl_container_child_append (EWL_CONTAINER (menu), check);
   ewl_widget_show (check);
+
+  submenu = ewl_menu_new();
+  ewl_button_label_set(EWL_BUTTON(submenu), "Orientation");
+  ewl_container_child_append(EWL_CONTAINER(menu), submenu);
+  ewl_widget_show(submenu);
+
+  radio1 = ewl_radiobutton_new ();
+  ewl_button_label_set (EWL_BUTTON (radio1), "Portrait");
+  ewl_checkbutton_checked_set (EWL_CHECKBUTTON (radio1), TRUE);
+  ewl_callback_append (radio1,
+                       EWL_CALLBACK_CLICKED,
+                       _exo_ewl_orientation_portrait_cb, data);
+  ewl_container_child_append (EWL_CONTAINER (submenu), radio1);
+  ewl_widget_show (radio1);
+
+  radio2 = ewl_radiobutton_new ();
+  ewl_button_label_set (EWL_BUTTON (radio2), "Landscape");
+  ewl_checkbutton_checked_set (EWL_CHECKBUTTON (radio2), FALSE);
+  ewl_radiobutton_chain_set (EWL_RADIOBUTTON (radio2), EWL_RADIOBUTTON (radio1));
+  ewl_callback_append (radio2,
+                       EWL_CALLBACK_CLICKED,
+                       _exo_ewl_orientation_landscape_cb, data);
+  ewl_container_child_append (EWL_CONTAINER (submenu), radio2);
+  ewl_widget_show (radio2);
+
+  radio3 = ewl_radiobutton_new ();
+  ewl_button_label_set (EWL_BUTTON (radio3), "Upside down");
+  ewl_checkbutton_checked_set (EWL_CHECKBUTTON (radio3), FALSE);
+  ewl_radiobutton_chain_set (EWL_RADIOBUTTON (radio3), EWL_RADIOBUTTON (radio1));
+  ewl_callback_append (radio3,
+                       EWL_CALLBACK_CLICKED,
+                       _exo_ewl_orientation_upsidedown_cb, data);
+  ewl_container_child_append (EWL_CONTAINER (submenu), radio3);
+  ewl_widget_show (radio3);
+
+  radio4 = ewl_radiobutton_new ();
+  ewl_button_label_set (EWL_BUTTON (radio4), "Seascape");
+  ewl_checkbutton_checked_set (EWL_CHECKBUTTON (radio4), FALSE);
+  ewl_radiobutton_chain_set (EWL_RADIOBUTTON (radio4), EWL_RADIOBUTTON (radio1));
+  ewl_callback_append (radio4,
+                       EWL_CALLBACK_CLICKED,
+                       _exo_ewl_orientation_seascape_cb, data);
+  ewl_container_child_append (EWL_CONTAINER (submenu), radio4);
+  ewl_widget_show (radio4);
+
+  submenu = ewl_menu_new();
+  ewl_button_label_set(EWL_BUTTON(submenu), "Size");
+  ewl_container_child_append(EWL_CONTAINER(menu), submenu);
+  ewl_widget_show(submenu);
+
+  size1 = ewl_radiobutton_new ();
+  ewl_button_label_set (EWL_BUTTON (size1), "150%%");
+  ewl_checkbutton_checked_set (EWL_CHECKBUTTON (size1), FALSE);
+  ewl_callback_append (size1,
+                       EWL_CALLBACK_CLICKED,
+                       _exo_ewl_size_150_cb, data);
+  ewl_container_child_append (EWL_CONTAINER (submenu), size1);
+  ewl_widget_show (size1);
+
+  size2 = ewl_radiobutton_new ();
+  ewl_button_label_set (EWL_BUTTON (size2), "100%%");
+  ewl_checkbutton_checked_set (EWL_CHECKBUTTON (size2), TRUE);
+  ewl_radiobutton_chain_set (EWL_RADIOBUTTON (size2), EWL_RADIOBUTTON (size1));
+  ewl_callback_append (size2,
+                       EWL_CALLBACK_CLICKED,
+                       _exo_ewl_size_100_cb, data);
+  ewl_container_child_append (EWL_CONTAINER (submenu), size2);
+  ewl_widget_show (size2);
+
+  size3 = ewl_radiobutton_new ();
+  ewl_button_label_set (EWL_BUTTON (size3), "50%%");
+  ewl_checkbutton_checked_set (EWL_CHECKBUTTON (size3), FALSE);
+  ewl_radiobutton_chain_set (EWL_RADIOBUTTON (size3), EWL_RADIOBUTTON (size1));
+  ewl_callback_append (size3,
+                       EWL_CALLBACK_CLICKED,
+                       _exo_ewl_size_50_cb, data);
+  ewl_container_child_append (EWL_CONTAINER (submenu), size3);
+  ewl_widget_show (size3);
 
   return menu;
 }
@@ -477,10 +582,8 @@ _exo_ewl_document_open_cb (Ewl_Widget *widget __UNUSED__,
   }
   data = (Exo_Ewl *)user_data;
   filedialog = ewl_filedialog_new ();
-  ewl_filedialog_type_set (EWL_FILEDIALOG (filedialog),
-                           EWL_FILEDIALOG_TYPE_OPEN);
   if (data->path)
-    ewl_filedialog_path_set (EWL_FILEDIALOG (filedialog), data->path);
+    ewl_filedialog_directory_set (EWL_FILEDIALOG (filedialog), data->path);
   ewl_callback_append (filedialog,
                        EWL_CALLBACK_VALUE_CHANGED,
                        EWL_CALLBACK_FUNCTION (_exo_ewl_filedialog_cb),
@@ -506,8 +609,8 @@ _exo_ewl_filedialog_cb (Ewl_Widget *widget,
       free (data->path);
     if (data->filename)
       free (data->filename);
-    data->path = ewl_filedialog_path_get (filedialog);
-    data->filename = ewl_filedialog_file_get (filedialog);
+    data->path = (char *)ewl_filedialog_directory_get (filedialog);
+    data->filename = ewl_filedialog_selected_file_get (filedialog);
     _exo_ewl_update_document (data);
     ewl_widget_destroy (widget);
     break;
@@ -552,7 +655,7 @@ _exo_ewl_search_next_cb (Ewl_Widget *widget __UNUSED__,
   int      res;
 
   data = (Exo_Ewl *)user_data;
-  pdf =  EWL_PDF (((Exo_Ewl *)user_data)->pdf);
+  pdf =  EWL_PDF (data->pdf);
 
   text = ewl_text_text_get (EWL_TEXT (data->search_text));
   if (!text || (text[0] == '\0'))
@@ -864,4 +967,123 @@ _exo_ewl_info_destroy_cb (Ewl_Widget *widget __UNUSED__,
                           void       *user_data)
 {
   ewl_widget_destroy (EWL_WIDGET (user_data));
+}
+
+static void
+_exo_ewl_orientation_landscape_cb (Ewl_Widget *widget,
+                                   void       *ev_data __UNUSED__,
+                                   void       *user_data)
+{
+  Ewl_Radiobutton *r;
+  Ewl_Pdf         *pdf;
+
+  r = EWL_RADIOBUTTON (widget);
+  pdf =  EWL_PDF (((Exo_Ewl *)user_data)->pdf);
+
+  if (ewl_radiobutton_is_checked (r)) {
+    ewl_pdf_orientation_set (pdf, EVAS_POPPLER_PAGE_ORIENTATION_LANDSCAPE);
+    ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
+  }
+}
+
+static void
+_exo_ewl_orientation_upsidedown_cb (Ewl_Widget *widget,
+                                   void       *ev_data __UNUSED__,
+                                   void       *user_data)
+{
+  Ewl_Radiobutton *r;
+  Ewl_Pdf         *pdf;
+
+  r = EWL_RADIOBUTTON (widget);
+  pdf =  EWL_PDF (((Exo_Ewl *)user_data)->pdf);
+
+  if (ewl_radiobutton_is_checked (r)) {
+    ewl_pdf_orientation_set (pdf, EVAS_POPPLER_PAGE_ORIENTATION_UPSIDEDOWN);
+    ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
+  }
+}
+
+static void
+_exo_ewl_orientation_seascape_cb (Ewl_Widget *widget,
+                                   void       *ev_data __UNUSED__,
+                                   void       *user_data)
+{
+  Ewl_Radiobutton *r;
+  Ewl_Pdf         *pdf;
+
+  r = EWL_RADIOBUTTON (widget);
+  pdf =  EWL_PDF (((Exo_Ewl *)user_data)->pdf);
+
+  if (ewl_radiobutton_is_checked (r)) {
+    ewl_pdf_orientation_set (pdf, EVAS_POPPLER_PAGE_ORIENTATION_SEASCAPE);
+    ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
+  }
+}
+
+static void
+_exo_ewl_orientation_portrait_cb (Ewl_Widget *widget,
+                                   void       *ev_data __UNUSED__,
+                                   void       *user_data)
+{
+  Ewl_Radiobutton *r;
+  Ewl_Pdf         *pdf;
+
+  r = EWL_RADIOBUTTON (widget);
+  pdf =  EWL_PDF (((Exo_Ewl *)user_data)->pdf);
+
+  if (ewl_radiobutton_is_checked (r)) {
+    ewl_pdf_orientation_set (pdf, EVAS_POPPLER_PAGE_ORIENTATION_PORTRAIT);
+    ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
+  }
+}
+
+static void
+_exo_ewl_size_150_cb (Ewl_Widget *widget,
+                      void       *ev_data __UNUSED__,
+                      void       *user_data)
+{
+  Ewl_Radiobutton *r;
+  Ewl_Pdf         *pdf;
+
+  r = EWL_RADIOBUTTON (widget);
+  pdf =  EWL_PDF (((Exo_Ewl *)user_data)->pdf);
+
+  if (ewl_radiobutton_is_checked (r)) {
+    ewl_pdf_scale_set (pdf, 1.5, 1.5);
+    ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
+  }
+}
+
+static void
+_exo_ewl_size_100_cb (Ewl_Widget *widget,
+                      void       *ev_data __UNUSED__,
+                      void       *user_data)
+{
+  Ewl_Radiobutton *r;
+  Ewl_Pdf         *pdf;
+
+  r = EWL_RADIOBUTTON (widget);
+  pdf =  EWL_PDF (((Exo_Ewl *)user_data)->pdf);
+
+  if (ewl_radiobutton_is_checked (r)) {
+    ewl_pdf_scale_set (pdf, 1.0, 1.0);
+    ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
+  }
+}
+
+static void
+_exo_ewl_size_50_cb (Ewl_Widget *widget,
+                     void       *ev_data __UNUSED__,
+                     void       *user_data)
+{
+  Ewl_Radiobutton *r;
+  Ewl_Pdf         *pdf;
+
+  r = EWL_RADIOBUTTON (widget);
+  pdf =  EWL_PDF (((Exo_Ewl *)user_data)->pdf);
+
+  if (ewl_radiobutton_is_checked (r)) {
+    ewl_pdf_scale_set (pdf, 0.5, 0.5);
+    ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
+  }
 }

@@ -26,16 +26,27 @@ struct Exo_Etk_
   Etk_Widget *search_circular;
 };
 
-static void     _exo_etk_quit_cb            (Etk_Object *object, void *data);
-static Etk_Bool _exo_etk_delete_cb          (Etk_Object *object, void *user_data);
-static void     _exo_etk_menu_popup_cb      (Etk_Object *object, void *event_info, void *data);
-static void     _change_page_cb             (Etk_Object *object, Etk_Tree_Row *row, void *data);
-static void     _exo_etk_row_data_free_cb   (Etk_Object *object);
-static void     _exo_etk_info_cb            (Etk_Object *object, void *user_data);
-static Etk_Bool _exo_etk_info_delete_cb     (Etk_Object *object, void *user_data);
-static void     _exo_etk_info_response_cb   (Etk_Object *object, int res, void *user_data);
-static void     _exo_etk_search_cb          (Etk_Object *object, void *user_data);
-static void     _exo_etk_search_response_cb (Etk_Object *object, int res, void *user_data);
+static void     _exo_etk_quit_cb                   (Etk_Object *object, void *data);
+static Etk_Bool _exo_etk_delete_cb                 (Etk_Object *object, void *user_data);
+static void     _exo_etk_menu_popup_cb             (Etk_Object *object, void *event_info, void *data);
+static void     _change_page_cb                    (Etk_Object *object, Etk_Tree_Row *row, void *data);
+static void     _exo_etk_row_data_free_cb          (Etk_Object *object);
+static void     _exo_etk_info_cb                   (Etk_Object *object, void *user_data);
+static Etk_Bool _exo_etk_info_delete_cb            (Etk_Object *object, void *user_data);
+static void     _exo_etk_info_response_cb          (Etk_Object *object, int res, void *user_data);
+static void     _exo_etk_search_cb                 (Etk_Object *object, void *user_data);
+static Etk_Bool _exo_etk_search_delete_cb          (Etk_Object *object, void *user_data);
+static void     _exo_etk_search_response_cb        (Etk_Object *object, int res, void *user_data);
+static void     _exo_etk_index_show_cb             (Etk_Object *object, void *user_data);
+
+static void     _exo_etk_orientation_landscape_cb  (Etk_Object *object, void *user_data);
+static void     _exo_etk_orientation_upsidedown_cb (Etk_Object *object, void *user_data);
+static void     _exo_etk_orientation_seascape_cb   (Etk_Object *object, void *user_data);
+static void     _exo_etk_orientation_portrait_cb   (Etk_Object *object, void *user_data);
+
+static void     _exo_etk_size_150_cb               (Etk_Object *object, void *user_data);
+static void     _exo_etk_size_100_cb               (Etk_Object *object, void *user_data);
+static void     _exo_etk_size_50_cb                (Etk_Object *object, void *user_data);
 
 
 static void
@@ -76,7 +87,8 @@ _exo_etk_tree_fill (Etk_Pdf *pdf, Etk_Tree *tree, Etk_Tree_Col *col, Etk_Tree_Ro
 
 static void
 _exo_etk_update_document (Exo_Etk      *data,
-                          Etk_Tree_Col *col)
+                          Etk_Tree_Col *col_pages,
+                          Etk_Tree_Col *col_index)
 {
   Evas_Poppler_Document   *document;
   Ecore_List              *index;
@@ -100,7 +112,7 @@ _exo_etk_update_document (Exo_Etk      *data,
       Etk_Tree_Row *row;
       int          *num;
 
-      row = etk_tree_append (ETK_TREE (data->list_pages), col, i + 1, NULL);
+      row = etk_tree_append (ETK_TREE (data->list_pages), col_pages, i + 1, NULL);
       num = (int *)malloc (sizeof (int));
       *num = i;
       etk_tree_row_data_set (row, num);
@@ -110,7 +122,7 @@ _exo_etk_update_document (Exo_Etk      *data,
   etk_tree_thaw (ETK_TREE (data->list_pages));
 
   index = etk_pdf_pdf_index_get (ETK_PDF (data->pdf));
-  _exo_etk_tree_fill (ETK_PDF (data->pdf), ETK_TREE (data->list_index), col, NULL, index);
+  _exo_etk_tree_fill (ETK_PDF (data->pdf), ETK_TREE (data->list_index), col_index, NULL, index);
 }
 
 void
@@ -124,7 +136,7 @@ _exo_etk_index_window (Exo_Etk *data)
   etk_window_title_set (ETK_WINDOW (data->win_index), title);
   etk_window_wmclass_set (ETK_WINDOW (data->win_index), title, title);
 
-  etk_tree_headers_visible_set (ETK_TREE (data->list_index), ETK_FALSE);
+/*   etk_tree_headers_visible_set (ETK_TREE (data->list_index), ETK_FALSE); */
   etk_container_add (ETK_CONTAINER (data->win_index), data->list_index);
   etk_widget_show (data->list_index);
 }
@@ -133,6 +145,7 @@ static Etk_Widget *
 _exo_etk_menu_options (Exo_Etk *data)
 {
   Etk_Widget *menu;
+  Etk_Widget *submenu;
   Etk_Widget *menu_item;
 
   menu = etk_menu_new ();
@@ -148,8 +161,57 @@ _exo_etk_menu_options (Exo_Etk *data)
                      ETK_CALLBACK(_exo_etk_search_cb), data);
   etk_menu_shell_append (ETK_MENU_SHELL (menu), ETK_MENU_ITEM (menu_item));
 
-  menu_item = etk_menu_item_new_with_label ("Index");
+  menu_item = etk_menu_item_check_new_with_label ("Index");
+  etk_signal_connect ("toggled", ETK_OBJECT (menu_item), ETK_CALLBACK (_exo_etk_index_show_cb), data);
   etk_menu_shell_append (ETK_MENU_SHELL (menu), ETK_MENU_ITEM (menu_item));
+
+  menu_item = etk_menu_item_new_with_label ("Orientation");
+  etk_menu_shell_append (ETK_MENU_SHELL (menu), ETK_MENU_ITEM (menu_item));
+
+  submenu = etk_menu_new ();
+  etk_menu_item_submenu_set (ETK_MENU_ITEM (menu_item), ETK_MENU (submenu));
+
+  menu_item = etk_menu_item_radio_new_with_label_from_widget ("Portrait", NULL);
+  etk_signal_connect("activated", ETK_OBJECT(menu_item),
+                     ETK_CALLBACK(_exo_etk_orientation_portrait_cb), data);
+  etk_menu_shell_append (ETK_MENU_SHELL (submenu), ETK_MENU_ITEM (menu_item));
+
+  menu_item = etk_menu_item_radio_new_with_label_from_widget ("Landscape", ETK_MENU_ITEM_RADIO (menu_item));
+  etk_signal_connect("activated", ETK_OBJECT(menu_item),
+                     ETK_CALLBACK(_exo_etk_orientation_landscape_cb), data);
+  etk_menu_shell_append (ETK_MENU_SHELL (submenu), ETK_MENU_ITEM (menu_item));
+
+  menu_item = etk_menu_item_radio_new_with_label_from_widget ("Upside down", ETK_MENU_ITEM_RADIO (menu_item));
+  etk_signal_connect("activated", ETK_OBJECT(menu_item),
+                     ETK_CALLBACK(_exo_etk_orientation_upsidedown_cb), data);
+  etk_menu_shell_append (ETK_MENU_SHELL (submenu), ETK_MENU_ITEM (menu_item));
+
+  menu_item = etk_menu_item_radio_new_with_label_from_widget ("Seascape", ETK_MENU_ITEM_RADIO (menu_item));
+  etk_signal_connect("activated", ETK_OBJECT(menu_item),
+                     ETK_CALLBACK(_exo_etk_orientation_seascape_cb), data);
+  etk_menu_shell_append (ETK_MENU_SHELL (submenu), ETK_MENU_ITEM (menu_item));
+
+  menu_item = etk_menu_item_new_with_label ("Size");
+  etk_menu_shell_append (ETK_MENU_SHELL (menu), ETK_MENU_ITEM (menu_item));
+
+  submenu = etk_menu_new ();
+  etk_menu_item_submenu_set (ETK_MENU_ITEM (menu_item), ETK_MENU (submenu));
+
+  menu_item = etk_menu_item_radio_new_with_label_from_widget ("150%%", NULL);
+  etk_signal_connect("activated", ETK_OBJECT(menu_item),
+                     ETK_CALLBACK(_exo_etk_size_150_cb), data);
+  etk_menu_shell_append (ETK_MENU_SHELL (submenu), ETK_MENU_ITEM (menu_item));
+
+  menu_item = etk_menu_item_radio_new_with_label_from_widget ("100%%", ETK_MENU_ITEM_RADIO (menu_item));
+  etk_menu_item_check_active_set (ETK_MENU_ITEM_CHECK (menu_item), TRUE);
+  etk_signal_connect("activated", ETK_OBJECT(menu_item),
+                     ETK_CALLBACK(_exo_etk_size_100_cb), data);
+  etk_menu_shell_append (ETK_MENU_SHELL (submenu), ETK_MENU_ITEM (menu_item));
+
+  menu_item = etk_menu_item_radio_new_with_label_from_widget ("50%%", ETK_MENU_ITEM_RADIO (menu_item));
+  etk_signal_connect("activated", ETK_OBJECT(menu_item),
+                     ETK_CALLBACK(_exo_etk_size_50_cb), data);
+  etk_menu_shell_append (ETK_MENU_SHELL (submenu), ETK_MENU_ITEM (menu_item));
 
   return menu;
 }
@@ -181,7 +243,13 @@ _exo_etk_menu_bar (Exo_Etk *data)
 /*   etk_signal_connect("selected", ETK_OBJECT(menu_item), */
 /*                      ETK_CALLBACK(_exo_etk_document_open_cb), data); */
 
-  menu_item = etk_menu_item_new_with_label ("Info");
+  menu_item = etk_menu_item_image_new_with_label ("Info");
+  {
+    Etk_Widget *image;
+
+    image = etk_image_new_from_stock (ETK_STOCK_DIALOG_INFORMATION, ETK_STOCK_SMALL);
+    etk_menu_item_image_set (ETK_MENU_ITEM_IMAGE (menu_item), ETK_IMAGE (image));
+  }
   etk_menu_shell_append (ETK_MENU_SHELL (menu), ETK_MENU_ITEM (menu_item));
   etk_signal_connect("activated", ETK_OBJECT(menu_item),
                      ETK_CALLBACK(_exo_etk_info_cb), data);
@@ -234,8 +302,10 @@ exo_etk_main_window (char *filename)
   Etk_Widget *menu_bar;
   Etk_Widget *popup;
   Etk_Widget *hbox;
+  Etk_Widget *scrollview;
   Exo_Etk    *data;
-  Etk_Tree_Col *col;
+  Etk_Tree_Col *col_pages;
+  Etk_Tree_Col *col_index;
 
   data = (Exo_Etk *)calloc (sizeof (Exo_Etk), 1);
   if (!data) return;
@@ -269,22 +339,32 @@ exo_etk_main_window (char *filename)
   etk_signal_connect ("row_selected", ETK_OBJECT (data->list_pages),
                       ETK_CALLBACK (_change_page_cb), data->pdf);
   etk_tree_mode_set (ETK_TREE (data->list_pages), ETK_TREE_MODE_LIST);
-  col = etk_tree_col_new (ETK_TREE (data->list_pages), "",
-                          etk_tree_model_int_new (ETK_TREE (data->list_pages)),
-                          60);
+  col_pages = etk_tree_col_new (ETK_TREE (data->list_pages), "",
+                                etk_tree_model_int_new (ETK_TREE (data->list_pages)),
+                                60);
   etk_tree_build (ETK_TREE (data->list_pages));
   etk_box_pack_start (ETK_BOX (hbox), data->list_pages, ETK_FALSE, ETK_FALSE, 0);
   etk_widget_show (data->list_pages);
 
   popup = _exo_etk_menu_options (data);
 
-  etk_box_pack_start (ETK_BOX (hbox), data->pdf, ETK_FALSE, ETK_FALSE, 0);
+  scrollview = etk_scrolled_view_new ();
+  etk_box_pack_start (ETK_BOX (hbox), scrollview, ETK_FALSE, ETK_FALSE, 0);
+  etk_widget_show (scrollview);
+
+  etk_container_add (ETK_CONTAINER (scrollview), data->pdf);
   etk_signal_connect("mouse_down", ETK_OBJECT(data->pdf),
                      ETK_CALLBACK(_exo_etk_menu_popup_cb), popup);
   etk_widget_show (data->pdf);
 
+  etk_tree_headers_visible_set (ETK_TREE (data->list_index), ETK_FALSE);
+  etk_widget_size_request_set (data->list_index, 60, -1);
+  etk_tree_mode_set (ETK_TREE (data->list_index), ETK_TREE_MODE_TREE);
+  col_index = etk_tree_col_new (ETK_TREE (data->list_index), "",
+                                etk_tree_model_int_new (ETK_TREE (data->list_index)),
+                                60);
   if (data->filename)
-    _exo_etk_update_document (data, col);
+    _exo_etk_update_document (data, col_pages, col_index);
 
   etk_widget_show (window);
 
@@ -376,7 +456,7 @@ _exo_etk_info_cb (Etk_Object *object __UNUSED__, void *user_data)
                       ETK_CALLBACK (_exo_etk_info_delete_cb), NULL);
 
   etk_dialog_button_add (ETK_DIALOG (dialog_info),
-                         etk_stock_label_get (ETK_STOCK_DIALOG_CANCEL), ETK_RESPONSE_CLOSE);
+                         etk_stock_label_get (ETK_STOCK_DIALOG_OK), ETK_RESPONSE_OK);
   etk_signal_connect ("response", ETK_OBJECT (dialog_info),
                       ETK_CALLBACK (_exo_etk_info_response_cb), NULL);
 
@@ -389,9 +469,7 @@ _exo_etk_info_cb (Etk_Object *object __UNUSED__, void *user_data)
   etk_widget_show (label);
 
   entry = etk_entry_new ();
-  printf ("version %s\n", evas_poppler_version_get ());
-  etk_entry_text_set (ETK_ENTRY (entry), "toto");
-/*   etk_entry_text_set (ETK_ENTRY (entry), evas_poppler_version_get ()); */
+  etk_entry_text_set (ETK_ENTRY (entry), evas_poppler_version_get ());
   etk_table_attach_defaults (ETK_TABLE (table), entry, 1, 1, 0, 0);
   etk_widget_show (entry);
 
@@ -406,7 +484,7 @@ _exo_etk_info_cb (Etk_Object *object __UNUSED__, void *user_data)
     char *text;
 
     list = etk_tree_new ();
-    etk_tree_headers_visible_set (ETK_TREE (list), ETK_FALSE);
+/*     etk_tree_headers_visible_set (ETK_TREE (list), ETK_FALSE); */
     etk_widget_size_request_set (list, 60, -1);
     etk_tree_mode_set (ETK_TREE (list), ETK_TREE_MODE_LIST);
     col_title = etk_tree_col_new (ETK_TREE (list), "",
@@ -620,6 +698,9 @@ _exo_etk_info_cb (Etk_Object *object __UNUSED__, void *user_data)
     case EVAS_POPPLER_PAGE_ORIENTATION_PORTRAIT:
       text = "portrait";
       break;
+    default:
+      text = "landscape";
+      break;
     }
     etk_tree_append (ETK_TREE (list),
                      col_title, "Orientation",
@@ -646,16 +727,15 @@ _exo_etk_info_delete_cb (Etk_Object *object, void *user_data __UNUSED__)
 static void
 _exo_etk_info_response_cb (Etk_Object *object, int res, void *user_data __UNUSED__)
 {
-  printf ("res : %d\n", res, ETK_RESPONSE_CLOSE);
   switch (res) {
-  case ETK_RESPONSE_CLOSE:
+  case ETK_RESPONSE_OK:
     etk_object_destroy (object);
     break;
   }
 }
 
 static void
-_exo_etk_search_cb (Etk_Object *object, void *user_data)
+_exo_etk_search_cb (Etk_Object *object __UNUSED__, void *user_data)
 {
   Exo_Etk    *data;
   Etk_Widget *dialog_search;
@@ -669,11 +749,11 @@ _exo_etk_search_cb (Etk_Object *object, void *user_data)
   dialog_search = etk_dialog_new ();
   etk_window_title_set (ETK_WINDOW (dialog_search), "Exorcist - Search");
   etk_window_wmclass_set (ETK_WINDOW (dialog_search), "Exorcist - Search", "Exorcist - Search");
-/*   etk_signal_connect ("delete_event", ETK_OBJECT (dialog_search), */
-/*                       ETK_CALLBACK (_exo_etk_search_delete_cb), NULL); */
+  etk_signal_connect ("delete_event", ETK_OBJECT (dialog_search),
+                      ETK_CALLBACK (_exo_etk_search_delete_cb), NULL);
 
   etk_dialog_button_add (ETK_DIALOG (dialog_search),
-                         etk_stock_label_get (ETK_STOCK_DIALOG_CANCEL), ETK_RESPONSE_CLOSE);
+                         etk_stock_label_get (ETK_STOCK_DIALOG_CLOSE), ETK_RESPONSE_CLOSE);
   etk_dialog_button_add (ETK_DIALOG (dialog_search),
                          etk_stock_label_get (ETK_STOCK_GO_NEXT), ETK_RESPONSE_APPLY);
   etk_signal_connect ("response", ETK_OBJECT (dialog_search),
@@ -702,8 +782,140 @@ _exo_etk_search_cb (Etk_Object *object, void *user_data)
   etk_widget_show (dialog_search);
 }
 
+static Etk_Bool
+_exo_etk_search_delete_cb (Etk_Object *object, void *user_data __UNUSED__)
+{
+  etk_object_destroy (object);
+
+  return ETK_TRUE;
+}
+
 static void
 _exo_etk_search_response_cb (Etk_Object *object, int res, void *user_data)
 {
-  printf ("response !\n");
+  switch (res) {
+  case ETK_RESPONSE_CLOSE:
+    etk_object_destroy (object);
+    break;
+  case ETK_RESPONSE_APPLY: {
+    Exo_Etk    *data;
+    Etk_Pdf    *pdf;
+    const char *text;
+    int         is_case_sensitive;
+    int         is_circular;
+
+    data = (Exo_Etk *)user_data;
+    pdf =  ETK_PDF (data->pdf);
+    text = etk_entry_text_get (ETK_ENTRY (data->search_text));
+    if (!text || (text[0] == '\0'))
+      return;
+    is_case_sensitive = etk_toggle_button_active_get (ETK_TOGGLE_BUTTON (data->search_is_case_sensitive));
+    is_circular = etk_toggle_button_active_get (ETK_TOGGLE_BUTTON (data->search_circular));
+  etk_pdf_search_text_set (pdf, text);
+  etk_pdf_search_is_case_sensitive (pdf, is_case_sensitive);
+  printf ("we search...\n");
+  res = etk_pdf_search_next (pdf);
+
+  if (!res)
+    printf ("FIN\n");
+    break;
+  }
+  }
+}
+
+static void
+_exo_etk_index_show_cb (Etk_Object *object, void *user_data)
+{
+  Exo_Etk *data;
+
+  data = (Exo_Etk *)user_data;
+
+  if (etk_menu_item_check_active_get (ETK_MENU_ITEM_CHECK (object)))
+    etk_widget_show (data->win_index);
+  else
+    etk_widget_hide (data->win_index);
+}
+
+static void
+_exo_etk_orientation_landscape_cb (Etk_Object *object, void *user_data)
+{
+  Etk_Pdf         *pdf;
+
+  pdf =  ETK_PDF (((Exo_Etk *)user_data)->pdf);
+
+  if (etk_menu_item_check_active_get (ETK_MENU_ITEM_CHECK (object))) {
+    etk_pdf_orientation_set (pdf, EVAS_POPPLER_PAGE_ORIENTATION_LANDSCAPE);
+  }
+}
+
+static void
+_exo_etk_orientation_upsidedown_cb (Etk_Object *object, void *user_data)
+{
+  Etk_Pdf         *pdf;
+
+  pdf =  ETK_PDF (((Exo_Etk *)user_data)->pdf);
+
+  if (etk_menu_item_check_active_get (ETK_MENU_ITEM_CHECK (object))) {
+    etk_pdf_orientation_set (pdf, EVAS_POPPLER_PAGE_ORIENTATION_UPSIDEDOWN);
+  }
+}
+
+static void
+_exo_etk_orientation_seascape_cb (Etk_Object *object, void *user_data)
+{
+  Etk_Pdf         *pdf;
+
+  pdf =  ETK_PDF (((Exo_Etk *)user_data)->pdf);
+
+  if (etk_menu_item_check_active_get (ETK_MENU_ITEM_CHECK (object))) {
+    etk_pdf_orientation_set (pdf, EVAS_POPPLER_PAGE_ORIENTATION_SEASCAPE);
+  }
+}
+
+static void
+_exo_etk_orientation_portrait_cb (Etk_Object *object, void *user_data)
+{
+  Etk_Pdf         *pdf;
+
+  pdf =  ETK_PDF (((Exo_Etk *)user_data)->pdf);
+
+  if (etk_menu_item_check_active_get (ETK_MENU_ITEM_CHECK (object))) {
+    etk_pdf_orientation_set (pdf, EVAS_POPPLER_PAGE_ORIENTATION_PORTRAIT);
+  }
+}
+
+static void
+_exo_etk_size_150_cb (Etk_Object *object, void *user_data)
+{
+  Etk_Pdf         *pdf;
+
+  pdf =  ETK_PDF (((Exo_Etk *)user_data)->pdf);
+
+  if (etk_menu_item_check_active_get (ETK_MENU_ITEM_CHECK (object))) {
+    etk_pdf_scale_set (pdf, 1.5, 1.5);
+  }
+}
+
+static void
+_exo_etk_size_100_cb (Etk_Object *object, void *user_data)
+{
+  Etk_Pdf         *pdf;
+
+  pdf =  ETK_PDF (((Exo_Etk *)user_data)->pdf);
+
+  if (etk_menu_item_check_active_get (ETK_MENU_ITEM_CHECK (object))) {
+    etk_pdf_scale_set (pdf, 1.0, 1.0);
+  }
+}
+
+static void
+_exo_etk_size_50_cb (Etk_Object *object, void *user_data)
+{
+  Etk_Pdf         *pdf;
+
+  pdf =  ETK_PDF (((Exo_Etk *)user_data)->pdf);
+
+  if (etk_menu_item_check_active_get (ETK_MENU_ITEM_CHECK (object))) {
+    etk_pdf_scale_set (pdf, 0.5, 0.5);
+  }
 }
