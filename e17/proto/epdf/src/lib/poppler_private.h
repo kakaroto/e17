@@ -1,5 +1,5 @@
-#ifndef __POPPLER_PRIVATE_H__
-#define __POPPLER_PRIVATE_H__
+#ifndef __EPDF_PRIVATE_H__
+#define __EPDF_PRIVATE_H__
 
 
 #include <Ecore_Data.h>
@@ -14,43 +14,43 @@ class TextOutputDev;
 class Gfx;
 class LinkAction;
 
-typedef struct _Evas_Poppler_Page_Transition Evas_Poppler_Page_Transition;
-typedef struct _Evas_Poppler_Document Evas_Poppler_Document;
+typedef struct _Epdf_Page_Transition Epdf_Page_Transition;
+typedef struct _Epdf_Document Epdf_Document;
 
 
-struct _Evas_Poppler_Font_Info
+struct _Epdf_Font_Info
 {
-  char                       *font_name;
-  char                       *font_path;
-  unsigned char               is_embedded;
-  unsigned char               is_subset;
-  Evas_Poppler_Font_Info_Type type;
+  char               *font_name;
+  char               *font_path;
+  unsigned char       is_embedded;
+  unsigned char       is_subset;
+  Epdf_Font_Info_Type type;
 };
 
-struct _Evas_Poppler_Page_Transition
+struct _Epdf_Page_Transition
 {
-  Object                                *transition;
+  Object                        *transition;
 
-  Evas_Poppler_Page_Transition_Type      type;
-  int                                    duration;
-  Evas_Poppler_Page_Transition_Alignment alignment;
-  Evas_Poppler_Page_Transition_Direction direction;
-  int                                    angle;
-  double                                 scale;
-  unsigned char                          is_rectangular;
+  Epdf_Page_Transition_Type      type;
+  int                            duration;
+  Epdf_Page_Transition_Alignment alignment;
+  Epdf_Page_Transition_Direction direction;
+  int                            angle;
+  double                         scale;
+  unsigned char                  is_rectangular;
 };
 
-struct _Evas_Poppler_Page
+struct _Epdf_Page
 {
-  Evas_Poppler_Document        *doc;
-  int                           index;
-  ::Page                       *page;
-  Evas_Poppler_Page_Transition *transition;
-  TextOutputDev                *text_dev;
-  Gfx                          *gfx;
+  Epdf_Document        *doc;
+  int                   index;
+  ::Page               *page;
+  Epdf_Page_Transition *transition;
+  TextOutputDev        *text_dev;
+  Gfx                  *gfx;
 };
 
-struct _Evas_Poppler_Document
+struct _Epdf_Document
 {
   PDFDoc          *pdfdoc;
   unsigned char    locked;
@@ -58,15 +58,15 @@ struct _Evas_Poppler_Document
   FontInfoScanner *scanner;
 };
 
-struct _Evas_Poppler_Index_Item
+struct _Epdf_Index_Item
 {
-  char                         *title;
-  LinkAction                   *action;
-  Ecore_List                   *children;
+  char       *title;
+  LinkAction *action;
+  Ecore_List *children;
 };
 
-Evas_Poppler_Page_Transition *evas_poppler_page_transition_new (const Object *data);
-PDFDoc *evas_poppler_document_doc_get (Evas_Poppler_Document *document);
+Epdf_Page_Transition *epdf_page_transition_new (const Object *data);
+PDFDoc *epdf_document_doc_get (Epdf_Document *document);
 
 
-#endif /* __POPPLER_PRIVATE_H__ */
+#endif /* __EPDF_PRIVATE_H__ */

@@ -17,15 +17,15 @@
 #include "poppler_page_transition.h"
 
 
-Evas_Poppler_Page *
-evas_poppler_page_new (const Evas_Poppler_Document *doc, int index)
+Epdf_Page *
+epdf_page_new (const Epdf_Document *doc, int index)
 {
-  Evas_Poppler_Page *page;
+  Epdf_Page *page;
 
   if (!doc)
     return NULL;
 
-  page = (Evas_Poppler_Page *)malloc (sizeof (Evas_Poppler_Page));
+  page = (Epdf_Page *)malloc (sizeof (Epdf_Page));
   if (!page)
     return NULL;
 
@@ -35,7 +35,7 @@ evas_poppler_page_new (const Evas_Poppler_Document *doc, int index)
     return NULL;
   }
 
-  page->doc = (Evas_Poppler_Document *)doc;
+  page->doc = (Epdf_Document *)doc;
   page->index = index;
   page->transition = NULL;
   page->text_dev = NULL;
@@ -45,7 +45,7 @@ evas_poppler_page_new (const Evas_Poppler_Document *doc, int index)
 }
 
 void
-evas_poppler_page_delete (Evas_Poppler_Page *page)
+epdf_page_delete (Epdf_Page *page)
 {
   if (!page)
     return;
@@ -54,23 +54,23 @@ evas_poppler_page_delete (Evas_Poppler_Page *page)
     delete page->gfx;
   if (page->text_dev)
     delete page->text_dev;
-  evas_poppler_page_transition_delete (page->transition);
+  epdf_page_transition_delete (page->transition);
   free (page);
 }
 
 void
-evas_poppler_page_render (Evas_Poppler_Page *page, Evas_Object *o, Evas_Poppler_Page_Orientation orientation, int x, int y, int w, int h, double hscale, double vscale)
+epdf_page_render (Epdf_Page *page, Evas_Object *o, Epdf_Page_Orientation orientation, int x, int y, int w, int h, double hscale, double vscale)
 {
-  SplashOutputDev       *output_dev;
-  SplashColor            white;
-  SplashColorPtr         color_ptr;
-  Evas_Poppler_Document *doc;
-  unsigned int          *m = NULL;
-  unsigned int           val;
-  int                    offset = 0;
-  int                    rotate;
-  int                    width;
-  int                    height;
+  SplashOutputDev *output_dev;
+  SplashColor      white;
+  SplashColorPtr   color_ptr;
+  Epdf_Document   *doc;
+  unsigned int    *m = NULL;
+  unsigned int     val;
+  int              offset = 0;
+  int              rotate;
+  int              width;
+  int              height;
 
   white[0] = 255;
   white[1] = 255;
@@ -81,16 +81,16 @@ evas_poppler_page_render (Evas_Poppler_Page *page, Evas_Object *o, Evas_Poppler_
   output_dev = new SplashOutputDev(splashModeRGB8, 4, gFalse, white);
   output_dev->startDoc(doc->pdfdoc->getXRef ());
   switch (orientation) {
-  case EVAS_POPPLER_PAGE_ORIENTATION_LANDSCAPE:
+  case EPDF_PAGE_ORIENTATION_LANDSCAPE:
     rotate = 90;
     break;
-  case EVAS_POPPLER_PAGE_ORIENTATION_UPSIDEDOWN:
+  case EPDF_PAGE_ORIENTATION_UPSIDEDOWN:
     rotate = 180;
     break;
-  case EVAS_POPPLER_PAGE_ORIENTATION_SEASCAPE:
+  case EPDF_PAGE_ORIENTATION_SEASCAPE:
     rotate = 270;
     break;
-  case EVAS_POPPLER_PAGE_ORIENTATION_PORTRAIT:
+  case EPDF_PAGE_ORIENTATION_PORTRAIT:
   default:
     rotate = 0;
     break;
@@ -122,7 +122,7 @@ evas_poppler_page_render (Evas_Poppler_Page *page, Evas_Object *o, Evas_Poppler_
 }
 
 int
-evas_poppler_page_number_get (Evas_Poppler_Page *page)
+epdf_page_number_get (Epdf_Page *page)
 {
   if (!page)
     return -1;
@@ -131,7 +131,7 @@ evas_poppler_page_number_get (Evas_Poppler_Page *page)
 }
 
 static TextOutputDev *
-evas_poppler_page_text_output_dev_get (Evas_Poppler_Page *page)
+epdf_page_text_output_dev_get (Epdf_Page *page)
 {
   if (!page)
     return NULL;
@@ -139,14 +139,14 @@ evas_poppler_page_text_output_dev_get (Evas_Poppler_Page *page)
   if (!page->text_dev) {
     page->text_dev = new TextOutputDev (NULL, 1, 0, 0);
 
-    page->gfx = page->page->createGfx(page->text_dev,
-				      72.0, 72.0, 0,
-				      0, /* useMediaBox */
-				      1, /* Crop */
-				      -1, -1, -1, -1,
-				      NULL, /* links */
-				      page->doc->pdfdoc->getCatalog (),
-				      NULL, NULL, NULL, NULL);
+    page->gfx = page->page->createGfx (page->text_dev,
+                                       72.0, 72.0, 0,
+                                       0, /* useMediaBox */
+                                       1, /* Crop */
+                                       -1, -1, -1, -1,
+                                       NULL, /* links */
+                                       page->doc->pdfdoc->getCatalog (),
+                                       NULL, NULL, NULL, NULL);
 
     page->page->display(page->gfx);
 
@@ -157,7 +157,7 @@ evas_poppler_page_text_output_dev_get (Evas_Poppler_Page *page)
 }
 
 char *
-evas_poppler_page_text_get (Evas_Poppler_Page *page, Rectangle r)
+epdf_page_text_get (Epdf_Page *page, Epdf_Rectangle r)
 {
   TextOutputDev *text_dev;
   PDFDoc        *doc;
@@ -169,8 +169,8 @@ evas_poppler_page_text_get (Evas_Poppler_Page *page, Rectangle r)
   if (!page)
     return NULL;
 
-  text_dev = evas_poppler_page_text_output_dev_get (page);
-  height = evas_poppler_page_height_get (page);
+  text_dev = epdf_page_text_output_dev_get (page);
+  height = epdf_page_height_get (page);
 
   pdf_selection.x1 = r.x1;
   pdf_selection.y1 = r.y1;
@@ -186,17 +186,17 @@ evas_poppler_page_text_get (Evas_Poppler_Page *page, Rectangle r)
 }
 
 Ecore_List *
-evas_poppler_page_text_find (Evas_Poppler_Page *page,
-			     const char        *text,
-			     unsigned char is_case_sensitive)
+epdf_page_text_find (Epdf_Page    *page,
+                     const char   *text,
+                     unsigned char is_case_sensitive)
 {
-  Rectangle *match;
-  TextOutputDev *output_dev;
-  Ecore_List *matches = NULL;
-  double xMin, yMin, xMax, yMax;
-  int length;
-  int height;
-  UGooString utext(text);
+  Epdf_Rectangle *match;
+  TextOutputDev  *output_dev;
+  Ecore_List     *matches = NULL;
+  double          xMin, yMin, xMax, yMax;
+  int             length;
+  int             height;
+  UGooString      utext(text);
 
   if (!page || !text)
     return NULL;
@@ -205,7 +205,7 @@ evas_poppler_page_text_find (Evas_Poppler_Page *page,
 
   output_dev = new TextOutputDev (NULL, 1, 0, 0);
 
-  height = evas_poppler_page_height_get (page);
+  height = epdf_page_height_get (page);
   page->page->display (output_dev, 72, 72, 0, 0,
 		       1, NULL,
 		       page->doc->pdfdoc->getCatalog());
@@ -221,7 +221,7 @@ evas_poppler_page_text_find (Evas_Poppler_Page *page,
     if (!matches)
       matches = ecore_list_new ();
     ecore_list_set_free_cb (matches, ECORE_FREE_CB (free));
-    match = (Rectangle *)malloc (sizeof (Rectangle));
+    match = (Epdf_Rectangle *)malloc (sizeof (Epdf_Rectangle));
     match->x1 = xMin;
     match->y1 = yMin;//height - yMax;
     match->x2 = xMax;
@@ -234,8 +234,8 @@ evas_poppler_page_text_find (Evas_Poppler_Page *page,
   return matches;
 }
 
-Evas_Poppler_Page_Transition *
-evas_poppler_page_transition_get (Evas_Poppler_Page *page)
+Epdf_Page_Transition *
+epdf_page_transition_get (Epdf_Page *page)
 {
   if (!page)
     return NULL;
@@ -244,7 +244,7 @@ evas_poppler_page_transition_get (Evas_Poppler_Page *page)
 }
 
 int
-evas_poppler_page_width_get (Evas_Poppler_Page *page)
+epdf_page_width_get (Epdf_Page *page)
 {
   int rotate;
 
@@ -259,7 +259,7 @@ evas_poppler_page_width_get (Evas_Poppler_Page *page)
 }
 
 int
-evas_poppler_page_height_get (Evas_Poppler_Page *page)
+epdf_page_height_get (Epdf_Page *page)
 {
   int rotate;
 
@@ -273,29 +273,29 @@ evas_poppler_page_height_get (Evas_Poppler_Page *page)
     return (int)page->page->getMediaHeight ();
 }
 
-Evas_Poppler_Page_Orientation
-evas_poppler_page_orientation_get (Evas_Poppler_Page *page)
+Epdf_Page_Orientation
+epdf_page_orientation_get (Epdf_Page *page)
 {
   int rotation;
 
   if (!page)
-    return EVAS_POPPLER_PAGE_ORIENTATION_LANDSCAPE;
+    return EPDF_PAGE_ORIENTATION_LANDSCAPE;
 
   rotation = page->page->getRotate();;
   switch (rotation) {
   case 90:
-    return EVAS_POPPLER_PAGE_ORIENTATION_LANDSCAPE;
+    return EPDF_PAGE_ORIENTATION_LANDSCAPE;
   case 180:
-    return EVAS_POPPLER_PAGE_ORIENTATION_UPSIDEDOWN;
+    return EPDF_PAGE_ORIENTATION_UPSIDEDOWN;
   case 270:
-    return EVAS_POPPLER_PAGE_ORIENTATION_SEASCAPE;
+    return EPDF_PAGE_ORIENTATION_SEASCAPE;
   default:
-    return EVAS_POPPLER_PAGE_ORIENTATION_PORTRAIT;
+    return EPDF_PAGE_ORIENTATION_PORTRAIT;
   }
 }
 
 const char *
-evas_poppler_page_orientation_name_get (Evas_Poppler_Page *page)
+epdf_page_orientation_name_get (Epdf_Page *page)
 {
   int rotation;
 

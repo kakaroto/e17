@@ -10,28 +10,28 @@
 #include "poppler_page_transition.h"
 
 
-Evas_Poppler_Page_Transition *
-evas_poppler_page_transition_new (Object *data)
+Epdf_Page_Transition *
+epdf_page_transition_new (Object *data)
 {
-  Evas_Poppler_Page_Transition *transition;
-  Dict                         *trans_dict;
-  Object                        obj;
-  
+  Epdf_Page_Transition *transition;
+  Dict                 *trans_dict;
+  Object                obj;
+
   if (!data || !data->isDict())
     return NULL;
 
-  transition = (Evas_Poppler_Page_Transition *)malloc (sizeof (Evas_Poppler_Page_Transition));
+  transition = (Epdf_Page_Transition *)malloc (sizeof (Epdf_Page_Transition));
   if (!transition)
     return NULL;
 
-  transition->type           = EVAS_POPPLER_PAGE_TRANSITION_REPLACE;
+  transition->type           = EPDF_PAGE_TRANSITION_REPLACE;
   transition->duration       = 1;
-  transition->alignment      = EVAS_POPPLER_PAGE_TRANSITION_HORIZONTAL;
-  transition->direction      = EVAS_POPPLER_PAGE_TRANSITION_INWARD;
+  transition->alignment      = EPDF_PAGE_TRANSITION_HORIZONTAL;
+  transition->direction      = EPDF_PAGE_TRANSITION_INWARD;
   transition->angle          = 0;
   transition->scale          = 1.0;
   transition->is_rectangular = 0;
-  
+
   trans_dict = data->getDict ();
 
   UGooString trans_str("S");
@@ -40,29 +40,29 @@ evas_poppler_page_transition_new (Object *data)
 
     s = obj.getName();
     if (strcmp ("R", s) == 0)
-      transition->type = EVAS_POPPLER_PAGE_TRANSITION_REPLACE;
+      transition->type = EPDF_PAGE_TRANSITION_REPLACE;
     else if (strcmp("Split", s) == 0)
-      transition->type = EVAS_POPPLER_PAGE_TRANSITION_SPLIT;
+      transition->type = EPDF_PAGE_TRANSITION_SPLIT;
     else if (strcmp("Blinds", s) == 0)
-      transition->type = EVAS_POPPLER_PAGE_TRANSITION_BLINDS;
+      transition->type = EPDF_PAGE_TRANSITION_BLINDS;
     else if (strcmp("Box", s) == 0)
-      transition->type = EVAS_POPPLER_PAGE_TRANSITION_BOX;
+      transition->type = EPDF_PAGE_TRANSITION_BOX;
     else if (strcmp("Wipe", s) == 0)
-      transition->type = EVAS_POPPLER_PAGE_TRANSITION_WIPE;
+      transition->type = EPDF_PAGE_TRANSITION_WIPE;
     else if (strcmp("Dissolve", s) == 0)
-      transition->type = EVAS_POPPLER_PAGE_TRANSITION_DISSOLVE;
+      transition->type = EPDF_PAGE_TRANSITION_DISSOLVE;
     else if (strcmp("Glitter", s) == 0)
-     transition-> type = EVAS_POPPLER_PAGE_TRANSITION_GLITTER;
+     transition-> type = EPDF_PAGE_TRANSITION_GLITTER;
     else if (strcmp("Fly", s) == 0)
-      transition->type = EVAS_POPPLER_PAGE_TRANSITION_FLY;
+      transition->type = EPDF_PAGE_TRANSITION_FLY;
     else if (strcmp("Push", s) == 0)
-      transition->type = EVAS_POPPLER_PAGE_TRANSITION_PUSH;
+      transition->type = EPDF_PAGE_TRANSITION_PUSH;
     else if (strcmp("Cover", s) == 0)
-      transition->type = EVAS_POPPLER_PAGE_TRANSITION_COVER;
+      transition->type = EPDF_PAGE_TRANSITION_COVER;
     else if (strcmp("Uncover", s) == 0)
-      transition->type = EVAS_POPPLER_PAGE_TRANSITION_UNCOVER;
+      transition->type = EPDF_PAGE_TRANSITION_UNCOVER;
     else if (strcmp("Fade", s) == 0)
-      transition->type = EVAS_POPPLER_PAGE_TRANSITION_FADE;
+      transition->type = EPDF_PAGE_TRANSITION_FADE;
   }
   obj.free();
 
@@ -74,18 +74,18 @@ evas_poppler_page_transition_new (Object *data)
   if (trans_dict->lookup("Dm", &obj)->isName()) {
     const char *dm = obj.getName();
     if ( strcmp( "H", dm ) == 0 )
-      transition->alignment = EVAS_POPPLER_PAGE_TRANSITION_HORIZONTAL;
+      transition->alignment = EPDF_PAGE_TRANSITION_HORIZONTAL;
     else if ( strcmp( "V", dm ) == 0 )
-      transition->alignment = EVAS_POPPLER_PAGE_TRANSITION_VERTICAL;
+      transition->alignment = EPDF_PAGE_TRANSITION_VERTICAL;
   }
   obj.free();
 
   if (trans_dict->lookup("M", &obj)->isName()) {
     const char *m = obj.getName();
     if ( strcmp( "I", m ) == 0 )
-      transition->direction = EVAS_POPPLER_PAGE_TRANSITION_INWARD;
+      transition->direction = EPDF_PAGE_TRANSITION_INWARD;
     else if ( strcmp( "O", m ) == 0 )
-      transition->direction = EVAS_POPPLER_PAGE_TRANSITION_OUTWARD;
+      transition->direction = EPDF_PAGE_TRANSITION_OUTWARD;
   }
   obj.free();
 
@@ -114,7 +114,7 @@ evas_poppler_page_transition_new (Object *data)
 }
 
 void
-evas_poppler_page_transition_delete (Evas_Poppler_Page_Transition *transition)
+epdf_page_transition_delete (Epdf_Page_Transition *transition)
 {
   if (!transition)
     return;
@@ -123,17 +123,17 @@ evas_poppler_page_transition_delete (Evas_Poppler_Page_Transition *transition)
 }
 
 
-Evas_Poppler_Page_Transition_Type
-evas_poppler_page_transition_type_get (Evas_Poppler_Page_Transition *transition)
+Epdf_Page_Transition_Type
+epdf_page_transition_type_get (Epdf_Page_Transition *transition)
 {
   if (!transition)
-    return EVAS_POPPLER_PAGE_TRANSITION_REPLACE;
+    return EPDF_PAGE_TRANSITION_REPLACE;
 
   return transition->type;
 }
 
 int
-evas_poppler_page_transition_duration_get (Evas_Poppler_Page_Transition *transition)
+epdf_page_transition_duration_get (Epdf_Page_Transition *transition)
 {
   if (!transition)
     return 1;
@@ -141,26 +141,26 @@ evas_poppler_page_transition_duration_get (Evas_Poppler_Page_Transition *transit
   return transition->duration;
 }
 
-Evas_Poppler_Page_Transition_Alignment
-evas_poppler_page_transition_alignment_get (Evas_Poppler_Page_Transition *transition)
+Epdf_Page_Transition_Alignment
+epdf_page_transition_alignment_get (Epdf_Page_Transition *transition)
 {
   if (!transition)
-    return EVAS_POPPLER_PAGE_TRANSITION_HORIZONTAL;
+    return EPDF_PAGE_TRANSITION_HORIZONTAL;
 
       return transition->alignment;
 }
 
-Evas_Poppler_Page_Transition_Direction
-evas_poppler_page_transition_direction_get (Evas_Poppler_Page_Transition *transition)
+Epdf_Page_Transition_Direction
+epdf_page_transition_direction_get (Epdf_Page_Transition *transition)
 {
   if (!transition)
-    return EVAS_POPPLER_PAGE_TRANSITION_INWARD;
+    return EPDF_PAGE_TRANSITION_INWARD;
 
   return transition->direction;
 }
 
 int
-evas_poppler_page_transition_angle_get (Evas_Poppler_Page_Transition *transition)
+epdf_page_transition_angle_get (Epdf_Page_Transition *transition)
 {
   if (!transition)
     return 0;
@@ -169,7 +169,7 @@ evas_poppler_page_transition_angle_get (Evas_Poppler_Page_Transition *transition
 }
 
 double
-evas_poppler_page_transition_scale_get (Evas_Poppler_Page_Transition *transition)
+epdf_page_transition_scale_get (Epdf_Page_Transition *transition)
 {
   if (!transition)
     return 1.0;
@@ -178,7 +178,7 @@ evas_poppler_page_transition_scale_get (Evas_Poppler_Page_Transition *transition
 }
 
 unsigned char
-evas_poppler_page_transition_is_rectangular_get (Evas_Poppler_Page_Transition *transition)
+epdf_page_transition_is_rectangular_get (Epdf_Page_Transition *transition)
 {
   if (!transition)
     return 0;

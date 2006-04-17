@@ -86,13 +86,13 @@ void etk_pdf_file_set(Etk_Pdf *pdf, const char *filename)
    etk_object_notify(ETK_OBJECT(pdf), "pdf_file");
 
    if (pdf->pdf_document)
-      evas_poppler_document_delete (pdf->pdf_document);
+      epdf_document_delete (pdf->pdf_document);
 
    if (pdf->pdf_index)
-      evas_poppler_index_delete (pdf->pdf_index);
+      epdf_index_delete (pdf->pdf_index);
 
-   pdf->pdf_document = evas_poppler_document_new (pdf->filename);
-   pdf->pdf_index = evas_poppler_index_new (pdf->pdf_document);
+   pdf->pdf_document = epdf_document_new (pdf->filename);
+   pdf->pdf_index = epdf_index_new (pdf->pdf_document);
    pdf->page = 0;
 
    pdf->search.o = NULL;
@@ -126,7 +126,7 @@ void etk_pdf_page_set(Etk_Pdf *pdf, int page)
 {
    if (!pdf ||
        !pdf->pdf_document ||
-       (page >= evas_poppler_document_page_count_get (pdf->pdf_document)) ||
+       (page >= epdf_document_page_count_get (pdf->pdf_document)) ||
        (page == pdf->page))
       return;
 
@@ -153,7 +153,7 @@ int etk_pdf_page_get(Etk_Pdf *pdf)
  * @param pdf an pdf
  * @return Returns the poppler document of the pdf (NULL on failure)
  */
-Evas_Poppler_Document *etk_pdf_pdf_document_get (Etk_Pdf *pdf)
+Epdf_Document *etk_pdf_pdf_document_get (Etk_Pdf *pdf)
 {
    if (!pdf)
       return NULL;
@@ -166,7 +166,7 @@ Evas_Poppler_Document *etk_pdf_pdf_document_get (Etk_Pdf *pdf)
  * @param pdf an pdf
  * @return Returns the current poppler page of the pdf (NULL on failure)
  */
-Evas_Poppler_Page *etk_pdf_pdf_page_get (Etk_Pdf *pdf)
+Epdf_Page *etk_pdf_pdf_page_get (Etk_Pdf *pdf)
 {
    if (!pdf)
       return NULL;
@@ -204,9 +204,9 @@ void etk_pdf_size_get(Etk_Pdf *pdf, int *width, int *height)
    }
    else {
       if (width)
-	 *width = evas_poppler_page_width_get (pdf->pdf_page);
+	 *width = epdf_page_width_get (pdf->pdf_page);
       if (height)
-	 *height = evas_poppler_page_height_get (pdf->pdf_page);
+	 *height = epdf_page_height_get (pdf->pdf_page);
    }
       evas_object_image_size_get(pdf->pdf_object, width, height);
 }
@@ -272,26 +272,26 @@ etk_pdf_search_next (Etk_Pdf *pdf)
  next_page:
    /* no list, we search one */
    while (!pdf->search.list &&
-          pdf->search.page < evas_poppler_document_page_count_get (pdf->pdf_document)) {
-     Evas_Poppler_Page *page;
+          pdf->search.page < epdf_document_page_count_get (pdf->pdf_document)) {
+     Epdf_Page *page;
 
      pdf->search.page++;
      printf ("page : %d\n", pdf->search.page);
-     page = evas_poppler_document_page_get (pdf->pdf_document, pdf->search.page);
-     pdf->search.list = evas_poppler_page_text_find (page,
-                                                     pdf->search.text,
-                                                     pdf->search.is_case_sensitive);
+     page = epdf_document_page_get (pdf->pdf_document, pdf->search.page);
+     pdf->search.list = epdf_page_text_find (page,
+                                             pdf->search.text,
+                                             pdf->search.is_case_sensitive);
      if (pdf->search.list)
         ecore_list_goto_first (pdf->search.list);
-     evas_poppler_page_delete (page);
+     epdf_page_delete (page);
    }
 
    /* an already existing list or a netky one */
    if (pdf->search.list) {
-     Rectangle *rect;
-     int x, y, w, h;
+     Epdf_Rectangle *rect;
+     int             x, y, w, h;
 
-     if ((rect = (Rectangle *)ecore_list_next (pdf->search.list))) {
+     if ((rect = (Epdf_Rectangle *)ecore_list_next (pdf->search.list))) {
        if (pdf->search.page != pdf->page) {
          etk_pdf_page_set (pdf, pdf->search.page);
          _etk_pdf_load (pdf);
@@ -326,7 +326,7 @@ etk_pdf_search_next (Etk_Pdf *pdf)
       return ETK_TRUE;
 }
 
-void etk_pdf_orientation_set (Etk_Pdf *pdf, Evas_Poppler_Page_Orientation o)
+void etk_pdf_orientation_set (Etk_Pdf *pdf, Epdf_Page_Orientation o)
 {
    if (!pdf || !pdf->pdf_page || (pdf->orientation == o))
       return;
@@ -336,12 +336,12 @@ void etk_pdf_orientation_set (Etk_Pdf *pdf, Evas_Poppler_Page_Orientation o)
    _etk_pdf_load (pdf);
 }
 
-Evas_Poppler_Page_Orientation etk_pdf_orientation_get (Etk_Pdf *pdf)
+Epdf_Page_Orientation etk_pdf_orientation_get (Etk_Pdf *pdf)
 {
    if (!pdf || !pdf->pdf_page)
-      return EVAS_POPPLER_PAGE_ORIENTATION_PORTRAIT;
+      return EPDF_PAGE_ORIENTATION_PORTRAIT;
 
-   return evas_poppler_page_orientation_get (pdf->pdf_page);
+   return epdf_page_orientation_get (pdf->pdf_page);
 }
 
 void etk_pdf_scale_set (Etk_Pdf *pdf, double hscale, double vscale)
@@ -397,7 +397,7 @@ static void _etk_pdf_constructor(Etk_Pdf *pdf)
    pdf->pdf_page = NULL;
    pdf->pdf_index = NULL;
 
-   pdf->orientation = EVAS_POPPLER_PAGE_ORIENTATION_PORTRAIT;
+   pdf->orientation = EPDF_PAGE_ORIENTATION_PORTRAIT;
    pdf->hscale = 1.0;
    pdf->vscale = 1.0;
 
@@ -422,9 +422,9 @@ static void _etk_pdf_destructor(Etk_Pdf *pdf)
       return;
 
    free(pdf->filename);
-   evas_poppler_document_delete (pdf->pdf_document);
-   evas_poppler_page_delete (pdf->pdf_page);
-   evas_poppler_index_delete (pdf->pdf_index);
+   epdf_document_delete (pdf->pdf_document);
+   epdf_page_delete (pdf->pdf_page);
+   epdf_index_delete (pdf->pdf_index);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -573,14 +573,14 @@ static void _etk_pdf_load(Etk_Pdf *pdf)
 	 etk_widget_member_object_add(widget, pdf->pdf_object);
       }
       if (pdf->pdf_page)
-	 evas_poppler_page_delete (pdf->pdf_page);
+	 epdf_page_delete (pdf->pdf_page);
       if (pdf->pdf_object)
       {
-	 pdf->pdf_page = evas_poppler_document_page_get (pdf->pdf_document, pdf->page);
-	 evas_poppler_page_render (pdf->pdf_page, pdf->pdf_object,
-                                   pdf->orientation,
-                                   0, 0, -1, -1,
-                                   pdf->hscale, pdf->vscale);
+	 pdf->pdf_page = epdf_document_page_get (pdf->pdf_document, pdf->page);
+	 epdf_page_render (pdf->pdf_page, pdf->pdf_object,
+                           pdf->orientation,
+                           0, 0, -1, -1,
+                           pdf->hscale, pdf->vscale);
       }
       evas_object_show(pdf->pdf_object);
    }

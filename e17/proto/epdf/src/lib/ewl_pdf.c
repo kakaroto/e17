@@ -82,7 +82,7 @@ ewl_pdf_init(Ewl_Pdf *pdf)
 	pdf->pdf_page = NULL;
 	pdf->pdf_index = NULL;
 
-	pdf->orientation = EVAS_POPPLER_PAGE_ORIENTATION_PORTRAIT;
+	pdf->orientation = EPDF_PAGE_ORIENTATION_PORTRAIT;
 	pdf->hscale = 1.0;
 	pdf->vscale = 1.0;
 
@@ -137,14 +137,14 @@ ewl_pdf_file_set(Ewl_Pdf *pdf, const char *filename)
 
 	if (pdf->pdf_document) {
 		if (pdf->pdf_page)
-			evas_poppler_page_delete (pdf->pdf_page);
+			epdf_page_delete (pdf->pdf_page);
 		if (pdf->pdf_index)
-			evas_poppler_index_delete (pdf->pdf_index);
-		evas_poppler_document_delete (pdf->pdf_document);
+			epdf_index_delete (pdf->pdf_index);
+		epdf_document_delete (pdf->pdf_document);
 	}
 
-	pdf->pdf_document = evas_poppler_document_new (filename);
-	pdf->pdf_index = evas_poppler_index_new (pdf->pdf_document);
+	pdf->pdf_document = epdf_document_new (filename);
+	pdf->pdf_index = epdf_index_new (pdf->pdf_document);
 	pdf->page = 0;
 
         pdf->search.o = NULL;
@@ -180,7 +180,7 @@ void ewl_pdf_page_set(Ewl_Pdf *pdf, int page)
 	DCHECK_TYPE("pdf", pdf, "pdf");
 
 	if (!pdf->pdf_document ||
-	    (page >= evas_poppler_document_page_count_get (pdf->pdf_document)) ||
+	    (page >= epdf_document_page_count_get (pdf->pdf_document)) ||
 	    (page == pdf->page))
                 DLEAVE_FUNCTION(DLEVEL_STABLE);
 
@@ -194,7 +194,7 @@ void ewl_pdf_page_set(Ewl_Pdf *pdf, int page)
  * @return Returns the poppler document of the pdf (NULL on failure)
  * @brief get the poppler document of the pdf
  */
-Evas_Poppler_Document *ewl_pdf_pdf_document_get (Ewl_Pdf *pdf)
+Epdf_Document *ewl_pdf_pdf_document_get (Ewl_Pdf *pdf)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("pdf", pdf, 0);
@@ -208,7 +208,7 @@ Evas_Poppler_Document *ewl_pdf_pdf_document_get (Ewl_Pdf *pdf)
  * @return Returns the current poppler page of the pdf (NULL on failure)
  * @brief get the current poppler page of the pdf
  */
-Evas_Poppler_Page *ewl_pdf_pdf_page_get (Ewl_Pdf *pdf)
+Epdf_Page *ewl_pdf_pdf_page_get (Ewl_Pdf *pdf)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("pdf", pdf, 0);
@@ -249,8 +249,8 @@ void ewl_pdf_pdf_size_get (Ewl_Pdf *pdf, int *width, int *height)
 		if (height) *height = 0;
 	}
 	else {
-		if (width) *width = evas_poppler_page_width_get (pdf->pdf_page);
-		if (height) *height = evas_poppler_page_height_get (pdf->pdf_page);
+		if (width) *width = epdf_page_width_get (pdf->pdf_page);
+		if (height) *height = epdf_page_height_get (pdf->pdf_page);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -325,25 +325,25 @@ ewl_pdf_search_next (Ewl_Pdf *pdf)
  next_page:
         /* no list, we search one */
         while (!pdf->search.list &&
-               pdf->search.page < evas_poppler_document_page_count_get (pdf->pdf_document)) {
-                Evas_Poppler_Page *page;
+               pdf->search.page < epdf_document_page_count_get (pdf->pdf_document)) {
+                Epdf_Page *page;
 
                 pdf->search.page++;
                 printf ("page : %d\n", pdf->search.page);
-                page = evas_poppler_document_page_get (pdf->pdf_document, pdf->search.page);
-                pdf->search.list = evas_poppler_page_text_find (page,
-                                                                pdf->search.text,
-                                                                pdf->search.is_case_sensitive);
+                page = epdf_document_page_get (pdf->pdf_document, pdf->search.page);
+                pdf->search.list = epdf_page_text_find (page,
+                                                        pdf->search.text,
+                                                        pdf->search.is_case_sensitive);
                 if (pdf->search.list)
                         ecore_list_goto_first (pdf->search.list);
-                evas_poppler_page_delete (page);
+                epdf_page_delete (page);
         }
 
         /* an already existing list or a newly one */
         if (pdf->search.list) {
-                Rectangle *rect;
+                Epdf_Rectangle *rect;
 
-                if ((rect = (Rectangle *)ecore_list_next (pdf->search.list))) {
+                if ((rect = (Epdf_Rectangle *)ecore_list_next (pdf->search.list))) {
                   if (pdf->search.page != pdf->page) {
                           ewl_pdf_page_set (pdf, pdf->search.page);
                           ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
@@ -378,7 +378,7 @@ ewl_pdf_search_next (Ewl_Pdf *pdf)
 }
 
 void
-ewl_pdf_orientation_set (Ewl_Pdf *pdf, Evas_Poppler_Page_Orientation o)
+ewl_pdf_orientation_set (Ewl_Pdf *pdf, Epdf_Page_Orientation o)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("pdf", pdf);
@@ -392,7 +392,7 @@ ewl_pdf_orientation_set (Ewl_Pdf *pdf, Evas_Poppler_Page_Orientation o)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-Evas_Poppler_Page_Orientation
+Epdf_Page_Orientation
 ewl_pdf_orientation_get (Ewl_Pdf *pdf)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -400,9 +400,9 @@ ewl_pdf_orientation_get (Ewl_Pdf *pdf)
 	DCHECK_TYPE_RET("pdf", pdf, "pdf", 0);
 
 	if (!pdf || !pdf->pdf_page)
-		return EVAS_POPPLER_PAGE_ORIENTATION_PORTRAIT;
+		return EPDF_PAGE_ORIENTATION_PORTRAIT;
 
-	DRETURN_INT(evas_poppler_page_orientation_get (pdf->pdf_page), DLEVEL_STABLE);
+	DRETURN_INT(epdf_page_orientation_get (pdf->pdf_page), DLEVEL_STABLE);
 }
 
 void
@@ -468,12 +468,12 @@ ewl_pdf_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	if (pdf->pdf_document) {
 		if (pdf->pdf_page)
-			evas_poppler_page_delete (pdf->pdf_page);
-		pdf->pdf_page = evas_poppler_document_page_get (pdf->pdf_document, pdf->page);
-		evas_poppler_page_render (pdf->pdf_page, i->image,
-                                          pdf->orientation,
-                                          0, 0, -1, -1,
-                                          pdf->hscale, pdf->vscale);
+			epdf_page_delete (pdf->pdf_page);
+		pdf->pdf_page = epdf_document_page_get (pdf->pdf_document, pdf->page);
+		epdf_page_render (pdf->pdf_page, i->image,
+                                  pdf->orientation,
+                                  0, 0, -1, -1,
+                                  pdf->hscale, pdf->vscale);
 	}
 	evas_object_image_size_get(i->image, &i->ow, &i->oh);
 
@@ -527,11 +527,11 @@ ewl_pdf_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	pdf = EWL_PDF(w);
 
 	if (pdf->pdf_document)
-	  evas_poppler_document_delete (pdf->pdf_document);
+	  epdf_document_delete (pdf->pdf_document);
 	if (pdf->pdf_page)
-	  evas_poppler_page_delete (pdf->pdf_page);
+	  epdf_page_delete (pdf->pdf_page);
 	if (pdf->pdf_index)
-	  evas_poppler_index_delete (pdf->pdf_index);
+	  epdf_index_delete (pdf->pdf_index);
         if (pdf->search.text) free (pdf->search.text);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

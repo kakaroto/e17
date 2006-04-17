@@ -27,18 +27,18 @@ struct _Etk_Pdf
 {
    /* private: */
    /* Inherit from Etk_Widget */
-   Etk_Widget   widget;
+   Etk_Widget            widget;
 
-   Evas_Object *pdf_object;
-   char        *filename;
-   int          page;
+   Evas_Object          *pdf_object;
+   char                 *filename;
+   int                   page;
 
-   Evas_Poppler_Document *pdf_document;
-   Evas_Poppler_Page     *pdf_page;
-   Ecore_List            *pdf_index;
-   Evas_Poppler_Page_Orientation orientation;
-   double                 hscale;
-   double                 vscale;
+   Epdf_Document        *pdf_document;
+   Epdf_Page            *pdf_page;
+   Ecore_List           *pdf_index;
+   Epdf_Page_Orientation orientation;
+   double                hscale;
+   double                vscale;
 
   struct {
      Evas_Object *o;
@@ -50,26 +50,26 @@ struct _Etk_Pdf
   }search;
 };
 
-Etk_Type *etk_pdf_type_get();
-Etk_Widget *etk_pdf_new();
+Etk_Type             *etk_pdf_type_get();
+Etk_Widget           *etk_pdf_new();
 
-void                   etk_pdf_file_set(Etk_Pdf *pdf, const char *filename);
-const char            *etk_pdf_file_get(Etk_Pdf *pdf);
-void                   etk_pdf_page_set(Etk_Pdf *pdf, int page);
-int                    etk_pdf_page_get(Etk_Pdf *pdf);
-Evas_Poppler_Document *etk_pdf_pdf_document_get (Etk_Pdf *pdf);
-Evas_Poppler_Page     *etk_pdf_pdf_page_get (Etk_Pdf *pdf);
-Ecore_List            *etk_pdf_pdf_index_get (Etk_Pdf *pdf);
-void                   etk_pdf_size_get (Etk_Pdf *pdf, int *width, int *height);
-void                   etk_pdf_search_text_set (Etk_Pdf *pdf, const char *text);
-void                   etk_pdf_search_is_case_sensitive (Etk_Pdf *pdf, int is_case_sensitive);
-int                    etk_pdf_search_next (Etk_Pdf *pdf);
+void                  etk_pdf_file_set(Etk_Pdf *pdf, const char *filename);
+const char           *etk_pdf_file_get(Etk_Pdf *pdf);
+void                  etk_pdf_page_set(Etk_Pdf *pdf, int page);
+int                   etk_pdf_page_get(Etk_Pdf *pdf);
+Epdf_Document        *etk_pdf_pdf_document_get (Etk_Pdf *pdf);
+Epdf_Page            *etk_pdf_pdf_page_get (Etk_Pdf *pdf);
+Ecore_List           *etk_pdf_pdf_index_get (Etk_Pdf *pdf);
+void                  etk_pdf_size_get (Etk_Pdf *pdf, int *width, int *height);
+void                  etk_pdf_search_text_set (Etk_Pdf *pdf, const char *text);
+void                  etk_pdf_search_is_case_sensitive (Etk_Pdf *pdf, int is_case_sensitive);
+int                   etk_pdf_search_next (Etk_Pdf *pdf);
 
-void                   etk_pdf_orientation_set (Etk_Pdf *pdf, Evas_Poppler_Page_Orientation o);
-Evas_Poppler_Page_Orientation etk_pdf_orientation_get (Etk_Pdf *pdf);
+void                  etk_pdf_orientation_set (Etk_Pdf *pdf, Epdf_Page_Orientation o);
+Epdf_Page_Orientation etk_pdf_orientation_get (Etk_Pdf *pdf);
 
-void                   etk_pdf_scale_set (Etk_Pdf *pdf, double hscale, double vscale);
-void                   etk_pdf_scale_get (Etk_Pdf *pdf, double *hscale, double *vscale);
+void                  etk_pdf_scale_set (Etk_Pdf *pdf, double hscale, double vscale);
+void                  etk_pdf_scale_get (Etk_Pdf *pdf, double *hscale, double *vscale);
 
 /** @} */
 

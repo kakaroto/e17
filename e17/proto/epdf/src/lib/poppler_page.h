@@ -1,5 +1,5 @@
-#ifndef __POPPLER_PAGE_H__
-#define __POPPLER_PAGE_H__
+#ifndef __EPDF_PAGE_H__
+#define __EPDF_PAGE_H__
 
 
 #include <Evas.h>
@@ -14,7 +14,7 @@ typedef struct
   double y1;
   double x2;
   double y2;
-}Rectangle;
+}Epdf_Rectangle;
 
 
 #ifdef __cplusplus
@@ -23,28 +23,28 @@ extern "C" {
 
 
 /**
- * Return a newly created Evas_Poppler_Page object
+ * Return a newly created Epdf_Page object
  *
  * @param doc The document
  * @param index The page number
- * @return An Evas_Poppler_Page
+ * @return An Epdf_Page
  *
- * Return a newly created Evas_Poppler_Page object of the document @p
+ * Return a newly created Epdf_Page object of the document @p
  * doc, corresponding to the page @p index. It must be freed with
- * evas_poppler_page_delete
+ * epdf_page_delete
  */
-Evas_Poppler_Page *evas_poppler_page_new (const Evas_Poppler_Document *doc,
-                                          int                          index);
+Epdf_Page *epdf_page_new (const Epdf_Document *doc,
+                          int                  index);
 
 /**
- * Delete an Evas_Poppler_Page object
+ * Delete an Epdf_Page object
  *
  * @param page The page
  *
- * Delete the Evas_Poppler_Page object @p page, created with
- * evas_poppler_page_new
+ * Delete the Epdf_Page object @p page, created with
+ * epdf_page_new
  */
-void evas_poppler_page_delete (Evas_Poppler_Page *page);
+void epdf_page_delete (Epdf_Page *page);
 
 /**
  * Render a page on an Evas_Object
@@ -65,15 +65,15 @@ void evas_poppler_page_delete (Evas_Poppler_Page *page);
  * points to render the rectangle. A value of 1.0 and 1.0 (resp.)
  * means that the original size of the document is choosen.
  */
-void evas_poppler_page_render (Evas_Poppler_Page *page,
-                               Evas_Object       *o,
-                               Evas_Poppler_Page_Orientation orientation,
-                               int                x,
-                               int                y,
-                               int                w,
-                               int                h,
-                               double             hscale,
-                               double             vscale);
+void epdf_page_render (Epdf_Page            *page,
+                       Evas_Object          *o,
+                       Epdf_Page_Orientation orientation,
+                       int                   x,
+                       int                   y,
+                       int                   w,
+                       int                   h,
+                       double                hscale,
+                       double                vscale);
 
 /**
  * Return the page number
@@ -83,7 +83,7 @@ void evas_poppler_page_render (Evas_Poppler_Page *page,
  *
  * Return page number of the page @p page
  */
-int evas_poppler_page_number_get (Evas_Poppler_Page *page);
+int epdf_page_number_get (Epdf_Page *page);
 
 /**
  * Return the text of a page contained in a rectangle
@@ -95,7 +95,8 @@ int evas_poppler_page_number_get (Evas_Poppler_Page *page);
  * Return the text of the page @p contained in the rectangle @p r. The
  * result must be freed
  */
-char *evas_poppler_page_text_get (Evas_Poppler_Page *page, Rectangle r);
+char *epdf_page_text_get (Epdf_Page     *page,
+                          Epdf_Rectangle r);
 
 /**
  * Return a list of rectangle in tha page, all of them containing a given
@@ -112,19 +113,19 @@ char *evas_poppler_page_text_get (Evas_Poppler_Page *page, Rectangle r);
  * into account. The list must be destroyed with a call to
  * ecore_list_destroy
  */
-Ecore_List *evas_poppler_page_text_find (Evas_Poppler_Page *page,
-                                         const char        *text,
-                                         unsigned char      is_case_sensitive);
+Ecore_List *epdf_page_text_find (Epdf_Page    *page,
+                                 const char   *text,
+                                 unsigned char is_case_sensitive);
 
 /**
  * Return the transition of a page
  *
  * @param page The page
- * @return The transition of the page, as an Evas_Poppler_Page_Transition
+ * @return The transition of the page, as an Epdf_Page_Transition
  *
  * Return the transition of the page @p page
  */
-Evas_Poppler_Page_Transition *evas_poppler_page_transition_get (Evas_Poppler_Page *page);
+Epdf_Page_Transition *epdf_page_transition_get (Epdf_Page *page);
 
 /**
  * Return the width of a page
@@ -134,7 +135,7 @@ Evas_Poppler_Page_Transition *evas_poppler_page_transition_get (Evas_Poppler_Pag
  *
  * Return the width of the page @p page
  */
-int evas_poppler_page_width_get (Evas_Poppler_Page *page);
+int epdf_page_width_get (Epdf_Page *page);
 
 /**
  * Return the height of a page
@@ -144,7 +145,7 @@ int evas_poppler_page_width_get (Evas_Poppler_Page *page);
  *
  * Return the height of the page @p page
  */
-int evas_poppler_page_height_get (Evas_Poppler_Page *page);
+int epdf_page_height_get (Epdf_Page *page);
 
 /**
  * Return the orientation of a page
@@ -154,7 +155,7 @@ int evas_poppler_page_height_get (Evas_Poppler_Page *page);
  *
  * Return the orientation of the page @p page
  */
-Evas_Poppler_Page_Orientation evas_poppler_page_orientation_get (Evas_Poppler_Page *page);
+Epdf_Page_Orientation epdf_page_orientation_get (Epdf_Page *page);
 
 /**
  * Return the orientation of a page as a string
@@ -165,7 +166,7 @@ Evas_Poppler_Page_Orientation evas_poppler_page_orientation_get (Evas_Poppler_Pa
  * Return the orientation of the page @p page as a string. The
  * returned string must not be freed
  */
-const char *evas_poppler_page_orientation_name_get (Evas_Poppler_Page *page);
+const char *epdf_page_orientation_name_get (Epdf_Page *page);
 
 
 #ifdef __cplusplus
@@ -173,4 +174,4 @@ const char *evas_poppler_page_orientation_name_get (Evas_Poppler_Page *page);
 #endif
 
 
-#endif /* __POPPLER_PAGE_H__ */
+#endif /* __EPDF_PAGE_H__ */

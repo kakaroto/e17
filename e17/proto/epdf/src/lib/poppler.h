@@ -1,5 +1,5 @@
-#ifndef __POPPLER_H__
-#define __POPPLER_H__
+#ifndef __EPDF_POPPLER_H__
+#define __EPDF_POPPLER_H__
 
 
 #ifdef __cplusplus
@@ -13,7 +13,7 @@ extern "C" {
  * This function returns the version of poppler as a string. The
  * result must not be freed.
  */
-const char *evas_poppler_version_get (void);
+const char *epdf_poppler_version_get (void);
 
 
 #ifdef __cplusplus
@@ -21,4 +21,4 @@ const char *evas_poppler_version_get (void);
 #endif
 
 
-#endif /* __POPPLER_H__ */
+#endif /* __EPDF_POPPLER_H__ */

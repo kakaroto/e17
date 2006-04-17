@@ -1,17 +1,17 @@
-#ifndef __POPPLER_PAGE_TRANSITION_H__
-#define __POPPLER_PAGE_TRANSITION_H__
+#ifndef __EPDF_PAGE_TRANSITION_H__
+#define __EPDF_PAGE_TRANSITION_H__
 
 
 #include "poppler_enum.h"
 #include "poppler_forward.h"
 
 /**
- * Delete an Evas_Poppler_Page_Transition object
+ * Delete an Epdf_Page_Transition object
  * @param transition The page transition to delete
  *
- * Delete an Evas_Poppler_Page_Transition object @p transition
+ * Delete an Epdf_Page_Transition object @p transition
  */
-void evas_poppler_page_transition_delete (Evas_Poppler_Page_Transition *transition);
+void epdf_page_transition_delete (Epdf_Page_Transition *transition);
 
 /**
  * Return the type of a transition
@@ -20,9 +20,9 @@ void evas_poppler_page_transition_delete (Evas_Poppler_Page_Transition *transiti
  * @return The type of the transition
  *
  * Return the type of the transition @p transition, as an
- * Evas_Poppler_Page_Transition_Type 
+ * Epdf_Page_Transition_Type
  */
-Evas_Poppler_Page_Transition_Type evas_poppler_page_transition_type_get (Evas_Poppler_Page_Transition *transition);
+Epdf_Page_Transition_Type epdf_page_transition_type_get (Epdf_Page_Transition *transition);
 
 /**
  * Return the duration of a transition
@@ -32,7 +32,7 @@ Evas_Poppler_Page_Transition_Type evas_poppler_page_transition_type_get (Evas_Po
  *
  * Return the duration of the transition @p transition
  */
-int evas_poppler_page_transition_duration_get (Evas_Poppler_Page_Transition *transition);
+int epdf_page_transition_duration_get (Epdf_Page_Transition *transition);
 
 /**
  * Return the alignment of a transition
@@ -42,7 +42,7 @@ int evas_poppler_page_transition_duration_get (Evas_Poppler_Page_Transition *tra
  *
  * Return the alignment of the transition @p transition
  */
-Evas_Poppler_Page_Transition_Alignment evas_poppler_page_transition_alignment_get (Evas_Poppler_Page_Transition *transition);
+Epdf_Page_Transition_Alignment epdf_page_transition_alignment_get (Epdf_Page_Transition *transition);
 
 /**
  * Return the direction of a transition
@@ -52,7 +52,7 @@ Evas_Poppler_Page_Transition_Alignment evas_poppler_page_transition_alignment_ge
  *
  * Return the direction of the transition @p transition
  */
-Evas_Poppler_Page_Transition_Direction evas_poppler_page_transition_direction_get (Evas_Poppler_Page_Transition *transition);
+Epdf_Page_Transition_Direction epdf_page_transition_direction_get (Epdf_Page_Transition *transition);
 
 /**
  * Return the angle of a transition
@@ -62,7 +62,7 @@ Evas_Poppler_Page_Transition_Direction evas_poppler_page_transition_direction_ge
  *
  * Return the angle of the transition @p transition
  */
-int evas_poppler_page_transition_angle_get (Evas_Poppler_Page_Transition *transition);
+int epdf_page_transition_angle_get (Epdf_Page_Transition *transition);
 
 /**
  * Return the scale of a transition
@@ -72,17 +72,17 @@ int evas_poppler_page_transition_angle_get (Evas_Poppler_Page_Transition *transi
  *
  * Return the scale of the transition @p transition
  */
-double evas_poppler_page_transition_scale_get (Evas_Poppler_Page_Transition *transition);
+double epdf_page_transition_scale_get (Epdf_Page_Transition *transition);
 
 /**
  * Whether the transition is rectangular or not
  *
- * @param transition The page transition 
+ * @param transition The page transition
  * @return 1 if the transition is rectangular, 0 otherwise
  *
  * Whether the transition is rectangular or not
  */
-unsigned char evas_poppler_page_transition_is_rectangular_get (Evas_Poppler_Page_Transition *transition);
+unsigned char epdf_page_transition_is_rectangular_get (Epdf_Page_Transition *transition);
 
 
-#endif /* __POPPLER_PAGE_TRANSITION_H__ */
+#endif /* __EPDF_PAGE_TRANSITION_H__ */
