@@ -294,7 +294,7 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
       return;
 
    if (!gc)
-      gc = ECreateGC(win, 0, NULL);
+      gc = EXCreateGC(win, 0, NULL);
 
    if (ts->style.orientation == FONT_TO_RIGHT ||
        ts->style.orientation == FONT_TO_LEFT)

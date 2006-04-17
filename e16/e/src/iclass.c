@@ -1230,9 +1230,9 @@ ITApply(Window win, ImageClass * ic, ImageState * is, int w, int h,
      {
 	GC                  gc;
 
-	gc = ECreateGC(win, 0, NULL);
+	gc = EXCreateGC(win, 0, NULL);
 	ImagestateDrawBevel(is, win, gc, w, h);
-	EFreeGC(gc);
+	EXFreeGC(gc);
      }
 }
 
@@ -1287,10 +1287,10 @@ ImageclassApplyCopy(ImageClass * ic, Window win, int w, int h, int active,
 		  gcv.tile = pmm->pmap;
 		  gcv.ts_x_origin = 0;
 		  gcv.ts_y_origin = 0;
-		  gc = ECreateGC(tp, GCFillStyle | GCTile |
-				 GCTileStipXOrigin | GCTileStipYOrigin, &gcv);
+		  gc = EXCreateGC(tp, GCFillStyle | GCTile |
+				  GCTileStipXOrigin | GCTileStipYOrigin, &gcv);
 		  XFillRectangle(disp, tp, gc, 0, 0, w, h);
-		  EFreeGC(gc);
+		  EXFreeGC(gc);
 		  if (pmm->mask)
 		    {
 		       tm = ECreatePixmap(win, w, h, 1);
@@ -1298,11 +1298,11 @@ ImageclassApplyCopy(ImageClass * ic, Window win, int w, int h, int active,
 		       gcv.tile = pmm->mask;
 		       gcv.ts_x_origin = 0;
 		       gcv.ts_y_origin = 0;
-		       gc = ECreateGC(tm, GCFillStyle | GCTile |
-				      GCTileStipXOrigin | GCTileStipYOrigin,
-				      &gcv);
+		       gc = EXCreateGC(tm, GCFillStyle | GCTile |
+				       GCTileStipXOrigin | GCTileStipYOrigin,
+				       &gcv);
 		       XFillRectangle(disp, tm, gc, 0, 0, w, h);
-		       EFreeGC(gc);
+		       EXFreeGC(gc);
 		    }
 		  FreePmapMask(pmm);
 		  pmm->type = 0;
@@ -1329,14 +1329,14 @@ ImageclassApplyCopy(ImageClass * ic, Window win, int w, int h, int active,
 	pmm->pmap = pmap;
 	pmm->mask = 0;
 
-	gc = ECreateGC(pmap, 0, NULL);
+	gc = EXCreateGC(pmap, 0, NULL);
 	/* bg color */
 	XSetForeground(disp, gc, is->bg.pixel);
 	XFillRectangle(disp, pmap, gc, 0, 0, w, h);
 	/* if there is a bevel to draw, draw it */
 	if (is->bevelstyle != BEVEL_NONE)
 	   ImagestateDrawBevel(is, pmap, gc, w, h);
-	EFreeGC(gc);
+	EXFreeGC(gc);
 	/* FIXME - No text */
      }
 }

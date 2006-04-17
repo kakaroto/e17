@@ -176,9 +176,9 @@ IB_Animate(char iconify, EWin * from, EWin * to)
    gcv.foreground = WhitePixel(disp, VRoot.scr);
    if (gcv.foreground == 0)
       gcv.foreground = BlackPixel(disp, VRoot.scr);
-   gc = ECreateGC(root,
-		  GCFunction | GCForeground | GCSubwindowMode | GCFillStyle,
-		  &gcv);
+   gc = EXCreateGC(root,
+		   GCFunction | GCForeground | GCSubwindowMode | GCFillStyle,
+		   &gcv);
    t1 = GetTime();
    if (iconify)
      {
@@ -320,7 +320,7 @@ IB_Animate(char iconify, EWin * from, EWin * to)
 	     XDrawLine(disp, root, gc, x4 + 2, y4 + 2, x1 - 2, y1 - 2);
 	  }
      }
-   EFreeGC(gc);
+   EXFreeGC(gc);
    EUngrabServer();
 }
 

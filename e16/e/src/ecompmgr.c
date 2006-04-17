@@ -547,12 +547,12 @@ ECompMgrDeskConfigure(Desk * dsk)
 	GC                  gc;
 
 	pmap = XCreatePixmap(disp, VRoot.win, 1, 1, VRoot.depth);
-	gc = ECreateGC(pmap, 0, NULL);
+	gc = EXCreateGC(pmap, 0, NULL);
 	XSetClipMask(disp, gc, 0);
 	XSetFillStyle(disp, gc, FillSolid);
 	XSetForeground(disp, gc, dsk->bg.pixel);
 	XFillRectangle(disp, pmap, gc, 0, 0, 1, 1);
-	EFreeGC(gc);
+	EXFreeGC(gc);
      }
    else
      {

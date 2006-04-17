@@ -161,7 +161,7 @@ static const HiwinRender HiwinRenderIclass = {
 static void
 HiwinRenderPixmapInit(Hiwin * phi)
 {
-   phi->gc = ECreateGC(EoGetWin(phi), 0, NULL);
+   phi->gc = EXCreateGC(EoGetWin(phi), 0, NULL);
 }
 
 static void
@@ -195,7 +195,7 @@ HiwinRenderPixmapFini(Hiwin * phi, int shown)
 	EClearWindow(EoGetWin(phi));
      }
 
-   EFreeGC(phi->gc);
+   EXFreeGC(phi->gc);
    phi->gc = None;
 }
 

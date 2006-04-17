@@ -1008,10 +1008,10 @@ EShapeCombineMaskTiled(Window win, int dest, int x, int y,
    gcv.ts_x_origin = 0;
    gcv.ts_y_origin = 0;
    tm = ECreatePixmap(win, w, h, 1);
-   gc = ECreateGC(tm, GCFillStyle | GCTile |
-		  GCTileStipXOrigin | GCTileStipYOrigin, &gcv);
+   gc = EXCreateGC(tm, GCFillStyle | GCTile |
+		   GCTileStipXOrigin | GCTileStipYOrigin, &gcv);
    XFillRectangle(disp, tm, gc, 0, 0, w, h);
-   EFreeGC(gc);
+   EXFreeGC(gc);
    EShapeCombineMask(win, dest, x, y, tm, op);
    EFreePixmap(tm);
 }
@@ -1338,9 +1338,9 @@ ECreatePixmapCopy(Pixmap src, unsigned int w, unsigned int h,
    GC                  gc;
 
    pmap = ECreatePixmap(src, w, h, depth);
-   gc = ECreateGC(src, 0, NULL);
+   gc = EXCreateGC(src, 0, NULL);
    XCopyArea(disp, src, pmap, gc, 0, 0, w, h, 0, 0);
-   EFreeGC(gc);
+   EXFreeGC(gc);
 
    return pmap;
 }
@@ -1351,13 +1351,13 @@ ECopyArea(Drawable src, Drawable dst, int sx, int sy, unsigned int w,
 {
    GC                  gc;
 
-   gc = ECreateGC(src, 0, NULL);
+   gc = EXCreateGC(src, 0, NULL);
    XCopyArea(disp, src, dst, gc, sx, sy, w, h, dx, dy);
-   EFreeGC(gc);
+   EXFreeGC(gc);
 }
 
 GC
-ECreateGC(Drawable d, unsigned long mask, XGCValues * val)
+EXCreateGC(Drawable draw, unsigned long mask, XGCValues * val)
 {
    XGCValues           xgcv;
 
@@ -1372,11 +1372,11 @@ ECreateGC(Drawable d, unsigned long mask, XGCValues * val)
 	val = &xgcv;
 	val->graphics_exposures = False;
      }
-   return XCreateGC(disp, d, mask, val);
+   return XCreateGC(disp, draw, mask, val);
 }
 
 int
-EFreeGC(GC gc)
+EXFreeGC(GC gc)
 {
    return XFreeGC(disp, gc);
 }

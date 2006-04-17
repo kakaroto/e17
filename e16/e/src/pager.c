@@ -329,7 +329,7 @@ doPagerUpdate(Pager * p)
    vx = cx * VRoot.w;
    vy = cy * VRoot.h;
 
-   gc = ECreateGC(p->pmap, 0, NULL);
+   gc = EXCreateGC(p->pmap, 0, NULL);
    if (gc == None)
       return;
 
@@ -424,7 +424,7 @@ doPagerUpdate(Pager * p)
    p->x1 = p->y1 = 99999;
    p->x2 = p->y2 = -99999;
 
-   EFreeGC(gc);
+   EXFreeGC(gc);
 }
 
 static void
@@ -555,7 +555,7 @@ PagerUpdateBg(Pager * p)
 	return;
      }
 
-   gc = ECreateGC(pmap, 0, NULL);
+   gc = EXCreateGC(pmap, 0, NULL);
    if (gc == None)
       return;
 
@@ -564,7 +564,7 @@ PagerUpdateBg(Pager * p)
    XSetForeground(disp, gc, WhitePixel(disp, VRoot.scr));
    XFillRectangle(disp, pmap, gc, 1, 1, p->dw - 2, p->dh - 2);
 
-   EFreeGC(gc);
+   EXFreeGC(gc);
 }
 
 static void
@@ -806,7 +806,7 @@ PagerEwinUpdateFromPager(Pager * p, EWin * ewin)
       h = 1;
 
    if (!gc)
-      gc = ECreateGC(p->pmap, 0, NULL);
+      gc = EXCreateGC(p->pmap, 0, NULL);
 
    /* NB! If the pixmap/mask was created by imlib, free it. Due to imlibs */
    /*     image/pixmap cache it may be in use elsewhere. */

@@ -115,8 +115,9 @@ Pixmap              ECreatePixmapCopy(Pixmap src, unsigned int w,
 void                ECopyArea(Drawable src, Drawable dst, int sx, int sy,
 			      unsigned int w, unsigned int h, int dx, int dy);
 
-GC                  ECreateGC(Drawable d, unsigned long mask, XGCValues * val);
-int                 EFreeGC(GC gc);
+GC                  EXCreateGC(Drawable draw, unsigned long mask,
+			       XGCValues * val);
+int                 EXFreeGC(GC gc);
 
 #define EAllocColor(pxc) \
 	XAllocColor(disp, VRoot.cmap, pxc)

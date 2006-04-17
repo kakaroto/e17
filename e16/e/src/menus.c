@@ -927,7 +927,7 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape, int state)
 
 	if (!m->style->use_item_bg)
 	  {
-	     gc = ECreateGC(m->pmm.pmap, 0, NULL);
+	     gc = EXCreateGC(m->pmm.pmap, 0, NULL);
 	     XCopyArea(disp, m->pmm.pmap, mi_pmm->pmap, gc, x, y, w, h, 0, 0);
 	     if ((mi->state != STATE_NORMAL) || (mi->child))
 	       {
@@ -943,7 +943,7 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape, int state)
 		  XCopyArea(disp, pmm.pmap, mi_pmm->pmap, gc, 0, 0, w, h, 0, 0);
 		  FreePmapMask(&pmm);
 	       }
-	     EFreeGC(gc);
+	     EXFreeGC(gc);
 	  }
 	else
 	  {

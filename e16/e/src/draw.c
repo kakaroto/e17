@@ -36,9 +36,9 @@ EFillPixmap(Window win, Pixmap pmap, int x, int y, int w, int h)
    GC                  gc;
 
    gcv.subwindow_mode = IncludeInferiors;
-   gc = ECreateGC(win, GCSubwindowMode, &gcv);
+   gc = EXCreateGC(win, GCSubwindowMode, &gcv);
    XCopyArea(disp, win, pmap, gc, x, y, w, h, x, y);
-   EFreeGC(gc);
+   EXFreeGC(gc);
 }
 
 static void
@@ -48,9 +48,9 @@ EPastePixmap(Window win, Pixmap pmap, int x, int y, int w, int h)
    GC                  gc;
 
    gcv.subwindow_mode = IncludeInferiors;
-   gc = ECreateGC(win, GCSubwindowMode, &gcv);
+   gc = EXCreateGC(win, GCSubwindowMode, &gcv);
    XCopyArea(disp, pmap, win, gc, x, y, w, h, x, y);
-   EFreeGC(gc);
+   EXFreeGC(gc);
 }
 
 typedef struct _PixImg
@@ -96,7 +96,7 @@ ECreatePixImg(Window win, int w, int h)
 		       if (pi->pmap)
 			 {
 			    gcv.subwindow_mode = IncludeInferiors;
-			    pi->gc = ECreateGC(win, GCSubwindowMode, &gcv);
+			    pi->gc = EXCreateGC(win, GCSubwindowMode, &gcv);
 			    if (pi->gc)
 			       return pi;
 
@@ -127,7 +127,7 @@ EDestroyPixImg(PixImg * pi)
    XDestroyImage(pi->xim);
    Efree(pi->shminfo);
    EFreePixmap(pi->pmap);
-   EFreeGC(pi->gc);
+   EXFreeGC(pi->gc);
    Efree(pi);
 }
 
@@ -147,9 +147,9 @@ EBlendRemoveShape(EWin * ewin, Pixmap pmap, int x, int y)
 	if (rl)
 	   XFree(rl);
 	if (gc)
-	   EFreeGC(gc);
+	   EXFreeGC(gc);
 	if (gcm)
-	   EFreeGC(gcm);
+	   EXFreeGC(gcm);
 	if (mask)
 	   EFreePixmap(mask);
 	mask = 0;
@@ -182,11 +182,11 @@ EBlendRemoveShape(EWin * ewin, Pixmap pmap, int x, int y)
    if (!mask)
       mask = ECreatePixmap(root, w, h, 1);
    if (!gcm)
-      gcm = ECreateGC(mask, 0, &gcv);
+      gcm = EXCreateGC(mask, 0, &gcv);
    if (!gc)
      {
 	gcv.subwindow_mode = IncludeInferiors;
-	gc = ECreateGC(root, GCSubwindowMode, &gcv);
+	gc = EXCreateGC(root, GCSubwindowMode, &gcv);
 	XSetForeground(disp, gcm, 1);
 	XFillRectangle(disp, mask, gcm, 0, 0, w, h);
 	XSetForeground(disp, gcm, 0);
@@ -213,7 +213,7 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
    if (!s1)
      {
 	if (gc)
-	   EFreeGC(gc);
+	   EXFreeGC(gc);
 	if (rl > (XRectangle *) 1)
 	   XFree(rl);
 	gc = 0;
@@ -223,7 +223,7 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
    if (!gc)
      {
 	gcv.subwindow_mode = IncludeInferiors;
-	gc = ECreateGC(root, GCSubwindowMode, &gcv);
+	gc = EXCreateGC(root, GCSubwindowMode, &gcv);
      }
    if (!rl)
      {
@@ -699,8 +699,8 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	     if (gcv.foreground == 0)
 		gcv.foreground = BlackPixel(disp, VRoot.scr);
 	     gcv.subwindow_mode = IncludeInferiors;
-	     gc = ECreateGC(root,
-			    GCFunction | GCForeground | GCSubwindowMode, &gcv);
+	     gc = EXCreateGC(root,
+			     GCFunction | GCForeground | GCSubwindowMode, &gcv);
 	  }
 #define DRAW_H_ARROW(x1, x2, y1) \
       if (((x2) - (x1)) >= 12) \
@@ -857,10 +857,10 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		    }
 		  EFillPixmap(root, root_pi->pmap, x1, y1, EoGetW(ewin),
 			      EoGetH(ewin));
-		  gc2 = ECreateGC(root_pi->pmap, 0, &gcv2);
+		  gc2 = EXCreateGC(root_pi->pmap, 0, &gcv2);
 		  XCopyArea(disp, root_pi->pmap, ewin_pi->pmap, gc2, x1, y1,
 			    EoGetW(ewin), EoGetH(ewin), 0, 0);
-		  EFreeGC(gc2);
+		  EXFreeGC(gc2);
 		  EBlendPixImg(ewin, root_pi, ewin_pi, draw_pi, x, y,
 			       EoGetW(ewin), EoGetH(ewin));
 	       }
@@ -965,7 +965,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 
 	if (firstlast == 2)
 	  {
-	     EFreeGC(gc);
+	     EXFreeGC(gc);
 	     gc = 0;
 	  }
 	break;

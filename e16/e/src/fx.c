@@ -98,12 +98,12 @@ FX_ripple_timeout(int val __UNUSED__, void *data __UNUSED__)
 	   ECreatePixmap(fx_ripple_win, VRoot.w, fx_ripple_waterh * 2,
 			 VRoot.depth);
 	if (gc)
-	   EFreeGC(gc);
+	   EXFreeGC(gc);
 	if (gc1)
-	   EFreeGC(gc1);
+	   EXFreeGC(gc1);
 	gcv.subwindow_mode = IncludeInferiors;
-	gc = ECreateGC(fx_ripple_win, GCSubwindowMode, &gcv);
-	gc1 = ECreateGC(fx_ripple_win, 0L, &gcv);
+	gc = EXCreateGC(fx_ripple_win, GCSubwindowMode, &gcv);
+	gc1 = EXCreateGC(fx_ripple_win, 0L, &gcv);
 
 	FX_ripple_info();
      }
@@ -267,13 +267,13 @@ FX_raindrops_timeout(int val __UNUSED__, void *data __UNUSED__)
 	fx_raindrops_win = DeskGetBackgroundWin(DesksGetCurrent());
 
 	if (gc)
-	   EFreeGC(gc);
+	   EXFreeGC(gc);
 	if (gc1)
-	   EFreeGC(gc1);
+	   EXFreeGC(gc1);
 
 	gcv.subwindow_mode = IncludeInferiors;
-	gc = ECreateGC(fx_raindrops_win, GCSubwindowMode, &gcv);
-	gc1 = ECreateGC(fx_raindrops_win, 0L, &gcv);
+	gc = EXCreateGC(fx_raindrops_win, GCSubwindowMode, &gcv);
+	gc1 = EXCreateGC(fx_raindrops_win, 0L, &gcv);
 
 	fx_raindrops_draw =
 	   ECreatePixImg(fx_raindrops_win, fx_raindrop_size, fx_raindrop_size);
@@ -541,12 +541,12 @@ FX_Wave_timeout(int val __UNUSED__, void *data __UNUSED__)
 	fx_wave_above =
 	   ECreatePixmap(fx_wave_win, VRoot.w, FX_WAVE_WATERH * 2, VRoot.depth);
 	if (gc)
-	   EFreeGC(gc);
+	   EXFreeGC(gc);
 	if (gc1)
-	   EFreeGC(gc1);
+	   EXFreeGC(gc1);
 	gcv.subwindow_mode = IncludeInferiors;
-	gc = ECreateGC(fx_wave_win, GCSubwindowMode, &gcv);
-	gc1 = ECreateGC(fx_wave_win, 0L, &gcv);
+	gc = EXCreateGC(fx_wave_win, GCSubwindowMode, &gcv);
+	gc1 = EXCreateGC(fx_wave_win, 0L, &gcv);
 
 	FX_Wave_info();
      }

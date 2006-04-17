@@ -583,12 +583,12 @@ BackgroundRealize(Background * bg, Drawable draw, unsigned int rw,
 
 	if (!is_win)
 	  {
-	     gc = ECreateGC(draw, 0, NULL);
+	     gc = EXCreateGC(draw, 0, NULL);
 	     XSetClipMask(disp, gc, 0);
 	     XSetFillStyle(disp, gc, FillSolid);
 	     XSetForeground(disp, gc, bg->bg_solid.pixel);
 	     XFillRectangle(disp, draw, gc, 0, 0, rw, rh);
-	     EFreeGC(gc);
+	     EXFreeGC(gc);
 	  }
 	if (ppmap)
 	   *ppmap = None;
@@ -622,12 +622,12 @@ BackgroundRealize(Background * bg, Drawable draw, unsigned int rw,
 	  }
 	else
 	  {
-	     gc = ECreateGC(draw, 0, NULL);
+	     gc = EXCreateGC(draw, 0, NULL);
 	     XSetTile(disp, gc, pmap);
 	     XSetTSOrigin(disp, gc, x, y);
 	     XSetFillStyle(disp, gc, FillTiled);
 	     XFillRectangle(disp, draw, gc, 0, 0, rw, rh);
-	     EFreeGC(gc);
+	     EXFreeGC(gc);
 	  }
 #endif
 	goto done;
@@ -1713,7 +1713,7 @@ BG_RedrawView(void)
    DialogItemAreaGetSize(bg_sel, &w, &h);
 
    pmap = ECreatePixmap(win, w, h, VRoot.depth);
-   gc = ECreateGC(pmap, 0, NULL);
+   gc = EXCreateGC(pmap, 0, NULL);
 
    ic_button = ImageclassFind("DIALOG_BUTTON", 0);
 
@@ -1763,7 +1763,7 @@ BG_RedrawView(void)
 	}
       x += (64 + 8);
    }
-   EFreeGC(gc);
+   EXFreeGC(gc);
    EFreePixmap(pmap);
 
    EClearWindow(win);
