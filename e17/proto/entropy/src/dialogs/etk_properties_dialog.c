@@ -1,5 +1,6 @@
 #include <Etk.h>
 #include "entropy.h"
+#include <time.h>
 
 typedef struct _Entropy_Etk_Properties_Dialog Entropy_Etk_Properties_Dialog;
 struct _Entropy_Etk_Properties_Dialog {
@@ -32,6 +33,8 @@ void etk_properties_dialog_new(Entropy_Generic_File* file)
 	Etk_Widget* label;
 	Etk_Widget* pvbox;
 	char* perms;
+	char buf[50];
+	time_t stime;
 
 	/*First up, add a reference to this file*/
 	printf("Adding reference to '%s/%s'- > %s\n", file->path, file->filename, file->md5);
@@ -65,6 +68,9 @@ void etk_properties_dialog_new(Entropy_Generic_File* file)
 	if (file->thumbnail) {
 		icon = etk_image_new_from_file(file->thumbnail->thumbnail_filename);
 		etk_box_pack_start(ETK_BOX(hbox), icon, ETK_FALSE, ETK_FALSE, 0);
+	} else {
+		icon = etk_image_new_from_file(PACKAGE_DATA_DIR "/icons/default.png");
+		etk_box_pack_start(ETK_BOX(hbox), icon, ETK_FALSE, ETK_FALSE, 0);		
 	}
 
 	pvbox = etk_vbox_new(ETK_FALSE,0);
@@ -75,6 +81,51 @@ void etk_properties_dialog_new(Entropy_Generic_File* file)
 	
 	label = etk_label_new(file->filename);
 	etk_box_pack_start(ETK_BOX(pvbox), label, ETK_FALSE, ETK_FALSE, 0);
+
+	/*Size*/
+	hbox = etk_hbox_new(ETK_TRUE,0);
+	etk_box_pack_start(ETK_BOX(ivbox), hbox, ETK_FALSE, ETK_FALSE, 0);
+
+	label = etk_label_new("Size");
+	etk_box_pack_start(ETK_BOX(hbox), label, ETK_TRUE, ETK_TRUE, 0);
+
+	snprintf(buf,50,"%ld kb", file->properties.st_size / 1024);
+	label = etk_label_new(buf);
+	etk_box_pack_start(ETK_BOX(hbox), label, ETK_TRUE, ETK_TRUE, 0);
+	
+	/*Type*/
+	hbox = etk_hbox_new(ETK_TRUE,0);
+	etk_box_pack_start(ETK_BOX(ivbox), hbox, ETK_FALSE, ETK_FALSE, 0);
+
+	label = etk_label_new("File Type");
+	etk_box_pack_start(ETK_BOX(hbox), label, ETK_TRUE, ETK_TRUE, 0);
+
+	label = etk_label_new(file->mime_type);
+	etk_box_pack_start(ETK_BOX(hbox), label, ETK_TRUE, ETK_TRUE, 0);
+	
+
+	/*Accessed Time*/
+	hbox = etk_hbox_new(ETK_TRUE,0);
+	etk_box_pack_start(ETK_BOX(ivbox), hbox, ETK_FALSE, ETK_FALSE, 0);
+
+	label = etk_label_new("Accessed Time");
+	etk_box_pack_start(ETK_BOX(hbox), label, ETK_TRUE, ETK_TRUE, 0);
+
+	stime = file->properties.st_atime;
+	label = etk_label_new(ctime(&stime));
+	etk_box_pack_start(ETK_BOX(hbox), label, ETK_TRUE, ETK_TRUE, 0);
+
+
+	/*Modified Time*/
+	hbox = etk_hbox_new(ETK_TRUE,0);
+	etk_box_pack_start(ETK_BOX(ivbox), hbox, ETK_FALSE, ETK_FALSE, 0);
+
+	label = etk_label_new("Modified Time");
+	etk_box_pack_start(ETK_BOX(hbox), label, ETK_TRUE, ETK_TRUE, 0);
+
+	stime = file->properties.st_mtime;
+	label = etk_label_new(ctime(&stime));
+	etk_box_pack_start(ETK_BOX(hbox), label, ETK_TRUE, ETK_TRUE, 0);
 	/*------------------*/
 
 	/*Permissions*/
