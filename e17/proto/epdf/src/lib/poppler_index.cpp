@@ -99,8 +99,13 @@ epdf_index_item_page_get (Epdf_Document *document, Epdf_Index_Item *item)
   if (item->action->getKind () != actionGoTo)
     return -1;
 
+  UGooString *named_dest = ((LinkGoTo *)item->action)->getNamedDest ();
   LinkDest *dest = ((LinkGoTo *)item->action)->getDest ();
 
+  if (!dest && named_dest)
+    dest = document->pdfdoc->findDest (named_dest);
+
+  // we really can't find a destination
   if (!dest || !dest->isOk ())
     return -1;
 
