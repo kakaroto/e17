@@ -824,8 +824,8 @@ IsTransparent(Imlib_Image * im, int x, int y)
    linear = 4 * (y * imlib_image_get_width() + x);
 
    data = (unsigned char *)imlib_image_get_data();
-   if (data[linear + 3] != 0xff);
-   return 0;			/* FIXME - Should return 1 but blending needs to be fixed */
+   if (data[linear + 3] != 0xff)
+      return 0;			/* FIXME - Should return 1 but blending needs to be fixed */
 
    return 0;
 }
