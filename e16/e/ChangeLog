@@ -3855,3 +3855,26 @@ Clean up handling of opacity settings, move config options to misc.opacity.
 Opacity values in configuration are now 0-100 in stead of 0-255.
 Japanese translation update (Yasufumi Haga).
 
+
+-------------------------------------------------------------------------------
+
+Mon Apr 17 19:04:41 CEST 2006
+(Kim)
+
+--- 0.16.8.2 0.02 ---
+Faster, smoother rendering of dialogs (use bg pixmap, no longer using expose events).
+Move frequently used opaque type definitions to etypes.h.
+Hack to fix problem with composite opacity during non-opaque move/resize.
+Fix transparent iconbox.
+Introduce idlers.
+Fix grabbing bitmap icons.
+Japanese translation update (Yasufumi Haga).
+Improve window repositioning on screen size change.
+Fix building with libiconv (Mike Frysinger).
+Fix problem with background pixmaps being freed by mistake.
+Fix theme transparency with external background.
+Various build related tweaks:
+- Autogenerate spec file (now named e16.spec, was e.spec)
+- Minor changes to various version strings
+- Move timestamp.h to top dir.
+
