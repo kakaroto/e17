@@ -2,12 +2,12 @@ Source: exhibit
 Section: x11
 Priority: optional
 Maintainer: E17 Debian Team <debian@edevelop.org>
-Build-Depends: debhelper (>= 4.0.0), libetk0-dev, libecore0-dev, libevas0-dev, libedje0-dev, libepsilon0-dev, libe-dev
+Build-Depends: debhelper (>= 4.0.0), libetk-dev, libepsilon-dev, libe-dev
 Standards-Version: 3.6.2
 
 Package: exhibit
 Architecture: any
-Depends: ${shlibs:Depends}, libetk0, libevas0, libecore0, libedje0, libepsilon0
+Depends: ${shlibs:Depends}, libetk, libepsilon
 Suggests: libe
 Description: the Etk image viewer
  Exhibit is an image viewer that uses Etk as its toolkit.

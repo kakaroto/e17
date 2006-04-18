@@ -10,26 +10,11 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 		       $(MYAPPNAME)_docs.tar.gz $(MYAPPNAME).c \
 		       debian/changelog
 
-install-data-local:
-	@$(NORMAL_INSTALL)
-	if test -d $(srcdir)/data; then \
-	  $(mkinstalldirs) $(DESTDIR)$(pkgdatadir)/data; \
-	  for d in $(srcdir)/data/*; do \
-	    cp -pR $$d $(DESTDIR)$(pkgdatadir)/data; \
-          done \
-	fi
-
 dist-hook:
 	./gendoc; \
 	tar cvf $(MYAPPNAME)_docs.tar doc; \
 	rm -f $(MYAPPNAME)_docs.tar.gz; \
 	gzip -9 $(MYAPPNAME)_docs.tar; \
-	if test -d data; then \
-	  mkdir $(distdir)/data; \
-	  for file in data/*; do \
-	    cp -pR $$file $(distdir)/data; \
-	  done \
-	fi
 							  
 
 EXTRA_DIST = README \
