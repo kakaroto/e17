@@ -233,6 +233,7 @@ ewl_entry_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	Ewl_Entry *e;
 	unsigned int c_pos;
 	int cx = 0, cy = 0, cw = 0, ch = 0;
+	int ox = 0, oy = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -249,6 +250,16 @@ ewl_entry_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 
 	if (!cw) cw = CURRENT_W(e->cursor);
 	if (!ch) ch = CURRENT_H(e->cursor);
+
+	ox = (cx + cw) - (CURRENT_X(e) + CURRENT_W(e));
+	oy = (cy + ch) - (CURRENT_Y(e) + CURRENT_H(e));
+
+	if (ox < 0)
+		ox = 0;
+	if (oy < 0)
+		oy = 0;
+
+	ewl_text_offsets_set(EWL_TEXT(e), -ox, -oy);
 
 	ewl_object_geometry_request(EWL_OBJECT(e->cursor), cx, cy, cw, ch);
 
