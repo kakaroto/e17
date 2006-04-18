@@ -68,7 +68,7 @@ HiwinRenderImageInit(Hiwin * phi)
      }
    else if (phi->zoom > 2 && EwinIsOnScreen(ewin))
      {
-	phi->im = EImageGrabDrawable(EoGetWin(ewin), None, 0, 0,
+	phi->im = EImageGrabDrawable(EoGetXwin(ewin), None, 0, 0,
 				     EoGetW(ewin), EoGetH(ewin), 0);
      }
    else
@@ -89,7 +89,7 @@ HiwinRenderImageDrawX(Hiwin * phi, Drawable draw)
 static void
 HiwinRenderImageDraw(Hiwin * phi)
 {
-   HiwinRenderImageDrawX(phi, EoGetWin(phi));
+   HiwinRenderImageDrawX(phi, EoGetXwin(phi));
 }
 
 static void
@@ -124,7 +124,7 @@ HiwinRenderImageUpdate(Hiwin * phi)
    phi->im = EImageGrabDrawable(pmap, None, 0, 0,
 				EoGetW(ewin), EoGetH(ewin), 0);
    ESetWindowBackgroundPixmap(EoGetWin(phi), None);
-   HiwinRenderImageDrawX(phi, EoGetWin(phi));
+   HiwinRenderImageDrawX(phi, EoGetXwin(phi));
    EImageDecache(phi->im);
    phi->im = NULL;
 }
@@ -161,7 +161,7 @@ static const HiwinRender HiwinRenderIclass = {
 static void
 HiwinRenderPixmapInit(Hiwin * phi)
 {
-   phi->gc = EXCreateGC(EoGetWin(phi), 0, NULL);
+   phi->gc = EXCreateGC(EoGetXwin(phi), 0, NULL);
 }
 
 static void
@@ -176,7 +176,7 @@ HiwinRenderPixmapDrawX(Hiwin * phi, Drawable draw)
 static void
 HiwinRenderPixmapDraw(Hiwin * phi)
 {
-   HiwinRenderPixmapDrawX(phi, EoGetWin(phi));
+   HiwinRenderPixmapDrawX(phi, EoGetXwin(phi));
    EClearWindow(EoGetWin(phi));
 }
 

@@ -1042,7 +1042,7 @@ ActionclassEvent(ActionClass * ac, XEvent * ev, EWin * ewin)
 	break;
      case LeaveNotify:
 	/* If frame window, quit if pointer is still inside */
-	if (ewin && ev->xcrossing.window == EoGetWin(ewin) &&
+	if (ewin && ev->xcrossing.window == EoGetXwin(ewin) &&
 	    (ev->xcrossing.x >= 0 && ev->xcrossing.x < EoGetW(ewin) &&
 	     ev->xcrossing.y >= 0 && ev->xcrossing.y < EoGetH(ewin)))
 	   return 0;

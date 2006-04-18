@@ -491,7 +491,7 @@ DeskGetBackgroundWin(const Desk * dsk)
 {
    if (!dsk)
       return VRoot.win;
-   return EobjGetWin(dsk->bg.o);
+   return EobjGetXwin(dsk->bg.o);
 }
 
 Pixmap
@@ -518,7 +518,7 @@ DeskBackgroundConfigure(Desk * dsk)
    if (EventDebug(EDBUG_TYPE_DESKS))
       Eprintf
 	 ("DeskBackgroundConfigure %d v=%d %#lx/%#lx: ext=%d pmap=%#lx/%#lx pixel=%#lx/%#lx\n",
-	  dsk->num, dsk->viewable, EoGetWin(dsk), EobjGetWin(dsk->bg.o),
+	  dsk->num, dsk->viewable, EoGetXwin(dsk), EobjGetXwin(dsk->bg.o),
 	  BackgroundIsNone(dsk->bg.bg), pmap, dsk->bg.pmap_set, pixel,
 	  dsk->bg.pixel);
 
@@ -626,7 +626,7 @@ DeskBackgroundRefresh(Desk * dsk, int why)
 	     pixel = 0;
 
 	     if (pmap == None)
-		BackgroundRealize(bg, EoGetWin(dsk), EoGetW(dsk), EoGetH(dsk),
+		BackgroundRealize(bg, EoGetXwin(dsk), EoGetW(dsk), EoGetH(dsk),
 				  1, &pmap, &pixel);
 	     if (pmap != None)
 		BackgroundPixmapSet(bg, pmap);
@@ -1398,7 +1398,7 @@ DeskRestackSimple(Desk * dsk)
    eo->stacked = 1;
 
    if (EventDebug(EDBUG_TYPE_STACKING))
-      Eprintf("DeskRestackSimple %#lx %s\n", EobjGetWin(eo), EobjGetName(eo));
+      Eprintf("DeskRestackSimple %#lx %s\n", EobjGetXwin(eo), EobjGetName(eo));
 
    lst = EobjListStackGetForDesk(&num, dsk);
    if (num < 2)
@@ -1413,18 +1413,18 @@ DeskRestackSimple(Desk * dsk)
    if (i < num - 1)
      {
 	xwc.stack_mode = Above;
-	xwc.sibling = EobjGetWin(lst[i + 1]);
+	xwc.sibling = EobjGetXwin(lst[i + 1]);
      }
    else
      {
 	xwc.stack_mode = Below;
-	xwc.sibling = EobjGetWin(lst[i - 1]);
+	xwc.sibling = EobjGetXwin(lst[i - 1]);
      }
    value_mask = CWSibling | CWStackMode;
    if (EventDebug(EDBUG_TYPE_STACKING))
-      Eprintf("DeskRestackSimple %#10lx %s %#10lx\n", EobjGetWin(eo),
+      Eprintf("DeskRestackSimple %#10lx %s %#10lx\n", EobjGetXwin(eo),
 	      (xwc.stack_mode == Above) ? "Above" : "Below", xwc.sibling);
-   XConfigureWindow(disp, EobjGetWin(eo), value_mask, &xwc);
+   XConfigureWindow(disp, EobjGetXwin(eo), value_mask, &xwc);
 }
 
 #define _APPEND_TO_WIN_LIST(win) \

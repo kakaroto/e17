@@ -109,7 +109,7 @@ FX_ripple_timeout(int val __UNUSED__, void *data __UNUSED__)
      }
 
    if (fx_ripple_count == 0)
-      XCopyArea(disp, EoGetWin(DesksGetCurrent()), fx_ripple_above, gc, 0,
+      XCopyArea(disp, EoGetXwin(DesksGetCurrent()), fx_ripple_above, gc, 0,
 		VRoot.h - (fx_ripple_waterh * 3), VRoot.w, fx_ripple_waterh * 2,
 		0, 0);
 
@@ -554,7 +554,7 @@ FX_Wave_timeout(int val __UNUSED__, void *data __UNUSED__)
    /* On the zero, grab the desktop again. */
    if (fx_wave_count == 0)
      {
-	XCopyArea(disp, EoGetWin(DesksGetCurrent()), fx_wave_above, gc, 0,
+	XCopyArea(disp, EoGetXwin(DesksGetCurrent()), fx_wave_above, gc, 0,
 		  VRoot.h - (FX_WAVE_WATERH * 3), VRoot.w, FX_WAVE_WATERH * 2,
 		  0, 0);
      }

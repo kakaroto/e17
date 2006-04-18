@@ -888,7 +888,7 @@ pt_get_bg_image(Window win, int w, int h, int use_root)
      }
    else
      {
-	cr = EoGetWin(DesksGetCurrent());
+	cr = EoGetXwin(DesksGetCurrent());
      }
    XTranslateCoordinates(disp, win, cr, 0, 0, &xx, &yy, &dummy);
 #if 0

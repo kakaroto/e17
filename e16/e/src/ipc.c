@@ -983,7 +983,7 @@ EwinShowInfo(const EWin * ewin)
 	     _EwinGetClientXwin(ewin),
 	     ewin->client.x, ewin->client.y, ewin->client.w, ewin->client.h,
 	     _EwinGetContainerXwin(ewin),
-	     EoGetWin(ewin),
+	     EoGetXwin(ewin),
 	     EoGetX(ewin), EoGetY(ewin), EoGetW(ewin), EoGetH(ewin),
 #if USE_COMPOSITE
 	     EoGetPixmap(ewin),

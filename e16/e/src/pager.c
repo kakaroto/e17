@@ -283,7 +283,7 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
      {
 	draw = EoGetPixmap(ewin);
 	if (draw == None && EwinIsOnScreen(ewin))
-	   draw = EoGetWin(ewin);
+	   draw = EoGetXwin(ewin);
      }
    use_iclass = draw == None;
 

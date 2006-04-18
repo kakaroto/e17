@@ -159,7 +159,7 @@ static void
 EwinGetHints(EWin * ewin)
 {
    if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EwinGetHints %#lx\n", _EwinGetClientWin(ewin));
+      Eprintf("EwinGetHints %#lx\n", _EwinGetClientXwin(ewin));
 
    ICCCM_GetTitle(ewin, 0);
    if (EwinIsInternal(ewin))
@@ -236,7 +236,7 @@ EwinManage(EWin * ewin)
 
    if (EventDebug(EDBUG_TYPE_EWINS))
       Eprintf("EwinManage %#lx frame=%#lx cont=%#lx st=%d\n",
-	      _EwinGetClientXwin(ewin), EoGetWin(ewin),
+	      _EwinGetClientXwin(ewin), EoGetXwin(ewin),
 	      _EwinGetContainerXwin(ewin), ewin->state.state);
 
    EventCallbackRegister(EoGetWin(ewin), 0, EwinHandleEventsToplevel, ewin);
@@ -249,7 +249,7 @@ EwinManage(EWin * ewin)
    if (!EwinIsInternal(ewin))
      {
 	XShapeSelectInput(disp, _EwinGetClientXwin(ewin), ShapeNotifyMask);
-	ESetWindowBorderWidth(_EwinGetClientXwin(ewin), 0);
+	ESetWindowBorderWidth(_EwinGetClientWin(ewin), 0);
 	ewin->client.bw = 0;
      }
 
@@ -642,7 +642,7 @@ EwinPropagateShapes(EWin * ewin)
 
    if (EventDebug(EX_EVENT_SHAPE_NOTIFY))
       Eprintf("EwinPropagateShapes %#lx frame=%#lx shaped=%d\n",
-	      _EwinGetClientXwin(ewin), EoGetWin(ewin), ewin->state.shaped);
+	      _EwinGetClientXwin(ewin), EoGetXwin(ewin), ewin->state.shaped);
 
    EoShapeUpdate(ewin, 1);
    ewin->update.shape = 0;
@@ -1030,7 +1030,7 @@ EwinWithdraw(EWin * ewin)
 
    EGrabServer();
 
-   ESelectInput(_EwinGetClientXwin(ewin), NoEventMask);
+   ESelectInput(_EwinGetClientWin(ewin), NoEventMask);
    XShapeSelectInput(disp, _EwinGetClientXwin(ewin), NoEventMask);
 
    /* Park the client window on the root */
@@ -1218,7 +1218,7 @@ EwinEventConfigureRequest(EWin * ewin, XEvent * ev)
 	  {
 	     ewin2 = EwinFindByClient(winrel);
 	     if (ewin2)
-		winrel = EoGetWin(ewin2);
+		winrel = EoGetXwin(ewin2);
 	     xwc.sibling = winrel;
 	     xwc.stack_mode = ev->xconfigurerequest.detail;
 	     if (Mode.mode == MODE_NONE)

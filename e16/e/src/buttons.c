@@ -416,7 +416,7 @@ ButtonDoShowDefault(const Button * b)
    return !b->internal && b->default_show;
 }
 
-#if 1				/* Unused */
+#if 0				/* Unused */
 int
 ButtonEmbedWindow(Button * b, Window WindowToEmbed)
 {
@@ -1147,8 +1147,9 @@ ButtonsIpc(const char *params, Client * c __UNUSED__)
 	IpcPrintf("Win       d  s  l     x     y     w     h name\n");
 	ECORE_LIST_FOR_EACH(button_list, b)
 	   IpcPrintf("%#lx %2d %2d %2d %5d+%5d %5dx%5d %s\n",
-		     EoGetWin(b), EoGetDeskNum(b), EoIsSticky(b), EoGetLayer(b),
-		     EoGetX(b), EoGetY(b), EoGetW(b), EoGetH(b), EoGetName(b));
+		     EoGetXwin(b), EoGetDeskNum(b), EoIsSticky(b),
+		     EoGetLayer(b), EoGetX(b), EoGetY(b), EoGetW(b), EoGetH(b),
+		     EoGetName(b));
      }
    else if (!strncmp(cmd, "move", 2))
      {

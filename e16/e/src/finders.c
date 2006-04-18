@@ -49,7 +49,7 @@ EwinFindByFrame(Window win)
    ewins = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
-	if (win == EoGetWin(ewins[i]))
+	if (win == EoGetXwin(ewins[i]))
 	   return ewins[i];
      }
    return NULL;

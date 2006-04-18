@@ -302,7 +302,7 @@ ICCCM_Configure(EWin * ewin)
    ev.xconfigure.width = ewin->client.w;
    ev.xconfigure.height = ewin->client.h;
    ev.xconfigure.border_width = 0;
-   ev.xconfigure.above = EoGetWin(ewin);
+   ev.xconfigure.above = EoGetXwin(ewin);
    ev.xconfigure.override_redirect = False;
    XSendEvent(disp, _EwinGetClientXwin(ewin), False, StructureNotifyMask, &ev);
 
