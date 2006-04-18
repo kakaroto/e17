@@ -45,7 +45,7 @@ while test $# -gt 0; do
       ;;		  
     --libs)
       libdirs=-L@libdir@
-      echo $libdirs @my_libs@ -lenhance
+      echo $libdirs @my_libs@ -lenhance -export-dynamic
       ;;
     *)
       usage
