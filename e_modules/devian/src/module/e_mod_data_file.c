@@ -119,7 +119,7 @@ _create_tb(FILE *fd)
 
    tb = evas_object_textblock_add(DEVIANM->container->bg_evas);
    tb_style = evas_textblock_style_new();
-   evas_textblock_style_set(tb_style, "DEFAULT='font=Vera font_size=10 align=left color=#000000ff wrap=word'" "br='\n'");
+   evas_textblock_style_set(tb_style, "DEFAULT='font=Vera font_size=10 align=left color=#000000ff wrap=line'" "br='\n'");
    /*  evas_textblock_style_set(tb_style,
     * style); */
    evas_object_textblock_style_set(tb, tb_style);
@@ -165,24 +165,33 @@ _get_lines(char **buffer, int *size)
    while ( (size_left > 0) &&
 	   (p2 = memchr(p1, '\n', size_left)) )
      {
+        /* Add the position to the list */
+        pos = E_NEW(int, 1);
+        *pos = p2 - *buffer;
+        ecore_list_append(lines, pos);
+	printf("pos %d sizeleft %d (new %d) size %d (p1 %5.5s p2 %5.5s)\nBUF :\n%s",
+	       *pos, size_left, *size - (*pos +1), *size, p1, p2, *buffer);
+
         /* Replace by <br> */
         *size = *size + 3;
+        size_left = *size - (*pos + 4);
         *buffer = realloc(*buffer, *size);
-        memmove(p2 + 3, p2, strlen(p2) + 1);
+	p2 = *buffer + *pos;     /* buffer has been changed, recal p2 */
+	if (size_left)
+	   memmove(p2+4, p2+1, size_left);
         *p2 = '<';
         *(p2 + 1) = 'b';
         *(p2 + 2) = 'r';
         *(p2 + 3) = '>';
 
-        /* Add the position to the list */
-        pos = E_NEW(int, 1);
-        *pos = p2 - *buffer;
-        ecore_list_append(lines, pos);
-
 	/* Go to next char */
         p1 = p2 + 4;
-        size_left = *size - (*pos + 4);
      };
+
+   /* Put a final \0 */
+   (*size)++;
+   *buffer = realloc(*buffer, *size);
+   (*buffer)[(*size)-1] = '\0';
 
    return lines;
 }
@@ -232,6 +241,7 @@ _get_file_first(Source_File *source)
              block_size = DATA_FILE_BUF_SIZE;
           }
         moves_back += block_size;
+	DDATAFILE(("read_first : blocksize %d beg %d", block_size, beg));
 
         if (block_size)
           {
@@ -245,9 +255,10 @@ _get_file_first(Source_File *source)
                   E_FREE(block->buf);   //....CHANGE delete block
                   return 0;
                }
+	     DDATAFILE(("read_first : NEW block buf : %s", block->buf));
              block->retlines = _get_lines(&block->buf, &block->size);
-             DDATAFILE(("read_first (%d lines, block_size %d, offset %d):\n%s",
-                        ecore_list_nodes(block->retlines), block_size, ftell(source->fd), block->buf));
+             DDATAFILE(("get_lines : %d lines, block_size %d, offset %d):\nblock buf : %s",
+                        ecore_list_nodes(block->retlines), block->size, ftell(source->fd), block->buf));
 
              source->lines_tot += ecore_list_nodes(block->retlines);
              source->new_blocks++;
@@ -257,7 +268,7 @@ _get_file_first(Source_File *source)
              fseek(source->fd, -(block_size * sizeof(char)), SEEK_CUR);
           }
      }
-   while (block_size && (source->lines_tot < DEVIANM->conf->sources_file_nb_lines_max));
+   while (block_size && (source->lines_tot < DEVIANM->conf->sources_file_nb_lines_ini));
 
    /* Repositioning to where we start reading */
    fseek(source->fd, moves_back, SEEK_CUR);
@@ -282,15 +293,17 @@ _get_file_update(Source_File *source)
    if (!source->fd)
       return 1;
 
-   fflush(source->fd);          //...REMOVE
+   //fflush(source->fd);
 
    do
      {
         block_size = fread(buffer, sizeof(char), DATA_FILE_BUF_SIZE, source->fd);
         block_size = block_size * sizeof(char);
         if (ferror(source->fd))
-           DDATAFILE(("ERROR WHEN READING"));
-        DDATAFILE(("read_update (offset %d):\n%s", ftell(source->fd), buffer));
+	   {
+	      DDATAFILE(("ERROR WHEN READING"));
+	   }
+        DDATAFILE(("read_update (offset %d blocksize %d):\n%s", ftell(source->fd), block_size, buffer));
         if (block_size)
           {
              Data_File_Block *block;
@@ -332,11 +345,14 @@ _set_text_tb(Source_File *source)
      {
         block = ecore_list_next(source->blocks);
 
-        cur = evas_object_textblock_cursor_get(source->obj_tb);
-        evas_textblock_cursor_node_last((Evas_Textblock_Cursor *) cur);
+        //cur = evas_object_textblock_cursor_get(source->obj_tb);
+        //evas_textblock_cursor_node_last((Evas_Textblock_Cursor *) cur);
         //evas_textblock_cursor_text_append((Evas_Textblock_Cursor *)cur, block->buf);
         buf = evas_object_textblock_text_markup_get(source->obj_tb);
-        snprintf(buf2, sizeof(buf2), "%s%s", buf, block->buf);
+	if (!buf)
+	   strncpy(buf2, block->buf, sizeof(buf2));
+	else
+	   snprintf(buf2, sizeof(buf2), "%s%s", buf, block->buf);
         evas_object_textblock_text_markup_set(source->obj_tb, buf2);
 
         evas_object_textblock_size_formatted_get(source->obj_tb, &w, &h);
@@ -362,8 +378,8 @@ _cb_destroy_block(void *data)
    if (block->buf)
       E_FREE(block->buf);
    if (block->retlines)
-      if (ecore_list_nodes(block->retlines))
-         ecore_list_destroy(block->retlines);
+      if (!ecore_list_is_empty(block->retlines))
+	 ecore_list_destroy(block->retlines);
    E_FREE(block);
 }
 

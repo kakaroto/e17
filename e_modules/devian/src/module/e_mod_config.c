@@ -226,7 +226,8 @@ DEVIAN_MAIN_CONF *DEVIANF(config_main_new) (void)
    snprintf(buf, DEVIAN_MAX_PATH, "%s/Tofs", e_user_homedir_get());
    cfg_main->sources_picture_data_import_dir = (char *)evas_stringshare_add(buf);
    cfg_main->sources_picture_data_import_thumbs_warn = 1;
-   cfg_main->sources_picture_data_import_recursive = 0;
+   cfg_main->sources_picture_data_import_recursive = DATA_PICTURE_IMPORT_RECURSIVE_DEFAULT;
+   cfg_main->sources_picture_data_import_hidden = DATA_PICTURE_IMPORT_HIDDEN_DEFAULT;
    cfg_main->sources_picture_default_location = DATA_PICTURE_LOCAL;
    cfg_main->sources_picture_set_bg_purge = SOURCE_PICTURE_SET_BG_PURGE_DEFAULT;
    cfg_main->sources_picture_show_devian_pics = DATA_PICTURE_SHOW_DEVIAN_PICS_DEFAULT;
@@ -508,6 +509,7 @@ _devian_config_main_edd_init(void)
    E_CONFIG_VAL(D, T, sources_picture_data_import_dir, STR);
    E_CONFIG_VAL(D, T, sources_picture_data_import_thumbs_warn, INT);
    E_CONFIG_VAL(D, T, sources_picture_data_import_recursive, INT);
+   E_CONFIG_VAL(D, T, sources_picture_data_import_hidden, INT);
    E_CONFIG_VAL(D, T, sources_picture_default_location, INT);
    E_CONFIG_VAL(D, T, sources_picture_set_bg_purge, INT);
    E_CONFIG_VAL(D, T, sources_picture_show_devian_pics, INT);

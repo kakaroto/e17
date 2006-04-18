@@ -434,6 +434,10 @@ _picture_list_local_add_dir(const char *dir, int recursive)
              strncpy(buf, file_tmp, sizeof(buf));
           }
 
+	if (!DEVIANM->conf->sources_picture_data_import_hidden)
+	   if (file[0] == '.')
+	      continue;
+
         if (recursive)
            if (ecore_file_is_dir(buf))
              {

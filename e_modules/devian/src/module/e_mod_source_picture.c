@@ -179,10 +179,10 @@ int DEVIANF(source_picture_set_bg) (DEVIANN *devian)
           {
              Ecore_Exe *exe;
 
-             snprintf(buf, 4096, "e17setroot -s %s", file);
+             snprintf(buf, 4096, "e17setroot -s \"%s\"", file);
              DSOURCE(("Set background with %s", buf));
-             exe = ecore_exe_run(buf, NULL);
-             if (exe)
+	     exe = ecore_exe_pipe_run(buf, ECORE_EXE_USE_SH, NULL);
+             if (exe > 0)
                {
                   ecore_exe_free(exe);
                   if (DEVIANM->conf->sources_picture_set_bg_purge)
@@ -264,10 +264,10 @@ int DEVIANF(source_picture_viewer) (DEVIANN *devian)
      {
         Ecore_Exe *exe;
 
-        snprintf(buf, 4096, "%s %s", DEVIANM->conf->viewer_image, file);
+        snprintf(buf, 4096, "%s \"%s\"", DEVIANM->conf->viewer_image, file);
         DSOURCE(("Viewer: %s", buf));
-        exe = ecore_exe_run(buf, NULL);
-        if (exe)
+        exe = ecore_exe_pipe_run(buf, ECORE_EXE_USE_SH, NULL);
+        if (exe > 0)
            ecore_exe_free(exe);
      }
    else

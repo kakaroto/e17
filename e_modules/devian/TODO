@@ -1,15 +1,16 @@
-Ce fichier ne contient pas seulement les fonctionnalitées a ajouter,
-mais aussi l'avancement parfois tres détaillé
+This file contains not only functionnalities to add,
+but also all the implemented ones (historic),
+sometimes in a verry detailed way
 
-Etats
-	* : fait
-	/ : en cours
-	- : a faire
+States
+	* : done
+	/ : working on that
+	- : to do
 
-Prioritees
-	X : Urgent
-	M : Moyen
-	S : Peu important
+Priorities
+	X : Important
+	M 
+	S : Not verry important
 
 Debug defines
 	DEBUG_MAIN
@@ -27,7 +28,7 @@ Debug compil
 	-DDEBUG_DATA -DDEBUG_DATA_CACHE -DDEBUG_DATA_RSS -DDEBUG_DATA_RSS_PARSER -DDEBUG_DATA_FILE"
 
 --------------------------------------------------------------------------------
-BUG / FIXES
+BUG (FIXES)
 --------------------------------------------------------------------------------
 
  * X Sauvegarde/Restauration de la config d'un devian marche pas
@@ -56,7 +57,10 @@ BUG / FIXES
      Sur CERTAINES rares configurations seulement ...
      (FIXED :D :D, test if source_evas_object_get returns 0 ... SPANK SPANK SPANK)
  - M Proxy doesnt work (mz on #get-e, David Wallin mail)
- - S Quand taille trop grande / previews images, resize auto merde (AUTO_MODE)
+ - S When size is too big / image preview, resize auto is bad (AUTO_MODE)
+ - S Animation stops on theme change
+ - S Clean theme BUG: When switch theme, button_set_background and button_previous are on default state
+     instead of shade state
 
 
 --------------------------------------------------------------------------------
@@ -72,7 +76,7 @@ RENAMES
    en globals
 
 --------------------------------------------------------------------------------
-TODO CODE (ordre)
+TODO CODE (order)
 --------------------------------------------------------------------------------
 
  * Base H
@@ -325,11 +329,12 @@ TODO CODE (ordre)
  * Warning indicator
  * User can choose not to add dEvian's icons in picture list
  * Icon warning indicator
+ * Option Load hidden directories in source picture
 
  / Source file (log)
    * Read the last lines of a file (data_file_update)
    - Ini and Max lines
-   - Use Retlines, cut at the end of a line
+   - Use Retlines, do not cut in the middle of a line
 
  - Rss News hiligh when url == null
  - ? Bug in the config ? When updating ?
@@ -337,6 +342,7 @@ TODO CODE (ordre)
  - Charsets (ecore_txt :D)
    - Problems in convert
        Need strdup ?
+ - Box option to keep width / heigh
 
  - ? --SEGV embryo timer del some timer that doesnt exists (in infos panel)-- ?
    When the information pannel is going to close, after timer ...
@@ -373,22 +379,21 @@ TODO CODE (ordre)
    - recherche sur google et pecho des images au hasard / creation d'urls
    - Choix taille du cache dans panel config advanced
 
+ - Loading pictures to picture list in background (-> semaphore)
  - mhb_cze, #e : Multiple rss in one windows, talk svn account
  - Box animation boing boing
  - Picture Historic list
  - RSS historic, for news you missed
  - Change text color (edje_color_class ?)
- - Renommer une image
- - evas_object_smart pour box ?
- - Traduction (cvs 30/01 matin)
+ - ? Rename a picture ?
+ - evas_object_smart for box ?
+ - Traduction (cvs 30/01 morning)
  - ? Support Attom ?
 
 --------------------------------------------------------------------------------
 TODO THEME
 --------------------------------------------------------------------------------
  - Theme a couleurs plus foncées & opaques
- - Clean theme BUG: Quand on change de theme, button_set_background et button_previous
-   sont en default au lieu de shade
 
  / New theme minimal :
    * Name and Id overlap

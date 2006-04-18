@@ -8,10 +8,10 @@ typedef struct _dEvian_Conf DEVIAN_CONF;
 #define E_MOD_CONFIG_H_INCLUDED
 
 #ifdef HAVE_ALL
-#define CONFIG_VERSION 49
+#define CONFIG_VERSION 50
 #else
 #ifdef HAVE_PICTURE
-#define CONFIG_VERSION 4
+#define CONFIG_VERSION 5
 #else
 #ifdef HAVE_RSS
 #define CONFIG_VERSION 4
@@ -47,6 +47,7 @@ struct _dEvian_Main_Conf
 #ifdef HAVE_PICTURE
    const char *sources_picture_data_import_dir;
    int sources_picture_data_import_recursive;
+   int sources_picture_data_import_hidden;
    int sources_picture_data_import_thumbs_warn;
    int sources_picture_default_location;
    int sources_picture_set_bg_purge;

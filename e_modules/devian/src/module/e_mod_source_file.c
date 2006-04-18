@@ -19,9 +19,8 @@ int DEVIANF(source_file_add) (DEVIANN *devian)
       
       snprintf(buf, sizeof(buf),
 	       _("<hilight>dEvian's Log feature isn't stable yet !</hilight><br><br>"
-		 "This feature is disabled for the moment"));
+		 "It's enabled for debugging purpose only"));
       e_module_dialog_show(_(MODULE_NAME " Module error"), buf);
-      return 0;
    }
    /* SOURCE_FILE IS NOT STABLE YET */
 

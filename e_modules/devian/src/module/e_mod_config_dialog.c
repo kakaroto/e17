@@ -34,6 +34,7 @@ struct _E_Config_Dialog_Data
 #ifdef HAVE_PICTURE
    char *sources_picture_data_import_dir;
    int sources_picture_data_import_recursive;
+   int sources_picture_data_import_hidden;
 #endif
 #ifdef HAVE_RSS
    int sources_rss_popup_news;
@@ -138,6 +139,7 @@ _fill_data(E_Config_Dialog_Data *cfdata)
 #ifdef HAVE_PICTURE
    cfdata->sources_picture_data_import_dir = strdup(conf->sources_picture_data_import_dir);
    cfdata->sources_picture_data_import_recursive = conf->sources_picture_data_import_recursive;
+   cfdata->sources_picture_data_import_hidden = conf->sources_picture_data_import_hidden;
 #endif
 #ifdef HAVE_RSS
    cfdata->sources_rss_timer_s = conf->sources_rss_timer_s / 60;
@@ -271,6 +273,7 @@ _main_advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
         DEVIANM->conf->sources_picture_data_import_dir = evas_stringshare_add(cfdata->sources_picture_data_import_dir);
      }
    DEVIANM->conf->sources_picture_data_import_recursive = cfdata->sources_picture_data_import_recursive;
+   DEVIANM->conf->sources_picture_data_import_hidden = cfdata->sources_picture_data_import_hidden;
 #endif
 #ifdef HAVE_RSS
    DEVIANM->conf->sources_rss_timer_s = cfdata->sources_rss_timer_s * 60;
@@ -537,17 +540,19 @@ _main_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_
    e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 1, 1);
    ob = e_widget_check_add(evas, _("Load sub-directories"), &(cfdata->sources_picture_data_import_recursive));
    e_widget_frametable_object_append(of, ob, 0, 1, 2, 1, 1, 1, 1, 1);
-   ob = e_widget_button_add(evas, "Regenerate pictures list", NULL, _cb_button_regen_picture_list, NULL, NULL);
+   ob = e_widget_check_add(evas, _("Load hidden files/directories"), &(cfdata->sources_picture_data_import_hidden));
    e_widget_frametable_object_append(of, ob, 0, 2, 2, 1, 1, 1, 1, 1);
+   ob = e_widget_button_add(evas, "Regenerate pictures list", NULL, _cb_button_regen_picture_list, NULL, NULL);
+   e_widget_frametable_object_append(of, ob, 0, 3, 2, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, _("Quality"));
-   e_widget_frametable_object_append(of, ob, 0, 3, 1, 1, 1, 1, 1, 1);
+   e_widget_frametable_object_append(of, ob, 0, 4, 1, 1, 1, 1, 1, 1);
    ob = e_widget_slider_add(evas, 1, 0, _("%1.0f"), (float)CONTAINER_BOX_SIZE_MIN, (float)CONTAINER_BOX_SIZE_MAX, 1.0, 0,
                             NULL, &(cfdata->data_picture_thumb_default_size), 80);
-   e_widget_frametable_object_append(of, ob, 1, 3, 1, 1, 1, 0, 1, 0);
+   e_widget_frametable_object_append(of, ob, 1, 4, 1, 1, 1, 0, 1, 0);
    ob = e_widget_check_add(evas, _("Remove created .e/e/backgrounds/"), &(cfdata->sources_picture_set_bg_purge));
-   e_widget_frametable_object_append(of, ob, 0, 4, 2, 1, 1, 1, 1, 1);
-   ob = e_widget_check_add(evas, _("Show dEvian's logo in slideshow"), &(cfdata->sources_picture_show_devian_pics));
    e_widget_frametable_object_append(of, ob, 0, 5, 2, 1, 1, 1, 1, 1);
+   ob = e_widget_check_add(evas, _("Show dEvian's logo in slideshow"), &(cfdata->sources_picture_show_devian_pics));
+   e_widget_frametable_object_append(of, ob, 0, 6, 2, 1, 1, 1, 1, 1);
    e_widget_table_object_append(o, of, 1, 1, 1, 1, 1, 1, 1, 1);
 #endif
 #ifdef HAVE_FILE
