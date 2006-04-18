@@ -110,18 +110,14 @@ _create_tb(FILE *fd)
    Evas_Textblock_Style *tb_style;
    char style[1024];
 
-   /*
-    * snprintf(style, sizeof(style),
-    * "DEFAULT='font=Vera font_size=%d align=left color=#000000ff wrap=word'"
-    * "br='\n'",
-    * DEVIANM->conf->sources_file_font_size);
-    */
+   snprintf(style, sizeof(style),
+   "DEFAULT='font=Vera font_size=%d align=left color=#000000ff wrap=line' br='\n'",
+   DEVIANM->conf->sources_file_font_size);
 
    tb = evas_object_textblock_add(DEVIANM->container->bg_evas);
    tb_style = evas_textblock_style_new();
-   evas_textblock_style_set(tb_style, "DEFAULT='font=Vera font_size=10 align=left color=#000000ff wrap=line'" "br='\n'");
-   /*  evas_textblock_style_set(tb_style,
-    * style); */
+   //evas_textblock_style_set(tb_style, "DEFAULT='font=Vera font_size=10 align=left color=#000001ff wrap=line'" "br='\n'");
+   evas_textblock_style_set(tb_style, style);
    evas_object_textblock_style_set(tb, tb_style);
    evas_textblock_style_free(tb_style);
 
@@ -169,8 +165,8 @@ _get_lines(char **buffer, int *size)
         pos = E_NEW(int, 1);
         *pos = p2 - *buffer;
         ecore_list_append(lines, pos);
-	printf("pos %d sizeleft %d (new %d) size %d (p1 %5.5s p2 %5.5s)\nBUF :\n%s",
-	       *pos, size_left, *size - (*pos +1), *size, p1, p2, *buffer);
+	DDATAFILE(("pos %d sizeleft %d (new %d) size %d (p1 %5.5s p2 %5.5s)\nBUF :\n%s",
+	       *pos, size_left, *size - (*pos +1), *size, p1, p2, *buffer));
 
         /* Replace by <br> */
         *size = *size + 3;

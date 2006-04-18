@@ -132,12 +132,26 @@ _fill_data(E_Config_Dialog_Data *cfdata)
 
    conf = DEVIANM->conf;
 
-   cfdata->viewer_http = strdup(conf->viewer_http);
-   cfdata->viewer_image = strdup(conf->viewer_image);
-   cfdata->viewer_file = strdup(conf->viewer_file);
+   if (conf->viewer_http)
+      cfdata->viewer_http = strdup(conf->viewer_http);
+   else
+      cfdata->viewer_http = strdup ("");
+
+   if (conf->viewer_image)
+      cfdata->viewer_image = strdup(conf->viewer_image);
+   else
+      cfdata->viewer_image = strdup("");
+
+   if (conf->viewer_file)
+      cfdata->viewer_file = strdup(conf->viewer_file);
+   else
+      cfdata->viewer_file = strdup("");
 
 #ifdef HAVE_PICTURE
-   cfdata->sources_picture_data_import_dir = strdup(conf->sources_picture_data_import_dir);
+   if (conf->sources_picture_data_import_dir)
+      cfdata->sources_picture_data_import_dir = strdup(conf->sources_picture_data_import_dir);
+   else
+      cfdata->sources_picture_data_import_dir = strdup("");
    cfdata->sources_picture_data_import_recursive = conf->sources_picture_data_import_recursive;
    cfdata->sources_picture_data_import_hidden = conf->sources_picture_data_import_hidden;
 #endif

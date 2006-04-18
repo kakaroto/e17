@@ -245,7 +245,10 @@ _fill_data(E_Config_Dialog_Data *cfdata)
 #ifdef HAVE_FILE
              if (cfdata->s_file)
                {
-                  cfdata->source_file_path = strdup(d_conf->file_path);
+		  if (d_conf->file_path)
+		     cfdata->source_file_path = strdup(d_conf->file_path);
+		  else
+		     cfdata->source_file_path = strdup("");
                   cfdata->source_file_auto_scroll = d_conf->file_auto_scroll;
                }
 #endif
