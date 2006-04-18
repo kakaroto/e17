@@ -105,6 +105,9 @@ int 		 ewl_text_init(Ewl_Text *t);
 
 unsigned int	 ewl_text_length_get(Ewl_Text *t);
 
+void             ewl_text_offsets_set(Ewl_Text *t, int x, int y);
+void             ewl_text_offsets_get(Ewl_Text *t, int *x, int *y);
+
 void		 ewl_text_index_geometry_map(Ewl_Text *t, unsigned int idx,
 					int *x, int *y, int *w, int *h);
 unsigned int	 ewl_text_coord_index_map(Ewl_Text *t, int x, int y);

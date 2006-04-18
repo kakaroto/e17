@@ -164,6 +164,46 @@ ewl_text_length_get(Ewl_Text *t)
 }
 
 /**
+ * @param t: The Ewl_Text to get the layout offsets from
+ * @return Returns no value.
+ * @brief Retrieve the current layout offsets of the text
+ */
+void
+ewl_text_offsets_get(Ewl_Text *t, int *x, int *y)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
+
+	if (x)
+		*x = t->offset.x;
+
+	if (y)
+		*y = t->offset.y;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to set the layout offsets
+ * @return Returns no value.
+ * @brief Set the current layout offsets of the text
+ */
+void
+ewl_text_offsets_set(Ewl_Text *t, int x, int y)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
+
+	t->offset.x = x;
+	t->offset.y = y;
+	ewl_widget_configure(EWL_WIDGET(t));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * @param t: The Ewl_Text to get the geometry from
  * @param idx: The index to get the geometry for
  * @param x: Where to put the x value
@@ -2511,7 +2551,8 @@ ewl_text_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	{
 		evas_object_move(t->textblock, xx + t->offset.x,
 				 yy + t->offset.y);
-		evas_object_resize(t->textblock, ww, hh);
+		evas_object_resize(t->textblock, ww - t->offset.x,
+				hh - t->offset.y);
 
 		if (t->dirty)
 			ewl_text_display(t);
