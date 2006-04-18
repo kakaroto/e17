@@ -23,6 +23,7 @@ int argfit = 0;
 int argfullscreen = 0;
 int arglload = 0;
 int argviewi = 0;
+int argloadidir = 0;
 char *audios;
 char buf[PATH_MAX];
 char argimage[PATH_MAX];
@@ -221,6 +222,9 @@ main(int argc, char **argv)
 			snprintf(argload, PATH_MAX, "%s", argv[imageint]);
 			arglload = 1;
 		}
+		else if ( argint < argc && !strcmp(argv[argint], "--load-dir-images") ) {
+			argloadidir = 1;
+		}
 		else if ( argint < argc && !strcmp(argv[argint], "--help") ) {
 			printf("ephoto /path/to/dir loads /path/to/dir as default directory | " 
 			       "ephoto --album-slideshow album does a slideshow of album. No "
@@ -231,7 +235,9 @@ main(int argc, char **argv)
 			       "ephoto --length slidelength sets the integer slidelength(seconds) as the transition time for slideshow | "
 				"ephoto --list_albums lists all of your albums. | "
 				"ephoto --load-album album opens ephoto with album showing. No need to specify a path. "
-			       "Just put the basename of the album. | ephoto --loop sets the slideshow to loop | "
+			       "Just put the basename of the album. | ephoto --load-dir-images loads every image specified "
+				"from ephoto /path/to/dir or from your home dir if no dir is specified, into the content "
+				"window | ephoto --loop sets the slideshow to loop | "
 			       "ephoto --presentation-dir /path/to/dir loads every image from /path/to/dir into a presentation | "
 			       "ephoto --presentation /path/to/image /path/to/image /path/to/image starts the presentation using "
 			       "the specified images | ephoto --slideshow-dir /path/to/dir loads every image from "
@@ -308,6 +314,12 @@ main(int argc, char **argv)
 		ewl_container_child_append(EWL_CONTAINER(m->menubar), m->menu);
 		ewl_object_fill_policy_set(EWL_OBJECT(m->menu), EWL_FLAG_FILL_NONE);
 		ewl_widget_show(m->menu);
+
+		m->menu_item = ewl_menu_item_new();
+                ewl_button_label_set(EWL_BUTTON(m->menu_item), "Add All Images from Dir");
+                ewl_container_child_append(EWL_CONTAINER(m->menu), m->menu_item);
+                ewl_callback_append(m->menu_item, EWL_CALLBACK_CLICKED, addi, NULL);
+                ewl_widget_show(m->menu_item);
 
 		m->menu_item = ewl_menu_item_new();
                 ewl_button_label_set(EWL_BUTTON(m->menu_item), "Reset Images");
@@ -445,14 +457,16 @@ main(int argc, char **argv)
 		ewl_object_alignment_set(EWL_OBJECT(m->content), EWL_FLAG_ALIGN_CENTER);
 		ewl_widget_show(m->content);
 
-		m->iscroll = ewl_scrollpane_new();
-		ewl_container_child_append(EWL_CONTAINER(m->content), m->iscroll);
-		ewl_widget_show(m->iscroll);
-
 		m->ib = ewl_freebox_new();
 		ewl_freebox_layout_type_set(EWL_FREEBOX(m->ib), EWL_FREEBOX_LAYOUT_AUTO);
-		ewl_container_child_append(EWL_CONTAINER(m->iscroll), m->ib);
 		ewl_widget_show(m->ib);
+
+		m->iscroll = ewl_scrollpane_new();
+                ewl_container_child_append(EWL_CONTAINER(m->content), m->iscroll);
+                ewl_object_fill_policy_set(EWL_OBJECT(m->iscroll), EWL_FLAG_FILL_ALL);
+                ewl_widget_show(m->iscroll);
+		
+		ewl_container_child_append(EWL_CONTAINER(m->iscroll), m->ib);		
 
 		m->settings = ewl_border_new();
 		ewl_border_text_set(EWL_BORDER(m->settings), "Settings");
@@ -667,6 +681,9 @@ main(int argc, char **argv)
 		}
 		if ( argviewi == 1 ) {
 			ewl_notebook_visible_page_set(EWL_NOTEBOOK(m->notebook), m->viewbox);
+		}
+		if ( argloadidir == 1 ) {
+			addi(NULL, NULL, NULL);
 		}
 		ewl_main();
 	return 0;

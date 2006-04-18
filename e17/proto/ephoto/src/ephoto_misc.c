@@ -451,3 +451,67 @@ void list_albums_cb(Ewl_Widget *w, void *event, void *data)
 		printf("%s\n", path2);
 	}
 }
+
+void addi(Ewl_Widget *w, void *event, void *data)
+{
+	char *path;
+	char *path4;
+	char *pathi;
+	char path2[PATH_MAX];
+	char path3[PATH_MAX];
+	Ecore_List *dirifiles;
+	Ecore_List *imagefiles;
+
+	dirifiles = ecore_list_new();
+	imagefiles = ecore_list_new();
+
+	path = ewl_text_text_get(EWL_TEXT(m->directory));
+
+	if ( ecore_file_is_dir(path) ) {
+	        if (path[strlen(path)-1] != '/') {
+                	snprintf(path2, PATH_MAX, "%s/", path);
+                }
+                else {
+                        snprintf(path2, PATH_MAX, "%s", path);
+                }
+			
+		dirifiles = ecore_file_ls(path2);
+
+		while ( !ecore_list_is_empty(dirifiles) ) {
+			path4 = ecore_list_remove_first(dirifiles);
+                        snprintf(path3, PATH_MAX, "%s%s", path2, path4);
+			if ( fnmatch("*.[Pp][Nn][Gg]", path3, 0) == 0 ) {
+                                ecore_list_append(imagefiles, strdup(path3));
+                        }
+                        if ( fnmatch("*.[Jj][Pp][Gg]", path3, 0) == 0 ) {
+                                ecore_list_append(imagefiles, strdup(path3));
+                        }
+                        if ( fnmatch("*.[Jj][Pp][Ee][Gg]", path3, 0) == 0 ) {
+                                ecore_list_append(imagefiles, strdup(path3));
+                        }
+                        if ( fnmatch("*.[Bb][Mm][Pp]", path3, 0) == 0 ) {
+                                ecore_list_append(imagefiles, strdup(path3));
+                        }
+                        if ( fnmatch(".[Ss][Vv][Gg]", path3, 0) == 0 ) {
+                                ecore_list_append(imagefiles, strdup(path3));
+                        }
+		}
+		while ( !ecore_list_is_empty(imagefiles) ) {
+			pathi = ecore_list_remove_first(imagefiles);
+
+			m->i = ewl_image_thumbnail_new();
+                	ewl_widget_name_set(m->i, pathi);
+        	        ewl_image_constrain_set(EWL_IMAGE(m->i), 64);
+   	                ewl_image_proportional_set(EWL_IMAGE(m->i), TRUE);
+       		        ewl_image_thumbnail_request(EWL_IMAGE(m->i), pathi);
+	                ewl_image_file_set(EWL_IMAGE(m->i), PACKAGE_DATA_DIR "images/camera.png", NULL);
+                	ewl_container_child_append(EWL_CONTAINER(m->ib), m->i);
+        	        ewl_callback_append(m->i, EWL_CALLBACK_CLICKED, iremove_cb, NULL);
+	                ewl_widget_show(m->i);
+                
+			ecore_dlist_append(m->imagelist, strdup(pathi));
+                	slidenum++;
+		}
+	}
+}
+
