@@ -89,6 +89,7 @@ exml-config
 README
 src/Makefile
 exml.spec
+debian/changelog
 ], [
 chmod +x exml-config
 ]

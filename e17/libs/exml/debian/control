@@ -1,0 +1,36 @@
+Source: exml
+Section: libs
+Priority: optional
+Maintainer: E17 Debian Team <debian@edevelop.org>
+Build-Depends: debhelper (>= 4.0.0), autotools-dev, libecore-dev, libxml2-dev
+Standards-Version: 3.6.2.2
+
+Package: libexml0
+Architecture: any
+Section: libs
+Provides: libexml
+Depends: ${shlibs:Depends}, libecore, libxml2
+Description: abstracted, generalized xml parser/writer interface
+ EXML is an abstracted, generalized interface to an xml
+ parser/writer, using ecore data structures and making
+ things generally easy to get around in.
+ The functions detailed in EXML.h are fairly self explanatory,
+ and the io interfaces are also generalized and independent
+ (open from a socket, write to in memory xml image).
+ .
+ This package contains the shared library.
+
+Package: libexml0-dev
+Architecture: any
+Section: libdevel
+Provides: libexml-dev
+Depends: libecore-dev, libxml2-dev
+Description: abstracted, generalized xml parser/writer interface
+ EXML is an abstracted, generalized interface to an xml
+ parser/writer, using ecore data structures and making
+ things generally easy to get around in.
+ The functions detailed in EXML.h are fairly self explanatory,
+ and the io interfaces are also generalized and independent
+ (open from a socket, write to in memory xml image).
+ .
+ This package contains the headers and development libraries.
