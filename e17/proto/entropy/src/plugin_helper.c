@@ -240,14 +240,18 @@ void entropy_plugin_operation_respond(long operation, int response)
   }
 }
 
-void entropy_plugin_filesystem_file_rename(entropy_generic_file* file, entropy_generic_file* dest)
+void entropy_plugin_filesystem_file_rename(entropy_generic_file* file, char* dest)
 {
-	  Entropy_Plugin_File* plugin =
+    Entropy_Plugin_File* plugin =
     ENTROPY_PLUGIN_FILE(entropy_plugins_type_get_first (ENTROPY_PLUGIN_BACKEND_FILE,
 				    ENTROPY_PLUGIN_SUB_TYPE_ALL));
 
   if (plugin) {
-  	(*plugin->file_functions.file_rename) (file,dest);
+        entropy_generic_file* clone = entropy_generic_file_clone(file);
+	strncpy(clone->filename, dest, strlen(dest));
+	  
+  	(*plugin->file_functions.file_rename) (file,clone);
+	entropy_generic_file_destroy(clone);
   }
 
 }

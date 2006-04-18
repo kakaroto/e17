@@ -3,6 +3,7 @@
 #include "entropy_etk_context_menu.h"
 #include "etk_directory_add_dialog.h"
 #include "etk_properties_dialog.h"
+#include "etk_file_rename_dialog.h"
 
 static Etk_Widget* _entropy_etk_context_menu = NULL;
 static Etk_Widget* _entropy_etk_context_menu_open_with = NULL;
@@ -113,6 +114,12 @@ _open_folder_window_cb(Etk_Object* obj, void* data)
 }
 
 static void
+_entropy_etk_context_menu_file_rename_cb(Etk_Object *object, void *data)
+{
+	etk_file_rename_dialog_create(_entropy_etk_context_menu_current_file);
+}
+
+static void
 _entropy_etk_context_menu_popup_cb(Etk_Object *object, void *data)
 {
 	Entropy_Config_Mime_Binding* binding;
@@ -193,6 +200,8 @@ void entropy_etk_context_menu_init()
 	_entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Cut"), ETK_STOCK_EDIT_CUT, ETK_MENU_SHELL(menu),NULL);
 	_entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Paste"), ETK_STOCK_EDIT_PASTE, ETK_MENU_SHELL(menu),NULL);
 	_entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Delete"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu),NULL);
+	menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Rename"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu),NULL);
+	etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_entropy_etk_context_menu_file_rename_cb), NULL);
 	menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Properties"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu),NULL);
 	etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_entropy_etk_context_menu_properties_cb), NULL);
 
