@@ -168,11 +168,17 @@ ewl_media_media_set(Ewl_Media *m, const char *media)
 	/*
 	 * Update the emotion to the new file
 	 */
-	if (m->video) {
+	if (m->video)
 		emotion_object_file_set(m->video, m->media);
-		ewl_media_size_update(m);
-	}
 #endif
+
+	/*
+	 * Move this check outside the optional build to avoid warnings, and
+	 * to keep it generic in the event something other than emotion is
+	 * added.
+	 */
+	if (m->video)
+		ewl_media_size_update(m);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -539,7 +545,7 @@ ewl_media_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 static void
 ewl_media_size_update(Ewl_Media *m)
 {
-	int width, height;
+	int width = 0, height = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("m", m);
