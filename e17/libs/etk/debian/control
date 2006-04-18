@@ -2,15 +2,16 @@ Source: etk
 Section: libs
 Priority: optional
 Maintainer: E17 Debian Team <debian@edevelop.org>
-Build-Depends: debhelper (>= 4.0.0), autotools-dev, libevas0-dev, libecore0-dev, libedje0-dev
-Standards-Version: 3.6.2
+Build-Depends: debhelper (>= 4.0.0), autotools-dev, libevas-dev, libecore-dev, libedje-dev
+Standards-Version: 3.6.2.2
 
 Package: libetk0
 Architecture: any
 Section: libs
 Replaces: etk
 Conflicts: etk
-Depends: ${shlibs:Depends}, libevas0, libecore0, libedje0
+Provides: libetk
+Depends: ${shlibs:Depends}, libevas, libecore, libedje
 Description: A widget toolkit based on the EFL
  ETK is a widget toolkit based on the enlightenment foundation libraries.
 
@@ -18,14 +19,16 @@ Package: libetk0-dev
 Architecture: any
 Replaces: etk
 Conflicts: etk
-Depends: ${shlibs:Depends}, libevas0, libecore0, libedje0
-Description: Libetk0 headers, static libraries and documentation
+Provides: libetk-dev
+Depends: ${shlibs:Depends}, libevas, libecore, libedje
+Description: Etk headers, static libraries and documentation
  Headers, static libraries and documentation for the ETK widget library.
 
 Package: etk0-bin
 Architecture: any
 Replaces: etk
 Conflicts: etk
-Depends: ${shlibs:Depends}, libevas0, libecore0, libedje0
+Provides: etk-bin
+Depends: ${shlibs:Depends}, libevas, libecore, libedje
 Description: Tools that support libetk
  This package contains etk_test.
