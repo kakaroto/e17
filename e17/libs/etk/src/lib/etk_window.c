@@ -15,6 +15,8 @@
  * @{
  */
 
+#define ETK_INSIDE(x, y, xx, yy, ww, hh) (((x) < ((xx) + (ww))) && ((y) < ((yy) + (hh))) && ((x) >= (xx)) && ((y) >= (yy)))
+
 enum _Etk_Widget_Signal_Id
 {
    ETK_WINDOW_MOVE_SIGNAL,
@@ -234,11 +236,37 @@ void etk_window_center_on_window(Etk_Window *window_to_center, Etk_Window *windo
       else
       {
          Ecore_X_Window root;
-         
-         for (root = window_to_center->x_window; ecore_x_window_parent_get(root) != 0; root = ecore_x_window_parent_get(root));
-         ecore_x_window_geometry_get(root, &x, &y, &w, &h);
+	 int screens;
+	 
+	 screens = ecore_x_xinerama_screen_count_get();	 
+	 if (screens > 0)
+	 {
+	    int i;
+	    
+	    for (root = window_to_center->x_window; ecore_x_window_parent_get(root) != 0; root = ecore_x_window_parent_get(root));
+	    ecore_x_pointer_xy_get(root, &x, &y);
+	    for (i = 0; i < screens; i++)
+	    {	       
+	       int rx, ry, rw, rh;
+	       
+	       root = ecore_x_xinerama_screen_geometry_get(i, &rx, &ry, &rw, &rh);
+	       if (ETK_INSIDE(x, y, rx, ry, rw, rh))
+	       {
+		  x = rx; y = ry;
+		  w = rw; h = rh;
+		  goto END;
+	       }	       
+	    }
+	    goto DEFAULT;
+	 }
+	 else
+	 {
+DEFAULT:	    
+	    for (root = window_to_center->x_window; ecore_x_window_parent_get(root) != 0; root = ecore_x_window_parent_get(root));
+	    ecore_x_window_geometry_get(root, &x, &y, &w, &h);
+	 }
       }
-      
+END:      
       etk_window_geometry_get(window_to_center, NULL, NULL, &cw, &ch);
       ecore_evas_move(window_to_center->ecore_evas, x + (w - cw) / 2, y + (h - ch) / 2);
    }
