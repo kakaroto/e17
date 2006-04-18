@@ -199,16 +199,18 @@ EventCallbackRegister(Window win, int type __UNUSED__, EventCallbackFunc * func,
 
    xid = EXidFind(win);
    if (!xid)
-      ERegisterWindow(win);
-   xid = EXidFind(win);
+     {
+	ERegisterWindow(win);
+	xid = EXidFind(win);
+	if (!xid)
+	  {
+	     Eprintf("EventCallbackRegister win=%#lx ???\n", win);
+	     return;
+	  }
+     }
 #if 0
    Eprintf("EventCallbackRegister: %p %#lx\n", xid, win);
 #endif
-   if (!xid)
-     {
-	Eprintf("EventCallbackRegister win=%#lx ???\n", win);
-	return;
-     }
 
    xid->cbl.num++;
    xid->cbl.lst =
