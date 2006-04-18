@@ -215,7 +215,6 @@ main(int argc, char **argv)
    LangInit();
 
    /* run most of the setup */
-   AlertInit();			/* Set up all the text bits that belong on the GSOD */
    SignalsSetup();
    SetupX(dstr);		/* This is where the we fork per screen */
    /* X is now running, and we have forked per screen */
@@ -265,11 +264,6 @@ main(int argc, char **argv)
 
    if (Mode.wm.window)
       EMapWindow(VRoot.win);
-
-#if 0				/* FIXME - Remove? */
-   /* sync just to make sure */
-   ESync();
-#endif
 
    /* let's make sure we set this up and go to our desk anyways */
    DeskGoto(DesksGetCurrent());

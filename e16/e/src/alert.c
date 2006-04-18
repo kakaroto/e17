@@ -31,14 +31,6 @@
     (pxc)->red = (r << 8) | r; (pxc)->green = (g << 8) | g; (pxc)->blue = (b << 8) | b; \
   } while (0)
 
-static void         ShowAlert(char *text);
-
-static char        *TitleText = NULL;
-
-static char        *IgnoreText = NULL;
-static char        *RestartText = NULL;
-static char        *ExitText = NULL;
-
 static XFontSet     xfs = NULL;
 
 #define DRAW_BOX_OUT(mdd, mgc, mwin, mx, my, mw, mh) \
@@ -141,8 +133,23 @@ AlertDrawString(Display * mdd, GC mgc, Window mwin, int mx, int my,
      }
 }
 
+static char        *
+AlertButtonText(int btn, const char *text)
+{
+   char               *s;
+
+   if (!text)
+      return NULL;
+
+   s = Emalloc(strlen(text) + 6);
+   sprintf(s, "(F%d) %s", btn, text);
+
+   return s;
+}
+
 static void
-ShowAlert(char *text)
+ShowAlert(const char *title,
+	  const char *ignore, const char *restart, const char *quit, char *text)
 {
    Window              win = 0, b1 = 0, b2 = 0, b3 = 0;
    Display            *dd;
@@ -158,7 +165,7 @@ ShowAlert(char *text)
    XColor              xcl;
    Colormap            cmap;
    int                 cnum, fh, x, y, ww, hh, mh;
-   static char        *title = NULL, *str1 = NULL, *str2 = NULL, *str3 = NULL;
+   char               *str1, *str2, *str3;
    KeyCode             key;
    int                 button;
    char              **missing_charset_list_return, *def_string_return;
@@ -183,20 +190,11 @@ ShowAlert(char *text)
 
    cmap = DefaultColormap(dd, DefaultScreen(dd));
 
-   title = TitleText;
-   str1 = IgnoreText;
-   str2 = RestartText;
-   str3 = ExitText;
    if (!title)
       title = _("Enlightenment Error");
-#if 0
-   if (!str1)
-      str1 = _("Ignore");
-   if (!str2)
-      str2 = _("Restart");
-   if (!str3)
-      str3 = _("Exit");
-#endif
+   str1 = AlertButtonText(1, ignore);
+   str2 = AlertButtonText(2, restart);
+   str3 = AlertButtonText(3, quit);
 
    cnum = 0;
    colorful = 0;
@@ -278,7 +276,8 @@ ShowAlert(char *text)
 			&missing_charset_list_return,
 			&missing_charset_count_return, &def_string_return);
    if (!xfs)
-      return;
+      goto done;
+
    if (missing_charset_list_return)
       XFreeStringList(missing_charset_list_return);
 
@@ -523,75 +522,14 @@ ShowAlert(char *text)
      default:
 	break;
      }
-}
 
-static void
-AssignTitleText(const char *text)
-{
-   if (TitleText)
-      Efree(TitleText);
-   TitleText = Estrdup(text);
-}
-
-static void
-AssignIgnoreText(const char *text)
-{
-   if (IgnoreText)
-      Efree(IgnoreText);
-
-   if (text)
-     {
-	IgnoreText = Emalloc(strlen(text) + 6);
-	sprintf(IgnoreText, "(F1) %s", text);
-     }
-   else
-     {
-	IgnoreText = NULL;
-     }
-}
-
-static void
-AssignRestartText(const char *text)
-{
-   if (RestartText)
-      Efree(RestartText);
-
-   if (text)
-     {
-	RestartText = Emalloc(strlen(text) + 6);
-	sprintf(RestartText, "(F2) %s", text);
-     }
-   else
-     {
-	RestartText = NULL;
-     }
-}
-
-static void
-AssignExitText(const char *text)
-{
-   if (ExitText)
-      Efree(ExitText);
-
-   if (text)
-     {
-	ExitText = Emalloc(strlen(text) + 6);
-	sprintf(ExitText, "(F3) %s", text);
-     }
-   else
-     {
-	ExitText = NULL;
-     }
-}
-
-void
-AlertInit(void)
-{
-   /* Set up all the text bits that belong on the GSOD */
-   AssignTitleText(_("Enlightenment Message Dialog"));
-   AssignIgnoreText(_("Ignore this"));
-   AssignRestartText(_("Restart Enlightenment"));
-   AssignExitText(_("Quit Enlightenment"));
+ done:
+   if (str1)
+      Efree(str1);
+   if (str2)
+      Efree(str2);
+   if (str3)
+      Efree(str3);
 }
 
 void
@@ -601,21 +539,12 @@ AlertX(const char *title, const char *ignore,
    char                text[10240];
    va_list             args;
 
-   AssignTitleText(title);
-   AssignIgnoreText(ignore);
-   AssignRestartText(restart);
-   AssignExitText(quit);
-
    va_start(args, fmt);
-   Evsnprintf(text, 10240, fmt, args);
+   Evsnprintf(text, sizeof(text), fmt, args);
    va_end(args);
-   SoundPlay("SOUND_ALERT");
-   ShowAlert(text);
 
-   AssignTitleText(_("Enlightenment Message Dialog"));
-   AssignIgnoreText(_("Ignore this"));
-   AssignRestartText(_("Restart Enlightenment"));
-   AssignExitText(_("Quit Enlightenment"));
+   SoundPlay("SOUND_ALERT");
+   ShowAlert(title, ignore, restart, quit, text);
 }
 
 void
@@ -625,8 +554,10 @@ Alert(const char *fmt, ...)
    va_list             args;
 
    va_start(args, fmt);
-   Evsnprintf(text, 10240, fmt, args);
+   Evsnprintf(text, sizeof(text), fmt, args);
    va_end(args);
+
    SoundPlay("SOUND_ALERT");
-   ShowAlert(text);
+   ShowAlert(_("Enlightenment Message Dialog"), _("Ignore this"),
+	     _("Restart Enlightenment"), _("Quit Enlightenment"), text);
 }

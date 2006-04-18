@@ -584,7 +584,6 @@ void                Espawn(int argc, char **argv);
 void                EspawnCmd(const char *cmd);
 
 /* alert.c */
-void                AlertInit(void);
 void                Alert(const char *fmt, ...);
 void                AlertX(const char *title, const char *ignore,
 			   const char *restart, const char *quit,
