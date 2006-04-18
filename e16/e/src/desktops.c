@@ -1455,7 +1455,7 @@ DeskRestack(Desk * dsk)
    for (i = 0; i < num; i++)
      {
 	eo = lst[i];
-	_APPEND_TO_WIN_LIST(eo->win);
+	_APPEND_TO_WIN_LIST(EobjGetXwin(eo));
 	eo->stacked = 1;
      }
 

@@ -1065,7 +1065,7 @@ IPC_ObjInfo(const char *params __UNUSED__, Client * c __UNUSED__)
 	eo = lst[i];
 	IpcPrintf
 	   (" %2d %#9lx %d %d %2d  %3d %d  %d %3d %5d,%5d %4dx%4d %d %d %s\n",
-	    i, eo->win, eo->type, eo->shown, eo->shaped, eo->desk->num,
+	    i, EobjGetXwin(eo), eo->type, eo->shown, eo->shaped, eo->desk->num,
 	    eo->sticky, eo->floating, eo->ilayer, eo->x, eo->y, eo->w, eo->h,
 #if USE_COMPOSITE
 	    (eo->cmhook) ? 1 : 0, !eo->noredir

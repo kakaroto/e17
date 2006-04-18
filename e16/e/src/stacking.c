@@ -58,7 +58,7 @@ EobjListShow(const char *txt, EobjList * ewl)
    for (i = 0; i < ewl->nwins; i++)
      {
 	eo = ewl->list[i];
-	Eprintf(" %2d: %#10lx %#10lx %d %d %s\n", i, eo->win,
+	Eprintf(" %2d: %#10lx %#10lx %d %d %s\n", i, EobjGetXwin(eo),
 		EobjGetCwin(eo), eo->desk->num, eo->ilayer, eo->name);
      }
 }
@@ -245,7 +245,7 @@ EobjListFind(const EobjList * ewl, Window win)
    int                 i;
 
    for (i = 0; i < ewl->nwins; i++)
-      if (ewl->list[i]->win == win)
+      if (EobjGetXwin(ewl->list[i]) == win)
 	 return ewl->list[i];
 
    return NULL;

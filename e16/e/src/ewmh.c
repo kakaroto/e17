@@ -202,7 +202,7 @@ EWMH_SetDesktopRoots(void)
       return;
 
    for (i = 0; i < n_desks; i++)
-      wl[i] = EoGetWin(DeskGet(i));
+      wl[i] = EoGetXwin(DeskGet(i));
 
    ecore_x_netwm_desk_roots_set(VRoot.win, wl, n_desks);
 
@@ -443,7 +443,7 @@ void
 EWMH_SetWindowOpacity(const EWin * ewin)
 {
    ecore_x_netwm_opacity_set(_EwinGetClientXwin(ewin), ewin->ewmh.opacity);
-   ecore_x_netwm_opacity_set(EoGetWin(ewin), ewin->ewmh.opacity);
+   ecore_x_netwm_opacity_set(EoGetXwin(ewin), ewin->ewmh.opacity);
 }
 
 /*

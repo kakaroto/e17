@@ -202,18 +202,18 @@ EobjInit(EObj * eo, int type, Window win, int x, int y, int w, int h,
      }
    ECompMgrWinNew(eo);
 #endif
-   if (eo->win != VRoot.win)
+   if (EobjGetXwin(eo) != VRoot.win)
       EobjListStackAdd(eo, 1);
 
    if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EobjInit: %#lx %s\n", eo->win, eo->name);
+      Eprintf("EobjInit: %#lx %s\n", EobjGetXwin(eo), eo->name);
 }
 
 void
 EobjFini(EObj * eo)
 {
    if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EobjFini: %#lx %s\n", eo->win, eo->name);
+      Eprintf("EobjFini: %#lx %s\n", EobjGetXwin(eo), eo->name);
 
    EobjListStackDel(eo);
    if (!eo->external)
@@ -234,7 +234,7 @@ void
 EobjDestroy(EObj * eo)
 {
    if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EobjDestroy: %#lx %s\n", eo->win, eo->name);
+      Eprintf("EobjDestroy: %#lx %s\n", EobjGetXwin(eo), eo->name);
 
    EobjFini(eo);
 

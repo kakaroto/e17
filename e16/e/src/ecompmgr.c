@@ -1049,7 +1049,8 @@ win_extents(EObj * eo)
  skip_shadow:
 #endif
 
-   D2printf("extents %#lx %d %d %d %d\n", eo->win, r.x, r.y, r.width, r.height);
+   D2printf("extents %#lx %d %d %d %d\n", EobjGetXwin(eo), r.x, r.y, r.width,
+	    r.height);
 
    rgn = ERegionCreateRect(r.x, r.y, r.width, r.height);
 
@@ -1078,7 +1079,7 @@ win_shape(EObj * eo)
    XserverRegion       border;
    int                 x, y;
 
-   border = ERegionCreateFromWindow(eo->win);
+   border = ERegionCreateFromWindow(EobjGetXwin(eo));
 
    if (1 /* eo->shaped */ )	/* FIXME - Track shaped state */
      {
@@ -1095,7 +1096,7 @@ win_shape(EObj * eo)
    y = eo->y + cw->a.border_width;
    ERegionTranslate(border, x, y);
 
-   D2printf("shape %#lx: %d %d\n", eo->win, x, y);
+   D2printf("shape %#lx: %d %d\n", EobjGetXwin(eo), x, y);
    if (EventDebug(EDBUG_TYPE_COMPMGR3))
       ERegionShow("shape", border);
 
@@ -1116,7 +1117,7 @@ ECompMgrWinGetPixmap(const EObj * eo)
    if (eo->noredir)
       return None;
 
-   cw->pixmap = XCompositeNameWindowPixmap(disp, eo->win);
+   cw->pixmap = XCompositeNameWindowPixmap(disp, EobjGetXwin(eo));
 
    return cw->pixmap;
 }
@@ -1130,7 +1131,7 @@ ECompMgrWinInvalidate(EObj * eo, int what)
    if (!cw)
       return;
 
-   D2printf("ECompMgrWinInvalidate %#lx: %#x\n", eo->win, what);
+   D2printf("ECompMgrWinInvalidate %#lx: %#x\n", EobjGetXwin(eo), what);
 
    if ((what & (INV_SIZE | INV_PIXMAP)) && cw->pixmap != None)
      {
@@ -1196,7 +1197,8 @@ ECompMgrWinSetOpacity(EObj * eo, unsigned int opacity)
 
    cw->opacity = opacity;
 
-   D1printf("ECompMgrWinSetOpacity: %#lx opacity=%#x\n", eo->win, cw->opacity);
+   D1printf("ECompMgrWinSetOpacity: %#lx opacity=%#x\n", EobjGetXwin(eo),
+	    cw->opacity);
 
    if (eo->shown || cw->fadeout)
       ECompMgrDamageMergeObject(eo, cw->extents, 0);
@@ -1224,7 +1226,7 @@ ECompMgrWinFadeDoIn(EObj * eo, unsigned int op)
 {
    char                s[128];
 
-   Esnprintf(s, sizeof(s), "Fade-%#lx", eo->win);
+   Esnprintf(s, sizeof(s), "Fade-%#lx", EobjGetXwin(eo));
    DoIn(s, 1e-6 * Conf_compmgr.fading.dt_us, doECompMgrWinFade, op, eo);
 }
 
@@ -1233,7 +1235,7 @@ ECompMgrWinFadeCancel(EObj * eo)
 {
    char                s[128];
 
-   Esnprintf(s, sizeof(s), "Fade-%#lx", eo->win);
+   Esnprintf(s, sizeof(s), "Fade-%#lx", EobjGetXwin(eo));
    RemoveTimerEvent(s);
 }
 
@@ -1374,7 +1376,7 @@ ECompMgrWinMap(EObj * eo)
 	   return;
      }
 
-   D1printf("ECompMgrWinMap %#lx\n", eo->win);
+   D1printf("ECompMgrWinMap %#lx\n", EobjGetXwin(eo));
 
    if (cw->extents == None)
       cw->extents = win_extents(eo);
@@ -1391,7 +1393,7 @@ ECompMgrWinUnmap(EObj * eo)
 {
    ECmWinInfo         *cw = eo->cmhook;
 
-   D1printf("ECompMgrWinUnmap %#lx shown=%d\n", eo->win, eo->shown);
+   D1printf("ECompMgrWinUnmap %#lx shown=%d\n", EobjGetXwin(eo), eo->shown);
    if (!eo->shown)		/* Sometimes we get a synthetic one too */
       return;
 
@@ -1413,15 +1415,16 @@ ECompMgrWinSetPicts(EObj * eo)
    if (cw->pixmap == None && eo->shown && !eo->noredir &&
        (Mode_compmgr.use_pixmap || (eo->fade && Conf_compmgr.fading.enable)))
      {
-	cw->pixmap = XCompositeNameWindowPixmap(disp, eo->win);
-	D2printf("ECompMgrWinSetPicts %#lx: Pmap=%#lx\n", eo->win, cw->pixmap);
+	cw->pixmap = XCompositeNameWindowPixmap(disp, EobjGetXwin(eo));
+	D2printf("ECompMgrWinSetPicts %#lx: Pmap=%#lx\n", EobjGetXwin(eo),
+		 cw->pixmap);
      }
 
    if (cw->picture == None)
      {
 	XRenderPictFormat  *pictfmt;
 	XRenderPictureAttributes pa;
-	Drawable            draw = eo->win;
+	Drawable            draw = EobjGetXwin(eo);
 
 	if ((cw->pixmap && Mode_compmgr.use_pixmap) || (cw->fadeout))
 	   draw = cw->pixmap;
@@ -1433,13 +1436,13 @@ ECompMgrWinSetPicts(EObj * eo)
 	cw->picture = XRenderCreatePicture(disp, draw,
 					   pictfmt, CPSubwindowMode, &pa);
 	D2printf("ECompMgrWinSetPicts %#lx: Pict=%#lx (drawable=%#lx)\n",
-		 eo->win, cw->picture, draw);
+		 EobjGetXwin(eo), cw->picture, draw);
 
 	if (draw == cw->pixmap)
 	  {
 	     XserverRegion       clip;
 
-	     clip = ERegionCreateFromWindow(eo->win);
+	     clip = ERegionCreateFromWindow(EobjGetXwin(eo));
 	     XFixesSetPictureClipRegion(disp, cw->picture, 0, 0, clip);
 	     ERegionDestroy(clip);
 	  }
@@ -1458,14 +1461,14 @@ ECompMgrWinNew(EObj * eo)
    if (eo->inputonly || eo->win == VRoot.win)
       return;
 
-   if (!XGetWindowAttributes(disp, eo->win, &attr))
+   if (!XGetWindowAttributes(disp, EobjGetXwin(eo), &attr))
       return;
 
    cw = Ecalloc(1, sizeof(ECmWinInfo));
    if (!cw)
       return;
 
-   D1printf("ECompMgrWinNew %#lx\n", eo->win);
+   D1printf("ECompMgrWinNew %#lx\n", EobjGetXwin(eo));
 
    eo->cmhook = cw;
 
@@ -1486,9 +1489,11 @@ ECompMgrWinNew(EObj * eo)
    if (!eo->noredir)
      {
 	if (Conf_compmgr.mode == ECM_MODE_WINDOW)
-	   XCompositeRedirectWindow(disp, eo->win, CompositeRedirectManual);
+	   XCompositeRedirectWindow(disp, EobjGetXwin(eo),
+				    CompositeRedirectManual);
 	cw->damage_sequence = NextRequest(disp);
-	cw->damage = XDamageCreate(disp, eo->win, XDamageReportNonEmpty);
+	cw->damage =
+	   XDamageCreate(disp, EobjGetXwin(eo), XDamageReportNonEmpty);
      }
 
    if (eo->type == EOBJ_TYPE_EXT)
@@ -1515,7 +1520,7 @@ ECompMgrWinMoveResize(EObj * eo, int change_xy, int change_wh, int change_bw)
    int                 invalidate;
 
    D1printf("ECompMgrWinMoveResize %#lx xy=%d wh=%d bw=%d\n",
-	    eo->win, change_xy, change_wh, change_bw);
+	    EobjGetXwin(eo), change_xy, change_wh, change_bw);
 
    invalidate = 0;
    if (change_xy || change_bw)
@@ -1596,7 +1601,7 @@ ECompMgrWinReparent(EObj * eo, Desk * dsk, int change_xy)
    ECmWinInfo         *cw = eo->cmhook;
 
    D1printf("ECompMgrWinReparent %#lx %#lx d=%d->%d x,y=%d,%d %d\n",
-	    eo->win, cw->extents, eo->desk->num, dsk->num, eo->x, eo->y,
+	    EobjGetXwin(eo), cw->extents, eo->desk->num, dsk->num, eo->x, eo->y,
 	    change_xy);
 
    /* Invalidate old window region */
@@ -1619,7 +1624,8 @@ ECompMgrWinReparent(EObj * eo, Desk * dsk, int change_xy)
 static void
 ECompMgrWinCirculate(EObj * eo, XEvent * ev)
 {
-   D1printf("ECompMgrWinCirculate %#lx %#lx\n", ev->xany.window, eo->win);
+   D1printf("ECompMgrWinCirculate %#lx %#lx\n", ev->xany.window,
+	    EobjGetXwin(eo));
 
    _ECM_SET_STACK_CHANGED();
 }
@@ -1629,7 +1635,7 @@ ECompMgrWinChangeShape(EObj * eo)
 {
    ECmWinInfo         *cw = eo->cmhook;
 
-   D1printf("ECompMgrWinChangeShape %#lx\n", eo->win);
+   D1printf("ECompMgrWinChangeShape %#lx\n", EobjGetXwin(eo));
 
    ECompMgrDamageMergeObject(eo, cw->extents, 1);
    cw->extents = None;
@@ -1643,7 +1649,7 @@ ECompMgrWinRaise(EObj * eo)
 {
    ECmWinInfo         *cw = eo->cmhook;
 
-   D1printf("ECompMgrWinRaise %#lx\n", eo->win);
+   D1printf("ECompMgrWinRaise %#lx\n", EobjGetXwin(eo));
 
    _ECM_SET_STACK_CHANGED();
    ECompMgrDamageMergeObject(eo, cw->extents, 0);
@@ -1654,7 +1660,7 @@ ECompMgrWinLower(EObj * eo)
 {
    ECmWinInfo         *cw = eo->cmhook;
 
-   D1printf("ECompMgrWinLower %#lx\n", eo->win);
+   D1printf("ECompMgrWinLower %#lx\n", EobjGetXwin(eo));
 
    ECompMgrDamageMergeObject(eo, cw->extents, 0);
    _ECM_SET_STACK_CHANGED();
@@ -1668,7 +1674,7 @@ ECompMgrWinDel(EObj * eo)
    if (!cw)
       return;
 
-   D1printf("ECompMgrWinDel %#lx\n", eo->win);
+   D1printf("ECompMgrWinDel %#lx\n", EobjGetXwin(eo));
 
    if (cw->fading)
      {
@@ -1688,7 +1694,8 @@ ECompMgrWinDel(EObj * eo)
 	   XDamageDestroy(disp, cw->damage);
 
 	if (Conf_compmgr.mode == ECM_MODE_WINDOW)
-	   XCompositeUnredirectWindow(disp, eo->win, CompositeRedirectManual);
+	   XCompositeUnredirectWindow(disp, EobjGetXwin(eo),
+				      CompositeRedirectManual);
      }
 
    ECompMgrWinInvalidate(eo, INV_ALL);
@@ -1707,7 +1714,7 @@ ECompMgrWinDamage(EObj * eo, XEvent * ev __UNUSED__)
    XserverRegion       parts;
 
    D1printf("ECompMgrWinDamage %#lx %#lx damaged=%d %d,%d %dx%d\n",
-	    ev->xany.window, eo->win, cw->damaged,
+	    ev->xany.window, EobjGetXwin(eo), cw->damaged,
 	    de->area.x, de->area.y, de->area.width, de->area.height);
 
    if (!cw->damaged)
@@ -1743,7 +1750,7 @@ ECompMgrWinDumpInfo(const char *txt, EObj * eo, XserverRegion rgn, int force)
 {
    ECmWinInfo         *cw = eo->cmhook;
 
-   Eprintf("%s %#lx: %d,%d %dx%d: %s\n", txt, eo->win, eo->x, eo->y,
+   Eprintf("%s %#lx: %d,%d %dx%d: %s\n", txt, EobjGetXwin(eo), eo->x, eo->y,
 	   eo->w, eo->h, eo->name);
    if (!cw)
      {
@@ -1829,8 +1836,9 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 	if (cw->extents == None)
 	   cw->extents = win_extents(eo);
 
-	D4printf(" - %#lx desk=%d shown=%d fading=%d fadeout=%d\n", eo->win,
-		 eo->desk->num, eo->shown, cw->fading, cw->fadeout);
+	D4printf(" - %#lx desk=%d shown=%d fading=%d fadeout=%d\n",
+		 EobjGetXwin(eo), eo->desk->num, eo->shown, cw->fading,
+		 cw->fadeout);
 
 	if (eo->type == EOBJ_TYPE_DESK)
 	  {
@@ -1871,7 +1879,8 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 	ECompMgrWinSetPicts(eo);
 
 	D4printf(" - %#lx desk=%d shown=%d dam=%d pict=%#lx\n",
-		 eo->win, eo->desk->num, eo->shown, cw->damaged, cw->picture);
+		 EobjGetXwin(eo), eo->desk->num, eo->shown, cw->damaged,
+		 cw->picture);
 
 #if 0				/* FIXME - Need this? */
 	if (!cw->damaged)
@@ -1882,7 +1891,7 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 
 	D4printf
 	   ("ECompMgrDetermineOrder hook in %d - %#lx desk=%d shown=%d\n",
-	    dsk->num, eo->win, eo->desk->num, eo->shown);
+	    dsk->num, EobjGetXwin(eo), eo->desk->num, eo->shown);
 
 	if (!eo_first)
 	   eo_first = eo;
@@ -1895,8 +1904,8 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 	  {
 	  case WINDOW_UNREDIR:
 	  case WINDOW_SOLID:
-	     D4printf("-   clip %#lx %#lx %d,%d %dx%d: %s\n", eo->win, cw->clip,
-		      eo->x, eo->y, eo->w, eo->h, eo->name);
+	     D4printf("-   clip %#lx %#lx %d,%d %dx%d: %s\n", EobjGetXwin(eo),
+		      cw->clip, eo->x, eo->y, eo->w, eo->h, eo->name);
 #if USE_CLIP_RELATIVE_TO_DESK
 	     ERegionUnionOffset(clip, 0, 0, cw->shape);
 #else
@@ -1905,8 +1914,8 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 	     break;
 
 	  default:
-	     D4printf("- noclip %#lx %#lx %d,%d %dx%d: %s\n", eo->win, cw->clip,
-		      eo->x, eo->y, eo->w, eo->h, eo->name);
+	     D4printf("- noclip %#lx %#lx %d,%d %dx%d: %s\n", EobjGetXwin(eo),
+		      cw->clip, eo->x, eo->y, eo->w, eo->h, eo->name);
 	     break;
 	  }
 
