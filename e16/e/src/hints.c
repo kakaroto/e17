@@ -406,6 +406,9 @@ EHintsSetDeskInfo(void)
    int                 i, ax, ay, n_desks;
    unsigned int       *c;
 
+   if (!DesksGetCurrent())	/* Quit if current desk isn't assigned yet */
+      return;
+
    n_desks = DesksGetNumber();
    if (n_desks <= 0)
       return;
