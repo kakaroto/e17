@@ -2,12 +2,13 @@ Source: libenhance
 Section: libs
 Priority: optional
 Maintainer: E17 Debian Team <debian@edevelop.org>
-Build-Depends: debhelper (>= 4.0.0), libexml0, libetk0-dev
-Standards-Version: 3.6.2
+Build-Depends: debhelper (>= 4.0.0), libexml, libetk-dev
+Standards-Version: 3.6.2.2
 
 Package: libenhance0
 Architecture: any
-Depends: ${shlibs:Depends}, libetk0, libexml0
+Depends: libetk, libexml
+Provides: libenhance
 Description: Library for easy application GUI development
  After using Glade to design a GUI, you can save generate
  the .glade XML file that describes the interface design
@@ -20,7 +21,8 @@ Description: Library for easy application GUI development
 
 Package: libenhance0-dev
 Architecture: any
-Depends: ${shlibs:Depends}, libetk0, libexml0, libenhance0
+Depends: libetk, libexml, libenhance0
+Provides: libenhance-dev
 Description: Headers for libenhance0
  After using Glade to design a GUI, you can save generate
  the .glade XML file that describes the interface design
