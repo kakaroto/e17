@@ -11,4 +11,4 @@ Then to compile:
 To install (run this as root, or the user who handles installs):
     make install
 
-Node: edje mode will not work untile make install is performed.
+Note: edje mode will not work until make install is performed.
