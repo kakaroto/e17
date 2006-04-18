@@ -11,14 +11,20 @@ AM_CONFIG_HEADER(config.h)
 AC_C_BIGENDIAN
 AC_PROG_CC
 
-AC_MSG_CHECKING([if gcc supports __attribute__((visibility("hidden")))])
-AC_COMPILE_IFELSE([
-void __attribute__((visibility("hidden"))) func (void) {}
-],
+
+case $host_os in
+solaris*)
+  ;;
+*)
+  AC_MSG_CHECKING([if gcc supports __attribute__((visibility("hidden")))])
+  AC_COMPILE_IFELSE([
+  void __attribute__((visibility("hidden"))) func (void) {}
+  ],
         [AC_MSG_RESULT(yes)
          AC_DEFINE(USE_HIDDEN_FUNCTION_ATTRIBUTE,1,
          [Define this to 1 if `hidden' attribute for internal functions is used.])],
         [AC_MSG_RESULT(no)])
+esac
 
 AM_PROG_CC_STDC
 AC_HEADER_STDC
@@ -110,6 +116,10 @@ case $host_cpu in
   i*86)   mmx="yes";;
   x86_64) amd64="yes";;
   amd64) amd64="yes";;
+esac
+
+case $host_os in
+  solaris*) mmx="no";;
 esac
 
 dnl 
