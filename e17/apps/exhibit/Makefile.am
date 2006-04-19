@@ -14,7 +14,7 @@ dist-hook:
 	./gendoc; \
 	tar cvf $(MYAPPNAME)_docs.tar doc; \
 	rm -f $(MYAPPNAME)_docs.tar.gz; \
-	gzip -9 $(MYAPPNAME)_docs.tar; \
+	gzip -9 $(MYAPPNAME)_docs.tar;
 							  
 
 EXTRA_DIST = README \
