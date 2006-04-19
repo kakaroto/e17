@@ -42,6 +42,8 @@ struct entropy_layout_gui
   Etk_Widget* localshell;
   Ecore_Hash* progress_hash; /*Track progress events->dialogs*/
 
+  Ecore_Hash* properties_request_hash; 
+
 };
 
 typedef enum _Etk_Menu_Item_Type
@@ -422,6 +424,22 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 		entropy_etk_user_interaction_dialog_new((entropy_file_operation*)el);
 	     }
 	     break;
+
+	     case ENTROPY_NOTIFY_EXTENDED_STAT: {
+		 printf("**** Extended stat at layout\n");
+		 ecore_hash_set(view->properties_request_hash, (entropy_generic_file*)el, (int*)1);
+	     };
+	     break;
+
+	     case ENTROPY_NOTIFY_FILE_STAT_AVAILABLE:{
+		entropy_file_stat *file_stat = (entropy_file_stat *) eevent->return_struct;							     
+		
+		ecore_hash_remove(view->properties_request_hash, file_stat->file);	
+		/*Lauch a properties window*/
+		etk_properties_dialog_new(file_stat->file);
+	     }
+	     break;
+
      }
 }
 
@@ -472,6 +490,7 @@ entropy_plugin_layout_create (entropy_core * core)
   layout->data = gui;
   layout->core = core;
   gui->progress_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
+  gui->properties_request_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 
   /*Register this layout container with the core, so our children can get events */
   entropy_core_layout_register (core, layout);
@@ -490,6 +509,18 @@ entropy_plugin_layout_create (entropy_core * core)
   entropy_core_component_event_register (layout,
 					 entropy_core_gui_event_get
 					 (ENTROPY_GUI_EVENT_USER_INTERACTION_YES_NO_ABORT));
+
+    /*We want to know if a stat is an 'extended stat' - e.g. a properties dialog etc */
+  entropy_core_component_event_register (layout,
+					 entropy_core_gui_event_get
+					 (ENTROPY_GUI_EVENT_EXTENDED_STAT));
+
+  entropy_core_component_event_register (layout,
+					 entropy_core_gui_event_get
+					 (ENTROPY_GUI_EVENT_FILE_STAT));
+  entropy_core_component_event_register (layout,
+					 entropy_core_gui_event_get
+					 (ENTROPY_GUI_EVENT_FILE_STAT_AVAILABLE));
 
 
   /*Etk related init */

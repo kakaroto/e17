@@ -12,10 +12,6 @@ static entropy_generic_file* _entropy_etk_context_menu_current_folder = NULL;
 static entropy_generic_file* _entropy_etk_context_menu_current_file = NULL;
 static entropy_gui_component_instance* _entropy_etk_context_menu_current_instance = NULL;
 
-static void (*entropy_etk_context_menu_stat_cb)(void*, entropy_generic_file*) = NULL;
-static void *entropy_etk_context_menu_stat_cb_data = NULL;
-
-
 typedef enum _Etk_Menu_Item_Type
 {
    ETK_MENU_ITEM_NORMAL,
@@ -57,11 +53,11 @@ static Etk_Widget *_entropy_etk_menu_item_new(Etk_Menu_Item_Type item_type, cons
 
 static void _entropy_etk_context_menu_properties_cb(Etk_Object *object, void *data)
 {
-	if (_entropy_etk_context_menu_current_file) {
-		if (entropy_etk_context_menu_stat_cb) 
-			(*entropy_etk_context_menu_stat_cb)(entropy_etk_context_menu_stat_cb_data, 
-				_entropy_etk_context_menu_current_file);
+	entropy_event_extended_stat_expect(_entropy_etk_context_menu_current_file, 
+			_entropy_etk_context_menu_current_instance);
 
+	
+	if (_entropy_etk_context_menu_current_file) {
 		entropy_event_stat_request(_entropy_etk_context_menu_current_file, 
 			_entropy_etk_context_menu_current_instance);
 	}
@@ -219,21 +215,11 @@ void entropy_etk_context_menu_init()
 
 }
 
-void entropy_etk_context_menu_stat_cb_register(
-	void (*cb)(void*, entropy_generic_file*), void* data) {
-
-
-	entropy_etk_context_menu_stat_cb = cb;
-	entropy_etk_context_menu_stat_cb_data = data;
-
-}
-
 void entropy_etk_context_menu_popup(entropy_gui_component_instance* instance, entropy_generic_file* current_file)
 {
         _entropy_etk_context_menu_current_file = current_file;
 	_entropy_etk_context_menu_current_instance = instance;
 
-	entropy_etk_context_menu_stat_cb = NULL;
 	
 	if (!_entropy_etk_context_menu) 
 		entropy_etk_context_menu_init();

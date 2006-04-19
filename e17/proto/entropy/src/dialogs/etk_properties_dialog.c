@@ -128,6 +128,9 @@ void etk_properties_dialog_new(Entropy_Generic_File* file)
 	etk_box_pack_start(ETK_BOX(hbox), label, ETK_TRUE, ETK_TRUE, 0);
 	/*------------------*/
 
+	/**/
+	
+
 	/*Permissions*/
 	ivbox = etk_vbox_new(ETK_FALSE,0);	
 	etk_notebook_page_append(ETK_NOTEBOOK(notebook), "Permissions", ivbox);
@@ -196,12 +199,14 @@ void etk_properties_dialog_new(Entropy_Generic_File* file)
 
 	button = etk_button_new_with_label("OK");
 	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
+	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(_etk_window_deleted_cb), dialog);
 
 	button = etk_button_new_with_label("Apply");
 	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
 
 	button = etk_button_new_with_label("Cancel");
 	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
+	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(_etk_window_deleted_cb), dialog);
 	
 
 	if (perms) entropy_free(perms);

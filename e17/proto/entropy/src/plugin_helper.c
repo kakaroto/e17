@@ -269,6 +269,19 @@ void entropy_event_stat_request(Entropy_Generic_File* file, entropy_gui_componen
     
 }
 
+void entropy_event_extended_stat_expect(Entropy_Generic_File* file, entropy_gui_component_instance* instance)
+{
+    entropy_gui_event *gui_event;
+	
+    gui_event = entropy_malloc (sizeof (entropy_gui_event));
+    gui_event->event_type =
+      entropy_core_gui_event_get (ENTROPY_GUI_EVENT_EXTENDED_STAT);
+    gui_event->data = file;
+    entropy_core_layout_notify_event (instance, gui_event,
+				      ENTROPY_EVENT_LOCAL);
+    
+}
+
 void entropy_event_action_file(Entropy_Generic_File* file, entropy_gui_component_instance* instance) 
 {
     entropy_gui_event *gui_event;

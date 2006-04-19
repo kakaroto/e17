@@ -17,6 +17,7 @@ Ecore_List* entropy_plugin_filesystem_filelist_get(entropy_file_request* request
 void entropy_plugin_filesystem_filestat_get(entropy_file_request* request);
 void entropy_plugin_operation_respond(long operation, int response);
 void entropy_plugin_filesystem_file_rename(entropy_generic_file* file, char* dest);
+void entropy_event_extended_stat_expect(Entropy_Generic_File* file, entropy_gui_component_instance* instance);
 
 entropy_plugin* entropy_plugin_gui_get_by_name_toolkit(char* toolkit, char* name);
 

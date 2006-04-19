@@ -98,4 +98,9 @@ Entropy_Gui_Event_Handler* entropy_event_handler_user_interaction_handler();
 Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_user_interaction_instance_data(entropy_gui_event* event, 
 	entropy_gui_component_instance* requestor);
 
+/*Extended Stat*/
+Entropy_Gui_Event_Handler* entropy_event_handler_extended_stat_handler();
+Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_extended_stat_instance_data(entropy_gui_event* event, 
+	entropy_gui_component_instance* requestor);
+
 #endif

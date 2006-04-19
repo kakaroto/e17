@@ -31,8 +31,6 @@ struct entropy_etk_file_list_viewer
   /*Current folder - TODO - move to core - per layout API*/
   entropy_generic_file* current_folder;
 
-  /*A file we're waiting on for passback properties*/
-  Ecore_Hash* properties_request_hash;  
 };
 
 typedef struct event_file_core event_file_core;
@@ -59,7 +57,6 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 		    void *el, entropy_gui_component_instance * comp);
 void gui_file_destroy (gui_file * file);
 int entropy_plugin_type_get ();
-void entropy_etk_list_viewer_stat_callback(void* data, entropy_generic_file* file);
 
 /*-------------*/
 
@@ -412,7 +409,6 @@ static void _etk_list_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *row, 
 	file = ecore_hash_get(etk_list_viewer_row_hash, row);
 
 	entropy_etk_context_menu_popup(instance, file->file);
-	entropy_etk_context_menu_stat_cb_register(entropy_etk_list_viewer_stat_callback, viewer);
    }
 }
 
@@ -528,13 +524,6 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
 
 
 
-void entropy_etk_list_viewer_stat_callback(void* data, entropy_generic_file* file)
-{
-	entropy_etk_file_list_viewer* viewer = data;
-	
-	ecore_hash_set(viewer->properties_request_hash, file, (int*)1);
-}
-
 void
 gui_event_callback (entropy_notify_event * eevent, void *requestor,
 		    void *el, entropy_gui_component_instance * comp)
@@ -597,12 +586,6 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 	/*If !obj, it has been deleted - fail silently*/
 	if (obj) {
 		
-		if ( (ecore_hash_get(viewer->properties_request_hash, file_stat->file))) {
-			ecore_hash_remove(viewer->properties_request_hash, file_stat->file);
-
-			/*Lauch a properties window*/
-			etk_properties_dialog_new(file_stat->file);
-		} else {
 			col1 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 0);
 			col2 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 1);
 			col3 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 2);
@@ -619,7 +602,6 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 					col5, date_buffer,
 					NULL);
 			etk_tree_thaw(ETK_TREE(viewer->tree));
-		}
 	}
      }
      break;					 
@@ -722,7 +704,6 @@ entropy_plugin_gui_instance_new (entropy_core * core,
 
   viewer->files = ecore_list_new();
   viewer->gui_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
-  viewer->properties_request_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
   
   viewer->tree = etk_tree_new(); 
   etk_tree_mode_set(ETK_TREE(viewer->tree), ETK_TREE_MODE_LIST);

@@ -285,6 +285,7 @@ entropy_core* entropy_core_init(int argc, char** argv) {
 	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_FILE_METADATA, entropy_event_handler_metadata_request_handler);
 	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_FILE_METADATA_AVAILABLE, entropy_event_handler_metadata_available_handler);
 	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_USER_INTERACTION_YES_NO_ABORT, entropy_event_handler_user_interaction_handler);
+	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_EXTENDED_STAT, entropy_event_handler_extended_stat_handler);
 	
 
 	//printf("\n\nDetails of thumbnailers:\n");
@@ -622,6 +623,8 @@ char* entropy_core_gui_event_get(char* event) {
 		return "entropy_gui_event_file_metadata";
 	} else if (!strcmp(event,  ENTROPY_GUI_EVENT_FILE_METADATA_AVAILABLE)) {
 		return "entropy_gui_event_file_metadata_available";
+	} else if (!strcmp(event,  ENTROPY_GUI_EVENT_EXTENDED_STAT)) {
+		return "entropy_gui_event_extended_stat";
 	} else {
 		return "";
 	}

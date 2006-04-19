@@ -15,6 +15,8 @@
 #define ENTROPY_GUI_EVENT_USER_INTERACTION_YES_NO_ABORT "entropy_gui_event_user_interaction_yes_no_abort"		      //User needs to respond in some way
 #define ENTROPY_GUI_EVENT_FILE_METADATA "entropy_gui_event_file_metadata"  
 #define ENTROPY_GUI_EVENT_FILE_METADATA_AVAILABLE "entropy_gui_event_file_metadata_available"
+#define ENTROPY_GUI_EVENT_EXTENDED_STAT	"entropy_gui_event_extended_stat"	//Register that the next incoming stat for a file
+										// is an extended stat - e.g. a properties dialog request
 
 
 #define ENTROPY_TOOLKIT_EWL "ewl"
