@@ -27,6 +27,7 @@ group {
 }
 group {
    name, "spinnerup";
+   min, 10 10;
    
    parts {
 	part {
@@ -49,6 +50,7 @@ group {
 
 group {
    name, "spinnerdown";
+   min, 10 10;
    parts {
         part {
             name, "dback";
