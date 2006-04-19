@@ -1,1 +1,2 @@
-usr/lib/enlightenment/modules/snow/*
+usr/lib/enlightenment/modules/snow/*.png
+usr/lib/enlightenment/modules/snow/*/*.so

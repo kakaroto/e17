@@ -1,1 +1,2 @@
-usr/lib/enlightenment/modules/flame/*
+usr/lib/enlightenment/modules/flame/*.png
+usr/lib/enlightenment/modules/flame/*/*.so

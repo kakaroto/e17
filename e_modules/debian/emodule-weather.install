@@ -1,1 +1,3 @@
-usr/lib/enlightenment/modules/weather/*
+usr/lib/enlightenment/modules/weather/*.png
+usr/lib/enlightenment/modules/weather/*.edj
+usr/lib/enlightenment/modules/weather/*/*.so

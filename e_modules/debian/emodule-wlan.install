@@ -1,1 +1,3 @@
-usr/lib/enlightenment/modules/wlan/*
+usr/lib/enlightenment/modules/wlan/module_icon.png
+usr/lib/enlightenment/modules/wlan/*.edj
+usr/lib/enlightenment/modules/wlan/*/*.so

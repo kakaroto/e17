@@ -1,1 +1,3 @@
-usr/lib/enlightenment/modules/uptime/*
+usr/lib/enlightenment/modules/uptime/module_icon.png
+usr/lib/enlightenment/modules/uptime/*.edj
+usr/lib/enlightenment/modules/uptime/*/*.so

@@ -1,1 +1,3 @@
-usr/lib/enlightenment/modules/screenshot/*
+usr/lib/enlightenment/modules/screenshot/*.edj
+usr/lib/enlightenment/modules/screenshot/module_icon.png
+usr/lib/enlightenment/modules/screenshot/*/*.so

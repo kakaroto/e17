@@ -1,1 +1,3 @@
-usr/lib/enlightenment/modules/slideshow/*
+usr/lib/enlightenment/modules/slideshow/module_icon.png
+usr/lib/enlightenment/modules/slideshow/*.edj
+usr/lib/enlightenment/modules/slideshow/*/*.so

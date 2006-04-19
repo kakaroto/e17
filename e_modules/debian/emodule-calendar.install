@@ -1,1 +1,3 @@
-usr/lib/enlightenment/modules/calendar/*
+usr/lib/enlightenment/modules/calendar/*.edj
+usr/lib/enlightenment/modules/calendar/*.png
+usr/lib/enlightenment/modules/calendar/*/*.so

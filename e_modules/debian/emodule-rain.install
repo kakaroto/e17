@@ -1,1 +1,2 @@
-usr/lib/enlightenment/modules/rain/*
+usr/lib/enlightenment/modules/rain/*.png
+usr/lib/enlightenment/modules/rain/*/*.so

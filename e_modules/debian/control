@@ -2,20 +2,22 @@ Source: emodules
 Section: x11
 Priority: optional
 Maintainer: E17 Debian Team <debian@edevelop.org>
-Build-Depends: debhelper (>= 4.0.0), libe-dev, libecore0-dev, libevas0-dev, libesmart0-dev, libedje0-dev, libembryo0-dev, libeet0-dev
-Standards-Version: 3.6.2
+Build-Depends: debhelper (>= 4.0.0), libe-dev, libesmart-dev, libedje-dev, libembryo-dev
+Standards-Version: 3.6.2.2
 
-Package: emodules-data
+Package: emodules0-data
 Architecture: any
-Depends: ${shlibs:Depends}, libe, libecore0, libevas0, libesmart0, libedje0, libembryo0, libeet0
+Depends: ${shlibs:Depends}, libe, libesmart, libedje, libembryo
 Conflicts: emodules-extra, evolume
+Provides: emodules-data
 Description: Common files for E17 modules
  This package contains common files used by E17 modules.
 
-Package: emodules-all
+Package: emodules0-all
 Architecture: any
-Depends: ${shlibs:Depends}, libe, libecore0, libevas0, libesmart0, libedje0, emodule-calendar, emodule-cpu, emodule-devian, emodule-emu, emodule-evolume, emodule-flame, emodule-mbar, emodule-mem, emodule-mount, emodule-net, emodule-rain, emodule-screenshot, emodule-slideshow, emodule-snow, emodule-tclock, emodule-uptime, emodule-weather, emodule-wlan, emodules-data
+Depends: ${shlibs:Depends}, libe, libesmart, libedje, emodule0-calendar, emodule0-cpu, emodule0-devian, emodule0-emu, emodule0-evolume, emodule0-flame, emodule0-mbar, emodule0-mem, emodule0-mount, emodule0-net, emodule0-rain, emodule0-screenshot, emodule0-slideshow, emodule0-snow, emodule0-tclock, emodule0-uptime, emodule0-weather, emodule0-wlan, emodules0-data
 Conflicts: emodules-extra, evolume
+Provides: emodules-all
 Description: A dummy package for installing all modules for E17
  This package will install the following modules:
  Calendar    : Draws a nice calendar on your e17 desktop.
@@ -40,9 +42,10 @@ Description: A dummy package for installing all modules for E17
  Weather     : A module for displaying weather reports.
  Wlan        : Monitors WLAN activity.
 
-Package: emodule-calendar
+Package: emodule0-calendar
 Architecture: any
-Depends: ${shlibs:Depends}, libe, libecore0, libevas0, libesmart0, libedje0, emodules-data
+Depends: ${shlibs:Depends}, libe, libesmart, libedje, emodules0-data
+Provides: emodule-calendar
 Description: Draws a nice calendar on your E17 desktop
  An E17 module which displays a highly configurable calendar on the
  desktop. Features are:
@@ -52,53 +55,60 @@ Description: Draws a nice calendar on your E17 desktop
  - one with a top image & one without
  - change the 1st Day of the week.
 
-Package: emodule-cpu
+Package: emodule0-cpu
 Architecture: any
-Depends: ${shlibs:Depends}, libe, libecore0, libevas0, libesmart0, libedje0, emodules-data
+Depends: ${shlibs:Depends}, libe, libesmart, libedje, emodules0-data
+Provides: emodule-cpu
 Description: E17 monitor module for the CPU load
  An E17 module which displays the current CPU load. Features are:
  - draw a graph and/or draw the decimal load percentage
  - adjust the check interval.
  
-Package: emodule-devian
+Package: emodule0-devian
 Architecture: any
-Depends: ${shlibs:Depends}, libe, libeet0, libembryo0, libecore0, libevas0, libesmart0, libedje0, emodules-data
+Depends: ${shlibs:Depends}, libe, libeet, libembryo, libesmart, libedje, emodules0-data
+Provides: emodule-devian
 Description: E17 monitor module for displaying images and rss feeds
  An E17 module which displays images and rss feeds.
  
-Package: emodule-emu
+Package: emodule0-emu
 Architecture: any
-Depends: ${shlibs:Depends}, libe, libecore0, libevas0, libesmart0, libedje0, emodules-data
+Depends: ${shlibs:Depends}, libe, libesmart, libedje, emodules0-data
+Provides: emodule-emu
 Description: An E17 module front end
  An E17 module which works as a front end that runs arbitrary back
  ends written in any language.  Emu provides a high level interface
  to some of the things that modules typically do.  The backends can
  be written by anybody in any language.
  
-Package: emodule-evolume
+Package: emodule0-evolume
 Architecture: any
-Depends: ${shlibs:Depends}, libe, libecore0, libevas0, libesmart0, libedje0, emodules-data
+Depends: ${shlibs:Depends}, libe, libesmart, libedje, emodules0-data
+Provides: emodule-evolume
 Description: An E17 audio mixer module
  Evolume is an E17 module which allows the user to adjust the sound
  volume.
 
-Package: emodule-flame
+Package: emodule0-flame
 Architecture: any
-Depends: ${shlibs:Depends}, libe, libecore0, libevas0, libesmart0, libedje0, emodules-data
+Depends: ${shlibs:Depends}, libe, libesmart, libedje, emodules0-data
+Provides: emodule-flame
 Description: An E17 module that draws flames on the desktop
  Eflame is an E17 module which draws flames of configurable colors on
  the lower part of the screen.
  
-Package: emodule-mbar
+Package: emodule0-mbar
 Architecture: any
-Depends: ${shlibs:Depends}, libe, libecore0, libevas0, libesmart0, libedje0, emodules-data
+Depends: ${shlibs:Depends}, libe, libesmart, libedje, emodules0-data
+Provides: emodule-mbar
 Description: An E17 mount bar module
  Mbar is an E17 module which displays a list of devices which can be
  mounted or unmounted by clicking on them.
  
-Package: emodule-mem
+Package: emodule0-mem
 Architecture: any
-Depends: ${shlibs:Depends}, libe, libecore0, libevas0, libesmart0, libedje0, emodules-data
+Depends: ${shlibs:Depends}, libe, libesmart, libedje, emodules0-data
+Provides: emodule-mem
 Description: An E17 memory monitoring module
  An E17 module which monitors the RAM usage. It features the following:
  - display text and/or graph
@@ -106,16 +116,18 @@ Description: An E17 memory monitoring module
  - ignore/Count buffers
  - ignore/Count cached.
  
-Package: emodule-mount
+Package: emodule0-mount
 Architecture: any
-Depends: ${shlibs:Depends}, libe, libecore0, libevas0, libesmart0, libedje0, emodules-data
+Depends: ${shlibs:Depends}, libe, libesmart, libedje, emodules0-data
+Provides: emodule-mount
 Description: An E17 mount module
  An E17 module which allows easy mounting/unmounting of devices
  in /etc/fstab.
 
-Package: emodule-net
+Package: emodule0-net
 Architecture: any
-Depends: ${shlibs:Depends}, libe, libecore0, libevas0, libesmart0, libedje0, emodules-data
+Depends: ${shlibs:Depends}, libe, libesmart, libedje, emodules0-data
+Provides: emodule-net
 Description: An E17 network interface monitor module
  An E17 module which monitors TX and RX events of a specified
  network device. Features are:
@@ -123,18 +135,20 @@ Description: An E17 network interface monitor module
  - configure poll interval
  - choose device.
  
-Package: emodule-rain
+Package: emodule0-rain
 Architecture: any
-Depends: ${shlibs:Depends}, libe, libecore0, libevas0, libesmart0, libedje0, emodules-data
+Depends: ${shlibs:Depends}, libe, libesmart, libedje, emodules0-data
+Provides: emodule-rain
 Description: An E17 module displaying rain on the desktop
  An E17 module which displays falling rainsdrops on the desktop.
  Features are:
  - display/hide clouds
  - set rain density.
  
-Package: emodule-screenshot
+Package: emodule0-screenshot
 Architecture: any
-Depends: ${shlibs:Depends}, libe, libecore0, libevas0, libesmart0, libedje0, emodules-data
+Depends: ${shlibs:Depends}, libe, libesmart, libedje, emodules0-data
+Provides: emodule-screenshot
 Description: An E17 screenshot module
  An E17 module which enables the user to take screenshots. It contains
  the following features:
@@ -147,38 +161,43 @@ Description: An E17 screenshot module
  - trim edges (import)
  - generate thumbnail (scrot).
  
-Package: emodule-slideshow
+Package: emodule0-slideshow
 Architecture: any
-Depends: ${shlibs:Depends}, libe, libecore0, libevas0, libesmart0, libedje0, emodules-data
+Depends: ${shlibs:Depends}, libe, libesmart, libedje, emodules0-data
+Provides: emodule-slideshow
 Description: An E17 background cycle module
  An E17 module which changes the desktop background on a given
  interval. It cycles through all available background images.
  
-Package: emodule-snow
+Package: emodule0-snow
 Architecture: any
-Depends: ${shlibs:Depends}, libe, libecore0, libevas0, libesmart0, libedje0, emodules-data
+Depends: ${shlibs:Depends}, libe, libesmart, libedje, emodules0-data
+Provides: emodule-snow
 Description: An E17 module displaying rain on the desktop
  An E17 module which displays falling snow flakes on the desktop.
  Features are:
  - display/hide trees
  - set snow density.
 
-Package: emodule-tclock
+Package: emodule0-tclock
 Architecture: any
-Depends: ${shlibs:Depends}, libe, libecore0, libevas0, libesmart0, libedje0, emodules-data
+Depends: ${shlibs:Depends}, libe, libesmart, libedje, emodules0-data
+Provides: emodule-tclock
 Description: An E17 text clock module
  An E17 module which displays a digital clock on the desktop.
 
-Package: emodule-uptime
+Package: emodule0-uptime
 Architecture: any
-Depends: ${shlibs:Depends}, libe, libecore0, libevas0, libesmart0, libedje0, emodules-data
+Depends: ${shlibs:Depends}, libe, libesmart, libedje, emodules0-data
+Provides: emodule-uptime
 Description: An E17 uptime indicator module
  An E17 module indicating the system's current uptime in a configurable
  interval.
  
-Package: emodule-weather
+Package: emodule0-weather
 Architecture: any
-Depends: ${shlibs:Depends}, libe, libecore0, libevas0, libesmart0, libedje0, emodules-data
+Depends: ${shlibs:Depends}, libe, libesmart, libedje, emodules0-data
+Provides: emodule-weather
 Description: An E17 weather module
  An E17 module displaying the current weather conditions and forecast.
  Features are:
@@ -187,9 +206,10 @@ Description: An E17 weather module
  - display degree in Celsius or Fahrenheit
  - choose the weather station from a menu or via ICAO Code.
  
-Package: emodule-wlan
+Package: emodule0-wlan
 Architecture: any
-Depends: ${shlibs:Depends}, libe, libecore0, libevas0, libesmart0, libedje0, emodules-data
+Depends: ${shlibs:Depends}, libe, libesmart, libedje, emodules0-data
+Provides: emodule-wlan
 Description: An E17 WLAN monitor module
  An E17 module monitoring the link quality of a wireless network
  interface. Features are:

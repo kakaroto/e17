@@ -1,1 +1,4 @@
-usr/lib/enlightenment/modules/evolume/*
+usr/lib/enlightenment/modules/evolume/*.png
+usr/lib/enlightenment/modules/evolume/*.edj
+usr/lib/enlightenment/modules/evolume/*/*.so
+usr/lib/enlightenment/modules/evolume/*/systems/*.so
