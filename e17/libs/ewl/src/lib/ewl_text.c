@@ -165,6 +165,8 @@ ewl_text_length_get(Ewl_Text *t)
 
 /**
  * @param t: The Ewl_Text to get the layout offsets from
+ * @param x: A pointer to an integer to store the x offset of the text display
+ * @param y: A pointer to an integer to store the y offset of the text display
  * @return Returns no value.
  * @brief Retrieve the current layout offsets of the text
  */
@@ -186,6 +188,8 @@ ewl_text_offsets_get(Ewl_Text *t, int *x, int *y)
 
 /**
  * @param t: The Ewl_Text to set the layout offsets
+ * @param x: The x amount to offset of the text display
+ * @param y: The y amount to offset of the text display
  * @return Returns no value.
  * @brief Set the current layout offsets of the text
  */
