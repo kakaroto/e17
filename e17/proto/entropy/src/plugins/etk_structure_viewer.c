@@ -117,22 +117,27 @@ static void _etk_structure_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *
    entropy_gui_event *gui_event;
    event_file_core* e_event;
 
-   if ( (!(event->button == 1)) || event->flags & EVAS_BUTTON_TRIPLE_CLICK 
+   if ( (!(event->button == 1 || event->button == 3)) || event->flags & EVAS_BUTTON_TRIPLE_CLICK 
 	|| event->flags & EVAS_BUTTON_DOUBLE_CLICK )
 	   return;
    
    instance = ecore_hash_get(instance_map_hash, row);
+   etk_tree_row_select(row);
    if (instance) {
 	   viewer = instance->data;
 	   e_event = ecore_hash_get(viewer->row_hash, row);
 
 	  if (e_event) {
-		  gui_event = entropy_malloc (sizeof (entropy_gui_event));
-		  gui_event->event_type =
-		    entropy_core_gui_event_get (ENTROPY_GUI_EVENT_ACTION_FILE);
-		  gui_event->data = e_event->file;
-		  entropy_core_layout_notify_event (e_event->instance, gui_event, ENTROPY_EVENT_GLOBAL);
-	   }	
+		  if (event->button == 1) {
+		  	gui_event = entropy_malloc (sizeof (entropy_gui_event));
+			  gui_event->event_type =
+			    entropy_core_gui_event_get (ENTROPY_GUI_EVENT_ACTION_FILE);
+			  gui_event->data = e_event->file;
+			  entropy_core_layout_notify_event (e_event->instance, gui_event, ENTROPY_EVENT_GLOBAL);
+		  } else if (event->button == 3) {
+			entropy_etk_context_menu_popup(instance, e_event->file);
+		  }
+	  }
      }
 
    

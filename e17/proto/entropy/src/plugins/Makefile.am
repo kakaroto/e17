@@ -108,6 +108,10 @@ layout_etk_simple_la_LDFLAGS  = -module -avoid-version
 layout_etk_simple_la_LIBADD   = @ETK_LIBS@
 
 etk_structure_viewer_la_SOURCES    = $(top_srcdir)/src/entropy_gui.c \
+                                $(top_srcdir)/src/dialogs/etk_directory_add_dialog.c \
+                                $(top_srcdir)/src/dialogs/etk_properties_dialog.c \
+                                $(top_srcdir)/src/dialogs/etk_file_context_menu.c \
+                                $(top_srcdir)/src/dialogs/etk_file_rename_dialog.c \
                                 etk_structure_viewer.c $(top_srcdir)/src/entropy_debug.c
 etk_structure_viewer_la_CFLAGS     = @ETK_CFLAGS@
 etk_structure_viewer_la_LDFLAGS    = -module -avoid-version
