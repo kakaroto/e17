@@ -2103,12 +2103,17 @@ static void _etk_tree_row_show_cb(void *data, Evas *e, Evas_Object *obj, void *e
 /* Called when the row is hidden */
 static void _etk_tree_row_hide_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
+#if 0 
+   /* NOTE: there is a particular case when a row is deleted and we emit this
+    * signal still. We need to better implement this.
+    */
    Etk_Tree_Row_Objects *row_objects;
-   
+
    if (!(row_objects = data) || !row_objects->row)
      return;   
    
    etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_HIDDEN_SIGNAL], ETK_OBJECT(row_objects->row->tree), NULL, row_objects->row);
+#endif   
 }
 
 /* Called when the tree is focused */
