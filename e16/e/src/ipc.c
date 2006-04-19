@@ -30,6 +30,7 @@
 #include "ewins.h"
 #include "ewin-ops.h"
 #include "hints.h"		/* FIXME - Should not be here */
+#include "session.h"
 #include "snaps.h"
 #include "timers.h"
 #include "xwin.h"

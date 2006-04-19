@@ -26,6 +26,7 @@
 #include "e16-ecore_hints.h"
 #include "emodule.h"
 #include "ewins.h"
+#include "session.h"
 #include "snaps.h"
 #include "xwin.h"
 #include <fcntl.h>
@@ -54,21 +55,6 @@ static int          sm_fd = -1;
 
 /* True if we are saving state for a doExit("restart") */
 static int          restarting = False;
-
-void
-autosave(void)
-{
-   if (!Mode.wm.save_ok)
-      return;
-
-   if (EventDebug(EDBUG_TYPE_SESSION))
-      Eprintf("autosave\n");
-
-   Real_SaveSnapInfo(0, NULL);
-
-   /* Save the configuration parameters */
-   ConfigurationSave();
-}
 
 #ifdef HAVE_X11_SM_SMLIB_H
 
@@ -680,6 +666,10 @@ SessionLogoutConfirm(void)
 void
 SessionExit(int mode, const char *param)
 {
+   /* We do not want to be exited by children. */
+   if (getpid() != Mode.wm.pid)
+      return;
+
    if (mode == EEXIT_LOGOUT)
      {
 	if (Conf.session.enable_logout_dialog)

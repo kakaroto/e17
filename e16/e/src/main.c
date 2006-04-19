@@ -26,6 +26,7 @@
 #include "dialog.h"
 #include "emodule.h"
 #include "hints.h"
+#include "session.h"
 #include "snaps.h"
 #include "timestamp.h"
 #include "xwin.h"

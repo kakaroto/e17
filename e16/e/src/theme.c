@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "emodule.h"
+#include "session.h"
 
 #define ENABLE_THEME_SANITY_CHECKING 0
 

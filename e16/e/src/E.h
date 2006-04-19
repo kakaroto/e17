@@ -27,18 +27,11 @@
 #define _GNU_SOURCE
 #include "config.h"
 
-#define USE_EXT_INIT_WIN 1
+#include "alert.h"
+#include "lang.h"
+#include "util.h"
 
-#if HAVE_STRDUP
-#define USE_LIBC_STRDUP  1	/* Use libc strdup if present */
-#endif
-#if HAVE_STRNDUP
-#define USE_LIBC_STRNDUP 1	/* Use libc strndup if present */
-#endif
-#if HAVE_SETENV
-#define USE_LIBC_SETENV  1	/* Use libc setenv  if present */
-#endif
-#define USE_LIBC_MALLOC  1	/* Use unwrapped libc malloc/realloc/free */
+#define USE_EXT_INIT_WIN 1
 
 #include <X11/Xlib.h>
 #include <X11/extensions/shape.h>
@@ -91,14 +84,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#if HAVE___ATTRIBUTE__
-#define __UNUSED__ __attribute__((unused))
-#define __PRINTF__ __attribute__((__format__(__printf__, 1, 2)))
-#else
-#define __UNUSED__
-#define __PRINTF__
-#endif
-
 #ifndef HAVE_GETCWD
 #error "ERROR: Enlightenment needs a system with getcwd() in it's libs."
 #error "You may have to upgrade your Operating system, Distribution, base"
@@ -113,44 +98,6 @@
 #endif
 
 #define FILEPATH_LEN_MAX 4096
-
-#ifdef HAVE_SNPRINTF
-#define Evsnprintf vsnprintf
-#define Esnprintf snprintf
-#else /* HAVE_SNPRINTF */
-int                 Evsnprintf(char *str, size_t count, const char *fmt,
-			       va_list args);
-
-#ifdef HAVE_STDARG_H
-int                 Esnprintf(char *str, size_t count, const char *fmt, ...);
-
-#else
-int                 Esnprintf(va_alist);
-#endif
-#endif /* HAVE_SNPRINTF */
-
-/* This is a start to providing internationalization by means */
-/* of gettext */
-
-#ifdef HAVE_LOCALE_H
-#include <locale.h>
-#endif
-
-#ifdef ENABLE_NLS
-# include <libintl.h>
-# define _(String) gettext(String)
-# ifdef gettext_noop
-#  define N_(String) gettext_noop(String)
-# else
-#  define N_(String) (String)
-# endif
-#else
-# define _(String) (String)
-# define N_(String) (String)
-# define bindtextdomain(pkg,locale)
-# define textdomain(pkg)
-# define bind_textdomain_codeset(pkg,enc)
-#endif
 
 #ifndef MAX
 #define MAX(a,b)  ((a)>(b)?(a):(b))
@@ -583,12 +530,6 @@ int                 execApplication(const char *params);
 void                Espawn(int argc, char **argv);
 void                EspawnCmd(const char *cmd);
 
-/* alert.c */
-void                Alert(const char *fmt, ...);
-void                AlertX(const char *title, const char *ignore,
-			   const char *restart, const char *quit,
-			   const char *fmt, ...);
-
 /* arrange.c */
 #define ARRANGE_VERBATIM    0
 #define ARRANGE_BY_SIZE     1
@@ -806,13 +747,6 @@ int                 HandleIPC(const char *params, Client * c);
 int                 EFunc(EWin * ewin, const char *params);
 void                EFuncDefer(EWin * ewin, const char *params);
 
-/* lang.c */
-void                LangInit(void);
-char               *EstrLoc2Int(const char *str, int len);
-char               *EstrUtf82Int(const char *str, int len);
-const char         *EstrInt2Enc(const char *str, int want_utf8);
-void                EstrInt2EncFree(const char *str, int want_utf8);
-
 /* main.c */
 void                EExit(int exitcode);
 const char         *EDirRoot(void);
@@ -823,48 +757,14 @@ void                EDirMake(const char *base, const char *name);
 const char         *EGetSavePrefix(void);
 const char         *EGetSavePrefixCommon(void);
 
-/* memory.c */
-#define Ecalloc     calloc
-#define Emalloc     malloc
-#define Efree       free
-#define Erealloc    realloc
-
-#define _EFREE(p)    do { if (p) { Efree(p); p = NULL; } } while (0)
-#define _EFDUP(p, s) do { if (p) Efree(p); p = Estrdup(s); } while (0)
-
-char               *Estrtrim(char *s);
-
-#if USE_LIBC_STRDUP
-#define Estrdup(s) ((s) ? strdup(s) : NULL)
-#else
-char               *Estrdup(const char *s);
-#endif
-#if USE_LIBC_STRNDUP
-#define Estrndup(s,n) ((s) ? strndup(s,n) : NULL)
-#else
-char               *Estrndup(const char *s, int n);
-#endif
-#if USE_LIBC_SETENV
-#define Esetenv setenv
-#else
-int                 Esetenv(const char *name, const char *value, int overwrite);
-#endif
-char               *Estrdupcat2(char *ss, const char *s1, const char *s2);
-
-char              **StrlistDup(char **lst, int num);
-void                StrlistFree(char **lst, int num);
-char               *StrlistJoin(char **lst, int num);
-char               *StrlistEncodeEscaped(char *buf, int len, char **lst,
-					 int num);
-char              **StrlistDecodeEscaped(const char *str, int *pnum);
-char              **StrlistFromString(const char *str, int delim, int *num);
-
 /* misc.c */
 void                Quicksort(void **a, int l, int r,
 			      int (*CompareFunc) (void *d1, void *d2));
 void                ETimedLoopInit(int k1, int k2, int speed);
 int                 ETimedLoopNext(void);
-void __PRINTF__     Eprintf(const char *fmt, ...);
+
+/* mod-misc.c */
+void                autosave(void);
 
 /* moveresize.c */
 int                 ActionMoveStart(EWin * ewin, int grab, char constrained,
@@ -900,30 +800,6 @@ int                 GetPointerScreenGeometry(int *px, int *py,
 					     int *pw, int *ph);
 int                 GetPointerScreenAvailableArea(int *px, int *py,
 						  int *pw, int *ph);
-
-/* session.c */
-#define EEXIT_EXIT      0
-#define EEXIT_ERROR     1
-#define EEXIT_LOGOUT    2
-#define EEXIT_RESTART   3
-#define EEXIT_THEME     4
-#define EEXIT_EXEC      5
-
-#define ESESSION_INIT   0
-#define ESESSION_START  1
-#define ESESSION_STOP   2
-
-void                SessionInit(void);
-void                SessionSave(int shutdown);
-void                SessionExit(int mode, const char *params);
-void                SessionHelper(int when);
-void                ProcessICEMSGS(void);
-int                 GetSMfd(void);
-void                SessionGetInfo(EWin * ewin, Atom atom_change);
-void                SetSMID(const char *smid);
-void                MatchEwinToSM(EWin * ewin);
-void                autosave(void);
-void                SettingsSession(void);
 
 /* settings.c */
 void                SettingsMoveResize(void);

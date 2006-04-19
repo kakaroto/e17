@@ -22,6 +22,7 @@
  */
 #include "E.h"
 #include "emodule.h"
+#include "session.h"
 #include "snaps.h"
 
 /***********************************************************************
@@ -233,3 +234,18 @@ EModule             ModMisc = {
    ,
    {N_CFG_ITEMS, MiscCfgItems}
 };
+
+void
+autosave(void)
+{
+   if (!Mode.wm.save_ok)
+      return;
+
+   if (EventDebug(EDBUG_TYPE_SESSION))
+      Eprintf("autosave\n");
+
+   Real_SaveSnapInfo(0, NULL);
+
+   /* Save the configuration parameters */
+   ConfigurationSave();
+}

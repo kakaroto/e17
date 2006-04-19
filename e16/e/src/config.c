@@ -29,6 +29,7 @@
 #include "conf.h"
 #include "iclass.h"
 #include "menus.h"
+#include "session.h"
 #include "tclass.h"
 #include "tooltips.h"
 

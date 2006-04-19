@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "session.h"
 #include "xwin.h"
 #include <sys/wait.h>
 #include <signal.h>

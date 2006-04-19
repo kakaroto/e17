@@ -24,6 +24,7 @@
 #include "E.h"
 #include "aclass.h"
 #include "emodule.h"
+#include "session.h"
 #include "timers.h"
 #include "xwin.h"
 #include <sys/time.h>

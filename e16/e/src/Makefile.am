@@ -19,6 +19,7 @@ e16_SOURCES = \
 	aclass.h		\
 	actions.c		\
 	alert.c			\
+	alert.h			\
 	arrange.c		\
 	backgrounds.c		\
 	backgrounds.h		\
@@ -80,6 +81,7 @@ e16_SOURCES = \
 	icons.h			\
 	ipc.c			\
 	lang.c			\
+	lang.h			\
 	main.c			\
 	memory.c		\
 	menus.c			\
@@ -95,6 +97,7 @@ e16_SOURCES = \
 	regex.c			\
 	screen.c                \
 	session.c               \
+	session.h               \
 	settings.c              \
 	setup.c			\
 	size.c			\
@@ -112,6 +115,7 @@ e16_SOURCES = \
 	timers.h		\
 	tooltips.c		\
 	tooltips.h		\
+	util.h			\
 	ttfont.c		\
 	warp.c			\
 	windowmatch.c   	\

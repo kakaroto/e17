@@ -21,7 +21,19 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#include "E.h"
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <X11/Xlib.h>
+#include "alert.h"
+#include "lang.h"
+#include "session.h"
+#include "util.h"
+
+/* Should be elsewhere */
+void                SoundPlay(const char *name);
 
 #define ExTextExtents XmbTextExtents
 #define ExDrawString XmbDrawString
@@ -172,6 +184,8 @@ ShowAlert(const char *title,
    int                 missing_charset_count_return;
    XFontStruct       **font_struct_list_return;
    char              **font_name_list_return;
+
+   SoundPlay("SOUND_ALERT");
 
    if (!text)
       return;
@@ -509,17 +523,14 @@ ShowAlert(const char *title,
 
    switch (button)
      {
+     default:
      case 1:
 	break;
      case 2:
-	if (getpid() == Mode.wm.pid)
-	   SessionExit(EEXIT_RESTART, NULL);
+	SessionExit(EEXIT_RESTART, NULL);
 	break;
      case 3:
-	if (getpid() == Mode.wm.pid)
-	   SessionExit(EEXIT_EXIT, NULL);
-	break;
-     default:
+	SessionExit(EEXIT_EXIT, NULL);
 	break;
      }
 
@@ -543,7 +554,6 @@ AlertX(const char *title, const char *ignore,
    Evsnprintf(text, sizeof(text), fmt, args);
    va_end(args);
 
-   SoundPlay("SOUND_ALERT");
    ShowAlert(title, ignore, restart, quit, text);
 }
 
@@ -557,7 +567,6 @@ Alert(const char *fmt, ...)
    Evsnprintf(text, sizeof(text), fmt, args);
    va_end(args);
 
-   SoundPlay("SOUND_ALERT");
    ShowAlert(_("Enlightenment Message Dialog"), _("Ignore this"),
 	     _("Restart Enlightenment"), _("Quit Enlightenment"), text);
 }

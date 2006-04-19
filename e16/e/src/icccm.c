@@ -26,6 +26,7 @@
 #include "e16-ecore_hints.h"
 #include "ewins.h"
 #include "hints.h"
+#include "session.h"
 #include "xwin.h"
 #if USE_XSYNC
 #include <X11/extensions/sync.h>

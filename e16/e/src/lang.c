@@ -22,9 +22,20 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "lang.h"
+
+#ifdef HAVE_LOCALE_H
+#include <locale.h>
+#endif
 
 #if HAVE_LANGINFO_CODESET
 #include <langinfo.h>
+#endif
+
+#ifndef ENABLE_NLS
+#define bindtextdomain(pkg,locale)
+#define textdomain(pkg)
+#define bind_textdomain_codeset(pkg,enc)
 #endif
 
 #if HAVE_ICONV
