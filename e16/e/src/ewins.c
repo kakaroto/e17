@@ -292,10 +292,6 @@ EwinConfigure(EWin * ewin)
 {
    EwinStateUpdate(ewin);
 
-#if 0				/* Do we want this? */
-   if (!EwinIsInternal(ewin))
-      MatchEwinToSM(ewin);
-#endif
    WindowMatchEwinOps(ewin);	/* Window matches */
    if (!EwinIsInternal(ewin) && Mode.wm.startup)
       EHintsGetInfo(ewin);	/* E restart hints */

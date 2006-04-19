@@ -638,7 +638,8 @@ GroupCallback(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 }
 
 static void
-ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
+ChooseGroupDialog(EWin * ewin, const char *message, char group_select,
+		  int action)
 {
 
    Dialog             *d;

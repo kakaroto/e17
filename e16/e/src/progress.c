@@ -41,7 +41,7 @@ static int          pnum = 0;
 static Progressbar **plist = NULL;
 
 Progressbar        *
-ProgressbarCreate(char *name, int w, int h)
+ProgressbarCreate(const char *name, int w, int h)
 {
    Progressbar        *p;
    int                 x, y;

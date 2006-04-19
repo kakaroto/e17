@@ -880,7 +880,7 @@ void                ActionResizeHandleMotion(void);
 /* progress.c */
 typedef struct _progressbar Progressbar;
 
-Progressbar        *ProgressbarCreate(char *name, int width, int height);
+Progressbar        *ProgressbarCreate(const char *name, int width, int height);
 void                ProgressbarDestroy(Progressbar * p);
 void                ProgressbarSet(Progressbar * p, int progress);
 void                ProgressbarShow(Progressbar * p);
