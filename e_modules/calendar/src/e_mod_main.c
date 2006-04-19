@@ -941,7 +941,7 @@ update_colors(calendar, face);
              
 
 int skew = calculate_skew(calendar);
-
+	     
              
 
 
@@ -950,7 +950,7 @@ calendar_add_dates(face, calendar, skew);
 
 set_day_label(face->label_object, calendar->conf->DayofWeek_Start, 
 date.tm_mon, 
-date.tm_year);
+(date.tm_year + 1900));
      
 
 } 
