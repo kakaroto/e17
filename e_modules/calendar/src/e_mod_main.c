@@ -905,6 +905,7 @@ return 1;
         
 
 Evas_List *l;
+	    calendar->conf->view_year = date.tm_year + 1900;
 
         
 
