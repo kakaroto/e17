@@ -26,32 +26,32 @@ group {
     }
 }
 group {
-   name, "spinnerup";
-   min, 10 10;
-   
-   parts {
-	part {
-	    name, "uback";
-	    mouse_events, 0;
-	    description {
-		state, "default" 0.0;
-		max, 10 10;
-		min, 10 10;
-		image {
-		    normal, "e17_spinner_top_arrow.png";
-		}
-		fill {
-		    smooth: 0;
-		}
-	    }
-	}
+    name, "spinnerup";
+    min, 10 10;
+
+    parts {
+        part {
+            name, "uback";
+            mouse_events, 0;
+            description {
+                state, "default" 0.0;
+                max, 10 10;
+                min, 10 10;
+                image {
+                    normal, "e17_spinner_top_arrow.png";
+                }
+                fill {
+                    smooth: 0;
+                }
+            }
+        }
     }
 }
 
 group {
-   name, "spinnerdown";
-   min, 10 10;
-   parts {
+    name, "spinnerdown";
+    min, 10 10;
+    parts {
         part {
             name, "dback";
             mouse_events, 0;
