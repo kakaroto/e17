@@ -47,10 +47,6 @@ EWL BUGS
   specific tab order it will be whiped out by the realize code. (In
   ewl_embed I believe).
 
-- Run ewl_test menubar then click on a menu and click it again with out
-  moving the mouse. The display of the dropdown seems to become corrupted
-  when the menu is displayed again.
-
 - Resize the table multiple times vertically and the items are not placed in
   the same place as original.
 
@@ -60,6 +56,14 @@ EWL BUGS
 - the tree dosen't currently play well with the scrollbar. This can be seen
   in the tree test, if you shrink the window and scroll it will only scroll
   the first paned widget. (Need to make this and the paned work together).
+
+- text scrolling with Ewl_Entry needs a bit of work. If you scroll over to
+  the right and the text moves and arrow back it shifts as you move off of
+  the right edge instead of over the left edge.
+
+- text cursor seems to be a bit screwed now, half height and disappears on
+  the end of entrybox case.
+
 
   Ewl_Icon bugs/todo
   ------------------
@@ -95,7 +99,9 @@ EWL BUGS
  - The autolayout will align at the top, should probably be changed to align
    at the bottom based on the largest widget being put in.
 
- - Scrollpanes aren't kicking in correctly in the test case.
+ - The freebox seems to end up being larger then the scrollpane. This
+   happens gradually as you add items to the freebox. Eventually a whole row
+   or more will disappear.
 
 
 EWL TODO
@@ -105,9 +111,6 @@ EWL TODO
   uses the buffer engine to create the cursor. We then attach it with an
   EWL_ATTACH_TYPE_MOUSE_CURSOR_CUSTOM so on free we can free the cursor that
   is attached.
-
-- Ewl_Entry 
-    - Need to make the text scroll over as you type past the end of the entry box.
 
 - ColorChooser needs a slider for choosing alpha too, and an int a parameter for
   get / set to match 
@@ -145,11 +148,11 @@ EWL TODO
   order to eliminate most icons from the distributed lib, but provide good
   hooks for external icon sets.
 
-- Ewl_Radio
-    - Add a function that returns the selected radio button of a chain
-       associated to a given radio button.
+- Add a function that returns the selected radio button of a chain
+  associated to a given radio button.
 
-- [Ewl_Test] Unit tests
+- [Ewl_Test] More unit tests. There are a few examples in there but we need
+  to add unit tests for as many functions as we can.
 
 - [Ewl_Test] More Tutorials in the src/bin/test/*.c files
 

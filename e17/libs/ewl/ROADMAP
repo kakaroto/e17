@@ -14,6 +14,5 @@ EWL ROADMAP
 0.0.6
 -----
 - tree2
-- filedialog rewrite
 - finish ewl_freebox and ewl_icon and port iconbox to use them
 
