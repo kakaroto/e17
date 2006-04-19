@@ -8,7 +8,10 @@
 #include "entropy_alert.h"
 #include <Ecore_X.h>
 
-/*#include <execinfo.h>*/
+#ifdef __GLIBC__
+#include <execinfo.h>
+#endif
+
 
 void
 entropy_sigseg_act(int x, siginfo_t *info, void *data)
@@ -18,9 +21,13 @@ entropy_sigseg_act(int x, siginfo_t *info, void *data)
 	
    write(2, "**** SEGMENTATION FAULT ****\n", 29);
    write(2, "**** Printing Backtrace... *****\n\n", 34);
+
+#ifdef __GLIBC__
   
    size = backtrace(array, 255);
    backtrace_symbols_fd(array, size, 2);
+
+#endif
 
    ecore_x_pointer_ungrab();
    ecore_x_keyboard_ungrab();
