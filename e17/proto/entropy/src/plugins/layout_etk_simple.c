@@ -434,9 +434,12 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 	     case ENTROPY_NOTIFY_FILE_STAT_AVAILABLE:{
 		entropy_file_stat *file_stat = (entropy_file_stat *) eevent->return_struct;							     
 		
-		ecore_hash_remove(view->properties_request_hash, file_stat->file);	
-		/*Lauch a properties window*/
-		etk_properties_dialog_new(file_stat->file);
+		if (ecore_hash_get(view->properties_request_hash, file_stat->file)) {
+			ecore_hash_remove(view->properties_request_hash, file_stat->file);	
+			
+			/*Lauch a properties window*/
+			etk_properties_dialog_new(file_stat->file);
+		}
 	     }
 	     break;
 
