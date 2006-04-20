@@ -849,7 +849,8 @@ ewl_paned_grabber_cb_mouse_move(Ewl_Widget *w, void *ev,
 
 	/* didn't shirnk the entire amount XXX do something ... */
 	if ((cur_size - new_size) != shrink_size)
-		;
+	{
+	}
 
 	cur_size = layout->current_size(EWL_OBJECT(grow));
 	layout->variable_request(EWL_OBJECT(grow), cur_size + amt);

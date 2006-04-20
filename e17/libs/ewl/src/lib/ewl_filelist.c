@@ -700,7 +700,8 @@ ewl_filelist_signal_between(Ewl_Filelist *fl, Ewl_Container *c, int add,
 }
 
 void
-ewl_filelist_cb_destroy(Ewl_Widget *w, void *ev, void *data)
+ewl_filelist_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, 
+					void *data __UNUSED__)
 {
 	Ewl_Filelist *fl;
 

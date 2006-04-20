@@ -41,6 +41,10 @@ struct Ewl_Media
 	Ewl_Media_Module_Type	 module;       /**< Path to the module file */
 	char			*media;        /**< Path to the media file */
 	int			 block_seek;   /**< Temporarily prevent seeking */
+
+	double			 volume;	/**< The volume setting */
+	double			 position;	/**< The position setting */
+	unsigned char		 mute:1;	/**< The mute value */
 };
 
 Ewl_Widget		*ewl_media_new(void);

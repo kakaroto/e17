@@ -728,7 +728,7 @@ ewl_filepicker_cb_path_change(Ewl_Widget *w, void *ev __UNUSED__,
 }
 
 static void
-ewl_filepicker_cb_filter_change(Ewl_Widget *w, void *ev, void *data)
+ewl_filepicker_cb_filter_change(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
 	Ewl_Filepicker *fp;
 
@@ -769,7 +769,8 @@ ewl_filepicker_cb_type_change(Ewl_Widget *w, void *ev __UNUSED__,
 }
 
 static void
-ewl_filepicker_cb_destroy(Ewl_Widget *w, void *ev, void *data)
+ewl_filepicker_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, 
+					void *data __UNUSED__)
 {
 	char *file;
 	Ewl_Filepicker *fp;

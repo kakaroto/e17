@@ -108,9 +108,9 @@ struct Ewl_Tree2
 	Ecore_List *selected; 	 /**< The list of selected cells */
 
 	Ewl_Tree_Mode mode;	 /**< The mode of the tree */
-	unsigned int fixed:1;    /**< Rows are fixed height */
-	unsigned int headers_visible:1; /**< Are the headers visible? */
-	unsigned int dirty:1;    /**< Has the data changed? */
+	unsigned char fixed:1;    /**< Rows are fixed height */
+	unsigned char headers_visible:1; /**< Are the headers visible? */
+	unsigned char dirty:1;    /**< Has the data changed? */
 };
 
 /*
@@ -143,6 +143,9 @@ void 		 ewl_tree2_mode_set(Ewl_Tree2 *tree, Ewl_Tree_Mode mode);
 
 void		 ewl_tree2_fixed_rows_set(Ewl_Tree2 *tree, unsigned int fixed);
 unsigned int	 ewl_tree2_fixed_rows_get(Ewl_Tree2 *tree);
+
+void		 ewl_tree2_dirty_set(Ewl_Tree2 *tree2, unsigned int dirty);
+unsigned int	 ewl_tree2_dirty_get(Ewl_Tree2 *tree2);
 
 /*
  * Internal stuff.

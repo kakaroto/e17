@@ -6,12 +6,13 @@
 #ifdef BUILD_EPSILON_SUPPORT
 #include <Epsilon.h>
 #include <Epsilon_Request.h>
-#endif
 
 static Ecore_Event_Handler *ewl_image_epsilon_handler = NULL;
+static int ewl_image_thumbnail_complete_cb(void *data, int type, void *event);
+#endif
+
 
 static Ewl_Image_Type  ewl_image_type_get(const char *i);
-static int ewl_image_thumbnail_complete_cb(void *data, int type, void *event);
 static void ewl_image_thumb_destroy_cb(Ewl_Widget *w, void *ev, void *data);
 
 /**
@@ -593,19 +594,17 @@ ewl_image_thumb_destroy_cb(Ewl_Widget *w, void *ev __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+#ifdef BUILD_EPSILON_SUPPORT
 static int
 ewl_image_thumbnail_complete_cb(void *data __UNUSED__, int type __UNUSED__, 
 								void *event)
 {
-#ifdef BUILD_EPSILON_SUPPORT
 	Ewl_Image_Thumbnail *thumb;
 	Epsilon_Request *ev;
-#endif
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("event", event, FALSE);
 
-#ifdef BUILD_EPSILON_SUPPORT
 	ev = event;
 	thumb = ev->data;
 
@@ -613,10 +612,10 @@ ewl_image_thumbnail_complete_cb(void *data __UNUSED__, int type __UNUSED__,
 		ewl_image_file_path_set(EWL_IMAGE(thumb), ev->dest);
 		thumb->thumb = NULL;
 	}
-#endif
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
+#endif
 
 void
 ewl_image_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,

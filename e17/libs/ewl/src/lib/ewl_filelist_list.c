@@ -121,7 +121,8 @@ ewl_filelist_list_dir_change(Ewl_Filelist *fl)
  * @brief Callback when the selected files are changed
  */
 void
-ewl_filelist_list_selected_file_add(Ewl_Filelist *fl, const char *file)
+ewl_filelist_list_selected_file_add(Ewl_Filelist *fl, 
+				const char *file __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fl", fl);
