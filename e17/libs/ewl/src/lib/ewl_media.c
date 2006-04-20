@@ -304,11 +304,18 @@ ewl_media_seekable_get(Ewl_Media *m)
 double
 ewl_media_position_get(Ewl_Media *m)
 {
+	double p = 0.0;
+
 	DENTER_FUNCTION(DLEVEL_STABLE)
 	DCHECK_PARAM_PTR_RET("m", m, 0);
 	DCHECK_TYPE_RET("m", m, EWL_MEDIA_TYPE, 0);
 
-	DRETURN_FLOAT(m->position, DLEVEL_STABLE);
+#ifdef BUILD_EMOTION_SUPPORT
+	if (m->video)
+		p = emotion_object_position_get(m->video);
+#endif
+
+	DRETURN_FLOAT(p, DLEVEL_STABLE);
 }
 
 /**

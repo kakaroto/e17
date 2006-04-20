@@ -467,29 +467,17 @@ ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__
 
 	tree = EWL_TREE2(w);
 
-#if 0
-	ecore_list_goto_first(tree->columns);
-	while ((col = ecore_list_next(tree->columns)))
-	{
-		if (ewl_model_dirty_get(col->model))
-		{
-			dirty = TRUE;
-			break;
-		}
-	}
-#endif
-
 	/* place the header */
 	ewl_object_place(EWL_OBJECT(tree->header), CURRENT_X(tree), 
 				CURRENT_Y(tree), CURRENT_W(tree), 
 				CURRENT_H(tree));
-//	ewl_widget_configure(tree->header);
 
-	/* if none of the models are dirty we are done */
+	/* if the tree isn't dirty we're done */
 	if (!ewl_tree2_dirty_get(tree)) DRETURN(DLEVEL_STABLE);
 
 	/* setup the headers */
 	ewl_container_reset(EWL_CONTAINER(tree->header));
+
 	printf("First column pointer: %p\n", ecore_list_goto_first(tree->columns));
 	while ((col = ecore_list_next(tree->columns)))
 	{
@@ -498,8 +486,8 @@ ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__
 		h = col->view->header_fetch(tree->data, column);
 		printf("Column: ");
 		ewl_widget_print(h);
-		ewl_container_child_append(EWL_CONTAINER(tree->header), h);
 
+		ewl_container_child_append(EWL_CONTAINER(tree->header), h);
 		column ++;
 	}
 
