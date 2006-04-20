@@ -60,7 +60,7 @@ AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source code director
 
 PROG="ecore-config";
 AC_PATH_PROG(ECORE_CONFIG, $PROG, "", $PATH)
-if [ test -z $ECORE_CONFIG ]; then
+if test "x$ECORE_CONFIG" = "x" ; then
   echo $PROG " is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
   AC_MSG_ERROR(Cannot find $PROG)
@@ -72,7 +72,7 @@ AC_SUBST(ecore_libs)
 
 PROG="xml2-config";
 AC_PATH_PROG(XML2_CONFIG, $PROG, "", $PATH)
-if [ test -z $XML2_CONFIG ]; then
+if test "x$XML2_CONFIG" = "x" ; then
   echo $PROG " is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
   AC_MSG_ERROR(Cannot find $PROG)
