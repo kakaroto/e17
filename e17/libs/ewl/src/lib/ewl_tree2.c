@@ -477,17 +477,10 @@ ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__
 
 	/* setup the headers */
 	ewl_container_reset(EWL_CONTAINER(tree->header));
-
-	printf("First column pointer: %p\n", ecore_list_goto_first(tree->columns));
 	while ((col = ecore_list_next(tree->columns)))
 	{
-		Ewl_Widget *h;
-
-		h = col->view->header_fetch(tree->data, column);
-		printf("Column: ");
-		ewl_widget_print(h);
-
-		ewl_container_child_append(EWL_CONTAINER(tree->header), h);
+		ewl_container_child_append(EWL_CONTAINER(tree->header), 
+				col->view->header_fetch(tree->data, column));
 		column ++;
 	}
 
