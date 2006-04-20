@@ -1329,7 +1329,10 @@ entropy_generic_file* entropy_core_parent_folder_file_get(entropy_generic_file* 
 	/*First get the md5sum of the file that will be this file's parent folder...*/
 	tmp = strdup(file->path);
 	pos = strrchr(tmp, '/');
-	*pos = '\0';
+	if (pos) 
+		*pos = '\0';
+	else
+		return NULL; /*No parent - this is the root, i.e. '/' */
 		
 	md5 = md5_entropy_path_file(file->uri_base, tmp, pos+1);
 	listen = entropy_core_file_cache_retrieve(md5);
