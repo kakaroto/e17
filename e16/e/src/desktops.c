@@ -566,8 +566,6 @@ DeskBackgroundConfigure(Desk * dsk)
 	  }
 
 	HintsSetRootInfo(EoGetWin(dsk), pmap, pixel);
-	if (Conf.hints.set_xroot_info_on_root_window && win != VRoot.win)
-	   HintsSetRootInfo(VRoot.win, pmap, pixel);
      }
    else if (dsk->bg.bg)
      {
@@ -659,6 +657,10 @@ DeskBackgroundRefresh(Desk * dsk, int why)
 	DeskBackgroundConfigure(dsk);
 	dsk->bg.pmap_set = pmap;
      }
+
+   if (bg && dsk->viewable)
+      if (Conf.hints.set_xroot_info_on_root_window && dsk->num > 0)
+	 HintsSetRootInfo(VRoot.win, pmap, pixel);
 
    if (changed)
       ModulesSignal(ESIGNAL_BACKGROUND_CHANGE, dsk);
