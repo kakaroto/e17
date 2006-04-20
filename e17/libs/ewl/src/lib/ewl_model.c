@@ -25,6 +25,28 @@ ewl_model_new(void)
 }
 
 /**
+ * @return Returns a model that is setup to work with an ecore_list
+ * @brief Retrieves a model pre-initialized to work with an ecore list. This
+ * will setup the fetch and count methods for you 
+ */
+Ewl_Model *
+ewl_model_ecore_list_get(void)
+{
+	Ewl_Model *model;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	model = ewl_model_new();
+	if (model)
+	{
+		ewl_model_fetch_set(model, ewl_model_cb_ecore_list_fetch);
+		ewl_model_count_set(model, ewl_model_cb_ecore_list_count);
+	}
+
+	DRETURN_PTR(model, DLEVEL_STABLE);
+}
+
+/**
  * @param model: The Ewl_Model to initialize
  * @return Returns TRUE on success or FALSE on failure
  * @brief Set the model to the default values
@@ -161,5 +183,44 @@ ewl_model_count_get(Ewl_Model *m)
 	DCHECK_PARAM_PTR_RET("m", m, NULL);
 
 	DRETURN_INT(m->count, DLEVEL_STABLE);
+}
+
+/**
+ * @param data: The ecore_list to get the data from
+ * @param row: The row to get the data from
+ * @return Returns the data at the given row
+ * @brief This will return the @a row data element from the list
+ */
+void * 
+ewl_model_cb_ecore_list_fetch(void *data, unsigned int row, 
+				unsigned int col __UNUSED__)
+{
+	Ecore_List *list;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("data", data, NULL);
+
+	list = data;
+	ecore_list_goto_index(list, row);
+
+	DRETURN_PTR(ecore_list_current(list), DLEVEL_STABLE);
+}
+
+/**
+ * @param data: The ecore_list to get the count from
+ * @return Returns the number of elements in the list
+ * @brief This will return the number of elements in the ecore_list
+ */
+int
+ewl_model_cb_ecore_list_count(void *data)
+{
+	Ecore_List *list;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("data", data, 0);
+
+	list = data;
+
+	DRETURN_INT(ecore_list_nodes(list), DLEVEL_STABLE);
 }
 

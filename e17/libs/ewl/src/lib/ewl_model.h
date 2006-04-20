@@ -54,6 +54,8 @@ struct Ewl_Model
 Ewl_Model 	*ewl_model_new(void);
 int       	 ewl_model_init(Ewl_Model *model);
 
+Ewl_Model	*ewl_model_ecore_list_get(void);
+
 void             ewl_model_fetch_set(Ewl_Model *m, Ewl_Model_Fetch get);
 Ewl_Model_Fetch  ewl_model_fetch_get(Ewl_Model *m);
 
@@ -69,6 +71,9 @@ Ewl_Model_Count  ewl_model_count_get(Ewl_Model *m);
 /**
  * @}
  */
+void *ewl_model_cb_ecore_list_fetch(void *data, unsigned int row, 
+						unsigned int col);
+int ewl_model_cb_ecore_list_count(void *data);
 
 #endif
 

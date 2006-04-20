@@ -25,10 +25,6 @@ static void ewl_filepicker_cb_filter_change(Ewl_Widget *w, void *ev,
 static void ewl_filepicker_cb_type_change(Ewl_Widget *w, void *ev, 
 							void *data);
 
-static void *ewl_filepicker_cb_path_fetch(void *data, unsigned int row,
-						unsigned int col);
-static int ewl_filepicker_cb_path_count(void *data);
-
 static void *ewl_filepicker_cb_type_fetch(void *data, unsigned int row,
 						unsigned int col);
 static int ewl_filepicker_cb_type_count(void *data);
@@ -85,9 +81,7 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(fp), 400, 300);
 
-	model = ewl_model_new();
-	ewl_model_fetch_set(model, ewl_filepicker_cb_path_fetch);
-	ewl_model_count_set(model, ewl_filepicker_cb_path_count);
+	model = ewl_model_ecore_list_get();
 
 	view = ewl_view_new();
 	ewl_view_constructor_set(view, ewl_label_new);
@@ -626,34 +620,6 @@ ewl_filepicker_favorites_populate(Ewl_Filepicker *fp)
 	/* XXX Write me */
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-static void *
-ewl_filepicker_cb_path_fetch(void *data, unsigned int row, 
-				unsigned int col __UNUSED__)
-{
-	Ecore_List *list;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("data", data, NULL);
-
-	list = data;
-	ecore_list_goto_index(list, row);
-
-	DRETURN_PTR(ecore_list_current(list), DLEVEL_STABLE);
-}
-
-static int
-ewl_filepicker_cb_path_count(void *data)
-{
-	Ecore_List *list;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("data", data, 0);
-
-	list = data;
-
-	DRETURN_INT(ecore_list_nodes(list), DLEVEL_STABLE);
 }
 
 static void *
