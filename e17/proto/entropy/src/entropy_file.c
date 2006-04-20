@@ -46,48 +46,22 @@ void entropy_generic_file_uri_set(entropy_generic_file* file) {
 	}
 }
 
-/*Ecore_List* entropy_generic_file_list_sort(Ecore_List* file_list) {
-	Ecore_List* new_list = ecore_list_new();
-	entropy_generic_file* file_ins;
-	entropy_generic_file* file;
-
-	ecore_list_goto_first(file_list);
-	while ( (file_ins = ecore_list_remove_first(file_list)) ) {
-		int ins = 0;
-
-		ecore_list_goto_first(new_list);
-		while ( (file = ecore_list_current(new_list)) ) {
-			if (strcmp(file_ins->filename, file->filename) < 0) {
-				ecore_list_insert(new_list, file_ins);
-				ins = 1;
-
-				goto out;
-			}
-
-			ecore_list_next(new_list);
-		}
-		
-		if (!ins) {
-			ecore_list_append(new_list, file_ins);
-		}
-
-
-		
-
-		out: ;
-
-	}
-	ecore_list_destroy(file_list);
-
-
-	return new_list;
-	
-}*/
-
-
 int entropy_generic_file_path_compare(entropy_generic_file* file1, entropy_generic_file* file2) {
-	return strcasecmp(file1->filename, file2->filename);
-	
+	int val;
+
+   if (file1 && file2) {
+	 val = strcasecmp(file1->filename, file2->filename);
+	 
+	 if ( (!(file1->filetype == FILE_FOLDER)) && file2->filetype == FILE_FOLDER)
+		 return 1;
+	 else if  ( (!(file2->filetype == FILE_FOLDER)) && file1->filetype == FILE_FOLDER)
+		 return -1;
+	 else 
+		 return val;
+   } else {
+	   printf("Could not locate file!\n");
+	   return 0;
+   }
 }
 
 
