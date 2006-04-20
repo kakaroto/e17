@@ -93,12 +93,12 @@ ewl_model_fetch_get(Ewl_Model *m)
 
 /**
  * @param m: The Ewl_Model to set the subfetch callback into
- * @param get: The Ewl_Model_Fetch callback for subrows
+ * @param get: The Ewl_Model_Subfetch callback for subrows
  * @return Returns no value.
  * @brief Sets the subfetch callback into the model
  */
 void
-ewl_model_subfetch_set(Ewl_Model *m, Ewl_Model_Fetch get)
+ewl_model_subfetch_set(Ewl_Model *m, Ewl_Model_Subfetch get)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("m", m);
@@ -110,10 +110,10 @@ ewl_model_subfetch_set(Ewl_Model *m, Ewl_Model_Fetch get)
 
 /**
  * @param m: The Ewl_Model to get the subfetch callback from
- * @return Returns the Ewl_Model_Fetch for the subfetch callback
+ * @return Returns the Ewl_Model_Subfetch for the subfetch callback
  * @brief Gets the subfetch callback from the model
  */
-Ewl_Model_Fetch
+Ewl_Model_Subfetch
 ewl_model_subfetch_get(Ewl_Model *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);

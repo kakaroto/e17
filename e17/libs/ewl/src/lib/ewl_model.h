@@ -19,6 +19,15 @@ typedef void *(*Ewl_Model_Fetch)(void *data, unsigned int row,
 						unsigned int column);
 
 /**
+ * @def EWL_MODEL_DATA_SUBFETCH(f)
+ * Model callback to handle fetching the data for a given parent at a 
+ * given row/column
+ */
+#define EWL_MODEL_DATA_SUBFETCH(f) ((Ewl_Model_Subfetch)f)
+typedef void *(*Ewl_Model_Subfetch)(void *data, unsigned int parent,
+				unsigned int row, unsigned int column);
+
+/**
  * @def EWL_MODEL_DATA_SORT(f)
  * Model callback to inform the program to sort it's data in the given
  * column
@@ -46,7 +55,7 @@ typedef struct Ewl_Model Ewl_Model;
 struct Ewl_Model
 {
 	Ewl_Model_Fetch fetch;    /**< Retrieve data for a cell */
-	Ewl_Model_Fetch subfetch; /**< Check for subdata */
+	Ewl_Model_Subfetch subfetch; /**< Check for subdata */
 	Ewl_Model_Sort sort;      /**< Trigger sort on column */
 	Ewl_Model_Count count;    /**< Count of data items */
 };
@@ -59,8 +68,9 @@ Ewl_Model	*ewl_model_ecore_list_get(void);
 void             ewl_model_fetch_set(Ewl_Model *m, Ewl_Model_Fetch get);
 Ewl_Model_Fetch  ewl_model_fetch_get(Ewl_Model *m);
 
-void             ewl_model_subfetch_set(Ewl_Model *m, Ewl_Model_Fetch get);
-Ewl_Model_Fetch  ewl_model_subfetch_get(Ewl_Model *m);
+void               ewl_model_subfetch_set(Ewl_Model *m, 
+						Ewl_Model_Subfetch get);
+Ewl_Model_Subfetch ewl_model_subfetch_get(Ewl_Model *m);
 
 void             ewl_model_sort_set(Ewl_Model *m, Ewl_Model_Sort sort);
 Ewl_Model_Sort   ewl_model_sort_get(Ewl_Model *m);
@@ -68,12 +78,16 @@ Ewl_Model_Sort   ewl_model_sort_get(Ewl_Model *m);
 void             ewl_model_count_set(Ewl_Model *m, Ewl_Model_Count count);
 Ewl_Model_Count  ewl_model_count_get(Ewl_Model *m);
 
-/**
- * @}
+/*
+ * Internal stuff.
  */
 void *ewl_model_cb_ecore_list_fetch(void *data, unsigned int row, 
 						unsigned int col);
 int ewl_model_cb_ecore_list_count(void *data);
+
+/**
+ * @}
+ */
 
 #endif
 
