@@ -773,3 +773,11 @@ Fri Feb 24 16:45:38 2006                        Michael Jennings (mej)
 Make removal of options from argv[] optional and off by default.
 Fixes Eterm problem with WM_COMMAND entries being empty.
 ----------------------------------------------------------------------
+Thu Apr 20 16:44:39 2006                        Michael Jennings (mej)
+
+Added mbuff and ustr to testing routines.
+
+Fleshed out ustr class; doesn't do UTF-8 yet though.
+
+Fixed array removal code.  I have no idea how that was working before.
+----------------------------------------------------------------------

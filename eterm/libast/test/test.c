@@ -41,6 +41,8 @@ int test_options(void);
 int test_obj(void);
 int test_str(void);
 int test_tok(void);
+int test_mbuff(void);
+int test_ustr(void);
 int test_url(void);
 int test_list(void);
 int test_vector(void);
@@ -998,6 +1000,475 @@ test_tok(void)
 
 
     TEST_PASSED("spif_tok_t");
+    return 0;
+}
+
+int
+test_mbuff(void)
+{
+    spif_mbuff_t testmbuff, test2mbuff;
+    spif_mbuffclass_t cls;
+    char tmp[] = "this is a test";
+    spif_char_t buff[4096] = "abcde";
+    char tmp2[] = "string #1\nstring #2";
+    FILE *fp;
+    int fd, mypipe[2];
+    spif_charptr_t foo;
+
+    TEST_BEGIN("spif_mbuff_new() function");
+    testmbuff = spif_mbuff_new();
+    TEST_FAIL_IF(SPIF_MBUFF_ISNULL(testmbuff));
+    TEST_PASS();
+
+    TEST_BEGIN("spif_obj_get_classname() function");
+    cls = SPIF_MBUFF_CLASS(spif_obj_get_class(SPIF_OBJ(testmbuff)));
+    TEST_FAIL_IF(cls != SPIF_MBUFF_CLASS(SPIF_MBUFFCLASS_VAR(mbuff)));
+    TEST_PASS();
+
+    TEST_BEGIN("spif_mbuff_del() function");
+    TEST_FAIL_IF(spif_mbuff_del(testmbuff) != TRUE);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_mbuff_new_from_ptr() function");
+    testmbuff = spif_mbuff_new_from_ptr(SPIF_CHARPTR(tmp), sizeof(tmp));
+    TEST_FAIL_IF(spif_mbuff_cmp_with_ptr(testmbuff, SPIF_CHARPTR(tmp), sizeof(tmp)));
+    TEST_FAIL_IF(spif_mbuff_get_size(testmbuff) != sizeof(tmp));
+    TEST_FAIL_IF(spif_mbuff_get_len(testmbuff) != (sizeof(tmp)));
+    spif_mbuff_del(testmbuff);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_mbuff_new_from_buff() function");
+    testmbuff = spif_mbuff_new_from_buff(buff, sizeof(buff), 10240);
+    TEST_FAIL_IF(spif_mbuff_cmp_with_ptr(testmbuff, buff, sizeof(buff)));
+    TEST_FAIL_IF(spif_mbuff_get_size(testmbuff) != 10240);
+    TEST_FAIL_IF(spif_mbuff_get_len(testmbuff) != sizeof(buff));
+    spif_mbuff_del(testmbuff);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_mbuff_new_from_fp() function");
+    pipe(mypipe);
+    fd = mypipe[0];
+    fp = fdopen(fd, "r");
+    write(mypipe[1], tmp2, sizeof(tmp2));
+    close(mypipe[1]);
+    TEST_FAIL_IF(fp == NULL);
+    testmbuff = spif_mbuff_new_from_fp(fp);
+    TEST_FAIL_IF(spif_mbuff_cmp_with_ptr(testmbuff, tmp2, sizeof(tmp2)));
+    TEST_FAIL_IF(spif_mbuff_get_len(testmbuff) != sizeof(tmp2));
+    TEST_FAIL_IF(spif_mbuff_get_size(testmbuff) != sizeof(tmp2));
+    spif_mbuff_del(testmbuff);
+    fclose(fp);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_mbuff_new_from_fd() function");
+    pipe(mypipe);
+    fd = mypipe[0];
+    write(mypipe[1], tmp2, sizeof(tmp2));
+    close(mypipe[1]);
+    testmbuff = spif_mbuff_new_from_fd(fd);
+    TEST_FAIL_IF(memcmp(SPIF_MBUFF_BUFF(testmbuff), tmp2, sizeof(tmp2)));
+    TEST_FAIL_IF(spif_mbuff_get_len(testmbuff) != sizeof(tmp2));
+    TEST_FAIL_IF(spif_mbuff_get_size(testmbuff) != sizeof(tmp2));
+    spif_mbuff_del(testmbuff);
+    close(fd);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_mbuff_dup() function");
+    testmbuff = spif_mbuff_new_from_ptr(SPIF_CHARPTR(tmp), sizeof(tmp));
+    TEST_FAIL_IF(memcmp(SPIF_MBUFF_BUFF(testmbuff), tmp, sizeof(tmp)));
+    TEST_FAIL_IF(spif_mbuff_get_size(testmbuff) != sizeof(tmp));
+    TEST_FAIL_IF(spif_mbuff_get_len(testmbuff) != sizeof(tmp));
+    test2mbuff = spif_mbuff_dup(testmbuff);
+    TEST_FAIL_IF(test2mbuff == testmbuff);
+    TEST_FAIL_IF(SPIF_MBUFF_BUFF(test2mbuff) == SPIF_MBUFF_BUFF(testmbuff));
+    TEST_FAIL_IF(spif_mbuff_cmp(testmbuff, test2mbuff));
+    TEST_FAIL_IF(memcmp(SPIF_CHARPTR_C(SPIF_MBUFF_BUFF(test2mbuff)), tmp, strlen(tmp)));
+    TEST_FAIL_IF(spif_mbuff_get_size(test2mbuff) != sizeof(tmp));
+    TEST_FAIL_IF(spif_mbuff_get_len(test2mbuff) != sizeof(tmp));
+    spif_mbuff_del(testmbuff);
+    spif_mbuff_del(test2mbuff);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_mbuff_index() function");
+    testmbuff = spif_mbuff_new_from_ptr(SPIF_CHARPTR(tmp2), strlen(tmp2));
+    TEST_FAIL_IF(spif_mbuff_index(testmbuff, '#') != 7);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_mbuff_rindex() function");
+    TEST_FAIL_IF(spif_mbuff_rindex(testmbuff, '#') != 17);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_mbuff_find() function");
+    test2mbuff = spif_mbuff_new_from_ptr(SPIF_CHARPTR("ring"), 4);
+    TEST_FAIL_IF(spif_mbuff_find(testmbuff, test2mbuff) != 2);
+    spif_mbuff_del(test2mbuff);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_mbuff_find_from_ptr() function");
+    TEST_FAIL_IF(spif_mbuff_find_from_ptr(testmbuff, SPIF_CHARPTR("in"), 2) != 3);
+    spif_mbuff_del(testmbuff);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_mbuff_subbuff() function");
+    testmbuff = spif_mbuff_new_from_ptr(SPIF_CHARPTR(tmp), strlen(tmp));
+    test2mbuff = spif_mbuff_subbuff(testmbuff, 2, 6);
+    TEST_FAIL_IF(spif_mbuff_cmp_with_ptr(test2mbuff, "is is", 5));
+    TEST_FAIL_IF(spif_mbuff_get_size(test2mbuff) != 6);
+    TEST_FAIL_IF(spif_mbuff_get_len(test2mbuff) != 6);
+    spif_mbuff_del(test2mbuff);
+    test2mbuff = spif_mbuff_subbuff(testmbuff, -4, 4);
+    TEST_FAIL_IF(spif_mbuff_cmp_with_ptr(test2mbuff, SPIF_CHARPTR("test"), 4));
+    TEST_FAIL_IF(spif_mbuff_get_size(test2mbuff) != 4);
+    TEST_FAIL_IF(spif_mbuff_get_len(test2mbuff) != 4);
+    spif_mbuff_del(test2mbuff);
+    spif_mbuff_del(testmbuff);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_mbuff_subbuff_to_ptr() function");
+    testmbuff = spif_mbuff_new_from_ptr(SPIF_CHARPTR(tmp), strlen(tmp));
+    foo = spif_mbuff_subbuff_to_ptr(testmbuff, 2, 5);
+    TEST_FAIL_IF(foo == NULL);
+    TEST_FAIL_IF(memcmp(SPIF_CHARPTR_C(foo), "is is", 5));
+    FREE(foo);
+    foo = spif_mbuff_subbuff_to_ptr(testmbuff, -4, 4);
+    TEST_FAIL_IF(foo == NULL);
+    TEST_FAIL_IF(memcmp(SPIF_CHARPTR_C(foo), "test", 5));
+    FREE(foo);
+    spif_mbuff_del(testmbuff);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_mbuff_append() function");
+    testmbuff = spif_mbuff_new_from_ptr(SPIF_CHARPTR("copy"), 4);
+    test2mbuff = spif_mbuff_new_from_ptr(SPIF_CHARPTR("cat"), 3);
+    spif_mbuff_append(testmbuff, test2mbuff);
+    TEST_FAIL_IF(spif_mbuff_cmp_with_ptr(testmbuff, SPIF_CHARPTR("copycat"), 7));
+    TEST_FAIL_IF(spif_mbuff_get_size(testmbuff) != 7);
+    TEST_FAIL_IF(spif_mbuff_get_len(testmbuff) != 7);
+    spif_mbuff_del(test2mbuff);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_mbuff_append_from_ptr() function");
+    spif_mbuff_append_from_ptr(testmbuff, SPIF_CHARPTR("crime"), 5);
+    TEST_FAIL_IF(spif_mbuff_cmp_with_ptr(testmbuff, SPIF_CHARPTR("copycatcrime"), 12));
+    TEST_FAIL_IF(spif_mbuff_get_size(testmbuff) != 12);
+    TEST_FAIL_IF(spif_mbuff_get_len(testmbuff) != 12);
+    spif_mbuff_del(testmbuff);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_mbuff_clear() function");
+    testmbuff = spif_mbuff_new_from_ptr(SPIF_CHARPTR("abcdefg"), 7);
+    spif_mbuff_clear(testmbuff, 'x');
+    TEST_FAIL_IF(spif_mbuff_cmp_with_ptr(testmbuff, "xxxxxxx", 7));
+    TEST_FAIL_IF(spif_mbuff_get_size(testmbuff) != 7);
+    TEST_FAIL_IF(spif_mbuff_get_len(testmbuff) != 7);
+    spif_mbuff_del(testmbuff);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_mbuff_trim() function");
+    testmbuff = spif_mbuff_new_from_ptr(SPIF_CHARPTR("  \n \r\f       \t    testing 1 2 3    \v\r \n"), 39);
+    spif_mbuff_trim(testmbuff);
+    TEST_FAIL_IF(spif_mbuff_cmp_with_ptr(testmbuff, "testing 1 2 3", 13));
+    TEST_FAIL_IF(spif_mbuff_get_size(testmbuff) != 13);
+    TEST_FAIL_IF(spif_mbuff_get_len(testmbuff) != 13);
+    spif_mbuff_del(testmbuff);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_mbuff_splice() function");
+    testmbuff = spif_mbuff_new_from_ptr(SPIF_CHARPTR(tmp), strlen(tmp));
+    test2mbuff = spif_mbuff_new_from_ptr(SPIF_CHARPTR("lots of fun"), 11);
+    spif_mbuff_splice(testmbuff, 8, 6, test2mbuff);
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_mbuff_cmp_with_ptr(testmbuff, "this is lots of fun", 19)));
+    TEST_FAIL_IF(spif_mbuff_get_size(testmbuff) != 19);
+    TEST_FAIL_IF(spif_mbuff_get_len(testmbuff) != 19);
+    spif_mbuff_del(test2mbuff);
+    spif_mbuff_del(testmbuff);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_mbuff_splice_from_ptr() function");
+    testmbuff = spif_mbuff_new_from_ptr(SPIF_CHARPTR(tmp), strlen(tmp));
+    spif_mbuff_splice_from_ptr(testmbuff, 8, 0, SPIF_CHARPTR("not "), 4);
+    TEST_FAIL_IF(spif_mbuff_cmp_with_ptr(testmbuff, "this is not a test", 18));
+    TEST_FAIL_IF(spif_mbuff_get_size(testmbuff) != 18);
+    TEST_FAIL_IF(spif_mbuff_get_len(testmbuff) != 18);
+    spif_mbuff_del(testmbuff);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_mbuff_reverse() function");
+    testmbuff = spif_mbuff_new_from_buff(buff, 6, 0);
+    spif_mbuff_reverse(testmbuff);
+    TEST_FAIL_IF(spif_mbuff_cmp_with_ptr(testmbuff, "\0edcba", 6));
+    TEST_FAIL_IF(spif_mbuff_get_size(testmbuff) != 6);
+    TEST_FAIL_IF(spif_mbuff_get_len(testmbuff) != 6);
+    spif_mbuff_del(testmbuff);
+    TEST_PASS();
+
+    TEST_PASSED("spif_mbuff_t");
+    return 0;
+}
+
+int
+test_ustr(void)
+{
+    spif_ustr_t testustr, test2ustr;
+    spif_strclass_t cls;
+    char tmp[] = "this is a test";
+    spif_char_t buff[4096] = "abcde";
+    char tmp2[] = "string #1\nstring #2";
+    FILE *fp;
+    int fd, mypipe[2];
+    spif_charptr_t foo;
+
+    TEST_BEGIN("spif_ustr_new() function");
+    testustr = spif_ustr_new();
+    TEST_FAIL_IF(SPIF_USTR_ISNULL(testustr));
+    TEST_PASS();
+
+    TEST_BEGIN("spif_obj_get_classname() function");
+    cls = SPIF_STR_CLASS(spif_obj_get_class(SPIF_OBJ(testustr)));
+    TEST_FAIL_IF(cls != SPIF_STR_CLASS(SPIF_STRCLASS_VAR(ustr)));
+    TEST_PASS();
+
+    TEST_BEGIN("spif_ustr_del() function");
+    TEST_FAIL_IF(spif_ustr_del(testustr) != TRUE);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_ustr_new_from_ptr() function");
+    testustr = spif_ustr_new_from_ptr(SPIF_CHARPTR(tmp));
+    TEST_FAIL_IF(spif_ustr_cmp_with_ptr(testustr, SPIF_CHARPTR(tmp)));
+    TEST_FAIL_IF(spif_ustr_get_size(testustr) != sizeof(tmp));
+    TEST_FAIL_IF(spif_ustr_get_len(testustr) != (sizeof(tmp) - 1));
+    spif_ustr_del(testustr);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_ustr_new_from_buff() function");
+    testustr = spif_ustr_new_from_buff(buff, sizeof(buff));
+    TEST_FAIL_IF(spif_ustr_casecmp_with_ptr(testustr, buff));
+    TEST_FAIL_IF(spif_ustr_get_size(testustr) != sizeof(buff));
+    TEST_FAIL_IF(spif_ustr_get_len(testustr) != 5);
+    spif_ustr_del(testustr);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_ustr_new_from_fp() function");
+    pipe(mypipe);
+    fd = mypipe[0];
+    fp = fdopen(fd, "r");
+    write(mypipe[1], tmp2, sizeof(tmp2));
+    close(mypipe[1]);
+    TEST_FAIL_IF(fp == NULL);
+    testustr = spif_ustr_new_from_fp(fp);
+    TEST_FAIL_IF(spif_ustr_ncmp_with_ptr(testustr, SPIF_CHARPTR("string #1"), 9));
+    TEST_FAIL_IF(spif_ustr_get_len(testustr) != 9);
+    TEST_FAIL_IF(spif_ustr_get_size(testustr) != 10);
+    spif_ustr_del(testustr);
+    testustr = spif_ustr_new_from_fp(fp);
+    TEST_FAIL_IF(spif_ustr_ncasecmp_with_ptr(testustr, SPIF_CHARPTR("string #2"), 9));
+    TEST_FAIL_IF(spif_ustr_get_len(testustr) != 9);
+    TEST_FAIL_IF(spif_ustr_get_size(testustr) != 10);
+    spif_ustr_del(testustr);
+    fclose(fp);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_ustr_new_from_fd() function");
+    pipe(mypipe);
+    fd = mypipe[0];
+    write(mypipe[1], tmp2, sizeof(tmp2) - 1);
+    close(mypipe[1]);
+    testustr = spif_ustr_new_from_fd(fd);
+    TEST_FAIL_IF(strcmp(SPIF_CHARPTR_C(SPIF_USTR_STR(testustr)), tmp2));
+    TEST_FAIL_IF(spif_ustr_get_len(testustr) != (sizeof(tmp2) - 1));
+    TEST_FAIL_IF(spif_ustr_get_size(testustr) != sizeof(tmp2));
+    spif_ustr_del(testustr);
+    close(fd);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_ustr_new_from_num() function");
+    testustr = spif_ustr_new_from_num(1234567890L);
+    TEST_FAIL_IF(SPIF_USTR_ISNULL(testustr));
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_ustr_cmp_with_ptr(testustr, SPIF_CHARPTR("1234567890"))));
+    spif_ustr_done(testustr);
+    spif_ustr_init_from_num(testustr, 2147483647L);
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_ustr_cmp_with_ptr(testustr, SPIF_CHARPTR("2147483647"))));
+    spif_ustr_done(testustr);
+    spif_ustr_init_from_num(testustr, -2147483647L);
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_ustr_cmp_with_ptr(testustr, SPIF_CHARPTR("-2147483647"))));
+    spif_ustr_done(testustr);
+    spif_ustr_init_from_num(testustr, 0x00000000);
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_ustr_cmp_with_ptr(testustr, SPIF_CHARPTR("0"))));
+    spif_ustr_del(testustr);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_ustr_dup() function");
+    testustr = spif_ustr_new_from_ptr(SPIF_CHARPTR(tmp));
+    TEST_FAIL_IF(strcmp(SPIF_CHARPTR_C(SPIF_USTR_STR(testustr)), tmp));
+    TEST_FAIL_IF(spif_ustr_get_size(testustr) != sizeof(tmp));
+    TEST_FAIL_IF(spif_ustr_get_len(testustr) != (sizeof(tmp) - 1));
+    test2ustr = spif_ustr_dup(testustr);
+    TEST_FAIL_IF(test2ustr == testustr);
+    TEST_FAIL_IF(SPIF_USTR_STR(test2ustr) == SPIF_USTR_STR(testustr));
+    TEST_FAIL_IF(spif_ustr_cmp(testustr, test2ustr));
+    TEST_FAIL_IF(spif_ustr_casecmp(testustr, test2ustr));
+    TEST_FAIL_IF(spif_ustr_ncmp(testustr, test2ustr, spif_ustr_get_len(testustr)));
+    TEST_FAIL_IF(spif_ustr_ncasecmp(testustr, test2ustr, spif_ustr_get_len(test2ustr)));
+    TEST_FAIL_IF(strcmp(SPIF_CHARPTR_C(SPIF_USTR_STR(test2ustr)), tmp));
+    TEST_FAIL_IF(spif_ustr_get_size(test2ustr) != sizeof(tmp));
+    TEST_FAIL_IF(spif_ustr_get_len(test2ustr) != (sizeof(tmp) - 1));
+    spif_ustr_del(testustr);
+    spif_ustr_del(test2ustr);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_ustr_index() function");
+    testustr = spif_ustr_new_from_ptr(SPIF_CHARPTR(tmp2));
+    TEST_FAIL_IF(spif_ustr_index(testustr, '#') != 7);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_ustr_rindex() function");
+    TEST_FAIL_IF(spif_ustr_rindex(testustr, '#') != 17);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_ustr_find() function");
+    test2ustr = spif_ustr_new_from_ptr(SPIF_CHARPTR("ring"));
+    TEST_FAIL_IF(spif_ustr_find(testustr, test2ustr) != 2);
+    spif_ustr_del(test2ustr);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_ustr_find_from_ptr() function");
+    TEST_FAIL_IF(spif_ustr_find_from_ptr(testustr, SPIF_CHARPTR("in")) != 3);
+    spif_ustr_del(testustr);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_ustr_substr() function");
+    testustr = spif_ustr_new_from_ptr(SPIF_CHARPTR(tmp));
+    test2ustr = spif_ustr_substr(testustr, 2, 5);
+    TEST_FAIL_IF(spif_ustr_cmp_with_ptr(test2ustr, SPIF_CHARPTR("is is")));
+    TEST_FAIL_IF(spif_ustr_get_size(test2ustr) != 6);
+    TEST_FAIL_IF(spif_ustr_get_len(test2ustr) != 5);
+    spif_ustr_del(test2ustr);
+    test2ustr = spif_ustr_substr(testustr, -4, 4);
+    TEST_FAIL_IF(spif_ustr_cmp_with_ptr(test2ustr, SPIF_CHARPTR("test")));
+    TEST_FAIL_IF(spif_ustr_get_size(test2ustr) != 5);
+    TEST_FAIL_IF(spif_ustr_get_len(test2ustr) != 4);
+    spif_ustr_del(test2ustr);
+    spif_ustr_del(testustr);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_ustr_substr_to_ptr() function");
+    testustr = spif_ustr_new_from_ptr(SPIF_CHARPTR(tmp));
+    foo = spif_ustr_substr_to_ptr(testustr, 2, 5);
+    TEST_FAIL_IF(foo == NULL);
+    TEST_FAIL_IF(strcmp(SPIF_CHARPTR_C(foo), "is is"));
+    FREE(foo);
+    foo = spif_ustr_substr_to_ptr(testustr, -4, 4);
+    TEST_FAIL_IF(foo == NULL);
+    TEST_FAIL_IF(strcmp(SPIF_CHARPTR_C(foo), "test"));
+    FREE(foo);
+    spif_ustr_del(testustr);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_ustr_to_num() function");
+    testustr = spif_ustr_new_from_ptr(SPIF_CHARPTR("11001001"));
+    TEST_FAIL_IF(spif_ustr_to_num(testustr, 2) != 201);
+    TEST_FAIL_IF(spif_ustr_to_num(testustr, 10) != 11001001);
+    spif_ustr_del(testustr);
+    testustr = spif_ustr_new_from_ptr(SPIF_CHARPTR("0132"));
+    TEST_FAIL_IF(spif_ustr_to_num(testustr, 0) != 90);
+    TEST_FAIL_IF(spif_ustr_to_num(testustr, 8) != 90);
+    TEST_FAIL_IF(spif_ustr_to_num(testustr, 10) != 132);
+    spif_ustr_del(testustr);
+    testustr = spif_ustr_new_from_ptr(SPIF_CHARPTR("0xff"));
+    TEST_FAIL_IF(spif_ustr_to_num(testustr, 0) != 255);
+    TEST_FAIL_IF(spif_ustr_to_num(testustr, 10) != 0);
+    spif_ustr_del(testustr);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_ustr_to_float() function");
+    testustr = spif_ustr_new_from_ptr(SPIF_CHARPTR("3.1415"));
+    TEST_FAIL_IF(spif_ustr_to_float(testustr) != 3.1415);
+    spif_ustr_del(testustr);
+    testustr = spif_ustr_new_from_ptr(SPIF_CHARPTR("2.71"));
+    TEST_FAIL_IF(spif_ustr_to_float(testustr) != 2.71);
+    spif_ustr_del(testustr);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_ustr_append() function");
+    testustr = spif_ustr_new_from_ptr(SPIF_CHARPTR("copy"));
+    test2ustr = spif_ustr_new_from_ptr(SPIF_CHARPTR("cat"));
+    spif_ustr_append(testustr, test2ustr);
+    TEST_FAIL_IF(spif_ustr_cmp_with_ptr(testustr, SPIF_CHARPTR("copycat")));
+    TEST_FAIL_IF(spif_ustr_get_size(testustr) != 8);
+    TEST_FAIL_IF(spif_ustr_get_len(testustr) != 7);
+    spif_ustr_del(test2ustr);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_ustr_append_char() function");
+    test2ustr = spif_ustr_new_from_ptr(SPIF_CHARPTR("Hello"));
+    spif_ustr_append_char(test2ustr, ' ');
+    spif_ustr_append_char(test2ustr, 'w');
+    spif_ustr_append_char(test2ustr, 'o');
+    spif_ustr_append_char(test2ustr, 'r');
+    spif_ustr_append_char(test2ustr, 'l');
+    spif_ustr_append_char(test2ustr, 'd');
+    TEST_FAIL_IF(spif_ustr_cmp_with_ptr(test2ustr, SPIF_CHARPTR("Hello world")));
+    TEST_FAIL_IF(spif_ustr_get_size(test2ustr) != 12);
+    TEST_FAIL_IF(spif_ustr_get_len(test2ustr) != 11);
+    spif_ustr_del(test2ustr);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_ustr_append_from_ptr() function");
+    spif_ustr_append_from_ptr(testustr, SPIF_CHARPTR("crime"));
+    TEST_FAIL_IF(spif_ustr_cmp_with_ptr(testustr, SPIF_CHARPTR("copycatcrime")));
+    TEST_FAIL_IF(spif_ustr_get_size(testustr) != 13);
+    TEST_FAIL_IF(spif_ustr_get_len(testustr) != 12);
+    spif_ustr_del(testustr);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_ustr_clear() function");
+    testustr = spif_ustr_new_from_ptr(SPIF_CHARPTR("abcdefg"));
+    spif_ustr_clear(testustr, 'x');
+    TEST_FAIL_IF(spif_ustr_cmp_with_ptr(testustr, SPIF_CHARPTR("xxxxxxx")));
+    TEST_FAIL_IF(spif_ustr_get_size(testustr) != 8);
+    TEST_FAIL_IF(spif_ustr_get_len(testustr) != 7);
+    spif_ustr_del(testustr);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_ustr_trim() function");
+    testustr = spif_ustr_new_from_ptr(SPIF_CHARPTR("  \n \r\f       \t    testing 1 2 3    \v\r \n"));
+    spif_ustr_trim(testustr);
+    TEST_FAIL_IF(spif_ustr_cmp_with_ptr(testustr, SPIF_CHARPTR("testing 1 2 3")));
+    TEST_FAIL_IF(spif_ustr_get_size(testustr) != 14);
+    TEST_FAIL_IF(spif_ustr_get_len(testustr) != 13);
+    spif_ustr_del(testustr);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_ustr_splice() function");
+    testustr = spif_ustr_new_from_ptr(SPIF_CHARPTR(tmp));
+    test2ustr = spif_ustr_new_from_ptr(SPIF_CHARPTR("lots of fun"));
+    spif_ustr_splice(testustr, 8, 6, test2ustr);
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_ustr_cmp_with_ptr(testustr, SPIF_CHARPTR("this is lots of fun"))));
+    TEST_FAIL_IF(spif_ustr_get_size(testustr) != 20);
+    TEST_FAIL_IF(spif_ustr_get_len(testustr) != 19);
+    spif_ustr_del(test2ustr);
+    spif_ustr_del(testustr);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_ustr_splice_from_ptr() function");
+    testustr = spif_ustr_new_from_ptr(SPIF_CHARPTR(tmp));
+    spif_ustr_splice_from_ptr(testustr, 8, 0, SPIF_CHARPTR("not "));
+    TEST_FAIL_IF(spif_ustr_cmp_with_ptr(testustr, SPIF_CHARPTR("this is not a test")));
+    TEST_FAIL_IF(spif_ustr_get_size(testustr) != 19);
+    TEST_FAIL_IF(spif_ustr_get_len(testustr) != 18);
+    spif_ustr_del(testustr);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_ustr_reverse() function");
+    testustr = spif_ustr_new_from_buff(buff, sizeof(buff));
+    spif_ustr_reverse(testustr);
+    TEST_FAIL_IF(spif_ustr_cmp_with_ptr(testustr, SPIF_CHARPTR("edcba")));
+    TEST_FAIL_IF(spif_ustr_get_size(testustr) != sizeof(buff));
+    TEST_FAIL_IF(spif_ustr_get_len(testustr) != 5);
+    spif_ustr_del(testustr);
+    TEST_PASS();
+
+    TEST_PASSED("spif_ustr_t");
     return 0;
 }
 
@@ -2224,6 +2695,12 @@ main(int argc, char *argv[])
         return ret;
     }
     if ((ret = test_tok()) != 0) {
+        return ret;
+    }
+    if ((ret = test_mbuff()) != 0) {
+        return ret;
+    }
+    if ((ret = test_ustr()) != 0) {
         return ret;
     }
     if ((ret = test_url()) != 0) {

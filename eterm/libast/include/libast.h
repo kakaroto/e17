@@ -117,6 +117,7 @@ extern int re_exec();
 #include <libast/str.h>
 #include <libast/tok.h>
 #include <libast/url.h>
+#include <libast/ustr.h>
 
 #include <libast/iterator_if.h>
 #include <libast/list_if.h>

@@ -74,6 +74,8 @@ SPIF_TYPE(class) SPIF_CLASS_VAR(mbuff) = SPIF_CAST(class) &mb_class;
 SPIF_TYPE(mbuffclass) SPIF_MBUFFCLASS_VAR(mbuff) = &mb_class;
 /* *INDENT-ON* */
 
+static const size_t buff_inc = 4096;
+
 spif_mbuff_t
 spif_mbuff_new(void)
 {
@@ -186,7 +188,6 @@ spif_mbuff_init_from_buff(spif_mbuff_t self, spif_byteptr_t buff, spif_memidx_t 
 spif_bool_t
 spif_mbuff_init_from_fp(spif_mbuff_t self, FILE *fp)
 {
-    spif_byteptr_t p;
     long file_pos;
     spif_memidx_t file_size;
 
@@ -196,20 +197,49 @@ spif_mbuff_init_from_fp(spif_mbuff_t self, FILE *fp)
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS(SPIF_MBUFFCLASS_VAR(mbuff)));
 
     file_pos = ftell(fp);
-    fseek(fp, 0L, SEEK_END);
-    file_size = ftell(fp);
-    fseek(fp, file_pos, SEEK_SET);
-    LOWER_BOUND(file_size, 0);
-    if (file_size == 0) {
-        spif_mbuff_init(self);
-        return FALSE;
-    }
-    self->len = self->size = file_size;
-    self->buff = SPIF_CAST(byteptr) MALLOC(self->size);
+    LOWER_BOUND(file_pos, 0);
+    if (fseek(fp, 0L, SEEK_END) < 0) {
+        spif_byteptr_t p;
+        size_t cnt = 0;
 
-    if (fread(p, file_size, 1, fp) < 1) {
-        FREE(self->buff);
-        return FALSE;
+        D_OBJ(("Unable to seek to EOF -- %s.\n", strerror(errno)));
+        self->size = buff_inc;
+        self->len = 0;
+        self->buff = SPIF_CAST(byteptr) MALLOC(self->size);
+
+        for (p = self->buff; (cnt = fread(p, 1, buff_inc, fp)) > 0; p += buff_inc) {
+            self->len += cnt;
+            if (feof(fp)) {
+                break;
+            } else if (ferror(fp)) {
+                libast_print_warning("read failed:  %s.\n", strerror(errno));
+                break;
+            } else {
+                self->size += buff_inc;
+                self->buff = SPIF_CAST(byteptr) REALLOC(self->buff, self->size);
+            }
+        }
+        self->size = self->len;
+        if (self->size) {
+            self->buff = SPIF_CAST(byteptr) REALLOC(self->buff, self->size);
+        } else {
+            FREE(self->buff);
+        }
+    } else {
+        file_size = ftell(fp);
+        fseek(fp, file_pos, SEEK_SET);
+        LOWER_BOUND(file_size, 0);
+        if (file_size <= 0) {
+            spif_mbuff_init(self);
+            return FALSE;
+        }
+        self->len = self->size = file_size;
+        self->buff = SPIF_CAST(byteptr) MALLOC(self->size);
+
+        if (fread(self->buff, file_size, 1, fp) < 1) {
+            FREE(self->buff);
+            return FALSE;
+        }
     }
     return TRUE;
 }
@@ -229,17 +259,38 @@ spif_mbuff_init_from_fd(spif_mbuff_t self, int fd)
     file_pos = lseek(fd, SPIF_CAST_C(off_t) 0, SEEK_CUR);
     file_size = SPIF_CAST(memidx) lseek(fd, SPIF_CAST_C(off_t) 0, SEEK_END);
     lseek(fd, file_pos, SEEK_SET);
-    LOWER_BOUND(file_size, 0);
-    if (file_size == 0) {
-        spif_mbuff_init(self);
-        return FALSE;
-    }
-    self->len = self->size = file_size;
-    self->buff = SPIF_CAST(byteptr) MALLOC(self->size);
+    if (file_size < 0) {
+        spif_byteptr_t p;
+        size_t cnt = 0;
 
-    if (read(fd, p, file_size) < 1) {
-        FREE(self->buff);
-        return FALSE;
+        D_OBJ(("Unable to seek to EOF -- %s.\n", strerror(errno)));
+        self->size = buff_inc;
+        self->len = 0;
+        self->buff = SPIF_CAST(byteptr) MALLOC(self->size);
+
+        for (p = self->buff; (cnt = read(fd, p, buff_inc)) > 0; p += buff_inc) {
+            self->len += cnt;
+            if (cnt < buff_inc) {
+                break;
+            } else {
+                self->size += buff_inc;
+                self->buff = SPIF_CAST(byteptr) REALLOC(self->buff, self->size);
+            }
+        }
+        self->size = self->len;
+        if (self->size) {
+            self->buff = SPIF_CAST(byteptr) REALLOC(self->buff, self->size);
+        } else {
+            FREE(self->buff);
+        }
+    } else {
+        self->len = self->size = file_size;
+        self->buff = SPIF_CAST(byteptr) MALLOC(self->size);
+
+        if (read(fd, p, file_size) < 1) {
+            FREE(self->buff);
+            return FALSE;
+        }
     }
     return TRUE;
 }
@@ -291,17 +342,23 @@ spif_mbuff_show(spif_mbuff_t self, spif_byteptr_t name, spif_str_t buff, size_t 
     for (j = 0; j < self->len; j += 8) {
         spif_memidx_t k, l, len;
 
-        snprintf(SPIF_CHARPTR_C(tmp) + indent + 2, sizeof(tmp) - indent - 2, "%0lx    ", SPIF_CAST(long) j);
+        snprintf(SPIF_CHARPTR_C(tmp) + indent + 2, sizeof(tmp) - indent - 2, "0x%08lx    ", SPIF_CAST(long) j);
         len = strlen(SPIF_CHARPTR_C(tmp));
-        if (len + ((8 * 3) + 3 + 8 + 1) < sizeof(tmp)) {
+        if ((sizeof(tmp) - indent - 2) > 46) {
+            spif_char_t buffr[9];
+
             l = ((self->len - j < 8) ? (self->len - j) : (8));
+            memcpy(buffr, self->buff + j, l);
+            memset(buffr + l, 0, 9 - l);
             for (k = 0; k < l; k++) {
-                sprintf(SPIF_CHARPTR_C(tmp) + len, "%02x ", self->buff[j + k]);
+                sprintf(SPIF_CHARPTR_C(tmp) + 14 + (k * 3), "%02x ", self->buff[j + k]);
             }
             for (; k < 8; k++) {
-                strcat(SPIF_CHARPTR_C(tmp) + len, "   ");
+                strcat(SPIF_CHARPTR_C(tmp) + 14, "   ");
             }
-            sprintf(SPIF_CHARPTR_C(tmp) + len, "%-8s\n", spiftool_safe_str(SPIF_CAST(charptr) (self->buff + j), l));
+            sprintf(SPIF_CHARPTR_C(tmp) + 38, "%-8s\n", spiftool_safe_str(SPIF_CAST(charptr) (buffr), l));
+        } else {
+            snprintf(SPIF_CHARPTR_C(tmp) + indent + 2, sizeof(tmp) - indent - 2, "!X!");
         }
         spif_str_append_from_ptr(buff, tmp);
     }
@@ -432,7 +489,7 @@ spif_mbuff_index(spif_mbuff_t self, spif_uint8_t c)
     spif_memidx_t i;
 
     ASSERT_RVAL(!SPIF_MBUFF_ISNULL(self), (SPIF_CAST(memidx) -1));
-    for (tmp = self->buff, i = 0; (*tmp & (~c)) && (i < self->len); i++, tmp++);
+    for (tmp = self->buff, i = 0; ((int) *tmp != (int) (c)) && (i < self->len); i++, tmp++);
     return SPIF_CAST(memidx) (SPIF_CAST(long) tmp - SPIF_CAST(long) self->buff);
 }
 
@@ -534,7 +591,7 @@ spif_mbuff_splice(spif_mbuff_t self, spif_memidx_t idx, spif_memidx_t cnt, spif_
     REQUIRE_RVAL(cnt >= 0, FALSE);
     REQUIRE_RVAL(cnt <= (self->len - idx), FALSE);
 
-    newsize = self->len + ((SPIF_MBUFF_ISNULL(other)) ? (0) : (other->len)) - cnt + 1;
+    newsize = self->len + ((SPIF_MBUFF_ISNULL(other)) ? (0) : (other->len)) - cnt;
     ptmp = tmp = SPIF_CAST(byteptr) MALLOC(newsize);
     if (idx > 0) {
         memcpy(tmp, self->buff, idx);
@@ -650,11 +707,14 @@ spif_mbuff_trim(spif_mbuff_t self)
     if (start > end) {
         return spif_mbuff_done(self);
     }
-    *(++end) = 0;
-    self->len = (spif_memidx_t) (end - start);
-    self->size = self->len + 1;
-    memmove(self->buff, start, self->size);
-    self->buff = SPIF_CAST(byteptr) REALLOC(self->buff, self->size);
+    self->len = (spif_memidx_t) (end - start + 1);
+    if (start > self->buff) {
+        memmove(self->buff, start, self->len);
+    }
+    if (self->size != self->len) {
+        self->size = self->len;
+        self->buff = SPIF_CAST(byteptr) REALLOC(self->buff, self->size);
+    }
     return TRUE;
 }
 

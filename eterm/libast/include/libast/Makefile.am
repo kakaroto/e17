@@ -2,7 +2,7 @@
 
 EXTRA_HEADERS = array.h avl_tree.h dlinked_list.h iterator_if.h		\
 linked_list.h list_if.h map_if.h mbuff.h obj.h objpair.h regexp.h	\
-socket.h str.h sysdefs.h tok.h types.h url.h vector_if.h
+socket.h str.h sysdefs.h tok.h types.h url.h ustr.h vector_if.h
 
 install-exec-hook:
 	$(mkinstalldirs) $(DESTDIR)$(includedir)/$(PACKAGE)

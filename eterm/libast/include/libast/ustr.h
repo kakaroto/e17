@@ -70,40 +70,43 @@
 #define SPIF_USTR_RINDEX(o, x)                   SPIF_CAST(stridx) (SPIF_OBJ_CALL_METHOD((o), rindex)(o, x))
 #define SPIF_USTR_SPLICE(o, n1, n2, x)           SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), splice)(o, n1, n2, x))
 #define SPIF_USTR_SPLICE_FROM_PTR(o, n1, n2, x)  SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), splice_from_ptr)(o, n1, n2, x))
-#define SPIF_USTR_SUBUSTR(o, n1, n2)              SPIF_CAST(ustr) (SPIF_OBJ_CALL_METHOD((o), subustr)(o, n1, n2))
-#define SPIF_USTR_SUBUSTR_TO_PTR(o, n1, n2)       SPIF_CAST(charptr) (SPIF_OBJ_CALL_METHOD((o), subustr_to_ptr)(o, n1, n2))
+#define SPIF_USTR_SUBSTR(o, n1, n2)              SPIF_CAST(ustr) (SPIF_OBJ_CALL_METHOD((o), substr)(o, n1, n2))
+#define SPIF_USTR_SUBSTR_TO_PTR(o, n1, n2)       SPIF_CAST(charptr) (SPIF_OBJ_CALL_METHOD((o), substr_to_ptr)(o, n1, n2))
 #define SPIF_USTR_TO_FLOAT(o)                    SPIF_CAST_C(double) (SPIF_OBJ_CALL_METHOD((o), to_float)(o))
 #define SPIF_USTR_TO_NUM(o, x)                   SPIF_CAST_C(size_t) (SPIF_OBJ_CALL_METHOD((o), to_num)(o, x))
 #define SPIF_USTR_TRIM(o)                        SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), trim)(o))
 #define SPIF_USTR_UPCASE(o)                      SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), upcase)(o))
 
-#define SPIF_USTR_USTR(obj)  (SPIF_CONST_CAST(charptr) ((SPIF_USTR_ISNULL(obj)) \
-                                                      ? (SPIF_CAST(charptr) "") \
-                                                      : (SPIF_USTR(obj)->s)))
+#define SPIF_USTR_STR(obj)  (SPIF_CONST_CAST(charptr) ((SPIF_USTR_ISNULL(obj)) \
+                                                       ? (SPIF_CAST(charptr) "") \
+                                                       : (SPIF_USTR(obj)->s)))
+
+typedef spif_int64_t spif_ustridx_t;
 
 SPIF_DECL_OBJ(ustr) {
     SPIF_DECL_PARENT_TYPE(obj);
     spif_charptr_t s;
-    SPIF_DECL_PROPERTY_C(spif_stridx_t, size);
-    SPIF_DECL_PROPERTY_C(spif_stridx_t, len);
+    SPIF_DECL_PROPERTY_C(spif_ustridx_t, size);
+    SPIF_DECL_PROPERTY_C(spif_ustridx_t, len);
 };
 
 extern spif_class_t SPIF_CLASS_VAR(ustr);
+extern spif_strclass_t SPIF_STRCLASS_VAR(ustr);
 extern spif_ustr_t spif_ustr_new(void);
 extern spif_ustr_t spif_ustr_new_from_ptr(spif_charptr_t);
-extern spif_ustr_t spif_ustr_new_from_buff(spif_charptr_t, spif_stridx_t);
+extern spif_ustr_t spif_ustr_new_from_buff(spif_charptr_t, spif_ustridx_t);
 extern spif_ustr_t spif_ustr_new_from_fp(FILE *);
 extern spif_ustr_t spif_ustr_new_from_fd(int);
 extern spif_ustr_t spif_ustr_new_from_num(long);
 extern spif_bool_t spif_ustr_del(spif_ustr_t);
 extern spif_bool_t spif_ustr_init(spif_ustr_t);
 extern spif_bool_t spif_ustr_init_from_ptr(spif_ustr_t, spif_charptr_t);
-extern spif_bool_t spif_ustr_init_from_buff(spif_ustr_t, spif_charptr_t, spif_stridx_t);
+extern spif_bool_t spif_ustr_init_from_buff(spif_ustr_t, spif_charptr_t, spif_ustridx_t);
 extern spif_bool_t spif_ustr_init_from_fp(spif_ustr_t, FILE *);
 extern spif_bool_t spif_ustr_init_from_fd(spif_ustr_t, int);
 extern spif_bool_t spif_ustr_init_from_num(spif_ustr_t, long);
 extern spif_bool_t spif_ustr_done(spif_ustr_t);
-extern spif_ustr_t spif_ustr_show(spif_ustr_t, spif_charptr_t, spif_ustr_t, size_t);
+extern spif_str_t spif_ustr_show(spif_ustr_t, spif_charptr_t, spif_str_t, size_t);
 extern spif_cmp_t spif_ustr_comp(spif_ustr_t, spif_ustr_t);
 extern spif_ustr_t spif_ustr_dup(spif_ustr_t);
 extern spif_classname_t spif_ustr_type(spif_ustr_t);
@@ -117,27 +120,27 @@ extern spif_bool_t spif_ustr_clear(spif_ustr_t, spif_char_t);
 extern spif_cmp_t spif_ustr_cmp(spif_ustr_t, spif_ustr_t);
 extern spif_cmp_t spif_ustr_cmp_with_ptr(spif_ustr_t, spif_charptr_t);
 extern spif_bool_t spif_ustr_downcase(spif_ustr_t);
-extern spif_stridx_t spif_ustr_find(spif_ustr_t, spif_ustr_t);
-extern spif_stridx_t spif_ustr_find_from_ptr(spif_ustr_t, spif_charptr_t);
-extern spif_stridx_t spif_ustr_index(spif_ustr_t, spif_char_t);
-extern spif_cmp_t spif_ustr_ncasecmp(spif_ustr_t, spif_ustr_t, spif_stridx_t);
-extern spif_cmp_t spif_ustr_ncasecmp_with_ptr(spif_ustr_t, spif_charptr_t, spif_stridx_t);
-extern spif_cmp_t spif_ustr_ncmp(spif_ustr_t, spif_ustr_t, spif_stridx_t);
-extern spif_cmp_t spif_ustr_ncmp_with_ptr(spif_ustr_t, spif_charptr_t, spif_stridx_t);
+extern spif_ustridx_t spif_ustr_find(spif_ustr_t, spif_ustr_t);
+extern spif_ustridx_t spif_ustr_find_from_ptr(spif_ustr_t, spif_charptr_t);
+extern spif_ustridx_t spif_ustr_index(spif_ustr_t, spif_char_t);
+extern spif_cmp_t spif_ustr_ncasecmp(spif_ustr_t, spif_ustr_t, spif_ustridx_t);
+extern spif_cmp_t spif_ustr_ncasecmp_with_ptr(spif_ustr_t, spif_charptr_t, spif_ustridx_t);
+extern spif_cmp_t spif_ustr_ncmp(spif_ustr_t, spif_ustr_t, spif_ustridx_t);
+extern spif_cmp_t spif_ustr_ncmp_with_ptr(spif_ustr_t, spif_charptr_t, spif_ustridx_t);
 extern spif_bool_t spif_ustr_prepend(spif_ustr_t, spif_ustr_t);
 extern spif_bool_t spif_ustr_prepend_char(spif_ustr_t, spif_char_t);
 extern spif_bool_t spif_ustr_prepend_from_ptr(spif_ustr_t, spif_charptr_t);
 extern spif_bool_t spif_ustr_reverse(spif_ustr_t);
-extern spif_stridx_t spif_ustr_rindex(spif_ustr_t, spif_char_t);
-extern spif_bool_t spif_ustr_splice(spif_ustr_t, spif_stridx_t, spif_stridx_t, spif_ustr_t);
-extern spif_bool_t spif_ustr_splice_from_ptr(spif_ustr_t, spif_stridx_t, spif_stridx_t, spif_charptr_t);
-extern spif_ustr_t spif_ustr_subustr(spif_ustr_t, spif_stridx_t, spif_stridx_t);
-extern spif_charptr_t spif_ustr_subustr_to_ptr(spif_ustr_t, spif_stridx_t, spif_stridx_t);
+extern spif_ustridx_t spif_ustr_rindex(spif_ustr_t, spif_char_t);
+extern spif_bool_t spif_ustr_splice(spif_ustr_t, spif_ustridx_t, spif_ustridx_t, spif_ustr_t);
+extern spif_bool_t spif_ustr_splice_from_ptr(spif_ustr_t, spif_ustridx_t, spif_ustridx_t, spif_charptr_t);
+extern spif_ustr_t spif_ustr_substr(spif_ustr_t, spif_ustridx_t, spif_ustridx_t);
+extern spif_charptr_t spif_ustr_substr_to_ptr(spif_ustr_t, spif_ustridx_t, spif_ustridx_t);
 extern double spif_ustr_to_float(spif_ustr_t);
 extern size_t spif_ustr_to_num(spif_ustr_t, int);
 extern spif_bool_t spif_ustr_trim(spif_ustr_t);
 extern spif_bool_t spif_ustr_upcase(spif_ustr_t);
-SPIF_DECL_PROPERTY_FUNC_C(ustr, spif_stridx_t, size);
-SPIF_DECL_PROPERTY_FUNC_C(ustr, spif_stridx_t, len);
+SPIF_DECL_PROPERTY_FUNC_C(ustr, spif_ustridx_t, size);
+SPIF_DECL_PROPERTY_FUNC_C(ustr, spif_ustridx_t, len);
 
 #endif /* _LIBAST_USTR_H_ */

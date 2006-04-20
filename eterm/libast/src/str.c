@@ -86,7 +86,7 @@ SPIF_TYPE(class) SPIF_CLASS_VAR(str) = SPIF_CAST(class) &s_class;
 SPIF_TYPE(strclass) SPIF_STRCLASS_VAR(str) = &s_class;
 /* *INDENT-ON* */
 
-const size_t buff_inc = 4096;
+static const size_t buff_inc = 4096;
 
 spif_str_t
 spif_str_new(void)
