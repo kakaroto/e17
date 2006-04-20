@@ -144,11 +144,11 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 	ewl_combo_model_set(EWL_COMBO(fp->type_combo), model);
 	ewl_combo_view_set(EWL_COMBO(fp->type_combo), view);
 	ewl_combo_data_set(EWL_COMBO(fp->type_combo), fp);
+	ewl_combo_selected_set(EWL_COMBO(fp->type_combo), 0);
 	ewl_combo_editable_set(EWL_COMBO(fp->type_combo), TRUE);
 	ewl_callback_append(fp->type_combo, EWL_CALLBACK_VALUE_CHANGED,
 					ewl_filepicker_cb_type_change, fp);
 	ewl_container_child_append(EWL_CONTAINER(box), fp->type_combo);
-	ewl_combo_selected_set(EWL_COMBO(fp->type_combo), 0);
 	ewl_widget_show(fp->type_combo);
 
 	box = ewl_vbox_new();

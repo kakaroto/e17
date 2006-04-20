@@ -99,7 +99,6 @@ ewl_combo_selected_set(Ewl_Combo *combo, int idx)
 	/* we don't bail out early as the user could have prepended widgets
 	 * to their data, so the selected_idx will be the same but the
 	 * widget is actually different */
-
 	combo->selected_idx = idx;
 
 	/* remove the previously selected value */
@@ -118,9 +117,9 @@ ewl_combo_selected_set(Ewl_Combo *combo, int idx)
 		combo->view->assign(combo->selected, 
 				combo->model->fetch(combo->data, idx, 0));
 	}
-	else if ((idx < 0) && combo->view && combo->view->header_fetch)
+	else if (combo->view && combo->view->header_fetch)
 		combo->selected = combo->view->header_fetch(combo->data, 
-							combo->selected_idx);	
+							combo->selected_idx);
 
 	if (combo->selected)
 	{
