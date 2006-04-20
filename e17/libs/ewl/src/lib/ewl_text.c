@@ -919,7 +919,7 @@ ewl_text_font_get(Ewl_Text *t, unsigned int idx)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, NULL);
-	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
+	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, NULL);
 
 	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
 	if (tx && tx->font)

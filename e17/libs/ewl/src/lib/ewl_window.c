@@ -200,7 +200,7 @@ ewl_window_name_get(Ewl_Window *win)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("win", win, NULL);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_TYPE_RET("win", win, EWL_WINDOW_TYPE, NULL);
 
 	DRETURN_PTR(strdup(win->name), DLEVEL_STABLE);
 }

@@ -738,7 +738,7 @@ ewl_seeker_mouse_value_map(Ewl_Seeker *s, int mx, int my)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, 0.0);
-	DCHECK_TYPE("s", s, EWL_SEEKER_TYPE);
+	DCHECK_TYPE_RET("s", s, EWL_SEEKER_TYPE, 0.0);
 
 	if (s->orientation == EWL_ORIENTATION_HORIZONTAL) {
 		m = mx;
@@ -786,11 +786,10 @@ ewl_seeker_timer(void *data)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("data", data, FALSE);
-	DCHECK_TYPE("data", data, EWL_SEEKER_TYPE);
+	DCHECK_TYPE_RET("data", data, EWL_SEEKER_TYPE, FALSE);
 
 	s = EWL_SEEKER(data);
-
-	value = ewl_seeker_value_get(EWL_SEEKER(s));
+	value = ewl_seeker_value_get(s);
 
 	/*
 	 * Find the value based on mouse position
@@ -821,3 +820,4 @@ ewl_seeker_timer(void *data)
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
+

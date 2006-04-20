@@ -994,7 +994,7 @@ ewl_embed_widget_find(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
 
 	while (w->parent)
 		w = w->parent;

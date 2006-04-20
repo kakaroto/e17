@@ -371,7 +371,7 @@ ewl_theme_image_get(Ewl_Widget *w, char *k)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
 	DCHECK_PARAM_PTR_RET("k", k, NULL);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
 
 	data = ewl_theme_data_str_get(w, k);
 	if (!data)

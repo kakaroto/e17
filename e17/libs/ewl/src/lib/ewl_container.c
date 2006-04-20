@@ -682,7 +682,7 @@ ewl_container_child_at_get(Ewl_Container *widget, int x, int y)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("widget", widget, NULL);
-	DCHECK_TYPE("widget", widget, EWL_WIDGET_TYPE);
+	DCHECK_TYPE_RET("widget", widget, EWL_WIDGET_TYPE, NULL);
 
 	if (!widget->children || ecore_dlist_is_empty(widget->children))
 		DRETURN_PTR(NULL, DLEVEL_STABLE);

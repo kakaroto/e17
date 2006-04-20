@@ -388,7 +388,7 @@ ewl_media_audio_mute_get(Ewl_Media *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE)
 	DCHECK_PARAM_PTR_RET("m", m, 0);
-	DCHECK_TYPE("m", m, EWL_MEDIA_TYPE);
+	DCHECK_TYPE_RET("m", m, EWL_MEDIA_TYPE, 0);
 
 	DRETURN_INT(m->mute, DLEVEL_STABLE);
 }

@@ -211,7 +211,7 @@ ewl_filedialog_directory_get(Ewl_Filedialog *fd)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fd", fd, NULL);
-	DCHECK_TYPE("fd", fd, EWL_FILEDIALOG_TYPE);
+	DCHECK_TYPE_RET("fd", fd, EWL_FILEDIALOG_TYPE, NULL);
 
 	DRETURN_PTR(ewl_filepicker_directory_get(EWL_FILEPICKER(fd->fp)),
 							DLEVEL_STABLE);

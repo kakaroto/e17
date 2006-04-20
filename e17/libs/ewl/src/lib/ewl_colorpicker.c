@@ -554,7 +554,7 @@ ewl_colorpicker_color_mode_get(Ewl_Colorpicker *cp)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("cp", cp, FALSE);
-	DCHECK_TYPE("cp", cp, EWL_COLORPICKER_TYPE);
+	DCHECK_TYPE_RET("cp", cp, EWL_COLORPICKER_TYPE, FALSE);
 
 	DRETURN_INT(cp->mode, DLEVEL_STABLE);
 }

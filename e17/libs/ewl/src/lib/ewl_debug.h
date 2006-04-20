@@ -160,6 +160,7 @@ void ewl_backtrace(void);
 					"NULL") , type); \
 		ewl_backtrace(); \
 		ewl_segv(); \
+		return; \
 	} \
 }
 

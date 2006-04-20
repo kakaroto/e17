@@ -525,7 +525,7 @@ ewl_widget_data_del(Ewl_Widget * w, void *k)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
 	DCHECK_PARAM_PTR_RET("k", k, NULL);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
 
 	if (!w->data)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
@@ -547,7 +547,7 @@ ewl_widget_data_get(Ewl_Widget * w, void *k)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
 	DCHECK_PARAM_PTR_RET("k", k, NULL);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
 
 	if (!w->data)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
@@ -607,7 +607,7 @@ ewl_widget_appearance_get(Ewl_Widget * w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
 
 	DRETURN_PTR((w->appearance ? strdup(w->appearance) : NULL), DLEVEL_STABLE);
 }
@@ -626,7 +626,7 @@ ewl_widget_appearance_path_size_get(Ewl_Widget *w, int *size)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
 
 	/*
 	 * Allocate enough for the appearance plus a leading "/"
@@ -660,7 +660,7 @@ ewl_widget_appearance_path_get(Ewl_Widget * w)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
 
 	ret = ewl_widget_appearance_path_size_get(w, &len);
 
@@ -1086,7 +1086,7 @@ ewl_widget_layer_get(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, 0);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, 0);
 
 	DRETURN_INT(LAYER(w), DLEVEL_STABLE);
 }
@@ -1285,7 +1285,7 @@ ewl_widget_ignore_focus_change_get(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, FALSE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, FALSE);
 
 	if (ewl_object_flags_has(EWL_OBJECT(w), 
 					EWL_FLAG_PROPERTY_BLOCK_TAB_FOCUS,
@@ -1329,7 +1329,7 @@ ewl_widget_focusable_get(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, FALSE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, FALSE);
 
 	if (ewl_object_flags_has(EWL_OBJECT(w), 
 					EWL_FLAG_PROPERTY_FOCUSABLE,
@@ -1595,7 +1595,7 @@ ewl_widget_onscreen_is(Ewl_Widget *w)
 	Ewl_Embed *emb;
 
 	DCHECK_PARAM_PTR_RET("w", w, 0);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, 0);
 
 	/*
 	 * Until an embed is present, the widget is off screen by default.
@@ -1726,7 +1726,7 @@ ewl_widget_parent_of(Ewl_Widget *c, Ewl_Widget *w)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("c", c, FALSE);
-	DCHECK_TYPE("c", c, EWL_WIDGET_TYPE);
+	DCHECK_TYPE_RET("c", c, EWL_WIDGET_TYPE, FALSE);
 
 	if (!w) {
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
