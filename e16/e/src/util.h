@@ -40,9 +40,6 @@
 #if HAVE_STRNDUP
 #define USE_LIBC_STRNDUP 1	/* Use libc strndup if present */
 #endif
-#if HAVE_SETENV
-#define USE_LIBC_SETENV  1	/* Use libc setenv  if present */
-#endif
 
 /* memory.c */
 #define Ecalloc     calloc
@@ -69,12 +66,6 @@ char               *Estrndup(const char *s, int n);
 
 char               *Estrdupcat2(char *ss, const char *s1, const char *s2);
 
-#if USE_LIBC_SETENV
-#define Esetenv setenv
-#else
-int                 Esetenv(const char *name, const char *value, int overwrite);
-#endif
-
 char              **StrlistDup(char **lst, int num);
 void                StrlistFree(char **lst, int num);
 char               *StrlistJoin(char **lst, int num);
@@ -82,6 +73,8 @@ char               *StrlistEncodeEscaped(char *buf, int len, char **lst,
 					 int num);
 char              **StrlistDecodeEscaped(const char *str, int *pnum);
 char              **StrlistFromString(const char *str, int delim, int *num);
+
+void                Esetenv(const char *name, const char *value);
 
 /* misc.c */
 void __PRINTF__     Eprintf(const char *fmt, ...);

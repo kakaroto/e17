@@ -231,12 +231,12 @@ main(int argc, char **argv)
    ThemePathFind();
 
    /* Set the Environment variables */
-   Esetenv("EVERSION", e_wm_version, 1);
-   Esetenv("EROOT", EDirRoot(), 1);
-   Esetenv("EBIN", EDirBin(), 1);
-   Esetenv("ECONFDIR", EDirUser(), 1);
-   Esetenv("ECACHEDIR", EDirUserCache(), 1);
-   Esetenv("ETHEME", Mode.theme.path, 1);
+   Esetenv("EVERSION", e_wm_version);
+   Esetenv("EROOT", EDirRoot());
+   Esetenv("EBIN", EDirBin());
+   Esetenv("ECONFDIR", EDirUser());
+   Esetenv("ECACHEDIR", EDirUserCache());
+   Esetenv("ETHEME", Mode.theme.path);
 
    /* Unmap the clients */
    MapUnmap(0);
@@ -510,7 +510,7 @@ EConfNameSet(const char *name)
    if (Mode.conf.name)
       Efree(Mode.conf.name);
    Mode.conf.name = Estrdup(name);
-   Esetenv("ECONFNAME", Mode.conf.name, 1);
+   Esetenv("ECONFNAME", Mode.conf.name);
 }
 
 static void

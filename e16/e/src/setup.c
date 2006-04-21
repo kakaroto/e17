@@ -191,7 +191,7 @@ SetupX(const char *dstr)
      }
 
    Mode.display.name = Estrdup(DisplayString(disp));
-   Esetenv("DISPLAY", Mode.display.name, 1);
+   Esetenv("DISPLAY", Mode.display.name);
 
    /* set up an error handler for then E would normally have fatal X errors */
    XSetErrorHandler((XErrorHandler) HandleXError);
@@ -234,7 +234,7 @@ SetupX(const char *dstr)
 
 	/* Enable eesh and edox to pix up the virtual root */
 	Esnprintf(buf, sizeof(buf), "%#lx", VRoot.win);
-	Esetenv("ENL_WM_ROOT", buf, 1);
+	Esetenv("ENL_WM_ROOT", buf);
      }
    else
      {

@@ -69,7 +69,7 @@ AC_CHECK_FUNCS(mkdir)
 AC_CHECK_FUNCS(snprintf)
 AM_CONDITIONAL(USE_ESNPRINTF, test "x$ac_cv_func_snprintf" != "xyes")
 AC_CHECK_FUNCS(strcasecmp)
-AC_CHECK_FUNCS(setenv)
+AC_CHECK_FUNCS(setenv unsetenv)
 AC_CHECK_FUNCS(strdup strndup)
 
 AC_CHECK_FUNCS(blumfrub)

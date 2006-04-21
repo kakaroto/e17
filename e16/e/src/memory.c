@@ -296,13 +296,27 @@ StrlistFromString(const char *str, int delim, int *num)
    return lst;
 }
 
-#if !USE_LIBC_SETENV
-int
-Esetenv(const char *name, const char *value, int overwrite __UNUSED__)
+void
+Esetenv(const char *name, const char *value)
 {
-   char                envvar[FILEPATH_LEN_MAX];
+   if (value)
+     {
+#if HAVE_SETENV
+	setenv(name, value, 1);
+#else
+	char                buf[FILEPATH_LEN_MAX];
 
-   Esnprintf(envvar, FILEPATH_LEN_MAX, "%s=%s", name, value);
-   return putenv(Estrdup(envvar));
-}
+	Esnprintf(buf, FILEPATH_LEN_MAX, "%s=%s", name, value);
+	putenv(Estrdup(buf));
 #endif
+     }
+   else
+     {
+#if HAVE_UNSETENV
+	unsetenv(name);
+#else
+	if (getenv(name))
+	   putenv((char *)name);
+#endif
+     }
+}
