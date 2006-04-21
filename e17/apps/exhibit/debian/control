@@ -2,7 +2,7 @@ Source: exhibit
 Section: x11
 Priority: optional
 Maintainer: E17 Debian Team <debian@edevelop.org>
-Build-Depends: debhelper (>= 4.0.0), libetk-dev, libepsilon-dev, libe-dev
+Build-Depends: debhelper (>= 4.0.0), libetk-dev, libepsilon-dev, enlightenment-dev
 Standards-Version: 3.6.2
 
 Package: exhibit
