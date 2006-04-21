@@ -513,6 +513,8 @@ doSMExit(int mode, const char *params)
    if (mode != EEXIT_THEME && mode != EEXIT_RESTART)
       SessionHelper(ESESSION_STOP);
 
+   LangExit();
+
    if (disp)
      {
 	/* We may get here from HandleXIOError */

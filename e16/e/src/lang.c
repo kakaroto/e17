@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "emodule.h"
 #include "lang.h"
 
 #ifdef HAVE_LOCALE_H
@@ -121,6 +122,7 @@ EstrInt2Enc(const char *str, int want_utf8)
 
    return Eiconv(iconv_cd_int2loc, str, strlen(str));
 #else
+   want_utf8 = 0;
    return str;
 #endif
 }
@@ -135,7 +137,70 @@ EstrInt2EncFree(const char *str, int want_utf8)
 
    if (str)
       Efree((char *)str);
+#else
+   str = NULL;
+   want_utf8 = 0;
 #endif
+}
+
+static struct
+{
+   char               *internal;
+   char               *exported;
+} Conf_locale =
+{
+NULL, NULL};
+
+static struct
+{
+   char                init;
+   char               *env_language;
+   char               *env_lc_all;
+   char               *env_lc_messages;
+   char               *env_lang;
+} locale_data;
+
+static void
+LangEnvironmentSetup(const char *locale)
+{
+   /* Precedence:  LANGUAGE, LC_ALL, LC_MESSAGES, LANG */
+   if (locale)
+     {
+	/* Set requested */
+	Esetenv("LANGUAGE", locale);
+	Esetenv("LC_ALL", locale);
+	Esetenv("LANG", locale);
+     }
+   else
+     {
+	/* Restore saved */
+	Esetenv("LANGUAGE", locale_data.env_language);
+	Esetenv("LC_ALL", locale_data.env_lc_all);
+	Esetenv("LC_MESSAGES", locale_data.env_lc_messages);
+	Esetenv("LANG", locale_data.env_lang);
+     }
+}
+
+static void
+LangEnvironmentSave(void)
+{
+   if (locale_data.init)
+      return;
+   locale_data.init = 1;
+
+   locale_data.env_language = Estrdup(getenv("LANGUAGE"));
+   locale_data.env_lc_all = Estrdup(getenv("LC_ALL"));
+   locale_data.env_lc_messages = Estrdup(getenv("LC_MESSAGES"));
+   locale_data.env_lang = Estrdup(getenv("LANG"));
+}
+
+void
+LangExport(void)
+{
+   if (Conf_locale.exported)
+      LangEnvironmentSetup(Conf_locale.exported);
+   else if (Conf_locale.internal)
+      LangEnvironmentSetup(NULL);
 }
 
 void
@@ -143,8 +208,12 @@ LangInit(void)
 {
    const char         *enc_loc, *enc_int;
 
-   /* Set up things according to env vars */
-   setlocale(LC_ALL, "");
+   if (!locale_data.init)
+      LangEnvironmentSave();
+
+   LangEnvironmentSetup(Conf_locale.internal);
+
+   setlocale(LC_ALL, "");	/* Set up things according to env vars */
 
    bindtextdomain(PACKAGE, LOCALEDIR);
    textdomain(PACKAGE);
@@ -199,13 +268,44 @@ LangInit(void)
 #endif
 }
 
-#if 0				/* Not used yet */
-
-static void
+void
 LangExit(void)
 {
-   if (iconv_cd)
-      iconv_close(iconv_cd);
+#if HAVE_ICONV
+   if (iconv_cd_int2utf8)
+      iconv_close(iconv_cd_int2utf8);
+   if (iconv_cd_utf82int)
+      iconv_close(iconv_cd_utf82int);
+   if (iconv_cd_int2loc)
+      iconv_close(iconv_cd_int2loc);
+   if (iconv_cd_loc2int)
+      iconv_close(iconv_cd_loc2int);
+   iconv_cd_int2utf8 = iconv_cd_utf82int = NULL;
+   iconv_cd_int2loc = iconv_cd_loc2int = NULL;
+#endif
+
+   LangEnvironmentSetup(NULL);
 }
 
-#endif
+static void
+LangCfgChange(void *item __UNUSED__, const char *locale)
+{
+   if (*locale == '\0')
+      locale = NULL;
+   LangExit();
+   _EFDUP(Conf_locale.internal, locale);
+   LangInit();
+}
+
+static const CfgItem LocaleCfgItems[] = {
+   CFG_FUNC_STR(Conf_locale, internal, LangCfgChange),
+   CFG_ITEM_STR(Conf_locale, exported),
+};
+#define N_CFG_ITEMS (sizeof(LocaleCfgItems)/sizeof(CfgItem))
+
+const EModule       ModLocale = {
+   "locale", NULL,
+   NULL,
+   {0, NULL},
+   {N_CFG_ITEMS, LocaleCfgItems}
+};

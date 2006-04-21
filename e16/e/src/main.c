@@ -212,20 +212,20 @@ main(int argc, char **argv)
 	  }
      }
 
-   /* Initialise internationalisation */
-   LangInit();
+   SignalsSetup();		/* Install signal handlers */
 
-   /* run most of the setup */
-   SignalsSetup();
    SetupX(dstr);		/* This is where the we fork per screen */
    /* X is now running, and we have forked per screen */
+
+   /* So far nothing should rely on a selected settings or theme. */
+   ConfigurationLoad();		/* Load settings */
+
+   /* Initialise internationalisation */
+   LangInit();
 
    ECheckEprog("epp");
    ECheckEprog("eesh");
    EDirsSetup();
-
-   /* So far nothing should rely on a selected settings or theme. */
-   ConfigurationLoad();		/* Load settings */
 
    /* The theme path must now be available for config file loading. */
    ThemePathFind();
@@ -466,11 +466,12 @@ RunDocBrowser(void)
 static void
 RunMenuGen(void)
 {
-
    char                file[FILEPATH_LEN_MAX];
 
    if (fork())
       return;
+
+   LangExport();
 
    Esnprintf(file, sizeof(file), "exec %s/scripts/e_gen_menu", EDirRoot());
    execl(usershell(getuid()), usershell(getuid()), "-c", (char *)file, NULL);

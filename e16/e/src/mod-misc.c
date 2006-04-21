@@ -45,6 +45,7 @@ extern const EModule ModFocus;
 extern const EModule ModGroups;
 extern const EModule ModImageclass;
 extern const EModule ModIconboxes;
+extern const EModule ModLocale;
 extern const EModule ModMenus;
 extern const EModule ModMisc;
 extern const EModule ModPagers;
@@ -75,6 +76,7 @@ const EModule      *p_modules[] = {
    &ModGroups,
    &ModIconboxes,
    &ModImageclass,
+   &ModLocale,
    &ModMenus,
    &ModMisc,
    &ModPagers,

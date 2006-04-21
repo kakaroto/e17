@@ -40,6 +40,8 @@ runApp(const char *exe, const char *params)
    for (fd = 3; fd < 1024; fd++)
       close(fd);
 
+   LangExport();
+
    sh = usershell(getuid());
    if (exe)
      {
@@ -174,6 +176,8 @@ Espawn(int argc __UNUSED__, char **argv)
    /* Close all file descriptors except the std 3 */
    for (fd = 3; fd < 1024; fd++)
       close(fd);
+
+   LangExport();
 
    execvp(argv[0], argv);
 
