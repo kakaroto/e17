@@ -259,6 +259,9 @@ ewl_tree2_headers_visible_set(Ewl_Tree2 *tree, unsigned char visible)
 	DCHECK_PARAM_PTR("tree", tree);
 	DCHECK_TYPE("tree", tree, EWL_TREE2_TYPE);
 
+	if (tree->headers_visible == visible)
+		DRETURN(DLEVEL_STABLE);
+
 	tree->headers_visible = !!visible;
 
 	if (!tree->headers_visible)
@@ -416,7 +419,10 @@ ewl_tree2_dirty_set(Ewl_Tree2 *tree2, unsigned int dirty)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tree2", tree2);
 	DCHECK_TYPE("tree2", tree2, EWL_TREE2_TYPE);
-	
+
+	if (tree2->dirty == dirty)
+		DRETURN(DLEVEL_STABLE);
+
 	tree2->dirty = !!dirty;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -455,7 +461,8 @@ ewl_tree2_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 }
 
 void
-ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
+ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__, 
+					void *data __UNUSED__)
 {
 	Ewl_Tree2 *tree;
 	Ewl_Tree2_Column *col;
@@ -473,10 +480,12 @@ ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__
 				CURRENT_H(tree));
 
 	/* if the tree isn't dirty we're done */
-	if (!ewl_tree2_dirty_get(tree)) DRETURN(DLEVEL_STABLE);
+	if (!ewl_tree2_dirty_get(tree)) 
+		DRETURN(DLEVEL_STABLE);
 
 	/* setup the headers */
 	ewl_container_reset(EWL_CONTAINER(tree->header));
+	ecore_list_goto_first(tree->columns);
 	while ((col = ecore_list_next(tree->columns)))
 	{
 		ewl_container_child_append(EWL_CONTAINER(tree->header), 
