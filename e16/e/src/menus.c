@@ -2136,19 +2136,19 @@ static const CfgItem MenusCfgItems[] = {
    CFG_ITEM_BOOL(Conf.menus, warp, 1),
    CFG_ITEM_BOOL(Conf.menus, show_icons, 1),
    CFG_ITEM_INT(Conf.menus, icon_size, 16),
-   CFG_ITEM_INT(Conf.menus, key.left, XK_Left),
-   CFG_ITEM_INT(Conf.menus, key.right, XK_Right),
-   CFG_ITEM_INT(Conf.menus, key.up, XK_Up),
-   CFG_ITEM_INT(Conf.menus, key.down, XK_Down),
-   CFG_ITEM_INT(Conf.menus, key.escape, XK_Escape),
-   CFG_ITEM_INT(Conf.menus, key.ret, XK_Return),
+   CFG_ITEM_HEX(Conf.menus, key.left, XK_Left),
+   CFG_ITEM_HEX(Conf.menus, key.right, XK_Right),
+   CFG_ITEM_HEX(Conf.menus, key.up, XK_Up),
+   CFG_ITEM_HEX(Conf.menus, key.down, XK_Down),
+   CFG_ITEM_HEX(Conf.menus, key.escape, XK_Escape),
+   CFG_ITEM_HEX(Conf.menus, key.ret, XK_Return),
 };
 #define N_CFG_ITEMS (sizeof(MenusCfgItems)/sizeof(CfgItem))
 
 /*
  * Module descriptor
  */
-EModule             ModMenus = {
+const EModule       ModMenus = {
    "menus", "menu",
    MenusSighan,
    {N_IPC_FUNCS, MenusIpcArray},

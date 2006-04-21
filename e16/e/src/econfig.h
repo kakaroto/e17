@@ -32,16 +32,24 @@ typedef struct
    void                (*func) (void *item, const char *value);
 } CfgItem;
 
+typedef struct
+{
+   int                 num;
+   const CfgItem      *lst;
+} CfgItemList;
+
 typedef enum
 {
    ITEM_TYPE_BOOL,
    ITEM_TYPE_INT,
+   ITEM_TYPE_HEX,
    ITEM_TYPE_FLOAT,
    ITEM_TYPE_STRING
 } cfg_item_type_e;
 
 #define CFG_ITEM_BOOL(conf, name, dflt)  { #name, &conf.name, ITEM_TYPE_BOOL, dflt, NULL }
 #define CFG_ITEM_INT(conf, name, dflt)   { #name, &conf.name, ITEM_TYPE_INT, dflt, NULL }
+#define CFG_ITEM_HEX(conf, name, dflt)   { #name, &conf.name, ITEM_TYPE_HEX, dflt, NULL }
 #define CFG_ITEM_STR(conf, name)         { #name, &conf.name, ITEM_TYPE_STRING, 0, NULL }
 
 #define CFG_FUNC_BOOL(conf, name, dflt, func)  { #name, &conf.name, ITEM_TYPE_BOOL, dflt, func }

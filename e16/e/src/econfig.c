@@ -196,6 +196,12 @@ e16_db_int_set(ECfgFile * ecf, const char *key, int value)
 }
 
 static void
+e16_db_hex_set(ECfgFile * ecf, const char *key, unsigned int value)
+{
+   fprintf(ecf->fs, "%s = %#x\n", key, value);
+}
+
+static void
 e16_db_float_set(ECfgFile * ecf, const char *key, float value)
 {
    fprintf(ecf->fs, "%s = %f\n", key, value);
@@ -239,6 +245,7 @@ CfgItemLoad(E_DB_File * edf, const char *prefix, const CfgItem * ci)
 	*((char *)ci->ptr) = my_int;
 	break;
      case ITEM_TYPE_INT:
+     case ITEM_TYPE_HEX:
 	if (!edf || !e16_db_int_get(edf, name, &my_int))
 	   my_int = ci->dflt;
 	*((int *)ci->ptr) = my_int;
@@ -280,6 +287,9 @@ CfgItemSave(E_DB_File * edf, const char *prefix, const CfgItem * ci)
 	break;
      case ITEM_TYPE_INT:
 	e16_db_int_set(edf, name, *((int *)ci->ptr));
+	break;
+     case ITEM_TYPE_HEX:
+	e16_db_hex_set(edf, name, *((unsigned int *)ci->ptr));
 	break;
      case ITEM_TYPE_FLOAT:
 	e16_db_float_set(edf, name, *((float *)ci->ptr));
@@ -412,6 +422,9 @@ CfgItemToString(const CfgItem * ci, char *buf, int len)
 	break;
      case ITEM_TYPE_INT:
 	Esnprintf(buf, len, "%d", *((int *)ci->ptr));
+	break;
+     case ITEM_TYPE_HEX:
+	Esnprintf(buf, len, "%#x", *((unsigned int *)ci->ptr));
 	break;
      case ITEM_TYPE_FLOAT:
 	Esnprintf(buf, len, "%.3f", *((float *)ci->ptr));

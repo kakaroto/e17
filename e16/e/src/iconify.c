@@ -2610,7 +2610,7 @@ static const CfgItem IconboxesCfgItems[] = {
 /*
  * Module descriptor
  */
-EModule             ModIconboxes = {
+const EModule       ModIconboxes = {
    "iconboxes", "ibox",
    IconboxesSighan,
    {N_IPC_FUNCS, IconboxesIpcArray},

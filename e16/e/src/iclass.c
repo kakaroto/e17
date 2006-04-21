@@ -1616,7 +1616,7 @@ static const IpcItem ImageclassIpcArray[] = {
 /*
  * Module descriptor
  */
-EModule             ModImageclass = {
+const EModule       ModImageclass = {
    "imageclass", "ic",
    ImageclassSighan,
    {N_IPC_FUNCS, ImageclassIpcArray}

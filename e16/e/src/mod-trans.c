@@ -333,7 +333,7 @@ static const CfgItem TransCfgItems[] = {
 /*
  * Module descriptor
  */
-EModule             ModTransparency = {
+const EModule       ModTransparency = {
    "transparency", "tr",
    TransparencySighan,
    {N_IPC_FUNCS, TransIpcArray},

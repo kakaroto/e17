@@ -484,7 +484,7 @@ static const CfgItem WarplistCfgItems[] = {
 };
 #define N_CFG_ITEMS (sizeof(WarplistCfgItems)/sizeof(CfgItem))
 
-EModule             ModWarplist = {
+const EModule       ModWarplist = {
    "warplist", "warp",
    WarplistSighan,
    {0, NULL},

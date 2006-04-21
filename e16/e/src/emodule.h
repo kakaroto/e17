@@ -30,16 +30,8 @@ typedef struct
    const char         *name;
    const char         *nick;
    void                (*Signal) (int sig, void *prm);
-   struct
-   {
-      int                 num;
-      const IpcItem      *lst;
-   } ipc;
-   struct
-   {
-      int                 num;
-      const CfgItem      *lst;
-   } cfg;
+   IpcItemList         ipc;
+   CfgItemList         cfg;
 } EModule;
 
 typedef enum

@@ -919,7 +919,7 @@ static const CfgItem TooltipsCfgItems[] = {
 /*
  * Module descriptor
  */
-EModule             ModTooltips = {
+const EModule       ModTooltips = {
    "tooltips", "tt",
    TooltipsSighan,
    {N_IPC_FUNCS, TooltipsIpcArray},

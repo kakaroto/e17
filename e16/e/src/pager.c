@@ -2068,7 +2068,7 @@ static const CfgItem PagersCfgItems[] = {
 /*
  * Module descriptor
  */
-EModule             ModPagers = {
+const EModule       ModPagers = {
    "pagers", "pg",
    PagersSighan,
    {N_IPC_FUNCS, PagersIpcArray},

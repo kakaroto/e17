@@ -2945,7 +2945,7 @@ static const CfgItem DesksCfgItems[] = {
 /*
  * Module descriptor
  */
-EModule             ModDesktops = {
+const EModule       ModDesktops = {
    "desktops", "desk",
    DesksSighan,
    {N_IPC_FUNCS, DesksIpcArray},

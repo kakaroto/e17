@@ -1494,7 +1494,7 @@ static const CfgItem GroupsCfgItems[] = {
 };
 #define N_CFG_ITEMS (sizeof(GroupsCfgItems)/sizeof(CfgItem))
 
-EModule             ModGroups = {
+const EModule       ModGroups = {
    "groups", "grp",
    GroupsSighan,
    {N_IPC_FUNCS, GroupsIpcArray},

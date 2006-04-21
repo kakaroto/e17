@@ -1192,7 +1192,7 @@ static const CfgItem ButtonsCfgItems[] = {
 /*
  * Module descriptor
  */
-EModule             ModButtons = {
+const EModule       ModButtons = {
    "buttons", "btn",
    ButtonsSighan,
    {N_IPC_FUNCS, ButtonsIpcArray},

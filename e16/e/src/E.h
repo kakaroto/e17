@@ -205,6 +205,12 @@ IpcItem;
 
 typedef struct
 {
+   int                 num;
+   const IpcItem      *lst;
+} IpcItemList;
+
+typedef struct
+{
    Window              win;
    Visual             *vis;
    int                 depth;

@@ -559,7 +559,7 @@ static const CfgItem SoundCfgItems[] = {
 /*
  * Module descriptor
  */
-EModule             ModSound = {
+const EModule       ModSound = {
    "sound", "audio",
    SoundSighan,
    {N_IPC_FUNCS, SoundIpcArray},

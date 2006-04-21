@@ -1445,7 +1445,7 @@ static const IpcItem AclassIpcArray[] = {
 /*
  * Module descriptor
  */
-EModule             ModAclass = {
+const EModule       ModAclass = {
    "aclass", "ac",
    AclassSighan,
    {N_IPC_FUNCS, AclassIpcArray}

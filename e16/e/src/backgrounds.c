@@ -2642,7 +2642,7 @@ static const CfgItem BackgroundsCfgItems[] = {
 /*
  * Module descriptor
  */
-EModule             ModBackgrounds = {
+const EModule       ModBackgrounds = {
    "backgrounds", "bg",
    BackgroundsSighan,
    {N_IPC_FUNCS, BackgroundsIpcArray},

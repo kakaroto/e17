@@ -1083,7 +1083,7 @@ static const CfgItem FxCfgItems[] = {
 /*
  * Module descriptor
  */
-EModule             ModEffects = {
+const EModule       ModEffects = {
    "effects", "efx",
    FxSighan,
    {N_IPC_FUNCS, FxIpcArray},

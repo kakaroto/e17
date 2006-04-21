@@ -1023,7 +1023,7 @@ static const CfgItem FocusCfgItems[] = {
 /*
  * Module descriptor
  */
-EModule             ModFocus = {
+const EModule       ModFocus = {
    "focus", NULL,
    FocusSighan,
    {N_IPC_FUNCS, FocusIpcArray},

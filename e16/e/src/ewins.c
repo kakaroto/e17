@@ -2252,7 +2252,7 @@ static const IpcItem EwinsIpcArray[] = {
 /*
  * Module descriptor
  */
-EModule             ModEwins = {
+const const EModule ModEwins = {
    "ewins", NULL,
    EwinsSighan,
    {N_IPC_FUNCS, EwinsIpcArray}

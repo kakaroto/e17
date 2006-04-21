@@ -2726,7 +2726,7 @@ static const CfgItem CompMgrCfgItems[] = {
    CFG_ITEM_BOOL(Conf_compmgr, use_name_pixmap, 0),
    CFG_ITEM_BOOL(Conf_compmgr, fading.enable, 1),
    CFG_ITEM_INT(Conf_compmgr, fading.dt_us, 10000),
-   CFG_ITEM_INT(Conf_compmgr, fading.step, 0x10000000),
+   CFG_ITEM_HEX(Conf_compmgr, fading.step, 0x10000000),
    CFG_ITEM_INT(Conf_compmgr, override_redirect.mode, 1),
    CFG_ITEM_INT(Conf_compmgr, override_redirect.opacity, 90),
 };
@@ -2735,7 +2735,7 @@ static const CfgItem CompMgrCfgItems[] = {
 /*
  * Module descriptor
  */
-EModule             ModCompMgr = {
+const EModule       ModCompMgr = {
    "compmgr", "cm",
    ECompMgrSighan,
    {N_IPC_FUNCS, CompMgrIpcArray},

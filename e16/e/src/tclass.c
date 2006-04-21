@@ -642,7 +642,7 @@ static const IpcItem TextclassIpcArray[] = {
 /*
  * Module descriptor
  */
-EModule             ModTextclass = {
+const EModule       ModTextclass = {
    "textclass", "tc",
    TextclassSighan,
    {N_IPC_FUNCS, TextclassIpcArray}

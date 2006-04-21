@@ -30,35 +30,35 @@
  **********************************************************************/
 
 /* Use static module list for now */
-extern EModule      ModAclass;
-extern EModule      ModBackgrounds;
-extern EModule      ModButtons;
+extern const EModule ModAclass;
+extern const EModule ModBackgrounds;
+extern const EModule ModButtons;
 
 #if USE_COMPOSITE
-extern EModule      ModCompMgr;
+extern const EModule ModCompMgr;
 #endif
-extern EModule      ModCursors;
-extern EModule      ModDesktops;
-extern EModule      ModEffects;
-extern EModule      ModEwins;
-extern EModule      ModFocus;
-extern EModule      ModGroups;
-extern EModule      ModImageclass;
-extern EModule      ModIconboxes;
-extern EModule      ModMenus;
-extern EModule      ModMisc;
-extern EModule      ModPagers;
-extern EModule      ModSlideouts;
-extern EModule      ModSound;
-extern EModule      ModTextclass;
-extern EModule      ModTheme;
-extern EModule      ModTooltips;
+extern const EModule ModCursors;
+extern const EModule ModDesktops;
+extern const EModule ModEffects;
+extern const EModule ModEwins;
+extern const EModule ModFocus;
+extern const EModule ModGroups;
+extern const EModule ModImageclass;
+extern const EModule ModIconboxes;
+extern const EModule ModMenus;
+extern const EModule ModMisc;
+extern const EModule ModPagers;
+extern const EModule ModSlideouts;
+extern const EModule ModSound;
+extern const EModule ModTextclass;
+extern const EModule ModTheme;
+extern const EModule ModTooltips;
 
 #ifdef ENABLE_THEME_TRANSPARENCY
-extern EModule      ModTransparency;
+extern const EModule ModTransparency;
 #endif
-extern EModule      ModWarplist;
-extern EModule      ModWindowMatch;
+extern const EModule ModWarplist;
+extern const EModule ModWindowMatch;
 
 const EModule      *p_modules[] = {
    &ModAclass,
@@ -227,7 +227,7 @@ static const IpcItem MiscIpcArray[] = {
 #define N_IPC_FUNCS (sizeof(MiscIpcArray)/sizeof(IpcItem))
 
 /* Stuff not elsewhere */
-EModule             ModMisc = {
+const const EModule ModMisc = {
    "misc", NULL,
    NULL,
    {N_IPC_FUNCS, MiscIpcArray}

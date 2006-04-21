@@ -523,7 +523,7 @@ static const IpcItem SlideoutsIpcArray[] = {
 /*
  * Module descriptor
  */
-EModule             ModSlideouts = {
+const EModule       ModSlideouts = {
    "slideouts", "slideout",
    SlideoutsSighan,
    {N_IPC_FUNCS, SlideoutsIpcArray},

@@ -507,7 +507,7 @@ static const CfgItem ThemeCfgItems[] = {
 /*
  * Module descriptor
  */
-EModule             ModTheme = {
+const EModule       ModTheme = {
    "theme", "th",
    ThemesSighan,
    {N_IPC_FUNCS, ThemeIpcArray},

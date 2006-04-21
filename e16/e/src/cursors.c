@@ -372,7 +372,7 @@ static const IpcItem CursorIpcArray[] = {
 /*
  * Module descriptor
  */
-EModule             ModCursors = {
+const EModule       ModCursors = {
    "cursor", "csr",
    CursorSighan,
    {N_IPC_FUNCS, CursorIpcArray}
