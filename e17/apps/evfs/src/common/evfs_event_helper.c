@@ -144,3 +144,18 @@ evfs_operation_event_create(evfs_client * client, evfs_command * command,
    /*Destroy */
    evfs_cleanup_event(event);
 }
+
+void
+evfs_meta_data_event_create(evfs_client* client,evfs_command* command, Evas_List* ret_list)
+{
+   evfs_event *event = NEW(evfs_event);
+
+   event->type = EVFS_EV_METADATA;
+   event->meta = calloc(1, sizeof(evfs_event_meta));
+   event->meta->meta_list = ret_list;
+	
+   evfs_write_event(client, command, event);
+
+   /*Destroy */
+   evfs_cleanup_event(event);
+}

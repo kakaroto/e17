@@ -18,4 +18,7 @@ long evfs_client_operation_respond(evfs_connection * conn, long opid,
 
 long evfs_client_directory_create(evfs_connection * conn, evfs_filereference * file);
 
+long 
+evfs_client_metadata_retrieve(evfs_connection * conn, evfs_filereference* file );
+
 #endif

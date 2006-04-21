@@ -3,6 +3,11 @@
 
 #include "evfs_client.h"
 
+typedef struct evfs_plugin_functions_meta
+{
+   Evas_List* (*evfs_file_meta_retrieve)(evfs_client* client, evfs_command* command);
+} evfs_plugin_functions_meta;
+
 typedef struct evfs_plugin_functions
 {
    int (*evfs_client_disconnect) (evfs_client *);
@@ -32,11 +37,31 @@ typedef struct evfs_plugin_functions
 
 typedef struct evfs_plugin
 {
-   evfs_plugin_functions *functions;
-
    void *dl_ref;
-   char *uri;
 
 } evfs_plugin;
+#define EVFS_PLUGIN(plugin) ((evfs_plugin*)plugin)
+
+typedef struct evfs_plugin_file
+{
+	evfs_plugin base;
+	
+	char *uri;
+	evfs_plugin_functions *functions;
+
+} evfs_plugin_file;
+#define EVFS_PLUGIN_FILE(plugin) ((evfs_plugin_file*)plugin)
+
+typedef struct evfs_plugin_meta
+{
+	evfs_plugin base;
+	
+	char *uri;
+	evfs_plugin_functions_meta *functions;
+
+} evfs_plugin_meta;
+#define EVFS_PLUGIN_META(plugin) ((evfs_plugin_meta*)plugin)
+
+
 
 #endif

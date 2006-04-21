@@ -23,4 +23,7 @@ void evfs_read_event_create(evfs_client * client, evfs_command * command,
 void evfs_operation_event_create(evfs_client * client, evfs_command * command,
                                  evfs_operation * op, char* misc);
 
+void
+evfs_meta_data_event_create(evfs_client* client,evfs_command* command, Evas_List* ret_list);
+
 #endif

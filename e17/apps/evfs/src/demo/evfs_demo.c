@@ -38,6 +38,18 @@ callback(evfs_event * data, void *obj)
                     ref->file_type);
           }
 
+     } else if (data->type == EVFS_EV_METADATA)  {
+	     Ecore_List* keys;
+	     char* key;
+	     
+	     printf("Received metadata:\n");
+
+	     printf("Artist: '%s'\n", ecore_hash_get(data->meta->meta_hash, "artist"));
+	     printf("Title: '%s'\n", ecore_hash_get(data->meta->meta_hash, "title"));
+	     printf("Length: '%s'\n", ecore_hash_get(data->meta->meta_hash, "length"));
+	     
+			     
+	     
      }
 
    /*if (mon_current == 2) {
@@ -131,6 +143,8 @@ main(int argc, char **argv)
 	   evfs_client_dir_list(con, dir_path->files[0]);
    } else if (!strcmp(cmd, "STAT")) {
 	   evfs_client_file_stat(con, dir_path->files[0]);
+   } else if (!strcmp(cmd, "META")) {
+	   evfs_client_metadata_retrieve(con, dir_path->files[0]);
    }
    ecore_main_loop_begin();
    evfs_disconnect(con);

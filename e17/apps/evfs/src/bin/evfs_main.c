@@ -111,7 +111,7 @@ ipc_client_del(void *data __UNUSED__, int type __UNUSED__, void *event)
    while ((key = ecore_list_remove_first(keys)))
      {
         plugin = ecore_hash_get(server->plugin_uri_hash, key);
-        (*plugin->functions->evfs_client_disconnect) (client);
+        (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_client_disconnect) (client);
      }
 
    ecore_list_destroy(keys);
@@ -212,6 +212,10 @@ evfs_handle_command(evfs_client * client, evfs_command * command)
      case EVFS_CMD_OPERATION_RESPONSE:
         evfs_handle_operation_command(client, command);
         break;
+
+     case EVFS_CMD_METADATA_RETRIEVE:
+	evfs_handle_metadata_command(client,command);
+	break;
      default:
         printf("Warning - unhandled command %d\n", command->type);
         break;
@@ -221,26 +225,26 @@ evfs_handle_command(evfs_client * client, evfs_command * command)
 }
 
 evfs_plugin *
-evfs_load_plugin(char *filename)
+evfs_load_plugin_file(char *filename)
 {
-   evfs_plugin *plugin = NEW(evfs_plugin);
+   evfs_plugin_file *plugin = NEW(evfs_plugin_file);
 
    char *(*evfs_plugin_uri_get) ();
    evfs_plugin_functions *(*evfs_plugin_init) ();
 
    printf("Loading plugin: %s\n", filename);
-   plugin->dl_ref = dlopen(filename, RTLD_LAZY);
+   EVFS_PLUGIN(plugin)->dl_ref = dlopen(filename, RTLD_LAZY);
 
-   if (plugin->dl_ref)
+   if (EVFS_PLUGIN(plugin)->dl_ref)
      {
-        evfs_plugin_uri_get = dlsym(plugin->dl_ref, "evfs_plugin_uri_get");
+        evfs_plugin_uri_get = dlsym(EVFS_PLUGIN(plugin)->dl_ref, "evfs_plugin_uri_get");
         if (evfs_plugin_uri_get)
           {
              plugin->uri = (*evfs_plugin_uri_get) ();
              printf("The plugin at '%s' handles '%s'\n", filename, plugin->uri);
 
              /*Execute the init function, if it's there.. */
-             evfs_plugin_init = dlsym(plugin->dl_ref, "evfs_plugin_init");
+             evfs_plugin_init = dlsym(EVFS_PLUGIN(plugin)->dl_ref, "evfs_plugin_init");
              if (evfs_plugin_init)
                {
                   plugin->functions = (*evfs_plugin_init) ();
@@ -261,13 +265,70 @@ evfs_load_plugin(char *filename)
         goto exit_error;
      }
 
-   return plugin;
+   return EVFS_PLUGIN(plugin);
 
  exit_error:
    free(plugin);
    return NULL;
 
 }
+
+evfs_plugin *
+evfs_load_plugin_meta(char *filename)
+{
+   evfs_plugin_meta *plugin = NEW(evfs_plugin_file);
+   evfs_plugin_functions_meta *(*evfs_plugin_init) ();
+   Ecore_List* (*evfs_plugin_meta_types_get)();
+   char* type;
+   Ecore_List* types;
+
+
+   printf("Loading plugin: %s\n", filename);
+   EVFS_PLUGIN(plugin)->dl_ref = dlopen(filename, RTLD_LAZY);
+
+   if (EVFS_PLUGIN(plugin)->dl_ref)
+     {
+             /*Execute the init function, if it's there.. */
+             evfs_plugin_init = dlsym(EVFS_PLUGIN(plugin)->dl_ref, "evfs_plugin_init");
+             if (evfs_plugin_init)
+               {
+                  plugin->functions = (*evfs_plugin_init) ();
+
+		  /*Load meta types*/
+		  evfs_plugin_meta_types_get = dlsym(EVFS_PLUGIN(plugin)->dl_ref, "evfs_plugin_meta_types_get");
+		  if (evfs_plugin_meta_types_get) {
+			  
+			  types = (*evfs_plugin_meta_types_get)();
+			  /*Register..*/
+			 while ( (type = ecore_list_remove_first(types))) {
+				 ecore_hash_set(evfs_server_get()->plugin_meta_hash, type, plugin);
+				 printf("  Registered meta plugin for '%s'...\n", type);
+			 }
+		  } else {
+			  printf("Error - could not get type register function for meta plugin");
+		  }
+               } else {
+	             printf
+                ("Error - plugin file does not contain init function - %s\n",
+                 filename);
+       	      goto exit_error;
+             }
+
+     }
+   else
+     {
+        printf("Error - plugin file invalid - %s\n", filename);
+        goto exit_error;
+     }
+
+   return EVFS_PLUGIN(plugin);
+
+ exit_error:
+   free(plugin);
+   return NULL;
+
+}
+
 
 void
 evfs_load_plugins()
@@ -283,15 +344,39 @@ evfs_load_plugins()
      {
         while ((de = readdir(dir)))
           {
-
              if (!strncmp(de->d_name + strlen(de->d_name) - 3, ".so", 3))
                {
                   snprintf(plugin_path, 1024, "%s/%s",
                            PACKAGE_PLUGIN_DIR "/plugins/file", de->d_name);
-                  if ((plugin = evfs_load_plugin(plugin_path)))
+                  if ((plugin = evfs_load_plugin_file(plugin_path)))
                     {
-                       ecore_hash_set(server->plugin_uri_hash, plugin->uri,
+                       ecore_hash_set(server->plugin_uri_hash, EVFS_PLUGIN_FILE(plugin)->uri,
                                       plugin);
+                    }
+               }
+          }
+     }
+   else
+     {
+        fprintf(stderr, "EVFS: Could not location plugin directory '%s'\n",
+                PACKAGE_PLUGIN_DIR "/plugins/file");
+        exit(1);
+     }
+   closedir(dir);
+
+   /*Load meta plugins*/
+   printf("Reading plugins from: %s\n", PACKAGE_PLUGIN_DIR "/plugins/meta");
+   dir = opendir(PACKAGE_PLUGIN_DIR "/plugins/meta");
+   if (dir)
+     {
+        while ((de = readdir(dir)))
+          {
+             if (!strncmp(de->d_name + strlen(de->d_name) - 3, ".so", 3))
+               {
+                  snprintf(plugin_path, 1024, "%s/%s",
+                           PACKAGE_PLUGIN_DIR "/plugins/meta", de->d_name);
+                  if ((plugin = evfs_load_plugin_meta(plugin_path)))
+                    {
                     }
                }
           }
@@ -345,6 +430,7 @@ main(int argc, char **argv)
    server->client_hash =
       ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
    server->plugin_uri_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+   server->plugin_meta_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
    server->clientCounter = 0;
    server->incoming_command_list = ecore_list_new();
 

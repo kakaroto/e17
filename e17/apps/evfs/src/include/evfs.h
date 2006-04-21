@@ -13,6 +13,8 @@
 #include <Ecore_Ipc.h>
 #include <Ecore_File.h>
 
+#include <Evas.h>
+
 #include <stdlib.h>
 #include <string.h>
 

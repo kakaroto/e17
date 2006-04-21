@@ -7,6 +7,9 @@ static Eet_Data_Descriptor *_evfs_filereference_edd;
 static Eet_Data_Descriptor *_evfs_progress_event_edd;
 static Eet_Data_Descriptor *_evfs_operation_edd;
 static Eet_Data_Descriptor *_evfs_filemonitor_edd;
+static Eet_Data_Descriptor *_evfs_metalist_edd;
+static Eet_Data_Descriptor *_evfs_metaobj_edd;
+
 
 Eet_Data_Descriptor *
 evfs_io_filereference_edd_get()
@@ -78,6 +81,45 @@ evfs_io_initialise()
                                  "file_to", file_to, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_progress_event_edd, evfs_event_progress,
                                  "type", type, EET_T_INT);
+
+
+   /*Meta obj eet*/
+   _evfs_metaobj_edd =       eet_data_descriptor_new("evfs_meta_obj",
+                              sizeof(evfs_meta_obj),
+                              (void *(*)(void *))evas_list_next,
+                              (void *(*)(void *, void *))evas_list_append,
+                              (void *(*)(void *))evas_list_data,
+                              (void *(*)(void *))evas_list_free,
+                              (void (*)
+                               (void *,
+                                int (*)(void *, const char *, void *, void *),
+                                void *))evas_hash_foreach, (void *(*)(void *,
+                                                                      const char
+                                                                      *,
+                                                                      void *))
+                              evas_hash_add, (void (*)(void *))evas_hash_free);
+   
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_metaobj_edd, evfs_meta_obj, "key", key, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_metaobj_edd, evfs_meta_obj, "value", value, EET_T_STRING);
+
+   /*Meta list eet*/
+   _evfs_metalist_edd =       eet_data_descriptor_new("evfs_metalist",
+                              sizeof(evfs_event_meta),
+                              (void *(*)(void *))evas_list_next,
+                              (void *(*)(void *, void *))evas_list_append,
+                              (void *(*)(void *))evas_list_data,
+                              (void *(*)(void *))evas_list_free,
+                              (void (*)
+                               (void *,
+                                int (*)(void *, const char *, void *, void *),
+                                void *))evas_hash_foreach, (void *(*)(void *,
+                                                                      const char
+                                                                      *,
+                                                                      void *))
+                              evas_hash_add, (void (*)(void *))evas_hash_free);
+   
+   EET_DATA_DESCRIPTOR_ADD_LIST(_evfs_metalist_edd, evfs_event_meta, "evfs_event_meta", meta_list,
+		   	_evfs_metaobj_edd);
 
    /*Evfs_operation eet */
    _evfs_operation_edd =
@@ -248,6 +290,26 @@ evfs_write_file_read_event(evfs_client * client, evfs_event * event)
                                                              event->data.size));
 }
 
+void evfs_write_meta_event(evfs_client * client, evfs_command * command,
+                          evfs_event * event)
+{
+   int size_ret = 0;
+   char *data;
+
+   data =
+      eet_data_descriptor_encode(_evfs_metalist_edd, event->meta,
+                                 &size_ret);
+
+   evfs_write_ecore_ipc_client_message(client->client,
+                                       ecore_ipc_message_new(EVFS_EV_REPLY,
+                                                             EVFS_EV_PART_METALIST,
+                                                             client->id, 0, 0,
+                                                             data, size_ret));
+
+   free(data);
+
+}
+
 void
 evfs_write_progress_event(evfs_client * client, evfs_command * command,
                           evfs_event * event)
@@ -255,11 +317,6 @@ evfs_write_progress_event(evfs_client * client, evfs_command * command,
    int size_ret = 0;
    evfs_filereference *ref;
    char *data;
-
-   if (event->progress->type == EVFS_PROGRESS_TYPE_DONE)
-     {
-        printf("Sendign Done!\n");
-     }
 
    data =
       eet_data_descriptor_encode(_evfs_progress_event_edd, event->progress,
@@ -347,6 +404,9 @@ evfs_write_event(evfs_client * client, evfs_command * command,
      case EVFS_EV_FILE_PROGRESS:
         evfs_write_progress_event(client, command, event);
         break;
+     case EVFS_EV_METADATA:
+	evfs_write_meta_event(client,command,event);
+	break;
 
      case EVFS_EV_FILE_OPEN:
         printf("Open event send\n");
@@ -419,6 +479,33 @@ evfs_read_event(evfs_event * event, ecore_ipc_message * msg)
 
         }
         break;
+
+     
+     case EVFS_EV_PART_METALIST:
+	{
+		evfs_meta_obj* obj;
+		Evas_List* l;
+		
+		evfs_event_meta* meta = 
+	              eet_data_descriptor_decode(_evfs_metalist_edd, msg->data,
+                          msg->len);
+
+		/*Now we have to push this list to a hash..*/
+		event->meta = meta;
+		event->meta->meta_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+
+		for (l  = event->meta->meta_list; l; ) {
+			obj = l->data;
+			l = evas_list_remove(event->meta->meta_list, l->data);
+			
+			ecore_hash_set(event->meta->meta_hash, obj->key, obj->value);
+			free(obj);
+
+		}
+		evas_list_free(event->meta->meta_list);
+
+	}
+     break;
 
      case EVFS_EV_PART_DATA:
         {
@@ -558,6 +645,7 @@ evfs_write_command(evfs_connection * conn, evfs_command * command)
      case EVFS_CMD_FILE_OPEN:
      case EVFS_CMD_FILE_READ:
      case EVFS_CMD_DIRECTORY_CREATE:
+     case EVFS_CMD_METADATA_RETRIEVE:
      case EVFS_CMD_PING:
         evfs_write_file_command(conn, command);
         break;
@@ -592,6 +680,7 @@ evfs_write_command_client(evfs_client * client, evfs_command * command)
      case EVFS_CMD_FILE_OPEN:
      case EVFS_CMD_FILE_READ:
      case EVFS_CMD_DIRECTORY_CREATE:
+     case EVFS_CMD_METADATA_RETRIEVE:
      case EVFS_CMD_PING:
         evfs_write_file_command_client(client, command);
         break;

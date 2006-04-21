@@ -44,13 +44,13 @@ int evfs_operation_tasks_file_copy_run(evfs_operation* op,
 
 	if (copy->file_from->fd == 0 && copy->file_from->fd_p == NULL) {
 		/*printf("Opening source file...\n");*/
-		int fd =(*copy->file_from->plugin->functions->evfs_file_open) (op->client, copy->file_from);
+		int fd =(*EVFS_PLUGIN_FILE(copy->file_from->plugin)->functions->evfs_file_open) (op->client, copy->file_from);
 		/*TODO: Error checking on file open fail*/
 	}
 
 	if (copy->file_to->fd == 0 && copy->file_to->fd_p == NULL) {
 	     /*printf("Creating destination file..\n");*/
-             (*copy->file_to->plugin->functions->evfs_file_create) (copy->file_to);
+             (*EVFS_PLUGIN_FILE(copy->file_to->plugin)->functions->evfs_file_create) (copy->file_to);
 	}
 
 	/*printf ("next_byte:size  -> %lld:%lld\n", copy->next_byte, copy->source_stat.st_size);	*/
@@ -63,13 +63,13 @@ int evfs_operation_tasks_file_copy_run(evfs_operation* op,
 			(copy->source_stat.st_size - copy->next_byte);
 
 
-		b_read = (*copy->file_from->plugin->functions->evfs_file_read) (op->client,
+		b_read = (*EVFS_PLUGIN_FILE(copy->file_from->plugin)->functions->evfs_file_read) (op->client,
                                                            copy->file_from, bytes,
                                                            read_write_bytes);
 
 
 		if (b_read > 0) {
-			b_write = (*copy->file_to->plugin->functions->evfs_file_write) (copy->file_to,
+			b_write = (*EVFS_PLUGIN_FILE(copy->file_to->plugin)->functions->evfs_file_write) (copy->file_to,
                                                                      bytes,
                                                                      b_read);
 
@@ -93,8 +93,8 @@ int evfs_operation_tasks_file_copy_run(evfs_operation* op,
 
 	/*Check if it's time to end..*/
 	if (copy->next_byte == copy->source_stat.st_size) {
-	        (*copy->file_from->plugin->functions->evfs_file_close) (copy->file_from);
-        	(*copy->file_to->plugin->functions->evfs_file_close) (copy->file_to);
+	        (*EVFS_PLUGIN_FILE(copy->file_from->plugin)->functions->evfs_file_close) (copy->file_from);
+        	(*EVFS_PLUGIN_FILE(copy->file_to->plugin)->functions->evfs_file_close) (copy->file_to);
 		
 		EVFS_OPERATION_TASK(copy)->status = EVFS_OPERATION_TASK_STATUS_COMMITTED;
 	}
@@ -112,7 +112,7 @@ void evfs_operation_tasks_mkdir_run(evfs_operation* op, evfs_operation_task_mkdi
                               task->file->plugin_uri);
 
 	
-	ret = (*task->file->plugin->functions->evfs_file_mkdir) (task->file);
+	ret = (*EVFS_PLUGIN_FILE(task->file->plugin)->functions->evfs_file_mkdir) (task->file);
 
 	/*TODO - handle 'fail' state*/
 	EVFS_OPERATION_TASK(task)->status = EVFS_OPERATION_TASK_STATUS_COMMITTED;
@@ -126,7 +126,7 @@ uint64 evfs_operation_tasks_file_remove_run(evfs_operation* op, evfs_operation_t
 		task->file->plugin = evfs_get_plugin_for_uri(evfs_server_get(),
                               task->file->plugin_uri);
 
-	ret = (*task->file->plugin->functions->evfs_file_remove) (task->file->path);
+	ret = (*EVFS_PLUGIN_FILE(task->file->plugin)->functions->evfs_file_remove) (task->file->path);
 
 	/*TODO - handle 'fail' state*/
 	EVFS_OPERATION_TASK(task)->status = EVFS_OPERATION_TASK_STATUS_COMMITTED;

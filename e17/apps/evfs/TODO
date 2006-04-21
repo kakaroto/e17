@@ -1,11 +1,11 @@
 TODO
 ----
 
-       * Unique identifier per command, for easier tracking
+[DONE] * Unique identifier per command, for easier tracking
        * Exception handling
        * File permissions checking
 [DONE] * Remove monitors for client when client disconnects
-       * evfs_fs_ssh (SSH filesystem plugin)
+[DONE] * evfs_fs_ssh (SSH filesystem plugin)
 [DONE] * bzip2
 [DONE] * gzip support
 [DONE] * ldap plugin

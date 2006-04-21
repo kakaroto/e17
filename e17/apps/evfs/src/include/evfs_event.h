@@ -14,6 +14,7 @@ typedef enum evfs_eventtype
    EVFS_EV_FILE_READ = 7,
    EVFS_EV_PONG = 8,
    EVFS_EV_OPERATION = 9,
+   EVFS_EV_METADATA = 10,
 
    EVFS_EV_ERROR = 100,
    EVFS_EV_NOT_SUPPORTED = 101
@@ -34,17 +35,13 @@ typedef enum evfs_eventpart
    EVFS_EV_PART_DATA = 6,
    EVFS_EV_PART_STAT_SIZE = 7,
    EVFS_EV_PART_FILE_REFERENCE = 8,
-   EVFS_EV_PART_FILE_REFERENCE_USERNAME = 9,
-   EVFS_EV_PART_FILE_REFERENCE_PASSWORD = 10,
+   EVFS_EV_PART_METALIST = 9,
 
    EVFS_EV_PART_PROGRESS = 11,
 
    EVFS_COMMAND_EXTRA = 12,
    EVFS_COMMAND_TYPE = 13,
    EVFS_FILE_REFERENCE = 14,
-   EVFS_FILE_REFERENCE_PASSWORD = 15,
-   EVFS_FILE_REFERENCE_USERNAME = 16,
-   EVFS_FILE_REFERENCE_FD = 17,
 
    EVFS_EV_PART_OPERATION = 18,
    EVFS_EV_PART_FILE_MONITOR = 19,
@@ -76,6 +73,12 @@ typedef struct evfs_stat
    int ist_ctime;
 
 } evfs_stat;
+
+typedef struct evfs_meta_obj
+{
+	char* key;
+	char* value;
+} evfs_meta_obj;
 
 typedef struct evfs_event_id_notify evfs_event_id_notify;
 struct evfs_event_id_notify
@@ -128,6 +131,12 @@ typedef struct evfs_event_data
    char *bytes;
 } evfs_event_data;
 
+typedef struct evfs_event_meta 
+{
+   Evas_List* meta_list;
+   Ecore_Hash* meta_hash;
+} evfs_event_meta;
+
 /*typedef struct evfs_event_operation {
 	evfs_operation* op;
 } evfs_event_operation;*/
@@ -144,6 +153,11 @@ typedef struct evfs_event
    evfs_event_stat stat;
    evfs_event_progress *progress;
    struct evfs_operation *op;
+  
+   /*This is just a hack until we separate out 
+    * the different evfs_event types into a struct
+    * hierarchy */
+   evfs_event_meta* meta;
 
    evfs_event_data data;
 }

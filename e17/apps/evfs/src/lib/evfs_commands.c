@@ -231,3 +231,28 @@ evfs_client_operation_respond(evfs_connection * conn, long opid,
 
    return id;
 }
+
+
+long 
+evfs_client_metadata_retrieve(evfs_connection * conn, evfs_filereference* file )
+{
+   evfs_command *command = evfs_client_command_new();
+   long id = command->client_identifier;
+   
+   command->type = EVFS_CMD_METADATA_RETRIEVE;
+
+   command->file_command.num_files = 1;
+   command->file_command.files = malloc(sizeof(evfs_filereference *) * 1);
+   command->file_command.files[0] = file;
+
+
+   evfs_write_command(conn, command);
+
+   free(command->file_command.files);
+   free(command);
+
+
+   return id;
+
+}
+

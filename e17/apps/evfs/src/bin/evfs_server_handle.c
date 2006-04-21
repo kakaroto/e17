@@ -21,7 +21,7 @@ evfs_uri_open(evfs_client * client, evfs_filereference * uri)
    if (plugin)
      {
         printf("Opening file..\n");
-        return (*plugin->functions->evfs_file_open) (client, uri);
+        return (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_open) (client, uri);
      }
    else
      {
@@ -39,7 +39,7 @@ evfs_uri_close(evfs_client * client, evfs_filereference * uri)
    if (plugin)
      {
         printf("Closing file..\n");
-        return (*plugin->functions->evfs_file_close) (uri);
+        return (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_close) (uri);
      }
    else
      {
@@ -58,7 +58,7 @@ evfs_uri_read(evfs_client * client, evfs_filereference * uri, char *bytes,
       evfs_get_plugin_for_uri(client->server, uri->plugin_uri);
    if (plugin)
      {
-        return (*plugin->functions->evfs_file_read) (client, uri, bytes, size);
+        return (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_read) (client, uri, bytes, size);
      }
    else
      {
@@ -90,7 +90,7 @@ evfs_handle_monitor_start_command(evfs_client * client, evfs_command * command)
              printf
                 ("Requesting a file monitor from this plugin for uri type '%s'\n",
                  command->file_command.files[0]->plugin_uri);
-             (*plugin->functions->evfs_monitor_start) (client, command);
+             (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_monitor_start) (client, command);
 
           }
      }
@@ -148,7 +148,7 @@ evfs_handle_file_remove_command(evfs_client * client, evfs_command * command, ev
 	   op = evfs_operation_files_new(client, root_command);
 	   command->op = EVFS_OPERATION(op);
    } else {
-	   op = root_command->op;
+	   op = EVFS_OPERATION_FILES(root_command->op);
    }
 
 
@@ -157,7 +157,7 @@ evfs_handle_file_remove_command(evfs_client * client, evfs_command * command, ev
                                                  files[0]->plugin_uri);
    if (plugin)
      {
-        (*plugin->functions->evfs_file_lstat) (command, &file_stat, 0);
+        (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_lstat) (command, &file_stat, 0);
 
         /*If we're not a dir, simple remove command */
         if (!S_ISDIR(file_stat.st_mode))
@@ -181,7 +181,7 @@ evfs_handle_file_remove_command(evfs_client * client, evfs_command * command, ev
                   evfs_filereference *file = NULL;
 
                   /*First, we need a directory list... */
-                  (*plugin->functions->evfs_dir_list) (client, command,
+                  (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_dir_list) (client, command,
                                                        &directory_list);
                   if (directory_list)
                     {
@@ -242,12 +242,12 @@ evfs_handle_file_rename_command(evfs_client * client, evfs_command * command)
                                                  files[0]->plugin_uri);
    if (plugin)
      {
-        printf("Pointer here: %p\n", plugin->functions->evfs_file_rename);
+        printf("Pointer here: %p\n", EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_rename);
 
-        if (plugin->functions->evfs_file_rename)
+        if (EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_rename)
           {
              if (command->file_command.num_files == 2)
-                (*plugin->functions->evfs_file_rename) (client, command);
+                (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_rename) (client, command);
              else
                 printf("ERR: Wrong number of files to rename\n");
           }
@@ -266,7 +266,7 @@ evfs_handle_file_stat_command(evfs_client * client, evfs_command * command)
                                                  files[0]->plugin_uri);
    if (plugin)
      {
-        (*(plugin->functions->evfs_file_stat)) (command, &file_stat, 0);
+        (*(EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_stat)) (command, &file_stat, 0);
 
         evfs_stat_event_create(client, command, &file_stat);
      }
@@ -284,8 +284,8 @@ evfs_handle_file_open_command(evfs_client * client, evfs_command * command)
                                                  files[0]->plugin_uri);
    if (plugin)
      {
-        printf("Pointer here: %p\n", plugin->functions->evfs_file_open);
-        (*(plugin->functions->evfs_file_open)) (client,
+        printf("Pointer here: %p\n", EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_open);
+        (*(EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_open)) (client,
                                                 command->file_command.files[0]);
 
         fprintf(stderr, "Opened file, fd is: %d\n",
@@ -312,9 +312,9 @@ evfs_handle_file_read_command(evfs_client * client, evfs_command * command)
                                                  files[0]->plugin_uri);
    if (plugin)
      {
-        //printf("Pointer here: %p\n", plugin->functions->evfs_file_read);
+        //printf("Pointer here: %p\n", EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_read);
         b_read =
-           (*(plugin->functions->evfs_file_read)) (client,
+           (*(EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_read)) (client,
                                                    command->file_command.
                                                    files[0], bytes,
                                                    command->file_command.extra);
@@ -338,7 +338,7 @@ evfs_handle_dir_list_command(evfs_client * client, evfs_command * command)
      {
         Ecore_List *directory_list = NULL;
 
-        (*plugin->functions->evfs_dir_list) (client, command, &directory_list);
+        (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_dir_list) (client, command, &directory_list);
 
         if (directory_list)
           {
@@ -373,7 +373,7 @@ void evfs_handle_directory_create_command(evfs_client* client, evfs_command* com
 	        command->file_command.files[0]->path);
 		  
 	        ret =
-	        (*plugin->functions->evfs_file_mkdir) (command->file_command.files[0]);
+	        (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_mkdir) (command->file_command.files[0]);
 		printf("....ret was %d\n", ret);
 	}
 }
@@ -421,11 +421,11 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
      {
 
         /*Check for supported options */
-        if (!(plugin->functions->evfs_file_lstat &&
-              plugin->functions->evfs_file_open &&
-              dst_plugin->functions->evfs_file_create &&
-	      plugin->functions->evfs_file_read &&
-	      dst_plugin->functions->evfs_file_write))
+        if (!(EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_lstat &&
+              EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_open &&
+              EVFS_PLUGIN_FILE(dst_plugin)->functions->evfs_file_create &&
+	      EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_read &&
+	      EVFS_PLUGIN_FILE(dst_plugin)->functions->evfs_file_write))
           {
              printf("ARGH! Copy Not supported!\n");
              evfs_operation_destroy(EVFS_OPERATION(op));
@@ -433,9 +433,9 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
           }
 
         /*Get the source file size */
-        (*plugin->functions->evfs_file_lstat) (command, &file_stat, 0);
+        (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_lstat) (command, &file_stat, 0);
         res =
-           (*dst_plugin->functions->evfs_file_lstat) (command, &dest_stat, 1);
+           (*EVFS_PLUGIN_FILE(dst_plugin)->functions->evfs_file_lstat) (command, &dest_stat, 1);
 
         if (!S_ISDIR(file_stat.st_mode))
           {
@@ -451,7 +451,7 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 		       evfs_filereference_clone(command->file_command.files[1]));
 
              /*First, we need a directory list... */
-             (*plugin->functions->evfs_dir_list) (client, command,
+             (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_dir_list) (client, command,
                                                   &directory_list);
              if (directory_list)
                {
@@ -538,4 +538,21 @@ evfs_handle_operation_command(evfs_client * client, evfs_command * command)
         printf("*** Received operation response for op %ld -> %d\n",
                command->op->id, command->op->response);
      }
+}
+
+void evfs_handle_metadata_command(evfs_client* client, evfs_command* command)
+{
+	char* type = "audio/x-mp3";
+	evfs_plugin_meta* plugin;
+	Ecore_List* ret_list;
+
+	plugin = EVFS_PLUGIN_META(evfs_meta_plugin_get_for_type(evfs_server_get(),type));
+	if (plugin) {
+		ret_list = (*plugin->functions->evfs_file_meta_retrieve)(client,command);
+
+		evfs_meta_data_event_create(client,command, ret_list);
+	} else {
+		printf("Could not find plugin to tag this type\n");
+	}
+	
 }

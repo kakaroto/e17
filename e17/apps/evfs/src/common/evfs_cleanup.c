@@ -128,6 +128,26 @@ evfs_cleanup_operation_event(evfs_event * event)
 }
 
 void
+evfs_cleanup_metadata_event(evfs_event* event)
+{
+	evfs_meta_obj* obj;
+	Evas_List* l = event->meta->meta_list;
+	
+	for (; l ;) {
+		obj = l->data;
+		l = evas_list_remove(event->meta->meta_list, obj);
+		
+		free(obj->key);
+		free(obj->value);
+		free(obj);
+	}
+	evas_list_free(event->meta->meta_list);
+	free(event->meta);
+
+	/*FIXME - id if client, free hash*/
+}
+
+void
 evfs_cleanup_event(evfs_event * event)
 {
    evfs_cleanup_command(&event->resp_command, EVFS_CLEANUP_PRESERVE_COMMAND);
@@ -149,6 +169,8 @@ evfs_cleanup_event(evfs_event * event)
      case EVFS_EV_OPERATION:
         evfs_cleanup_operation_event(event);
         break;
+     case EVFS_EV_METADATA:
+	evfs_cleanup_metadata_event(event);
      }
 
    free(event);

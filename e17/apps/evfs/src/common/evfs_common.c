@@ -1,5 +1,11 @@
 #include "evfs.h"
 
+evfs_plugin*
+evfs_meta_plugin_get_for_type(evfs_server* server, char* mime)
+{
+	return ecore_hash_get(server->plugin_meta_hash, mime);
+}
+
 evfs_plugin *
 evfs_get_plugin_for_uri(evfs_server * server, char *uri_base)
 {
