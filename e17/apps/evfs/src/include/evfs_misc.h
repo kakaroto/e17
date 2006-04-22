@@ -1,6 +1,8 @@
 #ifndef _EVFS_MISC_H_
 #define _EVFS_MISC_H_
 
+#define IF_FREE(obj) if (obj) free(obj)
+
 typedef struct evfs_command_client
 {
    evfs_client *client;

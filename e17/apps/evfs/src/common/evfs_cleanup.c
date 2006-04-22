@@ -124,7 +124,10 @@ evfs_cleanup_operation_event(evfs_event * event)
 {
    /*We don't want to free the operation - the command owns this,
     * unless we're a client*/
-   /*FIXME identify if we're the client, and free */
+   if (evfs_object_client_is_get()) {
+	   IF_FREE(event->op->misc_str);
+	   free(event->op);
+  }
 }
 
 void
@@ -142,9 +145,19 @@ evfs_cleanup_metadata_event(evfs_event* event)
 		free(obj);
 	}
 	evas_list_free(event->meta->meta_list);
-	free(event->meta);
 
-	/*FIXME - id if client, free hash*/
+	if (evfs_object_client_is_get()) {
+		Ecore_List* keys;
+		char* key;
+		keys = ecore_hash_keys(event->meta->meta_hash);
+		while ( (key = ecore_list_remove_first(keys))) {
+			ecore_hash_remove(event->meta->meta_hash, key);
+			free(key);
+		}
+		ecore_hash_destroy(event->meta->meta_hash);
+		ecore_list_destroy(keys);
+	}
+	free(event->meta);	
 }
 
 void
