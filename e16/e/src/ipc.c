@@ -30,6 +30,7 @@
 #include "ewins.h"
 #include "ewin-ops.h"
 #include "hints.h"		/* FIXME - Should not be here */
+#include "screen.h"
 #include "session.h"
 #include "snaps.h"
 #include "timers.h"
@@ -133,9 +134,36 @@ SetEwinBoolean(const char *txt, char *item, const char *value, int set)
 /* The IPC functions */
 
 static void
-IPC_Screen(const char *params __UNUSED__, Client * c __UNUSED__)
+IPC_Screen(const char *params, Client * c __UNUSED__)
 {
-   ScreenShowInfo();
+   char                param[1024];
+   int                 l;
+   const char         *p;
+
+   p = params;
+   if (p)
+     {
+	l = 0;
+	sscanf(p, "%1000s %n", param, &l);
+	p += l;
+     }
+
+   if (!p || !strncmp(param, "list", 2))
+     {
+	ScreenShowInfo(p);
+     }
+   else if (!strcmp(param, "split"))
+     {
+	int                 i, j, nx, ny;
+
+	nx = 2;
+	ny = 1;
+	sscanf(p, "%i %i\n", &nx, &ny);
+	for (i = 0; i < nx; i++)
+	   for (j = 0; j < ny; j++)
+	      ScreenAdd(1, VRoot.scr, i * VRoot.w / nx, j * VRoot.h / ny,
+			VRoot.w / nx, VRoot.h / ny);
+     }
 }
 
 static void

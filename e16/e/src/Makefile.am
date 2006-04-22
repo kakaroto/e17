@@ -96,6 +96,7 @@ e16_SOURCES = \
 	progress.c		\
 	regex.c			\
 	screen.c                \
+	screen.h                \
 	session.c               \
 	session.h               \
 	settings.c              \

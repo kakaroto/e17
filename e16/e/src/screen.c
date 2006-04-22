@@ -23,51 +23,83 @@
  */
 #include "E.h"
 #include "ewins.h"
+#include "screen.h"
 #include "xwin.h"
 #ifdef HAS_XINERAMA
 #include <X11/extensions/Xinerama.h>
 #endif
 
-#ifdef HAS_XINERAMA
-static XineramaScreenInfo *screens = NULL;
-static int          num_screens = 0;
-#endif
+typedef struct
+{
+   int                 type;
+   int                 head;
+   int                 x, y;
+   int                 w, h;
+} EScreen;
+
+static EScreen     *p_screens = NULL;
+static int          n_screens = 0;
+
+void
+ScreenAdd(int type, int head, int x, int y, unsigned int w, unsigned int h)
+{
+   EScreen            *es;
+
+   n_screens++;
+   p_screens = Erealloc(p_screens, n_screens * sizeof(EScreen));
+
+   es = p_screens + n_screens - 1;
+   es->type = type;
+   es->head = head;
+   es->x = x;
+   es->y = y;
+   es->w = w;
+   es->h = h;
+}
 
 void
 ScreenInit(void)
 {
+#ifdef HAS_XINERAMA
+   XineramaScreenInfo *screens = NULL;
+   int                 num_screens = 0;
+   int                 i;
+
    if (Mode.wm.window)
       return;
-#ifdef HAS_XINERAMA
+
    Mode.display.xinerama_active = XineramaIsActive(disp);
    Conf.extra_head = 0;
    if (Mode.display.xinerama_active)
       screens = XineramaQueryScreens(disp, &num_screens);
+
+   for (i = 0; i < num_screens; i++)
+      ScreenAdd(0, screens[i].screen_number, screens[i].x_org,
+		screens[i].y_org, screens[i].width, screens[i].height);
 #endif
 }
 
 void
-ScreenShowInfo(void)
+ScreenShowInfo(const char *prm __UNUSED__)
 {
+   int                 i;
+
 #ifdef HAS_XINERAMA
-   if (Mode.display.xinerama_active)
+   if (XineramaIsActive(disp))
      {
 	XineramaScreenInfo *scrns;
-	int                 num, i;
+	int                 num;
 
 	scrns = XineramaQueryScreens(disp, &num);
 
-	IpcPrintf("Xinerama active:\n");
+	IpcPrintf("Xinerama screens:\n");
 	IpcPrintf("Head  Screen  X-Origin  Y-Origin     Width    Height\n");
 	for (i = 0; i < num; i++)
-	  {
-	     IpcPrintf(" %2d     %2d       %5d     %5d     %5d     %5d\n",
-		       i, scrns[i].screen_number,
-		       scrns[i].x_org, scrns[i].y_org, scrns[i].width,
-		       scrns[i].height);
-	  }
+	   IpcPrintf(" %2d     %2d       %5d     %5d     %5d     %5d\n",
+		     i, scrns[i].screen_number,
+		     scrns[i].x_org, scrns[i].y_org, scrns[i].width,
+		     scrns[i].height);
 	XFree(scrns);
-	return;
      }
    else
      {
@@ -75,9 +107,23 @@ ScreenShowInfo(void)
      }
 #endif
 
+   IpcPrintf("E-screens:\n");
    IpcPrintf("Head  Screen  X-Origin  Y-Origin     Width    Height\n");
-   IpcPrintf(" %2d     %2d       %5d     %5d     %5d     %5d\n",
-	     0, VRoot.scr, 0, 0, VRoot.w, VRoot.h);
+   if (n_screens)
+     {
+	for (i = 0; i < n_screens; i++)
+	  {
+	     EScreen            *ps = p_screens + i;
+
+	     IpcPrintf(" %2d     %2d       %5d     %5d     %5d     %5d\n",
+		       i, ps->head, ps->x, ps->y, ps->w, ps->h);
+	  }
+     }
+   else
+     {
+	IpcPrintf(" %2d     %2d       %5d     %5d     %5d     %5d\n",
+		  0, VRoot.scr, 0, 0, VRoot.w, VRoot.h);
+     }
 }
 
 int
@@ -92,29 +138,27 @@ ScreenGetGeometry(int xi, int yi, int *px, int *py, int *pw, int *ph)
    w = VRoot.w;
    h = VRoot.h;
 
-#ifdef HAS_XINERAMA
-   if (Mode.display.xinerama_active)
+   if (n_screens > 1)
      {
 	int                 i;
 
-	for (i = 0; i < num_screens; i++)
+	for (i = 0; i < n_screens; i++)
 	  {
-	     XineramaScreenInfo *ps = &screens[i];
+	     EScreen            *ps = p_screens + i;
 
-	     if (xi >= ps->x_org && xi < ps->x_org + ps->width &&
-		 yi >= ps->y_org && yi < ps->y_org + ps->height)
+	     if (xi >= ps->x && xi < ps->x + ps->w &&
+		 yi >= ps->y && yi < ps->y + ps->h)
 	       {
-		  x = ps->x_org;
-		  y = ps->y_org;
-		  w = ps->width;
-		  h = ps->height;
-		  head = i;
+		  x = ps->x;
+		  y = ps->y;
+		  w = ps->w;
+		  h = ps->h;
+		  head = ps->head;
 		  /* NB! *First* matching head is used */
 		  break;
 	       }
 	  }
      }
-#endif
 
    if (px)
       *px = x;

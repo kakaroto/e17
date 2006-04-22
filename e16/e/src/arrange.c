@@ -26,6 +26,7 @@
 #include "desktops.h"
 #include "ewins.h"
 #include "groups.h"
+#include "screen.h"
 
 static int
 ArrangeAddToList(int **array, int current_size, int value)

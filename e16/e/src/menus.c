@@ -32,6 +32,7 @@
 #include "hints.h"
 #include "iclass.h"
 #include "menus.h"
+#include "screen.h"
 #include "tclass.h"
 #include "timers.h"
 #include "tooltips.h"

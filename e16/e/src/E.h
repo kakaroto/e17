@@ -795,18 +795,6 @@ void                ProgressbarHide(Progressbar * p);
 /* regex.c */
 int                 matchregexp(const char *rx, const char *s);
 
-/* screen.c */
-void                ScreenInit(void);
-void                ScreenShowInfo(void);
-int                 ScreenGetGeometry(int x, int y, int *px, int *py,
-				      int *pw, int *ph);
-int                 ScreenGetAvailableArea(int x, int y, int *px, int *py,
-					   int *pw, int *ph);
-int                 GetPointerScreenGeometry(int *px, int *py,
-					     int *pw, int *ph);
-int                 GetPointerScreenAvailableArea(int *px, int *py,
-						  int *pw, int *ph);
-
 /* settings.c */
 void                SettingsMoveResize(void);
 void                SettingsPlacement(void);

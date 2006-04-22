@@ -24,6 +24,7 @@
 #include "E.h"
 #include "eimage.h"
 #include "ewins.h"
+#include "screen.h"
 #include "xwin.h"
 #include <signal.h>
 #include <X11/keysym.h>

@@ -24,6 +24,7 @@
 #include "E.h"
 #include "ewins.h"
 #include "hints.h"
+#include "screen.h"
 
 #define MAX_HOR 0x1
 #define MAX_VER 0x2

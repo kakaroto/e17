@@ -36,6 +36,7 @@
 #include "ewins.h"
 #include "iclass.h"
 #include "icons.h"
+#include "screen.h"
 #include "tclass.h"
 #include "tooltips.h"
 #include "xwin.h"
