@@ -3,6 +3,7 @@
 #include <Evas.h>
 
 static int io_init = 0;
+static int _evfs_object_client_is = 1;
 static Eet_Data_Descriptor *_evfs_filereference_edd;
 static Eet_Data_Descriptor *_evfs_progress_event_edd;
 static Eet_Data_Descriptor *_evfs_operation_edd;
@@ -10,6 +11,18 @@ static Eet_Data_Descriptor *_evfs_filemonitor_edd;
 static Eet_Data_Descriptor *_evfs_metalist_edd;
 static Eet_Data_Descriptor *_evfs_metaobj_edd;
 
+
+/*Functions so we know what to clean in various objects client/server side*/
+void evfs_object_server_is_set()
+{
+	_evfs_object_client_is = 0;
+}
+
+int evfs_object_client_is_get()
+{
+	return _evfs_object_client_is;
+}
+/*-----------------------*/
 
 Eet_Data_Descriptor *
 evfs_io_filereference_edd_get()

@@ -276,7 +276,7 @@ evfs_load_plugin_file(char *filename)
 evfs_plugin *
 evfs_load_plugin_meta(char *filename)
 {
-   evfs_plugin_meta *plugin = NEW(evfs_plugin_file);
+   evfs_plugin_meta *plugin = NEW(evfs_plugin_meta);
    evfs_plugin_functions_meta *(*evfs_plugin_init) ();
    Ecore_List* (*evfs_plugin_meta_types_get)();
    char* type;
@@ -435,6 +435,9 @@ main(int argc, char **argv)
    server->incoming_command_list = ecore_list_new();
 
    ecore_idle_enterer_add(incoming_command_cb, NULL);
+
+   /*Identify that we are a server*/
+   evfs_object_server_is_set();
 
    /*Add a timer, to make sure our event loop keeps going.  Kinda hacky */
    ecore_timer_add(0.01, ecore_timer_enterer, NULL);
