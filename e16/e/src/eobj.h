@@ -143,6 +143,7 @@ void                EobjUnmap(EObj * eo);
 void                EobjMove(EObj * eo, int x, int y);
 void                EobjResize(EObj * eo, int w, int h);
 void                EobjMoveResize(EObj * eo, int x, int y, int w, int h);
+void                EobjDamage(EObj * eo);
 void                EobjReparent(EObj * eo, EObj * dst, int x, int y);
 int                 EobjRaise(EObj * eo);
 int                 EobjLower(EObj * eo);

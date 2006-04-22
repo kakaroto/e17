@@ -410,6 +410,15 @@ EobjResize(EObj * eo, int w, int h)
 }
 
 void
+EobjDamage(EObj * eo)
+{
+#if USE_COMPOSITE
+   if (eo->cmhook)
+      ECompMgrWinDamageArea(eo, 0, 0, eo->w, eo->h);
+#endif
+}
+
+void
 EobjReparent(EObj * eo, EObj * dst, int x, int y)
 {
    int                 move;

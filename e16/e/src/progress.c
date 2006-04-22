@@ -67,6 +67,9 @@ ProgressbarCreate(const char *name, int w, int h)
 	ProgressbarDestroy(p);
 	return NULL;
      }
+   p->win->fade = 0;
+   p->n_win->fade = 0;
+   p->p_win->fade = 0;
 
    p->ic = ImageclassFind("PROGRESS_BAR", 1);
    if (p->ic)
@@ -95,6 +98,8 @@ void
 ProgressbarDestroy(Progressbar * p)
 {
    int                 i, j, dy;
+
+   ProgressbarHide(p);
 
    dy = 2 * p->h;
    EobjWindowDestroy(p->win);
@@ -175,8 +180,10 @@ ProgressbarSet(Progressbar * p, int progress)
 	    pad->left, pad->top, p->h * 5 - (pad->left + pad->right),
 	    p->h - (pad->top + pad->bottom), p->h - (pad->top + pad->bottom),
 	    TextclassGetJustification(p->tnc));
+   /* Hack - We may not be running in the event loop here */
+   EobjDamage(p->n_win);
 
-   EFlush();
+   EobjsRepaint();
 }
 
 void
@@ -201,7 +208,7 @@ ProgressbarShow(Progressbar * p)
 	    p->h - (pad->top + pad->bottom), p->h - (pad->top + pad->bottom),
 	    TextclassGetJustification(p->tnc));
 
-   EFlush();
+   EobjsRepaint();
 }
 
 void

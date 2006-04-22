@@ -48,6 +48,8 @@ void                ECompMgrWinMap(EObj * eo);
 void                ECompMgrWinUnmap(EObj * eo);
 void                ECompMgrWinMoveResize(EObj * eo, int change_xy,
 					  int change_wh, int change_bw);
+void                ECompMgrWinDamageArea(EObj * eo, int x, int y, int w,
+					  int h);
 void                ECompMgrWinReparent(EObj * eo, Desk * dsk, int change_xy);
 void                ECompMgrWinRaise(EObj * eo);
 void                ECompMgrWinLower(EObj * eo);

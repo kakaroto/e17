@@ -1569,6 +1569,15 @@ ECompMgrWinMoveResize(EObj * eo, int change_xy, int change_wh, int change_bw)
      }
 }
 
+void
+ECompMgrWinDamageArea(EObj * eo, int x __UNUSED__, int y __UNUSED__,
+		      int w __UNUSED__, int h __UNUSED__)
+{
+   ECmWinInfo         *cw = eo->cmhook;
+
+   ECompMgrDamageMergeObject(eo, cw->shape, 0);
+}
+
 static void
 ECompMgrWinConfigure(EObj * eo, XEvent * ev)
 {
