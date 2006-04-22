@@ -517,8 +517,14 @@ DialogRedraw(Dialog * d)
 
    if (d->text)
      {
-	TextclassApply(d->iclass, d->pmap, d->w, d->h, 0, 0, STATE_NORMAL,
-		       d->tclass, d->text);
+	EImageBorder       *pad;
+
+	pad = ImageclassGetPadding(d->iclass);
+	TextDraw(d->tclass, d->pmap, 0, 0, STATE_NORMAL, d->text,
+		 pad->left, pad->top, d->w - (pad->left + pad->right),
+		 d->h - (pad->top + pad->bottom),
+		 d->h - (pad->top + pad->bottom),
+		 TextclassGetJustification(d->tclass));
      }
    else if (d->item)
      {

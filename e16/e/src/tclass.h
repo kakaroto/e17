@@ -78,9 +78,6 @@ void                TextclassDecRefcount(TextClass * tc);
 int                 TextclassGetJustification(TextClass * tc);
 void                TextclassSetJustification(TextClass * tc, int just);
 TextClass          *TextclassFind(const char *name, int fallback);
-void                TextclassApply(ImageClass * ic, Window win, int w,
-				   int h, int active, int sticky, int state,
-				   TextClass * tclass, const char *text);
 
 /* text.c */
 TextState          *TextclassGetTextState(TextClass * tclass, int state,

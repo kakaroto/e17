@@ -470,25 +470,6 @@ TextclassConfigLoad(FILE * fs)
    return err;
 }
 
-void
-TextclassApply(ImageClass * iclass, Window win, int w, int h,
-	       int active, int sticky, int state,
-	       TextClass * tclass, const char *text)
-{
-   EImageBorder       *pad;
-
-   if ((!iclass) || (!tclass) || (!text) || (!win) || (w < 1) || (h < 1))
-      return;
-
-   XClearWindow(disp, win);
-
-   pad = ImageclassGetPadding(iclass);
-   TextDraw(tclass, win, active, sticky, state, text,
-	    pad->left, pad->top, w - (pad->left + pad->right),
-	    h - (pad->top + pad->bottom), h - (pad->top + pad->bottom),
-	    tclass->justification);
-}
-
 /*
  * Textclass Module
  */

@@ -191,8 +191,11 @@ WarpFocusWinHide(WarpFocusWin * fw)
 static void
 WarpFocusWinPaint(WarpFocusWin * fw)
 {
-   int                 i, state;
+   int                 i, state, iw;
    WarplistItem       *wi;
+   EImageBorder       *pad;
+
+   pad = ImageclassGetPadding(fw->ic);
 
    for (i = 0; i < warplist_num; i++)
      {
@@ -208,33 +211,26 @@ WarpFocusWinPaint(WarpFocusWin * fw)
 	ImageclassApply(fw->ic, wi->win, fw->mw, fw->mh, 0, 0, state,
 			ST_WARPLIST);
 
-	/* New icon stuff */
+	iw = 0;
 	if (Conf.warplist.icon_mode != 0)
 	  {
 	     int                 icon_size = fw->mh - 2 * ICON_PAD;
 	     EImage             *im;
-	     EImageBorder       *pad;
-
-	     pad = ImageclassGetPadding(fw->ic);
-
-	     TextDraw(fw->tc, wi->win, 0, 0, state, wi->txt,
-		      pad->left + fw->mh, pad->top, fw->tw, fw->th, 0, 0);
 
 	     im = EwinIconImageGet(wi->ewin, icon_size,
 				   Conf.warplist.icon_mode);
-	     if (!im)
-		continue;
+	     if (im)
+	       {
+		  EImageRenderOnDrawable(im, wi->win, pad->left +
+					 ICON_PAD, ICON_PAD,
+					 icon_size, icon_size, 1);
+		  EImageFree(im);
+	       }
+	     iw = fw->mh;
+	  }
 
-	     EImageRenderOnDrawable(im, wi->win, pad->left +
-				    ICON_PAD, ICON_PAD,
-				    icon_size, icon_size, 1);
-	     EImageFree(im);
-	  }
-	else
-	  {
-	     TextclassApply(fw->ic, wi->win, fw->mw, fw->mh, 0, 0, state,
-			    fw->tc, wi->txt);
-	  }
+	TextDraw(fw->tc, wi->win, 0, 0, state, wi->txt,
+		 pad->left + iw, pad->top, fw->tw, fw->th, 0, 0);
      }
 
    /* FIXME - Check shape */

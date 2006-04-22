@@ -117,7 +117,6 @@ ProgressbarDestroy(Progressbar * p)
 	     EobjMove(pp->p_win, pp->p_win->x, pp->p_win->y - dy);
 	  }
 	break;
-
      }
 
    if (p->ic)
@@ -152,6 +151,7 @@ ProgressbarSet(Progressbar * p, int progress)
 {
    int                 w;
    char                s[64];
+   EImageBorder       *pad;
 
    if (progress == p->value)
       return;
@@ -164,12 +164,17 @@ ProgressbarSet(Progressbar * p, int progress)
       w = p->w;
    Esnprintf(s, sizeof(s), "%i%%", p->value);
 
-   TextclassApply(p->inc, p->n_win->win, p->h * 5, p->h, 0, 0, STATE_CLICKED,
-		  p->tnc, s);
+   EobjResize(p->p_win, w, p->h);
    ImageclassApply(p->inc, p->p_win->win, w, p->h, 1, 0, STATE_NORMAL,
 		   ST_SOLID);
+   EobjShapeUpdate(p->p_win, 0);
 
-   EobjResize(p->p_win, w, p->h);
+   pad = ImageclassGetPadding(p->inc);
+   EClearWindow(p->n_win->win);
+   TextDraw(p->tnc, p->n_win->win, 0, 0, STATE_CLICKED, s,
+	    pad->left, pad->top, p->h * 5 - (pad->left + pad->right),
+	    p->h - (pad->top + pad->bottom), p->h - (pad->top + pad->bottom),
+	    TextclassGetJustification(p->tnc));
 
    EFlush();
 }
@@ -177,27 +182,26 @@ ProgressbarSet(Progressbar * p, int progress)
 void
 ProgressbarShow(Progressbar * p)
 {
-   int                 w;
-
-   w = (p->value * p->w) / 100;
-   if (w < 1)
-      w = 1;
-   if (w > p->w)
-      w = p->w;
+   EImageBorder       *pad;
 
    ImageclassApply(p->ic, p->win->win, p->w - (p->h * 5), p->h, 0, 0,
 		   STATE_NORMAL, ST_SOLID);
    ImageclassApply(p->inc, p->n_win->win, (p->h * 5), p->h, 0, 0, STATE_CLICKED,
 		   ST_SOLID);
-   ImageclassApply(p->ipc, p->p_win->win, w, p->h, 1, 0, STATE_NORMAL,
+   ImageclassApply(p->ipc, p->p_win->win, 1, p->h, 1, 0, STATE_NORMAL,
 		   ST_SOLID);
 
    EobjMap(p->win, 0);
    EobjMap(p->n_win, 0);
    EobjMap(p->p_win, 0);
-   ESync();
-   TextclassApply(p->ic, p->win->win, p->w - (p->h * 5), p->h, 0, 0,
-		  STATE_NORMAL, p->tc, p->win->name);
+
+   pad = ImageclassGetPadding(p->inc);
+   TextDraw(p->tc, p->win->win, 0, 0, STATE_NORMAL, p->win->name,
+	    pad->left, pad->top, p->w - (p->h * 5) - (pad->left + pad->right),
+	    p->h - (pad->top + pad->bottom), p->h - (pad->top + pad->bottom),
+	    TextclassGetJustification(p->tnc));
+
+   EFlush();
 }
 
 void
