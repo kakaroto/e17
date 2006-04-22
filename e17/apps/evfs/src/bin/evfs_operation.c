@@ -385,7 +385,7 @@ void evfs_operation_run_tasks(evfs_operation* op)
 			ecore_list_next(op->sub_task);
 		}
 	   } else {
-		   printf("Operation is in user wait state!\n");
+		   //printf("Operation is in user wait state!\n");
 	   }
 	} else {
 		/*If task is null, operation is completed!*/

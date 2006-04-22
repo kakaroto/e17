@@ -392,18 +392,10 @@ evfs_load_plugins()
 }
 
 int
-ecore_timer_enterer(__UNUSED__ void *data)
-{
-   evfs_operation_queue_run();
-	
-   return 1;
-}
-
-int
 incoming_command_cb(__UNUSED__ void *data)
 {
    int clean =0;
-	
+
    evfs_command_client *com_cli =
       ecore_list_remove_first(server->incoming_command_list);
 
@@ -414,6 +406,15 @@ incoming_command_cb(__UNUSED__ void *data)
         free(com_cli);
      }
 
+   return 1;
+}
+
+int
+ecore_timer_enterer(__UNUSED__ void *data)
+{
+   incoming_command_cb(NULL);
+   evfs_operation_queue_run();
+	
    return 1;
 }
 
@@ -434,7 +435,7 @@ main(int argc, char **argv)
    server->clientCounter = 0;
    server->incoming_command_list = ecore_list_new();
 
-   ecore_idle_enterer_add(incoming_command_cb, NULL);
+   //ecore_idle_enterer_add(incoming_command_cb, NULL);
 
    /*Identify that we are a server*/
    evfs_object_server_is_set();
@@ -471,6 +472,7 @@ main(int argc, char **argv)
         ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DATA, ipc_client_data,
                                 NULL);
      }
+
 
    ecore_main_loop_begin();
 

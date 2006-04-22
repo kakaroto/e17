@@ -890,10 +890,8 @@ evfs_file_stat(evfs_command* command, struct stat *dst_stat, int i)
 	int rid;
 	SftpGenericHandle* handle;
 
+	sftp_split_host_path(command->file_command.files[i]->path, &host, &path);
 
-	sftp_split_host_path(command->file_command.files[0]->path, &host, &path);
-	
-	
 	if ( !(conn = sftp_get_connection_for_host(host))) {
 		conn = sftp_connect(host);
 	}

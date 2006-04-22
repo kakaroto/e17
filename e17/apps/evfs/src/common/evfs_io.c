@@ -735,7 +735,6 @@ evfs_write_file_command(evfs_connection * conn, evfs_command * command)
 	char* data;
 	int size;
         evfs_filereference *ref = command->file_command.files[i];
-
 	data = eet_data_descriptor_encode(_evfs_filereference_edd, ref, &size);
 
 
@@ -837,7 +836,6 @@ evfs_process_incoming_command(evfs_server * server, evfs_command * command,
               eet_data_descriptor_decode(_evfs_filereference_edd, message->data,
                                          message->len);
 	   
-
 
            if (command->file_command.num_files == 0)
              {

@@ -420,6 +420,7 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
    if (plugin && dst_plugin)
      {
 
+
         /*Check for supported options */
         if (!(EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_lstat &&
               EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_open &&
@@ -432,10 +433,15 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
              return;
           }
 
+
+
         /*Get the source file size */
         (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_lstat) (command, &file_stat, 0);
+
         res =
            (*EVFS_PLUGIN_FILE(dst_plugin)->functions->evfs_file_lstat) (command, &dest_stat, 1);
+
+
 
         if (!S_ISDIR(file_stat.st_mode))
           {
@@ -498,6 +504,9 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 
           }
 
+   printf("4\n");
+
+	
         /*Only send '100%' event when we're back at the top, or we aren't recursive */
         if (command == root_command) {
            /*evfs_file_progress_event_create(client, command, root_command, 100,
