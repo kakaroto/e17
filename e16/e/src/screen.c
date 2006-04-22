@@ -66,7 +66,7 @@ ScreenShowInfo(void)
 		       scrns[i].x_org, scrns[i].y_org, scrns[i].width,
 		       scrns[i].height);
 	  }
-	XFree(screens);
+	XFree(scrns);
 	return;
      }
    else
