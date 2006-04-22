@@ -1,1 +1,0 @@
-shlibs:Depends=libc6 (>= 2.3.5-1), libe, libecore0, libeet0, libevas0, libjpeg62, zlib1g (>= 1:1.2.1)
