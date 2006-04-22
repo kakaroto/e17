@@ -610,11 +610,13 @@ GtkObject *gevasobj_new(void)
 
 static void gevasobj_destroy(GtkObject * object)
 {
+    
 	GtkgEvasObj *ev;
 	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASOBJ(object));
 	ev = GTK_GEVASOBJ(object);
 
+    
 	/* printf(" gevasobj_destroy() refc:%d\n", object->ref_count); */
 	_gevasobj_ensure_obj_free(object);
 	GEVAS(ev) = NULL;

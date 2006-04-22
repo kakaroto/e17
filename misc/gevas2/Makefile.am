@@ -12,4 +12,7 @@ MAINTAINERCLEANFILES = INSTALL Makefile.in aclocal.m4 config.guess \
 
 SUBDIRS		     = src media demo
 
-EXTRA_DIST = README AUTHORS COPYING TODO acconfig.h INSTALL gevas.spec
+EXTRA_DIST = README AUTHORS COPYING TODO acconfig.h INSTALL gevas.spec gevas.pc.in gevas.pc
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = gevas.pc

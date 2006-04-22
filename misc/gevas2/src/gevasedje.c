@@ -184,9 +184,9 @@ static void gevasedje_destroy(GtkObject * object)
 
 	ev = GTK_GEVASEDJE(object);
 
-
-
-	/* Chain up */
+//    fprintf( stderr, "m_edje:%lx eobj:%lx \n", ev->m_edje, EVASO( ev ) );
+    
+    /* Chain up */
 	if (GTK_OBJECT_CLASS(parent_class)->destroy)
 		(*GTK_OBJECT_CLASS(parent_class)->destroy) (object);
 }

@@ -1,6 +1,7 @@
 AC_INIT(src/gevas.h)
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gevas, 2.2.1)
+VERSION=2.2.1
+AM_INIT_AUTOMAKE(gevas, $VERSION )
 
 AM_PATH_GTK_2_0( 2.2.0 )
 
@@ -38,7 +39,7 @@ AC_SUBST(edb_libs)
 
 
 have_edje=no
-PKG_CHECK_MODULES(EDJE, edje >= 0.5.0, 
+PKG_CHECK_MODULES(EDJE, edje >= 0.4.9 ecore >= 0.9.9, 
 [
 	have_edje=yes
 ],
@@ -99,9 +100,13 @@ AC_SUBST(LDFLAGS)
 AC_SUBST(evas_cflags)
 AC_SUBST(evas_libs)
 
+REQUIREMENTS="edje >= 0.4.9 ecore >= 0.9.9 "
+AC_SUBST(REQUIREMENTS)
+
 AC_OUTPUT([
 Makefile
 src/Makefile
 media/Makefile
 demo/Makefile
+gevas.pc
 ])

@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: gevas
+Description: GTK+2 wrapper and glue for Evas
+Version: @VERSION@
+Requires: @REQUIREMENTS@
+Libs:      -lgevas
+Cflags:  
+
+

@@ -32,24 +32,24 @@ TESTS = testgevas gwinmaptest imagesize rawimage gevasanim signalconnect gevased
 bin_PROGRAMS = $(TESTS)
 
 testgevas_SOURCES = testgevas.c
-testgevas_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@
+testgevas_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@ @EDJE_LIBS@
 
 gwinmaptest_SOURCES = gwinmaptest.c
-gwinmaptest_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@
+gwinmaptest_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@ @EDJE_LIBS@
 
 imagesize_SOURCES = imagesize.c
-imagesize_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@
+imagesize_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@ @EDJE_LIBS@
 
 rawimage_SOURCES = rawimage.c
-rawimage_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@
+rawimage_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@ @EDJE_LIBS@
 
 gevasanim_SOURCES = gevasanim.c
-gevasanim_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@
+gevasanim_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@ @EDJE_LIBS@
 
 signalconnect_SOURCES = signalconnect.c
-signalconnect_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@
+signalconnect_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@ @EDJE_LIBS@
 
 gevasedje_SOURCES = gevasedje.c
-gevasedje_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@
+gevasedje_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@ @EDJE_LIBS@
 
 

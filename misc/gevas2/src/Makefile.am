@@ -5,7 +5,7 @@ AUTOMAKE_OPTIONS     = 1.4 foreign
 # A list of all the files in the current directory which can be regenerated
 MAINTAINERCLEANFILES = Makefile.in
 
-LIBS_EVAS     = @evas_ldflags@
+LIBS_EVAS     = @evas_libs@
 LIBS_EXTRA    = -L/usr/local/lib @edb_libs@ @EDJE_LIBS@
 
 
