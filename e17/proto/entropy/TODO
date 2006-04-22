@@ -12,7 +12,7 @@ This is a rough list of things we could implement:
 [-] * archives - ability to extract archives to a path
 [-] * right click drag menus - when we drag with the right click, it would be
       nice to display a context menu (might need etk work)
-[I] * icon mode for etk - implement icon view as soon as the etk iconbox arrives
+[C] * icon mode for etk - implement icon view as soon as the etk iconbox arrives
 [-] * status bar - make the statusbar meaningful (number of selected files, size
       etc...) especially in the upcoming icon mode
 [-] * desktop support - icons on the desktop, backgrounds, etc.
@@ -25,6 +25,8 @@ This is a rough list of things we could implement:
 [-] * internal scripting - some sort of internal scripting language that would
       allow us to write minor scripts like: download from cam, copy to backup, etc.
 [-] * about dialog - nice fat about dialog
+[-] * ETK Rename dialog
+
 
 
 Key:
