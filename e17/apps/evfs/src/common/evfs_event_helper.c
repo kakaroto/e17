@@ -152,6 +152,8 @@ evfs_meta_data_event_create(evfs_client* client,evfs_command* command, Evas_List
 
    event->type = EVFS_EV_METADATA;
    event->meta = calloc(1, sizeof(evfs_event_meta));
+
+   printf("Ret list is: %p\n", ret_list);
    event->meta->meta_list = ret_list;
 	
    evfs_write_event(client, command, event);

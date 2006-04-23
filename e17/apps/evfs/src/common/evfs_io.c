@@ -505,18 +505,22 @@ evfs_read_event(evfs_event * event, ecore_ipc_message * msg)
 
 		/*Now we have to push this list to a hash..*/
 		event->meta = meta;
-		event->meta->meta_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+		if (event->meta) {
+			event->meta->meta_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 
-		for (l  = event->meta->meta_list; l; ) {
-			obj = l->data;
-			l = evas_list_remove(event->meta->meta_list, l->data);
-			
-			ecore_hash_set(event->meta->meta_hash, obj->key, obj->value);
-			free(obj);
-
+			for (l  = event->meta->meta_list; l; ) {
+				obj = l->data;
+				l = evas_list_remove(event->meta->meta_list, l->data);
+				
+				ecore_hash_set(event->meta->meta_hash, obj->key, obj->value);
+				free(obj);
+	
+			}
+			evas_list_free(event->meta->meta_list);	
+		} else {
+			printf("No meta data object!\n");
 		}
-		evas_list_free(event->meta->meta_list);
-
+	
 	}
      break;
 

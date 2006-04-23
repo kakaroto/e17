@@ -136,14 +136,24 @@ evfs_cleanup_metadata_event(evfs_event* event)
 	evfs_meta_obj* obj;
 	Evas_List* l = event->meta->meta_list;
 	
+	if (!evfs_object_client_is_get()) {
+		for (; l ;) {
+			obj = l->data;
+			l = evas_list_remove(event->meta->meta_list, obj);
+		
+			free(obj->key);
+			free(obj->value);
+			free(obj);
+		}
+		evas_list_free(event->meta->meta_list);
+	}
+
 	if (evfs_object_client_is_get()) {
 		Ecore_List* keys;
 		char* key;
-		char* value;
 		keys = ecore_hash_keys(event->meta->meta_hash);
 		while ( (key = ecore_list_remove_first(keys))) {
-			value = ecore_hash_remove(event->meta->meta_hash, key);
-			IF_FREE(value);
+			ecore_hash_remove(event->meta->meta_hash, key);
 			free(key);
 		}
 		ecore_hash_destroy(event->meta->meta_hash);
