@@ -740,7 +740,8 @@ GNOME_SetHints(Window win_wm_check)
       unsigned int        val;
 
       atom_set = XInternAtom(disp, "_WIN_DESKTOP_BUTTON_PROXY", False);
-      Mode.button_proxy_win = ECreateWindow(VRoot.win, -80, -80, 24, 24, 0);
+      Mode.button_proxy_win =
+	 XCreateSimpleWindow(disp, VRoot.win, -80, -80, 24, 24, 0, 0, 0);
       val = Mode.button_proxy_win;
       ecore_x_window_prop_card32_set(VRoot.win, atom_set, &val, 1);
       ecore_x_window_prop_card32_set(Mode.button_proxy_win, atom_set, &val, 1);

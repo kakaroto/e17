@@ -217,7 +217,7 @@ FocusEwinSetGrabs(EWin * ewin)
      {
 	if (!ewin->state.click_grab_isset)
 	  {
-	     GrabButtonSet(AnyButton, AnyModifier, _EwinGetContainerWin(ewin),
+	     GrabButtonSet(AnyButton, AnyModifier, _EwinGetContainerXwin(ewin),
 			   ButtonPressMask, ECSR_PGRAB, 1);
 	     if (EventDebug(EDBUG_TYPE_GRABS))
 		Eprintf("FocusEwinSetGrabs: %#lx set %s\n",
@@ -230,7 +230,7 @@ FocusEwinSetGrabs(EWin * ewin)
 	if (ewin->state.click_grab_isset)
 	  {
 	     GrabButtonRelease(AnyButton, AnyModifier,
-			       _EwinGetContainerWin(ewin));
+			       _EwinGetContainerXwin(ewin));
 	     if (EventDebug(EDBUG_TYPE_GRABS))
 		Eprintf("FocusEwinSetGrabs: %#lx unset %s\n",
 			_EwinGetClientXwin(ewin), EwinGetName(ewin));

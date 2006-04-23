@@ -93,4 +93,6 @@ void                ScaleRect(Window src, Pixmap dst, Pixmap * pdst,
 			      int sx, int sy, int sw, int sh,
 			      int dx, int dy, int dw, int dh, int scale);
 
+void                EDrawableDumpImage(Drawable draw, const char *txt);
+
 #endif /* _EIMAGE_H_ */

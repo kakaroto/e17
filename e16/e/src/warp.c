@@ -164,8 +164,8 @@ WarpFocusWinShow(WarpFocusWin * fw)
     * Grab the keyboard. The grab is automatically released when
     * WarpFocusHide unmaps warpFocusWindow.
     */
-   GrabKeyboardSet(EoGetWin(fw));
-   GrabPointerSet(EoGetWin(fw), None, 0);
+   GrabKeyboardSet(EoGetXwin(fw));
+   GrabPointerSet(EoGetXwin(fw), None, 0);
 
    TooltipsEnable(0);
 }

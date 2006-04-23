@@ -418,7 +418,7 @@ EDrawableDumpImage(Drawable draw, const char *txt)
    int                 w, h;
 
    w = h = 0;
-   EGetGeometry(draw, NULL, NULL, NULL, &w, &h, NULL, NULL);
+   EXGetGeometry(draw, NULL, NULL, NULL, &w, &h, NULL, NULL);
    if (w <= 0 || h <= 0)
       return;
    imlib_context_set_drawable(draw);

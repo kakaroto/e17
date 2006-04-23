@@ -447,7 +447,7 @@ ButtonDragStart(Button * b)
    if (ButtonIsFixed(b))
       return;
 
-   GrabPointerSet(EoGetWin(b), ECSR_GRAB, 0);
+   GrabPointerSet(EoGetXwin(b), ECSR_GRAB, 0);
    Mode.mode = MODE_BUTTONDRAG;
    Mode_buttons.move_pending = 1;
    Mode_buttons.start_x = Mode.events.x;
@@ -527,7 +527,7 @@ ButtonEventMouseDown(Button * b, XEvent * ev)
 {
    Mode_buttons.button = b;
 
-   GrabPointerSet(EoGetWin(b), ECSR_GRAB, 0);
+   GrabPointerSet(EoGetXwin(b), ECSR_GRAB, 0);
 
    if (b->inside_win)
      {

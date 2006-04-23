@@ -901,7 +901,7 @@ EDrawableCheck(Drawable draw, int grab)
    if (grab)
       EGrabServer();
 
-   ok = EGetGeometry(draw, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+   ok = EXGetGeometry(draw, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
    if (grab && !ok)
       EUngrabServer();

@@ -380,11 +380,7 @@ EobjMoveResize(EObj * eo, int x, int y, int w, int h)
 #if USE_COMPOSITE
    if (eo->type == EOBJ_TYPE_EWIN)
      {
-	if (EventDebug(250))
-	   EDrawableDumpImage(eo->win, "Win1");
 	ECompMgrMoveResizeFix(eo, x, y, w, h);
-	if (EventDebug(250))
-	   EDrawableDumpImage(eo->win, "Win2");
      }
    else
 #endif

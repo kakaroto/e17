@@ -233,7 +233,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
    s->ref_count++;
    s->context_ewin = ewin;
 
-   GrabPointerSet(EoGetWin(s), ECSR_ROOT, 0);
+   GrabPointerSet(EoGetXwin(s), ECSR_ROOT, 0);
 
    Mode_slideouts.active = s;
 }
@@ -379,7 +379,7 @@ SlideoutHandleEvent(XEvent * ev, void *prm)
 	break;
      case LeaveNotify:
 	if (ev->xcrossing.mode != NotifyUngrab)
-	   GrabPointerSet(EoGetWin(s), ECSR_ROOT, 0);
+	   GrabPointerSet(EoGetXwin(s), ECSR_ROOT, 0);
 	break;
      }
 }

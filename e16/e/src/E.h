@@ -731,7 +731,7 @@ int                 GrabKeyboardRelease(void);
 int                 GrabPointerSet(Window win, unsigned int csr, int confine);
 void                GrabPointerRelease(void);
 void                GrabButtonSet(unsigned int button, unsigned int modifiers,
-				  Window window, unsigned int event_mask,
+				  Window win, unsigned int event_mask,
 				  unsigned int csr, int confine);
 void                GrabButtonRelease(unsigned int button,
 				      unsigned int modifiers, Window win);

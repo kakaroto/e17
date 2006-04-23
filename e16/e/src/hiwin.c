@@ -458,7 +458,7 @@ HiwinShow(Hiwin * phi, EWin * ewin, int zoom, int confine)
 	EoMoveResize(phi, x - w / 2, y - h / 2, w, h);
      }
 
-   GrabPointerSet(EoGetWin(phi), ECSR_ACT_MOVE, confine);
+   GrabPointerSet(EoGetXwin(phi), ECSR_ACT_MOVE, confine);
 
    pz->fini(phi, 1);
 }

@@ -60,7 +60,7 @@ HintsInit(void)
    ENL_WIN_DATA = XInternAtom(disp, "ENL_WIN_DATA", False);
    ENL_WIN_BORDER = XInternAtom(disp, "ENL_WIN_BORDER", False);
 
-   win = ECreateWindow(VRoot.win, -200, -200, 5, 5, 0);
+   win = XCreateSimpleWindow(disp, VRoot.win, -200, -200, 5, 5, 0, 0, 0);
 
    ICCCM_Init();
    MWM_SetInfo();

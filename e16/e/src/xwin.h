@@ -115,6 +115,8 @@ Pixmap              ECreatePixmapCopy(Pixmap src, unsigned int w,
 void                ECopyArea(Drawable src, Drawable dst, int sx, int sy,
 			      unsigned int w, unsigned int h, int dx, int dy);
 
+#define EXGetGeometry EGetGeometry
+
 GC                  EXCreateGC(Drawable draw, unsigned long mask,
 			       XGCValues * val);
 int                 EXFreeGC(GC gc);

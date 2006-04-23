@@ -1490,7 +1490,7 @@ GrabButtonGrabs(EWin * ewin)
 
 	if (mod == AnyModifier)
 	  {
-	     GrabButtonSet(button, mod, EoGetWin(ewin), mask, ECSR_PGRAB, 1);
+	     GrabButtonSet(button, mod, EoGetXwin(ewin), mask, ECSR_PGRAB, 1);
 	  }
 	else
 	  {
@@ -1499,7 +1499,7 @@ GrabButtonGrabs(EWin * ewin)
 	     for (i = 0; i < 8; i++)
 	       {
 		  GrabButtonSet(button, mod | Mode.masks.mod_combos[i],
-				EoGetWin(ewin), mask, ECSR_PGRAB, 1);
+				EoGetXwin(ewin), mask, ECSR_PGRAB, 1);
 	       }
 	  }
      }
@@ -1540,7 +1540,7 @@ UnGrabButtonGrabs(EWin * ewin)
 
 	if (mod == AnyModifier)
 	  {
-	     GrabButtonRelease(button, mod, EoGetWin(ewin));
+	     GrabButtonRelease(button, mod, EoGetXwin(ewin));
 	  }
 	else
 	  {
@@ -1549,7 +1549,7 @@ UnGrabButtonGrabs(EWin * ewin)
 	     for (i = 0; i < 8; i++)
 	       {
 		  GrabButtonRelease(button, mod | Mode.masks.mod_combos[i],
-				    EoGetWin(ewin));
+				    EoGetXwin(ewin));
 	       }
 	  }
      }
