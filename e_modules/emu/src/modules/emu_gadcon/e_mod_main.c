@@ -625,11 +625,6 @@ _emu_parse_menu(Emu_Face *emu_face, char *name, int start, int end)
 //   e_menu_item_separator_set(mi, 1);
 //
 //   mi = e_menu_item_new(menu);
-//   e_menu_item_label_set(mi, D_("Add face"));
-//   mi = e_menu_item_new(menu);
-//   e_menu_item_label_set(mi, D_("Remove face"));
-//
-//   mi = e_menu_item_new(menu);
 //   e_menu_item_label_set(mi, D_("Add row"));
 //   mi = e_menu_item_new(menu);
 //   e_menu_item_label_set(mi, D_("Remove row"));
@@ -638,36 +633,6 @@ _emu_parse_menu(Emu_Face *emu_face, char *name, int start, int end)
 //   mi = e_menu_item_new(menu);
 //   e_menu_item_label_set(mi, D_("Remove column"));
 //
-//   mi = e_menu_item_new(menu);
-//   e_menu_item_separator_set(mi, 1);
-//
-//   mi = e_menu_item_new(menu);
-//   e_menu_item_label_set(mi, D_("Transparent"));
-//   e_menu_item_check_set(mi, 1);
-//   if (1)
-//      e_menu_item_toggle_set(mi, 1);
-//
-//   mi = e_menu_item_new(menu);
-//   e_menu_item_label_set(mi, D_("Zoom icons"));
-//   e_menu_item_check_set(mi, 1);
-//   if (0)
-//      e_menu_item_toggle_set(mi, 1);
-//
-//   mi = e_menu_item_new(menu);
-//   e_menu_item_label_set(mi, D_("Stretch bar"));
-//   e_menu_item_check_set(mi, 1);
-//   if (0)
-//      e_menu_item_toggle_set(mi, 1);
-//
-//   mi = e_menu_item_new(menu);
-//   e_menu_item_label_set(mi, D_("Cling to edge"));
-//   e_menu_item_check_set(mi, 1);
-//   if (0)
-//      e_menu_item_toggle_set(mi, 1);
-//
-//   mi = e_menu_item_new(menu);
-//   e_menu_item_label_set(mi, _("Follower"));
-//   e_menu_item_check_set(mi, 1);
 //   if (0)
 //      e_menu_item_toggle_set(mi, 1);
 //}
@@ -959,11 +924,33 @@ _emu_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 		case E_GADCON_ORIENT_RIGHT:
 		  dir = E_MENU_POP_DIRECTION_LEFT;
 		  break;
-		case E_GADCON_ORIENT_FLOAT:
 		case E_GADCON_ORIENT_CORNER_TL:
+		  dir = E_MENU_POP_DIRECTION_DOWN;
+		  break;
 		case E_GADCON_ORIENT_CORNER_TR:
+		  dir = E_MENU_POP_DIRECTION_DOWN;
+		  break;
 		case E_GADCON_ORIENT_CORNER_BL:
+		  dir = E_MENU_POP_DIRECTION_UP;
+		  break;
 		case E_GADCON_ORIENT_CORNER_BR:
+		  dir = E_MENU_POP_DIRECTION_UP;
+		  break;
+		case E_GADCON_ORIENT_CORNER_LT:
+		  dir = E_MENU_POP_DIRECTION_RIGHT;
+		  break;
+		case E_GADCON_ORIENT_CORNER_RT:
+		  dir = E_MENU_POP_DIRECTION_LEFT;
+		  break;
+		case E_GADCON_ORIENT_CORNER_LB:
+		  dir = E_MENU_POP_DIRECTION_RIGHT;
+		  break;
+		case E_GADCON_ORIENT_CORNER_RB:
+		  dir = E_MENU_POP_DIRECTION_LEFT;
+		  break;
+		case E_GADCON_ORIENT_FLOAT:
+		case E_GADCON_ORIENT_HORIZ:
+		case E_GADCON_ORIENT_VERT:
 		default:
 		  dir = E_MENU_POP_DIRECTION_AUTO;
 		  break;

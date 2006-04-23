@@ -17,11 +17,6 @@ typedef struct _Config_Emu Config_Emu;
 struct _Config
 {
    char *appdir;
-   int follower;
-   double follow_speed;
-   double autoscroll_speed;
-   int iconsize;
-   int width;
    Evas_List *emus;
 };
 
