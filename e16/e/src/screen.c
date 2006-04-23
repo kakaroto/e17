@@ -129,35 +129,44 @@ ScreenShowInfo(const char *prm __UNUSED__)
 int
 ScreenGetGeometry(int xi, int yi, int *px, int *py, int *pw, int *ph)
 {
-   int                 x, y, w, h, head;
+   int                 i, dx, dy, x, y, w, h, dist, ix;
+   EScreen            *ps;
 
-   head = 0;
-
-   x = 0;
-   y = 0;
-   w = VRoot.w;
-   h = VRoot.h;
+   ix = -1;
+   dist = 2147483647;
 
    if (n_screens > 1)
      {
-	int                 i;
-
 	for (i = 0; i < n_screens; i++)
 	  {
-	     EScreen            *ps = p_screens + i;
+	     ps = p_screens + i;
 
-	     if (xi >= ps->x && xi < ps->x + ps->w &&
-		 yi >= ps->y && yi < ps->y + ps->h)
-	       {
-		  x = ps->x;
-		  y = ps->y;
-		  w = ps->w;
-		  h = ps->h;
-		  head = ps->head;
-		  /* NB! *First* matching head is used */
-		  break;
-	       }
+	     dx = xi - (ps->x + ps->w / 2);
+	     dy = yi - (ps->y + ps->h / 2);
+	     dx = dx * dx + dy * dy;
+	     if (dx >= dist)
+		continue;
+	     dist = dx;
+	     ix = i;
 	  }
+     }
+
+   if (ix >= 0)
+     {
+	ps = p_screens + ix;
+	ix = ps->head;
+	x = ps->x;
+	y = ps->y;
+	w = ps->w;
+	h = ps->h;
+     }
+   else
+     {
+	ix = VRoot.scr;
+	x = 0;
+	y = 0;
+	w = VRoot.w;
+	h = VRoot.h;
      }
 
    if (px)
@@ -169,7 +178,7 @@ ScreenGetGeometry(int xi, int yi, int *px, int *py, int *pw, int *ph)
    if (ph)
       *ph = h;
 
-   return head;
+   return ix;
 }
 
 static void

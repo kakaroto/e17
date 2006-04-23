@@ -74,11 +74,10 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
       type = MAX_XINERAMA;
 
    /* Default is no change */
-   y = EoGetY(ewin);
    x = EoGetX(ewin);
-   h = ewin->client.h;
-   w = ewin->client.w;
-   EwinBorderGetSize(ewin, &bl, &br, &bt, &bb);
+   y = EoGetY(ewin);
+   h = EoGetH(ewin);
+   w = EoGetW(ewin);
 
    switch (type)
      {
@@ -86,19 +85,22 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 	if (direction & MAX_HOR)
 	  {
 	     x = 0;
-	     w = VRoot.w - bl - br;
+	     w = VRoot.w;
+	     ewin->state.maximized_horz = 1;
 	  }
 	if (direction & MAX_VER)
 	  {
 	     y = 0;
-	     h = VRoot.h - bt - bb;
+	     h = VRoot.h;
+	     ewin->state.maximized_vert = 1;
 	  }
 	break;
 
+     default:
      case MAX_ABSOLUTE:
      case MAX_AVAILABLE:
      case MAX_CONSERVATIVE:
-	ScreenGetAvailableArea(EoGetX(ewin), EoGetY(ewin), &x1, &y1, &x2, &y2);
+	ScreenGetAvailableArea(x + w / 2, y + h / 2, &x1, &y1, &x2, &y2);
 	x2 += x1;
 	y2 += y1;
 
@@ -134,7 +136,7 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 		     y2 = EoGetY(pe);
 	       }
 	     y = y1;
-	     h = y2 - y1 - (bt + bb);
+	     h = y2 - y1;
 
 	     ewin->state.maximized_vert = 1;
 	  }
@@ -160,7 +162,7 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 		     x2 = EoGetX(pe);
 	       }
 	     x = x1;
-	     w = x2 - x1 - (bl + br);
+	     w = x2 - x1;
 
 	     ewin->state.maximized_horz = 1;
 	  }
@@ -168,10 +170,19 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 	break;
      }
 
+   EwinBorderGetSize(ewin, &bl, &br, &bt, &bb);
+   w -= (bl + br);
+   if (w < 10)
+      w = 10;
+   h -= (bt + bb);
+   if (h < 10)
+      h = 10;
+
    ewin->lx = EoGetX(ewin);
    ewin->ly = EoGetY(ewin);
    ewin->lw = ewin->client.w;
    ewin->lh = ewin->client.h;
+
    ewin->state.maximizing = 1;
    EwinMoveResize(ewin, x, y, w, h);
    ewin->state.maximizing = 0;
