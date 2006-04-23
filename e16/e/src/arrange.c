@@ -29,23 +29,23 @@
 #include "screen.h"
 
 static int
-ArrangeAddToList(int **array, int current_size, int value)
+ArrangeAddToList(int *array, int current_size, int value)
 {
    int                 i, j;
 
    for (i = 0; i < current_size; i++)
      {
-	if (value < (*array)[i])
+	if (value < array[i])
 	  {
 	     for (j = current_size; j > i; j--)
-		(*array)[j] = (*array)[j - 1];
-	     (*array)[i] = value;
+		array[j] = array[j - 1];
+	     array[i] = value;
 	     return current_size + 1;
 	  }
-	else if (value == (*array)[i])
+	else if (value == array[i])
 	   return current_size;
      }
-   (*array)[current_size] = value;
+   array[current_size] = value;
    return current_size + 1;
 }
 
@@ -71,7 +71,7 @@ ArrangeSwapList(RectBox * list, int a, int b)
    list[b].h = bb.h;
 }
 
-void
+static void
 ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	     int floating_count, RectBox * sorted, int startx, int starty,
 	     int width, int height, int policy, char initial_window)
@@ -179,22 +179,22 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	xsize = 0;
 	ysize = 0;
 /* put all the sorted rects into the xy arrays */
-	xsize = ArrangeAddToList(&xarray, xsize, startx);
-	xsize = ArrangeAddToList(&xarray, xsize, width);
-	ysize = ArrangeAddToList(&yarray, ysize, starty);
-	ysize = ArrangeAddToList(&yarray, ysize, height);
+	xsize = ArrangeAddToList(xarray, xsize, startx);
+	xsize = ArrangeAddToList(xarray, xsize, width);
+	ysize = ArrangeAddToList(yarray, ysize, starty);
+	ysize = ArrangeAddToList(yarray, ysize, height);
 	for (j = 0; j < num_sorted; j++)
 	  {
 	     if (sorted[j].x < width)
-		xsize = ArrangeAddToList(&xarray, xsize, sorted[j].x);
+		xsize = ArrangeAddToList(xarray, xsize, sorted[j].x);
 	     if ((sorted[j].x + sorted[j].w) < width)
 		xsize =
-		   ArrangeAddToList(&xarray, xsize, sorted[j].x + sorted[j].w);
+		   ArrangeAddToList(xarray, xsize, sorted[j].x + sorted[j].w);
 	     if (sorted[j].y < height)
-		ysize = ArrangeAddToList(&yarray, ysize, sorted[j].y);
+		ysize = ArrangeAddToList(yarray, ysize, sorted[j].y);
 	     if ((sorted[j].y + sorted[j].h) < height)
 		ysize =
-		   ArrangeAddToList(&yarray, ysize, sorted[j].y + sorted[j].h);
+		   ArrangeAddToList(yarray, ysize, sorted[j].y + sorted[j].h);
 	  }
 /* fill the allocation array */
 	for (j = 0; j < (xsize - 1) * (ysize - 1); filled[j++] = 0)
@@ -390,22 +390,22 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	xsize = 0;
 	ysize = 0;
 	/* put all the sorted rects into the xy arrays */
-	xsize = ArrangeAddToList(&xarray, xsize, 0);
-	xsize = ArrangeAddToList(&xarray, xsize, width);
-	ysize = ArrangeAddToList(&yarray, ysize, 0);
-	ysize = ArrangeAddToList(&yarray, ysize, height);
+	xsize = ArrangeAddToList(xarray, xsize, 0);
+	xsize = ArrangeAddToList(xarray, xsize, width);
+	ysize = ArrangeAddToList(yarray, ysize, 0);
+	ysize = ArrangeAddToList(yarray, ysize, height);
 	for (j = 0; j < num_sorted; j++)
 	  {
 	     if (sorted[j].x < width)
-		xsize = ArrangeAddToList(&xarray, xsize, sorted[j].x);
+		xsize = ArrangeAddToList(xarray, xsize, sorted[j].x);
 	     if ((sorted[j].x + sorted[j].w) < width)
 		xsize =
-		   ArrangeAddToList(&xarray, xsize, sorted[j].x + sorted[j].w);
+		   ArrangeAddToList(xarray, xsize, sorted[j].x + sorted[j].w);
 	     if (sorted[j].y < height)
-		ysize = ArrangeAddToList(&yarray, ysize, sorted[j].y);
+		ysize = ArrangeAddToList(yarray, ysize, sorted[j].y);
 	     if ((sorted[j].y + sorted[j].h) < height)
 		ysize =
-		   ArrangeAddToList(&yarray, ysize, sorted[j].y + sorted[j].h);
+		   ArrangeAddToList(yarray, ysize, sorted[j].y + sorted[j].h);
 	  }
 	/* fill the allocation array */
 	for (j = 0; j < (xsize - 1) * (ysize - 1); filled[j++] = 0)
@@ -847,24 +847,61 @@ ArrangeEwinXY(EWin * ewin, int *px, int *py)
    ret = NULL;
 
    lst = EwinListGetAll(&num);
-   if ((lst) && (num > 0))
+   if (num <= 1)
      {
-	fixed = Emalloc(sizeof(RectBox) * num);
-	j = 0;
+	ArrangeEwinCenteredXY(ewin, px, py);
+	return;
+     }
+
+   fixed = Emalloc(sizeof(RectBox) * num);
+   j = 0;
+   for (i = 0; i < num; i++)
+     {
+	EWin               *e = lst[i];
+
+	if (e == ewin ||
+	    e->state.iconified || e->props.ignorearrange ||
+	    EoGetLayer(e) == 0 || !EWinIsOnViewport(e, EoGetDesk(ewin)))
+	   continue;
+
+	fixed[j].data = e;
+	fixed[j].x = EoGetX(e);
+	fixed[j].y = EoGetY(e);
+	fixed[j].w = EoGetW(e);
+	fixed[j].h = EoGetH(e);
+	if (fixed[j].x < 0)
+	  {
+	     fixed[j].w += fixed[j].x;
+	     fixed[j].x = 0;
+	  }
+	if ((fixed[j].x + fixed[j].w) > VRoot.w)
+	   fixed[j].w = VRoot.w - fixed[j].x;
+	if (fixed[j].y < 0)
+	  {
+	     fixed[j].h += fixed[j].y;
+	     fixed[j].y = 0;
+	  }
+	if ((fixed[j].y + fixed[j].h) > VRoot.h)
+	   fixed[j].h = VRoot.h - fixed[j].y;
+	if ((fixed[j].w <= 0) || (fixed[j].h <= 0))
+	   continue;
+
+	if (e->props.never_use_area)
+	   fixed[j].p = 50;
+	else
+	   fixed[j].p = EoGetLayer(e);
+	j++;
+     }
+
+   blst = ButtonsGetList(&num);
+   if (blst)
+     {
+	fixed = Erealloc(fixed, sizeof(RectBox) * (num + j));
 	for (i = 0; i < num; i++)
 	  {
-	     EWin               *e = lst[i];
-
-	     if (e == ewin ||
-		 e->state.iconified || e->props.ignorearrange ||
-		 EoGetLayer(e) == 0 || !EWinIsOnViewport(e, EoGetDesk(ewin)))
+	     if (ButtonGetInfo(blst[i], &fixed[j], EoGetDesk(ewin)))
 		continue;
 
-	     fixed[j].data = e;
-	     fixed[j].x = EoGetX(e);
-	     fixed[j].y = EoGetY(e);
-	     fixed[j].w = EoGetW(e);
-	     fixed[j].h = EoGetH(e);
 	     if (fixed[j].x < 0)
 	       {
 		  fixed[j].w += fixed[j].x;
@@ -882,75 +919,37 @@ ArrangeEwinXY(EWin * ewin, int *px, int *py)
 	     if ((fixed[j].w <= 0) || (fixed[j].h <= 0))
 		continue;
 
-	     if (e->props.never_use_area)
-		fixed[j].p = 50;
+	     if (fixed[j].p)	/* Sticky */
+		fixed[j].p = 1;
 	     else
-		fixed[j].p = EoGetLayer(e);
+		fixed[j].p = 0;
 	     j++;
 	  }
-
-	blst = ButtonsGetList(&num);
-	if (blst)
-	  {
-	     fixed = Erealloc(fixed, sizeof(RectBox) * (num + j));
-	     for (i = 0; i < num; i++)
-	       {
-		  if (ButtonGetInfo(blst[i], &fixed[j], EoGetDesk(ewin)))
-		     continue;
-
-		  if (fixed[j].x < 0)
-		    {
-		       fixed[j].w += fixed[j].x;
-		       fixed[j].x = 0;
-		    }
-		  if ((fixed[j].x + fixed[j].w) > VRoot.w)
-		     fixed[j].w = VRoot.w - fixed[j].x;
-		  if (fixed[j].y < 0)
-		    {
-		       fixed[j].h += fixed[j].y;
-		       fixed[j].y = 0;
-		    }
-		  if ((fixed[j].y + fixed[j].h) > VRoot.h)
-		     fixed[j].h = VRoot.h - fixed[j].y;
-		  if ((fixed[j].w <= 0) || (fixed[j].h <= 0))
-		     continue;
-
-		  if (fixed[j].p)	/* Sticky */
-		     fixed[j].p = 1;
-		  else
-		     fixed[j].p = 0;
-		  j++;
-	       }
-	     Efree(blst);
-	  }
-	ret = Emalloc(sizeof(RectBox) * (j + 1));
-	newrect.data = ewin;
-	newrect.x = 0;
-	newrect.y = 0;
-	newrect.w = EoGetW(ewin);
-	newrect.h = EoGetH(ewin);
-	newrect.p = EoGetLayer(ewin);
-	ArrangeRects(fixed, j, &newrect, 1, ret,
-		     0, 0, VRoot.w, VRoot.h, ARRANGE_BY_SIZE, 1);
-
-	for (i = 0; i < j + 1; i++)
-	  {
-	     if (ret[i].data == ewin)
-	       {
-		  *px = ret[i].x;
-		  *py = ret[i].y;
-		  break;
-	       }
-	  }
-	if (ret)
-	   Efree(ret);
-	if (fixed)
-	   Efree(fixed);
+	Efree(blst);
      }
-   else
+   ret = Emalloc(sizeof(RectBox) * (j + 1));
+   newrect.data = ewin;
+   newrect.x = 0;
+   newrect.y = 0;
+   newrect.w = EoGetW(ewin);
+   newrect.h = EoGetH(ewin);
+   newrect.p = EoGetLayer(ewin);
+   ArrangeRects(fixed, j, &newrect, 1, ret,
+		0, 0, VRoot.w, VRoot.h, ARRANGE_BY_SIZE, 1);
+
+   for (i = 0; i < j + 1; i++)
      {
-	ArrangeEwinCenteredXY(ewin, px, py);
+	if (ret[i].data == ewin)
+	  {
+	     *px = ret[i].x;
+	     *py = ret[i].y;
+	     break;
+	  }
      }
+   if (ret)
+      Efree(ret);
+   if (fixed)
+      Efree(fixed);
 }
 
 void
@@ -1094,32 +1093,18 @@ ArrangeEwins(const char *params)
 
    for (i = 0; i < (j + k); i++)
      {
-	if (ret[i].data)
-	  {
-	     if (doslide)
-	       {
-		  ewin = (EWin *) ret[i].data;
-		  if (ewin)
-		    {
-		       if ((EoGetX(ewin) != ret[i].x)
-			   || (EoGetY(ewin) != ret[i].y))
-			 {
-			    SlideEwinTo(ewin, EoGetX(ewin), EoGetY(ewin),
-					ret[i].x, ret[i].y, speed);
-			 }
-		    }
-	       }
-	     else
-	       {
-		  ewin = (EWin *) ret[i].data;
-		  if (ewin)
-		    {
-		       if ((EoGetX(ewin) != ret[i].x)
-			   || (EoGetY(ewin) != ret[i].y))
-			  EwinMove((EWin *) ret[i].data, ret[i].x, ret[i].y);
-		    }
-	       }
-	  }
+	if (!ret[i].data)
+	   continue;
+
+	ewin = (EWin *) ret[i].data;
+	if ((EoGetX(ewin) == ret[i].x) && (EoGetY(ewin) == ret[i].y))
+	   continue;
+
+	if (doslide)
+	   SlideEwinTo(ewin, EoGetX(ewin), EoGetY(ewin),
+		       ret[i].x, ret[i].y, speed);
+	else
+	   EwinMove(ewin, ret[i].x, ret[i].y);
      }
 
    if (fixed)

@@ -541,11 +541,6 @@ void                EspawnCmd(const char *cmd);
 #define ARRANGE_BY_SIZE     1
 #define ARRANGE_BY_POSITION 2
 
-void                ArrangeRects(RectBox * fixed, int fixed_count,
-				 RectBox * floating, int floating_count,
-				 RectBox * sorted, int startx, int starty,
-				 int width, int height, int policy,
-				 char initial_window);
 void                SnapEwin(EWin * ewin, int dx, int dy, int *new_dx,
 			     int *new_dy);
 void                ArrangeEwin(EWin * ewin);
