@@ -1013,7 +1013,7 @@ EwinUnmap2(EWin * ewin)
 }
 
 static void
-EwinWithdraw(EWin * ewin)
+EwinWithdraw(EWin * ewin, Window to)
 {
    Window              win;
    int                 x, y;
@@ -1029,15 +1029,18 @@ EwinWithdraw(EWin * ewin)
    ESelectInput(_EwinGetClientWin(ewin), NoEventMask);
    XShapeSelectInput(disp, _EwinGetClientXwin(ewin), NoEventMask);
 
-   /* Park the client window on the root */
-   x = ewin->client.x;
-   y = ewin->client.y;
-   ETranslateCoordinates(_EwinGetClientWin(ewin), VRoot.win,
-			 -ewin->border->border.left,
-			 -ewin->border->border.top, &x, &y, &win);
-   EReparentWindow(_EwinGetClientWin(ewin), VRoot.win, x, y);
+   if (EWindowGetParent(_EwinGetClientWin(ewin)) == _EwinGetContainerXwin(ewin))
+     {
+	/* Park the client window on the new root */
+	x = ewin->client.x;
+	y = ewin->client.y;
+	ETranslateCoordinates(_EwinGetClientWin(ewin), VRoot.win,
+			      -ewin->border->border.left,
+			      -ewin->border->border.top, &x, &y, &win);
+	EReparentWindow(_EwinGetClientWin(ewin), to, x, y);
+	HintsDelWindowHints(ewin);
+     }
    ICCCM_Withdraw(ewin);
-   HintsDelWindowHints(ewin);
 
    ESync();
    EUngrabServer();
@@ -1166,8 +1169,7 @@ EwinEventUnmap(EWin * ewin)
    if (EoIsGone(ewin))
       return;
 
-   if (EWindowGetParent(_EwinGetClientWin(ewin)) == _EwinGetContainerXwin(ewin))
-      EwinWithdraw(ewin);
+   EwinWithdraw(ewin, VRoot.win);
 }
 
 static void
@@ -1325,7 +1327,7 @@ EwinEventVisibility(EWin * ewin, int state)
 void
 EwinReparent(EWin * ewin, Window parent)
 {
-   EReparentWindow(_EwinGetClientWin(ewin), parent, 0, 0);
+   EwinWithdraw(ewin, parent);
 }
 
 void
