@@ -1,0 +1,3 @@
+This is the emu module converted to use gadcon.  Don't try to use this
+until raster finishes the shelf config stuff, as the modules that are in
+each shelf are currently hard coded in e17/apps/e/src/bin/e_config.c.

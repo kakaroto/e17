@@ -1,3 +1,3 @@
 MAINTAINERCLEANFILES = Makefile.in
-SUBDIRS = emu
+SUBDIRS = emu emu_gadcon
 

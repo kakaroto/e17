@@ -212,6 +212,7 @@ data/images/Makefile
 src/Makefile
 src/modules/Makefile
 src/modules/emu/Makefile
+src/modules/emu_gadcon/Makefile
 po/Makefile
 e_modules-emu.spec
 ],[
