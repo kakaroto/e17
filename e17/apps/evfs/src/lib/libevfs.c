@@ -445,7 +445,7 @@ evfs_parse_uri(char *uri)
    evfs_file_uri_path *path = NEW(evfs_file_uri_path);
    Ecore_DList *tokens;
 
-   printf("Parsing URI '%s'\n", uri);
+   //printf("Parsing URI '%s'\n", uri);
 
    /*for (i=0;i<strlen(uri);i++) {
     * printf("URI Input: '%s'\n", uri);

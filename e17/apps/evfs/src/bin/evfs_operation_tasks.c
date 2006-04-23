@@ -1,6 +1,6 @@
 #include "evfs.h"
 
-#define TASK_COPY_ITERATIONS 20
+#define TASK_COPY_ITERATIONS 1
 
 int evfs_operation_tasks_file_copy_run(evfs_operation* op,
 		evfs_operation_task_file_copy* copy)
