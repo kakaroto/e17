@@ -25,29 +25,16 @@ struct _Config_Emu
    unsigned char enabled;
 };
 
-typedef struct _Emu Emu;
-struct _Emu
-{
-   Ecore_Event_Handler *del;
-
-//   Evas_List   *bars;
-   E_Menu *config_menu;
-
-   Config *conf;
-   E_Config_Dialog *config_dialog;
-};
-
 typedef struct _Emu_Face Emu_Face;
 struct _Emu_Face
 {
-//   Emu *emu;
-
    E_Gadcon_Client *gcc;
    Evas_Object     *o_button;
 
    const char *name;
    const char *command;
    Ecore_Exe *exe;
+   Ecore_Event_Handler *del;
    Ecore_Event_Handler *add;
    Ecore_Event_Handler *read;
 
@@ -58,6 +45,11 @@ struct _Emu_Face
    Ecore_Exe_Event_Data_Line *lines; /**< a NULL terminated array of line data if line buffered */
 
    Evas_Hash *menus;
+
+   E_Menu *config_menu;
+
+   Config *conf;
+   E_Config_Dialog *config_dialog;
 };
 
 EAPI extern E_Module_Api e_modapi;

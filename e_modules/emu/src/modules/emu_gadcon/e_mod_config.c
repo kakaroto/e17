@@ -21,7 +21,7 @@ static Evas_Object *_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E
 static int _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 
 void
-_config_emu_module(E_Container *con, Emu *emu)
+_config_emu_module(E_Container *con, Emu_Face *emu_face)
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
@@ -37,12 +37,12 @@ _config_emu_module(E_Container *con, Emu *emu)
    v->advanced.create_widgets = _advanced_create_widgets;
 
    /* Create The Dialog */
-   cfd = e_config_dialog_new(con, D_("Emu Configuration"), NULL, 0, v, emu);
-   emu->config_dialog = cfd;
+   cfd = e_config_dialog_new(con, D_("Emu Configuration"), NULL, 0, v, emu_face);
+   emu_face->config_dialog = cfd;
 }
 
 static void
-_fill_data(Emu *emu, E_Config_Dialog_Data *cfdata)
+_fill_data(Emu_Face *emu_face, E_Config_Dialog_Data *cfdata)
 {
 }
 
@@ -50,22 +50,22 @@ static void *
 _create_data(E_Config_Dialog *cfd)
 {
    E_Config_Dialog_Data *cfdata;
-   Emu *emu;
+   Emu_Face *emu_face;
 
-   emu = cfd->data;
+   emu_face = cfd->data;
    cfdata = E_NEW(E_Config_Dialog_Data, 1);
 
-   _fill_data(emu, cfdata);
+   _fill_data(emu_face, cfdata);
    return cfdata;
 }
 
 static void
 _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-   Emu *emu;
+   Emu_Face *emu_face;
 
-   emu = cfd->data;
-   emu->config_dialog = NULL;
+   emu_face = cfd->data;
+   emu_face->config_dialog = NULL;
    free(cfdata);
 }
 
@@ -83,16 +83,16 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 static int
 _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-   Emu *emu;
+   Emu_Face *emu_face;
 
-   emu = cfd->data;
+   emu_face = cfd->data;
    e_border_button_bindings_ungrab_all();
 
 
    e_border_button_bindings_grab_all();
    e_config_save_queue();
 
-   _emu_cb_config_updated(emu);
+   _emu_cb_config_updated(emu_face);
    return 1;
 }
 
@@ -110,15 +110,15 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 static int
 _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-   Emu *emu;
+   Emu_Face *emu_face;
 
-   emu = cfd->data;
+   emu_face = cfd->data;
    e_border_button_bindings_ungrab_all();
 
 
    e_border_button_bindings_grab_all();
    e_config_save_queue();
 
-   _emu_cb_config_updated(emu);
+   _emu_cb_config_updated(emu_face);
    return 1;
 }

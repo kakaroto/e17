@@ -157,28 +157,12 @@ e_modapi_about(E_Module *m)
 EAPI void *
 e_modapi_init(E_Module *m)
 {
-//   Emu *emu;
-
    /* Set up module's message catalogue */
    bindtextdomain(PACKAGE, LOCALEDIR);
    bind_textdomain_codeset(PACKAGE, "UTF-8");
 
-//   emu = E_NEW(Emu, 1);
-
-//   if (emu)
-//     {
-//??        emu->del = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _emu_cb_exe_del, emu->gad);
-
-//        if (emu->del == NULL)
-//          {
-//             e_modapi_shutdown(m);
-//             emu = NULL;
-//          }
-//     }
-
    e_gadcon_provider_register(&_gadcon_class);
 
-//   return emu;
    return 1;
 }
 
@@ -194,14 +178,6 @@ e_modapi_init(E_Module *m)
 EAPI int
 e_modapi_save(E_Module *m)
 {
-//   Emu *emu;
-
-//   emu = m->data;
-
-//   if (emu)
-//     {
-//     }
-
    return 1;
 }
 
@@ -219,18 +195,7 @@ e_modapi_save(E_Module *m)
 EAPI int
 e_modapi_shutdown(E_Module *m)
 {
-   Emu *emu;
-
-
    e_gadcon_provider_unregister(&_gadcon_class);
-
-//   emu = m->data;
-//   if (emu)
-//     {
-//        if (emu->del)
-//           ecore_event_handler_del(emu->del);
-//        E_FREE(emu);
-//     }
 
 // FIXME: we really want to do this at unload time.
 //   if (_emu_module_edje)   evas_stringshare_del(_emu_module_edje);
@@ -275,7 +240,6 @@ _gc_init(E_Gadcon *gc, char *name, char *id, char *style)
 
         gcc = e_gadcon_client_new(gc, name, id, style, o);
         gcc->data = emu_face;
-//??        emu_face->emu = emu;
         emu_face->gcc = gcc;
         emu_face->o_button = o;
         emu_face->menus = NULL;
@@ -284,6 +248,7 @@ _gc_init(E_Gadcon *gc, char *name, char *id, char *style)
         emu_face->command = evas_stringshare_add("emu_client");
         if (emu_face->command)
           {
+             emu_face->del = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _emu_cb_exe_del, emu_face);
              emu_face->add = ecore_event_handler_add(ECORE_EXE_EVENT_ADD, _emu_cb_exe_add, emu_face);
              emu_face->read = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _emu_cb_exe_data, emu_face);
              emu_face->exe =
@@ -341,6 +306,8 @@ _gc_shutdown(E_Gadcon_Client *gcc)
            ecore_event_handler_del(emu_face->read);
         if (emu_face->add)
            ecore_event_handler_del(emu_face->add);
+        if (emu_face->del)
+           ecore_event_handler_del(emu_face->del);
 
         if (emu_face->exe)
            ecore_exe_terminate(emu_face->exe);
@@ -674,10 +641,6 @@ _emu_parse_menu(Emu_Face *emu_face, char *name, int start, int end)
 static int
 _emu_cb_exe_add(void *data, int type, void *ev)
 {
-   Emu *emu;
-
-   emu = data;
-
    return 1;
 }
 
@@ -696,31 +659,19 @@ _emu_cb_exe_add(void *data, int type, void *ev)
 static int
 _emu_cb_exe_del(void *data, int type, void *ev)
 {
-//   if (E_OBJECT(data)->type == (E_GADGET_TYPE))
-//     {
-//        E_Gadget *gad;
-//        Ecore_Exe_Event_Del *event;
-//        Evas_List *l;
-//
-//        gad = data;
-//        event = ev;
-//        for (l = gad->faces; l; l = l->next)    /* Search for the matching face. */
-//          {
-//             E_Gadget_Face *face;
-//             Emu_Face *emu_face;
-//
-//             face = l->data;
-//             emu_face = face->data;
-//             if ((emu_face->exe == event->exe) && (ecore_exe_data_get(event->exe) == emu_face))
-//               {                /* This is the event we are interested in. */
-//                  emu_face->exe = NULL;
-//
-//                  printf("EMU CLIENT DEL - \n");
-//                  return 0;
-//               }
-//          }
-//     }
-//
+   Ecore_Exe_Event_Del *event;
+   Emu_Face *emu_face;
+
+   emu_face = data;
+   event = ev;
+   if ((emu_face->exe == event->exe) && (ecore_exe_data_get(event->exe) == emu_face))
+     {  /* This is the event we are interested in. */
+        emu_face->exe = NULL;
+
+        printf("EMU CLIENT DEL - \n");
+        return 0;
+     }
+
    return 1;
 }
 
