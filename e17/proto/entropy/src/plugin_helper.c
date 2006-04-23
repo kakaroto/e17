@@ -293,3 +293,8 @@ void entropy_event_action_file(Entropy_Generic_File* file, entropy_gui_component
     gui_event->data = file;
     entropy_core_layout_notify_event (instance, gui_event, ENTROPY_EVENT_GLOBAL); 
 }
+
+entropy_generic_file* entropy_layout_current_folder_get(entropy_gui_component_instance_layout* layout)
+{
+	return layout->current_folder;
+}

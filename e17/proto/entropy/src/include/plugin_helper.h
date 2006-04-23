@@ -23,4 +23,6 @@ entropy_plugin* entropy_plugin_gui_get_by_name_toolkit(char* toolkit, char* name
 
 void entropy_event_stat_request(Entropy_Generic_File* file, entropy_gui_component_instance* instance);
 void entropy_event_action_file(Entropy_Generic_File* file, entropy_gui_component_instance* instance);
+entropy_generic_file* entropy_layout_current_folder_get(entropy_gui_component_instance_layout* layout);
+
 #endif

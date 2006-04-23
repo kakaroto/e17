@@ -3,6 +3,7 @@
 #include "entropy_gui.h"
 #include "etk_location_add_dialog.h"
 #include "etk_progress_dialog.h"
+#include "etk_properties_dialog.h"
 #include "etk_user_interaction_dialog.h"
 #include "etk_mime_dialog.h"
 #include "etk_file_cache_dialog.h"
@@ -32,6 +33,8 @@ struct entropy_layout_gui
   entropy_gui_component_instance *iconbox_viewer;
   entropy_gui_component_instance *list_viewer;
   entropy_gui_component_instance *structure_viewer;
+  entropy_gui_component_instance *trackback;
+  
   Etk_Widget *tree;
   Etk_Widget *paned;
   Etk_Widget *statusbar_box;
@@ -467,6 +470,7 @@ entropy_plugin_layout_create (entropy_core * core)
 
   
   entropy_plugin *meta;
+  entropy_plugin *trackback;
   entropy_gui_component_instance* meta_instance;
 	  
   Etk_Tree_Col* col;
@@ -611,6 +615,18 @@ entropy_plugin_layout_create (entropy_core * core)
   }
 
 
+  /*Initialise the trackback*/
+  trackback = entropy_plugin_gui_get_by_name_toolkit(ENTROPY_TOOLKIT_ETK, "trackback");
+  if (trackback) {
+	  local_plugin_init =
+	      dlsym (trackback->dl_ref, "entropy_plugin_gui_instance_new");   
+	  gui->trackback = (*local_plugin_init)(core, layout,NULL);
+	  gui->trackback->plugin = trackback;
+	  gui->trackback->active=1;
+  }
+
+
+
   /*Menu setup*/
   menubar = etk_menu_bar_new();
   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("File"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menubar), NULL);
@@ -668,6 +684,11 @@ entropy_plugin_layout_create (entropy_core * core)
 
 
   etk_box_pack_start(ETK_BOX(vbox), menubar, ETK_FALSE, ETK_FALSE, 0);
+
+  if (trackback) {
+	  etk_box_pack_start(ETK_BOX(vbox), gui->trackback->gui_object, ETK_FALSE,ETK_FALSE,0);
+  }
+  
   etk_box_pack_start(ETK_BOX(vbox), gui->paned, TRUE, TRUE, 0);
   /*---------------------------*/
 
