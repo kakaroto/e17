@@ -852,21 +852,19 @@ ETranslateCoordinates(Window src_w, Window dst_w,
 }
 
 void
-EWarpPointer(Window win, int x, int y)
+EXWarpPointer(Window xwin, int x, int y)
 {
-   XWarpPointer(disp, None, win, 0, 0, 0, 0, x, y);
+   XWarpPointer(disp, None, xwin, 0, 0, 0, 0, x, y);
 }
 
 Bool
-EQueryPointer(Window win, int *px, int *py, Window * pchild,
-	      unsigned int *pmask)
+EXQueryPointer(Window xwin, int *px, int *py, Window * pchild,
+	       unsigned int *pmask)
 {
    Window              root, child;
    int                 root_x, root_y;
    unsigned int        mask;
 
-   if (win == None)
-      win = VRoot.win;
    if (!px)
       px = &root_x;
    if (!py)
@@ -876,7 +874,7 @@ EQueryPointer(Window win, int *px, int *py, Window * pchild,
    if (!pmask)
       pmask = &mask;
 
-   return XQueryPointer(disp, win, &root, pchild, &root_x, &root_y, px, py,
+   return XQueryPointer(disp, xwin, &root, pchild, &root_x, &root_y, px, py,
 			pmask);
 }
 

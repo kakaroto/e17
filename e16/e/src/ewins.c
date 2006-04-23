@@ -463,7 +463,7 @@ GetEwinByCurrentPointer(void)
 {
    Window              child;
 
-   EQueryPointer(EoGetWin(DesksGetCurrent()), NULL, NULL, &child, NULL);
+   EXQueryPointer(EoGetXwin(DesksGetCurrent()), NULL, NULL, &child, NULL);
 
    return EwinFindByFrame(child);
 }
@@ -477,7 +477,7 @@ GetEwinPointerInClient(void)
    Desk               *dsk;
 
    dsk = DesktopAt(Mode.events.x, Mode.events.y);
-   EQueryPointer(EoGetWin(dsk), &px, &py, NULL, NULL);
+   EXQueryPointer(EoGetXwin(dsk), &px, &py, NULL, NULL);
 
    lst = EwinListGetForDesk(&num, dsk);
    for (i = 0; i < num; i++)
@@ -830,7 +830,7 @@ AddToFamily(EWin * ewin, Window win)
 	     /* the window there */
 	     DeskGoto(dsk);
 
-	     EQueryPointer(VRoot.win, &rx, &ry, NULL, NULL);
+	     EXQueryPointer(VRoot.win, &rx, &ry, NULL, NULL);
 	     Mode.events.x = rx;
 	     Mode.events.y = ry;
 	     ewin->state.placed = 1;
@@ -880,7 +880,7 @@ AddToFamily(EWin * ewin, Window win)
 	/* the window there */
 	DeskGoto(dsk);
 
-	EQueryPointer(VRoot.win, &rx, &ry, NULL, NULL);
+	EXQueryPointer(VRoot.win, &rx, &ry, NULL, NULL);
 	Mode.events.x = rx;
 	Mode.events.y = ry;
 	ewin->state.placed = 1;

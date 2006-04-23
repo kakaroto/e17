@@ -748,7 +748,7 @@ ToolTipTimeout(int val __UNUSED__, void *data __UNUSED__)
 
    /* In the case of multiple screens, check to make sure
     * the root window is still where the mouse is... */
-   if (!EQueryPointer(VRoot.win, &x, &y, NULL, &mask))
+   if (!EXQueryPointer(VRoot.win, &x, &y, NULL, &mask))
       return;
 
    /* In case this is a virtual root */

@@ -45,7 +45,7 @@ EdgeTimeout(int val, void *data __UNUSED__)
       return;
 
    /* Quit if pointer has left screen */
-   if (!EQueryPointer(None, NULL, NULL, NULL, NULL))
+   if (!EXQueryPointer(None, NULL, NULL, NULL, NULL))
       return;
 
    /* Quit if in fullscreen window */
@@ -96,7 +96,7 @@ EdgeTimeout(int val, void *data __UNUSED__)
    Mode.events.py = Mode.events.y;
    Mode.events.x += dx;
    Mode.events.y += dy;
-   EWarpPointer(VRoot.win, Mode.events.x, Mode.events.y);
+   EXWarpPointer(VRoot.win, Mode.events.x, Mode.events.y);
    DeskCurrentMoveAreaBy(dax, day);
    Mode.events.px = Mode.events.x;
    Mode.events.py = Mode.events.y;

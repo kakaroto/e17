@@ -78,9 +78,6 @@ int                 ETranslateCoordinates(Window src_w, Window dst_w,
 					  int *dest_x_return,
 					  int *dest_y_return,
 					  Window * child_return);
-void                EWarpPointer(Window win, int x, int y);
-Bool                EQueryPointer(Window win, int *px, int *py, Window * pchild,
-				  unsigned int *pmask);
 int                 EDrawableCheck(Drawable draw, int grab);
 
 #define ESelectInput(win, mask) XSelectInput(disp, win, mask)
@@ -116,6 +113,10 @@ void                ECopyArea(Drawable src, Drawable dst, int sx, int sy,
 			      unsigned int w, unsigned int h, int dx, int dy);
 
 #define EXGetGeometry EGetGeometry
+
+void                EXWarpPointer(Window xwin, int x, int y);
+Bool                EXQueryPointer(Window xwin, int *px, int *py,
+				   Window * pchild, unsigned int *pmask);
 
 GC                  EXCreateGC(Drawable draw, unsigned long mask,
 			       XGCValues * val);

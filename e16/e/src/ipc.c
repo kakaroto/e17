@@ -1136,31 +1136,31 @@ IPC_Warp(const char *params, Client * c __UNUSED__)
    x = y = 0;
    if (!strcmp(params, "?"))
      {
-	EQueryPointer(None, &x, &y, NULL, NULL);
+	EXQueryPointer(None, &x, &y, NULL, NULL);
 	IpcPrintf("Pointer location: %d %d\n", x, y);
      }
    else if (!strncmp(params, "abs", 3))
      {
 	sscanf(params, "%*s %i %i", &x, &y);
-	EWarpPointer(VRoot.win, x, y);
+	EXWarpPointer(VRoot.win, x, y);
      }
    else if (!strncmp(params, "rel", 3))
      {
 	sscanf(params, "%*s %i %i", &x, &y);
-	EWarpPointer(None, x, y);
+	EXWarpPointer(None, x, y);
      }
    else if (!strncmp(params, "scr", 3))
      {
 	x = (VRoot.scr + 1) % ScreenCount(disp);
 	sscanf(params, "%*s %i", &x);
 	if (x >= 0 && x < ScreenCount(disp))
-	   EWarpPointer(RootWindow(disp, x), DisplayWidth(disp, x) / 2,
-			DisplayHeight(disp, x) / 2);
+	   EXWarpPointer(RootWindow(disp, x), DisplayWidth(disp, x) / 2,
+			 DisplayHeight(disp, x) / 2);
      }
    else
      {
 	sscanf(params, "%i %i", &x, &y);
-	EWarpPointer(None, x, y);
+	EXWarpPointer(None, x, y);
      }
 }
 
