@@ -27,6 +27,7 @@ poppler.h \
 poppler_index.h \
 poppler_page.h \
 poppler_page_transition.h \
+poppler_postscript.h \
 esmart_pdf.h \
 $(EPDF_EWL_HEADER) \
 $(EPDF_ETK_HEADER)
@@ -38,6 +39,7 @@ poppler_fontinfo.cpp \
 poppler_index.cpp \
 poppler_page.cpp \
 poppler_page_transition.cpp \
+poppler_postscript.cpp \
 esmart_pdf.c \
 $(EPDF_EWL_WIDGET) \
 $(EPDF_ETK_WIDGET) \

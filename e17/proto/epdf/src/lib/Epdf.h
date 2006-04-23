@@ -8,6 +8,7 @@
 #include "poppler_page.h"
 #include "poppler_document.h"
 #include "poppler_index.h"
+#include "poppler_postscript.h"
 #include "poppler.h"
 
 

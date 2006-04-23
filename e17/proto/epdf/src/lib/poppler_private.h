@@ -65,6 +65,20 @@ struct _Epdf_Index_Item
   Ecore_List *children;
 };
 
+struct _Epdf_Postscript
+{
+  PDFDoc          *pdfdoc;
+
+  char            *filename;
+
+  int              first_page;
+  int              last_page;
+
+  double           width;
+  double           height;
+  int              duplex :1;
+};
+
 Epdf_Page_Transition *epdf_page_transition_new (const Object *data);
 PDFDoc *epdf_document_doc_get (Epdf_Document *document);
 
