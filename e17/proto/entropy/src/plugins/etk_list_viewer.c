@@ -96,6 +96,26 @@ entropy_plugin_toolkit_get()
 
 
 /* Compares two rows of the tree */
+static int _entropy_etk_list_type_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data)
+{
+   gui_file *file1, *file2;
+   int val;
+   
+   if (!tree || !row1 || !row2 || !col)
+      return 0;
+
+   file1 = ecore_hash_get(etk_list_viewer_row_hash, row1);
+   file2 = ecore_hash_get(etk_list_viewer_row_hash, row2);
+  
+   if (file1 && file2) {
+	 val = strcasecmp(file1->file->mime_type, file2->file->mime_type);
+	 return val;
+   } else {
+	   printf("Could not locate file!\n");
+	   return 0;
+   }
+}
+
 static int _entropy_etk_list_filename_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data)
 {
    gui_file *file1, *file2;
@@ -720,6 +740,7 @@ entropy_plugin_gui_instance_new (entropy_core * core,
 
   viewer->tree_col1 = etk_tree_col_new(ETK_TREE(viewer->tree), _("Type"), 
 		  etk_tree_model_text_new(ETK_TREE(viewer->tree)),65);
+  etk_tree_col_sort_func_set(viewer->tree_col1, _entropy_etk_list_type_compare_cb, NULL);
 
   viewer->tree_col1 = etk_tree_col_new(ETK_TREE(viewer->tree), _("Date Modified"), 
 		  etk_tree_model_text_new(ETK_TREE(viewer->tree)),90);

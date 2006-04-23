@@ -66,8 +66,18 @@ static void _entropy_etk_context_menu_properties_cb(Etk_Object *object, void *da
 
 void _entropy_etk_context_menu_directory_add_cb(Etk_Object *object, void *data)
 {
-	if (_entropy_etk_context_menu_current_folder) {
-		etk_directory_add_dialog_create(_entropy_etk_context_menu_current_folder);
+	if (_entropy_etk_context_menu_current_file) {
+		if (!strcmp(_entropy_etk_context_menu_current_file->mime_type, "file/folder"))
+			_entropy_etk_context_menu_current_folder = _entropy_etk_context_menu_current_file;
+		else
+			_entropy_etk_context_menu_current_folder = 
+				entropy_core_parent_folder_file_get(_entropy_etk_context_menu_current_file);
+	
+		if (_entropy_etk_context_menu_current_folder) {
+			etk_directory_add_dialog_create(_entropy_etk_context_menu_current_folder);
+		} else {
+			printf("Current folder is NULL at context menu\n");
+		}
 	}
 }
 
