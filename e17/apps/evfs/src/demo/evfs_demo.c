@@ -1,14 +1,9 @@
 #include <evfs.h>
 #include <string.h>
-#include <limits.h>
 
 static int mon_current = 0;     /*A demo of stopping monitoring, after 10 events */
 evfs_file_uri_path *dir_path;
 evfs_connection *con;
-
-Ecore_List* files;
-char buffer[PATH_MAX];
-char *current;
 
 void
 callback(evfs_event * data, void *obj)
@@ -53,14 +48,7 @@ callback(evfs_event * data, void *obj)
 	     printf("Title: '%s'\n", ecore_hash_get(data->meta->meta_hash, "title"));
 	     printf("Length: '%s'\n", ecore_hash_get(data->meta->meta_hash, "length"));
 	     
-	      current = ecore_list_next(files);
-   snprintf(buffer,PATH_MAX,"file:///mnt/music/alexmp3/%s", current);
-
-   printf("Getting meta for '%s'...\n", buffer);
-
-   dir_path = evfs_parse_uri(buffer);
-   evfs_client_metadata_retrieve(con, dir_path->files[0]);
-   evfs_cleanup_file_uri_path(dir_path);
+			     
 	     
      }
 
@@ -78,6 +66,7 @@ callback(evfs_event * data, void *obj)
     * 
     * } */
 
+   exit(0);
 }
 
 int
@@ -150,17 +139,13 @@ main(int argc, char **argv)
    /*evfs_monitor_add(con, dir_path->files[0]);
     * evfs_client_file_copy(con, dir_path->files[0], NULL); */
 
-   files = ecore_file_ls("/mnt/music/alexmp3");
-
-   ecore_list_goto_first(files);
-   current = ecore_list_next(files);
-   snprintf(buffer,PATH_MAX,"file:///mnt/music/alexmp3/%s", current);
-
-   printf("Getting meta for '%s'...\n", buffer);
-
-   dir_path = evfs_parse_uri(buffer);
-   evfs_client_metadata_retrieve(con, dir_path->files[0]);
-   
+   if (!strcmp(cmd, "DIR")) {
+	   evfs_client_dir_list(con, dir_path->files[0]);
+   } else if (!strcmp(cmd, "STAT")) {
+	   evfs_client_file_stat(con, dir_path->files[0]);
+   } else if (!strcmp(cmd, "META")) {
+	   evfs_client_metadata_retrieve(con, dir_path->files[0]);
+   }
    ecore_main_loop_begin();
    evfs_disconnect(con);
 }
