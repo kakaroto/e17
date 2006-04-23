@@ -508,15 +508,19 @@ evfs_read_event(evfs_event * event, ecore_ipc_message * msg)
 		if (event->meta) {
 			event->meta->meta_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 
-			for (l  = event->meta->meta_list; l; ) {
-				obj = l->data;
-				l = evas_list_remove(event->meta->meta_list, l->data);
+			if (event->meta->meta_list) {
+				for (l  = event->meta->meta_list; l; ) {
+					obj = l->data;
 				
-				ecore_hash_set(event->meta->meta_hash, obj->key, obj->value);
-				free(obj);
-	
+					ecore_hash_set(event->meta->meta_hash, obj->key, obj->value);
+					free(obj);
+
+					l = l->next;
+				}
+				evas_list_free(event->meta->meta_list);	
+			} else {
+				printf("Meta list empty\n");
 			}
-			evas_list_free(event->meta->meta_list);	
 		} else {
 			printf("No meta data object!\n");
 		}
