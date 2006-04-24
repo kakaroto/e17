@@ -45,7 +45,7 @@ void epdf_document_delete (Epdf_Document *document);
  *
  */
 Epdf_Page *epdf_document_page_get (Epdf_Document *document,
-                                                   int                    index);
+                                   int            index);
 
 /**
  * Return the count of the pages of the document
@@ -93,15 +93,16 @@ unsigned char epdf_document_unlock (Epdf_Document *document, const char *passwor
 unsigned char epdf_document_is_locked (Epdf_Document *document);
 
 /**
- * Return
+ * To be implemented
  *
  * @param document The document
- * @return
+ * @param data data
+ * @return @c NULL
  *
- * Return
+ * Return NULL
  *
  */
-const char *epdf_document_info_get (const char *data);
+const char *epdf_document_info_get (Epdf_Document *document, const char *data);
 
 /**
  * Return wheter the document is encrypted
@@ -216,7 +217,7 @@ Ecore_List * epdf_document_scan_for_fonts (Epdf_Document *document,
  * Return the filename of the document @p document as a string
  *
  */
-char *epdf_document_filename_get (Epdf_Document *document);
+const char *epdf_document_filename_get (Epdf_Document *document);
 
 /**
  * Return the title as a string
@@ -224,7 +225,8 @@ char *epdf_document_filename_get (Epdf_Document *document);
  * @param document The document
  * @return The title as a string
  *
- * Return the title of the document @p document as a string
+ * Return the title of the document @p document as a string. The
+ * result must be freed
  *
  */
 char *epdf_document_title_get (Epdf_Document *document);
@@ -235,7 +237,8 @@ char *epdf_document_title_get (Epdf_Document *document);
  * @param document The document
  * @return The author as a string
  *
- * Return the author of the document @p document as a string
+ * Return the author of the document @p document as a string. The
+ * result must be freed
  *
  */
 char *epdf_document_author_get (Epdf_Document *document);
@@ -246,7 +249,8 @@ char *epdf_document_author_get (Epdf_Document *document);
  * @param document The document
  * @return The subject as a string
  *
- * Return the subject of the document @p document as a string
+ * Return the subject of the document @p document as a string. The
+ * result must be freed
  *
  */
 char *epdf_document_subject_get (Epdf_Document *document);
@@ -257,7 +261,8 @@ char *epdf_document_subject_get (Epdf_Document *document);
  * @param document The document
  * @return The keywords as a string
  *
- * Return the keywords of the document @p document as a string
+ * Return the keywords of the document @p document as a string. The
+ * result must be freed
  *
  */
 char *epdf_document_keywords_get (Epdf_Document *document);
@@ -268,7 +273,8 @@ char *epdf_document_keywords_get (Epdf_Document *document);
  * @param document The document
  * @return The creator as a string
  *
- * Return the creator of the document @p document as a string
+ * Return the creator of the document @p document as a string. The
+ * result must be freed
  *
  */
 char *epdf_document_creator_get (Epdf_Document *document);
@@ -279,7 +285,8 @@ char *epdf_document_creator_get (Epdf_Document *document);
  * @param document The document
  * @return The producer as a string
  *
- * Return the producer of the document @p document as a string
+ * Return the producer of the document @p document as a string. The
+ * result must be freed
  *
  */
 char *epdf_document_producer_get (Epdf_Document *document);

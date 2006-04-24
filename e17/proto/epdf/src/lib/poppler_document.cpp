@@ -322,7 +322,7 @@ epdf_document_scan_for_fonts (Epdf_Document *document, int page_count)
   return fonts;
 }
 
-char *
+const char *
 epdf_document_filename_get (Epdf_Document *document)
 {
   if (!document)

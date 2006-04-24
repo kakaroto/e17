@@ -20,7 +20,7 @@ epdf_evas_test_SOURCES =			\
 
 epdf_evas_test_LDADD =				\
 	$(top_builddir)/src/lib/libepdf.la	\
-	$(EVAS_LIBS)			\
+	$(EVAS_LIBS)				\
 	$(ECORE_LIBS)
 
 epdf_esmart_test_SOURCES =			\
@@ -28,7 +28,7 @@ epdf_esmart_test_SOURCES =			\
 
 epdf_esmart_test_LDADD =			\
 	$(top_builddir)/src/lib/libepdf.la	\
-	$(EVAS_LIBS)			\
+	$(EVAS_LIBS)				\
 	$(ECORE_LIBS)
 
 epdf_ewl_test_SOURCES =				\
@@ -49,5 +49,5 @@ epdf_etk_test_CFLAGS = @ETK_CFLAGS@
 
 epdf_etk_test_LDADD =				\
 	$(top_builddir)/src/lib/libepdf.la	\
-	$(EVAS_LIBS)			\
+	$(EVAS_LIBS)				\
 	$(ECORE_LIBS)
