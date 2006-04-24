@@ -3,7 +3,7 @@ Section: x11
 Priority: optional
 Maintainer: E17 Debian Team <debian@edevelop.org>
 Build-Depends: debhelper (>= 4.0.0)
-Build-Depends: libeet0-dev, libengrave0-dev, libevas0-dev, libecore0-dev, libe-dev, libewl0-dev, libimlib2-dev, libedje0-dev, libepsilon0-dev, libesmart0-dev, debhelper (>> 4.0.0)
+Build-Depends: libeet0-dev, libengrave0-dev, libevas0-dev, libecore0-dev, enlightenment-dev, libewl-dev, libimlib2-dev, libedje-dev, libepsilon-dev, libesmart-dev, debhelper (>> 4.0.0)
 Standards-Version: 3.6.1.0
 
 Package: eutils
