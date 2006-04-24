@@ -227,7 +227,7 @@ entropy_plugin_gui_instance_new (entropy_core * core,
   
   trackback->label = etk_label_new("");
   etk_box_pack_start(ETK_BOX(trackback->hbox), button, ETK_FALSE,ETK_FALSE,0);
-  etk_box_pack_start(ETK_BOX(trackback->hbox), trackback->label, ETK_TRUE,ETK_TRUE,0);
+  etk_box_pack_start(ETK_BOX(trackback->hbox), trackback->label, ETK_FALSE,ETK_FALSE,0);
   
   
   instance->gui_object = trackback->hbox;
