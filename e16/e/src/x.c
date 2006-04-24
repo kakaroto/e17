@@ -865,6 +865,9 @@ EXQueryPointer(Window xwin, int *px, int *py, Window * pchild,
    int                 root_x, root_y;
    unsigned int        mask;
 
+   if (xwin == None)
+      xwin = VRoot.win;
+
    if (!px)
       px = &root_x;
    if (!py)
