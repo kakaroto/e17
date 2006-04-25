@@ -16,8 +16,6 @@
 
 
 Ecore_Hash *folder_monitor_hash;
-Ecore_Hash *stat_request_hash;
-Ecore_Hash *file_copy_hash;
 Ecore_Hash *evfs_dir_requests;
 entropy_core *filesystem_core;	/*A reference to the core */
 
@@ -30,15 +28,6 @@ void entropy_filesystem_file_rename (entropy_generic_file * file_from, entropy_g
 void entropy_filesystem_operation_respond(long id, int response);
 void entropy_filesystem_directory_create (entropy_generic_file * parent, char* child_name);
 void entropy_filesystem_file_remove (entropy_generic_file * file, entropy_gui_component_instance* instance);
-
-
-
-
-
-//TODO: In its current implementation - stats can only be tracked by one instance at a time.
-//      I.e. if a request is made for a file by one instance, and another instance requests a stat on that file,
-//      whilst we're waiting for a response on the first, we'll have a collision.  This will almost *never* happen, 
-//      but it would be a good idea to fix.
 
 evfs_connection *con;
 
@@ -161,20 +150,17 @@ callback (evfs_event * data, void *obj)
       entropy_gui_component_instance *instance;
       entropy_file_stat *file_stat;
       entropy_file_listener* listener;
+      char* md5;
 
-
-      char *md5;
       char *folder =
 	strdup ((char *) data->resp_command.file_command.files[0]->path);
       char *pos = rindex (folder, '/');
-
-
 
       *pos = '\0';
 
       //printf("Folder: '%s'\nFilename: '%s'\n", folder, pos+1);
       md5 = md5_entropy_path_file (data->resp_command.file_command.files[0]->plugin_uri, folder, pos + 1);
-      instance = ecore_hash_get (stat_request_hash, md5);
+      instance = ecore_hash_get (evfs_dir_requests, (long*)data->resp_command.client_identifier );
 
       /*Build a file<->stat structure to pass to requester */
       file_stat = entropy_malloc (sizeof (entropy_file_stat));
@@ -223,7 +209,7 @@ callback (evfs_event * data, void *obj)
       entropy_free (file_stat->stat_obj);
       entropy_free (file_stat);
 
-      ecore_hash_remove (stat_request_hash, md5);
+      ecore_hash_remove (evfs_dir_requests, (long*)data->resp_command.client_identifier);
       entropy_free (folder);
       entropy_free (md5);
 
@@ -377,7 +363,7 @@ callback (evfs_event * data, void *obj)
       uri =
 	evfs_filereference_to_string (data->resp_command.file_command.
 				      files[0]);
-      instance = ecore_hash_get (file_copy_hash, uri);
+      instance = ecore_hash_get (evfs_dir_requests, (long*)data->resp_command.client_identifier);
 
       if (instance) {
 	/*Build up the gui_event wrapper */
@@ -394,8 +380,7 @@ callback (evfs_event * data, void *obj)
       }
 
       if (data->progress->type == EVFS_PROGRESS_TYPE_DONE) {
-	/*TODO free the key */
-	ecore_hash_remove(file_copy_hash, uri);
+	ecore_hash_remove(evfs_dir_requests, (long*)data->resp_command.client_identifier);
       }
 
       if (uri) free (uri);
@@ -417,7 +402,8 @@ callback (evfs_event * data, void *obj)
       uri =
 	evfs_filereference_to_string (data->resp_command.file_command.
 				      files[0]);
-      instance = ecore_hash_get (file_copy_hash, uri);
+      instance = ecore_hash_get (evfs_dir_requests, (long*)data->resp_command.client_identifier);
+
 
       if (instance) {
          /*Build up the gui_event wrapper */
@@ -526,9 +512,7 @@ entropy_plugin_init (entropy_core * core)
   /*Initialise misc. hashes*/
   folder_monitor_hash =
     ecore_hash_new (ecore_direct_hash, ecore_direct_compare);
-  stat_request_hash = ecore_hash_new (ecore_str_hash, ecore_str_compare);
   evfs_dir_requests = ecore_hash_new (ecore_direct_hash, ecore_direct_compare);
-  file_copy_hash = ecore_hash_new (ecore_str_hash, ecore_str_compare);
 
   /*Connect to evfs*/
   con = evfs_connect (&callback, NULL);
@@ -601,17 +585,17 @@ filestat_get (entropy_file_request * request)
 {
   evfs_file_uri_path *path;
   char *uri = uri = entropy_core_generic_file_uri_create (request->file, 0);
+  long id;
 
   //printf("Getting a stat from evfs...\n");
 
 
   path = evfs_parse_uri (uri);
-  char *md5 =
-    md5_entropy_path_file (request->file->uri_base, request->file->path, request->file->filename);
-  ecore_hash_set (stat_request_hash, md5, request->requester);
-  evfs_client_file_stat (con, path->files[0]);
+  id = evfs_client_file_stat (con, path->files[0]);
+ecore_hash_set (evfs_dir_requests, (long*)id, request->requester);
 
-  free (uri);
+  evfs_cleanup_file_uri_path (path);
+  free(uri);
 
 
   return NULL;
@@ -812,12 +796,10 @@ entropy_filesystem_file_copy (entropy_generic_file * file, char *path_to,
 {
   evfs_file_uri_path *uri_path_from;
   evfs_file_uri_path *uri_path_to;
-  char *original;
-
   char copy_buffer[PATH_MAX];
-
   char uri_from[512];
   char uri_to[512];
+  long id;
 
 
 
@@ -837,12 +819,11 @@ entropy_filesystem_file_copy (entropy_generic_file * file, char *path_to,
   //
   /*Track the copy action */
   snprintf (copy_buffer, PATH_MAX, "%s%s", uri_from, uri_to);
-  original = evfs_filereference_to_string (uri_path_from->files[0]);
-  ecore_hash_set (file_copy_hash, original, instance);
+  id = evfs_client_file_copy (con, uri_path_from->files[0], uri_path_to->files[0]);
+  ecore_hash_set(evfs_dir_requests, (long*)id, instance);
 
-  evfs_client_file_copy (con, uri_path_from->files[0], uri_path_to->files[0]);
-
-  //TODO - free the file containers here
+  evfs_cleanup_file_uri_path(uri_path_from);
+  evfs_cleanup_file_uri_path(uri_path_to);
 }
 
 
@@ -853,17 +834,16 @@ void
 entropy_filesystem_file_remove (entropy_generic_file * file, entropy_gui_component_instance* instance)
 {
   evfs_file_uri_path *uri_path_from;
-  char* original;
   char *uri = entropy_core_generic_file_uri_create (file, 0);
-  //printf("Deleting uri '%s'\n", uri);
+  long id;
 
   uri_path_from = evfs_parse_uri (uri);
-  original = evfs_filereference_to_string (uri_path_from->files[0]);
-  evfs_client_file_remove (con, uri_path_from->files[0]);
+  id = evfs_client_file_remove (con, uri_path_from->files[0]);
 
-  ecore_hash_set (file_copy_hash, original, instance);
+  ecore_hash_set (evfs_dir_requests, (long*)id, instance);
 
   free (uri);
+  evfs_cleanup_file_uri_path(uri_path_from);
 
 }
 
