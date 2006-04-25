@@ -107,10 +107,13 @@ Pixmap              EWindowGetShapePixmap(Window win);
 
 #define ECreatePixmap(draw, w, h, depth) XCreatePixmap(disp, draw, w, h, depth)
 #define EFreePixmap(pmap) XFreePixmap(disp, pmap)
-Pixmap              ECreatePixmapCopy(Pixmap src, unsigned int w,
-				      unsigned int h, unsigned int depth);
-void                ECopyArea(Drawable src, Drawable dst, int sx, int sy,
-			      unsigned int w, unsigned int h, int dx, int dy);
+
+#define EXCreatePixmap(draw, w, h, depth) XCreatePixmap(disp, draw, w, h, depth)
+#define EXFreePixmap(pmap) XFreePixmap(disp, pmap)
+Pixmap              EXCreatePixmapCopy(Pixmap src, unsigned int w,
+				       unsigned int h, unsigned int depth);
+void                EXCopyArea(Drawable src, Drawable dst, int sx, int sy,
+			       unsigned int w, unsigned int h, int dx, int dy);
 
 #define EXGetGeometry EGetGeometry
 

@@ -492,7 +492,7 @@ BgFindImageSize(BgPart * bgp, unsigned int rw, unsigned int rh,
 }
 
 static              Pixmap
-BackgroundCreatePixmap(Window win, unsigned int w, unsigned int h,
+BackgroundCreatePixmap(Drawable draw, unsigned int w, unsigned int h,
 		       unsigned int depth)
 {
    Pixmap              pmap;
@@ -501,11 +501,11 @@ BackgroundCreatePixmap(Window win, unsigned int w, unsigned int h,
     * Stupid hack to avoid that a new root pixmap has the same ID as the now
     * invalid one from a previous session.
     */
-   pmap = ECreatePixmap(win, w, h, depth);
-   if (win == VRoot.win && pmap == Mode.root.ext_pmap)
+   pmap = EXCreatePixmap(draw, w, h, depth);
+   if (draw == VRoot.win && pmap == Mode.root.ext_pmap)
      {
 	EFreePixmap(pmap);
-	pmap = ECreatePixmap(win, w, h, depth);
+	pmap = EXCreatePixmap(draw, w, h, depth);
 	Mode.root.ext_pmap = None;
 	Mode.root.ext_pmap_valid = 0;
      }

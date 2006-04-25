@@ -979,7 +979,7 @@ ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	EImageBlendCM(ii, is->im, (flags & ICLASS_ATTR_USE_CM) ? icm : NULL);
 
 	pmm->type = 0;
-	pmm->pmap = pmap = ECreatePixmap(win, w, h, VRoot.depth);
+	pmm->pmap = pmap = EXCreatePixmap(win, w, h, VRoot.depth);
 	pmm->mask = None;
 	pmm->w = w;
 	pmm->h = h;
@@ -993,7 +993,7 @@ ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 		  EImageRenderPixmaps(is->im, win, &pmap, &mask, w, h);
 
 		  /* Replace the mask with the correct one */
-		  pmm->mask = ECreatePixmapCopy(mask, w, h, 1);
+		  pmm->mask = EXCreatePixmapCopy(mask, w, h, 1);
 
 		  EImagePixmapFree(pmap);
 	       }
@@ -1187,7 +1187,7 @@ ITApply(Window win, ImageClass * ic, ImageState * is, int w, int h,
 	     if (ts && text)
 	       {
 		  if (pmm.type != 0)
-		     pmap = ECreatePixmapCopy(pmm.pmap, w, h, VRoot.depth);
+		     pmap = EXCreatePixmapCopy(pmm.pmap, w, h, VRoot.depth);
 
 		  TextstateDrawText(ts, pmap, text, ic->padding.left,
 				    ic->padding.top,
@@ -1282,7 +1282,7 @@ ImageclassApplyCopy(ImageClass * ic, Window win, int w, int h, int active,
 		  Pixmap              tp = 0, tm = 0;
 		  XGCValues           gcv;
 
-		  tp = ECreatePixmap(win, w, h, VRoot.depth);
+		  tp = EXCreatePixmap(win, w, h, VRoot.depth);
 		  gcv.fill_style = FillTiled;
 		  gcv.tile = pmm->pmap;
 		  gcv.ts_x_origin = 0;
@@ -1293,7 +1293,7 @@ ImageclassApplyCopy(ImageClass * ic, Window win, int w, int h, int active,
 		  EXFreeGC(gc);
 		  if (pmm->mask)
 		    {
-		       tm = ECreatePixmap(win, w, h, 1);
+		       tm = EXCreatePixmap(win, w, h, 1);
 		       gcv.fill_style = FillTiled;
 		       gcv.tile = pmm->mask;
 		       gcv.ts_x_origin = 0;
@@ -1324,7 +1324,7 @@ ImageclassApplyCopy(ImageClass * ic, Window win, int w, int h, int active,
 	if (pmm->pmap)
 	   Eprintf("ImageclassApplyCopy: Hmm... pmm->pmap already set\n");
 
-	pmap = ECreatePixmap(win, w, h, VRoot.depth);
+	pmap = EXCreatePixmap(win, w, h, VRoot.depth);
 	pmm->type = 0;
 	pmm->pmap = pmap;
 	pmm->mask = 0;

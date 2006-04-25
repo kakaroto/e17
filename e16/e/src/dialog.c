@@ -508,7 +508,7 @@ DialogRedraw(Dialog * d)
 	d->pmap = ECreatePixmap(d->win, d->w, d->h, VRoot.depth);
 	ESetWindowBackgroundPixmap(d->win, d->pmap);
      }
-   ECopyArea(d->pmm_bg.pmap, d->pmap, 0, 0, d->w, d->h, 0, 0);
+   EXCopyArea(d->pmm_bg.pmap, d->pmap, 0, 0, d->w, d->h, 0, 0);
 
    d->redraw = 1;
 
@@ -1680,8 +1680,8 @@ DialogDrawItem(Dialog * d, DItem * di)
 
      case DITEM_TEXT:
 	if (!d->redraw)
-	   ECopyArea(d->pmm_bg.pmap, d->pmap, di->x, di->y, di->w, di->h,
-		     di->x, di->y);
+	   EXCopyArea(d->pmm_bg.pmap, d->pmap, di->x, di->y, di->w, di->h,
+		      di->x, di->y);
 	x = di->x;
 	w = di->w;
 	goto draw_text;

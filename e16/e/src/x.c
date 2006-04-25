@@ -1334,13 +1334,13 @@ EShapeCheck(Window win)
 }
 
 Pixmap
-ECreatePixmapCopy(Pixmap src, unsigned int w, unsigned int h,
-		  unsigned int depth)
+EXCreatePixmapCopy(Pixmap src, unsigned int w, unsigned int h,
+		   unsigned int depth)
 {
    Pixmap              pmap;
    GC                  gc;
 
-   pmap = ECreatePixmap(src, w, h, depth);
+   pmap = EXCreatePixmap(src, w, h, depth);
    gc = EXCreateGC(src, 0, NULL);
    XCopyArea(disp, src, pmap, gc, 0, 0, w, h, 0, 0);
    EXFreeGC(gc);
@@ -1349,8 +1349,8 @@ ECreatePixmapCopy(Pixmap src, unsigned int w, unsigned int h,
 }
 
 void
-ECopyArea(Drawable src, Drawable dst, int sx, int sy, unsigned int w,
-	  unsigned int h, int dx, int dy)
+EXCopyArea(Drawable src, Drawable dst, int sx, int sy, unsigned int w,
+	   unsigned int h, int dx, int dy)
 {
    GC                  gc;
 
@@ -1414,7 +1414,7 @@ EWindowGetShapePixmap(Window win)
    EGetGeometry(win, NULL, NULL, NULL, &w, &h, NULL, NULL);
    mask = ECreatePixmap(win, w, h, 1);
 
-   gc = XCreateGC(disp, mask, 0, NULL);
+   gc = EXCreateGC(mask, 0, NULL);
    XSetForeground(disp, gc, 0);
 
    rect = XShapeGetRectangles(disp, win, ShapeBounding, &rect_num, &rect_ord);
@@ -1428,7 +1428,7 @@ EWindowGetShapePixmap(Window win)
 	XFree(rect);
      }
 
-   XFreeGC(disp, gc);
+   EXFreeGC(gc);
 
    return mask;
 }

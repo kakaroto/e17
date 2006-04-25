@@ -151,7 +151,7 @@ EBlendRemoveShape(EWin * ewin, Pixmap pmap, int x, int y)
 	if (gcm)
 	   EXFreeGC(gcm);
 	if (mask)
-	   EFreePixmap(mask);
+	   EXFreePixmap(mask);
 	mask = 0;
 	gc = 0;
 	gcm = 0;
@@ -180,7 +180,7 @@ EBlendRemoveShape(EWin * ewin, Pixmap pmap, int x, int y)
 	  }
      }
    if (!mask)
-      mask = ECreatePixmap(root, w, h, 1);
+      mask = EXCreatePixmap(root, w, h, 1);
    if (!gcm)
       gcm = EXCreateGC(mask, 0, &gcv);
    if (!gc)
