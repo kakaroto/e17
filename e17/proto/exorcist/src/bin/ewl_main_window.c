@@ -28,11 +28,35 @@ struct Exo_Ewl_
   Ewl_Widget *search_circular;
 };
 
+typedef struct _Exo_Ps_Data Exo_Ps_Data;
+struct _Exo_Ps_Data {
+  Epdf_Document *pdf_doc;
+  Ewl_Widget    *dialog;
+  Ewl_Widget    *filename;
+  Ewl_Widget    *first_page;
+  Ewl_Widget    *last_page;
+  Ewl_Widget    *width;
+  Ewl_Widget    *height;
+  Ewl_Widget    *duplex;
+};
+
 
 static void _exo_ewl_change_page_cb            (Ewl_Widget *widget,
                                                 void       *ev_data,
                                                 void       *user_data);
 static void _exo_ewl_document_open_cb          (Ewl_Widget *widget,
+                                                void       *ev_data,
+                                                void       *user_data);
+static void _exo_ewl_document_save_cb          (Ewl_Widget *widget,
+                                                void       *ev_data,
+                                                void       *user_data);
+static void _exo_ewl_document_save_destroy_cb  (Ewl_Widget *widget,
+                                                void       *ev_data,
+                                                void       *user_data);
+static void _exo_ewl_document_save_quit_cb     (Ewl_Widget *widget,
+                                                void       *ev_data,
+                                                void       *user_data);
+static void _exo_ewl_document_save_ok_cb       (Ewl_Widget *widget,
                                                 void       *ev_data,
                                                 void       *user_data);
 static void _exo_ewl_filedialog_cb             (Ewl_Widget *widget,
@@ -59,10 +83,10 @@ static void _exo_ewl_search_next_cb            (Ewl_Widget *widget,
 static void _exo_ewl_popup_cb                  (Ewl_Widget *widget,
                                                 void       *ev_data,
                                                 void       *user_data);
-static void _exo_ewl_info_cb                   (Ewl_Widget *widget,
+static void _exo_ewl_document_info_cb          (Ewl_Widget *widget,
                                                 void       *ev_data,
                                                 void       *user_data);
-static void _exo_ewl_info_destroy_cb           (Ewl_Widget *widget,
+static void _exo_ewl_document_info_destroy_cb  (Ewl_Widget *widget,
                                                 void       *ev_data,
                                                 void       *user_data);
 
@@ -327,11 +351,19 @@ _exo_ewl_menu_bar (Exo_Ewl *data)
   ewl_widget_show (item);
 
   item = ewl_menu_item_new ();
+  ewl_button_stock_type_set (EWL_BUTTON (item), EWL_STOCK_SAVE);
+  ewl_container_child_append (EWL_CONTAINER (menu), item);
+  ewl_callback_append (item,
+                       EWL_CALLBACK_CLICKED,
+                       _exo_ewl_document_save_cb, data);
+  ewl_widget_show (item);
+
+  item = ewl_menu_item_new ();
   ewl_button_label_set (EWL_BUTTON (item), "Info");
   ewl_container_child_append (EWL_CONTAINER (menu), item);
   ewl_callback_append (item,
                        EWL_CALLBACK_CLICKED,
-                       _exo_ewl_info_cb, data);
+                       _exo_ewl_document_info_cb, data);
   ewl_widget_show (item);
 
   item = ewl_hseparator_new ();
@@ -619,6 +651,187 @@ _exo_ewl_filedialog_cb (Ewl_Widget *widget,
 }
 
 static void
+_exo_ewl_document_save_cb (Ewl_Widget *widget __UNUSED__,
+                           void       *ev_data __UNUSED__,
+                           void       *user_data)
+{
+  char         buf[128];
+  Exo_Ewl     *data;
+  Ewl_Pdf     *pdf;
+  Ewl_Widget  *button;
+  Ewl_Widget  *table;
+  Ewl_Widget  *label;
+  Exo_Ps_Data *ps_data;
+  char        *tmp;
+  char        *filename;
+  char        *psfilename;
+  int          l;
+  int          page_count;
+
+  data = (Exo_Ewl *)user_data;
+  pdf =  EWL_PDF (data->pdf);
+  filename = epdf_document_filename_get (pdf->pdf_document);
+  l = strlen (filename);
+  tmp = strstr (filename, ".pdf");
+  if (!tmp) {
+    psfilename = (char *)malloc (sizeof (char) * (l + 4));
+    memcpy (psfilename, filename, l);
+    psfilename[l + 0] = '.';
+    psfilename[l + 1] = 'p';
+    psfilename[l + 2] = 's';
+    psfilename[l + 3] = '\0';
+  }
+  else {
+    psfilename = (char *)malloc (sizeof (char) * l);
+    memcpy (psfilename, filename, l);
+    psfilename[l - 2] = 's';
+    psfilename[l - 1] = '\0';
+  }
+  page_count = epdf_document_page_count_get (pdf->pdf_document);
+
+  ps_data = (Exo_Ps_Data *)malloc (sizeof (Exo_Ps_Data));
+  ps_data->pdf_doc = pdf->pdf_document;
+
+  ps_data->dialog = ewl_dialog_new ();
+  ewl_window_title_set (EWL_WINDOW (ps_data->dialog), "Exorcist - Save");
+  ewl_window_name_set (EWL_WINDOW (ps_data->dialog), "Exorcist - Save");
+  ewl_window_class_set (EWL_WINDOW (ps_data->dialog), "Exorcist - Save");
+  ewl_callback_append (ps_data->dialog,
+                       EWL_CALLBACK_DELETE_WINDOW,
+                       _exo_ewl_document_save_destroy_cb, NULL);
+
+  button = ewl_button_new ();
+  ewl_button_stock_type_set (EWL_BUTTON (button), EWL_STOCK_OK);
+  ewl_callback_append (EWL_WIDGET (button),
+                       EWL_CALLBACK_CLICKED,
+                       EWL_CALLBACK_FUNCTION (_exo_ewl_document_save_ok_cb),
+                       ps_data);
+  ewl_container_child_append (EWL_CONTAINER (ps_data->dialog), button);
+  ewl_widget_show (button);
+
+  button = ewl_button_new ();
+  ewl_button_stock_type_set (EWL_BUTTON (button), EWL_STOCK_CANCEL);
+  ewl_container_child_append (EWL_CONTAINER (ps_data->dialog), button);
+  ewl_callback_append (button,
+                       EWL_CALLBACK_CLICKED,
+                       _exo_ewl_document_save_quit_cb, ps_data->dialog);
+  ewl_widget_show (button);
+
+  table = ewl_table_new (2, 6, NULL);
+  ewl_table_vhomogeneous_set (EWL_TABLE (table), TRUE);
+  ewl_dialog_active_area_set (EWL_DIALOG (ps_data->dialog), EWL_POSITION_TOP);
+  ewl_container_child_append (EWL_CONTAINER (ps_data->dialog), table);
+  ewl_widget_show (table);
+
+  label = ewl_label_new ();
+  ewl_label_text_set (EWL_LABEL (label), "File name");
+  ewl_table_add (EWL_TABLE (table), label, 1, 1, 1, 1);
+  ewl_widget_show (label);
+
+  ps_data->filename = ewl_entry_new ();
+  ewl_text_text_set (EWL_TEXT (ps_data->filename), psfilename);
+  ewl_table_add (EWL_TABLE (table), ps_data->filename, 2, 2, 1, 1);
+  ewl_widget_show (ps_data->filename);
+
+  label = ewl_label_new ();
+  ewl_label_text_set (EWL_LABEL (label), "First page");
+  ewl_table_add (EWL_TABLE (table), label, 1, 1, 2, 2);
+  ewl_widget_show (label);
+
+  ps_data->first_page = ewl_entry_new ();
+  ewl_text_text_set (EWL_TEXT (ps_data->first_page), "1");
+  ewl_table_add (EWL_TABLE (table), ps_data->first_page, 2, 2, 2, 2);
+  ewl_widget_show (ps_data->first_page);
+
+  label = ewl_label_new ();
+  ewl_label_text_set (EWL_LABEL (label), "Last page");
+  ewl_table_add (EWL_TABLE (table), label, 1, 1, 3, 3);
+  ewl_widget_show (label);
+
+  snprintf (buf, 128, "%d", page_count);
+  ps_data->last_page = ewl_entry_new ();
+  ewl_text_text_set (EWL_TEXT (ps_data->last_page), buf);
+  ewl_table_add (EWL_TABLE (table), ps_data->last_page, 2, 2, 3, 3);
+  ewl_widget_show (ps_data->last_page);
+
+  label = ewl_label_new ();
+  ewl_label_text_set (EWL_LABEL (label), "Width");
+  ewl_table_add (EWL_TABLE (table), label, 1, 1, 4, 4);
+  ewl_widget_show (label);
+
+  ps_data->width = ewl_entry_new ();
+  ewl_text_text_set (EWL_TEXT (ps_data->width), "-1");
+  ewl_table_add (EWL_TABLE (table), ps_data->width, 2, 2, 4, 4);
+  ewl_widget_show (ps_data->width);
+
+  label = ewl_label_new ();
+  ewl_label_text_set (EWL_LABEL (label), "Height");
+  ewl_table_add (EWL_TABLE (table), label, 1, 1, 5, 5);
+  ewl_widget_show (label);
+
+  ps_data->height = ewl_entry_new ();
+  ewl_text_text_set (EWL_TEXT (ps_data->height), "-1");
+  ewl_table_add (EWL_TABLE (table), ps_data->height, 2, 2, 5, 5);
+  ewl_widget_show (ps_data->height);
+
+  ps_data->duplex = ewl_checkbutton_new ();
+  ewl_button_label_set (EWL_BUTTON (ps_data->duplex), "Duplex");
+  ewl_checkbutton_checked_set (EWL_CHECKBUTTON (ps_data->duplex), TRUE);
+  ewl_table_add (EWL_TABLE (table), ps_data->duplex, 1, 2, 6, 6);
+  ewl_widget_show (ps_data->duplex);
+
+  ewl_widget_show (ps_data->dialog);
+
+  free (psfilename);
+}
+
+static void
+_exo_ewl_document_save_destroy_cb (Ewl_Widget *widget,
+                                   void       *ev_data __UNUSED__,
+                                   void       *user_data __UNUSED__)
+{
+  ewl_widget_destroy (widget);
+}
+
+static void
+_exo_ewl_document_save_quit_cb (Ewl_Widget *widget __UNUSED__,
+                                void       *ev_data __UNUSED__,
+                                void       *user_data)
+{
+  ewl_widget_destroy (EWL_WIDGET (user_data));
+}
+
+static void
+_exo_ewl_document_save_ok_cb (Ewl_Widget *widget __UNUSED__,
+                              void       *ev_data __UNUSED__,
+                              void       *user_data)
+{
+  Epdf_Postscript *eps;
+  Exo_Ps_Data     *ps_data = (Exo_Ps_Data *)user_data;
+  const char      *filename;
+  int              page_first;
+  int              page_last;
+  int              width;
+  int              height;
+  int              duplex;
+
+  filename = ewl_text_text_get (EWL_TEXT (ps_data->filename));
+  page_first = atoi (ewl_text_text_get (EWL_TEXT (ps_data->first_page)));
+  page_last = atoi (ewl_text_text_get (EWL_TEXT (ps_data->last_page)));
+  width = atoi (ewl_text_text_get (EWL_TEXT (ps_data->width)));
+  height = atoi (ewl_text_text_get (EWL_TEXT (ps_data->height)));
+  duplex = ewl_checkbutton_is_checked (EWL_CHECKBUTTON (ps_data->duplex));
+  eps = epdf_postscript_new (ps_data->pdf_doc, filename, page_first, page_last);
+  epdf_postscript_size_set (eps, width, height);
+  epdf_postscript_duplex_set (eps, duplex);
+  if (!eps) return;
+  epdf_postscript_print (eps);
+  epdf_postscript_delete (eps);
+
+  ewl_widget_destroy (ps_data->dialog);
+}
+
+static void
 _exo_ewl_row_data_free_cb (Ewl_Widget *widget,
                            void       *ev_data __UNUSED__,
                            void       *user_data __UNUSED__)
@@ -703,9 +916,9 @@ _exo_ewl_popup_cb (Ewl_Widget *widget,
 }
 
 static void
-_exo_ewl_info_cb (Ewl_Widget *widget __UNUSED__,
-                  void       *ev_data __UNUSED__,
-                  void       *user_data)
+_exo_ewl_document_info_cb (Ewl_Widget *widget __UNUSED__,
+                           void       *ev_data __UNUSED__,
+                           void       *user_data)
 {
   Exo_Ewl        *data;
   Ewl_Widget     *dialog_info;
@@ -730,13 +943,13 @@ _exo_ewl_info_cb (Ewl_Widget *widget __UNUSED__,
   ewl_window_class_set (EWL_WINDOW (dialog_info), "Exorcist - Info");
   ewl_callback_append (dialog_info,
                        EWL_CALLBACK_DELETE_WINDOW,
-                       _exo_ewl_info_destroy_cb, dialog_info);
+                       _exo_ewl_document_info_destroy_cb, dialog_info);
 
   button = ewl_button_new ();
   ewl_button_stock_type_set (EWL_BUTTON (button), EWL_STOCK_CANCEL);
   ewl_callback_append (button,
                        EWL_CALLBACK_CLICKED,
-                       _exo_ewl_info_destroy_cb, dialog_info);
+                       _exo_ewl_document_info_destroy_cb, dialog_info);
   ewl_container_child_append (EWL_CONTAINER (dialog_info), button);
   ewl_widget_show (button);
 
@@ -959,9 +1172,9 @@ _exo_ewl_info_cb (Ewl_Widget *widget __UNUSED__,
 }
 
 static void
-_exo_ewl_info_destroy_cb (Ewl_Widget *widget __UNUSED__,
-                          void       *ev_data __UNUSED__,
-                          void       *user_data)
+_exo_ewl_document_info_destroy_cb (Ewl_Widget *widget __UNUSED__,
+                                   void       *ev_data __UNUSED__,
+                                   void       *user_data)
 {
   ewl_widget_destroy (EWL_WIDGET (user_data));
 }

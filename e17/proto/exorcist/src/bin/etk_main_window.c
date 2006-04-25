@@ -26,14 +26,25 @@ struct Exo_Etk_
   Etk_Widget *search_circular;
 };
 
-static void     _exo_etk_quit_cb                   (Etk_Object *object, void *data);
+typedef struct _Exo_Ps_Data Exo_Ps_Data;
+struct _Exo_Ps_Data {
+  Epdf_Document *pdf_doc;
+  Etk_Widget    *filename;
+  Etk_Widget    *first_page;
+  Etk_Widget    *last_page;
+  Etk_Widget    *width;
+  Etk_Widget    *height;
+  Etk_Widget    *duplex;
+};
+
+static void     _exo_etk_quit_cb                   (Etk_Object *object, void *user_data);
 static Etk_Bool _exo_etk_delete_cb                 (Etk_Object *object, void *user_data);
 static void     _exo_etk_menu_popup_cb             (Etk_Object *object, void *event_info, void *data);
 static void     _change_page_cb                    (Etk_Object *object, Etk_Tree_Row *row, void *data);
 static void     _exo_etk_row_data_free_cb          (Etk_Object *object);
-static void     _exo_etk_info_cb                   (Etk_Object *object, void *user_data);
-static Etk_Bool _exo_etk_info_delete_cb            (Etk_Object *object, void *user_data);
-static void     _exo_etk_info_response_cb          (Etk_Object *object, int res, void *user_data);
+static void     _exo_etk_document_info_cb          (Etk_Object *object, void *user_data);
+static Etk_Bool _exo_etk_document_info_delete_cb   (Etk_Object *object, void *user_data);
+static void     _exo_etk_document_info_response_cb (Etk_Object *object, int res, void *user_data);
 static void     _exo_etk_search_cb                 (Etk_Object *object, void *user_data);
 static Etk_Bool _exo_etk_search_delete_cb          (Etk_Object *object, void *user_data);
 static void     _exo_etk_search_response_cb        (Etk_Object *object, int res, void *user_data);
@@ -47,6 +58,11 @@ static void     _exo_etk_orientation_portrait_cb   (Etk_Object *object, void *us
 static void     _exo_etk_size_150_cb               (Etk_Object *object, void *user_data);
 static void     _exo_etk_size_100_cb               (Etk_Object *object, void *user_data);
 static void     _exo_etk_size_50_cb                (Etk_Object *object, void *user_data);
+
+static void     _exo_etk_document_open_cb          (Etk_Object *object, void *user_data);
+static void     _exo_etk_document_save_cb          (Etk_Object *object, void *user_data);
+static void     _exo_etk_document_save_response_cb (Etk_Object *object, int res, void *user_data);
+static Etk_Bool _exo_etk_document_save_delete_cb   (Etk_Object *object, void *user_data);
 
 
 static void
@@ -237,8 +253,19 @@ _exo_etk_menu_bar (Exo_Etk *data)
     etk_menu_item_image_set (ETK_MENU_ITEM_IMAGE (menu_item), ETK_IMAGE (image));
   }
   etk_menu_shell_append (ETK_MENU_SHELL (menu), ETK_MENU_ITEM (menu_item));
-/*   etk_signal_connect("selected", ETK_OBJECT(menu_item), */
-/*                      ETK_CALLBACK(_exo_etk_document_open_cb), data); */
+  etk_signal_connect("activated", ETK_OBJECT(menu_item),
+                     ETK_CALLBACK(_exo_etk_document_open_cb), data);
+
+  menu_item = etk_menu_item_image_new_with_label ("Save");
+  {
+    Etk_Widget *image;
+
+    image = etk_image_new_from_stock (ETK_STOCK_DOCUMENT_SAVE, ETK_STOCK_SMALL);
+    etk_menu_item_image_set (ETK_MENU_ITEM_IMAGE (menu_item), ETK_IMAGE (image));
+  }
+  etk_menu_shell_append (ETK_MENU_SHELL (menu), ETK_MENU_ITEM (menu_item));
+  etk_signal_connect("activated", ETK_OBJECT(menu_item),
+                     ETK_CALLBACK(_exo_etk_document_save_cb), data);
 
   menu_item = etk_menu_item_image_new_with_label ("Info");
   {
@@ -249,7 +276,7 @@ _exo_etk_menu_bar (Exo_Etk *data)
   }
   etk_menu_shell_append (ETK_MENU_SHELL (menu), ETK_MENU_ITEM (menu_item));
   etk_signal_connect("activated", ETK_OBJECT(menu_item),
-                     ETK_CALLBACK(_exo_etk_info_cb), data);
+                     ETK_CALLBACK(_exo_etk_document_info_cb), data);
 
   menu_item = etk_menu_item_separator_new();
   etk_menu_shell_append (ETK_MENU_SHELL (menu), ETK_MENU_ITEM (menu_item));
@@ -426,7 +453,7 @@ _exo_etk_row_data_free_cb  (Etk_Object *object)
 }
 
 static void
-_exo_etk_info_cb (Etk_Object *object __UNUSED__, void *user_data)
+_exo_etk_document_info_cb (Etk_Object *object __UNUSED__, void *user_data)
 {
   Exo_Etk        *data;
   Etk_Widget     *dialog_info;
@@ -450,12 +477,12 @@ _exo_etk_info_cb (Etk_Object *object __UNUSED__, void *user_data)
   etk_window_title_set (ETK_WINDOW (dialog_info), "Exorcist - Info");
   etk_window_wmclass_set (ETK_WINDOW (dialog_info), "Exorcist - Info", "Exorcist - Info");
   etk_signal_connect ("delete_event", ETK_OBJECT (dialog_info),
-                      ETK_CALLBACK (_exo_etk_info_delete_cb), NULL);
+                      ETK_CALLBACK (_exo_etk_document_info_delete_cb), NULL);
 
   etk_dialog_button_add (ETK_DIALOG (dialog_info),
                          etk_stock_label_get (ETK_STOCK_DIALOG_OK), ETK_RESPONSE_OK);
   etk_signal_connect ("response", ETK_OBJECT (dialog_info),
-                      ETK_CALLBACK (_exo_etk_info_response_cb), NULL);
+                      ETK_CALLBACK (_exo_etk_document_info_response_cb), NULL);
 
   table = etk_table_new (2, 2, ETK_FALSE);
   etk_dialog_pack_in_main_area (ETK_DIALOG (dialog_info), table, ETK_TRUE, ETK_TRUE, 0, ETK_FALSE);
@@ -714,7 +741,7 @@ _exo_etk_info_cb (Etk_Object *object __UNUSED__, void *user_data)
 }
 
 static Etk_Bool
-_exo_etk_info_delete_cb (Etk_Object *object, void *user_data __UNUSED__)
+_exo_etk_document_info_delete_cb (Etk_Object *object, void *user_data __UNUSED__)
 {
   etk_object_destroy (object);
 
@@ -722,7 +749,7 @@ _exo_etk_info_delete_cb (Etk_Object *object, void *user_data __UNUSED__)
 }
 
 static void
-_exo_etk_info_response_cb (Etk_Object *object, int res, void *user_data __UNUSED__)
+_exo_etk_document_info_response_cb (Etk_Object *object, int res, void *user_data __UNUSED__)
 {
   switch (res) {
   case ETK_RESPONSE_OK:
@@ -915,4 +942,168 @@ _exo_etk_size_50_cb (Etk_Object *object, void *user_data)
   if (etk_menu_item_check_active_get (ETK_MENU_ITEM_CHECK (object))) {
     etk_pdf_scale_set (pdf, 0.5, 0.5);
   }
+}
+
+static void
+_exo_etk_document_open_cb (Etk_Object *object __UNUSED__, void *user_data)
+{
+  Etk_Pdf         *pdf;
+
+  pdf =  ETK_PDF (((Exo_Etk *)user_data)->pdf);
+}
+
+static void
+_exo_etk_document_save_cb (Etk_Object *object __UNUSED__, void *user_data)
+{
+  char         buf[128];
+  Exo_Etk     *data;
+  Etk_Pdf     *pdf;
+  Etk_Widget  *dialog_save;
+  Etk_Widget  *table;
+  Etk_Widget  *label;
+  char        *tmp;
+  char        *filename;
+  char        *psfilename;
+  int          l;
+  int          page_count;
+  Exo_Ps_Data *ps_data;
+
+  data = (Exo_Etk *)user_data;
+  pdf =  ETK_PDF (data->pdf);
+  filename = epdf_document_filename_get (pdf->pdf_document);
+  l = strlen (filename);
+  tmp = strstr (filename, ".pdf");
+  if (!tmp) {
+    psfilename = (char *)malloc (sizeof (char) * (l + 4));
+    memcpy (psfilename, filename, l);
+    psfilename[l + 0] = '.';
+    psfilename[l + 1] = 'p';
+    psfilename[l + 2] = 's';
+    psfilename[l + 3] = '\0';
+  }
+  else {
+    psfilename = (char *)malloc (sizeof (char) * l);
+    memcpy (psfilename, filename, l);
+    psfilename[l - 2] = 's';
+    psfilename[l - 1] = '\0';
+  }
+  page_count = epdf_document_page_count_get (pdf->pdf_document);
+
+  ps_data = (Exo_Ps_Data *)malloc (sizeof (Exo_Ps_Data));
+  ps_data->pdf_doc = pdf->pdf_document;
+
+  dialog_save = etk_dialog_new ();
+  etk_window_title_set (ETK_WINDOW (dialog_save), "Exorcist - Save");
+  etk_window_wmclass_set (ETK_WINDOW (dialog_save), "Exorcist - Save", "Exorcist - Save");
+  etk_signal_connect ("delete_event", ETK_OBJECT (dialog_save),
+                      ETK_CALLBACK (_exo_etk_document_save_delete_cb), NULL);
+
+  etk_dialog_button_add (ETK_DIALOG (dialog_save),
+                         etk_stock_label_get (ETK_STOCK_DIALOG_OK), ETK_RESPONSE_OK);
+
+  etk_dialog_button_add (ETK_DIALOG (dialog_save),
+                         etk_stock_label_get (ETK_STOCK_DIALOG_CANCEL), ETK_RESPONSE_CANCEL);
+  etk_signal_connect ("response", ETK_OBJECT (dialog_save),
+                      ETK_CALLBACK (_exo_etk_document_save_response_cb), ps_data);
+
+  table = etk_table_new (2, 6, ETK_FALSE);
+  etk_dialog_pack_in_main_area (ETK_DIALOG (dialog_save), table, ETK_TRUE, ETK_TRUE, 0, ETK_FALSE);
+  etk_widget_show (table);
+
+  label = etk_label_new ("File name");
+  etk_table_attach_defaults (ETK_TABLE (table), label, 0, 0, 0, 0);
+  etk_widget_show (label);
+
+  ps_data->filename = etk_entry_new ();
+  etk_entry_text_set (ETK_ENTRY (ps_data->filename), psfilename);
+  etk_table_attach_defaults (ETK_TABLE (table), ps_data->filename, 1, 1, 0, 0);
+  etk_widget_show (ps_data->filename);
+
+  label = etk_label_new ("First page");
+  etk_table_attach_defaults (ETK_TABLE (table), label, 0, 0, 1, 1);
+  etk_widget_show (label);
+
+  ps_data->first_page = etk_entry_new ();
+  etk_entry_text_set (ETK_ENTRY (ps_data->first_page), "1");
+  etk_table_attach_defaults (ETK_TABLE (table), ps_data->first_page, 1, 1, 1, 1);
+  etk_widget_show (ps_data->first_page);
+
+  label = etk_label_new ("Last page");
+  etk_table_attach_defaults (ETK_TABLE (table), label, 0, 0, 2, 2);
+  etk_widget_show (label);
+
+  snprintf (buf, 128, "%d", page_count);
+  ps_data->last_page = etk_entry_new ();
+  etk_entry_text_set (ETK_ENTRY (ps_data->last_page), buf);
+  etk_table_attach_defaults (ETK_TABLE (table), ps_data->last_page, 1, 1, 2, 2);
+  etk_widget_show (ps_data->last_page);
+
+  label = etk_label_new ("Width");
+  etk_table_attach_defaults (ETK_TABLE (table), label, 0, 0, 3, 3);
+  etk_widget_show (label);
+
+  ps_data->width = etk_entry_new ();
+  etk_entry_text_set (ETK_ENTRY (ps_data->width), "-1");
+  etk_table_attach_defaults (ETK_TABLE (table), ps_data->width, 1, 1, 3, 3);
+  etk_widget_show (ps_data->width);
+
+  label = etk_label_new ("Height");
+  etk_table_attach_defaults (ETK_TABLE (table), label, 0, 0, 4, 4);
+  etk_widget_show (label);
+
+  ps_data->height = etk_entry_new ();
+  etk_entry_text_set (ETK_ENTRY (ps_data->height), "-1");
+  etk_table_attach_defaults (ETK_TABLE (table), ps_data->height, 1, 1, 4, 4);
+  etk_widget_show (ps_data->height);
+
+  ps_data->duplex = etk_check_button_new_with_label ("Duplex");
+  etk_toggle_button_active_set (ETK_TOGGLE_BUTTON (ps_data->duplex), ETK_TRUE);
+  etk_table_attach_defaults (ETK_TABLE (table), ps_data->duplex, 0, 1, 5, 5);
+  etk_widget_show (ps_data->duplex);
+
+  etk_widget_show (dialog_save);
+
+  free (psfilename);
+}
+
+static Etk_Bool
+_exo_etk_document_save_delete_cb (Etk_Object *object, void *user_data __UNUSED__)
+{
+  etk_object_destroy (object);
+
+  return ETK_TRUE;
+}
+
+static void
+_exo_etk_document_save_response_cb (Etk_Object *object, int res, void *user_data)
+{
+switch (res) {
+  case ETK_RESPONSE_OK: {
+    Epdf_Postscript *eps;
+    Exo_Ps_Data     *ps_data = (Exo_Ps_Data *)user_data;
+    const char      *filename;
+    int              page_first;
+    int              page_last;
+    int              width;
+    int              height;
+    int              duplex;
+
+    filename = etk_entry_text_get (ETK_ENTRY (ps_data->filename));
+    page_first = atoi (etk_entry_text_get (ETK_ENTRY (ps_data->first_page)));
+    page_last = atoi (etk_entry_text_get (ETK_ENTRY (ps_data->last_page)));
+    width = atoi (etk_entry_text_get (ETK_ENTRY (ps_data->width)));
+    height = atoi (etk_entry_text_get (ETK_ENTRY (ps_data->height)));
+    duplex = etk_toggle_button_active_get (ETK_TOGGLE_BUTTON (ps_data->duplex));
+    eps = epdf_postscript_new (ps_data->pdf_doc, filename, page_first, page_last);
+    epdf_postscript_size_set (eps, width, height);
+    epdf_postscript_duplex_set (eps, duplex);
+    if (!eps) break;
+    epdf_postscript_print (eps);
+    epdf_postscript_delete (eps);
+    break;
+  }
+  case ETK_RESPONSE_CANCEL:
+    break;
+  }
+  etk_object_destroy (object);
 }
