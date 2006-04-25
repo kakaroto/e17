@@ -2,7 +2,8 @@
 
 static void _devian_container_del(DEVIANN *devian);
 
-/* Public functions */
+
+/* PUBLIC FUNCTIONS */
 
 /*
   Change the current container of a devian
@@ -14,11 +15,11 @@ int DEVIANF(container_change) (DEVIANN *devian, int container)
 {
    int edje_part;
 
-   /* CHECK: if no source, no way */
+   /* check: if no source, no way */
    if (!devian->source)
       return 0;
 
-   /* CHECK: if already one container, remove it */
+   /* check: if already one container, remove it */
    if (devian->container)
      {
         edje_part = DEVIANF(container_edje_part_get) (devian);
@@ -27,7 +28,7 @@ int DEVIANF(container_change) (DEVIANN *devian, int container)
    else
       edje_part = -1;
 
-   /* Add the new container to the devian */
+   /* add the new container to the devian */
    switch (container)
      {
      case CONTAINER_BOX:
@@ -44,7 +45,7 @@ int DEVIANF(container_change) (DEVIANN *devian, int container)
 
      case CONTAINER_NO:
         {
-           /* I want no container attached, thank you */
+           /* i want no container attached, thank you */
            return 0;
         }
 
@@ -195,7 +196,7 @@ const char *DEVIANF(container_edje_load) (Evas_Object *edje_obj, char *part, DEV
    if (!(theme = DEVIANF(devian_edje_load) (edje_obj, part, devian->conf->source_type)))
       return NULL;
 
-   /* 'Precalculate' (get) borders */
+   /* 'precalculate' (get) borders */
    evas_object_resize(edje_obj, 400, 400);
    edje_object_part_geometry_get(edje_obj, "source0", NULL, NULL, &source_w, &source_h);
    border_w = (400 - source_w);
@@ -326,7 +327,8 @@ void DEVIANF(container_idle_alpha_set) (void *container, int alpha)
    return;
 }
 
-/* Static functions */
+
+/* STATIC FUNCTIONS */
 
 static void
 _devian_container_del(DEVIANN *devian)
@@ -345,7 +347,7 @@ _devian_container_del(DEVIANN *devian)
         break;
      }
 
-   /* Actions */
+   /* actions */
    devian->container_func.resize_auto = DEVIANF(container_idle_resize_auto);
    devian->container_func.update_actions = DEVIANF(container_idle_update_actions);
    devian->container_func.is_in_transition = DEVIANF(container_idle_is_in_transition);

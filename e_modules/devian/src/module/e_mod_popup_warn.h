@@ -36,9 +36,10 @@ struct _Popup_Warn
    void *data;
 };
 
-int DEVIANF(popup_warn_add) (Popup_Warn **popup_warn, int type, const char *text, void *data);
+int  DEVIANF(popup_warn_init) (void);
+void DEVIANF(popup_warn_shutdown) (void);
+int  DEVIANF(popup_warn_add) (Popup_Warn **popup_warn, int type, const char *text, void *data);
 void DEVIANF(popup_warn_del) (Popup_Warn *popw);
-void DEVIANF(popup_warn_del_all) (void);
 void DEVIANF(popup_warn_devian_desactivate) (void);
 void DEVIANF(popup_warn_theme_change) (void);
 

@@ -5,6 +5,7 @@ typedef struct _Picture_List_Net Picture_List_Net;
 typedef struct _Picture_Cache Picture_Cache;
 typedef struct _Picture Picture;
 typedef struct _Picture_Infos Picture_Infos;
+typedef struct _Picture_Event_List_Fill Picture_Event_List_Fill;
 
 #else
 
@@ -26,6 +27,22 @@ struct _Picture_List_Local
 {
    Evas_List *pictures;
    int nb_pictures_waiting;
+
+   /* ecore idler to load in background */
+   struct
+   {
+      Ecore_Idler *idler;
+      Evas_List *path;
+      char *dir;
+      Ecore_List *file;
+   } loader;
+
+   /* to warn dEvians wich are waiting for pictures */
+   struct
+   {
+      int id;
+      int nb_clients;
+   } loader_ev;
 };
 
 struct _Picture_List_Net
@@ -35,7 +52,7 @@ struct _Picture_List_Net
 };
 
 /**
- * Cache of pictures in RAM
+ * Cache of pictures in memory
  * 
  * Pictures that can be attached to a source are here
  * - pictures: List of pictures in cache
@@ -77,19 +94,26 @@ struct _Picture_Infos
    char *comments;
 };
 
-int DEVIANF(data_picture_list_local_init) (void);
-void DEVIANF(data_picture_list_local_shutdown) (void);
-void DEVIANF(data_picture_list_local_regen) (void);
+struct _Picture_Event_List_Fill
+{
+   int new;
+   int type;
+};
 
-int DEVIANF(data_picture_list_net_init) (void);
-void DEVIANF(data_picture_list_net_shutdown) (void);
 
-int DEVIANF(data_picture_cache_init) (void);
-void DEVIANF(data_picture_cache_shutdown) (void);
+int      DEVIANF(data_picture_list_local_init) (void);
+void     DEVIANF(data_picture_list_local_shutdown) (void);
+void     DEVIANF(data_picture_list_local_regen) (void);
+
+int      DEVIANF(data_picture_list_net_init) (void);
+void     DEVIANF(data_picture_list_net_shutdown) (void);
+
+int      DEVIANF(data_picture_cache_init) (void);
+void     DEVIANF(data_picture_cache_shutdown) (void);
 Picture *DEVIANF(data_picture_cache_attach) (Source_Picture *source, int edje_part, int histo_nb);
-void DEVIANF(data_picture_cache_detach) (Source_Picture *source, int part);
+void     DEVIANF(data_picture_cache_detach) (Source_Picture *source, int part);
 
-char *DEVIANF(data_picture_get_name_from_path) (char *path, int len);
+char    *DEVIANF(data_picture_get_name_from_path) (char *path, int len);
 
 #endif
 #endif

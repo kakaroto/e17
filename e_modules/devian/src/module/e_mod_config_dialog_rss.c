@@ -12,14 +12,15 @@ static int _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfda
 
 struct _E_Config_Dialog_Data
 {
-   /* Basic */
+   /* basic */
    char *url;
-   /* Advanced */
+   /* advanced */
    char *name;
    char *description;
    int w_name;
    int w_description;
 };
+
 
 /* PUBLIC FUNCTIONS */
 
@@ -28,7 +29,7 @@ E_Config_Dialog *DEVIANF(config_dialog_rss) (Rss_Doc *doc, DEVIANN *devian)
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
 
-   /* If was alreay open, return */
+   /* if was alreay open, return */
    if (devian->dialog_conf_rss)
       if (!e_object_is_del(E_OBJECT(devian->dialog_conf_rss)))
          if (e_object_ref_get(E_OBJECT(devian->dialog_conf_rss)) > 0)
@@ -59,6 +60,7 @@ void DEVIANF(config_dialog_rss_shutdown) (DEVIANN *devian)
         devian->dialog_conf_rss = NULL;
      }
 }
+
 
 /* PRIVATE FUNCTIONS */
 
@@ -102,7 +104,7 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    Rss_Doc *doc;
 
    doc = cfd->data;
-   /* If still new, free doc */
+   /* if still new, free doc */
    if (doc->state == DATA_RSS_DOC_STATE_NEW)
       DEVIANF(data_rss_doc_free) (doc, 0, 1);
 
@@ -162,7 +164,7 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    doc->w_name = cfdata->w_name;
    doc->w_description = cfdata->w_description;
 
-   /* Do update ? */
+   /* do update ? */
    if (change)
      {
         if (doc->state == DATA_RSS_DOC_STATE_NEW)
@@ -254,7 +256,7 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    doc->w_name = cfdata->w_name;
    doc->w_description = cfdata->w_description;
 
-   /* Do update ? */
+   /* do update ? */
    if (change)
      {
         if (doc->state == DATA_RSS_DOC_STATE_NEW)

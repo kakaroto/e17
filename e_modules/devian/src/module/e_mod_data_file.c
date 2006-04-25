@@ -20,8 +20,12 @@ int DEVIANF(data_file_add) (Source_File *source)
 
    source->blocks = ecore_list_new();
    ecore_list_set_free_cb(source->blocks, _cb_destroy_block);
+   source->lines_tot = 0;
+   source->new_blocks = 0;
+   source->hiligh_blocks = 0;
+   source->hiligh_blocks_cur = NULL;
 
-   /* Open the file */
+   /* open the file */
    if (!(source->fd = fopen((char *)source->devian->conf->file_path, "r")))
      {
         char buf[4096];
@@ -32,19 +36,19 @@ int DEVIANF(data_file_add) (Source_File *source)
         e_module_dialog_show(_(MODULE_NAME " Module Error"), buf);
      }
 
-   /* Create the textblock */
+   /* create the textblock */
    if (!(source->obj_tb = _create_tb(source->fd)))
       return 0;
 
-   /* Put the textblock in a the source's scrollframe */
+   /* put the textblock in a the source's scrollframe */
    e_scrollframe_child_set(source->obj, source->obj_tb);
    evas_object_show(source->obj_tb);
 
-   /* First read of the file */
+   /* first read of the file */
    if (!_get_file_first(source))
       return 0;
 
-   /* Put the text in the textblock */
+   /* put the text in the textblock */
    if (!_set_text_tb(source))
       return 0;
 
@@ -67,19 +71,19 @@ int DEVIANF(data_file_update) (Source_File *source, int option)
    switch (option)
      {
      case -1:
-        /* Normal update */
+        /* normal update */
 
-        /* Update the source->blocks */
+        /* update the source->blocks */
         if (!_get_file_update(source))
            return 0;
-        /* Set the text in textblock with the content of source->blocks */
+        /* set the text in textblock with the content of source->blocks */
         if (!_set_text_tb(source))
            return 0;
 
         break;
 
      case 0:
-        /* Full update */
+        /* full update */
 
         DEVIANF(source_file_update_change) (source->devian, 0, 0);
         DEVIANF(data_file_del) (source);
@@ -91,9 +95,13 @@ int DEVIANF(data_file_update) (Source_File *source, int option)
         break;
 
      case 1:
-        /* Remove hilighted text */
-
-        //... TODO
+        /* remove hilighted text */
+	if (source->hiligh_blocks)
+	   {
+	      evas_textblock_cursor_node_delete(source->hiligh_blocks_cur);
+	      evas_textblock_cursor_free(source->hiligh_blocks_cur);
+	      source->hiligh_blocks = 0;
+	   }
 
         break;
      }
@@ -116,7 +124,6 @@ _create_tb(FILE *fd)
 
    tb = evas_object_textblock_add(DEVIANM->container->bg_evas);
    tb_style = evas_textblock_style_new();
-   //evas_textblock_style_set(tb_style, "DEFAULT='font=Vera font_size=10 align=left color=#000001ff wrap=line'" "br='\n'");
    evas_textblock_style_set(tb_style, style);
    evas_object_textblock_style_set(tb, tb_style);
    evas_textblock_style_free(tb_style);
@@ -146,7 +153,7 @@ _get_lines(char **buffer, int *size)
    p1 = *buffer;
    size_left = *size;
 
-   /* Quick replace for unused chars ...CHANGE, use them ! */
+   /* quick replace for unused chars ...CHANGE, use them ! */
    while (p1 < (*buffer + *size))
      {
         if (*p1 == 0xd)
@@ -161,30 +168,18 @@ _get_lines(char **buffer, int *size)
    while ( (size_left > 0) &&
 	   (p2 = memchr(p1, '\n', size_left)) )
      {
-        /* Add the position to the list */
+        /* add the position to the list */
         pos = E_NEW(int, 1);
         *pos = p2 - *buffer;
         ecore_list_append(lines, pos);
 	DDATAFILE(("pos %d sizeleft %d (new %d) size %d (p1 %5.5s p2 %5.5s)\nBUF :\n%s",
 	       *pos, size_left, *size - (*pos +1), *size, p1, p2, *buffer));
 
-        /* Replace by <br> */
-        *size = *size + 3;
-        size_left = *size - (*pos + 4);
-        *buffer = realloc(*buffer, *size);
-	p2 = *buffer + *pos;     /* buffer has been changed, recal p2 */
-	if (size_left)
-	   memmove(p2+4, p2+1, size_left);
-        *p2 = '<';
-        *(p2 + 1) = 'b';
-        *(p2 + 2) = 'r';
-        *(p2 + 3) = '>';
-
-	/* Go to next char */
-        p1 = p2 + 4;
+	/* go to next char */
+        p1 = p2 + 1;
      };
 
-   /* Put a final \0 */
+   /* put a final \0 */
    (*size)++;
    *buffer = realloc(*buffer, *size);
    (*buffer)[(*size)-1] = '\0';
@@ -209,8 +204,6 @@ _get_file_first(Source_File *source)
 
    beg = 0;
    moves_back = 0;
-   source->lines_tot = 0;
-   source->new_blocks = 0;
 
    if (!source->fd)
       return 1;
@@ -243,6 +236,8 @@ _get_file_first(Source_File *source)
           {
              block = E_NEW(Data_File_Block, 1);
              block->retlines = NULL;
+	     block->cur_beg = NULL;
+	     block->cur_end = NULL;
              block->buf = E_NEW(char, block_size);
 
              block->size = block_size;
@@ -260,15 +255,18 @@ _get_file_first(Source_File *source)
              source->new_blocks++;
 
              ecore_list_prepend(source->blocks, block);
-             /* Come back at the begining of this block */
+             /* come back at the begining of this block */
              fseek(source->fd, -(block_size * sizeof(char)), SEEK_CUR);
           }
      }
    while (block_size && (source->lines_tot < DEVIANM->conf->sources_file_nb_lines_ini));
 
-   /* Repositioning to where we start reading */
+   /* repositioning to where we start reading */
    fseek(source->fd, moves_back, SEEK_CUR);
    DDATAFILE(("read_first finished, offset %d", ftell(source->fd)));
+
+   /* cut all what was before first end of line */
+   //... TODO
 
    return 1;
 }
@@ -300,12 +298,16 @@ _get_file_update(Source_File *source)
 	      DDATAFILE(("ERROR WHEN READING"));
 	   }
         DDATAFILE(("read_update (offset %d blocksize %d):\n%s", ftell(source->fd), block_size, buffer));
+
+	/* add text at the end */
         if (block_size)
           {
              Data_File_Block *block;
 
              block = E_NEW(Data_File_Block, 1);
              block->retlines = NULL;
+	     block->cur_beg = NULL;
+	     block->cur_end = NULL;
              block->buf = E_NEW(char, block_size);
 
              memcpy(block->buf, buffer, block_size);
@@ -317,8 +319,43 @@ _get_file_update(Source_File *source)
 
              ecore_list_append(source->blocks, block);
           }
+
+	/* delete text at the begining */
+	DDATAFILE(("LINES_TOT: %d (max %d)",
+		   source->lines_tot, DEVIANM->conf->sources_file_nb_lines_max));
+	while (source->lines_tot > DEVIANM->conf->sources_file_nb_lines_max)
+	   {
+	      Data_File_Block *b;
+	      int b_lines;
+
+	      ecore_list_goto_first(source->blocks);
+	      b = ecore_list_current(source->blocks);
+	      b_lines = ecore_list_nodes(b->retlines);
+	      DDATAFILE(("TOO MUCH LINES (%d, first block %d)",
+			 source->lines_tot, b_lines));
+	      if ( source->lines_tot >
+		   (DEVIANM->conf->sources_file_nb_lines_max - b_lines) )
+		 {
+		    if (b->cur_beg && b->cur_end)
+		       {
+			  DDATAFILE(( "REMOVE text (%d lines, %d %d)", b_lines,
+				      evas_textblock_cursor_pos_get(b->cur_beg),
+				      evas_textblock_cursor_pos_get(b->cur_end) ));
+			  fflush(stderr);
+			  DDATAFILE(( "Range : %s",
+				      evas_textblock_cursor_range_text_get(b->cur_beg, b->cur_end, EVAS_TEXTBLOCK_TEXT_PLAIN) ));
+			  evas_textblock_cursor_range_delete(b->cur_beg, b->cur_end);
+			  source->lines_tot -= b_lines;
+			  ecore_list_remove_destroy(source->blocks);
+		       }
+		    else
+		       break;
+		 }
+	      else
+		 break;
+	   }
      }
-   while (block_size);
+   while ( block_size );
 
    return 1;
 }
@@ -327,13 +364,28 @@ static int
 _set_text_tb(Source_File *source)
 {
    Data_File_Block *block;
-   const Evas_Textblock_Cursor *cur;
-   const char *buf;
-   char buf2[8192];
+   Evas_Textblock_Cursor *cur;
+   char *str, *end;
    int w, h;
 
    if (!source->new_blocks)
       return 1;
+
+   /* hiligh */
+   if (source->devian->conf->file_news_hiligh &&
+       !source->hiligh_blocks)
+      {
+	 cur = evas_object_textblock_cursor_new(source->obj_tb);
+	 evas_textblock_cursor_node_last(cur);
+	 evas_textblock_cursor_char_last(cur);
+	 evas_textblock_cursor_format_append(cur, "color=#ff0000");
+	 source->hiligh_blocks_cur = cur;
+      }
+   /* popup */
+   if (source->devian->conf->file_news_popup)
+      {
+	 //... TODO
+      }
 
    ecore_list_goto_index(source->blocks, ecore_list_nodes(source->blocks) - source->new_blocks);
 
@@ -341,16 +393,50 @@ _set_text_tb(Source_File *source)
      {
         block = ecore_list_next(source->blocks);
 
-        //cur = evas_object_textblock_cursor_get(source->obj_tb);
-        //evas_textblock_cursor_node_last((Evas_Textblock_Cursor *) cur);
-        //evas_textblock_cursor_text_append((Evas_Textblock_Cursor *)cur, block->buf);
-        buf = evas_object_textblock_text_markup_get(source->obj_tb);
-	if (!buf)
-	   strncpy(buf2, block->buf, sizeof(buf2));
-	else
-	   snprintf(buf2, sizeof(buf2), "%s%s", buf, block->buf);
-        evas_object_textblock_text_markup_set(source->obj_tb, buf2);
+	/* get a cursor at the end of tb (begining of this block) */
+	if (!block->cur_beg)
+	   {
+	      block->cur_beg = evas_object_textblock_cursor_new(source->obj_tb);
+	      evas_textblock_cursor_node_last(block->cur_beg);
+	      DDATAFILE(("NODE BEG %d", evas_textblock_cursor_pos_get(block->cur_beg)));
+	   }
 
+	/* append the text */
+        cur = evas_object_textblock_cursor_new(source->obj_tb);
+        evas_textblock_cursor_node_last(cur);
+	ecore_list_goto_first(block->retlines);
+	str = block->buf;
+	end = str + block->size;
+	while (str < end)
+	   {
+	      int *pos;
+	      
+	      pos = ecore_list_next(block->retlines);
+	      if (pos)
+		 {
+		    block->buf[*pos] = '\0';
+		    evas_textblock_cursor_text_append(cur, str);
+		    block->buf[*pos] = '\n';
+		    evas_textblock_cursor_format_append(cur, "\n");
+		    str = block->buf + *pos + 1;
+		 }
+	      else
+		 {
+		    evas_textblock_cursor_text_append(cur, str);
+		    break;
+		 }
+	   }
+	evas_textblock_cursor_free(cur);
+
+	/* get a cursor at the end of tb (end of this block too) */	
+	if (!block->cur_end)
+	   {
+	      block->cur_end = evas_object_textblock_cursor_new(source->obj_tb);
+	      evas_textblock_cursor_node_last(block->cur_end);
+	      DDATAFILE(("NODE END %d", evas_textblock_cursor_pos_get(block->cur_end)));
+	   }
+
+	/* size of tb */
         evas_object_textblock_size_formatted_get(source->obj_tb, &w, &h);
         evas_object_resize(source->obj_tb, w, h);
         if (source->devian->conf->file_auto_scroll)
@@ -358,6 +444,8 @@ _set_text_tb(Source_File *source)
 
         DDATAFILE(("add_tb (w:%d h:%d):\n%s", w, h, block->buf));
         source->new_blocks--;
+	if (source->devian->conf->file_news_hiligh)
+	   source->hiligh_blocks++;
      }
    while (source->new_blocks);
 
@@ -376,6 +464,10 @@ _cb_destroy_block(void *data)
    if (block->retlines)
       if (!ecore_list_is_empty(block->retlines))
 	 ecore_list_destroy(block->retlines);
+   if (block->cur_beg)
+      evas_textblock_cursor_free(block->cur_beg);
+   if (block->cur_end)
+      evas_textblock_cursor_free(block->cur_end);
    E_FREE(block);
 }
 

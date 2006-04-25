@@ -4,6 +4,7 @@
 
 static int _cb_timer_rss_update(void *data);
 
+
 /* PUBLIC FUNCTIONS */
 
 int DEVIANF(source_rss_add) (DEVIANN *devian)
@@ -17,39 +18,37 @@ int DEVIANF(source_rss_add) (DEVIANN *devian)
    source->rss_feed = NULL;
    source->active_article = NULL;
 
-   /* Objects */
+   /* objects */
    source->obj0 = e_table_add(DEVIANM->container->bg_evas);
    e_table_homogenous_set(source->obj0, 1);
    source->obj1 = e_table_add(DEVIANM->container->bg_evas);
    e_table_homogenous_set(source->obj1, 1);
 
-   /* Set new name for devian */
+   /* set new name for devian */
    DEVIANF(devian_set_id) (devian, SOURCE_RSS, NULL);
 
-   /* Create Rss Feed */
+   /* create rss feed */
    if (!DEVIANF(data_rss_new) (source))
       return 0;
 
-   /* Provide declarations */
+   /* provide declarations */
    devian->source_info.provide_double_buf = 1;
    devian->source_info.provide_previous = 0;
    devian->source_info.provide_set_bg = 0;
    devian->source_info.allow_info_panel = 1;
 
-   /* Actions */
+   /* actions */
    devian->source_func.timer_change = DEVIANF(source_rss_timer_change);
    devian->source_func.refresh = DEVIANF(source_rss_change);
    devian->source_func.set_bg = DEVIANF(source_idle_set_bg);
    devian->source_func.viewer = DEVIANF(source_rss_viewer);
    devian->source_func.gui_update = DEVIANF(data_rss_gui_update);
 
-   devian->container_func.update_actions(devian);
-
    devian->conf->source_type = SOURCE_RSS;
    devian->size_policy = SIZE_POLICY_USER;
    devian->source = source;
 
-   /* Timer to update rss feed */
+   /* timer to update rss feed */
    if (devian->conf->rss_timer_active)
       DEVIANF(source_rss_timer_change) (devian, 1, 0);
    else
@@ -214,12 +213,6 @@ void DEVIANF(source_rss_dialog_infos) (Source_Rss *source)
    e_dialog_button_add(dia, _("Ok"), NULL, NULL, NULL);
    e_win_centered_set(dia->win, 1);
    e_dialog_show(dia);
-
-   /* ... FOR TESTING */
-#if 0
-   if (DEVIANM->conf->sources_rss_popup_news && source->devian->conf->rss_popup_news)
-      DEVIANF(popup_warn_add) (&source->devian->popup_warn, POPUP_WARN_TYPE_DEVIAN, "News", source->devian);
-#endif
 }
 
 char *DEVIANF(source_rss_name_get) (Source_Rss *source)
@@ -240,7 +233,7 @@ char *DEVIANF(source_rss_infos_get) (Source_Rss *source)
 
         article = source->active_article;
 
-        /* Description and date about the selected article */
+        /* description and date about the selected article */
         snprintf(buf, sizeof(buf), "<underline=on underline_color=#000>%s<br>%s</><br><br>%s<br><br><u\
 nderline=on underline_color=#000>Link: %s</>", article->date, article->title, article->description, article->url);
      }
@@ -251,7 +244,7 @@ nderline=on underline_color=#000>Link: %s</>", article->date, article->title, ar
         doc = source->devian->conf->rss_doc;
         if (doc)
           {
-             /* Informations about current rss document */
+             /* informations about current rss document */
              snprintf(buf, sizeof(buf),
                       "<underline=on underline_color=#000>%s</><br><br>"
                       "<underline=on underline_color=#000>Rss url :</> %s<br>"
@@ -301,6 +294,7 @@ void DEVIANF(source_rss_timer_change) (DEVIANN *devian, int active, int time)
       ecore_timer_del(source->timer);
    source->timer = ecore_timer_add(time, _cb_timer_rss_update, source);
 }
+
 
 /* PRIVATE FUNCTIONS */
 

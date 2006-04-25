@@ -8,7 +8,7 @@ typedef struct _Container_Box_Anim Container_Box_Anim;
 #ifndef E_MOD_CONTAINER_BOX_H_INCLUDED
 #define E_MOD_CONTAINER_BOX_H_INCLUDED
 
-/* Default things */
+/* default things */
 #define CONTAINER_BOX_EDJE_PART_DEFAULT 0
 
 #define CONTAINER_BOX_AUTO_RESIZE_DEFAULT 1
@@ -78,15 +78,15 @@ struct _Container_Box
    Ecore_Animator *animator;
    Container_Box_Anim *anim;
 
-   /* Box status */
+   /* box status */
    int in_transition;
    int in_resize;
    int infos_visible;
 
-   /* Theme */
+   /* theme */
    int theme_border_w, theme_border_h;
 
-   /* Box geometry */
+   /* box geometry */
    int max_size;
    int x, y;
    int w, h;
@@ -95,32 +95,32 @@ struct _Container_Box
    int alpha;
 };
 
-int DEVIANF(container_box_add) (DEVIANN *devian, int edje_part);
+int  DEVIANF(container_box_add) (DEVIANN *devian, int edje_part);
 void DEVIANF(container_box_del) (Container_Box *container);
 void DEVIANF(container_box_update_actions) (DEVIANN *devian);
 void DEVIANF(container_box_resize_auto) (DEVIANN *devian);
 void DEVIANF(container_box_alpha_set) (void *container, int alpha);
-int DEVIANF(container_box_is_in_transition) (DEVIANN *devian);
+int  DEVIANF(container_box_is_in_transition) (DEVIANN *devian);
 
-int DEVIANF(container_box_edje_part_get) (Container_Box *container);
-int DEVIANF(container_box_edje_part_change) (Container_Box *container);
+int  DEVIANF(container_box_edje_part_get) (Container_Box *container);
+int  DEVIANF(container_box_edje_part_change) (Container_Box *container);
 
-int DEVIANF(container_box_infos_init) (Container_Box *box);
-int DEVIANF(container_box_infos_shutdown) (Container_Box *box);
-int DEVIANF(container_box_infos_text_change) (Container_Box *box, char *text);
+int  DEVIANF(container_box_infos_init) (Container_Box *box);
+int  DEVIANF(container_box_infos_shutdown) (Container_Box *box);
+int  DEVIANF(container_box_infos_text_change) (Container_Box *box, char *text);
 void DEVIANF(container_box_infos_text_scroll) (Container_Box *box);
 void DEVIANF(container_box_infos_text_change_set) (Container_Box *box, int action);
-int DEVIANF(container_box_infos_edje_part_is_visible) (Container_Box *box);
+int  DEVIANF(container_box_infos_edje_part_is_visible) (Container_Box *box);
 void DEVIANF(container_box_infos_pos_set) (Container_Box *box);
 
 void DEVIANF(container_box_loading_state_change) (Container_Box *box, int state);
 void DEVIANF(container_box_warning_indicator_change) (Container_Box *box, int state);
 
-int DEVIANF(container_box_devian_dying) (Container_Box *box);
-int DEVIANF(container_box_update_id_devian) (Container_Box *box);
+int  DEVIANF(container_box_devian_dying) (Container_Box *box);
+int  DEVIANF(container_box_update_id_devian) (Container_Box *box);
 void DEVIANF(container_box_comments_display_set) (Container_Box *box);
 
-int DEVIANF(container_box_animation_start) (Container_Box *box, int anim_num);
+int  DEVIANF(container_box_animation_start) (Container_Box *box, int anim_num);
 void DEVIANF(container_box_random_pos_get) (Container_Box *box, int *x, int *y, int max_size);
 
 void DEVIANF(container_box_gadman_policy_update) (Container_Box *box);

@@ -104,7 +104,7 @@ int DEVIANF(data_rss_parse_feed) (Rss_Feed *feed, Ecore_List *old_list, Ecore_Li
           }
      }
 
-   /* Parse infos if its allowed */
+   /* parse infos if its allowed */
    if (feed->source->devian->conf->rss_doc->w_name || feed->source->devian->conf->rss_doc->w_description)
      {
         if (!DEVIANF(data_rss_parse_doc_infos) (feed, buf))
@@ -119,7 +119,7 @@ int DEVIANF(data_rss_parse_feed) (Rss_Feed *feed, Ecore_List *old_list, Ecore_Li
 
    DDATARSSP(("Going to parse items"));
 
-   /* Parse */
+   /* parse */
    i = 0;
    while ((buf = DEVIANF(data_rss_parse_article) (feed, buf, list)))
      {
@@ -135,7 +135,7 @@ int DEVIANF(data_rss_parse_feed) (Rss_Feed *feed, Ecore_List *old_list, Ecore_Li
    feed->buffer = NULL;
    feed->buffer_size = 0;
 
-   /* Something has changed ? */
+   /* something has changed ? */
    if (old_list)
      {
         Rss_Article *old, *new;
@@ -149,11 +149,11 @@ int DEVIANF(data_rss_parse_feed) (Rss_Feed *feed, Ecore_List *old_list, Ecore_Li
                   new = ecore_list_goto_last(list);
                   old = ecore_list_goto_last(old_list);
                   if (!strcmp(old->title, new->title))
-                     return -1; //No
+                     return -1;         /* no */
                }
           }
      }
-   return 1;                    /* Yes */
+   return 1;                    /* yes */
 }
 
 /**
@@ -177,7 +177,7 @@ char *DEVIANF(data_rss_parse_article) (Rss_Feed *feed, char *buf, Ecore_List *li
 
    ver = feed->source->devian->conf->rss_doc->version;
 
-   /* Go to first meta */
+   /* go to first meta */
    while (*buf && (*buf != '<'))
       buf++;
 
@@ -200,7 +200,7 @@ char *DEVIANF(data_rss_parse_article) (Rss_Feed *feed, char *buf, Ecore_List *li
    do
      {
         tmp = NULL;
-        /* Compare for * rss versions */
+        /* compare for * rss versions */
         if (!strncmp(buf, "<title", 6))
           {
              DDATARSSP(("detected title"));
@@ -231,7 +231,7 @@ char *DEVIANF(data_rss_parse_article) (Rss_Feed *feed, char *buf, Ecore_List *li
                     }
                   else
                     {
-                       /* Compare for specific rss versions */
+                       /* compare for specific rss versions */
                        switch ((int)ver)
                          {
                          case 1:
@@ -239,7 +239,7 @@ char *DEVIANF(data_rss_parse_article) (Rss_Feed *feed, char *buf, Ecore_List *li
                               {
                                  char *buf_sav = buf;
 
-                                 /* Parse it one time ->date and one time ->date_simple */
+                                 /* parse it one time ->date and one time ->date_simple */
                                  DDATARSSP(("detected pubdate"));
                                  if (!(tmp = _parse_item(buf, &article->date, PARSE_ITEM_TITLE)))
 				    {
@@ -260,7 +260,7 @@ char *DEVIANF(data_rss_parse_article) (Rss_Feed *feed, char *buf, Ecore_List *li
                               {
                                  char *buf_sav = buf;
 
-                                 /* Parse it one time ->date and one time ->date_simple */
+                                 /* parse it one time ->date and one time ->date_simple */
                                  DDATARSSP(("detected pubdate"));
                                  if (!(tmp = _parse_item(buf, &article->date, PARSE_ITEM_TITLE)))
 				    {
@@ -280,8 +280,8 @@ char *DEVIANF(data_rss_parse_article) (Rss_Feed *feed, char *buf, Ecore_List *li
 
                        if (!tmp)
                          {
-                            /* We didnt found what is the meta ? The we jump over it :)
-                             * Before, test if where not going to crash after jump =) */
+                            /* we didnt found what is the meta ? the we jump over it :)
+                             * before, test if where not going to crash after jump =) */
                             DDATARSSP(("unknow meta (%8.8s), skip", buf));
                             if (!(tmp = _parse_go_end_meta(buf)))
 			       {
@@ -292,15 +292,15 @@ char *DEVIANF(data_rss_parse_article) (Rss_Feed *feed, char *buf, Ecore_List *li
                }
           }
 
-        /* We have all data ? */
+        /* we have all data ? */
         if (article->title && article->url && article->description && article->date)
            break;
-        /* Prepare next (+1 not to take the same) */
+        /* prepare next (+1 not to take the same) */
         buf = tmp + 1;
-        /* Go to begining of next meta */
+        /* go to begining of next meta */
         while (*buf && (*buf != '<'))
            buf++;
-        /* Check prematurate end of article, missing data
+        /* check prematurate end of article, missing data
          * keep it anyway */
         if (!*(buf + 1))
 	   {
@@ -400,12 +400,12 @@ int DEVIANF(data_rss_parse_doc_infos) (Rss_Feed *feed, char *buf)
                     }
                }
           }
-        /* We have all data ? */
+        /* we have all data ? */
         if (name && description && link)
            break;
-        /* Prepare next (+1 not to take the same */
+        /* prepare next (+1 not to take the same */
         buf = tmp + 1;
-        /* Go to begining of next meta */
+        /* go to begining of next meta */
         while (*buf && (*buf != '<'))
            buf++;
      }
@@ -446,7 +446,8 @@ int DEVIANF(data_rss_parse_doc_infos) (Rss_Feed *feed, char *buf)
    return 1;
 }
 
-/* PRIVATE FUNCTION */
+
+/* PRIVATE FUNCTIONS */
 
 static char *
 _parse_item(char *buf, const char **text, int type)
@@ -455,13 +456,13 @@ _parse_item(char *buf, const char **text, int type)
    char *tmp;
    int tmp_l;
 
-   /* Get content in tmp */
+   /* get content in tmp */
 
-   /* Get the begining position of the content */
+   /* get the begining position of the content */
    if (!(tmp = _parse_go_begin_meta(buf)))
       return NULL;
 
-   /* Get the end position of the content */
+   /* get the end position of the content */
    if (!(p = _parse_go_end_meta(buf)))
       return NULL;
 
@@ -469,7 +470,7 @@ _parse_item(char *buf, const char **text, int type)
    buf = tmp;
    tmp_l = p - buf;
    DDATARSSP(("Item size: %d", tmp_l));
-   if (!tmp_l)                  /* Nothing in item, skip it */
+   if (!tmp_l)                  /* nothing in item, skip it */
      {
         *text = evas_stringshare_add("No");
         return p;
@@ -480,7 +481,7 @@ _parse_item(char *buf, const char **text, int type)
    memcpy(tmp, buf, tmp_l);
    *(tmp + tmp_l) = '\0';
 
-   /* Clean the content of the item */
+   /* clean the content of the item */
    switch (type)
      {
      case PARSE_ITEM_DATE_10:
@@ -526,7 +527,7 @@ static char *
 _parse_item_clean(char *buf, int size, int type)
 {
    char *p;
-   int new_size;                /* Future size, to avoid realloc on each memmove */
+   int new_size;                /* future size, to avoid realloc on each memmove */
 
    if ((!*buf))
       return NULL;
@@ -535,13 +536,13 @@ _parse_item_clean(char *buf, int size, int type)
 
    while (*p)
      {
-        DDATARSSP(("%d %d -------------------------------\n%30.30s", size, new_size, p));
-        /* Skip metas inside text */
+        DDATARSSP(("%d %d ------\n%30.30s", size, new_size, p));
+        /* skip metas inside text */
         if (*p == '<')
           {
              char *p2;
 
-             /* Skip cfdata */
+             /* skip cfdata */
              if (*(p + 1) == '!')
                {
                   if (!strncmp(p, "<![CDATA[", 9))
@@ -550,16 +551,16 @@ _parse_item_clean(char *buf, int size, int type)
                        new_size -= 9;
                     }
                   else
-                     p++;       /* Next char */
+                     p++;       /* next char */
                }
              else
                {
-                  /* Skip normal meta */
+                  /* skip normal meta */
                   p2 = p;
                   do
                     {
                        p2++;
-                       /* Check &gt (>) */
+                       /* check &gt (>) */
                        if (*p2 == '&')
                          {
                             if (!strncmp(p2 + 1, "gt;", 3))
@@ -584,7 +585,7 @@ _parse_item_clean(char *buf, int size, int type)
           }
         else
           {
-             /* Skip end cfdata */
+             /* skip end cfdata */
              if (*p == ']')
                {
                   if (!strncmp(p + 1, "]>", 2))
@@ -593,7 +594,7 @@ _parse_item_clean(char *buf, int size, int type)
                        new_size -= 3;
                     }
                   else
-                     p++;       /* Next char */
+                     p++;       /* next char */
                }
              else
                {
@@ -679,7 +680,7 @@ _parse_item_clean(char *buf, int size, int type)
                                         }
                                       else
                                         {
-                                           /* Add html chars convertion, dec->hex */
+                                           /* add html chars convertion, dec->hex */
                                            if (*(p + 1) == '#')
                                              {
                                                 char b[4];
@@ -691,11 +692,11 @@ _parse_item_clean(char *buf, int size, int type)
                                                    p2++;
                                                 p2++;
                                                 if (((p2 - p) == 3) || (p2 - p) > 6)
-                                                   p = p2;      /* Next char */
+                                                   p = p2;      /* next char */
                                                 else
                                                   {
                                                      if (!sscanf(p + 2, "%d", &i))
-                                                        p = p2 + 1;     /* Next char */
+                                                        p = p2 + 1;     /* next char */
                                                      else
                                                        {
                                                           snprintf(b, sizeof(b), "%c", i);
@@ -707,11 +708,11 @@ _parse_item_clean(char *buf, int size, int type)
                                                   }
                                              }
                                            else
-                                              p++;      /* Next char */
+                                              p++;      /* next char */
                                         }
                                    }
                                  else
-                                    p++;        /* Next char */
+                                    p++;        /* next char */
                               }
                          }
                     }
@@ -811,7 +812,7 @@ _parse_go_begin_meta(char *buf)
 
    p = buf;
 
-   /* Looking for autoclosing meta */
+   /* looking for autoclosing meta */
    while (*p && (*p != '>'))
       p++;
    if (!(*p))
@@ -853,12 +854,12 @@ _parse_go_end_meta(char *buf)
 
    while (*p)
      {
-        /* Look for meta */
+        /* look for meta */
         while (*p && (*p != '<'))
            p++;
         if (*(p + 1))
           {
-             /* Closing meta */
+             /* closing meta */
              if (*(p + 1) == '/')
                {
                   if (!layer)
@@ -867,7 +868,7 @@ _parse_go_end_meta(char *buf)
                }
              else
                {
-                  /* CDATA meta, direct skip
+                  /* cdata meta, direct skip
                    * because it cant include another one */
                   if (*(p + 1) == '!')
                     {
@@ -881,17 +882,17 @@ _parse_go_end_meta(char *buf)
                     }
                   else
 		     {
-			/* Looking for autoclosing meta */
+			/* looking for autoclosing meta */
 			while (*p && (*p != '>'))
 			   p++;
 			if (*(p-1) == '/')
-			   ;   /* Skip meta */
+			   ;   /* skip meta */
 			else
-			   layer++;   /* Opening meta */
+			   layer++;   /* opening meta */
 		     }
                }
           }
-        /* Next char */
+        /* next char */
         p++;
      }
    DDATARSSP(("End meta NOT found, prematurate end of doc !"));

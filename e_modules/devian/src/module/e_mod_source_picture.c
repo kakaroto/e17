@@ -7,6 +7,9 @@ static int _cb_timer_picture_change(void *data);
 static void _was_set_bg_add(Source_Picture *source, char *name);
 static void _was_set_bg_purge(Source_Picture *source, int in_use);
 
+
+/* PUBLIC FUNCTIONS */
+
 /**
  * Add a source to a devian
  * @param devian The dEvian
@@ -24,38 +27,37 @@ int DEVIANF(source_picture_add) (DEVIANN *devian)
    source->picture0 = NULL;
    source->picture1 = NULL;
 
-   /* Set new name for devian */
+   /* set new name for devian */
    DEVIANF(devian_set_id) (devian, SOURCE_PICTURE, NULL);
 
-   /* Provide declarations */
+   /* provide declarations */
    devian->source_info.provide_double_buf = 1;
    devian->source_info.provide_previous = 1;
    devian->source_info.provide_set_bg = 1;
    devian->source_info.allow_info_panel = 1;
 
-   /* Actions */
+   /* actions */
    devian->source_func.timer_change = DEVIANF(source_picture_timer_change);
    devian->source_func.refresh = DEVIANF(source_picture_change);
    devian->source_func.set_bg = DEVIANF(source_picture_set_bg);
    devian->source_func.viewer = DEVIANF(source_picture_viewer);
 
-   devian->container_func.update_actions(devian);
-
    source->was_set_bg = NULL;
    source->histo = NULL;
    source->histo_pos = 0;
+   source->load_handler = NULL;
    devian->conf->source_type = SOURCE_PICTURE;
    devian->size_policy = SIZE_POLICY_AUTO;
    devian->source = source;
    DEVIANM->source_picture_count++;
 
-   /* Timer to change picture */
+   /* timer to change picture */
    if (devian->conf->picture_timer_active)
       DEVIANF(source_picture_timer_change) (devian, 1, 0);
    else
       DEVIANF(source_picture_timer_change) (devian, 0, 0);
 
-   /* Attach picture */
+   /* attach picture */
    DEVIANF(source_picture_change) (devian, 0);
 
    DSOURCE(("Source picture creation OK"));
@@ -74,6 +76,9 @@ void DEVIANF(source_picture_del) (Source_Picture *source)
 
    if (source->histo)
       DEVIANF(source_picture_histo_clear) (source);
+   
+   if (source->load_handler)
+      ecore_event_handler_del(source->load_handler);
 
    if (source->timer)
       ecore_timer_del(source->timer);
@@ -103,7 +108,7 @@ int DEVIANF(source_picture_change) (DEVIANN *devian, int option)
    source = devian->source;
    old_part = DEVIANF(container_edje_part_get) (source->devian);
 
-   /* If no option and we are in historic, show the next picture of historic */
+   /* if no option and we are in historic, show the next picture of historic */
    if (!option && source->histo_pos)
       option = -1;
 
@@ -120,7 +125,7 @@ int DEVIANF(source_picture_change) (DEVIANN *devian, int option)
      }
    devian->container_func.resize_auto(source->devian);
 
-   /* Informations */
+   /* informations */
    DEVIANF(container_infos_text_change) (source->devian, NULL);
 
    return 1;
@@ -489,7 +494,7 @@ void DEVIANF(source_picture_histo_picture_attach) (Source_Picture *source, Pictu
    if (!evas_list_find(picture->sources_histo, source))
       picture->sources_histo = evas_list_append(picture->sources_histo, source);
 
-   /* Check max size, remove last of the list if needed */
+   /* check max size, remove last of the list if needed */
    if (evas_list_count(source->histo) > SOURCE_PICTURE_HISTO_MAX_SIZE)
      {
         Evas_List *l;
@@ -531,7 +536,7 @@ void DEVIANF(source_picture_histo_clear) (Source_Picture *source)
      }
 }
 
-/* Private functions */
+/* PRIVATE FUNCTIONS */
 
 static int
 _cb_timer_picture_change(void *data)

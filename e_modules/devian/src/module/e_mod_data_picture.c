@@ -4,17 +4,23 @@
 
 #define CACHE_SIZE() (DEVIANM->conf->data_picture_cache_size + evas_list_count(DEVIANM->devians) * DEVIANM->conf->data_picture_cache_size)
 
-static int _picture_list_local_add_dir(const char *dir, int recursive);
-static Picture *_picture_list_get_picture(Evas_List *pictures_list);
+
+static int _picture_list_local_add_dir(const char *dir);
+static Picture *_picture_list_get_picture(Source_Picture *client, int picture_type);
 
 static Picture *_picture_cache_get_picture_unused(void);
 static int _picture_cache_add_picture(Picture *picture);
 static int _picture_cache_del_picture(Picture *picture);
-static int _picture_cache_fill(void);
+static int _picture_cache_fill(int type, Source_Picture *client);
 
 static int _picture_free(Picture *picture, int force, int force_now);
 static void _picture_local_thumb_cb(Evas_Object *obj, void *data);
 static Evas_Object *_picture_thumb_get_evas(char *thumb);
+
+static int _load_cb_fill(void *data, int type, void *event);
+static int _load_local_idler(void *data);
+static void _load_local_idler_stop(void);
+
 
 /* PUBLIC FUNCTIONS */
 
@@ -34,17 +40,30 @@ int DEVIANF(data_picture_list_local_init) (void)
         list = E_NEW(Picture_List_Local, 1);
         list->pictures = NULL;
         list->nb_pictures_waiting = 0;
+	list->loader.idler = NULL;
+	list->loader.path = NULL;
+	list->loader.dir = NULL;
+	list->loader.file = NULL;
+	list->loader_ev.id = ecore_event_type_new();
+	list->loader_ev.nb_clients = 0;
         DEVIANM->picture_list_local = list;
      }
    else
       list = DEVIANM->picture_list_local;
 
-   /* Load pictures */
+   /* load pictures */
    if (DEVIANM->conf->sources_picture_show_devian_pics)
-      _picture_list_local_add_dir(e_module_dir_get(DEVIANM->module), 0);
-   _picture_list_local_add_dir(DEVIANM->conf->sources_picture_data_import_dir,
-                               DEVIANM->conf->sources_picture_data_import_recursive);
+      _picture_list_local_add_dir(e_module_dir_get(DEVIANM->module));
+   _picture_list_local_add_dir(DEVIANM->conf->sources_picture_data_import_dir);
 
+   /* loading popup message */
+   {
+      int time = 2;
+      
+      DEVIANF(popup_warn_add) (NULL, POPUP_WARN_TYPE_INFO_TIMER, "Loading pictures", &time);
+   }
+
+   /* thumbnailing message */
    if (list->nb_pictures_waiting > 2)
      {
         char buf[4096];
@@ -60,14 +79,6 @@ int DEVIANF(data_picture_list_local_init) (void)
                         "they will be thumbed"), list->nb_pictures_waiting);
              e_module_dialog_show(_(MODULE_NAME " Module Information"), buf);
              return 0;
-          }
-        else
-          {
-             char buf[100];
-             int time = 3;
-
-             snprintf(buf, sizeof(buf), "%d pictures in thumbnail", list->nb_pictures_waiting - 2);
-             DEVIANF(popup_warn_add) (NULL, POPUP_WARN_TYPE_INFO_TIMER, buf, &time);
           }
      }
 
@@ -89,6 +100,9 @@ void DEVIANF(data_picture_list_local_shutdown) (void)
 
    if (!list)
       return;
+
+   if (list->loader.idler)
+      _load_local_idler_stop();
 
    for (l = list->pictures; l; l = evas_list_next(l))
      {
@@ -118,6 +132,9 @@ void DEVIANF(data_picture_list_local_regen) (void)
    if (list->nb_pictures_waiting)
       return;
 
+   if (list->loader.idler)
+      _load_local_idler_stop();
+
    for (l = list->pictures; l; l = evas_list_next(l))
      {
         picture = evas_list_data(l);
@@ -143,7 +160,7 @@ int DEVIANF(data_picture_cache_init) (void)
    cache->nb_attached = 0;
    DEVIANM->picture_cache = cache;
 
-   _picture_cache_fill();
+   _picture_cache_fill(DATA_PICTURE_BOTH, NULL);
 
    return 1;
 }
@@ -188,7 +205,7 @@ Picture *DEVIANF(data_picture_cache_attach) (Source_Picture *source, int edje_pa
 
    cache = DEVIANM->picture_cache;
 
-   /* If old pictures are still attached, abord */
+   /* if old pictures are still attached, abord */
    if (!edje_part && source->picture0)
       return NULL;
    if (edje_part && source->picture1)
@@ -198,16 +215,16 @@ Picture *DEVIANF(data_picture_cache_attach) (Source_Picture *source, int edje_pa
      {
         int new_pos, n;
 
-        /* Get a picture in the histo */
+        /* get a picture in the histo */
 
         new_pos = source->histo_pos + histo_nb;
         n = new_pos;
-        /* Select the picture if unused and not going to be deleted */
+        /* select the picture if unused and not going to be deleted */
         do
           {
              if (n < 0)
                {
-                  /* Can't get a picture in historic ? So get a new one ! */
+                  /* can't get a picture in historic ? So get a new one ! */
                   source->histo_pos = 0;
                   return DEVIANF(data_picture_cache_attach) (source, edje_part, 0);
                }
@@ -229,32 +246,32 @@ Picture *DEVIANF(data_picture_cache_attach) (Source_Picture *source, int edje_pa
           }
         while (picture->source || picture->delete);
 
-        /* Add it to the cache if wasnt */
+        /* add it to the cache if wasnt */
 	if (!picture->picture)
            if (!_picture_cache_add_picture(picture))
               return NULL;
 
-        /* Update the source's histo position */
+        /* update the source's histo position */
         source->histo_pos = new_pos;
      }
    else
      {
-        /* Get a picture in the cache */
+        /* get a picture in the cache */
 
-        /* Need to fill the cache ? */
+        /* need to fill the cache ? */
         if (cache->pos == -1)
-           _picture_cache_fill();
+           _picture_cache_fill(DATA_PICTURE_BOTH, source);
         else if (cache->pos > (evas_list_count(cache->pictures) - (int)(evas_list_count(cache->pictures) / 4)))
-           _picture_cache_fill();
+           _picture_cache_fill(DATA_PICTURE_BOTH, source);
 
-        /* Get the next picture and change next picture */
+        /* get the next picture and change next picture */
         if (cache->pos != -1)
           {
              picture = evas_list_nth(cache->pictures, cache->pos);
              cache->pos++;
              if (cache->pos > (evas_list_count(cache->pictures) - 1))
-                cache->pos = -1;        /* Overflow -> no more pictures avalaible ! */
-             /* If picture isnt good, retry */
+                cache->pos = -1;        /* overflow -> no more pictures avalaible ! */
+             /* if picture isnt good, retry */
              if (picture->source || picture->delete)
                 return DEVIANF(data_picture_cache_attach) (source, edje_part, 0);
           }
@@ -262,15 +279,20 @@ Picture *DEVIANF(data_picture_cache_attach) (Source_Picture *source, int edje_pa
           {
              picture = _picture_cache_get_picture_unused();
              if (!picture)
-                return NULL;
+		{
+		   /* put the devian in the queue to be warned when new pictures
+		    * will be added */
+		   
+		   return NULL;
+		}
           }
 
-        /* Attach the picture to the source's historic
+        /* attach the picture to the source's historic
 	 * and attach the source to the picture histo's list */
         DEVIANF(source_picture_histo_picture_attach) (source, picture);
      }
 
-   /* Attach the picture to the source */
+   /* attach the picture to the source */
    picture->source = source;
    if (!edje_part)
       source->picture0 = picture;
@@ -278,7 +300,7 @@ Picture *DEVIANF(data_picture_cache_attach) (Source_Picture *source, int edje_pa
       source->picture1 = picture;
    cache->nb_attached++;
    
-   DDATAC(("attach ok (%s, %p), pos: %d", picture->picture_description->name, picture, cache->pos));
+   DDATAPICC(("attach ok (%s, %p), pos: %d", picture->picture_description->name, picture, cache->pos));
 
    return picture;
 }
@@ -308,24 +330,24 @@ void DEVIANF(data_picture_cache_detach) (Source_Picture *source, int part)
            picture = source->picture1;
         else
 	   {
-	      DDATAC(("BAD BAD BAD in cache detach"));
+	      DDATAPICC(("BAD BAD BAD in cache detach"));
 	   }
      }
 
    if (!picture)
       return;
 
-   /* Detach source from picture */
+   /* detach source from picture */
    picture->source = NULL;
 
-   /* Picture needs to be deleted ? */
+   /* picture needs to be deleted ? */
    if (picture->delete)
      {
         if (picture->from == DATA_PICTURE_LOCAL)
            _picture_free(picture, 1, 1);
      }
 
-   /* Detach picture from source */
+   /* detach picture from source */
    if (!part && (source->picture0))
       source->picture0 = NULL;
    else
@@ -339,9 +361,9 @@ void DEVIANF(data_picture_cache_detach) (Source_Picture *source, int part)
    cache->nb_attached--;
 
    if (picture->picture_description)
-      DDATAC(("detach ok (%s)", picture->picture_description->name));
+      DDATAPICC(("detach ok (%s)", picture->picture_description->name));
    else
-      DDATAC(("detach ok (-null-)"));
+      DDATAPICC(("detach ok (-null-)"));
 }
 
 /**
@@ -376,141 +398,38 @@ char *DEVIANF(data_picture_get_name_from_path) (char *path, int len)
    return (char *)DEVIANF(ss_utf8_add) (name, 0);
 }
 
+
 /* PRIVATE FUNCTIONS */
 
 static int
-_picture_list_local_add_dir(const char *dir, int recursive)
+_picture_list_local_add_dir(const char *dir)
 {
    Picture_List_Local *list;
-   Picture *picture;
-   Ecore_List *files;
-   char *file, *ext;
-   char *file_tmp;
-   int th_w, th_h;
-   char buf[DEVIAN_MAX_PATH];
-   char buf2[4096];
+   char buf[4096];
 
    list = DEVIANM->picture_list_local;
-   th_w = DEVIANM->conf->data_picture_thumb_default_size;
-   th_h = DEVIANM->conf->data_picture_thumb_default_size;
 
+   /* checks */
    if (!ecore_file_is_dir(dir))
      {
-        snprintf(buf2, sizeof(buf2),
+        snprintf(buf, sizeof(buf),
                  _("<hilight>Directory %s doesnt exists.</hilight><br><br>"
                    "To import pictures, you have to put them"
                    "in the folder you set in main configuration panel<br><br>"
                    "They can be jpeg, gif, png, edj<br>"
                    "After import, if you can remove these files and the pictures still can<br>"
                    "be viewed, but you wont be able to set them as wallpaper anymore<br><br>"), dir);
-        e_module_dialog_show(_(MODULE_NAME " Module Error"), buf2);
+        e_module_dialog_show(_(MODULE_NAME " Module Error"), buf);
         return 0;
      }
-   files = ecore_file_ls(dir);
-   if (!strcmp(DEVIANM->conf->sources_picture_data_import_dir, dir))
-      if (ecore_list_is_empty(files) || !files)
-        {
-           snprintf(buf2, sizeof(buf2),
-                    _("<hilight>Directory %s is empty</hilight><br><br>"
-                      "To import pictures, you have to put them"
-                      "in this folder.<br>"
-                      "They can be jpeg, gif, png, edj<br>"
-                      "After import, if you can remove these files and the pictures still can<br>"
-                      "be viewed, but you wont be able to set them as wallpaper anymore<br><br>"), dir);
-           e_module_dialog_show(_(MODULE_NAME " Module Error"), buf2);
-           return 0;
-        }
 
-   DDATA(("Going to list %s", dir));
+   DDATAPIC(("Going to load %s", dir));
+   list->loader.path = evas_list_append(list->loader.path, strdup(dir));
 
-   while ((file = (char *)ecore_list_next(files)) != NULL)
-     {
-        snprintf(buf, DEVIAN_MAX_PATH, "%s/%s", dir, file);
-
-        if ((file_tmp = ecore_file_readlink(buf)))
-          {
-             E_FREE(file);
-             file = strdup(ecore_file_get_file(file_tmp));
-             strncpy(buf, file_tmp, sizeof(buf));
-          }
-
-	if (!DEVIANM->conf->sources_picture_data_import_hidden)
-	   if (file[0] == '.')
-	      continue;
-
-        if (recursive)
-           if (ecore_file_is_dir(buf))
-             {
-                _picture_list_local_add_dir(buf, 1);
-                continue;
-             }
-
-        ext = strrchr(file, '.');
-        if (!ext)
-           continue;
-        if (strcasecmp(ext, ".edj") &&
-            strcasecmp(ext, ".jpg") && strcasecmp(ext, ".JPG") &&
-            strcasecmp(ext, ".jpeg") && strcasecmp(ext, ".JPEG") && strcasecmp(ext, ".png") && strcasecmp(ext, ".PNG"))
-           continue;
-
-        DDATA(("File %s thumb ...", file));
-
-        picture = E_NEW(Picture, 1);
-
-        picture->source = NULL;
-        picture->path = (char *)evas_stringshare_add(buf);
-        picture->thumb_path = e_thumb_file_get(picture->path);
-        picture->picture = NULL;
-        picture->picture_description = E_NEW(Picture_Infos, 1);
-        picture->picture_description->name = DEVIANF(data_picture_get_name_from_path) (picture->path, DATA_PICTURE_INFOS_LEN);
-        picture->picture_description->author_name = NULL;
-        picture->picture_description->where_from = NULL;
-        picture->picture_description->date = NULL;
-        picture->picture_description->comments = NULL;
-        picture->delete = 0;
-        picture->from = DATA_PICTURE_LOCAL;
-        picture->thumbed = 0;
-        picture->cached = 0;
-        picture->sources_histo = NULL;
-
-        DDATA(("Thumb %s of %s exists ?", picture->thumb_path, picture->path));
-        if (e_thumb_exists(picture->path))
-          {
-             int w, h;
-
-             e_thumb_geometry_get(picture->thumb_path, &w, &h, 1);
-             DDATA(("THUMB %dx%d (wanted %dx%d)", w, h, th_w, th_h));
-             if ((th_w > w) && (th_h > h))
-               {
-                  /* Thumb exists, but regen to new size */
-                  int i;
-
-                  i = ecore_file_unlink(picture->thumb_path);
-                  DDATA(("File %s thumb exists (%dx%d),  but regen to %dx%d (del old %d)", file, w, h, th_w, th_h, i));
-                  e_thumb_generate_begin(picture->path, th_w, th_h,
-                                         DEVIANM->container->bg_evas, &picture->picture, _picture_local_thumb_cb, picture);
-                  list->nb_pictures_waiting++;
-                  continue;
-               }
-             /* Thumb exists and good size */
-             DDATA(("File %s thumb exists and good size, add (%de)", file, evas_list_count(list->pictures)));
-             picture->thumbed = 1;
-             picture->original_w = w;
-             picture->original_h = h;
-             list->pictures = evas_list_append(list->pictures, picture);
-          }
-        else
-          {
-             /* Thumb doesnt exists so generate it */
-             DDATA(("File %s thumb doesnt exist, gen %dx%d", file, th_w, th_h));
-             e_thumb_generate_begin(picture->path, th_w, th_h,
-                                    DEVIANM->container->bg_evas, &picture->picture, _picture_local_thumb_cb, picture);
-             list->nb_pictures_waiting++;
-             continue;
-          }
-     }
-
-   DDATA(("End listing %s", dir));
+   if (!list->loader.idler)
+      {
+	 list->loader.idler = ecore_idler_add(_load_local_idler, NULL);
+      }
 
    return 1;
 }
@@ -518,67 +437,113 @@ _picture_list_local_add_dir(const char *dir, int recursive)
 /**
  * Get a picture in a list
  *
- * @param pictures_list list where to get the picture. If NULL, will take the pic in the list indicated by default location
+ * @param client The picture source wich ask for pictures. Can be NULL.
+ * @param picture_type Where to get the picture. If -1, will take the pic in the list indicated by default location
  * @return the picture
  */
 static Picture *
-_picture_list_get_picture(Evas_List *pictures_list)
+_picture_list_get_picture(Source_Picture *client, int picture_type)
 {
    Picture *picture;
    Evas_List *l, *was_first;
+   Evas_List *pictures_list;
 
    picture = NULL;
 
-   if (!pictures_list)
-     {
+   DDATAPICC(("Trying to get a picture on %d", picture_type));
+
+   switch (picture_type)
+      {
+      case DATA_PICTURE_LOCAL:
+	 pictures_list = DEVIANM->picture_list_local->pictures;
+	 break;
+
+      case DATA_PICTURE_NET:
+	 pictures_list = DEVIANM->picture_list_net->pictures;
+	 break;
+
+      case -1:
         switch (DEVIANM->conf->sources_picture_default_location)
           {
           case DATA_PICTURE_LOCAL:
              pictures_list = DEVIANM->picture_list_local->pictures;
+	     picture_type = DATA_PICTURE_LOCAL;
              break;
           case DATA_PICTURE_NET:
              pictures_list = DEVIANM->picture_list_net->pictures;
+	     picture_type = DATA_PICTURE_NET;
              break;
           case DATA_PICTURE_BOTH:
              {
-                /* Random between local and net. If one doesnt work, try the other one */
+                /* random between local and net. If one doesnt work, try the other one */
                 int i;
 
                 i = rand() % 2;
                 if (!i)
-                   picture = _picture_list_get_picture(DEVIANM->picture_list_local->pictures);
+                   picture = _picture_list_get_picture(client, DATA_PICTURE_LOCAL);
                 else
-                   picture = _picture_list_get_picture(DEVIANM->picture_list_net->pictures);
+                   picture = _picture_list_get_picture(client, DATA_PICTURE_NET);
 
                 if (!picture)
-                  {
+		  {
                      if (i)
-                        picture = _picture_list_get_picture(DEVIANM->picture_list_local->pictures);
+                        picture = _picture_list_get_picture(client, DATA_PICTURE_LOCAL);
                      else
-                        picture = _picture_list_get_picture(DEVIANM->picture_list_net->pictures);
+                        picture = _picture_list_get_picture(client, DATA_PICTURE_NET);
                   }
-
                 return picture;
              }
           }
+	break;
      }
 
-   if (!evas_list_count(pictures_list))
-      return NULL;
+   if (evas_list_count(pictures_list))
+      {
+	 l = evas_list_nth_list(pictures_list, rand() % evas_list_count(pictures_list));
+	 was_first = l;
+	 
+	 do
+	    {
+	       picture = evas_list_data(l);
+	       if (!picture->source && !picture->cached && !picture->delete)
+		  return picture;
+	       l = evas_list_next(l);
+	       if (!l)
+		  l = pictures_list;
+	    }
+	 while (l != was_first);
+      }
 
-   l = evas_list_nth_list(pictures_list, rand() % evas_list_count(pictures_list));
-   was_first = l;
+   DDATAPICC(("Trying to get a picture on %d (bis)", picture_type));
 
-   do
-     {
-        picture = evas_list_data(l);
-        if (!picture->source && !picture->cached && !picture->delete)
-           return picture;
-        l = evas_list_next(l);
-        if (!l)
-           l = pictures_list;
-     }
-   while (l != was_first);
+   /* no pictures where found */
+
+   if (client)
+      {
+	 if (!client->load_handler)
+	    {
+	       /* add a handler to warn the dEvian when new pictures will arrive */
+	       switch (picture_type)
+		  {
+		  case DATA_PICTURE_LOCAL:
+		     {
+			/* local picture event */
+			DEVIANM->picture_list_local->loader_ev.nb_clients++;
+			client->load_handler = ecore_event_handler_add(DEVIANM->picture_list_local->loader_ev.id,
+								       _load_cb_fill,
+								       client);
+			DDATAPIC(("Loading event SET !"));
+			break;
+		     }
+		     
+		  case DATA_PICTURE_NET:
+		     {
+			/* net picture event */
+			break;
+		     }
+		  }
+	    }
+      }
 
    return NULL;
 }
@@ -598,7 +563,7 @@ _picture_cache_get_picture_unused(void)
 
    cache = DEVIANM->picture_cache;
 
-   DDATAC(("Going to try to attach unused picture"));
+   DDATAPICC(("Going to try to attach unused picture"));
 
    if (!evas_list_count(cache->pictures))
       return NULL;
@@ -620,10 +585,10 @@ _picture_cache_get_picture_unused(void)
    do
      {
         picture = evas_list_data(l);
-        /* Current picture ? */
+        /* current picture ? */
         if (!picture->source && !picture->delete && picture->thumbed)
 	   {
-	      DDATAC(("Picture found ! %s", picture->picture_description->name));
+	      DDATAPICC(("Picture found ! %s", picture->picture_description->name));
 	      return picture;
 	   }
         l = evas_list_next(l);
@@ -665,7 +630,7 @@ _picture_cache_add_picture(Picture *picture)
    th_w = DEVIANM->conf->data_picture_thumb_default_size;
    th_h = DEVIANM->conf->data_picture_thumb_default_size;
 
-   /* (Load the picture) */
+   /* (load the picture) */
    if (!picture->picture)
       picture->picture = _picture_thumb_get_evas(picture->thumb_path);
 
@@ -675,7 +640,7 @@ _picture_cache_add_picture(Picture *picture)
    if (cache->pos == -1)
       cache->pos = evas_list_count(cache->pictures) - 1;
 
-   DDATAC(("ajout ok (%s), pos:%d", picture->picture_description->name, cache->pos));
+   DDATAPICC(("ajout ok (%s), pos:%d", picture->picture_description->name, cache->pos));
 
    return 1;
 }
@@ -700,7 +665,7 @@ _picture_cache_del_picture(Picture *picture)
         picture = _picture_cache_get_picture_unused();
         if (!picture)
            return 0;
-        /* We have a picture to remove =) */
+        /* we have a picture to remove =) */
      }
 
    if (picture->source)
@@ -718,7 +683,7 @@ _picture_cache_del_picture(Picture *picture)
           }
      }
 
-   /* (Unload picture) */
+   /* (unload picture) */
    if (picture->from == DATA_PICTURE_LOCAL)
      {
         if (picture->picture)
@@ -726,13 +691,13 @@ _picture_cache_del_picture(Picture *picture)
         picture->picture = NULL;
      }
 
-   /* Only if picture is before cache->pos, decr cache->pos */
+   /* only if picture is before cache->pos, decr cache->pos */
    if (cache->pos != -1)
      {
         l = evas_list_nth_list(cache->pictures, cache->pos);
         if (!evas_list_find(l, picture))
           {
-             DDATAC(("retrait %s pos --", picture->picture_description->name));
+             DDATAPICC(("retrait %s pos --", picture->picture_description->name));
              cache->pos--;
           }
      }
@@ -740,18 +705,18 @@ _picture_cache_del_picture(Picture *picture)
    cache->pictures = evas_list_remove(cache->pictures, picture);
    picture->cached = 0;
 
-   /* If the pictures pointed by cache->pos is no more valid, set 'no new pics to display' */
+   /* if the pictures pointed by cache->pos is no more valid, set 'no new pics to display' */
    if (cache->pos != -1)
      {
         l = evas_list_nth_list(cache->pictures, cache->pos);
         if (!l)
           {
-             DDATAC(("retrait %s was last, pos set to -1", picture->picture_description->name));
+             DDATAPICC(("retrait %s was last, pos set to -1", picture->picture_description->name));
              cache->pos = -1;
           }
      }
 
-   DDATAC(("retrait ok (%s), pos %d", picture->picture_description->name, cache->pos));
+   DDATAPICC(("retrait ok (%s), pos %d", picture->picture_description->name, cache->pos));
 
    return 1;
 }
@@ -761,10 +726,11 @@ _picture_cache_del_picture(Picture *picture)
  *
  * Fill the cache to CACHE_SIZE() if possible.
  * If max is reached, try to remove unused old pictures and go again
+ * @param type Type of the picture requested (LOCAL / NET / BOTH)
  * @return Number of pictures added
  */
 static int
-_picture_cache_fill(void)
+_picture_cache_fill(int type, Source_Picture *client)
 {
    Picture_Cache *cache;
    Picture *picture = NULL;
@@ -773,12 +739,12 @@ _picture_cache_fill(void)
    cache = DEVIANM->picture_cache;
    new = 0;
 
-   DDATAC(("fill begin"));
+   DDATAPICC(("fill begin"));
 
-   /* If cache is too big, reduce it */
+   /* if cache is too big, reduce it */
    while (evas_list_count(cache->pictures) > CACHE_SIZE())
      {
-        DDATAC(("cache too big, delete a pic"));
+        DDATAPICC(("cache too big, delete a pic"));
         if (!_picture_cache_del_picture(NULL))
           {
              fprintf(stderr, MODULE_NAME ": !!! Cache too big but cant delete picture ... NEED TO BE FIXED !!!\n");
@@ -786,8 +752,8 @@ _picture_cache_fill(void)
           }
      }
 
-   /* Add pictures while we have one, and if max reached, we can del one */
-   while ((picture = _picture_list_get_picture(NULL)))
+   /* add pictures while we have one, and if max reached, we can del one */
+   while ((picture = _picture_list_get_picture(client, -1)))
      {
         if (evas_list_count(cache->pictures) == CACHE_SIZE())
           {
@@ -799,7 +765,7 @@ _picture_cache_fill(void)
         new++;
      }
 
-   DDATAC(("fill end"));
+   DDATAPICC(("fill end"));
 
    return new;
 }
@@ -814,14 +780,14 @@ _picture_free(Picture *picture, int force, int force_now)
 {
    Evas_List *l;
 
-   DDATA(("Free picture %s beginf (%d %d)", picture->picture_description->name, force, force_now));
+   DDATAPIC(("Free picture %s beginf (%d %d)", picture->picture_description->name, force, force_now));
 
    if (picture->source)
      {
         if (!force)
            return 0;
 
-        /* If not now, only mark as delete, and picture will be deleted
+        /* if not now, only mark as delete, and picture will be deleted
          * on next picture change */
         if (!force_now)
           {
@@ -874,7 +840,7 @@ _picture_free(Picture *picture, int force, int force_now)
         DEVIANM->picture_list_net->pictures = evas_list_remove(DEVIANM->picture_list_net->pictures, picture);
      }
 
-   DDATA(("Picture free ok (%p, %d in list)", picture, evas_list_count(DEVIANM->picture_list_local->pictures)));
+   DDATAPIC(("Picture free ok (%p, %d in list)", picture, evas_list_count(DEVIANM->picture_list_local->pictures)));
 
    E_FREE(picture);
 
@@ -893,18 +859,18 @@ _picture_local_thumb_cb(Evas_Object *obj, void *data)
    list = DEVIANM->picture_list_local;
    picture = data;
 
-   DDATA(("back from thumb generation of %s", picture->picture_description->name));
+   DDATAPIC(("back from thumb generation of %s", picture->picture_description->name));
 
    if (ecore_file_exists(picture->thumb_path))
      {
         e_thumb_geometry_get(picture->thumb_path, &picture->original_w, &picture->original_h, 1);
         picture->thumbed = 1;
-        DDATA(("thumb generated %dx%d", picture->original_w, picture->original_h));
+        DDATAPIC(("thumb generated %dx%d", picture->original_w, picture->original_h));
         list->pictures = evas_list_append(list->pictures, picture);
         list->nb_pictures_waiting--;
 
-        /* If the pic is loaded, remove it, we dont want it !
-         * Moreover it does memleak */
+        /* if the pic is loaded, remove it, we dont want it !
+         * moreover it does memleak */
         if (picture->picture)
           {
              evas_object_del(picture->picture);
@@ -915,6 +881,19 @@ _picture_local_thumb_cb(Evas_Object *obj, void *data)
      {
         _picture_free(picture, 1, 1);
      }
+
+   if (list->loader_ev.nb_clients)
+      {
+	 Picture_Event_List_Fill *ev;
+	 
+	 ev = E_NEW(Picture_Event_List_Fill, 1);
+	 ev->new = 1;
+	 ev->type = DATA_PICTURE_LOCAL;
+	 /* raise event to warn : a picture is here for you ! */
+	 ecore_event_add(list->loader_ev.id, ev, NULL, NULL);
+	 DDATAPIC(("Loader event RAISED !"));
+      }
+
 }
 
 static Evas_Object *
@@ -942,4 +921,230 @@ _picture_thumb_get_evas(char *thumb)
 
    return im;
 }
+
+
+static int
+_load_cb_fill(void *data, int type, void *event)
+{
+   Source_Picture *source;
+   DEVIANN *devian;
+   Picture_Event_List_Fill *ev;
+
+   source = data;
+   devian = source->devian;
+   ev = event;
+
+   DDATAPIC(("Loader - EVENT -"));
+
+   if (!devian->source_func.refresh(devian, 0))
+      return 1;
+
+   //... TODO: use new from ev
+   if (ev->type == DATA_PICTURE_LOCAL)
+      {
+	 DEVIANM->picture_list_local->loader_ev.nb_clients--;
+	 DDATAPIC(("Loader event nb_clients : %d", DEVIANM->picture_list_local->loader_ev.nb_clients));
+      }
+
+   ecore_event_handler_del(source->load_handler);
+   source->load_handler = NULL;
+
+   return 0;
+}
+
+static int
+_load_local_idler(void *data)
+{
+   Picture_List_Local *pl;
+   char file[DEVIAN_MAX_PATH];
+   char *name;
+
+   pl = DEVIANM->picture_list_local;
+
+   if (!pl->loader.dir)
+      {
+	 if (pl->loader.path)
+	    {
+	       Evas_List *l;
+	       pl->loader.dir = strdup((char *)evas_list_data(pl->loader.path));
+
+	       l = evas_list_next(pl->loader.path);
+	       if (!l)
+		  {
+		     for(l=evas_list_last(pl->loader.path); l; l=evas_list_prev(l))
+			{
+			   name = evas_list_data(l);
+			   E_FREE(name);
+			}
+		     evas_list_free(pl->loader.path);
+		     pl->loader.path = NULL;
+		  }
+	       else
+		  {
+		     pl->loader.path = l;
+		  }
+	       pl->loader.file = ecore_file_ls(pl->loader.dir);
+	    }
+	 else
+	    {
+	       pl->loader.idler = NULL;
+	       return 0;
+	    }	 
+      }
+
+   if (pl->loader.dir)
+      {
+	 name = ecore_list_next(pl->loader.file);
+	 if (!name)
+	    {
+	       ecore_list_destroy(pl->loader.file);
+	       E_FREE(pl->loader.dir);
+	       pl->loader.dir = NULL;
+	    }
+	 else
+	    {
+	       int th_w, th_h;
+	       char *file_tmp, *ext;
+	       Picture *picture;
+
+	       if (!DEVIANM->conf->sources_picture_data_import_hidden)
+		  if (name[0] == '.')
+		     return 1;
+
+	       th_w = DEVIANM->conf->data_picture_thumb_default_size;
+	       th_h = DEVIANM->conf->data_picture_thumb_default_size;
+
+	       snprintf(file, sizeof(file), "%s/%s", pl->loader.dir, name);
+   
+	       if ((file_tmp = ecore_file_readlink(file)))
+		  {
+		     E_FREE(name);
+		     name = strdup(ecore_file_get_file(file_tmp));
+		     strncpy(file, file_tmp, sizeof(file));
+		  }
+
+	       if (DEVIANM->conf->sources_picture_data_import_recursive)
+		  {
+		     if (ecore_file_is_dir(file))
+			{
+			   pl->loader.path = evas_list_append(pl->loader.path, strdup(file));
+			   return 1;
+			}
+		  }
+   
+	       ext = strrchr(name, '.');
+	       if (!ext)
+		  return 1;
+	       if (strcasecmp(ext, ".jpg") && strcasecmp(ext, ".JPG") &&
+		   strcasecmp(ext, ".jpeg") && strcasecmp(ext, ".JPEG") &&
+		   strcasecmp(ext, ".png") && strcasecmp(ext, ".PNG"))
+		  return 1;
+   
+	       DDATAPIC(("File %s loading ...", name));
+	
+	       picture = E_NEW(Picture, 1);
+	
+	       picture->source = NULL;
+	       picture->path = (char *)evas_stringshare_add(file);
+	       picture->thumb_path = e_thumb_file_get(picture->path);
+	       picture->picture = NULL;
+	       picture->picture_description = E_NEW(Picture_Infos, 1);
+	       picture->picture_description->name = DEVIANF(data_picture_get_name_from_path) (picture->path, DATA_PICTURE_INFOS_LEN);
+	       picture->picture_description->author_name = NULL;
+	       picture->picture_description->where_from = NULL;
+	       picture->picture_description->date = NULL;
+	       picture->picture_description->comments = NULL;
+	       picture->delete = 0;
+	       picture->from = DATA_PICTURE_LOCAL;
+	       picture->thumbed = 0;
+	       picture->cached = 0;
+	       picture->sources_histo = NULL;
+
+	       DDATAPIC(("Thumb %s of %s exists ?", picture->thumb_path, picture->path));
+	       if (e_thumb_exists(picture->path))
+		  {
+		     int w, h;
+		     
+		     e_thumb_geometry_get(picture->thumb_path, &w, &h, 1);
+		     DDATAPIC(("THUMB %dx%d (wanted %dx%d)", w, h, th_w, th_h));
+		     if ((th_w > w) && (th_h > h))
+			{
+			   /* thumb exists, but regen to new size */
+			   int i;
+
+			   i = ecore_file_unlink(picture->thumb_path);
+			   DDATAPIC(("File %s thumb exists (%dx%d),  but regen to %dx%d (del old %d)", file, w, h, th_w, th_h, i));
+			   e_thumb_generate_begin(picture->path, th_w, th_h,
+						  DEVIANM->container->bg_evas, &picture->picture, _picture_local_thumb_cb, picture);
+			   pl->nb_pictures_waiting++;
+			   return 1;
+			}
+		     /* thumb exists and good size */
+		     DDATAPIC(("File %s thumb exists and good size, add (%de)", file, evas_list_count(pl->pictures)));
+		     picture->thumbed = 1;
+		     picture->original_w = w;
+		     picture->original_h = h;
+		     pl->pictures = evas_list_append(pl->pictures, picture);
+		  }
+	       else
+		  {
+		     /* thumb doesnt exists so generate it */
+		     DDATAPIC(("File %s thumb doesnt exist, gen %dx%d", file, th_w, th_h));
+		     e_thumb_generate_begin(picture->path, th_w, th_h,
+					    DEVIANM->container->bg_evas, &picture->picture, _picture_local_thumb_cb, picture);
+		     pl->nb_pictures_waiting++;
+		     return 1;
+		  }
+	       
+	    }
+      }
+
+   if (pl->loader_ev.nb_clients)
+      {
+	 Picture_Event_List_Fill *ev;
+	 
+	 ev = E_NEW(Picture_Event_List_Fill, 1);
+	 ev->new = 1;
+	 ev->type = DATA_PICTURE_LOCAL;
+	 /* raise event to warn : a picture is here for you ! */
+	 ecore_event_add(pl->loader_ev.id, ev, NULL, NULL);
+	 DDATAPIC(("Loader event RAISED !"));
+      }
+
+   return 1;
+}
+
+static void
+_load_local_idler_stop(void)
+{
+   Picture_List_Local *list;
+   Evas_List *l;
+   char *name;
+
+   list = DEVIANM->picture_list_local;
+
+   ecore_idler_del(list->loader.idler);
+   list->loader.idler = NULL;
+   if (list->loader.path)
+      {
+	 for(l=evas_list_last(list->loader.path); l; l=evas_list_prev(l))
+	    {
+	       name = evas_list_data(l);
+	       E_FREE(name);
+	    }
+	 evas_list_free(list->loader.path);
+	 list->loader.path = NULL;
+      }
+   if (list->loader.dir)
+      {
+	 E_FREE(list->loader.dir);
+	 list->loader.dir = NULL;
+      }
+   if (list->loader.file)
+      {
+	 ecore_list_destroy(list->loader.file);
+	 list->loader.file = NULL;
+      }
+}
+	 
 #endif

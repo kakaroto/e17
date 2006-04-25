@@ -17,7 +17,7 @@ Debug defines
 	DEBUG_POPUP_WARN
 	DEBUG_SOURCE
 	DEBUG_CONTAINER
-	DEBUG_DATA
+	DEBUG_DATA_PICTURE
 	DEBUG_DATA_CACHE
 	DEBUG_DATA_RSS
 	DEBUG_DATA_RSS_PARSER
@@ -25,7 +25,7 @@ Debug defines
 
 Debug compil
 	make install CFLAGS="-g -Wall -DDEBUG_MAIN -DDEBUG_POPUP_WARN -DDEBUG_SOURCE -DDEBUG_CONTAINER
-	-DDEBUG_DATA -DDEBUG_DATA_CACHE -DDEBUG_DATA_RSS -DDEBUG_DATA_RSS_PARSER -DDEBUG_DATA_FILE"
+	-DDEBUG_DATA_PICTURE -DDEBUG_DATA_CACHE -DDEBUG_DATA_RSS -DDEBUG_DATA_RSS_PARSER -DDEBUG_DATA_FILE"
 
 --------------------------------------------------------------------------------
 BUG (FIXES)
@@ -64,16 +64,19 @@ BUG (FIXES)
 
 
 --------------------------------------------------------------------------------
-RENAMES
+RENAMES / INDENT
 --------------------------------------------------------------------------------
 
  * Faire de devian_main une variable globale
  * degager globale dEvian_Container 
  * devian_add ... -> devian_devian_add
- - Passer   Picture_List_Local *picture_list_local;
-	    Picture_List_Net *picture_list_net;
-	    Picture_Cache *picture_cache;
-   en globals
+ * Indent functions in .h
+ * Comments min
+ - Rename DEVIANN and DEVIANM to something more explicit
+ - Change Picture_List_Local *picture_list_local;
+	  Picture_List_Net *picture_list_net;
+	  Picture_Cache *picture_cache;
+   to globals
 
 --------------------------------------------------------------------------------
 TODO CODE (order)
@@ -330,19 +333,45 @@ TODO CODE (order)
  * User can choose not to add dEvian's icons in picture list
  * Icon warning indicator
  * Option Load hidden directories in source picture
+ * Loading pictures to picture list in background (ecore_idler)
+ * Loading pictures popup
+ * When a source picture local has no picture to display, keep an eye on cache
+   to see when there's something to display (own ecore_event)
+ * Disable .edj load in pictures for the moment
+ * Fix 'don't load hidden files' option
 
  / Source file (log)
    * Read the last lines of a file (data_file_update)
-   - Ini and Max lines
+   - ! Fix problem with textblock cursors !
+   / Ini and Max lines
+   / Hilight
    - Use Retlines, do not cut in the middle of a line
+   - Popup
+
+ - e_mod_data_rss.c 937 free ts ?
+
+ - Modify popup_warn devian to be not rss only -> changes in rss too
+     Args (popup_warn_add) :
+       - text
+       - (popup_warn_old)
+       - (timer)
+       - (devian)
+
+ - Something better for loading / thumbnailing picture message
+   Message in a corner during all pictures loading
+     (close on click, refresh / 500 pictures and on end)
+   Popup for thumbnailing, one popup per thumb ?
 
  - Rss News hiligh when url == null
  - ? Bug in the config ? When updating ?
+ - Ident functions in .h
+
+ - Container Box option to keep width / heigh
+ - Double click to open viewer
 
  - Charsets (ecore_txt :D)
    - Problems in convert
        Need strdup ?
- - Box option to keep width / heigh
 
  - ? --SEGV embryo timer del some timer that doesnt exists (in infos panel)-- ?
    When the information pannel is going to close, after timer ...
@@ -359,13 +388,12 @@ TODO CODE (order)
 
  - RELEASE 0.2.0
 
- -------
- - ? Check modifs dans gestion config dialog (close & only one per type) ?
- - les dEvians doivent eviter les autres modules
-   (comme les windows peuvent detecter les collisions avec,
-    c'est fesable) PLUTOT wait pour gadcon
+ - Gadman -> Gadcon
+ - dEvian has to avoid other modules
  - RSS Box auto resize
- -------
+ - Check changes in config dialog management (close & only one per type)
+
+ - Source file : pattern watch ! hihi =)
 
  - Just add color_class: "nameofclass"; in the parts that you want color_classed 
 
@@ -375,15 +403,13 @@ TODO CODE (order)
 
  - images from net
    - deviantart
-   - url utilisateur (direct la page avec images)
-   - recherche sur google et pecho des images au hasard / creation d'urls
-   - Choix taille du cache dans panel config advanced
+   - url user (direct on page with pictures)
+   - search on google et take random pictures / url creator
+   - choose cache size in config panel
 
- - Loading pictures to picture list in background (-> semaphore)
  - mhb_cze, #e : Multiple rss in one windows, talk svn account
  - Box animation boing boing
  - Picture Historic list
- - RSS historic, for news you missed
  - Change text color (edje_color_class ?)
  - ? Rename a picture ?
  - evas_object_smart for box ?
@@ -393,15 +419,14 @@ TODO CODE (order)
 --------------------------------------------------------------------------------
 TODO THEME
 --------------------------------------------------------------------------------
- - Theme a couleurs plus foncées & opaques
 
  / New theme minimal :
    * Name and Id overlap
    * Infos panel
-   * Boutons
-   - Transitions entre sources avec des clips
-     Clip swallow part dans part clip, et change alpha du clip
-   - Joli rss selection, style menu E
+   * Butons
+   - Transitions between sources using clips
+     Clip swallow part in part clip, et change clip alpha
+   - Nice rss selection, menu E style
    -  morlenxus kiwi_: I would also remove these hightlights. If you click on a test the links should
       be opened, without extra clicking on the icon. And the reload button and the || button would be
       fit better to the context menu. That would make the module fit better to the desktop.
@@ -410,3 +435,5 @@ TODO THEME
       kiwi_ i'll split the files and write a little help about communication between devian and theme,
       so people wiill be able to write other ones
       kiwi_ i agree, i have to find somthing to avoid animations when mouse over only
+
+ - Theme with dark and non transparent colors

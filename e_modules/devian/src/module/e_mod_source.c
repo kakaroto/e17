@@ -2,10 +2,11 @@
 
 static void _devian_source_del(DEVIANN *devian);
 
-/* Public functions */
+
+/* PUBLIC FUNCTIONS */
 
 /**
- * Change de source of a dEvian
+ * Change source of a dEvian
  *
  * @param devian The dEvian
  * @return 0 on success, 1 on fail
@@ -18,7 +19,7 @@ int DEVIANF(source_change) (DEVIANN *devian, int source)
         return 1;
      }
 
-   /* CHECK: if already one source, remove it, except if its the one we want */
+   /* check: if already one source, remove it, except if its the one we want */
    if (devian->source)
      {
         if (devian->conf->source_type == source)
@@ -30,7 +31,7 @@ int DEVIANF(source_change) (DEVIANN *devian, int source)
            DEVIANF(config_dialog_devian_shutdown) (devian);
      }
 
-   /* Add the new container to the devian */
+   /* add the new container to the devian */
    switch (source)
      {
 
@@ -39,7 +40,7 @@ int DEVIANF(source_change) (DEVIANN *devian, int source)
         {
            if (!DEVIANM->source_picture_count)
              {
-                /* Init pictures subsystem */
+                /* init pictures subsystem */
                 if (DEVIANF(data_picture_list_local_init) ())
                   {
                      fprintf(stderr, MODULE_NAME ": can't init picture list (local) !\n");
@@ -51,10 +52,10 @@ int DEVIANF(source_change) (DEVIANN *devian, int source)
                      return 1;
                   }
              }
-           /* Add the picture */
+           /* add the picture */
            if (DEVIANF(source_picture_add) (devian))
               return 1;
-           /* Chech good theme */
+           /* chech good theme */
            DEVIANF(container_theme_check) (devian, &DEVIANM->conf->theme_picture);
            break;
         }
@@ -63,10 +64,10 @@ int DEVIANF(source_change) (DEVIANN *devian, int source)
 #ifdef HAVE_RSS
      case SOURCE_RSS:
         {
-           /* Add the rss */
+           /* add the rss */
            if (!DEVIANF(source_rss_add) (devian))
               return 1;
-           /* Chech good theme */
+           /* chech good theme */
            DEVIANF(container_theme_check) (devian, &DEVIANM->conf->theme_rss);
            break;
         }
@@ -75,10 +76,10 @@ int DEVIANF(source_change) (DEVIANN *devian, int source)
 #ifdef HAVE_FILE
      case SOURCE_FILE:
         {
-           /* Add the file */
+           /* add the file */
            if (!DEVIANF(source_file_add) (devian))
               return 1;
-           /* Chech good theme */
+           /* chech good theme */
            DEVIANF(container_theme_check) (devian, &DEVIANM->conf->theme_file);
            break;
         }
@@ -86,13 +87,15 @@ int DEVIANF(source_change) (DEVIANN *devian, int source)
 
      case SOURCE_NO:
         {
-           /* I want no source attached, thank you */
+           /* i want no source attached, thank you */
            return 0;
         }
 
      default:
         return 1;
      }
+
+   devian->container_func.update_actions(devian);
 
    DEVIANF(menu_refresh) (devian);
 
@@ -262,7 +265,8 @@ int DEVIANF(source_idle_gui_update) (DEVIANN *devian)
    return 0;
 }
 
-/* Private functions */
+
+/* PRIVATE FUNCTIONS */
 
 static void
 _devian_source_del(DEVIANN *devian)
@@ -276,7 +280,7 @@ _devian_source_del(DEVIANN *devian)
         DEVIANF(source_picture_del) (devian->source);
         if (!DEVIANM->source_picture_count)
           {
-             /* Shutdown pictures subsystem */
+             /* shutdown pictures subsystem */
              DEVIANF(data_picture_cache_shutdown) ();
              DEVIANF(data_picture_list_local_shutdown) ();
           }
@@ -297,7 +301,7 @@ _devian_source_del(DEVIANN *devian)
    devian->source = NULL;
    devian->conf->source_type = SOURCE_NO;
 
-   /* Actions */
+   /* actions */
    devian->source_func.timer_change = DEVIANF(source_idle_timer_change);
    devian->source_func.refresh = DEVIANF(source_idle_refresh);
    devian->source_func.set_bg = DEVIANF(source_idle_set_bg);

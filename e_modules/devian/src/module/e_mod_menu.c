@@ -33,7 +33,7 @@ _devian_menu_cb_general_configure(void *data, E_Menu *m, E_Menu_Item *mi)
 
    if (!(cfd = DEVIANF(config_dialog_main) (DEVIANM->container)))
       return;
-   DEVIANM->dialog_conf = cfd;  /* Actualy dont need this */
+   DEVIANM->dialog_conf = cfd;  /* actualy dont need this */
 }
 
 static void
@@ -91,7 +91,7 @@ _devian_menu_cb_devian_delete(void *data, E_Menu *m, E_Menu_Item *mi)
 
    devian = data;
 
-   /* CHECK: if the devian was destroyed but the menu stays (key space) */
+   /* check: if the devian was destroyed but the menu stays (key space) */
    if (!devian)
       return;
    if ((!devian->source) || (!devian->conf) || (!devian->menu))

@@ -54,7 +54,7 @@ struct _Rss_Doc
    const char *link;
    float version;
 
-   /* Server can overwrite ? */
+   /* server can overwrite ? */
    int w_name;
    int w_description;
 
@@ -62,22 +62,22 @@ struct _Rss_Doc
    Rss_Feed *user;
 };
 
-int DEVIANF(data_rss_new) (Source_Rss *source);
-void DEVIANF(data_rss_del) (Rss_Feed *feed);
-int DEVIANF(data_rss_poll) (void *data, int force_retry);
+int          DEVIANF(data_rss_new) (Source_Rss *source);
+void         DEVIANF(data_rss_del) (Rss_Feed *feed);
+int          DEVIANF(data_rss_poll) (void *data, int force_retry);
 
-Rss_Doc *DEVIANF(data_rss_doc_new) (Rss_Doc *s, int add);
-int DEVIANF(data_rss_doc_free) (Rss_Doc *doc, int remove_from_list, int force);
-int DEVIANF(data_rss_doc_set_new) (Rss_Feed *feed, Rss_Doc *doc, const char *url);
-void DEVIANF(data_rss_doc_detach) (Rss_Doc *doc);
-Rss_Doc *DEVIANF(data_rss_doc_find_doc) (const char *url);
-Rss_Doc *DEVIANF(data_rss_doc_find_unused) (void);
+Rss_Doc     *DEVIANF(data_rss_doc_new) (Rss_Doc *s, int add);
+int          DEVIANF(data_rss_doc_free) (Rss_Doc *doc, int remove_from_list, int force);
+int          DEVIANF(data_rss_doc_set_new) (Rss_Feed *feed, Rss_Doc *doc, const char *url);
+void         DEVIANF(data_rss_doc_detach) (Rss_Doc *doc);
+Rss_Doc     *DEVIANF(data_rss_doc_find_doc) (const char *url);
+Rss_Doc     *DEVIANF(data_rss_doc_find_unused) (void);
 
-void DEVIANF(data_rss_prev_detach) (Source_Rss *source, int part);
+void         DEVIANF(data_rss_prev_detach) (Source_Rss *source, int part);
 Evas_Object *DEVIANF(data_rss_object_create) (Rss_Article *article);
-void DEVIANF(data_rss_article_free) (Rss_Article *article);
+void         DEVIANF(data_rss_article_free) (Rss_Article *article);
 
-int DEVIANF(data_rss_gui_update) (DEVIANN *devian);
+int          DEVIANF(data_rss_gui_update) (DEVIANN *devian);
 
 #endif
 #endif

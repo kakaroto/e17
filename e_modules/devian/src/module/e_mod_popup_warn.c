@@ -12,6 +12,33 @@ static void _cb_edje_desactivate(void *data, Evas_Object *obj, const char *emiss
 /* PUBLIC FUNCTIONS */
 
 /**
+ * Initialise popup warn system
+ * @return 0 on success
+ */
+int DEVIANF(popup_warn_init) (void)
+{
+   _popups_warn = NULL;
+   return 1;
+}
+
+/**
+ * Shutdown popup warn system
+ */
+void DEVIANF(popup_warn_shutdown) (void)
+{
+   Evas_List *l;
+   Popup_Warn *p;
+
+   for (l = _popups_warn; l; l = evas_list_next(l))
+     {
+        p = evas_list_data(l);
+        DEVIANF(popup_warn_del) (p);
+     }
+   evas_list_free(_popups_warn);
+   _popups_warn = NULL;
+}
+
+/**
  * Add popup warning above all windows to alert user that something happened
  * If one already exists, update it
  * Multiple types of popup exists
@@ -57,7 +84,7 @@ int DEVIANF(popup_warn_add) (Popup_Warn **popup_warn, int type, const char *text
 
         zone = e_util_zone_current_get(e_manager_current_get());
 
-        /* Pop */
+        /* pop */
         popw->pop = e_popup_new(zone, 0, 0, 1, 1);
         if (!popw->pop)
           {
@@ -68,7 +95,7 @@ int DEVIANF(popup_warn_add) (Popup_Warn **popup_warn, int type, const char *text
 
         evas_event_freeze(popw->pop->evas);
 
-        /* Face */
+        /* face */
         popw->face = edje_object_add(popw->pop->evas);
         if (!DEVIANF(devian_edje_load) (popw->face, "devian/popup/warn", DEVIAN_THEME_TYPE_POPUP))
           {
@@ -85,7 +112,7 @@ int DEVIANF(popup_warn_add) (Popup_Warn **popup_warn, int type, const char *text
         evas_object_move(popw->face, 0, 0);
         show_desactivate = 0;
 
-        /* OK :) Name & Pos + Extra */
+        /* ok :) name & pos + extra */
         pw = fw;
         ph = fh;
         switch (type)
@@ -95,17 +122,17 @@ int DEVIANF(popup_warn_add) (Popup_Warn **popup_warn, int type, const char *text
 
           case POPUP_WARN_TYPE_DEVIAN:
              devian = (DEVIANN *)data;
-	     /* Warning indicator */
+	     /* warning indicator */
 	     DEVIANF(container_warning_indicator_change) (devian, 1);
-	     /* Text */
+	     /* text */
              popw->name = evas_stringshare_add(DEVIANF(source_name_get) (devian, -1));
              edje_object_part_text_set(popw->face, "name", popw->name);
-	     /* Pos */
+	     /* pos */
              px = DEVIANM->canvas_w - (fw + 20);
              py = DEVIANM->canvas_h - (fh + 20);
-             /* Log */
+             /* log */
              popw->log = evas_list_append(popw->log, evas_stringshare_add(text));
-             /* Timer */
+             /* timer */
 #ifdef HAVE_RSS
              if (DEVIANM->conf->sources_rss_popup_news_timer)
                 popw->timer = ecore_timer_add(DEVIANM->conf->sources_rss_popup_news_timer, _cb_timer, popw);
@@ -114,25 +141,25 @@ int DEVIANF(popup_warn_add) (Popup_Warn **popup_warn, int type, const char *text
              break;
 
           case POPUP_WARN_TYPE_INFO:
-	     /* Text */
+	     /* text */
              popw->name = evas_stringshare_add(MODULE_NAME);
              edje_object_part_text_set(popw->face, "name", popw->name);
-	     /* Pos */
+	     /* pos */
              px = (DEVIANM->canvas_w - fw) / 2;
              py = (DEVIANM->canvas_h - fh) / 2;
              break;
 
           case POPUP_WARN_TYPE_INFO_DEVIAN:
 	     devian = (DEVIANN *)data;
-	     /* Warning indicator */
+	     /* warning indicator */
 	     DEVIANF(container_warning_indicator_change) (devian, 1);
-	     /* Text */
+	     /* text */
              popw->name = evas_stringshare_add(MODULE_NAME);
              edje_object_part_text_set(popw->face, "name", popw->name);
-	     /* Pos */
+	     /* pos */
              px = (DEVIANM->canvas_w - fw) / 2;
              py = (DEVIANM->canvas_h - fh) / 2;
-             /* Log */
+             /* log */
              popw->log = evas_list_append(popw->log, evas_stringshare_add(text));
              break;
 
@@ -142,7 +169,7 @@ int DEVIANF(popup_warn_add) (Popup_Warn **popup_warn, int type, const char *text
              edje_object_part_text_set(popw->face, "name", popw->name);
              px = (DEVIANM->canvas_w - fw) / 2;
              py = (DEVIANM->canvas_h - fh) / 2;
-             /* Timer */
+             /* timer */
              popw->timer = ecore_timer_add(*time, _cb_timer, popw);
              popw->timer_org = *time;
 
@@ -153,12 +180,12 @@ int DEVIANF(popup_warn_add) (Popup_Warn **popup_warn, int type, const char *text
         evas_object_show(popw->face);
         e_popup_edje_bg_object_set(popw->pop, popw->face);
 
-        /* Check for popup overlaps */
+        /* check for popup overlaps */
         _check_overlap(&px, &py, &pw, &ph, 0, px, py);
         DPOPW(("New: %dx%d : %dx%d", px, py, pw, ph));
         DPOPW(("New face: %dx%d", fw, fh));
 
-        /* Go ! */
+        /* go ! */
         popw->x = px;
         popw->y = py;
         popw->w = pw;
@@ -191,7 +218,7 @@ void DEVIANF(popup_warn_del) (Popup_Warn *popw)
    if (!popw)
       return;
 
-   /* Extra */
+   /* extra */
    switch (popw->type)
      {
         Evas_List *l;
@@ -200,12 +227,12 @@ void DEVIANF(popup_warn_del) (Popup_Warn *popw)
      case POPUP_WARN_TYPE_DEVIAN:
         devian = (DEVIANN *)popw->data;
         devian->popup_warn = NULL;
-	/* Warning indicator */
+	/* warning indicator */
 	DEVIANF(container_warning_indicator_change) (devian, 0);
-        /* Timer */
+        /* timer */
         if (popw->timer)
            ecore_timer_del(popw->timer);
-        /* Log */
+        /* log */
         for (l = popw->log; l; l = evas_list_next(l))
            evas_stringshare_del(l->data);
         evas_list_free(popw->log);
@@ -213,54 +240,38 @@ void DEVIANF(popup_warn_del) (Popup_Warn *popw)
 
      case POPUP_WARN_TYPE_INFO_DEVIAN:
         devian = (DEVIANN *)popw->data;
-	/* Warning indicator */
+	/* warning indicator */
 	DEVIANF(container_warning_indicator_change) (devian, 0);
-        /* Timer */
+        /* timer */
         if (popw->timer)
            ecore_timer_del(popw->timer);
-        /* Log */
+        /* log */
         for (l = popw->log; l; l = evas_list_next(l))
            evas_stringshare_del(l->data);
         evas_list_free(popw->log);
         break;
 
      case POPUP_WARN_TYPE_INFO_TIMER:
-        /* Timer */
+        /* timer */
         ecore_timer_del(popw->timer);
         break;
      }
 
-   /* Pop */
+   /* pop */
    if (popw->pop)
       e_object_del(E_OBJECT(popw->pop));
 
-   /* Name */
+   /* name */
    if (popw->name)
       evas_stringshare_del(popw->name);
 
-   /* Face */
+   /* face */
    if (popw->face)
       evas_object_del(popw->face);
 
    _popups_warn = evas_list_remove(_popups_warn, popw);
 
    E_FREE(popw);
-}
-
-/**
- * Del all popups
- */
-void DEVIANF(popup_warn_del_all) (void)
-{
-   Evas_List *l;
-   Popup_Warn *p;
-
-   for (l = _popups_warn; l; l = evas_list_next(l))
-     {
-        p = evas_list_data(l);
-        DEVIANF(popup_warn_del) (p);
-     }
-   evas_list_free(_popups_warn);
 }
 
 /**
@@ -275,7 +286,7 @@ void DEVIANF(popup_warn_devian_desactivate) (void)
 #ifdef HAVE_RSS
    DEVIANM->conf->sources_rss_popup_news = 0;
 #endif
-   /* Delete all devians' popups */
+   /* delete all devians' popups */
    for (l = DEVIANM->devians; l; l = evas_list_next(l))
      {
         devian = evas_list_data(l);
@@ -292,6 +303,7 @@ void DEVIANF(popup_warn_theme_change) (void)
 
 }
 
+
 /* PRIVATE FUNCTIONS */
 
 static void
@@ -299,7 +311,7 @@ _update(Popup_Warn *popw, const char *text)
 {
    char buf[3];
 
-   /* Name */
+   /* name */
    switch (popw->type)
      {
         DEVIANN *devian;
@@ -315,12 +327,12 @@ _update(Popup_Warn *popw, const char *text)
              popw->name = evas_stringshare_add(tmp);
              edje_object_part_text_set(popw->face, "name", popw->name);
           }
-        /* Log */
+        /* log */
         popw->log = evas_list_append(popw->log, evas_stringshare_add(text));
         times = evas_list_count(popw->log);
         snprintf(buf, sizeof(buf), "%d", times);
         edje_object_part_text_set(popw->face, "times", buf);
-        /* Timer */
+        /* timer */
         if (popw->timer)
            ecore_timer_del(popw->timer);
 #ifdef HAVE_RSS
@@ -338,7 +350,7 @@ _update(Popup_Warn *popw, const char *text)
              popw->name = evas_stringshare_add(tmp);
              edje_object_part_text_set(popw->face, "name", popw->name);
           }
-        /* Log */
+        /* log */
         popw->log = evas_list_append(popw->log, evas_stringshare_add(text));
         times = evas_list_count(popw->log);
         snprintf(buf, sizeof(buf), "%d", times);
@@ -346,7 +358,7 @@ _update(Popup_Warn *popw, const char *text)
         break;
 
      case POPUP_WARN_TYPE_INFO_TIMER:
-        /* Timer */
+        /* timer */
         ecore_timer_del(popw->timer);
         popw->timer = ecore_timer_add(popw->timer_org, _cb_timer, popw);
         break;
@@ -373,9 +385,9 @@ _check_overlap(int *px, int *py, int *pw, int *ph, int tries, int org_x, int org
         if (((p->x >= *px) && (p->x <= pxw) &&
              (p->y >= *py) && (p->y <= pyh)) || ((*px >= p->x) && (*px <= p_xw) && (*py >= p->y) && (*py <= p_yh)))
           {
-             /* Overlap ! Correct coords */
-             /* Try upper, and then on the left */
-             //...TODO: Try down and right, maybe placement policy ?
+             /* overlap ! correct coords */
+             /* try upper, and then on the left */
+             //...TODO: try down and right, maybe placement policy ?
              DPOPW(("Overlap !"));
              *py = *py - (*ph + POPUP_WARN_OVERLAP_BORDER);
              if (*py < 0)
@@ -428,7 +440,7 @@ _cb_edje_next(void *data, Evas_Object *obj, const char *emission, const char *so
 
    popw = data;
 
-   /* Name */
+   /* name */
    switch (popw->type)
      {
      case POPUP_WARN_TYPE_DEVIAN:
@@ -438,7 +450,7 @@ _cb_edje_next(void *data, Evas_Object *obj, const char *emission, const char *so
              DEVIANF(popup_warn_del) (popw);
              return;
           }
-        /* Log */
+        /*log */
         l = evas_list_last(popw->log);
         tmp = evas_list_data(l);
         edje_object_part_text_set(popw->face, "text", tmp);
@@ -450,7 +462,7 @@ _cb_edje_next(void *data, Evas_Object *obj, const char *emission, const char *so
         else
            strcpy(buf, "");
         edje_object_part_text_set(popw->face, "times", buf);
-        /* Timer */
+        /* timer */
         if (popw->timer)
            ecore_timer_del(popw->timer);
 #ifdef HAVE_RSS
@@ -466,7 +478,7 @@ _cb_edje_next(void *data, Evas_Object *obj, const char *emission, const char *so
              DEVIANF(popup_warn_del) (popw);
              return;
           }
-        /* Log */
+        /* log */
         l = evas_list_last(popw->log);
         tmp = evas_list_data(l);
         edje_object_part_text_set(popw->face, "text", tmp);
@@ -489,7 +501,7 @@ _cb_edje_desactivate(void *data, Evas_Object *obj, const char *emission, const c
 
    popw = data;
 
-   /* Name */
+   /* name */
    switch (popw->type)
      {
      case POPUP_WARN_TYPE_DEVIAN:

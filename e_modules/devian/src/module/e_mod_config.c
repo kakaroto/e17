@@ -14,7 +14,8 @@ static E_Config_DD *_devian_config_devians_edd_init();
 static E_Config_DD *_devian_config_rss_docs_edd_init();
 #endif
 
-/* Public functions */
+
+/* PUBLIC FUNCTIONS */
 
 DEVIAN_MAIN_CONF *DEVIANF(config_init) (void)
 {
@@ -39,13 +40,54 @@ DEVIAN_MAIN_CONF *DEVIANF(config_init) (void)
    return conf;
 }
 
+void DEVIANF(config_shutdown) (void)
+{
+   Evas_List *l;
+
+   DEVIAN_MAIN_CONF *cfg_main;
+
+   cfg_main = DEVIANM->conf;
+
+   evas_stringshare_del(cfg_main->viewer_http);
+   evas_stringshare_del(cfg_main->viewer_image);
+#ifdef HAVE_PICTURE
+   evas_stringshare_del(cfg_main->theme_picture);
+#endif
+#ifdef HAVE_RSS
+   evas_stringshare_del(cfg_main->theme_rss);
+#endif
+#ifdef HAVE_FILE
+   evas_stringshare_del(cfg_main->theme_file);
+#endif
+   evas_stringshare_del(cfg_main->theme_popup);
+#ifdef HAVE_PICTURE
+   evas_stringshare_del(cfg_main->sources_picture_data_import_dir);
+#endif
+
+#ifdef HAVE_RSS
+   for (l = cfg_main->sources_rss_docs; l; l = evas_list_next(l))
+      DEVIANF(data_rss_doc_free) (evas_list_data(l), 0, 1);
+#endif
+
+   for (l = DEVIANM->devians; l; l = evas_list_next(l))
+      DEVIANF(config_devian_free) (evas_list_data(l));
+
+   E_FREE(DEVIANM->conf);
+
+   E_CONFIG_DD_FREE(_edd_main);
+   E_CONFIG_DD_FREE(_edd_devians);
+#ifdef HAVE_RSS
+   E_CONFIG_DD_FREE(_edd_rss_docs);
+#endif
+}
+
 DEVIAN_MAIN_CONF *DEVIANF(config_load) (void)
 {
    DEVIAN_MAIN_CONF *cfg_main;
 
    cfg_main = e_config_domain_load("module." MODULE_NAME_NOCASE, _edd_main);
 
-   /* If loaded, check for good version */
+   /* if loaded, check for good version */
    if (cfg_main)
      {
         if (cfg_main->conf_version < CONFIG_VERSION)
@@ -91,7 +133,7 @@ DEVIAN_MAIN_CONF *DEVIANF(config_load) (void)
      }
 
    E_CONFIG_LIMIT(cfg_main->high_quality, 0, 1);
-   //... ADD all config limits
+   // ...TODO all config limits
 
    DMAIN(("Main config initialised"));
 
@@ -108,10 +150,10 @@ void DEVIANF(config_save) (void)
    if (!cfg_main)
       return;
 
-   /* Save number of devians */
+   /* save number of devians */
    cfg_main->nb_devian = evas_list_count(DEVIANM->devians);
 
-   /* Save config of each devian in main config */
+   /* save config of each devian in main config */
    cfg_main->devians_conf = NULL;
    for (l = DEVIANM->devians; l; l = evas_list_next(l))
      {
@@ -131,7 +173,7 @@ void DEVIANF(config_devian_save) (DEVIANN *devian)
    if (!devian->conf)
       return;
 
-   if (devian->container && (devian->conf->container_type == CONTAINER_BOX))
+  if (devian->container && (devian->conf->container_type == CONTAINER_BOX))
      {
         box = devian->container;
         devian->conf->box_x = box->x + box->theme_border_w / 2;
@@ -140,47 +182,6 @@ void DEVIANF(config_devian_save) (DEVIANN *devian)
         devian->conf->box_h = box->go_h - box->theme_border_h;
         devian->conf->box_alpha = box->alpha;
      }
-}
-
-void DEVIANF(config_free) (void)
-{
-   Evas_List *l;
-
-   DEVIAN_MAIN_CONF *cfg_main;
-
-   cfg_main = DEVIANM->conf;
-
-   evas_stringshare_del(cfg_main->viewer_http);
-   evas_stringshare_del(cfg_main->viewer_image);
-#ifdef HAVE_PICTURE
-   evas_stringshare_del(cfg_main->theme_picture);
-#endif
-#ifdef HAVE_RSS
-   evas_stringshare_del(cfg_main->theme_rss);
-#endif
-#ifdef HAVE_FILE
-   evas_stringshare_del(cfg_main->theme_file);
-#endif
-   evas_stringshare_del(cfg_main->theme_popup);
-#ifdef HAVE_PICTURE
-   evas_stringshare_del(cfg_main->sources_picture_data_import_dir);
-#endif
-
-#ifdef HAVE_RSS
-   for (l = cfg_main->sources_rss_docs; l; l = evas_list_next(l))
-      DEVIANF(data_rss_doc_free) (evas_list_data(l), 0, 1);
-#endif
-
-   for (l = DEVIANM->devians; l; l = evas_list_next(l))
-      DEVIANF(config_devian_free) (evas_list_data(l));
-
-   E_FREE(DEVIANM->conf);
-
-   E_CONFIG_DD_FREE(_edd_main);
-   E_CONFIG_DD_FREE(_edd_devians);
-#ifdef HAVE_RSS
-   E_CONFIG_DD_FREE(_edd_rss_docs);
-#endif
 }
 
 void DEVIANF(config_devian_free) (DEVIANN *devian)
@@ -382,13 +383,13 @@ DEVIAN_MAIN_CONF *DEVIANF(config_main_new) (void)
    return cfg_main;
 }
 
-/*
-  Creates a new config for a devian
-  Args:
-    - Conf: if !NULL, the returned config will be a copy of this one
-  Return:
-    The new config
-*/
+/**
+ * Creates a new config for a devian
+ *
+ * @param source_type Type of the source to put in the new config
+ * @param conf if !NULL, the returned config will be a copy of this one
+ * @return The new config
+ */
 DEVIAN_CONF *DEVIANF(config_devian_new) (int source_type, DEVIAN_CONF *conf)
 {
    DEVIAN_CONF *cfg;
@@ -416,6 +417,8 @@ DEVIAN_CONF *DEVIANF(config_devian_new) (int source_type, DEVIAN_CONF *conf)
 #endif
 #ifdef HAVE_FILE
         cfg->file_path = evas_stringshare_add(conf->file_path);
+	cfg->file_news_hiligh = conf->file_news_hiligh;
+	cfg->file_news_popup = conf->file_news_popup;
         cfg->file_auto_scroll = conf->file_auto_scroll;
 #endif
 
@@ -454,6 +457,8 @@ DEVIAN_CONF *DEVIANF(config_devian_new) (int source_type, DEVIAN_CONF *conf)
 #endif
 #ifdef HAVE_FILE
         cfg->file_path = evas_stringshare_add(DATA_FILE_PATH_DEFAULT);
+	cfg->file_news_hiligh = DATA_FILE_NEWS_HILIGH_DEFAULT;
+	cfg->file_news_popup = DATA_FILE_NEWS_POPUP_DEFAULT;
         cfg->file_auto_scroll = DATA_FILE_AUTO_SCROLL_DEFAULT;
 #endif
 
@@ -476,7 +481,8 @@ DEVIAN_CONF *DEVIANF(config_devian_new) (int source_type, DEVIAN_CONF *conf)
    return cfg;
 }
 
-/* Private functions */
+
+/* PRIVATE FUNCTIONS */
 
 static E_Config_DD *
 _devian_config_main_edd_init(void)
@@ -578,6 +584,8 @@ _devian_config_devians_edd_init(void)
 #endif
 #ifdef HAVE_FILE
    E_CONFIG_VAL(D, T, file_path, STR);
+   E_CONFIG_VAL(D, T, file_news_hiligh, INT);
+   E_CONFIG_VAL(D, T, file_news_popup, INT);
    E_CONFIG_VAL(D, T, file_auto_scroll, INT);
 #endif
 

@@ -9,7 +9,7 @@ typedef struct _Rss_Article Rss_Article;
 
 struct _Rss_Article
 {
-   /* Edje obj for item */
+   /* edje obj for item */
    Evas_Object *obj;
 
    Rss_Feed *feed;
@@ -19,8 +19,8 @@ struct _Rss_Article
    const char *description;
    const char *date;
    const char *date_simple;
-   int new;                     /* User already saw it ? */
-   int reused;                  /* Article was existing previously */
+   int new;                     /* user already saw it ? */
+   int reused;                  /* article was existing previously */
 };
 
 int DEVIANF(data_rss_parse_feed) (Rss_Feed *feed, Ecore_List *old_list, Ecore_List *list);

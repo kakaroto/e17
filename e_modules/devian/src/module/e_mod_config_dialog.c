@@ -25,7 +25,7 @@ static void _cb_button_regen_picture_list(void *data, void *data2);
 
 struct _E_Config_Dialog_Data
 {
-  /*- BASIC -*/
+  /* basic */
    char *viewer_http;
    char *viewer_image;
    char *viewer_file;
@@ -42,7 +42,7 @@ struct _E_Config_Dialog_Data
 #ifdef HAVE_FILE
    int sources_file_font_size;
 #endif
-  /*- ADVANCED -*/
+  /* advanced */
    int boxs_nice_resize;
    int boxs_nice_trans;
    int boxs_default_max_size;
@@ -63,6 +63,7 @@ struct _E_Config_Dialog_Data
 #endif
 };
 
+
 /* PUBLIC FUNCTIONS */
 
 E_Config_Dialog *DEVIANF(config_dialog_main) (E_Container *con)
@@ -70,8 +71,7 @@ E_Config_Dialog *DEVIANF(config_dialog_main) (E_Container *con)
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
 
-   /* If already open, return */
-   /* Only works if open via our menu, not config panel */
+   /* if already open, return */
    if (DEVIANM->dialog_conf)
       if (!e_object_is_del(E_OBJECT(DEVIANM->dialog_conf)))
          if (e_object_ref_get(E_OBJECT(DEVIANM->dialog_conf)) > 0)
@@ -91,7 +91,7 @@ E_Config_Dialog *DEVIANF(config_dialog_main) (E_Container *con)
 
    e_object_ref(E_OBJECT(cfd));
 
-   /* To make work our system of ref, even if module configuration panel open it */
+   /* to make work our system of ref, even if module configuration panel open it */
    DEVIANM->dialog_conf = cfd;
 
    return cfd;
@@ -108,9 +108,8 @@ void DEVIANF(config_dialog_main_shutdown) (void)
      }
 }
 
-/* PRIVATE FUNCTIONS */
 
-/**--DATA--**/
+/* PRIVATE FUNCTIONS */
 
 static void *
 _main_create_data(E_Config_Dialog *cfd)
@@ -185,7 +184,6 @@ _fill_data(E_Config_Dialog_Data *cfdata)
 static void
 _main_free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-   /* Free the cfdata */
    E_FREE(cfdata->viewer_http);
    E_FREE(cfdata->viewer_image);
    E_FREE(cfdata->viewer_file);
@@ -194,8 +192,6 @@ _main_free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 #endif
    free(cfdata);
 }
-
-/**--APPLY--**/
 
 static int
 _main_basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
@@ -254,13 +250,12 @@ _main_basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
    e_config_save_queue();
 
-   return 1;                    /* Apply was OK */
+   return 1;
 }
 
 static int
 _main_advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-   /* Actually take our cfdata settings and apply them in real life */
    Evas_List *l;
    DEVIANN *devian;
 
@@ -331,7 +326,7 @@ _main_advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    DEVIANM->conf->boxs_nice_resize = cfdata->boxs_nice_resize;
    DEVIANM->conf->boxs_nice_trans = cfdata->boxs_nice_trans;
 
-   /* Advanced only */
+   /* advanced only */
    DEVIANM->conf->boxs_default_max_size = cfdata->boxs_default_max_size;
    DEVIANM->conf->boxs_default_anim = cfdata->boxs_default_anim;
    if (DEVIANM->conf->boxs_anim_ghost_timer != cfdata->boxs_anim_ghost_timer)
@@ -360,8 +355,6 @@ _main_advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
    return 1;
 }
-
-/**--GUI--**/
 
 static Evas_Object *
 _main_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)

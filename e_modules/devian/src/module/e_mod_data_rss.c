@@ -27,6 +27,7 @@ static void _cb_infos_set(void *data, Evas_Object *obj, const char *emission, co
 static void _cb_infos_unset(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void _cb_infos_scroll(void *data, Evas_Object *obj, const char *emission, const char *source);
 
+
 /* PUBLIC FUNCTIONS */
 
 int DEVIANF(data_rss_new) (Source_Rss *source)
@@ -48,13 +49,13 @@ int DEVIANF(data_rss_new) (Source_Rss *source)
    feed->buffer = NULL;
    feed->buffer_size = 0;
 
-   /* Initialise lists of items */
+   /* initialise lists of items */
    feed->list_articles0 = ecore_list_new();
    feed->list_articles1 = ecore_list_new();
 
    source->rss_feed = feed;
 
-   /* Initialise network */
+   /* initialise network */
    if (!_net_init(feed))
      {
         DEVIANF(data_rss_del) (feed);
@@ -64,7 +65,7 @@ int DEVIANF(data_rss_new) (Source_Rss *source)
    feed->last_time = E_NEW(char, 9);
    strcpy(feed->last_time, "");
 
-   /* Set the RSS document to follow */
+   /* set the rss document to follow */
    DEVIANF(data_rss_doc_set_new) (feed, feed->source->devian->conf->rss_doc, feed->source->devian->conf->rss_url);
 
    return 1;
@@ -111,7 +112,7 @@ int DEVIANF(data_rss_poll) (void *data, int force_retry)
         return 0;
      }
 
-   /* Delete current connection if was forced to retry */
+   /* delete current connection if was forced to retry */
    if (feed->server)
      {
         DDATARSS(("Was already in connection, but forcing !"));
@@ -159,7 +160,7 @@ Rss_Doc *DEVIANF(data_rss_doc_new) (Rss_Doc *s, int add)
 
    if (s)
      {
-        /* Check if s is correct */
+        /* check if s is correct */
         {
            char *p, *p2;
 
@@ -188,7 +189,7 @@ Rss_Doc *DEVIANF(data_rss_doc_new) (Rss_Doc *s, int add)
 
         if (add)
           {
-             /* Check if s already exists */
+             /* check if s already exists */
              {
                 Evas_List *l;
 
@@ -200,7 +201,7 @@ Rss_Doc *DEVIANF(data_rss_doc_new) (Rss_Doc *s, int add)
                   }
              }
 
-             /* s is okay to be added ! Lets do it */
+             /* s is okay to be added ! lets do it */
              s->user = NULL;
              s->state = DATA_RSS_DOC_STATE_USABLE;
              DEVIANM->conf->sources_rss_docs = evas_list_append(DEVIANM->conf->sources_rss_docs, s);
@@ -232,7 +233,7 @@ int DEVIANF(data_rss_doc_free) (Rss_Doc *doc, int remove_from_list, int force)
 {
    if (!force)
      {
-        /* CHECK */
+        /* check */
         if (doc->user)
            return 0;
 
@@ -316,7 +317,7 @@ int DEVIANF(data_rss_doc_set_new) (Rss_Feed *feed, Rss_Doc *doc, const char *url
         feed->channel_meta = NULL;
      }
 
-   /* If feed is rightly initialised, we can poll */
+   /* if feed is rightly initialised, we can poll */
    if (feed->source->rss_feed)
       DEVIANF(data_rss_poll) (feed, 1);
 
@@ -410,14 +411,14 @@ Evas_Object *DEVIANF(data_rss_object_create) (Rss_Article *article)
 {
    Evas_Object *obj;
 
-   /* Title (edje) */
+   /* title (edje) */
    obj = edje_object_add(DEVIANM->container->bg_evas);
    if (!DEVIANF(devian_edje_load) (obj, "devian/rss/item", DEVIAN_THEME_TYPE_RSS))
       return NULL;
    edje_object_part_text_set(obj, "date", article->date_simple);
    edje_object_part_text_set(obj, "title", article->title);
 
-   /* Callbacks for open and description change & scroll */
+   /* callbacks for open and description change & scroll */
    edje_object_signal_callback_add(obj, "open", "item", _cb_item_open, article);
    edje_object_signal_callback_add(obj, "infos_set", "item", _cb_infos_set, article);
    edje_object_signal_callback_add(obj, "infos_unset", "item", _cb_infos_unset, article);
@@ -495,6 +496,7 @@ int DEVIANF(data_rss_gui_update) (DEVIANN *devian)
    return 1;
 }
 
+
 /* PRIVATE FUNCTIONS */
 
 static void
@@ -513,7 +515,7 @@ _rss_update(Rss_Feed *feed)
         old_list = feed->list_articles0;
         table = feed->source->obj1;
         DDATARSS(("Update on source 1"));
-        /* Clean in case we stoped an existing connection */
+        /* clean in case we stoped an existing connection */
         _feed_del(feed, list, table);
      }
    else
@@ -522,14 +524,14 @@ _rss_update(Rss_Feed *feed)
         old_list = feed->list_articles1;
         table = feed->source->obj0;
         DDATARSS(("Update on source 0"));
-        /* Clean in case we stoped an existing connection */
+        /* clean in case we stoped an existing connection */
         _feed_del(feed, list, table);
      }
 
    if (ecore_list_is_empty(old_list))
       old_list = NULL;
 
-   /* Parse, sort, repack table and the show result */
+   /* parse, sort, repack table and the show result */
    if ((i = DEVIANF(data_rss_parse_feed) (feed, old_list, list)) > 0)
       if ((i = _feed_sort(list)))
          if ((i = _table_create(feed, list, old_list, table)))
@@ -577,7 +579,7 @@ _rss_update(Rss_Feed *feed)
      }
    else
      {
-        if (i == -1)            /* No changes in feed */
+        if (i == -1)            /* no changes in feed */
            DEVIANF(container_loading_state_change) (feed->source->devian, 0);
      }
 
@@ -592,13 +594,13 @@ _net_init(Rss_Feed *feed)
 {
    char *env;
 
-   /* Proxy ? */
+   /* proxy ? */
    env = getenv("http_proxy");
    if (!env)
       env = getenv("HTTP_PROXY");
    if ((env) && !strncmp(env, "http://", 7))
      {
-        /* Proxy ! */
+        /* proxy ! */
         char *host = NULL, *p;
         int port = 0;
 
@@ -639,7 +641,7 @@ _net_init(Rss_Feed *feed)
 
    DDATARSS(("Init network: proxy %s %d", feed->proxy.host, feed->proxy.port));
 
-   /* Net callbacks */
+   /* net callbacks */
    feed->handler_server_add = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD, _server_add, feed);
    feed->handler_server_del = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL, _server_del, feed);
    feed->handler_server_data = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA, _server_data, feed);
@@ -653,7 +655,7 @@ _net_shutdown(Rss_Feed *feed)
    if (feed->proxy.host)
       E_FREE(feed->proxy.host);
 
-   /* Net callbacks */
+   /* net callbacks */
    if (feed->handler_server_add)
       ecore_event_handler_del(feed->handler_server_add);
    if (feed->handler_server_data)
@@ -678,15 +680,13 @@ _server_add(void *data, int type, void *event)
    feed = (Rss_Feed *)data;
    ev = event;
 
-   /* Check if the events is our event */
+   /* check if the events is our event */
    if (feed->server != ev->server)
       return 1;
 
    DDATARSS(("Connection established after %d tries, sending request", feed->nb_tries));
 
-   //......
-
-   /* Send request */
+   /* send request */
    snprintf(buf, sizeof(buf), "GET %s HTTP/1.0\r\n", feed->source->devian->conf->rss_doc->file);
    ecore_con_server_send(feed->server, buf, strlen(buf));
    snprintf(buf, sizeof(buf), "Host: %s\r\n", feed->source->devian->conf->rss_doc->host);
@@ -706,11 +706,11 @@ _server_del(void *data, int type, void *event)
    ev = (Ecore_Con_Event_Server_Del *) event;
    feed = (Rss_Feed *)data;
 
-   /* Check if the events is our event */
+   /* check if the events is our event */
    if (feed->server != ev->server)
       return 1;
 
-   /* Del server */
+   /* del server */
    ecore_con_server_del(ev->server);
    feed->server = NULL;
 
@@ -723,7 +723,7 @@ _server_del(void *data, int type, void *event)
         return 0;
      }
 
-   /* Update all with new data */
+   /* update all with new data */
    _rss_update(feed);
 
    return 0;
@@ -738,11 +738,11 @@ _server_data(void *data, int type, void *event)
    ev = (Ecore_Con_Event_Server_Data *) event;
    feed = (Rss_Feed *)data;
 
-   /* Check if the events is our event */
+   /* check if the events is our event */
    if (feed->server != ev->server)
       return 1;
 
-   /* Read add add in main buffer */
+   /* read add add in main buffer */
    feed->buffer = realloc(feed->buffer, feed->buffer_size + ev->size);
    memcpy(feed->buffer + feed->buffer_size, ev->data, ev->size);
    feed->buffer_size += ev->size;
@@ -789,7 +789,7 @@ _feed_sort(Ecore_List *list)
    if (!cmp || cmp > 0)
       return 1;
 
-   /* First is older than last, we have to invert list */
+   /* first is older than last, we have to invert list */
    count = ecore_list_nodes(list);
    for (i = 0; i < count; i++)
      {
@@ -828,7 +828,7 @@ _table_create(Rss_Feed *feed, Ecore_List *list, Ecore_List *old_list, Evas_Objec
       i = 0;
    while ((article = (Rss_Article *)ecore_list_next(list)) != NULL)
      {
-        /* Create object */
+        /* create object */
         if (!DEVIANF(data_rss_object_create) (article))
           {
              DEVIANF(data_rss_article_free) (article);
@@ -843,7 +843,7 @@ _table_create(Rss_Feed *feed, Ecore_List *list, Ecore_List *old_list, Evas_Objec
                     {
                        if (strcmp(feed->last_time, ""))
                          {
-                            /* New article */
+                            /* new article */
                             edje_object_message_send(article->obj, EDJE_MESSAGE_INT,
                                                      DEVIAN_DATA_RSS_EDJE_MSG_ITEM_NEW, &article->new);
                             if (DEVIANM->conf->sources_rss_popup_news && feed->source->devian->conf->rss_popup_news)
@@ -863,7 +863,7 @@ _table_create(Rss_Feed *feed, Ecore_List *list, Ecore_List *old_list, Evas_Objec
                     {
                        if (old_article->new)
                          {
-                            /* Existing red article */
+                            /* existing red article */
                             edje_object_message_send(article->obj, EDJE_MESSAGE_INT,
                                                      DEVIAN_DATA_RSS_EDJE_MSG_ITEM_NEW, &article->new);
                          }
@@ -875,7 +875,7 @@ _table_create(Rss_Feed *feed, Ecore_List *list, Ecore_List *old_list, Evas_Objec
                 article->new = 0;
 
              DDATARSS(("Put %s in the table, obj=%p", article->title, article->obj));
-             /* Hop in the table ;p */
+             /* hop in the table ;p */
              e_table_pack(table, article->obj, 0, i, 1, 1);
              e_table_pack_options_set(article->obj, 1, 1,       /* fill */
                                       1, 1,     /* expand */
@@ -934,7 +934,7 @@ _time_get(char *str)
    curtime = time(NULL);
    ts = localtime(&curtime);
    snprintf(str, 9, "%02d:%02d:%02d", ts->tm_hour, ts->tm_min, ts->tm_sec);
-   //... E_FREE(ts); //Maybe ?
+   //... E_FREE(ts); //maybe ?
 }
 
 static const char *
@@ -1031,7 +1031,7 @@ _cb_infos_set(void *data, Evas_Object *obj, const char *emission, const char *so
    if (!article->description)
       return;
 
-   /* Set item as viewed */
+   /* set item as viewed */
    if (article->new)
      {
         article->new = 0;
@@ -1054,7 +1054,7 @@ _cb_infos_unset(void *data, Evas_Object *obj, const char *emission, const char *
       return;
    article = (Rss_Article *)data;
 
-   /* Set no current article only if its not another */
+   /* set no current article only if its not another */
    if (article->feed->source->active_article == article)
       article->feed->source->active_article = NULL;
 }

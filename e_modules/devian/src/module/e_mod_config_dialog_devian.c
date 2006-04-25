@@ -29,7 +29,7 @@ struct _E_Config_Dialog_Data
 #ifdef HAVE_FILE
    Source_File *s_file;
 #endif
-  /*- BASIC -*/
+  /* basic */
    int container_box_size;
    int container_box_infos_show;
    int container_box_infos_pos;
@@ -38,17 +38,19 @@ struct _E_Config_Dialog_Data
 #ifdef HAVE_RSS
    Evas_Object *sources_rss_docs_ilist;
    Evas_Object *source_rss_tb;
-   Rss_Doc *source_rss_doc;     /* Pointer to sources_rss_docs list in main_conf
+   Rss_Doc *source_rss_doc;     /* pointer to sources_rss_docs list in main_conf
                                  * (the one selected) */
-   char *source_rss_url;        /* Copy of source_rss_doc url
-                                 * Used by ilist */
+   char *source_rss_url;        /* copy of source_rss_doc url
+                                 * used by ilist */
    int source_rss_nb_items;
    int source_rss_popup_news;
 #endif
 #ifdef HAVE_FILE
    char *source_file_path;
+   int source_file_news_hiligh;
+   int source_file_news_popup;
 #endif
-  /*- ADVANCED -*/
+  /* advanced */
    int container_box_speed;
    int container_box_auto_resize;
    int container_box_animation;
@@ -66,6 +68,7 @@ struct _E_Config_Dialog_Data
 #endif
 };
 
+
 /* PUBLIC FUNCTIONS */
 
 E_Config_Dialog *DEVIANF(config_dialog_devian) (E_Container *con, DEVIANN *devian)
@@ -73,7 +76,7 @@ E_Config_Dialog *DEVIANF(config_dialog_devian) (E_Container *con, DEVIANN *devia
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
 
-   /* If already open, return */
+   /* if already open, return */
    if (devian->dialog_conf)
       if (!e_object_is_del(E_OBJECT(devian->dialog_conf)))
          if (e_object_ref_get(E_OBJECT(devian->dialog_conf)) > 0)
@@ -88,7 +91,7 @@ E_Config_Dialog *DEVIANF(config_dialog_devian) (E_Container *con, DEVIANN *devia
    v->basic.create_widgets = _basic_create_widgets;
    v->advanced.apply_cfdata = _advanced_apply_data;
    v->advanced.create_widgets = _advanced_create_widgets;
-   /* create config diaolg for NULL object/data */
+
    cfd = e_config_dialog_new(con, _(MODULE_NAME " Module Configuration"), NULL, 0, v, devian);
 
    e_object_ref(E_OBJECT(cfd));
@@ -121,8 +124,8 @@ void DEVIANF(config_dialog_devian_rss_doc_update) (Rss_Doc *doc)
         devian = evas_list_data(l);
         if ((devian->conf->source_type == SOURCE_RSS) && (devian->dialog_conf))
           {
-             //... TODO: Remove and add only the item
-             //if (doc) nanana, CAN BE NULL -> refr all
+             // ...TODO: Remove and add only the item
+             //if (doc) nanana, can be null -> refr all
              cfdata = devian->dialog_conf->cfdata;
              _ilist_rss_docs_append(devian->dialog_conf, cfdata->sources_rss_docs_ilist, DEVIANM->conf->sources_rss_docs);
           }
@@ -130,9 +133,8 @@ void DEVIANF(config_dialog_devian_rss_doc_update) (Rss_Doc *doc)
 }
 #endif
 
-/* PRIVATE FUNCTIONS */
 
-/**--DATA--**/
+/* PRIVATE FUNCTIONS */
 
 static void *
 _create_data(E_Config_Dialog *cfd)
@@ -249,6 +251,8 @@ _fill_data(E_Config_Dialog_Data *cfdata)
 		     cfdata->source_file_path = strdup(d_conf->file_path);
 		  else
 		     cfdata->source_file_path = strdup("");
+		  cfdata->source_file_news_hiligh = d_conf->file_news_hiligh;
+		  cfdata->source_file_news_popup = d_conf->file_news_popup;
                   cfdata->source_file_auto_scroll = d_conf->file_auto_scroll;
                }
 #endif
@@ -272,8 +276,6 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
    free(cfdata);
 }
-
-/**--APPLY--**/
 
 static int
 _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
@@ -334,6 +336,8 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
                   devian->conf->file_path = evas_stringshare_add(cfdata->source_file_path);
                   devian->source_func.refresh(devian, 0);
                }
+	     devian->conf->file_news_hiligh = cfdata->source_file_news_hiligh;
+	     devian->conf->file_news_popup = cfdata->source_file_news_popup;
           }
      }
 #endif
@@ -387,7 +391,7 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
            devian->container_func.alpha_set(devian->container, cfdata->container_box_alpha);
      }
 
-   /* Advanced only */
+   /* advanced only */
 
 #ifdef HAVE_PICTURE
    if (cfdata->s_picture)
@@ -438,6 +442,8 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
                             devian->source_func.refresh(devian, 0);
                          }
                     }
+		  devian->conf->file_news_hiligh = cfdata->source_file_news_hiligh;
+		  devian->conf->file_news_popup = cfdata->source_file_news_popup;
                   devian->conf->file_auto_scroll = cfdata->source_file_auto_scroll;
                }
 #endif
@@ -452,8 +458,6 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
    return 1;
 }
-
-/**--GUI--**/
 
 static Evas_Object *
 _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
@@ -540,6 +544,10 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
                   ob = e_widget_entry_add(evas, &(cfdata->source_file_path));
                   e_widget_min_size_set(ob, 100, 1);
                   e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 1, 1);
+		  ob = e_widget_check_add(evas, _("Updates hiligh"), &(cfdata->source_file_news_hiligh));
+		  e_widget_frametable_object_append(of, ob, 0, 1, 2, 1, 1, 1, 1, 1);
+		  ob = e_widget_check_add(evas, _("Updates popup"), &(cfdata->source_file_news_popup));
+		  e_widget_frametable_object_append(of, ob, 0, 2, 2, 1, 1, 1, 1, 1);
                   e_widget_table_object_append(o, of, 1, 0, 1, 1, 1, 1, 1, 1);
                }
 #endif
@@ -556,7 +564,6 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 static Evas_Object *
 _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
-   /* generate the core widget layout for an advanced dialog */
    Evas_Object *o, *of, *ob;
    E_Radio_Group *rg;
 
@@ -676,6 +683,10 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
                   e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 1, 1);
                   ob = e_widget_check_add(evas, _("Auto scroll when updates"), &(cfdata->source_file_auto_scroll));
                   e_widget_frametable_object_append(of, ob, 0, 1, 2, 1, 1, 1, 1, 1);
+		  ob = e_widget_check_add(evas, _("Updates hiligh"), &(cfdata->source_file_news_hiligh));
+		  e_widget_frametable_object_append(of, ob, 0, 2, 2, 1, 1, 1, 1, 1);
+		  ob = e_widget_check_add(evas, _("Updates popup"), &(cfdata->source_file_news_popup));
+		  e_widget_frametable_object_append(of, ob, 0, 3, 2, 1, 1, 1, 1, 1);
                   e_widget_table_object_append(o, of, 1, 0, 1, 1, 1, 1, 1, 1);
                }
 #endif
@@ -732,10 +743,10 @@ _ilist_cb_rss_doc_selected(void *data)
    doc = DEVIANF(data_rss_doc_find_doc) ((const char *)cfdata->source_rss_url);
    if (doc)
      {
-        /* Select the doc */
+        /* select the doc */
         cfdata->source_rss_doc = doc;
 
-        /* Set it in panel infos tb */
+        /* set it in panel infos tb */
         if (doc->description)
            snprintf(buf, sizeof(buf), "<underline=on underline_color=#000>%s</><br>%s", doc->url, doc->description);
         else

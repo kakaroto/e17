@@ -54,19 +54,20 @@ struct _dEvian_Theme
 
 struct _E_Config_Dialog_Data
 {
-   /* List of dEvian_Theme */
+   /* list of devian_theme */
    Evas_List *themes;
-   /* Path for icons */
+   /* path for icons */
    char *icon_ok;
 
-   /* Basic */
+   /* basic */
    char *theme_general;
-   /* Advanced */
+   /* advanced */
    char *theme_rss;
    char *theme_picture;
    char *theme_file;
    char *theme_popup;
 };
+
 
 /* PUBLIC FUNCTIONS */
 
@@ -75,7 +76,7 @@ E_Config_Dialog *DEVIANF(config_dialog_theme) (void)
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
 
-   /* If was alreay open, return */
+   /* if was alreay open, return */
    if (DEVIANM->dialog_conf_theme)
       if (!e_object_is_del(E_OBJECT(DEVIANM->dialog_conf_theme)))
          if (e_object_ref_get(E_OBJECT(DEVIANM->dialog_conf_theme)) > 0)
@@ -106,6 +107,7 @@ void DEVIANF(config_dialog_theme_shutdown) (void)
         DEVIANM->dialog_conf_theme = NULL;
      }
 }
+
 
 /* PRIVATE FUNCTIONS */
 

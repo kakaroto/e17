@@ -30,22 +30,26 @@ int DEVIANF(devian_main_init) (E_Module *m)
    DEVIANM->dialog_conf = NULL;
    DEVIANM->dialog_conf_theme = NULL;
 
-   /* Libs used */
+   /* libs */
    DEVIANM->display = DEVIANF(display_init) ();
 
-   /* Config */
+   /* config */
    DEVIANM->conf = DEVIANF(config_init) ();
    if (!DEVIANM->conf)
       return 0;
 
-   /* Init devians like it is in the config file */
+   /* popup warn */
+   if (!DEVIANF(popup_warn_init) ())
+      return 0;
+
+   /* devians like it is in the config file */
    DMAIN(("%d devians to create", DEVIANM->conf->nb_devian));
    for (i = 0; i < DEVIANM->conf->nb_devian; i++)
      {
         cfg_devian = evas_list_nth(DEVIANM->conf->devians_conf, i);
         if (!DEVIANF(devian_add) (cfg_devian->source_type, cfg_devian))
           {
-             /* Should never happend */
+             /* should never happend */
              fprintf(stderr, MODULE_NAME ": Not good, a devian couldnt be created\n");
              evas_list_remove(DEVIANM->conf->devians_conf, cfg_devian);
           }
@@ -63,15 +67,15 @@ void DEVIANF(devian_main_shutdown) (void)
 {
    DMAIN(("Main shutdown begins"));
 
-   /* dEvians */
+   /* devians */
    DEVIANF(devian_del_all) ();
-   /* Popups */
-   DEVIANF(popup_warn_del_all) ();
-   /* Dialogs */
+   /* popup warn */
+   DEVIANF(popup_warn_shutdown) ();
+   /* dialogs */
    DEVIANF(config_dialog_main_shutdown) ();
-   /* Config */
-   DEVIANF(config_free) ();
-   /* Libs */
+   /* config */
+   DEVIANF(config_shutdown) ();
+   /* libs */
    DEVIANF(display_shutdown) ();
 
    E_FREE(DEVIANM);
@@ -113,21 +117,21 @@ DEVIANN *DEVIANF(devian_add) (int source_type, DEVIAN_CONF *cfg_devian)
    devian->dialog_conf_rss = NULL;
    devian->menu = NULL;
 
-   /* Append new devian to the list of devians */
+   /* append new devian to the list of devians */
    DEVIANM->devians = evas_list_append(DEVIANM->devians, devian);
 
-   /* Id */
+   /* id */
    DEVIANF(devian_set_id) (devian, source_type, NULL);
 
-   /* Config */
+   /* config */
    if (cfg_devian)
      {
-        /* Use existing config */
+        /* use existing config */
         devian->conf = cfg_devian;
      }
    else
      {
-        /* New config */
+        /* new config */
         devian->conf = DEVIANF(config_devian_new) (source_type, NULL);
         if (!devian->conf)
           {
@@ -136,7 +140,7 @@ DEVIANN *DEVIANF(devian_add) (int source_type, DEVIAN_CONF *cfg_devian)
           }
      }
 
-   /* Menu */
+   /* menu */
    devian->menu = DEVIANF(menu_init) (devian);
    if (!devian->menu)
      {
@@ -144,14 +148,14 @@ DEVIANN *DEVIANF(devian_add) (int source_type, DEVIAN_CONF *cfg_devian)
         return NULL;
      }
 
-   /* Source */
+   /* source */
    if (DEVIANF(source_change) (devian, devian->conf->source_type))
      {
         DEVIANF(devian_del) (devian, 1);
         return NULL;
      }
 
-   /* Container */
+   /* container */
    if (DEVIANF(container_change) (devian, devian->conf->container_type))
      {
         DEVIANF(devian_del) (devian, 1);
@@ -372,7 +376,7 @@ char *DEVIANF(display_init) (void)
    else
       display = strdup(":0.0");
 
-   /* Init E Lib */
+   /* init e Lib */
    if (display)
       e_lib_init(display);
    else

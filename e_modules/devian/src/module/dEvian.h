@@ -77,15 +77,15 @@
 #else
 # define DCONTAINER(x)  ((void) 0)
 #endif
-#ifdef DEBUG_DATA
-# define DDATA(x)  do {printf("DATA - %s:%d:  ", __FILE__, __LINE__); printf x; printf ("\n"); fflush(stdout);} while (0)
+#ifdef DEBUG_DATA_PICTURE
+# define DDATAPIC(x)  do {printf("DATA_PICTURE - %s:%d:  ", __FILE__, __LINE__); printf x; printf ("\n"); fflush(stdout);} while (0)
 #else
-# define DDATA(x)  ((void) 0)
+# define DDATAPIC(x)  ((void) 0)
 #endif
-#ifdef DEBUG_DATA_CACHE
-# define DDATAC(x)  do {printf("DATA_CACHE %s:%d:  ", __FILE__, __LINE__); printf x; printf ("\n"); fflush(stdout);} while (0)
+#ifdef DEBUG_DATA_PICTURE_CACHE
+# define DDATAPICC(x)  do {printf("DATA_PICTURE_CACHE %s:%d:  ", __FILE__, __LINE__); printf x; printf ("\n"); fflush(stdout);} while (0)
 #else
-# define DDATAC(x)  ((void) 0)
+# define DDATAPICC(x)  ((void) 0)
 #endif
 #ifdef DEBUG_DATA_RSS
 # define DDATARSS(x)  do {printf("DATA_RSS %s:%d:  ", __FILE__, __LINE__); printf x; printf ("\n"); fflush(stdout);} while (0)

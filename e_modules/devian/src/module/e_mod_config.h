@@ -8,7 +8,7 @@ typedef struct _dEvian_Conf DEVIAN_CONF;
 #define E_MOD_CONFIG_H_INCLUDED
 
 #ifdef HAVE_ALL
-#define CONFIG_VERSION 50
+#define CONFIG_VERSION 51
 #else
 #ifdef HAVE_PICTURE
 #define CONFIG_VERSION 5
@@ -17,7 +17,7 @@ typedef struct _dEvian_Conf DEVIAN_CONF;
 #define CONFIG_VERSION 4
 #else
 #ifdef HAVE_FILE
-#define CONFIG_VERSION 6
+#define CONFIG_VERSION 7
 #endif
 #endif
 #endif
@@ -25,10 +25,11 @@ typedef struct _dEvian_Conf DEVIAN_CONF;
 
 #define CONFIG_THEME_VERSION 2
 
-/* Struct for the module configuration */
+/* struct for the module configuration */
+
 struct _dEvian_Main_Conf
 {
-   /* General Module Settings */
+   /* general Module Settings */
    int conf_version;
    int high_quality;
    int nb_devian;
@@ -65,7 +66,7 @@ struct _dEvian_Main_Conf
    int sources_file_nb_lines_max;
 #endif
 
-   /* General Containers Settings */
+   /* general Containers Settings */
    int container_default;
 
    int boxs_always_id;
@@ -77,22 +78,23 @@ struct _dEvian_Main_Conf
    int boxs_nice_resize;
    int boxs_nice_trans;
 
-   /* General Data Settings */
+   /* general Data Settings */
 #ifdef HAVE_PICTURE
    int data_picture_thumb_default_size;
    int data_picture_cache_size;
 #endif
 
-   /* Viewers */
+   /* viewers */
    const char *viewer_image;
    const char *viewer_http;
    const char *viewer_file;
 
-   /* Config for each devian */
+   /* config for each devian */
    Evas_List *devians_conf;
 };
 
-/* Struct for sources config */
+
+/* struct for sources config */
 
 struct _dEvian_Conf
 {
@@ -104,10 +106,10 @@ struct _dEvian_Conf
    int picture_timer_active;
 #endif
 #ifdef HAVE_RSS
-   Rss_Doc *rss_doc;            /* Pointer to sources_rss_docs list in DEVIANM conf 
-                                 * Not being saved */
-   const char *rss_url;         /* Copy of rss_doc url 
-                                 * To be saved */
+   Rss_Doc *rss_doc;            /* pointer to sources_rss_docs list in DEVIANM conf 
+                                 * not being saved */
+   const char *rss_url;         /* copy of rss_doc url 
+                                 * to be saved */
    int rss_timer_s;
    int rss_timer_active;
    int rss_nb_items;
@@ -116,16 +118,18 @@ struct _dEvian_Conf
 #endif
 #ifdef HAVE_FILE
    const char *file_path;
+   int file_news_hiligh;
+   int file_news_popup;
    int file_auto_scroll;
 #endif
 
    /* About the container */
    int container_type;
 
-   int box_x;                   /* ...TODO: rename *_source */
-   int box_y;                   /* ...TODO: rename *_source */
-   int box_w;                   /* ...TODO: rename *_source */
-   int box_h;                   /* ...TODO: rename *_source */
+   int box_x;                   /* ...TODO rename *_source */
+   int box_y;                   /* ...TODO rename *_source */
+   int box_w;                   /* ...TODO rename *_source */
+   int box_h;                   /* ...TODO rename *_source */
    int box_alpha;
    int box_max_size_source;
    int box_speed;
@@ -137,15 +141,15 @@ struct _dEvian_Conf
 };
 
 DEVIAN_MAIN_CONF *DEVIANF(config_init) (void);
+void              DEVIANF(config_shutdown) (void);
 DEVIAN_MAIN_CONF *DEVIANF(config_load) (void);
-void DEVIANF(config_save) (void);
-void DEVIANF(config_devian_save) (DEVIANN *devian);
+void              DEVIANF(config_save) (void);
 
-void DEVIANF(config_free) (void);
-void DEVIANF(config_devian_free) (DEVIANN *devian);
+void              DEVIANF(config_devian_save) (DEVIANN *devian);
+void              DEVIANF(config_devian_free) (DEVIANN *devian);
 
 DEVIAN_MAIN_CONF *DEVIANF(config_main_new) (void);
-DEVIAN_CONF *DEVIANF(config_devian_new) (int source_type, DEVIAN_CONF *conf);
+DEVIAN_CONF      *DEVIANF(config_devian_new) (int source_type, DEVIAN_CONF *conf);
 
 #endif
 #endif

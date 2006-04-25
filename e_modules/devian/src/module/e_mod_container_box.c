@@ -21,6 +21,9 @@ static void _cb_edje_messages(void *data, Evas_Object *obj, Edje_Message_Type ty
 static int _cb_ecore_animator(void *data);
 static int _cb_timer_anim_ghost(void *data);
 
+
+/* PUBLIC FUNCTIONS */
+
 /**
  * Put the devian in a box
  *
@@ -41,7 +44,7 @@ int DEVIANF(container_box_add) (DEVIANN *devian, int edje_part)
 
    box->layer = DEVIANM->conf->boxs_stacking;
 
-   /* Edje object */
+   /* edje object */
    box->edje = edje_object_add(DEVIANM->container->bg_evas);
    if (!(box->theme = DEVIANF(container_edje_load) (box->edje, "devian/box", devian, CONTAINER_BOX, box)))
      {
@@ -49,7 +52,7 @@ int DEVIANF(container_box_add) (DEVIANN *devian, int edje_part)
         return 1;
      }
    evas_object_layer_set(box->edje, box->layer);
-   /* Default edje part : Set the other one, because we are going to do
+   /* default edje part : set the other one, because we are going to do
     * an edje_part_change at the end of the container's creation */
    if (edje_part == -1)
       box->edje_part = !CONTAINER_BOX_EDJE_PART_DEFAULT;
@@ -59,33 +62,33 @@ int DEVIANF(container_box_add) (DEVIANN *devian, int edje_part)
    box->in_transition = 0;
    box->infos_visible = 0;
 
-   /* Messages from edje */
+   /* messages from edje */
    edje_object_message_handler_set(box->edje, _cb_edje_messages, box);
 
-   /* Init show name & id */
+   /* init show name & id */
    DEVIANF(container_box_comments_display_set) (box);
    DEVIANF(container_box_update_id_devian) (box);
 
-   /* Infos scrollframe */
+   /* infos scrollframe */
    if (!DEVIANF(container_box_infos_init) (box))
      {
         DEVIANF(container_box_del) (box);
         return 1;
      }
 
-   /* Callbacks for mouse events on box */
+   /* callbacks for mouse events on box */
    evas_object_event_callback_add(box->edje, EVAS_CALLBACK_MOUSE_DOWN, _cb_mouse_down, box);
    evas_object_event_callback_add(box->edje, EVAS_CALLBACK_MOUSE_IN, _cb_mouse_in, box);
    evas_object_event_callback_add(box->edje, EVAS_CALLBACK_MOUSE_OUT, _cb_mouse_out, box);
 
-   /* Callbacks for controls on edje */
+   /* callbacks for controls on edje */
    edje_object_signal_callback_add(box->edje, "pause", "button_playpause", _cb_edje_part_change_stop, box);
    edje_object_signal_callback_add(box->edje, "play", "button_playpause", _cb_edje_part_change_start, box);
    edje_object_signal_callback_add(box->edje, "set_bg", "button_set_bg", _cb_edje_set_bg, box);
    edje_object_signal_callback_add(box->edje, "refresh", "button_refresh", _cb_edje_part_change_wanted, box);
    edje_object_signal_callback_add(box->edje, "previous", "button_previous", _cb_edje_part_previous_wanted, box);
 
-   /* Position, Size and Alpha */
+   /*position, size and alpha */
    box->x = devian->conf->box_x - box->theme_border_w / 2;
    box->y = devian->conf->box_y - box->theme_border_h / 2;
    box->w = 0;
@@ -96,37 +99,37 @@ int DEVIANF(container_box_add) (DEVIANN *devian, int edje_part)
    evas_object_move(box->edje, box->x, box->y);
    DEVIANF(container_box_alpha_set) (box, devian->conf->box_alpha);
 
-   /* Show edje */
+   /* show edje */
    evas_object_show(box->edje);
 
-   /* Disable warning indicator */
+   /* disable warning indicator */
    DEVIANF(container_box_warning_indicator_change) (box, 0);
 
-   /* Show we are waiting for a source */
+   /* show we are waiting for a source */
    DEVIANF(container_box_loading_state_change) (box, 1);
 
-   /* Animation */
+   /* animation */
    box->anim = E_NEW(Container_Box_Anim, 1);
    DEVIANF(container_box_animation_start) (box, box->devian->conf->box_anim);
 
-   /* Gadman */
+   /* gadman */
    _gadman_init(box);
 
-   /* Attach the object to the devian */
+   /* attach the object to the devian */
    devian->conf->container_type = CONTAINER_BOX;
    devian->container = box;
 
-   /* Set GUI actions */
+   /* set gui actions */
    DEVIANF(container_box_update_actions) (devian);
 
-   /* Transition and resize */
+   /* transition and resize */
    if (devian->source)
      {
         DEVIANF(container_box_edje_part_change) (box);
         DEVIANF(container_box_resize_auto) (devian);
      }
 
-   /* Actions */
+   /* actions */
    devian->container_func.resize_auto = DEVIANF(container_box_resize_auto);
    devian->container_func.update_actions = DEVIANF(container_box_update_actions);
    devian->container_func.is_in_transition = DEVIANF(container_box_is_in_transition);
@@ -147,22 +150,22 @@ void DEVIANF(container_box_del) (Container_Box *container)
    devian->conf->container_type = CONTAINER_NO;
    devian->container = NULL;
 
-   /* Gadman */
+   /* gadman */
    _gadman_shutdown(container);
 
-   /* Callbacks for mouse events */
+   /* callbacks for mouse events */
    evas_object_event_callback_del(container->edje, EVAS_CALLBACK_MOUSE_DOWN, _cb_mouse_down);
    evas_object_event_callback_del(container->edje, EVAS_CALLBACK_MOUSE_IN, _cb_mouse_in);
    evas_object_event_callback_del(container->edje, EVAS_CALLBACK_MOUSE_OUT, _cb_mouse_out);
 
-   /* Callbacks for controls */
+   /* callbacks for controls */
    edje_object_signal_callback_del(container->edje, "pause", "button_playpause", _cb_edje_part_change_stop);
    edje_object_signal_callback_del(container->edje, "play", "button_playpause", _cb_edje_part_change_start);
    edje_object_signal_callback_del(container->edje, "set", "button_background", _cb_edje_set_bg);
    edje_object_signal_callback_del(container->edje, "refresh", "button_refresh", _cb_edje_part_change_wanted);
    edje_object_signal_callback_del(container->edje, "previous", "button_previous", _cb_edje_part_previous_wanted);
 
-   /* Animation */
+   /* animation */
    if (container->animator)
      {
         if (container == ecore_animator_del(container->animator))
@@ -174,14 +177,14 @@ void DEVIANF(container_box_del) (Container_Box *container)
    DEVIANF(container_box_animation_start) (container, CONTAINER_BOX_ANIM_NO);
    E_FREE(container->anim);
 
-   /* Source */
+   /* source */
    if (DEVIANF(source_evas_object_get) (devian, &source0, &source1))
      {
         evas_object_hide(source0);
         evas_object_hide(source1);
      }
 
-   /* Edje object */
+   /* edje object */
    if (container->theme)
       evas_stringshare_del(container->theme);
    if (container->edje)
@@ -190,7 +193,7 @@ void DEVIANF(container_box_del) (Container_Box *container)
         evas_object_del(container->edje);
      }
 
-   /* Infos object */
+   /* infos object */
    DEVIANF(container_box_infos_shutdown) (container);
 
    DEVIANM->container_box_count--;
@@ -248,7 +251,7 @@ void DEVIANF(container_box_resize_auto) (DEVIANN *devian)
 
    box = devian->container;
 
-   /* Calc the size */
+   /* calc the size */
 
    if (!box->devian->dying)
      {
@@ -257,7 +260,7 @@ void DEVIANF(container_box_resize_auto) (DEVIANN *devian)
         thm_w = box->theme_border_w;
         thm_h = box->theme_border_h;
 
-        /* Get the new size in (w h) */
+        /* get the new size in (w h) */
         if (box->devian->conf->box_auto_resize)
           {
              double ratio;
@@ -272,9 +275,9 @@ void DEVIANF(container_box_resize_auto) (DEVIANN *devian)
                {
                   DCONTAINER((" - Auto resize - (im %dx%d) (max %dx%d) (r %f %f)", w, h, max_w, max_h, thm_w, thm_h));
 
-                  /* Box size limited to max box size, keeping ratio
-                   * Size of edje <-> size of the source
-                   * What size the box should have to perfectly fit the source */
+                  /* box size limited to max box size, keeping ratio
+                   * size of edje <-> size of the source
+                   * what size the box should have to perfectly fit the source */
 
                   w2 = (double)w_org;
                   h2 = (double)h_org;
@@ -298,9 +301,9 @@ void DEVIANF(container_box_resize_auto) (DEVIANN *devian)
                {
                   if (box->devian->size_policy == SIZE_POLICY_USER)
                     {
-                       //w = w_org; //... CHANGE to this
+                       //w = w_org; // ...CHANGE to this
                        //when original_size_get of rss will be ok
-                       w = box->go_w;   //... REMOVE
+                       w = box->go_w;   // ...REMOVE
                        h = max_h + thm_h;
                     }
                }
@@ -324,7 +327,7 @@ void DEVIANF(container_box_resize_auto) (DEVIANN *devian)
           }
         DCONTAINER(("Box new size : %dx%d", w, h));
 
-        /* Check the size is correct */
+        /* check the size is correct */
 
         if (w < CONTAINER_BOX_SIZE_MIN + thm_w)
            w = CONTAINER_BOX_SIZE_MIN + thm_w;
@@ -338,17 +341,17 @@ void DEVIANF(container_box_resize_auto) (DEVIANN *devian)
         if ((box->w == w) && (box->h == h))
            return;
 
-        /* We are going to this new (w h) size */
+        /* we are going to this new (w h) size */
 
         box->go_w = w;
         box->go_h = h;
      }
 
-   /* Set the size */
+   /* set the size */
 
    if (DEVIANM->conf->boxs_nice_resize)
      {
-        /* Nice resize */
+        /* nice resize */
         box->in_resize = 1;
         if (!box->animator)
           {
@@ -357,7 +360,7 @@ void DEVIANF(container_box_resize_auto) (DEVIANN *devian)
      }
    else
      {
-        /* Quick resize */
+        /* quick resize */
         if (((box->go_w == 0) || (box->go_h == 0)) && box->devian->dying)
           {
              DEVIANF(devian_del) (box->devian, 1);
@@ -402,7 +405,7 @@ int DEVIANF(container_box_edje_part_change) (Container_Box *container)
    if (container->in_transition)
       DCONTAINER(("Already in transition ! bur starting a new one =)"));
 
-   /* Change the name displayed */
+   /* change the name displayed */
    source_name = NULL;
    source_name = DEVIANF(source_name_get) (container->devian, !container->edje_part);
    if (source_name)
@@ -414,21 +417,21 @@ int DEVIANF(container_box_edje_part_change) (Container_Box *container)
         edje_object_part_text_set(container->edje, "name", "???");
      }
 
-   /* Support double buf ? */
+   /* support double buf ? */
    if (!container->devian->source_info.provide_double_buf)
      {
         if (!container->edje_part)
           {
-             /* Already on good part, apply and exit */
+             /* already on good part, apply and exit */
              edje_object_part_swallow(container->edje, "source0", source0);
              evas_object_show(source0);
              DEVIANF(container_box_loading_state_change) (container, 0);
              return 1;
           }
-        /* Change to the part0 */
+        /* change to the part0 */
      }
 
-   /* Start transition */
+   /* start transition */
    if (!container->edje_part)
      {
         container->edje_part = 1;
@@ -501,7 +504,7 @@ int DEVIANF(container_box_infos_init) (Container_Box *box)
    Evas_Textblock_Style *tb_style;
    const char *tmp;
 
-   /* Get the initial infos size */
+   /* get the initial infos size */
    tmp = edje_object_data_get(box->edje, "infos_initial_size");
    if (!tmp)
      {
@@ -514,7 +517,7 @@ int DEVIANF(container_box_infos_init) (Container_Box *box)
         return 0;
      }
 
-   /* Init the textblock */
+   /* init the textblock */
    tb = evas_object_textblock_add(DEVIANM->container->bg_evas);
    tb_style = evas_textblock_style_new();
    evas_textblock_style_set(tb_style, "DEFAULT='font=Vera font_size=10 align=left color=#000000ff wrap=word'" "br='\n'");
@@ -573,10 +576,10 @@ int DEVIANF(container_box_infos_text_change) (Container_Box *box, char *text)
 
    E_FREE(text);
 
-   /* Go to first page */
+   /* go to first page */
    e_scrollframe_child_pos_set(box->infos_scrollframe, 0, 0);
 
-   /* Debug */
+   /* debug */
    /*
     * {
     * int x, y;
@@ -717,14 +720,14 @@ int DEVIANF(container_box_animation_start) (Container_Box *box, int anim_num)
 
      case CONTAINER_BOX_ANIM_GHOST:
         {
-           /* In fade */
+           /* in fade */
            box->anim->data[1] = 0;
            /* 0: fade->trans, 1: fade->visible */
            box->anim->data[2] = 1;
-           /* Alpha */
+           /* alpha */
            evas_object_color_set(box->edje, 255, 255, 255, box->alpha);
            box->anim->data[3] = box->alpha;
-           /* Timer */
+           /* timer */
            if (box->anim->timer)
               ecore_timer_del(box->anim->timer);
            box->anim->timer = ecore_timer_add(DEVIANM->conf->boxs_anim_ghost_timer, _cb_timer_anim_ghost, box);
@@ -801,6 +804,7 @@ void DEVIANF(container_box_gadman_policy_update) (Container_Box *box)
 
 }
 
+
 /* PRIVATE FUNCTIONS */
 
 static int
@@ -820,23 +824,12 @@ _gadman_init(Container_Box *box)
    e_gadman_client_min_size_set(box->gmc, CONTAINER_BOX_SIZE_MIN, CONTAINER_BOX_SIZE_MIN);
    e_gadman_client_max_size_set(box->gmc, CONTAINER_BOX_SIZE_MAX, CONTAINER_BOX_SIZE_MAX);
    e_gadman_client_auto_size_set(box->gmc, (box->w), (box->h));
-   //e_gadman_client_align_set(box->gmc,
-   //                ((float)box->w/(float)box->h),
-   //                ((float)box->w/(float)box->h));
-
-   /*
-    * e_gadman_client_aspect_set(box->gmc,
-    * ((float)box->w/(float)box->h),
-    * ((float)box->w/(float)box->h));
-    */
 
    e_gadman_client_padding_set(box->gmc, 10, 10, 10, 10);
    e_gadman_client_resize(box->gmc, box->w, box->h);
    e_gadman_client_change_func_set(box->gmc, _gadman_change, box);
    box->gmc->x = box->x;
    box->gmc->y = box->y;
-
-   //e_gadman_client_load(box->gmc);
 
    return 1;
 }
@@ -902,7 +895,6 @@ _gadman_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change)
              box->in_resize = 0;
           }
 
-        //e_config_save_queue();
         DEVIANF(config_save) ();
 
         evas_object_move(box->edje, x, y);
@@ -1151,9 +1143,9 @@ _cb_edje_messages(void *data, Evas_Object *obj, Edje_Message_Type type, int id, 
      }
 }
 
-/*
-  The animator for one Container_Box
-*/
+/**
+ * The animator for one Container_Box
+ */
 static int
 _cb_ecore_animator(void *data)
 {
@@ -1165,7 +1157,7 @@ _cb_ecore_animator(void *data)
 
    if (e_gadman_mode_get(box->gmc->gadman) == E_GADMAN_MODE_NORMAL)
      {
-        /* Resize */
+        /* resize */
         if (box->in_resize)
           {
              int diff_w, diff_h;
@@ -1174,7 +1166,7 @@ _cb_ecore_animator(void *data)
              diff_w = box->w - box->go_w;
              diff_h = box->h - box->go_h;
 
-             /* CHECK: End of resize ? */
+             /* check: end of resize ? */
              if ((diff_w == 0) && (diff_h == 0))
                {
                   DCONTAINER(("Resize finished"));
@@ -1187,7 +1179,7 @@ _cb_ecore_animator(void *data)
                }
              else
                {
-                  /* Resize */
+                  /* resize */
                   if (diff_w > 3)
                      box->w = box->w - 3;
                   else
@@ -1207,7 +1199,7 @@ _cb_ecore_animator(void *data)
                           box->h = box->go_h;
                     }
 
-                  /* Out of the screen ? */
+                  /* out of the screen ? */
                   too_w = DEVIANM->canvas_w - (box->x + box->w);
                   if (too_w < 0)
                     {
@@ -1221,7 +1213,7 @@ _cb_ecore_animator(void *data)
                        evas_object_move(box->edje, box->x, box->y);
                     }
 
-                  /* Apply resize */
+                  /* apply resize */
                   box->gmc->w = box->w;
                   box->gmc->h = box->h;
                   evas_object_resize(box->edje, box->w, box->h);
@@ -1229,7 +1221,7 @@ _cb_ecore_animator(void *data)
                }
           }
 
-        /* Animation */
+        /* animation */
         switch (box->devian->conf->box_anim)
           {
           case CONTAINER_BOX_ANIM_NO:
@@ -1305,7 +1297,7 @@ _cb_ecore_animator(void *data)
 
      }
 
-   /* If there are no more animations for box , destroy ecore animator */
+   /* if there are no more animations for box , destroy ecore animator */
    if (!box->in_resize &&
        (!box->devian->conf->box_anim || (box->devian->conf->box_anim == CONTAINER_BOX_ANIM_GHOST && !box->anim->data[1])))
      {

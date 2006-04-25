@@ -4,6 +4,9 @@
 
 static void _cb_monitor(void *data, Ecore_File_Monitor *em, Ecore_File_Event event, const char *path);
 
+
+/* PUBLIC FUNCTIONS */
+
 /**
  * Add a file source to a dEvian
  * @param devian The dEvian
@@ -19,8 +22,9 @@ int DEVIANF(source_file_add) (DEVIANN *devian)
       
       snprintf(buf, sizeof(buf),
 	       _("<hilight>dEvian's Log feature isn't stable yet !</hilight><br><br>"
-		 "It's enabled for debugging purpose only"));
+		 "It's disabled for now"));
       e_module_dialog_show(_(MODULE_NAME " Module error"), buf);
+      return 0;
    }
    /* SOURCE_FILE IS NOT STABLE YET */
 
@@ -40,27 +44,25 @@ int DEVIANF(source_file_add) (DEVIANN *devian)
    if (!DEVIANF(data_file_add) (source))
       return 0;
 
-   /* Set new name for devian */
+   /* set new name for devian */
    DEVIANF(devian_set_id) (devian, SOURCE_FILE, NULL);
 
-   /* Provide declarations */
+   /* provide declarations */
    devian->source_info.provide_double_buf = 0;
-   devian->source_info.provide_previous = 0;
+   devian->source_info.provide_previous = 1;
    devian->source_info.provide_set_bg = 0;
    devian->source_info.allow_info_panel = 0;
 
-   /* Actions */
+   /* actions */
    devian->source_func.refresh = DEVIANF(source_file_change);
    devian->source_func.viewer = DEVIANF(source_file_viewer);
    devian->source_func.timer_change = DEVIANF(source_file_update_change);
 
-   devian->container_func.update_actions(devian);
-
-   /* Hop its active :) */
+   /* hop its active :) */
    devian->conf->source_type = SOURCE_FILE;
    devian->size_policy = SIZE_POLICY_USER;
 
-   /* Activate updates */
+   /* activate updates */
    DEVIANF(source_file_update_change) (devian, 1, 0);
 
    if (source->devian->container)
@@ -70,7 +72,7 @@ int DEVIANF(source_file_add) (DEVIANN *devian)
      }
    devian->container_func.resize_auto(source->devian);
 
-   /* Informations */
+   /* informations */
    DEVIANF(container_infos_text_change) (source->devian, NULL);
 
    DSOURCE(("Source file creation OK\n"));
@@ -162,6 +164,7 @@ void DEVIANF(source_file_update_change) (DEVIANN *devian, int active, int time)
           }
      }
 }
+
 
 /* PRIVATE FUNCTIONS */
 

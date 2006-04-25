@@ -22,13 +22,13 @@ typedef struct _dEvian DEVIANN;
 #define DEVIAN_THEME_DEFAULT "minimal"
 #define DEVIAN_THEME_TYPE_POPUP 0
 #ifdef HAVE_PICTURE
-#define DEVIAN_THEME_TYPE_PICTURE 1     /* Must be the same than SOURCE_PICTURE */
+#define DEVIAN_THEME_TYPE_PICTURE 1     /* must be the same than SOURCE_PICTURE */
 #endif
 #ifdef HAVE_RSS
-#define DEVIAN_THEME_TYPE_RSS 2 /* Must be the same than SOURCE_RSS */
+#define DEVIAN_THEME_TYPE_RSS 2 /* must be the same than SOURCE_RSS */
 #endif
 #ifdef HAVE_FILE
-#define DEVIAN_THEME_TYPE_FILE 3        /* Must be the same than SOURCE_FILE */
+#define DEVIAN_THEME_TYPE_FILE 3        /* must be the same than SOURCE_FILE */
 #endif
 
 #define DEVIAN_MAX_PATH 200
@@ -42,7 +42,7 @@ typedef struct _dEvian DEVIANN;
 #define SIZE_POLICY_AUTO 0
 #define SIZE_POLICY_USER 1
 
-/* Name of the global main dEvian is strcat(DEVIAN_NAME,"M") */
+/* name of the global main devian is strcat(DEVIAN_NAME,"M") */
 
 #ifdef HAVE_ALL
 #define DEVIANM dEvianM
@@ -65,7 +65,7 @@ typedef struct _dEvian DEVIANN;
 DEVIAN_MAIN *DEVIANM;
 
 /**
- *Struct for dEvian module
+ * Struct for dEvian module
  */
 struct _dEvian_Main
 {
@@ -73,7 +73,6 @@ struct _dEvian_Main
    E_Container *container;
    char *display;
 
-   //Evas_Coord canvas_w, canvas_h;
    int canvas_w, canvas_h;
    Evas_List *devians;
 
@@ -91,10 +90,10 @@ struct _dEvian_Main
    Picture_Cache *picture_cache;
 #endif
 
-   /* Panel */
+   /* panel */
    E_Config_Dialog *dialog_conf;
    E_Config_Dialog *dialog_conf_theme;
-   /* Module config */
+   /* module config */
    DEVIAN_MAIN_CONF *conf;
 };
 
@@ -108,8 +107,8 @@ struct _dEvian
    char *id;
 
    void *source;
-   /* Source actions wich dEvian handles */
-   /* ...TODO: Add other actions */
+   /* source actions wich dEvian handles */
+   /* ...TODO add other actions */
    struct
    {
       void (*timer_change) (DEVIANN *devian, int active, int time);
@@ -128,8 +127,8 @@ struct _dEvian
    } source_info;
 
    void *container;
-   /* Container actions wich dEvian handles */
-   /* ...TODO: Add other actions */
+   /* container actions wich devian handles */
+   /* ...TODO add other actions */
    struct
    {
       void (*update_actions) (DEVIANN *devian);
@@ -141,7 +140,7 @@ struct _dEvian
    int size_policy;
    Popup_Warn *popup_warn;
 
-   /* The devian is going to die */
+   /* the devian is going to die */
    int dying;
 
    DEVIAN_CONF *conf;
@@ -150,7 +149,8 @@ struct _dEvian
    E_Menu *menu;
 };
 
-/* Functions about dEvian */
+
+/* functions about devian */
 
 int DEVIANF(devian_main_init) (E_Module *m);
 void DEVIANF(devian_main_shutdown) (void);
@@ -161,7 +161,8 @@ void DEVIANF(devian_del_all) (void);
 
 void DEVIANF(devian_set_id) (DEVIANN *devian, int source, char *c2);
 
-/* Some wrappers for librairies/functionalities used by dEvian */
+
+/* some wrappers for librairies/functionalities used by devian */
 
 char *DEVIANF(display_init) (void);
 void DEVIANF(display_shutdown) (void);
