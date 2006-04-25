@@ -6,6 +6,7 @@
 
 #include "poppler_enum.h"
 #include "poppler_private.h"
+#include "poppler_document.h"
 #include "poppler_postscript.h"
 
 
@@ -26,8 +27,10 @@ epdf_postscript_new (Epdf_Document *document,
 
   ps->pdfdoc = document->pdfdoc;
   ps->filename = strdup (filename);
-  ps->first_page = first_page;
-  ps->last_page = last_page;
+  ps->first_page = (first_page < 1) ? 1 : first_page;
+  ps->last_page = (last_page > epdf_document_page_count_get (document)) ?
+    epdf_document_page_count_get (document) :
+    last_page;
 
   ps->width = -1.0;
   ps->height = -1.0;

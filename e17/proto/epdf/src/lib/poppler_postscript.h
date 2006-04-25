@@ -23,7 +23,8 @@ extern "C" {
  * PDF document @p document,  whose name will be @p filename. The
  * first and last pages that will be printed are respectively @p
  * first_page and @p last_page. The count of the pages begins from 1
- * and not 0
+ * and not 0. if @p first_page is < 1, 1 is used. If @p last_page is >
+ * #pages, #pages is used
  */
 Epdf_Postscript *epdf_postscript_new (Epdf_Document *document,
                                       const char    *filename,
