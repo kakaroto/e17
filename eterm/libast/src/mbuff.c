@@ -66,6 +66,7 @@ static SPIF_CONST_TYPE(mbuffclass) mb_class = {
     (spif_func_t) spif_mbuff_rindex,
     (spif_func_t) spif_mbuff_splice,
     (spif_func_t) spif_mbuff_splice_from_ptr,
+    (spif_func_t) spif_mbuff_sprintf,
     (spif_func_t) spif_mbuff_subbuff,
     (spif_func_t) spif_mbuff_subbuff_to_ptr,
     (spif_func_t) spif_mbuff_trim
@@ -652,6 +653,38 @@ spif_mbuff_splice_from_ptr(spif_mbuff_t self, spif_memidx_t idx, spif_memidx_t c
     memcpy(self->buff, tmp, newsize);
     FREE(tmp);
     return TRUE;
+}
+
+spif_bool_t
+spif_mbuff_sprintf(spif_mbuff_t self, spif_charptr_t format, ...)
+{
+    va_list ap;
+
+    ASSERT_RVAL(!SPIF_MBUFF_ISNULL(self), FALSE);
+    va_start(ap, format);
+    if (self->buff != SPIF_NULL_TYPE(byteptr)) {
+        spif_mbuff_done(self);
+    }
+    if (*format == 0) {
+        return TRUE;
+    } else if (*(format + 1) == 0) {
+        return spif_mbuff_init_from_ptr(self, format, 2);
+    } else {
+        int c;
+        char buff[2];
+
+        c = vsnprintf(buff, sizeof(buff), format, ap);
+        if (c <= 0) {
+            return TRUE;
+        } else {
+            c++;
+            self->len = self->size = c;
+            self->buff = SPIF_CAST(charptr) MALLOC(self->size);
+            c = vsnprintf(self->buff, self->size, format, ap);
+        }
+        return ((c >= 0) ? (TRUE) : (FALSE));
+    }
+    ASSERT_NOTREACHED_RVAL(FALSE);
 }
 
 spif_mbuff_t

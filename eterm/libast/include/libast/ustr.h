@@ -24,6 +24,20 @@
 #ifndef _LIBAST_USTR_H_
 #define _LIBAST_USTR_H_
 
+#define SPIF_UTF8_CHAR_LEN(s)         ((((SPIF_CAST(uchar) (*(s))) & 0x80) == 0x00) \
+                                       ? (1) \
+                                       : ((((SPIF_CAST(uchar) (*(s))) & 0xc0) == 0x80) \
+                                          ? (2) \
+                                          : ((((SPIF_CAST(uchar) (*(s))) & 0xe0) == 0xc0) \
+                                             ? (3) \
+                                             : ((((SPIF_CAST(uchar) (*(s))) & 0xf0) == 0xe0) \
+                                                ? (4) \
+                                                : ((((SPIF_CAST(uchar) (*(s))) & 0xf8) == 0xf0) \
+                                                   ? (5) \
+                                                   : ((((SPIF_CAST(uchar) (*(s))) & 0xfc) == 0xf8) \
+                                                      ? (6) \
+                                                      : (0)))))))
+
 #define SPIF_USTR(obj)                ((spif_ustr_t) (obj))
 #define SPIF_OBJ_IS_USTR(obj)         (SPIF_OBJ_IS_TYPE(obj, ustr))
 #define SPIF_USTR_ISNULL(s)           SPIF_OBJ_ISNULL(SPIF_OBJ(s))
@@ -70,6 +84,7 @@
 #define SPIF_USTR_RINDEX(o, x)                   SPIF_CAST(stridx) (SPIF_OBJ_CALL_METHOD((o), rindex)(o, x))
 #define SPIF_USTR_SPLICE(o, n1, n2, x)           SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), splice)(o, n1, n2, x))
 #define SPIF_USTR_SPLICE_FROM_PTR(o, n1, n2, x)  SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), splice_from_ptr)(o, n1, n2, x))
+#define SPIF_USTR_SPRINTF(x)                     SPIF_CAST(bool) (SPIF_STR_CALL_METHOD((o), sprintf) x)
 #define SPIF_USTR_SUBSTR(o, n1, n2)              SPIF_CAST(ustr) (SPIF_OBJ_CALL_METHOD((o), substr)(o, n1, n2))
 #define SPIF_USTR_SUBSTR_TO_PTR(o, n1, n2)       SPIF_CAST(charptr) (SPIF_OBJ_CALL_METHOD((o), substr_to_ptr)(o, n1, n2))
 #define SPIF_USTR_TO_FLOAT(o)                    SPIF_CAST_C(double) (SPIF_OBJ_CALL_METHOD((o), to_float)(o))
@@ -134,6 +149,7 @@ extern spif_bool_t spif_ustr_reverse(spif_ustr_t);
 extern spif_ustridx_t spif_ustr_rindex(spif_ustr_t, spif_char_t);
 extern spif_bool_t spif_ustr_splice(spif_ustr_t, spif_ustridx_t, spif_ustridx_t, spif_ustr_t);
 extern spif_bool_t spif_ustr_splice_from_ptr(spif_ustr_t, spif_ustridx_t, spif_ustridx_t, spif_charptr_t);
+extern spif_bool_t spif_ustr_sprintf(spif_ustr_t, spif_charptr_t, ...);
 extern spif_ustr_t spif_ustr_substr(spif_ustr_t, spif_ustridx_t, spif_ustridx_t);
 extern spif_charptr_t spif_ustr_substr_to_ptr(spif_ustr_t, spif_ustridx_t, spif_ustridx_t);
 extern double spif_ustr_to_float(spif_ustr_t);

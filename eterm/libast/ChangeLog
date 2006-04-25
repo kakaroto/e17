@@ -781,3 +781,9 @@ Fleshed out ustr class; doesn't do UTF-8 yet though.
 
 Fixed array removal code.  I have no idea how that was working before.
 ----------------------------------------------------------------------
+Tue Apr 25 10:19:10 2006                        Michael Jennings (mej)
+
+Added sprintf() routines for string classes.
+
+Began work on UTF-8/Unicode strings.
+----------------------------------------------------------------------

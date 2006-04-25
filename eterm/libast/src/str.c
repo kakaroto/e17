@@ -75,6 +75,7 @@ static SPIF_CONST_TYPE(strclass) s_class = {
     (spif_func_t) spif_str_rindex,
     (spif_func_t) spif_str_splice,
     (spif_func_t) spif_str_splice_from_ptr,
+    (spif_func_t) spif_str_sprintf,
     (spif_func_t) spif_str_substr,
     (spif_func_t) spif_str_substr_to_ptr,
     (spif_func_t) spif_str_to_float,
@@ -704,6 +705,38 @@ spif_str_splice_from_ptr(spif_str_t self, spif_stridx_t idx, spif_stridx_t cnt, 
     memcpy(self->s, tmp, newsize);
     FREE(tmp);
     return TRUE;
+}
+
+spif_bool_t
+spif_str_sprintf(spif_str_t self, spif_charptr_t format, ...)
+{
+    va_list ap;
+
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), FALSE);
+    va_start(ap, format);
+    if (self->s != SPIF_NULL_TYPE(charptr)) {
+        spif_str_done(self);
+    }
+    if (*format == 0) {
+        return TRUE;
+    } else if (*(format + 1) == 0) {
+        return spif_str_init_from_ptr(self, format);
+    } else {
+        int c;
+        char buff[2];
+
+        c = vsnprintf(buff, sizeof(buff), format, ap);
+        if (c <= 0) {
+            return TRUE;
+        } else {
+            self->len = c;
+            self->size = c + 1;
+            self->s = SPIF_CAST(charptr) MALLOC(self->size);
+            c = vsnprintf(self->s, c + 1, format, ap);
+        }
+        return ((c >= 0) ? (TRUE) : (FALSE));
+    }
+    ASSERT_NOTREACHED_RVAL(FALSE);
 }
 
 spif_str_t

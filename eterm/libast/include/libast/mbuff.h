@@ -68,6 +68,7 @@
 #define SPIF_MBUFF_RINDEX(o, x)                   SPIF_CAST(memidx) (SPIF_OBJ_CALL_METHOD((o), rindex)(o, x))
 #define SPIF_MBUFF_SPLICE(o, n1, n2, x)           SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), splice)(o, n1, n2, x))
 #define SPIF_MBUFF_SPLICE_FROM_PTR(o, n1, n2, x)  SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), splice_from_ptr)(o, n1, n2, x))
+#define SPIF_MBUFF_SPRINTF(x)                     SPIF_CAST(bool) (SPIF_STR_CALL_METHOD((o), sprintf) x)
 #define SPIF_MBUFF_SUBBUFF(o, n1, n2)             SPIF_CAST(mbuff) (SPIF_OBJ_CALL_METHOD((o), subbuff)(o, n1, n2))
 #define SPIF_MBUFF_SUBBUFF_TO_PTR(o, n1, n2)      SPIF_CAST(byteptr) (SPIF_OBJ_CALL_METHOD((o), subbuff_to_ptr)(o, n1, n2))
 #define SPIF_MBUFF_TRIM(o)                        SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), trim)(o))
@@ -111,6 +112,7 @@ SPIF_DECL_OBJ(mbuffclass) {
     spif_func_t rindex;
     spif_func_t splice;
     spif_func_t splice_from_ptr;
+    spif_func_t sprintf;
     spif_func_t subbuff;
     spif_func_t subbuff_to_ptr;
     spif_func_t trim;
@@ -151,6 +153,7 @@ extern spif_bool_t spif_mbuff_reverse(spif_mbuff_t);
 extern spif_memidx_t spif_mbuff_rindex(spif_mbuff_t, spif_uint8_t);
 extern spif_bool_t spif_mbuff_splice(spif_mbuff_t, spif_memidx_t, spif_memidx_t, spif_mbuff_t);
 extern spif_bool_t spif_mbuff_splice_from_ptr(spif_mbuff_t, spif_memidx_t, spif_memidx_t, spif_byteptr_t, spif_memidx_t);
+extern spif_bool_t spif_mbuff_sprintf(spif_mbuff_t, spif_charptr_t, ...);
 extern spif_mbuff_t spif_mbuff_subbuff(spif_mbuff_t, spif_memidx_t, spif_memidx_t);
 extern spif_byteptr_t spif_mbuff_subbuff_to_ptr(spif_mbuff_t, spif_memidx_t, spif_memidx_t);
 extern spif_bool_t spif_mbuff_trim(spif_mbuff_t);

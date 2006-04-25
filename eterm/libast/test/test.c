@@ -888,6 +888,17 @@ test_str(void)
     spif_str_del(teststr);
     TEST_PASS();
 
+    TEST_BEGIN("spif_str_sprintf() function");
+    teststr = spif_str_new();
+    TEST_FAIL_IF(!spif_str_sprintf(teststr, ""));
+    TEST_FAIL_IF(!SPIF_PTR_ISNULL(SPIF_STR_STR(teststr)));
+    TEST_FAIL_IF(!spif_str_sprintf(teststr, "E"));
+    TEST_FAIL_IF(spif_str_cmp_with_ptr(teststr, "E"));
+    TEST_FAIL_IF(!spif_str_sprintf(teststr, "float %3.2f int %d string %s", 1.0, 17, "hot"));
+    TEST_FAIL_IF(spif_str_cmp_with_ptr(teststr, "float 1.00 int 17 string hot"));
+    spif_str_del(teststr);
+    TEST_PASS();
+
     TEST_BEGIN("spif_str_reverse() function");
     teststr = spif_str_new_from_buff(buff, sizeof(buff));
     spif_str_reverse(teststr);
@@ -1193,6 +1204,17 @@ test_mbuff(void)
     spif_mbuff_del(testmbuff);
     TEST_PASS();
 
+    TEST_BEGIN("spif_mbuff_sprintf() function");
+    testmbuff = spif_mbuff_new();
+    TEST_FAIL_IF(!spif_mbuff_sprintf(testmbuff, ""));
+    TEST_FAIL_IF(!SPIF_PTR_ISNULL(SPIF_MBUFF_BUFF(testmbuff)));
+    TEST_FAIL_IF(!spif_mbuff_sprintf(testmbuff, "E"));
+    TEST_FAIL_IF(spif_mbuff_cmp_with_ptr(testmbuff, "E", 2));
+    TEST_FAIL_IF(!spif_mbuff_sprintf(testmbuff, "float %3.2f int %d string %s", 1.0, 17, "hot"));
+    TEST_FAIL_IF(spif_mbuff_cmp_with_ptr(testmbuff, "float 1.00 int 17 string hot", 29));
+    spif_mbuff_del(testmbuff);
+    TEST_PASS();
+
     TEST_BEGIN("spif_mbuff_reverse() function");
     testmbuff = spif_mbuff_new_from_buff(buff, 6, 0);
     spif_mbuff_reverse(testmbuff);
@@ -1209,13 +1231,14 @@ test_mbuff(void)
 int
 test_ustr(void)
 {
-    spif_ustr_t testustr, test2ustr;
+    spif_ustr_t testustr, test2ustr, test3ustr;
     spif_strclass_t cls;
     char tmp[] = "this is a test";
     spif_char_t buff[4096] = "abcde";
     char tmp2[] = "string #1\nstring #2";
+    char tmp3[] = "ASCII\316\272\341\275\271\317\203\316\274\316ASCII";
     FILE *fp;
-    int fd, mypipe[2];
+    int i, fd, mypipe[2];
     spif_charptr_t foo;
 
     TEST_BEGIN("spif_ustr_new() function");
@@ -1459,6 +1482,17 @@ test_ustr(void)
     spif_ustr_del(testustr);
     TEST_PASS();
 
+    TEST_BEGIN("spif_ustr_sprintf() function");
+    testustr = spif_ustr_new();
+    TEST_FAIL_IF(!spif_ustr_sprintf(testustr, ""));
+    TEST_FAIL_IF(!SPIF_PTR_ISNULL(SPIF_USTR_STR(testustr)));
+    TEST_FAIL_IF(!spif_ustr_sprintf(testustr, "E"));
+    TEST_FAIL_IF(spif_ustr_cmp_with_ptr(testustr, "E"));
+    TEST_FAIL_IF(!spif_ustr_sprintf(testustr, "float %3.2f int %d string %s", 1.0, 17, "hot"));
+    TEST_FAIL_IF(spif_ustr_cmp_with_ptr(testustr, "float 1.00 int 17 string hot"));
+    spif_ustr_del(testustr);
+    TEST_PASS();
+
     TEST_BEGIN("spif_ustr_reverse() function");
     testustr = spif_ustr_new_from_buff(buff, sizeof(buff));
     spif_ustr_reverse(testustr);
@@ -1466,6 +1500,23 @@ test_ustr(void)
     TEST_FAIL_IF(spif_ustr_get_size(testustr) != sizeof(buff));
     TEST_FAIL_IF(spif_ustr_get_len(testustr) != 5);
     spif_ustr_del(testustr);
+    TEST_PASS();
+
+    TEST_BEGIN("SPIF_UTF8_CHAR_LEN() macro");
+    for (i = 0; i < 5; i++) {
+        TEST_FAIL_IF(SPIF_UTF8_CHAR_LEN(&tmp3[i]) != 1);
+    }
+    TEST_FAIL_IF(SPIF_UTF8_CHAR_LEN(&tmp3[i]) != 3);
+    i+=3;
+    TEST_FAIL_IF(SPIF_UTF8_CHAR_LEN(&tmp3[i]) != 2);
+    i+=2;
+    TEST_FAIL_IF(SPIF_UTF8_CHAR_LEN(&tmp3[i]) != 3);
+    i+=3;
+    TEST_FAIL_IF(SPIF_UTF8_CHAR_LEN(&tmp3[i]) != 2);
+    i+=2;
+    for (; i < 21; i++) {
+        TEST_FAIL_IF(SPIF_UTF8_CHAR_LEN(&tmp3[i]) != 1);
+    }
     TEST_PASS();
 
     TEST_PASSED("spif_ustr_t");

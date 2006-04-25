@@ -73,6 +73,7 @@
 #define SPIF_STR_RINDEX(o, x)                   SPIF_CAST(stridx) (SPIF_STR_CALL_METHOD((o), rindex)(o, x))
 #define SPIF_STR_SPLICE(o, n1, n2, x)           SPIF_CAST(bool) (SPIF_STR_CALL_METHOD((o), splice)(o, n1, n2, x))
 #define SPIF_STR_SPLICE_FROM_PTR(o, n1, n2, x)  SPIF_CAST(bool) (SPIF_STR_CALL_METHOD((o), splice_from_ptr)(o, n1, n2, x))
+#define SPIF_STR_SPRINTF(x)                     SPIF_CAST(bool) (SPIF_STR_CALL_METHOD((o), sprintf) x)
 #define SPIF_STR_SUBSTR(o, n1, n2)              SPIF_CAST(str) (SPIF_STR_CALL_METHOD((o), substr)(o, n1, n2))
 #define SPIF_STR_SUBSTR_TO_PTR(o, n1, n2)       SPIF_CAST(charptr) (SPIF_STR_CALL_METHOD((o), substr_to_ptr)(o, n1, n2))
 #define SPIF_STR_TO_FLOAT(o)                    SPIF_CAST_C(double) (SPIF_STR_CALL_METHOD((o), to_float)(o))
@@ -128,6 +129,7 @@ SPIF_DECL_OBJ(strclass) {
     spif_func_t rindex;
     spif_func_t splice;
     spif_func_t splice_from_ptr;
+    spif_func_t sprintf;
     spif_func_t substr;
     spif_func_t substr_to_ptr;
     spif_func_t to_float;
@@ -180,6 +182,7 @@ extern spif_bool_t spif_str_reverse(spif_str_t);
 extern spif_stridx_t spif_str_rindex(spif_str_t, spif_char_t);
 extern spif_bool_t spif_str_splice(spif_str_t, spif_stridx_t, spif_stridx_t, spif_str_t);
 extern spif_bool_t spif_str_splice_from_ptr(spif_str_t, spif_stridx_t, spif_stridx_t, spif_charptr_t);
+extern spif_bool_t spif_str_sprintf(spif_str_t, spif_charptr_t, ...);
 extern spif_str_t spif_str_substr(spif_str_t, spif_stridx_t, spif_stridx_t);
 extern spif_charptr_t spif_str_substr_to_ptr(spif_str_t, spif_stridx_t, spif_stridx_t);
 extern double spif_str_to_float(spif_str_t);
