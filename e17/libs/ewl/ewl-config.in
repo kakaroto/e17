@@ -42,11 +42,11 @@ while test $# -gt 0; do
       if test @includedir@ != /usr/include ; then
         includes=-I@includedir@
       fi
-      echo $includes @EMOTION_CFLAGS@ @ECORE_CFLAGS@ @EVAS_CFLAGS@ -I$prefix/include/ewl
+      echo $includes @EMOTION_CFLAGS@ @ECORE_CFLAGS@ @EVAS_CFLAGS@ @EPSILON_CFLAGS@ -I$prefix/include/ewl
       ;;
     --libs)
       libdirs=-L@libdir@
-      echo $libdirs -lewl @EMOTION_LIBS@ @EDJE_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ -lm
+      echo $libdirs -lewl @EMOTION_LIBS@ @EDJE_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ @EPSILON_LIBS@ -lm
       ;;
     *)
       echo "${usage}" 1>&2
