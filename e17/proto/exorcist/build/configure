@@ -185,7 +185,7 @@ fi
 # Epdf check
 echo -n "Checking for Epdf library... "
 have_epdf="no"
-epdf_check $epdf_config $have_ewl $have_etk && have_epdf="yes"
+epdf_check $epdf_config $have_ewl $ewl_config $have_etk $etk_config && have_epdf="yes"
 echo "$have_epdf"
 if test "x$have_epdf" = "xno" ; then
     error_library_msg epdf

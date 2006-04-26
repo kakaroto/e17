@@ -36,7 +36,7 @@ EOF
 #include "ewl_pdf.h"
 EOF
     fi
-    if test "x$3" = "xyes" ; then
+    if test "x$4" = "xyes" ; then
         cat >> conftest.c << EOF
 #include <Etk.h>
 #include "etk_pdf.h"
@@ -50,7 +50,7 @@ EOF
   Ewl_Widget *ewl_pdf;
 EOF
     fi
-    if test "x$3" = "xyes" ; then
+    if test "x$4" = "xyes" ; then
         cat >> conftest.c << EOF
   Etk_Widget *etk_pdf;
 EOF
@@ -63,7 +63,7 @@ EOF
   ewl_pdf = ewl_pdf_new ();
 EOF
     fi
-    if test "x$3" = "xyes" ; then
+    if test "x$4" = "xyes" ; then
         cat >> conftest.c << EOF
   etk_pdf = etk_pdf_new ();
 EOF
@@ -72,7 +72,16 @@ EOF
   return 0;
 }
 EOF
-    $CC $CPPFLAGS $CFLAGS `$1 --cflags --libs` conftest.c -o conftest 2>$DEVNULL
+    EPDF_FLAGS=`$1 --cflags --libs`
+    EWL_FLAGS=""
+    if test "x$2" = "xyes" ; then
+        EWL_FLAGS=`$3 --cflags --libs`
+    fi
+    ETK_FLAGS=""
+    if test "x$4" = "xyes" ; then
+        ETK_FLAGS=`$5 --cflags --libs`
+    fi
+    $CC $CPPFLAGS $CFLAGS $EPDF_FLAGS $EWL_FLAGS $ETK_FLAGS conftest.c -o conftest 2>$DEVNULL
     TMP="$?"
     rm -f conftest.c conftest
     return $TMP
