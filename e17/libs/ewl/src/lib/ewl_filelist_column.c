@@ -5,9 +5,12 @@
 
 static Ewl_View *ewl_filelist_column_view = NULL;
 
-static void ewl_filelist_column_dir_clicked(Ewl_Widget *w, void *event, void *data);
-static void ewl_filelist_column_file_clicked(Ewl_Widget *w, void *event, void *data);
-static void ewl_filelist_column_row_add(Ewl_Filelist *fl, const char *dir, char *file);
+static void ewl_filelist_column_dir_clicked(Ewl_Widget *w, void *event, 
+							void *data);
+static void ewl_filelist_column_file_clicked(Ewl_Widget *w, void *event, 
+							void *data);
+static void ewl_filelist_column_row_add(Ewl_Filelist *fl, const char *dir, 
+							char *file);
 
 /**
  * @return Returns the Ewl_View needed to display the filelist_column
@@ -21,7 +24,8 @@ ewl_filelist_column_view_get(void)
 	if (!ewl_filelist_column_view)
 	{
 		ewl_filelist_column_view = ewl_view_new();
-		ewl_view_constructor_set(ewl_filelist_column_view, ewl_filelist_column_new);
+		ewl_view_constructor_set(ewl_filelist_column_view, 
+					ewl_filelist_column_new);
 	}
 
 	DRETURN_PTR(ewl_filelist_column_view, DLEVEL_STABLE);
@@ -74,9 +78,9 @@ ewl_filelist_column_init(Ewl_Filelist_Column *fl)
 	list->dir_change = ewl_filelist_column_dir_change;
 	list->filter_change = ewl_filelist_column_dir_change;
 	
-
 	fl->hbox = ewl_scrollpane_new();
-	ewl_box_orientation_set(EWL_BOX(EWL_SCROLLPANE(fl->hbox)->box), EWL_ORIENTATION_HORIZONTAL);
+	ewl_box_orientation_set(EWL_BOX(EWL_SCROLLPANE(fl->hbox)->box), 
+						EWL_ORIENTATION_HORIZONTAL);
 	ewl_container_child_append(EWL_CONTAINER(fl), fl->hbox);
 	ewl_widget_show(fl->hbox);
 
@@ -92,27 +96,33 @@ void
 ewl_filelist_column_dir_change(Ewl_Filelist *fl)
 {
 	const char *path;
-
 	Ewl_Filelist_Column *list;
+	Ewl_Container *c;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fl", fl);
+	DCHECK_TYPE("fl", fl, EWL_FILELIST_COLUMN_TYPE);
 
 	list = EWL_FILELIST_COLUMN(fl);
-
+	c = EWL_CONTAINER(list->hbox);
 	path = ewl_filelist_directory_get(EWL_FILELIST(fl));
 
-	if ( list->tree != NULL ) {
+	if (list->tree != NULL) 
+	{
 		Ewl_Widget *tree;
 		Ewl_Widget *tree2;
 		int index;
 
 		tree = ewl_widget_name_find(path);
-		index = ewl_container_child_index_get(EWL_CONTAINER(list->hbox), tree);
-		tree2 = ewl_container_child_get(EWL_CONTAINER(list->hbox), index+1);
+		index = ewl_container_child_index_get(c, tree);
+		tree2 = ewl_container_child_get(c, index + 1);
 		ewl_widget_destroy(tree2);
-		while ( tree2 != NULL ) {
-			tree2 = ewl_container_child_get(EWL_CONTAINER(list->hbox), index+1);
+
+		/* Um, this code is fucked. using tree2 after you've
+		 * destroyed it dosen't make sense. */
+		while(tree2 != NULL) 
+		{
+			tree2 = ewl_container_child_get(c, index + 1);
 			ewl_widget_destroy(tree2);
 		}
 	}
@@ -128,32 +138,27 @@ ewl_filelist_column_dir_change(Ewl_Filelist *fl)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-
-
 static void
 ewl_filelist_column_dir_clicked(Ewl_Widget *w, void *ev, void *data)
 {
 	Ewl_Filelist_Column *fl;
-	Ewl_Box *hbox;
-	const char *dir;
 	Ewl_Event_Mouse_Down *event;
-	Ewl_Filelist_Column *list;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("ev", ev);
+	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	hbox = EWL_BOX(w);
 	fl = data;
 	event = ev;
-
-	list = EWL_FILELIST_COLUMN(fl);
 
 	/* only trigger on lmb */
 	if (event->button != 1)
 		DRETURN(DLEVEL_STABLE);
 
-	dir = ewl_widget_name_get(hbox);
-
-	ewl_filelist_directory_set(EWL_FILELIST(fl), dir);
+	ewl_filelist_directory_set(EWL_FILELIST(fl), 
+				ewl_widget_name_get(w));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -161,19 +166,22 @@ ewl_filelist_column_dir_clicked(Ewl_Widget *w, void *ev, void *data)
 static void
 ewl_filelist_column_file_clicked(Ewl_Widget *w, void *ev, void *data)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("ev", ev);
+	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
+	printf("Unimplemented\n");
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void
 ewl_filelist_column_row_add(Ewl_Filelist *fl, const char *dir, char *file)
 {
 	Ewl_Filelist_Column *list;
-	Ewl_Widget *row;
-	Ewl_Widget *children[2];
-	Ewl_Widget *hbox;
-	Ewl_Widget *image;
-	Ewl_Widget *text;
-
+	Ewl_Widget *row, *children[2], *hbox, *image, *text;
 	char *stock, path[PATH_MAX];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -183,7 +191,6 @@ ewl_filelist_column_row_add(Ewl_Filelist *fl, const char *dir, char *file)
 	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
 
 	list = EWL_FILELIST_COLUMN(fl);
-
 	snprintf(path, PATH_MAX, "%s/%s", dir, file);
 
 	hbox = ewl_hbox_new();
@@ -198,8 +205,8 @@ ewl_filelist_column_row_add(Ewl_Filelist *fl, const char *dir, char *file)
 	ewl_object_fill_policy_set(EWL_OBJECT(image), EWL_FLAG_FILL_SHRINK);
 	ewl_widget_show(image);
 
-	text = ewl_text_new();
-	ewl_text_text_set(EWL_TEXT(text), file);
+	text = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(text), file);
 	ewl_container_child_append(EWL_CONTAINER(hbox), text);
 	ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_LEFT);
 	ewl_widget_show(text);
@@ -226,3 +233,4 @@ ewl_filelist_column_row_add(Ewl_Filelist *fl, const char *dir, char *file)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
