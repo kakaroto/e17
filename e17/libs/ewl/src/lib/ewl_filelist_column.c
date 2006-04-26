@@ -77,7 +77,7 @@ ewl_filelist_column_init(Ewl_Filelist_Column *fl)
 	list = EWL_FILELIST(fl);
 	list->dir_change = ewl_filelist_column_dir_change;
 	list->filter_change = ewl_filelist_column_dir_change;
-	
+
 	fl->hbox = ewl_scrollpane_new();
 	ewl_box_orientation_set(EWL_BOX(EWL_SCROLLPANE(fl->hbox)->box), 
 						EWL_ORIENTATION_HORIZONTAL);
@@ -198,7 +198,7 @@ ewl_filelist_column_row_add(Ewl_Filelist *fl, const char *dir, char *file)
 	ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_CENTER);
 	ewl_box_spacing_set(EWL_BOX(hbox), 5);
 	ewl_widget_show(hbox);
-		
+
 	image = ewl_icon_new();
 	ewl_container_child_append(EWL_CONTAINER(hbox), image);
 	ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_LEFT);
@@ -225,7 +225,7 @@ ewl_filelist_column_row_add(Ewl_Filelist *fl, const char *dir, char *file)
 		ewl_callback_append(hbox, EWL_CALLBACK_CLICKED,
 				ewl_filelist_column_file_clicked, fl);
 	}
-	
+
 	children[0] = hbox;
 	children[1] = NULL;
 	row = ewl_tree_row_add(EWL_TREE(list->tree), NULL, children);
