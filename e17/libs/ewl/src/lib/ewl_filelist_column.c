@@ -136,7 +136,6 @@ ewl_filelist_column_dir_clicked(Ewl_Widget *w, void *ev, void *data)
 	Ewl_Filelist_Column *fl;
 	Ewl_Box *hbox;
 	const char *dir;
-	char *path;
 	Ewl_Event_Mouse_Down *event;
 	Ewl_Filelist_Column *list;
 
@@ -155,8 +154,6 @@ ewl_filelist_column_dir_clicked(Ewl_Widget *w, void *ev, void *data)
 	dir = ewl_widget_name_get(hbox);
 
 	ewl_filelist_directory_set(EWL_FILELIST(fl), dir);
-
-	FREE(path);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
