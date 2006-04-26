@@ -4,7 +4,9 @@
 #include "eaps.h"
 #include "parse.h"
 
-#define DEBUG 1
+//#define DEBUG 1
+
+extern int not_found_count;
 
 static void _write_eap(Eet_File *ef, char *section, char *value);
 
@@ -80,12 +82,13 @@ write_icon(char *file, G_Eap *eap)
    char *idir, *ifile, *icomp, *exec;
 
 #ifdef DEBUG
-   fprintf(stderr, "\tWriting file %s\n", file);
-   fprintf(stderr, "\t\tIcon %s\n", eap->icon_path);
+   fprintf(stderr, "\tWriting file %s\t\twith icon (%s) %s\n", file, eap->icon, eap->icon_path);
 #endif
-   /* FIXME: This does not seem to be catching all the problems.  Further head scratching is needed. */
-   if ((!eap->icon_path) || (eap->icon_path[0] == '\0'))
+   if ((!eap->icon_path) || (eap->icon_path[0] == '\0') || (!ecore_file_exists(eap->icon_path)))
+   {
       eap->icon_path = DEFAULTICON;
+      not_found_count++;
+   }
    ifile = ecore_file_get_file(eap->icon_path);
    idir = ecore_file_get_dir(eap->icon_path);
 

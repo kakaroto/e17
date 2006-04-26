@@ -7,7 +7,12 @@
 #include "icons.h"
 #include "parse.h"
 
+//#define DEBUG 1
+
 extern double icon_time;
+
+static char * find_fdo_icon(char *icon, char *icon_size, char *icon_theme);
+
 
 /* FIXME: Ideally this should be -
  * {".png", ".svg", ".xpm", "", NULL}
@@ -61,7 +66,11 @@ find_icon(char *icon)
    char *dir, *icon_size, *icon_theme, *home;
 
    if (icon == NULL)
-      return strdup(DEFAULTICON);
+      return NULL;
+
+   /* Easy check first, was a full path supplied? */
+   if ((icon[0] == '/') && (ecore_file_exists(icon)))
+      return strdup(icon);
 
    home = get_home();
 
@@ -73,7 +82,7 @@ find_icon(char *icon)
    /* Check For Unsupported Extension */
    if ((!strcmp(icon + strlen(icon) - 4, ".svg")) || (!strcmp(icon + strlen(icon) - 4, ".ico"))
        || (!strcmp(icon + strlen(icon) - 4, ".xpm")))
-      return strdup(DEFAULTICON);
+      return NULL;
 
    /* Check For An Extension, Append PNG If Missing */
    if (strrchr(icon, '.') == NULL)
@@ -97,7 +106,10 @@ find_icon(char *icon)
           }
      }
 
-   return strdup(find_fdo_icon(icon, icon_size, icon_theme));
+   dir = find_fdo_icon(icon, icon_size, icon_theme);
+   if (dir)
+      dir = strdup(dir);
+   return dir;
 }
 
 /** Search for an icon the fdo way.
@@ -109,7 +121,7 @@ find_icon(char *icon)
  * @param   icon_theme The icon theme to search in.
  * @return  The full path to the found icon.
  */
-char *
+static char *
 find_fdo_icon(char *icon, char *icon_size, char *icon_theme)
 {
    /*  NOTES ON OPTIMIZATIONS
@@ -145,7 +157,7 @@ find_fdo_icon(char *icon, char *icon_size, char *icon_theme)
    if ((icon == NULL) || (icon[0] == '\0'))
      {
         icon_time += ecore_time_get() - begin;
-        return DEFAULTICON;
+        return NULL;
      }
 
 #ifdef DEBUG
@@ -202,7 +214,7 @@ find_fdo_icon(char *icon, char *icon_size, char *icon_theme)
                                  Ecore_Hash *sub_group;
 
 #ifdef DEBUG
-                                 printf("FDO icon path = %s\n", directory_paths->elements[i].element);
+                                 printf("FDO icon path = %s\n", (char *) directory_paths->elements[i].element);
 #endif
                                  /* Get the details for this theme directory. */
                                  sub_group = (Ecore_Hash *) ecore_hash_get(theme, directory_paths->elements[i].element);
@@ -303,7 +315,7 @@ find_fdo_icon(char *icon, char *icon_size, char *icon_theme)
                             if ((inherits) && (inherits[0] != '\0') && (strcmp(icon_theme, "hicolor") != 0))
                               {
                                  found = find_fdo_icon(icon, icon_size, inherits);
-                                 if (found != DEFAULTICON)
+                                 if (found != NULL)
                                    {
                                       icon_time += ecore_time_get() - begin;
                                       return found;
@@ -314,7 +326,7 @@ find_fdo_icon(char *icon, char *icon_size, char *icon_theme)
                             if ((!((inherits) && (inherits[0] != '\0'))) && (strcmp(icon_theme, "hicolor") != 0))
                               {
                                  found = find_fdo_icon(icon, icon_size, "hicolor");
-                                 if (found != DEFAULTICON)
+                                 if (found != NULL)
                                    {
                                       icon_time += ecore_time_get() - begin;
                                       return found;
@@ -344,5 +356,5 @@ find_fdo_icon(char *icon, char *icon_size, char *icon_theme)
      }
 
    icon_time += ecore_time_get() - begin;
-   return DEFAULTICON;
+   return NULL;
 }

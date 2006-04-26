@@ -22,7 +22,7 @@
 #include "parse.h"
 #include "xmlame.h"
 
-#define DEBUG 1
+//#define DEBUG 1
 
 extern double convert_time;
 

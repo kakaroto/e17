@@ -234,9 +234,7 @@ process_file(char *file, char *menu_path, G_Eap *eap)
       eap->window_class = get_window_class(path);
 
    if (eap->icon != NULL)
-      eap->icon_path = find_icon(strdup(eap->icon));
-   if (eap->icon == NULL)
-      eap->icon_path = strdup(DEFAULTICON);
+      eap->icon_path = find_icon(eap->icon);
 
    if ((ecore_file_exists(path)) && (!overwrite))
         not_over_count++;

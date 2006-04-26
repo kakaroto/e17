@@ -5,7 +5,7 @@
 #include "parse.h"
 #include "menus.h"
 
-#define DEBUG 1
+//#define DEBUG 1
 
 extern int menu_count, item_count;
 extern double generate_time;
