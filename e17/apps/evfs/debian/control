@@ -2,12 +2,12 @@ Source: libevfs
 Section: libs
 Priority: optional
 Maintainer: E17 Debian Team <debian@edevelop.org>
-Build-Depends: debhelper (>= 4.0.0), libsmbclient-dev, libxml2-dev, libecore0-dev, libcurl3-dev, libbz2-dev, libeet0-dev, libx11-dev, libxrender-dev, libssl-dev, libxcursor-dev, libxss-dev, libxinerama-dev, libxrandr-dev, libxext-dev, libxp-dev, zlib1g-dev
+Build-Depends: debhelper (>= 4.0.0), libsmbclient-dev, libxml2-dev, libecore-dev, libcurl3-dev, libbz2-dev, libeet-dev, libx11-dev, libxrender-dev, libssl-dev, libxcursor-dev, libxss-dev, libxinerama-dev, libxrandr-dev, libxp-dev, zlib1g-dev
 Standards-Version: 3.6.2
 
 Package: libevfs0
 Architecture: any
-Depends: ${shlibs:Depends}, libbz2-1.0, libxml2, libsmbclient, libecore0, libevas0, libcurl3, libxinerama1, libxrandr2, libxext6, libxss1, libxcursor1, libxp6, libx11-6 
+Depends: ${shlibs:Depends}, libbz2-1.0, libxml2, libsmbclient, libecore, libevas, libcurl3, libxinerama1, libxrandr2, libxext6, libxss1, libxcursor1, libxp6, libx11-6 
 Description: enlightenment virtual filesystem library
  EVFS - a virtual file system for E with plugins and URI nesting
  support.
@@ -15,7 +15,7 @@ Description: enlightenment virtual filesystem library
 
 Package: libevfs0-dev
 Architecture: any
-Depends: ${shlibs:Depends}, libevfs0, libsmbclient-dev, libxml2-dev, libecore0-dev, libcurl3-dev, libbz2-dev, libeet0-dev, libx11-dev, libxrender-dev, libssl-dev, libxcursor-dev, libxss-dev, libxinerama-dev, libxrandr-dev, libxext-dev, libxp-dev, zlib1g-dev 
+Depends: ${shlibs:Depends}, libevfs0, libsmbclient-dev, libxml2-dev, libecore-dev, libcurl3-dev, libbz2-dev, libeet-dev, libx11-dev, libxrender-dev, libssl-dev, libxcursor-dev, libxss-dev, libxinerama-dev, libxrandr-dev, libxp-dev, zlib1g-dev 
 Description: enlightenment virtual filesystem header files
  EVFS - a virtual file system for E with plugins and URI nesting
  support.
@@ -23,7 +23,7 @@ Description: enlightenment virtual filesystem header files
 
 Package: evfs0-bin
 Architecture: any
-Depends: ${shlibs:Depends}, libecore0, libevfs0
+Depends: ${shlibs:Depends}, libecore, libevfs0
 Provides: evfs-bin
 Description: enlightenment virtual filesystem tools
  EVFS - a virtual file system for E with plugins and URI nesting
@@ -32,7 +32,7 @@ Description: enlightenment virtual filesystem tools
 
 Package: evfs0-debug
 Architecture: any
-Depends: ${shlibs:Depends}, libecore0, libevfs0
+Depends: ${shlibs:Depends}, libecore, libevfs0
 Provides: evfs-bin
 Description: enlightenment virtual filesystem debug tools
  EVFS - a virtual file system for E with plugins and URI nesting
@@ -41,7 +41,7 @@ Description: enlightenment virtual filesystem debug tools
 
 Package: libevfs0-plugin-posix
 Architecture: any
-Depends: ${shlibs:Depends}, libevfs0, evfs0-bin, libecore0
+Depends: ${shlibs:Depends}, libevfs0, evfs0-bin, libecore
 Description: enlightenment virtual filesystem POSIX plugin
  EVFS - a virtual file system for E with plugins and URI nesting
  support.
@@ -49,7 +49,7 @@ Description: enlightenment virtual filesystem POSIX plugin
 
 Package: libevfs0-plugin-samba
 Architecture: any
-Depends: ${shlibs:Depends}, libsmbclient, libecore0, evfs0-bin, libevfs0
+Depends: ${shlibs:Depends}, libsmbclient, libecore, evfs0-bin, libevfs0
 Description: enlightenment virtual filesystem Samba plugin
  EVFS - a virtual file system for E with plugins and URI nesting
  support.
@@ -81,7 +81,7 @@ Description: enlightenment virtual filesystem Gzip plugin
 
 Package: libevfs0-plugin-ftp
 Architecture: any
-Depends: ${shlibs:Depends}, libcurl3, libecore0, libevfs0, evfs0-bin
+Depends: ${shlibs:Depends}, libcurl3, libecore, libevfs0, evfs0-bin
 Description: enlightenment virtual filesystem FTP plugin
  EVFS - a virtual file system for E with plugins and URI nesting
  support.
@@ -89,7 +89,7 @@ Description: enlightenment virtual filesystem FTP plugin
 
 Package: libevfs0-plugin-sftp
 Architecture: any
-Depends: ${shlibs:Depends}, libecore0, libevfs0, evfs0-bin
+Depends: ${shlibs:Depends}, libecore, libevfs0, evfs0-bin
 Description: enlightenment virtual filesystem SFTP plugin
  EVFS - a virtual file system for E with plugins and URI nesting
  support.
