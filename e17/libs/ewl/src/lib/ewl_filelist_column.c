@@ -133,7 +133,7 @@ ewl_filelist_column_dir_change(Ewl_Filelist *fl)
 	ewl_container_child_append(EWL_CONTAINER(list->hbox), list->tree);
 	ewl_widget_show(list->tree);
 
-	ewl_filelist_directory_read(fl, ewl_filelist_column_row_add);
+	ewl_filelist_directory_read(fl, TRUE, ewl_filelist_column_row_add);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

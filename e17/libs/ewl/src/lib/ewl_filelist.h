@@ -102,6 +102,7 @@ void		 ewl_filelist_selected_signal_all(Ewl_Filelist *fl,
 
 char 		*ewl_filelist_expand_path(Ewl_Filelist *fl, const char *dir);
 void 		 ewl_filelist_directory_read(Ewl_Filelist *fl, 
+					unsigned int skip_dot_dot,
 					void (*func)(Ewl_Filelist *fl, 
 							const char *dir, 
 							char *file));

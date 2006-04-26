@@ -1,6 +1,28 @@
 #ifndef EWL_TREE2_H
 #define EWL_TREE2_H
 
+/* 
+ * Make ewl_tree2 an ewl_box. it will pack in the paned header and a
+ * ewl_tree_display widget for the body. This will be a standard vbox. 
+ *
+ * subclassing widgets (ewl_tree_scrolled) will inherit tree and can then
+ * pull the _display widget out of the main box, pack in their scrollpane
+ * and then pack the _display widget back into the box. 
+ *
+ * This means that all the standard tree calls will work on the subclassing
+ * stuff, as the tree will do the work, and the subclassers will just move
+ * the shit in the tree around as needed.
+ *
+ * Ewl_Widget *rows needs to be a custom widget that can lay the widgets out
+ * in their tree view.
+ *
+ * Cons
+ * ----
+ * Needs an extra widget to hold the 'display' of the tree data
+ */
+
+
+
 /**
  * @addtogroup Ewl_Tree2 Ewl_Tree2: A Widget for List or Tree Layout
  * @brief Defines a widget for laying out other widgets in a tree or list

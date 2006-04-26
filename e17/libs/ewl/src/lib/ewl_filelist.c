@@ -390,7 +390,7 @@ ewl_filelist_expand_path(Ewl_Filelist *fl, const char *dir)
  * displayed.
  */
 void
-ewl_filelist_directory_read(Ewl_Filelist *fl, 
+ewl_filelist_directory_read(Ewl_Filelist *fl, unsigned int skip_dot_dot,
 		void (*func)(Ewl_Filelist *fl, const char *dir, 
 							char *file))
 {
@@ -412,7 +412,7 @@ ewl_filelist_directory_read(Ewl_Filelist *fl,
 	dirs = ecore_list_new();
 
 	/* if this isn't the root dir add a .. entry */
-	if (strcmp(dir, "/"))
+	if (strcmp(dir, "/") && !skip_dot_dot)
 		ecore_list_append(dirs, strdup(".."));
 
 	while ((file = ecore_list_remove_first(all_files)))

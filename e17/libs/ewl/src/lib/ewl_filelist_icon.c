@@ -105,7 +105,7 @@ ewl_filelist_icon_dir_change(Ewl_Filelist *fl)
 
 	list = EWL_FILELIST_ICON(fl);
 	ewl_container_reset(EWL_CONTAINER(list->freebox));
-	ewl_filelist_directory_read(fl, ewl_filelist_icon_icon_add);
+	ewl_filelist_directory_read(fl, FALSE, ewl_filelist_icon_icon_add);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

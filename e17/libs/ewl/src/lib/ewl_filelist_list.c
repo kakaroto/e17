@@ -110,7 +110,7 @@ ewl_filelist_list_dir_change(Ewl_Filelist *fl)
 
 	list = EWL_FILELIST_LIST(fl);
 	ewl_container_reset(EWL_CONTAINER(list->tree));
-	ewl_filelist_directory_read(fl, ewl_filelist_list_add);
+	ewl_filelist_directory_read(fl, FALSE, ewl_filelist_list_add);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
