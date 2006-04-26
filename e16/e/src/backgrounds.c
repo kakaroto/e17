@@ -2000,7 +2000,7 @@ SettingsBackground(Background * bg)
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
+	DialogShow(d);
 	return;
      }
    SoundPlay("SOUND_SETTINGS_BG");
@@ -2258,7 +2258,7 @@ SettingsBackground(Background * bg)
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureBG);
 
-   ShowDialog(d);
+   DialogShow(d);
 
    CB_DesktopMiniDisplayRedraw(NULL, 1, area);
    BGSettingsGoTo(tmp_bg);

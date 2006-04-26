@@ -202,6 +202,7 @@ struct _dialog
    int                 xu1, yu1, xu2, yu2;
 };
 
+static EWin        *FindEwinByDialog(Dialog * d);
 static int          FindADialog(void);
 
 static void         DialogHandleEvents(XEvent * ev, void *prm);
@@ -570,8 +571,8 @@ DialogEwinInit(EWin * ewin, void *ptr)
    EoSetLayer(ewin, 10);
 }
 
-void
-ShowDialog(Dialog * d)
+static void
+DialogShowArranged(Dialog * d, int center)
 {
    int                 i, w, h, mw, mh;
    EWin               *ewin;
@@ -652,10 +653,10 @@ ShowDialog(Dialog * d)
    else
      {
 	EwinResize(ewin, w, h);
-	if (FindADialog() > 1)
-	   ArrangeEwin(ewin);
-	else
+	if (center || FindADialog() == 1)
 	   ArrangeEwinCentered(ewin);
+	else
+	   ArrangeEwin(ewin);
      }
 
    DialogRedraw(d);
@@ -664,6 +665,18 @@ ShowDialog(Dialog * d)
 }
 
 void
+DialogShow(Dialog * d)
+{
+   DialogShowArranged(d, 0);
+}
+
+void
+DialogShowCentered(Dialog * d)
+{
+   DialogShowArranged(d, 1);
+}
+
+static void
 DialogClose(Dialog * d)
 {
    if (!d)
@@ -2075,7 +2088,7 @@ DialogOKstr(const char *title, const char *txt)
    DialogAddButton(d, _("OK"), NULL, 1, DLG_BUTTON_OK);
    DialogBindKey(d, "Return", DialogCallbackClose, 0);
    DialogBindKey(d, "Escape", DialogCallbackClose, 0);
-   ShowDialog(d);
+   DialogShow(d);
 }
 
 void
@@ -2510,7 +2523,7 @@ DButtonHandleEvents(XEvent * ev, void *prm)
  * Finders
  */
 
-EWin               *
+static EWin        *
 FindEwinByDialog(Dialog * d)
 {
    EWin               *const *ewins;
@@ -2541,33 +2554,3 @@ FindADialog(void)
 
    return n;
 }
-
-#if 0				/* Unused */
-static int
-doAlert(EWin * edummy __UNUSED__, const char *params)
-{
-   char               *pp;
-   int                 i;
-
-   pp = Estrdup(params);
-   if (!pp)
-      return 1;
-   if (strlen(pp) <= 0)
-      return 1;
-
-   i = 1;
-   while (pp[i])
-     {
-	if ((pp[i - 1] == '\\') && (params[i] == 'n'))
-	  {
-	     pp[i - 1] = ' ';
-	     pp[i] = '\n';
-	  }
-	i++;
-     }
-   DialogAlertOK(pp);
-   Efree(pp);
-
-   return 0;
-}
-#endif

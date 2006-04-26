@@ -52,7 +52,7 @@ SettingsMoveResize(void)
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
+	DialogShow(d);
 	return;
      }
    SoundPlay("SOUND_SETTINGS_MOVERESIZE");
@@ -180,7 +180,7 @@ SettingsMoveResize(void)
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureMoveResize);
 
-   ShowDialog(d);
+   DialogShow(d);
 }
 
 static char         tmp_with_leader;
@@ -241,7 +241,7 @@ SettingsPlacement(void)
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
+	DialogShow(d);
 	return;
      }
    SoundPlay("SOUND_SETTINGS_PLACEMENT");
@@ -410,7 +410,7 @@ SettingsPlacement(void)
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigurePlacement);
 
-   ShowDialog(d);
+   DialogShow(d);
 }
 
 static char         tmp_autoraise;
@@ -437,7 +437,7 @@ SettingsAutoRaise(void)
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
+	DialogShow(d);
 	return;
      }
    SoundPlay("SOUND_SETTINGS_AUTORAISE");
@@ -474,7 +474,7 @@ SettingsAutoRaise(void)
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureAutoraise);
 
-   ShowDialog(d);
+   DialogShow(d);
 }
 
 static char         tmp_dialog_headers;
@@ -505,7 +505,7 @@ SettingsMiscellaneous(void)
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
+	DialogShow(d);
 	return;
      }
    SoundPlay("SOUND_SETTINGS_MISCELLANEOUS");
@@ -553,7 +553,7 @@ SettingsMiscellaneous(void)
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureMiscellaneous);
 
-   ShowDialog(d);
+   DialogShow(d);
 }
 
 #if USE_COMPOSITE
@@ -588,7 +588,7 @@ SettingsComposite(void)
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
+	DialogShow(d);
 	return;
      }
    SoundPlay("SOUND_SETTINGS_COMPOSITE");
@@ -661,6 +661,6 @@ SettingsComposite(void)
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureComposite);
 
-   ShowDialog(d);
+   DialogShow(d);
 }
 #endif

@@ -1736,7 +1736,7 @@ SettingsPager(void)
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
+	DialogShow(d);
 	return;
      }
    SoundPlay("SOUND_SETTINGS_PAGER");
@@ -1890,7 +1890,7 @@ SettingsPager(void)
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigurePager);
 
-   ShowDialog(d);
+   DialogShow(d);
 }
 
 /*

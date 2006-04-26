@@ -847,7 +847,7 @@ SettingsTooltips(void)
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
+	DialogShow(d);
 	return;
      }
    SoundPlay("SOUND_SETTINGS_TOOLTIPS");
@@ -888,7 +888,7 @@ SettingsTooltips(void)
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureTooltips);
 
-   ShowDialog(d);
+   DialogShow(d);
 }
 
 static void

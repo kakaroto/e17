@@ -448,7 +448,7 @@ SettingsAudio(void)
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
+	DialogShow(d);
 	return;
      }
    SoundPlay("SOUND_SETTINGS_AUDIO");
@@ -480,7 +480,7 @@ SettingsAudio(void)
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureAudio);
 
-   ShowDialog(d);
+   DialogShow(d);
 }
 
 /*

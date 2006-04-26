@@ -2037,7 +2037,7 @@ MenusSettings(void)
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
+	DialogShow(d);
 	return;
      }
    SoundPlay("SOUND_SETTINGS_MENUS");
@@ -2073,7 +2073,7 @@ MenusSettings(void)
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureMenus);
 
-   ShowDialog(d);
+   DialogShow(d);
 }
 
 static void

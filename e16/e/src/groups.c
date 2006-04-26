@@ -687,7 +687,7 @@ ChooseGroupDialog(EWin * ewin, const char *message, char group_select,
    if (d)
      {
 	SoundPlay("GROUP_SETTINGS_ACTIVE");
-	ShowDialog(d);
+	DialogShow(d);
      }
    SoundPlay("SOUND_SETTINGS_GROUP");
 
@@ -730,7 +730,7 @@ ChooseGroupDialog(EWin * ewin, const char *message, char group_select,
 
    DialogAddFooter(d, DLG_OC, ChooseGroup);
 
-   ShowDialog(d);
+   DialogShow(d);
 }
 
 typedef struct
@@ -810,7 +810,7 @@ SettingsGroups(EWin * ewin)
    if (d)
      {
 	SoundPlay("GROUP_SETTINGS_ACTIVE");
-	ShowDialog(d);
+	DialogShow(d);
 	return;
      }
 
@@ -922,7 +922,7 @@ SettingsGroups(EWin * ewin)
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureGroup);
 
-   ShowDialog(d);
+   DialogShow(d);
 }
 
 static GroupConfig  tmp_group_cfg;
@@ -949,7 +949,7 @@ SettingsDefaultGroupControl(void)
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
+	DialogShow(d);
 	return;
      }
    SoundPlay("SOUND_SETTINGS_GROUP");
@@ -1031,7 +1031,7 @@ SettingsDefaultGroupControl(void)
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureDefaultGroupSettings);
 
-   ShowDialog(d);
+   DialogShow(d);
 }
 
 /*

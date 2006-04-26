@@ -288,7 +288,7 @@ About(void)
    d = DialogFind("ABOUT_ENLIGHTENMENT");
    if (d)
      {
-	ShowDialog(d);
+	DialogShow(d);
 	return;
      }
 
@@ -320,7 +320,7 @@ About(void)
    DialogItemSetText(di, buf);
 
    DialogAddButton(d, _("OK"), NULL, 1, DLG_BUTTON_OK);
-   ShowDialog(d);
+   DialogShow(d);
 }
 
 #if 0				/* FIXME - Fix */

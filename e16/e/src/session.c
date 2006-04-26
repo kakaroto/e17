@@ -633,7 +633,6 @@ static void
 SessionLogoutConfirm(void)
 {
    Dialog             *d;
-   EWin               *ewin;
 
    d = DialogFind("LOGOUT_DIALOG");
    if (!d)
@@ -657,12 +656,7 @@ SessionLogoutConfirm(void)
 	DialogBindKey(d, "Return", LogoutCB, 0);
      }
 
-   ShowDialog(d);
-
-   ewin = FindEwinByDialog(d);
-   if (ewin)
-      ArrangeEwinCentered(ewin);
-   return;
+   DialogShowCentered(d);
 }
 
 void
@@ -760,7 +754,7 @@ SettingsSession(void)
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
+	DialogShow(d);
 	return;
      }
    SoundPlay("SOUND_SETTINGS_SESSION");
@@ -796,5 +790,5 @@ SettingsSession(void)
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureSession);
 
-   ShowDialog(d);
+   DialogShow(d);
 }

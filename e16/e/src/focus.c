@@ -685,7 +685,7 @@ SettingsFocus(void)
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
+	DialogShow(d);
 	return;
      }
    SoundPlay("SOUND_SETTINGS_FOCUS");
@@ -851,7 +851,7 @@ SettingsFocus(void)
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureFocus);
 
-   ShowDialog(d);
+   DialogShow(d);
 }
 
 /*

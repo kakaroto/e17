@@ -65,9 +65,9 @@ void                DialogSetExitFunction(Dialog * d, DialogCallbackFunc * func,
 void                DialogSetData(Dialog * d, void *data);
 void               *DialogGetData(Dialog * d);
 
+void                DialogShow(Dialog * d);
+void                DialogShowCentered(Dialog * d);
 void                DialogRedraw(Dialog * d);
-void                ShowDialog(Dialog * d);
-void                DialogClose(Dialog * d);
 
 void                DialogAddButton(Dialog * d, const char *text,
 				    DialogCallbackFunc * func, char doclose,
@@ -128,7 +128,5 @@ void                DialogItemAreaSetEventFunc(DItem * di,
 void                DialogCallbackClose(Dialog * d, int val, void *data);
 
 void                DialogsInit(void);
-
-EWin               *FindEwinByDialog(Dialog * d);
 
 #endif /* _DIALOG_H_ */

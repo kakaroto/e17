@@ -119,7 +119,7 @@ SettingsTransparency(void)
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
+	DialogShow(d);
 	return;
      }
    SoundPlay("SOUND_SETTINGS_TRANS");
@@ -283,7 +283,7 @@ SettingsTransparency(void)
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureTrans);
 
-   ShowDialog(d);
+   DialogShow(d);
 }
 
 static void

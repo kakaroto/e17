@@ -2134,7 +2134,7 @@ IconboxConfigure(Iconbox * ib)
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
+	DialogShow(d);
 	return;
      }
    SoundPlay("SOUND_SETTINGS_ICONBOX");
@@ -2333,7 +2333,7 @@ IconboxConfigure(Iconbox * ib)
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureIconbox);
 
-   ShowDialog(d);
+   DialogShow(d);
 }
 
 /*

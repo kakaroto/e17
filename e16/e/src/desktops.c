@@ -2356,7 +2356,7 @@ SettingsDesktops(void)
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
+	DialogShow(d);
 	return;
      }
    SoundPlay("SOUND_SETTINGS_DESKTOPS");
@@ -2473,7 +2473,7 @@ SettingsDesktops(void)
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureDesktops);
 
-   ShowDialog(d);
+   DialogShow(d);
 
    DialogItemSetCallback(slider, CB_DesktopDisplayRedraw, 0, (void *)area);
    CB_DesktopDisplayRedraw(d, 1, area);
@@ -2577,7 +2577,7 @@ SettingsArea(void)
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
+	DialogShow(d);
 	return;
      }
    SoundPlay("SOUND_SETTINGS_AREA");
@@ -2661,7 +2661,7 @@ SettingsArea(void)
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureAreas);
 
-   ShowDialog(d);
+   DialogShow(d);
 
    CB_AreaDisplayRedraw(d, 1, area);
 }

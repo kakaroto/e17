@@ -680,7 +680,7 @@ SnapshotEwinDialog(const EWin * ewin)
    d = DialogFind(s);
    if (d)
      {
-	ShowDialog(d);
+	DialogShow(d);
 	return;
      }
    d = DialogCreate(s);
@@ -945,7 +945,7 @@ SnapshotEwinDialog(const EWin * ewin)
 
    DialogAddFooter(d, DLG_OAC, CB_ApplySnap);
 
-   ShowDialog(d);
+   DialogShow(d);
 }
 
 /* list of remembered items for the remember dialog -- it's either
@@ -1018,7 +1018,7 @@ SettingsRemember(void)
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
+	DialogShow(d);
 	return;
      }
    SoundPlay("SOUND_SETTINGS_REMEMBER");
@@ -1096,7 +1096,7 @@ SettingsRemember(void)
 
    DialogAddFooter(d, DLG_OC, CB_ApplyRemember);
 
-   ShowDialog(d);
+   DialogShow(d);
 }
 
 /* ... combine writes, only save after a timeout */
