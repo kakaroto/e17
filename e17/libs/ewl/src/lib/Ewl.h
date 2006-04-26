@@ -301,6 +301,7 @@ extern"C" {
 #include <ewl_filelist.h>
 #include <ewl_filelist_list.h>
 #include <ewl_filelist_icon.h>
+#include <ewl_filelist_column.h>
 #include <ewl_filepicker.h>
 #include <ewl_filedialog.h>
 

@@ -38,6 +38,7 @@ EWLHEADERS = \
 	ewl_filelist.h \
 	ewl_filelist_list.h\
 	ewl_filelist_icon.h \
+	ewl_filelist_column.h \
 	ewl_filepicker.h \
 	ewl_filedialog.h \
 	ewl_freebox.h \
@@ -105,6 +106,7 @@ EWLSOURCES= \
 	ewl_filelist.c \
 	ewl_filelist_list.c \
 	ewl_filelist_icon.c \
+	ewl_filelist_column.c \
 	ewl_filepicker.c \
 	ewl_filedialog.c \
 	ewl_freebox.c \
