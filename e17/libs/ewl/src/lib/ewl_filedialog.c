@@ -7,6 +7,7 @@ static void ewl_filedialog_respond(Ewl_Filedialog *fd, unsigned int response);
 static void ewl_filedialog_cb_value_changed(Ewl_Widget *w, void *ev, 
 							void *data);
 static void ewl_filedialog_cb_mouse_down(Ewl_Widget *w, void *ev, void *data);
+static void ewl_filedialog_cb_column_view(Ewl_Widget *w, void *ev, void *data);
 static void ewl_filedialog_cb_icon_view(Ewl_Widget *w, void *ev, void *data);
 static void ewl_filedialog_cb_list_view(Ewl_Widget *w, void *ev, void *data);
 
@@ -115,6 +116,13 @@ ewl_filedialog_init(Ewl_Filedialog *fd)
 	ewl_button_label_set(EWL_BUTTON(menu), "View");
 	ewl_container_child_append(EWL_CONTAINER(fd->menu), menu);
 	ewl_widget_show(menu);
+
+	o = ewl_menu_item_new();
+	ewl_button_label_set(EWL_BUTTON(o), "Column view");
+	ewl_container_child_append(EWL_CONTAINER(menu), o);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
+				ewl_filedialog_cb_column_view, fd);
+	ewl_widget_show(o);
 
 	o = ewl_menu_item_new();
 	ewl_button_label_set(EWL_BUTTON(o), "Icon view");
@@ -484,6 +492,21 @@ ewl_filedialog_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 		ewl_object_state_remove(EWL_OBJECT(fd->menu_float),
 						EWL_FLAG_STATE_PRESSED);
 	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_filedialog_cb_column_view(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+								void *data)
+{
+	Ewl_Filedialog *fd;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("data", data);
+
+	fd = data;
+	ewl_filedialog_list_view_set(fd, ewl_filelist_column_view_get());
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
