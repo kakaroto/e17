@@ -2,27 +2,32 @@
 #include "config.h"
 #include "icons.h"
 #include "eaps.h"
+#include "parse.h"
 
 #define DEBUG 1
+
+static void _write_eap(Eet_File *ef, char *section, char *value);
+
 
 /* Create a .directory.eap for this dir */
 void
 create_dir_eap(char *path, char *cat)
 {
    char path2[MAX_PATH];
-   char *icon;
+   G_Eap eap;
 
+   memset(&eap, 0, sizeof(G_Eap));
+   eap.name = cat;
    snprintf(path2, sizeof(path2), "%s/.directory.eap", path);
    if (!ecore_file_exists(path2))
      {
-        icon = set_icon(cat);
-        if (!icon)
+        eap.icon_path = set_icon(cat);
+        if (!eap.icon_path)
           {
              fprintf(stderr, "ERROR: Cannot Find Icon For %s\n", cat);
              return;
           }
-        write_icon(path2, icon);
-        write_eap(path2, "app/info/name", cat);
+        write_icon(path2, &eap);
      }
 }
 
@@ -63,24 +68,26 @@ get_window_class(char *file)
 }
 
 void
-write_icon(char *f, char *i)
+write_icon(char *file, G_Eap *eap)
 {
    Engrave_File *eet;
    Engrave_Image *image;
    Engrave_Group *grp;
    Engrave_Part *part;
    Engrave_Part_State *ps;
+   Eet_File *ef;
 
-   char *idir, *ifile, *icomp;
+   char *idir, *ifile, *icomp, *exec;
 
 #ifdef DEBUG
-   fprintf(stderr, "\tWriting Icon %s\n", i);
+   fprintf(stderr, "\tWriting file %s\n", file);
+   fprintf(stderr, "\t\tIcon %s\n", eap->icon_path);
 #endif
    /* FIXME: This does not seem to be catching all the problems.  Further head scratching is needed. */
-   if ((!i) || (i[0] == '\0'))
-      i = DEFAULTICON;
-   ifile = ecore_file_get_file(i);
-   idir = ecore_file_get_dir(i);
+   if ((!eap->icon_path) || (eap->icon_path[0] == '\0'))
+      eap->icon_path = DEFAULTICON;
+   ifile = ecore_file_get_file(eap->icon_path);
+   idir = ecore_file_get_dir(eap->icon_path);
 
    eet = engrave_file_new();
    engrave_file_image_dir_set(eet, idir);
@@ -109,7 +116,7 @@ write_icon(char *f, char *i)
    engrave_part_state_image_normal_set(ps, image);
    engrave_part_state_add(part, ps);
 
-   engrave_edj_output(eet, f);
+   engrave_edj_output(eet, file);
    engrave_file_free(eet);
 
 //   if (icomp)
@@ -118,21 +125,55 @@ write_icon(char *f, char *i)
 //      free(idir);
 //   if (ifile)
 //      free(ifile);
+
+   /* FIXME: This is probably why creating eaps takes so long.  
+    * We should just create it right in the first place, rather 
+    * than creating a basic one, then rewriting it several times
+    * each time we find a new little bit of info.
+    */
+   ef = eet_open(file, EET_FILE_MODE_READ_WRITE);
+   if (ef)
+   {
+        /* Set Eap Values. Trap For Name Not Being Set */
+        if (eap->name != NULL)
+           _write_eap(ef, "app/info/name", eap->name);
+        else if (eap->eap_name != NULL)
+           _write_eap(ef, "app/info/name", eap->eap_name);
+
+        if (eap->generic != NULL)
+           _write_eap(ef, "app/info/generic", eap->generic);
+        if (eap->comment != NULL)
+           _write_eap(ef, "app/info/comments", eap->comment);
+
+        /* Parse Exec string for %'s that messup eap write */
+        exec = NULL;
+        if (eap->exec != NULL)
+          {
+             exec = parse_exec(eap->exec);
+             if (exec != NULL)
+               {
+                  _write_eap(ef, "app/info/exe", exec);
+                  _write_eap(ef, "app/icon/class", exec);
+               }
+          }
+
+        if (eap->startup != NULL)
+           _write_eap(ef, "app/info/startup_notify", eap->startup);
+        if (eap->window_class != NULL)
+           _write_eap(ef, "app/window/class", eap->window_class);
+      eet_close(ef);
+   }
 }
 
-void
-write_eap(char *file, char *section, char *value)
+
+static void
+_write_eap(Eet_File *ef, char *section, char *value)
 {
    int i;
-   Eet_File *ef;
 
 #ifdef DEBUG
-   fprintf(stderr, "\tWriting %s %s:%s\n", strdup(file), strdup(section), strdup(value));
+   fprintf(stderr, "\t\t%s:%s\n", strdup(section), strdup(value));
 #endif
-
-   ef = eet_open(file, EET_FILE_MODE_READ_WRITE);
-   if (!ef)
-      return;
 
    if (!strcmp(section, "app/info/startup_notify"))
      {
@@ -152,8 +193,7 @@ write_eap(char *file, char *section, char *value)
           {
              i = eet_write(ef, strdup(section), strdup(value), strlen(value), 0);
              if (i == 0)
-                fprintf(stderr, "Failed To Write %s To %s Of %s\n", value, section, file);
+                fprintf(stderr, "Failed To Write %s To %s\n", value, section);
           }
      }
-   eet_close(ef);
 }

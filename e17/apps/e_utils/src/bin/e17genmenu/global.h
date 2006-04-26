@@ -23,6 +23,7 @@ struct _G_Eap
    char *categories;
    char *exec;
    char *icon;
+   char *icon_path;
    char *startup;
    char *type;
    char *window_class;
