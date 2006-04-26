@@ -118,16 +118,12 @@ ewl_filelist_column_dir_change(Ewl_Filelist *fl)
 
 		tree = ewl_widget_name_find(path);
 		index = ewl_container_child_index_get(c, tree);
-		tree2 = ewl_container_child_get(c, index + 1);
-		ewl_widget_destroy(tree2);
 
-		/* Um, this code is fucked. using tree2 after you've
-		 * destroyed it dosen't make sense. */
-		while(tree2 != NULL) 
-		{
-			tree2 = ewl_container_child_get(c, index + 1);
+		/*
+		 * Destroy columns following the current column.
+		 */
+		while ((tree2 = ewl_container_child_get(c, index + 1))) 
 			ewl_widget_destroy(tree2);
-		}
 	}
 
 	list->tree = ewl_tree_new(1);
