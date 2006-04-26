@@ -64,6 +64,7 @@ int
 ewl_filelist_column_init(Ewl_Filelist_Column *fl)
 {
 	Ewl_Filelist *list;
+	Ewl_Widget *p;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fl", fl, FALSE);
@@ -78,10 +79,12 @@ ewl_filelist_column_init(Ewl_Filelist_Column *fl)
 	list->dir_change = ewl_filelist_column_dir_change;
 	list->filter_change = ewl_filelist_column_dir_change;
 
-	fl->hbox = ewl_scrollpane_new();
-	ewl_box_orientation_set(EWL_BOX(EWL_SCROLLPANE(fl->hbox)->box), 
-						EWL_ORIENTATION_HORIZONTAL);
-	ewl_container_child_append(EWL_CONTAINER(fl), fl->hbox);
+	p = ewl_scrollpane_new();
+	ewl_container_child_append(EWL_CONTAINER(fl), p);
+	ewl_widget_show(p);
+
+	fl->hbox = ewl_hbox_new();
+	ewl_container_child_append(EWL_CONTAINER(p), fl->hbox);
 	ewl_widget_show(fl->hbox);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
