@@ -19,8 +19,17 @@
  * Cons
  * ----
  * Needs an extra widget to hold the 'display' of the tree data
+ *
+ *
+ * The _display will actually be called ewl_tree2_view. This will be
+ * abstracted out like the filelist does for the filedialog. This way we can
+ * have different types of 'views' on the tree columns. So, there would be
+ * the default view which is just as now (ewl_tree2_view_tree) and if
+ * someone wanted they could write ewl_tree2_view_spreadsheet to get a more
+ * spreadsheet type view with numbers down the side and letters over the
+ * top.
+ *
  */
-
 
 
 /**
