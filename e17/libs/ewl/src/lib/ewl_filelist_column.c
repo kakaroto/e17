@@ -79,12 +79,8 @@ ewl_filelist_column_init(Ewl_Filelist_Column *fl)
 	list->dir_change = ewl_filelist_column_dir_change;
 	list->filter_change = ewl_filelist_column_dir_change;
 
-	p = ewl_scrollpane_new();
-	ewl_container_child_append(EWL_CONTAINER(fl), p);
-	ewl_widget_show(p);
-
 	fl->hbox = ewl_hbox_new();
-	ewl_container_child_append(EWL_CONTAINER(p), fl->hbox);
+	ewl_container_child_append(EWL_CONTAINER(fl), fl->hbox);
 	ewl_widget_show(fl->hbox);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
