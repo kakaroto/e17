@@ -113,7 +113,7 @@ ewl_filelist_filter_get(Ewl_Filelist *fl)
 	DCHECK_PARAM_PTR_RET("fl", fl, NULL);
 	DCHECK_TYPE_RET("fl", fl, EWL_FILELIST_TYPE, NULL);
 
-	DRETURN_INT(fl->filter, DLEVEL_STABLE);
+	DRETURN_PTR(fl->filter, DLEVEL_STABLE);
 }
 
 /**
