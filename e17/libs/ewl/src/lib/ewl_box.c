@@ -559,7 +559,7 @@ ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
 			 */
 			policy = ewl_object_fill_policy_get(child);
 			policy &= ewl_box_info->f_policy;
-			if (policy || change == initial)
+			if (policy && change == initial)
 				ecore_dlist_append(ewl_box_spread, child);
 		}
 	}
