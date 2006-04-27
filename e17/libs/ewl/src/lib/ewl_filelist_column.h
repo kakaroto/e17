@@ -24,8 +24,9 @@ typedef struct Ewl_Filelist_Column Ewl_Filelist_Column;
 struct Ewl_Filelist_Column
 {
 	Ewl_Filelist list;      /**< Inherit from filelist */
-	Ewl_Widget *hbox;    /**<Hbox to contain the trees**/
-	Ewl_Widget *tree;    /**< Tree to hold directories */
+
+	Ewl_Widget *hbox;    /**< Hbox to contain the file lists **/
+	Ecore_List *dirs;	/**< List of directories shown */
 };
 
 Ewl_View	*ewl_filelist_column_view_get(void);
@@ -34,6 +35,13 @@ Ewl_Widget	*ewl_filelist_column_new(void);
 int		 ewl_filelist_column_init(Ewl_Filelist_Column *fl);
 
 void		 ewl_filelist_column_dir_change(Ewl_Filelist *fl);
+void             ewl_filelist_column_selected_file_add(Ewl_Filelist *fl,
+                                                        const char *file);
+const char      *ewl_filelist_column_filename_get(Ewl_Filelist *fl,
+                                                        void *item);
+void             ewl_filelist_column_selected_unselect(Ewl_Filelist *fl);
+void             ewl_filelist_column_shift_handle(Ewl_Filelist *fl,
+                                                Ewl_Widget *clicked);
 
 /**
  * @}

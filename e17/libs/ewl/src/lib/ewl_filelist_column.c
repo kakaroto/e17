@@ -3,6 +3,13 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
+struct Ewl_Filelist_Column_Data
+{
+	Ewl_Widget *list;
+	char *dir;
+};
+typedef struct Ewl_Filelist_Column_Data Ewl_Filelist_Column_Data;;
+
 static Ewl_View *ewl_filelist_column_view = NULL;
 
 static void ewl_filelist_column_cb_dir_clicked(Ewl_Widget *w, void *event, 
@@ -10,7 +17,7 @@ static void ewl_filelist_column_cb_dir_clicked(Ewl_Widget *w, void *event,
 static void ewl_filelist_column_cb_file_clicked(Ewl_Widget *w, void *event, 
 							void *data);
 static void ewl_filelist_column_row_add(Ewl_Filelist *fl, const char *dir, 
-							char *file);
+						char *file, void *data);
 
 /**
  * @return Returns the Ewl_View needed to display the filelist_column
@@ -64,7 +71,6 @@ int
 ewl_filelist_column_init(Ewl_Filelist_Column *fl)
 {
 	Ewl_Filelist *list;
-	Ewl_Widget *p;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fl", fl, FALSE);
@@ -78,6 +84,15 @@ ewl_filelist_column_init(Ewl_Filelist_Column *fl)
 	list = EWL_FILELIST(fl);
 	list->dir_change = ewl_filelist_column_dir_change;
 	list->filter_change = ewl_filelist_column_dir_change;
+	list->show_dot_change = ewl_filelist_column_dir_change;
+	list->selected_file_add = ewl_filelist_column_selected_file_add;
+	list->file_name_get = ewl_filelist_column_filename_get;
+	list->selected_unselect = ewl_filelist_column_selected_unselect;
+	list->shift_handle = ewl_filelist_column_shift_handle;
+
+	ewl_filelist_vscroll_flag_set(list, EWL_SCROLLPANE_FLAG_ALWAYS_HIDDEN);
+
+	fl->dirs = ecore_list_new();	/* XXX NEED to free this on destroy */
 
 	fl->hbox = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(fl), fl->hbox);
@@ -94,52 +109,224 @@ ewl_filelist_column_init(Ewl_Filelist_Column *fl)
 void
 ewl_filelist_column_dir_change(Ewl_Filelist *fl)
 {
-	const char *path;
 	Ewl_Filelist_Column *list;
-	Ewl_Container *c;
+	Ewl_Filelist_Column_Data *d;
+	Ecore_List *path_list;
+	Ewl_Widget *s;
+	char *new_path, *p, *t, *dir, path[PATH_MAX];
+	int i = 0, count = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fl", fl);
 	DCHECK_TYPE("fl", fl, EWL_FILELIST_COLUMN_TYPE);
 
 	list = EWL_FILELIST_COLUMN(fl);
-	c = EWL_CONTAINER(list->hbox);
-	path = ewl_filelist_directory_get(EWL_FILELIST(fl));
+	new_path = strdup(ewl_filelist_directory_get(EWL_FILELIST(fl)));
 
-	if (list->tree != NULL) 
+	memset(path, '\0', PATH_MAX);
+	path_list = ecore_list_new();
+
+	/* break the path into it's components */
+	p = new_path;
+	if (p[0] == '/')
 	{
-		Ewl_Widget *tree;
-		int index;
-
-		tree = ewl_widget_name_find(path);
-		if (tree)
-		{
-			index = ewl_container_child_index_get(c, tree);
-
-			/*
-			 * Destroy columns following the current column.
-			 */
-			while ((tree = ewl_container_child_get(c, index + 1))) 
-				ewl_widget_destroy(tree);
-		}
+		ecore_list_append(path_list, strdup("/"));
+		p++;
 	}
 
-	list->tree = ewl_vbox_new();
-	ewl_container_child_append(EWL_CONTAINER(list->hbox), list->tree);
-	ewl_widget_show(list->tree);
+	while ((t = strchr((p + 1), '/')))
+	{
+		char tmp;
 
-	ewl_filelist_directory_read(fl, TRUE, ewl_filelist_column_row_add);
+		t ++;
+		tmp = *t;
+
+		*t = '\0';
+		ecore_list_append(path_list, strdup(p));
+
+		*t = tmp;
+		p = t;
+	}
+
+	if (p && (*(p + 1) != '\0'))
+		ecore_list_append(path_list, strdup(p));
+
+	/* find the point at which the two lists differ */
+	ecore_list_goto_first(list->dirs);
+	ecore_list_goto_first(path_list);
+	while (1)
+	{
+		int len1, len2;
+
+		d = ecore_list_next(list->dirs);
+		dir = ecore_list_next(path_list);
+		if (!d || !dir) break;
+		
+		/* we do this as a strncmp and use the length of d->dir as
+		 * there is the possiblity we have dropped the /. but, we
+		 * also check to make sure that d->dir is no more then 1
+		 * more then dir to be on the safe side */
+		len1 = strlen(d->dir);
+		len2 = strlen(dir);
+
+		if (len1 == (len2 - 1))
+			len1 = len2;
+
+		if ((len1 == len2) && strncmp(d->dir, dir, len1))
+			break;
+
+		i++;
+	}
+
+	/* remove all of the nodes after this one */
+	ecore_list_goto_index(list->dirs, i);
+	while((d = ecore_list_remove(list->dirs)))
+	{
+		ewl_widget_destroy(d->list);
+		IF_FREE(d->dir);
+		FREE(d);
+	}
+
+	/* build up our base path */
+	ecore_list_goto_first(path_list);
+	while(count != i)
+	{
+		strcat(path, ecore_list_next(path_list));
+		count ++;
+	}
+
+	/* add the rest of the path to the view */
+	while ((dir = ecore_list_next(path_list)))
+	{
+		s = ewl_scrollpane_new();
+		ewl_container_child_append(EWL_CONTAINER(list->hbox), s);
+		ewl_scrollpane_hscrollbar_flag_set(EWL_SCROLLPANE(s),
+					EWL_SCROLLPANE_FLAG_ALWAYS_HIDDEN);
+		ewl_widget_show(s);
+
+		/* setup the path data */
+		d = NEW(Ewl_Filelist_Column_Data, 1);
+		d->list = s;
+		d->dir = strdup(dir);
+		ecore_list_append(list->dirs, d);
+
+		strcat(path, dir);
+		ewl_filelist_directory_read(fl, path, TRUE, 
+					ewl_filelist_column_row_add, s);
+	}
+
+	ecore_list_destroy(path_list);
+	FREE(new_path);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
+/**
+ * @param fl: The filelist to work with
+ * @return Returns no value
+ * @brief The callback to notify of selected files changing
+ */
+void
+ewl_filelist_column_selected_file_add(Ewl_Filelist *fl, const char *file)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("fl", fl);
+	DCHECK_PARAM_PTR("file", file);
+	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param fl: The filelist to work with
+ * @param item: The item to get the name from
+ * @return Returns the filename for the given item
+ * @brief Retrieves the filename for the given item
+ */
+const char *
+ewl_filelist_column_filename_get(Ewl_Filelist *fl, void *item)
+{
+	Ewl_Icon *icon;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("fl", fl, NULL);
+	DCHECK_PARAM_PTR_RET("item", item, NULL);
+	DCHECK_TYPE_RET("fl", fl, EWL_FILELIST_TYPE, NULL);
+
+	icon = EWL_ICON(item);
+
+	DRETURN_PTR(ewl_icon_label_get(icon), DLEVEL_STABLE);
+}
+
+/**
+ * @param fl: The filelist to work with
+ * @return Returns no value.
+ * @brief This will set all of the icons back to their unselected state
+ */
+void
+ewl_filelist_column_selected_unselect(Ewl_Filelist *fl)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("fl", fl);
+	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
+
+	ewl_filelist_selected_signal_all(fl, "icon,unselect");
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param fl: The filelist to deal with
+ * @param clicked: The currently clicked item
+ * @return Returns no value
+ * @brief Select the appropriate widgets to deal with a shift click
+ */
+void
+ewl_filelist_column_shift_handle(Ewl_Filelist *fl, Ewl_Widget *clicked)
+{
+	Ewl_Filelist_Column *list;
+	Ewl_Filelist_Column_Data *d;
+	Ewl_Widget *parent;
+	Ewl_Container *dir_parent;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("fl", fl);
+	DCHECK_PARAM_PTR("clicked", clicked);
+	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
+	DCHECK_TYPE("clicked", clicked, EWL_WIDGET_TYPE);
+
+	list = EWL_FILELIST_COLUMN(fl);
+	parent = clicked->parent;
+
+	ecore_list_goto_first(list->dirs);
+	while ((d = ecore_list_next(list->dirs)))
+	{
+		dir_parent = EWL_CONTAINER(d->list);
+		while (dir_parent->redirect)
+			dir_parent = dir_parent->redirect;
+
+		if (dir_parent == EWL_CONTAINER(parent))
+			break;
+	}
+
+	ewl_filelist_container_shift_handle(fl,
+			EWL_CONTAINER(parent), clicked,
+			"icon,select", "icon,unselect");
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 
 static void
 ewl_filelist_column_cb_dir_clicked(Ewl_Widget *w, void *ev, void *data)
 {
 	Ewl_Filelist_Column *fl;
+	Ewl_Filelist_Column_Data *d;
 	Ewl_Event_Mouse_Down *event;
 	const char *dir;
-	char *path;
+	char path[PATH_MAX];
+	Ewl_Widget *parent;
+	Ewl_Container *dir_parent;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -155,10 +342,31 @@ ewl_filelist_column_cb_dir_clicked(Ewl_Widget *w, void *ev, void *data)
 		DRETURN(DLEVEL_STABLE);
 
 	dir = ewl_icon_label_get(EWL_ICON(w));
-	path = ewl_filelist_expand_path(EWL_FILELIST(fl), dir);
-	ewl_filelist_directory_set(EWL_FILELIST(fl), path);
+	memset(path, '\0', PATH_MAX);
 
-	FREE(path);
+	/* we have a directory clicked. we need to take the icon, grab it's
+	 * parent then walk the list of nodes in the dir_list till we find
+	 * the parent widget. we can assemble a path from that */
+	parent = w->parent;
+
+	ecore_list_goto_first(fl->dirs);
+	while ((d = ecore_list_next(fl->dirs)))
+	{
+		strcat(path, d->dir);
+
+		dir_parent = EWL_CONTAINER(d->list);
+		while (dir_parent->redirect)
+			dir_parent = dir_parent->redirect;
+
+		if (dir_parent == EWL_CONTAINER(parent))
+		{
+			strcat(path, "/");
+			strcat(path, dir);
+			break;
+		}
+	}
+	
+	ewl_filelist_directory_set(EWL_FILELIST(fl), path);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -166,12 +374,39 @@ ewl_filelist_column_cb_dir_clicked(Ewl_Widget *w, void *ev, void *data)
 static void
 ewl_filelist_column_cb_file_clicked(Ewl_Widget *w, void *ev, void *data)
 {
+	Ewl_Filelist_Column *fl;
+	Ewl_Filelist_Column_Data *d;
+	char path[PATH_MAX];
+	Ewl_Widget *parent;
+	Ewl_Container *dir_parent;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("ev", ev);
 	DCHECK_PARAM_PTR("data", data);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
+	fl = data;
+
+	/* need to get the files parent and then update the filelist to have
+	 * his parent as the top level widget */
+	memset(path, '\0', PATH_MAX);
+
+	parent = w->parent;
+	ecore_list_goto_first(fl->dirs);
+	while ((d = ecore_list_next(fl->dirs)))
+	{
+		strcat(path, d->dir);
+
+		dir_parent = EWL_CONTAINER(d->list);
+		while (dir_parent->redirect)
+			dir_parent = dir_parent->redirect;
+
+		if (dir_parent == EWL_CONTAINER(parent))
+			break;
+	}
+
+	ewl_filelist_directory_set(EWL_FILELIST(data), path);
 	ewl_filelist_handle_click(EWL_FILELIST(data), w, ev, 
 					"icon,select", "icon,unselect");
 
@@ -179,7 +414,8 @@ ewl_filelist_column_cb_file_clicked(Ewl_Widget *w, void *ev, void *data)
 }
 
 static void
-ewl_filelist_column_row_add(Ewl_Filelist *fl, const char *dir, char *file)
+ewl_filelist_column_row_add(Ewl_Filelist *fl, const char *dir, char *file,
+								void *data)
 {
 	Ewl_Filelist_Column *list;
 	Ewl_Widget *icon;
@@ -189,11 +425,10 @@ ewl_filelist_column_row_add(Ewl_Filelist *fl, const char *dir, char *file)
 	DCHECK_PARAM_PTR("fl", fl);
 	DCHECK_PARAM_PTR("dir", dir);
 	DCHECK_PARAM_PTR("file", file);
+	DCHECK_PARAM_PTR("data", data);
 	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
 
 	list = EWL_FILELIST_COLUMN(fl);
-	snprintf(path, PATH_MAX, "%s/%s", dir, file);
-	ewl_widget_name_set(list->tree, strdup(path));
 
 	icon = ewl_icon_new();
 	ewl_box_orientation_set(EWL_BOX(icon),
@@ -201,6 +436,7 @@ ewl_filelist_column_row_add(Ewl_Filelist *fl, const char *dir, char *file)
 	ewl_object_fill_policy_set(EWL_OBJECT(icon), EWL_FLAG_FILL_VSHRINK);
 	ewl_icon_label_set(EWL_ICON(icon), file);
 
+	snprintf(path, PATH_MAX, "%s/%s", dir, file);
 	if (ecore_file_is_dir(path))
 	{
 		stock = "/stock/open";
@@ -217,7 +453,7 @@ ewl_filelist_column_row_add(Ewl_Filelist *fl, const char *dir, char *file)
 	ewl_icon_image_set(EWL_ICON(icon), ewl_theme_path_get(),
 			ewl_theme_data_str_get(EWL_WIDGET(icon), stock));
 
-	ewl_container_child_append(EWL_CONTAINER(list->tree), icon);
+	ewl_container_child_append(EWL_CONTAINER(data), icon);
 	ewl_widget_show(icon);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

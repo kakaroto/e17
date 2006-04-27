@@ -250,6 +250,15 @@ ewl_filepicker_list_view_set(Ewl_Filepicker *fp, Ewl_View *view)
 				EWL_CALLBACK_VALUE_CHANGED,
 				ewl_filepicker_cb_list_value_changed, fp);
 
+	/* get any scrollpane flags from the file list in case they need to
+	 * turn off certain bars */
+	ewl_scrollpane_vscrollbar_flag_set(EWL_SCROLLPANE(fp->file_list_box),
+				ewl_filelist_vscroll_flag_get(
+						EWL_FILELIST(fp->file_list)));
+	ewl_scrollpane_hscrollbar_flag_set(EWL_SCROLLPANE(fp->file_list_box),
+				ewl_filelist_hscroll_flag_get(
+						EWL_FILELIST(fp->file_list)));
+
 	/* load new view from old view values */
 	if (old_fl)
 	{

@@ -25,6 +25,9 @@ ewl_filelist_init(Ewl_Filelist *fl)
 	ewl_widget_inherit(EWL_WIDGET(fl), EWL_FILELIST_TYPE);
 	ewl_object_fill_policy_set(EWL_OBJECT(fl), EWL_FLAG_FILL_FILL);
 
+	fl->scroll_flags.h = EWL_SCROLLPANE_FLAG_AUTO_VISIBLE;
+	fl->scroll_flags.v = EWL_SCROLLPANE_FLAG_AUTO_VISIBLE;
+
 	fl->selected = ecore_list_new();
 	ewl_callback_prepend(EWL_WIDGET(fl), EWL_CALLBACK_DESTROY,
 				ewl_filelist_cb_destroy, NULL);
@@ -221,7 +224,7 @@ ewl_filelist_selected_file_get(Ewl_Filelist *fl)
 
 	ecore_list_goto_first(fl->selected);
 	widget = ecore_list_current(fl->selected);
-	if (fl->file_name_get) file = fl->file_name_get(fl, widget);
+	if (widget && fl->file_name_get) file = fl->file_name_get(fl, widget);
 
 	DRETURN_PTR((file ? strdup(file) : NULL), DLEVEL_STABLE);
 }
@@ -328,6 +331,74 @@ ewl_filelist_selected_signal_all(Ewl_Filelist *fl, const char *signal)
 }
 
 /**
+ * @param fl: The filelist to work with
+ * @param v: The value to set for the vertical scrollbar
+ * @return Returns no value
+ * @brief Sets the value to use for flags on the vertical scrollbar
+ */
+void
+ewl_filelist_vscroll_flag_set(Ewl_Filelist *fl, Ewl_ScrollPane_Flags v)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("fl", fl);
+	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
+
+	fl->scroll_flags.v = v;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param fl: The filelist to work with
+ * @return Returns the flags for the vertical scrollbar
+ * @brief Retrieves the flags for the vertical scrollbar
+ */
+Ewl_ScrollPane_Flags
+ewl_filelist_vscroll_flag_get(Ewl_Filelist *fl)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("fl", fl, EWL_SCROLLPANE_FLAG_NONE);
+	DCHECK_TYPE_RET("fl", fl, EWL_FILELIST_TYPE,
+					EWL_SCROLLPANE_FLAG_NONE);
+
+	DRETURN_INT(fl->scroll_flags.v, DLEVEL_STABLE);
+}
+
+/**
+ * @param fl: The filelist to work with
+ * @param h: The value to set for the horizontal scrollbar
+ * @return Returns no value
+ * @brief Sets the value to use for flags on the horizontal scrollbar
+ */
+void 
+ewl_filelist_hscroll_flag_set(Ewl_Filelist *fl, Ewl_ScrollPane_Flags h)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("fl", fl);
+	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
+
+	fl->scroll_flags.h = h;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param fl: The filelist to work with
+ * @return Returns the flags for the horizontal scrollbar
+ * @brief Retrieves the flags for the horizontal scrollbar
+ */
+Ewl_ScrollPane_Flags
+ewl_filelist_hscroll_flag_get(Ewl_Filelist *fl)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("fl", fl, EWL_SCROLLPANE_FLAG_NONE);
+	DCHECK_TYPE_RET("fl", fl, EWL_FILELIST_TYPE,
+					EWL_SCROLLPANE_FLAG_NONE);
+
+	DRETURN_INT(fl->scroll_flags.h, DLEVEL_STABLE);
+}
+
+/**
  * @param fl: The filelist to get the path from
  * @param dir: The dir name to append to the path
  * @return Returns the full path to the given directory
@@ -390,13 +461,13 @@ ewl_filelist_expand_path(Ewl_Filelist *fl, const char *dir)
  * displayed.
  */
 void
-ewl_filelist_directory_read(Ewl_Filelist *fl, unsigned int skip_dot_dot,
+ewl_filelist_directory_read(Ewl_Filelist *fl, const char *dir,
+		unsigned int skip_dot_dot, 
 		void (*func)(Ewl_Filelist *fl, const char *dir, 
-							char *file))
+				char *file, void *data), void *data)
 {
 	Ecore_List *all_files, *files, *dirs;
 	char path[PATH_MAX];
-	const char *dir;
 	char *file;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -404,7 +475,6 @@ ewl_filelist_directory_read(Ewl_Filelist *fl, unsigned int skip_dot_dot,
 	DCHECK_PARAM_PTR("func", func);
 	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
 
-	dir = ewl_filelist_directory_get(fl);
 	all_files = ecore_file_ls(dir);
 	if (!all_files) DRETURN(DLEVEL_STABLE);
 
@@ -437,13 +507,13 @@ ewl_filelist_directory_read(Ewl_Filelist *fl, unsigned int skip_dot_dot,
 	/* XXX will need to do sorting here ... */
 	while ((file = ecore_list_remove_first(dirs)))
 	{
-		func(fl, dir, file);
+		func(fl, dir, file, data);
 		FREE(file);
 	}
 	
 	while ((file = ecore_list_remove_first(files)))
 	{
-		func(fl, dir, file);
+		func(fl, dir, file, data);
 		FREE(file);
 	}
 

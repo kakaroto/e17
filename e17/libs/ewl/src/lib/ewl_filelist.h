@@ -45,6 +45,11 @@ struct Ewl_Filelist
 		Ewl_Widget *last; /**< Last selected in SHIFT select */
 	} select;		 /**< Data used in SHIFT select */
 
+	struct
+	{	Ewl_ScrollPane_Flags h; /**< Horizontal scroll flag */
+		Ewl_ScrollPane_Flags v; /**< Vertical scroll flag */
+	} scroll_flags;		/**< Flags to modify a containing scrollpane */
+
 	void (*dir_change)(Ewl_Filelist *fl);	/**< Callback to notify of
 							directory change */
 	void (*filter_change)(Ewl_Filelist *fl);	/**< Callback to notify
@@ -100,12 +105,22 @@ void 		 ewl_filelist_selected_files_change_notify(Ewl_Filelist *fl);
 void		 ewl_filelist_selected_signal_all(Ewl_Filelist *fl, 
 						const char *signal);
 
+void		 ewl_filelist_vscroll_flag_set(Ewl_Filelist *fl,
+						Ewl_ScrollPane_Flags v);
+Ewl_ScrollPane_Flags ewl_filelist_vscroll_flag_get(Ewl_Filelist *fl);
+
+void		 ewl_filelist_hscroll_flag_set(Ewl_Filelist *fl,
+						Ewl_ScrollPane_Flags h);
+Ewl_ScrollPane_Flags ewl_filelist_hscroll_flag_get(Ewl_Filelist *fl);
+
 char 		*ewl_filelist_expand_path(Ewl_Filelist *fl, const char *dir);
 void 		 ewl_filelist_directory_read(Ewl_Filelist *fl, 
+					const char *dir,
 					unsigned int skip_dot_dot,
 					void (*func)(Ewl_Filelist *fl, 
-							const char *dir, 
-							char *file));
+						const char *dir, 
+						char *file, void *data),
+					void *data);
 void 		 ewl_filelist_handle_click(Ewl_Filelist *fl, Ewl_Widget *w,
 						Ewl_Event_Mouse_Up *ev,
 						const char *select_state, 

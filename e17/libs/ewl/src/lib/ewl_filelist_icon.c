@@ -10,7 +10,7 @@ static void ewl_filelist_icon_cb_dir_clicked(Ewl_Widget *w,
 static void ewl_filelist_icon_cb_icon_clicked(Ewl_Widget *w,
 						void *ev, void *data);
 static void ewl_filelist_icon_icon_add(Ewl_Filelist *fl, const char *dir, 
-							char *file);
+						char *file, void *data);
 
 /**
  * @return Returns the Ewl_View needed to display the filelist_icon
@@ -105,7 +105,8 @@ ewl_filelist_icon_dir_change(Ewl_Filelist *fl)
 
 	list = EWL_FILELIST_ICON(fl);
 	ewl_container_reset(EWL_CONTAINER(list->freebox));
-	ewl_filelist_directory_read(fl, FALSE, ewl_filelist_icon_icon_add);
+	ewl_filelist_directory_read(fl, ewl_filelist_directory_get(fl), 
+				FALSE, ewl_filelist_icon_icon_add, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -233,7 +234,8 @@ ewl_filelist_icon_cb_icon_clicked(Ewl_Widget *w, void *ev, void *data)
 }
 
 static void
-ewl_filelist_icon_icon_add(Ewl_Filelist *fl, const char *dir, char *file)
+ewl_filelist_icon_icon_add(Ewl_Filelist *fl, const char *dir, char *file,
+							void *data __UNUSED__)
 {
 	Ewl_Filelist_Icon *list;
 	Ewl_Widget *icon;

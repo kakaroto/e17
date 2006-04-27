@@ -6,7 +6,7 @@
 static Ewl_View *ewl_filelist_list_view = NULL;
 
 static void ewl_filelist_list_add(Ewl_Filelist *fl, const char *dir, 
-							char *file);
+						char *file, void *data);
 static void ewl_filelist_list_cb_dir_clicked(Ewl_Widget *w, void *ev, 
 							void *data);
 static void ewl_filelist_list_cb_icon_clicked(Ewl_Widget *w, void *ev, 
@@ -110,7 +110,8 @@ ewl_filelist_list_dir_change(Ewl_Filelist *fl)
 
 	list = EWL_FILELIST_LIST(fl);
 	ewl_container_reset(EWL_CONTAINER(list->tree));
-	ewl_filelist_directory_read(fl, FALSE, ewl_filelist_list_add);
+	ewl_filelist_directory_read(fl, ewl_filelist_directory_get(fl),
+				FALSE, ewl_filelist_list_add, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -191,7 +192,8 @@ ewl_filelist_list_shift_handle(Ewl_Filelist *fl, Ewl_Widget *clicked)
 }
 
 static void
-ewl_filelist_list_add(Ewl_Filelist *fl, const char *dir, char *file)
+ewl_filelist_list_add(Ewl_Filelist *fl, const char *dir, char *file, 
+						void *data __UNUSED__)
 {
 	char path[PATH_MAX];
 	char *vals[6];
