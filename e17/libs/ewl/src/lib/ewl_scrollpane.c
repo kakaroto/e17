@@ -139,6 +139,14 @@ ewl_scrollpane_hscrollbar_flag_set(Ewl_ScrollPane *s, Ewl_ScrollPane_Flags f)
 	DCHECK_TYPE("s", s, EWL_SCROLLPANE_TYPE);
 
 	s->hflag = f;
+
+	if (f & EWL_SCROLLPANE_FLAG_ALWAYS_HIDDEN) {
+		unsigned int fill;
+		fill = ewl_object_fill_policy_get(EWL_OBJECT(s->box));
+		ewl_object_fill_policy_set(EWL_OBJECT(s->box),
+				fill | EWL_FLAG_FILL_HSHRINK);
+	}
+
 	ewl_widget_configure(EWL_WIDGET(s));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -160,6 +168,14 @@ ewl_scrollpane_vscrollbar_flag_set(Ewl_ScrollPane *s, Ewl_ScrollPane_Flags f)
 	DCHECK_TYPE("s", s, EWL_SCROLLPANE_TYPE);
 
 	s->vflag = f;
+
+	if (f & EWL_SCROLLPANE_FLAG_ALWAYS_HIDDEN) {
+		unsigned int fill;
+		fill = ewl_object_fill_policy_get(EWL_OBJECT(s->box));
+		ewl_object_fill_policy_set(EWL_OBJECT(s->box),
+				fill | EWL_FLAG_FILL_VSHRINK);
+	}
+
 	ewl_widget_configure(EWL_WIDGET(s));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -309,7 +325,7 @@ ewl_scrollpane_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	int hs_height = 0;
 	int b_width, b_height;
 	int content_w, content_h;
-	unsigned int box_fill = EWL_FLAG_FILL_FILL;
+	unsigned int old_fill, box_fill = EWL_FLAG_FILL_FILL;
 	double hstep = 1.0, vstep = 1.0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -418,6 +434,7 @@ ewl_scrollpane_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	/*
 	 * Set the fill policy on the box based on scrollbars visible.
 	 */
+	old_fill = ewl_object_fill_policy_get(EWL_OBJECT(s->box));
 	ewl_object_fill_policy_set(EWL_OBJECT(s->box), box_fill);
 
 	/*
@@ -450,7 +467,7 @@ ewl_scrollpane_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	/*
 	 * Reset the default fill policy on the box to get updated sizes..
 	 */
-	ewl_object_fill_policy_set(EWL_OBJECT(s->box), EWL_FLAG_FILL_FILL);
+	ewl_object_fill_policy_set(EWL_OBJECT(s->box), old_fill);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
