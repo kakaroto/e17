@@ -80,6 +80,7 @@ ewl_filelist_column_init(Ewl_Filelist_Column *fl)
 
 	ewl_widget_appearance_set(EWL_WIDGET(fl), EWL_FILELIST_COLUMN_TYPE);
 	ewl_widget_inherit(EWL_WIDGET(fl), EWL_FILELIST_COLUMN_TYPE);
+	ewl_object_fill_policy_set(EWL_OBJECT(fl), EWL_FLAG_FILL_ALL);
 
 	list = EWL_FILELIST(fl);
 	list->dir_change = ewl_filelist_column_dir_change;
@@ -95,6 +96,7 @@ ewl_filelist_column_init(Ewl_Filelist_Column *fl)
 	fl->dirs = ecore_list_new();	/* XXX NEED to free this on destroy */
 
 	fl->hbox = ewl_hbox_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(fl->hbox), EWL_FLAG_FILL_ALL);
 	ewl_container_child_append(EWL_CONTAINER(fl), fl->hbox);
 	ewl_widget_show(fl->hbox);
 
