@@ -121,6 +121,7 @@ typedef struct
 struct _ditem
 {
    int                 type;
+   Dialog             *dlg;
    DialogCallbackFunc *func;
    int                 val;
    void               *data;
@@ -206,6 +207,7 @@ static EWin        *FindEwinByDialog(Dialog * d);
 static int          FindADialog(void);
 
 static void         DialogHandleEvents(XEvent * ev, void *prm);
+static void         DItemHandleEvents(XEvent * ev, void *prm);
 static void         DButtonHandleEvents(XEvent * ev, void *prm);
 
 static void         MoveTableBy(Dialog * d, DItem * di, int dx, int dy);
@@ -726,6 +728,7 @@ DialogInitItem(Dialog * d)
    if (!di)
       return di;
 
+   di->dlg = d;
    di->item.table.num_columns = 1;
 
    return di;
@@ -833,6 +836,7 @@ DialogAddItem(DItem * dii, int type)
 	   Erealloc(dii->item.table.items,
 		    sizeof(DItem *) * dii->item.table.num_items);
 	dii->item.table.items[dii->item.table.num_items - 1] = di;
+	di->dlg = dii->dlg;
      }
 
    return di;
@@ -1031,12 +1035,12 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	ESelectInput(di->item.slider.base_win,
 		     EnterWindowMask | LeaveWindowMask | ButtonPressMask |
 		     ButtonReleaseMask);
-	EventCallbackRegister(di->item.slider.base_win, 0, DialogHandleEvents,
-			      d);
+	EventCallbackRegister(di->item.slider.base_win, 0, DItemHandleEvents,
+			      di);
 	ESelectInput(di->item.slider.knob_win,
 		     ButtonPressMask | ButtonReleaseMask | PointerMotionMask);
-	EventCallbackRegister(di->item.slider.knob_win, 0, DialogHandleEvents,
-			      d);
+	EventCallbackRegister(di->item.slider.knob_win, 0, DItemHandleEvents,
+			      di);
 	if (!di->item.slider.ic_base)
 	  {
 	     if (di->item.slider.horizontal)
@@ -1152,7 +1156,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	ESelectInput(di->item.area.area_win,
 		     EnterWindowMask | LeaveWindowMask | ButtonPressMask |
 		     ButtonReleaseMask | PointerMotionMask);
-	EventCallbackRegister(di->item.area.area_win, 0, DialogHandleEvents, d);
+	EventCallbackRegister(di->item.area.area_win, 0, DItemHandleEvents, di);
 	di->w = iw;
 	di->h = ih;
 	break;
@@ -1480,7 +1484,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
      }
 
    if (di->win && register_win_callback)
-      EventCallbackRegister(di->win, 0, DialogHandleEvents, d);
+      EventCallbackRegister(di->win, 0, DItemHandleEvents, di);
 }
 
 static void
@@ -2025,33 +2029,6 @@ DialogFreeItem(DItem * di)
    Efree(di);
 }
 
-static DItem       *
-DialogItemFindWindow(DItem * di, Window win)
-{
-   DItem              *dii = NULL;
-
-   if (di->type == DITEM_TABLE)
-     {
-	int                 i;
-
-	for (i = 0; i < di->item.table.num_items; i++)
-	  {
-	     dii = DialogItemFindWindow(di->item.table.items[i], win);
-	     if (dii)
-		return dii;
-	  }
-     }
-   else if ((di->win == win)
-	    || ((di->type == DITEM_SLIDER)
-		&& ((di->item.slider.base_win == win)
-		    || (di->item.slider.knob_win == win)))
-	    || ((di->type == DITEM_AREA) && (di->item.area.area_win == win)))
-     {
-	return di;
-     }
-   return NULL;
-}
-
 /* Convenience callback to close dialog */
 void
 DialogCallbackClose(Dialog * d, int val __UNUSED__, void *data __UNUSED__)
@@ -2133,22 +2110,23 @@ DialogEventKeyPress(Dialog * d, XEvent * ev)
      }
 }
 
-static DItem       *
-DialogFindDItem(Dialog * d, Window win)
+static void
+DialogHandleEvents(XEvent * ev, void *prm)
 {
-   return (d->item) ? DialogItemFindWindow(d->item, win) : NULL;
+   Dialog             *d = (Dialog *) prm;
+
+   switch (ev->type)
+     {
+     case KeyPress:
+	DialogEventKeyPress(d, ev);
+	break;
+     }
 }
 
 static void
-DialogEventMotion(Dialog * d, XEvent * ev)
+DItemEventMotion(DItem * di, XEvent * ev)
 {
-   Window              win = ev->xmotion.window;
-   DItem              *di;
    int                 dx, dy;
-
-   di = DialogFindDItem(d, win);
-   if (!di)
-      return;
 
    switch (di->type)
      {
@@ -2197,24 +2175,19 @@ DialogEventMotion(Dialog * d, XEvent * ev)
 	     if (di->item.slider.val_ptr)
 		*di->item.slider.val_ptr = di->item.slider.val;
 	     if (di->func)
-		(di->func) (d, di->val, di->data);
+		(di->func) (di->dlg, di->val, di->data);
 	  }
 
-	DialogDrawItems(d, di, di->x, di->y, di->w, di->h);
+	DialogDrawItems(di->dlg, di, di->x, di->y, di->w, di->h);
 	break;
      }
 }
 
 static void
-DialogEventMouseDown(Dialog * d, XEvent * ev)
+DItemEventMouseDown(DItem * di, XEvent * ev)
 {
    Window              win = ev->xbutton.window;
-   DItem              *di;
    int                 x, y, wheel_jump;
-
-   di = DialogFindDItem(d, win);
-   if (!di)
-      return;
 
    switch (di->type)
      {
@@ -2309,20 +2282,16 @@ DialogEventMouseDown(Dialog * d, XEvent * ev)
 
    di->clicked = 1;
 
-   DialogDrawItems(d, di, di->x, di->y, di->w, di->h);
+   DialogDrawItems(di->dlg, di, di->x, di->y, di->w, di->h);
 }
 
 static void
-DialogEventMouseUp(Dialog * d, XEvent * ev)
+DItemEventMouseUp(DItem * di, XEvent * ev)
 {
    Window              win = ev->xbutton.window;
-   DItem              *di, *dii;
+   DItem              *dii;
 
    if (win != Mode.events.last_bpress)
-      return;
-
-   di = DialogFindDItem(d, win);
-   if (!di)
       return;
 
    di->clicked = 0;
@@ -2345,7 +2314,7 @@ DialogEventMouseUp(Dialog * d, XEvent * ev)
 	     if (dii->item.radio_button.onoff)
 	       {
 		  dii->item.radio_button.onoff = 0;
-		  DialogDrawItems(d, dii, dii->x, dii->y, dii->w, dii->h);
+		  DialogDrawItems(di->dlg, dii, dii->x, dii->y, dii->w, dii->h);
 	       }
 	     dii = dii->item.radio_button.next;
 	  }
@@ -2360,22 +2329,15 @@ DialogEventMouseUp(Dialog * d, XEvent * ev)
 	break;
      }
 
-   DialogDrawItems(d, di, di->x, di->y, di->w, di->h);
+   DialogDrawItems(di->dlg, di, di->x, di->y, di->w, di->h);
 
    if (di->func)
-      di->func(d, di->val, di->data);
+      di->func(di->dlg, di->val, di->data);
 }
 
 static void
-DialogEventMouseIn(Dialog * d, XEvent * ev)
+DItemEventMouseIn(DItem * di, XEvent * ev)
 {
-   Window              win = ev->xcrossing.window;
-   DItem              *di;
-
-   di = DialogFindDItem(d, win);
-   if (!di)
-      return;
-
    switch (di->type)
      {
      case DITEM_AREA:
@@ -2391,19 +2353,12 @@ DialogEventMouseIn(Dialog * d, XEvent * ev)
 
    di->hilited = 1;
 
-   DialogDrawItems(d, di, di->x, di->y, di->w, di->h);
+   DialogDrawItems(di->dlg, di, di->x, di->y, di->w, di->h);
 }
 
 static void
-DialogEventMouseOut(Dialog * d, XEvent * ev)
+DItemEventMouseOut(DItem * di, XEvent * ev)
 {
-   Window              win = ev->xcrossing.window;
-   DItem              *di;
-
-   di = DialogFindDItem(d, win);
-   if (!di)
-      return;
-
    switch (di->type)
      {
      case DITEM_AREA:
@@ -2419,57 +2374,33 @@ DialogEventMouseOut(Dialog * d, XEvent * ev)
 
    di->hilited = 0;
 
-   DialogDrawItems(d, di, di->x, di->y, di->w, di->h);
+   DialogDrawItems(di->dlg, di, di->x, di->y, di->w, di->h);
 }
 
-static void
-DialogHandleEvents(XEvent * ev, void *prm)
-{
-   Dialog             *d = (Dialog *) prm;
-
-   switch (ev->type)
-     {
-     case KeyPress:
-	DialogEventKeyPress(d, ev);
-	break;
-     case ButtonPress:
-	DialogEventMouseDown(d, ev);
-	break;
-     case ButtonRelease:
-	DialogEventMouseUp(d, ev);
-	break;
-     case MotionNotify:
-	DialogEventMotion(d, ev);
-	break;
-     case EnterNotify:
-	DialogEventMouseIn(d, ev);
-	break;
-     case LeaveNotify:
-	DialogEventMouseOut(d, ev);
-	break;
-     }
-}
-
-#if 0				/* TBD */
 static void
 DItemHandleEvents(XEvent * ev, void *prm)
 {
-   DItem              *di = (Dialog *) prm;
-   Window              win = ev->xany.window;
+   DItem              *di = (DItem *) prm;
 
    switch (ev->type)
      {
      case ButtonPress:
+	DItemEventMouseDown(di, ev);
 	break;
      case ButtonRelease:
+	DItemEventMouseUp(di, ev);
+	break;
+     case MotionNotify:
+	DItemEventMotion(di, ev);
 	break;
      case EnterNotify:
+	DItemEventMouseIn(di, ev);
 	break;
      case LeaveNotify:
+	DItemEventMouseOut(di, ev);
 	break;
      }
 }
-#endif
 
 static void
 DButtonHandleEvents(XEvent * ev, void *prm)
