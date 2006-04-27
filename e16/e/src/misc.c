@@ -155,7 +155,7 @@ ETimedLoopInit(int k1, int k2, int speed)
    if (speed < 500)
       speed = 500;
    /* When speed is 1000 the loop will take one sec. */
-   etl_fac = (k2 - k1) * speed / 1000.;
+   etl_fac = (k2 - k1) * (double)speed / 1000.;
 
    gettimeofday(&etl_tv_start, NULL);
    ESync();
@@ -171,10 +171,10 @@ ETimedLoopNext(void)
 
    /* Find elapsed time since loop start */
    tm = ETimeElapsed(&etl_tv_start);
+   etl_k = etl_k1 + tm * etl_fac;
 #if 0
    Eprintf("ETimedLoopNext k=%4f tm=%.3f\n", etl_k, tm);
 #endif
-   etl_k = etl_k1 + tm * etl_fac;
    y = ETimeCurve(etl_k1, etl_k2, (float)etl_k, 2);
 
    EobjsRepaint();
