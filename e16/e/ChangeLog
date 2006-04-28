@@ -3878,3 +3878,21 @@ Various build related tweaks:
 - Minor changes to various version strings
 - Move timestamp.h to top dir.
 
+
+-------------------------------------------------------------------------------
+
+Fri Apr 28 20:36:30 CEST 2006
+(Kim)
+
+--- 0.16.8.2 0.03 ---
+Start renaming/rewrapping stuff preparing for other api changes.
+Revert bad change. ICCCM size matching should never increase size.
+Fix _XROOT... hint compatibility hack.
+Enable configuring internal and exported language.
+Fix progress bars with composite enabled.
+Fix winter theme progress bar images.
+Add feature to subdivide screen (xinerama style).
+Fix several bugs with maximizing windows.
+Fix bug when reparenting to nested E.
+Fix bug potentially causing eternal loop while sliding.
+
