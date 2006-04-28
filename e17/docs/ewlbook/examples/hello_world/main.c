@@ -11,7 +11,7 @@ void text_update_cb(Ewl_Widget *w, void *event, void *data) {
     Ewl_Widget *label = NULL;
     char buf[BUFSIZ];
 
-    s = ewl_entry_text_get(EWL_ENTRY(w));
+    s = ewl_text_text_get(EWL_TEXT(w));
     label = (Ewl_Widget *)data;
 
     snprintf(buf, BUFSIZ, "Hello %s", s);
@@ -52,7 +52,7 @@ int main(int argc, char ** argv) {
     label = ewl_text_new();
     ewl_container_child_append(EWL_CONTAINER(box), label);
     ewl_object_alignment_set(EWL_OBJECT(label), EWL_FLAG_ALIGN_CENTER);
-    ewl_text_style_set(EWL_TEXT(label), "soft_shadow");
+    ewl_text_styles_set(EWL_TEXT(label), EWL_TEXT_STYLE_SOFT_SHADOW);
     ewl_text_color_set(EWL_TEXT(label), 255, 0, 0, 255);
     ewl_text_text_set(EWL_TEXT(label), "Hello");
     ewl_widget_show(label);
@@ -62,7 +62,7 @@ int main(int argc, char ** argv) {
     ewl_container_child_append(EWL_CONTAINER(box), o);
     ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
     ewl_object_padding_set(EWL_OBJECT(o), 5, 5, 5, 0);
-    ewl_entry_color_set(EWL_ENTRY(o), 0, 0, 0, 255);
+    ewl_text_color_set(EWL_TEXT(o), 0, 0, 0, 255);
     ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED, text_update_cb, label);
     ewl_widget_show(o);
 
