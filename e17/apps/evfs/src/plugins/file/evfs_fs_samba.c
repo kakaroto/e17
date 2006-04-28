@@ -41,6 +41,7 @@
 #include <dirent.h>
 #include <Ecore_File.h>
 #include <libsmbclient.h>
+#include <limits.h>
 
 //static struct stat file_stat;
 int smbc_remove_unused_server(SMBCCTX * context, SMBCSRV * srv);
