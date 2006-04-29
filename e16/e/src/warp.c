@@ -45,7 +45,7 @@
 typedef struct
 {
    EWin               *ewin;
-   Window              win;
+   Win                 win;
    char               *txt;
 } WarplistItem;
 
@@ -57,7 +57,7 @@ typedef struct
    int                 mw, mh, tw, th;
 } WarpFocusWin;
 
-static void         WarpFocusHandleEvent(XEvent * ev, void *prm);
+static void         WarpFocusHandleEvent(Win win, XEvent * ev, void *prm);
 
 static WarpFocusWin *warpFocusWindow = NULL;
 
@@ -164,8 +164,8 @@ WarpFocusWinShow(WarpFocusWin * fw)
     * Grab the keyboard. The grab is automatically released when
     * WarpFocusHide unmaps warpFocusWindow.
     */
-   GrabKeyboardSet(EoGetXwin(fw));
-   GrabPointerSet(EoGetXwin(fw), None, 0);
+   GrabKeyboardSet(EoGetWin(fw));
+   GrabPointerSet(EoGetWin(fw), None, 0);
 
    TooltipsEnable(0);
 }
@@ -222,7 +222,7 @@ WarpFocusWinPaint(WarpFocusWin * fw)
 				   Conf.warplist.icon_mode);
 	     if (im)
 	       {
-		  EImageRenderOnDrawable(im, wi->win, pad->left +
+		  EImageRenderOnDrawable(im, Xwin(wi->win), pad->left +
 					 ICON_PAD, ICON_PAD,
 					 icon_size, icon_size, 1);
 		  EImageFree(im);
@@ -230,7 +230,7 @@ WarpFocusWinPaint(WarpFocusWin * fw)
 	     iw = fw->mh;
 	  }
 
-	TextDraw(fw->tc, wi->win, 0, 0, state, wi->txt,
+	TextDraw(fw->tc, Xwin(wi->win), 0, 0, state, wi->txt,
 		 pad->left + iw, pad->top, fw->tw, fw->th, 0, 0);
      }
 
@@ -392,7 +392,7 @@ WarpFocusFinish(void)
 }
 
 static void
-WarpFocusHandleEvent(XEvent * ev, void *prm __UNUSED__)
+WarpFocusHandleEvent(Win win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
 {
    WarpFocusWin       *fw = warpFocusWindow;
    KeySym              key;

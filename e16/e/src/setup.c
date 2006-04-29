@@ -51,7 +51,7 @@ MapUnmap(int start)
      {
      case 0:
 	EGrabServer();
-	XQueryTree(disp, VRoot.win, &rt, &par, &wlist, &num);
+	XQueryTree(disp, VRoot.xwin, &rt, &par, &wlist, &num);
 	for (i = 0; i < num; i++)
 	  {
 #ifdef USE_EXT_INIT_WIN
@@ -201,19 +201,19 @@ SetupX(const char *dstr)
 
    /* Root defaults */
    RRoot.scr = DefaultScreen(disp);
-   RRoot.win = DefaultRootWindow(disp);
+   RRoot.xwin = DefaultRootWindow(disp);
    RRoot.vis = DefaultVisual(disp, RRoot.scr);
    RRoot.depth = DefaultDepth(disp, RRoot.scr);
    RRoot.cmap = DefaultColormap(disp, RRoot.scr);
    RRoot.w = DisplayWidth(disp, RRoot.scr);
    RRoot.h = DisplayHeight(disp, RRoot.scr);
 
-   VRoot.win = RRoot.win;
+   VRoot.xwin = RRoot.xwin;
    VRoot.vis = RRoot.vis;
    VRoot.depth = RRoot.depth;
    VRoot.cmap = RRoot.cmap;
 
-   ERegisterWindow(RRoot.win);
+   RRoot.win = ERegisterWindow(RRoot.xwin);
 
    if (Mode.wm.window)
      {
@@ -226,20 +226,21 @@ SetupX(const char *dstr)
 	attr.border_pixel = 0;
 	attr.background_pixel = 0;
 	attr.save_under = True;
-	VRoot.win = XCreateWindow(disp, RRoot.win, 0, 0, VRoot.w, VRoot.h, 0,
-				  CopyFromParent, InputOutput, CopyFromParent,
-				  CWOverrideRedirect | CWSaveUnder |
-				  CWBackingStore | CWColormap | CWBackPixel |
-				  CWBorderPixel, &attr);
-	ERegisterWindow(VRoot.win);
+	VRoot.xwin = XCreateWindow(disp, RRoot.xwin, 0, 0, VRoot.w, VRoot.h, 0,
+				   CopyFromParent, InputOutput, CopyFromParent,
+				   CWOverrideRedirect | CWSaveUnder |
+				   CWBackingStore | CWColormap | CWBackPixel |
+				   CWBorderPixel, &attr);
+	VRoot.win = ERegisterWindow(VRoot.xwin);
 
 	/* Enable eesh and edox to pix up the virtual root */
-	Esnprintf(buf, sizeof(buf), "%#lx", VRoot.win);
+	Esnprintf(buf, sizeof(buf), "%#lx", VRoot.xwin);
 	Esetenv("ENL_WM_ROOT", buf);
      }
    else
      {
 	/* Running E normally on the root window */
+	VRoot.win = RRoot.win;
 	VRoot.w = RRoot.w;
 	VRoot.h = RRoot.h;
      }
@@ -262,7 +263,7 @@ SetupX(const char *dstr)
       ButtonPressMask | ButtonReleaseMask | EnterWindowMask | LeaveWindowMask |
       ButtonMotionMask | PropertyChangeMask | SubstructureRedirectMask |
       PointerMotionMask | StructureNotifyMask | SubstructureNotifyMask;
-   XSelectInput(disp, VRoot.win, mask);
+   ESelectInput(VRoot.win, mask);
 
    ESync();
    Mode.wm.xselect = 0;

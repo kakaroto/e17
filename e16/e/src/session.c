@@ -521,7 +521,7 @@ doSMExit(int mode, const char *params)
 	EwinsSetFree();
 	if (Mode.wm.startup && Mode.wm.exiting)
 	   MapUnmap(1);
-	XSelectInput(disp, VRoot.win, 0);
+	XSelectInput(disp, VRoot.xwin, 0);
 	ExtInitWinKill();
 	ESync();
 

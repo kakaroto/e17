@@ -138,7 +138,7 @@ EBlendRemoveShape(EWin * ewin, Pixmap pmap, int x, int y)
    static int          rn, ord;
    static XRectangle  *rl = NULL;
    static Pixmap       mask = 0;
-   Window              root = VRoot.win;
+   Window              root = VRoot.xwin;
    XGCValues           gcv;
    int                 i, w, h;
 
@@ -206,7 +206,7 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
    static int          rn, ord;
    static XRectangle  *rl = NULL;
    static GC           gc = 0;
-   Window              root = VRoot.win;
+   Window              root = VRoot.xwin;
    XGCValues           gcv;
    int                 i, j, ox, oy;
 
@@ -627,7 +627,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
    static GC           gc = 0;
    static Pixmap       b1 = 0, b2 = 0, b3 = 0;
    static Font         font = 0;
-   Window              root = VRoot.win;
+   Window              root = VRoot.xwin;
    int                 x1, y1, w1, h1, i, j, dx, dy;
    int                 bl, br, bt, bb;
    char                str[32];

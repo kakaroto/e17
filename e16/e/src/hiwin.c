@@ -36,7 +36,7 @@ struct _hiwin
    EWin               *ewin;
    int                 zoom;
    int                 xo, yo, wo, ho;
-   void                (*evcb) (XEvent * ev, void *data);
+   void                (*evcb) (Win win, XEvent * ev, void *data);
    void               *data;
    char                animate;
    GC                  gc;
@@ -204,17 +204,17 @@ static const HiwinRender HiwinRenderPixmap = {
 };
 
 static void
-HiwinEvent(XEvent * ev, void *prm)
+HiwinEvent(Win win, XEvent * ev, void *prm)
 {
    Hiwin              *phi = prm;
 
    if (phi->evcb)
-      phi->evcb(ev, phi->data);
+      phi->evcb(win, ev, phi->data);
 }
 
 #if USE_COMPOSITE
 static void
-HiwinEwinEvent(XEvent * ev, void *prm)
+HiwinEwinEvent(Win win __UNUSED__, XEvent * ev, void *prm)
 {
    Hiwin              *phi = prm;
 
@@ -294,7 +294,7 @@ HiwinInit(Hiwin * phi, EWin * ewin)
 }
 
 void
-HiwinSetCallback(Hiwin * phi, void (*func) (XEvent * ev, void *data),
+HiwinSetCallback(Hiwin * phi, void (*func) (Win win, XEvent * ev, void *data),
 		 void *data)
 {
    phi->evcb = func;
@@ -458,7 +458,7 @@ HiwinShow(Hiwin * phi, EWin * ewin, int zoom, int confine)
 	EoMoveResize(phi, x - w / 2, y - h / 2, w, h);
      }
 
-   GrabPointerSet(EoGetXwin(phi), ECSR_ACT_MOVE, confine);
+   GrabPointerSet(EoGetWin(phi), ECSR_ACT_MOVE, confine);
 
    pz->fini(phi, 1);
 }

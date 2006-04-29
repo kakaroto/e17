@@ -36,7 +36,7 @@ void                BackgroundRealize(Background * bg, Drawable draw,
 				      unsigned long *ppixel);
 void                BackgroundApplyPmap(Background * bg, Drawable draw,
 					unsigned int rw, unsigned int rh);
-void                BackgroundSet(Background * bg, Window win, unsigned int rw,
+void                BackgroundSet(Background * bg, Win win, unsigned int rw,
 				  unsigned int rh);
 void                BackgroundIncRefcount(Background * bg);
 void                BackgroundDecRefcount(Background * bg);

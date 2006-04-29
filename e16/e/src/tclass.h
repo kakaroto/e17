@@ -88,7 +88,7 @@ void                TextstateDrawText(TextState * ts, Window win,
 void                TextSize(TextClass * tclass, int active, int sticky,
 			     int state, const char *text, int *width,
 			     int *height, int fsize);
-void                TextDraw(TextClass * tclass, Window win, int active,
+void                TextDraw(TextClass * tclass, Drawable draw, int active,
 			     int sticky, int state, const char *text, int x,
 			     int y, int w, int h, int fsize, int justification);
 

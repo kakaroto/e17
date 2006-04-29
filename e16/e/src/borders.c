@@ -42,8 +42,8 @@
 static Ecore_List  *border_list = NULL;
 
 static void         BorderDestroy(Border * b);
-static void         BorderWinpartHandleEvents(XEvent * ev, void *prm);
-static void         BorderFrameHandleEvents(XEvent * ev, void *prm);
+static void         BorderWinpartHandleEvents(Win win, XEvent * ev, void *prm);
+static void         BorderFrameHandleEvents(Win win, XEvent * ev, void *prm);
 
 static void
 BorderWinpartRealise(EWin * ewin, int i)
@@ -562,13 +562,13 @@ EwinBorderSetTo(EWin * ewin, const Border * b)
       for (i = b->num_winparts - 1; i >= 0; i--)
 	{
 	   if (b->part[i].ontop)
-	      wl[j++] = ewin->bits[i].win;
+	      wl[j++] = Xwin(ewin->bits[i].win);
 	}
-      wl[j++] = ewin->win_container;
+      wl[j++] = Xwin(ewin->win_container);
       for (i = b->num_winparts - 1; i >= 0; i--)
 	{
 	   if (!b->part[i].ontop)
-	      wl[j++] = ewin->bits[i].win;
+	      wl[j++] = Xwin(ewin->bits[i].win);
 	}
       XRestackWindows(disp, wl, j);
       Efree(wl);
@@ -834,7 +834,7 @@ EwinBorderMinShadeSize(EWin * ewin, int *mw, int *mh)
 }
 
 int
-BorderWinpartIndex(EWin * ewin, Window win)
+BorderWinpartIndex(EWin * ewin, Win win)
 {
    int                 i;
 
@@ -880,7 +880,8 @@ BorderWinpartEventMouseDown(EWinBit * wbit, XEvent * ev)
 
    wbit->state = STATE_CLICKED;
 #if DEBUG_BORDER_EVENTS
-   Eprintf("BorderWinpartEventMouseDown %#lx %d\n", wbit->win, wbit->state);
+   Eprintf("BorderWinpartEventMouseDown %#lx %d\n", Xwin(wbit->win),
+	   wbit->state);
 #endif
    BorderWinpartChange(ewin, part, 0);
 
@@ -904,14 +905,14 @@ BorderWinpartEventMouseUp(EWinBit * wbit, XEvent * ev)
    else
       wbit->state = STATE_NORMAL;
 #if DEBUG_BORDER_EVENTS
-   Eprintf("BorderWinpartEventMouseUp %#lx %d\n", wbit->win, wbit->state);
+   Eprintf("BorderWinpartEventMouseUp %#lx %d\n", Xwin(wbit->win), wbit->state);
 #endif
    BorderWinpartChange(ewin, part, 0);
 
    /* Beware! Actions may destroy the current border */
    wbit->left = 0;
 
-   if (wbit->win == Mode.events.last_bpress && !left &&
+   if (Xwin(wbit->win) == Mode.events.last_bpress && !left &&
        ewin->border->part[part].aclass)
       ActionclassEvent(ewin->border->part[part].aclass, ev, ewin);
 }
@@ -923,7 +924,7 @@ BorderWinpartEventEnter(EWinBit * wbit, XEvent * ev)
    int                 part = wbit - ewin->bits;
 
 #if DEBUG_BORDER_EVENTS
-   Eprintf("BorderWinpartEventEnter %#lx %d\n", wbit->win, wbit->state);
+   Eprintf("BorderWinpartEventEnter %#lx %d\n", Xwin(wbit->win), wbit->state);
 #endif
    if (wbit->state == STATE_CLICKED)
       wbit->left = 0;
@@ -945,7 +946,7 @@ BorderWinpartEventLeave(EWinBit * wbit, XEvent * ev)
    int                 part = wbit - ewin->bits;
 
 #if DEBUG_BORDER_EVENTS
-   Eprintf("BorderWinpartEventLeave %#lx %d\n", wbit->win, wbit->state);
+   Eprintf("BorderWinpartEventLeave %#lx %d\n", Xwin(wbit->win), wbit->state);
 #endif
    if (wbit->state == STATE_CLICKED)
       wbit->left = 1;
@@ -959,7 +960,7 @@ BorderWinpartEventLeave(EWinBit * wbit, XEvent * ev)
 }
 
 static void
-BorderFrameHandleEvents(XEvent * ev, void *prm)
+BorderFrameHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
 {
    EWin               *ewin = (EWin *) prm;
 
@@ -1015,7 +1016,7 @@ BorderWinpartHandleTooltip(EWinBit * wbit, int event)
 }
 
 static void
-BorderWinpartHandleEvents(XEvent * ev, void *prm)
+BorderWinpartHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
 {
    EWinBit            *wbit = (EWinBit *) prm;
 

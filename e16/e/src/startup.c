@@ -35,7 +35,7 @@ static char         bg_sideways = 0;
 void
 StartupWindowsCreate(void)
 {
-   Window              w1, w2, win1, win2, b1, b2;
+   Win                 w1, w2, win1, win2, b1, b2;
    Background         *bg;
    ImageClass         *ic;
    int                 x, y, bx, by, bw, bh;

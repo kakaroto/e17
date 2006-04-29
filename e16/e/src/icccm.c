@@ -50,7 +50,7 @@ ICCCM_Init(void)
 	Atom                wm_props[1];
 
 	wm_props[0] = ECORE_X_ATOM_WM_DELETE_WINDOW;
-	XSetWMProtocols(disp, VRoot.win, wm_props, 1);
+	XSetWMProtocols(disp, VRoot.xwin, wm_props, 1);
      }
 }
 
@@ -74,7 +74,7 @@ ICCCM_ProcessClientMessage(XClientMessageEvent * event)
    else if (event->message_type == ECORE_X_ATOM_WM_PROTOCOLS)
      {
 	a = event->data.l[0];
-	if (a == ECORE_X_ATOM_WM_DELETE_WINDOW && event->window == VRoot.win)
+	if (a == ECORE_X_ATOM_WM_DELETE_WINDOW && event->window == VRoot.xwin)
 	   SessionExit(EEXIT_EXIT, NULL);
      }
 }
@@ -297,7 +297,7 @@ ICCCM_Configure(EWin * ewin)
    ev.xconfigure.y = ewin->client.y;
 #endif
    if (Mode.wm.window)
-      XTranslateCoordinates(disp, VRoot.win, RRoot.win,
+      XTranslateCoordinates(disp, VRoot.xwin, RRoot.xwin,
 			    ev.xconfigure.x, ev.xconfigure.y,
 			    &ev.xconfigure.x, &ev.xconfigure.y, &child);
    ev.xconfigure.width = ewin->client.w;
@@ -408,7 +408,7 @@ ICCCM_Focus(const EWin * ewin)
 
    if (!ewin)
      {
-	XSetInputFocus(disp, VRoot.win, RevertToPointerRoot, Mode.events.time);
+	XSetInputFocus(disp, VRoot.xwin, RevertToPointerRoot, Mode.events.time);
 	HintsSetActiveWindow(None);
 	return;
      }
@@ -786,7 +786,7 @@ ICCCM_SetIconSizes(void)
    is->max_height = 48;
    is->width_inc = 1;
    is->height_inc = 1;
-   XSetIconSizes(disp, VRoot.win, is, 1);
+   XSetIconSizes(disp, VRoot.xwin, is, 1);
    XFree(is);
 }
 

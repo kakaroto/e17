@@ -105,21 +105,21 @@ ImageState         *ImageclassGetImageState(ImageClass * ic, int state,
 ImageClass         *ImageclassCreateSimple(const char *name, const char *image);
 EImage             *ImageclassGetImage(ImageClass * ic, int active, int sticky,
 				       int state);
-Pixmap              ImageclassApplySimple(ImageClass * ic, Window win,
+Pixmap              ImageclassApplySimple(ImageClass * ic, Win win,
 					  Drawable draw, int state, int x,
 					  int y, int w, int h);
-void                ImageclassApply(ImageClass * ic, Window win, int w, int h,
+void                ImageclassApply(ImageClass * ic, Win win, int w, int h,
 				    int active, int sticky, int state,
 				    int image_type);
 void                ImageclassApplyCopy(ImageClass * ic, Window win, int w,
 					int h, int active, int sticky,
 					int state, PmapMask * pmm,
 					int make_mask, int image_type);
-EImage             *ImageclassGetImageBlended(ImageClass * ic, Window win,
+EImage             *ImageclassGetImageBlended(ImageClass * ic, Win win,
 					      int w, int h, int active,
 					      int sticky, int state,
 					      int image_type);
-void                ITApply(Window win, ImageClass * ic, ImageState * is, int w,
+void                ITApply(Win win, ImageClass * ic, ImageState * is, int w,
 			    int h, int state, int active, int sticky,
 			    int image_type, TextClass * tc,
 			    TextState * ts, const char *text);

@@ -29,7 +29,7 @@
 struct _client
 {
    char               *name;
-   Window              win;
+   Win                 win;
    char               *msg;
    char               *clientname;
    char               *version;
@@ -39,15 +39,15 @@ struct _client
 
 static Ecore_List  *client_list = NULL;
 
-static Window       comms_win = 0;
+static Win          comms_win = NoWin;
 
 static Atom         XA_ENLIGHTENMENT_COMMS = 0;
 static Atom         XA_ENL_MSG = 0;
 
-static void         ClientHandleEvents(XEvent * ev, void *cc);
+static void         ClientHandleEvents(Win win, XEvent * ev, void *cc);
 
 static Client      *
-ClientCreate(Window win)
+ClientCreate(Window xwin)
 {
    Client             *c;
    char                st[32];
@@ -56,12 +56,11 @@ ClientCreate(Window win)
    if (!c)
       return NULL;
 
-   Esnprintf(st, sizeof(st), "%8x", (int)win);
+   Esnprintf(st, sizeof(st), "%8x", (int)xwin);
    c->name = Estrdup(st);
-   c->win = win;
-   ERegisterWindow(win);
-   EventCallbackRegister(win, 0, ClientHandleEvents, c);
-   XSelectInput(disp, win, StructureNotifyMask | SubstructureNotifyMask);
+   c->win = ERegisterWindow(xwin);
+   EventCallbackRegister(c->win, 0, ClientHandleEvents, c);
+   ESelectInput(c->win, StructureNotifyMask | SubstructureNotifyMask);
 
    if (!client_list)
       client_list = ecore_list_new();
@@ -80,6 +79,7 @@ ClientDestroy(Client * c)
 
    EventCallbackUnregister(c->win, 0, ClientHandleEvents, c);
    EUnregisterWindow(c->win);
+
    if (c->name)
       Efree(c->name);
    if (c->msg)
@@ -148,7 +148,7 @@ ClientConfigure(Client * c, const char *str)
 static int
 ClientMatchWindow(const void *data, const void *match)
 {
-   return ((const Client *)data)->win != (Window) match;
+   return Xwin(((const Client *)data)->win) != (Window) match;
 }
 
 static char        *
@@ -242,7 +242,7 @@ ClientHandleComms(XClientMessageEvent * ev)
 }
 
 static void
-ClientHandleEvents(XEvent * ev, void *cc)
+ClientHandleEvents(Win win __UNUSED__, XEvent * ev, void *cc)
 {
    Client             *c = (Client *) cc;
 
@@ -266,14 +266,13 @@ CommsInit(void)
    char                s[1024];
 
    comms_win = ECreateEventWindow(VRoot.win, -100, -100, 5, 5);
-   ERegisterWindow(comms_win);
-   XSelectInput(disp, comms_win, StructureNotifyMask | SubstructureNotifyMask);
+   ESelectInput(comms_win, StructureNotifyMask | SubstructureNotifyMask);
    EventCallbackRegister(comms_win, 0, ClientHandleEvents, NULL);
 
-   Esnprintf(s, sizeof(s), "WINID %8x", (int)comms_win);
+   Esnprintf(s, sizeof(s), "WINID %8lx", Xwin(comms_win));
    XA_ENLIGHTENMENT_COMMS = XInternAtom(disp, "ENLIGHTENMENT_COMMS", False);
-   ecore_x_window_prop_string_set(comms_win, XA_ENLIGHTENMENT_COMMS, s);
-   ecore_x_window_prop_string_set(VRoot.win, XA_ENLIGHTENMENT_COMMS, s);
+   ecore_x_window_prop_string_set(Xwin(comms_win), XA_ENLIGHTENMENT_COMMS, s);
+   ecore_x_window_prop_string_set(VRoot.xwin, XA_ENLIGHTENMENT_COMMS, s);
 
    XA_ENL_MSG = XInternAtom(disp, "ENL_MSG", False);
 }
@@ -297,7 +296,7 @@ CommsDoSend(Window win, const char *s)
    ev.xclient.format = 8;
    for (i = 0; i < len + 1; i += 12)
      {
-	Esnprintf(ss, sizeof(ss), "%8x", (int)comms_win);
+	Esnprintf(ss, sizeof(ss), "%8lx", Xwin(comms_win));
 	for (j = 0; j < 12; j++)
 	  {
 	     ss[8 + j] = s[i + j];
@@ -318,7 +317,7 @@ CommsSend(Client * c, const char *s)
       return;
 
    c->replied = 1;
-   CommsDoSend(c->win, s);
+   CommsDoSend(Xwin(c->win), s);
 }
 
 void
@@ -328,7 +327,7 @@ CommsFlush(Client * c)
       return;
 
    if (!c->replied)
-      CommsDoSend(c->win, "");
+      CommsDoSend(Xwin(c->win), "");
 }
 
 /*

@@ -795,7 +795,7 @@ ImageclassGetImage(ImageClass * ic, int active, int sticky, int state)
 }
 
 Pixmap
-ImageclassApplySimple(ImageClass * ic, Window win, Drawable draw, int state,
+ImageclassApplySimple(ImageClass * ic, Win win, Drawable draw, int state,
 		      int x, int y, int w, int h)
 {
    Pixmap              pmap;
@@ -883,8 +883,8 @@ pt_get_bg_image(Window win, int w, int h, int use_root)
    bg = DeskGetBackgroundPixmap(DesksGetCurrent());
    if (use_root || bg == None)
      {
-	cr = VRoot.win;
-	bg = VRoot.win;
+	cr = VRoot.xwin;
+	bg = VRoot.xwin;
      }
    else
      {
@@ -906,7 +906,7 @@ pt_get_bg_image(Window win, int w, int h, int use_root)
 #endif
 
 EImage             *
-ImageclassGetImageBlended(ImageClass * ic, Window win, int w, int h, int active,
+ImageclassGetImageBlended(ImageClass * ic, Win win, int w, int h, int active,
 			  int sticky, int state, int image_type)
 {
    EImage             *im, *bg;
@@ -923,7 +923,7 @@ ImageclassGetImageBlended(ImageClass * ic, Window win, int w, int h, int active,
    flags = pt_type_to_flags(image_type);
    if (flags != ICLASS_ATTR_OPAQUE)
      {
-	bg = pt_get_bg_image(win, w, h, flags & ICLASS_ATTR_GLASS);
+	bg = pt_get_bg_image(Xwin(win), w, h, flags & ICLASS_ATTR_GLASS);
 	if (bg)
 	  {
 	     EImageBlendCM(bg, im, (flags & ICLASS_ATTR_USE_CM) ? icm : NULL);
@@ -1146,11 +1146,11 @@ ImagestateDrawBevel(ImageState * is, Drawable win, GC gc, int w, int h)
 }
 
 void
-ITApply(Window win, ImageClass * ic, ImageState * is, int w, int h,
+ITApply(Win win, ImageClass * ic, ImageState * is, int w, int h,
 	int state, int active, int sticky, int image_type,
 	TextClass * tc, TextState * ts, const char *text)
 {
-   if (win == None || !ic)
+   if (win == NoWin || !ic)
       return;
 
    /* FIXME - Why? */
@@ -1178,7 +1178,7 @@ ITApply(Window win, ImageClass * ic, ImageState * is, int w, int h,
      {
 	PmapMask            pmm;
 
-	ImagestateMakePmapMask(is, win, &pmm, 1, w, h, image_type);
+	ImagestateMakePmapMask(is, Xwin(win), &pmm, 1, w, h, image_type);
 
 	if (pmm.pmap)
 	  {
@@ -1230,14 +1230,14 @@ ITApply(Window win, ImageClass * ic, ImageState * is, int w, int h,
      {
 	GC                  gc;
 
-	gc = EXCreateGC(win, 0, NULL);
-	ImagestateDrawBevel(is, win, gc, w, h);
+	gc = EXCreateGC(Xwin(win), 0, NULL);
+	ImagestateDrawBevel(is, Xwin(win), gc, w, h);
 	EXFreeGC(gc);
      }
 }
 
 void
-ImageclassApply(ImageClass * ic, Window win, int w, int h, int active,
+ImageclassApply(ImageClass * ic, Win win, int w, int h, int active,
 		int sticky, int state, int image_type)
 {
    ITApply(win, ic, NULL, w, h, state, active, sticky, image_type,
@@ -1245,7 +1245,7 @@ ImageclassApply(ImageClass * ic, Window win, int w, int h, int active,
 }
 
 void
-ImageclassApplyCopy(ImageClass * ic, Window win, int w, int h, int active,
+ImageclassApplyCopy(ImageClass * ic, Drawable win, int w, int h, int active,
 		    int sticky, int state, PmapMask * pmm, int make_mask,
 		    int image_type)
 {
@@ -1512,13 +1512,17 @@ ImageclassIpc(const char *params, Client * c __UNUSED__)
 	ic = ImageclassFind(param1, 0);
 	if (ic)
 	  {
-	     Window              win;
+	     Window              xwin;
+	     Win                 win;
 	     char                state[20];
 	     const char         *winptr, *hptr;
 	     int                 st, w = -1, h = -1;
 
 	     winptr = atword(params, 3);
-	     win = (Window) strtoul(winptr, NULL, 0);
+	     xwin = (Window) strtoul(winptr, NULL, 0);
+	     win = ECreateWinFromXwin(xwin);
+	     if (!win)
+		return;
 
 	     word(params, 4, state);
 	     if (!strcmp(state, "hilited"))
@@ -1537,9 +1541,8 @@ ImageclassIpc(const char *params, Client * c __UNUSED__)
 		  h = (int)strtol(hptr, (char **)NULL, 0);
 	       }
 
-	     if (!EDrawableCheck(win, 0))	/* Grab server? */
-		return;
 	     ImageclassApply(ic, win, w, h, 0, 0, st, ST_SOLID);
+	     EDestroyWin(win);
 	  }
      }
    else if (!strcmp(param2, "apply_copy"))

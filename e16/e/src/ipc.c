@@ -902,8 +902,6 @@ IPC_Debug(const char *params, Client * c __UNUSED__)
      }
    else if (!strncmp(param, "grab", 2))
      {
-	Window              win;
-
 	l = 0;
 	sscanf(p, "%1000s %n", param, &l);
 	p += l;
@@ -925,12 +923,6 @@ IPC_Debug(const char *params, Client * c __UNUSED__)
 	  {
 	     GrabPointerRelease();
 	     IpcPrintf("Ungrab\n");
-	  }
-	else
-	  {
-	     sscanf(param, "%li", &win);
-	     GrabPointerSet(win, ECSR_ACT_RESIZE, 1);
-	     IpcPrintf("Grab %#lx\n", win);
 	  }
      }
    else if (!strncmp(param, "sync", 2))
@@ -1122,7 +1114,7 @@ IPC_Reparent(const char *params, Client * c __UNUSED__)
    if (!ewin || !enew)
       IpcPrintf("No matching client or target EWin found\n");
    else
-      EwinReparent(ewin, _EwinGetClientXwin(enew));
+      EwinReparent(ewin, _EwinGetClientWin(enew));
 }
 
 static void
@@ -1142,7 +1134,7 @@ IPC_Warp(const char *params, Client * c __UNUSED__)
    else if (!strncmp(params, "abs", 3))
      {
 	sscanf(params, "%*s %i %i", &x, &y);
-	EXWarpPointer(VRoot.win, x, y);
+	EXWarpPointer(VRoot.xwin, x, y);
      }
    else if (!strncmp(params, "rel", 3))
      {

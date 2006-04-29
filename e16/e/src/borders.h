@@ -76,7 +76,7 @@ struct _border
 struct _ewinbit
 {
    EWin               *ewin;	/* Belongs to */
-   Window              win;
+   Win                 win;
    int                 x, y, w, h;
    int                 cx, cy, cw, ch;
    int                 state;
@@ -103,7 +103,7 @@ void                EwinBorderUpdateInfo(EWin * ewin);
 void                EwinBorderEventsConfigure(EWin * ewin, int mode);
 void                EwinSetBorder(EWin * ewin, const Border * b, int apply);
 void                EwinSetBorderByName(EWin * ewin, const char *name);
-int                 BorderWinpartIndex(EWin * ewin, Window win);
+int                 BorderWinpartIndex(EWin * ewin, Win win);
 Border             *BorderCreateFiller(int left, int right, int top,
 				       int bottom);
 void                BordersForeach(void (*func) (Border * b, void *data),

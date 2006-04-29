@@ -53,7 +53,7 @@ ExtInitWinMain(void)
    attr.border_pixel = 0;
    attr.background_pixel = 0;
    attr.save_under = True;
-   win = XCreateWindow(disp, VRoot.win, 0, 0, VRoot.w, VRoot.h, 0,
+   win = XCreateWindow(disp, VRoot.xwin, 0, 0, VRoot.w, VRoot.h, 0,
 		       CopyFromParent, InputOutput, CopyFromParent,
 		       CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 		       CWColormap | CWBackPixel | CWBorderPixel, &attr);
@@ -61,14 +61,14 @@ ExtInitWinMain(void)
    pmap = XCreatePixmap(disp, win, VRoot.w, VRoot.h, VRoot.depth);
    gcv.subwindow_mode = IncludeInferiors;
    gc = XCreateGC(disp, win, GCSubwindowMode, &gcv);
-   XCopyArea(disp, VRoot.win, pmap, gc, 0, 0, VRoot.w, VRoot.h, 0, 0);
+   XCopyArea(disp, VRoot.xwin, pmap, gc, 0, 0, VRoot.w, VRoot.h, 0, 0);
    XSetWindowBackgroundPixmap(disp, win, pmap);
    XMapRaised(disp, win);
    XFreePixmap(disp, pmap);
    XFreeGC(disp, gc);
 
    a = XInternAtom(disp, "ENLIGHTENMENT_RESTART_SCREEN", False);
-   ecore_x_window_prop_window_set(VRoot.win, a, &win, 1);
+   ecore_x_window_prop_window_set(VRoot.xwin, a, &win, 1);
 
    XSelectInput(disp, win, StructureNotifyMask);
 
@@ -171,7 +171,7 @@ ExtInitWinCreate(void)
 	     /* Hack to give the child some space. Not foolproof. */
 	     sleep(1);
 
-	     if (ecore_x_window_prop_window_get(VRoot.win, a, &win_ex, 1) > 0)
+	     if (ecore_x_window_prop_window_get(VRoot.xwin, a, &win_ex, 1) > 0)
 		break;
 	  }
 

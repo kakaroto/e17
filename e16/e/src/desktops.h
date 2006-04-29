@@ -73,7 +73,7 @@ void                DeskSetDirtyStack(Desk * dsk, EObj * eo);
 void                DeskGoto(Desk * dsk);
 void                DeskGotoNum(unsigned int desk);
 void                DeskRestack(Desk * dsk);
-Window              DeskGetBackgroundWin(const Desk * dsk);
+Win                 DeskGetBackgroundWin(const Desk * dsk);
 Pixmap              DeskGetBackgroundPixmap(const Desk * dsk);
 
 Background         *DeskBackgroundGet(const Desk * dsk);

@@ -78,8 +78,8 @@ void                HintsSetDesktopViewport(void);
 void                HintsSetClientList(void);
 void                HintsSetClientStacking(void);
 void                HintsSetActiveWindow(Window win);
-void                HintsSetWindowName(Window win, const char *name);
-void                HintsSetWindowClass(Window win, const char *name,
+void                HintsSetWindowName(Win win, const char *name);
+void                HintsSetWindowClass(Win win, const char *name,
 					const char *clss);
 void                HintsSetWindowDesktop(const EWin * ewin);
 void                HintsSetWindowArea(const EWin * ewin);
@@ -91,10 +91,9 @@ void                HintsDelWindowHints(const EWin * ewin);
 void                HintsProcessPropertyChange(EWin * ewin, Atom atom_change);
 void                HintsProcessClientMessage(XClientMessageEvent * event);
 
-Pixmap              HintsGetRootPixmap(Window win);
-void                HintsSetRootHints(Window win);
-void                HintsSetRootInfo(Window win, Pixmap pmap,
-				     unsigned int color);
+Pixmap              HintsGetRootPixmap(Win win);
+void                HintsSetRootHints(Win win);
+void                HintsSetRootInfo(Win win, Pixmap pmap, unsigned int color);
 
 void                EHintsSetInfo(const EWin * ewin);
 void                EHintsGetInfo(EWin * ewin);

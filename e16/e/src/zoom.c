@@ -32,10 +32,10 @@ static int          std_vid_modes_num = 0;
 static int          std_vid_mode_cur = 0;
 static XF86VidModeModeInfo **std_vid_modes = NULL;
 
-static Window       zoom_mask_1 = 0;
-static Window       zoom_mask_2 = 0;
-static Window       zoom_mask_3 = 0;
-static Window       zoom_mask_4 = 0;
+static Win          zoom_mask_1 = 0;
+static Win          zoom_mask_2 = 0;
+static Win          zoom_mask_3 = 0;
+static Win          zoom_mask_4 = 0;
 static EWin        *zoom_last_ewin = NULL;
 static int          zoom_last_x, zoom_last_y;
 static char         zoom_can = 0;
@@ -177,10 +177,10 @@ ZoomInit(void)
      }
 }
 
-static              Window
+static              Win
 ZoomMask(int x, int y, int w, int h)
 {
-   Window              win;
+   Win                 win;
 
    if (x < 0 || y < 0 || w <= 0 || h <= 0)
       return 0;

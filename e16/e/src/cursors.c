@@ -66,9 +66,9 @@ ECursorCreate(const char *name, const char *image, int native_id, XColor * fg,
 	mask = 0;
 	xh = 0;
 	yh = 0;
-	XReadBitmapFile(disp, VRoot.win, msk, &w, &h, &mask, &xh, &yh);
-	XReadBitmapFile(disp, VRoot.win, img, &w, &h, &pmap, &xh, &yh);
-	XQueryBestCursor(disp, VRoot.win, w, h, &ww, &hh);
+	XReadBitmapFile(disp, VRoot.xwin, msk, &w, &h, &mask, &xh, &yh);
+	XReadBitmapFile(disp, VRoot.xwin, img, &w, &h, &pmap, &xh, &yh);
+	XQueryBestCursor(disp, VRoot.xwin, w, h, &ww, &hh);
 	if ((w > ww) || (h > hh))
 	  {
 	     EFreePixmap(pmap);
@@ -235,13 +235,13 @@ ECursorConfigLoad(FILE * fs)
 }
 
 void
-ECursorApply(ECursor * ec, Window win)
+ECursorApply(ECursor * ec, Win win)
 {
    if (!ec)
       return;
-   XDefineCursor(disp, win, ec->cursor);
+   XDefineCursor(disp, Xwin(win), ec->cursor);
 #if 0				/* Not used */
-   if (win == VRoot.win)
+   if (win == VRoot.xwin)
       ec->inroot = 1;
 #endif
 }

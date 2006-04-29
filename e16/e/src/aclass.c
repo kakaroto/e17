@@ -1490,7 +1490,7 @@ GrabButtonGrabs(EWin * ewin)
 
 	if (mod == AnyModifier)
 	  {
-	     GrabButtonSet(button, mod, EoGetXwin(ewin), mask, ECSR_PGRAB, 1);
+	     GrabButtonSet(button, mod, EoGetWin(ewin), mask, ECSR_PGRAB, 1);
 	  }
 	else
 	  {
@@ -1499,7 +1499,7 @@ GrabButtonGrabs(EWin * ewin)
 	     for (i = 0; i < 8; i++)
 	       {
 		  GrabButtonSet(button, mod | Mode.masks.mod_combos[i],
-				EoGetXwin(ewin), mask, ECSR_PGRAB, 1);
+				EoGetWin(ewin), mask, ECSR_PGRAB, 1);
 	       }
 	  }
      }
@@ -1540,7 +1540,7 @@ UnGrabButtonGrabs(EWin * ewin)
 
 	if (mod == AnyModifier)
 	  {
-	     GrabButtonRelease(button, mod, EoGetXwin(ewin));
+	     GrabButtonRelease(button, mod, EoGetWin(ewin));
 	  }
 	else
 	  {
@@ -1549,7 +1549,7 @@ UnGrabButtonGrabs(EWin * ewin)
 	     for (i = 0; i < 8; i++)
 	       {
 		  GrabButtonRelease(button, mod | Mode.masks.mod_combos[i],
-				    EoGetXwin(ewin));
+				    EoGetWin(ewin));
 	       }
 	  }
      }
@@ -1567,7 +1567,7 @@ GrabActionKey(Action * aa)
    if (aa->anymodifier)
      {
 	mod = AnyModifier;
-	XGrabKey(disp, aa->key, mod, VRoot.win, False, GrabModeAsync,
+	XGrabKey(disp, aa->key, mod, VRoot.xwin, False, GrabModeAsync,
 		 GrabModeSync);
      }
    else
@@ -1576,7 +1576,7 @@ GrabActionKey(Action * aa)
 
 	/* grab the key even if locks are on or not */
 	for (i = 0; i < 8; i++)
-	   XGrabKey(disp, aa->key, mod | Mode.masks.mod_combos[i], VRoot.win,
+	   XGrabKey(disp, aa->key, mod | Mode.masks.mod_combos[i], VRoot.xwin,
 		    False, GrabModeAsync, GrabModeSync);
      }
 }
@@ -1593,7 +1593,7 @@ UnGrabActionKey(Action * aa)
    if (aa->anymodifier)
      {
 	mod = AnyModifier;
-	XUngrabKey(disp, aa->key, mod, VRoot.win);
+	XUngrabKey(disp, aa->key, mod, VRoot.xwin);
      }
    else
      {
@@ -1601,6 +1601,7 @@ UnGrabActionKey(Action * aa)
 
 	/* ungrab the key even if locks are on or not */
 	for (i = 0; i < 8; i++)
-	   XUngrabKey(disp, aa->key, mod | Mode.masks.mod_combos[i], VRoot.win);
+	   XUngrabKey(disp, aa->key, mod | Mode.masks.mod_combos[i],
+		      VRoot.xwin);
      }
 }

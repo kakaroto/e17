@@ -155,7 +155,7 @@ EobjIsShaped(const EObj * eo)
 #endif
 
 void
-EobjInit(EObj * eo, int type, Window win, int x, int y, int w, int h,
+EobjInit(EObj * eo, int type, Win win, int x, int y, int w, int h,
 	 int su, const char *name)
 {
    if (!eo->desk)
@@ -181,7 +181,7 @@ EobjInit(EObj * eo, int type, Window win, int x, int y, int w, int h,
    eo->shaped = -1;
 
    if (type == EOBJ_TYPE_EXT)
-      eo->name = ecore_x_icccm_title_get(win);
+      eo->name = ecore_x_icccm_title_get(Xwin(win));
    else if (name)
       eo->name = Estrdup(name);
    if (!eo->name)
@@ -202,7 +202,7 @@ EobjInit(EObj * eo, int type, Window win, int x, int y, int w, int h,
      }
    ECompMgrWinNew(eo);
 #endif
-   if (EobjGetXwin(eo) != VRoot.win)
+   if (EobjGetXwin(eo) != VRoot.xwin)
       EobjListStackAdd(eo, 1);
 
    if (EventDebug(EDBUG_TYPE_EWINS))
@@ -279,16 +279,17 @@ EobjWindowDestroy(EObj * eo)
 }
 
 EObj               *
-EobjRegister(Window win, int type)
+EobjRegister(Window xwin, int type)
 {
    EObj               *eo;
    XWindowAttributes   attr;
+   Win                 win;
 
-   eo = EobjListStackFind(win);
+   eo = EobjListStackFind(xwin);
    if (eo)
       return eo;
 
-   if (!XGetWindowAttributes(disp, win, &attr))
+   if (!XGetWindowAttributes(disp, xwin, &attr))
       return NULL;
 
    if (type == EOBJ_TYPE_EXT && !attr.override_redirect)
@@ -297,6 +298,8 @@ EobjRegister(Window win, int type)
    eo = Ecalloc(1, sizeof(EObj));
    if (!eo)
       return eo;
+
+   win = ERegisterWindow(xwin);
 
    if (attr.class == InputOnly)
       eo->inputonly = 1;
@@ -314,7 +317,7 @@ EobjRegister(Window win, int type)
      }
 #endif
 #if 0
-   Eprintf("EobjRegister: %#lx type=%d or=%d: %s\n", win, type,
+   Eprintf("EobjRegister: %#lx type=%d or=%d: %s\n", xwin, type,
 	   attr.override_redirect, eo->name);
 #endif
 

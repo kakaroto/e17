@@ -502,7 +502,7 @@ BackgroundCreatePixmap(Drawable draw, unsigned int w, unsigned int h,
     * invalid one from a previous session.
     */
    pmap = EXCreatePixmap(draw, w, h, depth);
-   if (draw == VRoot.win && pmap == Mode.root.ext_pmap)
+   if (draw == VRoot.xwin && pmap == Mode.root.ext_pmap)
      {
 	EFreePixmap(pmap);
 	pmap = EXCreatePixmap(draw, w, h, depth);
@@ -701,7 +701,7 @@ BackgroundApplyPmap(Background * bg, Drawable draw,
 }
 
 static void
-BackgroundApplyWin(Background * bg, Window win)
+BackgroundApplyWin(Background * bg, Win win)
 {
    int                 w, h;
    Pixmap              pmap;
@@ -710,7 +710,7 @@ BackgroundApplyWin(Background * bg, Window win)
    if (!EGetGeometry(win, NULL, NULL, NULL, &w, &h, NULL, NULL))
       return;
 
-   BackgroundRealize(bg, win, w, h, 1, &pmap, &pixel);
+   BackgroundRealize(bg, Xwin(win), w, h, 1, &pmap, &pixel);
    if (pmap != None)
      {
 	ESetWindowBackgroundPixmap(win, pmap);
@@ -728,7 +728,7 @@ BackgroundApplyWin(Background * bg, Window win)
  * The BG pixmap is stored in bg->pmap.
  */
 void
-BackgroundSet(Background * bg, Window win, unsigned int w, unsigned int h)
+BackgroundSet(Background * bg, Win win, unsigned int w, unsigned int h)
 {
    Pixmap              pmap = None;
    unsigned long       pixel = 0;
@@ -736,7 +736,7 @@ BackgroundSet(Background * bg, Window win, unsigned int w, unsigned int h)
    if (bg->pmap)
       pmap = bg->pmap;
    else
-      BackgroundRealize(bg, win, w, h, 1, &pmap, &pixel);
+      BackgroundRealize(bg, Xwin(win), w, h, 1, &pmap, &pixel);
 
    bg->pmap = pmap;
    if (pmap != None)
@@ -1504,7 +1504,7 @@ CB_DesktopMiniDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
    Pixmap              pmap;
    int                 w, h;
    DItem              *di;
-   Window              win;
+   Win                 win;
    XColor              xclr;
    const char         *fbg, *ffg;
 
@@ -1700,7 +1700,7 @@ BG_RedrawView(void)
 {
    Background         *bg;
    int                 x, w, h, num;
-   Window              win;
+   Win                 win;
    Pixmap              pmap;
    GC                  gc;
    ImageClass         *ic_button;
@@ -2439,16 +2439,21 @@ BackgroundsIpc(const char *params, Client * c __UNUSED__)
      }
    else if (!strncmp(cmd, "apply", 2))
      {
-	Window              win;
+	Window              xwin;
+	Win                 win;
 
 	bg = BackgroundFind(prm);
-	if (bg)
-	  {
-	     win = None;
-	     sscanf(p, "%lx", &win);
-	     if (win)
-		BackgroundApplyWin(bg, win);
-	  }
+	if (!bg)
+	   return;
+
+	xwin = None;
+	sscanf(p, "%lx", &xwin);
+
+	win = ECreateWinFromXwin(xwin);
+	if (!win)
+	   return;
+	BackgroundApplyWin(bg, win);
+	EDestroyWin(win);
      }
    else if (!strncmp(cmd, "cfg", 2))
      {

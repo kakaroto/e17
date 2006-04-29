@@ -75,8 +75,8 @@ struct _menuitem
    Menu               *child;
    char                state;
    PmapMask            pmm[3];
-   Window              win;
-   Window              icon_win;
+   Win                 win;
+   Win                 icon_win;
    short               icon_w;
    short               icon_h;
    short               text_w;
@@ -96,7 +96,7 @@ struct _menu
    int                 w, h;
    int                 num;
    MenuItem          **items;
-   Window              win;
+   Win                 win;
    PmapMask            pmm;
    int                 icon_size;
    char                internal;	/* Don't destroy when reloading */
@@ -124,9 +124,9 @@ static void         MenuActivateItem(Menu * m, MenuItem * mi);
 static void         MenuDrawItem(Menu * m, MenuItem * mi, char shape,
 				 int state);
 
-static void         MenuHandleEvents(XEvent * ev, void *m);
-static void         MenuItemHandleEvents(XEvent * ev, void *mi);
-static void         MenuMaskerHandleEvents(XEvent * ev, void *prm);
+static void         MenuHandleEvents(Win win, XEvent * ev, void *m);
+static void         MenuItemHandleEvents(Win win, XEvent * ev, void *mi);
+static void         MenuMaskerHandleEvents(Win win, XEvent * ev, void *prm);
 
 static void         MenusHide(void);
 
@@ -885,8 +885,8 @@ MenuRedraw(Menu * m)
 	w = m->w;
 	h = m->h;
 	FreePmapMask(&m->pmm);
-	ImageclassApplyCopy(m->style->bg_iclass, m->win, w, h, 0, 0,
-			    STATE_NORMAL, &m->pmm, 1, ST_MENU);
+	ImageclassApplyCopy(m->style->bg_iclass, Xwin(m->win), w, h, 0,
+			    0, STATE_NORMAL, &m->pmm, 1, ST_MENU);
 	ESetWindowBackgroundPixmap(m->win, m->pmm.pmap);
 	EShapeCombineMask(m->win, ShapeBounding, 0, 0, m->pmm.mask, ShapeSet);
 	EClearWindow(m->win);
@@ -934,8 +934,8 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape, int state)
 	       {
 		  PmapMask            pmm;
 
-		  ImageclassApplyCopy(ic, mi->win, w, h, 0, 0, mi->state, &pmm,
-				      1, item_type);
+		  ImageclassApplyCopy(ic, Xwin(mi->win), w, h, 0, 0,
+				      mi->state, &pmm, 1, item_type);
 		  if (pmm.mask)
 		    {
 		       XSetClipMask(disp, gc, pmm.mask);
@@ -1573,7 +1573,7 @@ SubmenuShowTimeout(int val __UNUSED__, void *dat)
 	     MenusSetEvents(1);
 
 	     if (Conf.menus.warp)
-		EXWarpPointer(mi->win, mi->text_w / 2, mi->text_h / 2);
+		EXWarpPointer(Xwin(mi->win), mi->text_w / 2, mi->text_h / 2);
 	  }
      }
 
@@ -1638,7 +1638,7 @@ MenuItemEventMouseOut(MenuItem * mi, XEvent * ev)
 }
 
 static void
-MenuHandleEvents(XEvent * ev, void *prm)
+MenuHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
 {
    Menu               *m = (Menu *) prm;
 
@@ -1659,7 +1659,7 @@ MenuHandleEvents(XEvent * ev, void *prm)
 }
 
 static void
-MenuItemHandleEvents(XEvent * ev, void *prm)
+MenuItemHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
 {
    MenuItem           *mi = (MenuItem *) prm;
 
@@ -1684,7 +1684,7 @@ MenuItemHandleEvents(XEvent * ev, void *prm)
 }
 
 static void
-MenuMaskerHandleEvents(XEvent * ev, void *prm __UNUSED__)
+MenuMaskerHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
 {
 #if DEBUG_MENU_EVENTS
    Eprintf("MenuMaskerHandleEvents %d\n", ev->type);

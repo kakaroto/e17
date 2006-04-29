@@ -60,7 +60,7 @@ Desktops;
 
 static void         DeskRaise(unsigned int num);
 static void         DeskLower(unsigned int num);
-static void         DeskHandleEvents(XEvent * ev, void *prm);
+static void         DeskHandleEvents(Win win, XEvent * ev, void *prm);
 static void         DeskButtonCallback(EObj * eo, XEvent * ev,
 				       ActionClass * ac);
 
@@ -343,7 +343,7 @@ DeskEventsConfigure(Desk * dsk, int mode)
 {
    long                event_mask;
    XWindowAttributes   xwa;
-   Window              win;
+   Win                 win;
 
    win = EobjGetWin(dsk->bg.o);
 
@@ -389,7 +389,7 @@ DeskCreate(int desk, int configure)
    EObj               *eo;
 #endif
    Desk               *dsk;
-   Window              win;
+   Win                 win;
    char                buf[64];
 
    if (desk < 0 || desk >= ENLIGHTENMENT_CONF_NUM_DESKTOPS)
@@ -401,7 +401,7 @@ DeskCreate(int desk, int configure)
    dsk->num = desk;
    desks.order[desk] = desk;
 
-   win = (desk == 0) ? VRoot.win : None;
+   win = (desk == 0) ? VRoot.win : NoWin;
    Esnprintf(buf, sizeof(buf), "Desk-%d", desk);
    EoSetNoRedirect(dsk, 1);
    EoInit(dsk, EOBJ_TYPE_DESK, win, 0, 0, VRoot.w, VRoot.h, 0, buf);
@@ -486,12 +486,12 @@ DeskDestroy(Desk * dsk)
    Efree(dsk);
 }
 
-Window
+Win
 DeskGetBackgroundWin(const Desk * dsk)
 {
    if (!dsk)
       return VRoot.win;
-   return EobjGetXwin(dsk->bg.o);
+   return EobjGetWin(dsk->bg.o);
 }
 
 Pixmap
@@ -511,7 +511,7 @@ DeskBackgroundGet(const Desk * dsk)
 static void
 DeskBackgroundConfigure(Desk * dsk)
 {
-   Window              win;
+   Win                 win;
    Pixmap              pmap = dsk->bg.pmap;
    unsigned long       pixel = dsk->bg.pixel;
 
@@ -1466,7 +1466,7 @@ DeskRestack(Desk * dsk)
 	Eprintf("DeskRestack %d (%d):\n", dsk->num, dsk->stack.dirty);
 	for (i = 0; i < tot; i++)
 	   Eprintf(" win=%#10lx parent=%#10lx\n", wl[i],
-		   EWindowGetParent(wl[i]));
+		   EXWindowGetParent(wl[i]));
      }
 
    XRestackWindows(disp, wl, tot);
@@ -1967,11 +1967,11 @@ DeskPropertyChange(Desk * dsk, XEvent * ev)
    if (ev->xproperty.atom == E_XROOTPMAP_ID)
      {
 	/* Possible race here? */
-	pmap = HintsGetRootPixmap(ev->xany.window);
+	pmap = HintsGetRootPixmap(EoGetWin(dsk));
 	if (EventDebug(EDBUG_TYPE_DESKS))
 	   Eprintf("DeskPropertyChange win=%#lx _XROOTPMAP_ID=%#lx\n",
 		   ev->xany.window, pmap);
-	if (ev->xany.window != VRoot.win)
+	if (ev->xany.window != VRoot.xwin)
 	   return;
 	dsk->bg.pmap_set = pmap;
 	if (pmap == dsk->bg.pmap)
@@ -1987,13 +1987,13 @@ DeskPropertyChange(Desk * dsk, XEvent * ev)
 	if (EventDebug(EDBUG_TYPE_DESKS))
 	   Eprintf("DeskPropertyChange win=%#lx _XROOTCOLOR_PIXEL\n",
 		   ev->xany.window);
-	if (ev->xany.window != VRoot.win)
+	if (ev->xany.window != VRoot.xwin)
 	   return;
      }
 }
 
 static void
-DeskHandleEvents(XEvent * ev, void *prm)
+DeskHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
 {
    Desk               *dsk = (Desk *) prm;
 
@@ -2019,12 +2019,12 @@ DeskHandleEvents(XEvent * ev, void *prm)
 	break;
 
      case ConfigureNotify:
-	if (ev->xconfigure.window == VRoot.win)
+	if (ev->xconfigure.window == VRoot.xwin)
 	   DeskRootResize(0, ev->xconfigure.width, ev->xconfigure.height);
 	break;
 
      case PropertyNotify:
-	if (ev->xany.window == VRoot.win)
+	if (ev->xany.window == VRoot.xwin)
 	   DeskPropertyChange(dsk, ev);
 	break;
 
@@ -2261,11 +2261,12 @@ static void
 CB_DesktopDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
 {
    static char         called = 0;
+   static int          prev_desktops = -1;
+   static Win          wins[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
    DItem              *di;
-   static Window       win, wins[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
    int                 i;
    int                 w, h;
-   static int          prev_desktops = -1;
+   Win                 win;
    char                s[64];
    ImageClass         *ic;
 
@@ -2512,10 +2513,10 @@ CB_AreaDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
 {
    static int          prev_ax = 0, prev_ay = 0;
    static char         called = 0;
-   static Window       awin;
+   static Win          awin;
    char                s[64];
    DItem              *di;
-   Window              win;
+   Win                 win;
    int                 w, h;
 
    if (val == 1)

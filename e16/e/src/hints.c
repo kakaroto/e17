@@ -60,7 +60,7 @@ HintsInit(void)
    ENL_WIN_DATA = XInternAtom(disp, "ENL_WIN_DATA", False);
    ENL_WIN_BORDER = XInternAtom(disp, "ENL_WIN_BORDER", False);
 
-   win = XCreateSimpleWindow(disp, VRoot.win, -200, -200, 5, 5, 0, 0, 0);
+   win = XCreateSimpleWindow(disp, VRoot.xwin, -200, -200, 5, 5, 0, 0, 0);
 
    ICCCM_Init();
    MWM_SetInfo();
@@ -69,7 +69,7 @@ HintsInit(void)
 #endif
    EWMH_Init(win);
    atom = XInternAtom(disp, "ENLIGHTENMENT_VERSION", False);
-   ecore_x_window_prop_string_set(VRoot.win, atom, e_wm_version);
+   ecore_x_window_prop_string_set(VRoot.xwin, atom, e_wm_version);
 
    if (Mode.wm.window)
      {
@@ -82,7 +82,7 @@ HintsInit(void)
 }
 
 void
-HintsSetRootHints(Window win __UNUSED__)
+HintsSetRootHints(Win win __UNUSED__)
 {
    /* Nothing done here for now */
 }
@@ -151,22 +151,22 @@ HintsSetActiveWindow(Window win)
 }
 
 void
-HintsSetWindowName(Window win, const char *name)
+HintsSetWindowName(Win win, const char *name)
 {
-   ecore_x_icccm_title_set(win, name);
+   ecore_x_icccm_title_set(Xwin(win), name);
 
-   EWMH_SetWindowName(win, name);
+   EWMH_SetWindowName(Xwin(win), name);
 }
 
 void
-HintsSetWindowClass(Window win, const char *name, const char *clss)
+HintsSetWindowClass(Win win, const char *name, const char *clss)
 {
    XClassHint         *xch;
 
    xch = XAllocClassHint();
    xch->res_name = (char *)name;
    xch->res_class = (char *)clss;
-   XSetClassHint(disp, win, xch);
+   XSetClassHint(disp, Xwin(win), xch);
    XFree(xch);
 }
 
@@ -280,26 +280,27 @@ HintsProcessClientMessage(XClientMessageEvent * event)
 }
 
 Pixmap
-HintsGetRootPixmap(Window win)
+HintsGetRootPixmap(Win win)
 {
    Ecore_X_Pixmap      pm;
    int                 num;
 
    pm = None;
-   num = ecore_x_window_prop_xid_get(win, E_XROOTPMAP_ID, XA_PIXMAP, &pm, 1);
+   num =
+      ecore_x_window_prop_xid_get(Xwin(win), E_XROOTPMAP_ID, XA_PIXMAP, &pm, 1);
 
    return pm;
 }
 
 void
-HintsSetRootInfo(Window win, Pixmap pmap, unsigned int color)
+HintsSetRootInfo(Win win, Pixmap pmap, unsigned int color)
 {
    Ecore_X_Pixmap      pm;
 
    pm = pmap;
-   ecore_x_window_prop_xid_set(win, E_XROOTPMAP_ID, XA_PIXMAP, &pm, 1);
+   ecore_x_window_prop_xid_set(Xwin(win), E_XROOTPMAP_ID, XA_PIXMAP, &pm, 1);
 
-   ecore_x_window_prop_card32_set(win, E_XROOTCOLOR_PIXEL, &color, 1);
+   ecore_x_window_prop_card32_set(Xwin(win), E_XROOTCOLOR_PIXEL, &color, 1);
 }
 
 typedef union
@@ -424,11 +425,11 @@ EHintsSetDeskInfo(void)
 	c[(i * 2) + 1] = ay;
      }
 
-   ecore_x_window_prop_card32_set(VRoot.win, ENL_INTERNAL_AREA_DATA,
+   ecore_x_window_prop_card32_set(VRoot.xwin, ENL_INTERNAL_AREA_DATA,
 				  c, 2 * n_desks);
 
    c[0] = DesksGetCurrentNum();
-   ecore_x_window_prop_card32_set(VRoot.win, ENL_INTERNAL_DESK_DATA, c, 1);
+   ecore_x_window_prop_card32_set(VRoot.xwin, ENL_INTERNAL_DESK_DATA, c, 1);
 
    Efree(c);
 
@@ -450,7 +451,7 @@ EHintsGetDeskInfo(void)
    if (!c)
       return;
 
-   num = ecore_x_window_prop_card32_get(VRoot.win, ENL_INTERNAL_AREA_DATA,
+   num = ecore_x_window_prop_card32_get(VRoot.xwin, ENL_INTERNAL_AREA_DATA,
 					c, 2 * n_desks);
    if (num > 0)
      {
@@ -458,7 +459,7 @@ EHintsGetDeskInfo(void)
 	   DeskSetArea(DeskGet(i), c[(i * 2)], c[(i * 2) + 1]);
      }
 
-   num = ecore_x_window_prop_card32_get(VRoot.win, ENL_INTERNAL_DESK_DATA,
+   num = ecore_x_window_prop_card32_get(VRoot.xwin, ENL_INTERNAL_DESK_DATA,
 					c, 1);
    if (num > 0)
      {

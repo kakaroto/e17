@@ -60,7 +60,7 @@ struct _ewin
 {
    EObj                o;
    char                type;
-   Window              win_container;
+   Win                 win_container;
 
    const Border       *border;
    const Border       *normal_border;
@@ -69,7 +69,7 @@ struct _ewin
 
    struct
    {
-      Window              win;
+      Win                 win;
       int                 x, y, w, h, bw;
       int                 grav;
       Colormap            cmap;
@@ -277,9 +277,9 @@ struct _ewin
 #define EwinGetWindowGroup(ewin)	((ewin)->icccm.group)
 
 #define _EwinGetClientWin(ewin)		((ewin)->client.win)
-#define _EwinGetClientXwin(ewin)	((ewin)->client.win)
+#define _EwinGetClientXwin(ewin)	Xwin((ewin)->client.win)
 #define _EwinGetContainerWin(ewin)	((ewin)->win_container)
-#define _EwinGetContainerXwin(ewin)	((ewin)->win_container)
+#define _EwinGetContainerXwin(ewin)	Xwin((ewin)->win_container)
 
 /* ewins.c */
 #define EWIN_CHANGE_NAME        (1<<0)
@@ -307,11 +307,10 @@ void                EwinUpdateShapeInfo(EWin * ewin);
 void                EwinPropagateShapes(EWin * ewin);
 void                EwinStateUpdate(EWin * ewin);
 void                AddToFamily(EWin * ewin, Window win);
-EWin               *AddInternalToFamily(Window win, const char *bname, int type,
+EWin               *AddInternalToFamily(Win win, const char *bname, int type,
 					void *ptr,
 					void (*init) (EWin * ewin, void *ptr));
-void                EwinReparent(EWin * ewin, Window parent);
-Window              EwinGetClientWin(const EWin * ewin);
+void                EwinReparent(EWin * ewin, Win parent);
 const char         *EwinGetName(const EWin * ewin);
 const char         *EwinGetIconName(const EWin * ewin);
 const char         *EwinBorderGetName(const EWin * ewin);

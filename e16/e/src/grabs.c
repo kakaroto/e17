@@ -24,15 +24,15 @@
 #include "E.h"
 
 int
-GrabKeyboardSet(Window win)
+GrabKeyboardSet(Win win)
 {
    int                 rc;
 
-   rc = XGrabKeyboard(disp, win, False, GrabModeAsync, GrabModeAsync,
+   rc = XGrabKeyboard(disp, Xwin(win), False, GrabModeAsync, GrabModeAsync,
 		      CurrentTime);
 
 #if 0
-   Eprintf("GrabKeyboardSet %#lx %d\n", win, rc);
+   Eprintf("GrabKeyboardSet %#lx %d\n", Xwin(win), rc);
 #endif
    return rc;
 }
@@ -51,18 +51,18 @@ GrabKeyboardRelease(void)
 }
 
 int
-GrabPointerSet(Window win, unsigned int csr, int confine)
+GrabPointerSet(Win win, unsigned int csr, int confine)
 {
    int                 ret = -1;
-   Window              confine_to = (confine) ? win : None;
+   Window              confine_to = (confine) ? Xwin(win) : None;
 
-   ret = XGrabPointer(disp, win, False,
+   ret = XGrabPointer(disp, Xwin(win), False,
 		      ButtonPressMask | ButtonReleaseMask | PointerMotionMask |
 		      ButtonMotionMask | EnterWindowMask | LeaveWindowMask,
 		      GrabModeAsync, GrabModeAsync, confine_to, ECsrGet(csr),
 		      CurrentTime);
 
-   Mode.grabs.pointer_grab_window = win;
+   Mode.grabs.pointer_grab_window = Xwin(win);
    Mode.grabs.pointer_grab_active = 1;
 
    if (EventDebug(EDBUG_TYPE_GRABS))
@@ -85,20 +85,20 @@ GrabPointerRelease(void)
 }
 
 void
-GrabButtonSet(unsigned int button, unsigned int modifiers, Window win,
+GrabButtonSet(unsigned int button, unsigned int modifiers, Win win,
 	      unsigned int event_mask, unsigned int csr, int confine)
 {
    Bool                owner_events = False;
    int                 pointer_mode = GrabModeSync;
    int                 keyboard_mode = GrabModeAsync;
-   Window              confine_to = (confine) ? win : None;
+   Window              confine_to = (confine) ? Xwin(win) : None;
 
-   XGrabButton(disp, button, modifiers, win, owner_events, event_mask,
+   XGrabButton(disp, button, modifiers, Xwin(win), owner_events, event_mask,
 	       pointer_mode, keyboard_mode, confine_to, ECsrGet(csr));
 }
 
 void
-GrabButtonRelease(unsigned int button, unsigned int modifiers, Window win)
+GrabButtonRelease(unsigned int button, unsigned int modifiers, Win win)
 {
-   XUngrabButton(disp, button, modifiers, win);
+   XUngrabButton(disp, button, modifiers, Xwin(win));
 }

@@ -217,7 +217,7 @@ FocusEwinSetGrabs(EWin * ewin)
      {
 	if (!ewin->state.click_grab_isset)
 	  {
-	     GrabButtonSet(AnyButton, AnyModifier, _EwinGetContainerXwin(ewin),
+	     GrabButtonSet(AnyButton, AnyModifier, _EwinGetContainerWin(ewin),
 			   ButtonPressMask, ECSR_PGRAB, 1);
 	     if (EventDebug(EDBUG_TYPE_GRABS))
 		Eprintf("FocusEwinSetGrabs: %#lx set %s\n",
@@ -230,7 +230,7 @@ FocusEwinSetGrabs(EWin * ewin)
 	if (ewin->state.click_grab_isset)
 	  {
 	     GrabButtonRelease(AnyButton, AnyModifier,
-			       _EwinGetContainerXwin(ewin));
+			       _EwinGetContainerWin(ewin));
 	     if (EventDebug(EDBUG_TYPE_GRABS))
 		Eprintf("FocusEwinSetGrabs: %#lx unset %s\n",
 			_EwinGetClientXwin(ewin), EwinGetName(ewin));
@@ -503,7 +503,7 @@ void
 FocusNewDeskBegin(void)
 {
    /* Freeze keyboard */
-   XGrabKeyboard(disp, VRoot.win, False, GrabModeAsync, GrabModeSync,
+   XGrabKeyboard(disp, VRoot.xwin, False, GrabModeAsync, GrabModeSync,
 		 CurrentTime);
 
    focus_pending_new = NULL;
@@ -559,7 +559,7 @@ FocusHandleEnter(EWin * ewin, XEvent * ev)
    if (!ewin)
      {
 	/* Entering root may mean entering this screen */
-	if (win == VRoot.win &&
+	if (win == VRoot.xwin &&
 	    (ev->xcrossing.mode == NotifyNormal &&
 	     ev->xcrossing.detail != NotifyInferior))
 	  {
@@ -590,7 +590,7 @@ FocusHandleLeave(EWin * ewin __UNUSED__, XEvent * ev)
    Window              win = ev->xcrossing.window;
 
    /* Leaving root may mean entering other screen */
-   if (win == VRoot.win &&
+   if (win == VRoot.xwin &&
        (ev->xcrossing.mode == NotifyNormal &&
 	ev->xcrossing.detail != NotifyInferior))
       FocusToEWin(NULL, FOCUS_DESK_LEAVE);
@@ -606,7 +606,7 @@ FocusHandleChange(EWin * ewin __UNUSED__, XEvent * ev __UNUSED__)
 }
 
 void
-FocusHandleClick(EWin * ewin, Window win)
+FocusHandleClick(EWin * ewin, Win win)
 {
    if (Conf.focus.clickraises)
       RaiseEwin(ewin);
@@ -616,8 +616,9 @@ FocusHandleClick(EWin * ewin, Window win)
 
    /* Allow click to pass thorugh */
    if (EventDebug(EDBUG_TYPE_GRABS))
-      Eprintf("FocusHandleClick %#lx %#lx\n", win, _EwinGetContainerXwin(ewin));
-   if (win == _EwinGetContainerXwin(ewin))
+      Eprintf("FocusHandleClick %#lx %#lx\n", Xwin(win),
+	      _EwinGetContainerXwin(ewin));
+   if (win == _EwinGetContainerWin(ewin))
      {
 	ESync();
 	XAllowEvents(disp, ReplayPointer, CurrentTime);

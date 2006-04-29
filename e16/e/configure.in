@@ -244,6 +244,8 @@ AC_CHECK_LIB(Fridge,mass_quantities_of_any_ale,, [
   echo "  We highly suggest that you rectify this situation immediately."
 ])
 
+AC_DEFINE(USE_NEW_WIN_API, 1, [Use new window handling API])
+
 AC_ARG_ENABLE(gcc-warnings,
   [  --enable-gcc-warnings   enable GCC compiler warnings @<:@default=no@:>@],,
   enable_gcc_warnings=no) 

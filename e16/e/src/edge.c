@@ -96,7 +96,7 @@ EdgeTimeout(int val, void *data __UNUSED__)
    Mode.events.py = Mode.events.y;
    Mode.events.x += dx;
    Mode.events.y += dy;
-   EXWarpPointer(VRoot.win, Mode.events.x, Mode.events.y);
+   EXWarpPointer(VRoot.xwin, Mode.events.x, Mode.events.y);
    DeskCurrentMoveAreaBy(dax, day);
    Mode.events.px = Mode.events.x;
    Mode.events.py = Mode.events.y;
@@ -124,7 +124,7 @@ EdgeEvent(int dir)
 }
 
 static void
-EdgeHandleEvents(XEvent * ev, void *prm)
+EdgeHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
 {
    static Time         last_time = 0;
    int                 dir;

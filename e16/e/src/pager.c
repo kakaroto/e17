@@ -68,7 +68,7 @@ static struct
 typedef struct
 {
    char               *name;
-   Window              win;
+   Win                 win;
    Pixmap              pmap;
    Pixmap              bgpmap;
    Desk               *dsk;
@@ -77,7 +77,7 @@ typedef struct
    int                 screen_w, screen_h;
    int                 update_phase;
    EWin               *ewin;
-   Window              sel_win;
+   Win                 sel_win;
 
    /* State flags */
    char                scan_pending;
@@ -94,8 +94,8 @@ static void         PagerCheckUpdate(Pager * p, void *prm);
 static void         PagerEwinUpdateFromPager(Pager * p, EWin * ewin);
 static void         PagerHiwinHide(void);
 static void         PagerEwinGroupSet(void);
-static void         PagerEvent(XEvent * ev, void *prm);
-static void         PagerHiwinEvent(XEvent * ev, void *prm);
+static void         PagerEvent(Win win, XEvent * ev, void *prm);
+static void         PagerHiwinEvent(Win win, XEvent * ev, void *prm);
 
 static Ecore_List  *pager_list = NULL;
 
@@ -213,7 +213,7 @@ PagerScanTimeout(int val __UNUSED__, void *data)
    y = ((phase & 0xfffffff8) + offsets[phase % 8]) % hh;
    y2 = (y * VRoot.h) / hh;
 
-   ScaleRect(VRoot.win, p->pmap, NULL, 0, y2, VRoot.w, VRoot.h / hh,
+   ScaleRect(VRoot.xwin, p->pmap, NULL, 0, y2, VRoot.w, VRoot.h / hh,
 	     xx, yy + y, ww, 1, Conf_pagers.hiq);
    EClearArea(p->win, xx, yy + y, ww, 1, False);
    y2 = p->h;
@@ -221,7 +221,7 @@ PagerScanTimeout(int val __UNUSED__, void *data)
    y = ((phase & 0xfffffff8) + offsets[phase % 8]) % ww;
    y2 = (y * VRoot.w) / ww;
 
-   ScaleRect(VRoot.win, p->pmap, NULL, y2, 0, VRoot.w / ww, VRoot.h,
+   ScaleRect(VRoot.xwin, p->pmap, NULL, y2, 0, VRoot.w / ww, VRoot.h,
 	     xx + y, yy, 1, hh, Conf_pagers.hiq);
    EClearArea(p->win, xx + y, yy, 1, hh, False);
    y2 = p->w;
@@ -409,7 +409,7 @@ doPagerUpdate(Pager * p)
 
  do_screen_update:
    /* Update pager area by snapshotting entire screen */
-   ScaleRect(VRoot.win, p->pmap, NULL, 0, 0, VRoot.w, VRoot.h, cx * p->dw,
+   ScaleRect(VRoot.xwin, p->pmap, NULL, 0, 0, VRoot.w, VRoot.h, cx * p->dw,
 	     cy * p->dh, p->dw, p->dh, Conf_pagers.hiq);
    p->update_phase = 0;
 
@@ -1107,7 +1107,7 @@ PagerHandleMotion(Pager * p, int x, int y)
    if (!Conf_pagers.enable)
       return;
 
-   on_screen = EXQueryPointer(p->win, &x, &y, NULL, NULL);
+   on_screen = EXQueryPointer(Xwin(p->win), &x, &y, NULL, NULL);
 
    if (on_screen && x >= 0 && x < p->w && y >= 0 && y < p->h)
       ewin = EwinInPagerAt(p, x, y);
@@ -1437,7 +1437,7 @@ PagerHiwinHandleMouseUp(Pager * p, int px, int py, int button)
 	else if (ewin2 && ewin2->props.vroot)
 	  {
 	     /* Dropping onto virtual root */
-	     EwinReparent(ewin, _EwinGetClientXwin(ewin2));
+	     EwinReparent(ewin, _EwinGetClientWin(ewin2));
 	  }
 	else if (!in_vroot)
 	  {
@@ -1463,7 +1463,7 @@ PagerHiwinHandleMouseUp(Pager * p, int px, int py, int button)
 }
 
 static void
-PagerEvent(XEvent * ev, void *prm)
+PagerEvent(Win win __UNUSED__, XEvent * ev, void *prm)
 {
    Pager              *p = (Pager *) prm;
 
@@ -1506,7 +1506,7 @@ PagerEvent(XEvent * ev, void *prm)
 }
 
 static void
-PagerHiwinEvent(XEvent * ev, void *prm)
+PagerHiwinEvent(Win win, XEvent * ev, void *prm)
 {
    Pager              *p = prm;
    int                 px, py;
@@ -1536,7 +1536,7 @@ PagerHiwinEvent(XEvent * ev, void *prm)
 	     break;
 	  default:
 	     /* Translate x,y to pager window coordinates */
-	     ETranslateCoordinates(ev->xbutton.window, p->win,
+	     ETranslateCoordinates(win, p->win,
 				   ev->xbutton.x, ev->xbutton.y, &px, &py,
 				   NULL);
 	     PagerHiwinHandleMouseDown(p, px, py, (int)ev->xbutton.button);
@@ -1552,7 +1552,7 @@ PagerHiwinEvent(XEvent * ev, void *prm)
 	     break;
 	  default:
 	     /* Translate x,y to pager window coordinates */
-	     ETranslateCoordinates(ev->xbutton.window, p->win,
+	     ETranslateCoordinates(win, p->win,
 				   ev->xbutton.x, ev->xbutton.y, &px, &py,
 				   NULL);
 	     PagerHiwinHandleMouseUp(p, px, py, (int)ev->xbutton.button);

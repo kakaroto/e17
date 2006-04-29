@@ -59,7 +59,7 @@ static struct
 {
 NULL};
 
-static void         SlideoutHandleEvent(XEvent * ev, void *prm);
+static void         SlideoutHandleEvent(Win win, XEvent * ev, void *prm);
 
 static Slideout    *
 SlideoutCreate(const char *name, char dir)
@@ -82,7 +82,7 @@ SlideoutCreate(const char *name, char dir)
 }
 
 static void
-SlideoutShow(Slideout * s, EWin * ewin, Window win)
+SlideoutShow(Slideout * s, EWin * ewin, Win win)
 {
    int                 x, y, i, xx, yy, sw, sh;
    char                pdir;
@@ -233,7 +233,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
    s->ref_count++;
    s->context_ewin = ewin;
 
-   GrabPointerSet(EoGetXwin(s), ECSR_ROOT, 0);
+   GrabPointerSet(EoGetWin(s), ECSR_ROOT, 0);
 
    Mode_slideouts.active = s;
 }
@@ -358,7 +358,7 @@ SlideoutRemoveButton(Slideout * s, Button * b)
 #endif
 
 static void
-SlideoutHandleEvent(XEvent * ev, void *prm)
+SlideoutHandleEvent(Win win __UNUSED__, XEvent * ev, void *prm)
 {
    Slideout           *s = prm;
 
@@ -379,7 +379,7 @@ SlideoutHandleEvent(XEvent * ev, void *prm)
 	break;
      case LeaveNotify:
 	if (ev->xcrossing.mode != NotifyUngrab)
-	   GrabPointerSet(EoGetXwin(s), ECSR_ROOT, 0);
+	   GrabPointerSet(EoGetWin(s), ECSR_ROOT, 0);
 	break;
      }
 }

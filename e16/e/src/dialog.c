@@ -66,21 +66,21 @@ typedef struct
    char                in_drag;
    int                 wanted_val;
 
-   Window              base_win;
-   Window              knob_win;
-   Window              border_win;
+   Win                 base_win;
+   Win                 knob_win;
+   Win                 border_win;
 } DItemSlider;
 
 typedef struct
 {
-   Window              area_win;
+   Win                 area_win;
    int                 w, h;
    DialogItemCallbackFunc *event_func;
 } DItemArea;
 
 typedef struct
 {
-   Window              check_win;
+   Win                 check_win;
    int                 check_orig_w, check_orig_h;
    char                onoff;
    char               *onoff_ptr;
@@ -108,7 +108,7 @@ typedef struct
 
 typedef struct
 {
-   Window              radio_win;
+   Win                 radio_win;
    int                 radio_orig_w, radio_orig_h;
    char                onoff;
    int                 val;
@@ -138,7 +138,7 @@ struct _ditem
    int                 x, y, w, h;
    char                hilited;
    char                clicked;
-   Window              win;
+   Win                 win;
    char               *text;
    union
    {
@@ -160,7 +160,7 @@ typedef struct
    Dialog             *parent;
    char               *text;
    DialogCallbackFunc *func;
-   Window              win;
+   Win                 win;
    int                 x, y, w, h;
    char                hilited;
    char                clicked;
@@ -184,7 +184,7 @@ struct _dialog
    char               *title;
    char               *text;
    int                 num_buttons;
-   Window              win;
+   Win                 win;
    Pixmap              pmap;
    PmapMask            pmm_bg;
    DButton           **button;
@@ -206,9 +206,9 @@ struct _dialog
 static EWin        *FindEwinByDialog(Dialog * d);
 static int          FindADialog(void);
 
-static void         DialogHandleEvents(XEvent * ev, void *prm);
-static void         DItemHandleEvents(XEvent * ev, void *prm);
-static void         DButtonHandleEvents(XEvent * ev, void *prm);
+static void         DialogHandleEvents(Win win, XEvent * ev, void *prm);
+static void         DItemHandleEvents(Win win, XEvent * ev, void *prm);
+static void         DButtonHandleEvents(Win win, XEvent * ev, void *prm);
 
 static void         MoveTableBy(Dialog * d, DItem * di, int dx, int dy);
 static void         DialogItemsRealize(Dialog * d);
@@ -473,12 +473,12 @@ DialogDrawButton(Dialog * d __UNUSED__, DButton * db)
 
 	pad = ImageclassGetPadding(ic);
 	h = db->h - (pad->top + pad->bottom);
-	TextDraw(db->tclass, db->win, 0, 0, state, db->text,
+	TextDraw(db->tclass, Xwin(db->win), 0, 0, state, db->text,
 		 h + 2 + pad->left, pad->top,
 		 db->w - (h + 2 + pad->left + pad->right),
 		 h, h, TextclassGetJustification(db->tclass));
 
-	EImageRenderOnDrawable(im, db->win, pad->left, pad->top, h, h, 1);
+	EImageRenderOnDrawable(im, Xwin(db->win), pad->left, pad->top, h, h, 1);
 	EImageFree(im);
      }
    else
@@ -501,7 +501,7 @@ DialogRedraw(Dialog * d)
 #endif
 
    FreePmapMask(&(d->pmm_bg));
-   ImageclassApplyCopy(d->iclass, d->win, d->w, d->h, 0, 0, STATE_NORMAL,
+   ImageclassApplyCopy(d->iclass, Xwin(d->win), d->w, d->h, 0, 0, STATE_NORMAL,
 		       &(d->pmm_bg), 0, ST_DIALOG);
    if (d->pmm_bg.pmap == None)
       return;
@@ -1198,7 +1198,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	     EImageGetSize(im, &iw, &ih);
 	     di->win = ECreateWindow(d->win, 0, 0, iw, ih, 0);
 	     EMapWindow(di->win);
-	     EImageRenderPixmaps(im, di->win, &pmap, &mask, 0, 0);
+	     EImageRenderPixmaps(im, Xwin(di->win), &pmap, &mask, 0, 0);
 	     ESetWindowBackgroundPixmap(di->win, pmap);
 	     EShapeCombineMask(di->win, ShapeBounding, 0, 0, mask, ShapeSet);
 	     EImagePixmapFree(pmap);
@@ -1966,7 +1966,7 @@ DialogItemAreaSetSize(DItem * di, int w, int h)
    di->item.area.h = h;
 }
 
-Window
+Win
 DialogItemAreaGetWindow(DItem * di)
 {
    return di->item.area.area_win;
@@ -2111,7 +2111,7 @@ DialogEventKeyPress(Dialog * d, XEvent * ev)
 }
 
 static void
-DialogHandleEvents(XEvent * ev, void *prm)
+DialogHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
 {
    Dialog             *d = (Dialog *) prm;
 
@@ -2124,7 +2124,7 @@ DialogHandleEvents(XEvent * ev, void *prm)
 }
 
 static void
-DItemEventMotion(DItem * di, XEvent * ev)
+DItemEventMotion(Win win __UNUSED__, DItem * di, XEvent * ev)
 {
    int                 dx, dy;
 
@@ -2138,7 +2138,7 @@ DItemEventMotion(DItem * di, XEvent * ev)
      case DITEM_SLIDER:
 	if (!di->item.slider.in_drag)
 	   break;
-	if (ev->xmotion.window == di->item.slider.knob_win)
+	if (ev->xmotion.window == Xwin(di->item.slider.knob_win))
 	  {
 	     dx = Mode.events.x - Mode.events.px;
 	     dy = Mode.events.y - Mode.events.py;
@@ -2184,9 +2184,8 @@ DItemEventMotion(DItem * di, XEvent * ev)
 }
 
 static void
-DItemEventMouseDown(DItem * di, XEvent * ev)
+DItemEventMouseDown(Win win, DItem * di, XEvent * ev)
 {
-   Window              win = ev->xbutton.window;
    int                 x, y, wheel_jump;
 
    switch (di->type)
@@ -2202,7 +2201,7 @@ DItemEventMouseDown(DItem * di, XEvent * ev)
 	   break;
 #endif
 
-	if (win == di->item.slider.knob_win)
+	if (ev->xbutton.window == Xwin(di->item.slider.knob_win))
 	  {
 	     if (ev->xbutton.button >= 1 && ev->xbutton.button <= 3)
 	       {
@@ -2286,12 +2285,11 @@ DItemEventMouseDown(DItem * di, XEvent * ev)
 }
 
 static void
-DItemEventMouseUp(DItem * di, XEvent * ev)
+DItemEventMouseUp(Win win, DItem * di, XEvent * ev)
 {
-   Window              win = ev->xbutton.window;
    DItem              *dii;
 
-   if (win != Mode.events.last_bpress)
+   if (ev->xbutton.window != Mode.events.last_bpress)
       return;
 
    di->clicked = 0;
@@ -2336,7 +2334,7 @@ DItemEventMouseUp(DItem * di, XEvent * ev)
 }
 
 static void
-DItemEventMouseIn(DItem * di, XEvent * ev)
+DItemEventMouseIn(Win win __UNUSED__, DItem * di, XEvent * ev)
 {
    switch (di->type)
      {
@@ -2357,7 +2355,7 @@ DItemEventMouseIn(DItem * di, XEvent * ev)
 }
 
 static void
-DItemEventMouseOut(DItem * di, XEvent * ev)
+DItemEventMouseOut(Win win __UNUSED__, DItem * di, XEvent * ev)
 {
    switch (di->type)
      {
@@ -2378,32 +2376,32 @@ DItemEventMouseOut(DItem * di, XEvent * ev)
 }
 
 static void
-DItemHandleEvents(XEvent * ev, void *prm)
+DItemHandleEvents(Win win, XEvent * ev, void *prm)
 {
    DItem              *di = (DItem *) prm;
 
    switch (ev->type)
      {
      case ButtonPress:
-	DItemEventMouseDown(di, ev);
+	DItemEventMouseDown(win, di, ev);
 	break;
      case ButtonRelease:
-	DItemEventMouseUp(di, ev);
+	DItemEventMouseUp(win, di, ev);
 	break;
      case MotionNotify:
-	DItemEventMotion(di, ev);
+	DItemEventMotion(win, di, ev);
 	break;
      case EnterNotify:
-	DItemEventMouseIn(di, ev);
+	DItemEventMouseIn(win, di, ev);
 	break;
      case LeaveNotify:
-	DItemEventMouseOut(di, ev);
+	DItemEventMouseOut(win, di, ev);
 	break;
      }
 }
 
 static void
-DButtonHandleEvents(XEvent * ev, void *prm)
+DButtonHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
 {
    DButton            *db = (DButton *) prm;
    Dialog             *d;

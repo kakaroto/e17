@@ -55,9 +55,9 @@ static void         EwinSlideIn(int val __UNUSED__, void *data);
 static void         EwinChangesStart(EWin * ewin);
 static void         EwinChangesProcess(EWin * ewin);
 
-static void         EwinHandleEventsToplevel(XEvent * ev, void *prm);
-static void         EwinHandleEventsContainer(XEvent * ev, void *prm);
-static void         EwinHandleEventsClient(XEvent * ev, void *prm);
+static void         EwinHandleEventsToplevel(Win win, XEvent * ev, void *prm);
+static void         EwinHandleEventsContainer(Win win, XEvent * ev, void *prm);
+static void         EwinHandleEventsClient(Win win, XEvent * ev, void *prm);
 
 static void
 EwinEventsConfigure(EWin * ewin, int mode)
@@ -72,9 +72,16 @@ EwinEventsConfigure(EWin * ewin, int mode)
 }
 
 static EWin        *
-EwinCreate(Window win, int type)
+EwinCreate(Win win, Window xwin, int type)
 {
    EWin               *ewin;
+
+   if (!win)
+     {
+	win = ERegisterWindow(xwin);
+	if (!win)
+	   return NULL;
+     }
 
    ewin = Ecalloc(1, sizeof(EWin));
 
@@ -181,7 +188,7 @@ static void
 EwinManage(EWin * ewin)
 {
    XSetWindowAttributes att;
-   Window              frame;
+   Win                 frame;
    XWindowAttributes   win_attr;
 
    if (ewin->client.w <= 0)
@@ -242,7 +249,6 @@ EwinManage(EWin * ewin)
    EventCallbackRegister(EoGetWin(ewin), 0, EwinHandleEventsToplevel, ewin);
    EventCallbackRegister(ewin->win_container, 0, EwinHandleEventsContainer,
 			 ewin);
-   ERegisterWindow(_EwinGetClientXwin(ewin));
    EventCallbackRegister(_EwinGetClientWin(ewin), 0, EwinHandleEventsClient,
 			 ewin);
 
@@ -687,7 +693,7 @@ AddToFamily(EWin * ewin, Window win)
    if (ewin)
       EwinCleanup(ewin);
    else
-      ewin = EwinCreate(win, EWIN_TYPE_NORMAL);
+      ewin = EwinCreate(0, win, EWIN_TYPE_NORMAL);
    if (!ewin)
       goto done;
 
@@ -713,10 +719,10 @@ AddToFamily(EWin * ewin, Window win)
    if (ewin->icccm.transient)
      {
 	if (ewin->icccm.transient_for == None ||
-	    ewin->icccm.transient_for == VRoot.win)
+	    ewin->icccm.transient_for == VRoot.xwin)
 	  {
 	     /* Group transient */
-	     ewin->icccm.transient_for = VRoot.win;
+	     ewin->icccm.transient_for = VRoot.xwin;
 #if 0				/* Maybe? */
 	     ewin->layer++;
 #endif
@@ -830,7 +836,7 @@ AddToFamily(EWin * ewin, Window win)
 	     /* the window there */
 	     DeskGoto(dsk);
 
-	     EXQueryPointer(VRoot.win, &rx, &ry, NULL, NULL);
+	     EXQueryPointer(VRoot.xwin, &rx, &ry, NULL, NULL);
 	     Mode.events.x = rx;
 	     Mode.events.y = ry;
 	     ewin->state.placed = 1;
@@ -880,7 +886,7 @@ AddToFamily(EWin * ewin, Window win)
 	/* the window there */
 	DeskGoto(dsk);
 
-	EXQueryPointer(VRoot.win, &rx, &ry, NULL, NULL);
+	EXQueryPointer(VRoot.xwin, &rx, &ry, NULL, NULL);
 	Mode.events.x = rx;
 	Mode.events.y = ry;
 	ewin->state.placed = 1;
@@ -939,14 +945,14 @@ AddToFamily(EWin * ewin, Window win)
 }
 
 EWin               *
-AddInternalToFamily(Window win, const char *bname, int type, void *ptr,
+AddInternalToFamily(Win win, const char *bname, int type, void *ptr,
 		    void (*init) (EWin * ewin, void *ptr))
 {
    EWin               *ewin;
 
    EGrabServer();
 
-   ewin = EwinCreate(win, type);
+   ewin = EwinCreate(win, None, type);
    if (!ewin)
       goto done;
 
@@ -1013,7 +1019,7 @@ EwinUnmap2(EWin * ewin)
 }
 
 static void
-EwinWithdraw(EWin * ewin, Window to)
+EwinWithdraw(EWin * ewin, Win to)
 {
    Window              win;
    int                 x, y;
@@ -1029,7 +1035,8 @@ EwinWithdraw(EWin * ewin, Window to)
    ESelectInput(_EwinGetClientWin(ewin), NoEventMask);
    XShapeSelectInput(disp, _EwinGetClientXwin(ewin), NoEventMask);
 
-   if (EWindowGetParent(_EwinGetClientWin(ewin)) == _EwinGetContainerXwin(ewin))
+   if (EXWindowGetParent(_EwinGetClientXwin(ewin)) ==
+       _EwinGetContainerXwin(ewin))
      {
 	/* Park the client window on the new root */
 	x = ewin->client.x;
@@ -1103,7 +1110,7 @@ EwinEventReparent(EWin * ewin)
    if (EoIsGone(ewin))
       parent = None;
    else
-      parent = EWindowGetParent(_EwinGetClientWin(ewin));
+      parent = EXWindowGetParent(_EwinGetClientXwin(ewin));
    if (EventDebug(EDBUG_TYPE_EWINS))
       Eprintf("EwinEventReparent %#lx st=%d parent=%#lx: %s\n",
 	      _EwinGetClientXwin(ewin), ewin->state.state, parent,
@@ -1249,7 +1256,7 @@ EwinEventConfigureRequest(EWin * ewin, XEvent * ev)
 	xwc.border_width = ev->xconfigurerequest.border_width;
 	xwc.sibling = ev->xconfigurerequest.above;
 	xwc.stack_mode = ev->xconfigurerequest.detail;
-	EConfigureWindow(ev->xconfigurerequest.window,
+	XConfigureWindow(disp, ev->xconfigurerequest.window,
 			 ev->xconfigurerequest.value_mask, &xwc);
      }
 }
@@ -1264,7 +1271,7 @@ EwinEventResizeRequest(EWin * ewin, XEvent * ev)
      }
    else
      {
-	EResizeWindow(ev->xresizerequest.window,
+	XResizeWindow(disp, ev->xresizerequest.window,
 		      ev->xresizerequest.width, ev->xresizerequest.height);
      }
 }
@@ -1282,9 +1289,9 @@ EwinEventCirculateRequest(EWin * ewin, XEvent * ev)
    else
      {
 	if (ev->xcirculaterequest.place == PlaceOnTop)
-	   ERaiseWindow(ev->xcirculaterequest.window);
+	   XRaiseWindow(disp, ev->xcirculaterequest.window);
 	else
-	   ELowerWindow(ev->xcirculaterequest.window);
+	   XLowerWindow(disp, ev->xcirculaterequest.window);
      }
 }
 
@@ -1325,7 +1332,7 @@ EwinEventVisibility(EWin * ewin, int state)
 }
 
 void
-EwinReparent(EWin * ewin, Window parent)
+EwinReparent(EWin * ewin, Win parent)
 {
    EwinWithdraw(ewin, parent);
 }
@@ -1448,12 +1455,6 @@ HideEwin(EWin * ewin)
       ewin->Close(ewin);
 
    EwinDestroy(ewin);
-}
-
-Window
-EwinGetClientWin(const EWin * ewin)
-{
-   return (ewin) ? _EwinGetClientWin(ewin) : None;
 }
 
 const char         *
@@ -1967,7 +1968,7 @@ ActionsCheck(const char *which, EWin * ewin, XEvent * ev)
 
    if (ev->type == ButtonPress)
      {
-	GrabPointerSet(EoGetXwin(ewin), ECSR_GRAB, 0);
+	GrabPointerSet(EoGetWin(ewin), ECSR_GRAB, 0);
 	FocusToEWin(ewin, FOCUS_CLICK);
      }
    else if (ev->type == ButtonRelease)
@@ -1980,7 +1981,7 @@ ActionsCheck(const char *which, EWin * ewin, XEvent * ev)
 
 #define DEBUG_EWIN_EVENTS 0
 static void
-EwinHandleEventsToplevel(XEvent * ev, void *prm)
+EwinHandleEventsToplevel(Win win __UNUSED__, XEvent * ev, void *prm)
 {
    EWin               *ewin = (EWin *) prm;
 
@@ -2010,7 +2011,7 @@ EwinHandleEventsToplevel(XEvent * ev, void *prm)
 }
 
 static void
-EwinHandleEventsContainer(XEvent * ev, void *prm)
+EwinHandleEventsContainer(Win win __UNUSED__, XEvent * ev, void *prm)
 {
    EWin               *ewin = (EWin *) prm;
 
@@ -2021,7 +2022,7 @@ EwinHandleEventsContainer(XEvent * ev, void *prm)
    switch (ev->type)
      {
      case ButtonPress:
-	FocusHandleClick(ewin, ev->xany.window);
+	FocusHandleClick(ewin, _EwinGetContainerWin(ewin));
 	break;
      case MapRequest:
 	EwinEventMapRequest(ewin, ev->xmaprequest.window);
@@ -2077,7 +2078,7 @@ EwinHandleEventsContainer(XEvent * ev, void *prm)
 }
 
 static void
-EwinHandleEventsClient(XEvent * ev, void *prm)
+EwinHandleEventsClient(Win win __UNUSED__, XEvent * ev, void *prm)
 {
    EWin               *ewin = (EWin *) prm;
 
@@ -2126,7 +2127,7 @@ EwinHandleEventsClient(XEvent * ev, void *prm)
 }
 
 static void
-EwinHandleEventsRoot(XEvent * ev, void *prm __UNUSED__)
+EwinHandleEventsRoot(Win win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
 {
    EWin               *ewin;
 

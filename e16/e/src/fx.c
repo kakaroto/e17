@@ -58,7 +58,7 @@ FXHandler;
 
 #define fx_ripple_waterh 64
 static Pixmap       fx_ripple_above = None;
-static Window       fx_ripple_win = None;
+static Win          fx_ripple_win = NoWin;
 static int          fx_ripple_count = 0;
 
 static void
@@ -102,8 +102,8 @@ FX_ripple_timeout(int val __UNUSED__, void *data __UNUSED__)
 	if (gc1)
 	   EXFreeGC(gc1);
 	gcv.subwindow_mode = IncludeInferiors;
-	gc = EXCreateGC(fx_ripple_win, GCSubwindowMode, &gcv);
-	gc1 = EXCreateGC(fx_ripple_win, 0L, &gcv);
+	gc = EXCreateGC(Xwin(fx_ripple_win), GCSubwindowMode, &gcv);
+	gc1 = EXCreateGC(Xwin(fx_ripple_win), 0L, &gcv);
 
 	FX_ripple_info();
      }
@@ -137,8 +137,8 @@ FX_ripple_timeout(int val __UNUSED__, void *data __UNUSED__)
 	yy = (fx_ripple_waterh * 2) - yoff;
 	aa = p * p * 64 + inch;
 	off = (int)(sin(aa) * 10 * (1 - p));
-	XCopyArea(disp, fx_ripple_above, fx_ripple_win, gc1, 0, yy, VRoot.w, 1,
-		  off, VRoot.h - fx_ripple_waterh + y);
+	XCopyArea(disp, fx_ripple_above, Xwin(fx_ripple_win), gc1, 0, yy,
+		  VRoot.w, 1, off, VRoot.h - fx_ripple_waterh + y);
      }
    DoIn("FX_RIPPLE_TIMEOUT", 0.066, FX_ripple_timeout, 0, NULL);
 }
@@ -163,7 +163,7 @@ static void
 FX_Ripple_Quit(void)
 {
    RemoveTimerEvent("FX_RIPPLE_TIMEOUT");
-   XClearArea(disp, fx_ripple_win, 0, VRoot.h - fx_ripple_waterh, VRoot.w,
+   EClearArea(fx_ripple_win, 0, VRoot.h - fx_ripple_waterh, VRoot.w,
 	      fx_ripple_waterh, False);
 }
 
@@ -498,7 +498,7 @@ FX_Raindrops_Pause(void)
 #define FX_WAVE_GRABH  (FX_WAVE_WATERH + FX_WAVE_DEPTH)
 #define FX_WAVE_CROSSPERIOD 0.42
 static Pixmap       fx_wave_above = None;
-static Window       fx_wave_win = None;
+static Win          fx_wave_win = NoWin;
 static int          fx_wave_count = 0;
 
 static void
@@ -545,8 +545,8 @@ FX_Wave_timeout(int val __UNUSED__, void *data __UNUSED__)
 	if (gc1)
 	   EXFreeGC(gc1);
 	gcv.subwindow_mode = IncludeInferiors;
-	gc = EXCreateGC(fx_wave_win, GCSubwindowMode, &gcv);
-	gc1 = EXCreateGC(fx_wave_win, 0L, &gcv);
+	gc = EXCreateGC(Xwin(fx_wave_win), GCSubwindowMode, &gcv);
+	gc1 = EXCreateGC(Xwin(fx_wave_win), 0L, &gcv);
 
 	FX_Wave_info();
      }
@@ -580,7 +580,7 @@ FX_Wave_timeout(int val __UNUSED__, void *data __UNUSED__)
    /* Copy the area to correct bugs */
    if (fx_wave_count == 0)
      {
-	XCopyArea(disp, fx_wave_above, fx_wave_win, gc1, 0,
+	XCopyArea(disp, fx_wave_above, Xwin(fx_wave_win), gc1, 0,
 		  VRoot.h - FX_WAVE_GRABH, VRoot.w, FX_WAVE_DEPTH * 2, 0,
 		  VRoot.h - FX_WAVE_GRABH);
      }
@@ -620,7 +620,7 @@ FX_Wave_timeout(int val __UNUSED__, void *data __UNUSED__)
 	     sx = (int)(sin(incx2) * FX_WAVE_DEPTH);
 
 	     /* Display this block */
-	     XCopyArea(disp, fx_wave_above, fx_wave_win, gc1, x, yy,	/* x, y */
+	     XCopyArea(disp, fx_wave_above, Xwin(fx_wave_win), gc1, x, yy,	/* x, y */
 		       FX_WAVE_WATERW, 1,	/* w, h */
 		       off + x, VRoot.h - FX_WAVE_WATERH + y + sx	/* dx, dy */
 		);
@@ -650,7 +650,7 @@ static void
 FX_Waves_Quit(void)
 {
    RemoveTimerEvent("FX_WAVE_TIMEOUT");
-   XClearArea(disp, fx_wave_win, 0, VRoot.h - FX_WAVE_WATERH, VRoot.w,
+   EClearArea(fx_wave_win, 0, VRoot.h - FX_WAVE_WATERH, VRoot.w,
 	      FX_WAVE_WATERH, False);
 }
 

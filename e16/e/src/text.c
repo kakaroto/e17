@@ -350,8 +350,8 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 
 	     if (ts->style.orientation != FONT_TO_RIGHT)
 		drawable =
-		   ECreatePixmap(VRoot.win, wid + 2, ascent + descent + 2,
-				 VRoot.depth);
+		   EXCreatePixmap(win, wid + 2, ascent + descent + 2,
+				  VRoot.depth);
 	     else
 		drawable = win;
 	     TextDrawRotTo(win, &drawable, xx - 1, yy - 1 - ascent, wid + 2,
@@ -493,8 +493,8 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 
 	     if (ts->style.orientation != FONT_TO_RIGHT)
 		drawable =
-		   ECreatePixmap(VRoot.win, ret2.width + 2, ret2.height + 2,
-				 VRoot.depth);
+		   EXCreatePixmap(win, ret2.width + 2, ret2.height + 2,
+				  VRoot.depth);
 	     else
 		drawable = win;
 	     TextDrawRotTo(win, &drawable, xx - 1,
@@ -591,8 +591,8 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 
 	     if (ts->style.orientation != FONT_TO_RIGHT)
 		drawable =
-		   ECreatePixmap(VRoot.win, wid + 2, ascent + descent + 2,
-				 VRoot.depth);
+		   EXCreatePixmap(win, wid + 2, ascent + descent + 2,
+				  VRoot.depth);
 	     else
 		drawable = win;
 	     TextDrawRotTo(win, &drawable, xx - 1, yy - ascent - 1, wid + 2,
@@ -689,8 +689,8 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 
 	     if (ts->style.orientation != FONT_TO_RIGHT)
 		drawable =
-		   ECreatePixmap(VRoot.win, wid + 2, ascent + descent + 2,
-				 VRoot.depth);
+		   EXCreatePixmap(win, wid + 2, ascent + descent + 2,
+				  VRoot.depth);
 	     else
 		drawable = win;
 	     TextDrawRotTo(win, &drawable, xx - 1, yy - ascent - 1, wid + 2,
@@ -734,7 +734,7 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 	     TextDrawRotBack(win, drawable, xx - 1, yy - 1 - ascent, wid + 2,
 			     ascent + descent + 2, ts);
 	     if (drawable != win)
-		EFreePixmap(drawable);
+		XFreePixmap(disp, drawable);
 	     yy += ts->xfont->ascent + ts->xfont->descent;
 	  }
      }
@@ -743,7 +743,7 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 }
 
 void
-TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
+TextDraw(TextClass * tclass, Drawable draw, int active, int sticky, int state,
 	 const char *text, int x, int y, int w, int h, int fsize,
 	 int justification)
 {
@@ -756,7 +756,7 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
    if (!ts)
       return;
 
-   TextstateDrawText(ts, win, text, x, y, w, h, fsize, justification);
+   TextstateDrawText(ts, draw, text, x, y, w, h, fsize, justification);
 }
 
 void

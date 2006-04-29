@@ -83,7 +83,7 @@ static struct
    int                 start_x, start_y;
 } Mode_buttons;
 
-static void         ButtonHandleEvents(XEvent * ev, void *btn);
+static void         ButtonHandleEvents(Win win, XEvent * ev, void *btn);
 
 void
 ButtonIncRefcount(Button * b)
@@ -447,7 +447,7 @@ ButtonDragStart(Button * b)
    if (ButtonIsFixed(b))
       return;
 
-   GrabPointerSet(EoGetXwin(b), ECSR_GRAB, 0);
+   GrabPointerSet(EoGetWin(b), ECSR_GRAB, 0);
    Mode.mode = MODE_BUTTONDRAG;
    Mode_buttons.move_pending = 1;
    Mode_buttons.start_x = Mode.events.x;
@@ -527,7 +527,7 @@ ButtonEventMouseDown(Button * b, XEvent * ev)
 {
    Mode_buttons.button = b;
 
-   GrabPointerSet(EoGetXwin(b), ECSR_GRAB, 0);
+   GrabPointerSet(EoGetWin(b), ECSR_GRAB, 0);
 
    if (b->inside_win)
      {
@@ -674,7 +674,7 @@ ButtonHandleTooltip(Button * b, int event)
 }
 
 static void
-ButtonHandleEvents(XEvent * ev, void *prm)
+ButtonHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
 {
    Button             *b = (Button *) prm;
 

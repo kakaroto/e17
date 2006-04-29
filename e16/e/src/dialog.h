@@ -121,7 +121,7 @@ void                DialogItemSliderGetBounds(DItem * di, int *lower,
 
 void                DialogItemAreaSetSize(DItem * di, int w, int h);
 void                DialogItemAreaGetSize(DItem * di, int *w, int *h);
-Window              DialogItemAreaGetWindow(DItem * di);
+Win                 DialogItemAreaGetWindow(DItem * di);
 void                DialogItemAreaSetEventFunc(DItem * di,
 					       DialogItemCallbackFunc * func);
 

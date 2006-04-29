@@ -56,7 +56,7 @@ struct _tooltip
    ImageClass         *iclass[5];
    TextClass          *tclass;
    int                 dist;
-   Window              iwin;
+   Win                 iwin;
    EObj               *win[5];
    char                visible;
    ImageClass         *tooltippic;
@@ -265,7 +265,7 @@ TooltipIclassPaste(ToolTip * tt, const char *ic_name, int x, int y, int *px)
       return;
 
    EImageGetSize(im, &w, &h);
-   EImageRenderOnDrawable(im, tt->TTWIN->win, x, y, w, h, 1);
+   EImageRenderOnDrawable(im, Xwin(tt->TTWIN->win), x, y, w, h, 1);
 
    *px = x + w;
 }
@@ -592,7 +592,7 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
    xx = pad->left + iw;
 
    /* draw the ordinary tooltip text */
-   TextDraw(tt->tclass, tt->TTWIN->win, 0, 0, STATE_NORMAL, text, xx,
+   TextDraw(tt->tclass, Xwin(tt->TTWIN->win), 0, 0, STATE_NORMAL, text, xx,
 	    pad->top, headline_w, headline_h, 17, 512);
 
    /* draw the icons and labels, if any */
@@ -617,8 +617,9 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 
 	     if (ActionGetEvent(aa) == EVENT_DOUBLE_DOWN)
 	       {
-		  TextDraw(tt->tclass, tt->TTWIN->win, 0, 0, STATE_NORMAL, "2x",
-			   xx + iw - double_w, y, double_w, heights[i], 17, 0);
+		  TextDraw(tt->tclass, Xwin(tt->TTWIN->win), 0, 0, STATE_NORMAL,
+			   "2x", xx + iw - double_w, y, double_w, heights[i],
+			   17, 0);
 	       }
 
 	     if (ActionGetAnybutton(aa))
@@ -668,7 +669,7 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 		     TooltipIclassPaste(tt, "TOOLTIP_KEY_MOD5", x, y, &x);
 	       }
 
-	     TextDraw(tt->tclass, tt->TTWIN->win, 0, 0, STATE_NORMAL, tts,
+	     TextDraw(tt->tclass, Xwin(tt->TTWIN->win), 0, 0, STATE_NORMAL, tts,
 		      pad->left + icons_width + iw, y,
 		      labels_width, heights[i], 17, 0);
 	     y += heights[i];
@@ -748,7 +749,7 @@ ToolTipTimeout(int val __UNUSED__, void *data __UNUSED__)
 
    /* In the case of multiple screens, check to make sure
     * the root window is still where the mouse is... */
-   if (!EXQueryPointer(VRoot.win, &x, &y, NULL, &mask))
+   if (!EXQueryPointer(VRoot.xwin, &x, &y, NULL, &mask))
       return;
 
    /* In case this is a virtual root */

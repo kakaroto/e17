@@ -54,6 +54,8 @@
 #define USE_COMPOSITE 1
 #endif
 
+#include <xwin.h>
+
 #define ENABLE_COLOR_MODIFIERS 0	/* Not functional */
 
 #define ENABLE_TRANSPARENCY 1
@@ -211,7 +213,8 @@ typedef struct
 
 typedef struct
 {
-   Window              win;
+   Window              xwin;
+   Win                 win;
    Visual             *vis;
    int                 depth;
    Colormap            cmap;
@@ -222,7 +225,8 @@ RealRoot;
 
 typedef struct
 {
-   Window              win;
+   Window              xwin;
+   Win                 win;
    Visual             *vis;
    int                 depth;
    Colormap            cmap;
@@ -503,7 +507,7 @@ typedef struct
    EWin               *mouse_over_ewin;
    EWin               *context_ewin;
    Colormap            current_cmap;
-   Window              context_win;
+   Win                 context_win;
    char                constrained;
    char                nogroup;
    char                keybinds_changed;
@@ -586,7 +590,7 @@ void                CoordsHide(void);
 #define ECSR_COUNT          6
 
 ECursor            *ECursorFind(const char *name);
-void                ECursorApply(ECursor * ec, Window win);
+void                ECursorApply(ECursor * ec, Win win);
 void                ECursorIncRefcount(ECursor * ec);
 void                ECursorDecRefcount(ECursor * ec);
 Cursor              ECsrGet(int which);
@@ -715,7 +719,7 @@ void                FocusToEWin(EWin * ewin, int why);
 void                FocusHandleEnter(EWin * ewin, XEvent * ev);
 void                FocusHandleLeave(EWin * ewin, XEvent * ev);
 void                FocusHandleChange(EWin * ewin, XEvent * ev);
-void                FocusHandleClick(EWin * ewin, Window win);
+void                FocusHandleClick(EWin * ewin, Win win);
 void                FocusNewDeskBegin(void);
 void                FocusNewDesk(void);
 void                FocusGrabsUpdate(void);
@@ -726,15 +730,15 @@ void                FontConfigUnload(void);
 const char         *FontLookup(const char *name);
 
 /* grabs.c */
-int                 GrabKeyboardSet(Window win);
+int                 GrabKeyboardSet(Win win);
 int                 GrabKeyboardRelease(void);
-int                 GrabPointerSet(Window win, unsigned int csr, int confine);
+int                 GrabPointerSet(Win win, unsigned int csr, int confine);
 void                GrabPointerRelease(void);
 void                GrabButtonSet(unsigned int button, unsigned int modifiers,
-				  Window win, unsigned int event_mask,
+				  Win win, unsigned int event_mask,
 				  unsigned int csr, int confine);
 void                GrabButtonRelease(unsigned int button,
-				      unsigned int modifiers, Window win);
+				      unsigned int modifiers, Win win);
 
 /* handlers.c */
 void                SignalsSetup(void);

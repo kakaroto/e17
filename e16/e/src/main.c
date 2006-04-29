@@ -256,7 +256,7 @@ main(int argc, char **argv)
    ModulesSignal(ESIGNAL_CONFIGURE, NULL);
 
    /* Set root window cursor */
-   ECsrApply(ECSR_ROOT, VRoot.win);
+   ECsrApply(ECSR_ROOT, VRoot.xwin);
 
 #ifdef USE_EXT_INIT_WIN
    /* Kill the E process owning the "init window" */
@@ -317,7 +317,7 @@ EExit(int exitcode)
 	/* XSetInputFocus(disp, None, RevertToParent, CurrentTime); */
 	/* I think this is a better way to release the grabs: (felix) */
 	XSetInputFocus(disp, PointerRoot, RevertToPointerRoot, CurrentTime);
-	XSelectInput(disp, VRoot.win, 0);
+	XSelectInput(disp, VRoot.xwin, 0);
 	EDisplayClose();
      }
 

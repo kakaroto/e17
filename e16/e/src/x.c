@@ -44,10 +44,10 @@ typedef struct
    EventCallbackItem  *lst;
 } EventCallbackList;
 
-typedef struct _exid
+struct _xwin
 {
-   struct _exid       *next;
-   struct _exid       *prev;
+   struct _xwin       *next;
+   struct _xwin       *prev;
    EventCallbackList   cbl;
    Window              parent;
    Window              win;
@@ -62,12 +62,22 @@ typedef struct _exid
    int                 depth;
    Pixmap              bgpmap;
    int                 bgcol;
-} EXID;
+};
+
+typedef struct _xwin EXID;	/* FIXME -  Remove */
 
 static XContext     xid_context = 0;
 
 static EXID        *xid_first = NULL;
 static EXID        *xid_last = NULL;
+
+#if USE_NEW_WIN_API
+Window
+Xwin(const Win win)
+{
+   return win->win;
+}
+#endif
 
 static EXID        *
 EXidCreate(void)
@@ -152,8 +162,15 @@ EXidDel(EXID * xid)
       EXidDestroy(xid);
 }
 
-static EXID        *
-EXidFind(Window win)
+#if USE_NEW_WIN_API
+#define EXidFind(win) (win)
+#define EXidLookup ELookupXwin
+#else
+#define EXidFind EXidLookup
+EXID               *EXidLookup(Window xwin);
+#endif
+EXID               *
+EXidLookup(Window xwin)
 {
    EXID               *xid;
    XPointer            xp;
@@ -162,7 +179,7 @@ EXidFind(Window win)
       return NULL;
 
    xp = NULL;
-   if (XFindContext(disp, win, xid_context, &xp) == XCNOENT)
+   if (XFindContext(disp, xwin, xid_context, &xp) == XCNOENT)
       xp = NULL;
    xid = (EXID *) xp;
 
@@ -191,7 +208,7 @@ EXidSet(Window win, Window parent, int x, int y, int w, int h, int depth)
 }
 
 void
-EventCallbackRegister(Window win, int type __UNUSED__, EventCallbackFunc * func,
+EventCallbackRegister(Win win, int type __UNUSED__, EventCallbackFunc * func,
 		      void *prm)
 {
    EXID               *xid;
@@ -200,11 +217,11 @@ EventCallbackRegister(Window win, int type __UNUSED__, EventCallbackFunc * func,
    xid = EXidFind(win);
    if (!xid)
      {
-	ERegisterWindow(win);
+	ERegisterWindow(Xwin(win));	/* FIXME - We shouldn't go here */
 	xid = EXidFind(win);
 	if (!xid)
 	  {
-	     Eprintf("EventCallbackRegister win=%#lx ???\n", win);
+	     Eprintf("EventCallbackRegister win=%#lx ???\n", Xwin(win));
 	     return;
 	  }
      }
@@ -221,7 +238,7 @@ EventCallbackRegister(Window win, int type __UNUSED__, EventCallbackFunc * func,
 }
 
 void
-EventCallbackUnregister(Window win, int type __UNUSED__,
+EventCallbackUnregister(Win win, int type __UNUSED__,
 			EventCallbackFunc * func, void *prm)
 {
    EXID               *xid;
@@ -259,14 +276,14 @@ EventCallbackUnregister(Window win, int type __UNUSED__,
 }
 
 void
-EventCallbacksProcess(XEvent * ev)
+EventCallbacksProcess(Win win, XEvent * ev)
 {
    EXID               *xid;
    EventCallbackList  *ecl;
    EventCallbackItem  *eci;
    int                 i;
 
-   xid = EXidFind(ev->xany.window);
+   xid = EXidFind(win);
    if (xid == NULL)
       return;
 
@@ -278,7 +295,11 @@ EventCallbacksProcess(XEvent * ev)
 	if (EventDebug(EDBUG_TYPE_DISPATCH))
 	   Eprintf("EventDispatch: type=%d win=%#lx func=%p prm=%p\n",
 		   ev->type, ev->xany.window, eci->func, eci->prm);
-	eci->func(ev, eci->prm);
+#if USE_NEW_WIN_API
+	eci->func(xid, ev, eci->prm);
+#else
+	eci->func(xid->win, ev, eci->prm);
+#endif
 	if (xid->do_del)
 	  {
 	     EXidDestroy(xid);
@@ -288,10 +309,11 @@ EventCallbacksProcess(XEvent * ev)
    xid->in_use = 0;
 }
 
-Window
-ECreateWindow(Window parent, int x, int y, int w, int h, int saveunder)
+Win
+ECreateWindow(Win parent, int x, int y, int w, int h, int saveunder)
 {
-   Window              win;
+   EXID               *win;
+   Window              xwin, xpar;
    XSetWindowAttributes attr;
 
    attr.backing_store = NotUseful;
@@ -306,21 +328,28 @@ ECreateWindow(Window parent, int x, int y, int w, int h, int saveunder)
       attr.save_under = True;
    else
       attr.save_under = False;
-   win = XCreateWindow(disp, parent, x, y, w, h, 0,
-		       VRoot.depth, InputOutput, VRoot.vis,
-		       CWOverrideRedirect | CWSaveUnder | CWBackingStore |
-		       CWColormap | CWBackPixmap | CWBorderPixel, &attr);
-   EXidSet(win, parent, x, y, w, h, VRoot.depth);
 
+   xpar = (parent != NoWin) ? Xwin(parent) : VRoot.xwin;
+   xwin = XCreateWindow(disp, xpar, x, y, w, h, 0,
+			VRoot.depth, InputOutput, VRoot.vis,
+			CWOverrideRedirect | CWSaveUnder | CWBackingStore |
+			CWColormap | CWBackPixmap | CWBorderPixel, &attr);
+   win = EXidSet(xwin, xpar, x, y, w, h, VRoot.depth);
+
+#if USE_NEW_WIN_API
    return win;
+#else
+   return xwin;
+#endif
 }
 
 /* Creates a window, but takes the visual, depth and the colormap from c_attr. */
-Window
-ECreateVisualWindow(Window parent, int x, int y, int w, int h, int saveunder,
+Win
+ECreateVisualWindow(Win parent, int x, int y, int w, int h, int saveunder,
 		    XWindowAttributes * c_attr)
 {
-   Window              win;
+   EXID               *win;
+   Window              xwin, xpar;
    XSetWindowAttributes attr;
 
    attr.backing_store = NotUseful;
@@ -335,27 +364,40 @@ ECreateVisualWindow(Window parent, int x, int y, int w, int h, int saveunder,
       attr.save_under = True;
    else
       attr.save_under = False;
-   win = XCreateWindow(disp, parent, x, y, w, h, 0,
-		       c_attr->depth, InputOutput, c_attr->visual,
-		       CWOverrideRedirect | CWSaveUnder | CWBackingStore |
-		       CWColormap | CWBackPixmap | CWBorderPixel, &attr);
-   EXidSet(win, parent, x, y, w, h, VRoot.depth);
 
+   xpar = (parent != NoWin) ? Xwin(parent) : VRoot.xwin;
+   xwin = XCreateWindow(disp, xpar, x, y, w, h, 0,
+			c_attr->depth, InputOutput, c_attr->visual,
+			CWOverrideRedirect | CWSaveUnder | CWBackingStore |
+			CWColormap | CWBackPixmap | CWBorderPixel, &attr);
+   win = EXidSet(xwin, xpar, x, y, w, h, VRoot.depth);
+
+#if USE_NEW_WIN_API
    return win;
+#else
+   return xwin;
+#endif
 }
 
-Window
-ECreateEventWindow(Window parent, int x, int y, int w, int h)
+Win
+ECreateEventWindow(Win parent, int x, int y, int w, int h)
 {
-   Window              win;
+   EXID               *win;
+   Window              xwin, xpar;
    XSetWindowAttributes attr;
 
    attr.override_redirect = False;
-   win = XCreateWindow(disp, parent, x, y, w, h, 0, 0, InputOnly,
-		       CopyFromParent, CWOverrideRedirect, &attr);
-   EXidSet(win, parent, x, y, w, h, VRoot.depth);
 
+   xpar = (parent != NoWin) ? Xwin(parent) : VRoot.xwin;
+   xwin = XCreateWindow(disp, xpar, x, y, w, h, 0, 0, InputOnly,
+			CopyFromParent, CWOverrideRedirect, &attr);
+   win = EXidSet(xwin, xpar, x, y, w, h, VRoot.depth);
+
+#if USE_NEW_WIN_API
    return win;
+#else
+   return xwin;
+#endif
 }
 
 #if 0				/* Not used */
@@ -363,10 +405,10 @@ ECreateEventWindow(Window parent, int x, int y, int w, int h)
  * create a window which will accept the keyboard focus when no other 
  * windows have it
  */
-Window
-ECreateFocusWindow(Window parent, int x, int y, int w, int h)
+Win
+ECreateFocusWindow(Win parent, int x, int y, int w, int h)
 {
-   Window              win;
+   EXID               *win;
    XSetWindowAttributes attr;
 
    attr.backing_store = NotUseful;
@@ -376,6 +418,8 @@ ECreateFocusWindow(Window parent, int x, int y, int w, int h)
    attr.background_pixel = 0;
    attr.save_under = False;
    attr.event_mask = KeyPressMask | FocusChangeMask;
+
+   Window              xwin, xpar;
 
    win = XCreateWindow(disp, parent, x, y, w, h, 0, 0, InputOnly,
 		       CopyFromParent,
@@ -392,7 +436,7 @@ ECreateFocusWindow(Window parent, int x, int y, int w, int h)
 #endif
 
 void
-EMoveWindow(Window win, int x, int y)
+EMoveWindow(Win win, int x, int y)
 {
    EXID               *xid;
 
@@ -403,38 +447,34 @@ EMoveWindow(Window win, int x, int y)
 	Eprintf("EMoveWindow: %p %#lx: %d,%d %dx%d -> %d,%d\n",
 		xid, xid->win, xid->x, xid->y, xid->w, xid->h, x, y);
 #endif
-	if ((x != xid->x) || (y != xid->y))
-	  {
-	     xid->x = x;
-	     xid->y = y;
-	     XMoveWindow(disp, win, x, y);
-	  }
+	if ((x == xid->x) && (y == xid->y))
+	   return;
+
+	xid->x = x;
+	xid->y = y;
      }
-   else
-      XMoveWindow(disp, win, x, y);
+   XMoveWindow(disp, Xwin(win), x, y);
 }
 
 void
-EResizeWindow(Window win, int w, int h)
+EResizeWindow(Win win, int w, int h)
 {
    EXID               *xid;
 
    xid = EXidFind(win);
    if (xid)
      {
-	if ((w != xid->w) || (h != xid->h))
-	  {
-	     xid->w = w;
-	     xid->h = h;
-	     XResizeWindow(disp, win, w, h);
-	  }
+	if ((w == xid->w) && (h == xid->h))
+	   return;
+
+	xid->w = w;
+	xid->h = h;
      }
-   else
-      XResizeWindow(disp, win, w, h);
+   XResizeWindow(disp, Xwin(win), w, h);
 }
 
 void
-EMoveResizeWindow(Window win, int x, int y, int w, int h)
+EMoveResizeWindow(Win win, int x, int y, int w, int h)
 {
    EXID               *xid;
 
@@ -445,17 +485,15 @@ EMoveResizeWindow(Window win, int x, int y, int w, int h)
 	Eprintf("EMoveResizeWindow: %p %#lx: %d,%d %dx%d -> %d,%d %dx%d\n",
 		xid, xid->win, xid->x, xid->y, xid->w, xid->h, x, y, w, h);
 #endif
-	if ((w != xid->w) || (h != xid->h) || (x != xid->x) || (y != xid->y))
-	  {
-	     xid->x = x;
-	     xid->y = y;
-	     xid->w = w;
-	     xid->h = h;
-	     XMoveResizeWindow(disp, win, x, y, w, h);
-	  }
+	if ((w == xid->w) && (h == xid->h) && (x == xid->x) && (y == xid->y))
+	   return;
+
+	xid->x = x;
+	xid->y = y;
+	xid->w = w;
+	xid->h = h;
      }
-   else
-      XMoveResizeWindow(disp, win, x, y, w, h);
+   XMoveResizeWindow(disp, Xwin(win), x, y, w, h);
 }
 
 static int
@@ -510,7 +548,7 @@ ExDestroyWindow(EXID * xid)
 }
 
 void
-EDestroyWindow(Window win)
+EDestroyWindow(Win win)
 {
    EXID               *xid;
 
@@ -518,11 +556,11 @@ EDestroyWindow(Window win)
    if (xid)
       ExDestroyWindow(xid);
    else
-      XDestroyWindow(disp, win);
+      XDestroyWindow(disp, Xwin(win));
 }
 
 void
-EWindowSync(Window win)
+EWindowSync(Win win)
 {
    EXID               *xid;
    Window              rr;
@@ -533,7 +571,7 @@ EWindowSync(Window win)
    if (!xid)
       return;
 
-   XGetGeometry(disp, win, &rr, &x, &y, &w, &h, &bw, &depth);
+   XGetGeometry(disp, Xwin(win), &rr, &x, &y, &w, &h, &bw, &depth);
 #if 0
    Eprintf("EWindowSync: %p %#lx: %d,%d %dx%d -> %d,%d %dx%d\n",
 	   xid, xid->win, xid->x, xid->y, xid->w, xid->h, x, y, w, h);
@@ -546,7 +584,7 @@ EWindowSync(Window win)
 }
 
 void
-EWindowSetMapped(Window win, int mapped)
+EWindowSetMapped(Win win, int mapped)
 {
    EXID               *xid;
 
@@ -558,7 +596,7 @@ EWindowSetMapped(Window win, int mapped)
 }
 
 Window
-EWindowGetParent(Window win)
+EXWindowGetParent(Window xwin)
 {
    EXID               *xid;
    Window              parent, rt;
@@ -566,40 +604,82 @@ EWindowGetParent(Window win)
    unsigned int        nch = 0;
 
    parent = None;
-   if (!XQueryTree(disp, win, &rt, &parent, &pch, &nch))
+   if (!XQueryTree(disp, xwin, &rt, &parent, &pch, &nch))
       parent = None;
    else if (pch)
       XFree(pch);
 
-   xid = EXidFind(win);
+   xid = EXidLookup(xwin);
    if (xid)
       xid->parent = parent;
 
    return parent;
 }
 
-void
-ERegisterWindow(Window win)
+#if USE_NEW_WIN_API
+Win
+ECreateWinFromXwin(Window xwin)
+{
+   Win                 win;
+   Window              rr;
+   int                 x, y;
+   unsigned int        w, h, bw, depth;
+
+   if (!XGetGeometry(disp, xwin, &rr, &x, &y, &w, &h, &bw, &depth))
+      return NULL;
+
+   win = EXidCreate();
+   if (!win)
+      return NULL;
+   win->win = xwin;
+   win->x = x;
+   win->y = y;
+   win->w = w;
+   win->h = h;
+   win->depth = depth;
+   return win;
+}
+#endif
+
+Win
+ERegisterWindow(Window xwin)
 {
    EXID               *xid;
    Window              rr;
    int                 x, y;
    unsigned int        w, h, bw, depth;
 
-   xid = EXidFind(win);
+   xid = EXidLookup(xwin);
    if (xid)
-      return;
+      goto done;
 
-   XGetGeometry(disp, win, &rr, &x, &y, &w, &h, &bw, &depth);
+   XGetGeometry(disp, xwin, &rr, &x, &y, &w, &h, &bw, &depth);
 #if 0
    Eprintf("ERegisterWindow %#lx %d+%d %dx%d\n", win, x, y, w, h);
 #endif
-   xid = EXidSet(win, None, x, y, w, h, depth);
+   xid = EXidSet(xwin, None, x, y, w, h, depth);
    xid->attached = 1;
+
+ done:
+#if USE_NEW_WIN_API
+   return xid;
+#else
+   return xwin;
+#endif
 }
 
 void
-EUnregisterWindow(Window win)
+EUnregisterXwin(Window xwin)
+{
+   EXID               *xid;
+
+   xid = EXidLookup(xwin);
+   if (xid)
+      EXidDel(xid);		/* FIXME - We shouldn't go here */
+}
+
+void
+EUnregisterWindow(Win win)
 {
    EXID               *xid;
 
@@ -609,25 +689,7 @@ EUnregisterWindow(Window win)
 }
 
 void
-EMapWindow(Window win)
-{
-   EXID               *xid;
-
-   xid = EXidFind(win);
-   if (xid)
-     {
-	if (!xid->mapped)
-	  {
-	     xid->mapped = 1;
-	     XMapWindow(disp, win);
-	  }
-     }
-   else
-      XMapWindow(disp, win);
-}
-
-void
-EUnmapWindow(Window win)
+EMapWindow(Win win)
 {
    EXID               *xid;
 
@@ -635,17 +697,29 @@ EUnmapWindow(Window win)
    if (xid)
      {
 	if (xid->mapped)
-	  {
-	     xid->mapped = 0;
-	     XUnmapWindow(disp, win);
-	  }
+	   return;
+	xid->mapped = 1;
      }
-   else
-      XUnmapWindow(disp, win);
+   XMapWindow(disp, Xwin(win));
 }
 
 void
-EReparentWindow(Window win, Window parent, int x, int y)
+EUnmapWindow(Win win)
+{
+   EXID               *xid;
+
+   xid = EXidFind(win);
+   if (xid)
+     {
+	if (!xid->mapped)
+	   return;
+	xid->mapped = 0;
+     }
+   XUnmapWindow(disp, Xwin(win));
+}
+
+void
+EReparentWindow(Win win, Win parent, int x, int y)
 {
    EXID               *xid;
 
@@ -658,29 +732,28 @@ EReparentWindow(Window win, Window parent, int x, int y)
 	    xid, xid->win, xid->mapped, xid->parent, parent, xid->x, xid->y,
 	    xid->w, xid->h, x, y);
 #endif
-	if (parent == xid->parent)
+	if (Xwin(parent) == xid->parent)
 	  {
 	     if ((x != xid->x) || (y != xid->y))
 	       {
 		  xid->x = x;
 		  xid->y = y;
-		  XMoveWindow(disp, win, x, y);
+		  XMoveWindow(disp, Xwin(win), x, y);
+		  return;
 	       }
 	  }
 	else
 	  {
-	     xid->parent = parent;
+	     xid->parent = Xwin(parent);
 	     xid->x = x;
 	     xid->y = y;
-	     XReparentWindow(disp, win, parent, x, y);
 	  }
      }
-   else
-      XReparentWindow(disp, win, parent, x, y);
+   XReparentWindow(disp, Xwin(win), Xwin(parent), x, y);
 }
 
 void
-EMapRaised(Window win)
+EMapRaised(Win win)
 {
    EXID               *xid;
 
@@ -688,19 +761,56 @@ EMapRaised(Window win)
    if (xid)
      {
 	if (xid->mapped)
-	   XRaiseWindow(disp, win);
+	  {
+	     XRaiseWindow(disp, Xwin(win));
+	     return;
+	  }
 	else
 	  {
 	     xid->mapped = 1;
-	     XMapRaised(disp, win);
 	  }
      }
-   else
-      XMapRaised(disp, win);
+   XMapRaised(disp, Xwin(win));
 }
 
 int
-EGetGeometry(Window win, Window * root_return, int *x, int *y,
+EXGetGeometry(Drawable draw, Window * root_return, int *x, int *y,
+	      int *w, int *h, int *bw, int *depth)
+{
+   int                 ok;
+   Window              rr;
+   int                 xx, yy;
+   unsigned int        ww, hh, bb, dd;
+
+   ok = XGetGeometry(disp, draw, &rr, &xx, &yy, &ww, &hh, &bb, &dd);
+   if (!ok)
+      goto done;
+
+   if (root_return)
+      *root_return = rr;
+   if (x)
+      *x = xx;
+   if (y)
+      *y = yy;
+   if (w)
+      *w = ww;
+   if (h)
+      *h = hh;
+   if (bw)
+      *bw = bb;
+   if (depth)
+      *depth = dd;
+
+ done:
+#if 0				/* Debug */
+   if (!ok)
+      Eprintf("EGetGeometry win=%#x, error %d\n", (unsigned)win, ok);
+#endif
+   return ok;
+}
+
+int
+EGetGeometry(Win win, Window * root_return, int *x, int *y,
 	     int *w, int *h, int *bw, int *depth)
 {
    int                 ok;
@@ -722,43 +832,18 @@ EGetGeometry(Window win, Window * root_return, int *x, int *y,
 	if (depth)
 	   *depth = xid->depth;
 	if (root_return)
-	   *root_return = VRoot.win;
+	   *root_return = VRoot.xwin;
 	ok = 1;
      }
    else
      {
-	Window              rr;
-	int                 xx, yy;
-	unsigned int        ww, hh, bb, dd;
-
-	ok = XGetGeometry(disp, win, &rr, &xx, &yy, &ww, &hh, &bb, &dd);
-	if (ok)
-	  {
-	     if (root_return)
-		*root_return = rr;
-	     if (x)
-		*x = xx;
-	     if (y)
-		*y = yy;
-	     if (w)
-		*w = ww;
-	     if (h)
-		*h = hh;
-	     if (bw)
-		*bw = bb;
-	     if (depth)
-		*depth = dd;
-	  }
+	ok = EXGetGeometry(Xwin(win), root_return, x, y, w, h, bw, depth);
      }
-#if 0				/* Debug */
-   if (!ok)
-      Eprintf("EGetGeometry win=%#x, error %d\n", (unsigned)win, ok);
-#endif
    return ok;
 }
 
 void
-EConfigureWindow(Window win, unsigned int mask, XWindowChanges * wc)
+EConfigureWindow(Win win, unsigned int mask, XWindowChanges * wc)
 {
    EXID               *xid;
 
@@ -788,16 +873,16 @@ EConfigureWindow(Window win, unsigned int mask, XWindowChanges * wc)
 	     doit = 1;
 	  }
 	if ((doit) || (mask & (CWBorderWidth | CWSibling | CWStackMode)))
-	   XConfigureWindow(disp, win, mask, wc);
+	   XConfigureWindow(disp, Xwin(win), mask, wc);
      }
    else
      {
-	XConfigureWindow(disp, win, mask, wc);
+	XConfigureWindow(disp, Xwin(win), mask, wc);
      }
 }
 
 void
-ESetWindowBackgroundPixmap(Window win, Pixmap pmap)
+ESetWindowBackgroundPixmap(Win win, Pixmap pmap)
 {
    EXID               *xid;
 
@@ -806,14 +891,12 @@ ESetWindowBackgroundPixmap(Window win, Pixmap pmap)
      {
 	xid->bgpmap = pmap;
 	xid->bgcol = 0xffffffff;	/* Hmmm.. */
-	XSetWindowBackgroundPixmap(disp, win, pmap);
      }
-   else
-      XSetWindowBackgroundPixmap(disp, win, pmap);
+   XSetWindowBackgroundPixmap(disp, Xwin(win), pmap);
 }
 
 void
-ESetWindowBackground(Window win, int col)
+ESetWindowBackground(Win win, int col)
 {
    EXID               *xid;
 
@@ -824,20 +907,19 @@ ESetWindowBackground(Window win, int col)
 	  {
 	     xid->bgpmap = 0;
 	     xid->bgcol = col;
-	     XSetWindowBackground(disp, win, col);
 	  }
 	else if (xid->bgcol != col)
 	  {
 	     xid->bgcol = col;
-	     XSetWindowBackground(disp, win, col);
 	  }
+	else
+	   return;
      }
-   else
-      XSetWindowBackground(disp, win, col);
+   XSetWindowBackground(disp, Xwin(win), col);
 }
 
 int
-ETranslateCoordinates(Window src_w, Window dst_w,
+ETranslateCoordinates(Win src_w, Win dst_w,
 		      int src_x, int src_y,
 		      int *dest_x_return,
 		      int *dest_y_return, Window * child_return)
@@ -847,7 +929,7 @@ ETranslateCoordinates(Window src_w, Window dst_w,
    if (!child_return)
       child_return = &child;
 
-   return XTranslateCoordinates(disp, src_w, dst_w, src_x, src_y,
+   return XTranslateCoordinates(disp, Xwin(src_w), Xwin(dst_w), src_x, src_y,
 				dest_x_return, dest_y_return, child_return);
 }
 
@@ -866,7 +948,7 @@ EXQueryPointer(Window xwin, int *px, int *py, Window * pchild,
    unsigned int        mask;
 
    if (xwin == None)
-      xwin = VRoot.win;
+      xwin = VRoot.xwin;
 
    if (!px)
       px = &root_x;
@@ -882,13 +964,13 @@ EXQueryPointer(Window xwin, int *px, int *py, Window * pchild,
 }
 
 void
-ESelectInputAdd(Window win, long mask)
+ESelectInputAdd(Win win, long mask)
 {
    XWindowAttributes   xwa;
 
-   XGetWindowAttributes(disp, win, &xwa);
+   XGetWindowAttributes(disp, Xwin(win), &xwa);
    xwa.your_event_mask |= mask;
-   XSelectInput(disp, win, xwa.your_event_mask);
+   XSelectInput(disp, Xwin(win), xwa.your_event_mask);
 }
 
 int
@@ -999,7 +1081,7 @@ ExShapeCombineMask(EXID * xid, int dest, int x, int y, Pixmap pmap, int op)
 }
 
 void
-EShapeCombineMaskTiled(Window win, int dest, int x, int y,
+EShapeCombineMaskTiled(Win win, int dest, int x, int y,
 		       Pixmap pmap, int op, int w, int h)
 {
    XGCValues           gcv;
@@ -1064,7 +1146,7 @@ ExShapeCombineShape(EXID * xdst, int dest, int x, int y,
 }
 
 XRectangle         *
-EShapeGetRectangles(Window win, int dest, int *rn, int *ord)
+EShapeGetRectangles(Win win, int dest, int *rn, int *ord)
 {
    EXID               *xid;
 
@@ -1094,7 +1176,7 @@ EShapeGetRectangles(Window win, int dest, int *rn, int *ord)
 #if DEBUG_SHAPE_OPS
 	Eprintf("EShapeGetRectangles-B %#lx nr=%d\n", win, xid->num_rect);
 #endif
-	r = XShapeGetRectangles(disp, win, dest, rn, ord);
+	r = XShapeGetRectangles(disp, Xwin(win), dest, rn, ord);
 	if (r)
 	  {
 	     rr = Emalloc(sizeof(XRectangle) * *rn);
@@ -1183,7 +1265,7 @@ ExShapePropagate(EXID * xid)
    /* go through all child windows and create/inset spans */
    for (i = 0; i < num; i++)
      {
-	xch = EXidFind(list[i]);
+	xch = EXidLookup(list[i]);
 	if (!xch)
 	   continue;		/* Should never happen */
 	XGetWindowAttributes(disp, list[i], &att);
@@ -1263,7 +1345,7 @@ ExShapePropagate(EXID * xid)
 }
 
 void
-EShapeCombineMask(Window win, int dest, int x, int y, Pixmap pmap, int op)
+EShapeCombineMask(Win win, int dest, int x, int y, Pixmap pmap, int op)
 {
    EXID               *xid;
 
@@ -1271,11 +1353,11 @@ EShapeCombineMask(Window win, int dest, int x, int y, Pixmap pmap, int op)
    if (xid)
       ExShapeCombineMask(xid, dest, x, y, pmap, op);
    else
-      XShapeCombineMask(disp, win, dest, x, y, pmap, op);
+      XShapeCombineMask(disp, Xwin(win), dest, x, y, pmap, op);
 }
 
 void
-EShapeCombineRectangles(Window win, int dest, int x, int y,
+EShapeCombineRectangles(Win win, int dest, int x, int y,
 			XRectangle * rect, int n_rects, int op, int ordering)
 {
    EXID               *xid;
@@ -1284,24 +1366,24 @@ EShapeCombineRectangles(Window win, int dest, int x, int y,
    if (xid)
       ExShapeCombineRectangles(xid, dest, x, y, rect, n_rects, op, ordering);
    else
-      XShapeCombineRectangles(disp, win, dest, x, y, rect, n_rects, op,
+      XShapeCombineRectangles(disp, Xwin(win), dest, x, y, rect, n_rects, op,
 			      ordering);
 }
 
 void
-EShapeCombineShape(Window win, int dest, int x, int y,
-		   Window src_win, int src_kind, int op)
+EShapeCombineShape(Win win, int dest, int x, int y,
+		   Win src_win, int src_kind, int op)
 {
    EXID               *xid;
 
-   XShapeCombineShape(disp, win, dest, x, y, src_win, src_kind, op);
+   XShapeCombineShape(disp, Xwin(win), dest, x, y, Xwin(src_win), src_kind, op);
    xid = EXidFind(win);
    if (xid)
       ExShapeUpdate(xid);
 }
 
 int
-EShapeCopy(Window dst, Window src)
+EShapeCopy(Win dst, Win src)
 {
    EXID               *xsrc, *xdst;
 
@@ -1314,7 +1396,7 @@ EShapeCopy(Window dst, Window src)
 }
 
 int
-EShapePropagate(Window win)
+EShapePropagate(Win win)
 {
    EXID               *xid;
 
@@ -1324,7 +1406,7 @@ EShapePropagate(Window win)
 }
 
 int
-EShapeCheck(Window win)
+EShapeCheck(Win win)
 {
    EXID               *xid;
 
@@ -1403,7 +1485,7 @@ EGetColor(const XColor * pxc, int *pr, int *pg, int *pb)
 /* Build mask from window shape rects */
 /* Snatched from imlib_create_scaled_image_from_drawable() */
 Pixmap
-EWindowGetShapePixmap(Window win)
+EWindowGetShapePixmap(Win win)
 {
    Pixmap              mask;
    GC                  gc;
@@ -1417,7 +1499,8 @@ EWindowGetShapePixmap(Window win)
    gc = EXCreateGC(mask, 0, NULL);
    XSetForeground(disp, gc, 0);
 
-   rect = XShapeGetRectangles(disp, win, ShapeBounding, &rect_num, &rect_ord);
+   rect =
+      XShapeGetRectangles(disp, Xwin(win), ShapeBounding, &rect_num, &rect_ord);
    XFillRectangle(disp, mask, gc, 0, 0, w, h);
    if (rect)
      {
@@ -1550,7 +1633,7 @@ EGetTimestamp(void)
    if (win_ts == None)
      {
 	attr.override_redirect = False;
-	win_ts = XCreateWindow(disp, VRoot.win, -100, -100, 1, 1, 0,
+	win_ts = XCreateWindow(disp, VRoot.xwin, -100, -100, 1, 1, 0,
 			       CopyFromParent, InputOnly, CopyFromParent,
 			       CWOverrideRedirect, &attr);
 	XSelectInput(disp, win_ts, PropertyChangeMask);

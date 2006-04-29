@@ -119,7 +119,7 @@ ExtInitSS(int available)
      {
 	XScreenSaverInfo   *xssi = XScreenSaverAllocInfo();
 
-	XScreenSaverQueryInfo(disp, VRoot.win, xssi);
+	XScreenSaverQueryInfo(disp, VRoot.xwin, xssi);
 	Eprintf(" Screen saver window=%#lx\n", xssi->window);
 	XFree(xssi);
      }
@@ -134,7 +134,7 @@ ExtInitRR(int available)
       return;
 
    /* Listen for RandR events */
-   XRRSelectInput(disp, VRoot.win, RRScreenChangeNotifyMask);
+   XRRSelectInput(disp, VRoot.xwin, RRScreenChangeNotifyMask);
 }
 #endif
 
@@ -213,7 +213,7 @@ ModeGetXY(Window rwin, int rx, int ry)
 
    if (Mode.wm.window)
      {
-	XTranslateCoordinates(disp, rwin, VRoot.win,
+	XTranslateCoordinates(disp, rwin, VRoot.xwin,
 			      rx, ry, &Mode.events.x, &Mode.events.y, &child);
      }
    else
@@ -226,10 +226,14 @@ ModeGetXY(Window rwin, int rx, int ry)
 static void
 HandleEvent(XEvent * ev)
 {
+   Win                 win;
+
 #if ENABLE_DEBUG_EVENTS
    if (EventDebug(ev->type))
       EventShow(ev);
 #endif
+
+   win = ELookupXwin(ev->xany.window);
 
    switch (ev->type)
      {
@@ -239,7 +243,7 @@ HandleEvent(XEvent * ev)
 	Mode.events.time = ev->xkey.time;
 	ModeGetXY(ev->xbutton.root, ev->xkey.x_root, ev->xkey.y_root);
 #if 0				/* FIXME - Why? */
-	if (ev->xkey.root != VRoot.win)
+	if (ev->xkey.root != VRoot.xwin)
 	  {
 	     XSetInputFocus(disp, ev->xkey.root, RevertToPointerRoot,
 			    CurrentTime);
@@ -270,7 +274,7 @@ HandleEvent(XEvent * ev)
 	break;
 
      case EnterNotify:
-	Mode.context_win = ev->xany.window;
+	Mode.context_win = win;
 	Mode.events.time = ev->xcrossing.time;
 	Mode.events.on_screen = ev->xcrossing.same_screen;
 	if (ev->xcrossing.mode == NotifyGrab &&
@@ -298,7 +302,7 @@ HandleEvent(XEvent * ev)
 	break;
 
       do_stuff:
-	if (ev->xany.window == VRoot.win)
+	if (ev->xany.window == VRoot.xwin)
 	   ActionclassesGlobalEvent(ev);
 	break;
      }
@@ -331,7 +335,7 @@ HandleEvent(XEvent * ev)
      }
 
    /* The new event dispatcher */
-   EventCallbacksProcess(ev);
+   EventCallbacksProcess(win, ev);
 
    /* Post-event stuff TBD */
    switch (ev->type)
@@ -343,7 +347,7 @@ HandleEvent(XEvent * ev)
 
 #if 1				/* Do this here? */
      case DestroyNotify:
-	EUnregisterWindow(ev->xdestroywindow.window);
+	EUnregisterXwin(ev->xdestroywindow.window);
 	break;
 #endif
      }

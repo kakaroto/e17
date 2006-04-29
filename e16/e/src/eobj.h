@@ -24,12 +24,13 @@
 #define _EOBJ_H_
 
 #include "etypes.h"
+#include "xwin.h"
 
 typedef struct _eobj EObj;
 
 struct _eobj
 {
-   Window              win;	/* The top level window */
+   Win                 win;	/* The top level window */
    short               type;	/* Ewin, button, other, ... */
    short               ilayer;	/* Internal stacking layer */
    short               layer;	/* Stacking layer */
@@ -64,7 +65,7 @@ struct _eobj
 #define EOBJ_TYPE_ROOT_BG   7
 
 #define EobjGetWin(eo)          ((eo)->win)
-#define EobjGetXwin(eo)         ((eo)->win)
+#define EobjGetXwin(eo)         Xwin((eo)->win)
 #define EobjGetDesk(eo)         ((eo)->desk)
 #define EobjGetName(eo)         ((eo)->name)
 #define EobjGetType(eo)         ((eo)->type)
@@ -125,7 +126,7 @@ struct _eobj
 #define EoShapeUpdate(eo, p)            EobjShapeUpdate(EoObj(eo), p)
 
 /* eobj.c */
-void                EobjInit(EObj * eo, int type, Window win, int x, int y,
+void                EobjInit(EObj * eo, int type, Win win, int x, int y,
 			     int w, int h, int su, const char *name);
 void                EobjFini(EObj * eo);
 void                EobjDestroy(EObj * eo);

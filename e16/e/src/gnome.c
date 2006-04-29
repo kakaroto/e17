@@ -549,7 +549,7 @@ GNOME_SetUsedHints(void)
    list[7] = XInternAtom(disp, XA_WIN_WORKSPACE_COUNT, False);
    list[8] = XInternAtom(disp, XA_WIN_WORKSPACE_NAMES, False);
    list[9] = XInternAtom(disp, XA_WIN_CLIENT_LIST, False);
-   ecore_x_window_prop_atom_set(VRoot.win, atom_set, list, 10);
+   ecore_x_window_prop_atom_set(VRoot.xwin, atom_set, list, 10);
 }
 
 void
@@ -564,7 +564,7 @@ GNOME_SetCurrentArea(void)
    DeskCurrentGetArea(&ax, &ay);
    val[0] = ax;
    val[1] = ay;
-   ecore_x_window_prop_card32_set(VRoot.win, atom_set, val, 2);
+   ecore_x_window_prop_card32_set(VRoot.xwin, atom_set, val, 2);
 }
 
 void
@@ -576,7 +576,7 @@ GNOME_SetCurrentDesk(void)
    if (!atom_set)
       atom_set = XInternAtom(disp, XA_WIN_WORKSPACE, False);
    val = DesksGetCurrentNum();
-   ecore_x_window_prop_card32_set(VRoot.win, atom_set, &val, 1);
+   ecore_x_window_prop_card32_set(VRoot.xwin, atom_set, &val, 1);
 }
 
 static void
@@ -588,7 +588,7 @@ GNOME_SetWMCheck(Window win_wm_check)
    if (!atom_set)
       atom_set = XInternAtom(disp, XA_WIN_SUPPORTING_WM_CHECK, False);
    val = win_wm_check;
-   ecore_x_window_prop_card32_set(VRoot.win, atom_set, &val, 1);
+   ecore_x_window_prop_card32_set(VRoot.xwin, atom_set, &val, 1);
    ecore_x_window_prop_card32_set(win_wm_check, atom_set, &val, 1);
 }
 
@@ -601,7 +601,7 @@ GNOME_SetDeskCount(void)
    if (!atom_set)
       atom_set = XInternAtom(disp, XA_WIN_WORKSPACE_COUNT, False);
    val = DesksGetNumber();
-   ecore_x_window_prop_card32_set(VRoot.win, atom_set, &val, 1);
+   ecore_x_window_prop_card32_set(VRoot.xwin, atom_set, &val, 1);
 }
 
 void
@@ -616,7 +616,7 @@ GNOME_SetAreaCount(void)
    DesksGetAreaSize(&ax, &ay);
    val[0] = ax;
    val[1] = ay;
-   ecore_x_window_prop_card32_set(VRoot.win, atom_set, val, 2);
+   ecore_x_window_prop_card32_set(VRoot.xwin, atom_set, val, 2);
 }
 
 void
@@ -640,7 +640,7 @@ GNOME_SetDeskNames(void)
 	names[i] = Estrdup(s);
      }
 
-   ecore_x_window_prop_string_list_set(VRoot.win, atom_set, names, n_desks);
+   ecore_x_window_prop_string_list_set(VRoot.xwin, atom_set, names, n_desks);
 
    for (i = 0; i < n_desks; i++)
       if (names[i])
@@ -671,7 +671,7 @@ GNOME_SetClientList(void)
 		wl[j++] = _EwinGetClientXwin(lst[i]);
 	  }
      }
-   ecore_x_window_prop_card32_set(VRoot.win, atom_set, wl, j);
+   ecore_x_window_prop_card32_set(VRoot.xwin, atom_set, wl, j);
    if (wl)
       Efree(wl);
 }
@@ -683,11 +683,11 @@ GNOME_SetWMNameVer(void)
 
    if (!atom_set)
       atom_set = XInternAtom(disp, XA_WIN_WM_NAME, False);
-   ecore_x_window_prop_string_set(VRoot.win, atom_set, e_wm_name);
+   ecore_x_window_prop_string_set(VRoot.xwin, atom_set, e_wm_name);
 
    if (!atom_set2)
       atom_set2 = XInternAtom(disp, XA_WIN_WM_VERSION, False);
-   ecore_x_window_prop_string_set(VRoot.win, atom_set2, e_wm_version);
+   ecore_x_window_prop_string_set(VRoot.xwin, atom_set2, e_wm_version);
 }
 
 void
@@ -741,9 +741,9 @@ GNOME_SetHints(Window win_wm_check)
 
       atom_set = XInternAtom(disp, "_WIN_DESKTOP_BUTTON_PROXY", False);
       Mode.button_proxy_win =
-	 XCreateSimpleWindow(disp, VRoot.win, -80, -80, 24, 24, 0, 0, 0);
+	 XCreateSimpleWindow(disp, VRoot.xwin, -80, -80, 24, 24, 0, 0, 0);
       val = Mode.button_proxy_win;
-      ecore_x_window_prop_card32_set(VRoot.win, atom_set, &val, 1);
+      ecore_x_window_prop_card32_set(VRoot.xwin, atom_set, &val, 1);
       ecore_x_window_prop_card32_set(Mode.button_proxy_win, atom_set, &val, 1);
    }
 }
