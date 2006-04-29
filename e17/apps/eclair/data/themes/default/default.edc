@@ -40,6 +40,7 @@ images {
    image: "playlist_bottom.png" COMP;
    image: "playlist_background.png" COMP;
    image: "playlist_box.png" COMP;
+   image: "playlist_box_over.png" COMP;
    image: "playlist_scrollbar_button.png" COMP;
    image: "playlist_scrollbar_up.png" COMP;
    image: "playlist_scrollbar_down.png" COMP;

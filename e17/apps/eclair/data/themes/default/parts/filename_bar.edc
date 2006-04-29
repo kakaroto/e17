@@ -1,8 +1,8 @@
 part {
    name: "filename_bar";
+   mouse_events: 0;
    description {
       state: "default" 0.0;
-      color: 216 216 216 255;
       rel1 {
          relative: 0 0;
          offset: 124 18;
@@ -10,29 +10,30 @@ part {
       }
       rel2 {
          relative: 0 0;
-         offset: 291 46;
+         offset: 291 43;
          to: "body";
       }
       image {
          normal: "filename_bar.png";
-         border: 12 12 12 12;
+         border: 30 30 12 12;
       }
    }
 }
 part {
    name: "filename_bar_clip";
    type: RECT;
+   mouse_events: 0;
    description {
       state: "default" 0.0;
       visible: 1;
       rel1 {
          relative: 0 0;
-         offset: 10 2;
+         offset: 11 2;
          to: "filename_bar";
       }
       rel2 {
          relative: 1 1;
-         offset: -11 0;
+         offset: -10 0;
          to: "filename_bar";
       }
    }
@@ -41,24 +42,23 @@ part {
    name: "current_media_name";
    type: TEXT;
    effect: SOFT_SHADOW;
+   mouse_events: 0;
    clip_to: "filename_bar_clip";
    description {
       state: "default" 0.0;
-      align: 0.0 0.5;       
-      rel1 {
-         relative: 0.0 0.0;
-         offset: 0 0;
-         to: "filename_bar_clip";
-      }
-	   rel2 {
-         relative: 1.0 1.0;
-         offset: -1 -1;
-         to: "filename_bar_clip";
-      }
       color: 132 132 132 255;
       color3: 255 255 255 32;
+      align: 0.0 0.5;       
+      rel1 {
+         to: "filename_bar_clip";
+         offset: 0 1;
+      }
+      rel2 {
+         to: "filename_bar_clip";
+         offset: 0 0;
+      }
       text {
-         text: "Media name";
+         text: "filename Text";
          font: "Edje Vera";
          size: 11;
          min: 1 1;
