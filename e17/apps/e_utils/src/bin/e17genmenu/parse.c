@@ -98,46 +98,21 @@ parse_buffer(char *b, char *section)
    return strdup(p);
 }
 
-char *
-parse_exec(char *exec)
-{
-   char *token;
-
-   token = strdup(exec);
-   /* Strip Caption From Exec */
-   if (strstr(token, "caption") != NULL)
-     {
-        token = strdup(token);
-        token = strtok(token, " ");
-     }
-
-   /* Strip %U from Exec */
-   if (strstr(token, "%") != NULL)
-     {
-        token = strdup(token);
-        token = strtok(token, " ");
-     }
-   return strdup(token);
-}
-
 void
 parse_desktop_file(char *app, char *menu_path)
 {
-   char *home, *eap_name;
+   char *home;
    G_Eap *eap;
    Desktop *desktop;
 
    home = get_home();
-   eap_name = get_eap_name(app);
 
 #ifdef DEBUG
    fprintf(stderr, "Parsing Desktop File %s\n", app);
 #endif
 
    eap = calloc(1, sizeof(G_Eap));
-   eap->eap_name = strdup(eap_name);
-   if (eap_name)
-      free(eap_name);
+   eap->eap_name = get_eap_name(app);
 
    desktop = parse_desktop_ini_file(app);
    if ((desktop) && (desktop->group))
@@ -230,8 +205,6 @@ process_file(char *file, char *menu_path, G_Eap *eap)
    overwrite = get_overwrite();
 
    snprintf(path, sizeof(path), "%s" EAPPDIR "/%s", home, eap->eap_name);
-   if (eap->window_class == NULL)
-      eap->window_class = get_window_class(path);
 
    if (eap->icon != NULL)
       eap->icon_path = find_icon(eap->icon);
@@ -262,7 +235,7 @@ process_file(char *file, char *menu_path, G_Eap *eap)
 void
 parse_debian_file(char *file)
 {
-   char *eap_name, *name, *generic, *comment, *exec, *category, *icon;
+   char *name, *generic, *comment, *exec, *category, *icon;
    char buffer[MAX_PATH];
    int overwrite, length;
    FILE *f;
@@ -272,7 +245,6 @@ parse_debian_file(char *file)
       return;
 
    overwrite = get_overwrite();
-   eap_name = get_eap_name(file);
 
 #ifdef DEBUG
    fprintf(stderr, "Parsing Debian File %s\n", file);
@@ -286,7 +258,7 @@ parse_debian_file(char *file)
      }
 
    eap = calloc(1, sizeof(G_Eap));
-   eap->eap_name = eap_name;
+   eap->eap_name = get_eap_name(file);
    *buffer = 0;
    while (fgets(buffer, sizeof(buffer), f) != NULL)
      {

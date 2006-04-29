@@ -1,15 +1,15 @@
+#include <ctype.h>
 #include "global.h"
 #include "config.h"
 #include "icons.h"
 #include "eaps.h"
 #include "parse.h"
 
-//#define DEBUG 1
+#define DEBUG 1
 
 extern int not_found_count;
 
 static void _write_eap(Eet_File *ef, char *section, char *value);
-
 
 /* Create a .directory.eap for this dir */
 void
@@ -33,41 +33,90 @@ create_dir_eap(char *path, char *cat)
      }
 }
 
-char *
-get_window_class(char *file)
-{
-   char *tmp, *cls;
-   int i;
-   Eet_File *ef;
+#define EAP_MIN_WIDTH 8
+#define EAP_MIN_HEIGHT 8
 
-   if (!ecore_file_exists(file))
-      return NULL;
+#define EAP_EDC_TMPL \
+"images {\n"  \
+"   image: \"%s\" COMP;\n" \
+"}\n" \
+"collections {\n" \
+"   group {\n" \
+"      name: \"icon\";\n" \
+"      max: %d %d;\n" \
+"      parts {\n" \
+"	 part {\n" \
+"	    name: \"image\";\n" \
+"	    type: IMAGE;\n" \
+"	    mouse_events: 0;\n" \
+"	    description {\n" \
+"	       state: \"default\" 0.00;\n" \
+"	       visible: 1;\n" \
+"	       aspect: 1.00 1.00;\n" \
+"	       rel1 {\n" \
+"		  relative: 0.00 0.00;\n" \
+"		  offset: 0 0;\n" \
+"	       }\n" \
+"	       rel2 {\n" \
+"		  relative: 1.00 1.00;\n" \
+"		  offset: -1 -1;\n" \
+"	       }\n" \
+"	       image {\n" \
+"		  normal: \"%s\";\n" \
+"	       }\n" \
+"	    }\n" \
+"	 }\n" \
+"      }\n" \
+"   }\n" \
+"}\n"
 
-   ef = eet_open(file, EET_FILE_MODE_READ);
-   if (!ef)
-      return NULL;
+#define EAP_EDC_TMPL_EMPTY \
+"images {\n " \
+"}\n" \
+"collections {\n" \
+"}\n"
 
-   tmp = eet_read(ef, "app/window/class", &i);
-   if (!tmp)
-     {
-        if (ef)
-           eet_close(ef);
-        return NULL;
-     }
 
-   /* Allocate string for window class */
-   cls = malloc(i + 1);
-   memcpy(cls, tmp, i);
-   cls[i] = 0;
-
-   if (tmp)
-      free(tmp);
-   eet_close(ef);
-
-   if (cls != NULL)
-      return strdup(cls);
-   return NULL;
-}
+/* How to create the perfect eap.
+ *
+ * /dir/to/icon_name.png
+ * icon size
+ * write EAP_EDC_TMPL to /tmp/temp_file.edc
+ * edje_cc -id /dir/to -fd . /tmp/temp_file.edc ~/.e/e/applications/all/file.eap
+ *
+ * eet_open ~/.e/e/applications/all/file.eap
+ * app/info/name =  eap->name
+ * app/info/generic = eap->generic
+ * app/info/comments = eap->comment
+ *
+ * app/info/name[lang] =  eap->name->lang
+ * app/info/generic[lang] = eap->generic->lang
+ * app/info/comments[lang] = eap->comment->lang
+ *
+ * app/info/startup_notify = eap->startup
+ * app/info/exe = eap->exec
+ *    Handle the fdo %x replacable params.  Some should be stripped, some should be expanded.
+ * app/icon/class
+ *    icon/class is a list of standard icons from the theme that can override the icon created above.
+ *    Use (from .desktop) eap name,exe name,categories.  It's case sensitive, the reccomendation is to lowercase it.
+ *    It should be most specific to most generic.  firefox,browser,internet for instance
+ *
+ * app/window/class
+ *    Guess - exe name vith first letter capitalized.
+ * app/window/name
+ * app/window/title
+ * app/window/role
+ * app/info/wait_exit
+ *    Wait for app to exit before starting next one.
+ * 
+ * Some other stuff from e_apps.c e_app_fields_save()
+ *    get the icon image into an evas then -
+ *    eet_data_image_write(ef, "images/0", 
+ *       ecore_evas_buffer_pixels_get(buf), 
+ *       a->width, a->height, 
+ *       evas_object_image_alpha_get(im), 
+ *       1, 0, 0);
+ */
 
 void
 write_icon(char *file, G_Eap *eap)
@@ -79,7 +128,7 @@ write_icon(char *file, G_Eap *eap)
    Engrave_Part_State *ps;
    Eet_File *ef;
 
-   char *idir, *ifile, *icomp, *exec;
+   char *idir, *ifile;
 
 #ifdef DEBUG
    fprintf(stderr, "\tWriting file %s\t\twith icon (%s) %s\n", file, eap->icon, eap->icon_path);
@@ -95,8 +144,7 @@ write_icon(char *file, G_Eap *eap)
    eet = engrave_file_new();
    engrave_file_image_dir_set(eet, idir);
 
-   icomp = get_icon_compression();
-   if (!strcmp(icomp, "COMP"))
+   if (!strcmp(get_icon_compression(), "COMP"))
       image = engrave_image_new(ifile, ENGRAVE_IMAGE_TYPE_COMP, 0);
    else
       image = engrave_image_new(ifile, ENGRAVE_IMAGE_TYPE_LOSSY, 0);
@@ -122,81 +170,98 @@ write_icon(char *file, G_Eap *eap)
    engrave_edj_output(eet, file);
    engrave_file_free(eet);
 
-//   if (icomp)
-//      free(icomp);
-//   if (idir)
-//      free(idir);
-//   if (ifile)
-//      free(ifile);
+   if (idir)
+      free(idir);
 
-   /* FIXME: This is probably why creating eaps takes so long.  
-    * We should just create it right in the first place, rather 
-    * than creating a basic one, then rewriting it several times
-    * each time we find a new little bit of info.
-    */
    ef = eet_open(file, EET_FILE_MODE_READ_WRITE);
    if (ef)
-   {
-        /* Set Eap Values. Trap For Name Not Being Set */
+     {
+        /* FIXME: if there is no name, strip the path and extension of the eap file name and use that. */
         if (eap->name != NULL)
            _write_eap(ef, "app/info/name", eap->name);
-        else if (eap->eap_name != NULL)
-           _write_eap(ef, "app/info/name", eap->eap_name);
-
         if (eap->generic != NULL)
            _write_eap(ef, "app/info/generic", eap->generic);
         if (eap->comment != NULL)
            _write_eap(ef, "app/info/comments", eap->comment);
 
-        /* Parse Exec string for %'s that messup eap write */
-        exec = NULL;
         if (eap->exec != NULL)
           {
-             exec = parse_exec(eap->exec);
-             if (exec != NULL)
-               {
-                  _write_eap(ef, "app/info/exe", exec);
-                  _write_eap(ef, "app/icon/class", exec);
-               }
+	     /* FIXME: Handle the fdo %x replacable params.  Some should be stripped, some should be expanded. */
+             _write_eap(ef, "app/info/exe", eap->exec);
           }
 
         if (eap->startup != NULL)
            _write_eap(ef, "app/info/startup_notify", eap->startup);
+
+        if (eap->window_class == NULL)
+	{
+           int i;
+	   char *tmp;
+
+           /* Try reading it from the existing eap. */
+           tmp = eet_read(ef, "app/window/class", &i);
+	   if (tmp)
+	     {
+                eap->window_class = malloc(i + 1);
+                if (eap->window_class)
+	          {
+                     memcpy(eap->window_class, tmp, i);
+                     eap->window_class[i] = 0;
+	          }
+	        free(tmp);
+	     }
+	}
+        if ((eap->window_class == NULL) && (eap->exec != NULL))
+	  {
+	     char *tmp;
+
+	     /* Guess - exe name with first letter capitalized. */
+             tmp = strdup(eap->exec);
+	     if (tmp)
+	       {
+	          char *p;
+
+	          p = tmp;
+	          while ((*p != '\0') && (*p != ' '))
+	            {
+	               *p = tolower(*p);
+		       p++;
+	            }
+	          *p = '\0';
+	          p = ecore_file_get_file(tmp);  /* In case the exe included a path. */
+	          *p = toupper(*p);
+                  eap->window_class = strdup(p);
+	          free(tmp);
+	       }
+	  }
         if (eap->window_class != NULL)
            _write_eap(ef, "app/window/class", eap->window_class);
-      eet_close(ef);
-   }
+
+        eet_close(ef);
+     }
 }
 
 
 static void
 _write_eap(Eet_File *ef, char *section, char *value)
 {
-   int i;
-
-#ifdef DEBUG
-   fprintf(stderr, "\t\t%s:%s\n", strdup(section), strdup(value));
-#endif
-
-   if (!strcmp(section, "app/info/startup_notify"))
-     {
-        if (!value)
-           eet_delete(ef, section);
-        if (value)
-          {
-             i = atoi(value);
-             eet_write(ef, strdup(section), &i, 1, 0);
-          }
-     }
+   if ((!value) || (value[0] == '\0'))
+      eet_delete(ef, section);
    else
      {
-        if (!value)
-           eet_delete(ef, section);
-        if (value)
+        int i = 0;
+
+#ifdef DEBUG
+        fprintf(stderr, "\t\t%s:%s\n", section, value);
+#endif
+        if (!strcmp(section, "app/info/startup_notify"))
           {
-             i = eet_write(ef, strdup(section), strdup(value), strlen(value), 0);
-             if (i == 0)
-                fprintf(stderr, "Failed To Write %s To %s\n", value, section);
+             i = atoi(value);
+             i = eet_write(ef, section, &i, 1, 0);
           }
+        else
+             i = eet_write(ef, section, value, strlen(value), 0);
+        if (i == 0)
+           fprintf(stderr, "Failed to write %s to %s\n", value, section);
      }
 }

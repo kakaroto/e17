@@ -16,6 +16,7 @@
 typedef struct _G_Eap G_Eap;
 struct _G_Eap
 {
+   char *desktop_file;
    char *eap_name;
    char *name;
    char *generic;
@@ -24,6 +25,7 @@ struct _G_Eap
    char *exec;
    char *icon;
    char *icon_path;
+   char *icon_class;
    char *startup;
    char *type;
    char *window_class;

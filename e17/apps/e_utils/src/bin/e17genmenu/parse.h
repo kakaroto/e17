@@ -20,7 +20,6 @@ Ecore_Hash *desktop_cache;
 
 /* Function Prototypes */
 char *get_t(char *icon);
-char *parse_exec(char *exec);
 char *parse_buffer(char *b, char *section);
 void parse_desktop_file(char *app, char *menu_path);
 void parse_debian_file(char *file);

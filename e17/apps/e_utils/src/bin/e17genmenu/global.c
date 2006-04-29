@@ -86,28 +86,28 @@ get_icon_compression()
    for (i = 1; i < argc; i++)
      {
         if ((strncmp(argv[i], "--lossy", 11) == 0) || (strncmp(argv[i], "-l", 2) == 0))
-           return strdup("LOSSY");
+           return "LOSSY";
      }
-   return strdup("COMP");
+   return "COMP";
 }
 
 char *
 get_eap_name(char *file)
 {
-   char *tmp, *tmp2;
+   char *tmp2;
    char eap[MAX_PATH];
 
-   tmp2 = ecore_file_get_file(strdup(file));
+   tmp2 = strdup(ecore_file_get_file(file));
    if (!tmp2)
       return NULL;
 
-   tmp = strdup(tmp2);
    if (strrchr(tmp2, '.') != NULL)
      {
-        tmp = strtok(tmp2, ".");
-        snprintf(eap, sizeof(eap), "%s.eap", tmp);
+        snprintf(eap, sizeof(eap), "%s.eap", strtok(tmp2, "."));
+	free(tmp2);
         return strdup(eap);
      }
+   free(tmp2);
    return NULL;
 }
 
