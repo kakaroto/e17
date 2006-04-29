@@ -7,7 +7,6 @@ static void ewl_filelist_signal_between(Ewl_Filelist *fl, Ewl_Container *c,
 						int add, const char *signal, 
 						int a_idx, Ewl_Widget *a, 
 						int b_idx, Ewl_Widget *b);
-
 /**
  * @param fl: The filelist to initialize
  * @return Returns TRUE on success or FALSE on failure
@@ -227,6 +226,178 @@ ewl_filelist_selected_file_get(Ewl_Filelist *fl)
 	if (widget && fl->file_name_get) file = fl->file_name_get(fl, widget);
 
 	DRETURN_PTR((file ? strdup(file) : NULL), DLEVEL_STABLE);
+}
+
+/**
+ * @param fl: Filelist that asked for the preview.
+ * @param path: Path of the file which was clicked.
+ * @return Returns a box with a preview of the file.
+ * @brief Creates a preview of the selected file.
+ **/
+
+char *
+ewl_filelist_size_get(off_t st_size)
+{
+	double dsize;
+	char size[1024];
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	dsize = (double)st_size;
+	if (dsize < 1024)
+		sprintf(size, "%'.0f b", dsize);
+	else 
+	{
+		dsize /= 1024.0;
+		if (dsize < 1024)
+			sprintf(size, "%'.1f kb", dsize);
+		else 
+		{
+			dsize /= 1024.0;
+			if (dsize < 1024)
+				sprintf(size, "%'.1f mb", dsize);
+			else 
+			{
+				dsize /= 1024.0;
+				sprintf(size, "%'.1f gb", dsize);
+			}
+		}
+	}
+
+	DRETURN_PTR(strdup(size), DLEVEL_STABLE);
+}
+
+char *
+ewl_filelist_perms_get(mode_t st_mode)
+{
+	char *perm;
+	int i;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	perm = (char *)malloc(sizeof(char) * 10);
+	for (i = 0; i < 9; i++)
+		perm[i] = '-';
+
+	perm[9] = '\0';
+
+	if ((S_IRUSR & st_mode) == S_IRUSR) perm[0] = 'r';
+	if ((S_IWUSR & st_mode) == S_IWUSR) perm[1] = 'w';
+	if ((S_IXUSR & st_mode) == S_IXUSR) perm[2] = 'x';
+
+	if ((S_IRGRP & st_mode) == S_IRGRP) perm[3] = 'r';
+	if ((S_IWGRP & st_mode) == S_IWGRP) perm[4] = 'w';
+	if ((S_IXGRP & st_mode) == S_IXGRP) perm[5] = 'x';
+
+	if ((S_IROTH & st_mode) == S_IROTH) perm[6] = 'r';
+	if ((S_IWOTH & st_mode) == S_IWOTH) perm[7] = 'w';
+	if ((S_IXOTH & st_mode) == S_IXOTH) perm[8] = 'x';
+
+	DRETURN_PTR(perm, DLEVEL_STABLE);
+}
+
+char *
+ewl_filelist_username_get(uid_t st_uid)
+{
+	char name[PATH_MAX];
+	struct passwd *pwd;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if ((pwd = getpwuid(st_uid)))
+		snprintf(name, PATH_MAX, "%s", pwd->pw_name);
+	else {
+		snprintf(name, PATH_MAX, "%-8d", st_uid);
+	}
+
+	DRETURN_PTR(strdup(name), DLEVEL_STABLE);
+}
+
+char *
+ewl_filelist_groupname_get(gid_t st_gid)
+{
+	char name[PATH_MAX];
+	struct group *grp;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if ((grp = getgrgid(st_gid)))
+		snprintf(name, PATH_MAX, "%s", grp->gr_name);
+	else {
+		snprintf(name, PATH_MAX, "%-8d", st_gid);
+	}
+	
+	DRETURN_PTR(strdup(name), DLEVEL_STABLE);
+}
+
+Ewl_Widget *
+ewl_filelist_selected_file_preview_get(Ewl_Filelist *fl, const char *path)
+{
+	Ewl_Widget *box, *icon, *text, *image;
+	const char *path2;
+	char path3[PATH_MAX];
+	char file_info[PATH_MAX];
+	char *size;
+	char *perms;
+	char *username;
+	char *groupname;
+	struct stat buf;
+	struct tm *time_struct;
+	
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("fl", fl, NULL);
+	DCHECK_PARAM_PTR_RET("path", path, NULL);
+	DCHECK_TYPE_RET("fl", fl, EWL_FILELIST_TYPE, NULL);
+
+	path2 = ewl_filelist_directory_get(EWL_FILELIST(fl));
+	snprintf(path3, PATH_MAX, "%s/%s", path2, path);	
+
+	stat(path3, &buf);
+	time_struct = localtime(&buf.st_mtime);
+
+	size = ewl_filelist_size_get(buf.st_size);
+	perms = ewl_filelist_perms_get(buf.st_mode);
+	username = ewl_filelist_username_get(buf.st_uid);
+	groupname = ewl_filelist_groupname_get(buf.st_gid);
+
+	snprintf(file_info, PATH_MAX, 
+				"Size: %s\n"
+				"User ID: %s\n"
+				"Group ID: %s\n"
+				"Permissions: %s\n"
+				"Last Modified: %s\n", 
+			size, username, groupname,
+			perms, asctime(time_struct));
+	
+	box = ewl_vbox_new();
+	ewl_widget_show(box);
+
+	image = ewl_image_thumbnail_new();
+	ewl_image_proportional_set(EWL_IMAGE(image), TRUE);
+	ewl_image_constrain_set(EWL_IMAGE(image), 100);
+	ewl_image_thumbnail_request(EWL_IMAGE_THUMBNAIL(image), path3);
+	ewl_container_child_append(EWL_CONTAINER(box), image);
+	ewl_widget_show(image);
+
+	text = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(text), file_info);
+	ewl_widget_show(text);
+
+	icon = ewl_icon_new();
+	ewl_box_orientation_set(EWL_BOX(icon),
+			EWL_ORIENTATION_VERTICAL);
+	ewl_icon_label_set(EWL_ICON(icon), path);
+	ewl_icon_extended_data_set(EWL_ICON(icon), text);
+	ewl_icon_type_set(EWL_ICON(icon), EWL_ICON_TYPE_LONG);
+	ewl_container_child_append(EWL_CONTAINER(box), icon);
+	ewl_widget_show(icon);
+
+	free(size);
+	free(perms);
+	free(username);
+	free(groupname);
+
+	DRETURN_PTR(box, DLEVEL_STABLE);
 }
 
 /**

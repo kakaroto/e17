@@ -11,8 +11,6 @@ static void ewl_filelist_list_cb_dir_clicked(Ewl_Widget *w, void *ev,
 							void *data);
 static void ewl_filelist_list_cb_icon_clicked(Ewl_Widget *w, void *ev, 
 							void *data);
-static char *ewl_filelist_list_size_get(off_t st_size);
-static char *ewl_filelist_list_perms_get(mode_t st_mode);
 
 /**
  * @return Returns the view for the filelist list
@@ -219,31 +217,17 @@ ewl_filelist_list_add(Ewl_Filelist *fl, const char *dir, char *file,
 		Ewl_Widget *row;
 
 		vals[0] = file;
-		vals[1] = ewl_filelist_list_size_get(buf.st_size);
+		vals[1] = ewl_filelist_size_get(buf.st_size);
 
 		tm = localtime(&buf.st_mtime);
 		strftime(date, sizeof(date), nl_langinfo(D_T_FMT), tm);
 		vals[2] = strdup(date);
 
-		vals[3] = ewl_filelist_list_perms_get(buf.st_mode);
+		vals[3] = ewl_filelist_perms_get(buf.st_mode);
 
-		if ((pwd = getpwuid(buf.st_uid)))
-			vals[4] = strdup(pwd->pw_name);
-		else
-		{
-			char name[PATH_MAX];
-			snprintf(name, PATH_MAX, "%-8d", (int)buf.st_uid);
-			vals[4] = strdup(name);
-		}
+		vals[4] = ewl_filelist_username_get(buf.st_uid);
 
-		if ((grp = getgrgid(buf.st_gid)))
-			vals[5] = strdup(grp->gr_name);
-		else
-		{
-			char name[PATH_MAX];
-			snprintf(name, PATH_MAX, "%-8d", (int)buf.st_gid);
-			vals[5] = strdup(name);
-		}
+		vals[5] = ewl_filelist_groupname_get(buf.st_gid);
 
 		row = ewl_tree_text_row_add(EWL_TREE(list->tree), NULL, vals);
 
@@ -262,67 +246,6 @@ ewl_filelist_list_add(Ewl_Filelist *fl, const char *dir, char *file,
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-static char *
-ewl_filelist_list_size_get(off_t st_size)
-{
-	double dsize;
-	char size[1024];
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	dsize = (double)st_size;
-	if (dsize < 1024)
-		sprintf(size, "%'.0f b", dsize);
-	else 
-	{
-		dsize /= 1024.0;
-		if (dsize < 1024)
-			sprintf(size, "%'.1f kb", dsize);
-		else 
-		{
-			dsize /= 1024.0;
-			if (dsize < 1024)
-				sprintf(size, "%'.1f mb", dsize);
-			else 
-			{
-				dsize /= 1024.0;
-				sprintf(size, "%'.1f gb", dsize);
-			}
-		}
-	}
-
-	DRETURN_PTR(strdup(size), DLEVEL_STABLE);
-}
-
-static char *
-ewl_filelist_list_perms_get(mode_t st_mode)
-{
-	char *perm;
-	int i;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	perm = (char *)malloc(sizeof(char) * 10);
-	for (i = 0; i < 9; i++)
-		perm[i] = '-';
-
-	perm[9] = '\0';
-
-	if ((S_IRUSR & st_mode) == S_IRUSR) perm[0] = 'r';
-	if ((S_IWUSR & st_mode) == S_IWUSR) perm[1] = 'w';
-	if ((S_IXUSR & st_mode) == S_IXUSR) perm[2] = 'x';
-
-	if ((S_IRGRP & st_mode) == S_IRGRP) perm[3] = 'r';
-	if ((S_IWGRP & st_mode) == S_IWGRP) perm[4] = 'w';
-	if ((S_IXGRP & st_mode) == S_IXGRP) perm[5] = 'x';
-
-	if ((S_IROTH & st_mode) == S_IROTH) perm[6] = 'r';
-	if ((S_IWOTH & st_mode) == S_IWOTH) perm[7] = 'w';
-	if ((S_IXOTH & st_mode) == S_IXOTH) perm[8] = 'x';
-
-	DRETURN_PTR(perm, DLEVEL_STABLE);
 }
 
 static void
