@@ -26,7 +26,6 @@
 #define THUMB_SIZE_LARGE 256
 #include "exiftags/exif.h"
 
-#include <Emotion.h>
 #include <Ecore.h>
 
 #include <Evas.h>
@@ -34,8 +33,6 @@
 #include <Edje.h>
 #include <dlfcn.h>
 
-#include <xine.h>
-#include <xine/xineutils.h>
 
 static Ecore_Hash* plugins_mime;
 
