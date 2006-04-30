@@ -25,8 +25,9 @@ struct Ewl_Filelist_Column
 {
 	Ewl_Filelist list;      /**< Inherit from filelist */
 
-	Ewl_Widget *hbox;    /**< Hbox to contain the file lists **/
+	Ewl_Widget *hbox;	/**< Hbox to contain the file lists **/
 	Ecore_List *dirs;	/**< List of directories shown */
+	Ewl_Widget *preview;	/**< The preview */
 };
 
 Ewl_View	*ewl_filelist_column_view_get(void);

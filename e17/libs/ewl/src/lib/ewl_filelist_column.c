@@ -367,7 +367,8 @@ ewl_filelist_column_cb_dir_clicked(Ewl_Widget *w, void *ev, void *data)
 			break;
 		}
 	}
-	
+
+	if (fl->preview) ewl_widget_destroy(fl->preview);
 	ewl_filelist_directory_set(EWL_FILELIST(fl), path);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -411,6 +412,14 @@ ewl_filelist_column_cb_file_clicked(Ewl_Widget *w, void *ev, void *data)
 	ewl_filelist_directory_set(EWL_FILELIST(data), path);
 	ewl_filelist_handle_click(EWL_FILELIST(data), w, ev, 
 					"icon,select", "icon,unselect");
+
+	if (fl->preview) ewl_widget_destroy(fl->preview);
+	fl->preview = ewl_filelist_selected_file_preview_get(EWL_FILELIST(data),
+						ewl_icon_label_get(EWL_ICON(w)));
+	ewl_object_fill_policy_set(EWL_OBJECT(fl->preview), 
+				EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL);
+	ewl_container_child_append(EWL_CONTAINER(fl), fl->preview);
+	ewl_widget_show(fl->preview);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
