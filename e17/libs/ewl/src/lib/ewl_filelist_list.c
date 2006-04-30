@@ -196,10 +196,6 @@ ewl_filelist_list_add(Ewl_Filelist *fl, const char *dir, char *file,
 	char path[PATH_MAX];
 	char *vals[6];
 	struct stat buf;
-	struct passwd *pwd;
-	struct group *grp;
-	struct tm *tm;
-	char date[256];
 	Ewl_Filelist_List *list;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
