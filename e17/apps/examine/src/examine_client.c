@@ -316,6 +316,8 @@ examine_client_list_props_cb(void)
           prop_tmp->data = strdup(range);
         } else if (!strcmp(type, "boolean")) {
           prop_tmp->type = ECORE_CONFIG_BLN;
+        } else if (!strcmp(type, "structure")) {
+          prop_tmp->type = ECORE_CONFIG_SCT;
         } else {
           prop_tmp->type = ECORE_CONFIG_NIL;
           prop_tmp->value.ptr = prop_tmp->oldvalue.ptr = NULL; }
@@ -379,6 +381,7 @@ examine_client_revert(examine_prop * target)
     }
     break;
   case ECORE_CONFIG_NIL:
+  case ECORE_CONFIG_SCT:
     break;
   default:                     /* ECORE_CONFIG_STR, ECORE_CONFIG_RGB */
     free(target->value.ptr);
@@ -415,6 +418,9 @@ examine_client_save(examine_prop * target)
       target->oldvalue.fval = target->value.fval;
       examine_client_set_val(target);
     }
+    break;
+  case ECORE_CONFIG_NIL:
+  case ECORE_CONFIG_SCT:
     break;
   default:                     /* ECORE_CONFIG_STR, ECORE_CONFIG_RGB */
 #if 0
@@ -524,6 +530,9 @@ examine_client_get_val_cb(void)
     prop->oldvalue.val = tmpi;
     ewl_checkbutton_checked_set(EWL_CHECKBUTTON(prop->w), tmpi);
     break;
+  case ECORE_CONFIG_NIL:
+  case ECORE_CONFIG_SCT:
+    break;
   default:                     /* ECORE_CONFIG_STR, ECORE_CONFIG_RGB */
     prop->value.ptr = strdup(ret);
     prop->oldvalue.ptr = strdup(ret);
@@ -548,6 +557,9 @@ examine_client_set_val(examine_prop * target)
   case ECORE_CONFIG_FLT:
     valstr = malloc(1000);      /* ### FIXME */
     snprintf(valstr, sizeof(valstr)-1, "%f", target->value.fval);
+    break;
+  case ECORE_CONFIG_NIL:
+  case ECORE_CONFIG_SCT:
     break;
   default:                     /* ECORE_CONFIG_STR, ECORE_CONFIG_RGB */
     valstr = target->value.ptr;

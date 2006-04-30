@@ -400,6 +400,12 @@ draw_tree(examine_prop * prop_item)
       ewl_callback_append(entries[1],
                           EWL_CALLBACK_VALUE_CHANGED, cb_set_bln, prop_item);
 
+    } else if (prop_item->type == ECORE_CONFIG_SCT) {
+      entries[1] = ewl_label_new();
+      ewl_label_text_set(EWL_LABEL(entries[1]), "structure - MAKE ME A BOX"); /* FIXME - make structures borders, not  lines in the row */
+    } else if (prop_item->type == ECORE_CONFIG_NIL) {
+      entries[1] = ewl_label_new();
+      ewl_label_text_set(EWL_LABEL(entries[1]), "undefined");
     } else
       entries[1] = ewl_entry_new();
     prop_item->w = entries[1];
