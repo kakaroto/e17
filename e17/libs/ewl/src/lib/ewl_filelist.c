@@ -297,11 +297,11 @@ ewl_filelist_username_get(uid_t st_uid)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if ((pwd = getpwuid(st_uid)))
+	pwd = getpwuid(st_uid);
+	if (pwd)
 		snprintf(name, PATH_MAX, "%s", pwd->pw_name);
-	else {
+	else 
 		snprintf(name, PATH_MAX, "%-8d", st_uid);
-	}
 
 	DRETURN_PTR(strdup(name), DLEVEL_STABLE);
 }
@@ -314,11 +314,11 @@ ewl_filelist_groupname_get(gid_t st_gid)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if ((grp = getgrgid(st_gid)))
+	grp = getgrgid(st_gid);
+	if (grp)
 		snprintf(name, PATH_MAX, "%s", grp->gr_name);
-	else {
+	else 
 		snprintf(name, PATH_MAX, "%-8d", st_gid);
-	}
 	
 	DRETURN_PTR(strdup(name), DLEVEL_STABLE);
 }
@@ -327,14 +327,14 @@ char *
 ewl_filelist_modtime_get(time_t st_modtime)
 {
 	char *time;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
+
 	time = ctime(&st_modtime);
-	if (time)
-		time = strdup(time);
-	else {
-		time = strdup("Ctime Failure");
-	}
-	DRETURN_PTR(strdup(time), DLEVEL_STABLE);
+	if (time) time = strdup(time);
+	else time = strdup("unknown");
+
+	DRETURN_PTR(time, DLEVEL_STABLE);
 }
 
 Ewl_Widget *
@@ -342,13 +342,8 @@ ewl_filelist_selected_file_preview_get(Ewl_Filelist *fl, const char *path)
 {
 	Ewl_Widget *box, *icon, *text, *image;
 	const char *path2;
-	char path3[PATH_MAX];
-	char file_info[PATH_MAX];
-	char *size;
-	char *perms;
-	char *username;
-	char *groupname;
-	char *time;
+	char path3[PATH_MAX], file_info[PATH_MAX];
+	char *size, *perms, *username, *groupname, *time;
 	struct stat buf;
 		
 	DENTER_FUNCTION(DLEVEL_STABLE);
