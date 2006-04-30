@@ -379,10 +379,12 @@ ewl_filelist_selected_file_preview_get(Ewl_Filelist *fl, const char *path)
 	ewl_image_constrain_set(EWL_IMAGE(image), 100);
 	ewl_image_thumbnail_request(EWL_IMAGE_THUMBNAIL(image), path3);
 	ewl_container_child_append(EWL_CONTAINER(box), image);
+	ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_CENTER);
 	ewl_widget_show(image);
 
 	text = ewl_text_new();
 	ewl_text_text_set(EWL_TEXT(text), file_info);
+	ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_CENTER);
 	ewl_widget_show(text);
 
 	icon = ewl_icon_new();
