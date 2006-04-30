@@ -1,4 +1,5 @@
 #include "Epsilon.h"
+#include "epsilon_plugin.h"
 #include "../config.h"
 #define X_DISPLAY_MISSING 1
 #include <Imlib2.h>
@@ -10,6 +11,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <errno.h>
+#include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "md5.h"
@@ -23,9 +26,18 @@
 #define THUMB_SIZE_LARGE 256
 #include "exiftags/exif.h"
 
+#include <Emotion.h>
+#include <Ecore.h>
+
 #include <Evas.h>
 #include <Ecore_Evas.h>
 #include <Edje.h>
+#include <dlfcn.h>
+
+#include <xine.h>
+#include <xine/xineutils.h>
+
+static Ecore_Hash* plugins_mime;
 
 extern int epsilon_info_exif_props_as_int_get (Epsilon_Info * ei, unsigned
 					       short lvl, long prop);
@@ -86,6 +98,27 @@ epsilon_free (Epsilon * e)
       free (e);
     }
 }
+
+
+Epsilon_Plugin*
+epsilon_plugin_load(char* path)
+{
+	Epsilon_Plugin* plugin = NULL;
+	void* dl_ref;
+	Epsilon_Plugin* (*epsilon_plugin_init)();
+
+	printf ("Loading plugin '%s'...\n", path);
+
+	dl_ref = dlopen(path, RTLD_LAZY);
+	if (dl_ref) {
+		epsilon_plugin_init = dlsym(dl_ref, "epsilon_plugin_init");
+		plugin = (*epsilon_plugin_init)();
+	}
+
+	return plugin;
+}
+
+
 void
 epsilon_init (void)
 {
@@ -96,6 +129,12 @@ epsilon_init (void)
     ".thumbnails/large", ".thumbnails/fail"
   };
 
+   struct dirent *de;
+   char* type;
+   DIR *dir;
+   Epsilon_Plugin *plugin;
+   char plugin_path[1024];
+
   for (i = 0; i < 4; i++)
     {
       snprintf (buf, sizeof(buf), "%s/%s", getenv ("HOME"), dirs[i]);
@@ -104,6 +143,30 @@ epsilon_init (void)
       else
 	mkdir (buf, S_IRUSR | S_IWUSR | S_IXUSR);
     }
+
+  plugins_mime = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+
+  /*Initialise plugins*/
+  dir = opendir(PACKAGE_LIB_DIR "/epsilon/plugins/");
+  if (dir) {
+	while ((de = readdir(dir))) {
+		if (!strncmp(de->d_name + strlen(de->d_name) - 3, ".so", 3)) {
+			   snprintf(plugin_path, 1024, "%s/%s",
+                           	PACKAGE_LIB_DIR "/epsilon/plugins", de->d_name);
+
+			   if ((plugin = epsilon_plugin_load(plugin_path))) {
+				   /*Append the mime types for this plugin*/
+				   ecore_list_goto_first(plugin->mime_types);
+				   while ( (type = ecore_list_next(plugin->mime_types))) {
+					ecore_hash_set(plugins_mime, type, plugin);
+				   }
+			   }
+
+		}
+	}
+
+  }
+  closedir(dir);
 }
 
 void
@@ -339,6 +402,19 @@ epsilon_info_exif_get (Epsilon_Info * info)
   return (0);
 }
 
+
+/*This needs to be worked into some kind of 'mime-magic' ID 
+ * section, to work out what file type we're dealing with*/
+char* epsilon_mime_for_extension_get(char* extension)
+{
+	if ((!strcasecmp(extension, "mpg")) ||
+			(!strcasecmp(extension, "mpeg"))) return "video/mpeg";
+	else if (!strcasecmp(extension, "wmv")) return "video/x-ms-wmv";
+	else if (!strcasecmp(extension, "avi")) return "video/x-msvideo";
+	else if (!strcasecmp(extension, "mov")) return "video/quicktime";
+	else return NULL;
+}
+
 int
 epsilon_exists (Epsilon * e)
 {
@@ -441,6 +517,9 @@ epsilon_generate (Epsilon * e)
   int iw, ih;
   int tw, th;
   char outfile[PATH_MAX];
+  char* mime;
+  Epsilon_Plugin* plugin;
+
 #ifdef HAVE_EPEG_H
   Epeg_Image *im;
   Epeg_Thumbnail_Info info;
@@ -560,9 +639,10 @@ epsilon_generate (Epsilon * e)
 	  }
       }
 
-
-    if (!tmp)
-      {
+   mime = epsilon_mime_for_extension_get( strrchr(e->src, '.')+1);  
+   if (  (plugin = ecore_hash_get(plugins_mime, mime)) ) {
+	tmp = (*plugin->epsilon_generate_thumb)(e);
+   } else {
 	tmp = imlib_load_image_immediately_without_cache (e->src);
 	imlib_context_set_image (tmp);
 	snprintf (format, sizeof(format), "image/%s", imlib_image_format ());
