@@ -220,6 +220,7 @@ ewl_icon_label_set(Ewl_Icon *icon, const char *label)
 	if (!icon->label)
 	{
 		icon->label = ewl_text_new();
+		ewl_object_alignment_set(EWL_OBJECT(icon->label), EWL_FLAG_ALIGN_CENTER);
 
 		if (icon->editable)
 			ewl_callback_append(icon->label, 
