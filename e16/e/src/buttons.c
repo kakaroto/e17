@@ -393,24 +393,6 @@ ButtonMoveRelative(Button * b, int dx, int dy)
 }
 
 int
-ButtonGetInfo(const Button * b, RectBox * r, Desk * desk)
-{
-   if (!EoIsShown(b) || ButtonIsInternal(b))
-      return -1;
-   if (!EoIsSticky(b) && EoGetDesk(b) != desk)
-      return -1;
-
-   r->data = NULL;
-   r->x = EoGetX(b);
-   r->y = EoGetY(b);
-   r->w = EoGetW(b);
-   r->h = EoGetH(b);
-   r->p = EoIsSticky(b);
-
-   return 0;
-}
-
-int
 ButtonDoShowDefault(const Button * b)
 {
    return !b->internal && b->default_show;
@@ -472,12 +454,6 @@ ButtonDragEnd(Button * b)
       Mode_buttons.move_pending = 0;
 
    autosave();
-}
-
-Button            **
-ButtonsGetList(int *pnum)
-{
-   return (Button **) ecore_list_items_get(button_list, pnum);
 }
 
 void
@@ -944,12 +920,10 @@ ButtonsConfigSave(void)
 {
    char                s[FILEPATH_LEN_MAX], st[FILEPATH_LEN_MAX];
    FILE               *fs;
-   int                 i, num;
-   Button            **blst;
+   Button             *b;
    int                 flags;
 
-   blst = ButtonsGetList(&num);
-   if (!blst)
+   if (ecore_list_nodes(button_list) <= 0)
       return;
 
    Etmp(st);
@@ -957,64 +931,61 @@ ButtonsConfigSave(void)
    if (!fs)
       return;
 
-   for (i = 0; i < num; i++)
-     {
-	if (blst[i]->id != 0 || blst[i]->internal)
-	   continue;
+   ECORE_LIST_FOR_EACH(button_list, b)
+   {
+      if (b->id != 0 || b->internal)
+	 continue;
 
-	fprintf(fs, "4 999\n");
-	fprintf(fs, "100 %s\n", EoGetName(blst[i]));
-	if (blst[i]->iclass)
-	   fprintf(fs, "12 %s\n", ImageclassGetName(blst[i]->iclass));
-	if (blst[i]->aclass)
-	   fprintf(fs, "11 %s\n", ActionclassGetName(blst[i]->aclass));
-	if (EoGetLayer(blst[i]) >= 0)
-	   fprintf(fs, "453 %i\n", EoGetLayer(blst[i]));
-	fprintf(fs, "456 %i\n", blst[i]->geom.width.min);
-	fprintf(fs, "457 %i\n", blst[i]->geom.width.max);
-	fprintf(fs, "468 %i\n", blst[i]->geom.height.min);
-	fprintf(fs, "469 %i\n", blst[i]->geom.height.max);
-	fprintf(fs, "528 %i\n", blst[i]->geom.xorigin);
-	fprintf(fs, "529 %i\n", blst[i]->geom.yorigin);
-	fprintf(fs, "530 %i\n", blst[i]->geom.xabs);
-	fprintf(fs, "531 %i\n", blst[i]->geom.xrel);
-	fprintf(fs, "532 %i\n", blst[i]->geom.yabs);
-	fprintf(fs, "533 %i\n", blst[i]->geom.yrel);
-	fprintf(fs, "534 %i\n", blst[i]->geom.xsizerel);
-	fprintf(fs, "535 %i\n", blst[i]->geom.xsizeabs);
-	fprintf(fs, "536 %i\n", blst[i]->geom.ysizerel);
-	fprintf(fs, "537 %i\n", blst[i]->geom.ysizeabs);
-	fprintf(fs, "538 %i\n", blst[i]->geom.size_from_image);
-	fprintf(fs, "539 %i\n", EoGetDeskNum(blst[i]));
-	fprintf(fs, "540 %i\n", EoIsSticky(blst[i]));
-	fprintf(fs, "542 %i\n", EoIsShown(blst[i]));
+      fprintf(fs, "4 999\n");
+      fprintf(fs, "100 %s\n", EoGetName(b));
+      if (b->iclass)
+	 fprintf(fs, "12 %s\n", ImageclassGetName(b->iclass));
+      if (b->aclass)
+	 fprintf(fs, "11 %s\n", ActionclassGetName(b->aclass));
+      if (EoGetLayer(b) >= 0)
+	 fprintf(fs, "453 %i\n", EoGetLayer(b));
+      fprintf(fs, "456 %i\n", b->geom.width.min);
+      fprintf(fs, "457 %i\n", b->geom.width.max);
+      fprintf(fs, "468 %i\n", b->geom.height.min);
+      fprintf(fs, "469 %i\n", b->geom.height.max);
+      fprintf(fs, "528 %i\n", b->geom.xorigin);
+      fprintf(fs, "529 %i\n", b->geom.yorigin);
+      fprintf(fs, "530 %i\n", b->geom.xabs);
+      fprintf(fs, "531 %i\n", b->geom.xrel);
+      fprintf(fs, "532 %i\n", b->geom.yabs);
+      fprintf(fs, "533 %i\n", b->geom.yrel);
+      fprintf(fs, "534 %i\n", b->geom.xsizerel);
+      fprintf(fs, "535 %i\n", b->geom.xsizeabs);
+      fprintf(fs, "536 %i\n", b->geom.ysizerel);
+      fprintf(fs, "537 %i\n", b->geom.ysizeabs);
+      fprintf(fs, "538 %i\n", b->geom.size_from_image);
+      fprintf(fs, "539 %i\n", EoGetDeskNum(b));
+      fprintf(fs, "540 %i\n", EoIsSticky(b));
+      fprintf(fs, "542 %i\n", EoIsShown(b));
 
-	if (blst[i]->flags)
-	  {
-	     flags = 0;
-	     if (((blst[i]->flags & FLAG_FIXED_HORIZ)
-		  && (blst[i]->flags & FLAG_FIXED_VERT))
-		 || (blst[i]->flags & FLAG_FIXED))
-		flags = 2;
-	     else if (blst[i]->flags & FLAG_FIXED_HORIZ)
-		flags = 3;
-	     else if (blst[i]->flags & FLAG_FIXED_VERT)
-		flags = 4;
-	     else if (blst[i]->flags & FLAG_TITLE)
-		flags = 0;
-	     else if (blst[i]->flags & FLAG_MINIICON)
-		flags = 1;
-	     fprintf(fs, "454 %i\n", flags);
-	  }
-	fprintf(fs, "1000\n");
-     }
+      if (b->flags)
+	{
+	   flags = 0;
+	   if (((b->flags & FLAG_FIXED_HORIZ) &&
+		(b->flags & FLAG_FIXED_VERT)) || (b->flags & FLAG_FIXED))
+	      flags = 2;
+	   else if (b->flags & FLAG_FIXED_HORIZ)
+	      flags = 3;
+	   else if (b->flags & FLAG_FIXED_VERT)
+	      flags = 4;
+	   else if (b->flags & FLAG_TITLE)
+	      flags = 0;
+	   else if (b->flags & FLAG_MINIICON)
+	      flags = 1;
+	   fprintf(fs, "454 %i\n", flags);
+	}
+      fprintf(fs, "1000\n");
+   }
 
    fclose(fs);
 
    Esnprintf(s, sizeof(s), "%s.buttons", EGetSavePrefix());
    E_mv(st, s);
-
-   Efree(blst);
 }
 
 /*

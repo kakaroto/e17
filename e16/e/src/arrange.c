@@ -27,6 +27,13 @@
 #include "groups.h"
 #include "screen.h"
 
+typedef struct
+{
+   void               *data;
+   int                 x, y, w, h;
+   int                 p;
+} RectBox;
+
 static int
 ArrangeAddToList(int *array, int current_size, int value)
 {

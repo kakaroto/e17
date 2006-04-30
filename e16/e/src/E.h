@@ -517,14 +517,6 @@ typedef struct
 }
 EMode;
 
-typedef struct _rectbox
-{
-   void               *data;
-   int                 x, y, w, h;
-   int                 p;
-}
-RectBox;
-
 /*
  * Function prototypes
  */

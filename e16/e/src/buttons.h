@@ -49,12 +49,10 @@ void                ButtonDecRefcount(Button * b);
 void                ButtonSwallowInto(Button * b, EObj * eo);
 void                ButtonSetCallback(Button * b, ButtonCbFunc * func,
 				      EObj * eo);
-int                 ButtonGetInfo(const Button * b, RectBox * r, Desk * d);
 int                 ButtonDoShowDefault(const Button * b);
 int                 ButtonEmbedWindow(Button * ButtonToUse,
 				      Window WindowToEmbed);
 
-Button            **ButtonsGetList(int *pnum);
 void                ButtonsForeach(int id, Desk * dsk,
 				   void (*func) (Button * b));
 void                ButtonsMoveStickyToDesk(Desk * d);
