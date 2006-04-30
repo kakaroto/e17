@@ -128,6 +128,78 @@ ArrangeMakeFillLists(int startx, int width, int starty, int height,
 }
 
 static void
+ArrangeFindSpaces(const int *xarray, int xsize, const int *yarray, int ysize,
+		  unsigned char *filled, RectBox * spaces, int *ns,
+		  RectBox * fit)
+{
+   int                 j, x, y, x1, y1;
+   int                 num_spaces;
+
+   /* create list of all "spaces" */
+   num_spaces = 0;
+   for (y = 0; y < ysize - 1; y++)
+     {
+	for (x = 0; x < xsize - 1; x++)
+	  {
+	     /* if the square is empty "grow" the space */
+	     if (Filled(x, y) <= fit->p)
+	       {
+		  int                 can_expand_x = 1;
+		  int                 can_expand_y = 1;
+
+		  Filled(x, y) = 100;
+		  x1 = x + 1;
+		  y1 = y + 1;
+		  if (x >= xsize - 2)
+		     can_expand_x = 0;
+		  if (y >= ysize - 2)
+		     can_expand_y = 0;
+		  while ((can_expand_x) || (can_expand_y))
+		    {
+		       if (x1 >= xsize - 1)
+			  can_expand_x = 0;
+		       if (y1 >= ysize - 1)
+			  can_expand_y = 0;
+		       if (can_expand_x)
+			 {
+			    for (j = y; j < y1; j++)
+			      {
+				 if (Filled(x1, j) > fit->p)
+				    can_expand_x = 0;
+			      }
+			 }
+		       if (can_expand_x)
+			  x1++;
+		       if (can_expand_y)
+			 {
+			    for (j = x; j < x1; j++)
+			      {
+				 if (Filled(j, y1) > fit->p)
+				    can_expand_y = 0;
+			      }
+			 }
+		       if (can_expand_y)
+			  y1++;
+		    }
+		  spaces[num_spaces].x = xarray[x];
+		  spaces[num_spaces].y = yarray[y];
+		  spaces[num_spaces].w = xarray[x1] - xarray[x];
+		  spaces[num_spaces].h = yarray[y1] - yarray[y];
+#if 0
+		  spaces[num_spaces].p = spaces[num_spaces].w >= fit->w &&
+		     spaces[num_spaces].h >= fit->h;
+#else
+		  spaces[num_spaces].p = 1;
+#endif
+		  num_spaces++;
+	       }
+	  }
+     }
+
+   *ns = num_spaces;
+}
+
+static void
 ArrangeSwapList(RectBox * list, int a, int b)
 {
    RectBox             bb;
@@ -158,7 +230,7 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
    int                 xsize = 0, ysize = 0;
    int                *xarray, *yarray;
    int                *leftover;
-   int                 i, j, k, x, y, x1, y1;
+   int                 i, j, k;
    unsigned char      *filled;
    RectBox            *spaces;
    int                 num_spaces;
@@ -251,106 +323,41 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 			     xarray, &xsize, yarray, &ysize, filled);
 
 	/* create list of all "spaces" */
-	num_spaces = 0;
-	for (y = 0; y < ysize - 1; y++)
-	  {
-	     for (x = 0; x < xsize - 1; x++)
-	       {
-		  /* if the square is empty (lowe prioiryt suares filled) "grow" the space */
-		  if (Filled(x, y) <= floating[i].p)
-		    {
-		       int                 can_expand_x = 1;
-		       int                 can_expand_y = 1;
-
-		       x1 = x + 1;
-		       y1 = y + 1;
-		       Filled(x, y) = 100;
-		       if (x >= xsize - 2)
-			  can_expand_x = 0;
-		       if (y >= ysize - 2)
-			  can_expand_y = 0;
-		       while ((can_expand_x) || (can_expand_y))
-			 {
-			    if (x1 >= xsize - 1)
-			       can_expand_x = 0;
-			    if (y1 >= ysize - 1)
-			       can_expand_y = 0;
-			    if (can_expand_x)
-			      {
-				 for (j = y; j < y1; j++)
-				   {
-				      if (Filled(x1, j) >= floating[i].p + 1)
-					 can_expand_x = 0;
-				   }
-			      }
-			    if (can_expand_x)
-			       x1++;
-			    if (can_expand_y)
-			      {
-				 for (j = x; j < x1; j++)
-				   {
-				      if (Filled(j, y1) >= floating[i].p + 1)
-					 can_expand_y = 0;
-				   }
-			      }
-			    if (can_expand_y)
-			       y1++;
-			 }
-		       spaces[num_spaces].x = xarray[x];
-		       spaces[num_spaces].y = yarray[y];
-		       spaces[num_spaces].w = xarray[x1] - xarray[x];
-		       spaces[num_spaces].h = yarray[y1] - yarray[y];
-		       spaces[num_spaces].p = 0;
-		       num_spaces++;
-		    }
-	       }
-	  }
+	ArrangeFindSpaces(xarray, xsize, yarray, ysize, filled,
+			  spaces, &num_spaces, floating + i);
 
 	/* find the first space that fits */
 	k = -1;
 	sort = 0x7fffffff;
 	for (j = 0; j < num_spaces; j++)
 	  {
-	     if ((spaces[j].w >= floating[i].w)
-		 && (spaces[j].h >= floating[i].h))
+	     if ((spaces[j].w < floating[i].w) ||
+		 (spaces[j].h < floating[i].h) ||
+		 (spaces[j].x < startx) ||
+		 (spaces[j].x + spaces[j].w > width) ||
+		 (spaces[j].y < starty) || (spaces[j].y + spaces[j].h > height))
+		continue;
+
+	     if (policy == ARRANGE_BY_POSITION)
 	       {
-		  if (spaces[j].x >= startx)
+		  a1 = (spaces[j].x + (spaces[j].w >> 1)) -
+		     (floating[i].x + (floating[i].w >> 1));
+		  a2 = (spaces[j].y + (spaces[j].h >> 1)) -
+		     (floating[i].y + (floating[i].h >> 1));
+		  if (a1 < 0)
+		     a1 = -a1;
+		  if (a2 < 0)
+		     a2 = -a2;
+		  if ((a1 + a2) < sort)
 		    {
-		       if ((spaces[j].x + spaces[j].w) <= width)
-			 {
-			    if (spaces[j].y >= starty)
-			      {
-				 if ((spaces[j].y + spaces[j].h) <= height)
-				   {
-				      if (policy == ARRANGE_BY_POSITION)
-					{
-					   a1 = (spaces[j].x +
-						 (spaces[j].w >> 1)) -
-					      (floating[i].x +
-					       (floating[i].w >> 1));
-					   a2 = (spaces[j].y +
-						 (spaces[j].h >> 1)) -
-					      (floating[i].y +
-					       (floating[i].h >> 1));
-					   if (a1 < 0)
-					      a1 = -a1;
-					   if (a2 < 0)
-					      a2 = -a2;
-					   if ((a1 + a2) < sort)
-					     {
-						sort = a1 + a2;
-						k = j;
-					     }
-					}
-				      else
-					{
-					   k = j;
-					   j = num_spaces;
-					}
-				   }
-			      }
-			 }
+		       sort = a1 + a2;
+		       k = j;
 		    }
+	       }
+	     else
+	       {
+		  k = j;
+		  j = num_spaces;
 	       }
 	  }
 
@@ -406,62 +413,8 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 			     xarray, &xsize, yarray, &ysize, filled);
 
 	/* create list of all "spaces" */
-	num_spaces = 0;
-	for (y = 0; y < ysize - 1; y++)
-	  {
-	     for (x = 0; x < xsize - 1; x++)
-	       {
-		  /* if the square is empty "grow" the space */
-		  if (Filled(x, y) <= floating[leftover[i]].p)
-		    {
-		       int                 can_expand_x = 1;
-		       int                 can_expand_y = 1;
-		       char                fitswin = 1;
-
-		       x1 = x + 1;
-		       y1 = y + 1;
-		       if (x >= xsize - 2)
-			  can_expand_x = 0;
-		       if (y >= ysize - 2)
-			  can_expand_y = 0;
-		       while ((can_expand_x) || (can_expand_y))
-			 {
-			    if (x1 >= xsize - 1)
-			       can_expand_x = 0;
-			    if (y1 >= ysize - 1)
-			       can_expand_y = 0;
-			    if (can_expand_x)
-			      {
-				 for (j = y; j < y1; j++)
-				   {
-				      if (Filled(x1, j) >
-					  floating[leftover[i]].p + 1)
-					 can_expand_x = 0;
-				   }
-			      }
-			    if (can_expand_x)
-			       x1++;
-			    if (can_expand_y)
-			      {
-				 for (j = x; j < x1; j++)
-				   {
-				      if (Filled(j, y1) >
-					  floating[leftover[i]].p + 1)
-					 can_expand_y = 0;
-				   }
-			      }
-			    if (can_expand_y)
-			       y1++;
-			 }
-		       spaces[num_spaces].x = xarray[x];
-		       spaces[num_spaces].y = yarray[y];
-		       spaces[num_spaces].w = xarray[x1] - xarray[x];
-		       spaces[num_spaces].h = yarray[y1] - yarray[y];
-		       spaces[num_spaces].p = fitswin;
-		       num_spaces++;
-		    }
-	       }
-	  }
+	ArrangeFindSpaces(xarray, xsize, yarray, ysize, filled,
+			  spaces, &num_spaces, floating + leftover[i]);
 
 	/* find the first space that fits */
 	k = -1;
