@@ -123,7 +123,8 @@ ewl_icon_image_set(Ewl_Icon *icon, const char *file, const char *key)
 	{
 		icon->preview = ewl_image_new();
 		ewl_image_proportional_set(EWL_IMAGE(icon->preview), TRUE);
-		ewl_object_alignment_set(EWL_OBJECT(icon->preview), EWL_FLAG_ALIGN_CENTER);
+		ewl_object_alignment_set(EWL_OBJECT(icon->preview), 
+							EWL_FLAG_ALIGN_CENTER);
 		ewl_widget_internal_set(icon->preview, TRUE);
 		ewl_container_child_prepend(EWL_CONTAINER(icon), 
 						icon->preview);
@@ -222,7 +223,8 @@ ewl_icon_label_set(Ewl_Icon *icon, const char *label)
 	if (!icon->label)
 	{
 		icon->label = ewl_text_new();
-		ewl_object_alignment_set(EWL_OBJECT(icon->label), EWL_FLAG_ALIGN_CENTER);
+		ewl_object_alignment_set(EWL_OBJECT(icon->label), 
+						EWL_FLAG_ALIGN_CENTER);
 
 		if (icon->editable)
 			ewl_callback_append(icon->label, 
