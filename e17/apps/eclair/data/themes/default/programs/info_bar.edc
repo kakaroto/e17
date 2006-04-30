@@ -1,16 +1,16 @@
 program {
-   name: "filename_scroll_left";
+   name: "info_scroll_left";
 	action: STATE_SET "right" 0.0;
 	transition: SINUSOIDAL 2.0;
 	target: "current_media_name";
 	in: 1.5 0.0;
-	after: "filename_scroll_right";
+	after: "info_scroll_right";
 }
 program {
-	name: "filename_scroll_right";
+	name: "info_scroll_right";
 	action: STATE_SET "default" 0.0;
 	transition: SINUSOIDAL 2.0;
 	target: "current_media_name";
 	in: 1.5 0.0;
-	after: "filename_scroll_left";
+	after: "info_scroll_left";
 }

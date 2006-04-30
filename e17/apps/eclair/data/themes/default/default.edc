@@ -5,54 +5,13 @@ data {
    item: "current_entry_bg_color" "222 201 149 255";
    item: "current_entry_fg_color" "80 80 80 255";
 }
-images {
-   image: "body.png" COMP;
-   image: "glass.png" COMP;
-   image: "cover.png" COMP;
-   image: "cover_border.png" COMP;
-   image: "right_border.png" COMP;
-   image: "right_shadow.png" COMP;
-   image: "left_border.png" COMP;
-   image: "left_shadow.png" COMP;
-   image: "side.png" COMP;
-   image: "button_play.png" COMP;
-   image: "button_play_down.png" COMP;
-   image: "button_pause.png" COMP;
-   image: "button_pause_down.png" COMP;
-   image: "button_prev.png" COMP;
-   image: "button_prev_down.png" COMP;
-   image: "button_next.png" COMP;
-   image: "button_next_down.png" COMP;
-   image: "button_open.png" COMP;
-   image: "button_open_down.png" COMP;
-   image: "button_stop.png" COMP;
-   image: "button_stop_down.png" COMP;
-   image: "window_button_bar.png" COMP;
-   image: "button_close.png" COMP;
-   image: "button_minimize.png" COMP;
-   image: "volume_bar.png" COMP;
-   image: "progress_bar.png" COMP;
-   image: "progress_bar_drag.png" COMP;
-   image: "progress_bar_drag_down.png" COMP;
-   image: "handle_thumb.png" COMP;
-   image: "playlist_button.png" COMP;
-   image: "playlist_shadow.png" COMP;
-   image: "playlist_bottom.png" COMP;
-   image: "playlist_background.png" COMP;
-   image: "playlist_box.png" COMP;
-   image: "playlist_box_over.png" COMP;
-   image: "playlist_scrollbar_button.png" COMP;
-   image: "playlist_scrollbar_up.png" COMP;
-   image: "playlist_scrollbar_down.png" COMP;
-   image: "filename_bar.png" COMP;
-}
 fonts {
    font: "Vera.ttf" "Edje Vera";
 }
+#include "images/images.edc"
 collections {
    group {
       name: "eclair_main_body";
-      //591
       min: 438 260;
       max: 438 260;
       script {
@@ -65,7 +24,7 @@ collections {
          #include "parts/body.edc"
          #include "parts/volume_control.edc"
          #include "parts/progress_bar.edc"
-         #include "parts/filename_bar.edc"
+         #include "parts/info_bar.edc"
          #include "parts/navigation_buttons.edc"
          #include "parts/left_side_front.edc"
          #include "parts/right_side_front.edc"
@@ -73,13 +32,13 @@ collections {
       }
       programs {
          #include "programs/left_side.edc"
-         #include "programs/right_side.edc"
+         //#include "programs/right_side.edc"
          #include "programs/playlist.edc"
          #include "programs/body.edc"
          #include "programs/navigation_buttons.edc"
          #include "programs/progress_bar.edc"
          #include "programs/volume_control.edc"
-         #include "programs/filename_bar.edc"
+         #include "programs/info_bar.edc"
          #include "programs/core.edc"
       }
    }

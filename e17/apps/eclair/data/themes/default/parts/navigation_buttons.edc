@@ -1,73 +1,120 @@
-part {
-   name: "play_pause_clip";
-   type: RECT;
-   description {
-      state: "default" 0.0;
-      color: 255 255 255 255;
-      rel1 {
-         relative: 0 0;
-         offset: 44 35;
-         to: "body";
-      }
-      rel2 {
-         relative: 0 0;
-         offset: 93 84;
-         to: "body";
-      }      
-   }
-   description {
-      state: "over" 0.0;
-      inherit: "default" 0.0;
-      color: 255 247 217 255;
-   }
+#define NAV_BUTTON_COLOR_OVER 219 238 252 255
+
+#define NAV_BUTTON(button_name, bx, by, bw, bh, ix, iy, iw, ih, rx1, ry1, rx2, ry2) \
+part { \
+   name: "button_"button_name"_bg"; \
+   mouse_events: 0; \
+   description { \
+      state: "default" 0.0; \
+      color: 255 255 255 255; \
+      rel1 { \
+         relative: 0 0; \
+         offset: bx by; \
+         to: "body"; \
+      } \
+      rel2 { \
+         relative: 0 0; \
+         offset: (bx + bw - 1) (by + bh - 1); \
+         to: "body"; \
+      } \
+      image { \
+         normal: "button_"button_name"_bg.png"; \
+      } \
+   } \
+   description { \
+      state: "over" 0.0; \
+      inherit: "default" 0.0; \
+      color: NAV_BUTTON_COLOR_OVER; \
+   } \
+} \
+part { \
+   name: "button_"button_name"_icon"; \
+   mouse_events: 0; \
+   description { \
+      state: "default" 0.0; \
+      rel1 { \
+         relative: 0 0; \
+         offset: ix iy; \
+         to: "body"; \
+      } \
+      rel2 { \
+         relative: 0 0; \
+         offset: (ix + iw - 1) (iy + ih - 1); \
+         to: "body"; \
+      } \
+      image { \
+         normal: "button_"button_name"_icon.png"; \
+      } \
+   } \
+   description { \
+      state: "over" 0.0; \
+      inherit: "default" 0.0; \
+      color: NAV_BUTTON_COLOR_OVER; \
+   } \
+   description { \
+      state: "down" 0.0; \
+      inherit: "default" 0.0; \
+      color: NAV_BUTTON_COLOR_OVER; \
+      rel1 { \
+         offset: (ix + 1) (iy + 1); \
+      } \
+      rel2 { \
+         offset: (ix + iw) (iy + ih); \
+      } \
+   } \
+} \
+part { \
+   name: "button_"button_name"_shadow"; \
+   mouse_events: 0; \
+   description { \
+      state: "default" 0.0; \
+      visible: 0; \
+      rel1 { \
+         relative: 0 0; \
+         offset: bx by; \
+         to: "body"; \
+      } \
+      rel2 { \
+         relative: 0 0; \
+         offset: (bx + bw - 1) (by + bh - 1); \
+         to: "body"; \
+      } \
+      image { \
+         normal: "button_"button_name"_shadow.png"; \
+      } \
+   } \
+   description { \
+      state: "down" 0.0; \
+      inherit: "default" 0.0; \
+      visible: 1; \
+   } \
+} \
+part { \
+   name: "button_"button_name"_rect"; \
+   type: RECT; \
+   description { \
+      state: "default" 0.0; \
+      color: 255 255 255 0; \
+      rel1 { \
+         relative: 0 0; \
+         offset: rx1 ry1; \
+         to: "body"; \
+      } \
+      rel2 { \
+         relative: 0 0; \
+         offset: rx2 ry2; \
+         to: "body"; \
+      } \
+   } \
 }
-part {
-   name: "button_play";
-   clip_to: "play_pause_clip";
-   description {
-      state: "default" 0.0;
-      rel1 {
-         to: "play_pause_clip";
-      }
-      rel2 {
-         to: "play_pause_clip";
-      }
-      image {
-         normal: "button_play.png";
-      }
-   }
-   description {
-      state: "play" 0.0;
-      inherit: "default" 0.0;
-      color: 255 255 255 0;
-      visible: 0;
-   }
-   description {
-      state: "pause" 0.0;
-      inherit: "default" 0.0;
-   }
-   description {
-      state: "stop" 0.0;
-      inherit: "default" 0.0;
-   }
-   description {
-      state: "down" 0.0;
-      rel1 {
-         relative: 0 0;
-         offset: 8 8;
-         to: "play_pause_clip";
-      }
-      rel2 {
-         relative: 1 1;
-         offset: -8 -8;
-         to: "play_pause_clip";
-      }
-      image {
-         normal: "button_play_down.png";
-      }
-   }
-}
-part {
+
+NAV_BUTTON("play", 52, 43, 34, 34, 67, 54, 7, 13, 54, 46, 83, 74)
+NAV_BUTTON("prev", 26, 29, 32, 62, 33, 55, 12, 11, 29, 40, 53, 81)
+NAV_BUTTON("next", 80, 29, 32, 62, 91, 55, 12, 11, 84, 40, 108, 81)
+NAV_BUTTON("open", 38, 71, 62, 32, 61, 82, 13, 12, 47, 75, 92, 102)
+NAV_BUTTON("stop", 38, 16, 61, 32, 63, 26, 10, 10, 47, 19, 92, 45)
+
+/*part {
    name: "button_pause";
    repeat_events: 1;
    clip_to: "play_pause_clip";
@@ -284,24 +331,24 @@ part {
          normal: "button_next_down.png";
       }
    }
-}
+}*/
 part {
-   name: "glass";
+   name: "reflection";
    mouse_events: 0;
    description {
       state: "default" 0.0;
       rel1 {
          relative: 0 0;
-         offset: 25 16;
+         offset: 32 21;
          to: "body";
       }
       rel2 {
          relative: 0 0;
-         offset: 112 104;
+         offset: 105 52;
          to: "body";
       }
       image {
-         normal: "glass.png";
+         normal: "reflection.png";
       }
    }            
 }

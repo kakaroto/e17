@@ -83,5 +83,5 @@ public cover_change_cb(set) {
    set_int(previous_cover_alpha, pca);
 
    //TODO: edje bug: the edje object is not updated after the set_state_val call
-   run_program(PROGRAM:"update");
+   //run_program(PROGRAM:"update");
 }

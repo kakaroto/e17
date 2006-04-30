@@ -1,4 +1,4 @@
-/*program {
+program {
    name: "open_right_side";
    signal: "mouse,clicked,1";
    source: "right_border";
@@ -20,4 +20,3 @@ program {
    target: "right_side";
    target: "right_shadow";
 }
-*/
