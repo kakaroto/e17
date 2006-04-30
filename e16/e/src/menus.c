@@ -232,6 +232,7 @@ MenuEwinInit(EWin * ewin, void *ptr)
    ewin->props.no_actions = 1;
    ewin->props.skip_focuslist = 1;
    ewin->props.skip_winlist = 1;
+   ewin->props.ignorearrange = 1;
    EwinInhSetWM(ewin, focus, 1);
    ewin->client.grav = StaticGravity;
 

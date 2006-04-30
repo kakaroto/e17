@@ -22,7 +22,6 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
-#include "buttons.h"
 #include "desktops.h"
 #include "ewins.h"
 #include "groups.h"
@@ -733,27 +732,148 @@ ArrangeEwinCentered(EWin * ewin)
    EwinMove(ewin, x, y);
 }
 
-static int
-EWinIsOnViewport(EWin * ewin, Desk * dsk)
+static void
+ArrangeGetRectList(RectBox ** pfixed, int *nfixed, RectBox ** pfloating,
+		   int *nfloating, EWin * ewin)
 {
-   int                 ax, ay;
+   RectBox            *rb, *fixed, *floating;
+   int                 x, y, w, h, i, nfix, nflt, num;
+   EObj               *const *lst, *eo;
+   Desk               *dsk;
 
-   if (EoIsSticky(ewin))
-      return 1;
+   fixed = floating = NULL;
+   nfix = nflt = 0;
 
-   DeskGetArea(dsk, &ax, &ay);
-   if (EoGetDesk(ewin) == dsk && ewin->area_x == ax && ewin->area_y == ay)
-      return 1;
+   lst = EobjListStackGet(&num);
+   if (!lst)
+      goto done;
 
-   return 0;
+   fixed = Emalloc(sizeof(RectBox) * num);
+   if (!fixed)
+      goto done;
+   rb = fixed;
+
+   dsk = (ewin) ? EoGetDesk(ewin) : DesksGetCurrent();
+
+   for (i = 0; i < num; i++)
+     {
+	rb = fixed + nfix;
+	eo = lst[i];
+
+	if (!eo->shown)
+	   continue;
+
+	if (eo->type == EOBJ_TYPE_EWIN)
+	  {
+	     EWin               *ew = (EWin *) eo;
+
+	     if (ew == ewin)
+		continue;
+	     if (eo->desk != dsk)
+		continue;
+
+	     if (ew->props.ignorearrange || EoGetLayer(ew) == 0)
+		continue;
+
+	     if (pfloating)
+	       {
+		  int                 ax, ay;
+
+		  DeskGetArea(EoGetDesk(ew), &ax, &ay);
+
+		  if (!EoIsSticky(ew) && !EoIsFloating(ew) &&
+		      ew->area_x == ax && ew->area_y == ay)
+		    {
+		       floating =
+			  Erealloc(floating, (nflt + 1) * sizeof(RectBox));
+		       rb = floating + nflt++;
+		       rb->data = ew;
+		       rb->x = EoGetX(ew);
+		       rb->y = EoGetY(ew);
+		       rb->w = EoGetW(ew);
+		       rb->h = EoGetH(ew);
+		       rb->p = EoGetLayer(ew);
+#if 0
+		       Eprintf("Add float: x,y=%4d,%4d wxh=%3dx%3d p=%2d: %s\n",
+			       rb->x, rb->y, rb->w, rb->h, rb->p, eo->name);
+#endif
+		       continue;
+		    }
+	       }
+
+	     rb->data = ew;
+
+	     if (ew->props.never_use_area)
+		rb->p = 50;
+	     else
+		rb->p = EoGetLayer(ew);
+	  }
+	else if (eo->type == EOBJ_TYPE_BUTTON)
+	  {
+	     if (!eo->sticky && eo->desk != dsk)
+		continue;
+
+	     rb->data = NULL;
+	     rb->p = (eo->sticky) ? 1 : 0;
+	  }
+	else
+	  {
+	     continue;
+	  }
+
+	x = EobjGetX(eo);
+	y = EobjGetY(eo);
+	w = EobjGetW(eo);
+	h = EobjGetH(eo);
+
+	if (x < 0)
+	  {
+	     w += x;
+	     x = 0;
+	  }
+	if ((x + w) > VRoot.w)
+	   w = VRoot.w - x;
+
+	if (y < 0)
+	  {
+	     h += y;
+	     y = 0;
+	  }
+	if ((y + h) > VRoot.h)
+	   h = VRoot.h - y;
+
+	if ((w <= 0) || (h <= 0))
+	   continue;
+
+	rb->x = x;
+	rb->y = y;
+	rb->w = w;
+	rb->h = h;
+#if 0
+	Eprintf("Add fixed: x,y=%4d,%4d wxh=%3dx%3d p=%2d: %s\n", rb->x, rb->y,
+		rb->w, rb->h, rb->p, eo->name);
+#endif
+
+	nfix++;
+     }
+
+ done:
+#if 0
+   Eprintf("Fixed: %p/%d  Floating: %p/%d\n", fixed, nfix, floating, nflt);
+#endif
+   *pfixed = fixed;
+   *nfixed = nfix;
+   if (pfloating)
+      *pfloating = floating;
+   if (nfloating)
+      *nfloating = nflt;
 }
 
 void
 ArrangeEwinXY(EWin * ewin, int *px, int *py)
 {
    EWin               *const *lst;
-   Button            **blst;
-   int                 i, j, num;
+   int                 i, num;
    RectBox            *fixed, *ret, newrect;
 
    fixed = NULL;
@@ -766,91 +886,20 @@ ArrangeEwinXY(EWin * ewin, int *px, int *py)
 	return;
      }
 
-   fixed = Emalloc(sizeof(RectBox) * num);
-   j = 0;
-   for (i = 0; i < num; i++)
-     {
-	EWin               *e = lst[i];
+   ArrangeGetRectList(&fixed, &num, NULL, NULL, ewin);
 
-	if (e == ewin ||
-	    e->state.iconified || e->props.ignorearrange ||
-	    EoGetLayer(e) == 0 || !EWinIsOnViewport(e, EoGetDesk(ewin)))
-	   continue;
-
-	fixed[j].data = e;
-	fixed[j].x = EoGetX(e);
-	fixed[j].y = EoGetY(e);
-	fixed[j].w = EoGetW(e);
-	fixed[j].h = EoGetH(e);
-	if (fixed[j].x < 0)
-	  {
-	     fixed[j].w += fixed[j].x;
-	     fixed[j].x = 0;
-	  }
-	if ((fixed[j].x + fixed[j].w) > VRoot.w)
-	   fixed[j].w = VRoot.w - fixed[j].x;
-	if (fixed[j].y < 0)
-	  {
-	     fixed[j].h += fixed[j].y;
-	     fixed[j].y = 0;
-	  }
-	if ((fixed[j].y + fixed[j].h) > VRoot.h)
-	   fixed[j].h = VRoot.h - fixed[j].y;
-	if ((fixed[j].w <= 0) || (fixed[j].h <= 0))
-	   continue;
-
-	if (e->props.never_use_area)
-	   fixed[j].p = 50;
-	else
-	   fixed[j].p = EoGetLayer(e);
-	j++;
-     }
-
-   blst = ButtonsGetList(&num);
-   if (blst)
-     {
-	fixed = Erealloc(fixed, sizeof(RectBox) * (num + j));
-	for (i = 0; i < num; i++)
-	  {
-	     if (ButtonGetInfo(blst[i], &fixed[j], EoGetDesk(ewin)))
-		continue;
-
-	     if (fixed[j].x < 0)
-	       {
-		  fixed[j].w += fixed[j].x;
-		  fixed[j].x = 0;
-	       }
-	     if ((fixed[j].x + fixed[j].w) > VRoot.w)
-		fixed[j].w = VRoot.w - fixed[j].x;
-	     if (fixed[j].y < 0)
-	       {
-		  fixed[j].h += fixed[j].y;
-		  fixed[j].y = 0;
-	       }
-	     if ((fixed[j].y + fixed[j].h) > VRoot.h)
-		fixed[j].h = VRoot.h - fixed[j].y;
-	     if ((fixed[j].w <= 0) || (fixed[j].h <= 0))
-		continue;
-
-	     if (fixed[j].p)	/* Sticky */
-		fixed[j].p = 1;
-	     else
-		fixed[j].p = 0;
-	     j++;
-	  }
-	Efree(blst);
-     }
-   ret = Emalloc(sizeof(RectBox) * (j + 1));
    newrect.data = ewin;
    newrect.x = 0;
    newrect.y = 0;
    newrect.w = EoGetW(ewin);
    newrect.h = EoGetH(ewin);
    newrect.p = EoGetLayer(ewin);
-   ArrangeRects(fixed, j, &newrect, 1, ret,
-		0, 0, VRoot.w, VRoot.h, ARRANGE_BY_SIZE, 1);
 
-   for (i = 0; i < j + 1; i++)
+   ret = Emalloc(sizeof(RectBox) * (num + 1));
+   ArrangeRects(fixed, num, &newrect, 1, ret, 0, 0, VRoot.w, VRoot.h,
+		ARRANGE_BY_SIZE, 1);
+
+   for (i = 0; i < num + 1; i++)
      {
 	if (ret[i].data == ewin)
 	  {
@@ -880,16 +929,12 @@ ArrangeEwins(const char *params)
 {
    const char         *type;
    int                 method;
-   int                 i, j, k, num, speed, ax, ay;
+   int                 i, nfix, nflt, num;
    RectBox            *fixed, *ret, *floating;
-   char                doslide;
    EWin               *const *lst, *ewin;
-   Button            **blst;
 
    type = params;
    method = ARRANGE_BY_SIZE;
-   speed = Conf.place.slidespeedcleanup;
-   doslide = Conf.place.cleanupslide;
 
    if (params)
      {
@@ -907,104 +952,13 @@ ArrangeEwins(const char *params)
    if (!lst)
       goto done;
 
-   fixed = NULL;
-   floating = Emalloc(sizeof(RectBox) * num);
-   ret = Emalloc(sizeof(RectBox) * (num));
-   j = 0;
-   k = 0;
-   for (i = 0; i < num; i++)
-     {
-	ewin = lst[i];
+   ArrangeGetRectList(&fixed, &nfix, &floating, &nflt, NULL);
 
-	DeskGetArea(EoGetDesk(ewin), &ax, &ay);
+   ret = Emalloc(sizeof(RectBox) * (nflt + nfix));
+   ArrangeRects(fixed, nfix, floating, nflt, ret, 0, 0, VRoot.w, VRoot.h,
+		method, 0);
 
-	if ((EoGetDesk(ewin) == DesksGetCurrent()) &&
-	    (!EoIsSticky(ewin)) && (!EoIsFloating(ewin)) &&
-	    (!ewin->state.iconified) && (!ewin->props.ignorearrange) &&
-	    (ewin->type != EWIN_TYPE_MENU) &&
-	    (ewin->area_x == ax) && (ewin->area_y == ay))
-	  {
-	     floating[j].data = lst[i];
-	     floating[j].x = EoGetX(ewin);
-	     floating[j].y = EoGetY(ewin);
-	     floating[j].w = EoGetW(ewin);
-	     floating[j].p = EoGetLayer(ewin);
-	     floating[j++].h = EoGetH(ewin);
-	  }
-	else if ((EoGetDesk(ewin) == DesksGetCurrent()) &&
-		 (EoGetLayer(ewin) != 4) && (EoGetLayer(ewin) != 0) &&
-		 (ewin->type != EWIN_TYPE_MENU))
-	  {
-	     fixed = Erealloc(fixed, sizeof(RectBox) * (k + 1));
-	     fixed[k].data = lst[i];
-	     fixed[k].x = EoGetX(ewin);
-	     fixed[k].y = EoGetY(ewin);
-	     fixed[k].w = EoGetW(ewin);
-	     fixed[k].h = EoGetH(ewin);
-	     if (fixed[k].x < 0)
-	       {
-		  fixed[k].x += fixed[k].w;
-		  fixed[k].x = 0;
-	       }
-	     if ((fixed[k].x + fixed[k].w) > VRoot.w)
-		fixed[k].w = VRoot.w - fixed[k].x;
-	     if (fixed[k].y < 0)
-	       {
-		  fixed[k].y += fixed[k].h;
-		  fixed[k].y = 0;
-	       }
-	     if ((fixed[k].y + fixed[k].h) > VRoot.h)
-		fixed[k].h = VRoot.h - fixed[k].y;
-	     if ((fixed[k].w > 0) && (fixed[k].h > 0))
-	       {
-		  if (!ewin->props.never_use_area)
-		     fixed[k].p = EoGetLayer(ewin);
-		  else
-		     fixed[k].p = 99;
-		  k++;
-	       }
-	  }
-     }
-
-   blst = ButtonsGetList(&num);
-   if (blst)
-     {
-	fixed = Erealloc(fixed, sizeof(RectBox) * (num + k));
-	ret = Erealloc(ret, sizeof(RectBox) * ((num + j) + 1 + k));
-	for (i = 0; i < num; i++)
-	  {
-	     if (ButtonGetInfo(blst[i], &fixed[k], DesksGetCurrent()))
-		continue;
-
-	     if (fixed[k].x < 0)
-	       {
-		  fixed[k].x += fixed[k].w;
-		  fixed[k].x = 0;
-	       }
-	     if ((fixed[k].x + fixed[k].w) > VRoot.w)
-		fixed[k].w = VRoot.w - fixed[k].x;
-	     if (fixed[k].y < 0)
-	       {
-		  fixed[k].y += fixed[k].h;
-		  fixed[k].y = 0;
-	       }
-	     if ((fixed[k].y + fixed[k].h) > VRoot.h)
-		fixed[k].h = VRoot.h - fixed[k].y;
-	     if ((fixed[k].w <= 0) || (fixed[k].h <= 0))
-		continue;
-
-	     if (fixed[k].p)	/* Sticky */
-		fixed[k].p = 50;
-	     else
-		fixed[k].p = 0;
-	     k++;
-	  }
-	Efree(blst);
-     }
-
-   ArrangeRects(fixed, k, floating, j, ret, 0, 0, VRoot.w, VRoot.h, method, 0);
-
-   for (i = 0; i < (j + k); i++)
+   for (i = 0; i < (nflt + nfix); i++)
      {
 	if (!ret[i].data)
 	   continue;
@@ -1013,9 +967,9 @@ ArrangeEwins(const char *params)
 	if ((EoGetX(ewin) == ret[i].x) && (EoGetY(ewin) == ret[i].y))
 	   continue;
 
-	if (doslide)
+	if (Conf.place.cleanupslide)
 	   SlideEwinTo(ewin, EoGetX(ewin), EoGetY(ewin),
-		       ret[i].x, ret[i].y, speed);
+		       ret[i].x, ret[i].y, Conf.place.slidespeedcleanup);
 	else
 	   EwinMove(ewin, ret[i].x, ret[i].y);
      }
