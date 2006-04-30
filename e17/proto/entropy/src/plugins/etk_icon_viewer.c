@@ -7,6 +7,7 @@
 #include <Etk.h>
 #include "etk_directory_add_dialog.h"
 #include "etk_properties_dialog.h"
+#include "entropy_etk_context_menu.h"
 
 typedef struct entropy_etk_iconbox_viewer entropy_etk_iconbox_viewer;
 struct entropy_etk_iconbox_viewer
@@ -181,15 +182,22 @@ void _etk_entropy_click_cb(Etk_Object *object, void *event_info, void *data)
   viewer = instance->data;
   event = event_info;
 
-   if (!(icon = etk_iconbox_icon_get_at_xy(ETK_ICONBOX(viewer->iconbox), 
+ if (!(icon = etk_iconbox_icon_get_at_xy(ETK_ICONBOX(viewer->iconbox), 
    	event->canvas.x, event->canvas.y, ETK_FALSE, ETK_TRUE, ETK_TRUE)))
-      return;
+  return;
 
+  
   file = etk_iconbox_icon_data_get(icon);
-  printf("File is %p\n", file);
 
-  if (file) {
-	entropy_event_action_file(file,instance);
+  if (event->button == 1) {
+	  if (file) {
+		entropy_event_action_file(file,instance);
+	  }
+  } else if (event->button == 3) {
+	  etk_iconbox_unselect_all(icon->iconbox);
+	  etk_iconbox_icon_select(icon);
+
+	  entropy_etk_context_menu_popup(instance, file);
   }
 }
 

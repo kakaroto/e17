@@ -135,6 +135,7 @@ etk_iconbox_la_SOURCES      =      etk_icon_viewer.c \
                                 $(top_srcdir)/src/entropy_gui.c \
                                 $(top_srcdir)/src/entropy_debug.c \
                                 $(top_srcdir)/src/dialogs/etk_directory_add_dialog.c \
+                                $(top_srcdir)/src/dialogs/etk_file_context_menu.c \
                                 $(top_srcdir)/src/dialogs/etk_properties_dialog.c
 etk_iconbox_la_CFLAGS       = @ETK_CFLAGS@
 etk_iconbox_la_LDFLAGS      = -module -avoid-version
