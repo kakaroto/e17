@@ -248,7 +248,7 @@ void entropy_plugin_filesystem_file_rename(entropy_generic_file* file, char* des
 
   if (plugin) {
         entropy_generic_file* clone = entropy_generic_file_clone(file);
-	strncpy(clone->filename, dest, strlen(dest));
+	strncpy(clone->filename, dest, strlen(dest)+1);
 	  
   	(*plugin->file_functions.file_rename) (file,clone);
 	entropy_generic_file_destroy(clone);
