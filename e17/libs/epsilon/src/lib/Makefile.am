@@ -20,6 +20,6 @@ md5.c md5.h \
 epsilon_thumb.c \
 $(top_srcdir)/src/common/epsilon_thumb_common.c
 
-libepsilon_la_LIBADD	= exiftags/libepsilon_exiftags.la @IMLIB2_LIBS@ @EPEG_LIBS@ @PNG_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ @EDJE_LIBS@ -lemotion -lxine
+libepsilon_la_LIBADD	= exiftags/libepsilon_exiftags.la @IMLIB2_LIBS@ @EPEG_LIBS@ @PNG_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ @EDJE_LIBS@
 libepsilon_la_DEPENDENCIES = ../config.h 
 libepsilon_la_LDFLAGS      = $(LDFLAGS) -version-info 0:1:0
