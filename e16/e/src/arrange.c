@@ -49,6 +49,84 @@ ArrangeAddToList(int *array, int current_size, int value)
    return current_size + 1;
 }
 
+#define Filled(x,y) (filled[(y * (xsize - 1)) + x])
+
+static void
+ArrangeMakeFillLists(int startx, int width, int starty, int height,
+		     const RectBox * sorted, int num_sorted,
+		     int *xarray, int *nx, int *yarray, int *ny,
+		     unsigned char *filled)
+{
+   int                 j, x1, x2, y1, y2, k, y, x;
+   int                 xsize, ysize;
+
+   xsize = 0;
+   ysize = 0;
+
+   /* put all the sorted rects into the xy arrays */
+   xsize = ArrangeAddToList(xarray, xsize, startx);
+   xsize = ArrangeAddToList(xarray, xsize, width);
+   ysize = ArrangeAddToList(yarray, ysize, starty);
+   ysize = ArrangeAddToList(yarray, ysize, height);
+
+   for (j = 0; j < num_sorted; j++)
+     {
+	if (sorted[j].x < width)
+	   xsize = ArrangeAddToList(xarray, xsize, sorted[j].x);
+	if ((sorted[j].x + sorted[j].w) < width)
+	   xsize = ArrangeAddToList(xarray, xsize, sorted[j].x + sorted[j].w);
+	if (sorted[j].y < height)
+	   ysize = ArrangeAddToList(yarray, ysize, sorted[j].y);
+	if ((sorted[j].y + sorted[j].h) < height)
+	   ysize = ArrangeAddToList(yarray, ysize, sorted[j].y + sorted[j].h);
+     }
+
+   /* fill the allocation array */
+   for (j = 0; j < (xsize - 1) * (ysize - 1); filled[j++] = 0)
+      ;
+   for (j = 0; j < num_sorted; j++)
+     {
+	x1 = -1;
+	x2 = -1;
+	y1 = -1;
+	y2 = -1;
+	for (k = 0; k < xsize - 1; k++)
+	  {
+	     if (sorted[j].x == xarray[k])
+	       {
+		  x1 = k;
+		  x2 = k;
+	       }
+	     if (sorted[j].x + sorted[j].w == xarray[k + 1])
+		x2 = k;
+	  }
+	for (k = 0; k < ysize - 1; k++)
+	  {
+	     if (sorted[j].y == yarray[k])
+	       {
+		  y1 = k;
+		  y2 = k;
+	       }
+	     if (sorted[j].y + sorted[j].h == yarray[k + 1])
+		y2 = k;
+	  }
+	if ((x1 >= 0) && (x2 >= 0) && (y1 >= 0) && (y2 >= 0))
+	  {
+	     for (y = y1; y <= y2; y++)
+	       {
+		  for (x = x1; x <= x2; x++)
+		    {
+		       if (Filled(x, y) <= sorted[j].p)
+			  Filled(x, y) = sorted[j].p + 1;
+		    }
+	       }
+	  }
+     }
+
+   *nx = xsize;
+   *ny = ysize;
+}
+
 static void
 ArrangeSwapList(RectBox * list, int a, int b)
 {
@@ -76,19 +154,17 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	     int floating_count, RectBox * sorted, int startx, int starty,
 	     int width, int height, int policy, char initial_window)
 {
-   int                 num_sorted = 0;
+   int                 num_sorted;
    int                 xsize = 0, ysize = 0;
-   int                *xarray = NULL, *yarray = NULL;
-   int                *leftover = NULL;
-   int                 i, j, k, x, y, x1, x2, y1, y2;
-   unsigned char      *filled = NULL;
-   RectBox            *spaces = NULL;
-   int                 num_spaces = 0;
+   int                *xarray, *yarray;
+   int                *leftover;
+   int                 i, j, k, x, y, x1, y1;
+   unsigned char      *filled;
+   RectBox            *spaces;
+   int                 num_spaces;
    int                 sort;
    int                 a1, a2;
-   int                 num_leftover = 0;
-
-#define Filled(x,y) (filled[(y * (xsize - 1)) + x])
+   int                 num_leftover;
 
    if (initial_window)
      {
@@ -149,101 +225,38 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
      default:
 	break;
      }
-/* for every floating rect in order, "fit" it into the sorted list */
+
+   /* for every floating rect in order, "fit" it into the sorted list */
    i = ((fixed_count + floating_count) * 2) + 2;
    xarray = Emalloc(i * sizeof(int));
    yarray = Emalloc(i * sizeof(int));
    filled = Emalloc(i * i * sizeof(char));
-
    spaces = Emalloc(i * i * sizeof(RectBox));
+   leftover = NULL;
    if (floating_count)
       leftover = Emalloc(floating_count * sizeof(int));
 
    if (!xarray || !yarray || !filled || !spaces)
       goto done;
 
-/* copy "fixed" rects into the sorted list */
-   for (i = 0; i < fixed_count; i++)
-     {
-	sorted[num_sorted].data = fixed[i].data;
-	sorted[num_sorted].x = fixed[i].x;
-	sorted[num_sorted].y = fixed[i].y;
-	sorted[num_sorted].w = fixed[i].w;
-	sorted[num_sorted].h = fixed[i].h;
-	sorted[num_sorted].p = fixed[i].p;
-	num_sorted++;
-     }
-/* go through each floating rect in order and "fit" it in */
+   /* copy "fixed" rects into the sorted list */
+   memcpy(sorted, fixed, fixed_count * sizeof(RectBox));
+   num_sorted = fixed_count;
+
+   /* go through each floating rect in order and "fit" it in */
+   num_leftover = 0;
    for (i = 0; i < floating_count; i++)
      {
-	xsize = 0;
-	ysize = 0;
-/* put all the sorted rects into the xy arrays */
-	xsize = ArrangeAddToList(xarray, xsize, startx);
-	xsize = ArrangeAddToList(xarray, xsize, width);
-	ysize = ArrangeAddToList(yarray, ysize, starty);
-	ysize = ArrangeAddToList(yarray, ysize, height);
-	for (j = 0; j < num_sorted; j++)
-	  {
-	     if (sorted[j].x < width)
-		xsize = ArrangeAddToList(xarray, xsize, sorted[j].x);
-	     if ((sorted[j].x + sorted[j].w) < width)
-		xsize =
-		   ArrangeAddToList(xarray, xsize, sorted[j].x + sorted[j].w);
-	     if (sorted[j].y < height)
-		ysize = ArrangeAddToList(yarray, ysize, sorted[j].y);
-	     if ((sorted[j].y + sorted[j].h) < height)
-		ysize =
-		   ArrangeAddToList(yarray, ysize, sorted[j].y + sorted[j].h);
-	  }
-/* fill the allocation array */
-	for (j = 0; j < (xsize - 1) * (ysize - 1); filled[j++] = 0)
-	   ;
-	for (j = 0; j < num_sorted; j++)
-	  {
-	     x1 = -1;
-	     x2 = -1;
-	     y1 = -1;
-	     y2 = -1;
-	     for (k = 0; k < xsize - 1; k++)
-	       {
-		  if (sorted[j].x == xarray[k])
-		    {
-		       x1 = k;
-		       x2 = k;
-		    }
-		  if (sorted[j].x + sorted[j].w == xarray[k + 1])
-		     x2 = k;
-	       }
-	     for (k = 0; k < ysize - 1; k++)
-	       {
-		  if (sorted[j].y == yarray[k])
-		    {
-		       y1 = k;
-		       y2 = k;
-		    }
-		  if (sorted[j].y + sorted[j].h == yarray[k + 1])
-		     y2 = k;
-	       }
-	     if ((x1 >= 0) && (x2 >= 0) && (y1 >= 0) && (y2 >= 0))
-	       {
-		  for (y = y1; y <= y2; y++)
-		    {
-		       for (x = x1; x <= x2; x++)
-			 {
-			    if (Filled(x, y) <= sorted[j].p)
-			       Filled(x, y) = sorted[j].p + 1;
-			 }
-		    }
-	       }
-	  }
+	ArrangeMakeFillLists(startx, width, starty, height, sorted, num_sorted,
+			     xarray, &xsize, yarray, &ysize, filled);
+
+	/* create list of all "spaces" */
 	num_spaces = 0;
-/* create list of all "spaces" */
 	for (y = 0; y < ysize - 1; y++)
 	  {
 	     for (x = 0; x < xsize - 1; x++)
 	       {
-/* if the square is empty (lowe prioiryt suares filled) "grow" the space */
+		  /* if the square is empty (lowe prioiryt suares filled) "grow" the space */
 		  if (Filled(x, y) <= floating[i].p)
 		    {
 		       int                 can_expand_x = 1;
@@ -292,7 +305,8 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 		    }
 	       }
 	  }
-/* find the first space that fits */
+
+	/* find the first space that fits */
 	k = -1;
 	sort = 0x7fffffff;
 	for (j = 0; j < num_spaces; j++)
@@ -339,6 +353,7 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 		    }
 	       }
 	  }
+
 	if (k >= 0)
 	  {
 	     if (policy == ARRANGE_BY_POSITION)
@@ -387,69 +402,11 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
    /* the leftovers into the leftover space */
    for (i = 0; i < num_leftover; i++)
      {
-	xsize = 0;
-	ysize = 0;
-	/* put all the sorted rects into the xy arrays */
-	xsize = ArrangeAddToList(xarray, xsize, 0);
-	xsize = ArrangeAddToList(xarray, xsize, width);
-	ysize = ArrangeAddToList(yarray, ysize, 0);
-	ysize = ArrangeAddToList(yarray, ysize, height);
-	for (j = 0; j < num_sorted; j++)
-	  {
-	     if (sorted[j].x < width)
-		xsize = ArrangeAddToList(xarray, xsize, sorted[j].x);
-	     if ((sorted[j].x + sorted[j].w) < width)
-		xsize =
-		   ArrangeAddToList(xarray, xsize, sorted[j].x + sorted[j].w);
-	     if (sorted[j].y < height)
-		ysize = ArrangeAddToList(yarray, ysize, sorted[j].y);
-	     if ((sorted[j].y + sorted[j].h) < height)
-		ysize =
-		   ArrangeAddToList(yarray, ysize, sorted[j].y + sorted[j].h);
-	  }
-	/* fill the allocation array */
-	for (j = 0; j < (xsize - 1) * (ysize - 1); filled[j++] = 0)
-	   ;
-	for (j = 0; j < num_sorted; j++)
-	  {
-	     x1 = -1;
-	     x2 = -1;
-	     y1 = -1;
-	     y2 = -1;
-	     for (k = 0; k < xsize - 1; k++)
-	       {
-		  if (sorted[j].x == xarray[k])
-		    {
-		       x1 = k;
-		       x2 = k;
-		    }
-		  if (sorted[j].x + sorted[j].w == xarray[k + 1])
-		     x2 = k;
-	       }
-	     for (k = 0; k < ysize - 1; k++)
-	       {
-		  if (sorted[j].y == yarray[k])
-		    {
-		       y1 = k;
-		       y2 = k;
-		    }
-		  if (sorted[j].y + sorted[j].h == yarray[k + 1])
-		     y2 = k;
-	       }
-	     if ((x1 >= 0) && (x2 >= 0) && (y1 >= 0) && (y2 >= 0))
-	       {
-		  for (y = y1; y <= y2; y++)
-		    {
-		       for (x = x1; x <= x2; x++)
-			 {
-			    if (Filled(x, y) <= sorted[j].p)
-			       Filled(x, y) = sorted[j].p + 1;
-			 }
-		    }
-	       }
-	  }
-	num_spaces = 0;
+	ArrangeMakeFillLists(startx, width, starty, height, sorted, num_sorted,
+			     xarray, &xsize, yarray, &ysize, filled);
+
 	/* create list of all "spaces" */
+	num_spaces = 0;
 	for (y = 0; y < ysize - 1; y++)
 	  {
 	     for (x = 0; x < xsize - 1; x++)
@@ -505,6 +462,7 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 		    }
 	       }
 	  }
+
 	/* find the first space that fits */
 	k = -1;
 	sort = 0x7fffffff;
@@ -519,6 +477,7 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 		  sort = a1 - a2;
 	       }
 	  }
+
 	/* if there's a small space ... */
 	if (k >= 0)
 	  {
@@ -553,6 +512,7 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	     num_sorted++;
 	  }
      }
+
    for (i = 0; i < num_sorted; i++)
      {
 	if ((sorted[i].x + sorted[i].w) > width)
