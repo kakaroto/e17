@@ -100,6 +100,7 @@ char		*ewl_filelist_size_get(off_t st_size);
 char		*ewl_filelist_perms_get(mode_t st_mode);
 char		*ewl_filelist_username_get(uid_t st_uid);
 char		*ewl_filelist_groupname_get(gid_t st_gid);
+char		*ewl_filelist_modtime_get(time_t modtime);
 Ewl_Widget	*ewl_filelist_selected_file_preview_get(Ewl_Filelist *fl, 
 							const char *path);
 void		 ewl_filelist_selected_files_set(Ewl_Filelist *fl,

@@ -228,13 +228,6 @@ ewl_filelist_selected_file_get(Ewl_Filelist *fl)
 	DRETURN_PTR((file ? strdup(file) : NULL), DLEVEL_STABLE);
 }
 
-/**
- * @param fl: Filelist that asked for the preview.
- * @param path: Path of the file which was clicked.
- * @return Returns a box with a preview of the file.
- * @brief Creates a preview of the selected file.
- **/
-
 char *
 ewl_filelist_size_get(off_t st_size)
 {
@@ -330,6 +323,20 @@ ewl_filelist_groupname_get(gid_t st_gid)
 	DRETURN_PTR(strdup(name), DLEVEL_STABLE);
 }
 
+char *
+ewl_filelist_modtime_get(time_t st_modtime)
+{
+	char *time;
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	time = ctime(&st_modtime);
+	if (time)
+		time = strdup(time);
+	else {
+		time = strdup("Ctime Failure");
+	}
+	DRETURN_PTR(strdup(time), DLEVEL_STABLE);
+}
+
 Ewl_Widget *
 ewl_filelist_selected_file_preview_get(Ewl_Filelist *fl, const char *path)
 {
@@ -341,9 +348,9 @@ ewl_filelist_selected_file_preview_get(Ewl_Filelist *fl, const char *path)
 	char *perms;
 	char *username;
 	char *groupname;
+	char *time;
 	struct stat buf;
-	struct tm *time_struct;
-	
+		
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fl", fl, NULL);
 	DCHECK_PARAM_PTR_RET("path", path, NULL);
@@ -353,12 +360,12 @@ ewl_filelist_selected_file_preview_get(Ewl_Filelist *fl, const char *path)
 	snprintf(path3, PATH_MAX, "%s/%s", path2, path);	
 
 	stat(path3, &buf);
-	time_struct = localtime(&buf.st_mtime);
 
 	size = ewl_filelist_size_get(buf.st_size);
 	perms = ewl_filelist_perms_get(buf.st_mode);
 	username = ewl_filelist_username_get(buf.st_uid);
 	groupname = ewl_filelist_groupname_get(buf.st_gid);
+	time = ewl_filelist_modtime_get(buf.st_mtime);
 
 	snprintf(file_info, PATH_MAX, 
 				"Size: %s\n"
@@ -367,7 +374,7 @@ ewl_filelist_selected_file_preview_get(Ewl_Filelist *fl, const char *path)
 				"Permissions: %s\n"
 				"Last Modified: %s\n", 
 			size, username, groupname,
-			perms, asctime(time_struct));
+			perms, time);
 	
 	box = ewl_vbox_new();
 	ewl_widget_show(box);
@@ -396,6 +403,7 @@ ewl_filelist_selected_file_preview_get(Ewl_Filelist *fl, const char *path)
 	free(perms);
 	free(username);
 	free(groupname);
+	free(time);
 
 	DRETURN_PTR(box, DLEVEL_STABLE);
 }

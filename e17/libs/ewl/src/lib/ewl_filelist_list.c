@@ -218,15 +218,9 @@ ewl_filelist_list_add(Ewl_Filelist *fl, const char *dir, char *file,
 
 		vals[0] = file;
 		vals[1] = ewl_filelist_size_get(buf.st_size);
-
-		tm = localtime(&buf.st_mtime);
-		strftime(date, sizeof(date), nl_langinfo(D_T_FMT), tm);
-		vals[2] = strdup(date);
-
+		vals[2] = ewl_filelist_modtime_get(buf.st_mtime);
 		vals[3] = ewl_filelist_perms_get(buf.st_mode);
-
 		vals[4] = ewl_filelist_username_get(buf.st_uid);
-
 		vals[5] = ewl_filelist_groupname_get(buf.st_gid);
 
 		row = ewl_tree_text_row_add(EWL_TREE(list->tree), NULL, vals);
