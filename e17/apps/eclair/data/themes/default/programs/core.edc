@@ -22,7 +22,6 @@ program {
    /*target: "button_play";
    target: "button_pause";*/
    target: "progress_bar_drag";
-   target: "progress_bar_drag_thumb";
 }
 /*program {
    name: "pause";
@@ -42,7 +41,6 @@ program {
    /*target: "button_play";
    target: "button_pause";*/
    target: "progress_bar_drag";
-   target: "progress_bar_drag_thumb";
 }
 program {
    name: "cover_set";

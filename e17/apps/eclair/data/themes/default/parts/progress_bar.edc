@@ -27,12 +27,12 @@ part {
       visible: 0;
       rel1 {
          relative: 0.0 0.0;
-         offset: -2 8;
+         offset: -8 14;
          to: "progress_bar";
       }
       rel2 {
          relative: 1.0 0.0;
-         offset: 2 9;
+         offset: 8 15;
          to: "progress_bar";
       }
    }
@@ -48,11 +48,10 @@ part {
       state: "default" 0.0;
       visible: 0;
       color: 255 255 255 0;
-      min: 34 18;
-      max: 34 18;
+      min: 32 32;
+      max: 32 32;
       image {
-         normal: "progress_bar_drag.png";
-         border: 10 10 0 0;
+         normal: "slider_up.png";
       }
    }
    description {
@@ -71,52 +70,30 @@ part {
       visible: 1;
       color: 255 255 255 255;
       image {
-         normal: "progress_bar_drag_down.png";
+         normal: "slider_down.png";
       }
    }
 }
 part {
-   name: "progress_bar_drag_thumb";
+   name: "progress_bar_drag_glow";
    mouse_events: 0;
    description {
       state: "default" 0.0;
-      visible: 0;
       color: 255 255 255 0;
       rel1 {
-         relative: 0.5 0.5;
-         offset: -9 -4;
          to: "progress_bar_drag";
       }
       rel2 {
-         relative: 0.5 0.5;
-         offset: 6 1;
          to: "progress_bar_drag";
       }
       image {
-         normal: "handle_thumb.png";
+         normal: "slider_glow.png";
       }
    }
    description {
-      state: "play" 0.0;
+      state: "visible" 0.0;
       inherit: "default" 0.0;
-      visible: 1;
       color: 255 255 255 255;
-   }
-   description {
-      state: "stop" 0.0;
-      inherit: "default" 0.0;
-   }
-   description {
-      state: "down" 0.0;
-      inherit: "default" 0.0;
-      visible: 1;
-      color: 255 255 255 255;
-      rel1 {
-         offset: -8 -3;
-      }
-      rel2 {
-         offset: 7 2;
-      }
    }
 }
 part {

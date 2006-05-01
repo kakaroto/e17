@@ -26,10 +26,6 @@ images {
    image: "window_button_bar.png" COMP;
    image: "button_close.png" COMP;
    image: "button_minimize.png" COMP;
-   image: "progress_bar.png" COMP;
-   image: "progress_bar_drag.png" COMP;
-   image: "progress_bar_drag_down.png" COMP;
-   image: "handle_thumb.png" COMP;
    image: "playlist_button.png" COMP;
    image: "playlist_shadow.png" COMP;
    image: "playlist_bottom.png" COMP;
@@ -40,4 +36,8 @@ images {
    image: "playlist_scrollbar_up.png" COMP;
    image: "playlist_scrollbar_down.png" COMP;
    image: "info_bar.png" COMP;
+   image: "progress_bar.png" COMP;
+   image: "slider_up.png" COMP;
+   image: "slider_down.png" COMP;
+   image: "slider_glow.png" COMP;
 }

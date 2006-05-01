@@ -1,10 +1,33 @@
 program {
+   name: "volume_bar_drag_in";
+   signal: "mouse,in";
+   source: "volume_bar_drag";
+   action: STATE_SET "visible" 0.0;
+   transition: SINUSOIDAL 1.0;
+   target: "volume_bar_drag_glow";
+   after: "volume_bar_drag_in2";
+}
+program {
+   name: "volume_bar_drag_in2";
+   action: STATE_SET "default" 0.0;
+   transition: SINUSOIDAL 1.0;
+   target: "volume_bar_drag_glow";
+   after: "volume_bar_drag_in";
+}
+program {
+   name: "volume_bar_drag_out";
+   signal: "mouse,out";
+   source: "volume_bar_drag";
+   action: STATE_SET "default" 0.0;
+   transition: SINUSOIDAL 1.0;
+   target: "volume_bar_drag_glow";
+}
+program {
    name: "volume_bar_drag_down";
    signal: "mouse,down,1";
    source: "volume_bar_drag";
    action: STATE_SET "down" 0.0;
    target: "volume_bar_drag";
-   target: "volume_bar_drag_thumb";
 }
 program {
    name: "volume_bar_drag_up";
@@ -12,5 +35,4 @@ program {
    source: "volume_bar_drag";
    action: STATE_SET "default" 0.0;
    target: "volume_bar_drag";
-   target: "volume_bar_drag_thumb";
 }
