@@ -8,6 +8,7 @@ program {
    target: "left_border_close";
    target: "left_side";
    target: "left_shadow";
+   target: "left_shadow2";
    target: "cover";
 }
 program {
@@ -20,5 +21,6 @@ program {
    target: "left_border_close";
    target: "left_side";
    target: "left_shadow";
+   target: "left_shadow2";
    target: "cover";
 }

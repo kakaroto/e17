@@ -3,13 +3,13 @@ part {
    description {
       state: "default" 0.0;
       rel1 {
-         relative: 0 0;
+         relative: 0.0 0.0;
          offset: 105 101;
          to: "body";
       }
       rel2 {
-         relative: 0 0;
-         offset: 184 119;
+         relative: 0.0 0.0;
+         offset: 177 119;
          to: "body";
       }
       image {
@@ -19,14 +19,14 @@ part {
    description {
       state: "open" 0.0;
       rel1 {
-         relative: 0 0;
-         offset: 200 240;
-         to: "body";
+         relative: 0.0 1.0;
+         offset: 200 -21;
+         to_x: "body";
       }
       rel2 {
-         relative: 0 0;
-         offset: 272 258;
-         to: "body";
+         relative: 0.0 1.0;
+         offset: 272 -3;
+         to_x: "body";
       }
       image {
          normal: "playlist_button.png";
@@ -39,15 +39,11 @@ part {
    description {
       state: "default" 0.0;
       visible: 0;
-      color: 0 0 0 0;
+      color: 255 255 255 0;
       rel1 {
-         relative: 0 0;
-         offset: 0 0;
          to: "playlist_button";
       }
       rel2 {
-         relative: 1 1;
-         offset: 0 0;
          to: "playlist_button";
       }
    }

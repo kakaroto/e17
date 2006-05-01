@@ -9,6 +9,7 @@ program {
    target: "playlist_bottom";
    target: "playlist_background";
    target: "playlist_box";
+   target: "playlist_box_over";
    target: "playlist_container";
    target: "playlist_shadow";
 }
@@ -23,6 +24,7 @@ program {
    target: "playlist_bottom";
    target: "playlist_background";
    target: "playlist_box";
+   target: "playlist_box_over";
    target: "playlist_container";
    target: "playlist_shadow";
 }

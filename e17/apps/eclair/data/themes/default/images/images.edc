@@ -6,6 +6,7 @@ images {
    image: "right_shadow.png" COMP;
    image: "left_border.png" COMP;
    image: "left_shadow.png" COMP;
+   image: "left_shadow2.png" COMP;
    image: "side.png" COMP;
    image: "button_play_icon.png" COMP;
    image: "button_play_bg.png" COMP;

@@ -4,12 +4,12 @@ part {
       state: "default" 0.0;
       visible: 0;
       rel1 {
-         relative: 0 0;
+         relative: 0.0 0.0;
          offset: 8 0;
          to: "left_border";
       }
       rel2 {
-         relative: 0 0;
+         relative: 0.0 0.0;
          offset: 10 112;
          to: "body";
       }
@@ -29,13 +29,13 @@ part {
       state: "default" 0.0;
       visible: 1;
       rel1 {
-         relative: 0 0;
-         offset: 17 10;
+         relative: 0.0 0.0;
+         offset: 15 10;
          to: "left_side";
       }
       rel2 {
-         relative: 0 0;
-         offset: 104 96;
+         relative: 0.0 0.0;
+         offset: 102 96;
          to: "left_side";
       }
       image {
@@ -72,6 +72,8 @@ part {
       }
       image {
          normal: "cover_border.png";
+         border: 1 1 1 1;
+         middle: 0;
       }
    }
 }
@@ -83,12 +85,12 @@ part {
       state: "default" 0.0;
       visible: 0;
       rel1 {
-         relative: 0 0;
+         relative: 0.0 0.0;
          offset: 1 1;
          to: "cover_border";
       }
       rel2 {
-         relative: 1 1;
+         relative: 1.0 1.0;
          offset: -2 -2;
          to: "cover_border";
       }
@@ -139,12 +141,12 @@ part {
       state: "default" 0.0;
       visible: 1;
       rel1 {
-         relative: 0 0;
+         relative: 0.0 0.0;
          offset: 1 1;
          to: "previous_cover_border";
       }
       rel2 {
-         relative: 1 1;
+         relative: 1.0 1.0;
          offset: -2 -2;
          to: "previous_cover_border";
       }
@@ -157,17 +159,44 @@ part {
       visible: 0;
       color: 255 255 255 0;
       rel1 {
-         relative: 0 0;
+         relative: 0.0 0.0;
          offset: 8 1;
          to: "left_border";
       }
       rel2 {
-         relative: 0 0;
+         relative: 0.0 0.0;
          offset: 22 104;
          to: "left_border";
       }
       image {
          normal: "left_shadow.png";
+      }
+   }
+   description {
+      state: "open" 0.0;
+      inherit: "default" 0.0;
+      visible: 1;
+      color: 255 255 255 255;
+   }
+}
+part {
+   name: "left_shadow2";
+   description {
+      state: "default" 0.0;
+      visible: 0;
+      color: 255 255 255 0;
+      rel1 {
+         relative: 1.0 0.0;
+         offset: -14 0;
+         to: "left_side";
+      }
+      rel2 {
+         relative: 1.0 1.0;
+         offset: -1 -1;
+         to: "left_side";
+      }
+      image {
+         normal: "left_shadow2.png";
       }
    }
    description {
