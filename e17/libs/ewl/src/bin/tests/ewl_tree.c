@@ -67,11 +67,10 @@ create_test(Ewl_Container *box)
 
 	for (row = 0; row < ROWS; row++) 
 	{
+
 		for (col = 0; col < COLS; col++) 
 		{
 			snprintf(buf, 1024, "Row %d Col %d", row, col);
-			if (entries[col])
-				free(entries[col]);
 			entries[col] = strdup(buf);
 		}
 
@@ -86,6 +85,7 @@ create_test(Ewl_Container *box)
 		{
 			if (entries[col])
 				free(entries[col]);
+			entries[col] = NULL;
 		}
 	}
 
