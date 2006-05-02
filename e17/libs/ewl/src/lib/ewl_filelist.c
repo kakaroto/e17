@@ -301,7 +301,7 @@ ewl_filelist_username_get(uid_t st_uid)
 	if (pwd)
 		snprintf(name, PATH_MAX, "%s", pwd->pw_name);
 	else 
-		snprintf(name, PATH_MAX, "%-8d", st_uid);
+		snprintf(name, PATH_MAX, "%-8d", (int)st_uid);
 
 	DRETURN_PTR(strdup(name), DLEVEL_STABLE);
 }
@@ -318,7 +318,7 @@ ewl_filelist_groupname_get(gid_t st_gid)
 	if (grp)
 		snprintf(name, PATH_MAX, "%s", grp->gr_name);
 	else 
-		snprintf(name, PATH_MAX, "%-8d", st_gid);
+		snprintf(name, PATH_MAX, "%-8d", (int)st_gid);
 	
 	DRETURN_PTR(strdup(name), DLEVEL_STABLE);
 }
