@@ -216,7 +216,11 @@ EobjFini(EObj * eo)
       Eprintf("EobjFini: %#lx %s\n", EobjGetXwin(eo), eo->name);
 
    EobjListStackDel(eo);
-   if (!eo->external)
+   if (eo->external)
+     {
+	EUnregisterWindow(eo->win);
+     }
+   else
      {
 	EDestroyWindow(eo->win);
 	eo->gone = 1;

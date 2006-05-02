@@ -216,15 +216,7 @@ EventCallbackRegister(Win win, int type __UNUSED__, EventCallbackFunc * func,
 
    xid = EXidFind(win);
    if (!xid)
-     {
-	ERegisterWindow(Xwin(win));	/* FIXME - We shouldn't go here */
-	xid = EXidFind(win);
-	if (!xid)
-	  {
-	     Eprintf("EventCallbackRegister win=%#lx ???\n", Xwin(win));
-	     return;
-	  }
-     }
+      return;
 #if 0
    Eprintf("EventCallbackRegister: %p %#lx\n", xid, win);
 #endif
@@ -674,8 +666,14 @@ EUnregisterXwin(Window xwin)
    EXID               *xid;
 
    xid = EXidLookup(xwin);
-   if (xid)
-      EXidDel(xid);		/* FIXME - We shouldn't go here */
+   if (!xid)
+      return;
+
+   /* FIXME - We shouldn't go here */
+   EXidDel(xid);
+#if 1				/* Debug - Fix code if we get here */
+   Eprintf("*** FIXME - EUnregisterXwin %#lx\n", xwin);
+#endif
 }
 
 void
