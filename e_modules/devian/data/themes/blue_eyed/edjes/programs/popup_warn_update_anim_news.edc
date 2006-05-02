@@ -1,0 +1,8 @@
+program{
+	name: "update_anim_news";
+	action: STATE_SET "news_hidden" 0.0;
+	transition: DECELERATE 1;
+	target: "logo";
+	after: "update_anim_news_1";
+        after: "update_anim_end";
+}

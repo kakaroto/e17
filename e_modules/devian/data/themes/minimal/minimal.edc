@@ -19,6 +19,9 @@ images
 	image: "popup_close.png" COMP;
 	image: "popup_disable.png" COMP;
 	image: "popup_disable_clicked.png" COMP;
+        image: "popup_logo_news.png" COMP;
+        image: "popup_logo_info.png" COMP;
+        image: "popup_logo_error.png" COMP;
 
 	image: "rss_background.png" COMP;
 	image: "rss_background_selected.png" COMP;
@@ -47,7 +50,7 @@ fonts
 
 data
 {
-	item: "version" "2";
+	item: "version" "3";
 }
 
 collections

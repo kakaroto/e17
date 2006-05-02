@@ -23,19 +23,19 @@ DEVIAN_MAIN_CONF *DEVIANF(config_init) (void)
 
    _edd_devians = _devian_config_devians_edd_init();
    if (!_edd_devians)
-      return NULL;
+     return NULL;
 #ifdef HAVE_RSS
    _edd_rss_docs = _devian_config_rss_docs_edd_init();
    if (!_edd_rss_docs)
-      return NULL;
+     return NULL;
 #endif
    _edd_main = _devian_config_main_edd_init();
    if (!_edd_main)
-      return NULL;
+     return NULL;
 
    conf = DEVIANF(config_load) ();
    if (!conf)
-      return NULL;
+     return NULL;
 
    return conf;
 }
@@ -66,11 +66,11 @@ void DEVIANF(config_shutdown) (void)
 
 #ifdef HAVE_RSS
    for (l = cfg_main->sources_rss_docs; l; l = evas_list_next(l))
-      DEVIANF(data_rss_doc_free) (evas_list_data(l), 0, 1);
+     DEVIANF(data_rss_doc_free) (evas_list_data(l), 0, 1);
 #endif
 
    for (l = DEVIANM->devians; l; l = evas_list_next(l))
-      DEVIANF(config_devian_free) (evas_list_data(l));
+     DEVIANF(config_devian_free) (evas_list_data(l));
 
    E_FREE(DEVIANM->conf);
 
@@ -123,7 +123,7 @@ DEVIAN_MAIN_CONF *DEVIANF(config_load) (void)
      }
 
    if (!cfg_main)
-      cfg_main = DEVIANF(config_main_new) ();
+     cfg_main = DEVIANF(config_main_new) ();
 
    if (cfg_main->nb_devian != evas_list_count(cfg_main->devians_conf))
      {
@@ -148,7 +148,7 @@ void DEVIANF(config_save) (void)
 
    cfg_main = DEVIANM->conf;
    if (!cfg_main)
-      return;
+     return;
 
    /* save number of devians */
    cfg_main->nb_devian = evas_list_count(DEVIANM->devians);
@@ -171,9 +171,9 @@ void DEVIANF(config_devian_save) (DEVIANN *devian)
    Container_Box *box;
 
    if (!devian->conf)
-      return;
+     return;
 
-  if (devian->container && (devian->conf->container_type == CONTAINER_BOX))
+   if (devian->container && (devian->conf->container_type == CONTAINER_BOX))
      {
         box = devian->container;
         devian->conf->box_x = box->x + box->theme_border_w / 2;
@@ -187,11 +187,11 @@ void DEVIANF(config_devian_save) (DEVIANN *devian)
 void DEVIANF(config_devian_free) (DEVIANN *devian)
 {
    if (!devian->conf)
-      return;
+     return;
 
 #ifdef HAVE_RSS
    if (devian->conf->rss_url)
-      evas_stringshare_del(devian->conf->rss_url);
+     evas_stringshare_del(devian->conf->rss_url);
 #endif
 
    E_FREE(devian->conf);
@@ -372,6 +372,7 @@ DEVIAN_MAIN_CONF *DEVIANF(config_main_new) (void)
 #ifdef HAVE_PICTURE
    cfg_main->data_picture_thumb_default_size = DATA_PICTURE_THUMB_SIZE_DEFAULT;
    cfg_main->data_picture_cache_size = DATA_PICTURE_CACHE_SIZE_DEFAULT;
+   cfg_main->data_picture_popup_when = DATA_PICTURE_POPUP_WHEN_DEFAULT;
 #endif
 
    cfg_main->viewer_image = evas_stringshare_add(DEVIAN_VIEWER_IMAGE_DEFAULT);
@@ -405,9 +406,9 @@ DEVIAN_CONF *DEVIANF(config_devian_new) (int source_type, DEVIAN_CONF *conf)
 #endif
 #ifdef HAVE_RSS
         if (conf->rss_url)
-           cfg->rss_url = evas_stringshare_add(conf->rss_url);
+          cfg->rss_url = evas_stringshare_add(conf->rss_url);
         else
-           cfg->rss_url = NULL;
+          cfg->rss_url = NULL;
         cfg->rss_doc = NULL;
         cfg->rss_timer_s = conf->rss_timer_s;
         cfg->rss_timer_active = conf->rss_timer_active;
@@ -446,9 +447,9 @@ DEVIAN_CONF *DEVIANF(config_devian_new) (int source_type, DEVIAN_CONF *conf)
 #ifdef HAVE_RSS
         cfg->rss_doc = DEVIANF(data_rss_doc_find_unused) ();
         if (cfg->rss_doc)
-           cfg->rss_url = evas_stringshare_add(cfg->rss_doc->url);
+          cfg->rss_url = evas_stringshare_add(cfg->rss_doc->url);
         else
-           cfg->rss_url = NULL;
+          cfg->rss_url = NULL;
         cfg->rss_timer_s = DEVIANM->conf->sources_rss_timer_s;
         cfg->rss_timer_active = 1;
         cfg->rss_nb_items = SOURCE_RSS_NB_ITEMS_DEFAULT;
@@ -546,6 +547,7 @@ _devian_config_main_edd_init(void)
 #ifdef HAVE_PICTURE
    E_CONFIG_VAL(D, T, data_picture_thumb_default_size, INT);
    E_CONFIG_VAL(D, T, data_picture_cache_size, INT);
+   E_CONFIG_VAL(D, T, data_picture_popup_when, INT);
 #endif
 
    E_CONFIG_VAL(D, T, viewer_image, STR);

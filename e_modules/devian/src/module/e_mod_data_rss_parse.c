@@ -132,7 +132,6 @@ int DEVIANF(data_rss_parse_feed) (Rss_Feed *feed, Ecore_List *old_list, Ecore_Li
      }
 
    E_FREE(feed->buffer);
-   feed->buffer = NULL;
    feed->buffer_size = 0;
 
    /* something has changed ? */
@@ -188,14 +187,7 @@ char *DEVIANF(data_rss_parse_article) (Rss_Feed *feed, char *buf, Ecore_List *li
 
    article = E_NEW(Rss_Article, 1);
    article->feed = feed;
-   article->obj = NULL;
-   article->title = NULL;
-   article->url = NULL;
-   article->description = NULL;
-   article->date = NULL;
-   article->date_simple = NULL;
    article->new = 1;
-   article->reused = 0;
 
    do
      {
@@ -487,14 +479,14 @@ _parse_item(char *buf, const char **text, int type)
      case PARSE_ITEM_DATE_10:
         if (!(tmp = _parse_item_date_10(tmp)))
           {
-             E_FREE(tmp);
+             free(tmp);
              return NULL;
           }
         break;
      case PARSE_ITEM_DATE_20:
         if (!(tmp = _parse_item_date_20(tmp)))
           {
-             E_FREE(tmp);
+             free(tmp);
              return NULL;
           }
         break;
@@ -502,7 +494,7 @@ _parse_item(char *buf, const char **text, int type)
      default:
         if (!(tmp = _parse_item_clean(tmp, tmp_l + 1, type)))
           {
-             E_FREE(tmp);
+             free(tmp);
              return NULL;
           }
      }
@@ -518,7 +510,7 @@ _parse_item(char *buf, const char **text, int type)
    *text = evas_stringshare_add(tmp);
    //}
 
-   E_FREE(tmp);
+   free(tmp);
 
    return p;
 }

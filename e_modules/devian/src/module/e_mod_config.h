@@ -8,10 +8,10 @@ typedef struct _dEvian_Conf DEVIAN_CONF;
 #define E_MOD_CONFIG_H_INCLUDED
 
 #ifdef HAVE_ALL
-#define CONFIG_VERSION 51
+#define CONFIG_VERSION 53
 #else
 #ifdef HAVE_PICTURE
-#define CONFIG_VERSION 5
+#define CONFIG_VERSION 6
 #else
 #ifdef HAVE_RSS
 #define CONFIG_VERSION 4
@@ -23,7 +23,7 @@ typedef struct _dEvian_Conf DEVIAN_CONF;
 #endif
 #endif
 
-#define CONFIG_THEME_VERSION 2
+#define CONFIG_THEME_VERSION 3
 
 /* struct for the module configuration */
 
@@ -82,6 +82,7 @@ struct _dEvian_Main_Conf
 #ifdef HAVE_PICTURE
    int data_picture_thumb_default_size;
    int data_picture_cache_size;
+   int data_picture_popup_when;
 #endif
 
    /* viewers */

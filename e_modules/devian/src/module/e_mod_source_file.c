@@ -17,6 +17,7 @@ int DEVIANF(source_file_add) (DEVIANN *devian)
    Source_File *source;
 
    /* SOURCE_FILE IS NOT STABLE YET */
+#ifndef DEBUG_DATA_FILE
    {
       char buf[4096];
       
@@ -26,6 +27,7 @@ int DEVIANF(source_file_add) (DEVIANN *devian)
       e_module_dialog_show(_(MODULE_NAME " Module error"), buf);
       return 0;
    }
+#endif
    /* SOURCE_FILE IS NOT STABLE YET */
 
    DSOURCE(("Source file creation START"));
@@ -42,7 +44,7 @@ int DEVIANF(source_file_add) (DEVIANN *devian)
    source->obj = e_scrollframe_add(DEVIANM->container->bg_evas);
 
    if (!DEVIANF(data_file_add) (source))
-      return 0;
+     return 0;
 
    /* set new name for devian */
    DEVIANF(devian_set_id) (devian, SOURCE_FILE, NULL);
@@ -68,7 +70,7 @@ int DEVIANF(source_file_add) (DEVIANN *devian)
    if (source->devian->container)
      {
         if (!DEVIANF(container_edje_part_change) (source->devian))
-           return 0;
+          return 0;
      }
    devian->container_func.resize_auto(source->devian);
 
@@ -87,7 +89,7 @@ void DEVIANF(source_file_del) (Source_File *source)
    DEVIANF(data_file_del) (source);
 
    if (source->obj)
-      evas_object_del(source->obj);
+     evas_object_del(source->obj);
 
    E_FREE(source);
 }

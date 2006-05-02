@@ -32,7 +32,7 @@ _devian_menu_cb_general_configure(void *data, E_Menu *m, E_Menu_Item *mi)
    E_Config_Dialog *cfd;
 
    if (!(cfd = DEVIANF(config_dialog_main) (DEVIANM->container)))
-      return;
+     return;
    DEVIANM->dialog_conf = cfd;  /* actualy dont need this */
 }
 
@@ -93,9 +93,9 @@ _devian_menu_cb_devian_delete(void *data, E_Menu *m, E_Menu_Item *mi)
 
    /* check: if the devian was destroyed but the menu stays (key space) */
    if (!devian)
-      return;
+     return;
    if ((!devian->source) || (!devian->conf) || (!devian->menu))
-      return;
+     return;
 
    DEVIANF(devian_del) (devian, 0);
 }
@@ -157,7 +157,7 @@ _devian_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
 
    devian = data;
    if (!(cfd = DEVIANF(config_dialog_devian) (DEVIANM->container, devian)))
-      return;
+     return;
    devian->dialog_conf = cfd;
 }
 
@@ -239,7 +239,7 @@ E_Menu *DEVIANF(menu_init) (DEVIANN *devian)
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 2);
    if (devian->conf->source_type == SOURCE_PICTURE)
-      e_menu_item_toggle_set(mi, 1);
+     e_menu_item_toggle_set(mi, 1);
    e_menu_item_callback_set(mi, _devian_menu_cb_set_source_picture, devian);
 #endif
 
@@ -249,7 +249,7 @@ E_Menu *DEVIANF(menu_init) (DEVIANN *devian)
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 2);
    if (devian->conf->source_type == SOURCE_RSS)
-      e_menu_item_toggle_set(mi, 1);
+     e_menu_item_toggle_set(mi, 1);
    e_menu_item_callback_set(mi, _devian_menu_cb_set_source_rss, devian);
 #endif
 
@@ -259,7 +259,7 @@ E_Menu *DEVIANF(menu_init) (DEVIANN *devian)
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 2);
    if (devian->conf->source_type == SOURCE_FILE)
-      e_menu_item_toggle_set(mi, 1);
+     e_menu_item_toggle_set(mi, 1);
    e_menu_item_callback_set(mi, _devian_menu_cb_set_source_file, devian);
 #endif
 #endif

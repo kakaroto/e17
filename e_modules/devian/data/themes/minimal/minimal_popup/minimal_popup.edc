@@ -1,6 +1,12 @@
-#define MSG_RECV_POPUP_WARN_SHOW_DISABLE 0
-
 /* Popup warning group */
+
+#define POPUP_WARN_TYPE_NEWS 0
+#define POPUP_WARN_TYPE_INFO 1
+#define POPUP_WARN_TYPE_ERROR 2
+
+#define MSG_RECV_POPUP_WARN_SHOW_DISABLE 0
+#define MSG_RECV_POPUP_WARN_TYPE 1
+
 group
 {
 	name: "devian/popup/warn";
@@ -8,6 +14,8 @@ group
 	script
 	{
 		public show_disabled;
+                public popup_type;
+                public popup_in_update;
 
 		/* Message from C code */
 		public message(Msg_Type: type, id, msg)
@@ -20,8 +28,34 @@ group
 					set_state(PART:"disable", "visible", 0.0);
 				}
 			}
-		}
-	}
+        		if (id == MSG_RECV_POPUP_WARN_TYPE){
+        			if (type == MSG_INT){
+        				set_int(popup_type, getarg(2));
+                                        if (get_int(popup_type) == POPUP_WARN_TYPE_NEWS)
+                                        {
+                                                if (get_int(popup_in_update))
+                                                        run_program(PROGRAM:"update_anim_news");
+                                                else
+                        				set_state(PART:"logo", "default", 0.0);
+                                        }
+                                        if (get_int(popup_type) == POPUP_WARN_TYPE_INFO)
+                                        {
+                                                if (get_int(popup_in_update))
+                                                        run_program(PROGRAM:"update_anim_info");
+                                                else
+                        				set_state(PART:"logo", "info", 0.0);
+                                        }
+                                        if (get_int(popup_type) == POPUP_WARN_TYPE_ERROR)
+                                        {
+                                                if (get_int(popup_in_update))
+                                                        run_program(PROGRAM:"update_anim_error");
+                                                else
+                        				set_state(PART:"logo", "error", 0.0);
+                                        }
+        	      		}
+        		}
+        	}
+        }
 
 	parts
 	{

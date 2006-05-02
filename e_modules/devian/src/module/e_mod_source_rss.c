@@ -29,7 +29,7 @@ int DEVIANF(source_rss_add) (DEVIANN *devian)
 
    /* create rss feed */
    if (!DEVIANF(data_rss_new) (source))
-      return 0;
+     return 0;
 
    /* provide declarations */
    devian->source_info.provide_double_buf = 1;
@@ -50,9 +50,9 @@ int DEVIANF(source_rss_add) (DEVIANN *devian)
 
    /* timer to update rss feed */
    if (devian->conf->rss_timer_active)
-      DEVIANF(source_rss_timer_change) (devian, 1, 0);
+     DEVIANF(source_rss_timer_change) (devian, 1, 0);
    else
-      DEVIANF(source_rss_timer_change) (devian, 0, 0);
+     DEVIANF(source_rss_timer_change) (devian, 0, 0);
 
    return 1;
 }
@@ -64,13 +64,13 @@ void DEVIANF(source_rss_del) (Source_Rss *source)
    devian = source->devian;
 
    if (source->rss_feed)
-      DEVIANF(data_rss_del) (source->rss_feed);
+     DEVIANF(data_rss_del) (source->rss_feed);
 
    evas_object_del(source->obj0);
    evas_object_del(source->obj1);
 
    if (source->timer)
-      ecore_timer_del(source->timer);
+     ecore_timer_del(source->timer);
 
    E_FREE(source);
 }
@@ -84,7 +84,7 @@ int DEVIANF(source_rss_change) (DEVIANN *devian, int option)
    if (devian->conf->rss_doc)
      {
         if (!DEVIANF(data_rss_poll) (source->rss_feed, 1))
-           return 0;
+          return 0;
      }
 
    return 1;
@@ -99,7 +99,7 @@ int DEVIANF(source_rss_viewer) (DEVIANN *devian)
    source = devian->source;
 
    if (!source->devian->conf->rss_doc)
-      return 0;
+     return 0;
 
    url = source->devian->conf->rss_doc->link;
 
@@ -120,7 +120,7 @@ int DEVIANF(source_rss_viewer) (DEVIANN *devian)
         DSOURCE(("Viewer: %s", buf));
         exe = ecore_exe_pipe_run(buf, ECORE_EXE_USE_SH, NULL);
         if (exe > 0)
-           ecore_exe_free(exe);
+          ecore_exe_free(exe);
      }
    else
      {
@@ -142,16 +142,16 @@ int DEVIANF(source_rss_evas_object_get) (DEVIANN *devian, Evas_Object **rss0, Ev
    source = (Source_Rss *)devian->source;
 
    if ((!source->obj0) && (!source->obj1))
-      return 0;
+     return 0;
 
    if (source->obj0)
-      *rss0 = source->obj0;
+     *rss0 = source->obj0;
    else
-      *rss0 = NULL;
+     *rss0 = NULL;
    if (source->obj1)
-      *rss1 = source->obj1;
+     *rss1 = source->obj1;
    else
-      *rss1 = NULL;
+     *rss1 = NULL;
 
    return 1;
 }
@@ -159,12 +159,12 @@ int DEVIANF(source_rss_evas_object_get) (DEVIANN *devian, Evas_Object **rss0, Ev
 int DEVIANF(source_rss_original_size_get) (Source_Rss *source, int part, int *w, int *h)
 {
    if (!source)
-      return 0;
+     return 0;
 
    if (part == -1)
      {
         if ((part = DEVIANF(container_edje_part_get) (source->devian)) == -1)
-           return 0;
+          return 0;
      }
 
    if (!part && source->obj0)
@@ -194,10 +194,10 @@ void DEVIANF(source_rss_dialog_infos) (Source_Rss *source)
 
    dia = e_dialog_new(DEVIANM->container);
    if (!dia)
-      return;
+     return;
    doc = source->devian->conf->rss_doc;
    if (!doc)
-      return;
+     return;
 
    snprintf(buf, 4096,
             "<hilight>Informations on %s</hilight><br><br>"
@@ -218,7 +218,7 @@ void DEVIANF(source_rss_dialog_infos) (Source_Rss *source)
 char *DEVIANF(source_rss_name_get) (Source_Rss *source)
 {
    if (!source->devian->conf->rss_doc)
-      return NULL;
+     return NULL;
 
    return (char *)source->devian->conf->rss_doc->name;
 }
@@ -266,13 +266,13 @@ void DEVIANF(source_rss_timer_change) (DEVIANN *devian, int active, int time)
    source = devian->source;
 
    if (time && (time < SOURCE_RSS_UPDATE_RATE_MIN))
-      return;
+     return;
 
    devian->conf->rss_timer_active = active;
    if (!time)
-      time = source->devian->conf->rss_timer_s;
+     time = source->devian->conf->rss_timer_s;
    else
-      devian->conf->rss_timer_s = time;
+     devian->conf->rss_timer_s = time;
 
    e_config_save_queue();
 
@@ -291,7 +291,7 @@ void DEVIANF(source_rss_timer_change) (DEVIANN *devian, int active, int time)
    devian->container_func.update_actions(devian);
 
    if (source->timer)
-      ecore_timer_del(source->timer);
+     ecore_timer_del(source->timer);
    source->timer = ecore_timer_add(time, _cb_timer_rss_update, source);
 }
 

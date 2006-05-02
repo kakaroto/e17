@@ -27,6 +27,9 @@ static void _cb_infos_set(void *data, Evas_Object *obj, const char *emission, co
 static void _cb_infos_unset(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void _cb_infos_scroll(void *data, Evas_Object *obj, const char *emission, const char *source);
 
+static int _popup_close(Popup_Warn *popw, void *data);
+static void _popup_desactivate(Popup_Warn *popw, void *data);
+
 
 /* PUBLIC FUNCTIONS */
 
@@ -37,17 +40,6 @@ int DEVIANF(data_rss_new) (Source_Rss *source)
    feed = E_NEW(Rss_Feed, 1);
 
    feed->source = source;
-
-   feed->server = NULL;
-   feed->handler_server_add = NULL;
-   feed->handler_server_data = NULL;
-   feed->handler_server_del = NULL;
-   feed->last_time = NULL;
-   feed->item_meta = NULL;
-   feed->channel_meta = NULL;
-
-   feed->buffer = NULL;
-   feed->buffer_size = 0;
 
    /* initialise lists of items */
    feed->list_articles0 = ecore_list_new();
@@ -66,7 +58,8 @@ int DEVIANF(data_rss_new) (Source_Rss *source)
    strcpy(feed->last_time, "");
 
    /* set the rss document to follow */
-   DEVIANF(data_rss_doc_set_new) (feed, feed->source->devian->conf->rss_doc, feed->source->devian->conf->rss_url);
+   DEVIANF(data_rss_doc_set_new) (feed, feed->source->devian->conf->rss_doc,
+                                  feed->source->devian->conf->rss_url);
 
    return 1;
 }
@@ -75,25 +68,23 @@ void DEVIANF(data_rss_del) (Rss_Feed *feed)
 {
    _net_shutdown(feed);
 
-   if (feed->item_meta)
-      E_FREE(feed->item_meta);
-   if (feed->channel_meta)
-      E_FREE(feed->channel_meta);
+   if (feed->item_meta) free(feed->item_meta);
+   if (feed->channel_meta) free(feed->channel_meta);
 
    _feed_del(feed, feed->list_articles0, feed->source->obj0);
    ecore_list_destroy(feed->list_articles0);
    _feed_del(feed, feed->list_articles1, feed->source->obj1);
    ecore_list_destroy(feed->list_articles1);
 
-   E_FREE(feed->last_time);
+   free(feed->last_time);
    if (feed->buffer)
-      E_FREE(feed->buffer);
+     free(feed->buffer);
 
    DEVIANF(data_rss_doc_detach) (feed->source->devian->conf->rss_doc);
 
    feed->source->rss_feed = NULL;
 
-   E_FREE(feed);
+   free(feed);
 }
 
 int DEVIANF(data_rss_poll) (void *data, int force_retry)
@@ -103,7 +94,7 @@ int DEVIANF(data_rss_poll) (void *data, int force_retry)
    feed = (Rss_Feed *)data;
 
    if (!feed)
-      return 0;
+     return 0;
 
    if (feed->server && !force_retry)
      {
@@ -121,15 +112,18 @@ int DEVIANF(data_rss_poll) (void *data, int force_retry)
         if (feed->buffer)
           {
              E_FREE(feed->buffer);
-             feed->buffer = NULL;
              feed->buffer_size = 0;
           }
      }
 
    if (feed->proxy.port)
-      feed->server = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM, feed->proxy.host, feed->proxy.port, feed);
+     feed->server = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM,
+                                             feed->proxy.host,
+                                             feed->proxy.port, feed);
    else
-      feed->server = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM, feed->source->devian->conf->rss_doc->host, 80, feed);
+     feed->server = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM,
+                                             feed->source->devian->conf->rss_doc->host,
+                                             80, feed);
 
    if (!feed->server)
      {
@@ -165,26 +159,26 @@ Rss_Doc *DEVIANF(data_rss_doc_new) (Rss_Doc *s, int add)
            char *p, *p2;
 
            if (!s->name)
-              return NULL;
+             return NULL;
            if (!s->url)
-              return NULL;
+             return NULL;
            if (strncmp(s->url, "http://", 7))
-              return NULL;
+             return NULL;
            if (strlen(s->url) <= 7)
-              return NULL;
+             return NULL;
            p = (char *)(s->url + 7);
            if (!(p2 = strchr(p, '/')))
-              return NULL;
+             return NULL;
            if (!s->description)
-              s->description = evas_stringshare_add("");
+             s->description = evas_stringshare_add("");
            if (s->host)
-              evas_stringshare_del(s->host);
+             evas_stringshare_del(s->host);
            if (!(s->host = _get_host_from_url(s->url)))
-              return NULL;
+             return NULL;
            if (s->file)
-              evas_stringshare_del(s->file);
+             evas_stringshare_del(s->file);
            if (!(s->file = _get_file_from_url(s->url)))
-              return NULL;
+             return NULL;
         }
 
         if (add)
@@ -197,7 +191,7 @@ Rss_Doc *DEVIANF(data_rss_doc_new) (Rss_Doc *s, int add)
                   {
                      doc = evas_list_data(l);
                      if (!strcmp(s->url, doc->url))
-                        return NULL;
+                       return NULL;
                   }
              }
 
@@ -235,26 +229,26 @@ int DEVIANF(data_rss_doc_free) (Rss_Doc *doc, int remove_from_list, int force)
      {
         /* check */
         if (doc->user)
-           return 0;
+          return 0;
 
         DEVIANF(data_rss_doc_detach) (doc);
      }
 
    if (remove_from_list)
-      DEVIANM->conf->sources_rss_docs = evas_list_remove(DEVIANM->conf->sources_rss_docs, doc);
+     DEVIANM->conf->sources_rss_docs = evas_list_remove(DEVIANM->conf->sources_rss_docs, doc);
 
    if (doc->name)
-      evas_stringshare_del(doc->name);
+     evas_stringshare_del(doc->name);
    if (doc->url)
-      evas_stringshare_del(doc->url);
+     evas_stringshare_del(doc->url);
    if (doc->host)
-      evas_stringshare_del(doc->host);
+     evas_stringshare_del(doc->host);
    if (doc->file)
-      evas_stringshare_del(doc->file);
+     evas_stringshare_del(doc->file);
    if (doc->description)
-      evas_stringshare_del(doc->description);
+     evas_stringshare_del(doc->description);
 
-   E_FREE(doc);
+   free(doc);
 
    return 1;
 }
@@ -272,11 +266,11 @@ int DEVIANF(data_rss_doc_set_new) (Rss_Feed *feed, Rss_Doc *doc, const char *url
    if (!doc)
      {
         if (!url)
-           return 0;
+          return 0;
         else
-           doc = DEVIANF(data_rss_doc_find_doc) (url);
+          doc = DEVIANF(data_rss_doc_find_doc) (url);
         if (!doc)
-           return 0;
+          return 0;
      }
 
    if (doc->user)
@@ -296,30 +290,21 @@ int DEVIANF(data_rss_doc_set_new) (Rss_Feed *feed, Rss_Doc *doc, const char *url
    feed->source->devian->conf->rss_doc = doc;
 
    if (feed->source->devian->conf->rss_url)
-      evas_stringshare_del(feed->source->devian->conf->rss_url);
+     evas_stringshare_del(feed->source->devian->conf->rss_url);
    feed->source->devian->conf->rss_url = evas_stringshare_add(feed->source->devian->conf->rss_doc->url);
 
    DDATARSS(("New rss set host: %s url: %s file: %s", doc->host, doc->url, doc->file));
 
-   if (feed->last_time)
-      E_FREE(feed->last_time);
+   if (feed->last_time) E_FREE(feed->last_time);
    feed->last_time = E_NEW(char, 9);
 
    strcpy(feed->last_time, "");
-   if (feed->item_meta)
-     {
-        E_FREE(feed->item_meta);
-        feed->item_meta = NULL;
-     }
-   if (feed->channel_meta)
-     {
-        E_FREE(feed->channel_meta);
-        feed->channel_meta = NULL;
-     }
+   if (feed->item_meta) E_FREE(feed->item_meta);
+   if (feed->channel_meta) E_FREE(feed->channel_meta);
 
    /* if feed is rightly initialised, we can poll */
    if (feed->source->rss_feed)
-      DEVIANF(data_rss_poll) (feed, 1);
+     DEVIANF(data_rss_poll) (feed, 1);
 
    return 1;
 }
@@ -327,11 +312,11 @@ int DEVIANF(data_rss_doc_set_new) (Rss_Feed *feed, Rss_Doc *doc, const char *url
 void DEVIANF(data_rss_doc_detach) (Rss_Doc *doc)
 {
    if (!doc)
-      return;
+     return;
    if (!doc->user)
-      return;
+     return;
    if (!doc->user->source->devian->conf)
-      return;
+     return;
 
    doc->user->source->devian->conf->rss_doc = NULL;
    doc->user = NULL;
@@ -347,7 +332,7 @@ Rss_Doc *DEVIANF(data_rss_doc_find_doc) (const char *url)
      {
         doc = evas_list_data(list);
         if (!strcmp(doc->url, url))
-           return doc;
+          return doc;
      }
    while ((list = evas_list_next(list)));
 
@@ -365,7 +350,7 @@ Rss_Doc *DEVIANF(data_rss_doc_find_unused) (void)
      {
         doc = evas_list_data(list);
         if (!doc->user)
-           return doc;
+          return doc;
      }
    while ((list = evas_list_next(list)));
 
@@ -381,7 +366,7 @@ void DEVIANF(data_rss_prev_detach) (Source_Rss *source, int part)
 
    feed = source->rss_feed;
    if (!feed)
-      return;
+     return;
 
    DDATARSS(("Want to detach source %d", part));
 
@@ -414,15 +399,19 @@ Evas_Object *DEVIANF(data_rss_object_create) (Rss_Article *article)
    /* title (edje) */
    obj = edje_object_add(DEVIANM->container->bg_evas);
    if (!DEVIANF(devian_edje_load) (obj, "devian/rss/item", DEVIAN_THEME_TYPE_RSS))
-      return NULL;
+     return NULL;
    edje_object_part_text_set(obj, "date", article->date_simple);
    edje_object_part_text_set(obj, "title", article->title);
 
    /* callbacks for open and description change & scroll */
-   edje_object_signal_callback_add(obj, "open", "item", _cb_item_open, article);
-   edje_object_signal_callback_add(obj, "infos_set", "item", _cb_infos_set, article);
-   edje_object_signal_callback_add(obj, "infos_unset", "item", _cb_infos_unset, article);
-   edje_object_signal_callback_add(obj, "infos_scroll", "item", _cb_infos_scroll, article);
+   edje_object_signal_callback_add(obj, "open", "item",
+                                   _cb_item_open, article);
+   edje_object_signal_callback_add(obj, "infos_set", "item",
+                                   _cb_infos_set, article);
+   edje_object_signal_callback_add(obj, "infos_unset", "item",
+                                   _cb_infos_unset, article);
+   edje_object_signal_callback_add(obj, "infos_scroll", "item",
+                                   _cb_infos_scroll, article);
 
    article->obj = obj;
    return obj;
@@ -432,24 +421,27 @@ void DEVIANF(data_rss_article_free) (Rss_Article *article)
 {
    DDATARSSP(("Free article (%s)", article->title));
    if (article->title)
-      evas_stringshare_del(article->title);
+     evas_stringshare_del(article->title);
    if (article->url)
-      evas_stringshare_del(article->url);
+     evas_stringshare_del(article->url);
    if (article->description)
-      evas_stringshare_del(article->description);
+     evas_stringshare_del(article->description);
    if (article->date)
-      evas_stringshare_del(article->date);
+     evas_stringshare_del(article->date);
    if (article->date_simple)
-      evas_stringshare_del(article->date_simple);
+     evas_stringshare_del(article->date_simple);
    if (article->obj)
      {
-        edje_object_signal_callback_del(article->obj, "infos_set", "item", _cb_infos_set);
-        edje_object_signal_callback_del(article->obj, "infos_unset", "item", _cb_infos_unset);
-        edje_object_signal_callback_del(article->obj, "open", "item", _cb_item_open);
+        edje_object_signal_callback_del(article->obj, "infos_set", "item", 
+                                        _cb_infos_set);
+        edje_object_signal_callback_del(article->obj, "infos_unset", "item",
+                                        _cb_infos_unset);
+        edje_object_signal_callback_del(article->obj, "open", "item",
+                                        _cb_item_open);
         evas_object_del(article->obj);
         article->obj = NULL;
      }
-   E_FREE(article);
+   free(article);
 }
 
 int DEVIANF(data_rss_gui_update) (DEVIANN *devian)
@@ -475,25 +467,33 @@ int DEVIANF(data_rss_gui_update) (DEVIANN *devian)
      }
 
    if (ecore_list_is_empty(list))
-      return 0;
+     return 0;
 
    ecore_list_goto_first(list);
    while ((article = (Rss_Article *)ecore_list_next(list)) != NULL)
      {
         if (article->obj)
           {
-             edje_object_signal_callback_del(article->obj, "infos_set", "item", _cb_infos_set);
-             edje_object_signal_callback_del(article->obj, "infos_unset", "item", _cb_infos_unset);
-             edje_object_signal_callback_del(article->obj, "open", "item", _cb_item_open);
+             edje_object_signal_callback_del(article->obj, "infos_set", "item",
+                                             _cb_infos_set);
+             edje_object_signal_callback_del(article->obj, "infos_unset", "item",
+                                             _cb_infos_unset);
+             edje_object_signal_callback_del(article->obj, "open", "item",
+                                             _cb_item_open);
              evas_object_del(article->obj);
              article->obj = NULL;
           }
      }
 
    if (!_table_create(feed, list, NULL, table))
-      return 0;
+     return 0;
 
    return 1;
+}
+
+void DEVIANF(data_rss_popup_desactivate) (void)
+{
+   DEVIANM->conf->sources_rss_popup_news = 0;
 }
 
 
@@ -529,17 +529,17 @@ _rss_update(Rss_Feed *feed)
      }
 
    if (ecore_list_is_empty(old_list))
-      old_list = NULL;
+     old_list = NULL;
 
    /* parse, sort, repack table and the show result */
    if ((i = DEVIANF(data_rss_parse_feed) (feed, old_list, list)) > 0)
-      if ((i = _feed_sort(list)))
-         if ((i = _table_create(feed, list, old_list, table)))
-            if (DEVIANF(container_edje_part_change) (feed->source->devian))
-              {
-                 feed->source->devian->container_func.resize_auto(feed->source->devian);
-                 _time_get(feed->last_time);
-              }
+     if ((i = _feed_sort(list)))
+       if ((i = _table_create(feed, list, old_list, table)))
+         if (DEVIANF(container_edje_part_change) (feed->source->devian))
+           {
+              feed->source->devian->container_func.resize_auto(feed->source->devian);
+              _time_get(feed->last_time);
+           }
 
    if (!i)
      {
@@ -552,7 +552,7 @@ _rss_update(Rss_Feed *feed)
 
              p = strstr(feed->buffer, "<rss");
              if (!p)
-                p = strstr(feed->buffer, "<rdf");
+               p = strstr(feed->buffer, "<rdf");
              if (!p)
                {
                   snprintf(buf, sizeof(buf),
@@ -580,11 +580,10 @@ _rss_update(Rss_Feed *feed)
    else
      {
         if (i == -1)            /* no changes in feed */
-           DEVIANF(container_loading_state_change) (feed->source->devian, 0);
+          DEVIANF(container_loading_state_change) (feed->source->devian, 0);
      }
 
    E_FREE(feed->buffer);
-   feed->buffer = NULL;
    feed->buffer_size = 0;
 
 }
@@ -597,7 +596,7 @@ _net_init(Rss_Feed *feed)
    /* proxy ? */
    env = getenv("http_proxy");
    if (!env)
-      env = getenv("HTTP_PROXY");
+     env = getenv("HTTP_PROXY");
    if ((env) && !strncmp(env, "http://", 7))
      {
         /* proxy ! */
@@ -612,14 +611,14 @@ _net_init(Rss_Feed *feed)
              *p = 0;
              p++;
              if (sscanf(p, "%d", &port) != 1)
-                port = 0;
+               port = 0;
           }
 #if 0
         else
           {
              p = strchr(host, '/');
              if (p)
-                *p = 0;
+               *p = 0;
           }
 #endif
         if ((host) && (port))
@@ -642,9 +641,12 @@ _net_init(Rss_Feed *feed)
    DDATARSS(("Init network: proxy %s %d", feed->proxy.host, feed->proxy.port));
 
    /* net callbacks */
-   feed->handler_server_add = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD, _server_add, feed);
-   feed->handler_server_del = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL, _server_del, feed);
-   feed->handler_server_data = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA, _server_data, feed);
+   feed->handler_server_add = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD,
+                                                      _server_add, feed);
+   feed->handler_server_del = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL,
+                                                      _server_del, feed);
+   feed->handler_server_data = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA,
+                                                       _server_data, feed);
 
    return 1;
 }
@@ -653,15 +655,15 @@ static void
 _net_shutdown(Rss_Feed *feed)
 {
    if (feed->proxy.host)
-      E_FREE(feed->proxy.host);
+     E_FREE(feed->proxy.host);
 
    /* net callbacks */
    if (feed->handler_server_add)
-      ecore_event_handler_del(feed->handler_server_add);
+     ecore_event_handler_del(feed->handler_server_add);
    if (feed->handler_server_data)
-      ecore_event_handler_del(feed->handler_server_data);
+     ecore_event_handler_del(feed->handler_server_data);
    if (feed->handler_server_del)
-      ecore_event_handler_del(feed->handler_server_del);
+     ecore_event_handler_del(feed->handler_server_del);
 
    if (feed->server)
      {
@@ -682,7 +684,7 @@ _server_add(void *data, int type, void *event)
 
    /* check if the events is our event */
    if (feed->server != ev->server)
-      return 1;
+     return 1;
 
    DDATARSS(("Connection established after %d tries, sending request", feed->nb_tries));
 
@@ -708,7 +710,7 @@ _server_del(void *data, int type, void *event)
 
    /* check if the events is our event */
    if (feed->server != ev->server)
-      return 1;
+     return 1;
 
    /* del server */
    ecore_con_server_del(ev->server);
@@ -740,7 +742,7 @@ _server_data(void *data, int type, void *event)
 
    /* check if the events is our event */
    if (feed->server != ev->server)
-      return 1;
+     return 1;
 
    /* read add add in main buffer */
    feed->buffer = realloc(feed->buffer, feed->buffer_size + ev->size);
@@ -761,9 +763,9 @@ _feed_del(Rss_Feed *feed, Ecore_List *list, Evas_Object *table)
         while ((article = (Rss_Article *)ecore_list_next(list)) != NULL)
           {
              if (!article->reused)
-                DEVIANF(data_rss_article_free) (article);
+               DEVIANF(data_rss_article_free) (article);
              else
-                article->reused = 0;
+               article->reused = 0;
           }
         ecore_list_clear(list);
      }
@@ -780,14 +782,14 @@ _feed_sort(Ecore_List *list)
    first = ecore_list_goto_first(list);
 
    if (first == last)
-      return 1;
+     return 1;
    if (!first->date_simple || !last->date_simple)
-      return 1;
+     return 1;
 
    cmp = strcmp(first->date_simple, last->date_simple);
 
    if (!cmp || cmp > 0)
-      return 1;
+     return 1;
 
    /* first is older than last, we have to invert list */
    count = ecore_list_nodes(list);
@@ -807,7 +809,7 @@ _table_create(Rss_Feed *feed, Ecore_List *list, Ecore_List *old_list, Evas_Objec
    int i;
 
    if (ecore_list_is_empty(list))
-      return 0;
+     return 0;
 
    {
       int count, i;
@@ -823,9 +825,9 @@ _table_create(Rss_Feed *feed, Ecore_List *list, Ecore_List *old_list, Evas_Objec
 
    ecore_list_goto_first(list);
    if (feed->source->devian->conf->rss_reverse)
-      i = ecore_list_nodes(list) - 1;
+     i = ecore_list_nodes(list) - 1;
    else
-      i = 0;
+     i = 0;
    while ((article = (Rss_Article *)ecore_list_next(list)) != NULL)
      {
         /* create object */
@@ -845,19 +847,33 @@ _table_create(Rss_Feed *feed, Ecore_List *list, Ecore_List *old_list, Evas_Objec
                          {
                             /* new article */
                             edje_object_message_send(article->obj, EDJE_MESSAGE_INT,
-                                                     DEVIAN_DATA_RSS_EDJE_MSG_ITEM_NEW, &article->new);
+                                                     DEVIAN_DATA_RSS_EDJE_MSG_ITEM_NEW,
+                                                     &article->new);
+
                             if (DEVIANM->conf->sources_rss_popup_news && feed->source->devian->conf->rss_popup_news)
                               {
                                  if (article->date_simple)
-                                    DEVIANF(popup_warn_add) (&feed->source->devian->popup_warn,
-                                                             POPUP_WARN_TYPE_DEVIAN, article->date_simple, feed->source->devian);
+                                   feed->popup_warn =
+                                      DEVIANF(popup_warn_add) (POPUP_WARN_TYPE_NEWS,
+                                                               article->date_simple,
+                                                               feed->popup_warn, 1,
+                                                               DEVIANM->conf->sources_rss_popup_news_timer,
+                                                               feed->source->devian,
+                                                               _popup_close,
+                                                               _popup_desactivate);
                                  else
-                                    DEVIANF(popup_warn_add) (&feed->source->devian->popup_warn,
-                                                             POPUP_WARN_TYPE_DEVIAN, "News", feed->source->devian);
+                                   feed->popup_warn =
+                                      DEVIANF(popup_warn_add) (POPUP_WARN_TYPE_NEWS,
+                                                               "News",
+                                                               feed->popup_warn, 1,
+                                                               DEVIANM->conf->sources_rss_popup_news_timer,
+                                                               feed->source->devian,
+                                                               _popup_close,
+                                                               _popup_desactivate);
                               }
                          }
                        else
-                          article->new = 0;
+                         article->new = 0;
                     }
                   else
                     {
@@ -865,14 +881,15 @@ _table_create(Rss_Feed *feed, Ecore_List *list, Ecore_List *old_list, Evas_Objec
                          {
                             /* existing red article */
                             edje_object_message_send(article->obj, EDJE_MESSAGE_INT,
-                                                     DEVIAN_DATA_RSS_EDJE_MSG_ITEM_NEW, &article->new);
+                                                     DEVIAN_DATA_RSS_EDJE_MSG_ITEM_NEW,
+                                                     &article->new);
                          }
                        else
-                          article->new = 0;
+                         article->new = 0;
                     }
                }
              else
-                article->new = 0;
+               article->new = 0;
 
              DDATARSS(("Put %s in the table, obj=%p", article->title, article->obj));
              /* hop in the table ;p */
@@ -882,12 +899,12 @@ _table_create(Rss_Feed *feed, Ecore_List *list, Ecore_List *old_list, Evas_Objec
                                       0, 0,     /* align */
                                       0, 0,     /* min */
                                       9999, 9999        /* max */
-                );
+                                      );
              evas_object_show(article->obj);
              if (feed->source->devian->conf->rss_reverse)
-                i--;
+               i--;
              else
-                i++;
+               i++;
           }
      }
 
@@ -907,16 +924,16 @@ _item_exists(Ecore_List *list, Rss_Article *article)
         while ((cur = (Rss_Article *)ecore_list_next(list)))
           {
              if (cur->url && article->url)
-                if (strcmp(cur->url, article->url))
-                   continue;
+               if (strcmp(cur->url, article->url))
+                 continue;
 
              if (cur->date && article->date)
-                if (strcmp(cur->date, article->date))
-                   continue;
+               if (strcmp(cur->date, article->date))
+                 continue;
 
              if (cur->title && article->title)
-                if (strcmp(cur->title, article->title))
-                   continue;
+               if (strcmp(cur->title, article->title))
+                 continue;
 
              return cur;
           }
@@ -934,7 +951,6 @@ _time_get(char *str)
    curtime = time(NULL);
    ts = localtime(&curtime);
    snprintf(str, 9, "%02d:%02d:%02d", ts->tm_hour, ts->tm_min, ts->tm_sec);
-   //... E_FREE(ts); //maybe ?
 }
 
 static const char *
@@ -944,17 +960,17 @@ _get_host_from_url(const char *url)
    char *tmp, *p;
 
    if (strncmp(url, "http://", 7))
-      return NULL;
+     return NULL;
    tmp = strdup(url + 7);
    p = strchr(tmp, '/');
    if (!p)
      {
-        E_FREE(tmp);
+        free(tmp);
         return NULL;
      }
    *p = '\0';
    host = evas_stringshare_add(tmp);
-   E_FREE(tmp);
+   free(tmp);
 
    return host;
 }
@@ -967,11 +983,11 @@ _get_file_from_url(const char *url)
 
    p = strstr(url, "://");
    if (!p)
-      return NULL;
+     return NULL;
    p += 3;
    p = strstr(p, "/");
    if (!p)
-      return NULL;
+     return NULL;
    file = evas_stringshare_add(p);
 
    return file;
@@ -985,7 +1001,7 @@ _cb_item_open(void *data, Evas_Object *obj, const char *emission, const char *so
    const char *url;
 
    if (!data)
-      return;
+     return;
    article = (Rss_Article *)data;
    url = article->url;
 
@@ -1005,7 +1021,7 @@ _cb_item_open(void *data, Evas_Object *obj, const char *emission, const char *so
         DSOURCE(("Viewer: %s", buf));
         exe = ecore_exe_pipe_run(buf, ECORE_EXE_USE_SH, NULL);
         if (exe > 0)
-           ecore_exe_free(exe);
+          ecore_exe_free(exe);
      }
    else
      {
@@ -1026,18 +1042,18 @@ _cb_infos_set(void *data, Evas_Object *obj, const char *emission, const char *so
    Rss_Article *article;
 
    if (!data)
-      return;
+     return;
    article = (Rss_Article *)data;
    if (!article->description)
-      return;
+     return;
 
    /* set item as viewed */
    if (article->new)
      {
         article->new = 0;
         edje_object_message_send(article->obj, EDJE_MESSAGE_INT, DEVIAN_DATA_RSS_EDJE_MSG_ITEM_NEW, &article->new);
-        if (article->feed->source->devian->popup_warn)
-           DEVIANF(popup_warn_del) (article->feed->source->devian->popup_warn);
+        if (article->feed->popup_warn)
+          DEVIANF(popup_warn_del) (article->feed->popup_warn);
      }
 
    article->feed->source->active_article = article;
@@ -1051,12 +1067,12 @@ _cb_infos_unset(void *data, Evas_Object *obj, const char *emission, const char *
    Rss_Article *article;
 
    if (!data)
-      return;
+     return;
    article = (Rss_Article *)data;
 
    /* set no current article only if its not another */
    if (article->feed->source->active_article == article)
-      article->feed->source->active_article = NULL;
+     article->feed->source->active_article = NULL;
 }
 
 static void
@@ -1065,12 +1081,24 @@ _cb_infos_scroll(void *data, Evas_Object *obj, const char *emission, const char 
    Rss_Article *article;
 
    if (!data)
-      return;
+     return;
    article = (Rss_Article *)data;
    if (!article->description)
-      return;
+     return;
 
    DEVIANF(container_infos_text_scroll) (article->feed->source->devian);
 
+}
+
+static int
+_popup_close(Popup_Warn *popw, void *data)
+{
+   return 1;
+}
+
+static void
+_popup_desactivate(Popup_Warn *popw, void *data)
+{
+   DEVIANF(data_rss_popup_desactivate) ();
 }
 #endif

@@ -9,12 +9,12 @@ typedef struct _Popup_Warn Popup_Warn;
 
 #define POPUP_WARN_DEVIAN_ACTIVE_DEFAULT 1
 
-#define POPUP_WARN_TYPE_DEVIAN 0
-#define POPUP_WARN_TYPE_INFO 1
-#define POPUP_WARN_TYPE_INFO_DEVIAN 2
-#define POPUP_WARN_TYPE_INFO_TIMER 3
+#define POPUP_WARN_TYPE_INFO 0
+#define POPUP_WARN_TYPE_NEWS 1
+#define POPUP_WARN_TYPE_ERROR 2
 
 #define POPUP_WARN_EDJE_MESSAGE_SHOW_DESACTIVATE 0
+#define POPUP_WARN_EDJE_MESSAGE_TYPE 1
 
 #define POPUP_WARN_TIMER_DEFAULT 8
 #define POPUP_WARN_TIMER_MAX 60
@@ -24,24 +24,26 @@ typedef struct _Popup_Warn Popup_Warn;
 
 struct _Popup_Warn
 {
-   int type;
-
    const char *name;
+   int type;
    E_Popup *pop;
-   Evas_List *log;
    Evas_Object *face;
+   Evas_List *log;
+
    Ecore_Timer *timer;
+   DEVIANN *devian;
+   int (*func_close) (Popup_Warn *popw, void *data);
+   void (*func_desactivate) (Popup_Warn *popw, void *data);
+
    int timer_org;
    int x, y, w, h;
-   void *data;
 };
 
-int  DEVIANF(popup_warn_init) (void);
-void DEVIANF(popup_warn_shutdown) (void);
-int  DEVIANF(popup_warn_add) (Popup_Warn **popup_warn, int type, const char *text, void *data);
-void DEVIANF(popup_warn_del) (Popup_Warn *popw);
-void DEVIANF(popup_warn_devian_desactivate) (void);
-void DEVIANF(popup_warn_theme_change) (void);
+int         DEVIANF(popup_warn_init) (void);
+void        DEVIANF(popup_warn_shutdown) (void);
+Popup_Warn *DEVIANF(popup_warn_add) (int type, const char *text, Popup_Warn *popw_old, int keep_old, int timer, DEVIANN *devian, int (*func_close) (Popup_Warn *popw, void *data), void (*func_desactivate) (Popup_Warn *popw, void *data));
+void        DEVIANF(popup_warn_del) (Popup_Warn *popw);
+void        DEVIANF(popup_warn_theme_change) (void);
 
 #endif
 #endif

@@ -1,0 +1,6 @@
+program{
+	name: "update_anim_end";
+        script{
+                set_int(popup_in_update, 0);
+        }
+}

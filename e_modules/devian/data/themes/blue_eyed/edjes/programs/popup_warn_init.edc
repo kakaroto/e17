@@ -1,0 +1,9 @@
+program{
+	name:   "init";
+	signal: "load";
+	source: "";
+	script{
+		set_int(popup_type, POPUP_WARN_TYPE_NEWS);
+		set_int(popup_in_update, 0);
+	}
+}

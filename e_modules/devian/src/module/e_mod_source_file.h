@@ -18,11 +18,11 @@ struct _Source_File
    /* data file part */
 
    /* about the file parsing */
-   Ecore_List *blocks;/** <List of buffer blocks of the file in order  and object */
-   int lines_tot;/** <Number of lines buffered in blocks */
-   int new_blocks;/** <Number of new blocks from last update */
-   int hiligh_blocks;/** <Number of hilighted blocks */
-   Evas_Textblock_Cursor *hiligh_blocks_cur; /** <Cursor at the begining of updates hilighting */
+   Ecore_List *blocks;/** List of buffer blocks of the file in order  and object */
+   int lines_tot;/** Number of lines buffered in blocks */
+   int new_blocks;/** Number of new blocks from last update */
+   int hiligh_blocks;/** Number of hilighted blocks */
+   Evas_Textblock_Cursor *hiligh_blocks_cur; /** Cursor at the begining of updates hilighting */
    /* file and textblock */
    FILE *fd;
    Ecore_File_Monitor *monitor;

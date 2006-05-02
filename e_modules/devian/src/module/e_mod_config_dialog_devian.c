@@ -29,12 +29,16 @@ struct _E_Config_Dialog_Data
 #ifdef HAVE_FILE
    Source_File *s_file;
 #endif
-  /* basic */
+   /* basic */
    int container_box_size;
    int container_box_infos_show;
    int container_box_infos_pos;
    int container_box_allow_overlap;
    int container_box_alpha;
+#ifdef HAVE_PICTURE
+   int source_picture_timer;
+   int source_picture_timer_yn;
+#endif
 #ifdef HAVE_RSS
    Evas_Object *sources_rss_docs_ilist;
    Evas_Object *source_rss_tb;
@@ -50,14 +54,10 @@ struct _E_Config_Dialog_Data
    int source_file_news_hiligh;
    int source_file_news_popup;
 #endif
-  /* advanced */
+   /* advanced */
    int container_box_speed;
    int container_box_auto_resize;
    int container_box_animation;
-#ifdef HAVE_PICTURE
-   int source_picture_timer;
-   int source_picture_timer_yn;
-#endif
 #ifdef HAVE_RSS
    int source_rss_timer;
    int source_rss_timer_yn;
@@ -78,9 +78,9 @@ E_Config_Dialog *DEVIANF(config_dialog_devian) (E_Container *con, DEVIANN *devia
 
    /* if already open, return */
    if (devian->dialog_conf)
-      if (!e_object_is_del(E_OBJECT(devian->dialog_conf)))
-         if (e_object_ref_get(E_OBJECT(devian->dialog_conf)) > 0)
-            return NULL;
+     if (!e_object_is_del(E_OBJECT(devian->dialog_conf)))
+       if (e_object_ref_get(E_OBJECT(devian->dialog_conf)) > 0)
+         return NULL;
 
    v = E_NEW(E_Config_Dialog_View, 1);
 
@@ -163,30 +163,26 @@ _create_data(E_Config_Dialog *cfd)
 #endif
 
    if (devian->conf->container_type == CONTAINER_BOX)
-      cfdata->c_box = devian->container;
+     cfdata->c_box = devian->container;
 
-#ifdef HAVE_PICTURE
-   if (devian->conf->source_type == SOURCE_PICTURE)
-      cfdata->s_picture = devian->source;
-   else
+   switch(devian->conf->source_type)
      {
+#ifdef HAVE_PICTURE
+     case SOURCE_PICTURE:
+        cfdata->s_picture = devian->source;
+        break;
 #endif
 #ifdef HAVE_RSS
-        if (devian->conf->source_type == SOURCE_RSS)
-           cfdata->s_rss = devian->source;
-        else
-          {
+     case SOURCE_RSS:
+        cfdata->s_rss = devian->source;
+        break;
 #endif
 #ifdef HAVE_FILE
-             if (devian->conf->source_type == SOURCE_FILE)
-                cfdata->s_file = devian->source;
+     case SOURCE_FILE:
+        cfdata->s_file = devian->source;
+        break;
 #endif
-#ifdef HAVE_RSS
-          }
-#endif
-#ifdef HAVE_PICTURE
      }
-#endif
 
    _fill_data(cfdata);
 
@@ -219,47 +215,37 @@ _fill_data(E_Config_Dialog_Data *cfdata)
         cfdata->source_picture_timer_yn = d_conf->picture_timer_active;
         cfdata->source_picture_timer = d_conf->picture_timer_s;
      }
-   else
-     {
 #endif
 #ifdef HAVE_RSS
-        if (cfdata->s_rss)
+   if (cfdata->s_rss)
+     {
+        if (d_conf->rss_doc)
           {
-             if (d_conf->rss_doc)
-               {
-                  cfdata->source_rss_url = strdup(d_conf->rss_doc->url);
-                  cfdata->source_rss_doc = d_conf->rss_doc;
-               }
-             else
-               {
-                  cfdata->source_rss_url = strdup("");
-                  cfdata->source_rss_doc = NULL;
-               }
-             cfdata->source_rss_nb_items = d_conf->rss_nb_items;
-             cfdata->source_rss_timer_yn = d_conf->rss_timer_active;
-             cfdata->source_rss_timer = d_conf->rss_timer_s / 60;
-             cfdata->source_rss_popup_news = d_conf->rss_popup_news;
-             cfdata->source_rss_reverse = d_conf->rss_reverse;
+             cfdata->source_rss_url = strdup(d_conf->rss_doc->url);
+             cfdata->source_rss_doc = d_conf->rss_doc;
           }
         else
           {
+             cfdata->source_rss_url = strdup("");
+             cfdata->source_rss_doc = NULL;
+          }
+        cfdata->source_rss_nb_items = d_conf->rss_nb_items;
+        cfdata->source_rss_timer_yn = d_conf->rss_timer_active;
+        cfdata->source_rss_timer = d_conf->rss_timer_s / 60;
+        cfdata->source_rss_popup_news = d_conf->rss_popup_news;
+        cfdata->source_rss_reverse = d_conf->rss_reverse;
+     }
 #endif
 #ifdef HAVE_FILE
-             if (cfdata->s_file)
-               {
-		  if (d_conf->file_path)
-		     cfdata->source_file_path = strdup(d_conf->file_path);
-		  else
-		     cfdata->source_file_path = strdup("");
-		  cfdata->source_file_news_hiligh = d_conf->file_news_hiligh;
-		  cfdata->source_file_news_popup = d_conf->file_news_popup;
-                  cfdata->source_file_auto_scroll = d_conf->file_auto_scroll;
-               }
-#endif
-#ifdef HAVE_RSS
-          }
-#endif
-#ifdef HAVE_PICTURE
+   if (cfdata->s_file)
+     {
+        if (d_conf->file_path)
+          cfdata->source_file_path = strdup(d_conf->file_path);
+        else
+          cfdata->source_file_path = strdup("");
+        cfdata->source_file_news_hiligh = d_conf->file_news_hiligh;
+        cfdata->source_file_news_popup = d_conf->file_news_popup;
+        cfdata->source_file_auto_scroll = d_conf->file_auto_scroll;
      }
 #endif
 }
@@ -307,9 +293,18 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
              DEVIANF(container_box_gadman_policy_update) (devian->container);
           }
         if (cfdata->c_box->alpha != cfdata->container_box_alpha)
-           devian->container_func.alpha_set(devian->container, cfdata->container_box_alpha);
+          devian->container_func.alpha_set(devian->container, cfdata->container_box_alpha);
      }
 
+#ifdef HAVE_PICTURE
+   if (cfdata->s_picture)
+     {
+        if (devian->conf->picture_timer_active != cfdata->source_picture_timer_yn)
+          devian->source_func.timer_change(devian, cfdata->source_picture_timer_yn, cfdata->source_picture_timer);
+        else if (devian->conf->picture_timer_s != cfdata->source_picture_timer)
+          devian->source_func.timer_change(devian, devian->conf->picture_timer_active, cfdata->source_picture_timer);
+     }
+#endif
 #ifdef HAVE_RSS
    if (cfdata->s_rss)
      {
@@ -388,69 +383,57 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
              DEVIANF(container_box_gadman_policy_update) (devian->container);
           }
         if (cfdata->c_box->alpha != cfdata->container_box_alpha)
-           devian->container_func.alpha_set(devian->container, cfdata->container_box_alpha);
+          devian->container_func.alpha_set(devian->container, cfdata->container_box_alpha);
      }
-
-   /* advanced only */
 
 #ifdef HAVE_PICTURE
    if (cfdata->s_picture)
      {
         if (devian->conf->picture_timer_active != cfdata->source_picture_timer_yn)
-           devian->source_func.timer_change(devian, cfdata->source_picture_timer_yn, cfdata->source_picture_timer);
+          devian->source_func.timer_change(devian, cfdata->source_picture_timer_yn, cfdata->source_picture_timer);
         else if (devian->conf->picture_timer_s != cfdata->source_picture_timer)
-           devian->source_func.timer_change(devian, devian->conf->picture_timer_active, cfdata->source_picture_timer);
+          devian->source_func.timer_change(devian, devian->conf->picture_timer_active, cfdata->source_picture_timer);
      }
-   else
-     {
 #endif
 #ifdef HAVE_RSS
-        if (cfdata->s_rss)
+   if (cfdata->s_rss)
+     {
+        if (devian->conf->rss_doc != cfdata->source_rss_doc)
           {
-             if (devian->conf->rss_doc != cfdata->source_rss_doc)
-               {
-                  DEVIANF(data_rss_doc_set_new) (cfdata->s_rss->rss_feed, cfdata->source_rss_doc, NULL);
-               }
-             if (devian->conf->rss_nb_items != cfdata->source_rss_nb_items)
-               {
-                  devian->conf->rss_nb_items = cfdata->source_rss_nb_items;
-                  DEVIANF(data_rss_poll) (cfdata->s_rss->rss_feed, 0);
-               }
-             if (devian->conf->rss_timer_active != cfdata->source_rss_timer_yn)
-                devian->source_func.timer_change(devian, cfdata->source_rss_timer_yn, cfdata->source_rss_timer * 60);
-             else if (devian->conf->rss_timer_s != cfdata->source_rss_timer)
-                devian->source_func.timer_change(devian, devian->conf->rss_timer_active, cfdata->source_rss_timer * 60);
-             devian->conf->rss_popup_news = cfdata->source_rss_popup_news;
-             if (devian->conf->rss_reverse != cfdata->source_rss_reverse)
-               {
-                  devian->conf->rss_reverse = cfdata->source_rss_reverse;
-                  devian->source_func.gui_update(devian);
-               }
+             DEVIANF(data_rss_doc_set_new) (cfdata->s_rss->rss_feed, cfdata->source_rss_doc, NULL);
           }
-        else
+        if (devian->conf->rss_nb_items != cfdata->source_rss_nb_items)
           {
+             devian->conf->rss_nb_items = cfdata->source_rss_nb_items;
+             DEVIANF(data_rss_poll) (cfdata->s_rss->rss_feed, 0);
+          }
+        if (devian->conf->rss_timer_active != cfdata->source_rss_timer_yn)
+          devian->source_func.timer_change(devian, cfdata->source_rss_timer_yn, cfdata->source_rss_timer * 60);
+        else if (devian->conf->rss_timer_s != cfdata->source_rss_timer)
+          devian->source_func.timer_change(devian, devian->conf->rss_timer_active, cfdata->source_rss_timer * 60);
+        devian->conf->rss_popup_news = cfdata->source_rss_popup_news;
+        if (devian->conf->rss_reverse != cfdata->source_rss_reverse)
+          {
+             devian->conf->rss_reverse = cfdata->source_rss_reverse;
+             devian->source_func.gui_update(devian);
+          }
+     }
 #endif
 #ifdef HAVE_FILE
-             if (cfdata->s_file)
+   if (cfdata->s_file)
+     {
+        if (!e_config->cfgdlg_auto_apply)
+          {
+             if (strcmp(devian->conf->file_path, cfdata->source_file_path))
                {
-                  if (!e_config->cfgdlg_auto_apply)
-                    {
-                       if (strcmp(devian->conf->file_path, cfdata->source_file_path))
-                         {
-                            evas_stringshare_del(devian->conf->file_path);
-                            devian->conf->file_path = evas_stringshare_add(cfdata->source_file_path);
-                            devian->source_func.refresh(devian, 0);
-                         }
-                    }
-		  devian->conf->file_news_hiligh = cfdata->source_file_news_hiligh;
-		  devian->conf->file_news_popup = cfdata->source_file_news_popup;
-                  devian->conf->file_auto_scroll = cfdata->source_file_auto_scroll;
+                  evas_stringshare_del(devian->conf->file_path);
+                  devian->conf->file_path = evas_stringshare_add(cfdata->source_file_path);
+                  devian->source_func.refresh(devian, 0);
                }
-#endif
-#ifdef HAVE_RSS
           }
-#endif
-#ifdef HAVE_PICTURE
+        devian->conf->file_news_hiligh = cfdata->source_file_news_hiligh;
+        devian->conf->file_news_popup = cfdata->source_file_news_popup;
+        devian->conf->file_auto_scroll = cfdata->source_file_auto_scroll;
      }
 #endif
 
@@ -493,68 +476,65 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 #ifdef HAVE_PICTURE
    if (cfdata->s_picture)
      {
-
+        of = e_widget_frametable_add(evas, _("Picture"), 0);
+        ob = e_widget_check_add(evas, _("Change pictures"), &(cfdata->source_picture_timer_yn));
+        e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 1, 1);
+        ob = e_widget_label_add(evas, _("Timer"));
+        e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 1, 1);
+        ob = e_widget_slider_add(evas, 1, 0, _("%1.0fs"), 3.0, 300.0, 5.0, 0, NULL, &(cfdata->source_picture_timer), 100);
+        e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 0, 1, 0);
+        e_widget_table_object_append(o, of, 1, 0, 1, 1, 1, 1, 1, 1);
      }
-   else
-     {
 #endif
 #ifdef HAVE_RSS
-        if (cfdata->s_rss)
-          {
-             of = e_widget_frametable_add(evas, _("Rss"), 0);
+   if (cfdata->s_rss)
+     {
+        of = e_widget_frametable_add(evas, _("Rss"), 0);
 
-             ob = e_widget_textblock_add(evas);
-             cfdata->source_rss_tb = ob;
-             e_widget_min_size_set(ob, 100, 55);
-             e_widget_frametable_object_append(of, ob, 0, 0, 3, 1, 1, 1, 1, 1);
-             ob = e_widget_ilist_add(evas, 0, 0, &(cfdata->source_rss_url));
-             cfdata->sources_rss_docs_ilist = ob;
-             e_widget_ilist_selector_set(ob, 1);
-             e_widget_min_size_set(ob, 100, 130);
-             _ilist_rss_docs_append(cfd, ob, DEVIANM->conf->sources_rss_docs);
-             e_widget_ilist_go(ob);
-             e_widget_frametable_object_append(of, ob, 0, 1, 3, 1, 1, 1, 1, 1);
-             ob = e_widget_button_add(evas, "Add", NULL, _cb_button_rss_doc_add, cfd, NULL);
-             e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 1, 1, 1);
-             ob = e_widget_button_add(evas, "Edit", NULL, _cb_button_rss_doc_edit, cfd, NULL);
-             e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 1, 1, 1);
-             ob = e_widget_button_add(evas, "Del", NULL, _cb_button_rss_doc_del, cfd, NULL);
-             e_widget_frametable_object_append(of, ob, 2, 2, 1, 1, 1, 1, 1, 1);
+        ob = e_widget_textblock_add(evas);
+        cfdata->source_rss_tb = ob;
+        e_widget_min_size_set(ob, 100, 55);
+        e_widget_frametable_object_append(of, ob, 0, 0, 3, 1, 1, 1, 1, 1);
+        ob = e_widget_ilist_add(evas, 0, 0, &(cfdata->source_rss_url));
+        cfdata->sources_rss_docs_ilist = ob;
+        e_widget_ilist_selector_set(ob, 1);
+        e_widget_min_size_set(ob, 100, 130);
+        _ilist_rss_docs_append(cfd, ob, DEVIANM->conf->sources_rss_docs);
+        e_widget_ilist_go(ob);
+        e_widget_frametable_object_append(of, ob, 0, 1, 3, 1, 1, 1, 1, 1);
+        ob = e_widget_button_add(evas, "Add", NULL, _cb_button_rss_doc_add, cfd, NULL);
+        e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 1, 1, 1);
+        ob = e_widget_button_add(evas, "Edit", NULL, _cb_button_rss_doc_edit, cfd, NULL);
+        e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 1, 1, 1);
+        ob = e_widget_button_add(evas, "Del", NULL, _cb_button_rss_doc_del, cfd, NULL);
+        e_widget_frametable_object_append(of, ob, 2, 2, 1, 1, 1, 1, 1, 1);
 
-             ob = e_widget_label_add(evas, _("Nb items"));
-             e_widget_frametable_object_append(of, ob, 0, 3, 1, 1, 1, 1, 1, 1);
-             ob = e_widget_slider_add(evas, 1, 0, _("%1.0f"), 1.0, 20.0, 1.0, 0, NULL, &(cfdata->source_rss_nb_items), 90);
-             e_widget_frametable_object_append(of, ob, 1, 3, 2, 1, 1, 0, 1, 0);
-             if (DEVIANM->conf->sources_rss_popup_news)
-                ob = e_widget_check_add(evas, _("News popup"), &(cfdata->source_rss_popup_news));
-             else
-                ob = e_widget_check_add(evas, _("News popup [desactivated]"), &(cfdata->source_rss_popup_news));
-             e_widget_frametable_object_append(of, ob, 0, 4, 2, 1, 1, 1, 1, 1);
-             e_widget_table_object_append(o, of, 1, 0, 1, 1, 1, 1, 1, 1);
-          }
+        ob = e_widget_label_add(evas, _("Nb items"));
+        e_widget_frametable_object_append(of, ob, 0, 3, 1, 1, 1, 1, 1, 1);
+        ob = e_widget_slider_add(evas, 1, 0, _("%1.0f"), 1.0, 20.0, 1.0, 0, NULL, &(cfdata->source_rss_nb_items), 90);
+        e_widget_frametable_object_append(of, ob, 1, 3, 2, 1, 1, 0, 1, 0);
+        if (DEVIANM->conf->sources_rss_popup_news)
+          ob = e_widget_check_add(evas, _("News popup"), &(cfdata->source_rss_popup_news));
         else
-          {
+          ob = e_widget_check_add(evas, _("News popup [desactivated]"), &(cfdata->source_rss_popup_news));
+        e_widget_frametable_object_append(of, ob, 0, 4, 2, 1, 1, 1, 1, 1);
+        e_widget_table_object_append(o, of, 1, 0, 1, 1, 1, 1, 1, 1);
+     }
 #endif
 #ifdef HAVE_FILE
-             if (cfdata->s_file)
-               {
-                  of = e_widget_frametable_add(evas, _("File Log"), 0);
-                  ob = e_widget_label_add(evas, _("Path"));
-                  e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 1, 1);
-                  ob = e_widget_entry_add(evas, &(cfdata->source_file_path));
-                  e_widget_min_size_set(ob, 100, 1);
-                  e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 1, 1);
-		  ob = e_widget_check_add(evas, _("Updates hiligh"), &(cfdata->source_file_news_hiligh));
-		  e_widget_frametable_object_append(of, ob, 0, 1, 2, 1, 1, 1, 1, 1);
-		  ob = e_widget_check_add(evas, _("Updates popup"), &(cfdata->source_file_news_popup));
-		  e_widget_frametable_object_append(of, ob, 0, 2, 2, 1, 1, 1, 1, 1);
-                  e_widget_table_object_append(o, of, 1, 0, 1, 1, 1, 1, 1, 1);
-               }
-#endif
-#ifdef HAVE_RSS
-          }
-#endif
-#ifdef HAVE_PICTURE
+   if (cfdata->s_file)
+     {
+        of = e_widget_frametable_add(evas, _("File Log"), 0);
+        ob = e_widget_label_add(evas, _("Path"));
+        e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 1, 1);
+        ob = e_widget_entry_add(evas, &(cfdata->source_file_path));
+        e_widget_min_size_set(ob, 100, 1);
+        e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 1, 1);
+        ob = e_widget_check_add(evas, _("Updates hiligh"), &(cfdata->source_file_news_hiligh));
+        e_widget_frametable_object_append(of, ob, 0, 1, 2, 1, 1, 1, 1, 1);
+        ob = e_widget_check_add(evas, _("Updates popup"), &(cfdata->source_file_news_popup));
+        e_widget_frametable_object_append(of, ob, 0, 2, 2, 1, 1, 1, 1, 1);
+        e_widget_table_object_append(o, of, 1, 0, 1, 1, 1, 1, 1, 1);
      }
 #endif
 
@@ -622,78 +602,68 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
         e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 0, 1, 0);
         e_widget_table_object_append(o, of, 1, 0, 1, 1, 1, 1, 1, 1);
      }
-   else
-     {
 #endif
 #ifdef HAVE_RSS
-        if (cfdata->s_rss)
-          {
-             of = e_widget_frametable_add(evas, _("Rss"), 0);
+   if (cfdata->s_rss)
+     {
+        of = e_widget_frametable_add(evas, _("Rss"), 0);
 
-             ob = e_widget_textblock_add(evas);
-             cfdata->source_rss_tb = ob;
-             e_widget_min_size_set(ob, 100, 55);
-             e_widget_frametable_object_append(of, ob, 0, 0, 3, 1, 1, 1, 1, 1);
-             ob = e_widget_ilist_add(evas, 0, 0, &(cfdata->source_rss_url));
-             cfdata->sources_rss_docs_ilist = ob;
-             e_widget_ilist_selector_set(ob, 1);
-             e_widget_min_size_set(ob, 100, 100);
-             _ilist_rss_docs_append(cfd, ob, DEVIANM->conf->sources_rss_docs);
-             e_widget_ilist_go(ob);
-             e_widget_frametable_object_append(of, ob, 0, 1, 3, 1, 1, 1, 1, 1);
-             ob = e_widget_button_add(evas, "Add", NULL, _cb_button_rss_doc_add, cfd, NULL);
-             e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 1, 1, 1);
-             ob = e_widget_button_add(evas, "Edit", NULL, _cb_button_rss_doc_edit, cfd, NULL);
-             e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 1, 1, 1);
-             ob = e_widget_button_add(evas, "Del", NULL, _cb_button_rss_doc_del, cfd, NULL);
-             e_widget_frametable_object_append(of, ob, 2, 2, 1, 1, 1, 1, 1, 1);
+        ob = e_widget_textblock_add(evas);
+        cfdata->source_rss_tb = ob;
+        e_widget_min_size_set(ob, 100, 55);
+        e_widget_frametable_object_append(of, ob, 0, 0, 3, 1, 1, 1, 1, 1);
+        ob = e_widget_ilist_add(evas, 0, 0, &(cfdata->source_rss_url));
+        cfdata->sources_rss_docs_ilist = ob;
+        e_widget_ilist_selector_set(ob, 1);
+        e_widget_min_size_set(ob, 100, 100);
+        _ilist_rss_docs_append(cfd, ob, DEVIANM->conf->sources_rss_docs);
+        e_widget_ilist_go(ob);
+        e_widget_frametable_object_append(of, ob, 0, 1, 3, 1, 1, 1, 1, 1);
+        ob = e_widget_button_add(evas, "Add", NULL, _cb_button_rss_doc_add, cfd, NULL);
+        e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 1, 1, 1);
+        ob = e_widget_button_add(evas, "Edit", NULL, _cb_button_rss_doc_edit, cfd, NULL);
+        e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 1, 1, 1);
+        ob = e_widget_button_add(evas, "Del", NULL, _cb_button_rss_doc_del, cfd, NULL);
+        e_widget_frametable_object_append(of, ob, 2, 2, 1, 1, 1, 1, 1, 1);
 
-             ob = e_widget_label_add(evas, _("Nb items"));
-             e_widget_frametable_object_append(of, ob, 0, 3, 1, 1, 1, 1, 1, 1);
-             ob = e_widget_slider_add(evas, 1, 0, _("%1.0f"), 1.0, 20.0, 1.0, 0, NULL, &(cfdata->source_rss_nb_items), 90);
-             e_widget_frametable_object_append(of, ob, 1, 3, 2, 1, 1, 0, 1, 0);
-             if (DEVIANM->conf->sources_rss_popup_news)
-                ob = e_widget_check_add(evas, _("News popup"), &(cfdata->source_rss_popup_news));
-             else
-                ob = e_widget_check_add(evas, _("News popup [desactivated]"), &(cfdata->source_rss_popup_news));
-             e_widget_frametable_object_append(of, ob, 0, 4, 2, 1, 1, 1, 1, 1);
-             ob = e_widget_check_add(evas, _("Update RSS"), &(cfdata->source_rss_timer_yn));
-             e_widget_frametable_object_append(of, ob, 0, 5, 2, 1, 1, 1, 1, 1);
-             ob = e_widget_label_add(evas, _("Update timer"));
-             e_widget_frametable_object_append(of, ob, 0, 6, 1, 1, 1, 1, 1, 1);
-             ob =
-                e_widget_slider_add(evas, 1, 0, _("%1.0f min"), (float)SOURCE_RSS_UPDATE_RATE_MIN / 60,
-                                    (float)SOURCE_RSS_UPDATE_RATE_MAX / 60, 1.0, 0, NULL, &(cfdata->source_rss_timer), 90);
-             e_widget_frametable_object_append(of, ob, 1, 6, 2, 1, 1, 0, 1, 0);
-             ob = e_widget_check_add(evas, _("Show the feed in reverse order"), &(cfdata->source_rss_reverse));
-             e_widget_frametable_object_append(of, ob, 0, 7, 2, 1, 1, 1, 1, 1);
-             e_widget_table_object_append(o, of, 1, 0, 1, 1, 1, 1, 1, 1);
-          }
+        ob = e_widget_label_add(evas, _("Nb items"));
+        e_widget_frametable_object_append(of, ob, 0, 3, 1, 1, 1, 1, 1, 1);
+        ob = e_widget_slider_add(evas, 1, 0, _("%1.0f"), 1.0, 20.0, 1.0, 0, NULL, &(cfdata->source_rss_nb_items), 90);
+        e_widget_frametable_object_append(of, ob, 1, 3, 2, 1, 1, 0, 1, 0);
+        if (DEVIANM->conf->sources_rss_popup_news)
+          ob = e_widget_check_add(evas, _("News popup"), &(cfdata->source_rss_popup_news));
         else
-          {
+          ob = e_widget_check_add(evas, _("News popup [desactivated]"), &(cfdata->source_rss_popup_news));
+        e_widget_frametable_object_append(of, ob, 0, 4, 2, 1, 1, 1, 1, 1);
+        ob = e_widget_check_add(evas, _("Update RSS"), &(cfdata->source_rss_timer_yn));
+        e_widget_frametable_object_append(of, ob, 0, 5, 2, 1, 1, 1, 1, 1);
+        ob = e_widget_label_add(evas, _("Update timer"));
+        e_widget_frametable_object_append(of, ob, 0, 6, 1, 1, 1, 1, 1, 1);
+        ob =
+           e_widget_slider_add(evas, 1, 0, _("%1.0f min"), (float)SOURCE_RSS_UPDATE_RATE_MIN / 60,
+                               (float)SOURCE_RSS_UPDATE_RATE_MAX / 60, 1.0, 0, NULL, &(cfdata->source_rss_timer), 90);
+        e_widget_frametable_object_append(of, ob, 1, 6, 2, 1, 1, 0, 1, 0);
+        ob = e_widget_check_add(evas, _("Show the feed in reverse order"), &(cfdata->source_rss_reverse));
+        e_widget_frametable_object_append(of, ob, 0, 7, 2, 1, 1, 1, 1, 1);
+        e_widget_table_object_append(o, of, 1, 0, 1, 1, 1, 1, 1, 1);
+     }
 #endif
 #ifdef HAVE_FILE
-             if (cfdata->s_file)
-               {
-                  of = e_widget_frametable_add(evas, _("File Log"), 0);
-                  ob = e_widget_label_add(evas, _("Path"));
-                  e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 1, 1);
-                  ob = e_widget_entry_add(evas, &(cfdata->source_file_path));
-                  e_widget_min_size_set(ob, 100, 1);
-                  e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 1, 1);
-                  ob = e_widget_check_add(evas, _("Auto scroll when updates"), &(cfdata->source_file_auto_scroll));
-                  e_widget_frametable_object_append(of, ob, 0, 1, 2, 1, 1, 1, 1, 1);
-		  ob = e_widget_check_add(evas, _("Updates hiligh"), &(cfdata->source_file_news_hiligh));
-		  e_widget_frametable_object_append(of, ob, 0, 2, 2, 1, 1, 1, 1, 1);
-		  ob = e_widget_check_add(evas, _("Updates popup"), &(cfdata->source_file_news_popup));
-		  e_widget_frametable_object_append(of, ob, 0, 3, 2, 1, 1, 1, 1, 1);
-                  e_widget_table_object_append(o, of, 1, 0, 1, 1, 1, 1, 1, 1);
-               }
-#endif
-#ifdef HAVE_RSS
-          }
-#endif
-#ifdef HAVE_PICTURE
+   if (cfdata->s_file)
+     {
+        of = e_widget_frametable_add(evas, _("File Log"), 0);
+        ob = e_widget_label_add(evas, _("Path"));
+        e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 1, 1);
+        ob = e_widget_entry_add(evas, &(cfdata->source_file_path));
+        e_widget_min_size_set(ob, 100, 1);
+        e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 1, 1);
+        ob = e_widget_check_add(evas, _("Auto scroll when updates"), &(cfdata->source_file_auto_scroll));
+        e_widget_frametable_object_append(of, ob, 0, 1, 2, 1, 1, 1, 1, 1);
+        ob = e_widget_check_add(evas, _("Updates hiligh"), &(cfdata->source_file_news_hiligh));
+        e_widget_frametable_object_append(of, ob, 0, 2, 2, 1, 1, 1, 1, 1);
+        ob = e_widget_check_add(evas, _("Updates popup"), &(cfdata->source_file_news_popup));
+        e_widget_frametable_object_append(of, ob, 0, 3, 2, 1, 1, 1, 1, 1);
+        e_widget_table_object_append(o, of, 1, 0, 1, 1, 1, 1, 1, 1);
      }
 #endif
 
@@ -718,11 +688,11 @@ _ilist_rss_docs_append(E_Config_Dialog *cfd, Evas_Object *il, Evas_List *list)
         odoc = evas_list_data(l);
         e_widget_ilist_append(il, NULL, (char *)odoc->name, _ilist_cb_rss_doc_selected, cfd, (char *)odoc->url);
         if (cfdata->d_conf->rss_url)
-           if (!strcmp(odoc->url, cfdata->d_conf->rss_url))
-             {
-                e_widget_ilist_selected_set(il, i);
-                _ilist_cb_rss_doc_selected(cfd);
-             }
+          if (!strcmp(odoc->url, cfdata->d_conf->rss_url))
+            {
+               e_widget_ilist_selected_set(il, i);
+               _ilist_cb_rss_doc_selected(cfd);
+            }
         i++;
      }
 }
@@ -748,9 +718,9 @@ _ilist_cb_rss_doc_selected(void *data)
 
         /* set it in panel infos tb */
         if (doc->description)
-           snprintf(buf, sizeof(buf), "<underline=on underline_color=#000>%s</><br>%s", doc->url, doc->description);
+          snprintf(buf, sizeof(buf), "<underline=on underline_color=#000>%s</><br>%s", doc->url, doc->description);
         else
-           snprintf(buf, sizeof(buf), "<underline=on underline_color=#000>%s</><br><i>No description</>", doc->url);
+          snprintf(buf, sizeof(buf), "<underline=on underline_color=#000>%s</><br><i>No description</>", doc->url);
         e_widget_textblock_markup_set(cfdata->source_rss_tb, buf);
      }
 }
@@ -767,7 +737,7 @@ _cb_button_rss_doc_add(void *data, void *data2)
    doc = DEVIANF(data_rss_doc_new) (NULL, 0);
 
    if ((cfd = DEVIANF(config_dialog_rss) (doc, devian)))
-      devian->dialog_conf_rss = cfd;
+     devian->dialog_conf_rss = cfd;
 }
 
 static void
@@ -784,10 +754,10 @@ _cb_button_rss_doc_edit(void *data, void *data2)
    doc = cfdata->source_rss_doc;
 
    if (!cfdata->source_rss_doc)
-      return;
+     return;
 
    if ((cfd = DEVIANF(config_dialog_rss) (doc, devian)))
-      devian->dialog_conf_rss = cfd;
+     devian->dialog_conf_rss = cfd;
 }
 
 static void
@@ -802,7 +772,7 @@ _cb_button_rss_doc_del(void *data, void *data2)
    doc = cfdata->source_rss_doc;
 
    if (!cfdata->source_rss_doc)
-      return;
+     return;
 
    if (!doc->user)
      {

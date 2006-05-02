@@ -40,6 +40,8 @@ struct _Rss_Feed
 
    Ecore_List *list_articles0;
    Ecore_List *list_articles1;
+
+   Popup_Warn *popup_warn;
 };
 
 struct _Rss_Doc
@@ -78,6 +80,8 @@ Evas_Object *DEVIANF(data_rss_object_create) (Rss_Article *article);
 void         DEVIANF(data_rss_article_free) (Rss_Article *article);
 
 int          DEVIANF(data_rss_gui_update) (DEVIANN *devian);
+
+void         DEVIANF(data_rss_popup_desactivate) (void);
 
 #endif
 #endif

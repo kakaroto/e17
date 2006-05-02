@@ -13,6 +13,7 @@ Priorities
 	S : Not verry important
 
 Debug defines
+        DEBUG (for tmp debug things)
 	DEBUG_MAIN
 	DEBUG_POPUP_WARN
 	DEBUG_SOURCE
@@ -24,7 +25,7 @@ Debug defines
 	DEBUG_DATA_FILE
 
 Debug compil
-	make install CFLAGS="-g -Wall -DDEBUG_MAIN -DDEBUG_POPUP_WARN -DDEBUG_SOURCE -DDEBUG_CONTAINER
+	make install CFLAGS="-g -Wall -DDEBUG -DDEBUG_MAIN -DDEBUG_POPUP_WARN -DDEBUG_SOURCE -DDEBUG_CONTAINER
 	-DDEBUG_DATA_PICTURE -DDEBUG_DATA_CACHE -DDEBUG_DATA_RSS -DDEBUG_DATA_RSS_PARSER -DDEBUG_DATA_FILE"
 
 --------------------------------------------------------------------------------
@@ -339,6 +340,25 @@ TODO CODE (order)
    to see when there's something to display (own ecore_event)
  * Disable .edj load in pictures for the moment
  * Fix 'don't load hidden files' option
+ * Indent with E style
+ * Change popup_warn subsystem to somthing that
+   Support all kind of clients
+   Support error and info types
+   More flexible and nice
+ * Remove message "cant get source size" * nb_devians
+   When pictures are not ready. Its a normal thing
+ * Something better for loading / thumbnailing picture message
+ * Check if the module is still loaded when back from thumb generation
+   and dequeue picture from thumb gen when list local shutdown / regen
+ * Stop all old loading / thumbnailing when changing picture directory
+ * Memory corruption fix
+ * Popup options for pictures
+ * Thumb gen doesnt work after a stop :D generate_end pb ?
+ * Picture popup desactivate via popup click
+ - Evas patch : typo for evas_list_remove_list doc, 'note' instead of 'node'
+ - E patch : Bug in e_thumb
+   * _cb_exe_exit when e_thumb_generate_end, pid -1
+   - kill proc when shutdown
 
  / Source file (log)
    * Read the last lines of a file (data_file_update)
@@ -348,25 +368,12 @@ TODO CODE (order)
    - Use Retlines, do not cut in the middle of a line
    - Popup
 
- - e_mod_data_rss.c 937 free ts ?
-
- - Modify popup_warn devian to be not rss only -> changes in rss too
-     Args (popup_warn_add) :
-       - text
-       - (popup_warn_old)
-       - (timer)
-       - (devian)
-
- - Something better for loading / thumbnailing picture message
-   Message in a corner during all pictures loading
-     (close on click, refresh / 500 pictures and on end)
-   Popup for thumbnailing, one popup per thumb ?
+ - More error popups
 
  - Rss News hiligh when url == null
  - ? Bug in the config ? When updating ?
- - Ident functions in .h
 
- - Container Box option to keep width / heigh
+ - Multiple path for pictures, ';' to separate paths
  - Double click to open viewer
 
  - Charsets (ecore_txt :D)
@@ -389,13 +396,19 @@ TODO CODE (order)
  - RELEASE 0.2.0
 
  - Gadman -> Gadcon
- - dEvian has to avoid other modules
- - RSS Box auto resize
+   - Container Box option to keep width / heigh
+   - dEvian has to avoid other modules
+   - RSS Box auto resize
+ - User enable butons he wants on a devian, != for each type of source
+   enable/disable all
+   add open viewer
+
  - Check changes in config dialog management (close & only one per type)
+
+ - Just add color_class: "nameofclass"; in the parts that you want color_classed 
 
  - Source file : pattern watch ! hihi =)
 
- - Just add color_class: "nameofclass"; in the parts that you want color_classed 
 
  - RPM build (cvs)
  - Use same way than e_int_config_background_import to set the background when no e17setroot
@@ -409,7 +422,7 @@ TODO CODE (order)
 
  - mhb_cze, #e : Multiple rss in one windows, talk svn account
  - Box animation boing boing
- - Picture Historic list
+ - Picture Historic list show
  - Change text color (edje_color_class ?)
  - ? Rename a picture ?
  - evas_object_smart for box ?

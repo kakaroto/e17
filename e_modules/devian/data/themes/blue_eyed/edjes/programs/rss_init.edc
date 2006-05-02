@@ -6,4 +6,3 @@ program{
 		set_int(item_new, 0);
 	}
 }
-

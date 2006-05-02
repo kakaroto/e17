@@ -11,6 +11,11 @@
 #define MSG_RECV_ITEM_STATE 0
 
 #define MSG_RECV_POPUP_WARN_SHOW_DISABLE 0
+#define MSG_RECV_POPUP_WARN_TYPE 1
+
+#define POPUP_WARN_TYPE_NEWS 0
+#define POPUP_WARN_TYPE_INFO 1
+#define POPUP_WARN_TYPE_ERROR 2
 
 #define INFOS_POS_DEFAULT 2
 #define INFOS_POS_TOP 1
@@ -38,6 +43,9 @@ images{
 	image: "images/popup_close.png" COMP;
 	image: "images/popup_disable.png" COMP;
 	image: "images/popup_disable_clicked.png" COMP;
+	image: "images/popup_logo_news.png" COMP;
+	image: "images/popup_logo_info.png" COMP;
+	image: "images/popup_logo_error.png" COMP;
 
 //	image: "images/rss_background.png" COMP;
 //	image: "images/rss_background_selected.png" COMP;
@@ -64,7 +72,7 @@ fonts{
 	font: "fonts/VeraBd.ttf" "VeraBd";
 }
 data{
-	item: "version" "2";
+	item: "version" "3";
 }
 
 collections{

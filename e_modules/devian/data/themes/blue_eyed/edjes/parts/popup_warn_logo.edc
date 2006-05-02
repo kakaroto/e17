@@ -17,12 +17,42 @@ part{
 			offset: 0 78;
 		}
 		image{
-			normal: "images/logo.png";
+			normal: "images/popup_logo_news.png";
+		}
+	}
+        description{
+                state: "info" 0.0;
+                inherit: "default" 0.0;
+       		image{
+			normal: "images/popup_logo_info.png";
+		}
+        }
+        description{
+                state: "error" 0.0;
+                inherit: "default" 0.0;
+       		image{
+			normal: "images/popup_logo_error.png";
+		}
+        }
+	description{
+		state: "news_hidden" 0.0;
+		inherit: "default" 0.0;
+		color: 255 255 255 0;
+	}
+	description{
+		state: "info_hidden" 0.0;
+	       	inherit: "default" 0.0;
+		color: 255 255 255 0;
+       		image{
+			normal: "images/popup_logo_info.png";
 		}
 	}
 	description{
-		state: "hidden" 0.0;
-		inherit: "default" 0.0;
+		state: "error_hidden" 0.0;
+	       	inherit: "default" 0.0;
 		color: 255 255 255 0;
+       		image{
+			normal: "images/popup_logo_error.png";
+		}
 	}
 }

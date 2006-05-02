@@ -23,10 +23,25 @@ typedef struct _Picture_Event_List_Fill Picture_Event_List_Fill;
 #define DATA_PICTURE_IMPORT_RECURSIVE_DEFAULT 0
 #define DATA_PICTURE_IMPORT_HIDDEN_DEFAULT 0
 
+#define DATA_PICTURE_THUMB_POPUP_MOD 250
+#define DATA_PICTURE_LOADER_POPUP_MOD 500
+#define DATA_PICTURE_LOADER_POPUP_TIME 2
+#define DATA_PICTURE_THUMB_POPUP_TIME 2
+
+#define DATA_PICTURE_POPUP_WHEN_DEFAULT 2
+#define DATA_PICTURE_POPUP_WHEN_NEVER 0
+#define DATA_PICTURE_POPUP_WHEN_SUM 1
+#define DATA_PICTURE_POPUP_WHEN_ALWAYS 2
+
 struct _Picture_List_Local
 {
    Evas_List *pictures;
-   int nb_pictures_waiting;
+
+   /* thumb */
+   int thumb_pictures_nb;
+   Evas_List *thumb_pictures;
+   Popup_Warn *thumb_popup;
+   int thumb_popup_show;
 
    /* ecore idler to load in background */
    struct
@@ -35,6 +50,7 @@ struct _Picture_List_Local
       Evas_List *path;
       char *dir;
       Ecore_List *file;
+      Popup_Warn *popup;
    } loader;
 
    /* to warn dEvians wich are waiting for pictures */

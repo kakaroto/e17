@@ -1,0 +1,6 @@
+program{
+	name: "update_anim_error_1";
+	action: STATE_SET "error" 0.0;
+	transition: DECELERATE 1;
+	target: "logo";
+}

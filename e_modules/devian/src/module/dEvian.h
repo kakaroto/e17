@@ -57,6 +57,11 @@
 #include "dEvian_includes.h"
 
 /* Debuging things */
+#ifdef DEBUG
+#define DD(x)  do {printf("DD <F4> %s:%d: ", __FILE__, __LINE__); printf x; printf("\n"); fflush(stdout);} while (0)
+#else
+# define DD(x)   ((void) 0)
+#endif
 #ifdef DEBUG_MAIN
 # define DMAIN(x)  do {printf("MAIN - %s:%d:  ", __FILE__, __LINE__); printf x; printf("\n"); fflush(stdout);} while (0)
 #else

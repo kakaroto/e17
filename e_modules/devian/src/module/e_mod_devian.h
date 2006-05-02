@@ -138,7 +138,6 @@ struct _dEvian
    } container_func;
 
    int size_policy;
-   Popup_Warn *popup_warn;
 
    /* the devian is going to die */
    int dying;

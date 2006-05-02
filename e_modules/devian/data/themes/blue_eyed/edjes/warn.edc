@@ -12,11 +12,18 @@ group{
 		#include "parts/popup_warn_disable.edc"
 	}
 	programs{
+                #include "programs/popup_warn_init.edc"
 		#include "programs/popup_warn_close_click.edc"
 		#include "programs/popup_warn_disable_click.edc"
 		#include "programs/popup_warn_disable_click_1.edc"
 		#include "programs/popup_warn_background_click.edc"
 		#include "programs/popup_warn_update_anim.edc"
-		#include "programs/popup_warn_update_anim_1.edc"
+		#include "programs/popup_warn_update_anim_news.edc"
+		#include "programs/popup_warn_update_anim_news_1.edc"
+		#include "programs/popup_warn_update_anim_info.edc"
+		#include "programs/popup_warn_update_anim_info_1.edc"
+		#include "programs/popup_warn_update_anim_error.edc"
+		#include "programs/popup_warn_update_anim_error_1.edc"
+		#include "programs/popup_warn_update_anim_end.edc"
 	}
 }

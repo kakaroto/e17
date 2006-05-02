@@ -31,9 +31,9 @@ E_Config_Dialog *DEVIANF(config_dialog_rss) (Rss_Doc *doc, DEVIANN *devian)
 
    /* if was alreay open, return */
    if (devian->dialog_conf_rss)
-      if (!e_object_is_del(E_OBJECT(devian->dialog_conf_rss)))
-         if (e_object_ref_get(E_OBJECT(devian->dialog_conf_rss)) > 0)
-            return NULL;
+     if (!e_object_is_del(E_OBJECT(devian->dialog_conf_rss)))
+       if (e_object_ref_get(E_OBJECT(devian->dialog_conf_rss)) > 0)
+         return NULL;
 
    v = E_NEW(E_Config_Dialog_View, 1);
 
@@ -87,13 +87,13 @@ _fill_data(Rss_Doc *doc, E_Config_Dialog_Data *cfdata)
 {
    cfdata->url = strdup(doc->url);
    if (doc->name)
-      cfdata->name = strdup(doc->name);
+     cfdata->name = strdup(doc->name);
    else
-      cfdata->name = strdup("");
+     cfdata->name = strdup("");
    if (doc->description)
-      cfdata->description = strdup(doc->description);
+     cfdata->description = strdup(doc->description);
    else
-      cfdata->description = strdup("");
+     cfdata->description = strdup("");
    cfdata->w_name = doc->w_name;
    cfdata->w_description = doc->w_description;
 }
@@ -106,7 +106,7 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    doc = cfd->data;
    /* if still new, free doc */
    if (doc->state == DATA_RSS_DOC_STATE_NEW)
-      DEVIANF(data_rss_doc_free) (doc, 0, 1);
+     DEVIANF(data_rss_doc_free) (doc, 0, 1);
 
    E_FREE(cfdata->url);
    E_FREE(cfdata->name);
@@ -170,7 +170,7 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
         if (doc->state == DATA_RSS_DOC_STATE_NEW)
           {
              if (!DEVIANF(data_rss_doc_new) (doc, 1))
-                return 1;
+               return 1;
              DEVIANF(config_dialog_devian_rss_doc_update) (doc);
           }
         else
@@ -178,10 +178,10 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
              if (doc->state == DATA_RSS_DOC_STATE_USABLE)
                {
                   if (!DEVIANF(data_rss_doc_new) (doc, 0))
-                     return 1;
+                    return 1;
                   DEVIANF(config_dialog_devian_rss_doc_update) (doc);
                   if (!e_config->cfgdlg_auto_apply && need_poll && doc->user)
-                     DEVIANF(data_rss_poll) (doc->user, 1);
+                    DEVIANF(data_rss_poll) (doc->user, 1);
                }
           }
      }
@@ -262,7 +262,7 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
         if (doc->state == DATA_RSS_DOC_STATE_NEW)
           {
              if (!DEVIANF(data_rss_doc_new) (doc, 1))
-                return 1;
+               return 1;
              DEVIANF(config_dialog_devian_rss_doc_update) (doc);
           }
         else
@@ -270,10 +270,10 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
              if (doc->state == DATA_RSS_DOC_STATE_USABLE)
                {
                   if (!DEVIANF(data_rss_doc_new) (doc, 0))
-                     return 1;
+                    return 1;
                   DEVIANF(config_dialog_devian_rss_doc_update) (doc);
                   if (need_poll && doc->user)
-                     DEVIANF(data_rss_poll) (doc->user, 1);
+                    DEVIANF(data_rss_poll) (doc->user, 1);
                }
           }
      }

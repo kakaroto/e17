@@ -8,8 +8,8 @@ static void _devian_container_del(DEVIANN *devian);
 /*
   Change the current container of a devian
   Return:
-    - 0 if ok
-    - 1 if fails
+  - 0 if ok
+  - 1 if fails
 */
 int DEVIANF(container_change) (DEVIANN *devian, int container)
 {
@@ -17,7 +17,7 @@ int DEVIANF(container_change) (DEVIANN *devian, int container)
 
    /* check: if no source, no way */
    if (!devian->source)
-      return 0;
+     return 0;
 
    /* check: if already one container, remove it */
    if (devian->container)
@@ -26,7 +26,7 @@ int DEVIANF(container_change) (DEVIANN *devian, int container)
         _devian_container_del(devian);
      }
    else
-      edje_part = -1;
+     edje_part = -1;
 
    /* add the new container to the devian */
    switch (container)
@@ -34,7 +34,7 @@ int DEVIANF(container_change) (DEVIANN *devian, int container)
      case CONTAINER_BOX:
         {
            if (DEVIANF(container_box_add) (devian, edje_part))
-              return 1;
+             return 1;
            break;
         }
 
@@ -59,7 +59,7 @@ int DEVIANF(container_change) (DEVIANN *devian, int container)
 int DEVIANF(container_edje_part_get) (DEVIANN *devian)
 {
    if (!devian->container)
-      return -1;
+     return -1;
 
    switch (devian->conf->container_type)
      {
@@ -88,7 +88,7 @@ int DEVIANF(container_edje_part_change) (DEVIANN *devian)
 int DEVIANF(container_infos_text_change) (DEVIANN *devian, char *text)
 {
    if (!devian->container)
-      return 0;
+     return 0;
 
    switch (devian->conf->container_type)
      {
@@ -104,7 +104,7 @@ int DEVIANF(container_infos_text_change) (DEVIANN *devian, char *text)
 void DEVIANF(container_infos_text_scroll) (DEVIANN *devian)
 {
    if (!devian->container)
-      return;
+     return;
 
    switch (devian->conf->container_type)
      {
@@ -135,7 +135,7 @@ void DEVIANF(container_infos_text_change_set) (DEVIANN *devian, int action)
 void DEVIANF(container_loading_state_change) (DEVIANN *devian, int state)
 {
    if (!devian->container)
-      return;
+     return;
 
    switch (devian->conf->container_type)
      {
@@ -150,7 +150,7 @@ void DEVIANF(container_loading_state_change) (DEVIANN *devian, int state)
 void DEVIANF(container_warning_indicator_change) (DEVIANN *devian, int state)
 {
    if (!devian->container)
-      return;
+     return;
 
    switch (devian->conf->container_type)
      {
@@ -165,7 +165,7 @@ void DEVIANF(container_warning_indicator_change) (DEVIANN *devian, int state)
 int DEVIANF(container_update_id_devian) (DEVIANN *devian)
 {
    if (!devian->conf || !devian->container)
-      return 0;
+     return 0;
 
    switch (devian->conf->container_type)
      {
@@ -194,7 +194,7 @@ const char *DEVIANF(container_edje_load) (Evas_Object *edje_obj, char *part, DEV
    const char *theme;
 
    if (!(theme = DEVIANF(devian_edje_load) (edje_obj, part, devian->conf->source_type)))
-      return NULL;
+     return NULL;
 
    /* 'precalculate' (get) borders */
    evas_object_resize(edje_obj, 400, 400);
@@ -289,7 +289,7 @@ int DEVIANF(container_theme_change) (DEVIANN *devian, int source_type, const cha
 void DEVIANF(container_theme_check) (DEVIANN *devian, const char **source_theme)
 {
    if (!devian->container)
-      return;
+     return;
 
    switch (devian->conf->container_type)
      {
@@ -300,7 +300,7 @@ void DEVIANF(container_theme_check) (DEVIANN *devian, const char **source_theme)
      case CONTAINER_BOX:
         box = devian->container;
         if (strcmp(box->theme, *source_theme))
-           DEVIANF(container_theme_change) (devian, 0, source_theme);
+          DEVIANF(container_theme_change) (devian, 0, source_theme);
         break;
      case CONTAINER_BAR:
         break;

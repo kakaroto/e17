@@ -23,12 +23,12 @@ int DEVIANF(source_change) (DEVIANN *devian, int source)
    if (devian->source)
      {
         if (devian->conf->source_type == source)
-           return 1;
+          return 1;
 
         _devian_source_del(devian);
 
         if (devian->dialog_conf)
-           DEVIANF(config_dialog_devian_shutdown) (devian);
+          DEVIANF(config_dialog_devian_shutdown) (devian);
      }
 
    /* add the new container to the devian */
@@ -54,7 +54,7 @@ int DEVIANF(source_change) (DEVIANN *devian, int source)
              }
            /* add the picture */
            if (DEVIANF(source_picture_add) (devian))
-              return 1;
+             return 1;
            /* chech good theme */
            DEVIANF(container_theme_check) (devian, &DEVIANM->conf->theme_picture);
            break;
@@ -66,7 +66,7 @@ int DEVIANF(source_change) (DEVIANN *devian, int source)
         {
            /* add the rss */
            if (!DEVIANF(source_rss_add) (devian))
-              return 1;
+             return 1;
            /* chech good theme */
            DEVIANF(container_theme_check) (devian, &DEVIANM->conf->theme_rss);
            break;
@@ -78,7 +78,7 @@ int DEVIANF(source_change) (DEVIANN *devian, int source)
         {
            /* add the file */
            if (!DEVIANF(source_file_add) (devian))
-              return 1;
+             return 1;
            /* chech good theme */
            DEVIANF(container_theme_check) (devian, &DEVIANM->conf->theme_file);
            break;
@@ -127,8 +127,8 @@ void DEVIANF(source_detach) (DEVIANN *devian, int part)
 /*
   Get the evas objects of a source
   Return:
-    - 1 on success
-    - 0 on fail
+  - 1 on success
+  - 0 on fail
 */
 int DEVIANF(source_evas_object_get) (DEVIANN *devian, Evas_Object **obj0, Evas_Object **obj1)
 {

@@ -36,11 +36,11 @@ int DEVIANF(devian_main_init) (E_Module *m)
    /* config */
    DEVIANM->conf = DEVIANF(config_init) ();
    if (!DEVIANM->conf)
-      return 0;
+     return 0;
 
    /* popup warn */
    if (!DEVIANF(popup_warn_init) ())
-      return 0;
+     return 0;
 
    /* devians like it is in the config file */
    DMAIN(("%d devians to create", DEVIANM->conf->nb_devian));
@@ -79,6 +79,7 @@ void DEVIANF(devian_main_shutdown) (void)
    DEVIANF(display_shutdown) ();
 
    E_FREE(DEVIANM);
+   DEVIANM = NULL;
 }
 
 /**
@@ -103,7 +104,6 @@ DEVIANN *DEVIANF(devian_add) (int source_type, DEVIAN_CONF *cfg_devian)
    devian->source_func.gui_update = DEVIANF(source_idle_gui_update);
 
    devian->size_policy = SIZE_POLICY_DEFAULT;
-   devian->popup_warn = NULL;
 
    devian->container = NULL;
    devian->container_func.resize_auto = DEVIANF(container_idle_resize_auto);
@@ -181,7 +181,7 @@ void DEVIANF(devian_del) (DEVIANN *devian, int now)
      {
         devian->dying = 1;
         if (DEVIANF(container_devian_dying) (devian))
-           return;
+          return;
      }
 
    DMAIN(("dEvian: del devian container"));
@@ -201,7 +201,7 @@ void DEVIANF(devian_del) (DEVIANN *devian, int now)
    DMAIN(("dEvian: Free devian free"));
 
    if (devian->id)
-      E_FREE(devian->id);
+     E_FREE(devian->id);
    E_FREE(devian);
 
    e_config_save_queue();
@@ -228,7 +228,7 @@ void DEVIANF(devian_del_all) (void)
  * The name is choosen with -source, and you can add -extra
  * @param source Type of the source of the devian indicated as -devian
  * @param extra You can add an extra to one / all devian(s) name's, or set it to null
-*/
+ */
 void DEVIANF(devian_set_id) (DEVIANN *devian, int source, char *extra)
 {
    char *id;
@@ -273,7 +273,7 @@ void DEVIANF(devian_set_id) (DEVIANN *devian, int source, char *extra)
              else
                {
                   if (d->id)
-                     E_FREE(d->id);
+                    E_FREE(d->id);
                   snprintf(id, DEVIAN_ID_LEN, "Invalid devian %d", n);
                }
              d->id = id;
@@ -291,45 +291,45 @@ void DEVIANF(devian_set_id) (DEVIANN *devian, int source, char *extra)
 #ifdef HAVE_PICTURE
           case SOURCE_PICTURE:
              if (extra)
-                snprintf(id, DEVIAN_ID_LEN, "Picture %d %s", n, extra);
+               snprintf(id, DEVIAN_ID_LEN, "Picture %d %s", n, extra);
              else
-                snprintf(id, DEVIAN_ID_LEN, "Picture %d", n);
+               snprintf(id, DEVIAN_ID_LEN, "Picture %d", n);
              break;
 #endif
 #ifdef HAVE_RSS
           case SOURCE_RSS:
              if (extra)
-                snprintf(id, DEVIAN_ID_LEN, "Rss %d %s", n, extra);
+               snprintf(id, DEVIAN_ID_LEN, "Rss %d %s", n, extra);
              else
-                snprintf(id, DEVIAN_ID_LEN, "Rss %d", n);
+               snprintf(id, DEVIAN_ID_LEN, "Rss %d", n);
              break;
 #endif
 #ifdef HAVE_FILE
           case SOURCE_FILE:
              if (extra)
-                snprintf(id, DEVIAN_ID_LEN, "File %d %s", n, extra);
+               snprintf(id, DEVIAN_ID_LEN, "File %d %s", n, extra);
              else
-                snprintf(id, DEVIAN_ID_LEN, "File %d", n);
+               snprintf(id, DEVIAN_ID_LEN, "File %d", n);
              break;
 #endif
           case SOURCE_NO:
              if (extra)
-                snprintf(id, DEVIAN_ID_LEN, "No source %d %s", n, extra);
+               snprintf(id, DEVIAN_ID_LEN, "No source %d %s", n, extra);
              else
-                snprintf(id, DEVIAN_ID_LEN, "No source %d", n);
+               snprintf(id, DEVIAN_ID_LEN, "No source %d", n);
              break;
           default:
              if (extra)
-                snprintf(id, DEVIAN_ID_LEN, "Invalid dEvian %d %s", n, extra);
+               snprintf(id, DEVIAN_ID_LEN, "Invalid dEvian %d %s", n, extra);
              else
-                snprintf(id, DEVIAN_ID_LEN, "Invalid dEvian %d", n);
+               snprintf(id, DEVIAN_ID_LEN, "Invalid dEvian %d", n);
              break;
           }
         if (devian->id)
-           E_FREE(devian->id);
+          E_FREE(devian->id);
         devian->id = id;
         if (devian->container)
-           DEVIANF(container_update_id_devian) (devian);
+          DEVIANF(container_update_id_devian) (devian);
      }
 
    return;
@@ -347,7 +347,7 @@ char *DEVIANF(display_init) (void)
 
    tmp = getenv("DISPLAY");
    if (tmp)
-      display = strdup(tmp);
+     display = strdup(tmp);
 
    /* make sure the display var is of the form name:0.0 or :0.0 */
    if (display)
@@ -374,11 +374,11 @@ char *DEVIANF(display_init) (void)
           }
      }
    else
-      display = strdup(":0.0");
+     display = strdup(":0.0");
 
    /* init e Lib */
    if (display)
-      e_lib_init(display);
+     e_lib_init(display);
    else
      {
         display = strdup(":0.0");
@@ -462,8 +462,11 @@ const char *DEVIANF(ss_utf8_add) (char *text, int tfree)
 {
    char *utf8;
    const char *ss;
+   char buf[8092];
 
-   utf8 = ecore_txt_convert("iso-8859-1", "UTF-8", text);
+   strncpy(buf, text, sizeof(buf));
+   buf[8091] = 0;
+   utf8 = ecore_txt_convert("iso-8859-1", "UTF-8", buf);
    if (!utf8)
      {
         ss = evas_stringshare_add(text);
@@ -474,7 +477,7 @@ const char *DEVIANF(ss_utf8_add) (char *text, int tfree)
         E_FREE(utf8);
      }
    if (tfree)
-      E_FREE(text);
+     E_FREE(text);
 
    return ss;
 }

@@ -78,9 +78,9 @@ E_Config_Dialog *DEVIANF(config_dialog_theme) (void)
 
    /* if was alreay open, return */
    if (DEVIANM->dialog_conf_theme)
-      if (!e_object_is_del(E_OBJECT(DEVIANM->dialog_conf_theme)))
-         if (e_object_ref_get(E_OBJECT(DEVIANM->dialog_conf_theme)) > 0)
-            return NULL;
+     if (!e_object_is_del(E_OBJECT(DEVIANM->dialog_conf_theme)))
+       if (e_object_ref_get(E_OBJECT(DEVIANM->dialog_conf_theme)) > 0)
+         return NULL;
 
    v = E_NEW(E_Config_Dialog_View, 1);
 
@@ -182,7 +182,7 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
      {
         t = evas_list_data(l);
         if (t->icon)
-           evas_object_del(t->icon);
+          evas_object_del(t->icon);
         evas_stringshare_del(t->name);
      }
 
@@ -267,15 +267,15 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    if (
 #ifdef HAVE_PICTURE
-         !cfdata->theme_picture ||
+       !cfdata->theme_picture ||
 #endif
 #ifdef HAVE_RSS
-         !cfdata->theme_rss ||
+       !cfdata->theme_rss ||
 #endif
 #ifdef HAVE_FILE
-         !cfdata->theme_file ||
+       !cfdata->theme_file ||
 #endif
-         !cfdata->theme_popup)
+       !cfdata->theme_popup)
      {
         _invalid_theme_error_msg();
         return 0;
@@ -410,7 +410,7 @@ _ilist_themes_general_append(E_Config_Dialog *cfd, Evas_Object *il, Evas *evas)
         theme = evas_list_data(l);
         ico = e_icon_add(evas);
         if (theme->valid)
-           e_icon_file_set(ico, cfdata->icon_ok);
+          e_icon_file_set(ico, cfdata->icon_ok);
         e_widget_ilist_append(il, ico, (char *)theme->name, _ilist_cb_theme_general_selected, cfd, (char *)theme->file);
         if (!strcmp(theme->name,
 #ifdef HAVE_PICTURE
@@ -426,7 +426,7 @@ _ilist_themes_general_append(E_Config_Dialog *cfd, Evas_Object *il, Evas *evas)
 #endif
 #endif
 #endif
-            ))
+                    ))
           {
              e_widget_ilist_selected_set(il, i);
              _ilist_cb_theme_general_selected(cfd);
@@ -453,7 +453,7 @@ _ilist_themes_picture_append(E_Config_Dialog *cfd, Evas_Object *il, Evas *evas)
         theme = evas_list_data(l);
         ico = e_icon_add(evas);
         if (theme->valid)
-           e_icon_file_set(ico, cfdata->icon_ok);
+          e_icon_file_set(ico, cfdata->icon_ok);
         e_widget_ilist_append(il, ico, (char *)theme->name, _ilist_cb_theme_picture_selected, cfd, (char *)theme->file);
         if (!strcmp(theme->name, DEVIANM->conf->theme_picture))
           {
@@ -483,7 +483,7 @@ _ilist_themes_rss_append(E_Config_Dialog *cfd, Evas_Object *il, Evas *evas)
         theme = evas_list_data(l);
         ico = e_icon_add(evas);
         if (theme->valid)
-           e_icon_file_set(ico, cfdata->icon_ok);
+          e_icon_file_set(ico, cfdata->icon_ok);
         e_widget_ilist_append(il, ico, (char *)theme->name, _ilist_cb_theme_rss_selected, cfd, (char *)theme->file);
         if (!strcmp(theme->name, DEVIANM->conf->theme_rss))
           {
@@ -513,7 +513,7 @@ _ilist_themes_file_append(E_Config_Dialog *cfd, Evas_Object *il, Evas *evas)
         theme = evas_list_data(l);
         ico = e_icon_add(evas);
         if (theme->valid)
-           e_icon_file_set(ico, cfdata->icon_ok);
+          e_icon_file_set(ico, cfdata->icon_ok);
         e_widget_ilist_append(il, ico, (char *)theme->name, _ilist_cb_theme_file_selected, cfd, (char *)theme->file);
         if (!strcmp(theme->name, DEVIANM->conf->theme_file))
           {
@@ -542,7 +542,7 @@ _ilist_themes_popup_append(E_Config_Dialog *cfd, Evas_Object *il, Evas *evas)
         theme = evas_list_data(l);
         ico = e_icon_add(evas);
         if (theme->valid)
-           e_icon_file_set(ico, cfdata->icon_ok);
+          e_icon_file_set(ico, cfdata->icon_ok);
         e_widget_ilist_append(il, ico, (char *)theme->name, _ilist_cb_theme_popup_selected, cfd, (char *)theme->file);
         if (!strcmp(theme->name, DEVIANM->conf->theme_popup))
           {
@@ -654,10 +654,10 @@ _theme_list_gen(void)
 
         ext = strrchr(file, '.');
         if (!ext)
-           continue;
+          continue;
         name_l = strlen(file) - strlen(ext);
         if (name_l <= 0)
-           continue;
+          continue;
         strncpy(name, file, name_l);
         name[name_l] = '\0';
 
@@ -666,9 +666,9 @@ _theme_list_gen(void)
         theme->valid = _is_theme_valid(buf);
         theme->name = evas_stringshare_add(name);
         if (theme->valid)
-           theme->file = evas_stringshare_add(name);
+          theme->file = evas_stringshare_add(name);
         else
-           theme->file = NULL;
+          theme->file = NULL;
         theme->icon = NULL;
 
         themes = evas_list_append(themes, theme);
@@ -685,10 +685,10 @@ _is_theme_valid(char *path)
 
    version_c = edje_file_data_get(path, "version");
    if (!version_c)
-      return 0;
+     return 0;
    version = atoi(version_c);
    if (version != CONFIG_THEME_VERSION)
-      return 0;
+     return 0;
 
    return 1;
 }

@@ -46,14 +46,44 @@ part
 		}
 		image
 		{
-			normal: "logo.png";
+			normal: "popup_logo_news.png";
 		}
 	}
+       description{
+                state: "info" 0.0;
+                inherit: "default" 0.0;
+       		image{
+			normal: "popup_logo_info.png";
+		}
+        }
+        description{
+                state: "error" 0.0;
+                inherit: "default" 0.0;
+       		image{
+			normal: "popup_logo_error.png";
+		}
+        }
 	description
 	{
-		state: "hidden" 0.0;
+		state: "news_hidden" 0.0;
 		inherit: "default" 0.0;
 		color: 255 255 255 0;
+	}
+	description{
+		state: "info_hidden" 0.0;
+	       	inherit: "default" 0.0;
+		color: 255 255 255 0;
+       		image{
+			normal: "popup_logo_info.png";
+		}
+	}
+	description{
+		state: "error_hidden" 0.0;
+	       	inherit: "default" 0.0;
+		color: 255 255 255 0;
+       		image{
+			normal: "popup_logo_error.png";
+		}
 	}
 }
 part

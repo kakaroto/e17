@@ -1,7 +1,6 @@
 program{
-	name: "update_anim_1";
+	name: "update_anim_news_1";
 	action: STATE_SET "default" 0.0;
 	transition: DECELERATE 1;
 	target: "logo";
 }
-

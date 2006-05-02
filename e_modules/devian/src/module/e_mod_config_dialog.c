@@ -25,7 +25,7 @@ static void _cb_button_regen_picture_list(void *data, void *data2);
 
 struct _E_Config_Dialog_Data
 {
-  /* basic */
+   /* basic */
    char *viewer_http;
    char *viewer_image;
    char *viewer_file;
@@ -50,6 +50,7 @@ struct _E_Config_Dialog_Data
    int boxs_anim_ghost_timer;
 #ifdef HAVE_PICTURE
    int data_picture_thumb_default_size;
+   int data_picture_popup_when;
    int sources_picture_set_bg_purge;
    int sources_picture_show_devian_pics;
 #endif
@@ -172,6 +173,7 @@ _fill_data(E_Config_Dialog_Data *cfdata)
    cfdata->boxs_anim_ghost_timer = conf->boxs_anim_ghost_timer;
 #ifdef HAVE_PICTURE
    cfdata->data_picture_thumb_default_size = conf->data_picture_thumb_default_size;
+   cfdata->data_picture_popup_when = conf->data_picture_popup_when;
    cfdata->sources_picture_set_bg_purge = conf->sources_picture_set_bg_purge;
    cfdata->sources_picture_show_devian_pics = conf->sources_picture_show_devian_pics;
 #endif
@@ -212,7 +214,7 @@ _main_basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    if (DEVIANM->conf->sources_rss_popup_news != cfdata->sources_rss_popup_news)
      {
         if (!cfdata->sources_rss_popup_news)
-           DEVIANF(popup_warn_devian_desactivate) ();
+           DEVIANF(data_rss_popup_desactivate) ();
         else
            DEVIANM->conf->sources_rss_popup_news = cfdata->sources_rss_popup_news;
      }
@@ -289,7 +291,7 @@ _main_advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    if (DEVIANM->conf->sources_rss_popup_news != cfdata->sources_rss_popup_news)
      {
         if (!cfdata->sources_rss_popup_news)
-           DEVIANF(popup_warn_devian_desactivate) ();
+           DEVIANF(data_rss_popup_desactivate) ();
         else
            DEVIANM->conf->sources_rss_popup_news = cfdata->sources_rss_popup_news;
      }
@@ -343,6 +345,7 @@ _main_advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
      }
 #ifdef HAVE_PICTURE
    DEVIANM->conf->data_picture_thumb_default_size = cfdata->data_picture_thumb_default_size;
+   DEVIANM->conf->data_picture_popup_when = cfdata->data_picture_popup_when;
    DEVIANM->conf->sources_picture_set_bg_purge = cfdata->sources_picture_set_bg_purge;
    DEVIANM->conf->sources_picture_show_devian_pics = cfdata->sources_picture_show_devian_pics;
 #endif
@@ -544,22 +547,33 @@ _main_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 1, 1);
    ob = e_widget_entry_add(evas, &(cfdata->sources_picture_data_import_dir));
    e_widget_min_size_set(ob, 100, 1);
-   e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 1, 1);
+   e_widget_frametable_object_append(of, ob, 1, 0, 3, 1, 1, 1, 1, 1);
    ob = e_widget_check_add(evas, _("Load sub-directories"), &(cfdata->sources_picture_data_import_recursive));
-   e_widget_frametable_object_append(of, ob, 0, 1, 2, 1, 1, 1, 1, 1);
+   e_widget_frametable_object_append(of, ob, 0, 1, 3, 1, 1, 1, 1, 1);
    ob = e_widget_check_add(evas, _("Load hidden files/directories"), &(cfdata->sources_picture_data_import_hidden));
-   e_widget_frametable_object_append(of, ob, 0, 2, 2, 1, 1, 1, 1, 1);
+   e_widget_frametable_object_append(of, ob, 0, 2, 3, 1, 1, 1, 1, 1);
    ob = e_widget_button_add(evas, "Regenerate pictures list", NULL, _cb_button_regen_picture_list, NULL, NULL);
-   e_widget_frametable_object_append(of, ob, 0, 3, 2, 1, 1, 1, 1, 1);
+   e_widget_frametable_object_append(of, ob, 0, 3, 4, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, _("Quality"));
    e_widget_frametable_object_append(of, ob, 0, 4, 1, 1, 1, 1, 1, 1);
    ob = e_widget_slider_add(evas, 1, 0, _("%1.0f"), (float)CONTAINER_BOX_SIZE_MIN, (float)CONTAINER_BOX_SIZE_MAX, 1.0, 0,
                             NULL, &(cfdata->data_picture_thumb_default_size), 80);
-   e_widget_frametable_object_append(of, ob, 1, 4, 1, 1, 1, 0, 1, 0);
+   e_widget_frametable_object_append(of, ob, 1, 4, 3, 1, 1, 0, 1, 0);
    ob = e_widget_check_add(evas, _("Remove created .e/e/backgrounds/"), &(cfdata->sources_picture_set_bg_purge));
-   e_widget_frametable_object_append(of, ob, 0, 5, 2, 1, 1, 1, 1, 1);
+   e_widget_frametable_object_append(of, ob, 0, 5, 3, 1, 1, 1, 1, 1);
    ob = e_widget_check_add(evas, _("Show dEvian's logo in slideshow"), &(cfdata->sources_picture_show_devian_pics));
-   e_widget_frametable_object_append(of, ob, 0, 6, 2, 1, 1, 1, 1, 1);
+   e_widget_frametable_object_append(of, ob, 0, 6, 3, 1, 1, 1, 1, 1);
+
+   ob = e_widget_label_add(evas, _("Loading Popups"));
+   e_widget_frametable_object_append(of, ob, 0, 7, 1, 1, 1, 1, 1, 1);
+   rg = e_widget_radio_group_new(&(cfdata->data_picture_popup_when));
+   ob = e_widget_radio_add(evas, _("No"), DATA_PICTURE_POPUP_WHEN_NEVER, rg);
+   e_widget_frametable_object_append(of, ob, 1, 7, 1, 1, 1, 1, 1, 1);
+   ob = e_widget_radio_add(evas, _("Summary"), DATA_PICTURE_POPUP_WHEN_SUM, rg);
+   e_widget_frametable_object_append(of, ob, 2, 7, 1, 1, 1, 1, 1, 1);
+   ob = e_widget_radio_add(evas, _("All"), DATA_PICTURE_POPUP_WHEN_ALWAYS, rg);
+   e_widget_frametable_object_append(of, ob, 3, 7, 1, 1, 1, 1, 1, 1);
+
    e_widget_table_object_append(o, of, 1, 1, 1, 1, 1, 1, 1, 1);
 #endif
 #ifdef HAVE_FILE
@@ -615,7 +629,7 @@ _cb_button_theme_select(void *data, void *data2)
    E_Config_Dialog *cfd;
 
    if ((cfd = DEVIANF(config_dialog_theme) ()))
-      DEVIANM->dialog_conf_theme = cfd;
+     DEVIANM->dialog_conf_theme = cfd;
 }
 
 #ifdef HAVE_PICTURE

@@ -1,6 +1,7 @@
 program{
 	name: "disable_click_1";
-	script{
-		emit("desactivate", "popup");
-	}
+	action: STATE_SET "clicked" 0.0;
+	transition: DECELERATE 1.5;
+	target: "disable";
+        after: "close_click";
 }

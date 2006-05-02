@@ -30,7 +30,7 @@ static int _cb_timer_anim_ghost(void *data);
  * @param devian The dEvian
  * @param edje_part The edje part where to start, -1 for default
  * @return 0 on success, 1 on fail
-*/
+ */
 int DEVIANF(container_box_add) (DEVIANN *devian, int edje_part)
 {
    Container_Box *box;
@@ -55,9 +55,9 @@ int DEVIANF(container_box_add) (DEVIANN *devian, int edje_part)
    /* default edje part : set the other one, because we are going to do
     * an edje_part_change at the end of the container's creation */
    if (edje_part == -1)
-      box->edje_part = !CONTAINER_BOX_EDJE_PART_DEFAULT;
+     box->edje_part = !CONTAINER_BOX_EDJE_PART_DEFAULT;
    else
-      box->edje_part = !edje_part;
+     box->edje_part = !edje_part;
 
    box->in_transition = 0;
    box->infos_visible = 0;
@@ -186,7 +186,7 @@ void DEVIANF(container_box_del) (Container_Box *container)
 
    /* edje object */
    if (container->theme)
-      evas_stringshare_del(container->theme);
+     evas_stringshare_del(container->theme);
    if (container->edje)
      {
         evas_object_hide(container->edje);
@@ -211,21 +211,21 @@ void DEVIANF(container_box_update_actions) (DEVIANN *devian)
    if (devian->source)
      {
         if (devian->source_info.paused)
-           action = 0;
+          action = 0;
         else
-           action = 1;
+          action = 1;
         edje_object_message_send(box->edje, EDJE_MESSAGE_INT, DEVIAN_CONTAINER_BOX_TO_EDJE_MSG_PART_CHANGE_SET, &action);
 
         if (devian->source_info.provide_set_bg)
-           action = 1;
+          action = 1;
         else
-           action = 0;
+          action = 0;
         edje_object_message_send(box->edje, EDJE_MESSAGE_INT, DEVIAN_CONTAINER_BOX_TO_EDJE_MSG_SHOW_SET_BG, &action);
 
         if (devian->source_info.provide_previous)
-           action = 1;
+          action = 1;
         else
-           action = 0;
+          action = 0;
         edje_object_message_send(box->edje, EDJE_MESSAGE_INT, DEVIAN_CONTAINER_BOX_TO_EDJE_MSG_SHOW_PREVIOUS, &action);
 
         DEVIANF(container_box_infos_text_change_set) (box, box->devian->conf->box_infos_show);
@@ -267,9 +267,9 @@ void DEVIANF(container_box_resize_auto) (DEVIANN *devian)
 
              if (!DEVIANF(source_original_size_get) (box->devian, box->edje_part, &w_org, &h_org))
                {
-                  printf("Cant get source's size !!!\n");
-                  w_org = 1;
-                  h_org = 1;
+                  DCONTAINER(("Cant get source's size !!!"));
+                  w_org = CONTAINER_BOX_SIZE_MIN;
+                  h_org = CONTAINER_BOX_SIZE_MIN;
                }
              if (box->devian->size_policy == SIZE_POLICY_AUTO)
                {
@@ -330,16 +330,16 @@ void DEVIANF(container_box_resize_auto) (DEVIANN *devian)
         /* check the size is correct */
 
         if (w < CONTAINER_BOX_SIZE_MIN + thm_w)
-           w = CONTAINER_BOX_SIZE_MIN + thm_w;
+          w = CONTAINER_BOX_SIZE_MIN + thm_w;
         if (h < CONTAINER_BOX_SIZE_MIN + thm_h)
-           h = CONTAINER_BOX_SIZE_MIN + thm_h;
+          h = CONTAINER_BOX_SIZE_MIN + thm_h;
         if (w > CONTAINER_BOX_SIZE_MAX + thm_w)
-           w = CONTAINER_BOX_SIZE_MAX + thm_w;
+          w = CONTAINER_BOX_SIZE_MAX + thm_w;
         if (h > CONTAINER_BOX_SIZE_MAX + thm_h)
-           h = CONTAINER_BOX_SIZE_MAX + thm_h;
+          h = CONTAINER_BOX_SIZE_MAX + thm_h;
 
         if ((box->w == w) && (box->h == h))
-           return;
+          return;
 
         /* we are going to this new (w h) size */
 
@@ -400,10 +400,10 @@ int DEVIANF(container_box_edje_part_change) (Container_Box *container)
    int w, h;
 
    if (!DEVIANF(source_evas_object_get) (container->devian, &source0, &source1))
-      return 0;
+     return 0;
 
    if (container->in_transition)
-      DCONTAINER(("Already in transition ! bur starting a new one =)"));
+     DCONTAINER(("Already in transition ! bur starting a new one =)"));
 
    /* change the name displayed */
    source_name = NULL;
@@ -440,7 +440,7 @@ int DEVIANF(container_box_edje_part_change) (Container_Box *container)
              if (container->devian->size_policy == SIZE_POLICY_AUTO)
                {
                   if (DEVIANF(source_original_size_get) (container->devian, 1, &w, &h))
-                     e_gadman_client_aspect_set(container->gmc, ((float)w / (float)h), ((float)w / (float)h));
+                    e_gadman_client_aspect_set(container->gmc, ((float)w / (float)h), ((float)w / (float)h));
                }
              else
                {
@@ -471,7 +471,7 @@ int DEVIANF(container_box_edje_part_change) (Container_Box *container)
              if (container->devian->size_policy == SIZE_POLICY_AUTO)
                {
                   if (DEVIANF(source_original_size_get) (container->devian, 0, &w, &h))
-                     e_gadman_client_aspect_set(container->gmc, ((float)w / (float)h), ((float)w / (float)h));
+                    e_gadman_client_aspect_set(container->gmc, ((float)w / (float)h), ((float)w / (float)h));
                }
              else
                {
@@ -556,12 +556,12 @@ int DEVIANF(container_box_infos_text_change) (Container_Box *box, char *text)
    int w, h;
 
    if (!box->infos_visible)
-      return 0;
+     return 0;
 
    if (!text)
-      text = DEVIANF(source_infos_get) (box->devian, -1);
+     text = DEVIANF(source_infos_get) (box->devian, -1);
    if (!text)
-      text = strdup("No informations about source");
+     text = strdup("No informations about source");
 
    evas_object_textblock_clear(box->infos_tb);
    evas_object_resize(box->infos_tb, box->infos_scrollframe_w - 10, 20);
@@ -603,16 +603,16 @@ void DEVIANF(container_box_infos_text_scroll) (Container_Box *box)
    int pos_x, pos_y;
 
    if (!box->infos_visible)
-      return;
+     return;
 
    evas_object_geometry_get(box->infos_scrollframe, NULL, NULL, &whole_w, &whole_h);
    e_scrollframe_child_pos_get(box->infos_scrollframe, &pos_x, &pos_y);
    evas_object_geometry_get(box->infos_tb, NULL, NULL, &tb_w, &tb_h);
 
    if ((tb_h - pos_y) > (whole_h - 15))
-      e_scrollframe_child_pos_set(box->infos_scrollframe, pos_x, pos_y + (whole_h - 50));       /* -> Next page */
+     e_scrollframe_child_pos_set(box->infos_scrollframe, pos_x, pos_y + (whole_h - 50));       /* -> Next page */
    else if (pos_y)
-      e_scrollframe_child_pos_set(box->infos_scrollframe, pos_x, 0);    /* -> First page */
+     e_scrollframe_child_pos_set(box->infos_scrollframe, pos_x, 0);    /* -> First page */
 }
 
 /**
@@ -628,7 +628,7 @@ void DEVIANF(container_box_infos_text_change_set) (Container_Box *box, int actio
         box->devian->conf->box_infos_show = action;
      }
    else
-      action = 0;
+     action = 0;
 
    DCONTAINER(("Message infos change set send (%d)", action));
    edje_object_message_send(box->edje, EDJE_MESSAGE_INT, DEVIAN_CONTAINER_BOX_TO_EDJE_MSG_INFOS_CHANGE_SET, &action);
@@ -661,7 +661,7 @@ int DEVIANF(container_box_devian_dying) (Container_Box *box)
 int DEVIANF(container_box_update_id_devian) (Container_Box *box)
 {
    if (!box->devian->id)
-      return 0;
+     return 0;
 
    edje_object_part_text_set(box->edje, "id", box->devian->id);
 
@@ -671,24 +671,24 @@ int DEVIANF(container_box_update_id_devian) (Container_Box *box)
 void DEVIANF(container_box_comments_display_set) (Container_Box *box)
 {
    if (DEVIANM->conf->boxs_always_id)
-      edje_object_signal_emit(box->edje, "id_always_activate", "");
+     edje_object_signal_emit(box->edje, "id_always_activate", "");
    else
-      edje_object_signal_emit(box->edje, "id_always_deactivate", "");
+     edje_object_signal_emit(box->edje, "id_always_deactivate", "");
    if (DEVIANM->conf->boxs_always_name)
-      edje_object_signal_emit(box->edje, "name_always_activate", "");
+     edje_object_signal_emit(box->edje, "name_always_activate", "");
    else
-      edje_object_signal_emit(box->edje, "name_always_deactivate", "");
+     edje_object_signal_emit(box->edje, "name_always_deactivate", "");
 }
 
 /*
   Start a new animation of on a box
   Stop all other anim / restart current anim
   Args:
-   - box
-   - number of the anim
+  - box
+  - number of the anim
   Returns:
-   - 1 if the animation has been set
-   - 0 otherwise
+  - 1 if the animation has been set
+  - 0 otherwise
 */
 int DEVIANF(container_box_animation_start) (Container_Box *box, int anim_num)
 {
@@ -729,7 +729,7 @@ int DEVIANF(container_box_animation_start) (Container_Box *box, int anim_num)
            box->anim->data[3] = box->alpha;
            /* timer */
            if (box->anim->timer)
-              ecore_timer_del(box->anim->timer);
+             ecore_timer_del(box->anim->timer);
            box->anim->timer = ecore_timer_add(DEVIANM->conf->boxs_anim_ghost_timer, _cb_timer_anim_ghost, box);
            break;
         }
@@ -748,7 +748,7 @@ int DEVIANF(container_box_animation_start) (Container_Box *box, int anim_num)
    if (anim_num)
      {
         if (!box->animator && (anim_num != CONTAINER_BOX_ANIM_GHOST))
-           box->animator = ecore_animator_add(_cb_ecore_animator, box);
+          box->animator = ecore_animator_add(_cb_ecore_animator, box);
         if (anim_num != CONTAINER_BOX_ANIM_GHOST)
           {
              if (box->anim->timer)
@@ -761,11 +761,11 @@ int DEVIANF(container_box_animation_start) (Container_Box *box, int anim_num)
    else
      {
         if (box->anim)
-           if (box->anim->timer)
-             {
-                ecore_timer_del(box->anim->timer);
-                box->anim->timer = NULL;
-             }
+          if (box->anim->timer)
+            {
+               ecore_timer_del(box->anim->timer);
+               box->anim->timer = NULL;
+            }
      }
 
    return 1;
@@ -790,15 +790,15 @@ void DEVIANF(container_box_gadman_policy_update) (Container_Box *box)
    E_Gadman_Policy policy;
 
    if (!box->gmc)
-      return;
+     return;
 
    policy = E_GADMAN_POLICY_ANYWHERE |
       E_GADMAN_POLICY_HMOVE | E_GADMAN_POLICY_VMOVE | E_GADMAN_POLICY_HSIZE | E_GADMAN_POLICY_VSIZE;
 
    if (box->devian->conf->box_allow_overlap)
-      policy |= E_GADMAN_POLICY_ALLOW_OVERLAP;
+     policy |= E_GADMAN_POLICY_ALLOW_OVERLAP;
    else
-      policy &= ~E_GADMAN_POLICY_ALLOW_OVERLAP;
+     policy &= ~E_GADMAN_POLICY_ALLOW_OVERLAP;
 
    e_gadman_client_policy_set(box->gmc, policy);
 
@@ -838,7 +838,7 @@ static void
 _gadman_shutdown(Container_Box *box)
 {
    if (!box->gmc)
-      return;
+     return;
 
    while (e_object_unref(E_OBJECT(box->gmc)) > 0);
 }
@@ -988,7 +988,7 @@ _cb_edje_part_change(void *data, Evas_Object *obj, const char *emission, const c
      }
 
    if (!DEVIANF(source_evas_object_get) (devian, &source0, &source1))
-      return;
+     return;
 
    if (!strcmp(emission, "source_transition_0-1_end"))
      {
@@ -1041,7 +1041,7 @@ _cb_edje_part_change(void *data, Evas_Object *obj, const char *emission, const c
                        DEVIANF(source_detach) (devian, 1);
                     }
                   else
-                     printf(MODULE_NAME ": Get unknow edje transition signal !\n");
+                    printf(MODULE_NAME ": Get unknow edje transition signal !\n");
                }
           }
      }
@@ -1136,7 +1136,7 @@ _cb_edje_messages(void *data, Evas_Object *obj, Edje_Message_Type type, int id, 
              w = msg;
              box->infos_visible = *w;
              if (*w)
-                DEVIANF(container_box_infos_text_change) (box, NULL);
+               DEVIANF(container_box_infos_text_change) (box, NULL);
              DCONTAINER(("Received message for infos visible: %d", *w));
           }
         break;
@@ -1181,22 +1181,22 @@ _cb_ecore_animator(void *data)
                {
                   /* resize */
                   if (diff_w > 3)
-                     box->w = box->w - 3;
+                    box->w = box->w - 3;
                   else
                     {
                        if (diff_w < -3)
-                          box->w = box->w + 3;
+                         box->w = box->w + 3;
                        else
-                          box->w = box->go_w;
+                         box->w = box->go_w;
                     }
                   if (diff_h > 3)
-                     box->h = box->h - 3;
+                    box->h = box->h - 3;
                   else
                     {
                        if (diff_h < -3)
-                          box->h = box->h + 3;
+                         box->h = box->h + 3;
                        else
-                          box->h = box->go_h;
+                         box->h = box->go_h;
                     }
 
                   /* out of the screen ? */
@@ -1230,7 +1230,7 @@ _cb_ecore_animator(void *data)
              {
                 box->x = box->x + spd;
                 if ((box->x + box->w) > DEVIANM->canvas_w)
-                   box->x = 0;
+                  box->x = 0;
 
                 box->gmc->x = box->x;
                 box->gmc->y = box->y;
@@ -1243,13 +1243,13 @@ _cb_ecore_animator(void *data)
                 box->x = box->x + box->anim->data[1] * spd;
                 box->y = box->y + box->anim->data[2] * spd;
                 if ((box->x + box->w) > DEVIANM->canvas_w)
-                   box->anim->data[1] = -1;
+                  box->anim->data[1] = -1;
                 if ((box->x) < 0)
-                   box->anim->data[1] = 1;
+                  box->anim->data[1] = 1;
                 if ((box->y + box->h) > DEVIANM->canvas_h)
-                   box->anim->data[2] = -1;
+                  box->anim->data[2] = -1;
                 if ((box->y) < 0)
-                   box->anim->data[2] = 1;
+                  box->anim->data[2] = 1;
 
                 box->gmc->x = box->x;
                 box->gmc->y = box->y;
@@ -1265,7 +1265,7 @@ _cb_ecore_animator(void *data)
                        {
                           box->anim->data[3] = box->anim->data[3] - 10;
                           if (box->anim->data[3] < 0)
-                             box->anim->data[3] = 0;
+                            box->anim->data[3] = 0;
                           evas_object_color_set(box->edje, 255, 255, 255, box->anim->data[3]);
                           if (box->anim->data[3] == 0)
                             {
@@ -1281,7 +1281,7 @@ _cb_ecore_animator(void *data)
                        {
                           box->anim->data[3] = box->anim->data[3] + 10;
                           if (box->anim->data[3] > box->alpha)
-                             box->anim->data[3] = box->alpha;
+                            box->anim->data[3] = box->alpha;
                           evas_object_color_set(box->edje, 255, 255, 255, box->anim->data[3]);
                           if (box->anim->data[3] == box->alpha)
                             {
@@ -1306,7 +1306,7 @@ _cb_ecore_animator(void *data)
         return 0;
      }
    else
-      return 1;
+     return 1;
 }
 
 static int
@@ -1317,7 +1317,7 @@ _cb_timer_anim_ghost(void *data)
    box = (Container_Box *)data;
 
    if (!box->animator)
-      box->animator = ecore_animator_add(_cb_ecore_animator, box);
+     box->animator = ecore_animator_add(_cb_ecore_animator, box);
 
    box->anim->data[1] = 1;
    box->anim->data[2] = !box->anim->data[2];
@@ -1329,6 +1329,6 @@ static void
 _animation_stop(Container_Box *box)
 {
    if (!box->anim)
-      return;
+     return;
    box->devian->conf->box_anim = CONTAINER_BOX_ANIM_NO;
 }
