@@ -246,7 +246,7 @@ Zoom(EWin * ewin)
 	y2 = mode->vdisplay - ewin->client.h - y1;
 	if (y2 < 0)
 	   y2 = 0;
-	RaiseEwin(ewin);
+	EwinRaise(ewin);
 	EwinBorderGetSize(ewin, &bl, &br, &bt, &bb);
 	EwinMove(ewin, -bl + x1, -bt + y1);
 	FocusToEWin(ewin, FOCUS_SET);

@@ -83,7 +83,7 @@ IB_SnapEWin(EWin * ewin, int size)
 
    if (ewin->state.shaded)
       EwinInstantUnShade(ewin);
-   RaiseEwin(ewin);
+   EwinRaise(ewin);
 
    w = h = size;
 

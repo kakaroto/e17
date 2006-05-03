@@ -142,7 +142,7 @@ AutoraiseTimeout(int val, void *data __UNUSED__)
 
    ewin = EwinFindByClient(val);
    if (ewin)
-      RaiseEwin(ewin);
+      EwinRaise(ewin);
 }
 
 static void
@@ -394,7 +394,7 @@ doFocusToEwin(EWin * ewin, int why)
      }
 
    if (do_raise)
-      RaiseEwin(ewin);
+      EwinRaise(ewin);
 
    if (Conf.focus.warp_always)
       do_warp = 1;
@@ -609,7 +609,7 @@ void
 FocusHandleClick(EWin * ewin, Win win)
 {
    if (Conf.focus.clickraises)
-      RaiseEwin(ewin);
+      EwinRaise(ewin);
 
    if (Conf.focus.mode == MODE_FOCUS_CLICK || ewin->props.focusclick)
       FocusToEWin(ewin, FOCUS_CLICK);

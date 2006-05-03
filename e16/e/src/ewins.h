@@ -291,10 +291,10 @@ struct _ewin
 #define EWIN_CHANGE_ATTENTION   (1<<6)
 
 void                EwinShapeSet(EWin * ewin);
-void                RaiseEwin(EWin * ewin);
-void                LowerEwin(EWin * ewin);
-void                ShowEwin(EWin * ewin);
-void                HideEwin(EWin * ewin);
+void                EwinRaise(EWin * ewin);
+void                EwinLower(EWin * ewin);
+void                EwinShow(EWin * ewin);
+void                EwinHide(EWin * ewin);
 void                DetermineEwinFloat(EWin * ewin, int dx, int dy);
 EWin               *GetEwinPointerInClient(void);
 EWin               *GetEwinByCurrentPointer(void);

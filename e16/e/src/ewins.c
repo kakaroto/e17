@@ -800,7 +800,7 @@ AddToFamily(EWin * ewin, Window win)
 	EwinOpFullscreen(ewin, OPSRC_WM, 2);
 	ewin->state.placed = 1;
 	EwinMoveToDesktopAt(ewin, dsk, EoGetX(ewin), EoGetY(ewin));
-	ShowEwin(ewin);
+	EwinShow(ewin);
 	goto done;
      }
 
@@ -894,7 +894,7 @@ AddToFamily(EWin * ewin, Window win)
 	y = Mode.events.y + 1;
 	EwinMoveToDesktopAt(ewin, dsk, x, y);
 	EwinMove(ewin, x, y);
-	ShowEwin(ewin);
+	EwinShow(ewin);
 	GrabPointerSet(VRoot.win, ECSR_GRAB, 0);
 	Mode.place.doing_manual = 1;
 	EoSetFloating(ewin, 1);	/* Causes reparenting to root */
@@ -929,7 +929,7 @@ AddToFamily(EWin * ewin, Window win)
 	FocusEnable(0);
 
 	EwinMoveToDesktopAt(ewin, dsk, fx, fy);
-	ShowEwin(ewin);
+	EwinShow(ewin);
 	ewin->req_x = x;
 	ewin->req_y = y;
 	DoIn("Slide", 0.05, EwinSlideIn, 0, ewin);
@@ -937,7 +937,7 @@ AddToFamily(EWin * ewin, Window win)
    else
      {
 	EwinMoveToDesktopAt(ewin, dsk, x, y);
-	ShowEwin(ewin);
+	EwinShow(ewin);
      }
 
  done:
@@ -1082,7 +1082,7 @@ EwinEventMapRequest(EWin * ewin, Window win)
 		     _EwinGetClientXwin(ewin));
 	     EReparentWindow(_EwinGetClientWin(ewin), ewin->win_container, 0,
 			     0);
-	     ShowEwin(ewin);
+	     EwinShow(ewin);
 	  }
 	else
 	   AddToFamily(NULL, win);
@@ -1229,9 +1229,9 @@ EwinEventConfigureRequest(EWin * ewin, XEvent * ev)
 	     if (Mode.mode == MODE_NONE)
 	       {
 		  if (xwc.stack_mode == Above)
-		     RaiseEwin(ewin);
+		     EwinRaise(ewin);
 		  else if (xwc.stack_mode == Below)
-		     LowerEwin(ewin);
+		     EwinLower(ewin);
 	       }
 	  }
 
@@ -1282,9 +1282,9 @@ EwinEventCirculateRequest(EWin * ewin, XEvent * ev)
    if (ewin)
      {
 	if (ev->xcirculaterequest.place == PlaceOnTop)
-	   RaiseEwin(ewin);
+	   EwinRaise(ewin);
 	else
-	   LowerEwin(ewin);
+	   EwinLower(ewin);
      }
    else
      {
@@ -1338,7 +1338,7 @@ EwinReparent(EWin * ewin, Win parent)
 }
 
 void
-RaiseEwin(EWin * ewin)
+EwinRaise(EWin * ewin)
 {
    static int          call_depth = 0;
    EWin              **lst;
@@ -1351,7 +1351,7 @@ RaiseEwin(EWin * ewin)
    num = EoRaise(ewin);
 
    if (EventDebug(EDBUG_TYPE_RAISELOWER))
-      Eprintf("RaiseEwin(%d) %#lx %s n=%d\n", call_depth,
+      Eprintf("EwinRaise(%d) %#lx %s n=%d\n", call_depth,
 	      _EwinGetClientXwin(ewin), EwinGetName(ewin), num);
 
    if (num == 0)		/* Quit if stacking is unchanged */
@@ -1359,7 +1359,7 @@ RaiseEwin(EWin * ewin)
 
    lst = EwinListTransients(ewin, &num, 1);
    for (i = 0; i < num; i++)
-      RaiseEwin(lst[i]);
+      EwinRaise(lst[i]);
    if (lst)
       Efree(lst);
 
@@ -1371,7 +1371,7 @@ RaiseEwin(EWin * ewin)
 }
 
 void
-LowerEwin(EWin * ewin)
+EwinLower(EWin * ewin)
 {
    static int          call_depth = 0;
    EWin              **lst;
@@ -1384,7 +1384,7 @@ LowerEwin(EWin * ewin)
    num = EoLower(ewin);
 
    if (EventDebug(EDBUG_TYPE_RAISELOWER))
-      Eprintf("LowerEwin(%d) %#lx %s n=%d\n", call_depth,
+      Eprintf("EwinLower(%d) %#lx %s n=%d\n", call_depth,
 	      _EwinGetClientXwin(ewin), EwinGetName(ewin), num);
 
    if (num == 0)		/* Quit if stacking is unchanged */
@@ -1392,7 +1392,7 @@ LowerEwin(EWin * ewin)
 
    lst = EwinListTransientFor(ewin, &num);
    for (i = 0; i < num; i++)
-      LowerEwin(lst[i]);
+      EwinLower(lst[i]);
    if (lst)
       Efree(lst);
 
@@ -1404,7 +1404,7 @@ LowerEwin(EWin * ewin)
 }
 
 void
-ShowEwin(EWin * ewin)
+EwinShow(EWin * ewin)
 {
    if (EoIsShown(ewin))
       return;
@@ -1434,7 +1434,7 @@ ShowEwin(EWin * ewin)
 }
 
 void
-HideEwin(EWin * ewin)
+EwinHide(EWin * ewin)
 {
    if (!EwinIsInternal(ewin) && (!EoIsShown(ewin) || !EwinIsMapped(ewin)))
       return;

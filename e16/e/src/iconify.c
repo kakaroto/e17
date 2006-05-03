@@ -620,7 +620,7 @@ IconboxShow(Iconbox * ib)
 	EwinMove(ewin, VRoot.w - EoGetW(ewin), VRoot.h - EoGetH(ewin));
      }
 
-   ShowEwin(ewin);
+   EwinShow(ewin);
 }
 
 /*

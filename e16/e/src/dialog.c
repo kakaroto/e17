@@ -593,8 +593,8 @@ DialogShowArranged(Dialog * d, int center)
 	if (EoGetDesk(ewin) != DesksGetCurrent())
 	   EwinMoveToDesktop(ewin, DesksGetCurrent());
 #endif
-	RaiseEwin(ewin);
-	ShowEwin(ewin);
+	EwinRaise(ewin);
+	EwinShow(ewin);
 	return;
      }
 
@@ -663,7 +663,7 @@ DialogShowArranged(Dialog * d, int center)
 
    DialogRedraw(d);
    DialogUpdate(d);
-   ShowEwin(ewin);
+   EwinShow(ewin);
 }
 
 void
@@ -687,7 +687,7 @@ DialogClose(Dialog * d)
    if (d->exit_func)
       d->exit_func(d, d->exit_val, NULL);
 
-   HideEwin(d->ewin);
+   EwinHide(d->ewin);
 }
 
 static DItem       *

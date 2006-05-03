@@ -86,7 +86,7 @@ ActionMoveStart(EWin * ewin, int grab, char constrained, int nogroup)
    Mode_mr.win_x = Mode.events.x - (EoGetX(ewin) + EoGetX(EoGetDesk(ewin)));
    Mode_mr.win_y = Mode.events.y - (EoGetY(ewin) + EoGetY(EoGetDesk(ewin)));
 
-   RaiseEwin(ewin);
+   EwinRaise(ewin);
    gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE, nogroup
 				      || Mode.move.swap, &num);
 

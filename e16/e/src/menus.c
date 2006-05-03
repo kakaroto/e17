@@ -177,7 +177,7 @@ MenuHide(Menu * m)
      {
 	EUnmapWindow(m->win);
 	EReparentWindow(m->win, VRoot.win, ewin->client.x, ewin->client.y);
-	HideEwin(ewin);
+	EwinHide(ewin);
      }
    m->ewin = NULL;
 
@@ -275,8 +275,8 @@ MenuShow(Menu * m, char noshow)
    if (ewin)
      {
 #if 0				/* ??? */
-	RaiseEwin(ewin);
-	ShowEwin(ewin);
+	EwinRaise(ewin);
+	EwinShow(ewin);
 	return;
 #else
 	MenuHide(m);
@@ -357,7 +357,7 @@ MenuShow(Menu * m, char noshow)
 	  {
 	     ICCCM_Cmap(NULL);
 	     EwinOpFloatAt(ewin, OPSRC_NA, EoGetX(ewin), EoGetY(ewin));
-	     ShowEwin(ewin);
+	     EwinShow(ewin);
 	     if (Conf.menus.animate)
 		EwinUnShade(ewin);
 	  }
@@ -637,7 +637,7 @@ MenuRepack(Menu * m)
    ICCCM_SetSizeConstraints(ewin, m->w, m->h, m->w, m->h, 0, 0, 1, 1,
 			    0.0, 65535.0);
    EwinResize(ewin, m->w, m->h);
-   RaiseEwin(ewin);
+   EwinRaise(ewin);
 }
 
 void
@@ -1582,8 +1582,8 @@ SubmenuShowTimeout(int val __UNUSED__, void *dat)
    EwinMove(ewin2, EoGetX(ewin) + xo, EoGetY(ewin) + yo);
    Mode.move.check = 1;
    EwinOpFloatAt(ewin2, OPSRC_NA, EoGetX(ewin2), EoGetY(ewin2));
-   RaiseEwin(ewin2);
-   ShowEwin(ewin2);
+   EwinRaise(ewin2);
+   EwinShow(ewin2);
 
    if (Conf.menus.animate)
       EwinUnShade(ewin2);

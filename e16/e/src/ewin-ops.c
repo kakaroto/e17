@@ -492,7 +492,7 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
    if (raise)
      {
 	EoSetFloating(ewin, floating);
-	RaiseEwin(ewin);
+	EwinRaise(ewin);
      }
 
    if (Mode.mode == MODE_NONE || Conf.movres.update_while_moving)
@@ -652,7 +652,7 @@ EwinIconify(EWin * ewin)
       ModulesSignal(ESIGNAL_EWIN_ICONIFY, ewin);
 
    ewin->state.iconified = 1;
-   HideEwin(ewin);
+   EwinHide(ewin);
 
    /* Save position at which the window was iconified */
    EwinRememberPositionSet(ewin);
@@ -733,8 +733,8 @@ EwinDeIconify1(EWin * ewin, int dx, int dy)
    ewin->state.iconified = 0;
    ewin->state.showingdesk = 0;
 
-   RaiseEwin(ewin);
-   ShowEwin(ewin);
+   EwinRaise(ewin);
+   EwinShow(ewin);
    ICCCM_DeIconify(ewin);
 
    lst = EwinListTransients(ewin, &num, 0);
@@ -1386,7 +1386,7 @@ EwinOpFullscreen(EWin * ewin, int source __UNUSED__, int on)
 		Efree(lst);
 	  }
 
-	RaiseEwin(ewin);
+	EwinRaise(ewin);
 	EwinMoveResize(ewin, x, y, w, h);
 	ewin->state.maximized_horz = ewin->state.maximized_vert = 0;
 	ewin->state.fullscreen = 1;
@@ -1414,7 +1414,7 @@ EwinOpFullscreen(EWin * ewin, int source __UNUSED__, int on)
 
 	ewin->state.fullscreen = 0;
 	EwinStateUpdate(ewin);
-	RaiseEwin(ewin);
+	EwinRaise(ewin);
 	EwinMoveResize(ewin, x, y, w, h);
      }
 
@@ -1515,7 +1515,7 @@ EwinOpRaise(EWin * ewin, int source __UNUSED__)
    gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_RAISE,
 				      Mode.nogroup, &num);
    for (i = 0; i < num; i++)
-      RaiseEwin(gwins[i]);
+      EwinRaise(gwins[i]);
    Efree(gwins);
 }
 
@@ -1529,7 +1529,7 @@ EwinOpLower(EWin * ewin, int source __UNUSED__)
    gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_LOWER,
 				      Mode.nogroup, &num);
    for (i = 0; i < num; i++)
-      LowerEwin(gwins[i]);
+      EwinLower(gwins[i]);
    Efree(gwins);
 }
 
@@ -1581,13 +1581,13 @@ EwinOpRaiseLower(EWin * ewin)
      {
 	SoundPlay("SOUND_LOWER");
 	for (j = 0; j < gnum; j++)
-	   LowerEwin(gwins[j]);
+	   EwinLower(gwins[j]);
      }
    else
      {
 	SoundPlay("SOUND_RAISE");
 	for (j = 0; j < gnum; j++)
-	   RaiseEwin(gwins[j]);
+	   EwinRaise(gwins[j]);
      }
 
    if (gwins)
@@ -1747,7 +1747,7 @@ EwinOpSetLayer(EWin * ewin, int source __UNUSED__, int layer)
 	SoundPlay("SOUND_WINDOW_CHANGE_LAYER_UP");
      }
    EoSetLayer(ewin, layer);
-   RaiseEwin(ewin);
+   EwinRaise(ewin);
    EwinStateUpdate(ewin);
    HintsSetWindowState(ewin);
    SnapshotEwinUpdate(ewin, SNAP_USE_LAYER);
@@ -1825,7 +1825,7 @@ EwinOpMoveToDesk(EWin * ewin, int source __UNUSED__, Desk * dsk, int inc)
 
    EoSetSticky(ewin, 0);
    EwinMoveToDesktop(ewin, dsk);
-   RaiseEwin(ewin);
+   EwinRaise(ewin);
    EwinBorderUpdateState(ewin);
    EwinStateUpdate(ewin);
    HintsSetWindowState(ewin);

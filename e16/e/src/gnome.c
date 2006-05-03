@@ -785,7 +785,7 @@ GNOME_ProcessClientMessage(XClientMessageEvent * event)
 	     EoSetLayer(ewin, val);
 	     ecore_x_window_prop_card32_set(_EwinGetClientXwin(ewin), a4,
 					    &val, 1);
-	     RaiseEwin(ewin);
+	     EwinRaise(ewin);
 	  }
 	return;
      }

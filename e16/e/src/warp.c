@@ -335,7 +335,7 @@ WarpFocus(int delta)
    WarpFocusShow();
 
    if (Conf.focus.raise_on_next)
-      RaiseEwin(ewin);
+      EwinRaise(ewin);
    if (Conf.focus.warp_on_next)
       if (ewin != Mode.mouse_over_ewin && !ewin->state.iconified)
 	{
@@ -358,7 +358,7 @@ WarpFocusClick(int ix)
    if (!EwinFindByPtr(ewin))
       return;
 
-   RaiseEwin(ewin);
+   EwinRaise(ewin);
    if (ewin->state.iconified)
       EwinDeIconify(ewin);
    FocusToEWin(ewin, FOCUS_SET);
@@ -381,7 +381,7 @@ WarpFocusFinish(void)
    if (ewin->state.shaded)
       EwinUnShade(ewin);
    if (Conf.warplist.raise_on_select)
-      RaiseEwin(ewin);
+      EwinRaise(ewin);
    if (Conf.warplist.warp_on_select)
       if (ewin != Mode.mouse_over_ewin)
 	{

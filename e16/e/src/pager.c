@@ -648,7 +648,7 @@ PagerShow(Pager * p)
 
    if (p->ewin)
      {
-	ShowEwin(p->ewin);
+	EwinShow(p->ewin);
 	return;
      }
 
@@ -691,7 +691,7 @@ PagerShow(Pager * p)
 		 VRoot.h - (DesksGetNumber() - p->dsk->num) * EoGetH(ewin));
      }
 
-   ShowEwin(ewin);
+   EwinShow(ewin);
 }
 
 static void
@@ -956,7 +956,7 @@ PagerMenuShow(Pager * p, int x, int y)
 static void
 PagerClose(Pager * p)
 {
-   HideEwin(p->ewin);
+   EwinHide(p->ewin);
 }
 
 static void
@@ -1372,7 +1372,7 @@ PagerHandleMouseUp(Pager * p, int px, int py, int button)
 	ewin = EwinInPagerAt(p, px, py);
 	if (ewin)
 	  {
-	     RaiseEwin(ewin);
+	     EwinRaise(ewin);
 	     FocusToEWin(ewin, FOCUS_SET);
 	  }
      }

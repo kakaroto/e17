@@ -108,7 +108,7 @@ ICCCM_Delete(const EWin * ewin)
 {
    if (EwinIsInternal(ewin))
      {
-	HideEwin((EWin *) ewin);
+	EwinHide((EWin *) ewin);
 	return;
      }
 
