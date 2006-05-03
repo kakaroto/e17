@@ -295,6 +295,7 @@ void                EwinRaise(EWin * ewin);
 void                EwinLower(EWin * ewin);
 void                EwinShow(EWin * ewin);
 void                EwinHide(EWin * ewin);
+void                EwinKill(EWin * ewin);
 void                DetermineEwinFloat(EWin * ewin, int dx, int dy);
 EWin               *GetEwinPointerInClient(void);
 EWin               *GetEwinByCurrentPointer(void);

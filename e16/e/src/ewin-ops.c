@@ -1502,7 +1502,7 @@ void
 EwinOpKill(EWin * ewin, int source __UNUSED__)
 {
    SoundPlay("SOUND_WINDOW_CLOSE");
-   EDestroyWindow(_EwinGetClientWin(ewin));
+   EwinKill(ewin);
 }
 
 void

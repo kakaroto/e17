@@ -1457,6 +1457,19 @@ EwinHide(EWin * ewin)
    EwinDestroy(ewin);
 }
 
+void
+EwinKill(EWin * ewin)
+{
+   if (EwinIsInternal(ewin))
+      return;
+
+   EwinUnmap1(ewin);
+   EoUnmap(ewin);
+   EwinUnmap2(ewin);
+
+   EwinDestroy(ewin);
+}
+
 const char         *
 EwinGetName(const EWin * ewin)
 {
