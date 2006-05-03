@@ -727,8 +727,8 @@ EReparentWindow(Win win, Win parent, int x, int y)
 #if 0
 	Eprintf
 	   ("EReparentWindow: %p %#lx: %d %#lx->%#lx %d,%d %dx%d -> %d,%d\n",
-	    xid, xid->win, xid->mapped, xid->parent, parent, xid->x, xid->y,
-	    xid->w, xid->h, x, y);
+	    xid, xid->win, xid->mapped, xid->parent, parent->win,
+	    xid->x, xid->y, xid->w, xid->h, x, y);
 #endif
 	if (Xwin(parent) == xid->parent)
 	  {
@@ -737,8 +737,8 @@ EReparentWindow(Win win, Win parent, int x, int y)
 		  xid->x = x;
 		  xid->y = y;
 		  XMoveWindow(disp, Xwin(win), x, y);
-		  return;
 	       }
+	     return;
 	  }
 	else
 	  {
