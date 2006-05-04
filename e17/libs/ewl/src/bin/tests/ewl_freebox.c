@@ -6,8 +6,18 @@ static int create_test(Ewl_Container *box);
 static void ewl_freebox_cb_icon_change(Ewl_Widget *w, void *ev, void *data);
 static int ewl_freebox_cb_compare(Ewl_Widget *a, Ewl_Widget *b);
 static void ewl_freebox_cb_add(Ewl_Widget *w, void *ev, void *data);
+static void ewl_freebox_cb_clear(Ewl_Widget *w, void *ev, void *data);
 
 static Ewl_Widget *sort_fb;
+
+typedef struct Freebox_Test Freebox_Test;
+
+struct Freebox_Test
+{
+	const char *name;
+	const Ewl_Freebox_Layout_Type type;
+	Ewl_Freebox_Comparator compare;
+};
 
 void 
 test_info(Ewl_Test *test)
@@ -23,107 +33,83 @@ test_info(Ewl_Test *test)
 static int
 create_test(Ewl_Container *box)
 {
-	Ewl_Widget *hbox, *fb, *pane, *o;
+	int i;
+	const Freebox_Test fbtests[] = {
+		{
+			"Manual Placement",
+			EWL_FREEBOX_LAYOUT_MANUAL,
+			NULL
+	       	},
+		{
+			"Auto Placement",
+			EWL_FREEBOX_LAYOUT_AUTO,
+			NULL
+		},
+		{
+			"Comparator Placement (by name)",
+			EWL_FREEBOX_LAYOUT_COMPARATOR,
+			ewl_freebox_cb_compare
+		},
+		{ NULL, NULL, NULL }
+	};
 
 	srand(time(NULL));
 
-	/* the manual box */
-	o = ewl_label_new();
-	ewl_label_text_set(EWL_LABEL(o), "Manual Placement");
-	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
-	ewl_container_child_append(EWL_CONTAINER(box), o);
-	ewl_widget_show(o);
+	ewl_object_fill_policy_set(EWL_OBJECT(box), EWL_FLAG_FILL_ALL);
 
-	hbox = ewl_hbox_new();
-	ewl_container_child_append(EWL_CONTAINER(box), hbox);
-	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_FILL);
-	ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_TOP);
-	ewl_widget_show(hbox);
+	for (i = 0; fbtests[i].name != NULL; i++) {
+		Ewl_Widget *border, *hbox, *fb, *pane, *o;
 
-	fb = ewl_freebox_new();
+		border  = ewl_border_new();
+		ewl_border_text_set(EWL_BORDER(border),
+				(char *)fbtests[i].name);
+		ewl_object_fill_policy_set(EWL_OBJECT(border), EWL_FLAG_FILL_FILL);
+		ewl_container_child_append(EWL_CONTAINER(box), border);
+		ewl_widget_show(border);
 
-	o = ewl_button_new();
-	ewl_button_label_set(EWL_BUTTON(o), "Add items");
-	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
-	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_TOP);
-	ewl_container_child_append(EWL_CONTAINER(hbox), o);
-	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-				ewl_freebox_cb_add, fb);
-	ewl_widget_show(o);
+		/* nest the freebox in a scrollpane */
+		pane = ewl_scrollpane_new();
+		ewl_container_child_append(EWL_CONTAINER(border), pane);
+		ewl_widget_show(pane);
 
-	pane = ewl_scrollpane_new();
-	ewl_container_child_append(EWL_CONTAINER(hbox), pane);
-	ewl_widget_show(pane);
+		/* create a freebox of the type for this test */
+		fb = ewl_freebox_new();
+		ewl_freebox_layout_type_set(EWL_FREEBOX(fb), fbtests[i].type);
+		if (fbtests[i].compare) {
+			ewl_freebox_comparator_set(EWL_FREEBOX(fb),
+					fbtests[i].compare);
+			sort_fb = fb;
+		}
+		ewl_container_child_append(EWL_CONTAINER(pane), fb);
+		ewl_widget_show(fb);
 
-	ewl_freebox_layout_type_set(EWL_FREEBOX(fb),
-					EWL_FREEBOX_LAYOUT_MANUAL);
-	ewl_container_child_append(EWL_CONTAINER(pane), fb);
-	ewl_widget_show(fb);
+		/* pack controls for the freebox */
+		hbox = ewl_hbox_new();
+		ewl_container_child_append(EWL_CONTAINER(border), hbox);
+		ewl_object_fill_policy_set(EWL_OBJECT(hbox),
+				EWL_FLAG_FILL_NONE);
+		ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_TOP);
+		ewl_widget_show(hbox);
 
-	/* the auto box */
-	o = ewl_label_new();
-	ewl_label_text_set(EWL_LABEL(o), "Auto Placement");
-	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
-	ewl_container_child_append(EWL_CONTAINER(box), o);
-	ewl_widget_show(o);
+		o = ewl_button_new();
+		ewl_button_label_set(EWL_BUTTON(o), "Add items");
+		ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
+		ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_TOP);
+		ewl_container_child_append(EWL_CONTAINER(hbox), o);
+		ewl_callback_append(o, EWL_CALLBACK_CLICKED,
+					ewl_freebox_cb_add, fb);
+		ewl_widget_show(o);
 
-	hbox = ewl_hbox_new();
-	ewl_container_child_append(EWL_CONTAINER(box), hbox);
-	ewl_widget_show(hbox);
+		o = ewl_button_new();
+		ewl_button_label_set(EWL_BUTTON(o), "Clear items");
+		ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
+		ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_TOP);
+		ewl_container_child_append(EWL_CONTAINER(hbox), o);
+		ewl_callback_append(o, EWL_CALLBACK_CLICKED,
+					ewl_freebox_cb_clear, fb);
+		ewl_widget_show(o);
 
-	fb = ewl_freebox_new();
-
-	o = ewl_button_new();
-	ewl_button_label_set(EWL_BUTTON(o), "Add items");
-	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
-	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_TOP);
-	ewl_container_child_append(EWL_CONTAINER(hbox), o);
-	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-				ewl_freebox_cb_add, fb);
-	ewl_widget_show(o);
-
-	pane = ewl_scrollpane_new();
-	ewl_container_child_append(EWL_CONTAINER(hbox), pane);
-	ewl_widget_show(pane);
-
-	ewl_freebox_layout_type_set(EWL_FREEBOX(fb),
-					EWL_FREEBOX_LAYOUT_AUTO);
-	ewl_container_child_append(EWL_CONTAINER(pane), fb);
-	ewl_widget_show(fb);
-
-	/* the comparator box */
-	o = ewl_label_new();
-	ewl_label_text_set(EWL_LABEL(o), "Comparator Placement (by name)");
-	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
-	ewl_container_child_append(EWL_CONTAINER(box), o);
-	ewl_widget_show(o);
-
-	hbox = ewl_hbox_new();
-	ewl_container_child_append(EWL_CONTAINER(box), hbox);
-	ewl_widget_show(hbox);
-
-	fb = ewl_freebox_new();
-
-	o = ewl_button_new();
-	ewl_button_label_set(EWL_BUTTON(o), "Add items");
-	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
-	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_TOP);
-	ewl_container_child_append(EWL_CONTAINER(hbox), o);
-	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-				ewl_freebox_cb_add, fb);
-	ewl_widget_show(o);
-
-	pane = ewl_scrollpane_new();
-	ewl_container_child_append(EWL_CONTAINER(hbox), pane);
-	ewl_widget_show(pane);
-
-	ewl_freebox_layout_type_set(EWL_FREEBOX(fb),
-					EWL_FREEBOX_LAYOUT_COMPARATOR);
-	ewl_freebox_comparator_set(EWL_FREEBOX(fb),
-					ewl_freebox_cb_compare);
-	ewl_container_child_append(EWL_CONTAINER(pane), fb);
-	ewl_widget_show(fb);
-	sort_fb = fb;
+	}
 
 	return 1;
 }
@@ -198,4 +184,13 @@ ewl_freebox_cb_add(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	}
 }
 
+static void
+ewl_freebox_cb_clear(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+						void *data)
+{
+	Ewl_Freebox *fb;
 
+	fb = data;
+
+	ewl_container_reset(EWL_CONTAINER(fb));
+}
