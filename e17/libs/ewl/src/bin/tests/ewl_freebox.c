@@ -50,7 +50,7 @@ create_test(Ewl_Container *box)
 			EWL_FREEBOX_LAYOUT_COMPARATOR,
 			ewl_freebox_cb_compare
 		},
-		{ NULL, NULL, NULL }
+		{ NULL, EWL_FREEBOX_LAYOUT_AUTO, NULL }
 	};
 
 	srand(time(NULL));
