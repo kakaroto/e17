@@ -153,7 +153,7 @@ static int _etk_xdnd_enter_handler(void *data, int type, void *event)
    if(_etk_dnd_types != NULL && _etk_dnd_types_num >= 0)
    {
       for (i = 0; i < _etk_dnd_types_num; i++)
-	if(_etk_dnd_types[i]) free(_etk_dnd_types[i]);
+         if(_etk_dnd_types[i]) free(_etk_dnd_types[i]);
    }
    
    if(_etk_dnd_types != NULL) free(_etk_dnd_types);
@@ -296,6 +296,9 @@ static int _etk_xdnd_drop_handler(void *data, int type, void *event)
    //printf("drop\n");
    ev = event;
    
+	if (!_etk_dnd_widget)
+		return 0;
+
    /* first case - if we dont have a type preferece, send everyting */
    if(_etk_dnd_widget->dnd_types == NULL || _etk_dnd_widget->dnd_types_num <= 0)
    {
