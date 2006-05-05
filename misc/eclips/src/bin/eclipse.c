@@ -40,6 +40,7 @@ int main(int argc, char **argv)
    /* parse the input we get from the    
     * user and set default options first 
     */
+   ecore_evas_init();
    ee = ecore_evas_software_x11_new(0, 0, 0, 0, 0, 0);
    evas =  ecore_evas_get(ee);   
    eo = setup_window(ee,eo,argc,argv);
