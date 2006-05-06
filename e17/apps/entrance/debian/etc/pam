@@ -1,0 +1,11 @@
+# /etc/pam.d/entrance
+
+@include common-auth
+@include common-account
+@include common-session
+@include common-password
+
+auth		requisite	pam_nologin.so
+auth		required	pam_env.so
+auth		required	pam_env.so envfile=/etc/default/locale
+session		required	pam_limits.so

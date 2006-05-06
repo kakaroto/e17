@@ -17,8 +17,10 @@ fi
 
 AC_EXPAND_DIR(PACKAGE_DATA_DIR, "$datadir/${PACKAGE}")
 AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "$PACKAGE_DATA_DIR", [Shared data directory])
-AC_EXPAND_DIR(PACKAGE_BIN_DIR, "$bindir")
+AC_EXPAND_DIR(PACKAGE_LIB_DIR, "$bindir")
 AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "$PACKAGE_BIN_DIR", [Location of binaries])
+AC_EXPAND_DIR(PACKAGE_LIB_DIR, "$libdir")
+AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "$PACKAGE_LIB_DIR", [Location of libraries])
 
 # Override autosplat's destination dir settings
 test $sysconfdir = '${prefix}/etc' && sysconfdir="/etc"
@@ -163,10 +165,9 @@ AC_ARG_WITH(xsession,
 	    fi
 	]
 )
-if test ! -x $xsession ; then
-    AC_MSG_WARN([** no $xsession file on this system **])
-    AC_MSG_WARN([** Perhaps you need to specify --with-xsession **])
-    xsession="You should reconfigure --with-xsession"
+if test ! -x "$xsession" ; then
+    AC_MSG_WARN([** $xsession does not exist or is not executable **])
+    AC_MSG_WARN([** Please consider overriding with --with-xsession **])
 fi
 
 AC_DEFINE_UNQUOTED(ENTRANCE_XSESSION, "$xsession", [Xsession script])

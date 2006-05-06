@@ -3,7 +3,11 @@
 INCLUDES = @EDJE_CFLAGS@ @ECORE_CFLAGS@ @EVAS_CFLAGS@ \
 @ESMART_CFLAGS@
 
-bin_PROGRAMS = entrance entrance_login entrance_edit
+entrancelibdir = $(libdir)/$(PACKAGE)
+
+bin_PROGRAMS = entrance entrance_edit
+
+entrancelib_PROGRAMS = entrance_login
 
 entrance_SOURCES = \
 	entrance_auth.c entrance_auth.h \

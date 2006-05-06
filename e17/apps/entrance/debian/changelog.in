@@ -2,5 +2,5 @@ entrance (@VERSION@-1) unstable; urgency=low
 
   * a CVS snapshot release.
 
- -- Blake Barnett (shadoi) <shadoi@soulmachine.net>  Fri, 23 Sep 2005 09:02:58 -0700
+ -- E17 Debian Team <debian@edevelop.org>  Sun, 16 Apr 2006 12:58:12 +0900
 

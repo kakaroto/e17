@@ -472,14 +472,15 @@ entrance_session_start_user_session(Entrance_Session * e)
 #ifdef HAVE_PAM
         if (e->config->auth == ENTRANCE_USE_PAM)
         {
-           snprintf(buf, sizeof(buf), "%s/entrance_login %i %s %s",
-                    PACKAGE_BIN_DIR, (int) pid, pwent->pw_name, e->display);
+           snprintf(buf, sizeof(buf), "%s/%s/entrance_login %i %s %s",
+                    PACKAGE_LIB_DIR, PACKAGE, (int) pid, pwent->pw_name, 
+		    e->display);
         }
         else
 #endif
         {
-           snprintf(buf, sizeof(buf), "%s/entrance_login %i", PACKAGE_BIN_DIR,
-                    (int) pid);
+           snprintf(buf, sizeof(buf), "%s/%s/entrance_login %i",
+                    PACKAGE_LIB_DIR, PACKAGE, (int) pid);
         }
         shell = strdup("/bin/sh");
         /* this bypasses a race condition where entrance loses its x

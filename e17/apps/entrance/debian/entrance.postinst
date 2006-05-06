@@ -87,7 +87,11 @@ fi
 
 if [ -x /etc/init.d/entrance ]; then
   update-rc.d entrance defaults 99 01 >/dev/null 2>&1
-  invoke-rc.d entrance reload 2> /dev/null || true
+  # xdm has some rather involved  logic to prompt the user
+  # in prerm to see if they want to stop xdm if its already running a session.
+  # That can be added to entrance later, but for now, just start it if its not running,
+  # otherwise just leave it running.
+  invoke-rc.d entrance start 2> /dev/null || true
 fi
 
 # Automatically added by dh_installmenu

@@ -22,7 +22,7 @@
 #define DEFAULT_X_SERVER X_BINARIES "/X -quiet -nolisten tcp" ENTRANCE_VT_ARG
 //#define X_SERVER "/usr/X11R6/bin/Xnest -full"
 #define X_DISP ":0"             /* only used if DISPLAY variable is NOT set */
-#define ENTRANCE PREFIX "/bin/entrance_wrapper"
+#define ENTRANCE PACKAGE_LIB_DIR "/" PACKAGE "/entrance_wrapper"
 #define PIDFILE "/var/run/entranced.pid"
 
 /* display->status possible values */

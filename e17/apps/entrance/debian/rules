@@ -1,5 +1,5 @@
 #!/usr/bin/make -f
-# Sample debian/rules that uses debhelper.
+
 # GNU copyright 1997 to 1999 by Joey Hess.
 
 # Uncomment this to turn on verbose mode.
@@ -11,6 +11,8 @@ export DH_COMPAT=4
 
 
 CFLAGS ?= -Wall -g
+
+pwd := `pwd`
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -O0
@@ -27,14 +29,16 @@ DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 
 INSTALL=/usr/bin/install -p
-CONFIGUREOPTS = --prefix=/usr --with-xsession=/etc/X11/Xsession --build=$(DEB_BUILD_GNU_TYPE) --host=$(DEB_HOST_GNU_TYPE)
+CONFIGUREOPTS = --prefix=/usr --with-xsession=/etc/entrance/Xsession \
+	--build=$(DEB_BUILD_GNU_TYPE) --host=$(DEB_HOST_GNU_TYPE) \
+	--with-pam-config=entrance
 package=entrance
 
 configure: configure-stamp
 configure-stamp:
 	dh_testdir
 
-	test -x autogen.sh && ./autogen.sh $(CONFIGUREOPTS) || ./configure $(CONFIGUREOPTS)
+	./configure $(CONFIGUREOPTS)
 
 	touch configure-stamp
 
@@ -64,6 +68,15 @@ install: build
 
 	# Add here commands to install the package into debian/entrance.
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/$(package)
+
+	./mkinstalldirs $(pwd)/debian/entrance/etc/init.d
+	install -c -m 755 debian/etc/init $(pwd)/debian/entrance/etc/init.d/entrance
+
+	./mkinstalldirs $(pwd)/debian/entrance/etc/pam.d
+	install -c -m 644 debian/etc/pam $(pwd)/debian/entrance/etc/pam.d/entrance
+
+	./mkinstalldirs $(pwd)/debian/entrance/etc/entrance
+	install -c -m 755 debian/etc/Xsession $(pwd)/debian/entrance/etc/entrance/Xsession
 
 # Build architecture-independent files here.
 binary-indep: build install

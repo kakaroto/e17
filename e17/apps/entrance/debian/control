@@ -1,14 +1,14 @@
 Source: entrance
 Section: x11
 Priority: optional
-Maintainer: Sytse Wielinga <s.b.wielinga@student.utwente.nl>
-Build-Depends: libevas-dev, libecore-dev, libedje-dev, libpam0g-dev | libpam-dev, debhelper (>> 4.0.0)
+Maintainer: E17 Debian Team <debian@edevelop.org>
+Build-Depends: debhelper (>> 4.0.0), automake1.7 | automaken, libtool, libpam0g-dev, libevas-dev, libecore-dev, ecore0-bin, libedje-dev, edje0-bin, libesmart-dev
 Standards-Version: 3.6.1.0
 
 Package: entrance
 Section: x11
 Architecture: any
-Depends: ${shlibs:Depends}
+Depends: ${shlibs:Depends}, x11-common
 Description: The enlightened login manager.
  Entrance is a login manager similar to gdm or kdm, it is based on the 
  Enlightenment Foundation Libraries.  It is fully themeable via Edje.

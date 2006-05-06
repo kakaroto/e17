@@ -5,11 +5,11 @@ SUBDIRS = data config src
 EXTRA_DIST = \
 	autogen.sh README README.edje AUTHORS COPYING entrance.spec \
 	debian/changelog debian/changelog.in debian/copyright \
-	debian/control debian/rules debian/dirs debian/docs \
+	debian/control debian/rules debian/docs \
 	debian/README.Debian debian/entrance.postinst \
 	debian/entrance.postrm debian/entrance.prerm \
-	debian/entrance.conffiles debian/entrance.config \
-	m4/ac_expand_dir.m4 m4/ac_path_generic.m4 \
+	debian/entrance.config debian/etc/pam debian/etc/init \
+	debian/etc/Xsession m4/ac_expand_dir.m4 m4/ac_path_generic.m4 \
 	debian/entrance.templates entrance.spec.in
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
