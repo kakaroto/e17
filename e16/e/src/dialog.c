@@ -508,7 +508,7 @@ DialogRedraw(Dialog * d)
 
    if (d->pmap == None)
      {
-	d->pmap = ECreatePixmap(d->win, d->w, d->h, VRoot.depth);
+	d->pmap = ECreatePixmap(d->win, d->w, d->h, 0);
 	ESetWindowBackgroundPixmap(d->win, d->pmap);
      }
    EXCopyArea(d->pmm_bg.pmap, d->pmap, 0, 0, d->w, d->h, 0, 0);

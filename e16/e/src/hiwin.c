@@ -99,8 +99,7 @@ HiwinRenderImageFini(Hiwin * phi, int shown)
 
    if (shown)
      {
-	pmap =
-	   ECreatePixmap(EoGetWin(phi), EoGetW(phi), EoGetH(phi), VRoot.depth);
+	pmap = ECreatePixmap(EoGetWin(phi), EoGetW(phi), EoGetH(phi), 0);
 	ESetWindowBackgroundPixmap(EoGetWin(phi), pmap);
 	HiwinRenderImageDrawX(phi, pmap);
 	EFreePixmap(pmap);
@@ -187,8 +186,7 @@ HiwinRenderPixmapFini(Hiwin * phi, int shown)
 
    if (shown)
      {
-	pmap =
-	   ECreatePixmap(EoGetWin(phi), EoGetW(phi), EoGetH(phi), VRoot.depth);
+	pmap = ECreatePixmap(EoGetWin(phi), EoGetW(phi), EoGetH(phi), 0);
 	ESetWindowBackgroundPixmap(EoGetWin(phi), pmap);
 	HiwinRenderPixmapDrawX(phi, pmap);
 	EFreePixmap(pmap);

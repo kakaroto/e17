@@ -506,7 +506,7 @@ PagerUpdateBg(Pager * p)
    pmap = p->bgpmap;
    if (pmap != None)
       EFreePixmap(pmap);
-   pmap = p->bgpmap = ECreatePixmap(p->win, p->dw, p->dh, VRoot.depth);
+   pmap = p->bgpmap = ECreatePixmap(p->win, p->dw, p->dh, 0);
 
    bg = DeskBackgroundGet(p->dsk);
    if (Conf_pagers.snap && bg)
@@ -596,7 +596,7 @@ PagerEwinMoveResize(EWin * ewin, int resize __UNUSED__)
    if (p->scale <= 0. || Mode.op_source == OPSRC_USER)
       p->scale = ((float)VRoot.w / p->dw + (float)VRoot.h / p->dh) / 2;
 
-   p->pmap = ECreatePixmap(p->win, p->w, p->h, VRoot.depth);
+   p->pmap = ECreatePixmap(p->win, p->w, p->h, 0);
    ESetWindowBackgroundPixmap(p->win, p->pmap);
    p->do_newbg = 1;
    PagerCheckUpdate(p, NULL);
@@ -819,7 +819,7 @@ PagerEwinUpdateFromPager(Pager * p, EWin * ewin)
 	ewin->mini_w = w;
 	ewin->mini_h = h;
 	ewin->mini_pmm.type = 0;
-	ewin->mini_pmm.pmap = ECreatePixmap(p->win, w, h, VRoot.depth);
+	ewin->mini_pmm.pmap = ECreatePixmap(p->win, w, h, 0);
 	ewin->mini_pmm.mask = None;
      }
 

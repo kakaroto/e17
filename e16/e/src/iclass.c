@@ -808,7 +808,7 @@ ImageclassApplySimple(ImageClass * ic, Win win, Drawable draw, int state,
    pmap = None;
    if (draw == None)
      {
-	pmap = ECreatePixmap(win, w, h, VRoot.depth);
+	pmap = ECreatePixmap(win, w, h, 0);
 	draw = pmap;
 	x = y = 0;
      }
@@ -979,7 +979,7 @@ ImagestateMakePmapMask(ImageState * is, Win win, PmapMask * pmm,
 	EImageBlendCM(ii, is->im, (flags & ICLASS_ATTR_USE_CM) ? icm : NULL);
 
 	pmm->type = 0;
-	pmm->pmap = pmap = ECreatePixmap(win, w, h, VRoot.depth);
+	pmm->pmap = pmap = ECreatePixmap(win, w, h, 0);
 	pmm->mask = None;
 	pmm->w = w;
 	pmm->h = h;
@@ -1282,7 +1282,7 @@ ImageclassApplyCopy(ImageClass * ic, Win win, int w, int h,
 		  Pixmap              tp = 0, tm = 0;
 		  XGCValues           gcv;
 
-		  tp = ECreatePixmap(win, w, h, VRoot.depth);
+		  tp = ECreatePixmap(win, w, h, 0);
 		  gcv.fill_style = FillTiled;
 		  gcv.tile = pmm->pmap;
 		  gcv.ts_x_origin = 0;
@@ -1324,7 +1324,7 @@ ImageclassApplyCopy(ImageClass * ic, Win win, int w, int h,
 	if (pmm->pmap)
 	   Eprintf("ImageclassApplyCopy: Hmm... pmm->pmap already set\n");
 
-	pmap = ECreatePixmap(win, w, h, VRoot.depth);
+	pmap = ECreatePixmap(win, w, h, 0);
 	pmm->type = 0;
 	pmm->pmap = pmap;
 	pmm->mask = 0;

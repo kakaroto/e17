@@ -2300,7 +2300,7 @@ CB_DesktopDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
 
 	     wins[i] = ECreateWindow(win, 0, 0, 64, 48, 0);
 	     ESetWindowBorderWidth(wins[i], 1);
-	     pmap = ECreatePixmap(wins[i], 64, 48, VRoot.depth);
+	     pmap = ECreatePixmap(wins[i], 64, 48, 0);
 	     ESetWindowBackgroundPixmap(wins[i], pmap);
 
 	     bg = DeskBackgroundGet(DeskGet(i));

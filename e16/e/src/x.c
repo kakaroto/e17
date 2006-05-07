@@ -348,7 +348,7 @@ ECreateVisualWindow(Win parent, int x, int y, int w, int h, int saveunder,
 			c_attr->depth, InputOutput, c_attr->visual,
 			CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 			CWColormap | CWBackPixmap | CWBorderPixel, &attr);
-   win = EXidSet(xwin, xpar, x, y, w, h, VRoot.depth);
+   win = EXidSet(xwin, xpar, x, y, w, h, c_attr->depth);
 
    return win;
 }
@@ -365,7 +365,7 @@ ECreateEventWindow(Win parent, int x, int y, int w, int h)
    xpar = (parent != NoWin) ? parent->xwin : VRoot.xwin;
    xwin = XCreateWindow(disp, xpar, x, y, w, h, 0, 0, InputOnly,
 			CopyFromParent, CWOverrideRedirect, &attr);
-   win = EXidSet(xwin, xpar, x, y, w, h, VRoot.depth);
+   win = EXidSet(xwin, xpar, x, y, w, h, 0);
 
    return win;
 }

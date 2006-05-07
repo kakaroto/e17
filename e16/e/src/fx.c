@@ -95,8 +95,7 @@ FX_ripple_timeout(int val __UNUSED__, void *data __UNUSED__)
 	fx_ripple_win = DeskGetBackgroundWin(DesksGetCurrent());
 
 	fx_ripple_above =
-	   ECreatePixmap(fx_ripple_win, VRoot.w, fx_ripple_waterh * 2,
-			 VRoot.depth);
+	   ECreatePixmap(fx_ripple_win, VRoot.w, fx_ripple_waterh * 2, 0);
 	if (gc)
 	   EXFreeGC(gc);
 	if (gc1)
@@ -539,7 +538,7 @@ FX_Wave_timeout(int val __UNUSED__, void *data __UNUSED__)
 	fx_wave_win = DeskGetBackgroundWin(DesksGetCurrent());
 
 	fx_wave_above =
-	   ECreatePixmap(fx_wave_win, VRoot.w, FX_WAVE_WATERH * 2, VRoot.depth);
+	   ECreatePixmap(fx_wave_win, VRoot.w, FX_WAVE_WATERH * 2, 0);
 	if (gc)
 	   EXFreeGC(gc);
 	if (gc1)

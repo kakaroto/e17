@@ -921,7 +921,7 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape, int state)
 	EGetGeometry(mi->win, NULL, &x, &y, &w, &h, NULL, NULL);
 
 	mi_pmm->type = 0;
-	mi_pmm->pmap = ECreatePixmap(mi->win, w, h, VRoot.depth);
+	mi_pmm->pmap = ECreatePixmap(mi->win, w, h, 0);
 	mi_pmm->mask = None;
 
 	ic = (mi->child) ? m->style->sub_iclass : m->style->item_iclass;

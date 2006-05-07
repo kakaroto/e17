@@ -948,7 +948,7 @@ BackgroundCacheMini(Background * bg, int keep, int nuke)
      }
 
    /* Create new cached bg mini image */
-   pmap = ECreatePixmap(VRoot.win, 64, 48, VRoot.depth);
+   pmap = ECreatePixmap(VRoot.win, 64, 48, 0);
    BackgroundApplyPmap(bg, pmap, 64, 48);
    im = EImageGrabDrawable(pmap, None, 0, 0, 64, 48, 0);
    EImageSave(im, s);
@@ -1516,7 +1516,7 @@ CB_DesktopMiniDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
    DialogItemAreaGetSize(di, &w, &h);
 
    if (tmp_bg_mini_pixmap == None)
-      tmp_bg_mini_pixmap = ECreatePixmap(win, w, h, VRoot.depth);
+      tmp_bg_mini_pixmap = ECreatePixmap(win, w, h, 0);
    pmap = tmp_bg_mini_pixmap;
 
    if (val == 1)
@@ -1712,7 +1712,7 @@ BG_RedrawView(void)
    win = DialogItemAreaGetWindow(bg_sel);
    DialogItemAreaGetSize(bg_sel, &w, &h);
 
-   pmap = ECreatePixmap(win, w, h, VRoot.depth);
+   pmap = ECreatePixmap(win, w, h, 0);
    gc = EXCreateGC(pmap, 0, NULL);
 
    ic_button = ImageclassFind("DIALOG_BUTTON", 0);
