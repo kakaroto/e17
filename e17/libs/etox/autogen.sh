@@ -1,5 +1,9 @@
 #!/bin/sh
 
+echo "This software is dead!"
+
+exit -1
+
 rm -rf autom4te.cache
 rm -f aclocal.m4 ltmain.sh
 
