@@ -1,3 +1,6 @@
+echo "This software is dead!"
+exit -1
+
 dnl Process this file with autoconf to produce a configure script.
 
 # get rid of that stupid cache mechanism
