@@ -892,7 +892,7 @@ pt_get_bg_image(Window win, int w, int h, int use_root)
      }
    XTranslateCoordinates(disp, win, cr, 0, 0, &xx, &yy, &dummy);
 #if 0
-   Eprintf("ImagestateMakePmapMask %#lx %d %d %d %d\n", win, xx, yy, w, h);
+   Eprintf("pt_get_bg_image %#lx %d %d %d %d\n", win, xx, yy, w, h);
 #endif
    if (xx < VRoot.w && yy < VRoot.h && xx + w >= 0 && yy + h >= 0)
      {
@@ -944,7 +944,7 @@ ImageclassGetImageBlended(ImageClass * ic, Win win, int w, int h, int active,
 }
 
 static void
-ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
+ImagestateMakePmapMask(ImageState * is, Win win, PmapMask * pmm,
 		       int make_mask, int w, int h, int image_type)
 {
 #ifdef ENABLE_TRANSPARENCY
@@ -965,7 +965,7 @@ ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 
    if (flags != ICLASS_ATTR_OPAQUE)
      {
-	ii = pt_get_bg_image(win, w, h, flags & ICLASS_ATTR_GLASS);
+	ii = pt_get_bg_image(Xwin(win), w, h, flags & ICLASS_ATTR_GLASS);
      }
    else
      {
@@ -979,7 +979,7 @@ ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	EImageBlendCM(ii, is->im, (flags & ICLASS_ATTR_USE_CM) ? icm : NULL);
 
 	pmm->type = 0;
-	pmm->pmap = pmap = EXCreatePixmap(win, w, h, VRoot.depth);
+	pmm->pmap = pmap = ECreatePixmap(win, w, h, VRoot.depth);
 	pmm->mask = None;
 	pmm->w = w;
 	pmm->h = h;
@@ -990,7 +990,7 @@ ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	     if (EImageHasAlpha(is->im))
 	       {
 		  /* Make the scaled clip mask to be used */
-		  EImageRenderPixmaps(is->im, win, &pmap, &mask, w, h);
+		  EImageRenderPixmaps(is->im, Xwin(win), &pmap, &mask, w, h);
 
 		  /* Replace the mask with the correct one */
 		  pmm->mask = EXCreatePixmapCopy(mask, w, h, 1);
@@ -1011,7 +1011,7 @@ ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	pmm->pmap = pmm->mask = None;
 	pmm->w = w;
 	pmm->h = h;
-	EImageRenderPixmaps(is->im, win, &pmm->pmap, &pmm->mask, w, h);
+	EImageRenderPixmaps(is->im, Xwin(win), &pmm->pmap, &pmm->mask, w, h);
      }
    else
      {
@@ -1047,7 +1047,7 @@ ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	pmm->pmap = pmm->mask = None;
 	pmm->w = pw;
 	pmm->h = ph;
-	EImageRenderPixmaps(is->im, win, &pmm->pmap, &pmm->mask, pw, ph);
+	EImageRenderPixmaps(is->im, Xwin(win), &pmm->pmap, &pmm->mask, pw, ph);
      }
 }
 
@@ -1178,7 +1178,7 @@ ITApply(Win win, ImageClass * ic, ImageState * is, int w, int h,
      {
 	PmapMask            pmm;
 
-	ImagestateMakePmapMask(is, Xwin(win), &pmm, 1, w, h, image_type);
+	ImagestateMakePmapMask(is, win, &pmm, 1, w, h, image_type);
 
 	if (pmm.pmap)
 	  {
@@ -1245,9 +1245,9 @@ ImageclassApply(ImageClass * ic, Win win, int w, int h, int active,
 }
 
 void
-ImageclassApplyCopy(ImageClass * ic, Drawable win, int w, int h, int active,
-		    int sticky, int state, PmapMask * pmm, int make_mask,
-		    int image_type)
+ImageclassApplyCopy(ImageClass * ic, Win win, int w, int h,
+		    int active, int sticky, int state,
+		    PmapMask * pmm, int make_mask, int image_type)
 {
    ImageState         *is;
    GC                  gc;
@@ -1282,7 +1282,7 @@ ImageclassApplyCopy(ImageClass * ic, Drawable win, int w, int h, int active,
 		  Pixmap              tp = 0, tm = 0;
 		  XGCValues           gcv;
 
-		  tp = EXCreatePixmap(win, w, h, VRoot.depth);
+		  tp = ECreatePixmap(win, w, h, VRoot.depth);
 		  gcv.fill_style = FillTiled;
 		  gcv.tile = pmm->pmap;
 		  gcv.ts_x_origin = 0;
@@ -1293,7 +1293,7 @@ ImageclassApplyCopy(ImageClass * ic, Drawable win, int w, int h, int active,
 		  EXFreeGC(gc);
 		  if (pmm->mask)
 		    {
-		       tm = EXCreatePixmap(win, w, h, 1);
+		       tm = ECreatePixmap(win, w, h, 1);
 		       gcv.fill_style = FillTiled;
 		       gcv.tile = pmm->mask;
 		       gcv.ts_x_origin = 0;
@@ -1324,7 +1324,7 @@ ImageclassApplyCopy(ImageClass * ic, Drawable win, int w, int h, int active,
 	if (pmm->pmap)
 	   Eprintf("ImageclassApplyCopy: Hmm... pmm->pmap already set\n");
 
-	pmap = EXCreatePixmap(win, w, h, VRoot.depth);
+	pmap = ECreatePixmap(win, w, h, VRoot.depth);
 	pmm->type = 0;
 	pmm->pmap = pmap;
 	pmm->mask = 0;
@@ -1537,8 +1537,8 @@ ImageclassIpc(const char *params, Client * c __UNUSED__)
 	     hptr = atword(params, 6);
 	     if (hptr)
 	       {
-		  w = (int)strtol(atword(params, 5), (char **)NULL, 0);
-		  h = (int)strtol(hptr, (char **)NULL, 0);
+		  w = (int)strtol(atword(params, 5), NULL, 0);
+		  h = (int)strtol(hptr, NULL, 0);
 	       }
 
 	     ImageclassApply(ic, win, w, h, 0, 0, st, ST_SOLID);
@@ -1550,14 +1550,15 @@ ImageclassIpc(const char *params, Client * c __UNUSED__)
 	ic = ImageclassFind(param1, 0);
 	if (ic)
 	  {
-	     Window              win;
+	     Window              xwin;
+	     Win                 win;
 	     char                state[20];
 	     const char         *winptr, *hptr;
 	     int                 st, w = -1, h = -1;
 	     PmapMask            pmm;
 
 	     winptr = atword(params, 3);
-	     win = (Window) strtoul(winptr, NULL, 0);
+	     xwin = (Window) strtoul(winptr, NULL, 0);
 
 	     word(params, 4, state);
 	     if (!strcmp(state, "hilited"))
@@ -1576,14 +1577,16 @@ ImageclassIpc(const char *params, Client * c __UNUSED__)
 		  return;
 	       }
 
-	     w = (int)strtol(atword(params, 5), (char **)NULL, 0);
-	     h = (int)strtol(hptr, (char **)NULL, 0);
+	     w = (int)strtol(atword(params, 5), NULL, 0);
+	     h = (int)strtol(hptr, NULL, 0);
 
-	     if (!EDrawableCheck(win, 0))	/* Grab server? */
+	     win = ECreateWinFromXwin(xwin);
+	     if (!win)
 		return;
+
 	     ImageclassApplyCopy(ic, win, w, h, 0, 0, st, &pmm, 1, ST_SOLID);
 	     IpcPrintf("0x%08lx 0x%08lx\n", pmm.pmap, pmm.mask);
-/*		    FreePmapMask(&pmm);		??? */
+	     EDestroyWin(win);
 	  }
      }
    else if (!strcmp(param2, "ref_count"))

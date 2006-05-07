@@ -886,7 +886,7 @@ MenuRedraw(Menu * m)
 	w = m->w;
 	h = m->h;
 	FreePmapMask(&m->pmm);
-	ImageclassApplyCopy(m->style->bg_iclass, Xwin(m->win), w, h, 0,
+	ImageclassApplyCopy(m->style->bg_iclass, m->win, w, h, 0,
 			    0, STATE_NORMAL, &m->pmm, 1, ST_MENU);
 	ESetWindowBackgroundPixmap(m->win, m->pmm.pmap);
 	EShapeCombineMask(m->win, ShapeBounding, 0, 0, m->pmm.mask, ShapeSet);
@@ -935,7 +935,7 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape, int state)
 	       {
 		  PmapMask            pmm;
 
-		  ImageclassApplyCopy(ic, Xwin(mi->win), w, h, 0, 0,
+		  ImageclassApplyCopy(ic, mi->win, w, h, 0, 0,
 				      mi->state, &pmm, 1, item_type);
 		  if (pmm.mask)
 		    {
@@ -949,7 +949,7 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape, int state)
 	  }
 	else
 	  {
-	     ImageclassApplyCopy(ic, mi_pmm->pmap, w, h, 0, 0, mi->state,
+	     ImageclassApplyCopy(ic, mi->win, w, h, 0, 0, mi->state,
 				 mi_pmm, 1, item_type);
 	  }
 

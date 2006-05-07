@@ -111,7 +111,7 @@ Pixmap              ImageclassApplySimple(ImageClass * ic, Win win,
 void                ImageclassApply(ImageClass * ic, Win win, int w, int h,
 				    int active, int sticky, int state,
 				    int image_type);
-void                ImageclassApplyCopy(ImageClass * ic, Window win, int w,
+void                ImageclassApplyCopy(ImageClass * ic, Win win, int w,
 					int h, int active, int sticky,
 					int state, PmapMask * pmm,
 					int make_mask, int image_type);

@@ -501,7 +501,7 @@ DialogRedraw(Dialog * d)
 #endif
 
    FreePmapMask(&(d->pmm_bg));
-   ImageclassApplyCopy(d->iclass, Xwin(d->win), d->w, d->h, 0, 0, STATE_NORMAL,
+   ImageclassApplyCopy(d->iclass, d->win, d->w, d->h, 0, 0, STATE_NORMAL,
 		       &(d->pmm_bg), 0, ST_DIALOG);
    if (d->pmm_bg.pmap == None)
       return;
