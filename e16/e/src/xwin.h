@@ -24,23 +24,17 @@
 #ifndef _XWIN_H_
 #define _XWIN_H_
 
-#if USE_NEW_WIN_API
 typedef struct _xwin *Win;
-Window              Xwin(const Win win);
-Win                 ECreateWinFromXwin(Window xwin);
-
-#define             EDestroyWin(win)	Efree(win)
-Win                 ELookupXwin(Window xwin);
 
 #define NoWin ((Win)0)
-#else
-#define Win Window
-#define Xwin(win) (win)
-#define ECreateWinFromXwin(xwin) (xwin)
-#define EDestroyWin(xwin)
-#define ELookupXwin(xwin) (xwin)
-#define NoWin None
-#endif
+
+Win                 ELookupXwin(Window xwin);
+
+#define Xwin(win) WinGetXwin(win)
+Window              WinGetXwin(const Win win);
+
+Win                 ECreateWinFromXwin(Window xwin);
+void                EDestroyWin(Win win);
 
 Display            *EDisplayOpen(const char *dstr, int scr);
 void                EDisplayClose(void);
@@ -116,10 +110,9 @@ int                 EDrawableCheck(Drawable draw, int grab);
 #define EClearArea(win, x, y, w, h, exp) \
 	XClearArea(disp, Xwin(win), x, y, w, h, exp)
 
-#define ECreatePixmap(win, w, h, d) \
-	XCreatePixmap(disp, Xwin(win), w, h, d)
-#define EFreePixmap(pmap) \
-	XFreePixmap(disp, pmap)
+Pixmap              ECreatePixmap(Win win, unsigned int width,
+				  unsigned int height, unsigned int depth);
+void                EFreePixmap(Pixmap pixmap);
 
 void                EShapeCombineMask(Win win, int dest, int x, int y,
 				      Pixmap pmap, int op);
