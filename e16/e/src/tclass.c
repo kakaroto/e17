@@ -547,13 +547,14 @@ TextclassIpc(const char *params, Client * c __UNUSED__)
      {
 	if (tc)
 	  {
+	     Window              xwin;
+	     Win                 win;
 	     int                 state;
 	     int                 x, y;
 	     const char         *txt;
-	     Window              win;
 
 	     word(params, 3, param3);
-	     win = (Window) strtoul(param3, NULL, 0);
+	     xwin = (Window) strtoul(param3, NULL, 0);
 
 	     word(params, 4, param3);
 	     x = atoi(param3);
@@ -575,10 +576,13 @@ TextclassIpc(const char *params, Client * c __UNUSED__)
 	     if (!txt)
 		return;
 
-	     if (!EDrawableCheck(win, 0))	/* Grab server? */
+	     win = ECreateWinFromXwin(xwin);
+	     if (!win)
 		return;
-	     TextDraw(tc, NULL, win, 0, 0, state, txt, x, y, 99999, 99999, 17,
+
+	     TextDraw(tc, win, None, 0, 0, state, txt, x, y, 99999, 99999, 17,
 		      0);
+	     EDestroyWin(win);
 	  }
      }
    else if (!strcmp(param2, "query_size"))
