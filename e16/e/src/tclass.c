@@ -577,7 +577,8 @@ TextclassIpc(const char *params, Client * c __UNUSED__)
 
 	     if (!EDrawableCheck(win, 0))	/* Grab server? */
 		return;
-	     TextDraw(tc, win, 0, 0, state, txt, x, y, 99999, 99999, 17, 0);
+	     TextDraw(tc, NULL, win, 0, 0, state, txt, x, y, 99999, 99999, 17,
+		      0);
 	  }
      }
    else if (!strcmp(param2, "query_size"))

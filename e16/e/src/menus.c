@@ -955,7 +955,7 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape, int state)
 
 	if (mi->text)
 	  {
-	     TextDraw(m->style->tclass, mi_pmm->pmap, 0, 0, mi->state,
+	     TextDraw(m->style->tclass, mi->win, mi_pmm->pmap, 0, 0, mi->state,
 		      _(mi->text), mi->text_x, mi->text_y, mi->text_w,
 		      mi->text_h, 17,
 		      TextclassGetJustification(m->style->tclass));

@@ -230,7 +230,7 @@ WarpFocusWinPaint(WarpFocusWin * fw)
 	     iw = fw->mh;
 	  }
 
-	TextDraw(fw->tc, Xwin(wi->win), 0, 0, state, wi->txt,
+	TextDraw(fw->tc, wi->win, None, 0, 0, state, wi->txt,
 		 pad->left + iw, pad->top, fw->tw, fw->th, 0, 0);
      }
 

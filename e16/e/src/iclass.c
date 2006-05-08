@@ -1187,9 +1187,12 @@ ITApply(Win win, ImageClass * ic, ImageState * is, int w, int h,
 	     if (ts && text)
 	       {
 		  if (pmm.type != 0)
-		     pmap = EXCreatePixmapCopy(pmm.pmap, w, h, VRoot.depth);
+		    {
+		       pmap = ECreatePixmap(win, w, h, 0);
+		       EXCopyArea(pmm.pmap, pmap, 0, 0, w, h, 0, 0);
+		    }
 
-		  TextstateDrawText(ts, pmap, text, ic->padding.left,
+		  TextstateDrawText(ts, win, pmap, text, ic->padding.left,
 				    ic->padding.top,
 				    w - (ic->padding.left +
 					 ic->padding.right),

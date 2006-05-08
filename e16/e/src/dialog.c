@@ -473,7 +473,7 @@ DialogDrawButton(Dialog * d __UNUSED__, DButton * db)
 
 	pad = ImageclassGetPadding(ic);
 	h = db->h - (pad->top + pad->bottom);
-	TextDraw(db->tclass, Xwin(db->win), 0, 0, state, db->text,
+	TextDraw(db->tclass, db->win, None, 0, 0, state, db->text,
 		 h + 2 + pad->left, pad->top,
 		 db->w - (h + 2 + pad->left + pad->right),
 		 h, h, TextclassGetJustification(db->tclass));
@@ -523,7 +523,7 @@ DialogRedraw(Dialog * d)
 	EImageBorder       *pad;
 
 	pad = ImageclassGetPadding(d->iclass);
-	TextDraw(d->tclass, d->pmap, 0, 0, STATE_NORMAL, d->text,
+	TextDraw(d->tclass, d->win, d->pmap, 0, 0, STATE_NORMAL, d->text,
 		 pad->left, pad->top, d->w - (pad->left + pad->right),
 		 d->h - (pad->top + pad->bottom),
 		 d->h - (pad->top + pad->bottom),
@@ -1737,7 +1737,7 @@ DialogDrawItem(Dialog * d, DItem * di)
 	break;
 
       draw_text:
-	TextDraw(di->tclass, d->pmap, 0, 0, STATE_NORMAL, di->text,
+	TextDraw(di->tclass, d->win, d->pmap, 0, 0, STATE_NORMAL, di->text,
 		 x, di->y, w, 99999, 17, TextclassGetJustification(di->tclass));
 	break;
      }

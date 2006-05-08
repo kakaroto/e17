@@ -82,15 +82,16 @@ TextClass          *TextclassFind(const char *name, int fallback);
 /* text.c */
 TextState          *TextclassGetTextState(TextClass * tclass, int state,
 					  int active, int sticky);
-void                TextstateDrawText(TextState * ts, Window win,
+void                TextstateDrawText(TextState * ts, Win win, Drawable draw,
 				      const char *text, int x, int y, int w,
 				      int h, int fsize, int justification);
 void                TextSize(TextClass * tclass, int active, int sticky,
 			     int state, const char *text, int *width,
 			     int *height, int fsize);
-void                TextDraw(TextClass * tclass, Drawable draw, int active,
-			     int sticky, int state, const char *text, int x,
-			     int y, int w, int h, int fsize, int justification);
+void                TextDraw(TextClass * tclass, Win win, Drawable draw,
+			     int active, int sticky, int state,
+			     const char *text, int x, int y, int w, int h,
+			     int fsize, int justification);
 
 /* ttfont.c */
 void                Efont_extents(Efont * f, const char *text,

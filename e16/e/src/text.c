@@ -29,11 +29,10 @@
 #define ExTextExtents XmbTextExtents
 #define ExDrawString XmbDrawString
 
-static void         TextDrawRotTo(Window win, Drawable * drawable, int x, int y,
-				  int w, int h, TextState * ts);
-
-static void         TextDrawRotBack(Window win, Drawable drawable, int x, int y,
-				    int w, int h, TextState * ts);
+static void         TextDrawRotTo(Win win, Drawable src, Drawable dst,
+				  int x, int y, int w, int h, TextState * ts);
+static void         TextDrawRotBack(Win win, Drawable dst, Drawable src,
+				    int x, int y, int w, int h, TextState * ts);
 
 TextState          *
 TextclassGetTextState(TextClass * tclass, int state, int active, int sticky)
@@ -270,8 +269,9 @@ TextSize(TextClass * tclass, int active, int sticky, int state,
 }
 
 void
-TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
-		  int w, int h, int fsize __UNUSED__, int justification)
+TextstateDrawText(TextState * ts, Win win, Drawable draw, const char *text,
+		  int x, int y, int w, int h, int fsize __UNUSED__,
+		  int justification)
 {
    const char         *str;
    char              **lines;
@@ -293,8 +293,11 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
    if (!lines)
       return;
 
+   if (draw == None)
+      draw = WinGetXwin(win);
+
    if (!gc)
-      gc = EXCreateGC(win, 0, NULL);
+      gc = EXCreateGC(draw, 0, NULL);
 
    if (ts->style.orientation == FONT_TO_RIGHT ||
        ts->style.orientation == FONT_TO_LEFT)
@@ -349,13 +352,11 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 	     xx = x + (((textwidth_limit - wid) * justification) >> 10);
 
 	     if (ts->style.orientation != FONT_TO_RIGHT)
-		drawable =
-		   EXCreatePixmap(win, wid + 2, ascent + descent + 2,
-				  VRoot.depth);
+		drawable = ECreatePixmap(win, wid + 2, ascent + descent + 2, 0);
 	     else
-		drawable = win;
-	     TextDrawRotTo(win, &drawable, xx - 1, yy - 1 - ascent, wid + 2,
-			   ascent + descent + 2, ts);
+		drawable = draw;
+	     TextDrawRotTo(win, draw, drawable, xx - 1, yy - 1 - ascent,
+			   wid + 2, ascent + descent + 2, ts);
 	     if (ts->style.orientation == FONT_TO_RIGHT)
 	       {
 		  offset_x = xx;
@@ -392,9 +393,9 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 	     EFont_draw_string(drawable, gc, offset_x, offset_y, lines[i],
 			       ts->efont, VRoot.vis, VRoot.cmap);
 
-	     TextDrawRotBack(win, drawable, xx - 1, yy - 1 - ascent, wid + 2,
-			     ascent + descent + 2, ts);
-	     if (drawable != win)
+	     TextDrawRotBack(win, draw, drawable, xx - 1, yy - 1 - ascent,
+			     wid + 2, ascent + descent + 2, ts);
+	     if (drawable != draw)
 		EFreePixmap(drawable);
 	     yy += ascent + descent;
 	  }
@@ -493,11 +494,10 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 
 	     if (ts->style.orientation != FONT_TO_RIGHT)
 		drawable =
-		   EXCreatePixmap(win, ret2.width + 2, ret2.height + 2,
-				  VRoot.depth);
+		   ECreatePixmap(win, ret2.width + 2, ret2.height + 2, 0);
 	     else
-		drawable = win;
-	     TextDrawRotTo(win, &drawable, xx - 1,
+		drawable = draw;
+	     TextDrawRotTo(win, draw, drawable, xx - 1,
 			   yy - (ts->xfontset_ascent) - 1, ret2.width + 2,
 			   ret2.height + 2, ts);
 	     if (ts->style.orientation == FONT_TO_RIGHT)
@@ -536,10 +536,10 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 	     ExDrawString(disp, drawable, ts->xfontset, gc, offset_x, offset_y,
 			  lines[i], strlen(lines[i]));
 
-	     TextDrawRotBack(win, drawable, xx - 1,
+	     TextDrawRotBack(win, draw, drawable, xx - 1,
 			     yy - (ts->xfontset_ascent) - 1, ret2.width + 2,
 			     ret2.height + 2, ts);
-	     if (drawable != win)
+	     if (drawable != draw)
 		EFreePixmap(drawable);
 	     yy += ret2.height;
 	  }
@@ -590,13 +590,11 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 	     xx = x + (((textwidth_limit - wid) * justification) >> 10);
 
 	     if (ts->style.orientation != FONT_TO_RIGHT)
-		drawable =
-		   EXCreatePixmap(win, wid + 2, ascent + descent + 2,
-				  VRoot.depth);
+		drawable = ECreatePixmap(win, wid + 2, ascent + descent + 2, 0);
 	     else
-		drawable = win;
-	     TextDrawRotTo(win, &drawable, xx - 1, yy - ascent - 1, wid + 2,
-			   ascent + descent + 2, ts);
+		drawable = draw;
+	     TextDrawRotTo(win, draw, drawable, xx - 1, yy - ascent - 1,
+			   wid + 2, ascent + descent + 2, ts);
 	     if (ts->style.orientation == FONT_TO_RIGHT)
 	       {
 		  offset_x = xx;
@@ -633,9 +631,9 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 	     XDrawString(disp, drawable, gc, offset_x, offset_y, lines[i],
 			 strlen(lines[i]));
 
-	     TextDrawRotBack(win, drawable, xx - 1, yy - 1 - ascent, wid + 2,
-			     ascent + descent + 2, ts);
-	     if (drawable != win)
+	     TextDrawRotBack(win, draw, drawable, xx - 1, yy - 1 - ascent,
+			     wid + 2, ascent + descent + 2, ts);
+	     if (drawable != draw)
 		EFreePixmap(drawable);
 	     yy += ts->xfont->ascent + ts->xfont->descent;
 	  }
@@ -688,13 +686,11 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 	     xx = x + (((textwidth_limit - wid) * justification) >> 10);
 
 	     if (ts->style.orientation != FONT_TO_RIGHT)
-		drawable =
-		   EXCreatePixmap(win, wid + 2, ascent + descent + 2,
-				  VRoot.depth);
+		drawable = ECreatePixmap(win, wid + 2, ascent + descent + 2, 0);
 	     else
-		drawable = win;
-	     TextDrawRotTo(win, &drawable, xx - 1, yy - ascent - 1, wid + 2,
-			   ascent + descent + 2, ts);
+		drawable = draw;
+	     TextDrawRotTo(win, draw, drawable, xx - 1, yy - ascent - 1,
+			   wid + 2, ascent + descent + 2, ts);
 	     if (ts->style.orientation == FONT_TO_RIGHT)
 	       {
 		  offset_x = xx;
@@ -731,10 +727,10 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 	     XDrawString16(disp, drawable, gc, offset_x, offset_y,
 			   (XChar2b *) lines[i], strlen(lines[i]) / 2);
 
-	     TextDrawRotBack(win, drawable, xx - 1, yy - 1 - ascent, wid + 2,
-			     ascent + descent + 2, ts);
-	     if (drawable != win)
-		XFreePixmap(disp, drawable);
+	     TextDrawRotBack(win, draw, drawable, xx - 1, yy - 1 - ascent,
+			     wid + 2, ascent + descent + 2, ts);
+	     if (drawable != draw)
+		EFreePixmap(drawable);
 	     yy += ts->xfont->ascent + ts->xfont->descent;
 	  }
      }
@@ -743,8 +739,8 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 }
 
 void
-TextDraw(TextClass * tclass, Drawable draw, int active, int sticky, int state,
-	 const char *text, int x, int y, int w, int h, int fsize,
+TextDraw(TextClass * tclass, Win win, Drawable draw, int active, int sticky,
+	 int state, const char *text, int x, int y, int w, int h, int fsize,
 	 int justification)
 {
    TextState          *ts;
@@ -756,38 +752,35 @@ TextDraw(TextClass * tclass, Drawable draw, int active, int sticky, int state,
    if (!ts)
       return;
 
-   TextstateDrawText(ts, draw, text, x, y, w, h, fsize, justification);
+   TextstateDrawText(ts, win, draw, text, x, y, w, h, fsize, justification);
 }
 
-void
-TextDrawRotTo(Window win, Drawable * draw, int x, int y, int w, int h,
-	      TextState * ts)
+static void
+TextDrawRotTo(Win win __UNUSED__, Drawable src, Drawable dst, int x, int y,
+	      int w, int h, TextState * ts)
 {
    EImage             *im;
-   int                 win_x, win_y;
-   unsigned int        win_w, win_h, win_b, win_d;
-   Window              rr;
+   int                 win_w;
 
    switch (ts->style.orientation)
      {
      case FONT_TO_UP:
-	im = EImageGrabDrawable(win, 0, y, x, h, w, 0);
+	im = EImageGrabDrawable(src, 0, y, x, h, w, 0);
 	EImageOrientate(im, 1);
-	EImageRenderOnDrawable(im, *draw, 0, 0, w, h, 0);
+	EImageRenderOnDrawable(im, dst, 0, 0, w, h, 0);
 	EImageFree(im);
 	break;
      case FONT_TO_DOWN:
-	XGetGeometry(disp, win, &rr, &win_x, &win_y, &win_w, &win_h,
-		     &win_b, &win_d);
-	im = EImageGrabDrawable(win, None, win_w - y - h, x, h, w, 0);
+	EXGetGeometry(src, NULL, NULL, NULL, &win_w, NULL, NULL, NULL);
+	im = EImageGrabDrawable(src, None, win_w - y - h, x, h, w, 0);
 	EImageOrientate(im, 3);
-	EImageRenderOnDrawable(im, *draw, 0, 0, w, h, 0);
+	EImageRenderOnDrawable(im, dst, 0, 0, w, h, 0);
 	EImageFree(im);
 	break;
      case FONT_TO_LEFT:	/* Holy carumba! That's for yoga addicts, maybe .... */
-	im = EImageGrabDrawable(win, None, x, y, w, h, 0);
+	im = EImageGrabDrawable(src, None, x, y, w, h, 0);
 	EImageOrientate(im, 2);
-	EImageRenderOnDrawable(im, *draw, 0, 0, w, h, 0);
+	EImageRenderOnDrawable(im, dst, 0, 0, w, h, 0);
 	EImageFree(im);
 	break;
      default:
@@ -795,35 +788,32 @@ TextDrawRotTo(Window win, Drawable * draw, int x, int y, int w, int h,
      }
 }
 
-void
-TextDrawRotBack(Window win, Pixmap draw, int x, int y, int w, int h,
-		TextState * ts)
+static void
+TextDrawRotBack(Win win __UNUSED__, Drawable dst, Drawable src, int x, int y,
+		int w, int h, TextState * ts)
 {
    EImage             *im;
-   int                 win_x, win_y;
-   unsigned int        win_w, win_h, win_b, win_d;
-   Window              rr;
+   int                 win_w;
 
    switch (ts->style.orientation)
      {
      case FONT_TO_UP:
-	im = EImageGrabDrawable(draw, None, 0, 0, w, h, 0);
+	im = EImageGrabDrawable(src, None, 0, 0, w, h, 0);
 	EImageOrientate(im, 3);
-	EImageRenderOnDrawable(im, win, y, x, h, w, 0);
+	EImageRenderOnDrawable(im, dst, y, x, h, w, 0);
 	EImageFree(im);
 	break;
      case FONT_TO_DOWN:
-	XGetGeometry(disp, win, &rr, &win_x, &win_y, &win_w, &win_h,
-		     &win_b, &win_d);
-	im = EImageGrabDrawable(draw, None, 0, 0, w, h, 0);
+	EXGetGeometry(dst, NULL, NULL, NULL, &win_w, NULL, NULL, NULL);
+	im = EImageGrabDrawable(src, None, 0, 0, w, h, 0);
 	EImageOrientate(im, 1);
-	EImageRenderOnDrawable(im, win, win_w - y - h, x, h, w, 0);
+	EImageRenderOnDrawable(im, dst, win_w - y - h, x, h, w, 0);
 	EImageFree(im);
 	break;
      case FONT_TO_LEFT:	/* Holy carumba! That's for yoga addicts, maybe .... */
-	im = EImageGrabDrawable(draw, None, 0, 0, w, h, 0);
+	im = EImageGrabDrawable(src, None, 0, 0, w, h, 0);
 	EImageOrientate(im, 2);
-	EImageRenderOnDrawable(im, win, x, y, w, h, 0);
+	EImageRenderOnDrawable(im, dst, x, y, w, h, 0);
 	EImageFree(im);
 	break;
      default:

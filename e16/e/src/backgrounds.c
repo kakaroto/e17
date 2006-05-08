@@ -1746,7 +1746,7 @@ BG_RedrawView(void)
 
 		     TextSize(tc, 0, 0, STATE_NORMAL,
 			      _("No\nBackground"), &tw, &th, 17);
-		     TextDraw(tc, pmap, 0, 0, STATE_NORMAL,
+		     TextDraw(tc, win, pmap, 0, 0, STATE_NORMAL,
 			      _("No\nBackground"), x + 4,
 			      4 + ((48 - th) / 2), 64, 48, 17, 512);
 		  }

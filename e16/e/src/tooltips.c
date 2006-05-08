@@ -592,7 +592,7 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
    xx = pad->left + iw;
 
    /* draw the ordinary tooltip text */
-   TextDraw(tt->tclass, Xwin(tt->TTWIN->win), 0, 0, STATE_NORMAL, text, xx,
+   TextDraw(tt->tclass, tt->TTWIN->win, None, 0, 0, STATE_NORMAL, text, xx,
 	    pad->top, headline_w, headline_h, 17, 512);
 
    /* draw the icons and labels, if any */
@@ -617,7 +617,7 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 
 	     if (ActionGetEvent(aa) == EVENT_DOUBLE_DOWN)
 	       {
-		  TextDraw(tt->tclass, Xwin(tt->TTWIN->win), 0, 0, STATE_NORMAL,
+		  TextDraw(tt->tclass, tt->TTWIN->win, None, 0, 0, STATE_NORMAL,
 			   "2x", xx + iw - double_w, y, double_w, heights[i],
 			   17, 0);
 	       }
@@ -669,7 +669,7 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 		     TooltipIclassPaste(tt, "TOOLTIP_KEY_MOD5", x, y, &x);
 	       }
 
-	     TextDraw(tt->tclass, Xwin(tt->TTWIN->win), 0, 0, STATE_NORMAL, tts,
+	     TextDraw(tt->tclass, tt->TTWIN->win, None, 0, 0, STATE_NORMAL, tts,
 		      pad->left + icons_width + iw, y,
 		      labels_width, heights[i], 17, 0);
 	     y += heights[i];
