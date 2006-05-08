@@ -755,24 +755,8 @@ ewl_widget_parent_set(Ewl_Widget * w, Ewl_Widget * p)
 	 * A widget cannot be the child of multiple widgets, so remove it
 	 * from a previous parent before adding to this parent.
 	 */
-	if (op) {
+	if (op)
 		ewl_container_child_remove(op, w);
-		/*
-		if (!p)
-			ewl_callback_del(w, EWL_CALLBACK_DESTROY,
-					ewl_widget_child_destroy_cb);
-					*/
-	}
-	/*
-	 * A widget that has not had a previous parent needs the parent
-	 * destruction callback added.
-	 */
-	else if (p) {
-		/*
-		ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
-					ewl_widget_child_destroy_cb, NULL);
-					*/
-	}
 
 	ewl_callback_call_with_event_data(w, EWL_CALLBACK_REPARENT, p);
 
@@ -2671,23 +2655,6 @@ ewl_widget_theme_insets_get(Ewl_Widget *w, int *l, int *r, int *t, int *b)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
-/*
-void
-ewl_widget_child_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
-				void *user_data __UNUSED__)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-
-	if (w->parent)
-		ewl_container_child_remove(EWL_CONTAINER(w->parent), w);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-*/
-
 
 void
 ewl_widget_drag_down_cb(Ewl_Widget *w, void *ev_data ,

@@ -73,8 +73,6 @@ double          ewl_scrollpane_vscrollbar_step_get(Ewl_ScrollPane *s);
  */
 void ewl_scrollpane_configure_cb(Ewl_Widget *w, void *ev_data,
 							void *user_data);
-void ewl_scrollpane_box_configure_cb(Ewl_Widget *w, void *ev_data,
-							void *user_data);
 void ewl_scrollpane_focus_jump_cb(Ewl_Widget *w, void *ev_data,
                                   void *user_data);
 void ewl_scrollpane_hscroll_cb(Ewl_Widget *w, void *ev_data, void *user_data);

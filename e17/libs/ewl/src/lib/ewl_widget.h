@@ -253,7 +253,6 @@ void ewl_widget_mouse_in_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_widget_mouse_out_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_widget_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_widget_mouse_up_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_widget_child_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_widget_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 
 /**

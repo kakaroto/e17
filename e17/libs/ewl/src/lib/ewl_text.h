@@ -299,7 +299,6 @@ void ewl_text_cb_destroy(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_cb_mouse_up(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_cb_mouse_move(Ewl_Widget *w, void *ev, void *data);
-void ewl_text_cb_resize(Ewl_Widget *w, void *ev, void *data);
 
 void ewl_text_cb_child_add(Ewl_Container *c, Ewl_Widget *w);
 void ewl_text_cb_child_del(Ewl_Container *c, Ewl_Widget *w, int idx);
