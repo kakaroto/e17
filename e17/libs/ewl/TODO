@@ -4,8 +4,6 @@ EWL BUGS
 - Evas smart object layering has changed, so using EWL in an embed does not
   work correctly since we don't get a layer set callback.
 
-- Scrollbar jumps when trying to drag the button from its lower part
-
 - In ewl_text if your in a multiline text and on a line that is longer
   then then one above or below and you hit the up arrow it will
   position your cursor one character _before_ the end of the line.

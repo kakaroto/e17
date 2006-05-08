@@ -552,9 +552,9 @@ ewl_seeker_button_mouse_down_cb(Ewl_Widget *w, void *ev_data,
 	ewl_object_current_geometry_get(EWL_OBJECT(w), &xx, &yy, &ww, &hh);
 
 	if (s->orientation == EWL_ORIENTATION_HORIZONTAL)
-		s->dragstart = ev->x - xx;
+		s->dragstart = ev->x - (xx + ((ww + 1) / 2));
 	else
-		s->dragstart = ev->y - yy;
+		s->dragstart = ev->y - (yy + ((hh + 1) / 2));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -756,6 +756,14 @@ ewl_seeker_mouse_value_map(Ewl_Seeker *s, int mx, int my)
 		adjust = ewl_object_current_h_get(EWL_OBJECT(s->button));
 	}
 
+	/*
+	 * Adjust mouse position based on drag starting point.
+	 */
+	m -= s->dragstart;
+
+	/*
+	 * Adjust the scale to align on the center of the drag bar.
+	 */
 	dg -= adjust;
 	adjust /= 2;
 	dc += adjust;
