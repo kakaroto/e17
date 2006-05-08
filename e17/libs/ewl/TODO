@@ -24,10 +24,6 @@ EWL BUGS
 
 - The text widget dosen't handle the wrap flag correctly.
 
-- Tooltips and dialogs aren't friends. If you don't set the active area
-  correctly the tooltip will go to the current active area. If you set 
-  the active area, the tooltip dosen't seem to appear.
-
 - We auto add things to the tab order as they are realized. We need to make
   sure the things we are adding aren't already in the tab order as we will
   then remove them. Should possibly add a flag to deactive this behaviour if

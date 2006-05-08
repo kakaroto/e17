@@ -675,6 +675,8 @@ ewl_attach_cb_tooltip_timer(void *data)
 
 	if (!(ewl_attach_tooltip->win))
 	{
+		Ewl_Container *redir;
+
 		ewl_attach_tooltip->embed = EWL_WIDGET(emb);
 #if 0
 		ewl_attach_tooltip->win = ewl_window_new();
@@ -692,8 +694,17 @@ ewl_attach_cb_tooltip_timer(void *data)
 
 		/* XXX this should really be in it's own window */
 		ewl_attach_tooltip->win = ewl_hbox_new();
+
+		/*
+		 * Temporarily override any redirect settings as this must go
+		 * into the top level of the embed.
+		 */
+		redir = ewl_container_redirect_get(EWL_CONTAINER(emb));
+		ewl_container_redirect_set(EWL_CONTAINER(emb), NULL);
 		ewl_container_child_append(EWL_CONTAINER(emb), 
 						ewl_attach_tooltip->win);
+		ewl_container_redirect_set(EWL_CONTAINER(emb), redir);
+
 		ewl_widget_layer_set(ewl_attach_tooltip->win, 1000);
 
 		ewl_callback_prepend(ewl_attach_tooltip->win, 
