@@ -1,9 +1,8 @@
 data {
-   //item: "selected_entry_bg_color" "234 234 234 255";
-   //item: "selected_entry_bg_color" "149 183 222 255";
-   item: "selected_entry_bg_color" "174 196 222 255";
-   item: "current_entry_bg_color" "222 201 149 255";
-   item: "current_entry_fg_color" "80 80 80 255";
+   item: "current_entry_bg_color" "248 209 70 100";
+   item: "current_entry_fg_color" "120 120 120 255";
+   item: "selected_entry_bg_color" "126 162 248 100";
+   item: "selected_entry_fg_color" "180 180 180 255";
 }
 fonts {
    font: "Vera.ttf" "Edje Vera";
