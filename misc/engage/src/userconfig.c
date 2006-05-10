@@ -165,7 +165,7 @@ userconfig_load()
   snprintf(filename, PATH_MAX, "%s/.e/e/applications/all", getenv("HOME"));
   userconfig_mappings_load(filename);
 
-  snprintf(filename, PATH_MAX, "%s/.e/e/applications/engage", getenv("HOME"));
+  snprintf(filename, PATH_MAX, "%s/.e/e/applications/bar/engage", getenv("HOME"));
   userconfig_applinks_load(filename);
 
   userconfig_sysicons_load();
