@@ -2,7 +2,7 @@ MAINTAINERCLEANFILES = Makefile.in
 
 if HAVE_E17
 # data files for the module
-filesdir = $(libdir)/engage/module
+filesdir = $(datadir)
 files_DATA = \
 module_icon.png
 
@@ -13,7 +13,7 @@ INCLUDES               = -I. \
 			 -I$(top_srcdir) \
 			 -I$(includedir) \
 			 @e_cflags@
-pkgdir                 = @e_modules@/engage/$(MODULE_ARCH)
+pkgdir                 = $(datadir)/$(MODULE_ARCH)
 pkg_LTLIBRARIES        = module.la
 module_la_SOURCES      = e_mod_main.c \
                          tray.c \
