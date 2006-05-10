@@ -32,6 +32,7 @@ Win                 ELookupXwin(Window xwin);
 
 #define Xwin(win) WinGetXwin(win)
 Window              WinGetXwin(const Win win);
+Visual             *WinGetVisual(const Win win);
 
 Win                 ECreateWinFromXwin(Window xwin);
 void                EDestroyWin(Win win);

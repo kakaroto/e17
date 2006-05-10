@@ -50,7 +50,7 @@ struct _xwin
    struct _xwin       *prev;
    EventCallbackList   cbl;
    Window              xwin;
-   Window              parent;
+   Win                 parent;
    int                 x, y, w, h;
    char                mapped;
    char                in_use;
@@ -60,6 +60,7 @@ struct _xwin
    int                 ord;
    XRectangle         *rects;
    int                 depth;
+   Visual             *visual;
    Pixmap              bgpmap;
    int                 bgcol;
 };
@@ -75,6 +76,12 @@ Window
 WinGetXwin(const Win win)
 {
    return win->xwin;
+}
+
+Visual             *
+WinGetVisual(const Win win)
+{
+   return win->visual;
 }
 
 static EXID        *
@@ -181,7 +188,8 @@ EXidLookup(Window xwin)
 }
 
 static EXID        *
-EXidSet(Window xwin, Window parent, int x, int y, int w, int h, int depth)
+EXidSet(Window xwin, Win parent, int x, int y, int w, int h, int depth,
+	Visual * visual)
 {
    EXID               *xid;
 
@@ -193,6 +201,7 @@ EXidSet(Window xwin, Window parent, int x, int y, int w, int h, int depth)
    xid->w = w;
    xid->h = h;
    xid->depth = depth;
+   xid->visual = visual;
 #if DEBUG_XWIN
    Eprintf("EXidSet: %#lx\n", xid->xwin);
 #endif
@@ -311,12 +320,12 @@ ECreateWindow(Win parent, int x, int y, int w, int h, int saveunder)
    else
       attr.save_under = False;
 
-   xpar = (parent != NoWin) ? parent->xwin : VRoot.xwin;
+   xpar = (parent) ? parent->xwin : VRoot.xwin;
    xwin = XCreateWindow(disp, xpar, x, y, w, h, 0,
 			VRoot.depth, InputOutput, VRoot.vis,
 			CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 			CWColormap | CWBackPixmap | CWBorderPixel, &attr);
-   win = EXidSet(xwin, xpar, x, y, w, h, VRoot.depth);
+   win = EXidSet(xwin, parent, x, y, w, h, VRoot.depth, VRoot.vis);
 
    return win;
 }
@@ -343,12 +352,12 @@ ECreateVisualWindow(Win parent, int x, int y, int w, int h, int saveunder,
    else
       attr.save_under = False;
 
-   xpar = (parent != NoWin) ? parent->xwin : VRoot.xwin;
+   xpar = (parent) ? parent->xwin : VRoot.xwin;
    xwin = XCreateWindow(disp, xpar, x, y, w, h, 0,
 			c_attr->depth, InputOutput, c_attr->visual,
 			CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 			CWColormap | CWBackPixmap | CWBorderPixel, &attr);
-   win = EXidSet(xwin, xpar, x, y, w, h, c_attr->depth);
+   win = EXidSet(xwin, parent, x, y, w, h, c_attr->depth, c_attr->visual);
 
    return win;
 }
@@ -362,10 +371,10 @@ ECreateEventWindow(Win parent, int x, int y, int w, int h)
 
    attr.override_redirect = False;
 
-   xpar = (parent != NoWin) ? parent->xwin : VRoot.xwin;
+   xpar = (parent) ? parent->xwin : VRoot.xwin;
    xwin = XCreateWindow(disp, xpar, x, y, w, h, 0, 0, InputOnly,
 			CopyFromParent, CWOverrideRedirect, &attr);
-   win = EXidSet(xwin, xpar, x, y, w, h, 0);
+   win = EXidSet(xwin, parent, x, y, w, h, 0, parent->visual);
 
    return win;
 }
@@ -469,16 +478,16 @@ EMoveResizeWindow(Win win, int x, int y, int w, int h)
 static int
 ExDelTree(EXID * xid)
 {
-   Window              xwin;
+   Win                 win;
    int                 nsub;
 
    xid->do_del = -1;
 
    nsub = 0;
-   xwin = xid->xwin;
+   win = xid;
    for (xid = xid_first; xid; xid = xid->next)
      {
-	if (xid->parent != xwin)
+	if (xid->parent != win)
 	   continue;
 	ExDelTree(xid);
 	nsub++;
@@ -568,7 +577,6 @@ EWindowSetMapped(Win win, int mapped)
 Window
 EXWindowGetParent(Window xwin)
 {
-   EXID               *xid;
    Window              parent, rt;
    Window             *pch = NULL;
    unsigned int        nch = 0;
@@ -579,9 +587,11 @@ EXWindowGetParent(Window xwin)
    else if (pch)
       XFree(pch);
 
+#if 0				/* FIXME - Remove? */
    xid = EXidLookup(xwin);
    if (xid)
       xid->parent = parent;
+#endif
 
    return parent;
 }
@@ -619,19 +629,18 @@ Win
 ERegisterWindow(Window xwin)
 {
    EXID               *xid;
-   Window              rr;
-   int                 x, y;
-   unsigned int        w, h, bw, depth;
+   XWindowAttributes   xwa;
 
    xid = EXidLookup(xwin);
    if (xid)
       goto done;
 
-   XGetGeometry(disp, xwin, &rr, &x, &y, &w, &h, &bw, &depth);
+   XGetWindowAttributes(disp, xwin, &xwa);
 #if 0
    Eprintf("ERegisterWindow %#lx %d+%d %dx%d\n", win, x, y, w, h);
 #endif
-   xid = EXidSet(xwin, None, x, y, w, h, depth);
+   xid = EXidSet(xwin, None, xwa.x, xwa.y, xwa.width, xwa.height, xwa.depth,
+		 xwa.visual);
    xid->attached = 1;
 
  done:
@@ -708,7 +717,7 @@ EReparentWindow(Win win, Win parent, int x, int y)
 	    xid, xid->xwin, xid->mapped, xid->parent, parent->xwin,
 	    xid->x, xid->y, xid->w, xid->h, x, y);
 #endif
-	if (parent->xwin == xid->parent)
+	if (parent == xid->parent)
 	  {
 	     if ((x != xid->x) || (y != xid->y))
 	       {
@@ -720,7 +729,7 @@ EReparentWindow(Win win, Win parent, int x, int y)
 	  }
 	else
 	  {
-	     xid->parent = parent->xwin;
+	     xid->parent = parent;
 	     xid->x = x;
 	     xid->y = y;
 	  }
