@@ -436,6 +436,12 @@ EventsCompress(XEvent * evq, int count)
 			  continue;
 		       ev2->type = EX_EVENT_REPARENT_GONE;
 		       break;
+		    case ConfigureRequest:
+		       if (ev2->xconfigurerequest.window !=
+			   ev->xdestroywindow.window)
+			  continue;
+		       ev2->type = 0;
+		       break;
 		    default:
 		       /* Nuke all other events on a destroyed window */
 		       if (ev2->xany.window != ev->xdestroywindow.window)
