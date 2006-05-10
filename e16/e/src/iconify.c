@@ -2620,6 +2620,7 @@ const EModule       ModIconboxes = {
 /*
  * System tray functions
  */
+#define DEBUG_SYSTRAY 0
 
 /* Selection atoms */
 static Atom         E_XA_MANAGER = 0;
@@ -2635,7 +2636,7 @@ static Atom         _NET_SYSTEM_TRAY_MESSAGE_DATA = 0;
 static Win          systray_sel_win = NoWin;
 static Time         systray_sel_time = 0;
 
-static void         SystrayEvent(Win win, XEvent * ev, void *prm);
+static void         SystrayItemEvent(Win win, XEvent * ev, void *prm);
 
 #define SYSTEM_TRAY_REQUEST_DOCK    0
 #define SYSTEM_TRAY_BEGIN_MESSAGE   1
@@ -2695,6 +2696,44 @@ IconboxObjSwinFind(Iconbox * ib, Window win)
    return -1;
 }
 
+static              Win
+IconboxObjSwinManage(Iconbox * ib, Window xwin)
+{
+   Win                 win;
+
+#if DEBUG_SYSTRAY
+   Eprintf("IconboxObjSwinManage %#lx\n", xwin);
+#endif
+   win = ERegisterWindow(xwin);
+   if (win == NoWin)
+      return win;
+
+   ESelectInput(win, StructureNotifyMask | PropertyChangeMask);
+   EventCallbackRegister(win, 0, SystrayItemEvent, ib);
+   EReparentWindow(win, ib->icon_win, 0, 0);
+   XAddToSaveSet(disp, xwin);
+
+   return win;
+}
+
+static void
+IconboxObjSwinUnmanage(Iconbox * ib, Win win, int gone)
+{
+#if DEBUG_SYSTRAY
+   Eprintf("IconboxObjSwinUnmanage %#lx gone=%d\n", WinGetXwin(win), gone);
+#endif
+   EventCallbackUnregister(win, 0, SystrayItemEvent, ib);
+   EUnregisterWindow(win);
+
+   if (gone)
+      return;
+
+   ESelectInput(win, NoEventMask);
+   EUnmapWindow(win);
+   EReparentWindow(win, VRoot.win, 0, 0);
+   XRemoveFromSaveSet(disp, Xwin(win));
+}
+
 static void
 IconboxObjSwinAdd(Iconbox * ib, Window xwin)
 {
@@ -2724,10 +2763,6 @@ IconboxObjSwinAdd(Iconbox * ib, Window xwin)
 	break;
      }
 
-   win = ERegisterWindow(xwin);
-   if (win == NoWin)
-      return;
-
    swin = Emalloc(sizeof(SWin));
    if (!swin)
       goto bail_out;
@@ -2735,13 +2770,12 @@ IconboxObjSwinAdd(Iconbox * ib, Window xwin)
    if (IconboxObjectAdd(ib, swin) < 0)
       goto bail_out;
 
+   win = IconboxObjSwinManage(ib, xwin);
+   if (win == NoWin)
+      goto bail_out;
+
    swin->win = win;
    swin->mapped = (xembed_info[1] & XEMBED_MAPPED) != 0;
-
-   ESelectInput(win, PropertyChangeMask);
-   EventCallbackRegister(win, 0, SystrayEvent, ib);
-   EReparentWindow(win, ib->icon_win, 0, 0);
-
    if (swin->mapped)
       EMapWindow(win);
 
@@ -2756,12 +2790,14 @@ IconboxObjSwinAdd(Iconbox * ib, Window xwin)
 
  bail_out:
    EUngrabServer();
-   if (swin)
-      Efree(swin);
+   if (!swin)
+      return;
+   IconboxObjectDel(ib, swin);
+   Efree(swin);
 }
 
 static void
-IconboxObjSwinDel(Iconbox * ib, Window win)
+IconboxObjSwinDel(Iconbox * ib, Window win, int gone)
 {
    int                 i;
    SWin               *swin;
@@ -2774,6 +2810,8 @@ IconboxObjSwinDel(Iconbox * ib, Window win)
 
    if (IconboxObjectDel(ib, swin) == 0)
       IconboxRedraw(ib);
+
+   IconboxObjSwinUnmanage(ib, swin->win, gone);
 
    Efree(swin);
 }
@@ -2827,14 +2865,7 @@ IconboxObjSwinFree(Iconbox * ib, SWin * swin)
       Eprintf("IconboxObjSwinFree %#lx\n", Xwin(swin->win));
 
    if (disp)
-     {
-	EventCallbackUnregister(swin->win, 0, SystrayEvent, ib);
-	EUnregisterWindow(swin->win);
-
-	EUnmapWindow(swin->win);
-	EReparentWindow(swin->win, VRoot.win, 0, 0);
-	ESync();
-     }
+      IconboxObjSwinUnmanage(ib, swin->win, 0);
 
    Efree(swin);
 }
@@ -2880,12 +2911,32 @@ SystrayEventClientProperty(Iconbox * ib, XPropertyEvent * ev)
 }
 
 static void
-SystrayEvent(Win _win __UNUSED__, XEvent * ev, void *prm)
+SystraySelectionEvent(Win win __UNUSED__, XEvent * ev, void *prm)
 {
-   Window              win;
+   if (EventDebug(EDBUG_TYPE_ICONBOX))
+      Eprintf("SystraySelectionEvent %2d %#lx\n", ev->type, ev->xany.window);
 
+   switch (ev->type)
+     {
+     default:
+	Eprintf(" ??? SystraySelectionEvent %2d %#lx\n", ev->type,
+		ev->xany.window);
+	break;
+
+     case ClientMessage:
+	SystrayEventClientMessage(prm, &(ev->xclient));
+	break;
+     }
+}
+
+static void
+SystrayEvent(Win _win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
+{
    if (EventDebug(EDBUG_TYPE_ICONBOX))
       Eprintf("SystrayEvent %2d %#lx\n", ev->type, ev->xany.window);
+
+#if 0				/* FIXME - Need this one at all? ConfigureRequest? */
+   Window              win;
 
    switch (ev->type)
      {
@@ -2906,6 +2957,38 @@ SystrayEvent(Win _win __UNUSED__, XEvent * ev, void *prm)
 	win = ev->xreparent.window;
 	goto do_terminate;
 
+      do_terminate:
+	IconboxObjSwinDel(prm, win);
+	break;
+     }
+#endif
+}
+
+static void
+SystrayItemEvent(Win win, XEvent * ev, void *prm)
+{
+   Iconbox            *ib = prm;
+
+   if (EventDebug(EDBUG_TYPE_ICONBOX))
+      Eprintf("SystrayItemEvent %2d %#lx\n", ev->type, ev->xany.window);
+
+   switch (ev->type)
+     {
+     case MapNotify:
+	EWindowSync(win);
+	IconboxRedraw(prm);
+	break;
+
+     case DestroyNotify:
+	goto do_terminate;
+
+     case ReparentNotify:
+     case EX_EVENT_REPARENT_GONE:
+	/* Terminate if reparenting away from systray */
+	if (ev->xreparent.parent == WinGetXwin(ib->icon_win))
+	   break;
+	goto do_terminate;
+
      case ClientMessage:
 	SystrayEventClientMessage(prm, &(ev->xclient));
 	break;
@@ -2915,7 +2998,7 @@ SystrayEvent(Win _win __UNUSED__, XEvent * ev, void *prm)
 	break;
 
       do_terminate:
-	IconboxObjSwinDel(prm, win);
+	IconboxObjSwinDel(prm, WinGetXwin(win), ev->type != ReparentNotify);
 	break;
      }
 }
@@ -2960,9 +3043,10 @@ SystrayInit(Iconbox * ib, Win win, int screen)
 
    ESelectInput(systray_sel_win,
 		SubstructureRedirectMask | SubstructureNotifyMask);
-   EventCallbackRegister(systray_sel_win, 0, SystrayEvent, ib);
+   EventCallbackRegister(systray_sel_win, 0, SystraySelectionEvent, ib);
 
-   ESelectInputAdd(win, SubstructureRedirectMask | SubstructureNotifyMask);
+   ESelectInputAdd(win,
+		   SubstructureRedirectMask /* | SubstructureNotifyMask */ );
    EventCallbackRegister(win, 0, SystrayEvent, ib);
 
    ecore_x_client_message32_send(VRoot.xwin, E_XA_MANAGER, StructureNotifyMask,
@@ -2974,7 +3058,7 @@ static void
 SystrayExit(Iconbox * ib)
 {
    XSetSelectionOwner(disp, _NET_SYSTEM_TRAY_Sx, None, systray_sel_time);
-   EventCallbackUnregister(systray_sel_win, 0, SystrayEvent, ib);
+   EventCallbackUnregister(systray_sel_win, 0, SystraySelectionEvent, ib);
    EventCallbackUnregister(ib->win, 0, SystrayEvent, ib);
    EDestroyWindow(systray_sel_win);
    systray_sel_win = None;
