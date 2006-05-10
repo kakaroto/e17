@@ -2216,7 +2216,7 @@ _engage_bar_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
    Evas_Coord x, y, w, h;
    E_Gadman_Edge edge;
    double multiplier;
-printf("mouse in\n");
+
    ev = event_info;
    eb = data;
 
@@ -2261,7 +2261,7 @@ _engage_bar_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info
 {
    Evas_Event_Mouse_Out *ev;
    Engage_Bar *eb;
-printf("mouse out\n");
+
    ev = event_info;
    eb = data;
 
