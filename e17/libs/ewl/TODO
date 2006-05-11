@@ -58,6 +58,8 @@ EWL BUGS
 - text cursor seems to be a bit screwed now, half height and disappears on
   the end of entrybox case.
 
+- text entry on the spinner seems to be broken for manual entry
+
 
   Ewl_Icon bugs/todo
   ------------------
@@ -150,5 +152,6 @@ EWL TODO
 
 - [Ewl_Test] More Tutorials in the src/bin/test/*.c files
 
-
+- The colourpicker should send a value_changed callback whenever it updates
+  it's preview widget
 
