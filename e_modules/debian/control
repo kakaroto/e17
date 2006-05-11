@@ -2,41 +2,12 @@ Source: emodules
 Section: x11
 Priority: optional
 Maintainer: E17 Debian Team <debian@edevelop.org>
-Build-Depends: debhelper (>= 4.0.0), enlightenment-dev, libesmart-dev, libedje-dev, libembryo-dev
+Build-Depends: debhelper (>= 4.0.0), enlightenment-dev, libesmart-dev, libembryo-dev
 Standards-Version: 3.6.2.2
-
-Package: emodules0-all
-Architecture: any
-Depends: ${shlibs:Depends}, enlightenment, libesmart, libedje, emodule0-calendar, emodule0-cpu, emodule0-devian, emodule0-emu, emodule0-evolume, emodule0-flame, emodule0-mbar, emodule0-mem, emodule0-mount, emodule0-net, emodule0-rain, emodule0-screenshot, emodule0-slideshow, emodule0-snow, emodule0-tclock, emodule0-uptime, emodule0-weather, emodule0-wlan
-Conflicts: emodules-extra, evolume
-Provides: emodules-all
-Description: A dummy package for installing all modules for E17
- This package will install the following modules:
- Calendar    : Draws a nice calendar on your e17 desktop.
- Cpu         : Monitor module for the CPU load.
- dEvian      : Displays images and rss feeds on your e17 desktop.
- Emu         : A module front end that runs arbitrary back ends
-               written in any language.
- Evolume     : An audio mixer module.
- Flame       : Displays flames at the bottom of the screen.
- Mbar        : A bar for mounting and unmounting devices.
- Mount       : This module is used to mount/unmount devices.
- Net         : Network activity monitoring module.
- Rain        : Displays rain on the desktop.
- Screenshot  : This module is used to take screenshots. It
-               supports using import and scrot. Version 0.0.2
-               contains only a few basic options for import and
-               scrot. More options will be added later.
- Slideshow   : Port of the e16 E-Slides epplet.
- Snow        : Displays some snow on your desktop.
- Tclock      : Simple text Clock module.
- Uptime      : Monitors the uptime.
- Weather     : A module for displaying weather reports.
- Wlan        : Monitors WLAN activity.
 
 Package: emodule0-calendar
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment, libesmart, libedje
+Depends: ${shlibs:Depends}, enlightenment, libesmart
 Provides: emodule-calendar
 Description: Draws a nice calendar on your E17 desktop
  An E17 module which displays a highly configurable calendar on the
@@ -49,7 +20,7 @@ Description: Draws a nice calendar on your E17 desktop
 
 Package: emodule0-cpu
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment, libesmart, libedje
+Depends: ${shlibs:Depends}, enlightenment, libesmart
 Provides: emodule-cpu
 Description: E17 monitor module for the CPU load
  An E17 module which displays the current CPU load. Features are:
@@ -58,14 +29,14 @@ Description: E17 monitor module for the CPU load
  
 Package: emodule0-devian
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment, libeet, libembryo, libesmart, libedje
+Depends: ${shlibs:Depends}, enlightenment, libeet, libembryo, libesmart
 Provides: emodule-devian
 Description: E17 monitor module for displaying images and rss feeds
  An E17 module which displays images and rss feeds.
  
 Package: emodule0-emu
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment, libesmart, libedje
+Depends: ${shlibs:Depends}, enlightenment, libesmart
 Provides: emodule-emu
 Description: An E17 module front end
  An E17 module which works as a front end that runs arbitrary back
@@ -75,7 +46,7 @@ Description: An E17 module front end
  
 Package: emodule0-evolume
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment, libesmart, libedje
+Depends: ${shlibs:Depends}, enlightenment, libesmart
 Provides: emodule-evolume
 Description: An E17 audio mixer module
  Evolume is an E17 module which allows the user to adjust the sound
@@ -83,15 +54,23 @@ Description: An E17 audio mixer module
 
 Package: emodule0-flame
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment, libesmart, libedje
+Depends: ${shlibs:Depends}, enlightenment, libesmart
 Provides: emodule-flame
 Description: An E17 module that draws flames on the desktop
  Eflame is an E17 module which draws flames of configurable colors on
  the lower part of the screen.
- 
+
+Package: emodule0-language
+Architecture: any
+Depends: ${shlibs:Depends}, enlightenment
+Provides: emodule-language
+Description: An E17 module that manages keyboard layouts and more
+ This is an E17 module which allows to control the keyboard layout,
+ keyboard model and keyboard layout variant.
+
 Package: emodule0-mbar
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment, libesmart, libedje
+Depends: ${shlibs:Depends}, enlightenment, libesmart
 Provides: emodule-mbar
 Description: An E17 mount bar module
  Mbar is an E17 module which displays a list of devices which can be
@@ -99,7 +78,7 @@ Description: An E17 mount bar module
  
 Package: emodule0-mem
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment, libesmart, libedje
+Depends: ${shlibs:Depends}, enlightenment, libesmart
 Provides: emodule-mem
 Description: An E17 memory monitoring module
  An E17 module which monitors the RAM usage. It features the following:
@@ -110,7 +89,7 @@ Description: An E17 memory monitoring module
  
 Package: emodule0-mount
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment, libesmart, libedje
+Depends: ${shlibs:Depends}, enlightenment, libesmart
 Provides: emodule-mount
 Description: An E17 mount module
  An E17 module which allows easy mounting/unmounting of devices
@@ -118,7 +97,7 @@ Description: An E17 mount module
 
 Package: emodule0-net
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment, libesmart, libedje
+Depends: ${shlibs:Depends}, enlightenment, libesmart
 Provides: emodule-net
 Description: An E17 network interface monitor module
  An E17 module which monitors TX and RX events of a specified
@@ -129,7 +108,7 @@ Description: An E17 network interface monitor module
  
 Package: emodule0-rain
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment, libesmart, libedje
+Depends: ${shlibs:Depends}, enlightenment, libesmart
 Provides: emodule-rain
 Description: An E17 module displaying rain on the desktop
  An E17 module which displays falling rainsdrops on the desktop.
@@ -139,7 +118,7 @@ Description: An E17 module displaying rain on the desktop
  
 Package: emodule0-screenshot
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment, libesmart, libedje
+Depends: ${shlibs:Depends}, enlightenment, libesmart
 Provides: emodule-screenshot
 Description: An E17 screenshot module
  An E17 module which enables the user to take screenshots. It contains
@@ -155,7 +134,7 @@ Description: An E17 screenshot module
  
 Package: emodule0-slideshow
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment, libesmart, libedje
+Depends: ${shlibs:Depends}, enlightenment, libesmart
 Provides: emodule-slideshow
 Description: An E17 background cycle module
  An E17 module which changes the desktop background on a given
@@ -163,7 +142,7 @@ Description: An E17 background cycle module
  
 Package: emodule0-snow
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment, libesmart, libedje
+Depends: ${shlibs:Depends}, enlightenment, libesmart
 Provides: emodule-snow
 Description: An E17 module displaying rain on the desktop
  An E17 module which displays falling snow flakes on the desktop.
@@ -173,14 +152,14 @@ Description: An E17 module displaying rain on the desktop
 
 Package: emodule0-tclock
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment, libesmart, libedje
+Depends: ${shlibs:Depends}, enlightenment, libesmart
 Provides: emodule-tclock
 Description: An E17 text clock module
  An E17 module which displays a digital clock on the desktop.
 
 Package: emodule0-uptime
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment, libesmart, libedje
+Depends: ${shlibs:Depends}, enlightenment, libesmart
 Provides: emodule-uptime
 Description: An E17 uptime indicator module
  An E17 module indicating the system's current uptime in a configurable
@@ -188,7 +167,7 @@ Description: An E17 uptime indicator module
  
 Package: emodule0-weather
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment, libesmart, libedje
+Depends: ${shlibs:Depends}, enlightenment, libesmart
 Provides: emodule-weather
 Description: An E17 weather module
  An E17 module displaying the current weather conditions and forecast.
@@ -200,10 +179,40 @@ Description: An E17 weather module
  
 Package: emodule0-wlan
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment, libesmart, libedje
+Depends: ${shlibs:Depends}, enlightenment, libesmart
 Provides: emodule-wlan
 Description: An E17 WLAN monitor module
  An E17 module monitoring the link quality of a wireless network
  interface. Features are:
  - choose display as text and/or graph
  - specify the check interval.
+
+Package: emodules0-all
+Architecture: any
+Depends: ${shlibs:Depends}, enlightenment, libesmart, emodule0-calendar, emodule0-cpu, emodule0-devian, emodule0-emu, emodule0-evolume, emodule0-flame, emodule0-language, emodule0-mbar, emodule0-mem, emodule0-mount, emodule0-net, emodule0-rain, emodule0-screenshot, emodule0-slideshow, emodule0-snow, emodule0-tclock, emodule0-uptime, emodule0-weather, emodule0-wlan
+Conflicts: emodules-extra, evolume
+Provides: emodules-all
+Description: A dummy package for installing all modules for E17
+ This package will install the following modules:
+ Calendar    : Draws a nice calendar on your e17 desktop.
+ Cpu         : Monitor module for the CPU load.
+ dEvian      : Displays images and rss feeds on your e17 desktop.
+ Emu         : A module front end that runs arbitrary back ends
+               written in any language.
+ Evolume     : An audio mixer module.
+ Flame       : Displays flames at the bottom of the screen.
+ Language    : Allows to control keyboard layout, model and variant.
+ Mbar        : A bar for mounting and unmounting devices.
+ Mount       : This module is used to mount/unmount devices.
+ Net         : Network activity monitoring module.
+ Rain        : Displays rain on the desktop.
+ Screenshot  : This module is used to take screenshots. It
+               supports using import and scrot. Version 0.0.2
+               contains only a few basic options for import and
+               scrot. More options will be added later.
+ Slideshow   : Port of the e16 E-Slides epplet.
+ Snow        : Displays some snow on your desktop.
+ Tclock      : Simple text Clock module.
+ Uptime      : Monitors the uptime.
+ Weather     : A module for displaying weather reports.
+ Wlan        : Monitors WLAN activity.
