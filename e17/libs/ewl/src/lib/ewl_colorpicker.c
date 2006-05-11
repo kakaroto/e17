@@ -749,6 +749,8 @@ ewl_colorpicker_display_update(Ewl_Colorpicker *cp, unsigned int r, unsigned int
 
 	ewl_widget_color_set(cp->preview.current, r, g, b, 255);
 
+	ewl_callback_call(EWL_WIDGET(cp), EWL_CALLBACK_VALUE_CHANGED);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
