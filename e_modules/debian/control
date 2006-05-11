@@ -2,7 +2,7 @@ Source: emodules
 Section: x11
 Priority: optional
 Maintainer: E17 Debian Team <debian@edevelop.org>
-Build-Depends: debhelper (>= 4.0.0), enlightenment-dev, libesmart-dev, libembryo-dev
+Build-Depends: debhelper (>= 4.0.0), enlightenment-dev, libesmart-dev, libembryo-dev, libexml-dev
 Standards-Version: 3.6.2.2
 
 Package: emodule0-calendar
@@ -62,7 +62,7 @@ Description: An E17 module that draws flames on the desktop
 
 Package: emodule0-language
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
+Depends: ${shlibs:Depends}, enlightenment, libexml
 Provides: emodule-language
 Description: An E17 module that manages keyboard layouts and more
  This is an E17 module which allows to control the keyboard layout,
