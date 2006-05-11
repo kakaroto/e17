@@ -228,6 +228,11 @@ ewl_filelist_selected_file_get(Ewl_Filelist *fl)
 	DRETURN_PTR((file ? strdup(file) : NULL), DLEVEL_STABLE);
 }
 
+/**
+ * @param st_size: The size to convert
+ * @return Returns a string representation of the given size
+ * @brief Converts the given size into a human readable format
+ */
 char *
 ewl_filelist_size_get(off_t st_size)
 {
@@ -260,6 +265,11 @@ ewl_filelist_size_get(off_t st_size)
 	DRETURN_PTR(strdup(size), DLEVEL_STABLE);
 }
 
+/**
+ * @param st_mode: The mode setting to convert
+ * @return Returns the string of the given mode setting
+ * @brief Converts the given mode settings into a human readable string
+ */
 char *
 ewl_filelist_perms_get(mode_t st_mode)
 {
@@ -289,6 +299,11 @@ ewl_filelist_perms_get(mode_t st_mode)
 	DRETURN_PTR(perm, DLEVEL_STABLE);
 }
 
+/**
+ * @param st_uid: The userid to lookup
+ * @return Returns the user name for the given user id
+ * @brief Convertes the given user id into the approriate user name
+ */
 char *
 ewl_filelist_username_get(uid_t st_uid)
 {
@@ -306,6 +321,11 @@ ewl_filelist_username_get(uid_t st_uid)
 	DRETURN_PTR(strdup(name), DLEVEL_STABLE);
 }
 
+/**
+ * @param st_gid: The group id to convert
+ * @return Returns the group name for the given id
+ * @brief Converts the given group id into a group name
+ */
 char *
 ewl_filelist_groupname_get(gid_t st_gid)
 {
@@ -323,6 +343,11 @@ ewl_filelist_groupname_get(gid_t st_gid)
 	DRETURN_PTR(strdup(name), DLEVEL_STABLE);
 }
 
+/**
+ * @param st_modtime: The modification time to convert
+ * @return Returns the string version of the modtime
+ * @brief Converts the given modtime to a human readable string
+ */
 char *
 ewl_filelist_modtime_get(time_t st_modtime)
 {
@@ -337,6 +362,12 @@ ewl_filelist_modtime_get(time_t st_modtime)
 	DRETURN_PTR(time, DLEVEL_STABLE);
 }
 
+/**
+ * @param fl: The Ewl_Filelist to work with
+ * @param path: The file to get the preview for
+ * @return Returns the preview widget for the given file
+ * @brief Creates and returns a preview widget for the given file
+ */
 Ewl_Widget *
 ewl_filelist_selected_file_preview_get(Ewl_Filelist *fl, const char *path)
 {
@@ -513,7 +544,7 @@ ewl_filelist_selected_signal_all(Ewl_Filelist *fl, const char *signal)
  * @brief Sets the value to use for flags on the vertical scrollbar
  */
 void
-ewl_filelist_vscroll_flag_set(Ewl_Filelist *fl, Ewl_ScrollPane_Flags v)
+ewl_filelist_vscroll_flag_set(Ewl_Filelist *fl, Ewl_Scrollpane_Flags v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fl", fl);
@@ -529,7 +560,7 @@ ewl_filelist_vscroll_flag_set(Ewl_Filelist *fl, Ewl_ScrollPane_Flags v)
  * @return Returns the flags for the vertical scrollbar
  * @brief Retrieves the flags for the vertical scrollbar
  */
-Ewl_ScrollPane_Flags
+Ewl_Scrollpane_Flags
 ewl_filelist_vscroll_flag_get(Ewl_Filelist *fl)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -547,7 +578,7 @@ ewl_filelist_vscroll_flag_get(Ewl_Filelist *fl)
  * @brief Sets the value to use for flags on the horizontal scrollbar
  */
 void 
-ewl_filelist_hscroll_flag_set(Ewl_Filelist *fl, Ewl_ScrollPane_Flags h)
+ewl_filelist_hscroll_flag_set(Ewl_Filelist *fl, Ewl_Scrollpane_Flags h)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fl", fl);
@@ -563,7 +594,7 @@ ewl_filelist_hscroll_flag_set(Ewl_Filelist *fl, Ewl_ScrollPane_Flags h)
  * @return Returns the flags for the horizontal scrollbar
  * @brief Retrieves the flags for the horizontal scrollbar
  */
-Ewl_ScrollPane_Flags
+Ewl_Scrollpane_Flags
 ewl_filelist_hscroll_flag_get(Ewl_Filelist *fl)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -630,7 +661,10 @@ ewl_filelist_expand_path(Ewl_Filelist *fl, const char *dir)
 
 /**
  * @param fl: The filelist to work with
+ * @param dir: The directory to read
+ * @param skip_dot_dot: Should the .. entry be skipped
  * @param func: The function to call to actually add the item
+ * @param data: The data to pass to the callback function
  * @return Returns no value.
  * @brief This will read the directory set in the file list, filter each
  * item through the set filter and call @a func if the file is to be
@@ -703,6 +737,7 @@ ewl_filelist_directory_read(Ewl_Filelist *fl, const char *dir,
 /**
  * @param fl: The filelist to work with
  * @param w: The widget that was clicked
+ * @param ev: The Ewl_Event_Mouse_Up structure
  * @param select_state: Signal to send to goto select state
  * @param unselect_state: Signal to send to goto unselect state
  * @return Returns no value.

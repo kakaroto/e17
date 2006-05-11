@@ -46,8 +46,8 @@ struct Ewl_Filelist
 	} select;		 /**< Data used in SHIFT select */
 
 	struct
-	{	Ewl_ScrollPane_Flags h; /**< Horizontal scroll flag */
-		Ewl_ScrollPane_Flags v; /**< Vertical scroll flag */
+	{	Ewl_Scrollpane_Flags h; /**< Horizontal scroll flag */
+		Ewl_Scrollpane_Flags v; /**< Vertical scroll flag */
 	} scroll_flags;		/**< Flags to modify a containing scrollpane */
 
 	void (*dir_change)(Ewl_Filelist *fl);	/**< Callback to notify of
@@ -112,12 +112,12 @@ void		 ewl_filelist_selected_signal_all(Ewl_Filelist *fl,
 						const char *signal);
 
 void		 ewl_filelist_vscroll_flag_set(Ewl_Filelist *fl,
-						Ewl_ScrollPane_Flags v);
-Ewl_ScrollPane_Flags ewl_filelist_vscroll_flag_get(Ewl_Filelist *fl);
+						Ewl_Scrollpane_Flags v);
+Ewl_Scrollpane_Flags ewl_filelist_vscroll_flag_get(Ewl_Filelist *fl);
 
 void		 ewl_filelist_hscroll_flag_set(Ewl_Filelist *fl,
-						Ewl_ScrollPane_Flags h);
-Ewl_ScrollPane_Flags ewl_filelist_hscroll_flag_get(Ewl_Filelist *fl);
+						Ewl_Scrollpane_Flags h);
+Ewl_Scrollpane_Flags ewl_filelist_hscroll_flag_get(Ewl_Filelist *fl);
 
 char 		*ewl_filelist_expand_path(Ewl_Filelist *fl, const char *dir);
 void 		 ewl_filelist_directory_read(Ewl_Filelist *fl, 

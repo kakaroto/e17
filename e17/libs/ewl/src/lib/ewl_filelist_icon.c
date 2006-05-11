@@ -113,6 +113,7 @@ ewl_filelist_icon_dir_change(Ewl_Filelist *fl)
 
 /**
  * @param fl: The filelist to work with
+ * @param file: The file to set selected
  * @return Returns no value
  * @brief The callback to notify of selected files changing
  */

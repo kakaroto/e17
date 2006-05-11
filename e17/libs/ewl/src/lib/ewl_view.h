@@ -15,6 +15,10 @@
  * View callback for the constructor for a data row
  */
 #define EWL_VIEW_CONSTRUCTOR(f) ((Ewl_View_Constructor)f)
+
+/**
+ * A typedef to shorten the definition of the view_constructor  callbacks. 
+ */
 typedef Ewl_Widget *(*Ewl_View_Constructor)(void);
 
 /**
@@ -22,6 +26,10 @@ typedef Ewl_Widget *(*Ewl_View_Constructor)(void);
  * View callback to set data into a given widget
  */
 #define EWL_VIEW_ASSIGN(f) ((Ewl_View_Assign)f)
+
+/**
+ * A typedef to shorten the definition of the view_assign callbacks. 
+ */
 typedef void (*Ewl_View_Assign)(Ewl_Widget *w, void *data);
 
 /**
@@ -29,6 +37,10 @@ typedef void (*Ewl_View_Assign)(Ewl_Widget *w, void *data);
  * View callback to get the header for a given column
  */
 #define EWL_VIEW_HEADER_GET(f) ((Ewl_View_Header_Fetch)f)
+
+/**
+ * A typedef to shorten the definition of the view_header_fetch callbacks. 
+ */
 typedef Ewl_Widget *(*Ewl_View_Header_Fetch)(void *data, int column);
 
 /**
@@ -36,6 +48,10 @@ typedef Ewl_Widget *(*Ewl_View_Header_Fetch)(void *data, int column);
  * Typecasts a pointer to an Ewl_View pointer.
  */
 #define EWL_VIEW(view) ((Ewl_View *)view)
+
+/**
+ * The Ewl_View type
+ */
 typedef struct Ewl_View Ewl_View;
 
 /**

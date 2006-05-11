@@ -51,6 +51,9 @@ enum Ewl_Callback_Type
 	EWL_CALLBACK_MAX /**< Flag to indicate last value */
 };
 
+/**
+ * The Ewl_Callback_Type 
+ */
 typedef enum Ewl_Callback_Type Ewl_Callback_Type;
 
 /**
@@ -66,6 +69,9 @@ enum Ewl_Event_Notify
 	EWL_CALLBACK_TYPE_DIRECT = 4		/**< Direct call */
 };
 
+/**
+ * The Ewl_Event_Notify type
+ */
 typedef enum Ewl_Event_Notify Ewl_Event_Notify;
 
 /**
@@ -79,6 +85,9 @@ enum Ewl_Orientation
 	EWL_ORIENTATION_VERTICAL	/**< Vertical layout */
 };
 
+/**
+ * The Ewl_Orientation type
+ */
 typedef enum Ewl_Orientation Ewl_Orientation;
 
 /**
@@ -225,8 +234,15 @@ enum Ewl_Position
 	EWL_POSITION_BOTTOM = 0x8	/**< Bottom position */
 };
 
+/**
+ * The Ewl_Position type
+ */
 typedef enum Ewl_Position Ewl_Position;
 
+/**
+ * @def EWL_POSITION_MASK
+ * The mask for the Ewl_Position bitmap
+ */
 #define EWL_POSITION_MASK (0xf)
 
 /**
@@ -241,6 +257,9 @@ enum Ewl_Window_Flags
 	EWL_WINDOW_OVERRIDE = 0x10		/**< Window override setting */
 };
 
+/**
+ * The Ewl_Window_Flags type
+ */
 typedef enum Ewl_Window_Flags Ewl_Window_Flags;
 
 /**
@@ -253,6 +272,9 @@ enum Ewl_Tree_Node_Flags
 	EWL_TREE_NODE_EXPANDED = 2,	/**< Node is expanded */
 };
 
+/**
+ * The Ewl_Tree_Node_Flags type
+ */
 typedef enum Ewl_Tree_Node_Flags Ewl_Tree_Node_Flags;
 
 /**
@@ -263,20 +285,30 @@ enum Ewl_Notebook_Flags
 	EWL_NOTEBOOK_FLAG_TABS_HIDDEN = 0x10	/**< Tabbar is hidden */
 };
 
+/**
+ * The Ewl_Notebook_Flags type
+ */
 typedef enum Ewl_Notebook_Flags Ewl_Notebook_Flags;
 
 /**
- * @enum Ewl_ScrollPane_Flags
+ * @enum Ewl_Scrollpane_Flags
  */
-enum Ewl_ScrollPane_Flags
+enum Ewl_Scrollpane_Flags
 {
 	EWL_SCROLLPANE_FLAG_NONE,		/**< No flags set */
 	EWL_SCROLLPANE_FLAG_AUTO_VISIBLE,	/**< Hide if possible */
 	EWL_SCROLLPANE_FLAG_ALWAYS_HIDDEN	/**< Always hide */
 };
 
-typedef enum Ewl_ScrollPane_Flags Ewl_ScrollPane_Flags;
+/**
+ * The Ewl_Scrollpane_Flags type
+ */
+typedef enum Ewl_Scrollpane_Flags Ewl_Scrollpane_Flags;
 
+/**
+ * @enum Ewl_Engine
+ * The possible ewl engine settings
+ */
 enum Ewl_Engine
 {
 	EWL_ENGINE_SOFTWARE_X11 = 1,	/**< The Software X11 engine */
@@ -284,6 +316,9 @@ enum Ewl_Engine
 	EWL_ENGINE_FB = 4,		/**< The Framebuffer engine */
 };
 
+/**
+ * The Ewl_Engine type
+ */
 typedef enum Ewl_Engine Ewl_Engine;
 
 /**
@@ -311,6 +346,9 @@ enum Ewl_Key_Modifiers
 	EWL_KEY_MODIFIER_WIN = 0x10,	/**< Win key */
 };
 
+/**
+ * The Ewl_Key_Modifiers type
+ */
 typedef enum Ewl_Key_Modifiers Ewl_Key_Modifiers;
 
 /**
@@ -336,6 +374,10 @@ enum Ewl_Stock_Type
 	EWL_STOCK_STOP,
 	EWL_STOCK_NONE
 };
+
+/**
+ * The Ewl_Stock_Type type
+ */
 typedef enum Ewl_Stock_Type Ewl_Stock_Type;
 
 /**
@@ -350,6 +392,10 @@ enum Ewl_Color_Mode
 	EWL_COLOR_MODE_HSV_SATURATION,
 	EWL_COLOR_MODE_HSV_VALUE
 };
+
+/**
+ * The Ewl_Color_Mode type
+ */
 typedef enum Ewl_Color_Mode Ewl_Color_Mode;
 
 /**
@@ -360,8 +406,16 @@ enum Ewl_Spectrum_Type
 	EWL_SPECTRUM_TYPE_SQUARE,
 	EWL_SPECTRUM_TYPE_VERTICAL
 };
+
+/**
+ * The Ewl_Spectrum_Type type
+ */
 typedef enum Ewl_Spectrum_Type Ewl_Spectrum_Type;
 
+/**
+ * @enum Ewl_Text_Style
+ * The possible styles that can be set into ewl_text widgets
+ */
 enum Ewl_Text_Style 
 {
 	EWL_TEXT_STYLE_NONE = 0x00,
@@ -374,16 +428,32 @@ enum Ewl_Text_Style
 	EWL_TEXT_STYLE_OUTLINE = 0x40,
 	EWL_TEXT_STYLE_GLOW = 0x80
 };
+
+/**
+ * The Ewl_Text_Style type
+ */
 typedef enum Ewl_Text_Style Ewl_Text_Style;
 
+/**
+ * @enum Ewl_Text_Trigger_Type
+ * The types of trigger that can be set
+ */
 enum Ewl_Text_Trigger_Type 
 {
 	EWL_TEXT_TRIGGER_TYPE_NONE,
 	EWL_TEXT_TRIGGER_TYPE_SELECTION,
 	EWL_TEXT_TRIGGER_TYPE_TRIGGER
 };
+
+/**
+ * The Ewl_Text_Trigger_Type
+ */
 typedef enum Ewl_Text_Trigger_Type Ewl_Text_Trigger_Type;
 
+/**
+ * @enum Ewl_Attach_Type
+ * The types that can be attached to a widget
+ */
 enum Ewl_Attach_Type 
 {
 	EWL_ATTACH_TYPE_TOOLTIP,
@@ -392,23 +462,47 @@ enum Ewl_Attach_Type
 	EWL_ATTACH_TYPE_MOUSE_CURSOR,
 	EWL_ATTACH_TYPE_NOTEBOOK_DATA
 };
+
+/**
+ * The Ewl_Attach_Type 
+ */
 typedef enum Ewl_Attach_Type Ewl_Attach_Type;
 
+/**
+ * @enum Ewl_Attach_Data_Type
+ * The types of data that can be set into a widgets attachment
+ */
 enum Ewl_Attach_Data_Type 
 {
 	EWL_ATTACH_DATA_TYPE_TEXT,
 	EWL_ATTACH_DATA_TYPE_WIDGET,
 	EWL_ATTACH_DATA_TYPE_OTHER
 };
+
+/**
+ * The Ewl_Attach_Data_Type
+ */
 typedef enum Ewl_Attach_Data_Type Ewl_Attach_Data_Type;
 
+/**
+ * @enum Ewl_Media_Module_Type
+ * The possible modules to use with ewl_media
+ */
 enum Ewl_Media_Module_Type
 {
 	EWL_MEDIA_MODULE_XINE,
 	EWL_MEDIA_MODULE_GSTREAMER
 };
+
+/**
+ * The Ewl_Media_Module_Type
+ */
 typedef enum Ewl_Media_Module_Type Ewl_Media_Module_Type;
 
+/**
+ * @enum Ewl_Tree_Mode
+ * The possible tree mode settings
+ */
 enum Ewl_Tree_Mode
 {
 	EWL_TREE_MODE_NONE,
@@ -416,8 +510,15 @@ enum Ewl_Tree_Mode
 	EWL_TREE_MODE_MULTI
 };
 
+/**
+ * The Ewl_Tree_Mode type
+ */
 typedef enum Ewl_Tree_Mode Ewl_Tree_Mode;
 
+/**
+ * @enum Ewl_Text_Context_Mask
+ * The possible context masks for the ewl_text
+ */
 enum Ewl_Text_Context_Mask
 {
 	EWL_TEXT_CONTEXT_MASK_NONE = 0x00,
@@ -435,31 +536,63 @@ enum Ewl_Text_Context_Mask
 	EWL_TEXT_CONTEXT_MASK_UNDERLINE_COLOR = 0x800,
 	EWL_TEXT_CONTEXT_MASK_DOUBLE_UNDERLINE_COLOR = 0x1000
 };
+
+/**
+ * The Ewl_Text_Context_Mask type
+ */
 typedef enum Ewl_Text_Context_Mask Ewl_Text_Context_Mask;
 
+/**
+ * @enum Ewl_Icon_Type
+ * The possible icon types
+ */
 enum Ewl_Icon_Type
 {
 	EWL_ICON_TYPE_SHORT,
 	EWL_ICON_TYPE_LONG
 };
+
+/**
+ * The Ewl_Icon_Type
+ */
 typedef enum Ewl_Icon_Type Ewl_Icon_Type;
 
+/**
+ * @enum Ewl_Freebox_Layout_Type
+ * The possibly layout settings for the freebox
+ */
 enum Ewl_Freebox_Layout_Type
 {
 	EWL_FREEBOX_LAYOUT_MANUAL,
 	EWL_FREEBOX_LAYOUT_COMPARATOR,
 	EWL_FREEBOX_LAYOUT_AUTO
 };
+
+/**
+ * The Ewl_Freebox_Layout_Type
+ */
 typedef enum Ewl_Freebox_Layout_Type Ewl_Freebox_Layout_Type;
 
+/**
+ * @enum Ewl_Filelist_Event_Type
+ * The possible events that can happen from the filelist
+ */
 enum Ewl_Filelist_Event_Type
 {
 	EWL_FILELIST_EVENT_TYPE_DIR_CHANGE,
 	EWL_FILELIST_EVENT_TYPE_SELECTION_CHANGE,
 	EWL_FILELIST_EVENT_TYPE_FILE_SELECTED
 };
+
+/**
+ * The Ewl_Filelist_Event_Type 
+ */
 typedef enum Ewl_Filelist_Event_Type Ewl_Filelist_Event_Type;
 
+/**
+ * @enum Ewl_Mouse_Cursor_Type
+ * The possible mouse cursor settings
+ */
 enum Ewl_Mouse_Cursor_Type
 {
 	EWL_MOUSE_CURSOR_X = 0,
@@ -540,6 +673,9 @@ enum Ewl_Mouse_Cursor_Type
 	EWL_MOUSE_CURSOR_XTERM = 152
 };
 
+/**
+ * The Ewl_Mouse_Cursor_Type
+ */
 typedef enum Ewl_Mouse_Cursor_Type Ewl_Mouse_Cursor_Type;
 
 /**

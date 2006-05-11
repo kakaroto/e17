@@ -224,12 +224,39 @@ unsigned int    ewl_object_flags_get(Ewl_Object *o, unsigned int mask);
 	(ewl_object_flags_get(o, EWL_FLAGS_PROPERTY_MASK) & \
 	 EWL_FLAG_PROPERTY_TOPLEVEL)
 
+/**
+ * @def ewl_object_state_add(o, state)
+ * @param o: The object to work with
+ * @param state: The state to set into the object
+ * Adds the given state @a state to the object @a o
+ */
 #define ewl_object_state_add(o, state) \
 	ewl_object_flags_add(o, state, EWL_FLAGS_STATE_MASK)
+
+/**
+ * @def ewl_object_state_remove(o, state)
+ * @param o: The object to work with
+ * @param state: The state to remove
+ * Removes the given state from the given @a o object 
+ */
 #define ewl_object_state_remove(o, state) \
 	ewl_object_flags_remove(o, state, EWL_FLAGS_STATE_MASK)
+
+/**
+ * @def ewl_object_state_has(o, state)
+ * @param o: The object to check
+ * @param state: The state to check
+ * Checks if the given state @a state is set on the given object @a o
+ */
 #define ewl_object_state_has(o, state) \
 	ewl_object_flags_has(o, state, EWL_FLAGS_STATE_MASK)
+
+/**
+ * @def ewl_object_state_get(o, state)
+ * @param o: The object to work with
+ * @param state: The state to get
+ * Retrives the given state @a state from the object @a o
+ */
 #define ewl_object_state_get(o, state) \
 	ewl_object_flags_get(o, state, EWL_FLAGS_STATE_MASK)
 
@@ -272,15 +299,49 @@ unsigned int    ewl_object_flags_get(Ewl_Object *o, unsigned int mask);
 #define CURRENT_W(o) EWL_OBJECT(o)->current.w
 #define CURRENT_H(o) EWL_OBJECT(o)->current.h
 
+/**
+ * @def PREFERRED_W(o)
+ * Set the preferred width of the widget
+ */
 #define PREFERRED_W(o) EWL_OBJECT(o)->preferred.w
+
+/**
+ * @def PREFERRED_H(o)
+ * Set the preferred height of the widget
+ */
 #define PREFERRED_H(o) EWL_OBJECT(o)->preferred.h
 
+/**
+ * @def MAXIMUM_W(o)
+ * Set the maximum width of the widget
+ */
 #define MAXIMUM_W(o) EWL_OBJECT(o)->maximum.w
+
+/**
+ * @def MAXIMUM_H(o)
+ * Set the maximum height of the object
+ */
 #define MAXIMUM_H(o) EWL_OBJECT(o)->maximum.h
 
+/**
+ * @def MINIMUM_W(o)
+ * Set the minimum width of the object
+ */
 #define MINIMUM_W(o) EWL_OBJECT(o)->minimum.w
+
+/**
+ * @def MINIMUM_H(o)
+ * Set the minimum height of the object
+ */
 #define MINIMUM_H(o) EWL_OBJECT(o)->minimum.h
 
+/**
+ * @def ewl_object_custom_size_set(o, w, h)
+ * @param o: The object to work with
+ * @param w: The width to set
+ * @param h: The height to set
+ * A convenience method to set a custom size onto a widget
+ */
 #define ewl_object_custom_size_set(o, w, h) \
 	{ \
 		ewl_object_minimum_size_set(o, w, h); \
@@ -288,6 +349,12 @@ unsigned int    ewl_object_flags_get(Ewl_Object *o, unsigned int mask);
  		ewl_object_fill_policy_set(o, EWL_FLAG_FILL_NONE); \
 	}
 
+/**
+ * @def ewl_object_custom_w_set(o, w)
+ * @param o: The object to work with
+ * @param w: The width to set
+ * A convenience method to set a custom width onto a widget
+ */
 #define ewl_object_custom_w_set(o, w) \
 	{ \
 		ewl_object_maximum_w_set(o, w); \
@@ -296,6 +363,12 @@ unsigned int    ewl_object_flags_get(Ewl_Object *o, unsigned int mask);
 				~(EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK)); \
 	}
 
+/**
+ * @def ewl_object_custom_h_set(o, h)
+ * @param o: The object to work with
+ * @param h: The height to set
+ * A convenience method to set a custom height onto a widget
+ */
 #define ewl_object_custom_h_set(o, h) \
 	{ \
 		ewl_object_maximum_h_set(o, h); \

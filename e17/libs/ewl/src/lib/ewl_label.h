@@ -18,6 +18,9 @@
  */
 #define EWL_LABEL_TYPE "label"
 
+/**
+ * The Ewl_Label widget
+ */
 typedef struct Ewl_Label Ewl_Label;
 
 /**

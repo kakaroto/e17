@@ -471,6 +471,11 @@ ewl_entry_cb_mouse_move(Ewl_Widget *w, void *ev __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param e: The Ewl_Entry to work with
+ * @return Returns no value
+ * @brief Moves the cursor to the left of it's current position 
+ */
 void
 ewl_entry_cursor_move_left(Ewl_Entry *e)
 {
@@ -492,6 +497,11 @@ ewl_entry_cursor_move_left(Ewl_Entry *e)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param e: The Ewl_Entry to work with
+ * @return Returns no value.
+ * @brief Moves the cursor to the right of its current position
+ */
 void
 ewl_entry_cursor_move_right(Ewl_Entry *e)
 {
@@ -513,6 +523,11 @@ ewl_entry_cursor_move_right(Ewl_Entry *e)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param e: The Ewl_Entry to work with
+ * @return Returns no value.
+ * @brief Moves the cursor up one line from its current position
+ */
 void
 ewl_entry_cursor_move_up(Ewl_Entry *e)
 {
@@ -529,6 +544,11 @@ ewl_entry_cursor_move_up(Ewl_Entry *e)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param e: The Ewl_Entry to work with
+ * @return Returns no value.
+ * @brief Moves the cursor down one line from its current position
+ */
 void
 ewl_entry_cursor_move_down(Ewl_Entry *e)
 {
@@ -545,6 +565,11 @@ ewl_entry_cursor_move_down(Ewl_Entry *e)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param e: The Ewl_Entry to work with
+ * @return Returns no value.
+ * @brief Deletes the character to the left of the cursor
+ */
 void
 ewl_entry_delete_left(Ewl_Entry *e)
 {
@@ -559,6 +584,11 @@ ewl_entry_delete_left(Ewl_Entry *e)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param e: The Ewl_Entry to work with
+ * @return Returns no value.
+ * @brief Deletes the character to the right of the cursor 
+ */
 void
 ewl_entry_delete_right(Ewl_Entry *e)
 {
@@ -618,6 +648,12 @@ ewl_entry_keymap_set(void)
 /*
  * cursor stuff
  */
+
+/**
+ * @param parent: The parent Ewl_Entry widget
+ * @return Returns a new Ewl_Entry_Cursor on success or NULL on failure
+ * @brief Creates and initializes a new Ewl_Entry_Cursor widget
+ */
 Ewl_Widget *
 ewl_entry_cursor_new(Ewl_Entry *parent)
 {
@@ -639,6 +675,12 @@ ewl_entry_cursor_new(Ewl_Entry *parent)
 	DRETURN_PTR(w, DLEVEL_STABLE);
 }
 
+/**
+ * @param c: The Ewl_Entry_Cursor to initialize
+ * @param parent: The parent Ewl_Text widget
+ * @return Returns TRUE on success or FALSE on failure
+ * @brief Initializes an Ewl_Entry_Cursor to default values
+ */
 int
 ewl_entry_cursor_init(Ewl_Entry_Cursor *c, Ewl_Entry *parent)
 {
@@ -661,6 +703,12 @@ ewl_entry_cursor_init(Ewl_Entry_Cursor *c, Ewl_Entry *parent)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+/**
+ * @param c: The cursor to work with
+ * @param pos: The position to set the cursor too
+ * @return Returns no value.
+ * @brief Set the current cursor position
+ */
 void
 ewl_entry_cursor_position_set(Ewl_Entry_Cursor *c, unsigned int pos)
 {
@@ -673,6 +721,11 @@ ewl_entry_cursor_position_set(Ewl_Entry_Cursor *c, unsigned int pos)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param c: The cursor to get the position from
+ * @return Returns the current position of the cursor
+ * @brief Retrieves the current position of the Ewl_Entry_Cursor
+ */
 unsigned int
 ewl_entry_cursor_position_get(Ewl_Entry_Cursor *c)
 {

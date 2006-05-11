@@ -19,8 +19,14 @@
  */
 #define EWL_GRID_TYPE "grid"
 
+/**
+ * The Ewl_Grid_Info structure
+ */
 typedef struct Ewl_Grid_Info Ewl_Grid_Info;
 
+/**
+ * Contains information about the Ewl_Grid
+ */
 struct Ewl_Grid_Info
 {
 	int		 override;	/**< Override the size of the column */

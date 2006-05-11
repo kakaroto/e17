@@ -643,6 +643,12 @@ ewl_paned_grabber_show_cursor_for(Ewl_Paned_Grabber *g, unsigned int dir)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param g: The grabber to work with
+ * @param placed: The placed value to set
+ * @return Returns no value
+ * @brief Set if the grabber has been placed or not
+ */
 void
 ewl_paned_grabber_placed_set(Ewl_Paned_Grabber *g, unsigned int placed)
 {
@@ -655,6 +661,11 @@ ewl_paned_grabber_placed_set(Ewl_Paned_Grabber *g, unsigned int placed)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param g: The grabber to work with
+ * @return Returns if the placed setting of the grabber
+ * @brief Retrieves the placed setting of the grabber
+ */
 unsigned int
 ewl_paned_grabber_placed_get(Ewl_Paned_Grabber *g)
 {

@@ -758,7 +758,7 @@ ewl_box_configure_child(Ewl_Box * b __UNUSED__, Ewl_Object * c,
  * When a child gets added to the box update it's size.
  */
 void
-ewl_box_child_show_cb(Ewl_Container * c, Ewl_Widget * w)
+ewl_box_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 {
 	int space = 0;
 	int width, height;
@@ -877,7 +877,7 @@ ewl_box_child_hide_cb(Ewl_Container * c, Ewl_Widget * w)
  * @brief The container resize callback used by the box 
  */
 void
-ewl_box_child_resize_cb(Ewl_Container * c, Ewl_Widget * w __UNUSED__, 
+ewl_box_child_resize_cb(Ewl_Container *c, Ewl_Widget *w __UNUSED__, 
 			int size, Ewl_Orientation o)
 {
 	int align_size, fill_size;

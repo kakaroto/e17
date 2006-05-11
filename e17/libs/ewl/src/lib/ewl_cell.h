@@ -19,6 +19,9 @@
  */
 #define EWL_CELL_TYPE "cell"
 
+/**
+ * The Ewl_Cell widget
+ */
 typedef struct Ewl_Cell Ewl_Cell;
 
 /**

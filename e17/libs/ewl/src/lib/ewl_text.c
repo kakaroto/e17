@@ -1006,9 +1006,9 @@ ewl_text_font_size_get(Ewl_Text *t, unsigned int idx)
 	DRETURN_INT(((tx) ? tx->size : 0), DLEVEL_STABLE);
 }
 
-/*
+/**
  * @param t: The Ewl_Text to set the colour on
- * @parma r: The red value
+ * @param r: The red value
  * @param g: The green value
  * @param b: The blue value
  * @param a: The alpha value

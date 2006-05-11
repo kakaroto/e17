@@ -182,14 +182,14 @@ typedef struct Ewl_Filepicker_Event Ewl_Filepicker_Event;
 
 struct Ewl_Filepicker_Event
 {
-	unsigned int response;
+	unsigned int response;	/**< The filepicker response */
 };
 
 typedef struct Ewl_Filelist_Event Ewl_Filelist_Event;
 
 struct Ewl_Filelist_Event
 {
-	Ewl_Filelist_Event_Type type;
+	Ewl_Filelist_Event_Type type;	/**< The type of event */
 };
 
 int		ewl_ev_init(void);

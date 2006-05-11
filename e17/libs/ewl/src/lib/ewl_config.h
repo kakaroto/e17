@@ -7,6 +7,9 @@
  * @{
  */
 
+/**
+ * The Ewl_Config structure
+ */
 typedef struct Ewl_Config Ewl_Config;
 
 /**

@@ -102,6 +102,9 @@
  */
 #define EWL_TREE2_COLUMN(c) ((Ewl_Tree2_Column *)c)
 
+/**
+ * The Ewl_Tree2_Column type
+ */
 typedef struct Ewl_Tree2_Column Ewl_Tree2_Column;
 
 /**
@@ -119,6 +122,9 @@ struct Ewl_Tree2_Column
  */
 #define EWL_TREE2(t) ((Ewl_Tree2 *)t)
 
+/**
+ * The Ewl_Tree2 widget
+ */
 typedef struct Ewl_Tree2 Ewl_Tree2;
 
 /**

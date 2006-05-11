@@ -2,7 +2,7 @@
 #define EWL_SCROLLPANE_H
 
 /**
- * @addtogroup Ewl_ScrollPane Ewl_ScrollPane: A Scrollable Viewing Area
+ * @addtogroup Ewl_Scrollpane Ewl_Scrollpane: A Scrollable Viewing Area
  * Provides a scrollable area for viewing large sets of widgets in a smaller
  * viewable region.
  *
@@ -23,20 +23,20 @@
 /**
  * The scrollpane provides a way to pan around large collections of images.
  */
-typedef struct Ewl_ScrollPane Ewl_ScrollPane;
+typedef struct Ewl_Scrollpane Ewl_Scrollpane;
 
 /**
  * @def EWL_SCROLLPANE(scrollpane)
- * Typecasts a pointer to an Ewl_ScrollPane pointer.
+ * Typecasts a pointer to an Ewl_Scrollpane pointer.
  */
-#define EWL_SCROLLPANE(scrollpane) ((Ewl_ScrollPane *) scrollpane)
+#define EWL_SCROLLPANE(scrollpane) ((Ewl_Scrollpane *) scrollpane)
 
 /**
  * Inherits from Ewl_Container and extends it to enclose a single widget in
  * vertical and horizontal scrollbars for panning around displaying different
  * regions of the enclosed widget.
  */
-struct Ewl_ScrollPane
+struct Ewl_Scrollpane
 {
 	Ewl_Container         container;  /**< Inherit from Ewl_Container */
 
@@ -44,29 +44,29 @@ struct Ewl_ScrollPane
 	Ewl_Widget           *box;        /**< Lays out enclosed widget */
 	Ewl_Widget           *hscrollbar; /**< Horizontal scrollbar */
 	Ewl_Widget           *vscrollbar; /**< Vertical scrollbar */
-	Ewl_ScrollPane_Flags  hflag;      /**< Flags for horizontal scrollbar */
-	Ewl_ScrollPane_Flags  vflag;      /**< Flags for vertical scrollbar */
+	Ewl_Scrollpane_Flags  hflag;      /**< Flags for horizontal scrollbar */
+	Ewl_Scrollpane_Flags  vflag;      /**< Flags for vertical scrollbar */
 };
 
 Ewl_Widget     *ewl_scrollpane_new(void);
-int             ewl_scrollpane_init(Ewl_ScrollPane *s);
+int             ewl_scrollpane_init(Ewl_Scrollpane *s);
 
-void            ewl_scrollpane_hscrollbar_flag_set(Ewl_ScrollPane *s,
-						   Ewl_ScrollPane_Flags f);
-void            ewl_scrollpane_vscrollbar_flag_set(Ewl_ScrollPane *s,
-						   Ewl_ScrollPane_Flags f);
+void            ewl_scrollpane_hscrollbar_flag_set(Ewl_Scrollpane *s,
+						   Ewl_Scrollpane_Flags f);
+void            ewl_scrollpane_vscrollbar_flag_set(Ewl_Scrollpane *s,
+						   Ewl_Scrollpane_Flags f);
 
-Ewl_ScrollPane_Flags ewl_scrollpane_hscrollbar_flag_get(Ewl_ScrollPane *s);
-Ewl_ScrollPane_Flags ewl_scrollpane_vscrollbar_flag_get(Ewl_ScrollPane *s);
+Ewl_Scrollpane_Flags ewl_scrollpane_hscrollbar_flag_get(Ewl_Scrollpane *s);
+Ewl_Scrollpane_Flags ewl_scrollpane_vscrollbar_flag_get(Ewl_Scrollpane *s);
 
-double          ewl_scrollpane_hscrollbar_value_get(Ewl_ScrollPane *s);
-double          ewl_scrollpane_vscrollbar_value_get(Ewl_ScrollPane *s);
+double          ewl_scrollpane_hscrollbar_value_get(Ewl_Scrollpane *s);
+double          ewl_scrollpane_vscrollbar_value_get(Ewl_Scrollpane *s);
 
-void            ewl_scrollpane_hscrollbar_value_set(Ewl_ScrollPane *s, double val);
-void            ewl_scrollpane_vscrollbar_value_set(Ewl_ScrollPane *s, double val);
+void            ewl_scrollpane_hscrollbar_value_set(Ewl_Scrollpane *s, double val);
+void            ewl_scrollpane_vscrollbar_value_set(Ewl_Scrollpane *s, double val);
 
-double          ewl_scrollpane_hscrollbar_step_get(Ewl_ScrollPane *s);
-double          ewl_scrollpane_vscrollbar_step_get(Ewl_ScrollPane *s);
+double          ewl_scrollpane_hscrollbar_step_get(Ewl_Scrollpane *s);
+double          ewl_scrollpane_vscrollbar_step_get(Ewl_Scrollpane *s);
 
 /*
  * Internally used callbacks, override at your own risk.

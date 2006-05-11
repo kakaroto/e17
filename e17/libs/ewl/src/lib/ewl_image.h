@@ -19,11 +19,19 @@
  */
 #define EWL_IMAGE_TYPE "image"
 
+/**
+ * @enum Ewl_Image_Type
+ * The type of image
+ */
 enum Ewl_Image_Type
 {
 	EWL_IMAGE_TYPE_NORMAL, /**< Standard image type */
 	EWL_IMAGE_TYPE_EDJE /**< Edje image type */
 };
+
+/**
+ * The Ewl_Image_Type
+ */
 typedef enum Ewl_Image_Type Ewl_Image_Type;
 
 /**

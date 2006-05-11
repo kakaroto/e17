@@ -870,6 +870,10 @@ ewl_tree_node_init(Ewl_Tree_Node *node)
 }
 
 /**
+ * @param node: The node to work with
+ * @param expand: The expand setting for the node
+ * @return Returns no value
+ * @brief Sets the expand value into the node
  */
 void
 ewl_tree_node_expandable_set(Ewl_Tree_Node *node, int expand)
@@ -900,6 +904,9 @@ ewl_tree_node_expandable_set(Ewl_Tree_Node *node, int expand)
 }
 
 /**
+ * @param node: The node to work with
+ * @return Returns the expand setting of the node
+ * @brief Retrieves the expand setting from the node
  */
 int
 ewl_tree_node_expandable_get(Ewl_Tree_Node *node)

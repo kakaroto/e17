@@ -116,6 +116,7 @@ ewl_filelist_list_dir_change(Ewl_Filelist *fl)
 
 /**
  * @param fl: The filelist to work with
+ * @param file: The file to set selected
  * @return Returns no value
  * @brief Callback when the selected files are changed
  */

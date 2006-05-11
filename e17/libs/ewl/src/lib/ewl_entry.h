@@ -78,9 +78,21 @@ void ewl_entry_delete_right(Ewl_Entry *e);
 /*
  * cursor stuff
  */
+
+/**
+ * @def EWL_ENTRY_CURSOR(cursor)
+ * Typecast a pointer to an Ewl_Entry_Cursor pointer
+ */
 #define EWL_ENTRY_CURSOR(cursor) ((Ewl_Entry_Cursor *) cursor)
 
+/**
+ * The Ewl_Entry_Cursor widget
+ */
 typedef struct Ewl_Entry_Cursor Ewl_Entry_Cursor;
+
+/**
+ * Inherit from Ewl_Widget and extend for the Entry cursor 
+ */
 struct Ewl_Entry_Cursor
 {
 	Ewl_Widget	 widget;	/**< Inherit from Ewl_Widget */

@@ -14,6 +14,10 @@
  */
 #define EWL_FILELIST_COLUMN_TYPE "filelist_column"
 
+/**
+ * @def EWL_FILELIST_COLUMN(fl)
+ * Typecasts a pointer to an Ewl_Filelist_Column pointer
+ */
 #define EWL_FILELIST_COLUMN(fl) ((Ewl_Filelist_Column *)fl)
 
 /**
@@ -21,6 +25,9 @@
  */
 typedef struct Ewl_Filelist_Column Ewl_Filelist_Column;
 
+/**
+ * Inherits from Ewl_Filelist and extends to provide a column view
+ */
 struct Ewl_Filelist_Column
 {
 	Ewl_Filelist list;      /**< Inherit from filelist */

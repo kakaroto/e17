@@ -15,6 +15,10 @@
  * Model callback to handle fetching the data at the given row/column
  */
 #define EWL_MODEL_DATA_FETCH(f) ((Ewl_Model_Fetch)f)
+
+/**
+ * A typedef to shorten the definition of the model_fetch callbacks. 
+ */
 typedef void *(*Ewl_Model_Fetch)(void *data, unsigned int row, 
 						unsigned int column);
 
@@ -24,6 +28,10 @@ typedef void *(*Ewl_Model_Fetch)(void *data, unsigned int row,
  * given row/column
  */
 #define EWL_MODEL_DATA_SUBFETCH(f) ((Ewl_Model_Subfetch)f)
+
+/**
+ * A typedef to shorten the definition of the model_subfetch callbacks. 
+ */
 typedef void *(*Ewl_Model_Subfetch)(void *data, unsigned int parent,
 				unsigned int row, unsigned int column);
 
@@ -33,6 +41,10 @@ typedef void *(*Ewl_Model_Subfetch)(void *data, unsigned int parent,
  * column
  */
 #define EWL_MODEL_DATA_SORT(f) ((Ewl_Model_Sort)f)
+
+/**
+ * A typedef to shorten the definition of the model_sort callbacks. 
+ */
 typedef void (*Ewl_Model_Sort)(void *data, unsigned int column);
 
 /**
@@ -40,6 +52,10 @@ typedef void (*Ewl_Model_Sort)(void *data, unsigned int column);
  * Model callback to have the program return the number of rows in its data
  */
 #define EWL_MODEL_DATA_COUNT(f) ((Ewl_Model_Count)f)
+
+/**
+ * A typedef to shorten the definition of the model_count callbacks. 
+ */
 typedef int (*Ewl_Model_Count)(void *data);
 
 /**
@@ -47,6 +63,10 @@ typedef int (*Ewl_Model_Count)(void *data);
  * Typecasts a pointer to an Ewl_Model pointer.
  */
 #define EWL_MODEL(model) ((Ewl_Model *)model)
+
+/**
+ * The Ewl_Model structure
+ */
 typedef struct Ewl_Model Ewl_Model;
 
 /**
