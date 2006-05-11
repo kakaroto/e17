@@ -5,7 +5,7 @@ exec_prefix=@exec_prefix@
 exec_prefix_set=no
 
 usage="\
-Usage: ewl-config [--prefix[=DIR]] [--exec-prefix[=DIR]] [--version] [--libs] [--cflags]"
+Usage: ewl-config [--prefix[=DIR]] [--exec-prefix[=DIR]] [--version] [--libs] [--cflags] [--test-lib-dir] [--test-src-dir]"
 
 if test $# -eq 0; then
       echo "${usage}" 1>&2
@@ -47,6 +47,12 @@ while test $# -gt 0; do
     --libs)
       libdirs=-L@libdir@
       echo $libdirs -lewl @EMOTION_LIBS@ @EDJE_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ @EPSILON_LIBS@ -lm
+      ;;
+    --test-lib-dir)
+      echo @libdir@/ewl/tests
+      ;;
+    --test-src-dir)
+      echo @prefix@/share/ewl/examples
       ;;
     *)
       echo "${usage}" 1>&2
