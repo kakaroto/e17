@@ -167,7 +167,6 @@ EXidDel(EXID * xid)
       EXidDestroy(xid);
 }
 
-#define EXidFind(win) (win)
 #define EXidLookup ELookupXwin
 
 EXID               *
@@ -214,14 +213,13 @@ void
 EventCallbackRegister(Win win, int type __UNUSED__, EventCallbackFunc * func,
 		      void *prm)
 {
-   EXID               *xid;
+   EXID               *xid = win;
    EventCallbackItem  *eci;
 
-   xid = EXidFind(win);
    if (!xid)
       return;
 #if 0
-   Eprintf("EventCallbackRegister: %p %#lx\n", xid, win);
+   Eprintf("EventCallbackRegister: %p %#lx\n", xid, xid->xwin);
 #endif
 
    xid->cbl.num++;
@@ -236,17 +234,16 @@ void
 EventCallbackUnregister(Win win, int type __UNUSED__,
 			EventCallbackFunc * func, void *prm)
 {
-   EXID               *xid;
+   EXID               *xid = win;
    EventCallbackList  *ecl;
    EventCallbackItem  *eci;
    int                 i;
 
-   xid = EXidFind(win);
-#if 0
-   Eprintf("EventCallbackUnregister: %p %#lx\n", xid, win);
-#endif
-   if (xid == NULL)
+   if (!xid)
       return;
+#if 0
+   Eprintf("EventCallbackUnregister: %p %#lx\n", xid, xid->xwin);
+#endif
 
    ecl = &xid->cbl;
    eci = ecl->lst;
@@ -273,13 +270,12 @@ EventCallbackUnregister(Win win, int type __UNUSED__,
 void
 EventCallbacksProcess(Win win, XEvent * ev)
 {
-   EXID               *xid;
+   EXID               *xid = win;
    EventCallbackList  *ecl;
    EventCallbackItem  *eci;
    int                 i;
 
-   xid = EXidFind(win);
-   if (xid == NULL)
+   if (!xid)
       return;
 
    xid->in_use = 1;
@@ -417,61 +413,61 @@ ECreateFocusWindow(Win parent, int x, int y, int w, int h)
 void
 EMoveWindow(Win win, int x, int y)
 {
-   EXID               *xid;
+   EXID               *xid = win;
 
-   xid = EXidFind(win);
-   if (xid)
-     {
+   if (!xid)
+      return;
+
 #if 0
-	Eprintf("EMoveWindow: %p %#lx: %d,%d %dx%d -> %d,%d\n",
-		xid, xid->xwin, xid->x, xid->y, xid->w, xid->h, x, y);
+   Eprintf("EMoveWindow: %p %#lx: %d,%d %dx%d -> %d,%d\n",
+	   xid, xid->xwin, xid->x, xid->y, xid->w, xid->h, x, y);
 #endif
-	if ((x == xid->x) && (y == xid->y))
-	   return;
+   if ((x == xid->x) && (y == xid->y))
+      return;
 
-	xid->x = x;
-	xid->y = y;
-     }
+   xid->x = x;
+   xid->y = y;
+
    XMoveWindow(disp, win->xwin, x, y);
 }
 
 void
 EResizeWindow(Win win, int w, int h)
 {
-   EXID               *xid;
+   EXID               *xid = win;
 
-   xid = EXidFind(win);
-   if (xid)
-     {
-	if ((w == xid->w) && (h == xid->h))
-	   return;
+   if (!xid)
+      return;
 
-	xid->w = w;
-	xid->h = h;
-     }
+   if ((w == xid->w) && (h == xid->h))
+      return;
+
+   xid->w = w;
+   xid->h = h;
+
    XResizeWindow(disp, win->xwin, w, h);
 }
 
 void
 EMoveResizeWindow(Win win, int x, int y, int w, int h)
 {
-   EXID               *xid;
+   EXID               *xid = win;
 
-   xid = EXidFind(win);
-   if (xid)
-     {
+   if (!xid)
+      return;
+
 #if 0
-	Eprintf("EMoveResizeWindow: %p %#lx: %d,%d %dx%d -> %d,%d %dx%d\n",
-		xid, xid->xwin, xid->x, xid->y, xid->w, xid->h, x, y, w, h);
+   Eprintf("EMoveResizeWindow: %p %#lx: %d,%d %dx%d -> %d,%d %dx%d\n",
+	   xid, xid->xwin, xid->x, xid->y, xid->w, xid->h, x, y, w, h);
 #endif
-	if ((w == xid->w) && (h == xid->h) && (x == xid->x) && (y == xid->y))
-	   return;
+   if ((w == xid->w) && (h == xid->h) && (x == xid->x) && (y == xid->y))
+      return;
 
-	xid->x = x;
-	xid->y = y;
-	xid->w = w;
-	xid->h = h;
-     }
+   xid->x = x;
+   xid->y = y;
+   xid->w = w;
+   xid->h = h;
+
    XMoveResizeWindow(disp, win->xwin, x, y, w, h);
 }
 
@@ -496,11 +492,15 @@ ExDelTree(EXID * xid)
    return nsub;
 }
 
-static void
-ExDestroyWindow(EXID * xid)
+void
+EDestroyWindow(Win win)
 {
+   EXID               *xid = win;
    EXID               *next;
    int                 nsub;
+
+   if (!xid)
+      return;
 
 #if DEBUG_XWIN
    Eprintf("ExDestroyWindow: %p %#lx\n", xid, xid->xwin);
@@ -527,26 +527,13 @@ ExDestroyWindow(EXID * xid)
 }
 
 void
-EDestroyWindow(Win win)
-{
-   EXID               *xid;
-
-   xid = EXidFind(win);
-   if (xid)
-      ExDestroyWindow(xid);
-   else
-      XDestroyWindow(disp, win->xwin);
-}
-
-void
 EWindowSync(Win win)
 {
-   EXID               *xid;
+   EXID               *xid = win;
    Window              rr;
    int                 x, y;
    unsigned int        w, h, bw, depth;
 
-   xid = EXidFind(win);
    if (!xid)
       return;
 
@@ -565,9 +552,8 @@ EWindowSync(Win win)
 void
 EWindowSetMapped(Win win, int mapped)
 {
-   EXID               *xid;
+   EXID               *xid = win;
 
-   xid = EXidFind(win);
    if (!xid)
       return;
 
@@ -666,95 +652,96 @@ EUnregisterXwin(Window xwin)
 void
 EUnregisterWindow(Win win)
 {
-   EXID               *xid;
+   EXID               *xid = win;
 
-   xid = EXidFind(win);
-   if (xid)
-      EXidDel(xid);
+   if (!xid)
+      return;
+
+   EXidDel(xid);
 }
 
 void
 EMapWindow(Win win)
 {
-   EXID               *xid;
+   EXID               *xid = win;
 
-   xid = EXidFind(win);
-   if (xid)
-     {
-	if (xid->mapped)
-	   return;
-	xid->mapped = 1;
-     }
+   if (!xid)
+      return;
+
+   if (xid->mapped)
+      return;
+   xid->mapped = 1;
+
    XMapWindow(disp, win->xwin);
 }
 
 void
 EUnmapWindow(Win win)
 {
-   EXID               *xid;
+   EXID               *xid = win;
 
-   xid = EXidFind(win);
-   if (xid)
-     {
-	if (!xid->mapped)
-	   return;
-	xid->mapped = 0;
-     }
+   if (!xid)
+      return;
+
+   if (!xid->mapped)
+      return;
+   xid->mapped = 0;
+
    XUnmapWindow(disp, win->xwin);
 }
 
 void
 EReparentWindow(Win win, Win parent, int x, int y)
 {
-   EXID               *xid;
+   EXID               *xid = win;
 
-   xid = EXidFind(win);
-   if (xid)
-     {
+   if (!xid)
+      return;
+
 #if 0
-	Eprintf
-	   ("EReparentWindow: %p %#lx: %d %#lx->%#lx %d,%d %dx%d -> %d,%d\n",
-	    xid, xid->xwin, xid->mapped, xid->parent, parent->xwin,
-	    xid->x, xid->y, xid->w, xid->h, x, y);
+   Eprintf
+      ("EReparentWindow: %p %#lx: %d %#lx->%#lx %d,%d %dx%d -> %d,%d\n",
+       xid, xid->xwin, xid->mapped, xid->parent, parent->xwin,
+       xid->x, xid->y, xid->w, xid->h, x, y);
 #endif
-	if (parent == xid->parent)
+   if (parent == xid->parent)
+     {
+	if ((x != xid->x) || (y != xid->y))
 	  {
-	     if ((x != xid->x) || (y != xid->y))
-	       {
-		  xid->x = x;
-		  xid->y = y;
-		  XMoveWindow(disp, win->xwin, x, y);
-	       }
-	     return;
-	  }
-	else
-	  {
-	     xid->parent = parent;
 	     xid->x = x;
 	     xid->y = y;
+	     XMoveWindow(disp, win->xwin, x, y);
 	  }
+	return;
      }
+   else
+     {
+	xid->parent = parent;
+	xid->x = x;
+	xid->y = y;
+     }
+
    XReparentWindow(disp, win->xwin, parent->xwin, x, y);
 }
 
 void
 EMapRaised(Win win)
 {
-   EXID               *xid;
+   EXID               *xid = win;
 
-   xid = EXidFind(win);
-   if (xid)
+   if (!xid)
+      return;
+
+   if (xid->mapped)
      {
-	if (xid->mapped)
-	  {
-	     XRaiseWindow(disp, win->xwin);
-	     return;
-	  }
-	else
-	  {
-	     xid->mapped = 1;
-	  }
+	XRaiseWindow(disp, win->xwin);
+	return;
      }
+   else
+     {
+	xid->mapped = 1;
+     }
+
    XMapRaised(disp, win->xwin);
 }
 
@@ -798,108 +785,97 @@ int
 EGetGeometry(Win win, Window * root_return, int *x, int *y,
 	     int *w, int *h, int *bw, int *depth)
 {
-   int                 ok;
-   EXID               *xid;
+   EXID               *xid = win;
 
-   xid = EXidFind(win);
-   if (xid)
-     {
-	if (x)
-	   *x = xid->x;
-	if (y)
-	   *y = xid->y;
-	if (w)
-	   *w = xid->w;
-	if (h)
-	   *h = xid->h;
-	if (bw)
-	   *bw = 0;
-	if (depth)
-	   *depth = xid->depth;
-	if (root_return)
-	   *root_return = VRoot.xwin;
-	ok = 1;
-     }
-   else
-     {
-	ok = EXGetGeometry(win->xwin, root_return, x, y, w, h, bw, depth);
-     }
-   return ok;
+   if (!xid)
+      return 0;
+
+   if (x)
+      *x = xid->x;
+   if (y)
+      *y = xid->y;
+   if (w)
+      *w = xid->w;
+   if (h)
+      *h = xid->h;
+   if (bw)
+      *bw = 0;
+   if (depth)
+      *depth = xid->depth;
+   if (root_return)
+      *root_return = VRoot.xwin;
+
+   return 1;
 }
 
 void
 EConfigureWindow(Win win, unsigned int mask, XWindowChanges * wc)
 {
-   EXID               *xid;
+   EXID               *xid = win;
+   char                doit = 0;
 
-   xid = EXidFind(win);
-   if (xid)
-     {
-	char                doit = 0;
+   if (!xid)
+      return;
 
-	if ((mask & CWX) && (wc->x != xid->x))
-	  {
-	     xid->x = wc->x;
-	     doit = 1;
-	  }
-	if ((mask & CWY) && (wc->y != xid->y))
-	  {
-	     xid->y = wc->y;
-	     doit = 1;
-	  }
-	if ((mask & CWWidth) && (wc->width != xid->w))
-	  {
-	     xid->w = wc->width;
-	     doit = 1;
-	  }
-	if ((mask & CWHeight) && (wc->height != xid->h))
-	  {
-	     xid->h = wc->height;
-	     doit = 1;
-	  }
-	if ((doit) || (mask & (CWBorderWidth | CWSibling | CWStackMode)))
-	   XConfigureWindow(disp, win->xwin, mask, wc);
-     }
-   else
+   if ((mask & CWX) && (wc->x != xid->x))
      {
-	XConfigureWindow(disp, win->xwin, mask, wc);
+	xid->x = wc->x;
+	doit = 1;
      }
+   if ((mask & CWY) && (wc->y != xid->y))
+     {
+	xid->y = wc->y;
+	doit = 1;
+     }
+   if ((mask & CWWidth) && (wc->width != xid->w))
+     {
+	xid->w = wc->width;
+	doit = 1;
+     }
+   if ((mask & CWHeight) && (wc->height != xid->h))
+     {
+	xid->h = wc->height;
+	doit = 1;
+     }
+
+   if ((doit) || (mask & (CWBorderWidth | CWSibling | CWStackMode)))
+      XConfigureWindow(disp, win->xwin, mask, wc);
 }
 
 void
 ESetWindowBackgroundPixmap(Win win, Pixmap pmap)
 {
-   EXID               *xid;
+   EXID               *xid = win;
 
-   xid = EXidFind(win);
-   if (xid)
-     {
-	xid->bgpmap = pmap;
-	xid->bgcol = 0xffffffff;	/* Hmmm.. */
-     }
+   if (!xid)
+      return;
+
+   xid->bgpmap = pmap;
+   xid->bgcol = 0xffffffff;	/* Hmmm.. */
+
    XSetWindowBackgroundPixmap(disp, win->xwin, pmap);
 }
 
 void
 ESetWindowBackground(Win win, int col)
 {
-   EXID               *xid;
+   EXID               *xid = win;
 
-   xid = EXidFind(win);
-   if (xid)
+   if (!xid)
+      return;
+
+   if (xid->bgpmap)
      {
-	if (xid->bgpmap)
-	  {
-	     xid->bgpmap = 0;
-	     xid->bgcol = col;
-	  }
-	else if (xid->bgcol != col)
-	  {
-	     xid->bgcol = col;
-	  }
-	else
-	   return;
+	xid->bgpmap = 0;
+	xid->bgcol = col;
      }
+   else if (xid->bgcol != col)
+     {
+	xid->bgcol = col;
+     }
+   else
+      return;
+
    XSetWindowBackground(disp, win->xwin, col);
 }
 
@@ -1133,10 +1109,12 @@ ExShapeCombineShape(EXID * xdst, int dest, int x, int y,
 XRectangle         *
 EShapeGetRectangles(Win win, int dest, int *rn, int *ord)
 {
-   EXID               *xid;
+   EXID               *xid = win;
 
-   xid = EXidFind(win);
-   if (xid && !xid->attached)
+   if (!xid)
+      return NULL;
+
+   if (!xid->attached)
      {
 	XRectangle         *r;
 
@@ -1332,48 +1310,45 @@ ExShapePropagate(EXID * xid)
 void
 EShapeCombineMask(Win win, int dest, int x, int y, Pixmap pmap, int op)
 {
-   EXID               *xid;
+   EXID               *xid = win;
 
-   xid = EXidFind(win);
-   if (xid)
-      ExShapeCombineMask(xid, dest, x, y, pmap, op);
-   else
-      XShapeCombineMask(disp, win->xwin, dest, x, y, pmap, op);
+   if (!xid)
+      return;
+
+   ExShapeCombineMask(xid, dest, x, y, pmap, op);
 }
 
 void
 EShapeCombineRectangles(Win win, int dest, int x, int y,
 			XRectangle * rect, int n_rects, int op, int ordering)
 {
-   EXID               *xid;
+   EXID               *xid = win;
 
-   xid = EXidFind(win);
-   if (xid)
-      ExShapeCombineRectangles(xid, dest, x, y, rect, n_rects, op, ordering);
-   else
-      XShapeCombineRectangles(disp, win->xwin, dest, x, y, rect, n_rects, op,
-			      ordering);
+   if (!xid)
+      return;
+
+   ExShapeCombineRectangles(xid, dest, x, y, rect, n_rects, op, ordering);
 }
 
 void
 EShapeCombineShape(Win win, int dest, int x, int y,
 		   Win src_win, int src_kind, int op)
 {
-   EXID               *xid;
+   EXID               *xid = win;
+
+   if (!xid)
+      return;
 
    XShapeCombineShape(disp, win->xwin, dest, x, y, src_win->xwin, src_kind, op);
-   xid = EXidFind(win);
-   if (xid)
-      ExShapeUpdate(xid);
+   ExShapeUpdate(xid);
 }
 
 int
 EShapeCopy(Win dst, Win src)
 {
-   EXID               *xsrc, *xdst;
+   EXID               *xsrc = src;
+   EXID               *xdst = dst;
 
-   xsrc = EXidFind(src);
-   xdst = EXidFind(dst);
    if (!xsrc || !xdst)
       return 0;
 
@@ -1383,9 +1358,10 @@ EShapeCopy(Win dst, Win src)
 int
 EShapePropagate(Win win)
 {
-   EXID               *xid;
+   EXID               *xid = win;
 
-   xid = EXidFind(win);
+   if (!xid)
+      return 0;
 
    return ExShapePropagate(xid);
 }
@@ -1393,9 +1369,10 @@ EShapePropagate(Win win)
 int
 EShapeCheck(Win win)
 {
-   EXID               *xid;
+   EXID               *xid = win;
 
-   xid = EXidFind(win);
+   if (!xid)
+      return 0;
 
    return xid->num_rect;
 }
