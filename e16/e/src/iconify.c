@@ -558,6 +558,7 @@ static void
 IconboxEwinClose(EWin * ewin)
 {
    IconboxDestroy(ewin->data, 0);
+   ewin->client.win = NULL;
    ewin->data = NULL;
 }
 

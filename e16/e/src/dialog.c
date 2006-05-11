@@ -551,6 +551,7 @@ static void
 DialogEwinClose(EWin * ewin)
 {
    DialogDestroy(ewin->data);
+   ewin->client.win = NULL;
    ewin->data = NULL;
 }
 

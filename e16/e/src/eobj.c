@@ -216,19 +216,19 @@ EobjFini(EObj * eo)
       Eprintf("EobjFini: %#lx %s\n", EobjGetXwin(eo), eo->name);
 
    EobjListStackDel(eo);
-   if (eo->external)
-     {
-	EUnregisterWindow(eo->win);
-     }
-   else
-     {
-	EDestroyWindow(eo->win);
-	eo->gone = 1;
-     }
+
 #if USE_COMPOSITE
+   if (!eo->external)
+      eo->gone = 1;		/* Actually not yet (but soon) */
+
    if (eo->cmhook)
       ECompMgrWinDel(eo);
 #endif
+
+   if (eo->external)
+      EUnregisterWindow(eo->win);
+   else
+      EDestroyWindow(eo->win);
 
    if (eo->name)
       Efree(eo->name);

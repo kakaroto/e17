@@ -615,6 +615,7 @@ static void
 PagerEwinClose(EWin * ewin)
 {
    PagerDestroy(ewin->data);
+   ewin->client.win = NULL;
    ewin->data = NULL;
 }
 
