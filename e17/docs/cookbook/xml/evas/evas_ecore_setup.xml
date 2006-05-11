@@ -43,6 +43,7 @@ development time.
 int main(){
 
         ecore_init();
+        ecore_evas_init();
 
    ee = ecore_evas_software_x11_new(NULL, 0,  0, 0, WIDTH, HEIGHT);
         ecore_evas_title_set(ee, "Ecore_Evas Template");
@@ -62,6 +63,9 @@ int main(){
         /* Insert Object Here */
 
         ecore_main_loop_begin();
+
+        ecore_evas_shutdown();
+        ecore_shutdown();
 
         return 0;
 }
