@@ -155,3 +155,7 @@ EWL TODO
 - The colourpicker should send a value_changed callback whenever it updates
   it's preview widget
 
+- Need to add a way to select the previous colour from the colourpicker UI.
+  Maybe a swap button like the gimp.
+
+
