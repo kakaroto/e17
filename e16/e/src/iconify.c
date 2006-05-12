@@ -53,7 +53,7 @@ typedef struct
 
 static void         SystrayInit(Iconbox * ib, Win win, int screen);
 static void         SystrayExit(Iconbox * ib);
-static void         IconboxObjSwinFree(Iconbox * ib, SWin * swin);
+static void         IconboxObjSwinDel(Iconbox * ib, Win win, int gone);
 
 typedef struct
 {
@@ -422,8 +422,6 @@ IconboxCreate(const char *name)
 static void
 IconboxDestroy(Iconbox * ib, int exiting)
 {
-   int                 i;
-
    ecore_list_remove_node(ibox_list, ib);
 
    if (ib->name)
@@ -438,17 +436,17 @@ IconboxDestroy(Iconbox * ib, int exiting)
 	break;
      }
 
-   for (i = 0; i < ib->num_objs; i++)
+   while (ib->num_objs)
      {
 	switch (ib->type)
 	  {
 	  case IB_TYPE_ICONBOX:
 	     if (!exiting)
-		EwinDeIconify(ib->objs[i].u.ewin);
-	     IconboxObjEwinDel(ib, ib->objs[i].u.ewin);
+		EwinDeIconify(ib->objs[0].u.ewin);
+	     IconboxObjEwinDel(ib, ib->objs[0].u.ewin);
 	     break;
 	  case IB_TYPE_SYSTRAY:
-	     IconboxObjSwinFree(ib, ib->objs[i].u.swin);
+	     IconboxObjSwinDel(ib, ib->objs[0].u.swin->win, 0);
 	     break;
 	  }
      }
@@ -2718,21 +2716,23 @@ IconboxObjSwinManage(Iconbox * ib, Window xwin)
 }
 
 static void
-IconboxObjSwinUnmanage(Iconbox * ib, Win win, int gone)
+IconboxObjSwinUnmanage(Iconbox * ib __UNUSED__, Win win, int gone)
 {
 #if DEBUG_SYSTRAY
    Eprintf("IconboxObjSwinUnmanage %#lx gone=%d\n", WinGetXwin(win), gone);
 #endif
+
+   if (!gone)
+     {
+	ESelectInput(win, NoEventMask);
+	EUnmapWindow(win);
+	EReparentWindow(win, VRoot.win, 0, 0);
+	XRemoveFromSaveSet(disp, WinGetXwin(win));
+     }
+#if 0				/* Not needed when going to EUnregisterWindow */
    EventCallbackUnregister(win, 0, SystrayItemEvent, ib);
+#endif
    EUnregisterWindow(win);
-
-   if (gone)
-      return;
-
-   ESelectInput(win, NoEventMask);
-   EUnmapWindow(win);
-   EReparentWindow(win, VRoot.win, 0, 0);
-   XRemoveFromSaveSet(disp, Xwin(win));
 }
 
 static void
@@ -2798,21 +2798,24 @@ IconboxObjSwinAdd(Iconbox * ib, Window xwin)
 }
 
 static void
-IconboxObjSwinDel(Iconbox * ib, Window win, int gone)
+IconboxObjSwinDel(Iconbox * ib, Win win, int gone)
 {
    int                 i;
    SWin               *swin;
 
-   i = IconboxObjSwinFind(ib, win);
+   i = IconboxObjSwinFind(ib, WinGetXwin(win));
    if (i < 0)
       return;
 
+   if (EventDebug(EDBUG_TYPE_ICONBOX))
+      Eprintf("IconboxObjSwinDel %#lx\n", Xwin(win));
+
    swin = ib->objs[i].u.swin;
 
-   if (IconboxObjectDel(ib, swin) == 0)
-      IconboxRedraw(ib);
+   IconboxObjectDel(ib, swin);
 
-   IconboxObjSwinUnmanage(ib, swin->win, gone);
+   if (disp)
+      IconboxObjSwinUnmanage(ib, swin->win, gone);
 
    Efree(swin);
 }
@@ -2857,18 +2860,6 @@ IconboxObjSwinMapUnmap(Iconbox * ib, Window win)
 
    swin->mapped = map;
    IconboxRedraw(ib);
-}
-
-static void
-IconboxObjSwinFree(Iconbox * ib, SWin * swin)
-{
-   if (EventDebug(EDBUG_TYPE_ICONBOX))
-      Eprintf("IconboxObjSwinFree %#lx\n", Xwin(swin->win));
-
-   if (disp)
-      IconboxObjSwinUnmanage(ib, swin->win, 0);
-
-   Efree(swin);
 }
 
 static void
@@ -2977,7 +2968,7 @@ SystrayItemEvent(Win win, XEvent * ev, void *prm)
      {
      case MapNotify:
 	EWindowSync(win);
-	IconboxRedraw(prm);
+	IconboxRedraw(ib);
 	break;
 
      case DestroyNotify:
@@ -2991,15 +2982,16 @@ SystrayItemEvent(Win win, XEvent * ev, void *prm)
 	goto do_terminate;
 
      case ClientMessage:
-	SystrayEventClientMessage(prm, &(ev->xclient));
+	SystrayEventClientMessage(ib, &(ev->xclient));
 	break;
 
      case PropertyNotify:
-	SystrayEventClientProperty(prm, &(ev->xproperty));
+	SystrayEventClientProperty(ib, &(ev->xproperty));
 	break;
 
       do_terminate:
-	IconboxObjSwinDel(prm, WinGetXwin(win), ev->type != ReparentNotify);
+	IconboxObjSwinDel(ib, win, ev->type != ReparentNotify);
+	IconboxRedraw(ib);
 	break;
      }
 }
