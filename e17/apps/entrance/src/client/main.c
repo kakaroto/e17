@@ -9,6 +9,7 @@
 #include <getopt.h>
 #include <string.h>
 #include <locale.h>
+#include <Ecore_X_Cursor.h>
 #include <Edje.h>
 #include <Esmart/Esmart_Text_Entry.h>
 #include <Esmart/Esmart_Container.h>
@@ -23,6 +24,7 @@
 
 static Entrance_Session *session = NULL;
 static Evas_Object *edje;
+static Evas_Object *background;
 
 static int
 idler_before_cb(void *data)
@@ -634,6 +636,7 @@ main(int argc, char *argv[])
 {
    int i = 0;
    char buf[PATH_MAX];
+   char *bg_file;
    char *str = NULL;
    char *display = NULL;
    Ecore_X_Window ew;
@@ -842,7 +845,7 @@ main(int argc, char *argv[])
          ecore_evas_title_set(e, "Entrance");
       ecore_evas_callback_delete_request_set(e, window_del_cb);
       ecore_evas_callback_resize_set(e, window_resize_cb);
-      ecore_evas_cursor_set(e, session->config->pointer, 12, 0, 0);
+      ecore_x_window_cursor_set(ew, ECORE_X_CURSOR_WATCH);
       ecore_evas_move(e, 0, 0);
 
       /* Evas specific callbacks */
@@ -858,8 +861,8 @@ main(int argc, char *argv[])
       evas_key_modifier_add(evas, "Alt_L");
       evas_key_modifier_add(evas, "Alt_R");
 
+      
       /* Load our theme as an edje */
-      edje = edje_object_add(evas);
       if (!theme)
          snprintf(buf, PATH_MAX, "%s/themes/%s", PACKAGE_DATA_DIR,
                   session->config->theme);
@@ -870,6 +873,24 @@ main(int argc, char *argv[])
             free(session->config->theme);
          session->config->theme = strdup(buf);
       }
+      
+      /* Load background first, from theme file */
+      background = edje_object_add(evas);
+      if (!strlen(session->config->background))
+         bg_file = buf;
+      else
+         bg_file = session->config->background;
+      if (!edje_object_file_set(background, bg_file, "Background"))
+         if (!edje_object_file_set(background, bg_file, "desktop/background"))
+            syslog(LOG_INFO, "Failed to load background from %s\n", buf);
+      evas_object_move(background, 0, 0);
+      evas_object_resize(background, g_x, g_y);
+      evas_object_name_set(background, "background");
+      evas_object_layer_set(background, 0);
+      evas_object_show(background);
+
+      /* Now load theme */
+      edje = edje_object_add(evas);
       if (!edje_object_file_set(edje, buf, "Main"))
       {
          syslog(LOG_CRIT, "Failed to load theme %s\n", buf);
@@ -879,7 +900,7 @@ main(int argc, char *argv[])
       evas_object_move(edje, 0, 0);
       evas_object_resize(edje, g_x, g_y);
       evas_object_name_set(edje, "ui");
-      evas_object_layer_set(edje, 0);
+      evas_object_layer_set(edje, 1);
       entrance_session_edje_object_set(session, edje);
 
       /* Setup the entries */
@@ -1008,6 +1029,8 @@ main(int argc, char *argv[])
 
       entrance_session_ecore_evas_set(session, e);
       entrance_ipc_session_set(session);
+      ecore_x_window_cursor_set(ew, ECORE_X_CURSOR_ARROW);
+      ecore_evas_cursor_set(e, session->config->pointer, 12, 0, 0);
       entrance_session_run(session);
 
       if (!testing)

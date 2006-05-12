@@ -31,6 +31,7 @@ static void
 _entrance_config_defaults_set()
 {
    ecore_config_string_default("/entrance/theme", "default.edj");
+   ecore_config_string_default("/entrance/background", "");
    ecore_config_string_default("/entrance/pointer", PACKAGE_DATA_DIR "/images/pointer.png");
    ecore_config_string_default("/entrance/greeting/before", "Welcome to");
    ecore_config_string_default("/entrance/greeting/after", "");
@@ -83,6 +84,7 @@ entrance_config_populate(Entrance_Config *e)
 
    /* strings 'n things */
    e->theme = ecore_config_string_get("/entrance/theme");
+   e->background = ecore_config_string_get("/entrance/background");
    e->pointer = ecore_config_string_get("/entrance/pointer");
    e->before.string = ecore_config_string_get("/entrance/greeting/before");
    e->after.string = ecore_config_string_get("/entrance/greeting/after");
@@ -282,11 +284,11 @@ entrance_config_store(Entrance_Config *e)
    Entrance_User *eu;
    Entrance_X_Session *exs;
    Evas_List *l = NULL;
-   char *strings[] = { "/entrance/theme",
+   char *strings[] = { "/entrance/theme", "/entrance/background",
       "/entrance/pointer", "/entrance/date_format", "/entrance/time_format",
       "/entrance/greeting/before", "/entrance/greeting/after"
    };
-   char *values[] = { e->theme, e->pointer, e->date.string,
+   char *values[] = { e->theme, e->background, e->pointer, e->date.string,
       e->time.string, e->before.string, e->after.string
    };
    int ssize = sizeof(strings) / sizeof(char *);
@@ -365,6 +367,8 @@ entrance_config_free(Entrance_Config * e)
    {
       if (e->theme)
          free(e->theme);
+      if (e->background)
+         free(e->background);
       if (e->pointer)
          free(e->pointer);
       if (e->date.string)

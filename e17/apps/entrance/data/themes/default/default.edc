@@ -343,6 +343,53 @@ images {
 
 collections {
    group {
+      name: "Background";
+      parts {
+	 part {
+	    name: "bg_clip";
+	    type: RECT;
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       visible: 1;
+	       color:       255 255 255 255;
+	    }
+	    description {
+	       state: "hidden" 0.0;
+	       visible: 0;
+	       color:       255 255 255 0;
+	    }
+	 }
+         part {
+	    name: "background";
+	    description {
+	       state: "default" 0.0;
+               visible: 1; /* Background will be loaded by application */
+	       image {
+		  normal: "e17_brushed.png";
+	       }
+	       fill {
+		  size {
+		     relative: 0 0;
+		     offset:   400 300;
+		  }
+	       }
+	    }
+	 }
+	 part {
+	    name: "reflection_shadow_overlay";
+	    description {
+	       state: "default" 0.0;
+	       image {
+		  normal: "e17_reflection_shadow_overlay.png";
+	       }
+	    }
+	 }
+	 
+      }
+   }
+      
+   group {
       name: "Main";
       script {
 	 public sessions_visible;
@@ -388,31 +435,6 @@ collections {
 	       color:       255 255 255 0;
 	    }
 	 }
-         part {
-	    name: "background";
-	    description {
-	       state: "default" 0.0;
-	       image {
-		  normal: "e17_brushed.png";
-	       }
-	       fill {
-		  size {
-		     relative: 0 0;
-		     offset:   400 300;
-		  }
-	       }
-	    }
-	 }
-	 part {
-	    name: "reflection_shadow_overlay";
-	    description {
-	       state: "default" 0.0;
-	       image {
-		  normal: "e17_reflection_shadow_overlay.png";
-	       }
-	    }
-	 }
-	 
 	 part {
 	    name:          "power_button";
 	    mouse_events:  1;

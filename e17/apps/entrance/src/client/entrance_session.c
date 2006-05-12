@@ -549,8 +549,8 @@ entrance_session_x_session_set(Entrance_Session * e, Entrance_X_Session * exs)
 
 /**
  * Set the main edje for the session to be the parameter passed in
- * @param e - the entrance session you want to modify
- * @param obj - the new edje you're specifying
+ * @param e The entrance session you want to modify
+ * @param obj The new edje you're specifying
  */
 void
 entrance_session_edje_object_set(Entrance_Session * e, Evas_Object * obj)
@@ -560,6 +560,22 @@ entrance_session_edje_object_set(Entrance_Session * e, Evas_Object * obj)
       if (e->edje)
          evas_object_del(e->edje);
       e->edje = obj;
+   }
+}
+
+/**
+ * Set the edje object for the background.
+ * @param e The Entrance Session to be modified
+ * @param obj The new Edje background object
+ */
+void
+entrance_session_bg_object_set(Entrance_Session * e, Evas_Object * obj)
+{
+   if (e)
+   {
+      if (e->background)
+         evas_object_del(e->background);
+      e->background = obj;
    }
 }
 

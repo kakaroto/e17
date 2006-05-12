@@ -29,6 +29,7 @@ struct _Entrance_Session
    char *session;               /* the current session in context */
    Ecore_Evas *ee;              /* the ecore_evas */
    Evas_Object *edje;           /* the main theme edje */
+   Evas_Object *background;     /* the background edje */
    Evas_Object *user_container;
    Evas_Object *session_container;
    Entrance_Auth *auth;         /* encapsulated auth info */
@@ -55,6 +56,7 @@ void entrance_session_user_session_default_set(Entrance_Session * e);
 int entrance_session_pass_set(Entrance_Session * e, const char *pass);
 void entrance_session_setup_user_session(Entrance_Session * e);
 void entrance_session_start_user_session(Entrance_Session * e);
+void entrance_session_bg_object_set(Entrance_Session * e, Evas_Object * obj);
 void entrance_session_edje_object_set(Entrance_Session * e,
                                       Evas_Object * obj);
 void entrance_session_xsession_list_add(Entrance_Session * e);

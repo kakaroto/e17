@@ -35,6 +35,10 @@ struct _Entrance_Config
     */
    char *theme;
    /**
+    * background - the UI background */
+   char *background;
+
+   /**
     * pointer - path to the file on disk we want to use as the pointer
     */
    char *pointer;
