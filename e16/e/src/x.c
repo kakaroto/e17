@@ -608,7 +608,7 @@ ECreateWinFromXwin(Window xwin)
 void
 EDestroyWin(Win win)
 {
-   Efree(win);
+   EXidDestroy(win);
 }
 
 Win
