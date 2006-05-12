@@ -8,6 +8,9 @@
  * @{
  */
 
+/**
+ * The Ewl_Event_Window_Expose structure
+ */
 typedef struct Ewl_Event_Window_Expose Ewl_Event_Window_Expose;
 
 /**
@@ -21,6 +24,9 @@ struct Ewl_Event_Window_Expose
 	int h; /**< Height of the expose rectangle */
 };
 
+/**
+ * The Ewl_Event_Window_Configure type
+ */
 typedef struct Ewl_Event_Window_Configure Ewl_Event_Window_Configure;
 
 /**
@@ -34,6 +40,9 @@ struct Ewl_Event_Window_Configure
 	int h; /**< The new height of the window */
 };
 
+/**
+ * The Ewl_Event_Window_Delete type
+ */
 typedef struct Ewl_Event_Window_Delete Ewl_Event_Window_Delete;
 
 /**
@@ -44,6 +53,9 @@ struct Ewl_Event_Window_Delete
 	int ignore;	/**< Unused. */
 };
 
+/**
+ *  The Ewl_Event_Window_Key_Down structure 
+ */
 typedef struct Ewl_Event_Key_Down Ewl_Event_Key_Down;
 
 /**
@@ -55,6 +67,9 @@ struct Ewl_Event_Key_Down
 	char *keyname; /**< Name of the key that was pressed */
 };
 
+/**
+ * The Ewl_Event_Key_Up structure
+ */
 typedef struct Ewl_Event_Key_Up Ewl_Event_Key_Up;
 
 /**
@@ -66,6 +81,9 @@ struct Ewl_Event_Key_Up
 	char *keyname; /**< Name of the key that was released */
 };
 
+/**
+ * The Ewl_Event_Mouse_Down structure
+ */
 typedef struct Ewl_Event_Mouse_Down Ewl_Event_Mouse_Down;
 
 /**
@@ -80,6 +98,9 @@ struct Ewl_Event_Mouse_Down
 	int y; /**< Y coordinate the mouse press occurred at */
 };
 
+/**
+ * The Ewl_Event_Mouse_Up structure
+ */
 typedef struct Ewl_Event_Mouse_Up Ewl_Event_Mouse_Up;
 
 /**
@@ -93,6 +114,9 @@ struct Ewl_Event_Mouse_Up
 	int y; /**< Y coordinate the mouse release occurred at */
 };
 
+/**
+ * The Ewl_Event_Mouse_Move structure
+ */
 typedef struct Ewl_Event_Mouse_Move Ewl_Event_Mouse_Move;
 
 /**
@@ -105,6 +129,9 @@ struct Ewl_Event_Mouse_Move
 	int y; /**< Y coordinate the mouse moved to */
 };
 
+/**
+ * The Ewl_Event_Mouse_In structure
+ */
 typedef struct Ewl_Event_Mouse_In Ewl_Event_Mouse_In;
 
 /**
@@ -117,6 +144,9 @@ struct Ewl_Event_Mouse_In
 	int y; /**< Y coordinate the mouse entered at */
 };
 
+/**
+ * The Ewl_Event_Mouse_Out structure
+ */
 typedef struct Ewl_Event_Mouse_Out Ewl_Event_Mouse_Out;
 
 /**
@@ -129,6 +159,9 @@ struct Ewl_Event_Mouse_Out
 	int y; /**< Y coordinate the mouse left at */
 };
 
+/**
+ * The Ewl_Event_Mouse_Wheel structure
+ */
 typedef struct Ewl_Event_Mouse_Wheel Ewl_Event_Mouse_Wheel;
 
 /**
@@ -143,6 +176,9 @@ struct Ewl_Event_Mouse_Wheel
 	int dir; /**< Direction mouse wheel scrolled */
 };
 
+/**
+ * The Ewl_Dnd_Types type 
+ */
 typedef struct Ewl_Dnd_Types Ewl_Dnd_Types;
 
 /**
@@ -164,10 +200,15 @@ struct Ewl_Event_Dnd_Drop
         int y; /**< Y coordinate the mouse moved to */
 	void* data; /**< Data from drop source 	    */
 };
+
+/**
+ * The Ewl_Event_Dnd_Drop type
+ */
 typedef struct Ewl_Event_Dnd_Drop Ewl_Event_Dnd_Drop;
 
-
-
+/**
+ * The Ewl_Dialog_Evenet type
+ */
 typedef struct Ewl_Dialog_Event Ewl_Dialog_Event;
 
 /**
@@ -178,15 +219,27 @@ struct Ewl_Dialog_Event
 	unsigned int response; /**< The response ID from the dialog */
 };
 
+/**
+ * The Ewl_Filepicker_Event type
+ */
 typedef struct Ewl_Filepicker_Event Ewl_Filepicker_Event;
 
+/**
+ * Contains the filepicker response
+ */
 struct Ewl_Filepicker_Event
 {
 	unsigned int response;	/**< The filepicker response */
 };
 
+/**
+ * The Ewl_Filelist_Event type
+ */
 typedef struct Ewl_Filelist_Event Ewl_Filelist_Event;
 
+/**
+ * Contains the filelist event type
+ */
 struct Ewl_Filelist_Event
 {
 	Ewl_Filelist_Event_Type type;	/**< The type of event */

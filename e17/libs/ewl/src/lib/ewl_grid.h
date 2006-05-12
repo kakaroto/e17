@@ -68,9 +68,14 @@ struct Ewl_Grid
 	Ecore_List *rchildren;			/**< List of old children after a reset call */
 };
 
-
+/**
+ * The Ewl_Grid_Child type
+ */
 typedef struct Ewl_Grid_Child Ewl_Grid_Child;
 
+/**
+ * Contains information about a grid child
+ */
 struct Ewl_Grid_Child
 {
 	int start_col;	/**< The start column */

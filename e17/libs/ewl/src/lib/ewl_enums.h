@@ -225,6 +225,7 @@ enum Ewl_Flags
 
 /**
  * @enum Ewl_Position
+ * The possible placement positions
  */
 enum Ewl_Position
 {
@@ -247,6 +248,7 @@ typedef enum Ewl_Position Ewl_Position;
 
 /**
  * @enum Ewl_Window_Flags
+ * The possible window states
  */
 enum Ewl_Window_Flags
 {
@@ -264,6 +266,7 @@ typedef enum Ewl_Window_Flags Ewl_Window_Flags;
 
 /**
  * @enum Ewl_Tree_Node_Flags
+ * The available tree node states
  */
 enum Ewl_Tree_Node_Flags
 {
@@ -279,6 +282,7 @@ typedef enum Ewl_Tree_Node_Flags Ewl_Tree_Node_Flags;
 
 /**
  * @enum Ewl_Notebook_Flags
+ * States effecting the notebook
  */
 enum Ewl_Notebook_Flags
 {
@@ -292,6 +296,7 @@ typedef enum Ewl_Notebook_Flags Ewl_Notebook_Flags;
 
 /**
  * @enum Ewl_Scrollpane_Flags
+ * The possible scrollpane settings
  */
 enum Ewl_Scrollpane_Flags
 {
@@ -336,6 +341,7 @@ typedef enum Ewl_Engine Ewl_Engine;
 
 /**
  * @enum Ewl_Key_Modifiers
+ * The key modifiers
  */
 enum Ewl_Key_Modifiers
 {
@@ -353,6 +359,7 @@ typedef enum Ewl_Key_Modifiers Ewl_Key_Modifiers;
 
 /**
  * @enum Ewl_Stock_Type
+ * The different stock types
  */
 enum Ewl_Stock_Type
 {
@@ -382,6 +389,7 @@ typedef enum Ewl_Stock_Type Ewl_Stock_Type;
 
 /**
  * @enum Ewl_Color_Mode
+ * The different colour picker modes
  */
 enum Ewl_Color_Mode 
 {
@@ -400,6 +408,7 @@ typedef enum Ewl_Color_Mode Ewl_Color_Mode;
 
 /**
  * @enum Ewl_Spectrum_Type
+ * The spectrum types
  */
 enum Ewl_Spectrum_Type
 {
