@@ -157,6 +157,41 @@ images {
 
 collections {
    group {
+      name, "Background";
+      parts {
+         part {
+            name,          "background";
+            //color_class,   "bg";
+            mouse_events,  0;
+            description {
+               state,    "default" 0.0;
+               rel1 {
+                  relative, 0.0  0.0;
+                  offset,   0    0;
+               }
+               rel2 {
+                  relative, 1.0  1.0;
+                  offset,   -1   -1;
+               }
+               image {
+                  normal, "rockface.png";
+               }
+               fill {
+                  origin {
+                     relative, 0.0 0.0;
+                     offset,   0 0;
+                  }
+                  size {
+                     relative, 0.0 0.0;
+                     offset,   1024 1024;
+                  }
+               }
+            }
+         }
+      }
+   }
+
+   group {
       name, "Main";
       parts {
          part {
@@ -188,35 +223,6 @@ collections {
                   offset,   -1 -1;
                }
                color,       255 255 255 0;
-            }
-         }
-         part {
-            name,          "background";
-            //color_class,   "bg";
-            mouse_events,  0;
-            description {
-               state,    "default" 0.0;
-               rel1 {
-                  relative, 0.0  0.0;
-                  offset,   0    0;
-               }
-               rel2 {
-                  relative, 1.0  1.0;
-                  offset,   -1   -1;
-               }
-               image {
-                  normal, "rockface.png";
-               }
-               fill {
-                  origin {
-                     relative, 0.0 0.0;
-                     offset,   0 0;
-                  }
-                  size {
-                     relative, 0.0 0.0;
-                     offset,   1024 1024;
-                  }
-               }
             }
          }
          part {
@@ -1336,13 +1342,13 @@ collections {
                     {
                         relative, 0.0 0.5;
                         offset, 0 0;
-                        to, "background";
+                        to, "all_clip";
                     }
                     rel2
                     {
                         relative, 0.0 0.5;
                         offset, 0 0;
-                        to, "background";
+                        to, "all_clip";
                     }
                     color, 255 255 255 0;
                 }
@@ -1354,13 +1360,13 @@ collections {
                     {
                         relative, 0.0 0.5;
                         offset, 20 -40;
-                        to, "background";
+                        to, "all_clip";
                     }
                     rel2
                     {
                         relative, 0.0 0.5;
                         offset, 240 40;
-                        to, "background";
+                        to, "all_clip";
                     }
                     color, 255 255 255 32;
                 }
@@ -1372,13 +1378,13 @@ collections {
                     {
                         relative, 0.0 0.5;
                         offset, 20 -230;
-                        to, "background";
+                        to, "all_clip";
                     }
                     rel2
                     {
                         relative, 0.0 0.5;
                         offset, 200 230;
-                        to, "background";
+                        to, "all_clip";
                     }
                     color, 255 255 255 255;
                 }
@@ -1664,13 +1670,13 @@ collections {
                     {
                         relative, 0.0 1.0;
                         offset, 25 -53;
-                        to, "background";
+                        to, "all_clip";
                     }
                     rel2
                     {
                         relative, 0.0 1.0;
                         offset, 200 -5;
-                        to, "background";
+                        to, "all_clip";
                     }
                     color, 255 255 255 255;
                 }
