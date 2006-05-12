@@ -181,19 +181,6 @@ _lang_init(E_Module *m)
 		    return NULL;
 
 		  lang_face_language_indicator_set(l);
-#if 0
-		  if (lf->text_obj)
-		    {
-		       if (l->conf->languages)
-			 {
-			    Language   *_lang = l->conf->languages->data;
-			    edje_object_part_text_set(lf->text_obj, "in-text",
-						      _lang->lang_shortcut);
-			 }
-		       else 
-			 edje_object_part_text_set(lf->text_obj, "in-text", "");
-		    }
-#endif
 
 		  _lang_face_menu_new(lf);
 
