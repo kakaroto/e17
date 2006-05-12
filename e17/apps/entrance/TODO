@@ -12,11 +12,7 @@ TODO List
  ESSENTIAL FEATURES
 -------------------------------------------------------------------------------
 
-* Ecore_Config for daemon code. Configurable options for X server, server
-  options, display, respawn delay, max respawns
 * Command-line configuration tool
-* Separate background object from main theme edje, but still allow themes to
-  provide a default background if a custom background edje is not specified
 * Create abstracted interface for obtaining system session list.
   - Add functions for finding session list on various distributions
   - Move entrance-definded sessions out of config into $prefix/share/xsessions/.
