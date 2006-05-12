@@ -132,6 +132,9 @@ _lang_init(E_Module *m)
    E_Menu_Item	*mi;
    Evas_List	*managers, *l1, *l2;
 
+   lang_load_kbd_models();
+   lang_load_xfree_languages();
+
    l = E_NEW(Lang, 1);
 
    if (!l)
@@ -141,8 +144,6 @@ _lang_init(E_Module *m)
    l->current_lang_selector = 0;
 
    _lang_load_config(l);
-
-
    _lang_config_menu_new(l);
 
    managers = e_manager_list();
@@ -179,6 +180,21 @@ _lang_init(E_Module *m)
 		  if (!_lang_face_init(lf))
 		    return NULL;
 
+		  lang_face_language_indicator_set(l);
+#if 0
+		  if (lf->text_obj)
+		    {
+		       if (l->conf->languages)
+			 {
+			    Language   *_lang = l->conf->languages->data;
+			    edje_object_part_text_set(lf->text_obj, "in-text",
+						      _lang->lang_shortcut);
+			 }
+		       else 
+			 edje_object_part_text_set(lf->text_obj, "in-text", "");
+		    }
+#endif
+
 		  _lang_face_menu_new(lf);
 
 		  mi = e_menu_item_new(l->config_menu);
@@ -196,17 +212,7 @@ _lang_init(E_Module *m)
    _lang_register_module_actions();
    _lang_register_module_keybindings(l);
 
-   /*const char *en_l[] = {"en", "en_US", NULL};
-   const char *en_v[] = {"basic", NULL};
-   const char *ru_l[] = {"ru", "ru_KOI", NULL};
-   const char *ru_v[] = {"basic", "difficult", NULL};*/
-   //lang_register_language("English", "EN", NULL, "en", "basic");
 
-   //lang_register_language("Russian", "RU", NULL, "ru", NULL);
-
-   //lang_register_language("Lithuanian", "LT", NULL, "lt", NULL);
-
-   //lang_load_kbd_models();
    return l;
 }
 
@@ -216,8 +222,8 @@ _lang_shutdown(Lang *l)
    _lang_unregister_module_actions();
    _lang_unregister_module_keybindings(l);
 
-   //lang_unregister_all_languages();
-   //lang_free_kbd_models();
+   lang_free_kbd_models();
+   lang_free_xfree_languages();
 
    while (l->conf->languages)
      {
@@ -487,6 +493,7 @@ _lang_load_config(Lang *l)
    l->conf = e_config_domain_load(LANG_MODULE_CONFIG_FILE, l->conf_edd);
    if (!l->conf)
      {
+	Language  *_lang;
 	l->conf = E_NEW(Config, 1);
 	l->conf->lang_policy = LS_GLOBAL_POLICY;
 	l->conf->lang_show_indicator = 1;
@@ -506,6 +513,12 @@ _lang_load_config(Lang *l)
 	l->conf->bk_prev->any_mod = 0;
 	l->conf->bk_prev->action = evas_stringshare_add("lang_prev_language");
 	l->conf->bk_prev->params = NULL;
+
+	_lang  = lang_get_default_language();
+	if (_lang) 
+	  l->conf->languages = evas_list_append(l->conf->languages, _lang);
+
+	//e_module_dialog_show("aaaaaaaaaaaaaaa", "we created a new config !!!!!!!!");
      }
    E_CONFIG_LIMIT(l->conf->lang_policy, LS_GLOBAL_POLICY, LS_UNKNOWN_POLICY - 1);
    E_CONFIG_LIMIT(l->conf->lang_show_indicator, 0, 1);
@@ -553,6 +566,34 @@ _lang_load_config(Lang *l)
 	l->conf->languages = evas_list_append(l->conf->languages, ll);
      }
 #endif
+}
+
+void lang_face_language_indicator_set(Lang  *l)
+{
+   Language *lang;
+
+   if (!l || !l->conf || !l->face || !l->face->text_obj) return;
+
+   if (l->conf->languages)
+     {
+	/*Evas_Coord   x, y, w, h;
+	Evas_Coord   tx, ty, tw, th;
+	char buf[4096];*/
+
+	lang = evas_list_nth(l->conf->languages, l->current_lang_selector); 
+	//evas_event_freeze(l->face->evas);
+	edje_object_part_text_set(l->face->text_obj, "in-text", lang->lang_shortcut);
+
+	//edje_object_size_min_calc(l->face->lang_obj, &w, &h);
+	//edje_object_size_min_calc(l->face->text_obj, &tw, &th);
+	/*evas_object_move(l->face->text_obj, (int)((w - tw)/2), (int)((h - th)/2));*/
+
+	//evas_event_thaw(l->face->evas);
+	/*snprintf(buf, sizeof(buf), "w = %d : h = %d : tw = %d : th = %d", w, h, tw, th);
+	e_module_dialog_show("bbbbbbbbbbbbbbbbbbbbb", buf);*/
+     }
+   else 
+     edje_object_part_text_set(l->face->text_obj, "in-text", "");
 }
 
 /*static void

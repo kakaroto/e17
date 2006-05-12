@@ -19,10 +19,38 @@ int _lang_def_language_sort_cb(void *e1, void *e2);
 int  _lang_load_xfree_languages_load_configItem(EXML *xml, Language_Def *ld);
 int  _lang_load_xfree_languages_load_variantList(EXML *xml, Language_Def *ld);
 static void _lang_register_language(const char *lang_name, const char *lang_shortcut,
-				    const char *lang_flag, Evas_List *kbd_layout,
+				    const char *lang_flag, const char *kbd_layout,
 				    Evas_List *kbd_layout_variant);
 /****************************************/
 
+Language *lang_get_default_language()
+{
+   Evas_List   *l;
+   Language    *lang = NULL; 
+   
+   for (l = language_def_list; l; l = l->next) 
+     { 
+	Language_Def  *ld = l->data; 
+	
+	if (!strcmp(ld->kbd_layout, "us")) 
+	  { 
+	     lang = E_NEW(Language, 1); 
+	     if (!lang) 
+	       break; 
+	     
+	     lang->id = 0; 
+	     lang->lang_name = evas_stringshare_add(ld->lang_name); 
+	     lang->lang_shortcut = evas_stringshare_add(ld->lang_shortcut); 
+	     lang->lang_flag = evas_stringshare_add(ld->lang_flag); 
+	     //FIXME: get current model from config. 
+	     lang->kbd_model = evas_stringshare_add("compaqik13"); 
+	     lang->kbd_layout = evas_stringshare_add(ld->kbd_layout); 
+	     lang->kbd_variant = evas_stringshare_add("basic"); 
+	     break; 
+	  } 
+     }
+   return lang;
+}
 
 int
 lang_load_kbd_models()
@@ -201,9 +229,6 @@ lang_load_xfree_languages()
 		  _lang_load_xfree_languages_load_configItem(exml, ld);
 		  _lang_load_xfree_languages_load_variantList(exml, ld); 
 
-		  if (ld->lang_name && ld->lang_shortcut && ld->kbd_layout)
-		    break;
-
 		  if (!exml_next_nomove(exml)) 
 		    break; 
 	       }
@@ -217,9 +242,7 @@ lang_load_xfree_languages()
 		  if (ld->lang_name) evas_stringshare_del(ld->lang_name);
 		  if (ld->lang_shortcut) evas_stringshare_del(ld->lang_shortcut);
 		  if (ld->lang_flag) evas_stringshare_del(ld->lang_flag);
-
-		  while (ld->kbd_layout) 
-		    ld->kbd_layout = evas_list_remove_list(ld->kbd_layout, ld->kbd_layout);
+		  if (ld->kbd_layout) evas_stringshare_del(ld->kbd_layout);
 
 		  while (ld->kbd_variant)
 		    ld->kbd_variant = evas_list_remove_list(ld->kbd_variant,
@@ -247,11 +270,7 @@ lang_free_xfree_languages()
 	if (ld->lang_name) evas_stringshare_del(ld->lang_name);
 	if (ld->lang_shortcut) evas_stringshare_del(ld->lang_shortcut);
 	if (ld->lang_flag) evas_stringshare_del(ld->lang_flag);
-	while (ld->kbd_layout)
-	  {
-	     evas_stringshare_del(ld->kbd_layout->data);
-	     ld->kbd_layout = evas_list_remove_list(ld->kbd_layout, ld->kbd_layout);
-	  }
+	if (ld->kbd_layout) evas_stringshare_del(ld->kbd_layout);
 	while (ld->kbd_variant)
 	  {
 	     evas_stringshare_del((const char *)ld->kbd_variant);
@@ -281,11 +300,8 @@ _lang_load_xfree_languages_load_configItem(EXML *xml, Language_Def *ld)
      {
 	char *tag = exml_tag_get(xml);
 
-	if (!strcasecmp(tag, "name"))
-	  {
-	     ld->kbd_layout = evas_list_append(ld->kbd_layout,
-					       evas_stringshare_add(exml_value_get(xml)));
-	  }
+	if (!strcasecmp(tag, "name")) 
+	  ld->kbd_layout = evas_stringshare_add(exml_value_get(xml));
 
 	if (!strcasecmp(tag, "shortDescription"))
 	  {
@@ -380,7 +396,7 @@ _lang_load_xfree_languages_load_variantList(EXML *xml, Language_Def *ld)
 
 static void 
 _lang_register_language(const char *lang_name, const char *lang_shortcut,
-		        const char *lang_flag, Evas_List *kbd_layout,
+		        const char *lang_flag, const char *kbd_layout,
 		        Evas_List *kbd_layout_variant)
 {
    Language_Def	  *ld;
@@ -399,9 +415,6 @@ _lang_register_language(const char *lang_name, const char *lang_shortcut,
      }
    if (found)
      {
-	for (l = kbd_layout; l; l = l->next) 
-	  ld->kbd_layout = evas_list_append(ld->kbd_layout, evas_stringshare_add(l->data)); 
-	
 	if (kbd_layout_variant) 
 	  { 
 	     for (l = kbd_layout_variant; l; l = l->next) 
@@ -416,9 +429,7 @@ _lang_register_language(const char *lang_name, const char *lang_shortcut,
 	ld->lang_name = evas_stringshare_add(lang_name); 
 	ld->lang_shortcut = evas_stringshare_add(lang_shortcut); 
 	ld->lang_flag = !lang_flag ? NULL : evas_stringshare_add(lang_flag); 
-	
-	for (l = kbd_layout; l; l = l->next) 
-	  ld->kbd_layout = evas_list_append(ld->kbd_layout, evas_stringshare_add(l->data)); 
+	ld->kbd_layout = evas_stringshare_add(kbd_layout);
 	
 	if (kbd_layout_variant) 
 	  { 

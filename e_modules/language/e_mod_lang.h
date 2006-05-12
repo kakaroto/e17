@@ -15,12 +15,13 @@ struct _Language_Kbd_Model
 
 struct _Language
 {
-   const char *lang_name;
-   const char *lang_shortcut;
-   const char *lang_flag;
-   const char *kbd_model;
-   const char *kbd_layout;
-   const char *kbd_variant;
+   unsigned int	  id;
+   const char	  *lang_name;
+   const char	  *lang_shortcut;
+   const char	  *lang_flag;
+   const char	  *kbd_model;
+   const char	  *kbd_layout;
+   const char	  *kbd_variant;
 };
 
 struct _Language_Def
@@ -28,8 +29,8 @@ struct _Language_Def
    const char  *lang_name;
    const char  *lang_shortcut;
    const char  *lang_flag;
-   Evas_List   *kbd_layout;
-   Evas_List   *kbd_variant;
+   const char  *kbd_layout;
+   Evas_List   *kbd_variant; // const char *
 };
 
 /*void  lang_register_language(const char *lang_name, const char *lang_shortcut,
@@ -40,6 +41,8 @@ struct _Language_Def
 /*void lang_register_language_layout_variant(const char *lang_name, const char *kbd_layout_variant);*/
 
 /*void  lang_unregister_all_languages();*/
+
+Language *lang_get_default_language();
 
 int   lang_load_kbd_models();
 void  lang_free_kbd_models();

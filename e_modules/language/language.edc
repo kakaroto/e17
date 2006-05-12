@@ -98,7 +98,7 @@ collections
 			 {
 			    text: "EN";
 			    font: "VeraMono";
-			    size:  20;
+			    size:  16;
 			    min:     1 1;
 			    align: 0.5 0.5;
 			 }

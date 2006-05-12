@@ -156,6 +156,9 @@ ACT_FN_GO(lang_next_language)
    char buf[4096];
    Language *ll;
 
+   //if (!lang->conf->languages) return;
+   if (evas_list_count(lang->conf->languages) == 1) return;
+
    if (lang->current_lang_selector >= evas_list_count(lang->conf->languages) - 1)
      lang->current_lang_selector = 0;
    else
@@ -171,7 +174,8 @@ ACT_FN_GO(lang_next_language)
 	    ll->lang_name, ll->lang_shortcut, ll->lang_flag, ll->kbd_model,
 	    ll->kbd_layout, ll->kbd_variant);
 
-   edje_object_part_text_set(lang->face->text_obj, "in-text", ll->lang_shortcut);
+   lang_face_language_indicator_set(lang);
+   //edje_object_part_text_set(lang->face->text_obj, "in-text", ll->lang_shortcut);
 
    e_module_dialog_show( _("Enlightenment Language Enhancment Module"), buf);
 
@@ -182,6 +186,9 @@ ACT_FN_GO(lang_prev_language)
 {
    char buf[4096];
    Language *ll;
+
+   //if (!lang->conf->languages) return;
+   if (evas_list_count(lang->conf->languages) == 1) return;
 
    if (lang->current_lang_selector == 0)
      lang->current_lang_selector = evas_list_count(lang->conf->languages) - 1;
@@ -198,7 +205,8 @@ ACT_FN_GO(lang_prev_language)
 	    ll->lang_name, ll->lang_shortcut, ll->lang_flag, ll->kbd_model,
 	    ll->kbd_layout, ll->kbd_variant);
 
-   edje_object_part_text_set(lang->face->text_obj, "in-text", ll->lang_shortcut);
+   lang_face_language_indicator_set(lang);
+   //edje_object_part_text_set(lang->face->text_obj, "in-text", ll->lang_shortcut);
 
    e_module_dialog_show( _("Enlightenment Language Enhancment Module"), buf);
    return;
