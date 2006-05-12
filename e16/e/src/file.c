@@ -43,12 +43,9 @@ FileExtension(const char *file)
 void
 Etmp(char *s)
 {
-   static unsigned long n_calls = 0;
+   static unsigned int n_calls = 0;
 
-   if (!n_calls)
-      n_calls = (unsigned long)time(NULL) + (unsigned long)getpid();
-   Esnprintf(s, 1024, "%s/TMP_%lX", EDirUser(), n_calls);
-   n_calls++;
+   Esnprintf(s, 1024, "%s/TMP_%d_%d", EDirUser(), getpid(), n_calls++);
 }
 
 void
