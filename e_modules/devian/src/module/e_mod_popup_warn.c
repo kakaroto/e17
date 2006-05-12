@@ -74,14 +74,6 @@ Popup_Warn *DEVIANF(popup_warn_add) (int type, const char *text, Popup_Warn *pop
         popw = E_NEW(Popup_Warn, 1);
 
         popw->type = type;
-        popw->name = NULL;
-        popw->pop = NULL;
-        popw->log = NULL;
-        popw->face = NULL;
-        popw->timer = NULL;
-        popw->devian = NULL;
-        popw->func_close = NULL;
-        popw->func_desactivate = NULL;
         popw->timer_org = timer;
 
         zone = e_util_zone_current_get(e_manager_current_get());

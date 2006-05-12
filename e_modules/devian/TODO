@@ -370,6 +370,8 @@ TODO CODE (order)
 
  - More error popups
 
+ - Resize time in RSS
+ - Sort news by time and date
  - Rss News hiligh when url == null
  - ? Bug in the config ? When updating ?
 

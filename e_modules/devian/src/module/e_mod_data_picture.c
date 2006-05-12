@@ -378,7 +378,7 @@ char *DEVIANF(data_picture_get_name_from_path) (char *path, int len)
    name[name_l] = '\0';
 
    //return (char *)DEVIANF(ss_utf8_add) (name, 0);
-   return evas_stringshare_add(name);
+   return (char *)evas_stringshare_add(name);
 }
 
 

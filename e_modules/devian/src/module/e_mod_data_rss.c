@@ -1053,7 +1053,10 @@ _cb_infos_set(void *data, Evas_Object *obj, const char *emission, const char *so
         article->new = 0;
         edje_object_message_send(article->obj, EDJE_MESSAGE_INT, DEVIAN_DATA_RSS_EDJE_MSG_ITEM_NEW, &article->new);
         if (article->feed->popup_warn)
+	{
           DEVIANF(popup_warn_del) (article->feed->popup_warn);
+	  article->feed->popup_warn = NULL;
+	}
      }
 
    article->feed->source->active_article = article;
@@ -1093,6 +1096,10 @@ _cb_infos_scroll(void *data, Evas_Object *obj, const char *emission, const char 
 static int
 _popup_close(Popup_Warn *popw, void *data)
 {
+   Source_Rss *source;
+   
+   source = popw->devian->source;
+   source->rss_feed->popup_warn = NULL;
    return 1;
 }
 
