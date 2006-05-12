@@ -1,7 +1,0 @@
-    fonts {
-	font,	"luxisr.ttf"  "Edje.Luxi";
-	font,	"luxisri.ttf" "Edje.LuxiItalic";
-	font,	"luxisb.ttf"  "Edje.LuxiBold";
-	font,	"luxisbi.ttf" "Edje.LuxiBoldItalic";
-    }
-

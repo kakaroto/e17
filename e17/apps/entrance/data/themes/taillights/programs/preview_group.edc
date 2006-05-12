@@ -1,7 +1,0 @@
-	    program
-	    {
-		name, "PreviewClicked";
-		signal, "mouse,clicked,1";
-		source, "img";
-		action, SIGNAL_EMIT "PreviewSelected" "";
-	    }
