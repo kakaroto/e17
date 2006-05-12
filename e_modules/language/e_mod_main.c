@@ -200,11 +200,13 @@ _lang_init(E_Module *m)
    const char *en_v[] = {"basic", NULL};
    const char *ru_l[] = {"ru", "ru_KOI", NULL};
    const char *ru_v[] = {"basic", "difficult", NULL};*/
-   lang_register_language("English", "EN", NULL, "en", "basic");
+   //lang_register_language("English", "EN", NULL, "en", "basic");
 
-   lang_register_language("Russian", "RU", NULL, "ru", NULL);
+   //lang_register_language("Russian", "RU", NULL, "ru", NULL);
 
-   lang_register_language("Lithuanian", "LT", NULL, "lt", NULL);
+   //lang_register_language("Lithuanian", "LT", NULL, "lt", NULL);
+
+   //lang_load_kbd_models();
    return l;
 }
 
@@ -213,6 +215,9 @@ _lang_shutdown(Lang *l)
 {
    _lang_unregister_module_actions();
    _lang_unregister_module_keybindings(l);
+
+   //lang_unregister_all_languages();
+   //lang_free_kbd_models();
 
    while (l->conf->languages)
      {
@@ -506,6 +511,7 @@ _lang_load_config(Lang *l)
    E_CONFIG_LIMIT(l->conf->lang_show_indicator, 0, 1);
 
    /* this is for debug */
+#if 0
    Language *ll;
 
    ll = E_NEW(Language, 1);
@@ -546,6 +552,7 @@ _lang_load_config(Lang *l)
 
 	l->conf->languages = evas_list_append(l->conf->languages, ll);
      }
+#endif
 }
 
 /*static void

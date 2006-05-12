@@ -97,6 +97,8 @@ AC_DEFINE_UNQUOTED(LOCALEDIR, "${localedir}", [Module Locale Directory])
 AC_CHECK_LIB(dl, dlopen, dlopen_libs=-ldl)
 AC_SUBST(dlopen_libs)
 
+AC_CHECK_HEADERS(EXML.h,, AC_MSG_ERROR([Cannot find EXML.h. Make sure your CFLAGS environment variable contains include lines for the location of this file and EXML lib is installed]))
+
 AC_ARG_WITH(edje-config,
 [  --with-edje-config=EDJE_CONFIG      use edje-config specified ],
 [
