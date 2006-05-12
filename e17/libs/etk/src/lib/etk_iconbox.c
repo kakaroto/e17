@@ -27,7 +27,7 @@
 #define ETK_ICONBOX_MAX_SCROLL_DISTANCE 100
 #define ETK_ICONBOX_SCROLL_MARGIN 15
 
-typedef struct _Etk_Iconbox_Grid
+typedef struct Etk_Iconbox_Grid
 {
    /* Inherit form Etk_Widget */
    Etk_Widget widget;
@@ -56,14 +56,14 @@ typedef struct _Etk_Iconbox_Grid
    float vscrolling_speed;
 } Etk_Iconbox_Grid;
 
-typedef struct _Etk_Iconbox_Icon_Object
+typedef struct Etk_Iconbox_Icon_Object
 {
    Evas_Object *image;
    Etk_Widget *label;
    Etk_Bool use_edje;
 } Etk_Iconbox_Icon_Object;
 
-enum _Etk_Tree_Signal_Id
+enum Etk_Tree_Signal_Id
 {
    ETK_ICONBOX_ICON_SELECTED_SIGNAL,
    ETK_ICONBOX_ICON_UNSELECTED_SIGNAL,
@@ -74,8 +74,6 @@ enum _Etk_Tree_Signal_Id
 
 static void _etk_iconbox_constructor(Etk_Iconbox *iconbox);
 static void _etk_iconbox_destructor(Etk_Iconbox *iconbox);
-//static void _etk_tree_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
-//static void _etk_tree_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_iconbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 
 static Etk_Type *_etk_iconbox_grid_type_get();
@@ -108,7 +106,7 @@ static Etk_Signal *_etk_iconbox_signals[ETK_ICONBOX_NUM_SIGNALS];
 
 /**
  * @brief Gets the type of an Etk_Iconbox
- * @return Returns the type on an Etk_Iconbox
+ * @return Returns the type of an Etk_Iconbox
  */
 Etk_Type *etk_iconbox_type_get()
 {
@@ -127,14 +125,6 @@ Etk_Type *etk_iconbox_type_get()
          iconbox_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_iconbox_signals[ETK_ICONBOX_UNSELECT_ALL_SIGNAL] = etk_signal_new("unselect_all",
          iconbox_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
-      
-      /*etk_type_property_add(tree_type, "mode", ETK_TREE_MODE_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(ETK_TREE_MODE_LIST));
-      etk_type_property_add(tree_type, "multiple_select", ETK_TREE_MULTIPLE_SELECT_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_bool(ETK_TRUE));
-      etk_type_property_add(tree_type, "headers_visible", ETK_TREE_HEADERS_VISIBLE_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_bool(ETK_TRUE));
-      etk_type_property_add(tree_type, "row_height", ETK_TREE_ROW_HEIGHT_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(24));
-      
-      tree_type->property_set = _etk_tree_property_set;
-      tree_type->property_get = _etk_tree_property_get;*/
    }
 
    return iconbox_type;
@@ -174,7 +164,7 @@ Etk_Iconbox_Model *etk_iconbox_model_new(Etk_Iconbox *iconbox)
    model->icon_y = 0;
    model->icon_width = 48;
    model->icon_height = 48;
-   model->icon_expand = ETK_FALSE;
+   model->icon_fill = ETK_FALSE;
    model->icon_keep_aspect = ETK_TRUE;
    
    model->label_x = 0;
@@ -213,10 +203,10 @@ void etk_iconbox_model_free(Etk_Iconbox_Model *model)
 /**
  * @brief Sets the global geometry of the iconbox model
  * @param model an iconbox model
- * @param width the width of the modell (min = 10)
- * @param height the height of the model (min = 10)
- * @param xpadding the horizontal padding of the model (min = 0)
- * @param yapdding the vertical padding of the model (min = 0)
+ * @param width the width of the cells of the model (min = 10)
+ * @param height the height of the cells of the model (min = 10)
+ * @param xpadding the horizontal padding of the cells of the model (min = 0)
+ * @param ypadding the vertical padding of the cells of the model (min = 0)
  */
 void etk_iconbox_model_geometry_set(Etk_Iconbox_Model *model, int width, int height, int xpadding, int ypadding)
 {
@@ -238,10 +228,10 @@ void etk_iconbox_model_geometry_set(Etk_Iconbox_Model *model, int width, int hei
 /**
  * @brief Gets the global geometry of the iconbox model
  * @param model an iconbox model
- * @param width the location where to store the width of the model
- * @param height the location where to store the height of the model
- * @param xpadding the location where to store the horizontal padding of the model
- * @param ypadding the location where to store the vertical padding of the model
+ * @param width the location where to store the width of the cells of the model
+ * @param height the location where to store the height of the cells of the model
+ * @param xpadding the location where to store the horizontal padding of the cells of the model
+ * @param ypadding the location where to store the vertical padding of the cells of the model
  */
 void etk_iconbox_model_geometry_get(Etk_Iconbox_Model *model, int *width, int *height, int *xpadding, int *ypadding)
 {
@@ -262,12 +252,13 @@ void etk_iconbox_model_geometry_get(Etk_Iconbox_Model *model, int *width, int *h
  * @param y the y position of the icon image of the model (min = 0)
  * @param width the width of the icon image of the model (min = 10)
  * @param height the height of the icon image of the model (min = 10)
- * @param expand if @a expand == ETK_TRUE, and if the icon image is smaller than the icon geometry, the image will be expanded
+ * @param fill if @a fill == ETK_TRUE, and if the icon image is
+ * smaller than the icon geometry, the image will fill the geometry
  * @param keep_aspect if @a keep_aspect == ETK_TRUE, the icon image will keep its aspect ratio (no distortion)
  * @note the x/y positions are relative to the inner top left corner of the icon model: @n
  * i.e. the icon image will be in fact put at (model->xpadding + model->icon_x, model->ypadding + model->icon_y)
  */
-void etk_iconbox_model_icon_geometry_set(Etk_Iconbox_Model *model, int x, int y, int width, int height, Etk_Bool expand, Etk_Bool keep_aspect)
+void etk_iconbox_model_icon_geometry_set(Etk_Iconbox_Model *model, int x, int y, int width, int height, Etk_Bool fill, Etk_Bool keep_aspect)
 {
    if (!model)
       return;
@@ -276,7 +267,7 @@ void etk_iconbox_model_icon_geometry_set(Etk_Iconbox_Model *model, int x, int y,
    model->icon_y = ETK_MAX(y, 0);
    model->icon_width = ETK_MAX(width, 10);
    model->icon_height = ETK_MAX(height, 10);
-   model->icon_expand = expand;
+   model->icon_fill = fill;
    model->icon_keep_aspect = keep_aspect;
    
    if (model->iconbox && model->iconbox->current_model == model)
@@ -293,11 +284,13 @@ void etk_iconbox_model_icon_geometry_set(Etk_Iconbox_Model *model, int x, int y,
  * @param y the location where to store y position of the icon image
  * @param width the location where to store the width of the icon image
  * @param height the location where to store the height of the icon image
- * @param expand the location where to store the expand property of the model (see @a etk_iconbox_model_icon_geometry_set() )
- * @param keep_aspect the location where to store the "keep aspect ratio" property of the model (see @a etk_iconbox_model_icon_geometry_set() )
+ * @param fill the location where to store the fill property of the model
+ * (see etk_iconbox_model_icon_geometry_set())
+ * @param keep_aspect the location where to store the "keep aspect ratio"
+ * property of the model (see etk_iconbox_model_icon_geometry_set())
  * @see etk_iconbox_model_icon_geometry_set()
  */
-void etk_iconbox_model_icon_geometry_get(Etk_Iconbox_Model *model, int *x, int *y, int *width, int *height, Etk_Bool *expand, Etk_Bool *keep_aspect)
+void etk_iconbox_model_icon_geometry_get(Etk_Iconbox_Model *model, int *x, int *y, int *width, int *height, Etk_Bool *fill, Etk_Bool *keep_aspect)
 {
    if (x)
       *x = model ? model->icon_x : 0;
@@ -307,8 +300,8 @@ void etk_iconbox_model_icon_geometry_get(Etk_Iconbox_Model *model, int *x, int *
       *width = model ? model->icon_width : 0;
    if (height)
       *height = model ? model->icon_height : 0;
-   if (expand)
-      *expand = model ? model->icon_expand : ETK_FALSE;
+   if (fill)
+      *fill = model ? model->icon_fill : ETK_FALSE;
    if (keep_aspect)
       *keep_aspect = model ? model->icon_keep_aspect : ETK_TRUE;
 }
@@ -398,8 +391,8 @@ Etk_Iconbox_Model *etk_iconbox_current_model_get(Etk_Iconbox *iconbox)
 }
 
 /**
- * @brief Freezes the iconbox: it will not be updated until it is thawed @n
- * This function is useful when you want to add a lot of icons quickly.
+ * @brief Freezes the iconbox: it will not be updated until it is thawed. @n
+ * This function is useful when you want to add a lot of icons efficiently.
  * @param iconbox an iconbox
  */
 void etk_iconbox_freeze(Etk_Iconbox *iconbox)
@@ -529,7 +522,7 @@ void etk_iconbox_clear(Etk_Iconbox *iconbox)
  * @param y the y position
  * @param over_cell if @a over_cell == ETK_TRUE, the function will return the icon if (x, y) is over the cell of the icon
  * @param over_icon if @a over_icon == ETK_TRUE, the function will return the icon if (x, y) is over the image of the icon
- * @param over_icon if @a over_label == ETK_TRUE, the function will return the icon if (x, y) is over the label of the icon
+ * @param over_label if @a over_label == ETK_TRUE, the function will return the icon if (x, y) is over the label of the icon
  * @return Returns the icon located below the position (x, y), or NULL if none
  */
 Etk_Iconbox_Icon *etk_iconbox_icon_get_at_xy(Etk_Iconbox *iconbox, int x, int y, Etk_Bool over_cell, Etk_Bool over_icon, Etk_Bool over_label)
@@ -594,7 +587,8 @@ Etk_Iconbox_Icon *etk_iconbox_icon_get_at_xy(Etk_Iconbox *iconbox, int x, int y,
  * @brief Sets the file used for the icon image
  * @param icon an icon
  * @param filename the filename of the image to use for the icon
- * @param edje_group the edje group to use if the image file is an edje animation. Set it to NULL if it's a normal image
+ * @param edje_group the edje group to use if the image file is an edje animation.
+ * It has to be set to NULL for a "normal" image
  */
 void etk_iconbox_icon_file_set(Etk_Iconbox_Icon *icon, const char *filename, const char *edje_group)
 {
@@ -824,9 +818,6 @@ static void _etk_iconbox_constructor(Etk_Iconbox *iconbox)
    
    etk_signal_connect("realize", ETK_OBJECT(iconbox), ETK_CALLBACK(_etk_iconbox_realize_cb), NULL);
    /* TODO: focus, unfocus, keynav */
-   /*etk_signal_connect("focus", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree_focus_cb), NULL);
-   etk_signal_connect("unfocus", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree_unfocus_cb), NULL);
-   etk_signal_connect("key_down", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree_key_down_cb), NULL);*/
 }
 
 /* Destroys the iconbox */
@@ -1383,7 +1374,7 @@ static void _etk_iconbox_icon_draw(Etk_Iconbox_Icon *icon, Etk_Iconbox_Icon_Obje
       if (grid->clip && clip)
          evas_object_clip_set(icon_object->image, grid->clip);
       
-      if (model->icon_expand)
+      if (model->icon_fill)
       {
          icon_geometry.w = model->icon_width;
          icon_geometry.h = model->icon_height;
@@ -1523,3 +1514,57 @@ static int _etk_iconbox_grid_scroll_cb(void *data)
    
    return 1;
 }
+
+/** @} */
+
+/**************************
+ *
+ * Documentation
+ *
+ **************************/
+
+/**
+ * @addtogroup Etk_Iconbox
+ *
+ * @image html iconbox.png
+ * The iconbox is based on a notion of "model". The icon view is describes by a model which is fully customizable:
+ * the model controls the position and the size of the cell, the icon image and the label of the iconbox's icons. @n
+ * A default model is created when the iconbox is created, but you can add your own with etk_iconbox_model_new(),
+ * and enable it with etk_iconbox_current_model_set(). @n @n
+ * The model's settings can be changed with 
+ * etk_iconbox_model_geometry_set(), etk_iconbox_model_icon_geometry_set() and etk_iconbox_model_label_geometry_set(). @n @n
+ * Once the model is defined, you can start adding and removing icons to the iconbox with etk_iconbox_append(),
+ * etk_iconbox_icon_del() and etk_iconbox_clear().
+ *  
+ * \par Object Hierarchy:
+ * - Etk_Object
+ *   - Etk_Widget
+ *     - Etk_Iconbox
+ *
+ * \par Signals:
+ * @signal_name "icon_selected": Emitted when an icon of the iconbox has been selected.
+ * If several icons have been selected at the same time (with etk_iconbox_select_all(), or with the selection rect),
+ * the "icon_selected" signal will only be emitted once, on the last selected icon.
+ * @signal_cb void callback(Etk_Iconbox *iconbox, Etk_Iconbox_Icon *icon, void *data)
+ * @signal_arg iconbox: the iconbox connected to the callback
+ * @signal_arg icon: the icon which has been selected
+ * @signal_data
+ * \par
+ * @signal_name "icon_unselected": Emitted when an icon of the iconbox has been unselected.
+ * If several icons have been unselected at the same time (with etk_iconbox_unselect_all(), or with the selection rect),
+ * the "icon_unselected" signal will only be emitted once, on the last unselected icon.
+ * @signal_cb void callback(Etk_Iconbox *iconbox, Etk_Iconbox_Icon *icon, void *data)
+ * @signal_arg iconbox: the iconbox connected to the callback
+ * @signal_arg icon: the icon which has been unselected
+ * @signal_data
+ * \par
+ * @signal_name "select_all": Emitted when all the icons of the iconbox have been selected with etk_iconbox_select_all()
+ * @signal_cb void callback(Etk_Iconbox *iconbox, void *data)
+ * @signal_arg iconbox: the iconbox connected to the callback
+ * @signal_data
+ * \par
+ * @signal_name "unselect_all": Emitted when all the icons of the iconbox have been unselected with etk_iconbox_select_all()
+ * @signal_cb void callback(Etk_Iconbox *iconbox, void *data)
+ * @signal_arg iconbox: the iconbox connected to the callback
+ * @signal_data
+ */

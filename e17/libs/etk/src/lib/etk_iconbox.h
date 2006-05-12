@@ -9,23 +9,25 @@
 
 /**
  * @defgroup Etk_Iconbox Etk_Iconbox
+ * @brief An Etk_Iconbox is a widget that can displays icons aligned on a grid
  * @{
  */
 
-/** @brief Gets the type of an iconbox */
+/** Gets the type of an iconbox */
 #define ETK_ICONBOX_TYPE       (etk_iconbox_type_get())
-/** @brief Casts the object to an Etk_Iconbox */
+/** Casts the object to an Etk_Iconbox */
 #define ETK_ICONBOX(obj)       (ETK_OBJECT_CAST((obj), ETK_ICONBOX_TYPE, Etk_Iconbox))
-/** @brief Check if the object is an Etk_Iconbobx */
+/** Check if the object is an Etk_Iconbobx */
 #define ETK_IS_ICONBOX(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_ICONBOX_TYPE))
 
 /**
- * @struct Etk_Iconbox_Model
- * @brief Describes the model of an iconbox: it includes the position and the size of the the cells, the icons, @n
- * the labels. An iconbox can have several models, and can change its current model to change the view
+ * @brief Describes the model of an iconbox: it includes the position and the size of the cell, the icon and
+ * the label. An iconbox can have several models, and you can change its current model to change the view
+ * @structinfo
  */
-struct _Etk_Iconbox_Model
+struct Etk_Iconbox_Model
 {
+   /* private: */
    Etk_Iconbox *iconbox;
    
    int width;
@@ -37,7 +39,7 @@ struct _Etk_Iconbox_Model
    int icon_y;
    int icon_width;
    int icon_height;
-   Etk_Bool icon_expand;
+   Etk_Bool icon_fill;
    Etk_Bool icon_keep_aspect;
    
    int label_x;
@@ -49,11 +51,12 @@ struct _Etk_Iconbox_Model
 };
 
 /**
- * @struct Etk_Iconbox_Icon
  * @brief An icon of the iconbox
+ * @structinfo
  */
-struct _Etk_Iconbox_Icon
+struct Etk_Iconbox_Icon
 {
+   /* private: */
    Etk_Iconbox *iconbox;
 
    Etk_Iconbox_Icon *prev;
@@ -71,10 +74,10 @@ struct _Etk_Iconbox_Icon
 };
 
 /**
- * @struct Etk_Iconbox
- * @brief An iconbox is a widget that can displays icons on a grid
+ * @brief @widget The structure of an iconbox
+ * @structinfo
  */
-struct _Etk_Iconbox
+struct Etk_Iconbox
 {
    /* private: */
    /* Inherit from Etk_Widget */
@@ -103,8 +106,8 @@ void etk_iconbox_model_free(Etk_Iconbox_Model *model);
 
 void etk_iconbox_model_geometry_set(Etk_Iconbox_Model *model, int width, int height, int xpadding, int ypadding);
 void etk_iconbox_model_geometry_get(Etk_Iconbox_Model *model, int *width, int *height, int *xpadding, int *ypadding);
-void etk_iconbox_model_icon_geometry_set(Etk_Iconbox_Model *model, int x, int y, int width, int height, Etk_Bool expand, Etk_Bool keep_aspect_ratio);
-void etk_iconbox_model_icon_geometry_get(Etk_Iconbox_Model *model, int *x, int *y, int *width, int *height, Etk_Bool *expand, Etk_Bool *keep_aspect_ratio);
+void etk_iconbox_model_icon_geometry_set(Etk_Iconbox_Model *model, int x, int y, int width, int height, Etk_Bool fill, Etk_Bool keep_aspect_ratio);
+void etk_iconbox_model_icon_geometry_get(Etk_Iconbox_Model *model, int *x, int *y, int *width, int *height, Etk_Bool *fill, Etk_Bool *keep_aspect_ratio);
 void etk_iconbox_model_label_geometry_set(Etk_Iconbox_Model *model, int x, int y, int width, int height, float xalign, float yalign);
 void etk_iconbox_model_label_geometry_get(Etk_Iconbox_Model *model, int *x, int *y, int *width, int *height, float *xalign, float *yalign);
 

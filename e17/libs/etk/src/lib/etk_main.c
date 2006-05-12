@@ -38,8 +38,11 @@ static Ecore_Job *_etk_main_iterate_job = NULL;
  **************************/
 
 /**
- * @brief Initializes Etk
+ * @brief Initializes Etk. This function needs to be called before any other call to an etk_* function. @n
+ * It initializes Evas, Ecore, Ecore_Evas, Ecore_X and Edje so you do not need to initialize them manually
+ * if you call etk_init().
  * @return Returns ETK_TRUE on success, ETK_FALSE on failure
+ * @see etk_shutdown()
  */
 Etk_Bool etk_init()
 {
@@ -89,7 +92,9 @@ Etk_Bool etk_init()
 }
 
 /**
- * @brief Shutdowns Etk and frees the memory
+ * @brief Shuts down Etk. @n
+ * You need to call it at the shutdown of your program to free all the resources used by Etk. @n
+ * It also shutdown Edje, Ecore_Evas, Ecore and Evas, so you do not need to shut them down manually
  */
 void etk_shutdown()
 {
@@ -112,8 +117,9 @@ void etk_shutdown()
 }
 
 /**
- * @brief Enters the main loop
-*/
+ * @brief Runs the Etk's main loop (and Ecore's too) until etk_main_quit() is called. @n
+ * The main look updates the widgets that need to be.
+ */
 void etk_main()
 {
    if (!_etk_main_initialized || _etk_main_running)
@@ -124,7 +130,8 @@ void etk_main()
 }
 
 /**
- * @brief Leaves the main loop
+ * @brief Leaves the main loop of Etk. @n
+ * It will quit the main loop of Ecore and will make etk_main() return.
  */
 void etk_main_quit()
 {
@@ -139,7 +146,8 @@ void etk_main_quit()
 }
 
 /**
- * @brief Runs an iteration of the main loop
+ * @brief Runs an iteration of the main loop: it updates the widgets that need to be updated. @n
+ * You usually do not need to call it manually, you might want to use etk_main() instead.
  */
 void etk_main_iterate()
 {
@@ -159,7 +167,8 @@ void etk_main_iterate()
 }
 
 /**
- * @brief Will run an iteration as soon as possible
+ * @brief Queues an iteration: it will run an iteration as soon as possible.
+ * You do not need to call it manually.
  */
 void etk_main_iteration_queue()
 {
@@ -168,7 +177,7 @@ void etk_main_iteration_queue()
 }
 
 /**
- * @brief Adds the widget to the list of toplevel widgets. Never call it manually
+ * @brief Adds the widget to the list of toplevel widgets. For internal use only!
  * @param widget the toplevel widget to add
  */
 void etk_main_toplevel_widget_add(Etk_Toplevel_Widget *widget)
@@ -179,7 +188,7 @@ void etk_main_toplevel_widget_add(Etk_Toplevel_Widget *widget)
 }
 
 /**
- * @brief Removes the widget from the list of toplevel widgets. Never call it manually!
+ * @brief Removes the widget from the list of toplevel widgets. For internal use only!
  * @param widget the toplevel widget to remove
  */
 void etk_main_toplevel_widget_remove(Etk_Toplevel_Widget *widget)
@@ -190,7 +199,7 @@ void etk_main_toplevel_widget_remove(Etk_Toplevel_Widget *widget)
 }
 
 /**
- * @brief Gets the list of the created toplevel widgets
+ * @brief Gets the list of the created toplevel widgets (windows, ...)
  * @return Returns the list of the created toplevel widgets
  */
 Evas_List *etk_main_toplevel_widgets_get()
@@ -204,14 +213,14 @@ Evas_List *etk_main_toplevel_widgets_get()
  *
  **************************/
 
-/* Runs an iteration (used as callback for an ecore_job)*/
+/* Runs an iteration (used as callback for an ecore_job) */
 static void _etk_main_iterate_job_cb(void *data)
 {
    etk_main_iterate();
    _etk_main_iterate_job = NULL;
 }
 
-/* Recusively requests the size of all the widgets */
+/* Recursively requests the size of all the widgets */
 static void _etk_main_size_request_recursive(Etk_Widget *widget)
 {
    Evas_List *l;
@@ -222,7 +231,7 @@ static void _etk_main_size_request_recursive(Etk_Widget *widget)
       _etk_main_size_request_recursive(ETK_WIDGET(l->data));
 }
 
-/* Recusively allocates the size of all the widgets */
+/* Recursively allocates the size of all the widgets */
 static void _etk_main_size_allocate_recursive(Etk_Widget *widget, Etk_Bool is_top_level)
 {
    Evas_List *l;

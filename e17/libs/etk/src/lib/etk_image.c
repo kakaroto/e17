@@ -14,7 +14,7 @@
  * @{
  */
 
-enum _Etk_Image_Property_Id
+enum Etk_Image_Property_Id
 {
    ETK_IMAGE_FILE_PROPERTY,
    ETK_IMAGE_EDJE_FILE_PROPERTY,
@@ -43,7 +43,7 @@ static void _etk_image_load(Etk_Image *image);
 
 /**
  * @brief Gets the type of an Etk_Image
- * @return Returns the type on an Etk_Image
+ * @return Returns the type of an Etk_Image
  */
 Etk_Type *etk_image_type_get()
 {
@@ -51,15 +51,23 @@ Etk_Type *etk_image_type_get()
 
    if (!image_type)
    {
-      image_type = etk_type_new("Etk_Image", ETK_WIDGET_TYPE, sizeof(Etk_Image), ETK_CONSTRUCTOR(_etk_image_constructor), ETK_DESTRUCTOR(_etk_image_destructor));
+      image_type = etk_type_new("Etk_Image", ETK_WIDGET_TYPE, sizeof(Etk_Image),
+         ETK_CONSTRUCTOR(_etk_image_constructor), ETK_DESTRUCTOR(_etk_image_destructor));
       
-      etk_type_property_add(image_type, "image_file", ETK_IMAGE_FILE_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
-      etk_type_property_add(image_type, "edje_file", ETK_IMAGE_EDJE_FILE_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
-      etk_type_property_add(image_type, "edje_group", ETK_IMAGE_EDJE_GROUP_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
-      etk_type_property_add(image_type, "keep_aspect", ETK_IMAGE_KEEP_ASPECT_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
-      etk_type_property_add(image_type, "use_edje", ETK_IMAGE_USE_EDJE_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE, etk_property_value_bool(ETK_FALSE));
-      etk_type_property_add(image_type, "stock_id", ETK_IMAGE_STOCK_ID_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_STOCK_NO_STOCK));
-      etk_type_property_add(image_type, "stock_size", ETK_IMAGE_STOCK_SIZE_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_STOCK_SMALL));
+      etk_type_property_add(image_type, "image_file", ETK_IMAGE_FILE_PROPERTY,
+         ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
+      etk_type_property_add(image_type, "edje_file", ETK_IMAGE_EDJE_FILE_PROPERTY,
+         ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
+      etk_type_property_add(image_type, "edje_group", ETK_IMAGE_EDJE_GROUP_PROPERTY,
+         ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
+      etk_type_property_add(image_type, "keep_aspect", ETK_IMAGE_KEEP_ASPECT_PROPERTY,
+         ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
+      etk_type_property_add(image_type, "use_edje", ETK_IMAGE_USE_EDJE_PROPERTY,
+         ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE, etk_property_value_bool(ETK_FALSE));
+      etk_type_property_add(image_type, "stock_id", ETK_IMAGE_STOCK_ID_PROPERTY,
+         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_STOCK_NO_STOCK));
+      etk_type_property_add(image_type, "stock_size", ETK_IMAGE_STOCK_SIZE_PROPERTY,
+         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_STOCK_SMALL));
 
       image_type->property_set = _etk_image_property_set;
       image_type->property_get = _etk_image_property_get;
@@ -78,7 +86,7 @@ Etk_Widget *etk_image_new()
 }
 
 /**
- * @brief Creates a new image and loads the image from the file
+ * @brief Creates a new image and loads the image from an image file
  * @param filename the name of the file to load
  * @return Returns the new image widget
  */
@@ -101,14 +109,15 @@ Etk_Widget *etk_image_new_from_edje(const char *edje_filename, const char *edje_
 /**
  * @brief Creates a new image and loads the image corresponding to the stock id
  * @param stock_id the stock id corresponding to the image
+ * @param stock_size the size of the image to load
  * @return Returns the new image widget
  */
-Etk_Widget *etk_image_new_from_stock(Etk_Stock_Id stock_id, Etk_Stock_Size size)
+Etk_Widget *etk_image_new_from_stock(Etk_Stock_Id stock_id, Etk_Stock_Size stock_size)
 {
    Etk_Widget *new_image;
    
    new_image = etk_image_new();
-   etk_image_set_from_stock(ETK_IMAGE(new_image), stock_id, size);
+   etk_image_set_from_stock(ETK_IMAGE(new_image), stock_id, stock_size);
    return new_image;
 }
 
@@ -158,7 +167,7 @@ void etk_image_set_from_file(Etk_Image *image, const char *filename)
 /**
  * @brief Gets the name of the file used for the image
  * @param image an image
- * @return Returns the name of the file use for the image (NULL on failure)
+ * @return Returns the name of the file used by the image (NULL on failure)
  */
 const char *etk_image_file_get(Etk_Image *image)
 {
@@ -241,28 +250,28 @@ void etk_image_edje_get(Etk_Image *image, char **edje_filename, char **edje_grou
  * @brief Loads the image corresponding to the stock id
  * @param image an image
  * @param stock_id the stock id corresponding to the image
- * @param size the size of the stock icon
+ * @param stock_size the size of the stock icon
  */
-void etk_image_set_from_stock(Etk_Image *image, Etk_Stock_Id stock_id, Etk_Stock_Size size)
+void etk_image_set_from_stock(Etk_Image *image, Etk_Stock_Id stock_id, Etk_Stock_Size stock_size)
 {
    char *key;
 
-   if (!image || ((image->stock_id == stock_id) && (image->stock_size == size)))
+   if (!image || ((image->stock_id == stock_id) && (image->stock_size == stock_size)))
       return;
    
-   if ((key = etk_stock_key_get(stock_id, size)))
+   if ((key = etk_stock_key_get(stock_id, stock_size)))
       etk_image_set_from_edje(image, etk_theme_icon_theme_get(), key);
    image->stock_id = stock_id;
-   image->stock_size = size;
+   image->stock_size = stock_size;
    etk_object_notify(ETK_OBJECT(image), "stock_id");
    etk_object_notify(ETK_OBJECT(image), "stock_size");
 }
 
 /**
- * @brief Gets the stock id used for the image
+ * @brief Gets the stock id used by the image
  * @param image an image
  * @param stock_id the location where to store the stock id used by the image
- * @param stock_id the location where to store the stock size used by the image
+ * @param stock_size the location where to store the stock size used by the image
  */
 void etk_image_stock_get(Etk_Image *image, Etk_Stock_Id *stock_id, Etk_Stock_Size *stock_size)
 {
@@ -300,9 +309,9 @@ void etk_image_size_get(Etk_Image *image, int *width, int *height)
 }
 
 /**
- * @brief Sets if the image should keep its aspect ratio when it's resized
+ * @brief Sets if the image should keep its aspect ratio when it is resized
  * @param image an image
- * @param keep_aspect if keep_aspect == ETK_TRUE, the image will keep its aspect ratio when it's resized
+ * @param keep_aspect if keep_aspect == ETK_TRUE, the image will keep its aspect ratio when itis resized
  */
 void etk_image_keep_aspect_set(Etk_Image *image, Etk_Bool keep_aspect)
 {
@@ -315,9 +324,9 @@ void etk_image_keep_aspect_set(Etk_Image *image, Etk_Bool keep_aspect)
 }
 
 /**
- * @brief Checks if the image keeps its aspect ratio when it's resized
+ * @brief Get whether the image keeps its aspect ratio when it is resized
  * @param image an image
- * @return Returns ETK_TRUE if the image keeps its aspect ratio when it's resized
+ * @return Returns ETK_TRUE if the image keeps its aspect ratio when it is resized
  */
 Etk_Bool etk_image_keep_aspect_get(Etk_Image *image)
 {
@@ -359,7 +368,7 @@ void etk_image_copy(Etk_Image *dest_image, Etk_Image *src_image)
  *
  **************************/
 
-/* Initializes the members */
+/* Initializes the image */
 static void _etk_image_constructor(Etk_Image *image)
 {
    Etk_Widget *widget;
@@ -646,3 +655,63 @@ static void _etk_image_load(Etk_Image *image)
 }
 
 /** @} */
+
+/**************************
+ *
+ * Documentation
+ *
+ **************************/
+
+/**
+ * @addtogroup Etk_Image
+ *
+ * @image html image.png
+ * The image can be loaded from several sources: image files (png, jpg, and the other formats supported by evas), edje
+ * files (edj), or from stock IDs.
+ * 
+ * \par Object Hierarchy:
+ * - Etk_Object
+ *   - Etk_Widget
+ *     - Etk_Image
+ *
+ * \par Properties:
+ * @prop_name "image_file": The image file (.png, .jpg, ...) which the image is loaded from.
+ * Set to NULL if the image is loaded from an edje file (.edj)
+ * @prop_type String (char *)
+ * @prop_rw
+ * @prop_val NULL
+ * \par
+ * @prop_name "edje_file": The edje file (.edj) which the image is loaded from.
+ * Set to NULL if the image is loaded from an image file (.png, .jpg, ...)
+ * @prop_type String (char *)
+ * @prop_rw
+ * @prop_val NULL
+ * \par
+ * @prop_name "edje_group": The edje group of the image.
+ * Set to NULL if the image is loaded from an image file (.png, .jpg, ...)
+ * @prop_type String (char *)
+ * @prop_rw
+ * @prop_val NULL
+ * \par
+ * @prop_name "keep_aspect": Whether of not the image keeps its aspect ratio when it is resized
+ * @prop_type Boolean
+ * @prop_rw
+ * @prop_val ETK_TRUE
+ * \par
+ * @prop_name "use_edje": Whether of not the image is loaded from an edje file (.edj)
+ * @prop_type Boolean
+ * @prop_ro
+ * @prop_val ETK_FALSE
+ * \par
+ * @prop_name "stock_id": The stock ID used by the image.
+ * Set to ETK_STOCK_NO_STOCK if the image is not loaded from a stock icon
+ * @prop_type Integer
+ * @prop_rw
+ * @prop_val ETK_STOCK_NO_STOCK
+ * \par
+ * @prop_name "stock_size": The size of the stock icon used by the image.
+ * Set to a random value if the image is not loaded from a stock icon
+ * @prop_type Integer
+ * @prop_rw
+ * @prop_val ETK_STOCK_SMALL
+ */

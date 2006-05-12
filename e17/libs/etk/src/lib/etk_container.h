@@ -8,34 +8,37 @@
 
 /**
  * @defgroup Etk_Container Etk_Container
+ * @brief An Etk_Container is a widget that can contain other widgets
  * @{
  */
 
-/** @brief Gets the type of a container */
+/** Gets the type of a container */
 #define ETK_CONTAINER_TYPE       (etk_container_type_get())
-/** @brief Casts the object to an Etk_Container */
+/** Casts the object to an Etk_Container */
 #define ETK_CONTAINER(obj)       (ETK_OBJECT_CAST((obj), ETK_CONTAINER_TYPE, Etk_Container))
-/** @brief Checks if the object is an Etk_Container */
+/** Checks if the object is an Etk_Container */
 #define ETK_IS_CONTAINER(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_CONTAINER_TYPE))
 
 /**
  * @enum Etk_Fill_Policy_Flags
- * @brief Describes how a child should fill the space allocated by its parent container
+ * @brief Describes how a child fills and expands the space allocated by its parent container
  */ 
-typedef enum _Etk_Fill_Policy_Flags
+typedef enum Etk_Fill_Policy_Flags
 {
-   ETK_FILL_POLICY_NONE = 1 << 0,
-   ETK_FILL_POLICY_HFILL = 1 << 1,
-   ETK_FILL_POLICY_VFILL = 1 << 2,
-   ETK_FILL_POLICY_HEXPAND = 1 << 3,
-   ETK_FILL_POLICY_VEXPAND = 1 << 4
+   ETK_FILL_POLICY_NONE = 1 << 0,       /**< The child doesn't fill or expand */
+   ETK_FILL_POLICY_HFILL = 1 << 1,      /**< The child fills all the horizontal space allocated for him */
+   ETK_FILL_POLICY_VFILL = 1 << 2,      /**< The child fills all the vertical space allocated for him */
+   ETK_FILL_POLICY_HEXPAND = 1 << 3,    /**< The child expands horizontally: the cell containing the child */
+                                        /**< will take as much place as possible in the horizontal direction */
+   ETK_FILL_POLICY_VEXPAND = 1 << 4     /**< The child expands vertically: the cell containing the child */
+                                        /**< will take as much place as possible in the vertical direction */
 } Etk_Fill_Policy_Flags;
 
 /**
- * @struct Etk_Container
- * @brief An Etk_Container is a widget that can contain other widgets
+ * @brief @widget The structure of a container
+ * @structinfo
  */
-struct _Etk_Container
+struct Etk_Container
 {
    /* private: */
    /* Inherit from Etk_Widget */

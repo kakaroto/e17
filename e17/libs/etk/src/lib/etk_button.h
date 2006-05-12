@@ -8,21 +8,22 @@
 
 /**
  * @defgroup Etk_Button Etk_Button
+ * @brief The Etk_Button widget is a widget that emits a signal when it is pressed, released and clicked
  * @{
  */
 
-/** @brief Gets the type of a button */
+/** Gets the type of a button */
 #define ETK_BUTTON_TYPE       (etk_button_type_get())
-/** @brief Casts the object to an Etk_Button */
+/** Casts the object to an Etk_Button */
 #define ETK_BUTTON(obj)       (ETK_OBJECT_CAST((obj), ETK_BUTTON_TYPE, Etk_Button))
-/** @brief Checks if the object is an Etk_Button */
+/** Checks if the object is an Etk_Button */
 #define ETK_IS_BUTTON(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_BUTTON_TYPE))
 
 /**
- * @struct Etk_Button
- * @brief An Etk_Button is a widget that can be pressed, released, clicked...
+ * @brief @widget The structure of a button
+ * @structinfo
  */
-struct _Etk_Button
+struct Etk_Button
 {
    /* private: */
    /* Inherit from Etk_Bin */

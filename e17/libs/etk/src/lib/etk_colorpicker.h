@@ -2,7 +2,7 @@
 #ifndef __ETK_COLORPICKER_H__
 #define __ETK_COLORPICKER_H__
 
-#include "etk_hbox.h"
+#include "etk_box.h"
 #include "etk_types.h"
 
 /**

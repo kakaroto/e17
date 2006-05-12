@@ -8,34 +8,37 @@
 
 /**
  * @defgroup Etk_Box Etk_Box
+ * @brief The Etk_Box widget is a container that can contain several children
+ * packed in one direction (horizontal of vertical) 
  * @{
  */
 
-/** @brief Gets the type of a box */
+/** Gets the type of a box */
 #define ETK_BOX_TYPE       (etk_box_type_get())
-/** @brief Casts the object to an Etk_Box */
+/** Casts the object to an Etk_Box */
 #define ETK_BOX(obj)       (ETK_OBJECT_CAST((obj), ETK_BOX_TYPE, Etk_Box))
-/** @brief Checks if the object is an Etk_Box */
+/** Checks if the object is an Etk_Box */
 #define ETK_IS_BOX(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_BOX_TYPE))
 
-/**
- * @struct Etk_Box_Child_Props
- * @brief Describes how a child of the box should expand, fill (...) the allocated space
- * @note You can change directly those values, but you'll then have to call @a etk_widget_size_recalc() on the bin
- */
-struct _Etk_Box_Child_Props
-{
-   int padding;
-   Etk_Bool expand;
-   Etk_Bool fill;
-   Etk_Bool pack_end;
-};
+/** Gets the type of a hbox */
+#define ETK_HBOX_TYPE       (etk_hbox_type_get())
+/** Casts the object to an Etk_HBox */
+#define ETK_HBOX(obj)       (ETK_OBJECT_CAST((obj), ETK_HBOX_TYPE, Etk_HBox))
+/** Checks if the object is an Etk_HBox */
+#define ETK_IS_HBOX(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_HBOX_TYPE))
+
+/** Gets the type of a vbox */
+#define ETK_VBOX_TYPE       (etk_vbox_type_get())
+/** Casts the object to an Etk_VBox */
+#define ETK_VBOX(obj)       (ETK_OBJECT_CAST((obj), ETK_VBOX_TYPE, Etk_VBox))
+/** Checks if the object is an Etk_VBox */
+#define ETK_IS_VBOX(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_VBOX_TYPE))
 
 /**
- * @struct Etk_Box
- * @brief An Etk_Box is a container that can contain several children packed in one direction (horizontal of vertical) 
+ * @brief @widget The structure of a box
+ * @structinfo
  */
-struct _Etk_Box
+struct Etk_Box
 {
    /* private: */
    /* Inherit from Etk_Container */
@@ -43,10 +46,38 @@ struct _Etk_Box
 
    int spacing;
    Etk_Bool homogeneous;
-   Evas_List *children;
+   Evas_List *cells;
+   int *requested_sizes;
+};
+
+/**
+ * @brief @widget The structure of a hbox
+ * @structinfo
+ */
+struct Etk_HBox
+{
+   /* private: */
+   /* Inherit from Etk_Box */
+   Etk_Box box;
+};
+
+/**
+ * @brief @widget The structure of a vbox
+ * @structinfo
+ */
+struct Etk_VBox
+{
+   /* private: */
+   /* Inherit from Etk_Box */
+   Etk_Box box;
 };
 
 Etk_Type *etk_box_type_get();
+Etk_Type *etk_hbox_type_get();
+Etk_Type *etk_vbox_type_get();
+
+Etk_Widget *etk_hbox_new(Etk_Bool homogeneous, int spacing);
+Etk_Widget *etk_vbox_new(Etk_Bool homogeneous, int spacing);
 
 void etk_box_pack_start(Etk_Box *box, Etk_Widget *child, Etk_Bool expand, Etk_Bool fill, int padding);
 void etk_box_pack_end(Etk_Box *box, Etk_Widget *child, Etk_Bool expand, Etk_Bool fill, int padding);

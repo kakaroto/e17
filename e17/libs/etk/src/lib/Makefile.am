@@ -23,7 +23,7 @@ etk_signal.h etk_signal_callback.h etk_marshallers.h \
 etk_theme.h etk_cache.h \
 etk_widget.h etk_toplevel_widget.h \
 etk_container.h etk_bin.h etk_table.h etk_alignment.h \
-etk_box.h etk_hbox.h etk_vbox.h \
+etk_box.h \
 etk_paned.h etk_frame.h \
 etk_scrolled_view.h etk_viewport.h \
 etk_window.h etk_dialog.h \
@@ -63,7 +63,7 @@ etk_signal.c etk_signal_callback.c etk_marshallers.c \
 etk_theme.c etk_cache.c \
 etk_widget.c etk_toplevel_widget.c \
 etk_container.c etk_bin.c etk_table.c etk_alignment.c \
-etk_box.c etk_hbox.c etk_vbox.c \
+etk_box.c \
 etk_paned.c etk_frame.c \
 etk_scrolled_view.c etk_viewport.c \
 etk_window.c etk_dialog.c \

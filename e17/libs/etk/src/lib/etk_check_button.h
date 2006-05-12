@@ -7,21 +7,22 @@
 
 /**
  * @defgroup Etk_Check_Button Etk_Check_Button
+ * @brief The Etk_Check_Button widget is a toggle button made up of a checkbox, which can be checked or unchecked, and a label
  * @{
  */
 
-/** @brief Gets the type of a check button */
+/** Gets the type of a check button */
 #define ETK_CHECK_BUTTON_TYPE       (etk_check_button_type_get())
-/** @brief Casts the object to an Etk_Check_Button */
+/** Casts the object to an Etk_Check_Button */
 #define ETK_CHECK_BUTTON(obj)       (ETK_OBJECT_CAST((obj), ETK_CHECK_BUTTON_TYPE, Etk_Check_Button))
-/** @brief Checks if the object is an Etk_Check_Button */
+/** Checks if the object is an Etk_Check_Button */
 #define ETK_IS_CHECK_BUTTON(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_CHECK_BUTTON_TYPE))
 
 /**
- * @struct Etk_Check_Button
- * @brief An Etk_Check_Button is a button that can be checked and unckecked
+ * @brief @widget The structure of a check button
+ * @structinfo
  */
-struct _Etk_Check_Button
+struct Etk_Check_Button
 {
    /* private: */
    /* Inherit from Etk_Toggle_Button */

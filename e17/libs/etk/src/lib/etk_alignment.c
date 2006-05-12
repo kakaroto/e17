@@ -8,7 +8,7 @@
  * @{
  */
 
-enum _Etk_Alignment_Property_Id
+enum Etk_Alignment_Property_Id
 {
    ETK_ALIGNMENT_XALIGN_PROPERTY,
    ETK_ALIGNMENT_YALIGN_PROPERTY,
@@ -29,7 +29,7 @@ static void _etk_alignment_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
 
 /**
  * @brief Gets the type of an Etk_Alignment
- * @return Returns the type on an Etk_Alignment
+ * @return Returns the type of an Etk_Alignment
  */
 Etk_Type *etk_alignment_type_get()
 {
@@ -37,12 +37,17 @@ Etk_Type *etk_alignment_type_get()
 
    if (!alignment_type)
    {
-      alignment_type = etk_type_new("Etk_Alignment", ETK_BIN_TYPE, sizeof(Etk_Alignment), ETK_CONSTRUCTOR(_etk_alignment_constructor), NULL);
+      alignment_type = etk_type_new("Etk_Alignment", ETK_BIN_TYPE, sizeof(Etk_Alignment),
+         ETK_CONSTRUCTOR(_etk_alignment_constructor), NULL);
 
-      etk_type_property_add(alignment_type, "xalign", ETK_ALIGNMENT_XALIGN_PROPERTY, ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_float(0.5));
-      etk_type_property_add(alignment_type, "yalign", ETK_ALIGNMENT_YALIGN_PROPERTY, ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_float(0.5));
-      etk_type_property_add(alignment_type, "xscale", ETK_ALIGNMENT_XSCALE_PROPERTY, ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_float(1.0));
-      etk_type_property_add(alignment_type, "yscale", ETK_ALIGNMENT_YSCALE_PROPERTY, ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_float(1.0));
+      etk_type_property_add(alignment_type, "xalign", ETK_ALIGNMENT_XALIGN_PROPERTY,
+         ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_float(0.5));
+      etk_type_property_add(alignment_type, "yalign", ETK_ALIGNMENT_YALIGN_PROPERTY,
+         ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_float(0.5));
+      etk_type_property_add(alignment_type, "xscale", ETK_ALIGNMENT_XSCALE_PROPERTY,
+         ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_float(1.0));
+      etk_type_property_add(alignment_type, "yscale", ETK_ALIGNMENT_YSCALE_PROPERTY,
+         ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_float(1.0));
       
       alignment_type->property_set = _etk_alignment_property_set;
       alignment_type->property_get = _etk_alignment_property_get;
@@ -61,7 +66,8 @@ Etk_Type *etk_alignment_type_get()
  */
 Etk_Widget *etk_alignment_new(float xalign, float yalign, float xscale, float yscale)
 {
-   return etk_widget_new(ETK_ALIGNMENT_TYPE, "xalign", xalign, "yalign", yalign, "xscale", xscale, "yscale", yscale, NULL);
+   return etk_widget_new(ETK_ALIGNMENT_TYPE, "xalign", xalign,
+      "yalign", yalign, "xscale", xscale, "yscale", yscale, NULL);
 }
 
 /**
@@ -133,7 +139,7 @@ void etk_alignment_get(Etk_Alignment *alignment, float *xalign, float *yalign, f
  *
  **************************/
 
-/* Initializes the members */
+/* Initializes the alignment */
 static void _etk_alignment_constructor(Etk_Alignment *alignment)
 {
    if (!alignment)
@@ -150,23 +156,25 @@ static void _etk_alignment_constructor(Etk_Alignment *alignment)
 static void _etk_alignment_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value)
 {
    Etk_Alignment *alignment;
+   float setting;
 
    if (!(alignment = ETK_ALIGNMENT(object)) || !value)
       return;
 
+   setting = etk_property_value_float_get(value);
    switch (property_id)
    {
       case ETK_ALIGNMENT_XALIGN_PROPERTY:
-         etk_alignment_set(alignment, etk_property_value_float_get(value), alignment->yalign, alignment->xscale, alignment->yscale);
+         etk_alignment_set(alignment, setting, alignment->yalign, alignment->xscale, alignment->yscale);
          break;
       case ETK_ALIGNMENT_YALIGN_PROPERTY:
-         etk_alignment_set(alignment, alignment->xalign, etk_property_value_float_get(value), alignment->xscale, alignment->yscale);
+         etk_alignment_set(alignment, alignment->xalign, setting, alignment->xscale, alignment->yscale);
          break;
       case ETK_ALIGNMENT_XSCALE_PROPERTY:
-         etk_alignment_set(alignment, alignment->xalign, alignment->yalign, etk_property_value_float_get(value), alignment->yscale);
+         etk_alignment_set(alignment, alignment->xalign, alignment->yalign, setting, alignment->yscale);
          break;
       case ETK_ALIGNMENT_YSCALE_PROPERTY:
-         etk_alignment_set(alignment, alignment->xalign, alignment->yalign, alignment->xscale, etk_property_value_float_get(value));
+         etk_alignment_set(alignment, alignment->xalign, alignment->yalign, alignment->xscale, setting);
          break;
       default:
          break;
@@ -200,7 +208,7 @@ static void _etk_alignment_property_get(Etk_Object *object, int property_id, Etk
    }
 }
 
-/* Resizes the alignment to the size allocation */
+/* Resizes the alignment to the allocated size */
 static void _etk_alignment_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 {
    Etk_Alignment *alignment;
@@ -240,3 +248,49 @@ static void _etk_alignment_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
 }
 
 /** @} */
+
+/**************************
+ *
+ * Documentation
+ *
+ **************************/
+
+/**
+ * @addtogroup Etk_Alignment
+ *
+ * The scale settings control how much the child should expand to fill the available space,
+ * from 0.0 (the child doesn't expand at all) to 1.0 (the child takes all the available space). @n
+ * The align settings control the alignment of the child inside the container,
+ * from 0.0 (the child is aligned on the left/top) to 1.0 (the child is aligned on the right/bottom). @n
+ * The align settings have no effect if the scale factors are set to 1.0. 
+ *
+ * \par Object Hierarchy:
+ * - Etk_Object
+ *   - Etk_Widget
+ *     - Etk_Container
+ *       - Etk_Bin
+ *         - Etk_Alignment
+ *
+ * \par Properties:
+ * @prop_name "xalign": Horizontal alignment of the child in the available space, from 0.0 (left) to 1.0 (right).
+ * @prop_type Float
+ * @prop_rw
+ * @prop_val 0.5
+ * \par 
+ * @prop_name "yalign": Vertical alignment of the child in the available space, from 0.0 (top) to 1.0 (bottom).
+ * @prop_type Float
+ * @prop_rw
+ * @prop_val 0.5
+ * \par 
+ * @prop_name "xscale": How much of the horizontal space should use the child,
+ * from 0.0 (none, the child does not expand) to 1.0 (the child fill all the horizontal space).
+ * @prop_type Float
+ * @prop_rw
+ * @prop_val 1.0
+ * \par 
+ * @prop_name "yscale": How much of the vertical space should use the child,
+ * from 0.0 (none, the child does not expand) to 1.0 (the child fill all the vertical space).
+ * @prop_type Float
+ * @prop_rw
+ * @prop_val 1.0
+ */

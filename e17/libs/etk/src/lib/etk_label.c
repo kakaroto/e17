@@ -11,7 +11,7 @@
  * @{
  */
 
-enum _Etk_Label_Property_Id
+enum Etk_Label_Property_Id
 {
    ETK_LABEL_LABEL_PROPERTY,
    ETK_LABEL_XALIGN_PROPERTY,
@@ -38,7 +38,7 @@ static int _etk_label_style_use = 0;
 
 /**
  * @brief Gets the type of an Etk_Label
- * @return Returns the type on an Etk_Label
+ * @return Returns the type of an Etk_Label
  */
 Etk_Type *etk_label_type_get()
 {
@@ -46,11 +46,15 @@ Etk_Type *etk_label_type_get()
 
    if (!label_type)
    {
-      label_type = etk_type_new("Etk_Label", ETK_WIDGET_TYPE, sizeof(Etk_Label), ETK_CONSTRUCTOR(_etk_label_constructor), ETK_DESTRUCTOR(_etk_label_destructor));
+      label_type = etk_type_new("Etk_Label", ETK_WIDGET_TYPE, sizeof(Etk_Label),
+         ETK_CONSTRUCTOR(_etk_label_constructor), ETK_DESTRUCTOR(_etk_label_destructor));
       
-      etk_type_property_add(label_type, "label", ETK_LABEL_LABEL_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
-      etk_type_property_add(label_type, "xalign", ETK_LABEL_XALIGN_PROPERTY, ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_float(0.0));
-      etk_type_property_add(label_type, "yalign", ETK_LABEL_YALIGN_PROPERTY, ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_float(0.5));
+      etk_type_property_add(label_type, "label", ETK_LABEL_LABEL_PROPERTY,
+         ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
+      etk_type_property_add(label_type, "xalign", ETK_LABEL_XALIGN_PROPERTY,
+         ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_float(0.0));
+      etk_type_property_add(label_type, "yalign", ETK_LABEL_YALIGN_PROPERTY,
+         ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_float(0.5));
 
       label_type->property_set = _etk_label_property_set;
       label_type->property_get = _etk_label_property_get;
@@ -61,7 +65,7 @@ Etk_Type *etk_label_type_get()
 
 /**
  * @brief Creates a new label
- * @param text the text to display
+ * @param text the text to set to the label
  * @return Returns the new label widget
  */
 Etk_Widget *etk_label_new(const char *text)
@@ -163,7 +167,7 @@ void etk_label_alignment_get(Etk_Label *label, float *xalign, float *yalign)
  *
  **************************/
 
-/* Initializes the members */
+/* Initializes the label */
 static void _etk_label_constructor(Etk_Label *label)
 {
    Etk_Widget *widget;
@@ -336,5 +340,41 @@ static void _etk_label_unrealize_cb(Etk_Object *object, void *data)
    }
 }
 
-
 /** @} */
+
+/**************************
+ *
+ * Documentation
+ *
+ **************************/
+
+/**
+ * @addtogroup Etk_Label
+ *
+ * You can use html-like tags to format the text of the label. For example, "<b>Text</b>" makes <b>Text</b> bold. @n
+ * Here is the list of the supported tags: @n
+ * TODO: [Doc] List of the tags for the label
+ *
+ * \par Object Hierarchy:
+ * - Etk_Object
+ *   - Etk_Widget
+ *     - Etk_Label
+ *
+ * \par Properties:
+ * @prop_name "label": The text of the label widget
+ * @prop_type String (char *)
+ * @prop_rw
+ * @prop_val NULL
+ * \par
+ * @prop_name "xalign": The horizontal alignment of the text of the label,
+ * from 0.0 (left-aligned) to 1.0 (right-aligned)
+ * @prop_type Float
+ * @prop_rw
+ * @prop_val 0.0
+ * \par
+ * @prop_name "yalign": The vertical alignment of the text of the label,
+ * from 0.0 (top-aligned) to 1.0 (bottom-aligned)
+ * @prop_type Float
+ * @prop_rw
+ * @prop_val 0.5
+ */

@@ -13,14 +13,12 @@ without causing any problem
 * The labels sometimes does not returns its ideal size requisition (happens when there is a <br>)
 Maybe a bug of the evas textblock
 * Fix and optimize the colorpicker
-* Sometimes, the mouse cursor is not reset when you stop resizing a row in the tree (and also segv)
 
 --------------------
 [Things that need to be improved (in order of pripority)]
 --------------------
 * Improve the entry: add selection supports, better keyboard navigation [In progress: MoOm]
-* Add a cache system to cache images used by the tree and the future iconbox in order to make
-the scrolling smoother [In progress: MoOm]
+* Implement the cache system in the tree [In progress: MoOm]
 * Allow the theme to change the color/font/style of the labels
 * More API work for the tree (get a row according to (x,y) position...)
 * The filechooser still need to be finished/rewritten [In progress: MoOm]

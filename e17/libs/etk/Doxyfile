@@ -18,7 +18,7 @@ HHC_LOCATION           =
 GENERATE_CHI           = NO
 BINARY_TOC             = NO
 TOC_EXPAND             = NO
-DISABLE_INDEX          = NO
+DISABLE_INDEX          = YES
 EXTRACT_ALL            = NO
 EXTRACT_PRIVATE        = NO
 EXTRACT_STATIC         = NO
@@ -28,7 +28,7 @@ HIDE_UNDOC_CLASSES     = YES
 HIDE_FRIEND_COMPOUNDS  = YES
 BRIEF_MEMBER_DESC      = YES
 REPEAT_BRIEF           = YES
-ALWAYS_DETAILED_SEC    = NO
+ALWAYS_DETAILED_SEC    = YES
 INLINE_INHERITED_MEMB  = NO
 FULL_PATH_NAMES        = NO
 STRIP_FROM_PATH        = 
@@ -41,22 +41,34 @@ VERBATIM_HEADERS       = NO
 SHOW_INCLUDE_FILES     = NO
 JAVADOC_AUTOBRIEF      = NO
 MULTILINE_CPP_IS_BRIEF = NO
-DETAILS_AT_TOP         = NO
+DETAILS_AT_TOP         = YES
 INHERIT_DOCS           = YES
 INLINE_INFO            = YES
-SORT_MEMBER_DOCS       = YES
+SORT_MEMBER_DOCS       = NO
 DISTRIBUTE_GROUP_DOC   = NO
-TAB_SIZE               = 2
+TAB_SIZE               = 3
 GENERATE_TODOLIST      = YES
 GENERATE_TESTLIST      = YES
 GENERATE_BUGLIST       = YES
 GENERATE_DEPRECATEDLIST= YES
-ALIASES                = 
+ALIASES                = "widget=<b>[Widget]</b>"
+ALIASES               += "structinfo=@note For more informations, see the documention page of the corresponding module (link above or in the <i>\"Widgets\"</i> page)"
+ALIASES               += "prop_name=- @b"
+ALIASES               += "prop_type=   - <tt>Type:</tt>"
+ALIASES               += "prop_rw=   - <tt>Access:</tt> Read/Write"
+ALIASES               += "prop_ro=   - <tt>Access:</tt> Read Only"
+ALIASES               += "prop_wo=   - <tt>Access:</tt> Write Only"
+ALIASES               += "prop_na=   - <tt>Access:</tt> No Access"
+ALIASES               += "prop_val=   - <tt>Default Value:</tt>"
+ALIASES               += "signal_name=- @b"
+ALIASES               += "signal_cb=   - <tt>Callback:</tt>"
+ALIASES               += "signal_arg=     - @c"
+ALIASES               += "signal_data=     - @c data: the user data set when the callback has been connected to the signal"
 ENABLED_SECTIONS       = 
 MAX_INITIALIZER_LINES  = 30
 OPTIMIZE_OUTPUT_FOR_C  = YES
 OPTIMIZE_OUTPUT_JAVA   = NO
-SHOW_USED_FILES        = NO
+SHOW_USED_FILES        = YES
 QUIET                  = NO
 WARNINGS               = YES
 WARN_IF_UNDOCUMENTED   = YES
@@ -78,10 +90,10 @@ REFERENCED_BY_RELATION = YES
 REFERENCES_RELATION    = YES
 ALPHABETICAL_INDEX     = YES
 COLS_IN_ALPHA_INDEX    = 2
-IGNORE_PREFIX          = 
+IGNORE_PREFIX          = "Etk_"
 GENERATE_TREEVIEW      = NO
 TREEVIEW_WIDTH         = 250
-GENERATE_LATEX         = YES
+GENERATE_LATEX         = NO
 LATEX_OUTPUT           = latex
 LATEX_CMD_NAME         = latex
 MAKEINDEX_CMD_NAME     = makeindex
@@ -98,11 +110,11 @@ COMPACT_RTF            = NO
 RTF_HYPERLINKS         = NO
 RTF_STYLESHEET_FILE    = 
 RTF_EXTENSIONS_FILE    = 
-GENERATE_MAN           = YES
+GENERATE_MAN           = NO
 MAN_OUTPUT             = man
 MAN_EXTENSION          = .3
 MAN_LINKS              = YES
-GENERATE_XML           = YES
+GENERATE_XML           = NO
 XML_SCHEMA             = 
 XML_DTD                = 
 GENERATE_AUTOGEN_DEF   = NO

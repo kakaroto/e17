@@ -5,7 +5,8 @@
 #include <Evas.h>
 
 /**
- * @defgroup Etk_Cache Etk_Cache
+ * @defgroup Etk_Cache Cache system of Etk
+ * @brief The cache system is used by widgets that frequently need to load images, such as Etk_Tree or Etk_Iconbox
  * @{
  */
  

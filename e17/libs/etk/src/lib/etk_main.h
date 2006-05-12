@@ -6,7 +6,8 @@
 #include "etk_types.h"
 
 /**
- * @defgroup Etk_Main Main functions of Etk
+ * @defgroup Etk_Main The main functions of Etk
+ * @brief The main functions of Etk, used to initialize or shutdown Etk, or to control the main loop
  * @{
  */
 

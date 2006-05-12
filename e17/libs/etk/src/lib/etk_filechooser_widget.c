@@ -15,8 +15,6 @@
 #include "etk_tree_model.h"
 #include "etk_paned.h"
 #include "etk_box.h"
-#include "etk_hbox.h"
-#include "etk_vbox.h"
 #include "etk_tooltips.h"
 #include "config.h"
 

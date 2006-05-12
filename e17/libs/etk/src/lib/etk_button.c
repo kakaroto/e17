@@ -2,7 +2,7 @@
 #include "etk_button.h"
 #include <stdlib.h>
 #include <string.h>
-#include "etk_hbox.h"
+#include "etk_box.h"
 #include "etk_alignment.h"
 #include "etk_image.h"
 #include "etk_label.h"
@@ -12,10 +12,10 @@
 
 /**
  * @addtogroup Etk_Button
-* @{
+ * @{
  */
 
-enum _Etk_Button_Signal_Id
+enum Etk_Button_Signal_Id
 {
    ETK_BUTTON_PRESSED_SIGNAL,
    ETK_BUTTON_RELEASED_SIGNAL,
@@ -23,7 +23,7 @@ enum _Etk_Button_Signal_Id
    ETK_BUTTON_NUM_SIGNALS
 };
 
-enum _Etk_Button_Property_Id
+enum Etk_Button_Property_Id
 {
    ETK_BUTTON_LABEL_PROPERTY,
    ETK_BUTTON_IMAGE_PROPERTY,
@@ -56,7 +56,7 @@ static Etk_Signal *_etk_button_signals[ETK_BUTTON_NUM_SIGNALS];
 
 /**
  * @brief Gets the type of an Etk_Button
- * @return Returns the type on an Etk_Button
+ * @return Returns the type of an Etk_Button
  */
 Etk_Type *etk_button_type_get()
 {
@@ -64,16 +64,24 @@ Etk_Type *etk_button_type_get()
 
    if (!button_type)
    {
-      button_type = etk_type_new("Etk_Button", ETK_BIN_TYPE, sizeof(Etk_Button), ETK_CONSTRUCTOR(_etk_button_constructor), NULL);
+      button_type = etk_type_new("Etk_Button", ETK_BIN_TYPE, sizeof(Etk_Button),
+         ETK_CONSTRUCTOR(_etk_button_constructor), NULL);
 
-      _etk_button_signals[ETK_BUTTON_PRESSED_SIGNAL] = etk_signal_new("pressed", button_type, ETK_MEMBER_OFFSET(Etk_Button, pressed), etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_button_signals[ETK_BUTTON_RELEASED_SIGNAL] = etk_signal_new("released", button_type, ETK_MEMBER_OFFSET(Etk_Button, released), etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_button_signals[ETK_BUTTON_CLICKED_SIGNAL] = etk_signal_new("clicked", button_type, ETK_MEMBER_OFFSET(Etk_Button, clicked), etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_button_signals[ETK_BUTTON_PRESSED_SIGNAL] = etk_signal_new("pressed",
+         button_type, ETK_MEMBER_OFFSET(Etk_Button, pressed), etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_button_signals[ETK_BUTTON_RELEASED_SIGNAL] = etk_signal_new("released",
+         button_type, ETK_MEMBER_OFFSET(Etk_Button, released), etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_button_signals[ETK_BUTTON_CLICKED_SIGNAL] = etk_signal_new("clicked",
+         button_type, ETK_MEMBER_OFFSET(Etk_Button, clicked), etk_marshaller_VOID__VOID, NULL, NULL);
 
-      etk_type_property_add(button_type, "label", ETK_BUTTON_LABEL_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_string(NULL));
-      etk_type_property_add(button_type, "image", ETK_BUTTON_IMAGE_PROPERTY, ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_pointer(NULL));
-      etk_type_property_add(button_type, "xalign", ETK_BUTTON_XALIGN_PROPERTY, ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_float(0.5));
-      etk_type_property_add(button_type, "yalign", ETK_BUTTON_YALIGN_PROPERTY, ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_float(0.5));
+      etk_type_property_add(button_type, "label", ETK_BUTTON_LABEL_PROPERTY,
+         ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_string(NULL));
+      etk_type_property_add(button_type, "image", ETK_BUTTON_IMAGE_PROPERTY,
+         ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_pointer(NULL));
+      etk_type_property_add(button_type, "xalign", ETK_BUTTON_XALIGN_PROPERTY,
+         ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_float(0.5));
+      etk_type_property_add(button_type, "yalign", ETK_BUTTON_YALIGN_PROPERTY,
+         ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_float(0.5));
 
       button_type->property_set = _etk_button_property_set;
       button_type->property_get = _etk_button_property_get;
@@ -88,7 +96,8 @@ Etk_Type *etk_button_type_get()
  */
 Etk_Widget *etk_button_new()
 {
-   return etk_widget_new(ETK_BUTTON_TYPE, "theme_group", "button", "focusable", ETK_TRUE, "focus_on_press", ETK_TRUE, NULL);
+   return etk_widget_new(ETK_BUTTON_TYPE, "theme_group", "button",
+      "focusable", ETK_TRUE, "focus_on_press", ETK_TRUE, NULL);
 }
 
 /**
@@ -97,12 +106,13 @@ Etk_Widget *etk_button_new()
  */
 Etk_Widget *etk_button_new_with_label(const char *label)
 {
-   return etk_widget_new(ETK_BUTTON_TYPE, "theme_group", "button", "label", label, "focusable", ETK_TRUE, "focus_on_press", ETK_TRUE, NULL);
+   return etk_widget_new(ETK_BUTTON_TYPE, "theme_group", "button",
+      "label", label, "focusable", ETK_TRUE, "focus_on_press", ETK_TRUE, NULL);
 }
 
 /**
  * @brief Creates a new button with a label and an icon defined by a stock id
- * @param stock_id the stock id corresponding to the label and the icon you want
+ * @param stock_id the stock id corresponding to a label and an icon
  * @return Returns the new button widget
  * @see Etk_Stock
  */
@@ -154,9 +164,9 @@ void etk_button_click(Etk_Button *button)
 }
 
 /**
- * @brief Sets the label of the button
+ * @brief Sets the text of the label of the button
  * @param button a button
- * @param label the label to set
+ * @param label the text to set to the label of the button
  */
 void etk_button_label_set(Etk_Button *button, const char *label)
 {
@@ -173,9 +183,9 @@ void etk_button_label_set(Etk_Button *button, const char *label)
 }
 
 /**
- * @brief Gets the label of the button
+ * @brief Gets the text of the label of the button
  * @param button a button
- * @return Returns the label of the button
+ * @return Returns the text of the label of the button
  */
 const char *etk_button_label_get(Etk_Button *button)
 {
@@ -239,7 +249,7 @@ void etk_button_set_from_stock(Etk_Button *button, Etk_Stock_Id stock_id)
 }
 
 /**
- * @brief Sets the alignment of the child of the button, if it's a label or an alignment
+ * @brief Sets the alignment of the child of the button (only have effect if the child is a label, or an alignment)
  * @param button a button
  * @param xalign the horizontal alignment (0.0 = left, 0.5 = center, 1.0 = right, ...)
  * @param yalign the vertical alignment (0.0 = top, 0.5 = center, 1.0 = bottom, ...)
@@ -297,7 +307,7 @@ void etk_button_alignment_get(Etk_Button *button, float *xalign, float *yalign)
  *
  **************************/
 
-/* Initializes the members */
+/* Initializes the button */
 static void _etk_button_constructor(Etk_Button *button)
 {
    if (!button)
@@ -567,3 +577,63 @@ static void _etk_button_children_create(Etk_Button *button)
 }
 
 /** @} */
+
+/**************************
+ *
+ * Documentation
+ *
+ **************************/
+
+/**
+ * @addtogroup Etk_Button
+ *
+ * @image html button.png
+ * An Etk_Button usually contains only a label and an icon, but it can contain any type of widgets.
+ * 
+ * \par Object Hierarchy:
+ * - Etk_Object
+ *   - Etk_Widget
+ *     - Etk_Container
+ *       - Etk_Bin
+ *         - Etk_Button
+ *
+ * \par Signals:
+ * @signal_name "pressed": Emitted when the button is pressed
+ * @signal_cb void callback(Etk_Button *button, void *data)
+ * @signal_arg button: the button which has been pressed
+ * @signal_data
+ * \par
+ * @signal_name "released": Emitted when the button is released
+ * @signal_cb void callback(Etk_Button *button, void *data)
+ * @signal_arg button: the button which has been released
+ * @signal_data
+ * \par
+ * @signal_name "clicked": Emitted when the button is clicked
+ * (i.e. when the button is released, and if the mouse is still above it)
+ * @signal_cb void callback(Etk_Button *button, void *data)
+ * @signal_arg button: the button which has been clicked
+ * @signal_data
+ *
+ * \par Properties:
+ * @prop_name "label": The text of the label of the button
+ * @prop_type String (char *)
+ * @prop_rw
+ * @prop_val NULL
+ * \par 
+ * @prop_name "image": The image packed on the left of the label, inside the button
+ * @prop_type Pointer (Etk_Image *)
+ * @prop_rw
+ * @prop_val NULL
+ * \par 
+ * @prop_name "xalign": The horizontal alignment of the child of the button,
+ * from 0.0 (left aligned) to 1.0 (right aligned)
+ * @prop_type Float
+ * @prop_rw
+ * @prop_val 0.5
+ * \par 
+ * @prop_name "yalign": The vertical alignment of the child of the button,
+ * from 0.0 (top aligned) to 1.0 (bottom aligned)
+ * @prop_type Float
+ * @prop_rw
+ * @prop_val 0.5
+ */

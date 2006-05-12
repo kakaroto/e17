@@ -7,21 +7,22 @@
 
 /**
  * @defgroup Etk_Label Etk_Label
+ * @brief The Etk_Label widget is a simple widget that can display text
  * @{
  */
 
-/** @brief Gets the type of a label */
+/** Gets the type of a label */
 #define ETK_LABEL_TYPE        (etk_label_type_get())
-/** @brief Casts the object to an Etk_Label */
+/** Casts the object to an Etk_Label */
 #define ETK_LABEL(obj)        (ETK_OBJECT_CAST((obj), ETK_LABEL_TYPE, Etk_Label))
-/** @brief Check if the object is an Etk_Label */
+/** Check if the object is an Etk_Label */
 #define ETK_IS_LABEL(obj)     (ETK_OBJECT_CHECK_TYPE((obj), ETK_LABEL_TYPE))
 
 /**
- * @struct Etk_Label
- * @brief A label is a widget that displays text
+ * @brief @widget The structure of a label
+ * @structinfo
  */
-struct _Etk_Label
+struct Etk_Label
 {
    /* private: */
    /* Inherit from Etk_Widget */

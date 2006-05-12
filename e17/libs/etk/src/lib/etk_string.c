@@ -576,8 +576,8 @@ static char *_etk_string_vprintf(const char *format, va_list args)
    va_copy(args2, args);
    length = vsnprintf(&c, 1, format, args2);
    va_end(args2);
-   va_copy(args2, args);
    text = malloc(length + 1);
+   va_copy(args2, args);
    vsprintf(text, format, args2);
    va_end(args2);
    

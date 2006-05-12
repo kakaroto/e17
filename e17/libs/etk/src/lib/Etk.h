@@ -1,6 +1,6 @@
 /**
  * @file Etk.h
- * @brief The file to include in an Etk project
+ * @brief This file has to be included in all the Etk projects. It includes all the other headers.
  */
 #ifndef _ETK_H_
 #define _ETK_H_
@@ -22,8 +22,6 @@
 #include "etk_stock.h"
 #include "etk_bin.h"
 #include "etk_box.h"
-#include "etk_hbox.h"
-#include "etk_vbox.h"
 #include "etk_table.h"
 #include "etk_alignment.h"
 #include "etk_frame.h"

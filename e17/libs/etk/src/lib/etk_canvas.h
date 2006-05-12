@@ -8,17 +8,22 @@
 
 /**
  * @defgroup Etk_Canvas Etk_Canvas
+ * @brief The Etk_Canvas widget can contain any sort of Evas_Object
  * @{
  */
 
-/** @brief Gets the type of a canvas */
+/** Gets the type of a canvas */
 #define ETK_CANVAS_TYPE       (etk_canvas_type_get())
-/** @brief Casts the object to an Etk_Canvas */
+/** Casts the object to an Etk_Canvas */
 #define ETK_CANVAS(obj)       (ETK_OBJECT_CAST((obj), ETK_CANVAS_TYPE, Etk_Canvas))
-/** @brief Checks if the object is an Etk_Canvas */
+/** Checks if the object is an Etk_Canvas */
 #define ETK_IS_CANVAS(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_CANVAS_TYPE))
 
-struct _Etk_Canvas
+/**
+ * @brief @widget The structure of a canvas
+ * @structinfo
+ */
+struct Etk_Canvas
 {
    /* private: */
    /* Inherit from Etk_Widget */

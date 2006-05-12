@@ -40,32 +40,31 @@ typedef struct _Etk_Size Etk_Size;
 typedef struct _Etk_Geometry Etk_Geometry;
 typedef struct _Etk_Toplevel_Widget Etk_Toplevel_Widget;
 typedef struct _Etk_Window Etk_Window;
-typedef struct _Etk_Dialog Etk_Dialog;
-typedef struct _Etk_Container Etk_Container;
-typedef struct _Etk_Bin Etk_Bin;
-typedef struct _Etk_Box Etk_Box;
-typedef struct _Etk_Box_Child_Props Etk_Box_Child_Props;
-typedef struct _Etk_HBox Etk_HBox;
-typedef struct _Etk_VBox Etk_VBox;
+typedef struct Etk_Dialog Etk_Dialog;
+typedef struct Etk_Container Etk_Container;
+typedef struct Etk_Bin Etk_Bin;
+typedef struct Etk_Box Etk_Box;
+typedef struct Etk_HBox Etk_HBox;
+typedef struct Etk_VBox Etk_VBox;
 typedef struct _Etk_Table Etk_Table;
-typedef struct _Etk_Alignment Etk_Alignment;
-typedef struct _Etk_Frame Etk_Frame;
+typedef struct Etk_Alignment Etk_Alignment;
+typedef struct Etk_Frame Etk_Frame;
 typedef struct _Etk_Paned Etk_Paned;
 typedef struct _Etk_HPaned Etk_HPaned;
 typedef struct _Etk_VPaned Etk_VPaned;
 typedef struct _Etk_Scrolled_View Etk_Scrolled_View;
 typedef struct _Etk_Viewport Etk_Viewport;
-typedef struct _Etk_Image Etk_Image;
-typedef struct _Etk_Label Etk_Label;
-typedef struct _Etk_Button Etk_Button;
+typedef struct Etk_Image Etk_Image;
+typedef struct Etk_Label Etk_Label;
+typedef struct Etk_Button Etk_Button;
 typedef struct _Etk_Toggle_Button Etk_Toggle_Button;
-typedef struct _Etk_Check_Button Etk_Check_Button;
+typedef struct Etk_Check_Button Etk_Check_Button;
 typedef struct _Etk_Radio_Button Etk_Radio_Button;
 typedef struct _Etk_Textblock Etk_Textblock;
 typedef struct _Etk_Textblock_Iter Etk_Textblock_Iter;
 typedef struct _Etk_Entry Etk_Entry;
 typedef struct _Etk_Text_View Etk_Text_View;
-typedef struct _Etk_Canvas Etk_Canvas;
+typedef struct Etk_Canvas Etk_Canvas;
 typedef struct _Etk_Colorpicker Etk_Colorpicker;
 typedef struct _Etk_Colorpicker_Vertical Etk_Colorpicker_Vertical;
 typedef struct _Etk_Colorpicker_Square Etk_Colorpicker_Square;
@@ -88,15 +87,15 @@ typedef struct _Etk_VSeparator Etk_VSeparator;
 typedef struct _Etk_Popup_Window Etk_Popup_Window;
 typedef struct _Etk_Menu_Shell Etk_Menu_Shell;
 typedef struct _Etk_Menu Etk_Menu;
-typedef struct _Etk_Menu_Bar Etk_Menu_Bar;
+typedef struct Etk_Menu_Bar Etk_Menu_Bar;
 typedef struct _Etk_Menu_Item Etk_Menu_Item;
 typedef struct _Etk_Menu_Item_Separator Etk_Menu_Item_Separator;
 typedef struct _Etk_Menu_Item_Image Etk_Menu_Item_Image;
 typedef struct _Etk_Menu_Item_Check Etk_Menu_Item_Check;
 typedef struct _Etk_Menu_Item_Radio Etk_Menu_Item_Radio;
-typedef struct _Etk_Combobox Etk_Combobox;
-typedef struct _Etk_Combobox_Column Etk_Combobox_Column;
-typedef struct _Etk_Combobox_Item Etk_Combobox_Item;
+typedef struct Etk_Combobox Etk_Combobox;
+typedef struct Etk_Combobox_Column Etk_Combobox_Column;
+typedef struct Etk_Combobox_Item Etk_Combobox_Item;
 typedef struct _Etk_Statusbar Etk_Statusbar;
 typedef struct _Etk_Filechooser_Widget Etk_Filechooser_Widget;
 typedef struct _Etk_Notebook Etk_Notebook;
@@ -113,15 +112,15 @@ typedef enum   _Etk_Argument_Returns Etk_Argument_Returns;
 typedef enum   _Etk_Argument_Flags Etk_Argument_Flags;
 typedef struct _Etk_Argument Etk_Argument;
 typedef struct _Etk_Message_Dialog Etk_Message_Dialog;
-typedef struct _Etk_Iconbox Etk_Iconbox;
-typedef struct _Etk_Iconbox_Icon Etk_Iconbox_Icon;
-typedef struct _Etk_Iconbox_Model Etk_Iconbox_Model;
+typedef struct Etk_Iconbox Etk_Iconbox;
+typedef struct Etk_Iconbox_Icon Etk_Iconbox_Icon;
+typedef struct Etk_Iconbox_Model Etk_Iconbox_Model;
 
 /**
  * @struct Etk_Color
  * @brief A color
  */
-typedef struct _Etk_Color
+typedef struct Etk_Color
 {
    int r, g, b, a;
 } Etk_Color;

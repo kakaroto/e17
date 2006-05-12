@@ -11,7 +11,7 @@
  * @{
  */
 
-enum _Etk_Frame_Property_Id
+enum Etk_Frame_Property_Id
 {
    ETK_FRAME_LABEL_PROPERTY
 };
@@ -30,7 +30,7 @@ static void _etk_frame_realized_cb(Etk_Object *object, void *data);
 
 /**
  * @brief Gets the type of an Etk_Frame
- * @return Returns the type on an Etk_Frame
+ * @return Returns the type of an Etk_Frame
  */
 Etk_Type *etk_frame_type_get()
 {
@@ -38,9 +38,11 @@ Etk_Type *etk_frame_type_get()
 
    if (!frame_type)
    {
-      frame_type = etk_type_new("Etk_Frame", ETK_BIN_TYPE, sizeof(Etk_Frame), ETK_CONSTRUCTOR(_etk_frame_constructor), ETK_DESTRUCTOR(_etk_frame_destructor));
+      frame_type = etk_type_new("Etk_Frame", ETK_BIN_TYPE, sizeof(Etk_Frame),
+         ETK_CONSTRUCTOR(_etk_frame_constructor), ETK_DESTRUCTOR(_etk_frame_destructor));
 
-      etk_type_property_add(frame_type, "label", ETK_FRAME_LABEL_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_string(NULL));
+      etk_type_property_add(frame_type, "label", ETK_FRAME_LABEL_PROPERTY,
+         ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       
       frame_type->property_set = _etk_frame_property_set;
       frame_type->property_get = _etk_frame_property_get;
@@ -180,3 +182,28 @@ static void _etk_frame_realized_cb(Etk_Object *object, void *data)
 }
 
 /** @} */
+
+/**************************
+ *
+ * Documentation
+ *
+ **************************/
+
+/**
+ * @addtogroup Etk_Frame
+ *
+ * @image html frame.png
+ * 
+ * \par Object Hierarchy:
+ * - Etk_Object
+ *   - Etk_Widget
+ *     - Etk_Container
+ *       - Etk_Bin
+ *         - Etk_Frame
+ *
+ * \par Properties:
+ * @prop_name "label": The text of the frame's label
+ * @prop_type String (char *)
+ * @prop_rw
+ * @prop_val NULL
+ */

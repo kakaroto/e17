@@ -7,21 +7,23 @@
 
 /**
  * @defgroup Etk_Alignment Etk_Alignment
+ * @brief The Etk_Alignment widget is a container that can contain
+ * one child which can be aligned and scaled inside the container
  * @{
  */
-
-/** @brief Gets the type of an alignment */
+ 
+/** Gets the type of an alignment */
 #define ETK_ALIGNMENT_TYPE       (etk_alignment_type_get())
-/** @brief Casts the object to an Etk_Alignment */
+/** Casts the object to an Etk_Alignment */
 #define ETK_ALIGNMENT(obj)       (ETK_OBJECT_CAST((obj), ETK_ALIGNMENT_TYPE, Etk_Alignment))
-/** @brief Checks if the object is an Etk_Alignment */
+/** Checks if the object is an Etk_Alignment */
 #define ETK_IS_ALIGNMENT(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_ALIGNMENT_TYPE))
 
 /**
- * @struct Etk_Alignment
- * @brief An Etk_Alignment is a container that can contain one child which can be aligned and scaled inside the container
-  */
-struct _Etk_Alignment
+ * @brief @widget The structure of an alignment
+ * @structinfo
+ */
+struct Etk_Alignment
 {
    /* private: */
    /* Inherit from Etk_Bin */

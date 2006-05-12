@@ -10,14 +10,14 @@
  * @{
  */
 
-enum _Etk_Container_Signal_Id
+enum Etk_Container_Signal_Id
 {
    ETK_CONTAINER_CHILD_ADDED_SIGNAL,
    ETK_CONTAINER_CHILD_REMOVED_SIGNAL,
    ETK_CONTAINER_NUM_SIGNALS
 };
 
-enum _Etk_Container_Property_Id
+enum Etk_Container_Property_Id
 {
    ETK_CONTAINER_BORDER_WIDTH_PROPERTY
 };
@@ -37,7 +37,7 @@ static Etk_Signal *_etk_container_signals[ETK_CONTAINER_NUM_SIGNALS];
 
 /**
  * @brief Gets the type of an Etk_Container
- * @return Returns the type on an Etk_Container
+ * @return Returns the type of an Etk_Container
  */
 Etk_Type *etk_container_type_get()
 {
@@ -45,12 +45,16 @@ Etk_Type *etk_container_type_get()
 
    if (!container_type)
    {
-      container_type = etk_type_new("Etk_Container", ETK_WIDGET_TYPE, sizeof(Etk_Container), ETK_CONSTRUCTOR(_etk_container_constructor), ETK_DESTRUCTOR(_etk_container_destructor));
+      container_type = etk_type_new("Etk_Container", ETK_WIDGET_TYPE, sizeof(Etk_Container),
+         ETK_CONSTRUCTOR(_etk_container_constructor), ETK_DESTRUCTOR(_etk_container_destructor));
    
-      _etk_container_signals[ETK_CONTAINER_CHILD_ADDED_SIGNAL] = etk_signal_new("child_added", container_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_container_signals[ETK_CONTAINER_CHILD_REMOVED_SIGNAL] = etk_signal_new("child_removed", container_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
+      _etk_container_signals[ETK_CONTAINER_CHILD_ADDED_SIGNAL] = etk_signal_new("child_added",
+         container_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
+      _etk_container_signals[ETK_CONTAINER_CHILD_REMOVED_SIGNAL] = etk_signal_new("child_removed",
+         container_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
 
-      etk_type_property_add(container_type, "border_width", ETK_CONTAINER_BORDER_WIDTH_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(0));
+      etk_type_property_add(container_type, "border_width", ETK_CONTAINER_BORDER_WIDTH_PROPERTY,
+         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(0));
    
       container_type->property_set = _etk_container_property_set;
       container_type->property_get = _etk_container_property_get;
@@ -60,7 +64,7 @@ Etk_Type *etk_container_type_get()
 }
 
 /**
- * @brief Adds a child to the container
+ * @brief Adds a child to the container. It simply calls the "child_add" function of the corresponding container
  * @param container a container
  * @param widget the widget to add
  */
@@ -72,7 +76,7 @@ void etk_container_add(Etk_Container *container, Etk_Widget *widget)
 }
 
 /**
- * @brief Removes a child from the container
+ * @brief Removes a child from the container It simply calls the "child_remove" function of the corresponding container
  * @param container a container
  * @param widget the widget to remove
  */
@@ -84,7 +88,7 @@ void etk_container_remove(Etk_Container *container, Etk_Widget *widget)
 }
 
 /**
- * @brief Sets the border width of the container
+ * @brief Sets the border width of the container. The border will be added on each side of the container
  * @param container a container
  * @param border_width the border width to set
  */
@@ -111,9 +115,12 @@ int etk_container_border_width_get(Etk_Container *container)
 }
 
 /**
- * @brief Gets the list of the children of the container
+ * @brief Gets the list of the children of the container.
+ * It simply calls the "childrend_get" function of the corresponding container. @n
+ * The list will have to be freed with evas_list_free()
  * @param container a container
  * @return Returns the list of the children of @a container
+ * @warning The returned list has to be freed with evas_list_free()
  */
 Evas_List *etk_container_children_get(Etk_Container *container)
 {
@@ -126,49 +133,62 @@ Evas_List *etk_container_children_get(Etk_Container *container)
  * @brief Gets whether the widget is a child of the container
  * @param container a container
  * @param widget the widget you want to check if it is a child of the container
+ * @return Returns ETK_TRUE if the widget is a child of the container, ETK_FALSE otherwise
  */
 Etk_Bool etk_container_is_child(Etk_Container *container, Etk_Widget *widget)
 {
+   Evas_List *children;
+   Etk_Bool is_child;
+   
    if (!container || !widget)
       return ETK_FALSE;
-   return (evas_list_find(etk_container_children_get(container), widget) != NULL);
-}
-
-/**
- * @brief Calls @a for_each_cb(child, data) for each child of the container
- * @param container the container
- * @param for_each_cb the function to call
- */
-void etk_container_for_each(Etk_Container *container, void (*for_each_cb)(Etk_Widget *child))
-{
-   Evas_List *l;
-
-   if (!container || !for_each_cb)
-      return;
-
-   for (l = etk_container_children_get(container); l; l = l->next)
-      for_each_cb(ETK_WIDGET(l->data));
+   
+   children = etk_container_children_get(container);
+   is_child = (evas_list_find(etk_container_children_get(container), widget) != NULL);
+   evas_list_free(children);
+   
+   return is_child;
 }
 
 /**
  * @brief Calls @a for_each_cb(child) for each child of the container
  * @param container the container
  * @param for_each_cb the function to call
- * @param data the data to pass as the second argument of @a for_each_cb()
  */
-void etk_container_for_each_data(Etk_Container *container, void (*for_each_cb)(Etk_Widget *child, void *data), void *data)
+void etk_container_for_each(Etk_Container *container, void (*for_each_cb)(Etk_Widget *child))
 {
-   Evas_List *l;
+   Evas_List *children, *l;
 
    if (!container || !for_each_cb)
       return;
 
-   for (l = etk_container_children_get(container); l; l = l->next)
-      for_each_cb(ETK_WIDGET(l->data), data);
+   children = etk_container_children_get(container);
+   for (l = children; l; l = l->next)
+      for_each_cb(ETK_WIDGET(l->data));
+   evas_list_free(children);
 }
 
 /**
- * @brief Resizes the allocated child space acoording to the fill policy (mainly for container implementations)
+ * @brief Calls @a for_each_cb(child, data) for each child of the container
+ * @param container the container
+ * @param for_each_cb the function to call
+ * @param data the data to pass as the second argument of @a for_each_cb()
+ */
+void etk_container_for_each_data(Etk_Container *container, void (*for_each_cb)(Etk_Widget *child, void *data), void *data)
+{
+   Evas_List *children, *l;
+
+   if (!container || !for_each_cb)
+      return;
+
+   children = etk_container_children_get(container);
+   for (l = children; l; l = l->next)
+      for_each_cb(ETK_WIDGET(l->data), data);
+   evas_list_free(children);
+}
+
+/**
+ * @brief Resizes the allocated space acoording to the fill policy. It is a utility function used by other containers
  * @param child a child
  * @param child_space the allocated space for the child. It will be modified to correspond to the fill options
  * @param hfill if hfill == ETK_TRUE, the child should fill the space horizontally
@@ -205,7 +225,7 @@ void etk_container_child_space_fill(Etk_Widget *child, Etk_Geometry *child_space
  *
  **************************/
 
-/* Initializes the members of the container */
+/* Initializes the container */
 static void _etk_container_constructor(Etk_Container *container)
 {
    if (!container)
@@ -217,7 +237,7 @@ static void _etk_container_constructor(Etk_Container *container)
    container->border_width = 0;
 }
 
-/* Destoys the container */
+/* Destroys the container */
 static void _etk_container_destructor(Etk_Container *container)
 {
    if (!container)
@@ -265,3 +285,46 @@ static void _etk_container_property_get(Etk_Object *object, int property_id, Etk
 }
 
 /** @} */
+
+/**************************
+ *
+ * Documentation
+ *
+ **************************/
+
+/**
+ * @addtogroup Etk_Container
+ *
+ * Etk_Container is an abstract class which allows the user to add or remove children to a deriving widget. @n @n
+ * etk_container_add() calls the @a "child_add" function of the deriving widget, such as etk_bin_child_set() for Etk_Bin,
+ * or etk_box_pack_start for Etk_Box. But, you will often have to call directly a function of the API of the deriving
+ * widget, in order to add the child at a specific place. For example, you'll have to call directly etk_box_pack_end() to
+ * pack a child at the end of a box (since etk_container_add() only call etk_box_pack_start()). @n
+ * etk_container_remove() calls the @a "child_remove" function of the deriving widget, which will remove the child
+ * from the container. @n @n
+ * You can also get the list of the children of the container with etk_container_children_get().
+ * 
+ * \par Object Hierarchy:
+ * - Etk_Object
+ *   - Etk_Widget
+ *     - Etk_Container
+ *
+ * \par Signals:
+ * @signal_name "child_added": Emitted when a child has been added to the container
+ * @signal_cb void callback(Etk_Container *container, Etk_Widget *child, void *data)
+ * @signal_arg container: the container connected to the callback
+ * @signal_arg child: the child which has been added
+ * @signal_data
+ * \par
+ * @signal_name "child_removed": Emitted when a child has been removed from the container
+ * @signal_cb void callback(Etk_Container *container, Etk_Widget *child, void *data)
+ * @signal_arg container: the container connected to the callback
+ * @signal_arg child: the child which has been removed
+ * @signal_data
+ *
+ * \par Properties:
+ * @prop_name "border_width": The size of the border to add on each side of the container
+ * @prop_type Integer
+ * @prop_rw
+ * @prop_val 0
+ */

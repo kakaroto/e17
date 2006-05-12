@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
    if (!etk_init())
    {
       fprintf(stderr, "Could not init etk. Exiting...\n");
-      return 0;
+      return 1;
    };
 
    etk_tooltips_enable();
@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
    etk_main();
    etk_shutdown();
 
-   return 1;
+   return 0;
 }
 
 /* Creates the main window */

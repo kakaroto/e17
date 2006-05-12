@@ -6,7 +6,7 @@
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
-#include "etk_vbox.h"
+#include "etk_box.h"
 #include "etk_radio_button.h"
 #include "etk_colorpicker_vertical.h"
 #include "etk_colorpicker_square.h"

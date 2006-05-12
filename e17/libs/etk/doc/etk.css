@@ -1,3 +1,30 @@
+BODY {
+   background             : url("bg.jpg");
+   background-repeat      : repeat-x;
+   background-position    : top left;
+   background-color       : #b2a5b0;
+   padding-top            : 0px;
+   padding-bottom         : 0px;
+   padding-left           : 0px;
+   padding-right          : 0px;
+   margin-right: 20px;
+   margin-left: 20px;
+}
+
+td.bx1[class] { background-image:url("nav_tlf.png"); }
+td.bx2[class] { background-image:url("nav_top.png"); }
+td.bx3[class] { background-image:url("nav_trt.png"); }
+td.bx4[class] { background-image:url("nav_lef.png"); }
+td.bx5 {
+   background             : #fff;
+   text-align             : left;
+   vertical-align         : middle;
+}
+td.bx6[class] { background-image:url("nav_rig.png"); }
+td.bx7[class] { background-image:url("nav_blf.png"); }
+td.bx8[class] { background-image:url("nav_bot.png"); }
+td.bx9[class] { background-image:url("nav_brt.png"); }
+
 BODY,H1,H2,H3,H4,H5,H6,P,CENTER,TD,TH,UL,DL,DIV {
 	font-family: Geneva, Arial, Helvetica, sans-serif;
 }
@@ -17,7 +44,7 @@ H3 {
 CAPTION { font-weight: bold }
 DIV.qindex {
 	width: 100%;
-	background-color: #eeeeff;
+	background-color: #eeeeee;
 	border: 1px solid #b0b0b0;
 	text-align: center;
 	margin: 2px;
@@ -26,7 +53,7 @@ DIV.qindex {
 }
 DIV.nav {
 	width: 100%;
-	background-color: #eeeeff;
+	background-color: #eeeeee;
 	border: 1px solid #b0b0b0;
 	text-align: center;
 	margin: 2px;
@@ -34,7 +61,7 @@ DIV.nav {
 	line-height: 140%;
 }
 DIV.navtab {
-       background-color: #eeeeff;
+       background-color: #eeeeee;
        border: 1px solid #b0b0b0;
        text-align: center;
        margin: 2px;
@@ -47,37 +74,37 @@ TD.navtab {
 A.qindex {
        text-decoration: none;
        font-weight: bold;
-       color: #1A419D;
+       color: #444444;
 }
 A.qindex:visited {
        text-decoration: none;
        font-weight: bold;
-       color: #1A419D
+       color: #333333
 }
 A.qindex:hover {
 	text-decoration: none;
-	background-color: #ddddff;
+	background-color: #dddddd;
 }
 A.qindexHL {
 	text-decoration: none;
 	font-weight: bold;
-	background-color: #6666cc;
+	background-color: #666666;
 	color: #ffffff;
 	border: 1px double #9295C2;
 }
 A.qindexHL:hover {
 	text-decoration: none;
-	background-color: #6666cc;
+	background-color: #666666;
 	color: #ffffff;
 }
-A.qindexHL:visited { text-decoration: none; background-color: #6666cc; color: #ffffff }
+A.qindexHL:visited { text-decoration: none; background-color: #666666; color: #ffffff }
 A.el { text-decoration: none; font-weight: bold }
 A.elRef { font-weight: bold }
-A.code:link { text-decoration: none; font-weight: normal; color: #0000FF}
-A.code:visited { text-decoration: none; font-weight: normal; color: #0000FF}
-A.codeRef:link { font-weight: normal; color: #0000FF}
-A.codeRef:visited { font-weight: normal; color: #0000FF}
-A:hover { text-decoration: none; background-color: #f2f2ff }
+A.code:link { text-decoration: underline; font-weight: normal; color: #000000 }
+A.code:visited { text-decoration: underline; font-weight: normal; color: #000000 }
+A.codeRef:link { text-decoration: underline; font-weight: normal; color: #000000 }
+A.codeRef:visited { text-decoration: underline; font-weight: normal; color: #000000 }
+A:hover { text-decoration: none; background-color: #f2f2f2 }
 DL.el { margin-left: -1cm }
 .fragment {
        font-family: Fixed, monospace;
@@ -96,14 +123,14 @@ PRE.fragment {
 	padding-bottom: 4px;
 }
 DIV.ah { background-color: black; font-weight: bold; color: #ffffff; margin-bottom: 3px; margin-top: 3px }
-TD.md { background-color: #F4F4FB; font-weight: bold; }
+TD.md { background-color: #F4F4F4; font-weight: bold; }
 TD.mdPrefix {
-       background-color: #F4F4FB;
+       background-color: #F4F4F4;
        color: #606060;
 	font-size: 80%;
 }
-TD.mdname1 { background-color: #F4F4FB; font-weight: bold; color: #602020; }
-TD.mdname { background-color: #F4F4FB; font-weight: bold; color: #602020; width: 600px; }
+TD.mdname1 { background-color: #F4F4F4; font-weight: bold; color: #602020; }
+TD.mdname { background-color: #F4F4F4; font-weight: bold; color: #602020; width: 600px; }
 DIV.groupHeader {
        margin-left: 16px;
        margin-top: 12px;
@@ -111,14 +138,8 @@ DIV.groupHeader {
        font-weight: bold;
 }
 DIV.groupText { margin-left: 16px; font-style: italic; font-size: 90% }
-BODY {
-	background: white;
-	color: black;
-	margin-right: 20px;
-	margin-left: 20px;
-}
 TD.indexkey {
-	background-color: #eeeeff;
+	background-color: #eeeeee;
 	font-weight: bold;
 	padding-right  : 10px;
 	padding-top    : 2px;
@@ -131,7 +152,7 @@ TD.indexkey {
 	border: 1px solid #CCCCCC;
 }
 TD.indexvalue {
-	background-color: #eeeeff;
+	background-color: #eeeeee;
 	font-style: italic;
 	padding-right  : 10px;
 	padding-top    : 2px;
@@ -158,7 +179,7 @@ SPAN.stringliteral { color: #002080 }
 SPAN.charliteral   { color: #008080 }
 .mdTable {
 	border: 1px solid #868686;
-	background-color: #F4F4FB;
+	background-color: #F4F4F4;
 }
 .mdRow {
 	padding: 8px 10px;
@@ -286,21 +307,21 @@ FORM.search {
 INPUT.search { font-size: 75%;
                color: #000080;
                font-weight: normal;
-               background-color: #eeeeff;
+               background-color: #eeeeee;
 }
 TD.tiny      { font-size: 75%;
 }
 a {
-	color: #252E78;
+	color: #525252;
 }
 a:visited {
-	color: #3D2185;
+	color: #525252;
 }
 .dirtab { padding: 4px;
           border-collapse: collapse;
           border: 1px solid #b0b0b0;
 }
-TH.dirtab { background: #eeeeff;
+TH.dirtab { background: #eeeeee;
             font-weight: bold;
 }
 HR { height: 1px;

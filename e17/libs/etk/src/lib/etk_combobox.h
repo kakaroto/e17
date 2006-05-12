@@ -9,40 +9,41 @@
 
 /**
  * @defgroup Etk_Combobox Etk_Combobox
+ * @brief The Etk_Combobox widget is made up of a button that shows a popup menu when it is clicked,
+ * allowing the user to choose an item from a list
  * @{
  */
 
-/** @brief Gets the type of a combobox */
+/** Gets the type of a combobox */
 #define ETK_COMBOBOX_TYPE       (etk_combobox_type_get())
-/** @brief Casts the object to an Etk_Combobox */
+/** Casts the object to an Etk_Combobox */
 #define ETK_COMBOBOX(obj)       (ETK_OBJECT_CAST((obj), ETK_COMBOBOX_TYPE, Etk_Combobox))
-/** @brief Check if the object is an Etk_Combobox */
+/** Check if the object is an Etk_Combobox */
 #define ETK_IS_COMBOBOX(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_COMBOBOX_TYPE))
 
-/** @brief Gets the type of a combobox item */
+/** Gets the type of a combobox item */
 #define ETK_COMBOBOX_ITEM_TYPE       (etk_combobox_item_type_get())
-/** @brief Casts the object to an Etk_Combobox_Item */
+/** Casts the object to an Etk_Combobox_Item */
 #define ETK_COMBOBOX_ITEM(obj)       (ETK_OBJECT_CAST((obj), ETK_COMBOBOX_ITEM_TYPE, Etk_Combobox_Item))
-/** @brief Check if the object is an Etk_Combobox_Item */
+/** Check if the object is an Etk_Combobox_Item */
 #define ETK_IS_COMBOBOX_ITEM(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_COMBOBOX_ITEM_TYPE))
 
-/**
- * @enum Etk_Combobox_Column_Type
- * @brief The type of widget that can contain a column of a combobox
- */
-typedef enum _Etk_Combobox_Column_Type
+/** @brief The type of widget that can contain a column of a combobox */
+typedef enum Etk_Combobox_Column_Type
 {
-   ETK_COMBOBOX_LABEL,
-   ETK_COMBOBOX_IMAGE,
-   ETK_COMBOBOX_OTHER
+   ETK_COMBOBOX_LABEL,          /**< The widget of the column is a label */
+   ETK_COMBOBOX_IMAGE,          /**< The widget of the column is an image */
+   ETK_COMBOBOX_OTHER           /**< The widget of the column is any type of widget */
 } Etk_Combobox_Column_Type;
 
 /**
- * @struct Etk_Combobox_Column
- * @brief A column of a combobox: a combobox should have at least a column, and each column contains a specific type of widgets
+ * @brief A column of a combobox: a combobox should have at least a column,
+ * and each column contains a specific type of widget
+ * @structinfo
  */
-struct _Etk_Combobox_Column
+struct Etk_Combobox_Column
 {
+   /* private: */
    Etk_Combobox_Column_Type type;
    Etk_Bool expand;
    Etk_Bool hfill;
@@ -53,10 +54,10 @@ struct _Etk_Combobox_Column
 };
 
 /**
- * @struct Etk_Combobox_Item
  * @brief An item of a combobox
+ * @structinfo
  */
-struct _Etk_Combobox_Item
+struct Etk_Combobox_Item
 {
    /* private: */
    /* Inherit from Etk_Widget */
@@ -69,10 +70,10 @@ struct _Etk_Combobox_Item
 };
 
 /**
- * @struct Etk_Combobox
- * @param A combobox is a button that pops up a window with a list of options when you click on it
+ * @brief @widget The structure of a combobox
+ * @structinfo
  */
-struct _Etk_Combobox
+struct Etk_Combobox
 {
    /* private: */
    /* Inherit from Etk_Widget */
@@ -106,13 +107,13 @@ void etk_combobox_build(Etk_Combobox *combobox);
 
 void etk_combobox_active_item_set(Etk_Combobox *combobox, Etk_Combobox_Item *item);
 Etk_Combobox_Item *etk_combobox_active_item_get(Etk_Combobox *combobox);
+Etk_Combobox_Item *etk_combobox_nth_item_get(Etk_Combobox *combobox, int index);
 
 Etk_Combobox_Item *etk_combobox_item_prepend(Etk_Combobox *combobox, ...);
 Etk_Combobox_Item *etk_combobox_item_prepend_valist(Etk_Combobox *combobox, va_list args);
 Etk_Combobox_Item *etk_combobox_item_append(Etk_Combobox *combobox, ...);
 Etk_Combobox_Item *etk_combobox_item_append_valist(Etk_Combobox *combobox, va_list args);
 
-Etk_Combobox_Item *etk_combobox_nth_item_get(Etk_Combobox *combobox, int index);
 void etk_combobox_item_remove(Etk_Combobox *combobox, Etk_Combobox_Item *item);
 void etk_combobox_clear(Etk_Combobox *combobox);
 

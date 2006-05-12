@@ -10,13 +10,13 @@
  * @{
  */
 
-typedef struct _Etk_Cache_Image_Object_Item
+typedef struct Etk_Cache_Image_Object_Item
 {
    char *filename;
    Evas_Object *image_object;
 } Etk_Cache_Image_Object_Item;
 
-typedef struct _Etk_Cache_Edje_Object_Item
+typedef struct Etk_Cache_Edje_Object_Item
 {
    char *filename;
    char *group;
@@ -24,7 +24,7 @@ typedef struct _Etk_Cache_Edje_Object_Item
    Evas_Object *edje_object;
 } Etk_Cache_Edje_Object_Item;
 
-typedef struct _Etk_Cache_System
+typedef struct Etk_Cache_System
 {
    Evas *evas;
    
@@ -74,7 +74,7 @@ void etk_cache_empty(Evas *evas)
 
 /**
  * @brief Sets the number of image objects from @a evas that can be stored in the cache. @n
- * Do not call it manually, unless you know what you do
+ * Do not call it manually, unless you know what you are doing
  * @param evas the evas which the cache system is attached to
  * @param size the number of image objects from @a evas that the cache can store
  */
@@ -105,7 +105,7 @@ int etk_cache_image_object_size_get(Evas *evas)
 
 /**
  * @brief Sets the number of edje objects from @a evas that can be stored in the cache. @n
- * Do not call it manually, unless you know what you do
+ * Do not call it manually, unless you know what what you are doing
  * @param evas the evas which the cache system is attached to
  * @param size the number of edje objects from @a evas that the cache can store
  */
@@ -135,9 +135,11 @@ int etk_cache_edje_object_size_get(Evas *evas)
 }
 
 /**
- * @brief Adds an image object to the cache, so it will be available for a further use. The object will be automatically hidden
+ * @brief Adds an image object to the cache, so it will be available for a further use.
+ * The object will be automatically hidden
  * @param image_object the image object to cache
- * @note You shouldn't keep references of the image objects you cache: they can be destoyed if there is no more space in the cache
+ * @note You should not keep references of the image objects that you cache:
+ * they can be destroyed if there is not enough space in the cache
  */
 void etk_cache_image_object_add(Evas_Object *image_object)
 {
@@ -179,7 +181,7 @@ void etk_cache_image_object_add(Evas_Object *image_object)
 }
 
 /**
- * @brief Removes an image object from the cache. The image object won't be deleted
+ * @brief Removes an image object from the cache. The image object will not be deleted
  * @param image_object the object to remove from the cache
  */
 void etk_cache_image_object_remove(Evas_Object *image_object)
@@ -227,6 +229,7 @@ void etk_cache_image_object_remove(Evas_Object *image_object)
 /**
  * @brief Finds in the cache an image object on evas @a evas and whose filename is @a filename. @n
  * If an image is found, it will be removed from the cache
+ * @param evas the evas which the searched object should belong
  * @param filename the filename of the image to find
  * @return Returns the corresponding image object, or NULL on failure
  * @note The object will need to be shown
@@ -259,9 +262,11 @@ Evas_Object *etk_cache_image_object_find(Evas *evas, const char *filename)
 }
 
 /**
- * @brief Adds an edje object to the cache, so it will be available for a further use. The object will be automatically hidden
+ * @brief Adds an edje object to the cache, so it will be available for a further use.
+ * The object will be automatically hidden
  * @param edje_object the edje object to cache
- * @note You shouldn't keep references of the edje objects you cache: they can be destoyed if there is no more space in the cache
+ * @note You shouldn't keep references of the edje objects that you cache:
+ * they could be destroyed if there is not enough space in the cache
  */
 void etk_cache_edje_object_add(Evas_Object *edje_object)
 {
@@ -269,11 +274,14 @@ void etk_cache_edje_object_add(Evas_Object *edje_object)
 }
 
 /**
- * @brief Adds an edje object to the cache, so it will be available for a further use. The object will be automatically hidden
+ * @brief Adds an edje object to the cache, so it will be available for a further use.
+ * The object will be automatically hidden
  * @param edje_object the edje object to cache
- * @param The state id to associate to the object. It can be used later if you want to find an edje object in the cache with a specific state @n
+ * @param state The state id to associate to the object.
+ * It can be used later if you want to find an edje object in the cache with a specific state. @n
  * if @a state is < 0, the function will have the same effect than etk_cache_edje_object_add()
- * @note You shouldn't keep references of the edje objects you cache: they can be destoyed if there is no more space in the cache
+ * @note You shouldn't keep references of the edje objects you cache:
+ * they could be destroyed if there is not enough space in the cache
  */
 void etk_cache_edje_object_add_with_state(Evas_Object *edje_object, int state)
 {
@@ -321,7 +329,7 @@ void etk_cache_edje_object_add_with_state(Evas_Object *edje_object, int state)
 }
 
 /**
- * @brief Removes an edje object from the cache. The edje object won't be deleted
+ * @brief Removes an edje object from the cache. The edje object will not be deleted
  * @param edje_object the object to remove from the cache
  */
 void etk_cache_edje_object_remove(Evas_Object *edje_object)
@@ -374,6 +382,7 @@ void etk_cache_edje_object_remove(Evas_Object *edje_object)
 /**
  * @brief Finds in the cache an edje object on evas @a evas and whose filename is @a filename. @n
  * If an edje object is found, it will be removed from the cache
+ * @param evas the evas which the searched object should belong
  * @param filename the filename of the edje object to find
  * @param group the group of the edje object to find
  * @return Returns the corresponding edje object, or NULL on failure
@@ -387,9 +396,11 @@ Evas_Object *etk_cache_edje_object_find(Evas *evas, const char *filename, const 
 /**
  * @brief Finds in the cache an edje object on evas @a evas and whose filename is @a filename. @n
  * If an edje object is found, it will be removed from the cache
+ * @param evas the evas which the searched object should belong
  * @param filename the filename of the edje object to find
  * @param group the group of the edje object to find
- * @param the state of the edje object to find. If @a state is < 0, any edje object with the correct filename and group will be returned
+ * @param state the state of the edje object to find
+ * If @a state is < 0, any edje object with the correct filename and group will be returned
  * @return Returns the corresponding edje object, or NULL on failure
  * @note The object will need to be shown
  */
@@ -505,7 +516,8 @@ static void _etk_cache_system_empty(Etk_Cache_System *cache_system)
       evas_object_del(image_item->image_object);
       free(image_item->filename);
       free(image_item);
-      cache_system->cached_image_objects = evas_list_remove_list(cache_system->cached_image_objects, cache_system->cached_image_objects);
+      cache_system->cached_image_objects = evas_list_remove_list(cache_system->cached_image_objects,
+         cache_system->cached_image_objects);
    }
    evas_hash_free(cache_system->image_object_hash);
    cache_system->image_object_hash = NULL;
@@ -517,7 +529,8 @@ static void _etk_cache_system_empty(Etk_Cache_System *cache_system)
       free(edje_item->filename);
       free(edje_item->group);
       free(edje_item);
-      cache_system->cached_edje_objects = evas_list_remove_list(cache_system->cached_edje_objects, cache_system->cached_edje_objects);
+      cache_system->cached_edje_objects = evas_list_remove_list(cache_system->cached_edje_objects,
+         cache_system->cached_edje_objects);
    }
    evas_hash_free(cache_system->edje_object_hash);
    cache_system->edje_object_hash = NULL;

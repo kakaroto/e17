@@ -8,18 +8,19 @@
 
 /**
  * @defgroup Etk_Table Etk_Table
+ * @brief The Etk_Table widget is a container that can contain several children aligned on a grid
  * @{
  */
 
-/** @brief Gets the type of a table */
+/** Gets the type of a table */
 #define ETK_TABLE_TYPE       (etk_table_type_get())
-/** @brief Casts the object to an Etk_Table */
+/** Casts the object to an Etk_Table */
 #define ETK_TABLE(obj)       (ETK_OBJECT_CAST((obj), ETK_TABLE_TYPE, Etk_Table))
-/** @brief Checks if the object is an Etk_Table */
+/** Checks if the object is an Etk_Table */
 #define ETK_IS_TABLE(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_TABLE_TYPE))
 
 /* A cell of a table */
-typedef struct _Etk_Table_Cell
+typedef struct Etk_Table_Cell
 {
    /* private: */
    int left_attach;
@@ -33,7 +34,7 @@ typedef struct _Etk_Table_Cell
 } Etk_Table_Cell;
 
 /* A column or a row of a table */
-typedef struct _Etk_Table_Col_Row
+typedef struct Etk_Table_Col_Row
 {
    /* private: */
    int requested_size;
@@ -44,7 +45,6 @@ typedef struct _Etk_Table_Col_Row
 
 /**
  * @struct Etk_Table
- * @brief An Etk_Table is a container that can contain several children packed on a grid
  */
 struct _Etk_Table
 {

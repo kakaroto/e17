@@ -7,21 +7,22 @@
 
 /**
  * @defgroup Etk_Frame Etk_Frame
+ * @brief A frame is a bin container with a label. It's useful to group widgets that logically need to be together
  * @{
  */
 
-/** @brief Gets the type of an frame */
+/** Gets the type of an frame */
 #define ETK_FRAME_TYPE       (etk_frame_type_get())
-/** @brief Casts the object to an Etk_Frame */
+/** Casts the object to an Etk_Frame */
 #define ETK_FRAME(obj)       (ETK_OBJECT_CAST((obj), ETK_FRAME_TYPE, Etk_Frame))
-/** @brief Checks if the object is an Etk_Frame */
+/**  Checks if the object is an Etk_Frame */
 #define ETK_IS_FRAME(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_FRAME_TYPE))
 
 /**
- * @struct Etk_Frame
- * @brief A frame is a bin container with a label. It's useful to group some widgets that need to be together
+ * @brief @widget The structure of a frame
+ * @structinfo
  */
-struct _Etk_Frame
+struct Etk_Frame
 {
    /* private: */
    /* Inherit from Etk_Bin */
