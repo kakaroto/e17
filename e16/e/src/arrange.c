@@ -110,7 +110,7 @@ ArrangeMakeFillLists(int startx, int width, int starty, int height,
 		x1 = x2 = k;
 		break;
 	     }
-	for (k++; k < xsize; k++)
+	for (k++; k < xsize - 1; k++)
 	   if (sorted[j].x + sorted[j].w > xarray[k])
 	      x2 = k;
 	for (k = 0; k < ysize - 1; k++)
@@ -119,7 +119,7 @@ ArrangeMakeFillLists(int startx, int width, int starty, int height,
 		y1 = y2 = k;
 		break;
 	     }
-	for (k++; k < ysize; k++)
+	for (k++; k < ysize - 1; k++)
 	   if (sorted[j].y + sorted[j].h > yarray[k])
 	      y2 = k;
 #if DEBUG_ARRANGE
