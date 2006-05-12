@@ -25,12 +25,13 @@
 #define _SESSION_H_
 
 /* session.c */
-#define EEXIT_EXIT      0
-#define EEXIT_ERROR     1
-#define EEXIT_LOGOUT    2
-#define EEXIT_RESTART   3
-#define EEXIT_THEME     4
-#define EEXIT_EXEC      5
+#define EEXIT_QUIT      0
+#define EEXIT_EXIT      1
+#define EEXIT_ERROR     2
+#define EEXIT_LOGOUT    3
+#define EEXIT_RESTART   4
+#define EEXIT_THEME     5
+#define EEXIT_EXEC      6
 
 #define ESESSION_INIT   0
 #define ESESSION_START  1

@@ -48,7 +48,7 @@ SignalHandler(int sig)
      case SIGQUIT:
      case SIGABRT:
      case SIGTERM:
-	SessionExit(EEXIT_ERROR, NULL);
+	SessionExit(EEXIT_EXIT, NULL);
 	break;
 
      case SIGPIPE:

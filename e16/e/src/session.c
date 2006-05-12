@@ -594,7 +594,7 @@ SessionLogout(void)
    else
 #endif /* HAVE_X11_SM_SMLIB_H */
      {
-	doSMExit(EEXIT_EXIT, NULL);
+	SessionExit(EEXIT_EXIT, NULL);
      }
 }
 
@@ -666,8 +666,35 @@ SessionExit(int mode, const char *param)
    if (getpid() != Mode.wm.pid)
       return;
 
-   if (mode == EEXIT_LOGOUT)
+   if (EventDebug(EDBUG_TYPE_SESSION))
+      Eprintf("SessionExit: mode=%d(%d) prm=%s\n", mode, Mode.wm.exit_mode,
+	      param);
+
+   if (Mode.wm.startup)
+      goto done;
+
+   switch (mode)
      {
+     default:
+	/* In event loop - Set exit mode */
+	Mode.wm.exit_mode = mode;
+	Mode.wm.exit_param = Estrdup(param);
+	return;
+
+     case EEXIT_QUIT:
+	mode = Mode.wm.exit_mode;
+	param = Mode.wm.exit_param;
+	break;
+
+     case EEXIT_ERROR:
+	if (!Mode.wm.exiting)
+	   break;
+	/* This may be possible during nested signal handling */
+	Eprintf("SessionExit already in progress ... now exiting\n");
+	exit(1);
+	break;
+
+     case EEXIT_LOGOUT:
 	if (Conf.session.enable_logout_dialog)
 	   SessionLogoutConfirm();
 	else
@@ -675,13 +702,8 @@ SessionExit(int mode, const char *param)
 	return;
      }
 
-   if (Mode.wm.exiting++)
-     {
-	/* This may be possible during nested signal handling */
-	Eprintf("SessionExit already in progress ... now exiting\n");
-	exit(1);
-     }
-
+ done:
+   Mode.wm.exiting++;
    doSMExit(mode, param);
 }
 

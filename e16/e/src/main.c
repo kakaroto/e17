@@ -295,9 +295,9 @@ main(int argc, char **argv)
    /* The primary event loop */
    EventsMain();
 
-   /* Of course, we should NEVER get to this point */
+   SessionExit(EEXIT_QUIT, NULL);
 
-   return 1;
+   return 0;
 }
 
 void
@@ -320,8 +320,6 @@ EExit(int exitcode)
 	XSelectInput(disp, VRoot.xwin, 0);
 	EDisplayClose();
      }
-
-   SignalsRestore();
 
    if (Mode.wm.master)
      {

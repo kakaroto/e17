@@ -496,6 +496,8 @@ typedef struct
       char                exiting;
       char                save_ok;
       char                coredump;
+      int                 exit_mode;
+      char               *exit_param;
       int                 child_count;
       pid_t              *children;
       char               *machine_name;

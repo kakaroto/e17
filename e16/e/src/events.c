@@ -629,7 +629,7 @@ EventsMain(void)
 
    time1 = GetTime();
 
-   for (;;)
+   for (; !Mode.wm.exit_mode;)
      {
 	pfetch = 0;
 	count = EventsProcess(&evq_ptr, &evq_alloc, &pfetch);
