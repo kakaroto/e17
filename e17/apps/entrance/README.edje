@@ -7,6 +7,8 @@ Themes are edjes(eet files) and work like this:
 1. A Parts Collection Must be Present, Titled "Main"
 2. Entrance makes use of the parts of Main.  If the required column is
     set to No it is an optional feature for the themer.
+3. A Background collection must also be present, titled "Background", and
+   must be defined before the "Main" collection.
 ----------------------------------------------------------------------------
 A Complete listing of Edje parts Entrance is aware of
 -------------------------------------------------------------------------

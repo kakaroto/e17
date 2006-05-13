@@ -5,10 +5,10 @@ Entrance (v.)
 1. To put into a trance.
 2. To fill with delight, wonder, or enchantment.
 
-Entrance is the next generation of Elogin, a login/display manager for
-Linux XFree86 systems. It is designed to be extremely customizable and
-aesthetically attractive -- a refreshing relief from the traditional
-dull and boring interfaces of XDM and its descendants.
+Entrance is a login/display manager for UNIX X11 displays. It is 
+designed to be extremely customizable and aesthetically attractive
+-- a refreshing relief from the traditional dull and boring interfaces 
+of XDM and its descendants.
 
 Compiling & Installing
 ----------------------
@@ -16,9 +16,8 @@ Compiling & Installing
 To compile, you need the following libraries (if you're using a
 package-based system, be sure to install the devel packages):
 
-- Evas (>= 1.0.0pre12). Evas 0.6 will NOT work.
-- Edb (>= 1.0.3)
-- Ecore (>= 1.0.0pre4). You must have Ecore_Evas support.
+- Evas
+- Ecore
 - Edje
 - Esmart
 - PAM (optional)
@@ -64,6 +63,12 @@ that does not have PAM support, configure should automatically set your
 config settings appropriately so that crypt/shadow authentication is used
 instead. If you wish to manually set the authentication method, edit the
 /entrance/auth entry in the config db (1 for PAM, 2 for crypt/shadow).
+
+You may specify a custom background Edje file for Entrance by modifying
+the "/entrance/background" key in your Entrance config. Entrance can load
+background collections from Entrance themes or E17 background files. If
+no background is specified, Entrance will use the default background
+specified in your theme.
 
 Take a look at README.edje for a guide to the theme format and a detailed
 explanation of how sessions and users work.
