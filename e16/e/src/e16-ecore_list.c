@@ -255,7 +255,7 @@ Functions that are used to add nodes to an Ecore_List.
  * @return  @c FALSE if an error occurs, @c TRUE if appended successfully
  * @ingroup Ecore_Data_List_Add_Item_Group
  */
-EAPI inline int
+EAPI int
 ecore_list_append(Ecore_List * list, void *data)
 {
    int                 ret;
@@ -304,7 +304,7 @@ _ecore_list_append_0(Ecore_List * list, Ecore_List_Node * end)
  * @return @c FALSE if an error occurs, @c TRUE if prepended successfully.
  * @ingroup Ecore_Data_List_Add_Item_Group
  */
-EAPI inline int
+EAPI int
 ecore_list_prepend(Ecore_List * list, void *data)
 {
    int                 ret;
@@ -346,7 +346,7 @@ _ecore_list_prepend_0(Ecore_List * list, Ecore_List_Node * start)
  * @return  @c FALSE if there is an error, @c TRUE on success
  * @ingroup Ecore_Data_List_Add_Item_Group
  */
-EAPI inline int
+EAPI int
 ecore_list_insert(Ecore_List * list, void *data)
 {
    int                 ret;
@@ -411,7 +411,7 @@ Functions that remove nodes from an Ecore_List.
  * @return  A pointer to the removed data on success, @c NULL on failure.
  * @ingroup Ecore_Data_List_Remove_Item_Group
  */
-EAPI inline void   *
+EAPI void          *
 ecore_list_remove(Ecore_List * list)
 {
    void               *ret;
@@ -489,7 +489,7 @@ ecore_list_remove_destroy(Ecore_List * list)
  *          failure.
  * @ingroup Ecore_Data_List_Remove_Item_Group
  */
-EAPI inline void   *
+EAPI void          *
 ecore_list_remove_first(Ecore_List * list)
 {
    void               *ret;
@@ -544,7 +544,7 @@ _ecore_list_remove_first(Ecore_List * list)
  * @return  A pointer to the removed data on success, @c NULL on failure.
  * @ingroup Ecore_Data_List_Remove_Item_Group
  */
-EAPI inline void   *
+EAPI void          *
 ecore_list_remove_last(Ecore_List * list)
 {
    void               *ret;
@@ -616,7 +616,7 @@ Functions that can be used to traverse an Ecore_List.
  * @return  A pointer to new current item on success, @c NULL on failure.
  * @ingroup Ecore_Data_List_Traverse_Group
  */
-EAPI inline void   *
+EAPI void          *
 ecore_list_goto_index(Ecore_List * list, int indx)
 {
    void               *ret;
@@ -664,7 +664,7 @@ _ecore_list_goto_index(Ecore_List * list, int indx)
  * @return  A pointer to @p data on success, @c NULL on failure.
  * @ingroup Ecore_Data_List_Traverse_Group
  */
-EAPI inline void   *
+EAPI void          *
 ecore_list_goto(Ecore_List * list, void *data)
 {
    void               *ret;
@@ -718,7 +718,7 @@ _ecore_list_goto(Ecore_List * list, void *data)
  * @return  A pointer to the first item on success, @c NULL on failure
  * @ingroup Ecore_Data_List_Traverse_Group
  */
-EAPI inline void   *
+EAPI void          *
 ecore_list_goto_first(Ecore_List * list)
 {
    void               *ret;
@@ -749,7 +749,7 @@ _ecore_list_goto_first(Ecore_List * list)
  * @return  A pointer to the last item on success, @c NULL on failure.
  * @ingroup Ecore_Data_List_Traverse_Group
  */
-EAPI inline void   *
+EAPI void          *
 ecore_list_goto_last(Ecore_List * list)
 {
    void               *ret;
@@ -779,7 +779,7 @@ _ecore_list_goto_last(Ecore_List * list)
  * @param  list The list.
  * @return Returns the data at current position, can be @c NULL.
  */
-EAPI inline void   *
+EAPI void          *
 ecore_list_current(Ecore_List * list)
 {
    void               *ret;
@@ -809,7 +809,7 @@ _ecore_list_current(Ecore_List * list)
  * @param   list The list to retrieve data from.
  * @return  The current item in the list on success, @c NULL on failure.
  */
-EAPI inline void   *
+EAPI void          *
 ecore_list_next(Ecore_List * list)
 {
    void               *data;
