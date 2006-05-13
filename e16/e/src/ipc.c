@@ -140,6 +140,7 @@ IPC_Screen(const char *params, Client * c __UNUSED__)
    int                 l;
    const char         *p;
 
+   param[0] = '\0';
    p = params;
    if (p)
      {
