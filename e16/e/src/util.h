@@ -52,18 +52,8 @@
 
 char               *Estrtrim(char *s);
 
-#if USE_LIBC_STRDUP
-#define Estrdup(s) ((s) ? strdup(s) : NULL)
-#else
 char               *Estrdup(const char *s);
-#endif
-
-#if USE_LIBC_STRNDUP
-#define Estrndup(s,n) ((s) ? strndup(s,n) : NULL)
-#else
 char               *Estrndup(const char *s, int n);
-#endif
-
 char               *Estrdupcat2(char *ss, const char *s1, const char *s2);
 
 char              **StrlistDup(char **lst, int num);

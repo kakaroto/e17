@@ -42,11 +42,14 @@ Estrtrim(char *s)
    return s;
 }
 
-#if !USE_LIBC_STRDUP
 char               *
 Estrdup(const char *s)
 {
-   char               *ss;
+#if USE_LIBC_STRDUP
+   if (s)
+      return strdup(s);
+   return NULL;
+#else
    int                 sz;
 
    if (!s)
@@ -55,13 +58,17 @@ Estrdup(const char *s)
    ss = Emalloc(sz + 1);
    strncpy(ss, s, sz + 1);
    return ss;
-}
 #endif
+}
 
-#if !USE_LIBC_STRNDUP
 char               *
 Estrndup(const char *s, int n)
 {
+#if USE_LIBC_STRNDUP
+   if (s)
+      return strndup(s, n);
+   return NULL;
+#else
    char               *ss;
 
    if (!s)
@@ -70,8 +77,8 @@ Estrndup(const char *s, int n)
    strncpy(ss, s, n);
    ss[n] = '\0';
    return ss;
-}
 #endif
+}
 
 char               *
 Estrdupcat2(char *ss, const char *s1, const char *s2)
