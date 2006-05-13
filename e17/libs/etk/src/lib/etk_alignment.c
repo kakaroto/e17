@@ -214,7 +214,7 @@ static void _etk_alignment_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
    Etk_Alignment *alignment;
    Etk_Widget *child;
    Etk_Container *container;
-   Etk_Size child_requisition;
+   Etk_Size child_size;
 
    if (!(alignment = ETK_ALIGNMENT(widget)))
       return;
@@ -223,24 +223,24 @@ static void _etk_alignment_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
 
    if ((child = etk_bin_child_get(ETK_BIN(alignment))))
    {
-      etk_widget_size_request(child, &child_requisition);
+      etk_widget_size_request(child, &child_size);
 
       geometry.x += etk_container_border_width_get(container);
       geometry.y += etk_container_border_width_get(container);
       geometry.w -= 2 * etk_container_border_width_get(container);
       geometry.h -= 2 * etk_container_border_width_get(container);
 
-      if (geometry.w > child_requisition.w)
+      if (geometry.w > child_size.w)
       {
-         child_requisition.w += alignment->xscale * (geometry.w - child_requisition.w);
-         geometry.x += alignment->xalign * (geometry.w - child_requisition.w);
-         geometry.w = child_requisition.w;
+         child_size.w += alignment->xscale * (geometry.w - child_size.w);
+         geometry.x += alignment->xalign * (geometry.w - child_size.w);
+         geometry.w = child_size.w;
       }
-      if (geometry.h > child_requisition.h)
+      if (geometry.h > child_size.h)
       {
-         child_requisition.h += alignment->yscale * (geometry.h - child_requisition.h);
-         geometry.y += alignment->yalign * (geometry.h - child_requisition.h);
-         geometry.h = child_requisition.h;
+         child_size.h += alignment->yscale * (geometry.h - child_size.h);
+         geometry.y += alignment->yalign * (geometry.h - child_size.h);
+         geometry.h = child_size.h;
       }
 
       etk_widget_size_allocate(child, geometry);

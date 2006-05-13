@@ -1,4 +1,10 @@
 group {
+   name: "combobox";
+   data {
+      item: "item_height" "24";
+   }
+}
+group {
    name: "combobox/button";
    min: 0 32;
    parts {

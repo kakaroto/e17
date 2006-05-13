@@ -55,7 +55,7 @@ Etk_Widget *etk_canvas_new()
  * (probably because the canvas and the object do not belong to the same evas)
  * @note The object will be automatically deleted when the canvas is destroyed
  * @warning The object position remains relative to the window, and not to the canvas itself
- * (See the detailed description Etk_Canvas, at the top of this page, for more informations)
+ * (See the detailed description Etk_Canvas, at the top of this page, for more information)
  */
 Etk_Bool etk_canvas_object_add(Etk_Canvas *canvas, Evas_Object *object)
 {

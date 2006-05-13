@@ -7,6 +7,12 @@
 #include <Evas.h>
 #include "etk_types.h"
 
+/* TODO/FIXME list:
+ * - Combobox item separator!
+ * - Bug in the default theme: when you press the combobox button, and you release it with the mouse out of it,
+ * the button looks pressed.
+ */
+
 /**
  * @defgroup Etk_Combobox Etk_Combobox
  * @brief The Etk_Combobox widget is made up of a button that shows a popup menu when it is clicked,
@@ -92,6 +98,7 @@ struct Etk_Combobox
    
    Evas_List *items;
    int item_height;
+   Etk_Bool item_height_set;
    
    Etk_Bool built;
 };
@@ -101,6 +108,9 @@ Etk_Type *etk_combobox_item_type_get();
 
 Etk_Widget *etk_combobox_new();
 Etk_Widget *etk_combobox_new_default();
+
+void etk_combobox_item_height_set(Etk_Combobox *combobox, int item_height);
+int etk_combobox_item_height_get(Etk_Combobox *combobox);
 
 void etk_combobox_column_add(Etk_Combobox *combobox, Etk_Combobox_Column_Type col_type, int size, Etk_Bool expand, Etk_Bool hfill, Etk_Bool vfill, float xalign, float yalign);
 void etk_combobox_build(Etk_Combobox *combobox);
@@ -113,6 +123,11 @@ Etk_Combobox_Item *etk_combobox_item_prepend(Etk_Combobox *combobox, ...);
 Etk_Combobox_Item *etk_combobox_item_prepend_valist(Etk_Combobox *combobox, va_list args);
 Etk_Combobox_Item *etk_combobox_item_append(Etk_Combobox *combobox, ...);
 Etk_Combobox_Item *etk_combobox_item_append_valist(Etk_Combobox *combobox, va_list args);
+
+Etk_Combobox_Item *etk_combobox_item_prepend_relative(Etk_Combobox *combobox, Etk_Combobox_Item *relative, ...);
+Etk_Combobox_Item *etk_combobox_item_prepend_relative_valist(Etk_Combobox *combobox, Etk_Combobox_Item *relative, va_list args);
+Etk_Combobox_Item *etk_combobox_item_append_relative(Etk_Combobox *combobox, Etk_Combobox_Item *relative, ...);
+Etk_Combobox_Item *etk_combobox_item_append_relative_valist(Etk_Combobox *combobox, Etk_Combobox_Item *relative, va_list args);
 
 void etk_combobox_item_remove(Etk_Combobox *combobox, Etk_Combobox_Item *item);
 void etk_combobox_clear(Etk_Combobox *combobox);

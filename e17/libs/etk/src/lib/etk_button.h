@@ -6,6 +6,10 @@
 #include "etk_types.h"
 #include "etk_stock.h"
 
+/* TODO/FIXME list:
+ * - For some reasons, sometimes the child is not "swallowed" (see Extrackt's combobox)
+ */
+
 /**
  * @defgroup Etk_Button Etk_Button
  * @brief The Etk_Button widget is a widget that emits a signal when it is pressed, released and clicked

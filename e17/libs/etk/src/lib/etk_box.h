@@ -81,11 +81,11 @@ Etk_Widget *etk_vbox_new(Etk_Bool homogeneous, int spacing);
 
 void etk_box_pack_start(Etk_Box *box, Etk_Widget *child, Etk_Bool expand, Etk_Bool fill, int padding);
 void etk_box_pack_end(Etk_Box *box, Etk_Widget *child, Etk_Bool expand, Etk_Bool fill, int padding);
-void etk_box_child_reorder(Etk_Box *box, Etk_Widget *child, int position);
+void etk_box_child_packing_set(Etk_Box *box, Etk_Widget *child, int padding, Etk_Bool expand, Etk_Bool fill, Etk_Bool pack_end);
+void etk_box_child_packing_get(Etk_Box *box, Etk_Widget *child, int *padding, Etk_Bool *expand, Etk_Bool *fill, Etk_Bool *pack_end);
 
 void etk_box_spacing_set(Etk_Box *box, int spacing);
 int etk_box_spacing_get(Etk_Box *box);
-
 void etk_box_homogeneous_set(Etk_Box *box, Etk_Bool homogeneous);
 Etk_Bool etk_box_homogeneous_get(Etk_Box *box);
 
