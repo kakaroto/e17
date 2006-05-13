@@ -1,1 +1,1 @@
-SUBDIRS = default Nebulous taillights darkrock
+SUBDIRS = default darkrock

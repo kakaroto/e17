@@ -912,7 +912,7 @@ main(int argc, char *argv[])
             o = esmart_text_entry_new(evas);
             evas_object_move(o, x, y);
             evas_object_resize(o, w, h);
-            evas_object_layer_set(o, 1);
+            evas_object_layer_set(o, 2);
             esmart_text_entry_max_chars_set(o, 32);
             esmart_text_entry_is_password_set(o, i);
             evas_object_name_set(o, entries[i]);
