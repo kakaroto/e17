@@ -110,6 +110,9 @@ void etk_scrolled_view_add_with_viewport(Etk_Scrolled_View *scrolled_view, Etk_W
    else
    {
       viewport = etk_viewport_new();
+      etk_widget_visibity_locked_set(viewport, ETK_TRUE);
+      etk_widget_show(viewport, ETK_TRUE);
+      
       etk_container_add(ETK_CONTAINER(scrolled_view), viewport);
    }
 
