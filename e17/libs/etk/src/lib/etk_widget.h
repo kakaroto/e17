@@ -142,6 +142,7 @@ struct _Etk_Widget
    Etk_Widget *parent;
    void *child_properties;
    Evas_List *children;
+   Evas_List *focus_order;
    
    Evas_Object *theme_object;
    int theme_min_width, theme_min_height;
@@ -159,9 +160,9 @@ struct _Etk_Widget
    int left_inset, right_inset, top_inset, bottom_inset;
    Etk_Geometry geometry;
    Etk_Geometry inner_geometry;
-   /* The size wanted by the user */
+   /* The size requested by the user */
    Etk_Size requested_size;
-   /* The result of the last etk_widget_size_request() */
+   /* The result of the last call to etk_widget_size_request() */
    Etk_Size last_size_requisition;
    void (*size_request)(Etk_Widget *widget, Etk_Size *size_requisition);
    void (*size_allocate)(Etk_Widget *widget, Etk_Geometry geometry);
@@ -192,6 +193,7 @@ struct _Etk_Widget
    unsigned char focusable : 1;
    unsigned char focus_on_press : 1;
    unsigned char can_pass_focus : 1;
+   unsigned char use_focus_order : 1;
    unsigned char need_size_recalc : 1;
    unsigned char need_redraw : 1;
    unsigned char need_theme_min_size_recalc : 1;

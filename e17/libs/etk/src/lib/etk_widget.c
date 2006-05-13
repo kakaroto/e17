@@ -1741,6 +1741,7 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->toplevel_parent = NULL;
    widget->child_properties = NULL;
    widget->children = NULL;
+   widget->focus_order = NULL;
 
    widget->theme_object = NULL;
    widget->theme_min_width = 0;
@@ -1793,6 +1794,7 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->focusable = ETK_FALSE;
    widget->focus_on_press = ETK_FALSE;
    widget->can_pass_focus = ETK_TRUE;
+   widget->use_focus_order = ETK_FALSE;
    widget->has_event_object = ETK_FALSE;
    widget->repeat_mouse_events = ETK_FALSE;
    widget->pass_mouse_events = ETK_FALSE;
@@ -1833,8 +1835,8 @@ static void _etk_widget_destructor(Etk_Widget *widget)
          etk_container_remove(ETK_CONTAINER(widget->parent), widget);
       etk_widget_parent_set(widget, NULL);
    }
+   evas_list_free(widget->focus_order);
    
-   /* Unref theme children/parent */
    while (widget->theme_children)
    {
       ETK_WIDGET(widget->theme_children->data)->theme_parent = NULL;
@@ -1843,10 +1845,9 @@ static void _etk_widget_destructor(Etk_Widget *widget)
    if (widget->theme_parent)
       widget->theme_parent->theme_children = evas_list_remove(widget->theme_parent->theme_children, widget);
    
-   /* Free what need to be freed */
+   /* Remove the widget from the dnd lists */
    if (widget->accepts_dnd && widget->dnd_dest)
       _etk_widget_dnd_dest_widgets = evas_list_remove(_etk_widget_dnd_dest_widgets, widget);
-   
    if (widget->accepts_dnd && widget->dnd_source)
      _etk_widget_dnd_source_widgets = evas_list_remove(_etk_widget_dnd_source_widgets, widget);
    

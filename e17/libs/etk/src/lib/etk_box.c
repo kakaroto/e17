@@ -274,6 +274,7 @@ static void _etk_box_constructor(Etk_Box *box)
    ETK_CONTAINER(box)->child_add = _etk_box_child_add;
    ETK_CONTAINER(box)->child_remove = _etk_box_child_remove;
    ETK_CONTAINER(box)->children_get = _etk_box_children_get;
+   ETK_WIDGET(box)->use_focus_order = ETK_TRUE;
 }
 
 /* Destroys the box */
@@ -356,6 +357,7 @@ static void _etk_box_child_remove(Etk_Container *container, Etk_Widget *widget)
          etk_widget_parent_set_full(widget, NULL, ETK_FALSE);
          free(cell);
          box->cells = evas_list_remove_list(box->cells, l);
+         ETK_WIDGET(box)->focus_order = evas_list_remove(ETK_WIDGET(box)->focus_order, widget);
          etk_widget_size_recalc_queue(ETK_WIDGET(box));
          return;
       }
@@ -784,11 +786,13 @@ static void _etk_vbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
  *
  **************************/
 
-/* Adds the "child" to the "box" : "expand" and "fill" describe its fill policy, "padding" is the size of the space
- * on the sides of the child and if "pack_end" == ETK_TRUE, the child will be packed at the end of the box */
+/* Adds the "child" to the "box" : "expand" and "fill" describe its fill policy, "padding" is the amount of space
+ * on the sides of the child and. If "pack_end" == ETK_TRUE, the child will be packed at the end of the box */
 static void _etk_box_pack_full(Etk_Box *box, Etk_Widget *child, Etk_Bool expand, Etk_Bool fill, int padding, Etk_Bool pack_end)
 {
-   Etk_Box_Cell *cell;
+   Etk_Box_Cell *cell, *last_cell;
+   Evas_List *l;
+   Etk_Widget *w;
    
    if (!box || !child)
       return;
@@ -799,6 +803,26 @@ static void _etk_box_pack_full(Etk_Box *box, Etk_Widget *child, Etk_Bool expand,
    cell->padding = padding;
    cell->pack_end = pack_end;
    cell->child = child;
+   
+   /* Adds the child in the focus_order list, at the right place */
+   last_cell = evas_list_data(evas_list_last(box->cells));
+   if (!last_cell)
+      ETK_WIDGET(box)->focus_order = evas_list_append(ETK_WIDGET(box)->focus_order, child);
+   else
+   {
+      for (l = ETK_WIDGET(box)->focus_order; l; l = l->next)
+      {
+         w = ETK_WIDGET(l->data);
+         if (w == last_cell->child)
+         {
+            if (last_cell->pack_end)
+               ETK_WIDGET(box)->focus_order = evas_list_prepend_relative(ETK_WIDGET(box)->focus_order, child, l);
+            else
+               ETK_WIDGET(box)->focus_order = evas_list_append_relative(ETK_WIDGET(box)->focus_order, child, l);
+            break;
+         }
+      }
+   }
    
    box->cells = evas_list_append(box->cells, cell);
    etk_widget_parent_set(child, ETK_WIDGET(box));
