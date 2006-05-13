@@ -397,7 +397,7 @@ presentation_cb(Ewl_Widget * w, void *event, void *data)
 	ewl_window_class_set(EWL_WINDOW(s->wins), "Presentation");
 	if ( mainwin == 1 ) {
 		if ( ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->fullrad)) == 0 ) {
-			ewl_object_maximum_size_set(EWL_OBJECT(s->wins), ws, h);
+			ewl_object_size_request(EWL_OBJECT(s->wins), ws, h);
 		}
 		if ( ewl_checkbutton_is_checked(EWL_CHECKBUTTON(m->fullrad)) == 1 ) {
 			ewl_callback_append(s->wins, EWL_CALLBACK_REALIZE, realize_cb, NULL);
@@ -408,7 +408,7 @@ presentation_cb(Ewl_Widget * w, void *event, void *data)
 			ewl_callback_append(s->wins, EWL_CALLBACK_REALIZE, realize_cb, NULL);
 		}
 		if ( argfullscreen == 0 ) {
-			ewl_object_maximum_size_set(EWL_OBJECT(s->wins), ws, h);
+			ewl_object_size_request(EWL_OBJECT(s->wins), ws, h);
 		}
 	}
 	ewl_callback_append(s->wins, EWL_CALLBACK_DELETE_WINDOW, destroyp_cb, NULL);
