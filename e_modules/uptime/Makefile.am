@@ -8,13 +8,11 @@ EDJE_FLAGS = -v
 # data files for the module
 filesdir = $(datadir)
 
-EXTRA_DIST = $(files_DATA) uptime.png e_modules-uptime.spec e_modules-uptime.spec.in 
+EXTRA_DIST = $(files_DATA) uptime.png uptime.edc VeraMono.ttf e_modules-uptime.spec e_modules-uptime.spec.in 
 
 files_DATA = \
 module_icon.png \
-uptime.edj \
-uptime.edc \
-VeraMono.ttf
+uptime.edj
 
 # the module .so file
 INCLUDES = -I. \
