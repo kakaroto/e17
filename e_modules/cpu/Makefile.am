@@ -5,16 +5,18 @@ SUBDIRS = po
 EDJE_CC = @edje_cc@
 EDJE_FLAGS = -v
 
-EXTRA_DIST = $(files_DATA) cpu.png e_modules-cpu.spec e_modules-cpu.spec.in 
+EXTRA_DIST = $(files_DATA) \
+cpu.edc \
+VeraMono.ttf \
+cpu.png \
+e_modules-cpu.spec e_modules-cpu.spec.in 
 
 # data files for the module
 filesdir = $(datadir)
 
 files_DATA = \
 module_icon.png \
-cpu.edj \
-cpu.edc \
-VeraMono.ttf
+cpu.edj
 
 # the module .so file
 INCLUDES = -I. \
