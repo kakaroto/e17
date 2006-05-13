@@ -147,28 +147,6 @@ AC_SUBST(e_cflags)
 AC_SUBST(e_libs)
 AC_SUBST(e_modules)
 
-AC_ARG_ENABLE(osiris, 
-[  --enable-osiris              enable osiris code], [
-  if [ test "$enableval" = "yes" ]; then  
-  AC_MSG_RESULT(Enabled Osiris Code)
-    want_osiris="yes"
-  else
-    AC_MSG_RESULT(Disabled Osiris Code)
-    want_osiris="no"
-  fi
-], [
-  AC_MSG_RESULT(Disabled Osiris Code)
-  want_osiris="no"
-]
-)
-
-if test "x$want_osiris" = "xyes"; then
-   AC_DEFINE(WANT_OSIRIS, 1, [Define to 1 to enable osiris code])
-   AM_CONDITIONAL(WANT_OSIRIS, true)
-else
-    AM_CONDITIONAL(WANT_OSIRIS, false)
-fi
-
 AC_OUTPUT([
 Makefile
 e_modules-slideshow.spec
