@@ -1019,10 +1019,14 @@ ExShapeUpdate(EXID * xid)
 #endif
 }
 
-static void
-ExShapeCombineMask(EXID * xid, int dest, int x, int y, Pixmap pmap, int op)
+void
+EShapeCombineMask(Win win, int dest, int x, int y, Pixmap pmap, int op)
 {
+   EXID               *xid = win;
    char                wasshaped = 0;
+
+   if (!xid)
+      return;
 
    if (xid->rects)
      {
@@ -1032,7 +1036,7 @@ ExShapeCombineMask(EXID * xid, int dest, int x, int y, Pixmap pmap, int op)
 	wasshaped = 1;
      }
 #if DEBUG_SHAPE_OPS
-   Eprintf("ExShapeCombineMask %#lx %d,%d %dx%d mask=%#lx wassh=%d\n",
+   Eprintf("EShapeCombineMask %#lx %d,%d %dx%d mask=%#lx wassh=%d\n",
 	   xid->xwin, xid->x, xid->y, xid->w, xid->h, pmap, wasshaped);
 #endif
    if (pmap)
@@ -1065,12 +1069,16 @@ EShapeCombineMaskTiled(Win win, int dest, int x, int y,
    EFreePixmap(tm);
 }
 
-static void
-ExShapeCombineRectangles(EXID * xid, int dest, int x, int y,
-			 XRectangle * rect, int n_rects, int op, int ordering)
+void
+EShapeCombineRectangles(Win win, int dest, int x, int y,
+			XRectangle * rect, int n_rects, int op, int ordering)
 {
+   EXID               *xid = win;
+
+   if (!xid)
+      return;
 #if DEBUG_SHAPE_OPS
-   Eprintf("ExShapeCombineRectangles %#lx %d\n", xid->xwin, n_rects);
+   Eprintf("EShapeCombineRectangles %#lx %d\n", xid->xwin, n_rects);
 #endif
 
    if (n_rects == 1 && op == ShapeSet)
@@ -1156,11 +1164,16 @@ EShapeGetRectangles(Win win, int dest, int *rn, int *ord)
    return NULL;
 }
 
-static int
-ExShapeCopy(EXID * xdst, EXID * xsrc)
+int
+EShapeCopy(Win dst, Win src)
 {
+   EXID               *xsrc = src;
+   EXID               *xdst = dst;
    XRectangle         *rl;
    int                 rn;
+
+   if (!xsrc || !xdst)
+      return 0;
 
    if (xsrc->attached)
       ExShapeUpdate(xsrc);
@@ -1177,7 +1190,7 @@ ExShapeCopy(EXID * xdst, EXID * xsrc)
    else if (rn == 0)
      {
 	/* Source has default shape (no shape) */
-	ExShapeCombineMask(xdst, ShapeBounding, 0, 0, None, ShapeSet);
+	EShapeCombineMask(xdst, ShapeBounding, 0, 0, None, ShapeSet);
      }
    else if (rn == 1)
      {
@@ -1185,7 +1198,7 @@ ExShapeCopy(EXID * xdst, EXID * xsrc)
 	    && (rl[0].height >= xsrc->h))
 	  {
 	     rn = 0;
-	     ExShapeCombineMask(xdst, ShapeBounding, 0, 0, None, ShapeSet);
+	     EShapeCombineMask(xdst, ShapeBounding, 0, 0, None, ShapeSet);
 	  }
 	else
 	  {
@@ -1202,9 +1215,10 @@ ExShapeCopy(EXID * xdst, EXID * xsrc)
    return rn != 0;
 }
 
-static int
-ExShapePropagate(EXID * xid)
+int
+EShapePropagate(Win win)
 {
+   EXID               *xid = win;
    EXID               *xch;
    Window              rt, par, *list = NULL;
    unsigned int        i, num, num_rects;
@@ -1217,7 +1231,7 @@ ExShapePropagate(EXID * xid)
       return 0;
 
 #if DEBUG_SHAPE_PROPAGATE
-   Eprintf("ExShapePropagate %#lx %d,%d %dx%d\n", win, xid->x, xid->y, xid->w,
+   Eprintf("EShapePropagate %#lx %d,%d %dx%d\n", win, xid->x, xid->y, xid->w,
 	   xid->h);
 #endif
 
@@ -1287,7 +1301,7 @@ ExShapePropagate(EXID * xid)
    XFree(list);
 
 #if DEBUG_SHAPE_PROPAGATE > 1
-   Eprintf("ExShapePropagate %#lx nr=%d\n", win, num_rects);
+   Eprintf("EShapePropagate %#lx nr=%d\n", win, num_rects);
    for (i = 0; i < num_rects; i++)
       Eprintf("%3d %4d,%4d %4dx%4d\n", i, rects[i].x, rects[i].y,
 	      rects[i].width, rects[i].height);
@@ -1296,41 +1310,18 @@ ExShapePropagate(EXID * xid)
    /* set the rects as the shape mask */
    if (rects)
      {
-	ExShapeCombineRectangles(xid, ShapeBounding, 0, 0, rects,
-				 num_rects, ShapeSet, Unsorted);
+	EShapeCombineRectangles(xid, ShapeBounding, 0, 0, rects,
+				num_rects, ShapeSet, Unsorted);
 	Efree(rects);
      }
    else
      {
 	/* Empty shape */
-	ExShapeCombineRectangles(xid, ShapeBounding, 0, 0, NULL, 0, ShapeSet,
-				 Unsorted);
+	EShapeCombineRectangles(xid, ShapeBounding, 0, 0, NULL, 0, ShapeSet,
+				Unsorted);
      }
 
    return xid->num_rect;
-}
-
-void
-EShapeCombineMask(Win win, int dest, int x, int y, Pixmap pmap, int op)
-{
-   EXID               *xid = win;
-
-   if (!xid)
-      return;
-
-   ExShapeCombineMask(xid, dest, x, y, pmap, op);
-}
-
-void
-EShapeCombineRectangles(Win win, int dest, int x, int y,
-			XRectangle * rect, int n_rects, int op, int ordering)
-{
-   EXID               *xid = win;
-
-   if (!xid)
-      return;
-
-   ExShapeCombineRectangles(xid, dest, x, y, rect, n_rects, op, ordering);
 }
 
 void
@@ -1344,29 +1335,6 @@ EShapeCombineShape(Win win, int dest, int x, int y,
 
    XShapeCombineShape(disp, win->xwin, dest, x, y, src_win->xwin, src_kind, op);
    ExShapeUpdate(xid);
-}
-
-int
-EShapeCopy(Win dst, Win src)
-{
-   EXID               *xsrc = src;
-   EXID               *xdst = dst;
-
-   if (!xsrc || !xdst)
-      return 0;
-
-   return ExShapeCopy(xdst, xsrc);
-}
-
-int
-EShapePropagate(Win win)
-{
-   EXID               *xid = win;
-
-   if (!xid)
-      return 0;
-
-   return ExShapePropagate(xid);
 }
 
 int
