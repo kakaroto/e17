@@ -78,7 +78,7 @@ EFont_draw_string(Drawable win, GC gc, int x, int y, const char *text,
    imlib_context_set_font(f->face);
    ImlibSetFgColorFromGC(gc, cm);
    imlib_text_draw(0, 0, text);
-   EImageRenderOnDrawable(im, win, x, y - ascent, w, h, 0);
+   EImageRenderOnDrawable(im, NULL, win, x, y - ascent, w, h, 0);
    EImageFree(im);
 }
 

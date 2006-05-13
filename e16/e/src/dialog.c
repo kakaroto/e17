@@ -478,7 +478,7 @@ DialogDrawButton(Dialog * d __UNUSED__, DButton * db)
 		 db->w - (h + 2 + pad->left + pad->right),
 		 h, h, TextclassGetJustification(db->tclass));
 
-	EImageRenderOnDrawable(im, Xwin(db->win), pad->left, pad->top, h, h, 1);
+	EImageRenderOnDrawable(im, db->win, None, pad->left, pad->top, h, h, 1);
 	EImageFree(im);
      }
    else
@@ -1199,7 +1199,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	     EImageGetSize(im, &iw, &ih);
 	     di->win = ECreateWindow(d->win, 0, 0, iw, ih, 0);
 	     EMapWindow(di->win);
-	     EImageRenderPixmaps(im, Xwin(di->win), &pmap, &mask, 0, 0);
+	     EImageRenderPixmaps(im, di->win, &pmap, &mask, 0, 0);
 	     ESetWindowBackgroundPixmap(di->win, pmap);
 	     EShapeCombineMask(di->win, ShapeBounding, 0, 0, mask, ShapeSet);
 	     EImagePixmapFree(pmap);

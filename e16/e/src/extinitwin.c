@@ -118,7 +118,7 @@ ExtInitWinMain(void)
 	   im = EImageLoad(s);
 	   if (im)
 	     {
-		EImageRenderPixmaps(im, w2, &pmap, &mask, 0, 0);
+		EImageRenderPixmaps(im, NULL, &pmap, &mask, 0, 0);
 		EImageGetSize(im, &w, &h);
 		XShapeCombineMask(disp, w2, ShapeBounding, 0, 0, mask,
 				  ShapeSet);

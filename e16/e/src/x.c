@@ -596,12 +596,15 @@ ECreateWinFromXwin(Window xwin)
    win = EXidCreate();
    if (!win)
       return NULL;
+
    win->xwin = xwin;
    win->x = x;
    win->y = y;
    win->w = w;
    win->h = h;
    win->depth = depth;
+   win->visual = VRoot.vis;
+
    return win;
 }
 

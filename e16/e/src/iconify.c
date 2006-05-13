@@ -1675,7 +1675,7 @@ IconboxDraw(Iconbox * ib)
    if (im)
      {
 	EMapWindow(ib->icon_win);
-	EImageRenderPixmaps(im, Xwin(ib->icon_win), &pmap, &mask, 0, 0);
+	EImageRenderPixmaps(im, ib->icon_win, &pmap, &mask, 0, 0);
 	ESetWindowBackgroundPixmap(ib->icon_win, pmap);
 	EShapeCombineMask(ib->icon_win, ShapeBounding, 0, 0, mask, ShapeSet);
 	EImagePixmapFree(pmap);

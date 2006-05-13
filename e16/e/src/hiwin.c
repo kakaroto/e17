@@ -83,7 +83,8 @@ HiwinRenderImageInit(Hiwin * phi)
 static void
 HiwinRenderImageDrawX(Hiwin * phi, Drawable draw)
 {
-   EImageRenderOnDrawable(phi->im, draw, 0, 0, EoGetW(phi), EoGetH(phi), 0);
+   EImageRenderOnDrawable(phi->im, EoGetWin(phi), draw, 0, 0,
+			  EoGetW(phi), EoGetH(phi), 0);
 }
 
 static void

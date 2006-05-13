@@ -813,7 +813,7 @@ ImageclassApplySimple(ImageClass * ic, Win win, Drawable draw, int state,
 	x = y = 0;
      }
 
-   EImageRenderOnDrawable(im, draw, x, y, w, h, 0);
+   EImageRenderOnDrawable(im, win, draw, x, y, w, h, 0);
    EImageFree(im);
 
    return pmap;
@@ -983,14 +983,14 @@ ImagestateMakePmapMask(ImageState * is, Win win, PmapMask * pmm,
 	pmm->mask = None;
 	pmm->w = w;
 	pmm->h = h;
-	EImageRenderOnDrawable(ii, pmap, 0, 0, w, h, 0);
+	EImageRenderOnDrawable(ii, win, pmap, 0, 0, w, h, 0);
 
 	if (make_mask && !(flags & ICLASS_ATTR_NO_CLIP))
 	  {
 	     if (EImageHasAlpha(is->im))
 	       {
 		  /* Make the scaled clip mask to be used */
-		  EImageRenderPixmaps(is->im, Xwin(win), &pmap, &mask, w, h);
+		  EImageRenderPixmaps(is->im, win, &pmap, &mask, w, h);
 
 		  /* Replace the mask with the correct one */
 		  pmm->mask = EXCreatePixmapCopy(mask, w, h, 1);
@@ -1011,7 +1011,7 @@ ImagestateMakePmapMask(ImageState * is, Win win, PmapMask * pmm,
 	pmm->pmap = pmm->mask = None;
 	pmm->w = w;
 	pmm->h = h;
-	EImageRenderPixmaps(is->im, Xwin(win), &pmm->pmap, &pmm->mask, w, h);
+	EImageRenderPixmaps(is->im, win, &pmm->pmap, &pmm->mask, w, h);
      }
    else
      {
@@ -1047,7 +1047,7 @@ ImagestateMakePmapMask(ImageState * is, Win win, PmapMask * pmm,
 	pmm->pmap = pmm->mask = None;
 	pmm->w = pw;
 	pmm->h = ph;
-	EImageRenderPixmaps(is->im, Xwin(win), &pmm->pmap, &pmm->mask, pw, ph);
+	EImageRenderPixmaps(is->im, win, &pmm->pmap, &pmm->mask, pw, ph);
      }
 }
 

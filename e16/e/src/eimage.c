@@ -25,6 +25,10 @@
 #include "xwin.h"
 #include <Imlib2.h>
 
+static Window       _default_draw;
+static Visual      *_default_vis;
+static Colormap     _default_cmap;
+
 void
 EImageInit(Display * dpy)
 {
@@ -33,9 +37,13 @@ EImageInit(Display * dpy)
 
    imlib_set_color_usage(128);
 
+   _default_draw = DefaultRootWindow(dpy);
+   _default_vis = DefaultVisual(dpy, DefaultScreen(dpy));
+   _default_cmap = DefaultColormap(dpy, DefaultScreen(dpy));
+
    imlib_context_set_display(dpy);
-   imlib_context_set_visual(DefaultVisual(dpy, DefaultScreen(dpy)));
-   imlib_context_set_colormap(DefaultColormap(dpy, DefaultScreen(dpy)));
+   imlib_context_set_visual(_default_vis);
+   imlib_context_set_colormap(_default_cmap);
 
    imlib_context_set_dither(1);
 }
@@ -350,30 +358,47 @@ EImageGrabDrawableScaled(Drawable draw, Pixmap mask, int x, int y, int w, int h,
 }
 
 void
-EImageRenderOnDrawable(EImage * im, Drawable draw, int x, int y, int w, int h,
-		       int blend)
+EImageRenderOnDrawable(EImage * im, Win win, Drawable draw, int x, int y,
+		       int w, int h, int blend)
 {
+   Visual             *vis;
+
    imlib_context_set_image(im);
-   imlib_context_set_drawable(draw);
+   imlib_context_set_drawable((draw != None) ? draw : WinGetXwin(win));
+   vis = (win) ? WinGetVisual(win) : NULL;
+   if (vis)
+      imlib_context_set_visual(vis);
+
    if (blend)
       imlib_context_set_blend(1);
    imlib_render_image_on_drawable_at_size(x, y, w, h);
    if (blend)
       imlib_context_set_blend(0);
+
+   if (vis)
+      imlib_context_set_visual(_default_vis);
 }
 
 void
-EImageRenderPixmaps(EImage * im, Drawable draw, Pixmap * pmap, Pixmap * mask,
+EImageRenderPixmaps(EImage * im, Win win, Pixmap * pmap, Pixmap * mask,
 		    int w, int h)
 {
+   Visual             *vis;
+
    imlib_context_set_image(im);
-   imlib_context_set_drawable(draw);
+   imlib_context_set_drawable((win) ? WinGetXwin(win) : _default_draw);
+   vis = (win) ? WinGetVisual(win) : NULL;
+   if (vis)
+      imlib_context_set_visual(vis);
 
    *pmap = *mask = None;
    if (w <= 0 || h <= 0)
       imlib_render_pixmaps_for_whole_image(pmap, mask);
    else
       imlib_render_pixmaps_for_whole_image_at_size(pmap, mask, w, h);
+
+   if (vis)
+      imlib_context_set_visual(_default_vis);
 }
 
 void

@@ -613,7 +613,7 @@ BackgroundRealize(Background * bg, Drawable draw, unsigned int rw,
      {
 	/* Window, no fg, no offset, and scale to 100%, or tiled, no trans */
 	pmap = BackgroundCreatePixmap(draw, w, h, VRoot.depth);
-	EImageRenderOnDrawable(bg->bg.im, pmap, 0, 0, w, h, 0);
+	EImageRenderOnDrawable(bg->bg.im, NULL, pmap, 0, 0, w, h, 0);
 
 #if 0				/* FIXME - Remove? */
 	if (x == 0 && y == 0)	/* Hmmm. Always true. */
@@ -679,7 +679,7 @@ BackgroundRealize(Background * bg, Drawable draw, unsigned int rw,
 	EImageBlend(im, bg->top.im, 1, 0, 0, ww, hh, x, y, w, h, 0, 0);
      }
 
-   EImageRenderOnDrawable(im, pmap, 0, 0, rw, rh, 0);
+   EImageRenderOnDrawable(im, NULL, pmap, 0, 0, rw, rh, 0);
    if (im != bg->bg.im)
       EImageFree(im);
 
@@ -1756,7 +1756,8 @@ BG_RedrawView(void)
 		im = BackgroundCacheMini(bg, 1, 0);
 		if (im)
 		  {
-		     EImageRenderOnDrawable(im, pmap, x + 4, 4, 64, 48, 0);
+		     EImageRenderOnDrawable(im, NULL, pmap, x + 4, 4, 64, 48,
+					    0);
 		     EImageFree(im);
 		  }
 	     }

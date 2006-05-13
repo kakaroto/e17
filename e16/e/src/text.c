@@ -756,7 +756,7 @@ TextDraw(TextClass * tclass, Win win, Drawable draw, int active, int sticky,
 }
 
 static void
-TextDrawRotTo(Win win __UNUSED__, Drawable src, Drawable dst, int x, int y,
+TextDrawRotTo(Win win, Drawable src, Drawable dst, int x, int y,
 	      int w, int h, TextState * ts)
 {
    EImage             *im;
@@ -767,20 +767,20 @@ TextDrawRotTo(Win win __UNUSED__, Drawable src, Drawable dst, int x, int y,
      case FONT_TO_UP:
 	im = EImageGrabDrawable(src, 0, y, x, h, w, 0);
 	EImageOrientate(im, 1);
-	EImageRenderOnDrawable(im, dst, 0, 0, w, h, 0);
+	EImageRenderOnDrawable(im, win, dst, 0, 0, w, h, 0);
 	EImageFree(im);
 	break;
      case FONT_TO_DOWN:
 	EXGetGeometry(src, NULL, NULL, NULL, &win_w, NULL, NULL, NULL);
 	im = EImageGrabDrawable(src, None, win_w - y - h, x, h, w, 0);
 	EImageOrientate(im, 3);
-	EImageRenderOnDrawable(im, dst, 0, 0, w, h, 0);
+	EImageRenderOnDrawable(im, win, dst, 0, 0, w, h, 0);
 	EImageFree(im);
 	break;
      case FONT_TO_LEFT:	/* Holy carumba! That's for yoga addicts, maybe .... */
 	im = EImageGrabDrawable(src, None, x, y, w, h, 0);
 	EImageOrientate(im, 2);
-	EImageRenderOnDrawable(im, dst, 0, 0, w, h, 0);
+	EImageRenderOnDrawable(im, win, dst, 0, 0, w, h, 0);
 	EImageFree(im);
 	break;
      default:
@@ -789,7 +789,7 @@ TextDrawRotTo(Win win __UNUSED__, Drawable src, Drawable dst, int x, int y,
 }
 
 static void
-TextDrawRotBack(Win win __UNUSED__, Drawable dst, Drawable src, int x, int y,
+TextDrawRotBack(Win win, Drawable dst, Drawable src, int x, int y,
 		int w, int h, TextState * ts)
 {
    EImage             *im;
@@ -800,20 +800,20 @@ TextDrawRotBack(Win win __UNUSED__, Drawable dst, Drawable src, int x, int y,
      case FONT_TO_UP:
 	im = EImageGrabDrawable(src, None, 0, 0, w, h, 0);
 	EImageOrientate(im, 3);
-	EImageRenderOnDrawable(im, dst, y, x, h, w, 0);
+	EImageRenderOnDrawable(im, win, dst, y, x, h, w, 0);
 	EImageFree(im);
 	break;
      case FONT_TO_DOWN:
 	EXGetGeometry(dst, NULL, NULL, NULL, &win_w, NULL, NULL, NULL);
 	im = EImageGrabDrawable(src, None, 0, 0, w, h, 0);
 	EImageOrientate(im, 1);
-	EImageRenderOnDrawable(im, dst, win_w - y - h, x, h, w, 0);
+	EImageRenderOnDrawable(im, win, dst, win_w - y - h, x, h, w, 0);
 	EImageFree(im);
 	break;
      case FONT_TO_LEFT:	/* Holy carumba! That's for yoga addicts, maybe .... */
 	im = EImageGrabDrawable(src, None, 0, 0, w, h, 0);
 	EImageOrientate(im, 2);
-	EImageRenderOnDrawable(im, dst, x, y, w, h, 0);
+	EImageRenderOnDrawable(im, win, dst, x, y, w, h, 0);
 	EImageFree(im);
 	break;
      default:

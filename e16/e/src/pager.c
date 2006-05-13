@@ -524,7 +524,7 @@ PagerUpdateBg(Pager * p)
 	im = EImageLoad(s);
 	if (im)
 	  {
-	     EImageRenderOnDrawable(im, pmap, 0, 0, p->dw, p->dh, 0);
+	     EImageRenderOnDrawable(im, p->win, pmap, 0, 0, p->dw, p->dh, 0);
 	     EImageDecache(im);
 	  }
 	else

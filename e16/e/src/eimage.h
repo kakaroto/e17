@@ -23,6 +23,9 @@
 #ifndef _EIMAGE_H_
 #define _EIMAGE_H_
 
+#include <X11/Xlib.h>
+#include "xwin.h"
+
 typedef void        EImage;
 typedef void        EImageColorModifier;
 
@@ -73,11 +76,11 @@ EImage             *EImageGrabDrawableScaled(Drawable draw, Pixmap mask,
 					     int iw, int ih, int grab,
 					     int get_mask_from_shape);
 
-void                EImageRenderOnDrawable(EImage * im, Drawable draw,
+void                EImageRenderOnDrawable(EImage * im, Win win, Drawable draw,
 					   int x, int y, int w, int h,
 					   int blend);
 
-void                EImageRenderPixmaps(EImage * im, Drawable draw,
+void                EImageRenderPixmaps(EImage * im, Win win,
 					Pixmap * pmap, Pixmap * mask,
 					int w, int h);
 void                EImagePixmapFree(Pixmap pmap);
