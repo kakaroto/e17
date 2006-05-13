@@ -1,0 +1,10 @@
+
+* Switch language on mouse click on module.
+* Introduce country flags for the face box, and for the list icons in the config
+  dialog and in the face menu.
+* Center the language indicator in the box. Maybe do it 2 letter long instead of 3.
+* Make module shelf compatible.
+* Think on language switch policy :
+   a) Global
+   b) Per Window
+   c) ????
