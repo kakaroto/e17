@@ -233,14 +233,6 @@ data/themes/default/Makefile
 data/themes/default/img/Makefile
 data/themes/darkrock/Makefile
 data/themes/darkrock/img/Makefile
-data/themes/Nebulous/Makefile
-data/themes/Nebulous/images/Makefile
-data/themes/taillights/Makefile
-data/themes/taillights/embryo/Makefile
-data/themes/taillights/parts/Makefile
-data/themes/taillights/programs/Makefile
-data/themes/taillights/images/Makefile
-data/themes/taillights/fonts/Makefile
 entrance.spec
 debian/changelog
 ])
