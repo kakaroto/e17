@@ -154,6 +154,9 @@ AlertButtonText(int btn, const char *text)
       return NULL;
 
    s = Emalloc(strlen(text) + 6);
+   if (!s)
+      return NULL;
+
    sprintf(s, "(F%d) %s", btn, text);
 
    return s;
