@@ -1,9 +1,7 @@
 #include <e.h>
 #include <E_Lib.h>
 #include <Ecore.h>
-#ifdef WANT_OSIRIS
 # include <Ecore_File.h>
-#endif
 #include "e_mod_main.h"
 #include "e_mod_config.h"
 #include "config.h"
@@ -173,7 +171,8 @@ _slide_init(E_Module *m)
    Slide *e;
    E_Menu_Item *mi;
    Evas_List *managers, *l, *l2;
-
+   char buf[1024];
+   
    e = E_NEW(Slide, 1);
 
    if (!e)
@@ -184,9 +183,7 @@ _slide_init(E_Module *m)
 #undef D
 #define T Config
 #define D e->conf_edd
-#ifdef WANT_OSIRIS
-   E_CONFIG_VAL(D, T, theme, STR);
-#endif
+   E_CONFIG_VAL(D, T, dir, STR);
    E_CONFIG_VAL(D, T, disable_timer, INT);
    E_CONFIG_VAL(D, T, cycle_time, DOUBLE);
 
@@ -195,9 +192,8 @@ _slide_init(E_Module *m)
      {
         e->conf = E_NEW(Config, 1);
 
-#ifdef WANT_OSIRIS
-        e->conf->theme = (char *)evas_stringshare_add("");
-#endif
+	snprintf(buf, sizeof(buf), "%s/.e/e/backgrounds", e_user_homedir_get());
+        e->conf->dir = (char *)evas_stringshare_add(buf);
         e->conf->disable_timer = 0;
         e->conf->cycle_time = 600;
      }
@@ -224,7 +220,6 @@ _slide_init(E_Module *m)
              if (ef)
                {
                   ef->conf_face_edd = E_CONFIG_DD_NEW("Slide_Config_Face", Config_Face);
-
 #undef T
 #undef D
 #define T Config_Face
@@ -258,13 +253,9 @@ _slide_init(E_Module *m)
 
                   /* Setup */
                   if (!ef->conf->enabled)
-                    {
-                       _slide_face_disable(ef);
-                    }
+		    _slide_face_disable(ef);
                   else
-                    {
-                       _slide_face_enable(ef);
-                    }
+		    _slide_face_enable(ef);
                }
           }
      }
@@ -274,8 +265,7 @@ _slide_init(E_Module *m)
 static void
 _slide_shutdown(Slide *e)
 {
-   if (list)
-      ecore_list_destroy(list);
+   if (list) ecore_list_destroy(list);
 
    _slide_face_free(e->face);
 
@@ -284,8 +274,8 @@ _slide_shutdown(Slide *e)
         e->cycle_timer = ecore_timer_del(e->cycle_timer);
         e->cycle_timer = NULL;
      }
-   if (e->display)
-      free(e->display);
+   
+   if (e->display) free(e->display);
 
    free(e->conf);
    E_CONFIG_DD_FREE(e->conf_edd);
@@ -500,23 +490,17 @@ static int
 _slide_cb_check(void *data)
 {
    char *bg;
-   Slide_Face *ef = data;
-
-#ifdef WANT_OSIRIS
+   Slide_Face *ef;
    Slide *e;
 
+   ef = data;
+   if (!ef) return 0;
+   if (!ef->conf) return 0;
+   if (!ef->con) return 0;
+   if (ef->conf->enabled == 0) return 0;
+   
    e = ef->slide;
-   get_bg_count(e->conf->theme);
-#else
-   get_bg_count(NULL);
-#endif
-
-   if (!ef)
-      return 0;
-   if (!ef->conf)
-      return 0;
-   if (!ef->con)
-      return 0;
+   get_bg_count(e->conf->dir);
 
    if (idx > bg_count)
       idx = 0;
@@ -534,8 +518,6 @@ _slide_cb_check(void *data)
              idx++;
           }
      }
-   if (ef->conf->enabled == 0)
-      return 0;
    return 1;
 }
 
@@ -552,55 +534,23 @@ static void
 get_bg_count(char *name)
 {
    char *list_item;
-   char *home;
-   char buffer[PATH_MAX];
 
-   home = e_user_homedir_get();
-#ifdef WANT_OSIRIS
-   if (name == NULL)
-     {
-        snprintf(buffer, sizeof(buffer), "%s/.e/e/backgrounds", home);
-     }
-   else
-     {
-        snprintf(buffer, sizeof(buffer), "%s/.e/e/backgrounds/%s", home, name);
-     }
-#else
-   snprintf(buffer, sizeof(buffer), "%s/.e/e/backgrounds", home);
-#endif
    bg_count = 0;
-   list = ecore_file_ls(buffer);
+   list = ecore_file_ls(name);
    ecore_list_goto_first(list);
    while ((list_item = (char *)ecore_list_next(list)) != NULL)
-      bg_count++;
+     bg_count++;
 }
 
 static void
 _set_bg(char *bg, Slide_Face *sf)
 {
    char buffer[4096];
-   char *home;
-
-   home = e_user_homedir_get();
-
-#ifdef WANT_OSIRIS
    Slide *e;
 
    e = sf->slide;
-   if (e->conf->theme == NULL)
-     {
-        snprintf(buffer, sizeof(buffer), "%s/.e/e/backgrounds/%s", home, bg);
-     }
-   else
-     {
-        snprintf(buffer, sizeof(buffer), "%s/.e/e/backgrounds/%s/%s", home, e->conf->theme, bg);
-     }
-#else
-   snprintf(buffer, sizeof(buffer), "%s/.e/e/backgrounds/%s", home, bg);
-#endif
-
-   if (buffer)
-      e_lib_background_set(buffer);
+   snprintf(buffer, sizeof(buffer), "%s/%s", e->conf->dir, bg);
+   e_lib_background_set(buffer);
 }
 
 static void
@@ -610,7 +560,7 @@ _slide_face_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi)
 
    sf = data;
    if (!sf)
-      return;
+     return;
    _config_slideshow_module(sf->con, sf->slide);
 }
 

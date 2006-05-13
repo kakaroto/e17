@@ -12,9 +12,7 @@ struct _Config
 {
    int disable_timer;
    double cycle_time;
-#ifdef WANT_OSIRIS
-   char *theme;
-#endif
+   char *dir;
 };
 
 struct _Config_Face

@@ -7,9 +7,7 @@ struct _E_Config_Dialog_Data
 {
    int disable_timer;
    double cycle_time;
-#ifdef WANT_OSIRIS
-   char *theme;
-#endif
+   char *dir;
 };
 
 /* Protos */
@@ -41,11 +39,17 @@ _config_slideshow_module(E_Container *con, Slide *s)
 static void
 _fill_data(Slide *s, E_Config_Dialog_Data *cfdata)
 {
+   char buf[PATH_MAX];
+   
    cfdata->cycle_time = s->conf->cycle_time;
    cfdata->disable_timer = s->conf->disable_timer;
-#ifdef WANT_OSIRIS
-   cfdata->theme = s->conf->theme;
-#endif
+   if (s->conf->dir)
+     cfdata->dir = s->conf->dir;
+   else 
+     {
+	snprintf(buf, sizeof(buf), "%s/.e/e/backgrounds", e_user_homedir_get());
+	cfdata->dir = (char *)evas_stringshare_add(buf);
+     }
 }
 
 static void *
@@ -56,7 +60,6 @@ _create_data(E_Config_Dialog *cfd)
 
    s = cfd->data;
    cfdata = E_NEW(E_Config_Dialog_Data, 1);
-
    _fill_data(s, cfdata);
    return cfdata;
 }
@@ -68,14 +71,13 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
    s = cfd->data;
    s->config_dialog = NULL;
-   /* Free the cfdata */
    free(cfdata);
 }
 
 static Evas_Object *
 _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
-   Evas_Object *o, *ob, *of;
+   Evas_Object *o, *ob, *of, *ot;
 
    o = e_widget_list_add(evas, 0, 0);
    of = e_widget_framelist_add(evas, D_("Cycle Time"), 0);
@@ -85,18 +87,15 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-#ifdef WANT_OSIRIS
-   of = e_widget_framelist_add(evas, D_("Theme"), 0);
+   of = e_widget_framelist_add(evas, D_("Directory"), 0);
    ot = e_widget_table_add(evas, 1);
    ob = e_widget_label_add(evas, D_("Sub-directory to use for backgrounds"));
    e_widget_table_object_append(ot, ob, 0, 0, 1, 1, 0, 0, 1, 0);
-   ob = e_widget_label_add(evas, D_("Leave blank for none"));
-   e_widget_table_object_append(ot, ob, 0, 1, 1, 1, 0, 0, 1, 0);
-   ob = e_widget_entry_add(evas, &cfdata->theme);
-   e_widget_table_object_append(ot, ob, 0, 2, 1, 1, 1, 0, 1, 0);
+   ob = e_widget_entry_add(evas, &cfdata->dir);
+   e_widget_table_object_append(ot, ob, 0, 1, 1, 1, 1, 0, 1, 0);
    e_widget_framelist_object_append(of, ot);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
-#endif
+
    return o;
 }
 
@@ -104,21 +103,23 @@ static int
 _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    Slide *s;
+   char buf[PATH_MAX];
 
    s = cfd->data;
-   /* Actually take our cfdata settings and apply them in real life */
    e_border_button_bindings_ungrab_all();
    s->conf->cycle_time = cfdata->cycle_time;
    s->conf->disable_timer = cfdata->disable_timer;
-#ifdef WANT_OSIRIS
-   if (cfdata->theme != NULL)
-      s->conf->theme = (char *)evas_stringshare_add(cfdata->theme);
-   else
-      s->conf->theme = (char *)evas_stringshare_add("");
-#endif
+   if (cfdata->dir != NULL)
+     s->conf->dir = (char *)evas_stringshare_add(cfdata->dir);
+   else 
+     {
+	snprintf(buf, sizeof(buf), "%s/.e/e/backgrounds", e_user_homedir_get());
+	s->conf->dir = (char *)evas_stringshare_add(buf);
+     }
+   
    e_config_save_queue();
    e_border_button_bindings_grab_all();
 
    _slide_cb_config_updated(s);
-   return 1;                    /* Apply was OK */
+   return 1;
 }
