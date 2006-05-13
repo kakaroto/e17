@@ -268,6 +268,28 @@ TextSize(TextClass * tclass, int active, int sticky, int state,
    StrlistFree(lines, num_lines);
 }
 
+static              GC
+_get_gc(Win win)
+{
+   static GC           gc = None;
+   static Visual      *last_vis = NULL;
+   Visual             *vis;
+
+   vis = WinGetVisual(win);
+   if (vis != last_vis)
+     {
+	if (gc)
+	   EXFreeGC(gc);
+	gc = None;
+	last_vis = vis;
+     }
+
+   if (!gc)
+      gc = EXCreateGC(WinGetXwin(win), 0, NULL);
+
+   return gc;
+}
+
 void
 TextstateDrawText(TextState * ts, Win win, Drawable draw, const char *text,
 		  int x, int y, int w, int h, int fsize __UNUSED__,
@@ -277,8 +299,8 @@ TextstateDrawText(TextState * ts, Win win, Drawable draw, const char *text,
    char              **lines;
    int                 i, num_lines;
    int                 xx, yy;
-   static GC           gc = 0;
    int                 textwidth_limit, offset_x, offset_y;
+   GC                  gc;
    Pixmap              drawable;
 
    if (w <= 0 || h <= 0)
@@ -296,9 +318,6 @@ TextstateDrawText(TextState * ts, Win win, Drawable draw, const char *text,
    if (draw == None)
       draw = WinGetXwin(win);
 
-   if (!gc)
-      gc = EXCreateGC(draw, 0, NULL);
-
    if (ts->style.orientation == FONT_TO_RIGHT ||
        ts->style.orientation == FONT_TO_LEFT)
       textwidth_limit = w;
@@ -310,6 +329,8 @@ TextstateDrawText(TextState * ts, Win win, Drawable draw, const char *text,
 
    if (ts->efont)
      {
+	int                 r, g, b;
+
 	for (i = 0; i < num_lines; i++)
 	  {
 	     int                 ascent, descent, wid;
@@ -370,28 +391,26 @@ TextstateDrawText(TextState * ts, Win win, Drawable draw, const char *text,
 
 	     if (ts->effect == 1)
 	       {
-		  EAllocColor(&ts->bg_col);
-		  XSetForeground(disp, gc, ts->bg_col.pixel);
-		  EFont_draw_string(drawable, gc, offset_x + 1, offset_y + 1,
-				    lines[i], ts->efont, VRoot.vis, VRoot.cmap);
+		  EGetColor(&(ts->bg_col), &r, &g, &b);
+		  EFont_draw_string(win, drawable, ts->efont,
+				    offset_x + 1, offset_y + 1,
+				    r, g, b, lines[i]);
 	       }
 	     else if (ts->effect == 2)
 	       {
-		  EAllocColor(&ts->bg_col);
-		  XSetForeground(disp, gc, ts->bg_col.pixel);
-		  EFont_draw_string(drawable, gc, offset_x - 1, offset_y,
-				    lines[i], ts->efont, VRoot.vis, VRoot.cmap);
-		  EFont_draw_string(drawable, gc, offset_x + 1, offset_y,
-				    lines[i], ts->efont, VRoot.vis, VRoot.cmap);
-		  EFont_draw_string(drawable, gc, offset_x, offset_y - 1,
-				    lines[i], ts->efont, VRoot.vis, VRoot.cmap);
-		  EFont_draw_string(drawable, gc, offset_x, offset_y + 1,
-				    lines[i], ts->efont, VRoot.vis, VRoot.cmap);
+		  EGetColor(&(ts->bg_col), &r, &g, &b);
+		  EFont_draw_string(win, drawable, ts->efont, offset_x - 1,
+				    offset_y, r, g, b, lines[i]);
+		  EFont_draw_string(win, drawable, ts->efont, offset_x + 1,
+				    offset_y, r, g, b, lines[i]);
+		  EFont_draw_string(win, drawable, ts->efont, offset_x,
+				    offset_y - 1, r, g, b, lines[i]);
+		  EFont_draw_string(win, drawable, ts->efont, offset_x,
+				    offset_y + 1, r, g, b, lines[i]);
 	       }
-	     EAllocColor(&ts->fg_col);
-	     XSetForeground(disp, gc, ts->fg_col.pixel);
-	     EFont_draw_string(drawable, gc, offset_x, offset_y, lines[i],
-			       ts->efont, VRoot.vis, VRoot.cmap);
+	     EGetColor(&(ts->fg_col), &r, &g, &b);
+	     EFont_draw_string(win, drawable, ts->efont, offset_x, offset_y,
+			       r, g, b, lines[i]);
 
 	     TextDrawRotBack(win, draw, drawable, xx - 1, yy - 1 - ascent,
 			     wid + 2, ascent + descent + 2, ts);
@@ -402,6 +421,8 @@ TextstateDrawText(TextState * ts, Win win, Drawable draw, const char *text,
      }
    else if (ts->xfontset)
      {
+	gc = _get_gc(win);
+
 	for (i = 0; i < num_lines; i++)
 	  {
 	     XRectangle          ret1, ret2;
@@ -547,6 +568,8 @@ TextstateDrawText(TextState * ts, Win win, Drawable draw, const char *text,
    else if ((ts->xfont) && (ts->xfont->min_byte1 == 0)
 	    && (ts->xfont->max_byte1 == 0))
      {
+	gc = _get_gc(win);
+
 	XSetFont(disp, gc, ts->xfont->fid);
 	for (i = 0; i < num_lines; i++)
 	  {
@@ -640,6 +663,8 @@ TextstateDrawText(TextState * ts, Win win, Drawable draw, const char *text,
      }
    else if ((ts->xfont))
      {
+	gc = _get_gc(win);
+
 	XSetFont(disp, gc, ts->xfont->fid);
 	for (i = 0; i < num_lines; i++)
 	  {

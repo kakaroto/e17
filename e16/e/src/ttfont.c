@@ -33,20 +33,6 @@ struct _efont
 };
 
 static void
-ImlibSetFgColorFromGC(GC gc, Colormap cm)
-{
-   XGCValues           xgcv;
-   XColor              xclr;
-   int                 r, g, b;
-
-   XGetGCValues(disp, gc, GCForeground, &xgcv);
-   xclr.pixel = xgcv.foreground;
-   XQueryColor(disp, cm, &xclr);
-   EGetColor(&xclr, &r, &g, &b);
-   imlib_context_set_color(r, g, b, 255);
-}
-
-static void
 EFonts_Init(void)
 {
 #if !TEST_TTFONT
@@ -64,8 +50,8 @@ EFonts_Init(void)
 }
 
 void
-EFont_draw_string(Drawable win, GC gc, int x, int y, const char *text,
-		  Efont * f, Visual * vis __UNUSED__, Colormap cm)
+EFont_draw_string(Win win, Drawable draw, Efont * f, int x, int y,
+		  int r, int g, int b, const char *text)
 {
    EImage             *im;
    int                 w, h, ascent, descent;
@@ -73,12 +59,12 @@ EFont_draw_string(Drawable win, GC gc, int x, int y, const char *text,
    Efont_extents(f, text, &ascent, &descent, &w, NULL, NULL, NULL, NULL);
    h = ascent + descent;
 
-   im = EImageGrabDrawable(win, None, x, y - ascent, w, h, 0);
+   im = EImageGrabDrawable(draw, None, x, y - ascent, w, h, 0);
    imlib_context_set_image(im);
+   imlib_context_set_color(r, g, b, 255);
    imlib_context_set_font(f->face);
-   ImlibSetFgColorFromGC(gc, cm);
    imlib_text_draw(0, 0, text);
-   EImageRenderOnDrawable(im, NULL, win, x, y - ascent, w, h, 0);
+   EImageRenderOnDrawable(im, win, draw, x, y - ascent, w, h, 0);
    EImageFree(im);
 }
 
