@@ -2,6 +2,7 @@
 #define E_MOD_LANG_H
 
 #include <e.h>
+#include "e_mod_main.h"
 
 typedef struct _Language	    Language;
 typedef struct _Language_Def	    Language_Def;
@@ -33,21 +34,16 @@ struct _Language_Def
    Evas_List   *kbd_variant; // const char *
 };
 
-/*void  lang_register_language(const char *lang_name, const char *lang_shortcut,
-			     const char *lang_flag, const char *kbd_layout,
-			     const char *kbd_layout_variant);*/
+void	    lang_switch_language_to(Lang *l, unsigned int n);
+void	    lang_switch_language_next(Lang *l);
+void	    lang_switch_language_prev(Lang *l);
 
-/*void lang_register_language_layout(const char *lang_name, const char *kbd_layout);*/
-/*void lang_register_language_layout_variant(const char *lang_name, const char *kbd_layout_variant);*/
+Language    *lang_get_default_language();
 
-/*void  lang_unregister_all_languages();*/
+int	    lang_load_kbd_models();
+void	    lang_free_kbd_models();
 
-Language *lang_get_default_language();
-
-int   lang_load_kbd_models();
-void  lang_free_kbd_models();
-
-int   lang_load_xfree_languages();
-void  lang_free_xfree_languages();
+int	    lang_load_xfree_languages();
+void	    lang_free_xfree_languages();
 
 #endif

@@ -17,8 +17,6 @@ struct _E_Config_Dialog_Data
    lang_switch_policy_t	lang_policy;
    int			lang_show_indicator;
 
-   //Lang	 *lang;
-   
    Evas_List   *selected_languages;
    Evas_List   *kbd_models;
 
@@ -26,6 +24,7 @@ struct _E_Config_Dialog_Data
 
    struct 
      {
+	E_Config_Dialog	*cfd;
 	Evas_Object  *lang_ilist;
 	Evas_Object  *btn_add;
 	Evas_Object  *btn_del;
@@ -33,7 +32,6 @@ struct _E_Config_Dialog_Data
 	Evas_Object  *btn_move_down;
 	Evas_Object  *selected_lang_ilist;
 	Evas_Object  *kbd_model_ilist;
-	//Evas_Object  *kbd_layout_ilist;
 	Evas_Object  *kbd_layout_variant_ilist;
      } gui;
 };
@@ -97,6 +95,7 @@ _fill_data(Lang *l, E_Config_Dialog_Data *cfdata)
    Evas_List   *ll;
    Language    *lang, *lang2;
 
+   cfdata->gui.cfd = l->cfd;
    cfdata->lang_policy = l->conf->lang_policy;
    cfdata->lang_show_indicator = l->conf->lang_show_indicator;
 
@@ -118,7 +117,7 @@ _fill_data(Lang *l, E_Config_Dialog_Data *cfdata)
 	cfdata->selected_languages = evas_list_append(cfdata->selected_languages, lang2);
      }
 
-   if (!cfdata->selected_languages)
+   /*if (!cfdata->selected_languages)
      {
 	for (ll = language_def_list; ll; ll = ll->next)
 	  {
@@ -144,7 +143,7 @@ _fill_data(Lang *l, E_Config_Dialog_Data *cfdata)
 		  break;
 	       }
 	  }
-     }
+     }*/
 
 }
 
@@ -156,8 +155,6 @@ _create_data(E_Config_Dialog *cfd)
 
    l = cfd->data;
    cfdata = E_NEW(E_Config_Dialog_Data, 1);
-   //cfdata->lang = l;
-
 
    _fill_data(l, cfdata);
    return cfdata;
@@ -210,6 +207,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
 	 oft = e_widget_frametable_add(evas, _("Selected Languages"), 0);
 	 {
+
 	    /* selected languages ilist */
 	    ob = e_widget_ilist_add(evas, ILIST_ICON_WIDTH, ILIST_ICON_HEIGHT, NULL);
 	    e_widget_on_change_hook_set(ob, _lang_selected_languages_ilist_cb_change, cfdata);
@@ -226,12 +224,12 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 	    cfdata->gui.btn_del = ob;
 	    e_widget_frametable_object_append(oft, ob, 1, 1, 1, 1, 1, 1, 1, 1);
 
-	    ob = e_widget_button_add(evas, "^", NULL, 
+	    ob = e_widget_button_add(evas, "Up", "widget/up_arrow", 
 				     _lang_move_language_order_up_cb, cfdata, NULL);
 	    cfdata->gui.btn_move_up = ob;
 	    e_widget_frametable_object_append(oft, ob, 2, 1, 1, 1, 1, 1, 1, 1);
 
-	    ob = e_widget_button_add(evas, "v", NULL,
+	    ob = e_widget_button_add(evas, "Down", "widget/down_arrow",
 				     _lang_move_language_order_down_cb, cfdata, NULL);
 	    cfdata->gui.btn_move_down = ob;
 	    e_widget_frametable_object_append(oft, ob, 3, 1, 1, 1, 1, 1, 1, 1);
@@ -286,6 +284,10 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    _lang_update_language_movedown_button(cfdata);
    _lang_update_language_moveup_button(cfdata);
 
+   //e_widget_ilist_selected_set(cfdata->gui.selected_lang_ilist, 0);
+
+   /*e_dialog_button_disable_num_set(cfdata->gui.cfd->dia, 0, 0);
+   e_dialog_button_disable_num_set(cfdata->gui.cfd->dia, 1, 0);*/
    return o;
 }
 
@@ -327,9 +329,8 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    l->current_lang_selector = 0;
    e_config_save_queue();
 
+   lang_face_menu_regenerate(l->face);
    lang_face_language_indicator_set(l);
-
-   /* here we have to redo context menu of the module */
 
    /*if (c->face->monitor)
       ecore_timer_interval_set(c->face->monitor, (double)cfdata->check_interval);*/
@@ -531,6 +532,12 @@ _lang_unselect_language_cb(void *data, void *data2)
 
    _lang_update_select_button(cfdata);
    _lang_update_unselect_button(cfdata);
+
+   if (!evas_list_count(cfdata->selected_languages))
+     { 
+	_lang_update_kbd_model_list(cfdata);
+	_lang_update_kbd_layout_variant_list(cfdata);
+     }
 }
 static void
 _lang_update_select_button(E_Config_Dialog_Data *cfdata)
@@ -840,5 +847,3 @@ _lang_free_language(Language  *lang)
 
    E_FREE(lang);
 }
-
-

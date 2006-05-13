@@ -6,22 +6,25 @@
 #include "config.h"
 
 #define LANG_MODULE_CONFIG_FILE "module.language"
+#define SELECTED_LANG_SET_RADIO_GROUP 1
 
-static Lang   *_lang_init(E_Module *m);
-static void   _lang_shutdown(Lang *l);
+static Lang    *_lang_init(E_Module *m);
+static void    _lang_shutdown(Lang *l);
 
-static void   _lang_config_menu_new(Lang *l);
+static void    _lang_config_menu_new(Lang *l);
 
-static int    _lang_face_init(Lang_Face *lf);
-static void   _lang_face_menu_new(Lang_Face *lf);
-static void   _lang_face_enable(Lang_Face *lf);
-static void   _lang_face_disable(Lang_Face *lf);
-static void   _lang_face_free(Lang_Face *lf);
+static int     _lang_face_init(Lang_Face *lf);
+static void    _lang_face_menu_new(Lang_Face *lf);
+static void    _lang_face_enable(Lang_Face *lf);
+static void    _lang_face_disable(Lang_Face *lf);
+static void    _lang_face_free(Lang_Face *lf);
 
-static void   _lang_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change);
-static void   _lang_face_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event_info);
-static void   _lang_face_cb_menu_edit(void *data, E_Menu *mn, E_Menu_Item *mi);
-static void   _lang_face_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi);
+static void    _lang_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change);
+static void    _lang_face_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event_info);
+static void    _lang_face_cb_menu_edit(void *data, E_Menu *mn, E_Menu_Item *mi);
+static void    _lang_face_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi);
+
+static void    _lang_cb_switch_to_language(void *data, E_Menu *m, E_Menu_Item *mi);
 
 static void   _lang_load_config(Lang *l);
 
@@ -71,6 +74,7 @@ e_modapi_shutdown(E_Module *m)
 	l->cfd = NULL;
      }
    _lang_shutdown(l);
+   lang = NULL;
    return 1;
 }
 
@@ -83,8 +87,6 @@ e_modapi_save(E_Module *m)
    if (!l)
      return 0;
    e_config_domain_save(LANG_MODULE_CONFIG_FILE, l->conf_edd, l->conf);
-   e_config_domain_save(LANG_MODULE_CONFIG_FILE, l->conf_bk_next_edd, l->conf->bk_next);
-   e_config_domain_save(LANG_MODULE_CONFIG_FILE, l->conf_bk_prev_edd, l->conf->bk_prev);
    return 1;
 }
 
@@ -123,6 +125,52 @@ e_modapi_config(E_Module *m)
      _lang_configure_lang_module(con, l);
 
    return 1;
+}
+
+void lang_face_menu_regenerate(Lang_Face *lf)
+{
+   E_Menu *mn;
+   E_Menu_Item *mi;
+
+   if (!lf) return;
+   if (lf->menu) e_object_del(E_OBJECT(lf->menu));
+
+   mn = e_menu_new();
+   lf->menu = mn;
+
+   mi = e_menu_item_new(mn);
+   e_menu_item_label_set(mi, _("Configuration"));
+   e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
+   e_menu_item_callback_set(mi, _lang_face_cb_menu_configure, lf);
+
+   mi = e_menu_item_new(mn);
+   e_menu_item_label_set(mi, _("Edit Mode"));
+   e_util_menu_item_edje_icon_set(mi, "enlightenment/gadgets");
+   e_menu_item_callback_set(mi, _lang_face_cb_menu_edit, lf);
+
+   if (evas_list_count(lf->lang->conf->languages))
+     {
+	Evas_List *l;
+	int indx;
+	mi = e_menu_item_new(mn);
+	e_menu_item_separator_set(mi, 1);
+
+	for (l = lf->lang->conf->languages, indx = 0; l; l = l->next, indx ++)
+	  {
+	     Language	*lang = l->data;
+
+	     mi = e_menu_item_new(mn);
+	     e_menu_item_label_set(mi, lang->lang_name); 
+	     e_menu_item_radio_set(mi, 1);
+	     e_menu_item_radio_group_set(mi, SELECTED_LANG_SET_RADIO_GROUP);
+	     e_menu_item_toggle_set(mi, indx == lf->lang->current_lang_selector ? 1 : 0);
+	     e_menu_item_callback_set(mi, _lang_cb_switch_to_language, lf->lang);
+
+	     //e_menu_item_callback_set(mi, _lang_cp_switch_langauge, ..);
+	     //e_menu_item_icon_edje_set(mi, (char *)e_theme_edje_file_get(...,...),...);
+	  }
+
+     }
 }
 
 static Lang *
@@ -206,8 +254,8 @@ _lang_init(E_Module *m)
 static void
 _lang_shutdown(Lang *l)
 {
-   _lang_unregister_module_actions();
    _lang_unregister_module_keybindings(l);
+   _lang_unregister_module_actions();
 
    lang_free_kbd_models();
    lang_free_xfree_languages();
@@ -228,8 +276,17 @@ _lang_shutdown(Lang *l)
 
    _lang_face_free(l->face);
 
+   if (l->conf->bk_next.key) evas_stringshare_del(l->conf->bk_next.key);
+   if (l->conf->bk_next.action) evas_stringshare_del(l->conf->bk_next.action);
+   if (l->conf->bk_next.params) evas_stringshare_del(l->conf->bk_next.params);
+
+   if (l->conf->bk_prev.key) evas_stringshare_del(l->conf->bk_prev.key);
+   if (l->conf->bk_prev.action) evas_stringshare_del(l->conf->bk_prev.action);
+   if (l->conf->bk_prev.params) evas_stringshare_del(l->conf->bk_prev.params);
+
    E_FREE(l->conf);
    E_CONFIG_DD_FREE(l->conf_edd);
+   E_CONFIG_DD_FREE(l->conf_lang_list_edd);
    E_FREE(l);
 }
 
@@ -303,7 +360,8 @@ _lang_face_init(Lang_Face *lf)
 static void
 _lang_face_menu_new(Lang_Face *lf)
 {
-   E_Menu *mn;
+   lang_face_menu_regenerate(lf);
+/*   E_Menu *mn;
    E_Menu_Item *mi;
 
    mn = e_menu_new();
@@ -318,6 +376,24 @@ _lang_face_menu_new(Lang_Face *lf)
    e_menu_item_label_set(mi, _("Edit Mode"));
    e_util_menu_item_edje_icon_set(mi, "enlightenment/gadgets");
    e_menu_item_callback_set(mi, _lang_face_cb_menu_edit, lf);
+
+   if (evas_list_count(lf->lang->conf->languages))
+     {
+	Evas_List *l;
+	mi = e_menu_item_new(mn);
+	e_menu_item_separator_set(mi, 1);
+
+	for (l = lf->lang->conf->languages; l; l = l->next)
+	  {
+	     Language	*lang = l->data;
+
+	     mi = e_menu_item_new(mn);
+	     e_menu_item_label_set(mi, lang->lang_name);
+	     //e_menu_item_callback_set(mi, _lang_cp_switch_langauge, ..);
+	     //e_menu_item_icon_edje_set(mi, (char *)e_theme_edje_file_get(...,...),...);
+	  }
+
+     }*/
 
    /* here should go items indicating selected languages */
 }
@@ -443,11 +519,26 @@ _lang_face_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi)
 static void
 _lang_load_config(Lang *l)
 {
-   l->conf_bk_next_edd = E_CONFIG_DD_NEW("Lang_BK_Next_Config", E_Config_Binding_Key);
+   if (!l) return;
+
+   l->conf_lang_list_edd = E_CONFIG_DD_NEW("Lang_Language_List_Config", Language);
 #undef T
 #undef D
-#define T E_Config_Binding_Key
-#define D l->conf_bk_next_edd
+#define T   Language
+#define D   l->conf_lang_list_edd
+   E_CONFIG_VAL(D, T, id, UINT);
+   E_CONFIG_VAL(D, T, lang_name, STR);
+   E_CONFIG_VAL(D, T, lang_shortcut, STR);
+   E_CONFIG_VAL(D, T, lang_flag, STR);
+   E_CONFIG_VAL(D, T, kbd_model, STR);
+   E_CONFIG_VAL(D, T, kbd_layout, STR);
+   E_CONFIG_VAL(D, T, kbd_variant, STR);
+
+/*   l->conf_bk_next_edd = E_CONFIG_DD_NEW("E_Config_Binding_Key_Next_Config", E_Config_Binding_Key);
+#undef T
+#undef D
+#define T   E_Config_Binding_Key
+#define D   l->conf_bk_next_edd
    E_CONFIG_VAL(D, T, context, INT);
    E_CONFIG_VAL(D, T, modifiers, INT);
    E_CONFIG_VAL(D, T, key, STR);
@@ -455,37 +546,65 @@ _lang_load_config(Lang *l)
    E_CONFIG_VAL(D, T, params, STR);
    E_CONFIG_VAL(D, T, any_mod, UCHAR);
 
-   l->conf_bk_prev_edd = E_CONFIG_DD_NEW("Lang_BK_Prev_Config", E_Config_Binding_Key);
+   l->conf_bk_prev_edd = E_CONFIG_DD_NEW("E_Config_Binding_Key_Prev_COnfig", E_Config_Binding_Key);
 #undef T
 #undef D
-#define T E_Config_Binding_Key
-#define D l->conf_bk_prev_edd
+#define T   E_Config_Binding_Key
+#define D   l->conf_bk_prev_edd
    E_CONFIG_VAL(D, T, context, INT);
    E_CONFIG_VAL(D, T, modifiers, INT);
    E_CONFIG_VAL(D, T, key, STR);
    E_CONFIG_VAL(D, T, action, STR);
    E_CONFIG_VAL(D, T, params, STR);
-   E_CONFIG_VAL(D, T, any_mod, UCHAR);
+   E_CONFIG_VAL(D, T, any_mod, UCHAR);*/
 
    l->conf_edd = E_CONFIG_DD_NEW("Lang_Config", Config);
 #undef T
 #undef D
-#define T Config
-#define D l->conf_edd
+#define T   Config
+#define D   l->conf_edd
    E_CONFIG_VAL(D, T, lang_policy, INT);
    E_CONFIG_VAL(D, T, lang_show_indicator, INT);
-   E_CONFIG_SUB(D, T, bk_next, l->conf_bk_next_edd);
-   E_CONFIG_SUB(D, T, bk_prev, l->conf_bk_prev_edd);
+   //E_CONFIG_SUB(D, T, bk_next, l->conf_bk_next_edd);
+   E_CONFIG_VAL(D, T, bk_next.context, INT);
+   E_CONFIG_VAL(D, T, bk_next.modifiers, INT);
+   E_CONFIG_VAL(D, T, bk_next.key, STR);
+   E_CONFIG_VAL(D, T, bk_next.action, STR);
+   E_CONFIG_VAL(D, T, bk_next.params, STR);
+   E_CONFIG_VAL(D, T, bk_next.any_mod, UCHAR);
+   //E_CONFIG_SUB(D, T, bk_prev, l->conf_bk_prev_edd);
+   E_CONFIG_VAL(D, T, bk_prev.context, INT);
+   E_CONFIG_VAL(D, T, bk_prev.modifiers, INT);
+   E_CONFIG_VAL(D, T, bk_prev.key, STR);
+   E_CONFIG_VAL(D, T, bk_prev.action, STR);
+   E_CONFIG_VAL(D, T, bk_prev.params, STR);
+   E_CONFIG_VAL(D, T, bk_prev.any_mod, UCHAR);
+   //
+   E_CONFIG_LIST(D, T, languages, l->conf_lang_list_edd);
 
    l->conf = e_config_domain_load(LANG_MODULE_CONFIG_FILE, l->conf_edd);
    if (!l->conf)
      {
 	Language  *_lang;
+
 	l->conf = E_NEW(Config, 1);
 	l->conf->lang_policy = LS_GLOBAL_POLICY;
 	l->conf->lang_show_indicator = 1;
 
-	l->conf->bk_next = E_NEW(E_Config_Binding_Key, 1);
+	l->conf->bk_next.context = E_BINDING_CONTEXT_ANY;
+	l->conf->bk_next.key = evas_stringshare_add("q");
+	l->conf->bk_next.modifiers = E_BINDING_MODIFIER_CTRL;
+	l->conf->bk_next.any_mod = 0;
+	l->conf->bk_next.action = evas_stringshare_add("lang_next_language");
+	l->conf->bk_next.params = NULL;
+
+	l->conf->bk_prev.context = E_BINDING_CONTEXT_ANY;
+	l->conf->bk_prev.key = evas_stringshare_add("w");
+	l->conf->bk_prev.modifiers = E_BINDING_MODIFIER_CTRL;
+	l->conf->bk_prev.any_mod = 0;
+	l->conf->bk_prev.action = evas_stringshare_add("lang_prev_language");
+	l->conf->bk_prev.params = NULL;
+	/*l->conf->bk_next = E_NEW(E_Config_Binding_Key, 1);
 	l->conf->bk_next->context = E_BINDING_CONTEXT_ANY;
 	l->conf->bk_next->key = evas_stringshare_add("q");
 	l->conf->bk_next->modifiers = E_BINDING_MODIFIER_CTRL;
@@ -499,60 +618,71 @@ _lang_load_config(Lang *l)
 	l->conf->bk_prev->modifiers = E_BINDING_MODIFIER_CTRL;
 	l->conf->bk_prev->any_mod = 0;
 	l->conf->bk_prev->action = evas_stringshare_add("lang_prev_language");
-	l->conf->bk_prev->params = NULL;
+	l->conf->bk_prev->params = NULL;*/
 
 	_lang  = lang_get_default_language();
 	if (_lang) 
 	  l->conf->languages = evas_list_append(l->conf->languages, _lang);
-
-	//e_module_dialog_show("aaaaaaaaaaaaaaa", "we created a new config !!!!!!!!");
      }
    E_CONFIG_LIMIT(l->conf->lang_policy, LS_GLOBAL_POLICY, LS_UNKNOWN_POLICY - 1);
    E_CONFIG_LIMIT(l->conf->lang_show_indicator, 0, 1);
+}
 
-   /* this is for debug */
-#if 0
-   Language *ll;
+static void
+_lang_cb_switch_to_language(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   Lang	       *lang;
+   Evas_List   *list;
+   Language    *l;
+   int indx;
 
-   ll = E_NEW(Language, 1);
-   if (ll)
+   if (!(lang = data) || !mi) return;
+
+   for (list = lang->conf->languages, indx = 0; list; list = list->next, indx ++)
      {
-	ll->lang_name = evas_stringshare_add("English");
-	ll->lang_shortcut = evas_stringshare_add("EN");
-	ll->lang_flag = evas_stringshare_add("en_flag");
-	ll->kbd_model = evas_stringshare_add("compaqik13");
-	ll->kbd_layout = evas_stringshare_add("us");
-	ll->kbd_variant = evas_stringshare_add("basic");
+	l = list->data;
 
-	l->conf->languages = evas_list_append(l->conf->languages, ll);
+	if (!strcmp(l->lang_name, mi->label))
+	  {
+	     if (lang->current_lang_selector == indx)
+	       break;
+
+	     lang_switch_language_to(lang, indx);
+	     break;
+	  }
      }
+}
 
-   ll = E_NEW(Language, 1);
-   if (ll)
+void lang_face_menu_language_indicator_set(Lang *l)
+{
+   if (!l || !l->conf || !l->face || !l->face->menu) return;
+
+   if (l->conf->languages)
      {
-	ll->lang_name = evas_stringshare_add("Russian");
-	ll->lang_shortcut = evas_stringshare_add("RU");
-	ll->lang_flag = evas_stringshare_add("ru_flag");
-	ll->kbd_model = evas_stringshare_add("compaqik13");
-	ll->kbd_layout = evas_stringshare_add("ru");
-	ll->kbd_variant = evas_stringshare_add("basic");
-
-	l->conf->languages = evas_list_append(l->conf->languages, ll);
+	Evas_List *list;
+	Language  *lang = evas_list_nth(l->conf->languages, l->current_lang_selector);
+	for (list = l->face->menu->items; list; list = list->next)
+	  {
+	     E_Menu_Item   *mi = list->data;
+	     if (mi && mi->radio && mi->radio_group == SELECTED_LANG_SET_RADIO_GROUP)
+	       {
+		  if (!strcmp(lang->lang_name, mi->label))
+		    e_menu_item_toggle_set(mi, 1);
+		  else
+		    e_menu_item_toggle_set(mi, 0);
+	       }
+	  }
      }
-
-   ll = E_NEW(Language, 1);
-   if (ll)
+   else
      {
-	ll->lang_name = evas_stringshare_add("Italian");
-	ll->lang_shortcut = evas_stringshare_add("IT");
-	ll->lang_flag = evas_stringshare_add("it_flag");
-	ll->kbd_model = evas_stringshare_add("compaqik13");
-	ll->kbd_layout = evas_stringshare_add("it");
-	ll->kbd_variant = evas_stringshare_add("basic");
-
-	l->conf->languages = evas_list_append(l->conf->languages, ll);
+	Evas_List *list;
+	for (list = l->face->menu->items; list; list = list->next)
+	  {
+	     E_Menu_Item   *mi = list->data;
+	     if (mi && mi->radio && mi->radio_group == SELECTED_LANG_SET_RADIO_GROUP)
+	       e_menu_item_toggle_set(mi, 0);
+	  }
      }
-#endif
 }
 
 void lang_face_language_indicator_set(Lang  *l)
@@ -582,141 +712,3 @@ void lang_face_language_indicator_set(Lang  *l)
    else 
      edje_object_part_text_set(l->face->text_obj, "in-text", "");
 }
-
-/*static void
-_lang_load_config(Lang *l)
-{
-   E_Config_Binding_Key	*eb;
-
-   l->conf_edd = E_CONFIG_DD_NEW("Lang_Config", Config);
-#undef T
-#undef D
-#define T Config
-#define D l->conf_edd
-   E_CONFIG_VAL(D, T, lang_policy, INT);
-   E_CONFIG_VAL(D, T, lang_show_indicator, INT);
-   //E_CONFIG_SUB(D, T, bk_next, l->conf_bk_next_edd);
-
-   l->conf = e_config_domain_load(LANG_MODULE_CONFIG_FILE, l->conf_edd);
-   if (!l->conf)
-     {
-	l->conf = E_NEW(Config, 1);
-
-	l->conf->lang_policy = LS_GLOBAL_POLICY;
-	l->conf->lang_show_indicator = 1;
-
-     }
-   E_CONFIG_LIMIT(l->conf->lang_policy, LS_GLOBAL_POLICY, LS_UNKNOWN_POLICY - 1);
-   E_CONFIG_LIMIT(l->conf->lang_show_indicator, 0, 1);
-
-   l->conf_bk_next_edd = E_CONFIG_DD_NEW("Lang_BK_Next_Config", E_Config_Binding_Key);
-#undef T
-#undef D
-#define T E_Config_Binding_Key
-#define D l->conf_bk_next_edd
-   E_CONFIG_VAL(D, T, context, INT);
-   E_CONFIG_VAL(D, T, modifiers, INT);
-   E_CONFIG_VAL(D, T, key, STR);
-   E_CONFIG_VAL(D, T, action, STR);
-   E_CONFIG_VAL(D, T, params, STR);
-   E_CONFIG_VAL(D, T, any_mod, UCHAR);
-
-   eb = e_config_domain_load(LANG_MODULE_CONFIG_FILE, l->conf_bk_next_edd);
-   if (!eb)
-     {
-	l->conf->bk_next.context = E_BINDING_CONTEXT_ANY;
-	l->conf->bk_next.key = evas_stringshare_add("q");
-	l->conf->bk_next.modifiers = E_BINDING_MODIFIER_CTRL;
-	l->conf->bk_next.any_mod = 0;
-	l->conf->bk_next.action = evas_stringshare_add("lang_next_language");
-	l->conf->bk_next.params = NULL;
-     }
-   else
-     {
-	l->conf->bk_next.context = eb->context;
-	l->conf->bk_next.key = evas_stringshare_add(eb->key);
-	l->conf->bk_next.modifiers = eb->modifiers;	
-	l->conf->bk_next.any_mod = eb->any_mod;
-	l->conf->bk_next.action = evas_stringshare_add(eb->action);
-	l->conf->bk_next.params = eb->params == NULL ? NULL : evas_stringshare_add(eb->params);
-
-	if (eb->key) evas_stringshare_del(eb->key);
-	if (eb->action) evas_stringshare_del(eb->action);
-	if (eb->params) evas_stringshare_del(eb->params);
-	E_FREE(eb);
-     }
-
-   l->conf_bk_prev_edd = E_CONFIG_DD_NEW("Lang_BK_Prev_Config", E_Config_Binding_Key);
-#undef T
-#undef D
-#define T E_Config_Binding_Key
-#define D l->conf_bk_prev_edd
-   E_CONFIG_VAL(D, T, context, INT);
-   E_CONFIG_VAL(D, T, modifiers, INT);
-   E_CONFIG_VAL(D, T, key, STR);
-   E_CONFIG_VAL(D, T, action, STR);
-   E_CONFIG_VAL(D, T, params, STR);
-   E_CONFIG_VAL(D, T, any_mod, UCHAR);
-
-   eb = e_config_domain_load(LANG_MODULE_CONFIG_FILE, l->conf_bk_prev_edd);
-   if (!eb)
-     {
-	l->conf->bk_prev.context = E_BINDING_CONTEXT_ANY;
-	l->conf->bk_prev.key = evas_stringshare_add("w");
-	l->conf->bk_prev.modifiers = E_BINDING_MODIFIER_CTRL;
-	l->conf->bk_prev.any_mod = 0;
-	l->conf->bk_prev.action = evas_stringshare_add("lang_prev_language");
-	l->conf->bk_prev.params = NULL;
-     }
-   else
-     {
-	l->conf->bk_prev.context = eb->context;
-	l->conf->bk_prev.key = evas_stringshare_add(eb->key);
-	l->conf->bk_prev.modifiers = eb->modifiers;	
-	l->conf->bk_prev.any_mod = eb->any_mod;
-	l->conf->bk_prev.action = evas_stringshare_add(eb->action);
-	l->conf->bk_prev.params = eb->params == NULL ? NULL : evas_stringshare_add(eb->params);
-
-	if (eb->key) evas_stringshare_del(eb->key);
-	if (eb->action) evas_stringshare_del(eb->action);
-	if (eb->params) evas_stringshare_del(eb->params);
-	E_FREE(eb);
-     }
-}*/
-
-/*static int
-_cpu_face_update_values(void *data)
-{
-   Cpu_Face *cf;
-   char str[100];
-   int i = 0;
-   char str_tmp[100];
-
-   cf = data;
-   _cpu_face_get_load(cf);
-
-   if (cpu_stats[0] == -1)
-      return 1;
-
-   if (cf->cpu->conf->show_text)
-     {
-        snprintf(str, sizeof(str), "%d%%", cpu_stats[0]);
-        i = 1;
-        while (i < cpu_count)
-          {
-             snprintf(str_tmp, sizeof(str_tmp), " / %d%%", cpu_stats[i]);
-             strncat(str, str_tmp, sizeof(str));
-             i++;
-          }
-        edje_object_part_text_set(cf->txt_obj, "in-text", str);
-     }
-   else
-      edje_object_part_text_set(cf->txt_obj, "in-text", "");
-
-   if ((cf->cpu->conf->show_graph) && (edje_object_part_exists(cf->cpu_obj, "lines")))
-      _cpu_face_graph_values(cf);
-   else
-      _cpu_face_graph_clear(cf);
-
-   return 1;
-}*/

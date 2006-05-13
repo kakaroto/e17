@@ -66,11 +66,11 @@ _lang_register_module_keybindings(Lang *l)
    e_managers_keys_ungrab();
 
    /* switch to next language */
-   if (l->conf->bk_next->key && l->conf->bk_next->key[0])
+   if (l->conf->bk_next.key && l->conf->bk_next.key[0])
      {
-	CFG_KEYBIND(l->conf->bk_next->context, l->conf->bk_next->key,
-		    l->conf->bk_next->modifiers, l->conf->bk_next->any_mod,
-		    "lang_next_language", l->conf->bk_next->params);
+	CFG_KEYBIND(l->conf->bk_next.context, l->conf->bk_next.key,
+		    l->conf->bk_next.modifiers, l->conf->bk_next.any_mod,
+		    "lang_next_language", l->conf->bk_next.params);
 
 	found = 0;
 	for (list = e_config->key_bindings; list && !found; list = list->next)
@@ -88,18 +88,18 @@ _lang_register_module_keybindings(Lang *l)
 	  {
 	     e_config->key_bindings = evas_list_append(e_config->key_bindings, eb);
 
-	     e_bindings_key_add(l->conf->bk_next->context, l->conf->bk_next->key,
-				l->conf->bk_next->modifiers, l->conf->bk_next->any_mod,
-				"lang_next_language", l->conf->bk_next->params);
+	     e_bindings_key_add(l->conf->bk_next.context, l->conf->bk_next.key,
+				l->conf->bk_next.modifiers, l->conf->bk_next.any_mod,
+				"lang_next_language", l->conf->bk_next.params);
 	  }
      }
 
    /* switch to prev language */
-   if (l->conf->bk_prev->key && l->conf->bk_prev->key[0])
+   if (l->conf->bk_prev.key && l->conf->bk_prev.key[0])
      {
-	CFG_KEYBIND(l->conf->bk_prev->context, l->conf->bk_prev->key,
-		    l->conf->bk_prev->modifiers, l->conf->bk_prev->any_mod,
-		    "lang_prev_language", l->conf->bk_prev->params);
+	CFG_KEYBIND(l->conf->bk_prev.context, l->conf->bk_prev.key,
+		    l->conf->bk_prev.modifiers, l->conf->bk_prev.any_mod,
+		    "lang_prev_language", l->conf->bk_prev.params);
 
 	found = 0;
 	for (list = e_config->key_bindings; list && !found; list = list->next)
@@ -118,9 +118,9 @@ _lang_register_module_keybindings(Lang *l)
 	  {
 	     e_config->key_bindings = evas_list_append(e_config->key_bindings, eb);
 
-	     e_bindings_key_add(l->conf->bk_prev->context, l->conf->bk_prev->key,
-				l->conf->bk_prev->modifiers, l->conf->bk_prev->any_mod,
-				"lang_prev_language", l->conf->bk_prev->params);
+	     e_bindings_key_add(l->conf->bk_prev.context, l->conf->bk_prev.key,
+				l->conf->bk_prev.modifiers, l->conf->bk_prev.any_mod,
+				"lang_prev_language", l->conf->bk_prev.params);
 	  }
      }
 
@@ -134,18 +134,17 @@ int _lang_unregister_module_keybindings(Lang *l)
    e_managers_keys_ungrab();
 
    /* switch to next language */
-   _lang_update_delete_keybinding(l->conf->bk_next);
+   _lang_update_delete_keybinding(&(l->conf->bk_next));
 
 
    /* switch to prev language */
-   _lang_update_delete_keybinding(l->conf->bk_prev);
+   _lang_update_delete_keybinding(&(l->conf->bk_prev));
 
    e_managers_keys_grab();
 
    e_unregister_action_predef_name("Language", "Switch To Next Language");
    e_unregister_action_predef_name("Language", "Switch To Previous Language");
-
-   e_config_save_queue();
+   e_config_save();
 
    return 1;
 }
@@ -153,62 +152,14 @@ int _lang_unregister_module_keybindings(Lang *l)
 
 ACT_FN_GO(lang_next_language)
 {
-   char buf[4096];
-   Language *ll;
 
-   //if (!lang->conf->languages) return;
-   if (evas_list_count(lang->conf->languages) == 1) return;
-
-   if (lang->current_lang_selector >= evas_list_count(lang->conf->languages) - 1)
-     lang->current_lang_selector = 0;
-   else
-     lang->current_lang_selector ++;
-
-   ll = evas_list_nth(lang->conf->languages, lang->current_lang_selector);
-
-   snprintf(buf, sizeof(buf), 
-	    "message 1: current_lang_selector : %d : lang->confg->languages.size() : %d<br>"
-	    "ll->lang_name: %s<br>ll->lang_shortcut: %s<br>ll->lang_flag: %s<br>ll->kbd_model:"
-	    "%s<br>ll->kbd_layout: %s<br>ll->kbd_variant: %s",
-	    lang->current_lang_selector, evas_list_count(lang->conf->languages),
-	    ll->lang_name, ll->lang_shortcut, ll->lang_flag, ll->kbd_model,
-	    ll->kbd_layout, ll->kbd_variant);
-
-   lang_face_language_indicator_set(lang);
-   //edje_object_part_text_set(lang->face->text_obj, "in-text", ll->lang_shortcut);
-
-   e_module_dialog_show( _("Enlightenment Language Enhancment Module"), buf);
-
+   lang_switch_language_next(lang);
    return;
 }
 
 ACT_FN_GO(lang_prev_language)
 {
-   char buf[4096];
-   Language *ll;
-
-   //if (!lang->conf->languages) return;
-   if (evas_list_count(lang->conf->languages) == 1) return;
-
-   if (lang->current_lang_selector == 0)
-     lang->current_lang_selector = evas_list_count(lang->conf->languages) - 1;
-   else
-     lang->current_lang_selector --;
-
-   ll = evas_list_nth(lang->conf->languages, lang->current_lang_selector);
-
-   snprintf(buf, sizeof(buf), 
-	    "message 1: current_lang_selector : %d : lang->confg->languages.size() : %d<br>"
-	    "ll->lang_name: %s<br>ll->lang_shortcut: %s<br>ll->lang_flag: %s<br>ll->kbd_model:"
-	    "%s<br>ll->kbd_layout: %s<br>ll->kbd_variant: %s",
-	    lang->current_lang_selector, evas_list_count(lang->conf->languages),
-	    ll->lang_name, ll->lang_shortcut, ll->lang_flag, ll->kbd_model,
-	    ll->kbd_layout, ll->kbd_variant);
-
-   lang_face_language_indicator_set(lang);
-   //edje_object_part_text_set(lang->face->text_obj, "in-text", ll->lang_shortcut);
-
-   e_module_dialog_show( _("Enlightenment Language Enhancment Module"), buf);
+   lang_switch_language_prev(lang);
    return;
 }
 

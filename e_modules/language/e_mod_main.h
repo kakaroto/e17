@@ -17,8 +17,10 @@ struct _Config
    lang_switch_policy_t	lang_policy;
    int			lang_show_indicator;
 
-   E_Config_Binding_Key *bk_next;
-   E_Config_Binding_Key	*bk_prev;
+   E_Config_Binding_Key bk_next;
+   E_Config_Binding_Key	bk_prev;
+   /*E_Config_Binding_Key *bk_next;
+   E_Config_Binding_Key	*bk_prev;*/
 
    Evas_List		*languages;
 };
@@ -36,10 +38,13 @@ struct _Lang
    E_Module    *module;
 
    int	       current_lang_selector;
+   //E_Config_Binding_Key *bk_next;
+   //E_Config_Binding_Key	*bk_prev;
 
    E_Config_DD	    *conf_edd;
-   E_Config_DD	    *conf_bk_next_edd;
-   E_Config_DD	    *conf_bk_prev_edd;
+   E_Config_DD	    *conf_lang_list_edd;
+   //E_Config_DD	    *conf_bk_next_edd;
+   //E_Config_DD	    *conf_bk_prev_edd;
    E_Config_Dialog  *cfd;
 };
 
@@ -72,6 +77,8 @@ EAPI int e_modapi_info(E_Module *m);
 EAPI int e_modapi_about(E_Module *m);
 EAPI int e_modapi_config(E_Module *m);
 
-void lang_face_language_indicator_set(Lang *l);
+void  lang_face_language_indicator_set(Lang *l);
+void  lang_face_menu_language_indicator_set(Lang *l);
+void  lang_face_menu_regenerate(Lang_Face *lf);
 
 #endif

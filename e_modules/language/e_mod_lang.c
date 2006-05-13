@@ -13,6 +13,10 @@
 Evas_List   *language_def_list = NULL; // Language_Def
 Evas_List   *language_kbd_model_list = NULL; // Language_Kbd_Model
 
+/************ extern ********************/
+extern Lang *lang;
+/****************************************/
+
 /************ private ********************/
 int _lang_def_language_sort_cb(void *e1, void *e2);
 
@@ -22,6 +26,59 @@ static void _lang_register_language(const char *lang_name, const char *lang_shor
 				    const char *lang_flag, const char *kbd_layout,
 				    Evas_List *kbd_layout_variant);
 /****************************************/
+
+void  lang_switch_language_to(Lang *l, unsigned int n)
+{
+   if (!l || n >= evas_list_count(l->conf->languages)) return;
+
+   l->current_lang_selector = n;
+
+
+   /* here goes the actuall work that calls X to switch the kbd layout, etc. */
+
+   /* debug */
+   {
+   char buf[4096];
+   Language *ll;
+
+   ll = evas_list_nth(lang->conf->languages, lang->current_lang_selector);
+
+   snprintf(buf, sizeof(buf), 
+	    "message 1: current_lang_selector : %d : lang->confg->languages.size() : %d<br>"
+	    "ll->lang_name: %s<br>ll->lang_shortcut: %s<br>ll->lang_flag: %s<br>ll->kbd_model:"
+	    "%s<br>ll->kbd_layout: %s<br>ll->kbd_variant: %s",
+	    lang->current_lang_selector, evas_list_count(lang->conf->languages),
+	    ll->lang_name, ll->lang_shortcut, ll->lang_flag, ll->kbd_model,
+	    ll->kbd_layout, ll->kbd_variant);
+   e_module_dialog_show( _("Enlightenment Language Enhancment Module"), buf);
+   }
+
+
+
+   lang_face_language_indicator_set(l);
+   lang_face_menu_language_indicator_set(l);
+   return;
+}
+
+void lang_switch_language_next(Lang *l)
+{
+   if (!l || !l->conf || evas_list_count(l->conf->languages) <= 1) return;
+
+   if (l->current_lang_selector >= evas_list_count(l->conf->languages) - 1)
+     lang_switch_language_to(l, 0);
+   else
+     lang_switch_language_to(l, l->current_lang_selector + 1);
+}
+
+void lang_switch_language_prev(Lang *l)
+{
+   if (!l || !l->conf || evas_list_count(l->conf->languages) <= 1) return;
+
+   if (l->current_lang_selector == 0)
+     lang_switch_language_to(l, evas_list_count(lang->conf->languages) - 1);
+   else
+     lang_switch_language_to(l, l->current_lang_selector - 1);
+}
 
 Language *lang_get_default_language()
 {
@@ -309,15 +366,20 @@ _lang_load_xfree_languages_load_configItem(EXML *xml, Language_Def *ld)
 	     //FIXME: take into account current E localization
 	     if (!attr)
 	       { 
-		  if (ld->lang_shortcut) evas_stringshare_del(ld->lang_shortcut);
-		  ld->lang_shortcut = evas_stringshare_add(exml_value_get(xml));
-	       }
-
-	     if (!attr)
-	       {
+		  int i;
 		  char buf[1024];
+		  char *ls = strdup(exml_value_get(xml));
+		  if (ld->lang_shortcut) evas_stringshare_del(ld->lang_shortcut);
+
+		  if (ls)
+		    {
+			for (i = 0; ls[i]; i++)
+			  ls[i] = (char)toupper(ls[i]);
+			ld->lang_shortcut = evas_stringshare_add(ls); 
+		    }
+
 		  if (ld->lang_flag) evas_stringshare_del(ld->lang_flag);
-		  snprintf(buf, sizeof(buf), "%s_flag", exml_value_get(xml));
+		  snprintf(buf, sizeof(buf), "%s_flag", ls);
 		  ld->lang_flag = evas_stringshare_add(buf);
 	       }
 	  }
