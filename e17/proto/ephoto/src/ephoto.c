@@ -271,14 +271,14 @@ main(int argc, char **argv)
 		m->win = ewl_window_new();
 		ewl_window_title_set(EWL_WINDOW(m->win), "ephoto");
 		ewl_window_name_set(EWL_WINDOW(m->win), "ephoto");
-		ewl_object_size_request(EWL_OBJECT(m->win), 640, 500);
+		ewl_object_size_request(EWL_OBJECT(m->win), 640, 480);
 		ewl_callback_append(m->win, EWL_CALLBACK_DELETE_WINDOW, destroy_cb, NULL);
 		ewl_widget_show(m->win);
 		mainwin = 1;
 
 		m->avbox = ewl_vbox_new();
 		ewl_container_child_append(EWL_CONTAINER(m->win), m->avbox);
-		ewl_object_fill_policy_set(EWL_OBJECT(m->avbox), EWL_FLAG_FILL_ALL);
+		ewl_object_fill_policy_set(EWL_OBJECT(m->avbox), EWL_FLAG_FILL_ALL | EWL_FLAG_FILL_SHRINK);
 		ewl_widget_show(m->avbox);
 
 		m->menubar = ewl_hmenubar_new();
@@ -366,21 +366,22 @@ main(int argc, char **argv)
 		m->hbox = ewl_hpaned_new();
 		ewl_object_alignment_set(EWL_OBJECT(m->hbox), EWL_FLAG_ALIGN_CENTER);
 		ewl_container_child_append(EWL_CONTAINER(m->avbox), m->hbox);
+		ewl_object_fill_policy_set(EWL_OBJECT(m->hbox), EWL_FLAG_FILL_ALL | EWL_FLAG_FILL_SHRINK);
 		ewl_widget_show(m->hbox);
 
 		m->vbox = ewl_vbox_new();
 		ewl_object_alignment_set(EWL_OBJECT(m->vbox), EWL_FLAG_ALIGN_CENTER);
 		ewl_box_spacing_set(EWL_BOX(m->vbox), 10);
-		ewl_object_preferred_inner_size_set(EWL_OBJECT(m->vbox), 200, 30);
+		ewl_object_preferred_inner_size_set(EWL_OBJECT(m->vbox), 200, 45);
 		ewl_container_child_append(EWL_CONTAINER(m->hbox), m->vbox);
+		ewl_object_fill_policy_set(EWL_OBJECT(m->vbox), EWL_FLAG_FILL_VFILL | EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HSHRINK);
 		ewl_widget_show(m->vbox);
 
 		m->images = ewl_border_new();
 		ewl_border_text_set(EWL_BORDER(m->images), "Add Content");
 		ewl_border_label_alignment_set(EWL_BORDER(m->images), EWL_FLAG_ALIGN_CENTER);
 		ewl_container_child_append(EWL_CONTAINER(m->vbox), m->images);
-		ewl_object_maximum_size_set(EWL_OBJECT(m->images), 200, 999999);
-		ewl_object_fill_policy_set(EWL_OBJECT(m->images), EWL_FLAG_FILL_ALL);	
+		ewl_object_fill_policy_set(EWL_OBJECT(m->images), EWL_FLAG_FILL_VFILL | EWL_FLAG_FILL_VSHRINK);	
 		ewl_widget_show(m->images);
 
 		m->directory = ewl_entry_new();
@@ -398,11 +399,12 @@ main(int argc, char **argv)
 		m->imagetree = ewl_tree_new(1);
 		ewl_container_child_append(EWL_CONTAINER(m->images), m->imagetree);
 		ewl_object_maximum_size_set(EWL_OBJECT(m->imagetree), 200, 160);
+		ewl_object_fill_policy_set(EWL_OBJECT(m->imagetree), EWL_FLAG_FILL_VFILL);
 		ewl_widget_show(m->imagetree);
 
 		m->notebook = ewl_notebook_new();
 		ewl_notebook_tabbar_position_set(EWL_NOTEBOOK(m->notebook), EWL_POSITION_TOP);
-		ewl_object_preferred_inner_size_set(EWL_OBJECT(m->notebook), 440, 35);
+		ewl_object_preferred_inner_size_set(EWL_OBJECT(m->notebook), 440, 45);
 		ewl_container_child_append(EWL_CONTAINER(m->hbox), m->notebook);
 		ewl_object_alignment_set(EWL_OBJECT(m->notebook), EWL_FLAG_ALIGN_CENTER);
 		ewl_object_fill_policy_set(EWL_OBJECT(m->notebook), EWL_FLAG_FILL_ALL);
@@ -463,7 +465,6 @@ main(int argc, char **argv)
 
 		m->iscroll = ewl_scrollpane_new();
                 ewl_container_child_append(EWL_CONTAINER(m->content), m->iscroll);
-                ewl_object_fill_policy_set(EWL_OBJECT(m->iscroll), EWL_FLAG_FILL_ALL);
                 ewl_widget_show(m->iscroll);
 		
 		ewl_container_child_append(EWL_CONTAINER(m->iscroll), m->ib);		
@@ -474,8 +475,8 @@ main(int argc, char **argv)
 		ewl_container_child_append(EWL_CONTAINER(m->vbox2), m->settings);
 		ewl_object_alignment_set(EWL_OBJECT(m->settings), EWL_FLAG_ALIGN_CENTER);
 		ewl_box_spacing_set(EWL_BOX(m->settings), 5);
-		ewl_object_minimum_size_set(EWL_OBJECT(m->settings), 400, 200);
-		ewl_object_maximum_size_set(EWL_OBJECT(m->settings), 99999, 200);
+		ewl_object_minimum_size_set(EWL_OBJECT(m->settings), 400, 240);
+		ewl_object_maximum_size_set(EWL_OBJECT(m->settings), 400, 240);
 		ewl_widget_show(m->settings);
 
 		m->hboxv = ewl_hbox_new();
@@ -502,7 +503,7 @@ main(int argc, char **argv)
 			ewl_spinner_value_set(EWL_SPINNER(m->slidetime), 3);
 		}
 		ewl_spinner_min_val_set(EWL_SPINNER(m->slidetime), 1);
-		ewl_spinner_max_val_set(EWL_SPINNER(m->slidetime), 1000);
+		ewl_spinner_max_val_set(EWL_SPINNER(m->slidetime), 100000);
 		ewl_container_child_append(EWL_CONTAINER(m->hboxv), m->slidetime);
 		ewl_spinner_step_set(EWL_SPINNER(m->slidetime), 1);
 		ewl_spinner_digits_set(EWL_SPINNER(m->slidetime), 0);
@@ -586,6 +587,12 @@ main(int argc, char **argv)
 
 		ewl_radiobutton_chain_set(EWL_RADIOBUTTON(m->rad4), EWL_RADIOBUTTON(m->fullrad));
 
+		m->zoom = ewl_checkbutton_new();
+		ewl_button_label_set(EWL_BUTTON(m->zoom), "Zoom Images to Fit Window");
+                ewl_container_child_append(EWL_CONTAINER(m->settings), m->zoom);
+                ewl_object_alignment_set(EWL_OBJECT(m->zoom), EWL_FLAG_ALIGN_CENTER);
+                ewl_widget_show(m->zoom);
+
 		m->hboxv = ewl_hbox_new();
 		ewl_container_child_append(EWL_CONTAINER(m->settings), m->hboxv);
 		ewl_object_alignment_set(EWL_OBJECT(m->hboxv), EWL_FLAG_ALIGN_CENTER);
@@ -665,7 +672,6 @@ main(int argc, char **argv)
 		ewl_widget_show(m->presentation);
 		ewl_widget_disable(m->presentation);
 
-		ewl_object_fill_policy_set(EWL_OBJECT(m->vbox), EWL_FLAG_FILL_SHRINK);
 		ewl_object_fill_policy_set(EWL_OBJECT(m->vbox2), EWL_FLAG_FILL_ALL);
 		ewl_object_fill_policy_set(EWL_OBJECT(m->hbox), EWL_FLAG_FILL_ALL);
 		/**********************************************************/

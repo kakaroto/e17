@@ -69,6 +69,7 @@ rad_cb(Ewl_Widget * w, void *event, void *data)
 		ewl_entry_editable_set(EWL_ENTRY(m->hsize), 1);
 	}
 	/****************************************************/
+	return;
 }
 void
 ephoto_men_cb(Ewl_Widget * w, void *event, void *data)
@@ -123,6 +124,8 @@ ephoto_men_cb(Ewl_Widget * w, void *event, void *data)
         ewl_object_maximum_size_set(EWL_OBJECT(cancel), 80, 15);
         ewl_callback_append(cancel, EWL_CALLBACK_CLICKED, destroywin_cb, hwin);
         ewl_widget_show(cancel);
+
+	return;
 }
 
 void slideshow_save_cb(Ewl_Widget *w, void *event, void *data)
@@ -182,6 +185,8 @@ void slideshow_save_cb(Ewl_Widget *w, void *event, void *data)
         ewl_callback_append(cancel, EWL_CALLBACK_CLICKED, destroywin_cb, m->save_win);
         ewl_widget_show(cancel);
 
+	return;
+
 }
 
 void save_cb(Ewl_Widget *w, void *event, void *data)
@@ -220,6 +225,7 @@ void save_cb(Ewl_Widget *w, void *event, void *data)
 	}
 	
 	ewl_widget_destroy(m->save_win);
+	return;
 }
 void slideshow_load_cb(Ewl_Widget *w, void *event, void *data)
 {
@@ -317,6 +323,8 @@ void slideshow_load_cb(Ewl_Widget *w, void *event, void *data)
         ewl_object_maximum_size_set(EWL_OBJECT(cancel), 80, 15);
         ewl_callback_append(cancel, EWL_CALLBACK_CLICKED, destroywin_cb, m->load_win);
         ewl_widget_show(cancel);
+
+	return;
 }
 
 void loadclicked_cb(Ewl_Widget *w, void *event, void *data)
@@ -324,6 +332,7 @@ void loadclicked_cb(Ewl_Widget *w, void *event, void *data)
 	char *rpath;
 	rpath = ewl_widget_name_get(w);
 	ewl_text_text_set(EWL_TEXT(m->otext), rpath);
+	return;
 }
 
 void load_cb(Ewl_Widget *w, void *event, void *data)
@@ -386,7 +395,8 @@ void load_cb(Ewl_Widget *w, void *event, void *data)
 		
 		fclose(file_ptr);
 	}
-	ewl_widget_destroy(m->load_win);	
+	ewl_widget_destroy(m->load_win);
+	return;
 }
 
 void create_list_cb(Ewl_Widget *w, void *event, void *data)
@@ -417,6 +427,7 @@ void create_list_cb(Ewl_Widget *w, void *event, void *data)
 		}
 		fclose(file_ptr);
 	}
+	return;
 }
 
 void reseti_cb(Ewl_Widget *w, void *event, void *data)
@@ -429,12 +440,14 @@ void reseti_cb(Ewl_Widget *w, void *event, void *data)
         ewl_freebox_layout_type_set(EWL_FREEBOX(m->ib), EWL_FREEBOX_LAYOUT_AUTO);
         ewl_container_child_append(EWL_CONTAINER(m->iscroll), m->ib);
         ewl_widget_show(m->ib);
+	return;
 }
 
 void reseta_cb(Ewl_Widget *w, void *event, void *data)
 {
 	ewl_text_text_set(EWL_TEXT(m->atext), "");
 	audio = 0;
+	return;
 }
 
 void list_albums_cb(Ewl_Widget *w, void *event, void *data)
@@ -450,6 +463,7 @@ void list_albums_cb(Ewl_Widget *w, void *event, void *data)
 		path2 = ecore_list_remove_first(albums);
 		printf("%s\n", path2);
 	}
+	return;
 }
 
 void addi(Ewl_Widget *w, void *event, void *data)
@@ -513,5 +527,6 @@ void addi(Ewl_Widget *w, void *event, void *data)
                 	slidenum++;
 		}
 	}
+	return;
 }
 
