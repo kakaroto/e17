@@ -139,14 +139,14 @@ static void
 window_resize_cb(Ecore_Evas * ee)
 {
    Evas_Object *o = NULL;
+   int w, h;
 
+   ecore_evas_geometry_get(ee, NULL, NULL, &w, &h);
+   
    if ((o = evas_object_name_find(ecore_evas_get(ee), "ui")))
-   {
-      int w, h;
-
-      ecore_evas_geometry_get(ee, NULL, NULL, &w, &h);
       evas_object_resize(o, w, h);
-   }
+   if ((o = evas_object_name_find(ecore_evas_get(ee), "background")))
+      evas_object_resize(o, w, h);
 }
 
 /**
