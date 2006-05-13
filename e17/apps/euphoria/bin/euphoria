@@ -81,18 +81,19 @@ class Euphoria
 		@sliders = {}
 
 		unless @edje.data("has_volume_slider").nil?
-			p = "player.slider.volume"
-			k = "output.volume"
-			@sliders[k] = VolumeSlider.new(@edje, @xmms, p, k)
+			@sliders["volume"] = VolumeSlider.new(@edje, @xmms,
+			                                      "player.slider.volume")
 		end
 
+=begin
 		unless @edje.data("has_eq_slider").nil?
 			1.upto(10) do |i|
 				p = "player.slider.eq.band%02i" % i
-				k = "effect.equalizer.gain#{i - 1}"
+				k = "equalizer.gain#{i - 1}"
 				@sliders[k] = EqSlider.new(@edje, @xmms, p, k)
 			end
 		end
+=end
 
 		handle_current_pos(@xmms.playlist_current_pos.wait)
 	end
@@ -278,11 +279,13 @@ private
 						@repeat = tmp
 						@edje.emit_signal("TOGGLE_REPEAT_MODE", "Euphoria")
 					end
-				when "output.volume"
-					@sliders[k].value = v
-				when /effect\.equalizer\.gain(\d+)/
+				when /equalizer\.gain(\d+)/
 					@sliders[k].value = v.to_f
 			end
+		end
+
+		@xmms.broadcast_playback_volume_changed.notifier do |res|
+			@sliders["volume"].value = res.value
 		end
 
 		@xmms.broadcast_playlist_current_pos.notifier do |res|
