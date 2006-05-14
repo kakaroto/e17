@@ -39,9 +39,9 @@ struct _Exo_Ps_Data {
 
 static void     _exo_etk_quit_cb                   (Etk_Object *object, void *user_data);
 static Etk_Bool _exo_etk_delete_cb                 (Etk_Object *object, void *user_data);
+static Etk_Bool _exo_etk_index_delete_cb           (Etk_Object *object, void *user_data);
 static void     _exo_etk_menu_popup_cb             (Etk_Object *object, void *event_info, void *data);
 static void     _change_page_cb                    (Etk_Object *object, Etk_Tree_Row *row, void *data);
-static void     _exo_etk_row_data_free_cb          (Etk_Object *object);
 static void     _exo_etk_document_info_cb          (Etk_Object *object, void *user_data);
 static Etk_Bool _exo_etk_document_info_delete_cb   (Etk_Object *object, void *user_data);
 static void     _exo_etk_document_info_response_cb (Etk_Object *object, int res, void *user_data);
@@ -49,6 +49,7 @@ static void     _exo_etk_search_cb                 (Etk_Object *object, void *us
 static Etk_Bool _exo_etk_search_delete_cb          (Etk_Object *object, void *user_data);
 static void     _exo_etk_search_response_cb        (Etk_Object *object, int res, void *user_data);
 static void     _exo_etk_index_show_cb             (Etk_Object *object, void *user_data);
+static void     _exo_etk_row_data_free_cb          (void *data);
 
 static void     _exo_etk_orientation_landscape_cb  (Etk_Object *object, void *user_data);
 static void     _exo_etk_orientation_upsidedown_cb (Etk_Object *object, void *user_data);
@@ -88,15 +89,20 @@ _exo_etk_tree_fill (Etk_Pdf *pdf, Etk_Tree *tree, Etk_Tree_Col *col, Etk_Tree_Ro
 
     num = (int *)malloc (sizeof (int));
     *num = epdf_index_item_page_get (etk_pdf_pdf_document_get (pdf), item);
-    etk_tree_row_data_set (prow, num);
+    etk_tree_row_data_set_full (prow, num, _exo_etk_row_data_free_cb);
     free (buf);
-    /*       etk_signal_connect ("destroyed", ETK_OBJECT (row), */
-    /*                           ETK_CALLBACK(_exo_etk_row_data_free_cb), NULL); */
     c = epdf_index_item_children_get (item);
     if (c) {
       _exo_etk_tree_fill (pdf, tree, col, prow, c);
     }
   }
+}
+
+static void
+_exo_etk_row_data_free_cb (void *data)
+{
+  if (data)
+    free (data);
 }
 
 static void
@@ -106,18 +112,56 @@ _exo_etk_update_document (Exo_Etk      *data,
 {
   Epdf_Document   *document;
   Ecore_List      *index;
+  char            *file;
   int              page_count;
   int              i;
+  int              l1;
+  int              l2;
 
   if (!data || !data->filename) return;
 
-/*   etk_container_reset (ETK_CONTAINER (data->list_pages)); */
-/*   etk_container_reset (ETK_CONTAINER (data->list_index)); */
+  etk_tree_clear (ETK_TREE (data->list_pages));
+  etk_tree_clear (ETK_TREE (data->list_index));
 
-  printf ("page : %d %s\n", etk_pdf_page_get (ETK_PDF (data->pdf)), data->filename);
-  etk_pdf_file_set (ETK_PDF (data->pdf), data->filename);
+  l1 = strlen (data->path);
+  l2 = strlen (data->filename);
+  if (!data->path || (data->path[0] == '\0'))
+    etk_pdf_file_set (ETK_PDF (data->pdf), data->filename);
+  else {
+    file = (char *)malloc (sizeof (char) * (l1 + l2 + 2));
+    memcpy (file, data->path, l1);
+    file[l1] = '/';
+    memcpy (file + l1 + 1, data->filename, l2);
+    file [l1 + l2 + 1] = '\0';
+    etk_pdf_file_set (ETK_PDF (data->pdf), file);
+    free (file);
+  }
   document = etk_pdf_pdf_document_get (ETK_PDF (data->pdf));
-  if (!document) return;
+  if (!document) {
+    char        buf[1024];
+    Etk_Widget *dialog_error;
+    Etk_Widget *label;
+
+    dialog_error = etk_dialog_new ();
+    etk_window_title_set (ETK_WINDOW (dialog_error), "Exorcist - Error");
+    etk_window_wmclass_set (ETK_WINDOW (dialog_error), "Exorcist - Error", "Exorcist - Error");
+    etk_container_border_width_set (ETK_CONTAINER (dialog_error), ETK_TRUE);
+
+    etk_dialog_button_add (ETK_DIALOG (dialog_error),
+                           etk_stock_label_get (ETK_STOCK_DIALOG_OK), ETK_RESPONSE_OK);
+    etk_signal_connect ("response", ETK_OBJECT (dialog_error),
+                        ETK_CALLBACK (etk_object_destroy), NULL);
+
+    snprintf (buf, 1024, "Error: Can not open file<br>%s", etk_pdf_file_get (ETK_PDF (data->pdf)));
+    label = etk_label_new (buf);
+    etk_dialog_pack_in_main_area (ETK_DIALOG (dialog_error), label, ETK_TRUE, ETK_TRUE, 0, ETK_FALSE);
+    etk_widget_show (label);
+
+
+    etk_widget_show (dialog_error);
+
+    return;
+  }
 
   page_count = epdf_document_page_count_get (document);
   etk_tree_freeze (ETK_TREE (data->list_pages));
@@ -128,9 +172,7 @@ _exo_etk_update_document (Exo_Etk      *data,
     row = etk_tree_append (ETK_TREE (data->list_pages), col_pages, i + 1, NULL);
     num = (int *)malloc (sizeof (int));
     *num = i;
-    etk_tree_row_data_set (row, num);
-    /*       etk_signal_connect ("destroyed", ETK_OBJECT (row), */
-    /*                           ETK_CALLBACK(_exo_etk_row_data_free_cb), NULL); */
+    etk_tree_row_data_set_full (row, num, _exo_etk_row_data_free_cb);
   }
   etk_tree_thaw (ETK_TREE (data->list_pages));
 
@@ -141,16 +183,19 @@ _exo_etk_update_document (Exo_Etk      *data,
 void
 _exo_etk_index_window (Exo_Etk *data)
 {
-  char title[4096];
+  char        title[4096];
 
   snprintf (title, 4096, "Exorcist - %s - Index", data->filename);
 
   data->win_index = etk_window_new ();
   etk_window_title_set (ETK_WINDOW (data->win_index), title);
   etk_window_wmclass_set (ETK_WINDOW (data->win_index), title, title);
+  etk_widget_size_request_set (data->win_index, 150, 200);
+  etk_signal_connect ("delete_event", ETK_OBJECT (data->win_index),
+                      ETK_CALLBACK (_exo_etk_index_delete_cb), data);
 
-/*   etk_tree_headers_visible_set (ETK_TREE (data->list_index), ETK_FALSE); */
   etk_container_add (ETK_CONTAINER (data->win_index), data->list_index);
+  etk_widget_size_request_set (data->list_index, 150, 150);
   etk_widget_show (data->list_index);
 }
 
@@ -319,7 +364,7 @@ _exo_etk_menu_bar (Exo_Etk *data)
 }
 
 void
-exo_etk_main_window (char *filename)
+exo_etk_main_window (const char *filename)
 {
   Etk_Widget *window;
   Etk_Widget *vbox;
@@ -334,8 +379,21 @@ exo_etk_main_window (char *filename)
   data = (Exo_Etk *)calloc (sizeof (Exo_Etk), 1);
   if (!data) return;
 
-  if (filename)
-    data->filename = strdup (filename);
+  if (filename) {
+    char *tmp;
+    int   l;
+
+    tmp = strrchr (filename, '/');
+    if (tmp) {
+      l = tmp - filename;
+      data->path = (char *)malloc (sizeof (char) * (l + 1));
+      memcpy (data->path, filename, l);
+      data->path[l] = '\0';
+      data->filename = strdup (tmp + 1);
+    }
+    else
+      data->filename = strdup (filename);
+  }
   data->pdf = etk_pdf_new ();
   data->list_pages = etk_tree_new ();
   data->list_index = etk_tree_new ();
@@ -343,6 +401,7 @@ exo_etk_main_window (char *filename)
   window = etk_window_new ();
   etk_window_title_set (ETK_WINDOW (window), "Exorcist");
   etk_window_wmclass_set (ETK_WINDOW (window), "Exorcist", "Exorcist");
+/*   etk_widget_size_request_set (window, 300, 400); */
   etk_signal_connect ("delete_event", ETK_OBJECT (window),
                       ETK_CALLBACK (_exo_etk_delete_cb), data);
 
@@ -355,7 +414,7 @@ exo_etk_main_window (char *filename)
   etk_widget_show (menu_bar);
 
   hbox = etk_hbox_new (ETK_FALSE, 0);
-  etk_box_pack_start (ETK_BOX (vbox), hbox, ETK_FALSE, ETK_FALSE, 0);
+  etk_box_pack_start (ETK_BOX (vbox), hbox, ETK_TRUE, ETK_TRUE, 0);
   etk_widget_show (hbox);
 
   etk_tree_headers_visible_set (ETK_TREE (data->list_pages), ETK_FALSE);
@@ -367,16 +426,16 @@ exo_etk_main_window (char *filename)
                                 etk_tree_model_int_new (ETK_TREE (data->list_pages)),
                                 60);
   etk_tree_build (ETK_TREE (data->list_pages));
-  etk_box_pack_start (ETK_BOX (hbox), data->list_pages, ETK_FALSE, ETK_FALSE, 0);
+  etk_box_pack_start (ETK_BOX (hbox), data->list_pages, ETK_FALSE, ETK_TRUE, 0);
   etk_widget_show (data->list_pages);
 
   popup = _exo_etk_menu_options (data);
 
   scrollview = etk_scrolled_view_new ();
-  etk_box_pack_start (ETK_BOX (hbox), scrollview, ETK_FALSE, ETK_FALSE, 0);
+  etk_box_pack_start (ETK_BOX (hbox), scrollview, ETK_TRUE, ETK_TRUE, 0);
   etk_widget_show (scrollview);
 
-  etk_container_add (ETK_CONTAINER (scrollview), data->pdf);
+  etk_scrolled_view_add_with_viewport (ETK_SCROLLED_VIEW (scrollview), data->pdf);
   etk_signal_connect("mouse_down", ETK_OBJECT(data->pdf),
                      ETK_CALLBACK(_exo_etk_menu_popup_cb), popup);
   etk_widget_show (data->pdf);
@@ -385,12 +444,15 @@ exo_etk_main_window (char *filename)
   etk_widget_size_request_set (data->list_index, 60, -1);
   etk_tree_mode_set (ETK_TREE (data->list_index), ETK_TREE_MODE_TREE);
   col_index = etk_tree_col_new (ETK_TREE (data->list_index), "",
-                                etk_tree_model_int_new (ETK_TREE (data->list_index)),
+                                etk_tree_model_text_new (ETK_TREE (data->list_index)),
                                 60);
+  etk_tree_build (ETK_TREE (data->list_index));
   if (data->filename)
     _exo_etk_update_document (data, col_pages, col_index);
 
-  etk_widget_show (window);
+  etk_widget_show_all (window);
+
+  printf ("%d\n", evas_object_visible_get(data->pdf->smart_object));
 
   _exo_etk_index_window (data);
 }
@@ -401,8 +463,16 @@ _exo_etk_delete_cb (Etk_Object *object, void *user_data)
   Exo_Etk *data;
 
   data = (Exo_Etk *)user_data;
+  if (data->list_pages)
+    etk_tree_clear (ETK_TREE (data->list_pages));
+/*   if (data->list_index) */
+    etk_tree_clear (ETK_TREE (data->list_index));
+
   etk_object_destroy (object);
   etk_main_quit ();
+
+  if (data->path)
+    free (data->path);
   if (data->filename)
     free (data->filename);
   free (data);
@@ -415,11 +485,25 @@ _exo_etk_quit_cb (Etk_Object *object __UNUSED__, void *user_data)
 {
   Exo_Etk *data;
 
-  etk_main_quit ();
   data = (Exo_Etk *)user_data;
+  etk_tree_clear (ETK_TREE (data->list_pages));
+  etk_tree_clear (ETK_TREE (data->list_index));
+
+  etk_main_quit ();
+
+  if (data->path)
+    free (data->path);
   if (data->filename)
     free (data->filename);
   free (data);
+}
+
+static Etk_Bool
+_exo_etk_index_delete_cb (Etk_Object *object, void *user_data __UNUSED__)
+{
+  etk_widget_hide (ETK_WIDGET (object));
+
+  return ETK_TRUE;
 }
 
 static void
@@ -439,17 +523,6 @@ _change_page_cb (Etk_Object *object, Etk_Tree_Row *row, void *data)
   pdf = ETK_PDF (data);
   row_number = *(int *)etk_tree_row_data_get (row);
   etk_pdf_page_set (pdf, row_number);
-}
-
-static void
-_exo_etk_row_data_free_cb  (Etk_Object *object)
-{
-  int *row_number;
-
-  if (!object)
-    return;
-  row_number = (int *)etk_tree_row_data_get ((Etk_Tree_Row *)object);
-  if (row_number) free (row_number);
 }
 
 static void
@@ -962,7 +1035,7 @@ _exo_etk_document_save_cb (Etk_Object *object __UNUSED__, void *user_data)
   Etk_Widget  *table;
   Etk_Widget  *label;
   char        *tmp;
-  char        *filename;
+  const char  *filename;
   char        *psfilename;
   int          l;
   int          page_count;

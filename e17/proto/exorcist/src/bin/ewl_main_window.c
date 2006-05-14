@@ -160,16 +160,30 @@ _exo_ewl_update_document (Exo_Ewl *data)
 {
   Epdf_Document   *document;
   Ecore_List      *index;
+  char            *file;
   int              page_count;
   int              i;
+  int              l1;
+  int              l2;
 
   if (!data || !data->filename) return;
 
   ewl_container_reset (EWL_CONTAINER (data->list_pages));
   ewl_container_reset (EWL_CONTAINER (data->list_index));
 
-  printf ("page : %d %s\n", ewl_pdf_page_get (EWL_PDF (data->pdf)), data->filename);
-  ewl_pdf_file_set (EWL_PDF (data->pdf), data->filename);
+  l1 = strlen (data->path);
+  l2 = strlen (data->filename);
+  if (!data->path || (data->path[0] == '\0'))
+    ewl_pdf_file_set (EWL_PDF (data->pdf), data->filename);
+  else {
+    file = (char *)malloc (sizeof (char) * (l1 + l2 + 2));
+    memcpy (file, data->path, l1);
+    file[l1] = '/';
+    memcpy (file + l1 + 1, data->filename, l2);
+    file [l1 + l2 + 1] = '\0';
+    ewl_pdf_file_set (EWL_PDF (data->pdf), file);
+    free (file);
+  }
   document = ewl_pdf_pdf_document_get (EWL_PDF (data->pdf));
   if (!document) return;
 
@@ -423,19 +437,33 @@ _exo_ewl_index_window (Exo_Ewl *data)
 }
 
 void
-exo_ewl_main_window (char *filename)
+exo_ewl_main_window (const char *filename)
 {
   Ewl_Widget *window;
   Ewl_Widget *vbox;
   Ewl_Widget *menu_bar;
   Ewl_Widget *hbox;
+  Ewl_Widget *scrollpane;
   Exo_Ewl    *data;
 
   data = (Exo_Ewl *)calloc (sizeof (Exo_Ewl), 1);
   if (!data) return;
 
-  if (filename)
-    data->filename = strdup (filename);
+  if (filename) {
+    char *tmp;
+    int   l;
+
+    tmp = strrchr (filename, '/');
+    if (tmp) {
+      l = tmp - filename;
+      data->path = (char *)malloc (sizeof (char) * (l + 1));
+      memcpy (data->path, filename, l);
+      data->path[l] = '\0';
+      data->filename = strdup (tmp + 1);
+    }
+    else
+      data->filename = strdup (filename);
+  }
   data->pdf = ewl_pdf_new ();
   data->list_pages = ewl_tree_new (1);
   ewl_tree_expandable_rows_set (EWL_TREE (data->list_pages), 0);
@@ -464,14 +492,25 @@ exo_ewl_main_window (char *filename)
 
   hbox = ewl_hbox_new ();
   ewl_box_homogeneous_set (EWL_BOX (hbox), FALSE);
+  ewl_object_fill_policy_set(EWL_OBJECT(hbox),
+                             EWL_FLAG_FILL_SHRINK);
   ewl_container_child_append (EWL_CONTAINER (vbox), hbox);
   ewl_widget_show (hbox);
 
   ewl_tree_headers_visible_set (EWL_TREE (data->list_pages), FALSE);
+  ewl_object_fill_policy_set(EWL_OBJECT(data->list_pages),
+                             EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL);
   ewl_container_child_append (EWL_CONTAINER (hbox), data->list_pages);
   ewl_widget_show (data->list_pages);
 
-  ewl_container_child_append (EWL_CONTAINER (hbox), data->pdf);
+  scrollpane = ewl_scrollpane_new ();
+  ewl_container_child_append (EWL_CONTAINER (hbox), scrollpane);
+  ewl_scrollpane_hscrollbar_flag_set (EWL_SCROLLPANE (scrollpane), EWL_SCROLLPANE_FLAG_AUTO_VISIBLE);
+  ewl_scrollpane_vscrollbar_flag_set (EWL_SCROLLPANE (scrollpane), EWL_SCROLLPANE_FLAG_AUTO_VISIBLE);
+  ewl_widget_show (scrollpane);
+
+
+  ewl_container_child_append (EWL_CONTAINER (scrollpane), data->pdf);
   ewl_widget_show (data->pdf);
 
   data->popup = _exo_ewl_menu_options (data);
@@ -633,21 +672,20 @@ _exo_ewl_filedialog_cb (Ewl_Widget *widget,
   data = (Exo_Ewl *)user_data;
   resp = *(unsigned int *)ev_data;
   switch (resp) {
-  case EWL_STOCK_OPEN:
+  case EWL_STOCK_OK:
     if (data->path)
       free (data->path);
     if (data->filename)
       free (data->filename);
-    data->path = (char *)ewl_filedialog_directory_get (filedialog);
+    data->path = strdup (ewl_filedialog_directory_get (filedialog));
     data->filename = ewl_filedialog_selected_file_get (filedialog);
     _exo_ewl_update_document (data);
-    ewl_widget_destroy (widget);
     break;
   case EWL_STOCK_CANCEL:
   default:
-    ewl_widget_destroy (widget);
     break;
   }
+  ewl_widget_destroy (widget);
 }
 
 static void
@@ -663,7 +701,7 @@ _exo_ewl_document_save_cb (Ewl_Widget *widget __UNUSED__,
   Ewl_Widget  *label;
   Exo_Ps_Data *ps_data;
   char        *tmp;
-  char        *filename;
+  const char  *filename;
   char        *psfilename;
   int          l;
   int          page_count;
@@ -984,7 +1022,7 @@ _exo_ewl_document_info_cb (Ewl_Widget *widget __UNUSED__,
     ewl_widget_show (list);
 
     row_text[0] = "File name";
-    row_text[1] = epdf_document_filename_get (doc);
+    row_text[1] = (char *)epdf_document_filename_get (doc);
     ewl_tree_text_row_add (EWL_TREE (list), NULL, row_text);
 
     row_text[0] = "Title";
