@@ -222,8 +222,10 @@ EVisualIsARGB(Visual * vis)
 {
    XRenderPictFormat  *pictfmt;
 
+#if 0				/* FIXME - Remove? */
    if (!Mode_compmgr.active)
       return 0;
+#endif
 
    pictfmt = XRenderFindVisualFormat(disp, vis);
    if (!pictfmt)
