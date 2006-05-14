@@ -418,6 +418,8 @@ EobjDamage(EObj * eo)
 #if USE_COMPOSITE
    if (eo->cmhook)
       ECompMgrWinDamageArea(eo, 0, 0, eo->w, eo->h);
+#else
+   eo = NULL;
 #endif
 }
 
