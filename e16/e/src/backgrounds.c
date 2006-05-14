@@ -579,7 +579,7 @@ BackgroundRealize(Background * bg, Drawable draw, unsigned int rw,
    if (!hasbg && !hasfg)
      {
 	/* Solid color only */
-	EAllocColor(&bg->bg_solid);
+	EAllocColor(VRoot.cmap, &bg->bg_solid);
 
 	if (!is_win)
 	  {

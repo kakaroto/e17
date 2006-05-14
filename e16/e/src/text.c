@@ -290,6 +290,13 @@ _get_gc(Win win)
    return gc;
 }
 
+static void
+_set_gc_color(Win win, GC gc, XColor * pxc)
+{
+   EAllocColor(WinGetCmap(win), pxc);
+   XSetForeground(disp, gc, pxc->pixel);
+}
+
 void
 TextstateDrawText(TextState * ts, Win win, Drawable draw, const char *text,
 		  int x, int y, int w, int h, int fsize __UNUSED__,
@@ -534,15 +541,13 @@ TextstateDrawText(TextState * ts, Win win, Drawable draw, const char *text,
 
 	     if (ts->effect == 1)
 	       {
-		  EAllocColor(&ts->bg_col);
-		  XSetForeground(disp, gc, ts->bg_col.pixel);
+		  _set_gc_color(win, gc, &ts->bg_col);
 		  ExDrawString(disp, drawable, ts->xfontset, gc, offset_x + 1,
 			       offset_y + 1, lines[i], strlen(lines[i]));
 	       }
 	     else if (ts->effect == 2)
 	       {
-		  EAllocColor(&ts->bg_col);
-		  XSetForeground(disp, gc, ts->bg_col.pixel);
+		  _set_gc_color(win, gc, &ts->bg_col);
 		  ExDrawString(disp, drawable, ts->xfontset, gc, offset_x - 1,
 			       offset_y, lines[i], strlen(lines[i]));
 		  ExDrawString(disp, drawable, ts->xfontset, gc, offset_x + 1,
@@ -552,8 +557,7 @@ TextstateDrawText(TextState * ts, Win win, Drawable draw, const char *text,
 		  ExDrawString(disp, drawable, ts->xfontset, gc, offset_x,
 			       offset_y + 1, lines[i], strlen(lines[i]));
 	       }
-	     EAllocColor(&ts->fg_col);
-	     XSetForeground(disp, gc, ts->fg_col.pixel);
+	     _set_gc_color(win, gc, &ts->fg_col);
 	     ExDrawString(disp, drawable, ts->xfontset, gc, offset_x, offset_y,
 			  lines[i], strlen(lines[i]));
 
@@ -631,15 +635,13 @@ TextstateDrawText(TextState * ts, Win win, Drawable draw, const char *text,
 
 	     if (ts->effect == 1)
 	       {
-		  EAllocColor(&ts->bg_col);
-		  XSetForeground(disp, gc, ts->bg_col.pixel);
+		  _set_gc_color(win, gc, &ts->bg_col);
 		  XDrawString(disp, drawable, gc, offset_x + 1, offset_y + 1,
 			      lines[i], strlen(lines[i]));
 	       }
 	     else if (ts->effect == 2)
 	       {
-		  EAllocColor(&ts->bg_col);
-		  XSetForeground(disp, gc, ts->bg_col.pixel);
+		  _set_gc_color(win, gc, &ts->bg_col);
 		  XDrawString(disp, drawable, gc, offset_x - 1, offset_y,
 			      lines[i], strlen(lines[i]));
 		  XDrawString(disp, drawable, gc, offset_x + 1, offset_y,
@@ -649,8 +651,7 @@ TextstateDrawText(TextState * ts, Win win, Drawable draw, const char *text,
 		  XDrawString(disp, drawable, gc, offset_x, offset_y + 1,
 			      lines[i], strlen(lines[i]));
 	       }
-	     EAllocColor(&ts->fg_col);
-	     XSetForeground(disp, gc, ts->fg_col.pixel);
+	     _set_gc_color(win, gc, &ts->fg_col);
 	     XDrawString(disp, drawable, gc, offset_x, offset_y, lines[i],
 			 strlen(lines[i]));
 
@@ -729,15 +730,13 @@ TextstateDrawText(TextState * ts, Win win, Drawable draw, const char *text,
 
 	     if (ts->effect == 1)
 	       {
-		  EAllocColor(&ts->bg_col);
-		  XSetForeground(disp, gc, ts->bg_col.pixel);
+		  _set_gc_color(win, gc, &ts->bg_col);
 		  XDrawString16(disp, drawable, gc, offset_x + 1, offset_y + 1,
 				(XChar2b *) lines[i], strlen(lines[i]) / 2);
 	       }
 	     else if (ts->effect == 2)
 	       {
-		  EAllocColor(&ts->bg_col);
-		  XSetForeground(disp, gc, ts->bg_col.pixel);
+		  _set_gc_color(win, gc, &ts->bg_col);
 		  XDrawString16(disp, drawable, gc, offset_x - 1, offset_y,
 				(XChar2b *) lines[i], strlen(lines[i]) / 2);
 		  XDrawString16(disp, drawable, gc, offset_y + 1, offset_y,
@@ -747,8 +746,7 @@ TextstateDrawText(TextState * ts, Win win, Drawable draw, const char *text,
 		  XDrawString16(disp, drawable, gc, offset_x, offset_y + 1,
 				(XChar2b *) lines[i], strlen(lines[i]) / 2);
 	       }
-	     EAllocColor(&ts->fg_col);
-	     XSetForeground(disp, gc, ts->fg_col.pixel);
+	     _set_gc_color(win, gc, &ts->fg_col);
 	     XDrawString16(disp, drawable, gc, offset_x, offset_y,
 			   (XChar2b *) lines[i], strlen(lines[i]) / 2);
 

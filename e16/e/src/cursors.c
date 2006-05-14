@@ -77,8 +77,8 @@ ECursorCreate(const char *name, const char *image, int native_id, XColor * fg,
 	     return NULL;
 	  }
 
-	EAllocColor(fg);
-	EAllocColor(bg);
+	EAllocColor(VRoot.cmap, fg);
+	EAllocColor(VRoot.cmap, bg);
 
 	curs = 0;
 	curs = XCreatePixmapCursor(disp, pmap, mask, fg, bg, xh, yh);

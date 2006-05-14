@@ -237,11 +237,12 @@ ImagestatePopulate(ImageState * is)
    if (!is)
       return;
 
-   EAllocColor(&is->bg);
-   EAllocColor(&is->hi);
-   EAllocColor(&is->lo);
-   EAllocColor(&is->hihi);
-   EAllocColor(&is->lolo);
+   /* FIXME - Should be done elsewhere (ImagestateDrawBevel?) */
+   EAllocColor(VRoot.cmap, &is->bg);
+   EAllocColor(VRoot.cmap, &is->hi);
+   EAllocColor(VRoot.cmap, &is->lo);
+   EAllocColor(VRoot.cmap, &is->hihi);
+   EAllocColor(VRoot.cmap, &is->lolo);
 }
 
 static void
