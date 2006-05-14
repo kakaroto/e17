@@ -48,7 +48,7 @@ moon_config_init()
    if (!moon_config)
      {
 	moon_config = E_NEW(Config, 1);
-	moon_config->show_phase_value = POLICY_YES;
+	moon_config->show_phase_value = POLICY_NO;
 	moon_config->value_format = VALUE_FMT_NUM;
 	moon_config->show_border = POLICY_YES;
 	moon_config->show_cloud_anim = POLICY_NO;
