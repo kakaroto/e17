@@ -33,6 +33,7 @@ Win                 ELookupXwin(Window xwin);
 #define Xwin(win) WinGetXwin(win)
 Window              WinGetXwin(const Win win);
 Visual             *WinGetVisual(const Win win);
+Colormap            WinGetCmap(const Win win);
 
 Win                 ECreateWinFromXwin(Window xwin);
 void                EDestroyWin(Win win);
@@ -130,8 +131,7 @@ int                 EShapePropagate(Win win);
 int                 EShapeCheck(Win win);
 Pixmap              EWindowGetShapePixmap(Win win);
 
-#define EAllocColor(pxc) \
-	XAllocColor(disp, VRoot.cmap, pxc)
+void                EAllocColor(Colormap colormap, XColor * pxc);
 void                ESetColor(XColor * pxc, int r, int g, int b);
 void                EGetColor(const XColor * pxc, int *pr, int *pg, int *pb);
 

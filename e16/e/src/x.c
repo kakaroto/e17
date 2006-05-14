@@ -59,8 +59,9 @@ struct _xwin
    int                 num_rect;
    int                 ord;
    XRectangle         *rects;
-   int                 depth;
    Visual             *visual;
+   int                 depth;
+   Colormap            cmap;
    Pixmap              bgpmap;
    int                 bgcol;
 };
@@ -82,6 +83,12 @@ Visual             *
 WinGetVisual(const Win win)
 {
    return win->visual;
+}
+
+Colormap
+WinGetCmap(const Win win)
+{
+   return win->cmap;
 }
 
 static EXID        *
@@ -188,7 +195,7 @@ EXidLookup(Window xwin)
 
 static EXID        *
 EXidSet(Window xwin, Win parent, int x, int y, int w, int h, int depth,
-	Visual * visual)
+	Visual * visual, Colormap cmap)
 {
    EXID               *xid;
 
@@ -201,6 +208,7 @@ EXidSet(Window xwin, Win parent, int x, int y, int w, int h, int depth,
    xid->h = h;
    xid->depth = depth;
    xid->visual = visual;
+   xid->cmap = cmap;
 #if DEBUG_XWIN
    Eprintf("EXidSet: %#lx\n", xid->xwin);
 #endif
@@ -300,12 +308,12 @@ Win
 ECreateWindow(Win parent, int x, int y, int w, int h, int saveunder)
 {
    EXID               *win;
-   Window              xwin, xpar;
+   Window              xwin;
    XSetWindowAttributes attr;
 
    attr.backing_store = NotUseful;
    attr.override_redirect = False;
-   attr.colormap = VRoot.cmap;
+   attr.colormap = parent->cmap;
    attr.border_pixel = 0;
 /*   attr.background_pixel = 0; */
    attr.background_pixmap = None;
@@ -316,12 +324,12 @@ ECreateWindow(Win parent, int x, int y, int w, int h, int saveunder)
    else
       attr.save_under = False;
 
-   xpar = (parent) ? parent->xwin : VRoot.xwin;
-   xwin = XCreateWindow(disp, xpar, x, y, w, h, 0,
-			VRoot.depth, InputOutput, VRoot.vis,
+   xwin = XCreateWindow(disp, parent->xwin, x, y, w, h, 0,
+			CopyFromParent, InputOutput, CopyFromParent,
 			CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 			CWColormap | CWBackPixmap | CWBorderPixel, &attr);
-   win = EXidSet(xwin, parent, x, y, w, h, VRoot.depth, VRoot.vis);
+   win = EXidSet(xwin, parent, x, y, w, h, parent->depth, parent->visual,
+		 parent->cmap);
 
    return win;
 }
@@ -332,7 +340,7 @@ ECreateVisualWindow(Win parent, int x, int y, int w, int h, int saveunder,
 		    XWindowAttributes * c_attr)
 {
    EXID               *win;
-   Window              xwin, xpar;
+   Window              xwin;
    XSetWindowAttributes attr;
 
    attr.backing_store = NotUseful;
@@ -348,12 +356,12 @@ ECreateVisualWindow(Win parent, int x, int y, int w, int h, int saveunder,
    else
       attr.save_under = False;
 
-   xpar = (parent) ? parent->xwin : VRoot.xwin;
-   xwin = XCreateWindow(disp, xpar, x, y, w, h, 0,
+   xwin = XCreateWindow(disp, parent->xwin, x, y, w, h, 0,
 			c_attr->depth, InputOutput, c_attr->visual,
 			CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 			CWColormap | CWBackPixmap | CWBorderPixel, &attr);
-   win = EXidSet(xwin, parent, x, y, w, h, c_attr->depth, c_attr->visual);
+   win = EXidSet(xwin, parent, x, y, w, h, c_attr->depth, c_attr->visual,
+		 c_attr->colormap);
 
    return win;
 }
@@ -362,15 +370,14 @@ Win
 ECreateEventWindow(Win parent, int x, int y, int w, int h)
 {
    EXID               *win;
-   Window              xwin, xpar;
+   Window              xwin;
    XSetWindowAttributes attr;
 
    attr.override_redirect = False;
 
-   xpar = (parent) ? parent->xwin : VRoot.xwin;
-   xwin = XCreateWindow(disp, xpar, x, y, w, h, 0, 0, InputOnly,
+   xwin = XCreateWindow(disp, parent->xwin, x, y, w, h, 0, 0, InputOnly,
 			CopyFromParent, CWOverrideRedirect, &attr);
-   win = EXidSet(xwin, parent, x, y, w, h, 0, parent->visual);
+   win = EXidSet(xwin, parent, x, y, w, h, 0, NULL, None);
 
    return win;
 }
@@ -604,6 +611,7 @@ ECreateWinFromXwin(Window xwin)
    win->h = h;
    win->depth = depth;
    win->visual = VRoot.vis;
+   win->cmap = VRoot.cmap;
 
    return win;
 }
@@ -629,7 +637,7 @@ ERegisterWindow(Window xwin)
    Eprintf("ERegisterWindow %#lx %d+%d %dx%d\n", win, x, y, w, h);
 #endif
    xid = EXidSet(xwin, None, xwa.x, xwa.y, xwa.width, xwa.height, xwa.depth,
-		 xwa.visual);
+		 xwa.visual, xwa.colormap);
    xid->attached = 1;
 
  done:
@@ -1413,6 +1421,12 @@ int
 EXFreeGC(GC gc)
 {
    return XFreeGC(disp, gc);
+}
+
+void
+EAllocColor(Colormap cmap, XColor * pxc)
+{
+   XAllocColor(disp, cmap, pxc);
 }
 
 void
