@@ -1565,6 +1565,9 @@ IconboxDraw(Iconbox * ib)
    int                 ww, hh;
    Pixmap              pmap, mask;
 
+   if (!ib->ic_box)
+      IconboxLayoutImageWin(ib);
+
    w = ib->w;
    h = ib->h;
 
