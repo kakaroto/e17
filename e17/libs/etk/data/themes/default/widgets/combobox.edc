@@ -249,7 +249,7 @@ group {
          signal: "deactivate";
          source: "";
          script {
-            desactivate();
+            deactivate();
          }
       }
       program {
@@ -365,7 +365,7 @@ group {
          set_state(PART:"combo_button", "on", 0.0);
          set_state(PART:"swallow_area", "down", 0.0);
       }
-      public desactivate()
+      public deactivate()
       {
          activated = 0;
          set_state(PART:"combo_button", "default", 0.0);
@@ -373,10 +373,10 @@ group {
       }
       public up()
       {
-         if (activated)
+         if (activated  == 1)
             activate();
          else
-            desactivate();
+            deactivate();
       }
    }
 }

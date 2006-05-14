@@ -9,8 +9,6 @@
 
 /* TODO/FIXME list:
  * - Combobox item separator!
- * - Bug in the default theme: when you press the combobox button, and you release it with the mouse out of it,
- * the button looks pressed.
  */
 
 /**

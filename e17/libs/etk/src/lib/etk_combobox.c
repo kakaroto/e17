@@ -808,7 +808,8 @@ static void _etk_combobox_size_allocate(Etk_Widget *widget, Etk_Geometry geometr
 static void _etk_combobox_window_size_request(Etk_Widget *widget, Etk_Size *size)
 {
    Etk_Combobox *combobox;
-   int i;
+   Evas_List *l;
+   int i, num_visible_items;
    
    if (!widget || !size)
       return;
@@ -819,7 +820,14 @@ static void _etk_combobox_window_size_request(Etk_Widget *widget, Etk_Size *size
    for (i = 0; i < combobox->num_cols; i++)
       size->w += combobox->cols[i]->size;
    
-   size->h = evas_list_count(combobox->items) * combobox->item_height;
+   num_visible_items = 0;
+   for (l = combobox->items; l; l = l->next)
+   {
+      if (etk_widget_is_visible(ETK_WIDGET(l->data)))
+         num_visible_items++;
+   }
+   
+   size->h = num_visible_items * combobox->item_height;
 }
 
 /* Resizes the combobox window to the allocated geometry */
@@ -834,8 +842,11 @@ static void _etk_combobox_window_size_allocate(Etk_Widget *widget, Etk_Geometry 
    geometry.h = combobox->item_height;
    for (l = combobox->items; l; l = l->next)
    {
-      etk_widget_size_allocate(ETK_WIDGET(l->data), geometry);
-      geometry.y += combobox->item_height;
+      if (etk_widget_is_visible(ETK_WIDGET(l->data)))
+      {
+         etk_widget_size_allocate(ETK_WIDGET(l->data), geometry);
+         geometry.y += combobox->item_height;
+      }
    }
 }
 
@@ -910,8 +921,6 @@ static void _etk_combobox_active_item_size_request(Etk_Widget *widget, Etk_Size 
       return;
    
    size->w = 0;
-   /* TODO: active_item_size_request: height */
-   /* size->h = combobox->item_height; */
    size->h = 0;
    for (i = 0; i < combobox->num_cols; i++)
    {
