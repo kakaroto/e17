@@ -85,8 +85,8 @@ typedef struct _Etk_VScrollbar Etk_VScrollbar;
 typedef struct _Etk_HSeparator Etk_HSeparator;
 typedef struct _Etk_VSeparator Etk_VSeparator;
 typedef struct _Etk_Popup_Window Etk_Popup_Window;
-typedef struct _Etk_Menu_Shell Etk_Menu_Shell;
-typedef struct _Etk_Menu Etk_Menu;
+typedef struct Etk_Menu_Shell Etk_Menu_Shell;
+typedef struct Etk_Menu Etk_Menu;
 typedef struct Etk_Menu_Bar Etk_Menu_Bar;
 typedef struct _Etk_Menu_Item Etk_Menu_Item;
 typedef struct _Etk_Menu_Item_Separator Etk_Menu_Item_Separator;
@@ -124,5 +124,7 @@ typedef struct Etk_Color
 {
    int r, g, b, a;
 } Etk_Color;
+
+/** @} */
 
 #endif

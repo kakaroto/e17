@@ -115,7 +115,7 @@ int etk_statusbar_context_id_get(Etk_Statusbar *statusbar, const char *context)
  * @brief Pushs on the statusbar message stack a new message
  * @param statusbar a statusbar
  * @param message the message to push
- * @param context id the context id to associate to the message. You can generate a context id with @a etk_statusbar_context_id_get()
+ * @param context_id the context id to associate to the message. You can generate a context id with @a etk_statusbar_context_id_get()
  * @return Returns the message id of the pushed message, or -1 on failure
  */
 int etk_statusbar_push(Etk_Statusbar *statusbar, const char *message, int context_id)
@@ -171,7 +171,7 @@ void etk_statusbar_pop(Etk_Statusbar *statusbar, int context_id)
 /**
  * @brief Removes the message corresponding to the message id from the statusbar
  * @param statusbar a statusbar
- * @param message id the message id of the message, returned when you've pushed the message with @a etk_statusbar_push()
+ * @param message_id the message id of the message, returned when you've pushed the message with @a etk_statusbar_push()
  */
 void etk_statusbar_remove(Etk_Statusbar *statusbar, int message_id)
 {
@@ -197,7 +197,7 @@ void etk_statusbar_remove(Etk_Statusbar *statusbar, int message_id)
 
 /**
  * @brief Sets whether the status bar has a resize grip
- * @param status bar a status bar
+ * @param statusbar a status bar
  * @param has_resize_grip @a has_resize_grip == ETK_TRUE if the statusbar should have a resize grip
  */
 void etk_statusbar_has_resize_grip_set(Etk_Statusbar *statusbar, Etk_Bool has_resize_grip)
@@ -212,7 +212,7 @@ void etk_statusbar_has_resize_grip_set(Etk_Statusbar *statusbar, Etk_Bool has_re
 
 /**
  * @brief Gets whether the status bar has a resize grip
- * @param status bar a status bar
+ * @param statusbar a status bar
  * @return Returns ETK_TRUE if the statusbar has a resize grip
  */
 Etk_Bool etk_statusbar_has_resize_grip_get(Etk_Statusbar *statusbar)

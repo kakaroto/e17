@@ -583,8 +583,14 @@ void etk_tree_col_sort_func_set(Etk_Tree_Col *col, int (*compare_cb)(Etk_Tree *t
  */
 void etk_tree_mode_set(Etk_Tree *tree, Etk_Tree_Mode mode)
 {
-   if (!tree || tree->built)
+   if (!tree)
       return;
+   if (tree->built)
+   {
+      ETK_WARNING("Unable to change the mode of the tree because the tree has been built.");
+      return;
+   }
+   
    tree->mode = mode;
    etk_object_notify(ETK_OBJECT(tree), "mode");
 }
@@ -755,7 +761,7 @@ Etk_Tree_Row *etk_tree_append(Etk_Tree *tree, ...)
    Etk_Tree_Row *new_row;
    va_list args;
 
-   if (!tree || !tree->built)
+   if (!tree)
       return NULL;
 
    va_start(args, tree);
@@ -776,8 +782,13 @@ Etk_Tree_Row *etk_tree_append_valist(Etk_Tree *tree, va_list args)
    Etk_Tree_Row *new_row;
 
 
-   if (!tree || !tree->built)
+   if (!tree)
       return NULL;
+   if (!tree->built)
+   {
+      ETK_WARNING("Unable to add a row to the tree because etk_tree_build() has not been called yet");
+      return NULL;
+   }
 
    new_row = _etk_tree_row_new_valist(tree, &tree->root, args);
 
@@ -795,8 +806,19 @@ Etk_Tree_Row *etk_tree_append_to_row(Etk_Tree_Row *row, ...)
    Etk_Tree_Row *new_row;
    va_list args;
 
-   if (!row || !row->tree || !row->tree->built || (row->tree->mode != ETK_TREE_MODE_TREE))
+   if (!row || !row->tree)
       return NULL;
+   if (row->tree->mode != ETK_TREE_MODE_TREE)
+   {
+      ETK_WARNING("Unable to add a row as a child of an existing row of "
+         "the tree because the mode of the tree is not ETK_TREE_MODE_TREE");
+      return NULL;
+   }
+   if (!row->tree->built)
+   {
+      ETK_WARNING("Unable to add a row to the tree because etk_tree_build() has not been called yet");
+      return NULL;
+   }
 
    va_start(args, row);
    new_row = _etk_tree_row_new_valist(row->tree, row, args);
@@ -3029,3 +3051,5 @@ static void _etk_tree_drag_end_cb(Etk_Object *object, void *data)
 {
    _etk_tree_drag_started = ETK_FALSE;
 }
+
+/** @} */

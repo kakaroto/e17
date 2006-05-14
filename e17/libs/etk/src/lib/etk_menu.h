@@ -5,23 +5,33 @@
 #include "etk_menu_shell.h"
 #include "etk_types.h"
 
+/* TODO/FIXME list:
+ * - Sometimes, when the menu is popped down, the window stay visible, but its content is hidden
+ * - The width of the menu window is not correctly calculated. Probably a bug of edje_object_size_min_calc().
+ * For now, 15 pixels are manually added to the calculated width
+ * - Keyboard navigation!
+ * - better theme grouping?
+ * - Sometimes the menu is not popped up at the right place (maybe a bug ot Etk_Popup_Window)
+ */
+
 /**
  * @defgroup Etk_Menu Etk_Menu
+ * @brief The Etk_Menu widget is a menu shell implemented in a popup window
  * @{
  */
 
-/** @brief Gets the type of a menu */
+/** Gets the type of a menu */
 #define ETK_MENU_TYPE       (etk_menu_type_get())
-/** @brief Casts the object to an Etk_Menu */
+/** Casts the object to an Etk_Menu */
 #define ETK_MENU(obj)       (ETK_OBJECT_CAST((obj), ETK_MENU_TYPE, Etk_Menu))
-/** @brief Check if the object is an Etk_Menu */
+/** Check if the object is an Etk_Menu */
 #define ETK_IS_MENU(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_MENU_TYPE))
 
 /**
- * @struct Etk_Menu
- * @brief An Etk_Menu is a popup window containing several menu items
+ * @brief @widget The structure of a menu
+ * @structinfo
  */
-struct _Etk_Menu
+struct Etk_Menu
 {
    /* private: */
    /* Inherit from Etk_Menu_Shell */

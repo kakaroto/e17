@@ -5,6 +5,11 @@
 #include "etk_menu_shell.h"
 #include "etk_types.h"
 
+/* TODO/FIXME list:
+ * - Improve default theme
+ * - Add keyboard navigation
+ */
+
 /**
  * @defgroup Etk_Menu_Bar Etk_Menu_Bar
  * @brief A menu bar is an horizontal bar that can contain several menu items

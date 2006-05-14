@@ -569,3 +569,5 @@ static void _etk_colorpicker_vertical_resize_map_cursor(Etk_Colorpicker_Vertical
    if (cpv->cursor)
       evas_object_image_size_set(cpv->cursor, cpv->map_width, 1);
 }
+
+/** @} */

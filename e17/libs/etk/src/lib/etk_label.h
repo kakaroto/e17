@@ -5,6 +5,13 @@
 #include <Evas.h>
 #include "etk_widget.h"
 
+/*
+ * TODO/FIXME list:
+ * - The style has to be defined by the theme
+ * - Fix bad size_request and bad rendering (evas_textblock bug?)
+ * - Document the different style tags
+ */
+
 /**
  * @defgroup Etk_Label Etk_Label
  * @brief The Etk_Label widget is a simple widget that can display text

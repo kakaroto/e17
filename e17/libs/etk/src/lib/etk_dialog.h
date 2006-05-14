@@ -5,6 +5,11 @@
 #include "etk_window.h"
 #include "etk_types.h"
 
+/* TODO/FIXME list:
+ * - We should certainly set some X hints to make the dialogs not simple windows anymore
+ * - Find a way to make modal dialogs
+ */
+
 /**
  * @defgroup Etk_Dialog Etk_Dialog
  * @brief A dialog is a window with buttons in its bottom area to allow the user to respond to a request

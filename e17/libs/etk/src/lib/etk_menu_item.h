@@ -106,7 +106,7 @@ struct _Etk_Menu_Item_Check
 };
 
 /**
- * @struct Etk_Menu_Item_Check
+ * @struct Etk_Menu_Item_Radio
  * @brief A menu item with a radiobox
  */
 struct _Etk_Menu_Item_Radio

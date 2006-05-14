@@ -31,7 +31,7 @@ static void _etk_image_property_set(Etk_Object *object, int property_id, Etk_Pro
 static void _etk_image_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_image_realize_cb(Etk_Object *object, void *data);
 static void _etk_image_unrealize_cb(Etk_Object *object, void *data);
-static void _etk_image_size_request(Etk_Widget *widget, Etk_Size *size_requisition);
+static void _etk_image_size_request(Etk_Widget *widget, Etk_Size *size);
 static void _etk_image_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_image_load(Etk_Image *image);
 
@@ -474,11 +474,11 @@ static void _etk_image_property_get(Etk_Object *object, int property_id, Etk_Pro
 }
 
 /* Calculates the ideal size of the image */
-static void _etk_image_size_request(Etk_Widget *widget, Etk_Size *size_requisition)
+static void _etk_image_size_request(Etk_Widget *widget, Etk_Size *size)
 {
    Etk_Image *image;
 
-   if (!(image = ETK_IMAGE(widget)) || !size_requisition)
+   if (!(image = ETK_IMAGE(widget)) || !size)
       return;
 
    if (image->image_object)
@@ -489,16 +489,16 @@ static void _etk_image_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
 
          edje_object_size_min_get(image->image_object, &min_x, &min_y);
          edje_object_size_min_calc(image->image_object, &calc_x, &calc_y);
-         size_requisition->w = ETK_MAX(min_x, calc_x);
-         size_requisition->h = ETK_MAX(min_y, calc_y);
+         size->w = ETK_MAX(min_x, calc_x);
+         size->h = ETK_MAX(min_y, calc_y);
       }
       else
-         evas_object_image_size_get(image->image_object, &size_requisition->w, &size_requisition->h);
+         evas_object_image_size_get(image->image_object, &size->w, &size->h);
    }
    else
    {
-      size_requisition->w = 0;
-      size_requisition->h = 0;
+      size->w = 0;
+      size->h = 0;
    }
 }
 

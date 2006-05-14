@@ -16,7 +16,7 @@
  */
 
 static void _etk_menu_bar_constructor(Etk_Menu_Bar *menu_bar);
-static void _etk_menu_bar_size_request(Etk_Widget *widget, Etk_Size *size_requisition);
+static void _etk_menu_bar_size_request(Etk_Widget *widget, Etk_Size *size);
 static void _etk_menu_bar_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_menu_bar_item_added_cb(Etk_Object *object, void *item, void *data);
 static void _etk_menu_bar_item_removed_cb(Etk_Object *object, void *item, void *data);
@@ -36,21 +36,24 @@ static Ecore_Event_Handler *_etk_menu_bar_mouse_move_handler = NULL;
 
 /**
  * @brief Gets the type of an Etk_Menu_Bar
- * @return Returns the type on an Etk_Menu_Bar
+ * @return Returns the type of an Etk_Menu_Bar
  */
 Etk_Type *etk_menu_bar_type_get()
 {
    static Etk_Type *menu_bar_type = NULL;
 
    if (!menu_bar_type)
-      menu_bar_type = etk_type_new("Etk_Menu_Bar", ETK_MENU_SHELL_TYPE, sizeof(Etk_Menu_Bar), ETK_CONSTRUCTOR(_etk_menu_bar_constructor), NULL);
+   {
+      menu_bar_type = etk_type_new("Etk_Menu_Bar", ETK_MENU_SHELL_TYPE, sizeof(Etk_Menu_Bar),
+         ETK_CONSTRUCTOR(_etk_menu_bar_constructor), NULL);
+   }
 
    return menu_bar_type;
 }
 
 /**
- * @brief Creates a new menu_bar
- * @return Returns the new menu_bar widget
+ * @brief Creates a new menu bar
+ * @return Returns the new menu bar widget
  */
 Etk_Widget *etk_menu_bar_new()
 {
@@ -63,7 +66,7 @@ Etk_Widget *etk_menu_bar_new()
  *
  **************************/
 
-/* Initializes the members */
+/* Initializes the menu bar */
 static void _etk_menu_bar_constructor(Etk_Menu_Bar *menu_bar)
 {
    if (!menu_bar)
@@ -77,28 +80,28 @@ static void _etk_menu_bar_constructor(Etk_Menu_Bar *menu_bar)
    etk_signal_connect("item_removed", ETK_OBJECT(menu_bar), ETK_CALLBACK(_etk_menu_bar_item_removed_cb), NULL);
 }
 
-/* Calculates the ideal size of the menu_bar */
-static void _etk_menu_bar_size_request(Etk_Widget *widget, Etk_Size *size_requisition)
+/* Calculates the ideal size of the menu bar */
+static void _etk_menu_bar_size_request(Etk_Widget *widget, Etk_Size *size)
 {
    Evas_List *l;
    Etk_Menu_Shell *menu_shell;
    
-   if (!(menu_shell = ETK_MENU_SHELL(widget)) || !size_requisition)
+   if (!(menu_shell = ETK_MENU_SHELL(widget)) || !size)
       return;
    
-   size_requisition->w = 0;
-   size_requisition->h = 0;
+   size->w = 0;
+   size->h = 0;
    for (l = menu_shell->items; l; l = l->next)
    {
-      Etk_Size child_requisition;
+      Etk_Size child_size;
       
-      etk_widget_size_request(ETK_WIDGET(l->data), &child_requisition);
-      size_requisition->w += child_requisition.w;
-      size_requisition->h = ETK_MAX(size_requisition->h, child_requisition.h);
+      etk_widget_size_request(ETK_WIDGET(l->data), &child_size);
+      size->w += child_size.w;
+      size->h = ETK_MAX(size->h, child_size.h);
    }
 }
 
-/* Resizes the menu_bar to the size allocation */
+/* Resizes the menu bar to the allocated size */
 static void _etk_menu_bar_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 {
    Etk_Geometry child_geometry;
@@ -113,15 +116,15 @@ static void _etk_menu_bar_size_allocate(Etk_Widget *widget, Etk_Geometry geometr
    child_geometry.y = geometry.y;
    for (l = menu_shell->items; l; l = l->next)
    {
-      Etk_Size child_requisition;
+      Etk_Size child_size;
       
-      etk_widget_size_request(ETK_WIDGET(l->data), &child_requisition);
+      etk_widget_size_request(ETK_WIDGET(l->data), &child_size);
       child_geometry.x = x_offset;
-      child_geometry.w = child_requisition.w;
+      child_geometry.w = child_size.w;
       child_geometry.h = geometry.h;
       
       etk_widget_size_allocate(ETK_WIDGET(l->data), child_geometry);
-      x_offset += child_requisition.w;
+      x_offset += child_geometry.w;
    }
 }
 
@@ -173,8 +176,11 @@ static int _etk_menu_bar_mouse_move_cb(void *data, int type, void *event)
    Evas_List *l;
    Etk_Widget *item;
    
-   if (!(menu_bar = ETK_MENU_BAR(data)) || !(toplevel = etk_widget_toplevel_parent_get(ETK_WIDGET(menu_bar))) || !(mouse_event = event))
+   if (!(menu_bar = ETK_MENU_BAR(data)) || !(toplevel = etk_widget_toplevel_parent_get(ETK_WIDGET(menu_bar))) ||
+      !(mouse_event = event))
+   {
       return 1;
+   }
    
    /* If the mouse pointer is above a menu item, we select it */
    etk_toplevel_widget_geometry_get(toplevel, &tx, &ty, NULL, NULL);
@@ -224,7 +230,10 @@ static void _etk_menu_bar_item_selected_cb(Etk_Object *object, void *data)
    }
    
    if (!_etk_menu_bar_mouse_move_handler)
-      _etk_menu_bar_mouse_move_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE, _etk_menu_bar_mouse_move_cb, menu_bar);
+   {
+      _etk_menu_bar_mouse_move_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE,
+         _etk_menu_bar_mouse_move_cb, menu_bar);
+   }
    menu_bar->item_selected = ETK_TRUE;
 }
 
@@ -265,3 +274,25 @@ static void _etk_menu_bar_item_submenu_popped_down_cb(Etk_Object *object, void *
 }
 
 /** @} */
+
+/**************************
+ *
+ * Documentation
+ *
+ **************************/
+
+/**
+ * @addtogroup Etk_Menu_Bar
+ *
+ * @image html menu_bar.png
+ * The menu bar is a menu shell whose items are packed horizontally.
+ * A menu bar is usually packed at the top of a window. @n
+ * To add or remove items, you have to use the functions provided by the Etk_Menu_Shell:
+ * etk_menu_shell_append(), etk_menu_shell_remove(), ...
+ * 
+ * \par Object Hierarchy:
+ * - Etk_Object
+ *   - Etk_Widget
+ *     - Etk_Menu_Shell
+ *       - Etk_Menu_Bar
+ */

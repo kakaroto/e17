@@ -351,6 +351,7 @@ static void _etk_label_unrealize_cb(Etk_Object *object, void *data)
 /**
  * @addtogroup Etk_Label
  *
+ * @image html label.png
  * You can use html-like tags to format the text of the label. For example, "<b>Text</b>" makes <b>Text</b> bold. @n
  * Here is the list of the supported tags: @n
  * TODO: [Doc] List of the tags for the label

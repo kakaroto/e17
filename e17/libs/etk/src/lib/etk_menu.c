@@ -12,7 +12,7 @@
  * @{
  */
 
-enum _Etk_Menu_Signal_Id
+enum Etk_Menu_Signal_Id
 {
    ETK_MENU_POPPED_DOWN_SIGNAL,
    ETK_MENU_POPPED_UP_SIGNAL,
@@ -21,7 +21,7 @@ enum _Etk_Menu_Signal_Id
 
 static void _etk_menu_constructor(Etk_Menu *menu);
 static void _etk_menu_destructor(Etk_Menu *menu);
-static void _etk_menu_size_request(Etk_Widget *widget, Etk_Size *size_requisition);
+static void _etk_menu_size_request(Etk_Widget *widget, Etk_Size *size);
 static void _etk_menu_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_menu_window_popped_up_cb(Etk_Object *object, void *data);
 static void _etk_menu_window_popped_down_cb(Etk_Object *object, void *data);
@@ -45,7 +45,7 @@ static Etk_Signal *_etk_menu_signals[ETK_MENU_NUM_SIGNALS];
 
 /**
  * @brief Gets the type of an Etk_Menu
- * @return Returns the type on an Etk_Menu
+ * @return Returns the type of an Etk_Menu
  */
 Etk_Type *etk_menu_type_get()
 {
@@ -53,10 +53,13 @@ Etk_Type *etk_menu_type_get()
 
    if (!menu_type)
    {
-      menu_type = etk_type_new("Etk_Menu", ETK_MENU_SHELL_TYPE, sizeof(Etk_Menu), ETK_CONSTRUCTOR(_etk_menu_constructor), ETK_DESTRUCTOR(_etk_menu_destructor));
+      menu_type = etk_type_new("Etk_Menu", ETK_MENU_SHELL_TYPE, sizeof(Etk_Menu),
+         ETK_CONSTRUCTOR(_etk_menu_constructor), ETK_DESTRUCTOR(_etk_menu_destructor));
       
-      _etk_menu_signals[ETK_MENU_POPPED_UP_SIGNAL] = etk_signal_new("popped_up", menu_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_menu_signals[ETK_MENU_POPPED_DOWN_SIGNAL] = etk_signal_new("popped_down", menu_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_menu_signals[ETK_MENU_POPPED_UP_SIGNAL] = etk_signal_new("popped_up",
+         menu_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_menu_signals[ETK_MENU_POPPED_DOWN_SIGNAL] = etk_signal_new("popped_down",
+         menu_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
    }
 
    return menu_type;
@@ -72,10 +75,10 @@ Etk_Widget *etk_menu_new()
 }
 
 /**
- * @brief Popups the menu at the position (x, y)
+ * @brief Pops up the menu at the position (x, y)
  * @param menu a menu
- * @param x the x component of the location where to popup the menu
- * @param y the y component of the location where to popup the menu
+ * @param x the x component of the position where to popup the menu
+ * @param y the y component of the position where to popup the menu
  */
 void etk_menu_popup_at_xy(Etk_Menu *menu, int x, int y)
 {
@@ -85,7 +88,7 @@ void etk_menu_popup_at_xy(Etk_Menu *menu, int x, int y)
 }
 
 /**
- * @brief Popups the menu at the mouse pointer position
+ * @brief Pops up the menu at the mouse position
  * @param menu a menu
  */
 void etk_menu_popup(Etk_Menu *menu)
@@ -96,7 +99,7 @@ void etk_menu_popup(Etk_Menu *menu)
 }
 
 /**
- * @brief Pops down the menu and its children
+ * @brief Pops down the menu and all its submenus (menus attached to its items)
  * @param menu a menu
  */
 void etk_menu_popdown(Etk_Menu *menu)
@@ -112,7 +115,7 @@ void etk_menu_popdown(Etk_Menu *menu)
  *
  **************************/
 
-/* Initializes the members */
+/* Initializes the menu */
 static void _etk_menu_constructor(Etk_Menu *menu)
 {
    if (!menu)
@@ -141,29 +144,29 @@ static void _etk_menu_destructor(Etk_Menu *menu)
 }
 
 /* Calculates the ideal size of the menu */
-static void _etk_menu_size_request(Etk_Widget *widget, Etk_Size *size_requisition)
+static void _etk_menu_size_request(Etk_Widget *widget, Etk_Size *size)
 {
    Evas_List *l;
    Etk_Menu_Shell *menu_shell;
    
-   if (!(menu_shell = ETK_MENU_SHELL(widget)) || !size_requisition)
+   if (!(menu_shell = ETK_MENU_SHELL(widget)) || !size)
       return;
    
-   size_requisition->w = 0;
-   size_requisition->h = 0;
+   size->w = 0;
+   size->h = 0;
    for (l = menu_shell->items; l; l = l->next)
    {
-      Etk_Size child_requisition;
+      Etk_Size child_size;
       
-      etk_widget_size_request(ETK_WIDGET(l->data), &child_requisition);
-      size_requisition->w = ETK_MAX(size_requisition->w, child_requisition.w);
-      size_requisition->h += child_requisition.h;
+      etk_widget_size_request(ETK_WIDGET(l->data), &child_size);
+      size->w = ETK_MAX(size->w, child_size.w);
+      size->h += child_size.h;
    }
-   /* TODO: Fixme: size request */
-   size_requisition->w += 15;
+   /* TODO: FIXME: incorrect calculated width */
+   size->w += 15;
 }
 
-/* Resizes the menu to the size allocation */
+/* Resizes the menu to the allocated size */
 static void _etk_menu_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 {
    Etk_Geometry child_geometry;
@@ -195,23 +198,24 @@ static void _etk_menu_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       else
          etk_widget_theme_object_signal_emit(ETK_WIDGET(item), "arrow_hide");
       
-      etk_widget_theme_object_signal_emit(ETK_WIDGET(item), items_have_left_widget ? "left_widget_show" : "left_widget_hide");
+      etk_widget_theme_object_signal_emit(ETK_WIDGET(item),
+         items_have_left_widget ? "left_widget_show" : "left_widget_hide");
    }
    
    y_offset = geometry.y;
    child_geometry.x = geometry.x;
    for (l = menu_shell->items; l; l = l->next)
    {
-      Etk_Size child_requisition;
+      Etk_Size child_size;
       
       item = ETK_MENU_ITEM(l->data);
-      etk_widget_size_request(ETK_WIDGET(item), &child_requisition);
+      etk_widget_size_request(ETK_WIDGET(item), &child_size);
       child_geometry.y = y_offset;
       child_geometry.w = geometry.w;
-      child_geometry.h = child_requisition.h;
+      child_geometry.h = child_size.h;
       
       etk_widget_size_allocate(ETK_WIDGET(item), child_geometry);
-      y_offset += child_requisition.h;
+      y_offset += child_geometry.h;
    }
 }
 
@@ -255,36 +259,11 @@ static void _etk_menu_window_key_down_cb(Etk_Object *object, void *event_info, v
 {
    Etk_Menu_Shell *menu_shell;
    Evas_Event_Key_Down *event;
-   //Evas_List *l;
    
    if (!(menu_shell = ETK_MENU_SHELL(data)) || !(event = event_info))
       return;
    
-   /*if (strcmp(event->keyname, "Down") == 0)
-   {
-      if (!menu_shell->items)
-         return;
-      if (!combobox->selected_item || !(l = evas_list_find_list(combobox->items, combobox->selected_item)) || !l->next)
-         _etk_combobox_selected_item_set(combobox, ETK_COMBOBOX_ITEM(combobox->items->data));
-      else
-         _etk_combobox_selected_item_set(combobox, ETK_COMBOBOX_ITEM(l->next->data));
-   }
-   else if (strcmp(event->keyname, "Up") == 0)
-   {
-      if (!combobox->items)
-         return;
-      if (!combobox->selected_item || !(l = evas_list_find_list(combobox->items, combobox->selected_item)) || !l->prev)
-         _etk_combobox_selected_item_set(combobox, ETK_COMBOBOX_ITEM(evas_list_last(combobox->items)->data));
-      else
-         _etk_combobox_selected_item_set(combobox, ETK_COMBOBOX_ITEM(l->prev->data));
-   }
-   else if (strcmp(event->keyname, "Return") == 0 || strcmp(event->keyname, "space") == 0 || strcmp(event->keyname, "KP_Enter") == 0)
-   {
-      if (combobox->selected_item)
-         etk_combobox_active_item_set(combobox, combobox->selected_item);
-   }
-   else if (strcmp(event->keyname, "Escape") == 0)
-      etk_popup_window_popdown(combobox->window);*/
+   /* TODO: keyboard navigation */
 }
 
 /* Called when an item is added to the menu */
@@ -393,3 +372,39 @@ static void _etk_menu_item_activated_cb(Etk_Object *object, void *data)
 }
 
 /** @} */
+
+/**************************
+ *
+ * Documentation
+ *
+ **************************/
+
+/**
+ * @addtogroup Etk_Menu
+ *
+ * @image html menu.png
+ * The items of the menu are packed vertically. @n
+ * To add or remove items, you have to use the functions provided by the Etk_Menu_Shell:
+ * etk_menu_shell_append(), etk_menu_shell_remove(), ... @n @n
+ * A menu is usually popped up by clicking on an item of a menu bar, or by activating an item of another menu. @n
+ * You can also pop up a menu at the mouse position with etk_menu_popup() or at a specific position with
+ * etk_menu_popup_xy(). The menu could then be popped down with etk_menu_popdown().
+ * 
+ * 
+ * \par Object Hierarchy:
+ * - Etk_Object
+ *   - Etk_Widget
+ *     - Etk_Menu_Shell
+ *       - Etk_Menu
+ *
+ * \par Signals:
+ * @signal_name "popped_up": Emitted when the the menu has been popped up
+ * @signal_cb void callback(Etk_Menu *menu, void *data)
+ * @signal_arg menu: the menu that has been popped up
+ * @signal_data
+ * \par
+ * @signal_name "popped_down": Emitted when the the menu has been popped down
+ * @signal_cb void callback(Etk_Menu *menu, void *data)
+ * @signal_arg menu: the menu that has been popped down
+ * @signal_data
+ */

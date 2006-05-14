@@ -191,7 +191,7 @@ void etk_combobox_column_add(Etk_Combobox *combobox, Etk_Combobox_Column_Type co
       return;
    if (combobox->built)
    {
-      ETK_WARNING("The combobox shouldn't be already built when you add a new column");
+      ETK_WARNING("Unable to add a new column to the combobox because the combobox has been built");
       return;
    }
    
@@ -1186,7 +1186,7 @@ static Etk_Combobox_Item *_etk_combobox_item_new_valist(Etk_Combobox *combobox, 
       return NULL;
    if (!combobox->built)
    {
-      ETK_WARNING("The combobox should be already built when you add a new item to it");
+      ETK_WARNING("Unable to add a new item to the combobox because etk_combobox_build() has not been called yet");
       return NULL;
    }
    

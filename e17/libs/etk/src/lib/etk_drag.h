@@ -1,4 +1,4 @@
-/** @file etk_dnd.h */
+/** @file etk_drag.h */
 #ifndef _ETK_DRAG_H_
 #define _ETK_DRAG_H_
 
