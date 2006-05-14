@@ -49,6 +49,7 @@ EFonts_Init(void)
 #endif
 }
 
+#if 0				/* Unused - Remove? */
 void
 EFont_draw_string(Win win, Drawable draw, Efont * f, int x, int y,
 		  int r, int g, int b, const char *text)
@@ -66,6 +67,17 @@ EFont_draw_string(Win win, Drawable draw, Efont * f, int x, int y,
    imlib_text_draw(0, 0, text);
    EImageRenderOnDrawable(im, win, draw, x, y - ascent, w, h, 0);
    EImageFree(im);
+}
+#endif
+
+void
+EFont_draw_string(EImage * im, Efont * f, int x, int y,
+		  int r, int g, int b, const char *text)
+{
+   imlib_context_set_image(im);
+   imlib_context_set_color(r, g, b, 255);
+   imlib_context_set_font(f->face);
+   imlib_text_draw(x, y - imlib_get_font_ascent(), text);
 }
 
 void

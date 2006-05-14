@@ -102,8 +102,7 @@ void                Efont_extents(Efont * f, const char *text,
 				  int *rbearing_return);
 Efont              *Efont_load(const char *file, int size);
 void                Efont_free(Efont * f);
-void                EFont_draw_string(Win win, Drawable draw, Efont * f, int x,
-				      int y, int r, int g, int b,
-				      const char *text);
+void                EFont_draw_string(EImage * im, Efont * f, int x, int y,
+				      int r, int g, int b, const char *text);
 
 #endif /* _TCLASS_H */

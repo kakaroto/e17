@@ -95,6 +95,66 @@ TextDrawRotBack(Win win, Drawable dst, Drawable src, int x, int y,
      }
 }
 
+static EImage      *
+TextImageGet(Win win __UNUSED__, Drawable src, int x, int y, int w, int h,
+	     TextState * ts)
+{
+   EImage             *im;
+   int                 win_w;
+
+   switch (ts->style.orientation)
+     {
+     default:
+     case FONT_TO_RIGHT:
+	im = EImageGrabDrawable(src, None, x, y, w, h, 0);
+	break;
+     case FONT_TO_LEFT:
+	im = EImageGrabDrawable(src, None, x, y, w, h, 0);
+	EImageOrientate(im, 2);
+	break;
+     case FONT_TO_UP:
+	im = EImageGrabDrawable(src, 0, y, x, h, w, 0);
+	EImageOrientate(im, 1);
+	break;
+     case FONT_TO_DOWN:
+	EXGetGeometry(src, NULL, NULL, NULL, &win_w, NULL, NULL, NULL);
+	im = EImageGrabDrawable(src, None, win_w - y - h, x, h, w, 0);
+	EImageOrientate(im, 3);
+	break;
+     }
+
+   return im;
+}
+
+static void
+TextImagePut(EImage * im, Win win, Drawable dst, int x, int y,
+	     int w, int h, TextState * ts)
+{
+   int                 win_w;
+
+   switch (ts->style.orientation)
+     {
+     default:
+     case FONT_TO_RIGHT:
+	EImageRenderOnDrawable(im, win, dst, x, y, w, h, 0);
+	break;
+     case FONT_TO_LEFT:
+	EImageOrientate(im, 2);
+	EImageRenderOnDrawable(im, win, dst, x, y, w, h, 0);
+	break;
+     case FONT_TO_UP:
+	EImageOrientate(im, 3);
+	EImageRenderOnDrawable(im, win, dst, y, x, h, w, 0);
+	break;
+     case FONT_TO_DOWN:
+	EXGetGeometry(dst, NULL, NULL, NULL, &win_w, NULL, NULL, NULL);
+	EImageOrientate(im, 1);
+	EImageRenderOnDrawable(im, win, dst, win_w - y - h, x, h, w, 0);
+	break;
+     }
+   EImageFree(im);
+}
+
 TextState          *
 TextclassGetTextState(TextClass * tclass, int state, int active, int sticky)
 {
@@ -397,6 +457,7 @@ TextstateDrawText(TextState * ts, Win win, Drawable draw, const char *text,
 
    if (ts->efont)
      {
+	EImage             *im;
 	int                 r, g, b;
 
 	for (i = 0; i < num_lines; i++)
@@ -440,50 +501,39 @@ TextstateDrawText(TextState * ts, Win win, Drawable draw, const char *text,
 		yy += ascent;
 	     xx = x + (((textwidth_limit - wid) * justification) >> 10);
 
-	     if (ts->style.orientation != FONT_TO_RIGHT)
-		drawable = ECreatePixmap(win, wid + 2, ascent + descent + 2, 0);
-	     else
-		drawable = draw;
-	     TextDrawRotTo(win, draw, drawable, xx - 1, yy - 1 - ascent,
-			   wid + 2, ascent + descent + 2, ts);
-	     if (ts->style.orientation == FONT_TO_RIGHT)
-	       {
-		  offset_x = xx;
-		  offset_y = yy;
-	       }
-	     else
-	       {
-		  offset_x = 1;
-		  offset_y = ascent + 1;
-	       }
+	     im = TextImageGet(win, draw, xx - 1, yy - 1 - ascent,
+			       wid + 2, ascent + descent + 2, ts);
+	     if (!im)
+		break;
+
+	     offset_x = 1;
+	     offset_y = ascent + 1;
 
 	     if (ts->effect == 1)
 	       {
 		  EGetColor(&(ts->bg_col), &r, &g, &b);
-		  EFont_draw_string(win, drawable, ts->efont,
-				    offset_x + 1, offset_y + 1,
-				    r, g, b, lines[i]);
+		  EFont_draw_string(im, ts->efont, offset_x + 1,
+				    offset_y + 1, r, g, b, lines[i]);
 	       }
 	     else if (ts->effect == 2)
 	       {
 		  EGetColor(&(ts->bg_col), &r, &g, &b);
-		  EFont_draw_string(win, drawable, ts->efont, offset_x - 1,
+		  EFont_draw_string(im, ts->efont, offset_x - 1,
 				    offset_y, r, g, b, lines[i]);
-		  EFont_draw_string(win, drawable, ts->efont, offset_x + 1,
+		  EFont_draw_string(im, ts->efont, offset_x + 1,
 				    offset_y, r, g, b, lines[i]);
-		  EFont_draw_string(win, drawable, ts->efont, offset_x,
+		  EFont_draw_string(im, ts->efont, offset_x,
 				    offset_y - 1, r, g, b, lines[i]);
-		  EFont_draw_string(win, drawable, ts->efont, offset_x,
+		  EFont_draw_string(im, ts->efont, offset_x,
 				    offset_y + 1, r, g, b, lines[i]);
 	       }
 	     EGetColor(&(ts->fg_col), &r, &g, &b);
-	     EFont_draw_string(win, drawable, ts->efont, offset_x, offset_y,
+	     EFont_draw_string(im, ts->efont, offset_x, offset_y,
 			       r, g, b, lines[i]);
 
-	     TextDrawRotBack(win, draw, drawable, xx - 1, yy - 1 - ascent,
-			     wid + 2, ascent + descent + 2, ts);
-	     if (drawable != draw)
-		EFreePixmap(drawable);
+	     TextImagePut(im, win, draw, xx - 1, yy - 1 - ascent,
+			  wid + 2, ascent + descent + 2, ts);
+
 	     yy += ascent + descent;
 	  }
      }
