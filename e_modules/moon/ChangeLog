@@ -1,0 +1,26 @@
+0.2.0   * Gadman -> Gadcon port
+
+0.1.0   * Added configurability
+
+0.0.6
+	* Fix to work with gcc 4.0. Tested with the following version
+	gcc (GCC) 4.0.3 20051201 (prerelease) (Debian 4.0.2-5)
+	gcc 3.3 users shouldn't be effectted.
+
+0.0.5 
+	* more moon.edc tidy up
+
+0.0.4
+	* moon.edc uses states instead of embryo script calculations
+
+0.0.3
+	* Add support for internationalization 
+	  (not actually required yet, but it's ready for it)
+
+0.0.2 
+	* Tidy up build setup
+	* Use license safe e16 images
+
+0.0.1
+	* Initial e16 MoonClock port
+

@@ -1,0 +1,15 @@
+Moon Clock module for Enlightenment 0.17.0
+
+See INSTALL for installation instructions.
+
+This module is a port of the e16 E-MoonClock epplet.  
+The module supplies a gadget that displays information about the current phase of the moon.
+
+The default theme re-uses moon phase images from the e16 E-MoonClock.
+The sky image is from the e17 "bling bling" theme.
+Moon phase calculation routines are also re-used.
+The rest was mainly written by the AUTHORS. 
+
+Feel free to send suggestions or problem reports to the AUTHORS
+And have fun :)
+

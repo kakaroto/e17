@@ -1,0 +1,19 @@
+images {
+   image: "moon.png" COMP;
+}
+collections {
+   group {
+      name: "icon";
+      parts {
+	 part {
+	    name: "image";
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       aspect: 1.0 1.0;
+	       image.normal: "moon.png";
+	    }
+	 }
+      }
+   }
+}

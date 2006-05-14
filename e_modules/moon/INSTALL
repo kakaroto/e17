@@ -1,0 +1,21 @@
+COMPILING and INSTALLING:
+
+1) Installing to ~/.e/e/modules (default)
+
+Users wishing to install the module to their home directory should do the following:
+
+    $ ./configure
+    $ make
+    $ make install
+
+2) Installing to a system directory
+
+System admins can install to a system directory by specifying the appropriate prefix to the configure script. Note that the prefix specified should be the same as that used to install Enlightenment. For example, to install to /usr/local:
+
+    $ ./configure --prefix=/usr/local
+    $ make
+
+      Then finally as root:
+
+    $ make install
+
