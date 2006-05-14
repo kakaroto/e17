@@ -112,14 +112,14 @@ IB_SnapEWin(EWin * ewin, int size)
 	Pixmap              mask;
 
 	mask = EWindowGetShapePixmap(EoGetWin(ewin));
-	im = EImageGrabDrawableScaled(draw, mask, 0, 0, ww, hh, w, h,
-				      !EServerIsGrabbed(), 0);
+	im = EImageGrabDrawableScaled(EoGetWin(ewin), draw, mask, 0, 0, ww, hh,
+				      w, h, !EServerIsGrabbed(), 0);
      }
    else
      {
 	draw = EoGetXwin(ewin);
-	im = EImageGrabDrawableScaled(draw, None, 0, 0, ww, hh, w, h,
-				      !EServerIsGrabbed(), 1);
+	im = EImageGrabDrawableScaled(EoGetWin(ewin), draw, None, 0, 0, ww, hh,
+				      w, h, !EServerIsGrabbed(), 1);
      }
    EImageSetHasAlpha(im, 1);
 

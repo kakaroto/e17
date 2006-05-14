@@ -344,15 +344,23 @@ EImageGrabDrawable(Drawable draw, Pixmap mask, int x, int y, int w, int h,
 }
 
 EImage             *
-EImageGrabDrawableScaled(Drawable draw, Pixmap mask, int x, int y, int w, int h,
+EImageGrabDrawableScaled(Win win, Drawable draw, Pixmap mask,
+			 int x, int y, int w, int h,
 			 int iw, int ih, int grab, int get_mask_from_shape)
 {
    EImage             *im;
+   Visual             *vis;
 
    imlib_context_set_drawable(draw);
-   im =
-      imlib_create_scaled_image_from_drawable(mask, x, y, w, h, iw, ih, grab,
-					      get_mask_from_shape);
+   vis = (win) ? WinGetVisual(win) : NULL;
+   if (vis)
+      imlib_context_set_visual(vis);
+
+   im = imlib_create_scaled_image_from_drawable(mask, x, y, w, h, iw, ih, grab,
+						get_mask_from_shape);
+
+   if (vis)
+      imlib_context_set_visual(_default_vis);
 
    return im;
 }
@@ -408,7 +416,8 @@ EImagePixmapFree(Pixmap pmap)
 }
 
 void
-ScaleRect(Window src, Pixmap dst, Pixmap * pdst, int sx, int sy, int sw, int sh,
+ScaleRect(Win wsrc, Drawable src, Win wdst, Pixmap dst, Pixmap * pdst,
+	  int sx, int sy, int sw, int sh,
 	  int dx, int dy, int dw, int dh, int scale)
 {
    Imlib_Image        *im;
@@ -416,20 +425,17 @@ ScaleRect(Window src, Pixmap dst, Pixmap * pdst, int sx, int sy, int sw, int sh,
 
    scale = (scale) ? 2 : 1;
 
-   imlib_context_set_drawable(src);
-   im = imlib_create_scaled_image_from_drawable(None, sx, sy, sw, sh,
-						scale * dw, scale * dh, 0, 0);
-   imlib_context_set_image(im);
+   im = EImageGrabDrawableScaled(wsrc, src, None, sx, sy, sw, sh,
+				 scale * dw, scale * dh, 0, 0);
    imlib_context_set_anti_alias(1);
    if (pdst)
      {
-	imlib_render_pixmaps_for_whole_image_at_size(&pmap, &mask, dw, dh);
+	EImageRenderPixmaps(im, wdst, &pmap, &mask, dw, dh);
 	*pdst = pmap;
      }
    else
      {
-	imlib_context_set_drawable(dst);
-	imlib_render_image_on_drawable_at_size(dx, dy, dw, dh);
+	EImageRenderOnDrawable(im, wdst, dst, dx, dy, dw, dh, 0);
      }
    imlib_free_image();
 }

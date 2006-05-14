@@ -71,7 +71,8 @@ void                EImageTile(EImage * im, EImage * tile, int blend, int tw,
 
 EImage             *EImageGrabDrawable(Drawable draw, Pixmap mask,
 				       int x, int y, int w, int h, int grab);
-EImage             *EImageGrabDrawableScaled(Drawable draw, Pixmap mask,
+EImage             *EImageGrabDrawableScaled(Win win,
+					     Drawable draw, Pixmap mask,
 					     int x, int y, int w, int h,
 					     int iw, int ih, int grab,
 					     int get_mask_from_shape);
@@ -92,7 +93,8 @@ void                EImageColorModifierSetTables(EImageColorModifier * icm,
 						 unsigned char *b,
 						 unsigned char *a);
 
-void                ScaleRect(Window src, Pixmap dst, Pixmap * pdst,
+void                ScaleRect(Win wsrc, Drawable src,
+			      Win wdst, Pixmap dst, Pixmap * pdst,
 			      int sx, int sy, int sw, int sh,
 			      int dx, int dy, int dw, int dh, int scale);
 

@@ -213,16 +213,16 @@ PagerScanTimeout(int val __UNUSED__, void *data)
    y = ((phase & 0xfffffff8) + offsets[phase % 8]) % hh;
    y2 = (y * VRoot.h) / hh;
 
-   ScaleRect(VRoot.xwin, p->pmap, NULL, 0, y2, VRoot.w, VRoot.h / hh,
-	     xx, yy + y, ww, 1, Conf_pagers.hiq);
+   ScaleRect(VRoot.win, VRoot.xwin, p->win, p->pmap, NULL, 0, y2, VRoot.w,
+	     VRoot.h / hh, xx, yy + y, ww, 1, Conf_pagers.hiq);
    EClearArea(p->win, xx, yy + y, ww, 1, False);
    y2 = p->h;
 #else
    y = ((phase & 0xfffffff8) + offsets[phase % 8]) % ww;
    y2 = (y * VRoot.w) / ww;
 
-   ScaleRect(VRoot.xwin, p->pmap, NULL, y2, 0, VRoot.w / ww, VRoot.h,
-	     xx + y, yy, 1, hh, Conf_pagers.hiq);
+   ScaleRect(VRoot.win, VRoot.xwin, p->win, p->pmap, NULL, y2, 0, VRoot.w / ww,
+	     VRoot.h, xx + y, yy, 1, hh, Conf_pagers.hiq);
    EClearArea(p->win, xx + y, yy, 1, hh, False);
    y2 = p->w;
 #endif
@@ -305,8 +305,9 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
      {
 	ewin->mini_pmm.type = 1;
 	ewin->mini_pmm.mask = None;
-	ScaleRect(draw, None, &ewin->mini_pmm.pmap, 0, 0,
-		  EoGetW(ewin), EoGetH(ewin), 0, 0, w, h, Conf_pagers.hiq);
+	ScaleRect(EoGetWin(ewin), draw, VRoot.win, None, &ewin->mini_pmm.pmap,
+		  0, 0, EoGetW(ewin), EoGetH(ewin), 0, 0, w, h,
+		  Conf_pagers.hiq);
      }
 
 #if 0				/* FIXME - Remove? */
@@ -409,8 +410,9 @@ doPagerUpdate(Pager * p)
 
  do_screen_update:
    /* Update pager area by snapshotting entire screen */
-   ScaleRect(VRoot.xwin, p->pmap, NULL, 0, 0, VRoot.w, VRoot.h, cx * p->dw,
-	     cy * p->dh, p->dw, p->dh, Conf_pagers.hiq);
+   ScaleRect(VRoot.win, VRoot.xwin, p->win, p->pmap, NULL, 0, 0,
+	     VRoot.w, VRoot.h, cx * p->dw, cy * p->dh, p->dw, p->dh,
+	     Conf_pagers.hiq);
    p->update_phase = 0;
 
    EClearWindow(p->win);
@@ -542,8 +544,8 @@ PagerUpdateBg(Pager * p)
 
    if (Conf_pagers.snap && p->dsk->bg.pmap)
      {
-	ScaleRect(p->dsk->bg.pmap, pmap, NULL, 0, 0, VRoot.w, VRoot.h, 0,
-		  0, p->dw, p->dh, Conf_pagers.hiq);
+	ScaleRect(VRoot.win, p->dsk->bg.pmap, p->win, pmap, NULL, 0, 0,
+		  VRoot.w, VRoot.h, 0, 0, p->dw, p->dh, Conf_pagers.hiq);
 	return;
      }
 
