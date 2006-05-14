@@ -327,7 +327,12 @@ SessionInit(void)
 #ifdef HAVE_X11_SM_SMLIB_H
    static SmPointer    context;
    SmcCallbacks        callbacks;
+#endif
 
+   if (Mode.wm.window)
+      return;
+
+#ifdef HAVE_X11_SM_SMLIB_H
    atom_sm_client_id = XInternAtom(disp, "SM_CLIENT_ID", False);
    atom_wm_client_leader = XInternAtom(disp, "WM_CLIENT_LEADER", False);
 
