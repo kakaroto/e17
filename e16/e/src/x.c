@@ -1028,10 +1028,11 @@ EShapeCombineMask(Win win, int dest, int x, int y, Pixmap pmap, int op)
    if (!xid)
       return;
 
-   if (xid->rects)
+   if (xid->rects || xid->num_rect < 0)
      {
 	xid->num_rect = 0;
-	XFree(xid->rects);
+	if (xid->rects)
+	   XFree(xid->rects);
 	xid->rects = NULL;
 	wasshaped = 1;
      }
@@ -1130,7 +1131,7 @@ EShapeGetRectangles(Win win, int dest, int *rn, int *ord)
 	XRectangle         *r;
 
 #if DEBUG_SHAPE_OPS
-	Eprintf("EShapeGetRectangles-A %#lx nr=%d\n", win, xid->num_rect);
+	Eprintf("EShapeGetRectangles-A %#lx nr=%d\n", win->xwin, xid->num_rect);
 #endif
 	*rn = xid->num_rect;
 	*ord = xid->ord;
@@ -1148,7 +1149,7 @@ EShapeGetRectangles(Win win, int dest, int *rn, int *ord)
 	XRectangle         *r, *rr;
 
 #if DEBUG_SHAPE_OPS
-	Eprintf("EShapeGetRectangles-B %#lx nr=%d\n", win, xid->num_rect);
+	Eprintf("EShapeGetRectangles-B %#lx nr=%d\n", win->xwin, xid->num_rect);
 #endif
 	r = XShapeGetRectangles(disp, win->xwin, dest, rn, ord);
 	if (r)
@@ -1231,8 +1232,8 @@ EShapePropagate(Win win)
       return 0;
 
 #if DEBUG_SHAPE_PROPAGATE
-   Eprintf("EShapePropagate %#lx %d,%d %dx%d\n", win, xid->x, xid->y, xid->w,
-	   xid->h);
+   Eprintf("EShapePropagate %#lx %d,%d %dx%d\n", win->xwin,
+	   xid->x, xid->y, xid->w, xid->h);
 #endif
 
    XQueryTree(disp, xid->xwin, &rt, &par, &list, &num);
