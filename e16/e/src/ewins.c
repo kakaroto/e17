@@ -1463,11 +1463,15 @@ EwinKill(EWin * ewin)
    if (EwinIsInternal(ewin))
       return;
 
+   XKillClient(disp, _EwinGetClientXwin(ewin));
+
+#if 0				/* Wait for unmap/destroy for now */
    EwinUnmap1(ewin);
    EoUnmap(ewin);
    EwinUnmap2(ewin);
 
    EwinDestroy(ewin);
+#endif
 }
 
 const char         *
