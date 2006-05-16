@@ -65,7 +65,7 @@ _e_db_find(const char *file, char writeable)
 
    if (!edb_init)
      {
-	atexit(e_db_flush);
+//	atexit(e_db_flush);
 	edb_init = 1;
      }
    for (ptr = edbs; ptr; ptr = ptr->next)
