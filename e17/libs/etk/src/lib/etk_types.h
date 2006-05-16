@@ -65,10 +65,7 @@ typedef struct _Etk_Textblock_Iter Etk_Textblock_Iter;
 typedef struct _Etk_Entry Etk_Entry;
 typedef struct _Etk_Text_View Etk_Text_View;
 typedef struct Etk_Canvas Etk_Canvas;
-typedef struct _Etk_Colorpicker Etk_Colorpicker;
-typedef struct _Etk_Colorpicker_Vertical Etk_Colorpicker_Vertical;
-typedef struct _Etk_Colorpicker_Square Etk_Colorpicker_Square;
-typedef enum   _Etk_Color_Mode Etk_Color_Mode;
+typedef struct Etk_Colorpicker Etk_Colorpicker;
 typedef struct _Etk_Tree Etk_Tree;
 typedef enum   _Etk_Tree_Mode Etk_Tree_Mode;
 typedef struct _Etk_Tree_Col Etk_Tree_Col;
@@ -118,11 +115,14 @@ typedef struct Etk_Iconbox_Model Etk_Iconbox_Model;
 
 /**
  * @struct Etk_Color
- * @brief A color
+ * @brief A RGBA color
  */
 typedef struct Etk_Color
 {
-   int r, g, b, a;
+   int r;       /**< The red component of the color */
+   int g;       /**< The green component of the color */
+   int b;       /**< The blue component of the color */
+   int a;       /**< The alpha component of the color */
 } Etk_Color;
 
 /** @} */

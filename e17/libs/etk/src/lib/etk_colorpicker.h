@@ -7,55 +7,73 @@
 
 /**
  * @defgroup Etk_Colorpicker Etk_Colorpicker
+ * @brief TODO: doc
  * @{
  */
 
-/** @brief Gets the type of a colorpicker */
+/** Gets the type of a colorpicker */
 #define ETK_COLORPICKER_TYPE        (etk_colorpicker_type_get())
-/** @brief Casts the object to a colorpicker */
+/** Casts the object to a colorpicker */
 #define ETK_COLORPICKER(obj)        (ETK_OBJECT_CAST((obj), ETK_COLORPICKER_TYPE, Etk_Colorpicker))
-/** @brief Check if the object is an Etk_Colorpicker */
+/** Check if the object is an Etk_Colorpicker */
 #define ETK_IS_COLORPICKER(obj)     (ETK_OBJECT_CHECK_TYPE((obj), ETK_COLORPICKER_TYPE))
 
-/**
- * @enum Etk_Color_Mode
- * @brief The color modes used by the colorpicker
- */
-enum _Etk_Color_Mode
+/** @brief The color modes used by the colorpicker */
+typedef enum Etk_Colorpicker_Mode
 {
-   ETK_COLOR_MODE_H, 
-   ETK_COLOR_MODE_S,
-   ETK_COLOR_MODE_V,
-   ETK_COLOR_MODE_R,
-   ETK_COLOR_MODE_G,
-   ETK_COLOR_MODE_B
-};
+   ETK_COLORPICKER_H,     /**< The "Hue" mode */
+   ETK_COLORPICKER_S,     /**< The "Saturation" mode */
+   ETK_COLORPICKER_V,     /**< The "Value" mode */
+   ETK_COLORPICKER_R,     /**< The "Red" mode */
+   ETK_COLORPICKER_G,     /**< The "Green" mode */
+   ETK_COLORPICKER_B      /**< The "Blue" mode */
+} Etk_Colorpicker_Mode;
 
-struct _Etk_Colorpicker
+/**
+ * @brief @widget The structure of a colorpicker
+ * @structinfo
+ */
+struct Etk_Colorpicker
 {
-  Etk_HBox hbox;
-  
-  Etk_Widget *cps;
-  Etk_Widget *cpv;
-  Etk_Widget *radio[6];
-  
-  Etk_Color_Mode color_mode;
-  
-  Etk_Color color;
+   /* private: */
+   /* Inherit from Etk_Widget */
+   Etk_Widget widget;
+   
+   /* Square picker */
+   Evas_Object *sp_image;
+   Evas_Object *sp_hcursor;
+   Evas_Object *sp_vcursor;
+   int sp_res;
+   float sp_xpos, sp_ypos;
+   Etk_Bool sp_dragging;
+   Etk_Bool sp_image_needs_update;
+   Etk_Bool sp_cursor_needs_update;
+   
+   /* Vertical picker */
+   Evas_Object *vp_image;
+   Evas_Object *vp_cursor;
+   int vp_res;
+   float vp_pos;
+   Etk_Bool vp_dragging;
+   Etk_Bool vp_image_needs_update;
+   Etk_Bool vp_cursor_needs_update;
+   
+   Etk_Widget *radio_vbox;
+   Etk_Widget *radios[6];
+   
+   Etk_Colorpicker_Mode mode;
+   Etk_Color current_color;
 };
 
 Etk_Type *etk_colorpicker_type_get();
 Etk_Widget *etk_colorpicker_new();
 
-void etk_colorpicker_color_mode_set(Etk_Colorpicker *cp, Etk_Color_Mode color_mode);
-Etk_Color_Mode etk_colorpicker_color_mode_get(Etk_Colorpicker *cp);
+void etk_colorpicker_mode_set(Etk_Colorpicker *cp, Etk_Colorpicker_Mode mode);
+Etk_Colorpicker_Mode etk_colorpicker_mode_get(Etk_Colorpicker *cp);
 
-Etk_Color etk_colorpicker_color_get(Etk_Colorpicker *cp);
-
-void etk_colorpicker_rgb_to_hsv(Etk_Color color, double *h, double *s, double *v);
-void etk_colorpicker_hsv_to_rgb(double h, double s, double v, Etk_Color *color);
+void etk_colorpicker_current_color_set(Etk_Colorpicker *cp, Etk_Color color);
+Etk_Color etk_colorpicker_current_color_get(Etk_Colorpicker *cp);
 
 /** @} */
 
-
-#endif /*  __ETK_COLORPICKER_H__ */
+#endif

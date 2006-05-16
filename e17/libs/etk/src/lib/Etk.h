@@ -42,8 +42,6 @@
 #include "etk_text_view.h"
 #include "etk_canvas.h"
 #include "etk_colorpicker.h"
-#include "etk_colorpicker_vertical.h"
-#include "etk_colorpicker_square.h"
 #include "etk_tree.h"
 #include "etk_tree_model.h"
 #include "etk_range.h"

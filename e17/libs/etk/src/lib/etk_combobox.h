@@ -58,7 +58,7 @@ struct Etk_Combobox_Column
 };
 
 /**
- * @brief An item of a combobox
+ * @brief @widget The structure of an item of a combobox
  * @structinfo
  */
 struct Etk_Combobox_Item
