@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-03 17:23+0900\n"
+"POT-Creation-Date: 2006-04-30 18:48+0900\n"
 "PO-Revision-Date: 2006-03-03 21:33+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,55 +16,55 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:41
+#: e_mod_config.c:37
 msgid "Mount Configuration"
 msgstr "Mount の設定"
 
-#: e_mod_config.c:84 e_mod_config.c:126
+#: e_mod_config.c:80 e_mod_config.c:119
 msgid "Show Labels"
 msgstr "ラベルを表示する"
 
-#: e_mod_config.c:88 e_mod_config.c:130
+#: e_mod_config.c:84 e_mod_config.c:123
 msgid "Layout Settings"
 msgstr "mount アイコンの配置"
 
-#: e_mod_config.c:90 e_mod_config.c:132
+#: e_mod_config.c:86 e_mod_config.c:125
 msgid "Use Vertical Layout"
 msgstr "縦に並べる"
 
-#: e_mod_config.c:93 e_mod_config.c:135
+#: e_mod_config.c:88 e_mod_config.c:127
 msgid "Use Horizontal Layout"
 msgstr "横に並べる"
 
-#: e_mod_config.c:140
+#: e_mod_config.c:131
 msgid "Icon Size"
 msgstr "アイコンの大きさ"
 
-#: e_mod_main.c:123
+#: e_mod_main.c:114
 msgid "Enlightenment Mount Module"
 msgstr "Enlightenment mount モジュール"
 
-#: e_mod_main.c:124
+#: e_mod_main.c:114
 msgid "This is a mount module to mount/unmount devices."
-msgstr "これはデバイスをマウント、アンマウントする mount モジュールです."
+msgstr "これはデバイスをマウント, アンマウントする mount モジュールです."
 
-#: e_mod_main.c:161
+#: e_mod_main.c:151
 msgid "Cannot Parse fstab"
 msgstr "fstab が解析できません."
 
-#: e_mod_main.c:161 e_mod_main.c:1283 e_mod_main.c:1291 e_mod_main.c:1299
+#: e_mod_main.c:151 e_mod_main.c:1210 e_mod_main.c:1217 e_mod_main.c:1224
 msgid "Mount Module"
 msgstr "mount モジュール"
 
-#: e_mod_main.c:1284
+#: e_mod_main.c:1210
 msgid "Unmount Failed !!<br>Perhaps this device is in use or is not mounted."
 msgstr ""
 "アンマウントに失敗しました.<br>デバイスが使用中か, マウントされていません."
 
-#: e_mod_main.c:1292
+#: e_mod_main.c:1217
 msgid "Mount Failed !!<br>Please check that media is inserted"
 msgstr "マウントに失敗しました.<br>メディアはちゃんと挿入されていますか？"
 
-#: e_mod_main.c:1299
+#: e_mod_main.c:1224
 msgid "Eject Failed !!"
 msgstr "メディアの排出に失敗しました."
