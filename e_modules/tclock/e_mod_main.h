@@ -9,6 +9,8 @@
 #define TIME_BUF 1024
 #define FORMAT_BUF_SIZE 1024
 #define TCLOCK_DEBUG(X) (printf("tclock_debug: %s\n",X))
+#undef TCLOCK_DEBUG
+#define TCLOCK_DEBUG(X)
 
 typedef struct _Config
 {

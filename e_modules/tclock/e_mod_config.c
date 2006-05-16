@@ -35,7 +35,6 @@ _config_tclock_module(E_Container *con, TClock_Face *f)
 static void
 _fill_data(TClock_Face *f, E_Config_Dialog_Data *cfdata)
 {
-   printf("Cfg Format: %s\n", f->conf->format);
    cfdata->resolution = f->conf->resolution;
    cfdata->format = strdup(f->conf->format);
    cfdata->userformat = f->conf->userformat;
@@ -127,7 +126,6 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
      f->conf->format = (char *)evas_stringshare_add("%c");
    
    e_config_save_queue();
-   printf("Cfg Format: %s\n", f->conf->format);
    
    return 1;
 }

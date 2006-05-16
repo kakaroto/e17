@@ -197,8 +197,6 @@ _tclock_new()
                        cl = cl->next;
 		    }
 
-		  printf("Format: %s\n", face->conf->format);
-
 		  /* to avoid the long display of "Starting the clock..." */
 		  _tclock_cb_check(tclock);
 		  tclock->tclock_check_timer = ecore_timer_add(tclock->conf->poll_time, _tclock_cb_check, tclock);
