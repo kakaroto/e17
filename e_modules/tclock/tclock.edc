@@ -20,6 +20,7 @@ collections
 		       image
 			 {
 			    normal: "background.png";
+			    border: 3 3 3 3;
 			 }
 		    }
 	       }
