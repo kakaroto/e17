@@ -1,73 +1,81 @@
 // Sample EDC
-images {
-    image, "background.png" COMP;
+images
+{
+   image: "background.png" COMP;
 }
-collections {
-    group {
-	name, "modules/tclock/main";
-	min, 32 32;
-	max, 1024 768;
-	
-	parts {
-	    part {
-		name, "background";
-		type, IMAGE;
-		mouse_events, 0;
-		description { 
-    		    state, "default" 0.0;
-		    rel1 {
-			relative, 0.0 0.0;
-			offset, 0 0;
-		    }
-		    rel2 {
-			relative, 1.0 1.0;
-			offset, -1 -1;
-		    }
-		    image {
-			normal, "background.png";
-		    }
-		    
-	    }
-	}
-	
-part {
-    name: "tclock_format";
-    type: TEXT;
-    mouse_events, 0;
-    description {
-	state: " %c" 0.0;
-    }
+styles
+{
+   style
+     {
+	name: "tclock_style";
+	base: "font=Edje-Vera font_size=12 text_class=tb_plain align=center style=soft_shadow color=#fff shadow_color=#00000020 valign=center";
+	tag: "br" "\n";
+     }
 }
 
-part {
-    name: "tclock_text";
-    type: TEXT;
-    effect:         SOFT_SHADOW;
-    mouse_events, 0;
-    
-    description {
-	state, "default" 0.0;
-	rel1 {
-	    relative, 0.0 0.0;
-	    offset, 0 0;
-	}
+collections
+{
+   group
+     {
+	name: "modules/tclock/main";
+	min: 32 32;
+	max: 1024 768;
 
-	rel2 {
-	    relative, 1.0 1.0;
-	    offset, -1 -1;
-	}
-	color: 255 255 255 230;
-	//color2: 0 0 255 155;                                             
-	color3: 0 0 0 50; 
-	text {
-	    text, "Starting the clock...";
-	    font, "vera";
-	    size, 12;
-	    align, 0.5 0.5;
-	}
-}
-}
-} /* Close Parts */
+	parts
+	  {
+	     part
+	       {
+		  name: "background";
+		  type: IMAGE;
+		  mouse_events: 0;
+		  description
+		    {
+		       state: "default" 0.0;
+		       rel1
+			 {
+			    relative: 0.0 0.0;
+			    offset: 0 0;
+			 }
+		       rel2
+			 {
+			    relative: 1.0 1.0;
+			    offset: -1 -1;
+			 }
+		       image
+			 {
+			    normal: "background.png";
+			 }
+		    }
+	       }
 
-} /* Close Group */
-} /* Close Coll */
+	     part
+	       {
+		  name: "tclock_text";
+		  type: TEXTBLOCK;
+		  mouse_events: 0;
+		  description
+		    {
+		       state: "default" 0.0;
+		       rel1
+			 {
+			    relative: 0.0 0.0;
+			    offset: 0 0;
+			 }
+		       rel2
+			 {
+			    relative: 1.0 1.0;
+			    offset: -1 -1;
+			 }
+		       text
+			 {
+			    style: "tclock_style";
+			    min: 1 1;
+			 }
+		    }
+	       }
+	  }
+	/* Close Parts */
+     }
+   /* Close Group */
+}
+/* Close Coll */

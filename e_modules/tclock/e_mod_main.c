@@ -50,13 +50,11 @@ e_modapi_shutdown(E_Module *module)
    TClock *tclock;
 
    if (module->config_menu)
-      module->config_menu = NULL;
+     module->config_menu = NULL;
 
    tclock = module->data;
    if (tclock)
-     {
-        _tclock_shutdown(tclock);
-     }
+     _tclock_shutdown(tclock);
    return 1;
 }
 
@@ -135,10 +133,10 @@ _tclock_new()
 #define T Config_Face
 #define D conf_face_edd
    E_CONFIG_VAL(D, T, enabled, UCHAR);
-   E_CONFIG_VAL(D, T, resolution, UINT);
+   E_CONFIG_VAL(D, T, resolution, INT);
    E_CONFIG_VAL(D, T, format, STR);
-   E_CONFIG_VAL(D, T, userformat, UINT);
-
+   E_CONFIG_VAL(D, T, userformat, UCHAR);
+   
    conf_edd = E_CONFIG_DD_NEW("TClock_Config", Config);
 
 #undef T
@@ -149,13 +147,13 @@ _tclock_new()
    E_CONFIG_VAL(D, T, poll_time, DOUBLE);
 
    tclock->conf = e_config_domain_load("module.tclock", conf_edd);
-
    if (!tclock->conf)
      {
         tclock->conf = E_NEW(Config, 1);
-
         tclock->conf->poll_time = 60.0;
      }
+
+   E_CONFIG_LIMIT(tclock->conf->poll_time, 1.0, 60.0);
 
    _tclock_config_menu_new(tclock);
 
@@ -187,11 +185,9 @@ _tclock_new()
                        face->conf->enabled = 1;
                        face->conf->resolution = RESOLUTION_MINUTE;
                        face->conf->userformat = 0;
+                       face->conf->format = (char *)evas_stringshare_add("%c");
 
-                       const char *format;
-
-                       format = edje_object_part_state_get(face->tclock_object, "tclock_format", NULL);
-                       face->conf->format = (char *)evas_stringshare_add(format);
+		       E_CONFIG_LIMIT(face->conf->resolution, 0, 1);
 
                        tclock->conf->faces = evas_list_append(tclock->conf->faces, face->conf);
                     }
@@ -199,22 +195,13 @@ _tclock_new()
                     {
                        face->conf = cl->data;
                        cl = cl->next;
-                    }
+		    }
 
-                  if (face->conf->resolution == RESOLUTION_SECOND)
-                    {
-                       E_CONFIG_LIMIT(tclock->conf->poll_time, 0.1, 1.0);
-                       tclock->tclock_check_timer = ecore_timer_add(tclock->conf->poll_time, _tclock_cb_check, tclock);
-                       TCLOCK_DEBUG("RES_SEC");
-                    }
-                  else
-                    {
-                       E_CONFIG_LIMIT(tclock->conf->poll_time, 60.0, 60.0);
-                       tclock->tclock_check_timer = ecore_timer_add(tclock->conf->poll_time, _tclock_cb_check, tclock);
-                       TCLOCK_DEBUG("RES_MIN");
-                       /* to avoid the long display of "Starting the clock..." */
-                       _tclock_cb_check(tclock);
-                    }
+		  printf("Format: %s\n", face->conf->format);
+
+		  /* to avoid the long display of "Starting the clock..." */
+		  _tclock_cb_check(tclock);
+		  tclock->tclock_check_timer = ecore_timer_add(tclock->conf->poll_time, _tclock_cb_check, tclock);
 
                   /* Menu */
                   /* This menu must be initialized after conf */
@@ -246,10 +233,10 @@ _tclock_shutdown(TClock *tclock)
 
    for (list = tclock->faces; list; list = list->next)
       _tclock_face_free(list->data);
-   evas_list_free(tclock->faces);
 
    e_object_del(E_OBJECT(tclock->config_menu));
 
+   evas_list_free(tclock->faces);
    evas_list_free(tclock->conf->faces);
    free(tclock->conf);
    free(tclock);
@@ -306,17 +293,14 @@ _tclock_face_new(E_Container *con)
    e_gadman_client_domain_set(face->gmc, "module.tclock", _tclock_count++);
    e_gadman_client_policy_set(face->gmc,
                               E_GADMAN_POLICY_ANYWHERE |
-                              E_GADMAN_POLICY_HMOVE | E_GADMAN_POLICY_VMOVE | E_GADMAN_POLICY_HSIZE | E_GADMAN_POLICY_VSIZE);
+                              E_GADMAN_POLICY_HMOVE | E_GADMAN_POLICY_VMOVE | 
+			      E_GADMAN_POLICY_HSIZE | E_GADMAN_POLICY_VSIZE);
    e_gadman_client_min_size_set(face->gmc, 4, 4);
    e_gadman_client_max_size_set(face->gmc, 512, 512);
    e_gadman_client_auto_size_set(face->gmc, 40 + (face->inset.l + face->inset.r), 40 + (face->inset.t + face->inset.b));
-
    e_gadman_client_align_set(face->gmc, 1.0, 1.0);
-   //e_gadman_client_aspect_set(face->gmc, 1.0, 1.0);
    e_gadman_client_padding_set(face->gmc, face->inset.l, face->inset.r, face->inset.t, face->inset.b);
-
    e_gadman_client_resize(face->gmc, 40 + (face->inset.l + face->inset.r), 40 + (face->inset.t + face->inset.b));
-
    e_gadman_client_change_func_set(face->gmc, _tclock_face_cb_gmc_change, face);
    e_gadman_client_load(face->gmc);
 
@@ -336,6 +320,7 @@ _tclock_face_free(TClock_Face *face)
 
    if (face->conf->format)
       evas_stringshare_del(face->conf->format);
+
    free(face->conf);
    free(face);
    _tclock_count--;
@@ -360,24 +345,8 @@ _tclock_cb_check(void *data)
         TClock_Face *face;
 
         face = l->data;
-
-        const char *format;
-
-        /* Load the default format string from the module.edj-file
-         * when the user defineable format string shouldn't be used 
-         * otherwise use the user defined format string */
-        if (!face->conf->userformat)
-          {
-             format = edje_object_part_state_get(face->tclock_object, "tclock_format", NULL);
-          }
-        else
-           format = face->conf->format;
-
-        strftime(buf, TIME_BUF, format, local_time);
-
-        TCLOCK_DEBUG(face->conf->format);
+        strftime(buf, TIME_BUF, face->conf->format, local_time);	
         edje_object_part_text_set(face->tclock_object, "tclock_text", buf);
-        e_config_save_queue();
      }
    return 1;
 }
