@@ -1,16 +1,6 @@
-// Sample EDC
 images
 {
    image: "background.png" COMP;
-}
-styles
-{
-   style
-     {
-	name: "tclock_style";
-	base: "font=Edje-Vera font_size=12 text_class=tb_plain align=center style=soft_shadow color=#fff shadow_color=#00000020 valign=center";
-	tag: "br" "\n";
-     }
 }
 
 collections
@@ -18,63 +8,147 @@ collections
    group
      {
 	name: "modules/tclock/main";
-	min: 32 32;
-	max: 1024 768;
-
 	parts
 	  {
 	     part
 	       {
 		  name: "background";
 		  type: IMAGE;
-		  mouse_events: 0;
 		  description
 		    {
 		       state: "default" 0.0;
-		       rel1
-			 {
-			    relative: 0.0 0.0;
-			    offset: 0 0;
-			 }
-		       rel2
-			 {
-			    relative: 1.0 1.0;
-			    offset: -1 -1;
-			 }
 		       image
 			 {
 			    normal: "background.png";
 			 }
 		    }
 	       }
-
 	     part
 	       {
-		  name: "tclock_text";
-		  type: TEXTBLOCK;
+		  name: "tclock_time";
+		  type: TEXT;
+		  effect: SOFT_SHADOW;		  
 		  mouse_events: 0;
 		  description
 		    {
 		       state: "default" 0.0;
+		       visible: 0;
 		       rel1
 			 {
 			    relative: 0.0 0.0;
-			    offset: 0 0;
+			    offset: 0 2;
+			 }
+		       rel2
+			 {
+			    relative: 1.0 0.5;
+			    offset: -1 -1;
+			 }
+		       color: 255 255 255 255;
+		       color3: 0 0 0 32;
+		       text {
+			  text:     "";
+			  font:     "Edje-Vera";
+			  size:     12;
+			  min:      1 1;
+			  align:    0.5 0.5;
+			  text_class: "module_large";			  
+		       }
+		    }
+		  description 
+		    {
+		       state: "hidden" 0.0;
+		       inherit: "default" 0.0;
+		       visible: 0;
+		    }
+		  description 
+		    {
+		       state: "visible" 0.0;
+		       inherit: "default" 0.0;
+		       visible: 1;
+		    }		  
+	       }
+	     part
+	       {
+		  name: "tclock_date";
+		  type: TEXT;
+		  effect: SOFT_SHADOW;
+		  mouse_events: 0;
+		  description
+		    {
+		       state: "default" 0.0;
+		       visible: 0;
+		       rel1
+			 {
+			    relative: 0.0 0.5;
+			    offset: 0 2;
 			 }
 		       rel2
 			 {
 			    relative: 1.0 1.0;
 			    offset: -1 -1;
 			 }
-		       text
-			 {
-			    style: "tclock_style";
-			    min: 1 1;
-			 }
+		       color: 255 255 255 255;
+		       color3: 0 0 0 32;
+		       text {
+			  text:     "";
+			  font:     "Edje-Vera";
+			  size:     8;
+			  min:      1 1;
+			  align:    0.5 0.5;
+			  text_class: "module_small";
+		       }
 		    }
+		  description 
+		    {
+		       state: "hidden" 0.0;
+		       inherit: "default" 0.0;
+		       visible: 0;
+		    }
+		  description 
+		    {
+		       state: "visible" 0.0;
+		       inherit: "default" 0.0;
+		       visible: 1;
+		    }		  
 	       }
 	  }
 	/* Close Parts */
+	programs 
+	  {
+	     program 
+	       {
+		  name: "p1";
+		  signal: "time_hidden";
+		  source: "";
+		  action: STATE_SET "hidden" 0.0;
+		  target: "tclock_time";
+	       }
+	     program 
+	       {
+		  name: "p2";
+		  signal: "time_visible";
+		  source: "";
+		  action: STATE_SET "visible" 0.0;
+		  target: "tclock_time";
+	       }
+	     program 
+	       {
+		  name: "p3";
+		  signal: "date_hidden";
+		  source: "";
+		  action: STATE_SET "hidden" 0.0;
+		  target: "tclock_date";
+	       }
+	     program 
+	       {
+		  name: "p4";
+		  signal: "date_visible";
+		  source: "";
+		  action: STATE_SET "visible" 0.0;
+		  target: "tclock_date";
+	       }	     
+	  }
+	/* Close Programs */
      }
    /* Close Group */
 }
