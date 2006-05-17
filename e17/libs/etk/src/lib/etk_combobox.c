@@ -1286,7 +1286,7 @@ static void _etk_combobox_selected_item_set(Etk_Combobox *combobox, Etk_Combobox
  *     - Etk_Combobox
  *
  * \par Signals:
- * @signal_name "active_item_changed": Emitted when the active item is changed (when the users selects another items)
+ * @signal_name "active_item_changed": Emitted when the active item is changed (when the user selects another items)
  * @signal_cb void callback(Etk_Combobox *combobox, void *data)
  * @signal_arg combobox: the combobox whose active item has been changed
  * @signal_data

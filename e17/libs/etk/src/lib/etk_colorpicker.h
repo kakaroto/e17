@@ -2,7 +2,7 @@
 #ifndef __ETK_COLORPICKER_H__
 #define __ETK_COLORPICKER_H__
 
-#include "etk_box.h"
+#include <etk_widget.h>
 #include <Evas.h>
 #include "etk_types.h"
 
@@ -63,8 +63,10 @@ struct Etk_Colorpicker
    Etk_Bool vp_image_needs_update;
    Etk_Bool vp_cursor_needs_update;
    
-   Etk_Widget *radio_vbox;
+   Etk_Widget *table;
    Etk_Widget *radios[6];
+   Etk_Widget *sliders[6];
+   Etk_Widget *value_labels[6];
    
    Etk_Colorpicker_Mode mode;
    Etk_Color current_color;

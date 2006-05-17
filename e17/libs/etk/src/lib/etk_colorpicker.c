@@ -6,6 +6,9 @@
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
+#include "etk_table.h"
+#include "etk_slider.h"
+#include "etk_label.h"
 #include "etk_radio_button.h"
 #include "etk_theme.h"
 
@@ -167,7 +170,11 @@ Etk_Color etk_colorpicker_current_color_get(Etk_Colorpicker *cp)
    return cp->current_color;
 }
 
-/* TODO: doc */
+/**
+ * @brief Sets the color currently selected by the colorpicker
+ * @param cp a colorpicker
+ * @param color the color to set
+ */
 void etk_colorpicker_current_color_set(Etk_Colorpicker *cp, Etk_Color color)
 {
    int r, g, b;
@@ -262,21 +269,29 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
    cp->vp_image_needs_update = ETK_FALSE;
    cp->vp_cursor_needs_update = ETK_FALSE;
    
-   cp->radio_vbox = etk_vbox_new(0, ETK_TRUE);
-   etk_widget_parent_set(cp->radio_vbox, cp_widget);
-   etk_widget_visibility_locked_set(cp->radio_vbox, ETK_TRUE);
-   etk_widget_show(cp->radio_vbox);
+   cp->table = etk_table_new(2, 6, ETK_FALSE);
+   etk_widget_parent_set(cp->table, cp_widget);
+   etk_widget_visibility_locked_set(cp->table, ETK_TRUE);
+   etk_widget_show(cp->table);
    
    for (i = 0; i < 6; i++)
    {
-      cp->radios[i] = etk_radio_button_new_with_label_from_widget(labels[i],
-         (i == 0) ? NULL : ETK_RADIO_BUTTON(cp->radios[0]));
-      etk_box_pack_start(ETK_BOX(cp->radio_vbox), cp->radios[i], ETK_TRUE, ETK_TRUE, 0);
+      if (i == 0)
+         cp->radios[i] = etk_radio_button_new_with_label(labels[i], NULL);
+      else
+         cp->radios[i] = etk_radio_button_new_with_label_from_widget(labels[i], ETK_RADIO_BUTTON(cp->radios[0]));
+      etk_table_attach(ETK_TABLE(cp->table), cp->radios[i], 0, 0, i, i,
+         0, 0, ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VEXPAND);
       etk_widget_visibility_locked_set(cp->radios[i], ETK_TRUE);
       etk_widget_show(cp->radios[i]);
-
-      etk_signal_connect("toggled", ETK_OBJECT(cp->radios[i]),
-         ETK_CALLBACK(_etk_colorpicker_radio_toggled_cb), cp);
+      
+      cp->sliders[i] = etk_hslider_new(0.0, 1.0, 0.0, 1.0 / 255, 10.0 / 255);
+      etk_table_attach(ETK_TABLE(cp->table), cp->sliders[i], 1, 1, i, i,
+         0, 0, ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_HEXPAND | ETK_FILL_POLICY_VEXPAND);
+      etk_widget_visibility_locked_set(cp->sliders[i], ETK_TRUE);
+      etk_widget_show(cp->sliders[i]);
+      
+      etk_signal_connect("toggled", ETK_OBJECT(cp->radios[i]), ETK_CALLBACK(_etk_colorpicker_radio_toggled_cb), cp);
    }
    
    cp_widget->size_request = _etk_colorpicker_size_request;
@@ -284,12 +299,6 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
    
    etk_signal_connect("realize", ETK_OBJECT(cp), ETK_CALLBACK(_etk_colorpicker_realize_cb), NULL);
    etk_signal_connect("unrealize", ETK_OBJECT(cp), ETK_CALLBACK(_etk_colorpicker_unrealize_cb), NULL);
-   
-   Etk_Color test;
-   test.r = 161;
-   test.g = 177;
-   test.b = 0;
-   etk_colorpicker_current_color_set(cp, test);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -368,7 +377,7 @@ static void _etk_colorpicker_size_allocate(Etk_Widget *widget, Etk_Geometry geom
    child_geometry.y = geometry.y;
    child_geometry.w = geometry.w / 2;
    child_geometry.h = geometry.h;
-   etk_widget_size_allocate(cp->radio_vbox, child_geometry);
+   etk_widget_size_allocate(cp->table, child_geometry);
    
    cp->sp_image_needs_update = ETK_FALSE;
    cp->sp_cursor_needs_update = ETK_FALSE;
@@ -833,9 +842,9 @@ static void _etk_colorpicker_sp_image_update(Etk_Colorpicker *cp)
    if (!(data = (uint32_t *)evas_object_image_data_get(cp->sp_image, 1)))
       return;
    
-   for (i = 0; i < cp->sp_res; i++)
+   for (j = 0; j < cp->sp_res; j++)
    {
-      for (j = 0; j < cp->sp_res; j++)
+      for (i = 0; i < cp->sp_res; i++)
       {
          _etk_colorpicker_sp_color_get(cp, i, j, &r, &g, &b);
          *data = ((r << 16) | (g << 8) | b);
@@ -862,7 +871,7 @@ static void _etk_colorpicker_sp_cursor_update(Etk_Colorpicker *cp)
       j = cp->sp_res * (1.0 - cp->sp_ypos);
       for (i = 0; i < cp->sp_res; i++)
       {
-         _etk_colorpicker_sp_color_get(cp, j, i, &r, &g, &b);
+         _etk_colorpicker_sp_color_get(cp, i, j, &r, &g, &b);
          *data = (((255 - r) << 16) | ((255 - g) << 8) | (255 - b));
          data++;
       }
@@ -875,7 +884,7 @@ static void _etk_colorpicker_sp_cursor_update(Etk_Colorpicker *cp)
       i = cp->sp_res * cp->sp_xpos;
       for (j = 0; j < cp->sp_res; j++)
       {
-         _etk_colorpicker_sp_color_get(cp, j, i, &r, &g, &b);
+         _etk_colorpicker_sp_color_get(cp, i, j, &r, &g, &b);
          *data = (((255 - r) << 16) | ((255 - g) << 8) | (255 - b));
          data++;
       }
@@ -920,7 +929,7 @@ static void _etk_colorpicker_vp_cursor_update(Etk_Colorpicker *cp)
 /* Get the color of the square picker's image, at the point (i, j). (r, g, b) must not be NULL! */
 static void _etk_colorpicker_sp_color_get(Etk_Colorpicker *cp, int i, int j, int *r, int *g, int *b)
 {
-   _etk_colorpicker_color_calc(cp->mode, 1.0 - ((float)i / cp->sp_res), (float)j / cp->sp_res, cp->vp_pos, r, g, b);
+   _etk_colorpicker_color_calc(cp->mode, (float)i / cp->sp_res, 1.0 - ((float)j / cp->sp_res), cp->vp_pos, r, g, b);
 }
 
 /* Get the color of the vertical picker's image, at the point i. (r, g, b) must not be NULL!  */
@@ -961,33 +970,33 @@ static void _etk_colorpicker_vp_color_get(Etk_Colorpicker *cp, int i, int *r, in
    }
 }
 
-/* Calculates a color according to the color mode and the positions of the cursors */
+/* Calculates a color according to the color mode and the positions of the cursors. (r, g, b) must not be NULL! */
 static void _etk_colorpicker_color_calc(Etk_Colorpicker_Mode mode, float sp_xpos, float sp_ypos, float vp_pos, int *r, int *g, int *b)
 {
    switch (mode)
    {
       case ETK_COLORPICKER_H:
-         evas_color_hsv_to_rgb(vp_pos * 360.0, sp_xpos, sp_ypos, r, g, b);
+         evas_color_hsv_to_rgb(vp_pos * 360.0, sp_ypos, sp_xpos, r, g, b);
          break;
       case ETK_COLORPICKER_S:
-         evas_color_hsv_to_rgb(sp_xpos * 360.0, vp_pos, sp_ypos, r, g, b);
+         evas_color_hsv_to_rgb(sp_ypos * 360.0, vp_pos, sp_xpos, r, g, b);
          break;
       case ETK_COLORPICKER_V:
-         evas_color_hsv_to_rgb(sp_xpos * 360.0, sp_ypos, vp_pos, r, g, b);
+         evas_color_hsv_to_rgb(sp_ypos * 360.0, sp_xpos, vp_pos, r, g, b);
          break;
       case ETK_COLORPICKER_R:
          *r = 255 * vp_pos;
-         *g = 255 * sp_xpos;
-         *b = 255 * sp_ypos;
+         *g = 255 * sp_ypos;
+         *b = 255 * sp_xpos;
          break;
       case ETK_COLORPICKER_G:
-         *r = 255 * sp_xpos;
+         *r = 255 * sp_ypos;
          *g = 255 * vp_pos;
-         *b = 255 * sp_ypos;
+         *b = 255 * sp_xpos;
          break;
       case ETK_COLORPICKER_B:
-         *r = 255 * sp_xpos;
-         *g = 255 * sp_ypos;
+         *r = 255 * sp_ypos;
+         *g = 255 * sp_xpos;
          *b = 255 * vp_pos;
          break;
       default:

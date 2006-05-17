@@ -2,7 +2,7 @@ group {
    name: "radio_button";
    min: 20 20;
    data {
-      item: "inset" "20 0 0 0";
+      item: "inset" "20 3 0 0";
    }
    parts {
       part {
