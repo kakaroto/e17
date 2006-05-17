@@ -87,6 +87,14 @@ Description: An E17 memory monitoring module
  - ignore/Count buffers
  - ignore/Count cached.
  
+Package: emodule0-moon
+Architecture: any
+Depends: ${shlibs:Depends}, enlightenment, libesmart
+Provides: emodule-moon
+Description: Moon Clock module for Enlightenment
+ Moon is an E17 module which displays information about the current
+ phase of the moon.
+ 
 Package: emodule0-mount
 Architecture: any
 Depends: ${shlibs:Depends}, enlightenment, libesmart
@@ -189,7 +197,7 @@ Description: An E17 WLAN monitor module
 
 Package: emodules0-all
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment, libesmart, emodule0-calendar, emodule0-cpu, emodule0-devian, emodule0-emu, emodule0-evolume, emodule0-flame, emodule0-language, emodule0-mbar, emodule0-mem, emodule0-mount, emodule0-net, emodule0-rain, emodule0-screenshot, emodule0-slideshow, emodule0-snow, emodule0-tclock, emodule0-uptime, emodule0-weather, emodule0-wlan
+Depends: ${shlibs:Depends}, enlightenment, libesmart, emodule0-calendar, emodule0-cpu, emodule0-devian, emodule0-emu, emodule0-evolume, emodule0-flame, emodule0-language, emodule0-mbar, emodule0-mem, emodule0-moon, emodule0-mount, emodule0-net, emodule0-rain, emodule0-screenshot, emodule0-slideshow, emodule0-snow, emodule0-tclock, emodule0-uptime, emodule0-weather, emodule0-wlan
 Conflicts: emodules-extra, evolume
 Provides: emodules-all
 Description: A dummy package for installing all modules for E17
@@ -203,6 +211,8 @@ Description: A dummy package for installing all modules for E17
  Flame       : Displays flames at the bottom of the screen.
  Language    : Allows to control keyboard layout, model and variant.
  Mbar        : A bar for mounting and unmounting devices.
+ Mem         : Monitors memory usage.
+ Moon        : Moon Clock module for Enlightenment
  Mount       : This module is used to mount/unmount devices.
  Net         : Network activity monitoring module.
  Rain        : Displays rain on the desktop.
