@@ -3,12 +3,87 @@
 #include "e_mod_main.h"
 
 #include <EXML.h>
+#include <X11/Xlib.h>
+//#include <X11/Xos.h>
+#include <X11/XKBlib.h>
+//#include <X11/extensions/XKBfile.h>
+//#include <X11/extensions/XKBconfig.h>
+#include <X11/extensions/XKBrules.h>
 
 #define EXML_RETURN_ON_ERROR(xml) \
    { \
       exml_destroy(xml); \
       return; \
    }
+
+/******************************************************/
+
+#define DFLT_XKB_RULES_FILE   "/usr/share/X11/xkb/rules/xorg"
+#define DFLT_XKB_LAYOUT	      "us"
+#define DFLT_XKB_MODEL	      "pc101"
+
+#define RULES_INDX	0
+#define CONFIG_INDX	1
+#define DISPLAY_INDX	2
+#define LOCALE_INDX	3
+#define MODEL_INDX	4
+#define LAYOUT_INDX	5
+#define VARIANT_INDX	6
+#define KEYCODES_INDX	7
+#define TYPES_INDX	8
+#define COMPAT_INDX	9
+#define SYMBOLS_INDX	10
+#define GEOMETRY_INDX	11
+#define KEYMAP_INDX	12
+#define NUM_OF_INDX	13
+
+#define LXC_FREE(p) \
+   { \
+      int i; \
+      for (i = 0; i < NUM_OF_INDX; i++) \
+	 if (p->sv[i]) evas_stringshare_del(p->sv[i]); \
+      if (p->dpy) XCloseDisplay(p->dpy); \
+      E_FREE(p); \
+   }
+
+#define LANG_SETTING_SET_RETURN_ON_ERROR(p) \
+   { \
+      LXC_FREE(p); \
+      e_module_dialog_show("Error", "Error : If You get this error dialog please<br>" \
+				    "let the author(astruk@gmail.com) to know about it.<br>" \
+				    "Moreover, please let him know about your version of Xorg." \
+				    "<br>Please be patient. We are working on fixing all the" \
+				    "problems"); \
+      return; \
+   }
+
+#define LXC_SET_STRING(l, c, s) \
+   { \
+      if (!(l->sv[c])) \
+	 l->sv[c] = (!s ? NULL : (char *)evas_stringshare_add(s)); \
+   }
+
+typedef struct _Language_Xkb_Config Language_Xkb_Config;
+
+struct _Language_Xkb_Config
+{
+   Display	     *dpy;
+   XkbRF_VarDefsRec  rdefs;
+   char		     *sv[NUM_OF_INDX];
+};
+
+#if 0
+static int _lang_check_name(char *name, char* string);
+#endif
+
+static int _lang_apply_components_names(Language_Xkb_Config *lxc);
+static int _lang_apply_rules(Language_Xkb_Config *lxc);
+static int _lang_server_values_get(Language_Xkb_Config *lxc);
+static Display * _lang_server_display_get();
+static void _lang_apply_language_settings(const char *model, const char *layout,
+					  const char *variant);
+
+/******************************************************/
 
 /************** private ******************/
 static void	     _lang_load_xfree_language_kbd_layouts_load_configItem(EXML *xml,
@@ -31,6 +106,16 @@ lang_language_switch_to(Config *cfg, unsigned int n)
    cfg->language_selector = n;
 
    /* here goes the actuall work that calls X to switch the kbd layout, etc. */
+
+   {
+      Language  *l;
+
+      l = evas_list_nth(cfg->languages, cfg->language_selector);
+      if (l)
+	{
+	   _lang_apply_language_settings(l->kbd_model, l->kbd_layout, l->kbd_variant);
+	}
+   }
 
    /* debug */
 #if 0
@@ -535,3 +620,226 @@ _lang_predef_language_sort_cb(void *e1, void *e2)
    return strcmp((const char *)lp1->lang_name, (const char *)lp2->lang_name);
 }
 /****************************************/
+
+static void
+_lang_apply_language_settings(const char *model, const char *layout,
+			      const char *variant)
+{
+   Language_Xkb_Config	*lxc;
+
+   if (!layout) return;
+
+   lxc = E_NEW(Language_Xkb_Config, 1);
+   if (!lxc) return;
+
+   LXC_SET_STRING(lxc, MODEL_INDX, model);
+   LXC_SET_STRING(lxc, LAYOUT_INDX, layout);
+   LXC_SET_STRING(lxc, VARIANT_INDX, variant);
+
+   if (!(lxc->dpy = _lang_server_display_get()))
+     LANG_SETTING_SET_RETURN_ON_ERROR(lxc);
+
+   // this is a hack of locale.
+   lxc->sv[LOCALE_INDX] = (char *)evas_stringshare_add("C");
+
+   if (!_lang_server_values_get(lxc))
+     LANG_SETTING_SET_RETURN_ON_ERROR(lxc);
+
+   if (!_lang_apply_rules(lxc))
+     LANG_SETTING_SET_RETURN_ON_ERROR(lxc);
+
+   if (!_lang_apply_components_names(lxc))
+     LANG_SETTING_SET_RETURN_ON_ERROR(lxc);
+
+   LXC_FREE(lxc);
+}
+static Display *
+_lang_server_display_get()
+{
+   int	    major, minor, why;
+   char	    *display;
+
+   major = XkbMajorVersion;
+   minor = XkbMinorVersion;
+
+   display = getenv("DISPLAY");
+
+   return XkbOpenDisplay(display, NULL, NULL, &major, &minor, &why);
+}
+
+static int
+_lang_server_values_get(Language_Xkb_Config *lxc)
+{
+   XkbRF_VarDefsRec  vd;
+   char		     *tmp = NULL;
+
+   if (!lxc) return 0;
+
+   if (!XkbRF_GetNamesProp(lxc->dpy, &tmp, &vd) || !tmp)
+     {
+	tmp	     = DFLT_XKB_RULES_FILE;
+	vd.model     = DFLT_XKB_MODEL;
+	vd.layout    = DFLT_XKB_LAYOUT;
+	vd.variant   = NULL;
+	vd.options   = NULL;
+     }
+
+   if (tmp) LXC_SET_STRING(lxc, RULES_INDX, tmp);
+   if (vd.model) LXC_SET_STRING(lxc, MODEL_INDX, vd.model);
+   if (vd.layout) LXC_SET_STRING(lxc, LAYOUT_INDX, vd.layout);
+   if (vd.variant) LXC_SET_STRING(lxc, VARIANT_INDX, vd.variant);
+
+   if (vd.options) XFree(vd.options);
+
+   return 1;
+}
+
+static int
+_lang_apply_rules(Language_Xkb_Config *lxc)
+{
+   //FIXME: rfName is a hack it points to /usr/share/X11/xkb/rules/xorg
+   //I'm not sure that this file exist in all the versions of X
+   //Mostprobably this path should be /usr/X11R6/lib/X11/xkb/rules/xfree86
+   char			*rfName = DFLT_XKB_RULES_FILE;
+   XkbComponentNamesRec	rnames;
+   XkbRF_RulesPtr	rules = NULL;
+
+   if (!lxc) return 0;
+
+   lxc->rdefs.model	= lxc->sv[MODEL_INDX];
+   lxc->rdefs.layout	= lxc->sv[LAYOUT_INDX];
+   lxc->rdefs.variant	= lxc->sv[VARIANT_INDX];
+
+   rules = XkbRF_Load(rfName, lxc->sv[LOCALE_INDX], True, True);
+
+   if (!rules)
+     return 0;
+
+   XkbRF_GetComponents(rules, &(lxc->rdefs), &rnames);
+
+   if (rnames.keycodes)
+     { 
+	LXC_SET_STRING(lxc, KEYCODES_INDX, rnames.keycodes);
+	rnames.keycodes = NULL;
+	//E_FREE(rnames.keycodes);
+     }
+   if (rnames.symbols)
+     {
+	LXC_SET_STRING(lxc, SYMBOLS_INDX, rnames.symbols);
+	rnames.symbols = NULL;
+	//E_FREE(rnames.symbols);
+     }
+   if(rnames.types)
+     {
+	LXC_SET_STRING(lxc, TYPES_INDX, rnames.types);
+	rnames.types = NULL;
+	//E_FREE(rnames.types);
+     }
+   if (rnames.compat)
+     {
+	LXC_SET_STRING(lxc, COMPAT_INDX, rnames.compat);
+	rnames.compat = NULL;
+	//E_FREE(rnames.compat);
+     }
+   if (rnames.geometry)
+     {
+	LXC_SET_STRING(lxc, GEOMETRY_INDX, rnames.geometry);
+	rnames.geometry = NULL;
+	//E_FREE(rnames.geometry);
+     }
+   if (rnames.keymap)
+     {
+	LXC_SET_STRING(lxc, KEYMAP_INDX, rnames.keymap);
+	rnames.keymap = NULL;
+	//E_FREE(rnames.keymap);
+     }
+   return 1;
+}
+static int
+_lang_apply_components_names(Language_Xkb_Config *lxc)
+{
+   XkbDescPtr		xkb = NULL;
+   XkbComponentNamesRec	cmdNames;
+
+   if (!lxc) return 0;
+
+#if 0
+   if (!_lang_check_name(lxc->sv[TYPES_INDX], "types")) { printf("\n[1]\n");return 0;}
+   if (!_lang_check_name(lxc->sv[COMPAT_INDX], "compat")) { printf("\n[2]\n");return 0;}
+   if (!_lang_check_name(lxc->sv[SYMBOLS_INDX], "symbols")) { printf("\n[3]\n");return 0;}
+   if (!_lang_check_name(lxc->sv[KEYCODES_INDX], "keycodes")) { printf("\n[4]\n");return 0;}
+   if (!_lang_check_name(lxc->sv[GEOMETRY_INDX], "geometry")) { printf("\n[5]\n");return 0;}
+   if (!_lang_check_name(lxc->sv[KEYMAP_INDX], "keymap")) { printf("\n[6]\n");return 0;}
+#endif
+
+   memset(&cmdNames, 0, sizeof(XkbComponentNamesRec));
+
+   cmdNames.types    = lxc->sv[TYPES_INDX];
+   cmdNames.compat   = lxc->sv[COMPAT_INDX];
+   cmdNames.symbols  = lxc->sv[SYMBOLS_INDX];
+   cmdNames.keycodes = lxc->sv[KEYCODES_INDX];
+   cmdNames.geometry = lxc->sv[GEOMETRY_INDX];
+   cmdNames.keymap   = lxc->sv[KEYMAP_INDX];
+
+   xkb = XkbGetKeyboardByName(lxc->dpy, XkbUseCoreKbd, &cmdNames,
+			      XkbGBN_AllComponentsMask,
+			      XkbGBN_AllComponentsMask & (~XkbGBN_GeometryMask), 1);
+
+   if (!xkb)
+     {
+	return 0;
+     }
+
+   if (lxc->rdefs.model || lxc->rdefs.layout)
+     {
+	if (!XkbRF_SetNamesProp(lxc->dpy, DFLT_XKB_RULES_FILE, &(lxc->rdefs)))
+	  {
+	     return 0;
+	  }
+     }
+   return 1;
+}
+
+#if 0
+static int 
+_lang_check_name(char *name, char* string)
+{
+   char *i = name, *opar = NULL;
+   int ret = 1; 
+
+   if(!name)
+      return 1;
+
+   while (*i){
+      if (opar == NULL) {
+         if (*i == '(')
+         opar = i;
+      } else {
+         if ((*i == '(') || (*i == '|') || (*i == '+')) {
+             ret = 0;
+             break;
+         }
+         if (*i == ')')
+             opar = NULL;
+      }
+      i++;
+   }
+   if (opar)
+      ret = 0;
+   if (!ret) {
+      char c;
+      int n = 1;
+      for(i = opar+1; *i && n; i++) {
+         if (*i == '(') n++;
+         if (*i == ')') n--;
+      }
+      if (*i) i++;
+      c = *i;
+      *i = '\0';
+      printf("Illegal map name '%s' ", opar);
+      *i = c;
+      printf("in %s name '%s'\n", string, name);
+   }
+   return ret;
+}
+#endif

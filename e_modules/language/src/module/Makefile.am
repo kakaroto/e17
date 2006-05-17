@@ -13,7 +13,7 @@ module_la_SOURCES	= e_mod_main.c \
 			  e_mod_keybindings.h \
 			  e_mod_lang.c \
 			  e_mod_lang.h
-module_la_LIBADD	= @e_libs@ -lexml
+module_la_LIBADD	= @e_libs@ -lexml -lxkbfile -lX11
 module_la_LDFLAGS	= -module -avoid-version
 module_la_DEPENDENCIES	= $(top_builddir)/config.h
 
