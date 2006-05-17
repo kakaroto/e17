@@ -1,6 +1,8 @@
 #include <Enhance.h>
 #include <Etk.h>
 
+#include <string.h>
+
 Enhance *en;
 
 void
