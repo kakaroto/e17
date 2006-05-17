@@ -101,32 +101,12 @@ main(int argc, char **argv)
 					snprintf(trues, PATH_MAX, "%s", 
 								argv[imageint]);
 				}
-				image_list = ecore_file_ls(argv[imageint]);
+				image_list = get_images(argv[imageint]);
 				while ( !ecore_list_is_empty(image_list) ) {
 					char *pathi;
-					char pathw[PATH_MAX];
-					pathi = 
-					  ecore_list_remove_first(image_list);
-		                        snprintf(pathw, PATH_MAX, 
-							"%s%s", trues, pathi);
-					if ( fnmatch("*.[Pp][Nn][Gg]", 
-							pathw, 0) == 0 ) {
-                                		ecore_dlist_append(m->imagelist,
-								 strdup(pathw));
-                        			slidenum++;
-					}
-                        		if ( fnmatch("*.[Jj][Pp][Gg]", 
-							pathw, 0) == 0 ) {
-                                		ecore_dlist_append(m->imagelist,
-								 strdup(pathw));
-                        			slidenum++;
-					}
-                        		if ( fnmatch("*.[Jj][Pp][Ee][Gg]", 
-							pathw, 0) == 0 ) {
-                		                ecore_dlist_append(m->imagelist,
-								 strdup(pathw));
-		                        	slidenum++;
-					}
+					ecore_dlist_append(m->imagelist, 
+								strdup(pathi));
+					slidenum++;
 				}
 			mainwin = 0;
 			nopresent = 0;
@@ -150,32 +130,14 @@ main(int argc, char **argv)
                                         snprintf(trues, PATH_MAX, "%s", 
 							argv[imageint]);
                                 }
-                                image_list = ecore_file_ls(argv[imageint]);
+                                image_list = get_images(argv[imageint]);
                                 while ( !ecore_list_is_empty(image_list) ) {
                                         char *pathi;
-                                        char pathw[PATH_MAX];
                                         pathi = 
 					  ecore_list_remove_first(image_list);
-                                        snprintf(pathw, PATH_MAX, "%s%s", 
-								trues, pathi);
-                                        if ( fnmatch("*.[Pp][Nn][Gg]", 
-							pathw, 0) == 0 ) {
-                                                ecore_dlist_append(m->imagelist,
-								 strdup(pathw));
-                                                slidenum++;
-                                        }
-                                        if ( fnmatch("*.[Jj][Pp][Gg]", 
-							pathw, 0) == 0 ) {
-                                                ecore_dlist_append(m->imagelist,
-								 strdup(pathw));
-                                                slidenum++;
-                                        }
-                                        if ( fnmatch("*.[Jj][Pp][Ee][Gg]", 
-							pathw, 0) == 0 ) {
-                                                ecore_dlist_append(m->imagelist,
-								 strdup(pathw));
-                                                slidenum++;
-                                        }
+					ecore_dlist_append(m->imagelist,
+								strdup(pathi));
+					slidenum++;
                                 }
                         mainwin = 0;
                         noslide = 0;

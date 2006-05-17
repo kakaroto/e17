@@ -69,7 +69,8 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 		}		
 	
 		m->dirtree = ewl_tree_new(1);
-                ewl_container_child_append(EWL_CONTAINER(m->images), m->dirtree);
+                ewl_container_child_append(EWL_CONTAINER(m->images), 
+								m->dirtree);
                 ewl_object_maximum_size_set(EWL_OBJECT(m->dirtree), 200, 215);
 		ewl_object_minimum_size_set(EWL_OBJECT(m->dirtree), 200, 215);
                 ewl_tree_headers_visible_set(EWL_TREE(m->dirtree), 0);
@@ -82,24 +83,28 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 		ewl_widget_show(m->spacer);
 	
 		m->imagetree = ewl_tree_new(1);
-		ewl_container_child_append(EWL_CONTAINER(m->images), m->imagetree);
+		ewl_container_child_append(EWL_CONTAINER(m->images), 
+								m->imagetree);
 		ewl_tree_headers_visible_set(EWL_TREE(m->imagetree), 0);
 		ewl_tree_expandable_rows_set(EWL_TREE(m->imagetree), FALSE);
 		ewl_object_minimum_size_set(EWL_OBJECT(m->imagetree), 200, 260);
 		ewl_object_maximum_size_set(EWL_OBJECT(m->imagetree), 200, 260);
-		ewl_object_fill_policy_set(EWL_OBJECT(m->imagetree), EWL_FLAG_FILL_VFILL | EWL_FLAG_FILL_VSHRINK);
+		ewl_object_fill_policy_set(EWL_OBJECT(m->imagetree), 
+				EWL_FLAG_FILL_VFILL | EWL_FLAG_FILL_VSHRINK);
 		ewl_widget_show(m->imagetree);
 		
 		/******************************************/
 
 		/*********Lets setup the parent dir row**********/
 		m->hbox = ewl_hbox_new();
-		ewl_object_alignment_set(EWL_OBJECT(m->hbox), EWL_FLAG_ALIGN_CENTER);
+		ewl_object_alignment_set(EWL_OBJECT(m->hbox), 
+							EWL_FLAG_ALIGN_CENTER);
 		ewl_box_spacing_set(EWL_BOX(m->hbox), 5);
 		ewl_widget_show(m->hbox);
 		
 		m->image = ewl_image_new();
-		ewl_image_file_set(EWL_IMAGE(m->image), PACKAGE_DATA_DIR "/images/up.png", NULL);
+		ewl_image_file_set(EWL_IMAGE(m->image), 
+				PACKAGE_DATA_DIR "/images/up.png", NULL);
 		ewl_container_child_append(EWL_CONTAINER(m->hbox), m->image);
 		ewl_widget_show(m->image);
 		
@@ -107,17 +112,21 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 		ewl_widget_name_set(m->texti, pathi);
 		ewl_text_text_set(EWL_TEXT(m->texti), up);
 		ewl_object_minimum_size_set(EWL_OBJECT(m->texti), 10, 16);
-		ewl_object_fill_policy_set(EWL_OBJECT(m->texti), EWL_FLAG_FILL_ALL);
-		ewl_object_alignment_set(EWL_OBJECT(m->texti), EWL_FLAG_ALIGN_CENTER);
+		ewl_object_fill_policy_set(EWL_OBJECT(m->texti), 
+							EWL_FLAG_FILL_ALL);
+		ewl_object_alignment_set(EWL_OBJECT(m->texti), 
+							EWL_FLAG_ALIGN_CENTER);
 		ewl_container_child_append(EWL_CONTAINER(m->hbox), m->texti);
 		ewl_widget_show(m->texti);
 		
 		m->children[0] = m->hbox;
 		m->children[1] = NULL;
-		m->row = ewl_tree_row_add(EWL_TREE(m->dirtree), NULL, m->children);
-		ewl_callback_append(m->texti, EWL_CALLBACK_CLICKED, up_cb, NULL);
+		m->row = ewl_tree_row_add(EWL_TREE(m->dirtree), NULL, 
+								m->children);
+		ewl_callback_append(m->texti, EWL_CALLBACK_CLICKED, up_cb, 
+								NULL);
 		
-		/*****************************************************************/
+		/************************************************************/
 
 		files = ecore_file_ls(pathf);
 		
@@ -171,32 +180,42 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 				
 				m->hbox = ewl_hbox_new();
 				ewl_box_spacing_set(EWL_BOX(m->hbox), 5);
-				ewl_object_alignment_set(EWL_OBJECT(m->hbox), EWL_FLAG_ALIGN_CENTER);
-				ewl_object_fill_policy_set(EWL_OBJECT(m->hbox), EWL_FLAG_FILL_ALL);
+				ewl_object_alignment_set(EWL_OBJECT(m->hbox), 
+							EWL_FLAG_ALIGN_CENTER);
+				ewl_object_fill_policy_set(EWL_OBJECT(m->hbox), 
+							EWL_FLAG_FILL_ALL);
 				ewl_widget_name_set(m->hbox, pathw);
 				ewl_widget_show(m->hbox);
 				
 				m->image = ewl_image_new();
-				ewl_image_file_set(EWL_IMAGE(m->image), PACKAGE_DATA_DIR "/images/folder.png", NULL);
-				ewl_container_child_append(EWL_CONTAINER(m->hbox), m->image);
+				ewl_image_file_set(EWL_IMAGE(m->image), 
+				  PACKAGE_DATA_DIR "/images/folder.png", NULL);
+				ewl_container_child_append(EWL_CONTAINER
+							(m->hbox), m->image);
 				ewl_widget_show(m->image);
 				
 				m->text = ewl_text_new();
 				ewl_widget_name_set(m->text, pathw);
 				ewl_text_text_set(EWL_TEXT(m->text), bname);
-				ewl_object_minimum_size_set(EWL_OBJECT(m->text), 10, 16);
-				ewl_object_fill_policy_set(EWL_OBJECT(m->text), EWL_FLAG_FILL_SHRINK);
-				ewl_object_alignment_set(EWL_OBJECT(m->text), EWL_FLAG_ALIGN_CENTER);
-				ewl_container_child_append(EWL_CONTAINER(m->hbox), m->text);
+				ewl_object_minimum_size_set(EWL_OBJECT(m->text),
+								 10, 16);
+				ewl_object_fill_policy_set(EWL_OBJECT(m->text), 
+							EWL_FLAG_FILL_SHRINK);
+				ewl_object_alignment_set(EWL_OBJECT(m->text), 
+							EWL_FLAG_ALIGN_CENTER);
+				ewl_container_child_append(EWL_CONTAINER
+							(m->hbox), m->text);
 				ewl_widget_show(m->text);
 				
 				m->children[0] = m->hbox;
 				m->children[1] = NULL;
-				m->row = ewl_tree_row_add(EWL_TREE(m->dirtree), NULL, m->children);
-				ewl_callback_append(m->hbox, EWL_CALLBACK_CLICKED, populatei_cb, NULL);
+				m->row = ewl_tree_row_add(EWL_TREE(m->dirtree), 
+							NULL, m->children);
+				ewl_callback_append(m->hbox, 
+				  EWL_CALLBACK_CLICKED, populatei_cb, NULL);
 			}
 		}
-		/****************************************************************************/
+		/*************************************************************/
 		
 		/************Populate Image files********************/
 		while( !ecore_list_is_empty(imagefiles) ) {
@@ -206,32 +225,43 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 		
 			m->hbox = ewl_hbox_new();
 			ewl_box_spacing_set(EWL_BOX(m->hbox), 5);
-			ewl_object_alignment_set(EWL_OBJECT(m->hbox), EWL_FLAG_ALIGN_CENTER);
-			ewl_object_fill_policy_set(EWL_OBJECT(m->hbox), EWL_FLAG_FILL_ALL);
+			ewl_object_alignment_set(EWL_OBJECT(m->hbox), 
+							EWL_FLAG_ALIGN_CENTER);
+			ewl_object_fill_policy_set(EWL_OBJECT(m->hbox), 
+							EWL_FLAG_FILL_ALL);
 			ewl_widget_name_set(m->hbox, itemp);
 			ewl_widget_show(m->hbox);
 
 			m->image = ewl_image_thumbnail_new();
 			ewl_image_constrain_set(EWL_IMAGE(m->image), 64);
 			ewl_image_proportional_set(EWL_IMAGE(m->image), TRUE);
-			ewl_image_thumbnail_request(EWL_IMAGE(m->image), itemp);
-			ewl_image_file_set(EWL_IMAGE(m->image), PACKAGE_DATA_DIR "images/camera.png", NULL);
-			ewl_container_child_append(EWL_CONTAINER(m->hbox), m->image);
+			ewl_image_thumbnail_request(EWL_IMAGE_THUMBNAIL
+							(m->image), itemp);
+			ewl_image_file_set(EWL_IMAGE(m->image), 
+				PACKAGE_DATA_DIR "images/camera.png", NULL);
+			ewl_container_child_append(EWL_CONTAINER(m->hbox), 
+								m->image);
 			ewl_widget_show(m->image);
 
 			m->text = ewl_text_new();
 			ewl_widget_name_set(m->text, itemp);
 			ewl_text_text_set(EWL_TEXT(m->text), bname2);
-   			ewl_object_minimum_size_set(EWL_OBJECT(m->text), 10, 16);
-			ewl_object_fill_policy_set(EWL_OBJECT(m->text), EWL_FLAG_FILL_SHRINK);
-			ewl_object_alignment_set(EWL_OBJECT(m->text), EWL_FLAG_ALIGN_CENTER);
-			ewl_container_child_append(EWL_CONTAINER(m->hbox), m->text);
+   			ewl_object_minimum_size_set(EWL_OBJECT(m->text), 
+								10, 16);
+			ewl_object_fill_policy_set(EWL_OBJECT(m->text), 
+							EWL_FLAG_FILL_SHRINK);
+			ewl_object_alignment_set(EWL_OBJECT(m->text), 
+							EWL_FLAG_ALIGN_CENTER);
+			ewl_container_child_append(EWL_CONTAINER(m->hbox), 
+								m->text);
 			ewl_widget_show(m->text);
 		
 			m->children[0] = m->hbox;
 			m->children[1] = NULL;
-  			m->row = ewl_tree_row_add(EWL_TREE(m->imagetree), NULL, m->children);
-			ewl_callback_append(m->hbox, EWL_CALLBACK_CLICKED, images_cb, NULL);
+  			m->row = ewl_tree_row_add(EWL_TREE(m->imagetree), NULL, 
+								m->children);
+			ewl_callback_append(m->hbox, EWL_CALLBACK_CLICKED, 
+							images_cb, NULL);
 			free(itemp);
 		}
 		while (!ecore_list_is_empty(audiofiles)) {
@@ -241,36 +271,50 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 
                         m->hbox = ewl_hbox_new();
                         ewl_box_spacing_set(EWL_BOX(m->hbox), 5);
-                        ewl_object_alignment_set(EWL_OBJECT(m->hbox), EWL_FLAG_ALIGN_CENTER);
-                        ewl_object_fill_policy_set(EWL_OBJECT(m->hbox), EWL_FLAG_FILL_ALL);
+                        ewl_object_alignment_set(EWL_OBJECT(m->hbox), 
+							EWL_FLAG_ALIGN_CENTER);
+                        ewl_object_fill_policy_set(EWL_OBJECT(m->hbox), 
+							EWL_FLAG_FILL_ALL);
                         ewl_widget_name_set(m->hbox, itemp);
                         ewl_widget_show(m->hbox);
 
                         m->image = ewl_image_new();
-                        ewl_image_file_set(EWL_IMAGE(m->image), PACKAGE_DATA_DIR "/images/audio.png", NULL);
-                        ewl_container_child_append(EWL_CONTAINER(m->hbox), m->image);
+                        ewl_image_file_set(EWL_IMAGE(m->image), 
+				PACKAGE_DATA_DIR "/images/audio.png", NULL);
+                        ewl_container_child_append(EWL_CONTAINER(m->hbox), 
+								m->image);
                         ewl_widget_show(m->image);
 
                         m->text = ewl_text_new();
                         ewl_widget_name_set(m->text, itemp);
                         ewl_text_text_set(EWL_TEXT(m->text), bname2);
-                        ewl_object_minimum_size_set(EWL_OBJECT(m->text), 10, 16);
-                        ewl_object_fill_policy_set(EWL_OBJECT(m->text), EWL_FLAG_FILL_SHRINK);
-                        ewl_object_alignment_set(EWL_OBJECT(m->text), EWL_FLAG_ALIGN_CENTER);
-                        ewl_container_child_append(EWL_CONTAINER(m->hbox), m->text);
+                        ewl_object_minimum_size_set(EWL_OBJECT(m->text), 
+								10, 16);
+                        ewl_object_fill_policy_set(EWL_OBJECT(m->text), 
+							EWL_FLAG_FILL_SHRINK);
+                        ewl_object_alignment_set(EWL_OBJECT(m->text), 
+							EWL_FLAG_ALIGN_CENTER);
+                        ewl_container_child_append(EWL_CONTAINER(m->hbox), 
+								m->text);
                         ewl_widget_show(m->text);
 
                         m->children[0] = m->hbox;
                         m->children[1] = NULL;
-                        m->row = ewl_tree_row_add(EWL_TREE(m->dirtree), NULL, m->children);
-                        ewl_callback_append(m->hbox, EWL_CALLBACK_CLICKED, audio_cb, NULL);
+                        m->row = ewl_tree_row_add(EWL_TREE(m->dirtree), 
+							NULL, m->children);
+                        ewl_callback_append(m->hbox, EWL_CALLBACK_CLICKED, 
+								audio_cb, NULL);
                         free(itemp);
 
 		} 	
-		/***********************************************************************/
+		/*********************************************************/
 		ecore_list_destroy(files);
 		ecore_list_destroy(imagefiles);
 	}
+	return;
+	w = NULL;
+	event = NULL;
+	data = NULL;
 }
 
 void
@@ -296,6 +340,10 @@ up_cb(Ewl_Widget *w, void *event, void *data)
 		ewl_callback_call(m->directory, EWL_CALLBACK_VALUE_CHANGED);
 	}
 	/*******************************************************/
+	return;
+	w = NULL;
+	event = NULL;
+	data = NULL;
 }
 
 void
@@ -325,6 +373,10 @@ iremove_cb(Ewl_Widget *w, void *event, void *data)
 		}
 	}
 	/******************************************************/
+	return;
+	w = NULL;
+	event = NULL;
+	data = NULL;
 }
 
 void
@@ -357,10 +409,12 @@ images_cb(Ewl_Widget *w, void *event, void *data)
                 ewl_widget_name_set(m->i, pathi);
 		ewl_image_constrain_set(EWL_IMAGE(m->i), 64);
                 ewl_image_proportional_set(EWL_IMAGE(m->i), TRUE);
-                ewl_image_thumbnail_request(EWL_IMAGE(m->i), pathi);
-                ewl_image_file_set(EWL_IMAGE(m->i), PACKAGE_DATA_DIR "images/camera.png", NULL);
+                ewl_image_thumbnail_request(EWL_IMAGE_THUMBNAIL(m->i), pathi);
+                ewl_image_file_set(EWL_IMAGE(m->i), PACKAGE_DATA_DIR 
+						"images/camera.png", NULL);
                 ewl_container_child_append(EWL_CONTAINER(m->ib), m->i);
-                ewl_callback_append(m->i, EWL_CALLBACK_CLICKED, iremove_cb, NULL);
+                ewl_callback_append(m->i, EWL_CALLBACK_CLICKED, iremove_cb, 
+									NULL);
 		ewl_widget_show(m->i);
 		
 		ecore_dlist_append(m->imagelist, strdup(pathi));
@@ -373,22 +427,31 @@ images_cb(Ewl_Widget *w, void *event, void *data)
 		ewl_widget_destroy(m->vbutton);
 		
                 m->viewscroll = ewl_scrollpane_new();
-                ewl_container_child_append(EWL_CONTAINER(m->viewbox), m->viewscroll);
-                ewl_object_alignment_set(EWL_OBJECT(m->viewscroll), EWL_FLAG_ALIGN_CENTER);
-                ewl_object_fill_policy_set(EWL_OBJECT(m->viewscroll), EWL_FLAG_FILL_ALL);
+                ewl_container_child_append(EWL_CONTAINER(m->viewbox), 
+								m->viewscroll);
+                ewl_object_alignment_set(EWL_OBJECT(m->viewscroll), 
+							EWL_FLAG_ALIGN_CENTER);
+                ewl_object_fill_policy_set(EWL_OBJECT(m->viewscroll), 
+							EWL_FLAG_FILL_ALL);
                 ewl_widget_show(m->viewscroll);
 
                 m->vimage = ewl_image_new();
-                ewl_object_fill_policy_set(EWL_OBJECT(m->vimage), EWL_FLAG_FILL_SHRINK);
-                ewl_container_child_append(EWL_CONTAINER(m->viewscroll), m->vimage);
+                ewl_object_fill_policy_set(EWL_OBJECT(m->vimage), 
+							EWL_FLAG_FILL_SHRINK);
+                ewl_container_child_append(EWL_CONTAINER(m->viewscroll), 
+							m->vimage);
                 ewl_widget_show(m->vimage);
 
                 m->vbutton = ewl_button_new();
-                ewl_button_label_set(EWL_BUTTON(m->vbutton), "Add image to slideshow");
-                ewl_container_child_append(EWL_CONTAINER(m->viewbox), m->vbutton);
+                ewl_button_label_set(EWL_BUTTON(m->vbutton), 
+						"Add image to slideshow");
+                ewl_container_child_append(EWL_CONTAINER(m->viewbox), 
+							m->vbutton);
                 ewl_object_maximum_size_set(EWL_OBJECT(m->vbutton), 150 , 25);
-                ewl_object_alignment_set(EWL_OBJECT(m->vbutton), EWL_FLAG_ALIGN_CENTER);
-                ewl_callback_append(m->vbutton, EWL_CALLBACK_CLICKED, images_cb, NULL);
+                ewl_object_alignment_set(EWL_OBJECT(m->vbutton), 
+							EWL_FLAG_ALIGN_CENTER);
+                ewl_callback_append(m->vbutton, EWL_CALLBACK_CLICKED, 
+							images_cb, NULL);
                 ewl_widget_disable(m->vbutton);
                 ewl_widget_state_set(m->vbutton, "disabled");
                 ewl_widget_show(m->vbutton);
@@ -400,12 +463,17 @@ images_cb(Ewl_Widget *w, void *event, void *data)
 	}
 	/**********************************************************/
 
-	/****Enable the slideshow and presentation buttons so we can get to work****/
+	/****Enable the slideshow and presentation buttons 
+					so we can get to work****/
 	ewl_widget_enable(m->slideshow);
 	ewl_widget_state_set(m->slideshow, "enabled");
 	ewl_widget_enable(m->presentation);
 	ewl_widget_state_set(m->presentation, "enabled");
 	/***************************************************/
+	return;
+	w = NULL;
+	event = NULL;
+	data = NULL;
 }
 
 void
@@ -428,5 +496,9 @@ audio_cb(Ewl_Widget *w, void *event, void *data)
 			ewl_widget_state_set(m->audiolen, "enabled");
 		}
 	}
+	return;
+	w = NULL;
+	event = NULL;
+	data = NULL;
 }
 
