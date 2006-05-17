@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-24 22:44+0900\n"
+"POT-Creation-Date: 2006-05-15 22:50+0900\n"
 "PO-Revision-Date: 2006-03-03 10:29+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,39 +16,42 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:47
+#: e_mod_config.c:35
 msgid "Slideshow Configuration"
 msgstr "スライドショーの設定"
 
-#: e_mod_config.c:91
+#: e_mod_config.c:83
 msgid "Cycle Time"
 msgstr "周期"
 
-#: e_mod_config.c:92
+#: e_mod_config.c:84
 msgid "Disable Timer"
 msgstr "タイマーを切る"
 
-#: e_mod_config.c:94
+#: e_mod_config.c:86
 #, c-format
 msgid "%3.0f seconds"
 msgstr "%3.0f 秒"
 
-#: e_mod_config.c:100
-msgid "Theme"
-msgstr "テーマ"
+#: e_mod_config.c:90
+msgid "Directory"
+msgstr "ディレクトリ"
 
-#: e_mod_config.c:102
+#: e_mod_config.c:92
 msgid "Sub-directory to use for backgrounds"
 msgstr "背景に使うサブディレクトリ"
 
-#: e_mod_config.c:104
-msgid "Leave blank for none"
-msgstr "無ければ黒いままにする"
-
-#: e_mod_main.c:148
+#: e_mod_main.c:143
 msgid "Enlightenment Slide Show Module"
 msgstr "Enlightenment slideshow モジュール"
 
-#: e_mod_main.c:149
+#: e_mod_main.c:144
 msgid "This module is VERY simple and is used to cycle desktop backgrounds"
-msgstr "これは, デスクトップ背景を周期的に変更していく, とても簡単なモジュールです."
+msgstr ""
+"これは, デスクトップ背景を周期的に変更していく, とても簡単なモジュールです."
+
+#~ msgid "Theme"
+#~ msgstr "テーマ"
+
+#~ msgid "Leave blank for none"
+#~ msgstr "無ければ黒いままにする"
