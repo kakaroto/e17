@@ -5,7 +5,9 @@
 2. Remove all FIXMEs. Especially in e_mod_lang.c since the code the paths to
    X files are hardcoded. That is not ok.
 
-3. Turn on module shortcut bindings. They are turned of for a while
+3. Fix the lang_language_current_kbd_model_get() to return the actual value.
+
+3. Turn on module shortcut bindings. They are turned of for a while.
 
 4. Introduce country flags for the face box, and for the list icons in the config
    dialog and in the face menu.
