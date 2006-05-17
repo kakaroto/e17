@@ -19,4 +19,5 @@ EXTRA_DIST = button.edc \
 	     frame.edc \
      	     scrollbar.edc \
 	     toggle_button.edc \
-             iconbox.edc
+             iconbox.edc \
+             colorpicker.edc

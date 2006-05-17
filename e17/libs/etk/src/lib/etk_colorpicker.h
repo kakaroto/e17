@@ -3,6 +3,7 @@
 #define __ETK_COLORPICKER_H__
 
 #include "etk_box.h"
+#include <Evas.h>
 #include "etk_types.h"
 
 /**
@@ -39,7 +40,10 @@ struct Etk_Colorpicker
    /* Inherit from Etk_Widget */
    Etk_Widget widget;
    
+   Evas_Object *picker_theme_object;
+   
    /* Square picker */
+   Evas_Object *sp_object;
    Evas_Object *sp_image;
    Evas_Object *sp_hcursor;
    Evas_Object *sp_vcursor;
@@ -50,6 +54,7 @@ struct Etk_Colorpicker
    Etk_Bool sp_cursor_needs_update;
    
    /* Vertical picker */
+   Evas_Object *vp_object;
    Evas_Object *vp_image;
    Evas_Object *vp_cursor;
    int vp_res;

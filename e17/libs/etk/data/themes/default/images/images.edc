@@ -85,4 +85,6 @@ images {
    image: "tooltip_border.png" COMP;
    image: "iconbox_selection.png" COMP;
    image: "iconbox_label_bg.png" COMP;
+   image: "colorpicker_square.png" COMP;
+   image: "colorpicker_vertical.png" COMP;
 }

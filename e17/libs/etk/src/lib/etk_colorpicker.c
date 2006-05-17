@@ -2,15 +2,24 @@
 #include "etk_colorpicker.h"
 #include <stdlib.h>
 #include <stdint.h>
+#include <Edje.h>
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
 #include "etk_radio_button.h"
+#include "etk_theme.h"
 
 /**
  * @addtogroup Etk_Colorpicker
  * @{
  */
+
+typedef struct Etk_Colorpicker_Picker_Data
+{
+   Evas_List *objects;
+   Etk_Colorpicker *cp;
+   void (*move_resize)(Etk_Colorpicker *cp, int x, int y, int w, int h);
+} Etk_Colorpicker_Picker_Data;
 
 enum Etk_Combobox_Signal_Id
 {
@@ -40,8 +49,20 @@ static void _etk_colorpicker_vp_mouse_down_cb(void *data, Evas *e, Evas_Object *
 static void _etk_colorpicker_vp_mouse_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _etk_colorpicker_vp_mouse_move_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
+static Evas_Object *_etk_colorpicker_picker_object_add(Evas *evas, Etk_Colorpicker *cp, void (*move_resize)(Etk_Colorpicker *cp, int x, int y, int w, int h));
+static void _etk_colorpicker_picker_smart_add(Evas_Object *obj);
+static void _etk_colorpicker_picker_smart_del(Evas_Object *obj);
+static void _etk_colorpicker_picker_smart_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y);
+static void _etk_colorpicker_picker_smart_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h);
+static void _etk_colorpicker_picker_smart_show(Evas_Object *obj);
+static void _etk_colorpicker_picker_smart_hide(Evas_Object *obj);
+static void _etk_colorpicker_picker_smart_clip_set(Evas_Object *obj, Evas_Object *clip);
+static void _etk_colorpicker_picker_smart_clip_unset(Evas_Object *obj);
+
 static void _etk_colorpicker_sp_move_resize(Etk_Colorpicker *cp, int x, int y, int w, int h);
 static void _etk_colorpicker_vp_move_resize(Etk_Colorpicker *cp, int x, int y, int w, int h);
+static void _etk_colorpicker_sp_cursor_move_resize(Etk_Colorpicker *cp);
+static void _etk_colorpicker_vp_cursor_move_resize(Etk_Colorpicker *cp);
 
 static void _etk_colorpicker_update(Etk_Colorpicker *cp, Etk_Bool sp_image, Etk_Bool sp_cursor, Etk_Bool vp_image, Etk_Bool vp_cursor);
 static void _etk_colorpicker_sp_image_update(Etk_Colorpicker *cp);
@@ -51,6 +72,9 @@ static void _etk_colorpicker_vp_cursor_update(Etk_Colorpicker *cp);
 static void _etk_colorpicker_sp_color_get(Etk_Colorpicker *cp, int i, int j, int *r, int *g, int *b);
 static void _etk_colorpicker_vp_color_get(Etk_Colorpicker *cp, int i, int *r, int *g, int *b);
 static void _etk_colorpicker_color_calc(Etk_Colorpicker_Mode mode, float sp_xpos, float sp_ypos, float vp_pos, int *r, int *g, int *b);
+
+static Evas_Smart *_etk_colorpicker_picker_smart = NULL;
+static int _etk_colorpicker_picker_smart_use = 0;
 static Etk_Signal *_etk_colorpicker_signals[ETK_CP_NUM_SIGNALS];
 
 
@@ -143,7 +167,7 @@ Etk_Color etk_colorpicker_current_color_get(Etk_Colorpicker *cp)
    return cp->current_color;
 }
 
-/* TODO: doc, signal */
+/* TODO: doc */
 void etk_colorpicker_current_color_set(Etk_Colorpicker *cp, Etk_Color color)
 {
    int r, g, b;
@@ -215,6 +239,9 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
    cp->current_color.b = 0;
    cp->current_color.a = 255;
    
+   cp->picker_theme_object = NULL;
+   
+   cp->sp_object = NULL;
    cp->sp_image = NULL;
    cp->sp_hcursor = NULL;
    cp->sp_vcursor = NULL;
@@ -222,6 +249,7 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
    cp->sp_xpos = 0.0;
    cp->sp_ypos = 0.0;
    
+   cp->vp_object = NULL;
    cp->vp_image = NULL;
    cp->vp_cursor = NULL;
    cp->vp_res = 256;
@@ -312,7 +340,6 @@ static void _etk_colorpicker_size_request(Etk_Widget *widget, Etk_Size *size)
 }
 
 /* Resizes the colorpicker to the allocated size */
-/* TODO: size_allocate */
 static void _etk_colorpicker_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 {
    Etk_Colorpicker *cp;
@@ -332,8 +359,10 @@ static void _etk_colorpicker_size_allocate(Etk_Widget *widget, Etk_Geometry geom
       _etk_colorpicker_vp_cursor_update(cp);
    
    /* Then, moves and resizes the objects */
-   _etk_colorpicker_sp_move_resize(cp, geometry.x, geometry.y, (geometry.w / 2) - 30, geometry.h);
-   _etk_colorpicker_vp_move_resize(cp, geometry.x + (geometry.w / 2) - 25, geometry.y, 20, geometry.h);
+   evas_object_move(cp->picker_theme_object, geometry.x, geometry.y);
+   evas_object_resize(cp->picker_theme_object, (geometry.w / 2) - 5, geometry.h);
+   _etk_colorpicker_sp_cursor_move_resize(cp);
+   _etk_colorpicker_vp_cursor_move_resize(cp);
    
    child_geometry.x = geometry.x + (geometry.w / 2);
    child_geometry.y = geometry.y;
@@ -354,49 +383,59 @@ static void _etk_colorpicker_size_allocate(Etk_Widget *widget, Etk_Geometry geom
  **************************/
 
 /* Called when the colorpicker is realized */
-/* TODO: use smart objects! */
 static void _etk_colorpicker_realize_cb(Etk_Object *object, void *data)
 {
    Etk_Colorpicker *cp;
+   Etk_Colorpicker_Picker_Data *picker_data;
    Evas *evas;
    
    if (!(cp = ETK_COLORPICKER(object)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(cp))))
       return;
    
-   /* Square picker */
+   /* Picker theme object */
+   cp->picker_theme_object = etk_theme_object_load_from_parent(evas, ETK_WIDGET(cp), NULL, "picker");
+   evas_object_show(cp->picker_theme_object);
+   etk_widget_member_object_add(ETK_WIDGET(cp), cp->picker_theme_object);
+   
+   /* Square picker objects */
+   cp->sp_object = _etk_colorpicker_picker_object_add(evas, cp, _etk_colorpicker_sp_move_resize);
+   edje_object_part_swallow(cp->picker_theme_object, "square_picker", cp->sp_object);
+   picker_data = evas_object_smart_data_get(cp->sp_object);
+   
    cp->sp_image = evas_object_image_add(evas);
    evas_object_image_alpha_set(cp->sp_image, 0);
    evas_object_image_size_set(cp->sp_image, cp->sp_res, cp->sp_res);
-   evas_object_show(cp->sp_image);
-   etk_widget_member_object_add(ETK_WIDGET(cp), cp->sp_image);
+   picker_data->objects = evas_list_append(picker_data->objects, cp->sp_image);
    
    cp->sp_hcursor = evas_object_image_add(evas);
    evas_object_image_alpha_set(cp->sp_hcursor, 0);
    evas_object_image_size_set(cp->sp_hcursor, cp->sp_res, 1);
    evas_object_pass_events_set(cp->sp_hcursor, 1);
-   evas_object_show(cp->sp_hcursor);
-   etk_widget_member_object_add(ETK_WIDGET(cp), cp->sp_hcursor);
+   picker_data->objects = evas_list_append(picker_data->objects, cp->sp_hcursor);
    
    cp->sp_vcursor = evas_object_image_add(evas);
    evas_object_image_alpha_set(cp->sp_vcursor, 0);
    evas_object_image_size_set(cp->sp_vcursor, 1, cp->sp_res);
    evas_object_pass_events_set(cp->sp_vcursor, 1);
-   evas_object_show(cp->sp_vcursor);
-   etk_widget_member_object_add(ETK_WIDGET(cp), cp->sp_vcursor);
+   picker_data->objects = evas_list_append(picker_data->objects, cp->sp_vcursor);
    
-   /* Vertical picker */
+   evas_object_show(cp->sp_object);
+   
+   /* Vertical picker objects */
+   cp->vp_object = _etk_colorpicker_picker_object_add(evas, cp, _etk_colorpicker_vp_move_resize);
+   edje_object_part_swallow(cp->picker_theme_object, "vertical_picker", cp->vp_object);
+   picker_data = evas_object_smart_data_get(cp->vp_object);
+   
    cp->vp_image = evas_object_image_add(evas);
    evas_object_image_alpha_set(cp->vp_image, 0);
    evas_object_image_size_set(cp->vp_image, 1, cp->vp_res);
-   evas_object_show(cp->vp_image);
-   etk_widget_member_object_add(ETK_WIDGET(cp), cp->vp_image);
+   picker_data->objects = evas_list_append(picker_data->objects, cp->vp_image);
    
-   cp->vp_cursor = evas_object_image_add(evas);
-   evas_object_image_alpha_set(cp->vp_cursor, 0);
-   evas_object_image_size_set(cp->vp_cursor, 1, 1);
+   cp->vp_cursor = evas_object_rectangle_add(evas);
    evas_object_pass_events_set(cp->vp_cursor, 1);
-   evas_object_show(cp->vp_cursor);
-   etk_widget_member_object_add(ETK_WIDGET(cp), cp->vp_cursor);
+   picker_data->objects = evas_list_append(picker_data->objects, cp->vp_cursor);
+   
+   evas_object_show(cp->vp_object);
    
    /* Adds the mouse callbacks */
    evas_object_event_callback_add(cp->sp_image, EVAS_CALLBACK_MOUSE_DOWN, _etk_colorpicker_sp_mouse_down_cb, cp);
@@ -418,9 +457,11 @@ static void _etk_colorpicker_unrealize_cb(Etk_Object *object, void *data)
    if (!(cp = ETK_COLORPICKER(object)))
       return;
    
+   cp->sp_object = NULL;
    cp->sp_image = NULL;
    cp->sp_hcursor = NULL;
    cp->sp_vcursor = NULL;
+   cp->vp_object = NULL;
    cp->vp_image = NULL;
    cp->vp_cursor = NULL;
 }
@@ -535,6 +576,163 @@ static void _etk_colorpicker_vp_mouse_move_cb(void *data, Evas *e, Evas_Object *
 
 /**************************
  *
+ * Colorpicker's smart object
+ *
+ **************************/
+
+/* Creates a new picker object */
+static Evas_Object *_etk_colorpicker_picker_object_add(Evas *evas, Etk_Colorpicker *cp, void (*move_resize)(Etk_Colorpicker *cp, int x, int y, int w, int h))
+{
+   Evas_Object *obj;
+   Etk_Colorpicker_Picker_Data *picker_data;
+   
+   if (!evas || !cp)
+      return NULL;
+   
+   if (!_etk_colorpicker_picker_smart)
+   {
+      _etk_colorpicker_picker_smart = evas_smart_new("Picker_Object",
+         _etk_colorpicker_picker_smart_add,
+         _etk_colorpicker_picker_smart_del,
+         NULL,
+         NULL,
+         NULL,
+         NULL,
+         NULL,
+         _etk_colorpicker_picker_smart_move,
+         _etk_colorpicker_picker_smart_resize,
+         _etk_colorpicker_picker_smart_show,
+         _etk_colorpicker_picker_smart_hide,
+         NULL,
+         _etk_colorpicker_picker_smart_clip_set,
+         _etk_colorpicker_picker_smart_clip_unset,
+         NULL);
+   }
+   /* TODO: _etk_colorpicker_picker_smart_use */
+   _etk_colorpicker_picker_smart_use++;
+   
+   obj = evas_object_smart_add(evas, _etk_colorpicker_picker_smart);
+   picker_data = evas_object_smart_data_get(obj);
+   picker_data->cp = cp;
+   picker_data->move_resize = move_resize;
+   
+   return obj;
+}
+
+/* Initializes the new picker object */
+static void _etk_colorpicker_picker_smart_add(Evas_Object *obj)
+{
+   Etk_Colorpicker_Picker_Data *picker_data;
+   Evas *evas;
+   
+   if (!obj || !(evas = evas_object_evas_get(obj)))
+      return;
+   
+   picker_data = malloc(sizeof(Etk_Colorpicker_Picker_Data));
+   picker_data->objects = NULL;
+   picker_data->cp = NULL;
+   picker_data->move_resize = NULL;
+   evas_object_smart_data_set(obj, picker_data);
+}
+
+/* Destroys the picker object */
+static void _etk_colorpicker_picker_smart_del(Evas_Object *obj)
+{
+   Etk_Colorpicker_Picker_Data *picker_data;
+   
+   if (!obj || !(picker_data = evas_object_smart_data_get(obj)))
+      return;
+
+   while (picker_data->objects)
+   {
+      evas_object_del(picker_data->objects->data);
+      picker_data->objects = evas_list_remove_list(picker_data->objects, picker_data->objects);
+   }
+   free(picker_data);
+}
+
+/* Moves the picker object */
+static void _etk_colorpicker_picker_smart_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y)
+{
+   Etk_Colorpicker_Picker_Data *picker_data;
+   Evas_Coord w, h;
+   
+   if (!obj || !(picker_data = evas_object_smart_data_get(obj)))
+      return;
+
+   evas_object_geometry_get(obj, NULL, NULL, &w, &h);
+   if (picker_data->cp && picker_data->move_resize)
+      picker_data->move_resize(picker_data->cp, x, y, w, h);
+}
+
+/* Resizes the picker object */
+static void _etk_colorpicker_picker_smart_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
+{
+   Etk_Colorpicker_Picker_Data *picker_data;
+   Evas_Coord x, y;
+   
+   if (!obj || !(picker_data = evas_object_smart_data_get(obj)))
+      return;
+
+   evas_object_geometry_get(obj, &x, &y, NULL, NULL);
+   if (picker_data->cp && picker_data->move_resize)
+      picker_data->move_resize(picker_data->cp, x, y, w, h);
+}
+
+/* Shows the picker object */
+static void _etk_colorpicker_picker_smart_show(Evas_Object *obj)
+{
+   Etk_Colorpicker_Picker_Data *picker_data;
+   Evas_List *l;
+   
+   if (!obj || !(picker_data = evas_object_smart_data_get(obj)))
+      return;
+
+   for (l = picker_data->objects; l; l = l->next)
+      evas_object_show(l->data);
+}
+
+/* Hides the picker object */
+static void _etk_colorpicker_picker_smart_hide(Evas_Object *obj)
+{
+   Etk_Colorpicker_Picker_Data *picker_data;
+   Evas_List *l;
+   
+   if (!obj || !(picker_data = evas_object_smart_data_get(obj)))
+      return;
+
+   for (l = picker_data->objects; l; l = l->next)
+      evas_object_hide(l->data);
+}
+
+/* Sets the clip of the picker object */
+static void _etk_colorpicker_picker_smart_clip_set(Evas_Object *obj, Evas_Object *clip)
+{
+   Etk_Colorpicker_Picker_Data *picker_data;
+   Evas_List *l;
+   
+   if (!obj || !(picker_data = evas_object_smart_data_get(obj)))
+      return;
+
+   for (l = picker_data->objects; l; l = l->next)
+      evas_object_clip_set(l->data, clip);
+}
+
+/* Unsets the clip of the picker object */
+static void _etk_colorpicker_picker_smart_clip_unset(Evas_Object *obj)
+{
+   Etk_Colorpicker_Picker_Data *picker_data;
+   Evas_List *l;
+   
+   if (!obj || !(picker_data = evas_object_smart_data_get(obj)))
+      return;
+
+   for (l = picker_data->objects; l; l = l->next)
+      evas_object_clip_unset(l->data);
+}
+
+/**************************
+ *
  * Private functions
  *
  **************************/
@@ -542,35 +740,59 @@ static void _etk_colorpicker_vp_mouse_move_cb(void *data, Evas *e, Evas_Object *
 /* Moves and resizes the square picker */
 static void _etk_colorpicker_sp_move_resize(Etk_Colorpicker *cp, int x, int y, int w, int h)
 {
-   if (!cp || !cp->sp_image || !cp->sp_hcursor || !cp->sp_vcursor)
+   if (!cp || !cp->sp_image)
       return;
    
    evas_object_move(cp->sp_image, x, y);
    evas_object_resize(cp->sp_image, w, h);
    evas_object_image_fill_set(cp->sp_image, 0, 0, w, h);
    
-   evas_object_move(cp->sp_hcursor, x, y + ((1.0 - cp->sp_ypos) * h));
-   evas_object_resize(cp->sp_hcursor, w, 1);
-   evas_object_image_fill_set(cp->sp_hcursor, 0, 0, w, 1);
-   
-   evas_object_move(cp->sp_vcursor, x + (cp->sp_xpos * w), y);
-   evas_object_resize(cp->sp_vcursor, 1, h);
-   evas_object_image_fill_set(cp->sp_vcursor, 0, 0, 1, h);
+   _etk_colorpicker_sp_cursor_move_resize(cp);
 }
 
 /* Moves and resizes the vertical picker */
 static void _etk_colorpicker_vp_move_resize(Etk_Colorpicker *cp, int x, int y, int w, int h)
 {
-   if (!cp || !cp->vp_image || !cp->vp_cursor)
+   if (!cp || !cp->vp_image)
       return;
    
    evas_object_move(cp->vp_image, x, y);
    evas_object_resize(cp->vp_image, w, h);
    evas_object_image_fill_set(cp->vp_image, 0, 0, w, h);
    
-   evas_object_move(cp->vp_cursor, x, y + ((1.0 - cp->vp_pos) * h));
+   _etk_colorpicker_vp_cursor_move_resize(cp);
+}
+
+/* Moves and resizes the cursor of the square picker to the correct position/size */
+static void _etk_colorpicker_sp_cursor_move_resize(Etk_Colorpicker *cp)
+{
+   int x, y, w, h;
+   
+   if (!cp || !cp->sp_image || !cp->sp_hcursor || !cp->sp_vcursor)
+      return;
+   
+   evas_object_geometry_get(cp->sp_image, &x, &y, &w, &h);
+   
+   evas_object_move(cp->sp_hcursor, x, y + ((1.0 - cp->sp_ypos) * (h - 1)));
+   evas_object_resize(cp->sp_hcursor, w, 1);
+   evas_object_image_fill_set(cp->sp_hcursor, 0, 0, w, 1);
+   
+   evas_object_move(cp->sp_vcursor, x + (cp->sp_xpos * (w - 1)), y);
+   evas_object_resize(cp->sp_vcursor, 1, h);
+   evas_object_image_fill_set(cp->sp_vcursor, 0, 0, 1, h);
+}
+
+/* Moves and resizes the cursor of the vertical picker to the correct position/size */
+static void _etk_colorpicker_vp_cursor_move_resize(Etk_Colorpicker *cp)
+{
+   int x, y, w, h;
+   
+   if (!cp || !cp->vp_image || !cp->vp_cursor)
+      return;
+   
+   evas_object_geometry_get(cp->vp_image, &x, &y, &w, &h);
+   evas_object_move(cp->vp_cursor, x, y + ((1.0 - cp->vp_pos) * (h - 1)));
    evas_object_resize(cp->vp_cursor, w, 1);
-   evas_object_image_fill_set(cp->vp_cursor, 0, 0, w, 1);
 }
 
 /* Updates of the colorpicker */ 
@@ -640,7 +862,7 @@ static void _etk_colorpicker_sp_cursor_update(Etk_Colorpicker *cp)
       j = cp->sp_res * (1.0 - cp->sp_ypos);
       for (i = 0; i < cp->sp_res; i++)
       {
-         _etk_colorpicker_sp_color_get(cp, i, j, &r, &g, &b);
+         _etk_colorpicker_sp_color_get(cp, j, i, &r, &g, &b);
          *data = (((255 - r) << 16) | ((255 - g) << 8) | (255 - b));
          data++;
       }
@@ -653,7 +875,7 @@ static void _etk_colorpicker_sp_cursor_update(Etk_Colorpicker *cp)
       i = cp->sp_res * cp->sp_xpos;
       for (j = 0; j < cp->sp_res; j++)
       {
-         _etk_colorpicker_sp_color_get(cp, i, j, &r, &g, &b);
+         _etk_colorpicker_sp_color_get(cp, j, i, &r, &g, &b);
          *data = (((255 - r) << 16) | ((255 - g) << 8) | (255 - b));
          data++;
       }
@@ -686,18 +908,13 @@ static void _etk_colorpicker_vp_image_update(Etk_Colorpicker *cp)
 /* Updates the vertical picker cursor */
 static void _etk_colorpicker_vp_cursor_update(Etk_Colorpicker *cp)
 {
-   uint32_t *data;
    int r, g, b;
    
    if (!cp || !cp->vp_cursor)
       return;
-   if (!(data = (uint32_t *)evas_object_image_data_get(cp->vp_cursor, 1)))
-      return;
    
    _etk_colorpicker_vp_color_get(cp, cp->vp_res * (1.0 - cp->vp_pos), &r, &g, &b);
-   *data = (((255 - r) << 16) | ((255 - g) << 8) | (255 - b));
-   
-   evas_object_image_data_update_add(cp->vp_cursor, 0, 0, 1, 1);
+   evas_object_color_set(cp->vp_cursor, 255 - r, 255 - g, 255 - b, 255);
 }
 
 /* Get the color of the square picker's image, at the point (i, j). (r, g, b) must not be NULL! */

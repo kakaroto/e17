@@ -91,4 +91,6 @@ EXTRA_DIST = background.png \
              hscrollbar_trough2.png \
              vscrollbar_trough2.png \
              iconbox_selection.png \
-             iconbox_label_bg.png
+             iconbox_label_bg.png \
+             colorpicker_square.png \
+             colorpicker_vertical.png

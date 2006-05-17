@@ -1,0 +1,79 @@
+group {
+   name: "colorpicker/picker";
+   parts {
+      part {
+         name: "square_cp_border";
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0 0;
+               offset: 0 0;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -36 -1;
+            }
+            image {
+               normal: "colorpicker_square.png";
+               border: 11 4 11 11;
+               middle: 0;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+      }
+      part {
+         name: "vertical_cp_border";
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: -36 0;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -1 -1;
+            }
+            image {
+               normal: "colorpicker_vertical.png";
+               border: 5 13 11 11;
+               middle: 0;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+      }
+      part {
+         name: "square_picker";
+         type: SWALLOW;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 11 11;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -40 -11;
+            }
+         }
+      }
+      part {
+         name: "vertical_picker";
+         type: SWALLOW;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: -31 11;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -14 -11;
+            }
+         }
+      }
+   }
+}

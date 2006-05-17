@@ -30,4 +30,5 @@ collections {
    #include "widgets/combobox.edc"
    #include "widgets/tooltips.edc"
    #include "widgets/iconbox.edc"
+   #include "widgets/colorpicker.edc"
 }
