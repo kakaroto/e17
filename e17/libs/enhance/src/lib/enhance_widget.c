@@ -35,12 +35,45 @@ static E_Widget *
 _e_widget_new(Enhance *en, EXML_Node *node, Etk_Widget *etk_widget, char *id)
 {
    E_Widget  *widget;
+   Ecore_List *props;
+   EXML_Node  *prop;
+   int width, height;
    
    widget = E_NEW(1, E_Widget);
    widget->wid = etk_widget;
    widget->node = node;
    widget->packing = NULL;
    en->widgets = evas_hash_add(en->widgets, id, widget);
+
+   width = -1;
+   height = -1;
+   props = node->children;
+   ecore_list_goto_first(props);
+   prop = ecore_list_current(props);
+   while(prop != NULL)
+     {  
+	if(!strcmp(prop->tag, "property"))
+	  {  
+	     char *name;
+
+	     name = ecore_hash_get(prop->attributes, "name");
+	     if(!name) { prop = ecore_list_next(props); continue; }
+			                                                      
+	     if (!strcmp(name, "width_request"))        
+	       {
+		  if (prop->value)
+		    width = atoi(prop->value);
+	       }
+	     else if (!strcmp(name, "height_request"))
+	       {
+		  if (prop->value)
+		    height = atoi(prop->value);
+	       }
+	  }
+	prop = ecore_list_next(props);
+     }
+   if (width != -1 || height != -1)
+     etk_widget_size_request_set(etk_widget, width, height);
 
    return widget;
 }
