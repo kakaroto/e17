@@ -324,15 +324,19 @@ eapp_cb_fd_changed(Ewl_Widget *w, void *ev, void *data)
     Ewl_Widget *o;
     
     e = ev;
-    if (e->response == EWL_STOCK_OPEN)
+    if (e->response == EWL_STOCK_OK)
     {
         char *icon;
-
+	const char *icon2;
+	char icon3[PATH_MAX];
+	
         icon = ewl_filedialog_selected_file_get(EWL_FILEDIALOG(w));
+	icon2 = ewl_filedialog_directory_get(EWL_FILEDIALOG(w));
+	snprintf(icon3, PATH_MAX, "%s/%s", icon2, icon);
 
         o = ewl_widget_name_find("icon");
-        ewl_widget_data_set(o, "file", icon);
-        ewl_image_file_set(EWL_IMAGE(o), icon, "");
+        ewl_widget_data_set(o, "file", icon3);
+	ewl_image_file_set(EWL_IMAGE(o), icon3, "");
     }
 
     o = ewl_widget_name_find("fd");
