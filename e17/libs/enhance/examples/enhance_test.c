@@ -38,7 +38,7 @@ int main(void)
    en = enhance_new();      
    enhance_callback_data_set(en, "rip_only_clicked", &data);
    
-   enhance_file_load(en, "window1", "combo_box.glade");
+   enhance_file_load(en, "window1", "stock.glade");
    
    data2 = enhance_callback_data_get(en, "rip_only_clicked");
    *data2 = string2;
