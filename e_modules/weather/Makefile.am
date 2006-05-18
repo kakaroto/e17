@@ -10,6 +10,7 @@ filesdir = $(datadir)
 
 files_DATA = \
 module_icon.png \
+module.eap \
 weather.edj \
 weather.edc \
 fonts/VeraBd.ttf \
@@ -27,8 +28,7 @@ pkgdir                 = $(datadir)/$(MODULE_ARCH)
 pkg_LTLIBRARIES        = module.la
 module_la_SOURCES      = e_mod_main.c \
 			 e_mod_main.h \
-			e_mod_config.c \
-			e_mod_config.h
+			 e_mod_config.c
 			
 module_la_LIBADD       = @e_libs@ -lm
 module_la_LDFLAGS      = -module -avoid-version

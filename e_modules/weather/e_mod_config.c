@@ -1,7 +1,5 @@
 #include <e.h>
 #include "e_mod_main.h"
-#include "e_mod_config.h"
-#include "config.h"
 
 struct _E_Config_Dialog_Data
 {
@@ -15,14 +13,15 @@ static void *_create_data(E_Config_Dialog *cfd);
 static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
 static int _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
-static void _fill_data(Weather_Face *wf, E_Config_Dialog_Data *cfdata);
+static void _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata);
 
 void
-_configure_weather_module(Weather_Face *wf)
+_config_weather_module(Config_Item *ci)
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
-
+   E_Container *con;
+   
    v = E_NEW(E_Config_Dialog_View, 1);
 
    v->create_cfdata = _create_data;
@@ -30,41 +29,42 @@ _configure_weather_module(Weather_Face *wf)
    v->basic.apply_cfdata = _basic_apply_data;
    v->basic.create_widgets = _basic_create_widgets;
    v->override_auto_apply = 1;
-   cfd = e_config_dialog_new(wf->con, D_("Weather Configuration"), NULL, 0, v, wf);
-   wf->weather->cfd = cfd;
+
+   con = e_container_current_get(e_manager_current_get());
+   cfd = e_config_dialog_new(con, D_("Weather Configuration"), NULL, 0, v, ci);
+   weather_config->config_dialog = cfd;
 }
 
 static void
-_fill_data(Weather_Face *wf, E_Config_Dialog_Data *cfdata)
+_fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata)
 {
-   cfdata->poll_time = (wf->conf->poll_time / 60.0);
-   cfdata->display = wf->conf->display;
-   cfdata->degrees = wf->conf->degrees;
-   if (wf->conf->code)
-      cfdata->code = strdup(wf->conf->code);
+   cfdata->poll_time = (ci->poll_time / 60.0);
+   cfdata->display = ci->display;
+   cfdata->degrees = ci->degrees;
+   if (ci->code)
+      cfdata->code = strdup(ci->code);
 }
 
 static void *
 _create_data(E_Config_Dialog *cfd)
 {
    E_Config_Dialog_Data *cfdata;
-   Weather_Face *wf;
+   Config_Item *ci;
 
-   wf = cfd->data;
+   ci = cfd->data;
    cfdata = E_NEW(E_Config_Dialog_Data, 1);
-
-   _fill_data(wf, cfdata);
+   _fill_data(ci, cfdata);
    return cfdata;
 }
 
 static void
 _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-   Weather_Face *wf;
-
-   wf = cfd->data;
-   wf->weather->cfd = NULL;
-   E_FREE(cfdata);
+   if (!weather_config)
+     return;
+   
+   weather_config->config_dialog = NULL;
+   free(cfdata);
 }
 
 static Evas_Object *
@@ -112,11 +112,12 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 static int
 _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-   Weather_Face *wf;
+   Config_Item *ci;
    int len;
    char tmp[1024];
    char buf[4096];
 
+   ci = cfd->data;
    if (!cfdata->code)
       return 0;
 
@@ -124,27 +125,14 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    if (len < 4 || len > 4)
       return 0;
 
-   wf = cfd->data;
-   wf->conf->display = cfdata->display;
-   wf->conf->degrees = cfdata->degrees;
-   wf->conf->poll_time = (cfdata->poll_time * 60.0);
-   if (wf->conf->code)
-      evas_stringshare_del(wf->conf->code);
-   wf->conf->code = evas_stringshare_add((char *)toupper(cfdata->code));
+   ci->display = cfdata->display;
+   ci->degrees = cfdata->degrees;
+   ci->poll_time = (cfdata->poll_time * 60.0);
+   if (ci->code)
+      evas_stringshare_del(ci->code);
+   ci->code = evas_stringshare_add((char *)toupper(cfdata->code));
 
-   e_config_save_queue();
-   if (wf->check_timer)
-      ecore_timer_interval_set(wf->check_timer, (double)(wf->conf->poll_time));
-
-   if (wf->conf->display == DETAILED_DISPLAY)
-      edje_object_signal_emit(wf->weather_obj, "set_style", "detailed");
-   else
-      edje_object_signal_emit(wf->weather_obj, "set_style", "simple");
-
-   _weather_convert_degrees(wf);
-   snprintf(buf, sizeof(buf), "%d°%c", wf->temp, wf->degrees);
-   edje_object_part_text_set(wf->weather_obj, "temp", buf);
-
-   //_weather_display_set(wf, 1);
+   _weather_config_updated(ci->id);
+   e_config_save_queue();   
    return 1;
 }
