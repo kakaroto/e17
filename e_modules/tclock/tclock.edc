@@ -12,7 +12,7 @@ collections
 		  description
 		    {
 		       state: "default" 0.0;
-		       color: 255 255 255 255;
+		       color: 255 255 255 0;
 		    }
 	       }
 	     part
@@ -20,7 +20,7 @@ collections
 		  name: "tclock_time";
 		  type: TEXT;
 		  effect: SOFT_SHADOW;
-		  clip_to: "base";
+		  //clip_to: "base";
 		  //mouse_events: 0;
 		  description
 		    {
@@ -41,8 +41,9 @@ collections
 		       text {
 			  text:     "";
 			  font:     "Edje-Vera";
-			  size:     10;
+			  size:     160;
 			  min:      1 1;
+			  fit: 1 1;
 			  align:    0.5 0.5;
 			  text_class: "module_large";			  
 		       }
@@ -65,7 +66,7 @@ collections
 		  name: "tclock_date";
 		  type: TEXT;
 		  effect: SOFT_SHADOW;
-		  clip_to: "base";
+		  //clip_to: "base";
 		  //mouse_events: 0;
 		  description
 		    {
@@ -86,8 +87,9 @@ collections
 		       text {
 			  text:     "";
 			  font:     "Edje-Vera";
-			  size:     8;
+			  size:     160;
 			  min:      1 1;
+			  fit: 1 1;
 			  align:    0.5 0.5;
 			  text_class: "module_small";
 		       }
