@@ -4,10 +4,7 @@
 
 #include <EXML.h>
 #include <X11/Xlib.h>
-//#include <X11/Xos.h>
 #include <X11/XKBlib.h>
-//#include <X11/extensions/XKBfile.h>
-//#include <X11/extensions/XKBconfig.h>
 #include <X11/extensions/XKBrules.h>
 
 #define EXML_RETURN_ON_ERROR(xml) \
@@ -18,7 +15,8 @@
 
 /******************************************************/
 
-#define DFLT_XKB_RULES_FILE   "/usr/share/X11/xkb/rules/xorg"
+//#define DFLT_XKB_RULES_FILE   "/usr/share/X11/xkb/rules/xorg"
+#define DFLT_XKB_RULES_FILE   "/etc/X11/xkb/rules/xfree86"
 #define DFLT_XKB_LAYOUT	      "us"
 #define DFLT_XKB_MODEL	      "pc101"
 
@@ -49,11 +47,13 @@
 #define LANG_SETTING_SET_RETURN_ON_ERROR(p) \
    { \
       LXC_FREE(p); \
-      e_module_dialog_show("Error", "Error : If You get this error dialog please<br>" \
-				    "let the author(astruk@gmail.com) to know about it.<br>" \
-				    "Moreover, please let him know about your version of Xorg." \
-				    "<br>Please be patient. We are working on fixing all the" \
-				    "problems"); \
+      e_module_dialog_show("Error", "Error: The module was not able to switch between the<br>" \
+				    "selected languages. The main reason could be is that X<br>" \
+				    "keyboard rules file cannot be loaded propertly, or it <br>" \
+				    "contains incorrect rules information. This can happen if<br>" \
+				    "you updated your X server to version 7.x. Please fix the<br>" \
+				    "X keyboar rules file located via /etc/X11/xkb/rules/xfree86." \
+			   ); \
       return; \
    }
 
