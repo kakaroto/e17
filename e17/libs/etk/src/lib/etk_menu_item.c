@@ -2,6 +2,7 @@
 #include "etk_menu_item.h"
 #include <stdlib.h>
 #include <string.h>
+#include "etk_image.h"
 #include "etk_menu_shell.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
@@ -120,6 +121,21 @@ Etk_Widget *etk_menu_item_new_with_label(const char *label)
 }
 
 /**
+ * @brief Creates a new menu item with a label and an icon defined by a stock id
+ * @param stock_id the stock id corresponding to a label and an icon
+ * @return Returns the new menu item widget
+ * @see Etk_Stock
+ */
+Etk_Widget *etk_menu_item_new_from_stock(Etk_Stock_Id stock_id)
+{
+   Etk_Widget *menu_item;
+
+   menu_item = etk_menu_item_new();
+   etk_menu_item_set_from_stock(ETK_MENU_ITEM(menu_item), stock_id);
+
+   return menu_item;
+}
+/**
  * @brief Sets the label of the menu item
  * @param menu_item a menu item
  * @param label the label to set
@@ -215,6 +231,30 @@ void etk_menu_item_activate(Etk_Menu_Item *menu_item)
    if (!menu_item)
       return;
    etk_signal_emit(_etk_menu_item_signals[ETK_MENU_ITEM_ACTIVATED_SIGNAL], ETK_OBJECT(menu_item), NULL);
+}
+
+/**
+ * @brief Sets the label and the image of the menu item from the stock id
+ * @param menu_item a menu item
+ * @param stock_id the stock id to use
+ */
+void etk_menu_item_set_from_stock(Etk_Menu_Item *menu_item, Etk_Stock_Id stock_id)
+{
+   Etk_Widget *image;
+   char *label;
+
+   if (!menu_item)
+      return;
+
+   if (ETK_IS_MENU_ITEM_IMAGE(menu_item))
+     {
+	image = etk_image_new_from_stock(stock_id, ETK_STOCK_SMALL);
+	etk_widget_show(image);
+	etk_widget_visibility_locked_set(image, ETK_TRUE);
+	etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
+     }
+   label = etk_stock_label_get(stock_id);
+   etk_menu_item_label_set(menu_item, label);
 }
 
 /**************************

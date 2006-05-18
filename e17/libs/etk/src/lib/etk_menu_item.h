@@ -4,6 +4,7 @@
 
 #include "etk_container.h"
 #include "etk_types.h"
+#include "etk_stock.h"
 
 /**
  * @defgroup Etk_Menu_Item Etk_Menu_Item
@@ -123,6 +124,7 @@ struct _Etk_Menu_Item_Radio
 Etk_Type *etk_menu_item_type_get();
 Etk_Widget *etk_menu_item_new();
 Etk_Widget *etk_menu_item_new_with_label(const char *label);
+Etk_Widget *etk_menu_item_new_from_stock(Etk_Stock_Id stock_id);
 
 void etk_menu_item_label_set(Etk_Menu_Item *menu_item, const char *label);
 const char *etk_menu_item_label_get(Etk_Menu_Item *menu_item);
@@ -131,6 +133,8 @@ void etk_menu_item_submenu_set(Etk_Menu_Item *menu_item, Etk_Menu *submenu);
 void etk_menu_item_select(Etk_Menu_Item *menu_item);
 void etk_menu_item_deselect(Etk_Menu_Item *menu_item);
 void etk_menu_item_activate(Etk_Menu_Item *menu_item);
+
+void etk_menu_item_set_from_stock(Etk_Menu_Item *menu_item, Etk_Stock_Id stock_id);
 
 /* Etk_Menu_Item_Separator */
 Etk_Type *etk_menu_item_separator_type_get();
