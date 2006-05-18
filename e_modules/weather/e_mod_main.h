@@ -16,7 +16,7 @@ struct _Config
    E_Module *module;
    E_Config_Dialog *config_dialog;
    Evas_List *instances;
-Evas_List *items;
+   Evas_List *items;
    E_Menu *menu;
 
    Ecore_Con_Server *server;
