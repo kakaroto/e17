@@ -8,11 +8,11 @@
 #define LANG_NEXT_ACTION   "switch_next_language"
 #define LANG_PREV_ACTION   "switch_prev_language"
 
-/*int _lang_register_module_actions();
-int _lang_unregister_module_actions();
+int lang_register_module_actions();
+int lang_unregister_module_actions();
 
-int _lang_register_module_keybindings(Lang *l);
-int _lang_unregister_module_keybindings(Lang *l);*/
+int lang_register_module_keybindings();
+int lang_unregister_module_keybindings();
 
 #endif
 #endif

@@ -77,6 +77,7 @@ _gc_init(E_Gadcon *gc, char *name, char *id, char *style)
 
    language_config->instances = evas_list_append(language_config->instances, inst);
    language_face_language_indicator_update();
+   lang_language_switch_to(language_config, language_config->language_selector);
    return gcc;
 }
 static void
@@ -192,13 +193,13 @@ e_modapi_init(E_Module *m)
 	language_config->switch_next_lang_key.params	 = NULL;
 
 	/* switch to prev language */
-	language_config->switch_next_lang_key.context	 = E_BINDING_CONTEXT_ANY;
-	language_config->switch_next_lang_key.key	 = evas_stringshare_add("comma");
-	language_config->switch_next_lang_key.modifiers	 = E_BINDING_MODIFIER_CTRL |
+	language_config->switch_prev_lang_key.context	 = E_BINDING_CONTEXT_ANY;
+	language_config->switch_prev_lang_key.key	 = evas_stringshare_add("comma");
+	language_config->switch_prev_lang_key.modifiers	 = E_BINDING_MODIFIER_CTRL |
 							   E_BINDING_MODIFIER_ALT;
-	language_config->switch_next_lang_key.any_mod	 = 0;
-	language_config->switch_next_lang_key.action	 = evas_stringshare_add(LANG_PREV_ACTION);
-	language_config->switch_next_lang_key.params	 = NULL;
+	language_config->switch_prev_lang_key.any_mod	 = 0;
+	language_config->switch_prev_lang_key.action	 = evas_stringshare_add(LANG_PREV_ACTION);
+	language_config->switch_prev_lang_key.params	 = NULL;
 
 	lang = lang_get_default_language(language_config);
 	if (lang) language_config->languages = evas_list_append(language_config->languages, lang);
@@ -210,12 +211,17 @@ e_modapi_init(E_Module *m)
    e_gadcon_provider_register((E_Gadcon_Client_Class *)(&_gadcon_class));
 
    //language_face_language_indicator_update();
+   lang_register_module_actions();
+   lang_register_module_keybindings();
 }
 
 EAPI int
 e_modapi_shutdown(E_Module *m)
 {
    e_gadcon_provider_unregister((E_Gadcon_Client_Class *)(&_gadcon_class));
+
+   //
+   lang_language_switch_to(language_config, 0);
 
    if (language_config->config_dialog)
      e_object_del(E_OBJECT(language_config->config_dialog));
@@ -228,6 +234,9 @@ e_modapi_shutdown(E_Module *m)
 
    lang_free_xfree_language_kbd_layouts(language_config);
    lang_free_xfree_kbd_models(language_config);
+
+   lang_unregister_module_keybindings();
+   lang_unregister_module_actions();
 
    free(language_config);
    language_config = NULL;

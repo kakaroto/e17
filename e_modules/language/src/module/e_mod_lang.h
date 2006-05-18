@@ -51,9 +51,4 @@ void	    lang_language_free(Language *l);
 
 const char *lang_language_current_kbd_model_get();
 
-/*
-void	    lang_switch_language_next(Lang *l);
-void	    lang_switch_language_prev(Lang *l);
-*/
-
 #endif
