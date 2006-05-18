@@ -36,8 +36,8 @@ struct _Instance
 {
    E_Gadcon_Client *gcc;
    Evas_Object *tclock;
-   Config_Item *cfg;
    const char *id;
+   Ecore_Timer *check_timer;
 };
 
 static E_Gadcon_Client *
@@ -65,13 +65,13 @@ _gc_init(E_Gadcon *gc, char *name, char *id, char *style)
    gcc->data = inst;
    inst->gcc = gcc;
    inst->tclock = o;
-   inst->cfg = ci;
    
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN,
 				  _tclock_cb_mouse_down, inst);
    tclock_config->instances = evas_list_append(tclock_config->instances, inst);
 
-   _tclock_cb_check(NULL);
+   _tclock_cb_check(inst);
+   inst->check_timer = ecore_timer_add(ci->poll_time, _tclock_cb_check, inst);
    return gcc;
 }
 
@@ -81,6 +81,8 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    Instance *inst;
    
    inst = gcc->data;
+   if (inst->check_timer)
+     ecore_timer_del(inst->check_timer);
    evas_stringshare_del(inst->id);
    tclock_config->instances = evas_list_remove(tclock_config->instances, inst);   
    evas_object_del(inst->tclock);
@@ -192,27 +194,24 @@ _tclock_config_updated(void)
 	inst = l->data;
 	ci = _tclock_config_item_get(inst->gcc->gadcon->id);
 	if ((inst->id) && (ci->id) && (!strcmp(inst->id, ci->id)))
-	  {
-	     inst->cfg = ci;
-	
-	     if (!inst->cfg->show_time) 
+	  {	
+	     if (!ci->show_time) 
 	       edje_object_signal_emit(inst->tclock, "time_hidden", "");
 	     else 
 	       edje_object_signal_emit(inst->tclock, "time_visible", "");	     
 	     edje_object_message_signal_process(inst->tclock);
 	
-	     if (!inst->cfg->show_date) 
+	     if (!ci->show_date) 
 	       edje_object_signal_emit(inst->tclock, "date_hidden", "");
 	     else  
 	       edje_object_signal_emit(inst->tclock, "date_visible", "");
 	     edje_object_message_signal_process(inst->tclock);
 	
-	     if (tclock_config->tclock_check_timer) 
-	       ecore_timer_del(tclock_config->tclock_check_timer);
+	     if (inst->check_timer) 
+	       ecore_timer_del(inst->check_timer);
    
-	     tclock_config->tclock_check_timer = ecore_timer_add(inst->cfg->poll_time,
-								 _tclock_cb_check, NULL);
-	     _tclock_cb_check(NULL);
+	     _tclock_cb_check(inst);
+	     inst->check_timer = ecore_timer_add(ci->poll_time, _tclock_cb_check, inst);
 	  }
      }
 }
@@ -221,6 +220,7 @@ static int
 _tclock_cb_check(void *data) 
 {
    Instance *inst;
+   Config_Item *ci;
    Evas_List *l;
    time_t current_time;
    struct tm *local_time;
@@ -230,32 +230,26 @@ _tclock_cb_check(void *data)
    current_time = time(NULL);
    local_time = localtime(&current_time);
 
-   for (l = tclock_config->instances; l; l = l->next) 
-     {
-	Instance *inst;
-	Config_Item *ci;
+   inst = data;
+   ci = _tclock_config_item_get(inst->gcc->gadcon->id);
 	
-	inst = l->data;
-	ci = _tclock_config_item_get(inst->gcc->gadcon->id);
-	inst->cfg = ci;
+   if (!ci->show_time) 
+     edje_object_signal_emit(inst->tclock, "time_hidden", "");
+   else 
+     edje_object_signal_emit(inst->tclock, "time_visible", "");
+   edje_object_message_signal_process(inst->tclock);
 	
-	if (!inst->cfg->show_time) 
-	  edje_object_signal_emit(inst->tclock, "time_hidden", "");
-	else 
-	  edje_object_signal_emit(inst->tclock, "time_visible", "");
-	edje_object_message_signal_process(inst->tclock);
+   if (!ci->show_date) 
+     edje_object_signal_emit(inst->tclock, "date_hidden", "");
+   else 
+     edje_object_signal_emit(inst->tclock, "date_visible", "");
+   edje_object_message_signal_process(inst->tclock);
 	
-	if (!inst->cfg->show_date) 
-	  edje_object_signal_emit(inst->tclock, "date_hidden", "");
-	else 
-	  edje_object_signal_emit(inst->tclock, "date_visible", "");
-	edje_object_message_signal_process(inst->tclock);
-	
-	strftime(buf, 1024, inst->cfg->time_format, local_time);
-	edje_object_part_text_set(inst->tclock, "tclock_time", buf);
-	strftime(buf, 1024, inst->cfg->date_format, local_time);
-	edje_object_part_text_set(inst->tclock, "tclock_date", buf);
-     }
+   strftime(buf, 1024, ci->time_format, local_time);
+   edje_object_part_text_set(inst->tclock, "tclock_time", buf);
+   strftime(buf, 1024, ci->date_format, local_time);
+   edje_object_part_text_set(inst->tclock, "tclock_date", buf);
+
    return 1;
 }
 
@@ -337,8 +331,6 @@ e_modapi_init(E_Module *m)
 	E_CONFIG_LIMIT(ci->show_time, 0, 1);
 	
 	tclock_config->items = evas_list_append(tclock_config->items, ci);
-	tclock_config->tclock_check_timer = ecore_timer_add(ci->poll_time,
-						       _tclock_cb_check, NULL);
      }
    
    tclock_config->module = m;
@@ -356,8 +348,8 @@ e_modapi_shutdown(E_Module *m)
    if (tclock_config->config_dialog)
      e_object_del(E_OBJECT(tclock_config->config_dialog));
    
-   if (tclock_config->tclock_check_timer)
-     ecore_timer_del(tclock_config->tclock_check_timer);
+//   if (tclock_config->tclock_check_timer)
+//     ecore_timer_del(tclock_config->tclock_check_timer);
    if (tclock_config->menu) 
      {
 	e_menu_post_deactivate_callback_set(tclock_config->menu, NULL, NULL);

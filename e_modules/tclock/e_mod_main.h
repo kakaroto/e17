@@ -16,7 +16,6 @@ struct _Config
    E_Menu *menu;
    Evas_List *instances;
    Evas_List *items;
-   Ecore_Timer *tclock_check_timer;
 };
 
 struct _Config_Item 
