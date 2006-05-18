@@ -100,7 +100,7 @@ _gc_orient(E_Gadcon_Client *gcc)
 static char *
 _gc_label(void) 
 {
-   return _("TClock");
+   return D_("TClock");
 }
 
 static Evas_Object *
@@ -135,7 +135,7 @@ _tclock_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	tclock_config->menu = mn;
 	
 	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, _("Configuration"));
+	e_menu_item_label_set(mi, D_("Configuration"));
 	e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
 	e_menu_item_callback_set(mi, _tclock_menu_cb_configure, inst);
 	
