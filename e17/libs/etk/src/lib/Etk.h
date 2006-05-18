@@ -5,6 +5,10 @@
 #ifndef _ETK_H_
 #define _ETK_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "etk_main.h"
 #include "etk_types.h"
 #include "etk_utils.h"
@@ -67,5 +71,9 @@
 #include "etk_tooltips.h"
 #include "etk_message_dialog.h"
 #include "etk_iconbox.h"
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
