@@ -20,6 +20,7 @@ static	 E_Config_DD *conf_langlist_edd = NULL;
 /************ private funcs **************************/
 static void _lang_button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _language_face_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi);
+static void _language_face_cb_menu_keybindings_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _language_face_cb_menu_switch_language_to(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _lang_menu_cb_post_deactivate(void *data, E_Menu *m);
 /*****************************************************/
@@ -76,7 +77,7 @@ _gc_init(E_Gadcon *gc, char *name, char *id, char *style)
 				  _lang_button_cb_mouse_down, inst);
 
    language_config->instances = evas_list_append(language_config->instances, inst);
-   language_face_language_indicator_update();
+   //language_face_language_indicator_update();
    lang_language_switch_to(language_config, language_config->language_selector);
    return gcc;
 }
@@ -324,6 +325,11 @@ _lang_button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_in
 	e_menu_item_label_set(mi, _("Configuration"));
 	e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
 	e_menu_item_callback_set(mi, _language_face_cb_menu_configure, NULL);
+
+	mi = e_menu_item_new(mn2);
+	e_menu_item_label_set(mi, _("Configure Key Bindings"));
+	e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
+	e_menu_item_callback_set(mi, _language_face_cb_menu_keybindings_configure, NULL);
 	
 	e_gadcon_client_util_menu_items_append(inst->gcc, mn2, 0);
 
@@ -394,6 +400,13 @@ _language_face_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi)
    if (!language_config) return;
    if (language_config->config_dialog) return;
    _lang_configure_language_module(language_config);
+}
+static void
+_language_face_cb_menu_keybindings_configure(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   e_module_dialog_show("", "Not available at the moment. If you want to set your<br>"
+			    "prefered key bindings, just do it using \"Key Bindings\"<br>"
+			    "menu in E configuration panel." );
 }
 static void
 _language_face_cb_menu_switch_language_to(void *data, E_Menu *m, E_Menu_Item *mi)

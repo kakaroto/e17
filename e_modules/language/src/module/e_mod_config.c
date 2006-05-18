@@ -249,7 +249,7 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    //e_config_save_queue();
    e_config_save();
 
-   language_face_language_indicator_update();
+   lang_language_switch_to(cfdata->conf, cfdata->conf->language_selector = 0);
    return 1;
 }
 static void
