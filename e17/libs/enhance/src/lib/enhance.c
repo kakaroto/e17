@@ -541,7 +541,7 @@ _e_property_handle(Enhance *en, EXML_Node *node)
 	etk_window_skip_pager_hint_set(ETK_WINDOW(wid-wid), value);
      }   
 
-	else if(!strcmp(name, "label"))
+   else if(!strcmp(name, "label"))
      {
 	IF_PARENT_CLASS("GtkButton")
 	  etk_button_label_set(ETK_BUTTON(wid->wid), node->value);	  
@@ -582,7 +582,6 @@ _e_property_handle(Enhance *en, EXML_Node *node)
      {
 	Etk_Stock_Id id;
 	PROPERTY_STR;
-	IF_PARENT_CLASS("GtkImage")
 
 	_en_stock_items_hash_init();      
 	id = (Etk_Stock_Id)ecore_hash_get(_en_stock_items_hash, value);
@@ -592,7 +591,6 @@ _e_property_handle(Enhance *en, EXML_Node *node)
    else if(!strcmp(name, "icon_size"))
      {
 	PROPERTY_INT;
-	IF_PARENT_CLASS("GtkImage");
 	Etk_Stock_Id id = ETK_STOCK_MEDIUM;
 	if (value <= 2) id = ETK_STOCK_SMALL;
 	else if (value >= 5) id = ETK_STOCK_BIG;
@@ -602,18 +600,30 @@ _e_property_handle(Enhance *en, EXML_Node *node)
    else if(!strcmp(name, "use_stock"))
      {
 	PROPERTY_BOOL;
-	IF_PARENT_CLASS("GtkButton");
 	char *label;
 	Etk_Stock_Id id = ETK_STOCK_NO_STOCK;
 	
 	if (value)
-	{
-		_en_stock_items_hash_init();
-		label = (char *)etk_button_label_get(ETK_BUTTON(wid->wid));
-		id = (Etk_Stock_Id)ecore_hash_get(_en_stock_items_hash, label);
-		if (id != ETK_STOCK_NO_STOCK)
-			etk_button_set_from_stock(ETK_BUTTON(wid->wid), (Etk_Stock_Id)id);
-	}
+	  {
+	     IF_PARENT_CLASS("GtkButton")
+	       {
+						 
+		  _en_stock_items_hash_init();
+		  label = (char *)etk_button_label_get(ETK_BUTTON(wid->wid));
+		  id = (Etk_Stock_Id)ecore_hash_get(_en_stock_items_hash, label);
+		  if (id != ETK_STOCK_NO_STOCK)
+		    etk_button_set_from_stock(ETK_BUTTON(wid->wid), (Etk_Stock_Id)id);
+	       }
+	     IF_PARENT_CLASS("GtkImageMenuItem")
+	       {
+
+                  _en_stock_items_hash_init();
+		  label = (char *)etk_menu_item_label_get(ETK_MENU_ITEM(wid->wid));
+		  id = (Etk_Stock_Id)ecore_hash_get(_en_stock_items_hash, label);
+		  if (id != ETK_STOCK_NO_STOCK)
+		    etk_menu_item_set_from_stock(ETK_MENU_ITEM(wid->wid), (Etk_Stock_Id)id);
+	       }
+	  }
      }
 }
 
