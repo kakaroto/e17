@@ -345,7 +345,7 @@ imlib_hash_find(Imlib_Hash * hash, const char *key)
    return NULL;
 }
 
-int
+static int
 imlib_hash_size(Imlib_Hash * hash)
 {
    if (!hash)

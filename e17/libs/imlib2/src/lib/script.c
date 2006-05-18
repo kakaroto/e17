@@ -33,7 +33,7 @@
 IVariable          *vars, *current_var, *curtail;
 
 static int
-__imlib_find_string(char *haystack, char *needle)
+__imlib_find_string(const char *haystack, const char *needle)
 {
    if (strstr(haystack, needle) != NULL)
       return (strstr(haystack, needle) - haystack);
@@ -66,7 +66,7 @@ __imlib_copystr(char *str, int start, int end)
    int                 i = 0;
    char               *rstr = calloc(1024, sizeof(char));
 
-   if (start <= end && end < strlen(str))
+   if (start <= end && end < (int)strlen(str))
      {
         for (i = start; i <= end; i++)
            rstr[i - start] = str[i];
@@ -175,7 +175,9 @@ __imlib_script_parse_parameters(Imlib_Image im, char *parameters)
                     {
                        ptr->data = __imlib_script_get_next_var();
                        if (ptr->data == NULL)
+                       {
                           D("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEK");
+                       }
                        /*     printf( "Using pointer variable %p\n", ptr->data ); */
                        ptr->type = VAR_PTR;
                        free(value);
@@ -209,7 +211,7 @@ __imlib_script_parse_function(Imlib_Image im, char *function)
        __imlib_copystr(function, __imlib_find_string(function, "(") + 1,
                        strlen(function) - 2);
 #ifdef FDEBUG
-   printf("DEBUG: (??)   = function <%s>( \"%s\" )\n", funcname, funcparams);
+   printf("DEBUG: (?\?)   = function <%s>( \"%s\" )\n", funcname, funcparams);
 #endif
    params = __imlib_script_parse_parameters(im, funcparams);
    /* excute the filter */
@@ -266,7 +268,7 @@ __imlib_script_parse(Imlib_Image im, char *script, va_list param_list)
              start = start + i + 2;
              i = __imlib_find_string(scriptbuf + start, "=[]") - 1;
              i = (i == 0 ? 0 : i);
-             D("(??)   Found pointer variable");
+             D("(?\?)   Found pointer variable");
           }
 
         start = 0;
