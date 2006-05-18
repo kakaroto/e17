@@ -93,4 +93,6 @@ EXTRA_DIST = background.png \
              iconbox_selection.png \
              iconbox_label_bg.png \
              colorpicker_square.png \
-             colorpicker_vertical.png
+             colorpicker_vertical.png \
+             colorpicker_slider_trough.png \
+             colorpicker_slider_drag.png

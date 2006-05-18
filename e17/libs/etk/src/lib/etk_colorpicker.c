@@ -43,6 +43,8 @@ static void _etk_colorpicker_size_allocate(Etk_Widget *widget, Etk_Geometry geom
 
 static void _etk_colorpicker_realize_cb(Etk_Object *object, void *data);
 static void _etk_colorpicker_unrealize_cb(Etk_Object *object, void *data);
+static void _etk_colorpicker_slider_realize_cb(Etk_Object *object, void *data);
+static void _etk_colorpicker_slider_unrealize_cb(Etk_Object *object, void *data);
 static void _etk_colorpicker_radio_toggled_cb(Etk_Object *object, void *data);
 
 static void _etk_colorpicker_sp_mouse_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
@@ -72,6 +74,7 @@ static void _etk_colorpicker_sp_image_update(Etk_Colorpicker *cp);
 static void _etk_colorpicker_sp_cursor_update(Etk_Colorpicker *cp);
 static void _etk_colorpicker_vp_image_update(Etk_Colorpicker *cp);
 static void _etk_colorpicker_vp_cursor_update(Etk_Colorpicker *cp);
+static void _etk_colorpicker_sliders_update(Etk_Colorpicker *cp);
 static void _etk_colorpicker_sp_color_get(Etk_Colorpicker *cp, int i, int j, int *r, int *g, int *b);
 static void _etk_colorpicker_vp_color_get(Etk_Colorpicker *cp, int i, int *r, int *g, int *b);
 static void _etk_colorpicker_color_calc(Etk_Colorpicker_Mode mode, float sp_xpos, float sp_ypos, float vp_pos, int *r, int *g, int *b);
@@ -262,12 +265,14 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
    cp->vp_res = 256;
    cp->vp_pos = 0.0;
    
+   cp->sliders_res = 256;
    cp->sp_dragging = ETK_FALSE;
    cp->vp_dragging = ETK_FALSE;
    cp->sp_image_needs_update = ETK_FALSE;
    cp->sp_cursor_needs_update = ETK_FALSE;
    cp->vp_image_needs_update = ETK_FALSE;
    cp->vp_cursor_needs_update = ETK_FALSE;
+   cp->sliders_need_update = ETK_FALSE;
    
    cp->table = etk_table_new(2, 6, ETK_FALSE);
    etk_widget_parent_set(cp->table, cp_widget);
@@ -285,6 +290,7 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
       etk_widget_visibility_locked_set(cp->radios[i], ETK_TRUE);
       etk_widget_show(cp->radios[i]);
       
+      cp->sliders_image[i] = NULL;
       cp->sliders[i] = etk_hslider_new(0.0, 1.0, 0.0, 1.0 / 255, 10.0 / 255);
       etk_table_attach(ETK_TABLE(cp->table), cp->sliders[i], 1, 1, i, i,
          0, 0, ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_HEXPAND | ETK_FILL_POLICY_VEXPAND);
@@ -292,6 +298,8 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
       etk_widget_show(cp->sliders[i]);
       
       etk_signal_connect("toggled", ETK_OBJECT(cp->radios[i]), ETK_CALLBACK(_etk_colorpicker_radio_toggled_cb), cp);
+      etk_signal_connect("realize", ETK_OBJECT(cp->sliders[i]), ETK_CALLBACK(_etk_colorpicker_slider_realize_cb), cp);
+      etk_signal_connect("unrealize", ETK_OBJECT(cp->sliders[i]), ETK_CALLBACK(_etk_colorpicker_slider_unrealize_cb), cp);
    }
    
    cp_widget->size_request = _etk_colorpicker_size_request;
@@ -366,6 +374,8 @@ static void _etk_colorpicker_size_allocate(Etk_Widget *widget, Etk_Geometry geom
       _etk_colorpicker_vp_image_update(cp);
    if (cp->vp_cursor_needs_update)
       _etk_colorpicker_vp_cursor_update(cp);
+   if (cp->sliders_need_update)
+      _etk_colorpicker_sliders_update(cp);
    
    /* Then, moves and resizes the objects */
    evas_object_move(cp->picker_theme_object, geometry.x, geometry.y);
@@ -383,6 +393,7 @@ static void _etk_colorpicker_size_allocate(Etk_Widget *widget, Etk_Geometry geom
    cp->sp_cursor_needs_update = ETK_FALSE;
    cp->vp_image_needs_update = ETK_FALSE;
    cp->vp_cursor_needs_update = ETK_FALSE;
+   cp->sliders_need_update = ETK_FALSE;
 }
 
 /**************************
@@ -466,6 +477,7 @@ static void _etk_colorpicker_unrealize_cb(Etk_Object *object, void *data)
    if (!(cp = ETK_COLORPICKER(object)))
       return;
    
+   /* TODO: delete objects! */
    cp->sp_object = NULL;
    cp->sp_image = NULL;
    cp->sp_hcursor = NULL;
@@ -473,6 +485,51 @@ static void _etk_colorpicker_unrealize_cb(Etk_Object *object, void *data)
    cp->vp_object = NULL;
    cp->vp_image = NULL;
    cp->vp_cursor = NULL;
+}
+
+/* Called when a slider of the colorpicker is realized */
+static void _etk_colorpicker_slider_realize_cb(Etk_Object *object, void *data)
+{
+   Etk_Widget *slider;
+   Etk_Colorpicker *cp;
+   Evas *evas;
+   int i;
+   
+   if (!(slider = ETK_WIDGET(object)) || !(cp = ETK_COLORPICKER(data))  || !(evas = etk_widget_toplevel_evas_get(slider)))
+      return;
+   
+   for (i = 0; i < 6; i++)
+   {
+      if (cp->sliders[i] == slider)
+      {
+         cp->sliders_image[i] = evas_object_image_add(evas);
+         evas_object_image_alpha_set(cp->sliders_image[i], 0);
+         evas_object_image_size_set(cp->sliders_image[i], cp->sliders_res, 1);
+         evas_object_show(cp->sliders_image[i]);
+         etk_widget_theme_object_swallow(slider, "slider_image", cp->sliders_image[i]);
+         
+         _etk_colorpicker_update(cp, ETK_FALSE, ETK_FALSE, ETK_FALSE, ETK_FALSE);
+         return;
+      }
+   }
+}
+
+/* Called when a slider of the colorpicker is unrealized */
+static void _etk_colorpicker_slider_unrealize_cb(Etk_Object *object, void *data)
+{
+   /* TODO: del image */
+   Etk_Widget *slider;
+   Etk_Colorpicker *cp;
+   int i;
+   
+   if (!(slider = ETK_WIDGET(object)) || !(cp = ETK_COLORPICKER(data)))
+      return;
+   
+   for (i = 0; i < 6; i++)
+   {
+      if (cp->sliders[i] == slider)
+         cp->sliders_image[i] = NULL;
+   }
 }
 
 /* Called when the color mode is changed with the radio buttons */
@@ -816,6 +873,7 @@ static void _etk_colorpicker_update(Etk_Colorpicker *cp, Etk_Bool sp_image, Etk_
    cp->sp_cursor_needs_update |= sp_cursor;
    cp->vp_image_needs_update |= vp_image;
    cp->vp_cursor_needs_update |= vp_cursor;
+   cp->sliders_need_update = ETK_TRUE;
    
    /* Updates the color */
    _etk_colorpicker_color_calc(cp->mode, cp->sp_xpos, cp->sp_ypos, cp->vp_pos, &r, &g, &b);
@@ -826,6 +884,8 @@ static void _etk_colorpicker_update(Etk_Colorpicker *cp, Etk_Bool sp_image, Etk_
       cp->current_color.b = b;
       etk_signal_emit(_etk_colorpicker_signals[ETK_CP_COLOR_CHANGED_SIGNAL], ETK_OBJECT(cp), NULL);
    }
+   
+   /* TODO: update slider value!! */
    
    etk_widget_redraw_queue(ETK_WIDGET(cp));
 }
@@ -924,6 +984,63 @@ static void _etk_colorpicker_vp_cursor_update(Etk_Colorpicker *cp)
    
    _etk_colorpicker_vp_color_get(cp, cp->vp_res * (1.0 - cp->vp_pos), &r, &g, &b);
    evas_object_color_set(cp->vp_cursor, 255 - r, 255 - g, 255 - b, 255);
+}
+
+/* Updates the images of the sliders */
+static void _etk_colorpicker_sliders_update(Etk_Colorpicker *cp)
+{
+   int i, j;
+   int r, g, b;
+   float h, s, v;
+   int r2, g2, b2;
+   uint32_t *data;
+   
+   r = cp->current_color.r;
+   g = cp->current_color.g;
+   b = cp->current_color.b;
+   evas_color_rgb_to_hsv(r, g, b, &h, &s, &v);
+   
+   for (i = 0; i < 6; i++)
+   {
+      if (cp->sliders_image[i] && (data = (uint32_t *)evas_object_image_data_get(cp->sliders_image[i], 1)))
+      {
+         for (j = 0; j < cp->sliders_res; j++)
+         {
+            switch (i)
+            {
+               case ETK_COLORPICKER_H:
+                  evas_color_hsv_to_rgb(360.0 * ((float)j / cp->sliders_res), s, v, &r2, &g2, &b2);
+                  break;
+               case ETK_COLORPICKER_S:
+                  evas_color_hsv_to_rgb(h, (float)j / cp->sliders_res, v, &r2, &g2, &b2);
+                  break;
+               case ETK_COLORPICKER_V:
+                  evas_color_hsv_to_rgb(h, s, (float)j / cp->sliders_res, &r2, &g2, &b2);
+                  break;
+               case ETK_COLORPICKER_R:
+                  r2 = (255 * j) / cp->sliders_res;
+                  g2 = g;
+                  b2 = b;
+                  break;
+               case ETK_COLORPICKER_G:
+                  r2 = r;
+                  g2 = (255 * j) / cp->sliders_res;
+                  b2 = b;
+                  break;
+               case ETK_COLORPICKER_B:
+                  r2 = r;
+                  g2 = g;
+                  b2 = (255 * j) / cp->sliders_res;
+                  break;
+               default:
+                  break;
+            }
+            *data = ((r2 << 16) | (g2 << 8) | b2);
+            data++;
+         }
+         evas_object_image_data_update_add(cp->sliders_image[i], 0, 0, cp->sliders_res, 1);
+      }
+   }
 }
 
 /* Get the color of the square picker's image, at the point (i, j). (r, g, b) must not be NULL! */

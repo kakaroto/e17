@@ -12,14 +12,14 @@
 #define ETK_SELECTION_TARGET_UTF8_STRING "UTF8_STRING"
 #define ETK_SELECTION_TARGET_FILENAME "FILENAME"
 
-enum _Etk_Selection_Content
+typedef enum Etk_Selection_Content
 {
    ETK_SELECTION_CONTENT_NONE,
    ETK_SELECTION_CONTENT_TEXT,
    ETK_SELECTION_CONTENT_FILES,
    ETK_SELECTION_CONTENT_TARGETS,
    ETK_SELECTION_CONTENT_CUSTOM
-};
+} Etk_Selection_Content;
 
 struct _Etk_Event_Selection_Request
 {    

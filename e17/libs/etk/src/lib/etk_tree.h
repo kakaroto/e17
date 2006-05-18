@@ -30,11 +30,11 @@
  * @enum Etk_Tree_Mode
  * @brief The mode of the tree: List (rows can not have children) or tree (rows can have children)
  */
-enum _Etk_Tree_Mode
+typedef enum Etk_Tree_Mode
 {
    ETK_TREE_MODE_LIST,
    ETK_TREE_MODE_TREE
-};
+} Etk_Tree_Mode;
 
 /**
  * @struct Etk_Tree_Row

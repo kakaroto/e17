@@ -15,11 +15,11 @@
  * @enum Etk_Tree_Model_Image_Type
  * @brief The types of the images that you could have in an "image" or "icon_text" model
  */ 
-enum _Etk_Tree_Model_Image_Type
+typedef enum Etk_Tree_Model_Image_Type
 {
    ETK_TREE_FROM_FILE,
    ETK_TREE_FROM_EDJE
-};
+} Etk_Tree_Model_Image_Type;
 
 /**
  * @struct Etk_Tree_Model

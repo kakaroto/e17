@@ -63,9 +63,14 @@ struct Etk_Colorpicker
    Etk_Bool vp_image_needs_update;
    Etk_Bool vp_cursor_needs_update;
    
+   /* Sliders */
+   int sliders_res;
+   Evas_Object *sliders_image[6];
+   Etk_Widget *sliders[6];
+   Etk_Bool sliders_need_update;
+   
    Etk_Widget *table;
    Etk_Widget *radios[6];
-   Etk_Widget *sliders[6];
    Etk_Widget *value_labels[6];
    
    Etk_Colorpicker_Mode mode;

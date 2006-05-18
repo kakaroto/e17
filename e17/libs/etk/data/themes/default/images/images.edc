@@ -87,4 +87,6 @@ images {
    image: "iconbox_label_bg.png" COMP;
    image: "colorpicker_square.png" COMP;
    image: "colorpicker_vertical.png" COMP;
+   image: "colorpicker_slider_trough.png" COMP;
+   image: "colorpicker_slider_drag.png" COMP;
 }

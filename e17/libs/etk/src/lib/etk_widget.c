@@ -2582,6 +2582,7 @@ static void _etk_widget_redraw_queue_recursive(Etk_Widget *widget)
 }
 
 /* Makes the theme object of the widget swallow an object into one of its part */
+/* TODO: object free_cb?? */
 static Etk_Bool _etk_widget_theme_object_swallow_full(Etk_Widget *swallowing_widget, const char *part, Evas_Object *object, Etk_Widget *widget)
 {
    Evas *evas;

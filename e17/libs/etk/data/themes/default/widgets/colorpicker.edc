@@ -77,3 +77,96 @@ group {
       }
    }
 }
+group {
+   name: "colorpicker/hslider";
+   min: 30 24;
+   parts {
+      part {
+         name: "slider_image";
+         type: SWALLOW;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 2 1;
+               to: "trough";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -2 -2;
+               to: "trough";
+            }
+         }
+      }
+      part {
+         name: "trough";
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.5;
+               offset: 4 -6;
+            }
+            rel2 {
+               relative: 1.0 0.5;
+               offset: -5 5;
+            }
+            image {
+               normal: "colorpicker_slider_trough.png";
+               border: 4 4 4 4;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+      }
+      part {
+         name: "confine";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: -2 8;
+               to: "trough";
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               offset: 2 9;
+               to: "trough";
+            }
+         }
+      }
+      part {
+         name: "drag";
+         dragable {
+            confine: "confine";
+            x: 1 1 1;
+            y: 0 0 0;
+         }
+         description {
+            state: "default" 0.0;
+            min: 11 13;
+            max: 11 13;
+            image {
+               normal: "colorpicker_slider_drag.png";
+            }
+         }
+      }
+      FOCUS_GLOW(0.0, 0.0, -4, -4, "trough", 1.0, 1.0, 3, 3, "trough")
+   }
+   programs {
+      program {
+         name: "colorpicker_hslider_focus";
+         signal: "focus";
+         source: "";
+         FOCUS_GLOW_ACTION
+      }
+      program {
+         name: "colorpicker_hslider_unfocus";
+         signal: "unfocus";
+         source: "";
+         UNFOCUS_GLOW_ACTION
+      }
+   }
+}
