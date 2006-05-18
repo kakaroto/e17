@@ -7,21 +7,27 @@
 #define RESOLUTION_SECOND 1
 
 typedef struct _Config Config;
+typedef struct _Config_Item Config_Item;
+
 struct _Config
 {
    E_Module *module;
    E_Config_Dialog *config_dialog;
    E_Menu *menu;
    Evas_List *instances;
-
+   Evas_List *items;
    Ecore_Timer *tclock_check_timer;
-   
+};
+
+struct _Config_Item 
+{
+   const char *id;
    int resolution;
    double poll_time;
    int show_time;
    int show_date;
    char *time_format;
-   char *date_format;
+   char *date_format;   
 };
 
 EAPI extern E_Module_Api e_modapi;
@@ -31,9 +37,8 @@ EAPI int e_modapi_shutdown(E_Module *m);
 EAPI int e_modapi_save(E_Module *m);
 EAPI int e_modapi_info(E_Module *m);
 EAPI int e_modapi_about(E_Module *m);
-EAPI int e_modapi_config(E_Module *m);
 
-void _config_tclock_module(void);
+void _config_tclock_module(Config_Item *ci);
 void _tclock_config_updated(void);
 extern Config *tclock_config;
 

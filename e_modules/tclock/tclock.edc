@@ -1,8 +1,3 @@
-images
-{
-   image: "background.png" COMP;
-}
-
 collections
 {
    group
@@ -12,24 +7,21 @@ collections
 	  {
 	     part
 	       {
-		  name: "background";
-		  type: IMAGE;
+		  name: "base";
+		  type: RECT;
 		  description
 		    {
 		       state: "default" 0.0;
-		       image
-			 {
-			    normal: "background.png";
-			    border: 3 3 3 3;
-			 }
+		       color: 255 255 255 255;
 		    }
 	       }
 	     part
 	       {
 		  name: "tclock_time";
 		  type: TEXT;
-		  effect: SOFT_SHADOW;		  
-		  mouse_events: 0;
+		  effect: SOFT_SHADOW;
+		  clip_to: "base";
+		  //mouse_events: 0;
 		  description
 		    {
 		       state: "default" 0.0;
@@ -73,7 +65,8 @@ collections
 		  name: "tclock_date";
 		  type: TEXT;
 		  effect: SOFT_SHADOW;
-		  mouse_events: 0;
+		  clip_to: "base";
+		  //mouse_events: 0;
 		  description
 		    {
 		       state: "default" 0.0;

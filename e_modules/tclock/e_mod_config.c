@@ -19,7 +19,7 @@ static void onTimeCheckChange(void *data, Evas_Object *obj);
 static void onDateCheckChange(void *data, Evas_Object *obj);
 
 void
-_config_tclock_module(void)
+_config_tclock_module(Config_Item *ci)
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
@@ -33,30 +33,29 @@ _config_tclock_module(void)
    v->basic.create_widgets = _basic_create_widgets;
 
    con = e_container_current_get(e_manager_current_get());
-   cfd = e_config_dialog_new(con, D_("Tclock Configuration"), NULL, 0, v, NULL);
+   cfd = e_config_dialog_new(con, D_("Tclock Configuration"), NULL, 0, v, ci);
    tclock_config->config_dialog = cfd;
 }
 
 static void
-_fill_data(E_Config_Dialog_Data *cfdata)
-{
-   if (!tclock_config)
-     return;
-   
-   cfdata->resolution = tclock_config->resolution;
-   cfdata->show_time = tclock_config->show_time;
-   cfdata->show_date = tclock_config->show_date;
-   cfdata->time_format = strdup(tclock_config->time_format);
-   cfdata->date_format = strdup(tclock_config->date_format);
+_fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata)
+{   
+   cfdata->resolution = ci->resolution;
+   cfdata->show_time = ci->show_time;
+   cfdata->show_date = ci->show_date;
+   cfdata->time_format = strdup(ci->time_format);
+   cfdata->date_format = strdup(ci->date_format);
 }
 
 static void *
 _create_data(E_Config_Dialog *cfd)
 {
    E_Config_Dialog_Data *cfdata;
-
+   Config_Item *ci;
+   
+   ci = cfd->data;
    cfdata = E_NEW(E_Config_Dialog_Data, 1);
-   _fill_data(cfdata);
+   _fill_data(ci, cfdata);
    return cfdata;
 }
 
@@ -119,19 +118,19 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 static int
 _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-   if (!tclock_config)
-     return;
+   Config_Item *ci;
 
-   tclock_config->resolution = cfdata->resolution;   
+   ci = cfd->data;
+   ci->resolution = cfdata->resolution;   
    if (cfdata->resolution == RESOLUTION_MINUTE)
-     tclock_config->poll_time = 60.0;
+     ci->poll_time = 60.0;
    else
-     tclock_config->poll_time = 1.0;
+     ci->poll_time = 1.0;
 
-   tclock_config->show_date = cfdata->show_date;
-   tclock_config->show_time = cfdata->show_time;
-   tclock_config->time_format = cfdata->time_format;
-   tclock_config->date_format = cfdata->date_format;
+   ci->show_date = cfdata->show_date;
+   ci->show_time = cfdata->show_time;
+   ci->time_format = cfdata->time_format;
+   ci->date_format = cfdata->date_format;
    _tclock_config_updated();
    e_config_save_queue();   
    return 1;
