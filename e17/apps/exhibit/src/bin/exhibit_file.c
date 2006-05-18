@@ -4,6 +4,7 @@
 char *viewables[] =
 {
    ".jpg",
+   ".jpeg",
    ".png",
    ".gif",
    ".tiff",
