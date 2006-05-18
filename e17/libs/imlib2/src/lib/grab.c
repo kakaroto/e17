@@ -461,11 +461,12 @@ char
 __imlib_GrabDrawableToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
                            Display * d, Drawable p, Pixmap m, Visual * v,
                            Colormap cm, int depth, int x, int y,
-                           int w, int h, char domask, char grab)
+                           int w, int h, char *pdomask, char grab)
 {
    XErrorHandler       prev_erh = NULL;
    XWindowAttributes   xatt, ratt;
    char                is_pixmap = 0, created_mask = 0, is_shm = 0, is_mshm = 0;
+   char                domask;
    int                 i;
    int                 src_x, src_y, src_w, src_h, origw, origh;
    int                 width, height, clipx, clipy;
@@ -474,6 +475,7 @@ __imlib_GrabDrawableToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
    static signed char  x_does_shm = -1;
    XColor              cols[256];
 
+   domask = (pdomask) ? *pdomask : 0;
    /* FIXME: oh isnt used - i wonder if there's a bug looming... */
    oh = 0;
    origw = w;
@@ -785,6 +787,10 @@ __imlib_GrabDrawableToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
       XFreePixmap(d, m);
    if (mxim)
       XDestroyImage(mxim);
+
+   if ((pdomask) && (!m) && (xatt.depth != 32))
+      *pdomask = 0;
+
    return 1;
 }
 

@@ -2098,11 +2098,12 @@ imlib_create_image_using_copied_data(int width, int height, DATA32 * data)
  * @return a valid image, otherwise NULL.
  * 
  * Return an image (using the mask @p mask to determine the alpha channel)
- * from the current drawable. If the mask is 0 it will not create a
- * useful alpha channel in the image. It will create an image from the
+ * from the current drawable.
+ * If @p mask is 0 it will not create a useful alpha channel in the image.
+ * If @p mask is 1 the mask will be set to the shape mask of the drawable.
+ * It will create an image from the
  * (@p x, @p y, @p width , @p height) rectangle in the drawable. If @p
- * need_to_grab_x
- * is 1 it will also grab the X Server to avoid possible race
+ * need_to_grab_x is 1 it will also grab the X Server to avoid possible race
  * conditions in grabbing. If you have not already grabbed the server
  * you MUST set this to 1. Imlib2 returns a valid image handle on
  * success or NULL on failure. 
@@ -2118,13 +2119,21 @@ imlib_create_image_from_drawable(Pixmap mask, int x, int y, int width,
    if (!ctx)
       ctx = imlib_context_new();
    if (mask)
-      domask = 1;
+     {
+        domask = 1;
+        if (mask == (Pixmap)1)
+           mask = None;
+     }
    im = __imlib_CreateImage(width, height, NULL);
    im->data = malloc(width * height * sizeof(DATA32));
    __imlib_GrabDrawableToRGBA(im->data, 0, 0, width, height, ctx->display,
                               ctx->drawable, mask, ctx->visual, ctx->colormap,
-                              ctx->depth, x, y, width, height, domask,
+                              ctx->depth, x, y, width, height, &domask,
                               need_to_grab_x);
+   if (domask)
+      SET_FLAG(im->flags, F_HAS_ALPHA);
+   else
+      UNSET_FLAG(im->flags, F_HAS_ALPHA);
    return (Imlib_Image) im;
 }
 
@@ -2265,8 +2274,12 @@ imlib_create_scaled_image_from_drawable(Pixmap mask, int source_x,
    __imlib_GrabDrawableToRGBA(im->data, 0, 0, destination_width,
                               source_height, ctx->display, p, m,
                               ctx->visual, ctx->colormap, ctx->depth, 0, 0,
-                              destination_width, destination_height, domask,
+                              destination_width, destination_height, &domask,
                               need_to_grab_x);
+   if (domask)
+      SET_FLAG(im->flags, F_HAS_ALPHA);
+   else
+      UNSET_FLAG(im->flags, F_HAS_ALPHA);
    XFreePixmap(ctx->display, p);
    if (m != None)
      {
@@ -2290,10 +2303,11 @@ imlib_create_scaled_image_from_drawable(Pixmap mask, int source_x,
  * @param need_to_grab_x Grab flag.
  * @return A char.
  * 
- * Grabs a section of the current drawable (optionally using the
- * pixmap @p mask
+ * Grabs a section of the current drawable (optionally using the pixmap @p mask
  * provided as a corresponding mask for that drawable - if @p mask is 0
- * this is not used). It grabs the (@p x, @p y, @p width, @p height) rectangle and
+ * this is not used).
+ * If @p mask is 1 the mask will be set to the shape mask of the drawable.
+ * It grabs the (@p x, @p y, @p width, @p height) rectangle and
  * places it at the destination (@p destination_x, @p destination_y) location in the current image. If
  * @p need_to_grab_x is 1 it will grab and ungrab the server whilst doing
  * this - you need to do this if you have not already grabbed the
@@ -2314,7 +2328,11 @@ imlib_copy_drawable_to_image(Pixmap mask, int x, int y, int width, int height,
    CHECK_PARAM_POINTER_RETURN("imlib_copy_drawable_to_image", "image",
                               ctx->image, 0);
    if (mask)
-      domask = 1;
+     {
+        domask = 1;
+        if (mask == (Pixmap)1)
+           mask = None;
+     }
    CAST_IMAGE(im, ctx->image);
 
    if ((!(im->data)) && (im->loader) && (im->loader->load))
@@ -2365,7 +2383,7 @@ imlib_copy_drawable_to_image(Pixmap mask, int x, int y, int width, int height,
                                      im->w, im->h, ctx->display,
                                      ctx->drawable, mask, ctx->visual,
                                      ctx->colormap, ctx->depth, x, y, width,
-                                     height, domask, need_to_grab_x);
+                                     height, &domask, need_to_grab_x);
 }
 #endif
 
