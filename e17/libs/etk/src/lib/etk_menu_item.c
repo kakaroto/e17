@@ -238,7 +238,7 @@ void etk_menu_item_activate(Etk_Menu_Item *menu_item)
  * @param menu_item a menu item
  * @param stock_id the stock id to use
  */
-void etk_menu_item_set_from_stock(Etk_Menu_Item *menu_item, Etk_Stock_Id stock_id)
+void etk_menu_item_set_from_stock(Etk_Menu_Item_Image *menu_item, Etk_Stock_Id stock_id)
 {
    Etk_Widget *image;
    char *label;
@@ -246,13 +246,10 @@ void etk_menu_item_set_from_stock(Etk_Menu_Item *menu_item, Etk_Stock_Id stock_i
    if (!menu_item)
       return;
 
-   if (ETK_IS_MENU_ITEM_IMAGE(menu_item))
-     {
-	image = etk_image_new_from_stock(stock_id, ETK_STOCK_SMALL);
-	etk_widget_show(image);
-	etk_widget_visibility_locked_set(image, ETK_TRUE);
-	etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
-     }
+   image = etk_image_new_from_stock(stock_id, ETK_STOCK_SMALL);
+   etk_widget_show(image);
+   etk_widget_visibility_locked_set(image, ETK_TRUE);
+   etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
    label = etk_stock_label_get(stock_id);
    etk_menu_item_label_set(menu_item, label);
 }

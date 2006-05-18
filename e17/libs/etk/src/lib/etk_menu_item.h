@@ -134,7 +134,7 @@ void etk_menu_item_select(Etk_Menu_Item *menu_item);
 void etk_menu_item_deselect(Etk_Menu_Item *menu_item);
 void etk_menu_item_activate(Etk_Menu_Item *menu_item);
 
-void etk_menu_item_set_from_stock(Etk_Menu_Item *menu_item, Etk_Stock_Id stock_id);
+void etk_menu_item_set_from_stock(Etk_Menu_Item_Image *menu_item, Etk_Stock_Id stock_id);
 
 /* Etk_Menu_Item_Separator */
 Etk_Type *etk_menu_item_separator_type_get();
