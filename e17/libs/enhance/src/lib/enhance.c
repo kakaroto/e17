@@ -621,7 +621,7 @@ _e_property_handle(Enhance *en, EXML_Node *node)
 		  label = (char *)etk_menu_item_label_get(ETK_MENU_ITEM(wid->wid));
 		  id = (Etk_Stock_Id)ecore_hash_get(_en_stock_items_hash, label);
 		  if (id != ETK_STOCK_NO_STOCK)
-		    etk_menu_item_set_from_stock(ETK_MENU_ITEM(wid->wid), (Etk_Stock_Id)id);
+		    etk_menu_item_set_from_stock(ETK_MENU_ITEM_IMAGE(wid->wid), (Etk_Stock_Id)id);
 	       }
 	  }
      }
