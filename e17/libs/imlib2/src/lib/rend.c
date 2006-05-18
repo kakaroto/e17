@@ -26,12 +26,8 @@ __imlib_RenderGetPixel(Display * d, Drawable w, Visual * v, Colormap cm,
                        int depth, DATA8 r, DATA8 g, DATA8 b)
 {
    Context            *ct;
-   int                 actual_depth;
 
    ct = __imlib_GetContext(d, v, cm, depth);
-   actual_depth = depth;
-   if (depth == 16)
-      actual_depth = __imlib_XActualDepth(d, v);
 
    if (ct->palette)
      {
@@ -258,7 +254,6 @@ __imlib_RenderImage(Display * d, ImlibImage * im,
    XGCValues           gcv;
    ImlibScaleInfo     *scaleinfo = NULL;
    int                 psx, psy, psw, psh;
-   int                 actual_depth = 0;
    char                shm = 0;
    ImlibRGBAFunction   rgbaer, masker = NULL;
    ImlibBlendFunction  blender = NULL;
@@ -312,9 +307,6 @@ __imlib_RenderImage(Display * d, ImlibImage * im,
    dw = abs(dw);
    dh = abs(dh);
    ct = __imlib_GetContext(d, v, cm, depth);
-   actual_depth = depth;
-   if (depth == 16)
-      actual_depth = __imlib_XActualDepth(d, v);
    __imlib_RGBASetupContext(ct);
    if ((blend) && (IMAGE_HAS_ALPHA(im)))
      {
@@ -335,9 +327,6 @@ __imlib_RenderImage(Display * d, ImlibImage * im,
            free(back);
         return;
      }
-   /* do a double check in 24/32bpp */
-   if ((xim->bits_per_pixel == 32) && (depth == 24))
-      actual_depth = 32;
    if (m)
      {
         mxim = __imlib_ProduceXImage(d, v, 1, dw, dh, &shm);
