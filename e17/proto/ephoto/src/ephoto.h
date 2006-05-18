@@ -106,6 +106,7 @@ struct _Main
 	Ewl_Widget	*menu_item;
 	Ewl_Widget	*avbox;
 	Ewl_Widget	*zoom;
+	Ewl_Widget	*vsep;
 	void		*data;
 	Ecore_List  	*imagelist;
 	Ecore_List  	*presentlist;
