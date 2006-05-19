@@ -76,9 +76,9 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    o = e_widget_list_add(evas, 0, 0);
    of = e_widget_framelist_add(evas, D_("Display Settings"), 0);
    rg = e_widget_radio_group_new(&(cfdata->display));
-   ob = e_widget_radio_add(evas, D_("Simple"), SIMPLE_DISPLAY, rg);
+   ob = e_widget_radio_add(evas, D_("Simple"), 0, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, D_("Detailed"), DETAILED_DISPLAY, rg);
+   ob = e_widget_radio_add(evas, D_("Detailed"), 1, rg);
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_label_add(evas, D_("Poll Time"));
    e_widget_framelist_object_append(of, ob);

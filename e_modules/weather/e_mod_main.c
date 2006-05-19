@@ -73,11 +73,10 @@ _gc_init(E_Gadcon *gc, char *name, char *id, char *style)
    Weather *w;
    Instance *inst;
    Config_Item *ci;
-   
+
    inst = E_NEW(Instance, 1);
-   ci = _weather_config_item_get(gc->id);
-   if (!ci->id) ci->id = evas_stringshare_add(gc->id);
-   inst->id = evas_stringshare_add(gc->id);
+   ci = _weather_config_item_get(id);
+   inst->id = evas_stringshare_add(ci->id);
    
    w = _weather_new(gc->evas);
    w->inst = inst;
@@ -118,7 +117,7 @@ static void
 _gc_shutdown(E_Gadcon_Client *gcc) 
 {
    Instance *inst;
-   
+
    inst = gcc->data;
    evas_stringshare_del(inst->id);
    if (inst->check_timer)
@@ -207,7 +206,7 @@ _weather_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
    Config_Item *ci;
    
    inst = data;
-   ci = _weather_config_item_get(inst->gcc->id);
+   ci = _weather_config_item_get(inst->gcc->id);   
    _config_weather_module(ci);
 }
 
@@ -228,7 +227,7 @@ _weather_config_item_get(const char *id)
    ci = E_NEW(Config_Item, 1);
    ci->id = evas_stringshare_add(id);
    ci->poll_time = 900.0;
-   ci->display = SIMPLE_DISPLAY;
+   ci->display = 0;
    ci->degrees = DEGREES_F;
    ci->host = evas_stringshare_add("www.rssweather.com");
    ci->code = evas_stringshare_add("KJFK");
@@ -248,7 +247,7 @@ EAPI E_Module_Api e_modapi =
 
 EAPI void *
 e_modapi_init(E_Module *m) 
-{
+{   
    bindtextdomain(PACKAGE, LOCALEDIR);
    bind_textdomain_codeset(PACKAGE, "UTF-8");
 
@@ -280,7 +279,7 @@ e_modapi_init(E_Module *m)
 
 	ci = E_NEW(Config_Item, 1);
 	ci->poll_time = 900.0;
-	ci->display = SIMPLE_DISPLAY;
+	ci->display = 0;
 	ci->degrees = DEGREES_F;
 	ci->host = evas_stringshare_add("www.rssweather.com");
 	ci->code = evas_stringshare_add("KJFK");
@@ -297,7 +296,7 @@ e_modapi_init(E_Module *m)
 
 EAPI int
 e_modapi_shutdown(E_Module *m) 
-{
+{   
    weather_config->module = NULL;
    e_gadcon_provider_unregister(&_gadcon_class);
    
@@ -359,6 +358,7 @@ e_modapi_save(E_Module *m)
 	
 	inst = l->data;
 	ci = _weather_config_item_get(inst->gcc->id);
+	
 	if (ci->id) evas_stringshare_del(ci->id);
 	ci->id = evas_stringshare_add(inst->gcc->id);
      }
@@ -480,7 +480,7 @@ _weather_server_add(void *data, int type, void *event)
    if (!inst)
      return 1;
 
-   ci = _weather_config_item_get(inst->gcc->id);
+   ci = _weather_config_item_get(inst->gcc->id);   
    ev = event;
    if ((!weather_config->server) || (weather_config->server != ev->server))
      return 1;
@@ -616,6 +616,7 @@ _weather_convert_degrees(void *data)
    
    inst = data;
    ci = _weather_config_item_get(inst->gcc->id);
+   
    if ((inst->degrees == 'F') && (ci->degrees == DEGREES_C))
      {
         inst->temp = (inst->temp - 32) * 5.0 / 9.0;
@@ -669,7 +670,7 @@ _weather_config_updated(const char *id)
    if (!weather_config) 
      return;
 
-   ci = _weather_config_item_get(id);
+   ci = _weather_config_item_get(id);   
    for (l = weather_config->instances; l; l = l->next) 
      {
 	Instance *inst;
@@ -681,11 +682,11 @@ _weather_config_updated(const char *id)
 	  {
 	     switch (ci->display) 
 	       {
-		case DETAILED_DISPLAY:
-		  edje_object_signal_emit(inst->weather->weather_obj, "set_style", "detailed");
-		  break;
-		case SIMPLE_DISPLAY:
+		case 0:
 		  edje_object_signal_emit(inst->weather->weather_obj, "set_style", "simple");
+		  break;
+		case 1:
+		  edje_object_signal_emit(inst->weather->weather_obj, "set_style", "detailed");
 		  break;
 	       }
 
