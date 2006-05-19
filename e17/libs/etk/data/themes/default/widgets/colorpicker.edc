@@ -119,6 +119,7 @@ group {
             }
          }
       }
+      FOCUS_GLOW(0.0, 0.0, -4, -4, "trough", 1.0, 1.0, 3, 3, "trough")
       part {
          name: "confine";
          type: RECT;
@@ -127,12 +128,12 @@ group {
             visible: 0;
             rel1 {
                relative: 0.0 0.0;
-               offset: -2 8;
+               offset: -1 12;
                to: "trough";
             }
             rel2 {
                relative: 1.0 0.0;
-               offset: 2 9;
+               offset: 1 12;
                to: "trough";
             }
          }
@@ -146,14 +147,13 @@ group {
          }
          description {
             state: "default" 0.0;
-            min: 11 13;
-            max: 11 13;
+            min: 9 15;
+            max: 9 15;
             image {
                normal: "colorpicker_slider_drag.png";
             }
          }
       }
-      FOCUS_GLOW(0.0, 0.0, -4, -4, "trough", 1.0, 1.0, 3, 3, "trough")
    }
    programs {
       program {
