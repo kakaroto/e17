@@ -173,7 +173,7 @@ static void _etk_canvas_unrealize_cb(Etk_Object *object, void *data)
  *    Evas *evas;
  *    Evas_Object *obj;
  *
- *    evas = etk_widget_toplevel_widget_get(canvas);
+ *    evas = etk_widget_toplevel_evas_get(canvas);
  *    obj = evas_object_rectangle_add(evas);
  *    etk_canvas_object_add(canvas, obj);
  * }
@@ -191,10 +191,10 @@ static void _etk_canvas_unrealize_cb(Etk_Object *object, void *data)
  * @endcode @n
  *
  *
- * When the canvas is moved, the objects belonging to it are automatically moved in the same direction,
- * but you might want to add notification callback to the @a "geometry" property of the canvas widget which will be
- * called each time the geometry of the canvas changed. That way, you can resize the objects when the size of canvas is
- * modified: @n
+ * When the canvas is moved, the objects belonging to it are automatically moved with it,
+ * but you might want to add a notification callback to the @a "geometry" property of the canvas widget, which will be
+ * called each time the geometry of the canvas is changed. That way, you can resize the objects when the size of the
+ * canvas is modified: @n
  * @code
  * etk_object_notification_callback_add(ETK_OBJECT(canvas), "geometry", canvas_geometry_changed_cb, NULL);
  *
