@@ -20,8 +20,6 @@ collections
 		  name: "tclock_time";
 		  type: TEXT;
 		  effect: SOFT_SHADOW;
-		  //clip_to: "base";
-		  //mouse_events: 0;
 		  description
 		    {
 		       state: "default" 0.0;
@@ -41,7 +39,6 @@ collections
 		       text {
 			  text:     "";
 			  font:     "Edje-Vera";
-			  size:     160;
 			  min:      1 1;
 			  fit: 1 1;
 			  align:    0.5 0.5;
@@ -66,8 +63,6 @@ collections
 		  name: "tclock_date";
 		  type: TEXT;
 		  effect: SOFT_SHADOW;
-		  //clip_to: "base";
-		  //mouse_events: 0;
 		  description
 		    {
 		       state: "default" 0.0;
@@ -87,7 +82,6 @@ collections
 		       text {
 			  text:     "";
 			  font:     "Edje-Vera";
-			  size:     160;
 			  min:      1 1;
 			  fit: 1 1;
 			  align:    0.5 0.5;
