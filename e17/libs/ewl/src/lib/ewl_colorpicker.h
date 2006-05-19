@@ -94,6 +94,7 @@ Ewl_Color_Mode	 ewl_colorpicker_color_mode_get(Ewl_Colorpicker *cp);
   *   */
 void ewl_colorpicker_cb_square_change(Ewl_Widget *w, void *ev, void *data);
 void ewl_colorpicker_cb_vertical_change(Ewl_Widget *w, void *ev, void *data);
+
 void ewl_colorpicker_cb_spinner_change(Ewl_Widget *w, void *ev, void *data);
 void ewl_colorpicker_cb_radio_change(Ewl_Widget *w, void *ev, void *data); 
 

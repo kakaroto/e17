@@ -63,8 +63,7 @@ create_test(Ewl_Container *box)
 }
 
 static void
-color_value_changed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-						void *data __UNUSED__)
+color_value_changed(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
 	int r, g, b;
 
