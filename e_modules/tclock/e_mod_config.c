@@ -131,8 +131,9 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    ci->show_time = cfdata->show_time;
    ci->time_format = cfdata->time_format;
    ci->date_format = cfdata->date_format;
-   _tclock_config_updated();
    e_config_save_queue();   
+
+   _tclock_config_updated(ci->id);
    return 1;
 }
 

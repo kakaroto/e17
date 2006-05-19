@@ -38,7 +38,7 @@ EAPI int e_modapi_info(E_Module *m);
 EAPI int e_modapi_about(E_Module *m);
 
 void _config_tclock_module(Config_Item *ci);
-void _tclock_config_updated(void);
+void _tclock_config_updated(const char *id);
 extern Config *tclock_config;
 
 #endif

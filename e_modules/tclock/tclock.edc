@@ -20,7 +20,6 @@ collections
 		  name: "tclock_time";
 		  type: TEXT;
 		  effect: SOFT_SHADOW;
-//		  clip_to: "base";
 		  description
 		    {
 		       state: "default" 0.0;
@@ -64,7 +63,6 @@ collections
 		  name: "tclock_date";
 		  type: TEXT;
 		  effect: SOFT_SHADOW;
-//		  clip_to: "base";
 		  description
 		    {
 		       state: "default" 0.0;
