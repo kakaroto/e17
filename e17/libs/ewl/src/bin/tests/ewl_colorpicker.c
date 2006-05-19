@@ -63,10 +63,9 @@ create_test(Ewl_Container *box)
 }
 
 static void
-color_value_changed(Ewl_Widget *w __UNUSED__, void *ev,
+color_value_changed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 						void *data __UNUSED__)
 {
-	Ewl_Color_Set *col;
 	int r, g, b;
 
 	ewl_colorpicker_current_rgb_get(EWL_COLORPICKER(w), &r, &g, &b);
