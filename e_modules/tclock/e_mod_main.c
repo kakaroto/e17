@@ -171,7 +171,7 @@ _tclock_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
    Config_Item *ci;
    
    inst = data;
-   ci = _tclock_config_item_get(inst->gcc->gadcon->id);
+   ci = _tclock_config_item_get(inst->gcc->id);
    _config_tclock_module(ci);
 }
 
@@ -190,8 +190,8 @@ _tclock_config_updated(const char *id)
 	Instance *inst;
 	
 	inst = l->data;
-	if (!inst->gcc->gadcon->id) continue;
-	if (!strcmp(inst->gcc->gadcon->id, ci->id))
+	if (!inst->gcc->id) continue;
+	if (!strcmp(inst->gcc->id, ci->id))
 	  {	
 	     if (!ci->show_time) 
 	       edje_object_signal_emit(inst->tclock, "time_hidden", "");
@@ -228,7 +228,7 @@ _tclock_cb_check(void *data)
    char buf[1024];
 
    inst = data;   
-   ci = _tclock_config_item_get(inst->gcc->gadcon->id);
+   ci = _tclock_config_item_get(inst->gcc->id);
 
    if (!ci->show_time) 
      edje_object_signal_emit(inst->tclock, "time_hidden", "");
@@ -389,9 +389,9 @@ e_modapi_save(E_Module *m)
 	Config_Item *ci;
 	
 	inst = l->data;
-	ci = _tclock_config_item_get(inst->gcc->gadcon->id);
+	ci = _tclock_config_item_get(inst->gcc->id);
 	if (ci->id) evas_stringshare_del(ci->id);
-	ci->id = evas_stringshare_add(inst->gcc->gadcon->id);
+	ci->id = evas_stringshare_add(inst->gcc->id);
      }
    e_config_domain_save("module.tclock", conf_edd, tclock_config);
    return 1;

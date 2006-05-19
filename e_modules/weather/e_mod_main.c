@@ -207,7 +207,7 @@ _weather_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
    Config_Item *ci;
    
    inst = data;
-   ci = _weather_config_item_get(inst->gcc->gadcon->id);
+   ci = _weather_config_item_get(inst->gcc->id);
    _config_weather_module(ci);
 }
 
@@ -358,9 +358,9 @@ e_modapi_save(E_Module *m)
 	Config_Item *ci;
 	
 	inst = l->data;
-	ci = _weather_config_item_get(inst->gcc->gadcon->id);
+	ci = _weather_config_item_get(inst->gcc->id);
 	if (ci->id) evas_stringshare_del(ci->id);
-	ci->id = evas_stringshare_add(inst->gcc->gadcon->id);
+	ci->id = evas_stringshare_add(inst->gcc->id);
      }
    
    e_config_domain_save("module.weather", conf_edd, weather_config);
@@ -449,7 +449,7 @@ _weather_cb_check(void *data)
    Config_Item *ci;
 
    inst = data;
-   ci = _weather_config_item_get(inst->gcc->gadcon->id);
+   ci = _weather_config_item_get(inst->gcc->id);
    
    if (!weather_config->server)
      {	
@@ -480,7 +480,7 @@ _weather_server_add(void *data, int type, void *event)
    if (!inst)
      return 1;
 
-   ci = _weather_config_item_get(inst->gcc->gadcon->id);
+   ci = _weather_config_item_get(inst->gcc->id);
    ev = event;
    if ((!weather_config->server) || (weather_config->server != ev->server))
      return 1;
@@ -615,7 +615,7 @@ _weather_convert_degrees(void *data)
    Config_Item *ci;
    
    inst = data;
-   ci = _weather_config_item_get(inst->gcc->gadcon->id);
+   ci = _weather_config_item_get(inst->gcc->id);
    if ((inst->degrees == 'F') && (ci->degrees == DEGREES_C))
      {
         inst->temp = (inst->temp - 32) * 5.0 / 9.0;
@@ -675,9 +675,9 @@ _weather_config_updated(const char *id)
 	Instance *inst;
 	
 	inst = l->data;
-	if (!inst->gcc->gadcon->id) 
+	if (!inst->gcc->id) 
 	  continue;
-	if (!strcmp(inst->gcc->gadcon->id, ci->id))
+	if (!strcmp(inst->gcc->id, ci->id))
 	  {
 	     switch (ci->display) 
 	       {
