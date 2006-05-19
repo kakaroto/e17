@@ -132,7 +132,9 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
       evas_stringshare_del(ci->code);
    ci->code = evas_stringshare_add((char *)toupper(cfdata->code));
 
-   _weather_config_updated(ci->id);
    e_config_save_queue();   
+   
+   printf("Updating Config: %s\n", ci->id);
+   _weather_config_updated(ci->id);
    return 1;
 }

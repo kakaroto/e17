@@ -35,7 +35,7 @@ collections
 		       rel1
 			 {
 			    relative: 0.0 0.0;
-			    offset:   0   0;
+			    offset:   2   2;
 			 }
 		       rel2
 			 {
@@ -47,7 +47,6 @@ collections
 		  description
 		    {
 		       state:    "simple" 0.0;
-		       //aspect:   1.0 1.0;
 		       align:    0.5 0.5;
 		       rel1
 			 {
@@ -60,7 +59,7 @@ collections
 			    offset:   -1  -1;
 			 }
 		       color: 0 0 0 0;
-		    }		  
+		    }
 	       }
 	     part
 	       {
@@ -75,7 +74,7 @@ collections
 		       rel1
 			 {
 			    relative: 0.0 0.0;
-			    offset:   2   2;
+			    offset:   0   0;
 			    to: "icon";
 			 }
 		       rel2
@@ -90,9 +89,10 @@ collections
 			 {
 			    text:  "30";
 			    font:  "Vera Bold";
-			    size:  14;
+			    size:  12;
 			    min:   1 1;
 			    align: 0.5 0.5;
+			    text_class: "module_large";
 			 }
 		    }
 	       }
@@ -127,6 +127,7 @@ collections
 			    size:  10;
 			    min:   1 1;
 			    align: 0.5 0.5;
+			    text_class: "module_normal";
 			 }
 		    }
 		  description
@@ -194,10 +195,11 @@ collections
 		       text
 			 {
 			    text:  "Fair";
-			    font:  "Vera";
-			    size:  10;
+			    font:  "Vera Bold";
+			    size:  12;
 			    min:   1 1;
 			    align: 0.5 0.5;
+			    text_class: "module_large";
 			 }
 		    }
 		  description
@@ -206,7 +208,7 @@ collections
 		       rel1
 			 {
 			    relative: 0.0 1.0;
-			    offset:   0  -1;
+			    offset:   -1  -1;
 			    to_x:     "icon";
 			    to_y:     "temp";
 			 }
@@ -215,17 +217,17 @@ collections
 			    relative: 1.0 1.0;
 			    offset:   -1  -10;
 			    to_x:     "icon";
-			    //to_y:     "temp";			    
 			 }
 		       color:  255 255 255 255;
 		       color3:   0   0   0  60;
 		       text
 			 {
 			    text:  "Fair";
-			    font:  "Vera";
-			    size:  10;
+			    font:  "Vera Bold";
+			    size:  12;
 			    min:   1 1;
 			    align: 0.5 0.5;
+			    text_class: "module_large";
 			 }
 		    }
 	       }
