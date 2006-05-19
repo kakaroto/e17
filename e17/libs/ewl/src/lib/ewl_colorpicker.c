@@ -77,9 +77,24 @@ ewl_colorpicker_new(void)
 int
 ewl_colorpicker_init(Ewl_Colorpicker *cp)
 {
-	Ewl_Widget *vbox, *hbox, *o, *prev;
+	Ewl_Widget *vbox, *hbox, *o, *prev = NULL;
 	unsigned int r, g, b;
 	double h, s, v;
+	int i;
+	struct
+	{
+		char *name;
+		Ewl_Color_Mode mode;
+		int max;
+	} modes[] = {
+		{"h", EWL_COLOR_MODE_HSV_HUE, 360},
+		{"s", EWL_COLOR_MODE_HSV_SATURATION, 100},
+		{"v", EWL_COLOR_MODE_HSV_VALUE, 100},
+		{"r", EWL_COLOR_MODE_RGB_RED, 255},
+		{"g", EWL_COLOR_MODE_RGB_GREEN, 255},
+		{"b", EWL_COLOR_MODE_RGB_BLUE, 255},
+		{NULL, EWL_COLOR_MODE_RGB_RED, 0}
+	};
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("cp", cp, FALSE);
@@ -188,203 +203,74 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
 	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_SHRINK);
 	ewl_widget_show(vbox);
 
-	/* h button/spinner */
-	hbox = ewl_hbox_new();
-	ewl_widget_internal_set(hbox, TRUE);
-	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
-	ewl_widget_show(hbox);
+	/* setup the spinners and radiobuttons */
+	for (i = 0; modes[i].name != NULL; i++)
+	{
+		hbox = ewl_hbox_new();
+		ewl_widget_internal_set(hbox, TRUE);
+		ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
+		ewl_widget_show(hbox);
 
-	o = ewl_colorpicker_radiobutton_new();
-	ewl_widget_internal_set(o, TRUE);
-	ewl_button_label_set(EWL_BUTTON(o), "h");
-	ewl_radiobutton_checked_set(EWL_RADIOBUTTON(o), TRUE);
-	ewl_container_child_append(EWL_CONTAINER(hbox), o);
-	ewl_colorpicker_radiobutton_mode_set(EWL_COLORPICKER_RADIOBUTTON(o),
-							EWL_COLOR_MODE_HSV_HUE);
-	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
+		o = ewl_colorpicker_radiobutton_new();
+		ewl_widget_internal_set(o, TRUE);
+		ewl_button_label_set(EWL_BUTTON(o), modes[i].name);
+		if (!prev)
+			ewl_radiobutton_checked_set(EWL_RADIOBUTTON(o), TRUE);
+		else
+			ewl_radiobutton_checked_set(EWL_RADIOBUTTON(o), FALSE);
+
+		ewl_container_child_append(EWL_CONTAINER(hbox), o);
+		ewl_colorpicker_radiobutton_mode_set(EWL_COLORPICKER_RADIOBUTTON(o), 
+									modes[i].mode);
+		if (prev)
+			ewl_radiobutton_chain_set(EWL_RADIOBUTTON(o), EWL_RADIOBUTTON(prev));
+		ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
 				ewl_colorpicker_cb_radio_change, cp);
-	prev = o;
-	ewl_widget_show(o);
+		prev = o;
+		ewl_widget_show(o);
 
-	o = ewl_colorpicker_spinner_new();
-	ewl_widget_internal_set(o, TRUE);
-	ewl_container_child_append(EWL_CONTAINER(hbox), o);
-	ewl_spinner_min_val_set(EWL_SPINNER(o), 0);
-	ewl_spinner_max_val_set(EWL_SPINNER(o), 360);
-	ewl_spinner_value_set(EWL_SPINNER(o), h);
-	ewl_spinner_step_set(EWL_SPINNER(o), 1);
-	ewl_spinner_digits_set(EWL_SPINNER(o), 0);
-	ewl_colorpicker_spinner_mode_set(EWL_COLORPICKER_SPINNER(o),
-						EWL_COLOR_MODE_HSV_HUE);
-	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
+		o = ewl_colorpicker_spinner_new();
+		ewl_widget_internal_set(o, TRUE);
+		ewl_container_child_append(EWL_CONTAINER(hbox), o);
+		ewl_spinner_min_val_set(EWL_SPINNER(o), 0);
+		ewl_spinner_max_val_set(EWL_SPINNER(o), modes[i].max);
+
+		switch(modes[i].mode)
+		{
+			case EWL_COLOR_MODE_HSV_HUE:
+				ewl_spinner_value_set(EWL_SPINNER(o), h);
+				cp->spinners.hsv.h = o;
+				break;
+			case EWL_COLOR_MODE_HSV_SATURATION:
+				ewl_spinner_value_set(EWL_SPINNER(o), s * 100);
+				cp->spinners.hsv.s = o;
+				break;
+			case EWL_COLOR_MODE_HSV_VALUE:
+				ewl_spinner_value_set(EWL_SPINNER(o), v * 100);
+				cp->spinners.hsv.v = o;
+				break;
+			case EWL_COLOR_MODE_RGB_RED:
+				ewl_spinner_value_set(EWL_SPINNER(o), r);
+				cp->spinners.rgb.r = o;
+				break;
+			case EWL_COLOR_MODE_RGB_GREEN:
+				ewl_spinner_value_set(EWL_SPINNER(o), g);
+				cp->spinners.rgb.g = o;
+				break;
+			case EWL_COLOR_MODE_RGB_BLUE:
+				ewl_spinner_value_set(EWL_SPINNER(o), b);
+				cp->spinners.rgb.b = o;
+				break;
+		}
+
+		ewl_spinner_step_set(EWL_SPINNER(o), 1);
+		ewl_spinner_digits_set(EWL_SPINNER(o), 0);
+		ewl_colorpicker_spinner_mode_set(EWL_COLORPICKER_SPINNER(o),
+								modes[i].mode);
+		ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
 				ewl_colorpicker_cb_spinner_change, cp);
-	cp->spinners.hsv.h = o;
-	ewl_widget_show(o);
-
-	/* s button/spinner */
-	hbox = ewl_hbox_new();
-	ewl_widget_internal_set(hbox, TRUE);
-	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
-	ewl_widget_show(hbox);
-
-	o = ewl_colorpicker_radiobutton_new();
-	ewl_widget_internal_set(o, TRUE);
-	ewl_button_label_set(EWL_BUTTON(o), "s");
-	ewl_container_child_append(EWL_CONTAINER(hbox), o);
-	ewl_radiobutton_chain_set(EWL_RADIOBUTTON(o), EWL_RADIOBUTTON(prev));
-	ewl_colorpicker_radiobutton_mode_set(EWL_COLORPICKER_RADIOBUTTON(o),
-						EWL_COLOR_MODE_HSV_SATURATION);
-	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
-				ewl_colorpicker_cb_radio_change, cp);
-	prev = o;
-	ewl_widget_show(o);
-
-	o = ewl_colorpicker_spinner_new();
-	ewl_widget_internal_set(o, TRUE);
-	ewl_container_child_append(EWL_CONTAINER(hbox), o);
-	ewl_spinner_min_val_set(EWL_SPINNER(o), 0);
-	ewl_spinner_max_val_set(EWL_SPINNER(o), 100);
-	ewl_spinner_value_set(EWL_SPINNER(o), s * 100);
-	ewl_spinner_step_set(EWL_SPINNER(o), 1);
-	ewl_spinner_digits_set(EWL_SPINNER(o), 0);
-	ewl_colorpicker_spinner_mode_set(EWL_COLORPICKER_SPINNER(o),
-					EWL_COLOR_MODE_HSV_SATURATION);
-	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
-				ewl_colorpicker_cb_spinner_change, cp);
-	cp->spinners.hsv.s = o;
-	ewl_widget_show(o);
-
-	/* v button/spinner */
-	hbox = ewl_hbox_new();
-	ewl_widget_internal_set(hbox, TRUE);
-	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
-	ewl_widget_show(hbox);
-
-	o = ewl_colorpicker_radiobutton_new();
-	ewl_widget_internal_set(o, TRUE);
-	ewl_button_label_set(EWL_BUTTON(o), "v");
-	ewl_container_child_append(EWL_CONTAINER(hbox), o);
-	ewl_radiobutton_chain_set(EWL_RADIOBUTTON(o), EWL_RADIOBUTTON(prev));
-	ewl_colorpicker_radiobutton_mode_set(EWL_COLORPICKER_RADIOBUTTON(o),
-						EWL_COLOR_MODE_HSV_VALUE);
-	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
-				ewl_colorpicker_cb_radio_change, cp);
-	prev = o;
-	ewl_widget_show(o);
-
-	o = ewl_colorpicker_spinner_new();
-	ewl_widget_internal_set(o, TRUE);
-	ewl_container_child_append(EWL_CONTAINER(hbox), o);
-	ewl_spinner_min_val_set(EWL_SPINNER(o), 0);
-	ewl_spinner_max_val_set(EWL_SPINNER(o), 100);
-	ewl_spinner_value_set(EWL_SPINNER(o), v * 100);
-	ewl_spinner_step_set(EWL_SPINNER(o), 1);
-	ewl_spinner_digits_set(EWL_SPINNER(o), 0);
-	ewl_colorpicker_spinner_mode_set(EWL_COLORPICKER_SPINNER(o),
-						EWL_COLOR_MODE_HSV_VALUE);
-	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
-				ewl_colorpicker_cb_spinner_change, cp);
-	cp->spinners.hsv.v = o;
-	ewl_widget_show(o);
-
-	/* r button/spinner */
-	hbox = ewl_hbox_new();
-	ewl_widget_internal_set(hbox, TRUE);
-	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
-	ewl_widget_show(hbox);
-
-	o = ewl_colorpicker_radiobutton_new();
-	ewl_widget_internal_set(o, TRUE);
-	ewl_button_label_set(EWL_BUTTON(o), "r");
-	ewl_container_child_append(EWL_CONTAINER(hbox), o);
-	ewl_radiobutton_chain_set(EWL_RADIOBUTTON(o), EWL_RADIOBUTTON(prev));
-	ewl_colorpicker_radiobutton_mode_set(EWL_COLORPICKER_RADIOBUTTON(o),
-						EWL_COLOR_MODE_RGB_RED);
-	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
-			ewl_colorpicker_cb_radio_change, cp);
-	prev = o;
-	ewl_widget_show(o);
-
-	o = ewl_colorpicker_spinner_new();
-	ewl_widget_internal_set(o, TRUE);
-	ewl_container_child_append(EWL_CONTAINER(hbox), o);
-	ewl_spinner_min_val_set(EWL_SPINNER(o), 0);
-	ewl_spinner_max_val_set(EWL_SPINNER(o), 255);
-	ewl_spinner_value_set(EWL_SPINNER(o), r);
-	ewl_spinner_step_set(EWL_SPINNER(o), 1);
-	ewl_spinner_digits_set(EWL_SPINNER(o), 0);
-	ewl_colorpicker_spinner_mode_set(EWL_COLORPICKER_SPINNER(o),
-						EWL_COLOR_MODE_RGB_RED);
-	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
-			ewl_colorpicker_cb_spinner_change, cp);
-	cp->spinners.rgb.r = o;
-	ewl_widget_show(o);
-
-	/* g button/spinner */
-	hbox = ewl_hbox_new();
-	ewl_widget_internal_set(hbox, TRUE);
-	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
-	ewl_widget_show(hbox);
-
-	o = ewl_colorpicker_radiobutton_new();
-	ewl_widget_internal_set(o, TRUE);
-	ewl_button_label_set(EWL_BUTTON(o), "g");
-	ewl_container_child_append(EWL_CONTAINER(hbox), o);
-	ewl_radiobutton_chain_set(EWL_RADIOBUTTON(o), EWL_RADIOBUTTON(prev));
-	ewl_colorpicker_radiobutton_mode_set(EWL_COLORPICKER_RADIOBUTTON(o),
-						EWL_COLOR_MODE_RGB_GREEN);
-	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
-			ewl_colorpicker_cb_radio_change, cp);
-	prev = o;
-	ewl_widget_show(o);
-
-	o = ewl_colorpicker_spinner_new();
-	ewl_widget_internal_set(o, TRUE);
-	ewl_container_child_append(EWL_CONTAINER(hbox), o);
-	ewl_spinner_min_val_set(EWL_SPINNER(o), 0);
-	ewl_spinner_max_val_set(EWL_SPINNER(o), 255);
-	ewl_spinner_value_set(EWL_SPINNER(o), g);
-	ewl_spinner_step_set(EWL_SPINNER(o), 1);
-	ewl_spinner_digits_set(EWL_SPINNER(o), 0);
-	ewl_colorpicker_spinner_mode_set(EWL_COLORPICKER_SPINNER(o),
-						EWL_COLOR_MODE_RGB_GREEN);
-	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
-			ewl_colorpicker_cb_spinner_change, cp);
-	cp->spinners.rgb.g = o;
-	ewl_widget_show(o);
-
-	/* b button/spinner */
-	hbox = ewl_hbox_new();
-	ewl_widget_internal_set(hbox, TRUE);
-	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
-	ewl_widget_show(hbox);
-
-	o = ewl_colorpicker_radiobutton_new();
-	ewl_widget_internal_set(o, TRUE);
-	ewl_button_label_set(EWL_BUTTON(o), "b");
-	ewl_container_child_append(EWL_CONTAINER(hbox), o);
-	ewl_radiobutton_chain_set(EWL_RADIOBUTTON(o), EWL_RADIOBUTTON(prev));
-	ewl_colorpicker_radiobutton_mode_set(EWL_COLORPICKER_RADIOBUTTON(o),
-						EWL_COLOR_MODE_RGB_BLUE);
-	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
-			ewl_colorpicker_cb_radio_change, cp);
-	prev = o;
-	ewl_widget_show(o);
-
-	o = ewl_colorpicker_spinner_new();
-	ewl_widget_internal_set(o, TRUE);
-	ewl_container_child_append(EWL_CONTAINER(hbox), o);
-	ewl_spinner_min_val_set(EWL_SPINNER(o), 0);
-	ewl_spinner_max_val_set(EWL_SPINNER(o), 255);
-	ewl_spinner_value_set(EWL_SPINNER(o), b);
-	ewl_spinner_step_set(EWL_SPINNER(o), 1);
-	ewl_spinner_digits_set(EWL_SPINNER(o), 0);
-	ewl_colorpicker_spinner_mode_set(EWL_COLORPICKER_SPINNER(o),
-						EWL_COLOR_MODE_RGB_BLUE);
-	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
-			ewl_colorpicker_cb_spinner_change, cp);
-	cp->spinners.rgb.b = o;
-	ewl_widget_show(o);
+		ewl_widget_show(o);
+	}
 
 	/* alpha spinner */
 	o = ewl_spinner_new();
