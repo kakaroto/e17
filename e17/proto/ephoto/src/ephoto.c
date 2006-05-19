@@ -471,20 +471,29 @@ main(int argc, char **argv)
 		ewl_callback_append(m->directory, EWL_CALLBACK_VALUE_CHANGED, 
 						populatei_cb, NULL);
 		ewl_widget_show(m->directory);
+	
+                m->dirtree = ewl_tree_new(1);
+                ewl_container_child_append(EWL_CONTAINER(m->images),
+                                                                m->dirtree);
+                ewl_object_maximum_size_set(EWL_OBJECT(m->dirtree), 200, 215);
+                ewl_tree_headers_visible_set(EWL_TREE(m->dirtree), 0);
+                ewl_tree_expandable_rows_set(EWL_TREE(m->dirtree), FALSE);
+                ewl_widget_show(m->dirtree);
 
-		m->dirtree = ewl_tree_new(1);
-		ewl_container_child_append(EWL_CONTAINER(m->images), 
-						m->dirtree);
-		ewl_object_maximum_size_set(EWL_OBJECT(m->dirtree), 200, 160);
-		ewl_widget_show(m->dirtree);
+                m->spacer = ewl_spacer_new();
+                ewl_object_maximum_size_set(EWL_OBJECT(m->spacer), 10, 10);
+                ewl_container_child_append(EWL_CONTAINER(m->images), m->spacer);
+                ewl_widget_show(m->spacer);
 
-		m->imagetree = ewl_tree_new(1);
-		ewl_container_child_append(EWL_CONTAINER(m->images), 
-						m->imagetree);
-		ewl_object_maximum_size_set(EWL_OBJECT(m->imagetree), 200, 160);
+                m->imagetree = ewl_tree_new(1);
+                ewl_container_child_append(EWL_CONTAINER(m->images),
+                                                                m->imagetree);
+                ewl_tree_headers_visible_set(EWL_TREE(m->imagetree), 0);
+                ewl_tree_expandable_rows_set(EWL_TREE(m->imagetree), FALSE);
 		ewl_object_fill_policy_set(EWL_OBJECT(m->imagetree), 
-						EWL_FLAG_FILL_VFILL);
-		ewl_widget_show(m->imagetree);
+				EWL_FLAG_FILL_VFILL | EWL_FLAG_FILL_VSHRINK);
+                ewl_widget_show(m->imagetree);
+
 
 		m->vsep = ewl_vseparator_new();
 		ewl_container_child_append(EWL_CONTAINER(m->hbox), m->vsep);
@@ -847,7 +856,8 @@ main(int argc, char **argv)
 		/**********************************************************/
 
                 /************LETS POPULATE THEM TREES******************/
-                ewl_callback_call(m->directory, EWL_CALLBACK_VALUE_CHANGED);
+                ewl_callback_append(m->directory, EWL_CALLBACK_REALIZE, 
+						populatei_cb, NULL);
                 /******************************************************/
 		if ( arglload == 1 ) {
 			load_cb(NULL, NULL, NULL);
