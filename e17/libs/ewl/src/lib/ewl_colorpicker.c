@@ -193,6 +193,8 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
 	ewl_object_padding_set(EWL_OBJECT(o), 2, 2, 2, 2);
 	ewl_object_minimum_h_set(EWL_OBJECT(o), 20);
 	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_ALL);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
+				ewl_colorpicker_cb_previous_clicked, cp);
 	cp->preview.previous = o;
 	ewl_widget_show(o);
 
@@ -662,6 +664,24 @@ ewl_colorpicker_cb_radio_change(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 
 	ewl_spectrum_mode_set(EWL_SPECTRUM(cp->picker.square), cp->mode);
 	ewl_spectrum_mode_set(EWL_SPECTRUM(cp->picker.vertical), cp->mode);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_colorpicker_cb_previous_clicked(Ewl_Widget *w __UNUSED__, 
+					void *ev __UNUSED__, void *data)
+{
+	Ewl_Colorpicker *cp;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("ev", ev);
+	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	cp = data;
+	ewl_colorpicker_current_rgb_set(cp, cp->previous.r, cp->previous.g, 
+							cp->previous.b);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
