@@ -11,6 +11,7 @@
 # endif
 #endif
 #include "e_mod_main.h"
+#include "config.h"
 
 typedef struct _Instance Instance;
 typedef struct _Screenshot Screenshot;
@@ -214,10 +215,25 @@ _ss_config_item_get(const char *id)
    ci = E_NEW(Config_Item, 1);
    ci->id = evas_stringshare_add(id);
    ci->delay_time = 60.0;
+#ifdef HAVE_IMPORT
+ #ifdef HAVE_SCROT
+   ci->use_import = 0;
+   ci->use_scrot = 1;
+ #else
    ci->use_import = 1;
    ci->use_scrot = 0;
+ #endif
+#else
+   ci->use_import = 0;
+ #ifdef HAVE_SCROT
+   ci->use_scrot = 1;
+ #else
+   ci->use_scrot = 0;
+ #endif
+#endif
+   
    ci->location = evas_stringshare_add(e_user_homedir_get());
-   ci->filename = evas_stringshare_add("screenshot%d");
+   ci->filename = evas_stringshare_add("screenshot");
    ci->import.use_img_border = 1;
    ci->import.use_dither = 1;
    ci->import.use_frame = 1;
@@ -282,10 +298,24 @@ e_modapi_init(E_Module *m)
 	
 	ci->id = evas_stringshare_add("0");
 	ci->delay_time = 60.0;
-	ci->use_import = 1;
-	ci->use_scrot = 0;
+#ifdef HAVE_IMPORT
+ #ifdef HAVE_SCROT
+   ci->use_import = 0;
+   ci->use_scrot = 1;
+ #else
+   ci->use_import = 1;
+   ci->use_scrot = 0;
+ #endif
+#else
+   ci->use_import = 0;
+ #ifdef HAVE_SCROT
+   ci->use_scrot = 1;
+ #else
+   ci->use_scrot = 0;
+ #endif
+#endif
 	ci->location = evas_stringshare_add(e_user_homedir_get());
-	ci->filename = evas_stringshare_add("screenshot%d");
+	ci->filename = evas_stringshare_add("screenshot");
 	ci->import.use_img_border = 1;
 	ci->import.use_dither = 1;
 	ci->import.use_frame = 1;
@@ -546,8 +576,16 @@ _get_filename(Config_Item *ci)
 	     while ((file = ecore_list_next(fl)) != NULL)
 	       {
 		  x = ecore_file_strip_ext(file);
-		  if (strstr(x, ci->filename))
-		    c++;
+		  if (!x) 
+		    {
+		       if (strstr(file, ci->filename))
+			 c++;
+		    }
+		  else 
+		    {
+		       if (strstr(x, ci->filename))
+			 c++;
+		    }
 	       }
 	     if (fl)
 	       ecore_list_destroy(fl);
