@@ -44,6 +44,34 @@ group {
                     smooth: 0;
                 }
             }
+	    description {
+		state, "udown" 0.0;
+		inherit, "default" 0.0;
+		image {
+		   normal, "e17_spinner_top_arrow_down.png";
+		}
+		fill {
+		   smooth: 0;
+		}
+	    }		
+        }
+    }
+   programs {
+        program {
+                name:   "updown";
+                signal: "mouse,down,1";
+                source: "*";
+                action: STATE_SET "udown" 0.0;
+                transition: LINEAR 0.0;
+                target: "uback";
+        }
+        program {
+                name: "upup";
+                signal: "mouse,up,1";
+                source: "*";
+                action: STATE_SET "default" 0.0;
+                transition: LINEAR 0.0;
+                target: "uback";
         }
     }
 }
@@ -66,7 +94,35 @@ group {
                     smooth: 0;
                 }
             }
+            description {
+                state, "ddown" 0.0;
+                inherit, "default" 0.0;
+                image {
+                   normal, "e17_spinner_bottom_arrow_down.png";
+                }
+                fill {
+                   smooth: 0;
+                }
+            }
         }
+    }
+   programs {
+	program {
+		name:	"downdown";
+		signal: "mouse,down,1";
+		source: "*";
+		action: STATE_SET "ddown" 0.0;
+		transition: LINEAR 0.0;
+		target: "dback";
+	}
+	program {
+		name: "downup";
+		signal: "mouse,up,1";
+		source: "*";
+		action: STATE_SET "default" 0.0;
+		transition: LINEAR 0.0;
+		target: "dback";
+	}
     }
 }
 
