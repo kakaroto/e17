@@ -539,6 +539,11 @@ ewl_tree2_cb_column_free(void *data)
 /*
  * Ewl_Tree2_Column stuff
  */
+
+/**
+ * @return Returns a new Ewl_Tree2_Column
+ * @brief Creates a new Ewl_Tree2_Column object
+ */
 Ewl_Tree2_Column *
 ewl_tree2_column_new(void)
 {
@@ -551,6 +556,11 @@ ewl_tree2_column_new(void)
 	DRETURN_PTR(c, DLEVEL_STABLE);
 }
 
+/**
+ * @param c: The column to work with
+ * @return Returns no value
+ * @brief Destroys the given column 
+ */
 void
 ewl_tree2_column_destroy(Ewl_Tree2_Column *c)
 {
@@ -564,6 +574,12 @@ ewl_tree2_column_destroy(Ewl_Tree2_Column *c)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param c: The column to work with
+ * @param m: The model to set
+ * @return Returns no value
+ * @brief Sets the given model @a m into the column @a c
+ */
 void
 ewl_tree2_column_model_set(Ewl_Tree2_Column *c, Ewl_Model *m)
 {
@@ -576,6 +592,11 @@ ewl_tree2_column_model_set(Ewl_Tree2_Column *c, Ewl_Model *m)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param c: The column to work with
+ * @return Returns the model for the column
+ * @brief Retrieves the model for the given column
+ */
 Ewl_Model * 
 ewl_tree2_column_model_get(Ewl_Tree2_Column *c)
 {
@@ -585,6 +606,12 @@ ewl_tree2_column_model_get(Ewl_Tree2_Column *c)
 	DRETURN_PTR(c->model, DLEVEL_STABLE);
 }
 
+/**
+ * @param c: The column to work with
+ * @param v: The view to set
+ * @return Returns no value
+ * @brief Sets the given view @a v into the column @a c
+ */
 void
 ewl_tree2_column_view_set(Ewl_Tree2_Column *c, Ewl_View *v)
 {
@@ -597,6 +624,11 @@ ewl_tree2_column_view_set(Ewl_Tree2_Column *c, Ewl_View *v)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param c: The Ewl_Tree2_Column to work with
+ * @return Returns the view set on the given column
+ * @brief Retrieves the view for the given column
+ */
 Ewl_View *
 ewl_tree2_column_view_get(Ewl_Tree2_Column *c)
 {

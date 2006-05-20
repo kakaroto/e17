@@ -260,43 +260,158 @@ unsigned int    ewl_object_flags_get(Ewl_Object *o, unsigned int mask);
 #define ewl_object_state_get(o, state) \
 	ewl_object_flags_get(o, state, EWL_FLAGS_STATE_MASK)
 
+/**
+ * @def ewl_object_queued_add(o, queued)
+ * @param o: The object to work with
+ * @param queued: Add the given queue flag to the object
+ * Adds the given queue flag @a queued to the object @a o
+ */
 #define ewl_object_queued_add(o, queued) \
 	ewl_object_flags_add(o, queued, EWL_FLAGS_QUEUED_MASK)
+
+/**
+ * @def ewl_object_queued_remove(o, queued)
+ * Remove the @a queued flag from the @a o object
+ */
 #define ewl_object_queued_remove(o, queued) \
 	ewl_object_flags_remove(o, queued, EWL_FLAGS_QUEUED_MASK)
+
+/**
+ * @def ewl_object_queued_has(o, queued)
+ * Determine if the @a o object has the @a queued flag set
+ */
 #define ewl_object_queued_has(o, queued) \
 	ewl_object_flags_has(o, queued, EWL_FLAGS_QUEUED_MASK)
+
+/**
+ * @def ewl_object_queued_get(o, queued)
+ * Retrieve the value for the @a queued queue flag
+ */
 #define ewl_object_queued_get(o, queued) \
 	ewl_object_flags_get(o, queued, EWL_FLAGS_QUEUED_MASK)
 
+/**
+ * @def ewl_object_visible_add(o, visible)
+ * Add the @a visible flag to the object @a o
+ */
 #define ewl_object_visible_add(o, visible) \
 	ewl_object_flags_add(o, visible, EWL_FLAGS_VISIBLE_MASK)
+
+/**
+ * @def ewl_object_visible_remove(o, visible)
+ * Remove the @a visible flag from the object @a o
+ */
 #define ewl_object_visible_remove(o, visible) \
 	ewl_object_flags_remove(o, visible, EWL_FLAGS_VISIBLE_MASK)
+
+/**
+ * @def ewl_object_visible_has(o, visible)
+ * Check if the @a visible flag is set in the object @a o
+ */
 #define ewl_object_visible_has(o, visible) \
 	ewl_object_flags_has(o, visible, EWL_FLAGS_VISIBLE_MASK)
+
+/**
+ * @def ewl_object_visible_get(o, visible)
+ * Retrieves the @a visble flag from the object @a o
+ */
 #define ewl_object_visible_get(o, visible) \
 	ewl_object_flags_get(o, visible, EWL_FLAGS_VISIBLE_MASK)
 
+/**
+ * @def PADDING_TOP(o)
+ * Retrieve the size of the top pad
+ */
 #define PADDING_TOP(o) EWL_OBJECT(o)->pad.t
+
+/**
+ * @def PADDING_BOTTOM(o)
+ * Retrieve the size of the bottom pad
+ */
 #define PADDING_BOTTOM(o) EWL_OBJECT(o)->pad.b
+
+/**
+ * @def PADDING_LEFT(o)
+ * Retrieve the size of the left pad
+ */
 #define PADDING_LEFT(o) EWL_OBJECT(o)->pad.l
+
+/**
+ * @def PADDING_RIGHT(o)
+ * Retrieve the size of the right pad
+ */
 #define PADDING_RIGHT(o) EWL_OBJECT(o)->pad.r
 
+/**
+ * @def PADDING_HORIZONTAL(o)
+ * Retrieve the total size of the horizontal padding
+ */
 #define PADDING_HORIZONTAL(o) (EWL_OBJECT(o)->pad.l + EWL_OBJECT(o)->pad.r)
+
+/**
+ * @def PADDING_VERTICAL(o)
+ * Retrieve the total size of the vertical padding
+ */
 #define PADDING_VERTICAL(o) (EWL_OBJECT(o)->pad.t + EWL_OBJECT(o)->pad.b)
 
+/**
+ * @def INSET_LEFT(o)
+ * Retrieve the size of the left inset
+ */
 #define INSET_LEFT(o) EWL_OBJECT(o)->insets.l
+
+/**
+ * @def INSET_RIGHT(o)
+ * Retrieve the size of the right inset
+ */
 #define INSET_RIGHT(o) EWL_OBJECT(o)->insets.r
+
+/**
+ * @def INSET_TOP(o)
+ * Retrieve the size of the top inset
+ */
 #define INSET_TOP(o) EWL_OBJECT(o)->insets.t
+
+/**
+ * @def INSET_BOTTOM(o)
+ * Retrieve the size of the bottom inset
+ */
 #define INSET_BOTTOM(o) EWL_OBJECT(o)->insets.b
 
+/**
+ * @def INSET_HORIZONTAL(o)
+ * Retrieve the total size of the horizontal insets for the object
+ */
 #define INSET_HORIZONTAL(o) (EWL_OBJECT(o)->insets.l + EWL_OBJECT(o)->insets.r)
+
+/**
+ * @def INSET_VERTICAL(o)
+ * Retrieve the total size of the vertical insets for the object
+ */
 #define INSET_VERTICAL(o) (EWL_OBJECT(o)->insets.t + EWL_OBJECT(o)->insets.b)
 
+/**
+ * @def CURRENT_X(o)
+ * Retrieve the current x position of the object
+ */
 #define CURRENT_X(o) EWL_OBJECT(o)->current.x
+
+/**
+ * @def CURRENT_Y(o)
+ * Retrieve the current y position of the object
+ */
 #define CURRENT_Y(o) EWL_OBJECT(o)->current.y
+
+/**
+ * @def CURRENT_W(o)
+ * Retrieve the current width of the object without insets or padding
+ */
 #define CURRENT_W(o) EWL_OBJECT(o)->current.w
+
+/**
+ * @def CURRENT_H(o)
+ * Retrieve the current height of the object without insets or padding
+ */
 #define CURRENT_H(o) EWL_OBJECT(o)->current.h
 
 /**
