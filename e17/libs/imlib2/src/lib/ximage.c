@@ -180,8 +180,7 @@ __imlib_ProduceXImage(Display * d, Visual * v, int depth, int w, int h,
 
         /* if the image has the same depth, width and height - recycle it */
         /* as long as its not used */
-        if ( (list_xim[i]->bits_per_pixel == depth) ||
-             ((list_xim[i]->bits_per_pixel == 32) && (depth == 24)) )
+        if (list_xim[i]->depth == depth)
             depth_ok = 1;
 	  if ( depth_ok &&
 	     (list_xim[i]->width >= w) &&

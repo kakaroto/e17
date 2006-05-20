@@ -249,6 +249,7 @@ __imlib_RenderImage(Display * d, ImlibImage * im,
    DATA32             *buf = NULL, *pointer = NULL, *back = NULL;
    int                 y, h, hh, jump;
    static Display     *disp = NULL;
+   static int          last_depth = 0;
    static GC           gc = 0;
    static GC           gcm = 0;
    XGCValues           gcv;
@@ -459,25 +460,28 @@ __imlib_RenderImage(Display * d, ImlibImage * im,
       __imlib_FreeScaleInfo(scaleinfo);
    if (back)
       free(back);
-   /* if we changed diplays since last time... free old gc's */
-   if (disp != d)
+   /* if we changed diplays or depth since last time... free old gc */
+   if ((gc) && ((last_depth != depth) || (disp != d)))
      {
-        if (gc)
-           XFreeGC(disp, gc);
-        if (gcm)
-           XFreeGC(disp, gcm);
+        XFreeGC(disp, gc);
         gc = 0;
-        gcm = 0;
      }
    /* if we didnt have a gc... create it */
    if (!gc)
      {
         disp = d;
+        last_depth = depth;
         gcv.graphics_exposures = False;
         gc = XCreateGC(d, w, GCGraphicsExposures, &gcv);
      }
    if (m)
      {
+        /* if we changed diplays since last time... free old gc */
+        if ((gcm) && (disp != d))
+        {
+           XFreeGC(disp, gcm);
+           gcm = 0;
+        }
         if (!gcm)
           {
              gcv.graphics_exposures = False;
