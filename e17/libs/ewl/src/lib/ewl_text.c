@@ -2893,6 +2893,12 @@ ewl_text_cb_child_del(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
 /*
  * Trigger stuff 
  */
+
+/**
+ * @param type: The type of trigger to create
+ * @return Returns a new ewl_text_trigger widget
+ * @brief Creates a new trigger for the text object
+ */
 Ewl_Text_Trigger *
 ewl_text_trigger_new(Ewl_Text_Trigger_Type type)
 {
@@ -2913,6 +2919,12 @@ ewl_text_trigger_new(Ewl_Text_Trigger_Type type)
 	DRETURN_PTR(trigger, DLEVEL_STABLE);
 }
 
+/**
+ * @param trigger: The trigger to initialize
+ * @param type: The type of the triger
+ * @return Returns TRUE if successful of FALSE otherwise
+ * @brief Initializes a trigger to default values
+ */
 int
 ewl_text_trigger_init(Ewl_Text_Trigger *trigger, Ewl_Text_Trigger_Type type)
 {
@@ -2981,6 +2993,11 @@ ewl_text_trigger_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param t: The trigger to work with
+ * @return Returns the type of the trigger
+ * @brief Retrieves the type of the trigger
+ */
 Ewl_Text_Trigger_Type 
 ewl_text_trigger_type_get(Ewl_Text_Trigger *t)
 {
@@ -2991,6 +3008,12 @@ ewl_text_trigger_type_get(Ewl_Text_Trigger *t)
 	DRETURN_INT(t->type, DLEVEL_STABLE);
 }
 
+/**
+ * @param t: The trigger to work with
+ * @param pos: The position to set
+ * @return Returns no value
+ * @brief Sets the start position of the trigger @a t to position @a pos
+ */
 void 
 ewl_text_trigger_start_pos_set(Ewl_Text_Trigger *t, unsigned int pos)
 {
@@ -3003,6 +3026,11 @@ ewl_text_trigger_start_pos_set(Ewl_Text_Trigger *t, unsigned int pos)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param t: The trigger to work with
+ * @return Returns the current start position of the trigger
+ * @brief Retrieves the start position of the trigger
+ */
 unsigned int
 ewl_text_trigger_start_pos_get(Ewl_Text_Trigger *t)
 {
@@ -3013,6 +3041,12 @@ ewl_text_trigger_start_pos_get(Ewl_Text_Trigger *t)
 	DRETURN_INT(t->pos, DLEVEL_STABLE);
 }
 
+/**
+ * @param t: The trigger to work with
+ * @param len: The length to set on the cursor
+ * @return Returns no value
+ * @brief Sets the length @a len on the trigger @a t
+ */
 void
 ewl_text_trigger_length_set(Ewl_Text_Trigger *t, unsigned int len)
 {
@@ -3036,6 +3070,11 @@ ewl_text_trigger_length_set(Ewl_Text_Trigger *t, unsigned int len)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param t: The trigger to work with
+ * @return Returns the length of the trigger
+ * @brief Retrieves the length from the cursor @a t
+ */
 unsigned int
 ewl_text_trigger_length_get(Ewl_Text_Trigger *t)
 {
@@ -3046,6 +3085,12 @@ ewl_text_trigger_length_get(Ewl_Text_Trigger *t)
 	DRETURN_INT(t->len, DLEVEL_STABLE);
 }
 
+/**
+ * @param t: The trigger to work with
+ * @param pos: The position to set as the base for the cursor
+ * @return Returns no value
+ * @brief Sets the given position @a pos as the base for the trigger @a t
+ */
 void
 ewl_text_trigger_base_set(Ewl_Text_Trigger *t, unsigned int pos)
 {
@@ -3058,6 +3103,11 @@ ewl_text_trigger_base_set(Ewl_Text_Trigger *t, unsigned int pos)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param t: The trigger to work with
+ * @return Returns the current base position of the cursor
+ * @brief Retrieves the current base position of the cursor
+ */
 unsigned int
 ewl_text_trigger_base_get(Ewl_Text_Trigger *t)
 {
@@ -3068,6 +3118,12 @@ ewl_text_trigger_base_get(Ewl_Text_Trigger *t)
 	DRETURN_INT(t->base, DLEVEL_STABLE);
 }
 
+/**
+ * @param t: The ewl_text widget
+ * @return Returns no value
+ * @brief Configures the position and size of all the triggers within the 
+ * text widget @a t.
+ */
 void
 ewl_text_triggers_configure(Ewl_Text *t)
 {
@@ -3293,6 +3349,11 @@ ewl_text_triggers_shift(Ewl_Text *t, unsigned int pos, unsigned int len,
  	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param t: The ewl_text to work with
+ * @return Returns no value
+ * @brief Sets all of the triggers in the text @a t as realized
+ */
 void
 ewl_text_triggers_realize(Ewl_Text *t)
 {
@@ -3315,6 +3376,11 @@ ewl_text_triggers_realize(Ewl_Text *t)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param t: The ewl_text to work with
+ * @return Returns no value
+ * @brief Sets all of the triggers in the text @a t as unrealized
+ */
 void
 ewl_text_triggers_unrealize(Ewl_Text *t)
 {
@@ -3344,6 +3410,11 @@ ewl_text_triggers_unrealize(Ewl_Text *t)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param t: The ewl_text to work with
+ * @return Returns no value
+ * @brief Shows all triggers in text @a t
+ */
 void
 ewl_text_triggers_show(Ewl_Text *t)
 {
@@ -3377,6 +3448,11 @@ ewl_text_triggers_show(Ewl_Text *t)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param t: The text to work with
+ * @return Returns no value
+ * @brief Hides all of the triggers in the text @a t
+ */
 void
 ewl_text_triggers_hide(Ewl_Text *t)
 {
@@ -3562,6 +3638,12 @@ ewl_text_trigger_cb_mouse_down(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 /*
  * Ewl_Text_Trigger_Area stuff
  */
+
+/**
+ * @param type: The trigger area type to create
+ * @return Returns a new trigger area of the given type
+ * @brief Creates and returns a new trigger_area of the given type
+ */
 Ewl_Widget *
 ewl_text_trigger_area_new(Ewl_Text_Trigger_Type type)
 {
@@ -3584,6 +3666,12 @@ ewl_text_trigger_area_new(Ewl_Text_Trigger_Type type)
 	DRETURN_PTR(area, DLEVEL_STABLE);
 }
 
+/**
+ * @param area: The trigger area to initialize
+ * @param type: The type of the trigger area
+ * @return Returns TRUE on success or FALSE on failure
+ * @brief Initializes a triggger area to default values
+ */
 int
 ewl_text_trigger_area_init(Ewl_Text_Trigger_Area *area, 
 				Ewl_Text_Trigger_Type type)
@@ -3664,6 +3752,11 @@ ewl_text_selection_select_to(Ewl_Text_Trigger *s, unsigned int idx)
 /*
  * Ewl_Text_Context Stuff
  */
+
+/**
+ * @return Returns TRUE on success or FALSE on failure
+ * @brief Initializes the context system
+ */
 int
 ewl_text_context_init(void)
 {
@@ -3679,6 +3772,10 @@ ewl_text_context_init(void)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+/**
+ * @return Returns no value
+ * @brief Shuts the context system down
+ */
 void
 ewl_text_context_shutdown(void)
 {
@@ -3695,6 +3792,10 @@ ewl_text_context_shutdown(void)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @return Returns a new text context
+ * @brief Creates and returns a new text context
+ */
 Ewl_Text_Context *
 ewl_text_context_new(void)
 {
@@ -3708,6 +3809,11 @@ ewl_text_context_new(void)
 	DRETURN_PTR(tx, DLEVEL_STABLE);;
 }
 
+/**
+ * @param old: The context to duplicate
+ * @return Returns a new context with the same values
+ * @brief Duplicates the given context and returns the new version
+ */
 Ewl_Text_Context *
 ewl_text_context_dup(Ewl_Text_Context *old)
 {
@@ -4073,6 +4179,11 @@ ewl_text_context_find(Ewl_Text_Context *tx, unsigned int context_mask,
 	DRETURN_PTR(new_tx, DLEVEL_STABLE);
 }
 
+/**
+ * @param tx: The context to work with
+ * @return Returns no value
+ * @brief Acquires a reference to the given context
+ */
 void
 ewl_text_context_acquire(Ewl_Text_Context *tx)
 {
@@ -4084,6 +4195,13 @@ ewl_text_context_acquire(Ewl_Text_Context *tx)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param tx: The context to work with
+ * @return Returns no value
+ * @brief Releases a reference on the given context. 
+ * Do not use the context after this as it will be deallocated if it's 
+ * reference count drops to zero.
+ */
 void
 ewl_text_context_release(Ewl_Text_Context *tx)
 {
@@ -4105,8 +4223,11 @@ ewl_text_context_release(Ewl_Text_Context *tx)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
- * if they contain the same data the they should be the same pointer... 
+/**
+ * @param a: The first context
+ * @param b: The second context
+ * @return Returns TRUE if the two contexts are the same
+ * @brief Check if the tuw contexts are the same. Returns TRUE if so.
  */
 int
 ewl_text_context_compare(Ewl_Text_Context *a, Ewl_Text_Context *b)
@@ -4164,6 +4285,11 @@ ewl_text_context_cb_free(void *data)
 /*
  * Ewl_Text_Tree stuff
  */
+
+/**
+ * @return Returns a new ewl_text_Tree
+ * @brief Creates and initializes a new text tree
+ */
 Ewl_Text_Tree *
 ewl_text_tree_new(void)
 {
@@ -4180,6 +4306,11 @@ ewl_text_tree_new(void)
 	DRETURN_PTR(tree, DLEVEL_STABLE);
 }
 
+/**
+ * @param tree: The text tree to free
+ * @return Returns no value
+ * @brief Frees the contents of the given text tree
+ */
 void
 ewl_text_tree_free(Ewl_Text_Tree *tree)
 {
@@ -4209,6 +4340,13 @@ ewl_text_tree_free(Ewl_Text_Tree *tree)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param tree: The tree to work with
+ * @param idx: The index to get the node from
+ * @param inclusive: Include the edge numbers
+ * @return Returns the tree rooted at the given index
+ * @brief Retrieves the tree rooted at the given index
+ */
 Ewl_Text_Tree *
 ewl_text_tree_node_get(Ewl_Text_Tree *tree, unsigned int idx, 
 					unsigned int inclusive)
@@ -4249,6 +4387,12 @@ ewl_text_tree_node_get(Ewl_Text_Tree *tree, unsigned int idx,
 	DRETURN_PTR(child, DLEVEL_STABLE);
 }
 
+/**
+ * @param t: The ewl_text to work with
+ * @param current: The node to set current
+ * @return Returns no value
+ * @brief Sets the given node @a current as the current node in the tree
+ */
 void
 ewl_text_tree_current_node_set(Ewl_Text *t, Ewl_Text_Tree *current)
 {
@@ -4289,6 +4433,14 @@ ewl_text_tree_current_node_set(Ewl_Text *t, Ewl_Text_Tree *current)
  	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param t: The text to insert into
+ * @param idx: The index to insert into
+ * @param len: The length to insert
+ * @return Returns no value
+ * @brief: Inserts a node into the tree at index @a idx of length @a len 
+ * using the current context.
+ */
 void
 ewl_text_tree_insert(Ewl_Text *t, unsigned int idx, unsigned int len)
 {
@@ -4317,6 +4469,13 @@ ewl_text_tree_insert(Ewl_Text *t, unsigned int idx, unsigned int len)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param t: The ewl_text to work with
+ * @param idx: The index to delete from
+ * @param len: The length to delete
+ * @return Returns no value
+ * @brief Deletes @a len items from the tree at position @a idx
+ */
 void
 ewl_text_tree_delete(Ewl_Text *t, unsigned int idx, unsigned int len)
 {
@@ -4429,7 +4588,13 @@ ewl_text_tree_node_delete(Ewl_Text *t, Ewl_Text_Tree *tree)
 							 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
- 
+
+/**
+ * @param tree: The tree to work with
+ * @param idx: The node index
+ * @return Returns the Ewl_Text_Context retrieved
+ * @brief Retrieves the context at postion @a idx in the tree @a tree
+ */
 Ewl_Text_Context *
 ewl_text_tree_context_get(Ewl_Text_Tree *tree, unsigned int idx)
 {
@@ -4444,6 +4609,13 @@ ewl_text_tree_context_get(Ewl_Text_Tree *tree, unsigned int idx)
 	DRETURN_PTR(child->tx, DLEVEL_STABLE);
 }
 
+/**
+ * @param t: The tree to work with
+ * @param context_mask: The mask of items changing in the cntext
+ * @param tx: The context of things changing
+ * @return Returns no value
+ * @brief Sets the given @a tx values into the tree at the current context
+ */
 void
 ewl_text_tree_context_set(Ewl_Text *t, unsigned int context_mask,
 						Ewl_Text_Context *tx)
@@ -4506,6 +4678,15 @@ ewl_text_tree_context_set(Ewl_Text *t, unsigned int context_mask,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param t: The text to work with
+ * @param context_mask: The mask to use
+ * @param tx: The context to work with
+ * @param idx: The index to start from
+ * @param len: The length to apply over
+ * @return Returns no value
+ * @brief Applys the given context changes over the given length of text
+ */
 void
 ewl_text_tree_context_apply(Ewl_Text *t, unsigned int context_mask,
 				Ewl_Text_Context *tx, unsigned int idx,
@@ -4549,6 +4730,15 @@ ewl_text_tree_context_apply(Ewl_Text *t, unsigned int context_mask,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param t: The text to work with
+ * @param style: The style to set
+ * @param idx: The index to start from
+ * @param len: The length to work with
+ * @param invert: Are we inverting the style
+ * @return Returns no value
+ * @brief Applys the given style to the tree
+ */
 void
 ewl_text_tree_context_style_apply(Ewl_Text *t, Ewl_Text_Style style,
 					unsigned int idx, unsigned int len,
@@ -4597,7 +4787,15 @@ ewl_text_tree_context_style_apply(Ewl_Text *t, Ewl_Text_Style style,
 		 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
- 
+
+/**
+ * @param t: The text to work with
+ * @param style: The style to remove
+ * @param idx: The index to start from
+ * @param len: The length to remove from
+ * @return Returns no value
+ * @brief Removes the given style from the text from @a idx for length @a len
+ */
 void
 ewl_text_tree_context_style_remove(Ewl_Text *t, Ewl_Text_Style style, 
 					unsigned int idx, unsigned int len)
@@ -4782,7 +4980,11 @@ ewl_text_tree_shrink(Ewl_Text_Tree *tree)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/* search for siblings that are the same and merge the nodes */
+/**
+ * @param tree: The tree to work with
+ * @return Returns no values
+ * @brief Searchs for siblings that are the same and merges the nodes 
+ */
 void
 ewl_text_tree_condense(Ewl_Text_Tree *tree)
 {
@@ -4794,6 +4996,12 @@ ewl_text_tree_condense(Ewl_Text_Tree *tree)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param tree: The tree to work with
+ * @param indent: The indent string to use
+ * @return Returns no value
+ * @brief Dumps the tree out to the console.
+ */
 void
 ewl_text_tree_dump(Ewl_Text_Tree *tree, const char *indent)
 {
