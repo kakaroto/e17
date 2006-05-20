@@ -11,7 +11,6 @@
 # endif
 #endif
 #include "e_mod_main.h"
-#include "config.h"
 
 typedef struct _Instance Instance;
 typedef struct _Screenshot Screenshot;
@@ -22,6 +21,7 @@ struct _Instance
    Evas_Object *ss_obj;
    Screenshot *ss;
    Config_Item *ci;
+   Ecore_Exe *exe;
    const char *id;
 };
 
@@ -215,23 +215,24 @@ _ss_config_item_get(const char *id)
    ci = E_NEW(Config_Item, 1);
    ci->id = evas_stringshare_add(id);
    ci->delay_time = 60.0;
-#ifdef HAVE_IMPORT
- #ifdef HAVE_SCROT
-   ci->use_import = 0;
-   ci->use_scrot = 1;
- #else
-   ci->use_import = 1;
-   ci->use_scrot = 0;
- #endif
-#else
-   ci->use_import = 0;
- #ifdef HAVE_SCROT
-   ci->use_scrot = 1;
- #else
-   ci->use_scrot = 0;
- #endif
-#endif
-   
+   if (ecore_file_app_installed("import")) 
+     {
+	if (ecore_file_app_installed("scrot")) 
+	  {
+	     ci->use_import = 0;
+	     ci->use_scrot = 1;
+	  }
+	else 
+	  {
+	     ci->use_import = 1;
+	     ci->use_scrot = 0;
+	  }
+     }
+   else if (ecore_file_app_installed("scrot")) 
+     {
+	ci->use_import = 0;
+	ci->use_scrot = 1;
+     }
    ci->location = evas_stringshare_add(e_user_homedir_get());
    ci->filename = evas_stringshare_add("screenshot");
    ci->import.use_img_border = 1;
@@ -298,22 +299,24 @@ e_modapi_init(E_Module *m)
 	
 	ci->id = evas_stringshare_add("0");
 	ci->delay_time = 60.0;
-#ifdef HAVE_IMPORT
- #ifdef HAVE_SCROT
-   ci->use_import = 0;
-   ci->use_scrot = 1;
- #else
-   ci->use_import = 1;
-   ci->use_scrot = 0;
- #endif
-#else
-   ci->use_import = 0;
- #ifdef HAVE_SCROT
-   ci->use_scrot = 1;
- #else
-   ci->use_scrot = 0;
- #endif
-#endif
+	if (ecore_file_app_installed("import")) 
+	  {
+	     if (ecore_file_app_installed("scrot")) 
+	       {
+		  ci->use_import = 0;
+		  ci->use_scrot = 1;
+	       }
+	     else 
+	       {
+		  ci->use_import = 1;
+		  ci->use_scrot = 0;
+	       }
+	  }
+	else if (ecore_file_app_installed("scrot")) 
+	  {
+	     ci->use_import = 0;
+	     ci->use_scrot = 1;
+	  }
 	ci->location = evas_stringshare_add(e_user_homedir_get());
 	ci->filename = evas_stringshare_add("screenshot");
 	ci->import.use_img_border = 1;
@@ -348,6 +351,7 @@ e_modapi_shutdown(E_Module *m)
 	e_object_del(E_OBJECT(ss_config->menu));
 	ss_config->menu = NULL;
      }
+
    if (ss_config->exe_exit_handler)
      ecore_event_handler_del(ss_config->exe_exit_handler);
    
@@ -359,7 +363,7 @@ e_modapi_shutdown(E_Module *m)
 	if (ci->id) evas_stringshare_del(ci->id);
 	if (ci->location) evas_stringshare_del(ci->location);
 	if (ci->filename) evas_stringshare_del(ci->filename);
-	ss_config->items = evas_list_remove(ss_config->items, ss_config->items);
+	ss_config->items = evas_list_remove_list(ss_config->items, ss_config->items);
 	free(ci);
      }
    free(ss_config);
@@ -434,7 +438,6 @@ _ss_free(Screenshot *ss)
 static void 
 _ss_handle_mouse_down(Instance *inst) 
 {
-   Ecore_Exe *x;
    Edje_Message_Int_Set *msg;
    char buf[1024];
    char *cmd, *opt, *f;
@@ -468,8 +471,8 @@ _ss_handle_mouse_down(Instance *inst)
    ss_config->exe_exit_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
 							 _ss_exe_cb_exit, NULL);
 
-   x = ecore_exe_run(buf, inst);
-
+   inst->exe = ecore_exe_run(buf, inst);
+   
    if (inst->ci->delay_time > 0)
      {
 	msg = malloc(sizeof(Edje_Message_Int_Set) + 1 * sizeof(int));
@@ -613,6 +616,8 @@ _ss_exe_cb_exit(void *data, int type, void *event)
 
    inst = ecore_exe_data_get(x);
    x = NULL;
+   inst->exe = NULL;
+
    if (ss_config->exe_exit_handler)
      ecore_event_handler_del(ss_config->exe_exit_handler);
    return 0;
