@@ -53,8 +53,8 @@ __imlib_GrabXImageToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
    else
       iny = oy;
    /* go thru the XImage and convert */
-   if (xim->bits_per_pixel == 32)
-      depth = 32;
+   if ((depth == 24) && (xim->bits_per_pixel == 32))
+      depth = 25;	/* fake depth meaning 24 bit in 32 bpp ximage */
    /* data needs swapping */
 #define SWAP32(x) (x) = \
    ((((int)(x) & 0x000000ff ) << 24) |\
@@ -96,6 +96,7 @@ __imlib_GrabXImageToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
 		      }
 		 }
 	     case 24:
+	     case 25:
 	     case 32:
 	       for (y = 0; y < h; y++)
 		 {
@@ -374,7 +375,7 @@ __imlib_GrabXImageToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
                  }
             }
           break;
-       case 32:
+       case 25:
           if (bgr)
             {
                if (mxim)
@@ -444,6 +445,74 @@ __imlib_GrabXImageToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
                            {
                               *ptr++ = 0xff000000 | ((*src) & 0x00ffffff);
                               src++;
+                           }
+                      }
+                 }
+            }
+          break;
+       case 32:
+          if (bgr)
+            {
+               if (mxim)
+                 {
+                    for (y = 0; y < h; y++)
+                      {
+                         src =
+                             (DATA32 *) (xim->data + (xim->bytes_per_line * y));
+                         ptr = data + ((y + iny) * ow) + inx;
+                         for (x = 0; x < w; x++)
+                           {
+                              pixel = SWAP32(*src);
+                              if (!XGetPixel(mxim, x, y))
+                                 pixel &= 0x00ffffff;
+                              *ptr++ = pixel;
+                              src++;
+                           }
+                      }
+                 }
+               else
+                 {
+                    for (y = 0; y < h; y++)
+                      {
+                         src =
+                             (DATA32 *) (xim->data + (xim->bytes_per_line * y));
+                         ptr = data + ((y + iny) * ow) + inx;
+                         for (x = 0; x < w; x++)
+                           {
+                              *ptr++ = SWAP32(*src);
+                              src++;
+                           }
+                      }
+                 }
+            }
+          else
+            {
+               if (mxim)
+                 {
+                    for (y = 0; y < h; y++)
+                      {
+                         src =
+                             (DATA32 *) (xim->data + (xim->bytes_per_line * y));
+                         ptr = data + ((y + iny) * ow) + inx;
+                         for (x = 0; x < w; x++)
+                           {
+                              pixel = *src++;
+                              if (!XGetPixel(mxim, x, y))
+                                 pixel &= 0x00ffffff;
+                              *ptr++ = pixel;
+                           }
+                      }
+                 }
+               else
+                 {
+                    for (y = 0; y < h; y++)
+                      {
+                         src =
+                             (DATA32 *) (xim->data + (xim->bytes_per_line * y));
+                         ptr = data + ((y + iny) * ow) + inx;
+                         for (x = 0; x < w; x++)
+                           {
+                              *ptr++ = *src++;
                            }
                       }
                  }
@@ -788,8 +857,14 @@ __imlib_GrabDrawableToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
    if (mxim)
       XDestroyImage(mxim);
 
-   if ((pdomask) && (!m) && (xatt.depth != 32))
-      *pdomask = 0;
+   if (pdomask)
+     {
+        /* Set domask according to whether or not we have useful alpha data */
+        if (xatt.depth == 32)
+           *pdomask = 1;
+        else if (!m)
+           *pdomask = 0;
+     }
 
    return 1;
 }
