@@ -30,7 +30,7 @@
  * char *ewl_text_text_get(Ewl_Text *t);
  * int ewl_text_length_get(Ewl_Text *t);
  * void ewl_text_clear(Ewl_Text *t);
- * void ewl_text_delete(Ewl_Text *t, unsigned int len);
+ * void ewl_text_text_delete(Ewl_Text *t, unsigned int len);
  * @endcode
  *
  * The Ewl_Text widget allows you to perform style changes to the text in
