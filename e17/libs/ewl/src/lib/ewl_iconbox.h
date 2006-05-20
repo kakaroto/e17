@@ -156,7 +156,6 @@ Ecore_List	*ewl_iconbox_get_selection(Ewl_Iconbox *ib);
 void ewl_iconbox_dnd_drop_cb(Ewl_Widget *item, void *ev_data, void *user_data);
 void ewl_iconbox_dnd_position_cb(Ewl_Widget *item, void *ev_data, void *user_data);
 void ewl_iconbox_arrange_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_iconbox_expansion_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_iconbox_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_iconbox_mouse_up_cb(Ewl_Widget *w, void *ev_data, void *user_data);
