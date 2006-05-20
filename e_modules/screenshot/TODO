@@ -1,3 +1,11 @@
 TODO
-********************************************88
+********************************************
                       
+First in the config dialog you have two options: 
+	(i) Be so smart as win_must_die does, and 
+	(ii) be suitable for advanced users like everybody on this list. 
+
+If the first option is selected, then each scrapshot is saved in /tmp, or ~/tmp and the priview box is displayed with a thumbanailed scrapshot image, and two buttons "Close" and "Save As....". In the Advanced case, i'd leave the behaviour of the ss as is.
+
+Add option for View With to open an image viewer after the shot is taken.
+
