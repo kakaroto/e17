@@ -475,7 +475,7 @@ main(int argc, char **argv)
                 m->dirtree = ewl_tree_new(1);
                 ewl_container_child_append(EWL_CONTAINER(m->images),
                                                                 m->dirtree);
-                ewl_object_maximum_size_set(EWL_OBJECT(m->dirtree), 200, 215);
+                ewl_object_maximum_size_set(EWL_OBJECT(m->dirtree), 200, 210);
                 ewl_tree_headers_visible_set(EWL_TREE(m->dirtree), 0);
                 ewl_tree_expandable_rows_set(EWL_TREE(m->dirtree), FALSE);
                 ewl_widget_show(m->dirtree);
@@ -490,8 +490,9 @@ main(int argc, char **argv)
                                                                 m->imagetree);
                 ewl_tree_headers_visible_set(EWL_TREE(m->imagetree), 0);
                 ewl_tree_expandable_rows_set(EWL_TREE(m->imagetree), FALSE);
-		ewl_object_fill_policy_set(EWL_OBJECT(m->imagetree), 
-				EWL_FLAG_FILL_VFILL | EWL_FLAG_FILL_VSHRINK);
+		ewl_object_maximum_size_set(EWL_OBJECT(m->imagetree), 200, 240);
+		//ewl_object_fill_policy_set(EWL_OBJECT(m->imagetree), 
+		//		EWL_FLAG_FILL_VFILL | EWL_FLAG_FILL_VSHRINK);
                 ewl_widget_show(m->imagetree);
 
 
