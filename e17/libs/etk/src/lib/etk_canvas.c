@@ -47,7 +47,7 @@ Etk_Widget *etk_canvas_new()
 }
 
 /**
- * @brief Adds an evas object to the canvas. The object will be move to the top left corner of the canvas,
+ * @brief Adds an evas object to the canvas. The object will be moved to the top left corner of the canvas,
  * and will be resized to 32x32. You can then use any function of evas to control the object
  * @param canvas a canvas
  * @param object the object to add
@@ -76,7 +76,7 @@ Etk_Bool etk_canvas_object_add(Etk_Canvas *canvas, Evas_Object *object)
 }
 
 /**
- * @brief Removes an evas object from the canvas. The evas object will be also hidden
+ * @brief Removes an evas object from the canvas. The evas object will also be automatically hidden
  * @param canvas a canvas
  * @param object the evas object to remove
  */

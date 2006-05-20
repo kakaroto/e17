@@ -49,6 +49,7 @@ struct Etk_Colorpicker
    Evas_Object *sp_vcursor;
    int sp_res;
    float sp_xpos, sp_ypos;
+   Etk_Colorpicker_Mode sp_xcomponent, sp_ycomponent;
    Etk_Bool sp_dragging;
    Etk_Bool sp_image_needs_update;
    Etk_Bool sp_cursor_needs_update;
@@ -64,14 +65,18 @@ struct Etk_Colorpicker
    Etk_Bool vp_cursor_needs_update;
    
    /* Sliders */
-   int sliders_res;
-   Evas_Object *sliders_image[6];
    Etk_Widget *sliders[6];
+   Evas_Object *sliders_image[6];
+   float sliders_max_value[6];
+   int sliders_res;
    Etk_Bool sliders_need_update;
    
    Etk_Widget *table;
    Etk_Widget *radios[6];
    Etk_Widget *value_labels[6];
+   
+   Etk_Bool ignore_value_changed;
+   Etk_Bool emit_signal;
    
    Etk_Colorpicker_Mode mode;
    Etk_Color current_color;

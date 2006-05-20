@@ -182,12 +182,14 @@ static void _etk_slider_cursor_dragged_cb(void *data, Evas_Object *obj, const ch
       ETK_SLIDER(range)->dragging = ETK_TRUE;
    else if (strcmp(emission, "drag,stop") == 0)
       ETK_SLIDER(range)->dragging = ETK_FALSE;
-   
-   if (ETK_IS_HSLIDER(range))
-      edje_object_part_drag_value_get(obj, "drag", &v, NULL);
-   else
-      edje_object_part_drag_value_get(obj, "drag", NULL, &v);
-   etk_range_value_set(range, range->lower + v * (range->upper - range->lower));
+   else if (strcmp(emission, "drag") == 0)
+   {
+      if (ETK_IS_HSLIDER(range))
+         edje_object_part_drag_value_get(obj, "drag", &v, NULL);
+      else
+         edje_object_part_drag_value_get(obj, "drag", NULL, &v);
+      etk_range_value_set(range, range->lower + v * (range->upper - range->lower));
+   }
 }
 
 /* Default handler for the "value_changed" signal */

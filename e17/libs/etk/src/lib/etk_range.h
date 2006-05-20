@@ -3,7 +3,6 @@
 #define _ETK_RANGE_H_
 
 #include "etk_widget.h"
-#include <Ecore_Job.h>
 #include "etk_types.h"
 
 /**
@@ -36,7 +35,6 @@ struct _Etk_Range
    double page_increment;
    double page_size;
 
-   Ecore_Job *change_value_job;
    void (*value_changed)(Etk_Range *range, double value);
 };
 
