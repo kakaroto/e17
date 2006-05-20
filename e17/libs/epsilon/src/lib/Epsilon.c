@@ -640,7 +640,8 @@ epsilon_generate (Epsilon * e)
    if (  (plugin = ecore_hash_get(plugins_mime, mime)) ) {
 	tmp = (*plugin->epsilon_generate_thumb)(e);
    } else {
-	tmp = imlib_load_image_immediately_without_cache (e->src);
+        if(!tmp)
+	    tmp = imlib_load_image_immediately_without_cache (e->src);
 	imlib_context_set_image (tmp);
 	snprintf (format, sizeof(format), "image/%s", imlib_image_format ());
       }
