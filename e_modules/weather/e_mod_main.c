@@ -379,7 +379,6 @@ static Weather *
 _weather_new(Evas *evas) 
 {
    Weather *w;
-   Evas_Object *o;
    char buf[4096];
    
    w = E_NEW(Weather, 1);
