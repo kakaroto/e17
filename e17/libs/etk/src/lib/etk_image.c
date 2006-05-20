@@ -523,6 +523,11 @@ static void _etk_image_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
          edje_object_size_min_get(image->image_object, &image_w, &image_h);
       else
          evas_object_image_size_get(image->image_object, &image_w, &image_h);
+      if (image_w <= 0 || image_h <= 0)
+      {
+         image_w = 1;
+         image_h = 1;
+      }
       
       aspect_ratio = (double)image_w / (double)image_h;
       if (geometry.h * aspect_ratio > geometry.w)
