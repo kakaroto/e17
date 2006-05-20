@@ -35,7 +35,6 @@ group {
             mouse_events, 0;
             description {
                 state, "default" 0.0;
-                max, 10 10;
                 min, 10 10;
                 image {
                     normal, "e17_spinner_top_arrow.png";
@@ -85,7 +84,6 @@ group {
             mouse_events, 0;
             description {
                 state, "default" 0.0;
-                max, 10 10;
                 min, 10 10;
                 image {
                     normal, "e17_spinner_bottom_arrow.png";
