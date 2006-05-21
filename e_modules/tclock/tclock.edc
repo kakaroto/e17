@@ -20,7 +20,7 @@ collections
 	       {
 		  name: "tclock_time";
 		  type: TEXT;
-		  effect: SOFT_SHADOW;
+		  effect: OUTLINE_SOFT_SHADOW;
 		  mouse_events: 1;
 		  description
 		    {
@@ -64,7 +64,7 @@ collections
 	       {
 		  name: "tclock_date";
 		  type: TEXT;
-		  effect: SOFT_SHADOW;
+		  effect: OUTLINE_SOFT_SHADOW;
 		  mouse_events: 1;		  
 		  description
 		    {
