@@ -48,6 +48,7 @@ struct _eobj
    unsigned            noredir:1;	/* Do not redirect */
    unsigned            shadow:1;	/* Enable shadows */
    unsigned            fade:1;
+   unsigned            argb:1;
 #if USE_COMPOSITE
    unsigned int        opacity;
    void               *cmhook;

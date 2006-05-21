@@ -213,7 +213,7 @@ SetupX(const char *dstr)
    VRoot.depth = RRoot.depth;
    VRoot.cmap = RRoot.cmap;
 
-   RRoot.win = ERegisterWindow(RRoot.xwin);
+   RRoot.win = ERegisterWindow(RRoot.xwin, NULL);
 
    if (Mode.wm.window)
      {
@@ -231,7 +231,7 @@ SetupX(const char *dstr)
 				   CWOverrideRedirect | CWSaveUnder |
 				   CWBackingStore | CWColormap | CWBackPixel |
 				   CWBorderPixel, &attr);
-	VRoot.win = ERegisterWindow(VRoot.xwin);
+	VRoot.win = ERegisterWindow(VRoot.xwin, NULL);
 
 	/* Enable eesh and edox to pix up the virtual root */
 	Esnprintf(buf, sizeof(buf), "%#lx", VRoot.xwin);

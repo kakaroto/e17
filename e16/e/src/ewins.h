@@ -74,7 +74,6 @@ struct _ewin
       int                 grav;
       Colormap            cmap;
       long                event_mask;
-      unsigned            argb:1;
    } client;
 
    struct

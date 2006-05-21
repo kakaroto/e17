@@ -58,7 +58,12 @@ ClientCreate(Window xwin)
 
    Esnprintf(st, sizeof(st), "%8x", (int)xwin);
    c->name = Estrdup(st);
-   c->win = ERegisterWindow(xwin);
+   c->win = ERegisterWindow(xwin, NULL);
+   if (!c->win)
+     {
+	Efree(c);
+	return NULL;
+     }
    EventCallbackRegister(c->win, 0, ClientHandleEvents, c);
    ESelectInput(c->win, StructureNotifyMask | SubstructureNotifyMask);
 

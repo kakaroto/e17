@@ -52,6 +52,7 @@ struct _xwin
    Window              xwin;
    Win                 parent;
    int                 x, y, w, h;
+   int                 bw;
    char                mapped;
    char                in_use;
    signed char         do_del;
@@ -77,6 +78,18 @@ Window
 WinGetXwin(const Win win)
 {
    return win->xwin;
+}
+
+int
+WinGetBorderWidth(const Win win)
+{
+   return win->bw;
+}
+
+int
+WinGetDepth(const Win win)
+{
+   return win->depth;
 }
 
 Visual             *
@@ -623,7 +636,7 @@ EDestroyWin(Win win)
 }
 
 Win
-ERegisterWindow(Window xwin)
+ERegisterWindow(Window xwin, XWindowAttributes * pxwa)
 {
    EXID               *xid;
    XWindowAttributes   xwa;
@@ -632,12 +645,18 @@ ERegisterWindow(Window xwin)
    if (xid)
       goto done;
 
-   XGetWindowAttributes(disp, xwin, &xwa);
+   if (!pxwa)
+     {
+	pxwa = &xwa;
+	if (!XGetWindowAttributes(disp, xwin, pxwa))
+	   goto done;
+     }
+
 #if 0
    Eprintf("ERegisterWindow %#lx %d+%d %dx%d\n", win, x, y, w, h);
 #endif
-   xid = EXidSet(xwin, None, xwa.x, xwa.y, xwa.width, xwa.height, xwa.depth,
-		 xwa.visual, xwa.colormap);
+   xid = EXidSet(xwin, None, pxwa->x, pxwa->y, pxwa->width, pxwa->height,
+		 pxwa->depth, pxwa->visual, pxwa->colormap);
    xid->attached = 1;
 
  done:
@@ -817,6 +836,24 @@ EGetGeometry(Win win, Window * root_return, int *x, int *y,
       *root_return = VRoot.xwin;
 
    return 1;
+}
+
+void
+EGetWindowAttributes(Win win, XWindowAttributes * pxwa)
+{
+   EXID               *xid = win;
+
+   if (!xid)
+      return;
+
+   pxwa->x = xid->x;
+   pxwa->y = xid->y;
+   pxwa->width = xid->w;
+   pxwa->height = xid->h;
+   pxwa->border_width = xid->bw;
+   pxwa->depth = xid->depth;
+   pxwa->visual = xid->visual;
+   pxwa->colormap = xid->cmap;
 }
 
 void

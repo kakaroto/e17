@@ -2706,7 +2706,7 @@ IconboxObjSwinManage(Iconbox * ib, Window xwin)
 #if DEBUG_SYSTRAY
    Eprintf("IconboxObjSwinManage %#lx\n", xwin);
 #endif
-   win = ERegisterWindow(xwin);
+   win = ERegisterWindow(xwin, NULL);
    if (win == NoWin)
       return win;
 

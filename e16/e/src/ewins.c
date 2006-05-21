@@ -72,16 +72,9 @@ EwinEventsConfigure(EWin * ewin, int mode)
 }
 
 static EWin        *
-EwinCreate(Win win, Window xwin, int type)
+EwinCreate(int type)
 {
    EWin               *ewin;
-
-   if (!win)
-     {
-	win = ERegisterWindow(xwin);
-	if (!win)
-	   return NULL;
-     }
 
    ewin = Ecalloc(1, sizeof(EWin));
 
@@ -100,13 +93,6 @@ EwinCreate(Win win, Window xwin, int type)
    ewin->lw = -1;
    ewin->lh = -1;
    ewin->ll = -1;
-
-   ewin->client.win = win;
-   ewin->client.x = -1;
-   ewin->client.y = -1;
-   ewin->client.w = -1;
-   ewin->client.h = -1;
-   ewin->client.grav = NorthWestGravity;
 
    ewin->icccm.need_input = 1;
 
@@ -138,13 +124,20 @@ EwinCreate(Win win, Window xwin, int type)
 }
 
 static int
-EwinGetAttributes(EWin * ewin)
+EwinGetAttributes(EWin * ewin, Win win, Window xwin)
 {
    XWindowAttributes   xwa;
 
-   if (!XGetWindowAttributes(disp, _EwinGetClientXwin(ewin), &xwa))
-      return -1;
+   if (!win)
+     {
+	win = ERegisterWindow(xwin, NULL);
+	if (!win)
+	   return -1;
+     }
 
+   EGetWindowAttributes(win, &xwa);
+
+   ewin->client.win = win;
    ewin->client.x = ewin->lx = xwa.x;
    ewin->client.y = ewin->ly = xwa.y;
    ewin->client.w = ewin->lw = xwa.width;
@@ -152,7 +145,6 @@ EwinGetAttributes(EWin * ewin)
    ewin->client.bw = xwa.border_width;
    ewin->client.cmap = xwa.colormap;
    ewin->client.grav = NorthWestGravity;
-   ewin->client.argb = EVisualIsARGB(xwa.visual);
 
    if (EventDebug(EDBUG_TYPE_SNAPS))
       Eprintf("Snap get attr  %#lx: %4d+%4d %4dx%4d: %s\n",
@@ -199,16 +191,17 @@ EwinManage(EWin * ewin)
    if (ewin->state.docked)
       ewin->inh_wm.b.border = 1;
 
-   if (ewin->client.argb && Conf.argb_client_mode > 0)
+   if (EVisualIsARGB(WinGetVisual(_EwinGetClientWin(ewin))))
      {
-	if (!XGetWindowAttributes(disp, _EwinGetClientXwin(ewin), &win_attr))
-	   return;
+	ewin->o.argb = 1;
+
+	EGetWindowAttributes(_EwinGetClientWin(ewin), &win_attr);
 	frame =
 	   ECreateVisualWindow(VRoot.win, ewin->client.x, ewin->client.y,
 			       ewin->client.w, ewin->client.h, 1, &win_attr);
 	ewin->win_container =
-	   ECreateVisualWindow(frame, ewin->client.x, ewin->client.y,
-			       ewin->client.w, ewin->client.h, 0, &win_attr);
+	   ECreateVisualWindow(frame, 0, 0, ewin->client.w, ewin->client.h,
+			       0, &win_attr);
 
 	if (Conf.argb_client_mode == 1)
 	   ewin->inh_wm.b.border = 1;
@@ -219,8 +212,7 @@ EwinManage(EWin * ewin)
 	   ECreateWindow(VRoot.win, ewin->client.x, ewin->client.y,
 			 ewin->client.w, ewin->client.h, 1);
 	ewin->win_container =
-	   ECreateWindow(frame, ewin->client.x, ewin->client.y,
-			 ewin->client.w, ewin->client.h, 0);
+	   ECreateWindow(frame, 0, 0, ewin->client.w, ewin->client.h, 0);
      }
 
    EoInit(ewin, EOBJ_TYPE_EWIN, frame, ewin->client.x, ewin->client.y,
@@ -680,7 +672,7 @@ EwinStateUpdate(EWin * ewin)
 }
 
 void
-AddToFamily(EWin * ewin, Window win)
+AddToFamily(EWin * ewin, Window xwin)
 {
    EWin               *ewin2;
    EWin              **lst;
@@ -693,13 +685,13 @@ AddToFamily(EWin * ewin, Window win)
    if (ewin)
       EwinCleanup(ewin);
    else
-      ewin = EwinCreate(0, win, EWIN_TYPE_NORMAL);
+      ewin = EwinCreate(EWIN_TYPE_NORMAL);
    if (!ewin)
       goto done;
 
-   if (EwinGetAttributes(ewin))
+   if (EwinGetAttributes(ewin, NULL, xwin))
      {
-	Eprintf("Window is gone %#lx\n", win);
+	Eprintf("Window is gone %#lx\n", xwin);
 	/* We got here by MapRequest. DestroyNotify should follow. */
 	goto done;
      }
@@ -952,11 +944,11 @@ AddInternalToFamily(Win win, const char *bname, int type, void *ptr,
 
    EGrabServer();
 
-   ewin = EwinCreate(win, None, type);
+   ewin = EwinCreate(type);
    if (!ewin)
       goto done;
 
-   EwinGetAttributes(ewin);
+   EwinGetAttributes(ewin, win, None);
    EwinGetHints(ewin);
    EwinManage(ewin);
 

@@ -86,13 +86,8 @@ typedef struct
    EObj               *next;	/* Paint order */
    EObj               *prev;	/* Paint order */
    Pixmap              pixmap;
-   struct
-   {
-      int                 depth;	/* FIXME - Remove? */
-      Visual             *visual;	/* FIXME - Remove? */
-      int                 border_width;
-   } a;
    int                 rcx, rcy, rcw, rch;
+   int                 bw;
    int                 mode;
    unsigned            damaged:1;
    unsigned            fading:1;
@@ -500,8 +495,8 @@ ECompMgrMoveResizeFix(EObj * eo, int x, int y, int w, int h)
      }
 
    /* Resizing - grab old contents */
-   pict =
-      EPictureCreateBuffer(Xwin(eo->win), wo, ho, cw->a.depth, cw->a.visual);
+   pict = EPictureCreateBuffer(EobjGetXwin(eo), wo, ho, WinGetDepth(eo->win),
+			       WinGetVisual(eo->win));
    XRenderComposite(disp, PictOpSrc, cw->picture, None, pict, 0, 0, 0, 0, 0, 0,
 		    wo, ho);
 
@@ -961,7 +956,7 @@ win_extents(EObj * eo)
    unsigned int        bw;
 
    /* FIXME - Get this right */
-   bw = cw->a.border_width;
+   bw = cw->bw;
    if (Mode_compmgr.use_pixmap)
      {
 	cw->rcx = eo->x;
@@ -1095,8 +1090,8 @@ win_shape(EObj * eo)
      }
 
    /* translate this */
-   x = eo->x + cw->a.border_width;
-   y = eo->y + cw->a.border_width;
+   x = eo->x + cw->bw;
+   y = eo->y + cw->bw;
    ERegionTranslate(border, x, y);
 
    D2printf("shape %#lx: %d %d\n", EobjGetXwin(eo), x, y);
@@ -1211,7 +1206,7 @@ ECompMgrWinSetOpacity(EObj * eo, unsigned int opacity)
 
    if (eo->noredir)
       mode = WINDOW_UNREDIR;
-   else if (EVisualIsARGB(cw->a.visual))
+   else if (eo->argb)
       mode = WINDOW_ARGB;
    else if (cw->opacity != OPAQUE)
       mode = WINDOW_TRANS;
@@ -1434,7 +1429,7 @@ ECompMgrWinSetPicts(EObj * eo)
 	if (draw == None)
 	   return;
 
-	pictfmt = XRenderFindVisualFormat(disp, cw->a.visual);
+	pictfmt = XRenderFindVisualFormat(disp, WinGetVisual(eo->win));
 	pa.subwindow_mode = IncludeInferiors;
 	cw->picture = XRenderCreatePicture(disp, draw,
 					   pictfmt, CPSubwindowMode, &pa);
@@ -1456,15 +1451,11 @@ void
 ECompMgrWinNew(EObj * eo)
 {
    ECmWinInfo         *cw;
-   XWindowAttributes   attr;
 
    if (!Mode_compmgr.active)	/* FIXME - Here? */
       return;
 
    if (eo->inputonly || eo->win == VRoot.win)
-      return;
-
-   if (!XGetWindowAttributes(disp, EobjGetXwin(eo), &attr))
       return;
 
    cw = Ecalloc(1, sizeof(ECmWinInfo));
@@ -1475,11 +1466,7 @@ ECompMgrWinNew(EObj * eo)
 
    eo->cmhook = cw;
 
-   cw->damaged = 0;
-
-   cw->a.depth = attr.depth;
-   cw->a.visual = attr.visual;
-   cw->a.border_width = attr.border_width;
+   cw->bw = WinGetBorderWidth(eo->win);
 
    if (eo->type == EOBJ_TYPE_EXT &&
        Conf_compmgr.override_redirect.mode == ECM_OR_UNREDIRECTED)
@@ -1596,13 +1583,13 @@ ECompMgrWinConfigure(EObj * eo, XEvent * ev)
 
    change_xy = eo->x != x || eo->y != y;
    change_wh = eo->w != w || eo->h != h;
-   change_bw = cw->a.border_width != bw;
+   change_bw = cw->bw != bw;
 
    eo->x = x;
    eo->y = y;
    eo->w = w;
    eo->h = h;
-   cw->a.border_width = bw;
+   cw->bw = bw;
 
    ECompMgrWinMoveResize(eo, change_xy, change_wh, change_bw);
 }
@@ -1739,9 +1726,7 @@ ECompMgrWinDamage(EObj * eo, XEvent * ev __UNUSED__)
      {
 	parts = ERegionCreate();
 	XDamageSubtract(dpy, cw->damage, None, parts);
-	ERegionTranslate(parts,
-			 eo->x + cw->a.border_width,
-			 eo->y + cw->a.border_width);
+	ERegionTranslate(parts, eo->x + cw->bw, eo->y + cw->bw);
 #if 0				/* ENABLE_SHADOWS - FIXME - This is not right, remove? */
 	if (Mode_compmgr.shadow_mode == ECM_SHADOWS_SHARP)
 	  {

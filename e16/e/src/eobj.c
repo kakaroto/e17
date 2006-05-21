@@ -299,11 +299,13 @@ EobjRegister(Window xwin, int type)
    if (type == EOBJ_TYPE_EXT && !attr.override_redirect)
       return NULL;
 
+   win = ERegisterWindow(xwin, &attr);
+   if (!win)
+      return NULL;
+
    eo = Ecalloc(1, sizeof(EObj));
    if (!eo)
       return eo;
-
-   win = ERegisterWindow(xwin);
 
    if (attr.class == InputOnly)
       eo->inputonly = 1;

@@ -32,6 +32,8 @@ Win                 ELookupXwin(Window xwin);
 
 #define Xwin(win) WinGetXwin(win)
 Window              WinGetXwin(const Win win);
+int                 WinGetBorderWidth(const Win win);
+int                 WinGetDepth(const Win win);
 Visual             *WinGetVisual(const Win win);
 Colormap            WinGetCmap(const Win win);
 
@@ -48,7 +50,7 @@ void                EFlush(void);
 void                ESync(void);
 Time                EGetTimestamp(void);
 
-Win                 ERegisterWindow(Window xwin);
+Win                 ERegisterWindow(Window xwin, XWindowAttributes * pxwa);
 void                EUnregisterWindow(Win win);
 void                EUnregisterXwin(Window xwin);
 typedef void        (EventCallbackFunc) (Win win, XEvent * ev, void *prm);
@@ -81,6 +83,7 @@ void                EReparentWindow(Win win, Win parent, int x, int y);
 int                 EGetGeometry(Win win, Window * root_return,
 				 int *x, int *y, int *w, int *h, int *bw,
 				 int *depth);
+void                EGetWindowAttributes(Win win, XWindowAttributes * pxwa);
 void                EConfigureWindow(Win win, unsigned int mask,
 				     XWindowChanges * wc);
 void                ESetWindowBackgroundPixmap(Win win, Pixmap pmap);
@@ -95,8 +98,6 @@ int                 EDrawableCheck(Drawable draw, int grab);
 #define ESelectInput(win, event_mask) \
 	XSelectInput(disp, Xwin(win), event_mask)
 
-#define EGetWindowAttributes(win, xwa) \
-	XGetWindowAttributes(disp, Xwin(win), xwa)
 #define EChangeWindowAttributes(win, mask, attr) \
 	XChangeWindowAttributes(disp, Xwin(win), mask, attr)
 #define ESetWindowBorderWidth(win, bw) \
@@ -139,6 +140,8 @@ Window              EXWindowGetParent(Window xwin);
 int                 EXGetGeometry(Window xwin, Window * root_return,
 				  int *x, int *y, int *w, int *h, int *bw,
 				  int *depth);
+#define EXGetWindowAttributes(win, xwa) \
+	XGetWindowAttributes(disp, Xwin(win), xwa)
 
 void                EXCopyArea(Drawable src, Drawable dst, int sx, int sy,
 			       unsigned int w, unsigned int h, int dx, int dy);
