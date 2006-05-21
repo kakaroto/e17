@@ -3896,3 +3896,17 @@ Fix several bugs with maximizing windows.
 Fix bug when reparenting to nested E.
 Fix bug potentially causing eternal loop while sliding.
 
+
+-------------------------------------------------------------------------------
+
+Mon May 22 00:08:21 CEST 2006
+(Kim)
+
+--- 0.16.8.2 0.04 ---
+Change internal window handling API. Should make things slightly faster.
+Fix a number of window placement bugs.
+Attempt to fix occasional crashing of clients with systray windows on e16 exit.
+Fix potential configuration file corruption when running multihead.
+Faster TT font drawing. 
+Fix border rendering for ARGB clients (requires imlib2 from CVS).
+
