@@ -22,7 +22,6 @@ struct _Instance
    Screenshot *ss;
    Config_Item *ci;
    Ecore_Exe *exe;
-   const char *id;
 };
 
 struct _Screenshot
@@ -82,7 +81,6 @@ _gc_init(E_Gadcon *gc, char *name, char *id, char *style)
    
    ci = _ss_config_item_get(id);
    if (!ci->id) ci->id = evas_stringshare_add(id);
-   inst->id = evas_stringshare_add(ci->id);
    inst->ci = ci;
    
    ss = _ss_new(gc->evas);
@@ -108,7 +106,6 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    Instance *inst;
    
    inst = gcc->data;
-   evas_stringshare_del(inst->id);
    ss_config->instances = evas_list_remove(ss_config->instances, inst);
    _ss_free(inst->ss);
    free(inst);
