@@ -259,6 +259,9 @@ EImageTile(EImage * im, EImage * tile, int blend, int tw, int th,
    int                 x, y, tx, ty, ww, hh;
    int                 sw, sh;
 
+   if (tw <= 0 || th <= 0)
+      return;
+
    imlib_context_set_image(tile);
    sw = imlib_image_get_width();
    sh = imlib_image_get_height();

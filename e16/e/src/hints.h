@@ -105,7 +105,6 @@ void                EHintsSetInfoOnAll(void);
 void                ICCCM_Init(void);
 void                ICCCM_ProcessClientMessage(XClientMessageEvent * event);
 void                ICCCM_GetTitle(EWin * ewin, Atom atom_change);
-void                ICCCM_GetColormap(EWin * ewin);
 void                ICCCM_Delete(const EWin * ewin);
 void                ICCCM_Save(const EWin * ewin);
 void                ICCCM_Iconify(const EWin * ewin);

@@ -87,7 +87,7 @@ void                EGetWindowAttributes(Win win, XWindowAttributes * pxwa);
 void                EConfigureWindow(Win win, unsigned int mask,
 				     XWindowChanges * wc);
 void                ESetWindowBackgroundPixmap(Win win, Pixmap pmap);
-void                ESetWindowBackground(Win win, int col);
+void                ESetWindowBackground(Win win, unsigned int col);
 int                 ETranslateCoordinates(Win src_w, Win dst_w,
 					  int src_x, int src_y,
 					  int *dest_x_return,

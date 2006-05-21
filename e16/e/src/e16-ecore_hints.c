@@ -75,8 +75,6 @@ ecore_x_icccm_state_set_withdrawn(Ecore_X_Window win)
 
 #else /* USE_ECORE_X */
 
-extern Display     *disp;
-
 /*
  * General stuff
  */

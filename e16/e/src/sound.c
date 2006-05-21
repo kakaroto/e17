@@ -65,7 +65,7 @@ static struct
 
 static int          sound_fd = -1;
 
-Ecore_List         *sound_list = NULL;
+static Ecore_List  *sound_list = NULL;
 
 #ifdef HAVE_LIBESD
 static Sample      *

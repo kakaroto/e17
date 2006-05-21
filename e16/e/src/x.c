@@ -64,7 +64,7 @@ struct _xwin
    int                 depth;
    Colormap            cmap;
    Pixmap              bgpmap;
-   int                 bgcol;
+   unsigned int        bgcol;
 };
 
 typedef struct _xwin EXID;	/* FIXME -  Remove */
@@ -110,7 +110,7 @@ EXidCreate(void)
    EXID               *xid;
 
    xid = Ecalloc(1, sizeof(EXID));
-   xid->bgcol = -1;
+   xid->bgcol = 0xffffffff;
 
    return xid;
 }
@@ -905,7 +905,7 @@ ESetWindowBackgroundPixmap(Win win, Pixmap pmap)
 }
 
 void
-ESetWindowBackground(Win win, int col)
+ESetWindowBackground(Win win, unsigned int col)
 {
    EXID               *xid = win;
 

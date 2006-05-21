@@ -92,7 +92,7 @@ ICCCM_GetTitle(EWin * ewin, Atom atom_change)
    EwinChange(ewin, EWIN_CHANGE_NAME);
 }
 
-void
+static void
 ICCCM_GetColormap(EWin * ewin)
 {
    XWindowAttributes   xwa;

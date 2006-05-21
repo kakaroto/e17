@@ -24,7 +24,6 @@
 #include "E.h"
 #include "eimage.h"
 #include "tclass.h"
-#include "xwin.h"
 #include <Imlib2.h>
 
 struct _efont
