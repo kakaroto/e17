@@ -186,7 +186,7 @@ _net_init(E_Module *m)
 
                        nf->conf->enabled = 1;
                        nf->conf->device = (char *)evas_stringshare_add("eth0");
-                       nf->conf->check_interval = 30;
+                       nf->conf->check_interval = 1;
                        nf->conf->show_text = 1;
                        nf->conf->show_graph = 1;
                        n->conf->faces = evas_list_append(n->conf->faces, nf->conf);

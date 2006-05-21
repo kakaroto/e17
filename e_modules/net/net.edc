@@ -34,7 +34,7 @@ collections
 		  description
 		    {
 		       state:    "default" 0.0;
-		       color: 255 255 255 200;
+		       color: 255 255 255 176;
 		       //aspect:   0.5 2.25;
 		       rel1
 			 {
@@ -107,7 +107,7 @@ collections
 	       {
 		  name:           "tx-text";
 		  type:           TEXT;
-		  effect:         SOFT_SHADOW;
+		  effect:         OUTLINE_SOFT_SHADOW;
 		  clip_to: "net_clip";
 		  mouse_events: 0;
 		  description
@@ -122,8 +122,9 @@ collections
 			 {
 			    relative: 1.0 0.0;
 			 }
-		       color: 51 181 69 255;
-		       color3: 0 0 0 100;
+		       color: 128 255 128 255;
+             color2: 0 0 0 192;
+		       color3: 128 128 128 192;
 		       text
 			 {
 			    text: "Tx";
@@ -167,7 +168,7 @@ collections
 	       {
 		  name:           "rx-text";
 		  type:           TEXT;
-		  effect:         SOFT_SHADOW;
+		  effect:         OUTLINE_SOFT_SHADOW;
 		  clip_to: "net_clip";
 		  mouse_events: 0;
 		  description
@@ -182,8 +183,9 @@ collections
 			 {
 			    relative: 1.0 1.0;
 			 }
-		       color: 255 0 0 255;
-		       color3: 0 0 0 100;
+		       color: 255 192 128 255;
+             color2: 0 0 0 216;
+		       color3: 128 128 128 192;
 		       text
 			 {
 			    text: "Rx";
