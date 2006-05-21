@@ -39,8 +39,8 @@ struct Ewl_Icon
 	char *label_text;	/**< The label text */
 
 	Ewl_Icon_Type type;		/**< The icons type */
-	unsigned int editable:1;	/**< Is the icon editable? */
-	unsigned int compress_label:1; /**< Should the label be compressed? */
+	unsigned char editable:1;	/**< Is the icon editable? */
+	unsigned char compress_label:1; /**< Should the label be compressed? */
 };
 
 Ewl_Widget	*ewl_icon_new(void);

@@ -40,6 +40,7 @@ typedef struct Ewl_Freebox Ewl_Freebox;
 struct Ewl_Freebox
 {
 	Ewl_Container container;  	    /**< Inherit from Ewl_Container */
+
 	Ewl_Freebox_Layout_Type layout;	    /**< The current layout type */
 	Ewl_Freebox_Comparator comparator;  /**< The item comparator */
 	Ewl_Orientation orientation;	    /**< The orientation of the box */
