@@ -36,8 +36,11 @@ struct Ewl_Icon
 	Ewl_Widget *menu;	/**< The icons menu */
 	Ewl_Widget *extended;	/**< The icons extended information */
 
-	Ewl_Icon_Type type;	/**< The icons type */
-	unsigned int editable;	/**< Is the icon editable? */
+	char *label_text;	/**< The label text */
+
+	Ewl_Icon_Type type;		/**< The icons type */
+	unsigned int editable:1;	/**< Is the icon editable? */
+	unsigned int compress_label:1; /**< Should the label be compressed? */
 };
 
 Ewl_Widget	*ewl_icon_new(void);
@@ -64,6 +67,15 @@ Ewl_Widget	*ewl_icon_menu_get(Ewl_Icon *icon);
 
 void		 ewl_icon_constrain_set(Ewl_Icon *icon, unsigned int val);
 unsigned int	 ewl_icon_constrain_get(Ewl_Icon *icon);
+
+void		 ewl_icon_label_compressed_set(Ewl_Icon *icon, 
+						unsigned int compress);
+unsigned int	 ewl_icon_label_compressed_get(Ewl_Icon *icon);
+
+/*
+ * Internal stuff
+ */
+void ewl_icon_cb_destroy(Ewl_Widget *w, void *ev, void *data);
 
 /**
  * @}

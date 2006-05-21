@@ -3,12 +3,17 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
+/* XXX may want to make this configurable, possibly per icon? */
+#define EWL_ICON_COMPRESS_SIZE 10
+
 static void ewl_icon_cb_label_mouse_down(Ewl_Widget *w, void *ev, 
 							void *data);
 static void ewl_icon_cb_entry_focus_out(Ewl_Widget *w, void *ev,
 							void *data);
 static void ewl_icon_cb_entry_value_changed(Ewl_Widget *w, void *ev,
 							void *data);
+
+static void ewl_icon_update_label(Ewl_Icon *icon);
 
 /**
  * @return Returns a new Ewl_Icon widget, or NULL on failure
@@ -54,6 +59,9 @@ ewl_icon_init(Ewl_Icon *icon)
 
 	ewl_widget_appearance_set(EWL_WIDGET(icon), EWL_ICON_TYPE);
 	ewl_widget_inherit(EWL_WIDGET(icon), EWL_ICON_TYPE);
+
+	ewl_callback_prepend(EWL_WIDGET(icon), EWL_CALLBACK_DESTROY,
+					ewl_icon_cb_destroy, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -215,7 +223,10 @@ ewl_icon_label_set(Ewl_Icon *icon, const char *label)
 	if (!label)
 	{
 		if (icon->label)
+		{
 			ewl_text_text_set(EWL_TEXT(icon->label), NULL);
+			IF_FREE(icon->label_text);
+		}
 
 		DRETURN(DLEVEL_STABLE);
 	}
@@ -248,7 +259,8 @@ ewl_icon_label_set(Ewl_Icon *icon, const char *label)
 								icon->label);
 	}
 
-	ewl_text_text_set(EWL_TEXT(icon->label), label);
+	icon->label_text = strdup(label);
+	ewl_icon_update_label(icon);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -268,8 +280,7 @@ ewl_icon_label_get(Ewl_Icon *icon)
 	if (!icon->label)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	DRETURN_PTR(ewl_text_text_get(EWL_TEXT(icon->label)),
-						DLEVEL_STABLE);
+	DRETURN_PTR(icon->label_text, DLEVEL_STABLE);
 }
 
 /**
@@ -393,6 +404,59 @@ ewl_icon_constrain_get(Ewl_Icon *icon)
 	DRETURN_INT(constrain, DLEVEL_STABLE);
 }
 
+/**
+ * @param icon: The icon to work with
+ * @param compress: The compression setting to use
+ * @return Returns no value
+ * @brief Sets the compressions setting for the icon to the given value
+ */
+void
+ewl_icon_label_compressed_set(Ewl_Icon *icon, unsigned int compress)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("icon", icon);
+	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
+
+	/* nothing to do if no compression change */
+	if (compress == icon->compress_label)
+		DRETURN(DLEVEL_STABLE);
+
+	icon->compress_label = !!compress;
+	ewl_icon_update_label(icon);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param icon: The ewl_icon to work with
+ * @return Returns the current compression setting for the icon
+ * @brief Retrieves the current compressiion setting for the icon
+ */
+unsigned int
+ewl_icon_label_compressed_get(Ewl_Icon *icon)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("icon", icon, FALSE);
+	DCHECK_TYPE_RET("icon", icon, EWL_ICON_TYPE, FALSE);
+
+	DRETURN_INT(icon->compress_label, DLEVEL_STABLE);
+}
+
+void
+ewl_icon_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
+{
+	Ewl_Icon *icon;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	icon = EWL_ICON(w);
+	IF_FREE(icon->label_text);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 static void
 ewl_icon_cb_label_mouse_down(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
 						void *data)
@@ -400,7 +464,7 @@ ewl_icon_cb_label_mouse_down(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	Ewl_Icon *icon;
 	Ewl_Widget *entry;
 	Ewl_Embed *emb;
-	int x, y, width, height;
+	int x, y;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("data", data);
@@ -412,14 +476,13 @@ ewl_icon_cb_label_mouse_down(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	ewl_widget_hide(icon->label);
 
 	entry = ewl_entry_new();
-	ewl_text_text_set(EWL_TEXT(entry),
-			ewl_text_text_get(EWL_TEXT(icon->label)));
+	ewl_text_text_set(EWL_TEXT(entry), icon->label_text);
 	ewl_container_child_append(EWL_CONTAINER(emb), entry);
 
 	/* put the entry in the same spot as the label */
 	ewl_object_current_geometry_get(EWL_OBJECT(icon->label), &x, &y, 
-							&width, &height);
-	ewl_object_geometry_request(EWL_OBJECT(entry), x, y, width, height);
+							NULL, NULL);
+	ewl_object_position_request(EWL_OBJECT(entry), x, y);
 	ewl_widget_show(entry);
 
 	ewl_callback_append(entry, EWL_CALLBACK_FOCUS_OUT,
@@ -470,6 +533,31 @@ ewl_icon_cb_entry_value_changed(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	ewl_widget_destroy(w);
 
 	ewl_callback_call(EWL_WIDGET(icon), EWL_CALLBACK_VALUE_CHANGED);
+}
+
+static void
+ewl_icon_update_label(Ewl_Icon *icon)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("icon", icon);
+	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
+
+	if (icon->compress_label && 
+			(strlen(icon->label_text) > EWL_ICON_COMPRESS_SIZE))
+	{
+		char *c;
+
+		c = malloc(sizeof(char) * EWL_ICON_COMPRESS_SIZE + 4);
+		strncpy(c, icon->label_text, EWL_ICON_COMPRESS_SIZE);
+		strcat(c + EWL_ICON_COMPRESS_SIZE, "...");
+
+		ewl_text_text_set(EWL_TEXT(icon->label), c);
+		FREE(c);
+	}
+	else
+		ewl_text_text_set(EWL_TEXT(icon->label), icon->label_text);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 
