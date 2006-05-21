@@ -465,7 +465,7 @@ _ss_handle_mouse_down(Instance *inst)
    else 
      {
 	e_module_dialog_show(D_("Enlightenment Screenshot Module"),
-			     D_("Please install either import or scrot for taking screenshots."));
+			     D_("Please install either ImageMagick or Scrot for taking screenshots."));
 	return;
      }
    
