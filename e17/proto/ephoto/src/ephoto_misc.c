@@ -613,3 +613,14 @@ get_images(const char *dir)
         }
 	return imagefiles;
 }
+void imagerealize_cb(Ewl_Widget *w, void *event, void *data)
+{
+	if ( argimage != NULL ) {
+		ewl_image_file_set(EWL_IMAGE(m->vimage),
+					argimage, NULL);
+	}
+	return;
+	w = NULL;
+	event = NULL;
+	data = NULL;
+}

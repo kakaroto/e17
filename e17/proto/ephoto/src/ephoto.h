@@ -47,6 +47,7 @@ void reseta_cb(Ewl_Widget *w, void *event, void *data);
 void create_list_cb(Ewl_Widget *w, void *event, void *data);
 void list_albums_cb(Ewl_Widget *w, void *event, void *data);
 void addi(Ewl_Widget *w, void *event, void *data);
+void imagerealize_cb(Ewl_Widget *w, void *event, void *data);
 Ecore_List *get_images(const char *dir);
 
 typedef struct _Main Main;
@@ -160,6 +161,7 @@ extern int arglload;
 extern char argload[PATH_MAX];
 extern char argwidth[PATH_MAX];
 extern char argheight[PATH_MAX];
+extern char argimage[PATH_MAX];
 extern char *audios;
 
 #endif

@@ -530,10 +530,6 @@ main(int argc, char **argv)
 		ewl_widget_show(m->viewscroll);
 
 		m->vimage = ewl_image_new();
-		if ( argimage != NULL ) {
-			ewl_image_file_set(EWL_IMAGE(m->vimage), 
-						argimage, NULL);
-		}
 		ewl_object_fill_policy_set(EWL_OBJECT(m->vimage), 
 						EWL_FLAG_FILL_SHRINK);
 		ewl_container_child_append(EWL_CONTAINER(m->viewscroll), 
@@ -859,6 +855,8 @@ main(int argc, char **argv)
                 /************LETS POPULATE THEM TREES******************/
                 ewl_callback_append(m->directory, EWL_CALLBACK_REALIZE, 
 						populatei_cb, NULL);
+		ewl_callback_append(m->vimage, EWL_CALLBACK_REALIZE,
+						imagerealize_cb, NULL);
                 /******************************************************/
 		if ( arglload == 1 ) {
 			load_cb(NULL, NULL, NULL);
