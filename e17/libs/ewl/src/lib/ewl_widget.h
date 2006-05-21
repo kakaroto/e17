@@ -130,6 +130,7 @@ struct Ewl_Widget
 	Ewl_Callback_Chain callbacks[EWL_CALLBACK_MAX]; /**< Callback chain array */
 	Ewl_Attach_List *attach;       /**< List of attachments on the widget */
 
+	Evas_Object     *smart_object; /**< Smart Object for the layer stuff */
 	Evas_Object     *fx_clip_box;  /**< Clipping rectangle of widget */
 
 	Evas_Object     *theme_object; /**< Appearance shown on canvas */
@@ -138,7 +139,9 @@ struct Ewl_Widget
 	const char      *bit_state;    /**< State of the appearance */
 	const char      *appearance;   /**< Key to lookup appearance in theme */
 	const char      *inheritance;  /**< Inheritance of path widget */
-	int              layer;        /**< Current layer of widget on canvas */
+	int              layer;        /**< the layer relative to the parent */
+	int              toplayered;   /**< Indicates if the widget should 
+						be on the top of the layer stack */ 
 
 	Ecore_Hash      *theme;        /**< Overriding theme settings */
 	Ewl_Pair_List    theme_text;   /**< Overriding text in theme */
@@ -192,9 +195,10 @@ void            ewl_widget_print(Ewl_Widget *w);
 void            ewl_widget_print_verbose(Ewl_Widget *w);
 void		ewl_widget_tree_print(Ewl_Widget *w);
 
-int             ewl_widget_layer_sum_get(Ewl_Widget *w);
-void            ewl_widget_layer_set(Ewl_Widget *w, int layer);
-int             ewl_widget_layer_get(Ewl_Widget *w);
+void            ewl_widget_layer_top_set(Ewl_Widget *w, int top);
+int             ewl_widget_layer_top_get(Ewl_Widget *w);
+void            ewl_widget_layer_priority_set(Ewl_Widget *w, int layer);
+int             ewl_widget_layer_priority_get(Ewl_Widget *w);
 
 void            ewl_widget_internal_set(Ewl_Widget *w, unsigned int val);
 unsigned int    ewl_widget_internal_is(Ewl_Widget *w);

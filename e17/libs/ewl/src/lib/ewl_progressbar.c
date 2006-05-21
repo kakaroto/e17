@@ -4,7 +4,6 @@
 #include "ewl_private.h"
 
 static void ewl_progressbar_child_handle(Ewl_Container *c, Ewl_Widget *w);
-#define EWL_PROGRESSBAR_TEXT_LAYER 100
 
 /**
  * @return Returns NULL on failure, or a pointer to the new progressbar on success.
@@ -71,7 +70,6 @@ ewl_progressbar_init(Ewl_Progressbar *p)
 	ewl_object_alignment_set(EWL_OBJECT(p->label), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_child_append(EWL_CONTAINER(p), p->label);
 	ewl_widget_show(p->label);
-	ewl_widget_layer_set(p->label, EWL_PROGRESSBAR_TEXT_LAYER);
 
 	p->value = 0.0;
 	p->range = 100.0;

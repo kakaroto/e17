@@ -489,8 +489,11 @@ ewl_media_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	}
 #endif
 
-	if (w->fx_clip_box)
+	evas_object_smart_member_add(m->video, w->smart_object);
+	if (w->fx_clip_box) {
 		evas_object_clip_set(m->video, w->fx_clip_box);
+		evas_object_stack_below(m->video, w->fx_clip_box);
+	}
 
 	/*
 	 * Now set the media and display it.
@@ -536,7 +539,6 @@ ewl_media_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	if (m->video) {
 		evas_object_move(m->video, CURRENT_X(w), CURRENT_Y(w));
 		evas_object_resize(m->video, CURRENT_W(w), CURRENT_H(w));
-		evas_object_layer_set(m->video, ewl_widget_layer_sum_get(w));
 		evas_object_smart_callback_add(m->video, "frame_decode",
 				ewl_media_update_timer_cb, m);
 	}

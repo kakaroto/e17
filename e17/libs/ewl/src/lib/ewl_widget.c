@@ -6,6 +6,7 @@
 static Ecore_Hash *ewl_widget_name_table = NULL;
 static int ewl_widget_dnd_drag_move_count = 0;
 static Ewl_Widget *ewl_widget_drag_widget= NULL;
+static Evas_Smart *widget_smart = NULL;
 
 static void ewl_widget_theme_padding_get(Ewl_Widget *w, int *l, int *r,
 						int *t, int *b);
@@ -13,6 +14,10 @@ static void ewl_widget_theme_insets_get(Ewl_Widget *w, int *l, int *r,
 						int *t, int *b);
 static void ewl_widget_appearance_part_text_apply(Ewl_Widget * w,
 						  const char *part, char *text);
+static void ewl_widget_layer_stack_add(Ewl_Widget *w);
+static void ewl_widget_layer_update(Ewl_Widget *w);
+static Evas_Object *ewl_widget_layer_neighbor_find_above(Ewl_Widget *w);
+static Evas_Object *ewl_widget_layer_neighbor_find_below(Ewl_Widget *w);
 
 static void ewl_widget_drag_move_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 static void ewl_widget_drag_up_cb(Ewl_Widget *w, void *ev_data, void *user_data);
@@ -72,7 +77,6 @@ ewl_widget_init(Ewl_Widget * w)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	ewl_object_state_remove(EWL_OBJECT(w), EWL_FLAGS_STATE_MASK);
-	LAYER(w) = 10;
 
 	/*
 	 * Add the common callbacks that all widgets must perform
@@ -1034,28 +1038,19 @@ ewl_widget_disable(Ewl_Widget * w)
  * @brief Set the relative layer to it's parent
  *
  * Changes the current layer of @a w relative to it's parent. The default
- * value is 5.
+ * value is 0.
  */
 void
-ewl_widget_layer_set(Ewl_Widget *w, int layer)
+ewl_widget_layer_priority_set(Ewl_Widget *w, int layer)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	/*
-	 * Modify the current layer of the objects if realized.
-	 */
-	if (REALIZED(w) && w->fx_clip_box) {
-		int temp;
-
-		temp = evas_object_layer_get(w->fx_clip_box) + layer - LAYER(w);
-		evas_object_layer_set(w->fx_clip_box, temp);
-		if (w->theme_object)
-			evas_object_layer_set(w->theme_object, temp);
-	}
-
 	LAYER(w) = layer;
+
+	if (REALIZED(w))
+		ewl_widget_layer_update(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1066,7 +1061,7 @@ ewl_widget_layer_set(Ewl_Widget *w, int layer)
  * @brief Retrieve a widgets layer relative to it's parent.
  */
 int
-ewl_widget_layer_get(Ewl_Widget *w)
+ewl_widget_layer_priority_get(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, 0);
@@ -1076,25 +1071,47 @@ ewl_widget_layer_get(Ewl_Widget *w)
 }
 
 /**
- * @param w: the widget to retrieve sum of layers
- * @return Returns the absolute layer the widget is placed on.
- * @brief Sums the layers of a widgets parents to determine it's absolute layer.
+ * @param w:  the widget to set the top value
+ * @param top: TRUE or FALSE
+ * @return Returns no value.
+ * @brief set the widget to be layered above all other widgets
+ *
+ * This  set the widget to be layered above all other widgets.
+ */
+void
+ewl_widget_layer_top_set(Ewl_Widget *w, int top)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	
+	if (w->toplayered == top)
+		DRETURN(DLEVEL_STABLE);
+	
+	w->toplayered = top;
+	
+	if (REALIZED(w)) {
+		ewl_widget_layer_stack_add(w);
+		ewl_widget_layer_update(w);
+	}
+	
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param w:  the widget to get the top value
+ * @return Returns TRUE or FALSE
+ * @brief Returns if the widget will be drawn above all the others
+ *
  */
 int
-ewl_widget_layer_sum_get(Ewl_Widget *w)
+ewl_widget_layer_top_get(Ewl_Widget *w)
 {
-	int sum = 0;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("w", w, 0);
+	DCHECK_PARAM_PTR_RET("w", w, FALSE);
 	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, 0);
-
-	while (w) {
-		sum += LAYER(w);
-		w = w->parent;
-	}
-
-	DRETURN_INT(sum, DLEVEL_STABLE);
+	
+	DRETURN_INT(w->toplayered, DLEVEL_STABLE);
 }
 
 /**
@@ -1827,6 +1844,151 @@ ewl_widget_color_get(Ewl_Widget *w, int *r, int *g, int *b, int *a)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+static void
+ewl_widget_layer_stack_add(Ewl_Widget *w) 
+{
+	Evas_Object *smart_parent;
+	
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	
+	if (w->parent && OBSCURED(w->parent))
+		DRETURN(DLEVEL_STABLE);
+	
+	
+	if (w->parent && !w->toplayered) 
+		smart_parent = w->parent->smart_object;
+	else {
+		Ewl_Embed *emb;
+		
+		emb = ewl_embed_widget_find(w);
+		smart_parent = emb->smart;
+	}
+	
+	evas_object_smart_member_add(w->smart_object, smart_parent);
+	
+	if (w->theme_object) {
+		evas_object_smart_member_add(w->theme_object, w->smart_object);
+	}
+	if (w->fx_clip_box) {
+		evas_object_smart_member_add(w->fx_clip_box, w->smart_object);
+	}
+	if (w->theme_object && w->fx_clip_box)
+		evas_object_stack_below(w->theme_object, w->fx_clip_box);
+	
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_widget_layer_update(Ewl_Widget *w)
+{
+	Ewl_Widget *p;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	if (!(p = w->parent))
+		DRETURN(DLEVEL_STABLE);
+
+	/* check first if the widget should be on the top */
+	if (w->toplayered) 
+	{
+		evas_object_raise(w->smart_object);
+		DRETURN(DLEVEL_STABLE);
+	}
+	
+	if (LAYER(w) == 0)
+		evas_object_stack_above(w->smart_object, p->fx_clip_box);
+	else if (LAYER(w) > 0) {
+		Evas_Object *above;
+		
+		if (!(above = ewl_widget_layer_neighbor_find_above(w)))
+			DWARNING("Have not found an object above");
+		evas_object_stack_above(w->smart_object, above);
+	}
+	else {
+		Evas_Object *below;
+
+		if (!(below = ewl_widget_layer_neighbor_find_below(w)))
+			DWARNING("Have not found an object below");
+		evas_object_stack_below(w->smart_object, below);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static Evas_Object *
+ewl_widget_layer_neighbor_find_above(Ewl_Widget *w)
+{
+	Evas_Object *o, *ol;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("w", w, NULL);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
+
+	if (!w->parent)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+
+	o = ol = w->parent->fx_clip_box;
+	
+	while ((o = evas_object_above_get(o)))
+	{
+		Ewl_Widget *found;
+		
+		found = evas_object_data_get(o, "EWL");
+		/*
+		 * Perhaps it is a cached object so no reason to stop iterating
+		 */
+		if (found) {
+			/* ignore the widget itself */
+			if (w == found)
+				continue;
+			if (LAYER(w) <= LAYER(found))
+				break;
+			ol = o;
+		}
+	}
+
+	DRETURN_PTR(ol, DLEVEL_STABLE);
+}
+
+static Evas_Object *
+ewl_widget_layer_neighbor_find_below(Ewl_Widget *w)
+{
+	Evas_Object *o, *ol;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("w", w, NULL);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
+
+	if (!w->parent)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+
+	o = ol = w->parent->fx_clip_box;
+	
+	while ((o = evas_object_below_get(o)))
+	{
+		Ewl_Widget *found;
+		
+		found = evas_object_data_get(o, "EWL");
+		/*
+		 * Perhaps it is a cached object so no reason to stop iterating
+		 */
+		if (found) {
+			/* ignore the widget itself */
+			if (w == found)
+				continue;
+			if (LAYER(w) >= LAYER(found)) 
+				break;
+			ol = o;
+		}
+	}
+
+	DRETURN_PTR(ol, DLEVEL_STABLE)
+}
+
 /*
  * Perform the series of operations common to every widget when
  * they are destroyed. This should ALWAYS be the the last callback
@@ -1937,6 +2099,8 @@ ewl_widget_show_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
+	if (w->smart_object)
+		evas_object_show(w->smart_object);
 	if (w->fx_clip_box)
 		evas_object_show(w->fx_clip_box);
 	if (w->theme_object)
@@ -1987,7 +2151,6 @@ ewl_widget_hide_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 void ewl_widget_reveal_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
                                           void *user_data __UNUSED__)
 {
-	int sum;
 	Ewl_Embed *emb;
 
 	/* printf("Revealing %s\n", w->appearance); */
@@ -1998,6 +2161,29 @@ void ewl_widget_reveal_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	emb = ewl_embed_widget_find(w);
 	if (!emb || !emb->evas)
 		DRETURN(DLEVEL_STABLE);
+
+	/*
+	 * Smart Object allocation
+	 */
+	if (!w->smart_object) {
+		/*
+		 * Attempt to load a cached object first, fallback to adding a
+		 * new one.
+		 */
+		w->smart_object = ewl_embed_object_request(emb, "Ewl Widget Smart Object");
+		if (!w->smart_object) {
+			if (!widget_smart) {
+				widget_smart = evas_smart_new("Ewl Widget Smart Object",
+						NULL, NULL, NULL, NULL,
+						NULL, NULL, NULL, NULL,
+						NULL, NULL, NULL, NULL,
+						NULL, NULL, NULL);
+			}
+			w->smart_object = evas_object_smart_add(emb->evas,
+							widget_smart);
+		}
+		evas_object_data_set(w->smart_object, "EWL", w);
+	}
 
 	/*
 	 * No object allocated yet for this widget
@@ -2095,18 +2281,14 @@ void ewl_widget_reveal_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	/*
 	 * Set the layer of the clip box and theme object
 	 */
-	sum = ewl_widget_layer_sum_get(w);
-	if (sum > ewl_embed_max_layer_get(emb))
-		ewl_embed_max_layer_set(emb, sum);
-	if (w->theme_object) {
-		evas_object_layer_set(w->theme_object, sum);
-		/* printf("Setting layer %d on %s\n", sum, w->appearance); */
+	ewl_widget_layer_stack_add(w);
+
+	if (w->parent && !OBSCURED(w->parent)) {
+		ewl_widget_layer_update(w);
 	}
 
 	if (w->fx_clip_box) {
 		Ewl_Color_Set *color;
-
-		evas_object_layer_set(w->fx_clip_box, sum);
 
 		color = ewl_attach_color_get(w);
 		if (color)
@@ -2168,6 +2350,12 @@ void ewl_widget_obscure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 		evas_object_clip_unset(w->theme_object);
 		ewl_embed_object_cache(emb, w->fx_clip_box);
 		w->fx_clip_box = NULL;
+	}
+	if (w->smart_object) {
+		evas_object_hide(w->smart_object);
+		evas_object_data_del(w->smart_object, "EWL");
+		ewl_embed_object_cache(emb, w->smart_object);
+		w->smart_object = NULL;
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

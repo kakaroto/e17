@@ -4,10 +4,6 @@
 #include "ewl_private.h"
 
 #define ICON_LABEL_INITIAL 20
-#define ICONBOX_SELECT_LAYER 600
-#define ICONBOX_ICON_LAYER 500
-#define ICONBOX_BACKGROUND_LAYER 500
-#define ICONBOX_ENTRY_LAYER 1000
 #define ICONBOX_REPEAT 10000
 
 static void ewl_iconbox_icon_select(Ewl_Iconbox_Icon *ib, int loc, int deselect);
@@ -263,6 +259,7 @@ ewl_iconbox_init(Ewl_Iconbox *ib)
 	ib->ewl_iconbox_menu_floater = ewl_floater_new();
 	ewl_floater_follow_set(EWL_FLOATER(ib->ewl_iconbox_menu_floater),
 			       ib->ewl_iconbox_pane_inner);
+	ewl_widget_layer_priority_set(ib->ewl_iconbox_menu_floater, -1);
 
 	/*-------------------------------------------*/
 	/* Get the context menu ready */
@@ -298,6 +295,7 @@ ewl_iconbox_init(Ewl_Iconbox *ib)
 	ib->icon_menu_floater = ewl_floater_new();
 	ewl_floater_follow_set(EWL_FLOATER(ib->icon_menu_floater),
 			       ib->ewl_iconbox_pane_inner);
+	ewl_widget_layer_priority_set(ib->icon_menu_floater, -1);
 	
 	ib->icon_menu = ewl_menu_new();
 	ewl_button_label_set(EWL_BUTTON(ib->icon_menu), " ");
@@ -338,7 +336,7 @@ ewl_iconbox_init(Ewl_Iconbox *ib)
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_pane_inner), ib->select_floater);
 	
 	ewl_object_custom_size_set(EWL_OBJECT(ib->select), 1, 1);
-	ewl_widget_layer_set(EWL_WIDGET(ib->select_floater), ICONBOX_SELECT_LAYER);
+	ewl_widget_layer_top_set(EWL_WIDGET(ib->select_floater), TRUE);
 	ewl_widget_color_set(EWL_WIDGET(ib->select), 255, 255, 25, 50);
 	ib->drag_box = 0;
 
@@ -369,6 +367,7 @@ ewl_iconbox_init(Ewl_Iconbox *ib)
 	ib->entry_floater = ewl_floater_new();
 	ewl_floater_follow_set(EWL_FLOATER(ib->entry_floater),
 				ib->ewl_iconbox_pane_inner);
+	ewl_widget_layer_top_set(ib->entry_floater, TRUE);
 	ib->entry_box = ewl_hbox_new();
 	ewl_widget_show(ib->entry_box);
 	ewl_container_child_append(EWL_CONTAINER(ib->entry_floater), ib->entry_box);
@@ -554,6 +553,7 @@ ewl_iconbox_background_set(Ewl_Iconbox *ib, const char *file)
 	ewl_image_file_set(EWL_IMAGE(ib->background), file, 0);
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_pane_inner), 
 							ib->background);
+	ewl_widget_layer_priority_set(ib->background, -1);
 
 	if (EWL_WIDGET(ib)->parent) {
 		int width, height, sw, sh;
@@ -573,8 +573,7 @@ ewl_iconbox_background_set(Ewl_Iconbox *ib, const char *file)
 	}
 	
 	ewl_widget_show(ib->background);
-	ewl_widget_layer_set(EWL_WIDGET(ib->background), ICONBOX_BACKGROUND_LAYER);
-	
+
 	ewl_widget_configure(EWL_WIDGET(ib));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -845,7 +844,6 @@ ewl_iconbox_icon_select(Ewl_Iconbox_Icon *ib, int loc, int deselect) /* Loc 0= i
 		
 		ewl_widget_show(EWL_WIDGET(ib->icon_box_parent->entry_floater));
 		ewl_floater_position_set(EWL_FLOATER(ib->icon_box_parent->entry_floater), x,y+ih);
-		ewl_widget_layer_set(EWL_WIDGET(ib->icon_box_parent->entry_floater), ICONBOX_ENTRY_LAYER);
 		ewl_widget_focus_send(EWL_WIDGET(ib->icon_box_parent->entry));
 
 		/* Record which icon's label we are editing */
@@ -1033,7 +1031,6 @@ ewl_iconbox_icon_add(Ewl_Iconbox *iconbox, const char *name, const char *icon_fi
 	/* Add this icon to the icon list */
 	ecore_list_append(iconbox->ewl_iconbox_icon_list, ib);
 
-	ewl_widget_layer_set(EWL_WIDGET(ib), ICONBOX_ICON_LAYER);
 	ewl_widget_draggable_set(EWL_WIDGET(ib), 1, ewl_iconbox_drag_data_get);
 
 	DRETURN_PTR(EWL_ICONBOX_ICON(ib), DLEVEL_STABLE);
@@ -1555,8 +1552,6 @@ ewl_iconbox_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_dat
 				CURRENT_X(parent), CURRENT_Y(parent));
 		ewl_object_custom_size_set(EWL_OBJECT(ib->background), width-sw,
 				height-sh);
-
-		ewl_widget_layer_set(EWL_WIDGET(ib->background), ICONBOX_BACKGROUND_LAYER);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

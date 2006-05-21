@@ -60,7 +60,6 @@ struct Ewl_Embed
 
 	Ecore_Hash     *obj_cache;  /**< Hash of object queues for reuse */
 
-	int             max_layer;   /**< The maximum widget layer used */
 	int             focus;       /**< Indicates if it receives focus */
 
 	struct
@@ -88,8 +87,6 @@ int             ewl_embed_focus_get(Ewl_Embed *embed);
 void		ewl_embed_active_set(Ewl_Embed *embed, unsigned int act);
 Ewl_Embed      *ewl_embed_active_embed_get(void);
 
-int             ewl_embed_max_layer_get(Ewl_Embed *embed);
-void            ewl_embed_max_layer_set(Ewl_Embed *embed, int layer);
 void            ewl_embed_key_down_feed(Ewl_Embed *embed, char *keyname,
 					unsigned int modifiers);
 void            ewl_embed_key_up_feed(Ewl_Embed *embed, char *keyname,

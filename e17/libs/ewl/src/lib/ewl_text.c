@@ -2625,7 +2625,10 @@ ewl_text_cb_reveal(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 		evas_object_pass_events_set(t->textblock, 1);
 
-		evas_object_layer_set(t->textblock, ewl_widget_layer_sum_get(w));
+		evas_object_smart_member_add(t->textblock, w->smart_object);
+		if (w->fx_clip_box)
+			evas_object_stack_below(t->textblock, w->fx_clip_box);
+
 		ewl_text_display(t);
 		evas_object_show(t->textblock);
 	}

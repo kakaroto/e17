@@ -55,8 +55,8 @@ ewl_datepicker_init(Ewl_Datepicker *dp)
 	ewl_object_custom_size_set(EWL_OBJECT(dp->calendar_window), 159, 170);
 	ewl_object_fill_policy_set(EWL_OBJECT(dp->calendar_window), 
 						EWL_FLAG_FILL_FILL);
-        ewl_widget_layer_set(dp->calendar_window, 1000);
-        ewl_window_borderless_set(EWL_WINDOW(dp->calendar_window));
+	ewl_widget_layer_top_set(dp->calendar_window, TRUE);
+	ewl_window_borderless_set(EWL_WINDOW(dp->calendar_window));
 
 	dp->calendar = ewl_calendar_new();
 	ewl_container_child_append(EWL_CONTAINER(dp->calendar_window), 

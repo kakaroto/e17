@@ -77,7 +77,6 @@ ewl_window_init(Ewl_Window *w)
 	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_CONFIGURE,
 			     ewl_window_configure_cb, NULL);
 
-	LAYER(w) = -1000;
 	ecore_list_append(ewl_window_list, w);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -802,7 +801,6 @@ ewl_window_postrealize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	evas_object_pass_events_set(EWL_EMBED(w)->ev_clip, 1);
 	if (EWL_WINDOW(w)->transient)
 		ewl_window_transient_for(EWL_WINDOW(w),
 					 EWL_WINDOW(w)->transient);

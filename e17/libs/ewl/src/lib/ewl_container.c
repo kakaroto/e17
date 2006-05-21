@@ -698,10 +698,15 @@ ewl_container_child_at_get(Ewl_Container *widget, int x, int y)
 		    && (CURRENT_X(child) + CURRENT_W(child) +
 			    INSET_RIGHT(child)) >= x
 		    && (CURRENT_Y(child) + CURRENT_H(child) +
-			    INSET_BOTTOM(child)) >= y)
-			if ((!found || LAYER(found) <= LAYER(child)) 
+			    INSET_BOTTOM(child)) >= y) {
+			if (child->toplayered && VISIBLE(child)) {
+				found = child;
+				break;
+			}
+			if ((!found || LAYER(found) <= LAYER(child))
 					&& VISIBLE(child))
 				found = child;
+		}
 	}
 
 	DRETURN_PTR(found, DLEVEL_STABLE);
@@ -1244,10 +1249,6 @@ ewl_container_reparent_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	if (!EWL_CONTAINER(w)->children)
 		DRETURN(DLEVEL_STABLE);
 
-	if (REALIZED(w) && w->fx_clip_box)
-		evas_object_layer_set(EWL_CONTAINER(w)->clip_box,
-				evas_object_layer_get(w->fx_clip_box));
-
 	/*
 	 * Reparent all of the containers children
 	 */
@@ -1323,12 +1324,12 @@ ewl_container_reveal_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	 * Setup the remaining properties for the clip box.
 	 */
 	if (c->clip_box) {
-                evas_object_pass_events_set(c->clip_box, TRUE);
+		evas_object_pass_events_set(c->clip_box, TRUE);
+		evas_object_smart_member_add(c->clip_box, w->smart_object);
 
 		if (w->fx_clip_box) {
 			evas_object_clip_set(c->clip_box, w->fx_clip_box);
-			evas_object_layer_set(c->clip_box,
-					evas_object_layer_get(w->fx_clip_box));
+			evas_object_stack_below(c->clip_box, w->fx_clip_box);
 		}
 
 		evas_object_color_set(c->clip_box, 255, 255, 255, 255);

@@ -97,6 +97,7 @@ ewl_spectrum_init(Ewl_Spectrum *sp)
 
 	sp->type = EWL_SPECTRUM_TYPE_SQUARE;
 
+	/* create the canvas */
 	sp->canvas = ewl_image_new();
 	ewl_container_child_append(EWL_CONTAINER(sp), sp->canvas);
 	ewl_object_fill_policy_set(EWL_OBJECT(sp->canvas), EWL_FLAG_FILL_FILL);
@@ -107,10 +108,12 @@ ewl_spectrum_init(Ewl_Spectrum *sp)
 	sp->cross_hairs.horizontal = ewl_hseparator_new();
 	ewl_container_child_append(EWL_CONTAINER(sp), sp->cross_hairs.horizontal);
 	ewl_widget_internal_set(sp->cross_hairs.horizontal, TRUE);
+	ewl_widget_layer_priority_set(sp->cross_hairs.horizontal, 1);
 
 	sp->cross_hairs.vertical = ewl_vseparator_new();
 	ewl_container_child_append(EWL_CONTAINER(sp), sp->cross_hairs.vertical);
 	ewl_widget_internal_set(sp->cross_hairs.vertical, TRUE);
+	ewl_widget_layer_priority_set(sp->cross_hairs.vertical, 1);
 
 	ewl_callback_append(EWL_WIDGET(sp), EWL_CALLBACK_CONFIGURE, 
 			ewl_spectrum_cb_configure, NULL);

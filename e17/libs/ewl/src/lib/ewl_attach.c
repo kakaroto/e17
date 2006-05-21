@@ -705,7 +705,7 @@ ewl_attach_cb_tooltip_timer(void *data)
 						ewl_attach_tooltip->win);
 		ewl_container_redirect_set(EWL_CONTAINER(emb), redir);
 
-		ewl_widget_layer_set(ewl_attach_tooltip->win, 1000);
+		ewl_widget_layer_top_set(ewl_attach_tooltip->win, TRUE);
 
 		ewl_callback_prepend(ewl_attach_tooltip->win, 
 					EWL_CALLBACK_DESTROY,

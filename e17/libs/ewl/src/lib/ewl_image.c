@@ -660,9 +660,10 @@ ewl_image_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		evas_object_image_size_get(i->image, &i->ow, &i->oh);
 	}
 
+	evas_object_smart_member_add(i->image, w->smart_object);
+	if (w->fx_clip_box)
+		evas_object_stack_below(i->image, w->fx_clip_box);
 
-
-	evas_object_layer_set(i->image, ewl_widget_layer_sum_get(w));
 	if (w->fx_clip_box)
 		evas_object_clip_set(i->image, w->fx_clip_box);
 
@@ -764,8 +765,6 @@ ewl_image_reparent_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	i = EWL_IMAGE(w);
 	if (!i->image)
 		DRETURN(DLEVEL_STABLE);
-
-	evas_object_layer_set(i->image, ewl_widget_layer_sum_get(w));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

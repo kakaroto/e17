@@ -56,7 +56,7 @@ ewl_imenu_init(Ewl_Imenu *menu)
 	menu->base.popup = ewl_floater_new();
 	ewl_floater_follow_set(EWL_FLOATER(menu->base.popup), EWL_WIDGET(menu));
 	ewl_widget_internal_set(menu->base.popup, TRUE);
-	ewl_widget_layer_set(menu->base.popup, 1000);
+	ewl_widget_layer_top_set(menu->base.popup, TRUE);
 	ewl_widget_appearance_set(EWL_WIDGET(menu->base.popup), EWL_IMENU_TYPE);
 	ewl_box_orientation_set(EWL_BOX(menu->base.popup),
 				EWL_ORIENTATION_VERTICAL);

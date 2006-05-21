@@ -64,7 +64,7 @@ ewl_combo_init(Ewl_Combo *combo)
 	ewl_floater_follow_set(EWL_FLOATER(combo->popup->popup),
 						EWL_WIDGET(combo));
 	ewl_widget_internal_set(combo->popup->popup, TRUE);
-	ewl_widget_layer_set(combo->popup->popup, 1000);
+	ewl_widget_layer_top_set(combo->popup->popup, TRUE);
 	ewl_widget_appearance_set(combo->popup->popup, EWL_IMENU_TYPE);
 	ewl_box_orientation_set(EWL_BOX(combo->popup->popup),
 						EWL_ORIENTATION_VERTICAL);
