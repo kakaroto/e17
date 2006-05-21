@@ -288,8 +288,8 @@ collections
 		  description
 		    {
 		       state: "default" 0.0;
-		       color: 0 0 0 255;
-		       color3: 255 255 255 255;
+		       color: 255 255 255 255;
+		       color3: 0 0 0 32;
 		       visible: 0;
 		       rel1
 			 {
