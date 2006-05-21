@@ -365,7 +365,7 @@ ewl_combo_cb_decrement_clicked(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 	combo = data;
 
 	/* nothing to do if we have no model/view or data */
-	if ((!combo->model) || (!combo->view) || (!combo->data))
+	if ((!combo->model) || (!combo->view))
 		DRETURN(DLEVEL_STABLE);
 
 	/* XXX put checks to make sure all the needed module and view
