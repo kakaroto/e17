@@ -33,7 +33,6 @@ struct _Instance
    Evas_Object *weather_obj;
    Weather *weather;
    Ecore_Timer *check_timer;
-   const char *id;
    char *buffer, *location;
    int bufsize, cursize;
    int temp, loc_set;
@@ -76,7 +75,6 @@ _gc_init(E_Gadcon *gc, char *name, char *id, char *style)
 
    inst = E_NEW(Instance, 1);
    ci = _weather_config_item_get(id);
-   inst->id = evas_stringshare_add(ci->id);
    
    w = _weather_new(gc->evas);
    w->inst = inst;
@@ -119,7 +117,6 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    Instance *inst;
 
    inst = gcc->data;
-   evas_stringshare_del(inst->id);
    if (inst->check_timer)
      ecore_timer_del(inst->check_timer);
 
