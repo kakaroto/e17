@@ -36,7 +36,6 @@ struct _Instance
 {
    E_Gadcon_Client *gcc;
    Evas_Object *tclock;
-   const char *id;
    Ecore_Timer *check_timer;
 };
 
@@ -53,7 +52,6 @@ _gc_init(E_Gadcon *gc, char *name, char *id, char *style)
    
    ci = _tclock_config_item_get(gc->id);
    if (!ci->id) ci->id = evas_stringshare_add(gc->id);
-   inst->id = evas_stringshare_add(gc->id);
    
    o = edje_object_add(gc->evas);
    snprintf(buf, sizeof(buf), "%s/tclock.edj", e_module_dir_get(tclock_config->module));
@@ -83,7 +81,6 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    Instance *inst;
    
    inst = gcc->data;
-   evas_stringshare_del(inst->id);
    if (inst->check_timer)
      ecore_timer_del(inst->check_timer);
    tclock_config->instances = evas_list_remove(tclock_config->instances, inst);   
