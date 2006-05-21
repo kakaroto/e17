@@ -37,11 +37,12 @@ collections
 			    offset: -1 -1;
 			 }
 		       color: 255 255 255 255;
+		       color2: 0 0 0 96;
 		       color3: 0 0 0 32;
 		       text {
 			  text:     "";
-			  font:     "Edje-Vera";
-			  size: 10;
+			  font:     "VeraMono";
+			  size:     10;
 			  min:      1 1;
 			  align:    0.5 0.5;
 			  text_class: "module_large";			  
@@ -81,11 +82,12 @@ collections
 			    offset: -1 -1;
 			 }
 		       color: 255 255 255 255;
+		       color2: 0 0 0 96;
 		       color3: 0 0 0 32;
 		       text {
 			  text:     "";
-			  font:     "Edje-Vera";
-			  size: 8;
+			  font:     "VeraMono";
+			  size:     9;
 			  min:      1 1;
 			  align:    0.5 1.0;
 			  text_class: "module_small";
