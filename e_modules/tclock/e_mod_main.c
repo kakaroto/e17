@@ -50,8 +50,8 @@ _gc_init(E_Gadcon *gc, char *name, char *id, char *style)
    
    inst = E_NEW(Instance, 1);
    
-   ci = _tclock_config_item_get(gc->id);
-   if (!ci->id) ci->id = evas_stringshare_add(gc->id);
+   ci = _tclock_config_item_get(id);
+   if (!ci->id) ci->id = evas_stringshare_add(id);
    
    o = edje_object_add(gc->evas);
    snprintf(buf, sizeof(buf), "%s/tclock.edj", e_module_dir_get(tclock_config->module));
