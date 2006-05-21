@@ -24,6 +24,8 @@ struct _E_Config_Dialog_Data
       int use_img_border;
       int use_thumb;
    } scrot;
+   int use_app;
+   char *app;
 };
 
 /* Protos */
@@ -74,8 +76,13 @@ _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata)
 
    cfdata->filename = NULL;   
    if (ci->filename != NULL)
-      cfdata->filename = strdup(ci->filename);
+     cfdata->filename = strdup(ci->filename);
 
+   cfdata->use_app = ci->use_app;
+   cfdata->app = NULL;
+   if (ci->app != NULL)
+     cfdata->app = strdup(ci->app);
+   
    cfdata->import.use_img_border = ci->import.use_img_border;
    cfdata->import.use_dither = ci->import.use_dither;
    cfdata->import.use_frame = ci->import.use_frame;
@@ -113,44 +120,38 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    E_Radio_Group *rg;
 
    o = e_widget_list_add(evas, 0, 0);
-   of = e_widget_framelist_add(evas, _("General Settings"), 0);
+   of = e_widget_frametable_add(evas, D_("General Settings"), 1);
 
-   ot = e_widget_table_add(evas, 0);
    if ((ecore_file_app_installed("import")) && 
        (ecore_file_app_installed("scrot")))
      {
 	rg = e_widget_radio_group_new(&(cfdata->method));	
 	ob = e_widget_radio_add(evas, D_("Use Import"), 0, rg);
-	e_widget_table_object_append(ot, ob, 0, 0, 1, 1, 1, 0, 1, 0); 
+	e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 0, 0, 1, 0); 
 	ob = e_widget_radio_add(evas, D_("Use Scrot"), 1, rg);
-	e_widget_table_object_append(ot, ob, 0, 1, 1, 1, 1, 0, 1, 0);	
+	e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 0, 0, 1, 0);
      }   
    else if (ecore_file_app_installed("import")) 
      cfdata->method = 0;
    else if (ecore_file_app_installed("scrot"))
      cfdata->method = 1;
-   
+
    ob = e_widget_label_add(evas, D_("Delay Time:"));
-   e_widget_table_object_append(ot, ob, 0, 2, 1, 1, 0, 0, 1, 0);
-   ob = e_widget_slider_add(evas, 1, 0, _("%1.0f seconds"), 0.0, 60.0, 1.0, 0, &(cfdata->delay_time), NULL, 200);
-   e_widget_table_object_append(ot, ob, 1, 2, 1, 1, 1, 0, 1, 0);
-   e_widget_framelist_object_append(of, ot);
+   e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 0, 0, 1, 0);
+   ob = e_widget_slider_add(evas, 1, 0, D_("%1.0f seconds"), 0.0, 60.0, 1.0, 0, &(cfdata->delay_time), NULL, 100);
+   e_widget_frametable_object_append(of, ob, 1, 1, 2, 1, 1, 0, 1, 0);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
-
-   of = e_widget_framelist_add(evas, D_("File Settings"), 0);
-   ot = e_widget_table_add(evas, 1);   
+      
+   of = e_widget_frametable_add(evas, D_("File Settings"), 1);
    ob = e_widget_label_add(evas, D_("Save Directory:"));
-   e_widget_table_object_append(ot, ob, 0, 0, 1, 1, 0, 0, 1, 0);
+   e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 0, 0, 1, 0);
    ob = e_widget_entry_add(evas, &cfdata->location);
-   e_widget_table_object_append(ot, ob, 1, 0, 1, 1, 1, 0, 1, 0);
-   ob = e_widget_label_add(evas, D_("Filename (minus extension):"));
-   e_widget_table_object_append(ot, ob, 0, 1, 1, 1, 0, 0, 1, 0);
+   e_widget_frametable_object_append(of, ob, 1, 0, 2, 1, 1, 0, 1, 0);
+   ob = e_widget_label_add(evas, D_("Filename:"));
+   e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 0, 0, 1, 0);
    ob = e_widget_entry_add(evas, &cfdata->filename);
-   e_widget_table_object_append(ot, ob, 1, 1, 1, 1, 1, 0, 1, 0);
-
-   e_widget_framelist_object_append(of, ot);
+   e_widget_frametable_object_append(of, ob, 1, 1, 2, 1, 1, 0, 1, 0);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
-
    return o;
 }
 
@@ -209,17 +210,16 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    ci = cfd->data;
 
    o = e_widget_list_add(evas, 0, 0);
-   of = e_widget_framelist_add(evas, _("General Settings"), 0);
+   of = e_widget_frametable_add(evas, D_("General Settings"), 1);
 
-   ot = e_widget_table_add(evas, 0);
    if ((ecore_file_app_installed("import")) && 
        (ecore_file_app_installed("scrot")))
      {
 	rg = e_widget_radio_group_new(&(cfdata->method));	
 	ob = e_widget_radio_add(evas, D_("Use Import"), 0, rg);
-	e_widget_table_object_append(ot, ob, 0, 0, 1, 1, 1, 0, 1, 0); 
+	e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 0, 0, 1, 0); 
 	ob = e_widget_radio_add(evas, D_("Use Scrot"), 1, rg);
-	e_widget_table_object_append(ot, ob, 0, 1, 1, 1, 1, 0, 1, 0);	
+	e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 0, 0, 1, 0);
      }   
    else if (ecore_file_app_installed("import")) 
      cfdata->method = 0;
@@ -227,52 +227,57 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
      cfdata->method = 1;
 
    ob = e_widget_label_add(evas, D_("Delay Time:"));
-   e_widget_table_object_append(ot, ob, 0, 2, 1, 1, 0, 0, 1, 0);
-   ob = e_widget_slider_add(evas, 1, 0, _("%1.0f seconds"), 0.0, 60.0, 1.0, 0, &(cfdata->delay_time), NULL, 200);
-   e_widget_table_object_append(ot, ob, 1, 2, 1, 1, 1, 0, 1, 0);
-   e_widget_framelist_object_append(of, ot);
+   e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 0, 0, 1, 0);
+   ob = e_widget_slider_add(evas, 1, 0, D_("%1.0f seconds"), 0.0, 60.0, 1.0, 0, &(cfdata->delay_time), NULL, 100);
+   e_widget_frametable_object_append(of, ob, 1, 1, 2, 1, 1, 0, 1, 0);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-   of = e_widget_framelist_add(evas, D_("File Settings"), 0);
-   ot = e_widget_table_add(evas, 1);
+   of = e_widget_frametable_add(evas, D_("Image Viewer Settings"), 1);
+   ob = e_widget_check_add(evas, D_("Launch Image Viewer After Screenshot"), &(cfdata->use_app));
+   e_widget_frametable_object_append(of, ob, 0, 0, 2, 1, 1, 0, 1, 0);
+   ob = e_widget_entry_add(evas, &(cfdata->app));
+   e_widget_frametable_object_append(of, ob, 0, 1, 2, 1, 1, 0, 1, 0);
+   e_widget_list_object_append(o, of, 1, 1, 0.5);
+   
+   of = e_widget_frametable_add(evas, D_("File Settings"), 1);
    ob = e_widget_label_add(evas, D_("Save Directory:"));
-   e_widget_table_object_append(ot, ob, 0, 0, 1, 1, 0, 0, 1, 0);
+   e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 0, 0, 1, 0);
    ob = e_widget_entry_add(evas, &cfdata->location);
-   e_widget_table_object_append(ot, ob, 1, 0, 1, 1, 1, 0, 1, 0);
-   ob = e_widget_label_add(evas, D_("Filename (minus extension):"));
-   e_widget_table_object_append(ot, ob, 0, 1, 1, 1, 0, 0, 1, 0);
+   e_widget_frametable_object_append(of, ob, 1, 0, 2, 1, 1, 0, 1, 0);
+   ob = e_widget_label_add(evas, D_("Filename:"));
+   e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 0, 0, 1, 0);
    ob = e_widget_entry_add(evas, &cfdata->filename);
-   e_widget_table_object_append(ot, ob, 1, 1, 1, 1, 1, 0, 1, 0);
-   e_widget_framelist_object_append(of, ot);
+   e_widget_frametable_object_append(of, ob, 1, 1, 2, 1, 1, 0, 1, 0);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
+   ot = e_widget_table_add(evas, 0);
    if (ecore_file_app_installed("import")) 
      {
-	of = e_widget_framelist_add(evas, D_("Import Options"), 0);
+	of = e_widget_frametable_add(evas, D_("Import Settings"), 0);
 	ob = e_widget_check_add(evas, D_("Include Image Border"), &(cfdata->import.use_img_border));
-	e_widget_framelist_object_append(of, ob);
+	e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 0, 0, 1, 0);
 	ob = e_widget_check_add(evas, D_("Use Image Dithering"), &(cfdata->import.use_dither));
-	e_widget_framelist_object_append(of, ob);
+	e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 0, 0, 1, 0);
 	ob = e_widget_check_add(evas, D_("Include Window Manager Frame"), &(cfdata->import.use_frame));
-	e_widget_framelist_object_append(of, ob);
+	e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 0, 0, 1, 0);
 	ob = e_widget_check_add(evas, D_("Choose Window To Grab"), &(cfdata->import.use_window));
-	e_widget_framelist_object_append(of, ob);
+	e_widget_frametable_object_append(of, ob, 0, 3, 1, 1, 0, 0, 1, 0);
 	ob = e_widget_check_add(evas, D_("Silent"), &(cfdata->import.use_silent));
-	e_widget_framelist_object_append(of, ob);
+	e_widget_frametable_object_append(of, ob, 0, 4, 1, 1, 0, 0, 1, 0);
 	ob = e_widget_check_add(evas, D_("Trim Edges"), &(cfdata->import.use_trim));
-	e_widget_framelist_object_append(of, ob);
-	e_widget_list_object_append(o, of, 1, 1, 0.5);
+	e_widget_frametable_object_append(of, ob, 0, 5, 1, 1, 0, 0, 1, 0);
+	e_widget_table_object_append(ot, of, 0, 0, 1, 1, 1, 1, 1, 1);
      }
    if (ecore_file_app_installed("scrot")) 
      {
-	of = e_widget_framelist_add(evas, D_("Scrot Options"), 0);
+	of = e_widget_frametable_add(evas, D_("Scrot Settings"), 0);
 	ob = e_widget_check_add(evas, D_("Include Image Border"), &(cfdata->scrot.use_img_border));
-	e_widget_framelist_object_append(of, ob);
+	e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 0, 0, 1, 0);
 	ob = e_widget_check_add(evas, D_("Generate Thumbnail"), &(cfdata->scrot.use_thumb));
-	e_widget_framelist_object_append(of, ob);
-	e_widget_list_object_append(o, of, 1, 1, 0.5);
+	e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 0, 0, 1, 0);
+	e_widget_table_object_append(ot, of, 1, 0, 1, 1, 1, 1, 1, 1);
      }
-
+   e_widget_list_object_append(o, ot, 1, 1, 0.5);   
    return o;
 }
 
@@ -284,6 +289,14 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    ci = cfd->data;
    _basic_apply_data(cfd, cfdata);
 
+   ci->use_app = cfdata->use_app;
+   if (ci->app)
+     evas_stringshare_del(ci->app);
+   if (cfdata->app != NULL)
+     ci->app = evas_stringshare_add(cfdata->app);
+   else
+     ci->app = evas_stringshare_add("");
+   
    ci->import.use_img_border = cfdata->import.use_img_border;
    ci->import.use_dither = cfdata->import.use_dither;
    ci->import.use_frame = cfdata->import.use_frame;

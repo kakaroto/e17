@@ -21,6 +21,7 @@ struct _Instance
    Evas_Object *ss_obj;
    Screenshot *ss;
    Ecore_Exe *exe;
+   const char *filename;
 };
 
 struct _Screenshot
@@ -104,6 +105,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    Instance *inst;
    
    inst = gcc->data;
+   if (inst->filename) evas_stringshare_del(inst->filename);
    ss_config->instances = evas_list_remove(ss_config->instances, inst);
    _ss_free(inst->ss);
    free(inst);
@@ -239,6 +241,8 @@ _ss_config_item_get(const char *id)
    ci->import.use_trim = 1;
    ci->scrot.use_img_border = 1;
    ci->scrot.use_thumb = 0;
+   ci->use_app = 0;
+   ci->app = evas_stringshare_add("");
    
    ss_config->items = evas_list_append(ss_config->items, ci);
    return ci;
@@ -276,6 +280,8 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, import.use_trim, UCHAR);
    E_CONFIG_VAL(D, T, scrot.use_img_border, UCHAR);
    E_CONFIG_VAL(D, T, scrot.use_thumb, UCHAR);
+   E_CONFIG_VAL(D, T, use_app, INT);
+   E_CONFIG_VAL(D, T, app, STR);
    
    conf_edd = E_CONFIG_DD_NEW("Screenshot_Config", Config);
    #undef T
@@ -323,6 +329,8 @@ e_modapi_init(E_Module *m)
 	ci->import.use_trim = 1;
 	ci->scrot.use_img_border = 1;
 	ci->scrot.use_thumb = 0;
+	ci->use_app = 0;
+	ci->app = evas_stringshare_add("");
 	
 	ss_config->items = evas_list_append(ss_config->items, ci);
      }
@@ -358,6 +366,7 @@ e_modapi_shutdown(E_Module *m)
 	if (ci->id) evas_stringshare_del(ci->id);
 	if (ci->location) evas_stringshare_del(ci->location);
 	if (ci->filename) evas_stringshare_del(ci->filename);
+	if (ci->app) evas_stringshare_del(ci->app);
 	ss_config->items = evas_list_remove_list(ss_config->items, ss_config->items);
 	free(ci);
      }
@@ -437,6 +446,9 @@ _ss_handle_mouse_down(Instance *inst)
    char buf[1024];
    char *cmd, *opt, *f;
    Config_Item *ci;
+
+   if (inst->exe)
+     return;
    
    ci = _ss_config_item_get(inst->gcc->id);
    
@@ -462,12 +474,10 @@ _ss_handle_mouse_down(Instance *inst)
      snprintf(buf, sizeof(buf), "%s %s", cmd, opt); 
    else
      snprintf(buf, sizeof(buf), "%s %s %s", cmd, opt, f);
-	
-   ss_config->exe_exit_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
-							 _ss_exe_cb_exit, NULL);
 
-   inst->exe = ecore_exe_run(buf, inst);
-   
+   inst->filename = evas_stringshare_add(f);
+   ss_config->exe_exit_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
+							 _ss_exe_cb_exit, NULL);   
    if (ci->delay_time > 0)
      {
 	msg = malloc(sizeof(Edje_Message_Int_Set) + 1 * sizeof(int));
@@ -476,6 +486,7 @@ _ss_handle_mouse_down(Instance *inst)
 	edje_object_message_send(inst->ss->ss_obj, EDJE_MESSAGE_INT_SET, 1, msg);
 	free(msg);
      }
+   inst->exe = ecore_exe_run(buf, inst);
 }
 
 char *
@@ -603,7 +614,9 @@ _ss_exe_cb_exit(void *data, int type, void *event)
    Instance *inst;
    Ecore_Exe_Event_Del *ev;
    Ecore_Exe *x;
-
+   Config_Item *ci;
+   char buf[4096];
+   
    ev = event;
    if (!ev->exe) return 1;
    x = ev->exe;
@@ -612,8 +625,17 @@ _ss_exe_cb_exit(void *data, int type, void *event)
    inst = ecore_exe_data_get(x);
    x = NULL;
    inst->exe = NULL;
-
+   if (inst->filename) 
+     evas_stringshare_del(inst->filename);
    if (ss_config->exe_exit_handler)
      ecore_event_handler_del(ss_config->exe_exit_handler);
+   
+   ci = _ss_config_item_get(inst->gcc->id);
+   if ((ci->use_app) && (ci->app != NULL)) 
+     {
+	snprintf(buf, sizeof(buf), "%s %s", ci->app, inst->filename);
+	x = ecore_exe_run(buf, NULL);
+     }
+   
    return 0;
 }

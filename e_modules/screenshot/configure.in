@@ -142,13 +142,15 @@ AC_SUBST(e_modules)
 AC_PATH_PROG(IMPORT, import, "", $PATH)
 if test "x${PATH}" != "xNONE"; then
     AC_DEFINE_UNQUOTED(HAVE_IMPORT, 1, "You Have Import")
-    AC_DEFINE_UNQUOTED(IMPORT_PATH, "$IMPORT", "You Have Import")        
-fi
-   
-AC_PATH_PROG(SCROT, scrot, "", $PATH)
-if test "x${PATH}" != "xNONE"; then
-    AC_DEFINE_UNQUOTED(HAVE_SCROT, 1, "You Have Scrot")
-    AC_DEFINE_UNQUOTED(SCROT_PATH, "$SCROT", "You Have Scrot")            
+    AC_DEFINE_UNQUOTED(IMPORT_PATH, "$IMPORT", "You Have Import")
+else
+    AC_PATH_PROG(SCROT, scrot, "", $PATH)
+    if test "x${PATH}" != "xNONE"; then
+       AC_DEFINE_UNQUOTED(HAVE_SCROT, 1, "You Have Scrot")
+       AC_DEFINE_UNQUOTED(SCROT_PATH, "$SCROT", "You Have Scrot")
+    else
+       AC_MSG_ERROR("You do not have import or scrot installed.")
+    fi
 fi
 
 AC_PREFIX_DEFAULT(${HOME}/.e/e)
