@@ -20,7 +20,6 @@ struct _Instance
    E_Gadcon_Client *gcc;
    Evas_Object *ss_obj;
    Screenshot *ss;
-   Config_Item *ci;
    Ecore_Exe *exe;
 };
 
@@ -81,7 +80,6 @@ _gc_init(E_Gadcon *gc, char *name, char *id, char *style)
    
    ci = _ss_config_item_get(id);
    if (!ci->id) ci->id = evas_stringshare_add(id);
-   inst->ci = ci;
    
    ss = _ss_new(gc->evas);
    ss->inst = inst;
@@ -173,7 +171,7 @@ _ss_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	evas_event_feed_mouse_up(inst->gcc->gadcon->evas, ev->button,
 				 EVAS_BUTTON_NONE, ev->timestamp, NULL);
      }
-   else if ((ev->button == 1) && (inst->ci))
+   else if ((ev->button == 1) && (inst))
      _ss_handle_mouse_down(inst);
 }
 
@@ -447,7 +445,7 @@ _ss_handle_mouse_down(Instance *inst)
 	cmd = strdup("import");
 	opt = _get_import_options(ci);
      }
-   else if (inst->ci->use_scrot == 1) 
+   else if (ci->use_scrot == 1) 
      {
 	cmd = strdup("scrot");
 	opt = _get_scrot_options(ci);
@@ -470,11 +468,11 @@ _ss_handle_mouse_down(Instance *inst)
 
    inst->exe = ecore_exe_run(buf, inst);
    
-   if (inst->ci->delay_time > 0)
+   if (ci->delay_time > 0)
      {
 	msg = malloc(sizeof(Edje_Message_Int_Set) + 1 * sizeof(int));
 	msg->count = 1;
-	msg->val[0] = inst->ci->delay_time - 1;
+	msg->val[0] = ci->delay_time - 1;
 	edje_object_message_send(inst->ss->ss_obj, EDJE_MESSAGE_INT_SET, 1, msg);
 	free(msg);
      }
