@@ -764,13 +764,16 @@ entropy_plugin* create_plugin_object(char* filename) {
 
 	dl_ref = dlopen(filename, RTLD_LAZY);
 	if (!dl_ref) {
+		printf("Could not open plugin object %s - Corrupt file? abort\n", filename);
 		return NULL; /*Could not open plugin*/
 	}
 
 	entropy_plugin_init = dlsym(dl_ref, ENTROPY_PLUGIN_INIT_FUNCTION);
 
-	if (!entropy_plugin_init)
+	if (!entropy_plugin_init) {
+		printf("Registered plugin did not contain function '%s', abort\n",ENTROPY_PLUGIN_INIT_FUNCTION );
 		return NULL;
+	}
 	
 	plugin = (*entropy_plugin_init)(entropy_core_get_core());
 	plugin->dl_ref = dl_ref;
