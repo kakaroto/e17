@@ -202,9 +202,6 @@ EwinManage(EWin * ewin)
 	ewin->win_container =
 	   ECreateVisualWindow(frame, 0, 0, ewin->client.w, ewin->client.h,
 			       0, &win_attr);
-
-	if (Conf.argb_client_mode == 1)
-	   ewin->inh_wm.b.border = 1;
      }
    else
      {
