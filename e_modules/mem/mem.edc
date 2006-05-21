@@ -106,7 +106,7 @@ collections
 	       {
 		  name:           "real-text";
 		  type:           TEXT;
-		  effect:         SOFT_SHADOW;
+		  effect:         OUTLINE_SOFT_SHADOW;
 		  mouse_events: 0;
 		  clip_to: "text_clip";
 		  description
@@ -121,8 +121,9 @@ collections
 			 {
 			    relative: 1.0 0.0;
 			 }
-		       color: 213 91 91 255;
-		       color3: 0 0 0 100;
+		       color: 255 160 112 255;
+             color2: 0 0 0 192;
+		       color3: 128 128 128 192;
 		       text
 			 {
 			    text: "real";
@@ -165,7 +166,7 @@ collections
 	       {
 		  name:           "swap-text";
 		  type:           TEXT;
-		  effect:         SOFT_SHADOW;
+		  effect:         OUTLINE_SOFT_SHADOW;
 		  mouse_events: 0;
 		  clip_to: "text_clip";
 		  description
@@ -182,7 +183,8 @@ collections
 			 }
 		       
 		       color: 218 195 35 255;
-		       color3: 0 0 0 100;
+             color2: 0 0 0 192;
+		       color3: 128 128 128 192;
 		       text
 			 {
 			    text: "swap";
