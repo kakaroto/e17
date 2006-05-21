@@ -284,7 +284,7 @@ collections
 		  name: "text";
 		  mouse_events: 0;
 		  type: TEXT;
-		  effect: SOFT_SHADOW;
+		  effect: OUTLINE_SOFT_SHADOW;
 		  description
 		    {
 		       state: "default" 0.0;
