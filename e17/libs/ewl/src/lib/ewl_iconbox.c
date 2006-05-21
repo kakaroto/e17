@@ -591,9 +591,7 @@ ewl_iconbox_icon_label_setup(Ewl_Iconbox_Icon *icon, const char *text)
 	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
 	
 	/* If we have a current label, nuke it */
-	if (icon->label) {
-		free(icon->label);
-	}
+	IF_FREE(icon->label)
 
 	/* Copy the existing label to our icon */
 	icon->label = strdup(text);
@@ -602,9 +600,7 @@ ewl_iconbox_icon_label_setup(Ewl_Iconbox_Icon *icon, const char *text)
 		ewl_iconbox_icon_label_set(icon, icon->label);
 		icon->label_compressed = NULL;
 	} else {
-		if (icon->label_compressed) {
-			free(icon->label_compressed);
-		}
+		IF_FREE(icon->label_compressed);
 		
 		compressed = malloc(sizeof(char) * LABEL_CHARS + 3);
 		strncpy(compressed, text, LABEL_CHARS);
@@ -670,7 +666,7 @@ ewl_iconbox_label_edit_key_down(Ewl_Widget *w __UNUSED__, void *ev_data,
 		
 		text = ewl_text_text_get(EWL_TEXT(ib->entry));
 		ewl_iconbox_icon_label_set(EWL_ICONBOX_ICON(ib->edit_icon), text);
-		free(text);
+		FREE(text);
 
 		/*printf ("Setting label to: '%s'", ewl_text_text_get(EWL_TEXT(ib->entry)));*/
 
@@ -840,7 +836,7 @@ ewl_iconbox_icon_select(Ewl_Iconbox_Icon *ib, int loc, int deselect) /* Loc 0= i
 		/* Get the current text to set this to */
 		text = ewl_text_text_get(EWL_TEXT(ib->w_label));
 		ewl_text_text_set(EWL_TEXT(ib->icon_box_parent->entry), text);
-		free(text);
+		FREE(text);
 		
 		ewl_widget_show(EWL_WIDGET(ib->icon_box_parent->entry_floater));
 		ewl_floater_position_set(EWL_FLOATER(ib->icon_box_parent->entry_floater), x,y+ih);
@@ -1187,13 +1183,8 @@ void ewl_iconbox_icon_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DCHECK_TYPE("w", w, EWL_ICON_TYPE);
 
 	icon = EWL_ICONBOX_ICON(w);
-	if (icon->label) {
-		free(icon->label);
-	}
-
-	if (icon->label_compressed) {
-		free(icon->label_compressed);
-	}
+	IF_FREE(icon->label);
+	IF_FREE(icon->label_compressed);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
