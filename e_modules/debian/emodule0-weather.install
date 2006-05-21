@@ -1,0 +1,3 @@
+debian/tmp/usr/lib/enlightenment/modules/weather/*.png
+debian/tmp/usr/lib/enlightenment/modules/weather/*.edj
+debian/tmp/usr/lib/enlightenment/modules/weather/*/*.so

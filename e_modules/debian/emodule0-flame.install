@@ -1,0 +1,2 @@
+debian/tmp/usr/lib/enlightenment/modules/flame/*.png
+debian/tmp/usr/lib/enlightenment/modules/flame/*/*.so

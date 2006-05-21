@@ -1,0 +1,2 @@
+debian/tmp/usr/lib/enlightenment/modules/snow/*.png
+debian/tmp/usr/lib/enlightenment/modules/snow/*/*.so

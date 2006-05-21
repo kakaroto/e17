@@ -1,0 +1,2 @@
+debian/tmp/usr/lib/enlightenment/modules/rain/*.png
+debian/tmp/usr/lib/enlightenment/modules/rain/*/*.so

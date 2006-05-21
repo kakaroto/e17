@@ -1,0 +1,4 @@
+debian/tmp/usr/lib/enlightenment/modules/evolume/*.png
+debian/tmp/usr/lib/enlightenment/modules/evolume/*.edj
+debian/tmp/usr/lib/enlightenment/modules/evolume/*/*.so
+debian/tmp/usr/lib/enlightenment/modules/evolume/*/systems/*.so

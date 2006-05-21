@@ -15,9 +15,11 @@ Boldin Pavel <boldin.pavel@gmail.com> (evolume)
 Vincent Torri (flame, tclock)
 Team Ninjapirates <http://www.dxdstudio.com/npn/> (rain)
 Andrew Williams <http://handyande.co.uk/> (snow)
+David Stevenson <david.35472@gmail.com> (moon)
+Aleksej 'sndev' Struk <astruk@gmail.com> (language)
 
 
-Copyright (calendar, cpu, emu, evolume, flame, mem, net, slideshow, uptime, wlan):
+Copyright (calendar, cpu, emu, evolume, flame, mem, moon, net, slideshow, uptime, wlan):
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -47,7 +49,7 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-Copyright (mbar, mount, rain, screenshot, snow, weather):
+Copyright (language, mbar, mount, rain, screenshot, snow, weather):
 
 You are free to distribute this software under the terms of
 the GNU General Public License.
