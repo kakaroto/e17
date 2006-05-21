@@ -1,0 +1,103 @@
+# Russian translation of screenshot module for E17.
+# This file is put in the public domain.
+# Danny Moshnakov <admin@moshnakov.org>, 2006.
+# , fuzzy
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Screenshot E17 module 0.01\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-05-21 02:57+0300\n"
+"PO-Revision-Date: 2006-05-21 03:21+0300\n"
+"Last-Translator: Danny Moshnakov <admin@moshnakov.org>\n"
+"Language-Team: English <en@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: e_mod_config.c:57
+msgid "Screenshot Configuration"
+msgstr "Настройки Снимка Экрана"
+
+#: e_mod_config.c:123 e_mod_config.c:219
+msgid "Use Import"
+msgstr "Использовать Import"
+
+#: e_mod_config.c:125 e_mod_config.c:221
+msgid "Use Scrot"
+msgstr "Использовать Scrot"
+
+#: e_mod_config.c:133 e_mod_config.c:229
+msgid "Delay Time:"
+msgstr "Задержка:"
+
+#: e_mod_config.c:140 e_mod_config.c:236
+msgid "File Settings"
+msgstr "Настройки Файла"
+
+#: e_mod_config.c:142 e_mod_config.c:238
+msgid "Save Directory:"
+msgstr "Сохранять в Папке:"
+
+#: e_mod_config.c:146 e_mod_config.c:242
+msgid "Filename (minus extension):"
+msgstr "Имя Файла (без расширения):"
+
+#: e_mod_config.c:251
+msgid "Import Options"
+msgstr "Опции Import"
+
+#: e_mod_config.c:252 e_mod_config.c:269
+msgid "Include Image Border"
+msgstr "Включая Границу Изображения"
+
+#: e_mod_config.c:254
+msgid "Use Image Dithering"
+msgstr "Использовать Сглаживание Изображения"
+
+#: e_mod_config.c:256
+msgid "Include Window Manager Frame"
+msgstr "Включая Рамку Оконного Менеджера"
+
+#: e_mod_config.c:258
+msgid "Choose Window To Grab"
+msgstr "Выбрать Окно Для Снимка"
+
+#: e_mod_config.c:260
+msgid "Silent"
+msgstr "Тихий Снимок"
+
+#: e_mod_config.c:262
+msgid "Trim Edges"
+msgstr "Обрезать Края"
+
+#: e_mod_config.c:268
+msgid "Scrot Options"
+msgstr "Опции Scrot"
+
+#: e_mod_config.c:271
+msgid "Generate Thumbnail"
+msgstr "Генерировать Субкартинку"
+
+#: e_mod_main.c:130
+msgid "Screenshot"
+msgstr "Снимок Экрана"
+
+#: e_mod_main.c:165
+msgid "Configuration"
+msgstr "Конфигурация"
+
+#: e_mod_main.c:408 e_mod_main.c:460
+msgid "Enlightenment Screenshot Module"
+msgstr "Модуль Снимка Экрана для  Enlightenment"
+
+#: e_mod_main.c:409
+msgid "This module is used to take screenshots"
+msgstr "Этот модуль используетса для взятия снимков экрана"
+
+#: e_mod_main.c:461
+msgid "Please Choose A Program To Use For Taking Screenshots."
+msgstr "Пожалуйста Выберите Программу Для Использования в Снимке Экрана."
+
+

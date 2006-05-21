@@ -20,7 +20,7 @@ AC_C_CONST
 AM_ENABLE_SHARED
 AM_PROG_LIBTOOL
 
-ALL_LINGUAS="fi fr it ja sv"
+ALL_LINGUAS="fi fr it ja ru sv"
 AC_SUBST(ALL_LINGUAS)
 
 AM_GNU_GETTEXT([external])
