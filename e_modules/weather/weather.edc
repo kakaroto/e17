@@ -65,7 +65,7 @@ collections
 	       {
 		  name:         "temp";
 		  type:         TEXT;
-		  effect:       OUTLINE_SHADOW;
+		  effect:       OUTLINE_SOFT_SHADOW;
 		  mouse_events: 0;
 		  //clip_to: "base";
 		  description
@@ -100,7 +100,7 @@ collections
 	       {
 		  name:         "location";
 		  type:         TEXT;
-		  effect:       OUTLINE_SHADOW;
+		  effect:       OUTLINE_SOFT_SHADOW;
 		  //clip_to: "base";
 		  mouse_events: 0;
 		  description
@@ -171,7 +171,7 @@ collections
 	       {
 		  name:         "conditions";
 		  type:         TEXT;
-		  effect:       OUTLINE_SHADOW;
+		  effect:       OUTLINE_SOFT_SHADOW;
 		  //clip_to: "base";
 		  mouse_events: 0;
 		  description
