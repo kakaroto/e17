@@ -121,16 +121,21 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    Config_Item *ci;
 
    ci = cfd->data;
-   ci->resolution = cfdata->resolution;   
+   ci->show_date = cfdata->show_date;
+   ci->show_time = cfdata->show_time;   
+   ci->time_format = cfdata->time_format;
+   ci->date_format = cfdata->date_format;
+   
+   ci->resolution = cfdata->resolution;
    if (cfdata->resolution == RESOLUTION_MINUTE)
      ci->poll_time = 60.0;
    else
      ci->poll_time = 1.0;
-
-   ci->show_date = cfdata->show_date;
-   ci->show_time = cfdata->show_time;
-   ci->time_format = cfdata->time_format;
-   ci->date_format = cfdata->date_format;
+   
+   /* If we're not showing time, no reason to update every second */
+   if (!cfdata->show_time)
+     ci->poll_time = 60.0;
+     
    e_config_save_queue();   
 
    _tclock_config_updated(ci->id);
