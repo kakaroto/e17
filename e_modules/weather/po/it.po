@@ -6,67 +6,75 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Weather\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-20 20:24+0100\n"
-"PO-Revision-Date: 2006-03-20 20:21+0100\n"
+"POT-Creation-Date: 2006-05-21 10:14+0200\n"
+"PO-Revision-Date: 2006-05-21 10:22+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:33
+#: e_mod_config.c:34
 msgid "Weather Configuration"
 msgstr "Configurazione di Weather"
 
-#: e_mod_config.c:75
+#: e_mod_config.c:77
 msgid "Display Settings"
 msgstr "Visualizzazione"
 
-#: e_mod_config.c:77
+#: e_mod_config.c:79
 msgid "Simple"
 msgstr "Semplice"
 
-#: e_mod_config.c:79
+#: e_mod_config.c:81
 msgid "Detailed"
 msgstr "Dettagliata"
 
-#: e_mod_config.c:81
+#: e_mod_config.c:83
 msgid "Poll Time"
 msgstr "Tempo di campionamento"
 
-#: e_mod_config.c:83
+#: e_mod_config.c:85
 #, c-format
 msgid "%2.0f minutes"
 msgstr "%2.0f minuti"
 
-#: e_mod_config.c:87
+#: e_mod_config.c:89
 msgid "Degree Settings"
 msgstr "Scala temperatura"
 
-#: e_mod_config.c:89
+#: e_mod_config.c:91
 msgid "Celsius"
 msgstr "Centigrada"
 
-#: e_mod_config.c:91
+#: e_mod_config.c:93
 msgid "Farenheit"
 msgstr "Farenheit"
 
-#: e_mod_config.c:95 e_mod_config.c:96
+#: e_mod_config.c:97 e_mod_config.c:98
 msgid "ICAO Code"
 msgstr "Codice ICAO"
 
-#: e_mod_config.c:101
+#: e_mod_config.c:103
 msgid "Get your ICAO code at:"
 msgstr "Ottenete il codice ICAO da:"
 
-#: e_mod_config.c:103
+#: e_mod_config.c:105
 msgid "http://www.weather.gov/tg/siteloc.shtml"
 msgstr "http://www.weather.gov/tg/siteloc.shtml"
 
-#: e_mod_main.c:92
+#: e_mod_main.c:144
+msgid "Weather"
+msgstr "Weather"
+
+#: e_mod_main.c:179
+msgid "Configuration"
+msgstr "Configurazione"
+
+#: e_mod_main.c:373
 msgid "Enlightenment Weather Module"
 msgstr "Modulo Weather di Enlightenment"
 
-#: e_mod_main.c:93
+#: e_mod_main.c:374
 msgid "A weather forecast module for Enlightenment"
 msgstr "Un modulo per le previsioni del tempo per Enlightenment."
