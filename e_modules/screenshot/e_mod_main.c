@@ -453,7 +453,7 @@ _ss_handle_mouse_down(Instance *inst)
    else 
      {
 	e_module_dialog_show(D_("Enlightenment Screenshot Module"),
-			     D_("Please Choose A Program To Use For Taking Screenshots."));
+			     D_("Please install either import or scrot for taking screenshots."));
 	return;
      }
    
