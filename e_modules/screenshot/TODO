@@ -12,3 +12,8 @@ and two buttons "Close" and "Save As....".
 In the Advanced case, i'd leave the behaviour of the ss as is.
 
 Option to allow prompting to user of filename to use.
+
+* Nice to have *
+
+* The ss module should highlight when mouse overs it. Similarly as Start module does.
+  Because now, it is not clear if the user can press on it and expect some actions.
