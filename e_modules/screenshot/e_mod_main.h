@@ -6,7 +6,7 @@
 typedef struct _Config Config;
 typedef struct _Config_Item Config_Item;
 
-struct _Config 
+struct _Config
 {
    E_Module *module;
    E_Config_Dialog *config_dialog;
@@ -19,7 +19,7 @@ struct _Config
 struct _Config_Item
 {
    const char *id;
-   
+
    double delay_time;
    unsigned char use_import;
    unsigned char use_scrot;
@@ -28,21 +28,21 @@ struct _Config_Item
    int use_app;
    const char *app;
    struct
-     {
-	unsigned char use_img_border;
-	unsigned char use_dither;
-	unsigned char use_frame;
-	unsigned char use_mono;
-	unsigned char use_window;
-	unsigned char use_silent;
-	unsigned char use_trim;
-     } import;
-  
+   {
+      unsigned char use_img_border;
+      unsigned char use_dither;
+      unsigned char use_frame;
+      unsigned char use_mono;
+      unsigned char use_window;
+      unsigned char use_silent;
+      unsigned char use_trim;
+   } import;
+
    struct
-     {
-	unsigned char use_img_border;
-	unsigned char use_thumb;
-     } scrot;
+   {
+      unsigned char use_img_border;
+      unsigned char use_thumb;
+   } scrot;
 };
 
 EAPI extern E_Module_Api e_modapi;

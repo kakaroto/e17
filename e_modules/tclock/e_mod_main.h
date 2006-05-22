@@ -18,7 +18,7 @@ struct _Config
    Evas_List *items;
 };
 
-struct _Config_Item 
+struct _Config_Item
 {
    const char *id;
    int resolution;
@@ -26,7 +26,7 @@ struct _Config_Item
    int show_time;
    int show_date;
    char *time_format;
-   char *date_format;   
+   char *date_format;
 };
 
 EAPI extern E_Module_Api e_modapi;

@@ -24,7 +24,7 @@ _config_tclock_module(Config_Item *ci)
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
    E_Container *con;
-   
+
    v = E_NEW(E_Config_Dialog_View, 1);
 
    v->create_cfdata = _create_data;
@@ -39,7 +39,7 @@ _config_tclock_module(Config_Item *ci)
 
 static void
 _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata)
-{   
+{
    cfdata->resolution = ci->resolution;
    cfdata->show_time = ci->show_time;
    cfdata->show_date = ci->show_date;
@@ -52,9 +52,10 @@ _create_data(E_Config_Dialog *cfd)
 {
    E_Config_Dialog_Data *cfdata;
    Config_Item *ci;
-   
+
    ci = cfd->data;
    cfdata = E_NEW(E_Config_Dialog_Data, 1);
+
    _fill_data(ci, cfdata);
    return cfdata;
 }
@@ -63,7 +64,7 @@ static void
 _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    if (!tclock_config)
-     return;
+      return;
    tclock_config->config_dialog = NULL;
    free(cfdata);
 }
@@ -95,10 +96,10 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    e_widget_min_size_set(date_entry, 150, 1);
    e_widget_frametable_object_append(of, date_entry, 0, 1, 1, 1, 1, 0, 1, 0);
    ob = e_widget_label_add(evas, D_("Consult strftime(3) for format syntax"));
-   e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 0, 1, 0);   
+   e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 0, 1, 0);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
-   
-   of = e_widget_frametable_add(evas, D_("Time"), 1);   
+
+   of = e_widget_frametable_add(evas, D_("Time"), 1);
    time_check = e_widget_check_add(evas, D_("Show Time"), &(cfdata->show_time));
    if (cfdata->show_time)
       e_widget_check_checked_set(time_check, 1);
@@ -109,9 +110,9 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    e_widget_min_size_set(time_entry, 150, 1);
    e_widget_frametable_object_append(of, time_entry, 0, 1, 1, 1, 1, 0, 1, 0);
    ob = e_widget_label_add(evas, D_("Consult strftime(3) for format syntax"));
-   e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 0, 1, 0);   
+   e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 0, 1, 0);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
-   
+
    return o;
 }
 
@@ -122,21 +123,21 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
    ci = cfd->data;
    ci->show_date = cfdata->show_date;
-   ci->show_time = cfdata->show_time;   
+   ci->show_time = cfdata->show_time;
    ci->time_format = cfdata->time_format;
    ci->date_format = cfdata->date_format;
-   
+
    ci->resolution = cfdata->resolution;
    if (cfdata->resolution == RESOLUTION_MINUTE)
-     ci->poll_time = 60.0;
+      ci->poll_time = 60.0;
    else
-     ci->poll_time = 1.0;
-   
+      ci->poll_time = 1.0;
+
    /* If we're not showing time, no reason to update every second */
    if (!cfdata->show_time)
-     ci->poll_time = 60.0;
-     
-   e_config_save_queue();   
+      ci->poll_time = 60.0;
+
+   e_config_save_queue();
 
    _tclock_config_updated(ci->id);
    return 1;
@@ -146,6 +147,7 @@ static void
 onTimeCheckChange(void *data, Evas_Object *obj)
 {
    int checked = e_widget_check_checked_get(obj);
+
    e_widget_disabled_set(data, !checked);
 }
 
@@ -153,5 +155,6 @@ static void
 onDateCheckChange(void *data, Evas_Object *obj)
 {
    int checked = e_widget_check_checked_get(obj);
+
    e_widget_disabled_set(data, !checked);
 }

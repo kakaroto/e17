@@ -12,7 +12,7 @@ typedef struct _Config Config;
 typedef struct _Config_Item Config_Item;
 
 struct _Config
-{   
+{
    E_Module *module;
    E_Config_Dialog *config_dialog;
    Evas_List *instances;
@@ -25,10 +25,10 @@ struct _Config
    Ecore_Event_Handler *data_handler;
 };
 
-struct _Config_Item 
+struct _Config_Item
 {
    const char *id;
-   
+
    double poll_time;
    int display, degrees;
    const char *host, *code;
@@ -36,7 +36,7 @@ struct _Config_Item
    {
       const char *host;
       int port;
-   } proxy;   
+   } proxy;
 };
 
 EAPI extern E_Module_Api e_modapi;

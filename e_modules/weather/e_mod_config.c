@@ -21,7 +21,7 @@ _config_weather_module(Config_Item *ci)
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
    E_Container *con;
-   
+
    v = E_NEW(E_Config_Dialog_View, 1);
 
    v->create_cfdata = _create_data;
@@ -53,6 +53,7 @@ _create_data(E_Config_Dialog *cfd)
 
    ci = cfd->data;
    cfdata = E_NEW(E_Config_Dialog_Data, 1);
+
    _fill_data(ci, cfdata);
    return cfdata;
 }
@@ -61,8 +62,8 @@ static void
 _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    if (!weather_config)
-     return;
-   
+      return;
+
    weather_config->config_dialog = NULL;
    free(cfdata);
 }
@@ -132,8 +133,8 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
       evas_stringshare_del(ci->code);
    ci->code = evas_stringshare_add((char *)toupper(cfdata->code));
 
-   e_config_save_queue();   
-   
+   e_config_save_queue();
+
    printf("Updating Config: %s\n", ci->id);
    _weather_config_updated(ci->id);
    return 1;
