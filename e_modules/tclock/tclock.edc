@@ -13,7 +13,7 @@ collections
 		  description
 		    {
 		       state: "default" 0.0;
-		       color: 255 255 255 0;
+		       color: 255 255 255 255;
 		    }
 	       }
 	     part
@@ -21,6 +21,7 @@ collections
 		  name: "tclock_time";
 		  type: TEXT;
 		  effect: OUTLINE_SOFT_SHADOW;
+		  clip_to: "base";
 		  mouse_events: 1;
 		  description
 		    {
@@ -65,6 +66,7 @@ collections
 	       {
 		  name: "tclock_date";
 		  type: TEXT;
+		  clip_to: "base";
 		  effect: OUTLINE_SOFT_SHADOW;
 		  mouse_events: 1;		  
 		  description
