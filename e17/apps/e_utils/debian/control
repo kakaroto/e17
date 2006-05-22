@@ -9,7 +9,7 @@ Standards-Version: 3.6.1.0
 Package: eutils
 Section: x11
 Architecture: any
-Depends: ${shlibs:Depends}, libevas0, libecore0, libesmart0, libedje0, libeet0, libewl0, libengrave0, libimlib2, libe, libepsilon 
+Depends: ${shlibs:Depends}, libevas0, libecore0, libesmart0, libedje0, libeet0, libewl0, libengrave0, libimlib2, enlightenment, libepsilon 
 Description: A collection of utilities for use with E17 and EFL apps.
  This package contains the following E17 tools:
  e17genmenu - Application to automatically generate menu entries.
