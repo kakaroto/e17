@@ -421,18 +421,15 @@ static Screenshot *
 _ss_new(Evas *evas)
 {
    Screenshot *ss;
-   Evas_Object *o;
    char buf[4096];
 
    ss = E_NEW(Screenshot, 1);
-
    ss->ss_obj = edje_object_add(evas);
 
    snprintf(buf, sizeof(buf), "%s/screenshot.edj", e_module_dir_get(ss_config->module));
    if (!e_theme_edje_object_set(ss->ss_obj, "base/theme/modules/screenshot", "modules/screenshot/main"))
       edje_object_file_set(ss->ss_obj, buf, "modules/screenshot/main");
    evas_object_show(ss->ss_obj);
-
    return ss;
 }
 
