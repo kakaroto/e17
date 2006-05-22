@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tclock module for E17 N/A\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-05-17 13:21+0200\n"
-"PO-Revision-Date: 2006-05-17 16:22+0200\n"
+"POT-Creation-Date: 2006-05-22 14:36+0200\n"
+"PO-Revision-Date: 2006-05-22 15:52+0200\n"
 "Last-Translator: Anders Trobäck <enlightenment@troback.com>\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
@@ -52,11 +52,19 @@ msgstr "Klocka"
 msgid "Show Time"
 msgstr "Visa klocka"
 
-#: e_mod_main.c:334
-msgid "Simple Digital Clock"
-msgstr "Enkel digital klocka"
+#: e_mod_main.c:103
+msgid "TClock"
+msgstr "TClock"
 
-#: e_mod_main.c:335
+#: e_mod_main.c:137
+msgid "Configuration"
+msgstr "Konfiguration"
+
+#: e_mod_main.c:403
 msgid "Displays a digital clock on the desktop"
 msgstr "Visar en digital klocka på skrivbordet"
+
+#: e_mod_main.c:403
+msgid "Simple Digital Clock"
+msgstr "Enkel digital klocka"
 
