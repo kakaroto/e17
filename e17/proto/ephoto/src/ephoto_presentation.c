@@ -496,6 +496,7 @@ presentation_cb(Ewl_Widget * w, void *event, void *data)
 	}
 	ewl_callback_append(s->wins, EWL_CALLBACK_DELETE_WINDOW, destroyp_cb, 
 								NULL);
+	ewl_object_size_request(EWL_OBJECT(s->wins), ws, h);
 	ewl_widget_show(s->wins);
 
         p->vbox1p = ewl_vbox_new();
