@@ -20,12 +20,14 @@ populatei_cb(Ewl_Widget *w, void *event, void *data)
 	/**************************/
 	/*****************************/
 
-	/*****Find out what directory we want to look in******/
+	/***** Find out what directory we want to look in******/
 
 	if (w == m->directory) {
 		pathi = ewl_text_text_get(EWL_TEXT(w));
 	}
-	
+	else if (data == m->directory) {
+		pathi = ewl_text_text_get(EWL_TEXT(m->directory));
+	}
 	else {
 		pathi = ewl_widget_name_get(w);
 	}
