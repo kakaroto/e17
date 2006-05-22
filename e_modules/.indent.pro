@@ -1,4 +1,10 @@
 -i3 -bl -bad -nbap -sob -ncdb -di1 -nbc -lp -nce -npcs -sc -ncs -l132 -nut
+-T Instance
+-T Config_Item
+-T Screenshot
+-T Weather
+-T E_Gadcon_Client
+-T E_Gadcon
 -T App_Edit_CFData
 -T CFData
 -T CalFonts
