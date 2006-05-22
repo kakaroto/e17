@@ -1597,6 +1597,7 @@ ewl_embed_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Embed *emb;
+	Ewl_Object *child;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -1608,6 +1609,42 @@ ewl_embed_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 				 (Evas_Coord)(CURRENT_Y(w)));
 		evas_object_resize(emb->ev_clip, (Evas_Coord)(CURRENT_W(w)),
 				   (Evas_Coord)(CURRENT_H(w)));
+	}
+	
+	/*
+	 * Configure each of the child widgets.
+	 */
+	ecore_dlist_goto_first(EWL_CONTAINER(w)->children);
+	while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children))) {
+		int x, y;
+		int size;
+
+		/*
+		 * Try to give the child the full size of the window from it's
+		 * base position. The object will constrict it based on the
+		 * fill policy. Don't add the TOP and LEFT insets since
+		 * they've already been accounted for.
+		 */
+		x = ewl_object_current_x_get(EWL_OBJECT(child));
+		y = ewl_object_current_y_get(EWL_OBJECT(child));
+
+		if (x < CURRENT_X(w)) {
+			x = CURRENT_X(w);
+			size = ewl_object_preferred_w_get(EWL_OBJECT(child));
+			if (size > PREFERRED_W(w))
+				ewl_object_preferred_inner_w_set(EWL_OBJECT(w),
+						size);
+		}
+		if (y < CURRENT_Y(w)) {
+			y = CURRENT_Y(w);
+			size = ewl_object_preferred_h_get(EWL_OBJECT(child));
+			if (size > PREFERRED_H(w))
+				ewl_object_preferred_inner_h_set(EWL_OBJECT(w),
+						size);
+		}
+
+		ewl_object_place(child, x, y, CURRENT_W(w) - (x - CURRENT_X(w)),
+				 CURRENT_H(w) - (y - CURRENT_Y(w)));
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
