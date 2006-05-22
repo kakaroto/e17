@@ -7,6 +7,8 @@ static Etk_Widget* mime_dialog_window = NULL;
 static Etk_Widget* mime_dialog_add_edit_window = NULL;
 static Etk_Widget* mime_dialog_add_edit_application_window = NULL;
 
+static Entropy_Config_Mime_Binding_Action* edit_action = NULL;
+
 static	Etk_Widget* etk_mime_mime_entry;
 static	Etk_Widget* etk_mime_desc_entry;
 
@@ -24,7 +26,7 @@ static Etk_Bool _etk_window_deleted_cb (Etk_Object * object, void *data);
 void etk_mime_dialog_add_edit_create();
 void etk_mime_dialog_create();
 void etk_mime_dialog_tree_populate();
-void etk_mime_dialog_application_create(char* mime, int pos);
+void etk_mime_dialog_application_create(char* mime, Entropy_Config_Mime_Binding_Action*);
 void _entropy_etk_mime_dialog_app_add_edit_final_cb(Etk_Object* w, void* user_data);
 void etk_mime_dialog_populate_nth_binding_apps(int record);
 
@@ -98,14 +100,23 @@ void _entropy_etk_mime_dialog_app_add_edit_final_cb(Etk_Object* w, void* user_da
 	const char *args = etk_entry_text_get(ETK_ENTRY(etk_mime_app_args_entry)); 
 	const char *mime = user_data;
 
-	if (mime && args && exe && name)
-		entropy_core_mime_application_add((char*)mime, (char*)name, (char*)exe, (char*)args);
+	if (!edit_action) {
+		if (mime && args && exe && name)
+			entropy_core_mime_application_add((char*)mime, (char*)name, (char*)exe, (char*)args);
+	} else {
+		if (edit_action->app_description) free(edit_action->app_description);
+		if (name) edit_action->app_description = strdup(name);
+		if (edit_action->executable) free(edit_action->executable);
+		if (exe) edit_action->executable = strdup(exe);
+		if (edit_action->args) free(edit_action->args);
+		if (args) edit_action->args = strdup(args);
+	}
+
+	etk_mime_dialog_populate_nth_binding_apps(_mime_current_binding);
 
 	etk_object_destroy(ETK_OBJECT(mime_dialog_add_edit_application_window));
 	mime_dialog_add_edit_application_window = NULL;
 
-
-	etk_mime_dialog_populate_nth_binding_apps(_mime_current_binding);
 }
 
 
@@ -180,14 +191,26 @@ void _entropy_etk_mime_dialog_application_add_cb(Etk_Object* w, void* user_data)
 	Etk_Tree_Col* col2;
 	Etk_Tree_Row* row;
 	char* mime_type = NULL;
+	Entropy_Config_Mime_Binding_Action* action = NULL;
+
 
 	col2 = etk_tree_nth_col_get(ETK_TREE(_etk_mime_dialog_main_tree), 1);
 	row = etk_tree_selected_row_get(ETK_TREE(_etk_mime_dialog_main_tree));
 
 	if (row) {
+		int isedit = (int)user_data;
+
+		if (isedit) {
+			Etk_Tree_Row* app_row = etk_tree_selected_row_get(ETK_TREE(_etk_mime_dialog_sub_tree));
+			edit_action = etk_tree_row_data_get(app_row);
+			action = edit_action;
+		} else {
+			edit_action = NULL;
+		}
+		
 		etk_tree_row_fields_get(row, col2, &mime_type, NULL);
 		if (mime_type) {
-			etk_mime_dialog_application_create(mime_type,-1);	
+			etk_mime_dialog_application_create(mime_type,action);	
 		}
 	}
 }
@@ -361,7 +384,7 @@ void etk_mime_dialog_add_edit_create(char* mime, char* program) {
 
 
 
-void etk_mime_dialog_application_create(char* mime, int pos) {
+void etk_mime_dialog_application_create(char* mime, Entropy_Config_Mime_Binding_Action* action) {
 	Etk_Widget* table;
 	Etk_Widget* label;
 	Etk_Widget* button;
@@ -388,10 +411,6 @@ void etk_mime_dialog_application_create(char* mime, int pos) {
 				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
 
 	etk_mime_app_name_entry = etk_entry_new();
-	/*if (mime) {
-		printf("Setting mime to '%s'...\n", mime);
-		etk_entry_text_set(ETK_ENTRY(etk_mime_mime_entry), mime);
-	}*/
 	etk_table_attach(ETK_TABLE(table), etk_mime_app_name_entry,1,1,0,0,
 				0,0,
 				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
@@ -423,21 +442,25 @@ void etk_mime_dialog_application_create(char* mime, int pos) {
 	etk_table_attach(ETK_TABLE(table), button,0,0,3,3,
 				0,0,
 				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
-	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(_entropy_etk_mime_dialog_app_add_edit_final_cb), 
-				mime );
+	etk_signal_connect("pressed", ETK_OBJECT(button), 
+			ETK_CALLBACK(_entropy_etk_mime_dialog_app_add_edit_final_cb), mime );
 
 	button = etk_button_new_with_label("Cancel");
 	etk_table_attach(ETK_TABLE(table), button,1,1,3,3,
 				0,0,
 				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
-	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(_entropy_etk_mime_dialog_app_add_edit_cancel_cb), 
-				NULL );
+	etk_signal_connect("pressed", ETK_OBJECT(button), 
+			ETK_CALLBACK(_entropy_etk_mime_dialog_app_add_edit_cancel_cb), NULL );
 
 	etk_container_add(ETK_CONTAINER(window), table);
 
-
-
 	etk_widget_show_all(window);
+
+	if (action) {
+		etk_entry_text_set(ETK_ENTRY(etk_mime_app_name_entry), action->app_description);
+		etk_entry_text_set(ETK_ENTRY(etk_mime_app_exe_entry), action->executable);
+		etk_entry_text_set(ETK_ENTRY(etk_mime_app_args_entry), action->args);
+	}
 
 }
 
@@ -537,6 +560,7 @@ void etk_mime_dialog_create()
 	//
 	button = etk_button_new_with_label("Edit");
 	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
+	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(_entropy_etk_mime_dialog_application_add_cb), (int*)1);
 
 	button = etk_button_new_with_label("Remove");
 	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
