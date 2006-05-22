@@ -624,3 +624,24 @@ void imagerealize_cb(Ewl_Widget *w, void *event, void *data)
 	event = NULL;
 	data = NULL;
 }
+void key_cb(Ewl_Widget *w, void *event, void *data)
+{
+	Ewl_Event_Key_Down *ev;
+	ev = event;
+	if (ev->modifiers && EWL_KEY_MODIFIER_CTRL) {
+		if (strcmp(ev->keyname, "s") == 0) {
+			ewl_callback_call(m->slideshow, EWL_CALLBACK_CLICKED);
+		}
+		if (strcmp(ev->keyname, "p") == 0) {
+			ewl_callback_call(m->presentation, 
+							EWL_CALLBACK_CLICKED);
+		}
+		if (strcmp(ev->keyname, "q") == 0) {
+			ewl_callback_call(m->win, EWL_CALLBACK_DELETE_WINDOW);
+		}
+	}
+	return;
+	w = NULL;
+	event = NULL;
+	data = NULL;
+}
