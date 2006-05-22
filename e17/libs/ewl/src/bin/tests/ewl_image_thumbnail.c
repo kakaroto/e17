@@ -1,4 +1,5 @@
 #include "Ewl_Test.h"
+#include "ewl_test_private.h"
 #include <Ecore_File.h>
 #include <stdio.h>
 #include <stdlib.h>

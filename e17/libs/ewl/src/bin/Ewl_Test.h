@@ -2,13 +2,6 @@
 #define EWL_TEST_H
 
 #include <Ewl.h>
-#include <ewl-config.h>
-
-#if HAVE___ATTRIBUTE__
-#define __UNUSED__ __attribute__((unused))
-#else
-#define __UNUSED__
-#endif
 
 /**
  * @enum Ewl_Test_Type

@@ -1,4 +1,5 @@
 #include "Ewl_Test.h"
+#include "ewl_test_private.h"
 #include <sys/types.h>
 #include <dirent.h>
 #include <stdio.h>

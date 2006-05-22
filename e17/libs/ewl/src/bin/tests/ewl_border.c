@@ -1,4 +1,5 @@
 #include "Ewl_Test.h"
+#include "ewl_test_private.h"
 
 static Ewl_Widget *button_aleft, *button_acenter;
 static Ewl_Widget *button_aright, *button_atop, *button_abottom;
