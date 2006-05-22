@@ -33,3 +33,6 @@ EXTRA_DIST 			= 	$(ewl_test_SOURCES) \
 exampledir 			=	$(pkgdatadir)/examples/
 example_DATA 			=	$(ewl_test_SOURCES)
 
+installed_headersdir = $(prefix)/include/ewl
+installed_headers_DATA = Ewl_Test.h
+

@@ -108,7 +108,6 @@ create_test(Ewl_Container *box)
 		ewl_callback_append(o, EWL_CALLBACK_CLICKED,
 					ewl_freebox_cb_clear, fb);
 		ewl_widget_show(o);
-
 	}
 
 	return 1;
