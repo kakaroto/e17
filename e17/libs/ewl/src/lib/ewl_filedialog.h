@@ -37,7 +37,6 @@ struct Ewl_Filedialog
 {
 	Ewl_Dialog dialog;	/**< The dialog base class */
 	Ewl_Widget *fp;	   	/**< Ewl_Filepicker */
-	Ewl_Widget *menu_float;	/**< Floater to hold the menu */
 	Ewl_Widget *menu;	/**< The menu */
 };
 

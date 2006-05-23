@@ -101,28 +101,14 @@ ewl_filedialog_init(Ewl_Filedialog *fd)
 	ewl_dialog_has_separator_set(EWL_DIALOG(fd), FALSE);
 	ewl_widget_hide(EWL_DIALOG(fd)->action_area);
 
-	fd->menu_float = ewl_floater_new();
-	ewl_container_child_append(EWL_CONTAINER(fd), fd->menu_float);
-	ewl_object_fill_policy_set(EWL_OBJECT(fd->menu_float),
-						EWL_FLAG_FILL_FILL);
-	ewl_widget_internal_set(EWL_WIDGET(fd->menu_float), TRUE);
-
 	fd->menu = ewl_menu_new();
 	ewl_button_label_set(EWL_BUTTON(fd->menu), " ");
-	ewl_container_child_append(EWL_CONTAINER(fd->menu_float), fd->menu);
 	ewl_widget_show(fd->menu);
 
 	menu = ewl_menu_new();
 	ewl_button_label_set(EWL_BUTTON(menu), "View");
 	ewl_container_child_append(EWL_CONTAINER(fd->menu), menu);
 	ewl_widget_show(menu);
-
-	o = ewl_menu_item_new();
-	ewl_button_label_set(EWL_BUTTON(o), "Column view");
-	ewl_container_child_append(EWL_CONTAINER(menu), o);
-	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-				ewl_filedialog_cb_column_view, fd);
-	ewl_widget_show(o);
 
 	o = ewl_menu_item_new();
 	ewl_button_label_set(EWL_BUTTON(o), "Icon view");
@@ -136,6 +122,13 @@ ewl_filedialog_init(Ewl_Filedialog *fd)
 	ewl_container_child_append(EWL_CONTAINER(menu), o);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
 				ewl_filedialog_cb_list_view, fd);
+	ewl_widget_show(o);
+
+	o = ewl_menu_item_new();
+	ewl_button_label_set(EWL_BUTTON(o), "Column view");
+	ewl_container_child_append(EWL_CONTAINER(menu), o);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
+				ewl_filedialog_cb_column_view, fd);
 	ewl_widget_show(o);
 
 	o = ewl_menu_item_new();
@@ -483,13 +476,21 @@ ewl_filedialog_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 
 	if (event->button == 3)
 	{
-		ewl_floater_position_set(EWL_FLOATER(fd->menu_float),
-						event->x, event->y);
-		ewl_widget_show(fd->menu_float);
+		Ewl_Menu *menu;
+		Ewl_Embed *emb;
+		int x, y;
+
+		emb = ewl_embed_widget_find(w);
+		ewl_embed_window_position_get(emb, &x, &y);
+
+		menu = EWL_MENU(fd->menu);
+		ewl_window_move(EWL_WINDOW(menu->base.popup), 
+					x + event->x, y + event->y);
+		ewl_widget_show(fd->menu);
 
 		ewl_callback_call(EWL_WIDGET(fd->menu),
 					EWL_CALLBACK_FOCUS_IN);
-		ewl_object_state_remove(EWL_OBJECT(fd->menu_float),
+		ewl_object_state_remove(EWL_OBJECT(fd->menu),
 						EWL_FLAG_STATE_PRESSED);
 	}
 
