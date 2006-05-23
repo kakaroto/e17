@@ -557,7 +557,7 @@ ewl_image_thumbnail_init(Ewl_Image_Thumbnail *image)
  * given by @a path.
  */
 void
-ewl_image_thumbnail_request(Ewl_Image_Thumbnail *thumb, char *path)
+ewl_image_thumbnail_request(Ewl_Image_Thumbnail *thumb, const char *path)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("thumb", thumb);
@@ -565,7 +565,7 @@ ewl_image_thumbnail_request(Ewl_Image_Thumbnail *thumb, char *path)
 	DCHECK_PARAM_PTR("path", path);
 
 #ifdef BUILD_EPSILON_SUPPORT
-	thumb->thumb = epsilon_add(path, NULL, EPSILON_THUMB_NORMAL, thumb);
+	thumb->thumb = epsilon_add((char *)path, NULL, EPSILON_THUMB_NORMAL, thumb);
 #else
 	thumb->thumb = NULL;
 #endif

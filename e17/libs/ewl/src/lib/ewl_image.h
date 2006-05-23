@@ -127,7 +127,7 @@ Ewl_Widget      *ewl_image_thumbnail_get(Ewl_Image *i);
 Ewl_Widget      *ewl_image_thumbnail_new(void);
 int              ewl_image_thumbnail_init(Ewl_Image_Thumbnail *image);
 void             ewl_image_thumbnail_request(Ewl_Image_Thumbnail *thumb,
-					     char *path);
+					     const char *path);
 
 /*
  * Internally used callbacks, override at your own risk.
