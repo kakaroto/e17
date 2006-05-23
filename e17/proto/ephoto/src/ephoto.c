@@ -21,6 +21,7 @@ int argfullscreen = 0;
 int arglload = 0;
 int argviewi = 0;
 int argloadidir = 0;
+int argzoom = 0;
 char *audios;
 char buf[PATH_MAX];
 char argimage[PATH_MAX];
@@ -223,6 +224,10 @@ main(int argc, char **argv)
 						"--load-dir-images") ) {
 			argloadidir = 1;
 		}
+		else if ( argint < argc && !strcmp(argv[argint],
+						"--zoom-images") ) {
+			argzoom = 1;
+		}
 		else if ( argint < argc && !strcmp(argv[argint], "--help") ) {
 			printf("ephoto /path/to/dir loads /path/to/dir"
 				"as default directory | " 
@@ -267,7 +272,8 @@ main(int argc, char **argv)
 				" integer1 integer2 sets the first integer"
 				" as the width and the second integer as the"
 				" height of the presentation/slideshow"
-				" window\n");
+				" window | ephoto --zoom-images zooms the"
+				" images to fit the window\n");
 			mainwin = 0;
 		}
 		argint++;
@@ -598,7 +604,7 @@ main(int argc, char **argv)
 						EWL_FLAG_ALIGN_CENTER);
 		ewl_box_spacing_set(EWL_BOX(m->settings), 2);
 		ewl_object_maximum_size_set(EWL_OBJECT(m->settings), 
-								999999, 240);
+								999999, 225);
 		ewl_widget_show(m->settings);
 
 		m->hboxv = ewl_hbox_new();
@@ -744,6 +750,10 @@ main(int argc, char **argv)
                 ewl_container_child_append(EWL_CONTAINER(m->settings), m->zoom);
                 ewl_object_alignment_set(EWL_OBJECT(m->zoom), 
 						EWL_FLAG_ALIGN_CENTER);
+		if ( argzoom == 1 ) {
+			ewl_checkbutton_checked_set(EWL_CHECKBUTTON(m->zoom), 
+								TRUE);
+		}
                 ewl_widget_show(m->zoom);
 
 		m->hboxv = ewl_hbox_new();

@@ -159,6 +159,7 @@ extern int argfit;
 extern int argfullscreen;
 extern int argloop;
 extern int arglload;
+extern int argzoom;
 extern char argload[PATH_MAX];
 extern char argwidth[PATH_MAX];
 extern char argheight[PATH_MAX];
