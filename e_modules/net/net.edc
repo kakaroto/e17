@@ -1,6 +1,28 @@
 images
 {
-   image: "eth_dev.png" COMP;
+   image: "module_icon.png" COMP;
+   image: "rx_00.png" COMP;
+   image: "rx_01.png" COMP;
+   image: "rx_02.png" COMP;
+   image: "rx_03.png" COMP;
+   image: "rx_04.png" COMP;
+   image: "rx_05.png" COMP;
+   image: "rx_06.png" COMP;
+   image: "rx_07.png" COMP;
+   image: "rx_08.png" COMP;
+   image: "rx_09.png" COMP;
+   image: "rx_10.png" COMP;
+   image: "tx_00.png" COMP;
+   image: "tx_01.png" COMP;
+   image: "tx_02.png" COMP;
+   image: "tx_03.png" COMP;
+   image: "tx_04.png" COMP;
+   image: "tx_05.png" COMP;
+   image: "tx_06.png" COMP;
+   image: "tx_07.png" COMP;
+   image: "tx_08.png" COMP;
+   image: "tx_09.png" COMP;
+   image: "tx_10.png" COMP;
 }
 
 fonts
@@ -13,190 +35,434 @@ collections
    group
      {
 	name: "modules/net/main";
+	min: 4 4;
+	max: 128 128;
+	script 
+	  {
+	   public message(Msg_Type:type, id, ...) 
+	       {
+		  if ((type == MSG_INT_SET) && (id == 1)) 
+		    {
+		       new f = getarg(2);
+		       new Float:value;
+		       
+		       value = f;
+		       value = (value / 10);
+		       set_state(PART:"rx_meter", "default", value);
+		    }
+		  if ((type == MSG_INT_SET) && (id == 2)) 
+		    {
+		       new f = getarg(2);
+		       new Float:value;
+		       
+		       value = f;
+		       value = (value / 10);
+		       set_state(PART:"tx_meter", "default", value);
+		    }		  
+	       }	     
+	  }
+	
 	parts
 	  {
 	     part
 	       {
-		  name:           "net_clip";
-		  type:           RECT;
-		  mouse_events:   0;
+		  name: "fade_clip";
+		  type: RECT;
+		  mouse_events: 1;
 		  description
 		    {
 		       state: "default" 0.0;
 		       color: 255 255 255 255;
-		    }
-	       }
-	     part
-	       {
-		  name:          "net";
-		  clip_to: "net_clip";
-		  mouse_events:  0;
-		  description
-		    {
-		       state:    "default" 0.0;
-		       color: 255 255 255 176;
-		       //aspect:   0.5 2.25;
 		       rel1
 			 {
 			    relative: 0.0 0.0;
+			    offset: 0 0;
 			 }
 		       rel2
 			 {
 			    relative: 1.0 1.0;
+			    offset: -1 -1;
+			 }
+		    }
+	       }
+	     part
+	       {
+		  name: "net";
+		  type: IMAGE;
+		  mouse_events: 1;
+		  clip_to: "fade_clip";
+		  description
+		    {
+		       state: "default" 0.0;
+		       aspect: 1.0 1.0;
+		       rel1
+			 {
+			    relative: 0.0 0.0;
+			    offset: 0 0;
+			 }
+		       rel2
+			 {
+			    relative: 1.0 1.0;
+			    offset: -1 -1;
 			 }
 		       image
 			 {
-			    normal: "eth_dev.png";
+			    normal: "module_icon.png";
 			 }
-		       fill
-			 {
-			    smooth: 0;
-			 }
+		       color: 255 255 255 192;
 		    }
 	       }
 	     part
 	       {
-		  name,          "lines";
-		  mouse_events,  0;
-		  type,          SWALLOW;
-		  clip_to: 	"net_clip";
-		  description
-		    {
-		       state,    "default" 0.0;
-		       rel1
-			 {
-			    relative: 0.0 0.0;
-			 }
-		       rel2
-			 {
-			    relative: 1.0 1.0;
-			 }
-		       color, 0 0 0 0;
-		    }
-	       }
-	  }
-     }
-
-   group
-     {
-	name: "modules/net/tx_text";
-	parts
-	  {
-	     part
-	       {
-		  name:           "net_clip";
-		  type:           RECT;
-		  mouse_events:   0;
+		  name: "rx_meter";
+		  type: IMAGE;
+		  clip_to: "fade_clip";
+		  mouse_events: 1;
 		  description
 		    {
 		       state: "default" 0.0;
-		       color: 255 255 255 255;
-		       rel1 
+		       rel1
 			 {
 			    relative: 0.0 0.0;
 			    offset: 0 0;
 			 }
+		       rel2
+			 {
+			    relative: 1.0 0.25;
+			    offset: -1 -1;
+			 }
+		       image
+			 {
+			    normal: "rx_00.png";
+			 }
+		       color: 255 255 255 192;
+		    }
+		  description
+		    {
+		       state: "default" 0.1;
+		       inherit: "default" 0.0;
+		       image
+			 {
+			    normal: "rx_01.png";
+			 }
+		    }
+		  description
+		    {
+		       state: "default" 0.2;
+		       inherit: "default" 0.0;
+		       image
+			 {
+			    normal: "rx_02.png";
+			 }
+		    }
+		  description
+		    {
+		       state: "default" 0.3;
+		       inherit: "default" 0.0;
+		       image
+			 {
+			    normal: "rx_03.png";
+			 }
+		    }
+		  description
+		    {
+		       state: "default" 0.4;
+		       inherit: "default" 0.0;
+		       image
+			 {
+			    normal: "rx_04.png";
+			 }
+		    }
+		  description
+		    {
+		       state: "default" 0.5;
+		       inherit: "default" 0.0;
+		       image
+			 {
+			    normal: "rx_05.png";
+			 }
+		    }
+		  description
+		    {
+		       state: "default" 0.6;
+		       inherit: "default" 0.0;
+		       image
+			 {
+			    normal: "rx_06.png";
+			 }
+		    }
+		  description
+		    {
+		       state: "default" 0.7;
+		       inherit: "default" 0.0;
+		       image
+			 {
+			    normal: "rx_07.png";
+			 }
+		    }
+		  description
+		    {
+		       state: "default" 0.8;
+		       inherit: "default" 0.0;
+		       image
+			 {
+			    normal: "rx_08.png";
+			 }
+		    }
+		  description
+		    {
+		       state: "default" 0.9;
+		       inherit: "default" 0.0;
+		       image
+			 {
+			    normal: "rx_09.png";
+			 }
+		    }
+		  description
+		    {
+		       state: "default" 1.0;
+		       inherit: "default" 0.0;
+		       image
+			 {
+			    normal: "rx_10.png";
+			 }
+		    }
+	       }
+	     part 
+	       {
+		  name: "rx_label";
+		  type: TEXT;
+		  clip_to: "fade_clip";
+		  effect: SOFT_SHADOW;
+		  description 
+		    {
+		       state: "default" 0.0;
+		       color: 255 255 255 0;
+		       color3: 0 0 0 0;
+		       visible: 0;
+		       rel1 
+			 {
+			    relative: 0.5 0.0;
+			    offset: 0 0;
+			    to: "rx_meter";
+			 }
 		       rel2 
+			 {
+			    relative: 0.5 1.0;
+			    offset: -1 -1;
+			    to: "rx_meter";
+			 }
+		       text 
+			 {
+			    text: "Rx: 10 Kbps";
+			    font: "VeraMono";
+			    size: 9;
+			    min: 1 1;
+			    align: 0.5 1.0;
+			    text_class: "module_small";
+			 }
+		    }
+		  description 
+		    {
+		       state: "visible" 0.0;
+		       inherit: "default" 0.0;
+		       visible: 1;
+		       color: 255 255 255 255;
+		       color3: 0 0 0 42;
+		    }
+	       }
+	     part
+	       {
+		  name: "tx_meter";
+		  type: IMAGE;
+		  clip_to: "fade_clip";
+		  mouse_events: 1;
+		  description
+		    {
+		       state: "default" 0.0;
+		       rel1
+			 {
+			    relative: 0.0 0.75;
+			    offset: 0 0;
+			 }
+		       rel2
 			 {
 			    relative: 1.0 1.0;
 			    offset: -1 -1;
 			 }
+		       image
+			 {
+			    normal: "tx_00.png";
+			 }
+		       color: 255 255 255 192;
+		    }
+		  description
+		    {
+		       state: "default" 0.1;
+		       inherit: "default" 0.0;
+		       image
+			 {
+			    normal: "tx_01.png";
+			 }
+		    }
+		  description
+		    {
+		       state: "default" 0.2;
+		       inherit: "default" 0.0;
+		       image
+			 {
+			    normal: "tx_02.png";
+			 }
+		    }
+		  description
+		    {
+		       state: "default" 0.3;
+		       inherit: "default" 0.0;
+		       image
+			 {
+			    normal: "tx_03.png";
+			 }
+		    }
+		  description
+		    {
+		       state: "default" 0.4;
+		       inherit: "default" 0.0;
+		       image
+			 {
+			    normal: "tx_04.png";
+			 }
+		    }
+		  description
+		    {
+		       state: "default" 0.5;
+		       inherit: "default" 0.0;
+		       image
+			 {
+			    normal: "tx_05.png";
+			 }
+		    }
+		  description
+		    {
+		       state: "default" 0.6;
+		       inherit: "default" 0.0;
+		       image
+			 {
+			    normal: "tx_06.png";
+			 }
+		    }
+		  description
+		    {
+		       state: "default" 0.7;
+		       inherit: "default" 0.0;
+		       image
+			 {
+			    normal: "tx_07.png";
+			 }
+		    }
+		  description
+		    {
+		       state: "default" 0.8;
+		       inherit: "default" 0.0;
+		       image
+			 {
+			    normal: "tx_08.png";
+			 }
+		    }
+		  description
+		    {
+		       state: "default" 0.9;
+		       inherit: "default" 0.0;
+		       image
+			 {
+			    normal: "tx_09.png";
+			 }
+		    }
+		  description
+		    {
+		       state: "default" 1.0;
+		       inherit: "default" 0.0;
+		       image
+			 {
+			    normal: "tx_10.png";
+			 }
+		    }
+	       }
+	     part 
+	       {
+		  name: "tx_label";
+		  type: TEXT;
+		  clip_to: "fade_clip";
+		  effect: SOFT_SHADOW;
+		  description 
+		    {
+		       state: "default" 0.0;
+		       color: 255 255 255 0;
+		       color3: 0 0 0 0;
+		       visible: 0;
+		       rel1 
+			 {
+			    relative: 0.5 0.0;
+			    offset: 0 0;
+			    to: "tx_meter";
+			 }
+		       rel2 
+			 {
+			    relative: 0.5 1.0;
+			    offset: -1 -1;
+			    to: "tx_meter";
+			 }
+		       text 
+			 {
+			    text: "Tx: 10 Kbps";
+			    font: "VeraMono";
+			    size: 9;
+			    min: 1 1;
+			    align: 0.5 1.0;
+			    text_class: "module_small";
+			 }
+		    }
+		  description 
+		    {
+		       state: "visible" 0.0;
+		       inherit: "default" 0.0;
+		       visible: 1;
+		       color: 255 255 255 255;
+		       color3: 0 0 0 42;
 		    }
 	       }	     
-	     part
-	       {
-		  name:           "tx-text";
-		  type:           TEXT;
-		  effect:         OUTLINE_SOFT_SHADOW;
-		  clip_to: "net_clip";
-		  mouse_events: 0;
-		  description
-		    {
-		       state: "default" 0.0;
-		       align: 1.0 0.0;
-		       rel1
-			 {
-			    relative: 0.0 0.0;
-			 }
-		       rel2
-			 {
-			    relative: 1.0 0.0;
-			 }
-		       color: 128 255 128 255;
-             color2: 0 0 0 192;
-		       color3: 128 128 128 192;
-		       text
-			 {
-			    text: "Tx";
-			    font: "VeraMono";
-			    size:  10;
-			    min:     1 1;
-			    align: 1.0 0.0;
-			 }
-		    }
-	       }
 	  }
-     }
-
-   group
-     {
-	name: "modules/net/rx_text";
-	parts
+	programs 
 	  {
-	     part
+	     program 
 	       {
-		  name:           "net_clip";
-		  type:           RECT;
-		  mouse_events:   0;
-		  description
-		    {
-		       state: "default" 0.0;
-		       color: 255 255 255 255;
-		       rel1 
-			 {
-			    relative: 0.0 0.0;
-			    offset: 0 0;
-			 }
-		       rel2 
-			 {
-			    relative: 1.0 1.0;
-			    offset: -1 -1;
-			 }
-		    }
+		  name: "go_active";
+		  signal: "label_active";
+		  source: "";
+		  action: STATE_SET "visible" 0.0;
+		  transition: SINUSOIDAL 0.5;
+		  target: "rx_label";
+		  target: "tx_label";
+		  //after: "go_passive2";
 	       }
-	     part
+	     program 
 	       {
-		  name:           "rx-text";
-		  type:           TEXT;
-		  effect:         OUTLINE_SOFT_SHADOW;
-		  clip_to: "net_clip";
-		  mouse_events: 0;
-		  description
-		    {
-		       state: "default" 0.0;
-		       align: 1.0 1.0;
-		       rel1
-			 {
-			    relative: 0.0 0.0;
-			 }
-		       rel2
-			 {
-			    relative: 1.0 1.0;
-			 }
-		       color: 255 192 128 255;
-             color2: 0 0 0 216;
-		       color3: 128 128 128 192;
-		       text
-			 {
-			    text: "Rx";
-			    font: "VeraMono";
-			    size:  10;
-			    min:     1 1;
-			    align: 1.0 1.0;
-			 }
-		    }
+		  name: "go_passive2";
+		  signal: "label_passive2";
+		  source: "";
+		  action: ACTION_STOP;
+		  target: "go_active";
+		  //after: "go_passive2";
+	       }
+	     program 
+	       {
+		  name: "go_passive";
+		  signal: "label_passive";
+		  source: "";
+		  action: STATE_SET "default" 0.0;
+		  transition: SINUSOIDAL 1.0;		  
+		  target: "rx_label";
+		  target: "tx_label";
 	       }
 	  }
      }
 }
-
