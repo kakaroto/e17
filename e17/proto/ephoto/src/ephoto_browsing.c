@@ -331,6 +331,12 @@ iremove_cb(Ewl_Widget *w, void *event, void *data)
 		if ( strcmp(name, name2) == 0 ) {
 			ecore_dlist_remove(m->imagelist);
 			slidenum--;
+			if ( ecore_dlist_is_empty(m->imagelist) ) {
+				ewl_widget_disable(m->slideshow);
+				ewl_widget_disable(m->presentation);
+				ewl_widget_state_set(m->slideshow, "disabled");
+				ewl_widget_state_set(m->presentation, "disabled");
+			}
 		}
 		else {
 			ecore_dlist_next(m->imagelist);

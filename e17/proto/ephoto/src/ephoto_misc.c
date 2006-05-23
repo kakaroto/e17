@@ -496,6 +496,10 @@ void reseti_cb(Ewl_Widget *w, void *event, void *data)
 				EWL_FREEBOX_LAYOUT_AUTO);
         ewl_container_child_append(EWL_CONTAINER(m->iscroll), m->ib);
         ewl_widget_show(m->ib);
+	ewl_widget_disable(m->slideshow);
+	ewl_widget_disable(m->presentation);
+	ewl_widget_state_set(m->slideshow, "disabled");
+	ewl_widget_state_set(m->presentation, "disabled");
 	return;
 	w = NULL;
 	event = NULL;
@@ -571,6 +575,10 @@ void addi(Ewl_Widget *w, void *event, void *data)
 			ecore_dlist_append(m->imagelist, strdup(pathi));
                 	slidenum++;
 		}
+		ewl_widget_enable(m->slideshow);
+		ewl_widget_enable(m->presentation);
+		ewl_widget_state_set(m->slideshow, "enabled");
+		ewl_widget_state_set(m->presentation, "enabled");
 	}
 	return;
 	w = NULL;
@@ -618,6 +626,8 @@ void imagerealize_cb(Ewl_Widget *w, void *event, void *data)
 	if ( argimage != NULL ) {
 		ewl_image_file_set(EWL_IMAGE(m->vimage),
 					argimage, NULL);
+		ewl_widget_enable(m->vbutton);
+                ewl_widget_state_set(m->vbutton, "enabled");
 	}
 	return;
 	w = NULL;
