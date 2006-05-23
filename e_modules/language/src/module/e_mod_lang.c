@@ -35,18 +35,18 @@
 #define KEYMAP_INDX	12
 #define NUM_OF_INDX	13
 
-#define LXC_FREE(p) \
+#define LXC_FREE(__p) \
    { \
       int i; \
       for (i = 0; i < NUM_OF_INDX; i++) \
-	 if (p->sv[i]) evas_stringshare_del(p->sv[i]); \
-      if (p->dpy) XCloseDisplay(p->dpy); \
-      E_FREE(p); \
+	 if (__p->sv[i]) evas_stringshare_del(__p->sv[i]); \
+      if (__p->dpy) XCloseDisplay(__p->dpy); \
+      E_FREE(__p); \
    }
 
-#define LANG_SETTING_SET_RETURN_ON_ERROR(p) \
+#define LANG_SETTING_SET_RETURN_ON_ERROR(__p) \
    { \
-      LXC_FREE(p); \
+      LXC_FREE(__p); \
       e_module_dialog_show("Error", "Error: The module was not able to switch between the<br>" \
 				    "selected languages. The main reason could be is that X<br>" \
 				    "keyboard rules file cannot be loaded propertly, or it <br>" \
@@ -99,42 +99,173 @@ int		     _lang_predef_language_sort_cb(void *e1, void *e2);
 /****************************************/
 
 void
-lang_language_switch_to(Config *cfg, unsigned int n)
+lang_language_switch_to(Config *cfg, unsigned int n, int ignore_n)
 {
-   if (!cfg || n >= evas_list_count(cfg->languages)) return;
-
-   cfg->language_selector = n;
-
-   /* here goes the actuall work that calls X to switch the kbd layout, etc. */
-
-   {
-      Language  *l;
-
-      l = evas_list_nth(cfg->languages, cfg->language_selector);
-      if (l)
-	{
-	   _lang_apply_language_settings(l->kbd_model, l->kbd_layout, l->kbd_variant);
-	}
+#define APPLY_LANGUAGE_SETTINGS(__c) \
+   { \
+      Language *__l = evas_list_nth(__c->languages, __c->language_selector); \
+      if (__l) _lang_apply_language_settings(__l->kbd_model, __l->kbd_layout, __l->kbd_variant); \
    }
+   
+   
+   if (!cfg) return;
 
-   /* debug */
-#if 0
-   {
-   char buf[4096];
-   Language *l;
+   if (cfg->lang_policy == LS_GLOBAL_POLICY)
+     { 
+	if (n < 0) n = 0;
+	else if (n >= evas_list_count(cfg->languages))
+	  n = evas_list_count(cfg->languages) - 1;
 
-   l = evas_list_nth(cfg->languages, cfg->language_selector);
+	cfg->language_selector = n; 
+        
+	APPLY_LANGUAGE_SETTINGS(cfg);
+     }
+   else if (cfg->lang_policy == LS_WINDOW_POLICY)
+     {
+	if (ignore_n)
+	  { 
+	     Evas_List *l;
+	     E_Border *bd = NULL;
+	     E_Desk *desk;
 
-   snprintf(buf, sizeof(buf), 
-	    "message 1: current_lang_selector : %d : lang->confg->languages.size() : %d<br>"
-	    "ll->lang_name: %s<br>ll->lang_shortcut: %s<br>ll->lang_flag: %s<br>ll->kbd_model:"
-	    "%s<br>ll->kbd_layout: %s<br>ll->kbd_variant: %s",
-	    cfg->language_selector, evas_list_count(cfg->languages),
-	    l->lang_name, l->lang_shortcut, l->lang_flag, l->kbd_model,
-	    l->kbd_layout, l->kbd_variant);
-   e_module_dialog_show( _("Enlightenment Language Enhancment Module"), buf);
-   }
-#endif
+	     desk = e_desk_current_get
+		     (e_zone_current_get(e_container_current_get(e_manager_current_get())));
+
+	     for (l = e_border_focus_stack_get(); l; l = l->next) 
+	       { 
+		  bd = l->data; 
+		  if ((!bd->iconic) && (bd->visible) && 
+		      (((bd->desk == desk) ||
+		       ((bd->sticky) && (bd->zone == desk->zone))))) 
+		    { 
+		       break; 
+		    } 
+		  bd = NULL;
+	       }
+
+	     cfg->language_selector = 0;
+	     if (bd)
+	       {
+		  // here we have to set the language used by the window
+		  // if at all we have to do this ???? QUESTION - because,
+		  // if we just switch the desktop and we have focused window on it
+		  // them most probably !!! the focus_in callback will activate
+		  Border_Language_Settings *bls = NULL;
+
+		  for (l = cfg->border_lang_setup; l; l = l->next)
+		    {
+		       bls = l->data;
+
+		       if (bls->bd == bd)
+			 {
+			    // so we found a window with border settings set
+			    // 
+			    Language *lang = evas_list_nth(cfg->languages,
+							   bls->language_selector);
+			    if (strcmp(bls->language_name, lang->lang_name))
+			      {
+				 // here we will be smart :) we will try first to
+				 // find correct language settings and if we fail
+				 // then to fallback to default language
+
+				 bls->language_selector = 0;
+
+				 /*Evas_List *l2;
+				 int j = 0;
+				 for (l2 = cfg->languages; l2; l2 = l2->next, j++)
+				   {
+				      lang = l->data;
+				      if (!strcmp(bls->language_name, lang->lang_name))
+					break;
+				   }
+
+				 if (j) 
+				   bls->language_selector = j;
+				 else
+				   {
+				      //hhhhmmm the language_settings of the border is incorrect.
+				      //remove them. and fallback to default language.
+				      if (bls->language_name)
+					evas_stringshare_del(bls->language_name);
+				      E_FREE(bls);
+				      cfg->border_lang_setup = evas_list_remove_list
+					 (cfg->border_lang_setup, l);
+				   }*/
+			      }
+			    break;
+			 }
+		       bls = NULL;
+		    }
+
+		  if (bls) 
+		    cfg->language_selector = bls->language_selector;
+	       } 
+	     APPLY_LANGUAGE_SETTINGS(cfg);
+	  }
+	else
+	  { 
+	     Evas_List *l;
+	     E_Border *bd = NULL;
+
+	     if (n >= evas_list_count(cfg->languages))
+	       n = evas_list_count(cfg->languages) - 1;
+
+	     bd = e_border_focused_get();
+
+	     if (bd)
+	       {
+		  Evas_List *l;
+		  Border_Language_Settings *bls; 
+		  Language *lang;
+		  // we have a border. Let find it in the list of borders that have
+		  // language settings.
+
+		  cfg->language_selector = n;
+		  lang = evas_list_nth(cfg->languages, n);
+
+		  bls = NULL;
+		  for (l = cfg->border_lang_setup; l; l = l->next)
+		    {
+		       bls = l->data;
+		       if (bls && (bls->bd = bd))
+			 break;
+		       bls = NULL;
+		    }
+
+		  if (bls)
+		    {
+		       // kewl (ooohhh devilhorns :)) we have a border with language 
+		       // settings set. Updata them
+		       bls->language_selector = n;
+		       if (bls->language_name) evas_stringshare_del(bls->language_name);
+		       bls->language_name = evas_stringshare_add(lang->lang_name);
+		    }
+		  else
+		    {
+		       // there is no window.
+		       if (n) 
+			 {
+			    // we need to save none default lang settings
+			    bls = E_NEW(Border_Language_Settings, 1);
+			    bls->bd = bd;
+			    bls->language_selector = n;
+			    bls->language_name = evas_stringshare_add(lang->lang_name);
+
+			    cfg->border_lang_setup = evas_list_append(cfg->border_lang_setup, bls);
+			 }
+		    }
+	       }
+	     else
+	       cfg->language_selector = n;
+
+	     APPLY_LANGUAGE_SETTINGS(cfg);
+		  //e_module_dialog_show("Warning", "Focused window on desktop");
+	  }
+     }
+   else if (cfg->lang_policy == LS_APPLICATION_POLICY)
+     {
+	//e_module_dialog_show("Warning" , "Warning : This feature is not implemented yet.");
+     }
 
    language_face_language_indicator_update();
 }
@@ -148,9 +279,9 @@ lang_language_switch_to_next(Config *cfg)
    if (size <= 1) return;
 
    if (cfg->language_selector >= size - 1)
-     lang_language_switch_to(cfg, 0);
+     lang_language_switch_to(cfg, 0, 0);
    else
-     lang_language_switch_to(cfg, cfg->language_selector + 1);
+     lang_language_switch_to(cfg, cfg->language_selector + 1, 0);
 }
 void
 lang_language_switch_to_prev(Config *cfg)
@@ -162,9 +293,9 @@ lang_language_switch_to_prev(Config *cfg)
    if (size <= 1) return;
 
    if (cfg->language_selector == 0)
-     lang_language_switch_to(cfg, size - 1);
+     lang_language_switch_to(cfg, size - 1, 0);
    else
-     lang_language_switch_to(cfg, cfg->language_selector - 1);
+     lang_language_switch_to(cfg, cfg->language_selector - 1, 0);
 }
 Language *
 lang_get_default_language(Config *cfg)
@@ -428,7 +559,7 @@ lang_language_free(Language *l)
 const char *
 lang_language_current_kbd_model_get()
 {
-   //FIXME: make the function return the actuall keyboard model
+   //FIXME: make the function return the actual keyboard model
    return evas_stringshare_add("compaqik13");
 } 
 
@@ -799,6 +930,134 @@ _lang_apply_components_names(Language_Xkb_Config *lxc)
      }
    return 1;
 }
+
+/********************** event callbacks ***************************************/
+int
+lang_cb_event_desk_show(void *data, int type, void *event)
+{
+   E_Event_Desk_Show *ev;
+   Config	     *conf;
+   Evas_List	     *l;
+   E_Border	     *bd;
+
+   if (!(conf = data)) return 1;
+
+   ev = event;
+   // Actually this code should be executed only if WINDOW ir APPLICATION policy
+   // is used.
+   if (conf->lang_policy == LS_GLOBAL_POLICY)
+     { 
+	e_module_dialog_show("Warning", "Warning: This is a bug in the code. This message<br>"
+				        "should in this context when GLOBAL policy is used.<br>"
+					"Please report this behaviour.");
+	return 1;
+     }
+
+   for (l = e_border_focus_stack_get(); l; l = l->next) 
+     { 
+	bd = l->data; 
+	if ((!bd->iconic) && (bd->visible) && 
+	    (((bd->desk == ev->desk) ||
+	     ((bd->sticky) && (bd->zone == ev->desk->zone))))) 
+	  { 
+	     break; 
+	  } 
+	bd = NULL; 
+     }
+
+   if (!bd)
+     lang_language_switch_to(conf, 0, 0);
+
+   return 1;
+}
+
+int lang_cb_event_border_focus_in(void *data, int type, void *ev)
+{
+   E_Event_Border_Focus_In *e;
+
+   e = ev;
+
+   lang_language_switch_to(data, 0, 1);
+   return 1;
+}
+
+int lang_cb_event_border_remove(void *data, int type, void *ev)
+{
+   E_Event_Border_Remove      *e;
+   Border_Language_Settings   *bls;
+
+   Evas_List   *l;
+   Config      *cfg;
+
+   e = ev;
+   cfg = data;
+
+   for (l = cfg->border_lang_setup; l; l = l->next)
+     {
+	bls = l->data;
+
+	if (bls->bd == e->border)
+	  {
+	     cfg->border_lang_setup = evas_list_remove(cfg->border_lang_setup, bls);
+	     if (bls->language_name) evas_stringshare_del(bls->language_name);
+	     E_FREE(bls);
+	     break;
+	  }
+     }
+
+   if (!e_border_focused_get())
+     lang_language_switch_to(cfg, 0, 0);
+
+   return 1;
+}
+
+int
+lang_cb_event_border_iconify(void *data, int type, void *ev)
+{
+   E_Event_Border_Iconify *e;
+
+   e = ev;
+
+   if (!e_border_focused_get())
+     lang_language_switch_to(data, 0, 0);
+
+   return;
+}
+
+#if 0
+int
+lang_cb_event_border_iconify(void *data, int type, void *event)
+{
+  // e_module_dialog_show("1", "lang_cb_event_border_iconify");
+   return 1;
+}
+int
+lang_cb_event_border_uniconify(void *data, int type, void *event)
+{
+   //e_module_dialog_show("1", "lang_cb_event_border_uniconify");
+   return 1;
+}
+int
+lang_cb_event_border_zone_set(void *data, int type, void *event)
+{
+   //e_module_dialog_show("1", "lang_cb_event_border_zone_set");
+   return 1;
+}
+int
+lang_cb_event_border_desk_set(void *data, int type, void *event)
+{
+   //e_module_dialog_show("1", "lang_cb_event_border_desk_set");
+   return 1;
+}
+int
+lang_cb_event_border_hide(void *data, int type, void *event)
+{
+   //e_module_dialog_show("1", "lang_cb_event_border_hide");
+   return 1;
+}
+#endif
+
+/******************************************************************************/
 
 #if 0
 static int 

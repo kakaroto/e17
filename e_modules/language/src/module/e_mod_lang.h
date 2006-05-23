@@ -4,14 +4,22 @@
 #include <e.h>
 #include "e_mod_main.h"
 
-typedef struct _Language	    Language;
-typedef struct _Language_Predef	    Language_Predef;
-typedef struct _Language_Kbd_Model  Language_Kbd_Model;
+typedef struct _Language		  Language;
+typedef struct _Language_Predef		  Language_Predef;
+typedef struct _Language_Kbd_Model	  Language_Kbd_Model;
+typedef struct _Border_Language_Settings  Border_Language_Settings;
 
 struct _Language_Kbd_Model
 {
    const char *kbd_model;
    const char *kbd_model_desctiption;
+};
+
+struct _Border_Language_Settings
+{
+   E_Border    *bd;
+   int	       language_selector;
+   const char  *language_name;
 };
 
 struct _Language
@@ -34,7 +42,7 @@ struct _Language_Predef
    Evas_List   *kbd_variant; // const char *
 };
 
-void	    lang_language_switch_to(Config *cfg, unsigned int n);
+void	    lang_language_switch_to(Config *cfg, unsigned int n, int ignore_n);
 void	    lang_language_switch_to_next(Config *cfg);
 void	    lang_language_switch_to_prev(Config *cfg);
 
@@ -50,5 +58,19 @@ Language    *lang_language_copy(const Language *l);
 void	    lang_language_free(Language *l);
 
 const char *lang_language_current_kbd_model_get();
+
+/*************** border callback handlers *****************/
+
+int lang_cb_event_desk_show(void *data, int type, void *ev);
+int lang_cb_event_border_focus_in(void *data, int type, void *ev);
+int lang_cb_event_border_remove(void *data, int type, void *ev);
+int lang_cb_event_border_iconify(void *data, int type, void *ev);
+
+#if 0
+int lang_cb_event_border_zone_set(void *data, int type, void *event);
+int lang_cb_event_border_desk_set(void *data, int type, void *event);
+int lang_cb_event_border_show(void *data, int type, void *event);
+int lang_cb_event_border_hide(void *data, int type, void *event);
+#endif
 
 #endif

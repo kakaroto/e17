@@ -1,3 +1,4 @@
+0. Optimize language switching functionality. It is too slow for per window policy.
 
 1. Fix the configure.in file in order to have dependencies to X11 and xkbfile
    libraries.
@@ -13,3 +14,5 @@
       a) Global
       b) Per Window
       c) ????
+
+6. Memleaks? forget somewere to clear list or remove an item from it?

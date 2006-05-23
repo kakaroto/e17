@@ -6,6 +6,7 @@
 /******************* Shelf Code ****************************/
 typedef enum { LS_GLOBAL_POLICY,
 	       LS_WINDOW_POLICY,
+	       LS_APPLICATION_POLICY,
 	       LS_UNKNOWN_POLICY }lang_switch_policy_t;
 
 typedef struct _Config	Config;
@@ -27,10 +28,14 @@ struct _Config
    Evas_List	     *instances; // Instance
    E_Menu	     *menu;
 
+   Evas_List	     *handlers;
+
    /* lang related stuff */
    unsigned int	  language_selector;
    Evas_List	  *language_predef_list; // Language_Predef
    Evas_List	  *language_kbd_model_list; // Language_Kbd_Model
+
+   Evas_List	  *border_lang_setup; // Border_Language_Settings
 };
 
 /********** module api *********************/
@@ -48,14 +53,11 @@ EAPI int     e_modapi_config   (E_Module *m);
 
 /************ Just publics *****************/
 void language_face_language_indicator_update();
+
+void language_register_callback_handlers();
+void language_unregister_callback_handlers();
+
+void language_clear_border_language_setup_list();
 /*******************************************/
-
-/**********************************************************/
-
-/*
-
-void  lang_face_language_indicator_set(Lang *l);
-void  lang_face_menu_language_indicator_set(Lang *l);
-void  lang_face_menu_regenerate(Lang_Face *lf);*/
 
 #endif

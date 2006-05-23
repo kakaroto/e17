@@ -121,6 +121,7 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 static Evas_Object *
 _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
+   E_Radio_Group  *rg;
    Evas_Object *o, *of, *ob, *ot, *ot2, *oft;
 
    cfdata->evas = evas;
@@ -137,7 +138,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 	    ob = e_widget_ilist_add(evas, ILIST_ICON_LANG_WIDTH, ILIST_ICON_LANG_HEIGHT, NULL);
 	    e_widget_on_change_hook_set(ob, _lang_languages_ilist_cb_change, cfdata);
 	    cfdata->gui.lang_ilist = ob;
-	    e_widget_min_size_set(ob, 250, 250);
+	    e_widget_min_size_set(ob, 250, 170);
 	    e_widget_ilist_go(ob);
 	    e_widget_framelist_object_append(of, ob);
 	 }
@@ -150,7 +151,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 	    ob = e_widget_ilist_add(evas, ILIST_ICON_WIDTH, ILIST_ICON_HEIGHT, NULL);
 	    e_widget_on_change_hook_set(ob, _lang_selected_languages_ilist_cb_change, cfdata);
 	    cfdata->gui.selected_lang_ilist = ob;
-	    e_widget_min_size_set(ob, 250, 250);
+	    e_widget_min_size_set(ob, 250, 170);
 	    e_widget_ilist_go(ob);
 	    e_widget_frametable_object_append(oft, ob, 0, 0, 4, 1, 1, 1, 1, 1);
 
@@ -184,7 +185,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 	    e_widget_on_change_hook_set(ob, _lang_kbd_model_ilist_cb_change, cfdata);
 	    cfdata->gui.kbd_model_ilist = ob;
 	    {
-	       e_widget_min_size_set(ob, 380, 100);
+	       e_widget_min_size_set(ob, 380, 80);
 	       e_widget_ilist_go(ob);
 	    }
 	    e_widget_framelist_object_append(of, ob);
@@ -197,7 +198,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 	    e_widget_on_change_hook_set(ob, _lang_kbd_layout_variant_ilist_cb_change, cfdata);
 	    cfdata->gui.kbd_layout_variant_ilist = ob;
 	    {
-	       e_widget_min_size_set(ob, 120, 100);
+	       e_widget_min_size_set(ob, 120, 80);
 	       e_widget_ilist_go(ob);
 	    }
 	    e_widget_framelist_object_append(of, ob);
@@ -208,11 +209,26 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    }
    e_widget_list_object_append(o, ot, 1, 1, 0.5);
 
-   /*of = e_widget_framelist_add(evas, _("Options"), 0);
-   ob = e_widget_check_add(evas, _("Show Language Indicator"), (&(cfdata->lang_show_indicator)));
-   e_widget_framelist_object_append(of, ob);
+   
 
-   e_widget_list_object_append(o, of, 1, 1, 0.5);*/
+   of = e_widget_framelist_add(evas, _("Language Switching Policy"), 1);
+   { 
+      rg = e_widget_radio_group_new((int *)&(cfdata->lang_policy));
+
+      ob = e_widget_radio_add(evas, "Global", LS_GLOBAL_POLICY, rg);
+      e_widget_framelist_object_append(of, ob);
+
+      ob = e_widget_radio_add(evas, "Window", LS_WINDOW_POLICY, rg);
+      e_widget_framelist_object_append(of, ob);
+
+      ob = e_widget_radio_add(evas, "Application", LS_APPLICATION_POLICY, rg);
+      e_widget_framelist_object_append(of, ob);
+      e_widget_disabled_set(ob, 1);
+   }
+
+   e_widget_list_object_append(o, of, 1, 1, 0.5);
+
+   /****************************************************/
 
    _lang_update_lang_defined_list(cfdata);
    _lang_update_selected_lang_list(cfdata);
@@ -231,6 +247,17 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    Language    *lang, *lang2;
 
    cfdata->conf->lang_policy = cfdata->lang_policy;
+   if (cfdata->conf->lang_policy == LS_GLOBAL_POLICY)
+     { 
+	language_clear_border_language_setup_list();
+	language_unregister_callback_handlers();
+     }
+   else if (cfdata->conf->lang_policy == LS_WINDOW_POLICY ||
+	    cfdata->conf->lang_policy == LS_APPLICATION_POLICY)
+     { 
+	language_register_callback_handlers();
+     }
+
    cfdata->conf->lang_show_indicator = cfdata->lang_show_indicator;
 
    while (cfdata->conf->languages)
@@ -246,10 +273,10 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 	  cfdata->conf->languages = evas_list_append(cfdata->conf->languages, lang);
      }
    cfdata->conf->language_selector = 0;
-   //e_config_save_queue();
-   e_config_save();
+   e_config_save_queue();
+   //e_config_save();
 
-   lang_language_switch_to(cfdata->conf, cfdata->conf->language_selector = 0);
+   lang_language_switch_to(cfdata->conf, (cfdata->conf->language_selector = 0), 0);
    return 1;
 }
 static void
