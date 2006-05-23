@@ -38,7 +38,8 @@ ewl_dnd_init(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ewl_dnd_position_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
+	ewl_dnd_position_hash = ecore_hash_new(ecore_direct_hash, 
+						ecore_direct_compare);
 	if (!ewl_dnd_position_hash)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
@@ -129,10 +130,12 @@ ewl_drag_start(Ewl_Widget *w)
 	ewl_dnd_widget = w;
 	ewl_dnd_move_count = 0;
 	
-	ewl_dnd_mouse_up_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP,
-							ewl_dnd_event_mouse_up, NULL);
-	ewl_dnd_mouse_move_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE, 
-							ewl_dnd_event_dnd_move, NULL);
+	ewl_dnd_mouse_up_handler = ecore_event_handler_add(
+						ECORE_X_EVENT_MOUSE_BUTTON_UP,
+						ewl_dnd_event_mouse_up, NULL);
+	ewl_dnd_mouse_move_handler = ecore_event_handler_add(
+						ECORE_X_EVENT_MOUSE_MOVE, 
+						ewl_dnd_event_dnd_move, NULL);
 
 	ewl_dnd_drag_canvas = ecore_evas_software_x11_new(NULL, 
 							EWL_DND_WINDOW_ROOT, 
@@ -142,7 +145,8 @@ ewl_drag_start(Ewl_Widget *w)
 	ecore_evas_shaped_set(ewl_dnd_drag_canvas, 1);
 	ecore_evas_software_x11_direct_resize_set(ewl_dnd_drag_canvas, 1);
 
-	ewl_dnd_evas_win = ecore_evas_software_x11_window_get(ewl_dnd_drag_canvas);
+	ewl_dnd_evas_win = ecore_evas_software_x11_window_get(
+							ewl_dnd_drag_canvas);
 	ecore_x_window_resize(ewl_dnd_evas_win, 64, 64);
 	ecore_evas_override_set(ewl_dnd_drag_canvas, 1);
 	
