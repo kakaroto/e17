@@ -542,14 +542,18 @@ ewl_icon_update_label(Ewl_Icon *icon)
 	DCHECK_PARAM_PTR("icon", icon);
 	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
 
+	/* nothing to do if no label set */
+	if (!icon->label_text)
+		DRETURN(DLEVEL_STABLE);
+
 	if (icon->compress_label && 
 			(strlen(icon->label_text) > EWL_ICON_COMPRESS_SIZE))
 	{
 		char *c;
 
-		c = malloc(sizeof(char) * EWL_ICON_COMPRESS_SIZE + 4);
+		c = NEW(char, EWL_ICON_COMPRESS_SIZE + 4);
 		strncpy(c, icon->label_text, EWL_ICON_COMPRESS_SIZE);
-		strcat(c + EWL_ICON_COMPRESS_SIZE, "...");
+		strcat(c, "...");
 
 		ewl_text_text_set(EWL_TEXT(icon->label), c);
 		FREE(c);
