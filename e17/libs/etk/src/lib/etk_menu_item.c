@@ -130,7 +130,7 @@ Etk_Widget *etk_menu_item_new_from_stock(Etk_Stock_Id stock_id)
 {
    Etk_Widget *menu_item;
 
-   menu_item = etk_menu_item_new();
+   menu_item = etk_menu_item_image_new();
    etk_menu_item_set_from_stock(ETK_MENU_ITEM(menu_item), stock_id);
 
    return menu_item;
@@ -238,7 +238,7 @@ void etk_menu_item_activate(Etk_Menu_Item *menu_item)
  * @param menu_item a menu item
  * @param stock_id the stock id to use
  */
-void etk_menu_item_set_from_stock(Etk_Menu_Item_Image *menu_item, Etk_Stock_Id stock_id)
+void etk_menu_item_set_from_stock(Etk_Menu_Item *menu_item, Etk_Stock_Id stock_id)
 {
    Etk_Widget *image;
    char *label;
