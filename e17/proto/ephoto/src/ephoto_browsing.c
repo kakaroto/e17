@@ -291,7 +291,7 @@ up_cb(Ewl_Widget *w, void *event, void *data)
 	/*******Move to parent directory in the image tree*******/
 	if ( w == m->texta ) {
 		pathi = ewl_widget_name_get(w);
-		upname = dirname(pathi);
+		upname = dirname((char *)pathi);
 		ewl_text_text_set(EWL_TEXT(m->directorya), upname);
 		ewl_callback_call(m->directorya, EWL_CALLBACK_VALUE_CHANGED);
 	}
@@ -299,7 +299,7 @@ up_cb(Ewl_Widget *w, void *event, void *data)
 	/******Move to parent directory in the audio tree*******/
 	if ( w == m->texti ) {
 		pathi = ewl_widget_name_get(w);
-		upname = dirname(pathi);
+		upname = dirname((char *)pathi);
 		ewl_text_text_set(EWL_TEXT(m->directory), upname);
 		ewl_callback_call(m->directory, EWL_CALLBACK_VALUE_CHANGED);
 	}
@@ -450,11 +450,11 @@ void
 audio_cb(Ewl_Widget *w, void *event, void *data)
 {
 	/****Setup variables for adding audio to the slideshow****/
-	const char *name;
+	char *name;
 	const char *pathi;
 	/*********************************************************/
 	pathi = ewl_widget_name_get(w);
-	name = basename(pathi);
+	name = basename((char *)pathi);
 	/****Set Audio in slideshow settings****/
 	ewl_text_text_set(EWL_TEXT(m->atext), name);
 	/***************************************/
