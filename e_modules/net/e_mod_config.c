@@ -140,11 +140,8 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    tmp = ecore_list_goto_index(cfdata->devs, cfdata->dev_num);
    if (tmp != NULL)
      {
-        if (strcmp(tmp, ci->device))
-          {
-	     evas_stringshare_del(ci->device);
-             ci->device = evas_stringshare_add(strdup(tmp));
-          }
+	evas_stringshare_del(ci->device);
+	ci->device = evas_stringshare_add(tmp);
      }
 
    ci->poll_time = cfdata->poll_time;

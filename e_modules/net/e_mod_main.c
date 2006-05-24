@@ -63,7 +63,8 @@ _gc_init(E_Gadcon *gc, char *name, char *id, char *style)
    
    inst = E_NEW(Instance, 1);
    ci = _net_config_item_get(id);
-   if (!ci->id) ci->id = evas_stringshare_add(id);
+   if (!ci->id) 
+     ci->id = evas_stringshare_add(id);
    
    net = _net_new(gc->evas);
    net->inst = inst;
@@ -156,7 +157,7 @@ _net_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
                               e_util_zone_current_get(e_manager_current_get()),
                               x + ev->output.x, y + ev->output.y, 1, 1, E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
         evas_event_feed_mouse_up(inst->gcc->gadcon->evas, ev->button, EVAS_BUTTON_NONE, ev->timestamp, NULL);
-     }
+     }   
 }
 
 static void
@@ -199,7 +200,6 @@ _net_config_updated(const char *id)
 	
 	if (!strcmp(inst->gcc->id, ci->id)) 
 	  {
-	     _net_cb_check(inst);
 	     if (inst->check_timer)
 	       ecore_timer_interval_set(inst->check_timer, (double)ci->poll_time);
 	     else
@@ -226,7 +226,7 @@ _net_config_item_get(const char *id)
    ci = E_NEW(Config_Item, 1);
    ci->id = evas_stringshare_add(id);
    ci->device = evas_stringshare_add("eth0");
-   ci->poll_time = 1;
+   ci->poll_time = 1.0;
    ci->max = 1500;
    net_config->items = evas_list_append(net_config->items, ci);
    return ci;
@@ -273,7 +273,7 @@ e_modapi_init(E_Module *m)
 	ci = E_NEW(Config_Item, 1);
 	ci->id = evas_stringshare_add("0");
 	ci->device = evas_stringshare_add("eth0");
-	ci->poll_time = 1;
+	ci->poll_time = 1.0;
 	ci->max = 1500;
 	net_config->items = evas_list_append(net_config->items, ci);
      }
@@ -379,7 +379,7 @@ static void
 _net_update_rx(Instance *inst, int value) 
 {
    Edje_Message_Int_Set *val;
-
+   
    val = malloc(sizeof(Edje_Message_Int_Set) + (1 * sizeof(int)));
    val->count = 1;
    val->val[0] = value;
@@ -437,7 +437,6 @@ _net_cb_check(void *data)
    long bytes_out;
    double in_use = 0.0;
    double out_use = 0.0;
-   Edje_Message_Float msg;
    char in_str[100];
    char out_str[100];
    
@@ -462,7 +461,9 @@ _net_cb_check(void *data)
                    "%lu %lu %lu %lu\n", dev, &in, &dummy, &dummy,
                    &dummy, &dummy, &dummy, &dummy, &dummy, &out, &dummy, &dummy, &dummy, &dummy, &dummy, &dummy, &dummy) < 17)
            continue;
-        if (!strcmp(dev, strdup(ci->device)))
+	if (!ci->device)
+	  continue;
+        if (!strcmp(dev, ci->device))
           {
              found = 1;
              break;
@@ -483,24 +484,21 @@ _net_cb_check(void *data)
         if (bytes_out < 0)
            bytes_out = 0;
 
-        in_use = (int)((bytes_in * 100L) / max_in);
-        out_use = (int)((bytes_out * 100L) / max_out);
+        in_use = ((bytes_in * 100L) / max_in);
+        out_use = ((bytes_out * 100L) / max_out);
      }
    else
      {
-        in_use = 0;
-        out_use = 0;
+        in_use = 0.0;
+        out_use = 0.0;
      }
 
    old_in = in;
    old_out = out;
       
-   if ((bytes_in < 0) || (bytes_out < 0))
-     {
-        edje_object_part_text_set(inst->net_obj, "tx_label", "Tx: 0 B");
-        edje_object_part_text_set(inst->net_obj, "rx_label", "Rx: 0 B");
-     }
-   else
+   if (bytes_in <= 0)
+     edje_object_part_text_set(inst->net_obj, "rx_label", "Rx: 0 B");
+   else 
      {
         if (bytes_in > 1048576)
           {
@@ -513,8 +511,15 @@ _net_cb_check(void *data)
              snprintf(in_str, sizeof(in_str), "Rx: %d Kb", bytes_in);
           }
         else
-           snprintf(in_str, sizeof(in_str), "Rx: %d B", bytes_in);
-
+	  snprintf(in_str, sizeof(in_str), "Rx: %d B", bytes_in);
+	
+        edje_object_part_text_set(inst->net_obj, "rx_label", in_str);	
+     }
+   
+   if (bytes_out <= 0) 
+     edje_object_part_text_set(inst->net_obj, "tx_label", "Tx: 0 B");
+   else 
+     {
         if (bytes_out > 1048576)
           {
              bytes_out = bytes_out / 1048576;
@@ -526,22 +531,22 @@ _net_cb_check(void *data)
              snprintf(out_str, sizeof(out_str), "Tx: %d Kb", bytes_out);
           }
         else
-           snprintf(out_str, sizeof(out_str), "Tx: %d B", bytes_out);
-
-        edje_object_part_text_set(inst->net_obj, "tx_label", out_str);
-        edje_object_part_text_set(inst->net_obj, "rx_label", in_str);
+	  snprintf(out_str, sizeof(out_str), "Tx: %d B", bytes_out);
+	
+        edje_object_part_text_set(inst->net_obj, "tx_label", out_str);	
      }
 
    int x, y, w, h;
    double i, o;
    evas_object_geometry_get(inst->net_obj, &x, &y, &w, &h);
-   if (in_use > 100)
-     in_use = 100;
-   if (out_use > 100)
-     out_use = 100;
    i = ((double)in_use * ((double)w / (double)100));
    o = ((double)out_use * ((double)w / (double)100));
-
+   
+   if (i < 0)
+     i = 0.0;
+   if (o < 0)
+     o = 0.0;
+   
    if ((i > 0) && (i < 1))
      i = 10.0;
    if ((o > 0) && (o < 1))
