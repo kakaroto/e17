@@ -1,0 +1,44 @@
+# Russian translations for cpu package.
+# This file is put in the public domain.
+#  <achernok@mail.ru>, 2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: cpu 0.0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-04-08 16:50+0300\n"
+"PO-Revision-Date: 2006-05-24 23:37+0400\n"
+"Last-Translator:  <achernok@mail.ru>\n"
+"Language-Team: Russian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: e_mod_config.c:34
+msgid "Cpu Configuration"
+msgstr "Конфигурация модуля Cpu"
+
+#: e_mod_config.c:77
+msgid "Cpu Settings"
+msgstr "Настройка для Cpu"
+
+#: e_mod_config.c:78
+msgid "Show Text"
+msgstr "Отображать текст"
+
+#: e_mod_config.c:80
+msgid "Show Graph"
+msgstr "Отображать диаграмму"
+
+#: e_mod_config.c:83
+msgid "Check Interval:"
+msgstr "Интервал от време за проверка:"
+
+#: e_mod_main.c:96
+msgid "Enlightenment Cpu Monitor Module"
+msgstr "Модуль CPU для Enlightenment"
+
+#: e_mod_main.c:97
+msgid "This module is used to monitor a cpu."
+msgstr "Данный модуль предназначен для отображения состояний процессора"
+
