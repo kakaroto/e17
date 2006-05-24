@@ -2008,7 +2008,7 @@ ewl_widget_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 
 	ewl_callback_del(w, EWL_CALLBACK_MOUSE_DOWN, ewl_widget_drag_down_cb);
 	ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE, ewl_widget_drag_move_cb);
-	ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE, ewl_widget_drag_up_cb);
+	ewl_callback_del(w, EWL_CALLBACK_MOUSE_UP, ewl_widget_drag_up_cb);
 
 	/*
 	 * First remove the parents reference to this widget to avoid bad
@@ -2058,7 +2058,6 @@ ewl_widget_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 
 	if (w->bit_state) {
 		ecore_string_release(w->bit_state);
-		w->inheritance = NULL;
 		w->bit_state = NULL;
 	}
 
@@ -2536,15 +2535,12 @@ ewl_widget_unrealize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 		if (b == p_b)
 			p_b = 0;
 
-
 		/*
 		 * Assign the relevant insets and padding.
 		 */
 		ewl_object_insets_set(EWL_OBJECT(w), i_l, i_r, i_t, i_b);
 		ewl_object_padding_set(EWL_OBJECT(w), p_l, p_r, p_t, p_b);
 	}
-
-	
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2967,7 +2963,7 @@ ewl_widget_draggable_set(Ewl_Widget *w, unsigned int val, Ewl_Widget_Drag cb)
 						ewl_widget_drag_down_cb);
 			ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE, 
 						ewl_widget_drag_move_cb);
-			ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE, 
+			ewl_callback_del(w, EWL_CALLBACK_MOUSE_UP, 
 						ewl_widget_drag_up_cb);
 
 			ewl_object_flags_remove(EWL_OBJECT(w), EWL_FLAG_PROPERTY_DRAGGABLE,  EWL_FLAGS_PROPERTY_MASK);
@@ -3005,16 +3001,17 @@ ewl_widget_dnd_reset(void)
 		Ewl_Widget* temp = ewl_widget_drag_widget;
 
 		while (temp) {
-			ewl_object_state_remove(EWL_OBJECT(temp), EWL_FLAG_STATE_PRESSED);
+			ewl_object_state_remove(EWL_OBJECT(temp), 
+						EWL_FLAG_STATE_PRESSED);
 			temp = temp->parent;
 		}
 
-		ewl_embed_active_set(ewl_embed_widget_find(ewl_widget_drag_widget), 0);
+		ewl_embed_active_set(ewl_embed_widget_find(
+						ewl_widget_drag_widget), 0);
 	}
 
 	ewl_widget_dnd_drag_move_count = 0;
 	ewl_widget_drag_widget = NULL;
-//	printf("Drag reset..\n");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
