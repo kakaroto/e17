@@ -1471,6 +1471,7 @@ ewl_widget_print_verbose(Ewl_Widget *w)
 }
 
 /**
+ * @internal
  * @param w: the widget to mark as internally used
  * @param val: a boolean to indicate the state of the internal flag
  * @return Returns no value.
@@ -1566,6 +1567,7 @@ ewl_widget_type_is(Ewl_Widget *widget, const char *type)
 }
 
 /**
+ * @internal
  * @param w: the widget to query the state of the internal flag
  * @return Returns TRUE if the widget is marked internal, otherwise FALSE.
  * @brief Checks the widget for the internal flag.

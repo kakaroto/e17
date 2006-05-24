@@ -28,6 +28,7 @@ static int ewl_config_listener(const char *key, const Ecore_Config_Type type,
 Ewl_Config ewl_config;
 
 /**
+ * @internal
  * @return Returns true on success, false on failure.
  * @brief Initialize the configuration system
  *
@@ -47,6 +48,7 @@ ewl_config_init(void)
 }
 
 /**
+ * @internal
  * @return Returns no value
  * @brief Shutdown the configuration system.
  */

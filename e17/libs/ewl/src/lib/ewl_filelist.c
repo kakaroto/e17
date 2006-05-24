@@ -660,6 +660,7 @@ ewl_filelist_expand_path(Ewl_Filelist *fl, const char *dir)
 }
 
 /**
+ * @internal
  * @param fl: The filelist to work with
  * @param dir: The directory to read
  * @param skip_dot_dot: Should the .. entry be skipped
@@ -735,6 +736,7 @@ ewl_filelist_directory_read(Ewl_Filelist *fl, const char *dir,
 }
 
 /**
+ * @internal
  * @param fl: The filelist to work with
  * @param w: The widget that was clicked
  * @param ev: The Ewl_Event_Mouse_Up structure
@@ -838,6 +840,7 @@ ewl_filelist_handle_click(Ewl_Filelist *fl, Ewl_Widget *w,
 }
 
 /**
+ * @internal
  * @param fl: The filelist to work with
  * @param c: The container to select/unselect from
  * @param clicked: The clicked widget

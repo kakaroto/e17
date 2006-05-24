@@ -16,6 +16,7 @@ static char *ewl_theme_path_find(const char *name);
 static void ewl_theme_data_free(void *data);
 
 /**
+ * @internal
  * @return Returns TRUE on success, FALSE on failure.
  * @brief Initialize the themeing  system
  *
@@ -148,6 +149,7 @@ ewl_theme_path_find(const char *name)
 }
 
 /**
+ * @internal
  * @return Returns no value.
  * @brief Shutdown the EWL themeing subsystem
  */
@@ -236,6 +238,7 @@ ewl_theme_data_free(void *data)
 }
 
 /**
+ * @internal
  * @param w: the widget to initialize theme information
  * @return Returns TRUE on success, FALSE on failure.
  * @brief Initialize a widgets theme information to the default
@@ -256,6 +259,7 @@ ewl_theme_widget_init(Ewl_Widget *w)
 }
 
 /**
+ * @internal
  * @param w: the widget to remove theme information
  * @return Returns no value.
  * @brief remove the theme information from a widget

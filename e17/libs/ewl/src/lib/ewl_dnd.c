@@ -29,6 +29,7 @@ static int ewl_dnd_event_mouse_up(void *data, int type, void *event);
 static int ewl_dnd_event_dnd_move(void *data, int type, void *event);
 
 /**
+ * @internal
  * @return Returns TRUE if the DND system was successfully initialized,
  * FALSE otherwise
  * @brief Initialize the DND sybsystem
@@ -50,6 +51,7 @@ ewl_dnd_init(void)
 }
 
 /**
+ * @internal
  * @return Returns no value.
  * @brief Shuts down the EWL DND system
  */

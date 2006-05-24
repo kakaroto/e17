@@ -3122,6 +3122,7 @@ ewl_text_trigger_base_get(Ewl_Text_Trigger *t)
 }
 
 /**
+ * @internal
  * @param t: The ewl_text widget
  * @return Returns no value
  * @brief Configures the position and size of all the triggers within the 
@@ -3353,6 +3354,7 @@ ewl_text_triggers_shift(Ewl_Text *t, unsigned int pos, unsigned int len,
 }
 
 /**
+ * @internal
  * @param t: The ewl_text to work with
  * @return Returns no value
  * @brief Sets all of the triggers in the text @a t as realized
@@ -3380,6 +3382,7 @@ ewl_text_triggers_realize(Ewl_Text *t)
 }
 
 /**
+ * @internal
  * @param t: The ewl_text to work with
  * @return Returns no value
  * @brief Sets all of the triggers in the text @a t as unrealized
@@ -3414,6 +3417,7 @@ ewl_text_triggers_unrealize(Ewl_Text *t)
 }
 
 /**
+ * @internal
  * @param t: The ewl_text to work with
  * @return Returns no value
  * @brief Shows all triggers in text @a t
@@ -3452,6 +3456,7 @@ ewl_text_triggers_show(Ewl_Text *t)
 }
 
 /**
+ * @internal
  * @param t: The text to work with
  * @return Returns no value
  * @brief Hides all of the triggers in the text @a t
@@ -3643,6 +3648,7 @@ ewl_text_trigger_cb_mouse_down(Ewl_Widget *w __UNUSED__, void *ev, void *data)
  */
 
 /**
+ * @internal
  * @param type: The trigger area type to create
  * @return Returns a new trigger area of the given type
  * @brief Creates and returns a new trigger_area of the given type
@@ -3670,6 +3676,7 @@ ewl_text_trigger_area_new(Ewl_Text_Trigger_Type type)
 }
 
 /**
+ * @internal
  * @param area: The trigger area to initialize
  * @param type: The type of the trigger area
  * @return Returns TRUE on success or FALSE on failure
@@ -3757,6 +3764,7 @@ ewl_text_selection_select_to(Ewl_Text_Trigger *s, unsigned int idx)
  */
 
 /**
+ * @internal
  * @return Returns TRUE on success or FALSE on failure
  * @brief Initializes the context system
  */
@@ -3776,6 +3784,7 @@ ewl_text_context_init(void)
 }
 
 /**
+ * @internal
  * @return Returns no value
  * @brief Shuts the context system down
  */
@@ -3796,6 +3805,7 @@ ewl_text_context_shutdown(void)
 }
 
 /**
+ * @internal
  * @return Returns a new text context
  * @brief Creates and returns a new text context
  */
@@ -3813,6 +3823,7 @@ ewl_text_context_new(void)
 }
 
 /**
+ * @internal
  * @param old: The context to duplicate
  * @return Returns a new context with the same values
  * @brief Duplicates the given context and returns the new version
@@ -4183,6 +4194,7 @@ ewl_text_context_find(Ewl_Text_Context *tx, unsigned int context_mask,
 }
 
 /**
+ * @internal
  * @param tx: The context to work with
  * @return Returns no value
  * @brief Acquires a reference to the given context
@@ -4199,6 +4211,7 @@ ewl_text_context_acquire(Ewl_Text_Context *tx)
 }
 
 /**
+ * @internal
  * @param tx: The context to work with
  * @return Returns no value
  * @brief Releases a reference on the given context. 
@@ -4227,6 +4240,7 @@ ewl_text_context_release(Ewl_Text_Context *tx)
 }
 
 /**
+ * @internal
  * @param a: The first context
  * @param b: The second context
  * @return Returns TRUE if the two contexts are the same
@@ -4290,6 +4304,7 @@ ewl_text_context_cb_free(void *data)
  */
 
 /**
+ * @internal
  * @return Returns a new ewl_text_Tree
  * @brief Creates and initializes a new text tree
  */
@@ -4310,6 +4325,7 @@ ewl_text_tree_new(void)
 }
 
 /**
+ * @internal
  * @param tree: The text tree to free
  * @return Returns no value
  * @brief Frees the contents of the given text tree
@@ -4344,6 +4360,7 @@ ewl_text_tree_free(Ewl_Text_Tree *tree)
 }
 
 /**
+ * @internal
  * @param tree: The tree to work with
  * @param idx: The index to get the node from
  * @param inclusive: Include the edge numbers
@@ -4391,6 +4408,7 @@ ewl_text_tree_node_get(Ewl_Text_Tree *tree, unsigned int idx,
 }
 
 /**
+ * @internal
  * @param t: The ewl_text to work with
  * @param current: The node to set current
  * @return Returns no value
@@ -4437,6 +4455,7 @@ ewl_text_tree_current_node_set(Ewl_Text *t, Ewl_Text_Tree *current)
 }
 
 /**
+ * @internal
  * @param t: The text to insert into
  * @param idx: The index to insert into
  * @param len: The length to insert
@@ -4473,6 +4492,7 @@ ewl_text_tree_insert(Ewl_Text *t, unsigned int idx, unsigned int len)
 }
 
 /**
+ * @internal
  * @param t: The ewl_text to work with
  * @param idx: The index to delete from
  * @param len: The length to delete
@@ -4593,6 +4613,7 @@ ewl_text_tree_node_delete(Ewl_Text *t, Ewl_Text_Tree *tree)
 }
 
 /**
+ * @internal
  * @param tree: The tree to work with
  * @param idx: The node index
  * @return Returns the Ewl_Text_Context retrieved
@@ -4613,6 +4634,7 @@ ewl_text_tree_context_get(Ewl_Text_Tree *tree, unsigned int idx)
 }
 
 /**
+ * @internal
  * @param t: The tree to work with
  * @param context_mask: The mask of items changing in the cntext
  * @param tx: The context of things changing
@@ -4682,6 +4704,7 @@ ewl_text_tree_context_set(Ewl_Text *t, unsigned int context_mask,
 }
 
 /**
+ * @internal
  * @param t: The text to work with
  * @param context_mask: The mask to use
  * @param tx: The context to work with
@@ -4734,6 +4757,7 @@ ewl_text_tree_context_apply(Ewl_Text *t, unsigned int context_mask,
 }
 
 /**
+ * @internal
  * @param t: The text to work with
  * @param style: The style to set
  * @param idx: The index to start from
@@ -4792,6 +4816,7 @@ ewl_text_tree_context_style_apply(Ewl_Text *t, Ewl_Text_Style style,
 }
 
 /**
+ * @internal
  * @param t: The text to work with
  * @param style: The style to remove
  * @param idx: The index to start from
@@ -4984,6 +5009,7 @@ ewl_text_tree_shrink(Ewl_Text_Tree *tree)
 }
 
 /**
+ * @internal
  * @param tree: The tree to work with
  * @return Returns no values
  * @brief Searchs for siblings that are the same and merges the nodes 
@@ -5000,6 +5026,7 @@ ewl_text_tree_condense(Ewl_Text_Tree *tree)
 }
 
 /**
+ * @internal
  * @param tree: The tree to work with
  * @param indent: The indent string to use
  * @return Returns no value

@@ -39,6 +39,7 @@ int ewl_ev_fb_mouse_move(void *data, int type, void *_ev);
 
 
 /**
+ * @internal
  * @return Returns true or false to indicate success in initializing events.
  * @brief Initialize the event handlers for dispatching to proper widgets
  */
@@ -167,6 +168,7 @@ ewl_ev_modifiers_set(unsigned int modifiers)
  */
 
 /**
+ * @internal
  * @param data: user specified data passed to the function
  * @param type: the type of event triggering the function call
  * @param e: the expose event information
@@ -200,6 +202,7 @@ ewl_ev_x_window_expose(void *data __UNUSED__, int type __UNUSED__, void * e)
 }
 
 /**
+ * @internal
  * @param data: user specified data passed to the function
  * @param type: the type of event triggering the function call
  * @param e: the configure event information
@@ -250,7 +253,8 @@ ewl_ev_x_window_configure(void *data __UNUSED__, int type __UNUSED__, void *e)
 	/*
 	 * Configure events really only need to occur on resize.
 	 */
-	if ((ewl_object_current_w_get(EWL_OBJECT(window)) != ev->w) || (ewl_object_current_h_get(EWL_OBJECT(window)) != ev->h)) {
+	if ((ewl_object_current_w_get(EWL_OBJECT(window)) != ev->w) 
+			|| (ewl_object_current_h_get(EWL_OBJECT(window)) != ev->h)) {
 
     /* 
      * Right now this is commented out, as it was preventing windows from resizing
@@ -267,6 +271,7 @@ ewl_ev_x_window_configure(void *data __UNUSED__, int type __UNUSED__, void *e)
 }
 
 /**
+ * @internal
  * @param data: user specified data passed to the function
  * @param type: the type of event triggering the function call
  * @param e: the delete event information
@@ -299,6 +304,7 @@ ewl_ev_x_window_delete(void *data __UNUSED__, int type __UNUSED__, void *e)
 }
 
 /**
+ * @internal
  * @param data: user specified data passed to the function
  * @param type: the type of event triggering the function call
  * @param e: the key down event information
@@ -342,6 +348,7 @@ ewl_ev_x_key_down(void *data __UNUSED__, int type __UNUSED__, void *e)
 }
 
 /**
+ * @internal
  * @param data: user specified data passed to the function
  * @param type: the type of event triggering the function call
  * @param e: the key up event information
@@ -385,6 +392,7 @@ ewl_ev_x_key_up(void *data __UNUSED__, int type __UNUSED__, void *e)
 }
 
 /**
+ * @internal
  * @param data: user specified data passed to the function
  * @param type: the type of event triggering the function call
  * @param e: the mouse down event information
@@ -421,6 +429,7 @@ ewl_ev_x_mouse_down(void *data __UNUSED__, int type __UNUSED__, void *e)
 }
 
 /**
+ * @internal
  * @param data: user specified data passed to the function
  * @param type: the type of event triggering the function call
  * @param e: the mouse up event information
@@ -451,6 +460,7 @@ ewl_ev_x_mouse_up(void *data __UNUSED__, int type __UNUSED__, void *e)
 
 
 /**
+ * @internal
  * @param data: user specified data passed to the function
  * @param type: the type of event triggering the function call
  * @param e: the mouse move event information
@@ -479,6 +489,7 @@ ewl_ev_x_mouse_move(void *data __UNUSED__, int type __UNUSED__, void *e)
 }
 
 /**
+ * @internal
  * @param data: user specified data passed to the function
  * @param type: the type of event triggering the function call
  * @param e: the mouse out event information
@@ -505,6 +516,7 @@ ewl_ev_x_mouse_out(void *data __UNUSED__, int type __UNUSED__, void *e)
 }
 
 /**
+ * @internal
  * @param data: user specified data passed to the function
  * @param type: the type of event triggering the function call
  * @param e: the mouse wheel event information
@@ -531,6 +543,7 @@ ewl_ev_x_mouse_wheel(void *data __UNUSED__, int type __UNUSED__, void *e)
 }
 
 /**
+ * @internal
  * @param data: user specified data passed to the function
  * @param type: the type of event triggering the function call
  * @param e: the focus in event information
@@ -557,6 +570,7 @@ ewl_ev_x_focus_in(void *data __UNUSED__, int type __UNUSED__, void *e)
 }
 
 /**
+ * @internal
  * @param data: user specified data passed to the function
  * @param type: the type of event triggering the function call
  * @param e: the focus out event information
@@ -583,6 +597,7 @@ ewl_ev_x_focus_out(void *data __UNUSED__, int type __UNUSED__, void *e)
 }
 
 /**
+ * @internal
  * @param data: user specified data passed to the function
  * @param type: the type of event triggering the function call
  * @param e: the mouse out event information
@@ -609,6 +624,7 @@ ewl_ev_x_paste(void *data __UNUSED__, int type __UNUSED__, void *e)
 }
 
 /**
+ * @internal
  * @param data: user specified data passed to the function
  * @param type: the type of event triggering the function call
  * @param e: the dnd position information
@@ -671,6 +687,7 @@ ewl_ev_dnd_position(void *data __UNUSED__, int type __UNUSED__, void *e)
 }
 
 /**
+ * @internal
  * @param data: user specified data passed to the function
  * @param type: the type of event triggering the function call
  * @param e: the dnd 'enter' information
@@ -704,6 +721,7 @@ ewl_ev_dnd_enter(void *data __UNUSED__, int type __UNUSED__, void *e)
 }
 
 /**
+ * @internal
  * @param data: user specified data passed to the function
  * @param type: the type of event triggering the function call
  * @param e: the dnd 'leave' information
@@ -741,6 +759,7 @@ ewl_ev_dnd_leave(void *data __UNUSED__, int type __UNUSED__, void *e)
 
 
 /**
+ * @internal
  * @param data: user specified data passed to the function
  * @param type: the type of event triggering the function call
  * @param e: the dnd 'drop' information
@@ -800,6 +819,7 @@ ewl_ev_dnd_drop(void *data __UNUSED__, int type __UNUSED__, void *e)
 }
 
 /**
+ * @internal
  * @param data: user specified data passed to the function
  * @param type: the type of event triggering the function call
  * @param e: the dnd 'selection' information
@@ -846,6 +866,7 @@ ewl_ev_dnd_selection_notify(void *data __UNUSED__, int type __UNUSED__, void *e)
 #ifdef ENABLE_EWL_FB
 
 /**
+ * @internal
  * @param data: user specified data passed to the function
  * @param type: the type of event triggering the function call
  * @param e: the key down event information
@@ -875,6 +896,7 @@ ewl_ev_fb_key_down(void *data __UNUSED__, int type __UNUSED__, void *e)
 }
 
 /**
+ * @internal
  * @param data: user specified data passed to the function
  * @param type: the type of event triggering the function call
  * @param e: the key up event information
@@ -903,6 +925,7 @@ ewl_ev_fb_key_up(void *data __UNUSED__, int type __UNUSED__, void *e)
 }
 
 /**
+ * @internal
  * @param data: user specified data passed to the function
  * @param type: the type of event triggering the function call
  * @param e: the mouse down event information
@@ -943,6 +966,7 @@ ewl_ev_fb_mouse_down(void *data __UNUSED__, int type __UNUSED__, void *e)
 }
 
 /**
+ * @internal
  * @param data: user specified data passed to the function
  * @param type: the type of event triggering the function call
  * @param e: the mouse up event information
@@ -973,6 +997,7 @@ ewl_ev_fb_mouse_up(void *data __UNUSED__, int type __UNUSED__, void *e)
 }
 
 /**
+ * @internal
  * @param data: user specified data passed to the function
  * @param type: the type of event triggering the function call
  * @param e: the mouse move event information

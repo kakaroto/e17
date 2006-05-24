@@ -113,6 +113,7 @@ ewl_embed_init(Ewl_Embed *w)
 }
 
 /**
+ * @internal
  * @brief Shutdown the embed 
  */
 void

@@ -262,6 +262,7 @@ ewl_filelist_column_filename_get(Ewl_Filelist *fl, void *item)
 }
 
 /**
+ * @internal
  * @param fl: The filelist to work with
  * @return Returns no value.
  * @brief This will set all of the icons back to their unselected state
@@ -279,6 +280,7 @@ ewl_filelist_column_selected_unselect(Ewl_Filelist *fl)
 }
 
 /**
+ * @internal
  * @param fl: The filelist to deal with
  * @param clicked: The currently clicked item
  * @return Returns no value

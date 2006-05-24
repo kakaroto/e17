@@ -112,7 +112,7 @@ ewl_callback_register(Ewl_Callback *cb)
  * ewl_callback_unregister - unreference a callback and free if appropriate
  * @cb: the callback to unregister
  *
- * Returns no value. Checks to see if @cb has nay remaining references, if not
+ * Returns no value. Checks to see if @cb has any remaining references, if not
  * it is removed from the registration system and freed.
  */
 static void
@@ -463,6 +463,7 @@ ewl_callback_call_with_event_data(Ewl_Widget *w, Ewl_Callback_Type t,
 }
 
 /**
+ * @internal
  * @param w: the widget to delete the callbacks
  * @param t: the type of the callbacks to be deleted
  * @return Returns no value.
@@ -488,6 +489,7 @@ ewl_callback_del_type(Ewl_Widget *w, Ewl_Callback_Type t)
 }
 
 /**
+ * @internal
  * @param w: the widget to delete the id
  * @param t: the type of event the callback is attached to
  * @param cb_id: the id of the callback to delete
@@ -523,6 +525,7 @@ ewl_callback_del_cb_id(Ewl_Widget *w, Ewl_Callback_Type t, int cb_id)
 
 
 /**
+ * @internal
  * @param w: the widget to remove the callbacks
  * @return Returns no value.
  * @brief Remove all callbacks from the specified widget

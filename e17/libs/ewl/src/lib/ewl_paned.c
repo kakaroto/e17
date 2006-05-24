@@ -489,12 +489,19 @@ ewl_paned_grabbers_update(Ewl_Paned *p)
 	ecore_dlist_goto_first(c->children);
 	while ((child = ecore_dlist_next(c->children)))
 	{
+		/* internal means grabber */
 		if (ewl_widget_internal_is(child))
 		{
+			/* if there is a widget to the left we store the
+			 * grabber, otherwise, we have to hide the grabber */
 			if (left) g = child;
+			else ewl_widget_hide(child);
 		}
 		else if (VISIBLE(child))
 		{
+			/* if we have a grabber to the left of us we need to
+			 * show it as that means there is a widget to the
+			 * left of us */
 			if (g)
 			{
 				ewl_widget_show(g);
@@ -512,6 +519,7 @@ ewl_paned_grabbers_update(Ewl_Paned *p)
  */
 
 /**
+ * @internal
  * @return Returns a new Ewl_Paned_Grabber widget or NULL on failure
  */
 Ewl_Widget *
@@ -535,6 +543,7 @@ ewl_paned_grabber_new(void)
 }
 
 /**
+ * @internal
  * @param g: The Ewl_Paned_Grabber to initialize
  * @return Returns TRUE on success or FALSE on failure
  */
@@ -561,6 +570,7 @@ ewl_paned_grabber_init(Ewl_Paned_Grabber *g)
 }
 
 /**
+ * @internal
  * @param g: The Ewl_Paned_Grabber to set the orientation on
  * @param o: The Ewl_Orientation to set on the grabber
  * @return Returns no value.
@@ -593,6 +603,7 @@ ewl_paned_grabber_paned_orientation_set(Ewl_Paned_Grabber *g, Ewl_Orientation o)
 }
 
 /**
+ * @internal
  * @param g: The Ewl_Paned_Grabber to get the orientation from
  * @return Returns the Ewl_Orientation set on the grabber
  */
@@ -609,6 +620,7 @@ ewl_paned_grabber_orientation_get(Ewl_Paned_Grabber *g)
 }
 
 /**
+ * @internal
  * @param g: The Ewl_Paned_Grabber to set the cursor for
  * @param dir: The diretions to show arrows for
  * @return Returns no value.
@@ -644,6 +656,7 @@ ewl_paned_grabber_show_cursor_for(Ewl_Paned_Grabber *g, unsigned int dir)
 }
 
 /**
+ * @internal
  * @param g: The grabber to work with
  * @param placed: The placed value to set
  * @return Returns no value
@@ -662,6 +675,7 @@ ewl_paned_grabber_placed_set(Ewl_Paned_Grabber *g, unsigned int placed)
 }
 
 /**
+ * @internal
  * @param g: The grabber to work with
  * @return Returns if the placed setting of the grabber
  * @brief Retrieves the placed setting of the grabber

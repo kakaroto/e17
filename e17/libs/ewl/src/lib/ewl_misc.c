@@ -360,6 +360,7 @@ ewl_main(void)
 }
 
 /**
+ * @internal
  * @param data: this is only necessary for registering this function with ecore
  * @return Returns TRUE to continue the timer.
  * @brief Renders updates during idle times of the main loop
@@ -711,6 +712,7 @@ ewl_configure_request(Ewl_Widget * w)
 }
 
 /**
+ * @internal
  * @return Returns no value
  * @brief Configure all the widgets that need to be configured
  */
@@ -771,6 +773,7 @@ ewl_configure_queue(void)
 }
 
 /**
+ * @internal
  * @param w: the widget that no longer needs to be configured
  * @return Returns no value.
  * @brief Cancel a request to configure a widget
@@ -790,6 +793,7 @@ ewl_configure_cancel_request(Ewl_Widget *w)
 }
 
 /**
+ * @internal
  * @param w: widget to schedule for realization
  * @return Returns no value.
  * @brief Schedule a widget to be realized at idle time
@@ -824,6 +828,7 @@ ewl_realize_request(Ewl_Widget *w)
 }
 
 /**
+ * @internal
  * @param w: the widget that no longer needs to be realized
  * @return Returns no value.
  * @brief Cancel a request to realize a widget
@@ -845,6 +850,7 @@ ewl_realize_cancel_request(Ewl_Widget *w)
 }
 
 /**
+ * @internal
  * @return Returns no value
  * @brief Realize all widgets that need to be realized
  */
@@ -909,6 +915,7 @@ ewl_realize_queue(void)
 }
 
 /**
+ * @internal
  * @return Returns no value.
  * @brief Marks that EWL is currently realizing a widget.
  */
@@ -923,6 +930,7 @@ ewl_realize_phase_enter(void)
 }
 
 /**
+ * @internal
  * @return Returns no value.
  * @brief Marks that EWL is not realizing a widget.
  */
@@ -937,6 +945,7 @@ ewl_realize_phase_exit(void)
 }
 
 /**
+ * @internal
  * @return Returns TRUE if currently realizing a widget, FALSE otherwise.
  * @brief Checks if EWL is currently in the process of realizing widgets.
  */
@@ -961,6 +970,7 @@ ewl_engine_mask_get(void)
 }
 
 /**
+ * @internal
  * @param w: The widget to destroy
  * @return Returns no value
  * @brief Queues the widget to be destroyed. 
@@ -1001,6 +1011,7 @@ ewl_destroy_request(Ewl_Widget *w)
 }
 
 /**
+ * @internal
  * @param evas: evas to queue for destruction
  * @return Returns no value.
  * @brief Queues an evas to be destroyed at a later time.
@@ -1017,6 +1028,7 @@ ewl_evas_destroy(Evas *evas)
 }
 
 /**
+ * @internal
  * @param obj: evas object to queue for destruction
  * @return Returns no value.
  * @brief Queues an evas object to be destroyed at a later time.
@@ -1035,6 +1047,7 @@ ewl_evas_object_destroy(Evas_Object *obj)
 #define EWL_GC_LIMIT 300 
 
 /**
+ * @internal
  * @param data: Unused.
  * @return Returns TRUE if objects remain to be freed, otherwise false.
  * @brief Free's all widgets that have been marked for destruction.

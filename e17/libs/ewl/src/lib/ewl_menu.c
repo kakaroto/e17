@@ -3,7 +3,6 @@
 #include "ewl_debug.h"
 #include "ewl_macros.h"
 
-
 /**
  * @return Returns a pointer to a new menu on success, NULL on failure.
  * @brief Create a new internal menu

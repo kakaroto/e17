@@ -4,6 +4,7 @@
 #include "ewl_macros.h"
 
 /**
+ * @internal
  * @param o: the object to initialize
  * @return Returns no value.
  * @brief Initialize the fields of an object
