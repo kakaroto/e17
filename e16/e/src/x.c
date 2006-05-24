@@ -1266,12 +1266,10 @@ EShapePropagate(Win win)
 {
    EXID               *xid = win;
    EXID               *xch;
-   Window              rt, par, *list = NULL;
-   unsigned int        i, num, num_rects;
+   unsigned int        num_rects;
    int                 k, rn;
    int                 x, y, w, h;
    XRectangle         *rects, *rl;
-   XWindowAttributes   att;
 
    if (!xid || xid->w <= 0 || xid->h <= 0)
       return 0;
@@ -1281,25 +1279,20 @@ EShapePropagate(Win win)
 	   xid->x, xid->y, xid->w, xid->h);
 #endif
 
-   XQueryTree(disp, xid->xwin, &rt, &par, &list, &num);
-   if (!list)
-      return 0;
-
    num_rects = 0;
    rects = NULL;
 
    /* go through all child windows and create/inset spans */
-   for (i = 0; i < num; i++)
+   for (xch = xid_first; xch; xch = xch->next)
      {
-	xch = EXidLookup(list[i]);
-	if (!xch)
-	   continue;		/* Should never happen */
-	XGetWindowAttributes(disp, list[i], &att);
+	if (xch->parent != xid)
+	   continue;
+
 #if DEBUG_SHAPE_PROPAGATE > 1
-	Eprintf("%3d %#lx(%d): %4d,%4d %4dx%4d\n", i, list[i], att.map_state,
-		att.x, att.y, att.width, att.height);
+	Eprintf("%#lx(%d): %4d,%4d %4dx%4d\n", xch->xwin, xch->mapped,
+		xch->x, xch->y, xch->w, xch->h);
 #endif
-	if ((att.class != InputOutput) || (att.map_state == IsUnmapped))
+	if (!xch->mapped)
 	   continue;
 
 	x = xch->x;
@@ -1344,9 +1337,8 @@ EShapePropagate(Win win)
 	     num_rects++;
 	  }
      }
-   XFree(list);
 
-#if DEBUG_SHAPE_PROPAGATE > 1
+#if DEBUG_SHAPE_PROPAGATE
    Eprintf("EShapePropagate %#lx nr=%d\n", win, num_rects);
    for (i = 0; i < num_rects; i++)
       Eprintf("%3d %4d,%4d %4dx%4d\n", i, rects[i].x, rects[i].y,
