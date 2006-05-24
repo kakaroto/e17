@@ -1381,18 +1381,24 @@ ewl_embed_info_widgets_cleanup(Ewl_Embed *e, Ewl_Widget *w)
 
 	ewl_object_state_remove(EWL_OBJECT(w), EWL_FLAG_STATE_PRESSED);
 
-	if ((w == e->last.focused) || (RECURSIVE(w) && ewl_widget_parent_of(w, e->last.focused))) {
+	if ((w == e->last.focused) 
+			|| (RECURSIVE(w) 
+				&& ewl_widget_parent_of(w, e->last.focused)))
 		e->last.focused = NULL;
-		/*ewl_embed_focused_widget_set(e, NULL);*/
-	}
 
-	if ((w == e->last.clicked) || (RECURSIVE(w) && ewl_widget_parent_of(w, e->last.clicked)))
+	if ((w == e->last.clicked) 
+			|| (RECURSIVE(w) 
+				&& ewl_widget_parent_of(w, e->last.clicked)))
 		e->last.clicked = NULL;
 
-	if ((w == e->last.mouse_in) || (RECURSIVE(w) && ewl_widget_parent_of(w, e->last.mouse_in)))
+	if ((w == e->last.mouse_in) 
+			|| (RECURSIVE(w) 
+				&& ewl_widget_parent_of(w, e->last.mouse_in)))
 		e->last.mouse_in = NULL;
 
-	if ((w == e->dnd_widget) || (RECURSIVE(w) && ewl_widget_parent_of(w, e->dnd_widget)))
+	if ((w == e->dnd_widget) 
+			|| (RECURSIVE(w) 
+				&& ewl_widget_parent_of(w, e->dnd_widget)))
 		e->dnd_widget = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

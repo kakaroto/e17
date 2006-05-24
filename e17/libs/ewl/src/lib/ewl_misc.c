@@ -1072,12 +1072,13 @@ ewl_garbage_collect_idler(void *data __UNUSED__)
 		if (ewl_object_queued_has(EWL_OBJECT(w),
 					  EWL_FLAG_QUEUED_CSCHEDULED))
 			ewl_configure_cancel_request(w);
-		/* printf("Cleanup count %d: %s\n", cleanup, w->inheritance); */
+	
 		ewl_callback_call(w, EWL_CALLBACK_DESTROY);
 		ewl_callback_del_type(w, EWL_CALLBACK_DESTROY);
 		FREE(w);
 		cleanup++;
 	}
+
 	if (ewl_config.debug.gc_reap)
 		printf("Destroyed %d EWL objects\n", cleanup);
 
