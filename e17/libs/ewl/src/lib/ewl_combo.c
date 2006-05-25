@@ -103,11 +103,7 @@ ewl_combo_selected_set(Ewl_Combo *combo, int idx)
 
 	/* remove the previously selected value */
 	if (combo->selected)
-	{
-		ewl_container_child_remove(EWL_CONTAINER(combo), 
-						combo->selected);
 		ewl_widget_destroy(combo->selected);
-	}
 
 	/* if we have a selected value then show it in the top, else show
 	 * the header */
