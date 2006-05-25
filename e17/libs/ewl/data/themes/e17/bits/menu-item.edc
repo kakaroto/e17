@@ -4,8 +4,8 @@ group {
     data {
         item, "inset/left" "3";
         item, "inset/right" "3";
-        item, "inset/top" "3";
-        item, "inset/bottom" "3";
+        item, "inset/top" "1";
+        item, "inset/bottom" "1";
 
         item, "pad/left" "0";
         item, "pad/right" "0";
@@ -517,7 +517,7 @@ group {
     name, "submenuitem";
     data {
         item, "inset/left" "3";
-        item, "inset/right" "3";
+        item, "inset/right" "5";
         item, "inset/top" "3";
         item, "inset/bottom" "3";
 
@@ -543,7 +543,7 @@ group {
                 }
                 rel2 {
                     relative, 1.0 1.0;
-                    offset, -1 -1;
+                    offset, -10 -1;
                 }
                 image {
                     normal, "e17_titlebar_outline.png";
@@ -565,7 +565,7 @@ group {
             }
             rel2 {
                relative: 1.0  1.0;
-               offset:   -1   -1;
+               offset:   -10   -1;
             }
             image {
                normal: "e17_titlebar_outline.png";
@@ -926,7 +926,7 @@ group {
 		      }
 		      rel2 {
 			      relative,1.0 1.0;
-			      offset, -6 -1;
+			      offset, -1 -1;
 		      }
 		      image {
 			      normal, "e17_menu_arrow.png";
