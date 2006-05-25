@@ -655,7 +655,7 @@ ewl_text_selection_text_get(Ewl_Text *t)
 	DCHECK_PARAM_PTR_RET("t", t, NULL);
 	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, NULL);
 
-	if ((!t->selection) || t->selection->len == 0)
+	if ((!t->selection) || (t->selection->len == 0))
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	ret = malloc(sizeof(char) * (t->selection->len + 1));
@@ -2750,8 +2750,10 @@ ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	if (!t->selection)
 	{
 		/* create the selection */
-		t->selection = EWL_TEXT_TRIGGER(ewl_text_trigger_new(EWL_TEXT_TRIGGER_TYPE_SELECTION));
-		ewl_container_child_append(EWL_CONTAINER(t), EWL_WIDGET(t->selection));
+		t->selection = EWL_TEXT_TRIGGER(ewl_text_trigger_new(
+					EWL_TEXT_TRIGGER_TYPE_SELECTION));
+		ewl_container_child_append(EWL_CONTAINER(t), 
+					EWL_WIDGET(t->selection));
 		ewl_widget_internal_set(EWL_WIDGET(t->selection), TRUE);
 
 		ewl_text_trigger_start_pos_set(t->selection, 0);
