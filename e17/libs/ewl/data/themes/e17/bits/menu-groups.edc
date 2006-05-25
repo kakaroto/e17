@@ -78,10 +78,10 @@ group {
     name, "menu";
 
     data {
-        item, "inset/top" "2";
-        item, "inset/bottom" "2";
-        item, "inset/left" "2";
-        item, "inset/right" "2";
+        item, "inset/top" "1";
+        item, "inset/bottom" "1";
+        item, "inset/left" "1";
+        item, "inset/right" "1";
     }
 
     parts {
