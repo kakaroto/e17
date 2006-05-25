@@ -12,6 +12,7 @@ EXTRA_DIST=e_modules-mem.spec.in e_modules-mem.spec autogen.sh mem.png module_ic
 
 files_DATA = \
 module_icon.png \
+module.eap \
 mem.edj \
 mem.edc \
 VeraMono.ttf
@@ -26,8 +27,7 @@ pkgdir                 = $(datadir)/$(MODULE_ARCH)
 pkg_LTLIBRARIES        = module.la
 module_la_SOURCES      = e_mod_main.c \
 		       e_mod_main.h \
-		       e_mod_config.c \
-		       e_mod_config.h
+		       e_mod_config.c
 		       
 module_la_LIBADD       = @e_libs@ -lm
 module_la_LDFLAGS      = -module -avoid-version
