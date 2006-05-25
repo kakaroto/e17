@@ -358,6 +358,20 @@ enum Ewl_Key_Modifiers
 typedef enum Ewl_Key_Modifiers Ewl_Key_Modifiers;
 
 /**
+ * @enum Ewl_State_Type
+ * The state type
+ */
+enum Ewl_State_Type {
+	EWL_STATE_TRANSIENT,
+	EWL_STATE_PERSISTENT
+};
+
+/**
+ * The Ewl_State_Type type
+ */
+typedef enum Ewl_State_Type Ewl_State_Type;
+
+/**
  * @enum Ewl_Stock_Type
  * The different stock types
  */

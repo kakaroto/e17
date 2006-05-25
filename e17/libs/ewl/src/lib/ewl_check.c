@@ -128,9 +128,9 @@ ewl_check_update_check_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	cb = EWL_CHECK(w);
 	if (cb->checked)
-		ewl_widget_state_set(w, "checked");
+		ewl_widget_state_set(w, "checked", EWL_STATE_PERSISTENT);
 	else
-		ewl_widget_state_set(w, "default");
+		ewl_widget_state_set(w, "default", EWL_STATE_PERSISTENT);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

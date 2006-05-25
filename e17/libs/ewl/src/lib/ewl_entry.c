@@ -159,7 +159,8 @@ ewl_entry_editable_set(Ewl_Entry *e, unsigned int editable)
 		if (ewl_object_state_has(EWL_OBJECT(e), EWL_FLAG_STATE_FOCUSED))
 			ewl_widget_show(e->cursor);
 
-		ewl_widget_state_set(EWL_WIDGET(e), "editable");
+		ewl_widget_state_set(EWL_WIDGET(e), "editable", 
+					EWL_STATE_PERSISTENT);
 	}
 	else
 	{
@@ -169,7 +170,8 @@ ewl_entry_editable_set(Ewl_Entry *e, unsigned int editable)
 		if (ewl_object_state_has(EWL_OBJECT(e), EWL_FLAG_STATE_FOCUSED))
 			ewl_widget_hide(e->cursor);
 
-		ewl_widget_state_set(EWL_WIDGET(e), "noteditable");
+		ewl_widget_state_set(EWL_WIDGET(e), "noteditable",
+					EWL_STATE_PERSISTENT);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -314,7 +316,8 @@ ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	e = EWL_ENTRY(w);
 
 	/* reset the cursor blink */
-	ewl_widget_state_set(EWL_WIDGET(e->cursor), "noblink");
+	ewl_widget_state_set(EWL_WIDGET(e->cursor), "noblink",
+				EWL_STATE_PERSISTENT);
 
 	if (!strcmp(event->keyname, "Left"))
 		ewl_entry_cursor_move_left(e);

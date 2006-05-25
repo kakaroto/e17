@@ -609,7 +609,7 @@ ewl_tree_selected_clear(Ewl_Tree *tree)
 	DCHECK_TYPE("tree", tree, EWL_TREE_TYPE);
 
 	while ((w = ecore_list_remove_first(tree->selected)))
-		ewl_widget_state_set(w, "tree-deselect");
+		ewl_widget_state_set(w, "tree-deselect", EWL_STATE_PERSISTENT);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -673,10 +673,10 @@ ewl_tree_row_signal(Ewl_Tree *tree __UNUSED__, Ewl_Widget *row)
 	DCHECK_TYPE("row", row, EWL_WIDGET_TYPE);
 
 	if (ewl_tree_row_pos & 1) {
-		ewl_widget_state_set(row, "odd");
+		ewl_widget_state_set(row, "odd", EWL_STATE_PERSISTENT);
 	}
 	else {
-		ewl_widget_state_set(row, "even");
+		ewl_widget_state_set(row, "even", EWL_STATE_PERSISTENT);
 	}
 	ewl_tree_row_pos++;
 
@@ -966,7 +966,8 @@ ewl_tree_node_collapse(Ewl_Tree_Node *node)
 
 	node->expanded = EWL_TREE_NODE_COLLAPSED;
 
-	ewl_widget_state_set(EWL_WIDGET(node), "collapsed");
+	ewl_widget_state_set(EWL_WIDGET(node), "collapsed",
+				EWL_STATE_PERSISTENT);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1016,7 +1017,8 @@ ewl_tree_node_expand(Ewl_Tree_Node *node)
 
 	ecore_list_destroy(tmp);
 
-	ewl_widget_state_set(EWL_WIDGET(node), "expanded");
+	ewl_widget_state_set(EWL_WIDGET(node), "expanded",
+				EWL_STATE_PERSISTENT);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1257,7 +1259,7 @@ ewl_tree_row_select_cb(Ewl_Widget *w, void *ev_data,
 	if (tree->mode != EWL_TREE_MODE_NONE) {
 		if (ecore_list_goto(tree->selected, w) == NULL)
 			ecore_list_append(tree->selected, w);
-		ewl_widget_state_set(w, "tree-selected");
+		ewl_widget_state_set(w, "tree-selected", EWL_STATE_PERSISTENT);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1279,7 +1281,8 @@ ewl_tree_row_hide_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	if (ecore_list_goto(tree->selected, w)) {
 		ecore_list_remove(tree->selected);
-		ewl_widget_state_set(w, "tree-deselected");
+		ewl_widget_state_set(w, "tree-deselected",
+					EWL_STATE_PERSISTENT);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

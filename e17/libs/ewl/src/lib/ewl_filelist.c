@@ -532,7 +532,7 @@ ewl_filelist_selected_signal_all(Ewl_Filelist *fl, const char *signal)
 
 	ecore_list_goto_first(fl->selected);
 	while ((item = ecore_list_next(fl->selected)))
-		ewl_widget_state_set(item, signal);
+		ewl_widget_state_set(item, signal, EWL_STATE_PERSISTENT);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -777,7 +777,8 @@ ewl_filelist_handle_click(Ewl_Filelist *fl, Ewl_Widget *w,
 		ecore_list_clear(fl->selected);
 
 		if (select_state)
-			ewl_widget_state_set(w, select_state);
+			ewl_widget_state_set(w, select_state,
+						EWL_STATE_PERSISTENT);
 
 		ecore_list_append(fl->selected, w);
 		ewl_filelist_selected_files_change_notify(fl);
@@ -809,7 +810,9 @@ ewl_filelist_handle_click(Ewl_Filelist *fl, Ewl_Widget *w,
 			fl->select.last = w;
 		}
 
-		if (select_state) ewl_widget_state_set(w, select_state);
+		if (select_state) 
+			ewl_widget_state_set(w, select_state, 
+						EWL_STATE_PERSISTENT);
 		ecore_list_append(fl->selected, w);
 
 		ewl_filelist_selected_files_change_notify(fl);
@@ -825,13 +828,15 @@ ewl_filelist_handle_click(Ewl_Filelist *fl, Ewl_Widget *w,
 		if (item)
 		{
 			if (unselect_state)
-				ewl_widget_state_set(w, unselect_state);
+				ewl_widget_state_set(w, unselect_state,
+							EWL_STATE_PERSISTENT);
 			ecore_list_remove(fl->selected);
 		}
 		else
 		{
 			if (select_state)
-				ewl_widget_state_set(w, select_state);
+				ewl_widget_state_set(w, select_state,
+							EWL_STATE_PERSISTENT);
 			ecore_list_append(fl->selected, w);
 		}
 	}
@@ -904,7 +909,8 @@ ewl_filelist_container_shift_handle(Ewl_Filelist *fl,
 					fl->select.last, cur_idx, clicked);
 
 			/* make sure the last selected is removed */
-			ewl_widget_state_set(fl->select.last, unselect_signal);
+			ewl_widget_state_set(fl->select.last, unselect_signal,
+						EWL_STATE_PERSISTENT);
 			ecore_list_goto(fl->selected, fl->select.last);
 			ecore_list_remove(fl->selected);
 
@@ -965,7 +971,7 @@ ewl_filelist_signal_between(Ewl_Filelist *fl, Ewl_Container *c, int add,
 
 		if (add)
 		{
-			ewl_widget_state_set(cur, signal);
+			ewl_widget_state_set(cur, signal, EWL_STATE_PERSISTENT);
 			ecore_list_append(fl->selected, cur);
 		}
 		else
@@ -975,7 +981,8 @@ ewl_filelist_signal_between(Ewl_Filelist *fl, Ewl_Container *c, int add,
 			{
 				ecore_list_goto(fl->selected, cur);
 				ecore_list_remove(fl->selected);
-				ewl_widget_state_set(cur, signal);
+				ewl_widget_state_set(cur, signal, 
+							EWL_STATE_PERSISTENT);
 			}
 		}
 	}

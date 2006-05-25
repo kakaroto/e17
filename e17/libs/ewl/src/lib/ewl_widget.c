@@ -699,6 +699,7 @@ ewl_widget_appearance_path_get(Ewl_Widget * w)
 /**
  * @param w: the widget to update the appearance
  * @param state: the new state of the widget
+ * @param flag: the flag for the state e.g. EWL_STATE_TRANSIENT
  * @return Returns no value.
  * @brief Update the appearance of the widget to a state
  *
@@ -706,7 +707,7 @@ ewl_widget_appearance_path_get(Ewl_Widget * w)
  * the state parameter.
  */
 void
-ewl_widget_state_set(Ewl_Widget *w, const char *state)
+ewl_widget_state_set(Ewl_Widget *w, const char *state, Ewl_State_Type flag)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -717,7 +718,8 @@ ewl_widget_state_set(Ewl_Widget *w, const char *state)
 	 * Intentionally lose a reference to the ecore string to keep a
 	 * reference cached for later re-use.
 	 */
-	w->bit_state = ecore_string_instance((char *)state);
+	if (flag == EWL_STATE_PERSISTENT)
+		w->bit_state = ecore_string_instance((char *)state);
 
 	if (w->theme_object) {
 		if (ewl_config.theme.print_signals)
@@ -2219,12 +2221,15 @@ void ewl_widget_reveal_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 		/*
 		 * Set the state of the theme object
 		 */
-		if (w->bit_state)
-			ewl_widget_state_set(w, (char *)w->bit_state);
+		if (w->bit_state) {
+			ewl_widget_state_set(w, (char *)w->bit_state, 
+						EWL_STATE_PERSISTENT);
+		}
 
 		if (ewl_object_state_has(EWL_OBJECT(w),
 					EWL_FLAG_STATE_DISABLED))
-			ewl_widget_state_set(w, "disabled");
+			ewl_widget_state_set(w, "disabled", 
+						EWL_STATE_PERSISTENT);
 
 		/*
 		 * Apply any text overrides
@@ -2616,7 +2621,7 @@ ewl_widget_enable_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	ewl_widget_state_set(w, "default");
+	ewl_widget_state_set(w, "default", EWL_STATE_PERSISTENT);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2629,7 +2634,7 @@ ewl_widget_disable_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	ewl_widget_state_set(w, "disabled");
+	ewl_widget_state_set(w, "disabled", EWL_STATE_PERSISTENT);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2645,7 +2650,7 @@ ewl_widget_focus_in_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
 		DRETURN(DLEVEL_STABLE);
 
-	ewl_widget_state_set(w, "focus,in");
+	ewl_widget_state_set(w, "focus,in", EWL_STATE_TRANSIENT);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2661,7 +2666,7 @@ ewl_widget_focus_out_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
 		DRETURN(DLEVEL_STABLE);
 
-	ewl_widget_state_set(w, "focus,out");
+	ewl_widget_state_set(w, "focus,out", EWL_STATE_TRANSIENT);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2677,7 +2682,7 @@ ewl_widget_mouse_in_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
 		DRETURN(DLEVEL_STABLE);
 
-	ewl_widget_state_set(w, "mouse,in");
+	ewl_widget_state_set(w, "mouse,in", EWL_STATE_TRANSIENT);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2693,7 +2698,7 @@ ewl_widget_mouse_out_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
 		DRETURN(DLEVEL_STABLE);
 
-	ewl_widget_state_set(w, "mouse,out");
+	ewl_widget_state_set(w, "mouse,out", EWL_STATE_TRANSIENT);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2713,7 +2718,7 @@ ewl_widget_mouse_down_cb(Ewl_Widget *w, void *ev_data,
 		DRETURN(DLEVEL_STABLE);
 
 	snprintf(state, 14, "mouse,down,%i", e->button);
-	ewl_widget_state_set(w, state);
+	ewl_widget_state_set(w, state, EWL_STATE_TRANSIENT);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2733,12 +2738,12 @@ ewl_widget_mouse_up_cb(Ewl_Widget *w, void *ev_data,
 		DRETURN(DLEVEL_STABLE);
 
 	snprintf(state, 14, "mouse,up,%i", e->button);
-	ewl_widget_state_set(w, state);
+	ewl_widget_state_set(w, state, EWL_STATE_TRANSIENT);
 
 	if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_MOUSE_IN)) {
 		int x, y;
 
-		ewl_widget_state_set(w, "mouse,in");
+		ewl_widget_state_set(w, "mouse,in", EWL_STATE_TRANSIENT);
 		x = e->x - (CURRENT_X(w) - INSET_LEFT(w));
 		y = e->y - (CURRENT_Y(w) - INSET_TOP(w));
 		if ((x > 0) && (x < CURRENT_W(w) + INSET_HORIZONTAL(w)) &&
@@ -2751,7 +2756,7 @@ ewl_widget_mouse_up_cb(Ewl_Widget *w, void *ev_data,
 					e->x, e->y, e->modifiers);
 		}
 	} else
-		ewl_widget_state_set(w, "mouse,out");
+		ewl_widget_state_set(w, "mouse,out", EWL_STATE_TRANSIENT);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2764,7 +2769,7 @@ ewl_widget_mouse_move_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	ewl_widget_state_set(w, "mouse,move");
+	ewl_widget_state_set(w, "mouse,move", EWL_STATE_TRANSIENT);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
