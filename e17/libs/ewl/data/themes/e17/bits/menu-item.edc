@@ -402,9 +402,18 @@ group {
 
     programs {
       program {
-         name:    "go_active";
+         name:    "go_active_pre";
          signal:  "mouse,in";
          source:  "*";
+         action:  STATE_SET "default" 0.0;
+         target:  "title_outline";
+         target:  "title_bar";
+         target:  "title_shadow1";
+         target:  "title_shadow2";
+         after:   "go_active";
+      }
+      program {
+         name:    "go_active";
          action:  STATE_SET "active" 0.0;
          target:  "title_outline";
          target:  "title_bar";
@@ -470,9 +479,18 @@ group {
       }
 
       program {
-         name:    "go_passive";
+         name:    "go_passive_pre";
          signal:  "mouse,out";
          source:  "*";
+         action:  STATE_SET "active" 0.0;
+         target:  "title_outline";
+         target:  "title_bar";
+         target:  "title_shadow1";
+         target:  "title_shadow2";
+         after:   "go_passive";
+      }
+      program {
+         name:    "go_passive";
          action:  STATE_SET "default" 0.0;
          target:  "title_shadow2";
          transition: LINEAR 0.1;
@@ -919,9 +937,18 @@ group {
 
     programs {
       program {
+         name: "go_active_pre";
+         signal: "mouse,in";
+         source: "*";
+         action: STATE_SET "default" 0.0;
+         target: "title_outline";
+         target: "title_bar";
+         target: "title_shadow1";
+         target: "title_shadow2";
+         after:  "go_active";
+      }
+      program {
          name:    "go_active";
-         signal:  "mouse,in";
-         source:  "*";
          action:  STATE_SET "active" 0.0;
          target:  "title_outline";
          target:  "title_bar";
@@ -987,9 +1014,18 @@ group {
       }
 
       program {
-         name:    "go_passive";
+         name:    "go_passive_pre";
          signal:  "mouse,out";
          source:  "*";
+         action:  STATE_SET "active" 0.0;
+         target:  "title_outline";
+         target:  "title_bar";
+         target:  "title_shadow1";
+         target:  "title_shadow2";
+         after:   "go_passive";
+      }
+      program {
+         name:    "go_passive";
          action:  STATE_SET "default" 0.0;
          target:  "title_shadow2";
          transition: LINEAR 0.1;

@@ -41,9 +41,6 @@ EWL BUGS
 - Resize the table multiple times vertically and the items are not placed in
   the same place as original.
 
-- The menu theme dosen't seem to get all of the mouse,out's that it should.
-  Sometimes the menu_items stay in a selected mode.
-
 - the tree dosen't currently play well with the scrollbar. This can be seen
   in the tree test, if you shrink the window and scroll it will only scroll
   the first paned widget. (Need to make this and the paned work together).
