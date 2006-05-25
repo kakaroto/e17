@@ -43,7 +43,7 @@ entangle_apps_init(void)
     ecore_list_set_free_cb(entangle_apps_deleted_dirs, entangle_apps_free_cb);
 
     entangle_apps_dir_init(entangle_apps_bar, "bar/default");
-    entangle_apps_dir_init(entangle_apps_engage, "engage");
+    entangle_apps_dir_init(entangle_apps_engage, "bar/engage");
     entangle_apps_dir_init(entangle_apps_favorite, "favorite");
     entangle_apps_dir_init(entangle_apps_restart, "restart");
     entangle_apps_dir_init(entangle_apps_startup, "startup");
