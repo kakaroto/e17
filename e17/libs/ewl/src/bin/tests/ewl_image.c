@@ -72,7 +72,6 @@
  * This includes resizing, theming, color tinting and packing in containers.
  */
 
-static Ewl_Widget     *image_win;
 static Ewl_Widget     *image_box;
 static Ewl_Widget     *image;
 static Ecore_DList    *images;
@@ -152,8 +151,6 @@ image_goto_prev_cb(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
 
 	ewl_text_text_set(EWL_TEXT(entry_path), img);
 	ewl_image_file_set(EWL_IMAGE(image), img, NULL);
-
-	ewl_widget_configure(image_win);
 }
 
 static void
@@ -172,8 +169,6 @@ image_remove_cb(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
 
 	ewl_text_text_set(EWL_TEXT(entry_path), img);
 	ewl_image_file_set(EWL_IMAGE(image), img, NULL);
-
-	ewl_widget_configure(image_win);
 }
 
 static void
@@ -189,8 +184,6 @@ image_load()
 		ewl_image_file_set(EWL_IMAGE(image), img, NULL);
 	} else
 		printf("ERROR: %s does not exist\n", img);
-
-	ewl_widget_configure(image_win);
 }
 
 static void
@@ -207,8 +200,6 @@ image_goto_next_cb(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
 
 	ewl_text_text_set(EWL_TEXT(entry_path), img);
 	ewl_image_file_set(EWL_IMAGE(image), img, NULL);
-
-	ewl_widget_configure(image_win);
 }
 
 int
