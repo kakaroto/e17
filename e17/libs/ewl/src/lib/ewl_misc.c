@@ -1093,10 +1093,16 @@ ewl_garbage_collect_idler(void *data __UNUSED__)
 
 	cleanup = 0;
 
-	while ((evas = ecore_list_remove_first(free_evas_list))) {
-		evas_free(evas);
-		cleanup++;
+	/* make sure the widget and object lists are clear before trying to
+	 * remove the evas canvas */
+	if ((ecore_list_nodes(free_evas_object_list) == 0)
+			&& (ecore_list_nodes(destroy_list) == 0)) {
+		while ((evas = ecore_list_remove_first(free_evas_list))) {
+			evas_free(evas);
+			cleanup++;
+		}
 	}
+
 	if (ewl_config.debug.gc_reap)
 		printf("Destroyed %d Evas\n", cleanup);
 
