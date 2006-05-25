@@ -466,6 +466,14 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 		temp = temp->parent;
 
 	ewl_embed_focused_widget_set(embed, temp);
+
+	/*
+	 * Make sure we set this _BEFORE_ doing the callbacks below because
+	 * the CLICK or DOWN callback may trigger the widget itself to be
+	 * deleted which will trigger a cleanup of the info widgets. if we
+	 * cleanup this widget we don't want to be setting it as
+	 * last.clicked after that.
+	 */
 	embed->last.clicked = widget;
 
 	ev.modifiers = mods;
@@ -518,8 +526,6 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 			ewl_callback_call(widget, EWL_CALLBACK_FOCUS_IN);
 		}
 	}
-
-	embed->last.clicked = widget;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

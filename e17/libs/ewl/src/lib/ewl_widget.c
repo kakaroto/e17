@@ -398,6 +398,9 @@ ewl_widget_hide(Ewl_Widget * w)
 void
 ewl_widget_destroy(Ewl_Widget * w)
 {
+	int i;
+	Ewl_Embed *emb;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
@@ -407,8 +410,13 @@ ewl_widget_destroy(Ewl_Widget * w)
 					EWL_FLAG_QUEUED_DPROCESS)))
 		DRETURN(DLEVEL_STABLE);
 
+
+	/* cleanup any dnd widgets */
 	if (w == ewl_widget_drag_candidate_get())
 		ewl_widget_dnd_reset();
+
+	emb = ewl_embed_widget_find(w);
+	if (emb) ewl_embed_info_widgets_cleanup(emb, w);
 
 	/*
 	 * Request prior to hiding so we can skip resizing for child widgets
@@ -416,8 +424,28 @@ ewl_widget_destroy(Ewl_Widget * w)
 	 */
 	ewl_destroy_request(w);
 
-	if (w->parent)
-		ewl_container_child_remove(EWL_CONTAINER(w->parent), w);
+	ewl_widget_hide(w);
+	ewl_widget_unrealize(w);
+
+	/* 
+	 * remove ourselves from any containers 
+	 */ 
+	ewl_widget_parent_set(w, NULL);
+
+	/*
+	 * Clear out the callbacks, this is a bit tricky because we don't want
+	 * to continue using this widget after the callbacks have been
+	 * deleted. Clear all callbacks except for the destroy callbacks.
+	 * This preserves the list of the destroy type so we don't get a segfault.
+	 *
+	 * We delete these now so that we can't possibly get any callbacks before the 
+	 * idler kicks in
+	 */
+	for (i = 0; i < EWL_CALLBACK_MAX; i++)
+	{
+		if (i == EWL_CALLBACK_DESTROY) continue;
+		ewl_callback_del_type(w, i);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -715,7 +743,7 @@ ewl_widget_state_set(Ewl_Widget *w, const char *state)
  * callback is triggered to notify children of w of the change in parent.
  */
 void
-ewl_widget_parent_set(Ewl_Widget * w, Ewl_Widget * p)
+ewl_widget_parent_set(Ewl_Widget *w, Ewl_Widget *p)
 {
 	Ewl_Widget *tmp;
 	Ewl_Container *op;
@@ -728,7 +756,6 @@ ewl_widget_parent_set(Ewl_Widget * w, Ewl_Widget * p)
 	op = EWL_CONTAINER(w->parent);
 	if (op == EWL_CONTAINER(p))
 		DRETURN(DLEVEL_STABLE);
-	
 
 	if (!p)
 		ewl_widget_obscure(w);
@@ -2000,24 +2027,9 @@ void
 ewl_widget_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 			void *data __UNUSED__)
 {
-	int i;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-
-	ewl_callback_del(w, EWL_CALLBACK_MOUSE_DOWN, ewl_widget_drag_down_cb);
-	ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE, ewl_widget_drag_move_cb);
-	ewl_callback_del(w, EWL_CALLBACK_MOUSE_UP, ewl_widget_drag_up_cb);
-
-	/*
-	 * First remove the parents reference to this widget to avoid bad
-	 * references.
-	 */
-	if (w->parent)
-		ewl_container_child_remove(EWL_CONTAINER(w->parent), w);
-
-	ewl_widget_unrealize(w);
 
 	/* 
 	 * cleanup the attachment lists 
@@ -2027,18 +2039,6 @@ ewl_widget_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 		ewl_attach_list_del(w->attach, EWL_ATTACH_TYPE_TOOLTIP);
 		ewl_attach_list_del(w->attach, EWL_ATTACH_TYPE_COLOR);
 		ewl_attach_list_del(w->attach, EWL_ATTACH_TYPE_NAME);
-	}
-
-	/*
-	 * Clear out the callbacks, this is a bit tricky because we don't want
-	 * to continue using this widget after the callbacks have been
-	 * deleted. Clear all callbacks except for the destroy callbacks.
-	 * This preserves the list of the destroy type so we don't get a segfault.
-	 */
-	for (i = 0; i < EWL_CALLBACK_MAX; i++)
-	{
-		if (i == EWL_CALLBACK_DESTROY) continue;
-		ewl_callback_del_type(w, i);
 	}
 
 	/*
