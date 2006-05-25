@@ -254,7 +254,7 @@ collections
 			 }
 		       text 
 			 {
-			    text: "Rx: 10 Kbps";
+			    text: "Rx:";
 			    font: "VeraMono";
 			    size: 9;
 			    min: 1 1;
@@ -413,7 +413,7 @@ collections
 			 }
 		       text 
 			 {
-			    text: "Tx: 10 Kbps";
+			    text: "Tx:";
 			    font: "VeraMono";
 			    size: 9;
 			    min: 1 1;
