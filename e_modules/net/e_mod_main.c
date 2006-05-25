@@ -77,15 +77,15 @@ _gc_init(E_Gadcon *gc, char *name, char *id, char *style)
    inst->net_obj = o;
 
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _net_cb_mouse_down, inst);
-   
+
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_IN, _net_cb_mouse_in, inst);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_OUT, _net_cb_mouse_out, inst);
 
    if (ci->always_text)
-     edje_object_signal_emit(inst->net_obj, "label_active", "");
+      edje_object_signal_emit(inst->net_obj, "label_active", "");
 
    _net_cb_check(inst);
-   
+
    inst->check_timer = ecore_timer_add(ci->poll_time, _net_cb_check, inst);
    net_config->instances = evas_list_append(net_config->instances, inst);
 
@@ -153,9 +153,9 @@ _net_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
         e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
         e_menu_item_callback_set(mi, _net_menu_cb_configure, inst);
 
-	mi = e_menu_item_new(mn);
-	e_menu_item_separator_set(mi, 1);
-	
+        mi = e_menu_item_new(mn);
+        e_menu_item_separator_set(mi, 1);
+
         e_gadcon_client_util_menu_items_append(inst->gcc, mn, 0);
         e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &x, &y, &w, &h);
         e_menu_activate_mouse(mn,
@@ -206,13 +206,13 @@ _net_config_updated(const char *id)
         if (!strcmp(inst->gcc->id, ci->id))
           {
              if (inst->check_timer)
-	       ecore_timer_del(inst->check_timer);
-	     inst->check_timer = ecore_timer_add((double)ci->poll_time, _net_cb_check, inst);
-	     if (ci->always_text)
-	       edje_object_signal_emit(inst->net_obj, "label_active", "");
-	     else
-	       edje_object_signal_emit(inst->net_obj, "label_passive", "");
-	       
+                ecore_timer_del(inst->check_timer);
+             inst->check_timer = ecore_timer_add((double)ci->poll_time, _net_cb_check, inst);
+             if (ci->always_text)
+                edje_object_signal_emit(inst->net_obj, "label_active", "");
+             else
+                edje_object_signal_emit(inst->net_obj, "label_passive", "");
+
              break;
           }
      }
@@ -265,7 +265,7 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, max, DOUBLE);
    E_CONFIG_VAL(D, T, poll_time, DOUBLE);
    E_CONFIG_VAL(D, T, always_text, INT);
-   
+
    conf_edd = E_CONFIG_DD_NEW("Net_Config", Config);
 
 #undef T
@@ -286,7 +286,7 @@ e_modapi_init(E_Module *m)
         ci->device = evas_stringshare_add("eth0");
         ci->poll_time = 1.0;
         ci->max = 1500.0;
-	ci->always_text = 0;
+        ci->always_text = 0;
         net_config->items = evas_list_append(net_config->items, ci);
      }
    net_config->module = m;
@@ -392,8 +392,8 @@ _net_update_rx(void *data, int value)
 {
    Edje_Message_Int_Set *val;
    Instance *inst;
-   
-   inst = data;   
+
+   inst = data;
    val = malloc(sizeof(Edje_Message_Int_Set) + (1 * sizeof(int)));
    val->count = 1;
    val->val[0] = value;
@@ -406,7 +406,7 @@ _net_update_tx(void *data, int value)
 {
    Edje_Message_Int_Set *val;
    Instance *inst;
-   
+
    inst = data;
    val = malloc(sizeof(Edje_Message_Int_Set) + (1 * sizeof(int)));
    val->count = 1;
@@ -429,11 +429,11 @@ _net_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Instance *inst;
    Config_Item *ci;
-   
+
    inst = data;
    ci = _net_config_item_get(inst->gcc->id);
    if (!ci->always_text)
-     edje_object_signal_emit(inst->net_obj, "label_passive", "");
+      edje_object_signal_emit(inst->net_obj, "label_passive", "");
 }
 
 static int
@@ -495,29 +495,29 @@ _net_cb_check(void *data)
    bytes_in = in - old_in;
    bytes_out = out - old_out;
    if (bytes_in < 0)
-     bytes_in = 0;
+      bytes_in = 0;
    if (bytes_out < 0)
-     bytes_out = 0;
-   
+      bytes_out = 0;
+
    old_in = in;
    old_out = out;
 
-   if (first_time) 
+   if (first_time)
      {
-	first_time = 0;
-	return 1;
+        first_time = 0;
+        return 1;
      }
-   
+
    if (bytes_in <= 0)
       edje_object_part_text_set(inst->net_obj, "rx_label", "Rx: 0 B");
    else
      {
         if (bytes_in > 1048576)
-	  snprintf(in_str, sizeof(in_str), "Rx: %d Mb", (bytes_in / 1048576));
+           snprintf(in_str, sizeof(in_str), "Rx: %d Mb", (bytes_in / 1048576));
         else if (bytes_in > 1024 && bytes_in < 1048576)
-	  snprintf(in_str, sizeof(in_str), "Rx: %d Kb", (bytes_in / 1024));
+           snprintf(in_str, sizeof(in_str), "Rx: %d Kb", (bytes_in / 1024));
         else
-	  snprintf(in_str, sizeof(in_str), "Rx: %d B", bytes_in);
+           snprintf(in_str, sizeof(in_str), "Rx: %d B", bytes_in);
 
         edje_object_part_text_set(inst->net_obj, "rx_label", in_str);
      }
@@ -527,27 +527,27 @@ _net_cb_check(void *data)
    else
      {
         if (bytes_out > 1048576)
-	  snprintf(out_str, sizeof(out_str), "Tx: %d Mb", (bytes_out / 1048576));
+           snprintf(out_str, sizeof(out_str), "Tx: %d Mb", (bytes_out / 1048576));
         else if (bytes_out > 1024 && bytes_out < 1048576)
-	  snprintf(out_str, sizeof(out_str), "Tx: %d Kb", (bytes_out / 1024));
+           snprintf(out_str, sizeof(out_str), "Tx: %d Kb", (bytes_out / 1024));
         else
-	  snprintf(out_str, sizeof(out_str), "Tx: %d B", bytes_out);
+           snprintf(out_str, sizeof(out_str), "Tx: %d B", bytes_out);
 
         edje_object_part_text_set(inst->net_obj, "tx_label", out_str);
      }
 
    double i, o;
-   
+
    if (bytes_in != 0.0)
-     i = ((double)bytes_in / (double)ci->max);
+      i = ((double)bytes_in / (double)ci->max);
    else
-     i = 0.0;
-   
+      i = 0.0;
+
    if (bytes_out != 0.0)
-     o = ((double)bytes_out / (double)ci->max);
+      o = ((double)bytes_out / (double)ci->max);
    else
-     o = 0.0;
-   
+      o = 0.0;
+
    if (i < 0.0)
       i = 0.0;
    if (o < 0.0)

@@ -49,7 +49,7 @@ _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata)
    cfdata->poll_time = ci->poll_time;
    cfdata->always_text = ci->always_text;
    cfdata->max = ci->max;
-   
+
    if (ci->device != NULL)
       cfdata->device = strdup(ci->device);
    else
@@ -117,9 +117,9 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    ob = e_widget_radio_add(evas, D_("Always Show Text"), 1, rg);
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_radio_add(evas, D_("Show Text On Mouse Over"), 0, rg);
-   e_widget_framelist_object_append(of, ob);   
+   e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
-   
+
    of = e_widget_framelist_add(evas, D_("Device Settings"), 0);
    ot = e_widget_table_add(evas, 0);
    rg = e_widget_radio_group_new(&(cfdata->dev_num));
@@ -142,10 +142,10 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    e_widget_table_object_append(ot, ob, 0, i, 1, 1, 0, 0, 1, 0);
    i++;
    ob = e_widget_slider_add(evas, 1, 0, _("%1.0f"), 100, 1500, 100, 0, &(cfdata->max), NULL, 150);
-   e_widget_table_object_append(ot, ob, 0, i, 1, 1, 1, 0, 1, 0);   
+   e_widget_table_object_append(ot, ob, 0, i, 1, 1, 1, 0, 1, 0);
    e_widget_framelist_object_append(of, ot);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
-   
+
    return o;
 }
 
@@ -166,7 +166,7 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    ci->poll_time = cfdata->poll_time;
    ci->always_text = cfdata->always_text;
    ci->max = cfdata->max;
-   
+
    e_config_save_queue();
    _net_config_updated(ci->id);
    return 1;
