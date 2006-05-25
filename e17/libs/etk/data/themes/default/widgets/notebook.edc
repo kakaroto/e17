@@ -120,6 +120,7 @@ group {
             }
          }
       }
+      FOCUS_RECT("label_under", 0.0, 0.0, 2, 2, 1.0, 1.0, -3, -3)
       part {
          name: "shadow";
          mouse_events: 0;
@@ -182,6 +183,18 @@ group {
          source: "";
          action: STATE_SET "default" 0.0;
          target: "label_under_rect";
+      }
+      program {
+         name: "tab_focus";
+         signal: "focus";
+         source: "";
+         FOCUS_RECT_ACTION
+      }
+      program {
+         name: "tab_unfocus";
+         signal: "unfocus";
+         source: "";
+         UNFOCUS_RECT_ACTION
       }
    }
 }

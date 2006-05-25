@@ -1258,7 +1258,7 @@ static void _etk_combobox_selected_item_set(Etk_Combobox *combobox, Etk_Combobox
 /**
  * @addtogroup Etk_Combobox
  *
- * @image html combobox.png
+ * @image html widgets/combobox.png
  * Once the combobox is created, at least one column must be added to it with etk_combobox_column_add().
  * Each column can contain a specific widget type. @n
  * Once all the column are created, the combobox have to be built with etk_combobox_build(),

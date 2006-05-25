@@ -670,7 +670,7 @@ static void _etk_image_load(Etk_Image *image)
 /**
  * @addtogroup Etk_Image
  *
- * @image html image.png
+ * @image html widgets/image.png
  * The image can be loaded from several sources: image files (png, jpg, and the other formats supported by evas), edje
  * files (edj), or from stock IDs.
  * 

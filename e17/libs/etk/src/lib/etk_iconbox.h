@@ -9,7 +9,7 @@
 
 /**
  * @defgroup Etk_Iconbox Etk_Iconbox
- * @brief An Etk_Iconbox is a widget that can displays icons aligned on a grid
+ * @brief An Etk_Iconbox is a widget that can display icons aligned on a grid
  * @{
  */
 

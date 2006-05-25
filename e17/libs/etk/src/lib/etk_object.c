@@ -13,13 +13,13 @@
  * @{
  */
 
-typedef struct _Etk_Object_Data
+typedef struct Etk_Object_Data
 {
    void *value;
    void (*free_cb)(void *data);
 } Etk_Object_Data;
 
-enum _Etk_Object_Signal_Id
+enum Etk_Object_Signal_Id
 {
    ETK_OBJECT_DESTROYED_SIGNAL,
    ETK_OBJECT_NUM_SIGNALS
@@ -41,7 +41,7 @@ static Etk_Signal *_etk_object_signals[ETK_OBJECT_NUM_SIGNALS];
 
 /**
  * @brief Gets the type of an Etk_Object
- * @return Returns the type on an Etk_Object
+ * @return Returns the type of an Etk_Object
  */
 Etk_Type *etk_object_type_get()
 {
@@ -49,9 +49,11 @@ Etk_Type *etk_object_type_get()
 
    if (!object_type)
    {
-      object_type = etk_type_new("Etk_Object", NULL, sizeof(Etk_Object), ETK_CONSTRUCTOR(_etk_object_constructor), ETK_DESTRUCTOR(_etk_object_destructor));
+      object_type = etk_type_new("Etk_Object", NULL, sizeof(Etk_Object),
+         ETK_CONSTRUCTOR(_etk_object_constructor), ETK_DESTRUCTOR(_etk_object_destructor));
 
-      _etk_object_signals[ETK_OBJECT_DESTROYED_SIGNAL] = etk_signal_new("destroyed", object_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_object_signals[ETK_OBJECT_DESTROYED_SIGNAL] = etk_signal_new("destroyed",
+         object_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
    }
 
    return object_type;
@@ -623,3 +625,23 @@ static Evas_Bool _etk_object_data_free_cb(Evas_Hash *hash, const char *key, void
 }
 
 /** @} */
+
+/**************************
+ *
+ * Documentation
+ *
+ **************************/
+
+/**
+ * @addtogroup Etk_Object
+ * Etk_Object implements advanced features such as inheritance, constructors/destructors, properties and signals.
+ * 
+ * \par Object Hierarchy:
+ * - Etk_Object
+ *
+ * \par Signals:
+ * @signal_name "destroyed": Emitted just before all the destructors of the objects are called
+ * @signal_cb void callback(Etk_Object *object, void *data)
+ * @signal_arg object: the object which is about to be destroyed
+ * @signal_data
+ */

@@ -192,7 +192,7 @@ static void _etk_frame_realized_cb(Etk_Object *object, void *data)
 /**
  * @addtogroup Etk_Frame
  *
- * @image html frame.png
+ * @image html widgets/frame.png
  * 
  * \par Object Hierarchy:
  * - Etk_Object

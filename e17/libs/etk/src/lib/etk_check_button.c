@@ -62,7 +62,7 @@ Etk_Widget *etk_check_button_new_with_label(const char *label)
 /**
  * @addtogroup Etk_Check_Button
  *
- * @image html check_button.png
+ * @image html widgets/check_button.png
  * \par Object Hierarchy:
  * - Etk_Object
  *   - Etk_Widget

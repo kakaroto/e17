@@ -1526,7 +1526,7 @@ static int _etk_iconbox_grid_scroll_cb(void *data)
 /**
  * @addtogroup Etk_Iconbox
  *
- * @image html iconbox.png
+ * @image html widgets/iconbox.png
  * The iconbox is based on a notion of "model". The icon view is describes by a model which is fully customizable:
  * the model controls the position and the size of the cell, the icon image and the label of the iconbox's icons. @n
  * A default model is created when the iconbox is created, but you can add your own with etk_iconbox_model_new(),
@@ -1543,16 +1543,16 @@ static int _etk_iconbox_grid_scroll_cb(void *data)
  *
  * \par Signals:
  * @signal_name "icon_selected": Emitted when an icon of the iconbox has been selected.
- * If several icons have been selected at the same time (with etk_iconbox_select_all(), or with the selection rect),
- * the "icon_selected" signal will only be emitted once, on the last selected icon.
+ * If several icons have been selected at the same time (with etk_iconbox_select_all(), or with
+ * the selection rectangle), the "icon_selected" signal will only be emitted once, on the last selected icon.
  * @signal_cb void callback(Etk_Iconbox *iconbox, Etk_Iconbox_Icon *icon, void *data)
  * @signal_arg iconbox: the iconbox connected to the callback
  * @signal_arg icon: the icon which has been selected
  * @signal_data
  * \par
  * @signal_name "icon_unselected": Emitted when an icon of the iconbox has been unselected.
- * If several icons have been unselected at the same time (with etk_iconbox_unselect_all(), or with the selection rect),
- * the "icon_unselected" signal will only be emitted once, on the last unselected icon.
+ * If several icons have been unselected at the same time (with etk_iconbox_unselect_all(), or with
+ * the selection rectangle), the "icon_unselected" signal will only be emitted once, on the last unselected icon.
  * @signal_cb void callback(Etk_Iconbox *iconbox, Etk_Iconbox_Icon *icon, void *data)
  * @signal_arg iconbox: the iconbox connected to the callback
  * @signal_arg icon: the icon which has been unselected

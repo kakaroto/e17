@@ -19,10 +19,7 @@
 /** Checks if the object is an Etk_Container */
 #define ETK_IS_CONTAINER(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_CONTAINER_TYPE))
 
-/**
- * @enum Etk_Fill_Policy_Flags
- * @brief Describes how a child fills and expands the space allocated by its parent container
- */ 
+/** @brief Describes how a child fills and expands the space allocated by its parent container */ 
 typedef enum Etk_Fill_Policy_Flags
 {
    ETK_FILL_POLICY_NONE = 1 << 0,       /**< The child doesn't fill or expand */

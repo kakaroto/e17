@@ -2,6 +2,7 @@ images {
    image: "border.png" COMP;
    image: "background.png" COMP;
    image: "focus_glow.png" COMP;
+   image: "focus_rect.png" COMP;
    image: "drag_glow.png" COMP;
    image: "button_down.png" COMP;
    image: "button_up.png" COMP;
@@ -89,4 +90,5 @@ images {
    image: "colorpicker_vertical.png" COMP;
    image: "colorpicker_slider_trough.png" COMP;
    image: "colorpicker_slider_drag.png" COMP;
+   image: "colorpicker_preview.png" COMP;
 }

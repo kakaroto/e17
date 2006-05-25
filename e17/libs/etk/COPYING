@@ -1,11 +1,11 @@
-WARNING: the icons located in the directory data/stock_icons/default are
+WARNING: the icons located in the directory data/icons/default are
 under the "Creative Commons Attribution-ShareAlike 2.5 License Agreement".
-For more information, read the file data/stock_icons/default/COPYING
+For more information, read the file data/icons/default/COPYING
 
 
 All the other content of Etk is under the BSD license, explained below:
 
-Copyright (C) 2005 Simon TRENY and various contributors (see AUTHORS)
+Copyright (C) 2006 Simon TRENY and various contributors (see AUTHORS)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to

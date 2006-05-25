@@ -9,6 +9,7 @@
 
 /**
  * @defgroup Etk_Object Etk_Object
+ * @brief The Etk_Object class is the base class of all the objects and the widgets of Etk
  * @{
  */
 
@@ -19,28 +20,29 @@
 #endif
 #define ETK_OBJECT_CHECK_TYPE(obj, etk_type)          (etk_type_inherits_from(((Etk_Object *)(obj))->type, (etk_type)))
 
-/** @brief Gets the type of an object */
+/** Gets the type of an object */
 #define ETK_OBJECT_TYPE       (etk_object_type_get())
-/** @brief Casts the object to an Etk_Object */
+/** Casts the object to an Etk_Object */
 #define ETK_OBJECT(obj)       (ETK_OBJECT_CAST((obj), ETK_OBJECT_TYPE, Etk_Object))
-/** @brief Checks if the object is an Etk_Object (should be always true) */
+/** Checks if the object is an Etk_Object */
 #define ETK_IS_OBJECT(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_OBJECT_TYPE))
 
 /**
- * @struct Etk_Notification_Callback
- * @brief A callback called each time the associated property is changed
+ * @brief A callback called each time the value of the associated property is modified
+ * @structinfo
  */
-struct _Etk_Notification_Callback
+struct Etk_Notification_Callback
 {
+   /* private: */
    Etk_Notification_Callback_Function callback;
    void *data;
 };
 
 /**
- * @struct Etk_Object
- * @brief An Etk_Object is the base of all the widgets: it implements features such as inheritance, constructors, properties, signals.
+ * @brief @widget The structure of an object
+ * @structinfo
  */
-struct _Etk_Object
+struct Etk_Object
 {
    /* private: */
    Etk_Type *type;

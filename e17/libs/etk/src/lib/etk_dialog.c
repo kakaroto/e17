@@ -321,7 +321,7 @@ static void _etk_dialog_button_clicked_cb(Etk_Object *object, void *data)
 /**
  * @addtogroup Etk_Dialog
  *
- * @image html dialog.png
+ * @image html widgets/dialog.png
  * The dialog's window is split vertically in two area: the top area, called "main area", is an Etk_VBox where you can
  * pack any type of widgets; the bottom area, called "action area", is a Etk_HBox where you can pack any type of widgets,
  * but mostly buttons. Those buttons could be associated to a response id, which will be passed when the button is clicked
@@ -336,8 +336,9 @@ static void _etk_dialog_button_clicked_cb(Etk_Object *object, void *data)
  *   - Etk_Widget
  *     - Etk_Container
  *       - Etk_Bin
- *         - Etk_Window
- *           - Etk_Dialog
+ *         - Etk_Toplevel_Widget
+ *           - Etk_Window
+ *             - Etk_Dialog
  *
  * \par Signals:
  * @signal_name "response": Emitted when a button of the action area of the dialog is clicked.

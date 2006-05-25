@@ -1,5 +1,6 @@
 group {
    name: "colorpicker/picker";
+   min: 205 180;
    parts {
       part {
          name: "square_cp_border";
@@ -79,7 +80,7 @@ group {
 }
 group {
    name: "colorpicker/hslider";
-   min: 30 24;
+   min: 140 24;
    parts {
       part {
          name: "slider_image";
@@ -167,6 +168,50 @@ group {
          signal: "unfocus";
          source: "";
          UNFOCUS_GLOW_ACTION
+      }
+   }
+}
+group {
+   name: "colorpicker/color_preview";
+   min: 40 18;
+   parts {
+      part {
+         name: "preview_rect";
+         type: SWALLOW;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 2 1;
+               to: "border";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -2 -2;
+               to: "border";
+            }
+         }
+      }
+      part {
+         name: "border";
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 0 0;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -1 1;
+            }
+            image {
+               normal: "colorpicker_slider_trough.png";
+               border: 4 4 4 4;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
       }
    }
 }

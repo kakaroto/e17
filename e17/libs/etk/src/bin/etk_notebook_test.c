@@ -3,9 +3,6 @@
 
 static Etk_Widget *_etk_test_notebook_page1_widget_create();
 static Etk_Widget *_etk_test_notebook_page2_widget_create();
-static Etk_Widget *_etk_test_notebook_page3_widget_create();
-static void _etk_test_notebook_next_page(Etk_Object *object, void *data);
-static void _etk_test_notebook_prev_page(Etk_Object *object, void *data);
 
 /* Creates the window for the notebook test */
 void etk_test_notebook_window_create(void *data)
@@ -13,6 +10,7 @@ void etk_test_notebook_window_create(void *data)
    static Etk_Widget *win = NULL;
    Etk_Widget *notebook;
    Etk_Widget *page_widget;
+   Etk_Widget *alignment;
    Etk_Widget *hbox;
    Etk_Widget *vbox;
    Etk_Widget *button;
@@ -29,42 +27,47 @@ void etk_test_notebook_window_create(void *data)
    
    vbox = etk_vbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(win), vbox);
-   
-   hbox = etk_hbox_new(ETK_FALSE, 0);
-   etk_box_pack_start(ETK_BOX(vbox), hbox, ETK_FALSE, ETK_FALSE, 0);
 
    notebook = etk_notebook_new();
    etk_box_pack_start(ETK_BOX(vbox), notebook, ETK_TRUE, ETK_TRUE, 0);
    
-   button = etk_button_new_with_label(_("Prev"));
-   etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_notebook_prev_page), notebook);
-   etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
-   
-   button = etk_button_new_with_label(_("Next"));
-   etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_notebook_next_page), notebook);
-   etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);   
-   
+   /* Add the page */
    page_widget = _etk_test_notebook_page1_widget_create();
    etk_notebook_page_append(ETK_NOTEBOOK(notebook), "Tab 1 - Table test", page_widget);
    page_widget = _etk_test_notebook_page2_widget_create();
    etk_notebook_page_append(ETK_NOTEBOOK(notebook), "Tab 2 - Button test", page_widget);
-   page_widget = _etk_test_notebook_page3_widget_create();
-   etk_notebook_page_append(ETK_NOTEBOOK(notebook), "Tab 3 - Slider test", page_widget);
+   
+   etk_box_pack_start(ETK_BOX(vbox), etk_hseparator_new(), ETK_FALSE, ETK_FALSE, 5);
+   
+   /* Create the prev/next buttons */
+   alignment = etk_alignment_new(0.5, 0.5, 0.0, 1.0);
+   etk_box_pack_start(ETK_BOX(vbox), alignment, ETK_FALSE, ETK_FALSE, 0);
+   hbox = etk_hbox_new(ETK_TRUE, 0);
+   etk_container_add(ETK_CONTAINER(alignment), hbox);
+   
+   button = etk_button_new_from_stock(ETK_STOCK_GO_PREVIOUS);
+   etk_button_label_set(ETK_BUTTON(button), _("Previous"));
+   etk_signal_connect_swapped("clicked", ETK_OBJECT(button), ETK_CALLBACK(etk_notebook_page_prev), notebook);
+   etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_TRUE, 0);
+   
+   button = etk_button_new_from_stock(ETK_STOCK_GO_NEXT);
+   etk_button_label_set(ETK_BUTTON(button), _("Next"));
+   etk_signal_connect_swapped("clicked", ETK_OBJECT(button), ETK_CALLBACK(etk_notebook_page_next), notebook);
+   etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_TRUE, 0);
    
    etk_widget_show_all(win);
 }
 
-/* Create the widget for the page 1 */
+/* Create the widget for the first page */
 static Etk_Widget *_etk_test_notebook_page1_widget_create()
 {
-   Etk_Widget *widget[21];
-   Etk_Widget *vbox, *hbox, *table;
+   Etk_Widget *widget[19];
+   Etk_Widget *table;
    
    widget[0] = etk_button_new_from_stock(ETK_STOCK_DOCUMENT_OPEN);
    etk_button_label_set(ETK_BUTTON(widget[0]), _("Set Icon"));
-
-   widget[20] = etk_alignment_new(0.5, 0.5, 0.0, 0.0);
-   etk_container_add(ETK_CONTAINER(widget[20]), widget[0]);
+   widget[18] = etk_alignment_new(0.5, 0.5, 0.0, 0.0);
+   etk_container_add(ETK_CONTAINER(widget[18]), widget[0]);
 
    widget[1] = etk_label_new(_("App name"));
    widget[2] = etk_entry_new();
@@ -89,23 +92,12 @@ static Etk_Widget *_etk_test_notebook_page1_widget_create()
 
    widget[15] = etk_label_new(_("Wait exit"));
    widget[16] = etk_check_button_new();
-
-   widget[17] = etk_button_new_from_stock(ETK_STOCK_DIALOG_CANCEL);
-   widget[18] = etk_button_new_from_stock(ETK_STOCK_DOCUMENT_SAVE);
    
-   widget[19] = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/test.png");
+   widget[17] = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/test.png");
 
-   vbox = etk_vbox_new(ETK_FALSE, 0);
-   hbox = etk_hbox_new(ETK_FALSE, 0);
    table = etk_table_new(2, 10, ETK_FALSE);
-
-   etk_box_pack_start(ETK_BOX(vbox), table, ETK_FALSE, ETK_FALSE, 0);
-   etk_box_pack_end(ETK_BOX(vbox), hbox, ETK_FALSE, ETK_FALSE, 0);
-   etk_box_pack_end(ETK_BOX(hbox), widget[18], ETK_FALSE, ETK_FALSE, 0);
-   etk_box_pack_end(ETK_BOX(hbox), widget[17], ETK_FALSE, ETK_FALSE, 0);
-
-   etk_table_attach(ETK_TABLE(table), widget[19], 0, 0, 0, 0, 0, 0, ETK_FILL_POLICY_NONE);
-   etk_table_attach(ETK_TABLE(table), widget[20], 1, 1, 0, 0, 0, 0, ETK_FILL_POLICY_HEXPAND | ETK_FILL_POLICY_HFILL);
+   etk_table_attach(ETK_TABLE(table), widget[17], 0, 0, 0, 0, 0, 0, ETK_FILL_POLICY_NONE);
+   etk_table_attach(ETK_TABLE(table), widget[18], 1, 1, 0, 0, 0, 0, ETK_FILL_POLICY_HEXPAND | ETK_FILL_POLICY_HFILL);
    etk_table_attach(ETK_TABLE(table), widget[1], 0, 0, 2, 2, 0, 0, ETK_FILL_POLICY_HFILL);
    etk_table_attach_defaults(ETK_TABLE(table), widget[2], 1, 1, 2, 2);
    etk_table_attach(ETK_TABLE(table), widget[3], 0, 0, 3, 3, 0, 0, ETK_FILL_POLICY_HFILL);
@@ -123,10 +115,10 @@ static Etk_Widget *_etk_test_notebook_page1_widget_create()
    etk_table_attach(ETK_TABLE(table), widget[15], 0, 0, 9, 9, 0, 0, ETK_FILL_POLICY_HFILL);
    etk_table_attach_defaults(ETK_TABLE(table), widget[16], 1, 1, 9, 9);
    
-   return vbox;
+   return table;
 }
 
-/* Create the widget for the page 2 */
+/* Create the widget for the second page */
 static Etk_Widget *_etk_test_notebook_page2_widget_create()
 {
    Etk_Widget *alignment;
@@ -135,23 +127,17 @@ static Etk_Widget *_etk_test_notebook_page2_widget_create()
    Etk_Widget *button_toggle;
    Etk_Widget *button_check;
    Etk_Widget *button_radio;
-   Etk_Widget *image;
    
-   alignment = etk_alignment_new(0.5, 0.5, 0.5, 0.0);
+   alignment = etk_alignment_new(0.5, 0.5, 0.2, 0.0);
    
    vbox = etk_vbox_new(ETK_FALSE, 3);
    etk_container_add(ETK_CONTAINER(alignment), vbox);
 
    button_normal = etk_button_new_with_label(_("Normal button"));
    etk_box_pack_start(ETK_BOX(vbox), button_normal, ETK_FALSE, ETK_FALSE, 0);
-
-   image = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/e_icon.png");
-   button_normal = etk_button_new_with_label(_("Button with an image"));
-   etk_button_image_set(ETK_BUTTON(button_normal), ETK_IMAGE(image));
-   etk_box_pack_start(ETK_BOX(vbox), button_normal, ETK_FALSE, ETK_FALSE, 0);
    
-   button_normal = etk_button_new();
-   etk_box_pack_start(ETK_BOX(vbox), button_normal, ETK_FALSE, ETK_FALSE, 0);
+   button_toggle = etk_toggle_button_new_with_label(_("Toggle button"));
+   etk_box_pack_start(ETK_BOX(vbox), button_toggle, ETK_FALSE, ETK_FALSE, 0);
    
    button_check = etk_check_button_new_with_label(_("Check button"));
    etk_box_pack_start(ETK_BOX(vbox), button_check, ETK_FALSE, ETK_FALSE, 0);
@@ -165,40 +151,5 @@ static Etk_Widget *_etk_test_notebook_page2_widget_create()
    button_radio = etk_radio_button_new_from_widget(ETK_RADIO_BUTTON(button_radio));
    etk_box_pack_start(ETK_BOX(vbox), button_radio, ETK_FALSE, ETK_FALSE, 0);
    
-   button_toggle = etk_toggle_button_new_with_label(_("Toggle button"));
-   etk_box_pack_start(ETK_BOX(vbox), button_toggle, ETK_FALSE, ETK_FALSE, 0);
-   
-   button_toggle = etk_toggle_button_new();
-   etk_box_pack_start(ETK_BOX(vbox), button_toggle, ETK_FALSE, ETK_FALSE, 0);
-   
    return alignment;
-}
-
-/* Create the widget for the page 3 */
-static Etk_Widget *_etk_test_notebook_page3_widget_create()
-{
-   Etk_Widget *hbox;
-   Etk_Widget *slider;
-   
-   hbox = etk_hbox_new(ETK_TRUE, 0);
-   
-   slider = etk_hslider_new(0.0, 255.0, 128.0, 1.0, 10.0);
-   etk_widget_size_request_set(slider, 130, 130);
-   etk_box_pack_start(ETK_BOX(hbox), slider, ETK_TRUE, ETK_TRUE, 0);
-   
-   slider = etk_vslider_new(0.0, 255.0, 128.0, 1.0, 10.0);
-   etk_widget_size_request_set(slider, 130, 130);
-   etk_box_pack_end(ETK_BOX(hbox), slider, ETK_TRUE, ETK_TRUE, 0);
-
-   return hbox;
-}
-
-static void _etk_test_notebook_next_page(Etk_Object *object, void *data)
-{
-   etk_notebook_next_page(ETK_NOTEBOOK(data));
-}
-
-static void _etk_test_notebook_prev_page(Etk_Object *object, void *data)
-{
-   etk_notebook_prev_page(ETK_NOTEBOOK(data));
 }

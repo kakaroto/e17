@@ -587,7 +587,7 @@ static void _etk_button_children_create(Etk_Button *button)
 /**
  * @addtogroup Etk_Button
  *
- * @image html button.png
+ * @image html widgets/button.png
  * An Etk_Button usually contains only a label and an icon, but it can contain any type of widgets.
  * 
  * \par Object Hierarchy:

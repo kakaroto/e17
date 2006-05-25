@@ -8,6 +8,7 @@
 
 /* TODO/FIXME list:
  * - For some reasons, sometimes the child is not "swallowed" (see Extrackt's combobox)
+ * - More properties (stock, ...)?
  */
 
 /**

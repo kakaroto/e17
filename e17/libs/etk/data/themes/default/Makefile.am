@@ -14,7 +14,32 @@ EDJE_FLAGS = \
 filesdir = $(pkgdatadir)/themes
 files_DATA = default.edj
 
-default.edj: Makefile default.edc
+THEME_DEP = \
+default.edc \
+widgets/button.edc \
+widgets/check_button.edc \
+widgets/colorpicker.edc \
+widgets/combobox.edc \
+widgets/entry.edc \
+widgets/frame.edc \
+widgets/iconbox.edc \
+widgets/menu.edc \
+widgets/notebook.edc \
+widgets/paned.edc \
+widgets/progress_bar.edc \
+widgets/radio_button.edc \
+widgets/scrollbar.edc \
+widgets/separator.edc \
+widgets/slider.edc \
+widgets/spinner.edc \
+widgets/statusbar.edc \
+widgets/text_view.edc \
+widgets/toggle_button.edc \
+widgets/tooltips.edc \
+widgets/tree.edc \
+widgets/windows.edc
+
+default.edj: Makefile $(THEME_DEP)
 	$(EDJE_CC) $(EDJE_FLAGS) \
 	$(top_srcdir)/data/themes/default/default.edc \
 	$(top_builddir)/data/themes/default/default.edj

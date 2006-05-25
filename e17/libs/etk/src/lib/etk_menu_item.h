@@ -6,37 +6,42 @@
 #include "etk_types.h"
 #include "etk_stock.h"
 
+/* TODO/FIXME list:
+ * - Simplify the "swallow" code
+ */
+ 
 /**
  * @defgroup Etk_Menu_Item Etk_Menu_Item
+ * @brief The Etk_Menu_Item widget is used as a child of a menu shell (Etk_Menu or Etk_Menu_Bar)
  * @{
  */
 
-/** @brief Gets the type of a menu item */
+/** Gets the type of a menu item */
 #define ETK_MENU_ITEM_TYPE       (etk_menu_item_type_get())
-/** @brief Casts the object to an Etk_Menu_Item */
+/** Casts the object to an Etk_Menu_Item */
 #define ETK_MENU_ITEM(obj)       (ETK_OBJECT_CAST((obj), ETK_MENU_ITEM_TYPE, Etk_Menu_Item))
-/** @brief Checks if the object is an Etk_Menu_Item */
+/** Checks if the object is an Etk_Menu_Item */
 #define ETK_IS_MENU_ITEM(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_MENU_ITEM_TYPE))
 
-/** @brief Gets the type of a menu item separator */
+/** Gets the type of a menu item separator */
 #define ETK_MENU_ITEM_SEPARATOR_TYPE       (etk_menu_item_separator_type_get())
-/** @brief Casts the object to an Etk_Menu_Item_Separator */
+/** Casts the object to an Etk_Menu_Item_Separator */
 #define ETK_MENU_ITEM_SEPARATOR(obj)       (ETK_OBJECT_CAST((obj), ETK_MENU_ITEM_SEPARATOR_TYPE, Etk_Menu_Item_Separator))
-/** @brief Checks if the object is an Etk_Menu_Item_Separator */
+/** Checks if the object is an Etk_Menu_Item_Separator */
 #define ETK_IS_MENU_ITEM_SEPARATOR(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_MENU_ITEM_SEPARATOR_TYPE))
 
-/** @brief Gets the type of a menu item image */
+/** Gets the type of a menu item image */
 #define ETK_MENU_ITEM_IMAGE_TYPE       (etk_menu_item_image_type_get())
-/** @brief Casts the object to an Etk_Menu_Item_Image */
+/** Casts the object to an Etk_Menu_Item_Image */
 #define ETK_MENU_ITEM_IMAGE(obj)       (ETK_OBJECT_CAST((obj), ETK_MENU_ITEM_IMAGE_TYPE, Etk_Menu_Item_Image))
-/** @brief Checks if the object is an Etk_Menu_Item_Image */
+/** Checks if the object is an Etk_Menu_Item_Image */
 #define ETK_IS_MENU_ITEM_IMAGE(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_MENU_ITEM_IMAGE_TYPE))
 
-/** @brief Gets the type of a menu item check */
+/** Gets the type of a menu item check */
 #define ETK_MENU_ITEM_CHECK_TYPE       (etk_menu_item_check_type_get())
-/** @brief Casts the object to an Etk_Menu_Item_Check */
+/** Casts the object to an Etk_Menu_Item_Check */
 #define ETK_MENU_ITEM_CHECK(obj)       (ETK_OBJECT_CAST((obj), ETK_MENU_ITEM_CHECK_TYPE, Etk_Menu_Item_Check))
-/** @brief Checks if the object is an Etk_Menu_Item_Check */
+/** Checks if the object is an Etk_Menu_Item_Check */
 #define ETK_IS_MENU_ITEM_CHECK(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_MENU_ITEM_CHECK_TYPE))
 
 /** @brief Gets the type of a menu item radio */
@@ -47,10 +52,10 @@
 #define ETK_IS_MENU_ITEM_RADIO(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_MENU_ITEM_RADIO_TYPE))
 
 /**
- * @struct Etk_Menu_Item
- * @brief An item of a menu or of a menu bar
+ * @brief @widget The structure of a menu item
+ * @structinfo
  */
-struct _Etk_Menu_Item
+struct Etk_Menu_Item
 {
    /* private: */
    /* Inherit from Etk_Widget */
@@ -70,10 +75,10 @@ struct _Etk_Menu_Item
 };
 
 /**
- * @struct Etk_Menu_Item_Separator
- * @brief An horizontal separator for the menus
+ * @brief @widget The structure of a menu separator
+ * @structinfo
  */
-struct _Etk_Menu_Item_Separator
+struct Etk_Menu_Item_Separator
 {
    /* private: */
    /* Inherit from Etk_Menu_Item */
@@ -81,10 +86,10 @@ struct _Etk_Menu_Item_Separator
 };
 
 /**
- * @struct Etk_Menu_Item_Image
- * @brief A menu item with an image
+ * @brief @widget The structure of a menu item with an image
+ * @structinfo
  */
-struct _Etk_Menu_Item_Image
+struct Etk_Menu_Item_Image
 {
    /* private: */
    /* Inherit from Etk_Menu_Item */
@@ -92,10 +97,10 @@ struct _Etk_Menu_Item_Image
 };
 
 /**
- * @struct Etk_Menu_Item_Check
- * @brief A menu item with a checkbox
+ * @brief @widget The structure of a menu item with a checkbox
+ * @structinfo
  */
-struct _Etk_Menu_Item_Check
+struct Etk_Menu_Item_Check
 {
    /* private: */
    /* Inherit from Etk_Menu_Item */
@@ -107,10 +112,10 @@ struct _Etk_Menu_Item_Check
 };
 
 /**
- * @struct Etk_Menu_Item_Radio
- * @brief A menu item with a radiobox
+ * @brief @widget The structure of a radio
+ * @structinfo
  */
-struct _Etk_Menu_Item_Radio
+struct Etk_Menu_Item_Radio
 {
    /* private: */
    /* Inherit from Etk_Menu_Item_Check */
@@ -144,6 +149,7 @@ Etk_Widget *etk_menu_item_separator_new();
 Etk_Type *etk_menu_item_image_type_get();
 Etk_Widget *etk_menu_item_image_new();
 Etk_Widget *etk_menu_item_image_new_with_label(const char *label);
+Etk_Widget *etk_menu_item_image_new_from_stock(Etk_Stock_Id stock_id);
 void etk_menu_item_image_set(Etk_Menu_Item_Image *image_item, Etk_Image *image);
 
 /* Etk_Menu_Item_Check */

@@ -40,7 +40,8 @@ struct Etk_Colorpicker
    /* Inherit from Etk_Widget */
    Etk_Widget widget;
    
-   Evas_Object *picker_theme_object;
+   Etk_Widget *main_table;
+   Etk_Widget *picker_widget;
    
    /* Square picker */
    Evas_Object *sp_object;
@@ -71,9 +72,16 @@ struct Etk_Colorpicker
    int sliders_res;
    Etk_Bool sliders_need_update;
    
-   Etk_Widget *table;
+   /* Component widgets */
+   Etk_Widget *component_table;
    Etk_Widget *radios[6];
    Etk_Widget *value_labels[6];
+   
+   /* Current color objects */
+   Etk_Widget *color_table;
+   Etk_Widget *current_color_label;
+   Etk_Widget *current_color_widget;
+   Evas_Object *current_color_rect;
    
    Etk_Bool ignore_value_changed;
    Etk_Bool emit_signal;

@@ -33,16 +33,15 @@ EXTRA_DIST = background.png \
 	     drag_glow.png \
    	     menu_separator.png \
   	     tree_bg.png \
-	     entry_focus.png \
       	     notebook_frame.png \
  	     tree_desc_arrow.png \
 	     entry.png \
 	     radio_off.png \
 	     tree_expander_fold.png \
 	     focus_glow.png \
+	     focus_rect.png \
      	     radio_on.png \
 	     tree_expander_unfold.png \
-	     focus.png \
 	     scrollbar_button_down1.png \
 	     tree_header_active.png \
 	     frame_label_over.png \
@@ -50,7 +49,6 @@ EXTRA_DIST = background.png \
 	     tree_header_inactive.png \
 	     frame_label_under.png \
 	     scrollbar_button_left1.png \
-	     tree_over.png \
 	     frame_outline.png \
        	     scrollbar_button_left2.png \
 	     tree.png \
@@ -95,4 +93,5 @@ EXTRA_DIST = background.png \
              colorpicker_square.png \
              colorpicker_vertical.png \
              colorpicker_slider_trough.png \
-             colorpicker_slider_drag.png
+             colorpicker_slider_drag.png \
+             colorpicker_preview.png

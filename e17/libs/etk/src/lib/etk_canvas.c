@@ -161,7 +161,7 @@ static void _etk_canvas_unrealize_cb(Etk_Object *object, void *data)
 /**
  * @addtogroup Etk_Canvas
  *
- * @image html canvas.png
+ * @image html widgets/canvas.png
  * To add an object to a canvas, the object and the canvas should belong to the same evas. It means the canvas has to be
  * realized when you create the objects. You can for example create the objects in a callback connected to the "realize"
  * signal of the canvas widget.

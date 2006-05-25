@@ -6,7 +6,7 @@
 #include "etk_types.h"
 
 /* TODO/FIXME list:
- * - We should certainly set some X hints to make the dialogs not simple windows anymore
+ * - We should certainly set some X hints to make the dialogs not only simple windows
  * - Find a way to make modal dialogs
  */
 

@@ -3,16 +3,11 @@
 --------------------
 * Fix a bug in etk_tree: when you've scrolled to the end of the left tree in etk_test, and if you
 maximized the window, the tree is not correctly updated (maybe a bug in etk_scrolled_view)
-* Check if all the widgets can be reparented on a different window (i.e. unrealized then re-realized)
-without causing any problem
-* Check if all the functions of all the widgets work even is the widget is not realized
-(i.e. attached to a window)
 * etk_paned_position_set() does not work if the paned is not realized
 * Fix the focus problems in the notebook (you can focus children which are on an invisible page)
 * Sometimes the window of a menu is not hidden when the menu is popped_down
 * The labels sometimes does not returns its ideal size requisition (happens when there is a <br>)
 Maybe a bug of the evas textblock
-* Fix and optimize the colorpicker
 
 --------------------
 [Things that need to be improved (in order of pripority)]
@@ -22,8 +17,6 @@ Maybe a bug of the evas textblock
 * Allow the theme to change the color/font/style of the labels
 * More API work for the tree (get a row according to (x,y) position...)
 * The filechooser still need to be finished/rewritten [In progress: MoOm]
-* More API work for the colorpicker. We need to be able to know the current color, and to know
-when a color is changed
 * Add better mouse control for the scrollbar: click on the trough
 
 --------------------
@@ -35,4 +28,3 @@ when a color is changed
 * toolbar
 * drag and drop [In progress: CodeWarrior]
 * copy and paste [In progress: CodeWarrior]
-* add spin buttons and sliders to colorpicker

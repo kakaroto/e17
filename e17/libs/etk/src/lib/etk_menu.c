@@ -382,7 +382,7 @@ static void _etk_menu_item_activated_cb(Etk_Object *object, void *data)
 /**
  * @addtogroup Etk_Menu
  *
- * @image html menu.png
+ * @image html widgets/menu.png
  * The items of the menu are packed vertically. @n
  * To add or remove items, you have to use the functions provided by the Etk_Menu_Shell:
  * etk_menu_shell_append(), etk_menu_shell_remove(), ... @n @n

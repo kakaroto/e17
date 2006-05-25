@@ -52,6 +52,7 @@ GENERATE_TESTLIST      = YES
 GENERATE_BUGLIST       = YES
 GENERATE_DEPRECATEDLIST= YES
 ALIASES                = "widget=<b>[Widget]</b>"
+ALIASES                = "object=<b>[Object]</b>"
 ALIASES               += "structinfo=@note For more informations, see the documention page of the corresponding module (link above or in the <i>\"Widgets\"</i> page)"
 ALIASES               += "prop_name=- @b"
 ALIASES               += "prop_type=   - <tt>Type:</tt>"

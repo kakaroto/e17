@@ -177,7 +177,7 @@ Etk_Type *etk_widget_type_get()
       _etk_widget_signals[ETK_WIDGET_SHOW_SIGNAL] =          etk_signal_new("show",          widget_type, ETK_MEMBER_OFFSET(Etk_Widget, show),    etk_marshaller_VOID__VOID,    NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_HIDE_SIGNAL] =          etk_signal_new("hide",          widget_type, -1,                                     etk_marshaller_VOID__VOID,    NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_REALIZE_SIGNAL] =       etk_signal_new("realize",       widget_type, -1,                                     etk_marshaller_VOID__VOID,    NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_UNREALIZE_SIGNAL] =     etk_signal_new("unrealize",     widget_type, -1,                                     etk_marshaller_VOID__POINTER, NULL, NULL);
+      _etk_widget_signals[ETK_WIDGET_UNREALIZE_SIGNAL] =     etk_signal_new("unrealize",     widget_type, -1,                                     etk_marshaller_VOID__VOID,    NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_SIZE_REQUEST_SIGNAL] =  etk_signal_new("size_request",  widget_type, -1,                                     etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_MOUSE_IN_SIGNAL] =      etk_signal_new("mouse_in",      widget_type, -1,                                     etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_MOUSE_OUT_SIGNAL] =     etk_signal_new("mouse_out",     widget_type, -1,                                     etk_marshaller_VOID__POINTER, NULL, NULL);

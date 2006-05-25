@@ -284,7 +284,7 @@ static void _etk_menu_bar_item_submenu_popped_down_cb(Etk_Object *object, void *
 /**
  * @addtogroup Etk_Menu_Bar
  *
- * @image html menu_bar.png
+ * @image html widgets/menu_bar.png
  * The menu bar is a menu shell whose items are packed horizontally.
  * A menu bar is usually packed at the top of a window. @n
  * To add or remove items, you have to use the functions provided by the Etk_Menu_Shell:
