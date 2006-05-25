@@ -513,14 +513,19 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 	 * change. Then select the new widget and notify it of the selection.
 	 */
 	if (widget != deselect) {
-		if (deselect) {
+		/* 
+		 * Make sure these widgets haven't been scheduled for
+		 * deletion before we send their callbacks. 
+		 */
+		if (deselect && !DESTROYED(deselect)) {
 			ewl_object_state_remove(EWL_OBJECT(deselect),
-					EWL_FLAG_STATE_FOCUSED);
+						EWL_FLAG_STATE_FOCUSED);
 			ewl_callback_call(deselect, EWL_CALLBACK_FOCUS_OUT);
 		}
 
 		if (widget && !(ewl_object_state_has(EWL_OBJECT(widget),
-					EWL_FLAG_STATE_DISABLED))) {
+					EWL_FLAG_STATE_DISABLED))
+				&& !DESTROYED(widget)) {
 			ewl_object_state_add(EWL_OBJECT(widget),
 					EWL_FLAG_STATE_FOCUSED);
 			ewl_callback_call(widget, EWL_CALLBACK_FOCUS_IN);

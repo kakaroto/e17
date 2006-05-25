@@ -405,11 +405,8 @@ ewl_widget_destroy(Ewl_Widget * w)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	if ((ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_DSCHEDULED))
-			|| (ewl_object_queued_has(EWL_OBJECT(w), 
-					EWL_FLAG_QUEUED_DPROCESS)))
+	if (DESTROYED(w))
 		DRETURN(DLEVEL_STABLE);
-
 
 	/* cleanup any dnd widgets */
 	if (w == ewl_widget_drag_candidate_get())

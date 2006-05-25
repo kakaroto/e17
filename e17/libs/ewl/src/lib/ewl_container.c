@@ -1064,9 +1064,7 @@ ewl_container_child_remove_call(Ewl_Container *c, Ewl_Widget *w, int idx)
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	/* do nothing if the container is being destroyed */
-	if (ewl_object_queued_has(EWL_OBJECT(c), EWL_FLAG_QUEUED_DPROCESS) 
-			|| ewl_object_queued_has(EWL_OBJECT(c),
-					EWL_FLAG_QUEUED_DSCHEDULED))
+	if (DESTROYED(c))
 		DRETURN(DLEVEL_STABLE);
 
 	if (c->child_remove)
@@ -1120,9 +1118,7 @@ ewl_container_child_hide_call(Ewl_Container *c, Ewl_Widget *w)
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	/* do nothing if the container is being destroyed */
-	if (ewl_object_queued_has(EWL_OBJECT(c), EWL_FLAG_QUEUED_DPROCESS) 
-			|| ewl_object_queued_has(EWL_OBJECT(c),
-					EWL_FLAG_QUEUED_DSCHEDULED))
+	if (DESTROYED(c))
 		DRETURN(DLEVEL_STABLE);
 
 	if (c->child_hide)

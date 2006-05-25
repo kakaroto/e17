@@ -815,8 +815,9 @@ ewl_realize_request(Ewl_Widget *w)
 		if (!o)
 			DRETURN(DLEVEL_STABLE);
 
-		if (!ewl_object_queued_has(EWL_OBJECT(o), EWL_FLAG_QUEUED_RPROCESS)) {
-		       	if (!REALIZED(o))
+		if (!ewl_object_queued_has(EWL_OBJECT(o), 
+				EWL_FLAG_QUEUED_RPROCESS)) {
+			if (!REALIZED(o))
 				DRETURN(DLEVEL_STABLE);
 		}
 	}
@@ -984,14 +985,10 @@ ewl_destroy_request(Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	if ((ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_DSCHEDULED))
-			|| (ewl_object_queued_has(EWL_OBJECT(w),
-						EWL_FLAG_QUEUED_DPROCESS)))
+	if (DESTROYED(w))
 		DRETURN(DLEVEL_STABLE);
 
-	if ((ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_CSCHEDULED))
-			|| (ewl_object_queued_has(EWL_OBJECT(w),
-						EWL_FLAG_QUEUED_CPROCESS)))
+	if (CONFIGURED(w))
 		ewl_configure_cancel_request(w);
 
 	ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_DSCHEDULED);

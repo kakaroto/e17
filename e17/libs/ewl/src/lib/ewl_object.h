@@ -523,6 +523,23 @@ unsigned int    ewl_object_flags_get(Ewl_Object *o, unsigned int mask);
 #define HIDDEN(o) (!(EWL_OBJECT(o)->flags & EWL_FLAG_VISIBLE_SHOWN))
 
 /**
+ * @def DESTROYED(o)
+ * Used to determine if a widget has been destroyed
+ */
+#define DESTROYED(o) (ewl_object_queued_has(EWL_OBJECT(o), \
+					EWL_FLAG_QUEUED_DSCHEDULED) \
+			|| ewl_object_queued_has(EWL_OBJECT(o), \
+					EWL_FLAG_QUEUED_DPROCESS))
+
+/**
+ * @def CONFIGURED(o)
+ * Used to determine if a widget is scheduled for configure
+ */
+#define CONFIGURED(o) (ewl_object_queued_has(EWL_OBJECT(o), \
+					EWL_FLAG_QUEUED_CSCHEDULED) \
+			|| ewl_object_queued_has(EWL_OBJECT(o), \
+			                  EWL_FLAG_QUEUED_CPROCESS))
+/**
  * @}
  */
 
