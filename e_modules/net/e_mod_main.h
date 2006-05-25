@@ -6,7 +6,7 @@
 typedef struct _Config Config;
 typedef struct _Config_Item Config_Item;
 
-struct _Config 
+struct _Config
 {
    E_Module *module;
    E_Config_Dialog *config_dialog;
@@ -15,12 +15,13 @@ struct _Config
    Evas_List *items;
 };
 
-struct _Config_Item 
+struct _Config_Item
 {
    const char *id;
    const char *device;
    double poll_time;
    double max;
+   int always_text;
 };
 
 EAPI extern E_Module_Api e_modapi;
