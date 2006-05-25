@@ -9,7 +9,6 @@ struct _Instance
    E_Gadcon_Client *gcc;
    Evas_Object *net_obj;
    Net *net;
-   Config_Item *ci;
    Ecore_Timer *check_timer;
 };
 
