@@ -48,6 +48,7 @@ int		 ewl_imenu_init(Ewl_Imenu *menu);
  */
 void ewl_imenu_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_imenu_expand_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_imenu_destroy_cb(Ewl_Widget *w, void *ev, void *data);
 void ewl_imenu_popup_destroy_cb(Ewl_Widget *w, void *ev, void *data);
 
 /**

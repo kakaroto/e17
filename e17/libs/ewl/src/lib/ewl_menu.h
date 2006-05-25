@@ -55,6 +55,7 @@ void ewl_menu_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_menu_expand_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_menu_popup_move_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_menu_hide_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_menu_destroy_cb(Ewl_Widget *w, void *ev, void *data);
 void ewl_menu_popup_destroy_cb(Ewl_Widget *w, void *ev, void *data);
 void ewl_menu_expand_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_menu_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data);

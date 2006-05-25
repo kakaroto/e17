@@ -78,7 +78,9 @@ ewl_menu_init(Ewl_Menu *menu)
 
 	ewl_callback_append(menu->base.popup, EWL_CALLBACK_MOUSE_MOVE,
 				ewl_menu_mouse_move_cb, menu);
-			    
+			   
+	ewl_callback_prepend(EWL_WIDGET(menu), EWL_CALLBACK_DESTROY,
+				ewl_menu_destroy_cb, NULL);
 	ewl_callback_prepend(menu->base.popup, EWL_CALLBACK_DESTROY,
 				ewl_menu_popup_destroy_cb, menu);
 
@@ -277,6 +279,23 @@ ewl_menu_popup_destroy_cb(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 	m = data;
 	if (m->base.popup) m->base.popup = NULL;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_menu_destroy_cb(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
+{
+	Ewl_Menu *menu;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	menu = EWL_MENU(w);
+	if (menu->base.popup)
+		ewl_callback_del(menu->base.popup, EWL_CALLBACK_DESTROY, 
+						ewl_menu_popup_destroy_cb);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
