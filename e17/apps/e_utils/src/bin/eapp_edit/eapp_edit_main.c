@@ -260,8 +260,8 @@ eapp_populate(Ewl_Tree *tree, char *file, char *lang, char *winclass)
     {
         row[0] = ewl_label_new();
         ewl_label_text_set(EWL_LABEL(row[0]), keys[i].name);
-	ewl_object_fill_policy_set(EWL_OBJECT(row[0]), EWL_FLAG_FILL_NONE);
-	ewl_object_alignment_set(EWL_OBJECT(row[0]), EWL_FLAG_ALIGN_LEFT);
+        ewl_object_fill_policy_set(EWL_OBJECT(row[0]), EWL_FLAG_FILL_NONE);
+        ewl_object_alignment_set(EWL_OBJECT(row[0]), EWL_FLAG_ALIGN_LEFT);
         ewl_widget_show(row[0]);
 
         v = eapp_eet_read(ef, keys[i].key, lang);
@@ -327,16 +327,16 @@ eapp_cb_fd_changed(Ewl_Widget *w, void *ev, void *data)
     if (e->response == EWL_STOCK_OK)
     {
         char *icon;
-	const char *icon2;
-	char icon3[PATH_MAX];
+        const char *icon2;
+        char icon3[PATH_MAX];
 	
         icon = ewl_filedialog_selected_file_get(EWL_FILEDIALOG(w));
-	icon2 = ewl_filedialog_directory_get(EWL_FILEDIALOG(w));
-	snprintf(icon3, PATH_MAX, "%s/%s", icon2, icon);
+        icon2 = ewl_filedialog_directory_get(EWL_FILEDIALOG(w));
+        snprintf(icon3, PATH_MAX, "%s/%s", icon2, icon);
 
         o = ewl_widget_name_find("icon");
-        ewl_widget_data_set(o, "file", icon3);
-	ewl_image_file_set(EWL_IMAGE(o), icon3, "");
+        ewl_widget_data_set(o, "file", strdup(icon3));
+        ewl_image_file_set(EWL_IMAGE(o), icon3, "");
     }
 
     o = ewl_widget_name_find("fd");
