@@ -153,6 +153,9 @@ _net_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
         e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
         e_menu_item_callback_set(mi, _net_menu_cb_configure, inst);
 
+	mi = e_menu_item_new(mn);
+	e_menu_item_separator_set(mi, 1);
+	
         e_gadcon_client_util_menu_items_append(inst->gcc, mn, 0);
         e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &x, &y, &w, &h);
         e_menu_activate_mouse(mn,
