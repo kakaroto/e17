@@ -1193,13 +1193,9 @@ ITApply(Win win, ImageClass * ic, ImageState * is, int w, int h,
 		       EXCopyArea(pmm.pmap, pmap, 0, 0, w, h, 0, 0);
 		    }
 
-		  TextstateDrawText(ts, win, pmap, text, ic->padding.left,
-				    ic->padding.top,
-				    w - (ic->padding.left +
-					 ic->padding.right),
-				    h - (ic->padding.top +
-					 ic->padding.bottom),
-				    0, TextclassGetJustification(tc));
+		  TextstateDrawText(ts, win, pmap, text, 0, 0, w, h,
+				    &(ic->padding), 0,
+				    TextclassGetJustification(tc));
 	       }
 
 	     /* Set window pixmap */

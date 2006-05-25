@@ -420,8 +420,8 @@ _set_gc_color(Win win, GC gc, XColor * pxc)
 
 void
 TextstateDrawText(TextState * ts, Win win, Drawable draw, const char *text,
-		  int x, int y, int w, int h, int fsize __UNUSED__,
-		  int justification)
+		  int x, int y, int w, int h, const EImageBorder * pad,
+		  int fsize __UNUSED__, int justification)
 {
    const char         *str;
    char              **lines;
@@ -448,9 +448,27 @@ TextstateDrawText(TextState * ts, Win win, Drawable draw, const char *text,
 
    if (ts->style.orientation == FONT_TO_RIGHT ||
        ts->style.orientation == FONT_TO_LEFT)
-      textwidth_limit = w;
+     {
+	if (pad)
+	  {
+	     x += pad->left;
+	     w -= pad->left + pad->right;
+	     y += pad->top;
+	     h -= pad->top + pad->bottom;
+	  }
+	textwidth_limit = w;
+     }
    else
-      textwidth_limit = h;
+     {
+	if (pad)
+	  {
+	     x += pad->left;
+	     h -= pad->left + pad->right;
+	     y += pad->top;
+	     w -= pad->top + pad->bottom;
+	  }
+	textwidth_limit = h;
+     }
 
    xx = x;
    yy = y;
@@ -886,5 +904,6 @@ TextDraw(TextClass * tclass, Win win, Drawable draw, int active, int sticky,
    if (!ts)
       return;
 
-   TextstateDrawText(ts, win, draw, text, x, y, w, h, fsize, justification);
+   TextstateDrawText(ts, win, draw, text, x, y, w, h, NULL, fsize,
+		     justification);
 }
