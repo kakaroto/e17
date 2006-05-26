@@ -462,9 +462,14 @@ ewl_seeker_decrease(Ewl_Seeker *s)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
- * On a configure event we need to adjust the seeker to fit into it's new
- * coords and position as well as move the button to the correct size and
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief On a configure event we need to adjust the seeker to fit into it's 
+ * new coords and position as well as move the button to the correct size and
  * position.
  */
 void
@@ -533,6 +538,14 @@ ewl_seeker_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: The Ewl_Event_Mouse_Down data
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The button mouse down callback
+ */
 void
 ewl_seeker_button_mouse_down_cb(Ewl_Widget *w, void *ev_data,
 					void *user_data __UNUSED__)
@@ -559,6 +572,14 @@ ewl_seeker_button_mouse_down_cb(Ewl_Widget *w, void *ev_data,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The button mouse up callback
+ */
 void
 ewl_seeker_button_mouse_up_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
@@ -572,8 +593,13 @@ ewl_seeker_button_mouse_up_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
- * Move the cursor to the correct position
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: The Ewl_Event_Mouse_Move data
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief Move the cursor to the correct position
  */
 void
 ewl_seeker_mouse_move_cb(Ewl_Widget *w, void *ev_data,
@@ -623,6 +649,14 @@ ewl_seeker_mouse_move_cb(Ewl_Widget *w, void *ev_data,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: The Ewl_Event_Mouse_Down data
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The mouse down callback
+ */
 void
 ewl_seeker_mouse_down_cb(Ewl_Widget *w, void *ev_data,
 				void *user_data __UNUSED__)
@@ -681,6 +715,14 @@ ewl_seeker_mouse_down_cb(Ewl_Widget *w, void *ev_data,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The mouse up callback
+ */
 void
 ewl_seeker_mouse_up_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__)
@@ -701,6 +743,13 @@ ewl_seeker_mouse_up_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param p: The container to work with
+ * @param w: The widget to work with
+ * @return Returns no value
+ * @brief The child show callback
+ */
 void
 ewl_seeker_child_show_cb(Ewl_Container *p, Ewl_Widget *w)
 {

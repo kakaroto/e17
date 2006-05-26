@@ -2017,13 +2017,18 @@ ewl_widget_layer_neighbor_find_below(Ewl_Widget *w)
 	DRETURN_PTR(ol, DLEVEL_STABLE)
 }
 
-/*
- * Perform the series of operations common to every widget when
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief Perform the series of operations common to every widget when
  * they are destroyed. This should ALWAYS be the the last callback
  * in the chain.
  */
 void
-ewl_widget_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+ewl_widget_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 			void *data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -2086,11 +2091,16 @@ ewl_widget_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
- * Every widget must show it's fx_clip_box to be seen
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief Every widget must show it's fx_clip_box to be seen
  */
 void
-ewl_widget_show_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+ewl_widget_show_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 			void *user_data __UNUSED__)
 {
 	Ewl_Container *pc;
@@ -2115,11 +2125,16 @@ ewl_widget_show_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
- * Every widget must hide it's fx_clip_box in order to hide
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief Every widget must hide it's fx_clip_box in order to hide
  */
 void
-ewl_widget_hide_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+ewl_widget_hide_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 			void *user_data __UNUSED__)
 {
 	Ewl_Container *pc;
@@ -2145,15 +2160,19 @@ ewl_widget_hide_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
- * Request a new set of evas objects now that we're back on screen
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief Request a new set of evas objects now that we're back on screen
  */
-void ewl_widget_reveal_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+void
+ewl_widget_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
                                           void *user_data __UNUSED__)
 {
 	Ewl_Embed *emb;
-
-	/* printf("Revealing %s\n", w->appearance); */
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -2197,10 +2216,6 @@ void ewl_widget_reveal_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 		if (!w->theme_object) {
 			w->theme_object = edje_object_add(emb->evas);
 			evas_object_repeat_events_set(w->theme_object, 1);
-			/*
-			printf("Created edje %d: %s\n", ++edjes,
-					w->bit_group);
-					*/
 		}
 
 		/*
@@ -2260,11 +2275,11 @@ void ewl_widget_reveal_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	/*
 	 * Create clip box if necessary
 	 */
-	if (!w->fx_clip_box && !ewl_object_flags_get(EWL_OBJECT(w), EWL_FLAG_VISIBLE_NOCLIP)) {
+	if (!w->fx_clip_box && !ewl_object_flags_get(EWL_OBJECT(w), 
+						EWL_FLAG_VISIBLE_NOCLIP)) {
 		w->fx_clip_box = ewl_embed_object_request(emb, "rectangle");
 		if (!w->fx_clip_box) {
 			w->fx_clip_box = evas_object_rectangle_add(emb->evas);
-			/* printf("Created rectangle %d\n", ++rects); */
 		}
 		evas_object_pass_events_set(w->fx_clip_box, TRUE);
 	}
@@ -2310,10 +2325,16 @@ void ewl_widget_reveal_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
- * Give up unnecessary objects when we're offscreen
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief Give up unnecessary objects when we're offscreen
  */
-void ewl_widget_obscure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+void
+ewl_widget_obscure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
                                            void *user_data __UNUSED__)
 {
 	Ewl_Embed *emb;
@@ -2364,11 +2385,16 @@ void ewl_widget_obscure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
- * Perform the basic operations necessary for realizing a widget
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief Perform the basic operations necessary for realizing a widget
  */
 void
-ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+ewl_widget_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 			void *user_data __UNUSED__)
 {
 	int l = 0, r = 0, t = 0, b = 0;
@@ -2493,11 +2519,16 @@ ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DRETURN(DLEVEL_STABLE);
 }
 
-/*
- * Perform the basic operations necessary for unrealizing a widget
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief Perform the basic operations necessary for unrealizing a widget
  */
 void
-ewl_widget_unrealize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+ewl_widget_unrealize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 			void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -2547,11 +2578,16 @@ ewl_widget_unrealize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
- * Perform the basic operations necessary for configuring a widget
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief Perform the basic operations necessary for configuring a widget
  */
 void
-ewl_widget_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+ewl_widget_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 			void *user_data __UNUSED__)
 {
 	Ewl_Embed *emb;
@@ -2589,11 +2625,16 @@ ewl_widget_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
- * Perform the basic operations necessary for reparenting a widget
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief Perform the basic operations necessary for reparenting a widget
  */
 void
-ewl_widget_reparent_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+ewl_widget_reparent_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 			void *user_data __UNUSED__)
 {
 	Ewl_Container *pc;
@@ -2613,8 +2654,16 @@ ewl_widget_reparent_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 }
 
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The enable callback
+ */
 void
-ewl_widget_enable_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+ewl_widget_enable_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -2626,8 +2675,16 @@ ewl_widget_enable_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The disable callback
+ */
 void
-ewl_widget_disable_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+ewl_widget_disable_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -2639,6 +2696,14 @@ ewl_widget_disable_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The focus in callback
+ */
 void
 ewl_widget_focus_in_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__)
@@ -2655,6 +2720,14 @@ ewl_widget_focus_in_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The focus out callback
+ */
 void
 ewl_widget_focus_out_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__)
@@ -2671,6 +2744,14 @@ ewl_widget_focus_out_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The mouse in callback
+ */
 void
 ewl_widget_mouse_in_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__)
@@ -2687,6 +2768,14 @@ ewl_widget_mouse_in_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The mouse out callback
+ */
 void
 ewl_widget_mouse_out_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__)
@@ -2703,6 +2792,14 @@ ewl_widget_mouse_out_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: The Ewl_Event_Mouse_Down data
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The mouse down callback
+ */
 void
 ewl_widget_mouse_down_cb(Ewl_Widget *w, void *ev_data,
 				void *user_data __UNUSED__)
@@ -2723,6 +2820,14 @@ ewl_widget_mouse_down_cb(Ewl_Widget *w, void *ev_data,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: The Ewl_Event_Mouse_Up data
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The mouse up callback
+ */
 void
 ewl_widget_mouse_up_cb(Ewl_Widget *w, void *ev_data,
 				void *user_data __UNUSED__)
@@ -2761,6 +2866,14 @@ ewl_widget_mouse_up_cb(Ewl_Widget *w, void *ev_data,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The mouse move callback
+ */
 void
 ewl_widget_mouse_move_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__)
@@ -2844,6 +2957,14 @@ ewl_widget_theme_insets_get(Ewl_Widget *w, int *l, int *r, int *t, int *b)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: The Ewl_Event_Mouse_Down data
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The mouse down callback
+ */
 void
 ewl_widget_drag_down_cb(Ewl_Widget *w, void *ev_data ,
 				void *user_data __UNUSED__)
@@ -2870,6 +2991,14 @@ ewl_widget_drag_down_cb(Ewl_Widget *w, void *ev_data ,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The drag move callback
+ */
 void
 ewl_widget_drag_move_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__) 
@@ -2901,6 +3030,14 @@ ewl_widget_drag_move_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The drag up callback
+ */
 void
 ewl_widget_drag_up_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__) 

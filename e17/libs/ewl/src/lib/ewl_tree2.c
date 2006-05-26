@@ -443,6 +443,14 @@ ewl_tree2_dirty_get(Ewl_Tree2 *tree2)
 	DRETURN_INT(tree2->dirty, DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The destroy callback
+ */
 void
 ewl_tree2_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
@@ -460,6 +468,14 @@ ewl_tree2_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The configure callback
+ */
 void
 ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__, 
 					void *data __UNUSED__)
@@ -498,6 +514,15 @@ ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param c: The container to work with
+ * @param w: UNUSED
+ * @param size: UNUSED
+ * @param o: UNUSED
+ * @return Returns no value
+ * @brief The child resize callback
+ */
 void
 ewl_tree2_cb_child_resize(Ewl_Container *c, Ewl_Widget *w __UNUSED__,
 					int size __UNUSED__,

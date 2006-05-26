@@ -726,6 +726,14 @@ ewl_tree_row_walk_signal(Ewl_Tree *tree)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The configure callback
+ */
 void
 ewl_tree_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
@@ -757,6 +765,14 @@ ewl_tree_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The header configure callback
+ */
 void
 ewl_tree_header_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
@@ -772,6 +788,14 @@ ewl_tree_header_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The destroy callback
+ */
 void
 ewl_tree_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
@@ -788,6 +812,12 @@ ewl_tree_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param c: The container to work with
+ * @return Returns no value
+ * @brief The child resize callback
+ */
 void
 ewl_tree_child_resize_cb(Ewl_Container *c)
 {
@@ -1023,6 +1053,14 @@ ewl_tree_node_expand(Ewl_Tree_Node *node)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The tree node configure callback
+ */
 void
 ewl_tree_node_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
@@ -1071,6 +1109,14 @@ ewl_tree_node_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The tree node destroy callback
+ */
 void
 ewl_tree_node_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					 void *user_data __UNUSED__)
@@ -1094,6 +1140,14 @@ ewl_tree_node_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev_data: UNUSED
+ * @param user_data: The Ewl_Tree_Node
+ * @return Returns no value
+ * @brief The tree node toggle callback
+ */
 void
 ewl_tree_node_toggle_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 							void *user_data)
@@ -1117,6 +1171,13 @@ ewl_tree_node_toggle_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param c: The container to work with
+ * @param w: UNUSED
+ * @return Returns no value
+ * @brief The child add callback
+ */
 void
 ewl_tree_node_child_add_cb(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
 {
@@ -1141,6 +1202,14 @@ ewl_tree_node_child_add_cb(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param c: The container to work with
+ * @param w: The widget to work with
+ * @param idx: UNUSED
+ * @return Returns no value
+ * @brief The child del callback
+ */
 void
 ewl_tree_node_child_del_cb(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
 {
@@ -1153,6 +1222,13 @@ ewl_tree_node_child_del_cb(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param c: The container to work with
+ * @param w: UNUSED
+ * @return Returns no value
+ * @brief The tree node child show callback
+ */
 void
 ewl_tree_node_child_show_cb(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
 {
@@ -1189,6 +1265,13 @@ ewl_tree_node_child_show_cb(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param c: The container to work with
+ * @param w: The widget to work with
+ * @return Returns no value
+ * @brief The tree node child hide callback
+ */
 void
 ewl_tree_node_child_hide_cb(Ewl_Container *c, Ewl_Widget *w)
 {
@@ -1221,6 +1304,15 @@ ewl_tree_node_child_hide_cb(Ewl_Container *c, Ewl_Widget *w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param c: The container to work with
+ * @param w: The widget to work with
+ * @param size: UNUSED
+ * @param o: UNUSED
+ * @return Returns no value
+ * @brief The tree node resize callback
+ */
 void
 ewl_tree_node_resize_cb(Ewl_Container *c, Ewl_Widget *w,
 		int size __UNUSED__, Ewl_Orientation o __UNUSED__)
@@ -1236,6 +1328,14 @@ ewl_tree_node_resize_cb(Ewl_Container *c, Ewl_Widget *w,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: The Ewl_Event_Mouse_Down data
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The tree row select callback
+ */
 void
 ewl_tree_row_select_cb(Ewl_Widget *w, void *ev_data,
 					void *user_data __UNUSED__)
@@ -1265,6 +1365,14 @@ ewl_tree_row_select_cb(Ewl_Widget *w, void *ev_data,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The tree node hide callback
+ */
 void
 ewl_tree_row_hide_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
@@ -1288,6 +1396,14 @@ ewl_tree_row_hide_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev_data: UNUSED
+ * @param user_data: The user data
+ * @return Returns no value
+ * @brief The tree hscroll callback
+ */
 void
 ewl_tree_hscroll_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 					void *user_data)

@@ -279,6 +279,14 @@ ewl_spinner_step_set(Ewl_Spinner *s, double step)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The realize callback
+ */
 void
 ewl_spinner_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
 				void *user_data __UNUSED__)
@@ -295,6 +303,14 @@ ewl_spinner_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: The Ewl_Event_Key_Down data
+ * @param user_data: The Ewl_Spinner
+ * @return Returns no value
+ * @brief The key down callback
+ */
 void
 ewl_spinner_key_down_cb(Ewl_Widget *w, void *ev_data,
 				void *user_data)
@@ -349,6 +365,14 @@ ewl_spinner_key_down_cb(Ewl_Widget *w, void *ev_data,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev_data: UNUSED
+ * @param user_data: The Ewl_Spinner
+ * @return Returns no value
+ * @brief The focus out callback
+ */
 void
 ewl_spinner_focus_out_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 				void *user_data)
@@ -373,6 +397,14 @@ ewl_spinner_focus_out_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: The Ewl_Event_Mouse_Wheel data
+ * @param user_data: The Ewl_Spinner
+ * @return Returns no value
+ * @brief The mouse wheel callback
+ */
 void
 ewl_spinner_wheel_cb(Ewl_Widget *w __UNUSED__, void *ev_data,
 			void *user_data)
@@ -425,6 +457,14 @@ ewl_spinner_calc_value(Ewl_Spinner *s, double value, unsigned int call)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: The event data
+ * @param user_data: The Ewl_Spinner
+ * @return Returns no value
+ * @brief The increase value callback
+ */
 void
 ewl_spinner_increase_value_cb(Ewl_Widget *w, void *ev_data,
 					void *user_data)
@@ -450,6 +490,14 @@ ewl_spinner_increase_value_cb(Ewl_Widget *w, void *ev_data,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev_data: UNUSED
+ * @param user_data: The Ewl_Spinner
+ * @return Returns no value
+ * @brief The value stop callback
+ */
 void
 ewl_spinner_value_stop_cb(Ewl_Widget *w __UNUSED__,
 			void *ev_data __UNUSED__, void *user_data)
@@ -476,6 +524,14 @@ ewl_spinner_value_stop_cb(Ewl_Widget *w __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: The event
+ * @param user_data: The Ewl_Spinner
+ * @return Returns no value
+ * @brief The decrease value callback
+ */
 void
 ewl_spinner_decrease_value_cb(Ewl_Widget *w, void *ev_data,
 					void *user_data)
@@ -500,6 +556,14 @@ ewl_spinner_decrease_value_cb(Ewl_Widget *w, void *ev_data,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The destroy callback
+ */
 void
 ewl_spinner_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)

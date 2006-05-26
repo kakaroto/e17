@@ -419,6 +419,14 @@ ewl_table_selected_get(Ewl_Table *t)
 	DRETURN_PTR(strdup(""), DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: The Ewl_Table
+ * @return Returns no value
+ * @brief The child select callback
+ */
 void
 ewl_table_child_select_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 							void *user_data)
@@ -441,6 +449,14 @@ ewl_table_child_select_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The configure callback
+ */
 void
 ewl_table_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
@@ -480,6 +496,13 @@ ewl_table_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param p: The container to work with
+ * @param c: UNUSED
+ * @return Returns no value
+ * @brief The child show callback
+ */
 void
 ewl_table_child_show_cb(Ewl_Container *p, Ewl_Widget *c __UNUSED__)
 {

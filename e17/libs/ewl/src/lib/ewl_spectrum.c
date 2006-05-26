@@ -300,6 +300,14 @@ ewl_spectrum_hsv_get(Ewl_Spectrum *sp, double *h, double *s, double *v)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The configure callback
+ */
 void
 ewl_spectrum_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
@@ -327,6 +335,14 @@ ewl_spectrum_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: The Ewl_Event_Mouse_Down data
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The mouse down callback
+ */
 void
 ewl_spectrum_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
@@ -348,6 +364,14 @@ ewl_spectrum_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: The Ewl_Event_Mouse_Move data
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The mouse move callback
+ */
 void
 ewl_spectrum_cb_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
@@ -366,8 +390,16 @@ ewl_spectrum_cb_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The mouse up callback
+ */
 void
-ewl_spectrum_cb_mouse_up(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+ewl_spectrum_cb_mouse_up(Ewl_Widget *w, void *ev __UNUSED__,
 						void *data __UNUSED__)
 {
 	Ewl_Spectrum *sp;

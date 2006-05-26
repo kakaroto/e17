@@ -2530,6 +2530,14 @@ ewl_text_textblock_cursor_to_index(Evas_Textblock_Cursor *cursor)
 	DRETURN_INT(idx, DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The configure callback
+ */
 void
 ewl_text_cb_configure(Ewl_Widget *w, void *ev __UNUSED__, 
 					void *data __UNUSED__)
@@ -2573,6 +2581,14 @@ ewl_text_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The reveal callback
+ */
 void
 ewl_text_cb_reveal(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
@@ -2638,6 +2654,14 @@ ewl_text_cb_reveal(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The obscure callback
+ */
 void
 ewl_text_cb_obscure(Ewl_Widget *w, void *ev __UNUSED__, 
 					void *data __UNUSED__)
@@ -2664,6 +2688,14 @@ ewl_text_cb_obscure(Ewl_Widget *w, void *ev __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The show callback
+ */
 void
 ewl_text_cb_show(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
@@ -2683,6 +2715,14 @@ ewl_text_cb_show(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The hide callback
+ */
 void
 ewl_text_cb_hide(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
@@ -2699,6 +2739,14 @@ ewl_text_cb_hide(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The destroy callback
+ */
 void
 ewl_text_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
@@ -2729,6 +2777,14 @@ ewl_text_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: The Ewl_Event_Mouse_Down
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The mouse down callback
+ */
 void
 ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
@@ -2792,6 +2848,14 @@ ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }	   
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: The Ewl_Event_Mouse_Up data
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The mouse up callback
+ */
 void
 ewl_text_cb_mouse_up(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
@@ -2824,6 +2888,14 @@ ewl_text_cb_mouse_up(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: The Ewl_Event_Mouse_Move data
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The mouse move callback
+ */
 void
 ewl_text_cb_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
@@ -2849,6 +2921,13 @@ ewl_text_cb_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param c: The container to work with
+ * @param w: The widget to work with
+ * @return Returns no value
+ * @brief The child add callback
+ */
 void
 ewl_text_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 {
@@ -2872,6 +2951,14 @@ ewl_text_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param c: The container to work with
+ * @param w: The widget to work with
+ * @param idx: UNUSED
+ * @return Returns no value
+ * @brief The child del callback
+ */
 void
 ewl_text_cb_child_del(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
 {
@@ -2965,6 +3052,14 @@ ewl_text_trigger_init(Ewl_Text_Trigger *trigger, Ewl_Text_Trigger_Type type)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The trigger destroy callback
+ */
 void
 ewl_text_trigger_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__, 
 						void *user_data __UNUSED__)
@@ -3585,6 +3680,14 @@ ewl_text_trigger_del(Ewl_Text *t, Ewl_Text_Trigger *trigger)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev: The event data
+ * @param data: The Ewl_Text_Trigger
+ * @return Returns no value
+ * @brief The trigger mouse in callback
+ */
 void
 ewl_text_trigger_cb_mouse_in(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 {
@@ -3600,6 +3703,14 @@ ewl_text_trigger_cb_mouse_in(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev: The event data
+ * @param data: The Ewl_Text_Trigger
+ * @return Returns no value
+ * @brief The trigger mouse out callback
+ */
 void
 ewl_text_trigger_cb_mouse_out(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 {
@@ -3615,6 +3726,14 @@ ewl_text_trigger_cb_mouse_out(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev: The event data
+ * @param data: The Ewl_Text_Trigger
+ * @return Returns no value
+ * @brief The trigger mouse up callback
+ */
 void
 ewl_text_trigger_cb_mouse_up(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 {
@@ -3630,6 +3749,14 @@ ewl_text_trigger_cb_mouse_up(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev: The event data
+ * @param data: The Ewl_Text_Trigger
+ * @return Returns no value
+ * @brief The trigger mouse down callback
+ */
 void
 ewl_text_trigger_cb_mouse_down(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 {
