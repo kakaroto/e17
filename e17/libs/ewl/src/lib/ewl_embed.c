@@ -1521,6 +1521,14 @@ ewl_embed_window_position_get(Ewl_Embed *e, int *x, int *y)
        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief Callback for the realize event
+ */
 void
 ewl_embed_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
 					void *user_data __UNUSED__)
@@ -1585,6 +1593,14 @@ ewl_embed_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief Callback for the unrealize event
+ */
 void
 ewl_embed_unrealize_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
 					void *user_data __UNUSED__)
@@ -1610,6 +1626,14 @@ ewl_embed_unrealize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The configure callback
+ */
 void
 ewl_embed_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
@@ -1668,6 +1692,14 @@ ewl_embed_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief Callback for when the embed loses focus
+ */
 void
 ewl_embed_focus_out_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
@@ -1690,6 +1722,14 @@ ewl_embed_focus_out_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The destroy callback
+ */
 void ewl_embed_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
 					void *user_data __UNUSED__)
 {

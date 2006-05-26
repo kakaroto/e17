@@ -51,23 +51,23 @@ struct Ewl_Box
 Ewl_Widget     *ewl_box_new(void);
 Ewl_Widget     *ewl_hbox_new(void);
 Ewl_Widget     *ewl_vbox_new(void);
-int             ewl_box_init(Ewl_Box * box);
-void            ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o);
-Ewl_Orientation ewl_box_orientation_get(Ewl_Box * b);
-void            ewl_box_spacing_set(Ewl_Box * b, int spacing);
+int             ewl_box_init(Ewl_Box *box);
+void            ewl_box_orientation_set(Ewl_Box *b, Ewl_Orientation o);
+Ewl_Orientation ewl_box_orientation_get(Ewl_Box *b);
+void            ewl_box_spacing_set(Ewl_Box *b, int spacing);
 void            ewl_box_homogeneous_set(Ewl_Box *b, unsigned int h);
 
 /*
  * Internally used callbacks, override at your own risk.
  */
-void            ewl_box_child_resize_cb(Ewl_Container * c, Ewl_Widget * w,
+void            ewl_box_child_resize_cb(Ewl_Container *c, Ewl_Widget *w,
 				        int size, Ewl_Orientation o);
-void            ewl_box_child_show_cb(Ewl_Container * c, Ewl_Widget * w);
-void            ewl_box_child_hide_cb(Ewl_Container * c, Ewl_Widget * w);
-void            ewl_box_child_homogeneous_show_cb(Ewl_Container * c,
-						  Ewl_Widget * w);
+void            ewl_box_child_show_cb(Ewl_Container *c, Ewl_Widget *w);
+void            ewl_box_child_hide_cb(Ewl_Container *c, Ewl_Widget *w);
+void            ewl_box_child_homogeneous_show_cb(Ewl_Container *c,
+						  Ewl_Widget *w);
 
-void            ewl_box_configure_cb(Ewl_Widget * w, void *ev_data,
+void            ewl_box_configure_cb(Ewl_Widget *w, void *ev_data,
 						     void *user_data);
 void            ewl_box_configure_homogeneous_cb(Ewl_Widget *w, void *ev_data,
 						 void *user_data);

@@ -80,6 +80,14 @@ ewl_datepicker_init(Ewl_Datepicker *dp)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The destroy callback
+ */
 void
 ewl_datepicker_destroy_cb(Ewl_Widget *w, void *ev __UNUSED__,
 					void *user_data __UNUSED__) 
@@ -97,6 +105,14 @@ ewl_datepicker_destroy_cb(Ewl_Widget *w, void *ev __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The configure callback
+ */
 void
 ewl_datepicker_configure_cb(Ewl_Widget *w, void *ev __UNUSED__, 
 					void *user_data __UNUSED__) 
@@ -110,6 +126,14 @@ ewl_datepicker_configure_cb(Ewl_Widget *w, void *ev __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev: UNUSED
+ * @param user_data: The datepicker
+ * @return Returns no value
+ * @brief Callback for when the datepicker calendar window value changes
+ */
 void
 ewl_datepicker_value_changed_cb(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
 							void *user_data) 
@@ -130,6 +154,14 @@ ewl_datepicker_value_changed_cb(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief Realize callback
+ */
 void
 ewl_datepicker_realize_cb(Ewl_Widget *w, void *ev __UNUSED__, 
 						void *user_data __UNUSED__) 

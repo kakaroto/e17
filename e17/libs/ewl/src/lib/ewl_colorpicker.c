@@ -495,6 +495,14 @@ ewl_colorpicker_color_mode_get(Ewl_Colorpicker *cp)
 	DRETURN_INT(cp->mode, DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: The colorpicker
+ * @return Returns no value
+ * @brief Callback for when the square spectrum changes values
+ */
 void
 ewl_colorpicker_cb_square_change(Ewl_Widget *w, void *ev __UNUSED__,
 								void *data)
@@ -516,6 +524,14 @@ ewl_colorpicker_cb_square_change(Ewl_Widget *w, void *ev __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: The colorpicker
+ * @return Returns no value
+ * @brief Callback for a vertical spectrum value change
+ */
 void
 ewl_colorpicker_cb_vertical_change(Ewl_Widget *w, void *ev __UNUSED__,
 								void *data)
@@ -580,6 +596,14 @@ ewl_colorpicker_cb_vertical_change(Ewl_Widget *w, void *ev __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: The colorpicker
+ * @return Returns no value
+ * @brief The callback for a spinner change
+ */
 void
 ewl_colorpicker_cb_spinner_change(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
@@ -650,6 +674,14 @@ ewl_colorpicker_cb_spinner_change(Ewl_Widget *w, void *ev __UNUSED__, void *data
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: The colorpicker widget
+ * @return Returns no value
+ * @brief Callback for a radio button change
+ */
 void
 ewl_colorpicker_cb_radio_change(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
@@ -668,6 +700,14 @@ ewl_colorpicker_cb_radio_change(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev: UNUSED
+ * @param data: The colorpicker
+ * @return Returns no value
+ * @brief Callback for when a user clicks on the previous colour
+ */
 void
 ewl_colorpicker_cb_previous_clicked(Ewl_Widget *w __UNUSED__, 
 					void *ev __UNUSED__, void *data)

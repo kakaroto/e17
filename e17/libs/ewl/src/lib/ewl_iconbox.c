@@ -1508,10 +1508,10 @@ ewl_iconbox_icon_label_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data __U
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/**
+/*
  * @param ib: The iconbox
  * @return Returns no value
- * @brief	Initialize the icon box
+ * @brief Initialize the icon box
  */
 void
 ewl_iconbox_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_data __UNUSED__)

@@ -150,6 +150,14 @@ ewl_checkbutton_label_position_set(Ewl_Checkbutton *cb, Ewl_Position p)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The clicked callback for the checkbutton
+ */
 void
 ewl_checkbutton_clicked_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
 						void *user_data __UNUSED__)

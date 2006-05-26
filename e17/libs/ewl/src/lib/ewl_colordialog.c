@@ -284,6 +284,14 @@ ewl_colordialog_color_mode_get(Ewl_Colordialog *cd)
 	DRETURN_INT(mode, DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: The colourdialog
+ * @return Returns no value
+ * @brief The button click callback
+ */
 void
 ewl_colordialog_cb_button_click(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
@@ -299,6 +307,14 @@ ewl_colordialog_cb_button_click(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The delete window callback
+ */
 void
 ewl_colordialog_cb_delete_window(Ewl_Widget *w, void *ev __UNUSED__, 
 					void *data __UNUSED__)

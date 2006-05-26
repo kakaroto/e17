@@ -59,6 +59,14 @@ ewl_cell_init(Ewl_Cell *cell)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The configure callback for the cell widget
+ */
 void
 ewl_cell_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
 					void *user_data __UNUSED__)
@@ -80,6 +88,13 @@ ewl_cell_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param c: The container to work with
+ * @param w: The widget to show
+ * @return Returns no value
+ * @brief Update the container when a child widget is shown
+ */
 void
 ewl_cell_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 {
@@ -108,6 +123,15 @@ ewl_cell_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param c: The container to work with
+ * @param w: The widget that was resized
+ * @param size: UNUSED
+ * @param o: UNUSED
+ * @return Returns no value
+ * @brief Callback for when a child widget is resized within the container
+ */
 void
 ewl_cell_child_resize_cb(Ewl_Container *c, Ewl_Widget *w, 
 			int size __UNUSED__, Ewl_Orientation o __UNUSED__)

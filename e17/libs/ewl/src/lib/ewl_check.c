@@ -98,6 +98,14 @@ ewl_check_is_checked(Ewl_Check *cb)
 	DRETURN_INT(cb->checked, DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The clicked callback for the check widget
+ */
 void
 ewl_check_clicked_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
 				void *user_data __UNUSED__)
@@ -116,6 +124,14 @@ ewl_check_clicked_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief Callback to update the checkmark
+ */
 void
 ewl_check_update_check_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)

@@ -349,7 +349,14 @@ ewl_box_spacing_set(Ewl_Box * b, int s)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
+/**
+ * @internal
+ * @param w: The widget to configure
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief Configures the box
+ *
  * Box layout algorithm:
  * 1. Setup variables orientation dependant pointers so that the algorithm is
  *    independant of orientation.
@@ -361,7 +368,7 @@ ewl_box_spacing_set(Ewl_Box * b, int s)
  * 4. Layout the position of all children based on the sizes accepted.
  */
 void
-ewl_box_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__, 
+ewl_box_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
 					void *user_data __UNUSED__)
 {
 	Ewl_Box *b;
@@ -433,6 +440,14 @@ ewl_box_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to configure
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief Configure a homegeneous box
+ */
 void
 ewl_box_configure_homogeneous_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
@@ -754,8 +769,12 @@ ewl_box_configure_child(Ewl_Box * b __UNUSED__, Ewl_Object * c,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
- * When a child gets added to the box update it's size.
+/**
+ * @internal
+ * @param c: The container
+ * @param w: The widget that was added
+ * @return Returns no value
+ * @brief When a child gets added to the box update it's size.
  */
 void
 ewl_box_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
@@ -803,9 +822,16 @@ ewl_box_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param c: The container
+ * @param w: UNUSED
+ * @return Returns no value
+ * @brief Update the container when a widget is shown in homegeneous mode
+ */
 void
-ewl_box_child_homogeneous_show_cb(Ewl_Container * c, 
-					Ewl_Widget * w __UNUSED__)
+ewl_box_child_homogeneous_show_cb(Ewl_Container *c, 
+					Ewl_Widget *w __UNUSED__)
 {
 	int numc;
 	int size, space = 0;
@@ -833,8 +859,15 @@ ewl_box_child_homogeneous_show_cb(Ewl_Container * c,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param c: The container
+ * @param w: The widget that was hidden
+ * @return Returns no value
+ * @brief When a child is hidden update the container
+ */
 void
-ewl_box_child_hide_cb(Ewl_Container * c, Ewl_Widget * w)
+ewl_box_child_hide_cb(Ewl_Container *c, Ewl_Widget *w)
 {
 	int space = 0;
 	Ewl_Box *b = EWL_BOX(c);

@@ -324,6 +324,14 @@ ewl_combo_editable_get(Ewl_Combo *combo)
 	DRETURN_INT(combo->editable, DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The configure callback
+ */
 void
 ewl_combo_cb_configure(Ewl_Widget *w, void *ev __UNUSED__, 
 					void *data __UNUSED__)
@@ -349,6 +357,14 @@ ewl_combo_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev: The event data
+ * @param data: The combo box
+ * @return Returns no value
+ * @brief Callback for when the button to expand the combo is pressed
+ */
 void
 ewl_combo_cb_decrement_clicked(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 {
@@ -406,6 +422,14 @@ ewl_combo_cb_decrement_clicked(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev: UNUSED
+ * @param data: The combo widget
+ * @return Returns no value
+ * @brief Callback for when the button to close the combo is clicked
+ */
 void
 ewl_combo_cb_increment_clicked(Ewl_Widget *w __UNUSED__, 
 				void *ev __UNUSED__, void *data)
@@ -427,6 +451,14 @@ ewl_combo_cb_increment_clicked(Ewl_Widget *w __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev: UNUSED
+ * @param data: The combo widget
+ * @return Returns no value
+ * @brief Callback for when a combo item is clicked
+ */
 void
 ewl_combo_cb_item_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
 								void *data)

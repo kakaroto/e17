@@ -188,6 +188,7 @@ ewl_model_count_get(Ewl_Model *m)
 /**
  * @param data: The ecore_list to get the data from
  * @param row: The row to get the data from
+ * @param col: UNUSED
  * @return Returns the data at the given row
  * @brief This will return the @a row data element from the list
  */

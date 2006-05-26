@@ -1228,9 +1228,14 @@ ewl_container_redirect_set(Ewl_Container *c, Ewl_Container *rc)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
- * When reparenting a container, it's children need the updated information
- * about the container, such as the evas.
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief When reparenting a container, it's children need the updated 
+ * information about the container, such as the evas.
  */
 void
 ewl_container_reparent_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
@@ -1256,8 +1261,16 @@ ewl_container_reparent_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief Callback for when the container is obscured
+ */
 void
-ewl_container_obscure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+ewl_container_obscure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 			 void *user_data __UNUSED__)
 {
 	Ewl_Embed *e;
@@ -1293,8 +1306,16 @@ ewl_container_obscure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief Callback for when the container is revealed
+ */
 void 
-ewl_container_reveal_cb(Ewl_Widget * w, void *ev_data __UNUSED__, 
+ewl_container_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
 			void *user_data __UNUSED__)
 {
 	Ewl_Embed *e;
@@ -1334,8 +1355,13 @@ ewl_container_reveal_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
- * This is the default action to be taken by containers, it involves
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief This is the default action to be taken by containers, it involves
  * creating and showing a clip box, as well as clipping the clip box to parent
  * clip boxes.
  */
@@ -1373,6 +1399,14 @@ ewl_container_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The configure callback
+ */
 void
 ewl_container_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
 						void *user_data __UNUSED__)
@@ -1395,6 +1429,14 @@ ewl_container_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief Callback for when the container is unrealized
+ */
 void
 ewl_container_unrealize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)

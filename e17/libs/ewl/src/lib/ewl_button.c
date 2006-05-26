@@ -393,6 +393,14 @@ ewl_button_fill_policy_get(Ewl_Button *b)
 			DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: The Ewl_Event_Key_Down data
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The key event callback for the button
+ */
 void
 ewl_button_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
