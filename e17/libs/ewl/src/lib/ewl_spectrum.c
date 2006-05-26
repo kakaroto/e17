@@ -3,13 +3,6 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
-/*
- *  @todo may need to optimize this to only redraw if we have a resize, or a
- *  type/mode change
- *  @todo implement a triangle selection mode
- *  @todo Add a theme item for the cross hairs ...
- */
-
 static void ewl_spectrum_hsv_from_rgb(Ewl_Spectrum *sp);
 static void ewl_spectrum_rgb_from_hsv(Ewl_Spectrum *sp);
 static void ewl_spectrum_draw(Ewl_Spectrum *sp);

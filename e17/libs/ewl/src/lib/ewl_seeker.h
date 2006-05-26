@@ -7,7 +7,6 @@
  * value from a range.
  *
  * @{
- * @todo Add value labels and hash marks.
  */
 
 /**

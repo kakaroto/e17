@@ -12,14 +12,6 @@ static Ewl_Text_Context *ewl_text_default_context = NULL;
 /* how much do we extend the text by when we need more space? */
 #define EWL_TEXT_EXTEND_VAL  4096
 
-/*
- * @todo need a way to handle fonts that aren't in the theme .edj
- * @todo need to setup the styles/align/wrap data from the theme in 
- * ewl_text_context_default_create
- * @todo new theme keys for the align/wrap stuff
- * @todo need to fill in the condense function
- */
-
 /* Make a static hash to look up the context's. They can be shared between
  * the different text blocks. Just need to ref count them so we know when
  * they can be destroyed

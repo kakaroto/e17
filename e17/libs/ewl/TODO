@@ -1,5 +1,7 @@
+/**
+ * @page todo_bugs
+ *
 EWL BUGS
-========
 
 - In ewl_text if your in a multiline text and on a line that is longer
   then then one above or below and you hit the up arrow it will
@@ -57,9 +59,27 @@ EWL BUGS
 - The column view of the filepicker needs to blank out the preview when you
   have multiple files selected.
 
+- Ewl_Seeker:: Add value labels and hash marks.
+
+- Ewl_Spectrum:: may need to optimize this to only redraw if we have a resize, or a
+                 type/mode change
+
+- Ewl_Spectrum:: implement a triangle selection mode
+
+- Ewl_Spectrum:: Add a theme item for the cross hairs ...
+
+- Ewl_Text:: need a way to handle fonts that aren't in the theme .edj
+
+- Ewl_Text:: need to setup the styles/align/wrap data from the theme in 
+	     ewl_text_context_default_create
+
+- Ewl_Text:: new theme keys for the align/wrap stuff
+
+- Ewl_Text:: need to fill in the condense function
+
 
   Ewl_Icon bugs/todo
-  ------------------
+
  - Need to add the constrain stuff in like iconbox does at the moment.
    Figure out the constrain size by first checking the max size of the widget
    and falling back to check /icon/constrain/size from the theme, then
@@ -84,7 +104,7 @@ EWL BUGS
 
 
  Ewl_Freebox bugs/todo
- ---------------------
+
  - On the comparator test if you add a set of icons, rename an icon and then
    add another set of icons the second set of icons won't appear until the
    window is moved. (Must be missing a configure event)
@@ -98,7 +118,7 @@ EWL BUGS
 
 
 EWL TODO
-========
+
 - Ability to attach custom cursors to each widget. We can currently attach
   predefined cursors. Need to add a ewl_attach_widget_cursor_custom_set that
   uses the buffer engine to create the cursor. We then attach it with an
@@ -151,3 +171,4 @@ EWL TODO
 
 - Make the popup_destroy_cb's common between the imenu and menu
 
+ */
