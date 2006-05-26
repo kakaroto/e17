@@ -120,7 +120,7 @@ group {
             }
          }
       }
-      FOCUS_RECT("label_under", 0.0, 0.0, 2, 2, 1.0, 1.0, -3, -3)
+      FOCUS_RECT("label_under", 0.0, 0.0, 3, 2, 1.0, 1.0, -4, -3)
       part {
          name: "shadow";
          mouse_events: 0;
