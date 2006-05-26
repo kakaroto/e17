@@ -70,6 +70,14 @@ ewl_menu_item_init(Ewl_Menu_Item *item)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The clicked callback
+ */
 void
 ewl_menu_item_clicked_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		void *user_data __UNUSED__)

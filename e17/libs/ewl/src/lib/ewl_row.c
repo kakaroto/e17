@@ -111,6 +111,14 @@ ewl_row_column_get(Ewl_Row *row, short n)
 	DRETURN_PTR(found, DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The configure callback
+ */
 void
 ewl_row_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
@@ -235,6 +243,14 @@ ewl_row_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev_data: UNUSED
+ * @param user_data: The Ewl_Row
+ * @return Returns no value
+ * @brief The header configure callback
+ */
 void
 ewl_row_header_configure_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 							void *user_data)
@@ -251,6 +267,14 @@ ewl_row_header_configure_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev_data: UNUSED
+ * @param user_data: The Ewl_Row
+ * @return Returns no value
+ * @brief The header destroy callback
+ */
 void
 ewl_row_header_destroy_cb(Ewl_Widget *w __UNUSED__,
 			void *ev_data __UNUSED__, void *user_data)
@@ -267,6 +291,13 @@ ewl_row_header_destroy_cb(Ewl_Widget *w __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param c: The container to work with
+ * @param w: The widget to work with
+ * @return Returns no value
+ * @brief The child show callback
+ */
 void
 ewl_row_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 {
@@ -286,6 +317,13 @@ ewl_row_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param c: The container to work with
+ * @param w: The widget to work with
+ * @return Returns no value
+ * @brief The child hide callback
+ */
 void
 ewl_row_child_hide_cb(Ewl_Container *c, Ewl_Widget *w)
 {
@@ -305,6 +343,15 @@ ewl_row_child_hide_cb(Ewl_Container *c, Ewl_Widget *w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param c: The container to work with
+ * @param w: UNUSED
+ * @param size: The child size
+ * @param o: The orientation
+ * @return Returns no value
+ * @brief The child show callback
+ */
 void
 ewl_row_resize_cb(Ewl_Container *c, Ewl_Widget *w __UNUSED__, 
 				int size, Ewl_Orientation o)

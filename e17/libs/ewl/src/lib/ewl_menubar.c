@@ -154,6 +154,13 @@ ewl_menubar_orientation_get(Ewl_Menubar *mb)
 }
 
 
+/**
+ * @internal
+ * @param c: The container to work with
+ * @param w: The widget to work with
+ * @return Returns no value
+ * @brief The child add callback
+ */
 void
 ewl_menubar_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 {

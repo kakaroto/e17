@@ -467,8 +467,13 @@ ewl_scrollbar_step_set(Ewl_Scrollbar *s, double v)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
- * Decrement the value of the scrollbar's seeker portion
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: The scrollbar
+ * @return Returns no value
+ * @brief Decrement the value of the scrollbar's seeker portion
  */
 void
 ewl_scrollbar_scroll_start_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
@@ -500,6 +505,14 @@ ewl_scrollbar_scroll_start_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev_data: UNUSED
+ * @param user_data: The Ewl_Scrollbar
+ * @return Returns no value
+ * @brief The scroll stop callback
+ */
 void
 ewl_scrollbar_scroll_stop_cb(Ewl_Widget *w __UNUSED__,
 			     void *ev_data __UNUSED__, void *user_data)

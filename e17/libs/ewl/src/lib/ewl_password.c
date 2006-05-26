@@ -202,8 +202,13 @@ ewl_password_text_insert(Ewl_Password *e, const char *s)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
- * Handle key events to modify the text of the password widget.
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: The Ewl_Event_Key_Down data
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief Handle key events to modify the text of the password widget.. 
  */
 void
 ewl_password_key_down_cb(Ewl_Widget *w, void *ev_data,
@@ -246,6 +251,14 @@ ewl_password_key_down_cb(Ewl_Widget *w, void *ev_data,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The destroy callback
+ */
 void
 ewl_password_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__)

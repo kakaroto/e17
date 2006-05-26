@@ -256,10 +256,15 @@ ewl_progressbar_label_show (Ewl_Progressbar *p)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
- * On a configure event we need to adjust the progressbar to fit into it's new
- * coords and position as well as move the bar to the correct size and
- * position.
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief On a configure event we need to adjust the progressbar to fit 
+ * into it's new coords and position as well as move the bar to the correct 
+ * size and position.
  */
 void
 ewl_progressbar_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
@@ -314,6 +319,13 @@ ewl_progressbar_child_handle(Ewl_Container *c,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param c: The container to work with
+ * @param w: The widget to work with
+ * @return Returns no value
+ * @brief The child show callback
+ */
 void
 ewl_progressbar_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 {
@@ -328,6 +340,15 @@ ewl_progressbar_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param c: The container to work with
+ * @param w: The widget to work with
+ * @param size: UNUSED
+ * @param o: UNUSED
+ * @return Returns no value
+ * @brief The child resize callback
+ */
 void
 ewl_progressbar_child_resize_cb(Ewl_Container *c, Ewl_Widget *w,
 				int size __UNUSED__,

@@ -178,6 +178,13 @@ ewl_paned_orientation_get(Ewl_Paned *p)
 	DRETURN_INT(p->orientation, DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param c: The container to work with
+ * @param w: The widget to work with
+ * @return Returns no value
+ * @brief The child add callback
+ */
 void
 ewl_paned_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 {
@@ -207,6 +214,14 @@ ewl_paned_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param c: The container to work with
+ * @param w: The widget to work with
+ * @param idx: The index that the child was removed from
+ * @return Returns no value
+ * @brief The child remove callback
+ */
 void
 ewl_paned_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx)
 {
@@ -231,6 +246,13 @@ ewl_paned_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param c: The container to work with
+ * @param w: The widget to work with
+ * @return Returns no value
+ * @brief The child show callback
+ */
 void
 ewl_paned_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 {
@@ -262,6 +284,13 @@ ewl_paned_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param c: The container to work with
+ * @param w: The widget to work with
+ * @return Returns no value
+ * @brief The child hide callback
+ */
 void
 ewl_paned_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
 {
@@ -287,6 +316,14 @@ ewl_paned_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The configure callback
+ */
 void
 ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)

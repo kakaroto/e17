@@ -64,6 +64,14 @@ ewl_overlay_init(Ewl_Overlay *w)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The configure callback
+ */
 void
 ewl_overlay_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
@@ -99,6 +107,13 @@ ewl_overlay_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param o: The container to work with
+ * @param child: The widget to work with
+ * @return Returns no value
+ * @brief The child show callback
+ */
 void
 ewl_overlay_child_show_cb(Ewl_Container *o, Ewl_Widget *child)
 {
@@ -124,6 +139,15 @@ ewl_overlay_child_show_cb(Ewl_Container *o, Ewl_Widget *child)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param c: The container to work with
+ * @param w: The widget to work with
+ * @param size: UNUSED
+ * @param o: UNUSED
+ * @return Returns no value
+ * @brief The child resize callback
+ */
 void
 ewl_overlay_child_resize_cb(Ewl_Container *c, Ewl_Widget *w,
 	       int size __UNUSED__, Ewl_Orientation o __UNUSED__)

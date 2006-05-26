@@ -427,6 +427,13 @@ ewl_notebook_page_tab_widget_get(Ewl_Notebook *n, Ewl_Widget *page)
 	DRETURN_PTR(o, DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param c: The container to work with
+ * @param w: The widget to work with
+ * @return Returns no value
+ * @brief The child show callback
+ */
 void
 ewl_notebook_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 {
@@ -450,6 +457,13 @@ ewl_notebook_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param c: The container to work with
+ * @param w: The widget to work with
+ * @return Returns no value
+ * @brief The child hide callback
+ */
 void
 ewl_notebook_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
 {
@@ -469,6 +483,13 @@ ewl_notebook_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param c: The container to work with
+ * @param w: The widget to work with
+ * @return Returns no value
+ * @brief The child add callback
+ */
 void
 ewl_notebook_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 {
@@ -495,6 +516,14 @@ ewl_notebook_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param c: The container to work with
+ * @param w: The widget to work with
+ * @param rem_idx: UNUSED
+ * @return Returns no value
+ * @brief The child remove callback
+ */
 void
 ewl_notebook_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, 
 					int rem_idx __UNUSED__)
@@ -546,6 +575,14 @@ ewl_notebook_cb_child_remove(Ewl_Container *c, Ewl_Widget *w,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: The Ewl_Notebook widget
+ * @return Returns no value
+ * @brief The tab click callback
+ */
 void
 ewl_notebook_cb_tab_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
@@ -563,5 +600,4 @@ ewl_notebook_cb_tab_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
 

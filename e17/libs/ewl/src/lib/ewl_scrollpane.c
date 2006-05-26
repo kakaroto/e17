@@ -313,8 +313,13 @@ ewl_scrollpane_vscrollbar_step_get(Ewl_Scrollpane *s)
 								DLEVEL_STABLE);
 }
 
-/*
- * Move the contents of the scrollbar into place
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief Move the contents of the scrollbar into place
  */
 void
 ewl_scrollpane_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
@@ -472,6 +477,14 @@ ewl_scrollpane_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The focus jump callback
+ */
 void
 ewl_scrollpane_focus_jump_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
@@ -546,18 +559,21 @@ ewl_scrollpane_focus_jump_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
- * When a horizontal scrollbar is clicked we need to move the contents of the
- * scrollpane horizontally.
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev_data: UNUSED
+ * @param user_data: The scrollbar
+ * @return Returns no value
+ * @brief When a horizontal scrollbar is clicked we need to move the 
+ * contents of the scrollpane horizontally.
  */
 void
 ewl_scrollpane_hscroll_cb(Ewl_Widget *w __UNUSED__,
 		void *ev_data __UNUSED__, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ewl_callback_call(user_data, EWL_CALLBACK_VALUE_CHANGED);
 	ewl_widget_configure(user_data);
@@ -566,17 +582,22 @@ ewl_scrollpane_hscroll_cb(Ewl_Widget *w __UNUSED__,
 }
 
 /*
- * When a vertical scrollbar is clicked we need to move the contents of the
- * scrollpane vertically.
+ */
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev_data: UNUSED
+ * @param user_data: The scrollbar
+ * @return Returns no value
+ * @brief When a vertical scrollbar is clicked we need to move the 
+ * contents of the scrollpane vertically.
  */
 void
-ewl_scrollpane_vscroll_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_scrollpane_vscroll_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 						void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ewl_callback_call(user_data, EWL_CALLBACK_VALUE_CHANGED);
 	ewl_widget_configure(user_data);
@@ -584,6 +605,14 @@ ewl_scrollpane_vscroll_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param cb: The widget to work with
+ * @param ev_data: The Ewl_Event_Mouse_Wheel data
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The wheel scroll callback
+ */
 void
 ewl_scrollpane_wheel_scroll_cb(Ewl_Widget *cb, void *ev_data,
 				void *user_data __UNUSED__)
@@ -603,8 +632,13 @@ ewl_scrollpane_wheel_scroll_cb(Ewl_Widget *cb, void *ev_data,
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-/*
- * This handles all of the various size affecting callbacks.
+
+/**
+ * @internal
+ * @param parent: The container to work with
+ * @param child: The widget to work with
+ * @return Returns no value
+ * @brief This handles all of the various size affecting callbacks.
  */
 void
 ewl_scrollpane_child_resize_cb(Ewl_Container *parent, Ewl_Widget *child)
@@ -630,3 +664,4 @@ ewl_scrollpane_child_resize_cb(Ewl_Container *parent, Ewl_Widget *child)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+

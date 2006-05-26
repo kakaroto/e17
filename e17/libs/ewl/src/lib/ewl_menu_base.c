@@ -60,6 +60,14 @@ ewl_menu_base_init(Ewl_Menu_Base *menu)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The expand callback
+ */
 void
 ewl_menu_base_expand_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
@@ -112,6 +120,14 @@ ewl_menu_base_expand_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The collapse callback
+ */
 void
 ewl_menu_base_collapse_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
@@ -132,6 +148,14 @@ ewl_menu_base_collapse_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev_data: UNUSED
+ * @param user_data: The popup widget
+ * @return Returns no value
+ * @brief The popup hide callback
+ */
 void
 ewl_menu_base_popup_hide_cb(Ewl_Widget *w __UNUSED__,
 			void *ev_data __UNUSED__, void *user_data)
@@ -147,6 +171,14 @@ ewl_menu_base_popup_hide_cb(Ewl_Widget *w __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev_data: UNUSED
+ * @param user_data: The popup widget
+ * @return Returns no value
+ * @brief The popup show callback
+ */
 void
 ewl_menu_base_popup_show_cb(Ewl_Widget *w __UNUSED__,
 			void *ev_data __UNUSED__, void *user_data)
@@ -162,6 +194,14 @@ ewl_menu_base_popup_show_cb(Ewl_Widget *w __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev_data: The Ewl_Event_Key_Down data
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The popup key down callback
+ */
 void
 ewl_menu_base_popbox_key_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data, 
 					void *user_data __UNUSED__)
@@ -188,6 +228,14 @@ ewl_menu_base_popbox_key_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The destroy callback
+ */
 void
 ewl_menu_base_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
