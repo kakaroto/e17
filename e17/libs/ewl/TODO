@@ -1,8 +1,8 @@
 /**
- * @page todo_bugs
+ * @page todo_bugs TODO and Bugs list
  *
-EWL BUGS
-
+ * @section bugs BUGS
+ *
 - In ewl_text if your in a multiline text and on a line that is longer
   then then one above or below and you hit the up arrow it will
   position your cursor one character _before_ the end of the line.
@@ -78,8 +78,7 @@ EWL BUGS
 - Ewl_Text:: need to fill in the condense function
 
 
-  Ewl_Icon bugs/todo
-
+  Ewl_Icon
  - Need to add the constrain stuff in like iconbox does at the moment.
    Figure out the constrain size by first checking the max size of the widget
    and falling back to check /icon/constrain/size from the theme, then
@@ -103,8 +102,7 @@ EWL BUGS
    similar to what iconbox is currently doing.
 
 
- Ewl_Freebox bugs/todo
-
+ Ewl_Freebox 
  - On the comparator test if you add a set of icons, rename an icon and then
    add another set of icons the second set of icons won't appear until the
    window is moved. (Must be missing a configure event)
@@ -117,7 +115,7 @@ EWL BUGS
    or more will disappear.
 
 
-EWL TODO
+ * @section todo TODO
 
 - Ability to attach custom cursors to each widget. We can currently attach
   predefined cursors. Need to add a ewl_attach_widget_cursor_custom_set that
