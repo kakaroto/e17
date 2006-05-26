@@ -442,6 +442,14 @@ ewl_icon_label_compressed_get(Ewl_Icon *icon)
 	DRETURN_INT(icon->compress_label, DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The destroy callback
+ */
 void
 ewl_icon_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {

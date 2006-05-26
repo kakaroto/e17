@@ -990,6 +990,14 @@ ewl_filelist_signal_between(Ewl_Filelist *fl, Ewl_Container *c, int add,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The destroy callback
+ */
 void
 ewl_filelist_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, 
 					void *data __UNUSED__)

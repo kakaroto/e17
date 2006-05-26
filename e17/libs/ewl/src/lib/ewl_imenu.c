@@ -73,6 +73,14 @@ ewl_imenu_init(Ewl_Imenu *menu)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The configure callback
+ */
 void
 ewl_imenu_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
@@ -99,6 +107,14 @@ ewl_imenu_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The expand callback
+ */
 void
 ewl_imenu_expand_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
@@ -121,6 +137,14 @@ ewl_imenu_expand_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev: UNUSED
+ * @param data: The Ewl_Imenu
+ * @return Returns no value
+ * @brief The popup destroy callback
+ */
 void
 ewl_imenu_popup_destroy_cb(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 				void *data)
@@ -136,6 +160,14 @@ ewl_imenu_popup_destroy_cb(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The destroy callback
+ */
 void
 ewl_imenu_destroy_cb(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {

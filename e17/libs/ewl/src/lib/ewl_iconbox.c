@@ -141,7 +141,6 @@ ewl_iconbox_new(void)
 
 /**
  * @return Returns a new Ewl_Iconbox_Icon, NULL on failure
- *
  */
 Ewl_Widget *
 ewl_iconbox_icon_new(void)
@@ -484,6 +483,11 @@ ewl_iconbox_icon_menu_item_add(Ewl_Iconbox *ib, Ewl_Widget *item)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param ib: The iconbox
+ * @return Returns the list of selected widgets
+ * @brief Retrieves the the current selected icons from the list
+ */
 Ecore_List *
 ewl_iconbox_get_selection(Ewl_Iconbox *ib) 
 {
@@ -512,7 +516,11 @@ ewl_iconbox_get_selection(Ewl_Iconbox *ib)
 	DRETURN_PTR(selected, DLEVEL_STABLE);
 }
 
-/* Move to the root of the scrollpame */
+/**
+ * @param ib: The iconbox
+ * @return Returns no value
+ * @brief Move to the root of the scrollpame 
+ */
 void
 ewl_iconbox_scrollpane_goto_root(Ewl_Iconbox *ib) 
 {
@@ -526,6 +534,12 @@ ewl_iconbox_scrollpane_goto_root(Ewl_Iconbox *ib)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param ib: The iconbox to work with
+ * @param file: The background file to set
+ * @return Returns no value
+ * @brief Sets the given background into the iconbox
+ */
 void
 ewl_iconbox_background_set(Ewl_Iconbox *ib, const char *file)
 {
@@ -680,6 +694,12 @@ ewl_iconbox_label_edit_key_down(Ewl_Widget *w __UNUSED__, void *ev_data,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param ib: The iconbox
+ * @param edit: The editable setting 
+ * @return Returns no value
+ * @brief Sets the editable flag of the iconbox
+ */
 void
 ewl_iconbox_editable_set(Ewl_Iconbox *ib, int edit)
 {
@@ -693,6 +713,11 @@ ewl_iconbox_editable_set(Ewl_Iconbox *ib, int edit)
 }
 
 
+/**
+ * @param ib: The iconbox to work with
+ * @return Returns no value
+ * @brief Recalculate the scrollpane
+ */
 void
 ewl_iconbox_scrollpane_recalculate(Ewl_Iconbox *ib)
 {
@@ -712,6 +737,11 @@ ewl_iconbox_scrollpane_recalculate(Ewl_Iconbox *ib)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param ib: The iconbox
+ * @return Returns no value
+ * @brief Arrange the icons
+ */
 void
 ewl_iconbox_icon_arrange(Ewl_Iconbox *ib)
 {
@@ -885,6 +915,11 @@ ewl_iconbox_icon_deselect(Ewl_Iconbox_Icon *ib)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param ib: The iconbox
+ * @return Returns no value
+ * @brief Deselects all items in the iconbox 
+ */
 void
 ewl_iconbox_deselect_all(Ewl_Iconbox *ib)
 {
@@ -902,6 +937,12 @@ ewl_iconbox_deselect_all(Ewl_Iconbox *ib)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param ib: The iconbox to work with
+ * @param icon: The icon to remove
+ * @return Returns no value
+ * @brief Removes the given icon from the iconbox
+ */
 void
 ewl_iconbox_icon_remove(Ewl_Iconbox *ib, Ewl_Iconbox_Icon *icon) 
 {
@@ -946,6 +987,13 @@ ewl_iconbox_icon_remove(Ewl_Iconbox *ib, Ewl_Iconbox_Icon *icon)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param iconbox: The iconbox to work with
+ * @param name: The icon name
+ * @param icon_file: The icon image file
+ * @return Returns the new Ewl_Iconbox_Icon file
+ * @brief Creates and adds a new icon to the iconbox
+ */
 Ewl_Iconbox_Icon * 
 ewl_iconbox_icon_add(Ewl_Iconbox *iconbox, const char *name, const char *icon_file)
 {
@@ -1032,6 +1080,12 @@ ewl_iconbox_icon_add(Ewl_Iconbox *iconbox, const char *name, const char *icon_fi
 	DRETURN_PTR(EWL_ICONBOX_ICON(ib), DLEVEL_STABLE);
 }
 
+/**
+ * @param icon: The icon to set the image on
+ * @param filename: The image file name
+ * @return Returns no value
+ * @brief Sets the given image into the icon
+ */
 void
 ewl_iconbox_icon_image_set(Ewl_Iconbox_Icon *icon, const char *filename)
 {
@@ -1047,6 +1101,11 @@ ewl_iconbox_icon_image_set(Ewl_Iconbox_Icon *icon, const char *filename)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param ib: The iconbox to work with
+ * @return Returns no value
+ * @brief Clears the iconbox 
+ */
 void
 ewl_iconbox_clear(Ewl_Iconbox *ib)
 {
@@ -1076,6 +1135,14 @@ ewl_iconbox_clear(Ewl_Iconbox *ib)
 }
 
 /* Callbacks */
+/**
+ * @internal
+ * @param item: UNUSED
+ * @param ev_data: The Ewl_Event_Dnd_Drop data
+ * @param user_data: The iconbox 
+ * @return Returns no value
+ * @brief The drag and drop drop callback
+ */
 void
 ewl_iconbox_dnd_drop_cb(Ewl_Widget *item __UNUSED__, 
 			void *ev_data, void *user_data) 
@@ -1121,6 +1188,14 @@ ewl_iconbox_dnd_drop_cb(Ewl_Widget *item __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param item: UNUSED
+ * @param ev_data: UNUSED
+ * @param user_data: The iconbox
+ * @return Returns no value
+ * @brief The drag and drop position callback
+ */
 void
 ewl_iconbox_dnd_position_cb(Ewl_Widget *item __UNUSED__, 
 		void *ev_data __UNUSED__, void *user_data) 
@@ -1157,6 +1232,14 @@ ewl_iconbox_dnd_position_cb(Ewl_Widget *item __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);	
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The destroy callback
+ */
 void
 ewl_iconbox_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_data __UNUSED__)
 {
@@ -1173,6 +1256,14 @@ ewl_iconbox_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_data 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The realize callback
+ */
 void ewl_iconbox_icon_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
@@ -1190,6 +1281,14 @@ void ewl_iconbox_icon_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 }
 
 /* ----------- */
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev_data: UNUSED
+ * @param user_data: The iconbox
+ * @return Returns no value
+ * @brief The arrange callback
+ */
 void
 ewl_iconbox_arrange_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, void *user_data)
 {
@@ -1205,6 +1304,14 @@ ewl_iconbox_arrange_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, void 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev_data: The Ewl_Event_Mouse_Move data
+ * @param user_data: The iconbox 
+ * @return Returns no value
+ * @brief The mouse move callback
+ */
 void
 ewl_iconbox_mouse_move_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_data)
 {
@@ -1328,6 +1435,14 @@ ewl_iconbox_mouse_move_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_da
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev_data: The Ewl_Event_Mouse_Down data
+ * @param user_data: The iconbox
+ * @return Returns no value
+ * @brief The pane mouse down callback
+ */
 void
 ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_data)
 {
@@ -1384,6 +1499,14 @@ ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *us
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev_data: Ewl_Event_Mouse_Down data
+ * @param user_data: The iconbox icon
+ * @return Returns no value
+ * @brief The icon mouse down callback
+ */
 void
 ewl_iconbox_icon_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_data)
 {
@@ -1437,6 +1560,14 @@ ewl_iconbox_icon_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *us
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev_data: The Ewl_Event_Mouse_Down data
+ * @param user_data: The Iconbox icon
+ * @return Returns no value
+ * @brief The icon mouse up callback
+ */
 void
 ewl_iconbox_icon_mouse_up_cb(Ewl_Widget *w __UNUSED__, void *ev_data , void *user_data)
 {
@@ -1465,6 +1596,14 @@ ewl_iconbox_icon_mouse_up_cb(Ewl_Widget *w __UNUSED__, void *ev_data , void *use
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev_data: The Ewl_Event_Mouse_Up data
+ * @param user_data: The Iconbox
+ * @return Returns no value
+ * @brief The mouse up callback
+ */
 void
 ewl_iconbox_mouse_up_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_data)
 {
@@ -1491,6 +1630,14 @@ ewl_iconbox_mouse_up_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_data
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev_data: UNUSED
+ * @param user_data: The iconbox icon
+ * @return Returns no value
+ * @brief The icon label mouse down callback
+ */
 void
 ewl_iconbox_icon_label_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, void *user_data)
 {
@@ -1508,10 +1655,13 @@ ewl_iconbox_icon_label_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data __U
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
- * @param ib: The iconbox
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
  * @return Returns no value
- * @brief Initialize the icon box
+ * @brief The configure callback
  */
 void
 ewl_iconbox_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_data __UNUSED__)
@@ -1548,6 +1698,12 @@ ewl_iconbox_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_dat
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param i1: The first icon
+ * @param i2: The second icon
+ * @return Returns the distance between the icons
+ * @brief Retrieves the distance between the two icons
+ */
 double
 ewl_iconbox_icon_distance(Ewl_Iconbox_Icon *i1, Ewl_Iconbox_Icon *i2) 
 {
@@ -1561,8 +1717,16 @@ ewl_iconbox_icon_distance(Ewl_Iconbox_Icon *i1, Ewl_Iconbox_Icon *i2)
 				+ pow(CURRENT_Y(i1) - CURRENT_Y(i2), 2)), DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev_data: The Ewl_Event_Key_Down data
+ * @param user_data: The iconbox
+ * @return Returns no value
+ * @brief The key press callback
+ */
 void
-ewl_iconbox_key_press_cb (Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, void *user_data) 
+ewl_iconbox_key_press_cb (Ewl_Widget *w __UNUSED__, void *ev_data, void *user_data) 
 {
 	Ewl_Event_Key_Down *event;
 	Ewl_Iconbox *ib;
@@ -1690,6 +1854,13 @@ ewl_iconbox_key_press_cb (Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, vo
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param ib: The iconbox
+ * @param cb: The callback to set for the key event
+ * @param data: User data to pass to the key event
+ * @return Returns no value
+ * @brief The realize callback
+ */
 void
 ewl_iconbox_controlled_key_callback_register(Ewl_Iconbox *ib, void (*cb)(Ewl_Iconbox *, void *, char *), void *data) 
 {

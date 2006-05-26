@@ -460,9 +460,17 @@ ewl_media_audio_volume_set(Ewl_Media *m, double v)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The realize callback
+ */
 void
 ewl_media_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
-		void *user_data __UNUSED__)
+				void *user_data __UNUSED__)
 {
 	Ewl_Media *m;
 	Ewl_Embed *emb;
@@ -503,9 +511,17 @@ ewl_media_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The unrealize callback
+ */
 void
 ewl_media_unrealize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
-		void *user_data __UNUSED__)
+				void *user_data __UNUSED__)
 {
 	Ewl_Media *m;
 
@@ -521,6 +537,14 @@ ewl_media_unrealize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The configure callback
+ */
 void
 ewl_media_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		void *user_data __UNUSED__)

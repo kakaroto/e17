@@ -427,6 +427,14 @@ ewl_grid_row_h_get(Ewl_Grid *g, int row, int *height)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The realize callback
+ */
 void
 ewl_grid_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
@@ -457,6 +465,14 @@ ewl_grid_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The configure callback
+ */
 void
 ewl_grid_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
@@ -513,9 +529,17 @@ ewl_grid_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The destroy callback
+ */
 void
 ewl_grid_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
-		void *user_data __UNUSED__)
+				void *user_data __UNUSED__)
 {
 	Ewl_Grid *g;
 
@@ -533,9 +557,17 @@ ewl_grid_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: User data
+ * @return Returns no value
+ * @brief The child destroy callback
+ */
 void
 ewl_grid_child_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
-		void *user_data)
+						void *user_data)
 {
 	Ewl_Widget *child;
 
@@ -634,8 +666,12 @@ ewl_grid_resize(Ewl_Grid *g)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
- * Notify the grid that a child has been added.
+/**
+ * @internal
+ * @param p: The container to work with
+ * @param c: The widget to work with
+ * @return Returns no value
+ * @brief Notify the grid that a child has been added.
  */
 void
 ewl_grid_child_show_cb(Ewl_Container *p, Ewl_Widget *c)
@@ -758,8 +794,14 @@ ewl_grid_child_show_cb(Ewl_Container *p, Ewl_Widget *c)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
- * Catch notification of child resizes.
+/**
+ * @internal
+ * @param p: The container to work with
+ * @param child: The widget to work with
+ * @param size: The new child size
+ * @param o: The orientation
+ * @return Returns no value
+ * @brief Catch notification of child resizes.
  */
 void
 ewl_grid_child_resize_cb(Ewl_Container *p, Ewl_Widget *child, int size,

@@ -184,8 +184,14 @@ ewl_floater_relative_set(Ewl_Floater *f, Ewl_Widget *w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
- * Use this to ensure the floater gets configured when the parent/window is.
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief Use this to ensure the floater gets configured when the
+ * parent/window gets configured.
  */
 void
 ewl_floater_follow_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
@@ -246,6 +252,14 @@ ewl_floater_follow_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief Callback when the followed widget is destroyed
+ */
 void
 ewl_floater_follow_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)

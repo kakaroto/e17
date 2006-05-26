@@ -617,6 +617,14 @@ ewl_image_thumbnail_complete_cb(void *data __UNUSED__, int type __UNUSED__,
 }
 #endif
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The reveal callback
+ */
 void
 ewl_image_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
@@ -712,6 +720,14 @@ ewl_image_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The obscure callback
+ */
 void
 ewl_image_obscure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
@@ -734,6 +750,14 @@ ewl_image_obscure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The destroy callback
+ */
 void
 ewl_image_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					  void *user_data __UNUSED__)
@@ -752,6 +776,14 @@ ewl_image_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The reparent callback
+ */
 void
 ewl_image_reparent_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
@@ -769,6 +801,14 @@ ewl_image_reparent_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The configure callback
+ */
 void
 ewl_image_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
@@ -871,6 +911,14 @@ ewl_image_type_get(const char *i)
 	DRETURN_INT(EWL_IMAGE_TYPE_NORMAL, DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: The Ewl_Event_Mouse_Down data
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The mouse down callback
+ */
 void
 ewl_image_mouse_down_cb(Ewl_Widget *w, void *ev_data,
 					void *user_data __UNUSED__)
@@ -896,6 +944,14 @@ ewl_image_mouse_down_cb(Ewl_Widget *w, void *ev_data,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: The Ewl_Event_Mouse_Up data
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The mouse up callback
+ */
 void
 ewl_image_mouse_up_cb(Ewl_Widget *w, void *ev_data,
 					void *user_data __UNUSED__)
@@ -921,6 +977,14 @@ ewl_image_mouse_up_cb(Ewl_Widget *w, void *ev_data,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: The Ewl_Event_Mouse_Move data
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The mouse move callback
+ */
 void
 ewl_image_mouse_move_cb(Ewl_Widget *w, void *ev_data,
 					void *user_data __UNUSED__)

@@ -248,6 +248,14 @@ ewl_freebox_resort(Ewl_Freebox *fb)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The configure callback
+ */
 void
 ewl_freebox_cb_configure(Ewl_Widget *w, void *ev __UNUSED__, 
 					void *data __UNUSED__)
@@ -271,6 +279,13 @@ ewl_freebox_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param c: The container
+ * @param w: The widget to work with
+ * @return Returns no value
+ * @brief Callback for when a child is added
+ */
 void
 ewl_freebox_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 {
@@ -293,6 +308,13 @@ ewl_freebox_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param c: The container
+ * @param w: The widget to work with
+ * @return Returns no value
+ * @brief Callback for when a child is shown
+ */
 void
 ewl_freebox_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 {

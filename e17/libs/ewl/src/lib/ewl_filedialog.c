@@ -413,6 +413,15 @@ ewl_filedialog_filter_add(Ewl_Filedialog *fd, const char *name,
 /*
  * Internally used callback, override at your own risk.
  */
+
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief Callback to handle deleting of the filedialog window
+ */
 void
 ewl_filedialog_cb_delete_window(Ewl_Widget *w, void *ev_data __UNUSED__, 
 							void *data __UNUSED__)

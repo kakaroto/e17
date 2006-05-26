@@ -228,6 +228,15 @@ ewl_entry_selection_clear(Ewl_Entry *e)
 /*
  * internal stuff
  */
+
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The configure callback
+ */
 void
 ewl_entry_cb_configure(Ewl_Widget *w, void *ev __UNUSED__, 
 					void *data __UNUSED__)
@@ -268,6 +277,14 @@ ewl_entry_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The focus in callback
+ */
 void 
 ewl_entry_cb_focus_in(Ewl_Widget *w, void *ev __UNUSED__, 
 					void *data __UNUSED__)
@@ -285,6 +302,14 @@ ewl_entry_cb_focus_in(Ewl_Widget *w, void *ev __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The focus out callback
+ */
 void 
 ewl_entry_cb_focus_out(Ewl_Widget *w, void *ev __UNUSED__, 
 					void *data __UNUSED__)
@@ -302,6 +327,14 @@ ewl_entry_cb_focus_out(Ewl_Widget *w, void *ev __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: The Ewl_Event_Key_Down data
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The key down callback
+ */
 void
 ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
@@ -394,6 +427,14 @@ ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: The Ewl_Event_Mouse_Down data
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The mouse down callback
+ */
 void
 ewl_entry_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
@@ -419,6 +460,14 @@ ewl_entry_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The mouse up callback
+ */
 void
 ewl_entry_cb_mouse_up(Ewl_Widget *w, void *ev __UNUSED__, 
 					void *data __UNUSED__)
@@ -437,6 +486,14 @@ ewl_entry_cb_mouse_up(Ewl_Widget *w, void *ev __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The disable callback
+ */
 void
 ewl_entry_cb_disable(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
@@ -449,6 +506,14 @@ ewl_entry_cb_disable(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The enable callback
+ */
 void
 ewl_entry_cb_enable(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
@@ -461,6 +526,14 @@ ewl_entry_cb_enable(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The mouse move callback
+ */
 void
 ewl_entry_cb_mouse_move(Ewl_Widget *w, void *ev __UNUSED__, 
 					void *data __UNUSED__)
