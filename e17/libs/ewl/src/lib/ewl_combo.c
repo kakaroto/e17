@@ -411,7 +411,6 @@ ewl_combo_cb_decrement_clicked(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 		combo->view->assign(item, 
 				combo->model->fetch(combo->data, i, 0));
 		ewl_container_child_append(EWL_CONTAINER(combo->popup), item);
-		ewl_widget_data_set(item, "ewl_combo_position", (int *)i);
 		ewl_callback_append(item, EWL_CALLBACK_CLICKED,
 					ewl_combo_cb_item_clicked, combo);
 		ewl_widget_show(item);
@@ -471,7 +470,7 @@ ewl_combo_cb_item_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 	combo = data;
 
-	i = (int)ewl_widget_data_get(w, "ewl_combo_position");
+	i = ewl_container_child_index_get(EWL_CONTAINER(combo->popup), w);
 	ewl_combo_selected_set(combo, i);
 	ewl_combo_cb_increment_clicked(NULL, NULL, data);
 
