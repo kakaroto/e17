@@ -341,3 +341,7 @@ Mon Aug  20 01:48:07 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	  strings.
 	* I introduced a new bug in the Ewl_Seeker widget when playing working
 	  with the Ewl_Button widget, and fixed it.
+Fri May 26 16:24:46 2006                        Michael Jennings (mej)
+
+Fix distcheck.
+----------------------------------------------------------------------

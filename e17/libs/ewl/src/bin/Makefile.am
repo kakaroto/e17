@@ -10,7 +10,7 @@ EWLTESTPROGRAMS                 =	ewl_test ewl_embed_test ewl_simple_test
 bin_PROGRAMS			=	$(EWLTESTPROGRAMS)
 
 ewl_test_DEPENDENCIES		=	$(top_builddir)/src/lib/libewl.la
-ewl_test_SOURCES		=	Ewl_Test.h main.c
+ewl_test_SOURCES		=	Ewl_Test.h ewl_test_private.h main.c
 
 ewl_test_LDADD			=	$(top_builddir)/src/lib/libewl.la @EDJE_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ @EMOTION_LIBS@ @EPSILON_LIBS@
 
