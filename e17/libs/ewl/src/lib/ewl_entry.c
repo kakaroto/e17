@@ -377,7 +377,8 @@ ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	else if ((!strcmp(event->keyname, "Return")) 
 			|| (!strcmp(event->keyname, "KP_Return"))
 			|| (!strcmp(event->keyname, "Enter"))
-			|| (!strcmp(event->keyname, "KP_Enter")))
+			|| (!strcmp(event->keyname, "KP_Enter"))
+			|| (!strcmp(event->keyname, "\n")))
 	{
 		if (!e->multiline)
 			ewl_callback_call(w, EWL_CALLBACK_VALUE_CHANGED);
