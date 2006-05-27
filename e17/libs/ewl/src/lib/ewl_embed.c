@@ -275,11 +275,9 @@ ewl_embed_active_set(Ewl_Embed *embed, unsigned int act)
 		/* Clean the last.clicked up recursively.. */
 		temp = e->last.clicked;
 		while (temp) {
-			if (!(ewl_object_state_has(EWL_OBJECT(temp),
-						EWL_FLAG_STATE_DISABLED))) {
+			if (!DISABLED(temp))
 				ewl_object_state_remove(EWL_OBJECT(temp),
-						EWL_FLAG_STATE_PRESSED);
-			}
+							EWL_FLAG_STATE_PRESSED);
 			temp = temp->parent;
 		}
 
@@ -366,8 +364,7 @@ ewl_embed_key_down_feed(Ewl_Embed *embed, char *keyname, unsigned int mods)
 	 */
 	temp = embed->last.focused;
 	while (temp) {
-		if (!(ewl_object_state_has(EWL_OBJECT(temp),
-					EWL_FLAG_STATE_DISABLED)))
+		if (!DISABLED(temp))
 			ewl_callback_call_with_event_data(temp,
 					EWL_CALLBACK_KEY_DOWN, &ev);
 		temp = temp->parent;
@@ -412,8 +409,7 @@ ewl_embed_key_up_feed(Ewl_Embed *embed, char *keyname, unsigned int mods)
 	 */
 	temp = embed->last.focused;
 	while (temp) {
-		if (!(ewl_object_state_has(EWL_OBJECT(temp),
-					EWL_FLAG_STATE_DISABLED)))
+		if (!DISABLED(temp))
 			ewl_callback_call_with_event_data(temp,
 					EWL_CALLBACK_KEY_UP, &ev);
 		temp = temp->parent;
@@ -490,8 +486,7 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 	 */
 	temp = widget;
 	while (temp) {
-		if (!(ewl_object_state_has(EWL_OBJECT(temp),
-					EWL_FLAG_STATE_DISABLED))) {
+		if (!DISABLED(temp)) {
 			ewl_object_state_add(EWL_OBJECT(temp),
 					EWL_FLAG_STATE_PRESSED);
 
@@ -523,9 +518,7 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 			ewl_callback_call(deselect, EWL_CALLBACK_FOCUS_OUT);
 		}
 
-		if (widget && !(ewl_object_state_has(EWL_OBJECT(widget),
-					EWL_FLAG_STATE_DISABLED))
-				&& !DESTROYED(widget)) {
+		if (widget && !DISABLED(widget) && !DESTROYED(widget)) {
 			ewl_object_state_add(EWL_OBJECT(widget),
 					EWL_FLAG_STATE_FOCUSED);
 			ewl_callback_call(widget, EWL_CALLBACK_FOCUS_IN);
@@ -568,8 +561,7 @@ ewl_embed_mouse_up_feed(Ewl_Embed *embed, int b, int x, int y,
 	 */
 	temp = embed->last.clicked;
 	while (temp) {
-		if (!(ewl_object_state_has(EWL_OBJECT(temp),
-				EWL_FLAG_STATE_DISABLED))) {
+		if (!DISABLED(temp)) {
 			ewl_object_state_remove(EWL_OBJECT(temp),
 					EWL_FLAG_STATE_PRESSED);
 			ewl_callback_call_with_event_data(temp,
@@ -643,8 +635,7 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 	 */
 	embed->last.mouse_in = widget;
 	while (embed->last.mouse_in) {
-		if (!(ewl_object_state_has(EWL_OBJECT(embed->last.mouse_in),
-					EWL_FLAG_STATE_DISABLED))) {
+		if (!DISABLED(embed->last.mouse_in)) {
 
 			/*
 			 * First mouse move event in a widget marks it focused.

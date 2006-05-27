@@ -539,6 +539,13 @@ unsigned int    ewl_object_flags_get(Ewl_Object *o, unsigned int mask);
 					EWL_FLAG_QUEUED_CSCHEDULED) \
 			|| ewl_object_queued_has(EWL_OBJECT(o), \
 			                  EWL_FLAG_QUEUED_CPROCESS))
+
+/** 
+ * @def DISABLED(o)
+ * Used to determine if a widget is disabled
+ */
+#define DISABLED(o) (ewl_object_state_has(EWL_OBJECT(o), EWL_FLAG_STATE_DISABLED))
+
 /**
  * @}
  */

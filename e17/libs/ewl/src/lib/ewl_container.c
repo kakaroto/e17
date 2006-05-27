@@ -745,16 +745,16 @@ ewl_container_child_at_recursive_get(Ewl_Container *widget, int x, int y)
 	 * Now move down through the tree of widgets until the bottom layer is
 	 * found.
 	 */
-	if (!ewl_object_state_has(EWL_OBJECT(child), EWL_FLAG_STATE_DISABLED))
+	if (!DISABLED(child))
 		child2 = ewl_container_child_at_get(EWL_CONTAINER(child), x, y);
+
 	while (child2) {
 		if (RECURSIVE(child2))
 			child = child2;
 		else
 			DRETURN_PTR(child2, DLEVEL_STABLE);
 
-		if (!ewl_object_state_has(EWL_OBJECT(child),
-					EWL_FLAG_STATE_DISABLED))
+		if (!DISABLED(child))
 			child2 = ewl_container_child_at_get(EWL_CONTAINER(child), x, y);
 		else
 			child2 = NULL;

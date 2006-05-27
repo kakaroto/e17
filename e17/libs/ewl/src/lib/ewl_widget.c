@@ -1025,7 +1025,7 @@ ewl_widget_enable(Ewl_Widget * w)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED)) {
+	if (DISABLED(w)) {
 		ewl_object_state_remove(EWL_OBJECT(w), EWL_FLAGS_STATE_MASK);
 		ewl_object_state_add(EWL_OBJECT(w), EWL_FLAG_STATE_NORMAL);
 		ewl_callback_call(w, EWL_CALLBACK_WIDGET_ENABLE);
@@ -1048,7 +1048,7 @@ ewl_widget_disable(Ewl_Widget * w)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	if (!ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED)) {
+	if (!DISABLED(w)) {
 		ewl_object_state_remove(EWL_OBJECT(w), EWL_FLAGS_STATE_MASK);
 		ewl_object_state_add(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED);
 		ewl_callback_call(w, EWL_CALLBACK_WIDGET_DISABLE);
@@ -2241,8 +2241,7 @@ ewl_widget_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 						EWL_STATE_PERSISTENT);
 		}
 
-		if (ewl_object_state_has(EWL_OBJECT(w),
-					EWL_FLAG_STATE_DISABLED))
+		if (DISABLED(w))
 			ewl_widget_state_set(w, "disabled", 
 						EWL_STATE_PERSISTENT);
 
@@ -2712,7 +2711,7 @@ ewl_widget_focus_in_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
+	if (DISABLED(w))
 		DRETURN(DLEVEL_STABLE);
 
 	ewl_widget_state_set(w, "focus,in", EWL_STATE_TRANSIENT);
@@ -2736,7 +2735,7 @@ ewl_widget_focus_out_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
+	if (DISABLED(w))
 		DRETURN(DLEVEL_STABLE);
 
 	ewl_widget_state_set(w, "focus,out", EWL_STATE_TRANSIENT);
@@ -2760,7 +2759,7 @@ ewl_widget_mouse_in_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
+	if (DISABLED(w))
 		DRETURN(DLEVEL_STABLE);
 
 	ewl_widget_state_set(w, "mouse,in", EWL_STATE_TRANSIENT);
@@ -2784,7 +2783,7 @@ ewl_widget_mouse_out_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
+	if (DISABLED(w))
 		DRETURN(DLEVEL_STABLE);
 
 	ewl_widget_state_set(w, "mouse,out", EWL_STATE_TRANSIENT);
@@ -2811,7 +2810,7 @@ ewl_widget_mouse_down_cb(Ewl_Widget *w, void *ev_data,
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
+	if (DISABLED(w))
 		DRETURN(DLEVEL_STABLE);
 
 	snprintf(state, 14, "mouse,down,%i", e->button);
@@ -2839,7 +2838,7 @@ ewl_widget_mouse_up_cb(Ewl_Widget *w, void *ev_data,
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
+	if (DISABLED(w))
 		DRETURN(DLEVEL_STABLE);
 
 	snprintf(state, 14, "mouse,up,%i", e->button);
