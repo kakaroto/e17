@@ -1,0 +1,5 @@
+Sat May 27 18:41:24 2006                        Michael Jennings (mej)
+
+The emu module kinda threw everything for a loop by having a separate
+binary, so I had to add some spec-fu to make an exception for it.
+----------------------------------------------------------------------
