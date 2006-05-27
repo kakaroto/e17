@@ -77,7 +77,7 @@ _gc_init(E_Gadcon *gc, char *name, char *id, char *style)
 				  _lang_button_cb_mouse_down, inst);
 
    language_config->instances = evas_list_append(language_config->instances, inst);
-   lang_language_switch_to(language_config, language_config->language_selector, 0);
+   lang_language_switch_to(language_config, language_config->language_selector);
    return gcc;
 }
 static void
@@ -127,7 +127,8 @@ EAPI E_Module_Api e_modapi =
 EAPI void *
 e_modapi_init(E_Module *m)
 {
-   int	 load_default_config = 0;
+   int	     load_default_config = 0;
+   Evas_List *l;
 
    conf_langlist_edd = E_CONFIG_DD_NEW("Language_List_Config", Language);
 #undef T
@@ -138,9 +139,12 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, lang_name, STR);
    E_CONFIG_VAL(D, T, lang_shortcut, STR);
    E_CONFIG_VAL(D, T, lang_flag, STR);
-   E_CONFIG_VAL(D, T, kbd_model, STR);
+   E_CONFIG_VAL(D, T, rdefs.model, STR);
+   E_CONFIG_VAL(D, T, rdefs.layout, STR);
+   E_CONFIG_VAL(D, T, rdefs.variant, STR);
+   /*E_CONFIG_VAL(D, T, kbd_model, STR);
    E_CONFIG_VAL(D, T, kbd_layout, STR);
-   E_CONFIG_VAL(D, T, kbd_variant, STR);
+   E_CONFIG_VAL(D, T, kbd_variant, STR);*/
 
    conf_edd = E_CONFIG_DD_NEW("Language_Config", Config);
 #undef T
@@ -208,6 +212,13 @@ e_modapi_init(E_Module *m)
 
    language_config->module = m;
 
+   /* initializing languages */
+   for (l = language_config->languages; l; l = l->next)
+     {
+	lang_language_xorg_values_get(l->data);
+     }
+
+   language_config->l.current = e_border_focused_get();
 
    e_gadcon_provider_register((E_Gadcon_Client_Class *)(&_gadcon_class));
 
@@ -220,13 +231,14 @@ e_modapi_init(E_Module *m)
 EAPI int
 e_modapi_shutdown(E_Module *m)
 {
+   Evas_List *l;
+
    e_gadcon_provider_unregister((E_Gadcon_Client_Class *)(&_gadcon_class));
 
    language_unregister_callback_handlers();
    language_clear_border_language_setup_list();
 
-   //
-   lang_language_switch_to(language_config, 0, 0);
+   lang_language_switch_to(language_config, 0);
 
    if (language_config->config_dialog)
      e_object_del(E_OBJECT(language_config->config_dialog));
@@ -243,6 +255,10 @@ e_modapi_shutdown(E_Module *m)
    lang_unregister_module_keybindings();
    lang_unregister_module_actions();
 
+   for (l = language_config->languages; l; l = l->next)
+     {
+	lang_language_free(l->data);
+     }
 
    free(language_config);
    language_config = NULL;
@@ -292,12 +308,15 @@ void language_face_language_indicator_update()
 {
    Evas_List   *l;
    Instance    *inst; 
+   static int counter = 0;
 
    if (!language_config) return;
+
 
    for (l = language_config->instances; l; l = l->next)
      {
 	inst = l->data;
+
 	if (language_config->languages)
 	  {
 	     Language	*lang = evas_list_nth(language_config->languages,
@@ -321,7 +340,6 @@ void language_register_callback_handlers()
    language_config->handlers = evas_list_append
       (language_config->handlers, ecore_event_handler_add
        (E_EVENT_BORDER_FOCUS_IN, lang_cb_event_border_focus_in, language_config));
-
    language_config->handlers = evas_list_append
       (language_config->handlers, ecore_event_handler_add
        (E_EVENT_BORDER_REMOVE, lang_cb_event_border_remove, language_config));
@@ -329,22 +347,6 @@ void language_register_callback_handlers()
    language_config->handlers = evas_list_append
       (language_config->handlers, ecore_event_handler_add
        (E_EVENT_BORDER_ICONIFY, lang_cb_event_border_iconify, language_config));
-
-   /*language_config->handlers = evas_list_append
-      (language_config->handlers, ecore_event_handler_add
-       (E_EVENT_BORDER_ZONE_SET, lang_cb_event_border_zone_set, language_config));
-
-   language_config->handlers = evas_list_append
-      (language_config->handlers, ecore_event_handler_add
-       (E_EVENT_BORDER_DESK_SET, lang_cb_event_border_desk_set, language_config));
-
-   language_config->handlers = evas_list_append
-      (language_config->handlers, ecore_event_handler_add
-       (E_EVENT_BORDER_SHOW, lang_cb_event_border_show, language_config));
-
-   language_config->handlers = evas_list_append
-      (language_config->handlers, ecore_event_handler_add
-       (E_EVENT_BORDER_HIDE, lang_cb_event_border_hide, language_config));*/
 }
 void language_unregister_callback_handlers()
 { 
@@ -359,16 +361,17 @@ void language_clear_border_language_setup_list()
 {
    if (!language_config) return;
 
-   while (language_config->border_lang_setup)
+   language_config->l.current = NULL;
+   while (language_config->l.border_lang_setup)
      {
-	Border_Language_Settings *bls = language_config->border_lang_setup->data;
+	Border_Language_Settings *bls = language_config->l.border_lang_setup->data;
 
 	if (bls->language_name) evas_stringshare_del(bls->language_name);
 	E_FREE(bls);
 
-	language_config->border_lang_setup = 
-	   evas_list_remove_list(language_config->border_lang_setup,
-				 language_config->border_lang_setup);
+	language_config->l.border_lang_setup = 
+	   evas_list_remove_list(language_config->l.border_lang_setup,
+				 language_config->l.border_lang_setup);
      }
 }
 /************************* Private funcs *************************************************/
@@ -429,9 +432,7 @@ _lang_button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_in
 		  e_menu_item_radio_set(mi, 1);
 		  e_menu_item_radio_group_set(mi, SELECTED_LANG_SET_RADIO_GROUP);
 		  e_menu_item_toggle_set(mi, indx == language_config->language_selector ? 1 : 0);
-		  //FIXME: enable
 		  e_menu_item_callback_set(mi, _language_face_cb_menu_switch_language_to, NULL);
-		  //e_menu_item_callback_set(mi, _language_face_menu_cb_switch_language_to, NULL);
 	       }
 	     
 	     e_menu_post_deactivate_callback_set(mn, _lang_menu_cb_post_deactivate, inst); 
@@ -493,7 +494,7 @@ _language_face_cb_menu_switch_language_to(void *data, E_Menu *m, E_Menu_Item *mi
 	     if (language_config->language_selector == indx)
 	       break;
 
-	     lang_language_switch_to(language_config, indx, 0);
+	     lang_language_switch_to(language_config, indx);
 	     break;
 	  }
      }

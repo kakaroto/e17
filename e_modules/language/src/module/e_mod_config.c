@@ -185,7 +185,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 	    e_widget_on_change_hook_set(ob, _lang_kbd_model_ilist_cb_change, cfdata);
 	    cfdata->gui.kbd_model_ilist = ob;
 	    {
-	       e_widget_min_size_set(ob, 380, 80);
+	       e_widget_min_size_set(ob, 390, 80);
 	       e_widget_ilist_go(ob);
 	    }
 	    e_widget_framelist_object_append(of, ob);
@@ -269,14 +269,14 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    for (l = cfdata->selected_languages; l; l = l->next)
      {
 	lang = lang_language_copy(l->data);
+	lang_language_xorg_values_get(lang);
 	if (lang) 
 	  cfdata->conf->languages = evas_list_append(cfdata->conf->languages, lang);
      }
    cfdata->conf->language_selector = 0;
    e_config_save_queue();
-   //e_config_save();
 
-   lang_language_switch_to(cfdata->conf, (cfdata->conf->language_selector = 0), 0);
+   lang_language_switch_to(cfdata->conf, (cfdata->conf->language_selector = 0));
    return 1;
 }
 static void
@@ -485,7 +485,7 @@ _lang_update_kbd_model_list(E_Config_Dialog_Data *cfdata)
 	  {
 	     lkm = l->data;
 
-	     if (!strcmp(lkm->kbd_model, selected_lang->kbd_model))
+	     if (!strcmp(lkm->kbd_model, selected_lang->rdefs.model))
 	       kbd_model_indx = i;
 
 	     //snprintf(buf, sizeof(buf), "%s (%s)", lkm->kbd_model_desctiption, lkm->kbd_model);
@@ -499,7 +499,7 @@ _lang_update_kbd_model_list(E_Config_Dialog_Data *cfdata)
 	     l; l = l->next, kbd_model_indx++)
 	  {
 	     lkm = l->data;
-	     if (!strcmp(lkm->kbd_model, selected_lang->kbd_model))
+	     if (!strcmp(lkm->kbd_model, selected_lang->rdefs.model))
 	       break;
 	  }
 	if (!l)
@@ -541,7 +541,8 @@ _lang_update_kbd_layout_variant_list(E_Config_Dialog_Data *cfdata)
 		  char *variant = l->data;
 		  if (!strcmp(variant, "basic")) continue;
 
-		  if (selected_lang->kbd_variant && !strcmp(selected_lang->kbd_variant, variant))
+		  if (selected_lang->rdefs.variant &&
+		      !strcmp(selected_lang->rdefs.variant, variant))
 		    kbd_variant_indx = i;
 
 		  e_widget_ilist_append(cfdata->gui.kbd_layout_variant_ilist,
@@ -588,13 +589,14 @@ _lang_select_language_cb(void *data, void *data2)
    lang = E_NEW(Language, 1);
    if (!lang) return;
 
-   lang->id = evas_list_count(cfdata->selected_languages);
-   lang->lang_name = evas_stringshare_add(lp->lang_name);
+   lang->id	       = evas_list_count(cfdata->selected_languages);
+   lang->lang_name     = evas_stringshare_add(lp->lang_name);
    lang->lang_shortcut = evas_stringshare_add(lp->lang_shortcut);
-   lang->lang_flag = !(lp->lang_flag) ? NULL : evas_stringshare_add(lp->lang_flag);
-   lang->kbd_model = lang_language_current_kbd_model_get();
-   lang->kbd_layout = evas_stringshare_add(lp->kbd_layout);
-   lang->kbd_variant = evas_stringshare_add("basic");
+   lang->lang_flag     = !(lp->lang_flag) ? NULL : evas_stringshare_add(lp->lang_flag);
+   lang->rdefs.model   = (char *) evas_stringshare_add(lang_language_current_kbd_model_get());
+   lang->rdefs.layout  = (char *) evas_stringshare_add(lp->kbd_layout);
+   lang->rdefs.variant = (char *) evas_stringshare_add("basic");
+   //lang_language_xorg_values_get(lang);
 
    cfdata->selected_languages = evas_list_append(cfdata->selected_languages, lang);
    //DO NOT sort selected_languages list. Here the sequence of the langs is essential!
@@ -742,8 +744,9 @@ _lang_kbd_model_ilist_cb_change(void *data, Evas_Object *obj)
 
    if (!lang || !lkm) return;
 
-   if (lang->kbd_model) evas_stringshare_del(lang->kbd_model);
-   lang->kbd_model = evas_stringshare_add(lkm->kbd_model);
+   if (lang->rdefs.model) evas_stringshare_del(lang->rdefs.model);
+   lang->rdefs.model = (char *) evas_stringshare_add(lkm->kbd_model);
+   //lang_language_xorg_values_get(lang);
 }
 static void 
 _lang_kbd_layout_variant_ilist_cb_change(void *data, Evas_Object *obj)
@@ -763,8 +766,9 @@ _lang_kbd_layout_variant_ilist_cb_change(void *data, Evas_Object *obj)
    lang = evas_list_nth(cfdata->selected_languages, indx_lang);
    if (indx_variant == 0)
      {
-	if (lang->kbd_variant) evas_stringshare_del(lang->kbd_variant);
-	lang->kbd_variant = evas_stringshare_add("basic");
+	if (lang->rdefs.variant) evas_stringshare_del(lang->rdefs.variant);
+	lang->rdefs.variant = (char *) evas_stringshare_add("basic");
+	//lang_language_xorg_values_get(lang);
 	return;
      }
    else
@@ -780,8 +784,9 @@ _lang_kbd_layout_variant_ilist_cb_change(void *data, Evas_Object *obj)
 	       {
 		  variant = evas_list_nth(lp->kbd_variant, indx_variant - 1);
 
-		  if (lang->kbd_variant) evas_stringshare_del(lang->kbd_variant);
-		  lang->kbd_variant = evas_stringshare_add(variant);
+		  if (lang->rdefs.variant) evas_stringshare_del(lang->rdefs.variant);
+		  lang->rdefs.variant = (char *) evas_stringshare_add(variant);
+		  //lang_language_xorg_values_get(lang);
 		  break;
 	       }
 	  }

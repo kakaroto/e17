@@ -1,11 +1,7 @@
 
 #include "e_mod_lang.h"
 #include "e_mod_main.h"
-
 #include <EXML.h>
-#include <X11/Xlib.h>
-#include <X11/XKBlib.h>
-#include <X11/extensions/XKBrules.h>
 
 #define EXML_RETURN_ON_ERROR(xml) \
    { \
@@ -15,73 +11,12 @@
 
 /******************************************************/
 
-//#define DFLT_XKB_RULES_FILE   "/usr/share/X11/xkb/rules/xorg"
 #define DFLT_XKB_RULES_FILE   "/etc/X11/xkb/rules/xfree86"
 #define DFLT_XKB_LAYOUT	      "us"
 #define DFLT_XKB_MODEL	      "pc101"
 
-#define RULES_INDX	0
-#define CONFIG_INDX	1
-#define DISPLAY_INDX	2
-#define LOCALE_INDX	3
-#define MODEL_INDX	4
-#define LAYOUT_INDX	5
-#define VARIANT_INDX	6
-#define KEYCODES_INDX	7
-#define TYPES_INDX	8
-#define COMPAT_INDX	9
-#define SYMBOLS_INDX	10
-#define GEOMETRY_INDX	11
-#define KEYMAP_INDX	12
-#define NUM_OF_INDX	13
-
-#define LXC_FREE(__p) \
-   { \
-      int i; \
-      for (i = 0; i < NUM_OF_INDX; i++) \
-	 if (__p->sv[i]) evas_stringshare_del(__p->sv[i]); \
-      if (__p->dpy) XCloseDisplay(__p->dpy); \
-      E_FREE(__p); \
-   }
-
-#define LANG_SETTING_SET_RETURN_ON_ERROR(__p) \
-   { \
-      LXC_FREE(__p); \
-      e_module_dialog_show("Error", "Error: The module was not able to switch between the<br>" \
-				    "selected languages. The main reason could be is that X<br>" \
-				    "keyboard rules file cannot be loaded propertly, or it <br>" \
-				    "contains incorrect rules information. This can happen if<br>" \
-				    "you updated your X server to version 7.x. Please fix the<br>" \
-				    "X keyboar rules file located via /etc/X11/xkb/rules/xfree86." \
-			   ); \
-      return; \
-   }
-
-#define LXC_SET_STRING(l, c, s) \
-   { \
-      if (!(l->sv[c])) \
-	 l->sv[c] = (!s ? NULL : (char *)evas_stringshare_add(s)); \
-   }
-
-typedef struct _Language_Xkb_Config Language_Xkb_Config;
-
-struct _Language_Xkb_Config
-{
-   Display	     *dpy;
-   XkbRF_VarDefsRec  rdefs;
-   char		     *sv[NUM_OF_INDX];
-};
-
-#if 0
-static int _lang_check_name(char *name, char* string);
-#endif
-
-static int _lang_apply_components_names(Language_Xkb_Config *lxc);
-static int _lang_apply_rules(Language_Xkb_Config *lxc);
-static int _lang_server_values_get(Language_Xkb_Config *lxc);
-static Display * _lang_server_display_get();
-static void _lang_apply_language_settings(const char *model, const char *layout,
-					  const char *variant);
+static int  _lang_apply_language_conponent_names(Language *l);
+static void _lang_apply_language_settings(Language *l);
 
 /******************************************************/
 
@@ -99,13 +34,13 @@ int		     _lang_predef_language_sort_cb(void *e1, void *e2);
 /****************************************/
 
 void
-lang_language_switch_to(Config *cfg, unsigned int n, int ignore_n)
+lang_language_switch_to(Config *cfg, unsigned int n)
 {
 #define APPLY_LANGUAGE_SETTINGS(__c) \
-   { \
-      Language *__l = evas_list_nth(__c->languages, __c->language_selector); \
-      if (__l) _lang_apply_language_settings(__l->kbd_model, __l->kbd_layout, __l->kbd_variant); \
-   }
+     { \
+	Language *__l = evas_list_nth(__c->languages, __c->language_selector); \
+	if (__l) _lang_apply_language_settings(__l); \
+     }
    
    
    if (!cfg) return;
@@ -121,146 +56,67 @@ lang_language_switch_to(Config *cfg, unsigned int n, int ignore_n)
 	APPLY_LANGUAGE_SETTINGS(cfg);
      }
    else if (cfg->lang_policy == LS_WINDOW_POLICY)
-     {
-	if (ignore_n)
-	  { 
+     { 
+	Evas_List *l; 
+	E_Border *bd = NULL;
+
+	if (n >= evas_list_count(cfg->languages)) 
+	  n = evas_list_count(cfg->languages) - 1;
+
+        bd = e_border_focused_get();
+
+	if (bd)
+	  {
 	     Evas_List *l;
-	     E_Border *bd = NULL;
-	     E_Desk *desk;
+	     Border_Language_Settings *bls; 
+	     Language *lang;
 
-	     desk = e_desk_current_get
-		     (e_zone_current_get(e_container_current_get(e_manager_current_get())));
+	     cfg->language_selector = n;
+	     lang = evas_list_nth(cfg->languages, n);
 
-	     for (l = e_border_focus_stack_get(); l; l = l->next) 
-	       { 
-		  bd = l->data; 
-		  if ((!bd->iconic) && (bd->visible) && 
-		      (((bd->desk == desk) ||
-		       ((bd->sticky) && (bd->zone == desk->zone))))) 
+	     bls = NULL;
+	     for (l = cfg->l.border_lang_setup; l; l = l->next)
+	       {
+	          bls = l->data;
+	          if (bls && (bls->bd = bd))
 		    { 
-		       break; 
-		    } 
-		  bd = NULL;
+		       if (!n)
+			 {
+			    if (bls->language_name) evas_stringshare_del(bls->language_name);
+			    E_FREE(bls);
+			    cfg->l.border_lang_setup = evas_list_remove_list(
+								     cfg->l.border_lang_setup, l);
+			 }
+		       break;
+		    }
+	          bls = NULL;
 	       }
 
-	     cfg->language_selector = 0;
-	     if (bd)
+	     if (bls)
 	       {
-		  // here we have to set the language used by the window
-		  // if at all we have to do this ???? QUESTION - because,
-		  // if we just switch the desktop and we have focused window on it
-		  // them most probably !!! the focus_in callback will activate
-		  Border_Language_Settings *bls = NULL;
-
-		  for (l = cfg->border_lang_setup; l; l = l->next)
-		    {
-		       bls = l->data;
-
-		       if (bls->bd == bd)
-			 {
-			    // so we found a window with border settings set
-			    // 
-			    Language *lang = evas_list_nth(cfg->languages,
-							   bls->language_selector);
-			    if (strcmp(bls->language_name, lang->lang_name))
-			      {
-				 // here we will be smart :) we will try first to
-				 // find correct language settings and if we fail
-				 // then to fallback to default language
-
-				 bls->language_selector = 0;
-
-				 /*Evas_List *l2;
-				 int j = 0;
-				 for (l2 = cfg->languages; l2; l2 = l2->next, j++)
-				   {
-				      lang = l->data;
-				      if (!strcmp(bls->language_name, lang->lang_name))
-					break;
-				   }
-
-				 if (j) 
-				   bls->language_selector = j;
-				 else
-				   {
-				      //hhhhmmm the language_settings of the border is incorrect.
-				      //remove them. and fallback to default language.
-				      if (bls->language_name)
-					evas_stringshare_del(bls->language_name);
-				      E_FREE(bls);
-				      cfg->border_lang_setup = evas_list_remove_list
-					 (cfg->border_lang_setup, l);
-				   }*/
-			      }
-			    break;
-			 }
-		       bls = NULL;
-		    }
-
-		  if (bls) 
-		    cfg->language_selector = bls->language_selector;
-	       } 
-	     APPLY_LANGUAGE_SETTINGS(cfg);
-	  }
-	else
-	  { 
-	     Evas_List *l;
-	     E_Border *bd = NULL;
-
-	     if (n >= evas_list_count(cfg->languages))
-	       n = evas_list_count(cfg->languages) - 1;
-
-	     bd = e_border_focused_get();
-
-	     if (bd)
-	       {
-		  Evas_List *l;
-		  Border_Language_Settings *bls; 
-		  Language *lang;
-		  // we have a border. Let find it in the list of borders that have
-		  // language settings.
-
-		  cfg->language_selector = n;
-		  lang = evas_list_nth(cfg->languages, n);
-
-		  bls = NULL;
-		  for (l = cfg->border_lang_setup; l; l = l->next)
-		    {
-		       bls = l->data;
-		       if (bls && (bls->bd = bd))
-			 break;
-		       bls = NULL;
-		    }
-
-		  if (bls)
-		    {
-		       // kewl (ooohhh devilhorns :)) we have a border with language 
-		       // settings set. Updata them
-		       bls->language_selector = n;
-		       if (bls->language_name) evas_stringshare_del(bls->language_name);
-		       bls->language_name = evas_stringshare_add(lang->lang_name);
-		    }
-		  else
-		    {
-		       // there is no window.
-		       if (n) 
-			 {
-			    // we need to save none default lang settings
-			    bls = E_NEW(Border_Language_Settings, 1);
-			    bls->bd = bd;
-			    bls->language_selector = n;
-			    bls->language_name = evas_stringshare_add(lang->lang_name);
-
-			    cfg->border_lang_setup = evas_list_append(cfg->border_lang_setup, bls);
-			 }
-		    }
+	          bls->language_selector = n;
+	          if (bls->language_name) evas_stringshare_del(bls->language_name);
+	          bls->language_name = evas_stringshare_add(lang->lang_name);
+		  cfg->l.current = bd;
 	       }
 	     else
-	       cfg->language_selector = n;
-
-	     APPLY_LANGUAGE_SETTINGS(cfg);
-		  //e_module_dialog_show("Warning", "Focused window on desktop");
-	  }
+	       {
+		  cfg->l.current = NULL;
+	          if (n) 
+	            {
+		       bls = E_NEW(Border_Language_Settings, 1); 
+		       bls->bd = bd; 
+		       bls->language_selector = n; 
+		       bls->language_name = evas_stringshare_add(lang->lang_name); 
+		       
+		       cfg->l.border_lang_setup = evas_list_append(cfg->l.border_lang_setup, bls);
+	            }
+	       }
+	  } 
+	else 
+	  cfg->language_selector = n; 
+	
+	APPLY_LANGUAGE_SETTINGS(cfg);
      }
    else if (cfg->lang_policy == LS_APPLICATION_POLICY)
      {
@@ -279,9 +135,9 @@ lang_language_switch_to_next(Config *cfg)
    if (size <= 1) return;
 
    if (cfg->language_selector >= size - 1)
-     lang_language_switch_to(cfg, 0, 0);
+     lang_language_switch_to(cfg, 0);
    else
-     lang_language_switch_to(cfg, cfg->language_selector + 1, 0);
+     lang_language_switch_to(cfg, cfg->language_selector + 1);
 }
 void
 lang_language_switch_to_prev(Config *cfg)
@@ -293,9 +149,9 @@ lang_language_switch_to_prev(Config *cfg)
    if (size <= 1) return;
 
    if (cfg->language_selector == 0)
-     lang_language_switch_to(cfg, size - 1, 0);
+     lang_language_switch_to(cfg, size - 1);
    else
-     lang_language_switch_to(cfg, cfg->language_selector - 1, 0);
+     lang_language_switch_to(cfg, cfg->language_selector - 1);
 }
 Language *
 lang_get_default_language(Config *cfg)
@@ -313,13 +169,16 @@ lang_get_default_language(Config *cfg)
 	     if (!lang)
 	       break;
 
-	     lang->id = 0; 
-	     lang->lang_name = evas_stringshare_add(lp->lang_name); 
+	     lang->id		 = 0; 
+	     lang->lang_name	 = evas_stringshare_add(lp->lang_name); 
 	     lang->lang_shortcut = evas_stringshare_add(lp->lang_shortcut); 
-	     lang->lang_flag = evas_stringshare_add(lp->lang_flag); 
-	     lang->kbd_model = lang_language_current_kbd_model_get();
-	     lang->kbd_layout = evas_stringshare_add(lp->kbd_layout); 
-	     lang->kbd_variant = evas_stringshare_add("basic"); 
+	     lang->lang_flag	 = evas_stringshare_add(lp->lang_flag); 
+
+	     lang->rdefs.model	 = (char *)evas_stringshare_add
+						   (lang_language_current_kbd_model_get());
+	     lang->rdefs.layout	 = (char *) evas_stringshare_add(lp->kbd_layout); 
+	     lang->rdefs.variant = (char *) evas_stringshare_add("basic"); 
+	     lang_language_xorg_values_get(lang);
 	     break; 
 	  }
      }
@@ -532,13 +391,27 @@ lang_language_copy(const Language *l)
    lang = E_NEW(Language, 1);
    if (!lang) return NULL;
 
-   lang->id = l->id;
-   lang->lang_name = l->lang_name ? evas_stringshare_add(l->lang_name) : NULL;
+   lang->id	       = l->id;
+   lang->lang_name     = l->lang_name ? evas_stringshare_add(l->lang_name) : NULL;
    lang->lang_shortcut = l->lang_shortcut ? evas_stringshare_add(l->lang_shortcut) : NULL;
-   lang->lang_flag = l->lang_flag ? evas_stringshare_add(l->lang_flag) : NULL;
-   lang->kbd_model = l->kbd_model ? evas_stringshare_add(l->kbd_model) : NULL;
-   lang->kbd_layout = l->kbd_layout ? evas_stringshare_add(l->kbd_layout) : NULL;
-   lang->kbd_variant = l->kbd_variant ? evas_stringshare_add(l->kbd_variant) : NULL;
+   lang->lang_flag     = l->lang_flag ? evas_stringshare_add(l->lang_flag) : NULL;
+
+   lang->rdefs.model   = !l->rdefs.model ? NULL : (char *) evas_stringshare_add(l->rdefs.model);
+   lang->rdefs.layout  = !l->rdefs.layout ? NULL : (char *) evas_stringshare_add(l->rdefs.layout);
+   lang->rdefs.variant = !l->rdefs.variant ? NULL : (char *) evas_stringshare_add(l->rdefs.variant);
+
+   lang->cNames.keycodes = !l->cNames.keycodes ? NULL :
+						(char *) evas_stringshare_add(l->cNames.keycodes);
+   lang->cNames.symbols	 = !l->cNames.symbols ? NULL :
+						(char *) evas_stringshare_add(l->cNames.symbols);
+   lang->cNames.types	 = !l->cNames.types ? NULL :
+						(char *) evas_stringshare_add(l->cNames.types);
+   lang->cNames.compat	 = !l->cNames.compat ? NULL :
+						(char *) evas_stringshare_add(l->cNames.compat);
+   lang->cNames.geometry = !l->cNames.geometry ? NULL :
+						(char *) evas_stringshare_add(l->cNames.geometry);
+   lang->cNames.keymap = !l->cNames.keymap ? NULL :
+						(char *) evas_stringshare_add(l->cNames.keymap);
 
    return lang;
 }
@@ -551,16 +424,29 @@ lang_language_free(Language *l)
    if (l->lang_name) evas_stringshare_del(l->lang_name);
    if (l->lang_shortcut) evas_stringshare_del(l->lang_shortcut);
    if (l->lang_flag) evas_stringshare_del(l->lang_flag);
-   if (l->kbd_model) evas_stringshare_del(l->kbd_model);
-   if (l->kbd_layout) evas_stringshare_del(l->kbd_layout);
-   if (l->kbd_variant) evas_stringshare_del(l->kbd_variant);
+
+   if (l->rdefs.model) evas_stringshare_del(l->rdefs.model);
+   if (l->rdefs.layout) evas_stringshare_del(l->rdefs.layout);
+   if (l->rdefs.variant) evas_stringshare_del(l->rdefs.variant);
+
+   if (l->cNames.keycodes) evas_stringshare_del(l->cNames.keycodes);
+   if (l->cNames.symbols) evas_stringshare_del(l->cNames.symbols);
+   if (l->cNames.types) evas_stringshare_del(l->cNames.types);
+   if (l->cNames.compat) evas_stringshare_del(l->cNames.compat);
+   if (l->cNames.geometry) evas_stringshare_del(l->cNames.geometry);
+   if (l->cNames.keymap) evas_stringshare_del(l->cNames.keymap);
+
    E_FREE(l);
 }
 const char *
 lang_language_current_kbd_model_get()
 {
-   //FIXME: make the function return the actual keyboard model
-   return evas_stringshare_add("compaqik13");
+   XkbRF_VarDefsRec vd;
+   char *tmp;
+
+   if (!XkbRF_GetNamesProp((Display *)ecore_x_display_get(), &tmp, &vd))
+     return "pc101";
+   return vd.model;
 } 
 
 /************** private ******************/
@@ -751,186 +637,102 @@ _lang_predef_language_sort_cb(void *e1, void *e2)
    return strcmp((const char *)lp1->lang_name, (const char *)lp2->lang_name);
 }
 /****************************************/
-
 static void
-_lang_apply_language_settings(const char *model, const char *layout,
-			      const char *variant)
+_lang_apply_language_settings(Language *l)
 {
-   Language_Xkb_Config	*lxc;
+   if (!l) return;
 
-   if (!layout) return;
 
-   lxc = E_NEW(Language_Xkb_Config, 1);
-   if (!lxc) return;
-
-   LXC_SET_STRING(lxc, MODEL_INDX, model);
-   LXC_SET_STRING(lxc, LAYOUT_INDX, layout);
-   LXC_SET_STRING(lxc, VARIANT_INDX, variant);
-
-   if (!(lxc->dpy = _lang_server_display_get()))
-     LANG_SETTING_SET_RETURN_ON_ERROR(lxc);
-
-   // this is a hack of locale.
-   lxc->sv[LOCALE_INDX] = (char *)evas_stringshare_add("C");
-
-   if (!_lang_server_values_get(lxc))
-     LANG_SETTING_SET_RETURN_ON_ERROR(lxc);
-
-   if (!_lang_apply_rules(lxc))
-     LANG_SETTING_SET_RETURN_ON_ERROR(lxc);
-
-   if (!_lang_apply_components_names(lxc))
-     LANG_SETTING_SET_RETURN_ON_ERROR(lxc);
-
-   LXC_FREE(lxc);
+   if (!_lang_apply_language_conponent_names(l))
+     return;
 }
-static Display *
-_lang_server_display_get()
+////////////////// move this to public ////////////////////////
+int 
+lang_language_xorg_values_get(Language *l)
 {
-   int	    major, minor, why;
-   char	    *display;
-
-   major = XkbMajorVersion;
-   minor = XkbMinorVersion;
-
-   display = getenv("DISPLAY");
-
-   return XkbOpenDisplay(display, NULL, NULL, &major, &minor, &why);
-}
-
-static int
-_lang_server_values_get(Language_Xkb_Config *lxc)
-{
+#if 0
    XkbRF_VarDefsRec  vd;
    char		     *tmp = NULL;
-
-   if (!lxc) return 0;
-
-   if (!XkbRF_GetNamesProp(lxc->dpy, &tmp, &vd) || !tmp)
-     {
-	tmp	     = DFLT_XKB_RULES_FILE;
-	vd.model     = DFLT_XKB_MODEL;
-	vd.layout    = DFLT_XKB_LAYOUT;
-	vd.variant   = NULL;
-	vd.options   = NULL;
-     }
-
-   if (tmp) LXC_SET_STRING(lxc, RULES_INDX, tmp);
-   if (vd.model) LXC_SET_STRING(lxc, MODEL_INDX, vd.model);
-   if (vd.layout) LXC_SET_STRING(lxc, LAYOUT_INDX, vd.layout);
-   if (vd.variant) LXC_SET_STRING(lxc, VARIANT_INDX, vd.variant);
-
-   if (vd.options) XFree(vd.options);
-
-   return 1;
-}
-
-static int
-_lang_apply_rules(Language_Xkb_Config *lxc)
-{
-   //FIXME: rfName is a hack it points to /usr/share/X11/xkb/rules/xorg
-   //I'm not sure that this file exist in all the versions of X
-   //Mostprobably this path should be /usr/X11R6/lib/X11/xkb/rules/xfree86
-   char			*rfName = DFLT_XKB_RULES_FILE;
+#endif
    XkbComponentNamesRec	rnames;
    XkbRF_RulesPtr	rules = NULL;
 
-   if (!lxc) return 0;
+   if (!l) return 0;
 
-   lxc->rdefs.model	= lxc->sv[MODEL_INDX];
-   lxc->rdefs.layout	= lxc->sv[LAYOUT_INDX];
-   lxc->rdefs.variant	= lxc->sv[VARIANT_INDX];
+#if 0
+   if (!XkbRF_GetNamesProp((Display *)ecore_x_display_get(), &tmp, &vd) || !tmp)
+     {
+	vd.model     =  DFLT_XKB_MODEL;
+	vd.layout    =  DFLT_XKB_LAYOUT;
+	vd.variant   = NULL;
+	vd.options   = NULL;
+     }
+   if (vd.model)
+     { if (!l->rdefs.model) l->rdefs.model = vd.model; }
+   if (vd.layout)
+     { if (!l->rdefs.layout) l->rdefs.layout = vd.layout; }
+   if (vd.variant)
+     { if (!l->rdefs.variant) l->rdefs.variant = vd.variant; }
 
-   rules = XkbRF_Load(rfName, lxc->sv[LOCALE_INDX], True, True);
+   if (vd.options) XFree(vd.options);
+#endif 
 
-   if (!rules)
-     return 0;
+   rules = XkbRF_Load(DFLT_XKB_RULES_FILE, "C", True, True);
+   if (!rules) return 0;
 
-   XkbRF_GetComponents(rules, &(lxc->rdefs), &rnames);
+   XkbRF_GetComponents(rules, &(l->rdefs), &rnames);
 
    if (rnames.keycodes)
      { 
-	LXC_SET_STRING(lxc, KEYCODES_INDX, rnames.keycodes);
-	rnames.keycodes = NULL;
-	//E_FREE(rnames.keycodes);
+	if (l->cNames.keycodes) evas_stringshare_del(l->cNames.keycodes);
+	l->cNames.keycodes = (char *) evas_stringshare_add(rnames.keycodes);
      }
    if (rnames.symbols)
-     {
-	LXC_SET_STRING(lxc, SYMBOLS_INDX, rnames.symbols);
-	rnames.symbols = NULL;
-	//E_FREE(rnames.symbols);
+     { 
+	if (l->cNames.symbols) evas_stringshare_del(l->cNames.symbols);
+	l->cNames.symbols = (char *) evas_stringshare_add(rnames.symbols);
      }
-   if(rnames.types)
-     {
-	LXC_SET_STRING(lxc, TYPES_INDX, rnames.types);
-	rnames.types = NULL;
-	//E_FREE(rnames.types);
+   if (rnames.types)
+     { 
+	if (l->cNames.types) evas_stringshare_del(l->cNames.types);
+	l->cNames.types = (char *) evas_stringshare_add(rnames.types);
      }
    if (rnames.compat)
-     {
-	LXC_SET_STRING(lxc, COMPAT_INDX, rnames.compat);
-	rnames.compat = NULL;
-	//E_FREE(rnames.compat);
+     { 
+	if (l->cNames.compat) evas_stringshare_del(l->cNames.compat);
+	l->cNames.compat = (char *) evas_stringshare_add(rnames.compat);
      }
    if (rnames.geometry)
-     {
-	LXC_SET_STRING(lxc, GEOMETRY_INDX, rnames.geometry);
-	rnames.geometry = NULL;
-	//E_FREE(rnames.geometry);
+     { 
+	if (l->cNames.geometry) evas_stringshare_del(l->cNames.geometry);
+	l->cNames.geometry = (char *) evas_stringshare_add(rnames.geometry); 
      }
    if (rnames.keymap)
-     {
-	LXC_SET_STRING(lxc, KEYMAP_INDX, rnames.keymap);
-	rnames.keymap = NULL;
-	//E_FREE(rnames.keymap);
+     { 
+	if (l->cNames.keymap) evas_stringshare_del(l->cNames.keymap);
+	l->cNames.keymap = (char *) evas_stringshare_add(rnames.keymap); 
      }
+
    return 1;
 }
 static int
-_lang_apply_components_names(Language_Xkb_Config *lxc)
+_lang_apply_language_conponent_names(Language *l)
 {
-   XkbDescPtr		xkb = NULL;
-   XkbComponentNamesRec	cmdNames;
+   XkbDescPtr  xkb = NULL;
+   if (!l) return 0;
 
-   if (!lxc) return 0;
-
-#if 0
-   if (!_lang_check_name(lxc->sv[TYPES_INDX], "types")) { printf("\n[1]\n");return 0;}
-   if (!_lang_check_name(lxc->sv[COMPAT_INDX], "compat")) { printf("\n[2]\n");return 0;}
-   if (!_lang_check_name(lxc->sv[SYMBOLS_INDX], "symbols")) { printf("\n[3]\n");return 0;}
-   if (!_lang_check_name(lxc->sv[KEYCODES_INDX], "keycodes")) { printf("\n[4]\n");return 0;}
-   if (!_lang_check_name(lxc->sv[GEOMETRY_INDX], "geometry")) { printf("\n[5]\n");return 0;}
-   if (!_lang_check_name(lxc->sv[KEYMAP_INDX], "keymap")) { printf("\n[6]\n");return 0;}
-#endif
-
-   memset(&cmdNames, 0, sizeof(XkbComponentNamesRec));
-
-   cmdNames.types    = lxc->sv[TYPES_INDX];
-   cmdNames.compat   = lxc->sv[COMPAT_INDX];
-   cmdNames.symbols  = lxc->sv[SYMBOLS_INDX];
-   cmdNames.keycodes = lxc->sv[KEYCODES_INDX];
-   cmdNames.geometry = lxc->sv[GEOMETRY_INDX];
-   cmdNames.keymap   = lxc->sv[KEYMAP_INDX];
-
-   xkb = XkbGetKeyboardByName(lxc->dpy, XkbUseCoreKbd, &cmdNames,
+   xkb = XkbGetKeyboardByName((Display *)ecore_x_display_get(), XkbUseCoreKbd, &(l->cNames),
 			      XkbGBN_AllComponentsMask,
-			      XkbGBN_AllComponentsMask & (~XkbGBN_GeometryMask), 1);
+			      XkbGBN_AllComponentsMask & (~XkbGBN_GeometryMask) , True);
 
-   if (!xkb)
-     {
-	return 0;
-     }
+   if (!xkb) return 0;
 
-   if (lxc->rdefs.model || lxc->rdefs.layout)
-     {
-	if (!XkbRF_SetNamesProp(lxc->dpy, DFLT_XKB_RULES_FILE, &(lxc->rdefs)))
-	  {
-	     return 0;
-	  }
-     }
+   if (!XkbRF_SetNamesProp((Display *)ecore_x_display_get(),
+			   DFLT_XKB_RULES_FILE, &(l->rdefs))) 
+     return 0;
+
    return 1;
 }
-
 /********************** event callbacks ***************************************/
 int
 lang_cb_event_desk_show(void *data, int type, void *event)
@@ -965,48 +767,81 @@ lang_cb_event_desk_show(void *data, int type, void *event)
 	bd = NULL; 
      }
 
-   if (!bd)
-     lang_language_switch_to(conf, 0, 0);
+   if (!bd && conf->language_selector)
+     lang_language_switch_to(conf, 0);
 
    return 1;
 }
 
-int lang_cb_event_border_focus_in(void *data, int type, void *ev)
+int
+lang_cb_event_border_focus_in(void *data, int type, void *ev)
 {
+   Border_Language_Settings *bls;
+   Config *conf;
    E_Event_Border_Focus_In *e;
+   Evas_List *l;
 
    e = ev;
+   conf = data;
 
-   lang_language_switch_to(data, 0, 1);
+   if (conf->l.current == e->border)
+     return 1;
+   else
+     conf->l.current = e->border;
+
+   bls = NULL;
+   for (l = conf->l.border_lang_setup; l; l = l->next)
+     {
+	bls = l->data;
+	if (bls->bd == e->border && (bls->language_selector != conf->language_selector))
+	  {
+	     Language *lang;
+
+	     conf->language_selector = bls->language_selector;
+	     lang = evas_list_nth(conf->languages, conf->language_selector);
+	     _lang_apply_language_settings(lang);
+	     language_face_language_indicator_update();
+	     break;
+	  }
+	bls = NULL;
+     }
+
+   if (!bls && conf->language_selector)
+     {
+	conf->language_selector = 0;
+	_lang_apply_language_settings(conf->languages->data);
+	language_face_language_indicator_update();
+     }
+
    return 1;
 }
-
-int lang_cb_event_border_remove(void *data, int type, void *ev)
+int 
+lang_cb_event_border_remove(void *data, int type, void *ev)
 {
    E_Event_Border_Remove      *e;
    Border_Language_Settings   *bls;
 
    Evas_List   *l;
-   Config      *cfg;
+   Config      *conf;
 
    e = ev;
-   cfg = data;
+   conf = data;
 
-   for (l = cfg->border_lang_setup; l; l = l->next)
+   for (l = conf->l.border_lang_setup; l; l = l->next)
      {
 	bls = l->data;
 
 	if (bls->bd == e->border)
 	  {
-	     cfg->border_lang_setup = evas_list_remove(cfg->border_lang_setup, bls);
+	     conf->l.border_lang_setup = evas_list_remove(conf->l.border_lang_setup, bls);
 	     if (bls->language_name) evas_stringshare_del(bls->language_name);
 	     E_FREE(bls);
 	     break;
 	  }
      }
 
-   if (!e_border_focused_get())
-     lang_language_switch_to(cfg, 0, 0);
+   if (!e_border_focused_get() && conf->language_selector)
+     lang_language_switch_to(conf, 0);
 
    return 1;
 }
@@ -1015,90 +850,19 @@ int
 lang_cb_event_border_iconify(void *data, int type, void *ev)
 {
    E_Event_Border_Iconify *e;
+   Config *conf;
 
    e = ev;
+   conf = data;
 
-   if (!e_border_focused_get())
-     lang_language_switch_to(data, 0, 0);
+   if (!e_border_focused_get() && conf->language_selector)
+     lang_language_switch_to(conf, 0);
 
-   return;
-}
-
-#if 0
-int
-lang_cb_event_border_iconify(void *data, int type, void *event)
-{
-  // e_module_dialog_show("1", "lang_cb_event_border_iconify");
    return 1;
 }
-int
-lang_cb_event_border_uniconify(void *data, int type, void *event)
-{
-   //e_module_dialog_show("1", "lang_cb_event_border_uniconify");
-   return 1;
-}
-int
-lang_cb_event_border_zone_set(void *data, int type, void *event)
-{
-   //e_module_dialog_show("1", "lang_cb_event_border_zone_set");
-   return 1;
-}
-int
-lang_cb_event_border_desk_set(void *data, int type, void *event)
-{
-   //e_module_dialog_show("1", "lang_cb_event_border_desk_set");
-   return 1;
-}
-int
-lang_cb_event_border_hide(void *data, int type, void *event)
-{
-   //e_module_dialog_show("1", "lang_cb_event_border_hide");
-   return 1;
-}
-#endif
 
-/******************************************************************************/
 
-#if 0
-static int 
-_lang_check_name(char *name, char* string)
-{
-   char *i = name, *opar = NULL;
-   int ret = 1; 
 
-   if(!name)
-      return 1;
 
-   while (*i){
-      if (opar == NULL) {
-         if (*i == '(')
-         opar = i;
-      } else {
-         if ((*i == '(') || (*i == '|') || (*i == '+')) {
-             ret = 0;
-             break;
-         }
-         if (*i == ')')
-             opar = NULL;
-      }
-      i++;
-   }
-   if (opar)
-      ret = 0;
-   if (!ret) {
-      char c;
-      int n = 1;
-      for(i = opar+1; *i && n; i++) {
-         if (*i == '(') n++;
-         if (*i == ')') n--;
-      }
-      if (*i) i++;
-      c = *i;
-      *i = '\0';
-      printf("Illegal map name '%s' ", opar);
-      *i = c;
-      printf("in %s name '%s'\n", string, name);
-   }
-   return ret;
-}
-#endif
+
+

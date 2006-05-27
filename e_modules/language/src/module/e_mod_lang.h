@@ -4,6 +4,10 @@
 #include <e.h>
 #include "e_mod_main.h"
 
+#include <X11/Xlib.h>
+#include <X11/XKBlib.h>
+#include <X11/extensions/XKBrules.h>
+
 typedef struct _Language		  Language;
 typedef struct _Language_Predef		  Language_Predef;
 typedef struct _Language_Kbd_Model	  Language_Kbd_Model;
@@ -24,13 +28,12 @@ struct _Border_Language_Settings
 
 struct _Language
 {
-   unsigned int	  id;
-   const char	  *lang_name;
-   const char	  *lang_shortcut;
-   const char	  *lang_flag;
-   const char	  *kbd_model;
-   const char	  *kbd_layout;
-   const char	  *kbd_variant;
+   unsigned int		id;
+   const char		*lang_name;
+   const char		*lang_shortcut;
+   const char		*lang_flag;
+   XkbRF_VarDefsRec	rdefs;
+   XkbComponentNamesRec	cNames;
 };
 
 struct _Language_Predef
@@ -42,7 +45,7 @@ struct _Language_Predef
    Evas_List   *kbd_variant; // const char *
 };
 
-void	    lang_language_switch_to(Config *cfg, unsigned int n, int ignore_n);
+void	    lang_language_switch_to(Config *cfg, unsigned int n);
 void	    lang_language_switch_to_next(Config *cfg);
 void	    lang_language_switch_to_prev(Config *cfg);
 
@@ -57,7 +60,9 @@ void	    lang_free_xfree_kbd_models(Config *cfg);
 Language    *lang_language_copy(const Language *l);
 void	    lang_language_free(Language *l);
 
-const char *lang_language_current_kbd_model_get();
+const char  *lang_language_current_kbd_model_get();
+
+int	    lang_language_xorg_values_get(Language *l);
 
 /*************** border callback handlers *****************/
 

@@ -35,7 +35,11 @@ struct _Config
    Evas_List	  *language_predef_list; // Language_Predef
    Evas_List	  *language_kbd_model_list; // Language_Kbd_Model
 
-   Evas_List	  *border_lang_setup; // Border_Language_Settings
+   struct
+     { 
+	Evas_List *border_lang_setup; // Border_Language_Settings 
+	E_Border  *current;
+     } l;
 };
 
 /********** module api *********************/
