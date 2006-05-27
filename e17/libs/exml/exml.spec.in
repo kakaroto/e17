@@ -11,6 +11,7 @@ Source: ftp://ftp.enlightenment.org/pub/exml/%{name}-%{version}.tar.gz
 Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
 Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
+BuildRequires: libxml2-devel, ecore-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
@@ -20,7 +21,7 @@ XML library for EFL
 Summary: Exml headers, static libraries, documentation and test programs
 Group: System Environment/Libraries
 Requires: %{name} = %{version}
-Requires: eet-devel embryo-devel evas-devel ecore-devel
+Requires: libxml2-devel, ecore-devel
 
 %description devel
 Headers, static libraries, test programs and documentation for EXML
