@@ -8,10 +8,7 @@ EDJE_FLAGS = -v
 # data files for the module
 filesdir =  $(datadir)
 
-files_DATA = \
-module_icon.png \
-module.eap \
-screenshot.edj
+files_DATA = module_icon.png module.eap screenshot.edj $(wildcard e17*.png)
 
 EXTRA_DIST = $(files_DATA) screenshot.edc VeraBd.ttf e_modules-screenshot.spec
 
