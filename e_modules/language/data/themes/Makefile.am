@@ -5,6 +5,7 @@ EDJE_FLAGS = -v -id ./images
 
 filesdir = $(datadir)
 files_DATA = \
+language.edc \
 language.edj
 
 EXTRA_DIST = $(files_DATA) $(wildcard images/*.png)

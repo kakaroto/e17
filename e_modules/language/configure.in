@@ -143,6 +143,7 @@ AC_SUBST(e_libs)
 AC_SUBST(e_modules)
 
 AC_OUTPUT([
+e_modules-language.spec
 Makefile
 src/Makefile
 src/module/Makefile
