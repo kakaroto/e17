@@ -8,14 +8,10 @@ EDJE_FLAGS = -v
 # data files for the module
 filesdir = $(datadir)
 
-EXTRA_DIST=e_modules-mem.spec.in e_modules-mem.spec autogen.sh mem.png module_icon.png $(files_DATA)
+files_DATA = module_icon.png module.eap mem.edj mem.edc \
+             VeraMono.ttf $(wildcard real*.png) $(wildcard swap*.png)
 
-files_DATA = \
-module_icon.png \
-module.eap \
-mem.edj \
-mem.edc \
-VeraMono.ttf
+EXTRA_DIST=e_modules-mem.spec.in e_modules-mem.spec autogen.sh mem.png module_icon.png $(files_DATA)
 
 # the module .so file
 INCLUDES = -I. \
