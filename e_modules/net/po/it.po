@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Net\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-05 15:39+0100\n"
-"PO-Revision-Date: 2006-03-04 19:38+0100\n"
+"POT-Creation-Date: 2006-05-27 13:52+0200\n"
+"PO-Revision-Date: 2006-05-27 13:58+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -18,30 +18,42 @@ msgstr ""
 msgid "Net Configuration"
 msgstr "Configurazione modulo Net"
 
-#: e_mod_config.c:114
+#: e_mod_config.c:115
 msgid "General Settings"
 msgstr "Impostazioni generali"
 
-#: e_mod_config.c:115
-msgid "Show Text"
-msgstr "Mostra testo"
-
 #: e_mod_config.c:117
-msgid "Show Graph"
-msgstr "Mostra grafico"
+msgid "Always Show Text"
+msgstr "Mostra testo sempre"
 
-#: e_mod_config.c:121
+#: e_mod_config.c:119
+msgid "Show Text On Mouse Over"
+msgstr "Mostra testo al passaggio del mouse"
+
+#: e_mod_config.c:123
 msgid "Device Settings"
 msgstr "Impostazione del dispositivo"
 
-#: e_mod_config.c:133
+#: e_mod_config.c:135
 msgid "Check Interval:"
 msgstr "Frequenza di aggiornamento:"
 
-#: e_mod_main.c:93
+#: e_mod_config.c:141
+msgid "Max MTU:"
+msgstr "MTU massima:"
+
+#: e_mod_main.c:105
+msgid "Net"
+msgstr "Net"
+
+#: e_mod_main.c:152
+msgid "Configuration"
+msgstr "Configurazione"
+
+#: e_mod_main.c:361
 msgid "Enlightenment Network Monitor Module"
 msgstr "Modulo Net di Enlightenment"
 
-#: e_mod_main.c:94
+#: e_mod_main.c:361
 msgid "This module is used to monitor a network device."
 msgstr "Questo modulo viene usato per monitorare un dispositivo di rete."

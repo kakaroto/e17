@@ -6,94 +6,111 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Screenshot\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-05-21 10:14+0200\n"
-"PO-Revision-Date: 2006-05-21 10:18+0200\n"
+"POT-Creation-Date: 2006-05-27 13:52+0200\n"
+"PO-Revision-Date: 2006-05-27 14:03+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
 
-#: e_mod_config.c:57
+#: e_mod_config.c:59
 msgid "Screenshot Configuration"
 msgstr "Configurazione modulo Screenshot"
 
-#: e_mod_config.c:123 e_mod_config.c:219
+#: e_mod_config.c:123 e_mod_config.c:213
+msgid "General Settings"
+msgstr "Impostazioni generali"
+
+#: e_mod_config.c:129 e_mod_config.c:219
 msgid "Use Import"
 msgstr "Usa import"
 
-#: e_mod_config.c:125 e_mod_config.c:221
+#: e_mod_config.c:131 e_mod_config.c:221
 msgid "Use Scrot"
 msgstr "Usa scrot"
 
-#: e_mod_config.c:133 e_mod_config.c:229
+#: e_mod_config.c:139 e_mod_config.c:229
 msgid "Delay Time:"
 msgstr "Tempo di ritardo:"
 
-#: e_mod_config.c:140 e_mod_config.c:236
+#: e_mod_config.c:141 e_mod_config.c:231
+#, c-format
+msgid "%1.0f seconds"
+msgstr "%1.0f secondi"
+
+#: e_mod_config.c:145 e_mod_config.c:242
 msgid "File Settings"
 msgstr "Impostazioni del file"
 
-#: e_mod_config.c:142 e_mod_config.c:238
+#: e_mod_config.c:146 e_mod_config.c:243
 msgid "Save Directory:"
 msgstr "Directory di salvataggio:"
 
-#: e_mod_config.c:146 e_mod_config.c:242
-msgid "Filename (minus extension):"
-msgstr "Nome file (senza estensione):"
+#: e_mod_config.c:150 e_mod_config.c:247
+msgid "Filename:"
+msgstr "Nome file:"
 
-#: e_mod_config.c:251
-msgid "Import Options"
-msgstr "Opzioni per import"
+#: e_mod_config.c:235
+msgid "Image Viewer Settings"
+msgstr "Impostazioni visualizzatore"
 
-#: e_mod_config.c:252 e_mod_config.c:269
+#: e_mod_config.c:236
+msgid "Launch Image Viewer After Screenshot"
+msgstr "Lancia visualizzatore dopo Screenshot"
+
+#: e_mod_config.c:256
+msgid "Import Settings"
+msgstr "Impostazioni di Import"
+
+#: e_mod_config.c:257 e_mod_config.c:274
 msgid "Include Image Border"
 msgstr "Includi bordo immagine"
 
-#: e_mod_config.c:254
+#: e_mod_config.c:259
 msgid "Use Image Dithering"
 msgstr "Usa dithering (sfumatura)"
 
-#: e_mod_config.c:256
+#: e_mod_config.c:261
 msgid "Include Window Manager Frame"
 msgstr "Includi cornice del window manager"
 
-#: e_mod_config.c:258
+#: e_mod_config.c:263
 msgid "Choose Window To Grab"
 msgstr "Scegli finestra da catturare"
 
-#: e_mod_config.c:260
+#: e_mod_config.c:265
 msgid "Silent"
 msgstr "Silenzioso"
 
-#: e_mod_config.c:262
+#: e_mod_config.c:267
 msgid "Trim Edges"
 msgstr "Ritaglia bordi"
 
-#: e_mod_config.c:268
-msgid "Scrot Options"
-msgstr "Opzioni per scrot"
+#: e_mod_config.c:273
+msgid "Scrot Settings"
+msgstr "Impostazioni di Scrot"
 
-#: e_mod_config.c:271
+#: e_mod_config.c:276
 msgid "Generate Thumbnail"
 msgstr "Genera miniatiura"
 
-#: e_mod_main.c:130
+#: e_mod_main.c:126
 msgid "Screenshot"
 msgstr "Screenshot"
 
-#: e_mod_main.c:165
+#: e_mod_main.c:160
 msgid "Configuration"
 msgstr "Configurazione"
 
-#: e_mod_main.c:408 e_mod_main.c:460
+#: e_mod_main.c:419 e_mod_main.c:471
 msgid "Enlightenment Screenshot Module"
 msgstr "Modulo Screenshot di Enlightenment"
 
-#: e_mod_main.c:409
+#: e_mod_main.c:419
 msgid "This module is used to take screenshots"
 msgstr "Questo modulo serve per generare immagini dallo schermo"
 
-#: e_mod_main.c:461
-msgid "Please Choose A Program To Use For Taking Screenshots."
-msgstr "Scegliere un programma da usare per la cattura delle immagini."
+#: e_mod_main.c:472
+msgid "Please install either ImageMagick or Scrot for taking screenshots."
+msgstr "Si prega di installare ImageMagick o Scrot per la cattura delle immagini."
