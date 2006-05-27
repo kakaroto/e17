@@ -12,7 +12,7 @@ static void ewl_widget_theme_padding_get(Ewl_Widget *w, int *l, int *r,
 						int *t, int *b);
 static void ewl_widget_theme_insets_get(Ewl_Widget *w, int *l, int *r,
 						int *t, int *b);
-static void ewl_widget_appearance_part_text_apply(Ewl_Widget * w,
+static void ewl_widget_appearance_part_text_apply(Ewl_Widget *w,
 						  const char *part, char *text);
 static void ewl_widget_layer_stack_add(Ewl_Widget *w);
 static void ewl_widget_layer_update(Ewl_Widget *w);
@@ -57,7 +57,7 @@ ewl_widget_new(void)
  * assigned the default callbacks.
  */
 int
-ewl_widget_init(Ewl_Widget * w)
+ewl_widget_init(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, FALSE);
@@ -128,7 +128,7 @@ ewl_widget_init(Ewl_Widget * w)
  * @brief Name the specified widget.
  */
 void
-ewl_widget_name_set(Ewl_Widget * w, const char *name)
+ewl_widget_name_set(Ewl_Widget *w, const char *name)
 {
 	char *t;
 
@@ -155,7 +155,7 @@ ewl_widget_name_set(Ewl_Widget * w, const char *name)
  * @brief Get the name for the specified widget.
  */
 const char *
-ewl_widget_name_get(Ewl_Widget * w)
+ewl_widget_name_get(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
@@ -170,7 +170,7 @@ ewl_widget_name_get(Ewl_Widget * w)
  * @brief Find a widget identified by a name.
  */
 Ewl_Widget *
-ewl_widget_name_find(const char * name)
+ewl_widget_name_find(const char *name)
 {
 	Ewl_Widget *match = NULL;
 
@@ -192,7 +192,7 @@ ewl_widget_name_find(const char * name)
  * The specified widget is realized, ie. actually displayed to the screen.
  */
 void
-ewl_widget_realize(Ewl_Widget * w)
+ewl_widget_realize(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -233,7 +233,7 @@ ewl_widget_realize(Ewl_Widget * w)
  * The specified widget is unrealized, ie. no longer displayed to the screen.
  */
 void
-ewl_widget_unrealize(Ewl_Widget * w)
+ewl_widget_unrealize(Ewl_Widget *w)
 {
 	Ewl_Container *pc;
 
@@ -321,7 +321,7 @@ void ewl_widget_obscure(Ewl_Widget *w)
  * until the widget has been realized.
  */
 void
-ewl_widget_show(Ewl_Widget * w)
+ewl_widget_show(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -358,7 +358,7 @@ ewl_widget_show(Ewl_Widget * w)
  * through the rendering loop.
  */
 void
-ewl_widget_hide(Ewl_Widget * w)
+ewl_widget_hide(Ewl_Widget *w)
 {
 	Ewl_Embed *emb;
 
@@ -396,7 +396,7 @@ ewl_widget_hide(Ewl_Widget * w)
  * free's the widget.
  */
 void
-ewl_widget_destroy(Ewl_Widget * w)
+ewl_widget_destroy(Ewl_Widget *w)
 {
 	int i;
 	Ewl_Embed *emb;
@@ -456,7 +456,7 @@ ewl_widget_destroy(Ewl_Widget * w)
  * adjust the widgets size and position.
  */
 void
-ewl_widget_configure(Ewl_Widget * w)
+ewl_widget_configure(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -479,7 +479,7 @@ ewl_widget_configure(Ewl_Widget * w)
  * adjust the widgets appearance.
  */
 void
-ewl_widget_theme_update(Ewl_Widget * w)
+ewl_widget_theme_update(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -500,7 +500,7 @@ ewl_widget_theme_update(Ewl_Widget * w)
  * adjust the widgets attributes based on the new parent.
  */
 void
-ewl_widget_reparent(Ewl_Widget * w)
+ewl_widget_reparent(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -522,7 +522,7 @@ ewl_widget_reparent(Ewl_Widget * w)
  * specified widget w.
  */
 void
-ewl_widget_data_set(Ewl_Widget * w, void *k, void *v)
+ewl_widget_data_set(Ewl_Widget *w, void *k, void *v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -549,7 +549,7 @@ ewl_widget_data_set(Ewl_Widget * w, void *k, void *v)
  * stored data or if an error occurs.
  */
 void *
-ewl_widget_data_del(Ewl_Widget * w, void *k)
+ewl_widget_data_del(Ewl_Widget *w, void *k)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
@@ -571,7 +571,7 @@ ewl_widget_data_del(Ewl_Widget * w, void *k)
  * Retrieves a key / value pair with k as the key from the specified widget w.
  */
 void *
-ewl_widget_data_get(Ewl_Widget * w, void *k)
+ewl_widget_data_get(Ewl_Widget *w, void *k)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
@@ -594,7 +594,7 @@ ewl_widget_data_get(Ewl_Widget * w, void *k)
  * update callback to initiate the change.
  */
 void
-ewl_widget_appearance_set(Ewl_Widget * w, char *appearance)
+ewl_widget_appearance_set(Ewl_Widget *w, char *appearance)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -632,7 +632,7 @@ ewl_widget_appearance_set(Ewl_Widget * w, char *appearance)
  * @brief Retrieve the appearance key of the widget
  */
 char *
-ewl_widget_appearance_get(Ewl_Widget * w)
+ewl_widget_appearance_get(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
@@ -682,7 +682,7 @@ ewl_widget_appearance_path_size_get(Ewl_Widget *w, int *size)
  * @brief Retrieve the appearance path key of the widget
  */
 char *
-ewl_widget_appearance_path_get(Ewl_Widget * w)
+ewl_widget_appearance_path_get(Ewl_Widget *w)
 {
 	char *ret = NULL;
 	int len = 0;
@@ -803,7 +803,7 @@ ewl_widget_parent_set(Ewl_Widget *w, Ewl_Widget *p)
  * Changes the text of a given Edje-define TEXT part.
  */
 static void
-ewl_widget_appearance_part_text_apply(Ewl_Widget * w, const char *part, char *text)
+ewl_widget_appearance_part_text_apply(Ewl_Widget *w, const char *part, char *text)
 {
 	Evas_Coord nw, nh;
 
@@ -838,7 +838,7 @@ ewl_widget_appearance_part_text_apply(Ewl_Widget * w, const char *part, char *te
  * is reloaded for this widget.
  */
 void
-ewl_widget_appearance_part_text_set(Ewl_Widget * w, char *part, char *text)
+ewl_widget_appearance_part_text_set(Ewl_Widget *w, char *part, char *text)
 {
 	int i;
 	Ewl_Pair *match = NULL;
@@ -924,7 +924,7 @@ ewl_widget_appearance_part_text_set(Ewl_Widget * w, char *part, char *text)
  * each of those text parts to be retrieved independently.
  */
 char *
-ewl_widget_appearance_part_text_get(Ewl_Widget * w, char *part)
+ewl_widget_appearance_part_text_get(Ewl_Widget *w, char *part)
 {
 	int i;
 	Ewl_Pair *match = NULL;
@@ -970,7 +970,7 @@ ewl_widget_appearance_part_text_get(Ewl_Widget * w, char *part)
  * is reloaded for this widget.
  */
 void
-ewl_widget_appearance_text_set(Ewl_Widget * w, char *text)
+ewl_widget_appearance_text_set(Ewl_Widget *w, char *text)
 {
 	char *part;
 
@@ -993,7 +993,7 @@ ewl_widget_appearance_text_set(Ewl_Widget * w, char *text)
  * @brief Retrieve the text of the given theme part of a widget
  */
 char *
-ewl_widget_appearance_text_get(Ewl_Widget * w)
+ewl_widget_appearance_text_get(Ewl_Widget *w)
 {
 	char *part;
 	char *match = NULL;
@@ -1019,7 +1019,7 @@ ewl_widget_appearance_text_get(Ewl_Widget * w)
  * Re-enables a previously disabled widget.
  */
 void
-ewl_widget_enable(Ewl_Widget * w)
+ewl_widget_enable(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -1042,7 +1042,7 @@ ewl_widget_enable(Ewl_Widget * w)
  * This prevents that widget from receiving any user input events.
  */
 void
-ewl_widget_disable(Ewl_Widget * w)
+ewl_widget_disable(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -1404,14 +1404,16 @@ ewl_widget_print(Ewl_Widget *w)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	printf("%p:%s geometry (%d, %d) %d x %d, %s, %s\n",
+	printf("%p:%s geometry (%d, %d) %d x %d, %s, %s, %s, %s\n",
 			w, w->appearance,
 			ewl_object_current_x_get(EWL_OBJECT(w)),
 			ewl_object_current_y_get(EWL_OBJECT(w)),
 			ewl_object_current_w_get(EWL_OBJECT(w)),
 			ewl_object_current_h_get(EWL_OBJECT(w)),
 			(VISIBLE(w) ? "visible" : "not visible"),
-			(REALIZED(w) ? "realized" : "not realized"));
+			(REALIZED(w) ? "realized" : "not realized"),
+			(DESTROYED(w) ? "destroyed" : "not destroyed"),
+			(DISABLED(w) ? "disabled" : "enabled"));
 }
 
 
@@ -3104,7 +3106,9 @@ ewl_widget_draggable_set(Ewl_Widget *w, unsigned int val, Ewl_Widget_Drag cb)
 			ewl_callback_del(w, EWL_CALLBACK_MOUSE_UP, 
 						ewl_widget_drag_up_cb);
 
-			ewl_object_flags_remove(EWL_OBJECT(w), EWL_FLAG_PROPERTY_DRAGGABLE,  EWL_FLAGS_PROPERTY_MASK);
+			ewl_object_flags_remove(EWL_OBJECT(w), 
+						EWL_FLAG_PROPERTY_DRAGGABLE,  
+						EWL_FLAGS_PROPERTY_MASK);
 
 		}
 	}
@@ -3113,7 +3117,8 @@ ewl_widget_draggable_set(Ewl_Widget *w, unsigned int val, Ewl_Widget_Drag cb)
 }
 
 /**
- * @return Returns the current widget that has been clicked or moved (i.e. drag_wait)
+ * @return Returns the current widget that has been clicked or moved 
+ * (i.e. drag_wait)
  * @brief Accessor function for the current drag candidate widget
  *
  */
@@ -3128,7 +3133,6 @@ ewl_widget_drag_candidate_get(void)
 /**
  * @return none
  * @brief Cancel any active dnd_wait state widgets
- *
  */
 void
 ewl_widget_dnd_reset(void) 
