@@ -121,6 +121,7 @@ AC_STRUCT_TM
 AC_CHECK_FUNCS([sqrt strdup])
 
 AC_CONFIG_FILES([Makefile
+                 e_modules-moon.spec
                  data/Makefile
                  data/themes/Makefile
                  data/themes/images/Makefile

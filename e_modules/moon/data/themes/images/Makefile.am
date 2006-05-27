@@ -2,8 +2,6 @@ MAINTAINERCLEANFILES = Makefile.in
 
 EXTRA_DIST = \
 moon.png \
-e17_ibar_bg_h.png \
-e17_ibar_over_h.png \
 e17_about_sky3.png \
 E-MoonClock-00.png \
 E-MoonClock-01.png \
