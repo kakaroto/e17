@@ -3,7 +3,6 @@
 #include <Ewl.h>
 #include <Edje.h>
 #include <stdio.h>
-#include <ewl-config.h>
 
 #if HAVE_CONFIG_H
 #include "ewl-config.h"
@@ -20,23 +19,27 @@ Ecore_Evas *ee;
 Evas_Object *edje;
 Ewl_Widget *text, *entry;
 
-void _open(Ewl_Widget *w __UNUSED__, void *e __UNUSED__, void *d __UNUSED__)
+void
+_open(Ewl_Widget *w __UNUSED__, void *e __UNUSED__, void *d __UNUSED__)
 {
 	edje_object_signal_emit(edje, "open", "open");
 }
 
-void _close(Ewl_Widget *w __UNUSED__, void *e __UNUSED__, void *d __UNUSED__)
+void
+_close(Ewl_Widget *w __UNUSED__, void *e __UNUSED__, void *d __UNUSED__)
 {
 	edje_object_signal_emit(edje, "close", "close");
 }
 
-void _destroy_main_window(Ecore_Evas *ee __UNUSED__)
+void
+_destroy_main_window(Ecore_Evas *ee __UNUSED__)
 {
 	ewl_main_quit();
 	return;
 }
 
-void _resize_window(Ecore_Evas *ee)
+void
+_resize_window(Ecore_Evas *ee)
 {
 	Evas_Coord w, h;
 
@@ -44,7 +47,8 @@ void _resize_window(Ecore_Evas *ee)
 	evas_object_resize(edje, w, h);
 }
 
-void _insert(Ewl_Widget *w __UNUSED__, void *e __UNUSED__, void *d __UNUSED__)
+void
+_insert(Ewl_Widget *w __UNUSED__, void *e __UNUSED__, void *d __UNUSED__)
 {
 	const char * t;
 
@@ -58,7 +62,8 @@ void _insert(Ewl_Widget *w __UNUSED__, void *e __UNUSED__, void *d __UNUSED__)
 }
 
 
-int main(int argc, char **argv)
+int
+main(int argc, char **argv)
 {
 	Ewl_Widget *wg, *c, *vbox;
 	Ewl_Widget *emb;
