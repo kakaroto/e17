@@ -1,0 +1,151 @@
+images {
+        image: "e17_gadman_overlay_left.png" LOSSY 95;
+        image: "e17_gadman_overlay_right.png" LOSSY 95;
+        image: "e17_menu_bg.png" LOSSY 95;
+}
+
+collections {           
+    group {         
+        name, "main";
+        parts { 
+            part {
+                name, "bg";
+
+                description {
+                    state, "default" 0.0;
+                    image {
+                        normal: "e17_menu_bg.png";
+                    }
+                }   
+            }
+	    part {
+		name: "glass_box";
+                type: RECT;
+		description {
+              	     state, "default" 0.0;
+		     rel1.offset:   10 10;
+		     rel2.offset:   -10 -10;
+		     color, 0 0 0 0;
+		}
+	    }
+			  
+            part {
+                name: "swallow";
+                type: SWALLOW;
+                description {
+                    state: "default" 0.0;
+                    rel1.offset: 30 30;
+		    rel1.to:     "glass_box";
+                    rel2.offset: -30 -30;
+		    rel2.to:     "glass_box";
+                }
+            }
+                        
+            part {      
+                name, "glass_left";
+                repeat_events: 1;
+		mouse_events: 1;
+
+                description {
+                    state, "default" 0.0;
+                    
+                    rel1 {
+                        relative, 0.0 0.0;
+			to,       "glass_box";
+                    }
+
+                    rel2 {
+                        relative, 0.5 1.0;
+			to:       "glass_box";
+                    }
+                    
+                    image {
+                        normal: "e17_gadman_overlay_left.png";
+                    }
+
+		    image.border, 15 0 15 15;
+                }
+                description {
+                    state, "open" 0.0;
+                    
+                    rel1 {
+                        relative, -0.5 0.0;
+			to,       "glass_box";
+                    }
+
+                    rel2 {
+                        relative, 0.0 1.0;
+			to,       "glass_box";
+                    }
+                    
+                    image {
+                        normal: "e17_gadman_overlay_left.png";
+                    }
+		    
+		    image.border, 15 0 15 15;
+                }
+            }
+
+            part {
+                name, "glass_right";
+                repeat_events: 1;
+                
+                description {
+                    state, "default" 0.0;
+                    rel1 {
+                        relative, 0.5 0.0;
+			to,       "glass_box";
+                    }
+                    rel2 {
+                        relative, 1.0 1.0;
+			to,       "glass_box";
+                    }
+                    image {
+                        normal: "e17_gadman_overlay_right.png";
+                    }
+		    
+		    image.border, 0 15 15 15;
+                    
+                }
+                description {
+                    state, "open" 0.0;
+                    rel1 {
+                        relative, 1.0 0.0;
+                        to,       "glass_box";
+		    }
+                    rel2 {
+                        relative, 2.0 1.0;
+			to,       "glass_box";
+                    }
+                    image {
+                        normal: "e17_gadman_overlay_right.png";
+                    }
+                    
+		    image.border, 0 15 15 15;
+                }
+            }
+            
+        }
+        programs {
+            program {
+                name, "open_prog";
+                signal, "open";
+                source, "open";
+                action: STATE_SET "open" 0.0;
+                target: "glass_left";
+                target: "glass_right";
+                transition: SINUSOIDAL 1.5;
+            }
+        program {
+                name, "close_prog";
+                signal, "close";
+                source, "close";
+                action: STATE_SET "default" 0.0;
+                target: "glass_left";
+                target: "glass_right";
+                transition: SINUSOIDAL 1.5;
+            }
+            
+        }
+    }
+}

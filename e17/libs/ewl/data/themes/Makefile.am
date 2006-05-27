@@ -1,6 +1,6 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-EDCS =  e17.edc
+EDCS =  e17.edc ewl_embed_test.edc
 #EDCS = default.edc skeleton.edc zero.edc e17.edc
 
 EDJS = $(EDCS:%.edc=%.edj)
@@ -41,3 +41,4 @@ e17.edj: ${e17_DEPS}
 SUFFIXES = .edc .edj
 .edc.edj:
 	edje_cc -v -id $(top_srcdir)/data/themes/$(notdir $(<:%.edc=%))/bits/images  -fd $(top_srcdir)/data/themes $(top_srcdir)/data/themes/$< $(top_builddir)/data/themes/$(notdir $@)
+

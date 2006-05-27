@@ -1,8 +1,9 @@
-#include <Ewl.h>
+#include <Evas.h>
 #include <Ecore_Evas.h>
-
-#include <stdlib.h>
+#include <Ewl.h>
+#include <Edje.h>
 #include <stdio.h>
+#include <ewl-config.h>
 
 #if HAVE_CONFIG_H
 #include "ewl-config.h"
@@ -14,93 +15,175 @@
 #define __UNUSED__
 #endif
 
-static Ewl_Widget *text = NULL;
+Evas *evas;
+Ecore_Evas *ee;
+Evas_Object *edje;
+Ewl_Widget *text, *entry;
 
-static void
-print_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, 
-					void *user_data)
+void _open(Ewl_Widget *w __UNUSED__, void *e __UNUSED__, void *d __UNUSED__)
 {
-	Ewl_Widget *entry;
-	char *txt;
+	edje_object_signal_emit(edje, "open", "open");
+}
+
+void _close(Ewl_Widget *w __UNUSED__, void *e __UNUSED__, void *d __UNUSED__)
+{
+	edje_object_signal_emit(edje, "close", "close");
+}
+
+void _destroy_main_window(Ecore_Evas *ee __UNUSED__)
+{
+	ewl_main_quit();
+	return;
+}
+
+void _resize_window(Ecore_Evas *ee)
+{
+	Evas_Coord w, h;
+
+	ecore_evas_geometry_get(ee, NULL, NULL, &w, &h);
+	evas_object_resize(edje, w, h);
+}
+
+void _insert(Ewl_Widget *w __UNUSED__, void *e __UNUSED__, void *d __UNUSED__)
+{
+	const char * t;
+
+	t = ewl_text_text_get(EWL_TEXT(entry));
 	
-	entry = user_data;
-	txt = ewl_text_text_get(EWL_TEXT(entry));
-	printf("%s\n", txt);
-
-	ewl_text_text_set(EWL_TEXT(entry), "do it");
-	ewl_text_text_set(EWL_TEXT(text), txt);
-	free(txt);
-}
-
-static void
-move_embed_contents_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
-						void *user_data)
-{
-	ewl_object_geometry_request(EWL_OBJECT(user_data), CURRENT_X(w),
-				    CURRENT_Y(w), CURRENT_W(w), CURRENT_H(w));
-}
-
-int
-main(int argc, char **argv)
-{
-	Ecore_Evas *ee;
-	Evas_Object *embobj;
-	Evas_Object *bg;
-	Ewl_Widget *embed;
-	Ewl_Widget *entry;
-	Ewl_Widget *box;
-	Ewl_Widget *button;
-
-	ewl_init(&argc, argv);
-	ecore_evas_init();
-
-	if (!(ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, 320, 240))) {
-		printf("Failed to open display, exiting\n");
-		exit(1);
+	if (t) {
+		ewl_text_text_append(EWL_TEXT(text), "\n");
+		ewl_text_text_append(EWL_TEXT(text), t);
+		ewl_text_clear(EWL_TEXT(entry));
 	}
-	ecore_evas_title_set(ee, "EWL Embed Test App");
-	ecore_evas_name_class_set(ee, "EWL TEST APP", "EWL TEST APP");
+}
+
+
+int main(int argc, char **argv)
+{
+	Ewl_Widget *wg, *c, *vbox;
+	Ewl_Widget *emb;
+	Evas_Object *eo;
+	Evas_Coord x, y, w, h;
+
+	/*
+	 * initialize
+	 */
+	evas_init();
+	ecore_evas_init();
+	ewl_init(&argc, argv);
+
+	/*
+	 * setup ecore evas
+	 */
+	ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, 300, 300);
+	ecore_evas_title_set(ee, "Ewl_Embed Test");
+	ecore_evas_name_class_set(ee, "Ewl_Embed_Test", "Ewl");
+	ecore_evas_callback_delete_request_set(ee, _destroy_main_window);
+	ecore_evas_callback_resize_set(ee, _resize_window);
+	ecore_evas_size_min_set(ee, 210, 230);
 	ecore_evas_show(ee);
 
-	bg = evas_object_rectangle_add(ecore_evas_get(ee));
-	evas_object_move(bg, 0, 0);
-	evas_object_resize(bg, 320, 240);
-	evas_object_layer_set(bg, 0);
-	evas_object_color_set(bg, 255, 255, 255, 255);
-	evas_object_show(bg);
+	/*
+	 * get evas and setup the edje
+	 */
+	evas = ecore_evas_get(ee);
+	edje = edje_object_add(evas);
 
-	embed = ewl_embed_new();
-	embobj = ewl_embed_evas_set(EWL_EMBED(embed), ecore_evas_get(ee),
-				    EWL_EMBED_EVAS_WINDOW(ecore_evas_software_x11_window_get(ee)));
-	ewl_embed_focus_set(EWL_EMBED(embed), TRUE);
-	evas_object_layer_set(embobj, 1);
-	evas_object_show(embobj);
-	ewl_widget_show(embed);
+	if (!edje_object_file_set(edje, PACKAGE_DATA_DIR"/themes/ewl_embed_test.edj", "main")) {
+		fprintf(stderr, "Error in: %s\n", PACKAGE_DATA_DIR"/themes/ewl_embed_test.edj");
+		return 1;
+	}
+	evas_object_move(edje, 0, 0);
+	evas_object_resize(edje, 300, 300);
+	evas_object_show(edje);
 
-	box = ewl_hbox_new();
-	ewl_container_child_append(EWL_CONTAINER(embed), box);
-	ewl_widget_show(box);
+	/*
+	 * Setup the ewl embed
+	 */
+	emb = ewl_embed_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(emb), EWL_FLAG_FILL_ALL);
+	eo = ewl_embed_evas_set(EWL_EMBED(emb), evas, 
+			  (void *) ecore_evas_software_x11_window_get(ee));
+	ewl_embed_focus_set(EWL_EMBED(emb), TRUE);
 
-	entry = ewl_entry_new();
-	ewl_text_text_set(EWL_TEXT(entry), "Type stuff here");
-	ewl_container_child_append(EWL_CONTAINER(box), entry);
-	ewl_widget_show(entry);
+	/*
+	 * swallow it into the edje
+	 */
+	edje_object_part_geometry_get(edje, "swallow", &x, &y, &w, &h);
+	evas_object_move(eo, x, y);
+	evas_object_resize(eo, w, h);
+	edje_object_part_swallow(edje, "swallow", eo);
+	evas_object_show(eo);
 
-	button = ewl_button_new();
-	ewl_button_label_set(EWL_BUTTON(button), "Print");
-	ewl_container_child_append(EWL_CONTAINER(box), button);
-	ewl_callback_append(button, EWL_CALLBACK_CLICKED, print_cb, entry);
-	ewl_widget_show(button);
+	/*
+	 * fill it with content
+	 */
+	vbox = ewl_vbox_new();
+	ewl_container_child_append(EWL_CONTAINER(emb), vbox);
+	ewl_widget_show(vbox);
 
-	ewl_callback_append(embed, EWL_CALLBACK_CONFIGURE,
-			    move_embed_contents_cb, box);
-
+	wg = ewl_scrollpane_new();
+	ewl_container_child_append(EWL_CONTAINER(vbox), wg);
+	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
+	ewl_widget_show(wg);
+	
 	text = ewl_text_new();
-	ewl_text_text_set(EWL_TEXT(text), NULL);
-	ewl_container_child_append(EWL_CONTAINER(box), text);
+	ewl_container_child_append(EWL_CONTAINER(wg), text);
+	ewl_text_text_append(EWL_TEXT(text), 
+			"You can use EWL in side a evas/edje only app.\n"
+			"It can actually behave like a normal evas object\n"
+			"So forget to figure out how to write an entry object,\n"
+			"simply use the ewl widget! :)\n\n");
+	ewl_object_fill_policy_set(EWL_OBJECT(text), EWL_FLAG_FILL_HFILL | 
+			EWL_FLAG_FILL_VFILL);
 	ewl_widget_show(text);
 
-	ecore_main_loop_begin();
+	c = ewl_hbox_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(c), EWL_FLAG_FILL_NONE |
+			                           EWL_FLAG_FILL_HFILL);
+	ewl_container_child_append(EWL_CONTAINER(vbox), c);
+	ewl_widget_show(c);
+
+	entry = ewl_entry_new();
+	ewl_container_child_append(EWL_CONTAINER(c), entry);
+	ewl_entry_editable_set(EWL_ENTRY(entry), TRUE);
+	ewl_entry_multiline_set(EWL_ENTRY(entry), FALSE);
+	ewl_callback_append(entry, EWL_CALLBACK_VALUE_CHANGED, _insert, NULL);
+	ewl_widget_show(entry);
+
+	wg = ewl_button_new();
+	//ewl_button_stock_type_set(EWL_BUTTON(wg), EWL_STOCK_OK);
+	ewl_button_label_set(EWL_BUTTON(wg), "append");
+	ewl_object_fill_policy_set(EWL_OBJECT(wg), EWL_FLAG_FILL_SHRINK);
+	ewl_container_child_append(EWL_CONTAINER(c), wg);
+	ewl_callback_append(wg, EWL_CALLBACK_CLICKED, _insert, NULL);
+	ewl_widget_show(wg);
+
+	wg = ewl_separator_new();
+	ewl_container_child_append(EWL_CONTAINER(vbox), wg);
+	ewl_widget_show(wg);
+	
+	c = ewl_hbox_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(c), EWL_FLAG_FILL_NONE |
+			                           EWL_FLAG_FILL_HFILL);
+	ewl_container_child_append(EWL_CONTAINER(vbox), c);
+	ewl_widget_show(c);
+
+	wg = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(wg), "open");
+	ewl_widget_show(wg);
+	ewl_container_child_append(EWL_CONTAINER(c), wg);
+	ewl_callback_append(wg, EWL_CALLBACK_CLICKED, _open, NULL);
+
+	wg = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(wg), "close");
+	ewl_widget_show(wg);
+	ewl_container_child_append(EWL_CONTAINER(c), wg);
+	ewl_callback_append(wg, EWL_CALLBACK_CLICKED, _close, NULL);
+	ewl_widget_show(emb);
+
+	edje_object_signal_emit(edje, "open", "open");
+	ewl_main();
 
 	return 0;
 }
