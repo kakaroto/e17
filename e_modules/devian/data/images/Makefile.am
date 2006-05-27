@@ -4,3 +4,5 @@
 filesdir = $(datadir)
 
 files_DATA = dEvian.jpg module_icon.png
+
+EXTRA_DIST = $(files_DATA)

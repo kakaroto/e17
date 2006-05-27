@@ -15,24 +15,7 @@ EXTRA_DIST =    ./clean.edc \
 		./clean_box/clean_box_programs.edc \
 		./fonts/VeraBd.ttf \
 		./fonts/Vera.ttf \
-		./images/border.png \
-		./images/button_link_open.png \
-		./images/button_pause_clicked.png \
-		./images/button_pause.png \
-		./images/button_refresh_clicked.png \
-		./images/button_refresh.png \
-		./images/button_set_bg_clicked.png \
-		./images/button_set_bg.png \
-		./images/infos_border.png \
-		./images/loading_state_bg.png \
-		./images/loading_state.png \
-		./images/logo.png \
-		./images/popup_background.png \
-		./images/popup_close.png \
-		./images/popup_disable_clicked.png \
-		./images/popup_disable.png \
-		./images/rss_background.png \
-		./images/rss_background_selected.png
+		$(wildcard ./images/*.png)
 
 filesdir = $(datadir)/themes/
 

@@ -41,7 +41,8 @@ module_la_SOURCES      = e_mod_main.c \
 			 e_mod_data_rss_parse.c \
 			 e_mod_data_rss_parse.h \
 			 e_mod_data_file.c \
-			 e_mod_data_file.h
+			 e_mod_data_file.h \
+                         dEvian.h dEvian_includes.h
 module_la_LIBADD       = @ENLIGHTENMENT_LIBS@
 module_la_LDFLAGS      = -module -avoid-version -s
 module_la_DEPENDENCIES = $(top_builddir)/config.h

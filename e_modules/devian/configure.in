@@ -166,6 +166,7 @@ AC_PATH_GENERIC(enlightenment, 0.16.999,
 #### output
 
 AC_OUTPUT([
+e_modules-devian.spec
 Makefile
 data/Makefile
 data/images/Makefile
