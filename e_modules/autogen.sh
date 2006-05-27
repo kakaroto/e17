@@ -5,7 +5,7 @@ for d in * ; do
 	sed "s,%MODNAME%,$d,g" e_modules-TEMPLATE.spec.in > "$d/e_modules-$d.spec.in"
 	test -x "${d}/autogen.sh" || continue
 	echo "AUTOGEN:  $d"
-	(cd $d && ./autogen.sh "$@") || exit 1
+	(cd $d && ./autogen.sh "$@")
 done
 
 cp -p configure.in configure
