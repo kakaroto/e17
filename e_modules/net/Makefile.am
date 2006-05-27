@@ -4,16 +4,14 @@ SUBDIRS = po
 
 EDJE_CC = @edje_cc@
 EDJE_FLAGS = -v
-EXTRA_DIST=$(files_DATA) eth_dev.png module_icon.png e_modules-net.spec e_modules-net.spec.in
+
 # data files for the module
 filesdir = $(datadir)
 
-files_DATA = \
-module_icon.png \
-module.eap \
-net.edj \
-net.edc \
-VeraMono.ttf
+files_DATA = module_icon.png module.eap net.edj net.edc VeraMono.ttf \
+             $(wildcard tx*.png) $(wildcard rx*.png)
+
+EXTRA_DIST=$(files_DATA) eth_dev.png module_icon.png e_modules-net.spec e_modules-net.spec.in
 
 # the module .so file
 INCLUDES = -I. \
