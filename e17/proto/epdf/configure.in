@@ -68,6 +68,10 @@ requirements="evas ecore"
 AC_PATH_GENERIC(ewl, 0.0.4, [have_ewl="yes"], [have_ewl="no"])
 if test "x$have_ewl" = "xyes" ; then
    requirements="$requirements ewl"
+   EWL_TEST_LIBS_DIR="`ewl-config --test-lib-dir`"
+   EWL_TEST_SOURCE_DIR="`ewl-config --test-src-dir`"
+   AC_SUBST(EWL_TEST_LIBS_DIR)
+   AC_SUBST(EWL_TEST_SOURCE_DIR)
 else
    EWL_CFLAGS=""
    EWL_LIBS=""

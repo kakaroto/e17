@@ -10,7 +10,7 @@ EPDF_ETK_TEST = epdf_etk_test
 endif
 
 INCLUDES = 			\
--I. -I$(top_srcdir)/src/lib	\
+-I$(top_srcdir)/src/lib	\
 @EVAS_CFLAGS@ @ECORE_CFLAGS@
 
 bin_PROGRAMS = epdf_evas_test epdf_esmart_test $(EPDF_EWL_TEST) $(EPDF_ETK_TEST)
@@ -51,3 +51,21 @@ epdf_etk_test_LDADD =				\
 	$(top_builddir)/src/lib/libepdf.la	\
 	$(EVAS_LIBS)				\
 	$(ECORE_LIBS)
+
+if BUILD_EPDF_EWL
+pkgdir                  = @EWL_TEST_LIBS_DIR@
+pkg_LTLIBRARIES         = libewl_test_pdf.la
+
+libewl_test_pdf_la_SOURCES = ewl_test_pdf.c
+libewl_test_pdf_la_CFLAGS  = @EWL_CFLAGS@
+libewl_test_pdf_la_LIBADD  = 			\
+	$(top_builddir)/src/lib/libepdf.la	\
+	@EWL_LIBS@
+libewl_test_pdf_la_LDFLAGS = 			\
+	-L$(top_builddir)/src/lib		\
+	-L$(top_builddir)/src/lib/.libs
+
+EXTRA_DIST	= $(libewl_test_pdf_la_SOURCES)
+exampledir 	= @EWL_TEST_SOURCE_DIR@
+example_DATA 	= $(libewl_test_pdf_la_SOURCES)
+endif

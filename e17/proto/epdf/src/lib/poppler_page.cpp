@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <sys/time.h>
 
 #include <Evas.h>
 #include <Ecore_Data.h>
@@ -15,6 +16,16 @@
 #include "poppler_private.h"
 #include "poppler_page.h"
 #include "poppler_page_transition.h"
+
+double
+get_time(void)
+{
+  struct timeval timev;
+  
+  gettimeofday(&timev, NULL);
+
+  return (double)timev.tv_sec + (((double)timev.tv_usec) / 1000000);
+}
 
 
 Epdf_Page *
@@ -72,6 +83,8 @@ epdf_page_render (Epdf_Page *page, Evas_Object *o, Epdf_Page_Orientation orienta
   int              width;
   int              height;
 
+  double t1, t2;
+
   white[0] = 255;
   white[1] = 255;
   white[2] = 255;
@@ -106,9 +119,12 @@ epdf_page_render (Epdf_Page *page, Evas_Object *o, Epdf_Page_Orientation orienta
   width = output_dev->getBitmap()->getWidth();
   height = output_dev->getBitmap()->getHeight();
 
+//   printf ("%d %d\n", width, height);
+  t1 = get_time ();
+
   evas_object_image_size_set(o, width, height);
   evas_object_image_fill_set(o, 0, 0, width, height);
-
+//   evas_object_image_data_set(o, color_ptr);
   m = (unsigned int *)evas_object_image_data_get(o, 1);
   if (!m)
     goto sortie;
@@ -116,6 +132,10 @@ epdf_page_render (Epdf_Page *page, Evas_Object *o, Epdf_Page_Orientation orienta
   memcpy (m, color_ptr, height * width * 4);
   evas_object_image_data_update_add(o, 0, 0, width, height);
   evas_object_resize(o, width, height);
+//   evas_object_image_alpha_set (o, 0);
+
+  t2 = get_time ();
+  printf ("temps : %.5f\n", t2 - t1);
 
  sortie:
   delete output_dev;
