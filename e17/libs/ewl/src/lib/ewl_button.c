@@ -413,6 +413,7 @@ ewl_button_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 			|| (!strcmp(event->keyname, "KP_Return"))
 			|| (!strcmp(event->keyname, "Enter"))
 			|| (!strcmp(event->keyname, "KP_Enter"))
+			|| (!strcmp(event->keyname, "\n"))
 			|| (!strcmp(event->keyname, " ")))
 	{
 		Ewl_Event_Mouse_Up e;
