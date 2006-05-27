@@ -6,6 +6,9 @@
 
 static int create_test(Ewl_Container *box);
 static void ewl_widget_cb_toggle(Ewl_Widget *w, void *ev, void *data);
+static void ewl_widget_cb_first_click(Ewl_Widget *w, void *ev, void *data);
+static void ewl_widget_cb_second_click(Ewl_Widget *w, void *ev, void *data);
+
 static int appearance_test_set_get(char *buf, int len);
 
 static Ewl_Unit_Test widget_unit_tests[] = {
@@ -41,12 +44,14 @@ create_test(Ewl_Container *box)
 	ewl_button_label_set(EWL_BUTTON(o), "first button");
 	ewl_widget_name_set(o, "first_widget");
 	ewl_container_child_append(EWL_CONTAINER(b2), o);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED, ewl_widget_cb_first_click, NULL);
 	ewl_widget_show(o);
 
 	o = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(o), "second button");
 	ewl_widget_name_set(o, "second_widget");
 	ewl_container_child_append(EWL_CONTAINER(b2), o);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED, ewl_widget_cb_second_click, NULL);
 	ewl_widget_disable(o);
 	ewl_widget_show(o);
 
@@ -59,6 +64,8 @@ create_test(Ewl_Container *box)
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED, ewl_widget_cb_toggle, NULL);
 	ewl_container_child_append(EWL_CONTAINER(b2), o);
 	ewl_widget_show(o);
+
+	return 1;
 }
 
 static void
@@ -73,13 +80,25 @@ ewl_widget_cb_toggle(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	if (DISABLED(o)) 
 	{
 		ewl_widget_enable(o);
-		ewl_widget_disable(o);
+		ewl_widget_disable(o2);
 	}
 	else 
 	{
 		ewl_widget_disable(o);
 		ewl_widget_enable(o2);
 	}
+}
+
+static void
+ewl_widget_cb_first_click(Ewl_Widget *w, void *ev, void *data)
+{
+	printf("first clicked\n");
+}
+
+static void
+ewl_widget_cb_second_click(Ewl_Widget *w, void *ev, void *data)
+{
+	printf("second clicked\n");
 }
 
 static int
