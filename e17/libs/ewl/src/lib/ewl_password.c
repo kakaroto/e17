@@ -235,7 +235,8 @@ ewl_password_key_down_cb(Ewl_Widget *w, void *ev_data,
 	else if ((!strcmp(ev->keyname, "Return"))
 			|| (!strcmp(ev->keyname, "KP_Return"))
 			|| (!strcmp(ev->keyname, "Enter")) 
-			|| (!strcmp(ev->keyname, "KP_Enter")))
+			|| (!strcmp(ev->keyname, "KP_Enter"))
+			|| (!strcmp(ev->keyname, "\n")))
 		ewl_callback_call(w, EWL_CALLBACK_VALUE_CHANGED);
 
 	else if ((!strcmp(ev->keyname, "Left")) 
