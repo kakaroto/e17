@@ -224,9 +224,9 @@ load(ImlibImage * im, ImlibProgressFunction progress,
           {
              fprintf(stderr, "imlib2-tiffloader: Out of memory\n");
 
-             if (!rast)
+             if (rast)
                 _TIFFfree(rast);
-             if (!im->data)
+             if (im->data)
                {
                   free(im->data);
                   im->data = NULL;
