@@ -1,0 +1,68 @@
+# Bulgarian translations for tclock package.
+# This file is put in the public domain.
+# Luchezar P. Petkov <>, 2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: tclock 0.3.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-05-27 03:28+0300\n"
+"PO-Revision-Date: 2006-05-28 17:16+0300\n"
+"Last-Translator: Luchezar P. Petkov <>\n"
+"Language-Team: Bulgarian <dict@fsa-bg.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: e_mod_config.c:36
+msgid "Tclock Configuration"
+msgstr "Конфигурация на Tclock"
+
+#: e_mod_config.c:80
+msgid "Resolution"
+msgstr "Разделителна способност"
+
+#: e_mod_config.c:82
+msgid "1 Minute"
+msgstr "1 Минута"
+
+#: e_mod_config.c:84
+msgid "1 Second"
+msgstr "1 Секунда"
+
+#: e_mod_config.c:88
+msgid "Date"
+msgstr "Дата"
+
+#: e_mod_config.c:89
+msgid "Show Date"
+msgstr "Показване на датата"
+
+#: e_mod_config.c:98 e_mod_config.c:112
+msgid "Consult strftime(3) for format syntax"
+msgstr "Консултирайте се със strftime(3) за синтаксиса на формата"
+
+#: e_mod_config.c:102
+msgid "Time"
+msgstr "Време"
+
+#: e_mod_config.c:103
+msgid "Show Time"
+msgstr "Показване на времето"
+
+#: e_mod_main.c:103
+msgid "TClock"
+msgstr "TClock"
+
+#: e_mod_main.c:137
+msgid "Configuration"
+msgstr "Конфигурация"
+
+#: e_mod_main.c:406
+msgid "Displays a digital clock on the desktop"
+msgstr "Показва часа в цифров вид"
+
+#: e_mod_main.c:406
+msgid "Simple Digital Clock"
+msgstr "Прост електронен часовник"
+

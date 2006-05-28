@@ -7,12 +7,12 @@ msgstr ""
 "Project-Id-Version: calendar 0.0.4\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-04-09 01:45+0300\n"
-"PO-Revision-Date: 2006-04-09 01:46+0300\n"
+"PO-Revision-Date: 2006-05-28 17:28+0300\n"
 "Last-Translator:  <luchezar.petkov@gmail.com>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: 8bit"
 
 #: src/add_event_dialog.c:74 src/add_todo_dialog.c:73
 msgid "Font Editor"
@@ -294,35 +294,35 @@ msgstr "Шрифт за ден"
 
 #: src/otherfonts_editor.c:289 src/otherfonts_editor.c:381
 msgid "R Out:"
-msgstr ""
+msgstr "Ч контур:"
 
 #: src/otherfonts_editor.c:296 src/otherfonts_editor.c:389
 msgid "B Out:"
-msgstr ""
+msgstr "С контур:"
 
 #: src/otherfonts_editor.c:303 src/otherfonts_editor.c:397
 msgid "G Out:"
-msgstr ""
+msgstr "З контур:"
 
 #: src/otherfonts_editor.c:310 src/otherfonts_editor.c:405
 msgid "A Out:"
-msgstr ""
+msgstr "П контур:"
 
 #: src/otherfonts_editor.c:317 src/otherfonts_editor.c:413
 msgid "R Shad:"
-msgstr ""
+msgstr "Ч сянка:"
 
 #: src/otherfonts_editor.c:324 src/otherfonts_editor.c:421
 msgid "B Shad:"
-msgstr ""
+msgstr "С сянка:"
 
 #: src/otherfonts_editor.c:331 src/otherfonts_editor.c:429
 msgid "G Shad:"
-msgstr ""
+msgstr "З сянка:"
 
 #: src/otherfonts_editor.c:338 src/otherfonts_editor.c:437
 msgid "A Shad:"
-msgstr ""
+msgstr "П сянка:"
 
 #: src/today_editor.c:113 src/today_editor.c:267
 msgid "Today"
@@ -334,35 +334,35 @@ msgstr "Шрифт за днес"
 
 #: src/today_editor.c:340 src/weekday_editor.c:326 src/weekend_editor.c:324
 msgid "R Outline:"
-msgstr ""
+msgstr "Ч контур:"
 
 #: src/today_editor.c:348 src/weekday_editor.c:333 src/weekend_editor.c:331
 msgid "B Outline:"
-msgstr ""
+msgstr "С контур:"
 
 #: src/today_editor.c:356 src/weekday_editor.c:340 src/weekend_editor.c:338
 msgid "G Outline:"
-msgstr ""
+msgstr "З контур:"
 
 #: src/today_editor.c:364 src/weekday_editor.c:347 src/weekend_editor.c:345
 msgid "A Outline:"
-msgstr ""
+msgstr "П контур:"
 
 #: src/today_editor.c:372 src/weekday_editor.c:354 src/weekend_editor.c:352
 msgid "R Shadow:"
-msgstr ""
+msgstr "Ч сянка:"
 
 #: src/today_editor.c:380 src/weekday_editor.c:361 src/weekend_editor.c:359
 msgid "B Shadow:"
-msgstr ""
+msgstr "С сянка:"
 
 #: src/today_editor.c:388 src/weekday_editor.c:368 src/weekend_editor.c:366
 msgid "G Shadow:"
-msgstr ""
+msgstr "З сянка:"
 
 #: src/today_editor.c:396 src/weekday_editor.c:375 src/weekend_editor.c:373
 msgid "A Shadow:"
-msgstr ""
+msgstr "П сянка:"
 
 #: src/weekday_editor.c:120 src/weekday_editor.c:264
 msgid "Weekday"
