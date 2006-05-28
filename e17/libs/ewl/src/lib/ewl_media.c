@@ -491,7 +491,7 @@ ewl_media_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 * Create the emotion
 	 */
 	m->video = emotion_object_add(emb->evas);
-	if (ewl_media_module_set(m, m->module)) {
+	if (ewl_media_module_set(m, m->module) && m->media) {
 		emotion_object_file_set(m->video, m->media);
 		ewl_media_size_update(m);
 	}
@@ -582,6 +582,7 @@ ewl_media_size_update(Ewl_Media *m)
 #ifdef BUILD_EMOTION_SUPPORT
 	emotion_object_size_get(m->video, &width, &height);
 #endif
+
 	if (width && height)
 		ewl_object_preferred_inner_size_set(EWL_OBJECT(m), width, height);
 

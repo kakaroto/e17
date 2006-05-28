@@ -4,6 +4,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifndef PATH_MAX
+#define PATH_MAX 1024
+#endif
+
 static Ewl_Widget *video, *seeker, *fd_win;
 static Ewl_Media_Module_Type module_type;
 
@@ -43,7 +47,7 @@ static int
 create_test(Ewl_Container *box)
 {
 	Ewl_Widget *o, *o2;
-#if 0
+
 	if (!ewl_media_is_available())
 	{
 		o = ewl_label_new();
@@ -56,7 +60,7 @@ create_test(Ewl_Container *box)
 
 		return 1;
 	}
-#endif
+
 	o = ewl_radiobutton_new();
 	ewl_button_label_set(EWL_BUTTON(o), "Gstreamer");
 	ewl_radiobutton_checked_set(EWL_RADIOBUTTON(o), FALSE);
@@ -188,29 +192,35 @@ static void
 open_file_cb(Ewl_Widget *w, void *event, void *data __UNUSED__)
 {
 	Ewl_Dialog_Event *e;
-	char *file = NULL;
 
 	ewl_widget_hide(fd_win);
 
 	e = event;
-	if (e->response == EWL_STOCK_OPEN)
-		file = ewl_filedialog_selected_file_get(EWL_FILEDIALOG(w));
+	if (e->response == EWL_STOCK_OK)
+	{
+		char *file = NULL;
+		char buf[PATH_MAX];
 
-	if (file) 
-		ewl_media_media_set(EWL_MEDIA(video), file);
+		file = ewl_filedialog_selected_file_get(EWL_FILEDIALOG(w));
+		snprintf(buf, PATH_MAX, "%s/%s", 
+				ewl_filedialog_directory_get(EWL_FILEDIALOG(w)),
+				file);
+
+		ewl_media_media_set(EWL_MEDIA(video), buf);
+		IF_FREE(file);
+	}
 }
 
 static void
 open_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__,
 					void *data __UNUSED__)
 {
-	if (fd_win) {
-		ewl_widget_show(fd_win);
-		return;
+	if (!fd_win) 
+	{
+		fd_win = ewl_filedialog_new();
+		ewl_callback_append(fd_win, EWL_CALLBACK_VALUE_CHANGED, open_file_cb, NULL);
 	}
 
-	fd_win = ewl_filedialog_new();
-	ewl_callback_append(fd_win, EWL_CALLBACK_VALUE_CHANGED, open_file_cb, NULL);
 	ewl_widget_show(fd_win);
 }
 
@@ -234,7 +244,6 @@ create_media_window(Ewl_Media_Module_Type type)
 {
 	Ewl_Widget *win, *o = NULL, *b = NULL;
 	Ewl_Widget *controls = NULL, *time = NULL;
-	char * file = NULL;
 
 	win = ewl_window_new();
 	ewl_window_title_set(EWL_WINDOW(win), "EWL Media test");
@@ -260,7 +269,6 @@ create_media_window(Ewl_Media_Module_Type type)
 	video = ewl_media_new();
 	ewl_container_child_append(EWL_CONTAINER(b), video);
 	ewl_media_module_set(EWL_MEDIA(video), type);
-	ewl_media_media_set(EWL_MEDIA(video), file);
 	ewl_object_fill_policy_set(EWL_OBJECT(video), EWL_FLAG_FILL_ALL);
 	ewl_callback_append(video, EWL_CALLBACK_REALIZE, video_realize_cb, NULL);
 	ewl_callback_append(video, EWL_CALLBACK_VALUE_CHANGED, video_change_cb, time);
