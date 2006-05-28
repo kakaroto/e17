@@ -624,8 +624,8 @@ DeskBackgroundRefresh(Desk * dsk, int why)
 	     pixel = 0;
 
 	     if (pmap == None)
-		BackgroundRealize(bg, EoGetXwin(dsk), EoGetW(dsk), EoGetH(dsk),
-				  1, &pmap, &pixel);
+		BackgroundRealize(bg, EoGetWin(dsk), None,
+				  EoGetW(dsk), EoGetH(dsk), 1, &pmap, &pixel);
 	     if (pmap != None)
 		BackgroundPixmapSet(bg, pmap);
 
@@ -2305,7 +2305,7 @@ CB_DesktopDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
 
 	     bg = DeskBackgroundGet(DeskGet(i));
 	     if (bg)
-		BackgroundApplyPmap(bg, pmap, 64, 48);
+		BackgroundApplyPmap(bg, wins[i], pmap, 64, 48);
 	     else
 	       {
 		  ic = ImageclassFind("SETTINGS_DESKTOP_AREA", 0);

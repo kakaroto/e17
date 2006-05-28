@@ -202,36 +202,22 @@ SetupX(const char *dstr)
    /* Root defaults */
    RRoot.scr = DefaultScreen(disp);
    RRoot.xwin = DefaultRootWindow(disp);
+   RRoot.w = DisplayWidth(disp, RRoot.scr);
+   RRoot.h = DisplayHeight(disp, RRoot.scr);
    RRoot.vis = DefaultVisual(disp, RRoot.scr);
    RRoot.depth = DefaultDepth(disp, RRoot.scr);
    RRoot.cmap = DefaultColormap(disp, RRoot.scr);
-   RRoot.w = DisplayWidth(disp, RRoot.scr);
-   RRoot.h = DisplayHeight(disp, RRoot.scr);
+   RRoot.win = ERegisterWindow(RRoot.xwin, NULL);
 
    VRoot.xwin = RRoot.xwin;
    VRoot.vis = RRoot.vis;
    VRoot.depth = RRoot.depth;
    VRoot.cmap = RRoot.cmap;
 
-   RRoot.win = ERegisterWindow(RRoot.xwin, NULL);
-
    if (Mode.wm.window)
      {
-	XSetWindowAttributes attr;
-
-	/* Running E in its own virtual root window */
-	attr.backing_store = NotUseful;
-	attr.override_redirect = False;
-	attr.colormap = VRoot.cmap;
-	attr.border_pixel = 0;
-	attr.background_pixel = 0;
-	attr.save_under = True;
-	VRoot.xwin = XCreateWindow(disp, RRoot.xwin, 0, 0, VRoot.w, VRoot.h, 0,
-				   CopyFromParent, InputOutput, CopyFromParent,
-				   CWOverrideRedirect | CWSaveUnder |
-				   CWBackingStore | CWColormap | CWBackPixel |
-				   CWBorderPixel, &attr);
-	VRoot.win = ERegisterWindow(VRoot.xwin, NULL);
+	VRoot.win = ECreateWindow(RRoot.win, 0, 0, VRoot.w, VRoot.h, 0);
+	VRoot.xwin = WinGetXwin(VRoot.win);
 
 	/* Enable eesh and edox to pix up the virtual root */
 	Esnprintf(buf, sizeof(buf), "%#lx", VRoot.xwin);

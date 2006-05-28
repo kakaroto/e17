@@ -492,8 +492,7 @@ BgFindImageSize(BgPart * bgp, unsigned int rw, unsigned int rh,
 }
 
 static              Pixmap
-BackgroundCreatePixmap(Drawable draw, unsigned int w, unsigned int h,
-		       unsigned int depth)
+BackgroundCreatePixmap(Win win, unsigned int w, unsigned int h)
 {
    Pixmap              pmap;
 
@@ -501,11 +500,11 @@ BackgroundCreatePixmap(Drawable draw, unsigned int w, unsigned int h,
     * Stupid hack to avoid that a new root pixmap has the same ID as the now
     * invalid one from a previous session.
     */
-   pmap = EXCreatePixmap(draw, w, h, depth);
-   if (draw == VRoot.xwin && pmap == Mode.root.ext_pmap)
+   pmap = ECreatePixmap(win, w, h, 0);
+   if (win == RRoot.win && pmap == Mode.root.ext_pmap)
      {
 	EFreePixmap(pmap);
-	pmap = EXCreatePixmap(draw, w, h, depth);
+	pmap = ECreatePixmap(win, w, h, 0);
 	Mode.root.ext_pmap = None;
 	Mode.root.ext_pmap_valid = 0;
      }
@@ -513,7 +512,7 @@ BackgroundCreatePixmap(Drawable draw, unsigned int w, unsigned int h,
 }
 
 void
-BackgroundRealize(Background * bg, Drawable draw, unsigned int rw,
+BackgroundRealize(Background * bg, Win win, Drawable draw, unsigned int rw,
 		  unsigned int rh, int is_win, Pixmap * ppmap,
 		  unsigned long *ppixel)
 {
@@ -573,6 +572,9 @@ BackgroundRealize(Background * bg, Drawable draw, unsigned int rw,
      }
 #endif
 
+   if (!draw)
+      draw = WinGetXwin(win);
+
    hasbg = bg->bg.im != NULL;
    hasfg = bg->top.im != NULL;
 
@@ -612,8 +614,8 @@ BackgroundRealize(Background * bg, Drawable draw, unsigned int rw,
        ((w == rw && h == rh) || (bg->bg_tile && !TransparencyEnabled())))
      {
 	/* Window, no fg, no offset, and scale to 100%, or tiled, no trans */
-	pmap = BackgroundCreatePixmap(draw, w, h, VRoot.depth);
-	EImageRenderOnDrawable(bg->bg.im, NULL, pmap, 0, 0, w, h, 0);
+	pmap = BackgroundCreatePixmap(win, w, h);
+	EImageRenderOnDrawable(bg->bg.im, win, pmap, 0, 0, w, h, 0);
 
 #if 0				/* FIXME - Remove? */
 	if (x == 0 && y == 0)	/* Hmmm. Always true. */
@@ -635,7 +637,7 @@ BackgroundRealize(Background * bg, Drawable draw, unsigned int rw,
 
    /* The rest that require some more work */
    if (is_win)
-      pmap = BackgroundCreatePixmap(draw, rw, rh, VRoot.depth);
+      pmap = BackgroundCreatePixmap(win, rw, rh);
    else
       pmap = draw;
 
@@ -679,7 +681,7 @@ BackgroundRealize(Background * bg, Drawable draw, unsigned int rw,
 	EImageBlend(im, bg->top.im, 1, 0, 0, ww, hh, x, y, w, h, 0, 0);
      }
 
-   EImageRenderOnDrawable(im, NULL, pmap, 0, 0, rw, rh, 0);
+   EImageRenderOnDrawable(im, win, pmap, 0, 0, rw, rh, 0);
    if (im != bg->bg.im)
       EImageFree(im);
 
@@ -694,10 +696,10 @@ BackgroundRealize(Background * bg, Drawable draw, unsigned int rw,
 }
 
 void
-BackgroundApplyPmap(Background * bg, Drawable draw,
+BackgroundApplyPmap(Background * bg, Win win, Drawable draw,
 		    unsigned int w, unsigned int h)
 {
-   BackgroundRealize(bg, draw, w, h, 0, NULL, NULL);
+   BackgroundRealize(bg, win, draw, w, h, 0, NULL, NULL);
 }
 
 static void
@@ -710,7 +712,7 @@ BackgroundApplyWin(Background * bg, Win win)
    if (!EGetGeometry(win, NULL, NULL, NULL, &w, &h, NULL, NULL))
       return;
 
-   BackgroundRealize(bg, Xwin(win), w, h, 1, &pmap, &pixel);
+   BackgroundRealize(bg, win, None, w, h, 1, &pmap, &pixel);
    if (pmap != None)
      {
 	ESetWindowBackgroundPixmap(win, pmap);
@@ -736,7 +738,7 @@ BackgroundSet(Background * bg, Win win, unsigned int w, unsigned int h)
    if (bg->pmap)
       pmap = bg->pmap;
    else
-      BackgroundRealize(bg, Xwin(win), w, h, 1, &pmap, &pixel);
+      BackgroundRealize(bg, win, None, w, h, 1, &pmap, &pixel);
 
    bg->pmap = pmap;
    if (pmap != None)
@@ -949,7 +951,7 @@ BackgroundCacheMini(Background * bg, int keep, int nuke)
 
    /* Create new cached bg mini image */
    pmap = ECreatePixmap(VRoot.win, 64, 48, 0);
-   BackgroundApplyPmap(bg, pmap, 64, 48);
+   BackgroundApplyPmap(bg, VRoot.win, pmap, 64, 48);
    im = EImageGrabDrawable(pmap, None, 0, 0, 64, 48, 0);
    EImageSave(im, s);
    EFreePixmap(pmap);
@@ -1524,7 +1526,7 @@ CB_DesktopMiniDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
    if (val == 1)
      {
 	ESetWindowBackgroundPixmap(win, pmap);
-	BackgroundApplyPmap(tmp_bg, pmap, w, h);
+	BackgroundApplyPmap(tmp_bg, win, pmap, w, h);
      }
    else
      {
@@ -1539,7 +1541,7 @@ CB_DesktopMiniDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
 			      tmp_bg->top.yjust, tmp_bg->top.xperc,
 			      tmp_bg->top.yperc);
 
-	BackgroundApplyPmap(bg, pmap, w, h);
+	BackgroundApplyPmap(bg, win, pmap, w, h);
 	BackgroundDestroy(bg);
      }
    EClearWindow(win);

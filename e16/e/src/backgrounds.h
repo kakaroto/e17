@@ -30,11 +30,11 @@ Background         *BackgroundFind(const char *name);
 char               *BackgroundGetUniqueString(const Background * bg);
 void                BackgroundPixmapSet(Background * bg, Pixmap pmap);
 void                BackgroundDestroyByName(const char *name);
-void                BackgroundRealize(Background * bg, Drawable draw,
+void                BackgroundRealize(Background * bg, Win win, Drawable draw,
 				      unsigned int rw, unsigned int rh,
 				      int is_win, Pixmap * ppmap,
 				      unsigned long *ppixel);
-void                BackgroundApplyPmap(Background * bg, Drawable draw,
+void                BackgroundApplyPmap(Background * bg, Win win, Drawable draw,
 					unsigned int rw, unsigned int rh);
 void                BackgroundSet(Background * bg, Win win, unsigned int rw,
 				  unsigned int rh);

@@ -305,7 +305,7 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
      {
 	ewin->mini_pmm.type = 1;
 	ewin->mini_pmm.mask = None;
-	ScaleRect(EoGetWin(ewin), draw, VRoot.win, None, &ewin->mini_pmm.pmap,
+	ScaleRect(EoGetWin(ewin), draw, p->win, None, &ewin->mini_pmm.pmap,
 		  0, 0, EoGetW(ewin), EoGetH(ewin), 0, 0, w, h,
 		  Conf_pagers.hiq);
      }
@@ -532,7 +532,7 @@ PagerUpdateBg(Pager * p)
 	else
 	  {
 #endif
-	     BackgroundApplyPmap(bg, pmap, p->dw, p->dh);
+	     BackgroundApplyPmap(bg, p->win, pmap, p->dw, p->dh);
 #if USE_PAGER_BACKGROUND_CACHE
 	     im = EImageGrabDrawable(pmap, None, 0, 0, p->dw, p->dh, 0);
 	     EImageSave(im, s);
