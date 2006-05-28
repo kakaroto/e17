@@ -1003,9 +1003,6 @@ ewl_embed_object_cache(Ewl_Embed *e, Evas_Object *obj)
 			ecore_hash_set(e->obj_cache, (void *)type, obj_list);
 		}
 		ecore_list_prepend(obj_list, obj);
-
-		/* printf("%d nodes cached of type %s\n",
-				ecore_list_nodes(obj_list), type); */
 	}
 	else {
 		ewl_evas_object_destroy(obj);
@@ -1031,12 +1028,8 @@ ewl_embed_object_request(Ewl_Embed *e, char *type)
 	DCHECK_TYPE_RET("e", e, EWL_EMBED_TYPE, NULL);
 
 	obj_list = ecore_hash_get(e->obj_cache, type);
-	if (obj_list) {
+	if (obj_list)
 		obj = ecore_list_remove_first(obj_list);
-
-		/* printf("%d nodes remain cached of type %s\n",
-				ecore_list_nodes(obj_list), type); */
-	}
 
 	DRETURN_PTR(obj, DLEVEL_STABLE);
 }
