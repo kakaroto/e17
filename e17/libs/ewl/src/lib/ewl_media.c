@@ -589,19 +589,22 @@ ewl_media_size_update(Ewl_Media *m)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void ewl_media_update_timer_cb(void *data,
+static void
+ewl_media_update_timer_cb(void *data,
 		Evas_Object *obj __UNUSED__,
 		void *event_info __UNUSED__)
 {
-	Ewl_Widget *m;
+	Ewl_Media *m;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("data", data);
 
-	m = (Ewl_Widget *)data;
-	EWL_MEDIA(m)->block_seek = 1;
-	ewl_callback_call(m,  EWL_CALLBACK_VALUE_CHANGED);
-	EWL_MEDIA(m)->block_seek = 0;
+	m = data;
+
+	m->block_seek = 1;
+	ewl_callback_call(EWL_WIDGET(m),  EWL_CALLBACK_VALUE_CHANGED);
+	m->block_seek = 0;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+

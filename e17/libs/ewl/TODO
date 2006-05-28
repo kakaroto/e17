@@ -3,15 +3,15 @@
  *
  * @section bugs BUGS
  *
-- In ewl_text if your in a multiline text and on a line that is longer
+- Ewl_Text:: if your in a multiline text and on a line that is longer
   then then one above or below and you hit the up arrow it will
   position your cursor one character _before_ the end of the line.
 
-- In ewl_text if your in a multiline text and on the last line
+- Ewl_Text:: if your in a multiline text and on the last line
   of multiple lines. Pressing arrow down can wrap to the beginning
   of the first line.
 
-- The ewl_password entry needs to correctly deal with selections and
+- Ewl_Password:: The entry needs to correctly deal with selections and
   mouse clicks.
 
 - How to deal with the scrollpane with the focus? Currently widgets
@@ -38,7 +38,7 @@
   order automatically. This needs to be updated to check that the widget is
   not current in the tab order already. Currently if the user sets up a
   specific tab order it will be whiped out by the realize code. (In
-  ewl_embed I believe).
+  Ewl_Embed I believe).
 
 - Resize the table multiple times vertically and the items are not placed in
   the same place as original.
@@ -76,6 +76,9 @@
 
 - Ewl_Text:: need to fill in the condense function
 
+- Ewl_Media:: The layer for the video seems incorrect as it dosen't show up
+	      correctly. The audio plays, but the video isn't visible.
+
 
   Ewl_Icon
  - Need to add the constrain stuff in like iconbox does at the moment.
@@ -85,7 +88,7 @@
  
  - Clicking on the label 'Draw (Editable)' then clicking again will case a
    warning to print. I _think_ the move event is getting fired for the text
-   widget after I've deleted it in the ewl_icon code. Need to confirm/fix
+   widget after I've deleted it in the Ewl_Icon code. Need to confirm/fix
    this.
  
  - Need to properly center the icon and the text in the icon widget
