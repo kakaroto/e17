@@ -1454,6 +1454,7 @@ static int          tmp_bg_xperc;
 static int          tmp_bg_yperc;
 static char         tmp_hiq;
 static char         tmp_userbg;
+static char         tmp_root_hint;
 static int          tmp_bg_timeout;
 
 static void         BG_RedrawView(void);
@@ -1476,6 +1477,7 @@ CB_ConfigureBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	Conf.backgrounds.timeout = tmp_bg_timeout;
 	Conf.backgrounds.hiquality = tmp_hiq;
 	Conf.backgrounds.user = tmp_userbg;
+	Conf.hints.set_xroot_info_on_root_window = tmp_root_hint;
 
 	ESetColor(&(tmp_bg->bg_solid), tmp_bg_r, tmp_bg_g, tmp_bg_b);
 	tmp_bg->bg_tile = tmp_bg_tile;
@@ -2014,6 +2016,7 @@ SettingsBackground(Background * bg)
 
    tmp_hiq = Conf.backgrounds.hiquality;
    tmp_userbg = Conf.backgrounds.user;
+   tmp_root_hint = Conf.hints.set_xroot_info_on_root_window;
    tmp_bg_timeout = Conf.backgrounds.timeout;
 
    d = bg_sel_dialog = DialogCreate("CONFIGURE_BG");
@@ -2256,6 +2259,15 @@ SettingsBackground(Background * bg)
    DialogItemSetColSpan(di, 3);
    DialogItemSetAlign(di, 512, 512);
    BG_DialogSetFileName(bg_filename);
+
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, 3);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetColSpan(di, 3);
+   DialogItemSetText(di,
+		     _("Enable background transparency compatibility mode"));
+   DialogItemCheckButtonSetPtr(di, &tmp_root_hint);
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureBG);
 
