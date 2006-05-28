@@ -601,7 +601,7 @@ static void _etk_object_destructor(Etk_Object *object)
    while (object->after_signal_callbacks_list)
    {
       etk_signal_callback_del(object->after_signal_callbacks_list->data);
-      object->after_signal_callbacks_list = evas_list_remove_list(object->after_signal_callbacks_list
+      object->after_signal_callbacks_list = evas_list_remove_list(object->after_signal_callbacks_list,
          object->after_signal_callbacks_list);
    }
    
