@@ -1,6 +1,7 @@
 Makefile.in
 Makefile
 default.edj
+ewl_embed_test.edj
 skeleton.edj
 zero.edj
 e17.edj

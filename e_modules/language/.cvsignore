@@ -12,6 +12,7 @@ config.status
 config.sub
 configure
 depcomp
+e_modules-language.spec
 install-sh
 libtool
 ltmain.sh

@@ -10,6 +10,7 @@ config.status
 config.sub
 configure
 depcomp
+e_modules-moon.spec
 install-sh
 libtool
 ltmain.sh
