@@ -1,7 +1,7 @@
 Summary: engage
 Name: engage
 Version: 0.0.9
-Release: 1.20060528
+Release: 1.%(date '+%Y%m%d')
 License: BSD
 Group: Applications/Multimedia
 URL: http://www.enlightenment.org/
