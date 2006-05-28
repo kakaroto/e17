@@ -1248,8 +1248,9 @@ void ewl_embed_tab_order_next(Ewl_Embed *e)
 	if (!w) DRETURN(DLEVEL_STABLE);
 
 	start = w;
-	while ((!VISIBLE(w) || (!ewl_widget_focusable_get(w))
-			|| (ewl_widget_internal_is(w))))
+	while (!VISIBLE(w) || (!ewl_widget_focusable_get(w))
+			|| ewl_widget_internal_is(w)
+			|| DISABLED(w))
 	{
 		ecore_dlist_next(e->tab_order);
 		w = ecore_dlist_current(e->tab_order);
@@ -1299,8 +1300,9 @@ ewl_embed_tab_order_previous(Ewl_Embed *e)
 	if (!w) DRETURN(DLEVEL_STABLE);
 
 	start = w;
-	while ((!VISIBLE(w) || (!ewl_widget_focusable_get(w))
-			|| (ewl_widget_internal_is(w))))
+	while (!VISIBLE(w) || !ewl_widget_focusable_get(w)
+			|| ewl_widget_internal_is(w)
+			|| DISABLED(w))
 	{
 		ecore_dlist_previous(e->tab_order);
 		w = ecore_dlist_current(e->tab_order);
