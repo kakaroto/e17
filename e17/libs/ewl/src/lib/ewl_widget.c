@@ -2661,7 +2661,7 @@ ewl_widget_enable_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	ewl_widget_state_set(w, "default", EWL_STATE_PERSISTENT);
+	ewl_widget_state_set(w, "enabled", EWL_STATE_PERSISTENT);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
