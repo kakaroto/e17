@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Net\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-10 12:24+0900\n"
-"PO-Revision-Date: 2006-03-10 18:42+0900\n"
+"POT-Creation-Date: 2006-05-28 19:42+0900\n"
+"PO-Revision-Date: 2006-05-28 22:42+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -20,30 +20,45 @@ msgstr ""
 msgid "Net Configuration"
 msgstr "net の設定"
 
-#: e_mod_config.c:114
+#: e_mod_config.c:115
 msgid "General Settings"
 msgstr "一般の設定"
 
-#: e_mod_config.c:115
-msgid "Show Text"
-msgstr "数値を表示する"
-
 #: e_mod_config.c:117
-msgid "Show Graph"
-msgstr "グラフを表示する"
+msgid "Always Show Text"
+msgstr "常に表示する"
 
-#: e_mod_config.c:121
+#: e_mod_config.c:119
+msgid "Show Text On Mouse Over"
+msgstr "マウスが乗れば表示する"
+
+#: e_mod_config.c:123
 msgid "Device Settings"
 msgstr "デバイスの設定"
 
-#: e_mod_config.c:133
+#: e_mod_config.c:135
 msgid "Check Interval:"
 msgstr "監視間隔"
 
-#: e_mod_main.c:97
+#: e_mod_config.c:141
+msgid "Max MTU:"
+msgstr "最大 MTU:"
+
+#: e_mod_main.c:105
+msgid "Net"
+msgstr ""
+
+#: e_mod_main.c:152
+msgid "Configuration"
+msgstr "設定"
+
+#: e_mod_main.c:361
 msgid "Enlightenment Network Monitor Module"
 msgstr "Enlightenment ネットワーク監視モジュール"
 
-#: e_mod_main.c:98
+#: e_mod_main.c:361
 msgid "This module is used to monitor a network device."
 msgstr "これはネットワークデバイスを監視するためのモジュールです."
+
+#~ msgid "Show Graph"
+#~ msgstr "グラフを表示する"

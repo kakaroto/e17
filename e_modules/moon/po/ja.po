@@ -7,85 +7,96 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-21 01:05+0900\n"
-"PO-Revision-Date: 2006-01-29 22:45+0900\n"
+"POT-Creation-Date: 2006-05-28 19:36+0900\n"
+"PO-Revision-Date: 2006-05-28 23:14+0900\n"
 "Last-Translator: David <david35472@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: moon-0.1.0/src/e_mod_config.c:146 src/e_mod_config.c:146
+#: src/e_mod_config.c:97
 msgid "Moon Configuration"
 msgstr "月モジュールの設定"
 
-#: moon-0.1.0/src/e_mod_config.c:203 src/e_mod_config.c:203
+#: src/e_mod_config.c:153
 msgid "Display Settings"
 msgstr "表示設定"
 
-#: moon-0.1.0/src/e_mod_config.c:204 src/e_mod_config.c:204
-msgid "Show Border"
-msgstr "ボーダーを表示する"
-
-#: moon-0.1.0/src/e_mod_config.c:206 src/e_mod_config.c:206
+#: src/e_mod_config.c:154
 msgid "Animated Clouds"
 msgstr "雲を表示する"
 
-#: moon-0.1.0/src/e_mod_config.c:210 src/e_mod_config.c:210
+#: src/e_mod_config.c:158
 msgid "Moon Phase Value"
-msgstr "月の満ち欠け状態値"
+msgstr "月の満ち欠け"
 
-#: moon-0.1.0/src/e_mod_config.c:212 src/e_mod_config.c:212
+#: src/e_mod_config.c:160
 msgid "Show always"
 msgstr "常に表示する"
 
-#: moon-0.1.0/src/e_mod_config.c:214 src/e_mod_config.c:214
+#: src/e_mod_config.c:162
 msgid "Show on mouse over"
-msgstr "マウスがあると表示する"
+msgstr "マウスが乗れば表示する"
 
-#: moon-0.1.0/src/e_mod_config.c:216 src/e_mod_config.c:216
+#: src/e_mod_config.c:164
 msgid "Never show"
 msgstr "表示しない"
 
-#: moon-0.1.0/src/e_mod_main.c:86 src/e_mod_main.c:85
+#: src/e_mod_config.c:168
+msgid "Description"
+msgstr "月の満ち欠けを名前で表示"
+
+#: src/e_mod_config.c:171
+msgid "Numerical"
+msgstr "月の満ち欠けを数値で表示"
+
+#: src/e_mod_main.c:136
 msgid "Moon Clock Module"
 msgstr "月の相モジュール"
 
-#: moon-0.1.0/src/e_mod_main.c:87 src/e_mod_main.c:88
+#: src/e_mod_main.c:139
 msgid "Display current phase of the moon ala e16 E-MoonClock"
-msgstr "月の満ち欠け状態を表示するモジュール"
+msgstr "月の満ち欠けを表示するモジュール"
 
-#: src/e_mod_main.c:478
+#: src/e_mod_main.c:227
+msgid "Moon"
+msgstr ""
+
+#: src/e_mod_main.c:505
 msgid "New Moon"
 msgstr "新月"
 
-#: src/e_mod_main.c:479
+#: src/e_mod_main.c:507
 msgid "Waxing Crescent"
 msgstr "三日月"
 
-#: src/e_mod_main.c:480
+#: src/e_mod_main.c:509
 msgid "First Quarter"
 msgstr "上弦"
 
-#: src/e_mod_main.c:481
+#: src/e_mod_main.c:511
 msgid "Waxing Gibbous"
 msgstr "凸月"
 
-#: src/e_mod_main.c:482
+#: src/e_mod_main.c:513
 msgid "Full Moon"
 msgstr "満月"
 
-#: src/e_mod_main.c:483
+#: src/e_mod_main.c:515
 msgid "Waning Gibbous"
 msgstr "欠月"
 
-#: src/e_mod_main.c:484
+#: src/e_mod_main.c:517
 msgid "Last Quarter"
 msgstr "下弦"
 
-#: src/e_mod_main.c:485
+#: src/e_mod_main.c:519
 msgid "Waning Crescent"
 msgstr "衰月"
+
+#~ msgid "Show Border"
+#~ msgstr "ボーダーを表示する"
 
 #~ msgid "Moon Phase Calculation Interval"
 #~ msgstr "月の満ち欠け状態の計算間隔"
