@@ -51,8 +51,7 @@
   the right and the text moves and arrow back it shifts as you move off of
   the right edge instead of over the left edge.
 
-- text cursor seems to be a bit screwed now, half height and disappears on
-  the end of entrybox case.
+- text cursor disappears on the end of entrybox case.
 
 - text entry on the spinner seems to be broken for manual entry
 
