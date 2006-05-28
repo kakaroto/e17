@@ -723,7 +723,7 @@ ewl_widget_state_set(Ewl_Widget *w, const char *state, Ewl_State_Type flag)
 
 	if (w->theme_object) {
 		if (ewl_config.theme.print_signals)
-			printf("Emitting: %s\n", state);
+			printf("Emitting: %s to %p\n", state, w);
 		edje_object_signal_emit(w->theme_object, state, "EWL");
 	} 
 
@@ -1898,12 +1898,12 @@ ewl_widget_layer_stack_add(Ewl_Widget *w)
 	
 	evas_object_smart_member_add(w->smart_object, smart_parent);
 	
-	if (w->theme_object) {
+	if (w->theme_object)
 		evas_object_smart_member_add(w->theme_object, w->smart_object);
-	}
-	if (w->fx_clip_box) {
+
+	if (w->fx_clip_box)
 		evas_object_smart_member_add(w->fx_clip_box, w->smart_object);
-	}
+
 	if (w->theme_object && w->fx_clip_box)
 		evas_object_stack_below(w->theme_object, w->fx_clip_box);
 	
@@ -2113,8 +2113,10 @@ ewl_widget_show_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	if (w->smart_object)
 		evas_object_show(w->smart_object);
+
 	if (w->fx_clip_box)
 		evas_object_show(w->fx_clip_box);
+
 	if (w->theme_object)
 		evas_object_show(w->theme_object);
 
@@ -2225,7 +2227,7 @@ ewl_widget_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		 */
 		evas_object_repeat_events_set(w->theme_object, 1);
 		edje_object_file_set(w->theme_object, w->bit_path,
-				w->bit_group);
+							w->bit_group);
 		/*
 		 * If the file failed to load, destroy the unnecessary evas
 		 * object.
@@ -2420,11 +2422,8 @@ ewl_widget_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	i = ewl_theme_image_get(w, "file");
 	group = ewl_theme_data_str_get(w, "group");
 
-	if (i)
-		w->bit_path = ecore_string_instance(i);
-
-	if (group)
-		w->bit_group = ecore_string_instance(group);
+	if (i) w->bit_path = ecore_string_instance(i);
+	if (group) w->bit_group = ecore_string_instance(group);
 
 	IF_FREE(i);
 	IF_FREE(group);
@@ -2442,7 +2441,6 @@ ewl_widget_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 * Set up the theme object on the widgets evas
 	 */
 	if (w->theme_object) {
-
 		ewl_widget_theme_insets_get(w, &i_l, &i_r, &i_t, &i_b);
 		ewl_widget_theme_padding_get(w, &p_l, &p_r, &p_t, &p_b);
 
@@ -2451,25 +2449,17 @@ ewl_widget_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		/*
 		 * Use previously set insets and padding if available.
 		 */
-		if (l)
-			i_l = l;
-		if (r)
-			i_r = r;
-		if (t)
-			i_t = t;
-		if (b)
-			i_b = b;
+		if (l) i_l = l;
+		if (r) i_r = r;
+		if (t) i_t = t;
+		if (b) i_b = b;
 
 		ewl_object_padding_get(EWL_OBJECT(w), &l, &r, &t, &b);
 
-		if (l)
-			p_l = l;
-		if (r)
-			p_r = r;
-		if (t)
-			p_t = t;
-		if (b)
-			p_b = b;
+		if (l) p_l = l;
+		if (r) p_r = r;
+		if (t) p_t = t;
+		if (b) p_b = b;
 
 		/*
 		 * Assign the relevant insets and padding.
@@ -2901,24 +2891,20 @@ ewl_widget_theme_padding_get(Ewl_Widget *w, int *l, int *r, int *t, int *b)
 	 * Read in the padding values from the edje file
 	 */
 	key = edje_object_data_get(w->theme_object, "pad/left");
-	if (key && l) {
+	if (key && l)
 		*l = atoi(key);
-	}
 
 	key = edje_object_data_get(w->theme_object, "pad/right");
-	if (key && r) {
+	if (key && r)
 		*r = atoi(key);
-	}
 
 	key = edje_object_data_get(w->theme_object, "pad/top");
-	if (key && t) {
+	if (key && t)
 		*t = atoi(key);
-	}
 
 	key = edje_object_data_get(w->theme_object, "pad/bottom");
-	if (key && b) {
+	if (key && b)
 		*b = atoi(key);
-	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2936,24 +2922,20 @@ ewl_widget_theme_insets_get(Ewl_Widget *w, int *l, int *r, int *t, int *b)
 	 * Read in the inset values from the edje file
 	 */
 	key = edje_object_data_get(w->theme_object, "inset/left");
-	if (key && l) {
+	if (key && l)
 		*l = atoi(key);
-	}
 
 	key = edje_object_data_get(w->theme_object, "inset/right");
-	if (key && r) {
+	if (key && r)
 		*r = atoi(key);
-	}
 
 	key = edje_object_data_get(w->theme_object, "inset/top");
-	if (key && t) {
+	if (key && t)
 		*t = atoi(key);
-	}
 
 	key = edje_object_data_get(w->theme_object, "inset/bottom");
-	if (key && b) {
+	if (key && b)
 		*b = atoi(key);
-	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
