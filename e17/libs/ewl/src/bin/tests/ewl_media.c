@@ -26,7 +26,6 @@ static void play_cb(Ewl_Widget *w, void *event, void *data);
 static void stop_cb(Ewl_Widget *w, void *event, void *data);
 static void ff_cb(Ewl_Widget *w, void *event, void *data); 
 static void rew_cb(Ewl_Widget *w, void *event, void *data);
-static void video_realize_cb(Ewl_Widget *w, void *event, void *data);
 static void video_change_cb(Ewl_Widget *w, void *event, void *data);
 static void seeker_move_cb(Ewl_Widget *w, void *event, void *data); 
 static void open_file_cb(Ewl_Widget *w, void *event, void *data);
@@ -150,16 +149,6 @@ rew_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__,
 }
 
 static void
-video_realize_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__, 
-				void *data __UNUSED__)
-{
-	double len;
-
-	len = ewl_media_length_get(EWL_MEDIA(video));
-	ewl_seeker_range_set(EWL_SEEKER(seeker), len);
-}
-
-static void
 video_change_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__, void *data)
 {
 	char buf[512];
@@ -198,6 +187,7 @@ open_file_cb(Ewl_Widget *w, void *event, void *data __UNUSED__)
 	e = event;
 	if (e->response == EWL_STOCK_OK)
 	{
+		int len;
 		char *file = NULL;
 		char buf[PATH_MAX];
 
@@ -207,7 +197,10 @@ open_file_cb(Ewl_Widget *w, void *event, void *data __UNUSED__)
 				file);
 
 		ewl_media_media_set(EWL_MEDIA(video), buf);
-		IF_FREE(file);
+		if (file) free(file);
+
+		len = ewl_media_length_get(EWL_MEDIA(video));
+		ewl_seeker_range_set(EWL_SEEKER(seeker), len);
 	}
 }
 
@@ -270,7 +263,6 @@ create_media_window(Ewl_Media_Module_Type type)
 	ewl_container_child_append(EWL_CONTAINER(b), video);
 	ewl_media_module_set(EWL_MEDIA(video), type);
 	ewl_object_fill_policy_set(EWL_OBJECT(video), EWL_FLAG_FILL_ALL);
-	ewl_callback_append(video, EWL_CALLBACK_REALIZE, video_realize_cb, NULL);
 	ewl_callback_append(video, EWL_CALLBACK_VALUE_CHANGED, video_change_cb, time);
 	ewl_widget_show(video);
 
@@ -281,7 +273,7 @@ create_media_window(Ewl_Media_Module_Type type)
 	ewl_container_child_append(EWL_CONTAINER(b), controls);
 	ewl_widget_show(controls);
 
-	/* hold he controls */
+	/* hold the controls */
 	b = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(controls), b);
 	ewl_widget_show(b);
