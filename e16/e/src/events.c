@@ -851,10 +851,11 @@ EventNotifyDetailName(unsigned int detail)
 void
 EventShow(const XEvent * ev)
 {
-   unsigned long       ser = ev->xany.serial;
-   Window              win = ev->xany.window;
-   const char         *name = EventName(ev->type);
-   char               *txt;
+   char               *txt, buf[64];
+
+   Esnprintf(buf, sizeof(buf), "%#08lx %cEV-%s ev=%#lx",
+	     ev->xany.serial, (ev->xany.send_event) ? '*' : ' ',
+	     EventName(ev->type), ev->xany.window);
 
    switch (ev->type)
      {
@@ -863,39 +864,34 @@ EventShow(const XEvent * ev)
 	goto case_common;
      case ButtonPress:
      case ButtonRelease:
-	Eprintf("%#08lx EV-%s win=%#lx sub=%#lx state=%#x button=%#x\n", ser,
-		name, win, ev->xbutton.subwindow, ev->xbutton.state,
-		ev->xbutton.button);
+	Eprintf("%s sub=%#lx state=%#x button=%#x\n", buf,
+		ev->xbutton.subwindow, ev->xbutton.state, ev->xbutton.button);
 	break;
      case MotionNotify:
-	Eprintf("%#08lx EV-%s win=%#lx sub=%#lx\n", ser, name, win,
-		ev->xcrossing.subwindow);
+	Eprintf("%s sub=%#lx\n", buf, ev->xcrossing.subwindow);
 	break;
      case EnterNotify:
      case LeaveNotify:
-	Eprintf
-	   ("%#08lx EV-%s win=%#lx sub=%#lx m=%s d=%s sscreen=%d focus=%d\n",
-	    ser, name, win, ev->xcrossing.subwindow,
-	    EventNotifyModeName(ev->xcrossing.mode),
-	    EventNotifyDetailName(ev->xcrossing.detail),
-	    ev->xcrossing.same_screen, ev->xcrossing.focus);
+	Eprintf("%s sub=%#lx m=%s d=%s sscreen=%d focus=%d\n", buf,
+		ev->xcrossing.subwindow,
+		EventNotifyModeName(ev->xcrossing.mode),
+		EventNotifyDetailName(ev->xcrossing.detail),
+		ev->xcrossing.same_screen, ev->xcrossing.focus);
 	break;
      case FocusIn:
      case FocusOut:
-	Eprintf("%#08lx EV-%s win=%#lx m=%s d=%s\n", ser, name, win,
-		EventNotifyModeName(ev->xfocus.mode),
+	Eprintf("%s m=%s d=%s\n", buf, EventNotifyModeName(ev->xfocus.mode),
 		EventNotifyDetailName(ev->xfocus.detail));
 	break;
      case KeymapNotify:
      case Expose:
      case GraphicsExpose:
-	Eprintf("%#08lx EV-%s: win=%#lx %d+%d %dx%d\n", ser, name, win,
+	Eprintf("%sx %d+%d %dx%d\n", buf,
 		ev->xexpose.x, ev->xexpose.y,
 		ev->xexpose.width, ev->xexpose.height);
 	break;
      case VisibilityNotify:
-	Eprintf("%#08lx EV-%s win=%#lx state=%d\n", ser, name, win,
-		ev->xvisibility.state);
+	Eprintf("%s state=%d\n", buf, ev->xvisibility.state);
 	break;
      case CreateNotify:
      case DestroyNotify:
@@ -906,45 +902,41 @@ EventShow(const XEvent * ev)
      case EX_EVENT_UNMAP_GONE:
      case EX_EVENT_MAP_GONE:
      case EX_EVENT_MAPREQUEST_GONE:
-	Eprintf("%#08lx EV-%s ev=%#lx win=%#lx\n", ser, name, win,
-		ev->xcreatewindow.window);
+	Eprintf("%s win=%#lx\n", buf, ev->xcreatewindow.window);
 	break;
      case ReparentNotify:
      case EX_EVENT_REPARENT_GONE:
-	Eprintf("%#08lx EV-%s ev=%#lx win=%#lx parent=%#lx %d+%d\n", ser, name,
-		win, ev->xreparent.window, ev->xreparent.parent,
+	Eprintf("%s win=%#lx parent=%#lx %d+%d\n", buf,
+		ev->xreparent.window, ev->xreparent.parent,
 		ev->xreparent.x, ev->xreparent.y);
 	break;
      case ConfigureNotify:
-	Eprintf
-	   ("%#08lx EV-%s: ev=%#lx, win=%#lx %d+%d %dx%d bw=%d above=%#lx\n",
-	    ser, name, win, ev->xconfigure.window, ev->xconfigure.x,
-	    ev->xconfigure.y, ev->xconfigure.width, ev->xconfigure.height,
-	    ev->xconfigure.border_width, ev->xconfigure.above);
+	Eprintf("%s win=%#lx %d+%d %dx%d bw=%d above=%#lx\n", buf,
+		ev->xconfigure.window, ev->xconfigure.x,
+		ev->xconfigure.y, ev->xconfigure.width, ev->xconfigure.height,
+		ev->xconfigure.border_width, ev->xconfigure.above);
 	break;
      case ConfigureRequest:
-	Eprintf
-	   ("%#08lx EV-%s: ev=%#lx win=%#lx m=%#lx %d+%d %dx%d bw=%d above=%#lx stk=%d\n",
-	    ser, name, win, ev->xconfigurerequest.window,
-	    ev->xconfigurerequest.value_mask, ev->xconfigurerequest.x,
-	    ev->xconfigurerequest.y, ev->xconfigurerequest.width,
-	    ev->xconfigurerequest.height, ev->xconfigurerequest.border_width,
-	    ev->xconfigurerequest.above, ev->xconfigurerequest.detail);
+	Eprintf("%s win=%#lx m=%#lx %d+%d %dx%d bw=%d above=%#lx stk=%d\n",
+		buf, ev->xconfigurerequest.window,
+		ev->xconfigurerequest.value_mask, ev->xconfigurerequest.x,
+		ev->xconfigurerequest.y, ev->xconfigurerequest.width,
+		ev->xconfigurerequest.height,
+		ev->xconfigurerequest.border_width, ev->xconfigurerequest.above,
+		ev->xconfigurerequest.detail);
 	break;
      case GravityNotify:
 	goto case_common;
      case ResizeRequest:
-	Eprintf("%#08lx EV-%s: win=%#lx %dx%d\n",
-		ser, name, win, ev->xresizerequest.width,
-		ev->xresizerequest.height);
+	Eprintf("%s %dx%d\n", buf,
+		ev->xresizerequest.width, ev->xresizerequest.height);
 	break;
      case CirculateNotify:
      case CirculateRequest:
 	goto case_common;
      case PropertyNotify:
 	txt = XGetAtomName(disp, ev->xproperty.atom);
-	Eprintf("%#08lx EV-%s: win=%#lx Atom=%s(%ld)\n",
-		ser, name, win, txt, ev->xproperty.atom);
+	Eprintf("%s Atom=%s(%ld)\n", buf, txt, ev->xproperty.atom);
 	XFree(txt);
 	break;
      case SelectionClear:
@@ -954,39 +946,36 @@ EventShow(const XEvent * ev)
 	goto case_common;
      case ClientMessage:
 	txt = XGetAtomName(disp, ev->xclient.message_type);
-	Eprintf
-	   ("%#08lx EV-%s win=%#lx ev_type=%s(%ld) data: %08lx %08lx %08lx %08lx %08lx\n",
-	    ser, name, win, txt, ev->xclient.message_type,
-	    ev->xclient.data.l[0], ev->xclient.data.l[1], ev->xclient.data.l[2],
-	    ev->xclient.data.l[3], ev->xclient.data.l[4]);
+	Eprintf("%s ev_type=%s(%ld) data: %08lx %08lx %08lx %08lx %08lx\n",
+		buf, txt, ev->xclient.message_type,
+		ev->xclient.data.l[0], ev->xclient.data.l[1],
+		ev->xclient.data.l[2], ev->xclient.data.l[3],
+		ev->xclient.data.l[4]);
 	XFree(txt);
 	break;
-     case MappingNotify:
-      case_common:
-	Eprintf("%#08lx EV-%s win=%#lx\n", ser, name, win);
-	break;
+
      case EX_EVENT_SHAPE_NOTIFY:
 #define se ((XShapeEvent *)ev)
-	Eprintf("%#08lx EV-%s win=%#lx kind=%d shaped=%d %d,%d %dx%d\n",
-		ser, name, win, se->kind, se->shaped,
-		se->x, se->y, se->width, se->height);
+	Eprintf("%s kind=%d shaped=%d %d,%d %dx%d\n", buf,
+		se->kind, se->shaped, se->x, se->y, se->width, se->height);
 #undef se
 	break;
 #if USE_XRANDR
      case EX_EVENT_SCREEN_CHANGE_NOTIFY:
-	Eprintf("%#08lx EV-%s win=%#lx\n", ser, name, win);
+	Eprintf("%s\n", buf);
 	break;
 #endif
 #if USE_COMPOSITE
 #define de ((XDamageNotifyEvent *)ev)
      case EX_EVENT_DAMAGE_NOTIFY:
-	Eprintf("%#08lx EV-%s win=%#lx %d+%d %dx%d\n", ser, name, win,
+	Eprintf("%s %d+%d %dx%d\n", buf,
 		de->area.x, de->area.y, de->area.width, de->area.height);
 	break;
 #undef de
 #endif
      default:
-	Eprintf("%#08lx EV-%s win=%#lx\n", ser, name, win);
+      case_common:
+	Eprintf("%s\n", buf);
 	break;
      }
 }
