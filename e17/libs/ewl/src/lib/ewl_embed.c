@@ -20,6 +20,10 @@ static void ewl_embed_smart_color_set_cb(Evas_Object *obj, int r, int g, int b,
 static void ewl_embed_smart_clip_set_cb(Evas_Object *obj, Evas_Object *clip);
 static void ewl_embed_smart_clip_unset_cb(Evas_Object *obj);
 
+static void ewl_embed_tab_order_change(Ewl_Embed *e, 
+					 void *(*change)(Ecore_DList *list),
+					 void *(*cycle)(Ecore_DList *list));
+
 /*
  * Catch mouse events processed through the evas
  */
@@ -1227,46 +1231,12 @@ ewl_embed_tab_order_remove(Ewl_Embed *e, Ewl_Widget *w)
  */
 void ewl_embed_tab_order_next(Ewl_Embed *e)
 {
-	Ewl_Widget *w, *start;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 	DCHECK_TYPE("e", e, EWL_EMBED_TYPE);
 
-	/* make sure the list is at the last focused widget */
-	if (e->last.focused)
-	{
-		ecore_dlist_goto(e->tab_order, e->last.focused);
-		ecore_dlist_next(e->tab_order);
-		if (!ecore_dlist_current(e->tab_order))
-			ecore_dlist_goto_first(e->tab_order);
-	}
-	else
-		ecore_dlist_goto_first(e->tab_order);
-
-	w = ecore_dlist_current(e->tab_order);
-	if (!w) DRETURN(DLEVEL_STABLE);
-
-	start = w;
-	while (!VISIBLE(w) || (!ewl_widget_focusable_get(w))
-			|| ewl_widget_internal_is(w)
-			|| DISABLED(w))
-	{
-		ecore_dlist_next(e->tab_order);
-		w = ecore_dlist_current(e->tab_order);
-
-		/* check if we hit the end of the list and loop to the start */
-		if (!w) 
-		{
-			ecore_dlist_goto_first(e->tab_order);
-			w = ecore_dlist_current(e->tab_order);
-		}
-
-		/* make sure we don't cycle */
-		if (w == start) DRETURN(DLEVEL_STABLE);
-	}
-
-	if (w) ewl_embed_focused_widget_set(e, w);
+	ewl_embed_tab_order_change(e, ecore_dlist_next, 
+					ecore_dlist_goto_first);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1279,22 +1249,47 @@ void ewl_embed_tab_order_next(Ewl_Embed *e)
 void
 ewl_embed_tab_order_previous(Ewl_Embed *e)
 {
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+	DCHECK_TYPE("e", e, EWL_EMBED_TYPE);
+
+	ewl_embed_tab_order_change(e, ecore_dlist_previous, 
+					ecore_dlist_goto_last);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/*
+ * @internal
+ * @param e: The embed
+ * @param change: Function pointer to move one node
+ * @param cycle: Function pointer to move to the other end of the list
+ * @return Returns no value
+ * @brief Get the next item in the tab order
+ */
+static void
+ewl_embed_tab_order_change(Ewl_Embed *e, void *(*change)(Ecore_DList *list),
+					 void *(*cycle)(Ecore_DList *list))
+{
 	Ewl_Widget *w, *start;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
+	DCHECK_PARAM_PTR("change", change);
+	DCHECK_PARAM_PTR("cycle", cycle);
 	DCHECK_TYPE("e", e, EWL_EMBED_TYPE);
 
 	/* make sure the list is at the last focused widget */
 	if (e->last.focused)
 	{
 		ecore_dlist_goto(e->tab_order, e->last.focused);
-		ecore_dlist_previous(e->tab_order);
+		change(e->tab_order);
 		if (!ecore_dlist_current(e->tab_order))
-			ecore_dlist_goto_last(e->tab_order);
+			cycle(e->tab_order);
 	}
 	else
-		ecore_dlist_goto_last(e->tab_order);
+		cycle(e->tab_order);
 
 	w = ecore_dlist_current(e->tab_order);
 	if (!w) DRETURN(DLEVEL_STABLE);
@@ -1304,18 +1299,19 @@ ewl_embed_tab_order_previous(Ewl_Embed *e)
 			|| ewl_widget_internal_is(w)
 			|| DISABLED(w))
 	{
-		ecore_dlist_previous(e->tab_order);
+		change(e->tab_order);
 		w = ecore_dlist_current(e->tab_order);
 
 		/* check if we hit the end of the list and loop to the start */
 		if (!w) 
 		{
-			ecore_dlist_goto_last(e->tab_order);
+			cycle(e->tab_order);
 			w = ecore_dlist_current(e->tab_order);
 		}
 
 		/* make sure we don't cycle */
-		if (w == start) DRETURN(DLEVEL_STABLE);
+		if (w == start) 
+			DRETURN(DLEVEL_STABLE);
 	}
 
 	if (w) ewl_embed_focused_widget_set(e, w);
@@ -1339,16 +1335,12 @@ ewl_embed_focused_widget_set(Ewl_Embed *embed, Ewl_Widget *w)
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	if (embed->last.focused)
-	{
 		ewl_callback_call(embed->last.focused, EWL_CALLBACK_FOCUS_OUT);
-	}
 
 	embed->last.focused = w;
 
 	if (embed->last.focused)
-	{
 		ewl_callback_call(embed->last.focused, EWL_CALLBACK_FOCUS_IN);
-	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
