@@ -353,13 +353,13 @@ static void _etk_filechooser_widget_constructor(Etk_Filechooser_Widget *fcw)
    etk_widget_visibility_locked_set(fcw->hpaned, ETK_TRUE);
    
    vpaned = etk_vpaned_new();
-   etk_paned_add1(ETK_PANED(fcw->hpaned), vpaned, ETK_FALSE);
+   etk_paned_child1_set(ETK_PANED(fcw->hpaned), vpaned, ETK_FALSE);
    etk_widget_show(vpaned);
    etk_widget_visibility_locked_set(vpaned, ETK_TRUE);
    
    fcw->places_tree = etk_tree_new();
    etk_widget_size_request_set(fcw->places_tree, 180, 180);
-   etk_paned_add1(ETK_PANED(vpaned), fcw->places_tree, ETK_TRUE);
+   etk_paned_child1_set(ETK_PANED(vpaned), fcw->places_tree, ETK_TRUE);
    fcw->places_col = etk_tree_col_new(ETK_TREE(fcw->places_tree), _("Places"), etk_tree_model_icon_text_new(ETK_TREE(fcw->places_tree), ETK_TREE_FROM_EDJE), 120);
    etk_tree_build(ETK_TREE(fcw->places_tree));
    etk_widget_show(fcw->places_tree);
@@ -368,7 +368,7 @@ static void _etk_filechooser_widget_constructor(Etk_Filechooser_Widget *fcw)
    
    fcw->fav_tree = etk_tree_new();
    etk_widget_size_request_set(fcw->fav_tree, 180, 180);
-   etk_paned_add2(ETK_PANED(vpaned), fcw->fav_tree, ETK_TRUE);
+   etk_paned_child2_set(ETK_PANED(vpaned), fcw->fav_tree, ETK_TRUE);
    fcw->fav_col = etk_tree_col_new(ETK_TREE(fcw->fav_tree), _("Favorites"), etk_tree_model_icon_text_new(ETK_TREE(fcw->fav_tree), ETK_TREE_FROM_EDJE), 120);
    etk_tree_build(ETK_TREE(fcw->fav_tree));
    etk_widget_show(fcw->fav_tree);
@@ -377,7 +377,7 @@ static void _etk_filechooser_widget_constructor(Etk_Filechooser_Widget *fcw)
    
    fcw->files_tree = etk_tree_new();
    etk_widget_size_request_set(fcw->files_tree, 400, 120);
-   etk_paned_add2(ETK_PANED(fcw->hpaned), fcw->files_tree, ETK_TRUE);
+   etk_paned_child2_set(ETK_PANED(fcw->hpaned), fcw->files_tree, ETK_TRUE);
    fcw->files_name_col = etk_tree_col_new(ETK_TREE(fcw->files_tree), _("Filename"), etk_tree_model_icon_text_new(ETK_TREE(fcw->files_tree), ETK_TREE_FROM_EDJE), 100);
    etk_tree_col_expand_set(fcw->files_name_col, ETK_TRUE);
    fcw->files_date_col = etk_tree_col_new(ETK_TREE(fcw->files_tree), _("Date"), etk_tree_model_text_new(ETK_TREE(fcw->files_tree)), 60);
