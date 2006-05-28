@@ -76,9 +76,6 @@
 
 - Ewl_Text:: need to fill in the condense function
 
-- Ewl_Media:: The layer for the video seems incorrect as it dosen't show up
-	      correctly. The audio plays, but the video isn't visible.
-
 
   Ewl_Icon
  - Need to add the constrain stuff in like iconbox does at the moment.
