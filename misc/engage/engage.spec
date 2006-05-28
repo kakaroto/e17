@@ -1,7 +1,7 @@
 Summary: engage
 Name: engage
 Version: 0.0.9
-Release: 1.%(date '+%Y%m%d')
+Release: 1.20060528
 License: BSD
 Group: Applications/Multimedia
 URL: http://www.enlightenment.org/
@@ -12,7 +12,7 @@ Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 #BuildSuggests: xorg-x11-devel
 BuildRequires: libjpeg-devel XFree86-devel
 BuildRequires: evas-devel edje-devel imlib2-devel ecore-devel esmart-devel
-BuildRequires: ewl-devel emotion-devel enlightenment-devel
+BuildRequires: ewl-devel enlightenment-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
