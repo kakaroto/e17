@@ -38,6 +38,7 @@ static struct
    int                 win_x, win_y, win_w, win_h;
    int                 swapcoord_x, swapcoord_y;
    int                 resize_detail;
+   char                nogroup;
 } Mode_mr;
 
 void
@@ -71,6 +72,7 @@ ActionMoveStart(EWin * ewin, int grab, char constrained, int nogroup)
       return 0;
 
    Mode_mr.ewin = ewin;
+   Mode_mr.nogroup = nogroup;
 
    SoundPlay("SOUND_MOVE_START");
 
@@ -134,7 +136,7 @@ ActionMoveEnd(EWin * ewin)
 
    ewin->state.show_coords = 0;
 
-   gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE, Mode.nogroup
+   gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE, Mode_mr.nogroup
 				      || Mode.move.swap, &num);
 
    if (Mode.mode == MODE_MOVE)
@@ -171,7 +173,6 @@ ActionMoveEnd(EWin * ewin)
 
  done:
    Mode.mode = MODE_NONE;
-   Mode.nogroup = 0;
    Mode.move.swap = 0;
    Mode.place.doing_manual = 0;
 
@@ -201,9 +202,8 @@ ActionMoveSuspend(void)
    /* If non opaque undraw our boxes */
    if (Mode_mr.mode > 0)
      {
-	lst =
-	   ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE, Mode.nogroup,
-				      &num);
+	lst = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE,
+					 Mode_mr.nogroup, &num);
 	for (i = 0; i < num; i++)
 	  {
 	     ewin = lst[i];
@@ -244,8 +244,8 @@ ActionMoveResume(void)
    dy = Mode.events.y - Mode_mr.win_y - EoGetY(EoGetDesk(ewin)) - ewin->shape_y;
 
    /* Redraw any windows that were in "move mode" */
-   lst =
-      ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE, Mode.nogroup, &num);
+   lst = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE,
+				    Mode_mr.nogroup, &num);
    for (i = 0; i < num; i++)
      {
 	ewin = lst[i];
@@ -441,7 +441,7 @@ ActionMoveHandleMotion(void)
    EdgeCheckMotion(Mode.events.x, Mode.events.y);
 
    gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE,
-				      Mode.nogroup || Mode.move.swap, &num);
+				      Mode_mr.nogroup || Mode.move.swap, &num);
 
    if (Mode.mode == MODE_MOVE_PENDING)
      {
