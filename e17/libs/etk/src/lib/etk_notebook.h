@@ -9,6 +9,7 @@
 /** TODO/FIXME list:
  * - Improve the default theme of the tabs
  * - Make the tab bar "swallowable"
+ * - Focus the first widget of the page when the current page is changed
  */
 
 /**

@@ -60,11 +60,13 @@ Etk_Type *etk_object_type_get()
 }
 
 /**
- * @brief Creates a new object and call the constructors then set the properties, according to the type of the object
+ * @brief Creates a new object: it calls the corresponding constructors (from the constructor of the base class to the
+ * constructor of the more derived class) and then sets the values of the given properties
  * @param object_type the type of the object to create
- * @param first_property the name of the first property value
- * @param ... the value of the first argument, followed by any number of name/argument-value pairs, terminated with NULL
- * @return Returns the new Etk_Object of type object_type
+ * @param first_property the name of the first property to set
+ * @param ... the value of the first property, followed by any number of property-name/property-value pairs,
+ * terminated with NULL
+ * @return Returns the new Etk_Object of type @a object_type
  */
 Etk_Object *etk_object_new(Etk_Type *object_type, const char *first_property, ...)
 {
@@ -82,11 +84,13 @@ Etk_Object *etk_object_new(Etk_Type *object_type, const char *first_property, ..
 }
 
 /**
- * @brief Creates a new object and call the constructors then set the properties, according to the type of the object
+ * @brief Creates a new object: it calls the corresponding constructors (from the constructor of the base class to the
+ * constructor of the more derived class) and then sets the values of the given properties
  * @param object_type the type of the object to create
- * @param first_property the name of the first property value
- * @param args the value of the first argument, followed by any number of name/argument-value pairs, terminated with NULL
- * @return Returns the new Etk_Object of type object_type
+ * @param first_property the name of the first property to set
+ * @param args the value of the first property, followed by any number of property-name/property-value pairs,
+ * terminated with NULL
+ * @return Returns the new Etk_Object of type @a object_type
  */
 Etk_Object *etk_object_new_valist(Etk_Type *object_type, const char *first_property, va_list args)
 {
@@ -109,7 +113,8 @@ Etk_Object *etk_object_new_valist(Etk_Type *object_type, const char *first_prope
 }
 
 /**
- * @brief Destroys the object: emits the "destroyed" signal, sets the weak pointers to NULL, calls the destructors and frees the object
+ * @brief Destroys the object: if first emits the "destroyed" signal, sets the weak pointers to NULL and then
+ * calls the destructors (from the destructor of the more derived class to the destructor of the ultimate base class)
  * @param object the object to destroy
  */
 void etk_object_destroy(Etk_Object *object)
@@ -124,7 +129,7 @@ void etk_object_destroy(Etk_Object *object)
 }
 
 /**
- * @brief Destroys all the created objects
+ * @brief Destroys all the created objects. You do not need to call it manually, etk_shutdown() calls it automatically
  */
 void etk_object_destroy_all_objects()
 {
@@ -133,11 +138,12 @@ void etk_object_destroy_all_objects()
 }
 
 /**
- * @brief Checks if @a object can be cast to  @a type @n
- * If it can't be, we display a message in the console but we return it anyway (should we?)
+ * @brief Checks if @a object can be cast to @a type.
+ * If @a object doesn't inherit from @a type, a warning is displayed in the console but the object is returned anyway.
  * @param object the object to cast
- * @param type the which we cast the object to
+ * @param type the type to which we cast the object
  * @return Returns the object
+ * @note You usually do not need to call this function, use specific macros instead (ETK_WIDGET() for example)
  */
 Etk_Object *etk_object_check_cast(Etk_Object *object, Etk_Type *type)
 {
@@ -152,22 +158,23 @@ Etk_Object *etk_object_check_cast(Etk_Object *object, Etk_Type *type)
 
 /**
  * @brief Gets the type of the object
- * @param object the object whose type is returned
- * @return Returns the type of the object @a object (NULL on failure)
+ * @param object an object
+ * @return Returns the type of @a object (NULL on failure)
  */
 Etk_Type *etk_object_object_type_get(Etk_Object *object)
 {
    if (!object)
       return NULL;
-
    return object->type;
 }
 
 /**
- * @brief Adds @a signal_callback to the list of signal callbacks of the object
- * @param object the object to add the signal callback to
+ * @brief Adds @a signal_callback to the list of the signal callbacks of the object
+ * @param object an object
  * @param signal_callback the signal callback to add
- * @param after if @a after == ETK_TRUE, the callback will be called after the default handler, otherwise, it will be called before
+ * @param after if @a after == ETK_TRUE, the callback will be called after the default handler.
+ * Otherwise, it will be called before.
+ * @note You usually do not need to call this function, use etk_signal_connect() instead.
  */
 void etk_object_signal_callback_add(Etk_Object *object, Etk_Signal_Callback *signal_callback, Etk_Bool after)
 {
@@ -181,9 +188,10 @@ void etk_object_signal_callback_add(Etk_Object *object, Etk_Signal_Callback *sig
 }
 
 /**
- * @brief Removes @a signal_callback from the list of signal callbacks of the object, and frees it
- * @param object the object to remove the signal callback from
+ * @brief Removes @a signal_callback from the list of the signal callbacks of the object
+ * @param object an object
  * @param signal_callback the signal callback to remove
+ * @note You usually do not need to call this function, use etk_signal_disconnect() instead.
  */
 void etk_object_signal_callback_remove(Etk_Object *object, Etk_Signal_Callback *signal_callback)
 {
@@ -205,9 +213,13 @@ void etk_object_signal_callback_remove(Etk_Object *object, Etk_Signal_Callback *
 }
 
 /**
- * @brief Adds a weak pointer to the object. The pointer will be set to NULL when the object is destroyed
+ * @brief Adds a weak pointer to the object. A weak pointer is pointer that is automatically set
+ * to NULL when the object is destroyed
  * @param object an object
  * @param pointer_location the location of the weak pointer to add
+ * @warning if the @a pointer_location is not accessible when the object is destroyed, it may segfaults. So you have
+ * to use etk_object_weak_pointer_remove() when @a pointer_location becomes inaccessible
+ * @see etk_object_weak_pointer_remove()
  */
 void etk_object_weak_pointer_add(Etk_Object *object, void **pointer_location)
 {
@@ -220,6 +232,7 @@ void etk_object_weak_pointer_add(Etk_Object *object, void **pointer_location)
  * @brief Removes a weak pointer from the object
  * @param object an object
  * @param pointer_location the location of the weak pointer to remove
+ * @see etk_object_weak_pointer_add()
  */
 void etk_object_weak_pointer_remove(Etk_Object *object, void **pointer_location)
 {
@@ -229,12 +242,13 @@ void etk_object_weak_pointer_remove(Etk_Object *object, void **pointer_location)
 }
 
 /**
- * @brief Append the signal callbacks associated to the object @a object and the signal @a signal to the list @a callbacks
- * @param object the object associated to the signal
- * @param signal the signal which we want the callbacks
- * @param callbacks the location of the list where the callbacks will be appended
- * @param after if @a after == ETK_TRUE, it appends the callbacks to call after the default handler. @n
+ * @brief Gets the signal callbacks connected to the signal @a signal of the object @a object
+ * @param object the object connected to the signal
+ * @param signal the signal of which we want the callbacks
+ * @param callbacks the location of a list where the signal callbacks will be appended
+ * @param after if @a after == ETK_TRUE, it appends only the callbacks that have to be called after the default handler. @n
  * Otherwise, it appends the callbacks called before the default handler
+ * @note You usually do not need to call this function manually, it is used by etk_signal_emit()
  */
 void etk_object_signal_callbacks_get(Etk_Object *object, Etk_Signal *signal, Evas_List **callbacks, Etk_Bool after)
 {
@@ -254,10 +268,12 @@ void etk_object_signal_callbacks_get(Etk_Object *object, Etk_Signal *signal, Eva
 }
 
 /**
- * @brief Sets data associated to a key for the object
- * @param object the object to add the data to
- * @param key the key associated to the data
+ * @brief Sets the data associated to a key for the object. The data could be retrieved later with etk_object_data_get()
+ * @param object the object to which the data will be added
+ * @param key the key to associate to the data
  * @param value the value of the data
+ * @note If you want the data to be freed when the object is destroyed or when the value is changed,
+ * use etk_object_data_set_full() instead.
  */
 void etk_object_data_set(Etk_Object *object, const char *key, void *value)
 {
@@ -265,10 +281,10 @@ void etk_object_data_set(Etk_Object *object, const char *key, void *value)
 }
 
 /**
- * @brief Sets data associated to a key for the object
- * @param object the object to add the data to
- * @param key the key associated to the data
- * @param free_cb the function to call on the data when the object is destroyed
+ * @brief Sets the data associated to a key for the object. The data could be retrieved later with etk_object_data_get()
+ * @param object the object to which the data will be added
+ * @param key the key to associate to the data
+ * @param free_cb the function to call on the data when the object is destroyed or when the value is changed
  * @param value the value of the data
  */
 void etk_object_data_set_full(Etk_Object *object, const char *key, void *value, void (*free_cb)(void *data))
@@ -294,7 +310,7 @@ void etk_object_data_set_full(Etk_Object *object, const char *key, void *value, 
 
 /**
  * @brief Gets the data associated to the key
- * @param object the object to get the data from
+ * @param object the object which has the data
  * @param key the key associated to the data
  * @return Returns the value of the data, NULL on failure
  */
@@ -308,8 +324,8 @@ void *etk_object_data_get(Etk_Object *object, const char *key)
 }
 
 /**
- * @brief Reset the default value of a property
- * @param object the object that has the property
+ * @brief Resets the default value of a property
+ * @param object the object that has the property to reset
  * @param property_name the name of the property to reset
  */
 void etk_object_property_reset(Etk_Object *object, const char *property_name)
@@ -328,10 +344,11 @@ void etk_object_property_reset(Etk_Object *object, const char *property_name)
 }
 
 /**
- * @brief Sets several property values
- * @param object the object that have the property values
+ * @brief Sets the values of several properties
+ * @param object the object that has the properties to set
  * @param first_property the name of the first property value
- * @param ... the value of the first argument, followed by any number of name/value pairs, terminated with NULL
+ * @param ... the value of the first property, followed by any number of property-name/property-value pairs,
+ * terminated with NULL
  */
 void etk_object_properties_set(Etk_Object *object, const char *first_property, ...)
 {
@@ -346,10 +363,11 @@ void etk_object_properties_set(Etk_Object *object, const char *first_property, .
 }
 
 /**
- * @brief Sets several property values
- * @param object the object that have the property values
+ * @brief Sets the values of several properties
+ * @param object the object that has the properties to set
  * @param first_property the name of the first property value
- * @param args the value of the first argument, followed by any number of name/value pairs, terminated with NULL
+ * @param args the value of the first property, followed by any number of property-name/property-value pairs,
+ * terminated with NULL
  */
 void etk_object_properties_set_valist(Etk_Object *object, const char *first_property, va_list args)
 {
@@ -385,10 +403,11 @@ void etk_object_properties_set_valist(Etk_Object *object, const char *first_prop
 }
 
 /**
- * @brief Gets several property values
- * @param object the object that have the property values
+ * @brief Gets the values of several properties
+ * @param object the object that has the properties
  * @param first_property the name of the first property value
- * @param ... the value of the first argument, followed by any number of name/value pairs, terminated with NULL
+ * @param ... the value of the first property, followed by any number of property-name/property-value-location pairs,
+ * terminated with NULL
  */
 void etk_object_properties_get(Etk_Object *object, const char *first_property, ...)
 {
@@ -403,10 +422,11 @@ void etk_object_properties_get(Etk_Object *object, const char *first_property, .
 }
 
 /**
- * @brief Gets several property values
- * @param object the object that have the property values
+ * @brief Gets the values of several properties
+ * @param object the object that has the properties
  * @param first_property the name of the first property value
- * @param args the value of the first argument, followed by any number of name/value pairs, terminated with NULL
+ * @param args the value of the first property, followed by any number of property-name/property-value-location pairs,
+ * terminated with NULL
  */
 void etk_object_properties_get_valist(Etk_Object *object, const char *first_property, va_list args)
 {
@@ -443,10 +463,11 @@ void etk_object_properties_get_valist(Etk_Object *object, const char *first_prop
 }
 
 /**
- * @brief Calls the notification callbacks associated to the object and the property @n
- * It should be called each time the property value is changed
+ * @brief Calls the notification callbacks associated the property of the object.
+ * It should be called each time the value of the property is changed
  * @param object an object
  * @param property_name the name of the property
+ * @note This function is mainly used in object implementations, you usually do not need to call it manually
  */
 void etk_object_notify(Etk_Object *object, const char *property_name)
 {
@@ -468,7 +489,7 @@ void etk_object_notify(Etk_Object *object, const char *property_name)
       if (callback->callback)
          callback->callback(object, property_name, callback->data);
       
-      /* The object has been destroyed */
+      /* If the object has been destroyed by the notification callback, we return */
       if (!object_ptr)
          return;
    }
@@ -476,14 +497,15 @@ void etk_object_notify(Etk_Object *object, const char *property_name)
 }
 
 /**
- * @brief Adds a notification callback associated to the object and the property @n
- * It will be called each time the property value is changed
+ * @brief Adds a notification callback associated to a property of the object.
+ * The callback will be called each time the value of the property is changed
+ * (each time etk_object_notify(object, property_name) is called).
  * @param object an object
  * @param property_name the name of the property
  * @param callback the callback function
  * @param data the data to pass to the callback
  */
-void etk_object_notification_callback_add(Etk_Object *object, const char *property_name, Etk_Notification_Callback_Function callback, void *data)
+void etk_object_notification_callback_add(Etk_Object *object, const char *property_name, void (*callback)(Etk_Object *object, const char *property_name, void *data), void *data)
 {
    Evas_List **list;
    Etk_Notification_Callback *new_callback;
@@ -505,12 +527,12 @@ void etk_object_notification_callback_add(Etk_Object *object, const char *proper
 }
 
 /**
- * @brief Removes a notification callback associated to the object and the property
+ * @brief Removes a notification callback associated to a property of the object
  * @param object an object
  * @param property_name the name of the property
  * @param callback the callback function
  */
-void etk_object_notification_callback_remove(Etk_Object *object, const char *property_name, Etk_Notification_Callback_Function callback)
+void etk_object_notification_callback_remove(Etk_Object *object, const char *property_name, void (*callback)(Etk_Object *object, const char *property_name, void *data))
 {
    Evas_List *l;
    Evas_List **list;
@@ -539,7 +561,7 @@ void etk_object_notification_callback_remove(Etk_Object *object, const char *pro
  *
  **************************/
 
-/* Initializes the members of the object */
+/* Initializes the object */
 static void _etk_object_constructor(Etk_Object *object)
 {
    if (!object)
@@ -573,12 +595,14 @@ static void _etk_object_destructor(Etk_Object *object)
    while (object->before_signal_callbacks_list)
    {
       etk_signal_callback_del(object->before_signal_callbacks_list->data);
-      object->before_signal_callbacks_list = evas_list_remove_list(object->before_signal_callbacks_list, object->before_signal_callbacks_list);
+      object->before_signal_callbacks_list = evas_list_remove_list(object->before_signal_callbacks_list,
+         object->before_signal_callbacks_list);
    }
    while (object->after_signal_callbacks_list)
    {
       etk_signal_callback_del(object->after_signal_callbacks_list->data);
-      object->after_signal_callbacks_list = evas_list_remove_list(object->after_signal_callbacks_list, object->after_signal_callbacks_list);
+      object->after_signal_callbacks_list = evas_list_remove_list(object->after_signal_callbacks_list
+         object->after_signal_callbacks_list);
    }
    
    evas_hash_foreach(object->notification_callbacks_hash, _etk_object_notification_callbacks_free_cb, NULL);
@@ -634,13 +658,75 @@ static Evas_Bool _etk_object_data_free_cb(Evas_Hash *hash, const char *key, void
 
 /**
  * @addtogroup Etk_Object
- * Etk_Object implements advanced features such as inheritance, constructors/destructors, properties and signals.
+ * Etk_Object implements advanced features such as inheritance, constructors/destructors, signals and properties. @n @n
+ *
+ * <hr>
+ * <b>Constructors/Destructors:</b> @n
+ * A new object can be created with etk_object_new(). For example:
+ * @code
+ * //Creates a new unfocusable slider, for the range [1.0 - 3.0] and with the initial value 2.0
+ * slider = etk_object_new(ETK_SLIDER_TYPE, "focusable", ETK_FALSE, "lower", 1.0, "upper", 3.0, "value", 2.0, NULL);
+ * @endcode
+ * The first argument is the type of the object to create, followed by any number of property-name/property-value pairs,
+ * and terminated with NULL. @n
+ * etk_object_new() automatically calls the corresponding constructors on the object, from the constructor of
+ * the base class to the constructor of the more derived class. @n
+ *
+ * You can also destroy an object with etk_object_destroy(). It sets the weak pointers of the object to NULL
+ * (see etk_object_weak_pointer_add()) and then calls the destructors from the destructor of the more derived class
+ * to the destructor of the ultimate base class. @n @n
+ *
+ * <b>Signal concept:</b> @n
+ * Each object has a list of signals that can be connected to one or several callbacks. The callbacks connected to
+ * a signal will automatically be called when the signal is emitted with etk_signal_emit(). @n
+ * You can connect a callback to a signal with etk_signal_connect(). For example:
+ * @code
+ * //Callback prototype
+ * void clicked_cb(Etk_Button *button, void *data);
+ *
+ * //Connects the callback "clicked_cb()" to the signal "clicked" of the button
+ * etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(clicked_cb), user_data);
+ * @endcode
+ *
+ * You can also disconnect a callback from a signal with etk_signal_disconnect(). For instance: 
+ * @code
+ * //Disconnects the callback "clicked_cb()" from the signal "clicked"
+ * etk_signal_disconnect("clicked", ETK_OBJECT(button), ETK_CALLBACK(clicked_cb));
+ * @endcode
+ *
+ * Each object inherits the signals of its parent classes (for instance, an Etk_Button has the signals of Etk_Object,
+ * Etk_Widget, Etk_Container, Etk_Bin and Etk_Button).
+ * Each object's documentation page has a list of its signals with the associated callback prototype and a short
+ * explanation. @n
+ * For more information about signals, see the documentation page of Etk_Signal. @n @n
+ *
+ * <b>Property concept:</b> @n
+ * Each object also has a list of properties. Each property has a specific type, a default value, and can be either
+ * readable, writable or both. You can set or get the value of a property with etk_object_properties_set() and
+ * etk_object_properties_set(). @n
+ *
+ * Another important point about the property system is that you can add a notification callback to a property. The
+ * callback will be called each time the value of the property is changed (i.e. each time etk_object_notify() is called
+ * on that property). This can be done with etk_object_notification_callback_add(). For example:
+ * @code
+ * //Notification callback prototype
+ * void value_changed_cb(Etk_Object *object, const char *property_name, void *data);
+ *
+ * //Adds a notification callback to the property "upper" of the slider.
+ * //It will be called when the upper bound of the slider is changed
+ * etk_object_notification_callback_add(ETK_OBJECT(slider), "upper", value_changed_cb, user_data);
+ * @endcode
+ *
+ * Each object inherits the properties of its parent classes (for instance, an Etk_Button has the properties of
+ * Etk_Object, Etk_Widget, Etk_Container, Etk_Bin and Etk_Button).
+ * <hr>
+ * @n @n
  * 
  * \par Object Hierarchy:
  * - Etk_Object
  *
  * \par Signals:
- * @signal_name "destroyed": Emitted just before all the destructors of the objects are called
+ * @signal_name "destroyed": Emitted just before all the destructors of the object are called
  * @signal_cb void callback(Etk_Object *object, void *data)
  * @signal_arg object: the object which is about to be destroyed
  * @signal_data

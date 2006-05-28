@@ -27,8 +27,7 @@ typedef void (*Etk_Destructor)(Etk_Object *object);
 typedef void (*Etk_Signal_Callback_Function)(void);
 typedef void (*Etk_Signal_Swapped_Callback_Function)(void *data);
 typedef void (*Etk_Marshaller)(Etk_Signal_Callback_Function callback, Etk_Object *object, void *data, void *return_value, va_list arguments);
-typedef void (*Etk_Accumulator)(void *return_value, const void *value_to_accum, void *data); 
-typedef void (*Etk_Notification_Callback_Function)(Etk_Object *object, const char *property_name, void *data);
+typedef void (*Etk_Accumulator)(void *return_value, const void *value_to_accum, void *data);
 
 typedef struct _Etk_Widget Etk_Widget;
 typedef struct _Etk_Event_Mouse_In_Out Etk_Event_Mouse_In_Out;

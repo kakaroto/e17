@@ -34,12 +34,12 @@
 struct Etk_Notification_Callback
 {
    /* private: */
-   Etk_Notification_Callback_Function callback;
+   void (*callback)(Etk_Object *object, const char *property_name, void *data);
    void *data;
 };
 
 /**
- * @brief @widget The structure of an object
+ * @brief @object The structure of an object
  * @structinfo
  */
 struct Etk_Object
@@ -80,8 +80,8 @@ void etk_object_properties_get(Etk_Object *object, const char *first_property, .
 void etk_object_properties_get_valist(Etk_Object *object, const char *first_property, va_list args);
 
 void etk_object_notify(Etk_Object *object, const char *property_name);
-void etk_object_notification_callback_add(Etk_Object *object, const char *property_name, Etk_Notification_Callback_Function callback, void *data);
-void etk_object_notification_callback_remove(Etk_Object *object, const char *property_name, Etk_Notification_Callback_Function callback);
+void etk_object_notification_callback_add(Etk_Object *object, const char *property_name, void (*callback)(Etk_Object *object, const char *property_name, void *data), void *data);
+void etk_object_notification_callback_remove(Etk_Object *object, const char *property_name, void (*callback)(Etk_Object *object, const char *property_name, void *data));
 
 /** @} */
 
