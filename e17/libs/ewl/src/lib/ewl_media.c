@@ -61,6 +61,8 @@ ewl_media_init(Ewl_Media *m)
 
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE, ewl_media_realize_cb,
 									NULL);
+	ewl_callback_append(w, EWL_CALLBACK_REVEAL, ewl_media_reveal_cb,
+									NULL);
 	ewl_callback_append(w, EWL_CALLBACK_UNREALIZE, ewl_media_unrealize_cb,
 									NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_media_configure_cb,
@@ -496,17 +498,41 @@ ewl_media_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		ewl_media_size_update(m);
 	}
 #endif
-
-	evas_object_smart_member_add(m->video, w->smart_object);
-	if (w->fx_clip_box) {
-		evas_object_clip_set(m->video, w->fx_clip_box);
-		evas_object_stack_below(m->video, w->fx_clip_box);
-	}
-
 	/*
 	 * Now set the media and display it.
 	 */
 	evas_object_show(m->video);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The reveal callback
+ */
+void
+ewl_media_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+				void *user_data __UNUSED__)
+{
+	Ewl_Media *m;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	m = EWL_MEDIA(w);
+
+	if (m->video) {
+		evas_object_smart_member_add(m->video, w->smart_object);
+		if (w->fx_clip_box) {
+			evas_object_clip_set(m->video, w->fx_clip_box);
+			evas_object_stack_above(m->video, w->fx_clip_box);
+		}
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

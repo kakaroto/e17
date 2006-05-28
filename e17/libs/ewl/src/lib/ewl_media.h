@@ -79,6 +79,7 @@ void			 ewl_media_audio_volume_set(Ewl_Media *m, double v);
  * Internally used callbacks, override at your own risk.
  */
 void ewl_media_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_media_reveal_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_media_unrealize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_media_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 
