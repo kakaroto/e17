@@ -11,7 +11,8 @@ Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project 
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 #BuildSuggests: xorg-x11-devel
 BuildRequires: libjpeg-devel XFree86-devel
-BuildRequires: evas-devel edje-devel imlib2-devel ecore-devel esmart-devel ewl-devel
+BuildRequires: evas-devel edje-devel imlib2-devel ecore-devel esmart-devel
+BuildRequires: ewl-devel emotion-devel enlightenment-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
@@ -39,9 +40,7 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-, root, root)
 %doc AUTHORS ChangeLog COPYING README
-%{_bindir}/*
-%{_datadir}/*
-%{_libdir}/%{name}
-%{_libdir}/enlightenment/modules_extra/%{name}
+%{_bindir}/%{name}
+%{_libdir}/enlightenment/modules/%{name}*
 
 %changelog
