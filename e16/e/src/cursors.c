@@ -69,22 +69,30 @@ ECursorCreate(const char *name, const char *image, int native_id, XColor * fg,
 	XReadBitmapFile(disp, VRoot.xwin, msk, &w, &h, &mask, &xh, &yh);
 	XReadBitmapFile(disp, VRoot.xwin, img, &w, &h, &pmap, &xh, &yh);
 	XQueryBestCursor(disp, VRoot.xwin, w, h, &ww, &hh);
-	if ((w > ww) || (h > hh))
+	curs = None;
+	if ((w <= ww) && (h <= hh) && (pmap))
 	  {
-	     EFreePixmap(pmap);
-	     EFreePixmap(mask);
-	     Efree(img);
-	     return NULL;
+	     EAllocColor(VRoot.cmap, fg);
+	     EAllocColor(VRoot.cmap, bg);
+	     if (xh < 0 || xh >= (int)w)
+		xh = (int)w / 2;
+	     if (yh < 0 || yh >= (int)h)
+		yh = (int)h / 2;
+	     curs = XCreatePixmapCursor(disp, pmap, mask, fg, bg, xh, yh);
 	  }
 
-	EAllocColor(VRoot.cmap, fg);
-	EAllocColor(VRoot.cmap, bg);
+	if (!curs)
+	   Eprintf("*** Failed to create cursor \"%s\" from %s,%s\n",
+		   name, img, msk);
 
-	curs = 0;
-	curs = XCreatePixmapCursor(disp, pmap, mask, fg, bg, xh, yh);
-	EFreePixmap(pmap);
-	EFreePixmap(mask);
+	if (pmap)
+	   EFreePixmap(pmap);
+	if (mask)
+	   EFreePixmap(mask);
 	Efree(img);
+
+	if (!curs)
+	   return NULL;
      }
    else
      {
