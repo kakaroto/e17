@@ -387,7 +387,6 @@ EWin               *EwinFindByPtr(const EWin * ewin);
 EWin               *EwinFindByFrame(Window win);
 EWin               *EwinFindByClient(Window win);
 EWin               *EwinFindByChildren(Window win);
-EWin               *EwinFindByString(const char *win, int type);
 EWin              **EwinListTransients(const EWin * ewin, int *num, int group);
 EWin              **EwinListTransientFor(const EWin * ewin, int *num);
 

@@ -79,28 +79,132 @@ IpcPrintf(const char *fmt, ...)
    bufsiz += len;
 }
 
-static EWin        *
-IpcFindEwin(const char *windowid)
+static EWin       **
+IpcFindEwins(const char *match, int *pnum, int *pflags)
 {
-   unsigned int        win;
+   EWin               *ewin, **lst;
+   EWin               *const *ewins;
+   int                 type;
+   int                 i, num, len, nfound, match_one, flags;
 
-   if (!strcmp(windowid, "*") || !strcmp(windowid, "%")
-       || !strcmp(windowid, "current"))
-      return GetContextEwin();
+   if (pnum)
+      *pnum = 0;
 
-   if (isdigit(windowid[0]))
+   if (!match || !match[0])
+      return NULL;
+
+   ewin = NULL;
+   flags = 0;
+
+   if (!strcmp(match, "*") || !strcmp(match, "=") || !strcmp(match, "current"))
      {
-	sscanf(windowid, "%x", &win);
-	return EwinFindByChildren(win);
+	ewin = GetContextEwin();
+	if (match[0] == '=')
+	   flags = 1;		/* Nogroup */
+	goto do_one;
      }
 
-   if (windowid[0] == '+')
-      return EwinFindByString(windowid + 1, '+');
+   if (isdigit(match[0]))
+     {
+	unsigned int        win;
 
-   if (windowid[0] == '=')
-      return EwinFindByString(windowid + 1, '=');
+	sscanf(match, "%x", &win);
+	ewin = EwinFindByChildren(win);
+	goto do_one;
+     }
 
-   return EwinFindByString(windowid, '=');
+   match_one = 1;
+   if (!strcmp(match, "all"))
+     {
+	type = 'a';
+	match_one = 0;
+	flags = 1;		/* Nogroup */
+     }
+   else if (match[0] == '=')
+     {
+	type = 's';
+	match++;
+	flags = 1;		/* Nogroup */
+     }
+   else if (strchr(match, '*'))
+     {
+	type = 'w';
+	match_one = 0;
+	flags = 1;		/* Nogroup */
+     }
+   else
+     {
+	type = 's';
+     }
+
+   len = strlen(match);
+   if (len <= 0)
+      return NULL;
+
+   ewins = EwinListGetAll(&num);
+   if (!ewins)
+      return NULL;
+
+   nfound = 0;
+   lst = NULL;
+   for (i = 0; i < num; i++)
+     {
+	ewin = ewins[i];
+
+	if (type == 'a')	/* All */
+	  {
+	  }
+	else if (type == 'w')	/* Wildcard */
+	  {
+	     if (!matchregexp(match, ewin->icccm.wm_name))
+		continue;
+	  }
+	else			/* Match name (substring) */
+	  {
+	     const char         *name;
+
+	     name = ewin->icccm.wm_name;
+	     if (!name)
+		continue;
+	     if (!strstr(name, match))
+		continue;
+	  }
+	nfound++;
+	lst = Erealloc(lst, nfound * sizeof(EWin *));
+	lst[nfound - 1] = ewin;
+	if (match_one)
+	   break;
+     }
+   goto done;
+
+ do_one:
+   if (!ewin)
+      return NULL;
+   nfound = 1;
+   lst = Emalloc(sizeof(EWin *));
+   if (!lst)
+      return NULL;
+   lst[0] = ewin;
+
+ done:
+   if (pnum)
+      *pnum = nfound;
+   if (pflags)
+      *pflags = flags;
+   return lst;
+}
+
+static EWin        *
+IpcFindEwin(const char *match)
+{
+   EWin               *ewin, **lst;
+
+   lst = IpcFindEwins(match, NULL, NULL);
+   if (!lst)
+      return NULL;
+   ewin = lst[0];
+   Efree(lst);
+   return ewin;
 }
 
 static int
@@ -315,18 +419,33 @@ static void
 IPC_WinList(const char *params, Client * c __UNUSED__)
 {
    static const char  *const TxtPG[] = { "NW", "NE", "SW", "SE" };
-   char                param1[FILEPATH_LEN_MAX];
-   EWin               *const *lst, *e;
+   char                format[8];
+   const char         *match;
+   EWin              **lst, *e;
    int                 num, i;
 
-   param1[0] = '\0';
-   word(params, 1, param1);
+   format[0] = '\0';
+   match = params;
+   if (match)
+     {
+	num = 0;
+	sscanf(params, "%8s %n", format, &num);
+	match += num;
+     }
+   if (!match || !match[0])
+      match = "all";
 
-   lst = EwinListGetAll(&num);
+   lst = IpcFindEwins(match, &num, NULL);
+   if (!lst)
+     {
+	IpcPrintf("No windows matching %s\n", match);
+	return;
+     }
+
    for (i = 0; i < num; i++)
      {
 	e = lst[i];
-	switch (param1[0])
+	switch (format[0])
 	  {
 	  case '\0':
 	     IpcPrintf("%#lx : %s\n", _EwinGetClientXwin(e),
@@ -366,8 +485,7 @@ IPC_WinList(const char *params, Client * c __UNUSED__)
 	     break;
 	  }
      }
-   if (num <= 0)
-      IpcPrintf("No windows\n");
+   Efree(lst);
 }
 
 #if 0				/* TBD */
@@ -398,51 +516,15 @@ doMoveConstrainedNoGroup(EWin * ewin, const char *params)
 #endif
 
 static void
-IPC_WinOps(const char *params, Client * c __UNUSED__)
+IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 {
-   EWin               *ewin;
-   char                windowid[FILEPATH_LEN_MAX];
-   char                operation[FILEPATH_LEN_MAX];
-   char                param1[FILEPATH_LEN_MAX];
-   const char         *p;
-   const WinOp        *wop;
+   char                param1[128], param2[128];
    unsigned int        val;
    char                on;
    int                 a, b;
 
-   if (params == NULL)
-     {
-	IpcPrintf("Error: no window specified");
-	goto done;
-     }
-
-   operation[0] = 0;
-   param1[0] = 0;
-
-   windowid[0] = 0;
-   word(params, 1, windowid);
-   ewin = IpcFindEwin(windowid);
-   if (!ewin)
-     {
-	IpcPrintf("Error: no such window: %s", windowid);
-	goto done;
-     }
-
-   word(params, 2, operation);
-   word(params, 3, param1);
-
-   if (!operation[0])
-     {
-	IpcPrintf("Error: no operation specified");
-	goto done;
-     }
-
-   wop = EwinOpFind(operation);
-   if (!wop)
-     {
-	IpcPrintf("Error: unknown operation");
-	goto done;
-     }
+   param1[0] = param2[0] = '\0';
+   sscanf(prm, "%128s %128s", param1, param2);
 
    switch (wop->op)
      {
@@ -466,19 +548,18 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	break;
 
      case EWIN_OP_TITLE:
-	p = atword(params, 3);
-	if (!p)
+	if (!prm[0])
 	  {
 	     IpcPrintf("Error: no title specified");
 	     goto done;
 	  }
-	if (!strcmp(p, "?"))
+	if (!strcmp(prm, "?"))
 	  {
 	     IpcPrintf("title: %s", ewin->icccm.wm_name);
 	     goto done;
 	  }
 	_EFREE(ewin->icccm.wm_name);
-	ewin->icccm.wm_name = Estrdup(p);
+	ewin->icccm.wm_name = Estrdup(prm);
 	XStoreName(disp, _EwinGetClientXwin(ewin), ewin->icccm.wm_name);
 	EwinBorderUpdateInfo(ewin);
 	break;
@@ -555,14 +636,15 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	else if (!strcmp(param1, "move"))
 	  {
 	     a = b = 0;
-	     sscanf(params, "%*s %*s %*s %i %i", &a, &b);
+	     sscanf(prm, "%*s %i %i", &a, &b);
 	     EwinMoveToArea(ewin, ewin->area_x + a, ewin->area_y + b);
 	  }
 	else
 	  {
 	     a = ewin->area_x;
 	     b = ewin->area_y;
-	     sscanf(params, "%*s %*s %i %i", &a, &b);
+	     sscanf(param1, "%i", &a);
+	     sscanf(param2, "%i", &b);
 	     EwinMoveToArea(ewin, a, b);
 	  }
 	break;
@@ -575,7 +657,7 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	  }
 	if (!strcmp(param1, "ptr"))
 	  {
-	     ActionMoveStart(ewin, 1, 0, 0);
+	     ActionMoveStart(ewin, 1, 0, Mode.nogroup);
 	  }
 	else if (!strcmp(param1, "?"))
 	  {
@@ -589,7 +671,10 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	  }
 	else
 	  {
-	     sscanf(params, "%*s %*s %i %i", &a, &b);
+	     a = EoGetX(ewin);
+	     b = EoGetY(ewin);
+	     sscanf(param1, "%i", &a);
+	     sscanf(param2, "%i", &b);
 	     EwinOpMove(ewin, OPSRC_USER, a, b);
 	  }
 	break;
@@ -620,7 +705,10 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	  }
 	else
 	  {
-	     sscanf(params, "%*s %*s %i %i", &a, &b);
+	     a = ewin->client.w;
+	     b = ewin->client.h;
+	     sscanf(param1, "%i", &a);
+	     sscanf(param2, "%i", &b);
 	     EwinOpResize(ewin, OPSRC_USER, a, b);
 	  }
 	break;
@@ -628,8 +716,8 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
      case EWIN_OP_MOVE_REL:
 	if (!param1[0])
 	   goto done;
-
-	sscanf(params, "%*s %*s %i %i", &a, &b);
+	a = b = 0;
+	sscanf(prm, "%i %i", &a, &b);
 	a += EoGetX(ewin);
 	b += EoGetY(ewin);
 	EwinOpMove(ewin, OPSRC_USER, a, b);
@@ -638,8 +726,8 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
      case EWIN_OP_SIZE_REL:
 	if (!param1[0])
 	   goto done;
-
-	sscanf(params, "%*s %*s %i %i", &a, &b);
+	a = b = 0;
+	sscanf(prm, "%i %i", &a, &b);
 	a += ewin->client.w;
 	b += ewin->client.h;
 	EwinOpResize(ewin, OPSRC_USER, a, b);
@@ -708,7 +796,7 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	break;
 
      case EWIN_OP_SNAP:
-	SnapshotEwinParse(ewin, atword(params, 3));
+	SnapshotEwinParse(ewin, prm);
 	break;
 
      case EWIN_OP_SKIP_LISTS:
@@ -808,6 +896,58 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 
  done:
    return;
+}
+
+static void
+IPC_WinOps(const char *params, Client * c __UNUSED__)
+{
+   char                match[128];
+   char                operation[128];
+   const char         *p;
+   EWin              **lst;
+   int                 i, num, flags;
+   const WinOp        *wop;
+
+   if (!params)
+     {
+	IpcPrintf("Error: no window specified");
+	return;
+     }
+
+   match[0] = operation[0] = '\0';
+   num = 0;
+   sscanf(params, "%128s %128s %n", match, operation, &num);
+   p = params + num;
+
+   if (!operation[0])
+     {
+	IpcPrintf("Error: no operation specified");
+	return;
+     }
+
+   wop = EwinOpFind(operation);
+   if (!wop)
+     {
+	IpcPrintf("Error: unknown operation");
+	return;
+     }
+
+   lst = IpcFindEwins(match, &num, &flags);
+   if (!lst)
+     {
+	IpcPrintf("No windows matching %s\n", match);
+	return;
+     }
+
+   if (flags)
+      Mode.nogroup = 1;
+
+   for (i = 0; i < num; i++)
+      IpcWinop(wop, lst[i], p);
+
+   Mode.nogroup = 0;
+
+   Efree(lst);
 }
 
 static void
@@ -1045,30 +1185,27 @@ EwinShowInfo(const EWin * ewin)
 static void
 IPC_EwinInfo(const char *params, Client * c __UNUSED__)
 {
-   char                param1[FILEPATH_LEN_MAX];
-   EWin               *ewin;
+   char                match[FILEPATH_LEN_MAX];
+   EWin              **lst;
+   int                 i, num;
 
-   if (params == NULL)
+   if (!params)
       return;
 
-   sscanf(params, "%1000s", param1);
+   sscanf(params, "%1000s", match);
 
-   if (!strcmp(param1, "all"))
+   lst = IpcFindEwins(match, &num, NULL);
+   if (!lst)
      {
-	EWin               *const *lst;
-	int                 i, num;
-
-	lst = EwinListGetAll(&num);
-	for (i = 0; i < num; i++)
-	   EwinShowInfo(lst[i]);
+	IpcPrintf("No windows matching %s\n", match);
+	return;
      }
-   else
+
+   for (i = 0; i < num; i++)
      {
-	ewin = IpcFindEwin(param1);
-	if (ewin)
-	   EwinShowInfo(ewin);
-	else
-	   IpcPrintf("No matching EWin found\n");
+	EwinShowInfo(lst[i]);
+	if (i != num - 1)
+	   IpcPrintf("\n");
      }
 }
 

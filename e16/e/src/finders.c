@@ -96,52 +96,6 @@ EwinFindByChildren(Window win)
    return NULL;
 }
 
-EWin               *
-EwinFindByString(const char *match, int type)
-{
-   EWin               *ewin = NULL;
-   EWin               *const *ewins;
-   int                 i, num, len;
-   char                ewinid[FILEPATH_LEN_MAX];
-   const char         *name;
-
-   len = strlen(match);
-   if (len <= 0)
-      goto done;
-
-   ewins = EwinListGetAll(&num);
-   if (ewins == NULL)
-      goto done;
-
-   for (i = 0; i < num; i++)
-     {
-	if (type == '+')
-	  {
-	     /* Match start of window ID */
-	     sprintf(ewinid, "%x", (unsigned)_EwinGetClientXwin(ewins[i]));
-	     if (strncmp(ewinid, match, len))
-		continue;
-	  }
-	else if (type == '=')
-	  {
-	     /* Match name (substring) */
-	     name = ewins[i]->icccm.wm_name;
-	     if (!name)
-		continue;
-	     if (!strstr(name, match))
-		continue;
-	  }
-	else
-	   goto done;
-
-	ewin = ewins[i];
-	break;
-     }
-
- done:
-   return ewin;
-}
-
 EWin              **
 ListWinGroupMembersForEwin(const EWin * ewin, int action, char nogroup,
 			   int *pnum)
