@@ -814,7 +814,7 @@ entropy_plugin_layout_create (entropy_core * core)
   ewl_widget_show (menubar);
 
 
-  ewl_widget_state_set(tree, "nobg");
+  ewl_widget_state_set(tree, "nobg", EWL_STATE_PERSISTENT);
 
   menu = ewl_menu_new ();
   ewl_button_label_set (EWL_BUTTON (menu), "File");
