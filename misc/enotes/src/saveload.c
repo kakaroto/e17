@@ -202,9 +202,7 @@ ewl_saveload_revert(Ewl_Widget * widget, void *ev_data, void *ud)
 
 	ewl_container_reset((Ewl_Container *) saveload->tree);
 	ewl_widget_enable(saveload->savebtn);
-	ewl_widget_state_set(saveload->savebtn, "enabled");
 	ewl_widget_enable(saveload->loadbtn);
-	ewl_widget_state_set(saveload->loadbtn, "enabled");
 
 	saveload_selected = NULL;
 	ewl_text_text_set((Ewl_Text *) saveload->txt_selected, "Selected: N/A");
@@ -244,9 +242,7 @@ ewl_saveload_listitem_click(Ewl_Widget * o, void *ev_data, void *null)
 	char           *tmp = malloc(MAX_TITLE);
 
 	ewl_widget_enable(saveload->savebtn);
-	ewl_widget_state_set(saveload->savebtn, "enabled");
 	ewl_widget_disable(saveload->loadbtn);
-	ewl_widget_state_set(saveload->loadbtn, "disabled");
 
 	saveload_selected = ewl_text_text_get((Ewl_Text *) o);
 	snprintf(tmp, MAX_TITLE, "Selected: %s", saveload_selected);
@@ -416,9 +412,7 @@ ewl_load_listitem_click(Ewl_Widget * o, void *ev_data, void *null)
 	char           *tmp = malloc(MAX_TITLE);
 
 	ewl_widget_disable(saveload->savebtn);
-	ewl_widget_state_set(saveload->savebtn, "disabled");
 	ewl_widget_enable(saveload->loadbtn);
-	ewl_widget_state_set(saveload->loadbtn, "enabled");
 
 	saveload_selected = ewl_text_text_get((Ewl_Text *) o);
 	snprintf(tmp, MAX_TITLE, "Selected: %s", saveload_selected);
