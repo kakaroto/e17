@@ -1,0 +1,871 @@
+/* Enlightenment Eveil Module theme */
+
+#define BASE_BORDER 4
+#define SPLIT_OFFSET 0
+
+#define ALARM_STATE_OFF 0
+#define ALARM_STATE_ON 1
+#define ALARM_STATE_RINGING 2
+#define TIMER_STATE_OFF 0
+#define TIMER_STATE_ON 1
+#define TIMER_STATE_RINGING 2
+
+#define ALARM_ICON_OFF 0
+#define ALARM_ICON_ON 1
+#define ALARM_ICON_ONGO 2
+#define ALARM_ICON_DEFAULT 0
+#define ALARM_DETAIL_OFF 0
+#define ALARM_DETAIL_ON 1
+#define ALARM_DETAIL_ONGO 2
+#define ALARM_DETAIL_DEFAULT 0
+
+#define TIMER_ICON_OFF 0
+#define TIMER_ICON_ON 1
+#define TIMER_ICON_ONGO 2
+#define TIMER_ICON_DEFAULT 0
+#define TIMER_DETAIL_OFF 0
+#define TIMER_DETAIL_ON 1
+#define TIMER_DETAIL_ONGO 2
+#define TIMER_DETAIL_DEFAULT 0
+
+#define MSG_RECV_ALARM_STATE 0
+#define MSG_RECV_ALARM_ICON_MODE 1
+#define MSG_RECV_ALARM_DETAIL_MODE 2
+#define MSG_RECV_TIMER_STATE 3
+#define MSG_RECV_TIMER_ICON_MODE 4
+#define MSG_RECV_TIMER_DETAIL_MODE 5
+
+#define MSG_SEND_ALARM_STATE 0
+#define MSG_SEND_TIMER_STATE 1
+
+
+#define SETONMODE(cst1_on, cst1_off, var1_mode, var1_show, cst2_off, var2) \
+if(get_int(var1_mode) == cst1_off) \
+{ \
+        set_int(var1_show, 0); \
+} \
+else \
+{ \
+        if(get_int(var1_mode) == cst1_on) \
+        { \
+                set_int(var1_show, 1); \
+        } \
+        else \
+        { \
+                if(get_int(var2) == cst2_off) \
+                { \
+                        set_int(var1_show, 0); \
+                } \
+                else \
+                { \
+                        set_int(var1_show, 1); \
+                } \
+        } \
+ }
+#define EXECONMODE(cst1_on, cst1_off, var1_mode, prog1_show, prog1_hide, cst2_off, var2) \
+if(get_int(var1_mode) == cst1_off) \
+{ \
+        run_program(PROGRAM:prog1_hide); \
+} \
+else \
+{ \
+        if(get_int(var1_mode) == cst1_on) \
+        { \
+                run_program(PROGRAM:prog1_show); \
+        } \
+        else \
+        { \
+                if(get_int(var2) == cst2_off) \
+                { \
+                        run_program(PROGRAM:prog1_hide); \
+                } \
+                else \
+                { \
+                        run_program(PROGRAM:prog1_show); \
+                } \
+        } \
+ }
+
+
+images
+{
+        image: "images/alarm_enabled.png" COMP;
+        image: "images/alarm_disabled.png" COMP;
+        image: "images/timer_enabled.png" COMP;
+        image: "images/timer_disabled.png" COMP;
+}
+
+collections
+{
+
+   group
+     {
+	name: "modules/eveil/main";
+
+        script
+        {
+                public alarm_state;
+                public alarm_icon_mode;
+                public alarm_icon_show;
+                public alarm_detail_mode;
+                public timer_state;
+                public timer_icon_mode;
+                public timer_icon_show;
+                public timer_detail_mode;
+
+		/* Message from C code */
+		public message(Msg_Type: type, id, msg)
+		{
+			if (id == MSG_RECV_ALARM_STATE)
+			{
+				if (type == MSG_INT)
+				{
+					set_int(alarm_state, getarg(2));
+                                        if (get_int(alarm_state) == ALARM_STATE_ON)
+                                        {
+                                                run_program(PROGRAM:"alarm_activate");
+                                        }
+                                        else
+                                        {
+                                                if (get_int(alarm_state) == ALARM_STATE_RINGING)
+                                                {
+                                                        if (get_int(alarm_icon_show))
+                                                                run_program(PROGRAM:"alarm_ring_go");
+                                                }
+                                                else
+                                                {
+                                                        run_program(PROGRAM:"alarm_deactivate");
+                                                }
+                                        }
+				}
+			}
+			if (id == MSG_RECV_ALARM_ICON_MODE)
+			{
+				if (type == MSG_INT)
+				{
+                                        set_int(alarm_icon_mode, getarg(2));
+                                        run_program(PROGRAM:"alarm_icon_change");
+				}
+			}
+			if (id == MSG_RECV_ALARM_DETAIL_MODE)
+			{
+				if (type == MSG_INT)
+				{
+                                        set_int(alarm_detail_mode, getarg(2));
+                                        run_program(PROGRAM:"alarm_detail_change");
+				}
+			}
+			if (id == MSG_RECV_TIMER_STATE)
+			{
+				if (type == MSG_INT)
+				{
+					set_int(timer_state, getarg(2));
+                                        if (get_int(timer_state) == TIMER_STATE_ON)
+                                        {
+                                                run_program(PROGRAM:"timer_activate");
+                                        }
+                                        else
+                                        {
+                                                if (get_int(timer_state) == TIMER_STATE_RINGING)
+                                                {
+                                                        if (get_int(timer_icon_show))
+                                                                run_program(PROGRAM:"timer_ring_go");
+                                                }
+                                                else
+                                                {
+                                                        run_program(PROGRAM:"timer_deactivate");
+                                                }
+                                        }
+				}
+			}
+			if (id == MSG_RECV_TIMER_ICON_MODE)
+			{
+				if (type == MSG_INT)
+				{
+                                        set_int(timer_icon_mode, getarg(2));
+                                        run_program(PROGRAM:"timer_icon_change");
+				}
+			}
+			if (id == MSG_RECV_TIMER_DETAIL_MODE)
+			{
+				if (type == MSG_INT)
+				{
+                                        set_int(timer_detail_mode, getarg(2));
+                                        run_program(PROGRAM:"timer_detail_change");
+				}
+			}
+                }
+        }
+
+	parts
+	  {
+	     part
+	       {
+		  name: "base";
+		  type: RECT;
+		  mouse_events: 1;
+		  description
+		    {
+		       state: "default" 0.0;
+		       color: 255 255 255 0;
+        		rel1
+        		{
+        			relative: 0.0 0.0;
+        			offset: BASE_BORDER BASE_BORDER;
+        		}
+        		rel2
+        		{
+        			relative: 1.0 1.0;
+        			offset: -BASE_BORDER -BASE_BORDER;
+        		}
+		    }
+	       }
+	     part
+	       {
+		  name: "alarm";
+		  type: RECT;
+		  mouse_events: 0;
+		  description
+		    {
+		       state: "default" 0.0;
+		       color: 255 255 255 0;
+        		rel1
+        		{
+        			relative: 0.0 0.0;
+                                to_x: "split";
+                                to_y: "base";
+        		}
+        		rel2
+        		{
+        			relative: 1.0 0.0;
+                                to: "split";
+        		}
+		    }
+	       }
+
+	     part
+	       {
+		  name: "alarm_img";
+		  type: IMAGE;
+		  mouse_events: 1;
+		  description
+		    {
+		        state: "default" 0.0;
+                        aspect: 1 1;
+                        align: 0.0 0.0;
+        	        color: 255 255 255 200;
+        		rel1
+        		{
+        			relative: 0.0 0.0;
+	        		to: "alarm";
+        		}
+        		rel2
+        		{
+        			relative: 1.0 1.0;
+        			to: "alarm";
+        		}
+                        image
+                        {
+                               normal: "images/alarm_disabled.png";
+        		}
+        		fill
+        		{
+        			smooth: 0;
+        		}
+                   }
+		  description
+		    {
+		        state: "enabled" 0.0;
+                        aspect: 1 1;
+                        align: 0.0 0.0;
+        	        color: 255 255 255 200;
+        		rel1
+        		{
+        			relative: 0.0 0.0;
+	        		to: "alarm";
+        		}
+        		rel2
+        		{
+        			relative: 1.0 1.0;
+        			to: "alarm";
+        		}
+                        image
+                        {
+                               normal: "images/alarm_enabled.png";
+        		}
+        		fill
+        		{
+        			smooth: 0;
+        		}
+                   }
+		  description
+		    {
+		        state: "enabled_little" 0.0;
+                        inherit: "enabled" 0.0;
+        		rel1
+        		{
+        			relative: 0.3 0.3;
+        		}
+        		rel2
+        		{
+        			relative: 0.7 0.7;
+        		}
+                   }
+                }
+                part
+                {
+                	name, "alarm_txt";
+                	type: RECT;
+                	mouse_events: 0;
+                	description
+                	{
+                		state: "default" 0.0;
+                                visible: 0;
+                		rel1
+                		{
+                			relative: 1.0 0.05;
+                                        to: "alarm";
+                		}
+                		rel2
+                		{
+                			relative: 1.0 0.95;
+                                        to: "alarm";
+                		}
+        		       color: 255 255 255 255;
+        		}
+                	description
+                	{
+                		state: "enabled" 0.0;
+                                inherit: default 0.0;
+                                visible: 1;
+                		rel1
+                		{
+                			relative: 1.0 0.1;
+                                        to_x: "alarm_img";
+                                        to_y: "alarm";
+                                        offset: 2 0;
+                		}
+        		}
+        	}
+                part
+                {
+                	name, "alarm_txt_line";
+                	type: TEXT;
+                	effect: OUTLINE_SOFT_SHADOW;
+                	mouse_events: 0;
+                        clip_to: "alarm_txt";
+                	description
+                	{
+                		state: "default" 0.0;
+                		rel1
+                		{
+                			relative: 0.0 0.0;
+                                        to: "alarm_txt";
+                		}
+                		rel2
+                		{
+                			relative: 1.0 1.0;
+                                        to: "alarm_txt";
+                		}
+        		       color: 255 255 255 255;
+        		       color2: 0 0 0 96;
+        		       color3: 0 0 0 32;
+                		text
+                       		{
+        			text: "-- --:--";
+        			font: "VeraBd";
+        			size: 12;
+                                fit: 1 1;
+        			align: 0.0 0.5;
+                                }
+        		}
+        	}
+                part
+                {
+                	name, "split";
+                	type: RECT;
+                	mouse_events: 0;
+                	description
+                	{
+                		state: "default" 0.0;
+                                visible: 0;
+                		rel1
+                		{
+                			relative: 0.0 1.0;
+                                        to: "base";
+                		}
+                		rel2
+                		{
+                			relative: 1.0 1.0;
+                                        to: "base";
+                		}
+        		       color: 255 255 255 0;
+        		}
+                	description
+                	{
+                		state: "mid" 0.0;
+                                inherit: default 0.0;
+                                visible: 1;
+                		rel1
+                		{
+                			relative: 0.0 0.45;
+                                        offset: 0 -SPLIT_OFFSET;
+                		}
+                		rel2
+                		{
+                			relative: 1.0 0.55;
+                                        offset: 0 SPLIT_OFFSET;
+                		}
+        		       color: 255 255 255 0;
+        		}
+                	description
+                	{
+                		state: "up" 0.0;
+                                inherit: default 0.0;
+                                visible: 0;
+                		rel1
+                		{
+                			relative: 0.0 0.0;
+                		}
+                		rel2
+                		{
+                			relative: 1.0 0.0;
+                		}
+        		       color: 255 255 255 0;
+        		}
+                	description
+                	{
+                		state: "nothing" 0.0;
+                                inherit: default 0.0;
+                                visible: 0;
+                		rel1
+                		{
+                			relative: 0.0 0.0;
+                		}
+                		rel2
+                		{
+                			relative: 0.0 1.0;
+                		}
+        		       color: 255 255 255 0;
+        		}
+        	}
+	     part
+	       {
+		  name: "timer";
+		  type: RECT;
+		  mouse_events: 0;
+		  description
+		    {
+		       state: "default" 0.0;
+		       color: 255 255 255 0;
+        		rel1
+        		{
+        			relative: 0.0 1.0;
+                                to: "split";
+        		}
+        		rel2
+        		{
+        			relative: 1.0 1.0;
+                                to_x: "split";
+                                to_y: "base";
+        		}
+		    }
+	       }
+	     part
+	       {
+		  name: "timer_img";
+		  type: IMAGE;
+		  mouse_events: 1;
+		  description
+		    {
+		        state: "default" 0.0;
+                        aspect: 1 1;
+                        align: 0.0 0.0;
+        	        color: 255 255 255 200;
+        		rel1
+        		{
+        			relative: 0.0 0.0;
+	        		to: "timer";
+        		}
+        		rel2
+        		{
+        			relative: 1.0 1.0;
+        			to_y: "timer";
+        		}
+                        image
+                        {
+                               normal: "images/timer_disabled.png";
+        		}
+        		fill
+        		{
+        			smooth: 0;
+        		}
+                   }
+		  description
+		    {
+		        state: "enabled" 0.0;
+                        aspect: 1 1;
+                        align: 0.0 0.0;
+        	        color: 255 255 255 200;
+        		rel1
+        		{
+        			relative: 0.0 0.0;
+	        		to: "timer";
+        		}
+        		rel2
+        		{
+        			relative: 1.0 1.0;
+        			to_y: "timer";
+        		}
+                        image
+                        {
+                               normal: "images/timer_enabled.png";
+        		}
+        		fill
+        		{
+        			smooth: 0;
+        		}
+                   }
+		  description
+		    {
+		        state: "enabled_little" 0.0;
+                        inherit: "enabled" 0.0;
+        		rel1
+        		{
+        			relative: 0.3 0.3;
+        		}
+        		rel2
+        		{
+        			relative: 0.7 0.7;
+        		}
+                   }
+	       }
+                part
+                {
+                	name, "timer_txt";
+                	type: RECT;
+                	mouse_events: 0;
+                	description
+                	{
+                		state: "default" 0.0;
+                                visible: 0;
+                		rel1
+                		{
+                			relative: 1.0 0.05;
+                                        to: "timer";
+                		}
+                		rel2
+                		{
+                			relative: 1.0 0.95;
+                                        to: "timer";
+                		}
+        		       color: 255 255 255 255;
+        		}
+                	description
+                	{
+                		state: "enabled" 0.0;
+                                inherit: default 0.0;
+                                visible: 1;
+                		rel1
+                		{
+                			relative: 1.0 0.1;
+                                        to_x: "timer_img";
+                                        to_y: "timer";
+                                        offset: 2 0;
+                		}
+        		}
+        	}
+              part
+                {
+                	name, "timer_txt_line";
+                	type: TEXT;
+                	effect: OUTLINE_SOFT_SHADOW;
+                	mouse_events: 0;
+                        clip_to: "timer_txt";
+                	description
+                	{
+                		state: "default" 0.0;
+                		rel1
+                		{
+                			relative: 0.0 0.0;
+                                        to: "timer_txt";
+                		}
+                		rel2
+                		{
+                			relative: 1.0 1.0;
+                                        to: "timer_txt";
+                		}
+        		       color: 255 255 255 255;
+        		       color2: 0 0 0 96;
+        		       color3: 0 0 0 32;
+                		text
+                       		{
+        			text: "--:--:--";
+        			font: "VeraBd";
+        			size: 12;
+                                fit: 1 1;
+        			align: 0.0 0.5;
+                                }
+        		}
+        	}
+	  }
+
+        programs 
+        {
+                program
+                {
+                	name:	"init";
+                	signal:	"load";
+                	source:	"";
+                	script
+                	{
+                                set_int(alarm_state, ALARM_STATE_OFF);
+                                set_int(alarm_icon_mode, ALARM_ICON_DEFAULT);
+                                set_int(alarm_detail_mode, ALARM_DETAIL_DEFAULT);
+
+                                set_int(timer_state, TIMER_STATE_OFF);
+                                set_int(timer_icon_mode, TIMER_ICON_DEFAULT);
+                                set_int(timer_detail_mode, TIMER_DETAIL_DEFAULT);
+
+                                run_program(PROGRAM:"alarm_icon_change");
+                                run_program(PROGRAM:"timer_icon_change");
+                                run_program(PROGRAM:"alarm_detail_change");
+                                run_program(PROGRAM:"timer_detail_change");
+                        }
+                }
+                program
+                {
+                	name:	"alarm_img_mouse_down";
+                	signal:	"mouse,down,1";
+                	source:	"alarm_img";
+                	script
+                	{
+                       		if ((get_int(alarm_state) == ALARM_STATE_OFF) ||
+                                    (get_int(alarm_state) == ALARM_STATE_RINGING))
+                                {
+                                        set_int(alarm_state, ALARM_STATE_ON);
+                                        run_program(PROGRAM:"alarm_activate");
+                               		send_message(MSG_INT, MSG_SEND_ALARM_STATE, get_int(alarm_state));
+                                }
+                                else
+                                {
+                                        set_int(alarm_state, ALARM_STATE_OFF);
+                                        run_program(PROGRAM:"alarm_deactivate");
+                               		send_message(MSG_INT, MSG_SEND_ALARM_STATE, get_int(alarm_state));
+                                }
+                	}
+                }
+                program
+                {
+                	name:	"timer_img_mouse_down";
+                	signal:	"mouse,down,1";
+                	source:	"timer_img";
+                	script
+                	{
+                       		if (get_int(timer_state) == TIMER_STATE_OFF)                                {
+                                        set_int(timer_state, TIMER_STATE_ON);
+                                        run_program(PROGRAM:"timer_activate");
+                               		send_message(MSG_INT, MSG_SEND_TIMER_STATE, get_int(timer_state));
+                                }
+                                else
+                                {
+                                        set_int(timer_state, TIMER_STATE_OFF);
+                                        run_program(PROGRAM:"timer_deactivate");
+                               		send_message(MSG_INT, MSG_SEND_TIMER_STATE, get_int(timer_state));
+                                }
+                	}
+                }
+
+                program
+                {
+                        name: "split_change";
+                        script
+                        {
+                                if (get_int(alarm_icon_show) && get_int(timer_icon_show))
+                                        run_program(PROGRAM:"split_mid");
+                                else
+                                {
+                                        if (!get_int(alarm_icon_show) && !get_int(timer_icon_show))
+                                                run_program(PROGRAM:"split_nothing");
+                                        else
+                                        {
+                                                if (get_int(alarm_icon_show))
+                                                        run_program(PROGRAM:"split_down");
+                                                else
+                                                        run_program(PROGRAM:"split_up");
+                                        }
+                                }
+                        }
+                }
+                program
+                {
+                        name: "split_down";
+                        action: STATE_SET "default" 0.0;
+                	transition: SINUSOIDAL 1;
+                	target:	"split";
+                }
+                program
+                {
+                        name: "split_mid";
+                        action: STATE_SET "mid" 0.0;
+                	transition: SINUSOIDAL 1;
+                	target:	"split";
+                }
+                program
+                {
+                        name: "split_up";
+                        action: STATE_SET "up" 0.0;
+                	transition: SINUSOIDAL 1;
+                	target:	"split";
+                }
+                program
+                {
+                        name: "split_nothing";
+                        action: STATE_SET "nothing" 0.0;
+                	transition: SINUSOIDAL 1;
+                	target:	"split";
+                }
+
+                program
+                {
+                	name:	"alarm_activate";
+                        action: STATE_SET "enabled" 0.0;
+                	target:	"alarm_img";
+                        after: "alarm_icon_change";
+                        after: "alarm_detail_change";
+                }
+                program
+                {
+                	name:	"alarm_deactivate";
+                        action: STATE_SET "default" 0.0;
+                	target:	"alarm_img";
+                        after: "alarm_icon_change";
+                        after: "alarm_detail_change";
+                }
+
+                program
+                {
+                	name:	"alarm_ring_go";
+                        action: STATE_SET "enabled_little" 0.0;
+                	transition: SINUSOIDAL .3;
+                	target:	"alarm_img";
+                        after: "alarm_ring_go_2";
+                }
+                program
+                {
+                	name:	"alarm_ring_go_2";
+                        action: STATE_SET "enabled" 0.0;
+                	transition: SINUSOIDAL .5;
+                	target:	"alarm_img";
+                        after: "alarm_ring_go";
+                }
+
+                program
+                {
+                	name:	"alarm_icon_change";
+                        script
+                        {
+                                SETONMODE(ALARM_ICON_ON, ALARM_ICON_OFF, alarm_icon_mode, alarm_icon_show,
+                                          ALARM_STATE_OFF, alarm_state)
+                                run_program(PROGRAM:"split_change");
+                        }
+                }
+                program
+                {
+                	name:	"alarm_detail_change";
+                        script
+                        {
+                                EXECONMODE(ALARM_DETAIL_ON, ALARM_DETAIL_OFF, alarm_detail_mode,
+                                           "alarm_detail_show", "alarm_detail_hide", ALARM_STATE_OFF, alarm_state)
+                        }
+                }
+                program
+                {
+                        name: "alarm_detail_show";
+                        action: STATE_SET "enabled" 0.0;
+                	transition: SINUSOIDAL 1;
+                	target:	"alarm_txt";
+                }
+                program
+                {
+                	name:	"alarm_detail_hide";
+                        action: STATE_SET "default" 0.0;
+                	transition: SINUSOIDAL 1;
+                	target:	"alarm_txt";
+                }
+
+                program
+                {
+                	name:	"timer_activate";
+                        action: STATE_SET "enabled" 0.0;
+                	target:	"timer_img";
+                        after: "timer_icon_change";
+                        after: "timer_detail_change";
+                }
+                program
+                {
+                	name:	"timer_deactivate";
+                        action: STATE_SET "default" 0.0;
+                	target:	"timer_img";
+                        after: "timer_icon_change";
+                        after: "timer_detail_change";
+                }
+
+                program
+                {
+                	name:	"timer_ring_go";
+                        action: STATE_SET "enabled_little" 0.0;
+                	transition: SINUSOIDAL .3;
+                	target:	"timer_img";
+                        after: "timer_ring_go_2";
+                }
+                program
+                {
+                	name:	"timer_ring_go_2";
+                        action: STATE_SET "enabled" 0.0;
+                	transition: SINUSOIDAL .5;
+                	target:	"timer_img";
+                        after: "timer_ring_go";
+                }
+
+               program
+                {
+                	name:	"timer_icon_change";
+                        script
+                        {
+                                SETONMODE(TIMER_ICON_ON, TIMER_ICON_OFF, timer_icon_mode, timer_icon_show,
+                                          TIMER_STATE_OFF, timer_state)
+                                run_program(PROGRAM:"split_change");
+                        }
+                }
+                program
+                {
+                	name:	"timer_detail_change";
+                        script
+                        {
+                                EXECONMODE(TIMER_DETAIL_ON, TIMER_DETAIL_OFF, timer_detail_mode,
+                                           "timer_detail_show", "timer_detail_hide", TIMER_STATE_OFF, timer_state)
+                        }
+                }
+                program
+                {
+                        name: "timer_detail_show";
+                        action: STATE_SET "enabled" 0.0;
+                	transition: SINUSOIDAL 1;
+                	target:	"timer_txt";
+                }
+                program
+                {
+                	name:	"timer_detail_hide";
+                        action: STATE_SET "default" 0.0;
+                	transition: SINUSOIDAL 1;
+                	target:	"timer_txt";
+                }
+        }
+    }
+
+   group
+     {
+	name: "modules/eveil/popup";
+     }
+}

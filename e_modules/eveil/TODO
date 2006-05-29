@@ -1,0 +1,33 @@
+-------------------------------------------
+BUGS
+-------------------------------------------
+
+ - MODULE_VERSION don't show up
+
+
+-------------------------------------------
+TODO
+-------------------------------------------
+
+ * basics (like temperature) with structures
+ * timer callbacks basics
+ * theme icon mode
+ * theme detail mode
+ * finish edje messages
+ * alarm config
+ * avanced config
+ * finish timers
+   * pb with locale time (utc ...)
+ * show next date
+ * show date in alarms list
+ * show timer in realtime in theme
+ * launch program
+ - popups
+ - snooze
+ - exact alarm time ring
+ - show week days in alarms list
+ - pill mode
+ - handle alarms wich happend when no E on come back
+ - 12h time format
+ - dont share state for icons and detail between instance
+   and save it
