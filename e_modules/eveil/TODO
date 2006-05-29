@@ -22,6 +22,9 @@ TODO
  * show date in alarms list
  * show timer in realtime in theme
  * launch program
+
+ - set initial size larger (see also inset mode)
+
  - popups
  - snooze
  - exact alarm time ring

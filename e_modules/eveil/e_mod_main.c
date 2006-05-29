@@ -1002,7 +1002,9 @@ e_modapi_about(E_Module *m)
    e_module_dialog_show(_("Eveil Module version " MODULE_VERSION),
 			_("A module to set timers and alarms to alert you<br>"
                           " when youre pastas are ready<br>"
-			  "or when you need to wake up"));
+			  "or when you need to wake up<br><br>"
+			  "http://oooo.zapto.org<br>"
+			  "ooookiwi@free.fr"));
    return 1;
 }
 
