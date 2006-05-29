@@ -11,6 +11,8 @@ struct _Instance
    Evas_Object *net_obj;
    Net *net;
    Ecore_Timer *check_timer;
+   unsigned long old_in;
+   unsigned long old_out;
 };
 
 struct _Net
@@ -444,9 +446,6 @@ _net_cb_check(void *data)
    FILE *stat;
    char dev[64];
    char buf[256];
-   static unsigned long old_in = 0;
-   static unsigned long old_out = 0;
-   static int first_time = 1;
    unsigned long in = 0;
    unsigned long out = 0;
    unsigned long dummy = 0;
@@ -492,21 +491,15 @@ _net_cb_check(void *data)
    if (!found)
       return 1;
 
-   bytes_in = in - old_in;
-   bytes_out = out - old_out;
+   bytes_in = in - inst->old_in;
+   bytes_out = out - inst->old_out;
    if (bytes_in < 0)
       bytes_in = 0;
    if (bytes_out < 0)
       bytes_out = 0;
 
-   old_in = in;
-   old_out = out;
-
-   if (first_time)
-     {
-        first_time = 0;
-        return 1;
-     }
+   inst->old_in = in;
+   inst->old_out = out;
 
    if (bytes_in <= 0)
       edje_object_part_text_set(inst->net_obj, "rx_label", "Rx: 0 B");
