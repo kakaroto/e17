@@ -18,11 +18,6 @@ struct _Config
    Evas_List *instances;
    Evas_List *items;
    E_Menu *menu;
-
-   Ecore_Con_Server *server;
-   Ecore_Event_Handler *add_handler;
-   Ecore_Event_Handler *del_handler;
-   Ecore_Event_Handler *data_handler;
 };
 
 struct _Config_Item

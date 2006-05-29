@@ -31,6 +31,11 @@ struct _Instance
    Evas_Object *weather_obj;
    Weather *weather;
    Ecore_Timer *check_timer;
+   Ecore_Con_Server *server;
+   Ecore_Event_Handler *add_handler;
+   Ecore_Event_Handler *del_handler;
+   Ecore_Event_Handler *data_handler;
+
    char *buffer, *location;
    int bufsize, cursize;
    int temp, loc_set;
@@ -85,12 +90,12 @@ _gc_init(E_Gadcon *gc, char *name, char *id, char *style)
    inst->gcc = gcc;
    inst->weather_obj = o;
 
-   if (!weather_config->add_handler)
-      weather_config->add_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD, _weather_server_add, inst);
-   if (!weather_config->del_handler)
-      weather_config->del_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL, _weather_server_del, inst);
-   if (!weather_config->data_handler)
-      weather_config->data_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA, _weather_server_data, inst);
+   if (!inst->add_handler)
+      inst->add_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD, _weather_server_add, inst);
+   if (!inst->del_handler)
+      inst->del_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL, _weather_server_del, inst);
+   if (!inst->data_handler)
+      inst->data_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA, _weather_server_data, inst);
 
    evas_object_event_callback_add(w->weather_obj, EVAS_CALLBACK_MOUSE_DOWN, _weather_cb_mouse_down, inst);
    weather_config->instances = evas_list_append(weather_config->instances, inst);
@@ -118,6 +123,13 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    if (inst->check_timer)
       ecore_timer_del(inst->check_timer);
 
+   if (inst->add_handler)
+     ecore_event_handler_del(inst->add_handler);
+   if (inst->data_handler)
+     ecore_event_handler_del(inst->data_handler);
+   if (inst->del_handler)
+     ecore_event_handler_del(inst->del_handler);
+     
    weather_config->instances = evas_list_remove(weather_config->instances, inst);
    _weather_free(inst->weather);
    free(inst);
@@ -306,14 +318,7 @@ e_modapi_shutdown(E_Module *m)
         e_object_del(E_OBJECT(weather_config->menu));
         weather_config->menu = NULL;
      }
-
-   if (weather_config->add_handler)
-      ecore_event_handler_del(weather_config->add_handler);
-   if (weather_config->del_handler)
-      ecore_event_handler_del(weather_config->del_handler);
-   if (weather_config->data_handler)
-      ecore_event_handler_del(weather_config->data_handler);
-
+   
    while (weather_config->items)
      {
         Config_Item *ci;
@@ -454,16 +459,12 @@ _weather_cb_check(void *data)
    inst = data;
    ci = _weather_config_item_get(inst->gcc->id);
 
-   if (!weather_config->server)
+   if (!inst->server)
      {
         if (ci->proxy.port != 0)
-          {
-             weather_config->server = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM, ci->proxy.host, ci->proxy.port, inst);
-          }
+	  inst->server = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM, ci->proxy.host, ci->proxy.port, inst);
         else
-          {
-             weather_config->server = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM, ci->host, 80, inst);
-          }
+	  inst->server = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM, ci->host, 80, inst);
      }
    return 1;
 }
@@ -483,12 +484,12 @@ _weather_server_add(void *data, int type, void *event)
 
    ci = _weather_config_item_get(inst->gcc->id);
    ev = event;
-   if ((!weather_config->server) || (weather_config->server != ev->server))
+   if ((!inst->server) || (inst->server != ev->server))
       return 1;
 
    snprintf(icao, sizeof(icao), "/icao/%s/rss.php", ci->code);
    snprintf(buf, sizeof(buf), "GET http://%s%s HTTP/1.1\r\nHost: %s\r\n\r\n", ci->host, icao, ci->host);
-   ecore_con_server_send(weather_config->server, buf, strlen(buf));
+   ecore_con_server_send(inst->server, buf, strlen(buf));
    return 0;
 }
 
@@ -501,11 +502,11 @@ _weather_server_del(void *data, int type, void *event)
 
    inst = data;
    ev = event;
-   if ((!weather_config->server) || (weather_config->server != ev->server))
+   if ((!inst->server) || (inst->server != ev->server))
       return 1;
 
-   ecore_con_server_del(weather_config->server);
-   weather_config->server = NULL;
+   ecore_con_server_del(inst->server);
+   inst->server = NULL;
 
    ret = _weather_parse(inst);
    _weather_convert_degrees(inst);
@@ -528,7 +529,7 @@ _weather_server_data(void *data, int type, void *event)
    inst = data;
    ev = event;
 
-   if ((!weather_config->server) || (weather_config->server != ev->server))
+   if ((!inst->server) || (inst->server != ev->server))
       return 1;
 
    while ((inst->cursize + ev->size) >= inst->bufsize)
