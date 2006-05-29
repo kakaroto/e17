@@ -89,7 +89,7 @@ _ex_tab_select(Ex_Tab *tab)
 		    0, 0, ETK_FILL_POLICY_VEXPAND|ETK_FILL_POLICY_VFILL|ETK_FILL_POLICY_HFILL);
    etk_widget_show(tab->dtree);
    
-   etk_paned_add2(ETK_PANED(tab->e->vpaned), tab->itree, ETK_TRUE);
+   etk_paned_child2_set(ETK_PANED(tab->e->vpaned), tab->itree, ETK_TRUE);
    etk_widget_show(tab->itree);
       
    etk_widget_show(tab->image);

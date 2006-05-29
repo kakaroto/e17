@@ -733,9 +733,9 @@ _e_widget_parent_add(E_Widget *parent, E_Widget *child)
 	  }
 	
 	if((w = etk_paned_child1_get(ETK_PANED(parent->wid))) != NULL)	  
-	  etk_paned_add2(ETK_PANED(parent->wid), child->wid, expand);
+	  etk_paned_child2_set(ETK_PANED(parent->wid), child->wid, expand);
 	else
-	  etk_paned_add1(ETK_PANED(parent->wid), child->wid, expand);	
+	  etk_paned_child1_set(ETK_PANED(parent->wid), child->wid, expand);	
      }
    if(!strcmp(parent_class, "GtkNotebook"))
      {

@@ -10,7 +10,7 @@ _ex_comment_show(Exhibit *e)
      return;
    
    e->comment.vbox = etk_vbox_new(ETK_FALSE, 0);
-   etk_paned_add2(ETK_PANED(e->hpaned), e->comment.vbox, ETK_TRUE);
+   etk_paned_child2_set(ETK_PANED(e->hpaned), e->comment.vbox, ETK_TRUE);
    
    etk_box_pack_start(ETK_BOX(e->comment.vbox), e->cur_tab->scrolled_view, ETK_TRUE, ETK_TRUE, 0);
    
@@ -45,7 +45,7 @@ _ex_comment_hide(Exhibit *e)
    if(!e->comment.visible)
      return;
    
-   etk_paned_add2(ETK_PANED(e->hpaned), e->cur_tab->scrolled_view, ETK_TRUE);
+   etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->scrolled_view, ETK_TRUE);
    etk_object_destroy(ETK_OBJECT(e->comment.entry));
    etk_object_destroy(ETK_OBJECT(e->comment.save));
    etk_object_destroy(ETK_OBJECT(e->comment.revert));

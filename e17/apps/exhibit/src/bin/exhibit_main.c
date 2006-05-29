@@ -48,7 +48,7 @@ _ex_main_button_zoom_in_cb(Etk_Object *obj, void *data)
    if (e->cur_tab->fit_window)
      {
 	if(evas_list_count(e->tabs) == 1)
-	  etk_paned_add2(ETK_PANED(e->hpaned), e->cur_tab->scrolled_view, ETK_TRUE);
+	  etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->scrolled_view, ETK_TRUE);
 	else
 	  etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->scrolled_view);
 	  
@@ -76,7 +76,7 @@ _ex_main_button_zoom_out_cb(Etk_Object *obj, void *data)
    if (e->cur_tab->fit_window)
      {
 	if(evas_list_count(e->tabs) == 1)	  
-	  etk_paned_add2(ETK_PANED(e->hpaned), e->cur_tab->scrolled_view, ETK_TRUE);
+	  etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->scrolled_view, ETK_TRUE);
 	else
 	  etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->scrolled_view);
 	
@@ -104,7 +104,7 @@ _ex_main_button_zoom_one_to_one_cb(Etk_Object *obj, void *data)
    if (e->cur_tab->fit_window)
      {
 	if(evas_list_count(e->tabs) == 1)
-	  etk_paned_add2(ETK_PANED(e->hpaned), e->cur_tab->scrolled_view, ETK_TRUE);
+	  etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->scrolled_view, ETK_TRUE);
 	else
 	  etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->scrolled_view);
 	
@@ -133,7 +133,7 @@ _ex_main_button_fit_to_window_cb(Etk_Object *obj, void *data)
    
    etk_widget_size_request_set(e->cur_tab->alignment, 10, 10);
    if(evas_list_count(e->tabs) == 1)
-     etk_paned_add2(ETK_PANED(e->hpaned), e->cur_tab->alignment, ETK_TRUE);
+     etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->alignment, ETK_TRUE);
    else          
      etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->alignment);
      
@@ -669,7 +669,7 @@ _ex_main_window_tab_append(Exhibit *e, Ex_Tab *tab)
      {
 	/* adding first "real" tab, copy existing tab, and create new one */
 	e->notebook = etk_notebook_new();        
-	etk_paned_add2(ETK_PANED(e->hpaned), e->notebook, ETK_TRUE);	
+	etk_paned_child2_set(ETK_PANED(e->hpaned), e->notebook, ETK_TRUE);	
 	etk_notebook_page_append(ETK_NOTEBOOK(e->notebook), _ex_file_get(e->cur_tab->dir), e->cur_tab->scrolled_view);
 	etk_signal_connect("current_page_changed", ETK_OBJECT(e->notebook), ETK_CALLBACK(_ex_main_window_tab_toggled_cb), e);
 	etk_widget_show(ETK_WIDGET(e->notebook));
@@ -788,10 +788,10 @@ _ex_main_window_show(char *dir)
    etk_box_pack_start(ETK_BOX(e->vbox), e->hpaned, ETK_TRUE, ETK_TRUE, 0);   
 
    e->vpaned = etk_vpaned_new();
-   etk_paned_add1(ETK_PANED(e->hpaned), e->vpaned, ETK_FALSE);
+   etk_paned_child1_set(ETK_PANED(e->hpaned), e->vpaned, ETK_FALSE);
    
    e->table = etk_table_new(4, 4, ETK_FALSE);
-   etk_paned_add1(ETK_PANED(e->vpaned), e->table, ETK_FALSE);
+   etk_paned_child1_set(ETK_PANED(e->vpaned), e->table, ETK_FALSE);
 
    e->menu_bar = etk_menu_bar_new();
    etk_table_attach(ETK_TABLE(e->table), e->menu_bar, 0, 4, 0, 0, 0, 0, ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
@@ -943,7 +943,7 @@ _ex_main_window_show(char *dir)
    e->cur_tab = tab;   
    e->tabs = evas_list_append(e->tabs, tab);   
    _ex_tab_select(tab);
-   etk_paned_add2(ETK_PANED(tab->e->hpaned), tab->scrolled_view, ETK_TRUE);
+   etk_paned_child2_set(ETK_PANED(tab->e->hpaned), tab->scrolled_view, ETK_TRUE);
    
    _ex_main_populate_files(e, file);
       
