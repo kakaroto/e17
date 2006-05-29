@@ -357,6 +357,7 @@ _lang_update_lang_defined_list(E_Config_Dialog_Data *cfdata)
 {
    //FIXME: optimize - too slow
    char		     buf[1024];
+   char		     lbuf[1024];
    Evas_List	     *l, *l2;
    Language_Predef   *lp;
    Language	     *lang;
@@ -395,8 +396,10 @@ _lang_update_lang_defined_list(E_Config_Dialog_Data *cfdata)
 
 	snprintf(buf, sizeof(buf), ILIST_LANGUAGE_LABEL_FORMAT, lp->lang_name, lp->lang_shortcut);
 
-	ic = edje_object_add(cfdata->evas);
-	e_util_edje_icon_set(ic, "enlightenment/e");
+	ic = e_icon_add(cfdata->evas);
+	snprintf(lbuf, sizeof(lbuf), "%s/images/%s.png", e_module_dir_get(cfdata->conf->module),
+	        lp->lang_flag);
+	e_icon_file_set(ic, lbuf);
 	e_widget_ilist_append(cfdata->gui.lang_ilist, ic, buf, NULL, NULL, NULL);
      }
 
@@ -423,6 +426,7 @@ _lang_update_selected_lang_list(E_Config_Dialog_Data *cfdata)
 {
    //FIXME: optimize - too slow
    char buf[1024];
+   char lbuf[1024];
    Evas_List   *l;
    Language    *lang;
    int indx;
@@ -443,8 +447,10 @@ _lang_update_selected_lang_list(E_Config_Dialog_Data *cfdata)
 	snprintf(buf, sizeof(buf), ILIST_LANGUAGE_LABEL_FORMAT, lang->lang_name,
 	         lang->lang_shortcut);
 
-	ic = edje_object_add(cfdata->evas);
-	e_util_edje_icon_set(ic, "enlightenment/e");
+	ic = e_icon_add(cfdata->evas);
+	snprintf(lbuf, sizeof(lbuf), "%s/images/%s.png", e_module_dir_get(cfdata->conf->module),
+	        lang->lang_flag);
+	e_icon_file_set(ic, lbuf);
 	e_widget_ilist_append(cfdata->gui.selected_lang_ilist, ic, buf, NULL, NULL, NULL);
      }
 

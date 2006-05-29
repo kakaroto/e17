@@ -3,12 +3,4 @@
 
 1. Remove all FIXMEs.
 
-2. Introduce country flags for the face box, and for the list icons in the config
-   dialog and in the face menu.
-
-3. Think on language switch policy :
-      a) Global - done
-      b) Per Window - done
-      c) ????
-
-4. Memleaks? forget somewere to clear list or remove an item from it?
+2. Memleaks? forget somewere to clear list or remove an item from it?

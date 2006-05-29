@@ -5,12 +5,11 @@ images {
    image: "language_titlebar_glint1.png" COMP;
    image: "language_titlebar_glint2.png" COMP;
    image: "language_titlebar_glint3.png" COMP;
-   image: "language_flag.png" COMP;
 }
 collections {
    group {
       name: "modules/language/main";
-      max:	 128 128;
+      max:	 148 128;
       script {
 	 public is_active;
 	 public is_hilited;
@@ -94,36 +93,6 @@ collections {
 	       color: 255 255 255 255;
 	    }
 	 }
-//	 part {
-//	    name: "language_flag";
-//	    description {
-//	       state:   "default" 0.0;
-//	       aspect:  1.0 1.0;
-//	       rel1 {
-//		  to:	"title_bar";
-//		  offset:	0 0;
-//	       }
-//	       rel2 {
-//		  to:	"title_bar";
-//		  offset:	-1 -1;
-//	       }
-//	       image {
-//		  normal: "language_flag.png";
-//	       }
-//	    }
-//	    description {
-//	       state:   "active" 0.0;
-//	       inherit: "default" 0.0;
-//	       rel1 {
-//		  to:	"title_bar";
-//		  offset:	7 7;
-//	       }
-//	       rel2 {
-//		  to:	"title_bar";
-//		  offset:	-8 -8;
-//	       }
-//	    }
-//	 }
 
 	 part {
 	    name:		"title_glint_clip";
@@ -291,7 +260,71 @@ collections {
 	       color:    255 255 255 255;
 	    }
 	 }
+
+	 part {
+	    name:	   "language_flag";
+	    type:	   SWALLOW;
+	    mouse_events:  0;
+	    description {
+	       state:   "default" 0.0;
+	       align:	0.5 0.5;
+	       rel1 {
+		  to:	"title_bar";
+		  offset:	6 6;
+	       }
+	       rel2 {
+		  to:	"title_bar";
+		  offset:	-7 -7;
+	       } 
+	       color: 0 0 0 0;
+	    }
+	    description {
+	       state:   "active" 0.0;
+	       inherit: "default" 0.0;
+	       align:	0.5 0.5;
+	       rel1 {
+		  to:	"title_bar";
+		  offset:	6 6;
+	       }
+	       rel2 {
+		  to:	"title_bar";
+		  offset:	-7 -7;
+	       }
+	       color: 0 0 0 0;
+	    } 
+	 }
 	 
+//	 part {
+//	    name: "language_flag";
+//	    description {
+//	       state:   "default" 0.0;
+//	       aspect:  1.0 1.0;
+//	       rel1 {
+//		  to:	"title_bar";
+//		  offset:	0 0;
+//	       }
+//	       rel2 {
+//		  to:	"title_bar";
+//		  offset:	-1 -1;
+//	       }
+//	       image {
+//		  normal: "language_flag.png";
+//	       }
+//	    }
+//	    description {
+//	       state:   "active" 0.0;
+//	       inherit: "default" 0.0;
+//	       rel1 {
+//		  to:	"title_bar";
+//		  offset:	7 7;
+//	       }
+//	       rel2 {
+//		  to:	"title_bar";
+//		  offset:	-8 -8;
+//	       }
+//	    }
+//	 }
+//	 
 //	 part {
 //	    name: "language_flag2";
 //	    mouse_events:  0;

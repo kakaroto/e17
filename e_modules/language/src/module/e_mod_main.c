@@ -48,6 +48,7 @@ struct _Instance
 {
    E_Gadcon_Client   *gcc;
    Evas_Object	     *o_language;
+   Evas_Object	     *o_flag;
 };
 
 static E_Gadcon_Client *
@@ -73,6 +74,12 @@ _gc_init(E_Gadcon *gc, char *name, char *id, char *style)
    inst->gcc = gcc;
    inst->o_language = o;
 
+   inst->o_flag = e_icon_add(gc->evas);
+   snprintf(buf, sizeof(buf), "%s/images/unknown_flag.png",
+	    e_module_dir_get(language_config->module));
+   e_icon_file_set(inst->o_flag, buf);
+   edje_object_part_swallow(inst->o_language, "language_flag", inst->o_flag);
+
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN,
 				  _lang_button_cb_mouse_down, inst);
 
@@ -88,6 +95,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    inst = gcc->data;
    language_config->instances = evas_list_remove(language_config->instances, inst);
    evas_object_del(inst->o_language);
+   evas_object_del(inst->o_flag);
    free(inst);
 }
 static void
@@ -96,8 +104,8 @@ _gc_orient(E_Gadcon_Client *gcc)
    Instance *inst;
 
    inst = gcc->data;
-   e_gadcon_client_aspect_set(gcc, 16, 16);
-   e_gadcon_client_min_size_set(gcc, 16, 16);
+   e_gadcon_client_aspect_set(gcc, 24, 16);
+   e_gadcon_client_min_size_set(gcc, 24, 16);
 }
 static char *
 _gc_label(void)
@@ -142,9 +150,6 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, rdefs.model, STR);
    E_CONFIG_VAL(D, T, rdefs.layout, STR);
    E_CONFIG_VAL(D, T, rdefs.variant, STR);
-   /*E_CONFIG_VAL(D, T, kbd_model, STR);
-   E_CONFIG_VAL(D, T, kbd_layout, STR);
-   E_CONFIG_VAL(D, T, kbd_variant, STR);*/
 
    conf_edd = E_CONFIG_DD_NEW("Language_Config", Config);
 #undef T
@@ -309,6 +314,7 @@ void language_face_language_indicator_update()
    Evas_List   *l;
    Instance    *inst; 
    static int counter = 0;
+   char lbuf[4096];
 
    if (!language_config) return;
 
@@ -316,15 +322,30 @@ void language_face_language_indicator_update()
    for (l = language_config->instances; l; l = l->next)
      {
 	inst = l->data;
+	Evas_Coord mw, mh;
 
+	evas_object_hide(inst->o_flag);
+	edje_object_part_unswallow(inst->o_language, inst->o_flag);
 	if (language_config->languages)
 	  {
 	     Language	*lang = evas_list_nth(language_config->languages,
 					      language_config->language_selector);
-	     edje_object_part_text_set(inst->o_language, "langout", lang->lang_shortcut);
+
+	     snprintf(lbuf, sizeof(lbuf), "%s/images/%s.png",
+		      e_module_dir_get(language_config->module), lang->lang_flag);
+	     e_icon_file_set(inst->o_flag, lbuf);
+	     edje_object_part_swallow(inst->o_language, "language_flag", inst->o_flag);
+	     edje_object_part_text_set(inst->o_language, "langout", lang->lang_shortcut); 
 	  }
 	else 
-	  edje_object_part_text_set(inst->o_language, "langout", "");
+	  { 
+	     snprintf(lbuf, sizeof(lbuf), "%s/images/%s.png",
+		      e_module_dir_get(language_config->module));
+	     e_icon_file_set(inst->o_flag, lbuf);
+	     edje_object_part_swallow(inst->o_language, "language_flag", inst->o_flag);
+	     edje_object_part_text_set(inst->o_language, "langout", "");
+	  }
+
      }
 }
 
@@ -380,6 +401,7 @@ _lang_button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_in
 {
    Instance *inst;
    Evas_Event_Mouse_Down   *ev;
+   char buf[4096];
 
    if (!(inst = data)) return;
    ev = event_info;
@@ -427,8 +449,9 @@ _lang_button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_in
 
 		  mi = e_menu_item_new(mn);
 		  e_menu_item_label_set(mi, lang->lang_name);
-		  //FIXME: the country flag should go here
-		  e_util_menu_item_edje_icon_set(mi, "enlightenment/e"); 
+		  snprintf(buf, sizeof(buf), "%s/images/%s.png", 
+			   e_module_dir_get(language_config->module), lang->lang_flag);
+		  e_menu_item_icon_file_set(mi, buf);
 		  e_menu_item_radio_set(mi, 1);
 		  e_menu_item_radio_group_set(mi, SELECTED_LANG_SET_RADIO_GROUP);
 		  e_menu_item_toggle_set(mi, indx == language_config->language_selector ? 1 : 0);

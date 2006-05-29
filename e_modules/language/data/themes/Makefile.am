@@ -1,5 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 
+SUBDIRS = images
+
 EDJE_CC = @edje_cc@
 EDJE_FLAGS = -v -id ./images
 
