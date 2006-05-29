@@ -1,9 +1,0 @@
-Makefile.in
-Makefile
-.deps
-priv.lo
-file.lo
-misc.lo
-.libs
-libFnlib.la
-*.da

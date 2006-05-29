@@ -1,1 +1,0 @@
-SUBDIRS = e rock shinymetal
