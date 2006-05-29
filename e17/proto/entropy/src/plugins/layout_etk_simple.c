@@ -548,7 +548,7 @@ entropy_plugin_layout_create (entropy_core * core)
 
   /*Tree init*/
   gui->tree = etk_tree_new();
-  etk_paned_add1(ETK_PANED(gui->paned), gui->tree, ETK_FALSE);
+  etk_paned_child1_set(ETK_PANED(gui->paned), gui->tree, ETK_FALSE);
   etk_tree_mode_set(ETK_TREE(gui->tree), ETK_TREE_MODE_TREE);
   col = etk_tree_col_new(ETK_TREE(gui->tree), _("Folders"), 
 		  etk_tree_model_icon_text_new(ETK_TREE(gui->tree), ETK_TREE_FROM_FILE), 60);
@@ -560,7 +560,7 @@ entropy_plugin_layout_create (entropy_core * core)
 
   /*LocalShell Init*/
   gui->localshell = etk_vbox_new(ETK_TRUE,0);
-  etk_paned_add2(ETK_PANED(gui->paned), gui->localshell, ETK_TRUE);
+  etk_paned_child2_set(ETK_PANED(gui->paned), gui->localshell, ETK_TRUE);
 
   /*Popup init*/
    gui->popup = etk_menu_new();
