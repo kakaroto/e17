@@ -1,0 +1,5 @@
+debian/tmp/usr/lib/enlightenment/modules/eveil/*.png
+debian/tmp/usr/lib/enlightenment/modules/eveil/*.edj
+debian/tmp/usr/lib/enlightenment/modules/eveil/*.eap
+debian/tmp/usr/lib/enlightenment/modules/eveil/*.ttf
+debian/tmp/usr/lib/enlightenment/modules/eveil/*/*.so
