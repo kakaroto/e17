@@ -1,6 +1,0 @@
-touch config.h
-touch Imlib/config.h
-touch gdk_imlib/config.h
-touch utils/config.h
-xmkmf -a
-make install

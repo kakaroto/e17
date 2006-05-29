@@ -1,7 +1,0 @@
-$CC $CFLAGS \
--I. -I/usr/local/include -I/usr/X11R6/include/ \
--L/usr/local/lib -L/usr/X11R6/lib -L. \
-../*.o \
--lgif -ljpeg -ltiff -lpng -lz -lm -lc -lX11 -lXext -g \
-TEST.c \
--o TEST
