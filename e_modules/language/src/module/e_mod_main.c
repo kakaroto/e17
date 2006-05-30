@@ -339,7 +339,7 @@ void language_face_language_indicator_update()
 	  }
 	else 
 	  { 
-	     snprintf(lbuf, sizeof(lbuf), "%s/images/%s.png",
+	     snprintf(lbuf, sizeof(lbuf), "%s/images/unknown_flag.png",
 		      e_module_dir_get(language_config->module));
 	     e_icon_file_set(inst->o_flag, lbuf);
 	     edje_object_part_swallow(inst->o_language, "language_flag", inst->o_flag);

@@ -44,6 +44,11 @@ lang_language_switch_to(Config *cfg, unsigned int n)
    
    
    if (!cfg) return;
+   if (!cfg->languages)
+     {
+	language_face_language_indicator_update();
+	return;
+     }
 
    if (cfg->lang_policy == LS_GLOBAL_POLICY)
      { 
