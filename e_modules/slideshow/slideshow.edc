@@ -62,7 +62,6 @@ collections
 		  description
 		    {
 		       state: "default" 0.0;
-		       //aspect: 1.0 1.0;
 		       rel1
 			 {
 			    relative: 0.0 0.0;

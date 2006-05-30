@@ -20,7 +20,7 @@ _config_slideshow_module(Config_Item *ci)
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
    E_Container *con;
-   
+
    v = E_NEW(E_Config_Dialog_View, 1);
 
    v->create_cfdata = _create_data;
@@ -37,15 +37,15 @@ static void
 _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata)
 {
    char buf[PATH_MAX];
-   
+
    cfdata->poll_time = ci->poll_time;
    cfdata->disable_timer = ci->disable_timer;
    if (ci->dir)
-     cfdata->dir = strdup(ci->dir);
-   else 
+      cfdata->dir = strdup(ci->dir);
+   else
      {
-	snprintf(buf, sizeof(buf), "%s/.e/e/backgrounds", e_user_homedir_get());
-	cfdata->dir = strdup(buf);
+        snprintf(buf, sizeof(buf), "%s/.e/e/backgrounds", e_user_homedir_get());
+        cfdata->dir = strdup(buf);
      }
 }
 
@@ -54,9 +54,10 @@ _create_data(E_Config_Dialog *cfd)
 {
    E_Config_Dialog_Data *cfdata;
    Config_Item *ci;
-   
+
    ci = cfd->data;
    cfdata = E_NEW(E_Config_Dialog_Data, 1);
+
    _fill_data(ci, cfdata);
    return cfdata;
 }
@@ -65,7 +66,7 @@ static void
 _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    if (!slide_config)
-     return;
+      return;
 
    slide_config->config_dialog = NULL;
    free(cfdata);
@@ -107,16 +108,16 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    ci->disable_timer = cfdata->disable_timer;
 
    if (ci->dir)
-     evas_stringshare_del(ci->dir);
+      evas_stringshare_del(ci->dir);
 
    if (cfdata->dir != NULL)
-     ci->dir = evas_stringshare_add(cfdata->dir);
-   else 
+      ci->dir = evas_stringshare_add(cfdata->dir);
+   else
      {
-	snprintf(buf, sizeof(buf), "%s/.e/e/backgrounds", e_user_homedir_get());
-	ci->dir = evas_stringshare_add(buf);
+        snprintf(buf, sizeof(buf), "%s/.e/e/backgrounds", e_user_homedir_get());
+        ci->dir = evas_stringshare_add(buf);
      }
-   
+
    e_config_save_queue();
 
    _slide_config_updated(ci->id);

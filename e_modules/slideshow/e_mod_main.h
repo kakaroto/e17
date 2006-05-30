@@ -18,7 +18,7 @@ struct _Config
 struct _Config_Item
 {
    const char *id;
-   
+
    int disable_timer;
    double poll_time;
    const char *dir;
