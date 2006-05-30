@@ -124,13 +124,13 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    if (inst->check_timer)
       ecore_timer_del(inst->check_timer);
    if (inst->add_handler)
-     ecore_event_handler_del(inst->add_handler);
+      ecore_event_handler_del(inst->add_handler);
    if (inst->data_handler)
-     ecore_event_handler_del(inst->data_handler);
+      ecore_event_handler_del(inst->data_handler);
    if (inst->del_handler)
-     ecore_event_handler_del(inst->del_handler);   
+      ecore_event_handler_del(inst->del_handler);
    if (inst->server)
-     ecore_con_server_del(inst->server);
+      ecore_con_server_del(inst->server);
 
    inst->server = NULL;
    weather_config->instances = evas_list_remove(weather_config->instances, inst);
@@ -188,10 +188,10 @@ _weather_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
         e_menu_item_label_set(mi, D_("Configuration"));
         e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
         e_menu_item_callback_set(mi, _weather_menu_cb_configure, inst);
-	
-	mi = e_menu_item_new(mn);
-	e_menu_item_separator_set(mi, 1);
-	
+
+        mi = e_menu_item_new(mn);
+        e_menu_item_separator_set(mi, 1);
+
         e_gadcon_client_util_menu_items_append(inst->gcc, mn, 0);
         e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &x, &y, &w, &h);
         e_menu_activate_mouse(mn, e_util_zone_current_get(e_manager_current_get()),
@@ -321,7 +321,7 @@ e_modapi_shutdown(E_Module *m)
         e_object_del(E_OBJECT(weather_config->menu));
         weather_config->menu = NULL;
      }
-   
+
    while (weather_config->items)
      {
         Config_Item *ci;
@@ -462,17 +462,17 @@ _weather_cb_check(void *data)
    inst = data;
    ci = _weather_config_item_get(inst->gcc->id);
 
-   if (inst->server) 
+   if (inst->server)
      {
-	ecore_con_server_del(inst->server);
-	inst->server = NULL; 
+        ecore_con_server_del(inst->server);
+        inst->server = NULL;
      }
-   
+
    if (ci->proxy.port != 0)
-     inst->server = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM, ci->proxy.host, ci->proxy.port, inst);
+      inst->server = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM, ci->proxy.host, ci->proxy.port, inst);
    else
-     inst->server = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM, ci->host, 80, inst);
-   
+      inst->server = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM, ci->host, 80, inst);
+
    return 1;
 }
 
@@ -688,10 +688,10 @@ _weather_config_updated(const char *id)
            continue;
         if (!strcmp(inst->gcc->id, ci->id))
           {
-	     if (ci->display == 0)
-	       edje_object_signal_emit(inst->weather->weather_obj, "set_style", "simple");
-	     else if (ci->display == 1)
-	       edje_object_signal_emit(inst->weather->weather_obj, "set_style", "detailed");
+             if (ci->display == 0)
+                edje_object_signal_emit(inst->weather->weather_obj, "set_style", "simple");
+             else if (ci->display == 1)
+                edje_object_signal_emit(inst->weather->weather_obj, "set_style", "detailed");
 
              _weather_convert_degrees(inst);
 
