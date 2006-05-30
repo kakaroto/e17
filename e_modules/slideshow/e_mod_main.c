@@ -89,6 +89,12 @@ _gc_init(E_Gadcon *gc, char *name, char *id, char *style)
 
    if (!ci->disable_timer)
       inst->check_timer = ecore_timer_add(ci->poll_time, _slide_cb_check, inst);
+   else
+     {
+        _slide_get_bg_count(inst);
+        inst->index = 0;
+        _slide_set_preview(inst);
+     }
 
    return gcc;
 }
