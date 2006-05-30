@@ -12,7 +12,7 @@ Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 Prefix: %{_prefix}
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 BuildRequires: esmart-devel, ewl-devel, imlib2-devel, engrave-devel
-BuildRequires: enlightenment-devel >= 0.16.999
+BuildRequires: enlightenment-devel >= 0.16.999, edje-bin
 Requires: enlightenment >= 0.16.999
 Requires: e_utils-e17setroot, e_utils-e_util_eapp_edit, e_utils-emblem
 Requires: e_utils-entangle, e_utils-exige
