@@ -25,7 +25,7 @@ struct _Config_Item
    unsigned char use_scrot;
    const char *location;
    const char *filename;
-   int use_app;
+   unsigned char use_app;
    const char *app;
    struct
    {

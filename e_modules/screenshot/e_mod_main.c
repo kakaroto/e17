@@ -278,7 +278,7 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, import.use_trim, UCHAR);
    E_CONFIG_VAL(D, T, scrot.use_img_border, UCHAR);
    E_CONFIG_VAL(D, T, scrot.use_thumb, UCHAR);
-   E_CONFIG_VAL(D, T, use_app, INT);
+   E_CONFIG_VAL(D, T, use_app, UCHAR);
    E_CONFIG_VAL(D, T, app, STR);
 
    conf_edd = E_CONFIG_DD_NEW("Screenshot_Config", Config);
