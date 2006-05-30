@@ -110,6 +110,7 @@ _gc_init(E_Gadcon *gc, char *name, char *id, char *style)
         break;
      }
 
+   _weather_cb_check(inst);
    inst->check_timer = ecore_timer_add((double)ci->poll_time, _weather_cb_check, inst);
    return gcc;
 }
@@ -122,14 +123,16 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    inst = gcc->data;
    if (inst->check_timer)
       ecore_timer_del(inst->check_timer);
-
    if (inst->add_handler)
      ecore_event_handler_del(inst->add_handler);
    if (inst->data_handler)
      ecore_event_handler_del(inst->data_handler);
    if (inst->del_handler)
-     ecore_event_handler_del(inst->del_handler);
-     
+     ecore_event_handler_del(inst->del_handler);   
+   if (inst->server)
+     ecore_con_server_del(inst->server);
+
+   inst->server = NULL;
    weather_config->instances = evas_list_remove(weather_config->instances, inst);
    _weather_free(inst->weather);
    free(inst);
@@ -459,13 +462,17 @@ _weather_cb_check(void *data)
    inst = data;
    ci = _weather_config_item_get(inst->gcc->id);
 
-   if (!inst->server)
+   if (inst->server) 
      {
-        if (ci->proxy.port != 0)
-	  inst->server = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM, ci->proxy.host, ci->proxy.port, inst);
-        else
-	  inst->server = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM, ci->host, 80, inst);
+	ecore_con_server_del(inst->server);
+	inst->server = NULL; 
      }
+   
+   if (ci->proxy.port != 0)
+     inst->server = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM, ci->proxy.host, ci->proxy.port, inst);
+   else
+     inst->server = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM, ci->host, 80, inst);
+   
    return 1;
 }
 
@@ -681,15 +688,10 @@ _weather_config_updated(const char *id)
            continue;
         if (!strcmp(inst->gcc->id, ci->id))
           {
-             switch (ci->display)
-               {
-               case 0:
-                  edje_object_signal_emit(inst->weather->weather_obj, "set_style", "simple");
-                  break;
-               case 1:
-                  edje_object_signal_emit(inst->weather->weather_obj, "set_style", "detailed");
-                  break;
-               }
+	     if (ci->display == 0)
+	       edje_object_signal_emit(inst->weather->weather_obj, "set_style", "simple");
+	     else if (ci->display == 1)
+	       edje_object_signal_emit(inst->weather->weather_obj, "set_style", "detailed");
 
              _weather_convert_degrees(inst);
 
