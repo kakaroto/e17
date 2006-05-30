@@ -116,7 +116,7 @@ ewl_icon_type_get(Ewl_Icon *icon)
  * @param icon: The Ewl_Icon to set the image into
  * @param file: The file with the image
  * @param key: The key inside the file if applicable
- * @return Retruns no value
+ * @return Returns no value
  * @brief set the image to use in the icon
  */
 void
