@@ -104,8 +104,8 @@ _gc_orient(E_Gadcon_Client *gcc)
    Instance *inst;
 
    inst = gcc->data;
-   e_gadcon_client_aspect_set(gcc, 24, 16);
-   e_gadcon_client_min_size_set(gcc, 24, 16);
+   e_gadcon_client_aspect_set(gcc, 16, 16);
+   e_gadcon_client_min_size_set(gcc, 16, 16);
 }
 static char *
 _gc_label(void)
