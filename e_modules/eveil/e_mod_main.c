@@ -397,9 +397,8 @@ void eveil_edje_refresh_alarm(void)
         st = localtime(&t);
         strftime(bufdate, sizeof(bufdate), "%d", st);
         snprintf(buf, sizeof(buf), "%.2s %.2d:%.2d",
-                 bufdate, al->sched.hour, al->sched.minute);
+                 bufdate, first->sched.hour, first->sched.minute);
         eveil_edje_text_set("alarm_txt_line", buf);
-        printf("REFRESH !\n");
      }
 }
 
@@ -497,8 +496,6 @@ _epoch_find_date(char *date, int hour, int minute)
    ts.tm_isdst = 1;
 
    t = mktime(&ts);
-
-   printf("epoch find date : %f\n", (double)t);
 
    return (double)t;
 }
@@ -749,8 +746,6 @@ _cb_alarms_ring_etimer(void *data)
         else
           t = al->sched.day_next_epoch;
 
-        printf("Testing al %s : %f (now %f)\n", al->name, t, tt);
-        
         if (t <= tt)
           {
              eveil_config->alarms_state = ALARMS_STATE_RINGING;
