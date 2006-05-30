@@ -126,10 +126,11 @@ _gc_orient(E_Gadcon_Client *gcc)
    
    inst = gcc->data;
 
-   if (eveil_config->alarms_icon_mode)
+   if (eveil_config->alarms_icon_mode ||
+       eveil_config->timer_icon_mode)
      {
-        e_gadcon_client_aspect_set(gcc, 24, 16);
-        e_gadcon_client_min_size_set(gcc, 24, 16);
+        e_gadcon_client_aspect_set(gcc, 40, 16);
+        e_gadcon_client_min_size_set(gcc, 40, 16);
      }
    else
      {
@@ -162,7 +163,7 @@ _gc_icon(Evas *evas)
  * Eveil functions
  */
 
-Alarm *eveil_alarm_add(int state, char *name, int type, char *date, int day_monday, int day_tuesday, int day_wenesday, int day_thursday, int day_friday, int day_saturday, int day_sunday, int hour, int minute, int open_popup, int run_program, char *program)
+Alarm *eveil_alarm_add(int state, char *name, int type, char *date, int day_monday, int day_tuesday, int day_wenesday, int day_thursday, int day_friday, int day_saturday, int day_sunday, int hour, int minute, int autoremove, char *description, int open_popup, int run_program, char *program)
 {
    Alarm *al;
 
@@ -205,6 +206,9 @@ Alarm *eveil_alarm_add(int state, char *name, int type, char *date, int day_mond
              }
    al->sched.hour = hour;
    al->sched.minute = minute;
+   al->autoremove = autoremove;
+   if (description)
+      al->description = evas_stringshare_add(description);
    al->open_popup = open_popup;
    al->run_program = run_program;
    if (program)
@@ -226,6 +230,8 @@ void eveil_alarm_del(Alarm *al)
 {
    if (al->name)
      evas_stringshare_del(al->name);
+   if (al->description)
+      evas_stringshare_del(al->description);
    if (al->program)
      evas_stringshare_del(al->program);
    eveil_config->alarms = evas_list_remove(eveil_config->alarms, al);
@@ -431,7 +437,9 @@ _alarm_check_date(Alarm *al, int strict)
                return 0;
              else
                {
-                  if (eveil_config->alarms_date_autoremove)
+                  if ((al->autoremove == ALARM_AUTOREMOVE_YES) ||
+		      (al->autoremove == ALARM_AUTOREMOVE_PARENT &&
+		       eveil_config->alarms_date_autoremove_default == 1))
                     eveil_alarm_del(al);
                   else
                     al->state = ALARM_STATE_OFF;
@@ -821,6 +829,8 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, sched.hour, SHORT);
    E_CONFIG_VAL(D, T, sched.minute, SHORT);
    E_CONFIG_VAL(D, T, sched.day_next_epoch, DOUBLE);
+   E_CONFIG_VAL(D, T, autoremove, SHORT);
+   E_CONFIG_VAL(D, T, description, STR);
    E_CONFIG_VAL(D, T, open_popup, SHORT);
    E_CONFIG_VAL(D, T, run_program, SHORT);
    E_CONFIG_VAL(D, T, program, STR);
@@ -838,7 +848,7 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, timer_program_default, STR);
    E_CONFIG_VAL(D, T, alarms_state, SHORT);
    E_CONFIG_LIST(D, T, alarms, _alarms_edd);
-   E_CONFIG_VAL(D, T, alarms_date_autoremove, SHORT);
+   E_CONFIG_VAL(D, T, alarms_date_autoremove_default, SHORT);
    E_CONFIG_VAL(D, T, alarms_icon_mode, SHORT);
    E_CONFIG_VAL(D, T, alarms_detail_mode, SHORT);
    E_CONFIG_VAL(D, T, alarms_open_popup_default, SHORT);
@@ -890,7 +900,7 @@ e_modapi_init(E_Module *m)
         eveil_config->timer_open_popup_default = TIMER_OPEN_POPUP_DEFAULT;
         eveil_config->timer_run_program_default = TIMER_RUN_PROGRAM_DEFAULT;
         eveil_config->alarms_state = ALARMS_STATE_OFF;
-        eveil_config->alarms_date_autoremove = ALARMS_DATE_AUTOREMOVE_DEFAULT;
+        eveil_config->alarms_date_autoremove_default = ALARMS_DATE_AUTOREMOVE_DEFAULT;
         eveil_config->alarms_icon_mode = ALARMS_ICON_MODE_DEFAULT;
         eveil_config->alarms_detail_mode = ALARMS_DETAIL_MODE_DEFAULT;
         eveil_config->alarms_open_popup_default = ALARMS_OPEN_POPUP_DEFAULT;
@@ -903,7 +913,7 @@ e_modapi_init(E_Module *m)
    E_CONFIG_LIMIT(eveil_config->timer_detail_mode, 0, 2);
    E_CONFIG_LIMIT(eveil_config->timer_open_popup_default, 0, 1);
    E_CONFIG_LIMIT(eveil_config->timer_run_program_default, 0, 1);
-   E_CONFIG_LIMIT(eveil_config->alarms_date_autoremove, 0, 1);
+   E_CONFIG_LIMIT(eveil_config->alarms_date_autoremove_default, 0, 1);
    E_CONFIG_LIMIT(eveil_config->alarms_icon_mode, 0, 2);
    E_CONFIG_LIMIT(eveil_config->alarms_detail_mode, 0, 2);
    E_CONFIG_LIMIT(eveil_config->alarms_open_popup_default, 0, 1);

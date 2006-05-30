@@ -26,7 +26,13 @@ struct _E_Config_Dialog_Data
       int day_saturday;
       int day_sunday;
    } sched;
+   struct
+   {
+      Evas_Object *date;
+   } sched_gui;
+   int autoremove;
 
+   char *description;
    int open_popup;
    int run_program;
    char *program;
@@ -41,6 +47,8 @@ static Evas_Object *_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E
 static int          _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 
 static void _cb_alarm_test(void *data, void *data2);
+static void _cb_alarm_today(void *data, void *data2);
+static void _cb_alarm_tomorrow(void *data, void *data2);
 
 void eveil_config_alarm(Alarm *al) 
 {
@@ -74,6 +82,7 @@ static void
 _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
 {
    free(cfdata->name);
+   free(cfdata->description);
    free(cfdata->program);
    free(cfdata);
 }
@@ -113,6 +122,11 @@ _fill_data(E_Config_Dialog_Data *cfdata, Alarm *al)
         cfdata->sched.day_friday = al->sched.day_friday;
         cfdata->sched.day_saturday = al->sched.day_saturday;
         cfdata->sched.day_sunday = al->sched.day_sunday;
+	cfdata->autoremove = al->autoremove;
+	if (al->description)
+	   cfdata->description = strdup(al->description);
+	else
+	   cfdata->description = strdup("");
         cfdata->open_popup = al->open_popup;
         cfdata->run_program = al->run_program;
         if (al->program)
@@ -122,13 +136,24 @@ _fill_data(E_Config_Dialog_Data *cfdata, Alarm *al)
      }
    else
      {
+	struct tm *st;
+	time_t t;
+	char buf[20];
+
         cfdata->new = 1;
         cfdata->state = ALARM_STATE_ON;
         cfdata->name = strdup("");
         cfdata->sched.type = ALARM_SCHED_TYPE_DEFAULT;
-        cfdata->sched.date = strdup("");
-        cfdata->open_popup = eveil_config->alarms_open_popup_default;
-        cfdata->run_program = ALARM_RUN_PROGRAM_DEFAULT;
+
+	t = time(NULL);
+	st = localtime(&t);
+	strftime(buf, sizeof(buf), "%Y/", st);
+	cfdata->sched.date = strdup(buf);
+
+	cfdata->autoremove = ALARM_AUTOREMOVE_PARENT;
+	cfdata->description = strdup("");
+        cfdata->open_popup = ALARM_OPEN_POPUP_PARENT;
+        cfdata->run_program = ALARM_RUN_PROGRAM_PARENT;
         cfdata->program = strdup("");
      }
 }
@@ -148,6 +173,12 @@ _common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *c
    ob = e_widget_entry_add(evas, &(cfdata->name));
    e_widget_min_size_set(ob, 200, 25);
    e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 1, 1, 1);
+   ob = e_widget_label_add(evas, _("Description"));
+   e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 1, 1, 1);
+   ob = e_widget_entry_add(evas, &(cfdata->description));
+   e_widget_min_size_set(ob, 250, 25);
+   e_widget_frametable_object_append(of, ob, 0, 3, 2, 1, 1, 1, 1, 1);
+   
 
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
@@ -184,9 +215,13 @@ _common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *c
    e_widget_frametable_object_append(of, ob, 3, 3, 1, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, _("Date (YYYY/MM/DD)"));
    e_widget_frametable_object_append(of, ob, 3, 4, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_entry_add(evas, &(cfdata->sched.date));
-   e_widget_min_size_set(ob, 100, 25);
-   e_widget_frametable_object_append(of, ob, 3, 5, 1, 1, 1, 1, 1, 1);
+   cfdata->sched_gui.date = e_widget_entry_add(evas, &(cfdata->sched.date));
+   e_widget_min_size_set(cfdata->sched_gui.date, 100, 25);
+   e_widget_frametable_object_append(of, cfdata->sched_gui.date, 3, 5, 1, 1, 1, 1, 1, 1);
+   ob = e_widget_button_add(evas, _("Today"), NULL, _cb_alarm_today, cfdata, NULL);
+   e_widget_frametable_object_append(of, ob, 3, 6, 1, 1, 1, 1, 1, 1);
+   ob = e_widget_button_add(evas, _("Tomorow"), NULL, _cb_alarm_tomorrow, cfdata, NULL);
+   e_widget_frametable_object_append(of, ob, 3, 7, 1, 1, 1, 1, 1, 1);
 
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 }
@@ -207,6 +242,8 @@ _common_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
                         cfdata->sched.day_saturday,
                         cfdata->sched.day_sunday,
                         cfdata->sched.hour, cfdata->sched.minute,
+			cfdata->autoremove,
+			cfdata->description,
                         cfdata->open_popup,
                         cfdata->run_program,
                         cfdata->program);
@@ -280,6 +317,18 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 
    of = e_widget_frametable_add(evas, _("Ring Options"), 0);
 
+   ob = e_widget_label_add(evas, _("Remove alarm"));
+   e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 1, 1);
+
+   rg = e_widget_radio_group_new(&(cfdata->autoremove));
+
+   ob = e_widget_radio_add(evas, _("No"), ALARM_AUTOREMOVE_NO, rg);
+   e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 1, 1, 1);
+   ob = e_widget_radio_add(evas, _("Use general settings"), ALARM_AUTOREMOVE_PARENT, rg);
+   e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 1, 1, 1);
+   ob = e_widget_radio_add(evas, _("Yes"), ALARM_AUTOREMOVE_YES, rg);
+   e_widget_frametable_object_append(of, ob, 1, 3, 1, 1, 1, 1, 1, 1);
+
    ob = e_widget_label_add(evas, _("Open popup"));
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 1, 1);
 
@@ -342,4 +391,34 @@ static void _cb_alarm_test(void *data, void *data2)
      return;
 
    eveil_alarm_test(cfdata->al);
+}
+
+static void _cb_alarm_today(void *data, void *data2)
+{
+   E_Config_Dialog_Data *cfdata;
+   struct tm *st;
+   time_t t;
+   char buf[20];
+
+   cfdata = data;
+   t = time(NULL);
+   st = localtime(&t);
+   strftime(buf, sizeof(buf), "%Y/%m/%d", st);
+
+   e_widget_entry_text_set(cfdata->sched_gui.date, buf);
+}
+
+static void _cb_alarm_tomorrow(void *data, void *data2)
+{
+   E_Config_Dialog_Data *cfdata;
+   struct tm *st;
+   time_t t;
+   char buf[20];
+
+   cfdata = data;
+   t = time(NULL) + 3600*24;
+   st = localtime(&t);
+   strftime(buf, sizeof(buf), "%Y/%m/%d", st);
+
+   e_widget_entry_text_set(cfdata->sched_gui.date, buf);
 }

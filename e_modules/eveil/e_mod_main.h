@@ -4,7 +4,7 @@
 #ifndef E_MOD_MAIN_H
 #define E_MOD_MAIN_H
 
-#define CONFIG_VERSION 5
+#define CONFIG_VERSION 6
 
 #define TIME_FORMAT_12 0
 #define TIME_FORMAT_24 1
@@ -48,6 +48,9 @@
 #define ALARM_SCHED_TYPE_DAY 0
 #define ALARM_SCHED_TYPE_WEEK 1
 #define ALARM_SCHED_TYPE_DEFAULT 1
+#define ALARM_AUTOREMOVE_NO 0
+#define ALARM_AUTOREMOVE_YES 1
+#define ALARM_AUTOREMOVE_PARENT 2
 #define ALARM_OPEN_POPUP_NO 0
 #define ALARM_OPEN_POPUP_PARENT 1
 #define ALARM_OPEN_POPUP_YES 2
@@ -98,7 +101,9 @@ struct _Alarm
       int day_sunday;
       double day_next_epoch;
    } sched;
+   int autoremove;
 
+   const char *description;
    int   open_popup;
    int   run_program;
    const char *program;
@@ -122,7 +127,7 @@ struct _Config
    int              alarms_state;
    Evas_List       *alarms;
    Ecore_Timer     *alarms_ring_etimer;
-   int              alarms_date_autoremove;
+   int              alarms_date_autoremove_default;
    int              alarms_icon_mode;
    int              alarms_detail_mode;
    int              alarms_open_popup_default;
@@ -146,7 +151,7 @@ EAPI int   e_modapi_info     (E_Module *m);
 EAPI int   e_modapi_about    (E_Module *m);
 EAPI int   e_modapi_config   (E_Module *m);
 
-Alarm *eveil_alarm_add(int state, char *name, int type, char *date, int day_monday, int day_tuesday, int day_wenesday, int day_thursday, int day_friday, int day_saturday, int day_sunday, int hour, int minute, int open_popup, int run_program, char *program);
+Alarm *eveil_alarm_add(int state, char *name, int type, char *date, int day_monday, int day_tuesday, int day_wenesday, int day_thursday, int day_friday, int day_saturday, int day_sunday, int hour, int minute, int autoremove, char *description, int open_popup, int run_program, char *program);
 void   eveil_alarm_del(Alarm *al);
 int    eveil_alarm_test(Alarm *al);
 void   eveil_timer_start(void);

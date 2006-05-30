@@ -29,7 +29,7 @@ struct _E_Config_Dialog_Data
    Evas_Object *alarms_ilist;
    E_Config_Dialog *alarms_cfd;
    int    alarms_active;
-   int    alarms_date_autoremove;
+   int    alarms_date_autoremove_default;
    int    alarms_icon_mode;
    int    alarms_detail_mode;
    int    alarms_open_popup_default;
@@ -159,7 +159,7 @@ _fill_data(E_Config_Dialog_Data *cfdata)
      cfdata->alarms_active = ALARMS_STATE_OFF;
    else
      cfdata->alarms_active = ALARMS_STATE_ON;
-   cfdata->alarms_date_autoremove = eveil_config->alarms_date_autoremove;
+   cfdata->alarms_date_autoremove_default = eveil_config->alarms_date_autoremove_default;
    cfdata->alarms_icon_mode = eveil_config->alarms_icon_mode;
    cfdata->alarms_detail_mode = eveil_config->alarms_detail_mode;
    cfdata->alarms_open_popup_default = eveil_config->alarms_open_popup_default;
@@ -326,7 +326,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    e_widget_min_size_set(ob, 110, 25);
    e_widget_frametable_object_append(of, ob, 1, 5, 2, 1, 1, 1, 1, 1);
 
-   ob = e_widget_check_add(evas, _("Remove alarm after the date"), &(cfdata->alarms_date_autoremove));
+   ob = e_widget_check_add(evas, _("Remove alarm after the date"), &(cfdata->alarms_date_autoremove_default));
    e_widget_frametable_object_append(of, ob, 0, 6, 3, 1, 1, 1, 1, 1);
 
    ob = e_widget_label_add(evas, _("Time format"));
@@ -403,7 +403,7 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
      evas_stringshare_del(eveil_config->timer_program_default);
    eveil_config->timer_program_default = evas_stringshare_add(cfdata->timer_program_default);
 
-   eveil_config->alarms_date_autoremove = cfdata->alarms_date_autoremove;
+   eveil_config->alarms_date_autoremove_default = cfdata->alarms_date_autoremove_default;
    if (eveil_config->alarms_icon_mode != cfdata->alarms_icon_mode)
      {
         eveil_config->alarms_icon_mode = cfdata->alarms_icon_mode;
