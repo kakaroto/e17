@@ -440,11 +440,7 @@ void load_cb(Ewl_Widget *w, void *event, void *data)
                 	slidenum++;
 
 			ewl_widget_enable(m->slideshow);
-			ewl_widget_state_set(m->slideshow, "enabled", 
-							EWL_STATE_PERSISTENT);
 			ewl_widget_enable(m->presentation);
-			ewl_widget_state_set(m->presentation, "enabled", 
-							EWL_STATE_PERSISTENT);
 		}
 		
 		fclose(file_ptr);
@@ -500,8 +496,6 @@ void reseti_cb(Ewl_Widget *w, void *event, void *data)
         ewl_widget_show(m->ib);
 	ewl_widget_disable(m->slideshow);
 	ewl_widget_disable(m->presentation);
-	ewl_widget_state_set(m->slideshow, "disabled", EWL_STATE_PERSISTENT);
-	ewl_widget_state_set(m->presentation, "disabled", EWL_STATE_PERSISTENT);
 	return;
 	w = NULL;
 	event = NULL;
@@ -579,10 +573,6 @@ void addi(Ewl_Widget *w, void *event, void *data)
 		}
 		ewl_widget_enable(m->slideshow);
 		ewl_widget_enable(m->presentation);
-		ewl_widget_state_set(m->slideshow, "enabled", 
-						EWL_STATE_PERSISTENT);
-		ewl_widget_state_set(m->presentation, "enabled", 
-						EWL_STATE_PERSISTENT);
 	}
 	return;
 	w = NULL;
@@ -631,9 +621,7 @@ void imagerealize_cb(Ewl_Widget *w, void *event, void *data)
 		ewl_image_file_set(EWL_IMAGE(m->vimage),
 					argimage, NULL);
 		ewl_widget_enable(m->vbutton);
-                ewl_widget_state_set(m->vbutton, "enabled", 
-						EWL_STATE_PERSISTENT);
-	}
+        }
 	return;
 	w = NULL;
 	event = NULL;

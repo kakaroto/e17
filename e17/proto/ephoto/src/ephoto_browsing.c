@@ -334,10 +334,6 @@ iremove_cb(Ewl_Widget *w, void *event, void *data)
 			if ( ecore_dlist_is_empty(m->imagelist) ) {
 				ewl_widget_disable(m->slideshow);
 				ewl_widget_disable(m->presentation);
-				ewl_widget_state_set(m->slideshow, "disabled", 
-							EWL_STATE_PERSISTENT);
-				ewl_widget_state_set(m->presentation, 
-					"disabled", EWL_STATE_PERSISTENT);
 			}
 		}
 		else {
@@ -425,23 +421,17 @@ images_cb(Ewl_Widget *w, void *event, void *data)
                 ewl_callback_append(m->vbutton, EWL_CALLBACK_CLICKED, 
 							images_cb, NULL);
                 ewl_widget_disable(m->vbutton);
-                ewl_widget_state_set(m->vbutton, "disabled", 
-						EWL_STATE_PERSISTENT);
                 ewl_widget_show(m->vbutton);
 
 		ewl_image_file_set(EWL_IMAGE(m->vimage), pathi, NULL);
 		ewl_widget_enable(m->vbutton);
-		ewl_widget_state_set(m->vbutton, "enabled", 
-						EWL_STATE_PERSISTENT);
 	}
 	/**********************************************************/
 
 	/****Enable the slideshow and presentation buttons 
 					so we can get to work****/
 	ewl_widget_enable(m->slideshow);
-	ewl_widget_state_set(m->slideshow, "enabled", EWL_STATE_PERSISTENT);
 	ewl_widget_enable(m->presentation);
-	ewl_widget_state_set(m->presentation, "enabled", EWL_STATE_PERSISTENT);
 	/***************************************************/
 	return;
 	w = NULL;
@@ -466,8 +456,6 @@ audio_cb(Ewl_Widget *w, void *event, void *data)
 	if ( ewl_media_is_available() ) {
 		if (audio != 0) {
 			ewl_widget_enable(m->audiolen);
-			ewl_widget_state_set(m->audiolen, "enabled", 
-							EWL_STATE_PERSISTENT);
 		}
 	}
 	return;

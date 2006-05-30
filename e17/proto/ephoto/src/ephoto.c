@@ -554,8 +554,6 @@ main(int argc, char **argv)
 		ewl_callback_append(m->vbutton, EWL_CALLBACK_CLICKED, 
 						images_cb, NULL);
 		ewl_widget_disable(m->vbutton);
-		ewl_widget_state_set(m->vbutton, "disabled", 
-						EWL_STATE_PERSISTENT);
 		ewl_widget_show(m->vbutton);
 
 		ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(m->notebook), 
