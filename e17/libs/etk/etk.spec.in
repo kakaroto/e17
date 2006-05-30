@@ -21,6 +21,7 @@ Etk is a toolkit based on the EFL
 Summary: Etk headers, static libraries, documentation and test programs
 Group: System Environment/Libraries
 Requires: %{name} = %{version}
+Requires: evas-devel, edje-devel, ecore-devel
 
 %description devel
 Headers, static libraries, test programs and documentation for Etk
