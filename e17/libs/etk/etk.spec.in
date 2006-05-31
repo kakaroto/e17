@@ -12,7 +12,7 @@ Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project 
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 URL: http://www.enlightenment.org/
 #BuildSuggests: xorg-x11-devel doxygen
-BuildRequires: evas-devel, ecore-devel, edje-devel, edje-bin
+BuildRequires: evas-devel, ecore-devel, edje-devel, edje-bin, freetype-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
@@ -22,7 +22,7 @@ Etk is a toolkit based on the EFL
 Summary: Etk headers, static libraries, documentation and test programs
 Group: System Environment/Libraries
 Requires: %{name} = %{version}
-Requires: evas-devel, edje-devel, ecore-devel
+Requires: evas-devel, edje-devel, ecore-devel, freetype-devel >= 2
 
 %description devel
 Headers, static libraries, test programs and documentation for Etk
