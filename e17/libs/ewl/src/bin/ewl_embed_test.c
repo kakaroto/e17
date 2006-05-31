@@ -20,14 +20,18 @@ Evas_Object *edje;
 Ewl_Widget *text, *entry;
 
 void
-_open(Ewl_Widget *w __UNUSED__, void *e __UNUSED__, void *d __UNUSED__)
+_open(Ewl_Widget *w , void *e __UNUSED__, void *d)
 {
+	ewl_widget_disable(w);
+	ewl_widget_enable(EWL_WIDGET(d));
 	edje_object_signal_emit(edje, "open", "open");
 }
 
 void
-_close(Ewl_Widget *w __UNUSED__, void *e __UNUSED__, void *d __UNUSED__)
+_close(Ewl_Widget *w, void *e __UNUSED__, void *d)
 {
+	ewl_widget_disable(w);
+	ewl_widget_enable(EWL_WIDGET(d));
 	edje_object_signal_emit(edje, "close", "close");
 }
 
@@ -66,6 +70,7 @@ int
 main(int argc, char **argv)
 {
 	Ewl_Widget *wg, *c, *vbox;
+	Ewl_Widget *button[2];
 	Ewl_Widget *emb;
 	Evas_Object *eo;
 	Evas_Coord x, y, w, h;
@@ -157,7 +162,6 @@ main(int argc, char **argv)
 	ewl_widget_show(entry);
 
 	wg = ewl_button_new();
-	//ewl_button_stock_type_set(EWL_BUTTON(wg), EWL_STOCK_OK);
 	ewl_button_label_set(EWL_BUTTON(wg), "append");
 	ewl_object_fill_policy_set(EWL_OBJECT(wg), EWL_FLAG_FILL_SHRINK);
 	ewl_container_child_append(EWL_CONTAINER(c), wg);
@@ -178,18 +182,23 @@ main(int argc, char **argv)
 	ewl_button_label_set(EWL_BUTTON(wg), "open");
 	ewl_widget_show(wg);
 	ewl_container_child_append(EWL_CONTAINER(c), wg);
-	ewl_callback_append(wg, EWL_CALLBACK_CLICKED, _open, NULL);
+	button[0] = wg;
 
 	wg = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(wg), "close");
 	ewl_widget_show(wg);
 	ewl_container_child_append(EWL_CONTAINER(c), wg);
-	ewl_callback_append(wg, EWL_CALLBACK_CLICKED, _close, NULL);
 	ewl_widget_show(emb);
+	button[1] = wg;
+
+	ewl_callback_append(button[0], EWL_CALLBACK_CLICKED, _open, button[1]);
+	ewl_callback_append(button[1], EWL_CALLBACK_CLICKED, _close, button[0]);
 
 	edje_object_signal_emit(edje, "open", "open");
-	ewl_main();
+	ewl_widget_disable(button[0]);
 
+	ewl_main();
+	
 	return 0;
 }
 
