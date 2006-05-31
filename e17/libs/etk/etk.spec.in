@@ -12,6 +12,7 @@ Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project 
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 URL: http://www.enlightenment.org/
 #BuildSuggests: xorg-x11-devel doxygen
+BuildRequires: evas-devel, ecore-devel, edje-devel, edje-bin
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
