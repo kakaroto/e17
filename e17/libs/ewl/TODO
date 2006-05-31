@@ -58,6 +58,8 @@
 - The column view of the filepicker needs to blank out the preview when you
   have multiple files selected.
 
+- The focus doesn't change after a focused widget is disabled.
+
 - Ewl_Seeker:: Add value labels and hash marks.
 
 - Ewl_Spectrum:: may need to optimize this to only redraw if we have a resize, or a
