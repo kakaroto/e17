@@ -36,13 +36,18 @@ int main(int argc, char** argv)
 	double start, end;
 
 	if (argc < 2) {
-		printf ("Usage: epsilon_thumb_test <path>\n");
+		printf ("Usage: epsilon_thumb_test <directory path>\n");
 		exit(0);
 	}
 
 	epsilon_thumb_init();
 
 	thumb_done = ecore_event_handler_add(EPSILON_EVENT_DONE, thumb_complete_cb, NULL);
+
+	if (!ecore_file_is_dir(argv[1])) {
+		printf("Need a directory\n");
+		exit(-1);
+	}
 
 	files = ecore_file_ls(argv[1]);
 
@@ -63,7 +68,7 @@ int main(int argc, char** argv)
 	ecore_main_loop_begin();
 
 	end = ecore_time_get();
-	printf("\nEcore Thumb completed in %g seconds\n\n", end - start);
+	printf("\nEpsilon Thumb completed in %g seconds\n\n", end - start);
 
 	epsilon_shutdown();
 #if 0
