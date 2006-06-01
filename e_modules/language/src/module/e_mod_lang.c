@@ -500,6 +500,7 @@ _lang_load_xfree_language_kbd_layouts_load_configItem(EXML *xml, Language_Predef
 		  if (lp->lang_flag) evas_stringshare_del(lp->lang_flag);
 		  snprintf(buf, sizeof(buf), "%s_flag", ls ? ls : "language");
 		  lp->lang_flag = evas_stringshare_add(buf);
+		  if (ls) free(ls);
 	       }
 	  }
 
@@ -549,7 +550,7 @@ _lang_load_xfree_language_kbd_layouts_load_variantList(EXML *xml, Language_Prede
 		       if (!strcasecmp(tag, "name"))
 			 {
 			    lp->kbd_variant = evas_list_append(lp->kbd_variant,
-							       exml_value_get(xml));
+						      evas_stringshare_add(exml_value_get(xml)));
 			    break;
 			 }
 		       if (!exml_next_nomove(xml))
