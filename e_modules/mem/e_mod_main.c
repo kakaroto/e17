@@ -61,8 +61,7 @@ _gc_init(E_Gadcon *gc, char *name, char *id, char *style)
    inst = E_NEW(Instance, 1);
    
    ci = _mem_config_item_get(id);
-   if (!ci->id)
-     ci->id = evas_stringshare_add(id);
+   if (!ci->id) ci->id = evas_stringshare_add(id);
    
    mem = _mem_new(gc->evas);
    mem->inst = inst;
@@ -119,8 +118,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    Instance *inst;
    
    inst = gcc->data;
-   if (inst->check_timer)
-     ecore_timer_del(inst->check_timer);
+   if (inst->check_timer) ecore_timer_del(inst->check_timer);
    mem_config->instances = evas_list_remove(mem_config->instances, inst);
    _mem_free(inst->mem);
    free(inst);
@@ -164,8 +162,7 @@ _mem_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 static void
 _mem_menu_cb_post(void *data, E_Menu *m) 
 {
-   if (!mem_config->menu)
-     return;
+   if (!mem_config->menu) return;
    e_object_del(E_OBJECT(mem_config->menu));
    mem_config->menu = NULL;
 }
@@ -187,22 +184,18 @@ _mem_config_updated(const char *id)
    Evas_List *l;
    Config_Item *ci;
 
-   if (!mem_config)
-      return;
-
+   if (!mem_config) return;
    ci = _mem_config_item_get(id);
    for (l = mem_config->instances; l; l = l->next)
      {
         Instance *inst;
 
         inst = l->data;
-        if (!inst->gcc->id)
-           continue;
+        if (!inst->gcc->id) continue;
 
         if (!strcmp(inst->gcc->id, ci->id))
           {
-             if (inst->check_timer)
-                ecore_timer_del(inst->check_timer);
+             if (inst->check_timer) ecore_timer_del(inst->check_timer);
              inst->check_timer = ecore_timer_add((double)ci->poll_time, _mem_cb_check, inst);
              if (ci->always_text)
                 edje_object_signal_emit(inst->mem_obj, "label_active", "");
@@ -223,10 +216,8 @@ _mem_config_item_get(const char *id)
    for (l = mem_config->items; l; l = l->next)
      {
         ci = l->data;
-        if (!ci->id)
-           continue;
-        if (!strcmp(ci->id, id))
-           return ci;
+        if (!ci->id) continue;
+        if (!strcmp(ci->id, id)) return ci;
      }
    ci = E_NEW(Config_Item, 1);
    ci->id = evas_stringshare_add(id);
@@ -314,8 +305,7 @@ e_modapi_shutdown(E_Module *m)
 
         ci = mem_config->items->data;
         mem_config->items = evas_list_remove_list(mem_config->items, mem_config->items);
-        if (ci->id)
-           evas_stringshare_del(ci->id);
+        if (ci->id) evas_stringshare_del(ci->id);
         free(ci);
      }
    free(mem_config);
@@ -337,8 +327,7 @@ e_modapi_save(E_Module *m)
 
         inst = l->data;
         ci = _mem_config_item_get(inst->gcc->id);
-        if (ci->id)
-           evas_stringshare_del(ci->id);
+        if (ci->id) evas_stringshare_del(ci->id);
         ci->id = evas_stringshare_add(inst->gcc->id);
      }
    e_config_domain_save("module.mem", conf_edd, mem_config);
@@ -458,26 +447,21 @@ _mem_get_values(Config_Item *ci, int *real, int *swap, int *total_real, int *tot
    line = (char *)calloc(64, sizeof(char));
    while (fscanf(pmeminfo, "%c", &c) != EOF)
      {
-        if (c != '\n')
-           line[cursor++] = c;
+        if (c != '\n') line[cursor++] = c;
         else
           {
              field = (char *)malloc(strlen(line) * sizeof(char));
              sscanf(line, "%s %ld kB", field, &value);
-             if (!strcmp(field, "MemTotal:"))
-	       mtotal = value;
-             else if (!strcmp(field, "MemFree:"))
-	       mfree = value;
+             if (!strcmp(field, "MemTotal:")) mtotal = value;
+             else if (!strcmp(field, "MemFree:")) mfree = value;
              else if (ci->real_ignore_buffers && (!strcmp(field, "Buffers:")))
 	       mfree += value;
              else if (ci->real_ignore_cached && (!strcmp(field, "Cached:")))
 	       mfree += value;
              else if (ci->real_ignore_cached && (!strcmp(field, "SwapCached:")))
 	       sfree += value;
-             else if (!strcmp(field, "SwapTotal:"))
-	       stotal = value;
-             else if (!strcmp(field, "SwapFree:"))
-	       sfree = value;
+             else if (!strcmp(field, "SwapTotal:")) stotal = value;
+             else if (!strcmp(field, "SwapFree:")) sfree = value;
 	     
              free(line);
              free(field);
