@@ -209,31 +209,6 @@ static int          ECompMgrDetermineOrder(EObj * const *lst, int num,
 					   Desk * dsk, XserverRegion clip);
 
 /*
- * Visuals
- */
-
-int
-EVisualIsARGB(Visual * vis)
-{
-   XRenderPictFormat  *pictfmt;
-
-#if 0				/* FIXME - Remove? */
-   if (!Mode_compmgr.active)
-      return 0;
-#endif
-
-   pictfmt = XRenderFindVisualFormat(disp, vis);
-   if (!pictfmt)
-      return 0;
-
-#if 0
-   Eprintf("Visual ID=%#lx Type=%d, alphamask=%d\n", vis->visualid,
-	   pictfmt->type, pictfmt->direct.alphaMask);
-#endif
-   return pictfmt->type == PictTypeDirect && pictfmt->direct.alphaMask;
-}
-
-/*
  * Regions
  */
 

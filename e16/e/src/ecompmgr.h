@@ -36,8 +36,6 @@ typedef struct
    int                 fade_speed;
 } cfg_composite;
 
-int                 EVisualIsARGB(Visual * vis);
-
 int                 ECompMgrIsActive(void);
 
 int                 ECompMgrDeskConfigure(Desk * dsk);
@@ -66,8 +64,6 @@ void                ECompMgrMoveResizeFix(EObj * eo, int x, int y, int w,
 void                ECompMgrRepaint(void);
 
 #else
-
-#define EVisualIsARGB(vis)          0
 
 #define ECompMgrIsActive()          0
 

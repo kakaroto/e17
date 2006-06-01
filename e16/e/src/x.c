@@ -29,6 +29,9 @@
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
 #include <X11/Xresource.h>
+#if USE_COMPOSITE
+#include <X11/extensions/Xrender.h>
+#endif
 
 #define DEBUG_XWIN 0
 
@@ -1508,50 +1511,9 @@ EWindowGetShapePixmap(Win win)
    return mask;
 }
 
-void
-EGrabServer(void)
-{
-   if (Mode.grabs.server_grabbed <= 0)
-     {
-	if (EventDebug(EDBUG_TYPE_GRABS))
-	   Eprintf("EGrabServer\n");
-	XGrabServer(disp);
-     }
-   Mode.grabs.server_grabbed++;
-}
-
-void
-EUngrabServer(void)
-{
-   if (Mode.grabs.server_grabbed == 1)
-     {
-	XUngrabServer(disp);
-	XFlush(disp);
-	if (EventDebug(EDBUG_TYPE_GRABS))
-	   Eprintf("EUngrabServer\n");
-     }
-   Mode.grabs.server_grabbed--;
-   if (Mode.grabs.server_grabbed < 0)
-      Mode.grabs.server_grabbed = 0;
-}
-
-int
-EServerIsGrabbed(void)
-{
-   return Mode.grabs.server_grabbed;
-}
-
-void
-EFlush(void)
-{
-   XFlush(disp);
-}
-
-void
-ESync(void)
-{
-   XSync(disp, False);
-}
+/*
+ * Display
+ */
 
 Display            *
 EDisplayOpen(const char *dstr, int scr)
@@ -1614,6 +1576,113 @@ EDisplayDisconnect(void)
 
    disp = NULL;
 }
+
+/*
+ * Server
+ */
+
+void
+EGrabServer(void)
+{
+   if (Mode.grabs.server_grabbed <= 0)
+     {
+	if (EventDebug(EDBUG_TYPE_GRABS))
+	   Eprintf("EGrabServer\n");
+	XGrabServer(disp);
+     }
+   Mode.grabs.server_grabbed++;
+}
+
+void
+EUngrabServer(void)
+{
+   if (Mode.grabs.server_grabbed == 1)
+     {
+	XUngrabServer(disp);
+	XFlush(disp);
+	if (EventDebug(EDBUG_TYPE_GRABS))
+	   Eprintf("EUngrabServer\n");
+     }
+   Mode.grabs.server_grabbed--;
+   if (Mode.grabs.server_grabbed < 0)
+      Mode.grabs.server_grabbed = 0;
+}
+
+int
+EServerIsGrabbed(void)
+{
+   return Mode.grabs.server_grabbed;
+}
+
+void
+EFlush(void)
+{
+   XFlush(disp);
+}
+
+void
+ESync(void)
+{
+   XSync(disp, False);
+}
+
+/*
+ * Visuals
+ */
+
+#if USE_COMPOSITE
+
+Visual             *
+EVisualFindARGB(void)
+{
+   XVisualInfo        *xvi, xvit;
+   int                 i, num;
+   Visual             *vis;
+
+   xvit.screen = VRoot.scr;
+   xvit.depth = 32;
+   xvit.class = TrueColor;
+
+   xvi = XGetVisualInfo(disp,
+			VisualScreenMask | VisualDepthMask | VisualClassMask,
+			&xvit, &num);
+   if (!xvi)
+      return NULL;
+
+   for (i = 0; i < num; i++)
+     {
+	if (EVisualIsARGB(xvi[i].visual))
+	   break;
+     }
+
+   vis = (i < num) ? xvi[i].visual : NULL;
+
+   XFree(xvi);
+
+   return vis;
+}
+
+int
+EVisualIsARGB(Visual * vis)
+{
+   XRenderPictFormat  *pictfmt;
+
+   pictfmt = XRenderFindVisualFormat(disp, vis);
+   if (!pictfmt)
+      return 0;
+
+#if 0
+   Eprintf("Visual ID=%#lx Type=%d, alphamask=%d\n", vis->visualid,
+	   pictfmt->type, pictfmt->direct.alphaMask);
+#endif
+   return pictfmt->type == PictTypeDirect && pictfmt->direct.alphaMask;
+}
+
+#endif
+
+/*
+ * Misc
+ */
 
 Time
 EGetTimestamp(void)

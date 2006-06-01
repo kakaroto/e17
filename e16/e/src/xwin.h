@@ -28,6 +28,23 @@ typedef struct _xwin *Win;
 
 #define NoWin ((Win)0)
 
+Display            *EDisplayOpen(const char *dstr, int scr);
+void                EDisplayClose(void);
+void                EDisplayDisconnect(void);
+
+void                EGrabServer(void);
+void                EUngrabServer(void);
+int                 EServerIsGrabbed(void);
+void                EFlush(void);
+void                ESync(void);
+
+#if USE_COMPOSITE
+int                 EVisualIsARGB(Visual * vis);
+Visual             *EVisualFindARGB(void);
+#endif
+
+Time                EGetTimestamp(void);
+
 Win                 ELookupXwin(Window xwin);
 
 #define Xwin(win) WinGetXwin(win)
@@ -39,16 +56,6 @@ Colormap            WinGetCmap(const Win win);
 
 Win                 ECreateWinFromXwin(Window xwin);
 void                EDestroyWin(Win win);
-
-Display            *EDisplayOpen(const char *dstr, int scr);
-void                EDisplayClose(void);
-void                EDisplayDisconnect(void);
-void                EGrabServer(void);
-void                EUngrabServer(void);
-int                 EServerIsGrabbed(void);
-void                EFlush(void);
-void                ESync(void);
-Time                EGetTimestamp(void);
 
 Win                 ERegisterWindow(Window xwin, XWindowAttributes * pxwa);
 void                EUnregisterWindow(Win win);
