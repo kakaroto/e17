@@ -17,6 +17,12 @@ AC_C_CONST
 AM_ENABLE_SHARED
 AM_PROG_LIBTOOL
 
+ALL_LINGUAS=""
+AC_SUBST(ALL_LINGUAS)
+
+#AM_GNU_GETTEXT([external])
+#AM_GNU_GETTEXT_VERSION(0.14)
+
 MODULE_ARCH="$host_os-$host_cpu"
 AC_SUBST(MODULE_ARCH)
 AC_DEFINE_UNQUOTED(MODULE_ARCH, "$MODULE_ARCH", "Module architecture")
@@ -94,10 +100,9 @@ localedir=${datarootdir}/locale
 AC_SUBST(LOCALEDIR, "${localedir}")
 AC_DEFINE_UNQUOTED(LOCALEDIR, "${localedir}", [Module Locale Directory])
 
-AC_CHECK_LIB(dl, dlopen, dlopen_libs=-ldl)
-AC_SUBST(dlopen_libs)
+#AC_CHECK_LIB(dl, dlopen, dlopen_libs=-ldl)
+#AC_SUBST(dlopen_libs)
 
-AC_CHECK_HEADERS(EXML.h,, AC_MSG_ERROR([Cannot find EXML.h. Make sure your CFLAGS environment variable contains include lines for the location of this file and EXML lib is installed]))
 
 AC_ARG_WITH(edje-config,
 [  --with-edje-config=EDJE_CONFIG      use edje-config specified ],
@@ -141,6 +146,12 @@ e_modules=`$E_CONFIG --module-dir`
 AC_SUBST(e_cflags)
 AC_SUBST(e_libs)
 AC_SUBST(e_modules)
+
+AC_CHECK_HEADERS(EXML.h,, AC_MSG_ERROR([Cannot find EXML.h. Make sure your CFLAGS environment variable contains include lines for the location of this file and EXML lib is installed]))
+
+AC_CHECK_HEADERS(X11/XKBlib.h,, AC_MSG_ERROR([Cannot find XKBlib.h. Make sure your CFLAGS environment variable contains include lines for the location of this file.]))
+
+AC_CHECK_HEADERS(X11/extensions/XKBrules.h,, AC_MSG_ERROR([Cannot find XKBrules.h. Make sure your CFLAGS environment variable contains include lines for the location of this file.]))
 
 AC_OUTPUT([
 e_modules-language.spec
