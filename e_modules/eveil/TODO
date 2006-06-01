@@ -28,11 +28,15 @@ TODO
  * memo description
  * button to set date today and tomorow
  * set initial size larger (see also inset mode)
+ * snooze
+ * more explicit error messages
+ * menu icons
+ * better vertical orientation support
 
- - popups
- - snooze
+ - full size popup like exebuf
+ - eveil logo like an e, instead of alarm clock image, a bit like on e_module
+ - ? keep alarms on config change ?
  - exact alarm time ring
- - show week days in alarms list
  - pill mode
  - handle alarms wich happend when no E on come back
  - 12h time format

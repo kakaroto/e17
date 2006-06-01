@@ -220,7 +220,7 @@ _common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *c
    e_widget_frametable_object_append(of, cfdata->sched_gui.date, 3, 5, 1, 1, 1, 1, 1, 1);
    ob = e_widget_button_add(evas, _("Today"), NULL, _cb_alarm_today, cfdata, NULL);
    e_widget_frametable_object_append(of, ob, 3, 6, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_button_add(evas, _("Tomorow"), NULL, _cb_alarm_tomorrow, cfdata, NULL);
+   ob = e_widget_button_add(evas, _("Tomorrow"), NULL, _cb_alarm_tomorrow, cfdata, NULL);
    e_widget_frametable_object_append(of, ob, 3, 7, 1, 1, 1, 1, 1, 1);
 
    e_widget_list_object_append(o, of, 1, 1, 0.5);
@@ -230,6 +230,7 @@ static int
 _common_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    Alarm *al;
+   int error;
 
    al = eveil_alarm_add(cfdata->state, cfdata->name,
                         cfdata->sched.type,
@@ -246,14 +247,44 @@ _common_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 			cfdata->description,
                         cfdata->open_popup,
                         cfdata->run_program,
-                        cfdata->program);
+                        cfdata->program, &error);
 
    if (!al)
      {
         char buf[4096];
-        snprintf(buf, sizeof(buf),
-                 "<hilight>Alarm not added !</hilight><br>"
-                 "information / schedule you gave are not correct");
+        switch (error)
+          {
+          case ALARM_ADD_ERROR_UNKNOWN:
+             snprintf(buf, sizeof(buf),
+                      "<hilight>Error, The alarm was not added !</hilight><br><br>"
+                      "There is an error in the informations / schedule of your alarm");
+             break;
+          case ALARM_ADD_ERROR_NAME:
+             snprintf(buf, sizeof(buf),
+                      "<hilight>Error, The alarm was not added !</hilight><br><br>"
+                      "You have to enter a name for the alarm");
+             break;
+          case ALARM_ADD_ERROR_SCHED_WEEK:
+             snprintf(buf, sizeof(buf),
+                      "<hilight>Error, The alarm was not added !</hilight><br><br>"
+                      "You have to select at least one day in the week");
+             break;
+          case ALARM_ADD_ERROR_SCHED_DAY:
+             snprintf(buf, sizeof(buf),
+                      "<hilight>Error, The alarm was not added !</hilight><br><br>"
+                      "The date you entered for the alarm has incorrect syntax<br><br>"
+                      "You have to respect this format :<br>"
+                      "   YYYY/MM/DD<br>"
+                      "YYYY is the year on 4 numbers<br>"
+                      "MM is the month on 2 numbers<br>"
+                      "DD is the day on 2 numbers<br>");
+             break;
+          case ALARM_ADD_ERROR_SCHED_BEFORE:
+             snprintf(buf, sizeof(buf),
+                      "<hilight>Error, The alarm was not added !</hilight><br><br>"
+                      "The date you entered is before now");
+             break;
+          }
         e_module_dialog_show(_("Eveil Module Error"), buf);
         return 0;
      }
@@ -383,6 +414,7 @@ static void _cb_alarm_test(void *data, void *data2)
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_Data *cfdata;
+   char buf[4096];
 
    cfd = data;
    cfdata = data2;
@@ -390,7 +422,17 @@ static void _cb_alarm_test(void *data, void *data2)
    if(!_basic_apply_data(cfd, cfdata))
      return;
 
-   eveil_alarm_test(cfdata->al);
+   if (eveil_alarm_ring(cfdata->al, 1))
+     {
+        snprintf(buf, sizeof(buf),
+                 "<hilight>Alarm test SUCCEED !</hilight>");
+     }
+   else
+     {
+        snprintf(buf, sizeof(buf),
+                 "<hilight>Alarm test FAILED !</hilight>");
+     }
+   e_module_dialog_show(_("Eveil Module Test Report"), buf);
 }
 
 static void _cb_alarm_today(void *data, void *data2)

@@ -4,7 +4,7 @@
 #ifndef E_MOD_MAIN_H
 #define E_MOD_MAIN_H
 
-#define CONFIG_VERSION 6
+#define CONFIG_VERSION 7
 
 #define TIME_FORMAT_12 0
 #define TIME_FORMAT_24 1
@@ -15,7 +15,7 @@
 #define TIMER_STATE_RINGING 2
 #define TIMER_TIME_MIN 1
 #define TIMER_TIME_MAX (3600*24)
-#define TIMER_TIME_DEFAULT (60*11)
+#define TIMER_TIME_DEFAULT (60*9)
 #define TIMER_ICON_MODE_OFF 0
 #define TIMER_ICON_MODE_ON 1
 #define TIMER_ICON_MODE_ONGO 2
@@ -45,6 +45,8 @@
 
 #define ALARM_STATE_OFF 0
 #define ALARM_STATE_ON 1
+#define ALARM_STATE_RINGING 2
+#define ALARM_STATE_SNOOZED 3
 #define ALARM_SCHED_TYPE_DAY 0
 #define ALARM_SCHED_TYPE_WEEK 1
 #define ALARM_SCHED_TYPE_DEFAULT 1
@@ -58,9 +60,24 @@
 #define ALARM_RUN_PROGRAM_PARENT 1
 #define ALARM_RUN_PROGRAM_OWN 2
 #define ALARM_RUN_PROGRAM_DEFAULT 1
+#define ALARM_SNOOZE_HOUR_DEFAULT 0
+#define ALARM_SNOOZE_MINUTE_DEFAULT 15
+#define ALARM_ADD_ERROR_UNKNOWN 0
+#define ALARM_ADD_ERROR_NAME 1
+#define ALARM_ADD_ERROR_SCHED_WEEK 2
+#define ALARM_ADD_ERROR_SCHED_DAY 3
+#define ALARM_ADD_ERROR_SCHED_BEFORE 4
 
 #define RING_TEST_ALARM 0
 #define RING_TEST_TIMER 1
+
+#define THEME_IN_E "base/theme/modules/eveil"
+#define THEME_MAIN "modules/eveil/main"
+#define THEME_ICON_SNOOZE "modules/eveil/icon/alarm/snooze"
+#define THEME_ICON_ALARM_ON "modules/eveil/icon/alarm/on"
+#define THEME_ICON_ALARM_OFF "modules/eveil/icon/alarm/off"
+#define THEME_ICON_TIMER_ON "modules/eveil/icon/timer/on"
+#define THEME_ICON_TIMER_OFF "modules/eveil/icon/timer/off"
 
 #define EDJE_MSG_RECV_ALARM_STATE 0
 #define EDJE_MSG_RECV_TIMER_STATE 1
@@ -103,6 +120,15 @@ struct _Alarm
    } sched;
    int autoremove;
 
+   struct
+   {
+      int hour;
+      int minute;
+      int remember;
+      E_Dialog *dia;
+      Ecore_Timer *etimer;
+   } snooze;
+
    const char *description;
    int   open_popup;
    int   run_program;
@@ -135,6 +161,7 @@ struct _Config
    const char      *alarms_program_default;
 
    int config_version;
+   char *theme;
    E_Module        *module;
    E_Config_Dialog *config_dialog;
    Evas_List       *instances;
@@ -142,21 +169,20 @@ struct _Config
 };
 
 EAPI extern E_Module_Api e_modapi;
-
+extern Config *eveil_config;
 
 EAPI void *e_modapi_init     (E_Module *m);
 EAPI int   e_modapi_shutdown (E_Module *m);
 EAPI int   e_modapi_save     (E_Module *m);
-EAPI int   e_modapi_info     (E_Module *m);
 EAPI int   e_modapi_about    (E_Module *m);
 EAPI int   e_modapi_config   (E_Module *m);
 
-Alarm *eveil_alarm_add(int state, char *name, int type, char *date, int day_monday, int day_tuesday, int day_wenesday, int day_thursday, int day_friday, int day_saturday, int day_sunday, int hour, int minute, int autoremove, char *description, int open_popup, int run_program, char *program);
+Alarm *eveil_alarm_add(int state, char *name, int type, char *date, int day_monday, int day_tuesday, int day_wenesday, int day_thursday, int day_friday, int day_saturday, int day_sunday, int hour, int minute, int autoremove, char *description, int open_popup, int run_program, char *program, int *error);
 void   eveil_alarm_del(Alarm *al);
-int    eveil_alarm_test(Alarm *al);
+int    eveil_alarm_ring(Alarm *al, int test);
 void   eveil_timer_start(void);
 void   eveil_timer_stop(void);
-void   eveil_edje_message_send(int id, int message);
+void   eveil_edje_message_send(int id, int message, void *data);
 void   eveil_edje_text_set(char *part, char *text);
 void   eveil_edje_refresh_alarm(void);
 void   eveil_edje_refresh_timer(void);
@@ -164,8 +190,5 @@ void   eveil_edje_refresh_timer(void);
 void   eveil_config_module(void);
 void   eveil_config_refresh_alarms_ilist(E_Config_Dialog_Data *cfdata);
 void   eveil_config_alarm(Alarm *al);
-
-extern Config *eveil_config;
-
 
 #endif

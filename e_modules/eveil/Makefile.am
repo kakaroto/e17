@@ -6,8 +6,7 @@ EDJE_CC = @edje_cc@
 EDJE_FLAGS = -id . -fd $(srcdir)/fonts
 
 filesdir = $(datadir)
-files_DATA = module_icon.png \
-			module.eap \
+files_DATA = module.eap \
 			$(wildcard eveil.ed?) \
 			$(wildcard fonts/*.ttf)
 

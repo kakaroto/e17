@@ -1,6 +1,6 @@
 /* Enlightenment Eveil Module theme */
 
-#define BASE_BORDER 4
+#define BASE_BORDER 2
 #define SPLIT_OFFSET 0
 
 #define ALARM_STATE_OFF 0
@@ -91,6 +91,7 @@ images
 {
         image: "images/alarm_enabled.png" COMP;
         image: "images/alarm_disabled.png" COMP;
+        image: "images/alarm_snooze.png" COMP;
         image: "images/timer_enabled.png" COMP;
         image: "images/timer_disabled.png" COMP;
 }
@@ -392,21 +393,35 @@ collections
                                 visible: 0;
                 		rel1
                 		{
-                			relative: 0.0 1.0;
+                			relative: 0.0 0.0;
                                         to: "base";
                 		}
                 		rel2
                 		{
-                			relative: 1.0 1.0;
+                			relative: 0.0 1.0;
                                         to: "base";
                 		}
         		       color: 255 255 255 0;
         		}
                 	description
                 	{
+                		state: "down" 0.0;
+                                inherit: default 0.0;
+                                visible: 0;
+                		rel1
+                		{
+                			relative: 0.0 1.0;
+                		}
+                		rel2
+                		{
+                			relative: 1.0 1.0;
+                		}
+        		}
+                	description
+                	{
                 		state: "mid" 0.0;
                                 inherit: default 0.0;
-                                visible: 1;
+                                visible: 0;
                 		rel1
                 		{
                 			relative: 0.0 0.45;
@@ -417,7 +432,6 @@ collections
                 			relative: 1.0 0.55;
                                         offset: 0 SPLIT_OFFSET;
                 		}
-        		       color: 255 255 255 0;
         		}
                 	description
                 	{
@@ -432,22 +446,6 @@ collections
                 		{
                 			relative: 1.0 0.0;
                 		}
-        		       color: 255 255 255 0;
-        		}
-                	description
-                	{
-                		state: "nothing" 0.0;
-                                inherit: default 0.0;
-                                visible: 0;
-                		rel1
-                		{
-                			relative: 0.0 0.0;
-                		}
-                		rel2
-                		{
-                			relative: 0.0 1.0;
-                		}
-        		       color: 255 255 255 0;
         		}
         	}
 	     part
@@ -702,7 +700,7 @@ collections
                 program
                 {
                         name: "split_down";
-                        action: STATE_SET "default" 0.0;
+                        action: STATE_SET "down" 0.0;
                 	transition: SINUSOIDAL 1;
                 	target:	"split";
                 }
@@ -723,7 +721,7 @@ collections
                 program
                 {
                         name: "split_nothing";
-                        action: STATE_SET "nothing" 0.0;
+                        action: STATE_SET "default" 0.0;
                 	transition: SINUSOIDAL 1;
                 	target:	"split";
                 }
@@ -868,6 +866,188 @@ collections
 
    group
      {
-	name: "modules/eveil/popup";
+	name: "modules/eveil/icon/alarm/snooze";
+        parts
+        {
+               part
+	       {
+		  name: "icon";
+		  type: IMAGE;
+		  mouse_events: 1;
+		  description
+		    {
+		        state: "default" 0.0;
+                        aspect: 1 1;
+                        align: 0.0 0.0;
+        	        color: 255 255 255 200;
+        		rel1
+        		{
+        			relative: 0.0 0.0;
+                                offset: 2 2;
+        		}
+        		rel2
+        		{
+        			relative: 1.0 1.0;
+                                offset: -2 -2;
+        		}
+                        image
+                        {
+                               normal: "images/alarm_snooze.png";
+        		}
+        		fill
+        		{
+        			smooth: 1;
+        		}
+                   }
+             }
+         }
+     }
+
+   group
+     {
+	name: "modules/eveil/icon/alarm/on";
+        parts
+        {
+               part
+	       {
+		  name: "icon";
+		  type: IMAGE;
+		  mouse_events: 1;
+		  description
+		    {
+		        state: "default" 0.0;
+                        aspect: 1 1;
+                        align: 0.0 0.0;
+        	        color: 255 255 255 200;
+        		rel1
+        		{
+        			relative: 0.0 0.0;
+        		}
+        		rel2
+        		{
+        			relative: 1.0 1.0;
+        		}
+                        image
+                        {
+                               normal: "images/alarm_enabled.png";
+        		}
+        		fill
+        		{
+        			smooth: 1;
+        		}
+                   }
+             }
+         }
+     }
+
+   group
+     {
+	name: "modules/eveil/icon/alarm/off";
+        parts
+        {
+               part
+	       {
+		  name: "icon";
+		  type: IMAGE;
+		  mouse_events: 1;
+		  description
+		    {
+		        state: "default" 0.0;
+                        aspect: 1 1;
+                        align: 0.0 0.0;
+        	        color: 255 255 255 200;
+        		rel1
+        		{
+        			relative: 0.0 0.0;
+        		}
+        		rel2
+        		{
+        			relative: 1.0 1.0;
+        		}
+                        image
+                        {
+                               normal: "images/alarm_disabled.png";
+        		}
+        		fill
+        		{
+        			smooth: 1;
+        		}
+                   }
+             }
+         }
+     }
+
+   group
+     {
+	name: "modules/eveil/icon/timer/on";
+        parts
+        {
+               part
+	       {
+		  name: "icon";
+		  type: IMAGE;
+		  mouse_events: 1;
+		  description
+		    {
+		        state: "default" 0.0;
+                        aspect: 1 1;
+                        align: 0.0 0.0;
+        	        color: 255 255 255 200;
+        		rel1
+        		{
+        			relative: 0.0 0.0;
+        		}
+        		rel2
+        		{
+        			relative: 1.0 1.0;
+        		}
+                        image
+                        {
+                               normal: "images/timer_enabled.png";
+        		}
+        		fill
+        		{
+        			smooth: 1;
+        		}
+                   }
+             }
+         }
+     }
+
+   group
+     {
+	name: "modules/eveil/icon/timer/off";
+        parts
+        {
+               part
+	       {
+		  name: "icon";
+		  type: IMAGE;
+		  mouse_events: 1;
+		  description
+		    {
+		        state: "default" 0.0;
+                        aspect: 1 1;
+                        align: 0.0 0.0;
+        	        color: 255 255 255 200;
+        		rel1
+        		{
+        			relative: 0.0 0.0;
+        		}
+        		rel2
+        		{
+        			relative: 1.0 1.0;
+        		}
+                        image
+                        {
+                               normal: "images/timer_disabled.png";
+        		}
+        		fill
+        		{
+        			smooth: 1;
+        		}
+                   }
+             }
+         }
      }
 }

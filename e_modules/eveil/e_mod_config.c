@@ -85,11 +85,20 @@ void eveil_config_refresh_alarms_ilist(E_Config_Dialog_Data *cfdata)
 
    for(l=eveil_config->alarms; l; l=evas_list_next(l))
      {
+        Evas_Object *ic;
         Alarm *al;
         char buf[1024], bufdate[15];
         
         al = evas_list_data(l);
         
+        if (al->state == ALARM_STATE_OFF)
+          ic = NULL;
+        else
+          {
+             ic = e_icon_add(evas_object_evas_get(cfdata->alarms_ilist));
+             if (!eveil_config->theme) e_util_edje_icon_set(ic, THEME_ICON_ALARM_ON);
+             else e_icon_file_edje_set(ic, eveil_config->theme, THEME_ICON_ALARM_ON);
+          }
         if (al->sched.type == ALARM_SCHED_TYPE_DAY)
           {
              struct tm *st;
@@ -105,8 +114,7 @@ void eveil_config_refresh_alarms_ilist(E_Config_Dialog_Data *cfdata)
              // TODO: show the days of the week
              snprintf(buf, sizeof(buf), "%s (Weekly %.2d:%.2d)", al->name, al->sched.hour, al->sched.minute);
           }
-
-        e_widget_ilist_append(cfdata->alarms_ilist, NULL, buf, _cb_alarms_list, cfdata, NULL);
+        e_widget_ilist_append(cfdata->alarms_ilist, ic, buf, _cb_alarms_list, cfdata, NULL);
      }
 
    e_widget_min_size_get(cfdata->alarms_ilist, &wmw, &wmh);
@@ -180,7 +188,7 @@ _common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *c
    ob = e_widget_check_add(evas, _("Active"), &(cfdata->alarms_active));
    e_widget_frametable_object_append(of, ob, 0, 0, 2, 1, 1, 1, 1, 10);
 
-   ob = e_widget_ilist_add(evas, 80, 60, NULL);
+   ob = e_widget_ilist_add(evas, 16, 16, NULL);
    e_widget_ilist_selector_set(ob, 1);
    cfdata->alarms_ilist = ob;
    eveil_config_refresh_alarms_ilist(cfdata);
@@ -254,7 +262,7 @@ _common_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
      {
         eveil_config->alarms_state = cfdata->alarms_active;
         eveil_edje_message_send(EDJE_MSG_SEND_ALARM_STATE,
-                                cfdata->alarms_active);
+                                cfdata->alarms_active, NULL);
      }
 
    return 1;
@@ -389,13 +397,13 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
      {
         eveil_config->timer_icon_mode = cfdata->timer_icon_mode;
         eveil_edje_message_send(EDJE_MSG_SEND_TIMER_ICON_MODE,
-                                cfdata->timer_icon_mode);
+                                cfdata->timer_icon_mode, NULL);
      }
    if (eveil_config->timer_detail_mode != cfdata->timer_detail_mode)
      {
         eveil_config->timer_detail_mode = cfdata->timer_detail_mode;
         eveil_edje_message_send(EDJE_MSG_SEND_TIMER_DETAIL_MODE,
-                                cfdata->timer_detail_mode);
+                                cfdata->timer_detail_mode, NULL);
      }
    eveil_config->timer_open_popup_default = cfdata->timer_open_popup_default;
    eveil_config->timer_run_program_default = cfdata->timer_run_program_default;
@@ -408,13 +416,13 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
      {
         eveil_config->alarms_icon_mode = cfdata->alarms_icon_mode;
         eveil_edje_message_send(EDJE_MSG_SEND_ALARM_ICON_MODE,
-                                cfdata->alarms_icon_mode);
+                                cfdata->alarms_icon_mode, NULL);
      }
    if (eveil_config->alarms_detail_mode != cfdata->alarms_detail_mode)
      {
         eveil_config->alarms_detail_mode = cfdata->alarms_detail_mode;
         eveil_edje_message_send(EDJE_MSG_SEND_ALARM_DETAIL_MODE,
-                                cfdata->alarms_detail_mode);
+                                cfdata->alarms_detail_mode, NULL);
      }
    eveil_config->alarms_open_popup_default = cfdata->alarms_open_popup_default;
    eveil_config->alarms_run_program_default = cfdata->alarms_run_program_default;
