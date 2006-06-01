@@ -436,8 +436,15 @@ _e_widget_menu_item_handle(Enhance *en, EXML_Node *node)
 static E_Widget *
 _e_widget_menu_image_item_handle(Enhance *en, EXML_Node *node)
 {
-   /* FIXME: make images work */
-   return _e_widget_menu_item_handle(en, node);
+   E_Widget   *item;
+   char       *id;
+
+   id = ecore_hash_get(node->attributes, "id");
+   if(!id) return NULL;
+
+   item = _e_widget_new(en, node, etk_menu_item_image_new(), id);
+
+   return item;
 }
 
 static E_Widget *
