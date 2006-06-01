@@ -1,6 +1,3 @@
-/*
- * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
- */
 #include "border_props.h"
 
 struct _E_Config_Dialog_Data
@@ -61,7 +58,7 @@ border_props_substitute(E_Border * bd, char type)
 {
    int found = 1;
    char buf[32];
-   char *result = NULL;
+   const char *result = NULL;
 
    buf[0] = '\0';
    switch (type)

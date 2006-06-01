@@ -1,6 +1,6 @@
 group {
-   name: "emu/main";
-   max:  304 304;
+   name: "modules/emu/main";
+   max:  128 128;
    script {
       public is_active;
       public is_hilited;

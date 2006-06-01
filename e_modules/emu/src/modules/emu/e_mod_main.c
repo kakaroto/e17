@@ -1,5 +1,7 @@
 #include "e_mod_main.h"
 
+
+static E_Module *emu_module = NULL;
 static const char *_emu_module_edje = NULL;
 
 /* The emu commands. */
@@ -26,11 +28,12 @@ static char *_commands[] = {
    ""
 };
 
-/* E_Gadget interface. */
-static void _emu_face_init(void *data, E_Gadget_Face *face);
-static void _emu_face_free(void *data, E_Gadget_Face *face);
-static void _emu_face_change(void *data, E_Gadget_Face *face, E_Gadman_Client *gmc, E_Gadman_Change change);
-static void _emu_face_menu_init(void *data, E_Gadget_Face *face);
+/* gadcon requirements */
+static E_Gadcon_Client *_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style);
+static void _gc_shutdown(E_Gadcon_Client *gcc);
+static void _gc_orient(E_Gadcon_Client *gcc);
+static char *_gc_label(void);
+static Evas_Object *_gc_icon(Evas *evas);
 
 /* Parsers. */
 static void _emu_parse_command(Emu_Face *emu_face, int command, char *name, int start, int end);
@@ -42,7 +45,7 @@ static void _emu_parse_graph(Emu_Face *emu_face, char *name, int start, int end)
 static void _emu_parse_menu(Emu_Face *emu_face, char *name, int start, int end);
 
 /* Support functions. */
-static void _emu_add_face_menu(E_Gadget_Face *face, E_Menu *menu);
+//static void _emu_add_face_menu(E_Gadget_Face *face, E_Menu *menu);
 
 /* Ecore_Exe callback functions. */
 static int _emu_cb_exe_add(void *data, int type, void *ev);
@@ -56,24 +59,7 @@ static void _emu_menu_cb_post_deactivate(void *data, E_Menu *m);
 static void _emu_menu_cb_action(void *data, E_Menu *m, E_Menu_Item *mi);
 static Evas_Bool _emu_menus_hash_cb_free(Evas_Hash *hash, const char *key, void *data, void *fdata);
 
-static void _emu_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi);
-
-/* This is temporary until there is support in E_Gadget for third party modules. */
-void
-emu_gadget_face_theme_set(E_Gadget_Face *face, char *category, char *file, char *group)
-{
-   Evas_Object *o;
-   Evas_Coord x, y, w, h;
-
-   if (!face)
-      return;
-
-   o = edje_object_add(face->evas);
-   face->main_obj = o;
-   if (!e_theme_edje_object_set(o, category, group))
-      edje_object_file_set(o, file, group);
-   evas_object_show(o);
-}
+//static void _emu_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 
 /**
  * @defgroup Emu_Module_Basic_Group Emu module API interface
@@ -89,48 +75,17 @@ emu_gadget_face_theme_set(E_Gadget_Face *face, char *category, char *file, char 
  */
 E_Module_Api e_modapi = {
    E_MODULE_API_VERSION,        /* Minimal API version this module expects. */
-   "Emu"                        /* Title of this module, or NULL to just use the modules name. */
+   "Emu_gadcon"                        /* Title of this module, or NULL to just use the modules name. */
 };
 
-/**
- * Setup the main menu icon for the module.
- *
- * It is called when the module is first loaded.
- * You have three choices, an icon edje, an icon file, or do nothing.
- * These three members of E_Module (icon_file, edje_icon_file, and edje_icon_key)
- * will be free()ed for you when the module is unloaded, so you need 
- * to malloc() them,  strdup() them, or leave them as NULL.
- *
- * @param   m a pointer to your E_Module structure.
- * @return  1 for success, 0 for failure, it is currently ignored though.
- *          If there is not enough ram to allocate some strings, 
- *          then not having an icon is the least of our problems.
- * @ingroup Emu_Module_Basic_Group
- */
-EAPI int
-e_modapi_info(E_Module *m)
+static const E_Gadcon_Client_Class _gadcon_class =
 {
-   char buf[4096];
-
-   snprintf(buf, sizeof(buf), "%s/module_edje.edj", e_module_dir_get(m));
-   _emu_module_edje = evas_stringshare_add(buf);
-#if 0
-   snprintf(buf, sizeof(buf), "%s/module_icon.png", e_module_dir_get(m));
-   m->icon_file = strdup(buf);  /* Default icon file if no edge is set. */
-#else
-   if (_emu_module_edje)
+   GADCON_CLIENT_CLASS_VERSION,
+     "emu",
      {
-        m->edje_icon_file = strdup(_emu_module_edje);   /* Icon edje file. */
-        if (m->edje_icon_file)
-          {
-             snprintf(buf, sizeof(buf), "icon");
-             m->edje_icon_key = strdup(buf);    /* Icon edje key, defaults to "icon". */
-          }
+	_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon
      }
-#endif
-
-   return 1;
-}
+};
 
 /**
  * Display your modules about dialog.
@@ -144,7 +99,7 @@ e_modapi_about(E_Module *m)
 {
    /* This is a basic module dialog that is provided for simplicity, 
     * but there is probably nothing stopping you from making a complex dialog. */
-   e_module_dialog_show(D_("Enlightenment Emu Module - version " VERSION),
+   e_module_dialog_show(D_("Enlightenment Emu Module - gadcon version " VERSION),
                         D_
                         ("Experimental generic scriptable module for E17.<br><br>"
                          "Keep an eye out for the emu's.<br>"
@@ -165,40 +120,18 @@ e_modapi_about(E_Module *m)
 EAPI void *
 e_modapi_init(E_Module *m)
 {
-   Emu *emu;
+   char buf[4096];
 
+   emu_module = m;
+   snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(m));
+   _emu_module_edje = evas_stringshare_add(buf);
    /* Set up module's message catalogue */
    bindtextdomain(PACKAGE, LOCALEDIR);
    bind_textdomain_codeset(PACKAGE, "UTF-8");
 
-   emu = E_NEW(Emu, 1);
+   e_gadcon_provider_register(&_gadcon_class);
 
-   if (emu)
-     {
-        /*
-         * set up gadget -- only module and name are required, but the gadget would
-         * be pretty useless without func_face_*
-         */
-        emu->api.module = m;
-        emu->api.name = "emu_gadget";
-        emu->api.per_zone = 1;
-        emu->api.func_face_init = _emu_face_init;
-        emu->api.func_face_free = _emu_face_free;
-        emu->api.func_change = _emu_face_change;
-        emu->api.func_face_menu_init = _emu_face_menu_init;
-        emu->api.data = emu;
-        emu->gad = e_gadget_new(&emu->api);
-
-        emu->del = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _emu_cb_exe_del, emu->gad);
-
-        if ((emu->gad == NULL) || (emu->del == NULL))
-          {
-             e_modapi_shutdown(m);
-             emu = NULL;
-          }
-     }
-
-   return emu;
+   return 1;
 }
 
 /**
@@ -213,14 +146,6 @@ e_modapi_init(E_Module *m)
 EAPI int
 e_modapi_save(E_Module *m)
 {
-   Emu *emu;
-
-   emu = m->data;
-
-   if (emu)
-     {
-     }
-
    return 1;
 }
 
@@ -238,18 +163,8 @@ e_modapi_save(E_Module *m)
 EAPI int
 e_modapi_shutdown(E_Module *m)
 {
-   Emu *emu;
-
-   emu = m->data;
-
-   if (emu)
-     {
-        if (emu->del)
-           ecore_event_handler_del(emu->del);
-        if (emu->gad)
-           e_object_del(E_OBJECT(emu->gad));
-        E_FREE(emu);
-     }
+   emu_module = NULL;
+   e_gadcon_provider_unregister(&_gadcon_class);
 
 // FIXME: we really want to do this at unload time.
 //   if (_emu_module_edje)   evas_stringshare_del(_emu_module_edje);
@@ -275,27 +190,34 @@ e_modapi_shutdown(E_Module *m)
  * @param   face a pointer to your E_Gadget_Face.
  * @ingroup Emu_Module_Gadget_Group
  */
-static void
-_emu_face_init(void *data, E_Gadget_Face *face)
+static E_Gadcon_Client *
+_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 {
-   Emu *emu;
+   E_Gadcon_Client *gcc = NULL;
    Emu_Face *emu_face;
-
-   emu = data;
-
+   
    emu_face = E_NEW(Emu_Face, 1);
 
    if (emu_face)
      {
-        face->data = emu_face;
-        emu_face->emu = emu;
-        emu_face->face = face;
+        Evas_Object *o;
+
+        o = edje_object_add(gc->evas);
+        if ((!e_theme_edje_object_set(o, "base/theme/modules/emu", "modules/emu/main")) /*&& (_emu_module_edje)*/)
+           edje_object_file_set(o, (char *)_emu_module_edje, "modules/emu/main");
+        edje_object_signal_emit(o, "passive", "");
+
+        gcc = e_gadcon_client_new(gc, name, id, style, o);
+        gcc->data = emu_face;
+        emu_face->gcc = gcc;
+        emu_face->o_button = o;
         emu_face->menus = NULL;
 
         emu_face->name = evas_stringshare_add("Emu tester");
         emu_face->command = evas_stringshare_add("emu_client");
         if (emu_face->command)
           {
+             emu_face->del = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _emu_cb_exe_del, emu_face);
              emu_face->add = ecore_event_handler_add(ECORE_EXE_EVENT_ADD, _emu_cb_exe_add, emu_face);
              emu_face->read = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _emu_cb_exe_data, emu_face);
              emu_face->exe =
@@ -304,13 +226,14 @@ _emu_face_init(void *data, E_Gadget_Face *face)
              if (!emu_face->exe)
                 e_module_dialog_show(D_("Enlightenment Emu Module - error"), D_("There is no emu."));
           }
+
+        e_gadcon_client_util_menu_attach(gcc);
+        evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _emu_face_cb_mouse_down, emu_face);
      }
-
-   if (_emu_module_edje)
-      emu_gadget_face_theme_set(face, "base/theme/modules/emu", (char *)_emu_module_edje, "emu/main");
-
-   evas_object_event_callback_add(face->event_obj, EVAS_CALLBACK_MOUSE_DOWN, _emu_face_cb_mouse_down, emu_face);
+   
+   return gcc;
 }
+
 
 /**
  * Module specific face right click menu creation.
@@ -321,28 +244,11 @@ _emu_face_init(void *data, E_Gadget_Face *face)
  * @param   face a pointer to your E_Gadget_Face.
  * @ingroup Emu_Module_Gadget_Group
  */
-static void
-_emu_face_menu_init(void *data, E_Gadget_Face *face)
-{
-   _emu_add_face_menu(face, face->menu);
-}
-
-/**
- * Module specific face changing.
- *
- * It is called when a face is changed.
- *
- * @param   data the pointer you passed to e_gadget_new().
- * @param   face a pointer to your E_Gadget_Face.
- * @param   gmc a pointer to your E_Gadman_Client.
- * @param   change a pointer to your E_Gadman_Change.
- * @ingroup Emu_Module_Gadget_Group
- */
-static void
-_emu_face_change(void *data, E_Gadget_Face *face, E_Gadman_Client *gmc, E_Gadman_Change change)
-{
-   printf("change face!\n");
-}
+//static void
+//_emu_face_menu_init(void *data, E_Gadget_Face *face)
+//{
+//   _emu_add_face_menu(face, face->menu);
+//}
 
 /**
  * Module specific face freeing.
@@ -354,14 +260,11 @@ _emu_face_change(void *data, E_Gadget_Face *face, E_Gadman_Client *gmc, E_Gadman
  * @ingroup Emu_Module_Gadget_Group
  */
 static void
-_emu_face_free(void *data, E_Gadget_Face *face)
+_gc_shutdown(E_Gadcon_Client *gcc)
 {
-   Emu *emu;
    Emu_Face *emu_face;
 
-   emu = data;
-   emu_face = face->data;
-
+   emu_face = gcc->data;
    if (emu_face)
      {
         evas_hash_foreach(emu_face->menus, _emu_menus_hash_cb_free, NULL);
@@ -372,15 +275,44 @@ _emu_face_free(void *data, E_Gadget_Face *face)
            ecore_event_handler_del(emu_face->read);
         if (emu_face->add)
            ecore_event_handler_del(emu_face->add);
+        if (emu_face->del)
+           ecore_event_handler_del(emu_face->del);
 
         if (emu_face->exe)
            ecore_exe_terminate(emu_face->exe);
         if (emu_face->command)
            evas_stringshare_del(emu_face->command);
 
+        evas_object_del(emu_face->o_button);
         E_FREE(emu_face);
      }
 }
+
+static void
+_gc_orient(E_Gadcon_Client *gcc)
+{
+   e_gadcon_client_aspect_set(gcc, 16, 16);
+   e_gadcon_client_min_size_set(gcc, 16, 16);
+}
+
+static char *
+_gc_label(void)
+{
+   return _("Emu");
+}
+
+static Evas_Object *
+_gc_icon(Evas *evas)
+{
+   Evas_Object *o;
+   char buf[4096];
+   
+   o = edje_object_add(evas);
+   snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(emu_module));
+   edje_object_file_set(o, buf, "icon");
+   return o;
+}
+
 
 /**
  * @defgroup Emu_Module_Parser_Group Emu module command parsers
@@ -634,78 +566,43 @@ _emu_parse_menu(Emu_Face *emu_face, char *name, int start, int end)
  * @param   menu the pointer to your menu.
  * @ingroup Emu_Module_Support_Group
  */
-static void
-_emu_add_face_menu(E_Gadget_Face *face, E_Menu *menu)
-{
-   E_Menu_Item *mi;
+//static void
+//_emu_add_face_menu(E_Gadget_Face *face, E_Menu *menu)
+//{
+//   E_Menu_Item *mi;
+//
+//   mi = e_menu_item_new(menu);
+//   e_menu_item_label_set(mi, _("Configuration"));
+//   e_menu_item_callback_set(mi, _emu_cb_menu_configure, face);
+//
+//   mi = e_menu_item_new(menu);
+//   e_menu_item_separator_set(mi, 1);
+//
+//   mi = e_menu_item_new(menu);
+//   e_menu_item_label_set(mi, D_("Add row"));
+//   mi = e_menu_item_new(menu);
+//   e_menu_item_label_set(mi, D_("Remove row"));
+//   mi = e_menu_item_new(menu);
+//   e_menu_item_label_set(mi, D_("Add column"));
+//   mi = e_menu_item_new(menu);
+//   e_menu_item_label_set(mi, D_("Remove column"));
+//
+//   if (0)
+//      e_menu_item_toggle_set(mi, 1);
+//}
 
-   mi = e_menu_item_new(menu);
-   e_menu_item_label_set(mi, _("Configuration"));
-   e_menu_item_callback_set(mi, _emu_cb_menu_configure, face);
-
-   mi = e_menu_item_new(menu);
-   e_menu_item_separator_set(mi, 1);
-
-   mi = e_menu_item_new(menu);
-   e_menu_item_label_set(mi, D_("Add face"));
-   mi = e_menu_item_new(menu);
-   e_menu_item_label_set(mi, D_("Remove face"));
-
-   mi = e_menu_item_new(menu);
-   e_menu_item_label_set(mi, D_("Add row"));
-   mi = e_menu_item_new(menu);
-   e_menu_item_label_set(mi, D_("Remove row"));
-   mi = e_menu_item_new(menu);
-   e_menu_item_label_set(mi, D_("Add column"));
-   mi = e_menu_item_new(menu);
-   e_menu_item_label_set(mi, D_("Remove column"));
-
-   mi = e_menu_item_new(menu);
-   e_menu_item_separator_set(mi, 1);
-
-   mi = e_menu_item_new(menu);
-   e_menu_item_label_set(mi, D_("Transparent"));
-   e_menu_item_check_set(mi, 1);
-   if (1)
-      e_menu_item_toggle_set(mi, 1);
-
-   mi = e_menu_item_new(menu);
-   e_menu_item_label_set(mi, D_("Zoom icons"));
-   e_menu_item_check_set(mi, 1);
-   if (0)
-      e_menu_item_toggle_set(mi, 1);
-
-   mi = e_menu_item_new(menu);
-   e_menu_item_label_set(mi, D_("Stretch bar"));
-   e_menu_item_check_set(mi, 1);
-   if (0)
-      e_menu_item_toggle_set(mi, 1);
-
-   mi = e_menu_item_new(menu);
-   e_menu_item_label_set(mi, D_("Cling to edge"));
-   e_menu_item_check_set(mi, 1);
-   if (0)
-      e_menu_item_toggle_set(mi, 1);
-
-   mi = e_menu_item_new(menu);
-   e_menu_item_label_set(mi, _("Follower"));
-   e_menu_item_check_set(mi, 1);
-   if (0)
-      e_menu_item_toggle_set(mi, 1);
-}
-
-static void
-_emu_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi)
-{
-   E_Gadget_Face *face;
-   Emu_Face *emu_face;
-
-   face = data;
-   if (!face)
-      return;
-   emu_face = face->data;
-   _config_emu_module(face->con, emu_face->emu);
-}
+//static void
+//_emu_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi)
+//{
+//   E_Gadget_Face *face;
+//   Emu_Face *emu_face;
+//
+//   face = data;
+//   if (!face)
+//      return;
+//   emu_face = face->data;
+//   _config_emu_module(face->con, emu_face->emu);
+//}
 
 /**
  * @defgroup Emu_Module_Exe_Group Emu module Ecore_Exe interface
@@ -731,10 +628,6 @@ _emu_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi)
 static int
 _emu_cb_exe_add(void *data, int type, void *ev)
 {
-   Emu *emu;
-
-   emu = data;
-
    return 1;
 }
 
@@ -753,29 +646,17 @@ _emu_cb_exe_add(void *data, int type, void *ev)
 static int
 _emu_cb_exe_del(void *data, int type, void *ev)
 {
-   if (E_OBJECT(data)->type == (E_GADGET_TYPE))
-     {
-        E_Gadget *gad;
-        Ecore_Exe_Event_Del *event;
-        Evas_List *l;
+   Ecore_Exe_Event_Del *event;
+   Emu_Face *emu_face;
 
-        gad = data;
-        event = ev;
-        for (l = gad->faces; l; l = l->next)    /* Search for the matching face. */
-          {
-             E_Gadget_Face *face;
-             Emu_Face *emu_face;
+   emu_face = data;
+   event = ev;
+   if ((emu_face->exe == event->exe) && (ecore_exe_data_get(event->exe) == emu_face))
+     {  /* This is the event we are interested in. */
+        emu_face->exe = NULL;
 
-             face = l->data;
-             emu_face = face->data;
-             if ((emu_face->exe == event->exe) && (ecore_exe_data_get(event->exe) == emu_face))
-               {                /* This is the event we are interested in. */
-                  emu_face->exe = NULL;
-
-                  printf("EMU CLIENT DEL - \n");
-                  return 0;
-               }
-          }
+        printf("EMU CLIENT DEL - \n");
+        return 0;
      }
 
    return 1;
@@ -941,27 +822,82 @@ _emu_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
    emu_face = data;
    ev = event_info;
-   if ((ev->button == 3) && emu_face->face->menu)
-     {                          /* Right clirk configuration menu. */
-        e_menu_activate_mouse(emu_face->face->menu,
-                              e_zone_current_get(emu_face->face->con), ev->output.x, ev->output.y, 1, 1, E_MENU_POP_DIRECTION_AUTO,
-                              ev->timestamp);
-        e_util_container_fake_mouse_up_all_later(emu_face->face->con);
-     }
-   else if (ev->button == 1)
+//   if ((ev->button == 3) && emu_face->face->menu)
+//     {                          /* Right click configuration menu. */
+//        e_menu_activate_mouse(emu_face->face->menu,
+//                              e_zone_current_get(emu_face->face->con), ev->output.x, ev->output.y, 1, 1, E_MENU_POP_DIRECTION_AUTO,
+//                              ev->timestamp);
+//        e_util_container_fake_mouse_up_all_later(emu_face->face->con);
+//     }
+   /*else*/ if (ev->button == 1)
      {                          /* Left click default menu. */
         Easy_Menu *menu;
+	Evas_Coord x, y, w, h;
+	int cx, cy, cw, ch;
+	
+	evas_object_geometry_get(emu_face->o_button, &x, &y, &w, &h); 
+	e_gadcon_canvas_zone_geometry_get(emu_face->gcc->gadcon, &cx, &cy, &cw, &ch);
+	x += cx;
+	y += cy;
 
         /* Find the default menu, if there is one. */
         menu = evas_hash_find(emu_face->menus, "");
         if (menu && menu->valid)
           {
+	     int dir;
+	     
              e_menu_post_deactivate_callback_set(menu->menu->menu, _emu_menu_cb_post_deactivate, emu_face);
-             e_menu_activate_mouse(menu->menu->menu,
-                                   e_zone_current_get(emu_face->face->con), ev->output.x, ev->output.y, 1, 1,
-                                   E_MENU_POP_DIRECTION_AUTO, ev->timestamp);
-             e_util_container_fake_mouse_up_all_later(emu_face->face->con);
-             edje_object_signal_emit(emu_face->face->main_obj, "active", "");
+	     dir = E_MENU_POP_DIRECTION_AUTO;
+	     switch (emu_face->gcc->gadcon->orient)
+	       {
+		case E_GADCON_ORIENT_TOP:
+		  dir = E_MENU_POP_DIRECTION_DOWN;
+		  break;
+		case E_GADCON_ORIENT_BOTTOM:
+		  dir = E_MENU_POP_DIRECTION_UP;
+		  break;
+		case E_GADCON_ORIENT_LEFT:
+		  dir = E_MENU_POP_DIRECTION_RIGHT;
+		  break;
+		case E_GADCON_ORIENT_RIGHT:
+		  dir = E_MENU_POP_DIRECTION_LEFT;
+		  break;
+		case E_GADCON_ORIENT_CORNER_TL:
+		  dir = E_MENU_POP_DIRECTION_DOWN;
+		  break;
+		case E_GADCON_ORIENT_CORNER_TR:
+		  dir = E_MENU_POP_DIRECTION_DOWN;
+		  break;
+		case E_GADCON_ORIENT_CORNER_BL:
+		  dir = E_MENU_POP_DIRECTION_UP;
+		  break;
+		case E_GADCON_ORIENT_CORNER_BR:
+		  dir = E_MENU_POP_DIRECTION_UP;
+		  break;
+		case E_GADCON_ORIENT_CORNER_LT:
+		  dir = E_MENU_POP_DIRECTION_RIGHT;
+		  break;
+		case E_GADCON_ORIENT_CORNER_RT:
+		  dir = E_MENU_POP_DIRECTION_LEFT;
+		  break;
+		case E_GADCON_ORIENT_CORNER_LB:
+		  dir = E_MENU_POP_DIRECTION_RIGHT;
+		  break;
+		case E_GADCON_ORIENT_CORNER_RB:
+		  dir = E_MENU_POP_DIRECTION_LEFT;
+		  break;
+		case E_GADCON_ORIENT_FLOAT:
+		case E_GADCON_ORIENT_HORIZ:
+		case E_GADCON_ORIENT_VERT:
+		default:
+		  dir = E_MENU_POP_DIRECTION_AUTO;
+		  break;
+	       }
+//             e_menu_activate_mouse(menu->menu->menu, e_zone_current_get(emu_face->face->con), ev->output.x, ev->output.y, 1, 1, E_MENU_POP_DIRECTION_AUTO, ev->timestamp);
+	     e_menu_activate_mouse(menu->menu->menu, e_util_zone_current_get(e_manager_current_get()), x, y, w, h, dir, ev->timestamp);
+//             e_util_container_fake_mouse_up_all_later(emu_face->face->con);
+	     edje_object_signal_emit(emu_face->o_button, "active", "");
+	     evas_event_feed_mouse_up(emu_face->gcc->gadcon->evas, ev->button, EVAS_BUTTON_NONE, ev->timestamp, NULL);
           }
      }
 }
@@ -979,7 +915,7 @@ _emu_menu_cb_post_deactivate(void *data, E_Menu *m)
    Emu_Face *emu_face;
 
    emu_face = data;
-   edje_object_signal_emit(emu_face->face->main_obj, "passive", "");
+   edje_object_signal_emit(emu_face->o_button, "passive", "");
 }
 
 /**

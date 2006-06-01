@@ -9,12 +9,7 @@ EDJE_FLAGS = \
 
 # data files for the module
 filesdir = $(libdir)/enlightenment/modules/$(MODULE)
-files_DATA = \
-module_edje.edj \
-module_edje.edc \
-module_face.edc \
-module_icon.edc \
-module_icon.png
+files_DATA = module.eap
 
 EXTRA_DIST = $(files_DATA)
 
@@ -41,10 +36,14 @@ module_la_LIBADD       = @e_libs@
 module_la_LDFLAGS      = -module -avoid-version
 module_la_DEPENDENCIES = $(top_builddir)/config.h
 
-module_edje.edj: Makefile module_edje.edc module_face.edc module_icon.edc
-	 $(EDJE_CC) $(EDJE_FLAGS) \
-	 module_edje.edc \
-	 module_edje.edj
+module.eap: Makefile module_edje.edc module_face.edc module_icon.edc
+	$(EDJE_CC) $(EDJE_FLAGS) module_edje.edc module.eap
+	enlightenment_eapp module.eap \
+	-set-name "Emu" \
+	-set-generic "gadget" \
+	-set-comment "Experimental generic scriptable module for E17" \
+	-set-exe "enlightenment" \
+	-set-icon-class "emu,gadget"
 
 clean-local:
-	 rm -rf *.edj *~
+	 rm -rf *.eap *~
