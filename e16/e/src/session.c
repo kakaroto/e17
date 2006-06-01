@@ -363,7 +363,7 @@ SessionInit(void)
 	   Efree(client_id);
 
 	if (error_string_ret[0])
-	   fprintf(stderr, "While connecting to session manager:\n%s.",
+	   Eprintf("While connecting to session manager: %s.",
 		   error_string_ret);
      }
    if (sm_conn)

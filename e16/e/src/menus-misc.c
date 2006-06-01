@@ -287,8 +287,7 @@ FillFlatFileMenu(Menu * m, const char *name, const char *file)
    f = fopen(file, "r");
    if (!f)
      {
-	fprintf(stderr, "Unable to open menu file %s -- %s\n", file,
-		strerror(errno));
+	Eprintf("Unable to open menu file %s -- %s\n", file, strerror(errno));
 	return;
      }
 
