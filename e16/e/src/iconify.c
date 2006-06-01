@@ -955,15 +955,28 @@ IconboxLayoutImageWin(Iconbox * ib)
 	  }
 	else
 	  {
-	     if (ib->orientation)
+	     if (ib->type == IB_TYPE_ICONBOX)
 	       {
-		  wo = ib->iconsize;
-		  ho = hi;
+		  if (ib->orientation)
+		    {
+		       wo = ib->iconsize;
+		       ho = hi;
+		    }
+		  else
+		    {
+		       wo = wi;
+		       ho = ib->iconsize;
+		    }
 	       }
 	     else
 	       {
-		  wo = wi;
-		  ho = ib->iconsize;
+		  if (ib->objs[i].u.swin->mapped)
+		    {
+		       wo = ib->iconsize;
+		       ho = ib->iconsize;
+		    }
+		  else
+		     wo = ho = 0;
 	       }
 	  }
 
