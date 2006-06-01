@@ -65,8 +65,7 @@ _gc_init(E_Gadcon *gc, char *name, char *id, char *style)
    inst = E_NEW(Instance, 1);
 
    ci = _net_config_item_get(id);
-   if (!ci->id)
-      ci->id = evas_stringshare_add(id);
+   if (!ci->id) ci->id = evas_stringshare_add(id);
 
    net = _net_new(gc->evas);
    net->inst = inst;
@@ -79,7 +78,6 @@ _gc_init(E_Gadcon *gc, char *name, char *id, char *style)
    inst->net_obj = o;
 
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _net_cb_mouse_down, inst);
-
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_IN, _net_cb_mouse_in, inst);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_OUT, _net_cb_mouse_out, inst);
 
@@ -125,8 +123,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    Instance *inst;
 
    inst = gcc->data;
-   if (inst->check_timer)
-      ecore_timer_del(inst->check_timer);
+   if (inst->check_timer) ecore_timer_del(inst->check_timer);
    net_config->instances = evas_list_remove(net_config->instances, inst);
    _net_free(inst->net);
    free(inst);
@@ -170,8 +167,7 @@ _net_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 static void
 _net_menu_cb_post(void *data, E_Menu *m)
 {
-   if (!net_config->menu)
-      return;
+   if (!net_config->menu) return;
    e_object_del(E_OBJECT(net_config->menu));
    net_config->menu = NULL;
 }
@@ -193,22 +189,17 @@ _net_config_updated(const char *id)
    Evas_List *l;
    Config_Item *ci;
 
-   if (!net_config)
-      return;
-
+   if (!net_config) return;
    ci = _net_config_item_get(id);
    for (l = net_config->instances; l; l = l->next)
      {
         Instance *inst;
 
         inst = l->data;
-        if (!inst->gcc->id)
-           continue;
-
+        if (!inst->gcc->id) continue;
         if (!strcmp(inst->gcc->id, ci->id))
           {
-             if (inst->check_timer)
-                ecore_timer_del(inst->check_timer);
+             if (inst->check_timer) ecore_timer_del(inst->check_timer);
              inst->check_timer = ecore_timer_add((double)ci->poll_time, _net_cb_check, inst);
              if (ci->always_text)
                 edje_object_signal_emit(inst->net_obj, "label_active", "");
@@ -229,10 +220,8 @@ _net_config_item_get(const char *id)
    for (l = net_config->items; l; l = l->next)
      {
         ci = l->data;
-        if (!ci->id)
-           continue;
-        if (!strcmp(ci->id, id))
-           return ci;
+        if (!ci->id) continue;
+        if (!strcmp(ci->id, id)) return ci;
      }
    ci = E_NEW(Config_Item, 1);
    ci->id = evas_stringshare_add(id);
@@ -316,8 +305,7 @@ e_modapi_shutdown(E_Module *m)
 
         ci = net_config->items->data;
         net_config->items = evas_list_remove_list(net_config->items, net_config->items);
-        if (ci->id)
-           evas_stringshare_del(ci->id);
+        if (ci->id) evas_stringshare_del(ci->id);
         free(ci);
      }
    free(net_config);
@@ -339,8 +327,7 @@ e_modapi_save(E_Module *m)
 
         inst = l->data;
         ci = _net_config_item_get(inst->gcc->id);
-        if (ci->id)
-           evas_stringshare_del(ci->id);
+        if (ci->id) evas_stringshare_del(ci->id);
         ci->id = evas_stringshare_add(inst->gcc->id);
      }
    e_config_domain_save("module.net", conf_edd, net_config);
@@ -361,14 +348,11 @@ _net_new(Evas *evas)
    char buf[4096];
 
    net = E_NEW(Net, 1);
-
    net->net_obj = edje_object_add(evas);
-
    snprintf(buf, sizeof(buf), "%s/net.edj", e_module_dir_get(net_config->module));
    if (!e_theme_edje_object_set(net->net_obj, "base/theme/modules/net", "modules/net/main"))
       edje_object_file_set(net->net_obj, buf, "modules/net/main");
    evas_object_show(net->net_obj);
-
    return net;
 }
 
@@ -442,17 +426,16 @@ _net_cb_check(void *data)
    int found;
    long max_in = 171008;
    long max_out = 28672;
-   long bytes_in;
-   long bytes_out;
+   long bytes_in, bytes_out;
    char in_str[100];
    char out_str[100];
+   double i, o;
 
    inst = data;
    ci = _net_config_item_get(inst->gcc->id);
 
    stat = fopen("/proc/net/dev", "r");
-   if (!stat)
-      return 1;
+   if (!stat) return 1;
 
    found = 0;
    while (fgets(buf, 256, stat))
@@ -460,16 +443,13 @@ _net_cb_check(void *data)
         int i = 0;
 
         for (; buf[i] != 0; i++)
-          {
-             if (buf[i] == ':')
-                buf[i] = ' ';
-          }
+             if (buf[i] == ':') buf[i] = ' ';
+
         if (sscanf(buf, "%s %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu "
                    "%lu %lu %lu %lu\n", dev, &in, &dummy, &dummy,
                    &dummy, &dummy, &dummy, &dummy, &dummy, &out, &dummy, &dummy, &dummy, &dummy, &dummy, &dummy, &dummy) < 17)
            continue;
-        if (!ci->device)
-           continue;
+        if (!ci->device) continue;
         if (!strcmp(dev, ci->device))
           {
              found = 1;
@@ -478,15 +458,12 @@ _net_cb_check(void *data)
      }
    fclose(stat);
 
-   if (!found)
-      return 1;
+   if (!found) return 1;
 
    bytes_in = in - inst->old_in;
    bytes_out = out - inst->old_out;
-   if (bytes_in < 0)
-      bytes_in = 0;
-   if (bytes_out < 0)
-      bytes_out = 0;
+   if (bytes_in < 0) bytes_in = 0;
+   if (bytes_out < 0) bytes_out = 0;
 
    inst->old_in = in;
    inst->old_out = out;
@@ -519,27 +496,18 @@ _net_cb_check(void *data)
         edje_object_part_text_set(inst->net_obj, "tx_label", out_str);
      }
 
-   double i, o;
-
+   i = 0.0;
    if (bytes_in != 0.0)
       i = ((double)bytes_in / (double)ci->max);
-   else
-      i = 0.0;
 
+   o = 0.0;
    if (bytes_out != 0.0)
       o = ((double)bytes_out / (double)ci->max);
-   else
-      o = 0.0;
 
-   if (i < 0.0)
-      i = 0.0;
-   if (o < 0.0)
-      o = 0.0;
-
-   if ((i > 0.0) && (i < 1.0))
-      i = 1.0;
-   if ((o > 0.0) && (o < 1.0))
-      o = 1.0;
+   if (i < 0.0) i = 0.0;
+   if (o < 0.0) o = 0.0;
+   if ((i > 0.0) && (i < 1.0)) i = 1.0;
+   if ((o > 0.0) && (o < 1.0)) o = 1.0;
 
    _net_update_rx(inst, i);
    _net_update_tx(inst, o);
