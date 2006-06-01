@@ -24,9 +24,7 @@ Config *tclock_config = NULL;
 /* Define the class and gadcon functions this module provides */
 static const E_Gadcon_Client_Class _gc_class = {
    GADCON_CLIENT_CLASS_VERSION,
-   "tclock",
-   {
-    _gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon}
+   "tclock", {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon}
 };
 
 typedef struct _Instance Instance;
@@ -49,8 +47,7 @@ _gc_init(E_Gadcon *gc, char *name, char *id, char *style)
    inst = E_NEW(Instance, 1);
 
    ci = _tclock_config_item_get(id);
-   if (!ci->id)
-      ci->id = evas_stringshare_add(id);
+   if (!ci->id) ci->id = evas_stringshare_add(id);
 
    o = edje_object_add(gc->evas);
    snprintf(buf, sizeof(buf), "%s/tclock.edj", e_module_dir_get(tclock_config->module));
@@ -69,7 +66,6 @@ _gc_init(E_Gadcon *gc, char *name, char *id, char *style)
 
    _tclock_cb_check(inst);
    inst->check_timer = ecore_timer_add(ci->poll_time, _tclock_cb_check, inst);
-
    return gcc;
 }
 
@@ -79,8 +75,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    Instance *inst;
 
    inst = gcc->data;
-   if (inst->check_timer)
-      ecore_timer_del(inst->check_timer);
+   if (inst->check_timer) ecore_timer_del(inst->check_timer);
    tclock_config->instances = evas_list_remove(tclock_config->instances, inst);
    evas_object_del(inst->tclock);
    free(inst);
@@ -153,8 +148,7 @@ _tclock_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 static void
 _tclock_menu_cb_post(void *data, E_Menu *m)
 {
-   if (!tclock_config->menu)
-      return;
+   if (!tclock_config->menu) return;
    e_object_del(E_OBJECT(tclock_config->menu));
    tclock_config->menu = NULL;
 }
@@ -176,17 +170,14 @@ _tclock_config_updated(const char *id)
    Evas_List *l;
    Config_Item *ci;
 
-   if (!tclock_config)
-      return;
-
+   if (!tclock_config) return;
    ci = _tclock_config_item_get(id);
    for (l = tclock_config->instances; l; l = l->next)
      {
         Instance *inst;
 
         inst = l->data;
-        if (!inst->gcc->id)
-           continue;
+        if (!inst->gcc->id) continue;
         if (!strcmp(inst->gcc->id, ci->id))
           {
              if (!ci->show_time)
@@ -259,10 +250,8 @@ _tclock_config_item_get(const char *id)
    for (l = tclock_config->items; l; l = l->next)
      {
         ci = l->data;
-        if (!ci->id)
-           continue;
-        if (!strcmp(ci->id, id))
-           return ci;
+        if (!ci->id) continue;
+        if (!strcmp(ci->id, id)) return ci;
      }
 
    ci = E_NEW(Config_Item, 1);
@@ -290,7 +279,6 @@ e_modapi_init(E_Module *m)
    bind_textdomain_codeset(PACKAGE, "UTF-8");
 
    conf_item_edd = E_CONFIG_DD_NEW("TClock_Config_Item", Config_Item);
-
 #undef T
 #undef D
 #define T Config_Item
@@ -304,7 +292,6 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, time_format, STR);
 
    conf_edd = E_CONFIG_DD_NEW("TClock_Config", Config);
-
 #undef T
 #undef D
 #define T Config
@@ -319,7 +306,6 @@ e_modapi_init(E_Module *m)
         tclock_config = E_NEW(Config, 1);
 
         ci = E_NEW(Config_Item, 1);
-
         ci->id = evas_stringshare_add("0");
         ci->poll_time = 1.0;
         ci->resolution = RESOLUTION_SECOND;
@@ -330,7 +316,6 @@ e_modapi_init(E_Module *m)
 
         tclock_config->items = evas_list_append(tclock_config->items, ci);
      }
-
    tclock_config->module = m;
 
    e_gadcon_provider_register(&_gc_class);
@@ -358,8 +343,7 @@ e_modapi_shutdown(E_Module *m)
 
         ci = tclock_config->items->data;
         tclock_config->items = evas_list_remove_list(tclock_config->items, tclock_config->items);
-        if (ci->id)
-           evas_stringshare_del(ci->id);
+        if (ci->id) evas_stringshare_del(ci->id);
         free(ci);
      }
 
@@ -382,8 +366,7 @@ e_modapi_save(E_Module *m)
 
         inst = l->data;
         ci = _tclock_config_item_get(inst->gcc->id);
-        if (ci->id)
-           evas_stringshare_del(ci->id);
+        if (ci->id) evas_stringshare_del(ci->id);
         ci->id = evas_stringshare_add(inst->gcc->id);
      }
    e_config_domain_save("module.tclock", conf_edd, tclock_config);
