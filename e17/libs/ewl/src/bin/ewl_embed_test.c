@@ -65,7 +65,6 @@ _insert(Ewl_Widget *w __UNUSED__, void *e __UNUSED__, void *d __UNUSED__)
 	}
 }
 
-
 int
 main(int argc, char **argv)
 {
@@ -99,10 +98,15 @@ main(int argc, char **argv)
 	evas = ecore_evas_get(ee);
 	edje = edje_object_add(evas);
 
-	if (!edje_object_file_set(edje, PACKAGE_DATA_DIR"/themes/ewl_embed_test.edj", "main")) {
-		fprintf(stderr, "Error in: %s\n", PACKAGE_DATA_DIR"/themes/ewl_embed_test.edj");
+	if (!edje_object_file_set(edje, 
+			PACKAGE_DATA_DIR "/themes/ewl_embed_test.edj", 
+			"main")) 
+	{
+		fprintf(stderr, "Error in: %s\n", 
+			PACKAGE_DATA_DIR"/themes/ewl_embed_test.edj");
 		return 1;
 	}
+
 	evas_object_move(edje, 0, 0);
 	evas_object_resize(edje, 300, 300);
 	evas_object_show(edje);
@@ -115,6 +119,7 @@ main(int argc, char **argv)
 	eo = ewl_embed_evas_set(EWL_EMBED(emb), evas, 
 			  (void *) ecore_evas_software_x11_window_get(ee));
 	ewl_embed_focus_set(EWL_EMBED(emb), TRUE);
+	ewl_widget_show(emb);
 
 	/*
 	 * swallow it into the edje
@@ -140,10 +145,10 @@ main(int argc, char **argv)
 	text = ewl_text_new();
 	ewl_container_child_append(EWL_CONTAINER(wg), text);
 	ewl_text_text_append(EWL_TEXT(text), 
-			"You can use EWL in side a evas/edje only app.\n"
-			"It can actually behave like a normal evas object\n"
-			"So forget to figure out how to write an entry object,\n"
-			"simply use the ewl widget! :)\n\n");
+		"You can use EWL in side a evas/edje only app.\n"
+		"It can actually behave like a normal evas object\n"
+		"So forget to figure out how to write an entry object,\n"
+		"simply use the ewl widget! :)\n\n");
 	ewl_object_fill_policy_set(EWL_OBJECT(text), EWL_FLAG_FILL_HFILL | 
 			EWL_FLAG_FILL_VFILL);
 	ewl_widget_show(text);
@@ -180,15 +185,14 @@ main(int argc, char **argv)
 
 	wg = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(wg), "open");
-	ewl_widget_show(wg);
 	ewl_container_child_append(EWL_CONTAINER(c), wg);
+	ewl_widget_show(wg);
 	button[0] = wg;
 
 	wg = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(wg), "close");
-	ewl_widget_show(wg);
 	ewl_container_child_append(EWL_CONTAINER(c), wg);
-	ewl_widget_show(emb);
+	ewl_widget_show(wg);
 	button[1] = wg;
 
 	ewl_callback_append(button[0], EWL_CALLBACK_CLICKED, _open, button[1]);
