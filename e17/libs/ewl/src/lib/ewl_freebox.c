@@ -340,7 +340,7 @@ ewl_freebox_layout_auto(Ewl_Freebox *fb)
 	Ewl_Container *c;
 	Ewl_Widget *child;
 	int max_pos, largest_size = 0, cur_pos = 0, cur_align;
-	int base_pos, pad = 0, *x, *y;
+	int base_pos, start_pos, pad = 0, *x, *y;
 	int *stable_dir, *grow_dir, child_h, child_w;
 
 	void (*pref_inner)(Ewl_Object *obj, int size);
@@ -385,7 +385,7 @@ ewl_freebox_layout_auto(Ewl_Freebox *fb)
 	base_pos = current_pos(EWL_OBJECT(fb));
 	max_pos = base_pos + current_size(EWL_OBJECT(fb));
 
-	cur_pos = current_anchor(EWL_OBJECT(fb));
+	start_pos = cur_pos = current_anchor(EWL_OBJECT(fb));
 	cur_align = base_pos;
 
 	c = EWL_CONTAINER(fb);
@@ -410,7 +410,7 @@ ewl_freebox_layout_auto(Ewl_Freebox *fb)
 		ewl_object_place(EWL_OBJECT(child), *x, *y, child_w, child_h);
 		cur_align += *stable_dir + pad;
 	}
-	pref_inner(EWL_OBJECT(fb), cur_pos + largest_size + pad);
+	pref_inner(EWL_OBJECT(fb), cur_pos - start_pos + largest_size + pad);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
