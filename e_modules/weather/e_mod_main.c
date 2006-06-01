@@ -16,9 +16,7 @@ Config *weather_config = NULL;
 /* Define Gadcon Class */
 static const E_Gadcon_Client_Class _gadcon_class = {
    GADCON_CLIENT_CLASS_VERSION,
-   "weather",
-   {
-    _gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon}
+   "weather", {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon}
 };
 
 /* Module specifics */
@@ -100,15 +98,10 @@ _gc_init(E_Gadcon *gc, char *name, char *id, char *style)
    evas_object_event_callback_add(w->weather_obj, EVAS_CALLBACK_MOUSE_DOWN, _weather_cb_mouse_down, inst);
    weather_config->instances = evas_list_append(weather_config->instances, inst);
 
-   switch (ci->display)
-     {
-     case 0:
+   if (ci->display == 0)
         edje_object_signal_emit(inst->weather->weather_obj, "set_style", "simple");
-        break;
-     case 1:
+   else 
         edje_object_signal_emit(inst->weather->weather_obj, "set_style", "detailed");
-        break;
-     }
 
    _weather_cb_check(inst);
    inst->check_timer = ecore_timer_add((double)ci->poll_time, _weather_cb_check, inst);
@@ -121,16 +114,11 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    Instance *inst;
 
    inst = gcc->data;
-   if (inst->check_timer)
-      ecore_timer_del(inst->check_timer);
-   if (inst->add_handler)
-      ecore_event_handler_del(inst->add_handler);
-   if (inst->data_handler)
-      ecore_event_handler_del(inst->data_handler);
-   if (inst->del_handler)
-      ecore_event_handler_del(inst->del_handler);
-   if (inst->server)
-      ecore_con_server_del(inst->server);
+   if (inst->check_timer) ecore_timer_del(inst->check_timer);
+   if (inst->add_handler) ecore_event_handler_del(inst->add_handler);
+   if (inst->data_handler) ecore_event_handler_del(inst->data_handler);
+   if (inst->del_handler) ecore_event_handler_del(inst->del_handler);
+   if (inst->server) ecore_con_server_del(inst->server);
 
    inst->server = NULL;
    weather_config->instances = evas_list_remove(weather_config->instances, inst);
@@ -203,8 +191,7 @@ _weather_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 static void
 _weather_menu_cb_post(void *data, E_Menu *m)
 {
-   if (!weather_config->menu)
-      return;
+   if (!weather_config->menu) return;
    e_object_del(E_OBJECT(weather_config->menu));
    weather_config->menu = NULL;
 }
@@ -229,10 +216,8 @@ _weather_config_item_get(const char *id)
    for (l = weather_config->items; l; l = l->next)
      {
         ci = l->data;
-        if (!ci->id)
-           continue;
-        if (!strcmp(ci->id, id))
-           return ci;
+        if (!ci->id) continue;
+        if (!strcmp(ci->id, id)) return ci;
      }
 
    ci = E_NEW(Config_Item, 1);
@@ -262,7 +247,6 @@ e_modapi_init(E_Module *m)
    bind_textdomain_codeset(PACKAGE, "UTF-8");
 
    conf_item_edd = E_CONFIG_DD_NEW("Weather_Config_Item", Config_Item);
-
 #undef T
 #undef D
 #define T Config_Item
@@ -275,7 +259,6 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, code, STR);
 
    conf_edd = E_CONFIG_DD_NEW("Weather_Config", Config);
-
 #undef T
 #undef D
 #define T Config
@@ -290,7 +273,6 @@ e_modapi_init(E_Module *m)
         weather_config = E_NEW(Config, 1);
 
         ci = E_NEW(Config_Item, 1);
-
         ci->poll_time = 900.0;
         ci->display = 0;
         ci->degrees = DEGREES_F;
@@ -327,14 +309,10 @@ e_modapi_shutdown(E_Module *m)
         Config_Item *ci;
 
         ci = weather_config->items->data;
-        if (ci->id)
-           evas_stringshare_del(ci->id);
-        if (ci->host)
-           evas_stringshare_del(ci->host);
-        if (ci->code)
-           evas_stringshare_del(ci->code);
-        if (ci->proxy.host)
-           evas_stringshare_del(ci->proxy.host);
+        if (ci->id) evas_stringshare_del(ci->id);
+        if (ci->host) evas_stringshare_del(ci->host);
+        if (ci->code) evas_stringshare_del(ci->code);
+        if (ci->proxy.host) evas_stringshare_del(ci->proxy.host);
         weather_config->items = evas_list_remove_list(weather_config->items, weather_config->items);
         free(ci);
      }
@@ -359,8 +337,7 @@ e_modapi_save(E_Module *m)
         inst = l->data;
         ci = _weather_config_item_get(inst->gcc->id);
 
-        if (ci->id)
-           evas_stringshare_del(ci->id);
+        if (ci->id) evas_stringshare_del(ci->id);
         ci->id = evas_stringshare_add(inst->gcc->id);
      }
 
@@ -412,13 +389,10 @@ _weather_get_proxy(Config_Item *ci)
 {
    char *env;
 
-   if (!ci)
-      return;
+   if (!ci) return;
 
    env = getenv("http_proxy");
-   if (!env)
-      env = getenv("HTTP_PROXY");
-
+   if (!env) env = getenv("HTTP_PROXY");
    if ((env) && (!strncmp(env, "http://", 7)))
      {
         char *host = NULL;
@@ -432,8 +406,7 @@ _weather_get_proxy(Config_Item *ci)
           {
              *p = 0;
              p++;
-             if (sscanf(p, "%d", &port) != 1)
-                port = 0;
+             if (sscanf(p, "%d", &port) != 1) port = 0;
           }
         if ((host) && (port))
           {
@@ -476,13 +449,11 @@ _weather_server_add(void *data, int type, void *event)
    char icao[1024];
 
    inst = data;
-   if (!inst)
-      return 1;
+   if (!inst) return 1;
 
    ci = _weather_config_item_get(inst->gcc->id);
    ev = event;
-   if ((!inst->server) || (inst->server != ev->server))
-      return 1;
+   if ((!inst->server) || (inst->server != ev->server)) return 1;
 
    snprintf(icao, sizeof(icao), "/icao/%s/rss.php", ci->code);
    snprintf(buf, sizeof(buf), "GET http://%s%s HTTP/1.1\r\nHost: %s\r\n\r\n", ci->host, icao, ci->host);
@@ -499,8 +470,7 @@ _weather_server_del(void *data, int type, void *event)
 
    inst = data;
    ev = event;
-   if ((!inst->server) || (inst->server != ev->server))
-      return 1;
+   if ((!inst->server) || (inst->server != ev->server)) return 1;
 
    ecore_con_server_del(inst->server);
    inst->server = NULL;
@@ -526,9 +496,7 @@ _weather_server_data(void *data, int type, void *event)
    inst = data;
    ev = event;
 
-   if ((!inst->server) || (inst->server != ev->server))
-      return 1;
-
+   if ((!inst->server) || (inst->server != ev->server)) return 1;
    while ((inst->cursize + ev->size) >= inst->bufsize)
      {
         inst->bufsize += 4096;
@@ -548,8 +516,7 @@ _weather_parse(Instance *inst)
    char location[256];
 
    needle = strstr(inst->buffer, "<title");
-   if (!needle)
-      goto error;
+   if (!needle) goto error;
 
    needle = strstr(needle, ">");
    sscanf(needle, ">%[^<]<", location);
@@ -565,38 +532,29 @@ _weather_parse(Instance *inst)
      }
 
    needle = strstr(inst->buffer, "<content:encoded>");
-   if (!needle)
-      goto error;
+   if (!needle) goto error;
 
    needle = strstr(needle, "<img");
-   if (!needle)
-      goto error;
+   if (!needle) goto error;
    needle = strstr(needle, "id=");
-   if (!needle)
-      goto error;
+   if (!needle) goto error;
    sscanf(needle, "id=\"%[^\"]\"", inst->icon);
    ext = strstr(inst->icon, ".");
-   if (!strcmp(ext, ".gif"))
-      strcpy(ext, ".png");
+   if (!strcmp(ext, ".gif")) strcpy(ext, ".png");
 
    needle = strstr(needle, "class=\"sky\"");
-   if (!needle)
-      goto error;
+   if (!needle) goto error;
    needle = strstr(needle, ">");
-   if (!needle)
-      goto error;
+   if (!needle) goto error;
    sscanf(needle, ">%[^<]<", inst->conditions);
 
    needle = strstr(needle, "class=\"temp\"");
-   if (!needle)
-      goto error;
+   if (!needle) goto error;
    needle = strstr(needle, ">");
-   if (!needle)
-      goto error;
+   if (!needle) goto error;
    sscanf(needle, ">%d", &inst->temp);
    needle = strstr(needle, "<");
-   if (!needle)
-      goto error;
+   if (!needle) goto error;
    needle--;
    inst->degrees = needle[0];
 
@@ -633,9 +591,7 @@ _weather_display_set(Instance *inst, int ok)
    char buf[4096];
    char m[4096];
 
-   if (!inst)
-      return;
-
+   if (!inst) return;
    snprintf(m, sizeof(m), "%s", e_module_dir_get(weather_config->module));
    if (!ok)
      {
@@ -665,17 +621,14 @@ _weather_config_updated(const char *id)
    Config_Item *ci;
    char buf[4096];
 
-   if (!weather_config)
-      return;
-
+   if (!weather_config) return;
    ci = _weather_config_item_get(id);
    for (l = weather_config->instances; l; l = l->next)
      {
         Instance *inst;
 
         inst = l->data;
-        if (!inst->gcc->id)
-           continue;
+        if (!inst->gcc->id) continue;
         if (!strcmp(inst->gcc->id, ci->id))
           {
              if (ci->display == 0)
