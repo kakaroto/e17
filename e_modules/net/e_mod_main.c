@@ -1,6 +1,6 @@
 #include <e.h>
-#include "e_mod_main.h"
 #include <math.h>
+#include "e_mod_main.h"
 
 typedef struct _Instance Instance;
 typedef struct _Net Net;
