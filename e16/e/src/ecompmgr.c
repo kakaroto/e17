@@ -1251,7 +1251,7 @@ doECompMgrWinFade(int val, void *data)
    cw = eo->cmhook;
 
 #if DEBUG_OPACITY
-   Eprintf("doECompMgrWinFade %#lx, %d/%d, %#x->%#x\n", eo->win,
+   Eprintf("doECompMgrWinFade %#lx, %d/%d, %#x->%#x\n", EobjGetXwin(eo),
 	   cw->fading, cw->fadeout, cw->opacity, op);
 #endif
    if (!cw->fading)
@@ -1284,7 +1284,7 @@ doECompMgrWinFade(int val, void *data)
      }
 
 #if DEBUG_OPACITY
-   Eprintf("doECompMgrWinFade %#lx, %#x\n", eo->win, op);
+   Eprintf("doECompMgrWinFade %#lx, %#x\n", EobjGetXwin(eo), op);
 #endif
    if (cw->fading)
       ECompMgrWinFadeDoIn(eo, (unsigned int)val);
@@ -1309,7 +1309,7 @@ ECompMgrWinFadeIn(EObj * eo)
    ECmWinInfo         *cw = eo->cmhook;
 
 #if DEBUG_OPACITY
-   Eprintf("ECompMgrWinFadeIn  %#lx %#x -> %#x\n", eo->win, 0x10000000,
+   Eprintf("ECompMgrWinFadeIn  %#lx %#x -> %#x\n", EobjGetXwin(eo), 0x10000000,
 	   eo->opacity);
 #endif
    if (cw->fadeout)
@@ -1323,7 +1323,7 @@ ECompMgrWinFadeOut(EObj * eo)
    ECmWinInfo         *cw = eo->cmhook;
 
 #if DEBUG_OPACITY
-   Eprintf("ECompMgrWinFadeOut %#lx %#x -> %#x\n", eo->win, cw->opacity,
+   Eprintf("ECompMgrWinFadeOut %#lx %#x -> %#x\n", EobjGetXwin(eo), cw->opacity,
 	   0x10000000);
 #endif
    cw->fadeout = 1;
@@ -1339,7 +1339,7 @@ ECompMgrWinFadeOutEnd(EObj * eo)
    ECmWinInfo         *cw = eo->cmhook;
 
 #if DEBUG_OPACITY
-   Eprintf("ECompMgrWinFadeOutEnd %#lx\n", eo->win);
+   Eprintf("ECompMgrWinFadeOutEnd %#lx\n", EobjGetXwin(eo));
 #endif
    cw->fadeout = 0;
    ECompMgrWinInvalidate(eo, INV_PIXMAP | INV_PICTURE);
