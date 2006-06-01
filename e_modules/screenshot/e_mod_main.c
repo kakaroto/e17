@@ -60,9 +60,7 @@ Config *ss_config = NULL;
 /* Define the gadcon class */
 static const E_Gadcon_Client_Class _gc_class = {
    GADCON_CLIENT_CLASS_VERSION,
-   "screenshot",
-   {
-    _gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon}
+   "screenshot", {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon}
 };
 
 static E_Gadcon_Client *
@@ -78,8 +76,7 @@ _gc_init(E_Gadcon *gc, char *name, char *id, char *style)
    inst = E_NEW(Instance, 1);
 
    ci = _ss_config_item_get(id);
-   if (!ci->id)
-      ci->id = evas_stringshare_add(id);
+   if (!ci->id) ci->id = evas_stringshare_add(id);
 
    ss = _ss_new(gc->evas);
    ss->inst = inst;
@@ -103,8 +100,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    Instance *inst;
 
    inst = gcc->data;
-   if (inst->filename)
-      evas_stringshare_del(inst->filename);
+   if (inst->filename) evas_stringshare_del(inst->filename);
    ss_config->instances = evas_list_remove(ss_config->instances, inst);
    _ss_free(inst->ss);
    free(inst);
@@ -175,8 +171,7 @@ _ss_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 static void
 _ss_menu_cb_post(void *data, E_Menu *m)
 {
-   if (!ss_config->menu)
-      return;
+   if (!ss_config->menu) return;
    e_object_del(E_OBJECT(ss_config->menu));
    ss_config->menu = NULL;
 }
@@ -201,10 +196,8 @@ _ss_config_item_get(const char *id)
    for (l = ss_config->items; l; l = l->next)
      {
         ci = l->data;
-        if (!ci->id)
-           continue;
-        if (!strcmp(ci->id, id))
-           return ci;
+        if (!ci->id) continue;
+        if (!strcmp(ci->id, id)) return ci;
      }
 
    ci = E_NEW(Config_Item, 1);
@@ -362,14 +355,10 @@ e_modapi_shutdown(E_Module *m)
         Config_Item *ci;
 
         ci = ss_config->items->data;
-        if (ci->id)
-           evas_stringshare_del(ci->id);
-        if (ci->location)
-           evas_stringshare_del(ci->location);
-        if (ci->filename)
-           evas_stringshare_del(ci->filename);
-        if (ci->app)
-           evas_stringshare_del(ci->app);
+        if (ci->id) evas_stringshare_del(ci->id);
+        if (ci->location) evas_stringshare_del(ci->location);
+        if (ci->filename) evas_stringshare_del(ci->filename);
+        if (ci->app) evas_stringshare_del(ci->app);
         ss_config->items = evas_list_remove_list(ss_config->items, ss_config->items);
         free(ci);
      }
@@ -392,8 +381,7 @@ e_modapi_save(E_Module *m)
 
         inst = l->data;
         ci = _ss_config_item_get(inst->gcc->id);
-        if (ci->id)
-           evas_stringshare_del(ci->id);
+        if (ci->id) evas_stringshare_del(ci->id);
         ci->id = evas_stringshare_add(inst->gcc->id);
      }
    e_config_domain_save("module.screenshot", conf_edd, ss_config);
@@ -438,9 +426,7 @@ _ss_handle_mouse_down(Instance *inst)
    char *cmd, *opt, *f;
    Config_Item *ci;
 
-   if (inst->exe)
-      return;
-
+   if (inst->exe) return;
    ci = _ss_config_item_get(inst->gcc->id);
 
    if (ci->use_import == 1)
@@ -486,20 +472,13 @@ _get_import_options(Config_Item *ci)
    char buf[1024];
    char *opts[8] = { '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0' };
 
-   if (ci->import.use_img_border)
-      opts[0] = strdup("-border");
-   if (ci->import.use_dither)
-      opts[1] = strdup("-dither");
-   if (ci->import.use_frame)
-      opts[2] = strdup("-frame");
-   if (ci->import.use_mono)
-      opts[3] = strdup("-mono");
-   if (ci->import.use_silent)
-      opts[4] = strdup("-silent");
-   if (ci->import.use_trim)
-      opts[5] = strdup("-trim");
-   if (!ci->import.use_window)
-      opts[6] = strdup("-window root");
+   if (ci->import.use_img_border) opts[0] = strdup("-border");
+   if (ci->import.use_dither) opts[1] = strdup("-dither");
+   if (ci->import.use_frame) opts[2] = strdup("-frame");
+   if (ci->import.use_mono) opts[3] = strdup("-mono");
+   if (ci->import.use_silent) opts[4] = strdup("-silent");
+   if (ci->import.use_trim) opts[5] = strdup("-trim");
+   if (!ci->import.use_window) opts[6] = strdup("-window root");
    if (ci->delay_time > 0)
      {
         snprintf(buf, sizeof(buf), "-pause %.0f", ci->delay_time);
@@ -516,10 +495,8 @@ _get_scrot_options(Config_Item *ci)
    char buf[1024];
    char *opts[8] = { '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0' };
 
-   if (ci->scrot.use_img_border)
-      opts[0] = strdup("--border");
-   if (ci->scrot.use_thumb)
-      opts[1] = strdup("--thumb 25");
+   if (ci->scrot.use_img_border) opts[0] = strdup("--border");
+   if (ci->scrot.use_thumb) opts[1] = strdup("--thumb 25");
    if (ci->delay_time > 0)
      {
         snprintf(buf, sizeof(buf), "--delay %.0f", ci->delay_time);
@@ -585,22 +562,15 @@ _get_filename(Config_Item *ci)
                {
                   x = ecore_file_strip_ext(file);
                   if (!x)
-                    {
-                       if (strstr(file, ci->filename))
-                          c++;
-                    }
+                       if (strstr(file, ci->filename)) c++;
                   else
-                    {
-                       if (strstr(x, ci->filename))
-                          c++;
-                    }
+                       if (strstr(x, ci->filename)) c++;
                }
-             if (fl)
-                ecore_list_destroy(fl);
-             if (c == 0)
-                c = 1;
-             else
-                c++;
+             if (fl) ecore_list_destroy(fl);
+             if (c == 0) 
+	       c = 1;
+             else 
+	       c++;
              snprintf(buff, sizeof(buff), "%s/%s%i.png", strdup(ci->location), strdup(ci->filename), c);
           }
      }
@@ -617,17 +587,14 @@ _ss_exe_cb_exit(void *data, int type, void *event)
    char buf[4096];
 
    ev = event;
-   if (!ev->exe)
-      return 1;
+   if (!ev->exe) return 1;
    x = ev->exe;
-   if (!x)
-      return 1;
+   if (!x) return 1;
 
    inst = ecore_exe_data_get(x);
    x = NULL;
    inst->exe = NULL;
-   if (inst->filename)
-      evas_stringshare_del(inst->filename);
+   if (inst->filename) evas_stringshare_del(inst->filename);
    if (ss_config->exe_exit_handler)
       ecore_event_handler_del(ss_config->exe_exit_handler);
 
@@ -637,6 +604,5 @@ _ss_exe_cb_exit(void *data, int type, void *event)
         snprintf(buf, sizeof(buf), "%s %s", ci->app, inst->filename);
         x = ecore_exe_run(buf, NULL);
      }
-
    return 0;
 }
