@@ -5,8 +5,7 @@ SUBDIRS = src data
 # data files for the module
 filesdir = $(datadir)
 files_DATA = \
-module.eap \
-module_icon.png
+module.eap
 
 EXTRA_DIST = $(files_DATA)
 

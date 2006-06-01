@@ -179,8 +179,7 @@ lang_get_default_language(Config *cfg)
 	     lang->lang_shortcut = evas_stringshare_add(lp->lang_shortcut); 
 	     lang->lang_flag	 = evas_stringshare_add(lp->lang_flag); 
 
-	     lang->rdefs.model	 = (char *)evas_stringshare_add
-						   (lang_language_current_kbd_model_get());
+	     lang->rdefs.model	 = (char *) lang_language_current_kbd_model_get();
 	     lang->rdefs.layout	 = (char *) evas_stringshare_add(lp->kbd_layout); 
 	     lang->rdefs.variant = (char *) evas_stringshare_add("basic"); 
 	     lang_language_xorg_values_get(lang);
@@ -195,6 +194,7 @@ lang_load_xfree_language_kbd_layouts(Config *cfg)
 {
    EXML	 *exml;
    int	 found;
+   int	 result;
 
    if (!cfg) return;
 
@@ -203,7 +203,8 @@ lang_load_xfree_language_kbd_layouts(Config *cfg)
    if (!exml) return;
    if (!exml_init(exml)) EXML_RETURN_ON_ERROR(exml);
 
-   if (!exml_file_read(exml, "/usr/lib/X11/xkb/rules/xfree86.xml"))
+   result = exml_file_read(exml, "/usr/lib/X11/xkb/rules/xfree86.xml");
+   if (!result || result == -1)
      EXML_RETURN_ON_ERROR(exml);
 
    exml_down(exml);
@@ -278,6 +279,7 @@ lang_load_xfree_kbd_models(Config *cfg)
 {
    EXML	 *exml;
    int	 found;
+   int	 result;
 
    exml = exml_new();
 
@@ -285,7 +287,8 @@ lang_load_xfree_kbd_models(Config *cfg)
    if (!exml_init(exml))
      EXML_RETURN_ON_ERROR(exml);
 
-   if (!exml_file_read(exml, "/usr/lib/X11/xkb/rules/xfree86.xml"))
+   result = exml_file_read(exml, "/usr/lib/X11/xkb/rules/xfree86.xml");
+   if (!result || result == -1)
      EXML_RETURN_ON_ERROR(exml);
 
    if (strcasecmp(exml_tag_get(exml), "xkbConfigRegistry"))
@@ -337,25 +340,25 @@ lang_load_xfree_kbd_models(Config *cfg)
 			 { 
 			    char *attr = exml_attribute_get(exml, "xml:lang"); 
 			    if (!attr) 
-			      lkm->kbd_model_desctiption = 
+			      lkm->kbd_model_description = 
 						      evas_stringshare_add(exml_value_get(exml)); 
 			 } 
 		       
-		       if (lkm->kbd_model && lkm->kbd_model_desctiption) 
+		       if (lkm->kbd_model && lkm->kbd_model_description) 
 			 break; 
 		       
 		       if (!exml_next_nomove(exml)) 
 			 break; 
 		    } 
 		  
-		  if (lkm->kbd_model && lkm->kbd_model_desctiption) 
+		  if (lkm->kbd_model && lkm->kbd_model_description) 
 		    cfg->language_kbd_model_list = evas_list_append(cfg->language_kbd_model_list,
 								    lkm); 
 		  else 
 		    { 
 		       if (lkm->kbd_model) evas_stringshare_del(lkm->kbd_model); 
-		       if (lkm->kbd_model_desctiption) 
-			 evas_stringshare_del(lkm->kbd_model_desctiption); 
+		       if (lkm->kbd_model_description) 
+			 evas_stringshare_del(lkm->kbd_model_description); 
 		       E_FREE(lkm); 
 		    } 
 	       }
@@ -378,7 +381,7 @@ lang_free_xfree_kbd_models(Config *cfg)
 	lkm = cfg->language_kbd_model_list->data;
 
 	if (lkm->kbd_model) evas_stringshare_del(lkm->kbd_model);
-	if (lkm->kbd_model_desctiption) evas_stringshare_del(lkm->kbd_model_desctiption);
+	if (lkm->kbd_model_description) evas_stringshare_del(lkm->kbd_model_description);
 	E_FREE(lkm);
 	cfg->language_kbd_model_list = evas_list_remove_list(cfg->language_kbd_model_list,
 							     cfg->language_kbd_model_list);
@@ -450,8 +453,8 @@ lang_language_current_kbd_model_get()
    char *tmp;
 
    if (!XkbRF_GetNamesProp((Display *)ecore_x_display_get(), &tmp, &vd))
-     return "pc101";
-   return vd.model;
+     return evas_stringshare_add("pc101");
+   return evas_stringshare_add(vd.model);
 } 
 
 /************** private ******************/

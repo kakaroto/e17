@@ -16,7 +16,7 @@ typedef struct _Border_Language_Settings  Border_Language_Settings;
 struct _Language_Kbd_Model
 {
    const char *kbd_model;
-   const char *kbd_model_desctiption;
+   const char *kbd_model_description;
 };
 
 struct _Border_Language_Settings

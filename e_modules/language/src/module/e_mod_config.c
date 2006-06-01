@@ -17,23 +17,30 @@ struct _E_Config_Dialog_Data
    lang_switch_policy_t	lang_policy;
    int			lang_show_indicator;
 
-   Evas_List   *selected_languages;
-
    /* for internal use only */
    Config   *conf;
    Evas	    *evas;
+
+   Evas_List *s_langs;
+
+   char *plang;
+   char *slang;
+   char *kb_model;
+   char *kb_variant;
    /*************************/
 
    struct 
      {
-	Evas_Object  *lang_ilist;
-	Evas_Object  *btn_add;
-	Evas_Object  *btn_del;
-	Evas_Object  *btn_move_up;
-	Evas_Object  *btn_move_down;
-	Evas_Object  *selected_lang_ilist;
-	Evas_Object  *kbd_model_ilist;
-	Evas_Object  *kbd_layout_variant_ilist;
+	Evas_Object  *o_plang;
+	Evas_Object  *o_slang;
+
+	Evas_Object  *o_add;
+	Evas_Object  *o_del;
+	Evas_Object  *o_up;
+	Evas_Object  *o_down;
+
+	Evas_Object  *o_kbd_model;
+	Evas_Object  *o_kbd_variant;
      } gui;
 };
 
@@ -42,65 +49,95 @@ struct _E_Config_Dialog_Data
 /******************* Config Dialog related funcs *****************/
 static void	    *_create_data(E_Config_Dialog *cfd);
 static void	    _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+
 static Evas_Object  *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas,
 					   E_Config_Dialog_Data *cfdata);
-static int	    _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static int	    _apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+
+static Evas_Object  *_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas,
+					      E_Config_Dialog_Data *cfdata);
 
 static void	    _fill_data(E_Config_Dialog_Data *cfdata);
 
-/**************** button update funcs ***************************/
-static void _lang_update_select_button(E_Config_Dialog_Data *cfdata);
-static void _lang_update_unselect_button(E_Config_Dialog_Data *cfdata);
-static void _lang_update_language_moveup_button(E_Config_Dialog_Data *cfdata);
-static void _lang_update_language_movedown_button(E_Config_Dialog_Data *cfdata);
+/****************** ilist callbacks **********************************/
+static void _conf_cb_planguage_select  (void *data);
+static void _conf_cb_slanguage_select  (void *data);
+static void _conf_cb_kbd_model_select  (void *data);
+static void _conf_cb_kbd_variant_select(void *data);
 
-/*************** ilist update funcs ****************************/
-static void _lang_update_lang_defined_list(E_Config_Dialog_Data *cfdata);
-static void _lang_update_selected_lang_list(E_Config_Dialog_Data *cfdata);
-static void _lang_update_kbd_model_list(E_Config_Dialog_Data *cfdata);
-static void _lang_update_kbd_layout_variant_list(E_Config_Dialog_Data *cfdata);
+/****************** button callbacks *********************************/
+static void _conf_cb_language_add   (void *data, void *data2);
+static void _conf_cb_language_del   (void *data, void *data2);
+static void _conf_cb_language_up    (void *data, void *data2);
+static void _conf_cb_language_down  (void *data, void *data2);
 
-/************* button callbacks ****************************/
-static void _lang_select_language_cb(void *data, void *data2);
-static void _lang_unselect_language_cb(void *data, void *data2);
-static void _lang_move_language_order_up_cb(void *data, void *data2);
-static void _lang_move_language_order_down_cb(void *data, void *data2);
+/***************** button state set functions ************************/
+static void _conf_add_button_availability_set	(E_Config_Dialog_Data *cfdata);
+static void _conf_del_button_availability_set	(E_Config_Dialog_Data *cfdata);
+static void _conf_up_button_availability_set	(E_Config_Dialog_Data *cfdata);
+static void _conf_down_button_availability_set	(E_Config_Dialog_Data *cfdata);
 
-/************ ilist callbacks *****************************/
-static void _lang_languages_ilist_cb_change(void *data, Evas_Object *obj);
-static void _lang_selected_languages_ilist_cb_change(void *data, Evas_Object *obj);
-static void _lang_kbd_model_ilist_cb_change(void *data, Evas_Object *obj);
-static void _lang_kbd_layout_variant_ilist_cb_change(void *data, Evas_Object *obj);
-/************************************************************/
+/***************** list update functions ****************************/
+static void _conf_fill_planguages(E_Config_Dialog_Data *cfdata);
+static void _conf_fill_slanguages(E_Config_Dialog_Data *cfdata);
+static void _conf_fill_kbd_model (E_Config_Dialog_Data *cfdata);
 
-void _lang_configure_language_module(Config *cfg)
+/*************************************************************************/
+void
+_lang_configure_language_module(Config *conf)
 {
-   E_Config_Dialog *cfd;
+   E_Config_Dialog	*cfd;
    E_Config_Dialog_View *v;
 
    v = E_NEW(E_Config_Dialog_View, 1);
-
-   v->create_cfdata	   = _create_data;
-   v->free_cfdata	   = _free_data;
-   v->basic.apply_cfdata   = _basic_apply_data;
-   v->basic.create_widgets = _basic_create_widgets;
+   
+   v->create_cfdata	      = _create_data;
+   v->free_cfdata	      = _free_data;
+   v->basic.apply_cfdata      = _apply_data;
+   v->basic.create_widgets    = _basic_create_widgets;
+   v->advanced.apply_cfdata   = _apply_data;
+   v->advanced.create_widgets = _advanced_create_widgets;
 
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
-			     _("Language Module Configuration"), NULL, 0, v, cfg);
-   cfg->config_dialog = cfd;
+			     _("Language Module Settings"), NULL, 0, v, conf);
+
+   conf->config_dialog = cfd;
 }
 
-/******************* Config Dialog related funcs *****************/
+/*************** Config Dialog Functions ********************/
+static void
+_fill_data(E_Config_Dialog_Data *cfdata)
+{
+   Evas_List *l;
+
+   cfdata->lang_policy		 = cfdata->conf->lang_policy;
+   cfdata->lang_show_indicator	 = cfdata->conf->lang_show_indicator;
+
+   for (l = cfdata->conf->languages; l; l = l->next)
+     {
+	Language *lang;
+	
+	lang = lang_language_copy(l->data);
+	if (lang)
+	  cfdata->s_langs = evas_list_append(cfdata->s_langs, lang);
+     }
+
+   cfdata->plang	= NULL;
+   cfdata->slang	= NULL;
+   cfdata->kb_model	= NULL;
+   cfdata->kb_variant	= NULL;
+}
+
 static void *
 _create_data(E_Config_Dialog *cfd)
 {
    E_Config_Dialog_Data *cfdata;
-   Config   *cfg;
+   Config		*conf;
 
-   cfg = cfd->data;
+   conf = cfd->data;
 
    cfdata = E_NEW(E_Config_Dialog_Data, 1);
-   cfdata->conf = cfg;
+   cfdata->conf = conf;
 
    _fill_data(cfdata);
    return cfdata;
@@ -108,12 +145,16 @@ _create_data(E_Config_Dialog *cfd)
 static void
 _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-   while (cfdata->selected_languages)
+   while (cfdata->s_langs)
      {
-	lang_language_free(cfdata->selected_languages->data);
-	cfdata->selected_languages = evas_list_remove_list(cfdata->selected_languages,
-							   cfdata->selected_languages);
+	lang_language_free(cfdata->s_langs->data);
+	cfdata->s_langs = evas_list_remove_list(cfdata->s_langs, cfdata->s_langs);
      }
+
+   if (cfdata->plang) E_FREE(cfdata->plang);
+   if (cfdata->slang) E_FREE(cfdata->slang);
+   if (cfdata->kb_model) E_FREE(cfdata->kb_model);
+   if (cfdata->kb_variant) E_FREE(cfdata->kb_variant);
 
    cfdata->conf->config_dialog = NULL;
    free(cfdata);
@@ -121,140 +162,181 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 static Evas_Object *
 _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
-   E_Radio_Group  *rg;
-   Evas_Object *o, *of, *ob, *ot, *ot2, *oft;
+   E_Radio_Group *rg;
+   Evas_Object *o, *ol, *ol2, *of, *ob;
 
    cfdata->evas = evas;
 
    o = e_widget_list_add(evas, 0, 0);
 
-   ot = e_widget_table_add(evas, 0);
-   {
-      ot2 = e_widget_table_add(evas, 1);
-      {
-	 of = e_widget_framelist_add(evas, _("Languages"), 1);
-	 {
-	    /* languages ilist */
-	    ob = e_widget_ilist_add(evas, ILIST_ICON_LANG_WIDTH, ILIST_ICON_LANG_HEIGHT, NULL);
-	    e_widget_on_change_hook_set(ob, _lang_languages_ilist_cb_change, cfdata);
-	    cfdata->gui.lang_ilist = ob;
-	    e_widget_min_size_set(ob, 250, 170);
-	    e_widget_ilist_go(ob);
-	    e_widget_framelist_object_append(of, ob);
-	 }
-	 e_widget_table_object_append(ot2, of, 0, 0, 1, 1, 1, 1, 1, 1);
+   ol = e_widget_list_add(evas, 0, 1);
+      of = e_widget_framelist_add(evas, _("Available Languages"), 1);
+	 ob = e_widget_ilist_add(evas, ILIST_ICON_WIDTH, ILIST_ICON_HEIGHT, &(cfdata->plang));
+	 e_widget_min_size_set(ob, 220, 160);
+	 e_widget_ilist_go(ob);
+	 e_widget_framelist_object_append(of, ob);
+	 cfdata->gui.o_plang = ob;
+      e_widget_list_object_append(ol, of, 1, 1, 0.5);
 
-	 oft = e_widget_frametable_add(evas, _("Selected Languages"), 0);
-	 {
+      of = e_widget_framelist_add(evas, _("Selected Languages"), 0);
+	 ob = e_widget_ilist_add(evas, ILIST_ICON_WIDTH, ILIST_ICON_HEIGHT, &(cfdata->slang));
+	 e_widget_min_size_set(ob, 220, 160);
+	 e_widget_ilist_go(ob);
+	 e_widget_framelist_object_append(of, ob);
+	 cfdata->gui.o_slang = ob;
 
-	    /* selected languages ilist */
-	    ob = e_widget_ilist_add(evas, ILIST_ICON_WIDTH, ILIST_ICON_HEIGHT, NULL);
-	    e_widget_on_change_hook_set(ob, _lang_selected_languages_ilist_cb_change, cfdata);
-	    cfdata->gui.selected_lang_ilist = ob;
-	    e_widget_min_size_set(ob, 250, 170);
-	    e_widget_ilist_go(ob);
-	    e_widget_frametable_object_append(oft, ob, 0, 0, 4, 1, 1, 1, 1, 1);
+	 ol2 = e_widget_list_add(evas, 0, 1);
+	    ob = e_widget_button_add(evas, ">>", NULL, _conf_cb_language_add, cfdata, NULL);
+	    e_widget_list_object_append(ol2, ob, 1, 1, 0.5);
+	    cfdata->gui.o_add = ob;
 
-	    ob = e_widget_button_add(evas, ">>", NULL, _lang_select_language_cb, cfdata, NULL);
-	    cfdata->gui.btn_add = ob;
-	    e_widget_frametable_object_append(oft, ob, 0, 1, 1, 1, 1, 1, 1, 1);
+	    ob = e_widget_button_add(evas, "<<", NULL, _conf_cb_language_del, cfdata, NULL);
+	    e_widget_list_object_append(ol2, ob, 1, 1, 0.5);
+	    cfdata->gui.o_del = ob;
 
-	    ob = e_widget_button_add(evas, "<<", NULL, _lang_unselect_language_cb, cfdata, NULL);
-	    cfdata->gui.btn_del = ob;
-	    e_widget_frametable_object_append(oft, ob, 1, 1, 1, 1, 1, 1, 1, 1);
+	    ob = e_widget_button_add(evas, _("Up"), "widget/up_arrow", 
+				     _conf_cb_language_up, cfdata, NULL);
+	    e_widget_list_object_append(ol2, ob, 1, 1, 0.5);
+	    cfdata->gui.o_up = ob;
 
-	    ob = e_widget_button_add(evas, "Up", "widget/up_arrow", 
-				     _lang_move_language_order_up_cb, cfdata, NULL);
-	    cfdata->gui.btn_move_up = ob;
-	    e_widget_frametable_object_append(oft, ob, 2, 1, 1, 1, 1, 1, 1, 1);
+	    ob = e_widget_button_add(evas, _("Down"), "widget/down_arrow", 
+				     _conf_cb_language_down, cfdata, NULL);
+	    e_widget_list_object_append(ol2, ob, 1, 1, 0.5);
+	    cfdata->gui.o_down = ob;
+	 e_widget_framelist_object_append(of, ol2);
+      e_widget_list_object_append(ol, of, 1, 1, 0.5);
+   e_widget_list_object_append(o, ol, 1, 1, 0.5);
 
-	    ob = e_widget_button_add(evas, "Down", "widget/down_arrow",
-				     _lang_move_language_order_down_cb, cfdata, NULL);
-	    cfdata->gui.btn_move_down = ob;
-	    e_widget_frametable_object_append(oft, ob, 3, 1, 1, 1, 1, 1, 1, 1);
-	 }
-	 e_widget_table_object_append(ot2, oft, 1, 0, 1, 1, 1, 1, 1, 1);
-      }
-      e_widget_table_object_append(ot, ot2, 0, 0, 1, 1, 1, 1, 1, 1);
-
-      oft = e_widget_frametable_add(evas, _("Language Settings"), 0);
-      {
-	 of = e_widget_framelist_add(evas, _("Keyboard Model"), 1);
-	 {
-	    ob = e_widget_ilist_add(evas, ILIST_ICON_WIDTH, ILIST_ICON_HEIGHT, NULL);
-	    e_widget_on_change_hook_set(ob, _lang_kbd_model_ilist_cb_change, cfdata);
-	    cfdata->gui.kbd_model_ilist = ob;
-	    {
-	       e_widget_min_size_set(ob, 390, 80);
-	       e_widget_ilist_go(ob);
-	    }
-	    e_widget_framelist_object_append(of, ob);
-	 }
-	 e_widget_frametable_object_append(oft, of, 0, 0, 1, 1, 1, 1, 1, 1);
-
-	 of = e_widget_framelist_add(evas, _("Layout Variant"), 0);
-	 {
-	    ob = e_widget_ilist_add(evas, ILIST_ICON_WIDTH, ILIST_ICON_HEIGHT, NULL);
-	    e_widget_on_change_hook_set(ob, _lang_kbd_layout_variant_ilist_cb_change, cfdata);
-	    cfdata->gui.kbd_layout_variant_ilist = ob;
-	    {
-	       e_widget_min_size_set(ob, 120, 80);
-	       e_widget_ilist_go(ob);
-	    }
-	    e_widget_framelist_object_append(of, ob);
-	 }
-	 e_widget_frametable_object_append(oft, of, 1, 0, 1, 1, 1, 1, 1, 1);
-      }
-      e_widget_table_object_append(ot, oft, 0, 1, 1, 1, 1, 1, 1, 1);
-   }
-   e_widget_list_object_append(o, ot, 1, 1, 0.5);
-
-   
-
-   of = e_widget_framelist_add(evas, _("Language Switching Policy"), 1);
-   { 
+   of = e_widget_framelist_add(evas, _("Language Switch Policy"), 1);
       rg = e_widget_radio_group_new((int *)&(cfdata->lang_policy));
 
-      ob = e_widget_radio_add(evas, "Global", LS_GLOBAL_POLICY, rg);
+      ob = e_widget_radio_add(evas, _("Global"), LS_GLOBAL_POLICY, rg);
       e_widget_framelist_object_append(of, ob);
 
-      ob = e_widget_radio_add(evas, "Window", LS_WINDOW_POLICY, rg);
+      ob = e_widget_radio_add(evas, _("Window"), LS_WINDOW_POLICY, rg);
       e_widget_framelist_object_append(of, ob);
 
-      ob = e_widget_radio_add(evas, "Application", LS_APPLICATION_POLICY, rg);
+      ob = e_widget_radio_add(evas, _("Application"), LS_APPLICATION_POLICY, rg);
       e_widget_framelist_object_append(of, ob);
-      e_widget_disabled_set(ob, 1);
-   }
-
+      e_widget_disabled_set(ob, 1); // this is temporary
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-   /****************************************************/
+   cfdata->gui.o_kbd_model    = NULL;
+   cfdata->gui.o_kbd_variant  = NULL;
 
-   _lang_update_lang_defined_list(cfdata);
-   _lang_update_selected_lang_list(cfdata);
+   _conf_fill_planguages(cfdata); 
+   _conf_fill_slanguages(cfdata);
 
-   _lang_update_select_button(cfdata);
-   _lang_update_unselect_button(cfdata);
-   _lang_update_language_movedown_button(cfdata);
-   _lang_update_language_moveup_button(cfdata);
+   _conf_add_button_availability_set(cfdata);
+   _conf_del_button_availability_set(cfdata);
+   _conf_up_button_availability_set(cfdata);
+   _conf_down_button_availability_set(cfdata);
+
+   return o;
+}
+static Evas_Object *
+_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
+{
+   E_Radio_Group  *rg;
+   Evas_Object *o, *ol, *ol2, *of, *ob;
+
+   cfdata->evas = evas;
+
+   o = e_widget_list_add(evas, 0, 0);
+
+   ol = e_widget_list_add(evas, 0, 1);
+      of = e_widget_framelist_add(evas, _("Available Languages"), 1);
+	 ob = e_widget_ilist_add(evas, ILIST_ICON_WIDTH, ILIST_ICON_HEIGHT, &(cfdata->plang));
+	 e_widget_min_size_set(ob, 220, 160);
+	 e_widget_ilist_go(ob);
+	 e_widget_framelist_object_append(of, ob);
+	 cfdata->gui.o_plang = ob;
+      e_widget_list_object_append(ol, of, 1, 1, 0.5);
+
+      of = e_widget_framelist_add(evas, _("Selected Languages"), 0);
+	 ob = e_widget_ilist_add(evas, ILIST_ICON_WIDTH, ILIST_ICON_HEIGHT, &(cfdata->slang));
+	 e_widget_min_size_set(ob, 220, 160);
+	 e_widget_ilist_go(ob);
+	 e_widget_framelist_object_append(of, ob);
+	 cfdata->gui.o_slang = ob;
+
+	 ol2 = e_widget_list_add(evas, 0, 1);
+	    ob = e_widget_button_add(evas, ">>", NULL, _conf_cb_language_add, cfdata, NULL);
+	    e_widget_list_object_append(ol2, ob, 1, 1, 0.5);
+	    cfdata->gui.o_add = ob;
+
+	    ob = e_widget_button_add(evas, "<<", NULL, _conf_cb_language_del, cfdata, NULL);
+	    e_widget_list_object_append(ol2, ob, 1, 1, 0.5);
+	    cfdata->gui.o_del = ob;
+
+	    ob = e_widget_button_add(evas, _("Up"), "widget/up_arrow",
+				     _conf_cb_language_up, cfdata, NULL);
+	    e_widget_list_object_append(ol2, ob, 1, 1, 0.5);
+	    cfdata->gui.o_up = ob;
+
+	    ob = e_widget_button_add(evas, _("Down"), "widget/down_arrow",
+				     _conf_cb_language_down, cfdata, NULL);
+	    e_widget_list_object_append(ol2, ob, 1, 1, 0.5);
+	    cfdata->gui.o_down = ob;
+	 e_widget_framelist_object_append(of, ol2);
+      e_widget_list_object_append(ol, of, 1, 1, 0.5);
+   e_widget_list_object_append(o, ol, 1, 1, 0.5);
+
+   ol = e_widget_list_add(evas, 0, 1);
+      of = e_widget_framelist_add(evas, _("Keyboard Model"), 1);
+	 ob = e_widget_ilist_add(evas, 0, 0, &(cfdata->kb_model));
+	 e_widget_min_size_set(ob, 390, 80);
+	 e_widget_ilist_go(ob);
+	 cfdata->gui.o_kbd_model = ob;
+	 e_widget_framelist_object_append(of, ob);
+      e_widget_list_object_append(ol, of, 1, 1, 0.5);
+
+      of = e_widget_framelist_add(evas, _("Layout Variant"), 0);
+	 ob = e_widget_ilist_add(evas, 0, 0, &(cfdata->kb_variant));
+	 e_widget_min_size_set(ob, 120, 80);
+	 e_widget_ilist_go(ob);
+	 cfdata->gui.o_kbd_variant = ob;
+	 e_widget_framelist_object_append(of, ob);
+      e_widget_list_object_append(ol, of, 1, 1, 0.5);
+   e_widget_list_object_append(o, ol, 1, 1, 0.5);
+
+   of = e_widget_framelist_add(evas, _("Language Switch Policy"), 1);
+      rg = e_widget_radio_group_new((int *)&(cfdata->lang_policy));
+
+      ob = e_widget_radio_add(evas, _("Global"), LS_GLOBAL_POLICY, rg);
+      e_widget_framelist_object_append(of, ob);
+
+      ob = e_widget_radio_add(evas, _("Window"), LS_WINDOW_POLICY, rg);
+      e_widget_framelist_object_append(of, ob);
+
+      ob = e_widget_radio_add(evas, _("Application"), LS_APPLICATION_POLICY, rg);
+      e_widget_framelist_object_append(of, ob);
+      e_widget_disabled_set(ob, 1); // this is temporary
+   e_widget_list_object_append(o, of, 1, 1, 0.5);
+
+   _conf_fill_planguages(cfdata);
+   _conf_fill_slanguages(cfdata);
+
+   _conf_add_button_availability_set(cfdata);
+   _conf_del_button_availability_set(cfdata);
+   _conf_up_button_availability_set(cfdata);
+   _conf_down_button_availability_set(cfdata);
 
    return o;
 }
 static int
-_basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
+_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-   Evas_List   *l;
+   Evas_List *l;
    Language    *lang, *lang2;
 
    cfdata->conf->lang_policy = cfdata->lang_policy;
-   if (cfdata->conf->lang_policy == LS_GLOBAL_POLICY)
-     { 
-	language_clear_border_language_setup_list();
-	language_unregister_callback_handlers();
-     }
-   else if (cfdata->conf->lang_policy == LS_WINDOW_POLICY ||
-	    cfdata->conf->lang_policy == LS_APPLICATION_POLICY)
-     { 
+
+   language_clear_border_language_setup_list();
+   language_unregister_callback_handlers();
+   if (cfdata->conf->lang_policy == LS_WINDOW_POLICY ||
+       cfdata->conf->lang_policy == LS_APPLICATION_POLICY)
+     {
 	language_register_callback_handlers();
      }
 
@@ -266,326 +348,304 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 	cfdata->conf->languages = evas_list_remove_list(cfdata->conf->languages,
 						        cfdata->conf->languages);
      }
-   for (l = cfdata->selected_languages; l; l = l->next)
+
+   for (l = cfdata->s_langs; l; l = l->next)
      {
 	lang = lang_language_copy(l->data);
+	if (!lang) continue;
+
 	lang_language_xorg_values_get(lang);
-	if (lang) 
-	  cfdata->conf->languages = evas_list_append(cfdata->conf->languages, lang);
+	cfdata->conf->languages = evas_list_append(cfdata->conf->languages, lang);
      }
    cfdata->conf->language_selector = 0;
    e_config_save_queue();
 
-   lang_language_switch_to(cfdata->conf, (cfdata->conf->language_selector = 0));
+   lang_language_switch_to(cfdata->conf, 0);
    return 1;
 }
+
+/***************** list update functions ****************************/
 static void
-_fill_data(E_Config_Dialog_Data *cfdata)
+_conf_fill_planguages(E_Config_Dialog_Data *cfdata)
 {
-   Evas_List   *l;
-   Language    *lang, *lang2;
+   Evas_List *l;
+   char	     buf[128];
+   char	     lflag[2048];
 
-   if (!cfdata) return;
-
-   cfdata->lang_policy = cfdata->conf->lang_policy;
-   cfdata->lang_show_indicator = cfdata->conf->lang_show_indicator;
-
-   for (l = cfdata->conf->languages; l; l = l->next)
-     {
-	lang = lang_language_copy(l->data);
-	if (lang) 
-	  cfdata->selected_languages = evas_list_append(cfdata->selected_languages, lang);
-     }
-}
-
-/**************** button update funcs ***************************/
-static void
-_lang_update_select_button(E_Config_Dialog_Data *cfdata)
-{
-   if (!cfdata) return;
-
-   if (e_widget_ilist_count(cfdata->gui.lang_ilist) &&
-       e_widget_ilist_selected_label_get(cfdata->gui.lang_ilist))
-     e_widget_disabled_set(cfdata->gui.btn_add, 0);
-   else
-     e_widget_disabled_set(cfdata->gui.btn_add, 1);
-}
-static void
-_lang_update_unselect_button(E_Config_Dialog_Data *cfdata)
-{
-   if (!cfdata) return;
-
-   if (e_widget_ilist_count(cfdata->gui.selected_lang_ilist) &&
-       e_widget_ilist_selected_label_get(cfdata->gui.selected_lang_ilist))
-     e_widget_disabled_set(cfdata->gui.btn_del, 0);
-   else
-     e_widget_disabled_set(cfdata->gui.btn_del, 1);
-}
-static void
-_lang_update_language_moveup_button(E_Config_Dialog_Data *cfdata)
-{
-   if (!cfdata) return;
-
-   if (evas_list_count(cfdata->selected_languages) < 1 ||
-       !e_widget_ilist_selected_label_get(cfdata->gui.selected_lang_ilist) ||
-       !e_widget_ilist_selected_get(cfdata->gui.selected_lang_ilist))
-     { 
-	e_widget_disabled_set(cfdata->gui.btn_move_up, 1);
-     }
-   else
-     e_widget_disabled_set(cfdata->gui.btn_move_up, 0);
-}
-static void
-_lang_update_language_movedown_button(E_Config_Dialog_Data *cfdata)
-{
-   if (!cfdata) return;
-
-   if ((evas_list_count(cfdata->selected_languages) < 1) ||
-       (!e_widget_ilist_selected_label_get(cfdata->gui.selected_lang_ilist)) ||
-       (e_widget_ilist_selected_get(cfdata->gui.selected_lang_ilist) ==
-	 e_widget_ilist_count(cfdata->gui.selected_lang_ilist) - 1))
-     { 
-	e_widget_disabled_set(cfdata->gui.btn_move_down, 1);
-     }
-   else
-     e_widget_disabled_set(cfdata->gui.btn_move_down, 0);
-}
-
-/*************** ilist update funcs ****************************/
-static void 
-_lang_update_lang_defined_list(E_Config_Dialog_Data *cfdata)
-{
-   //FIXME: optimize - too slow
-   char		     buf[1024];
-   char		     lbuf[1024];
-   Evas_List	     *l, *l2;
-   Language_Predef   *lp;
-   Language	     *lang;
-   int indx;
-   char *sel_label = NULL;
-
-   if (!cfdata) return;
-
-   if (e_widget_ilist_count(cfdata->gui.lang_ilist))
-     { 
-	const char *t;
-	t = e_widget_ilist_selected_label_get(cfdata->gui.lang_ilist);
-	if (t)
-	  sel_label = strdup(t);
-     }
-   else
-     sel_label = NULL;
-
-   e_widget_ilist_clear(cfdata->gui.lang_ilist);
+   e_widget_ilist_clear(cfdata->gui.o_plang);
    for (l = cfdata->conf->language_predef_list; l; l = l->next)
      {
-	Evas_Object  *ic = NULL;
-	int found = 0;
+	Evas_Object	*ic = NULL;
+	Language_Predef *lp;
+	Evas_List	*l2;
+	int		found = 0;
+
 	lp = l->data;
 
-	for (l2 = cfdata->selected_languages; l2 && !found; l2 = l2->next)
+	for (l2 = cfdata->s_langs; l2; l2 = l2->next)
 	  {
-	     lang = l2->data;
-	     if (!strcmp(lang->lang_name, lp->lang_name) &&
-	         !strcmp(lang->lang_shortcut, lp->lang_shortcut))
-	       {
-		  found = 1;
-	       }
+	     Language *lang = l2->data;
+	     if (!strcmp(lang->lang_name, lp->lang_name))
+	       found = 1;
 	  }
-	if (found) continue;
 
+	if (found) continue;
+	
 	snprintf(buf, sizeof(buf), ILIST_LANGUAGE_LABEL_FORMAT, lp->lang_name, lp->lang_shortcut);
 
 	ic = e_icon_add(cfdata->evas);
-	snprintf(lbuf, sizeof(lbuf), "%s/images/%s.png", e_module_dir_get(cfdata->conf->module),
-	        lp->lang_flag);
-	e_icon_file_set(ic, lbuf);
-	e_widget_ilist_append(cfdata->gui.lang_ilist, ic, buf, NULL, NULL, NULL);
+	snprintf(lflag, sizeof(lflag), "%s/images/%s.png",
+	         e_module_dir_get(cfdata->conf->module), lp->lang_flag);
+	e_icon_file_set(ic, lflag);
+	e_widget_ilist_append(cfdata->gui.o_plang, ic, buf, _conf_cb_planguage_select,
+			      cfdata, (char *)lp->lang_name);
      }
-
-   e_widget_ilist_go(cfdata->gui.lang_ilist);
-   if (sel_label)
-     {
-	int i;
-	int size = e_widget_ilist_count(cfdata->gui.lang_ilist);
-	const char *t;
-	for (i = 0; i < size; i++)
-	  {
-	     t = e_widget_ilist_nth_label_get(cfdata->gui.lang_ilist, i);
-	     if (!strcmp(t, sel_label))
-	       { 
-		  e_widget_ilist_selected_set(cfdata->gui.lang_ilist, i);
-		  break;
-	       }
-	  }
-	free(sel_label);
-     }
+   e_widget_ilist_go(cfdata->gui.o_plang);
 }
-static void 
-_lang_update_selected_lang_list(E_Config_Dialog_Data *cfdata)
+
+static void
+_conf_fill_slanguages(E_Config_Dialog_Data *cfdata)
 {
-   //FIXME: optimize - too slow
-   char buf[1024];
-   char lbuf[1024];
-   Evas_List   *l;
-   Language    *lang;
-   int indx;
+   Evas_List *l;
+   char	     buf[128];
+   char	     lflag[2048];
 
-   if (!cfdata) return;
-
-   if (e_widget_ilist_count(cfdata->gui.selected_lang_ilist))
-     indx = e_widget_ilist_selected_get(cfdata->gui.selected_lang_ilist);
-   else
-     indx = -1;
-
-   e_widget_ilist_clear(cfdata->gui.selected_lang_ilist);
-   for (l = cfdata->selected_languages; l; l = l->next)
+   e_widget_ilist_clear(cfdata->gui.o_slang);
+   for (l = cfdata->s_langs; l; l = l->next)
      {
-	Evas_Object *ic;
+	Evas_Object *ic = NULL;
+	Language    *lang;
+
 	lang = l->data;
 
-	snprintf(buf, sizeof(buf), ILIST_LANGUAGE_LABEL_FORMAT, lang->lang_name,
-	         lang->lang_shortcut);
+	snprintf(buf, sizeof(buf), ILIST_LANGUAGE_LABEL_FORMAT,
+	         lang->lang_name, lang->lang_shortcut);
 
 	ic = e_icon_add(cfdata->evas);
-	snprintf(lbuf, sizeof(lbuf), "%s/images/%s.png", e_module_dir_get(cfdata->conf->module),
-	        lang->lang_flag);
-	e_icon_file_set(ic, lbuf);
-	e_widget_ilist_append(cfdata->gui.selected_lang_ilist, ic, buf, NULL, NULL, NULL);
+	snprintf(lflag, sizeof(lflag), "%s/images/%s.png",
+	         e_module_dir_get(cfdata->conf->module), lang->lang_flag);
+	e_icon_file_set(ic, lflag);
+	e_widget_ilist_append(cfdata->gui.o_slang, ic, buf, _conf_cb_slanguage_select,
+			      cfdata, (char *)lang->lang_name);
      }
-
-   e_widget_ilist_go(cfdata->gui.selected_lang_ilist);
-   if (indx >= 0)
-     {
-	if (indx >= e_widget_ilist_count(cfdata->gui.selected_lang_ilist))
-	  indx = e_widget_ilist_count(cfdata->gui.selected_lang_ilist) - 1;
-
-	e_widget_ilist_selected_set(cfdata->gui.selected_lang_ilist, indx);
-     }
+   e_widget_ilist_go(cfdata->gui.o_slang);
 }
 static void
-_lang_update_kbd_model_list(E_Config_Dialog_Data *cfdata)
+_conf_fill_kbd_model(E_Config_Dialog_Data *cfdata)
 {
-   int	 kbd_model_indx = -1;
-   Language *selected_lang;
-   Language_Kbd_Model *lkm;
-   Evas_List *l;
+   int kbdm_i = -1;
+   Language *slang;
 
-   if (!cfdata) return;
+   if (!cfdata->gui.o_kbd_model) return;
 
-   selected_lang = evas_list_nth(cfdata->selected_languages,
-				 e_widget_ilist_selected_get(cfdata->gui.selected_lang_ilist));
-
-   if (!selected_lang)
-     {
-	e_widget_ilist_clear(cfdata->gui.kbd_model_ilist);
+   if (!cfdata->slang)
+     { 
+	e_widget_ilist_clear(cfdata->gui.o_kbd_model);
 	return;
      }
 
-   if (!e_widget_ilist_count(cfdata->gui.kbd_model_ilist))
+   slang = evas_list_nth(cfdata->s_langs, e_widget_ilist_selected_get(cfdata->gui.o_slang));
+
+   if (!e_widget_ilist_count(cfdata->gui.o_kbd_model))
      {
-	char buf[4096];
+	Evas_List *l;
 	int i;
+	char buf[256];
 
 	for (l = cfdata->conf->language_kbd_model_list, i = 0; l; l = l->next, i++)
 	  {
+	     Language_Kbd_Model *lkm;
+
 	     lkm = l->data;
 
-	     if (!strcmp(lkm->kbd_model, selected_lang->rdefs.model))
-	       kbd_model_indx = i;
+	     if (!strcmp(lkm->kbd_model, slang->rdefs.model))
+	       kbdm_i = i;
 
-	     //snprintf(buf, sizeof(buf), "%s (%s)", lkm->kbd_model_desctiption, lkm->kbd_model);
-	     snprintf(buf, sizeof(buf), "%s", lkm->kbd_model_desctiption);
-	     e_widget_ilist_append(cfdata->gui.kbd_model_ilist, NULL, buf, NULL, NULL, NULL);
+	     snprintf(buf, sizeof(buf), "%s", lkm->kbd_model_description);
+	     e_widget_ilist_append(cfdata->gui.o_kbd_model, NULL, buf,
+				   _conf_cb_kbd_model_select, cfdata, (char *)lkm->kbd_model);
 	  }
      }
    else
      {
-	for (l = cfdata->conf->language_kbd_model_list, kbd_model_indx = 0;
-	     l; l = l->next, kbd_model_indx++)
+	Evas_List *l;
+
+	for (l = cfdata->conf->language_kbd_model_list, kbdm_i = 0; l; l = l->next, kbdm_i++)
 	  {
+	     Language_Kbd_Model *lkm;
+
 	     lkm = l->data;
-	     if (!strcmp(lkm->kbd_model, selected_lang->rdefs.model))
+
+	     if (!strcmp(lkm->kbd_model, slang->rdefs.model))
 	       break;
 	  }
 	if (!l)
-	  kbd_model_indx = -1;
+	  kbdm_i = 0;
      }
 
-   e_widget_ilist_go(cfdata->gui.kbd_model_ilist);
-   e_widget_ilist_selected_set(cfdata->gui.kbd_model_ilist, kbd_model_indx);
+   e_widget_ilist_go(cfdata->gui.o_kbd_model);
+   e_widget_ilist_selected_set(cfdata->gui.o_kbd_model, kbdm_i);
 }
 static void
-_lang_update_kbd_layout_variant_list(E_Config_Dialog_Data *cfdata)
+_conf_fill_kbd_variant(E_Config_Dialog_Data *cfdata)
 {
-   Language	     *selected_lang;
-   Language_Predef   *lp;
-   Evas_List	     *l;
-   int		     kbd_variant_indx = 0;
+   Language  *slang;
+   Evas_List *l;
+   int kbdv_i = 0;
 
-   if (!cfdata) return;
+   if (!cfdata->gui.o_kbd_variant) return;
 
-   selected_lang = evas_list_nth(cfdata->selected_languages,
-				 e_widget_ilist_selected_get(cfdata->gui.selected_lang_ilist));
+   e_widget_ilist_clear(cfdata->gui.o_kbd_variant);
 
-   e_widget_ilist_clear(cfdata->gui.kbd_layout_variant_ilist);
+   if (!cfdata->slang) 
+     return;
 
-   if (!selected_lang) return;
+   e_widget_ilist_clear(cfdata->gui.o_kbd_variant);
 
    for (l = cfdata->conf->language_predef_list; l; l = l->next)
      {
+	Language_Predef *lp;
+
 	lp = l->data;
 
-	if (!strcmp(lp->lang_name, selected_lang->lang_name))
+	if (!strcmp(lp->lang_name, cfdata->slang))
 	  {
+	     Language *lang;
 	     int i;
-	     e_widget_ilist_append(cfdata->gui.kbd_layout_variant_ilist,
-				   NULL, "basic", NULL, NULL, NULL);
 
-	     for (l = lp->kbd_variant, i = 1; l; l = l->next)
+	     lang = evas_list_nth(cfdata->s_langs,
+				  e_widget_ilist_selected_get(cfdata->gui.o_slang));
+
+	     e_widget_ilist_append(cfdata->gui.o_kbd_variant, NULL, "basic",
+				   _conf_cb_kbd_variant_select, cfdata, "basic");
+
+	     for (l = lp->kbd_variant, i = 1; l; l = l->next, i++)
 	       {
-		  char *variant = l->data;
-		  if (!strcmp(variant, "basic")) continue;
+		  char *var;
 
-		  if (selected_lang->rdefs.variant &&
-		      !strcmp(selected_lang->rdefs.variant, variant))
-		    kbd_variant_indx = i;
+		  var = l->data;
 
-		  e_widget_ilist_append(cfdata->gui.kbd_layout_variant_ilist,
-				        NULL, variant, NULL, NULL, NULL);
-		  i++;
+		  if (!strcmp(var, "basic")) continue;
+
+		  if (lang->rdefs.variant && !strcmp(lang->rdefs.variant, var))
+		    kbdv_i = i;
+
+		  e_widget_ilist_append(cfdata->gui.o_kbd_variant, NULL, var,
+				        _conf_cb_kbd_variant_select, cfdata, var);
 	       }
 	     break;
 	  }
      }
 
-   e_widget_ilist_go(cfdata->gui.kbd_layout_variant_ilist);
-   e_widget_ilist_selected_set(cfdata->gui.kbd_layout_variant_ilist, kbd_variant_indx);
+   e_widget_ilist_go(cfdata->gui.o_kbd_variant);
+   e_widget_ilist_selected_set(cfdata->gui.o_kbd_variant, kbdv_i);
+}
+/***************** button state set functions ************************/
+static void
+_conf_add_button_availability_set(E_Config_Dialog_Data *cfdata)
+{
+   if (!e_widget_ilist_selected_label_get(cfdata->gui.o_plang))
+     e_widget_disabled_set(cfdata->gui.o_add, 1);
+   else
+     e_widget_disabled_set(cfdata->gui.o_add, 0);
+}
+static void
+_conf_del_button_availability_set(E_Config_Dialog_Data *cfdata)
+{
+   if (!e_widget_ilist_selected_label_get(cfdata->gui.o_slang))
+     e_widget_disabled_set(cfdata->gui.o_del, 1);
+   else
+     e_widget_disabled_set(cfdata->gui.o_del, 0);
+}
+static void
+_conf_up_button_availability_set(E_Config_Dialog_Data *cfdata)
+{
+   if (!e_widget_ilist_selected_label_get(cfdata->gui.o_slang) ||
+       !e_widget_ilist_selected_get(cfdata->gui.o_slang) ||
+       evas_list_count(cfdata->s_langs) < 1)
+     e_widget_disabled_set(cfdata->gui.o_up, 1);
+   else
+     e_widget_disabled_set(cfdata->gui.o_up, 0);
+}
+static void
+_conf_down_button_availability_set(E_Config_Dialog_Data *cfdata)
+{
+   if (!e_widget_ilist_selected_label_get(cfdata->gui.o_slang) ||
+       (e_widget_ilist_selected_get(cfdata->gui.o_slang) ==
+	   e_widget_ilist_count(cfdata->gui.o_slang) - 1) ||
+       evas_list_count(cfdata->s_langs) < 1)
+     e_widget_disabled_set(cfdata->gui.o_down, 1);
+   else
+     e_widget_disabled_set(cfdata->gui.o_down, 0);
 }
 
-/************* button callbacks ****************************/
-static void
-_lang_select_language_cb(void *data, void *data2)
+/***************** ilist callbacks ***********************************/
+static void 
+_conf_cb_planguage_select(void *data)
 {
-   char			buf[1024];
-   const char		*sel_label;
-   Evas_List		*l;
-   E_Config_Dialog_Data	*cfdata;
-   Language_Predef	*lp = NULL;
+   E_Config_Dialog_Data *cfdata;
+   
+   cfdata = data;
+
+   _conf_add_button_availability_set(data);
+}
+static void 
+_conf_cb_slanguage_select(void *data)
+{
+   E_Config_Dialog_Data *cfdata;
+
+   cfdata = data;
+
+   _conf_fill_kbd_model(cfdata);
+   _conf_fill_kbd_variant(cfdata);
+
+   _conf_del_button_availability_set(cfdata);
+   _conf_up_button_availability_set(cfdata);
+   _conf_down_button_availability_set(cfdata);
+}
+static void
+_conf_cb_kbd_model_select(void *data)
+{
+   Language *l;
+   E_Config_Dialog_Data *cfdata;
+
+   cfdata = data;
+
+   l = evas_list_nth(cfdata->s_langs, e_widget_ilist_selected_get(cfdata->gui.o_slang));
+   if (!l) return;
+
+   if (l->rdefs.model) evas_stringshare_del(l->rdefs.model);
+   l->rdefs.model = (char *)evas_stringshare_add(cfdata->kb_model);
+}
+static void
+_conf_cb_kbd_variant_select(void *data)
+{
+   Language *l;
+   E_Config_Dialog_Data *cfdata;
+
+   cfdata = data;
+
+   l = evas_list_nth(cfdata->s_langs, e_widget_ilist_selected_get(cfdata->gui.o_slang));
+   if (!l) return;
+
+   if (l->rdefs.variant) evas_stringshare_del(l->rdefs.variant);
+   l->rdefs.variant = (char *)evas_stringshare_add(cfdata->kb_variant);
+}
+/****************** button callbacks *********************************/
+static void 
+_conf_cb_language_add(void *data, void *data2)
+{
    Language		*lang;
+   E_Config_Dialog_Data *cfdata;
+   Language_Predef	*lp = NULL;
+   Evas_List		*l;
 
-   if (!(cfdata = data)) return;
-
-   sel_label = e_widget_ilist_selected_label_get(cfdata->gui.lang_ilist);
-   if (!sel_label) return;
+   cfdata = data;
 
    for (l = cfdata->conf->language_predef_list; l; l = l->next)
      {
 	lp = l->data;
-
-	snprintf(buf, sizeof(buf), ILIST_LANGUAGE_LABEL_FORMAT, lp->lang_name, lp->lang_shortcut);
-
-	if (!strcmp(sel_label, buf))
+	if (!strcmp(lp->lang_name, cfdata->plang))
 	  break;
 	lp = NULL;
      }
@@ -595,206 +655,110 @@ _lang_select_language_cb(void *data, void *data2)
    lang = E_NEW(Language, 1);
    if (!lang) return;
 
-   lang->id	       = evas_list_count(cfdata->selected_languages);
-   lang->lang_name     = evas_stringshare_add(lp->lang_name);
-   lang->lang_shortcut = evas_stringshare_add(lp->lang_shortcut);
-   lang->lang_flag     = !(lp->lang_flag) ? NULL : evas_stringshare_add(lp->lang_flag);
-   lang->rdefs.model   = (char *) evas_stringshare_add(lang_language_current_kbd_model_get());
-   lang->rdefs.layout  = (char *) evas_stringshare_add(lp->kbd_layout);
-   lang->rdefs.variant = (char *) evas_stringshare_add("basic");
-   //lang_language_xorg_values_get(lang);
+   lang->id		= evas_list_count(cfdata->s_langs);
+   lang->lang_name	= evas_stringshare_add(lp->lang_name);
+   lang->lang_shortcut	= evas_stringshare_add(lp->lang_shortcut);
+   lang->lang_flag	= !(lp->lang_flag) ? NULL : evas_stringshare_add(lp->lang_flag);
+   lang->rdefs.model	= (char *) lang_language_current_kbd_model_get();
+   lang->rdefs.layout	= (char *) evas_stringshare_add(lp->kbd_layout);
+   lang->rdefs.variant	= (char *) evas_stringshare_add("basic");
 
-   cfdata->selected_languages = evas_list_append(cfdata->selected_languages, lang);
-   //DO NOT sort selected_languages list. Here the sequence of the langs is essential!
+   cfdata->s_langs = evas_list_append(cfdata->s_langs, lang);
 
-   _lang_update_lang_defined_list(cfdata);
-   _lang_update_selected_lang_list(cfdata);
-   e_widget_ilist_selected_set(cfdata->gui.selected_lang_ilist,
-			       evas_list_count(cfdata->selected_languages) - 1);
+   _conf_fill_planguages(cfdata);
+   _conf_fill_slanguages(cfdata);
 
-   _lang_update_select_button(cfdata);
-   _lang_update_unselect_button(cfdata);
+   E_FREE(cfdata->plang);
+
+   e_widget_ilist_selected_set(cfdata->gui.o_slang, evas_list_count(cfdata->s_langs) - 1);
+   _conf_add_button_availability_set(cfdata);
 }
 static void
-_lang_unselect_language_cb(void *data, void *data2)
+_conf_cb_language_del(void *data, void *data2)
 {
-   char			buf[1024];
-   const char		*sel_label;
-   Evas_List		*l;
-   Language		*lang;
-   E_Config_Dialog_Data	*cfdata;
+   E_Config_Dialog_Data *cfdata;
+   Language *l;
+   int n;
 
-   if (!(cfdata = data)) return;
+   cfdata = data;
 
-   sel_label = e_widget_ilist_selected_label_get(cfdata->gui.selected_lang_ilist);
-   if (!sel_label) return;
+   n = e_widget_ilist_selected_get(cfdata->gui.o_slang);
 
-   for (l = cfdata->selected_languages; l; l = l->next)
-     {
-	lang = l->data;
+   l = evas_list_nth(cfdata->s_langs, n);
+   cfdata->s_langs = evas_list_remove(cfdata->s_langs, l);
 
-	snprintf(buf, sizeof(buf), ILIST_LANGUAGE_LABEL_FORMAT, lang->lang_name,
-	         lang->lang_shortcut);
+   lang_language_free(l);
 
-	if (!strcmp(sel_label, buf))
-	  {
-	     cfdata->selected_languages = evas_list_remove_list(cfdata->selected_languages, l);
-	     lang_language_free(lang);
-	     break;
-	  }
-     }
+   _conf_fill_planguages(cfdata);
+   _conf_fill_slanguages(cfdata);
 
-   _lang_update_lang_defined_list(cfdata);
-   _lang_update_selected_lang_list(cfdata);
+   E_FREE(cfdata->slang);
 
-   _lang_update_select_button(cfdata);
-   _lang_update_unselect_button(cfdata);
+   if (n >= evas_list_count(cfdata->s_langs)) 
+     n = evas_list_count(cfdata->s_langs) - 1;
 
-   if (!evas_list_count(cfdata->selected_languages))
-     { 
-	_lang_update_kbd_model_list(cfdata);
-	_lang_update_kbd_layout_variant_list(cfdata);
-     }
-}
-static void 
-_lang_move_language_order_up_cb(void *data, void *data2)
-{
-   E_Config_Dialog_Data	*cfdata;
-   Evas_List   *lang, *lang2;
-   void *tmp;
-   int indx;
-
-   if (!(cfdata = data)) return;
-
-   indx = e_widget_ilist_selected_get(cfdata->gui.selected_lang_ilist);
-
-   if (indx <= 0) return;
-
-   lang = evas_list_nth_list(cfdata->selected_languages, indx);
-   lang2 = evas_list_nth_list(cfdata->selected_languages, indx - 1);
-
-   ((Language *)(lang->data))->id --;
-   ((Language *)(lang2->data))->id ++;
-   tmp = lang->data;
-   lang->data = lang2->data;
-   lang2->data = tmp;
-
-   _lang_update_selected_lang_list(cfdata);
-   e_widget_ilist_selected_set(cfdata->gui.selected_lang_ilist, indx - 1);
-}
-static void 
-_lang_move_language_order_down_cb(void *data, void *data2)
-{
-   E_Config_Dialog_Data	*cfdata;
-   Evas_List *lang, *lang2;
-   int indx;
-   void *tmp;
-
-   if (!(cfdata = data)) return;
-
-   indx = e_widget_ilist_selected_get(cfdata->gui.selected_lang_ilist);
-
-   if ((indx < 0) || (indx >= evas_list_count(cfdata->selected_languages))) return;
-
-   lang = evas_list_nth_list(cfdata->selected_languages, indx);
-   lang2 = evas_list_nth_list(cfdata->selected_languages, indx + 1);
-
-   ((Language *)(lang->data))->id ++;
-   ((Language *)(lang->data))->id --;
-   tmp = lang->data;
-   lang->data = lang2->data;
-   lang2->data = tmp;
-
-   _lang_update_selected_lang_list(cfdata);
-   e_widget_ilist_selected_set(cfdata->gui.selected_lang_ilist, indx + 1);
-}
-
-/************ ilist callbacks *****************************/
-static void
-_lang_languages_ilist_cb_change(void *data, Evas_Object *obj)
-{
-   if (!data) return;
-   _lang_update_select_button(data);
-}
-static void
-_lang_selected_languages_ilist_cb_change(void *data, Evas_Object *obj)
-{
-   if (!data) return;
-
-   _lang_update_unselect_button(data);
-   _lang_update_language_moveup_button(data);
-   _lang_update_language_movedown_button(data);
-
-   _lang_update_kbd_model_list(data); 
-   _lang_update_kbd_layout_variant_list(data);
-}
-static void 
-_lang_kbd_model_ilist_cb_change(void *data, Evas_Object *obj)
-{
-   E_Config_Dialog_Data	*cfdata;
-   Language_Kbd_Model	*lkm;
-   Language		*lang;
-   int	 indx_model;
-   int	 indx_lang;
-
-   if (!(cfdata = data)) return;
-
-   indx_lang = e_widget_ilist_selected_get(cfdata->gui.selected_lang_ilist);
-   if (indx_lang < 0) return;
-
-   indx_model = e_widget_ilist_selected_get(cfdata->gui.kbd_model_ilist);
-   if (indx_model < 0) return;
-
-   lang	 = evas_list_nth(cfdata->selected_languages, indx_lang);
-   lkm	 = evas_list_nth(cfdata->conf->language_kbd_model_list, indx_model);
-
-   if (!lang || !lkm) return;
-
-   if (lang->rdefs.model) evas_stringshare_del(lang->rdefs.model);
-   lang->rdefs.model = (char *) evas_stringshare_add(lkm->kbd_model);
-   //lang_language_xorg_values_get(lang);
-}
-static void 
-_lang_kbd_layout_variant_ilist_cb_change(void *data, Evas_Object *obj)
-{
-   E_Config_Dialog_Data	*cfdata;
-   Language *lang;
-   int	 indx_variant, indx_lang;
-
-   if (!(cfdata = data)) return;
-
-   indx_lang = e_widget_ilist_selected_get(cfdata->gui.selected_lang_ilist);
-   if (indx_lang < 0) return;
-
-   indx_variant = e_widget_ilist_selected_get(cfdata->gui.kbd_layout_variant_ilist);
-   if (indx_variant < 0) return;
-
-   lang = evas_list_nth(cfdata->selected_languages, indx_lang);
-   if (indx_variant == 0)
-     {
-	if (lang->rdefs.variant) evas_stringshare_del(lang->rdefs.variant);
-	lang->rdefs.variant = (char *) evas_stringshare_add("basic");
-	//lang_language_xorg_values_get(lang);
-	return;
-     }
+   if (n >= 0) 
+     e_widget_ilist_selected_set(cfdata->gui.o_slang, n);
    else
      {
-	Evas_List    *l;
-	Language_Predef *lp;
-	char *variant;
+	E_FREE(cfdata->kb_model);
+	E_FREE(cfdata->kb_variant);
 
-	for (l = cfdata->conf->language_predef_list; l; l = l->next)
-	  {
-	     lp = l->data;
-	     if (!strcmp(lp->lang_name, lang->lang_name))
-	       {
-		  variant = evas_list_nth(lp->kbd_variant, indx_variant - 1);
+	_conf_fill_kbd_model(cfdata);
+	_conf_fill_kbd_variant(cfdata);
 
-		  if (lang->rdefs.variant) evas_stringshare_del(lang->rdefs.variant);
-		  lang->rdefs.variant = (char *) evas_stringshare_add(variant);
-		  //lang_language_xorg_values_get(lang);
-		  break;
-	       }
-	  }
+	_conf_del_button_availability_set(cfdata);
      }
+}
+static void
+_conf_cb_language_up(void *data, void *data2)
+{
+   E_Config_Dialog_Data *cfdata;
+   Evas_List *l, *l2;
+   void *tmp;
+   int n;
+
+   cfdata = data;
+
+   n = e_widget_ilist_selected_get(cfdata->gui.o_slang);
+   if (n <= 0) return;
+
+   l  = evas_list_nth_list(cfdata->s_langs, n);
+   l2 = evas_list_nth_list(cfdata->s_langs, n - 1); 
+
+   ((Language *)(l->data))->id --;
+   ((Language *)(l2->data))->id ++;
+
+   tmp = l->data;
+   l->data = l2->data;
+   l2->data = tmp;
+
+   _conf_fill_slanguages(cfdata);
+   e_widget_ilist_selected_set(cfdata->gui.o_slang, n - 1);
+}
+static void 
+_conf_cb_language_down(void *data, void *data2)
+{
+   E_Config_Dialog_Data *cfdata;
+   Evas_List *l, *l2;
+   void *tmp;
+   int n;
+
+   cfdata = data;
+
+   n = e_widget_ilist_selected_get(cfdata->gui.o_slang);
+   if ((n < 0) || (n >= evas_list_count(cfdata->s_langs))) return;
+
+   l  = evas_list_nth_list(cfdata->s_langs, n);
+   l2 = evas_list_nth_list(cfdata->s_langs, n + 1);
+
+   ((Language *)(l->data))->id ++;
+   ((Language *)(l2->data))->id --;
+
+   tmp = l->data;
+   l->data = l2->data;
+   l2->data = tmp;
+
+   _conf_fill_slanguages(cfdata);
+   e_widget_ilist_selected_set(cfdata->gui.o_slang, n + 1);
 }
