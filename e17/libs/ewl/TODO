@@ -111,11 +111,6 @@
  - The autolayout will align at the top, should probably be changed to align
    at the bottom based on the largest widget being put in.
 
- - The freebox seems to end up being larger then the scrollpane. This
-   happens gradually as you add items to the freebox. Eventually a whole row
-   or more will disappear.
-
-
  * @section todo TODO
 
 - Ability to attach custom cursors to each widget. We can currently attach
