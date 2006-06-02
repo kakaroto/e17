@@ -4,7 +4,7 @@ group {
     data {
         item, "inset/left" "3";
         item, "inset/right" "5";
-        item, "inset/top" "1";
+        item, "inset/top" "3";
         item, "inset/bottom" "1";
 
         item, "pad/left" "0";
@@ -920,6 +920,7 @@ group {
 		      state, "default" 0.0;
 		      min, 6 12;
 		      max, 6 12;
+		      fixed, 1 1;
 		      rel1 {
 			      relative, 1.0 0.0;
 			      offset, 0 0;
