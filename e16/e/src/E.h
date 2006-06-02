@@ -700,7 +700,7 @@ void                fword(char *s, int num, char *wd);
 #define FOCUS_ENTER       4
 #define FOCUS_LEAVE       5
 #define FOCUS_EWIN_NEW    6
-#define FOCUS_EWIN_GONE   7
+#define FOCUS_EWIN_UNMAP  7
 #define FOCUS_DESK_ENTER  8
 #define FOCUS_DESK_LEAVE  9
 #define FOCUS_NEXT       10

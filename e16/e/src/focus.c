@@ -328,7 +328,7 @@ doFocusToEwin(EWin * ewin, int why)
 	   return;
 	break;
 
-     case FOCUS_EWIN_GONE:
+     case FOCUS_EWIN_UNMAP:
 	if (Mode.focuswin)
 	   return;
 	ewin = FocusEwinSelect();
@@ -473,14 +473,15 @@ FocusToEWin(EWin * ewin, int why)
 	focus_pending_ewin = ewin;
 	break;
 
-     case FOCUS_EWIN_GONE:
+     case FOCUS_EWIN_UNMAP:
 	focus_pending_why = why;
 	focus_pending_ewin = NULL;
 	if (ewin == Mode.focuswin)
 	  {
 	     Mode.focuswin = NULL;
 	     focus_is_set = 0;
-	     FocusEwinSetActive(ewin, 0);
+	     if (!EoIsGone(ewin))
+		FocusEwinSetActive(ewin, 0);
 	  }
 	if (ewin == focus_pending_new)
 	   focus_pending_new = NULL;

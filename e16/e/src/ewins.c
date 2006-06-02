@@ -1001,7 +1001,7 @@ EwinUnmap2(EWin * ewin)
 {
    /* The frame has been unmapped */
 
-   FocusToEWin(ewin, FOCUS_EWIN_GONE);
+   FocusToEWin(ewin, FOCUS_EWIN_UNMAP);
    if (ewin == Mode.mouse_over_ewin)
       Mode.mouse_over_ewin = NULL;
    if (ewin == Mode.context_ewin)
