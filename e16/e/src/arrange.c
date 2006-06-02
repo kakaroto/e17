@@ -549,8 +549,8 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 	return;
      }
 
-   ScreenGetAvailableArea(ewin->shape_x, ewin->shape_y,
-			  &left_bound, &top_bound, &w, &h);
+   ScreenGetGeometry(ewin->shape_x, ewin->shape_y,
+		     &left_bound, &top_bound, &w, &h);
    right_bound = left_bound + w;
    bottom_bound = top_bound + h;
    screen_snap_dist = Mode.constrained ? (w + h) : Conf.snap.screen_snap_dist;
