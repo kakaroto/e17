@@ -150,7 +150,7 @@ e_modapi_init(E_Module *m)
 
    /* actually init engage */
    e = _engage_new();
-   m->config_menu = e->config_menu;
+//   m->config_menu = e->config_menu;
    return e;
 }
 
@@ -159,12 +159,12 @@ e_modapi_shutdown(E_Module *m)
 {
    Engage *e;
 
-   if (m->config_menu)
-     {
-	e_menu_deactivate(m->config_menu);
-	e_object_del(E_OBJECT(m->config_menu));
-	m->config_menu = NULL;
-     }
+//   if (m->config_menu)
+//     {
+//	e_menu_deactivate(m->config_menu);
+//	e_object_del(E_OBJECT(m->config_menu));
+//	m->config_menu = NULL;
+//     }
 
    e = m->data;
    if (e)
@@ -179,13 +179,6 @@ e_modapi_save(E_Module *m)
 
    e = m->data;
    e_config_domain_save("module.engage", conf_edd, e->conf);
-   return 1;
-}
-
-EAPI int
-e_modapi_info(E_Module *m)
-{
-   m->icon_file = strdup(PACKAGE_LIB_DIR "/engage/module/module_icon.png");
    return 1;
 }
 

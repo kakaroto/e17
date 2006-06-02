@@ -115,8 +115,10 @@ AC_PATH_GENERIC(edje, 0.5.0, [
 	AC_MSG_ERROR(Cannot find edje: Is edje-config in path?))
 edje_libs=`edje-config --libs`
 edje_cflags=`edje-config --cflags`
+edje_cc="`edje-config --prefix`/bin/edje_cc"
 AC_SUBST(edje_libs)
 AC_SUBST(edje_cflags)
+AC_SUBST(edje_cc)
 
 AC_PATH_GENERIC(ecore, 0.9.9, [
 	AC_SUBST(ecore_libs)

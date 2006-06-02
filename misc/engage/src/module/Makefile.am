@@ -4,7 +4,7 @@ if HAVE_E17
 # data files for the module
 filesdir = $(datadir)
 files_DATA = \
-module_icon.png
+module.eap
 
 EXTRA_DIST = $(files_DATA)
 
@@ -23,4 +23,13 @@ module_la_SOURCES      = e_mod_main.c \
 module_la_LIBADD       = @e_libs@ -lm
 module_la_LDFLAGS      = -module -avoid-version
 module_la_DEPENDENCIES = $(top_builddir)/config.h
+
+module.eap:
+	@edje_cc@ -v module_icon.edc module.eap
+	enlightenment_eapp module.eap \
+	-set-name "Engage" \
+	-set-generic "gadget" \
+	-set-comment "Engage module for e17" \
+	-set-exe "null" \
+	-set-icon-class "null"
 endif
