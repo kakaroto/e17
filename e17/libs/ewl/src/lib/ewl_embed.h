@@ -87,9 +87,9 @@ int             ewl_embed_focus_get(Ewl_Embed *embed);
 void		ewl_embed_active_set(Ewl_Embed *embed, unsigned int act);
 Ewl_Embed      *ewl_embed_active_embed_get(void);
 
-void            ewl_embed_key_down_feed(Ewl_Embed *embed, char *keyname,
+void            ewl_embed_key_down_feed(Ewl_Embed *embed, const char *keyname,
 					unsigned int modifiers);
-void            ewl_embed_key_up_feed(Ewl_Embed *embed, char *keyname,
+void            ewl_embed_key_up_feed(Ewl_Embed *embed, const char *keyname,
 				      unsigned int modifiers);
 void            ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks,
 					  int x, int y, unsigned int modifiers);

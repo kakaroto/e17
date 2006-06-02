@@ -44,8 +44,6 @@ static void ewl_embed_evas_key_down_cb(void *data, Evas *e, Evas_Object *obj,
 static void ewl_embed_evas_key_up_cb(void *data, Evas *e, Evas_Object *obj,
 				     void *event_info);
 
-static void strupper(char *str);
-
 /**
  * @return Returns a new embed on success, or NULL on failure.
  * @brief Allocate and initialize a new embed
@@ -307,7 +305,8 @@ ewl_embed_active_embed_get(void)
  * @brief Sends the event for a key press into an embed.
  */
 void
-ewl_embed_key_down_feed(Ewl_Embed *embed, char *keyname, unsigned int mods)
+ewl_embed_key_down_feed(Ewl_Embed *embed, const char *keyname, 
+			unsigned int mods)
 {
 	Ewl_Widget *temp;
 	Ewl_Event_Key_Down ev;
@@ -383,7 +382,8 @@ ewl_embed_key_down_feed(Ewl_Embed *embed, char *keyname, unsigned int mods)
  * @brief Sends the event for a key release into an embed.
  */
 void
-ewl_embed_key_up_feed(Ewl_Embed *embed, char *keyname, unsigned int mods)
+ewl_embed_key_up_feed(Ewl_Embed *embed, const char *keyname,
+			unsigned int mods)
 {
 	Ewl_Widget *temp;
 	Ewl_Event_Key_Up ev;
@@ -1942,11 +1942,20 @@ ewl_embed_evas_mouse_move_cb(void *data, Evas *e __UNUSED__,
 }
 
 static void
-ewl_embed_evas_mouse_wheel_cb(void *data __UNUSED__, Evas *e __UNUSED__, 
+ewl_embed_evas_mouse_wheel_cb(void *data, Evas *e __UNUSED__, 
 				Evas_Object *obj __UNUSED__,
-				void *event_info __UNUSED__)
+				void *event_info)
 {
+	Ewl_Embed *embed;
+	Evas_Event_Mouse_Wheel *ev;
+	
 	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	ev = event_info;
+	embed = data;
+
+	ewl_embed_mouse_wheel_feed(embed, ev->canvas.x, ev->canvas.y, ev->z, 
+					ev->direction, ewl_ev_modifiers_get());
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1958,13 +1967,12 @@ ewl_embed_evas_key_down_cb(void *data, Evas *e __UNUSED__,
 	Ewl_Embed *embed;
 	Evas_Event_Key_Down *ev;
 	unsigned int key_modifiers = 0;
-	char *keyname;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ev = event_info;
-	keyname = strdup(ev->keyname);
 	embed = data;
+	
 	if (evas_key_modifier_is_set(ev->modifiers, "Shift"))
 		key_modifiers |= EWL_KEY_MODIFIER_SHIFT;
 	else if (evas_key_modifier_is_set(ev->modifiers, "Alt"))
@@ -1979,24 +1987,13 @@ ewl_embed_evas_key_down_cb(void *data, Evas *e __UNUSED__,
 		key_modifiers |= EWL_KEY_MODIFIER_WIN;
 
 	ewl_ev_modifiers_set(key_modifiers);
-
-	/* fixup the space char */
-	if (!strncmp(keyname, "space", 5)) {
-		free(keyname);
-		keyname = strdup(" ");
-
-	/* fixup the return char */
-	} else if (!strncmp(keyname, "Return", 6)) {
-		free(keyname);
-		keyname = strdup("\n");
-
-	/* fixup upper case chars */
-	} else if ((key_modifiers & EWL_KEY_MODIFIER_SHIFT)
-	 		&& (strlen(keyname) == 1))
-		strupper(keyname);
-
-	ewl_embed_key_down_feed(embed, keyname, ewl_ev_modifiers_get());
-	free(keyname);
+	
+	if (!ev->string || iscntrl(*ev->string))
+		ewl_embed_key_down_feed(embed, ev->keyname, 
+				ewl_ev_modifiers_get());
+	else 
+		ewl_embed_key_down_feed(embed, ev->string,
+				ewl_ev_modifiers_get());
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2008,7 +2005,6 @@ ewl_embed_evas_key_up_cb(void *data, Evas *e __UNUSED__,
 	Ewl_Embed *embed;
 	Evas_Event_Key_Down *ev = event_info;
 	unsigned int key_modifiers = 0;
-	char *keyname = strdup(ev->keyname);
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -2029,39 +2025,12 @@ ewl_embed_evas_key_up_cb(void *data, Evas *e __UNUSED__,
 
 	ewl_ev_modifiers_set(key_modifiers);
 
-	/* fixup the space char */
-	if (!strncmp(keyname, "space", 5)) {
-		free(keyname);
-		keyname = strdup(" ");
-
-	/* fixup the return char */
-	} else if (!strncmp(keyname, "Return", 6)) {
-		free(keyname);
-		keyname = strdup("\n");
-
-	/* fixup upper case chars */
-	} else if ((key_modifiers & EWL_KEY_MODIFIER_SHIFT) 
-			&& (strlen(keyname) == 1))
-		strupper(keyname);
-
-	ewl_embed_key_up_feed(embed, keyname, ewl_ev_modifiers_get());
-	free(keyname);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/*
- * Uppercase the given string
- */
-static void
-strupper(char *str)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("str", str);
-
-	char *i;
-	for(i = str; *i != '\0'; i++) 
-		*i = toupper(*i);
+	if (!ev->string || iscntrl(*ev->string))
+		ewl_embed_key_up_feed(embed, ev->keyname, 
+					ewl_ev_modifiers_get());
+	else
+		ewl_embed_key_up_feed(embed, ev->string,
+					ewl_ev_modifiers_get());
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
