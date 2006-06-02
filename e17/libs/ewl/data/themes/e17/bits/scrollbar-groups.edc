@@ -477,6 +477,23 @@ group {
       }
    }
 }
+group {
+   name: "transparent";
+   parts {
+      part {
+	 name: "transparent";
+	 description {
+	      state: "default" 0.0;
+	      image {
+	          normal: "e17_tranny.png";
+	      }
+	      fill {
+	          smooth: 0;
+	     }
+	 }
+      }
+   }
+}
 
 group {
    name: "vscrollbar_drag";

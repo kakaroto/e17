@@ -1,0 +1,69 @@
+group {   
+   name: "vseeker_track";
+   data {
+       item, "pad/top" "5";
+       item, "pad/bottom" "5";
+   }
+   parts {
+      part {
+         name: "vseeker_track";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.5 1.0;
+               offset: 9 0;
+            }
+            rel2 {
+               relative: 0.5 0.0;
+               offset: 10 0;
+            }
+         }
+      }
+      part {
+         name: "vseeker_line";
+         description {
+            max: 2 99999;
+            state: "default" 0.0;
+            image {
+               normal: "e17_menu_separator_vert.png";
+            }
+         }
+      }
+   }
+}
+group {
+   name: "hseeker_track";
+   data {
+       item, "pad/left" "5";
+       item, "pad/right" "5";
+   }
+   parts {
+      part {
+         name: "hseeker_track";
+	 type: RECT;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.5 1.0;
+               offset: 9 0;
+            }
+            rel2 {
+               relative: 0.5 0.0;
+               offset: 10 0;
+            }
+         }
+      }
+      part {
+         name: "hseeker_line";
+         description {
+            max: 99999 2;
+	    state: "default" 0.0;
+            image {
+	       normal: "e17_menu_separator.png";
+	    }
+         }
+      }
+   }
+}
+	

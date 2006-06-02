@@ -33,6 +33,7 @@ collections {
 #include "e17/bits/treebg-groups.edc"
 #include "e17/bits/treehead-groups.edc"
 #include "e17/bits/rowtext-groups.edc"
+#include "e17/bits/seeker-groups.edc"
 }
 
 data {
@@ -116,11 +117,15 @@ data {
 
     item, "/vscrollbar/group" "vscrollbar";
     item, "/hscrollbar/group" "hscrollbar";
+    item, "/vscrollbar/vseeker/group" "transparent";
+    item, "/hscrollbar/hseeker/group" "transparent";
     item, "/vscrollbar/decrement/group" "vscrollbar_bottom";
     item, "/vscrollbar/increment/group" "vscrollbar_top";
     item, "/hscrollbar/decrement/group" "hscrollbar_left";
     item, "/hscrollbar/increment/group" "hscrollbar_right";
-
+    
+    item, "/vseeker/group" "vseeker_track";
+    item, "/hseeker/group" "hseeker_track";
     item, "/vseeker/vbutton/group"  "vscrollbar_drag";
     item, "/hseeker/hbutton/group"  "hscrollbar_drag";
 
@@ -142,7 +147,7 @@ data {
 
     item, "/window/group" "window";
     item, "/scrollpane/group" "box";
-    item, "/theme/author" "dj2 (www.everburning.com) and titansoccer15 (www.assistix.org)";
+    item, "/theme/author" "dj2 (www.everburning.com) and LinuxTitan (www.ecoding.org)";
     item, "/theme/font_path" "fonts";
     item, "/theme/license" "Creative Commons License: http://creativecommons.org/licenses/bg-sa/1.0";
     item, "/theme/name" "e17";
