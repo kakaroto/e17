@@ -52,7 +52,7 @@ main(int argc, char **argv)
 	/****Get db directory****/
 	char *home;
 	int argint = 1;
-	while ( argint < argc ) { 	
+	while ( argint < argc ) {
 		if ( argint < argc && !strcmp(argv[argint], "--slideshow") 
 						&& noslide != 0 ) {
 			int imageint;
@@ -553,8 +553,8 @@ main(int argc, char **argv)
 						EWL_FLAG_ALIGN_CENTER);
 		ewl_callback_append(m->vbutton, EWL_CALLBACK_CLICKED, 
 						images_cb, NULL);
-		ewl_widget_disable(m->vbutton);
 		ewl_widget_show(m->vbutton);
+		ewl_widget_disable(m->vbutton);
 
 		ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(m->notebook), 
 					m->viewbox, "Simple Image Viewer");	
@@ -743,18 +743,6 @@ main(int argc, char **argv)
 		ewl_radiobutton_chain_set(EWL_RADIOBUTTON(m->rad4), 
 						EWL_RADIOBUTTON(m->fullrad));
 
-		m->zoom = ewl_checkbutton_new();
-		ewl_button_label_set(EWL_BUTTON(m->zoom), 
-						"Zoom Images to Fit Window");
-                ewl_container_child_append(EWL_CONTAINER(m->settings), m->zoom);
-                ewl_object_alignment_set(EWL_OBJECT(m->zoom), 
-						EWL_FLAG_ALIGN_CENTER);
-		if ( argzoom == 1 ) {
-			ewl_checkbutton_checked_set(EWL_CHECKBUTTON(m->zoom), 
-								TRUE);
-		}
-                ewl_widget_show(m->zoom);
-
 		m->hboxv = ewl_hbox_new();
 		ewl_container_child_append(EWL_CONTAINER(m->settings), 
 						m->hboxv);
@@ -801,6 +789,19 @@ main(int argc, char **argv)
 		ewl_container_child_append(EWL_CONTAINER(m->hboxv), m->hsize);
 		ewl_text_font_size_set(EWL_TEXT(m->hsize), 10);
 		ewl_widget_show(m->hsize);
+
+                m->zoom = ewl_checkbutton_new();
+                ewl_button_label_set(EWL_BUTTON(m->zoom),
+                                                "Zoom Images to Fit Window");
+                ewl_container_child_append(EWL_CONTAINER(m->settings), m->zoom);
+                ewl_object_alignment_set(EWL_OBJECT(m->zoom),
+                                                EWL_FLAG_ALIGN_CENTER);
+                if ( argzoom == 1 ) {
+                        ewl_checkbutton_checked_set(EWL_CHECKBUTTON(m->zoom),
+                                                                TRUE);
+                }
+                ewl_widget_show(m->zoom);
+
 
 		m->text = ewl_text_new();
 		ewl_container_child_append(EWL_CONTAINER(m->settings), m->text);
