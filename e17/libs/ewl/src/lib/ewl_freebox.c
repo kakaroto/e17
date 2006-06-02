@@ -11,12 +11,9 @@ static void ewl_freebox_layout_comparator(Ewl_Freebox *fb);
  * @note
  * This will allow for differnt types of 'free' layout depending on what you
  * need. First there is AUTO layout, which will just place the widgets in
- * rows and columns (this will expand the freebox vertically as needed while
- * trying to maintian the given horizontal space). 
+ * rows and columns (this will expand the freebox as needed while
+ * trying to maintain the given space). 
  * 
- * XXX we may want to make ewl_hfreebox_new and ewl_vfreebox_new and do the
- * expansion as required for those two instead of just forcing one.
- *
  * The second type of layout is MANUAL. Initially this will layout as per
  * AUTO but after that the user will be able to drag the widgets around and
  * put them where they want.
