@@ -8,21 +8,22 @@
 
 /**
  * @defgroup Etk_Radio_Button Etk_Radio_Button
+ * @brief The Etk_Radio_Button widget is a toggle button that belongs to a group in which only one button can be active
  * @{
  */
 
-/** @brief Gets the type of a radio button */
+/** Gets the type of a radio button */
 #define ETK_RADIO_BUTTON_TYPE       (etk_radio_button_type_get())
-/** @brief Casts the object to an Etk_Radio_Button */
+/** Casts the object to an Etk_Radio_Button */
 #define ETK_RADIO_BUTTON(obj)       (ETK_OBJECT_CAST((obj), ETK_RADIO_BUTTON_TYPE, Etk_Radio_Button))
-/** @brief Checks if the object is an Etk_Radio_Button */
+/** Checks if the object is an Etk_Radio_Button */
 #define ETK_IS_RADIO_BUTTON(obj)    (ETK_OBJECT_RADIO_TYPE((obj), ETK_RADIO_BUTTON_TYPE))
 
 /**
- * @struct Etk_Radio_Button
- * @brief A radio button is a toggle button that belongs to a group in which only one button can be toggled
+ * @brief @widget The structure of a radio button
+ * @structinfo
  */
-struct _Etk_Radio_Button
+struct Etk_Radio_Button
 {
    /* private: */
    /* Inherit from Etk_Check_Button */

@@ -20,7 +20,8 @@
  * @param name the name of the new property
  * @param property_id the id of the new property
  * @param type the type of the property
- * @param flags describes if the property value should be writable (ETK_PROPERTY_WRITABLE), readable (ETK_PROPERTY_READABLE) or both (ETK_PROPERTY_WRITABLE | ETK_PROPERTY_READABLE)
+ * @param flags describes if the property value should be writable (ETK_PROPERTY_WRITABLE),
+ * readable (ETK_PROPERTY_READABLE) or both (ETK_PROPERTY_WRITABLE | ETK_PROPERTY_READABLE)
  * @param default_value the default value of the property
  * @return Returns the new property on success, or NULL on failure
  * @warning The property will have to be freed with @a etk_property_delete()
@@ -70,7 +71,7 @@ Etk_Property_Type etk_property_type_get(Etk_Property *property)
 }
 
 /**
- * @brief Clears a property value: the current value is freed and set the type to ETK_PROPERTY_NONE
+ * @brief Clears a property value: the current value is freed and the type of the property is set to ETK_PROPERTY_NONE
  * @param value the property value to clear
  */ 
 void etk_property_value_clear(Etk_Property_Value *value)
@@ -86,7 +87,6 @@ void etk_property_value_clear(Etk_Property_Value *value)
 /**
  * @brief Deletes a property value
  * @param value the property value to delete
- * @note You will almost never have to call this function. Properties are deleted automatically.
  */ 
 void etk_property_value_delete(Etk_Property_Value *value)
 {
@@ -96,15 +96,13 @@ void etk_property_value_delete(Etk_Property_Value *value)
 
 /**
  * @brief Gets the type of the value
- * @param value the value whose the type is returned
- * @return Returns the the type of the value
- * @warning If value == NULL, it returns ETK_PROPERTY_INT by default
+ * @param value a property value
+ * @return Returns the type of the value
  */
 Etk_Property_Type etk_property_value_type_get(Etk_Property_Value *value)
 {
    if (!value)
       return ETK_PROPERTY_NONE;
-
    return value->type;
 }
 
@@ -140,11 +138,10 @@ Etk_Property_Value *etk_property_value_create(Etk_Property_Type type, ...)
 
 /**
  * @brief Creates a new property value of type @a type
- * @param type the type of the new Etk_Property_Value
- * @param arg the value of the new Etk_Property_Value
+ * @param type the type of the new property value
+ * @param arg the value of the new property value
  * @return Returns the new property value
  */
-/* TODO: Is it safe on Amd64? */
 Etk_Property_Value *etk_property_value_create_valist(Etk_Property_Type type, va_list *arg)
 {
    Etk_Property_Value *new_value;
@@ -157,7 +154,7 @@ Etk_Property_Value *etk_property_value_create_valist(Etk_Property_Type type, va_
 
 /**
  * @brief Creates a new integer property value
- * @param value the value of the new Etk_Property_Value
+ * @param value the value of the new property value
  * @return Returns the new property value
  */
 Etk_Property_Value *etk_property_value_int(int value)
@@ -170,7 +167,7 @@ Etk_Property_Value *etk_property_value_int(int value)
 
 /**
  * @brief Creates a new boolean property value
- * @param value the value of the new Etk_Property_Value
+ * @param value the value of the new property value
  * @return Returns the new property value
  */
 Etk_Property_Value *etk_property_value_bool(Etk_Bool value)
@@ -183,7 +180,7 @@ Etk_Property_Value *etk_property_value_bool(Etk_Bool value)
 
 /**
  * @brief Creates a new char property value
- * @param value the value of the new Etk_Property_Value
+ * @param value the value of the new property value
  * @return Returns the new property value
  */
 Etk_Property_Value *etk_property_value_char(char value)
@@ -196,7 +193,7 @@ Etk_Property_Value *etk_property_value_char(char value)
 
 /**
  * @brief Creates a new float property value
- * @param value the value of the new Etk_Property_Value
+ * @param value the value of the new property value
  * @return Returns the new property value
  */
 Etk_Property_Value *etk_property_value_float(float value)
@@ -209,7 +206,7 @@ Etk_Property_Value *etk_property_value_float(float value)
 
 /**
  * @brief Creates a new double property value
- * @param value the value of the new Etk_Property_Value
+ * @param value the value of the new property value
  * @return Returns the new property value
  */
 Etk_Property_Value *etk_property_value_double(double value)
@@ -222,7 +219,7 @@ Etk_Property_Value *etk_property_value_double(double value)
 
 /**
  * @brief Creates a new short property value
- * @param value the value of the new Etk_Property_Value
+ * @param value the value of the new property value
  * @return Returns the new property value
  */
 Etk_Property_Value *etk_property_value_short(short value)
@@ -235,7 +232,7 @@ Etk_Property_Value *etk_property_value_short(short value)
 
 /**
  * @brief Creates a new long property value
- * @param value the value of the new Etk_Property_Value
+ * @param value the value of the new property value
  * @return Returns the new property value
  */
 Etk_Property_Value *etk_property_value_long(long value)
@@ -248,7 +245,7 @@ Etk_Property_Value *etk_property_value_long(long value)
 
 /**
  * @brief Creates a new pointer property value
- * @param value the value of the new Etk_Property_Value
+ * @param value the value of the new property value
  * @return Returns the new property value
  */
 Etk_Property_Value *etk_property_value_pointer(void *value)
@@ -261,7 +258,7 @@ Etk_Property_Value *etk_property_value_pointer(void *value)
 
 /**
  * @brief Creates a new string property value
- * @param value the value of the new Etk_Property_Value
+ * @param value the value of the new property value
  * @return Returns the new property value
  */
 Etk_Property_Value *etk_property_value_string(const char *value)
@@ -276,7 +273,7 @@ Etk_Property_Value *etk_property_value_string(const char *value)
  * @brief Sets the value of a property value
  * @param property_value a property value
  * @param type the type of the value
- * @param ... the value to set (must be of the same type than @a type)
+ * @param ... the value to set (must be compatible with @a type)
  */
 void etk_property_value_set(Etk_Property_Value *property_value, Etk_Property_Type type, ...)
 {
@@ -294,7 +291,7 @@ void etk_property_value_set(Etk_Property_Value *property_value, Etk_Property_Typ
  * @brief Sets the value of a property value
  * @param property_value a property value
  * @param type the type of the value
- * @param arg the value to set (must be of the same type than @a type)
+ * @param arg the value to set (must be compatible with @a type)
  */
 void etk_property_value_set_valist(Etk_Property_Value *property_value, Etk_Property_Type type, va_list *arg)
 {
@@ -663,3 +660,21 @@ const char *etk_property_value_string_get(Etk_Property_Value *value)
 }
 
 /** @} */
+
+/**************************
+ *
+ * Documentation
+ *
+ **************************/
+
+/**
+ * @addtogroup Etk_Property
+ *
+ * Most of the following functions are used internally by Etk, you usually do not have to directly call any of the
+ * etk_property_*() functions. @n
+ * If you want to create a property for a new object type, use etk_type_property_add() instead. @n
+ * The only case where you have to use the etk_property_value_*_set/get() functions in in the property_set/get()
+ * methods when you are implementing a new widget, to set or to get the value of a property.  @n
+ *
+ * See Etk_Object for more information about how to use the property system.
+ */

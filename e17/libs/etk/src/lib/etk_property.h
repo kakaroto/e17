@@ -7,48 +7,52 @@
 
 /**
  * @defgroup Etk_Property Etk_Property
+ * @brief The property system of Etk is a powerful system to set or to get the state of an object, or to be notified when
+ * the state of an object has been changed.
  * @{
  */
 
-/**
- * @enum Etk_Property_Type
- * @brief The type of a property
- */
-typedef enum _Etk_Property_Type
+/** @brief The type of a property */
+typedef enum Etk_Property_Type
 {
-   /* Used when the property is not initialized to a value */
-   ETK_PROPERTY_NONE,
-   ETK_PROPERTY_INT,
-   ETK_PROPERTY_BOOL,
-   ETK_PROPERTY_CHAR,
-   ETK_PROPERTY_FLOAT,
-   ETK_PROPERTY_DOUBLE,
-   ETK_PROPERTY_SHORT,
-   ETK_PROPERTY_LONG,
-   ETK_PROPERTY_POINTER,
-   ETK_PROPERTY_STRING,
-   ETK_PROPERTY_OTHER,
+   ETK_PROPERTY_NONE,           /**< Used when the property is uninitialized */
+   ETK_PROPERTY_INT,            /**< The value of the property is an integer */
+   ETK_PROPERTY_BOOL,           /**< The value of the property is a boolean (Etk_Bool) */
+   ETK_PROPERTY_CHAR,           /**< The value of the property is a char */
+   ETK_PROPERTY_FLOAT,          /**< The value of the property is a float */
+   ETK_PROPERTY_DOUBLE,         /**< The value of the property is a double */
+   ETK_PROPERTY_SHORT,          /**< The value of the property is a short */
+   ETK_PROPERTY_LONG,           /**< The value of the property is a long */
+   ETK_PROPERTY_POINTER,        /**< The value of the property is a pointer (void *) */
+   ETK_PROPERTY_STRING,         /**< The value of the property is a string (char *) */
+   ETK_PROPERTY_OTHER,          /**< Used when none of the above type can be used. The property can't have a default
+                                 * value, and can't be accessible with etk_object_property_get/set().
+                                 * The only interest of this kind of property is that you can still use etk_object_notify()
+                                 * when the value of the property has been modified. You then have to use the API of
+                                 * the object to get the new value */
 } Etk_Property_Type;
 
-/** 
- * @enum Etk_Property_Flags
- * @brief Describes if the property is readable, writable or both. @n
- * You can also specify if the property needs to be initialized to its default value at the constuction of a new object (ETK_PROPERTY_CONSTRUCT)
+/** @brief Describes if the property is either readable, writable or both.
+ * You can also specify if the property needs to be initialized to its default value
+ * at the constuction of a new object with ETK_PROPERTY_CONSTRUCT.
  */
-typedef enum _Etk_Property_Flags
+typedef enum Etk_Property_Flags
 {
-   ETK_PROPERTY_NO_ACCESS = 1 << 0,
-   ETK_PROPERTY_READABLE = 1 << 1,
-   ETK_PROPERTY_WRITABLE = 1 << 2,
-   ETK_PROPERTY_READABLE_WRITABLE = ETK_PROPERTY_READABLE | ETK_PROPERTY_WRITABLE,
-   ETK_PROPERTY_CONSTRUCT = 1 << 3
+   ETK_PROPERTY_NO_ACCESS = 1 << 0,     /**< Used when the property type is ETK_PROPERTY_OTHER */
+   ETK_PROPERTY_READABLE = 1 << 1,      /**< The value of the property is readable */
+   ETK_PROPERTY_WRITABLE = 1 << 2,      /**< The value of the property is writable */
+   ETK_PROPERTY_READABLE_WRITABLE =     /**< The value of the property is readable and writable */
+      ETK_PROPERTY_READABLE | ETK_PROPERTY_WRITABLE,
+   ETK_PROPERTY_CONSTRUCT = 1 << 3      /**< Use this flag to force the default value of the property to be set when
+                                         * the object is created */
 } Etk_Property_Flags;
 
 /**
- * @struct Etk_Property
- * @brief An Etk_Property is a name associated to a type. The property have a default value, and can be readable, writable or both
+ * @brief An Etk_Property is a name associated to a type.
+ * A property has a default value and can be readable, writable or both
+ * @structinfo
  */
-struct _Etk_Property
+struct Etk_Property
 {
    /* private: */
    char *name;
@@ -59,11 +63,11 @@ struct _Etk_Property
 };
 
 /**
- * @struct Etk_Property_Value
- * @brief An Etk_Property_Value is an Etk_Property_Type associated to an Etk_Property_Value_Value @n
- * It's mainly used to set a value to an object property
+ * @brief The value of a property. You usually do not need to manipulate directly it, use etk_object_properties_set()
+ * and etk_object_properties_get() to set and get the value of a property of an object.
+ * @structinfo
  */
-struct _Etk_Property_Value
+struct Etk_Property_Value
 {
    /* private: */
    union

@@ -62,7 +62,6 @@ extern "C" {
 #include "etk_filechooser_widget.h"
 #include "etk_notebook.h"
 #include "etk_progress_bar.h"
-#include "etk_spin_button.h"
 #include "etk_dnd.h"
 #include "etk_clipboard.h"
 #include "etk_selection.h"

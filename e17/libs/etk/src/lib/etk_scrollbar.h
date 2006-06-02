@@ -6,37 +6,42 @@
 #include "etk_range.h"
 #include "etk_types.h"
 
+/* TODO/FIXME list:
+ * - the value of the scrollbar should be changed when the trough is clicked
+ */
+
 /**
  * @defgroup Etk_Scrollbar Etk_Scrollbar
+ * @brief A scrollbar is a widget with a cursor that can be moved to change the scrolling value
  * @{
  */
 
-/** @brief Gets the type of a scrollbar */
+/** Gets the type of a scrollbar */
 #define ETK_SCROLLBAR_TYPE       (etk_scrollbar_type_get())
-/** @brief Casts the object to an Etk_Scrollbar */
+/** Casts the object to an Etk_Scrollbar */
 #define ETK_SCROLLBAR(obj)       (ETK_OBJECT_CAST((obj), ETK_SCROLLBAR_TYPE, Etk_Scrollbar))
-/** @brief Checks if the object is an Etk_Scrollbar */
+/** Checks if the object is an Etk_Scrollbar */
 #define ETK_IS_SCROLLBAR(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_SCROLLBAR_TYPE))
 
-/** @brief Gets the type of a horizontal scrollbar */
+/** Gets the type of a horizontal scrollbar */
 #define ETK_HSCROLLBAR_TYPE       (etk_hscrollbar_type_get())
-/** @brief Casts the object to an Etk_HScrollbar */
+/** Casts the object to an Etk_HScrollbar */
 #define ETK_HSCROLLBAR(obj)       (ETK_OBJECT_CAST((obj), ETK_HSCROLLBAR_TYPE, Etk_HScrollbar))
-/** @brief Checks if the object is an Etk_HScrollbar */
+/** Checks if the object is an Etk_HScrollbar */
 #define ETK_IS_HSCROLLBAR(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_HSCROLLBAR_TYPE))
 
-/** @brief Gets the type of a vertical scrollbar */
+/** Gets the type of a vertical scrollbar */
 #define ETK_VSCROLLBAR_TYPE       (etk_vscrollbar_type_get())
-/** @brief Casts the object to an Etk_VScrollbar */
+/** Casts the object to an Etk_VScrollbar */
 #define ETK_VSCROLLBAR(obj)       (ETK_OBJECT_CAST((obj), ETK_VSCROLLBAR_TYPE, Etk_VScrollbar))
-/** @brief Checks if the object is an Etk_VScrollbar */
+/** Checks if the object is an Etk_VScrollbar */
 #define ETK_IS_VSCROLLBAR(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_VSCROLLBAR_TYPE))
 
 /**
- * @struct Etk_Scrollbar
- * @brief An Etk_Scrollbar is a widget with a cursor you can move to change the "scrolling value"
+ * @brief @widget The structure of a scrollbar
+ * @structinfo
  */
-struct _Etk_Scrollbar
+struct Etk_Scrollbar
 {
    /* private: */
    /* Inherit from Etk_Range */
@@ -48,10 +53,10 @@ struct _Etk_Scrollbar
 };
 
 /**
- * @struct Etk_HScrollbar
- * @brief An horizontal scrollbar
+ * @brief @widget The structure of a hscrollbar
+ * @structinfo
  */
-struct _Etk_HScrollbar
+struct Etk_HScrollbar
 {
    /* private: */
    /* Inherit from Etk_Scrollbar */
@@ -59,10 +64,10 @@ struct _Etk_HScrollbar
 };
 
 /**
- * @struct Etk_VScrollbar
- * @brief A vertical scrollbar
+ * @brief @widget The structure of a vscrollbar
+ * @structinfo
  */
-struct _Etk_VScrollbar
+struct Etk_VScrollbar
 {
    /* private: */
    /* Inherit from Etk_Scrollbar */

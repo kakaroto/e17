@@ -103,11 +103,6 @@ static Etk_Test_Example _etk_test_examples[] =
       ETK_TEST_MISC
    },
    {
-      "Text View",
-      etk_test_text_view_window_create,
-      ETK_TEST_ADVANCED_WIDGET
-   },
-   {
       "Combobox",
       etk_test_combobox_window_create,
       ETK_TEST_ADVANCED_WIDGET
@@ -115,6 +110,11 @@ static Etk_Test_Example _etk_test_examples[] =
    {
       "Iconbox",
       etk_test_iconbox_window_create,
+      ETK_TEST_ADVANCED_WIDGET
+   },
+   {
+      "Text View",
+      etk_test_text_view_window_create,
       ETK_TEST_ADVANCED_WIDGET
    }
 };

@@ -25,8 +25,8 @@ static Etk_Bool _etk_signal_stop_emission = ETK_FALSE;
  **************************/
 
 /**
- * @brief Shutdowns the signal system (just destroy the signals list)
- * @warning Shouldn't be called manually, etk_shudown() calls it
+ * @brief Shutdowns the signal system
+ * @warning You must not call it manually, etk_shudown() calls it automatically
  */
 void etk_signal_shutdown()
 {
@@ -38,14 +38,14 @@ void etk_signal_shutdown()
 }
 
 /**
- * @brief Creates a new signal called @a signal_name, associated to @a object_type.
- * The marshaller @a marshaller will treat the arguments and pass them to the callbacks when the signal will be connected and then emitted
+ * @brief Creates a new signal called @a signal_name, for the object type @a object_type
  * @param signal_name the name of the new signal
- * @param object_type the type associated to the new signal
- * @param default_handler_offset the offset of the default handler in the struct of the type (given by ETK_MEMBER_OFFSET). -1 if there is no default handler
- * @param marshaller the marshaller used by the signal
- * @param accumulator the accumulator used to combine together the different values returned by the callbacks. @n
- * If accumulator == NULL, only the value returned by the last callback called is returned.
+ * @param object_type the object type of the new signal
+ * @param default_handler_offset the offset of the default handler in the object's struct 
+ * (use ETK_MEMBER_OFFSET() to get it). -1 if there is no default handler
+ * @param marshaller the marshaller of the signal: it will treat and pass the arguments to the callbacks
+ * @param accumulator the accumulator used to combine together the different values returned by the callbacks.
+ * Set it to NULL if the callbacks does not return any value or if you only want to keep the last returned value.
  * @param accum_data the value to pass to the accumulator
  * @return Returns the new signal, or NULL on failure
  */
@@ -71,7 +71,7 @@ Etk_Signal *etk_signal_new(const char *signal_name, Etk_Type *object_type, long 
 }
 
 /**
- * @brief Deletes the signal. Then it couldn't be used anymore by any object of the type @a signal->object_type
+ * @brief Deletes the signal. The signal could not be connected or emitted anymore
  * @param signal the signal to delete
  */
 void etk_signal_delete(Etk_Signal *signal)
@@ -89,10 +89,10 @@ void etk_signal_delete(Etk_Signal *signal)
 }
 
 /**
- * @brief Gets the the signal corresponding to the name and the type
+ * @brief Gets the the signal corresponding to the name and the object type
  * @param signal_name the name of the signal to return
- * @param type the type that is associated to the signal to return
- * @return Returns the signal called @a signal_name and associated to @a type, or NULL on failure
+ * @param type the object type of the signal to return
+ * @return Returns the signal called @a signal_name, for the object type @a type, or NULL on failure
  */
 Etk_Signal *etk_signal_lookup(const char *signal_name, Etk_Type *type)
 {
@@ -112,7 +112,7 @@ Etk_Signal *etk_signal_lookup(const char *signal_name, Etk_Type *type)
 
 /**
  * @brief Gets the name of the signal
- * @param signal the signal whose the name is returned
+ * @param signal a signal
  * @return Returns the name of the signal, or NULL on failure
  */
 const char *etk_signal_name_get(Etk_Signal *signal)
@@ -121,13 +121,17 @@ const char *etk_signal_name_get(Etk_Signal *signal)
 }
 
 /**
- * @brief Connects the object and the signal to a callback function
- * @param signal the signal to connect to the object
- * @param object the object that will connect the signal
+ * @brief Connects a callback to a signal of the object @a object. When the signal of the object will be emitted, this
+ * callback will be automatically called
+ * @param signal the signal to connect to the callback
+ * @param object the object to connect to the callback
  * @param callback the callback to call when the signal is emitted
  * @param data the data to pass to the callback
- * @param swapped if @a swapped == ETK_TRUE, the callback will be swapped (called with @a data as the only argument)
- * @param after if @a after == ETK_TRUE, the callback will be called after the default handler, otherwise, it will be called before
+ * @param swapped if @a swapped == ETK_TRUE, the callback will be called with @a data as the only argument.
+ * It can be useful to set it to ETK_TRUE if you just want to call one function on an object when the signal is emitted
+ * @param after if @a after == ETK_TRUE, the callback will be called after the default handler is called.
+ * Otherwise, it will be called before the default handler. It can be useful to set it to ETK_TRUE if you want the
+ * callback to be called after all the other callbacks connect to the signal.
  */
 void etk_signal_connect_full(Etk_Signal *signal, Etk_Object *object, Etk_Signal_Callback_Function callback, void *data, Etk_Bool swapped, Etk_Bool after)
 {
@@ -141,12 +145,13 @@ void etk_signal_connect_full(Etk_Signal *signal, Etk_Object *object, Etk_Signal_
 }
 
 /**
- * @brief Connects the object and the signal to a callback function which will be called before the default handler 
- * @param signal_name the name of the signal to connect to the object
- * @param object the object that will connect the signal
+ * @brief Connects a callback to a signal of the object @a object. When the signal of the object will be emitted, this
+ * callback will be automatically called <b>before</b> the default handler
+ * @param signal the signal to connect to the callback
+ * @param object the object to connect to the callback
  * @param callback the callback to call when the signal is emitted
  * @param data the data to pass to the callback
- */ 
+ */
 void etk_signal_connect(const char *signal_name, Etk_Object *object, Etk_Signal_Callback_Function callback, void *data)
 {
    Etk_Signal *signal;
@@ -156,7 +161,8 @@ void etk_signal_connect(const char *signal_name, Etk_Object *object, Etk_Signal_
 
    if (!(signal = etk_signal_lookup(signal_name, etk_object_object_type_get(object))))
    {
-      ETK_WARNING("Invalid signal connection: the object type doesn't have a signal called \"%s\"", signal_name);
+      ETK_WARNING("Invalid signal connection: the object type \"%s\" doesn't have a signal called \"%s\"",
+         object->type->name, signal_name);
       return;
    }
 
@@ -164,12 +170,13 @@ void etk_signal_connect(const char *signal_name, Etk_Object *object, Etk_Signal_
 }
 
 /**
- * @brief Connects the object and the signal to a callback function which will be called adter the default handler 
- * @param signal_name the name of the signal to connect to the object
- * @param object the object that will connect the signal
+ * @brief Connects a callback to a signal of the object @a object. When the signal of the object will be emitted, this
+ * callback will be automatically called <b>after</b> the default handler
+ * @param signal the signal to connect to the callback
+ * @param object the object to connect to the callback
  * @param callback the callback to call when the signal is emitted
  * @param data the data to pass to the callback
- */ 
+ */
 void etk_signal_connect_after(const char *signal_name, Etk_Object *object, Etk_Signal_Callback_Function callback, void *data)
 {
    Etk_Signal *signal;
@@ -179,7 +186,8 @@ void etk_signal_connect_after(const char *signal_name, Etk_Object *object, Etk_S
 
    if (!(signal = etk_signal_lookup(signal_name, etk_object_object_type_get(object))))
    {
-      ETK_WARNING("Invalid signal connection: the object type doesn't have a signal called \"%s\"", signal_name);
+      ETK_WARNING("Invalid signal connection: the object type \"%s\" doesn't have a signal called \"%s\"",
+         object->type->name, signal_name);
       return;
    }
 
@@ -187,7 +195,9 @@ void etk_signal_connect_after(const char *signal_name, Etk_Object *object, Etk_S
 }
 
 /**
- * @brief Connects the object and the signal to a callback function which will be swapped (called with @a data as the only argument)
+ * @brief Connects a callback to a signal of the object @a object. When the signal of the object will be emitted, this
+ * callback will be automatically called <b>vefore</b> the default handler, with @a data as the only argument. @n
+ * It can be useful if you just want to call one function on an object when the signal is emitted
  * @param signal_name the name of the signal to connect to the object to
  * @param object the object that will connect the signal
  * @param callback the callback to call when the signal is emitted
@@ -202,7 +212,8 @@ void etk_signal_connect_swapped(const char *signal_name, Etk_Object *object, Etk
 
    if (!(signal = etk_signal_lookup(signal_name, etk_object_object_type_get(object))))
    {
-      ETK_WARNING("Invalid signal connection: the object type doesn't have a signal called \"%s\"", signal_name);
+      ETK_WARNING("Invalid signal connection: the object type \"%s\" doesn't have a signal called \"%s\"",
+         object->type->name, signal_name);
       return;
    }
 
@@ -226,7 +237,8 @@ void etk_signal_disconnect(const char *signal_name, Etk_Object *object, Etk_Sign
    
    if (!(signal = etk_signal_lookup(signal_name, etk_object_object_type_get(object))))
    {
-      ETK_WARNING("Invalid signal disconnection: the object type doesn't have a signal called \"%s\"", signal_name);
+      ETK_WARNING("Invalid signal disconnection: the object type \"%s\" doesn't have a signal called \"%s\"",
+         object->type->name, signal_name);
       return;
    }
    
@@ -251,12 +263,12 @@ void etk_signal_disconnect(const char *signal_name, Etk_Object *object, Etk_Sign
 }
 
 /**
- * @brief Emits the signal (will call the callbacks associtated to @a object and @a signal)
+ * @brief Emits the signal: it will call the callbacks connected to the signal @a signal
  * @param signal the signal to emit
- * @param object the object which emits the signal (it will be passed as the first argument to the callback function)
- * @param return_value the location where we will put the return value (may be NULL)
+ * @param object the object which will emit the signal
+ * @param return_value the location where store the return value ( @a return_value may be NULL)
  * @param ... the arguments to pass to the callback function
- */ 
+ */
 void etk_signal_emit(Etk_Signal *signal, Etk_Object *object, void *return_value, ...)
 {
    va_list args;
@@ -270,12 +282,12 @@ void etk_signal_emit(Etk_Signal *signal, Etk_Object *object, void *return_value,
 }
 
 /**
- * @brief Emits the signal by its name (will call the callbacks associtated to @a object and the signal)
- * @param signal_name the name of signal to emit
- * @param object the object which emits the signal (it will be passed as the first argument to the callback function)
- * @param return_value the location where we will put the return value (may be NULL)
+ * @brief Emits the signal: it will call the callbacks connected to the signal @a signal
+ * @param signal the name of the signal to emit
+ * @param object the object which will emit the signal
+ * @param return_value the location where store the return value ( @a return_value may be NULL)
  * @param ... the arguments to pass to the callback function
- */ 
+ */
 void etk_signal_emit_by_name(const char *signal_name, Etk_Object *object, void *return_value, ...)
 {
    va_list args;
@@ -296,10 +308,10 @@ void etk_signal_emit_by_name(const char *signal_name, Etk_Object *object, void *
 }
 
 /**
- * @brief Emits the signal (will call the callbacks associtated to @a object and @a signal)
+ * @brief Emits the signal: it will call the callbacks connected to the signal @a signal
  * @param signal the signal to emit
- * @param object the object which emits the signal (it will be passed as the first argument to the callback function)
- * @param return_value the location where we will put the return value (may be NULL)
+ * @param object the object which will emit the signal
+ * @param return_value the location where store the return value ( @a return_value may be NULL)
  * @param args the arguments to pass to the callback function
  */
 void etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return_value, va_list args)
@@ -403,21 +415,20 @@ void etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return
 
 /**
  * @brief Gets the marshaller used by the signal
- * @param signal the signal whose marshaller is returned
- * @return Returns the marshaller used by the signal, NULL on failure
+ * @param signal a signal
+ * @return Returns the marshaller used by the signal or NULL on failure
  */
 Etk_Marshaller etk_signal_marshaller_get(Etk_Signal *signal)
 {
    if (!signal)
       return NULL;
-
    return signal->marshaller;
 }
 
 /**
- * @brief Stops the propagation of the emitted signal: remaining callbacks/handler won't be called. @n
- * It's usually called in a callback to avoid other callbacks to be called. @n
- * It has no effect if no signal is emitted
+ * @brief Stops the propagation of the emitted signal: the remaining callbacks/handler won't be called. @n
+ * It's usually called in a callback to avoid the other callbacks to be called.
+ * @note It has no effect if no signal is emitted
  */ 
 void etk_signal_stop()
 {
@@ -430,7 +441,7 @@ void etk_signal_stop()
  *
  **************************/
 
-/* Frees the signal (called when the signal is removed from _etk_signal_signals_list) */
+/* Frees the signal */
 static void _etk_signal_free(Etk_Signal *signal)
 {
    if (!signal)
@@ -443,3 +454,15 @@ static void _etk_signal_free(Etk_Signal *signal)
 }
 
 /** @} */
+
+/**************************
+ *
+ * Documentation
+ *
+ **************************/
+
+/**
+ * @addtogroup Etk_Signal
+ *
+ * 
+ */

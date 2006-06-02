@@ -664,8 +664,8 @@ static Evas_Bool _etk_object_data_free_cb(Evas_Hash *hash, const char *key, void
  * <b>Constructors/Destructors:</b> @n
  * A new object can be created with etk_object_new(). For example:
  * @code
- * //Creates a new unfocusable slider, for the range [1.0 - 3.0] and with the initial value 2.0
- * slider = etk_object_new(ETK_SLIDER_TYPE, "focusable", ETK_FALSE, "lower", 1.0, "upper", 3.0, "value", 2.0, NULL);
+ * //Creates a new focusable slider, for the range [1.0 - 3.0] and with the initial value 2.0
+ * slider = etk_object_new(ETK_SLIDER_TYPE, "focusable", ETK_TRUE, "lower", 1.0, "upper", 3.0, "value", 2.0, NULL);
  * @endcode
  * The first argument is the type of the object to create, followed by any number of property-name/property-value pairs,
  * and terminated with NULL. @n

@@ -36,14 +36,17 @@ static int _etk_scrollbar_step_increment_cb(void *data);
 
 /**
  * @brief Gets the type of an Etk_Scrollbar
- * @return Returns the type on an Etk_Scrollbar
+ * @return Returns the type of an Etk_Scrollbar
  */
 Etk_Type *etk_scrollbar_type_get()
 {
    static Etk_Type *scrollbar_type = NULL;
 
    if (!scrollbar_type)
-      scrollbar_type = etk_type_new("Etk_Scrollbar", ETK_RANGE_TYPE, sizeof(Etk_Scrollbar), ETK_CONSTRUCTOR(_etk_scrollbar_constructor), NULL);
+   {
+      scrollbar_type = etk_type_new("Etk_Scrollbar", ETK_RANGE_TYPE, sizeof(Etk_Scrollbar),
+         ETK_CONSTRUCTOR(_etk_scrollbar_constructor), NULL);
+   }
 
    return scrollbar_type;
 }
@@ -57,9 +60,27 @@ Etk_Type *etk_hscrollbar_type_get()
    static Etk_Type *hscrollbar_type = NULL;
 
    if (!hscrollbar_type)
+   {
       hscrollbar_type = etk_type_new("Etk_HScrollbar", ETK_SCROLLBAR_TYPE, sizeof(Etk_HScrollbar), NULL, NULL);
+   }
 
    return hscrollbar_type;
+}
+
+/**
+ * @brief Gets the type of an Etk_VScrollbar
+ * @return Returns the type of an Etk_VScrollbar
+ */
+Etk_Type *etk_vscrollbar_type_get()
+{
+   static Etk_Type *vscrollbar_type = NULL;
+
+   if (!vscrollbar_type)
+   {
+      vscrollbar_type = etk_type_new("Etk_VScrollbar", ETK_SCROLLBAR_TYPE, sizeof(Etk_VScrollbar), NULL, NULL);
+   }
+
+   return vscrollbar_type;
 }
 
 /**
@@ -67,29 +88,17 @@ Etk_Type *etk_hscrollbar_type_get()
  * @param lower the lower bound of the scrollbar
  * @param upper the upper bound of the scrollbar
  * @param value the initial value of the scrollbar
- * @param step_increment the step increment value. Used when the arrow of a scrollbar is clicked, or when the keyboard arrows are pressed (for a scale)
- * @param page_increment the page increment value. Used when the trough of a scrollbar is clicked, or when page up/down are pressed
- * @param page_size the page size value of the scrollbar: this value is used to know the size of the drag button of the scrollbar
+ * @param step_increment the step increment value. This value is added or substracted to the current value of the
+ * scrollbar when an arrow button of the scrollbar is clicked, or when the mouse wheel is used
+ * @param page_increment the page increment value. This value is added or substracted to the current value of the
+ * scrollbar when the page up/down keys are pressed or when the user clicks on the trough of the scrollbar
+ * @param page_size the page size value: this value will determine the size of the drag button of the scrollbar
  * @return Returns the new horizontal scrollbar widget
  */
 Etk_Widget *etk_hscrollbar_new(double lower, double upper, double value, double step_increment, double page_increment, double page_size)
 {
-   return etk_widget_new(ETK_HSCROLLBAR_TYPE, "theme_group", "hscrollbar", "lower", lower, "upper", upper, "value", value,
-      "step_increment", step_increment, "page_increment", page_increment, "page_size", page_size, NULL);
-}
-
-/**
- * @brief Gets the type of an Etk_VScrollbar
- * @return Returns the type on an Etk_VScrollbar
- */
-Etk_Type *etk_vscrollbar_type_get()
-{
-   static Etk_Type *vscrollbar_type = NULL;
-
-   if (!vscrollbar_type)
-      vscrollbar_type = etk_type_new("Etk_VScrollbar", ETK_SCROLLBAR_TYPE, sizeof(Etk_VScrollbar), NULL, NULL);
-
-   return vscrollbar_type;
+   return etk_widget_new(ETK_HSCROLLBAR_TYPE, "theme_group", "hscrollbar", "lower", lower, "upper", upper,
+      "value", value, "step_increment", step_increment, "page_increment", page_increment, "page_size", page_size, NULL);
 }
 
 /**
@@ -97,15 +106,17 @@ Etk_Type *etk_vscrollbar_type_get()
  * @param lower the lower bound of the scrollbar
  * @param upper the upper bound of the scrollbar
  * @param value the initial value of the scrollbar
- * @param step_increment the step increment value. Used when the arrow of a scrollbar is clicked, or when the keyboard arrows are pressed (for a scale)
- * @param page_increment the page increment value. Used when the trough of a scrollbar is clicked, or when page up/down are pressed
- * @param page_size the page size value of the scrollbar: this value is used to know the size of the drag button of the scrollbar
+ * @param step_increment the step increment value. This value is added or substracted to the current value of the
+ * scrollbar when an arrow button of the scrollbar is clicked, or when the mouse wheel is used
+ * @param page_increment the page increment value. This value is added or substracted to the current value of the
+ * scrollbar when the page up/down keys are pressed or when the user clicks on the trough of the scrollbar
+ * @param page_size the page size value: this value will determine the size of the drag button of the scrollbar
  * @return Returns the new vertical scrollbar widget
  */
 Etk_Widget *etk_vscrollbar_new(double lower, double upper, double value, double step_increment, double page_increment, double page_size)
 {
-   return etk_widget_new(ETK_VSCROLLBAR_TYPE, "theme_group", "vscrollbar", "lower", lower, "upper", upper, "value", value,
-      "step_increment", step_increment, "page_increment", page_increment, "page_size", page_size, NULL);
+   return etk_widget_new(ETK_VSCROLLBAR_TYPE, "theme_group", "vscrollbar", "lower", lower, "upper", upper,
+      "value", value, "step_increment", step_increment, "page_increment", page_increment, "page_size", page_size, NULL);
 }
 
 /**************************
@@ -114,7 +125,7 @@ Etk_Widget *etk_vscrollbar_new(double lower, double upper, double value, double 
  *
  **************************/
 
-/* Initializes the default values of the scrollbar */
+/* Initializes the scrollbar */
 static void _etk_scrollbar_constructor(Etk_Scrollbar *scrollbar)
 {
    if (!scrollbar)
@@ -165,12 +176,14 @@ static void _etk_scrollbar_drag_dragged_cb(void *data, Evas_Object *obj, const c
       ETK_SCROLLBAR(range)->dragging = ETK_TRUE;
    else if (strcmp(emission, "drag,stop") == 0)
       ETK_SCROLLBAR(range)->dragging = ETK_FALSE;
-   
-   if (ETK_IS_HSCROLLBAR(range))
-      edje_object_part_drag_value_get(obj, "drag", &percent, NULL);
-   else
-      edje_object_part_drag_value_get(obj, "drag", NULL, &percent);
-   etk_range_value_set(range, range->lower + percent * (range->upper - range->lower - range->page_size));
+   else if (strcmp(emission, "drag") == 0)
+   {
+      if (ETK_IS_HSCROLLBAR(range))
+         edje_object_part_drag_value_get(obj, "drag", &percent, NULL);
+      else
+         edje_object_part_drag_value_get(obj, "drag", NULL, &percent);
+      etk_range_value_set(range, range->lower + percent * (range->upper - range->lower - range->page_size));
+   }
 }
 
 /* Called when the user wants to scroll the scrollbar with the mouse wheel */
@@ -330,3 +343,26 @@ static int _etk_scrollbar_step_increment_cb(void *data)
 }
 
 /** @} */
+
+/**************************
+ *
+ * Documentation
+ *
+ **************************/
+
+/**
+ * @addtogroup Etk_Scrollbar
+ *
+ * @image html scrollbar.png
+ * Etk_Scrollbar is an abstract class for two derived widgets: Etk_HScrollbar (an horizontal scrollbar)
+ * and Etk_VScrollbar (a vertical scrollbar). @n
+ * You usually do not need to use Etk_Scrollbar directly. In most of the cases, you can use Etk_Scrolled_View instead.
+ * 
+ * \par Object Hierarchy:
+ * - Etk_Object
+ *   - Etk_Widget
+ *     - Etk_Range
+ *       - Etk_Scrollbar
+ *         - Etk_HScrollbar
+ *         - Etk_VScrollbar
+ */

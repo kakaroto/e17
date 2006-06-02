@@ -23,7 +23,7 @@ void etk_test_text_view_window_create(void *data)
 
    text_view = etk_text_view_new();
    /* TODO: */
-   etk_textblock_text_set(ETK_TEXT_VIEW(text_view)->textblock,
+   /*etk_textblock_text_set(ETK_TEXT_VIEW(text_view)->textblock,
       "<center><h1>Title</h1></center><br>"
       "<p><tab>A pragraph here <red>red text</red> and stuff.</p>"
       "<p>And escaping &lt; and &gt; as well as &amp; as <h1>normal.</h1></p>"
@@ -50,7 +50,7 @@ void etk_test_text_view_window_create(void *data)
       "Heizölrückstoßabdämpfung fløde pingüino kilómetros cœur déçu l'âme "
       "plutôt naïve Louÿs rêva crapaüter Íosa Úrmhac Óighe pór Éava Ádhaim"
       "</blockquote>"
-   );
+   );*/
    etk_box_pack_start(ETK_BOX(vbox), text_view, ETK_TRUE, ETK_TRUE, 0);
    
    etk_widget_show_all(win);

@@ -2,74 +2,75 @@
 #ifndef _ETK_TEXTBLOCK_H_
 #define _ETK_TEXTBLOCK_H_
 
-#include <Evas.h>
-#include <Ecore.h>
 #include "etk_object.h"
+#include <Evas.h>
 #include "etk_types.h"
 
 /**
  * @defgroup Etk_Textblock Etk_Textblock
+ * @brief TODO: Etk_Textblock: brief description
  * @{
  */
 
-/** @brief Gets the type of a textblock */
+/** Gets the type of a textblock */
 #define ETK_TEXTBLOCK_TYPE       (etk_textblock_type_get())
-/** @brief Casts the object to an Etk_Textblock */
+/** Casts the object to an Etk_Textblock */
 #define ETK_TEXTBLOCK(obj)       (ETK_OBJECT_CAST((obj), ETK_TEXTBLOCK_TYPE, Etk_Textblock))
-/** @brief Checks if the object is an Etk_Textblock */
+/** Check if the object is an Etk_Textblock */
 #define ETK_IS_TEXTBLOCK(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_TEXTBLOCK_TYPE))
 
-/**
- * @struct Etk_Textblock_Iter
- * @brief TODO
- */
-struct _Etk_Textblock_Iter
+/** Gets the type of a textblock iterator */
+#define ETK_TEXTBLOCK_ITER_TYPE       (etk_textblock_iter_type_get())
+/** Casts the object to an Etk_Textblock_Iter */
+#define ETK_TEXTBLOCK_ITER(obj)       (ETK_OBJECT_CAST((obj), ETK_TEXTBLOCK_ITER_TYPE, Etk_Textblock_Iter))
+/** Check if the object is an Etk_Textblock_Iter */
+#define ETK_IS_TEXTBLOCK_ITER(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_TEXTBLOCK_ITER_TYPE))
+
+/** TODOC */
+typedef enum Etk_Textblock_Wrap
 {
-   Evas_Textblock_Cursor *cursor;
-   Etk_Textblock *textblock;
-   Etk_Bool evas_changed;
-};
+   ETK_TEXTBLOCK_WRAP_NONE,     /**< TODOC */        
+   ETK_TEXTBLOCK_WRAP_WORD,     /**< TODOC */
+   ETK_TEXTBLOCK_WRAP_CHAR      /**< TODOC */
+} Etk_Textblock_Wrap;
 
 /**
- * @struct Etk_Textblock
- * @brief TODO
+ * @brief @object The structure of a textblock iterator
+ * @structinfo
  */
-struct _Etk_Textblock
+struct Etk_Textblock_Iter
 {
    /* private: */
    /* Inherit from Etk_Object */
    Etk_Object object;
    
-   Evas_Object *smart_object;
-   Evas_Object *textblock_object;
-   Evas_Object *cursor_object;
-   Evas_Object *clip;
-   Evas_List *selection_rects;
+   Etk_Textblock *tb;
+};
+
+/**
+ * @brief @object The structure of a textblock
+ * @structinfo
+ */
+struct Etk_Textblock
+{
+   /* private: */
+   /* Inherit from Etk_Object */
+   Etk_Object object;
    
-   Etk_Textblock_Iter *cursor;
-   Etk_Textblock_Iter *selection_start;
-   Evas_List *iterators;
-   
-   Ecore_Timer *cursor_timer;
+   Evas_List *iters;
+   Evas_List *evas_objects;
 };
 
 Etk_Type *etk_textblock_type_get();
+Etk_Type *etk_textblock_iter_type_get();
+
 Etk_Textblock *etk_textblock_new();
 
-void etk_textblock_realize(Etk_Textblock *textblock, Evas *evas);
-void etk_textblock_unrealize(Etk_Textblock *textblock);
+Evas_Object *etk_textblock_object_add(Etk_Textblock *tb, Evas *evas);
 
-void etk_textblock_text_set(Etk_Textblock *textblock, const char *text);
-
-Etk_Textblock_Iter *etk_textblock_iter_new(Etk_Textblock *textblock);
-void etk_textblock_iter_free(Etk_Textblock_Iter *iter);
-void etk_textblock_iter_copy(Etk_Textblock_Iter *iter, Etk_Textblock_Iter *dest_iter);
-
-void etk_textblock_iter_goto_start(Etk_Textblock_Iter *iter);
-void etk_textblock_iter_goto_end(Etk_Textblock_Iter *iter);
-void etk_textblock_iter_goto_prev_char(Etk_Textblock_Iter *iter);
-void etk_textblock_iter_goto_next_char(Etk_Textblock_Iter *iter);
+void etk_textblock_wrap_set(Evas_Object *tbo, Etk_Textblock_Wrap wrap);
+Etk_Textblock_Wrap etk_textblock_wrap_get(Evas_Object *tbo);
 
 /** @} */
-
+ 
 #endif

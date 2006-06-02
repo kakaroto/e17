@@ -8,33 +8,34 @@
 
 /**
  * @defgroup Etk_Scrolled_View Etk_Scrolled_View
+ * @brief The Etk_Scrolled_View widget is a container with two scrollbars that allow the user to scroll its unique child
  * @{
  */
 
-/** @brief Gets the type of an scrolled_view */
+/** Gets the type of a scrolled_view */
 #define ETK_SCROLLED_VIEW_TYPE       (etk_scrolled_view_type_get())
-/** @brief Casts the object to an Etk_Scrolled_View */
+/** Casts the object to an Etk_Scrolled_View */
 #define ETK_SCROLLED_VIEW(obj)       (ETK_OBJECT_CAST((obj), ETK_SCROLLED_VIEW_TYPE, Etk_Scrolled_View))
-/** @brief Checks if the object is an Etk_Scrolled_View */
+/** Checks if the object is an Etk_Scrolled_View */
 #define ETK_IS_SCROLLED_VIEW(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_SCROLLED_VIEW_TYPE))
 
 /**
- * @enum Etk_Scrolled_View_Policy
- * @brief An Etk_Scrolled_View_Policy describes if the scrollbar should be always visible, always hidden, @n
- * or if it should be shown/hidden automatically
+ * @brief Etk_Scrolled_View_Policy describes whether the scrollbar should be always visible, always hidden, 
+ * or whether it should be shown/hidden automatically
  */
-typedef enum _Etk_Scrolled_View_Policy
+typedef enum Etk_Scrolled_View_Policy
 {
-   ETK_POLICY_SHOW,
-   ETK_POLICY_HIDE,
-   ETK_POLICY_AUTO
+   ETK_POLICY_SHOW,     /**< The scrollbar is always visible */
+   ETK_POLICY_HIDE,     /**< The scrollbar is always hidden */
+   ETK_POLICY_AUTO      /**< The scrollbar is shown and hidden automatically whether or not the child can fit
+                         * entirely in the scrolled view */
 } Etk_Scrolled_View_Policy;
 
 /**
- * @struct Etk_Scrolled_View
- * @brief A scrolled_view is a bin container which has two scrollbars that allow to scroll the child
+ * @brief @widget The structure of a scrolled view
+ * @structinfo
  */
-struct _Etk_Scrolled_View
+struct Etk_Scrolled_View
 {
    /* private: */
    /* Inherit from Etk_Bin */

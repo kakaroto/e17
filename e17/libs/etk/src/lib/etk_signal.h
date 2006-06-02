@@ -8,17 +8,19 @@
 
 /**
  * @defgroup Etk_Signal Etk_Signal
+ * @brief The signal system is a flexible system to create, connect and emit signals
  * @{
  */
 
-/** @brief Gets the offset of a member of a struct (mainly used for etk_signal_new) */
+/** Gets the offset of a member of a struct (used when you create a new signal
+ * with a default handler, with etk_signal_new()) */
 #define ETK_MEMBER_OFFSET(type, member)   ((long)((long *)&((type *)0)->member))
 
 /**
- * @struct Etk_Signal
- * @brief The signal system is a flexible system to create, connect and emit signals
+ * @brief The structure of a signal
+ * @structinfo
  */
-struct _Etk_Signal
+struct Etk_Signal
 {
    /* private: */
    char *name;

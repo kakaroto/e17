@@ -22,17 +22,20 @@
  * @struct Etk_Text_View
  * @brief An Etk_Text_View is a widget that allows the user to edit multi-line text 
  */
-struct _Etk_Text_View
+struct Etk_Text_View
 {
    /* private: */
    /* Inherit from Etk_Widget */
    Etk_Widget widget;
 
    Etk_Textblock *textblock;
+   Evas_Object *textblock_object;
 };
 
 Etk_Type *etk_text_view_type_get();
 Etk_Widget *etk_text_view_new();
+
+Etk_Textblock *etk_text_view_textblock_get(Etk_Text_View *text_view);
 
 /** @} */
 

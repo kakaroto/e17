@@ -17,10 +17,9 @@ void etk_test_menu_window_create(void *data);
 void etk_test_filechooser_window_create(void *data);
 void etk_test_notebook_window_create(void *data);
 void etk_test_progress_bar_window_create(void *data);
-void etk_test_spin_button_window_create(void *data);
 void etk_test_xdnd_window_create(void *data);
-void etk_test_text_view_window_create(void *data);
 void etk_test_combobox_window_create(void *data);
 void etk_test_iconbox_window_create(void *data);
+void etk_test_text_view_window_create(void *data);
 
 #endif

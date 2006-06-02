@@ -11,13 +11,13 @@
  * @{
  */
 
-enum _Etk_Range_Signal_Id
+enum Etk_Range_Signal_Id
 {
    ETK_RANGE_VALUE_CHANGED_SIGNAL,
    ETK_RANGE_NUM_SIGNALS
 };
 
-enum _Etk_Range_Property_Id
+enum Etk_Range_Property_Id
 {
    ETK_RANGE_LOWER_PROPERTY,
    ETK_RANGE_UPPER_PROPERTY,
@@ -41,7 +41,7 @@ static Etk_Signal *_etk_range_signals[ETK_RANGE_NUM_SIGNALS];
 
 /**
  * @brief Gets the type of an Etk_Range
- * @return Returns the type on an Etk_Range
+ * @return Returns the type of an Etk_Range
  */
 Etk_Type *etk_range_type_get()
 {
@@ -76,19 +76,7 @@ Etk_Type *etk_range_type_get()
 }
 
 /**
- * @brief Gets the value of the range
- * @param range a range
- * @return Returns the value of the range
- */
-double etk_range_value_get(Etk_Range *range)
-{
-   if (!range)
-      return 0.0;
-   return range->value;
-}
-
-/**
- * @brief Sets the value of the range.
+ * @brief Sets the value of the range
  * @param range a range
  * @param value the value to set to the range
  */
@@ -109,7 +97,19 @@ void etk_range_value_set(Etk_Range *range, double value)
 }
 
 /**
- * @brief Sets the range of the values that the range widget can have
+ * @brief Gets the value of the range
+ * @param range a range
+ * @return Returns the value of the range
+ */
+double etk_range_value_get(Etk_Range *range)
+{
+   if (!range)
+      return 0.0;
+   return range->value;
+}
+
+/**
+ * @brief Sets the range of values that the range widget can take
  * @param range a range
  * @param lower the lower bound
  * @param upper the upper bound
@@ -137,11 +137,26 @@ void etk_range_range_set(Etk_Range *range, double lower, double upper)
 }
 
 /**
- * @brief Sets the increment value of the range
+ * @brief Gets the range of values that the range widget can take
  * @param range a range
- * @param step the step increment value. Used when the arrow of a scrollbar is clicked, @n
- * or when the keyboard arrows are pressed (for a scale)
- * @param page the page increment value. Used when the trough of a scrollbar is clicked, or when page up/down are pressed
+ * @param lower the location where to store the lower bound
+ * @param upper the location where to store the upper bound
+ */
+void etk_range_range_get(Etk_Range *range, double *lower, double *upper)
+{
+   if (lower)
+      *lower = range ? range->lower : 0.0;
+   if (upper)
+      *upper = range ? range->upper : 0.0;
+}
+
+/**
+ * @brief Sets the increment values of the range
+ * @param range a range
+ * @param step the step increment value. Used when a arrow button of a scrollbar is clicked, or when the keyboard
+ * arrows are pressed
+ * @param page the page increment value. Used when the trough of a scrollbar is clicked, or when the page up/down keys
+ * are pressed
  */
 void etk_range_increments_set(Etk_Range *range, double step, double page)
 {
@@ -161,7 +176,21 @@ void etk_range_increments_set(Etk_Range *range, double step, double page)
 }
 
 /**
- * @brief Sets the page size of the range: this value will be used by the scrollbars to know the size of the drag button
+ * @brief Gets the increment values of the range
+ * @param range a range
+ * @param step the location where to store the step increment value
+ * @param page the location where to store the page increment value
+ */
+void etk_range_increments_get(Etk_Range *range, double *step, double *page)
+{
+   if (step)
+      *step = range ? range->step_increment : 0.0;
+   if (page)
+      *page = range ? range->page_increment : 0.0;
+}
+   
+/**
+ * @brief Sets the page size of the range: this value controls the size of the drag button of a scrollbar for example
  * @param range a range
  * @param page_size the value to set
  */
@@ -198,7 +227,7 @@ double etk_scrollbar_page_size_get(Etk_Range *range)
  *
  **************************/
 
-/* Initializes the members */
+/* Initializes the range */
 static void _etk_range_constructor(Etk_Range *range)
 {
    if (!range)
@@ -280,3 +309,67 @@ static void _etk_range_property_get(Etk_Object *object, int property_id, Etk_Pro
 }
 
 /** @} */
+
+/**************************
+ *
+ * Documentation
+ *
+ **************************/
+
+/**
+ * @addtogroup Etk_Range
+ *
+ * A range has a <b>value</b> that can't be lower than the <b>lower bound</b> of the range, or greater than the
+ * <b>upper bound</b> of the range. @n
+ * Three other value have to be set when a new range is created:
+ * - the <b>"step increment"</b> value is the value added or substracted to current value of the range, when the arrow
+ * keys are used, or when the arrow buttons of a scrollbar are clicked for example. It is also the value used when the
+ * user uses the mouse wheel.
+ * - the <b>"page increment"</b> value is the value added or substracted to current value of the range, when the page
+ * up/down keys are pressed, or when the trough of a scrollbar is clicked for example.
+ * - the <b>"page size"</b> value is the size of viewport, used to calculate the size of the drag button of a scrollbar
+ * @n @n
+ * 
+ * \par Object Hierarchy:
+ * - Etk_Object
+ *   - Etk_Widget
+ *     - Etk_Range
+ *
+ * \par Signals:
+ * @signal_name "value_changed": Emitted when the value of the range is changed
+ * @signal_cb void callback(Etk_Range *range, double value, void *data)
+ * @signal_arg range: the range whose value has been changed
+ * @signal_arg value: the new value of the range
+ * @signal_data
+ *
+ * \par Properties:
+ * @prop_name "value": The value of the range
+ * @prop_type Double
+ * @prop_rw
+ * @prop_val 0.0
+ * \par
+ * @prop_name "lower": The lower bound of the range. The value of the range can't be lower than its lower bound
+ * @prop_type Double
+ * @prop_rw
+ * @prop_val 0.0
+ * \par
+ * @prop_name "upper": The upper bound of the range. The value of the range can't be greater than its upper bound
+ * @prop_type Double
+ * @prop_rw
+ * @prop_val 0.0
+ * \par
+ * @prop_name "step_increment": The step increment value of the range. See the description of Etk_Range for more info
+ * @prop_type Double
+ * @prop_rw
+ * @prop_val 0.0
+ * \par
+ * @prop_name "page_increment": The page increment value of the range. See the description of Etk_Range for more info
+ * @prop_type Double
+ * @prop_rw
+ * @prop_val 0.0
+ * \par
+ * @prop_name "page_size": The size of the page of the range. See the description of Etk_Range for more info
+ * @prop_type Double
+ * @prop_rw
+ * @prop_val 0.0
+ */

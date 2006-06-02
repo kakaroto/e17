@@ -14,14 +14,14 @@
 
 #define ETK_POPUP_WINDOW_MIN_POP_TIME 400
 
-enum _Etk_Popup_Window_Signal_Id
+enum Etk_Popup_Window_Signal_Id
 {
    ETK_POPUP_WINDOW_POPPED_DOWN_SIGNAL,
    ETK_POPUP_WINDOW_POPPED_UP_SIGNAL,
    ETK_POPUP_WINDOW_NUM_SIGNALS
 };
 
-typedef enum _Etk_Popup_Window_Screen_Edge
+typedef enum Etk_Popup_Window_Screen_Edge
 {
    ETK_POPUP_WINDOW_NO_EDGE = 0,
    ETK_POPUP_WINDOW_LEFT_EDGE = (1 << 0),
@@ -65,7 +65,7 @@ static Etk_Signal *_etk_popup_window_signals[ETK_POPUP_WINDOW_NUM_SIGNALS];
 
 /**
  * @brief Gets the type of an Etk_Popup_Window
- * @return Returns the type on an Etk_Popup_Window
+ * @return Returns the type of an Etk_Popup_Window
  */
 Etk_Type *etk_popup_window_type_get()
 {
@@ -73,20 +73,23 @@ Etk_Type *etk_popup_window_type_get()
 
    if (!popup_window_type)
    {
-      popup_window_type = etk_type_new("Etk_Popup_Window", ETK_WINDOW_TYPE, sizeof(Etk_Popup_Window), ETK_CONSTRUCTOR(_etk_popup_window_constructor), NULL);
+      popup_window_type = etk_type_new("Etk_Popup_Window", ETK_WINDOW_TYPE, sizeof(Etk_Popup_Window),
+         ETK_CONSTRUCTOR(_etk_popup_window_constructor), NULL);
 
-      _etk_popup_window_signals[ETK_POPUP_WINDOW_POPPED_UP_SIGNAL] = etk_signal_new("popped_up", popup_window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_popup_window_signals[ETK_POPUP_WINDOW_POPPED_DOWN_SIGNAL] = etk_signal_new("popped_down", popup_window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_popup_window_signals[ETK_POPUP_WINDOW_POPPED_UP_SIGNAL] = etk_signal_new("popped_up",
+         popup_window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_popup_window_signals[ETK_POPUP_WINDOW_POPPED_DOWN_SIGNAL] = etk_signal_new("popped_down",
+         popup_window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
    }
 
    return popup_window_type;
 }
 
 /**
- * @brief Popups the popup window at the position (x, y)
+ * @brief Pops up the popup window at the position (x, y)
  * @param popup_window a popup window
- * @param x the x component of the location where to popup the popup window
- * @param y the y component of the location where to popup the popup window
+ * @param x the x component of the position where to pop up the popup window
+ * @param y the y component of the position where to pop up the popup window
  */
 void etk_popup_window_popup_at_xy(Etk_Popup_Window *popup_window, int x, int y)
 {
@@ -130,7 +133,7 @@ void etk_popup_window_popup_at_xy(Etk_Popup_Window *popup_window, int x, int y)
 }
 
 /**
- * @brief Popups the popup window at the mouse pointer position
+ * @brief Pops up the popup window at the mouse pointer position
  * @param popup_window a popup window
  */
 void etk_popup_window_popup(Etk_Popup_Window *popup_window)
@@ -189,24 +192,6 @@ void etk_popup_window_popdown_all()
       etk_popup_window_popdown(ETK_POPUP_WINDOW(_etk_popup_window_popped_windows->data));
 }
 
-/**************************
- *
- * Etk specific functions
- *
- **************************/
-
-/* Initializes the members */
-static void _etk_popup_window_constructor(Etk_Popup_Window *popup_window)
-{
-   if (!popup_window)
-      return;
-
-   etk_window_decorated_set(ETK_WINDOW(popup_window), ETK_FALSE);
-   etk_window_skip_taskbar_hint_set(ETK_WINDOW(popup_window), ETK_TRUE);
-   etk_window_skip_pager_hint_set(ETK_WINDOW(popup_window), ETK_TRUE);
-   ecore_x_netwm_window_type_set(ETK_WINDOW(popup_window)->x_window, ECORE_X_WINDOW_TYPE_MENU);
-}
-
 /**
  * @brief Gets whether the popup window is popped up
  * @param popup_window a popup window
@@ -223,7 +208,7 @@ Etk_Bool etk_popup_window_is_popped_up(Etk_Popup_Window *popup_window)
  * @brief Sets the focused popup window. The focused window is the one which will receive the keyboard events. @n
  * When a new popup window is popped up, the popup window is automatically focused
  * @param popup_window the popup window to focus
- * @note The poppup window should be popped up to be focused
+ * @note The popup window should be popped up to be focused
  */
 void etk_popup_window_focused_window_set(Etk_Popup_Window *popup_window)
 {
@@ -243,6 +228,24 @@ void etk_popup_window_focused_window_set(Etk_Popup_Window *popup_window)
 Etk_Popup_Window *etk_popup_window_focused_window_get()
 {
    return _etk_popup_window_focused_window;
+}
+
+/**************************
+ *
+ * Etk specific functions
+ *
+ **************************/
+
+/* Initializes the popup window */
+static void _etk_popup_window_constructor(Etk_Popup_Window *popup_window)
+{
+   if (!popup_window)
+      return;
+
+   etk_window_decorated_set(ETK_WINDOW(popup_window), ETK_FALSE);
+   etk_window_skip_taskbar_hint_set(ETK_WINDOW(popup_window), ETK_TRUE);
+   etk_window_skip_pager_hint_set(ETK_WINDOW(popup_window), ETK_TRUE);
+   ecore_x_netwm_window_type_set(ETK_WINDOW(popup_window)->x_window, ECORE_X_WINDOW_TYPE_MENU);
 }
 
 /**************************
@@ -495,3 +498,40 @@ static int _etk_popup_window_slide_timer_cb(void *data)
 }
 
 /** @} */
+
+/**************************
+ *
+ * Documentation
+ *
+ **************************/
+
+/**
+ * @addtogroup Etk_Popup_Window
+ *
+ * When a popup window is popped up, it grabs the keyboard and the mouse input so the user won't be able to manipulate
+ * the other windows. To pop down the window, the user has to click outside of it. @n
+ * If the popup window intersects one of the edges of the screen, the popup window will slide smoothly when the mouse
+ * pointer reaches this edge. @n
+ * You usually do not need to directly create a popup window in your programs, use Etk_Menu or Etk_Combobox instead.
+ * However, Etk_Popup_Window can be useful if you are creating a new widget.
+ * 
+ * \par Object Hierarchy:
+ * - Etk_Object
+ *   - Etk_Widget
+ *     - Etk_Container
+ *       - Etk_Bin
+ *         - Etk_Toplevel_Widget
+ *           - Etk_Window
+ *             - Etk_Popup_Window
+ *
+ * \par Signals:
+ * @signal_name "popped_up": Emitted when the popup window is popped up
+ * @signal_cb void callback(Etk_Popup_Window *popup_window, void *data)
+ * @signal_arg popup_window: the popup window which has been popped up
+ * @signal_data
+ * \par
+ * @signal_name "popped_down": Emitted when the popup window is popped down
+ * @signal_cb void callback(Etk_Popup_Window *popup_window, void *data)
+ * @signal_arg popup_window: the popup window which has been popped down
+ * @signal_data
+ */

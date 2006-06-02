@@ -9,10 +9,10 @@
 
 /**
  * @addtogroup Etk_Scrolled_View
-* @{
+ * @{
  */
 
-enum _Etk_Scrolled_View_Property_Id
+enum Etk_Scrolled_View_Property_Id
 {
    ETK_SCROLLED_VIEW_HPOLICY_PROPERTY,
    ETK_SCROLLED_VIEW_VPOLICY_PROPERTY
@@ -21,7 +21,7 @@ enum _Etk_Scrolled_View_Property_Id
 static void _etk_scrolled_view_constructor(Etk_Scrolled_View *scrolled_view);
 static void _etk_scrolled_view_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_scrolled_view_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_scrolled_view_size_request(Etk_Widget *widget, Etk_Size *size_requisition);
+static void _etk_scrolled_view_size_request(Etk_Widget *widget, Etk_Size *size);
 static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_scrolled_view_key_down_cb(Etk_Object *object, void *event, void *data);
 static void _etk_scrolled_view_mouse_wheel(Etk_Object *object, void *event, void *data);
@@ -39,7 +39,7 @@ static void _etk_scrolled_view_child_scroll_size_changed_cb(Etk_Object *object, 
 
 /**
  * @brief Gets the type of an Etk_Scrolled_View
- * @return Returns the type on an Etk_Scrolled_View
+ * @return Returns the type of an Etk_Scrolled_View
  */
 Etk_Type *etk_scrolled_view_type_get()
 {
@@ -47,10 +47,13 @@ Etk_Type *etk_scrolled_view_type_get()
 
    if (!scrolled_view_type)
    {
-      scrolled_view_type = etk_type_new("Etk_Scrolled_View", ETK_BIN_TYPE, sizeof(Etk_Scrolled_View), ETK_CONSTRUCTOR(_etk_scrolled_view_constructor), NULL);
+      scrolled_view_type = etk_type_new("Etk_Scrolled_View", ETK_BIN_TYPE, sizeof(Etk_Scrolled_View),
+         ETK_CONSTRUCTOR(_etk_scrolled_view_constructor), NULL);
 
-      etk_type_property_add(scrolled_view_type, "hpolicy", ETK_SCROLLED_VIEW_HPOLICY_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_POLICY_AUTO));
-      etk_type_property_add(scrolled_view_type, "vpolicy", ETK_SCROLLED_VIEW_VPOLICY_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_POLICY_AUTO));
+      etk_type_property_add(scrolled_view_type, "hpolicy", ETK_SCROLLED_VIEW_HPOLICY_PROPERTY,
+         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_POLICY_AUTO));
+      etk_type_property_add(scrolled_view_type, "vpolicy", ETK_SCROLLED_VIEW_VPOLICY_PROPERTY,
+         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_POLICY_AUTO));
       
       scrolled_view_type->property_set = _etk_scrolled_view_property_set;
       scrolled_view_type->property_get = _etk_scrolled_view_property_get;
@@ -60,8 +63,8 @@ Etk_Type *etk_scrolled_view_type_get()
 }
 
 /**
- * @brief Creates a new scrolled_view
- * @return Returns the new scrolled_view widget
+ * @brief Creates a new scrolled view
+ * @return Returns the new scrolled view widget
  */
 Etk_Widget *etk_scrolled_view_new()
 {
@@ -69,9 +72,9 @@ Etk_Widget *etk_scrolled_view_new()
 }
 
 /**
- * @brief Gets the hscrollbar of the scrolled view. You can directly change its value, its bound values, ...
+ * @brief Gets the hoizontal scrollbar of the scrolled view. You can then change its value, bound values, ...
  * @param scrolled_view a scrolled view
- * @return Returns the hscrollbar of the scrolled view
+ * @return Returns the hoizontal scrollbar of the scrolled view
  */
 Etk_Range *etk_scrolled_view_hscrollbar_get(Etk_Scrolled_View *scrolled_view)
 {
@@ -81,9 +84,9 @@ Etk_Range *etk_scrolled_view_hscrollbar_get(Etk_Scrolled_View *scrolled_view)
 }
 
 /**
- * @brief Gets the vscrollbar of the scrolled view. You can directly change its value, its bound values, ...
+ * @brief Gets the vertical scrollbar of the scrolled view. You can then change its value, bound values, ...
  * @param scrolled_view a scrolled view
- * @return Returns the vscrollbar of the scrolled view
+ * @return Returns the vertical scrollbar of the scrolled view
  */
 Etk_Range *etk_scrolled_view_vscrollbar_get(Etk_Scrolled_View *scrolled_view)
 {
@@ -93,8 +96,8 @@ Etk_Range *etk_scrolled_view_vscrollbar_get(Etk_Scrolled_View *scrolled_view)
 }
 
 /**
- * @brief A convenience function that creates a viewport, adds the child to it and attach the viewport to the scrolled view. @n
- * It's useful for widgets that have no scrolling ability
+ * @brief A convenient function that creates a viewport, attachs the child to it and adds the viewport to the
+ * scrolled view. It's useful for widgets that have no scrolling ability
  * @param scrolled_view a scrolled view
  * @param child the child to add to the viewport
  */
@@ -110,22 +113,20 @@ void etk_scrolled_view_add_with_viewport(Etk_Scrolled_View *scrolled_view, Etk_W
    else
    {
       viewport = etk_viewport_new();
+      etk_container_add(ETK_CONTAINER(scrolled_view), viewport);
       etk_widget_visibility_locked_set(viewport, ETK_TRUE);
       etk_widget_show(viewport);
-      
-      etk_container_add(ETK_CONTAINER(scrolled_view), viewport);
    }
 
    etk_container_add(ETK_CONTAINER(viewport), child);
 }
 
 /**
- * @brief Sets the policy of the hscrollbar and the vscrollbar of the scrolled view. @n
- * A policy describes when a scrollbar should appear: ETK_POLICY_SHOW always shows the scrollbar, @n
- * ETK_POLICY_HIDE always hides the scrollbar, and ETK_POLICY_AUTO determines automatically if the scrollbar should appear
+ * @brief Sets the visibility policy of the hscrollbar and the vscrollbar of the scrolled view
  * @param scrolled_view a scrolled view
- * @param hpolicy the policy to set for the hscrollbar
- * @param vpolicy the policy to set for the vscrollbar
+ * @param hpolicy the visibility policy to use for the hscrollbar
+ * @param vpolicy the visibility policy to use for the vscrollbar
+ * @see Etk_Scrolled_View_Policy
  */
 void etk_scrolled_view_policy_set(Etk_Scrolled_View *scrolled_view, Etk_Scrolled_View_Policy hpolicy, Etk_Scrolled_View_Policy vpolicy)
 {
@@ -147,10 +148,10 @@ void etk_scrolled_view_policy_set(Etk_Scrolled_View *scrolled_view, Etk_Scrolled
 }
 
 /**
- * @brief Fets the policy of the hscrollbar and the vscrollbar of the scrolled view
+ * @brief Gets the visibility policy of the hscrollbar and the vscrollbar of the scrolled view
  * @param scrolled_view a scrolled view
- * @param hpolicy the location where to set the policy of the hscrollbar
- * @param vpolicy the location where to set the policy of the vscrollbar
+ * @param hpolicy the location where to store the visibility policy of the hscrollbar
+ * @param vpolicy the location where to store the visibility policy of the vscrollbar
  */
 void etk_scrolled_view_policy_get(Etk_Scrolled_View *scrolled_view, Etk_Scrolled_View_Policy *hpolicy, Etk_Scrolled_View_Policy *vpolicy)
 {
@@ -158,9 +159,9 @@ void etk_scrolled_view_policy_get(Etk_Scrolled_View *scrolled_view, Etk_Scrolled
       return;
    
    if (hpolicy)
-      *hpolicy = scrolled_view->hpolicy;
+      *hpolicy = scrolled_view ? scrolled_view->hpolicy : ETK_POLICY_AUTO;
    if (vpolicy)
-      *vpolicy = scrolled_view->vpolicy;
+      *vpolicy = scrolled_view ? scrolled_view->vpolicy : ETK_POLICY_AUTO;
 }
 
 
@@ -170,7 +171,7 @@ void etk_scrolled_view_policy_get(Etk_Scrolled_View *scrolled_view, Etk_Scrolled
  *
  **************************/
 
-/* Initializes the members */
+/* Initializes the scrolled view */
 static void _etk_scrolled_view_constructor(Etk_Scrolled_View *scrolled_view)
 {
    if (!scrolled_view)
@@ -242,35 +243,35 @@ static void _etk_scrolled_view_property_get(Etk_Object *object, int property_id,
 }
 
 /* Calculates the ideal size for the scrolled view */
-static void _etk_scrolled_view_size_request(Etk_Widget *widget, Etk_Size *size_requisition)
+static void _etk_scrolled_view_size_request(Etk_Widget *widget, Etk_Size *size)
 {
    Etk_Scrolled_View *scrolled_view;
-   Etk_Size hscrollbar_requisition, vscrollbar_requisition, child_requisition;
+   Etk_Size hscrollbar_size, vscrollbar_size, child_size;
 
-   if (!(scrolled_view = ETK_SCROLLED_VIEW(widget)) || !size_requisition)
+   if (!(scrolled_view = ETK_SCROLLED_VIEW(widget)) || !size)
       return;
 
    if (ETK_BIN(scrolled_view)->child)
    {
-      etk_widget_size_request_full(scrolled_view->hscrollbar, &hscrollbar_requisition, ETK_FALSE);
-      etk_widget_size_request_full(scrolled_view->vscrollbar, &vscrollbar_requisition, ETK_FALSE);
-      etk_widget_size_request(ETK_BIN(scrolled_view)->child, &child_requisition);
+      etk_widget_size_request_full(scrolled_view->hscrollbar, &hscrollbar_size, ETK_FALSE);
+      etk_widget_size_request_full(scrolled_view->vscrollbar, &vscrollbar_size, ETK_FALSE);
+      etk_widget_size_request(ETK_BIN(scrolled_view)->child, &child_size);
 
-      size_requisition->w = ETK_MAX(child_requisition.w, hscrollbar_requisition.w + vscrollbar_requisition.w);
-      size_requisition->h = ETK_MAX(child_requisition.h, hscrollbar_requisition.h + vscrollbar_requisition.h);
+      size->w = ETK_MAX(child_size.w, hscrollbar_size.w + vscrollbar_size.w);
+      size->h = ETK_MAX(child_size.h, hscrollbar_size.h + vscrollbar_size.h);
    }
    else
    {
-      size_requisition->w = 0;
-      size_requisition->h = 0;
+      size->w = 0;
+      size->h = 0;
    }
 }
 
-/* Resizes the scrolled view to the size allocation */
+/* Resizes the scrolled view to the allocated size */
 static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 {
    Etk_Scrolled_View *scrolled_view;
-   Etk_Size hscrollbar_requisition, vscrollbar_requisition;
+   Etk_Size hscrollbar_size, vscrollbar_size;
    Etk_Size scrollview_size;
    Etk_Size scrollbar_size;
    Etk_Size scroll_size;
@@ -291,18 +292,18 @@ static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry ge
    }
 
    if (scrolled_view->hpolicy == ETK_POLICY_AUTO || scrolled_view->hpolicy == ETK_POLICY_SHOW)
-      etk_widget_size_request_full(scrolled_view->hscrollbar, &hscrollbar_requisition, ETK_FALSE);
+      etk_widget_size_request_full(scrolled_view->hscrollbar, &hscrollbar_size, ETK_FALSE);
    else
    {
-      hscrollbar_requisition.w = 0;
-      hscrollbar_requisition.h = 0;
+      hscrollbar_size.w = 0;
+      hscrollbar_size.h = 0;
    }
    if (scrolled_view->vpolicy == ETK_POLICY_AUTO || scrolled_view->vpolicy == ETK_POLICY_SHOW)
-      etk_widget_size_request_full(scrolled_view->vscrollbar, &vscrollbar_requisition, ETK_FALSE);
+      etk_widget_size_request_full(scrolled_view->vscrollbar, &vscrollbar_size, ETK_FALSE);
    else
    {
-      vscrollbar_requisition.w = 0;
-      vscrollbar_requisition.h = 0;
+      vscrollbar_size.w = 0;
+      vscrollbar_size.h = 0;
    }
    
    scrollview_size.w = geometry.w - child->left_inset - child->right_inset;
@@ -316,43 +317,49 @@ static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry ge
       scrollview_size.h -= margins_size.h;
    }
    
-   scrollbar_size.w = vscrollbar_requisition.w;
-   scrollbar_size.h = hscrollbar_requisition.h;
+   scrollbar_size.w = vscrollbar_size.w;
+   scrollbar_size.h = hscrollbar_size.h;
    child->scroll_size_get(child, scrollview_size, scrollbar_size, &scroll_size);
    
-   if ((scrolled_view->hpolicy == ETK_POLICY_AUTO && scroll_size.w > scrollview_size.w) || scrolled_view->hpolicy == ETK_POLICY_SHOW)
+   if ((scrolled_view->hpolicy == ETK_POLICY_AUTO && scroll_size.w > scrollview_size.w) ||
+      scrolled_view->hpolicy == ETK_POLICY_SHOW)
+   {
       show_hscrollbar = ETK_TRUE;
-   if ((scrolled_view->vpolicy == ETK_POLICY_AUTO && scroll_size.h > (scrollview_size.h - (show_hscrollbar ? hscrollbar_requisition.h : 0))) ||
+   }
+   if ((scrolled_view->vpolicy == ETK_POLICY_AUTO &&
+      scroll_size.h > (scrollview_size.h - (show_hscrollbar ? hscrollbar_size.h : 0))) ||
       scrolled_view->vpolicy == ETK_POLICY_SHOW)
    {
       show_vscrollbar = ETK_TRUE;
-      if (scrolled_view->hpolicy == ETK_POLICY_AUTO && scroll_size.w > (scrollview_size.w - vscrollbar_requisition.w))
+      if (scrolled_view->hpolicy == ETK_POLICY_AUTO && scroll_size.w > (scrollview_size.w - vscrollbar_size.w))
          show_hscrollbar = ETK_TRUE;
    }
 
+   /* Moves and resizes the hscrollbar */
    if (show_hscrollbar)
    {
-      scrollview_size.h -= hscrollbar_requisition.h;
+      scrollview_size.h -= hscrollbar_size.h;
       etk_widget_show(scrolled_view->hscrollbar);
       
       child_geometry.x = geometry.x;
-      child_geometry.y = geometry.y + geometry.h - hscrollbar_requisition.h;
-      child_geometry.w = geometry.w - (show_vscrollbar ? vscrollbar_requisition.w : 0);
-      child_geometry.h = hscrollbar_requisition.h;
+      child_geometry.y = geometry.y + geometry.h - hscrollbar_size.h;
+      child_geometry.w = geometry.w - (show_vscrollbar ? vscrollbar_size.w : 0);
+      child_geometry.h = hscrollbar_size.h;
       etk_widget_size_allocate(scrolled_view->hscrollbar, child_geometry);
    }
    else
       etk_widget_hide(scrolled_view->hscrollbar);
 
+   /* Moves and resizes the vscrollbar */
    if (show_vscrollbar)
    {
-      scrollview_size.w -= vscrollbar_requisition.w;
+      scrollview_size.w -= vscrollbar_size.w;
       etk_widget_show(scrolled_view->vscrollbar);
 
-      child_geometry.x = geometry.x + geometry.w - vscrollbar_requisition.w;
+      child_geometry.x = geometry.x + geometry.w - vscrollbar_size.w;
       child_geometry.y = geometry.y;
-      child_geometry.w = vscrollbar_requisition.w;
-      child_geometry.h = geometry.h - (show_hscrollbar ? hscrollbar_requisition.h : 0);
+      child_geometry.w = vscrollbar_size.w;
+      child_geometry.h = geometry.h - (show_hscrollbar ? hscrollbar_size.h : 0);
       etk_widget_size_allocate(scrolled_view->vscrollbar, child_geometry);
    }
    else
@@ -363,10 +370,11 @@ static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry ge
    etk_range_range_set(ETK_RANGE(scrolled_view->vscrollbar), 0, scroll_size.h);
    etk_range_page_size_set(ETK_RANGE(scrolled_view->vscrollbar), scrollview_size.h);
 
+   /* Moves and resizes the child */
    child_geometry.x = geometry.x;
    child_geometry.y = geometry.y;
-   child_geometry.w = geometry.w - (show_vscrollbar ? vscrollbar_requisition.w : 0);
-   child_geometry.h = geometry.h - (show_hscrollbar ? hscrollbar_requisition.h : 0);
+   child_geometry.w = geometry.w - (show_vscrollbar ? vscrollbar_size.w : 0);
+   child_geometry.h = geometry.h - (show_hscrollbar ? hscrollbar_size.h : 0);
    etk_widget_size_allocate(child, child_geometry);
 }
 
@@ -455,7 +463,8 @@ static void _etk_scrolled_view_child_added_cb(Etk_Object *object, void *child, v
 {
    if (!object || !child)
       return;
-   etk_signal_connect("scroll_size_changed", ETK_OBJECT(child), ETK_CALLBACK(_etk_scrolled_view_child_scroll_size_changed_cb), object); 
+   etk_signal_connect("scroll_size_changed", ETK_OBJECT(child),
+      ETK_CALLBACK(_etk_scrolled_view_child_scroll_size_changed_cb), object); 
 }
 
 /* Called when a child is removed */
@@ -463,10 +472,11 @@ static void _etk_scrolled_view_child_removed_cb(Etk_Object *object, void *child,
 {
    if (!object || !child)
       return;
-   etk_signal_disconnect("scroll_size_changed", ETK_OBJECT(child), ETK_CALLBACK(_etk_scrolled_view_child_scroll_size_changed_cb));
+   etk_signal_disconnect("scroll_size_changed", ETK_OBJECT(child), 
+      ETK_CALLBACK(_etk_scrolled_view_child_scroll_size_changed_cb));
 }
 
-/* Called when the scroll size of the child of the scrolled view has changed */
+/* Called when the scroll size of the scrolled view's child has changed */
 static void _etk_scrolled_view_child_scroll_size_changed_cb(Etk_Object *object, void *data)
 {
    Etk_Widget *child;
@@ -505,3 +515,46 @@ static void _etk_scrolled_view_child_scroll_size_changed_cb(Etk_Object *object, 
 }
 
 /** @} */
+
+/**************************
+ *
+ * Documentation
+ *
+ **************************/
+
+/**
+ * @addtogroup Etk_Scrolled_View
+ *
+ * @image html widgets/scrolled_view.png
+ * A scrolled view is made up of a hscrollbar which controls the horizontal scrolling of the child, and of a
+ * vscrollbar which controls the vertical scrolling of the child. @n
+ * These two scrollbars can have different visibility policy:
+ * - <b>ETK_POLICY_SHOW</b>: the scrollbar is always shown
+ * - <b>ETK_POLICY_HIDE</b>: the scrollbar is always hidden
+ * - <b>ETK_POLICY_AUTO</b>: the scrollbar is shown and hidden automatically whether or not the child can fit entirely in the
+ * scrolled view
+ *
+ * The visibility policy can be set with etk_scrolled_view_policy_set(). @n
+ *
+ * Most of the widgets doesn't have a scrolling ability, which means that you have to create an Etk_Viewport that
+ * implements this ability, attach the child to the viewport, and add the viewport to the scrolled view.
+ * etk_scrolled_view_add_with_viewport() is a convenient function that does that for you. @n @n
+ * 
+ * \par Object Hierarchy:
+ * - Etk_Object
+ *   - Etk_Widget
+ *     - Etk_Container
+ *       - Etk_Bin
+ *         - Etk_Scrolled_View
+ *
+ * \par Properties:
+ * @prop_name "hpolicy": The visibility policy of the horizontal scrollbar
+ * @prop_type Integer (Etk_Scrolled_View_Policy)
+ * @prop_rw
+ * @prop_val ETK_POLICY_AUTO
+ * \par
+ * @prop_name "vpolicy": The visibility policy of the vertical scrollbar
+ * @prop_type Integer (Etk_Scrolled_View_Policy)
+ * @prop_rw
+ * @prop_val ETK_POLICY_AUTO
+ */

@@ -1273,7 +1273,7 @@ static void _etk_combobox_selected_item_set(Etk_Combobox *combobox, Etk_Combobox
  *
  * combobox = etk_combobox_new();
  * etk_combobox_column_add(combobox, ETK_COMBOBOX_IMAGE, 24, ETK_FALSE, ETK_FALSE, ETK_FALSE, 0.0, 0.5);
- * etk_combobox_column_add(combobox, ETK_COMBOBOX_LABEL, 75, ETK_EXPAND, ETK_FALSE, ETK_FALSE, 0.0, 0.5);
+ * etk_combobox_column_add(combobox, ETK_COMBOBOX_LABEL, 75, ETK_TRUE, ETK_FALSE, ETK_FALSE, 0.0, 0.5);
  * etk_combobox_build(combobox);
  *
  * etk_combobox_item_append(combobox, image1, "item 1");

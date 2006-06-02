@@ -1,33 +1,47 @@
 /** @file etk_textblock.c */
+
 #include "etk_textblock.h"
 #include <stdlib.h>
 #include <string.h>
-#include <Ecore.h>
-#include <Evas_Engine_Buffer.h>
-#include "etk_utils.h"
 
-#define ETK_TEXTBLOCK_EVAS_SIZE 32
+#define ETK_TB_MAX_SEGMENT_CHARS 100
 
-static void _etk_textblock_constructor(Etk_Textblock *textblock);
-static void _etk_textblock_destructor(Etk_Textblock *textblock);
+/**
+ * @addtogroup Etk_Textblock
+ * @{
+ */
 
-static void _etk_textblock_iter_goto_prev_char_full(Etk_Textblock_Iter *iter, Etk_Bool include_new_line);
-static void _etk_textblock_iter_goto_next_char_full(Etk_Textblock_Iter *iter, Etk_Bool include_new_line);
-static void _etk_textblock_cursor_object_update(Etk_Textblock *textblock);
-static void _etk_textblock_object_evas_set(Etk_Textblock *textblock, Evas *new_evas);
+typedef struct Etk_Textblock_Object_SD
+{
+   Etk_Textblock *tb;
+   
+   Etk_Textblock_Wrap wrap;
+   
+   Evas_Object *cursor_object;
+   Evas_List *text_objects;
+} Etk_Textblock_Object_SD;
 
-static void _etk_textblock_smart_move_cb(Evas_Object *obj, Evas_Coord x, Evas_Coord y);
-static void _etk_textblock_smart_resize_cb(Evas_Object *obj, Evas_Coord w, Evas_Coord h);
-static void _etk_textblock_smart_show_cb(Evas_Object *obj);
-static void _etk_textblock_smart_hide_cb(Evas_Object *obj);
-static void _etk_textblock_smart_clip_set_cb(Evas_Object *obj, Evas_Object *clip);
-static void _etk_textblock_smart_clip_unset_cb(Evas_Object *obj);
+static void _etk_tb_constructor(Etk_Textblock *tb);
+static void _etk_tb_destructor(Etk_Textblock *tb);
+static void _etk_tb_iter_constructor(Etk_Textblock_Iter *tbi);
+static void _etk_tb_iter_destructor(Etk_Textblock_Iter *tbi);
 
-static Evas *_etk_textblock_evas = NULL;
-static unsigned char _etk_textblock_pixel_buffer[ETK_TEXTBLOCK_EVAS_SIZE * ETK_TEXTBLOCK_EVAS_SIZE * 3];
-static Evas_Textblock_Style *_etk_textblock_style = NULL;
-static Evas_Smart *_etk_textblock_smart = NULL;
-static int _etk_textblock_count = 0;
+static void _etk_tb_object_smart_add(Evas_Object *obj);
+static void _etk_tb_object_smart_del(Evas_Object *obj);
+static void _etk_tb_object_smart_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y);
+static void _etk_tb_object_smart_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h);
+static void _etk_tb_object_smart_show(Evas_Object *obj);
+static void _etk_tb_object_smart_hide(Evas_Object *obj);
+static void _etk_tb_object_smart_color_set(Evas_Object *obj, int r, int g, int b, int a);
+static void _etk_tb_object_smart_clip_set(Evas_Object *obj, Evas_Object *clip);
+static void _etk_tb_object_smart_clip_unset(Evas_Object *obj);
+
+static void _etk_tb_object_node_render(Evas_Object *tbo, const char *text);
+static int _etk_tb_object_line_render(Evas_Object *tbo, const char *text, int lx, int ly, int lw, int *lh);
+
+static Evas_Smart *_etk_tb_object_smart = NULL;
+static int _etk_tb_object_smart_use = 0;
+
 
 /**************************
  *
@@ -37,16 +51,36 @@ static int _etk_textblock_count = 0;
 
 /**
  * @brief Gets the type of an Etk_Textblock
- * @return Returns the type on an Etk_Textblock
+ * @return Returns the type of an Etk_Textblock
  */
 Etk_Type *etk_textblock_type_get()
 {
    static Etk_Type *textblock_type = NULL;
 
    if (!textblock_type)
-      textblock_type = etk_type_new("Etk_Textblock", ETK_OBJECT_TYPE, sizeof(Etk_Textblock), ETK_CONSTRUCTOR(_etk_textblock_constructor), ETK_DESTRUCTOR(_etk_textblock_destructor));
+   {
+      textblock_type = etk_type_new("Etk_Textblock", ETK_OBJECT_TYPE, sizeof(Etk_Textblock),
+         ETK_CONSTRUCTOR(_etk_tb_constructor), ETK_DESTRUCTOR(_etk_tb_destructor));
+   }
 
    return textblock_type;
+}
+
+/**
+ * @brief Gets the type of an Etk_Textblock_Iter
+ * @return Returns the type of an Etk_Textblock_Iter
+ */
+Etk_Type *etk_textblock_iter_type_get()
+{
+   static Etk_Type *textblock_iter_type = NULL;
+
+   if (!textblock_iter_type)
+   {
+      textblock_iter_type = etk_type_new("Etk_Textblock_Iter", ETK_OBJECT_TYPE, sizeof(Etk_Textblock_Iter),
+         ETK_CONSTRUCTOR(_etk_tb_iter_constructor), ETK_DESTRUCTOR(_etk_tb_iter_destructor));
+   }
+
+   return textblock_iter_type;
 }
 
 /**
@@ -58,183 +92,83 @@ Etk_Textblock *etk_textblock_new()
    return ETK_TEXTBLOCK(etk_object_new(ETK_TEXTBLOCK_TYPE, NULL));
 }
 
-/* TODO: doc */
-void etk_textblock_realize(Etk_Textblock *textblock, Evas *evas)
+/**
+ * @brief Creates a new evas object that will display the content of the textblock. @n
+ * A textblock can have several evas objects which display its content. All the evas objects are automatically updated
+ * when the textblock's content is changed.
+ * @param tb the textblock whose content will be displayed by the evas object
+ * @param evas the evas to which the object will be added
+ * @return Returns a new evas object that display the content of the textblock
+ */
+Evas_Object *etk_textblock_object_add(Etk_Textblock *tb, Evas *evas)
 {
-   if (!textblock || !evas)
-      return;
+   Evas_Object *obj;
+   Etk_Textblock_Object_SD *tbo_sd;
    
-   _etk_textblock_object_evas_set(textblock, evas);
-   
-   if (!_etk_textblock_smart)
-   {
-      _etk_textblock_smart = evas_smart_new(
-         "etk_textblock_smart_object",
-         NULL, /* add */
-         NULL, /* del */
-         NULL, /* layer_set */
-         NULL, /* raise */
-         NULL, /* lower */
-         NULL, /* stack_above */
-         NULL, /* stack_below */
-         _etk_textblock_smart_move_cb, /* move */
-         _etk_textblock_smart_resize_cb, /* resize */
-         _etk_textblock_smart_show_cb, /* show */
-         _etk_textblock_smart_hide_cb, /* hide */
-         NULL, /* color_set */
-         _etk_textblock_smart_clip_set_cb, /* clip_set */
-         _etk_textblock_smart_clip_unset_cb, /* clip_unset */
-         NULL); /* data*/
-   }
-   textblock->smart_object = evas_object_smart_add(evas, _etk_textblock_smart);
-   evas_object_smart_data_set(textblock->smart_object, textblock);
-   evas_object_smart_member_add(textblock->textblock_object, textblock->smart_object);
-   
-   /*textblock->clip = evas_object_rectangle_add(evas);
-   evas_object_color_set(textblock->clip, 255, 128, 0, 80);
-   evas_object_smart_member_add(textblock->clip, textblock->smart_object);
-   evas_object_lower(textblock->clip);*/
-   /* TODO: realize: creates selection rects, clip, cursor, timer  */
-   
-   textblock->cursor_object = evas_object_rectangle_add(evas);
-   /* TODO: theme */
-   evas_object_color_set(textblock->cursor_object, 0, 0, 0, 255);
-   evas_object_smart_member_add(textblock->cursor_object, textblock->smart_object);
-   _etk_textblock_cursor_object_update(textblock);
-}
-
-/* TODO: doc */
-void etk_textblock_unrealize(Etk_Textblock *textblock)
-{
-   if (!textblock)
-      return;
-   
-   if (textblock->cursor_timer)
-   {
-      ecore_timer_del(textblock->cursor_timer);
-      textblock->cursor_timer = NULL;
-   }
-   
-   while (textblock->selection_rects)
-   {
-      evas_object_del(textblock->selection_rects->data);
-      textblock->selection_rects = evas_list_remove_list(textblock->selection_rects, textblock->selection_rects);
-   }
-   
-   if (textblock->cursor_object)
-   {
-      evas_object_del(textblock->cursor_object);
-      textblock->cursor_object = NULL;
-   }
-   if (textblock->clip)
-   {
-      evas_object_del(textblock->clip);
-      textblock->clip = NULL;
-   }
-   if (textblock->smart_object)
-   {
-      if (textblock->textblock_object)
-         evas_object_smart_member_del(textblock->textblock_object);
-      evas_object_del(textblock->smart_object);
-      textblock->smart_object = NULL;
-   }
-   
-   _etk_textblock_object_evas_set(textblock, _etk_textblock_evas);
-}
-
-/* TODO: doc */
-void etk_textblock_text_set(Etk_Textblock *textblock, const char *text)
-{
-   Evas_List *l;
-   Etk_Textblock_Iter *iter;
-   
-   if (!textblock)
-      return;
-   
-   evas_object_textblock_text_markup_set(textblock->textblock_object, text ? text : "");
-   for (l = textblock->iterators; l; l = l->next)
-   {
-      iter = l->data;
-      etk_textblock_iter_goto_start(iter);
-   }
-}
-
-/* TODO: doc */
-Etk_Textblock_Iter *etk_textblock_iter_new(Etk_Textblock *textblock)
-{
-   Etk_Textblock_Iter *new_iter;
-   
-   if (!textblock)
+   if (!tb || !evas)
       return NULL;
    
-   new_iter = malloc(sizeof(Etk_Textblock_Iter));
-   new_iter->cursor = evas_object_textblock_cursor_new(textblock->textblock_object);
-   new_iter->textblock = textblock;
+   if (!_etk_tb_object_smart)
+   {
+      _etk_tb_object_smart = evas_smart_new("Textblock_Object",
+         _etk_tb_object_smart_add,
+         _etk_tb_object_smart_del,
+         NULL,
+         NULL,
+         NULL,
+         NULL,
+         NULL,
+         _etk_tb_object_smart_move,
+         _etk_tb_object_smart_resize,
+         _etk_tb_object_smart_show,
+         _etk_tb_object_smart_hide,
+         _etk_tb_object_smart_color_set,
+         _etk_tb_object_smart_clip_set,
+         _etk_tb_object_smart_clip_unset,
+         NULL);
+   }
+   _etk_tb_object_smart_use++;
    
-   textblock->iterators = evas_list_append(textblock->iterators, new_iter);
-   etk_textblock_iter_goto_start(new_iter);
+   obj = evas_object_smart_add(evas, _etk_tb_object_smart);
+   tbo_sd = evas_object_smart_data_get(obj);
+   tbo_sd->tb= tb;
    
-   return new_iter;
+   tb->evas_objects = evas_list_append(tb->evas_objects, obj);
+   
+   return obj;
 }
 
-/* TODO: doc */
-void etk_textblock_iter_free(Etk_Textblock_Iter *iter)
+/**
+ * @brief Sets how the text of the textblock object should be wrapped
+ * @param tbo a textblock object
+ * @param wrap the wrap mode
+ */
+void etk_textblock_wrap_set(Evas_Object *tbo, Etk_Textblock_Wrap wrap)
 {
-   if (!iter)
+   Etk_Textblock_Object_SD *tbo_sd;
+   
+   if (!tbo || !(tbo_sd = evas_object_smart_data_get(tbo)))
       return;
    
-   evas_textblock_cursor_free(iter->cursor);
-   if (iter->textblock)
-      iter->textblock->iterators = evas_list_remove(iter->textblock->iterators, iter);
-   free(iter);
+   if (tbo_sd->wrap != wrap)
+   {
+      tbo_sd->wrap = wrap;
+      /* TODO: etk_textblock_wrap_set: redraw */
+   }
 }
 
-/* TODO: doc */
-void etk_textblock_iter_copy(Etk_Textblock_Iter *iter, Etk_Textblock_Iter *dest_iter)
+/**
+ * @brief Gets the wrap mode of the textblock object
+ * @param tbo a textblock object
+ * @return Returns the wrap mode of the textblock object
+ */
+Etk_Textblock_Wrap etk_textblock_wrap_get(Evas_Object *tbo)
 {
-   if (!iter || !dest_iter || iter->textblock != dest_iter->textblock)
-      return;
-   evas_textblock_cursor_copy(iter->cursor, dest_iter->cursor);
-}
-
-/* TODO: doc */
-void etk_textblock_iter_goto_start(Etk_Textblock_Iter *iter)
-{
-   if (!iter || !iter->textblock || !iter->cursor)
-      return;
+   Etk_Textblock_Object_SD *tbo_sd;
    
-   evas_textblock_cursor_node_first(iter->cursor);
-   while (!evas_textblock_cursor_node_text_get(iter->cursor) && evas_textblock_cursor_node_next(iter->cursor));
-   evas_textblock_cursor_char_first(iter->cursor);
-   
-   /* TODO */
-   _etk_textblock_cursor_object_update(iter->textblock);
-}
-
-/* TODO: doc */
-void etk_textblock_iter_goto_end(Etk_Textblock_Iter *iter)
-{
-   if (!iter || !iter->textblock || !iter->cursor)
-      return;
-   
-   evas_textblock_cursor_node_last(iter->cursor);
-   while (!evas_textblock_cursor_node_text_get(iter->cursor) && evas_textblock_cursor_node_prev(iter->cursor));
-   evas_textblock_cursor_char_last(iter->cursor);
-   
-   /* TODO */
-   _etk_textblock_cursor_object_update(iter->textblock);
-}
-
-/* TODO: doc */
-void etk_textblock_iter_goto_prev_char(Etk_Textblock_Iter *iter)
-{
-   _etk_textblock_iter_goto_prev_char_full(iter, ETK_TRUE);
-}
-
-/* TODO: doc */
-void etk_textblock_iter_goto_next_char(Etk_Textblock_Iter *iter)
-{
-   _etk_textblock_iter_goto_next_char_full(iter, ETK_TRUE);
+   if (!tbo || !(tbo_sd = evas_object_smart_data_get(tbo)))
+      return ETK_TEXTBLOCK_WRAP_WORD;
+   return tbo_sd->wrap;
 }
 
 /**************************
@@ -243,126 +177,215 @@ void etk_textblock_iter_goto_next_char(Etk_Textblock_Iter *iter)
  *
  **************************/
 
-/* Initializes the default values of the textblock */
-static void _etk_textblock_constructor(Etk_Textblock *textblock)
+/* Initializes the textblock */
+static void _etk_tb_constructor(Etk_Textblock *tb)
 {
-   if (!textblock)
+   if (!tb)
       return;
    
-   textblock->smart_object = NULL;
-   textblock->textblock_object = NULL;
-   textblock->cursor_object = NULL;
-   textblock->clip = NULL;
-   textblock->selection_rects = NULL;
-   textblock->cursor = NULL;
-   textblock->selection_start = NULL;
-   textblock->iterators = NULL;
-   textblock->cursor_timer = NULL;
-   _etk_textblock_count++;
-   
-   if (!_etk_textblock_evas)
-   {
-      Evas_Engine_Info_Buffer *engine_info;
-      int render_method;
-      
-      if (!(render_method = evas_render_method_lookup("buffer")))
-      {
-         ETK_WARNING("Unable to use the buffer engine of Evas. Unable to create the textblock");
-         return;
-      }
-      
-      _etk_textblock_evas = evas_new();
-      evas_output_method_set(_etk_textblock_evas, render_method);
-      evas_output_size_set(_etk_textblock_evas, ETK_TEXTBLOCK_EVAS_SIZE, ETK_TEXTBLOCK_EVAS_SIZE);
-      evas_output_viewport_set(_etk_textblock_evas, 0, 0, ETK_TEXTBLOCK_EVAS_SIZE, ETK_TEXTBLOCK_EVAS_SIZE);
-      
-      if (!(engine_info = (Evas_Engine_Info_Buffer *)evas_engine_info_get(_etk_textblock_evas)))
-      {
-         ETK_WARNING("Unable to get the info of the buffer engine of Evas. Unable to create the textblock");
-         evas_free(_etk_textblock_evas);
-         _etk_textblock_evas = NULL;
-         return;
-      }
-      
-      engine_info->info.depth_type = EVAS_ENGINE_BUFFER_DEPTH_RGB24;
-      engine_info->info.dest_buffer = _etk_textblock_pixel_buffer;
-      engine_info->info.dest_buffer_row_bytes = ETK_TEXTBLOCK_EVAS_SIZE * 3;
-      engine_info->info.use_color_key = 0;
-      engine_info->info.alpha_threshold = 0;
-      engine_info->info.func.new_update_region = NULL;
-      engine_info->info.func.free_update_region = NULL;
-      evas_engine_info_set(_etk_textblock_evas, (Evas_Engine_Info *)engine_info);
-   }
-   
-   if (!_etk_textblock_style)
-   {
-      _etk_textblock_style = evas_textblock_style_new();
-      evas_textblock_style_set(_etk_textblock_style,
-         "DEFAULT='font=Vera font_size=8 align=left color=#000000 wrap=word'"
-         "center='+ font=Vera font_size=10 align=center'"
-         "/center='- \n'"
-         "right='+ font=Vera font_size=10 align=right'"
-         "/right='- \n'"
-         "blockquote='+ left_margin=+24 right_margin=+24 font=Vera font_size=10 align=left'"
-         "h1='+ font_size=20'"
-         "b='+font=Vera-Bold'"
-         "i='+font=Vera-Italic'"
-         "glow='+ style=glow color=#fff glow2_color=#fe87 glow_color=#fa14'"
-         "link='+ underline=on underline_color=#0000aa color=#0000aa'"		       
-         "red='+ color=#ff0000'"
-         "p='+ font=Vera font_size=10 align=left'"
-         "/p='- \n'"
-         "br='\n'"
-         "tab='\t'");
-   }
-   
-   textblock->textblock_object = evas_object_textblock_add(_etk_textblock_evas);
-   evas_object_textblock_style_set(textblock->textblock_object, _etk_textblock_style);
-   /* TODO: does it need to be shown */
-   evas_object_show(textblock->textblock_object);
-   
-   textblock->cursor = etk_textblock_iter_new(textblock);
-   textblock->selection_start = etk_textblock_iter_new(textblock);
+   tb->iters = NULL;
+   tb->evas_objects = NULL;
 }
 
 /* Destroys the textblock */
-static void _etk_textblock_destructor(Etk_Textblock *textblock)
+static void _etk_tb_destructor(Etk_Textblock *tb)
 {
-   if (!textblock)
+   if (!tb)
       return;
    
-   if (textblock->cursor_timer)
-      ecore_timer_del(textblock->cursor_timer);
+   while (tb->evas_objects)
+      evas_object_del(tb->evas_objects->data);
+   while (tb->iters)
+      etk_object_destroy(ETK_OBJECT(tb->iters->data));
+}
+
+/* Initializes the textblock iterator */
+static void _etk_tb_iter_constructor(Etk_Textblock_Iter *tbi)
+{
+   if (!tbi)
+      return;
    
-   while (textblock->selection_rects)
+   tbi->tb = NULL;
+}
+
+/* Destroys the textblock iterator */
+static void _etk_tb_iter_destructor(Etk_Textblock_Iter *tbi)
+{
+   if (!tbi)
+      return;
+   
+   if (tbi->tb)
+      tbi->tb->iters = evas_list_remove(tbi->tb->iters, tbi);
+}
+
+/**************************
+ *
+ * Textblock object's smart object
+ *
+ **************************/
+
+/* Initializes the new textblock object */
+static void _etk_tb_object_smart_add(Evas_Object *obj)
+{
+   Etk_Textblock_Object_SD *tbo_sd;
+   Evas *evas;
+   
+   if (!obj || !(evas = evas_object_evas_get(obj)))
+      return;
+   
+   tbo_sd = malloc(sizeof(Etk_Textblock_Object_SD));
+   tbo_sd->tb = NULL;
+   tbo_sd->wrap = ETK_TEXTBLOCK_WRAP_WORD;
+   tbo_sd->cursor_object = NULL;
+   tbo_sd->text_objects = NULL;
+   evas_object_smart_data_set(obj, tbo_sd);
+}
+
+/* Destroys the textblock object */
+static void _etk_tb_object_smart_del(Evas_Object *obj)
+{
+   Etk_Textblock_Object_SD *tbo_sd;
+   
+   if (!obj || !(tbo_sd = evas_object_smart_data_get(obj)))
+      return;
+   
+   while (tbo_sd->text_objects)
    {
-      evas_object_del(textblock->selection_rects->data);
-      textblock->selection_rects = evas_list_remove_list(textblock->selection_rects, textblock->selection_rects);
+      evas_object_del(tbo_sd->text_objects->data);
+      tbo_sd->text_objects = evas_list_remove_list(tbo_sd->text_objects, tbo_sd->text_objects);
+   }
+   evas_object_del(tbo_sd->cursor_object);
+   
+   tbo_sd->tb->evas_objects = evas_list_remove(tbo_sd->tb->evas_objects, obj);
+   
+   _etk_tb_object_smart_use--;
+   if (_etk_tb_object_smart_use <= 0)
+   {
+      evas_smart_free(_etk_tb_object_smart);
+      _etk_tb_object_smart = NULL;
+   }
+}
+
+/* Moves the textblock object */
+static void _etk_tb_object_smart_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y)
+{
+   Etk_Textblock_Object_SD *tbo_sd;
+   
+   if (!obj || !(tbo_sd = evas_object_smart_data_get(obj)))
+      return;
+}
+
+/* Resizes the textblock object */
+static void _etk_tb_object_smart_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
+{
+   Etk_Textblock_Object_SD *tbo_sd;
+   
+   if (!obj || !(tbo_sd = evas_object_smart_data_get(obj)))
+      return;
+   
+   while (tbo_sd->text_objects)
+   {
+      evas_object_del(tbo_sd->text_objects->data);
+      tbo_sd->text_objects = evas_list_remove_list(tbo_sd->text_objects, tbo_sd->text_objects);
    }
    
-   if (textblock->cursor_object)
-      evas_object_del(textblock->cursor_object);
-   if (textblock->clip)
-      evas_object_del(textblock->clip);
-   if (textblock->textblock_object)
-      evas_object_del(textblock->textblock_object);
-   if (textblock->smart_object)
-      evas_object_del(textblock->smart_object);
+   _etk_tb_object_node_render(obj, "This is a test1. This is a test2. This is a test3. This is a test4. This is a test5. "
+      "This is a test6. This is a test7. This is a test8. This is a test9. This is a test10. This is a test11. This is a test12. "
+      "This is a test13. This is a test14. This is a test15. This is a test16. This is a test17. This is a test18. This is a test19. "
+      "This is a test20. This is a test21. This is a test22. This is a test23. This is a test24. This is a test25. This is a test26. "
+      "This is a test27. This is a test28. This is a test29. This is a test30. This is a test31. This is a test32. This is a test33. "
+      "This is a test34. This is a test35. This is a test36. This is a test37. This is a test38. This is a test39. This is a test40. "
+      "This is a test6. This is a test7. This is a test8. This is a test9. This is a test10. This is a test11. This is a test12. "
+      "This is a test13. This is a test14. This is a test15. This is a test16. This is a test17. This is a test18. This is a test19. "
+      "This is a test20. This is a test21. This is a test22. This is a test23. This is a test24. This is a test25. This is a test26. "
+      "This is a test27. This is a test28. This is a test29. This is a test30. This is a test31. This is a test32. This is a test33. "
+      "This is a test34. This is a test35. This is a test36. This is a test37. This is a test38. This is a test39. This is a test40. "
+      "This is a test6. This is a test7. This is a test8. This is a test9. This is a test10. This is a test11. This is a test12. "
+      "This is a test13. This is a test14. This is a test15. This is a test16. This is a test17. This is a test18. This is a test19. "
+      "This is a test20. This is a test21. This is a test22. This is a test23. This is a test24. This is a test25. This is a test26. "
+      "This is a test27. This is a test28. This is a test29. This is a test30. This is a test31. This is a test32. This is a test33. "
+      "This is a test34. This is a test35. This is a test36. This is a test37. This is a test38. This is a test39. This is a test40. "
+      "This is a test6. This is a test7. This is a test8. This is a test9. This is a test10. This is a test11. This is a test12. "
+      "This is a test13. This is a test14. This is a test15. This is a test16. This is a test17. This is a test18. This is a test19. "
+      "This is a test20. This is a test21. This is a test22. This is a test23. This is a test24. This is a test25. This is a test26. "
+      "This is a test27. This is a test28. This is a test29. This is a test30. This is a test31. This is a test32. This is a test33. "
+      "This is a test34. This is a test35. This is a test36. This is a test37. This is a test38. This is a test39. This is a test40. "
+      "This is a test6. This is a test7. This is a test8. This is a test9. This is a test10. This is a test11. This is a test12. "
+      "This is a test13. This is a test14. This is a test15. This is a test16. This is a test17. This is a test18. This is a test19. "
+      "This is a test20. This is a test21. This is a test22. This is a test23. This is a test24. This is a test25. This is a test26. "
+      "This is a test27. This is a test28. This is a test29. This is a test30. This is a test31. This is a test32. This is a test33. "
+      "This is a test34. This is a test35. This is a test36. This is a test37. This is a test38. This is a test39. This is a test40. "
+      "This is a test6. This is a test7. This is a test8. This is a test9. This is a test10. This is a test11. This is a test12. "
+      "This is a test13. This is a test14. This is a test15. This is a test16. This is a test17. This is a test18. This is a test19. "
+      "This is a test20. This is a test21. This is a test22. This is a test23. This is a test24. This is a test25. This is a test26. "
+      "This is a test27. This is a test28. This is a test29. This is a test30. This is a test31. This is a test32. This is a test33. "
+      "This is a test34. This is a test35. This is a test36. This is a test37. This is a test38. This is a test39. This is a test40. "
+      "This is a test6. This is a test7. This is a test8. This is a test9. This is a test10. This is a test11. This is a test12. "
+      "This is a test13. This is a test14. This is a test15. This is a test16. This is a test17. This is a test18. This is a test19. "
+      "This is a test20. This is a test21. This is a test22. This is a test23. This is a test24. This is a test25. This is a test26. "
+      "This is a test27. This is a test28. This is a test29. This is a test30. This is a test31. This is a test32. This is a test33. "
+      "This is a test34. This is a test35. This is a test36. This is a test37. This is a test38. This is a test39. This is a test40. "
+      "This is a test6. This is a test7. This is a test8. This is a test9. This is a test10. This is a test11. This is a test12. "
+      "This is a test13. This is a test14. This is a test15. This is a test16. This is a test17. This is a test18. This is a test19. "
+      "This is a test20. This is a test21. This is a test22. This is a test23. This is a test24. This is a test25. This is a test26. "
+      "This is a test27. This is a test28. This is a test29. This is a test30. This is a test31. This is a test32. This is a test33. "
+      "This is a test34. This is a test35. This is a test36. This is a test37. This is a test38. This is a test39. This is a test40. "
+      "This is a test6. This is a test7. This is a test8. This is a test9. This is a test10. This is a test11. This is a test12. "
+      "This is a test13. This is a test14. This is a test15. This is a test16. This is a test17. This is a test18. This is a test19. "
+      "This is a test20. This is a test21. This is a test22. This is a test23. This is a test24. This is a test25. This is a test26. "
+      "This is a test27. This is a test28. This is a test29. This is a test30. This is a test31. This is a test32. This is a test33. "
+      "This is a test34. This is a test35. This is a test36. This is a test37. This is a test38. This is a test39. This is a test40. "
+      "This is a test6. This is a test7. This is a test8. This is a test9. This is a test10. This is a test11. This is a test12. "
+      "This is a test13. This is a test14. This is a test15. This is a test16. This is a test17. This is a test18. This is a test19. "
+      "This is a test20. This is a test21. This is a test22. This is a test23. This is a test24. This is a test25. This is a test26. "
+      "This is a test27. This is a test28. This is a test29. This is a test30. This is a test31. This is a test32. This is a test33. "
+      "This is a test34. This is a test35. This is a test36. This is a test37. This is a test38. This is a test39. This is a test40. "
+      "This is a test41. This is a test42. This is a test43.");
+}
+
+/* Shows the textblock object */
+static void _etk_tb_object_smart_show(Evas_Object *obj)
+{
+   Etk_Textblock_Object_SD *tbo_sd;
    
-   _etk_textblock_count--;
-   if (_etk_textblock_count <= 0)
-   {
-      if (_etk_textblock_style)
-      {
-         evas_textblock_style_free(_etk_textblock_style);
-         _etk_textblock_style = NULL;
-      }
-      if (_etk_textblock_evas)
-      {
-         evas_free(_etk_textblock_evas);
-         _etk_textblock_evas = NULL;
-      }
-   }
+   if (!obj || !(tbo_sd = evas_object_smart_data_get(obj)))
+      return;
+}
+
+/* Hides the textblock object */
+static void _etk_tb_object_smart_hide(Evas_Object *obj)
+{
+   Etk_Textblock_Object_SD *tbo_sd;
+   
+   if (!obj || !(tbo_sd = evas_object_smart_data_get(obj)))
+      return;
+}
+
+/* Set the color of the textblock object */
+static void _etk_tb_object_smart_color_set(Evas_Object *obj, int r, int g, int b, int a)
+{
+   Etk_Textblock_Object_SD *tbo_sd;
+   
+   if (!obj || !(tbo_sd = evas_object_smart_data_get(obj)))
+      return;
+}
+
+/* Clips the textblock object */
+static void _etk_tb_object_smart_clip_set(Evas_Object *obj, Evas_Object *clip)
+{
+   Etk_Textblock_Object_SD *tbo_sd;
+   
+   if (!obj || !(tbo_sd = evas_object_smart_data_get(obj)))
+      return;
+}
+
+/* Unclips the textblock object */
+static void _etk_tb_object_smart_clip_unset(Evas_Object *obj)
+{
+   Etk_Textblock_Object_SD *tbo_sd;
+   
+   if (!obj || !(tbo_sd = evas_object_smart_data_get(obj)))
+      return;
 }
 
 /**************************
@@ -371,290 +394,91 @@ static void _etk_textblock_destructor(Etk_Textblock *textblock)
  *
  **************************/
 
-/* TODO: doc */
-static void _etk_textblock_iter_goto_prev_char_full(Etk_Textblock_Iter *iter, Etk_Bool include_new_line)
+/* Renders a node of the textblock in a textblock object */
+static void _etk_tb_object_node_render(Evas_Object *tbo, const char *text)
 {
-   Evas_Textblock_Cursor *tmp;
-   const char *format;
+   int ox, oy, ow, oh;
+   int c = 0, res = 0;
+   int lh, y = 0;
    
-   if (!iter || !iter->textblock || !iter->cursor)
+   if (!tbo || !text)
       return;
    
-   if (!evas_textblock_cursor_char_prev(iter->cursor))
+   evas_object_geometry_get(tbo, &ox, &oy, &ow, &oh);
+   while (res >= 0)
    {
-      tmp = evas_object_textblock_cursor_new(iter->textblock->textblock_object);
-      evas_textblock_cursor_copy(iter->cursor, tmp);
-      while (evas_textblock_cursor_node_prev(tmp))
-      {
-         if (evas_textblock_cursor_node_text_get(tmp))
-         {
-            evas_textblock_cursor_char_last(tmp);
-            evas_textblock_cursor_copy(tmp, iter->cursor);
-            break;
-         }
-         if ((format = evas_textblock_cursor_node_format_get(tmp)))
-         {
-            if ((*format == '\t') || ((*format == '\n') && include_new_line))
-            {
-               evas_textblock_cursor_copy(tmp, iter->cursor);
-               break;
-            }
-         }
-      }
-      evas_textblock_cursor_free(tmp);
+      res = _etk_tb_object_line_render(tbo, &text[c], 0, y, ow, &lh);
+      c += res;
+      y += lh;
    }
-   
-   /* TODO */
-   _etk_textblock_cursor_object_update(iter->textblock);
 }
 
-/* TODO: doc */
-static void _etk_textblock_iter_goto_next_char_full(Etk_Textblock_Iter *iter, Etk_Bool include_new_line)
+/* Renders the text in a line starting at (lx, ly) and with a width of "lw", in the textblock object.
+ * The height of the new line will be stored in "lh".
+ * Returns the index of the next character to render (-1 on failure or if everything has been rendered;
+ * 0 means that nothing has been rendered) */
+static int _etk_tb_object_line_render(Evas_Object *tbo, const char *text, int lx, int ly, int lw, int *lh)
 {
-   Evas_Textblock_Cursor *tmp;
-   const char *format;
+   Evas *evas;
+   Etk_Textblock_Object_SD *tbo_sd;
+   Evas_Object *text_object;
+   char buf[ETK_TB_MAX_SEGMENT_CHARS + 1];
+   int ox, oy, ow;
+   int tw, th;
+   int res;
    
-   if (!iter || !iter->textblock || !iter->cursor)
-      return;
+   if (!tbo || !text)
+      return -1;
+   if (!(tbo_sd = evas_object_smart_data_get(tbo)) || !(evas = evas_object_evas_get(tbo)))
+      return -1;
    
-   if (!evas_textblock_cursor_char_next(iter->cursor))
+   /* TODO: get correct geometry */
+   evas_object_geometry_get(tbo, &ox, &oy, &ow, NULL);
+   if (lx > ow)
+      return 0;
+   
+   strncpy(buf, text, ETK_TB_MAX_SEGMENT_CHARS);
+   buf[ETK_TB_MAX_SEGMENT_CHARS] = '\0';
+   
+   text_object = evas_object_text_add(evas);
+   evas_object_text_font_set(text_object, "Vera", 10);
+   evas_object_text_text_set(text_object, buf);
+   evas_object_geometry_get(text_object, NULL, NULL, &tw, &th);
+   
+   if (tw > lw)
    {
-      tmp = evas_object_textblock_cursor_new(iter->textblock->textblock_object);
-      evas_textblock_cursor_copy(iter->cursor, tmp);
-      while (evas_textblock_cursor_node_next(tmp))
-      {
-         if (evas_textblock_cursor_node_text_get(tmp))
-         {
-            evas_textblock_cursor_char_first(tmp);
-            evas_textblock_cursor_copy(tmp, iter->cursor);
-            break;
-         }
-         if ((format = evas_textblock_cursor_node_format_get(tmp)))
-         {
-            if ((*format == '\t') || ((*format == '\n') && include_new_line))
-            {
-               evas_textblock_cursor_copy(tmp, iter->cursor);
-               break;
-            }
-         }
-      }
-      evas_textblock_cursor_free(tmp);
-   }
-   
-   /* TODO */
-   _etk_textblock_cursor_object_update(iter->textblock);
-}
-
-/* Updates the position and the size of the cursor object */
-static void _etk_textblock_cursor_object_update(Etk_Textblock *textblock)
-{
-   Evas_Coord tbx, tby;
-   Evas_Coord cx, cy, cw, ch;
-   
-   if (!textblock || !textblock->cursor || !textblock->cursor->cursor)
-      return;
-   if (!textblock->textblock_object || !textblock->cursor_object)
-      return;
-   
-   evas_object_geometry_get(textblock->textblock_object, &tbx, &tby, NULL, NULL);
-   evas_textblock_cursor_char_geometry_get(textblock->cursor->cursor, &cx, &cy, &cw, &ch);
-   evas_object_move(textblock->cursor_object, tbx + cx, tby + cy);
-   evas_object_resize(textblock->cursor_object, 1, ch);
-}
-
-/* Changes the evas used by the textblock object */
-static void _etk_textblock_object_evas_set(Etk_Textblock *textblock, Evas *new_evas)
-{
-   Evas_Object *new_tbo;
-   Evas_Textblock_Cursor *old_cursor, *new_cursor, *cursor;
-   const char *format;
-   const char *text;
-   Evas_List *l, *l2;
-   Etk_Textblock_Iter *iter;
-   
-   if (!textblock || !new_evas)
-      return;
-   if (new_evas == evas_object_evas_get(textblock->textblock_object))
-      return;
-   
-   new_tbo = evas_object_textblock_add(new_evas);
-   evas_object_textblock_style_set(new_tbo, _etk_textblock_style);
-   
-   for (l = textblock->iterators; l; l = l->next)
-   {
-      iter = l->data;
-      iter->evas_changed = ETK_FALSE;
-   }
-   
-   new_cursor = evas_object_textblock_cursor_new(new_tbo);
-   old_cursor = evas_object_textblock_cursor_new(textblock->textblock_object);
-   evas_textblock_cursor_node_first(new_cursor);
-   evas_textblock_cursor_node_first(old_cursor);
-   
-   do
-   {
-      /* Copy the text or the format of the node */
-      if ((format = evas_textblock_cursor_node_format_get(old_cursor)) && *format != 0)
-         evas_textblock_cursor_format_append(new_cursor, format);
-      if ((text = evas_textblock_cursor_node_text_get(old_cursor)) && *text != 0)
-         evas_textblock_cursor_text_append(new_cursor, text);
+      int wrap_pos;
+      int i, c;
+      char *wrapped_text;
       
-      /* Copy the iterators of the node */
-      for (l = textblock->iterators; l; l = l->next)
+      wrap_pos = evas_object_text_char_coords_get(text_object, lw, th / 2, NULL, NULL, NULL, NULL);
+      if (wrap_pos <= 0)
+         ;
+      else
       {
-         iter = l->data;
-         if (iter->evas_changed)
-            continue;
+         for (i = 0, c = 0; i < wrap_pos; i++)
+            c = evas_string_char_next_get(buf, c, NULL);
+         c = evas_string_char_next_get(buf, c, NULL);
          
-         evas_textblock_cursor_char_first(old_cursor);
-         if (evas_textblock_cursor_compare(old_cursor, iter->cursor) <= 0)
-         {
-            evas_textblock_cursor_char_last(old_cursor);
-            if (evas_textblock_cursor_compare(old_cursor, iter->cursor) >= 0)
-            {
-               cursor = iter->cursor;
-               iter->cursor = evas_object_textblock_cursor_new(new_tbo);
-               evas_textblock_cursor_copy(new_cursor, iter->cursor);
-               evas_textblock_cursor_pos_set(iter->cursor, evas_textblock_cursor_pos_get(cursor));
-               evas_textblock_cursor_free(cursor);
-               iter->evas_changed = ETK_TRUE;
-            }
-         }
+         wrapped_text = malloc(c);
+         snprintf(wrapped_text, c, "%s", buf);
+         evas_object_text_text_set(text_object, wrapped_text);
+         
+         res = evas_string_char_prev_get(buf, c, NULL);
       }
    }
-   while (evas_textblock_cursor_node_next(old_cursor));
+   else
+      res = -1;
    
-   if (!textblock->cursor->evas_changed)
-   {
-      ETK_WARNING("The cursor iterator has been lost during the realisation of the textblock");
-      textblock->cursor->cursor = evas_object_textblock_cursor_new(new_tbo);
-      /* TODO: move to first text node */
-      evas_textblock_cursor_node_first(textblock->cursor->cursor);
-      textblock->cursor->evas_changed = ETK_TRUE;
-   }
-   if (!textblock->selection_start->evas_changed)
-   {
-      ETK_WARNING("The selection_start iterator has been lost during the realisation of the textblock");
-      textblock->selection_start->cursor = evas_object_textblock_cursor_new(new_tbo);
-      evas_textblock_cursor_copy(textblock->cursor->cursor, textblock->selection_start->cursor);
-      textblock->selection_start->evas_changed = ETK_TRUE;
-   }
+   evas_object_move(text_object, ox + lx, oy + ly);
+   evas_object_color_set(text_object, 0, 0, 0, 255);
+   evas_object_show(text_object);
    
-   for (l = textblock->iterators; l; l = l2)
-   {
-      l2 = l->next;
-      iter = l->data;
-      /* Shouldn't happen: we can't loose iterators! */
-      if (!iter->evas_changed)
-      {
-         ETK_WARNING("An iterator has been lost during the realisation of the textblock");
-         evas_textblock_cursor_free(iter->cursor);
-         free(iter);
-         textblock->iterators = evas_list_remove_list(textblock->iterators, l);
-      }
-   }
+   tbo_sd->text_objects = evas_list_append(tbo_sd->text_objects, text_object);
    
-   evas_textblock_cursor_free(new_cursor);
-   evas_textblock_cursor_free(old_cursor);
-   evas_object_del(textblock->textblock_object);
-   textblock->textblock_object = new_tbo;
+   evas_object_geometry_get(text_object, NULL, NULL, NULL, lh);
+   
+   return res;
 }
 
-/**************************
- *
- * Smart object functions
- *
- **************************/
-
-/* Called when the smart object of the textblock is moved */
-static void _etk_textblock_smart_move_cb(Evas_Object *obj, Evas_Coord x, Evas_Coord y)
-{
-   Etk_Textblock *textblock;
-   
-   if (!obj || !(textblock = evas_object_smart_data_get(obj)))
-      return;
-   
-   /* TODO: smart_move: update selection_rects, cursor_object  */
-   if (textblock->textblock_object)
-      evas_object_move(textblock->textblock_object, x, y);
-   if (textblock->clip)
-      evas_object_move(textblock->clip, x, y);
-}
-
-/* Called when the smart object of the textblock is resized */
-static void _etk_textblock_smart_resize_cb(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
-{
-   Etk_Textblock *textblock;
-   
-   if (!obj || !(textblock = evas_object_smart_data_get(obj)))
-      return;
-   
-   /* TODO: smart_resize: update selection_rects  */
-   if (textblock->textblock_object)
-      evas_object_resize(textblock->textblock_object, w, h);
-   if (textblock->clip)
-      evas_object_resize(textblock->clip, w, h);
-   _etk_textblock_cursor_object_update(textblock);
-}
-
-/* Called when the smart object of the textblock is shown */
-static void _etk_textblock_smart_show_cb(Evas_Object *obj)
-{
-   Evas_List *l;
-   Etk_Textblock *textblock;
-   
-   if (!obj || !(textblock = evas_object_smart_data_get(obj)))
-      return;
-   
-   if (textblock->textblock_object)
-      evas_object_show(textblock->textblock_object);
-   /* TODO: smart_show: restart timer */
-   if (textblock->cursor_object)
-      evas_object_show(textblock->cursor_object);
-   if (textblock->clip)
-      evas_object_show(textblock->clip);
-   
-   for (l = textblock->selection_rects; l; l = l->next)
-      evas_object_show(l->data);
-}
-
-/* Called when the smart object of the textblock is hidden */
-static void _etk_textblock_smart_hide_cb(Evas_Object *obj)
-{
-   Evas_List *l;
-   Etk_Textblock *textblock;
-   
-   if (!obj || !(textblock = evas_object_smart_data_get(obj)))
-      return;
-   
-   if (textblock->textblock_object)
-      evas_object_hide(textblock->textblock_object);
-   /* TODO: smart_hide: stop timer */
-   if (textblock->cursor_object)
-      evas_object_hide(textblock->cursor_object);
-   if (textblock->clip)
-      evas_object_hide(textblock->clip);
-   
-   for (l = textblock->selection_rects; l; l = l->next)
-      evas_object_hide(l->data);
-}
-
-/* Called when the smart object of the textblock is clipped */
-static void _etk_textblock_smart_clip_set_cb(Evas_Object *obj, Evas_Object *clip)
-{
-   Etk_Textblock *textblock;
-   
-   if (!obj || !clip || !(textblock = evas_object_smart_data_get(obj)) || !textblock->clip)
-      return;
-   evas_object_clip_set(textblock->clip, clip);
-}
-
-/* Called when the smart object of the textblock is unclipped */
-static void _etk_textblock_smart_clip_unset_cb(Evas_Object *obj)
-{
-   Etk_Textblock *textblock;
-   
-   if (!obj || !(textblock = evas_object_smart_data_get(obj)) || !textblock->clip)
-      return;
-   evas_object_clip_unset(textblock->clip);
-}
+/** @} */

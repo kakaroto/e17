@@ -32,7 +32,8 @@ etk_stock.h \
 etk_label.h \
 etk_textblock.h etk_editable_text_object.h \
 etk_button.h etk_toggle_button.h etk_check_button.h etk_radio_button.h \
-etk_entry.h etk_text_view.h \
+etk_entry.h \
+etk_text_view.h \
 etk_canvas.h \
 etk_colorpicker.h \
 etk_tree.h etk_tree_model.h \
@@ -45,7 +46,6 @@ etk_statusbar.h \
 etk_filechooser_widget.h \
 etk_notebook.h \
 etk_progress_bar.h \
-etk_spin_button.h \
 etk_dnd.h \
 etk_clipboard.h \
 etk_selection.h \
@@ -72,7 +72,8 @@ etk_stock.c \
 etk_label.c \
 etk_textblock.c etk_editable_text_object.c \
 etk_button.c etk_toggle_button.c etk_check_button.c etk_radio_button.c \
-etk_entry.c etk_text_view.c \
+etk_entry.c \
+etk_text_view.c \
 etk_canvas.c \
 etk_colorpicker.c \
 etk_tree.c etk_tree_model.c \
@@ -85,7 +86,6 @@ etk_statusbar.c \
 etk_filechooser_widget.c \
 etk_notebook.c \
 etk_progress_bar.c \
-etk_spin_button.c \
 etk_dnd.c \
 etk_clipboard.c \
 etk_selection.c \

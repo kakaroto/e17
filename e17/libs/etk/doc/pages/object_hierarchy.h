@@ -45,8 +45,9 @@
  *     - Etk_Range
  *       - Etk_Scrollbar
  *       - Etk_Slider
- *     - Etk_HSeparator
- *     - Etk_VSeparator
+ *     - Etk_Separator
+ *       - Etk_HSeparator
+ *       - Etk_VSeparator
  *     - Etk_Statusbar
  *     - Etk_Text_View
  *     - Etk_Tree
