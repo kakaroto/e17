@@ -33,7 +33,6 @@ e_modapi_init(E_Module *m)
    bind_textdomain_codeset(PACKAGE, "UTF-8");
 
    snow = _snow_init(m);
-   m->config_menu = _snow_config_menu_new(snow);
    return snow;
 }
 
@@ -45,12 +44,6 @@ e_modapi_shutdown(E_Module *m)
    snow = m->data;
    if (snow)
      {
-        if (m->config_menu)
-          {
-             e_menu_deactivate(m->config_menu);
-             e_object_del(E_OBJECT(m->config_menu));
-             m->config_menu = NULL;
-          }
         if (snow->config_dialog)
           {
              e_object_del(E_OBJECT(snow->config_dialog));
@@ -70,13 +63,6 @@ e_modapi_save(E_Module *m)
    if (!snow)
       return 1;
    e_config_domain_save("module.snow", snow->conf_edd, snow->conf);
-   return 1;
-}
-
-EAPI int
-e_modapi_info(E_Module *m)
-{
-   m->icon_file = strdup(PACKAGE_DATA_DIR "/module_icon.png");
    return 1;
 }
 
