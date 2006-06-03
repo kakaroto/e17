@@ -5,7 +5,8 @@ SUBDIRS = data po
 # data files for the module
 filesdir = $(datadir)
 files_DATA = \
-module_icon.png
+module_icon.png \
+module.eap
 
 EXTRA_DIST = $(files_DATA) e_modules-mount.spec
 
