@@ -99,11 +99,8 @@ return NULL;
 }
    
 
-      /* actually init buttons */ 
-      calendar = _calendar_new();
-   
-
-module->config_menu = calendar->config_menu;
+     /* actually init buttons */
+     calendar = _calendar_new();
    
 
 return calendar;
@@ -125,25 +122,6 @@ e_modapi_shutdown(E_Module *module)
 
 Calendar *calendar;
 
-   
-
-
-if (module->config_menu)
-      
-
-     {
-        
-
-e_menu_deactivate(module->config_menu);
-        
-
-e_object_del(E_OBJECT(module->config_menu));
-        
-
-module->config_menu = NULL;
-     
-
-}
    
 
 
@@ -190,28 +168,6 @@ return 1;
 
 
 }
-
-
-/***************************************************
-/ Function: 
-/ Purpose:  
-/
-******************************************************/ 
-/* * int e_modapi_info(E_Module*) - Setup module specific infomation */ 
-EAPI int 
-e_modapi_info(E_Module *module) 
-{
-   
-
-module->icon_file = strdup(PACKAGE_DATA_DIR "/module_icon.png");
-   
-
-return 1;
-
-
-}
-
-
 /***************************************************
 / Function: 
 / Purpose:  
@@ -773,9 +729,6 @@ _calendar_count--;
    
 
 evas_list_free(calendar->faces);
-   
-
-e_object_del(E_OBJECT(calendar->config_menu));
    
 
 
