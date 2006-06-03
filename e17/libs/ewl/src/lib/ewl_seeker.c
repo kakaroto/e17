@@ -131,6 +131,8 @@ ewl_seeker_init(Ewl_Seeker *s)
 			    ewl_seeker_mouse_up_cb, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
 			    ewl_seeker_mouse_move_cb, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_KEY_DOWN,
+			    ewl_seeker_key_down_cb, NULL);
 
 	/*
 	 * Append a callback for catching mouse movements on the button and
@@ -739,6 +741,64 @@ ewl_seeker_mouse_up_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	s->timer = NULL;
 	s->start_time = 0;
 	s->dragstart = 0;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: The Ewl_Event_Key_Down data
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The key down callback
+ */
+void
+ewl_seeker_key_down_cb(Ewl_Widget *w, void *ev_data,
+				void *user_data __UNUSED__)
+{
+	Ewl_Seeker *s;
+	Ewl_Event_Key_Down *ev;
+	double start, end;
+
+	void (*increase)(Ewl_Seeker *s);
+	void (*decrease)(Ewl_Seeker *s);
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("ev_data", ev_data);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	ev = ev_data;
+	s = EWL_SEEKER(w);
+
+	if (!s->invert) {
+		increase = ewl_seeker_increase;
+		decrease = ewl_seeker_decrease;
+		start = 0.0;
+		end = s->range;
+	}
+	else {
+		increase = ewl_seeker_decrease;
+		decrease = ewl_seeker_increase;
+		start = s->range;
+		end = 0.0;
+	}
+
+	if (!strcmp(ev->keyname, "Home"))
+		ewl_seeker_value_set(s, start);
+	else if (!strcmp(ev->keyname, "End"))
+		ewl_seeker_value_set(s, end);
+	else if (!strcmp(ev->keyname, "Left")
+			|| !strcmp(ev->keyname, "KP_Left")
+			|| !strcmp(ev->keyname, "Up")
+			|| !strcmp(ev->keyname, "KP_Up"))
+		decrease(s);
+	else if (!strcmp(ev->keyname, "Right")
+			|| !strcmp(ev->keyname, "KP_Right")
+			|| !strcmp(ev->keyname, "Down")
+			|| !strcmp(ev->keyname, "KP_Down"))
+		increase(s);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
