@@ -9,7 +9,8 @@ EDJE_FLAGS = -v
 filesdir = $(datadir)
 files_DATA = \
 NoImage_icon.png \
-module_icon.png 
+module_icon.png \
+../module.eap
 
 EXTRA_DIST = $(files_DATA)
 
