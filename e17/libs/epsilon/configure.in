@@ -103,9 +103,9 @@ if test X"$ac_use_plugin_xine" = Xyes; then
             AC_DEFINE(HAVE_LIBXINE, 1, libxine thumbnailer)
             xine="xine "],
            [AC_PATH_GENERIC(xine, 1.0.0, [
-              xine_cflags=`xine-config --cflags`
-              xine_libs=`xine-config --libs`
-              xine_plugins=`xine-config --plugindir`
+              xine_CFLAGS=`xine-config --cflags`
+              xine_LIBS=`xine-config --libs`
+              xine_PLUGINS=`xine-config --plugindir`
               AC_DEFINE(HAVE_LIBXINE, 1, build xinefile thumbnailer)
               xine="xine"],[
               AC_MSG_WARN([libxine too old; no thumbnails for videos...])])])
