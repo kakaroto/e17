@@ -87,7 +87,7 @@ collections
 		       color3:   0   0   0  70;
 		       text
 			 {
-			    text:  "30";
+			    text:  "";
 			    font:  "Vera Bold";
 			    size:  10;
 			    min:   1 1;
@@ -193,7 +193,7 @@ collections
 		       color3:   0   0   0  60;
 		       text
 			 {
-			    text:  "Fair";
+			    text:  "";
 			    font:  "Vera Bold";
 			    size:  8;
 			    min:   1 1;
@@ -221,7 +221,7 @@ collections
 		       color3:   0   0   0  60;
 		       text
 			 {
-			    text:  "Fair";
+			    text:  "";
 			    font:  "Vera Bold";
 			    size:  8;
 			    min:   1 1;
