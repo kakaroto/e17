@@ -112,6 +112,49 @@ collections
 		       color: 255 255 255 192;
 		    }
 	       }
+	     part 
+	       {
+		  name: "net_label";
+		  type: TEXT;
+		  clip_to: "fade_clip";
+		  effect: SOFT_SHADOW;
+		  description 
+		    {
+		       state: "default" 0.0;
+		       color: 255 255 255 0;
+		       color3: 0 0 0 0;
+		       visible: 0;
+		       rel1 
+			 {
+			    relative: 0.0 0.0;
+			    offset: 0 0;
+			    to: "net";
+			 }
+		       rel2 
+			 {
+			    relative: 1.0 1.0;
+			    offset: -1 -1;
+			    to: "net";
+			 }
+		       text 
+			 {
+			    text: "Device";
+			    font: "VeraMono";
+			    size: 9;
+			    min: 1 1;
+			    align: 0.5 0.5;
+			    text_class: "module_normal";
+			 }
+		    }
+		  description 
+		    {
+		       state: "visible" 0.0;
+		       inherit: "default" 0.0;
+		       visible: 1;
+		       color: 255 255 255 255;
+		       color3: 0 0 0 42;
+		    }
+	       }
 	     part
 	       {
 		  name: "rx_meter";
@@ -442,6 +485,7 @@ collections
 		  transition: SINUSOIDAL 0.5;
 		  target: "rx_label";
 		  target: "tx_label";
+		  target: "net_label";
 		  //after: "go_passive2";
 	       }
 	     program 
@@ -462,6 +506,7 @@ collections
 		  transition: SINUSOIDAL 1.0;		  
 		  target: "rx_label";
 		  target: "tx_label";
+		  target: "net_label";
 	       }
 	  }
      }

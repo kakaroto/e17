@@ -468,6 +468,8 @@ _net_cb_check(void *data)
    inst->old_in = in;
    inst->old_out = out;
 
+   edje_object_part_text_set(inst->net_obj, "net_label", ci->device);
+   
    if (bytes_in <= 0)
       edje_object_part_text_set(inst->net_obj, "rx_label", "Rx: 0 B");
    else
