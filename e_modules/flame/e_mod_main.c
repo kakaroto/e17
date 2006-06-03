@@ -55,7 +55,6 @@ e_modapi_init(E_Module *m)
    bind_textdomain_codeset(PACKAGE, "UTF-8");
 
    f = _flame_init(m);
-   m->config_menu = _flame_config_menu_new(f);
    return f;
 }
 
@@ -67,12 +66,6 @@ e_modapi_shutdown(E_Module *m)
    f = m->data;
    if (f)
      {
-        if (m->config_menu)
-          {
-             e_menu_deactivate(m->config_menu);
-             e_object_del(E_OBJECT(m->config_menu));
-             m->config_menu = NULL;
-          }
         if (f->config_dialog)
           {
              e_object_del(E_OBJECT(f->config_dialog));
@@ -91,13 +84,6 @@ e_modapi_save(E_Module *m)
    f = m->data;
    if (f)
       e_config_domain_save("module.flame", f->conf_edd, f->conf);
-   return 1;
-}
-
-EAPI int
-e_modapi_info(E_Module *m)
-{
-   m->icon_file = strdup(PACKAGE_DATA_DIR "/module_icon.png");
    return 1;
 }
 
