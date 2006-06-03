@@ -1,7 +1,9 @@
 MAINTAINERCLEANFILES = Makefile.in
 SUBDIRS = src data patches po
 
-EXTRA_DIST=TODO TODO.rus COPYING COPYING-PLAIN autogen.sh m4/*.m4 e_modules-evolume.spec e_modules-evolume.spec.in
+EXTRA_DIST=TODO TODO.rus COPYING COPYING-PLAIN autogen.sh m4/*.m4 \
+e_modules-evolume.spec e_modules-evolume.spec.in module.eap
+
 
 # data files for the module
 filesdir = @e_modules@/evolume/
