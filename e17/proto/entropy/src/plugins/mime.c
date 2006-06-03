@@ -53,6 +53,7 @@ entropy_plugin_init (entropy_core * core)
   ecore_hash_set (mime_hash, ".tar", "application/x-tar");
   ecore_hash_set (mime_hash, ".txt", "text/plain");
   ecore_hash_set (mime_hash, ".mov", "video/quicktime");
+  ecore_hash_set (mime_hash, ".asf", "video/x-ms-asf");
 
   plugin = entropy_malloc(sizeof(Entropy_Plugin_Mime));
 
