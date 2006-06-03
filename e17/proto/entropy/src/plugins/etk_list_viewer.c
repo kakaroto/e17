@@ -756,7 +756,7 @@ entropy_plugin_gui_instance_new (entropy_core * core,
   etk_tree_multiple_select_set(ETK_TREE(viewer->tree), ETK_TRUE); 
   etk_tree_build(ETK_TREE(viewer->tree));
 
-  etk_widget_size_request_set(viewer->tree, 600, 600);
+  //etk_widget_size_request_set(viewer->tree, 600, 600);
 
   instance->data = viewer;
   instance->core = core;

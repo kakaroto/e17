@@ -11,6 +11,10 @@
 #include <Ecore.h>
 #include <stdlib.h>
 
+#define ENTROPY_ETK_WINDOW_WIDTH 640
+#define ENTROPY_ETK_WINDOW_HEIGHT 480
+#define ENTROPY_ETK_WINDOW_PANE_DEFAULT_X 150
+
 
 //This is here mostly as a demo of the "widget library independence" of entropy, but is on hold
 //for the moment until ETK supports more widgets that we need
@@ -235,6 +239,7 @@ void entropy_etk_layout_tree_cb(Etk_Object* obj, void* data)
 
 	if (!etk_widget_is_visible(gui->tree)) {
 		etk_widget_show_all(gui->tree);
+		etk_paned_position_set(ETK_PANED(gui->paned), ENTROPY_ETK_WINDOW_PANE_DEFAULT_X);
 	} else {
 		etk_widget_hide(gui->tree);
 		etk_paned_position_set(ETK_PANED(gui->paned), 0);
@@ -536,6 +541,7 @@ entropy_plugin_layout_create (entropy_core * core)
   etk_signal_connect("key_down", ETK_OBJECT(window), ETK_CALLBACK(_entropy_etk_layout_key_down_cb), layout);
   
   gui->paned = etk_hpaned_new();
+  
 
   etk_signal_connect ("delete_event", ETK_OBJECT (window),
 		      ETK_CALLBACK (_etk_window_deleted_cb), layout);
@@ -556,7 +562,7 @@ entropy_plugin_layout_create (entropy_core * core)
   etk_tree_col_expand_set(col, ETK_TRUE);
   etk_tree_build(ETK_TREE(gui->tree));
 
-  etk_widget_size_request_set(gui->tree, 230, 600);
+  etk_widget_size_request_set(ETK_WIDGET(gui->tree), ENTROPY_ETK_WINDOW_PANE_DEFAULT_X, 50);
 
   /*LocalShell Init*/
   gui->localshell = etk_vbox_new(ETK_TRUE,0);
@@ -711,6 +717,9 @@ entropy_plugin_layout_create (entropy_core * core)
 
   /*Increment the window counter*/
   _etk_layout_window_count++;
+
+  etk_paned_position_set(ETK_PANED(gui->paned), ENTROPY_ETK_WINDOW_PANE_DEFAULT_X);
+  etk_window_resize(ETK_WINDOW(window), ENTROPY_ETK_WINDOW_WIDTH, ENTROPY_ETK_WINDOW_HEIGHT);
 
   return layout;
 }
