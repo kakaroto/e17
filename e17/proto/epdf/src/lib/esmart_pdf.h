@@ -11,6 +11,7 @@ struct _Smart_Pdf
   Evas_Object          *obj;
   char                 *filename;
   int                   page;
+  int                   page_length;
 
   Epdf_Document        *pdf_document;
   Epdf_Page            *pdf_page;
@@ -34,5 +35,11 @@ Epdf_Page_Orientation esmart_pdf_orientation_get (Evas_Object *obj);
 
 void                  esmart_pdf_scale_set (Evas_Object *obj, double hscale, double vscale);
 void                  esmart_pdf_scale_get (Evas_Object *obj, double *hscale, double *vscale);
+void                  esmart_pdf_page_next (Evas_Object *obj);
+void                  esmart_pdf_page_previous (Evas_Object *obj);
+void                  esmart_pdf_page_page_length_set (Evas_Object *obj, int page_length);
+int                   esmart_pdf_page_page_length_get (Evas_Object *obj);
+void                  esmart_pdf_page_page_next (Evas_Object *obj);
+void                  esmart_pdf_page_page_previous (Evas_Object *obj);
 
 #endif /* __ESMART_PDF_H__ */

@@ -28,6 +28,7 @@ struct Ewl_Pdf
 {
 	Ewl_Image             image;
 	int                   page;
+	int                   page_length;
 
 	Epdf_Document        *pdf_document;
 	Epdf_Page            *pdf_page;
@@ -65,6 +66,12 @@ Epdf_Page_Orientation ewl_pdf_orientation_get (Ewl_Pdf *pdf);
 
 void                  ewl_pdf_scale_set (Ewl_Pdf *pdf, double hscale, double vscale);
 void                  ewl_pdf_scale_get (Ewl_Pdf *pdf, double *hscale, double *vscale);
+void                  ewl_pdf_page_next (Ewl_Pdf *pdf);
+void                  ewl_pdf_page_previous (Ewl_Pdf *pdf);
+void                  ewl_pdf_page_page_length_set (Ewl_Pdf *pdf, int page_length);
+int                   ewl_pdf_page_page_length_get (Ewl_Pdf *pdf);
+void                  ewl_pdf_page_page_next (Ewl_Pdf *pdf);
+void                  ewl_pdf_page_page_previous (Ewl_Pdf *pdf);
 
 /*
  * Internally used callbacks, override at your own risk.

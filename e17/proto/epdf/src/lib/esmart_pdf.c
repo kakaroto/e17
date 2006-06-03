@@ -104,6 +104,7 @@ esmart_pdf_init (Evas_Object *obj)
   if (sp->filename) free (sp->filename);
   sp->filename = NULL;
   sp->page = 0;
+  sp->page_length = 10;
 
   sp->pdf_document = NULL;
   sp->pdf_page = NULL;
@@ -190,8 +191,8 @@ esmart_pdf_page_set (Evas_Object *obj, int page)
       (page == sp->page))
     return;
 
-    sp->page = page;
-    _smart_page_render (obj);
+  sp->page = page;
+  _smart_page_render (obj);
 }
 
 /**
@@ -364,6 +365,84 @@ esmart_pdf_scale_get (Evas_Object *obj,
       if (vscale)
          *vscale = sp->vscale;
   }
+}
+
+void
+esmart_pdf_page_next (Evas_Object *obj)
+{
+  Smart_Pdf *sp;
+  int        page;
+
+  E_SMART_OBJ_GET(sp, obj, E_OBJ_NAME);
+
+  page = sp->page;
+  if (page < (epdf_document_page_count_get(sp->pdf_document) - 1))
+    page++;
+  esmart_pdf_page_set (obj, page);
+}
+
+void
+esmart_pdf_page_previous (Evas_Object *obj)
+{
+  Smart_Pdf *sp;
+  int        page;
+
+  E_SMART_OBJ_GET(sp, obj, E_OBJ_NAME);
+
+  page = sp->page;
+  if (page > 0)
+    page--;
+  esmart_pdf_page_set (obj, page);
+}
+
+void
+esmart_pdf_page_page_length_set (Evas_Object *obj, int page_length)
+{
+  Smart_Pdf *sp;
+
+  E_SMART_OBJ_GET(sp, obj, E_OBJ_NAME);
+
+  if ((page_length <= 0) || (sp->page_length == page_length))
+    return;
+  sp->page_length = page_length;
+}
+
+int
+esmart_pdf_page_page_length_get (Evas_Object *obj)
+{
+  Smart_Pdf *sp;
+
+  E_SMART_OBJ_GET_RETURN(sp, obj, E_OBJ_NAME, 0);
+
+  return sp->page_length;
+}
+
+void
+esmart_pdf_page_page_next (Evas_Object *obj)
+{
+  Smart_Pdf *sp;
+  int        page;
+
+  E_SMART_OBJ_GET(sp, obj, E_OBJ_NAME);
+
+  page = sp->page + sp->page_length;
+  if (page > (epdf_document_page_count_get(sp->pdf_document) - 1))
+    page = epdf_document_page_count_get(sp->pdf_document) - 1;
+  esmart_pdf_page_set (obj, sp->page);
+}
+
+void
+esmart_pdf_page_page_previous (Evas_Object *obj)
+{
+  Smart_Pdf *sp;
+  int        page;
+
+  E_SMART_OBJ_GET(sp, obj, E_OBJ_NAME);
+
+  page = sp->page - sp->page_length;
+  if (page < 0)
+    page = 0;
+  esmart_pdf_page_set (obj, page);
 }
 
 

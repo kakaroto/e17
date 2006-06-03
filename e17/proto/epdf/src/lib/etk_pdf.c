@@ -375,6 +375,80 @@ void etk_pdf_scale_get (Etk_Pdf *pdf, double *hscale, double *vscale)
   }
 }
 
+void
+etk_pdf_page_next (Etk_Pdf *pdf)
+{
+  int page;
+
+  if (!pdf)
+    return;
+
+  page = pdf->page + 1;
+  if (page >= epdf_document_page_count_get(pdf->pdf_document))
+    page = epdf_document_page_count_get(pdf->pdf_document) - 1;
+  etk_pdf_page_set (pdf, page);
+}
+
+void
+etk_pdf_page_previous (Etk_Pdf *pdf)
+{
+  int page;
+
+  if (!pdf)
+    return;
+
+  page = pdf->page - 1;
+  if (page < 0)
+    page = 0;
+  etk_pdf_page_set (pdf, page);
+}
+
+void
+etk_pdf_page_page_length_set (Etk_Pdf *pdf, int page_length)
+{
+  if (!pdf || (page_length <= 0) || (pdf->page_length == page_length))
+    return;
+
+  pdf->page_length = page_length;
+}
+
+int
+etk_pdf_page_page_length_get (Etk_Pdf *pdf)
+{
+  if (!pdf)
+    return 0;
+
+  return pdf->page_length;
+}
+
+void
+etk_pdf_page_page_next (Etk_Pdf *pdf)
+{
+  int page;
+
+  if (!pdf)
+    return;
+
+  page = pdf->page + pdf->page_length;
+  if (page >= epdf_document_page_count_get(pdf->pdf_document))
+    page = epdf_document_page_count_get(pdf->pdf_document) - 1;
+  etk_pdf_page_set (pdf, page);
+}
+
+void
+etk_pdf_page_page_previous (Etk_Pdf *pdf)
+{
+  int page;
+
+  if (!pdf)
+    return;
+
+  page = pdf->page - pdf->page_length;
+  if (page < 0)
+    page = 0;
+  etk_pdf_page_set (pdf, page);
+}
+
 /**************************
  *
  * Etk specific functions
@@ -392,6 +466,7 @@ static void _etk_pdf_constructor(Etk_Pdf *pdf)
    pdf->pdf_object = NULL;
    pdf->filename = NULL;
    pdf->page = 0;
+   pdf->page_length = 10;
 
    pdf->pdf_document = NULL;
    pdf->pdf_page = NULL;

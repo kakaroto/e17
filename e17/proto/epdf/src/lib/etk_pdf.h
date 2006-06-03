@@ -32,6 +32,7 @@ struct _Etk_Pdf
    Evas_Object          *pdf_object;
    char                 *filename;
    int                   page;
+   int                   page_length;
 
    Epdf_Document        *pdf_document;
    Epdf_Page            *pdf_page;
@@ -70,6 +71,12 @@ Epdf_Page_Orientation etk_pdf_orientation_get (Etk_Pdf *pdf);
 
 void                  etk_pdf_scale_set (Etk_Pdf *pdf, double hscale, double vscale);
 void                  etk_pdf_scale_get (Etk_Pdf *pdf, double *hscale, double *vscale);
+void                  etk_pdf_page_next (Etk_Pdf *pdf);
+void                  etk_pdf_page_previous (Etk_Pdf *pdf);
+void                  etk_pdf_page_page_length_set (Etk_Pdf *pdf, int page_length);
+int                   etk_pdf_page_page_length_get (Etk_Pdf *pdf);
+void                  etk_pdf_page_page_next (Etk_Pdf *pdf);
+void                  etk_pdf_page_page_previous (Etk_Pdf *pdf);
 
 /** @} */
 

@@ -77,6 +77,7 @@ ewl_pdf_init(Ewl_Pdf *pdf)
 
 	i->path = NULL;
 	pdf->page = 0;
+	pdf->page_length = 10;
 
 	pdf->pdf_document = NULL;
 	pdf->pdf_page = NULL;
@@ -185,6 +186,7 @@ void ewl_pdf_page_set(Ewl_Pdf *pdf, int page)
                 DLEAVE_FUNCTION(DLEVEL_STABLE);
 
 	pdf->page = page;
+	ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -385,9 +387,10 @@ ewl_pdf_orientation_set (Ewl_Pdf *pdf, Epdf_Page_Orientation o)
 	DCHECK_TYPE("pdf", pdf, "pdf");
 
 	if (!pdf || !pdf->pdf_page || (pdf->orientation == o))
-		return;
+		DLEAVE_FUNCTION(DLEVEL_STABLE);
 
 	pdf->orientation = o;
+	ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -400,7 +403,7 @@ ewl_pdf_orientation_get (Ewl_Pdf *pdf)
 	DCHECK_TYPE_RET("pdf", pdf, "pdf", 0);
 
 	if (!pdf || !pdf->pdf_page)
-		return EPDF_PAGE_ORIENTATION_PORTRAIT;
+		DRETURN_INT(EPDF_PAGE_ORIENTATION_PORTRAIT, DLEVEL_STABLE);
 
 	DRETURN_INT(epdf_page_orientation_get (pdf->pdf_page), DLEVEL_STABLE);
 }
@@ -413,10 +416,11 @@ ewl_pdf_scale_set (Ewl_Pdf *pdf, double hscale, double vscale)
 	DCHECK_TYPE("pdf", pdf, "pdf");
 
 	if (!pdf)
-		return;
+		DLEAVE_FUNCTION(DLEVEL_STABLE);
 
 	if (hscale != pdf->hscale) pdf->hscale = hscale;
 	if (vscale != pdf->vscale) pdf->vscale = vscale;
+	ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -436,6 +440,114 @@ ewl_pdf_scale_get (Ewl_Pdf *pdf, double *hscale, double *vscale)
 		if (hscale) *hscale = pdf->hscale;
 		if (vscale) *vscale = pdf->vscale;
 	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_pdf_page_next (Ewl_Pdf *pdf)
+{
+	int page;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("pdf", pdf);
+	DCHECK_TYPE("pdf", pdf, "pdf");
+
+	if (!pdf)
+		DLEAVE_FUNCTION(DLEVEL_STABLE);
+
+	page = pdf->page;
+	if (page < (epdf_document_page_count_get(pdf->pdf_document) - 1))
+		page++;
+	ewl_pdf_page_set (pdf, page);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_pdf_page_previous (Ewl_Pdf *pdf)
+{
+	int page;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("pdf", pdf);
+	DCHECK_TYPE("pdf", pdf, "pdf");
+
+	if (!pdf)
+		DLEAVE_FUNCTION(DLEVEL_STABLE);
+
+	page = pdf->page;
+	if (page > 0)
+		page--;
+	ewl_pdf_page_set (pdf, page);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_pdf_page_page_length_set (Ewl_Pdf *pdf, int page_length)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("pdf", pdf);
+	DCHECK_TYPE("pdf", pdf, "pdf");
+
+	if (!pdf || (page_length <= 0) || (pdf->page_length == page_length))
+		DLEAVE_FUNCTION(DLEVEL_STABLE);
+
+	pdf->page_length = page_length;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+int
+ewl_pdf_page_page_length_get (Ewl_Pdf *pdf)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("pdf", pdf, 0);
+	DCHECK_TYPE_RET("pdf", pdf, "pdf", 0);
+
+	if (!pdf)
+		DRETURN_INT(0, DLEVEL_STABLE);
+
+	DRETURN_INT(pdf->page_length, DLEVEL_STABLE);
+}
+
+void
+ewl_pdf_page_page_next (Ewl_Pdf *pdf)
+{
+	int page;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("pdf", pdf);
+	DCHECK_TYPE("pdf", pdf, "pdf");
+
+	if (!pdf)
+		DLEAVE_FUNCTION(DLEVEL_STABLE);
+
+	page = pdf->page + pdf->page_length;
+	if (page >= epdf_document_page_count_get(pdf->pdf_document))
+		page = epdf_document_page_count_get(pdf->pdf_document) - 1;
+	ewl_pdf_page_set (pdf, page);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_pdf_page_page_previous (Ewl_Pdf *pdf)
+{
+	int page;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("pdf", pdf);
+	DCHECK_TYPE("pdf", pdf, "pdf");
+
+	if (!pdf)
+		DLEAVE_FUNCTION(DLEVEL_STABLE);
+
+	page = pdf->page - pdf->page_length;
+	if (page < 0)
+		page = 0;
+	ewl_pdf_page_set (pdf, page);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
