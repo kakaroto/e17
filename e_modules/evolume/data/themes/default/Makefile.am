@@ -7,7 +7,8 @@ EDJE_FLAGS = -v \
 filesdir = @E_MODULES@/$(PACKAGE)
 
 files_DATA = module_icon.png \
-	     volume.edj
+	     volume.edj \
+	     ../../../module.eap
 
 EXTRA_DIST = ./default.edc \
 	     ./groups/mixer_entry.edc \
