@@ -4,7 +4,7 @@
 rm -f config.cache
 
 AC_PREREQ(2.59)
-AC_INIT(moon, 0.2.0)
+AC_INIT(moon, 0.2.1)
 AC_CONFIG_SRCDIR([src/e_mod_main.c])
 AC_CONFIG_HEADER([config.h])
 AC_CANONICAL_HOST

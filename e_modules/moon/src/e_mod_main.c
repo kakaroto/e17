@@ -118,17 +118,6 @@ e_modapi_shutdown(E_Module *module)
 }
 
 EAPI int
-e_modapi_info(E_Module *module)
-{  
-   // seems deprecated now, but what the hell...
-   char buf[4096];
-   snprintf(buf, sizeof(buf), "%s/moon.eap", e_module_dir_get(module));
-   module->edje_icon_file = strdup(buf);
-
-   return 1;
-}
-
-EAPI int
 e_modapi_about(E_Module *module)
 {
    char title[1024];
@@ -234,7 +223,7 @@ _gc_icon(Evas *evas)
    char buf[4096];
 
    o = edje_object_add(evas);
-   snprintf(buf, sizeof(buf), "%s/moon.eap", e_module_dir_get(_module));
+   snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(_module));
    edje_object_file_set(o, buf, "icon");
    return o;
 }

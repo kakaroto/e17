@@ -1,4 +1,5 @@
 Makefile
 Makefile.in
 *.edj
-moon.eap
+module.eap
+
