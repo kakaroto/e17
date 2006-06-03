@@ -201,13 +201,6 @@ ewl_config_config_read(void)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	/*
-	 * Clean out some memory first, this is likely to get re-used if the
-	 * values have not changed.
-	 */
-	IF_FREE(ewl_config.evas.render_method);
-	IF_FREE(ewl_config.theme.name);
-
 	ewl_config_defaults_set();
 
 	nc.debug.enable = ewl_config_int_get("/ewl/debug/enable");
@@ -339,7 +332,7 @@ ewl_config_config_read(void)
 	}
 
 	if (ewl_embed_list && !ecore_list_is_empty(ewl_embed_list)) {
-		Ewl_Embed      *e;
+		Ewl_Embed *e;
 
 		ecore_list_goto_first(ewl_embed_list);
 
@@ -364,7 +357,9 @@ ewl_config_config_read(void)
 	ewl_config.debug.level = nc.debug.level;
 	ewl_config.evas.font_cache = nc.evas.font_cache;
 	ewl_config.evas.image_cache = nc.evas.image_cache;
+	IF_FREE(ewl_config.evas.render_method);
 	ewl_config.evas.render_method = nc.evas.render_method;
+	IF_FREE(ewl_config.theme.name);
 	ewl_config.theme.name = nc.theme.name;
 	ewl_config.theme.cache = nc.theme.cache;
 	ewl_config.theme.print_keys = nc.theme.print_keys;
@@ -485,6 +480,7 @@ ewl_config_listener(const char *key,
 		case EWL_CONFIG_THEME_PRINT_KEYS:
 			ewl_config.theme.print_keys = ewl_config_int_get(key);
 			break;
+
 		case EWL_CONFIG_THEME_PRINT_SIGNALS:
 			ewl_config.theme.print_signals = ewl_config_int_get(key);
 			break;

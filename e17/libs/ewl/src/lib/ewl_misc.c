@@ -137,6 +137,7 @@ ewl_init(int *argc, char **argv)
 
 	/* make sure we have an engine set by default */
 	ewl_config.evas.engine = EWL_ENGINE_ALL;
+	IF_FREE(ewl_config.evas.render_method);
 	ewl_config.evas.render_method = strdup("software_x11");
 
 	ewl_init_parse_options(argc, argv);
