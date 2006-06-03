@@ -388,23 +388,23 @@ entrance_session_start_user_session(Entrance_Session * e)
    if ((exs->session) && (exs->session[0] != 0))
    {
       if (!strcmp(exs->session, "default"))
-         snprintf(buf, PATH_MAX, "%s", ENTRANCE_XSESSION);
+         snprintf(buf, PATH_MAX, "%s", e->config->xsession);
       else if (exs->session[0] == '/')
          snprintf(buf, PATH_MAX, "%s", exs->session);
       else
-         snprintf(buf, PATH_MAX, "%s %s", ENTRANCE_XSESSION, exs->session);
+         snprintf(buf, PATH_MAX, "%s %s", e->config->xsession, exs->session);
    }
    else
    {
       /* Default session */
-      snprintf(buf, PATH_MAX, "%s", ENTRANCE_XSESSION);
+      snprintf(buf, PATH_MAX, "%s", e->config->xsession);
    }
 
    if (e->testing)
    {
       printf("Would have executed: %s\n", buf);
       fflush(stdout);
-      snprintf(buf, PATH_MAX, X_BINARIES"/xterm");
+      snprintf(buf, PATH_MAX, "xterm");
    }
 
    syslog(LOG_INFO, "Executing %s", buf);

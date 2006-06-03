@@ -113,6 +113,8 @@ struct _Entrance_Config
       Evas_List *keys;
    } sessions;
 
+   char *xsession;
+
    struct
    {
 	/**
@@ -141,7 +143,7 @@ void entrance_config_print(Entrance_Config * e);
 void entrance_config_free(Entrance_Config * e);
 void entrance_config_prepend_recent_user(Entrance_Config * e, char *str);
 void entrance_config_user_list_save(Entrance_Config * e, const char *file);
-void entrance_config_prevuser_save(const char *user, const char *file);
+void entrance_config_prevuser_save(char *user, const char *file);
 int  entrance_config_save(Entrance_Config * e, const char *file);
 
 #endif

@@ -58,6 +58,8 @@ _entrance_config_defaults_set()
    ecore_config_string_default("/entrance/session/0/title", "Default");
    ecore_config_string_default("/entrance/session/0/icon", "default.png");
 
+   ecore_config_string_default("/entrance/xsession", ENTRANCE_XSESSION);
+
    ecore_config_int_default("/entrance/auth", 1);
 }
 
@@ -104,6 +106,7 @@ entrance_config_populate(Entrance_Config *e)
 
    e->reboot = ecore_config_int_get("/entrance/system/reboot");
    e->halt = ecore_config_int_get("/entrance/system/halt");
+   e->xsession = ecore_config_string_get("/entrance/xsession");
 
    num_user = ecore_config_int_get("/entrance/user/count");
    for (i = 0; i < num_user; i++)
@@ -217,7 +220,8 @@ entrance_config_print(Entrance_Config * e)
    Evas_List *l = NULL;
    char *strings[] = { "/entrance/theme",
       "/entrance/pointer", "/entrance/date_format", "/entrance/time_format",
-      "/entrance/greeting/before", "/entrance/greeting/after"
+      "/entrance/greeting/before", "/entrance/greeting/after",
+      "/entrance/xsession"
    };
    char *values[] = { e->theme, e->pointer, e->date.string,
       e->time.string, e->before.string, e->after.string
@@ -286,7 +290,8 @@ entrance_config_store(Entrance_Config *e)
    Evas_List *l = NULL;
    char *strings[] = { "/entrance/theme", "/entrance/background",
       "/entrance/pointer", "/entrance/date_format", "/entrance/time_format",
-      "/entrance/greeting/before", "/entrance/greeting/after"
+      "/entrance/greeting/before", "/entrance/greeting/after",
+      "/entrance/xsession"
    };
    char *values[] = { e->theme, e->background, e->pointer, e->date.string,
       e->time.string, e->before.string, e->after.string
@@ -430,7 +435,7 @@ entrance_config_user_list_save(Entrance_Config * e, const char *file)
 }
 
 void
-entrance_config_prevuser_save(const char *user, const char *file)
+entrance_config_prevuser_save(char *user, const char *file)
 {
    char buf[PATH_MAX];
 
