@@ -158,9 +158,12 @@ void
 EobjInit(EObj * eo, int type, Win win, int x, int y, int w, int h,
 	 int su, const char *name)
 {
+   char                argb;
+
    if (!eo->desk)
       eo->desk = DeskGet(0);
-   if (win == None)
+
+   if (!win)
      {
 	if (type == EOBJ_TYPE_EVENT)
 	  {
@@ -169,7 +172,9 @@ EobjInit(EObj * eo, int type, Win win, int x, int y, int w, int h,
 	  }
 	else
 	  {
-	     win = ECreateWindow(EoGetWin(eo->desk), x, y, w, h, su);
+	     win = ECreateObjectWindow(EoGetWin(eo->desk), x, y, w, h, su, 0,
+				       NULL, &argb);
+	     eo->argb = argb;
 	  }
      }
    eo->type = type;

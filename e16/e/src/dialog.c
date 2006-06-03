@@ -251,7 +251,7 @@ DialogCreate(const char *name)
    ecore_list_append(dialog_list, d);
 
    d->name = Estrdup(name);
-   d->win = ECreateWindow(VRoot.win, -20, -20, 2, 2, 0);
+   d->win = ECreateClientWindow(VRoot.win, -20, -20, 2, 2);
    EventCallbackRegister(d->win, 0, DialogHandleEvents, d);
 
    d->tclass = TextclassFind("DIALOG", 1);

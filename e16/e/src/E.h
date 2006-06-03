@@ -383,6 +383,13 @@ typedef struct
       char                warp_on_select;
       int                 icon_mode;
    } warplist;
+   struct
+   {
+      char                argb_internal_objects;
+      char                argb_internal_clients;
+      char                argb_clients;
+      char                argb_clients_inherit_attr;
+   } testing;
    int                 deskmode;
    char                animate_shading;
    int                 shadespeed;

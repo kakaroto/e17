@@ -181,6 +181,7 @@ EwinManage(EWin * ewin)
 {
    XSetWindowAttributes att;
    Win                 frame;
+   char                argb;
 
    if (ewin->client.w <= 0)
       ewin->client.w = 100;
@@ -190,30 +191,13 @@ EwinManage(EWin * ewin)
    if (ewin->state.docked)
       ewin->inh_wm.b.border = 1;
 
-#if USE_COMPOSITE
-   if (EVisualIsARGB(WinGetVisual(_EwinGetClientWin(ewin))))
-     {
-	XWindowAttributes   win_attr;
-
-	ewin->o.argb = 1;
-
-	EGetWindowAttributes(_EwinGetClientWin(ewin), &win_attr);
-	frame =
-	   ECreateVisualWindow(VRoot.win, ewin->client.x, ewin->client.y,
-			       ewin->client.w, ewin->client.h, 1, &win_attr);
-	ewin->win_container =
-	   ECreateVisualWindow(frame, 0, 0, ewin->client.w, ewin->client.h,
-			       0, &win_attr);
-     }
-   else
-#endif
-     {
-	frame =
-	   ECreateWindow(VRoot.win, ewin->client.x, ewin->client.y,
-			 ewin->client.w, ewin->client.h, 1);
-	ewin->win_container =
-	   ECreateWindow(frame, 0, 0, ewin->client.w, ewin->client.h, 0);
-     }
+   frame =
+      ECreateObjectWindow(VRoot.win, ewin->client.x, ewin->client.y,
+			  ewin->client.w, ewin->client.h, 0, 1,
+			  _EwinGetClientWin(ewin), &argb);
+   ewin->o.argb = argb;
+   ewin->win_container =
+      ECreateWindow(frame, 0, 0, ewin->client.w, ewin->client.h, 0);
 
    EoInit(ewin, EOBJ_TYPE_EWIN, frame, ewin->client.x, ewin->client.y,
 	  ewin->client.w, ewin->client.h, 1, ewin->icccm.wm_name);

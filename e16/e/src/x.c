@@ -35,6 +35,11 @@
 
 #define DEBUG_XWIN 0
 
+#if USE_COMPOSITE
+static Visual      *argb_visual = NULL;
+static Colormap     argb_cmap = None;
+#endif
+
 typedef struct
 {
    EventCallbackFunc  *func;
@@ -350,36 +355,99 @@ ECreateWindow(Win parent, int x, int y, int w, int h, int saveunder)
    return win;
 }
 
-/* Creates a window, but takes the visual, depth and the colormap from c_attr. */
+#if USE_COMPOSITE
 Win
-ECreateVisualWindow(Win parent, int x, int y, int w, int h, int saveunder,
-		    XWindowAttributes * c_attr)
+ECreateArgbWindow(Win parent, int x, int y, int w, int h, Win cwin)
 {
    EXID               *win;
    Window              xwin;
    XSetWindowAttributes attr;
+   int                 depth;
+   Visual             *vis;
+   Colormap            cmap;
 
-   attr.backing_store = NotUseful;
-   attr.override_redirect = False;
-   attr.border_pixel = 0;
-   attr.colormap = c_attr->colormap;
-/*   attr.background_pixel = 0; */
-   attr.background_pixmap = None;
-   if ((saveunder == 1) && (Conf.save_under))
-      attr.save_under = True;
-   else if (saveunder == 2)
-      attr.save_under = True;
+   if (cwin && Conf.testing.argb_clients_inherit_attr)
+     {
+	depth = cwin->depth;
+	vis = cwin->visual;
+	cmap = cwin->cmap;
+     }
    else
-      attr.save_under = False;
+     {
+	if (!argb_visual)
+	  {
+	     argb_visual = EVisualFindARGB();
+	     argb_cmap =
+		XCreateColormap(disp, VRoot.xwin, argb_visual, AllocNone);
+	  }
+	depth = 32;
+	vis = argb_visual;
+	cmap = argb_cmap;
+     }
+
+   attr.background_pixmap = None;
+   attr.border_pixel = 0;
+   attr.backing_store = NotUseful;
+   attr.save_under = False;
+   attr.override_redirect = False;
+   attr.colormap = cmap;
 
    xwin = XCreateWindow(disp, parent->xwin, x, y, w, h, 0,
-			c_attr->depth, InputOutput, c_attr->visual,
+			depth, InputOutput, vis,
 			CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 			CWColormap | CWBackPixmap | CWBorderPixel, &attr);
-   win = EXidSet(xwin, parent, x, y, w, h, c_attr->depth, c_attr->visual,
-		 c_attr->colormap);
+   win = EXidSet(xwin, parent, x, y, w, h, depth, vis, cmap);
 
    return win;
+}
+#endif
+
+Win
+ECreateObjectWindow(Win parent, int x, int y, int w, int h, int saveunder,
+		    int type, Win cwin, char *argb_ret)
+{
+   EXID               *win;
+   int                 argb = 0;
+
+#if USE_COMPOSITE
+   switch (type)
+     {
+     default:
+     case 0:			/* Internal */
+	if (Conf.testing.argb_internal_objects)
+	   argb = 1;
+	break;
+     case 1:			/* Client window */
+	if (Conf.testing.argb_clients || EVisualIsARGB(cwin->visual))
+	   argb = 1;
+	break;
+     }
+
+   if (argb)
+      win = ECreateArgbWindow(parent, x, y, w, h, cwin);
+   else
+      win = ECreateWindow(parent, x, y, w, h, saveunder);
+#else
+   win = ECreateWindow(parent, x, y, w, h, saveunder);
+   type = 0;
+   cwin = NULL;
+#endif
+
+   if (argb_ret)
+      *argb_ret = argb;
+
+   return win;
+}
+
+Win
+ECreateClientWindow(Win parent, int x, int y, int w, int h)
+{
+#if USE_COMPOSITE
+   if (Conf.testing.argb_internal_clients)
+      return ECreateArgbWindow(parent, x, y, w, h, NULL);
+#endif
+
+   return ECreateWindow(parent, x, y, w, h, 0);
 }
 
 Win

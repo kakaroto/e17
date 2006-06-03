@@ -120,7 +120,7 @@ PagerCreate(void)
    ecore_list_append(pager_list, p);
 
    p->name = NULL;
-   p->win = ECreateWindow(VRoot.win, 0, 0, 1, 1, 0);
+   p->win = ECreateClientWindow(VRoot.win, 0, 0, 1, 1);
    EventCallbackRegister(p->win, 0, PagerEvent, p);
    p->sel_win = ECreateWindow(p->win, 0, 0, 1, 1, 0);
 

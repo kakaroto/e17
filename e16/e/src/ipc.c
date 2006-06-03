@@ -1218,14 +1218,15 @@ IPC_ObjInfo(const char *params __UNUSED__, Client * c __UNUSED__)
    lst = EobjListStackGet(&num);
 
    IpcPrintf
-      ("Num    window T V Sh  Dsk S  F   L     pos       size    C R Name\n");
+      ("Num    window De T V Sh  Dsk S  F   L     pos       size    C R Name\n");
    for (i = 0; i < num; i++)
      {
 	eo = lst[i];
 	IpcPrintf
-	   (" %2d %#9lx %d %d %2d  %3d %d  %d %3d %5d,%5d %4dx%4d %d %d %s\n",
-	    i, EobjGetXwin(eo), eo->type, eo->shown, eo->shaped, eo->desk->num,
-	    eo->sticky, eo->floating, eo->ilayer, eo->x, eo->y, eo->w, eo->h,
+	   (" %2d %#9lx %2d %d %d %2d  %3d %d  %d %3d %5d,%5d %4dx%4d %d %d %s\n",
+	    i, WinGetXwin(eo->win), WinGetDepth(eo->win), eo->type, eo->shown,
+	    eo->shaped, eo->desk->num, eo->sticky, eo->floating, eo->ilayer,
+	    eo->x, eo->y, eo->w, eo->h,
 #if USE_COMPOSITE
 	    (eo->cmhook) ? 1 : 0, !eo->noredir
 #else

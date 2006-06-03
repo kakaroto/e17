@@ -70,9 +70,12 @@ void                EventCallbacksProcess(Win win, XEvent * ev);
 
 Win                 ECreateWindow(Win parent, int x, int y, int w, int h,
 				  int saveunder);
-Win                 ECreateVisualWindow(Win parent, int x, int y, int w,
-					int h, int saveunder,
-					XWindowAttributes * child_attr);
+Win                 ECreateArgbWindow(Win parent, int x, int y, int w, int h,
+				      Win cwin);
+Win                 ECreateClientWindow(Win parent, int x, int y, int w, int h);
+Win                 ECreateObjectWindow(Win parent, int x, int y, int w,
+					int h, int saveunder, int type,
+					Win cwin, char *argb);
 Win                 ECreateEventWindow(Win parent, int x, int y, int w, int h);
 Win                 ECreateFocusWindow(Win parent, int x, int y, int w, int h);
 void                EWindowSync(Win win);

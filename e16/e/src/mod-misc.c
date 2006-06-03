@@ -151,6 +151,11 @@ static const CfgItem MiscCfgItems[] = {
    CFG_ITEM_BOOL(Conf, startup.firsttime, 1),
    CFG_ITEM_BOOL(Conf, startup.animate, 1),
 
+   CFG_ITEM_BOOL(Conf, testing.argb_internal_objects, 0),
+   CFG_ITEM_BOOL(Conf, testing.argb_internal_clients, 0),
+   CFG_ITEM_BOOL(Conf, testing.argb_clients, 0),
+   CFG_ITEM_BOOL(Conf, testing.argb_clients_inherit_attr, 0),
+
    CFG_ITEM_INT(Conf, deskmode, MODE_NONE),
    CFG_ITEM_BOOL(Conf, animate_shading, 1),
    CFG_ITEM_INT(Conf, shadespeed, 8000),

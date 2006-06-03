@@ -663,7 +663,7 @@ MenuRealize(Menu * m)
 
    if (!m->win)
      {
-	m->win = ECreateWindow(VRoot.win, 0, 0, 1, 1, 0);
+	m->win = ECreateClientWindow(VRoot.win, 0, 0, 1, 1);
 	EventCallbackRegister(m->win, 0, MenuHandleEvents, m);
 	if (m->title)
 	   HintsSetWindowName(m->win, _(m->title));

@@ -372,7 +372,7 @@ IconboxCreate(const char *name)
    ib->scrollbar_clicked = 0;
    ib->scrollbox_clicked = 0;
 
-   ib->win = ECreateWindow(VRoot.win, 0, 0, 1, 1, 0);
+   ib->win = ECreateClientWindow(VRoot.win, 0, 0, 1, 1);
    ib->icon_win = ECreateWindow(ib->win, 0, 0, 128, 26, 0);
    EventCallbackRegister(ib->icon_win, 0, IboxEventIconWin, ib);
    ib->cover_win = ECreateWindow(ib->win, 0, 0, 128, 26, 0);
