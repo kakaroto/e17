@@ -9,13 +9,14 @@
 #include "etk_properties_dialog.h"
 #include "entropy_etk_context_menu.h"
 
+#define EN_DND_COL_NUM 5
+
 typedef struct entropy_etk_iconbox_viewer entropy_etk_iconbox_viewer;
 struct entropy_etk_iconbox_viewer
 {
   Etk_Widget *iconbox;
   Etk_Widget* parent_visual; 
 
-  Ecore_Hash* etk_list_viewer_row_hash;
   Ecore_Hash* gui_hash;
 
   Ecore_List *gui_events;
@@ -98,11 +99,6 @@ gui_object_destroy_and_free (entropy_gui_component_instance * comp,
   view->gui_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
   ecore_list_destroy (list);
 
-
-  /*ecore_list_goto_first(view->files);
-  while ((row = ecore_list_remove_first(view->files))) {
-	  ecore_hash_remove(etk_list_viewer_row_hash, row);
-  }*/
 
   entropy_notify_unlock_loop (comp->core->notify);
 
@@ -283,6 +279,104 @@ icon_viewer_add_row (entropy_gui_component_instance * instance,
 	entropy_core_file_cache_add_reference (file->md5);
 }
 
+static void _entropy_etk_icon_viewer_drag_begin_cb(Etk_Object *object, void *data)
+{
+   Etk_Iconbox *iconbox;
+   const char **types;
+   unsigned int num_types;
+   Etk_Drag *drag;
+   Etk_Widget *image;
+   entropy_gui_component_instance* instance;
+   entropy_etk_iconbox_viewer* viewer;
+   char buffer[8192]; /* Um - help - what do we size this to? */
+   Etk_Widget* table;
+   int l=0,r=0,t=0,b=0;
+   int added_object = 0;
+   entropy_generic_file* file;
+   Etk_Widget* vbox;
+   Etk_Widget* label;
+   char label_buffer[50];
+   Etk_Iconbox_Icon* icon;
+
+   instance = data;
+   viewer = instance->data;
+
+   iconbox = ETK_ICONBOX(object);
+   
+   drag = (ETK_WIDGET(iconbox))->drag;
+
+   table = etk_table_new(5,5,ETK_FALSE);
+   bzero(buffer,8192);
+   for (icon = iconbox->first_icon; icon ; icon = icon->next ) {
+	   if (etk_iconbox_is_selected(icon)) {
+		   file = etk_iconbox_icon_data_get(icon);
+	   
+		   strcat(buffer, file->uri);
+		   strcat(buffer, "\r\n");
+
+		   if (added_object < (EN_DND_COL_NUM*5)-1) {
+			   /*Build the drag widget*/
+			   vbox = etk_vbox_new(ETK_TRUE,0);
+
+			   /*Print the label*/
+			   bzero(label_buffer, sizeof(label_buffer));
+
+			   if (strlen(file->filename) > 5) {
+				   snprintf(label_buffer,5,"%s", file->filename);
+				   strcat(label_buffer, "...");
+			   } else {
+				   sprintf(label_buffer,"%s", file->filename);
+			   }
+	   		   label = etk_label_new(label_buffer);
+		   
+			  if (file->thumbnail && file->thumbnail->thumbnail_filename) {
+				image = etk_image_new_from_file(file->thumbnail->thumbnail_filename);
+			  } else {
+				image = etk_image_new_from_file(PACKAGE_DATA_DIR "/icons/default.png");
+			  }
+			 etk_image_keep_aspect_set(ETK_IMAGE(image), ETK_TRUE);
+			 etk_widget_size_request_set(image, 48, 48);
+			 etk_box_pack_start(ETK_BOX(vbox), image, ETK_FALSE, ETK_FALSE, 0);
+			  
+			  etk_box_pack_start(ETK_BOX(vbox), label, ETK_FALSE, ETK_FALSE, 0);
+			  etk_table_attach(ETK_TABLE(table), vbox, l, r, t, b, 3, 3,
+				   ETK_FILL_POLICY_NONE);
+		  
+			  ++l; ++r;
+			  added_object++;
+			  if(l == EN_DND_COL_NUM) {
+			       l = r = 0;
+			       ++t; ++b;
+			    }	 
+		  }
+	  }
+	  
+   }
+
+   etk_container_add(ETK_CONTAINER(drag), table);
+  
+
+   types = entropy_malloc(sizeof(char*));
+   num_types = 1;
+   types[0] = strdup("text/uri-list");
+    
+
+   printf("Drag buffer: %s\n", buffer);
+   
+   etk_drag_types_set(drag, types, num_types);
+   etk_drag_data_set(drag, buffer, strlen(buffer)+1);
+
+
+
+   
+   /*image = etk_image_new_from_file(icol1_string);
+   etk_image_keep_aspect_set(ETK_IMAGE(image), ETK_TRUE);
+   etk_widget_size_request_set(image, 96, 96);
+   etk_container_add(ETK_CONTAINER(drag), image);*/
+
+}
+
+
 
 
 entropy_gui_component_instance *
@@ -293,8 +387,6 @@ entropy_plugin_gui_instance_new (entropy_core * core,
   entropy_etk_iconbox_viewer *viewer;
   char  **dnd_types;
   int dnd_types_num=0;
-  Etk_Widget* new_menu;
-  Etk_Widget* menu_item;
 
     
   instance = entropy_gui_component_instance_new ();
@@ -309,6 +401,14 @@ entropy_plugin_gui_instance_new (entropy_core * core,
   instance->core = core;
   instance->data = viewer;
   instance->layout_parent = layout;
+
+  /*DND Setup*/
+   dnd_types_num = 1;
+   dnd_types = entropy_malloc(dnd_types_num* sizeof(char*));
+   dnd_types[0] = strdup("text/uri-list");  
+  etk_widget_dnd_source_set(viewer->iconbox, ETK_TRUE);
+  etk_signal_connect("drag_begin", ETK_OBJECT(viewer->iconbox) , ETK_CALLBACK(_entropy_etk_icon_viewer_drag_begin_cb), instance);
+
 
   /*Register out interest in receiving folder notifications */
   entropy_core_component_event_register (instance,
