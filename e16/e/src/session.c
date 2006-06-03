@@ -282,9 +282,7 @@ callback_die(SmcConn smc_conn __UNUSED__, SmPointer client_data __UNUSED__)
    if (EventDebug(EDBUG_TYPE_SESSION))
       Eprintf("callback_die\n");
 
-   if (Mode.wm.master)
-      SoundPlay("SOUND_EXIT");
-   EExit(0);
+   SessionExit(EEXIT_EXIT, NULL);
 }
 
 static void
