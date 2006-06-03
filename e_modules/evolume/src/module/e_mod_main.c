@@ -45,7 +45,6 @@ e_modapi_init(E_Module *module)
 
    /* actually init buttons */
    volume = e_volume_init(NULL);
-   module->config_menu = volume->config_menu;
    return volume;
 }
 
@@ -53,9 +52,6 @@ int
 e_modapi_shutdown(E_Module *module)
 {
    Volume *volume;
-
-   if (module->config_menu)
-      module->config_menu = NULL;
 
    volume = module->data;
 
@@ -72,16 +68,6 @@ e_modapi_save(E_Module *module)
 
    volume = module->data;
    e_config_domain_save("module.evolume", conf_edd, volume->conf);
-   return 1;
-}
-
-int
-e_modapi_info(E_Module *module)
-{
-   char buf[1024];
-
-   snprintf(buf, 1024, "%s/module_icon.png", module_root);
-   module->icon_file = strdup(buf);
    return 1;
 }
 
