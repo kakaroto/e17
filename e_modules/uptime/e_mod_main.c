@@ -38,7 +38,6 @@ e_modapi_init(E_Module *m)
    if (!c)
       return NULL;
 
-   m->config_menu = c->config_menu;
    return c;
 }
 
@@ -51,12 +50,6 @@ e_modapi_shutdown(E_Module *m)
    if (!c)
       return 0;
 
-   if (m->config_menu)
-     {
-        e_menu_deactivate(m->config_menu);
-        e_object_del(E_OBJECT(m->config_menu));
-        m->config_menu = NULL;
-     }
    if (c->cfd)
      {
         e_object_del(E_OBJECT(c->cfd));
@@ -75,13 +68,6 @@ e_modapi_save(E_Module *m)
    if (!c)
       return 0;
    e_config_domain_save("module.uptime", c->conf_edd, c->conf);
-   return 1;
-}
-
-EAPI int
-e_modapi_info(E_Module *m)
-{
-   m->icon_file = strdup(PACKAGE_DATA_DIR "/module_icon.png");
    return 1;
 }
 
