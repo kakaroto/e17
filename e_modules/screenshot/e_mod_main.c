@@ -223,7 +223,7 @@ _ss_config_item_get(const char *id)
         ci->use_scrot = 1;
      }
    ci->location = evas_stringshare_add(e_user_homedir_get());
-   ci->filename = evas_stringshare_add("screenshot");
+   ci->filename = evas_stringshare_add("");
    ci->import.use_img_border = 1;
    ci->import.use_dither = 1;
    ci->import.use_frame = 1;
@@ -312,7 +312,7 @@ e_modapi_init(E_Module *m)
              ci->use_scrot = 1;
           }
         ci->location = evas_stringshare_add(e_user_homedir_get());
-        ci->filename = evas_stringshare_add("screenshot");
+        ci->filename = evas_stringshare_add("");
         ci->import.use_img_border = 1;
         ci->import.use_dither = 1;
         ci->import.use_frame = 1;
@@ -448,10 +448,7 @@ _ss_handle_mouse_down(Instance *inst)
      }
 
    f = _get_filename(ci);
-   if (!f)
-      snprintf(buf, sizeof(buf), "%s %s", cmd, opt);
-   else
-      snprintf(buf, sizeof(buf), "%s %s %s", cmd, opt, f);
+   snprintf(buf, sizeof(buf), "%s %s %s", cmd, opt, f);
 
    inst->filename = evas_stringshare_add(f);
    ss_config->exe_exit_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _ss_exe_cb_exit, NULL);
@@ -546,7 +543,7 @@ _get_filename(Config_Item *ci)
         e_config_save_queue();
      }
 
-   if (!ci->filename)
+   if ((!ci->filename) || (ci->filename == NULL))
      {
         t = time(NULL);
         loctime = localtime(&t);
@@ -560,13 +557,8 @@ _get_filename(Config_Item *ci)
              fl = ecore_file_ls(ci->location);
              ecore_list_goto_first(fl);
              while ((file = ecore_list_next(fl)) != NULL)
-               {
-                  x = ecore_file_strip_ext(file);
-                  if (!x)
-                       if (strstr(file, ci->filename)) c++;
-                  else
-                       if (strstr(x, ci->filename)) c++;
-               }
+		  if (strstr(file, ci->filename)) c++;
+
              if (fl) ecore_list_destroy(fl);
              if (c == 0) 
 	       c = 1;
