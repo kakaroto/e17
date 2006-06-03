@@ -17,6 +17,8 @@ _entranced_ipc_client_add(void *data, int type, void *event)
 
    if (!(e = (Ecore_Ipc_Event_Client_Add *) event))
       return 1;
+   if (_display)
+      _display->client.connected = 1;
 
    entranced_debug("_entranced_ipc_client_add: Received event\n");
    return 1;

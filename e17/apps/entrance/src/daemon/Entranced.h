@@ -38,6 +38,7 @@ typedef struct _Entranced_Client {
    gid_t    gid;
    char    *homedir;
    char    *authfile;
+   unsigned char connected;
 } Entranced_Client;
 
 typedef struct _Entranced_Display

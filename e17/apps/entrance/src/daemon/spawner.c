@@ -16,7 +16,7 @@ static struct sigaction _entrance_x_sa, _entrance_d_sa;
 static unsigned char is_respawning = 0;
 static unsigned char exev = 0;
 static unsigned char x_ready = 0;
-Ecore_Timer *respawn_timer = NULL;
+static Ecore_Timer *respawn_timer = NULL;
 
 /**
  * Write the entranced pid to the defined pidfile.
@@ -223,6 +223,7 @@ Entranced_Respawn_Reset(void *data)
 {
    entranced_debug("Respawn timer reset.\n");
    is_respawning = 0;
+   ecore_timer_del(respawn_timer);
    respawn_timer = NULL;
    return 0;
 }
@@ -313,6 +314,15 @@ Entranced_Exe_Exited(void *data, int type, void *event)
 
    if (e->exe == d->e_exe || e->pid == ecore_exe_pid_get(d->e_exe))
    {
+      /* Entrance GUI failed to initialize correctly */
+      if (!d->client.connected)
+      {
+         syslog(LOG_CRIT, "Entrance GUI initialization failure. Aborting.");
+         fprintf(stderr, "Entrance has detected that the GUI is failing to launch properly.\n");
+         fprintf(stderr, "Please check your installation. Aborting.\n\n");
+         ecore_main_loop_quit(); 
+      }
+
       /* Session exited or crashed */
       if (e->exited)
       {
@@ -358,8 +368,8 @@ Entranced_Exe_Exited(void *data, int type, void *event)
       return 1;
    }
 
+   d->client.connected = 0;
    entranced_auth_user_remove(d);
-
    Entranced_Spawn_Entrance(d);
 
    return 1;
@@ -545,6 +555,7 @@ main(int argc, char **argv)
    {
       free(d);
       syslog(LOG_CRIT, "Could not start X server.");
+      fprintf(stderr, "Entrance could not start the X server. Please check your config.\n");
       exit(1);
    }
 
