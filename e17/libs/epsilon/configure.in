@@ -107,7 +107,7 @@ if test X"$ac_use_plugin_xine" = Xyes; then
               xine_libs=`xine-config --libs`
               xine_plugins=`xine-config --plugindir`
               AC_DEFINE(HAVE_LIBXINE, 1, build xinefile thumbnailer)
-              xine="xine "],[
+              xine="xine"],[
               AC_MSG_WARN([libxine too old; no thumbnails for videos...])])])
 else
         AC_MSG_RESULT(yes)
@@ -116,7 +116,7 @@ fi
 AC_SUBST(xine_LIBS)
 AC_SUBST(xine_CFLAGS)
 AC_SUBST(xine_PLUGINS)
-AM_CONDITIONAL(HAVE_XINE, test $xine = "xine ")
+AM_CONDITIONAL(HAVE_XINE, test $xine = "xine")
 
 
 dnl Make sure the Edje header/lib is available

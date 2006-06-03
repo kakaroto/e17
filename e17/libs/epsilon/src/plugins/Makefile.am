@@ -19,6 +19,6 @@ pkg_LTLIBRARIES = $(XINE_L)
 
 xine_thumbnailer_la_SOURCES = xine_thumbnailer.c
 xine_thumbnailer_la_LDFLAGS = -module -avoid-version
-xine_thumbnailer_la_LIBADD = @xine_libs@
-xine_thumbnailer_la_CFLAGS = @xine_cflags@
+xine_thumbnailer_la_LIBADD = @xine_LIBS@
+xine_thumbnailer_la_CFLAGS = @xine_CFLAGS@
 

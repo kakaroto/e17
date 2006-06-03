@@ -369,7 +369,7 @@ epsilond_client_dispatch(Epsilon_Client *cl)
 			/*
 			 * Don't dispatch work to active workers.
 			 */
-			if (!worker->child) {
+			if (!worker->child && !ecore_list_nodes(worker->thumbs)) {
 				Epsilon_Message *msg;
 
 				/*
