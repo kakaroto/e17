@@ -593,25 +593,15 @@ _weather_display_set(Instance *inst, int ok)
 
    if (!inst) return;
    snprintf(m, sizeof(m), "%s", e_module_dir_get(weather_config->module));
-   if (!ok)
-     {
-        snprintf(buf, sizeof(buf), "%s/images/unknown.png", m);
-        e_icon_file_set(inst->weather->icon_obj, buf);
-        edje_object_part_swallow(inst->weather->weather_obj, "icon", inst->weather->icon_obj);
-        edje_object_part_text_set(inst->weather->weather_obj, "location", "");
-        edje_object_part_text_set(inst->weather->weather_obj, "temp", "");
-        edje_object_part_text_set(inst->weather->weather_obj, "conditions", "");
-     }
-   else
-     {
-        snprintf(buf, sizeof(buf), "%s/images/%s", m, inst->icon);
-        e_icon_file_set(inst->weather->icon_obj, buf);
-        edje_object_part_swallow(inst->weather->weather_obj, "icon", inst->weather->icon_obj);
-        edje_object_part_text_set(inst->weather->weather_obj, "location", inst->location);
-        snprintf(buf, sizeof(buf), "%d°%c", inst->temp, inst->degrees);
-        edje_object_part_text_set(inst->weather->weather_obj, "temp", buf);
-        edje_object_part_text_set(inst->weather->weather_obj, "conditions", inst->conditions);
-     }
+   if (!ok) return;
+   
+   snprintf(buf, sizeof(buf), "%s/images/%s", m, inst->icon);
+   e_icon_file_set(inst->weather->icon_obj, buf);
+   edje_object_part_swallow(inst->weather->weather_obj, "icon", inst->weather->icon_obj);
+   edje_object_part_text_set(inst->weather->weather_obj, "location", inst->location);
+   snprintf(buf, sizeof(buf), "%d°%c", inst->temp, inst->degrees);
+   edje_object_part_text_set(inst->weather->weather_obj, "temp", buf);
+   edje_object_part_text_set(inst->weather->weather_obj, "conditions", inst->conditions);
 }
 
 void
