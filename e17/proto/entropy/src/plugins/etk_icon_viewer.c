@@ -443,11 +443,11 @@ entropy_plugin_gui_instance_new (entropy_core * core,
   instance->layout_parent = layout;
 
   /*DND Setup*/
-   dnd_types_num = 1;
+  /* dnd_types_num = 1;
    dnd_types = entropy_malloc(dnd_types_num* sizeof(char*));
    dnd_types[0] = strdup("text/uri-list");  
   etk_widget_dnd_source_set(viewer->iconbox, ETK_TRUE);
-  etk_signal_connect("drag_begin", ETK_OBJECT(viewer->iconbox) , ETK_CALLBACK(_entropy_etk_icon_viewer_drag_begin_cb), instance);
+  etk_signal_connect("drag_begin", ETK_OBJECT(viewer->iconbox) , ETK_CALLBACK(_entropy_etk_icon_viewer_drag_begin_cb), instance);*/
 
 
   /*Register out interest in receiving folder notifications */
