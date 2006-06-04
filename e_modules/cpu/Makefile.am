@@ -9,6 +9,7 @@ EXTRA_DIST = $(files_DATA) \
 cpu.edc \
 VeraMono.ttf \
 cpu.png \
+module.eap \
 e_modules-cpu.spec e_modules-cpu.spec.in 
 
 # data files for the module
@@ -16,6 +17,7 @@ filesdir = $(datadir)
 
 files_DATA = \
 module_icon.png \
+module.eap \
 cpu.edj
 
 # the module .so file
