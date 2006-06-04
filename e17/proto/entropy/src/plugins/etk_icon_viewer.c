@@ -16,6 +16,8 @@ struct entropy_etk_iconbox_viewer
 {
   Etk_Widget *iconbox;
   Etk_Widget* parent_visual; 
+  Etk_Widget* vbox;
+  Etk_Widget* slider;
 
   Ecore_Hash* gui_hash;
 
@@ -164,6 +166,26 @@ entropy_plugin_init (entropy_core * core)
   base = ENTROPY_PLUGIN(plugin);
   
   return base;
+}
+
+void _entropy_etk_icon_viewer_slider_cb(Etk_Object *object, double value, void *data)
+{
+  entropy_gui_component_instance *instance;	
+  entropy_etk_iconbox_viewer *viewer;
+
+  instance = data;
+  viewer = instance->data;
+
+  etk_iconbox_model_geometry_set(etk_iconbox_current_model_get(ETK_ICONBOX(viewer->iconbox)),
+		  (value*2) + 14,
+	  	  value + 22,
+		  5, 4);
+  etk_iconbox_model_icon_geometry_set(etk_iconbox_current_model_get(ETK_ICONBOX(viewer->iconbox)),
+		  26,0, value, value, 1, 1);
+
+  
+  etk_iconbox_model_label_geometry_set(etk_iconbox_current_model_get(ETK_ICONBOX(viewer->iconbox)),
+		  0, value + 2, (value*2) + 4, 12, 0.5,0);
 }
 
 void _etk_entropy_click_cb(Etk_Object *object, void *event_info, void *data)
@@ -394,10 +416,28 @@ entropy_plugin_gui_instance_new (entropy_core * core,
 
   viewer->gui_hash = ecore_hash_new(ecore_direct_hash,ecore_direct_compare);
 
+
+  /*Make the various widgets*/
+  viewer->vbox = etk_vbox_new(ETK_FALSE,0);
+  
+  /*Make the slider*/
+  viewer->slider = etk_hslider_new(10,128, 48, 1, 1);
+  etk_box_pack_start(ETK_BOX(viewer->vbox), viewer->slider, ETK_FALSE, ETK_FALSE,0);
+  etk_signal_connect("value_changed", ETK_OBJECT(viewer->slider), 
+		  ETK_CALLBACK(_entropy_etk_icon_viewer_slider_cb), instance);
+  
   viewer->iconbox = etk_iconbox_new();
+  etk_box_pack_start(ETK_BOX(viewer->vbox), viewer->iconbox, ETK_TRUE,ETK_TRUE,0);
+
+
+  
+  /*etk_iconbox_model_icon_geometry_set(etk_iconbox_current_model_get(ETK_ICONBOX(viewer->iconbox)),
+		  0,0,64,64,1,1);*/
+		  
+	  
   etk_signal_connect("mouse_up", ETK_OBJECT(viewer->iconbox), ETK_CALLBACK(_etk_entropy_click_cb), instance);
   
-  instance->gui_object = viewer->iconbox;
+  instance->gui_object = viewer->vbox;
   instance->core = core;
   instance->data = viewer;
   instance->layout_parent = layout;
@@ -446,7 +486,7 @@ entropy_plugin_gui_instance_new (entropy_core * core,
 					 (ENTROPY_GUI_EVENT_THUMBNAIL_AVAILABLE));
 
 
-  etk_widget_show_all(viewer->iconbox);
+  etk_widget_show_all(viewer->vbox);
 
   return instance;
 }
