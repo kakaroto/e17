@@ -486,6 +486,8 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
 		  HintsSetWindowState(ewin);
 	       }
 	  }
+	if (resize && ewin->state.shaped)
+	   ewin->update.shape = 1;
      }
    EwinPropagateShapes(ewin);
 
