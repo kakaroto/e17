@@ -41,7 +41,6 @@ e_modapi_init(E_Module *m)
    if (!n)
       return NULL;
 
-   m->config_menu = n->config_menu;
    return n;
 }
 
@@ -54,12 +53,6 @@ e_modapi_shutdown(E_Module *m)
    if (!n)
       return 0;
 
-   if (m->config_menu)
-     {
-        e_menu_deactivate(m->config_menu);
-        e_object_del(E_OBJECT(m->config_menu));
-        m->config_menu = NULL;
-     }
    if (n->cfd)
      {
         e_object_del(E_OBJECT(n->cfd));
@@ -78,13 +71,6 @@ e_modapi_save(E_Module *m)
    if (!n)
       return 0;
    e_config_domain_save("module.wlan", conf_edd, n->conf);
-   return 1;
-}
-
-EAPI int
-e_modapi_info(E_Module *m)
-{
-   m->icon_file = strdup(PACKAGE_DATA_DIR "/module_icon.png");
    return 1;
 }
 

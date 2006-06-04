@@ -12,6 +12,7 @@ EXTRA_DIST = $(files_DATA) wlan.png module_icon.png e_modules-wlan.spec e_module
 
 files_DATA = \
 module_icon.png \
+module.eap \
 wlan.edj \
 wlan.edc \
 VeraMono.ttf
