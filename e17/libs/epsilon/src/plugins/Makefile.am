@@ -2,7 +2,8 @@
 AUTOMAKE_OPTIONS     = 1.7 foreign
 
 LDFLAGS              = -rdynamic -shared
-INCLUDES             = -I. -I$(top_srcdir) -I$(top_srcdir)/src/include
+INCLUDES             = -I. -I$(top_srcdir) -I$(top_srcdir)/src/include \
+                       -I$(top_srcdir)/src/lib
 
 pkgdir =  $(libdir)/epsilon/plugins/
 
