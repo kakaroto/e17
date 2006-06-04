@@ -138,7 +138,6 @@ e_modapi_init(E_Module *m)
 
    /* actually init mbar */
    mb = _mbar_new();
-   m->config_menu = mb->config_menu;
    return mb;
 }
 
@@ -146,9 +145,6 @@ EAPI int
 e_modapi_shutdown(E_Module *m)
 {
    MBar *mb;
-
-   if (m->config_menu)
-      m->config_menu = NULL;
 
    mb = m->data;
    if (!mb)
@@ -170,13 +166,6 @@ e_modapi_save(E_Module *m)
 
    mb = m->data;
    e_config_domain_save("module.mbar", conf_edd, mb->conf);
-   return 1;
-}
-
-EAPI int
-e_modapi_info(E_Module *m)
-{
-   m->icon_file = strdup(PACKAGE_DATA_DIR "/module_icon.png");
    return 1;
 }
 
