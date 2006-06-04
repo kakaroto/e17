@@ -100,6 +100,68 @@ entropy_plugin_destroy (entropy_gui_component_instance * comp)
 
 }
 
+
+/*Function to make standard menu items*/
+static Etk_Widget *_entropy_etk_menu_item_new(Etk_Menu_Item_Type item_type, const char *label,
+   Etk_Stock_Id stock_id, Etk_Menu_Shell *menu_shell, Etk_Widget *statusbar)
+{
+   Etk_Widget *menu_item = NULL;
+   
+   switch (item_type)
+   {
+      case ETK_MENU_ITEM_NORMAL:
+         menu_item = etk_menu_item_image_new_with_label(label);
+         break;
+      case ETK_MENU_ITEM_SEPARATOR:
+         menu_item = etk_menu_item_separator_new();
+         break;
+      default:
+         return NULL;
+   }
+   if (stock_id != ETK_STOCK_NO_STOCK)
+   {
+      Etk_Widget *image;
+      
+      image = etk_image_new_from_stock(stock_id, ETK_STOCK_SMALL);
+      etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
+   }
+   etk_menu_shell_append(menu_shell, ETK_MENU_ITEM(menu_item));
+   
+   /*etk_signal_connect("selected", ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_test_menu_item_selected_cb), statusbar);
+   etk_signal_connect("deselected", ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_test_menu_item_deselected_cb), statusbar);*/
+   
+   return menu_item;
+}
+
+/*Function to make checkbox menu items*/
+static Etk_Widget *_entropy_etk_menu_check_item_new(const char *label, Etk_Menu_Shell *menu_shell)
+{
+   Etk_Widget *menu_item;
+   
+   if (!menu_shell)
+      return NULL;
+   
+   menu_item = etk_menu_item_check_new_with_label(label);
+   etk_menu_shell_append(menu_shell, ETK_MENU_ITEM(menu_item));
+   
+   return menu_item;
+}
+
+/*Function to make radio items*/
+static Etk_Widget *_entropy_etk_radio_item_new(const char *label, Etk_Menu_Item_Radio *group_item, Etk_Menu_Shell *menu_shell)
+{
+   Etk_Widget *menu_item;
+   
+   if (!menu_shell)
+      return NULL;
+   
+   menu_item = etk_menu_item_radio_new_with_label_from_widget(label, group_item);
+   etk_menu_shell_append(menu_shell, ETK_MENU_ITEM(menu_item));
+   
+   return menu_item;
+}
+
+
 static void _etk_layout_location_delete_confirm_cb(Etk_Object * object, void *data)
 {
 	entropy_gui_component_instance* instance = data;
@@ -140,37 +202,6 @@ static void _etk_layout_row_clicked(Etk_Object *object,
 		etk_menu_popup(ETK_MENU(gui->popup));
 	}
 	
-}
-
-static Etk_Widget *_entropy_etk_menu_item_new(Etk_Menu_Item_Type item_type, const char *label,
-   Etk_Stock_Id stock_id, Etk_Menu_Shell *menu_shell, Etk_Widget *statusbar)
-{
-   Etk_Widget *menu_item = NULL;
-   
-   switch (item_type)
-   {
-      case ETK_MENU_ITEM_NORMAL:
-         menu_item = etk_menu_item_image_new_with_label(label);
-         break;
-      case ETK_MENU_ITEM_SEPARATOR:
-         menu_item = etk_menu_item_separator_new();
-         break;
-      default:
-         return NULL;
-   }
-   if (stock_id != ETK_STOCK_NO_STOCK)
-   {
-      Etk_Widget *image;
-      
-      image = etk_image_new_from_stock(stock_id, ETK_STOCK_SMALL);
-      etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
-   }
-   etk_menu_shell_append(menu_shell, ETK_MENU_ITEM(menu_item));
-   
-   /*etk_signal_connect("selected", ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_test_menu_item_selected_cb), statusbar);
-   etk_signal_connect("deselected", ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_test_menu_item_deselected_cb), statusbar);*/
-   
-   return menu_item;
 }
 
 Entropy_Plugin*
@@ -663,15 +694,20 @@ entropy_plugin_layout_create (entropy_core * core)
   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("View"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menubar), NULL);
   menu = etk_menu_new();
   etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));
-  menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Tree View"), ETK_STOCK_SYSTEM_SHUTDOWN, ETK_MENU_SHELL(menu), NULL);
+  menu_item = _entropy_etk_menu_check_item_new(_("Tree View"), ETK_MENU_SHELL(menu));
+  etk_menu_item_check_active_set(ETK_MENU_ITEM_CHECK(menu_item),1 );
   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(entropy_etk_layout_tree_cb), layout);
+
   
-  menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("List View"), ETK_STOCK_SYSTEM_SHUTDOWN, ETK_MENU_SHELL(menu), NULL);
+  _entropy_etk_menu_item_new(ETK_MENU_ITEM_SEPARATOR, NULL, 
+		  ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL);
+
+  menu_item = _entropy_etk_radio_item_new(_("List View"), NULL, ETK_MENU_SHELL(menu));
   etk_object_data_set(ETK_OBJECT(menu_item), "VISUAL", gui->list_viewer);
   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(etk_local_viewer_cb), layout);
 
   
-  menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Icon View"), ETK_STOCK_IMAGE_X_GENERIC, ETK_MENU_SHELL(menu), NULL);
+  menu_item = _entropy_etk_radio_item_new(_("Icon View"), menu_item, ETK_MENU_SHELL(menu));
   etk_object_data_set(ETK_OBJECT(menu_item), "VISUAL", gui->iconbox_viewer);
   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(etk_local_viewer_cb), layout);
 
