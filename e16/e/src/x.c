@@ -1075,13 +1075,13 @@ EDrawableCheck(Drawable draw, int grab)
 #define DEBUG_SHAPE_OPS 0
 #define DEBUG_SHAPE_PROPAGATE 0
 
-#if DEBUG_SHAPE_OPS
+#if DEBUG_SHAPE_OPS || DEBUG_SHAPE_PROPAGATE
 static void
-EShapeShow(const char *txt, XRectangle * pr, int nr)
+EShapeShow(const char *txt, Window xwin, XRectangle * pr, int nr)
 {
    int                 i;
 
-   Eprintf("%s nr=%d\n", txt, nr);
+   Eprintf("%s %#lx nr=%d\n", txt, xwin, nr);
    for (i = 0; i < nr; i++)
       Eprintf(" %d - %4d,%4d %4dx%4d\n", i,
 	      pr[i].x, pr[i].y, pr[i].width, pr[i].height);
@@ -1089,7 +1089,7 @@ EShapeShow(const char *txt, XRectangle * pr, int nr)
 #endif
 
 static void
-ExShapeUpdate(EXID * xid)
+EShapeUpdate(EXID * xid)
 {
    if (xid->rects)
      {
@@ -1117,7 +1117,7 @@ ExShapeUpdate(EXID * xid)
 	  }
 	else if (xid->num_rect > 4096)
 	  {
-	     Eprintf("*** ExShapeUpdate: nrect=%d - Not likely, ignoring.\n",
+	     Eprintf("*** EShapeUpdate: nrect=%d - Not likely, ignoring.\n",
 		     xid->num_rect);
 	     XShapeCombineMask(disp, xid->xwin, ShapeBounding, 0, 0, None,
 			       ShapeSet);
@@ -1131,7 +1131,7 @@ ExShapeUpdate(EXID * xid)
 	xid->num_rect = -1;
      }
 #if DEBUG_SHAPE_OPS
-   EShapeShow("ExShapeUpdate", xid->rects, xid->num_rect);
+   EShapeShow("EShapeUpdate", xid->xwin, xid->rects, xid->num_rect);
 #endif
 }
 
@@ -1159,7 +1159,7 @@ EShapeCombineMask(Win win, int dest, int x, int y, Pixmap pmap, int op)
    if (pmap)
      {
 	XShapeCombineMask(disp, xid->xwin, dest, x, y, pmap, op);
-	ExShapeUpdate(xid);
+	EShapeUpdate(xid);
      }
    else if (wasshaped)
       XShapeCombineMask(disp, xid->xwin, dest, x, y, pmap, op);
@@ -1223,15 +1223,7 @@ EShapeCombineRectangles(Win win, int dest, int x, int y,
 	XShapeCombineRectangles(disp, xid->xwin, ShapeBounding, 0, 0, &r,
 				1, ShapeIntersect, Unsorted);
      }
-   ExShapeUpdate(xid);
-}
-
-static void
-ExShapeCombineShape(EXID * xdst, int dest, int x, int y,
-		    EXID * xsrc, int src_kind, int op)
-{
-   XShapeCombineShape(disp, xdst->xwin, dest, x, y, xsrc->xwin, src_kind, op);
-   ExShapeUpdate(xdst);
+   EShapeUpdate(xid);
 }
 
 XRectangle         *
@@ -1293,7 +1285,7 @@ EShapeCopy(Win dst, Win src)
       return 0;
 
    if (xsrc->attached)
-      ExShapeUpdate(xsrc);
+      EShapeUpdate(xsrc);
 
    rn = xsrc->num_rect;
    rl = xsrc->rects;
@@ -1301,8 +1293,8 @@ EShapeCopy(Win dst, Win src)
    if (rn < 0)
      {
 	/* Source has empty shape */
-	ExShapeCombineShape(xdst, ShapeBounding, 0, 0,
-			    xsrc, ShapeBounding, ShapeSet);
+	EShapeCombineShape(xdst, ShapeBounding, 0, 0,
+			   xsrc, ShapeBounding, ShapeSet);
      }
    else if (rn == 0)
      {
@@ -1319,14 +1311,14 @@ EShapeCopy(Win dst, Win src)
 	  }
 	else
 	  {
-	     ExShapeCombineShape(xdst, ShapeBounding, 0, 0,
-				 xsrc, ShapeBounding, ShapeSet);
+	     EShapeCombineShape(xdst, ShapeBounding, 0, 0,
+				xsrc, ShapeBounding, ShapeSet);
 	  }
      }
    else
      {
-	ExShapeCombineShape(xdst, ShapeBounding, 0, 0,
-			    xsrc, ShapeBounding, ShapeSet);
+	EShapeCombineShape(xdst, ShapeBounding, 0, 0,
+			   xsrc, ShapeBounding, ShapeSet);
      }
 
    return rn != 0;
@@ -1410,10 +1402,7 @@ EShapePropagate(Win win)
      }
 
 #if DEBUG_SHAPE_PROPAGATE
-   Eprintf("EShapePropagate %#lx nr=%d\n", win, num_rects);
-   for (i = 0; i < num_rects; i++)
-      Eprintf("%3d %4d,%4d %4dx%4d\n", i, rects[i].x, rects[i].y,
-	      rects[i].width, rects[i].height);
+   EShapeShow("EShapePropagate", win->xwin, rects, num_rects);
 #endif
 
    /* set the rects as the shape mask */
@@ -1443,7 +1432,7 @@ EShapeCombineShape(Win win, int dest, int x, int y,
       return;
 
    XShapeCombineShape(disp, win->xwin, dest, x, y, src_win->xwin, src_kind, op);
-   ExShapeUpdate(xid);
+   EShapeUpdate(xid);
 }
 
 int
