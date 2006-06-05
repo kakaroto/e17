@@ -31,7 +31,7 @@ static void eapp_cb_save(Ewl_Widget *w, void *ev, void *data);
 static void eapp_cb_fd_show(Ewl_Widget *w, void *ev, void *data);
 static void eapp_cb_fd_hide(Ewl_Widget *w, void *ev, void *data);
 static void eapp_cb_fd_changed(Ewl_Widget *w, void *ev, void *data);
-static void eapp_create_content(Eet_File *ef, char *key, char *name, 
+static void eapp_create_content(Eet_File *ef, Eapp_Item *item,
                                         char *lang, char *winclass, 
                                         Ewl_Widget *parent);
 Ewl_Widget *eapp_border_get(Ewl_Widget *parent, char *title, int left_align);
@@ -231,7 +231,7 @@ eapp_populate(Ewl_Widget *vbox, char *file, char *lang, char *winclass)
 {
     Ewl_Widget *hbox, *icon_border, *icon, *basic, *o;
     Ewl_Widget *hsep, *general;
-    Ewl_Widget *icon_theme, *window, *misc, *checkbutton;
+    Ewl_Widget *icon_theme, *window, *misc;
     Eet_File *ef = NULL;
     char *v;
     int i;   
@@ -290,37 +290,20 @@ eapp_populate(Ewl_Widget *vbox, char *file, char *lang, char *winclass)
     misc = eapp_border_get(hbox, "Misc", 0);
 
     for (i = 0; basic_keys[i].key; i++)
-        eapp_create_content(ef, basic_keys[i].key, basic_keys[i].name, 
-                                                lang, winclass, basic);
+        eapp_create_content(ef, &(basic_keys[i]), lang, winclass, basic);
 
     for (i = 0; general_keys[i].key; i++)
-        eapp_create_content(ef, general_keys[i].key, general_keys[i].name, 
-                                                lang, winclass, general);
+        eapp_create_content(ef, &(general_keys[i]), lang, winclass, general);
 
     for (i = 0; icon_theme_keys[i].key; i++)
-        eapp_create_content(ef, icon_theme_keys[i].key, 
-                                    icon_theme_keys[i].name, lang, 
+        eapp_create_content(ef, &(icon_theme_keys[i]), lang, 
                                     winclass, icon_theme);
 
     for (i = 0; window_keys[i].key; i++)
-     eapp_create_content(ef, window_keys[i].key, window_keys[i].name, 
-                                    lang, winclass, window);
+     eapp_create_content(ef, &(window_keys[i]), lang, winclass, window);
 
     for (i = 0; misc_keys[i].key; i++)
-    {
-        v = eapp_eet_read(ef, misc_keys[i].key, lang);
-
-        checkbutton = ewl_checkbutton_new();
-        ewl_button_label_set(EWL_BUTTON(checkbutton), misc_keys[i].name);
-        ewl_object_alignment_set(EWL_OBJECT(checkbutton), EWL_FLAG_ALIGN_LEFT);
-        ewl_container_child_append(EWL_CONTAINER(misc), checkbutton);
-        ewl_checkbutton_checked_set(EWL_CHECKBUTTON(checkbutton), v[0] == 1);
-        ewl_widget_name_set(checkbutton, misc_keys[i].key);
-        ewl_widget_show(checkbutton);
- 
-        if (v) free(v);
-        v = NULL;
-    }
+        eapp_create_content(ef, &(misc_keys[i]), lang, winclass, misc);
 
     if (ef) eet_close(ef);
 
@@ -349,38 +332,55 @@ eapp_border_get(Ewl_Widget *parent, char *title, int left_align)
 
 
 static void
-eapp_create_content(Eet_File *ef, char *key, char *name, char *lang, 
+eapp_create_content(Eet_File *ef, Eapp_Item *item, char *lang, 
                                     char *winclass, Ewl_Widget *parent)
 {
     Ewl_Widget *hbox, *label, *entry;
     char *v;
 
-    hbox = ewl_hbox_new();
-    ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_ALL);
-    ewl_container_child_append(EWL_CONTAINER(parent), hbox);
-    ewl_widget_show(hbox);
+    v = eapp_eet_read(ef, item->key, lang);
 
-    v = eapp_eet_read(ef, key, lang);
+    if (item->checkbox)
+    {
+        Ewl_Widget *checkbutton;
 
-    if ((!strcmp(key, "app/window/class")) && (winclass))
-        v = winclass;
+        v = eapp_eet_read(ef, item->key, lang);
 
-    label = ewl_label_new();
-    ewl_label_text_set(EWL_LABEL(label), name);
-    ewl_object_fill_policy_set(EWL_OBJECT(label), EWL_FLAG_FILL_NONE);
-    ewl_object_alignment_set(EWL_OBJECT(label), EWL_FLAG_ALIGN_LEFT);
-    ewl_container_child_append(EWL_CONTAINER(hbox), label);
-    ewl_object_minimum_size_set(EWL_OBJECT(label), 75, 15);
-    ewl_object_maximum_size_set(EWL_OBJECT(label), 75, 15);
-    ewl_widget_show(label);
- 
-    entry = ewl_entry_new();
-    ewl_text_text_set(EWL_TEXT(entry), v);
-    ewl_object_maximum_size_set(EWL_OBJECT(entry), 99999, 8);
-    ewl_container_child_append(EWL_CONTAINER(hbox), entry);
-    ewl_object_alignment_set(EWL_OBJECT(entry), EWL_FLAG_ALIGN_RIGHT);
-    ewl_widget_name_set(entry, key);
-    ewl_widget_show(entry);
+        checkbutton = ewl_checkbutton_new();
+        ewl_button_label_set(EWL_BUTTON(checkbutton), item->name);
+        ewl_object_alignment_set(EWL_OBJECT(checkbutton), EWL_FLAG_ALIGN_LEFT);
+        ewl_container_child_append(EWL_CONTAINER(parent), checkbutton);
+        ewl_checkbutton_checked_set(EWL_CHECKBUTTON(checkbutton), v[0] == 1);
+        ewl_widget_name_set(checkbutton, item->key);
+        ewl_widget_show(checkbutton);
+    }
+    else
+    {
+        hbox = ewl_hbox_new();
+        ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_ALL);
+        ewl_container_child_append(EWL_CONTAINER(parent), hbox);
+        ewl_widget_show(hbox);
+
+        if ((!strcmp(item->key, "app/window/class")) && (winclass))
+            v = winclass;
+
+        label = ewl_label_new();
+        ewl_label_text_set(EWL_LABEL(label), item->name);
+        ewl_object_fill_policy_set(EWL_OBJECT(label), EWL_FLAG_FILL_NONE);
+        ewl_object_alignment_set(EWL_OBJECT(label), EWL_FLAG_ALIGN_LEFT);
+        ewl_container_child_append(EWL_CONTAINER(hbox), label);
+        ewl_object_minimum_size_set(EWL_OBJECT(label), 75, 15);
+        ewl_object_maximum_size_set(EWL_OBJECT(label), 75, 15);
+        ewl_widget_show(label);
+
+        entry = ewl_entry_new();
+        ewl_text_text_set(EWL_TEXT(entry), v);
+        ewl_object_maximum_size_set(EWL_OBJECT(entry), 99999, 8);
+        ewl_container_child_append(EWL_CONTAINER(hbox), entry);
+        ewl_object_alignment_set(EWL_OBJECT(entry), EWL_FLAG_ALIGN_RIGHT);
+        ewl_widget_name_set(entry, item->key);
+        ewl_widget_show(entry);
+    }
 
     if (v && v != winclass) free(v);
     v = NULL;
