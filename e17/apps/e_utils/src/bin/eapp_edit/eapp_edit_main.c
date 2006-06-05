@@ -189,7 +189,7 @@ eapp_ui_init(char *file, char *lang, char *winclass)
     ewl_widget_show(hbox);
 
     o = ewl_button_new();
-    ewl_button_label_set(EWL_BUTTON(o), "Save");
+    ewl_button_stock_type_set(EWL_BUTTON(o), EWL_STOCK_SAVE);
     ewl_container_child_append(EWL_CONTAINER(hbox), o);
     ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
     ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
@@ -199,7 +199,7 @@ eapp_ui_init(char *file, char *lang, char *winclass)
     ewl_widget_show(o);
 
     o = ewl_button_new();
-    ewl_button_label_set(EWL_BUTTON(o), "Cancel");
+    ewl_button_stock_type_set(EWL_BUTTON(o), EWL_STOCK_CANCEL);
     ewl_container_child_append(EWL_CONTAINER(hbox), o);
     ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
     ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
