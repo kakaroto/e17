@@ -316,8 +316,8 @@ ewl_window_dialog_set(Ewl_Window *win, int dialog)
 			ecore_x_netwm_window_type_set(
 					(Ecore_X_Window)win->window, 
 					ECORE_X_WINDOW_TYPE_NORMAL);
-#endif
 	}
+#endif
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
