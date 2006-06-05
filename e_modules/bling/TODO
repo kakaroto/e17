@@ -1,0 +1,13 @@
+BUGS
+==============================================
+* Fading is horribly broken, and may need to be reworked altogether.
+* All active windows are lost upon E17 restart.
+* Config doesn't save. Haven't had time to attend to this.
+* Shadow offset/opacity needs fixing.
+
+
+MISSING FUNCTIONALITY
+==============================================
+* Make unfocused windows translucent
+* Save/cache window pixmaps for "expose"-type functionality
+* Alternate window transitions (zoom, stretch etc.)

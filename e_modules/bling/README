@@ -1,0 +1,19 @@
+Bling Module
+************
+EFLized Composite Manager for E17
+
+By Ibukun Olumuyiwa
+
+DO NOT USE THIS MODULE. I REPEAT, DO *NOT* USE THIS MODULE.
+
+It is not anywhere ready for end-users. It has too many bugs and you may 
+lose valuable data. You have been warned.
+
+This module is only in CVS for developers who want to help fix bugs and
+add features/make the code more mature. Also the name "bling" is a working
+title and may not be the final name for this module (or it may eventually
+be merged into the main e17 tree). Please see the TODO file for a list of
+outstanding bugs and unfinished items.
+
+
+
