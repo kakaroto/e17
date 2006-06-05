@@ -27,6 +27,7 @@ collections
 		    {
 		       state: "default" 0.0;
 		       visible: 0;
+		       align: 0.5 1.0;
 		       rel1
 			 {
 			    relative: 0.0 0.0;
@@ -45,7 +46,7 @@ collections
 			  font:     "VeraMono";
 			  size:     10;
 			  min:      1 1;
-			  align:    0.5 0.5;
+			  align:    0.5 1.0;
 			  text_class: "module_large";			  
 		       }
 		    }
@@ -73,10 +74,11 @@ collections
 		    {
 		       state: "default" 0.0;
 		       visible: 0;
+		       align: 0.5 0.0;
 		       rel1
 			 {
 			    relative: 0.0 0.5;
-			    offset: 0 0;
+			    offset: 0 2;
 			 }
 		       rel2
 			 {
@@ -91,7 +93,7 @@ collections
 			  font:     "VeraMono";
 			  size:     9;
 			  min:      1 1;
-			  align:    0.5 1.0;
+			  align:    0.5 0.0;
 			  text_class: "module_small";
 		       }
 		    }
