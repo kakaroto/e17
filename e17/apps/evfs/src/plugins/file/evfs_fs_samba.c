@@ -251,7 +251,7 @@ smb_evfs_file_stat(evfs_command * command, struct stat *file_stat, int number)
    //struct stat* file_stat = calloc(1,sizeof(struct stat));
    //
    /*Does this command have an attached authentication object? */
-   if (command->file_command.files[0]->username)
+   if (command->file_command.files[number]->username)
      {
         printf("We have a username, adding to hash..\n");
         evfs_auth_structure_add(auth_cache,
