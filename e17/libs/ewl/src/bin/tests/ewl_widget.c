@@ -8,6 +8,8 @@ static int create_test(Ewl_Container *box);
 static void ewl_widget_cb_toggle(Ewl_Widget *w, void *ev, void *data);
 static void ewl_widget_cb_first_click(Ewl_Widget *w, void *ev, void *data);
 static void ewl_widget_cb_second_click(Ewl_Widget *w, void *ev, void *data);
+static void ewl_widget_cb_toggle_fullscreen(Ewl_Widget *w, void *ev, 
+								void *data);
 
 static int appearance_test_set_get(char *buf, int len);
 
@@ -65,6 +67,17 @@ create_test(Ewl_Container *box)
 	ewl_container_child_append(EWL_CONTAINER(b2), o);
 	ewl_widget_show(o);
 
+	b2 = ewl_hbox_new();
+	ewl_container_child_append(EWL_CONTAINER(vbox), b2);
+	ewl_widget_show(b2);
+
+	o = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(o), "Change fullscreen setting");
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
+				ewl_widget_cb_toggle_fullscreen, NULL);
+	ewl_container_child_append(EWL_CONTAINER(b2), o);
+	ewl_widget_show(o);
+
 	return 1;
 }
 
@@ -99,6 +112,16 @@ static void
 ewl_widget_cb_second_click(Ewl_Widget *w, void *ev, void *data)
 {
 	printf("second clicked\n");
+}
+
+static void
+ewl_widget_cb_toggle_fullscreen(Ewl_Widget *w, void *ev, void *data)
+{
+	Ewl_Embed *win;
+
+	win = ewl_embed_widget_find(w);
+	ewl_window_fullscreen_set(EWL_WINDOW(win),
+		!ewl_window_fullscreen_get(EWL_WINDOW(win)));
 }
 
 static int

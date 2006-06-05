@@ -283,6 +283,54 @@ ewl_window_borderless_set(Ewl_Window *win)
 }
 
 /**
+ * @param win: The window to work with
+ * @param fullscreen: The fullscreen setting to use
+ * @return Returns no value
+ * @brief Sets the fullscreen setting for the window
+ */
+void 
+ewl_window_fullscreen_set(Ewl_Window *win, unsigned int fullscreen)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+
+	/* do nothing if already set */
+	if (fullscreen == ewl_window_fullscreen_get(win))
+		DRETURN(DLEVEL_STABLE);
+
+	if (fullscreen)
+		win->flags |= EWL_WINDOW_FULLSCREEN;
+	else
+		win->flags &= ~EWL_WINDOW_FULLSCREEN;
+
+#ifdef ENABLE_EWL_SOFTWARE_X11
+	if (REALIZED(win) && strstr(win->render, "x11")) {
+		ecore_x_netwm_state_request_send((Ecore_X_Window)win->window,
+					NULL, ECORE_X_WINDOW_STATE_FULLSCREEN,
+					ECORE_X_WINDOW_STATE_UNKNOWN, TRUE);
+	}
+#endif
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @params win: The window to work with
+ * @return Returns TRUE if the window is fullscreen, FALSE otherwise
+ * @brief Retrieve the fullscreen setting for the window
+ */
+unsigned int
+ewl_window_fullscreen_get(Ewl_Window *win)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("win", win, FALSE);
+	DCHECK_TYPE_RET("win", win, EWL_WINDOW_TYPE, FALSE);
+
+	DRETURN_INT((!!(win->flags & EWL_WINDOW_FULLSCREEN)), DLEVEL_STABLE);
+}
+
+/**
  * @param win: the window to move
  * @param x: the x coordinate of the new position
  * @param y: the y coordinate of the new position
@@ -696,6 +744,14 @@ ewl_window_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 		if (window->flags & EWL_WINDOW_BORDERLESS)
 			ecore_x_mwm_borderless_set(xwin, 1);
+
+		if (window->flags & EWL_WINDOW_FULLSCREEN)
+		{
+			Ecore_X_Window_State states[] = 
+					{ECORE_X_WINDOW_STATE_FULLSCREEN};
+
+			ecore_x_netwm_window_state_set(xwin, states, 1);
+		}
 
 		width = ewl_object_maximum_w_get(EWL_OBJECT(window));
 		height = ewl_object_maximum_h_get(EWL_OBJECT(window));
