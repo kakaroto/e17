@@ -234,8 +234,8 @@ eapp_populate(Ewl_Widget *vbox, char *file, char *lang, char *winclass)
     Ewl_Widget *icon_theme, *window, *misc, *checkbutton;
     Eet_File *ef = NULL;
     char *v;
-    int i = 0;
-
+    int i;   
+ 
     if (ecore_file_exists(file))
     {
         ef = eet_open(file, EET_FILE_MODE_READ);
@@ -318,10 +318,9 @@ eapp_populate(Ewl_Widget *vbox, char *file, char *lang, char *winclass)
         ewl_widget_name_set(checkbutton, misc_keys[i].key);
         ewl_widget_show(checkbutton);
     }
-
+    
     if (v) free(v);
     v = NULL;
-    
     if (ef) eet_close(ef);
 
     return 1;
@@ -381,6 +380,9 @@ eapp_create_content(Eet_File *ef, char *key, char *name, char *lang,
     ewl_object_alignment_set(EWL_OBJECT(entry), EWL_FLAG_ALIGN_RIGHT);
     ewl_widget_name_set(entry, key);
     ewl_widget_show(entry);
+
+    if (v) free(v);
+    v = NULL;
 
     return;
 }
