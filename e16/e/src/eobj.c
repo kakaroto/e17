@@ -352,7 +352,7 @@ EobjMap(EObj * eo, int raise)
    eo->shown = 1;
 
    if (raise)
-      EobjListStackRaise(eo);
+      EobjListStackRaise(eo, 0);
 
    if (eo->stacked <= 0 || raise > 1)
       DeskRestack(eo->desk);
@@ -472,13 +472,19 @@ EobjRaise(EObj * eo)
 {
    int                 num;
 
-   num = EobjListStackRaise(eo);
+   num = EobjListStackRaise(eo, 1);
    if (num == 0)
       return num;
+
+   if (num < 0)
+      num = EobjListStackRaise(eo, 0);
 #if USE_COMPOSITE
    if (eo->shown && eo->cmhook)
-      ECompMgrWinRaise(eo);
+      ECompMgrWinRaiseLower(eo, num);
 #endif
+   if (num > 0)
+      num = EobjListStackRaise(eo, 0);
+
    return num;
 }
 
@@ -487,13 +493,19 @@ EobjLower(EObj * eo)
 {
    int                 num;
 
-   num = EobjListStackLower(eo);
+   num = EobjListStackLower(eo, 1);
    if (num == 0)
       return num;
+
+   if (num < 0)
+      num = EobjListStackLower(eo, 0);
 #if USE_COMPOSITE
    if (eo->shown && eo->cmhook)
-      ECompMgrWinLower(eo);
+      ECompMgrWinRaiseLower(eo, num);
 #endif
+   if (num > 0)
+      num = EobjListStackLower(eo, 0);
+
    return num;
 }
 

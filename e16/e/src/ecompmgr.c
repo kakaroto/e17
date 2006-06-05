@@ -1619,25 +1619,17 @@ ECompMgrWinChangeShape(EObj * eo)
 }
 
 void
-ECompMgrWinRaise(EObj * eo)
+ECompMgrWinRaiseLower(EObj * eo, int delta)
 {
    ECmWinInfo         *cw = eo->cmhook;
 
-   D1printf("ECompMgrWinRaise %#lx\n", EobjGetXwin(eo));
+   D1printf("ECompMgrWinRaiseLower %#lx delta=%d\n", EobjGetXwin(eo), delta);
 
-   _ECM_SET_STACK_CHANGED();
+   if (delta < 0)		/* Raise */
+      _ECM_SET_STACK_CHANGED();
    ECompMgrDamageMergeObject(eo, cw->extents, 0);
-}
-
-void
-ECompMgrWinLower(EObj * eo)
-{
-   ECmWinInfo         *cw = eo->cmhook;
-
-   D1printf("ECompMgrWinLower %#lx\n", EobjGetXwin(eo));
-
-   ECompMgrDamageMergeObject(eo, cw->extents, 0);
-   _ECM_SET_STACK_CHANGED();
+   if (delta > 0)		/* Lower */
+      _ECM_SET_STACK_CHANGED();
 }
 
 void
@@ -2534,7 +2526,7 @@ ECompMgrHandleRootEvent(Win win __UNUSED__, XEvent * ev, void *prm)
 	if (eo && eo->type == EOBJ_TYPE_EXT && eo->cmhook)
 	  {
 	     eo->shown = 1;
-	     EobjListStackRaise(eo);
+	     EobjListStackRaise(eo, 0);
 	     ECompMgrWinMap(eo);
 	  }
 	break;

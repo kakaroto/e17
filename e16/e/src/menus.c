@@ -984,7 +984,6 @@ MenuShowMasker(Menu * m __UNUSED__)
 
 	EobjSetFloating(eo, 1);
 	EobjSetLayer(eo, 2);
-	EobjListStackLower(eo);
 	ESelectInput(eo->win, ButtonPressMask | ButtonReleaseMask |
 		     EnterWindowMask | LeaveWindowMask);
 	EventCallbackRegister(eo->win, 0, MenuMaskerHandleEvents, NULL);

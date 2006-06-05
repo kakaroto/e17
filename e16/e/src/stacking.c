@@ -41,8 +41,8 @@ struct _eobjlist
    char                layered;
 };
 
-static int          EobjListRaise(EobjList * ewl, EObj * eo);
-static int          EobjListLower(EobjList * ewl, EObj * eo);
+static int          EobjListRaise(EobjList * ewl, EObj * eo, int test);
+static int          EobjListLower(EobjList * ewl, EObj * eo, int test);
 
 #if ENABLE_DEBUG_STACKING
 static void
@@ -101,14 +101,14 @@ EobjListAdd(EobjList * ewl, EObj * eo, int ontop)
 	  {
 	     ewl->list[ewl->nwins] = eo;
 	     ewl->nwins++;
-	     EobjListRaise(ewl, eo);
+	     EobjListRaise(ewl, eo, 0);
 	  }
 	else
 	  {
 	     memmove(ewl->list + 1, ewl->list, ewl->nwins * sizeof(EObj *));
 	     ewl->list[0] = eo;
 	     ewl->nwins++;
-	     EobjListLower(ewl, eo);
+	     EobjListLower(ewl, eo, 0);
 	  }
 	if (eo->stacked == 0)
 	   DeskSetDirtyStack(eo->desk, eo);
@@ -158,7 +158,7 @@ EobjListDel(EobjList * ewl, EObj * eo)
 }
 
 static int
-EobjListLower(EobjList * ewl, EObj * eo)
+EobjListLower(EobjList * ewl, EObj * eo, int test)
 {
    int                 i, j, n;
 
@@ -179,6 +179,9 @@ EobjListLower(EobjList * ewl, EObj * eo)
      }
 
    n = j - i;
+   if (test)
+      return n;
+
    if (n > 0)
      {
 	memmove(ewl->list + i, ewl->list + i + 1, n * sizeof(EObj *));
@@ -199,7 +202,7 @@ EobjListLower(EobjList * ewl, EObj * eo)
 }
 
 static int
-EobjListRaise(EobjList * ewl, EObj * eo)
+EobjListRaise(EobjList * ewl, EObj * eo, int test)
 {
    int                 i, j, n;
 
@@ -220,6 +223,9 @@ EobjListRaise(EobjList * ewl, EObj * eo)
      }
 
    n = j - i;
+   if (test)
+      return n;
+
    if (n > 0)
      {
 	memmove(ewl->list + i, ewl->list + i + 1, n * sizeof(EObj *));
@@ -308,15 +314,15 @@ EobjListStackDel(EObj * eo)
 }
 
 int
-EobjListStackRaise(EObj * eo)
+EobjListStackRaise(EObj * eo, int test)
 {
-   return EobjListRaise(&EwinListStack, eo);
+   return EobjListRaise(&EwinListStack, eo, test);
 }
 
 int
-EobjListStackLower(EObj * eo)
+EobjListStackLower(EObj * eo, int test)
 {
-   return EobjListLower(&EwinListStack, eo);
+   return EobjListLower(&EwinListStack, eo, test);
 }
 
 void
@@ -334,7 +340,7 @@ EobjListFocusDel(EObj * eo)
 int
 EobjListFocusRaise(EObj * eo)
 {
-   return EobjListRaise(&EwinListFocus, eo);
+   return EobjListRaise(&EwinListFocus, eo, 0);
 }
 
 EWin               *const *
