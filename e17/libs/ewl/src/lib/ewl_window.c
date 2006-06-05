@@ -363,7 +363,7 @@ ewl_window_fullscreen_set(Ewl_Window *win, unsigned int fullscreen)
 #ifdef ENABLE_EWL_SOFTWARE_X11
 	if (REALIZED(win) && strstr(win->render, "x11")) {
 		ecore_x_netwm_state_request_send((Ecore_X_Window)win->window,
-					NULL, ECORE_X_WINDOW_STATE_FULLSCREEN,
+					0, ECORE_X_WINDOW_STATE_FULLSCREEN,
 					ECORE_X_WINDOW_STATE_UNKNOWN, TRUE);
 	}
 #endif
