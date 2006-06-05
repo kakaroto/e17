@@ -245,7 +245,7 @@ eapp_populate(Ewl_Widget *vbox, char *file, char *lang, char *winclass)
     ewl_widget_appearance_set(icon, "button");
     ewl_image_file_set(EWL_IMAGE(icon), file, "icon");
     ewl_image_proportional_set(EWL_IMAGE(icon), TRUE);
-    ewl_image_constrain_set(EWL_IMAGE(icon), 49);
+    ewl_image_size_set(EWL_IMAGE(icon), 49, 49);
     ewl_widget_name_set(icon, "icon");
     ewl_container_child_append(EWL_CONTAINER(icon_border), icon);
     ewl_callback_append(icon, EWL_CALLBACK_CLICKED, eapp_cb_fd_show, NULL);
