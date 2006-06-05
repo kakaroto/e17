@@ -98,7 +98,7 @@ main(int argc, char ** argv)
             }
             else
             {
-                fprintf(stderr, "Error, missing argument for lang.\n");
+                fprintf(stderr, "Error, missing argument for --lang.\n");
                 goto ARGS_SHUTDOWN;
             }
         }
@@ -111,7 +111,7 @@ main(int argc, char ** argv)
             }
             else
             {
-                fprintf(stderr, "Error, missing argument for win-class.\n");
+                fprintf(stderr, "Error, missing argument for --win-class.\n");
                 goto ARGS_SHUTDOWN;
             }
         }
@@ -137,7 +137,7 @@ main(int argc, char ** argv)
 
     if (!eapp_ui_init(file, lang, winclass))
     {
-        fprintf(stderr, "Error initializing e_utils_eapp_edit.\n");
+        fprintf(stderr, "Error initializing eap_edit.\n");
         goto EET_SHUTDOWN;
     }
 
@@ -159,7 +159,7 @@ SHUTDOWN:
 static void
 eapp_usage(void)
 {
-    printf("usage: e_util_eapp_edit [OPTIONS] file.eap\n"
+    printf("usage: eap_edit [OPTIONS] <file.eap>\n"
             "\t if <file.eap> doesn't exist a new file will be created\n\n"
             " [OPTIONS]\n"
             "  -h           \t - view this help screen.\n"
@@ -180,9 +180,9 @@ eapp_ui_init(char *file, char *lang, char *winclass)
     Ewl_Widget *win, *vbox, *hbox, *o;
     
     win = ewl_window_new();
-    ewl_window_title_set(EWL_WINDOW(win), "Eapp Editor");
-    ewl_window_class_set(EWL_WINDOW(win), "Eapp Editor");
-    ewl_window_name_set(EWL_WINDOW(win), "Eapp_Editor");
+    ewl_window_title_set(EWL_WINDOW(win), "Eap Editor");
+    ewl_window_class_set(EWL_WINDOW(win), "Eap Editor");
+    ewl_window_name_set(EWL_WINDOW(win), "Eap_Editor");
     ewl_object_size_request(EWL_OBJECT(win), 445, 315);
     ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, eapp_cb_quit, NULL);
     ewl_widget_show(win);

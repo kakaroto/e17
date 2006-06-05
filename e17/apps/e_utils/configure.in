@@ -138,7 +138,7 @@ AC_PATH_GENERIC(epsilon, 0.3.0,
 )
 
 build_e17genmenu="no"
-build_eapp_edit="no"
+build_eap_edit="no"
 build_e17setroot="no"
 build_entangle="no"
 build_emblem="no"
@@ -146,7 +146,7 @@ build_exige="no"
 build_ethemes="no"
 
 if test "x$have_ewl" = "xyes" -a "x$have_engrave" = "xyes"; then
-  build_eapp_edit="yes"
+  build_eap_edit="yes"
 fi
 
 if test "x$have_eet" = "xyes" -a "x$have_ecore" = "xyes" -a "x$have_engrave" = "xyes"; then
@@ -174,7 +174,7 @@ if test "x$have_evas" = "xyes" -a "x$have_ecore" = "xyes" -a "x$have_edje" = "xy
 fi
 
 AM_CONDITIONAL(BUILD_E17GENMENU, test "x$build_e17genmenu" = "xyes")
-AM_CONDITIONAL(BUILD_EAPP_EDIT, test "x$build_eapp_edit" = "xyes")
+AM_CONDITIONAL(BUILD_EAP_EDIT, test "x$build_eap_edit" = "xyes")
 AM_CONDITIONAL(BUILD_E17SETROOT, test "x$build_e17setroot" = "xyes")
 AM_CONDITIONAL(BUILD_ENTANGLE, test "x$build_entangle" = "xyes")
 AM_CONDITIONAL(BUILD_EMBLEM, test "x$build_emblem" = "xyes")
@@ -209,8 +209,6 @@ data/entangle/Makefile
 data/entangle/default/Makefile
 data/exige/Makefile
 data/exige/default/Makefile
-data/eapp_edit/Makefile
-data/eapp_edit/default/Makefile
 src/Makefile
 src/bin/Makefile
 src/bin/e17genmenu/Makefile
@@ -250,7 +248,7 @@ echo
 echo "Utilities that will be built:"
 echo
 echo "  e17genmenu......: "$build_e17genmenu
-echo "  Eapp_Edit.......: "$build_eapp_edit
+echo "  eap_edit........: "$build_eap_edit
 echo "  E17 Setroot.....: "$build_e17setroot
 echo "  Entangle........: "$build_entangle
 echo "  Emblem..........: "$build_emblem

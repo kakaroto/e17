@@ -9,10 +9,10 @@ INCLUDES = \
 @ECORE_CFLAGS@ \
 @ENGRAVE_CFLAGS@
 
-bin_PROGRAMS = e_util_eapp_edit
+bin_PROGRAMS = eap_edit
 
-e_util_eapp_edit_SOURCES = \
+eap_edit_SOURCES = \
 eapp_edit_main.c
 
-e_util_eapp_edit_LDADD = @EWL_LIBS@ @EET_LIBS@ @ECORE_LIBS@ @ENGRAVE_LIBS@
+eap_edit_LDADD = @EWL_LIBS@ @EET_LIBS@ @ECORE_LIBS@ @ENGRAVE_LIBS@
 

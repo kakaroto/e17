@@ -4,7 +4,7 @@ if BUILD_E17GENMENU
 e17genmenu_subdir = e17genmenu
 endif
 
-if BUILD_EAPP_EDIT
+if BUILD_EAP_EDIT
 eapp_edit_subdir = eapp_edit
 endif
 
