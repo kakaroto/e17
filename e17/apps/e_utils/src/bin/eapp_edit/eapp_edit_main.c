@@ -318,10 +318,11 @@ eapp_populate(Ewl_Widget *vbox, char *file, char *lang, char *winclass)
 
         checkbutton = ewl_checkbutton_new();
         ewl_button_label_set(EWL_BUTTON(checkbutton), misc_keys[i].name);
-        ewl_object_alignment_set(EWL_OBJECT(checkbutton), EWL_FLAG_ALIGN_LEFT);
+	ewl_object_alignment_set(EWL_OBJECT(checkbutton), EWL_FLAG_ALIGN_LEFT);
         ewl_container_child_append(EWL_CONTAINER(misc), checkbutton);
         ewl_widget_name_set(checkbutton, misc_keys[i].key);
         ewl_widget_show(checkbutton);
+	ewl_checkbutton_checked_set(EWL_CHECKBUTTON(checkbutton), v[0] == 1);
     }
 
     if (v) free(v);
