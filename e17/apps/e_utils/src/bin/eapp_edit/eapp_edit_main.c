@@ -31,6 +31,9 @@ static void eapp_cb_save(Ewl_Widget *w, void *ev, void *data);
 static void eapp_cb_fd_show(Ewl_Widget *w, void *ev, void *data);
 static void eapp_cb_fd_hide(Ewl_Widget *w, void *ev, void *data);
 static void eapp_cb_fd_changed(Ewl_Widget *w, void *ev, void *data);
+static void eapp_create_content(Eet_File *ef, char *key, char *name, char *lang, 
+						char *winclass, Ewl_Widget *parent);
+Ewl_Widget *eapp_border_get(Ewl_Widget *parent, char *title, char *align);
 
 static Eapp_Item basic_keys[] = {
             {"app/info/name", "App Name", 0},
@@ -226,7 +229,7 @@ static int
 eapp_populate(Ewl_Widget *vbox, char *file, char *lang, char *winclass)
 {
     Ewl_Widget *hbox, *icon_border, *icon, *basic, *o;
-    Ewl_Widget *hsep, *label, *entry, *general;
+    Ewl_Widget *hsep, *general;
     Ewl_Widget *icon_theme, *window, *misc, *checkbutton;
     Eet_File *ef = NULL;
     char *v;
@@ -265,164 +268,48 @@ eapp_populate(Ewl_Widget *vbox, char *file, char *lang, char *winclass)
     ewl_callback_append(icon, EWL_CALLBACK_CLICKED, eapp_cb_fd_show, NULL);
     ewl_widget_show(icon);
 
-    basic = ewl_border_new();
-    ewl_border_text_set(EWL_BORDER(basic), "Basic Info");
-    ewl_border_label_alignment_set(EWL_BORDER(basic), EWL_FLAG_ALIGN_LEFT);
-    ewl_container_child_append(EWL_CONTAINER(hbox), basic);
-    ewl_object_alignment_set(EWL_OBJECT(basic), EWL_FLAG_ALIGN_RIGHT);
-    ewl_widget_show(basic);
+    basic = eapp_border_get(hbox, "Basic Info", "right");
 
     hsep = ewl_hseparator_new();                 
     ewl_container_child_append(EWL_CONTAINER(vbox), hsep);
     ewl_widget_show(hsep);
 
+    hbox = ewl_hbox_new();
+    ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
+    ewl_widget_show(hbox);
+
+    general = eapp_border_get(hbox, "General", "left");
+
+    icon_theme = eapp_border_get(hbox, "Icon Theme", "right");
+
+    hbox = ewl_hbox_new();
+    ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
+    ewl_widget_show(hbox);
+
+    window = eapp_border_get(hbox, "Window", "left");
+
+    misc = eapp_border_get(hbox, "Misc", "Right");
+
     for (i = 0; basic_keys[i].key; i++)
     {
-        hbox = ewl_hbox_new();
-        ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_ALL);
-        ewl_container_child_append(EWL_CONTAINER(basic), hbox);
-        ewl_widget_show(hbox);
-
-        v = eapp_eet_read(ef, basic_keys[i].key, lang);
-
-        label = ewl_label_new();
-        ewl_label_text_set(EWL_LABEL(label), basic_keys[i].name);
-        ewl_object_fill_policy_set(EWL_OBJECT(label), EWL_FLAG_FILL_NONE);
-        ewl_object_alignment_set(EWL_OBJECT(label), EWL_FLAG_ALIGN_LEFT);
-        ewl_container_child_append(EWL_CONTAINER(hbox), label);
-        ewl_object_minimum_size_set(EWL_OBJECT(label), 65, 15);
-        ewl_object_maximum_size_set(EWL_OBJECT(label), 65, 15);
-        ewl_widget_show(label);
-
-        entry = ewl_entry_new();
-        ewl_text_text_set(EWL_TEXT(entry), v);
-        ewl_object_maximum_size_set(EWL_OBJECT(entry), 99999, 8);
-        ewl_object_alignment_set(EWL_OBJECT(entry), EWL_FLAG_ALIGN_RIGHT);
-        ewl_container_child_append(EWL_CONTAINER(hbox), entry);
-        ewl_widget_name_set(entry, basic_keys[i].key);    
-        ewl_widget_show(entry);
+        eapp_create_content(ef, basic_keys[i].key, basic_keys[i].name, lang, winclass, basic);
     }
-
-    hbox = ewl_hbox_new();
-    ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
-    ewl_widget_show(hbox);
-
-    general = ewl_border_new();
-    ewl_border_text_set(EWL_BORDER(general), "General");
-    ewl_border_label_alignment_set(EWL_BORDER(general), EWL_FLAG_ALIGN_LEFT);
-    ewl_container_child_append(EWL_CONTAINER(hbox), general);
-    ewl_object_alignment_set(EWL_OBJECT(general), EWL_FLAG_ALIGN_LEFT);
-    ewl_widget_show(general);
-
-    icon_theme = ewl_border_new();
-    ewl_border_text_set(EWL_BORDER(icon_theme), "Icon Theme");
-    ewl_border_label_alignment_set(EWL_BORDER(icon_theme), EWL_FLAG_ALIGN_LEFT);
-    ewl_container_child_append(EWL_CONTAINER(hbox), icon_theme);
-    ewl_object_alignment_set(EWL_OBJECT(icon_theme), EWL_FLAG_ALIGN_RIGHT);
-    ewl_widget_show(icon_theme);
-
-    hbox = ewl_hbox_new();
-    ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
-    ewl_widget_show(hbox);
-
-    window = ewl_border_new();
-    ewl_border_text_set(EWL_BORDER(window), "Window");
-    ewl_border_label_alignment_set(EWL_BORDER(window), EWL_FLAG_ALIGN_LEFT);
-    ewl_container_child_append(EWL_CONTAINER(hbox), window);
-    ewl_object_alignment_set(EWL_OBJECT(window), EWL_FLAG_ALIGN_LEFT);
-    ewl_widget_show(window);
-
-    misc = ewl_border_new();
-    ewl_border_text_set(EWL_BORDER(misc), "Misc");
-    ewl_border_label_alignment_set(EWL_BORDER(misc), EWL_FLAG_ALIGN_LEFT);
-    ewl_container_child_append(EWL_CONTAINER(hbox), misc);
-    ewl_object_alignment_set(EWL_OBJECT(misc), EWL_FLAG_ALIGN_RIGHT);
-    ewl_widget_show(misc);
 
     for (i = 0; general_keys[i].key; i++)
     {
-        hbox = ewl_hbox_new();
-        ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_ALL);
-        ewl_container_child_append(EWL_CONTAINER(general), hbox);
-        ewl_widget_show(hbox);
-
-        v = eapp_eet_read(ef, general_keys[i].key, lang);
-
-        label = ewl_label_new();
-        ewl_label_text_set(EWL_LABEL(label), general_keys[i].name);
-        ewl_object_fill_policy_set(EWL_OBJECT(label), EWL_FLAG_FILL_NONE);
-        ewl_object_alignment_set(EWL_OBJECT(label), EWL_FLAG_ALIGN_LEFT);
-        ewl_container_child_append(EWL_CONTAINER(hbox), label);
-        ewl_object_minimum_size_set(EWL_OBJECT(label), 75, 15);
-        ewl_object_maximum_size_set(EWL_OBJECT(label), 75, 15);
-        ewl_widget_show(label);
-
-        entry = ewl_entry_new();
-        ewl_text_text_set(EWL_TEXT(entry), v);
-        ewl_object_maximum_size_set(EWL_OBJECT(entry), 99999, 8);
-        ewl_object_alignment_set(EWL_OBJECT(entry), EWL_FLAG_ALIGN_RIGHT);
-        ewl_container_child_append(EWL_CONTAINER(hbox), entry);
-        ewl_widget_name_set(entry, general_keys[i].key);
-        ewl_widget_show(entry);
+        eapp_create_content(ef, general_keys[i].key, general_keys[i].name, lang, winclass, 
+										general);
     }
 
     for (i = 0; icon_theme_keys[i].key; i++)
     {
-        hbox = ewl_hbox_new();
-        ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_ALL);
-        ewl_container_child_append(EWL_CONTAINER(icon_theme), hbox);
-        ewl_widget_show(hbox);
-
-        v = eapp_eet_read(ef, icon_theme_keys[i].key, lang);
-
-        label = ewl_label_new();
-        ewl_label_text_set(EWL_LABEL(label), icon_theme_keys[i].name);
-        ewl_object_fill_policy_set(EWL_OBJECT(label), EWL_FLAG_FILL_NONE);
-        ewl_object_alignment_set(EWL_OBJECT(label), EWL_FLAG_ALIGN_LEFT);
-        ewl_container_child_append(EWL_CONTAINER(hbox), label);
-        ewl_object_minimum_size_set(EWL_OBJECT(label), 75, 15);
-        ewl_object_maximum_size_set(EWL_OBJECT(label), 75, 15);
-        ewl_widget_show(label);
-
-        entry = ewl_entry_new();
-        ewl_text_text_set(EWL_TEXT(entry), v);
-        ewl_object_maximum_size_set(EWL_OBJECT(entry), 99999, 8);
-        ewl_container_child_append(EWL_CONTAINER(hbox), entry);
-        ewl_object_alignment_set(EWL_OBJECT(entry), EWL_FLAG_ALIGN_RIGHT);
-        ewl_widget_name_set(entry, icon_theme_keys[i].key);
-        ewl_widget_show(entry);
+	eapp_create_content(ef, icon_theme_keys[i].key, icon_theme_keys[i].name, lang, 
+									winclass, icon_theme);
     }
 
     for (i = 0; window_keys[i].key; i++)
     {
-        hbox = ewl_hbox_new();
-        ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_ALL);
-        ewl_container_child_append(EWL_CONTAINER(window), hbox);
-        ewl_widget_show(hbox);
-
-        v = eapp_eet_read(ef, window_keys[i].key, lang);
-
-        if (!strcmp(window_keys[i].key, "app/window/class"))
-        {
-            if (winclass) v = winclass;
-        }
-
-        label = ewl_label_new();
-        ewl_label_text_set(EWL_LABEL(label), window_keys[i].name);
-        ewl_object_fill_policy_set(EWL_OBJECT(label), EWL_FLAG_FILL_NONE);
-        ewl_object_alignment_set(EWL_OBJECT(label), EWL_FLAG_ALIGN_LEFT);
-        ewl_container_child_append(EWL_CONTAINER(hbox), label);
-        ewl_object_minimum_size_set(EWL_OBJECT(label), 75, 15);
-        ewl_object_maximum_size_set(EWL_OBJECT(label), 75, 15);
-        ewl_widget_show(label);
-
-        entry = ewl_entry_new();
-        ewl_text_text_set(EWL_TEXT(entry), v);
-        ewl_object_maximum_size_set(EWL_OBJECT(entry), 99999, 8);
-        ewl_container_child_append(EWL_CONTAINER(hbox), entry);
-        ewl_object_alignment_set(EWL_OBJECT(entry), EWL_FLAG_ALIGN_RIGHT);
-        ewl_widget_name_set(entry, window_keys[i].key);
-        ewl_widget_show(entry);
+ 	eapp_create_content(ef, window_keys[i].key, window_keys[i].name, lang, winclass, window);
     }
 
     for (i = 0; misc_keys[i].key; i++)
@@ -443,6 +330,63 @@ eapp_populate(Ewl_Widget *vbox, char *file, char *lang, char *winclass)
     if (ef) eet_close(ef);
 
     return 1;
+}
+
+Ewl_Widget *
+eapp_border_get(Ewl_Widget *parent, char *title, char *align)
+{
+    Ewl_Widget *border;
+
+    border = ewl_border_new();
+    ewl_border_text_set(EWL_BORDER(border), title);
+    ewl_border_label_alignment_set(EWL_BORDER(border), EWL_FLAG_ALIGN_LEFT);
+    ewl_container_child_append(EWL_CONTAINER(parent), border);
+    ewl_widget_show(border);
+    if (strcmp(align, "left") == 0)
+        ewl_object_alignment_set(EWL_OBJECT(border), EWL_FLAG_ALIGN_LEFT);
+    else
+	ewl_object_alignment_set(EWL_OBJECT(border), EWL_FLAG_ALIGN_RIGHT);
+    
+    return border;
+}
+
+
+static void
+eapp_create_content(Eet_File *ef, char *key, char *name, char *lang, char *winclass,
+								 Ewl_Widget *parent)
+{
+    Ewl_Widget *hbox, *label, *entry;
+    char *v;
+
+    hbox = ewl_hbox_new();
+    ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_ALL);
+    ewl_container_child_append(EWL_CONTAINER(parent), hbox);
+    ewl_widget_show(hbox);
+
+    v = eapp_eet_read(ef, key, lang);
+
+    if (!strcmp(key, "app/window/class"))
+    {
+        if (winclass) v = winclass;
+    }
+
+    label = ewl_label_new();
+    ewl_label_text_set(EWL_LABEL(label), name);
+    ewl_object_fill_policy_set(EWL_OBJECT(label), EWL_FLAG_FILL_NONE);
+    ewl_object_alignment_set(EWL_OBJECT(label), EWL_FLAG_ALIGN_LEFT);
+    ewl_container_child_append(EWL_CONTAINER(hbox), label);
+    ewl_object_minimum_size_set(EWL_OBJECT(label), 75, 15);
+    ewl_object_maximum_size_set(EWL_OBJECT(label), 75, 15);
+    ewl_widget_show(label);
+ 
+    entry = ewl_entry_new();
+    ewl_text_text_set(EWL_TEXT(entry), v);
+    ewl_object_maximum_size_set(EWL_OBJECT(entry), 99999, 8);
+    ewl_container_child_append(EWL_CONTAINER(hbox), entry);
+    ewl_object_alignment_set(EWL_OBJECT(entry), EWL_FLAG_ALIGN_RIGHT);
+    ewl_widget_name_set(entry, key);
+    ewl_widget_show(entry);
+    return;
 }
 
 static void
