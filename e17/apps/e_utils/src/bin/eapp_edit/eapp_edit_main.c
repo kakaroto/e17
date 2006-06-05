@@ -317,10 +317,11 @@ eapp_populate(Ewl_Widget *vbox, char *file, char *lang, char *winclass)
         ewl_checkbutton_checked_set(EWL_CHECKBUTTON(checkbutton), v[0] == 1);
         ewl_widget_name_set(checkbutton, misc_keys[i].key);
         ewl_widget_show(checkbutton);
+ 
+        if (v) free(v);
+        v = NULL;
     }
-    
-    if (v) free(v);
-    v = NULL;
+
     if (ef) eet_close(ef);
 
     return 1;
@@ -381,7 +382,7 @@ eapp_create_content(Eet_File *ef, char *key, char *name, char *lang,
     ewl_widget_name_set(entry, key);
     ewl_widget_show(entry);
 
-    if (v) free(v);
+    if (v && v != winclass) free(v);
     v = NULL;
 
     return;
