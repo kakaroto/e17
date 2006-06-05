@@ -284,7 +284,7 @@ ewl_window_borderless_set(Ewl_Window *win)
 
 /**
  * @param win: the window
- * @param override: TRUE or FALSE to indicate dialog state.
+ * @param dialog: TRUE or FALSE to indicate dialog state.
  * @return Returns no value.
  * @brief Changes the dialog state on the specified window.
  *
@@ -372,7 +372,7 @@ ewl_window_fullscreen_set(Ewl_Window *win, unsigned int fullscreen)
 }
 
 /**
- * @params win: The window to work with
+ * @param win: The window to work with
  * @return Returns TRUE if the window is fullscreen, FALSE otherwise
  * @brief Retrieve the fullscreen setting for the window
  */
