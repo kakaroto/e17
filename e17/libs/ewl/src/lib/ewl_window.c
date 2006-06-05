@@ -1094,6 +1094,7 @@ ewl_window_expose_cb(Ewl_Widget *w, void *ev __UNUSED__,
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	win = EWL_WINDOW(w);
+#ifdef ENABLE_EWL_SOFTWARE_X11
 	if (win->flags & EWL_WINDOW_GRAB_KEYBOARD) 
 		ecore_x_keyboard_grab((Ecore_X_Window)win->window);
 
@@ -1110,6 +1111,7 @@ ewl_window_expose_cb(Ewl_Widget *w, void *ev __UNUSED__,
 		else if (grabval == GrabInvalidTime)
 			printf("GrabInvalidTime\n");
 	}
+#endif
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
