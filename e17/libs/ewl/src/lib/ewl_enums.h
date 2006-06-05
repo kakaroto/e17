@@ -257,7 +257,8 @@ enum Ewl_Window_Flags
 	EWL_WINDOW_GRAB_POINTER = 0x4,		/**< Window grabs pointer */
 	EWL_WINDOW_GRAB_KEYBOARD = 0x8,		/**< Window grabs keyboard */
 	EWL_WINDOW_OVERRIDE = 0x10,		/**< Window override setting */
-	EWL_WINDOW_FULLSCREEN = 0x20		/**< Window is fullscreen */
+	EWL_WINDOW_FULLSCREEN = 0x20,		/**< Window is fullscreen */
+	EWL_WINDOW_DIALOG = 0x40		/**< Window has no max and min buttons */
 };
 
 /**

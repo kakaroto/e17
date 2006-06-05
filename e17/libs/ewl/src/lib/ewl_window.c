@@ -283,6 +283,62 @@ ewl_window_borderless_set(Ewl_Window *win)
 }
 
 /**
+ * @param win: the window
+ * @param override: TRUE or FALSE to indicate dialog state.
+ * @return Returns no value.
+ * @brief Changes the dialog state on the specified window.
+ *
+ * A dialog window has not a iconify and/or maximize button.
+ */
+void
+ewl_window_dialog_set(Ewl_Window *win, int dialog)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+
+	/* do nothing if already set */
+	if (dialog == ewl_window_dialog_get(win))
+		DRETURN(DLEVEL_STABLE);
+	
+	if (dialog)
+		win->flags |= EWL_WINDOW_DIALOG;
+	else
+		win->flags &= ~EWL_WINDOW_DIALOG;
+
+#ifdef ENABLE_EWL_SOFTWARE_X11
+	if (REALIZED(win) && strstr(win->render, "x11")) {
+		if (dialog)
+			ecore_x_netwm_window_type_set(
+					(Ecore_X_Window)win->window, 
+					ECORE_X_WINDOW_TYPE_DIALOG);
+		else
+			ecore_x_netwm_window_type_set(
+					(Ecore_X_Window)win->window, 
+					ECORE_X_WINDOW_TYPE_NORMAL);
+#endif
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param win: window to retrieve dialog state
+ * @return Returns TRUE if window is an dialog window, FALSE otherwise.
+ * @brief Retrieves the current dialog state on a window.
+ */
+int
+ewl_window_dialog_get(Ewl_Window *win)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("win", win, FALSE);
+	DCHECK_TYPE_RET("win", win, EWL_WINDOW_TYPE, FALSE);
+
+	DRETURN_INT((!!(win->flags & EWL_WINDOW_DIALOG)), DLEVEL_STABLE);
+}
+
+
+/**
  * @param win: The window to work with
  * @param fullscreen: The fullscreen setting to use
  * @return Returns no value
@@ -744,6 +800,12 @@ ewl_window_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 		if (window->flags & EWL_WINDOW_BORDERLESS)
 			ecore_x_mwm_borderless_set(xwin, 1);
+		if (window->flags & EWL_WINDOW_DIALOG)
+			ecore_x_netwm_window_type_set(xwin, 
+						ECORE_X_WINDOW_TYPE_DIALOG);
+		else
+			ecore_x_netwm_window_type_set(xwin,
+						ECORE_X_WINDOW_TYPE_NORMAL);
 
 		if (window->flags & EWL_WINDOW_FULLSCREEN)
 		{
