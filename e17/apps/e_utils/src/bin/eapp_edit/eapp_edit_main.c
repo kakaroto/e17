@@ -31,9 +31,10 @@ static void eapp_cb_save(Ewl_Widget *w, void *ev, void *data);
 static void eapp_cb_fd_show(Ewl_Widget *w, void *ev, void *data);
 static void eapp_cb_fd_hide(Ewl_Widget *w, void *ev, void *data);
 static void eapp_cb_fd_changed(Ewl_Widget *w, void *ev, void *data);
-static void eapp_create_content(Eet_File *ef, char *key, char *name, char *lang, 
-						char *winclass, Ewl_Widget *parent);
-Ewl_Widget *eapp_border_get(Ewl_Widget *parent, char *title, char *align);
+static void eapp_create_content(Eet_File *ef, char *key, char *name, 
+                                        char *lang, char *winclass, 
+                                        Ewl_Widget *parent);
+Ewl_Widget *eapp_border_get(Ewl_Widget *parent, char *title, int left_align);
 
 static Eapp_Item basic_keys[] = {
             {"app/info/name", "App Name", 0},
@@ -268,7 +269,7 @@ eapp_populate(Ewl_Widget *vbox, char *file, char *lang, char *winclass)
     ewl_callback_append(icon, EWL_CALLBACK_CLICKED, eapp_cb_fd_show, NULL);
     ewl_widget_show(icon);
 
-    basic = eapp_border_get(hbox, "Basic Info", "right");
+    basic = eapp_border_get(hbox, "Basic Info", 0);
 
     hsep = ewl_hseparator_new();                 
     ewl_container_child_append(EWL_CONTAINER(vbox), hsep);
@@ -278,39 +279,32 @@ eapp_populate(Ewl_Widget *vbox, char *file, char *lang, char *winclass)
     ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
     ewl_widget_show(hbox);
 
-    general = eapp_border_get(hbox, "General", "left");
-
-    icon_theme = eapp_border_get(hbox, "Icon Theme", "right");
+    general = eapp_border_get(hbox, "General", 1);
+    icon_theme = eapp_border_get(hbox, "Icon Theme", 0);
 
     hbox = ewl_hbox_new();
     ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
     ewl_widget_show(hbox);
 
-    window = eapp_border_get(hbox, "Window", "left");
-
-    misc = eapp_border_get(hbox, "Misc", "Right");
+    window = eapp_border_get(hbox, "Window", 1);
+    misc = eapp_border_get(hbox, "Misc", 0);
 
     for (i = 0; basic_keys[i].key; i++)
-    {
-        eapp_create_content(ef, basic_keys[i].key, basic_keys[i].name, lang, winclass, basic);
-    }
+        eapp_create_content(ef, basic_keys[i].key, basic_keys[i].name, 
+                                                lang, winclass, basic);
 
     for (i = 0; general_keys[i].key; i++)
-    {
-        eapp_create_content(ef, general_keys[i].key, general_keys[i].name, lang, winclass, 
-										general);
-    }
+        eapp_create_content(ef, general_keys[i].key, general_keys[i].name, 
+                                                lang, winclass, general);
 
     for (i = 0; icon_theme_keys[i].key; i++)
-    {
-	eapp_create_content(ef, icon_theme_keys[i].key, icon_theme_keys[i].name, lang, 
-									winclass, icon_theme);
-    }
+        eapp_create_content(ef, icon_theme_keys[i].key, 
+                                    icon_theme_keys[i].name, lang, 
+                                    winclass, icon_theme);
 
     for (i = 0; window_keys[i].key; i++)
-    {
- 	eapp_create_content(ef, window_keys[i].key, window_keys[i].name, lang, winclass, window);
-    }
+     eapp_create_content(ef, window_keys[i].key, window_keys[i].name, 
+                                    lang, winclass, window);
 
     for (i = 0; misc_keys[i].key; i++)
     {
@@ -318,11 +312,11 @@ eapp_populate(Ewl_Widget *vbox, char *file, char *lang, char *winclass)
 
         checkbutton = ewl_checkbutton_new();
         ewl_button_label_set(EWL_BUTTON(checkbutton), misc_keys[i].name);
-	ewl_object_alignment_set(EWL_OBJECT(checkbutton), EWL_FLAG_ALIGN_LEFT);
+        ewl_object_alignment_set(EWL_OBJECT(checkbutton), EWL_FLAG_ALIGN_LEFT);
         ewl_container_child_append(EWL_CONTAINER(misc), checkbutton);
+        ewl_checkbutton_checked_set(EWL_CHECKBUTTON(checkbutton), v[0] == 1);
         ewl_widget_name_set(checkbutton, misc_keys[i].key);
         ewl_widget_show(checkbutton);
-	ewl_checkbutton_checked_set(EWL_CHECKBUTTON(checkbutton), v[0] == 1);
     }
 
     if (v) free(v);
@@ -334,7 +328,7 @@ eapp_populate(Ewl_Widget *vbox, char *file, char *lang, char *winclass)
 }
 
 Ewl_Widget *
-eapp_border_get(Ewl_Widget *parent, char *title, char *align)
+eapp_border_get(Ewl_Widget *parent, char *title, int left_align)
 {
     Ewl_Widget *border;
 
@@ -342,19 +336,21 @@ eapp_border_get(Ewl_Widget *parent, char *title, char *align)
     ewl_border_text_set(EWL_BORDER(border), title);
     ewl_border_label_alignment_set(EWL_BORDER(border), EWL_FLAG_ALIGN_LEFT);
     ewl_container_child_append(EWL_CONTAINER(parent), border);
-    ewl_widget_show(border);
-    if (strcmp(align, "left") == 0)
+
+    if (left_align)
         ewl_object_alignment_set(EWL_OBJECT(border), EWL_FLAG_ALIGN_LEFT);
     else
-	ewl_object_alignment_set(EWL_OBJECT(border), EWL_FLAG_ALIGN_RIGHT);
+        ewl_object_alignment_set(EWL_OBJECT(border), EWL_FLAG_ALIGN_RIGHT);
+
+    ewl_widget_show(border);
     
     return border;
 }
 
 
 static void
-eapp_create_content(Eet_File *ef, char *key, char *name, char *lang, char *winclass,
-								 Ewl_Widget *parent)
+eapp_create_content(Eet_File *ef, char *key, char *name, char *lang, 
+                                    char *winclass, Ewl_Widget *parent)
 {
     Ewl_Widget *hbox, *label, *entry;
     char *v;
@@ -366,10 +362,8 @@ eapp_create_content(Eet_File *ef, char *key, char *name, char *lang, char *wincl
 
     v = eapp_eet_read(ef, key, lang);
 
-    if (!strcmp(key, "app/window/class"))
-    {
-        if (winclass) v = winclass;
-    }
+    if ((!strcmp(key, "app/window/class")) && (winclass))
+        v = winclass;
 
     label = ewl_label_new();
     ewl_label_text_set(EWL_LABEL(label), name);
@@ -387,6 +381,7 @@ eapp_create_content(Eet_File *ef, char *key, char *name, char *lang, char *wincl
     ewl_object_alignment_set(EWL_OBJECT(entry), EWL_FLAG_ALIGN_RIGHT);
     ewl_widget_name_set(entry, key);
     ewl_widget_show(entry);
+
     return;
 }
 
@@ -472,7 +467,6 @@ eapp_write_keys(Eet_File *ef, Eapp_Item *keys, char *lang)
 {
     int i;
 
-
     /* add all the eet data */
     for (i = 0; keys[i].key; i++)
     {
@@ -493,7 +487,6 @@ eapp_write_keys(Eet_File *ef, Eapp_Item *keys, char *lang)
             v = ewl_text_text_get(EWL_TEXT(o));
             if (v) s = strlen(v);
         }
-
         eapp_eet_write(ef, keys[i].key, lang, v, s);
     }
 }
@@ -507,19 +500,14 @@ eapp_eet_read(Eet_File *ef, char *key, char *lang)
         char buf[4096];
         char *ret, *r;
 
-        if (lang)
-            snprintf(buf, sizeof(buf), "%s[%s]", key, lang);
-        else
-            snprintf(buf, sizeof(buf), "%s", key);
+        if (lang) snprintf(buf, sizeof(buf), "%s[%s]", key, lang);
+        else snprintf(buf, sizeof(buf), "%s", key);
 
         r = eet_read(ef, buf, &size);
         if (r)
         {
             ret = malloc(sizeof(char) * (size + 1));
-            if (ret)
-            {
-                snprintf(ret, size + 1, "%s", r);
-            }
+            if (ret) snprintf(ret, size + 1, "%s", r);
             else ret = strdup("");
 
             free(r);
@@ -536,15 +524,11 @@ eapp_eet_write(Eet_File *ef, char *key, char *lang, char *val, int size)
 
     if (ef)
     {
-        if (lang)
-            snprintf(buf, sizeof(buf), "%s[%s]", key, lang);
-        else
-            snprintf(buf, sizeof(buf), "%s", key);
+        if (lang) snprintf(buf, sizeof(buf), "%s[%s]", key, lang);
+        else snprintf(buf, sizeof(buf), "%s", key);
 
-        if (size == 0)
-            eet_delete(ef, buf);
-        else
-            eet_write(ef, buf, val, size, 0);
+        if (size == 0) eet_delete(ef, buf);
+        else eet_write(ef, buf, val, size, 0);
     }
 }
 
