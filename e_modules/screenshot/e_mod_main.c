@@ -251,7 +251,7 @@ EAPI E_Module_Api e_modapi = {
    "Screenshot"
 };
 
-EAPI int
+EAPI void *
 e_modapi_init(E_Module *m)
 {
    bindtextdomain(PACKAGE, LOCALEDIR);

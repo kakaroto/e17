@@ -47,10 +47,10 @@ struct _Config_Item
 
 EAPI extern E_Module_Api e_modapi;
 
-EAPI int e_modapi_init(E_Module *m);
-EAPI int e_modapi_shutdown(E_Module *m);
-EAPI int e_modapi_save(E_Module *m);
-EAPI int e_modapi_about(E_Module *m);
+EAPI void *e_modapi_init(E_Module *m);
+EAPI int   e_modapi_shutdown(E_Module *m);
+EAPI int   e_modapi_save(E_Module *m);
+EAPI int   e_modapi_about(E_Module *m);
 
 void _config_ss_module(Config_Item *ci);
 extern Config *ss_config;

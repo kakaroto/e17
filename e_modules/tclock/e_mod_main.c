@@ -275,7 +275,7 @@ EAPI E_Module_Api e_modapi = {
    "TClock"
 };
 
-EAPI int
+EAPI void *
 e_modapi_init(E_Module *m)
 {
    bindtextdomain(PACKAGE, LOCALEDIR);
