@@ -846,7 +846,11 @@ ewl_realize_cancel_request(Ewl_Widget *w)
 
 	ecore_list_goto(realize_list, w);
 	if (ecore_list_current(realize_list) == w)
+	{
+		ewl_object_queued_remove(EWL_OBJECT(w),
+					 EWL_FLAG_QUEUED_RSCHEDULED);
 		ecore_list_remove(realize_list);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_TESTING);
 }
