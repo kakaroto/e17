@@ -7,7 +7,7 @@ EAPI E_Module_Api e_modapi = {
    MODULE_NAME
 };
 
-EAPI int
+EAPI void *
 e_modapi_init(E_Module *m)
 {
    /* Init new module */

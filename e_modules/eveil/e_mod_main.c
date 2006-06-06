@@ -1017,7 +1017,7 @@ _cb_alarm_snooze_time(void *data)
  * Module functions
  */
 
-EAPI int
+EAPI void *
 e_modapi_init(E_Module *m)
 {
    char buf[4096];
