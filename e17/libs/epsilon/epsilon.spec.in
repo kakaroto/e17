@@ -63,6 +63,7 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libepsilon.so.*
 %{_libdir}/libepsilon.la
 %{_libdir}/pkgconfig/epsilon.pc
+%{_libdir}/%{name}/plugins/*.so
 %{_bindir}/epsilon
 %{_bindir}/epsilon_thumb_test
 %{_bindir}/epsilon_thumbd
@@ -72,6 +73,8 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %doc doc/html
 %{_libdir}/libepsilon.so
 %{_libdir}/libepsilon.a
+%{_libdir}/%{name}/plugins/*.a
+%{_libdir}/%{name}/plugins/*.la
 %{_includedir}/Epsilon.h
 %{_includedir}/Epsilon_Request.h
 %{_bindir}/epsilon-config
