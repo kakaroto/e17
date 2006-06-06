@@ -32,7 +32,7 @@ struct _Screenshot
 };
 
 /* Function Protos for Gadcon Requirements */
-static E_Gadcon_Client *_gc_init(E_Gadcon *gc, char *name, char *id, char *style);
+static E_Gadcon_Client *_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style);
 static void _gc_shutdown(E_Gadcon_Client *gcc);
 static void _gc_orient(E_Gadcon_Client *gcc);
 static char *_gc_label(void);
@@ -65,7 +65,7 @@ static const E_Gadcon_Client_Class _gc_class = {
 };
 
 static E_Gadcon_Client *
-_gc_init(E_Gadcon *gc, char *name, char *id, char *style)
+_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 {
    Evas_Object *o;
    E_Gadcon_Client *gcc;
@@ -245,7 +245,7 @@ EAPI E_Module_Api e_modapi = {
    "Screenshot"
 };
 
-EAPI void *
+EAPI int
 e_modapi_init(E_Module *m)
 {
    bindtextdomain(PACKAGE, LOCALEDIR);
