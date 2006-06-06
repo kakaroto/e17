@@ -1,0 +1,22 @@
+/**
+@brief Emphasis
+
+Emphasis is a graphical MPD Client using Etk
+*/
+
+/**
+
+@mainpage Emphasis
+
+@version 0.1
+@author Samuel Mendes <heka.lok\@gmail.com>
+@date 2006
+
+@section intro Introduction
+
+Emphasis is a graphical MPD Client written in C and using Etk.
+
+@section compiling How to compile Emphasis ?
+
+Just launch ./autogen.sh && make && sudo make install in the root directory
+*/
