@@ -74,6 +74,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    inst->mem_obj = o;
 
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _mem_cb_mouse_down, inst);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_MOVE, _mem_cb_mouse_in, inst);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_IN, _mem_cb_mouse_in, inst);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_OUT, _mem_cb_mouse_out, inst);
    
@@ -116,11 +117,20 @@ static void
 _gc_shutdown(E_Gadcon_Client *gcc) 
 {
    Instance *inst;
+   Mem *mem;
    
    inst = gcc->data;
+   mem = inst->mem;
+   
    if (inst->check_timer) ecore_timer_del(inst->check_timer);
    mem_config->instances = evas_list_remove(mem_config->instances, inst);
-   _mem_free(inst->mem);
+
+   evas_object_event_callback_del(mem->mem_obj, EVAS_CALLBACK_MOUSE_DOWN, _mem_cb_mouse_down);
+   evas_object_event_callback_del(mem->mem_obj, EVAS_CALLBACK_MOUSE_MOVE, _mem_cb_mouse_in);
+   evas_object_event_callback_del(mem->mem_obj, EVAS_CALLBACK_MOUSE_IN, _mem_cb_mouse_in);
+   evas_object_event_callback_del(mem->mem_obj, EVAS_CALLBACK_MOUSE_OUT, _mem_cb_mouse_out);
+
+   _mem_free(mem);
    free(inst);
 }
 
