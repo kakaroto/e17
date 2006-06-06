@@ -112,8 +112,11 @@ static void
 _gc_shutdown(E_Gadcon_Client *gcc)
 {
    Instance *inst;
-
+   Weather *w;
+   
    inst = gcc->data;
+   w = inst->weather;
+   
    if (inst->check_timer) ecore_timer_del(inst->check_timer);
    if (inst->add_handler) ecore_event_handler_del(inst->add_handler);
    if (inst->data_handler) ecore_event_handler_del(inst->data_handler);
@@ -122,7 +125,10 @@ _gc_shutdown(E_Gadcon_Client *gcc)
 
    inst->server = NULL;
    weather_config->instances = evas_list_remove(weather_config->instances, inst);
-   _weather_free(inst->weather);
+
+   evas_object_event_callback_del(w->weather_obj, EVAS_CALLBACK_MOUSE_DOWN, _weather_cb_mouse_down);
+   
+   _weather_free(w);
    free(inst);
 }
 
