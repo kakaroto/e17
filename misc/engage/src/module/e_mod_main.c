@@ -143,7 +143,7 @@ EAPI E_Module_Api e_modapi =
     "Engage"
 };
 
-EAPI void *
+EAPI int
 e_modapi_init(E_Module *m)
 {
    Engage *e;
@@ -151,7 +151,7 @@ e_modapi_init(E_Module *m)
    /* actually init engage */
    e = _engage_new();
 //   m->config_menu = e->config_menu;
-   return e;
+   return (e != NULL);
 }
 
 EAPI int
