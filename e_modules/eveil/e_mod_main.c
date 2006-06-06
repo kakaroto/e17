@@ -15,7 +15,7 @@ EAPI E_Module_Api e_modapi =
    };
 
 /* gadcon requirements */
-static E_Gadcon_Client *_gc_init(E_Gadcon *gc, char *name, char *id, char *style);
+static E_Gadcon_Client *_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style);
 static void _gc_shutdown(E_Gadcon_Client *gcc);
 static void _gc_orient(E_Gadcon_Client *gcc);
 static char *_gc_label(void);
@@ -68,7 +68,7 @@ Config *eveil_config = NULL;
  */
 
 static E_Gadcon_Client *
-_gc_init(E_Gadcon *gc, char *name, char *id, char *style)
+_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 {
    char buf[4096];
    Evas_Object *o;
@@ -1017,7 +1017,7 @@ _cb_alarm_snooze_time(void *data)
  * Module functions
  */
 
-EAPI void *
+EAPI int
 e_modapi_init(E_Module *m)
 {
    char buf[4096];
