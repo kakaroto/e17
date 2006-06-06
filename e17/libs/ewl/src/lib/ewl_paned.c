@@ -395,7 +395,7 @@ ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 			/* if the child is on the new panes list it still
 			 * needs to be placed, so take it's size into
 			 * account */
-			if (ecore_list_goto(p->new_panes, child))
+			if (ecore_list_goto(p->new_panes, child) == child)
 			{
 				needed_pane_size += 
 					layout->preferred_size(EWL_OBJECT(child));
