@@ -77,6 +77,9 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    inst = gcc->data;
    if (inst->check_timer) ecore_timer_del(inst->check_timer);
    tclock_config->instances = evas_list_remove(tclock_config->instances, inst);
+
+   evas_object_event_callback_del(inst->tclock, EVAS_CALLBACK_MOUSE_DOWN, _tclock_cb_mouse_down);
+
    evas_object_del(inst->tclock);
    free(inst);
 }
