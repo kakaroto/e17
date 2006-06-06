@@ -41,6 +41,9 @@ struct Ewl_Paned
 {
         Ewl_Container container;        /**< Inherit from Ewl_Container */
         Ewl_Orientation orientation;    /**< The orientation of the paned */
+
+	Ecore_List *new_panes;		/**< List of unplaced panes */
+	unsigned short updating_grabbers:1; /**< are we updating the grabbers */
 };
 
 Ewl_Widget      *ewl_paned_new(void);
