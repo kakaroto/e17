@@ -202,7 +202,8 @@ ewl_widget_realize(Ewl_Widget *w)
 		DRETURN(DLEVEL_STABLE);
 
 	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED)
-			&& !ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_RPROCESS))
+			&& !ewl_object_queued_has(EWL_OBJECT(w), 
+						EWL_FLAG_QUEUED_RPROCESS))
 		ewl_realize_cancel_request(w);
 
 	/*
