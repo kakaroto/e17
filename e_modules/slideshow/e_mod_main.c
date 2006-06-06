@@ -100,14 +100,20 @@ static void
 _gc_shutdown(E_Gadcon_Client *gcc)
 {
    Instance *inst;
-
+   Slideshow *slide;
+   
    inst = gcc->data;
+   slide = inst->slide;
+   
    if (inst->bg_list) ecore_list_destroy(inst->bg_list);
    if (inst->display) evas_stringshare_del(inst->display);
    if (inst->check_timer) ecore_timer_del(inst->check_timer);
 
    slide_config->instances = evas_list_remove(slide_config->instances, inst);
-   _slide_free(inst->slide);
+
+   evas_object_event_callback_del(slide->slide_obj, EVAS_CALLBACK_MOUSE_DOWN, _slide_cb_mouse_down);
+   
+   _slide_free(slide);
    free(inst);
 }
 
