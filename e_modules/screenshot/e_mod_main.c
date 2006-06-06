@@ -99,11 +99,17 @@ static void
 _gc_shutdown(E_Gadcon_Client *gcc)
 {
    Instance *inst;
-
+   Screenshot *ss;
+   
    inst = gcc->data;
+   ss = inst->ss;
+   
    if (inst->filename) evas_stringshare_del(inst->filename);
    ss_config->instances = evas_list_remove(ss_config->instances, inst);
-   _ss_free(inst->ss);
+
+   evas_object_event_callback_del(ss->ss_obj, EVAS_CALLBACK_MOUSE_DOWN, _ss_cb_mouse_down);
+   
+   _ss_free(ss);
    free(inst);
 }
 
