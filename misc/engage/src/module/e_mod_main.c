@@ -143,7 +143,7 @@ EAPI E_Module_Api e_modapi =
     "Engage"
 };
 
-EAPI int
+EAPI void *
 e_modapi_init(E_Module *m)
 {
    Engage *e;
@@ -151,7 +151,7 @@ e_modapi_init(E_Module *m)
    /* actually init engage */
    e = _engage_new();
 //   m->config_menu = e->config_menu;
-   return (e != NULL);
+   return e;
 }
 
 EAPI int
@@ -1060,6 +1060,8 @@ _engage_icon_find(Engage_Bar *eb, E_App *a)
 {
    Evas_List *l;
 
+   if (!a)
+     return NULL;
    for (l = eb->icons; l; l = l->next)
      {
 	Engage_Icon *ic;
