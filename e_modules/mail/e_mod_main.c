@@ -627,6 +627,9 @@ _mail_parse_pop(void *data, void *data2)
 	if (sscanf(in, "+OK %i %i", &num, &size) == 2) 
 	  {
 	     _mail_set_text(inst, num, num);
+	     inst->state = STATE_DISCONNECTED;
+	     ecore_con_server_del(inst->server);
+	     inst->server = NULL;
 	     if ((ci->use_exec) && (ci->exec != NULL)) 
 	       {
 		  if (num <= 0) break;
