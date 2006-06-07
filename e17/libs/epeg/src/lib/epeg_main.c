@@ -1171,13 +1171,12 @@ _epeg_encode(Epeg_Image *im)
 	dst_mgr->buf = malloc(65536);
    	im->out.jinfo.dest = (struct jpeg_destination_mgr *)dst_mgr;
      }
+   jpeg_set_defaults(&(im->out.jinfo));
    im->out.jinfo.image_width      = im->out.w;
    im->out.jinfo.image_height     = im->out.h;
    im->out.jinfo.input_components = im->in.jinfo.output_components;
    im->out.jinfo.in_color_space   = im->in.jinfo.out_color_space;
-   im->out.jinfo.dct_method       = JDCT_IFAST;
    im->out.jinfo.dct_method	  = im->in.jinfo.dct_method;
-   jpeg_set_defaults(&(im->out.jinfo));
    jpeg_set_quality(&(im->out.jinfo), im->out.quality, TRUE);   
    
    if (im->out.quality >= 90)
