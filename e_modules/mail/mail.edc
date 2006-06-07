@@ -88,7 +88,7 @@ collections
 		       visible: 0;
 		       rel1 
 			 {
-			    relative: 0.0 0.90;
+			    relative: 0.0 0.9;
 			    offset: 0 0;
 			    to: "logo";
 			 }
@@ -132,13 +132,13 @@ collections
 		       visible: 0;
 		       rel1 
 			 {
-			    relative: 0.0 0.0;
+			    relative: 0.0 0.3;
 			    offset: 0 0;
 			    to: "logo";
 			 }
 		       rel2 
 			 {
-			    relative: 1.0 0.6;
+			    relative: 1.0 0.5;
 			    offset: -1 -1;
 			    to: "logo";
 			 }
@@ -176,13 +176,13 @@ collections
 		       visible: 0;
 		       rel1 
 			 {
-			    relative: 0.5 0.0;
+			    relative: 0.0 0.6;
 			    offset: 0 0;
 			    to: "logo";
 			 }
 		       rel2 
 			 {
-			    relative: 0.5 1.0;
+			    relative: 1.0 0.8;
 			    offset: -1 -1;
 			    to: "logo";
 			 }
