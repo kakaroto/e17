@@ -237,7 +237,8 @@ _slide_config_item_get(const char *id)
 {
    Evas_List *l;
    Config_Item *ci;
-
+   char buf[4096];
+   
    for (l = slide_config->items; l; l = l->next)
      {
         ci = l->data;
@@ -245,11 +246,14 @@ _slide_config_item_get(const char *id)
         if (!strcmp(ci->id, id)) return ci;
      }
 
+   snprintf(buf, sizeof(buf), "%s/.e/e/backgrounds", e_user_homedir_get());
+   
    ci = E_NEW(Config_Item, 1);
    ci->id = evas_stringshare_add(id);
    ci->poll_time = 60.0;
    ci->disable_timer = 0;
-
+   ci->dir = evas_stringshare_add(buf);
+   
    slide_config->items = evas_list_append(slide_config->items, ci);
    return ci;
 }
@@ -469,7 +473,8 @@ _slide_get_bg_count(void *data)
 
    inst = data;
    ci = _slide_config_item_get(inst->gcc->id);
-
+   if (!ci->dir) return;
+   
    inst->bg_count = 0;
    if (inst->bg_list) ecore_list_destroy(inst->bg_list);
    inst->bg_list = ecore_file_ls(ci->dir);
