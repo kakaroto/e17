@@ -83,8 +83,8 @@ collections
 		  description 
 		    {
 		       state: "default" 0.0;
-		       color: 255 255 255 255;
-		       color3: 0 0 0 42;
+		       color: 0 0 0 255;
+		       color3: 255 255 255 42;
 		       visible: 0;
 		       rel1 
 			 {
@@ -113,8 +113,8 @@ collections
 		       state: "visible" 0.0;
 		       inherit: "default" 0.0;
 		       visible: 1;
-		       color: 255 255 255 255;
-		       color3: 0 0 0 42;
+		       color: 0 0 0 255;
+		       color3: 255 255 255 42;
 		    }
 	       }
 	     part 
@@ -127,8 +127,8 @@ collections
 		  description 
 		    {
 		       state: "default" 0.0;
-		       color: 255 255 255 255;
-		       color3: 0 0 0 42;
+		       color: 0 0 0 255;
+		       color3: 255 255 255 42;
 		       visible: 0;
 		       rel1 
 			 {
@@ -157,8 +157,8 @@ collections
 		       state: "visible" 0.0;
 		       inherit: "default" 0.0;
 		       visible: 1;
-		       color: 255 255 255 255;
-		       color3: 0 0 0 42;
+		       color: 0 0 0 255;
+		       color3: 255 255 255 42;
 		    }
 	       }
 	     part 
@@ -171,8 +171,8 @@ collections
 		  description 
 		    {
 		       state: "default" 0.0;
-		       color: 255 255 255 255;
-		       color3: 0 0 0 42;
+		       color: 0 0 0 255;
+		       color3: 255 255 255 42;
 		       visible: 0;
 		       rel1 
 			 {
@@ -201,8 +201,8 @@ collections
 		       state: "visible" 0.0;
 		       inherit: "default" 0.0;
 		       visible: 1;
-		       color: 255 255 255 255;
-		       color3: 0 0 0 42;
+		       color: 0 0 0 255;
+		       color3: 255 255 255 42;
 		    }
 	       }
 	  }
