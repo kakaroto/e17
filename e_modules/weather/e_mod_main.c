@@ -61,7 +61,7 @@ static void _weather_get_proxy(Config_Item *ci);
 static int _weather_server_add(void *data, int type, void *event);
 static int _weather_server_del(void *data, int type, void *event);
 static int _weather_server_data(void *data, int type, void *event);
-static int _weather_parse(Instance *inst);
+static int _weather_parse(void *data);
 static void _weather_display_set(Instance *inst, int ok);
 
 /* Gadcon Functions */
@@ -516,11 +516,16 @@ _weather_server_data(void *data, int type, void *event)
 }
 
 static int
-_weather_parse(Instance *inst)
+_weather_parse(void *data)
 {
+   Instance *inst;
    char *needle, *ext;
    char location[256];
 
+   inst = data;
+   if (!inst) return 0;
+   if (inst->buffer == NULL) return 0;
+   
    needle = strstr(inst->buffer, "<title");
    if (!needle) goto error;
 
