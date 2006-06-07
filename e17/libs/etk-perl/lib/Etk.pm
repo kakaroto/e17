@@ -1,6 +1,6 @@
 package Etk;
 
-use 5.008007;
+use 5.008006;
 use strict;
 use warnings;
 use Carp;

@@ -68,7 +68,7 @@ sub PulseStepSet
 sub PulseStepGet
 {
     my $self = shift;
-    return Etk::etk_progress_bar_pulse_step_get($self-{WIDGET});
+    return Etk::etk_progress_bar_pulse_step_get($self->{WIDGET});
 }
 
 sub DirectionSet
@@ -81,7 +81,7 @@ sub DirectionSet
 sub DirectionGet
 {
     my $self = shift;
-    return Etk::etk_progress_bar_direction_get($self-{WIDGET});
+    return Etk::etk_progress_bar_direction_get($self->{WIDGET});
 }
 
 1;

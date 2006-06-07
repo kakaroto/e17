@@ -16,6 +16,7 @@ use Etk::Table;
 use Etk::FillPolicy;
 use Etk::HSlider;
 use Etk::VSlider;
+use Etk::ProgressBar;
 
 Etk::Init();
 
@@ -342,7 +343,16 @@ sub slider_window_show
 
 sub progbar_window_show
 {
-    print "progbar_window_show\n";
+    my $win = Etk::Window->new("Etk-Perl Progress Bar Test");
+    my $vbox = Etk::VBox->new(1, 5);
+    my $pbar1 = Etk::ProgressBar->new("0% done");
+    my $pbar2 = Etk::ProgressBar->new("Loading...");
+    
+    $vbox->PackStart($pbar1);
+    $vbox->PackStart($pbar2);
+    
+    $win->Add($vbox);
+    $win->ShowAll();    
 }
 
 sub canvas_window_show
