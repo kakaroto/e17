@@ -5,6 +5,7 @@
 #include "ppport.h"
 
 #include <Etk.h>
+#include <Ecore.h>
 #include <Ecore_Data.h>
 
 #include "const-c.inc"
@@ -159,6 +160,24 @@ callback_BOOL__POINTER_POINTER(Etk_Object *object, void *val1, void *val2, void 
       
    /* Call the Perl sub */
    call_sv(cbd->sv, G_DISCARD);
+}
+
+/*
+ * TODO: return the return value from the perl callback
+ */
+int
+callback_timer(void *data)
+{
+   dSP;
+   SV* cb;
+   
+   cb = data;   
+   
+   PUSHMARK(SP) ;
+   PUTBACK ;  
+   
+   call_sv(cb, G_DISCARD);
+   return 1;
 }
 
 MODULE = Etk		PACKAGE = Etk		
@@ -3837,4 +3856,18 @@ etk_window_wmclass_set(window, window_name, window_class)
 	char *	window_class
 	CODE:
 	etk_window_wmclass_set(ETK_WINDOW(window), window_name, window_class);
+	 
+Ecore_Timer *
+etkpl_timer_add(interval, callback)
+        double interval
+	SV *    callback
+      CODE:        
+        RETVAL = ecore_timer_add(interval, callback_timer, newSVsv(callback));
+      OUTPUT:
+        RETVAL
 	
+void
+etkpl_timer_del(timer)
+      Ecore_Timer * timer
+    CODE:
+      ecore_timerdel(timer);

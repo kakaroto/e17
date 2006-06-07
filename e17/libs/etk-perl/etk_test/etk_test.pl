@@ -17,6 +17,7 @@ use Etk::FillPolicy;
 use Etk::HSlider;
 use Etk::VSlider;
 use Etk::ProgressBar;
+use Etk::Timer;
 
 Etk::Init();
 
@@ -348,8 +349,28 @@ sub progbar_window_show
     my $pbar1 = Etk::ProgressBar->new("0% done");
     my $pbar2 = Etk::ProgressBar->new("Loading...");
     
+    $pbar2->PulseStepSet(0.015);
+    
     $vbox->PackStart($pbar1);
     $vbox->PackStart($pbar2);
+
+    my $timer1 = Etk::Timer->new(0.05, 
+	sub {
+	    my $fraction = $pbar1->FractionGet();
+	    $fraction += 0.01;
+	    
+	    $fraction = 0.0 if ($fraction > 1.0);
+	    
+	    $pbar1->TextSet(sprintf("%.0f%% done", $fraction * 100.0));
+	    $pbar1->FractionSet($fraction);
+	}
+    );
+    
+    my $timer2 = Etk::Timer->new(0.025,
+	sub {
+	    $pbar2->Pulse();
+	}
+    );
     
     $win->Add($vbox);
     $win->ShowAll();    
