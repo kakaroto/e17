@@ -1,6 +1,8 @@
 
 General TODO:
 =============
+- finish porting etk_test from C to perl
+- callback system needs to convert structs to perl equivalents
 - all functions that use use references to change multiple values need
   to return a list of values to the perl caller
 - wrap up functions that use (...): important ones are combo for now
