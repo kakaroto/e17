@@ -3910,3 +3910,27 @@ Fix potential configuration file corruption when running multihead.
 Faster TT font drawing. 
 Fix border rendering for ARGB clients (requires imlib2 from CVS).
 
+
+-------------------------------------------------------------------------------
+
+Thu Jun  8 01:29:33 CEST 2006
+(Kim)
+
+--- 0.16.8.2 0.05 ---
+Fix killing clients (hmm... was broken quite a while back). (0.04)
+Speed up shape propagation.
+Fix drawing of vertical border text in certain themes.
+Add some sanity checking for pixmap cursors.
+Event debug cleanups.
+IPC window operation tweaks:
+- Enable targeting multiple windows (wildcard in name spec).
+- Enable non-group operations.
+Add background transparency "compatibility mode" option to configuration dialog.
+Don't reserve space for unmapped systray windows.
+Fix screen edge resistance in presence of windows with struts.
+ARGB window tweaks and testing stuff.
+Fix shutdown when using session manager.
+Fix shape update when client resizes after changing shape.
+Fix incorrect damage region when raise actually lowers and vice versa.
+Change default session script to run scripts in foreground.
+
