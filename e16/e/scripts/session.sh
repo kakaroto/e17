@@ -28,9 +28,16 @@ RunApps() {
 
 	for f in "$d"/*
 	do
-		if [ -x $f ]; then
+		if [ -x "$f" ]; then
 #			echo $f
-			$f  &
+			case "$f" in
+			*.sh)	# Scripts are executed in foreground
+				"$f"
+				;;
+			*)	# Anything else is executed in background
+				"$f"  &
+				;;
+			esac
 		fi
 	done
 }
