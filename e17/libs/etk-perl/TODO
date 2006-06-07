@@ -1,0 +1,26 @@
+
+General TODO:
+=============
+- all functions that use use references to change multiple values need
+  to return a list of values to the perl caller
+- wrap up functions that use (...): important ones are combo for now
+- create an evas_list to perl list converter
+- go over all enums and structs and port as needed
+- etk_argument.h
+- etk_cache.h
+- etk_colorpicker_*.h
+- etk_editable_text_object.h
+- etk_marshallers.h
+- etk_propery.h
+- etk_radio_button.h
+- etk_string.h
+- etk_text_buffer.h
+- etk_text_iter.h
+- etk_text_view.h
+- etk_textblock.h
+- etk_theme.h
+- etk_toplevel_widget.h
+- etk_type.h
+- etk_types.h
+- etk_utils.h
+- etk_main.h [DONE]

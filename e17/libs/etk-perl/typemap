@@ -1,0 +1,119 @@
+Etk_Accumulator					T_PTROBJ
+Etk_Alignment *					T_PTROBJ
+Etk_Argument *					T_PTROBJ
+Etk_Bin *					T_PTROBJ
+Etk_Bool					T_IV
+Etk_Bool *					T_PV
+Etk_Box *					T_PTROBJ
+Etk_Button *					T_PTROBJ
+Etk_Canvas *					T_PTROBJ
+Etk_Color					T_OPAQUE_STRUCT
+Etk_Colorpicker *				T_PTROBJ
+Etk_Colorpicker_Mode				T_PTROBJ
+Etk_Combobox *					T_PTROBJ
+Etk_Combobox_Column_Type			T_PTROBJ
+Etk_Combobox_Item *				T_PTROBJ
+Etk_Constructor   				T_PTROBJ
+Etk_Container *					T_PTROBJ
+Etk_Destructor 					T_PTROBJ
+Etk_Dialog *					T_PTROBJ
+Etk_Drag *					T_PTROBJ
+Etk_Entry *					T_PTROBJ
+Etk_Event_Selection_Request *			T_PTROBJ
+Etk_Filechooser_Widget *			T_PTROBJ
+Etk_Fill_Policy_Flags				T_IV
+Etk_Frame *					T_PTROBJ
+Etk_Geometry					T_OPAQUE_STRUCT
+Etk_Geometry *					T_PTROBJ
+Etk_Iconbox *					T_PTROBJ
+Etk_Iconbox_Icon *				T_PTROBJ
+Etk_Iconbox_Model *				T_PTROBJ
+Etk_Image *					T_PTROBJ
+Etk_Label *					T_PTROBJ
+Etk_Marshaller					T_PTROBJ
+Etk_Menu *					T_PTROBJ
+Etk_Menu_Item *					T_PTROBJ
+Etk_Menu_Item_Check *				T_PTROBJ
+Etk_Menu_Item_Image *				T_PTROBJ
+Etk_Menu_Item_Radio *				T_PTROBJ
+Etk_Menu_Shell *				T_PTROBJ
+Etk_Message_Dialog *				T_PTROBJ
+Etk_Message_Dialog_Buttons			T_IV
+Etk_Message_Dialog_Type				T_PTROBJ
+Etk_Notebook *					T_PTROBJ
+Etk_Object *					T_PTROBJ
+Etk_Paned *					T_PTROBJ
+Etk_Pointer_Type				T_PTROBJ
+Etk_Popup_Window *				T_PTROBJ
+Etk_Progress_Bar *				T_PTROBJ
+Etk_Property *					T_PTROBJ
+Etk_Property **					T_PTROBJ
+Etk_Property_Flags				T_PTROBJ
+Etk_Property_Type				T_PTROBJ
+Etk_Property_Value *				T_PTROBJ
+Etk_Radio_Button *				T_PTROBJ
+Etk_Range *					T_PTROBJ
+Etk_Scrolled_View *				T_PTROBJ
+Etk_Scrolled_View_Policy			T_PTROBJ
+Etk_Scrolled_View_Policy *			T_PTROBJ
+Etk_Signal *					T_PTROBJ
+Etk_Signal_Callback *				T_PTROBJ
+Etk_Signal_Callback_Function			T_CALLBACK
+Etk_Size *					T_PTROBJ
+Etk_Statusbar *					T_PTROBJ
+Etk_Stock_Id					T_IV
+Etk_Stock_Id *					T_PTROBJ
+Etk_Stock_Size					T_PTROBJ
+Etk_Stock_Size *				T_PTROBJ
+Etk_String *					T_PTROBJ
+Etk_Table *					T_PTROBJ
+Etk_Textblock *					T_PTROBJ
+Etk_Textblock_Iter *				T_PTROBJ
+Etk_Toggle_Button *				T_PTROBJ
+Etk_Toplevel_Widget *				T_PTROBJ
+Etk_Tree *					T_PTROBJ
+Etk_Tree_Col *					T_PTROBJ
+Etk_Tree_Mode					T_PTROBJ
+Etk_Tree_Model *				T_PTROBJ
+Etk_Tree_Model_Image_Type			T_PTROBJ
+Etk_Tree_Row *					T_PTROBJ
+Etk_Type *					T_PTROBJ
+Etk_Type **					T_PTROBJ
+Etk_Widget *					T_PTROBJ
+Etk_Window *					T_PTROBJ
+Evas *						T_PTROBJ
+Evas_List *					T_PTROBJ
+Evas_List **					T_PTROBJ
+Evas_Object *					T_PTROBJ
+const Etk_String *				T_PTROBJ
+char *						T_PV
+char **						T_PTROBJ
+void *						T_PTROBJ
+float *						T_PTROBJ
+int ( * ) ( Etk_Tree * tree, Etk_Tree_Row * row1, Etk_Tree_Row * row2, Etk_Tree_Col * col, void * data )	T_PTROBJ
+int *						T_PTROBJ
+va_list						T_PTROBJ
+va_list *					T_PTROBJ
+void ( * ) ( Etk_Object * object, char * property_name, void * data )	T_PTROBJ
+void ( * ) ( Etk_Widget * child )	   	T_PTROBJ
+void ( * ) ( Etk_Widget * child, void * data )	T_PTROBJ
+void ( * ) ( void * data )		     	T_PTROBJ
+void **						T_PTROBJ
+#############################################################################
+INPUT
+T_OPAQUE_STRUCT
+	if (sv_derived_from($arg, \"${ntype}\")) {
+	    STRLEN len;
+	    char  *s = SvPV((SV*)SvRV($arg), len);
+
+	    if (len != sizeof($var))
+		croak(\"Size %d of packed data != expected %d\",
+			len, sizeof($var));
+	    $var = *($type *)s;
+	}
+	else
+	    croak(\"$var is not of type ${ntype}\")
+#############################################################################
+OUTPUT
+T_OPAQUE_STRUCT
+	sv_setref_pvn($arg, \"${ntype}\", (char *)&$var, sizeof($var));

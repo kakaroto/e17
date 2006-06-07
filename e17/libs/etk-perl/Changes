@@ -1,0 +1,6 @@
+Revision history for Perl extension Etk.
+
+0.01  Thu Jun  1 15:53:00 2006
+	- original version; created by h2xs 1.23 with options
+		-d -x -F -I/usr/local/include/etk -M etk -n Etk /usr/local/include/etk/Etk.h
+
