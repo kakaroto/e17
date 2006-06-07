@@ -212,37 +212,37 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    
    ci = cfd->data;
 
-   evas_stringshare_del(ci->host);
+   if (ci->host) evas_stringshare_del(ci->host);
    if (cfdata->host != NULL)
      ci->host = evas_stringshare_add(cfdata->host);
    else
      ci->host = evas_stringshare_add("");
 
-   evas_stringshare_del(ci->user);
+   if (ci->user) evas_stringshare_del(ci->user);
    if (cfdata->user != NULL)
      ci->user = evas_stringshare_add(cfdata->user);
    else
      ci->user = evas_stringshare_add("");
 
-   evas_stringshare_del(ci->pass);
+   if (ci->pass) evas_stringshare_del(ci->pass);
    if (cfdata->pass != NULL)
      ci->pass = evas_stringshare_add(cfdata->pass);
    else
      ci->pass = evas_stringshare_add("");
 
-   evas_stringshare_del(ci->path);
+   if (ci->path) evas_stringshare_del(ci->path);
    if (cfdata->path != NULL)
      ci->path = evas_stringshare_add(cfdata->path);
    else
      ci->path = evas_stringshare_add("");
 
-   evas_stringshare_del(ci->path_current);
+   if (ci->path_current) evas_stringshare_del(ci->path_current);
    if (cfdata->path_current != NULL)
      ci->path_current = evas_stringshare_add(cfdata->path_current);
    else
      ci->path_current = evas_stringshare_add("");
 
-   evas_stringshare_del(ci->exec);   
+   if (ci->exec) evas_stringshare_del(ci->exec);   
    if (cfdata->exec != NULL)
      ci->exec = evas_stringshare_add(cfdata->exec);
    else
