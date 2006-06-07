@@ -5,6 +5,7 @@ struct _E_Config_Dialog_Data
 {
    int show_label;
    int use_exec;
+   int use_ssl;
    int type;
    double check_time;
    
@@ -14,6 +15,7 @@ struct _E_Config_Dialog_Data
    char *pass;
    char *path;
    char *path_current;
+   char *port;
    
    Evas_Object *new_path_label;
    Evas_Object *new_path_entry;
@@ -55,12 +57,15 @@ _config_mail_module(Config_Item *ci)
 static void
 _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata) 
 {
+   char buf[1024];
+   
    cfdata->host = NULL;
    cfdata->user = NULL;
    cfdata->pass = NULL;
    cfdata->exec = NULL;
    cfdata->path = NULL;
    cfdata->path_current = NULL;
+   cfdata->port = NULL;
    
    if (ci->host)
      cfdata->host = strdup(ci->host);
@@ -79,6 +84,10 @@ _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata)
    cfdata->type = ci->type;
    cfdata->use_exec = ci->use_exec;
    cfdata->check_time = ci->check_time;
+   cfdata->use_ssl = ci->use_ssl;
+   
+   snprintf(buf, sizeof(buf), "%d", ci->port);
+   cfdata->port = strdup(buf);
 }
 
 static void *
@@ -98,12 +107,6 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    if (!mail_config) return;
    mail_config->config_dialog = NULL;
-   free(cfdata->host);
-   free(cfdata->user);
-   free(cfdata->pass);
-   free(cfdata->exec);
-   free(cfdata->path);
-   free(cfdata->path_current);
    free(cfdata);
 }
 
@@ -154,26 +157,34 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    e_widget_list_object_append(o, of, 1, 1, 0.5);   
    
    of = e_widget_frametable_add(evas, _("Mailbox Settings"), 1);
-   ob = e_widget_label_add(evas, _("Mail Host:"));
+   ob = e_widget_label_add(evas, _("Port:"));
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 0, 0, 1, 0);
-   ob = e_widget_entry_add(evas, &cfdata->host);
+   ob = e_widget_entry_add(evas, &cfdata->port);
    e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 0, 0, 1, 0);
 
-   ob = e_widget_label_add(evas, _("Username:"));
+   ob = e_widget_check_add(evas, _("Use SSL"), &(cfdata->use_ssl));
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 0, 0, 1, 0);
+
+   ob = e_widget_label_add(evas, _("Mail Host:"));
+   e_widget_frametable_object_append(of, ob, 0, 3, 1, 1, 0, 0, 1, 0);
+   ob = e_widget_entry_add(evas, &cfdata->host);
+   e_widget_frametable_object_append(of, ob, 1, 3, 1, 1, 0, 0, 1, 0);
+
+   ob = e_widget_label_add(evas, _("Username:"));
+   e_widget_frametable_object_append(of, ob, 0, 4, 1, 1, 0, 0, 1, 0);
    ob = e_widget_entry_add(evas, &cfdata->user);
-   e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 0, 0, 1, 0);
+   e_widget_frametable_object_append(of, ob, 1, 4, 1, 1, 0, 0, 1, 0);
 
    ob = e_widget_label_add(evas, _("Password:"));
-   e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 0, 0, 1, 0);
+   e_widget_frametable_object_append(of, ob, 0, 5, 1, 1, 0, 0, 1, 0);
    ob = e_widget_entry_add(evas, &cfdata->pass);
    e_widget_entry_password_set(ob, 1);
-   e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 0, 0, 1, 0);
+   e_widget_frametable_object_append(of, ob, 1, 5, 1, 1, 0, 0, 1, 0);
    
    cfdata->new_path_label = e_widget_label_add(evas, _("New Mail Path:"));
-   e_widget_frametable_object_append(of, cfdata->new_path_label, 0, 3, 1, 1, 0, 0, 1, 0);
+   e_widget_frametable_object_append(of, cfdata->new_path_label, 0, 6, 1, 1, 0, 0, 1, 0);
    cfdata->new_path_entry = e_widget_entry_add(evas, &cfdata->path);
-   e_widget_frametable_object_append(of, cfdata->new_path_entry, 1, 3, 1, 1, 0, 0, 1, 0);
+   e_widget_frametable_object_append(of, cfdata->new_path_entry, 1, 6, 1, 1, 0, 0, 1, 0);
    if (cfdata->type == 0) 
      {
 	e_widget_disabled_set(cfdata->new_path_label, 1);
@@ -181,9 +192,9 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
      }
 
    cfdata->cur_path_label = e_widget_label_add(evas, _("Current Mail Path:"));
-   e_widget_frametable_object_append(of, cfdata->cur_path_label, 0, 4, 1, 1, 0, 0, 1, 0);
+   e_widget_frametable_object_append(of, cfdata->cur_path_label, 0, 7, 1, 1, 0, 0, 1, 0);
    cfdata->cur_path_entry = e_widget_entry_add(evas, &cfdata->path_current);
-   e_widget_frametable_object_append(of, cfdata->cur_path_entry, 1, 4, 1, 1, 0, 0, 1, 0);
+   e_widget_frametable_object_append(of, cfdata->cur_path_entry, 1, 7, 1, 1, 0, 0, 1, 0);
    if ((cfdata->type == 0) || (cfdata->type == 2)) 
      {
 	e_widget_disabled_set(cfdata->cur_path_label, 1);
@@ -201,37 +212,37 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    
    ci = cfd->data;
 
-   if (ci->host) evas_stringshare_del(ci->host);
+   evas_stringshare_del(ci->host);
    if (cfdata->host != NULL)
      ci->host = evas_stringshare_add(cfdata->host);
    else
      ci->host = evas_stringshare_add("");
 
-   if (ci->user) evas_stringshare_del(ci->user);
+   evas_stringshare_del(ci->user);
    if (cfdata->user != NULL)
      ci->user = evas_stringshare_add(cfdata->user);
    else
      ci->user = evas_stringshare_add("");
 
-   if (ci->pass) evas_stringshare_del(ci->pass);
+   evas_stringshare_del(ci->pass);
    if (cfdata->pass != NULL)
      ci->pass = evas_stringshare_add(cfdata->pass);
    else
      ci->pass = evas_stringshare_add("");
 
-   if (ci->path) evas_stringshare_del(ci->path);
+   evas_stringshare_del(ci->path);
    if (cfdata->path != NULL)
      ci->path = evas_stringshare_add(cfdata->path);
    else
      ci->path = evas_stringshare_add("");
 
-   if (ci->path_current) evas_stringshare_del(ci->path_current);
+   evas_stringshare_del(ci->path_current);
    if (cfdata->path_current != NULL)
      ci->path_current = evas_stringshare_add(cfdata->path_current);
    else
      ci->path_current = evas_stringshare_add("");
 
-   if (ci->exec) evas_stringshare_del(ci->exec);   
+   evas_stringshare_del(ci->exec);   
    if (cfdata->exec != NULL)
      ci->exec = evas_stringshare_add(cfdata->exec);
    else
@@ -241,6 +252,13 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    ci->type = cfdata->type;
    ci->use_exec = cfdata->use_exec;
    ci->check_time = cfdata->check_time;
+
+   if (cfdata->port != NULL)
+     ci->port = atoi(cfdata->port);
+   else
+     ci->port = 110;
+
+   ci->use_ssl = cfdata->use_ssl;
    
    e_config_save_queue();
    _mail_config_updated(ci->id);

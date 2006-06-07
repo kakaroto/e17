@@ -218,8 +218,13 @@ _mail_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Instance *inst;
    Evas_Event_Mouse_Down *ev;
+   Config_Item *ci;
    
    inst = data;
+   if (!inst) return;
+   
+   ci = _mail_config_item_get(inst->gcc->id);
+   
    ev = event_info;
    if ((ev->button == 3) && (!mail_config->menu)) 
      {
@@ -318,6 +323,7 @@ _mail_config_item_get(const char *id)
    ci->type = MAIL_TYPE_POP;
    ci->use_exec = 0;
    ci->check_time = 15.0;
+   ci->use_ssl = 0;
    
    mail_config->items = evas_list_append(mail_config->items, ci);
    return ci;
@@ -347,6 +353,7 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, path_current, STR);
    E_CONFIG_VAL(D, T, show_label, UCHAR);
    E_CONFIG_VAL(D, T, use_exec, UCHAR);
+   E_CONFIG_VAL(D, T, use_ssl, UCHAR);
    E_CONFIG_VAL(D, T, type, INT);
    E_CONFIG_VAL(D, T, check_time, DOUBLE);
    
@@ -377,6 +384,8 @@ e_modapi_init(E_Module *m)
 	ci->type = MAIL_TYPE_POP;	
 	ci->use_exec = 0;
 	ci->check_time = 15.0;
+	ci->use_ssl = 0;
+	
 	mail_config->items = evas_list_append(mail_config->items, ci);
      }
    mail_config->module = m;
@@ -476,8 +485,9 @@ _mail_cb_check(void *data)
 {
    Instance *inst;
    Config_Item *ci;
-
+   Ecore_Con_Type type = ECORE_CON_REMOTE_SYSTEM;
    inst = data;
+   
    ci = _mail_config_item_get(inst->gcc->id);
    if ((!ci->host) || (!ci->user) || (!ci->pass)) return 0;
 
@@ -486,7 +496,9 @@ _mail_cb_check(void *data)
    
    if ((ci->host) && (ci->port != 0)) 
      {	
-	inst->server = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM, ci->host, ci->port, inst);
+	if (ci->use_ssl)
+	  type |= ECORE_CON_USE_SSL;
+	inst->server = ecore_con_server_connect(type, ci->host, ci->port, inst);
 	inst->state = STATE_DISCONNECTED;
      }
    return 1;

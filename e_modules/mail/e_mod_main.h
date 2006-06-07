@@ -22,6 +22,7 @@ struct _Config_Item
 
    unsigned char show_label;
    unsigned char use_exec;
+   unsigned char use_ssl;
    const char *exec;
    double check_time;
    
