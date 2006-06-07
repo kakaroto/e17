@@ -1,0 +1,17 @@
+.deps
+.libs
+Makefile
+Makefile.in
+autom4te.cache
+config.*
+configure
+depcomp
+install-sh
+libtool
+ltmain.sh
+missing
+stamp-h1
+mkinstalldirs
+*.la
+*.lo
+*.tar.gz
