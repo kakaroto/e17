@@ -470,6 +470,7 @@ EobjReparent(EObj * eo, EObj * dst, int x, int y)
 int
 EobjRaise(EObj * eo)
 {
+#if USE_COMPOSITE
    int                 num;
 
    num = EobjListStackRaise(eo, 1);
@@ -478,19 +479,21 @@ EobjRaise(EObj * eo)
 
    if (num < 0)
       num = EobjListStackRaise(eo, 0);
-#if USE_COMPOSITE
    if (eo->shown && eo->cmhook)
       ECompMgrWinRaiseLower(eo, num);
-#endif
    if (num > 0)
       num = EobjListStackRaise(eo, 0);
 
    return num;
+#else
+   return EobjListStackRaise(eo, 0);
+#endif
 }
 
 int
 EobjLower(EObj * eo)
 {
+#if USE_COMPOSITE
    int                 num;
 
    num = EobjListStackLower(eo, 1);
@@ -499,14 +502,15 @@ EobjLower(EObj * eo)
 
    if (num < 0)
       num = EobjListStackLower(eo, 0);
-#if USE_COMPOSITE
    if (eo->shown && eo->cmhook)
       ECompMgrWinRaiseLower(eo, num);
-#endif
    if (num > 0)
       num = EobjListStackLower(eo, 0);
 
    return num;
+#else
+   return EobjListStackLower(eo, 0);
+#endif
 }
 
 void
