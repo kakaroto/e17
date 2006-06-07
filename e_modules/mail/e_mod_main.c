@@ -629,6 +629,7 @@ _mail_parse_pop(void *data, void *data2)
 	     _mail_set_text(inst, num, num);
 	     if ((ci->use_exec) && (ci->exec != NULL)) 
 	       {
+		  if (num <= 0) break;
 		  if (!inst->exe) 
 		    {
 		       inst->exit_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _mail_cb_exe_exit, inst);
@@ -850,11 +851,9 @@ _mail_config_updated(const char *id)
 	if (!inst->gcc->id) continue;
 	if (!strcmp(inst->gcc->id, ci->id)) 
 	  {
+	     if (inst->check_timer) ecore_timer_del(inst->check_timer);
 	     if ((ci->type == 0) || (ci->type == 1)) 
-	       {
-		  if (inst->check_timer) ecore_timer_del(inst->check_timer);
-		  inst->check_timer = ecore_timer_add((ci->check_time * 60.0), _mail_cb_check, inst);
-	       }
+	       inst->check_timer = ecore_timer_add((ci->check_time * 60.0), _mail_cb_check, inst);
 	     
 	     if (ci->show_label)
 	       edje_object_signal_emit(inst->mail_obj, "label_active", "");
@@ -863,5 +862,4 @@ _mail_config_updated(const char *id)
 	     break;
 	  }
      }
-   
 }
