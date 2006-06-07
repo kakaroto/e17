@@ -12,6 +12,7 @@ config.sub
 configure
 stamp-h
 stamp-h.in
+e16.spec
 e16*.tar.gz
 ABOUT-NLS
 m4
