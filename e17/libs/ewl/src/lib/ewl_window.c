@@ -481,9 +481,9 @@ ewl_window_transient_for(Ewl_Window *win, Ewl_Window *forwin)
 
 	win->transient = forwin;
 
-	if (forwin && REALIZED(win)) {
+	if (forwin && win->window) {
 #ifdef ENABLE_EWL_SOFTWARE_X11
-		if (REALIZED(forwin))
+		if (forwin->window)
 			ecore_x_icccm_transient_for_set((Ecore_X_Window)win->window,
 							(Ecore_X_Window)forwin->window);
 		else
@@ -492,7 +492,7 @@ ewl_window_transient_for(Ewl_Window *win, Ewl_Window *forwin)
 					    ewl_window_realize_transient_cb,
 					    win);
 	}
-	else if (REALIZED(win)) {
+	else if (win->window) {
 		ecore_x_icccm_transient_for_unset((Ecore_X_Window)win->window);
 #endif
 	}
