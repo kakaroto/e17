@@ -131,7 +131,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    gcc->data = inst;
    inst->gcc = gcc;
    inst->mail_obj = o;
-
+   
    if (ci->type == MAIL_TYPE_MDIR) 
      inst->monitor = ecore_file_monitor_add(ci->path, _mail_mdir_check, inst);
    else if (ci->type == MAIL_TYPE_MBOX) 
@@ -247,7 +247,8 @@ _mail_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 			      ev->timestamp);
 	evas_event_feed_mouse_up(inst->gcc->gadcon->evas, ev->button, EVAS_BUTTON_NONE, ev->timestamp, NULL);
      }
-   else if ((ev->button == 1) && (inst))
+   else if ((ev->button == 1) && (inst) && 
+	    ((ci->type == 0) || (ci->type == 1)))
      _mail_cb_check(inst);
 }
 
@@ -796,8 +797,6 @@ _mail_set_text(void *data, int n, int t)
    inst = data;
    if (!inst) return;
 
-   printf("New: %d\n", n);
-   
    ci = _mail_config_item_get(inst->gcc->id);
    edje_object_part_text_set(inst->mail->mail_obj, "name", ci->user);
    
