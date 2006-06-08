@@ -586,8 +586,6 @@ _mail_parse_pop(void *data, void *data2)
    if (!ev) return;
 
    if ((!inst->server) || (inst->server != ev->server)) return;
-
-   _mail_set_text(inst, 0, 0);
    
    ci = _mail_config_item_get(inst->gcc->id);
    
@@ -679,8 +677,6 @@ _mail_parse_imap(void *data, void *data2)
 
    if ((!inst->server) || (inst->server != ev->server)) return;
 
-   _mail_set_text(inst, 0, 0);
-   
    ci = _mail_config_item_get(inst->gcc->id);
    
    len = sizeof(in) -1;
