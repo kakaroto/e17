@@ -29,7 +29,7 @@ callback_VOID__VOID(Etk_Object *object, void *data)
    cbd = data;
    
    PUSHMARK(SP);
-   //XPUSHs(sv_2mortal(newSV
+   XPUSHs(sv_2mortal(newSVsv(cbd->data)));
    PUTBACK ;
       
    /* Call the Perl sub */
