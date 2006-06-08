@@ -571,17 +571,6 @@ etk_combobox_item_append_relative(combobox, relative, ...)
 	Etk_Widget *	combobox
 	Etk_Combobox_Item *	relative
 
-Etk_Combobox_Item *
-etk_combobox_item_append_relative_valist(combobox, relative, args)
-	Etk_Widget *	combobox
-	Etk_Combobox_Item *	relative
-	va_list	args
-
-Etk_Combobox_Item *
-etk_combobox_item_append_valist(combobox, args)
-	Etk_Widget *	combobox
-	va_list	args
-
 void *
 etk_combobox_item_data_get(item)
 	Etk_Combobox_Item *	item
@@ -614,17 +603,6 @@ Etk_Combobox_Item *
 etk_combobox_item_prepend_relative(combobox, relative, ...)
 	Etk_Widget *	combobox
 	Etk_Combobox_Item *	relative
-
-Etk_Combobox_Item *
-etk_combobox_item_prepend_relative_valist(combobox, relative, args)
-	Etk_Widget *	combobox
-	Etk_Combobox_Item *	relative
-	va_list	args
-
-Etk_Combobox_Item *
-etk_combobox_item_prepend_valist(combobox, args)
-	Etk_Widget *	combobox
-	va_list	args
 
 void
 etk_combobox_item_remove(combobox, item)
@@ -1295,78 +1273,6 @@ etk_main_toplevel_widget_remove(widget)
 Evas_List *
 etk_main_toplevel_widgets_get()
 
-void
-etk_marshaller_BOOL__DOUBLE(callback, object, data, return_value, arguments)
-	Etk_Signal_Callback_Function	callback
-	Etk_Object *	object
-	void *	data
-	void *	return_value
-	va_list	arguments
-
-void
-etk_marshaller_BOOL__POINTER_POINTER(callback, object, data, return_value, arguments)
-	Etk_Signal_Callback_Function	callback
-	Etk_Object *	object
-	void *	data
-	void *	return_value
-	va_list	arguments
-
-void
-etk_marshaller_BOOL__VOID(callback, object, data, return_value, arguments)
-	Etk_Signal_Callback_Function	callback
-	Etk_Object *	object
-	void *	data
-	void *	return_value
-	va_list	arguments
-
-void
-etk_marshaller_VOID__DOUBLE(callback, object, data, return_value, arguments)
-	Etk_Signal_Callback_Function	callback
-	Etk_Object *	object
-	void *	data
-	void *	return_value
-	va_list	arguments
-
-void
-etk_marshaller_VOID__INT(callback, object, data, return_value, arguments)
-	Etk_Signal_Callback_Function	callback
-	Etk_Object *	object
-	void *	data
-	void *	return_value
-	va_list	arguments
-
-void
-etk_marshaller_VOID__INT_POINTER(callback, object, data, return_value, arguments)
-	Etk_Signal_Callback_Function	callback
-	Etk_Object *	object
-	void *	data
-	void *	return_value
-	va_list	arguments
-
-void
-etk_marshaller_VOID__POINTER(callback, object, data, return_value, arguments)
-	Etk_Signal_Callback_Function	callback
-	Etk_Object *	object
-	void *	data
-	void *	return_value
-	va_list	arguments
-
-void
-etk_marshaller_VOID__POINTER_POINTER(callback, object, data, return_value, arguments)
-	Etk_Signal_Callback_Function	callback
-	Etk_Object *	object
-	void *	data
-	void *	return_value
-	va_list	arguments
-
-void
-etk_marshaller_VOID__VOID(callback, object, data, return_value, arguments)
-	Etk_Signal_Callback_Function	callback
-	Etk_Object *	object
-	void *	data
-	void *	return_value
-	va_list	arguments
-
 Etk_Widget *
 etk_menu_bar_new()
 
@@ -1712,12 +1618,6 @@ etk_object_new(object_type, first_property, ...)
 	Etk_Type *	object_type
 	char *	first_property
 
-Etk_Object *
-etk_object_new_valist(object_type, first_property, args)
-	Etk_Type *	object_type
-	char *	first_property
-	va_list	args
-
 void
 etk_object_notification_callback_add(object, property_name, callback, data)
 	Etk_Object *	object
@@ -1746,21 +1646,9 @@ etk_object_properties_get(object, first_property, ...)
 	char *	first_property
 
 void
-etk_object_properties_get_valist(object, first_property, args)
-	Etk_Object *	object
-	char *	first_property
-	va_list	args
-
-void
 etk_object_properties_set(object, first_property, ...)
 	Etk_Object *	object
 	char *	first_property
-
-void
-etk_object_properties_set_valist(object, first_property, args)
-	Etk_Object *	object
-	char *	first_property
-	va_list	args
 
 void
 etk_object_property_reset(object, property_name)
@@ -1953,11 +1841,6 @@ Etk_Property_Value *
 etk_property_value_create(type, ...)
 	Etk_Property_Type	type
 
-Etk_Property_Value *
-etk_property_value_create_valist(type, arg)
-	Etk_Property_Type	type
-	va_list *	arg
-
 void
 etk_property_value_delete(value)
 	Etk_Property_Value *	value
@@ -2040,12 +1923,6 @@ void
 etk_property_value_set(property_value, type, ...)
 	Etk_Property_Value *	property_value
 	Etk_Property_Type	type
-
-void
-etk_property_value_set_valist(property_value, type, arg)
-	Etk_Property_Value *	property_value
-	Etk_Property_Type	type
-	va_list *	arg
 
 Etk_Property_Value *
 etk_property_value_short(value)
@@ -2199,13 +2076,6 @@ etk_signal_callback_call(callback, object, return_value, ...)
 	void *	return_value
 
 void
-etk_signal_callback_call_valist(callback, object, return_value, args)
-	Etk_Signal_Callback *	callback
-	Etk_Object *	object
-	void *	return_value
-	va_list	args
-
-void
 etk_signal_callback_del(signal_callback)
 	Etk_Signal_Callback *	signal_callback
 
@@ -2302,13 +2172,6 @@ etk_signal_emit_by_name(signal_name, object, return_value, ...)
 	char *	signal_name
 	Etk_Object *	object
 	void *	return_value
-
-void
-etk_signal_emit_valist(signal, object, return_value, args)
-	Etk_Signal *	signal
-	Etk_Object *	object
-	void *	return_value
-	va_list	args
 
 Etk_Signal *
 etk_signal_lookup(signal_name, type)
@@ -2417,12 +2280,6 @@ etk_string_append_sized(string, text, length)
 	int	length
 
 Etk_String *
-etk_string_append_vprintf(string, format, args)
-	Etk_String *	string
-	char * format	
-	va_list	args
-
-Etk_String *
 etk_string_copy(string)
 	 Etk_String *	string
 
@@ -2455,13 +2312,6 @@ etk_string_insert_sized(string, pos, text, length)
 	char *	text
 	int	length
 
-Etk_String *
-etk_string_insert_vprintf(string, pos, format, args)
-	Etk_String *	string
-	int	pos
-	char * format
-	va_list	args
-
 int
 etk_string_length_get(string)
 	Etk_String *	string
@@ -2478,11 +2328,6 @@ Etk_String *
 etk_string_new_sized(value, size)
 	char *	value
 	int	size
-
-Etk_String *
-etk_string_new_vprintf(format, args)
-	char * format	
-	va_list	args
 
 Etk_String *
 etk_string_prepend(string, text)
@@ -2506,12 +2351,6 @@ etk_string_prepend_sized(string, text, length)
 	int	length
 
 Etk_String *
-etk_string_prepend_vprintf(string, format, args)
-	Etk_String *	string
-	char * format	
-	va_list	args
-
-Etk_String *
 etk_string_set(string, value)
 	Etk_String *	string
 	char *	value
@@ -2526,12 +2365,6 @@ etk_string_set_sized(string, value, length)
 	Etk_String *	string
 	char *	value
 	int	length
-
-Etk_String *
-etk_string_set_vprintf(string, format, args)
-	Etk_String *	string
-	char * format	
-	va_list	args
 
 Etk_String *
 etk_string_truncate(string, length)
@@ -2793,11 +2626,6 @@ etk_tree_append(tree)
 Etk_Tree_Row *
 etk_tree_append_to_row(row, ...)
 	Etk_Tree_Row *	row
-
-Etk_Tree_Row *
-etk_tree_append_valist(tree, args)
-	Etk_Widget *	tree
-	va_list	args
 
 void
 etk_tree_build(tree)
@@ -3115,18 +2943,8 @@ etk_tree_row_fields_get(row, ...)
 	Etk_Tree_Row *	row
 
 void
-etk_tree_row_fields_get_valist(row, args)
-	Etk_Tree_Row *	row
-	va_list	args
-
-void
 etk_tree_row_fields_set(row, ...)
 	Etk_Tree_Row *	row
-
-void
-etk_tree_row_fields_set_valist(row, args)
-	Etk_Tree_Row *	row
-	va_list	args
 
 Etk_Tree_Row *
 etk_tree_row_first_child_get(row)
