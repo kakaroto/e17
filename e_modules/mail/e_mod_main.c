@@ -501,6 +501,7 @@ _mail_cb_check(void *data)
 	if (ci->use_ssl)
 	  type |= ECORE_CON_USE_SSL;
 	inst->server = ecore_con_server_connect(type, ci->host, ci->port, inst);
+	inst->state = STATE_CONNECTED;
      }
    return 1;
 }
@@ -612,7 +613,10 @@ _mail_parse_pop(void *data, void *data2)
 	inst->server = NULL;
 	return 0;
      }
-	
+
+   if (inst->state == STATE_CONNECTED)
+     inst->state++;
+   
    switch (inst->state) 
      {
       case STATE_SERVER_READY:
@@ -708,6 +712,9 @@ _mail_parse_imap(void *data, void *data2)
 	  }	
      }
 
+   if (inst->state == STATE_CONNECTED)
+     inst->state++;
+   
    switch (inst->state) 
      {
       case STATE_SERVER_READY:
