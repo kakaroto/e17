@@ -493,14 +493,14 @@ _mail_cb_check(void *data)
 
    if (inst->server) ecore_con_server_del(inst->server);
    inst->server = NULL;
+   inst->state = STATE_DISCONNECTED;
+   inst->cmd = 0;
    
    if ((ci->host) && (ci->port != 0)) 
      {	
 	if (ci->use_ssl)
 	  type |= ECORE_CON_USE_SSL;
 	inst->server = ecore_con_server_connect(type, ci->host, ci->port, inst);
-	inst->state = STATE_DISCONNECTED;
-	inst->cmd = 0;
      }
    return 1;
 }
@@ -599,51 +599,55 @@ _mail_parse_pop(void *data, void *data2)
    if (!strncmp(in, "-ERR", 4)) 
      {
 	printf("ERROR: %s\n", in);
+	inst->state = STATE_DISCONNECTED;
+	ecore_con_server_del(inst->server);
+	inst->server = NULL;
 	return 0;
      }
    else if (strncmp(in, "+OK", 3)) 
      {
 	printf("Unexpected reply: %s\n", in);
+	inst->state = STATE_DISCONNECTED;
+	ecore_con_server_del(inst->server);
+	inst->server = NULL;
 	return 0;
      }
 	
-   inst->state++;
-   if (inst->state == STATE_LOGGED_IN)
-     inst->state = ++inst->state;
-   
    switch (inst->state) 
      {
       case STATE_SERVER_READY:
 	len = snprintf(out, sizeof(out), "USER %s\r\n", ci->user);
 	ecore_con_server_send(inst->server, out, len);
+	inst->state = STATE_USER_OK;
 	break;
       case STATE_USER_OK:
 	len = snprintf(out, sizeof(out), "PASS %s\r\n", ci->pass);
 	ecore_con_server_send(inst->server, out, len);
+	inst->state = STATE_PASS_OK;
 	break;
       case STATE_PASS_OK:
 	len = snprintf(out, sizeof(out), "STAT\r\n");
 	ecore_con_server_send(inst->server, out, len);
+	inst->state = STATE_STATUS_OK;
 	break;
       case STATE_STATUS_OK:
 	if (sscanf(in, "+OK %i %i", &num, &size) == 2) 
-	  {
-	     _mail_set_text(inst, num, num);
-	     inst->state = STATE_DISCONNECTED;
-	     ecore_con_server_del(inst->server);
-	     inst->server = NULL;
-	     if ((ci->use_exec) && (ci->exec != NULL)) 
-	       {
-		  if (num <= 0) break;
-		  if (!inst->exe) 
-		    {
-		       inst->exit_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _mail_cb_exe_exit, inst);
-		       inst->exe = ecore_exe_run(ci->exec, inst);
-		    }
-	       }
-	  }
+	  _mail_set_text(inst, num, num); 
 	else
 	  _mail_set_text(inst, 0, 0);
+	
+	inst->state = STATE_DISCONNECTED;
+	ecore_con_server_del(inst->server);
+	inst->server = NULL;
+	if ((ci->use_exec) && (ci->exec != NULL)) 
+	  {
+	     if (num <= 0) break;
+	     if (!inst->exe) 
+	       {
+		  inst->exit_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _mail_cb_exe_exit, inst);
+		  inst->exe = ecore_exe_run(ci->exec, inst);
+	       }
+	  }
 	break;
       default:
 	break;
@@ -689,6 +693,8 @@ _mail_parse_imap(void *data, void *data2)
 	     len = snprintf(out, sizeof(out), "A%03i LOGOUT", ++inst->cmd);
 	     ecore_con_server_send(inst->server, out, len);
 	     printf("Imap Failure: %s\n", spc + 4);
+	     inst->state = STATE_DISCONNECTED;
+	     inst->cmd = 0;
 	     return 0;
 	  }
 	else if ((slen > 6) && (!strncmp(spc + 1, "BAD ", 4))) 
@@ -696,34 +702,34 @@ _mail_parse_imap(void *data, void *data2)
 	     len = snprintf(out, sizeof(out), "A%03i LOGOUT", ++inst->cmd);
 	     ecore_con_server_send(inst->server, out, len);
 	     printf("Imap Bad Command: %s\n", spc + 5);
+	     inst->state = STATE_DISCONNECTED;
+	     inst->cmd = 0;
 	     return 0;
 	  }	
      }
 
-   inst->state++;
    switch (inst->state) 
      {
       case STATE_SERVER_READY:
 	len = snprintf(out, sizeof(out), "A%03i LOGIN %s %s\r\n", ++inst->cmd, ci->user, ci->pass);
 	ecore_con_server_send(inst->server, out, len);
-	break;
-      case STATE_STATUS_OK:
-	if (sscanf(in, "* STATUS %*s (MESSAGES %i UNSEEN %i)", &total, &unread) == 2) 
-	  {
-	     _mail_set_text(inst, unread, total);	     
-	     inst->state = STATE_LOGGED_IN;
-	  }
-	else 
-	  {
-	     _mail_set_text(inst, 0, 0);
-	     len = snprintf(out, sizeof(out), "A%03i LOGOUT", ++inst->cmd);
-	     ecore_con_server_send(inst->server, out, len);	     
-	  }
+	inst->state = STATE_LOGGED_IN;
 	break;
       case STATE_LOGGED_IN:
 	len = snprintf(out, sizeof(out), "A%03i STATUS %s (MESSAGES UNSEEN)\r\n",++inst->cmd, ci->path);
 	ecore_con_server_send(inst->server, out, len);
-	inst->state = STATE_PASS_OK;
+	inst->state = STATE_STATUS_OK;
+	break;
+      case STATE_STATUS_OK:
+	if (sscanf(in, "* STATUS %*s (MESSAGES %i UNSEEN %i)", &total, &unread) == 2) 
+	  _mail_set_text(inst, unread, total);	     
+	else 
+	  _mail_set_text(inst, 0, 0);
+
+	len = snprintf(out, sizeof(out), "A%03i LOGOUT", ++inst->cmd);
+	ecore_con_server_send(inst->server, out, len);	     
+	inst->state = STATE_DISCONNECTED;
+	inst->cmd = 0;
 	break;
       default:
 	break;
