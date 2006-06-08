@@ -146,5 +146,6 @@ src/Makefile
 src/bin/Makefile
 src/bin/ewl/Makefile
 src/bin/etk/Makefile
+debian/changelog
 ])
 
