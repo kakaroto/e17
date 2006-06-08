@@ -38,7 +38,7 @@ $vbox->PackStart($tree, 0, 0, 0);
 $win->Add($vbox);
 $win->ShowAll();
 
-$button1->SignalConnect("clicked", \&click_cb1);
+$button1->SignalConnect("clicked", \&click_cb1, "click_cb1_data");
 $button2->SignalConnect("clicked", \&click_cb2);
 $win->SignalConnect("delete_event", \&quit_cb);
 
@@ -47,7 +47,8 @@ Etk::etk_shutdown();
 
 sub click_cb1
 {
-    print "click_cb1!\n";
+    my $data = shift;
+    print "click_cb1! (data=$data)\n";
     my ($padding, $expand, $fill, $pack_end) = $vbox->ChildPackingGet($button1);
     print "padding = $padding, expand = $expand, fill = $fill, pack_end = $pack_end\n";
 }

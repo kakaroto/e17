@@ -29,6 +29,7 @@ callback_VOID__VOID(Etk_Object *object, void *data)
    cbd = data;
    
    PUSHMARK(SP);
+   //XPUSHs(sv_2mortal(newSV
    PUTBACK ;
       
    /* Call the Perl sub */
@@ -2087,14 +2088,13 @@ etk_signal_callback_new(signal, callback, data, swapped)
 	Etk_Bool	swapped
 
 void
-etk_signal_connect(signal_name, object, callback) 
-	char *	signal_name
+etk_signal_connect(signal_name, object, callback, data)
+	char *	        signal_name
 	Etk_Widget *	object
-	SV *	callback
+	SV *	        callback
+	SV *            data
 	
 	CODE:	
-/*, data */	
-/*	void *	data */
 	Callback_Data *cbd = NULL;
 	Etk_Signal *sig = NULL;
 	Etk_Marshaller marsh;
@@ -2102,7 +2102,7 @@ etk_signal_connect(signal_name, object, callback)
 	cbd = calloc(1, sizeof(Callback_Data));
 	cbd->signal_name = strdup(signal_name);
 	cbd->object = object;
-//	cbd->data = data;
+	cbd->data = newSVsv(data);
 	cbd->sv = newSVsv(callback);	
 	
 	sig = etk_signal_lookup(signal_name, ETK_OBJECT(object)->type);
