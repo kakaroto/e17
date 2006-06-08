@@ -832,11 +832,8 @@ _mail_set_text(void *data, int n, int t)
    ci = _mail_config_item_get(inst->gcc->id);
    edje_object_part_text_set(inst->mail->mail_obj, "name", ci->user);
    
-   snprintf(buf, sizeof(buf), "New: %d", n);
+   snprintf(buf, sizeof(buf), "%d/%d", n, t);
    edje_object_part_text_set(inst->mail->mail_obj, "new_label", buf);
-   
-   snprintf(buf, sizeof(buf), "Total: %d", t);
-   edje_object_part_text_set(inst->mail->mail_obj, "total_label", buf);
    
    if (n > 0)
      edje_object_signal_emit(inst->mail->mail_obj, "new_mail", "");

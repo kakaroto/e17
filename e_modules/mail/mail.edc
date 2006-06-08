@@ -161,50 +161,6 @@ collections
 		       color3: 255 255 255 42;
 		    }
 	       }
-	     part 
-	       {
-		  name: "total_label";
-		  type: TEXT;
-		  clip_to: "clip";
-		  effect: SOFT_SHADOW;
-		  mouse_events: 0;
-		  description 
-		    {
-		       state: "default" 0.0;
-		       color: 0 0 0 255;
-		       color3: 255 255 255 42;
-		       visible: 0;
-		       rel1 
-			 {
-			    relative: 0.0 0.6;
-			    offset: 0 0;
-			    to: "logo";
-			 }
-		       rel2 
-			 {
-			    relative: 1.0 0.8;
-			    offset: -1 -1;
-			    to: "logo";
-			 }
-		       text 
-			 {
-			    text: "Total:";
-			    font: "VeraBold";
-			    size: 9;
-			    min: 1 1;
-			    align: 1.0 0.5;
-			    text_class: "module_small";
-			 }
-		    }
-		  description 
-		    {
-		       state: "visible" 0.0;
-		       inherit: "default" 0.0;
-		       visible: 1;
-		       color: 0 0 0 255;
-		       color3: 255 255 255 42;
-		    }
-	       }
 	  }
 	programs 
 	  {
@@ -217,7 +173,6 @@ collections
 		  transition: SINUSOIDAL 0.5;
 		  target: "name";
 		  target: "new_label";
-		  target: "total_label";
 	       }
 	     program 
 	       {
@@ -236,7 +191,6 @@ collections
 		  transition: SINUSOIDAL 1.0;
 		  target: "name";
 		  target: "new_label";
-		  target: "total_label";
 	       }
 	     program 
 	       {
