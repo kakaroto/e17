@@ -283,7 +283,7 @@ _mail_type_cb_change(void *data, Evas_Object *obj)
    E_Config_Dialog_Data *cfdata;
    
    cfdata = data;
-   if (cfdata->type == 0) 
+   if ((cfdata->type == 0) || (cfdata->type == 1))
      {
 	e_widget_disabled_set(cfdata->new_path_label, 1);
 	e_widget_disabled_set(cfdata->new_path_entry, 1);
@@ -292,7 +292,7 @@ _mail_type_cb_change(void *data, Evas_Object *obj)
 	e_widget_entry_text_set(cfdata->new_path_entry, "");
 	e_widget_entry_text_set(cfdata->cur_path_entry, "");
      }
-   else if ((cfdata->type == 1) || (cfdata->type == 3))
+   else if (cfdata->type == 3)
      {
 	e_widget_disabled_set(cfdata->new_path_label, 0);
 	e_widget_disabled_set(cfdata->new_path_entry, 0);
