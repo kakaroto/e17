@@ -645,7 +645,7 @@ tutorial_parse(Ewl_Text *tutorial, char *str)
 	while (ptr != NULL)
 	{
 		ptr2 = ptr;
-		while ((*ptr2 != '*') && (*ptr2 != '@') && (*ptr2 != NULL))
+		while ((*ptr2 != '*') && (*ptr2 != '@') && (*ptr2 != '\0'))
 			ptr2 ++;
 
 		if (ptr2 == NULL)
