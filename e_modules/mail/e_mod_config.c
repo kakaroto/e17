@@ -18,7 +18,6 @@ static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
 static int _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 
-//static void _use_exec_cb_change(void *data, Evas_Object *obj);
 static void _load_boxes(E_Config_Dialog *cfd);
 static int  _ilist_header_exists(Evas_Object *il, const char *name);
 static void _ilist_cb_selected(void *data);
@@ -50,14 +49,7 @@ static void
 _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata) 
 {
    cfdata->show_label = ci->show_label;
-   //cfdata->use_exec = ci->use_exec;
-
-   //cfdata->exec = NULL;
-   //if (ci->exec)
-   //  cfdata->exec = strdup(ci->exec);
-
    cfdata->check_time = ci->check_time;
-
    cfdata->boxes = ci->boxes;
 }
 
@@ -271,12 +263,7 @@ _cb_edit_box(void *data, void *data2)
    il = cfdata->il;
    s = e_widget_ilist_selected_label_get(il);
    
-<<<<<<< e_mod_config.c
    for (l = ci->boxes; l; l = l->next) 
-=======
-   cfdata = data;
-   if (cfdata->type == 0)
->>>>>>> 1.5
      {
 	Config_Box *cb;
 	
@@ -288,7 +275,6 @@ _cb_edit_box(void *data, void *data2)
 	     break;
 	  }
      }
-<<<<<<< e_mod_config.c
 }
 
 static void 
@@ -310,25 +296,6 @@ _cb_del_box(void *data, void *data2)
    s = e_widget_ilist_selected_label_get(il);
    
    for (l = ci->boxes; l; l = l->next) 
-=======
-   else if (cfdata->type == 1) 
-     {
-	e_widget_disabled_set(cfdata->new_path_label, 0);
-	e_widget_disabled_set(cfdata->new_path_entry, 0);	
-	e_widget_disabled_set(cfdata->cur_path_label, 1);
-	e_widget_disabled_set(cfdata->cur_path_entry, 1);
-	e_widget_entry_text_set(cfdata->cur_path_entry, "");
-     }   
-   else if (cfdata->type == 3)
-     {
-	e_widget_disabled_set(cfdata->new_path_label, 0);
-	e_widget_disabled_set(cfdata->new_path_entry, 0);
-	e_widget_disabled_set(cfdata->cur_path_label, 1);
-	e_widget_disabled_set(cfdata->cur_path_entry, 1);
-	e_widget_entry_text_set(cfdata->cur_path_entry, "");	
-     }
-   else if (cfdata->type == 2) 
->>>>>>> 1.5
      {
 	Config_Box *cb;
 	

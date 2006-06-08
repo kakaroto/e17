@@ -656,13 +656,6 @@ _mail_parse_pop(void *data, void *data2)
    if (!ev) return;
    if ((!mb->server) || (mb->server != ev->server)) return;
 
-<<<<<<< e_mod_main.c
-=======
-   if ((!inst->server) || (inst->server != ev->server)) return;
-   
-   ci = _mail_config_item_get(inst->gcc->id);
-   
->>>>>>> 1.10
    len = sizeof(in) -1;
    len = (((len) > (ev->size)) ? ev->size : len);
    memcpy(in, ev->data, len);
@@ -758,13 +751,6 @@ _mail_parse_imap(void *data, void *data2)
    if (!ev) return;
    if ((!mb->server) || (mb->server != ev->server)) return;
 
-<<<<<<< e_mod_main.c
-=======
-   if ((!inst->server) || (inst->server != ev->server)) return;
-
-   ci = _mail_config_item_get(inst->gcc->id);
-   
->>>>>>> 1.10
    len = sizeof(in) -1;
    len = (((len) > (ev->size)) ? ev->size : len);
    memcpy(in, ev->data, len);
@@ -936,21 +922,10 @@ _mail_set_text(void *data)
    inst = data;
    if (!inst) return;
 
-   edje_object_part_text_set(inst->mail->mail_obj, "name", "");
-   
-<<<<<<< e_mod_main.c
-   snprintf(buf, sizeof(buf), "New: 0");
-=======
-   snprintf(buf, sizeof(buf), "%d/%d", n, t);
->>>>>>> 1.10
-   edje_object_part_text_set(inst->mail->mail_obj, "new_label", buf);
-<<<<<<< e_mod_main.c
+  edje_object_part_text_set(inst->mail->mail_obj, "name", "");
+  edje_object_signal_emit(inst->mail->mail_obj, "no_mail", "");
+  edje_object_part_text_set(inst->mail->mail_obj, "new_label", "");
 
-   snprintf(buf, sizeof(buf), "Total: 0");
-   edje_object_part_text_set(inst->mail->mail_obj, "total_label", buf);
-
-   edje_object_signal_emit(inst->mail->mail_obj, "no_mail", "");
-   
    for (l = inst->mboxes; l; l = l->next) 
      {
 	Mailbox *mb;
@@ -965,21 +940,11 @@ _mail_set_text(void *data)
 	     snprintf(buf, sizeof(buf), "New: %d", mb->num_new);
 	     edje_object_part_text_set(inst->mail->mail_obj, "new_label", buf);
 
-	     snprintf(buf, sizeof(buf), "Total: %d", mb->num_total);
-	     edje_object_part_text_set(inst->mail->mail_obj, "total_label", buf);
-
 	     edje_object_signal_emit(inst->mail->mail_obj, "new_mail", "");
 	     
 	     break;
 	  }
      }
-=======
-   
-   if (n > 0)
-     edje_object_signal_emit(inst->mail->mail_obj, "new_mail", "");
-   else
-     edje_object_signal_emit(inst->mail->mail_obj, "no_mail", "");   
->>>>>>> 1.10
 }
 
 static int 

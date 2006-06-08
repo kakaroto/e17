@@ -144,7 +144,6 @@ collections
 			 }
 		       text 
 			 {
-<<<<<<< mail.edc
 			    text: "";
 			    font: "VeraBold";
 			    size: 9;
@@ -162,25 +161,6 @@ collections
 		       color3: 255 255 255 42;
 		    }
 	       }
-=======
-			    text: "New:";
-			    font: "VeraBold";
-			    size: 9;
-			    min: 1 1;
-			    align: 1.0 0.5;
-			    text_class: "module_small";
-			 }
-		    }
-		  description 
-		    {
-		       state: "visible" 0.0;
-		       inherit: "default" 0.0;
-		       visible: 1;
-		       color: 0 0 0 255;
-		       color3: 255 255 255 42;
-		    }
-	       }
->>>>>>> 1.4
 	  }
 	programs 
 	  {
