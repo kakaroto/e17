@@ -500,6 +500,7 @@ _mail_cb_check(void *data)
 	  type |= ECORE_CON_USE_SSL;
 	inst->server = ecore_con_server_connect(type, ci->host, ci->port, inst);
 	inst->state = STATE_DISCONNECTED;
+	inst->cmd = 0;
      }
    return 1;
 }
@@ -543,6 +544,7 @@ _mail_server_del(void *data, int type, void *event)
    
    ecore_con_server_del(inst->server);
    inst->server = NULL;
+   inst->cmd = 0;
    return 0;
 }
 
@@ -721,6 +723,7 @@ _mail_parse_imap(void *data, void *data2)
       case STATE_LOGGED_IN:
 	len = snprintf(out, sizeof(out), "A%03i STATUS %s (MESSAGES UNSEEN)\r\n",++inst->cmd, ci->path);
 	ecore_con_server_send(inst->server, out, len);
+	inst->state = STATE_PASS_OK;
 	break;
       default:
 	break;
