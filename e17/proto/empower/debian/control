@@ -2,12 +2,12 @@ Source: empower
 Section: x11
 Priority: optional
 Maintainer: E17 Debian Team <debian@edevelop.org>
-Build-Depends: debhelper (>= 4.0.0), libewl-dev
+Build-Depends: debhelper (>= 4.0.0), libewl-dev, libetk-dev
 Standards-Version: 3.6.2
 
 Package: empower
 Architecture: any
-Depends: libewl
+Depends: libewl, libetk
 Description: graphical sudo tool based on the EFL
  Empower - A graphical sudo tool based on the Enlightenment
  Foundation Libraries. Version 0.1 - an alpha release.
