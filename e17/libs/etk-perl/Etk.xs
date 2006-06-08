@@ -46,6 +46,7 @@ callback_VOID__INT(Etk_Object *object, int value, void *data)
 
    PUSHMARK(SP) ;
    XPUSHs(sv_2mortal(newSViv(value)));
+   XPUSHs(sv_2mortal(newSVsv(cbd->data)));   
    PUTBACK ;
       
    /* Call the Perl sub */
@@ -62,6 +63,7 @@ callback_VOID__DOUBLE(Etk_Object *object, double value, void *data)
 
    PUSHMARK(SP) ;
    XPUSHs(sv_2mortal(newSVnv(value)));
+   XPUSHs(sv_2mortal(newSVsv(cbd->data)));   
    PUTBACK ;
 
    /* Call the Perl sub */
@@ -78,6 +80,7 @@ callback_VOID__POINTER(Etk_Object *object, void *value, void *data)
 
    PUSHMARK(SP) ;
    //XPUSHs(sv_2mortal(newSViv(value)));
+   XPUSHs(sv_2mortal(newSVsv(cbd->data)));   
    PUTBACK ;
       
    /* Call the Perl sub */
@@ -94,6 +97,7 @@ callback_VOID__POINTER_POINTER(Etk_Object *object, void *val1, void *val2, void 
 
    PUSHMARK(SP) ;
    //XPUSHs(sv_2mortal(newSViv(value)));
+   XPUSHs(sv_2mortal(newSVsv(cbd->data)));   
    PUTBACK ;
       
    /* Call the Perl sub */
@@ -110,6 +114,7 @@ callback_VOID__INT_POINTER(Etk_Object *object, int val1, void *val2, void *data)
 
    PUSHMARK(SP) ;
    XPUSHs(sv_2mortal(newSViv(val1)));
+   XPUSHs(sv_2mortal(newSVsv(cbd->data)));   
    PUTBACK ;
       
    /* Call the Perl sub */
@@ -125,6 +130,7 @@ callback_BOOL__VOID(Etk_Object *object, void *data)
    cbd = data;
 
    PUSHMARK(SP) ;
+   XPUSHs(sv_2mortal(newSVsv(cbd->data)));   
    PUTBACK ;
       
    /* Call the Perl sub */
@@ -140,7 +146,8 @@ callback_BOOL__DOUBLE(Etk_Object *object, double value, void *data)
    cbd = data;
 
    PUSHMARK(SP) ;
-   XPUSHs(sv_2mortal(newSVnv(value)));      
+   XPUSHs(sv_2mortal(newSVnv(value)));
+   XPUSHs(sv_2mortal(newSVsv(cbd->data)));   
    PUTBACK ;
       
    /* Call the Perl sub */
@@ -157,6 +164,7 @@ callback_BOOL__POINTER_POINTER(Etk_Object *object, void *val1, void *val2, void 
 
    PUSHMARK(SP) ;
    //XPUSHs(sv_2mortal(newSViv(value)));
+   XPUSHs(sv_2mortal(newSVsv(cbd->data)));   
    PUTBACK ;
       
    /* Call the Perl sub */
