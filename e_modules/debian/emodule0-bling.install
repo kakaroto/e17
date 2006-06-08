@@ -1,0 +1,4 @@
+debian/tmp/usr/lib/enlightenment/modules/bling/*.edj
+debian/tmp/usr/lib/enlightenment/modules/bling/*.eap
+debian/tmp/usr/lib/enlightenment/modules/bling/*.png
+debian/tmp/usr/lib/enlightenment/modules/bling/*/*.so
