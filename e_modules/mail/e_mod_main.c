@@ -909,7 +909,7 @@ _mail_mdir_get_files(const char *path)
      }
       
    ecore_list_destroy(l);
-   return 0;
+   return i;
 }
 
 static void 
