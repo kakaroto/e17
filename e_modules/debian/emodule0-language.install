@@ -1,3 +1,4 @@
 debian/tmp/usr/lib/enlightenment/modules/language/*.edj
 debian/tmp/usr/lib/enlightenment/modules/language/*.eap
+debian/tmp/usr/lib/enlightenment/modules/language/images/*.png
 debian/tmp/usr/lib/enlightenment/modules/language/*/*.so

@@ -1,3 +1,4 @@
-debian/tmp/usr/lib/enlightenment/modules/uptime/module_icon.png
+debian/tmp/usr/lib/enlightenment/modules/uptime/*.png
+debian/tmp/usr/lib/enlightenment/modules/uptime/*.eap
 debian/tmp/usr/lib/enlightenment/modules/uptime/*.edj
 debian/tmp/usr/lib/enlightenment/modules/uptime/*/*.so

@@ -1,3 +1,6 @@
 debian/tmp/usr/lib/enlightenment/modules/mount/*.edj
+debian/tmp/usr/lib/enlightenment/modules/mount/*.png
+debian/tmp/usr/lib/enlightenment/modules/mount/*.ttf
+debian/tmp/usr/lib/enlightenment/modules/mount/*.eap
 debian/tmp/usr/lib/enlightenment/modules/mount/module_icon.png
 debian/tmp/usr/lib/enlightenment/modules/mount/*/*.so

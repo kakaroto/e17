@@ -1,3 +1,4 @@
 debian/tmp/usr/lib/enlightenment/modules/calendar/*.edj
+debian/tmp/usr/lib/enlightenment/modules/calendar/*.eap
 debian/tmp/usr/lib/enlightenment/modules/calendar/*.png
 debian/tmp/usr/lib/enlightenment/modules/calendar/*/*.so

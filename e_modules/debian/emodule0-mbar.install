@@ -1,3 +1,5 @@
 debian/tmp/usr/lib/enlightenment/modules/mbar/*.edj
+debian/tmp/usr/lib/enlightenment/modules/mbar/*.eap
+debian/tmp/usr/lib/enlightenment/modules/mbar/*.ttf
 debian/tmp/usr/lib/enlightenment/modules/mbar/*.png
 debian/tmp/usr/lib/enlightenment/modules/mbar/*/*.so
