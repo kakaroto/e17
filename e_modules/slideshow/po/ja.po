@@ -22,11 +22,11 @@ msgstr "スライドショーの設定"
 
 #: e_mod_config.c:81
 msgid "Cycle Time"
-msgstr "周期"
+msgstr "切替間隔"
 
 #: e_mod_config.c:82
 msgid "Disable Timer"
-msgstr "タイマーは使わない"
+msgstr "背景を切り替えない"
 
 #: e_mod_config.c:84
 #, c-format
