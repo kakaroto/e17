@@ -33,6 +33,7 @@ static void _type_cb_change(void *data, Evas_Object *obj);
 static void _use_exec_cb_change(void *data, Evas_Object *obj);
 
 static E_Config_Dialog *prev_dlg;
+static Config_Item *mail_ci;
 
 void 
 _config_box(Config_Item *ci, Config_Box *cb, E_Config_Dialog *mcfd) 
@@ -45,16 +46,7 @@ _config_box(Config_Item *ci, Config_Box *cb, E_Config_Dialog *mcfd)
    if (!v) return;
 
    prev_dlg = mcfd;
-   
-   if (!cb) 
-     {
-	cb = E_NEW(Config_Box, 1);
-	cb->type = 0;
-	cb->port = 110;
-	cb->ssl = 0;
-	ci->boxes = evas_list_append(ci->boxes, cb);
-	e_config_save_queue();
-     }   
+   mail_ci = ci;
    
    v->create_cfdata = _create_data;
    v->free_cfdata = _free_data;
@@ -69,6 +61,16 @@ static void
 _fill_data(Config_Box *cb, E_Config_Dialog_Data *cfdata) 
 {
    char buf[1024];
+   
+   if (!cb) 
+     {
+	cfdata->type = 0;
+	cfdata->ssl = 0;
+	cfdata->use_exec = 0;
+	snprintf(buf, sizeof(buf), "110");
+	cfdata->port = strdup(buf);
+	return;
+     }
    
    if (cb->name)
      cfdata->name = strdup(cb->name);
@@ -199,7 +201,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    e_widget_frametable_object_append(of, cfdata->cur_path_label, 0, 5, 1, 1, 0, 0, 1, 0);
    cfdata->cur_path_entry = e_widget_entry_add(evas, &cfdata->cur_path);
    e_widget_frametable_object_append(of, cfdata->cur_path_entry, 1, 5, 1, 1, 0, 0, 1, 0);
-   if ((cfdata->type == 0) || (cfdata->type == 2)) 
+   if ((cfdata->type == 1) || (cfdata->type == 3)) 
      {
 	e_widget_disabled_set(cfdata->cur_path_label, 1);
 	e_widget_disabled_set(cfdata->cur_path_entry, 1);
@@ -213,14 +215,23 @@ static int
 _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
 {
    Config_Box *cb;
-   
-   cb = cfd->data;
+   int is_new = 0;
 
    if (cfdata->name == NULL) 
      {
 	e_module_dialog_show(_("Enlightenment Mail Module"),
 			     _("You must enter a name for this mailbox."));
 	return 0;
+     }
+   
+   cb = cfd->data;
+   if (!cb) 
+     {
+	cb = E_NEW(Config_Box, 1);
+	cb->type = 0;
+	cb->port = 110;
+	cb->ssl = 0;
+	is_new = 1;
      }
    
    if (cb->name) evas_stringshare_del(cb->name);
@@ -271,6 +282,15 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    
    e_config_save_queue();
 
+   _mail_box_config_updated(prev_dlg);
+
+   if (is_new) 
+     {
+	mail_ci->boxes = evas_list_append(mail_ci->boxes, cb);
+	e_config_save_queue();
+	_mail_box_added(mail_ci->id, cb->name);
+     }
+   
    _mail_box_config_updated(prev_dlg);
    return 1;
 }

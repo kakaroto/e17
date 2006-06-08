@@ -65,6 +65,8 @@ EAPI int   e_modapi_about(E_Module *m);
 void _config_mail_module(Config_Item *ci);
 void _mail_config_updated(const char *id);
 void _mail_box_config_updated(E_Config_Dialog *cfd);
+void _mail_box_deleted(const char *ci_name, const char *box_name);
+void _mail_box_added(const char *ci_name, const char *box_name);
 
 extern Config *mail_config;
 

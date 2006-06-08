@@ -958,6 +958,112 @@ _mail_cb_exe_exit(void *data, int type, void *event)
    ecore_event_handler_del(mb->exit_handler);
 }
 
+void
+_mail_box_added(const char *ci_name, const char *box_name) 
+{
+   Evas_List *l, *b;
+   
+   for (l = mail_config->instances; l; l = l->next) 
+     {
+	Instance *inst;
+	Config_Item *ci;
+	
+	inst = l->data;
+	ci = _mail_config_item_get(inst->gcc->id);
+	if ((ci->id) && (!strcmp(ci->id, ci_name))) 
+	  {
+	     for (b = ci->boxes; b; b = b->next) 
+	       {
+		  Config_Box *cb;
+		  
+		  cb = b->data;
+		  if ((cb->name) && (!strcmp(cb->name, box_name))) 
+		    {
+		       Mailbox *mb;
+
+		       mb = E_NEW(Mailbox, 1);
+		       mb->inst = inst;
+		       mb->config = cb;
+		       mb->server = NULL;
+		       mb->state = STATE_DISCONNECTED;
+		       mb->cmd = 0;
+		       inst->mboxes = evas_list_append(inst->mboxes, mb);
+		       if (cb->type == MAIL_TYPE_MDIR) 
+			 mb->monitor = ecore_file_monitor_add(cb->new_path, _mail_mdir_check, mb);
+		       else if (cb->type == MAIL_TYPE_MBOX) 
+			 mb->monitor = ecore_file_monitor_add(cb->new_path, _mail_mbox_check, mb);
+		       else 
+			 {
+			    _mail_cb_check(inst);
+			    if (!inst->check_timer)
+			      inst->check_timer = ecore_timer_add((ci->check_time * 60.0), _mail_cb_check, inst);
+			 }
+		       break;
+		    }
+	       }
+	     break;
+	  }
+     }
+}
+
+void 
+_mail_box_deleted(const char *ci_name, const char *box_name)
+{
+   Evas_List *l, *d, *i;
+   Config_Box *cb;
+   int found = 0;
+   
+   for (i = mail_config->instances; i; i = i->next) 
+     {
+	Instance *inst;
+	
+	inst = i->data;
+	if (!inst->gcc->id) continue;
+	if (!strcmp(inst->gcc->id, ci_name)) 
+	  {
+	     Config_Item *ci;
+	     
+	     ci = _mail_config_item_get(inst->gcc->id);
+	     for (d = ci->boxes; d; d = d->next) 
+	       {
+		  cb = d->data;
+		  if ((cb->name) && (box_name)) 
+		    {
+		       if (!strcmp(cb->name, box_name))
+			 found = 1;
+		    }
+		  if (found) break;
+	       }
+	     if (found) 
+	       {
+		  for (l = inst->mboxes; l; l = l->next) 
+		    {
+		       Mailbox *mb;
+		       
+		       mb = l->data;
+		       if (((mb->config->name) && (cb->name)) &&
+			 (!strcmp(mb->config->name, cb->name))) 
+			 {
+			    if (mb->monitor) ecore_file_monitor_del(mb->monitor);
+			    if (mb->add_handler) ecore_event_handler_del(mb->add_handler);
+			    if (mb->data_handler) ecore_event_handler_del(mb->data_handler);
+			    if (mb->del_handler) ecore_event_handler_del(mb->del_handler);
+			    if (mb->server) ecore_con_server_del(mb->server);
+			    mb->server = NULL;
+			    inst->mboxes = evas_list_remove(inst->mboxes, mb);
+			    free(mb);
+			    break;
+			 }
+		    }
+		  ci->boxes = evas_list_remove(ci->boxes, cb);
+		  e_config_save_queue();
+		  break;
+	       }
+	     break;
+	  }
+     }
+}
+
 void 
 _mail_config_updated(const char *id) 
 {

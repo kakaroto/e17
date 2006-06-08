@@ -242,6 +242,7 @@ _cb_add_box(void *data, void *data2)
 
    ci = cfd->data;
    cfdata = cfd->cfdata;
+
    _config_box(ci, NULL, cfd);
 }
 
@@ -303,8 +304,7 @@ _cb_del_box(void *data, void *data2)
 	if (!cb->name) continue;
 	if (!strcmp(s, cb->name)) 
 	  {
-	     ci->boxes = evas_list_remove(ci->boxes, cb);
-	     e_config_save_queue();
+	     _mail_box_deleted(ci->id, cb->name);
 	     break;
 	  }
      }
