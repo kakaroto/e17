@@ -77,7 +77,27 @@ sub FieldDoubleSet
     my $self = shift;
     my $col = shift;
     my $double = shift;
-    Etk::etk_tree_row_field_text_set($self->{WIDGET}, $col->{WIDGET}, $double);
+    Etk::etk_tree_row_field_double_set($self->{WIDGET}, $col->{WIDGET}, $double);
+}
+
+sub FieldImageFileSet
+{
+    my $self = shift;
+    my $col = shift;
+    my $icon = shift;
+    my $text = shift;
+    Etk::etk_tree_row_field_image_file_set($self->{WIDGET}, $col->{WIDGET},
+	$icon);
+}
+
+sub FieldImageEdjeSet
+{
+    my $self = shift;
+    my $col = shift;
+    my $edje = shift;
+    my $group = shift;
+    Etk::etk_tree_row_field_image_edje_set($self->{WIDGET}, $col->{WIDGET},
+	$edje, $group);
 }
 
 sub FieldIconFileTextSet
@@ -94,11 +114,11 @@ sub FieldIconEdjeTextSet
 {
     my $self = shift;
     my $col = shift;
-    my $icon = shift;
+    my $edje = shift;
     my $group = shift;
     my $text = shift;
     Etk::etk_tree_row_field_icon_edje_text_set($self->{WIDGET}, $col->{WIDGET},
-	$icon, $group, $text);
+	$edje, $group, $text);
 }
 
 sub FieldCheckboxSet

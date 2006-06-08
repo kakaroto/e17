@@ -73,9 +73,9 @@ Etk_Toggle_Button *				T_PTROBJ
 Etk_Toplevel_Widget *				T_PTROBJ
 Etk_Tree *					T_PTROBJ
 Etk_Tree_Col *					T_PTROBJ
-Etk_Tree_Mode					T_PTROBJ
+Etk_Tree_Mode					T_IV
 Etk_Tree_Model *				T_PTROBJ
-Etk_Tree_Model_Image_Type			T_PTROBJ
+Etk_Tree_Model_Image_Type			T_IV
 Etk_Tree_Row *					T_PTROBJ
 Etk_Type *					T_PTROBJ
 Etk_Type **					T_PTROBJ

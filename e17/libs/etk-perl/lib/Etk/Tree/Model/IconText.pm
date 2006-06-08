@@ -15,7 +15,8 @@ sub new
     my $self = {};
     my $tree = shift;
     my $icon_type = shift;
-    $self->{WIDGET} = Etk::etk_tree_model_icon_text_new($tree->{WIDGET});
+    $self->{WIDGET} = Etk::etk_tree_model_icon_text_new($tree->{WIDGET},
+	$icon_type);
     bless($self, $class);
     return $self;
 }
@@ -24,7 +25,7 @@ sub IconWidthSet
 {
     my $self = shift;
     my $icon_width = shift;
-    Etk::etk_tree_model_icon_text_icon_width_set($self->{WIDGET}, icon_width);
+    Etk::etk_tree_model_icon_text_icon_width_set($self->{WIDGET}, $icon_width);
 }
 
 sub IconWidthGet

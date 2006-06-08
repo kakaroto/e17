@@ -18,6 +18,15 @@ use Etk::HSlider;
 use Etk::VSlider;
 use Etk::ProgressBar;
 use Etk::Timer;
+use Etk::Theme;
+use Etk::Tree;
+use Etk::Tree::Col;
+use Etk::Tree::Model::Int;
+use Etk::Tree::Model::ProgressBar;
+use Etk::Tree::Model::Image;
+use Etk::Tree::Model::Double;
+use Etk::Tree::Model::IconText;
+use Etk::Tree::Model::Checkbox;
 
 Etk::Init();
 
@@ -378,12 +387,90 @@ sub progbar_window_show
 
 sub canvas_window_show
 {
-    print "canvas_window_show\n";
+    my $win = Etk::Window->new("Etk-Perl Canvas Test");
+    my $label = Etk::Label->new("<b>Etk::Canvas is not implemented yet.</b>");
+    
+    $win->Add($label);
+    $win->BorderWidthSet(10);
+    $win->ShowAll();
 }
 
 sub tree_window_show
 {
-    print "tree_window_show\n";
+    my $win = Etk::Window->new("Etk-Perl Tree Test");
+    my $table = Etk::Table->new(2, 3, 0);
+    my $label = Etk::Label->new("<h1>Tree:</h1>");
+    
+    $table->Attach($label, 0, 0, 0, 0, 0, 0, 
+	Etk::FillPolicy::HFill | Etk::FillPolicy::VFill);
+    
+    my $tree = Etk::Tree->new();    
+    $tree->SizeRequestSet(320, 400);
+    $table->AttachDefaults($tree, 0, 0, 1, 1);
+    $tree->ModeSet(Etk::Tree::ModeTree);
+    $tree->MultipleSelectSet(1);
+    $tree->Freeze();
+    
+    my $col1 = Etk::Tree::Col->new($tree, "Column 1", 
+	Etk::Tree::Model::IconText->new($tree,
+	    Etk::Tree::Model::IconText::FromEdje), 90);
+    
+    my $col2 = Etk::Tree::Col->new($tree, "Column 2",
+	Etk::Tree::Model::Double->new($tree), 60);
+    
+    my $col3 = Etk::Tree::Col->new($tree, "Column 3",
+	Etk::Tree::Model::Image->new($tree, 
+	    Etk::Tree::Model::Image::FromFile), 60);
+    
+    my $col4 = Etk::Tree::Col->new($tree,, "Column 4",
+	Etk::Tree::Model::Checkbox->new($tree), 40);
+    $col4->SignalConnect("cell_value_changed", 
+	sub {
+	    # TODO: we need to implement etk_tree_row_fields_get
+	    print "toggle!\n";
+	}
+    );
+    
+    $tree->Build();
+
+
+    for(my $i = 0; $i < 1000; $i++)
+    {
+	my $row = $tree->Append();
+	$row->FieldIconEdjeTextSet($col1, Etk::Theme::IconThemeGet(),
+	    "places/user-home_16", "Row1");
+	$row->FieldDoubleSet($col2, 10.0);
+	$row->FieldImageFileSet($col3, "images/1star.png");
+	$row->FieldCheckboxSet($col4, 0);
+    }
+    $tree->Thaw();
+    
+    $label = Etk::Label->new("<h1>List:</h1>");
+    $table->Attach($label, 1, 1, 0, 0, 0, 0, 
+	Etk::FillPolicy::HFill | Etk::FillPolicy::VFill);
+    
+    $tree = Etk::Tree->new();
+    $tree->SizeRequestSet(320, 400);
+    $table->AttachDefaults($tree, 1, 1, 1, 1);
+    $tree->ModeSet(Etk::Tree::ModeList);
+    $tree->MultipleSelectSet(1);
+    $tree->Freeze();
+    
+    $col1 = Etk::Tree::Col->new($tree, "Column 1", 
+	Etk::Tree::Model::IconText->new($tree,
+	    Etk::Tree::Model::IconText::FromFile), 90);
+    
+    $col2 = Etk::Tree::Col->new($tree, "Column 2",
+	Etk::Tree::Model::Int->new($tree), 90);
+    
+    $col3 = Etk::Tree::Col->new($tree, "Column 3",
+	Etk::Tree::Model::Image->new($tree, 
+	    Etk::Tree::Model::Image::FromFile), 90);
+    
+    $tree->Build();        
+    
+    $win->Add($table);
+    $win->ShowAll();
 }
 
 sub menu_window_show

@@ -3056,7 +3056,24 @@ etk_tree_row_field_double_set(row, col, d)
 	double          d
       CODE:
         etk_tree_row_fields_set(row, col, d, NULL);
-	
+
+void
+etk_tree_row_field_image_file_set(row, col, image)
+        Etk_Tree_Row *  row
+	Etk_Tree_Col *  col
+	char         *  image
+      CODE:
+        etk_tree_row_fields_set(row, col, image, NULL);
+
+void
+etk_tree_row_field_image_edje_set(row, col, edje, group)
+        Etk_Tree_Row *  row
+	Etk_Tree_Col *  col
+	char         *  edje
+	char         *  group
+      CODE:
+        etk_tree_row_fields_set(row, col, edje, group, NULL);
+
 void
 etk_tree_row_field_icon_file_text_set(row, col, icon, t)
         Etk_Tree_Row *  row
