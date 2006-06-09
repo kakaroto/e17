@@ -19,31 +19,31 @@ Ecore_Evas *ee;
 Evas_Object *edje;
 Ewl_Widget *text, *entry;
 
-void
-_open(Ewl_Widget *w , void *e __UNUSED__, void *d)
+static void
+open(Ewl_Widget *w , void *e __UNUSED__, void *d)
 {
 	ewl_widget_disable(w);
 	ewl_widget_enable(EWL_WIDGET(d));
 	edje_object_signal_emit(edje, "open", "open");
 }
 
-void
-_close(Ewl_Widget *w, void *e __UNUSED__, void *d)
+static void
+close(Ewl_Widget *w, void *e __UNUSED__, void *d)
 {
 	ewl_widget_disable(w);
 	ewl_widget_enable(EWL_WIDGET(d));
 	edje_object_signal_emit(edje, "close", "close");
 }
 
-void
-_destroy_main_window(Ecore_Evas *ee __UNUSED__)
+static void
+destroy_main_window(Ecore_Evas *ee __UNUSED__)
 {
 	ewl_main_quit();
 	return;
 }
 
-void
-_resize_window(Ecore_Evas *ee)
+static void
+resize_window(Ecore_Evas *ee)
 {
 	Evas_Coord w, h;
 
@@ -51,8 +51,8 @@ _resize_window(Ecore_Evas *ee)
 	evas_object_resize(edje, w, h);
 }
 
-void
-_insert(Ewl_Widget *w __UNUSED__, void *e __UNUSED__, void *d __UNUSED__)
+static void
+insert(Ewl_Widget *w __UNUSED__, void *e __UNUSED__, void *d __UNUSED__)
 {
 	const char * t;
 
@@ -87,8 +87,8 @@ main(int argc, char **argv)
 	ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, 300, 300);
 	ecore_evas_title_set(ee, "Ewl_Embed Test");
 	ecore_evas_name_class_set(ee, "Ewl_Embed_Test", "Ewl");
-	ecore_evas_callback_delete_request_set(ee, _destroy_main_window);
-	ecore_evas_callback_resize_set(ee, _resize_window);
+	ecore_evas_callback_delete_request_set(ee, destroy_main_window);
+	ecore_evas_callback_resize_set(ee, resize_window);
 	ecore_evas_size_min_set(ee, 210, 230);
 	ecore_evas_show(ee);
 
@@ -163,14 +163,14 @@ main(int argc, char **argv)
 	ewl_container_child_append(EWL_CONTAINER(c), entry);
 	ewl_entry_editable_set(EWL_ENTRY(entry), TRUE);
 	ewl_entry_multiline_set(EWL_ENTRY(entry), FALSE);
-	ewl_callback_append(entry, EWL_CALLBACK_VALUE_CHANGED, _insert, NULL);
+	ewl_callback_append(entry, EWL_CALLBACK_VALUE_CHANGED, insert, NULL);
 	ewl_widget_show(entry);
 
 	wg = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(wg), "append");
 	ewl_object_fill_policy_set(EWL_OBJECT(wg), EWL_FLAG_FILL_SHRINK);
 	ewl_container_child_append(EWL_CONTAINER(c), wg);
-	ewl_callback_append(wg, EWL_CALLBACK_CLICKED, _insert, NULL);
+	ewl_callback_append(wg, EWL_CALLBACK_CLICKED, insert, NULL);
 	ewl_widget_show(wg);
 
 	wg = ewl_separator_new();
@@ -195,8 +195,8 @@ main(int argc, char **argv)
 	ewl_widget_show(wg);
 	button[1] = wg;
 
-	ewl_callback_append(button[0], EWL_CALLBACK_CLICKED, _open, button[1]);
-	ewl_callback_append(button[1], EWL_CALLBACK_CLICKED, _close, button[0]);
+	ewl_callback_append(button[0], EWL_CALLBACK_CLICKED, open, button[1]);
+	ewl_callback_append(button[1], EWL_CALLBACK_CLICKED, close, button[0]);
 
 	edje_object_signal_emit(edje, "open", "open");
 	ewl_widget_disable(button[0]);
