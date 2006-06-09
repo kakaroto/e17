@@ -439,12 +439,12 @@ sub tree_window_show
     $col4->SignalConnect("cell_value_changed", 
 	sub {
 	    # TODO: we need to implement etk_tree_row_fields_get
-	    print "toggle!\n";
+	    # why is this getting called if we're not clicking?
+	    # print "toggle!\n";
 	}
     );
     
     $tree->Build();
-
 
     for(my $i = 0; $i < 1000; $i++)
     {
@@ -480,9 +480,66 @@ sub tree_window_show
 	    Etk::Tree::Model::Image::FromFile), 90);
     
     $tree->Build();        
+    tree_add_items($tree, 5000);
+    my $frame = Etk::Frame->new("List Actions");
+    $table->Attach($frame, 0, 1, 2, 2, 0, 0, 
+	Etk::FillPolicy::HFill | Etk::FillPolicy::VFill);
+    my $hbox = Etk::HBox->new(1, 10);
+    $frame->Add($hbox);
     
+    my $button = Etk::Button->new("Clear");
+    $hbox->PackStart($button);
+    
+    $button = Etk::Button->new("Add 5 rows");
+    $hbox->PackStart($button);
+    
+    $button = Etk::Button->new("Add 50 rows");
+    $hbox->PackStart($button);
+    
+    $button = Etk::Button->new("Add 500 rows");
+    $hbox->PackStart($button);
+    
+    $button = Etk::Button->new("Add 5000 rows");
+    $hbox->PackStart($button);
+    
+    $button = Etk::Button->new("Sort");
+    $hbox->PackStart($button);    
+            
     $win->Add($table);
     $win->ShowAll();
+}
+
+sub tree_add_items
+{
+    my $tree = shift;
+    my $n = shift;
+    my $col1 = $tree->NthColGet(0);
+    my $col2 = $tree->NthColGet(1);
+    my $col3 = $tree->NthColGet(2);
+    
+    $tree->Freeze();
+    for(my $i = 0; $i < $n; $i++)
+    {
+	my $row_name = "Row$i";
+	my $star_path = "";
+	if($i % 3 ==0)
+	{
+	    $star_path = "images/1star.png";
+	} elsif($i % 3 == 1)
+	{
+	    $star_path = "images/2stars.png";
+	} else
+	{
+	    $star_path = "images/3stars.png";
+	}
+	my $rand_value = rand(10000);
+	my $row = $tree->Append();
+	$row->FieldIconFileTextSet($col1, "images/1star.png", $row_name);
+	$row->FieldIntSet($col2, $rand_value);
+	$row->FieldImageFileSet($col3, $star_path);
+    }
+    $tree->Thaw();
+	
 }
 
 sub menu_window_show
