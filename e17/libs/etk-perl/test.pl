@@ -1,5 +1,6 @@
 use strict;
 use Etk;
+use Etk::Main;
 use Etk::Window;
 use Etk::Button;
 use Etk::VBox;
@@ -8,7 +9,7 @@ use Etk::Tree::Model::Text;
 use Etk::Tree::Model::ProgressBar;
 use Etk::Tree::Col;
 
-Etk::etk_init();
+Etk::Init();
 
 my $win = Etk::Window->new();
 my $button1 = Etk::Button->new("click me!");
@@ -42,8 +43,8 @@ $button1->SignalConnect("clicked", \&click_cb1, "click_cb1_data");
 $button2->SignalConnect("clicked", \&click_cb2);
 $win->SignalConnect("delete_event", \&quit_cb);
 
-Etk::etk_main();
-Etk::etk_shutdown();
+Etk::Main::Run();
+Etk::Shutdown();
 
 sub click_cb1
 {
@@ -61,5 +62,5 @@ sub click_cb2
 sub quit_cb
 {
     print "quit!\n";
-    Etk::etk_main_quit();
+    Etk::Main::Quit();
 }
