@@ -78,6 +78,9 @@
 
 - Ewl_Text:: need to fill in the condense function
 
+- Ewl_Dnd:: uses hardcoded ecore_evas_software_x11 type calls in there. This
+  needs to be moved over to use the new engine stuff and get the ecore_evas
+  and any ecore_x calls out of there.
 
   Ewl_Icon
  - Need to add the constrain stuff in like iconbox does at the moment.
@@ -147,9 +150,6 @@
 - Tree selection mode set and themeing (MULTI/SINGLE/EXTENDED/NONE).
   - Invert on mouse click (behavior depends upon select mode).
   - determination of whether a row is selected or not (ewl_[tree_]row_selected).
-
-- Need to split the evas engine code out then use function pointers to do
-  the engine functions instead of the current ifdef method.
 
 - Create a separate configuration value and theme hook for stock icons in
   order to eliminate most icons from the distributed lib, but provide good
