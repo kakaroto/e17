@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+	<head>
+		<title>eVFS Manual</title>
+		<link rel="stylesheet" type="text/css" href="manual.css" />
+	</head>
+	
+	<body>
+		<h1>Introduction</h1> <br/>
+		eVFS is a lightweight, yet powerful filesystem abstraction layer created using the 
+		<a href="http://www.enlightenment.org">Enlightenment Foundation Libraries</a> (EFL).  It 
+		aims to replace all common file functions in general application programming, whilst 
+		maintaining the ability to interoperate between a variety of filesystem types, both
+		local and remote. <p/>
+		In contrast to other virtual filesystem offerings, eVFS offers only an asyncronous
+		toolkit - that is, communication between the eVFS daemon, and a client application,
+		occurs as a series of messages and responses, rather than taking control away from
+		the client during operation execution.  Such a design ties in with the general 
+		philosophy of the EFL - a threadless, yet responsive toolkit providing maximum 
+		stability, whilst remaining powerful.
+		
+		<h1>Components</h1>
+		eVFS comprises a number of components, not all of which you will need to become 
+		familiar with.  The base components are:
+		<ol>
+			<li>The eVFS daemon</li>
+			<li>The client library</li>
+			<li>Modules</li>
+		</ol>
+		
+		<h1>Client/Server Interaction</h1>
+			<h2>Daemon Connection</h2>
+			A client wishing to make use of eVFS functionality must first connect to the daemon
+			itself.  If the daemon is not running at the time of the connection request, a new
+			eVFS daemon will be launched with the permissions of the current user.<p/>
+			An eVFS connection object is a variable of the form:<p></p>
+			<code>
+			evfs_connection *con;
+			</code><p/>
+			To make a new connection to the eVFS daemon, you call the function <var>evfs_connect</var>,
+			defined as:<p/>
+			
+			<code>evfs_connection *evfs_connect(void (*callback_func) (evfs_event *, void *), void* obj);</code><p/>
+			The arguments are, in order, the callback function to call with command responses and events, and the object (if any) 
+			return as a client-reference.
+			<h2><var>evfs_filereference</var> object</h2><p/>
+			An <var>evfs_filereference</var> is an abstract representation of a file on a filesystem.
+			An evfs_filereference is defined as: <p/>
+			<pre>
+			typedef struct evfs_filereference
+			{
+			   char *plugin_uri;
+			   struct evfs_plugin *plugin;
+
+			   struct evfs_filereference *parent;
+			   struct evfs_server *server;  /*The server that spawned/owns this fileref, if any */
+	
+			   evfs_file_type file_type;
+			   char *path;
+
+			   char *username;              /*The username/password pair (if any) required to hit this file */
+			   char *password;
+
+			   int fd;                      /*The file descriptor (if any) */
+			   void *fd_p;
+			} evfs_filereference;
+			</pre>
+			<p/>
+			An evfs filereference can refer to a nested file (See the section on URIs in this manual).  That is to say, a 
+			filereference can refer to a file in a .bz2, inside a .tar, on a remote samba share.  This is acheived through 
+			the <var>parent</var> object, as seen above.  In each <var>evfs_filereference</var>, parent is set to either 
+			another <var>evfs_filereference</var>, or NULL - with the NULL being at the top level.  The structure can be seen,
+			for example, as below:<p/>
+			<code>
+			(tar) '/inner/directory/example.c' -> (bz2) files.tar.bz2 -> (samba) //machine/example
+			</code>
+			<p/>
+			This would be expressed as a uri in the form:<p/>
+			<code>
+			smb:///machine/example/files.tar.bz2#bz2://#tar:///inner/directory/example.c
+			</code>
+			<br/><br/>
+			Generally, as a user of the evfs client libraries, you will not need to manipulate filereferences 
+			directly, but it is a good idea to become familiar with their internal structure, so as to understand
+			their recursive nature.  Through the use of nested URIs, you can refer to any file, on any filesystem,
+			or group of filesystems, that eVFS can manipulate.
+			<h2>evfs_parse_uri</h2><p/>
+			The <var>evfs_parse_uri</var> function turns a URI as seen above, into the nested filereference objects,
+			thus automating the transition between a textual file format, and the eVFS internal representation.
+			<h2>Client File Commands</h2>
+			<h3>evfs_monitor_add</h3>
+			<h3>evfs_monitor_remove</h3>
+			<h3>evfs_client_file_remove</h3>
+			<h3>evfs_client_file_rename</h3>
+			<h3>evfs_client_file_stat</h3>
+			<h3>evfs_client_dir_list</h3>
+			<h3>evfs_client_file_open</h3>
+			<h3>evfs_client_file_copy</h3>
+			<h3>evfs_client_file_read</h3>
+			<h3>evfs_client_operation_respond</h3>
+			<h3>evfs_client_directory_create</h3>
+			<h3>evfs_client_metadata_retrieve</h3>
+			
+			
+			
+			<h1>Writing eVFS Modules</h1>
+			<h2>Module Types</h2>
+			<h3>File modules</h3>
+			<h3>Metadata modules</h3>
+	</body>
+</html>

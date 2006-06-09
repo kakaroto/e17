@@ -1,0 +1,26 @@
+h1 {
+	font-size: 10;
+	color: #1453F3;
+	font-family: roman, 'times new roman', times, serif;
+	}
+	
+body {
+	font-family: sans-serif;
+	font-style: normal;
+}
+
+code {
+	border-left-color: #524A4A;
+	border-top-color: #524A4A;
+	border-bottom-color: black;
+	border-right-color: black;
+	font-family: courier, fixed, monospace;
+	background-color: #CBC4C4;
+	min-width: 300;
+	border-width: 1;
+}
+
+pre {
+	background-color: #CBC4C4;
+}
+
