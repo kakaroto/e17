@@ -222,6 +222,11 @@ src/Makefile
 src/bin/Makefile
 src/bin/tests/Makefile
 src/lib/Makefile
+src/engines/Makefile
+src/engines/x11/Makefile
+src/engines/evas_software_x11/Makefile
+src/engines/evas_gl_x11/Makefile
+src/engines/evas_fb/Makefile
 data/Makefile
 data/images/Makefile
 data/themes/Makefile

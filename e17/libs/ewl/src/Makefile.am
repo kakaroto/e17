@@ -1,5 +1,5 @@
 
-SUBDIRS = lib bin
+SUBDIRS = lib engines bin
 
 MAINTAINERCLEANFILES = Makefile.in
 

@@ -305,6 +305,8 @@ extern"C" {
 #include <ewl_filepicker.h>
 #include <ewl_filedialog.h>
 
+#include <ewl_engines.h>
+
 #include <ewl_text.h>
 #include <ewl_entry.h>
 

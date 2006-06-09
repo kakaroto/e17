@@ -1,0 +1,7 @@
+.deps
+.libs
+ewl_engine_x11.lo
+ewl_engine_x11.o
+Makefile
+Makefile.in
+x11.la

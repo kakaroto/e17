@@ -30,8 +30,6 @@ struct Ewl_Config
 	struct {
 		int font_cache;		/**< Font cache size */
 		int image_cache;	/**< Image cache size */
-		int engine;		/**< Engines available */
-		char *render_method;	/**< Current render method */
 		int render_debug;	/**< Enable debugging mode in Evas */
 	} evas;				/**< Evas configuration */
 
@@ -42,6 +40,8 @@ struct Ewl_Config
 		int print_keys;		/**< Print theme keys as accessed */
 		int print_signals;	/**< Print theme signals as accessed */
 	} theme;			/**< Theme configuration */
+
+	char *engine_name;		/**< The name of the engine to use */
 };
 
 extern Ewl_Config ewl_config;	/**< The global configuration data */
@@ -54,7 +54,6 @@ int             ewl_config_float_set(const char *k, float v);
 char           *ewl_config_str_get(const char *k);
 int             ewl_config_int_get(const char *k);
 float           ewl_config_float_get(const char *k);
-char *          ewl_config_render_method_get(void);
 
 /**
  * @}

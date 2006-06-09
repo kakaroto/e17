@@ -135,10 +135,11 @@ ewl_init(int *argc, char **argv)
 		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
 	}
 
-	/* make sure we have an engine set by default */
-	ewl_config.evas.engine = EWL_ENGINE_ALL;
-	IF_FREE(ewl_config.evas.render_method);
-	ewl_config.evas.render_method = strdup("software_x11");
+	if (!ewl_engines_init()) {
+		DERROR("Could not init engine data.\n");
+		ewl_shutdown();
+		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
+	}
 
 	ewl_init_parse_options(argc, argv);
 
@@ -172,37 +173,6 @@ ewl_init(int *argc, char **argv)
 		ecore_string_shutdown();
 		ecore_shutdown();
 		edje_shutdown();
-		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
-	}
-
-#ifdef ENABLE_EWL_SOFTWARE_X11
-	/*
-	 * Attempt to pick the correct engine by adjusting the bitmask
-	 * relative to the success of each engines init routine.
-	 */
-	if (ewl_config.evas.engine & EWL_ENGINE_X11) {
-		if (!ecore_x_init(NULL))
-			ewl_config.evas.engine &= ~EWL_ENGINE_X11;
-		else
-			ewl_config.evas.engine &= EWL_ENGINE_X11;
-	}
-#endif
-#ifdef ENABLE_EWL_FB
-	/*
-	 * Maybe the X11 engines arent' available or they failed, so see if
-	 * we should load up the FB.
-	 */
-	if (ewl_config.evas.engine & EWL_ENGINE_FB) {
-		if (!ecore_fb_init(NULL))
-			ewl_config.evas.engine &= ~EWL_ENGINE_FB;
-		else
-			ewl_config.evas.engine &= EWL_ENGINE_FB;
-	}
-#endif
-
-	if (!ewl_config.evas.engine) {
-		DERROR("Cannot open display!\n");
-		ewl_shutdown();
 		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
 	}
 
@@ -296,6 +266,7 @@ ewl_shutdown(void)
 	ewl_embed_shutdown();
 	ewl_callbacks_shutdown();
 	ewl_theme_shutdown();
+	ewl_engines_shutdown();
 	ewl_config_shutdown();
 	ewl_dnd_shutdown();
 
@@ -325,16 +296,6 @@ ewl_shutdown(void)
 
 	edje_shutdown();
 	evas_shutdown();
-
-#ifdef ENABLE_EWL_SOFTWARE_X11
-	if (ewl_config.evas.engine & EWL_ENGINE_X11) 
-		ecore_x_shutdown();
-#endif
-
-#ifdef ENABLE_EWL_FB
-	if (ewl_config.evas.engine & EWL_ENGINE_FB)
-		ecore_fb_shutdown();
-#endif
 
 	ecore_string_shutdown();
 	ecore_shutdown();
@@ -516,11 +477,14 @@ ewl_init_parse_options(int *argc, char **argv)
 {
 	int i;
 	int matched = 0;
+	Ecore_List *engines;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	if (!argc || !argv)
 		DRETURN(DLEVEL_STABLE);
+
+	engines = ewl_engine_names_get();
 
 	i = 0;
 	while (i < *argc) {
@@ -551,33 +515,6 @@ ewl_init_parse_options(int *argc, char **argv)
 			ewl_config.debug.gc_reap = 1;
 			matched++;
 		}
-#ifdef ENABLE_EWL_SOFTWARE_X11
-		else if (!strcmp(argv[i], "--ewl-software-x11")) {
-			IF_FREE(ewl_config.evas.render_method);
-			ewl_config.evas.render_method = strdup("software_x11");
-			ewl_config.evas.engine = EWL_ENGINE_SOFTWARE_X11;
-
-			matched++;
-		}
-#endif
-#ifdef ENABLE_EWL_GL_X11
-		else if (!strcmp(argv[i], "--ewl-gl-x11")) {
-			IF_FREE(ewl_config.evas.render_method);
-			ewl_config.evas.render_method = strdup("gl_x11");
-			ewl_config.evas.engine = EWL_ENGINE_GL_X11;
-
-			matched++;
-		}
-#endif
-#ifdef ENABLE_EWL_FB
-		else if (!strcmp(argv[i], "--ewl-fb")) {
-			IF_FREE(ewl_config.evas.render_method);
-			ewl_config.evas.render_method = strdup("fb");
-			ewl_config.evas.engine = EWL_ENGINE_FB;
-
-			matched++;
-		}
-#endif
 		else if (!strcmp(argv[i], "--ewl-debug")) {
 			if (i + i < *argc) {
 				ewl_config.debug.level = atoi(argv[i + 1]);
@@ -594,8 +531,39 @@ ewl_init_parse_options(int *argc, char **argv)
 		}
 		else if (!strcmp(argv[i], "--ewl-help")) {
 			ewl_print_help();
+			ecore_list_destroy(engines);
 			exit(0);
 			matched ++;
+		}
+		else if (!strncmp(argv[i], "--ewl-", 6)) {
+			int len;
+
+			len = strlen("--ewl-");
+			if (strlen(argv[i]) > len)
+			{
+				char *eng;
+				char *name;
+
+				eng = strdup(argv[i] + len);
+
+				while ((name = strchr(eng, '-')))
+					*name = '_';
+
+				ecore_list_goto_first(engines);
+				while ((name = ecore_list_next(engines)))
+				{
+					if (!strcmp(eng, name))
+					{
+						IF_FREE(ewl_config.engine_name);
+						ewl_config.engine_name = strdup(name);
+						matched ++;
+
+						break;
+					}
+				}
+
+				FREE(eng);
+			}
 		}
 
 		if (matched > 0) {
@@ -607,6 +575,7 @@ ewl_init_parse_options(int *argc, char **argv)
 		else
 			i++;
 	}
+	ecore_list_destroy(engines);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -633,20 +602,33 @@ ewl_init_remove_option(int *argc, char **argv, int i)
 void
 ewl_print_help(void)
 {
+	Ecore_List *names;
+	char *name;
+
 	printf("EWL Help\n"
 		"\t--ewl-backtrace           Print a stack trace warnings occur.\n"
 		"\t--ewl-debug <level>       Set the debugging printf level.\n"
 		"\t--ewl-debug-paint         Enable repaint debugging.\n"
-		"\t--ewl-fb                  Use framebuffer display engine.\n"
-		"\t--ewl-gl-x11              Use GL X11 display engine.\n"
 		"\t--ewl-help                Print this help message.\n"
 		"\t--ewl-print-gc-reap       Print garbage collection stats.\n"
 		"\t--ewl-print-theme-keys    Print theme keys matched widgets.\n"
 		"\t--ewl-print-theme-signals Print theme keys matched widgets.\n"
 		"\t--ewl-segv                Trigger crash when warning printed.\n"
-		"\t--ewl-software-x11        Use software X11 display engine.\n"
 		"\t--ewl-theme <theme>       Set the theme to use for widgets.\n"
-		);
+		" AVAILABLE ENGINES\n");
+			
+	names = ewl_engine_names_get();
+	ecore_list_goto_first(names);
+	while ((name = ecore_list_next(names)))
+	{
+		char *t;
+		while ((t = strchr(name, '_')))
+			*t = '-';
+
+		printf("\t--ewl-%s\n", name);
+		FREE(name);
+	}
+	ecore_list_destroy(names);
 }
 
 /**
@@ -707,7 +689,6 @@ ewl_configure_request(Ewl_Widget * w)
 	 */
 	ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_CSCHEDULED);
 	ecore_list_append(configure_list, w);
-	/* printf("*** Queued %s for configuration ***\n", w->appearance); */
 
 	DLEAVE_FUNCTION(DLEVEL_TESTING);
 }
@@ -748,18 +729,12 @@ ewl_configure_queue(void)
 		 * queued to receive new evas objects.
 		 */
 		if (!ewl_widget_onscreen_is(w)) {
-			if (!OBSCURED(w)) {
+			if (!OBSCURED(w))
 				ecore_list_prepend(obscure_list, w);
-				/* printf("Flagging obscure:\n\t");
-				ewl_widget_print(w); */
-			}
 		}
 		else {
-			if (OBSCURED(w)) {
+			if (OBSCURED(w))
 				ecore_list_prepend(reveal_list, w);
-				/* printf("Flagging revealed:\n\t");
-				ewl_widget_print(w); */
-			}
 
 			ewl_object_queued_add(EWL_OBJECT(w),
 				EWL_FLAG_QUEUED_CPROCESS);
@@ -961,18 +936,6 @@ ewl_in_realize_phase(void)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	DRETURN_INT((phase_status & EWL_FLAG_QUEUED_RSCHEDULED), DLEVEL_STABLE);
-}
-
-/**
- * @return Returns the current engine mask
- * @brief This will get the engine mask currently used by Ewl
- */
-unsigned int
-ewl_engine_mask_get(void)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	DRETURN_INT(ewl_config.evas.engine, DLEVEL_STABLE);
 }
 
 /**

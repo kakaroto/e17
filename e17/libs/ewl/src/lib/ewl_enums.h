@@ -313,35 +313,6 @@ enum Ewl_Scrollpane_Flags
 typedef enum Ewl_Scrollpane_Flags Ewl_Scrollpane_Flags;
 
 /**
- * @enum Ewl_Engine
- * The possible ewl engine settings
- */
-enum Ewl_Engine
-{
-	EWL_ENGINE_SOFTWARE_X11 = 1,	/**< The Software X11 engine */
-	EWL_ENGINE_GL_X11 = 2,		/**< The GL X11 engine */
-	EWL_ENGINE_FB = 4,		/**< The Framebuffer engine */
-};
-
-/**
- * The Ewl_Engine type
- */
-typedef enum Ewl_Engine Ewl_Engine;
-
-/**
- * @def EWL_ENGINE_X11
- * Mask for the X11 based engines 
- */
-#define EWL_ENGINE_X11 (EWL_ENGINE_SOFTWARE_X11 | EWL_ENGINE_GL_X11)
-
-/**
- * @def EWL_ENGINE_ALL
- * Mask for all engines
- */
-#define EWL_ENGINE_ALL (EWL_ENGINE_SOFTWARE_X11 | EWL_ENGINE_GL_X11 | \
-			EWL_ENGINE_FB)
-
-/**
  * @enum Ewl_Key_Modifiers
  * The key modifiers
  */

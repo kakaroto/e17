@@ -139,6 +139,7 @@ ewl_drag_start(Ewl_Widget *w)
 						ECORE_X_EVENT_MOUSE_MOVE, 
 						ewl_dnd_event_dnd_move, NULL);
 
+	/* XXX This needs to be changed ot correctly go through the engine */
 	ewl_dnd_drag_canvas = ecore_evas_software_x11_new(NULL, 
 							EWL_DND_WINDOW_ROOT, 
 							64, 64, 64, 64); 

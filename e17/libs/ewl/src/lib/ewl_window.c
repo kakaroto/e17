@@ -124,15 +124,7 @@ ewl_window_title_set(Ewl_Window *win, const char *title)
 		win->title = (title ? strdup(title) : strdup(""));
 	}
 
-	if (!REALIZED(win))
-		DRETURN(DLEVEL_STABLE);
-
-#ifdef ENABLE_EWL_SOFTWARE_X11
-	if (strstr(win->render, "x11")) {
-		ecore_x_icccm_title_set((Ecore_X_Window)win->window, win->title);
-		ecore_x_netwm_name_set((Ecore_X_Window)win->window, win->title);
-	}
-#endif
+	ewl_engine_window_title_set(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -175,14 +167,7 @@ ewl_window_name_set(Ewl_Window *win, const char *name)
 		win->name = (name ? strdup(name) : strdup(""));
 	}
 
-	if (!REALIZED(win))
-		DRETURN(DLEVEL_STABLE);
-
-#ifdef ENABLE_EWL_SOFTWARE_X11
-	if (strstr(win->render, "x11"))
-		ecore_x_icccm_name_class_set((Ecore_X_Window)win->window,
-					     win->name, win->name);
-#endif
+	ewl_engine_window_name_class_set(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -227,14 +212,7 @@ ewl_window_class_set(Ewl_Window *win, const char *classname)
 		win->classname = (classname ? strdup(classname) : strdup(""));
 	}
 
-	if (!REALIZED(win))
-		DRETURN(DLEVEL_STABLE);
-
-#ifdef ENABLE_EWL_SOFTWARE_X11
-	if (strstr(win->render, "x11"))
-		ecore_x_icccm_name_class_set((Ecore_X_Window)win->window,
-					     win->classname, win->classname);
-#endif
+	ewl_engine_window_name_class_set(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -273,11 +251,7 @@ ewl_window_borderless_set(Ewl_Window *win)
 
 	win->flags |= EWL_WINDOW_BORDERLESS;
 
-#ifdef ENABLE_EWL_SOFTWARE_X11
-	if (REALIZED(win) && strstr(win->render, "x11"))
-		ecore_x_mwm_borderless_set((Ecore_X_Window)win->window,
-					   TRUE);
-#endif
+	ewl_engine_window_borderless_set(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -306,18 +280,7 @@ ewl_window_dialog_set(Ewl_Window *win, int dialog)
 	else
 		win->flags &= ~EWL_WINDOW_DIALOG;
 
-#ifdef ENABLE_EWL_SOFTWARE_X11
-	if (REALIZED(win) && strstr(win->render, "x11")) {
-		if (dialog)
-			ecore_x_netwm_window_type_set(
-					(Ecore_X_Window)win->window, 
-					ECORE_X_WINDOW_TYPE_DIALOG);
-		else
-			ecore_x_netwm_window_type_set(
-					(Ecore_X_Window)win->window, 
-					ECORE_X_WINDOW_TYPE_NORMAL);
-	}
-#endif
+	ewl_engine_window_dialog_set(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -360,13 +323,7 @@ ewl_window_fullscreen_set(Ewl_Window *win, unsigned int fullscreen)
 	else
 		win->flags &= ~EWL_WINDOW_FULLSCREEN;
 
-#ifdef ENABLE_EWL_SOFTWARE_X11
-	if (REALIZED(win) && strstr(win->render, "x11")) {
-		ecore_x_netwm_state_request_send((Ecore_X_Window)win->window,
-					0, ECORE_X_WINDOW_STATE_FULLSCREEN,
-					ECORE_X_WINDOW_STATE_UNKNOWN, fullscreen);
-	}
-#endif
+	ewl_engine_window_fullscreen_set(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -406,12 +363,7 @@ ewl_window_move(Ewl_Window *win, int x, int y)
 	EWL_EMBED(win)->x = x;
 	EWL_EMBED(win)->y = y;
 
-	if (!REALIZED(win))
-		DRETURN(DLEVEL_STABLE);
-#ifdef ENABLE_EWL_SOFTWARE_X11
-	if (strstr(win->render, "x11"))
-		ecore_x_window_move((Ecore_X_Window)win->window, x, y);
-#endif
+	ewl_engine_window_move(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -430,13 +382,7 @@ ewl_window_raise(Ewl_Window *win)
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
-	if (!REALIZED(win))
-		DRETURN(DLEVEL_STABLE);
-
-#ifdef ENABLE_EWL_SOFTWARE_X11
-	if (strstr(win->render, "x11"))
-		ecore_x_window_raise((Ecore_X_Window)win->window);
-#endif
+	ewl_engine_window_raise(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -455,13 +401,7 @@ ewl_window_lower(Ewl_Window *win)
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
-	if (!REALIZED(win))
-		DRETURN(DLEVEL_STABLE);
-
-#ifdef ENABLE_EWL_SOFTWARE_X11
-	if (strstr(win->render, "x11"))
-		ecore_x_window_lower((Ecore_X_Window)win->window);
-#endif
+	ewl_engine_window_lower(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -482,20 +422,16 @@ ewl_window_transient_for(Ewl_Window *win, Ewl_Window *forwin)
 	win->transient = forwin;
 
 	if (forwin && win->window) {
-#ifdef ENABLE_EWL_SOFTWARE_X11
 		if (forwin->window)
-			ecore_x_icccm_transient_for_set((Ecore_X_Window)win->window,
-							(Ecore_X_Window)forwin->window);
+			ewl_engine_window_transient_for(win);
 		else
 			ewl_callback_append(EWL_WIDGET(forwin),
 					    EWL_CALLBACK_REALIZE,
 					    ewl_window_realize_transient_cb,
 					    win);
 	}
-	else if (win->window) {
-		ecore_x_icccm_transient_for_unset((Ecore_X_Window)win->window);
-#endif
-	}
+	else if (win->window) 
+		ewl_engine_window_transient_for(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -513,24 +449,12 @@ ewl_window_keyboard_grab_set(Ewl_Window *win, int grab)
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
-	if (grab) {
+	if (grab)
 		win->flags |= EWL_WINDOW_GRAB_KEYBOARD;
-	}
-	else {
+	else 
 		win->flags &= ~EWL_WINDOW_GRAB_KEYBOARD;
-	}
 
-	/*
-	 * Grab the keyboard if we're realized.
-	 */
-	if (VISIBLE(win) && win->window) {
-#ifdef ENABLE_EWL_SOFTWARE_X11
-		if (grab)
-			ecore_x_keyboard_grab((Ecore_X_Window)win->window);
-		else
-			ecore_x_keyboard_ungrab();
-#endif
-	}
+	ewl_engine_keyboard_grab(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -570,24 +494,12 @@ ewl_window_pointer_grab_set(Ewl_Window *win, int grab)
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
-	if (grab) {
+	if (grab)
 		win->flags |= EWL_WINDOW_GRAB_POINTER;
-	}
-	else {
+	else 
 		win->flags &= ~EWL_WINDOW_GRAB_POINTER;
-	}
 
-	/*
-	 * Grab the pointer if we're realized.
-	 */
-	if (VISIBLE(win) && win->window) {
-#ifdef ENABLE_EWL_SOFTWARE_X11
-		if (grab)
-			ecore_x_pointer_grab((Ecore_X_Window)win->window);
-		else
-			ecore_x_pointer_ungrab();
-#endif
-	}
+	ewl_engine_pointer_grab(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -627,18 +539,12 @@ ewl_window_override_set(Ewl_Window *win, int override)
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
-	if (override) {
+	if (override)
 		win->flags |= EWL_WINDOW_OVERRIDE;
-	}
-	else {
+	else
 		win->flags &= ~EWL_WINDOW_OVERRIDE;
-	}
 
-	if (VISIBLE(win) && win->window) {
-#ifdef ENABLE_EWL_SOFTWARE_X11
-		/* FIXME: Should probably unrealize and re-realize here. */
-#endif
-	}
+	/* FIXME: Should probably unrealize and re-realize here. */
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -680,7 +586,7 @@ ewl_window_dnd_aware_set(Ewl_Window *win)
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
 	win->flags |= EWL_FLAG_PROPERTY_DND_AWARE;
-	if (win->window) ecore_x_dnd_aware_set((Ecore_X_Window)win->window, 1);
+	ewl_engine_window_dnd_aware_set(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -700,18 +606,7 @@ ewl_window_selection_text_set(Ewl_Window *win, const char *txt)
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
-	/* XXX this needs to be SOFTWARE_X11 and GL_X11 */
-#ifdef ENABLE_EWL_SOFTWARE_X11
-	if (ewl_config.evas.engine & EWL_ENGINE_X11)
-	{
-		if (txt) 
-			ecore_x_selection_primary_set(
-					(Ecore_X_Window)win->window, 
-					(unsigned char *)txt, strlen(txt) + 1);
-		else
-			ecore_x_selection_primary_clear();
-	}
-#endif
+	ewl_engine_window_selection_text_set(win, txt);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -728,193 +623,38 @@ void
 ewl_window_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
-	Ewl_Object *o;
-	Evas *evas;
-	Ewl_Embed *embed;
 	Ewl_Window *window;
-	char *render;
-	Evas_Engine_Info *info = NULL;
+	int width, height;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	embed = EWL_EMBED(w);
 	window = EWL_WINDOW(w);
-	o = EWL_OBJECT(w);
-
-	/*
-	 * Determine the type of evas to create.
-	 */
-	render = ewl_config_render_method_get();
-	if (!render)
-		render = strdup("software_x11");
-
-	evas = evas_new();
-	evas_output_method_set(evas, evas_render_method_lookup(render));
-
-	info = evas_engine_info_get(evas);
-	if (!info) {
-		fprintf(stderr, "Unable to use %s engine for rendering, "
-				"falling back to software_x11\n", render);
-		FREE(render);
-		render = strdup("software_x11");
-		evas_output_method_set(evas, evas_render_method_lookup(render));
-		info = evas_engine_info_get(evas);
-	}
-
-	if (!info) {
-		DERROR("No valid engine available\n");
+	window->engine = ewl_engine_new(ewl_config.engine_name);
+	if (!window->engine)
+	{
+		DERROR("Error creating engine ...\n");
 		exit(-1);
 	}
 
-	/*
-	 * Prepare the base rendering region for the evas, such as the X
-	 * window for the X11 based engines, or the surfaces for directfb.
-	 */
-#ifdef ENABLE_EWL_SOFTWARE_X11
-	if (strstr(render, "x11") &&
-			(ewl_engine_mask_get() & EWL_ENGINE_X11)) {
-		int width, height;
-		Ecore_X_Window xwin;
+	ewl_engine_window_new(window);	
+	ewl_engine_window_name_class_set(window);
+	ewl_engine_window_title_set(window);
+	ewl_engine_window_borderless_set(window);
+	ewl_engine_window_dialog_set(window);
+	ewl_engine_window_fullscreen_set(window);
 
-		if (window->flags & EWL_WINDOW_OVERRIDE) {
-			xwin = ecore_x_window_override_new(0, embed->x,
-						  embed->y,
-						  ewl_object_current_w_get(o),
-						  ewl_object_current_h_get(o));
-		}
-		else {
-			xwin = ecore_x_window_new(0, embed->x,
-						  embed->y,
-						  ewl_object_current_w_get(o),
-						  ewl_object_current_h_get(o));
-		}
-
-		ecore_x_icccm_name_class_set(xwin, window->name,
-					     window->classname);
-		ecore_x_icccm_title_set(xwin, window->title);
-		ecore_x_netwm_name_set(xwin, window->title);
-		ecore_x_icccm_protocol_set(xwin,
-					   ECORE_X_WM_PROTOCOL_DELETE_REQUEST,1);
-
-		if (window->flags & EWL_WINDOW_BORDERLESS)
-			ecore_x_mwm_borderless_set(xwin, 1);
-		if (window->flags & EWL_WINDOW_DIALOG)
-			ecore_x_netwm_window_type_set(xwin, 
-						ECORE_X_WINDOW_TYPE_DIALOG);
-		else
-			ecore_x_netwm_window_type_set(xwin,
-						ECORE_X_WINDOW_TYPE_NORMAL);
-
-		if (window->flags & EWL_WINDOW_FULLSCREEN)
-		{
-			Ecore_X_Window_State states[] = 
-					{ECORE_X_WINDOW_STATE_FULLSCREEN};
-
-			ecore_x_netwm_window_state_set(xwin, states, 1);
-		}
-
-		width = ewl_object_maximum_w_get(EWL_OBJECT(window));
-		height = ewl_object_maximum_h_get(EWL_OBJECT(window));
-		if (width == EWL_OBJECT_MAX_SIZE && width == height) {
-			ecore_x_window_geometry_get(0, NULL, NULL, &width,
-						    &height);
-			ewl_object_maximum_size_set(EWL_OBJECT(window),
-						    width, height);
-		}
-		window->window = (void *)xwin;
-
-		if (window->flags & EWL_FLAG_PROPERTY_DND_AWARE) 
-			ecore_x_dnd_aware_set((Ecore_X_Window)window->window, 1);
-	}
-#endif
-
-	/*
-	 * Now perform engine specific info setup. This informs the evas of
-	 * the drawing engine specific info it needs.
-	 */
-#ifdef ENABLE_EWL_GL_X11
-	if (!strcmp(render, "gl_x11") &&
-			(ewl_engine_mask_get() & EWL_ENGINE_GL_X11)) {
-		Evas_Engine_Info_GL_X11 *glinfo;
-
-		glinfo = (Evas_Engine_Info_GL_X11 *)info;
-
-		glinfo->info.display = ecore_x_display_get();
-		glinfo->info.visual = glinfo->func.best_visual_get(
-				glinfo->info.display,
-				DefaultScreen(glinfo->info.display));
-		glinfo->info.colormap = glinfo->func.best_colormap_get(
-				glinfo->info.display,
-				DefaultScreen(glinfo->info.display));
-		glinfo->info.drawable = (Ecore_X_Window)window->window;
-		glinfo->info.depth = glinfo->func.best_depth_get(
-				glinfo->info.display,
-				DefaultScreen(glinfo->info.display));
-	}
-	else
-#endif
-#ifdef ENABLE_EWL_FB
-	if (!strcmp(render, "fb") &&
-			(ewl_engine_mask_get() & EWL_ENGINE_FB)) {
-		Evas_Engine_Info_FB *fbinfo;
-
-		window->window = fbinfo = (Evas_Engine_Info_FB *)info;
-
-		fbinfo->info.virtual_terminal = 0;
-		fbinfo->info.device_number = 0;
-		fbinfo->info.refresh = 0;
-		fbinfo->info.rotation = 0;
-		evas_engine_info_set(evas, (Evas_Engine_Info *)fbinfo);
-		ewl_object_geometry_request(EWL_OBJECT(w), 0, 0, 240, 320);
-	}
-	else
-#endif
-#ifdef ENABLE_EWL_SOFTWARE_X11
-	if (!strcmp(render, "software_x11") && 
-			(ewl_engine_mask_get() & EWL_ENGINE_SOFTWARE_X11)) {
-		Evas_Engine_Info_Software_X11 *sinfo;
-
-		sinfo = (Evas_Engine_Info_Software_X11 *)info;
-
-		sinfo->info.display = ecore_x_display_get();
-		sinfo->info.visual = DefaultVisual(sinfo->info.display,
-				DefaultScreen(sinfo->info.display));
-		sinfo->info.colormap = DefaultColormap(sinfo->info.display,
-				DefaultScreen(sinfo->info.display));
-		sinfo->info.drawable = (Ecore_X_Window)window->window;
-		sinfo->info.depth = DefaultDepth(sinfo->info.display,
-				DefaultScreen(sinfo->info.display));
-		sinfo->info.rotation = 0;
-		if (ewl_config.evas.render_debug)
-			sinfo->info.debug = 1;
-		else
-			sinfo->info.debug = 0;
-	}
-	else
-#endif
+	width = ewl_object_maximum_w_get(EWL_OBJECT(window));
+	height = ewl_object_maximum_h_get(EWL_OBJECT(window));
+	if ((width == EWL_OBJECT_MAX_SIZE) && (width == height))
 	{
-		fprintf(stderr, "No render engine found!!\n"
-				"Please check your configuration if you "
-				"or the config.log from your build to verify "
-				"that some Evas headers were detected.\n");
-		ewl_evas_destroy(evas);
-		DRETURN(DLEVEL_STABLE);
+		ewl_engine_window_geometry_get(window, TRUE, &width, &height);
+		ewl_object_maximum_size_set(EWL_OBJECT(window), width, height);
 	}
+	ewl_engine_window_dnd_aware_set(window);
 
-	evas_engine_info_set(evas, info);
-
-	evas_output_size_set(evas, ewl_object_current_w_get(o),
-			ewl_object_current_h_get(o));
-	evas_output_viewport_set(evas, ewl_object_current_x_get(o),
-			ewl_object_current_y_get(o),
-			ewl_object_current_w_get(o),
-			ewl_object_current_h_get(o));
-
-	ewl_embed_evas_set(embed, evas, window->window);
-	window->render = strdup(render);
-	FREE(render);
+	ewl_engine_canvas_setup(window, ewl_config.evas.render_debug);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -989,7 +729,7 @@ void
 ewl_window_unrealize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
-	Ewl_Object *o;
+	Ewl_Window *win;
 	Ewl_Embed *embed;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -997,18 +737,13 @@ ewl_window_unrealize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	embed = EWL_EMBED(w);
-	o = EWL_OBJECT(w);
+	win = EWL_WINDOW(w);
 
-#ifdef ENABLE_EWL_SOFTWARE_X11
-	if (REALIZED(w) && strstr(EWL_WINDOW(w)->render, "x11")) {
-		ecore_x_window_hide((Ecore_X_Window)embed->evas_window);
-		ecore_x_window_hide((Ecore_X_Window)EWL_WINDOW(w)->window);
-
-		ecore_x_window_del((Ecore_X_Window)embed->evas_window);
-		ecore_x_window_del((Ecore_X_Window)EWL_WINDOW(w)->window);
+	if (REALIZED(w))
+	{
+		ewl_engine_window_hide(win);
+		ewl_engine_window_destroy(win);
 	}
-#endif
-	IF_FREE(EWL_WINDOW(w)->render);
 
 	ewl_evas_destroy(embed->evas);
 	embed->evas = NULL;
@@ -1038,36 +773,16 @@ ewl_window_show_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	if (!win->window)
 		DRETURN(DLEVEL_STABLE);
 
-#ifdef ENABLE_EWL_SOFTWARE_X11
-	if (strstr(win->render, "x11")) {
-		int width, height;
+	ewl_engine_window_borderless_set(win);
+	/*
+	 * Now give the windows the appropriate size
+	 */
+	if (win->flags & EWL_WINDOW_USER_CONFIGURE)
+		win->flags &= ~EWL_WINDOW_USER_CONFIGURE;
+	else    
+		ewl_engine_window_resize(win);
 
-		if (win->flags & EWL_WINDOW_BORDERLESS)
-			ecore_x_mwm_borderless_set((Ecore_X_Window)win->window,
-						   1);
-
-		/*
-		 * Find out how much space the widget accepted.
-		 */
-		width = ewl_object_current_w_get(EWL_OBJECT(w));
-		height = ewl_object_current_h_get(EWL_OBJECT(w));
-
-		/*
-		 * Now give the windows the appropriate size
-		 */
-		if (win->flags & EWL_WINDOW_USER_CONFIGURE)
-			win->flags &= ~EWL_WINDOW_USER_CONFIGURE;
-		else {
-			if (strstr(win->render, "x11"))
-				ecore_x_window_resize((Ecore_X_Window)win->window,
-						      width, height);
-		}
-
-		ecore_x_window_show((Ecore_X_Window)win->window);
-		ecore_x_window_show((Ecore_X_Window)EWL_EMBED(w)->evas_window);
-
-	}
-#endif
+	ewl_engine_window_show(win);
 
 	if (win->flags & EWL_WINDOW_OVERRIDE)
 		ewl_widget_configure(w);
@@ -1088,30 +803,25 @@ ewl_window_expose_cb(Ewl_Widget *w, void *ev __UNUSED__,
 				void *user_data __UNUSED__)
 {
 	Ewl_Window *win;
+	int grabval;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	win = EWL_WINDOW(w);
-#ifdef ENABLE_EWL_SOFTWARE_X11
-	if (win->flags & EWL_WINDOW_GRAB_KEYBOARD) 
-		ecore_x_keyboard_grab((Ecore_X_Window)win->window);
 
-	if (win->flags & EWL_WINDOW_GRAB_POINTER) {
-		int grabval;
+	ewl_engine_keyboard_grab(win);
+	grabval = ewl_engine_pointer_grab(win);
 
-		grabval = ecore_x_pointer_grab((Ecore_X_Window)win->window);
-		if (grabval == GrabNotViewable)
-			printf("GrabNotViewable\n");
-		else if (grabval == AlreadyGrabbed)
-			printf("AlreadyGrabbed\n");
-		else if (grabval == GrabFrozen)
-			printf("GrabFrozen\n");
-		else if (grabval == GrabInvalidTime)
-			printf("GrabInvalidTime\n");
-	}
-#endif
+	if (grabval == GrabNotViewable)
+		printf("GrabNotViewable\n");
+	else if (grabval == AlreadyGrabbed)
+		printf("AlreadyGrabbed\n");
+	else if (grabval == GrabFrozen)
+		printf("GrabFrozen\n");
+	else if (grabval == GrabInvalidTime)
+		printf("GrabInvalidTime\n");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1136,17 +846,12 @@ ewl_window_hide_cb(Ewl_Widget *widget, void *ev_data __UNUSED__,
 
 	win = EWL_WINDOW(widget);
 
-#ifdef ENABLE_EWL_SOFTWARE_X11
-	if (strstr(EWL_WINDOW(widget)->render, "x11")) {
-		ecore_x_window_hide((Ecore_X_Window)EWL_EMBED(win)->evas_window);
-		ecore_x_window_hide((Ecore_X_Window)win->window);
-		if (win->flags & EWL_WINDOW_GRAB_KEYBOARD)
-			ecore_x_keyboard_ungrab();
+	ewl_engine_window_hide(win);
+	if (win->flags & EWL_WINDOW_GRAB_KEYBOARD)
+		ewl_engine_keyboard_ungrab(win);
 
-		if (win->flags & EWL_WINDOW_GRAB_POINTER)
-			ecore_x_pointer_ungrab();
-	}
-#endif
+	if (win->flags & EWL_WINDOW_GRAB_POINTER)
+		ewl_engine_pointer_ungrab(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1217,23 +922,9 @@ ewl_window_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 */
 	if (win->flags & EWL_WINDOW_USER_CONFIGURE)
 		win->flags &= ~EWL_WINDOW_USER_CONFIGURE;
-	else {
-#ifdef ENABLE_EWL_SOFTWARE_X11
-		if (strstr(win->render, "x11"))
-			ecore_x_window_resize((Ecore_X_Window)win->window,
-					      width, height);
-#endif
+	else
+		ewl_engine_window_resize(win);
 
-	}
-
-	if (EWL_EMBED(win)->evas_window != win->window) {
-#ifdef ENABLE_EWL_SOFTWARE_X11
-		if (strstr(win->render, "x11"))
-			ecore_x_window_resize((Ecore_X_Window)
-					EWL_EMBED(win)->evas_window, width,
-					height);
-#endif
-	}
 	evas_output_size_set(EWL_EMBED(win)->evas, width, height);
 	evas_output_viewport_set(EWL_EMBED(win)->evas,
 				 ewl_object_current_x_get(EWL_OBJECT(w)),
@@ -1245,19 +936,7 @@ ewl_window_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 * Do this after the resize to prevent early mapping, and the object
 	 * keeps the bounds respected.
 	 */
-#ifdef ENABLE_EWL_SOFTWARE_X11
-	if (strstr(win->render, "x11")) {
-		ecore_x_icccm_size_pos_hints_set((Ecore_X_Window)win->window,
-						 0, ECORE_X_GRAVITY_NW,
-						 ewl_object_minimum_w_get(EWL_OBJECT(w)),
-						 ewl_object_minimum_h_get(EWL_OBJECT(w)),
-						 ewl_object_maximum_w_get(EWL_OBJECT(w)),
-						 ewl_object_maximum_h_get(EWL_OBJECT(w)),
-						 0, 0, /* base */
-						 0, 0, /* step */
-						 0, 0); /* aspect */
-	}
-#endif
+	ewl_engine_window_min_max_size_set(win);
 	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

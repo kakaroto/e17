@@ -19,7 +19,6 @@ ewl_tree_new(unsigned short columns)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("columns", columns, NULL);
 
 	w = NEW(Ewl_Tree, 1);
 	if (!w)
@@ -52,7 +51,6 @@ ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("tree", tree, FALSE);
-	DCHECK_PARAM_PTR_RET("columns", columns, FALSE);
 
 	if (!ewl_container_init(EWL_CONTAINER(tree)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);

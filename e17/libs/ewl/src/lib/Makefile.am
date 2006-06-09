@@ -31,6 +31,7 @@ EWLHEADERS = \
 	ewl_dialog.h \
 	ewl_dnd.h \
 	ewl_embed.h \
+	ewl_engines.h \
 	ewl_entry.h \
 	ewl_enums.h \
 	ewl_events.h \
@@ -100,6 +101,7 @@ EWLSOURCES= \
 	ewl_dialog.c \
 	ewl_dnd.c \
 	ewl_embed.c \
+	ewl_engines.c \
 	ewl_entry.c \
 	ewl_events.c \
 	ewl_floater.c \

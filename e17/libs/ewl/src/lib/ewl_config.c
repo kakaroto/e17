@@ -7,7 +7,7 @@ enum Ewl_Config_Types
 {
 	EWL_CONFIG_DEBUG_ENABLE,
 	EWL_CONFIG_DEBUG_LEVEL,
-	EWL_CONFIG_EVAS_RENDER_METHOD,
+	EWL_CONFIG_ENGINE_NAME,
 	EWL_CONFIG_EVAS_FONT_CACHE,
 	EWL_CONFIG_EVAS_IMAGE_CACHE,
 	EWL_CONFIG_THEME_NAME,
@@ -57,9 +57,7 @@ ewl_config_shutdown(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	IF_FREE(ewl_config.evas.render_method);
 	IF_FREE(ewl_config.theme.name);
-
 	ecore_config_system_shutdown();
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -178,20 +176,6 @@ ewl_config_float_get(const char *k)
 	DRETURN_FLOAT(v, DLEVEL_STABLE);
 }
 
-/**
- * @return Returns the found render method, default software render.
- * @brief Retrieve the render method of the evas
- */
-char *
-ewl_config_render_method_get(void)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	DRETURN_PTR((ewl_config.evas.render_method ?
-				strdup(ewl_config.evas.render_method) : NULL),
-			DLEVEL_STABLE);
-}
-
 static void
 ewl_config_config_read(void)
 {
@@ -207,7 +191,7 @@ ewl_config_config_read(void)
 	nc.debug.level = ewl_config_int_get("/ewl/debug/level");
 	nc.evas.font_cache = ewl_config_int_get("/ewl/evas/font_cache");
 	nc.evas.image_cache = ewl_config_int_get("/ewl/evas/image_cache");
-	nc.evas.render_method = ewl_config_str_get("/ewl/evas/render_method");
+	nc.engine_name = ewl_config_str_get("/ewl/engine_name");
 	nc.theme.name = ewl_config_str_get("/ewl/theme/name");
 	nc.theme.cache = ewl_config_int_get("/ewl/theme/cache");
 	nc.theme.print_keys = ewl_config_int_get("/ewl/theme/print_keys");
@@ -357,8 +341,8 @@ ewl_config_config_read(void)
 	ewl_config.debug.level = nc.debug.level;
 	ewl_config.evas.font_cache = nc.evas.font_cache;
 	ewl_config.evas.image_cache = nc.evas.image_cache;
-	IF_FREE(ewl_config.evas.render_method);
-	ewl_config.evas.render_method = nc.evas.render_method;
+	IF_FREE(ewl_config.engine_name);
+	ewl_config.engine_name = nc.engine_name;
 	IF_FREE(ewl_config.theme.name);
 	ewl_config.theme.name = nc.theme.name;
 	ewl_config.theme.cache = nc.theme.cache;
@@ -376,7 +360,7 @@ ewl_config_defaults_set(void)
 
 	ecore_config_int_default("/ewl/debug/enable", 0);
 	ecore_config_int_default("/ewl/debug/level", 0);
-	ecore_config_string_default("/ewl/evas/render_method", "software_x11");
+	ecore_config_string_default("/ewl/engine_name", "evas_software_x11");
 	ecore_config_int_default("/ewl/evas/font_cache", 2097152);
 	ecore_config_int_default("/ewl/evas/image_cache", 8388608);
 	ecore_config_theme_default("/ewl/theme/name", "default");
@@ -392,7 +376,7 @@ ewl_config_defaults_set(void)
 		char *keys [] = {
 		    "/ewl/debug/enable",
 		    "/ewl/debug/level",
-		    "/ewl/evas/render_method",
+		    "/ewl/engine_name",
 		    "/ewl/evas/font_cache",
 		    "/ewl/evas/image_cache",
 		    "/ewl/theme/name",
@@ -413,8 +397,8 @@ ewl_config_defaults_set(void)
 		    ewl_config_listener, EWL_CONFIG_DEBUG_ENABLE, NULL);
 		ecore_config_listen("ewl_debug_level", "/ewl/debug/level",
 		    ewl_config_listener, EWL_CONFIG_DEBUG_LEVEL, NULL);
-		ecore_config_listen("ewl_render_method", "/ewl/evas/render_method",
-		    ewl_config_listener, EWL_CONFIG_EVAS_RENDER_METHOD, NULL);
+		ecore_config_listen("ewl_engine_name", "/ewl/engine_name",
+		    ewl_config_listener, EWL_CONFIG_ENGINE_NAME, NULL);
 		ecore_config_listen("ewl_font_cache", "/ewl/evas/font_cache",
 		    ewl_config_listener, EWL_CONFIG_EVAS_FONT_CACHE, NULL);
 		ecore_config_listen("ewl_image_cache", "/ewl/evas/image_cache",
@@ -451,9 +435,9 @@ ewl_config_listener(const char *key,
 			ewl_config.debug.level = ewl_config_int_get(key);
 			break;
 
-		case EWL_CONFIG_EVAS_RENDER_METHOD:
-			IF_FREE(ewl_config.evas.render_method);
-			ewl_config.evas.render_method = ewl_config_str_get(key);
+		case EWL_CONFIG_ENGINE_NAME:
+			IF_FREE(ewl_config.engine_name);
+			ewl_config.engine_name = ewl_config_str_get(key);
 			break;
 
 		case EWL_CONFIG_EVAS_FONT_CACHE:

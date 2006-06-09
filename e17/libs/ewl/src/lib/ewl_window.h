@@ -47,13 +47,12 @@ struct Ewl_Window
 	char           *name; /**< Current name on the provided window */
 	char           *classname; /**< Current class on the provided window */
 
-	 
 	Ewl_Window_Flags flags; /**< Flags indicating window properties */
 
-	char           *render; /**< The render engine in use */
+	void		*engine; /**< The display engine */
 
-	Ewl_Dnd_Types dnd_types;	/**< The dnd type */
-	Ewl_Widget* dnd_last_position;	/**< The last dnd position */
+	Ewl_Dnd_Types 	 dnd_types;	/**< The dnd type */
+	Ewl_Widget 	*dnd_last_position;	/**< The last dnd position */
 };
 
 Ewl_Widget     *ewl_window_new(void);
