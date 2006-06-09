@@ -3713,4 +3713,4 @@ void
 etkpl_timer_del(timer)
       Ecore_Timer * timer
     CODE:
-      ecore_timerdel(timer);
+      ecore_timer_del(timer);

@@ -375,11 +375,23 @@ sub progbar_window_show
 	}
     );
     
+    $pbar1->SignalConnect("destroyed", 
+	sub {
+	    $timer1->Delete();
+	}
+    );
+    
     my $timer2 = Etk::Timer->new(0.025,
 	sub {
 	    $pbar2->Pulse();
 	}
     );
+    
+    $pbar2->SignalConnect("destroyed", 
+	sub {
+	    $timer2->Delete();
+	}
+    );    
     
     $win->Add($vbox);
     $win->ShowAll();    
