@@ -263,6 +263,8 @@ _cb_edit_box(void *data, void *data2)
    cfdata = cfd->cfdata;
    il = cfdata->il;
    s = e_widget_ilist_selected_label_get(il);
+
+   if (!s) return;
    
    for (l = ci->boxes; l; l = l->next) 
      {
