@@ -937,7 +937,7 @@ _mail_set_text(void *data)
 	  {
 	     edje_object_part_text_set(inst->mail->mail_obj, "name", cb->user);
 
-	     snprintf(buf, sizeof(buf), "New: %d", mb->num_new);
+	     snprintf(buf, sizeof(buf), "%d/%d", mb->num_new, mb->num_total);
 	     edje_object_part_text_set(inst->mail->mail_obj, "new_label", buf);
 
 	     edje_object_signal_emit(inst->mail->mail_obj, "new_mail", "");
