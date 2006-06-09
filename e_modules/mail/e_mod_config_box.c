@@ -11,6 +11,7 @@ struct _E_Config_Dialog_Data
    char *host;
    char *user;
    char *pass;
+   char *pass_cp;
    char *new_path;
    char *cur_path;
    char *exec;
@@ -31,6 +32,7 @@ static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Co
 static int _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 static void _type_cb_change(void *data, Evas_Object *obj);
 static void _use_exec_cb_change(void *data, Evas_Object *obj);
+static void _passwd_cb_change(void *data, Evas_Object *obj);
 
 static E_Config_Dialog *prev_dlg;
 static Config_Item *mail_ci;
@@ -61,6 +63,7 @@ static void
 _fill_data(Config_Box *cb, E_Config_Dialog_Data *cfdata) 
 {
    char buf[1024];
+   char *ptr;
    
    if (!cb) 
      {
@@ -89,7 +92,12 @@ _fill_data(Config_Box *cb, E_Config_Dialog_Data *cfdata)
    if (cb->user)
      cfdata->user = strdup(cb->user);
    if (cb->pass)
-     cfdata->pass = strdup(cb->pass);
+     {
+	cfdata->pass = strdup(cb->pass);
+	cfdata->pass_cp = strdup(cb->pass);
+	for (ptr = cfdata->pass; *ptr; ptr++) 
+	  *ptr = '*';
+     }
    if (cb->new_path)
      cfdata->new_path = strdup(cb->new_path);
    if (cb->cur_path)
@@ -111,6 +119,16 @@ _create_data(E_Config_Dialog *cfd)
 static void
 _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
 {
+   E_FREE(cfdata->name);
+   E_FREE(cfdata->port);
+   E_FREE(cfdata->host);
+   E_FREE(cfdata->user);
+   E_FREE(cfdata->pass);
+   E_FREE(cfdata->pass_cp);
+   E_FREE(cfdata->new_path);
+   E_FREE(cfdata->cur_path);
+   E_FREE(cfdata->exec);
+
    free(cfdata);
 }
 
@@ -184,7 +202,8 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    ob = e_widget_label_add(evas, _("Password:"));
    e_widget_frametable_object_append(of, ob, 0, 3, 1, 1, 0, 0, 1, 0);
    ob = e_widget_entry_add(evas, &cfdata->pass);
-   e_widget_entry_password_set(ob, 1);
+   //e_widget_entry_password_set(ob, 1);
+   e_widget_entry_on_change_callback_set(ob, _passwd_cb_change, cfdata);
    e_widget_frametable_object_append(of, ob, 1, 3, 1, 1, 0, 0, 1, 0);
 
    cfdata->new_path_label = e_widget_label_add(evas, _("New Mail Path:"));
@@ -264,7 +283,7 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
    if (cb->pass) evas_stringshare_del(cb->pass);
    if (cfdata->pass != NULL)
-     cb->pass = evas_stringshare_add(cfdata->pass);
+     cb->pass = evas_stringshare_add(cfdata->pass_cp);
    else
      cb->pass = evas_stringshare_add("");
    
@@ -341,4 +360,45 @@ _use_exec_cb_change(void *data, Evas_Object *obj)
    e_widget_disabled_set(cfdata->exec_entry, !cfdata->use_exec);
    if (!cfdata->use_exec)
      e_widget_entry_text_set(cfdata->exec_entry, "");
+}
+
+static void 
+_passwd_cb_change(void *data, Evas_Object *obj) 
+{
+   E_Config_Dialog_Data	*cfdata;
+   int i;
+   char *ptr;
+   
+   cfdata = data;
+
+   if (!cfdata->pass[0])
+     {
+	E_FREE(cfdata->pass_cp);
+	cfdata->pass_cp = strdup("");
+	return;
+     }
+
+   if (strlen(cfdata->pass) > strlen(cfdata->pass_cp))
+     {
+	for (i = 0; i < strlen(cfdata->pass_cp); i++)
+	  cfdata->pass[i] = cfdata->pass_cp[i];
+	E_FREE(cfdata->pass_cp);
+	cfdata->pass_cp = strdup(cfdata->pass);
+     }
+   else if (strlen(cfdata->pass) < strlen(cfdata->pass_cp))
+     {
+	cfdata->pass_cp[strlen(cfdata->pass)] = 0;
+	E_FREE(cfdata->pass);
+	cfdata->pass = strdup(cfdata->pass_cp);
+     }
+   else
+     {
+	E_FREE(cfdata->pass);
+	cfdata->pass = strdup(cfdata->pass_cp);
+     }
+
+   for (ptr = cfdata->pass; *ptr; ptr++) 
+     *ptr = '*';
+   
+   e_widget_entry_text_set(obj, cfdata->pass);
 }
