@@ -10,7 +10,7 @@
 int 		 ewl_dnd_init(void);
 void		 ewl_dnd_shutdown(void);
 
-void 		 ewl_drag_start(Ewl_Widget *w);
+void 		 ewl_dnd_drag_start(Ewl_Widget *w);
 void 		 ewl_dnd_drag_widget_clear(void);
 Ewl_Widget	*ewl_dnd_drag_widget_get(void);
 

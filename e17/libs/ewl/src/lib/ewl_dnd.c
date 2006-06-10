@@ -117,7 +117,7 @@ ewl_dnd_types_for_widget_get(Ewl_Widget *widget)
  * @brief Tells the widget to start dragging
  */
 void
-ewl_drag_start(Ewl_Widget *w) 
+ewl_dnd_drag_start(Ewl_Widget *w) 
 {
 	int width, height;
 

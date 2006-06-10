@@ -3008,7 +3008,7 @@ ewl_widget_drag_move_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 						EWL_FLAG_STATE_DND,
 						EWL_FLAGS_STATE_MASK);
 		
-			ewl_drag_start(ewl_widget_drag_widget);	
+			ewl_dnd_drag_start(ewl_widget_drag_widget);	
 		}
 	}
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
