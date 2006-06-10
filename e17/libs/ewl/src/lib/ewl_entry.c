@@ -3,10 +3,6 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
-static void ewl_entry_keymap_set(void);
-
-static Ecore_Hash *shiftmap = NULL, *keymap = NULL;
-
 /**
  * @return Returns a new Ewl_Widget on success or NULL on failure
  * @brief Create and return a new Ewl_Entry widget
@@ -17,9 +13,6 @@ ewl_entry_new(void)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	if (!keymap)
-		ewl_entry_keymap_set();
 
 	w = NEW(Ewl_Entry, 1);
 	if (!w)
@@ -392,27 +385,11 @@ ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	}
 	else if (event->keyname)
 	{
-		char *tmp = NULL, *v;
+		char *tmp = NULL;
 
 		ewl_entry_selection_clear(e);
-		if (event->modifiers & EWL_KEY_MODIFIER_SHIFT)
-		{
-			v = ecore_hash_get(shiftmap, event->keyname);
-			if (v) 
-				tmp = strdup(v);
-			else if (strlen(event->keyname) == 1)
-			{
-				if (event->keyname[0] > 0x60)
-					event->keyname[0] -= 0x20;
-
-				tmp = strdup(event->keyname);
-			}
-		}
-		else if (strlen(event->keyname) != 1)
-		{
-			v = ecore_hash_get(keymap, event->keyname);
-			if (v) tmp = strdup(v);
-		}
+		if (strlen(event->keyname) != 1 && *event->keyname < 0)
+			tmp = strdup(event->keyname);
 		else
 			tmp = strdup(event->keyname);
 
@@ -674,50 +651,6 @@ ewl_entry_delete_right(Ewl_Entry *e)
 	DCHECK_TYPE("e", e, EWL_ENTRY_TYPE);
 
 	ewl_text_text_delete(EWL_TEXT(e), 1);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-static void
-ewl_entry_keymap_set(void)
-{
-	int i;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	static const char *tmp_shiftmap[] = {
-		"grave", "~", "1", "!", "2", "@",
-		"3", "#", "4", "$", "5", "%",
-		"6", "^", "7", "&", "8", "*",
-		"9", "(", "0", ")", 
-		"minus", "_", "equal", "+", 
-		"bracketleft", "{", "bracketright", "}",
-		"backslash", "|", "semicolon", ":", "apostrophe", "\"",
-		"comma", "<", "period", ">", "slash", "?",
-		NULL, NULL
-	};
-
-	static const char *tmp_keymap[] = {
-		"grave", "`", "minus", "-", "equal", "=",
-		"bracketleft", "[", "bracketright", "]",
-		"backslash", "\\", "semicolon", ";",
-		"apostrophe", "'", "comma", ",",
-		"period", ".", "slash", "/",
-		NULL, NULL
-	};
-
-	shiftmap = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-	keymap = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-	if (!shiftmap) DRETURN(DLEVEL_STABLE);
-	if (!keymap) DRETURN(DLEVEL_STABLE);
-
-	for (i = 0; tmp_shiftmap[i]; i += 2)
-		ecore_hash_set(shiftmap, (char *)tmp_shiftmap[i], 
-					(char *)tmp_shiftmap[i + 1]);
-
-	for (i = 0; tmp_keymap[i]; i += 2)
-		ecore_hash_set(keymap, (char *)tmp_keymap[i],
-					(char *)tmp_keymap[i + 1]);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
