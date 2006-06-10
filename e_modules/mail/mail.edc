@@ -47,6 +47,7 @@ collections
 		    {
 		       state:    "default" 0.0;
 		       aspect: 1.0 1.0;
+		       visible: 1;
 		       rel1 
 			 {
 			    relative: 0.0 0.0;
