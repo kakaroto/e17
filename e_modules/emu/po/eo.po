@@ -1,0 +1,231 @@
+# translation of eo.po to
+# This file is put in the public domain.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Yasufumi Haga <yasufumi.haga@nifty.com>, 2006
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: eo\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-04-30 18:35+0900\n"
+"PO-Revision-Date: 2006-06-08 21:17+0200\n"
+"Last-Translator: \n"
+"Language-Team:  <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Esperanto\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: /usr/portage/distfiles/cvs-src/e_modules/emu\n"
+"X-Generator: KBabel 1.11.2\n"
+
+#: src/modules/emu/border_props.c:55
+#: src/modules/emu_gadcon/border_props.c:55
+msgid "Window properties"
+msgstr "Fenestraj ecoj"
+
+#: src/modules/emu/border_props.c:224
+#: src/modules/emu/border_props.c:279
+#: src/modules/emu_gadcon/border_props.c:224
+#: src/modules/emu_gadcon/border_props.c:279
+msgid "Window identification"
+msgstr "Fenestra identeco"
+
+#: src/modules/emu/border_props.c:225
+#: src/modules/emu/border_props.c:292
+#: src/modules/emu_gadcon/border_props.c:225
+#: src/modules/emu_gadcon/border_props.c:292
+msgid "Title (%T)"
+msgstr "Titolo (%T)"
+
+#: src/modules/emu/border_props.c:231
+#: src/modules/emu/border_props.c:310
+#: src/modules/emu_gadcon/border_props.c:231
+#: src/modules/emu_gadcon/border_props.c:310
+msgid "Properties"
+msgstr "Atributoj"
+
+#: src/modules/emu/border_props.c:232
+#: src/modules/emu/border_props.c:311
+#: src/modules/emu_gadcon/border_props.c:232
+#: src/modules/emu_gadcon/border_props.c:311
+#, c-format
+msgid "Position (%p)"
+msgstr "Pozicio (%p)"
+
+#: src/modules/emu/border_props.c:236
+#: src/modules/emu/border_props.c:315
+#: src/modules/emu_gadcon/border_props.c:236
+#: src/modules/emu_gadcon/border_props.c:315
+#, c-format
+msgid "Size (%s)"
+msgstr "Grandeco (%s)"
+
+#: src/modules/emu/border_props.c:240
+#: src/modules/emu/border_props.c:323
+#: src/modules/emu_gadcon/border_props.c:240
+#: src/modules/emu_gadcon/border_props.c:323
+msgid "Border style (%b)"
+msgstr "Borda stilo (%b)"
+
+#: src/modules/emu/border_props.c:244
+#: src/modules/emu_gadcon/border_props.c:244
+#, c-format
+msgid "Stickiness (%p)"
+msgstr "Glueco (%p)"
+
+#: src/modules/emu/border_props.c:248
+#: src/modules/emu/border_props.c:331
+#: src/modules/emu_gadcon/border_props.c:248
+#: src/modules/emu_gadcon/border_props.c:331
+#, c-format
+msgid "Virtual desktop (%d)"
+msgstr "Virtuala Labortablo (%d)"
+
+#: src/modules/emu/border_props.c:252
+#: src/modules/emu/border_props.c:335
+#: src/modules/emu_gadcon/border_props.c:252
+#: src/modules/emu_gadcon/border_props.c:335
+msgid "Shaded state (%r)"
+msgstr "Ombra stato (%r)"
+
+#: src/modules/emu/border_props.c:256
+#: src/modules/emu/border_props.c:347
+#: src/modules/emu_gadcon/border_props.c:256
+#: src/modules/emu_gadcon/border_props.c:347
+#, c-format
+msgid "Fullscreen (%f)"
+msgstr "Tutekrana (%f)"
+
+#: src/modules/emu/border_props.c:260
+#: src/modules/emu/border_props.c:351
+#: src/modules/emu_gadcon/border_props.c:260
+#: src/modules/emu_gadcon/border_props.c:351
+#, c-format
+msgid "Iconified (%i)"
+msgstr "Piktogramigita (%i)"
+
+#: src/modules/emu/border_props.c:280
+#: src/modules/emu_gadcon/border_props.c:280
+#, fuzzy
+msgid "Window ID (%I)"
+msgstr "Fenestra ID (%i)"
+
+#: src/modules/emu/border_props.c:284
+#: src/modules/emu_gadcon/border_props.c:284
+msgid "Window name (%N)"
+msgstr "Fenestra nomo (%N)"
+
+#: src/modules/emu/border_props.c:288
+#: src/modules/emu_gadcon/border_props.c:288
+#, c-format
+msgid "Window class (%C)"
+msgstr "Fenestra klaso (%C)"
+
+#: src/modules/emu/border_props.c:296
+#: src/modules/emu_gadcon/border_props.c:296
+msgid "Window role (%R)"
+msgstr "Fenestra grado (%R)"
+
+#: src/modules/emu/border_props.c:300
+#: src/modules/emu_gadcon/border_props.c:300
+#, c-format
+msgid "Window type (%S)"
+msgstr "Fenestra tipo (%S)"
+
+#: src/modules/emu/border_props.c:304
+#: src/modules/emu_gadcon/border_props.c:304
+msgid "Transient (%H)"
+msgstr ""
+
+#: src/modules/emu/border_props.c:319
+#: src/modules/emu_gadcon/border_props.c:319
+msgid "Layer (%l)"
+msgstr "Tavolo (%l)"
+
+#: src/modules/emu/border_props.c:327
+#: src/modules/emu_gadcon/border_props.c:327
+#, fuzzy
+msgid "Stickiness (%y)"
+msgstr "Glueco (%y)"
+
+#: src/modules/emu/border_props.c:339
+#: src/modules/emu_gadcon/border_props.c:339
+msgid "Screen zone (%z)"
+msgstr "Ekrana zono (%z)"
+
+#: src/modules/emu/border_props.c:343
+#: src/modules/emu_gadcon/border_props.c:343
+msgid "Window list skip (%w)"
+msgstr ""
+
+#: src/modules/emu/e_mod_config.c:45
+#: src/modules/emu_gadcon/e_mod_config.c:40
+msgid "Emu Configuration"
+msgstr "Emu Konfiguro"
+
+#: src/modules/emu/e_mod_main.c:147
+msgid "Enlightenment Emu Module - version "
+msgstr "Modulo Emu de Enlightenment - versio"
+
+#: src/modules/emu/e_mod_main.c:149
+#: src/modules/emu_gadcon/e_mod_main.c:141
+msgid "Experimental generic scriptable module for E17.<br><br>Keep an eye out for the emu's.<br>Don't even try to run away, they're fast buggers.<br>Hiding in your dunny doesn't help, they can kick dunnies down."
+msgstr ""
+
+#: src/modules/emu/e_mod_main.c:305
+#: src/modules/emu_gadcon/e_mod_main.c:258
+msgid "Enlightenment Emu Module - error"
+msgstr "Modulo Emu de Enlightenment - eraro"
+
+#: src/modules/emu/e_mod_main.c:305
+#: src/modules/emu_gadcon/e_mod_main.c:258
+msgid "There is no emu."
+msgstr "Estas neniu emu."
+
+#: src/modules/emu/e_mod_main.c:650
+#, fuzzy
+msgid "Add face"
+msgstr "Aldonu visagxon"
+
+#: src/modules/emu/e_mod_main.c:652
+#, fuzzy
+msgid "Remove face"
+msgstr "Forigu visagxon"
+
+#: src/modules/emu/e_mod_main.c:655
+msgid "Add row"
+msgstr "Aldonu vicon"
+
+#: src/modules/emu/e_mod_main.c:657
+msgid "Remove row"
+msgstr "Forigu vicon"
+
+#: src/modules/emu/e_mod_main.c:659
+msgid "Add column"
+msgstr "Aldonu kolumnon"
+
+#: src/modules/emu/e_mod_main.c:661
+msgid "Remove column"
+msgstr "Forigu kolumnon"
+
+#: src/modules/emu/e_mod_main.c:667
+msgid "Transparent"
+msgstr "Travidebla"
+
+#: src/modules/emu/e_mod_main.c:673
+msgid "Zoom icons"
+msgstr "Zomu piktogramojn"
+
+#: src/modules/emu/e_mod_main.c:679
+msgid "Stretch bar"
+msgstr ""
+
+#: src/modules/emu/e_mod_main.c:685
+msgid "Cling to edge"
+msgstr ""
+
+#: src/modules/emu_gadcon/e_mod_main.c:139
+msgid "Enlightenment Emu Module - gadcon version "
+msgstr "Modulo Emu de Enlightenment - versio de gadcon"
+

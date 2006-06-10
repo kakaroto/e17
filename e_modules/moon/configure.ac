@@ -18,7 +18,7 @@ if test "$GCC" = "yes"; then
 fi
 AC_PROG_LIBTOOL
 
-ALL_LINGUAS="ja it sv"
+ALL_LINGUAS="eo ja it sv"
 AC_SUBST(ALL_LINGUAS)
 
 AM_GNU_GETTEXT([external]) 

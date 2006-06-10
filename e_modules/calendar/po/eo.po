@@ -1,0 +1,71 @@
+# translation of eo.po to
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: eo\n"
+"Report-Msgid-Bugs-To: olivierweb@ifrance.com\n"
+"POT-Creation-Date: 2006-06-04 19:51+0200\n"
+"PO-Revision-Date: 2006-06-04 19:52+0200\n"
+"Last-Translator: \n"
+"Language-Team:  <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.2\n"
+
+#: src/otherfonts_editor.c:114 src/otherfonts_editor.c:117
+#: src/otherfonts_editor.c:120 src/otherfonts_editor.c:123
+#: src/otherfonts_editor.c:134 src/otherfonts_editor.c:137
+#: src/otherfonts_editor.c:140 src/otherfonts_editor.c:143
+#: src/otherfonts_editor.c:229 src/otherfonts_editor.c:232
+#: src/otherfonts_editor.c:235 src/otherfonts_editor.c:238
+#: src/otherfonts_editor.c:274 src/otherfonts_editor.c:277
+#: src/otherfonts_editor.c:280 src/otherfonts_editor.c:283
+#: src/weekend_editor.c:117 src/weekend_editor.c:120 src/weekend_editor.c:123
+#: src/weekend_editor.c:126 src/weekend_editor.c:137 src/weekend_editor.c:140
+#: src/weekend_editor.c:143 src/weekend_editor.c:146 src/weekend_editor.c:234
+#: src/weekend_editor.c:237 src/weekend_editor.c:240 src/weekend_editor.c:243
+#: src/weekend_editor.c:254 src/weekend_editor.c:257 src/weekend_editor.c:260
+#: src/weekend_editor.c:263 src/today_editor.c:113 src/today_editor.c:116
+#: src/today_editor.c:119 src/today_editor.c:122 src/today_editor.c:133
+#: src/today_editor.c:136 src/today_editor.c:139 src/today_editor.c:142
+#: src/today_editor.c:229 src/today_editor.c:232 src/today_editor.c:235
+#: src/today_editor.c:238 src/today_editor.c:249 src/today_editor.c:252
+#: src/today_editor.c:255 src/today_editor.c:258 src/weekday_editor.c:120
+#: src/weekday_editor.c:123 src/weekday_editor.c:126 src/weekday_editor.c:129
+#: src/weekday_editor.c:140 src/weekday_editor.c:143 src/weekday_editor.c:146
+#: src/weekday_editor.c:149 src/weekday_editor.c:236 src/weekday_editor.c:239
+#: src/weekday_editor.c:242 src/weekday_editor.c:245 src/weekday_editor.c:256
+#: src/weekday_editor.c:259 src/weekday_editor.c:262 src/weekday_editor.c:265
+#, c-format
+msgid "%1.0f"
+msgstr "%1.0f"
+
+#: src/otherfonts_editor.c:242 src/otherfonts_editor.c:245
+#: src/otherfonts_editor.c:248 src/otherfonts_editor.c:251
+#: src/otherfonts_editor.c:254 src/otherfonts_editor.c:257
+#: src/otherfonts_editor.c:260 src/otherfonts_editor.c:263
+#: src/otherfonts_editor.c:287 src/otherfonts_editor.c:291
+#: src/otherfonts_editor.c:295 src/otherfonts_editor.c:299
+#: src/otherfonts_editor.c:303 src/otherfonts_editor.c:307
+#: src/otherfonts_editor.c:311 src/otherfonts_editor.c:315
+#: src/weekend_editor.c:267 src/weekend_editor.c:270 src/weekend_editor.c:273
+#: src/weekend_editor.c:276 src/weekend_editor.c:279 src/weekend_editor.c:282
+#: src/weekend_editor.c:285 src/weekend_editor.c:288 src/main_editor.c:336
+#: src/main_editor.c:345 src/main_editor.c:352 src/today_editor.c:262
+#: src/today_editor.c:265 src/today_editor.c:268 src/today_editor.c:271
+#: src/today_editor.c:274 src/today_editor.c:277 src/today_editor.c:280
+#: src/today_editor.c:283 src/weekday_editor.c:269 src/weekday_editor.c:272
+#: src/weekday_editor.c:275 src/weekday_editor.c:278 src/weekday_editor.c:281
+#: src/weekday_editor.c:284 src/weekday_editor.c:287 src/weekday_editor.c:290
+#, c-format
+msgid "%1.2f"
+msgstr "%1.2f"
+
+#: src/cal_face_func.c:432
+msgid "Edit Mode"
+msgstr "Redaktomoduso"
+
