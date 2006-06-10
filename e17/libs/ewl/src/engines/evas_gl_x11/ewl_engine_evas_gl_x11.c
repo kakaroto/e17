@@ -9,7 +9,7 @@ static void ee_canvas_setup(Ewl_Window *win, int debug);
 
 static Ewl_Engine_Info engine_funcs = {
 		ee_init,
-		NULL,
+		NULL, NULL,
 		NULL, NULL, NULL, NULL,
 		NULL, NULL, NULL, NULL,
 		NULL, NULL, NULL, NULL,

@@ -123,14 +123,12 @@ create_test(Ewl_Container *box)
         o = ewl_button_new();
         ewl_button_label_set(EWL_BUTTON(o), "Add to top pane");
         ewl_callback_append(o, EWL_CALLBACK_CLICKED, ewl_paned_test_cb_add, pane2);
-        ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
         ewl_container_child_append(EWL_CONTAINER(pbox), o);
         ewl_widget_show(o);
 
         o = ewl_button_new();
         ewl_button_label_set(EWL_BUTTON(o), "Add to bottom pane");
         ewl_callback_append(o, EWL_CALLBACK_CLICKED, ewl_paned_test_cb_add, pane3);
-        ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
         ewl_container_child_append(EWL_CONTAINER(pbox), o);
         ewl_widget_show(o);
 

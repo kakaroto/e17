@@ -37,7 +37,7 @@ static Ewl_Engine_Info engine_funcs = {
                 NULL, NULL, NULL, NULL,
                 NULL, NULL, NULL, NULL,
                 NULL, NULL, NULL, NULL,
-                NULL, NULL,
+                NULL, NULL, NULL,
                 ee_canvas_setup
         };
 

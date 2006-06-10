@@ -63,6 +63,7 @@ static void ee_window_borderless_set(Ewl_Window *win);
 static void ee_window_dialog_set(Ewl_Window *win);
 static void ee_window_fullscreen_set(Ewl_Window *win);
 static void ee_window_transient_for(Ewl_Window *win);
+static void ee_window_modal_set(Ewl_Window *win);
 static void ee_window_raise(Ewl_Window *win);
 static void ee_window_lower(Ewl_Window *win);
 static int ee_keyboard_grab(Ewl_Window *win);
@@ -89,6 +90,7 @@ static Ewl_Engine_Info engine_funcs = {
 		ee_window_dialog_set,
 		ee_window_fullscreen_set,
 		ee_window_transient_for,
+		ee_window_modal_set,
 		ee_window_raise,
 		ee_window_lower,
 		ee_keyboard_grab,
@@ -526,6 +528,34 @@ ee_window_transient_for(Ewl_Window *win)
 					(Ecore_X_Window)win->transient->window);
 	else
 		ecore_x_icccm_transient_for_unset((Ecore_X_Window)win->window);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ee_window_modal_set(Ewl_Window *win)
+{
+	int modal;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE); 
+
+	modal = (!!(win->flags & EWL_WINDOW_MODAL));
+
+	if (REALIZED(win))
+		ecore_x_netwm_state_request_send((Ecore_X_Window)win->window,
+					0, ECORE_X_WINDOW_STATE_MODAL,
+					ECORE_X_WINDOW_STATE_UNKNOWN, modal);
+
+	else if (win->window && modal)
+	{
+		Ecore_X_Window_State states[] =
+				{ECORE_X_WINDOW_STATE_MODAL};
+
+		ecore_x_netwm_window_state_set((Ecore_X_Window)win->window,
+								states, 1);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

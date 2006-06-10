@@ -25,7 +25,7 @@ pkg_LTLIBRARIES		= ewl_border.la ewl_box.la ewl_button.la \
 			  ewl_tree.la ewl_table.la ewl_notebook.la \
 			  ewl_scrollpane.la ewl_spinner.la ewl_progressbar.la \
 			  ewl_theme.la ewl_media.la ewl_menu.la ewl_imenu.la \
-			  ewl_widget.la fullscreen.la 
+			  ewl_widget.la fullscreen.la  modal.la
 
 ewl_border_la_SOURCES   = ewl_border.c
 ewl_border_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
@@ -307,6 +307,13 @@ fullscreen_la_LDFLAGS	= -module -avoid-version \
 			  -L$(top_builddir)/src/lib/.libs
 fullscreen_la_DEPENDENCIES = 
 
+modal_la_SOURCES   	= modal.c
+modal_la_LIBADD    	= $(top_builddir)/src/lib/libewl.la
+modal_la_LDFLAGS	= -module -avoid-version \
+			  -L$(top_builddir)/src/lib \
+			  -L$(top_builddir)/src/lib/.libs
+modal_la_DEPENDENCIES = 
+
 FILES = $(ewl_border_la_SOURCES) $(ewl_box_la_SOURCES) \
 	$(ewl_button_la_SOURCES) $(ewl_colordialog_la_SOURCES) \
 	$(ewl_datepicker_la_SOURCES) $(ewl_freebox_la_SOURCES) \
@@ -326,7 +333,8 @@ FILES = $(ewl_border_la_SOURCES) $(ewl_box_la_SOURCES) \
 	$(ewl_progressbar_la_SOURCES) $(ewl_theme_la_SOURCES) \
 	$(ewl_media_la_SOURCES) $(ewl_menu_la_SOURCES) \
 	$(ewl_imenu_la_SOURCES) $(ewl_widget_la_SOURCES) \
-	$(ewl_image_thumbnail_la_SOURCES) $(fullscreen_la_SOURCES)
+	$(ewl_image_thumbnail_la_SOURCES) $(fullscreen_la_SOURCES) \
+	$(modal_la_SOURCES)
 
 EXTRA_DIST = $(FILES)
 

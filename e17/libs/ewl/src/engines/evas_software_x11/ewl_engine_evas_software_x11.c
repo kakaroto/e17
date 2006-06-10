@@ -9,7 +9,7 @@ static int ee_init(Ewl_Engine *engine);
 
 static Ewl_Engine_Info engine_funcs = {
 		ee_init,
-		NULL,
+		NULL, NULL,
 		NULL, NULL, NULL, NULL,
 		NULL, NULL, NULL, NULL,
 		NULL, NULL, NULL, NULL,

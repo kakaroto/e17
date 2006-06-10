@@ -35,6 +35,7 @@ struct Ewl_Engine_Info
 							setting of the window */
 	void (*window_transient_for)(Ewl_Window *win);	/**< Set the window 
 								transient */
+	void (*window_modal_set)(Ewl_Window *win); /**< Set the window modal */
 
 	void (*window_raise)(Ewl_Window *win);	/**< Raise the window */
 	void (*window_lower)(Ewl_Window *win);	/**< Lower the window */
@@ -97,6 +98,7 @@ void		 ewl_engine_window_borderless_set(Ewl_Window *win);
 void		 ewl_engine_window_dialog_set(Ewl_Window *win);
 void		 ewl_engine_window_fullscreen_set(Ewl_Window *win);
 void		 ewl_engine_window_transient_for(Ewl_Window *win);
+void		 ewl_engine_window_modal_set(Ewl_Window *win);
 
 void		 ewl_engine_window_raise(Ewl_Window *win);
 void		 ewl_engine_window_lower(Ewl_Window *win);

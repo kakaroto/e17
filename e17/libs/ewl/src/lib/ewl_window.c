@@ -437,6 +437,32 @@ ewl_window_transient_for(Ewl_Window *win, Ewl_Window *forwin)
 }
 
 /**
+ * @param win: The window to work with
+ * @param modal: The main window
+ * @return Returns no value
+ * @brief Sets the window to modal for @a forwin
+ */
+void
+ewl_window_modal_for(Ewl_Window *win, Ewl_Window *forwin)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+
+	/* make sure the modal window is transient */
+	ewl_window_transient_for(win, forwin);
+
+	if (forwin)
+		win->flags |= EWL_WINDOW_MODAL;
+	else
+		win->flags &= ~EWL_WINDOW_MODAL;
+
+	ewl_engine_window_modal_set(win);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * @param win: the window to change keyboard grab settings.
  * @param grab: TRUE or FALSE to indicate grab state.
  * @return Returns no value.
@@ -644,6 +670,7 @@ ewl_window_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ewl_engine_window_borderless_set(window);
 	ewl_engine_window_dialog_set(window);
 	ewl_engine_window_fullscreen_set(window);
+	ewl_engine_window_modal_set(window);
 
 	width = ewl_object_maximum_w_get(EWL_OBJECT(window));
 	height = ewl_object_maximum_h_get(EWL_OBJECT(window));

@@ -677,6 +677,45 @@ ewl_engine_window_transient_for(Ewl_Window *win)
 /**
  * @param win: the window to work with
  * @return Returns no value
+ * @brief Sets the window modal
+ */
+void
+ewl_engine_window_modal_set(Ewl_Window *win)
+{
+	Ewl_Engine *caller;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	
+	if (!REALIZED(win))
+		DRETURN(DLEVEL_STABLE);
+
+	caller = EWL_ENGINE(win->engine);
+	if (!caller->functions->window_modal_set && caller->dependancies)
+	{
+		Ecore_List *deps;
+
+		deps = caller->dependancies;
+		ecore_list_goto_last(deps);
+		while ((caller = ecore_dlist_previous(deps)))
+		{
+			if (caller->functions->window_modal_set)
+				break;
+		}
+	}
+
+	if (!caller || !caller->functions->window_modal_set)
+		DRETURN(DLEVEL_STABLE);
+
+	caller->functions->window_modal_set(win);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param win: the window to work with
+ * @return Returns no value
  * @brief Raises the window
  */
 void

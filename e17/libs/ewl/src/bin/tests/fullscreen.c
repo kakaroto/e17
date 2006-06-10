@@ -33,7 +33,7 @@ create_test(Ewl_Container *box)
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED, ewl_widget_cb_click, NULL);
 	ewl_widget_show(o);
 
-	emb = ewl_embed_widget_find(box);
+	emb = ewl_embed_widget_find(EWL_WIDGET(box));
 	ewl_window_fullscreen_set(EWL_WINDOW(emb), TRUE);
 
 	return 1;
@@ -45,6 +45,6 @@ ewl_widget_cb_click(Ewl_Widget *w, void *ev, void *data)
 	Ewl_Embed *emb;
 
 	emb = ewl_embed_widget_find(w);
-	ewl_widget_hide(emb);
+	ewl_widget_hide(EWL_WIDGET(emb));
 }
 
