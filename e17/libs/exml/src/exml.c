@@ -27,7 +27,7 @@ EXML *exml_new()
 {
 	EXML *xml;
 
-	xml = (EXML *)malloc(sizeof(EXML));
+	xml = (EXML *) malloc(sizeof(EXML));
 	if (!xml)
 		return NULL;
 
@@ -51,7 +51,7 @@ int exml_init(EXML *xml)
 
 	memset(xml, 0, sizeof(EXML));
 
-	xml->buffers = ecore_hash_new( ecore_direct_hash, ecore_direct_compare );
+	xml->buffers = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 
 	return TRUE;
 }
@@ -68,7 +68,7 @@ int exml_start(EXML *xml)
 
 	CHECK_PARAM_POINTER_RETURN("xml", xml, FALSE);
 
-	if( xml->current == NULL && xml->top )
+	if (xml->current == NULL && xml->top)
 		return FALSE;
 
 	node = exml_node_new();
@@ -79,7 +79,7 @@ int exml_start(EXML *xml)
 
 	/* no sanity check on xml->current pointer */
 
-	if( xml->top == NULL )
+	if (xml->top == NULL)
 		xml->current = xml->top = node;
 	else {
 		ecore_list_append( xml->current->children, node );
@@ -115,7 +115,7 @@ int exml_tag_set(EXML *xml, char *tag)
 	IF_FREE(xml->current->tag);
 
 	xml->current->tag = strdup( tag );
-	if( !xml->current->tag )
+	if (!xml->current->tag)
 		return FALSE;
 
 	return TRUE;
@@ -162,7 +162,7 @@ int exml_value_set(EXML *xml, char *value)
 	IF_FREE(xml->current->value);
 
 	xml->current->value = strdup( value );
-	if( !xml->current->value )
+	if (!xml->current->value)
 		return FALSE;
 
 	return TRUE;
@@ -172,10 +172,11 @@ static void _exml_node_destroy( void *data )
 {
 	EXML_Node *node = data;
 
-	if( node ) {
+	if (node) {
+		ecore_hash_destroy(node->attributes);
 		IF_FREE(node->tag);
 		IF_FREE(node->value);
-		ecore_list_destroy( node->children );
+		ecore_list_destroy(node->children);
 
 		FREE(node);
 	}
@@ -194,19 +195,19 @@ int exml_tag_remove(EXML *xml)
 	CHECK_PARAM_POINTER_RETURN("xml", xml, FALSE);
 
 	n_cur = xml->current;
-	if( !n_cur )
+	if (!n_cur)
 		return FALSE;
 
 	n_cur = n_cur->parent;
 
-	if( n_cur ) {
+	if (n_cur) {
 		EXML_Node *c_parent = n_cur;
 		Ecore_List *c_list = c_parent->children;
 
 		ecore_list_goto( c_list, xml->current );
 		ecore_list_remove_destroy( c_list );
-		if( (n_cur = ecore_list_current( c_list )) == NULL )
-			if( (n_cur = ecore_list_goto_last( c_list )) == NULL )
+		if ((n_cur = ecore_list_current( c_list )) == NULL)
+			if ((n_cur = ecore_list_goto_last( c_list )) == NULL)
 				n_cur = c_parent;
 	} else {
 		/* we're removing the top level node */
@@ -310,13 +311,13 @@ char *exml_goto_node(EXML *xml, EXML_Node *node)
 
 	l = xml->top;
 
-	if( n != l )
+	if (n != l)
 		return NULL;
 
 	while( (n = ecore_list_remove_first(stack)) ) {
 		l = ecore_list_goto(l->children, n);
 
-		if( !l )
+		if (!l)
 			return NULL;
 	}
 
@@ -340,9 +341,9 @@ char *exml_goto(EXML *xml, char *tag, char *value)
 
 	exml_goto_top(xml);
 
-	while( exml_get( xml ) ) {
-		if( !strcmp( tag, exml_tag_get( xml ) ) &&
-				!strcmp( value, exml_value_get( xml ) ) ) {
+	while( exml_get(xml) ) {
+		if (!strcmp(tag, exml_tag_get(xml)) &&
+				!strcmp(value, exml_value_get(xml))) {
 			return exml_tag_get( xml );
 		}
 		exml_next(xml);
@@ -365,15 +366,15 @@ char *exml_next(EXML *xml)
 
 	CHECK_PARAM_POINTER_RETURN("xml", xml, NULL);
 
-	if( xml->current ) {
+	if (xml->current) {
 		parent = xml->current->parent;
 
-		if( parent ) {
+		if (parent) {
 			p_list = parent->children;
 
 			ecore_list_goto( p_list, xml->current );
 			ecore_list_next( p_list );
-			if( (xml->current = ecore_list_current( p_list )) == NULL ) {
+			if ((xml->current = ecore_list_current(p_list)) == NULL) {
 				xml->current = parent;
 				return exml_next(xml);
 			}
@@ -398,16 +399,16 @@ char *exml_next_nomove(EXML *xml)
 
 	CHECK_PARAM_POINTER_RETURN("xml", xml, NULL);
 
-	if( xml->current ) {
+	if (xml->current) {
 		cur = xml->current;
 		parent = cur->parent;
 
-		if( parent ) {
+		if (parent) {
 			p_list = parent->children;
 
 			ecore_list_goto( p_list, xml->current );
 			ecore_list_next( p_list );
-			if( (xml->current = ecore_list_current( p_list )) == NULL ) {
+			if ((xml->current = ecore_list_current(p_list)) == NULL) {
 				xml->current = cur;
 				return NULL;
 			}
@@ -428,7 +429,7 @@ char *exml_down(EXML *xml)
 {
 	CHECK_PARAM_POINTER_RETURN("xml", xml, NULL);
 
-	if( exml_has_children(xml) )
+	if (exml_has_children(xml))
 		xml->current = ecore_list_goto_first( xml->current->children );
 	else
 		return NULL;
@@ -446,7 +447,7 @@ char *exml_up(EXML *xml)
 {
 	CHECK_PARAM_POINTER_RETURN("xml", xml, NULL);
 
-	if( xml->current )
+	if (xml->current)
 		xml->current = xml->current->parent;
 
 	return xml->current ? xml->current->tag : NULL;
@@ -461,7 +462,7 @@ int exml_has_children(EXML *xml)
 {
 	CHECK_PARAM_POINTER_RETURN("xml", xml, FALSE);
 	
-	if( xml->current && xml->current->children )
+	if (xml->current && xml->current->children)
 		return !ecore_list_is_empty(xml->current->children);
 
 	return FALSE;
@@ -505,7 +506,7 @@ void exml_destroy(EXML *xml)
  */
 int exml_file_read(EXML *xml, char *filename)
 {
-	xmlTextReader *reader;
+	xmlTextReaderPtr reader;
 
 	CHECK_PARAM_POINTER_RETURN("xml", xml, FALSE);
 
@@ -523,13 +524,13 @@ int exml_file_read(EXML *xml, char *filename)
  */
 int exml_fd_read(EXML *xml, int fd)
 {
-	xmlTextReader *reader;
+	xmlTextReaderPtr reader;
 
 	CHECK_PARAM_POINTER_RETURN("xml", xml, FALSE);
 
 	reader = xmlReaderForFd( fd, "", NULL, XML_PARSE_RECOVER );
 
-	return _exml_read(xml, reader);
+  return _exml_read(xml, reader);
 }
 
 /**
@@ -542,7 +543,7 @@ int exml_fd_read(EXML *xml, int fd)
  */
 int exml_mem_read(EXML *xml, void *s_mem, size_t len)
 {
-	xmlTextReader *reader;
+	xmlTextReaderPtr reader;
 
 	CHECK_PARAM_POINTER_RETURN("xml", xml, FALSE);
 
@@ -556,34 +557,37 @@ static int _exml_read(EXML *xml, xmlTextReader *reader)
 	int ret, empty;
 	xmlChar *name, *value;
 
-	if( !reader )
+	if (!reader)
 		return -1;
 
 	exml_clear( xml );
 
 	while( (ret = xmlTextReaderRead( reader )) == 1 ) {
-		name = xmlTextReaderName( reader );
-		value = xmlTextReaderValue( reader );
-		empty = xmlTextReaderIsEmptyElement( reader );
+		name = xmlTextReaderName(reader);
+		value = xmlTextReaderValue(reader);
+		empty = xmlTextReaderIsEmptyElement(reader);
 
-		switch( xmlTextReaderNodeType( reader ) ) {
+		switch( xmlTextReaderNodeType(reader) ) {
 			case XML_READER_TYPE_ELEMENT:
 				exml_start(xml);
 				exml_tag_set(xml, (char *) name);
 		
-				if( xmlTextReaderHasAttributes( reader ) ) {
-					xmlTextReaderMoveToFirstAttribute( reader );
+				if (xmlTextReaderHasAttributes(reader)) {
+					xmlTextReaderMoveToFirstAttribute(reader);
 					do {
 						xmlChar *attr_name, *attr_value;
 
-						attr_name = xmlTextReaderName( reader );
-						attr_value = xmlTextReaderValue( reader );
+						attr_name = xmlTextReaderName(reader);
+						attr_value = xmlTextReaderValue(reader);
 
 						exml_attribute_set(xml, (char *) attr_name, (char *) attr_value);
-					} while( xmlTextReaderMoveToNextAttribute( reader ) == 1 );
+
+						xmlFree(attr_name);
+						xmlFree(attr_value);
+					} while( xmlTextReaderMoveToNextAttribute(reader) == 1 );
 				}
 
-				if( !empty )
+				if (!empty)
 					break;
 			case XML_READER_TYPE_END_ELEMENT:
 				exml_end(xml);
@@ -594,9 +598,12 @@ static int _exml_read(EXML *xml, xmlTextReader *reader)
 				exml_value_set(xml, (char *) value);
 				break;
 		}
+		xmlFree(name);
+		xmlFree(value);
 	}
 
-	xmlTextReaderClose( reader );
+	xmlTextReaderClose(reader);
+	xmlFreeTextReader(reader);
 
 	exml_goto_top( xml );
 
@@ -616,7 +623,7 @@ int exml_file_write(EXML *xml, char *filename)
 
 	CHECK_PARAM_POINTER_RETURN("xml", xml, FALSE);
 
-	writer = xmlNewTextWriterFilename( filename, 0 );
+	writer = xmlNewTextWriterFilename(filename, 0);
 
 	return _exml_write(xml, writer);
 }
@@ -665,7 +672,7 @@ void *exml_mem_write(EXML *xml, size_t *len)
 	buf = xmlBufferCreate();
 	writer = xmlNewTextWriterMemory( buf, 0 );
 
-	if( _exml_write(xml, writer) ) {
+	if (_exml_write(xml, writer)) {
 		ecore_hash_set( xml->buffers, (void *) xmlBufferContent( buf ), buf );
 
 		*len = xmlBufferLength( buf );
@@ -689,7 +696,7 @@ void exml_mem_free(EXML *xml, void *ptr)
 
 	CHECK_PARAM_POINTER("xml", xml);
 
-	if( (buf = ecore_hash_get( xml->buffers, ptr )) )
+	if ((buf = ecore_hash_get(xml->buffers, ptr)))
 		xmlBufferFree( buf );
 }
 
@@ -712,7 +719,7 @@ static void _exml_write_element(EXML_Node *node,
 
 	ecore_list_destroy( keys );
 
-	if( node->value )
+	if (node->value)
 		xmlTextWriterWriteString( writer, (xmlChar *) node->value );
 
 	ecore_list_goto_first( node->children );
