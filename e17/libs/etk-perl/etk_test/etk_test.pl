@@ -372,6 +372,8 @@ sub progbar_window_show
 	    
 	    $pbar1->TextSet(sprintf("%.0f%% done", $fraction * 100.0));
 	    $pbar1->FractionSet($fraction);
+	    
+	    return 1;
 	}
     );
     
@@ -384,6 +386,7 @@ sub progbar_window_show
     my $timer2 = Etk::Timer->new(0.025,
 	sub {
 	    $pbar2->Pulse();
+	    return 1;
 	}
     );
     
@@ -416,7 +419,7 @@ sub tree_window_show
     $table->Attach($label, 0, 0, 0, 0, 0, 0, 
 	Etk::FillPolicy::HFill | Etk::FillPolicy::VFill);
     
-    my $tree = Etk::Tree->new();    
+    my $tree = Etk::Tree->new();
     $tree->SizeRequestSet(320, 400);
     $table->AttachDefaults($tree, 0, 0, 1, 1);
     $tree->ModeSet(Etk::Tree::ModeTree);
@@ -448,7 +451,7 @@ sub tree_window_show
 
     for(my $i = 0; $i < 1000; $i++)
     {
-	my $row = $tree->Append();
+	my $row = $tree->Append();      
 	$row->FieldIconEdjeTextSet($col1, Etk::Theme::IconThemeGet(),
 	    "places/user-home_16", "Row1");
 	$row->FieldDoubleSet($col2, 10.0);
@@ -474,13 +477,14 @@ sub tree_window_show
     
     $col2 = Etk::Tree::Col->new($tree, "Column 2",
 	Etk::Tree::Model::Int->new($tree), 90);
+    $col2->SortFuncSet(\&tree_col2_compare_cb, "some_data");
     
     $col3 = Etk::Tree::Col->new($tree, "Column 3",
 	Etk::Tree::Model::Image->new($tree, 
 	    Etk::Tree::Model::Image::FromFile), 90);
     
     $tree->Build();        
-    tree_add_items($tree, 5000);
+    tree_add_items($tree, 500);
     my $frame = Etk::Frame->new("List Actions");
     $table->Attach($frame, 0, 1, 2, 2, 0, 0, 
 	Etk::FillPolicy::HFill | Etk::FillPolicy::VFill);
@@ -491,15 +495,35 @@ sub tree_window_show
     $hbox->PackStart($button);
     
     $button = Etk::Button->new("Add 5 rows");
+    $button->SignalConnect("clicked",
+	sub {
+	    tree_add_items($tree, 5);
+	}
+    );
     $hbox->PackStart($button);
     
     $button = Etk::Button->new("Add 50 rows");
+    $button->SignalConnect("clicked",
+	sub {
+	    tree_add_items($tree, 50);
+	}
+    );    
     $hbox->PackStart($button);
     
     $button = Etk::Button->new("Add 500 rows");
+    $button->SignalConnect("clicked",
+	sub {
+	    tree_add_items($tree, 500);
+	}
+    );    
     $hbox->PackStart($button);
     
     $button = Etk::Button->new("Add 5000 rows");
+    $button->SignalConnect("clicked",
+	sub {
+	    tree_add_items($tree, 5000);
+	}
+    );    
     $hbox->PackStart($button);
     
     $button = Etk::Button->new("Sort");
@@ -507,6 +531,33 @@ sub tree_window_show
             
     $win->Add($table);
     $win->ShowAll();
+}
+
+sub tree_col2_compare_cb
+{
+    my $tree = shift;
+    my $row1 = shift;
+    my $row2 = shift;
+    my $col = shift;
+    my $data = shift;
+    
+    my $v1 = $row1->FieldIntGet($col);
+    my $v2 = $row2->FieldIntGet($col);
+    
+    if ($v1 < $v2)
+    {
+	return -1;
+    }
+    elsif ($v1 > $v2)
+    {
+	return 1;
+    }
+    else
+    {
+	return 0;
+    }
+    
+    return 1;
 }
 
 sub tree_add_items

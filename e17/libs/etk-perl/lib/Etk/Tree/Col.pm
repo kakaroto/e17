@@ -114,7 +114,8 @@ sub Reorder
 sub SortFuncSet
 {
     my $self = shift;
-    # TODO: where do we store the sort callbacks?
+    # shift in callback and data
+    Etk::etk_tree_col_sort_func_set($self->{WIDGET}, shift, shift || undef);
 }
 
 

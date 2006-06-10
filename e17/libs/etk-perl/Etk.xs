@@ -10,184 +10,297 @@
 
 #include "const-c.inc"
 
-typedef struct _Callback_Data Callback_Data;
-struct _Callback_Data
+typedef struct _Callback_Signal_Data Callback_Signal_Data;
+typedef struct _Callback_Tree_Compare_Data Callback_Tree_Compare_Data;
+typedef struct _Callback_Timer_Data Callback_Timer_Data;
+
+/* Carries info for normal signals */
+struct _Callback_Signal_Data
 {
-   char *signal_name;
-   Etk_Object *object;
-   SV * sv;
-   void (*cb)(void);
-   void *data;
+   char       *signal_name;   /* etk signal name */
+   Etk_Object *object;        /* object signal is connected to */
+   SV         *perl_callback; /* perl callback to be called */
+   void       *perl_data;     /* perl data to pass to the perl callback */
+};
+
+/* Carries info for tree (column) compare callback */
+struct _Callback_Tree_Compare_Data
+{
+   Etk_Object *object;          /* the column */
+   SV         *perl_callback;   /* perl function that does the comparison */
+   SV         *perl_data;       /* data to be passed to the above function */
+};
+
+/* Carries info when we have a timer callback */
+struct _Callback_Timer_Data
+{
+   SV *perl_callback; /* the perl callback to call per timer tick */
+   SV *perl_data;     /* data to pass to the perl callback */
 };
 
 static void
 callback_VOID__VOID(Etk_Object *object, void *data)
 {
    dSP;
-   Callback_Data *cbd = NULL;
+   Callback_Signal_Data *cbd = NULL;
 
    cbd = data;
    
    PUSHMARK(SP);
-   XPUSHs(sv_2mortal(newSVsv(cbd->data)));
+   XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));
    PUTBACK ;
       
    /* Call the Perl sub */
-   call_sv(cbd->sv, G_DISCARD);
+   call_sv(cbd->perl_callback, G_DISCARD);
 }
 
 static void
 callback_VOID__INT(Etk_Object *object, int value, void *data)
 {
    dSP;
-   Callback_Data *cbd = NULL;
+   Callback_Signal_Data *cbd = NULL;
 
    cbd = data;
 
    PUSHMARK(SP) ;
    XPUSHs(sv_2mortal(newSViv(value)));
-   XPUSHs(sv_2mortal(newSVsv(cbd->data)));   
+   XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));   
    PUTBACK ;
       
    /* Call the Perl sub */
-   call_sv(cbd->sv, G_DISCARD);
+   call_sv(cbd->perl_callback, G_DISCARD);
 }
 
 static void
 callback_VOID__DOUBLE(Etk_Object *object, double value, void *data)
 {
    dSP;
-   Callback_Data *cbd = NULL;
+   Callback_Signal_Data *cbd = NULL;
 
    cbd = data;
 
    PUSHMARK(SP) ;
    XPUSHs(sv_2mortal(newSVnv(value)));
-   XPUSHs(sv_2mortal(newSVsv(cbd->data)));   
+   XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));   
    PUTBACK ;
 
    /* Call the Perl sub */
-   call_sv(cbd->sv, G_DISCARD);
+   call_sv(cbd->perl_callback, G_DISCARD);
 }
 
 static void
 callback_VOID__POINTER(Etk_Object *object, void *value, void *data)
 {
    dSP;
-   Callback_Data *cbd = NULL;
+   Callback_Signal_Data *cbd = NULL;
 
    cbd = data;
 
    PUSHMARK(SP) ;
    //XPUSHs(sv_2mortal(newSViv(value)));
-   XPUSHs(sv_2mortal(newSVsv(cbd->data)));   
+   XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));   
    PUTBACK ;
       
    /* Call the Perl sub */
-   call_sv(cbd->sv, G_DISCARD);
+   call_sv(cbd->perl_callback, G_DISCARD);
 }
 
 static void
 callback_VOID__POINTER_POINTER(Etk_Object *object, void *val1, void *val2, void *data)
 {
    dSP;
-   Callback_Data *cbd = NULL;
+   Callback_Signal_Data *cbd = NULL;
 
    cbd = data;
 
    PUSHMARK(SP) ;
    //XPUSHs(sv_2mortal(newSViv(value)));
-   XPUSHs(sv_2mortal(newSVsv(cbd->data)));   
+   XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));   
    PUTBACK ;
       
    /* Call the Perl sub */
-   call_sv(cbd->sv, G_DISCARD);
+   call_sv(cbd->perl_callback, G_DISCARD);
 }
 
 static void
 callback_VOID__INT_POINTER(Etk_Object *object, int val1, void *val2, void *data)
 {
    dSP;
-   Callback_Data *cbd = NULL;
+   Callback_Signal_Data *cbd = NULL;
 
    cbd = data;
 
    PUSHMARK(SP) ;
    XPUSHs(sv_2mortal(newSViv(val1)));
-   XPUSHs(sv_2mortal(newSVsv(cbd->data)));   
+   XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));   
    PUTBACK ;
       
    /* Call the Perl sub */
-   call_sv(cbd->sv, G_DISCARD);
+   call_sv(cbd->perl_callback, G_DISCARD);
 }
 
 static void
 callback_BOOL__VOID(Etk_Object *object, void *data)
 {
    dSP;
-   Callback_Data *cbd = NULL;
+   Callback_Signal_Data *cbd = NULL;
 
    cbd = data;
 
    PUSHMARK(SP) ;
-   XPUSHs(sv_2mortal(newSVsv(cbd->data)));   
+   XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));   
    PUTBACK ;
       
    /* Call the Perl sub */
-   call_sv(cbd->sv, G_DISCARD);
+   call_sv(cbd->perl_callback, G_DISCARD);
 }
 
 static void
 callback_BOOL__DOUBLE(Etk_Object *object, double value, void *data)
 {
    dSP;
-   Callback_Data *cbd = NULL;
+   Callback_Signal_Data *cbd = NULL;
 
    cbd = data;
 
    PUSHMARK(SP) ;
    XPUSHs(sv_2mortal(newSVnv(value)));
-   XPUSHs(sv_2mortal(newSVsv(cbd->data)));   
+   XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));   
    PUTBACK ;
       
    /* Call the Perl sub */
-   call_sv(cbd->sv, G_DISCARD);
+   call_sv(cbd->perl_callback, G_DISCARD);
 }
 
 static void
 callback_BOOL__POINTER_POINTER(Etk_Object *object, void *val1, void *val2, void *data)
 {
    dSP;
-   Callback_Data *cbd = NULL;
+   Callback_Signal_Data *cbd = NULL;
 
    cbd = data;
 
    PUSHMARK(SP) ;
    //XPUSHs(sv_2mortal(newSViv(value)));
-   XPUSHs(sv_2mortal(newSVsv(cbd->data)));   
+   XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));   
    PUTBACK ;
       
    /* Call the Perl sub */
-   call_sv(cbd->sv, G_DISCARD);
+   call_sv(cbd->perl_callback, G_DISCARD);
 }
 
-/*
- * TODO: return the return value from the perl callback
- */
 int
 callback_timer(void *data)
 {
    dSP;
    SV* cb;
+   Callback_Timer_Data *cbd;
+   int count;
+   int ret = 0;
    
-   cb = data;   
-   
+   cbd = data;   
    PUSHMARK(SP) ;
+   XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));      
    PUTBACK ;  
    
-   call_sv(cb, G_DISCARD);
-   return 1;
+   count = call_sv(cbd->perl_callback, G_SCALAR);
+
+   SPAGAIN;
+
+   /* if the return value is incorrect, return 0 to end timer */
+   if(count != 1)
+      croak("Improper return value from timer callback!\n");
+   
+   ret = POPi;
+   
+   PUTBACK;
+      
+   return ret;
 }
+
+int
+tree_compare_cb( Etk_Tree * tree, Etk_Tree_Row * row1, Etk_Tree_Row *row2,
+Etk_Tree_Col * col, void * data )
+{
+   dSP;
+   Callback_Tree_Compare_Data *cbd;
+   HV *row1_hv;
+   HV *row2_hv;
+   HV *col_hv;
+   HV *tree_hv;
+   SV *data_sv;
+   SV *row1_rv;
+   SV *row2_rv;
+   SV *col_rv;
+   SV *tree_rv;
+   int count;
+   int ret;   
+
+   ENTER ;
+   SAVETMPS;   
+   
+   cbd = data;
+   
+   tree_hv = (HV*)sv_2mortal((SV*)newHV());
+   row1_hv = (HV*)sv_2mortal((SV*)newHV());
+   row2_hv = (HV*)sv_2mortal((SV*)newHV());
+   col_hv = (HV*)sv_2mortal((SV*)newHV());
+          
+   tree_rv = newRV(newSViv(0));
+   sv_setref_iv(tree_rv, "Etk_WidgetPtr", (IV) tree);
+   tree_hv = newHV();
+   hv_store(tree_hv, "WIDGET", strlen("WIDGET"), tree_rv, 0);
+   row1_rv = newRV(tree_hv);
+   sv_bless(tree_rv, gv_stashpv("Etk::Tree", FALSE));   
+
+   row1_rv = newRV(newSViv(0));
+   sv_setref_iv(row1_rv, "Etk_Tree_RowPtr", (IV) row1);
+   row1_hv = newHV();
+   hv_store(row1_hv, "WIDGET", strlen("WIDGET"), row1_rv, 0);
+   row1_rv = newRV(row1_hv);
+   sv_bless(row1_rv, gv_stashpv("Etk::Tree::Row", FALSE));
+   
+   row2_rv = newRV(newSViv(0));
+   sv_setref_iv(row2_rv, "Etk_Tree_RowPtr", (IV) row2);
+   row2_hv = newHV();
+   hv_store(row2_hv, "WIDGET", strlen("WIDGET"), row2_rv, 0);
+   row2_rv = newRV(row2_hv);
+   sv_bless(row2_rv, gv_stashpv("Etk::Tree::Row", FALSE));
+   
+   col_rv = newRV(newSViv(0));
+   sv_setref_iv(col_rv, "Etk_Tree_ColPtr", (IV) col);
+   col_hv = newHV();
+   hv_store(col_hv, "WIDGET", strlen("WIDGET"), col_rv, 0);
+   col_rv = newRV(col_hv);
+   sv_bless(col_rv, gv_stashpv("Etk::Tree::Col", FALSE));   
+
+   data_sv = newSVsv(cbd->perl_data);   
+   
+   PUSHMARK(SP);  	  
+   XPUSHs(sv_2mortal(tree_rv));
+   XPUSHs(sv_2mortal(row1_rv));
+   XPUSHs(sv_2mortal(row2_rv));	
+   XPUSHs(sv_2mortal(col_rv));
+   XPUSHs(sv_2mortal(data_sv));   
+   PUTBACK;
+
+   count = call_sv(cbd->perl_callback, G_SCALAR);
+   
+   SPAGAIN;
+
+   /* if the return value is incorrect, return 0 to end timer */
+   if(count != 1)
+       croak("Improper return value from timer callback!\n");
+
+   ret = POPi;
+
+   PUTBACK;
+   FREETMPS ;
+   LEAVE ; 
+   
+   return ret;
+}
+
 
 MODULE = Etk		PACKAGE = Etk		
 
@@ -2103,15 +2216,15 @@ etk_signal_connect(signal_name, object, callback, data)
 	SV *            data
 	
 	CODE:	
-	Callback_Data *cbd = NULL;
+	Callback_Signal_Data *cbd = NULL;
 	Etk_Signal *sig = NULL;
 	Etk_Marshaller marsh;
 	
-	cbd = calloc(1, sizeof(Callback_Data));
+	cbd = calloc(1, sizeof(Callback_Signal_Data));
 	cbd->signal_name = strdup(signal_name);
 	cbd->object = object;
-	cbd->data = newSVsv(data);
-	cbd->sv = newSVsv(callback);	
+	cbd->perl_data = newSVsv(data);
+	cbd->perl_callback = newSVsv(callback);	
 	
 	sig = etk_signal_lookup(signal_name, ETK_OBJECT(object)->type);
 	if(!sig) printf("CANT GET SIG!\n");
@@ -2688,6 +2801,20 @@ etk_tree_col_resizable_set(col, resizable)
 
 void
 etk_tree_col_sort_func_set(col, compare_cb, data)
+        Etk_Tree_Col *  col
+        SV * compare_cb
+        SV * data
+      CODE:
+	Callback_Tree_Compare_Data *cbd;
+	
+        cbd = calloc(1, sizeof(Callback_Tree_Compare_Data));
+	cbd->object = col;
+        cbd->perl_data = newSVsv(data);
+        cbd->perl_callback = newSVsv(compare_cb);	
+        etk_tree_col_sort_func_set(col, tree_compare_cb, cbd);
+
+void
+etk_tree_col_sort_func_set2(col, compare_cb, data)
 	Etk_Tree_Col *	col
 	int ( * ) ( Etk_Tree * tree, Etk_Tree_Row * row1, Etk_Tree_Row *row2, Etk_Tree_Col * col, void * data ) compare_cb
 	void *	data
@@ -2945,6 +3072,109 @@ etk_tree_row_field_progress_bar_set(row, col, fraction, t)
 	char         *  t
       CODE:
         etk_tree_row_fields_set(row, col, fraction, t, NULL);
+
+int
+etk_tree_row_field_int_get(row, col)
+        Etk_Tree_Row *  row
+	Etk_Tree_Col *  col
+      CODE:
+	int i;
+        etk_tree_row_fields_get(row, col, &i, NULL);
+        RETVAL = i;
+      OUTPUT:
+        RETVAL
+	
+char *
+etk_tree_row_field_text_get(row, col)
+        Etk_Tree_Row *  row
+	Etk_Tree_Col *  col
+      CODE:
+        char *t;
+        etk_tree_row_fields_get(row, col, &t, NULL);
+        RETVAL = t;
+      OUTPUT:
+        RETVAL
+
+double
+etk_tree_row_field_double_get(row, col)
+        Etk_Tree_Row *  row
+	Etk_Tree_Col *  col
+      CODE:
+	double d;
+        etk_tree_row_fields_get(row, col, &d, NULL);
+        RETVAL = d;
+      OUTPUT:
+        RETVAL
+
+char *
+etk_tree_row_field_image_file_get(row, col)
+        Etk_Tree_Row *  row
+	Etk_Tree_Col *  col
+      CODE:
+	char *image;
+        etk_tree_row_fields_get(row, col, &image, NULL);
+
+void
+etk_tree_row_field_image_edje_get(row, col)
+        Etk_Tree_Row *  row
+	Etk_Tree_Col *  col
+      PPCODE:
+	char *edje;
+	char *group;
+
+        etk_tree_row_fields_get(row, col, &edje, &group, NULL);
+        EXTEND(SP, 2);
+        PUSHs(sv_2mortal(newSVpvn(edje, strlen(edje))));
+        PUSHs(sv_2mortal(newSVpvn(group, strlen(group))));
+
+void
+etk_tree_row_field_icon_file_text_get(row, col)
+        Etk_Tree_Row *  row
+	Etk_Tree_Col *  col
+      PPCODE:
+	char *icon;
+	char *t;
+        etk_tree_row_fields_set(row, col, &icon, &t, NULL);
+        EXTEND(SP, 2);
+        PUSHs(sv_2mortal(newSVpvn(icon, strlen(icon))));
+        PUSHs(sv_2mortal(newSVpvn(t, strlen(t))));
+
+void
+etk_tree_row_field_icon_edje_text_get(row, col)
+        Etk_Tree_Row *  row
+	Etk_Tree_Col *  col
+      PPCODE:
+	char *icon;
+	char *group;
+	char *t;
+        etk_tree_row_fields_get(row, col, &icon, &group, &t, NULL);
+        EXTEND(SP, 3);
+        PUSHs(sv_2mortal(newSVpvn(icon, strlen(icon))));
+        PUSHs(sv_2mortal(newSVpvn(group, strlen(group))));
+        PUSHs(sv_2mortal(newSVpvn(t, strlen(t))));
+	
+int
+etk_tree_row_field_checkbox_get(row, col)
+        Etk_Tree_Row *  row
+	Etk_Tree_Col *  col
+      CODE:
+	int checked;
+        etk_tree_row_fields_get(row, col, &checked, NULL);
+        RETVAL = checked;
+      OUTPUT:
+        RETVAL
+	
+void
+etk_tree_row_field_progress_bar_get(row, col)
+        Etk_Tree_Row *  row
+	Etk_Tree_Col *  col
+      CODE:
+	double fraction;
+	char *t;
+        etk_tree_row_fields_get(row, col, &fraction, &t, NULL);
+        EXTEND(SP, 2);
+        PUSHs(sv_2mortal(newSViv(fraction)));
+        PUSHs(sv_2mortal(newSVpvn(t, strlen(t))));
 
 void
 etk_tree_row_fields_get(row, ...)

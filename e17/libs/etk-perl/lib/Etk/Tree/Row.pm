@@ -140,6 +140,99 @@ sub FieldProgressBarSet
 	$fraction, $text);
 }
 
+sub FieldIntGet
+{
+    my $self = shift;
+    my $col = shift;
+    # RETURNS
+    # int
+    return Etk::etk_tree_row_field_int_get($self->{WIDGET}, $col->{WIDGET});
+}
+
+sub FieldTextGet
+{
+    my $self = shift;
+    my $col = shift;
+    # RETURNS
+    # text
+    return Etk::etk_tree_row_field_text_get($self->{WIDGET}, $col->{WIDGET});
+}
+
+sub FieldDoubleGet
+{
+    my $self = shift;
+    my $col = shift;
+    # RETURNS
+    # double
+    return Etk::etk_tree_row_field_double_get($self->{WIDGET}, $col->{WIDGET});
+}
+
+sub FieldImageFileGet
+{
+    my $self = shift;
+    my $col = shift;
+    # RETURNS
+    # icon
+    # text
+    return Etk::etk_tree_row_field_image_file_get($self->{WIDGET}, 
+	$col->{WIDGET});
+}
+
+sub FieldImageEdjeGet
+{
+    my $self = shift;
+    my $col = shift;
+    # RETURN
+    # edje
+    # group
+    return Etk::etk_tree_row_field_image_edje_get($self->{WIDGET},
+	$col->{WIDGET});
+}
+
+sub FieldIconFileTextGet
+{
+    my $self = shift;
+    my $col = shift;
+    # RETURNS
+    # icon
+    # text
+    return Etk::etk_tree_row_field_icon_file_text_get($self->{WIDGET},
+	$col->{WIDGET});
+}
+
+sub FieldIconEdjeTextGet
+{
+    my $self = shift;
+    my $col = shift;
+    # RETURN
+    # edje
+    # group
+    # text
+    return Etk::etk_tree_row_field_icon_edje_text_get($self->{WIDGET},
+	$col->{WIDGET});
+}
+
+sub FieldCheckboxGet
+{
+    my $self = shift;
+    my $col = shift;
+    # RETURN
+    # checked
+    return Etk::etk_tree_row_field_checkbox_get($self->{WIDGET},
+	$col->{WIDGET});
+}
+
+sub FieldProgressBarGet
+{
+    my $self = shift;
+    my $col = shift;
+    # RETURN
+    # fraction
+    # text
+    return Etk::etk_tree_row_field_progress_bar_get($self->{WIDGET},
+	$col->{WIDGET});
+}
+
 sub FieldsSet
 {
     my $self = shift;
