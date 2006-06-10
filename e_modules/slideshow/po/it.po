@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Slideshow\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-02 18:21+0200\n"
-"PO-Revision-Date: 2006-06-02 18:25+0200\n"
+"POT-Creation-Date: 2006-06-10 13:00+0200\n"
+"PO-Revision-Date: 2006-06-10 13:25+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -39,19 +39,15 @@ msgstr "Directory"
 msgid "Sub-directory to use for backgrounds"
 msgstr "Sottodirectory per gli sfondi"
 
-#: e_mod_main.c:124
+#: e_mod_main.c:130
 msgid "Slideshow"
 msgstr "Slideshow"
 
-#: e_mod_main.c:158
-msgid "Configuration"
-msgstr "Configurazione"
-
-#: e_mod_main.c:355
+#: e_mod_main.c:365
 msgid "Enlightenment Slide Show Module"
 msgstr "Modulo Slideshow di Enlightenment"
 
-#: e_mod_main.c:356
+#: e_mod_main.c:366
 msgid "This module is VERY simple and is used to cycle desktop backgrounds"
 msgstr ""
 "Questo modulo è molto semplice e serve per vedere ciclicamente gli sfondi "
