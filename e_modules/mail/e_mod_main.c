@@ -208,6 +208,8 @@ _gc_shutdown(E_Gadcon_Client *gcc)
 	mb = inst->mboxes->data;
 	if (mb->monitor) ecore_file_monitor_del(mb->monitor);
 	if (mb->server) ecore_con_server_del(mb->server);
+	if (mb->exit_handler) ecore_event_handler_del(mb->exit_handler);
+	mb->exe = NULL;
 	mb->server = NULL;
 	mb->cmd = 0;
 	mb->state = STATE_DISCONNECTED;
@@ -1068,7 +1070,9 @@ _mail_box_deleted(const char *ci_name, const char *box_name)
 			 {
 			    if (mb->monitor) ecore_file_monitor_del(mb->monitor);
 			    if (mb->server) ecore_con_server_del(mb->server);
+			    if (mb->exit_handler) ecore_event_handler_del(mb->exit_handler);
 			    mb->server = NULL;
+			    mb->exe = NULL;
 			    mb->state = STATE_DISCONNECTED;
 			    mb->cmd = 0;
 			    inst->mboxes = evas_list_remove(inst->mboxes, mb);
