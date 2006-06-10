@@ -241,6 +241,9 @@ void 		 ewl_text_double_underline_color_get(Ewl_Text *t, unsigned int *r, unsign
 							unsigned int *b, unsigned int *a,
 							unsigned int idx);
 
+unsigned int 	 ewl_text_utf_char_position_next(const char *text, unsigned int pos);
+unsigned int 	 ewl_text_utf_char_position_prev(const char *text, unsigned int pos);
+
 /**
  * Inherits from Ewl_Widget and extends to provide a trigger for the text
  * widget
