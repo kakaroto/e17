@@ -47,6 +47,10 @@ struct _Instance
    Mail *mail;
    Ecore_Timer *check_timer;
    Evas_List *mboxes;
+
+   Ecore_Event_Handler *add_handler;
+   Ecore_Event_Handler *del_handler;
+   Ecore_Event_Handler *data_handler;
 };
 
 struct _Mail
@@ -104,10 +108,6 @@ static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *conf_item_edd = NULL;
 static E_Config_DD *conf_box_edd = NULL;
 
-static Ecore_Event_Handler *add_handler;
-static Ecore_Event_Handler *del_handler;
-static Ecore_Event_Handler *data_handler;
-
 Config *mail_config = NULL;
 
 static const E_Gadcon_Client_Class _gc_class = 
@@ -152,12 +152,12 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 
    mail_config->instances = evas_list_append(mail_config->instances, inst);
 
-   if (!add_handler)
-     add_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD, _mail_server_add, inst);
-   if (!del_handler)
-     del_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL, _mail_server_del, inst);
-   if (!data_handler)
-     data_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA, _mail_server_data, inst);
+   if (!inst->add_handler)
+     inst->add_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD, _mail_server_add, inst);
+   if (!inst->del_handler)
+     inst->del_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL, _mail_server_del, inst);
+   if (!inst->data_handler)
+     inst->data_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA, _mail_server_data, inst);
    
    if (!ci->boxes) return gcc;
   
@@ -193,12 +193,12 @@ static void
 _gc_shutdown(E_Gadcon_Client *gcc) 
 {
    Instance *inst;
-   
-   if (add_handler) ecore_event_handler_del(add_handler);
-   if (data_handler) ecore_event_handler_del(data_handler);
-   if (del_handler) ecore_event_handler_del(del_handler);
 
    inst = gcc->data;
+   
+   if (inst->add_handler) ecore_event_handler_del(inst->add_handler);
+   if (inst->data_handler) ecore_event_handler_del(inst->data_handler);
+   if (inst->del_handler) ecore_event_handler_del(inst->del_handler);
    if (inst->check_timer) ecore_timer_del(inst->check_timer);
 
    while (inst->mboxes) 
