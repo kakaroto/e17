@@ -952,8 +952,12 @@ _mail_set_text(void *data)
    
    if (count > 0)
      edje_object_signal_emit(inst->mail->mail_obj, "new_mail", "");
-   else
-     edje_object_signal_emit(inst->mail->mail_obj, "no_mail", "");     
+   else 
+     {
+	edje_object_signal_emit(inst->mail->mail_obj, "no_mail", "");
+	edje_object_part_text_set(inst->mail->mail_obj, "name", "");
+	edje_object_part_text_set(inst->mail->mail_obj, "new_label", "");
+     }
 }
 
 static int 
