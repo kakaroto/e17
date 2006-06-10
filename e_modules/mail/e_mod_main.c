@@ -151,13 +151,6 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
      edje_object_signal_emit(inst->mail_obj, "label_passive", "");
 
    mail_config->instances = evas_list_append(mail_config->instances, inst);
-
-   if (!inst->add_handler)
-     inst->add_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD, _mail_server_add, inst);
-   if (!inst->del_handler)
-     inst->del_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL, _mail_server_del, inst);
-   if (!inst->data_handler)
-     inst->data_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA, _mail_server_data, inst);
    
    if (!ci->boxes) return gcc;
   
@@ -181,6 +174,13 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 	  mb->monitor = ecore_file_monitor_add(cb->new_path, _mail_mbox_check, mb);
 	else 
 	  {
+	     if (!inst->add_handler)
+	       inst->add_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD, _mail_server_add, inst);
+	     if (!inst->del_handler)
+	       inst->del_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL, _mail_server_del, inst);
+	     if (!inst->data_handler)
+	       inst->data_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA, _mail_server_data, inst);
+
 	     _mail_cb_check(inst);
 	     if (!inst->check_timer)
 	       inst->check_timer = ecore_timer_add((ci->check_time * 60.0), _mail_cb_check, inst);
@@ -1000,12 +1000,20 @@ _mail_box_added(const char *ci_name, const char *box_name)
 		       mb->state = STATE_DISCONNECTED;
 		       mb->cmd = 0;
 		       inst->mboxes = evas_list_append(inst->mboxes, mb);
+
 		       if (cb->type == MAIL_TYPE_MDIR) 
 			 mb->monitor = ecore_file_monitor_add(cb->new_path, _mail_mdir_check, mb);
 		       else if (cb->type == MAIL_TYPE_MBOX) 
 			 mb->monitor = ecore_file_monitor_add(cb->new_path, _mail_mbox_check, mb);
 		       else 
 			 {
+			    if (!inst->add_handler)
+			      inst->add_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD, _mail_server_add, inst);
+			    if (!inst->del_handler)
+			      inst->del_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL, _mail_server_del, inst);
+			    if (!inst->data_handler)
+			      inst->data_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA, _mail_server_data, inst);
+
 			    _mail_cb_check(inst);
 			    if (!inst->check_timer)
 			      inst->check_timer = ecore_timer_add((ci->check_time * 60.0), _mail_cb_check, inst);
@@ -1041,10 +1049,12 @@ _mail_box_deleted(const char *ci_name, const char *box_name)
 		  cb = d->data;
 		  if ((cb->name) && (box_name)) 
 		    {
-		       if (!strcmp(cb->name, box_name))
-			 found = 1;
+		       if (!strcmp(cb->name, box_name)) 
+			 {
+			    found = 1;
+			    break;
+			 }
 		    }
-		  if (found) break;
 	       }
 	     if (found) 
 	       {
@@ -1057,6 +1067,7 @@ _mail_box_deleted(const char *ci_name, const char *box_name)
 			 (!strcmp(mb->config->name, cb->name))) 
 			 {
 			    if (mb->monitor) ecore_file_monitor_del(mb->monitor);
+			    if (mb->server) ecore_con_server_del(mb->server);
 			    mb->server = NULL;
 			    mb->state = STATE_DISCONNECTED;
 			    mb->cmd = 0;
