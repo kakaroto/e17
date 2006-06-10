@@ -345,10 +345,10 @@ ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	ewl_widget_state_set(EWL_WIDGET(e->cursor), "noblink",
 				EWL_STATE_PERSISTENT);
 
-	if (!event->keyname) {
+	if (!event->keyname)
 		DRETURN(DLEVEL_STABLE);
-	}
-	else if (!strcmp(event->keyname, "Left"))
+
+	if (!strcmp(event->keyname, "Left"))
 		ewl_entry_cursor_move_left(e);
 
 	else if (!strcmp(event->keyname, "Right"))
@@ -388,11 +388,9 @@ ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	}
 	else 
 	{
-		size_t len;
-		
-		len = strlen(event->keyname);
 		ewl_entry_selection_clear(e);
-		if (len == 1 || (len != 1 && *event->keyname < 0))
+
+		if ((strlen(event->keyname) == 1) || (*event->keyname < 0))
 			ewl_text_text_insert(EWL_TEXT(e), event->keyname,
 				ewl_entry_cursor_position_get(
 					EWL_ENTRY_CURSOR(e->cursor)));
