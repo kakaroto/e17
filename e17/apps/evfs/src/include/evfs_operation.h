@@ -32,7 +32,8 @@ typedef enum evfs_operation_response
 
 typedef enum evfs_operation_substatus
 {
-   EVFS_OPERATION_SUBSTATUS_FILE_OVERWRITE
+   EVFS_OPERATION_SUBSTATUS_FILE_OVERWRITE,
+   EVFS_OPERATION_SUBSTATUS_WAIT_AUTH
 } evfs_operation_substatus;
 
 typedef enum evfs_operation_type
@@ -69,6 +70,11 @@ struct evfs_operation
 	
    long id;                     /* A unique id for this op */
    char* misc_str;
+
+   char* ret_str_1; 	/*Miscellaneous strings that may be passed
+			  back as part of an operational response */
+   char* ret_str_2;
+   
    evfs_operation_status status;
    evfs_operation_substatus substatus;
    evfs_operation_wait_type wait_type;

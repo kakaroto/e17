@@ -154,6 +154,11 @@ evfs_io_initialise()
                                  EET_T_INT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_operation_edd, evfs_operation,
 		                                       "misc_str", misc_str, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_operation_edd, evfs_operation,
+		                                       "ret_str_1", misc_str, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_operation_edd, evfs_operation,
+		                                       "ret_str_2", misc_str, EET_T_STRING);
+   
    EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_operation_edd, evfs_operation, "status",
                                  status, EET_T_INT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_operation_edd, evfs_operation,
@@ -663,6 +668,7 @@ evfs_write_command(evfs_connection * conn, evfs_command * command)
      case EVFS_CMD_LIST_DIR:
      case EVFS_CMD_FILE_TEST:
      case EVFS_CMD_FILE_COPY:
+     case EVFS_CMD_FILE_MOVE:
      case EVFS_CMD_FILE_OPEN:
      case EVFS_CMD_FILE_READ:
      case EVFS_CMD_DIRECTORY_CREATE:
@@ -698,6 +704,7 @@ evfs_write_command_client(evfs_client * client, evfs_command * command)
      case EVFS_CMD_LIST_DIR:
      case EVFS_CMD_FILE_TEST:
      case EVFS_CMD_FILE_COPY:
+     case EVFS_CMD_FILE_MOVE:
      case EVFS_CMD_FILE_OPEN:
      case EVFS_CMD_FILE_READ:
      case EVFS_CMD_DIRECTORY_CREATE:

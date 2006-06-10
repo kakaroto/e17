@@ -197,8 +197,11 @@ evfs_handle_command(evfs_client * client, evfs_command * command)
         evfs_handle_file_read_command(client, command);
         break;
      case EVFS_CMD_FILE_COPY:
-        printf("File copy handler\n");
-        evfs_handle_file_copy(client, command, command);
+        evfs_handle_file_copy(client, command, command,0);
+	cleanup_command = 0;
+        break;
+     case EVFS_CMD_FILE_MOVE:
+        evfs_handle_file_copy(client, command, command,1);
 	cleanup_command = 0;
         break;
 

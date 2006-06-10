@@ -11,6 +11,8 @@ long evfs_client_dir_list(evfs_connection * conn, evfs_filereference * file);
 long evfs_client_file_open(evfs_connection * conn, evfs_filereference * file);
 long evfs_client_file_copy(evfs_connection * conn, evfs_filereference * from,
                            evfs_filereference * to);
+long evfs_client_file_move(evfs_connection * conn, evfs_filereference * from,
+                           evfs_filereference * to);
 long evfs_client_file_read(evfs_connection * conn, evfs_filereference * file,
                            int read_size);
 long evfs_client_operation_respond(evfs_connection * conn, long opid,

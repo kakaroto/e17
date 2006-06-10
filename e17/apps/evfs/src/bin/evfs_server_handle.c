@@ -388,7 +388,7 @@ void evfs_handle_directory_create_command(evfs_client* client, evfs_command* com
  */
 void
 evfs_handle_file_copy(evfs_client * client, evfs_command * command,
-                      evfs_command * root_command)
+                      evfs_command * root_command, int move)
 {
    evfs_plugin *plugin;
    evfs_plugin *dst_plugin;
@@ -438,6 +438,7 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
         /*Get the source file size */
         (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_lstat) (command, &file_stat, 0);
 
+	/*Get destination file size*/
         res =
            (*EVFS_PLUGIN_FILE(dst_plugin)->functions->evfs_file_lstat) (command, &dest_stat, 1);
 
@@ -449,6 +450,13 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 		       evfs_filereference_clone(command->file_command.files[0]),
 		       evfs_filereference_clone(command->file_command.files[1]),
 		       file_stat, dest_stat, res);
+
+		  /*If we're a move, queue the delete of this dir..*/
+		  if (move) {
+		       evfs_operation_remove_task_add(EVFS_OPERATION(op), 
+		     	  evfs_filereference_clone(command->file_command.files[0]),
+			  file_stat);
+		  }
 
           } else {
              Ecore_List *directory_list = NULL;
@@ -492,7 +500,7 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
                        //printf("Copy file '%s' to %s\n", file->path, destination_file);
 
                        evfs_handle_file_copy(client, recursive_command,
-                                             root_command);
+                                             root_command, move);
 
                        evfs_cleanup_filereference(file);
                        evfs_cleanup_command(recursive_command,
@@ -500,20 +508,23 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
                     }
                   ecore_list_destroy(directory_list);
 
+		  /*If we're a move, queue the delete of this dir (it should be empty - unless perms denied it....*/
+		  if (move) {
+		       evfs_operation_remove_task_add(EVFS_OPERATION(op), 
+		     	  evfs_filereference_clone(command->file_command.files[0]),
+			  file_stat);
+		  }
+
                }
 
           }
 
-   printf("4\n");
-
-	
         /*Only send '100%' event when we're back at the top, or we aren't recursive */
         if (command == root_command) {
            /*evfs_file_progress_event_create(client, command, root_command, 100,
                                            EVFS_PROGRESS_TYPE_DONE);*/
 
 	   evfs_operation_tasks_print(EVFS_OPERATION(op));
-
 	   evfs_operation_queue_pending_add(EVFS_OPERATION(op));
 
 	}
