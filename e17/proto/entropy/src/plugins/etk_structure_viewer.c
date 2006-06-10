@@ -4,6 +4,7 @@
 #include <limits.h>
 #include <Etk.h>
 #include "etk_progress_dialog.h"
+#include "entropy_etk_context_menu.h";
 
 static int etk_callback_setup = 0;
 static Ecore_Hash* instance_map_hash = NULL;
@@ -103,7 +104,7 @@ static void _etk_structure_viewer_xdnd_drag_drop_cb(Etk_Object *object, void *ev
 		     printf("File is '%s' ---> %p\n", files->files[i], file);
 		     printf("Destination: %s\n", e_event->file->uri);
 
-		     entropy_plugin_filesystem_file_copy(file, e_event->file->uri, instance);
+		     entropy_plugin_filesystem_file_move(file, e_event->file->uri, instance);
 	     }
    } else {
 	   printf("Could not get instance for dropped row!\n");

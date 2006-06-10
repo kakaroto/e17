@@ -23,6 +23,8 @@ Ecore_List *structurelist_get (char *base);
 struct stat *filestat_get (entropy_file_request * request);
 Ecore_List *filelist_get (entropy_file_request * request);
 void entropy_filesystem_file_copy (entropy_generic_file * file, char *path_to, entropy_gui_component_instance * instance);
+void entropy_filesystem_file_move (entropy_generic_file * file, char *path_to, entropy_gui_component_instance * instance);
+
 
 void entropy_filesystem_file_rename (entropy_generic_file * file_from, entropy_generic_file * file_to);
 void entropy_filesystem_operation_respond(long id, int response);
@@ -527,12 +529,12 @@ entropy_plugin_init (entropy_core * core)
   plugin->file_functions.filestat_get = &filestat_get;
   plugin->file_functions.filelist_get = &filelist_get;
   plugin->file_functions.file_copy = &entropy_filesystem_file_copy;
+  plugin->file_functions.file_move = &entropy_filesystem_file_move;
 
   plugin->file_functions.file_rename = &entropy_filesystem_file_rename;
   plugin->file_functions.operation_respond = &entropy_filesystem_operation_respond;
   plugin->file_functions.directory_create = &entropy_filesystem_directory_create;
   plugin->file_functions.file_remove = &entropy_filesystem_file_remove;
-
 
   return base; 
 
@@ -825,6 +827,36 @@ entropy_filesystem_file_copy (entropy_generic_file * file, char *path_to,
   evfs_cleanup_file_uri_path(uri_path_from);
   evfs_cleanup_file_uri_path(uri_path_to);
 }
+
+void
+entropy_filesystem_file_move (entropy_generic_file * file, char *path_to,
+			      entropy_gui_component_instance * instance)
+{
+  evfs_file_uri_path *uri_path_from;
+  evfs_file_uri_path *uri_path_to;
+  char copy_buffer[PATH_MAX];
+  char uri_from[512];
+  char uri_to[512];
+  long id;
+
+
+
+  snprintf (uri_from, 512, "%s://%s/%s", file->uri_base, file->path,
+	    file->filename);
+  snprintf (uri_to, 512, "%s/%s", path_to, file->filename);
+
+  uri_path_from = evfs_parse_uri (uri_from);
+  uri_path_to = evfs_parse_uri (uri_to);
+
+  /*Track the move action */
+  snprintf (copy_buffer, PATH_MAX, "%s%s", uri_from, uri_to);
+  id = evfs_client_file_move (con, uri_path_from->files[0], uri_path_to->files[0]);
+  ecore_hash_set(evfs_dir_requests, (long*)id, instance);
+
+  evfs_cleanup_file_uri_path(uri_path_from);
+  evfs_cleanup_file_uri_path(uri_path_to);
+}
+
 
 
 /*
