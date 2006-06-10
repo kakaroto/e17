@@ -1300,7 +1300,7 @@ etk_image_new_from_file(filename)
 Etk_Widget *
 etk_image_new_from_stock(stock_id, stock_size)
 	Etk_Stock_Id	stock_id
-	Etk_Stock_Size	stock_size
+	int	stock_size
 
 void
 etk_image_set_from_edje(image, edje_filename, edje_group)
@@ -1441,7 +1441,7 @@ etk_menu_item_image_new_with_label(label)
 
 void
 etk_menu_item_image_set(image_item, image)
-	Etk_Menu_Item_Image *	image_item
+	Etk_Widget *	image_item
 	Etk_Widget *	image
 
 Etk_Type *
@@ -1449,7 +1449,7 @@ etk_menu_item_image_type_get()
 
 char *
 etk_menu_item_label_get(menu_item)
-	Etk_Menu_Item *	menu_item
+	Etk_Widget *	menu_item
 
 void
 etk_menu_item_label_set(menu_item, label)
@@ -1514,8 +1514,8 @@ etk_menu_item_set_from_stock(menu_item, stock_id)
 
 void
 etk_menu_item_submenu_set(menu_item, submenu)
-	Etk_Menu_Item *	menu_item
-	Etk_Menu *	submenu
+	Etk_Widget *	menu_item
+	Etk_Widget *	submenu
 
 Etk_Type *
 etk_menu_item_type_get()
@@ -1525,11 +1525,11 @@ etk_menu_new()
 
 void
 etk_menu_popdown(menu)
-	Etk_Menu *	menu
+	Etk_Widget *	menu
 
 void
 etk_menu_popup(menu)
-	Etk_Menu *	menu
+	Etk_Widget *	menu
 
 void
 etk_menu_popup_at_xy(menu, x, y)
@@ -1539,8 +1539,8 @@ etk_menu_popup_at_xy(menu, x, y)
 
 void
 etk_menu_shell_append(menu_shell, item)
-	Etk_Menu_Shell *	menu_shell
-	Etk_Menu_Item *	item
+	Etk_Widget *	menu_shell
+	Etk_Widget *	item
 
 void
 etk_menu_shell_append_relative(menu_shell, item, relative)
@@ -2353,12 +2353,12 @@ etk_statusbar_new()
 
 void
 etk_statusbar_pop(statusbar, context_id)
-	Etk_Statusbar *	statusbar
+	Etk_Widget *	statusbar
 	int	context_id
 
 int
 etk_statusbar_push(statusbar, message, context_id)
-	Etk_Statusbar *	statusbar
+	Etk_Widget *	statusbar
 	char *	message
 	int	context_id
 

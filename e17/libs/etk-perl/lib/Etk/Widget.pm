@@ -26,4 +26,11 @@ sub ShowAll
     Etk::etk_widget_show_all($self->{WIDGET}) if ($self->{WIDGET});
 }
 
+sub PassMouseEventsSet
+{
+    my $self = shift;
+    Etk::etk_widget_pass_mouse_events_set($self->{WIDGET}, shift);
+}
+
+
 1;

@@ -27,6 +27,16 @@ use Etk::Tree::Model::Image;
 use Etk::Tree::Model::Double;
 use Etk::Tree::Model::IconText;
 use Etk::Tree::Model::Checkbox;
+use Etk::Menu;
+use Etk::Menu::Bar;
+use Etk::Menu::Item;
+use Etk::Menu::Item::Image;
+use Etk::Menu::Item::Check;
+use Etk::Menu::Item::Radio;
+use Etk::Menu::Item::Separator;
+use Etk::StatusBar;
+use Etk::Stock;
+
 
 Etk::Init();
 
@@ -119,7 +129,7 @@ my %buttons = (
     },
     
     menu => {
-	label => "menu",
+	label => "Menu",
 	frame => "adv", 
 	cb => \&menu_window_show
     },
@@ -595,8 +605,151 @@ sub tree_add_items
 
 sub menu_window_show
 {
-    print "menu_window_show\n";
+    my $win = Etk::Window->new("Etk-Perl Menu Test");
+    $win->SizeRequestSet(300, 200);
+    my $box = Etk::VBox->new(0, 0);
+
+    my $menubar = Etk::Menu::Bar->new();
+
+    $box->PackStart($menubar, 0, 0);
+
+    my $label = Etk::Label->new("Click me :)");
+    $label->AlignmentSet(0.5, 0.5);
+    $label->PassMouseEventsSet(1);
+
+    $box->PackStart($label);
+
+    my $statusbar = Etk::StatusBar->new();
+
+    $box->PackEnd($statusbar, 0, 0);
+
+    my $menu_item = _menu_test_item_new("File", $menubar, $statusbar);
+    my $menu = Etk::Menu->new();
+    $menu_item->SubmenuSet($menu);
+    _menu_test_stock_item_new("Open", Etk::Stock::DocumentOpen, $menu, $statusbar);
+    _menu_test_stock_item_new("Save", Etk::Stock::DocumentSave, $menu, $statusbar);
+
+    $menu_item = _menu_test_item_new("Edit", $menubar, $statusbar);
+    $menu = Etk::Menu->new();
+    $menu_item->SubmenuSet($menu);
+    _menu_test_stock_item_new("Cut", Etk::Stock::EditCut, $menu, $statusbar);
+    _menu_test_stock_item_new("Copy", Etk::Stock::EditCopy, $menu, $statusbar);
+    _menu_test_stock_item_new("Paste", Etk::Stock::EditPaste, $menu, $statusbar);
+
+    $menu_item = _menu_test_item_new("Help", $menubar, $statusbar);
+    $menu = Etk::Menu->new();
+    $menu_item->SubmenuSet($menu);
+    _menu_test_item_new("About", $menu, $statusbar);
+
+
+   
+   $menu = Etk::Menu->new();
+   $win->SignalConnect("mouse_down", sub { $menu->Popup() });
+
+    _menu_test_stock_item_new("Open", Etk::Stock::DocumentOpen, $menu, $statusbar);
+    _menu_test_stock_item_new("Save", Etk::Stock::DocumentSave, $menu, $statusbar);
+    _menu_seperator_new($menu);
+    _menu_test_stock_item_new("Cut", Etk::Stock::EditCut, $menu, $statusbar);
+    _menu_test_stock_item_new("Copy", Etk::Stock::EditCopy, $menu, $statusbar);
+    _menu_test_stock_item_new("Paste", Etk::Stock::EditPaste, $menu, $statusbar);
+    _menu_seperator_new($menu);
+    $menu_item = _menu_test_item_new("Menu Item Test", $menu, $statusbar);
+
+    # Sub menu 1
+
+    my $submenu1 = Etk::Menu->new();
+    $menu_item->SubmenuSet($submenu1);
+
+    _menu_test_stock_item_new("Item with image", Etk::Stock::DocumentSave, $submenu1, $statusbar);
+
+    $menu_item = _menu_test_stock_item_new("Item with child", Etk::Stock::DocumentOpen, $submenu1, $statusbar);
+    _menu_seperator_new($submenu1);
+    _menu_test_check_item_new("Item with check 1", $submenu1, $statusbar);
+    _menu_test_check_item_new("Item with check 2", $submenu1, $statusbar);
+    _menu_seperator_new($submenu1);
+    
+    # TODO pending Radio implementation
+    # radio_item = _etk_test_menu_radio_item_new(_("Radio 1"), NULL, ETK_MENU_SHELL(menu));
+    # radio_item = _etk_test_menu_radio_item_new(_("Radio 2"), ETK_MENU_ITEM_RADIO(radio_item), ETK_MENU_SHELL(menu));
+    # _etk_test_menu_radio_item_new(_("Radio 3"), ETK_MENU_ITEM_RADIO(radio_item), ETK_MENU_SHELL(menu));
+
+    # Sub menu 2
+    my $submenu2 = Etk::Menu->new();
+    $menu_item->SubmenuSet($submenu2);
+    _menu_test_item_new("Child Menu Test", $submenu2, $statusbar);
+
+    $win->Add($box);
+    $win->ShowAll();
 }
+
+sub _menu_test_item_new
+{
+    my ($label, $menubar, $statusbar) = @_;
+    my $menu_item = Etk::Menu::Item->new($label);
+    $menubar->Append($menu_item);
+    $menu_item->SignalConnect("selected", 
+    	sub { $statusbar->Push($menu_item->LabelGet(), 0) });
+    $menu_item->SignalConnect("deselected", 
+    	sub { $statusbar->Pop(0) });
+
+    return $menu_item;
+}
+
+sub _menu_test_stock_item_new
+{
+    my ($label, $stockid, $menubar, $statusbar) = @_;
+
+    my $menu_item = Etk::Menu::Item::Image->new($label);
+    my $image = Etk::Image->new_from_stock($stockid, Etk::Stock::SizeSmall); # ETK_STOCK_SMALL
+    $menu_item->ImageSet($image);
+    $menubar->Append($menu_item);
+    $menu_item->SignalConnect("selected", 
+    	sub { $statusbar->Push($menu_item->LabelGet(), 0) });
+    $menu_item->SignalConnect("deselected", 
+    	sub { $statusbar->Pop(0) });
+
+    return $menu_item;
+
+}
+
+sub _menu_test_check_item_new
+{
+    my ($label, $menubar, $statusbar) = @_;
+
+    my $menu_item = Etk::Menu::Item::Check->new($label);
+    $menubar->Append($menu_item);
+    $menu_item->SignalConnect("selected", 
+    	sub { $statusbar->Push($menu_item->LabelGet(), 0) });
+    $menu_item->SignalConnect("deselected", 
+    	sub { $statusbar->Pop(0) });
+
+    return $menu_item;
+
+}
+
+sub _menu_test_radio_item_new
+{
+    my ($label, $menubar, $statusbar) = @_;
+
+    my $menu_item = Etk::Menu::Item::Radio->new($label);
+    $menubar->Append($menu_item);
+    $menu_item->SignalConnect("selected", 
+    	sub { $statusbar->Push($menu_item->LabelGet(), 0) });
+    $menu_item->SignalConnect("deselected", 
+    	sub { $statusbar->Pop(0) });
+
+    return $menu_item;
+
+}
+
+sub _menu_seperator_new
+{
+    my ($menubar) = @_;
+    my $menu_item = Etk::Menu::Item::Separator->new();
+    $menubar->Append($menu_item);
+    return $menu_item;
+}
+
 
 sub combobox_window_show
 {
