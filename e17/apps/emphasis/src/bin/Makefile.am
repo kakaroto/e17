@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 AM_CFLAGS = \
--Wall -g -Wno-unused -D_GNU_SOURCE
+-Wall -g -Wno-unused -D_GNU_SOURCE $(my_includes)
 
 bin_PROGRAMS = emphasis
 
