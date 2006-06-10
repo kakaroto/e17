@@ -19,5 +19,13 @@ sub SignalConnect
     bless($self->{WIDGET}, $type);
 }
 
+sub DataGet
+{
+    my $self = shift;
+    my $key = shift;
+    return undef unless $key;
+    return Etk::etk_object_data_get($self->{WIDGET}, $key);
+}
+
 1;
 
