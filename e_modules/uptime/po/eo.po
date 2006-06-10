@@ -1,0 +1,31 @@
+# translation of eo.po to
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: eo\n"
+"Report-Msgid-Bugs-To: olivierweb@ifrance.com\n"
+"POT-Creation-Date: 2006-06-04 20:33+0200\n"
+"PO-Revision-Date: 2006-06-04 20:34+0200\n"
+"Last-Translator: \n"
+"Language-Team:  <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.2\n"
+
+#: e_mod_config.c:77
+#, c-format
+msgid "%1.0f seconds"
+msgstr "%1.0f sekundoj"
+
+#: e_mod_main.c:183 e_mod_main.c:272
+msgid "Configuration"
+msgstr "Konfiguraĵo"
+
+#: e_mod_main.c:277
+msgid "Edit Mode"
+msgstr "Redaktomoduso"
+
