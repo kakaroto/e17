@@ -9,39 +9,54 @@ typedef struct Ewl_Engine Ewl_Engine;
 typedef struct Ewl_Engine_Info Ewl_Engine_Info;
 struct Ewl_Engine_Info
 {
-	int  (*init)(Ewl_Engine *engine);			/**< Initialize the engine */
-	void (*shutdown)(Ewl_Engine *engine);			/**< Shutdown the engine */
+	int  (*init)(Ewl_Engine *engine);	/**< Initialize the engine */
+	void (*shutdown)(Ewl_Engine *engine);	/**< Shutdown the engine */
 
-	void (*window_new)(Ewl_Window *win);			/**< Create the window */
-	void (*window_destroy)(Ewl_Window *win);		/**< Destroy the window */
+	void (*window_new)(Ewl_Window *win);	/**< Create the window */
+	void (*window_destroy)(Ewl_Window *win);/**< Destroy the window */
 
-	void (*window_move)(Ewl_Window *win);			/**< Move the window to the given location */
-	void (*window_resize)(Ewl_Window *win);			/**< Resize the window */
-	void (*window_min_max_size_set)(Ewl_Window *win);	/**< Set the window min and max sizes */
-	void (*window_show)(Ewl_Window *win);			/**< Show the window */
-	void (*window_hide)(Ewl_Window *win);			/**< Hide the window */
+	void (*window_move)(Ewl_Window *win);	/**< Move the window to 
+							the given location */
+	void (*window_resize)(Ewl_Window *win);	/**< Resize the window */
+	void (*window_min_max_size_set)(Ewl_Window *win); /**< Set the min 
+							       and max sizes */
+	void (*window_show)(Ewl_Window *win);	/**< Show the window */
+	void (*window_hide)(Ewl_Window *win);	/**< Hide the window */
 
-	void (*window_title_set)(Ewl_Window *win);		/**< Set the window title */
-	void (*window_name_class_set)(Ewl_Window *win);		/**< Set the window name/class */
+	void (*window_title_set)(Ewl_Window *win); /**< Set the window title */
+	void (*window_name_class_set)(Ewl_Window *win);	/**< Set the window 
+								name/class */
 
-	void (*window_borderless_set)(Ewl_Window *win);		/**< Set the borderless state of the window */
-	void (*window_dialog_set)(Ewl_Window *win);		/**< Set the dialog setting of the window */
-	void (*window_fullscreen_set)(Ewl_Window *win);		/**< Set the fullscreen setting of the window */
-	void (*window_transient_for)(Ewl_Window *win);		/**< Set the window transient */
+	void (*window_borderless_set)(Ewl_Window *win);	/**< Set the borderless 
+							 state of the window */
+	void (*window_dialog_set)(Ewl_Window *win);	/**< Set the dialog 
+						       setting of the window */
+	void (*window_fullscreen_set)(Ewl_Window *win);	/**< Set the fullscreen 
+							setting of the window */
+	void (*window_transient_for)(Ewl_Window *win);	/**< Set the window 
+								transient */
 
-	void (*window_raise)(Ewl_Window *win);			/**< Raise the window */
-	void (*window_lower)(Ewl_Window *win);			/**< Lower the window */
+	void (*window_raise)(Ewl_Window *win);	/**< Raise the window */
+	void (*window_lower)(Ewl_Window *win);	/**< Lower the window */
 
-	int  (*keyboard_grab)(Ewl_Window *win);				/**< Set the keyboard grab */
-	void  (*keyboard_ungrab)(Ewl_Window *win);			/**< Set the keyboard ungrab */
-	int  (*pointer_grab)(Ewl_Window *win);				/**< Set the pointer grab */
-	void  (*pointer_ungrab)(Ewl_Window *win);			/**< Set the pointer ungrab */
+	int  (*keyboard_grab)(Ewl_Window *win);	/**< Set the keyboard grab */
+	void  (*keyboard_ungrab)(Ewl_Window *win); /**< Set the keyboard 
+							ungrab */
+	int  (*pointer_grab)(Ewl_Window *win);	/**< Set the pointer grab */
+	void  (*pointer_ungrab)(Ewl_Window *win); /**< Set the pointer 
+							ungrab */
 
-	void (*window_selection_text_set)(Ewl_Window *win, const char *txt);	/**< Set the selection text */
-	void (*window_geometry_get)(Ewl_Window *win, int *width, int *height); /**< Get the window geometry */
-	void (*window_dnd_aware_set)(Ewl_Window *win);		/**< Set the window dnd aware */
+	void (*window_selection_text_set)(Ewl_Window *win, 
+					const char *txt); /**< Set the 
+							   selection text */
+	void (*window_geometry_get)(Ewl_Window *win, 
+				int *width, int *height); /**< Get the window 
+								geometry */
+	void (*window_dnd_aware_set)(Ewl_Window *win);	 /**< Set the window 
+								dnd aware */
 
-	void (*canvas_setup)(Ewl_Window *win, int debug);	/**< Setup the render canvas */
+	void (*canvas_setup)(Ewl_Window *win, int debug); /**< Setup the 
+						         render canvas */
 };
 
 struct Ewl_Engine
