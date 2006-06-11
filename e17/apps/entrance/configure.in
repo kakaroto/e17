@@ -10,10 +10,10 @@ AM_PROG_CC_STDC
 AC_HEADER_STDC
 
 if test "x${prefix}" = "xNONE"; then
-	AC_DEFINE_UNQUOTED(PREFIX, "/usr/local", [Install prefix])
-else
-	AC_DEFINE_UNQUOTED(PREFIX, "${prefix}", [Install prefix])
+	prefix="${ac_default_prefix}"
 fi
+
+AC_DEFINE_UNQUOTED(PREFIX, "${prefix}", [Install prefix])
 
 AC_EXPAND_DIR(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}")
 AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "$PACKAGE_DATA_DIR", [Shared data directory])
