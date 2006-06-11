@@ -179,7 +179,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
    ob = e_widget_label_add(evas, _("Use SSL:"));
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 0, 0, 1, 0);   
-   ob = e_widget_check_add(evas, _(""), &(cfdata->ssl));
+   ob = e_widget_check_add(evas, "", &(cfdata->ssl));
    e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 0, 0, 1, 0);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
    
