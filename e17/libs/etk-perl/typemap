@@ -11,7 +11,7 @@ Etk_Color					T_OPAQUE_STRUCT
 Etk_Colorpicker *				T_PTROBJ
 Etk_Colorpicker_Mode				T_PTROBJ
 Etk_Combobox *					T_PTROBJ
-Etk_Combobox_Column_Type			T_PTROBJ
+Etk_Combobox_Column_Type			T_IV
 Etk_Combobox_Item *				T_PTROBJ
 Etk_Constructor   				T_PTROBJ
 Etk_Container *					T_PTROBJ
@@ -63,7 +63,7 @@ Etk_Size *					T_PTROBJ
 Etk_Statusbar *					T_PTROBJ
 Etk_Stock_Id					T_IV
 Etk_Stock_Id *					T_PTROBJ
-Etk_Stock_Size					T_PTROBJ
+Etk_Stock_Size					T_IV
 Etk_Stock_Size *				T_PTROBJ
 Etk_String *					T_PTROBJ
 Etk_Table *					T_PTROBJ

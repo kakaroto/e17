@@ -3,11 +3,28 @@ use strict;
 use vars qw(@ISA);
 require Etk::Widget;
 @ISA = ("Etk::Widget");
+
+use constant
+{
+    ColumnTypeLabel => 0,
+    ColumnTypeImage => 1,
+    ColumnTypeOther => 2
+};
+
 sub new
 {
     my $class = shift;
     my $self = $class->SUPER::new();
     $self->{WIDGET} = Etk::etk_combobox_new();
+    bless($self, $class);
+    return $self;
+}
+
+sub new_default
+{
+    my $class = shift;
+    my $self = $class->SUPER::new();
+    $self->{WIDGET} = Etk::etk_combobox_new_default();
     bless($self, $class);
     return $self;
 }
@@ -31,11 +48,12 @@ sub ColumnAdd
     my $col_type = shift;
     my $size = shift;
     my $expand = shift;
+    my $hfill = shift;    
     my $vfill = shift;
     my $xalign = shift;
     my $yalign = shift;
     Etk::etk_combobox_column_add($self->{WIDGET}, $col_type, $size, $expand,
-	$vfill, $xalign, $yalign);
+	$hfill, $vfill, $xalign, $yalign);
 }
 
 sub Build
@@ -54,52 +72,111 @@ sub ActiveItemSet
 sub ActiveItemGet
 {
     my $self = shift;
-    return Etk::etk_combobox_active_item_get($self->{WIDGET});
+    my $item = Etk::Combobox::Item->new();
+    $item->{WIDGET} =  Etk::etk_combobox_active_item_get($self->{WIDGET});
+    return $item;
 }
 
 sub NthItemGet
 {
     my $self = shift;
-    my $item = shift;
-    return Etk::etk_combobox_nth_item_get($self->{WIDGET}, $item);
+    my $n = shift;
+    my $item = Etk::Combobox::Item->new();
+    $item->{WIDGET} = Etk::etk_combobox_nth_item_get($self->{WIDGET}, $n);
+    return $item;
 }
 
 sub ItemPrepend
 {
-    # TODO: make this work with as many items as we want
     my $self = shift;
-    my $item = shift;
+    my $item = Etk::Combobox::Item->new();
+    my @args;
     
-    Etk::etk_combobox_prepend($self->{WIDGET}, $item->{WIDGET});
+    for my $arg (@_)
+    {
+	if($arg->isa("Etk::Widget"))
+	{
+	    push @args, $arg->{WIDGET};
+	}
+	else
+	{
+	    push @args, $arg;
+	}
+    }    
+    $item->{WIDGET} = Etk::etk_combobox_prepend_complex($self->{WIDGET},
+	@args);
+    return $item;
 }
 
 sub ItemAppend
 {
-    # TODO: make this work with as many items as we want
     my $self = shift;
-    my $item = shift;
+    my $item = Etk::Combobox::Item->new();
+    my @args;
     
-    Etk::etk_combobox_append($self->{WIDGET}, $item->{WIDGET});
+    for my $arg (@_)
+    {
+	if($arg->isa("Etk::Widget"))
+	{
+	    push @args, $arg->{WIDGET};
+	}
+	else
+	{
+	    push @args, $arg;
+	}
+    }
+    
+    $item->{WIDGET} = Etk::etk_combobox_item_append_complex($self->{WIDGET},
+	@args);
+    return $item;
 }
 
 sub ItemPrependRelative
 {
-    # TODO: make this work with as many items as we want
     my $self = shift;
     my $relative = shift;
-    my $item = shift;
+    my $item = Etk::Combobox::Item->new();
+    my @args;
     
-    Etk::etk_combobox_prepend_relative($self->{WIDGET}, $relative->{WIDGET}, $item->{WIDGET});
+    for my $arg (@_)
+    {
+	if($arg->isa("Etk::Widget"))
+	{
+	    push @args, $arg->{WIDGET};
+	}
+	else
+	{
+	    push @args, $arg;
+	}
+    }
+        
+    $item->{WIDGET} = Etk::etk_combobox_prepend_relative_complex(
+	$self->{WIDGET}, $relative->{WIDGET}, @args);
+    return $item;
 }
 
 sub ItemAppendRelative
 {
-    # TODO: make this work with as many items as we want
     my $self = shift;
     my $relative = shift;
-    my $item = shift;
+    my $item = Etk::Combobox::Item->new();
+    my @args;
     
-    Etk::etk_combobox_append_relative($self->{WIDGET}, $relative->{WIDGET}, $item->{WIDGET});
+    for my $arg (@_)
+    {
+	if($arg->isa("Etk::Widget"))
+	{
+	    push @args, $arg->{WIDGET};
+	}
+	else
+	{
+	    push @args, $arg;
+	}
+    }
+        
+    $item->{WIDGET} = Etk::etk_combobox_append_relative_complex(
+	$self->{WIDGET}, $relative->{WIDGET}, @args);
+    return $item;
 }
 
 sub ItemRemove

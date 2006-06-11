@@ -1,24 +1,40 @@
 use strict;
 use POSIX;
 use Etk;
-use Etk::Main;
-use Etk::Window;
-use Etk::VBox;
-use Etk::HBox;
-use Etk::Frame;
 use Etk::Button;
 use Etk::CheckButton;
-use Etk::ToggleButton;
+use Etk::Colorpicker;
+use Etk::Combobox;
+use Etk::Combobox::Item;
 use Etk::Entry;
+use Etk::FillPolicy;
+use Etk::Frame;
+use Etk::HBox;
+use Etk::HPaned;
+use Etk::HSlider;
+use Etk::HSeparator;
 use Etk::Image;
 use Etk::Label;
-use Etk::Table;
-use Etk::FillPolicy;
-use Etk::HSlider;
-use Etk::VSlider;
+use Etk::Main;
+use Etk::Menu;
+use Etk::Menu::Bar;
+use Etk::Menu::Item;
+use Etk::Menu::Item::Image;
+use Etk::Menu::Item::Check;
+use Etk::Menu::Item::Radio;
+use Etk::Menu::Item::Separator;
 use Etk::ProgressBar;
+use Etk::VBox;
+use Etk::VPaned;
+use Etk::VSlider;
+use Etk::Window;
+use Etk::ScrolledView;
+use Etk::StatusBar;
+use Etk::Stock;
+use Etk::Table;
 use Etk::Timer;
 use Etk::Theme;
+use Etk::ToggleButton;
 use Etk::Tree;
 use Etk::Tree::Col;
 use Etk::Tree::Model::Int;
@@ -27,21 +43,6 @@ use Etk::Tree::Model::Image;
 use Etk::Tree::Model::Double;
 use Etk::Tree::Model::IconText;
 use Etk::Tree::Model::Checkbox;
-use Etk::Menu;
-use Etk::Menu::Bar;
-use Etk::Menu::Item;
-use Etk::Menu::Item::Image;
-use Etk::Menu::Item::Check;
-use Etk::Menu::Item::Radio;
-use Etk::Menu::Item::Separator;
-use Etk::StatusBar;
-use Etk::Stock;
-use Etk::Colorpicker;
-use Etk::ScrolledView;
-use Etk::VPaned;
-use Etk::HPaned;
-use Etk::HSeparator;
-
 
 Etk::Init();
 
@@ -754,7 +755,53 @@ sub _menu_seperator_new
 
 sub combobox_window_show
 {
-    print "combobox_window_show\n";
+    my $win = Etk::Window->new("Etk-Perl Combo Test");
+    my $vbox = Etk::VBox->new(0, 3);
+    
+    my $frame = Etk::Frame->new("Simple combobox");
+    $vbox->PackStart($frame, 0, 0, 0);
+    
+    my $combobox = Etk::Combobox::->new_default();
+    $frame->Add($combobox);
+    $combobox->ItemAppend("Test 1");
+    $combobox->ItemAppend("Test 2");
+    $combobox->ItemAppend("Test 3");    
+
+    $frame = Etk::Frame->new("Some stock icons");
+    $vbox->PackStart($frame);
+    
+    my $vbox2 = Etk::VBox->new(0, 3);
+    $frame->Add($vbox2);
+    
+    my $image = Etk::Image->new_from_stock(Etk::Stock::DocumentNew,
+	Etk::Stock::SizeBig);
+    $vbox2->PackStart($image, 0, 0, 0);
+    
+    $combobox = Etk::Combobox->new();
+    $combobox->ColumnAdd(Etk::Combobox::ColumnTypeImage, 24, 0, 0, 0, 0.0, 0.5);
+    $combobox->ColumnAdd(Etk::Combobox::ColumnTypeLabel, 75, 1, 0, 0, 0.0, 0.5);
+    $combobox->Build();
+    
+    $vbox2->PackStart($combobox, 0, 0, 0);
+	
+    for( my $i = Etk::Stock::DocumentNew; 
+	$i <= Etk::Stock::FormatTextUnderline; $i++)
+    {
+	my $image2 = Etk::Image->new_from_stock($i, Etk::Stock::SizeSmall);
+	my $item = $combobox->ItemAppend($image2, Etk::Stock::LabelGet($i));
+	$item->DataSet($i);
+    }
+    
+    $combobox->SignalConnect("active_item_changed", 
+	sub {
+	    my $item = $combobox->ActiveItemGet();
+	    my $stock_id = $item->DataGet();
+	    $image->SetFromStock($stock_id, Etk::Stock::SizeBig);
+	}
+    );    
+    
+    $win->Add($vbox);
+    $win->ShowAll();    
 }
 
 sub iconbox_window_show
@@ -801,7 +848,6 @@ sub paned_window_show
     $vbox->PackStart($hseparator, 0, 0, 6);
 
     # Properties Area
-
     my $hbox = Etk::HBox->new(1, 0);
     $vbox->PackStart($hbox, 0, 1, 0);
 
