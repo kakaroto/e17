@@ -39,8 +39,8 @@ while test $# -gt 0; do
       echo @PACKAGE_VERSION@
       ;;
     --cflags)
-      if test @prefix@/local != /usr/include ; then
-        includes="-I@prefix@/local"
+      if test @prefix@/include != /usr/include ; then
+        includes="-I@prefix@/include"
       fi
       echo $includes @EVAS_CFLAGS@ @ECORE_CFLAGS@ @EWL_CFLAGS@ @ETK_CFLAGS@ -I$prefix/include/epdf
       ;;
