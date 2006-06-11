@@ -94,14 +94,10 @@ else
 fi
 
 dnl Set PACKAGE_DATA_DIR in config.h.
-if test "x${datadir}" = 'x${prefix}/share'; then
-  if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}", "Package installed data destination")
-  else
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}", "Package installed data destination")
-  fi
+if test "x${prefix}" = "xNONE"; then
+  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}", [Shared Data Directory])
 else
-  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}", "Package installed data destination")
+  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}", [Shared Data Directory])
 fi
 
 dnl Set PACKAGE_SOURCE_DIR in config.h.
