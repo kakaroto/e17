@@ -493,7 +493,7 @@ sub tree_window_show
     
     $col2 = Etk::Tree::Col->new($tree, "Column 2",
 	Etk::Tree::Model::Int->new($tree), 90);
-    $col2->SortFuncSet(\&tree_col2_compare_cb, "some_data");
+    $col2->SortFuncSet(\&tree_col2_compare_cb, "some_data");    
     
     $col3 = Etk::Tree::Col->new($tree, "Column 3",
 	Etk::Tree::Model::Image->new($tree, 
@@ -542,7 +542,14 @@ sub tree_window_show
     );    
     $hbox->PackStart($button);
     
+    my $ascendant = 1;
     $button = Etk::Button->new("Sort");
+    $button->SignalConnect("clicked",
+	sub {
+	    $tree->Sort(\&tree_col2_compare_cb, $ascendant, $col2, undef);
+	    $ascendant = !$ascendant;
+	}
+    );
     $hbox->PackStart($button);    
             
     $win->Add($table);
@@ -806,17 +813,32 @@ sub combobox_window_show
 
 sub iconbox_window_show
 {
-    print "iconbox_window_show\n";
+    my $win = Etk::Window->new("Etk-Perl Iconbox Test");
+    my $label = Etk::Label->new("<b>Etk::Iconbox test is not implemented yet.</b>");
+    
+    $win->Add($label);
+    $win->BorderWidthSet(10);
+    $win->ShowAll();        
 }
 
 sub textview_window_show
 {
-    print "textview_window_show\n";
+    my $win = Etk::Window->new("Etk-Perl Textview Test");
+    my $label = Etk::Label->new("<b>Etk::Textview is not implemented yet.</b>");
+    
+    $win->Add($label);
+    $win->BorderWidthSet(10);
+    $win->ShowAll();  
 }
 
 sub table_window_show
 {
-    print "table_window_show\n";
+    my $win = Etk::Window->new("Etk-Perl Table Test");
+    my $label = Etk::Label->new("<b>Etk::Table test is not implemented yet.</b>");
+    
+    $win->Add($label);
+    $win->BorderWidthSet(10);
+    $win->ShowAll();  
 }
 
 sub paned_window_show
@@ -897,12 +919,22 @@ sub scrolledview_window_show
 
 sub notebook_window_show
 {
-    print "notebook_window_show\n";
+    my $win = Etk::Window->new("Etk-Perl Notebook Test");
+    my $label = Etk::Label->new("<b>Etk::Notebook test is not implemented yet.</b>");
+    
+    $win->Add($label);
+    $win->BorderWidthSet(10);
+    $win->ShowAll();    
 }
 
 sub dnd_window_show
 {
-    print "dnd_window_show\n";
+    my $win = Etk::Window->new("Etk-Perl Dnd Test");
+    my $label = Etk::Label->new("<b>Etk::Dnd is not implemented yet.</b>");
+    
+    $win->Add($label);
+    $win->BorderWidthSet(10);
+    $win->ShowAll();    
 }
 
 sub colorpicker_window_show
@@ -915,7 +947,12 @@ sub colorpicker_window_show
 
 sub filechooser_window_show
 {
-    print "filechooser_window_show\n";
+    my $win = Etk::Window->new("Etk-Perl Filechooser Test");
+    my $label = Etk::Label->new("<b>Etk::Filechooser test is not implemented yet.</b>");
+    
+    $win->Add($label);
+    $win->BorderWidthSet(10);
+    $win->ShowAll();   
 }
 
 sub main_window_delete

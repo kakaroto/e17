@@ -169,8 +169,14 @@ sub Clear
 
 sub Sort
 {
-   my $self = shift;
-   # TODO: implement this
+    my $self = shift;
+    my $callback = shift;
+    my $asc = shift;
+    my $col = shift;
+    my $data = undef;
+    $data = shift if (@_ > 0);
+    Etk::etk_tree_sort($self->{WIDGET}, $callback, $asc, $col->{WIDGET}, 
+	$data);
 }
 
 sub FirstRowGet

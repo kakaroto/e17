@@ -3555,10 +3555,18 @@ etk_tree_selected_rows_get(tree)
 void
 etk_tree_sort(tree, compare_cb, ascendant, col, data)
 	Etk_Widget *	tree
-	int ( * ) ( Etk_Tree * tree, Etk_Tree_Row * row1, Etk_Tree_Row * row2, Etk_Tree_Col * col, void * data ) compare_cb
+        SV *compare_cb
 	Etk_Bool	ascendant
 	Etk_Tree_Col *	col
-	void *	data
+	SV *	data
+      CODE:
+        Callback_Tree_Compare_Data *cbd;
+        
+        cbd = calloc(1, sizeof(Callback_Tree_Compare_Data));
+        cbd->object = col;
+        cbd->perl_data = newSVsv(data);
+        cbd->perl_callback = newSVsv(compare_cb);
+        etk_tree_sort(ETK_TREE(tree), tree_compare_cb, ascendant, col, cbd);
 
 void
 etk_tree_thaw(tree)
