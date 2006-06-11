@@ -237,7 +237,7 @@ ewl_text_index_geometry_map(Ewl_Text *t, unsigned int idx, int *x, int *y,
 
 	if (idx >= t->length)
 	{
-		idx = t->length - 1;
+		idx = ewl_text_utf_char_position_prev(t->text, t->length);
 		shifting = 1;
 	}
 
