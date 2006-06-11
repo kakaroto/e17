@@ -36,6 +36,11 @@ use Etk::Menu::Item::Radio;
 use Etk::Menu::Item::Separator;
 use Etk::StatusBar;
 use Etk::Stock;
+use Etk::Colorpicker;
+use Etk::ScrolledView;
+use Etk::VPaned;
+use Etk::HPaned;
+use Etk::HSeparator;
 
 
 Etk::Init();
@@ -769,12 +774,79 @@ sub table_window_show
 
 sub paned_window_show
 {
-    print "paned_window_show\n";
+    my $win = Etk::Window->new("Etk-Perl Paned Test");
+    $win->SizeRequestSet(300,300);
+    my $vbox = Etk::VBox->new(0,0);
+
+    # Paned Area
+    my $vpaned = Etk::VPaned->new();
+    $vbox->PackStart($vpaned);
+
+    my $hpaned = Etk::HPaned->new();
+    $vpaned->Child1Set($hpaned, 0);
+
+    my $label = Etk::Label->new("HPaned Child 1");
+    $label->AlignmentSet(0.5, 0.5);
+    $hpaned->Child1Set($label, 0);
+
+    $label = Etk::Label->new("HPaned Child 2");
+    $label->AlignmentSet(0.5, 0.5);
+    $hpaned->Child2Set($label, 0);
+
+    $label = Etk::Label->new("VPaned Child 2");
+    $label->AlignmentSet(0.5, 0.5);
+    $vpaned->Child2Set($label, 1);
+
+    my $hseparator = Etk::HSeparator->new();
+    $vbox->PackStart($hseparator, 0, 0, 6);
+
+    # Properties Area
+
+    my $hbox = Etk::HBox->new(1, 0);
+    $vbox->PackStart($hbox, 0, 1, 0);
+
+    my $frame = Etk::Frame->new("HPaned Properties");
+    $hbox->PackStart($frame, 1, 1, 0);
+
+    my $vbox2 = Etk::VBox->new(1, 0);
+    $frame->Add($vbox2);
+    
+    my $check_button = Etk::CheckButton->new("Child 1 Expand");
+    $check_button->ActiveSet(1);
+    $vbox2->PackStart($check_button, 1, 1, 0);
+
+    $check_button = Etk::CheckButton->new("Child 2 Expand");
+    $vbox2->PackStart($check_button, 1, 1, 0);
+
+    $frame = Etk::Frame->new("VPaned Properties");
+    $hbox->PackStart($frame, 1, 1, 0);
+
+    $vbox2 = Etk::VBox->new(1, 0);
+    $frame->Add($vbox2);
+    $check_button = Etk::CheckButton->new("Child 1 Expand");
+    $vbox2->PackStart($check_button, 1, 1, 0);
+    $check_button = Etk::CheckButton->new("Child 2 Expand");
+    $check_button->ActiveSet(1);
+    $vbox2->PackStart($check_button, 1, 1, 0);
+
+    $win->Add($vbox);
+    $win->ShowAll();
+   
 }
 
 sub scrolledview_window_show
 {
-    print "scrolledview_window_show\n";
+    my $win = Etk::Window->new("Etk-Perl Scrolled View Test");
+    $win->SizeRequestSet(180,180);
+
+    my $scrolledview = Etk::ScrolledView->new();
+    my $button = Etk::Button->new("Scrolled View Test");
+    $button->SizeRequestSet(300,300);
+
+    $scrolledview->AddWithViewport($button);
+
+    $win->Add($scrolledview);
+    $win->ShowAll();
 }
 
 sub notebook_window_show
@@ -789,7 +861,10 @@ sub dnd_window_show
 
 sub colorpicker_window_show
 {
-    print "colorpicker_window_show\n";
+    my $win = Etk::Window->new("Etk-Perl Color Picker Test");
+    my $cp = Etk::Colorpicker->new();
+    $win->Add($cp);
+    $win->ShowAll();
 }
 
 sub filechooser_window_show

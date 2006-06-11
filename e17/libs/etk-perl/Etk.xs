@@ -2144,12 +2144,12 @@ etk_scrollbar_type_get()
 
 void
 etk_scrolled_view_add_with_viewport(scrolled_view, child)
-	Etk_Scrolled_View *	scrolled_view
+	Etk_Widget *	scrolled_view
 	Etk_Widget *	child
 
 Etk_Range *
 etk_scrolled_view_hscrollbar_get(scrolled_view)
-	Etk_Scrolled_View *	scrolled_view
+	Etk_Widget *	scrolled_view
 
 Etk_Widget *
 etk_scrolled_view_new()
@@ -2171,7 +2171,7 @@ etk_scrolled_view_type_get()
 
 Etk_Range *
 etk_scrolled_view_vscrollbar_get(scrolled_view)
-	Etk_Scrolled_View *	scrolled_view
+	Etk_Widget *	scrolled_view
 
 void
 etk_selection_text_request(widget)
