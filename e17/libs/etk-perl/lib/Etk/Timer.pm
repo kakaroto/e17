@@ -6,7 +6,10 @@ sub new
     my $class = shift;
     my $self = {};
     my $interval = shift;
-    $self->{WIDGET} = Etk::etkpl_timer_add($interval, shift);
+    my $callback = shift;
+    my $data = undef;
+    $data = shift if (@_ > 0);
+    $self->{WIDGET} = Etk::etkpl_timer_add($interval, $callback, $data);
     bless($self, $class);
     return $self;
 }

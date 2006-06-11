@@ -200,7 +200,8 @@ callback_timer(void *data)
    
    cbd = data;   
    PUSHMARK(SP) ;
-   XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));      
+   if(cbd->perl_data)
+     XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));      
    PUTBACK ;  
    
    count = call_sv(cbd->perl_callback, G_SCALAR);
@@ -288,9 +289,8 @@ Etk_Tree_Col * col, void * data )
    
    SPAGAIN;
 
-   /* if the return value is incorrect, return 0 to end timer */
    if(count != 1)
-       croak("Improper return value from timer callback!\n");
+       croak("Improper return value from compare callback!\n");
 
    ret = POPi;
 
@@ -3931,11 +3931,20 @@ etk_window_wmclass_set(window, window_name, window_class)
 	etk_window_wmclass_set(ETK_WINDOW(window), window_name, window_class);
 	 
 Ecore_Timer *
-etkpl_timer_add(interval, callback)
+etkpl_timer_add(interval, callback, data)
         double interval
 	SV *    callback
+        SV *    data
       CODE:        
-        RETVAL = ecore_timer_add(interval, callback_timer, newSVsv(callback));
+        Callback_Timer_Data *cbd;
+        
+        cbd = calloc(1, sizeof(Callback_Timer_Data));
+        if(SvOK(data))
+           cbd->perl_data = newSVsv(data);
+        else
+           cbd->perl_data = NULL;
+        cbd->perl_callback = newSVsv(callback);
+        RETVAL = ecore_timer_add(interval, callback_timer, cbd);
       OUTPUT:
         RETVAL
 	

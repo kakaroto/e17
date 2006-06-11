@@ -114,8 +114,11 @@ sub Reorder
 sub SortFuncSet
 {
     my $self = shift;
+    my $callback = shift;
+    my $data = undef;
+    $data = shift if (@_ > 0);
     # shift in callback and data
-    Etk::etk_tree_col_sort_func_set($self->{WIDGET}, shift, shift || undef);
+    Etk::etk_tree_col_sort_func_set($self->{WIDGET}, $callback, $data);
 }
 
 

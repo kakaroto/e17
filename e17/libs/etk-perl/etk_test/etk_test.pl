@@ -628,24 +628,22 @@ sub menu_window_show
     $menu_item->SubmenuSet($menu);
     _menu_test_stock_item_new("Open", Etk::Stock::DocumentOpen, $menu, $statusbar);
     _menu_test_stock_item_new("Save", Etk::Stock::DocumentSave, $menu, $statusbar);
-
+    
     $menu_item = _menu_test_item_new("Edit", $menubar, $statusbar);
     $menu = Etk::Menu->new();
     $menu_item->SubmenuSet($menu);
     _menu_test_stock_item_new("Cut", Etk::Stock::EditCut, $menu, $statusbar);
     _menu_test_stock_item_new("Copy", Etk::Stock::EditCopy, $menu, $statusbar);
     _menu_test_stock_item_new("Paste", Etk::Stock::EditPaste, $menu, $statusbar);
-
+    
     $menu_item = _menu_test_item_new("Help", $menubar, $statusbar);
     $menu = Etk::Menu->new();
     $menu_item->SubmenuSet($menu);
     _menu_test_item_new("About", $menu, $statusbar);
-
-
    
-   $menu = Etk::Menu->new();
-   $win->SignalConnect("mouse_down", sub { $menu->Popup() });
-
+    $menu = Etk::Menu->new();
+    $win->SignalConnect("mouse_down", sub { $menu->Popup() });
+    
     _menu_test_stock_item_new("Open", Etk::Stock::DocumentOpen, $menu, $statusbar);
     _menu_test_stock_item_new("Save", Etk::Stock::DocumentSave, $menu, $statusbar);
     _menu_seperator_new($menu);
@@ -691,7 +689,7 @@ sub _menu_test_item_new
     	sub { $statusbar->Push($menu_item->LabelGet(), 0) });
     $menu_item->SignalConnect("deselected", 
     	sub { $statusbar->Pop(0) });
-
+    
     return $menu_item;
 }
 
@@ -724,7 +722,6 @@ sub _menu_test_check_item_new
     	sub { $statusbar->Pop(0) });
 
     return $menu_item;
-
 }
 
 sub _menu_test_radio_item_new
@@ -739,7 +736,6 @@ sub _menu_test_radio_item_new
     	sub { $statusbar->Pop(0) });
 
     return $menu_item;
-
 }
 
 sub _menu_seperator_new

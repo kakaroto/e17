@@ -13,9 +13,12 @@ sub SignalConnect
 {
     my $self = shift;
     my ($type, $mem) = split /=/, "$self->{WIDGET}";
-    # confess "usage: \$object->SignalConnect(\"sig_name\", \\&callback)" unless (@_ == 2);
-    Etk::etk_signal_connect(shift, 
-	bless($self->{WIDGET}, "Etk_WidgetPtr"), shift, shift || undef);
+    my $signal_name = shift;
+    my $callback = shift;
+    my $data = undef;
+    $data = shift if (@_ > 0);
+    Etk::etk_signal_connect($signal_name, 
+	bless($self->{WIDGET}, "Etk_WidgetPtr"), $callback, $data);
     bless($self->{WIDGET}, $type);
 }
 

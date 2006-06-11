@@ -15,9 +15,12 @@ sub PackStart
 {
     my $self = shift;
     my $child = shift;
-    my $expand = shift || 1;
-    my $fill = shift || 1;
-    my $padding = shift || 0;
+    my $expand = 1;
+    $expand = shift if(@_ > 0);
+    my $fill = 1;
+    $fill = shift if(@_ > 0);
+    my $padding = 0;
+    $padding = shift if(@_ > 0);
     Etk::etk_box_pack_start($self->{WIDGET}, $child->{WIDGET}, $expand,
 	$fill, $padding);
 }
@@ -26,9 +29,12 @@ sub PackEnd
 {
     my $self = shift;
     my $child = shift;
-    my $expand = shift || 1;
-    my $fill = shift || 1;
-    my $padding = shift || 0;
+    my $expand = 1;
+    $expand = shift if(@_ > 0);
+    my $fill = 1;
+    $fill = shift if(@_ > 0);
+    my $padding = 0;
+    $padding = shift if(@_ > 0);
     Etk::etk_box_pack_end($self->{WIDGET}, $child->{WIDGET}, $expand,
 	$fill, $padding);
 }
