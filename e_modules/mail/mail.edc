@@ -76,50 +76,6 @@ collections
 	       }
 	     part 
 	       {
-		  name: "name";
-		  type: TEXT;
-		  clip_to: "clip";
-		  effect: SOFT_SHADOW;
-		  mouse_events: 0;
-		  description 
-		    {
-		       state: "default" 0.0;
-		       color: 0 0 0 255;
-		       color3: 255 255 255 42;
-		       visible: 0;
-		       rel1 
-			 {
-			    relative: 0.0 0.9;
-			    offset: 0 0;
-			    to: "logo";
-			 }
-		       rel2 
-			 {
-			    relative: 1.0 1.0;
-			    offset: -1 -1;
-			    to: "logo";
-			 }
-		       text 
-			 {
-			    text: "";
-			    font: "VeraBold";
-			    size: 10;
-			    min: 1 1;
-			    align: 0.5 0.5;
-			    text_class: "module_normal";
-			 }
-		    }
-		  description 
-		    {
-		       state: "visible" 0.0;
-		       inherit: "default" 0.0;
-		       visible: 1;
-		       color: 0 0 0 255;
-		       color3: 255 255 255 42;
-		    }
-	       }
-	     part 
-	       {
 		  name: "new_label";
 		  type: TEXT;
 		  clip_to: "clip";
@@ -133,13 +89,13 @@ collections
 		       visible: 0;
 		       rel1 
 			 {
-			    relative: 0.0 0.3;
+			    relative: 0.0 0.0;
 			    offset: 0 0;
 			    to: "logo";
 			 }
 		       rel2 
 			 {
-			    relative: 1.0 0.5;
+			    relative: 1.0 1.0;
 			    offset: -1 -1;
 			    to: "logo";
 			 }
@@ -147,10 +103,10 @@ collections
 			 {
 			    text: "";
 			    font: "VeraBold";
-			    size: 9;
+			    size: 14;
 			    min: 1 1;
-			    align: 1.0 0.5;
-			    text_class: "module_small";
+			    align: 0.5 0.5;
+			    text_class: "module_large";
 			 }
 		    }
 		  description 
@@ -172,7 +128,6 @@ collections
 		  source: "";
 		  action: STATE_SET "visible" 0.0;
 		  transition: SINUSOIDAL 0.5;
-		  target: "name";
 		  target: "new_label";
 	       }
 	     program 
@@ -190,7 +145,6 @@ collections
 		  source: "";
 		  action: STATE_SET "default" 0.0;
 		  transition: SINUSOIDAL 1.0;
-		  target: "name";
 		  target: "new_label";
 	       }
 	     program 

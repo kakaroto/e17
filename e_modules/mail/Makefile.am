@@ -22,7 +22,11 @@ module_la_SOURCES      = e_mod_main.c \
 		         e_mod_main.h \
 			 e_mod_config.c \
 			 e_mod_config_box.h \
-			 e_mod_config_box.c
+			 e_mod_config_box.c \
+			 imap.h imap.c \
+			 pop.h pop.c \
+			 mdir.h mdir.c \
+			 mbox.h mbox.c
 			 
 module_la_LIBADD       = @e_libs@ -lm
 module_la_LDFLAGS      = -module -avoid-version

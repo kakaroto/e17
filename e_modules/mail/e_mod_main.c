@@ -17,61 +17,29 @@
  * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <sys/types.h>
-#include <dirent.h>
 #include <e.h>
-#include <Ecore.h>
-#include <Ecore_Con.h>
-#include <Ecore_File.h>
 #include "e_mod_main.h"
-
-typedef enum 
-{
-   STATE_DISCONNECTED,
-     STATE_CONNECTED,
-     STATE_SERVER_READY,
-     STATE_LOGGED_IN,     
-     STATE_USER_OK,
-     STATE_PASS_OK,
-     STATE_STATUS_OK
-} State;
+#include "imap.h"
+#include "pop.h"
+#include "mdir.h"
+#include "mbox.h"
 
 typedef struct _Instance Instance;
 typedef struct _Mail Mail;
-typedef struct _Mailbox Mailbox;
 
 struct _Instance 
 {
    E_Gadcon_Client *gcc;
    Evas_Object *mail_obj;
    Mail *mail;
+   Ecore_Exe *exe;
    Ecore_Timer *check_timer;
-   Evas_List *mboxes;
-
-   Ecore_Event_Handler *add_handler;
-   Ecore_Event_Handler *del_handler;
-   Ecore_Event_Handler *data_handler;
 };
 
 struct _Mail
 {
    Instance *inst;
    Evas_Object *mail_obj;
-};
-
-struct _Mailbox 
-{
-   Instance *inst;
-   Config_Box *config;
-   int state;
-   int cmd;
-   int has_mail;
-   int num_new;
-   int num_total;
-   Ecore_Con_Server *server;
-   Ecore_File_Monitor *monitor;
-   Ecore_Exe *exe;   
-   Ecore_Event_Handler *exit_handler;
 };
 
 /* Func Protos for Gadcon */
@@ -92,23 +60,15 @@ static Config_Item *_mail_config_item_get(const char *id);
 static Mail *_mail_new(Evas *evas);
 static void _mail_free(Mail *mail);
 static int _mail_cb_check(void *data);
-static int _mail_server_add(void *data, int type, void *event);
-static int _mail_server_del(void *data, int type, void *event);
-static int _mail_server_data(void *data, int type, void *event);
-static int _mail_parse_pop(void *data, void *data2);
-static int _mail_parse_imap(void *data, void *data2);
-static void _mail_mbox_check(void *data, Ecore_File_Monitor *monitor, Ecore_File_Event event, const char *path);
-static void _mail_mdir_check(void *data, Ecore_File_Monitor *monitor, Ecore_File_Event event, const char *path);
-static int _mail_mdir_get_files(const char *path);
-static void _mail_set_text(void *data);
 static int _mail_cb_exe_exit(void *data, int type, void *event);
-static Mailbox *_mail_find_mailbox(void *data, void *data2);
 
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *conf_item_edd = NULL;
 static E_Config_DD *conf_box_edd = NULL;
 
 Config *mail_config = NULL;
+
+static Ecore_Event_Handler *exit_handler;
 
 static const E_Gadcon_Client_Class _gc_class = 
 {
@@ -119,13 +79,11 @@ static const E_Gadcon_Client_Class _gc_class =
 static E_Gadcon_Client *
 _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style) 
 {
-   Evas_Object *o;
    E_Gadcon_Client *gcc;
    Instance *inst;
    Mail *mail;
    Config_Item *ci;
-   Evas_List *l;
-   char buf[4096];
+   Evas_List *l, *j;
    
    inst = E_NEW(Instance, 1);
    ci = _mail_config_item_get(id);
@@ -135,15 +93,14 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    mail->inst = inst;
    inst->mail = mail;
    
-   o = mail->mail_obj;
-   gcc = e_gadcon_client_new(gc, name, id, style, o);
+   gcc = e_gadcon_client_new(gc, name, id, style, mail->mail_obj);
    gcc->data = inst;
    inst->gcc = gcc;
-   inst->mail_obj = o;
+   inst->mail_obj = mail->mail_obj;
 
-   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _mail_cb_mouse_down, inst);
-   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_IN, _mail_cb_mouse_in, inst);
-   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_OUT, _mail_cb_mouse_out, inst);
+   evas_object_event_callback_add(inst->mail_obj, EVAS_CALLBACK_MOUSE_DOWN, _mail_cb_mouse_down, inst);
+   evas_object_event_callback_add(inst->mail_obj, EVAS_CALLBACK_MOUSE_IN, _mail_cb_mouse_in, inst);
+   evas_object_event_callback_add(inst->mail_obj, EVAS_CALLBACK_MOUSE_OUT, _mail_cb_mouse_out, inst);
 
    if (ci->show_label)
      edje_object_signal_emit(inst->mail_obj, "label_active", "");
@@ -151,41 +108,36 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
      edje_object_signal_emit(inst->mail_obj, "label_passive", "");
 
    mail_config->instances = evas_list_append(mail_config->instances, inst);
-   
-   if (!ci->boxes) return gcc;
-  
-   for (l = ci->boxes; l; l = l->next) 
+   for (l = mail_config->items; l; l = l->next) 
      {
-	Mailbox *mb;
-	Config_Box *cb;
-
-	cb = l->data;
-	mb = E_NEW(Mailbox, 1);
-	mb->inst = inst;
-	mb->config = cb;
-	mb->state = STATE_DISCONNECTED;
-	mb->cmd = 0;
-	mb->server = NULL;
-	inst->mboxes = evas_list_append(inst->mboxes, mb);
-
-	if (cb->type == MAIL_TYPE_MDIR) 
-	  mb->monitor = ecore_file_monitor_add(cb->new_path, _mail_mdir_check, mb);
-	else if (cb->type == MAIL_TYPE_MBOX) 
-	  mb->monitor = ecore_file_monitor_add(cb->new_path, _mail_mbox_check, mb);
-	else 
+	Config_Item *ci;
+	
+	ci = l->data;
+	for (j = ci->boxes; j; j = j->next) 
 	  {
-	     if (!inst->add_handler)
-	       inst->add_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD, _mail_server_add, inst);
-	     if (!inst->del_handler)
-	       inst->del_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL, _mail_server_del, inst);
-	     if (!inst->data_handler)
-	       inst->data_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA, _mail_server_data, inst);
-
-	     _mail_cb_check(inst);
-	     if (!inst->check_timer)
-	       inst->check_timer = ecore_timer_add((ci->check_time * 60.0), _mail_cb_check, inst);
-	  }
-     }   
+	     Config_Box *cb;
+	     
+	     cb = j->data;
+	     switch (cb->type) 
+	       {
+		case MAIL_TYPE_IMAP:
+		  _mail_imap_add_mailbox(cb);
+		  if (!inst->check_timer)
+		    inst->check_timer = ecore_timer_add((ci->check_time * 60.0), _mail_cb_check, inst);
+		  break;
+		case MAIL_TYPE_POP:
+		  if (!inst->check_timer)
+		    inst->check_timer = ecore_timer_add((ci->check_time * 60.0), _mail_cb_check, inst);
+		  break;
+		case MAIL_TYPE_MDIR:
+		  _mail_mdir_add_mailbox(inst, cb);
+		  break;
+		case MAIL_TYPE_MBOX:
+		  _mail_mbox_add_mailbox(inst, cb);
+		  break;
+	       }
+	  }	
+     }
    return gcc;
 }
 
@@ -193,34 +145,13 @@ static void
 _gc_shutdown(E_Gadcon_Client *gcc) 
 {
    Instance *inst;
-
+   
    inst = gcc->data;
    
-   if (inst->add_handler) ecore_event_handler_del(inst->add_handler);
-   if (inst->data_handler) ecore_event_handler_del(inst->data_handler);
-   if (inst->del_handler) ecore_event_handler_del(inst->del_handler);
-   if (inst->check_timer) ecore_timer_del(inst->check_timer);
-
-   while (inst->mboxes) 
-     {
-	Mailbox *mb;
-	
-	mb = inst->mboxes->data;
-	if (mb->monitor) ecore_file_monitor_del(mb->monitor);
-	if (mb->server) ecore_con_server_del(mb->server);
-	if (mb->exit_handler) ecore_event_handler_del(mb->exit_handler);
-	mb->exe = NULL;
-	mb->server = NULL;
-	mb->cmd = 0;
-	mb->state = STATE_DISCONNECTED;
-	inst->mboxes = evas_list_remove_list(inst->mboxes, inst->mboxes);
-	free(mb);
-     }
-
-   evas_object_event_callback_del(inst->mail->mail_obj, EVAS_CALLBACK_MOUSE_DOWN, _mail_cb_mouse_down);
-   evas_object_event_callback_del(inst->mail->mail_obj, EVAS_CALLBACK_MOUSE_IN, _mail_cb_mouse_in);
-   evas_object_event_callback_del(inst->mail->mail_obj, EVAS_CALLBACK_MOUSE_OUT, _mail_cb_mouse_out);   
-
+   evas_object_event_callback_del(inst->mail_obj, EVAS_CALLBACK_MOUSE_DOWN, _mail_cb_mouse_down);
+   evas_object_event_callback_del(inst->mail_obj, EVAS_CALLBACK_MOUSE_IN, _mail_cb_mouse_in);
+   evas_object_event_callback_del(inst->mail_obj, EVAS_CALLBACK_MOUSE_OUT, _mail_cb_mouse_out);
+   
    mail_config->instances = evas_list_remove(mail_config->instances, inst);
    _mail_free(inst->mail);
    free(inst);
@@ -255,11 +186,11 @@ static void
 _mail_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info) 
 {
    Instance *inst = data;
+   Config_Item *ci;
    Evas_Event_Mouse_Down *ev = event_info;
    Evas_List *l;
    
    if (!inst) return;
-   
    if ((ev->button == 3) && (!mail_config->menu))
      {
 	E_Menu *mn, *sn;
@@ -271,34 +202,34 @@ _mail_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	e_menu_post_deactivate_callback_set(mn, _mail_menu_cb_post, inst);
 	mail_config->menu = mn;
 
-	if ((inst->mboxes) && (evas_list_count(inst->mboxes) > 0))
+	ci = _mail_config_item_get(inst->gcc->id);
+	if ((ci->boxes) && (evas_list_count(ci->boxes) > 0)) 
 	  {
 	     E_Menu_Item *mm;
-
+	     
 	     snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(mail_config->module));
 	     mm = e_menu_item_new(mn);
 	     e_menu_item_label_set(mm, _("Mailboxes"));
 	     e_menu_item_icon_edje_set(mm, buf, "icon");
 	     
 	     sn = e_menu_new();
-	     for (l = inst->mboxes; l; l = l->next) 
+	     for (l = ci->boxes; l; l = l->next) 
 	       {
-		  Mailbox *mb;
+		  Config_Box *cb;
 		  
-		  mb = l->data;
-		  if (!mb) continue;
-
+		  cb = l->data;
+		  if (!cb) continue;
 		  mi = e_menu_item_new(sn);
-		  snprintf(buf, sizeof(buf), "%s: %d/%d", mb->config->name, mb->num_new, mb->num_total);
+		  snprintf(buf, sizeof(buf), "%s: %d/%d", cb->name, cb->num_new, cb->num_total);
 		  e_menu_item_label_set(mi, buf);
-		  if (mb->config->exec)
-		    e_menu_item_callback_set(mi, _mail_menu_cb_exec, mb);
+		  if ((cb->exec) && (cb->use_exec))
+		    e_menu_item_callback_set(mi, _mail_menu_cb_exec, cb);
 	       }
 	     e_menu_item_submenu_set(mm, sn);
 	     mi = e_menu_item_new(mn);
-	     e_menu_item_separator_set(mi, 1);	     
+	     e_menu_item_separator_set(mi, 1);
 	  }
-
+	
 	mi = e_menu_item_new(mn);
 	e_menu_item_label_set(mi, _("Configuration"));
 	e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
@@ -450,6 +381,9 @@ e_modapi_shutdown(E_Module *m)
 {
    mail_config->module = NULL;
    e_gadcon_provider_unregister(&_gc_class);
+
+   if (exit_handler)
+     ecore_event_handler_del(exit_handler);
    
    if (mail_config->config_dialog)
      e_object_del(E_OBJECT(mail_config->config_dialog));
@@ -469,6 +403,20 @@ e_modapi_shutdown(E_Module *m)
 	     Config_Box *cb;
 	     
 	     cb = ci->boxes->data;
+	     switch (cb->type) 
+	       {
+		case MAIL_TYPE_IMAP:
+		  _mail_imap_del_mailbox(cb);
+		  break;
+		case MAIL_TYPE_POP:
+		  break;
+		case MAIL_TYPE_MDIR:
+		  _mail_mdir_del_mailbox(cb);
+		  break;
+		case MAIL_TYPE_MBOX:
+		  _mail_mbox_del_mailbox(cb);
+		  break;
+	       }
 	     if (cb->name) evas_stringshare_del(cb->name);
 	     if (cb->host) evas_stringshare_del(cb->host);
 	     if (cb->user) evas_stringshare_del(cb->user);
@@ -546,418 +494,53 @@ static int
 _mail_cb_check(void *data) 
 {
    Instance *inst = data;
+   Config_Item *ci;
    Evas_List *l;
-   Ecore_Con_Type type;
-   Ecore_Con_Server *server;
+   int have_imap = 0;
    
    if (!inst) return 1;
-   if (!inst->mboxes) return 1;
-
-   for (l = inst->mboxes; l; l = l->next) 
+   ci = _mail_config_item_get(inst->gcc->id);
+   if (!ci->boxes) return 1;
+   for (l = ci->boxes; l; l = l->next) 
      {
-	Mailbox *mb;
 	Config_Box *cb;
-
-	mb = l->data;
-	mb->inst = inst;
-
-	cb = mb->config;
-	if (!cb->host) continue;
-	if (cb->port <= 0) continue;
-	if (cb->type > 1) continue;
-
-	type = ECORE_CON_REMOTE_SYSTEM;
-	if (cb->ssl)
-	  type |= ECORE_CON_USE_SSL;
-	server = ecore_con_server_connect(type, cb->host, cb->port, inst);
-	mb->server = server;
-	mb->state = STATE_CONNECTED;
-	mb->cmd = 0;
-     }
-
-   return 1;
-}
-
-static int 
-_mail_server_add(void *data, int type, void *event) 
-{
-   Instance *inst = data;
-   Mailbox *mb;
-   Ecore_Con_Event_Server_Add *ev = event;
-
-   if (!inst) return 1;
-   if (!inst->mboxes) return 1;
-   
-   mb = _mail_find_mailbox(inst, ev->server);
-   if (!mb) return 1;
-   
-   mb->state = STATE_CONNECTED;
-   mb->cmd = 0;
-
-   return 1;
-}
-
-static int 
-_mail_server_del(void *data, int type, void *event) 
-{
-   Instance *inst = data;
-   Mailbox *mb;
-   Config_Box *cb;
-   Ecore_Con_Event_Server_Del *ev = event;
-
-   if (!inst) return 1;
-   if (!inst->mboxes) return 1;
-   
-   mb = _mail_find_mailbox(inst, ev->server);
-   if (!mb) return 1;
-   
-   cb = mb->config;
-   if (!cb->host) return 1;
-
-   if (mb->state == STATE_DISCONNECTED)
-     printf("Cannot Connect to %s\n", cb->host);
-   
-   ecore_con_server_del(ev->server);
-   mb->server = NULL;
-   mb->cmd = 0;
-   mb->state = STATE_DISCONNECTED;
-   
-   return 1;
-}
-
-static int 
-_mail_server_data(void *data, int type, void *event) 
-{
-   Instance *inst = data;
-   Mailbox *mb;
-   Config_Box *cb;
-   Ecore_Con_Event_Server_Data *ev = event;
-   int ret;
-   
-   if (!inst) return 1;
-   if (!inst->mboxes) return 1;
-   
-   mb = _mail_find_mailbox(inst, ev->server);
-   if (!mb) return 1;
-   
-   cb = mb->config;
-   if (!cb) return 1;
-
-   if (cb->type == MAIL_TYPE_POP) 
-     ret = _mail_parse_pop(mb, ev);
-   else if (cb->type == MAIL_TYPE_IMAP) 
-     ret = _mail_parse_imap(mb, ev);
-
-   return ret;
-}
-
-static int
-_mail_parse_pop(void *data, void *data2) 
-{
-   Mailbox *mb = data;
-   Config_Box *cb;
-   Ecore_Con_Event_Server_Data *ev = data2;
-   char in[2048], out[2048];
-   int len;
-   
-   if (!mb) return;
-   if (!ev) return;
-   if ((!mb->server) || (mb->server != ev->server)) return;
-
-   cb = mb->config;
-   
-   len = sizeof(in) -1;
-   len = (((len) > (ev->size)) ? ev->size : len);
-   memcpy(in, ev->data, len);
-   in[len] = 0;
-   
-   if (!strncmp(in, "-ERR", 4)) 
-     {
-	printf("ERROR: %s\n", in);
-	mb->state = STATE_DISCONNECTED;
-	ecore_con_server_del(ev->server);
-	mb->server = NULL;
-	mb->cmd = 0;
-	return 0;
-     }
-   else if (strncmp(in, "+OK", 3)) 
-     {
-	printf("Unexpected reply: %s\n", in);
-	mb->state = STATE_DISCONNECTED;
-	ecore_con_server_del(ev->server);
-	mb->server = NULL;
-	mb->cmd = 0;
-	return 0;
-     }
-
-   if (mb->state == STATE_CONNECTED)
-     mb->state++;
-   
-   switch (mb->state) 
-     {
-      case STATE_SERVER_READY:
-	len = snprintf(out, sizeof(out), "USER %s\r\n", cb->user);
-	ecore_con_server_send(ev->server, out, len);
-	mb->state = STATE_USER_OK;
-	break;
-      case STATE_USER_OK:
-	len = snprintf(out, sizeof(out), "PASS %s\r\n", cb->pass);
-	ecore_con_server_send(ev->server, out, len);
-	mb->state = STATE_PASS_OK;
-	break;
-      case STATE_PASS_OK:
-	len = snprintf(out, sizeof(out), "STAT\r\n");
-	ecore_con_server_send(ev->server, out, len);
-	mb->state = STATE_STATUS_OK;
-	break;
-      case STATE_STATUS_OK:
-	mb->has_mail = 0;
-	mb->num_new = 0;
-	mb->num_total = 0;
-	if (sscanf(in, "+OK %i %i", &mb->num_new, &mb->num_total) == 2) 
-	  {
-	     if (mb->num_new > 0)
-	       mb->has_mail = 1;
-	  }
-	/* Reset total to be new mail as total above gets set to msg size */
-	mb->num_total = mb->num_new;
-
-	_mail_set_text(mb->inst);
 	
-	ecore_con_server_del(ev->server);
-	mb->state = STATE_DISCONNECTED;
-	mb->cmd = 0;
-	mb->server = NULL;
-	if ((cb->use_exec) && (cb->exec != NULL)) 
+	cb = l->data;
+	switch (cb->type) 
 	  {
-	     if (mb->num_new <= 0) break;
-	     if (!mb->exe) 
-	       {
-		  mb->exit_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _mail_cb_exe_exit, mb);
-		  mb->exe = ecore_exe_run(cb->exec, mb);
-	       }
-	  }
-	break;
-      default:
-	break;
-     }   
-   return 0;
-}
-   
-static int
-_mail_parse_imap(void *data, void *data2) 
-{
-   Mailbox *mb = data;
-   Config_Box *cb;
-   Ecore_Con_Event_Server_Data *ev = data2;
-   char in[2048], out[2048];
-   char *spc;
-   size_t slen;
-   int len;
-   
-   if (!mb) return;
-   if (!ev) return;
-   if ((!mb->server) || (mb->server != ev->server)) return;
-
-   cb = mb->config;
-
-   len = sizeof(in) -1;
-   len = (((len) > (ev->size)) ? ev->size : len);
-   memcpy(in, ev->data, len);
-   in[len] = 0;
-   
-   if (spc = strchr(in, ' '))
-     {
-	slen = strlen(spc);
-	if ((slen > 5) && (!strncmp(spc + 1, "NO ", 3))) 
-	  {
-	     len = snprintf(out, sizeof(out), "A%03i LOGOUT", ++mb->cmd);
-	     ecore_con_server_send(ev->server, out, len);
-	     printf("Imap Failure: %s\n", spc + 4);
-	     mb->state = STATE_DISCONNECTED;
-	     mb->cmd = 0;
-	     mb->server = NULL;
-	     return 0;
-	  }
-	else if ((slen > 6) && (!strncmp(spc + 1, "BAD ", 4))) 
-	  {
-	     len = snprintf(out, sizeof(out), "A%03i LOGOUT", ++mb->cmd);
-	     ecore_con_server_send(ev->server, out, len);
-	     printf("Imap Bad Command: %s\n", spc + 5);
-	     mb->state = STATE_DISCONNECTED;
-	     mb->cmd = 0;
-	     mb->server = NULL;
-	     return 0;
+	   case MAIL_TYPE_MDIR:
+	     break;
+	   case MAIL_TYPE_MBOX:
+	     break;
+	   case MAIL_TYPE_POP:
+	     _mail_pop_check_mail(inst, cb);
+	     break;
+	   case MAIL_TYPE_IMAP:
+	     have_imap = 1;
+	     break;
 	  }
      }
-   
-   if (mb->state == STATE_CONNECTED)
-     mb->state++;
-
-   switch (mb->state) 
-     {
-      case STATE_SERVER_READY:
-	len = snprintf(out, sizeof(out), "A%03i LOGIN %s %s\r\n", ++mb->cmd, cb->user, cb->pass);
-	ecore_con_server_send(ev->server, out, len);
-	mb->state = STATE_LOGGED_IN;
-	break;
-      case STATE_LOGGED_IN:
-	len = snprintf(out, sizeof(out), "A%03i STATUS %s (MESSAGES UNSEEN)\r\n",++mb->cmd, cb->new_path);
-	ecore_con_server_send(ev->server, out, len);
-	mb->state = STATE_STATUS_OK;
-	break;
-      case STATE_STATUS_OK:
-	mb->has_mail = 0;
-	mb->num_new = 0;
-	mb->num_total = 0;
-
-	if (sscanf(in, "* STATUS %*s (MESSAGES %i UNSEEN %i)", &mb->num_total, &mb->num_new) == 2) 
-	  {
-	     if (mb->num_new > 0)
-	       mb->has_mail = 1;
-	  }
-
-	_mail_set_text(mb->inst);
-	
-	len = snprintf(out, sizeof(out), "A%03i LOGOUT", ++mb->cmd);
-	ecore_con_server_send(ev->server, out, len);
-	mb->state = STATE_DISCONNECTED;
-	mb->cmd = 0;	
-	mb->server = NULL;
-	if ((cb->use_exec) && (cb->exec != NULL)) 
-	  {
-	     if (mb->num_new <= 0) break;
-	     if (!mb->exe) 
-	       {
-		  mb->exit_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _mail_cb_exe_exit, mb);
-		  mb->exe = ecore_exe_run(cb->exec, mb);
-	       }
-	  }	
-	break;
-      case STATE_DISCONNECTED:
-	mb->server = NULL;
-	mb->cmd = 0;
-	break;
-      default:
-	break;
-     }   
-   return 0;
+   if (have_imap) _mail_imap_check_mail(inst);
+   return 1;
 }
 
-static void 
-_mail_mbox_check(void *data, Ecore_File_Monitor *monitor, Ecore_File_Event event, const char *path) 
+void 
+_mail_set_text(void *data, int count) 
 {
-   Mailbox *mb = data;
-   Config_Box *cb;
-   FILE *f;
+   Instance *inst = data;
    char buf[1024];
-   int total = 0, unread = 0;
-   int header;
-   
-   if (!mb) return;
-
-   cb = mb->config;
-   if (!cb->new_path) return;
-   
-   if (!(f = fopen(cb->new_path, "r")))
-     return;
-
-   mb->has_mail = 0;
-   mb->num_new = 0;
-   mb->num_total = 0;
-   
-   while (fgets(buf, sizeof(buf), f)) 
-     {
-	if (buf[0] == '\n')
-	  header = 0;
-	else if (!strncmp(buf, "From ", 5)) 
-	  {
-	     header = 1;
-	     mb->num_total++;
-	     mb->num_new++;
-	  }
-	else if ((header) && (!strncmp(buf, "Status: ", 7)) && (strchr(buf, 'R')))
-	  mb->num_new--;
-     }
-   fclose(f);
-
-   if (mb->num_new > 0) 
-     mb->has_mail = 1;
-   
-   _mail_set_text(mb->inst);
-}
-
-static void 
-_mail_mdir_check(void *data, Ecore_File_Monitor *monitor, Ecore_File_Event event, const char *path) 
-{
-   Mailbox *mb = data;
-   
-   if (!mb) return;
-
-   mb->has_mail = 0;
-   mb->num_total = 0;
-   mb->num_new = 0;
-   
-   mb->num_total = _mail_mdir_get_files(mb->config->cur_path);
-   mb->num_new = _mail_mdir_get_files(mb->config->new_path);
-
-   if (mb->num_new > 0)
-     mb->has_mail = 1;
-   
-   _mail_set_text(mb->inst);
-}
-
-static int 
-_mail_mdir_get_files(const char *path) 
-{
-   Ecore_List *l;
-   char *item;
-   int i = 0;
-   
-   l = ecore_file_ls(path);
-   ecore_list_goto_first(l);
-   while ((item = (char *)ecore_list_next(l)) != NULL) 
-     {
-	if ((!strcmp(item, ".")) || (!strcmp(item, ".."))) continue;
-	i++;
-     }
-      
-   ecore_list_destroy(l);
-   return i;
-}
-
-static void 
-_mail_set_text(void *data) 
-{
-   Instance *inst = data;
-   Evas_List *l;
-   char buf[4096];
-   int count = 0;
    
    if (!inst) return;
-
-   for (l = inst->mboxes; l; l = l->next) 
-     {
-	Mailbox *mb;
-	Config_Box *cb;
-
-	mb = l->data;
-	cb = mb->config;
-	if (mb->has_mail) 
-	  {
-	     count++;
-	     edje_object_part_text_set(inst->mail->mail_obj, "name", cb->user);
-	     snprintf(buf, sizeof(buf), "%d/%d", mb->num_new, mb->num_total);
-	     edje_object_part_text_set(inst->mail->mail_obj, "new_label", buf);
-	  }
-     }
    
-   if (count > 0)
-     edje_object_signal_emit(inst->mail->mail_obj, "new_mail", "");
+   if (count > 0) 
+     {
+	snprintf(buf, sizeof(buf), "%d", count);
+	edje_object_part_text_set(inst->mail->mail_obj, "new_label", buf);
+	edje_object_signal_emit(inst->mail->mail_obj, "new_mail", "");
+     }
    else 
      {
 	edje_object_signal_emit(inst->mail->mail_obj, "no_mail", "");
-	edje_object_part_text_set(inst->mail->mail_obj, "name", "");
 	edje_object_part_text_set(inst->mail->mail_obj, "new_label", "");
      }
 }
@@ -965,11 +548,12 @@ _mail_set_text(void *data)
 static int 
 _mail_cb_exe_exit(void *data, int type, void *event) 
 {
-   Mailbox *mb = data;
+   Config_Box *cb;
    
-   if (!mb) return;
-   mb->exe = NULL;
-   ecore_event_handler_del(mb->exit_handler);
+   cb = data;
+   if (!cb) return;
+   cb->exe = NULL;
+   ecore_event_handler_del(exit_handler);
 }
 
 void
@@ -993,32 +577,19 @@ _mail_box_added(const char *ci_name, const char *box_name)
 		  cb = b->data;
 		  if ((cb->name) && (!strcmp(cb->name, box_name))) 
 		    {
-		       Mailbox *mb;
-
-		       mb = E_NEW(Mailbox, 1);
-		       mb->inst = inst;
-		       mb->config = cb;
-		       mb->server = NULL;
-		       mb->state = STATE_DISCONNECTED;
-		       mb->cmd = 0;
-		       inst->mboxes = evas_list_append(inst->mboxes, mb);
-
-		       if (cb->type == MAIL_TYPE_MDIR) 
-			 mb->monitor = ecore_file_monitor_add(cb->new_path, _mail_mdir_check, mb);
-		       else if (cb->type == MAIL_TYPE_MBOX) 
-			 mb->monitor = ecore_file_monitor_add(cb->new_path, _mail_mbox_check, mb);
-		       else 
+		       switch (cb->type) 
 			 {
-			    if (!inst->add_handler)
-			      inst->add_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD, _mail_server_add, inst);
-			    if (!inst->del_handler)
-			      inst->del_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL, _mail_server_del, inst);
-			    if (!inst->data_handler)
-			      inst->data_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA, _mail_server_data, inst);
-
-			    _mail_cb_check(inst);
-			    if (!inst->check_timer)
-			      inst->check_timer = ecore_timer_add((ci->check_time * 60.0), _mail_cb_check, inst);
+			  case MAIL_TYPE_IMAP:
+			    _mail_imap_add_mailbox(cb);
+			    break;
+			  case MAIL_TYPE_POP:
+			    break;
+			  case MAIL_TYPE_MDIR:
+			    _mail_mdir_add_mailbox(inst, cb);
+			    break;
+			  case MAIL_TYPE_MBOX:
+			    _mail_mbox_add_mailbox(inst, cb);
+			    break;
 			 }
 		       break;
 		    }
@@ -1060,25 +631,19 @@ _mail_box_deleted(const char *ci_name, const char *box_name)
 	       }
 	     if (found) 
 	       {
-		  for (l = inst->mboxes; l; l = l->next) 
+		  switch (cb->type) 
 		    {
-		       Mailbox *mb;
-		       
-		       mb = l->data;
-		       if (((mb->config->name) && (cb->name)) &&
-			 (!strcmp(mb->config->name, cb->name))) 
-			 {
-			    if (mb->monitor) ecore_file_monitor_del(mb->monitor);
-			    if (mb->server) ecore_con_server_del(mb->server);
-			    if (mb->exit_handler) ecore_event_handler_del(mb->exit_handler);
-			    mb->server = NULL;
-			    mb->exe = NULL;
-			    mb->state = STATE_DISCONNECTED;
-			    mb->cmd = 0;
-			    inst->mboxes = evas_list_remove(inst->mboxes, mb);
-			    free(mb);
-			    break;
-			 }
+		     case MAIL_TYPE_IMAP:
+		       _mail_imap_del_mailbox(cb);
+		       break;
+		     case MAIL_TYPE_POP:
+		       break;
+		     case MAIL_TYPE_MDIR:
+		       _mail_mdir_del_mailbox(cb);
+		       break;
+		     case MAIL_TYPE_MBOX:
+		       _mail_mbox_del_mailbox(cb);
+		       break;
 		    }
 		  ci->boxes = evas_list_remove(ci->boxes, cb);
 		  e_config_save_queue();
@@ -1124,35 +689,11 @@ _mail_config_updated(const char *id)
 static void 
 _mail_menu_cb_exec(void *data, E_Menu *m, E_Menu_Item *mi) 
 {
-   Mailbox *mb = data;
    Config_Box *cb;
    
-   if (!mb) return;
-   if (mb->exe) return;
-   cb = mb->config;
+   cb = data;
+   if (!cb) return;
    
-   mb->exit_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _mail_cb_exe_exit, mb);
-   mb->exe = ecore_exe_run(cb->exec, mb);
-}
-
-static Mailbox *
-_mail_find_mailbox(void *data, void *data2) 
-{
-   Instance *inst = data;
-   Ecore_Con_Server *serv = data2;
-   Evas_List *l;
-   Mailbox *mb;
-   
-   if (!inst) return NULL;
-   if (!serv) return NULL;
-   
-   for (l = inst->mboxes; l; l = l->next) 
-     {
-	mb = l->data;
-	if (!mb) continue;
-	if (!mb->server) continue;
-	if (mb->server != serv) continue;
-	return mb;
-     }
-   return NULL;
+   exit_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _mail_cb_exe_exit, cb);
+   cb->exe = ecore_exe_run(cb->exec, cb);
 }

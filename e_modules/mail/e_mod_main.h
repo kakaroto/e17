@@ -3,9 +3,6 @@
 #ifndef E_MOD_MAIN_H
 #define E_MOD_MAIN_H
 
-//IMAP: 143
-//POP: 110
-
 typedef enum 
 {
    MAIL_TYPE_POP,
@@ -25,7 +22,6 @@ struct _Config
    E_Menu *menu;
    Evas_List *instances;
    Evas_List *items;
-   Ecore_Event_Handler *exe_exit_handler;
 };
 
 struct _Config_Item 
@@ -51,8 +47,11 @@ struct _Config_Box
    const char *new_path;
    const char *cur_path;   
 
+   int num_new, num_total;
+
    unsigned char use_exec;   
    const char *exec;
+   Ecore_Exe *exe;
 };
 
 EAPI extern E_Module_Api e_modapi;
@@ -67,6 +66,7 @@ void _mail_config_updated(const char *id);
 void _mail_box_config_updated(E_Config_Dialog *cfd);
 void _mail_box_deleted(const char *ci_name, const char *box_name);
 void _mail_box_added(const char *ci_name, const char *box_name);
+void _mail_set_text(void *data, int count);
 
 extern Config *mail_config;
 

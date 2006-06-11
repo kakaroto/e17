@@ -172,7 +172,7 @@ _load_boxes(E_Config_Dialog *cfd)
 	     break;
 	  }
 	found = _ilist_header_exists(il, name);
-	if (found < 0) 
+	if (found <= 0) 
 	  e_widget_ilist_header_append(il, NULL, name);
 	
 	for (box = ci->boxes; box; box = box->next) 
