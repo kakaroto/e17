@@ -133,7 +133,7 @@ AC_PATH_EFL(
 #check for libmpd
 PKG_CHECK_MODULES(
    [libmpd], 
-	libmpd >= 0.12.3)
+	libmpd >= 0.12.0)
 
 dnl Set ETK_PACKAGE_DATA_DIR in config.h.  
 etk_prefix="\"`etk-config --prefix`/share/etk\""
