@@ -24,24 +24,6 @@
 #include "mdir.h"
 #include "mbox.h"
 
-typedef struct _Instance Instance;
-typedef struct _Mail Mail;
-
-struct _Instance 
-{
-   E_Gadcon_Client *gcc;
-   Evas_Object *mail_obj;
-   Mail *mail;
-   Ecore_Exe *exe;
-   Ecore_Timer *check_timer;
-};
-
-struct _Mail
-{
-   Instance *inst;
-   Evas_Object *mail_obj;
-};
-
 /* Func Protos for Gadcon */
 static E_Gadcon_Client *_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style);
 static void _gc_shutdown(E_Gadcon_Client *gcc);
@@ -126,6 +108,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 		    inst->check_timer = ecore_timer_add((ci->check_time * 60.0), _mail_cb_check, inst);
 		  break;
 		case MAIL_TYPE_POP:
+		  _mail_pop_add_mailbox(cb);
 		  if (!inst->check_timer)
 		    inst->check_timer = ecore_timer_add((ci->check_time * 60.0), _mail_cb_check, inst);
 		  break;
@@ -409,6 +392,7 @@ e_modapi_shutdown(E_Module *m)
 		  _mail_imap_del_mailbox(cb);
 		  break;
 		case MAIL_TYPE_POP:
+		  _mail_pop_del_mailbox(cb);
 		  break;
 		case MAIL_TYPE_MDIR:
 		  _mail_mdir_del_mailbox(cb);
@@ -431,6 +415,10 @@ e_modapi_shutdown(E_Module *m)
 	mail_config->items = evas_list_remove_list(mail_config->items, mail_config->items);
 	free(ci);
      }
+   _mail_imap_shutdown();
+   _mail_pop_shutdown();
+   _mail_mdir_shutdown();
+   _mail_mbox_shutdown();
    free(mail_config);
    mail_config = NULL;
    E_CONFIG_DD_FREE(conf_box_edd);
@@ -496,7 +484,7 @@ _mail_cb_check(void *data)
    Instance *inst = data;
    Config_Item *ci;
    Evas_List *l;
-   int have_imap = 0;
+   int have_imap = 0, have_pop = 0;
    
    if (!inst) return 1;
    ci = _mail_config_item_get(inst->gcc->id);
@@ -506,6 +494,7 @@ _mail_cb_check(void *data)
 	Config_Box *cb;
 	
 	cb = l->data;
+	if (!cb) continue;
 	switch (cb->type) 
 	  {
 	   case MAIL_TYPE_MDIR:
@@ -513,7 +502,7 @@ _mail_cb_check(void *data)
 	   case MAIL_TYPE_MBOX:
 	     break;
 	   case MAIL_TYPE_POP:
-	     _mail_pop_check_mail(inst, cb);
+	     have_pop = 1;
 	     break;
 	   case MAIL_TYPE_IMAP:
 	     have_imap = 1;
@@ -521,20 +510,21 @@ _mail_cb_check(void *data)
 	  }
      }
    if (have_imap) _mail_imap_check_mail(inst);
+   if (have_pop) _mail_pop_check_mail(inst);
    return 1;
 }
 
 void 
-_mail_set_text(void *data, int count) 
+_mail_set_text(void *data) 
 {
    Instance *inst = data;
    char buf[1024];
    
    if (!inst) return;
    
-   if (count > 0) 
+   if (inst->count > 0) 
      {
-	snprintf(buf, sizeof(buf), "%d", count);
+	snprintf(buf, sizeof(buf), "%d", inst->count);
 	edje_object_part_text_set(inst->mail->mail_obj, "new_label", buf);
 	edje_object_signal_emit(inst->mail->mail_obj, "new_mail", "");
      }
@@ -543,6 +533,18 @@ _mail_set_text(void *data, int count)
 	edje_object_signal_emit(inst->mail->mail_obj, "no_mail", "");
 	edje_object_part_text_set(inst->mail->mail_obj, "new_label", "");
      }
+}
+
+void
+_mail_start_exe(void *data) 
+{
+   Config_Box *cb;
+   
+   cb = data;
+   if (!cb) return;
+   
+   exit_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _mail_cb_exe_exit, cb);
+   cb->exe = ecore_exe_run(cb->exec, cb);   
 }
 
 static int 
@@ -583,6 +585,7 @@ _mail_box_added(const char *ci_name, const char *box_name)
 			    _mail_imap_add_mailbox(cb);
 			    break;
 			  case MAIL_TYPE_POP:
+			    _mail_pop_add_mailbox(cb);
 			    break;
 			  case MAIL_TYPE_MDIR:
 			    _mail_mdir_add_mailbox(inst, cb);
@@ -637,6 +640,7 @@ _mail_box_deleted(const char *ci_name, const char *box_name)
 		       _mail_imap_del_mailbox(cb);
 		       break;
 		     case MAIL_TYPE_POP:
+		       _mail_pop_del_mailbox(cb);
 		       break;
 		     case MAIL_TYPE_MDIR:
 		       _mail_mdir_del_mailbox(cb);

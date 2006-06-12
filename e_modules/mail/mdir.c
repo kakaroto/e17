@@ -4,7 +4,7 @@
 
 static Evas_List *mdirs;
 
-static void _mail_mdir_check(void *data, Ecore_File_Monitor *monitor, Ecore_File_Event event, const char *path); 
+static void _mail_mdir_check_mail(void *data, Ecore_File_Monitor *monitor, Ecore_File_Event event, const char *path); 
 static int _mail_mdir_get_files(const char *path);
 
 void
@@ -21,7 +21,7 @@ _mail_mdir_add_mailbox(void *data, void *data2)
    mc->data = data;
    mc->config->num_new = 0;
    mc->config->num_total = 0;
-   mc->monitor = ecore_file_monitor_add(cb->new_path, _mail_mdir_check, mc);
+   mc->monitor = ecore_file_monitor_add(cb->new_path, _mail_mdir_check_mail, mc);
 
    mdirs = evas_list_append(mdirs, mc);
 }
@@ -65,17 +65,21 @@ _mail_mdir_shutdown()
 
 /* PRIVATES */
 static void 
-_mail_mdir_check(void *data, Ecore_File_Monitor *monitor, Ecore_File_Event event, const char *path) 
+_mail_mdir_check_mail(void *data, Ecore_File_Monitor *monitor, Ecore_File_Event event, const char *path) 
 {
    MdirClient *mc;
+   Instance *inst;
    
    mc = data;
    if (!mc) return;
 
    mc->config->num_total = _mail_mdir_get_files(mc->config->cur_path);
    mc->config->num_new = _mail_mdir_get_files(mc->config->new_path);
-
-   _mail_set_text(mc->data, mc->config->num_new);
+   inst = mc->data;
+   inst->count = mc->config->num_new;
+   _mail_set_text(inst);
+   if ((mc->config->num_new > 0) && (mc->config->use_exec) && (mc->config->exec))
+     _mail_start_exe(mc->config);
 }
 
 static int 

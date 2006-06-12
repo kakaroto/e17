@@ -3,7 +3,7 @@
 #include "imap.h"
 
 static ImapServer *_mail_imap_server_get(Ecore_Con_Server *server);
-static ImapClient *_mail_imap_client_get(Config_Box *cb);
+static ImapClient *_mail_imap_client_get(void *data);
 static int _mail_imap_server_add(void *data, int type, void *event);
 static int _mail_imap_server_del(void *data, int type, void *event);
 static int _mail_imap_server_data(void *data, int type, void *event);
@@ -114,13 +114,17 @@ _mail_imap_server_get(Ecore_Con_Server *server)
 }
 
 static ImapClient *
-_mail_imap_client_get(Config_Box *cb) 
+_mail_imap_client_get(void *data) 
 {
    ImapServer *is;
    ImapClient *ic;
+   Config_Box *cb;
    Evas_List *l, *j;
    int found = 0;
    
+   cb = data;
+   if (!cb) return NULL;
+
    if ((!iservers) || (evas_list_count(iservers) <= 0)) 
      {
 	is = E_NEW(ImapServer, 1);
@@ -178,6 +182,7 @@ _mail_imap_server_del(void *data, int type, void *event)
 {
    Ecore_Con_Event_Server_Del *ev = event;
    ImapServer *is;
+   Instance *inst;
    
    is = _mail_imap_server_get(ev->server);
    if (!is) return 1;
@@ -189,9 +194,10 @@ _mail_imap_server_del(void *data, int type, void *event)
    
    ecore_con_server_del(is->server);
    is->server = NULL;
-   if (is->count > 0) 
-     _mail_set_text(is->data, is->count);
-
+   inst = is->data;
+   inst->count = is->count;
+   _mail_set_text(inst);
+   
    return 0;
 }
 
@@ -251,6 +257,8 @@ _mail_imap_server_data(void *data, int type, void *event)
 	     is->count += num;
 	     ic->config->num_new = num;
 	     ic->config->num_total = total;
+	     if ((num > 0) && (ic->config->use_exec) && (ic->config->exec))
+	       _mail_start_exe(ic->config);
 	     
 	     is->clients = evas_list_next(is->clients);
 	     if (is->clients) 

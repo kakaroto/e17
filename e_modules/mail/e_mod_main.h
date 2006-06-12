@@ -14,6 +14,24 @@ typedef enum
 typedef struct _Config Config;
 typedef struct _Config_Item Config_Item;
 typedef struct _Config_Box Config_Box;
+typedef struct _Instance Instance;
+typedef struct _Mail Mail;
+
+struct _Instance 
+{
+   E_Gadcon_Client *gcc;
+   Evas_Object *mail_obj;
+   Mail *mail;
+   Ecore_Exe *exe;
+   Ecore_Timer *check_timer;
+   int count;
+};
+
+struct _Mail
+{
+   Instance *inst;
+   Evas_Object *mail_obj;
+};
 
 struct _Config 
 {
@@ -66,7 +84,8 @@ void _mail_config_updated(const char *id);
 void _mail_box_config_updated(E_Config_Dialog *cfd);
 void _mail_box_deleted(const char *ci_name, const char *box_name);
 void _mail_box_added(const char *ci_name, const char *box_name);
-void _mail_set_text(void *data, int count);
+void _mail_set_text(void *data);
+void _mail_start_exe(void *data);
 
 extern Config *mail_config;
 

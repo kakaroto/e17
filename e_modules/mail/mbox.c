@@ -4,7 +4,7 @@
 
 static Evas_List *mboxes;
 
-static void _mail_mbox_check(void *data, Ecore_File_Monitor *monitor, Ecore_File_Event event, const char *path);
+static void _mail_mbox_check_mail(void *data, Ecore_File_Monitor *monitor, Ecore_File_Event event, const char *path);
 
 void 
 _mail_mbox_add_mailbox(void *data, void *data2) 
@@ -20,7 +20,7 @@ _mail_mbox_add_mailbox(void *data, void *data2)
    mb->data = data;
    mb->config->num_new = 0;
    mb->config->num_total = 0;
-   mb->monitor = ecore_file_monitor_add(cb->new_path, _mail_mbox_check, mb);
+   mb->monitor = ecore_file_monitor_add(cb->new_path, _mail_mbox_check_mail, mb);
    
    mboxes = evas_list_append(mboxes, mb);
 }
@@ -66,7 +66,7 @@ _mail_mbox_shutdown()
 
 /* PRIVATES */
 static void 
-_mail_mbox_check(void *data, Ecore_File_Monitor *monitor, Ecore_File_Event event, const char *path) 
+_mail_mbox_check_mail(void *data, Ecore_File_Monitor *monitor, Ecore_File_Event event, const char *path) 
 {
    MboxClient *mb;
    Config_Box *cb;
@@ -74,6 +74,7 @@ _mail_mbox_check(void *data, Ecore_File_Monitor *monitor, Ecore_File_Event event
    char buf[1024];
    int total = 0, unread = 0;
    int header;
+   Instance *inst;
    
    mb = data;
    if (!mb) return;
@@ -103,5 +104,9 @@ _mail_mbox_check(void *data, Ecore_File_Monitor *monitor, Ecore_File_Event event
      }
    fclose(f);
 
-   _mail_set_text(mb->data, mb->config->num_new);
+   inst = mb->data;
+   inst->count = mb->config->num_new;
+   _mail_set_text(inst);
+   if ((mb->config->num_new > 0) && (mb->config->use_exec) && (mb->config->exec))
+     _mail_start_exe(mb->config);
 }

@@ -22,8 +22,14 @@ struct _PopClient
    PopState state;
    Config_Box *config;
    Ecore_Con_Server *server;
+   Ecore_Event_Handler *add_handler;
+   Ecore_Event_Handler *del_handler;
+   Ecore_Event_Handler *data_handler;
 };
 
-void _mail_pop_check_mail(void *data, void *data2);
+void _mail_pop_check_mail(void *data);
+void _mail_pop_add_mailbox(void *data);
+void _mail_pop_del_mailbox(void *data);
+void _mail_pop_shutdown();
 
 #endif
