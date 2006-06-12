@@ -75,8 +75,9 @@ _mail_mdir_check_mail(void *data, Ecore_File_Monitor *monitor, Ecore_File_Event 
 
    mc->config->num_total = _mail_mdir_get_files(mc->config->cur_path);
    mc->config->num_new = _mail_mdir_get_files(mc->config->new_path);
+
    inst = mc->data;
-   inst->count = mc->config->num_new;
+   inst->count += mc->config->num_new;
    _mail_set_text(inst);
    if ((mc->config->num_new > 0) && (mc->config->use_exec) && (mc->config->exec))
      _mail_start_exe(mc->config);

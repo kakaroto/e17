@@ -16,32 +16,10 @@ collections
 	max: 128 128;
 	parts
 	  {
-	     part 
-	       {
-		  name: "clip";
-		  type: RECT;
-		  mouse_events: 1;
-		  description 
-		    {
-		       state: "default" 0.0;
-		       color: 255 255 255 255;
-		       rel1 
-			 {
-			    relative: 0.0 0.0;
-			    offset: 0 0;
-			 }
-		       rel2 
-			 {
-			    relative: 1.0 1.0;
-			    offset: -1 -1;
-			 }
-		    }
-	       }
 	     part
 	       {
 		  name:          "logo";
 		  type: IMAGE;
-		  clip_to: "clip";
 		  mouse_events: 1;
 		  description
 		    {
@@ -78,14 +56,13 @@ collections
 	       {
 		  name: "new_label";
 		  type: TEXT;
-		  clip_to: "clip";
-		  effect: SOFT_SHADOW;
+		  effect: OUTLINE_SOFT_SHADOW;
 		  mouse_events: 1;
 		  description 
 		    {
 		       state: "default" 0.0;
-		       color: 0 0 0 255;
-		       color3: 255 255 255 42;
+		       color: 255 255 255 255;
+		       color3: 0 0 0 32;
 		       visible: 0;
 		       rel1 
 			 {
@@ -103,10 +80,9 @@ collections
 			 {
 			    text: "";
 			    font: "VeraBold";
-			    size: 14;
+			    size: 16;
 			    min: 1 1;
-			    align: 0.5 0.5;
-			    text_class: "module_large";
+			    align: 1.0 0.5;
 			 }
 		    }
 		  description 
@@ -114,8 +90,6 @@ collections
 		       state: "visible" 0.0;
 		       inherit: "default" 0.0;
 		       visible: 1;
-		       color: 0 0 0 255;
-		       color3: 255 255 255 42;
 		    }
 	       }
 	  }

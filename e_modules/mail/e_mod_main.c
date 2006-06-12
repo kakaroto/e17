@@ -487,6 +487,8 @@ _mail_cb_check(void *data)
    int have_imap = 0, have_pop = 0;
    
    if (!inst) return 1;
+   inst->count = 0;
+   
    ci = _mail_config_item_get(inst->gcc->id);
    if (!ci->boxes) return 1;
    for (l = ci->boxes; l; l = l->next) 

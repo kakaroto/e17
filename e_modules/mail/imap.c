@@ -194,8 +194,9 @@ _mail_imap_server_del(void *data, int type, void *event)
    
    ecore_con_server_del(is->server);
    is->server = NULL;
+
    inst = is->data;
-   inst->count = is->count;
+   inst->count += is->count;
    _mail_set_text(inst);
    
    return 0;
@@ -258,9 +259,6 @@ _mail_imap_server_data(void *data, int type, void *event)
 	     is->count += num;
 	     ic->config->num_new = num;
 	     ic->config->num_total = total;
-	     inst = is->data;
-	     inst->count = num;
-	     _mail_set_text(inst); 
 	     if ((num > 0) && (ic->config->use_exec) && (ic->config->exec))
 	       _mail_start_exe(ic->config);
 	     

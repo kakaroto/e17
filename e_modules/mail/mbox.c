@@ -105,7 +105,7 @@ _mail_mbox_check_mail(void *data, Ecore_File_Monitor *monitor, Ecore_File_Event 
    fclose(f);
 
    inst = mb->data;
-   inst->count = mb->config->num_new;
+   inst->count += mb->config->num_new;
    _mail_set_text(inst);
    if ((mb->config->num_new > 0) && (mb->config->use_exec) && (mb->config->exec))
      _mail_start_exe(mb->config);

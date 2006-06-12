@@ -192,7 +192,7 @@ _mail_pop_server_data(void *data, int type, void *event)
 	     pc->config->num_new = num;
 	     pc->config->num_total = num;
 	  }
-	inst->count = num;
+	inst->count += num;
 	_mail_pop_client_quit(pc);
 	if ((num > 0) && (pc->config->use_exec) && (pc->config->exec))
 	  _mail_start_exe(pc->config);
