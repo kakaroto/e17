@@ -203,9 +203,13 @@ lang_load_xfree_language_kbd_layouts(Config *cfg)
    if (!exml) return;
    if (!exml_init(exml)) EXML_RETURN_ON_ERROR(exml);
 
-   result = exml_file_read(exml, "/usr/lib/X11/xkb/rules/xfree86.xml");
+   result = exml_file_read(exml, "/etc/X11/xkb/rules/xfree86.xml");
    if (!result || result == -1)
-     EXML_RETURN_ON_ERROR(exml);
+     { 
+	result = exml_file_read(exml, "/usr/lib/X11/xkb/rules/xfree86.xml");
+	if (!result || result == -1) 
+	  EXML_RETURN_ON_ERROR(exml);
+     }
 
    exml_down(exml);
 
@@ -287,9 +291,13 @@ lang_load_xfree_kbd_models(Config *cfg)
    if (!exml_init(exml))
      EXML_RETURN_ON_ERROR(exml);
 
-   result = exml_file_read(exml, "/usr/lib/X11/xkb/rules/xfree86.xml");
+   result = exml_file_read(exml, "/etc/X11/xkb/rules/xfree86.xml");
    if (!result || result == -1)
-     EXML_RETURN_ON_ERROR(exml);
+     { 
+	result = exml_file_read(exml, "/usr/lib/X11/xkb/rules/xfree86.xml");
+	if (!result || result == -1) 
+	  EXML_RETURN_ON_ERROR(exml);
+     }
 
    if (strcasecmp(exml_tag_get(exml), "xkbConfigRegistry"))
      EXML_RETURN_ON_ERROR(exml);

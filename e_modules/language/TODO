@@ -1,1 +1,2 @@
-0. Check for Memleaks? forget somewere to clear list or remove an item from it?
+1. Add gettext support
+2. Check for Memleaks? forget somewere to clear list or remove an item from it?
