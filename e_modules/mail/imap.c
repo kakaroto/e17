@@ -207,6 +207,7 @@ _mail_imap_server_data(void *data, int type, void *event)
    Ecore_Con_Event_Server_Data *ev = event;
    ImapServer *is;
    ImapClient *ic;
+   Instance *inst;
    int len, num = 0, total = 0;
    char in[1024], out[1024], *spc;
    size_t slen;
@@ -257,6 +258,9 @@ _mail_imap_server_data(void *data, int type, void *event)
 	     is->count += num;
 	     ic->config->num_new = num;
 	     ic->config->num_total = total;
+	     inst = is->data;
+	     inst->count = num;
+	     _mail_set_text(inst); 
 	     if ((num > 0) && (ic->config->use_exec) && (ic->config->exec))
 	       _mail_start_exe(ic->config);
 	     
