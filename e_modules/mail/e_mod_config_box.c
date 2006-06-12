@@ -329,6 +329,7 @@ _type_cb_change(void *data, Evas_Object *obj)
 	e_widget_disabled_set(cfdata->cur_path_label, 1);
 	e_widget_disabled_set(cfdata->cur_path_entry, 1);
 	e_widget_entry_text_set(cfdata->cur_path_entry, "");
+	e_widget_entry_text_set(cfdata->new_path_entry, _("Inbox"));
 	e_widget_entry_text_set(cfdata->port_entry, "143");
 	cfdata->port = strdup("143");
      }
