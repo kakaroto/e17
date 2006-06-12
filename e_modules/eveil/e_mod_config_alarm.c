@@ -65,7 +65,7 @@ void eveil_config_alarm(Alarm *al)
    v->advanced.create_widgets = _advanced_create_widgets;
    
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
-			     _("Eveil Alarm Configuration"), NULL, 0, v, al);
+			     D_("Eveil Alarm Configuration"), NULL, 0, v, al);
 }
 
 static void *
@@ -164,16 +164,16 @@ _common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *c
    Evas_Object *of, *ob;
    E_Radio_Group *rg;
 
-   of = e_widget_frametable_add(evas, _("Informations"), 0);
+   of = e_widget_frametable_add(evas, D_("Informations"), 0);
 
-   ob = e_widget_check_add(evas, _("Active"), &(cfdata->state));
+   ob = e_widget_check_add(evas, D_("Active"), &(cfdata->state));
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, _("Name"));
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 1, 1);
    ob = e_widget_entry_add(evas, &(cfdata->name));
    e_widget_min_size_set(ob, 200, 25);
    e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_label_add(evas, _("Description"));
+   ob = e_widget_label_add(evas, D_("Description"));
    e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 1, 1, 1);
    ob = e_widget_entry_add(evas, &(cfdata->description));
    e_widget_min_size_set(ob, 250, 25);
@@ -183,44 +183,44 @@ _common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *c
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
 
-   of = e_widget_frametable_add(evas, _("Schedule"), 0);
+   of = e_widget_frametable_add(evas, D_("Schedule"), 0);
 
-   ob = e_widget_slider_add(evas, 1, 0, _("%1.0f hour"), 0.0, 23.0, 1.0, 0,
+   ob = e_widget_slider_add(evas, 1, 0, D_("%1.0f hour"), 0.0, 23.0, 1.0, 0,
                             NULL, &(cfdata->sched.hour), 130);
    e_widget_frametable_object_append(of, ob, 0, 0, 4, 1, 1, 0, 1, 0);
-   ob = e_widget_slider_add(evas, 1, 0, _("%1.0f minute"), 0.0, 59.0, 1.0, 0,
+   ob = e_widget_slider_add(evas, 1, 0, D_("%1.0f minute"), 0.0, 59.0, 1.0, 0,
                             NULL, &(cfdata->sched.minute), 130);
    e_widget_frametable_object_append(of, ob, 0, 1, 4, 1, 1, 0, 1, 0);
 
    rg = e_widget_radio_group_new(&(cfdata->sched.type));
 
-   ob = e_widget_radio_add(evas, _("Days of the week"), ALARM_SCHED_TYPE_WEEK, rg);
+   ob = e_widget_radio_add(evas, D_("Days of the week"), ALARM_SCHED_TYPE_WEEK, rg);
    e_widget_frametable_object_append(of, ob, 0, 3, 2, 1, 1, 1, 1, 1);
-   ob = e_widget_check_add(evas, _("Monday"), &(cfdata->sched.day_monday));
+   ob = e_widget_check_add(evas, D_("Monday"), &(cfdata->sched.day_monday));
    e_widget_frametable_object_append(of, ob, 0, 4, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_check_add(evas, _("Tuesday"), &(cfdata->sched.day_tuesday));
+   ob = e_widget_check_add(evas, D_("Tuesday"), &(cfdata->sched.day_tuesday));
    e_widget_frametable_object_append(of, ob, 0, 5, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_check_add(evas, _("Wenesday"), &(cfdata->sched.day_wenesday));
+   ob = e_widget_check_add(evas, D_("Wenesday"), &(cfdata->sched.day_wenesday));
    e_widget_frametable_object_append(of, ob, 0, 6, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_check_add(evas, _("Thursday"), &(cfdata->sched.day_thursday));
+   ob = e_widget_check_add(evas, D_("Thursday"), &(cfdata->sched.day_thursday));
    e_widget_frametable_object_append(of, ob, 0, 7, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_check_add(evas, _("Friday"), &(cfdata->sched.day_friday));
+   ob = e_widget_check_add(evas, D_("Friday"), &(cfdata->sched.day_friday));
    e_widget_frametable_object_append(of, ob, 0, 8, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_check_add(evas, _("Saturday"), &(cfdata->sched.day_saturday));
+   ob = e_widget_check_add(evas, D_("Saturday"), &(cfdata->sched.day_saturday));
    e_widget_frametable_object_append(of, ob, 1, 4, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_check_add(evas, _("Sunday"), &(cfdata->sched.day_sunday));
+   ob = e_widget_check_add(evas, D_("Sunday"), &(cfdata->sched.day_sunday));
    e_widget_frametable_object_append(of, ob, 1, 5, 1, 1, 1, 1, 1, 1);
 
-   ob = e_widget_radio_add(evas, _("One day"), ALARM_SCHED_TYPE_DAY, rg);
+   ob = e_widget_radio_add(evas, D_("One day"), ALARM_SCHED_TYPE_DAY, rg);
    e_widget_frametable_object_append(of, ob, 3, 3, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_label_add(evas, _("Date (YYYY/MM/DD)"));
+   ob = e_widget_label_add(evas, D_("Date (YYYY/MM/DD)"));
    e_widget_frametable_object_append(of, ob, 3, 4, 1, 1, 1, 1, 1, 1);
    cfdata->sched_gui.date = e_widget_entry_add(evas, &(cfdata->sched.date));
    e_widget_min_size_set(cfdata->sched_gui.date, 100, 25);
    e_widget_frametable_object_append(of, cfdata->sched_gui.date, 3, 5, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_button_add(evas, _("Today"), NULL, _cb_alarm_today, cfdata, NULL);
+   ob = e_widget_button_add(evas, D_("Today"), NULL, _cb_alarm_today, cfdata, NULL);
    e_widget_frametable_object_append(of, ob, 3, 6, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_button_add(evas, _("Tomorrow"), NULL, _cb_alarm_tomorrow, cfdata, NULL);
+   ob = e_widget_button_add(evas, D_("Tomorrow"), NULL, _cb_alarm_tomorrow, cfdata, NULL);
    e_widget_frametable_object_append(of, ob, 3, 7, 1, 1, 1, 1, 1, 1);
 
    e_widget_list_object_append(o, of, 1, 1, 0.5);
@@ -256,36 +256,36 @@ _common_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
           {
           case ALARM_ADD_ERROR_UNKNOWN:
              snprintf(buf, sizeof(buf),
-                      "<hilight>Error, The alarm was not added !</hilight><br><br>"
-                      "There is an error in the informations / schedule of your alarm");
+                      D_("<hilight>Error, The alarm was not added !</hilight><br><br>"
+                      "There is an error in the informations / schedule of your alarm"));
              break;
           case ALARM_ADD_ERROR_NAME:
              snprintf(buf, sizeof(buf),
-                      "<hilight>Error, The alarm was not added !</hilight><br><br>"
-                      "You have to enter a name for the alarm");
+                      D_("<hilight>Error, The alarm was not added !</hilight><br><br>"
+                      "You have to enter a name for the alarm"));
              break;
           case ALARM_ADD_ERROR_SCHED_WEEK:
              snprintf(buf, sizeof(buf),
-                      "<hilight>Error, The alarm was not added !</hilight><br><br>"
-                      "You have to select at least one day in the week");
+                      D_("<hilight>Error, The alarm was not added !</hilight><br><br>"
+                      "You have to select at least one day in the week"));
              break;
           case ALARM_ADD_ERROR_SCHED_DAY:
              snprintf(buf, sizeof(buf),
-                      "<hilight>Error, The alarm was not added !</hilight><br><br>"
+                      D_("<hilight>Error, The alarm was not added !</hilight><br><br>"
                       "The date you entered for the alarm has incorrect syntax<br><br>"
                       "You have to respect this format :<br>"
                       "   YYYY/MM/DD<br>"
                       "YYYY is the year on 4 numbers<br>"
                       "MM is the month on 2 numbers<br>"
-                      "DD is the day on 2 numbers<br>");
+                      "DD is the day on 2 numbers<br>"));
              break;
           case ALARM_ADD_ERROR_SCHED_BEFORE:
              snprintf(buf, sizeof(buf),
-                      "<hilight>Error, The alarm was not added !</hilight><br><br>"
-                      "The date you entered is before now");
+                      D_("<hilight>Error, The alarm was not added !</hilight><br><br>"
+                      "The date you entered is before now"));
              break;
           }
-        e_module_dialog_show(_("Eveil Module Error"), buf);
+        e_module_dialog_show(D_("Eveil Module Error"), buf);
         return 0;
      }
 
@@ -318,7 +318,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
    _common_create_widgets(cfd, evas, cfdata, o);
 
-   ob = e_widget_button_add(evas, _("Test this alarm"), NULL, _cb_alarm_test, cfd, cfdata);
+   ob = e_widget_button_add(evas, D_("Test this alarm"), NULL, _cb_alarm_test, cfd, cfdata);
 
    e_widget_list_object_append(o, ob, 1, 1, 0.5);
 
@@ -346,42 +346,42 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 
    _common_create_widgets(cfd, evas, cfdata, o);
 
-   of = e_widget_frametable_add(evas, _("Ring Options"), 0);
+   of = e_widget_frametable_add(evas, D_("Ring Options"), 0);
 
-   ob = e_widget_label_add(evas, _("Remove alarm"));
+   ob = e_widget_label_add(evas, D_("Remove alarm"));
    e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 1, 1);
 
    rg = e_widget_radio_group_new(&(cfdata->autoremove));
 
    ob = e_widget_radio_add(evas, _("No"), ALARM_AUTOREMOVE_NO, rg);
    e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_radio_add(evas, _("Use general settings"), ALARM_AUTOREMOVE_PARENT, rg);
+   ob = e_widget_radio_add(evas, D_("Use general settings"), ALARM_AUTOREMOVE_PARENT, rg);
    e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 1, 1, 1);
    ob = e_widget_radio_add(evas, _("Yes"), ALARM_AUTOREMOVE_YES, rg);
    e_widget_frametable_object_append(of, ob, 1, 3, 1, 1, 1, 1, 1, 1);
 
-   ob = e_widget_label_add(evas, _("Open popup"));
+   ob = e_widget_label_add(evas, D_("Open popup"));
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 1, 1);
 
    rg = e_widget_radio_group_new(&(cfdata->open_popup));
 
    ob = e_widget_radio_add(evas, _("No"), ALARM_OPEN_POPUP_NO, rg);
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_radio_add(evas, _("Use general settings"), ALARM_OPEN_POPUP_PARENT, rg);
+   ob = e_widget_radio_add(evas, D_("Use general settings"), ALARM_OPEN_POPUP_PARENT, rg);
    e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 1, 1, 1);
    ob = e_widget_radio_add(evas, _("Yes"), ALARM_OPEN_POPUP_YES, rg);
    e_widget_frametable_object_append(of, ob, 0, 3, 1, 1, 1, 1, 1, 1);
 
-   ob = e_widget_label_add(evas, _("Run a program"));
+   ob = e_widget_label_add(evas, D_("Run a program"));
    e_widget_frametable_object_append(of, ob, 0, 4, 1, 1, 1, 1, 1, 1);
 
    rg = e_widget_radio_group_new(&(cfdata->run_program));
 
    ob = e_widget_radio_add(evas, _("No"), ALARM_RUN_PROGRAM_NO, rg);
    e_widget_frametable_object_append(of, ob, 0, 5, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_radio_add(evas, _("Use general settings"), ALARM_RUN_PROGRAM_PARENT, rg);
+   ob = e_widget_radio_add(evas, D_("Use general settings"), ALARM_RUN_PROGRAM_PARENT, rg);
    e_widget_frametable_object_append(of, ob, 0, 6, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_radio_add(evas, _("Run this program"), ALARM_RUN_PROGRAM_OWN, rg);
+   ob = e_widget_radio_add(evas, D_("Run this program"), ALARM_RUN_PROGRAM_OWN, rg);
    e_widget_frametable_object_append(of, ob, 0, 7, 1, 1, 1, 1, 1, 1);
 
    ob = e_widget_entry_add(evas, &(cfdata->program));
@@ -391,7 +391,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
 
-   ob = e_widget_button_add(evas, _("Test this alarm"), NULL, _cb_alarm_test, cfd, cfdata);
+   ob = e_widget_button_add(evas, D_("Test this alarm"), NULL, _cb_alarm_test, cfd, cfdata);
 
    e_widget_list_object_append(o, ob, 1, 1, 0.5);
 
@@ -425,14 +425,14 @@ static void _cb_alarm_test(void *data, void *data2)
    if (eveil_alarm_ring(cfdata->al, 1))
      {
         snprintf(buf, sizeof(buf),
-                 "<hilight>Alarm test SUCCEED !</hilight>");
+                 D_("<hilight>Alarm test SUCCEED !</hilight>"));
      }
    else
      {
         snprintf(buf, sizeof(buf),
-                 "<hilight>Alarm test FAILED !</hilight>");
+                 D_("<hilight>Alarm test FAILED !</hilight>"));
      }
-   e_module_dialog_show(_("Eveil Module Test Report"), buf);
+   e_module_dialog_show(D_("Eveil Module Test Report"), buf);
 }
 
 static void _cb_alarm_today(void *data, void *data2)

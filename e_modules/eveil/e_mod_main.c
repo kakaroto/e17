@@ -180,7 +180,7 @@ _gc_orient(E_Gadcon_Client *gcc)
 static char *
 _gc_label(void)
 {
-   return _("Eveil");
+   return D_("Eveil");
 }
 
 static Evas_Object *
@@ -315,10 +315,10 @@ int eveil_alarm_ring(Alarm *al, int test)
         eveil_config->alarms_open_popup_default))
      {
         snprintf(buf, sizeof(buf),
-                 "<hilight>Alarm : %s</hilight><br><br>"
-                 "%s",
+                 D_("<hilight>Alarm : %s</hilight><br><br>"
+                 "%s"),
                  al->name, (al->description) ? al->description : "" );
-        e_module_dialog_show(_("Eveil Module Popup"), buf);
+        e_module_dialog_show(D_("Eveil Module Popup"), buf);
      }
 
    if ((al->run_program == ALARM_RUN_PROGRAM_OWN) ||
@@ -342,9 +342,9 @@ int eveil_alarm_ring(Alarm *al, int test)
         else
           {
              snprintf(buf, sizeof(buf),
-                      "<hilight>Failed !</hilight><br><br>"
-                      "Eveil couln't launch the program you specified");
-             e_module_dialog_show(_("Eveil Module Error"), buf);
+                      D_("<hilight>Failed !</hilight><br><br>"
+                      "Eveil couln't launch the program you specified"));
+             e_module_dialog_show(D_("Eveil Module Error"), buf);
              ret = 0;
           }
      }
@@ -574,14 +574,14 @@ _alarm_snooze(Alarm *al)
      return;
    evas = e_win_evas_get(dia->win);
 
-   snprintf(buf, sizeof(buf), "Snooze %s", al->name);
+   snprintf(buf, sizeof(buf), D_("Snooze %s"), al->name);
    e_dialog_title_set(dia, buf);
    
    o = e_widget_list_add(evas, 0, 0);
-   ob = e_widget_slider_add(evas, 1, 0, _("%1.0f hours"), 0.0, 24.0, 1.0, 0,
+   ob = e_widget_slider_add(evas, 1, 0, D_("%1.0f hours"), 0.0, 24.0, 1.0, 0,
                             NULL, &(al->snooze.hour), 100);
    e_widget_list_object_append(o, ob, 0, 0, 1.0);
-   ob = e_widget_slider_add(evas, 1, 0, _("%1.0f minutes"), 0.0, 60.0, 1.0, 0,
+   ob = e_widget_slider_add(evas, 1, 0, D_("%1.0f minutes"), 0.0, 60.0, 1.0, 0,
                             NULL, &(al->snooze.minute), 100);
    e_widget_list_object_append(o, ob, 0, 0, 1.0);
 
@@ -750,7 +750,7 @@ _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
                   if (al->state == ALARM_STATE_RINGING)
                     {
                        char buf[30];
-                       snprintf(buf, sizeof(buf), "Snooze %s", al->name);
+                       snprintf(buf, sizeof(buf), D_("Snooze %s"), al->name);
                        mi = e_menu_item_new(mn);
                        e_menu_item_label_set(mi, buf);
                        e_menu_item_callback_set(mi, _menu_cb_alarm_snooze, al);
@@ -758,7 +758,7 @@ _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
                        else e_menu_item_icon_edje_set(mi, eveil_config->theme, THEME_ICON_SNOOZE);
                        if (al->snooze.remember)
                          {
-                            snprintf(buf, sizeof(buf), "Snooze %.14s of %.2d:%.2d",
+                            snprintf(buf, sizeof(buf), D_("Snooze %.14s of %.2d:%.2d"),
                                      al->name, al->snooze.hour, al->snooze.minute);
                             mi = e_menu_item_new(mn);
                             e_menu_item_label_set(mi, buf);
@@ -772,14 +772,14 @@ _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
         if (!nb_snoozed)
           {
              mi = e_menu_item_new(mn);
-             e_menu_item_label_set(mi, _("Snooze (No alarm to delay)"));
+             e_menu_item_label_set(mi, D_("Snooze (No alarm to delay)"));
              if (!eveil_config->theme) e_util_menu_item_edje_icon_set(mi, THEME_ICON_SNOOZE);
              else e_menu_item_icon_edje_set(mi, eveil_config->theme, THEME_ICON_SNOOZE);
           }
         mi = e_menu_item_new(mn);
         e_menu_item_separator_set(mi, 1);
 	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, _("Add an alarm"));
+	e_menu_item_label_set(mi, D_("Add an alarm"));
 	e_menu_item_callback_set(mi, _menu_cb_alarm_add, NULL);
         if (!eveil_config->theme) e_util_menu_item_edje_icon_set(mi, THEME_ICON_ALARM_ON);
         else e_menu_item_icon_edje_set(mi, eveil_config->theme, THEME_ICON_ALARM_ON);
@@ -788,14 +788,14 @@ _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
         mi = e_menu_item_new(mn);
         if (eveil_config->timer_state == TIMER_STATE_OFF)
           {
-             e_menu_item_label_set(mi, _("Start the timer"));
+             e_menu_item_label_set(mi, D_("Start the timer"));
              e_menu_item_callback_set(mi, _menu_cb_timer_start, NULL);
              if (!eveil_config->theme) e_util_menu_item_edje_icon_set(mi, THEME_ICON_TIMER_ON);
              else e_menu_item_icon_edje_set(mi, eveil_config->theme, THEME_ICON_TIMER_ON);
           }
         else
           {
-             e_menu_item_label_set(mi, _("Stop the timer"));
+             e_menu_item_label_set(mi, D_("Stop the timer"));
              e_menu_item_callback_set(mi, _menu_cb_timer_stop, NULL);
              if (!eveil_config->theme) e_util_menu_item_edje_icon_set(mi, THEME_ICON_TIMER_OFF);
              else e_menu_item_icon_edje_set(mi, eveil_config->theme, THEME_ICON_TIMER_OFF);
@@ -935,9 +935,9 @@ _cb_timer_etimer(void *data)
         char buf[4096];
         
         snprintf(buf, sizeof(buf),
-                 "<hilight>Timer elapsed !</hilight><br><br>"
-                 "Time for pastas :D");
-        e_module_dialog_show(_("Eveil Module Popup"), buf);
+                 D_("<hilight>Timer elapsed !</hilight><br><br>"
+                 "Time for pastas :D"));
+        e_module_dialog_show(D_("Eveil Module Popup"), buf);
      }
 
    if (eveil_config->timer_run_program_default)
@@ -1020,6 +1020,9 @@ _cb_alarm_snooze_time(void *data)
 EAPI void *
 e_modapi_init(E_Module *m)
 {
+   bindtextdomain(PACKAGE, LOCALEDIR);
+   bind_textdomain_codeset(PACKAGE, "UTF-8");
+
    char buf[4096];
 
    _alarms_edd = E_CONFIG_DD_NEW("Eveil_Alarm", Alarm);
@@ -1076,13 +1079,13 @@ e_modapi_init(E_Module *m)
         if (eveil_config->config_version < CONFIG_VERSION)
           {
              snprintf(buf, sizeof(buf),
-                      _("<hilight>Eveil module : Configuration Upgraded</hilight><br><br>"
+                      D_("<hilight>Eveil module : Configuration Upgraded</hilight><br><br>"
                         "Your configuration of eveil module<br>"
                         "has been upgraded<br>"
                         "Your settings were removed<br>"
                         "Sorry for the inconvenience<br><br>"
                         "(%d -> %d)"), eveil_config->config_version, CONFIG_VERSION);
-             e_module_dialog_show(_("Eveil Module version " MODULE_VERSION), buf);
+             e_module_dialog_show(D_("Eveil Module version " MODULE_VERSION), buf);
              eveil_config = NULL;
           }
         else
@@ -1090,13 +1093,13 @@ e_modapi_init(E_Module *m)
              if (eveil_config->config_version > CONFIG_VERSION)
                {
                   snprintf(buf, sizeof(buf),
-                           _("<hilight>Eveil module : Configuration Downgraded</hilight><br><br>"
+                           D_("<hilight>Eveil module : Configuration Downgraded</hilight><br><br>"
                              "Your configuration of Eveil module<br>"
                              "has been downgraded<br>"
                              "Your settings were removed<br>"
                              "Sorry for the inconvenience<br><br>"
                              "(%d ->%d)"), eveil_config->config_version, CONFIG_VERSION);
-                  e_module_dialog_show(_("Eveil Module version " MODULE_VERSION), buf);
+                  e_module_dialog_show(D_("Eveil Module version " MODULE_VERSION), buf);
                   eveil_config = NULL;
                }
           }
@@ -1207,8 +1210,8 @@ e_modapi_save(E_Module *m)
 EAPI int
 e_modapi_about(E_Module *m)
 {
-   e_module_dialog_show(_("Eveil Module version " MODULE_VERSION),
-			_("A module to set timers and alarms to alert you<br>"
+   e_module_dialog_show(D_("Eveil Module version " MODULE_VERSION),
+			D_("A module to set timers and alarms to alert you<br>"
                           " when youre pastas are ready<br>"
 			  "or when you need to wake up<br><br>"
 			  "http://oooo.zapto.org<br>"

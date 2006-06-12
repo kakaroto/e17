@@ -70,7 +70,7 @@ void eveil_config_module(void)
    v->advanced.create_widgets = _advanced_create_widgets;
    
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
-			     _("Eveil Configuration"), NULL, 0, v, NULL);
+			     D_("Eveil Configuration"), NULL, 0, v, NULL);
    eveil_config->config_dialog = cfd;
 }
 
@@ -183,9 +183,9 @@ _common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *c
 {
    Evas_Object *of, *ob;
 
-   of = e_widget_frametable_add(evas, _("Alarm"), 0);
+   of = e_widget_frametable_add(evas, D_("Alarm"), 0);
 
-   ob = e_widget_check_add(evas, _("Active"), &(cfdata->alarms_active));
+   ob = e_widget_check_add(evas, D_("Active"), &(cfdata->alarms_active));
    e_widget_frametable_object_append(of, ob, 0, 0, 2, 1, 1, 1, 1, 10);
 
    ob = e_widget_ilist_add(evas, 16, 16, NULL);
@@ -204,10 +204,10 @@ _common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *c
    e_widget_table_object_append(o, of, 0, 0, 1, 1, 1, 1, 1, 1);
 
 
-   of = e_widget_frametable_add(evas, _("Timer"), 0);
+   of = e_widget_frametable_add(evas, D_("Timer"), 0);
 
    cfdata->timer_gui.slider_h =
-      e_widget_slider_add(evas, 1, 0, _("%1.0f hours"),
+      e_widget_slider_add(evas, 1, 0, D_("%1.0f hours"),
                           (float)TIMER_TIME_MIN/3600, (float)TIMER_TIME_MAX/3600,
                           1.0, 0,
                           NULL, &(cfdata->timer_time_h), 130);
@@ -215,7 +215,7 @@ _common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *c
    e_widget_frametable_object_append(of, cfdata->timer_gui.slider_h,
                                      0, 0, 3, 1, 1, 0, 1, 0);
    cfdata->timer_gui.slider_m =
-      e_widget_slider_add(evas, 1, 0, _("%1.0f min"),
+      e_widget_slider_add(evas, 1, 0, D_("%1.0f min"),
                           0.0, 59.0,
                           1.0, 0,
                           NULL, &(cfdata->timer_time_m), 130);
@@ -223,7 +223,7 @@ _common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *c
    e_widget_frametable_object_append(of, cfdata->timer_gui.slider_m,
                                      0, 1, 3, 1, 1, 0, 1, 0);
    cfdata->timer_gui.slider_s =
-      e_widget_slider_add(evas, 1, 0, _("%1.0f sec"),
+      e_widget_slider_add(evas, 1, 0, D_("%1.0f sec"),
                           0.0, 59.0,
                           1.0, 0,
                           NULL, &(cfdata->timer_time_s), 130);
@@ -232,17 +232,17 @@ _common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *c
                                      0, 2, 3, 1, 1, 0, 1, 0);
    
    cfdata->timer_gui.button_start =
-      e_widget_button_add(evas, _("Start !"), NULL, _cb_timer_start, cfdata, NULL);
+      e_widget_button_add(evas, D_("Start !"), NULL, _cb_timer_start, cfdata, NULL);
    e_widget_disabled_set(cfdata->timer_gui.button_start, eveil_config->timer_state);
    e_widget_frametable_object_append(of, cfdata->timer_gui.button_start,
                                      0, 3, 1, 1, 1, 1, 1, 1);
    cfdata->timer_gui.button_stop =
-      e_widget_button_add(evas, _("Stop !"), NULL, _cb_timer_stop, cfdata, NULL);
+      e_widget_button_add(evas, D_("Stop !"), NULL, _cb_timer_stop, cfdata, NULL);
    e_widget_disabled_set(cfdata->timer_gui.button_stop, !eveil_config->timer_state);
    e_widget_frametable_object_append(of, cfdata->timer_gui.button_stop,
                                      1, 3, 1, 1, 1, 1, 1, 1);
    cfdata->timer_gui.button_zero =
-      e_widget_button_add(evas, _("Zero"), NULL, _cb_timer_zero, cfdata, NULL);
+      e_widget_button_add(evas, D_("Zero"), NULL, _cb_timer_zero, cfdata, NULL);
    e_widget_disabled_set(cfdata->timer_gui.button_zero, eveil_config->timer_state);
    e_widget_frametable_object_append(of, cfdata->timer_gui.button_zero,
                                      2, 3, 1, 1, 1, 1, 1, 1);
@@ -302,78 +302,78 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    _common_create_widgets(cfd, evas, cfdata, o);
 
 
-   of = e_widget_frametable_add(evas, _("Alarm Options"), 0);
+   of = e_widget_frametable_add(evas, D_("Alarm Options"), 0);
 
-   ob = e_widget_label_add(evas, _("Show icon"));
+   ob = e_widget_label_add(evas, D_("Show icon"));
    e_widget_frametable_object_append(of, ob, 0, 0, 2, 1, 1, 1, 1, 1);
    rg = e_widget_radio_group_new(&(cfdata->alarms_icon_mode));
-   ob = e_widget_radio_add(evas, _("Never"), ALARMS_ICON_MODE_OFF, rg);
+   ob = e_widget_radio_add(evas, D_("Never"), ALARMS_ICON_MODE_OFF, rg);
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_radio_add(evas, _("When enabled"), ALARMS_ICON_MODE_ONGO, rg);
+   ob = e_widget_radio_add(evas, D_("When enabled"), ALARMS_ICON_MODE_ONGO, rg);
    e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_radio_add(evas, _("Always"), ALARMS_ICON_MODE_ON, rg);
+   ob = e_widget_radio_add(evas, D_("Always"), ALARMS_ICON_MODE_ON, rg);
    e_widget_frametable_object_append(of, ob, 2, 1, 1, 1, 1, 1, 1, 1);
 
-   ob = e_widget_label_add(evas, _("Show details"));
+   ob = e_widget_label_add(evas, D_("Show details"));
    e_widget_frametable_object_append(of, ob, 0, 2, 2, 1, 1, 1, 1, 1);
    rg = e_widget_radio_group_new(&(cfdata->alarms_detail_mode));
-   ob = e_widget_radio_add(evas, _("Never"), ALARMS_DETAIL_MODE_OFF, rg);
+   ob = e_widget_radio_add(evas, D_("Never"), ALARMS_DETAIL_MODE_OFF, rg);
    e_widget_frametable_object_append(of, ob, 0, 3, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_radio_add(evas, _("When enabled"), ALARMS_DETAIL_MODE_ONGO, rg);
+   ob = e_widget_radio_add(evas, D_("When enabled"), ALARMS_DETAIL_MODE_ONGO, rg);
    e_widget_frametable_object_append(of, ob, 1, 3, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_radio_add(evas, _("Always"), ALARMS_DETAIL_MODE_ON, rg);
+   ob = e_widget_radio_add(evas, D_("Always"), ALARMS_DETAIL_MODE_ON, rg);
    e_widget_frametable_object_append(of, ob, 2, 3, 1, 1, 1, 1, 1, 1);
 
-   ob = e_widget_check_add(evas, _("Open popup"), &(cfdata->alarms_open_popup_default));
+   ob = e_widget_check_add(evas, D_("Open popup"), &(cfdata->alarms_open_popup_default));
    e_widget_frametable_object_append(of, ob, 0, 4, 2, 1, 1, 1, 1, 1);
 
-   ob = e_widget_check_add(evas, _("Run program"), &(cfdata->alarms_run_program_default));
+   ob = e_widget_check_add(evas, D_("Run program"), &(cfdata->alarms_run_program_default));
    e_widget_frametable_object_append(of, ob, 0, 5, 1, 1, 1, 1, 1, 1);
 
    ob = e_widget_entry_add(evas, &(cfdata->alarms_program_default));
    e_widget_min_size_set(ob, 110, 25);
    e_widget_frametable_object_append(of, ob, 1, 5, 2, 1, 1, 1, 1, 1);
 
-   ob = e_widget_check_add(evas, _("Remove alarm after the date"), &(cfdata->alarms_date_autoremove_default));
+   ob = e_widget_check_add(evas, D_("Remove alarm after the date"), &(cfdata->alarms_date_autoremove_default));
    e_widget_frametable_object_append(of, ob, 0, 6, 3, 1, 1, 1, 1, 1);
 
-   ob = e_widget_label_add(evas, _("Time format"));
+   ob = e_widget_label_add(evas, D_("Time format"));
    e_widget_frametable_object_append(of, ob, 0, 7, 1, 1, 1, 1, 1, 1);
    rg = e_widget_radio_group_new(&(cfdata->time_format));
-   ob = e_widget_radio_add(evas, _("12h"), TIME_FORMAT_12, rg);
+   ob = e_widget_radio_add(evas, D_("12h"), TIME_FORMAT_12, rg);
    e_widget_frametable_object_append(of, ob, 1, 7, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_radio_add(evas, _("24h"), TIME_FORMAT_24, rg);
+   ob = e_widget_radio_add(evas, D_("24h"), TIME_FORMAT_24, rg);
    e_widget_frametable_object_append(of, ob, 2, 7, 1, 1, 1, 1, 1, 1);
 
    e_widget_table_object_append(o, of, 1, 0, 1, 1, 1, 1, 1, 1);
 
 
-   of = e_widget_frametable_add(evas, _("Timer Options"), 0);
+   of = e_widget_frametable_add(evas, D_("Timer Options"), 0);
 
-   ob = e_widget_label_add(evas, _("Show icon"));
+   ob = e_widget_label_add(evas, D_("Show icon"));
    e_widget_frametable_object_append(of, ob, 0, 0, 2, 1, 1, 1, 1, 1);
    rg = e_widget_radio_group_new(&(cfdata->timer_icon_mode));
-   ob = e_widget_radio_add(evas, _("Never"), TIMER_ICON_MODE_OFF, rg);
+   ob = e_widget_radio_add(evas, D_("Never"), TIMER_ICON_MODE_OFF, rg);
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_radio_add(evas, _("When enabled"), TIMER_ICON_MODE_ONGO, rg);
+   ob = e_widget_radio_add(evas, D_("When enabled"), TIMER_ICON_MODE_ONGO, rg);
    e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_radio_add(evas, _("Always"), TIMER_ICON_MODE_ON, rg);
+   ob = e_widget_radio_add(evas, D_("Always"), TIMER_ICON_MODE_ON, rg);
    e_widget_frametable_object_append(of, ob, 2, 1, 1, 1, 1, 1, 1, 1);
 
-   ob = e_widget_label_add(evas, _("Show details"));
+   ob = e_widget_label_add(evas, D_("Show details"));
    e_widget_frametable_object_append(of, ob, 0, 2, 2, 1, 1, 1, 1, 1);
    rg = e_widget_radio_group_new(&(cfdata->timer_detail_mode));
-   ob = e_widget_radio_add(evas, _("Never"), TIMER_DETAIL_MODE_OFF, rg);
+   ob = e_widget_radio_add(evas, D_("Never"), TIMER_DETAIL_MODE_OFF, rg);
    e_widget_frametable_object_append(of, ob, 0, 3, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_radio_add(evas, _("When enabled"), TIMER_DETAIL_MODE_ONGO, rg);
+   ob = e_widget_radio_add(evas, D_("When enabled"), TIMER_DETAIL_MODE_ONGO, rg);
    e_widget_frametable_object_append(of, ob, 1, 3, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_radio_add(evas, _("Always"), TIMER_DETAIL_MODE_ON, rg);
+   ob = e_widget_radio_add(evas, D_("Always"), TIMER_DETAIL_MODE_ON, rg);
    e_widget_frametable_object_append(of, ob, 2, 3, 1, 1, 1, 1, 1, 1);
 
-   ob = e_widget_check_add(evas, _("Open popup"), &(cfdata->timer_open_popup_default));
+   ob = e_widget_check_add(evas, D_("Open popup"), &(cfdata->timer_open_popup_default));
    e_widget_frametable_object_append(of, ob, 0, 4, 2, 1, 1, 1, 1, 1);
 
-   ob = e_widget_check_add(evas, _("Run program"), &(cfdata->timer_run_program_default));
+   ob = e_widget_check_add(evas, D_("Run program"), &(cfdata->timer_run_program_default));
    e_widget_frametable_object_append(of, ob, 0, 5, 1, 1, 1, 1, 1, 1);
 
    ob = e_widget_entry_add(evas, &(cfdata->timer_program_default));
