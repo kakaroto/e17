@@ -6,7 +6,7 @@ SUBDIRS = src data
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
                        config.h.in config.sub configure install-sh \
 		       ltconfig ltmain.sh missing mkinstalldirs depcomp \
-		       stamp-h.in $(MYAPPNAME)_docs.tar \ 
+		       stamp-h.in $(MYAPPNAME)_docs.tar \
 		       $(MYAPPNAME)_docs.tar.gz $(MYAPPNAME).c \
 		       debian/changelog
 
