@@ -41,8 +41,8 @@ _mail_imap_check_mail(void *data)
 		    {
 		       if (ecore_con_ssl_available_get() && (ic->config->ssl))
 			 type |= ECORE_CON_USE_SSL;
-		       ic->server->server = ecore_con_server_connect(type, ic->config->host, ic->config->port, NULL);
 		       ic->server->state = IMAP_STATE_DISCONNECTED;
+		       ic->server->server = ecore_con_server_connect(type, ic->config->host, ic->config->port, NULL);
 		       ic->server->cmd = 0;
 		    }
 	       }
@@ -122,9 +122,6 @@ _mail_imap_client_get(void *data)
    Evas_List *l, *j;
    int found = 0;
    
-   cb = data;
-   if (!cb) return NULL;
-
    if ((!iservers) || (evas_list_count(iservers) <= 0)) 
      {
 	is = E_NEW(ImapServer, 1);
@@ -154,6 +151,7 @@ _mail_imap_client_get(void *data)
      }
    if (!found) 
      {
+	cb = data;
 	ic = E_NEW(ImapClient, 1);
 	ic->config = cb;
 	ic->server = is;
@@ -194,6 +192,7 @@ _mail_imap_server_del(void *data, int type, void *event)
    ecore_con_server_del(is->server);
    is->server = NULL;
    
+   _mail_set_text(is->data);
    return 0;
 }
 
@@ -252,7 +251,6 @@ _mail_imap_server_data(void *data, int type, void *event)
 	  {
 	     ic->config->num_new = num;
 	     ic->config->num_total = total;
-	     _mail_set_text(is->data);
 
 	     if ((num > 0) && (ic->config->use_exec) && (ic->config->exec))
 	       _mail_start_exe(ic->config);
@@ -261,7 +259,16 @@ _mail_imap_server_data(void *data, int type, void *event)
 	     if (is->clients) 
 	       {
 		  is->current = is->clients->data;
-		  is->state = IMAP_STATE_SERVER_READY;
+		  if (is->current) 
+		    {
+		       ic = is->current;
+		       is->state = IMAP_STATE_SERVER_READY;
+		    }
+		  else 
+		    {
+		       _mail_imap_server_logout(is);
+		       ic = NULL;		       
+		    }
 	       }
 	     else 
 	       {
