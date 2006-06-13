@@ -96,9 +96,7 @@ callback_VOID__POINTER(Etk_Object *object, void *value, void *data)
    Etk_Event_Mouse_Up_Down *event = value;   
    HV *event_hv;
    SV *event_rv;
-   cbd = data;
-
-   
+   cbd = data;   
    event_hv = (HV*)sv_2mortal((SV*)newHV());   
    
    if(!strcmp(cbd->signal_name, "mouse_up"))
@@ -113,6 +111,8 @@ callback_VOID__POINTER(Etk_Object *object, void *value, void *data)
 	hv_store(event_hv, "widget_y", strlen("widget_y"), event_rv, 0);
 	event_rv = newRV(event_hv);	
      }   
+   else
+     event_rv = newRV(event_hv);
    
    PUSHMARK(SP) ;
    XPUSHs(sv_2mortal(event_rv));
