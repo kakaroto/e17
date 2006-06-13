@@ -5,8 +5,8 @@ sub new
 {
     my $class = shift;
     my $self = {};
-    my $model = shift;
-    $self->{WIDGET} = Etk::etk_iconbox_model_new($model);
+    my $iconbox = shift;
+    $self->{WIDGET} = Etk::etk_iconbox_model_new($iconbox->{WIDGET});
     bless($self, $class);
     return $self;
 }

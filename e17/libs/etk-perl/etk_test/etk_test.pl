@@ -13,6 +13,9 @@ use Etk::HBox;
 use Etk::HPaned;
 use Etk::HSlider;
 use Etk::HSeparator;
+use Etk::Iconbox;
+use Etk::Iconbox::Icon;
+use Etk::Iconbox::Model;
 use Etk::Image;
 use Etk::Label;
 use Etk::Main;
@@ -199,6 +202,27 @@ my %buttons = (
 	frame => "misc", 
 	cb => \&dnd_window_show
     }
+);
+
+my $_iconbox_folder = "";
+my %_iconbox_types = (
+    jpg => "mimetypes/image-x-generic_48",
+    jpeg => "mimetypes/image-x-generic_48",
+    png => "mimetypes/image-x-generic_48",
+    bmp => "mimetypes/image-x-generic_48",
+    gif => "mimetypes/image-x-generic_48",
+    mp3 => "mimetypes/audio-x-generic_48",
+    ogg => "mimetypes/audio-x-generic_48",
+    wav => "mimetypes/audio-x-generic_48",
+    avi => "mimetypes/video-x-generic_48",
+    mpg => "mimetypes/video-x-generic_48",
+    mpeg => "mimetypes/video-x-generic_48",
+    gz => "mimetypes/package-x-generic_48",
+    tgz => "mimetypes/package-x-generic_48",
+    bz2 => "mimetypes/package-x-generic_48",
+    tbz2 => "mimetypes/package-x-generic_48",
+    zip => "mimetypes/package-x-generic_48",
+    rar => "mimetypes/package-x-generic_48"    
 );
 
 # Count number of examples per category
@@ -814,11 +838,77 @@ sub combobox_window_show
 sub iconbox_window_show
 {
     my $win = Etk::Window->new("Etk-Perl Iconbox Test");
-    my $label = Etk::Label->new("<b>Etk::Iconbox test is not implemented yet.</b>");
+    $win->SizeRequestSet(100, 100);
     
-    $win->Add($label);
-    $win->BorderWidthSet(10);
+    $_iconbox_folder = "";    
+    my $iconbox = Etk::Iconbox->new();
+    my $model = Etk::Iconbox::Model->new($iconbox);
+    $model->GeometrySet(150, 20, 2, 2);
+    $model->IconGeometrySet(20, 0, 130, 16, 0.0, 0.5);
+    _iconbox_folder_set($iconbox, "");
+    
+    $iconbox->SignalConnect("mouse_up", 
+	sub {
+	    my $event = shift;
+	    my $icon = $iconbox->IconGetAtXY($event->{canvas_x},
+		$event->{canvas_y}, 0, 1, 1);
+	    return if($icon == undef);
+	    if (-d $_iconbox_folder."/".$icon->LabelGet())
+	    {
+		_iconbox_folder_set($iconbox, $icon->LabelGet());
+	    }
+	}
+    );    
+        
+    $win->Add($iconbox);
     $win->ShowAll();        
+}
+
+sub _iconbox_folder_set
+{
+    my $iconbox = shift;
+    my $folder = shift;
+    my $file = undef;
+    
+    $folder = %ENV->{HOME} if($folder eq "");
+    return if($folder eq "");      
+    
+    $iconbox->Clear();
+    $iconbox->Append(Etk::Theme::IconThemeGet(), "actions/go-up_48", "..");
+    
+    # Add directories
+    opendir(DIR, $_iconbox_folder."/".$folder) or die "can't opendir $folder: $!";
+    while (defined($file = readdir(DIR))) {
+	if (-d "$_iconbox_folder/$folder/$file" && $file  !~ /^\./)
+	{
+	    $iconbox->Append(Etk::Theme::IconThemeGet(), 
+		"places/folder_48", $file);
+	}
+    }
+    closedir(DIR);
+    
+    # Add files
+    opendir(DIR, $_iconbox_folder."/".$folder) or die "can't opendir $folder: $!";
+    while (defined($file = readdir(DIR))) {
+	if (-f "$_iconbox_folder/$folder/$file" && $file  !~ /^\./)
+	{
+	    my @parts = split /\./, $file;
+	    $parts[-1] =~ tr [A-Z] [a-z];
+	    if($_iconbox_types{$parts[-1]})
+	    {
+		$iconbox->Append(Etk::Theme::IconThemeGet(), 
+		    $_iconbox_types{$parts[-1]}, $file);
+	    }
+	    else
+	    {
+		$iconbox->Append(Etk::Theme::IconThemeGet(), 
+		    "mimetypes/text-x-generic_48", $file);
+	    }
+	}
+    }
+    closedir(DIR);
+    
+    $_iconbox_folder .= "/".$folder;
 }
 
 sub textview_window_show

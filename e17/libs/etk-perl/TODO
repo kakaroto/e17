@@ -7,7 +7,6 @@ General TODO:
   to return a list of values to the perl caller
 - finish remaining signal_connect functions (swapped etc.)
 - perldoc everything
-- wrap up functions that use (...): important ones are combo for now
 - create an evas_list to perl list converter
 - go over all enums and structs and port as needed
 - etk_argument.h
@@ -28,3 +27,4 @@ General TODO:
 - etk_types.h
 - etk_utils.h
 - etk_main.h [DONE]
+- wrap up functions that use (...): important ones are combo for now [DONE]

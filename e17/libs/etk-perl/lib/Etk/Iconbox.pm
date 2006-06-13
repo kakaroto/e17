@@ -75,6 +75,7 @@ sub IconGetAtXY
     my $icon = Etk::Iconbox::Icon->new();
     $icon->{WIDGET} =  Etk::etk_iconbox_icon_get_at_xy($self->{WIDGET}, $x, $y,
 	$over_cell, $over_icon, $over_label);
+    return undef if($icon->{WIDGET} == undef);
     return $icon;
 }
 

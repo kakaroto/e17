@@ -93,11 +93,29 @@ callback_VOID__POINTER(Etk_Object *object, void *value, void *data)
 {
    dSP;
    Callback_Signal_Data *cbd = NULL;
-
+   Etk_Event_Mouse_Up_Down *event = value;   
+   HV *event_hv;
+   SV *event_rv;
    cbd = data;
 
+   
+   event_hv = (HV*)sv_2mortal((SV*)newHV());   
+   
+   if(!strcmp(cbd->signal_name, "mouse_up"))
+     {	
+	event_rv = newSViv(event->canvas.x);
+	hv_store(event_hv, "canvas_x", strlen("canvas_x"), event_rv, 0);
+	event_rv = newSViv(event->canvas.y);
+	hv_store(event_hv, "canvas_y", strlen("canvas_y"), event_rv, 0);
+	event_rv = newSViv(event->widget.x);
+	hv_store(event_hv, "widget_x", strlen("widget_x"), event_rv, 0);
+	event_rv = newSViv(event->widget.y);
+	hv_store(event_hv, "widget_y", strlen("widget_y"), event_rv, 0);
+	event_rv = newRV(event_hv);	
+     }   
+   
    PUSHMARK(SP) ;
-   //XPUSHs(sv_2mortal(newSViv(value)));
+   XPUSHs(sv_2mortal(event_rv));
    XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));   
    PUTBACK ;
       
@@ -1392,27 +1410,27 @@ etk_hslider_type_get()
 
 Etk_Iconbox_Icon *
 etk_iconbox_append(iconbox, filename, edje_group, label)
-	Etk_Iconbox *	iconbox
+	Etk_Widget *	iconbox
 	char *	filename
 	char *	edje_group
 	char *	label
 
 void
 etk_iconbox_clear(iconbox)
-	Etk_Iconbox *	iconbox
+	Etk_Widget *	iconbox
 
 Etk_Iconbox_Model *
 etk_iconbox_current_model_get(iconbox)
-	Etk_Iconbox *	iconbox
+	Etk_Widget *	iconbox
 
 void
 etk_iconbox_current_model_set(iconbox, model)
-	Etk_Iconbox *	iconbox
+	Etk_Widget *	iconbox
 	Etk_Iconbox_Model *	model
 
 void
 etk_iconbox_freeze(iconbox)
-	Etk_Iconbox *	iconbox
+	Etk_Widget *	iconbox
 
 SV *
 etk_iconbox_icon_data_get(icon)
@@ -1454,7 +1472,7 @@ etk_iconbox_icon_file_set(icon, filename, edje_group)
 
 Etk_Iconbox_Icon *
 etk_iconbox_icon_get_at_xy(iconbox, x, y, over_cell, over_icon, over_label)
-	Etk_Iconbox *	iconbox
+	Etk_Widget *	iconbox
 	int	x
 	int	y
 	Etk_Bool	over_cell
@@ -1565,25 +1583,25 @@ etk_iconbox_model_label_geometry_set(model, x, y, width, height, xalign, yalign)
 
 Etk_Iconbox_Model *
 etk_iconbox_model_new(iconbox)
-	Etk_Iconbox *	iconbox
+	Etk_Widget *	iconbox
 
 Etk_Widget *
 etk_iconbox_new()
 
 void
 etk_iconbox_select_all(iconbox)
-	Etk_Iconbox *	iconbox
+	Etk_Widget *	iconbox
 
 void
 etk_iconbox_thaw(iconbox)
-	Etk_Iconbox *	iconbox
+	Etk_Widget *	iconbox
 
 Etk_Type *
 etk_iconbox_type_get()
 
 void
 etk_iconbox_unselect_all(iconbox)
-	Etk_Iconbox *	iconbox
+	Etk_Widget *	iconbox
 
 void
 etk_image_copy(dest_image, src_image)
