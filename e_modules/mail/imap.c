@@ -259,24 +259,15 @@ _mail_imap_server_data(void *data, int type, void *event)
 	     
 	     is->clients = evas_list_next(is->clients);
 	     if (is->clients) 
-	       {		  
+	       {
 		  is->current = is->clients->data;
-		  if (is->current) 
-		    {
-		       ic = is->current;
-		       is->state = IMAP_STATE_SERVER_READY;
-		    }
-		  else 
-		    {
-		       _mail_imap_server_logout(is);
-		       ic = NULL;
-		    }
+		  is->state = IMAP_STATE_SERVER_READY;
 	       }
 	     else 
 	       {
 		  _mail_imap_server_logout(is);
-		  ic = NULL;		  
-	       }	     
+		  ic = NULL;
+	       }
 	  }
 	if (!ic) break;
       default:
