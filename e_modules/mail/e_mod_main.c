@@ -7,7 +7,7 @@
  * it under the terms of version 2 of the GNU General Public License as
  * published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it cwill be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
@@ -487,7 +487,6 @@ _mail_cb_check(void *data)
    int have_imap = 0, have_pop = 0;
    
    if (!inst) return 1;
-   inst->count = 0;
    
    ci = _mail_config_item_get(inst->gcc->id);
    if (!ci->boxes) return 1;
@@ -520,13 +519,29 @@ void
 _mail_set_text(void *data) 
 {
    Instance *inst = data;
+   Config_Item *ci;
+   Evas_List *l;
    char buf[1024];
+   int count = 0;
    
    if (!inst) return;
-   
-   if (inst->count > 0) 
+
+   ci = _mail_config_item_get(inst->gcc->id);
+   if (!ci) return;
+   for (l = ci->boxes; l; l = l->next) 
      {
-	snprintf(buf, sizeof(buf), "%d", inst->count);
+	Config_Box *cb;
+	
+	cb = l->data;
+	if (!cb) continue;
+	count += cb->num_new;
+     }
+
+   printf("Count: %i\n", count);
+   
+   if (count > 0) 
+     {
+	snprintf(buf, sizeof(buf), "%d", count);
 	edje_object_part_text_set(inst->mail->mail_obj, "new_label", buf);
 	edje_object_signal_emit(inst->mail->mail_obj, "new_mail", "");
      }

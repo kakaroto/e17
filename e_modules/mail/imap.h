@@ -21,7 +21,7 @@ struct _ImapServer
    Ecore_Con_Server *server;
    Evas_List *clients;
    ImapClient *current;
-   int cmd, count;
+   int cmd;
    ImapState state;
    void *data;
    

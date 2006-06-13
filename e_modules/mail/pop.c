@@ -123,7 +123,6 @@ _mail_pop_server_del(void *data, int type, void *event)
 {
    Ecore_Con_Event_Server_Del *ev = event;
    PopClient *pc;
-   Instance *inst;
    
    pc = _mail_pop_client_get_from_server(ev->server);
    if (!pc) return 1;
@@ -143,15 +142,12 @@ _mail_pop_server_data(void *data, int type, void *event)
 {
    Ecore_Con_Event_Server_Data *ev = event;
    PopClient *pc;
-   Instance *inst;
    char in[2048], out[2048];
    int len, num = 0, total = 0;
    
    pc = _mail_pop_client_get_from_server(ev->server);
    if (!pc) return 1;
    if (pc->state == POP_STATE_DISCONNECTED) return 1;
-   
-   inst = pc->data;
    
    len = sizeof(in) -1;
    len = (((len) > (ev->size)) ? ev->size : len);
@@ -192,7 +188,6 @@ _mail_pop_server_data(void *data, int type, void *event)
 	     pc->config->num_new = num;
 	     pc->config->num_total = num;
 	  }
-	inst->count += num;
 	_mail_pop_client_quit(pc);
 	if ((num > 0) && (pc->config->use_exec) && (pc->config->exec))
 	  _mail_start_exe(pc->config);

@@ -182,7 +182,6 @@ _mail_imap_server_del(void *data, int type, void *event)
 {
    Ecore_Con_Event_Server_Del *ev = event;
    ImapServer *is;
-   Instance *inst;
    
    is = _mail_imap_server_get(ev->server);
    if (!is) return 1;
@@ -194,10 +193,6 @@ _mail_imap_server_del(void *data, int type, void *event)
    
    ecore_con_server_del(is->server);
    is->server = NULL;
-
-   inst = is->data;
-   inst->count += is->count;
-   _mail_set_text(inst);
    
    return 0;
 }
@@ -208,7 +203,6 @@ _mail_imap_server_data(void *data, int type, void *event)
    Ecore_Con_Event_Server_Data *ev = event;
    ImapServer *is;
    ImapClient *ic;
-   Instance *inst;
    int len, num = 0, total = 0;
    char in[1024], out[1024], *spc;
    size_t slen;
@@ -256,9 +250,10 @@ _mail_imap_server_data(void *data, int type, void *event)
       case IMAP_STATE_STATUS_OK:
 	if (sscanf(in, "* STATUS %*s (MESSAGES %i UNSEEN %i)", &total, &num) == 2) 
 	  {
-	     is->count += num;
 	     ic->config->num_new = num;
 	     ic->config->num_total = total;
+	     _mail_set_text(is->data);
+
 	     if ((num > 0) && (ic->config->use_exec) && (ic->config->exec))
 	       _mail_start_exe(ic->config);
 	     

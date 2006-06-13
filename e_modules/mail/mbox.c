@@ -74,7 +74,6 @@ _mail_mbox_check_mail(void *data, Ecore_File_Monitor *monitor, Ecore_File_Event 
    char buf[1024];
    int total = 0, unread = 0;
    int header;
-   Instance *inst;
    
    mb = data;
    if (!mb) return;
@@ -104,9 +103,7 @@ _mail_mbox_check_mail(void *data, Ecore_File_Monitor *monitor, Ecore_File_Event 
      }
    fclose(f);
 
-   inst = mb->data;
-   inst->count += mb->config->num_new;
-   _mail_set_text(inst);
+   _mail_set_text(mb->data);
    if ((mb->config->num_new > 0) && (mb->config->use_exec) && (mb->config->exec))
      _mail_start_exe(mb->config);
 }

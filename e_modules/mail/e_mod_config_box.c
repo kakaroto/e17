@@ -244,8 +244,8 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 	cb->port = 110;
 	cb->ssl = 0;
 	is_new = 1;
-     }
-   
+     }  
+ 
    if (cb->name) evas_stringshare_del(cb->name);
    if (cfdata->name != NULL)
      cb->name = evas_stringshare_add(cfdata->name);
@@ -291,14 +291,13 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
      cb->cur_path = evas_stringshare_add(cfdata->cur_path);
    else
      cb->cur_path = evas_stringshare_add("");
-   
-   e_config_save_queue();
 
-   _mail_box_config_updated(prev_dlg);
+   if (!is_new)
+     e_config_save_queue();
 
    if (is_new) 
      {
-	cfd->data = cb;
+//	cfd->data = cb;
 	mail_ci->boxes = evas_list_append(mail_ci->boxes, cb);
 	e_config_save_queue();
 	_mail_box_added(mail_ci->id, cb->name);
