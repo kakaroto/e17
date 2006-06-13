@@ -16,6 +16,7 @@ _mail_imap_check_mail(void *data)
 {
    Ecore_Con_Type type = ECORE_CON_REMOTE_SYSTEM;
    Evas_List *l, *j;
+   ImapClient *ic;		  
 
    for (l = iservers; l; l = l->next) 
      {
@@ -34,8 +35,6 @@ _mail_imap_check_mail(void *data)
 
 	     for (j = is->clients; j; j = j->next) 
 	       {
-		  ImapClient *ic;
-		  
 		  ic = j->data;
 		  if (!ic->server->server) 
 		    {
@@ -48,6 +47,7 @@ _mail_imap_check_mail(void *data)
 	       }
 	  }
 	is->current = evas_list_nth(is->clients, 0);
+	ic = is->current;
      }
 }
 
@@ -121,6 +121,9 @@ _mail_imap_client_get(void *data)
    Config_Box *cb;
    Evas_List *l, *j;
    int found = 0;
+
+   cb = data;
+   if (!cb) return;
    
    if ((!iservers) || (evas_list_count(iservers) <= 0)) 
      {
@@ -151,7 +154,6 @@ _mail_imap_client_get(void *data)
      }
    if (!found) 
      {
-	cb = data;
 	ic = E_NEW(ImapClient, 1);
 	ic->config = cb;
 	ic->server = is;
@@ -255,7 +257,7 @@ _mail_imap_server_data(void *data, int type, void *event)
 	     if ((num > 0) && (ic->config->use_exec) && (ic->config->exec))
 	       _mail_start_exe(ic->config);
 	     
-	     is->clients = evas_list_next(is->clients);
+	     is->clients = is->clients->next;
 	     if (is->clients) 
 	       {
 		  is->current = is->clients->data;
