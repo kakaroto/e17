@@ -253,7 +253,8 @@ _mail_imap_server_data(void *data, int type, void *event)
 	  {
 	     ic->config->num_new = num;
 	     ic->config->num_total = total;
-
+	     _mail_set_text(is->data);
+	     
 	     if ((num > 0) && (ic->config->use_exec) && (ic->config->exec))
 	       _mail_start_exe(ic->config);
 	     
