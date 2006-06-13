@@ -1,6 +1,8 @@
 
 General TODO:
 =============
+- add some commonly used internal tree sorters to avoid the entire
+  perl -> c -> perl ... loop when sorting trees.
 - finish porting etk_test from C to perl
 - callback system needs to convert structs to perl equivalents
 - all functions that use use references to change multiple values need
