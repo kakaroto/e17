@@ -536,8 +536,6 @@ _mail_set_text(void *data)
 	if (!cb) continue;
 	count += cb->num_new;
      }
-
-   printf("Count: %i\n", count);
    
    if (count > 0) 
      {
