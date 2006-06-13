@@ -164,18 +164,20 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
    of = e_widget_frametable_add(evas, _("Port Settings"), 1);
-   ob = e_widget_label_add(evas, _("Port:"));
-   e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 0, 0, 1, 0);
-   ob = e_widget_entry_add(evas, &cfdata->port);
-   cfdata->port_entry = ob;
-   e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 0, 0, 1, 0);
 
    ob = e_widget_label_add(evas, _("Use SSL:"));
-   e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 0, 0, 1, 0);   
+   e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 0, 0, 1, 0);
    ob = e_widget_check_add(evas, "", &(cfdata->ssl));
+   e_widget_on_change_hook_set(ob, _type_cb_change, cfdata);
+   e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 0, 0, 1, 0);
+   
+   ob = e_widget_label_add(evas, _("Port:"));
+   e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 0, 0, 1, 0);   
+   ob = e_widget_entry_add(evas, &cfdata->port);
+   cfdata->port_entry = ob;
    e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 0, 0, 1, 0);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
-   
+
    of = e_widget_frametable_add(evas, _("Mailbox Settings"), 1);
    ob = e_widget_label_add(evas, _("Name:"));
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 0, 0, 1, 0);
@@ -320,8 +322,16 @@ _type_cb_change(void *data, Evas_Object *obj)
 	e_widget_disabled_set(cfdata->cur_path_entry, 1);
 	e_widget_entry_text_set(cfdata->new_path_entry, "");
 	e_widget_entry_text_set(cfdata->cur_path_entry, "");
-	e_widget_entry_text_set(cfdata->port_entry, "110");
-	cfdata->port = strdup("110");
+	if (cfdata->ssl)
+	  {
+	     e_widget_entry_text_set(cfdata->port_entry, "995");
+	     cfdata->port = strdup("995");
+	  }
+	else
+	  {
+	     e_widget_entry_text_set(cfdata->port_entry, "110");
+	     cfdata->port = strdup("110");
+	  }
      }
    else if ((cfdata->type == 1) || (cfdata->type == 3))
      {
@@ -331,8 +341,16 @@ _type_cb_change(void *data, Evas_Object *obj)
 	e_widget_disabled_set(cfdata->cur_path_entry, 1);
 	e_widget_entry_text_set(cfdata->cur_path_entry, "");
 	e_widget_entry_text_set(cfdata->new_path_entry, _("Inbox"));
-	e_widget_entry_text_set(cfdata->port_entry, "143");
-	cfdata->port = strdup("143");
+	if (cfdata->ssl)
+	  {
+	     e_widget_entry_text_set(cfdata->port_entry, "993");
+	     cfdata->port = strdup("993");
+	  }
+	else
+	  {
+	     e_widget_entry_text_set(cfdata->port_entry, "143");
+	     cfdata->port = strdup("143");
+	  }
      }
    else if (cfdata->type == 2) 
      {
@@ -340,6 +358,7 @@ _type_cb_change(void *data, Evas_Object *obj)
 	e_widget_disabled_set(cfdata->new_path_entry, 0);
 	e_widget_disabled_set(cfdata->cur_path_label, 0);
 	e_widget_disabled_set(cfdata->cur_path_entry, 0);	
+	e_widget_entry_text_set(cfdata->port_entry, "");
      }
 }
 
