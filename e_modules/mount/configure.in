@@ -7,12 +7,15 @@ AC_INIT(configure.in)
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 
-AM_INIT_AUTOMAKE(mount, 0.0.7)
+AM_INIT_AUTOMAKE(mount, 0.2.0)
 AM_CONFIG_HEADER(config.h)
+
 AC_ISC_POSIX
 AC_PROG_CC
 AM_PROG_CC_STDC
 AC_HEADER_STDC
+AC_HEADER_TIME
+AC_CHECK_HEADERS(sys/time.h)
 AC_C_CONST
 AM_ENABLE_SHARED
 AM_PROG_LIBTOOL
@@ -26,19 +29,6 @@ AM_GNU_GETTEXT_VERSION(0.14)
 MODULE_ARCH="$host_os-$host_cpu"
 AC_SUBST(MODULE_ARCH)
 AC_DEFINE_UNQUOTED(MODULE_ARCH, "$MODULE_ARCH", "Module architecture")
-
-dnl AC_CHECK_HEADERS(dirent.h,, AC_MSG_ERROR([Cannot find dirent.h])
-
-dnl Check for things we need to mount/unmount/eject
-AC_PATH_PROG(MOUNT, mount)
-AC_PATH_PROG(UMOUNT, umount)
-AC_PATH_PROG(EJECT, eject)
-AC_DEFINE_UNQUOTED(MOUNT, "$MOUNT", "Mount Command")
-AC_DEFINE_UNQUOTED(UMOUNT, "$UMOUNT", "Unmount Command")
-AC_DEFINE_UNQUOTED(EJECT, "$EJECT", "Eject Command")
-if test -n "$EJECT"; then
-   AC_DEFINE(HAVE_EJECT, 1, [Define to 1 if you have Eject])
-fi
 
 if test "x${bindir}" = 'x${exec_prefix}/bin'; then
   if test "x${exec_prefix}" = "xNONE"; then
@@ -102,68 +92,15 @@ else
     AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/lib/enlightenment/modules/${PACKAGE}", "Package installed data destination")
     datadir="${prefix}/lib/enlightenment/modules/${PACKAGE}"    
 fi
-
-AC_PREFIX_DEFAULT(${HOME}/.e/e)
-if test "x$prefix" = "xNONE"; then
-  datarootdir=${ac_default_prefix}
-else
-  datarootdir=${prefix}/share
-fi
-localedir=${datarootdir}/locale
-AC_SUBST(LOCALEDIR, "${localedir}")
-AC_DEFINE_UNQUOTED(LOCALEDIR, "${localedir}", [Module Locale Directory])
 	  
 #AC_CHECK_LIB(dl, dlopen, dlopen_libs=-ldl)
 #AC_SUBST(dlopen_libs)
-
-AC_ARG_WITH(ecore-config,
-[  --with-ecore-config=ECORE_CONFIG      use ecore-config specified ],
-[
-  ECORE_CONFIG=$withval;
-  echo "using "$ECORE_CONFIG" for ecore-config";
-],[
-  PROG="ecore-config";
-  AC_PATH_PROG(ECORE_CONFIG, $PROG, "", $PATH)
-])
-ecore_cflags=`$ECORE_CONFIG --cflags`
-ecore_libs=`$ECORE_CONFIG --libs`
-AC_SUBST(ecore_cflags)
-AC_SUBST(ecore_libs)
-
-AC_ARG_WITH(evas-config,
-[  --with-evas-config=EVAS_CONFIG      use evas-config specified ],
-[
-  EVAS_CONFIG=$withval;
-  echo "using "$EVAS_CONFIG" for evas-config";
-],[
-  PROG="evas-config";
-  AC_PATH_PROG(EVAS_CONFIG, $PROG, "", $PATH)
-])
-evas_cflags=`$EVAS_CONFIG --cflags`
-evas_libs=`$EVAS_CONFIG --libs`
-AC_SUBST(evas_cflags)
-AC_SUBST(evas_libs)
-
-AC_ARG_WITH(esmart-config,
-[  --with-esmart-config=ESMART_CONFIG      use esmart-config specified ],
-[
-  ESMART_CONFIG=$withval;
-  echo "using "$ESMART_CONFIG" for esmart-config";
-],[
-  PROG="esmart-config";
-  AC_PATH_PROG(ESMART_CONFIG, $PROG, "", $PATH)
-])
-esmart_cflags=`$ESMART_CONFIG --cflags`
-esmart_libs=`$ESMART_CONFIG --libs`
-AC_SUBST(esmart_cflags)
-AC_SUBST(esmart_libs)
 
 AC_ARG_WITH(edje-config,
 [  --with-edje-config=EDJE_CONFIG      use edje-config specified ],
 [
   EDJE_CONFIG=$withval;
   echo "using "$EDJE_CONFIG" for edje-config";
-/
 ],[
   PROG="edje-config";
   AC_PATH_PROG(EDJE_CONFIG, $PROG, "", $PATH)
@@ -185,20 +122,6 @@ AC_ARG_WITH(edje-cc,
 ])
 AC_SUBST(edje_cc)
 
-AC_ARG_WITH(eet-config,
-[  --with-eet-config=EET_CONFIG      use eet-config specified ],
-[
-  EET_CONFIG=$withval;
-  echo "using "$EET_CONFIG" for eet-config";
-],[
-  PROG="eet-config";
-  AC_PATH_PROG(EET_CONFIG, $PROG, "", $PATH)
-])
-eet_cflags=`$EET_CONFIG --cflags`
-eet_libs=`$EET_CONFIG --libs`
-AC_SUBST(eet_cflags)
-AC_SUBST(eet_libs)
-
 AC_ARG_WITH(enlightenment-config,
 [  --with-enlightenment-config=E_CONFIG    use enlightenment-config specified ],
 [
@@ -215,12 +138,19 @@ AC_SUBST(e_cflags)
 AC_SUBST(e_libs)
 AC_SUBST(e_modules)
 
+dnl Check for things we need to mount/unmount/eject
+AC_PATH_PROG(MOUNT, mount)
+AC_PATH_PROG(UMOUNT, umount)
+AC_PATH_PROG(EJECT, eject)
+AC_DEFINE_UNQUOTED(MOUNT, "$MOUNT", "Mount Command")
+AC_DEFINE_UNQUOTED(UMOUNT, "$UMOUNT", "Unmount Command")
+AC_DEFINE_UNQUOTED(EJECT, "$EJECT", "Eject Command")
+if test -n "$EJECT"; then
+   AC_DEFINE(HAVE_EJECT, 1, [Define to 1 if you have Eject])
+fi
+
 AC_OUTPUT([
 Makefile
-e_modules-mount.spec
-data/Makefile
-data/themes/Makefile
-po/Makefile
 ],[
 ])
 
