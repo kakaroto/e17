@@ -47,6 +47,9 @@ static Screenshot *_ss_new(Evas *evas);
 static void _ss_free(Screenshot *ss);
 static void _ss_handle_mouse_down(Instance *inst);
 static int _ss_exe_cb_exit(void *data, int type, void *event);
+static void _ss_take_shot(void *data);
+static void _ss_get_filename(void *data);
+static void _cb_entry_ok(char *text, void *data);
 
 char *_get_import_options(Config_Item *ci);
 char *_get_scrot_options(Config_Item *ci);
@@ -228,6 +231,7 @@ _ss_config_item_get(const char *id)
         ci->use_import = 0;
         ci->use_scrot = 1;
      }
+   ci->prompt = 0;
    ci->location = evas_stringshare_add(e_user_homedir_get());
    ci->filename = evas_stringshare_add("");
    ci->import.use_img_border = 1;
@@ -267,6 +271,7 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, delay_time, DOUBLE);
    E_CONFIG_VAL(D, T, use_import, UCHAR);
    E_CONFIG_VAL(D, T, use_scrot, UCHAR);
+   E_CONFIG_VAL(D, T, prompt, UCHAR);
    E_CONFIG_VAL(D, T, location, STR);
    E_CONFIG_VAL(D, T, filename, STR);
    E_CONFIG_VAL(D, T, import.use_img_border, UCHAR);
@@ -317,6 +322,7 @@ e_modapi_init(E_Module *m)
              ci->use_import = 0;
              ci->use_scrot = 1;
           }
+	ci->prompt = 0;
         ci->location = evas_stringshare_add(e_user_homedir_get());
         ci->filename = evas_stringshare_add("");
         ci->import.use_img_border = 1;
@@ -336,7 +342,7 @@ e_modapi_init(E_Module *m)
 
    ss_config->module = m;
    e_gadcon_provider_register(&_gc_class);
-   return 1;
+   return (void *)1;
 }
 
 EAPI int
@@ -428,45 +434,23 @@ _ss_free(Screenshot *ss)
 static void
 _ss_handle_mouse_down(Instance *inst)
 {
-   Edje_Message_Int_Set *msg;
-   char buf[1024];
-   char *cmd, *opt, *f;
    Config_Item *ci;
 
    if (inst->exe) return;
    ci = _ss_config_item_get(inst->gcc->id);
 
-   if (ci->use_import == 1)
+   if (!ci->prompt) 
      {
-        cmd = strdup("import");
-        opt = _get_import_options(ci);
-     }
-   else if (ci->use_scrot == 1)
-     {
-        cmd = strdup("scrot");
-        opt = _get_scrot_options(ci);
+	if (!ci->filename) 
+	  {
+	     char *f = _get_filename(ci);
+	     ci->filename = evas_stringshare_add(f);
+	     e_config_save_queue();
+	  }
+	_ss_take_shot(inst);
      }
    else
-     {
-        e_module_dialog_show(D_("Enlightenment Screenshot Module"),
-                             D_("Please install either ImageMagick or Scrot for taking screenshots."));
-        return;
-     }
-
-   f = _get_filename(ci);
-   snprintf(buf, sizeof(buf), "%s %s %s", cmd, opt, f);
-
-   inst->filename = evas_stringshare_add(f);
-   ss_config->exe_exit_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _ss_exe_cb_exit, NULL);
-   if (ci->delay_time > 0)
-     {
-        msg = malloc(sizeof(Edje_Message_Int_Set) + 1 * sizeof(int));
-        msg->count = 1;
-        msg->val[0] = ci->delay_time - 1;
-        edje_object_message_send(inst->ss->ss_obj, EDJE_MESSAGE_INT_SET, 1, msg);
-        free(msg);
-     }
-   inst->exe = ecore_exe_run(buf, inst);
+     _ss_get_filename(inst);
 }
 
 char *
@@ -605,3 +589,106 @@ _ss_exe_cb_exit(void *data, int type, void *event)
      }
    return 0;
 }
+
+static void 
+_ss_take_shot(void *data) 
+{
+   Instance *inst;
+   Config_Item *ci;
+   Edje_Message_Int_Set *msg;
+   char buf[1024];
+   char *cmd, *opt, *p;
+   
+   inst = data;
+   if (!inst) return;
+
+   ci = _ss_config_item_get(inst->gcc->id);
+   if (!ci) return;
+   
+   if (ci->use_import == 1)
+     {
+        cmd = strdup("import");
+        opt = _get_import_options(ci);
+     }
+   else if (ci->use_scrot == 1)
+     {
+        cmd = strdup("scrot");
+        opt = _get_scrot_options(ci);
+     }
+   else
+     {
+        e_module_dialog_show(D_("Enlightenment Screenshot Module"),
+                             D_("Please install either ImageMagick or Scrot for taking screenshots."));
+        return;
+     }
+
+   p = strrchr(ci->filename, '.');
+   if (!p) 
+     {
+	snprintf(buf, sizeof(buf), "%s.png", ci->filename);
+	evas_stringshare_del(ci->filename);
+	ci->filename = evas_stringshare_add(buf);
+	e_config_save_queue();
+     }
+   
+   snprintf(buf, sizeof(buf), "%s %s %s/%s", cmd, opt, ci->location, ci->filename);
+   inst->filename = evas_stringshare_add(ci->filename);
+   ss_config->exe_exit_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _ss_exe_cb_exit, NULL);
+   if (ci->delay_time > 0)
+     {
+        msg = malloc(sizeof(Edje_Message_Int_Set) + 1 * sizeof(int));
+        msg->count = 1;
+        msg->val[0] = ci->delay_time - 1;
+        edje_object_message_send(inst->ss->ss_obj, EDJE_MESSAGE_INT_SET, 1, msg);
+        free(msg);
+     }
+   inst->exe = ecore_exe_run(buf, inst);   
+}
+
+static void 
+_ss_get_filename(void *data) 
+{
+   e_entry_dialog_show(_("Enlightenment Screenshot Module"), "enlightenment/e",
+		       _("Enter a new filename to use for this screenshot"),
+		       NULL, NULL, _cb_entry_ok, NULL, data);
+}
+
+static void
+_cb_entry_ok(char *text, void *data) 
+{
+   Instance *inst;
+   Config_Item *ci;   
+   char buf[4096];
+   char *t;
+   
+   inst = data;
+   if (!inst) return;
+
+   ci = _ss_config_item_get(inst->gcc->id);
+
+   t = ecore_file_get_dir(text);
+   if (!strcmp(t, text))
+     {
+        e_module_dialog_show(D_("Enlightenment Screenshot Module"),
+                             D_("You did not specify a path.<br>"
+				"This shot will be saved in your home folder."));
+	if (ci->location)
+	  evas_stringshare_del(ci->location);
+	ci->location = evas_stringshare_add(e_user_homedir_get());	
+     }
+   else
+     {
+
+	if (ci->location)
+	  evas_stringshare_del(ci->location);
+	ci->location = evas_stringshare_add(t);
+     }
+   
+   if (ci->filename)
+     evas_stringshare_del(ci->filename);   
+   ci->filename = evas_stringshare_add(text);
+   e_config_save_queue();
+   
+   _ss_take_shot(inst);
+}
+

@@ -7,6 +7,7 @@ struct _E_Config_Dialog_Data
    int method;
    int use_import;
    int use_scrot;
+   int prompt;
    double delay_time;
    char *location;
    char *filename;
@@ -26,6 +27,8 @@ struct _E_Config_Dialog_Data
    } scrot;
    int use_app;
    char *app;
+   
+   Evas_Object *file_entry;
 };
 
 /* Protos */
@@ -35,6 +38,7 @@ static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Co
 static int _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 static Evas_Object *_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
 static int _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static void _prompt_cb_change(void *data, Evas_Object *obj);
 
 /* Config Calls */
 void
@@ -63,6 +67,8 @@ _config_screenshot_module(Config_Item *ci)
 static void
 _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata)
 {
+   cfdata->prompt = ci->prompt;
+   
    if (ci->use_import == 1)
      cfdata->method = 0;
    else if (ci->use_scrot == 1)
@@ -143,15 +149,20 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    e_widget_list_object_append(o, of, 1, 1, 0.5);
       
    of = e_widget_frametable_add(evas, D_("File Settings"), 1);
-   ob = e_widget_label_add(evas, D_("Save Directory:"));
+   ob = e_widget_check_add(evas, D_("Always Prompt For Filename"), &(cfdata->prompt));
+   e_widget_on_change_hook_set(ob, _prompt_cb_change, cfdata);
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 0, 0, 1, 0);
-   ob = e_widget_entry_add(evas, &cfdata->location);
-   e_widget_frametable_object_append(of, ob, 1, 0, 2, 1, 1, 0, 1, 0);
-   ob = e_widget_label_add(evas, D_("Filename:"));
+   ob = e_widget_label_add(evas, D_("Save Directory:"));
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 0, 0, 1, 0);
+   ob = e_widget_entry_add(evas, &cfdata->location);
+   e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 0, 1, 0);
+   ob = e_widget_label_add(evas, D_("Filename:"));
+   e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 0, 0, 1, 0);
    ob = e_widget_entry_add(evas, &cfdata->filename);
-   e_widget_frametable_object_append(of, ob, 1, 1, 2, 1, 1, 0, 1, 0);
+   cfdata->file_entry = ob;
+   e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 0, 1, 0);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
+
    return o;
 }
 
@@ -163,6 +174,9 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    Config_Item *ci;
 
    ci = cfd->data;
+   
+   ci->prompt = cfdata->prompt;
+   
    if (cfdata->method == 0)
      {
         ci->use_import = 1;
@@ -188,7 +202,7 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    evas_stringshare_del(ci->filename);
    if (cfdata->filename != NULL) 
      {
-	cfdata->filename = ecore_file_strip_ext(cfdata->filename);
+//	cfdata->filename = ecore_file_strip_ext(cfdata->filename);
 	ci->filename = evas_stringshare_add(cfdata->filename); 
      }
    else
@@ -234,20 +248,24 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 
    of = e_widget_frametable_add(evas, D_("Image Viewer Settings"), 1);
    ob = e_widget_check_add(evas, D_("Launch Image Viewer After Screenshot"), &(cfdata->use_app));
-   e_widget_frametable_object_append(of, ob, 0, 0, 2, 1, 1, 0, 1, 0);
+   e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 0, 1, 0);
    ob = e_widget_entry_add(evas, &(cfdata->app));
-   e_widget_frametable_object_append(of, ob, 0, 1, 2, 1, 1, 0, 1, 0);
+   e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 0, 1, 0);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
    
    of = e_widget_frametable_add(evas, D_("File Settings"), 1);
-   ob = e_widget_label_add(evas, D_("Save Directory:"));
+   ob = e_widget_check_add(evas, D_("Always Prompt For Filename"), &(cfdata->prompt));
+   e_widget_on_change_hook_set(ob, _prompt_cb_change, cfdata);
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 0, 0, 1, 0);
-   ob = e_widget_entry_add(evas, &cfdata->location);
-   e_widget_frametable_object_append(of, ob, 1, 0, 2, 1, 1, 0, 1, 0);
-   ob = e_widget_label_add(evas, D_("Filename:"));
+   ob = e_widget_label_add(evas, D_("Save Directory:"));
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 0, 0, 1, 0);
+   ob = e_widget_entry_add(evas, &cfdata->location);
+   e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 0, 1, 0);
+   ob = e_widget_label_add(evas, D_("Filename:"));
+   e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 0, 0, 1, 0);
    ob = e_widget_entry_add(evas, &cfdata->filename);
-   e_widget_frametable_object_append(of, ob, 1, 1, 2, 1, 1, 0, 1, 0);
+   cfdata->file_entry = ob;
+   e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 0, 1, 0);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
    ot = e_widget_table_add(evas, 0);
@@ -308,4 +326,24 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
    e_config_save_queue();
    return 1;
+}
+
+static void 
+_prompt_cb_change(void *data, Evas_Object *obj) 
+{
+   E_Config_Dialog_Data *cfdata;
+   
+   cfdata = data;
+   if (!cfdata) return;
+   
+   if (!cfdata->prompt) 
+     {
+	e_widget_disabled_set(cfdata->file_entry, 0);
+	e_widget_entry_text_set(cfdata->file_entry, cfdata->filename);
+     }
+   else 
+     {
+	e_widget_disabled_set(cfdata->file_entry, 1);
+	e_widget_entry_text_set(cfdata->file_entry, "");
+     }
 }

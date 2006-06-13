@@ -23,6 +23,7 @@ struct _Config_Item
    double delay_time;
    unsigned char use_import;
    unsigned char use_scrot;
+   unsigned char prompt;
    const char *location;
    const char *filename;
    unsigned char use_app;
