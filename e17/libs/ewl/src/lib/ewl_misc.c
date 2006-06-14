@@ -481,10 +481,16 @@ ewl_init_parse_options(int *argc, char **argv)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (!argc || !argv)
-		DRETURN(DLEVEL_STABLE);
-
+	/* XXX when the engine init stuff is fixed up this should move below
+	 * the if statement. Put it here for now to make sure the engines
+	 * always get init'd */
 	engines = ewl_engine_names_get();
+
+	if (!argc || !argv)
+	{
+		ecore_list_destroy(engines);
+		DRETURN(DLEVEL_STABLE);
+	}
 
 	i = 0;
 	while (i < *argc) {
