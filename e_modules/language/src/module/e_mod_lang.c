@@ -11,7 +11,11 @@
 
 /******************************************************/
 
-#define DFLT_XKB_RULES_FILE   "/etc/X11/xkb/rules/xfree86"
+#ifdef __FreeBSD__
+   #define DFLT_XKB_RULES_FILE   "/usr/X11R6/lib/X11/xkb/rules/xfree86"
+#else
+   #define DFLT_XKB_RULES_FILE   "/etc/X11/xkb/rules/xfree86"
+#endif // __FreeBSD__
 #define DFLT_XKB_LAYOUT	      "us"
 #define DFLT_XKB_MODEL	      "pc101"
 
@@ -206,7 +210,11 @@ lang_load_xfree_language_kbd_layouts(Config *cfg)
    result = exml_file_read(exml, "/etc/X11/xkb/rules/xfree86.xml");
    if (!result || result == -1)
      { 
+#ifdef __FreeBSD__
+	result = exml_file_read(exml, "/usr/X11R6/lib/X11/xkb/rules/xfree86.xml");
+#else
 	result = exml_file_read(exml, "/usr/lib/X11/xkb/rules/xfree86.xml");
+#endif // __FreeBSD__
 	if (!result || result == -1) 
 	  EXML_RETURN_ON_ERROR(exml);
      }
@@ -294,7 +302,11 @@ lang_load_xfree_kbd_models(Config *cfg)
    result = exml_file_read(exml, "/etc/X11/xkb/rules/xfree86.xml");
    if (!result || result == -1)
      { 
+#ifdef __FreeBSD__
+	result = exml_file_read(exml, "/usr/X11R6/lib/X11/xkb/rules/xfree86.xml");
+#else
 	result = exml_file_read(exml, "/usr/lib/X11/xkb/rules/xfree86.xml");
+#endif // __FreeBSD__
 	if (!result || result == -1) 
 	  EXML_RETURN_ON_ERROR(exml);
      }
