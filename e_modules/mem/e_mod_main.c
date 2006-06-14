@@ -237,14 +237,13 @@ EAPI E_Module_Api e_modapi =
      "Mem"
 };
 
-EAPI int
+EAPI void *
 e_modapi_init(E_Module *m) 
 {
    bindtextdomain(PACKAGE, LOCALEDIR);
    bind_textdomain_codeset(PACKAGE, "UTF-8");
 
    conf_item_edd = E_CONFIG_DD_NEW("Mem_Config_Item", Config_Item);
-
 #undef T
 #undef D
 #define T Config_Item
@@ -259,7 +258,6 @@ e_modapi_init(E_Module *m)
 #endif
 
    conf_edd = E_CONFIG_DD_NEW("Mem_Config", Config);
-
 #undef T
 #undef D
 #define T Config
