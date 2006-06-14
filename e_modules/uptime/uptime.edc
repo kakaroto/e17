@@ -17,21 +17,8 @@ collections
 	  {
 	     part
 	       {
-		  name: "base";
-		  type: RECT;
-		  mouse_events: 1;
-		  description
-		    {
-		       state: "default" 0.0;
-		       color: 255 255 255 255;
-		    }
-	       }
-
-	     part
-	       {
 		  name,		"uptime";
 		  type,           TEXT;
-		  clip_to: "base";
 		  effect,         OUTLINE_SOFT_SHADOW;
 		  mouse_events, 1;
 		  description
@@ -40,12 +27,12 @@ collections
 		       rel1
 			 {
 			    relative: 0.0 0.0;
-			    to_x: "base";
-			    offset: 0 0;
+			    offset: 0 2;
 			 }
 		       rel2
 			 {
-			    relative: 1.0 1.0;
+			    relative: 1.0 0.5;
+			    offset: -1 -1;
 			 }
 		       color: 255 255 255 255;
 		       color2: 64 64 64 255;
@@ -56,7 +43,7 @@ collections
 			    font: "VeraMono";
 			    size:  12;
 			    min:     1 1;
-			    align: 0.0 0.5;
+			    align: 0.5 0.5;
 			 }
 		    }
 	       }
