@@ -69,7 +69,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    of = e_widget_framelist_add(evas, D_("Uptime Settings"), 0);
    ob = e_widget_label_add(evas, D_("Check Interval:"));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_slider_add(evas, 1, 0, _("%1.0f seconds"), 1.0, 60.0, 1.0, 0, &(cfdata->check_interval), NULL, 100);
+   ob = e_widget_slider_add(evas, 1, 0, _("%1.0f seconds"), 5.0, 60.0, 1.0, 0, &(cfdata->check_interval), NULL, 100);
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
