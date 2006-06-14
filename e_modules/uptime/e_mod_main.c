@@ -11,6 +11,7 @@ struct _Instance
    Evas_Object *ut_obj;
    Uptime *ut;
    Ecore_Timer *monitor;
+   int uptime;
 };
 
 struct _Uptime 
@@ -53,6 +54,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    Config_Item *ci;
    Uptime *ut;
    char buf[4096];
+   struct sysinfo s_info;
    
    inst = E_NEW(Instance, 1);
    ci = _ut_config_item_get(id);
@@ -71,6 +73,9 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _ut_cb_mouse_down, inst);
    ut_config->instances = evas_list_append(ut_config->instances, inst);
 
+   sysinfo(&s_info);
+   inst->uptime = s_info.uptime;
+   
    if (!inst->monitor)
      inst->monitor = ecore_timer_add(ci->check_interval, _ut_cb_check, inst);
    
@@ -349,18 +354,22 @@ static int
 _ut_cb_check(void *data)
 {
    Instance *inst;
-   char u_date_time[256];
-   struct sysinfo s_info;
+   Config_Item *ci;
    long minute = 60;
    long hour = minute * 60;
    long day = hour * 24;
+   char u_date_time[256];
 
    inst = data;
    if (!inst) return 0;
 
-   sysinfo(&s_info);
+   ci = _ut_config_item_get(inst->gcc->id);
+   if (!ci) return 0;
+   
+   inst->uptime += (1 * ci->check_interval);
+   
    sprintf(u_date_time, D_("uptime: %ld days, %ld:%02ld:%02ld"),
-           s_info.uptime / day, (s_info.uptime % day) / hour, (s_info.uptime % hour) / minute, s_info.uptime % minute);
+           inst->uptime / day, (inst->uptime % day) / hour, (inst->uptime % hour) / minute, inst->uptime % minute);
    edje_object_part_text_set(inst->ut->ut_obj, "uptime", u_date_time);
    
    return 1;

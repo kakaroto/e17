@@ -35,8 +35,8 @@ collections
 			    offset: -1 -1;
 			 }
 		       color: 255 255 255 255;
-		       color2: 64 64 64 255;
-		       color3: 128 128 128 192;
+		       color2: 0 0 0 96;
+		       color3: 0 0 0 32;
 		       text
 			 {
 			    text: "uptime";
