@@ -35,7 +35,6 @@ static Config_Item *_mem_config_item_get(const char *id);
 static Mem *_mem_new(Evas *evas);
 static void _mem_free(Mem *mem);
 static int _mem_cb_check(void *data);
-static void _mem_get_values(Config_Item *ci, int *real, int *swap, int *total_real, int *total_swap);
 
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *conf_item_edd = NULL;
@@ -56,7 +55,6 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    Instance *inst;
    Config_Item *ci;
    Mem *mem;
-   char buf[4096];
    
    inst = E_NEW(Instance, 1);
    
@@ -74,7 +72,6 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    inst->mem_obj = o;
 
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _mem_cb_mouse_down, inst);
-   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_MOVE, _mem_cb_mouse_in, inst);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_IN, _mem_cb_mouse_in, inst);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_OUT, _mem_cb_mouse_out, inst);
    
@@ -117,20 +114,11 @@ static void
 _gc_shutdown(E_Gadcon_Client *gcc) 
 {
    Instance *inst;
-   Mem *mem;
    
    inst = gcc->data;
-   mem = inst->mem;
-   
    if (inst->check_timer) ecore_timer_del(inst->check_timer);
    mem_config->instances = evas_list_remove(mem_config->instances, inst);
-
-   evas_object_event_callback_del(mem->mem_obj, EVAS_CALLBACK_MOUSE_DOWN, _mem_cb_mouse_down);
-   evas_object_event_callback_del(mem->mem_obj, EVAS_CALLBACK_MOUSE_MOVE, _mem_cb_mouse_in);
-   evas_object_event_callback_del(mem->mem_obj, EVAS_CALLBACK_MOUSE_IN, _mem_cb_mouse_in);
-   evas_object_event_callback_del(mem->mem_obj, EVAS_CALLBACK_MOUSE_OUT, _mem_cb_mouse_out);
-
-   _mem_free(mem);
+   _mem_free(inst->mem);
    free(inst);
 }
 
@@ -234,8 +222,10 @@ _mem_config_item_get(const char *id)
    ci->poll_time = 1.0;
    ci->always_text = 0;
    ci->show_percent = 1;
+#ifdef __linux__
    ci->real_ignore_buffers = 0;
    ci->real_ignore_cached = 0;
+#endif
 
    mem_config->items = evas_list_append(mem_config->items, ci);
    return ci;   
@@ -247,7 +237,7 @@ EAPI E_Module_Api e_modapi =
      "Mem"
 };
 
-EAPI void *
+EAPI int
 e_modapi_init(E_Module *m) 
 {
    bindtextdomain(PACKAGE, LOCALEDIR);
@@ -263,8 +253,10 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, poll_time, DOUBLE);
    E_CONFIG_VAL(D, T, always_text, INT);
    E_CONFIG_VAL(D, T, show_percent, INT);
+#ifdef __linux__
    E_CONFIG_VAL(D, T, real_ignore_buffers, INT);
    E_CONFIG_VAL(D, T, real_ignore_cached, INT);
+#endif
 
    conf_edd = E_CONFIG_DD_NEW("Mem_Config", Config);
 
@@ -286,8 +278,10 @@ e_modapi_init(E_Module *m)
         ci->poll_time = 1.0;
         ci->always_text = 0;
 	ci->show_percent = 1;
+#ifdef __linux__
 	ci->real_ignore_buffers = 0;
 	ci->real_ignore_cached = 0;
+#endif
         mem_config->items = evas_list_append(mem_config->items, ci);
      }
    mem_config->module = m;
@@ -435,65 +429,6 @@ _mem_cb_check(void *data)
    double ts = ((double)swap / (double)total_swap);
    msg.val = ts;
    edje_object_message_send(inst->mem_obj, EDJE_MESSAGE_FLOAT, 2, &msg);
-}
 
-static void
-_mem_get_values(Config_Item *ci, int *real, int *swap, int *total_real, int *total_swap) 
-{
-   FILE *pmeminfo = NULL;
-   int cursor = 0;
-   char *line, *field;
-   unsigned char c;
-   long int value = 0, mtotal = 0, stotal = 0, mfree = 0, sfree = 0;
-   ldiv_t ldresult;
-   long int liresult;
-
-   if (!(pmeminfo = fopen("/proc/meminfo", "r")))
-     {
-        fprintf(stderr, "can't open /proc/meminfo");
-        return;
-     }
-
-   line = (char *)calloc(64, sizeof(char));
-   while (fscanf(pmeminfo, "%c", &c) != EOF)
-     {
-        if (c != '\n') line[cursor++] = c;
-        else
-          {
-             field = (char *)malloc(strlen(line) * sizeof(char));
-             sscanf(line, "%s %ld kB", field, &value);
-             if (!strcmp(field, "MemTotal:")) mtotal = value;
-             else if (!strcmp(field, "MemFree:")) mfree = value;
-             else if (ci->real_ignore_buffers && (!strcmp(field, "Buffers:")))
-	       mfree += value;
-             else if (ci->real_ignore_cached && (!strcmp(field, "Cached:")))
-	       mfree += value;
-             else if (ci->real_ignore_cached && (!strcmp(field, "SwapCached:")))
-	       sfree += value;
-             else if (!strcmp(field, "SwapTotal:")) stotal = value;
-             else if (!strcmp(field, "SwapFree:")) sfree = value;
-	     
-             free(line);
-             free(field);
-             cursor = 0;
-             line = (char *)calloc(64, sizeof(char));
-          }
-     }
-   fclose(pmeminfo);
-
-   if (stotal >= 1)
-     {
-        ldresult = ldiv(stotal, 100);
-        liresult = ldresult.quot;
-        ldresult = ldiv((stotal - sfree), liresult);
-     }
-
-   ldresult = ldiv(mtotal, 100);
-   liresult = ldresult.quot;
-   ldresult = ldiv((mtotal - mfree), liresult);
-
-   *real = (mtotal - mfree);
-   *swap = (stotal - sfree);
-   *total_real = mtotal;
-   *total_swap = stotal;
+   return 0;
 }

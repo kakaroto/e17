@@ -6,8 +6,10 @@ struct _E_Config_Dialog_Data
    double poll_time;
    int always_text;
    int show_percent;
+#ifdef __linux__
    int real_ignore_buffers;
    int real_ignore_cached;
+#endif
 };
 
 /* Protos */
@@ -41,8 +43,10 @@ static void
 _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata)
 {
    cfdata->poll_time = ci->poll_time;
+#ifdef __linux__
    cfdata->real_ignore_buffers = ci->real_ignore_buffers;
    cfdata->real_ignore_cached = ci->real_ignore_cached;
+#endif
 //   cfdata->show_text = c->conf->show_text;
    cfdata->always_text = ci->always_text;
    cfdata->show_percent = ci->show_percent;
@@ -85,10 +89,12 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_check_add(evas, D_("Show Text As Percent"), &(cfdata->show_percent));
    e_widget_framelist_object_append(of, ob);
+#ifdef __linux__
    ob = e_widget_check_add(evas, D_("Ignore Buffers"), &(cfdata->real_ignore_buffers));
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_check_add(evas, D_("Ignore Cached"), &(cfdata->real_ignore_cached));
    e_widget_framelist_object_append(of, ob);
+#endif
    ob = e_widget_label_add(evas, D_("Check Interval:"));
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_slider_add(evas, 1, 0, _("%1.0f seconds"), 1.0, 60.0, 1.0, 0, &(cfdata->poll_time), NULL, 150);
@@ -106,8 +112,10 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    
    ci = cfd->data;
    ci->poll_time = cfdata->poll_time;
+#ifdef __linux__
    ci->real_ignore_buffers = cfdata->real_ignore_buffers;
    ci->real_ignore_cached = cfdata->real_ignore_cached;
+#endif
    ci->always_text = cfdata->always_text;
    ci->show_percent = cfdata->show_percent;
    e_config_save_queue();

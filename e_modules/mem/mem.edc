@@ -27,7 +27,7 @@ images
 
 fonts
 {
-   font: "VeraMono.ttf" "VeraMono";
+   font: "DejaVuSansMono.ttf" "DejaVuSansMono";
 }
 
 collections
@@ -248,7 +248,7 @@ collections
 		       text 
 			 {
 			    text: "Real:";
-			    font: "VeraMono";
+			    font: "DejaVuSansMono";
 			    size: 9;
 			    min: 1 1;
 			    align: 0.5 1.0;
@@ -406,7 +406,7 @@ collections
 		       text 
 			 {
 			    text: "Swap:";
-			    font: "VeraMono";
+			    font: "DejaVuSansMono";
 			    size: 9;
 			    min: 1 1;
 			    align: 0.5 1.0;

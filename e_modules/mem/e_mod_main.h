@@ -27,13 +27,15 @@ struct _Config_Item
 
 EAPI extern E_Module_Api e_modapi;
 
-EAPI void *e_modapi_init(E_Module *m);
-EAPI int   e_modapi_shutdown(E_Module *m);
-EAPI int   e_modapi_save(E_Module *m);
-EAPI int   e_modapi_about(E_Module *m);
+EAPI int e_modapi_init(E_Module *m);
+EAPI int e_modapi_shutdown(E_Module *m);
+EAPI int e_modapi_save(E_Module *m);
+EAPI int e_modapi_about(E_Module *m);
 
 void _mem_config_updated(const char *id);
 void _config_mem_module(Config_Item *ci);
+void _mem_get_values(Config_Item *ci, int *real, int *swap, int *total_real,
+	int *total_swap);
 extern Config *mem_config;
 
 #endif
