@@ -1,2 +1,5 @@
 1. Add gettext support
+2. Fix the following problem. When u set a language for one window, then switch to another
+   window, set a language for it also, and then switch back to the first window, the current
+   language of the window became default. It should not.
 2. Check for Memleaks? forget somewere to clear list or remove an item from it?
