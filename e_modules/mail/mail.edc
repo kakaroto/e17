@@ -6,6 +6,7 @@ images
 {
    image: "module_icon.png" COMP;
    image: "newmail.png" COMP;
+   image: "checking.png" COMP;
 }
 
 collections
@@ -50,7 +51,16 @@ collections
 			 {
 			    normal: "newmail.png";
 			 }
-		    }		  
+		    }
+		  description 
+		    {
+		       state: "checking" 0.0;
+		       inherit: "default" 0.0;
+		       image 
+			 {
+			    normal: "checking.png";
+			 }
+		    }
 	       }
 	     part 
 	       {
@@ -126,6 +136,14 @@ collections
 		  name: "go_new";
 		  signal: "new_mail";
 		  action: STATE_SET "new" 0.0;
+		  transition: SINUSOIDAL 0.5;
+		  target: "logo";
+	       }
+	     program 
+	       {
+		  name: "go_check";
+		  signal: "check_mail";
+		  action: STATE_SET "checking" 0.0;
 		  transition: SINUSOIDAL 0.5;
 		  target: "logo";
 	       }

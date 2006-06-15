@@ -490,6 +490,9 @@ _mail_cb_check(void *data)
    
    ci = _mail_config_item_get(inst->gcc->id);
    if (!ci->boxes) return 1;
+
+   edje_object_signal_emit(inst->mail->mail_obj, "check_mail", "");
+   
    for (l = ci->boxes; l; l = l->next) 
      {
 	Config_Box *cb;
