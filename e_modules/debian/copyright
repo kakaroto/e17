@@ -18,6 +18,7 @@ Andrew Williams <http://handyande.co.uk/> (snow)
 David Stevenson <david.35472@gmail.com> (moon)
 Aleksej 'sndev' Struk <astruk@gmail.com> (language)
 Laurent 'kiwi' Ghigonis <ooookiwi@free.fr> (eveil)
+iamsthitha (taskbar)
 
 Copyright (calendar, cpu, emu, evolume, flame, mem, moon, net, slideshow, uptime, wlan):
 
@@ -49,7 +50,7 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-Copyright (deskshow, eveil, language, mail, mbar, rain, screenshot, snow, weather):
+Copyright (deskshow, eveil, language, mail, mbar, rain, screenshot, snow, taskbar, weather):
 
 You are free to distribute this software under the terms of
 the GNU General Public License.

@@ -173,6 +173,13 @@ Description: An E17 module displaying rain on the desktop
  - display/hide trees
  - set snow density.
 
+Package: emodule0-taskbar
+Architecture: any
+Depends: ${shlibs:Depends}, enlightenment
+Provides: emodule-taskbar
+Description: An E17 taskbar module
+ An E17 module acts as an extension of the default ibox module.
+
 Package: emodule0-tclock
 Architecture: any
 Depends: ${shlibs:Depends}, enlightenment
@@ -212,7 +219,7 @@ Description: An E17 WLAN monitor module
 
 Package: emodules0-all
 Architecture: any
-Depends: enlightenment, emodule0-calendar, emodule0-cpu, emodule0-deskshow, emodule0-devian, emodule0-emu, emodule0-eveil, emodule0-evolume, emodule0-flame, emodule0-language, emodule0-mail, emodule0-mbar, emodule0-mem, emodule0-moon, emodule0-net, emodule0-rain, emodule0-screenshot, emodule0-slideshow, emodule0-snow, emodule0-tclock, emodule0-uptime, emodule0-weather, emodule0-wlan
+Depends: enlightenment, emodule0-calendar, emodule0-cpu, emodule0-deskshow, emodule0-devian, emodule0-emu, emodule0-eveil, emodule0-evolume, emodule0-flame, emodule0-language, emodule0-mail, emodule0-mbar, emodule0-mem, emodule0-moon, emodule0-net, emodule0-rain, emodule0-screenshot, emodule0-slideshow, emodule0-snow, emodule0-taskbar, emodule0-tclock, emodule0-uptime, emodule0-weather, emodule0-wlan
 Conflicts: emodules-extra, evolume
 Provides: emodules-all
 Description: A dummy package for installing all modules for E17
@@ -239,6 +246,7 @@ Description: A dummy package for installing all modules for E17
                scrot. More options will be added later.
  Slideshow   : Port of the e16 E-Slides epplet.
  Snow        : Displays some snow on your desktop.
+ Taskbar     : An extension of the default ibox module.
  Tclock      : Simple text Clock module.
  Uptime      : Monitors the uptime.
  Weather     : A module for displaying weather reports.
