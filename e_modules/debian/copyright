@@ -20,7 +20,7 @@ Aleksej 'sndev' Struk <astruk@gmail.com> (language)
 Laurent 'kiwi' Ghigonis <ooookiwi@free.fr> (eveil)
 iamsthitha (taskbar)
 
-Copyright (calendar, cpu, emu, evolume, flame, mem, moon, net, slideshow, uptime, wlan):
+Copyright (calendar, cpu, deskshow, emu, evolume, flame, mbar, mem, moon, net, rain, screenshot, slideshow, tclock, uptime, wlan, weather):
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -50,15 +50,9 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-Copyright (deskshow, eveil, language, mail, mbar, rain, screenshot, snow, taskbar, weather):
+Copyright (devian, language, mail, snow, taskbar):
 
 You are free to distribute this software under the terms of
 the GNU General Public License.
 On Debian systems, the complete text of the GNU General Public
 License can be found in the file `/usr/share/common-licenses/GPL'.
-
-
-Copyright (tclock):
-
-Do whatever you want with this code.... it sucks anyway :d
-
