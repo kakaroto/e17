@@ -9,7 +9,7 @@ http://www.enlightenment.org/cvs.html
 Upstream Authors:
 Nathan Smith <nasa01@comcast.net> (calendar)
 Matthew Mullins (cpu, mem, net, uptime, weather, wlan)
-Christopher Michael <devilhorns@comcast.net> (cpu, deskshow, mail, mbar, mem, mount, net, screenshot, slideshow, uptime, weather, wlan)
+Christopher Michael <devilhorns@comcast.net> (cpu, deskshow, mail, mbar, mem, net, screenshot, slideshow, uptime, weather, wlan)
 David Seikel <onefang@gmail.com> (emu)
 Boldin Pavel <boldin.pavel@gmail.com> (evolume)
 Vincent Torri (flame, tclock)
@@ -49,7 +49,7 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-Copyright (deskshow, eveil, language, mail, mbar, mount, rain, screenshot, snow, weather):
+Copyright (deskshow, eveil, language, mail, mbar, rain, screenshot, snow, weather):
 
 You are free to distribute this software under the terms of
 the GNU General Public License.

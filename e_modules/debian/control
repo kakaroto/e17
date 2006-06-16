@@ -118,14 +118,6 @@ Description: Moon Clock module for Enlightenment
  Moon is an E17 module which displays information about the current
  phase of the moon.
  
-Package: emodule0-mount
-Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
-Provides: emodule-mount
-Description: An E17 mount module
- An E17 module which allows easy mounting/unmounting of devices
- in /etc/fstab.
-
 Package: emodule0-net
 Architecture: any
 Depends: ${shlibs:Depends}, enlightenment
@@ -220,7 +212,7 @@ Description: An E17 WLAN monitor module
 
 Package: emodules0-all
 Architecture: any
-Depends: enlightenment, emodule0-calendar, emodule0-cpu, emodule0-deskshow, emodule0-devian, emodule0-emu, emodule0-eveil, emodule0-evolume, emodule0-flame, emodule0-language, emodule0-mail, emodule0-mbar, emodule0-mem, emodule0-moon, emodule0-mount, emodule0-net, emodule0-rain, emodule0-screenshot, emodule0-slideshow, emodule0-snow, emodule0-tclock, emodule0-uptime, emodule0-weather, emodule0-wlan
+Depends: enlightenment, emodule0-calendar, emodule0-cpu, emodule0-deskshow, emodule0-devian, emodule0-emu, emodule0-eveil, emodule0-evolume, emodule0-flame, emodule0-language, emodule0-mail, emodule0-mbar, emodule0-mem, emodule0-moon, emodule0-net, emodule0-rain, emodule0-screenshot, emodule0-slideshow, emodule0-snow, emodule0-tclock, emodule0-uptime, emodule0-weather, emodule0-wlan
 Conflicts: emodules-extra, evolume
 Provides: emodules-all
 Description: A dummy package for installing all modules for E17
@@ -239,7 +231,6 @@ Description: A dummy package for installing all modules for E17
  Mbar        : A bar for mounting and unmounting devices.
  Mem         : Monitors memory usage.
  Moon        : Moon Clock module for Enlightenment
- Mount       : This module is used to mount/unmount devices.
  Net         : Network activity monitoring module.
  Rain        : Displays rain on the desktop.
  Screenshot  : This module is used to take screenshots. It
