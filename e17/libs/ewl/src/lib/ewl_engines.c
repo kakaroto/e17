@@ -457,7 +457,7 @@ ewl_engine_window_title_set(Ewl_Window *win)
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 	
-	if (!REALIZED(win))
+	if (!(win->window))
 		DRETURN(DLEVEL_STABLE);
 
 	caller = EWL_ENGINE(win->engine);
@@ -496,7 +496,7 @@ ewl_engine_window_name_class_set(Ewl_Window *win)
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 	
-	if (!REALIZED(win))
+	if (!(win->window))
 		DRETURN(DLEVEL_STABLE);
 
 	caller = EWL_ENGINE(win->engine);
@@ -535,7 +535,7 @@ ewl_engine_window_borderless_set(Ewl_Window *win)
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 	
-	if (!REALIZED(win))
+	if (!(win->window))
 		DRETURN(DLEVEL_STABLE);
 
 	caller = EWL_ENGINE(win->engine);
@@ -574,7 +574,7 @@ ewl_engine_window_dialog_set(Ewl_Window *win)
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 	
-	if (!REALIZED(win))
+	if (!(win->window))
 		DRETURN(DLEVEL_STABLE);
 
 	caller = EWL_ENGINE(win->engine);
@@ -612,7 +612,10 @@ ewl_engine_window_fullscreen_set(Ewl_Window *win)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
-	
+
+	if (!(win->window))
+		DRETURN(DLEVEL_STABLE);
+
 	caller = EWL_ENGINE(win->engine);
 	if (!caller->functions->window_fullscreen_set && caller->dependancies)
 	{
@@ -649,7 +652,7 @@ ewl_engine_window_transient_for(Ewl_Window *win)
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 	
-	if (!REALIZED(win))
+	if (!(win->window))
 		DRETURN(DLEVEL_STABLE);
 
 	caller = EWL_ENGINE(win->engine);
@@ -688,7 +691,7 @@ ewl_engine_window_modal_set(Ewl_Window *win)
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 	
-	if (!REALIZED(win))
+	if (!(win->window))
 		DRETURN(DLEVEL_STABLE);
 
 	caller = EWL_ENGINE(win->engine);
@@ -1041,7 +1044,7 @@ ewl_engine_window_dnd_aware_set(Ewl_Window *win)
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 	
-	if (!REALIZED(win))
+	if (!(win->window))
 		DRETURN(DLEVEL_STABLE);
 
 	caller = EWL_ENGINE(win->engine);
