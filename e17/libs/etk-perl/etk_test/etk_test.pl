@@ -664,15 +664,18 @@ sub menu_window_show
     my $menu_item = _menu_test_item_new("File", $menubar, $statusbar);
     my $menu = Etk::Menu->new();
     $menu_item->SubmenuSet($menu);
-    _menu_test_stock_item_new("Open", Etk::Stock::DocumentOpen, $menu, $statusbar);
-    _menu_test_stock_item_new("Save", Etk::Stock::DocumentSave, $menu, $statusbar);
+    _menu_test_stock_item_new("Open", Etk::Stock::DocumentOpen, $menu, 
+	$statusbar);
+    _menu_test_stock_item_new("Save", Etk::Stock::DocumentSave, $menu, 
+	$statusbar);
     
     $menu_item = _menu_test_item_new("Edit", $menubar, $statusbar);
     $menu = Etk::Menu->new();
     $menu_item->SubmenuSet($menu);
     _menu_test_stock_item_new("Cut", Etk::Stock::EditCut, $menu, $statusbar);
     _menu_test_stock_item_new("Copy", Etk::Stock::EditCopy, $menu, $statusbar);
-    _menu_test_stock_item_new("Paste", Etk::Stock::EditPaste, $menu, $statusbar);
+    _menu_test_stock_item_new("Paste", Etk::Stock::EditPaste, $menu, 
+	$statusbar);
     
     $menu_item = _menu_test_item_new("Help", $menubar, $statusbar);
     $menu = Etk::Menu->new();
@@ -682,8 +685,10 @@ sub menu_window_show
     $menu = Etk::Menu->new();
     $win->SignalConnect("mouse_down", sub { $menu->Popup() });
     
-    _menu_test_stock_item_new("Open", Etk::Stock::DocumentOpen, $menu, $statusbar);
-    _menu_test_stock_item_new("Save", Etk::Stock::DocumentSave, $menu, $statusbar);
+    _menu_test_stock_item_new("Open", Etk::Stock::DocumentOpen, $menu, 
+	$statusbar);
+    _menu_test_stock_item_new("Save", Etk::Stock::DocumentSave, $menu, 
+	$statusbar);
     _menu_seperator_new($menu);
     _menu_test_stock_item_new("Cut", Etk::Stock::EditCut, $menu, $statusbar);
     _menu_test_stock_item_new("Copy", Etk::Stock::EditCopy, $menu, $statusbar);
@@ -696,9 +701,11 @@ sub menu_window_show
     my $submenu1 = Etk::Menu->new();
     $menu_item->SubmenuSet($submenu1);
 
-    _menu_test_stock_item_new("Item with image", Etk::Stock::DocumentSave, $submenu1, $statusbar);
+    _menu_test_stock_item_new("Item with image", Etk::Stock::DocumentSave, 
+	$submenu1, $statusbar);
 
-    $menu_item = _menu_test_stock_item_new("Item with child", Etk::Stock::DocumentOpen, $submenu1, $statusbar);
+    $menu_item = _menu_test_stock_item_new("Item with child", 
+	Etk::Stock::DocumentOpen, $submenu1, $statusbar);
     _menu_seperator_new($submenu1);
     _menu_test_check_item_new("Item with check 1", $submenu1, $statusbar);
     _menu_test_check_item_new("Item with check 2", $submenu1, $statusbar);
@@ -736,7 +743,7 @@ sub _menu_test_stock_item_new
     my ($label, $stockid, $menubar, $statusbar) = @_;
 
     my $menu_item = Etk::Menu::Item::Image->new($label);
-    my $image = Etk::Image->new_from_stock($stockid, Etk::Stock::SizeSmall); # ETK_STOCK_SMALL
+    my $image = Etk::Image->new_from_stock($stockid, Etk::Stock::SizeSmall);
     $menu_item->ImageSet($image);
     $menubar->Append($menu_item);
     $menu_item->SignalConnect("selected", 
@@ -878,7 +885,8 @@ sub _iconbox_folder_set
     $iconbox->Append(Etk::Theme::IconThemeGet(), "actions/go-up_48", "..");
     
     # Add directories
-    opendir(DIR, $_iconbox_folder."/".$folder) or die "can't opendir $folder: $!";
+    opendir(DIR, $_iconbox_folder."/".$folder) or 
+      die "can't opendir $folder: $!";
     while (defined($file = readdir(DIR))) {
 	if (-d "$_iconbox_folder/$folder/$file" && $file  !~ /^\./)
 	{
@@ -889,7 +897,8 @@ sub _iconbox_folder_set
     closedir(DIR);
     
     # Add files
-    opendir(DIR, $_iconbox_folder."/".$folder) or die "can't opendir $folder: $!";
+    opendir(DIR, $_iconbox_folder."/".$folder) or 
+      die "can't opendir $folder: $!";
     while (defined($file = readdir(DIR))) {
 	if (-f "$_iconbox_folder/$folder/$file" && $file  !~ /^\./)
 	{
@@ -925,34 +934,34 @@ sub textview_window_show
 sub table_window_show
 {
     my $win = Etk::Window->new("Etk-Perl Table Test");
-
+    
     my @widgets;
-
+    
     push @widgets, Etk::Button->new(Etk::Stock::DocumentOpen);
     $widgets[0]->LabelSet("Set Icon");
-
+    
     push @widgets, 
-    	Etk::Label->new("App name"),
-	Etk::Entry->new(),
-	Etk::Label->new("Generic Info"),
-	Etk::Entry->new(),
-	Etk::Label->new("Comments"),
-	Etk::Entry->new(),
-	Etk::Label->new("Executable"),
-	Etk::Entry->new(),
-	Etk::Label->new("Window name"),
-	Etk::Entry->new(),
-	Etk::Label->new("Window class"),
-	Etk::Entry->new(),
-	Etk::Label->new("Startup notify"),
-	Etk::Entry->new(),
-	Etk::Label->new("Wait exit"),
-	Etk::Entry->new();
-
+      Etk::Label->new("App name"),
+      Etk::Entry->new(),
+      Etk::Label->new("Generic Info"),
+      Etk::Entry->new(),
+      Etk::Label->new("Comments"),
+      Etk::Entry->new(),
+      Etk::Label->new("Executable"),
+      Etk::Entry->new(),
+      Etk::Label->new("Window name"),
+      Etk::Entry->new(),
+      Etk::Label->new("Window class"),
+      Etk::Entry->new(),
+      Etk::Label->new("Startup notify"),
+      Etk::CheckButton->new(),
+      Etk::Label->new("Wait exit"),
+      Etk::CheckButton->new();
+    
     push @widgets, Etk::Button->new(Etk::Stock::DialogCancel);
     push @widgets, Etk::Button->new(Etk::Stock::DocumentSave);
     
-    push @widgets, Etk::Image->new("`etk-config --build-dir`/images/test.png"); # ugly
+    push @widgets, Etk::Image->new("images/test.png");
 
     push @widgets, Etk::Alignment->new(0.5, 0.5, 0, 0);
 
@@ -968,14 +977,18 @@ sub table_window_show
     $hbox->PackEnd($widgets[17], 0, 0, 0);
 
     $table->Attach($widgets[19], 0, 0, 0, 0, 0, 0, Etk::FillPolicy::None);
-    $table->Attach($widgets[20], 1, 1, 0, 0, 0, 0, Etk::FillPolicy::HExpand | Etk::FillPolicy::HFill);
+    $table->Attach($widgets[20], 1, 1, 0, 0, 0, 0, Etk::FillPolicy::HExpand | 
+	Etk::FillPolicy::HFill);
 
     my $index = 1;
-    for my $i (2 .. 9) {
-        $table->Attach($widgets[$index], 0, 0, $i, $i, 0, 0, Etk::FillPolicy::HFill);
+    for my $i (2 .. 9) 
+    {
+        $table->Attach($widgets[$index], 0, 0, $i, $i, 0, 0, 
+	    Etk::FillPolicy::HFill);
         $table->AttachDefaults($widgets[$index + 1], 1, 1, $i, $i);
         $index += 2;
     }
+    $win->BorderWidthSet(5);
     $win->Add($vbox);
     $win->ShowAll();  
 }
