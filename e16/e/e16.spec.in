@@ -7,7 +7,7 @@ Group: User Interface/Desktops
 URL: http://www.enlightenment.org/
 Source0: http://prdownloads.sourceforge.net/enlightenment/@PACKAGE@-@VERSION@.tar.gz
 #BuildSuggests: esound-devel
-BuildRequires: imlib2-devel freetype-devel xorg-x11-devel
+BuildRequires: imlib2-devel freetype-devel
 Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
 Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
