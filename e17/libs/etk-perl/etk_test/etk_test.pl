@@ -46,6 +46,7 @@ use Etk::Tree::Model::Image;
 use Etk::Tree::Model::Double;
 use Etk::Tree::Model::IconText;
 use Etk::Tree::Model::Checkbox;
+use Etk::Alignment;
 
 Etk::Init();
 
@@ -924,10 +925,58 @@ sub textview_window_show
 sub table_window_show
 {
     my $win = Etk::Window->new("Etk-Perl Table Test");
-    my $label = Etk::Label->new("<b>Etk::Table test is not implemented yet.</b>");
+
+    my @widgets;
+
+    push @widgets, Etk::Button->new(Etk::Stock::DocumentOpen);
+    $widgets[0]->LabelSet("Set Icon");
+
+    push @widgets, 
+    	Etk::Label->new("App name"),
+	Etk::Entry->new(),
+	Etk::Label->new("Generic Info"),
+	Etk::Entry->new(),
+	Etk::Label->new("Comments"),
+	Etk::Entry->new(),
+	Etk::Label->new("Executable"),
+	Etk::Entry->new(),
+	Etk::Label->new("Window name"),
+	Etk::Entry->new(),
+	Etk::Label->new("Window class"),
+	Etk::Entry->new(),
+	Etk::Label->new("Startup notify"),
+	Etk::Entry->new(),
+	Etk::Label->new("Wait exit"),
+	Etk::Entry->new();
+
+    push @widgets, Etk::Button->new(Etk::Stock::DialogCancel);
+    push @widgets, Etk::Button->new(Etk::Stock::DocumentSave);
     
-    $win->Add($label);
-    $win->BorderWidthSet(10);
+    push @widgets, Etk::Image->new("`etk-config --build-dir`/images/test.png"); # ugly
+
+    push @widgets, Etk::Alignment->new(0.5, 0.5, 0, 0);
+
+    $widgets[20]->Add($widgets[0]);
+
+    my $vbox = Etk::VBox->new(0, 0);
+    my $hbox = Etk::HBox->new(0, 0);
+    my $table = Etk::Table->new(2, 10, 0);
+
+    $vbox->PackStart($table, 0, 0, 0);
+    $vbox->PackEnd($hbox, 0, 0, 0);
+    $hbox->PackEnd($widgets[18], 0, 0, 0);
+    $hbox->PackEnd($widgets[17], 0, 0, 0);
+
+    $table->Attach($widgets[19], 0, 0, 0, 0, 0, 0, Etk::FillPolicy::None);
+    $table->Attach($widgets[20], 1, 1, 0, 0, 0, 0, Etk::FillPolicy::HExpand | Etk::FillPolicy::HFill);
+
+    my $index = 1;
+    for my $i (2 .. 9) {
+        $table->Attach($widgets[$index], 0, 0, $i, $i, 0, 0, Etk::FillPolicy::HFill);
+        $table->AttachDefaults($widgets[$index + 1], 1, 1, $i, $i);
+        $index += 2;
+    }
+    $win->Add($vbox);
     $win->ShowAll();  
 }
 

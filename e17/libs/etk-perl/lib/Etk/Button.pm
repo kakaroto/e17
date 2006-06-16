@@ -9,8 +9,10 @@ sub new
     my $self = $class->SUPER::new();
     if(@_ == 1)
     {
-	# TODO: check if its a string or num and use label / stock respectively
-	$self->{WIDGET} = Etk::etk_button_new_with_label(shift);
+	my $thing = shift;
+	$self->{WIDGET} = $thing + 0 eq $thing ?
+	    Etk::etk_button_new_from_stock($thing) :
+	    Etk::etk_button_new_with_label($thing); 
     }
     else
     {
