@@ -33,7 +33,7 @@ void main_window_show(char *file)
    gui->win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(gui->win), _(WINDOW_TITLE));
    etk_window_wmclass_set(ETK_WINDOW(gui->win), "edje_viewer", "Edje_viewer");
-   etk_container_border_width_set(ETK_CONTAINER(gui->win), 5);
+   etk_container_border_width_set(ETK_CONTAINER(gui->win), 0);
    etk_window_resize(ETK_WINDOW(gui->win), WINDOW_WIDTH, WINDOW_HEIGHT);
 
    vbox = etk_vbox_new(ETK_FALSE, 0);

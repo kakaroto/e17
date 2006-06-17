@@ -1,5 +1,5 @@
 Instead of printing useful info in the console, place it in an etk textblock when it's stable
 
-[bug] the edje part grows when it hidden and shown again (evas_objeect_geometry_get doesn't seem to return the correct values);
+[bug] the edje part grows when its hidden and shown again (evas_object_geometry_get doesn't seem to return the correct values);
 
 [bug] make the edje parts move/resize with the canvas
