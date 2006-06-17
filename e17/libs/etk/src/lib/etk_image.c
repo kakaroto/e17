@@ -611,7 +611,7 @@ static void _etk_image_load(Etk_Image *image)
       }
       if (image->image_object)
       {
-         char *image_file;
+         const char *image_file;
          
          evas_object_image_file_get(image->image_object, &image_file, NULL);
          if (!image_file || strcmp(image_file, image->filename) != 0)

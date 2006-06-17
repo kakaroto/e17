@@ -20,28 +20,6 @@
 #define ETK_IS_WIDGET(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_WIDGET_TYPE))
 
 /**
- * @struct Etk_Size
- * @brief A widget should set its ideal size to an Etk_Size when etk_widget_size_request() is called by its parent
- */
-struct _Etk_Size
-{
-   int w;
-   int h;
-};
-
-/**
- * @struct Etk_Geometry
- * @brief A widget should respect the geometry allocated by its parent through etk_widget_size_allocate()
- */
-struct _Etk_Geometry
-{
-   int x;
-   int y;
-   int w;
-   int h;
-};
-
-/**
  * @struct Etk_Event_Mouse_In_out
  * @brief The event sent as argument with the signals "mouse_in" and "mouse_out"
  */

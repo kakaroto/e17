@@ -324,6 +324,7 @@ static void _etk_label_realize_cb(Etk_Object *object, void *data)
    etk_widget_member_object_add(ETK_WIDGET(label), label->clip);
 
    evas_object_textblock_text_markup_set(label->text_object, label->text);
+   etk_widget_size_recalc_queue(ETK_WIDGET(label));
 }
 
 /* Called when the label is unrealized */

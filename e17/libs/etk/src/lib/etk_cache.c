@@ -143,7 +143,7 @@ int etk_cache_edje_object_size_get(Evas *evas)
  */
 void etk_cache_image_object_add(Evas_Object *image_object)
 {
-   char *filename;
+   const char *filename;
    Evas *evas;
    Etk_Cache_System *cache_system;
    Evas_List *item_list;
@@ -186,7 +186,7 @@ void etk_cache_image_object_add(Evas_Object *image_object)
  */
 void etk_cache_image_object_remove(Evas_Object *image_object)
 {
-   char *filename;
+   const char *filename;
    Evas *evas;
    Etk_Cache_System *cache_system;
    Evas_List *item_list, *l;

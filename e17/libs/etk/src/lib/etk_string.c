@@ -10,7 +10,8 @@
  */
  
 #define ETK_STRING_BLOCK_SIZE 128
-#define ETK_STRING_SIZE_TO_ALLOC(length)        (((length) + (ETK_STRING_BLOCK_SIZE - 1)) / ETK_STRING_BLOCK_SIZE) * ETK_STRING_BLOCK_SIZE
+#define ETK_STRING_SIZE_TO_ALLOC(length) \
+   (((length) + (ETK_STRING_BLOCK_SIZE - 1)) / ETK_STRING_BLOCK_SIZE) * ETK_STRING_BLOCK_SIZE
 
 enum _Etk_String_Property_Id
 {
@@ -23,7 +24,7 @@ static char *_etk_string_vprintf(const char *format, va_list args);
 
 /**
  * @brief Gets the type of an Etk_String
- * @return Returns the type on an Etk_String
+ * @return Returns the type of an Etk_String
  */
 Etk_Type *etk_string_type_get()
 {
@@ -31,8 +32,10 @@ Etk_Type *etk_string_type_get()
 
    if (!string_type)
    {
-      string_type = etk_type_new("Etk_String", ETK_OBJECT_TYPE, sizeof(Etk_String), ETK_CONSTRUCTOR(_etk_string_constructor), ETK_DESTRUCTOR(_etk_string_destructor));
-      etk_type_property_add(string_type, "string", ETK_STRING_STRING_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_string(NULL));
+      string_type = etk_type_new("Etk_String", ETK_OBJECT_TYPE, sizeof(Etk_String),
+         ETK_CONSTRUCTOR(_etk_string_constructor), ETK_DESTRUCTOR(_etk_string_destructor));
+      etk_type_property_add(string_type, "string", ETK_STRING_STRING_PROPERTY,
+         ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_string(NULL));
    }
 
    return string_type;
@@ -52,7 +55,8 @@ Etk_String *etk_string_new(const char *value)
  * @brief Creates a new string, with a specific size.
  * @param value the default value of the string. Can be NULL
  * @param size If @a size is lower than the length of @a value, the string will be truncated. @n
- * Otherwise, extra memory will be allocated (useful if you planned to insert text often and want to avoid too many reallocations)
+ * Otherwise, extra memory will be allocated (useful if you planned to insert text often
+ * and want to avoid too many reallocations)
  * @return Returns the new string
  */
 Etk_String *etk_string_new_sized(const char *value, int size)
@@ -148,26 +152,18 @@ Etk_String *etk_string_truncate(Etk_String *string, int length)
 
 /**
  * @brief Sets the value of a string
- * @param string a string
+ * @param string a string. If @a string is NULL, a new string is created
  * @param value the value to assign to the string
  * @return Returns the string
  */
 Etk_String *etk_string_set(Etk_String *string, const char *value)
 {
-   if (!string)
-      return NULL;
-   
-   if (!value)
-      etk_string_set_sized(string, NULL, 0);
-   else
-      etk_string_set_sized(string, value, strlen(value));
-   
-   return string;
+   return etk_string_set_sized(string, value, value ? strlen(value) : 0);
 }
 
 /**
  * @brief Sets the value of a string, with a specific size.
- * @param string a string
+ * @param string a string. If @a string is NULL, a new string is created
  * @param value the value to assign to the string
  * @param size If @a size is lower than the length of @a value, the string will be truncated. @n
  * Otherwise, extra memory will be allocated (useful if you planned to insert text often and want to avoid too many reallocations)
@@ -176,7 +172,7 @@ Etk_String *etk_string_set(Etk_String *string, const char *value)
 Etk_String *etk_string_set_sized(Etk_String *string, const char *value, int size)
 {
    if (!string)
-      return NULL;
+      return etk_string_new_sized(value, size);
    
    if (!value || *value == 0 || size <= 0)
    {
@@ -206,7 +202,7 @@ Etk_String *etk_string_set_sized(Etk_String *string, const char *value, int size
 
 /**
  * @brief Sets the value of the string from the format and the arguments
- * @param string a string
+ * @param string a string. If @a string is NULL, a new string is created
  * @param format the format to set to the string. It uses the same arguments than printf()
  * @param ... the arguments corresponding to the format
  * @return Returns the string
@@ -214,20 +210,18 @@ Etk_String *etk_string_set_sized(Etk_String *string, const char *value, int size
 Etk_String *etk_string_set_printf(Etk_String *string, const char *format, ...)
 {
    va_list args;
-   
-   if (!string)
-      return NULL;
+   Etk_String *result;
    
    va_start(args, format);
-   etk_string_set_vprintf(string, format, args);
+   result = etk_string_set_vprintf(string, format, args);
    va_end(args);
    
-   return string;
+   return result;
 }
 
 /**
  * @brief Sets the value of the string from the format and the arguments
- * @param string a string
+ * @param string a string. If @a string is NULL, a new string is created
  * @param format the format to set to the string. It uses the same arguments than printf()
  * @param args the arguments corresponding to the format
  * @return Returns the string
@@ -236,22 +230,20 @@ Etk_String *etk_string_set_vprintf(Etk_String *string, const char *format, va_li
 {
    va_list args2;
    char *text;
-   
-   if (!string)
-      return NULL;
+   Etk_String *result;
    
    va_copy(args2, args);
    text = _etk_string_vprintf(format, args);
-   etk_string_set(string, text);
+   result = etk_string_set(string, text);
    free(text);
    va_end(args2);
    
-   return string;
+   return result;
 }
 
 /**
  * @brief Prepends a text to a string
- * @param string a string
+ * @param string a string. If @a string is NULL, a new string is created
  * @param text the text to prepend to the string
  * @return Returns the string
  */
@@ -262,7 +254,7 @@ Etk_String *etk_string_prepend(Etk_String *string, const char *text)
 
 /**
  * @brief Prepends a text with a specific length  to a string
- * @param string a string
+ * @param string a string. If @a string is NULL, a new string is created
  * @param text the text to prepend to the string
  * @param length the length of the text to prepend
  * @return Returns the string
@@ -274,7 +266,7 @@ Etk_String *etk_string_prepend_sized(Etk_String *string, const char *text, int l
 
 /**
  * @brief Prepends a character to a string
- * @param string a string
+ * @param string a string. If @a string is NULL, a new string is created
  * @param c the character to prepend to the string
  * @return Returns the string
  */
@@ -285,7 +277,7 @@ Etk_String *etk_string_prepend_char(Etk_String *string, char c)
 
 /**
  * @brief Prepends a text to a string from the format and the arguments
- * @param string a string
+ * @param string a string. If @a string is NULL, a new string is created
  * @param format the format to prepend to the string. It uses the same arguments than printf()
  * @param ... the arguments corresponding to the format
  * @return Returns the string
@@ -293,20 +285,18 @@ Etk_String *etk_string_prepend_char(Etk_String *string, char c)
 Etk_String *etk_string_prepend_printf(Etk_String *string, const char *format, ...)
 {
    va_list args;
-   
-   if (!string)
-      return NULL;
+   Etk_String *result;
    
    va_start(args, format);
-   etk_string_prepend_vprintf(string, format, args);
+   result = etk_string_prepend_vprintf(string, format, args);
    va_end(args);
    
-   return string;
+   return result;
 }
 
 /**
  * @brief Prepends a text to a string from the format and the arguments
- * @param string a string
+ * @param string a string. If @a string is NULL, a new string is created
  * @param format the format to prepend to the string. It uses the same arguments than printf()
  * @param args the arguments corresponding to the format
  * @return Returns the string
@@ -314,20 +304,18 @@ Etk_String *etk_string_prepend_printf(Etk_String *string, const char *format, ..
 Etk_String *etk_string_prepend_vprintf(Etk_String *string, const char *format, va_list args)
 {
    va_list args2;
-   
-   if (!string)
-      return NULL;
+   Etk_String *result;
    
    va_copy(args2, args);
-   etk_string_insert_vprintf(string, 0, format, args2);
+   result = etk_string_insert_vprintf(string, 0, format, args2);
    va_end(args2);
    
-   return string;
+   return result;
 }
 
 /**
  * @brief Appends a text to a string
- * @param string a string
+ * @param string a string. If @a string is NULL, a new string is created
  * @param text the text to append to the string
  * @return Returns the string
  */
@@ -338,7 +326,7 @@ Etk_String *etk_string_append(Etk_String *string, const char *text)
 
 /**
  * @brief Appends a text with a specific length  to a string
- * @param string a string
+ * @param string a string. If @a string is NULL, a new string is created
  * @param text the text to append to the string
  * @param length the length of the text to append
  * @return Returns the string
@@ -350,7 +338,7 @@ Etk_String *etk_string_append_sized(Etk_String *string, const char *text, int le
 
 /**
  * @brief Appends a character to a string
- * @param string a string
+ * @param string a string. If @a string is NULL, a new string is created
  * @param c the character to append to the string
  * @return Returns the string
  */
@@ -361,7 +349,7 @@ Etk_String *etk_string_append_char(Etk_String *string, char c)
 
 /**
  * @brief Appends a text to a string from the format and the arguments
- * @param string a string
+ * @param string a string. If @a string is NULL, a new string is created
  * @param format the format to append to the string. It uses the same arguments than printf()
  * @param ... the arguments corresponding to the format
  * @return Returns the string
@@ -369,20 +357,18 @@ Etk_String *etk_string_append_char(Etk_String *string, char c)
 Etk_String *etk_string_append_printf(Etk_String *string, const char *format, ...)
 {
    va_list args;
-   
-   if (!string)
-      return NULL;
+   Etk_String *result;
    
    va_start(args, format);
-   etk_string_append_vprintf(string, format, args);
+   result = etk_string_append_vprintf(string, format, args);
    va_end(args);
    
-   return string;
+   return result;
 }
 
 /**
  * @brief Appends a text to a string from the format and the arguments
- * @param string a string
+ * @param string a string. If @a string is NULL, a new string is created
  * @param format the format to append to the string. It uses the same arguments than printf()
  * @param args the arguments corresponding to the format
  * @return Returns the string
@@ -390,36 +376,30 @@ Etk_String *etk_string_append_printf(Etk_String *string, const char *format, ...
 Etk_String *etk_string_append_vprintf(Etk_String *string, const char *format, va_list args)
 {
    va_list args2;
-   
-   if (!string)
-      return NULL;
+   Etk_String *result;
    
    va_copy(args2, args);
-   etk_string_insert_vprintf(string, string->length, format, args2);
+   result = etk_string_insert_vprintf(string, string->length, format, args2);
    va_end(args2);
    
-   return string;
+   return result;
 }
 
 /**
  * @brief Inserts a text into a string
- * @param string a string
+ * @param string a string. If @a string is NULL, a new string is created
  * @param pos the position where to insert the text
  * @param text the text to insert into the string
  * @return Returns the string
  */
 Etk_String *etk_string_insert(Etk_String *string, int pos, const char *text)
 {
-   if (!string)
-      return NULL;
-   if (!text || *text == 0)
-      return string;
-   return etk_string_insert_sized(string, pos, text, strlen(text));
+   return etk_string_insert_sized(string, pos, text, text ? strlen(text) : 0);
 }
 
 /**
  * @brief Inserts a text with a specific length into a string
- * @param string a string
+ * @param string a string. If @a string is NULL, a new string is created
  * @param pos the position where to insert the text
  * @param text the text to insert into the string
  * @param length the length of the text to insert
@@ -428,7 +408,7 @@ Etk_String *etk_string_insert(Etk_String *string, int pos, const char *text)
 Etk_String *etk_string_insert_sized(Etk_String *string, int pos, const char *text, int length)
 {
    if (!string)
-      return NULL;
+      return etk_string_new_sized(text, length);
    if (!text || *text == 0 || length <= 0)
       return string;
    
@@ -451,8 +431,8 @@ Etk_String *etk_string_insert_sized(Etk_String *string, int pos, const char *tex
 }
 
 /**
- * @brief Inserys a character into a string
- * @param string a string
+ * @brief Inserts a character into a string
+ * @param string a string. If @a string is NULL, a new string is created
  * @param pos the positon where to insert the char
  * @param c the character to insert into the string
  * @return Returns the string
@@ -462,7 +442,7 @@ Etk_String *etk_string_insert_char(Etk_String *string, int pos, char c)
    int i;
    
    if (!string)
-      return NULL;
+      return etk_string_insert_char(etk_string_new(NULL), pos, c);
    if (c == 0)
       return etk_string_truncate(string, pos);
    
@@ -486,7 +466,7 @@ Etk_String *etk_string_insert_char(Etk_String *string, int pos, char c)
 
 /**
  * @brief Inserts a text into a string from the format and the arguments
- * @param string a string
+ * @param string a string. If @a string is NULL, a new string is created
  * @param pos the positon where to insert the char
  * @param format the format to insert into the string. It uses the same arguments than printf()
  * @param ... the arguments corresponding to the format
@@ -495,20 +475,18 @@ Etk_String *etk_string_insert_char(Etk_String *string, int pos, char c)
 Etk_String *etk_string_insert_printf(Etk_String *string, int pos, const char *format, ...)
 {
    va_list args;
-   
-   if (!string)
-      return NULL;
+   Etk_String *result;
    
    va_start(args, format);
-   etk_string_insert_vprintf(string, pos, format, args);
+   result = etk_string_insert_vprintf(string, pos, format, args);
    va_end(args);
    
-   return string;
+   return result;
 }
 
 /**
  * @brief Inserts a text into a string from the format and the arguments
- * @param string a string
+ * @param string a string. If @a string is NULL, a new string is created
  * @param pos the positon where to insert the char
  * @param format the format to insert into the string. It uses the same arguments than printf()
  * @param args the arguments corresponding to the format
@@ -518,17 +496,15 @@ Etk_String *etk_string_insert_vprintf(Etk_String *string, int pos, const char *f
 {
    va_list args2;
    char *text_to_append;
-   
-   if (!string)
-      return NULL;
+   Etk_String *result;
    
    va_copy(args2, args);
    text_to_append = _etk_string_vprintf(format, args2);
-   etk_string_insert(string, pos, text_to_append);
+   result = etk_string_insert(string, pos, text_to_append);
    free(text_to_append);
    va_end(args2);
    
-   return string;
+   return result;
 }
 
 /**************************
@@ -562,7 +538,8 @@ static void _etk_string_destructor(Etk_String *string)
  *
  **************************/
 
-/* Creates a new string (char *) from the format and the args, and returns it. The returned string will have to be freed */
+/* Creates a new string (char *) from the format and the args, and returns it.
+ * The returned string will have to be freed */
 static char *_etk_string_vprintf(const char *format, va_list args)
 {
    char c;

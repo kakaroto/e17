@@ -43,7 +43,7 @@ void etk_test_menu_window_create(void *data)
    menu_bar = etk_menu_bar_new();
    etk_box_pack_start(ETK_BOX(vbox), menu_bar, ETK_FALSE, ETK_FALSE, 0);
    
-   label = etk_label_new(_("Click me :)"));
+   label = etk_label_new("<b>Bold</b><br>New Line<b>Test</b>");
    etk_label_alignment_set(ETK_LABEL(label), 0.5, 0.5);
    etk_widget_pass_mouse_events_set(label, ETK_TRUE);
    etk_box_pack_start(ETK_BOX(vbox), label, ETK_TRUE, ETK_TRUE, 0);

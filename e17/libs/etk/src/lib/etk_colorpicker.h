@@ -2,7 +2,7 @@
 #ifndef __ETK_COLORPICKER_H__
 #define __ETK_COLORPICKER_H__
 
-#include <etk_widget.h>
+#include "etk_widget.h"
 #include <Evas.h>
 #include "etk_types.h"
 
