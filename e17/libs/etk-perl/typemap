@@ -87,7 +87,9 @@ Evas_List **					T_PTROBJ
 Evas_Object *					T_PTROBJ
 const Etk_String *				T_PTROBJ
 char *						T_PV
+const char *					T_PV
 char **						T_PTROBJ
+const char **					T_PTROBJ
 void *						T_PTROBJ
 float *						T_PTROBJ
 Ecore_Timer *                                   T_PTROBJ

@@ -405,6 +405,7 @@ sub progbar_window_show
     $vbox->PackStart($pbar1);
     $vbox->PackStart($pbar2);
 
+use Data::Dumper;
     my $timer1 = Etk::Timer->new(0.05, 
 	sub {
 	    my $fraction = $pbar1->FractionGet();
@@ -414,6 +415,7 @@ sub progbar_window_show
 	    
 	    $pbar1->TextSet(sprintf("%.0f%% done", $fraction * 100.0));
 	    $pbar1->FractionSet($fraction);
+
 	    
 	    return 1;
 	}
