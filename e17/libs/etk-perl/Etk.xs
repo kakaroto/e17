@@ -1960,11 +1960,11 @@ etk_message_dialog_type_get()
 
 int
 etk_notebook_current_page_get(notebook)
-	Etk_Notebook *	notebook
+	Etk_Widget *	notebook
 
 void
 etk_notebook_current_page_set(notebook, page_num)
-	Etk_Notebook *	notebook
+	Etk_Widget *	notebook
 	int	page_num
 
 Etk_Widget *
@@ -1972,75 +1972,75 @@ etk_notebook_new()
 
 int
 etk_notebook_num_pages_get(notebook)
-	Etk_Notebook *	notebook
+	Etk_Widget *	notebook
 
 int
 etk_notebook_page_append(notebook, tab_label, page_child)
-	Etk_Notebook *	notebook
+	Etk_Widget *	notebook
 	char *	tab_label
 	Etk_Widget *	page_child
 
 Etk_Widget *
 etk_notebook_page_child_get(notebook, page_num)
-	Etk_Notebook *	notebook
+	Etk_Widget *	notebook
 	int	page_num
 
 void
 etk_notebook_page_child_set(notebook, page_num, child)
-	Etk_Notebook *	notebook
+	Etk_Widget *	notebook
 	int	page_num
 	Etk_Widget *	child
 
 int
 etk_notebook_page_index_get(notebook, child)
-	Etk_Notebook *	notebook
+	Etk_Widget *	notebook
 	Etk_Widget *	child
 
 int
 etk_notebook_page_insert(notebook, tab_label, page_child, position)
-	Etk_Notebook *	notebook
+	Etk_Widget *	notebook
 	char *	tab_label
 	Etk_Widget *	page_child
 	int	position
 
 int
 etk_notebook_page_next(notebook)
-	Etk_Notebook *	notebook
+	Etk_Widget *	notebook
 
 int
 etk_notebook_page_prepend(notebook, tab_label, page_child)
-	Etk_Notebook *	notebook
+	Etk_Widget *	notebook
 	char *	tab_label
 	Etk_Widget *	page_child
 
 int
 etk_notebook_page_prev(notebook)
-	Etk_Notebook *	notebook
+	Etk_Widget *	notebook
 
 void
 etk_notebook_page_remove(notebook, page_num)
-	Etk_Notebook *	notebook
+	Etk_Widget *	notebook
 	int	page_num
 
 char *
 etk_notebook_page_tab_label_get(notebook, page_num)
-	Etk_Notebook *	notebook
+	Etk_Widget *	notebook
 	int	page_num
 
 void
 etk_notebook_page_tab_label_set(notebook, page_num, tab_label)
-	Etk_Notebook *	notebook
+	Etk_Widget *	notebook
 	int	page_num
 	char *	tab_label
 
 Etk_Widget *
 etk_notebook_page_tab_widget_get(notebook, page_num)
-	Etk_Notebook *	notebook
+	Etk_Widget *	notebook
 	int	page_num
 
 void
 etk_notebook_page_tab_widget_set(notebook, page_num, tab_widget)
-	Etk_Notebook *	notebook
+	Etk_Widget *	notebook
 	int	page_num
 	Etk_Widget *	tab_widget
 

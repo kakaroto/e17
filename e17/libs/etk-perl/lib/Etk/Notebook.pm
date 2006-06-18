@@ -18,7 +18,7 @@ sub PagePrepend
     my $self = shift;
     my $tab_label = shift;
     my $page_child = shift;
-    Etk::etk_notebook_prepend_page($self->{WIDGET}, $tab_label,
+    Etk::etk_notebook_page_prepend($self->{WIDGET}, $tab_label,
 	$page_child->{WIDGET});
 }
 
@@ -27,7 +27,7 @@ sub PageAppend
     my $self = shift;
     my $tab_label = shift;
     my $page_child = shift;
-    Etk::etk_notebook_append_page($self->{WIDGET}, $tab_label, 
+    Etk::etk_notebook_page_append($self->{WIDGET}, $tab_label, 
 	$page_child->{WIDGET});
 }
 
@@ -37,7 +37,7 @@ sub Insert
     my $tab_label = shift;
     my $page_child = shift;
     my $position = shift;
-    Etk::etk_notebook_append_page($self->{WIDGET}, $tab_label, 
+    Etk::etk_notebook_page_insert($self->{WIDGET}, $tab_label, 
 	$page_child->{WIDGET}, $position);
 }
 

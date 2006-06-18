@@ -47,6 +47,7 @@ use Etk::Tree::Model::Double;
 use Etk::Tree::Model::IconText;
 use Etk::Tree::Model::Checkbox;
 use Etk::Alignment;
+use Etk::Notebook;
 
 Etk::Init();
 
@@ -1072,10 +1073,96 @@ sub scrolledview_window_show
 sub notebook_window_show
 {
     my $win = Etk::Window->new("Etk-Perl Notebook Test");
-    my $label = Etk::Label->new("<b>Etk::Notebook test is not implemented yet.</b>");
+
+    my $vbox = Etk::VBox->new(0, 0);
+
+    my $notebook = Etk::Notebook->new();
+    $vbox->PackStart($notebook, 1, 1, 0);
+
+    my @widgets;
     
-    $win->Add($label);
-    $win->BorderWidthSet(10);
+    push @widgets, Etk::Button->new(Etk::Stock::DocumentOpen);
+    $widgets[0]->LabelSet("Set Icon");
+    
+    push @widgets, 
+      Etk::Label->new("App name"), Etk::Entry->new(),
+      Etk::Label->new("Generic Info"), Etk::Entry->new(),
+      Etk::Label->new("Comments"), Etk::Entry->new(),
+      Etk::Label->new("Executable"), Etk::Entry->new(),
+      Etk::Label->new("Window name"), Etk::Entry->new(),
+      Etk::Label->new("Window class"), Etk::Entry->new(),
+      Etk::Label->new("Startup notify"), Etk::CheckButton->new(),
+      Etk::Label->new("Wait exit"), Etk::CheckButton->new();
+    
+    push @widgets, Etk::Image->new("images/test.png");
+    push @widgets, Etk::Alignment->new(0.5, 0.5, 0, 0);
+    $widgets[18]->Add($widgets[0]);
+    my $table = Etk::Table->new(2, 10, 0);
+    $table->Attach($widgets[17], 0, 0, 0, 0, 0, 0, Etk::FillPolicy::None);
+    $table->Attach($widgets[18], 1, 1, 0, 0, 0, 0, Etk::FillPolicy::HExpand | 
+	Etk::FillPolicy::HFill);
+
+    my $index = 1;
+    for my $i (2 .. 9) 
+    {
+        $table->Attach($widgets[$index], 0, 0, $i, $i, 0, 0, 
+	    Etk::FillPolicy::HFill);
+        $table->AttachDefaults($widgets[$index + 1], 1, 1, $i, $i);
+        $index += 2;
+    }
+
+    $notebook->PageAppend("Tab 1 - Table test", $table);
+
+    my $alignment = Etk::Alignment->new(0.5, 0.5, 0.2, 0);
+    my $vbox2 = Etk::VBox->new(0, 3);
+    $alignment->Add($vbox2);
+ 
+    my $button = Etk::Button->new("Normal Button");
+    $vbox2->PackStart($button);
+    
+    $button = Etk::ToggleButton->new("Toggle Button");
+    $vbox2->PackStart($button);
+    
+    $button = Etk::CheckButton->new("Check Button");
+    $vbox2->PackStart($button);
+    
+    $button = Etk::CheckButton->new();
+    $vbox2->PackStart($button);
+    
+    #######
+    # TODO: implement radio buttons!
+    # $button = Etk::RadioButton->new("Normal Button");
+    # $vbox->PackStart($button);
+    #
+    # $button = Etk::RadioButton->new();
+    # $vbox->PackStart($button);
+    #######
+    
+    $notebook->PageAppend("Tab 2 - Button test", $alignment);
+
+    $vbox->PackStart(Etk::HSeparator->new(), 0, 0, 5);
+
+    $alignment = Etk::Alignment->new(0.5, 0.5, 0, 1);
+    $vbox->PackStart($alignment, 0, 0, 0);
+    my $hbox = Etk::HBox->new(1, 0);
+    $alignment->Add($hbox);
+
+    $button = Etk::Button->new(Etk::Stock::GoPrevious);
+    $button->LabelSet("Previous");
+    $button->SignalConnect("clicked", sub {
+		$notebook->PagePrev();
+    });
+    $hbox->PackStart($button, 0, 1, 0);
+    
+    $button = Etk::Button->new(Etk::Stock::GoNext);
+    $button->LabelSet("Next");
+    $button->SignalConnect("clicked", sub {
+		$notebook->PageNext();
+    });
+    $hbox->PackStart($button, 0, 1, 0);
+
+    $win->Add($vbox);
+    $win->BorderWidthSet(5);
     $win->ShowAll();    
 }
 
