@@ -2932,9 +2932,10 @@ etk_textblock_realize(textblock, evas)
 	Evas *	evas
 
 void
-etk_textblock_text_set(textblock, text)
+etk_textblock_text_set(textblock, text, markup)
 	Etk_Textblock *	textblock
 	char *	text
+        Etk_Bool * markup
 
 Etk_Type *
 etk_textblock_type_get()
