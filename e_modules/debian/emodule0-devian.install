@@ -1,4 +1,5 @@
 debian/tmp/usr/lib/enlightenment/modules/devian/themes/*.edj
+debian/tmp/usr/lib/enlightenment/modules/devian/*.eap
 debian/tmp/usr/lib/enlightenment/modules/devian/*.jpg
 debian/tmp/usr/lib/enlightenment/modules/devian/*.png
 debian/tmp/usr/lib/enlightenment/modules/devian/*/*.so
