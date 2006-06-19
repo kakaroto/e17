@@ -235,7 +235,7 @@ Demo_Edje *edje_part_create(Etk_Tree *output, Etk_Canvas *canvas,
    de->title = o;
 
    o = edje_object_add(evas);
-   edje_object_message_handler_set(o, message_cb, NULL);
+   edje_object_message_handler_set(o, message_cb, output);
    edje_object_signal_callback_add(o, "*", "*", signal_cb, output);
    edje_object_file_set(o, file, name);
    edje_object_part_drag_size_set(o, "dragable", 0.01, 0.5);
