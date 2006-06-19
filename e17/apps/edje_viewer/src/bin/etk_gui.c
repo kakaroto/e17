@@ -26,6 +26,7 @@ void main_window_show(char *file)
    Etk_Widget *menuitem;
    Etk_Widget *vbox;
    Etk_Widget *paned;
+   Etk_Widget *vpaned;
    Etk_Widget *scrollview;
    Etk_Tree_Col *col, *col2;
 
@@ -52,10 +53,11 @@ void main_window_show(char *file)
 	   ETK_MENU_SHELL(menu));
 
    paned = etk_hpaned_new();
-   etk_box_pack_start(ETK_BOX(vbox), paned, ETK_TRUE, ETK_TRUE, 0);
+   vpaned = etk_vpaned_new();
+   etk_box_pack_start(ETK_BOX(vbox), vpaned, ETK_TRUE, ETK_TRUE, 0);
+   etk_paned_child1_set(ETK_PANED(vpaned), paned, ETK_TRUE);
 
    gui->tree = etk_tree_new();
-   etk_tree_multiple_select_set(ETK_TREE(gui->tree), ETK_TRUE);
    etk_tree_headers_visible_set(ETK_TREE(gui->tree), ETK_TRUE);
    col = etk_tree_col_new(ETK_TREE(gui->tree), _("Part"),
 	 etk_tree_model_text_new(ETK_TREE(gui->tree)), 100);
@@ -74,13 +76,22 @@ void main_window_show(char *file)
    etk_scrolled_view_add_with_viewport(ETK_SCROLLED_VIEW(scrollview),
 	 gui->canvas);
 
+   gui->output = etk_tree_new();
+   etk_tree_headers_visible_set(ETK_TREE(gui->output), ETK_TRUE);
+   col = etk_tree_col_new(ETK_TREE(gui->output), _("Output"),
+	 etk_tree_model_text_new(ETK_TREE(gui->output)), 200);
+   etk_tree_col_expand_set(col, ETK_TRUE);
+   etk_tree_build(ETK_TREE(gui->output));
+   etk_paned_child2_set(ETK_PANED(vpaned), gui->output, ETK_FALSE);
+
    gui->status = etk_statusbar_new();
    etk_box_pack_end(ETK_BOX(vbox), gui->status, ETK_FALSE, ETK_FALSE, 0);
 
    bg_setup(ETK_CANVAS(gui->canvas));
    etk_widget_show_all(gui->win);
 
-   if (file) list_entries(file, ETK_TREE(gui->tree), ETK_CANVAS(gui->canvas));
+   if (file) list_entries(file, ETK_TREE(gui->tree), ETK_TREE(gui->output),
+	 ETK_CANVAS(gui->canvas));
    etk_signal_connect("delete_event", ETK_OBJECT(gui->win), 
 	   ETK_CALLBACK(_gui_main_window_deleted_cb), NULL);
    etk_signal_connect("cell_value_changed", ETK_OBJECT(col2),
@@ -221,7 +232,8 @@ static void _gui_fm_ok_clicked_cb(Etk_Object *obj, void *data)
 
    gui->file = etk_filechooser_widget_selected_file_get(
 	   ETK_FILECHOOSER_WIDGET(gui->fm_chooser));
-   list_entries(gui->file, ETK_TREE(gui->tree), ETK_CANVAS(gui->canvas));
+   list_entries(gui->file, ETK_TREE(gui->tree), ETK_TREE(gui->output),
+	 ETK_CANVAS(gui->canvas));
    etk_window_hide_on_delete(ETK_OBJECT(gui->fm_dialog), NULL);
 }
 

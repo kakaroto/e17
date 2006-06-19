@@ -114,7 +114,8 @@ void canvas_resize_cb(Etk_Object *canvas, const char *property_name, void *data)
      }
 }
 
-void list_entries(char *file, Etk_Tree *tree, Etk_Canvas *canvas)
+void list_entries(char *file, Etk_Tree *tree, Etk_Tree *output,
+      Etk_Canvas *canvas)
 {
    Evas_List *entries;
    Evas_List *collections = NULL;
@@ -143,14 +144,15 @@ void list_entries(char *file, Etk_Tree *tree, Etk_Canvas *canvas)
 	     co->part = strdup(name);
 
 	     row = etk_tree_append(tree, col1, name, NULL);
-	     de = edje_part_create(canvas, file, name);
+	     de = edje_part_create(output, canvas, file, name);
 	     etk_tree_row_data_set(row, de);
 	  }
 	edje_file_collection_list_free(entries);
      }
 }
 
-Demo_Edje *edje_part_create(Etk_Canvas *canvas, char *file, char *name)
+Demo_Edje *edje_part_create(Etk_Tree *output, Etk_Canvas *canvas, 
+      char *file, char *name)
 {
    Evas_Object *o;
    Demo_Edje *de;
@@ -234,7 +236,7 @@ Demo_Edje *edje_part_create(Etk_Canvas *canvas, char *file, char *name)
 
    o = edje_object_add(evas);
    edje_object_message_handler_set(o, message_cb, NULL);
-   edje_object_signal_callback_add(o, "*", "*", signal_cb, NULL);
+   edje_object_signal_callback_add(o, "*", "*", signal_cb, output);
    edje_object_file_set(o, file, name);
    edje_object_part_drag_size_set(o, "dragable", 0.01, 0.5);
    edje_object_part_drag_step_set(o, "dragable", 0.1, 0.1);
@@ -559,28 +561,94 @@ static void bottom_move_cb
 static void signal_cb 
 (void *data, Evas_Object *o, const char *sig, const char *src)
 {
-    printf("CALLBACK for \"%s\" \"%s\"\n", sig, src);
-    if (!strcmp(sig, "drag"))
-    {
+   Etk_Tree *output;
+   Etk_Tree_Col *col;
+   Etk_Tree_Row *row;
+   int count;
+   char *str;
+
+   if (!(output = data)) return;
+   
+   col = etk_tree_nth_col_get(output, 0);
+   count = evas_list_count(output->rows_widgets);
+   if (count > 5000)
+     {
+	row = etk_tree_first_row_get(output);
+	etk_tree_row_del(row);
+     }
+   
+   str = calloc(1024, sizeof(char));
+   snprintf(str, 1024, "CALLBACK for \"%s\" \"%s\"", sig, src);
+
+
+   row = etk_tree_append(output, col, str, NULL);
+   etk_tree_row_scroll_to(row, ETK_TRUE);
+   etk_tree_row_select(row);
+   if (!strcmp(sig, "drag"))
+     {
 	double x, y;
 
+	count = evas_list_count(output->rows_widgets);
+	if (count > 5000)
+	  {
+	     row = etk_tree_first_row_get(output);
+	     etk_tree_row_del(row);
+	  }
+
 	edje_object_part_drag_value_get(o, src, &x, &y);
-	printf("Drag %3.3f %3.3f\n", x, y);
-    }
+	snprintf(str, 1024, "Drag %3.3f %3.3f", x, y);
+	etk_tree_append(output, col, str, NULL);
+	etk_tree_row_scroll_to(row, ETK_TRUE);
+	etk_tree_row_select(row);
+     }
+
+   free(str);
 }
 
 
 static void message_cb
 (void *data, Evas_Object *obj, Edje_Message_Type type, int id, void *msg)
 {
-    printf("MESSAGE for %p from script type %i id %i\n", obj, type, id);
-    if (type == EDJE_MESSAGE_STRING)
-    {
+   Etk_Tree *output;
+   Etk_Tree_Col *col;
+   Etk_Tree_Row *row;
+   int count;
+   char *str;
+
+   if (!(output = data)) return;
+   
+   col = etk_tree_nth_col_get(output, 0);
+   count = evas_list_count(output->rows_widgets);
+   if (count > 5000)
+     {
+	row = etk_tree_first_row_get(output);
+	etk_tree_row_del(row);
+     }
+   
+   str = calloc(1024, sizeof(char));
+   snprintf(str, 1024, "MESSAGE for %p from script type %i id %i", obj, type, id);
+
+   row = etk_tree_append(output, col, str, NULL);
+   etk_tree_row_scroll_to(row, ETK_TRUE);
+   etk_tree_row_select(row);
+   if (type == EDJE_MESSAGE_STRING)
+     {
 	Edje_Message_String *emsg;
 
+	count = evas_list_count(output->rows_widgets);
+	if (count > 5000)
+	  {
+	     row = etk_tree_first_row_get(output);
+	     etk_tree_row_del(row);
+	  }
+
 	emsg = (Edje_Message_String *)msg;
-	printf("STWING: \"%s\"\n", emsg->str);
-    }
-    printf("Send msg to script...\n");
-    edje_object_message_send(obj, EDJE_MESSAGE_NONE, 12345, NULL);
+	snprintf(str, 1024, "STWING: \"%s\"\n", emsg->str);
+	row = etk_tree_append(output, col, str, NULL);
+	etk_tree_row_scroll_to(row, ETK_TRUE);
+	etk_tree_row_select(row);
+     }
+   edje_object_message_send(obj, EDJE_MESSAGE_NONE, 12345, NULL);
+
+   free(str);
 }

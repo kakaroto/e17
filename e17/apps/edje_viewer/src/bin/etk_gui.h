@@ -10,6 +10,7 @@ struct _Gui
    Etk_Widget *tree;
    Etk_Widget *canvas;
    Etk_Widget *status;
+   Etk_Widget *output;
    
    Etk_Widget *fm_dialog;
    Etk_Widget *fm_chooser;
