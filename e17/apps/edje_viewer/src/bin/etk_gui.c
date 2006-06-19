@@ -227,11 +227,20 @@ static void _gui_open_edje_file_cb(Gui *gui)
 static void _gui_fm_ok_clicked_cb(Etk_Object *obj, void *data)
 {
    Gui *gui;
+   char *file;
+   char *dir;
 
    if (!(gui = data)) return;
 
-   gui->file = etk_filechooser_widget_selected_file_get(
+   dir = etk_filechooser_widget_current_folder_get(
 	   ETK_FILECHOOSER_WIDGET(gui->fm_chooser));
+   file = etk_filechooser_widget_selected_file_get(
+	   ETK_FILECHOOSER_WIDGET(gui->fm_chooser));
+   gui->file = strdup(dir);
+   gui->file = strcat(gui->file, "/");
+   gui->file = strcat(gui->file, file);
+   free(dir);
+   free(file);
    list_entries(gui->file, ETK_TREE(gui->tree), ETK_TREE(gui->output),
 	 ETK_CANVAS(gui->canvas));
    etk_window_hide_on_delete(ETK_OBJECT(gui->fm_dialog), NULL);
