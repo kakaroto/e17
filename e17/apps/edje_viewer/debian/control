@@ -1,0 +1,14 @@
+Source: edje-viewer
+Section: graphics
+Priority: optional
+Maintainer: E17 Debian Team <debian@edevelop.org> 
+Build-Depends: debhelper (>= 4.0.0), libecore0-dev, libevas0-dev, libedje0-dev, libetk0-dev, enlightenment (>= 0.16.999)
+Standards-Version: 3.6.2
+
+Package: edje-viewer
+Architecture: any
+Depends: libecore0, libevas0, libedje0, libetk0
+Recommends: enlightenment (>= 0.16.999)
+Description: A simple viewer for edj files
+ Edje-viewer should provide more ease of use than the
+ edje viewer that comes with edje itself.
