@@ -72,8 +72,6 @@ ewl_window_init(Ewl_Window *w)
 	 * Override the default configure callbacks since the window
 	 * has special needs for placement.
 	 */
-	ewl_callback_del(EWL_WIDGET(w), EWL_CALLBACK_CONFIGURE,
-			ewl_overlay_configure_cb);
 	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_CONFIGURE,
 			     ewl_window_configure_cb, NULL);
 
