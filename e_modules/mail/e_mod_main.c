@@ -66,6 +66,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    Mail *mail;
    Config_Item *ci;
    Evas_List *l, *j;
+   int have_pop = 0, have_imap = 0;
    
    inst = E_NEW(Instance, 1);
    ci = _mail_config_item_get(id);
@@ -103,11 +104,13 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 	     switch (cb->type) 
 	       {
 		case MAIL_TYPE_IMAP:
+		  have_imap = 1;
 		  _mail_imap_add_mailbox(cb);
 		  if (!inst->check_timer)
 		    inst->check_timer = ecore_timer_add((ci->check_time * 60.0), _mail_cb_check, inst);
 		  break;
 		case MAIL_TYPE_POP:
+		  have_pop = 1;
 		  _mail_pop_add_mailbox(cb);
 		  if (!inst->check_timer)
 		    inst->check_timer = ecore_timer_add((ci->check_time * 60.0), _mail_cb_check, inst);
@@ -119,7 +122,9 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 		  _mail_mbox_add_mailbox(inst, cb);
 		  break;
 	       }
-	  }	
+	  }
+	if (have_pop) _mail_pop_check_mail(inst);
+	if (have_imap) _mail_imap_check_mail(inst);
      }
    return gcc;
 }
