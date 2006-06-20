@@ -61,6 +61,7 @@ int evfs_file_read(evfs_client * client, evfs_filereference * file,
                    char *bytes, long size);
 int evfs_file_write(evfs_filereference * file, char *bytes, long size);
 int evfs_file_create(evfs_filereference * file);
+int smb_evfs_file_rename(evfs_client* client, evfs_command* command);
 int smb_evfs_file_mkdir(evfs_filereference * file);
 int evfs_file_remove(char *file);
 
@@ -206,6 +207,7 @@ evfs_plugin_init()
    functions->evfs_file_stat = &smb_evfs_file_stat;
    functions->evfs_file_lstat = &smb_evfs_file_stat;    /*Windows file systems have no concept
                                                          * of 'lstat' */
+   functions->evfs_file_rename = &smb_evfs_file_rename;
 
    functions->evfs_file_mkdir = &smb_evfs_file_mkdir;
    functions->evfs_file_remove = &evfs_file_remove;
@@ -237,6 +239,18 @@ char *
 evfs_plugin_uri_get()
 {
    return "smb";
+}
+
+int 
+smb_evfs_file_rename(evfs_client* client, evfs_command* command)
+{
+	int err;
+
+	/*TODO: Check that these files are on same filesystem.
+	 * This should really be a per-plugin function called from the top level*/
+	err = smb_context->rename(smb_context, command->file_command.files[0]->path, 
+			smb_context,
+			command->file_command.files[1]->path);
 }
 
 int
