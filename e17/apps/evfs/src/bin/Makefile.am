@@ -18,6 +18,8 @@ evfs_SOURCES = \
 	evfs_server_handle.c \
 	evfs_operation.c \
 	evfs_operation_tasks.c \
+	evfs_metadata.c \
+	#evfs_mounts.c \
 	$(top_srcdir)/src/common/evfs_vfolder.c
 
 evfscat_SOURCES = \
