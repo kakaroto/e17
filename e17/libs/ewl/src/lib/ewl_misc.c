@@ -363,8 +363,7 @@ ewl_idle_render(void *data __UNUSED__)
 	 */
 	ecore_list_goto_first(ewl_embed_list);
 	while ((emb = ecore_list_next(ewl_embed_list)) != NULL) {
-		if (REALIZED(emb) && emb->evas)
-			evas_event_freeze(emb->evas);
+		ewl_embed_freeze(emb);
 	}
 
 	/*
@@ -424,7 +423,7 @@ ewl_idle_render(void *data __UNUSED__)
 		if (REALIZED(emb) && emb->evas) {
 			double render_time = 0;
 
-			evas_event_thaw(emb->evas);
+			ewl_embed_thaw(emb);
 			if (ewl_config.evas.render_debug) {
 				printf("Entering render\n");
 				render_time = ecore_time_get();

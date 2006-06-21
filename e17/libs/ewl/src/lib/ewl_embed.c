@@ -1461,17 +1461,17 @@ ewl_embed_mouse_cursor_set(Ewl_Widget *w)
 void
 ewl_embed_position_get(Ewl_Embed *e, int *x, int *y)
 {
-       int sx, sy;
+	int sx, sy;
 
-       DENTER_FUNCTION(DLEVEL_STABLE);
-       DCHECK_PARAM_PTR("e", e);
-       DCHECK_TYPE("e", e, EWL_EMBED_TYPE);
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+	DCHECK_TYPE("e", e, EWL_EMBED_TYPE);
 
-       evas_object_geometry_get(e->smart, &sx, &sy, NULL, NULL);
-       if (x) *x = e->x + sx;
-       if (y) *y = e->y + sy;
+	evas_object_geometry_get(e->smart, &sx, &sy, NULL, NULL);
+	if (x) *x = e->x + sx;
+	if (y) *y = e->y + sy;
 
-       DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1486,14 +1486,50 @@ ewl_embed_position_get(Ewl_Embed *e, int *x, int *y)
 void
 ewl_embed_window_position_get(Ewl_Embed *e, int *x, int *y)
 {
-       DENTER_FUNCTION(DLEVEL_STABLE);
-       DCHECK_PARAM_PTR("e", e);
-       DCHECK_TYPE("e", e, EWL_EMBED_TYPE);
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+	DCHECK_TYPE("e", e, EWL_EMBED_TYPE);
 
-       if (x) *x = e->x;
-       if (y) *y = e->y;
+	if (x) *x = e->x;
+	if (y) *y = e->y;
 
-       DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param e: the embed to freeze redraws and canvas events
+ * @return Returns no value.
+ * @brief Freeze redraws and events on the specified embed.
+ */
+void
+ewl_embed_freeze(Ewl_Embed *e)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+	DCHECK_TYPE("e", e, EWL_EMBED_TYPE);
+
+	if (REALIZED(e) && e->evas && evas_event_freeze_get(e->evas) < 1)
+		evas_event_freeze(e->evas);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param e: the embed to thaw redraws and canvas events
+ * @return Returns no value.
+ * @brief Thaw redraws and events on the specified embed.
+ */
+void
+ewl_embed_thaw(Ewl_Embed *e)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+	DCHECK_TYPE("e", e, EWL_EMBED_TYPE);
+
+	if (REALIZED(e) && e->evas && evas_event_freeze_get(e->evas) > 0)
+		evas_event_thaw(e->evas);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**

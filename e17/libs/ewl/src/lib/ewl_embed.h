@@ -134,6 +134,8 @@ void            ewl_embed_coord_to_screen(Ewl_Embed *e, int xx, int yy,
 void		ewl_embed_mouse_cursor_set(Ewl_Widget *w);
 void            ewl_embed_position_get(Ewl_Embed *e, int *x, int *y);
 void            ewl_embed_window_position_get(Ewl_Embed *e, int *x, int *y);
+void            ewl_embed_freeze(Ewl_Embed *e);
+void            ewl_embed_thaw(Ewl_Embed *e);
 
 /*
  * Internally used callbacks, override at your own risk.
