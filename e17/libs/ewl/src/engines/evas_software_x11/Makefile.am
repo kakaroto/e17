@@ -10,6 +10,8 @@ INCLUDES = -I$(top_srcdir)/src/lib \
 
 pkgdir = $(libdir)/ewl/engines
 
+if EWL_ENABLE_EVAS_SOFTWARE_X11
+
 pkg_LTLIBRARIES = evas_software_x11.la
 
 evas_software_x11_la_SOURCES = \
@@ -22,3 +24,4 @@ evas_software_x11_la_LDFLAGS = -module -avoid-version \
 		-L$(top_builddir)/src/lib/.libs
 evas_software_x11_la_DEPENDENCIES =
 
+endif

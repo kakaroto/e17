@@ -10,6 +10,8 @@ INCLUDES = -I$(top_srcdir)/src/lib \
 
 pkgdir = $(libdir)/ewl/engines
 
+if EWL_ENABLE_EVAS_FB
+
 pkg_LTLIBRARIES = evas_fb.la
 
 evas_fb_la_SOURCES = \
@@ -21,4 +23,6 @@ evas_fb_la_LDFLAGS = -module -avoid-version \
 		-L$(top_builddir)/src/lib \
 		-L$(top_builddir)/src/lib/.libs
 evas_fb_la_DEPENDENCIES =
+
+endif
 

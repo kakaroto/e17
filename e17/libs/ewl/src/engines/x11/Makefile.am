@@ -10,6 +10,8 @@ INCLUDES = -I$(top_srcdir)/src/lib \
 
 pkgdir = $(libdir)/ewl/engines
 
+if EWL_ENABLE_X11
+
 pkg_LTLIBRARIES = x11.la
 
 x11_la_SOURCES = \
@@ -22,3 +24,4 @@ x11_la_LDFLAGS = -module -avoid-version \
 		-L$(top_builddir)/src/lib/.libs
 x11_la_DEPENDENCIES =
 
+endif
