@@ -1922,7 +1922,9 @@ composite_init(Bling *b)
    autoRedirect = 0;
 
    dpy = ecore_x_display_get();
+#if 0
    XSetErrorHandler(composite_x_error);
+#endif
    if (synchronize)
       ecore_x_sync();
    scr = DefaultScreen(dpy);
