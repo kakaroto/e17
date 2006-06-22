@@ -173,14 +173,28 @@ main(int argc, char **argv)
 	ewl_callback_append(wg, EWL_CALLBACK_CLICKED, insert, NULL);
 	ewl_widget_show(wg);
 
-	wg = ewl_separator_new();
-	ewl_container_child_append(EWL_CONTAINER(vbox), wg);
-	ewl_widget_show(wg);
-	
+	/*
+	 * Setup the second ewl embed
+	 */
+	emb = ewl_embed_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(emb), EWL_FLAG_FILL_ALL);
+	eo = ewl_embed_evas_set(EWL_EMBED(emb), evas, 
+			  (void *) ecore_evas_software_x11_window_get(ee));
+	ewl_widget_show(emb);
+
+	/*
+	 * swallow it into the edje
+	 */
+	edje_object_part_geometry_get(edje, "swallow2", &x, &y, &w, &h);
+	evas_object_move(eo, x, y);
+	evas_object_resize(eo, w, h);
+	edje_object_part_swallow(edje, "swallow2", eo);
+	evas_object_show(eo);
+
 	c = ewl_hbox_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(c), EWL_FLAG_FILL_NONE |
 			                           EWL_FLAG_FILL_HFILL);
-	ewl_container_child_append(EWL_CONTAINER(vbox), c);
+	ewl_container_child_append(EWL_CONTAINER(emb), c);
 	ewl_widget_show(c);
 
 	wg = ewl_button_new();
@@ -198,8 +212,7 @@ main(int argc, char **argv)
 	ewl_callback_append(button[0], EWL_CALLBACK_CLICKED, open, button[1]);
 	ewl_callback_append(button[1], EWL_CALLBACK_CLICKED, close, button[0]);
 
-	edje_object_signal_emit(edje, "open", "open");
-	ewl_widget_disable(button[0]);
+	ewl_widget_disable(button[1]);
 
 	ewl_main();
 	
