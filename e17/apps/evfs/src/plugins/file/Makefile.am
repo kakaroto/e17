@@ -44,6 +44,7 @@ tar_la_SOURCES = evfs_fs_tar.c \
 			$(top_srcdir)/src/common/evfs_common.c 
 
 sftp_la_SOURCES = evfs_fs_sftp.c \
+                        $(top_srcdir)/src/plugins/file/sftp.h \
                         $(top_srcdir)/src/common/evfs_debug.c \
                         $(top_srcdir)/src/common/evfs_event_helper.c \
                         $(top_srcdir)/src/bin/evfs_server_handle.c \

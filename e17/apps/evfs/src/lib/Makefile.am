@@ -26,6 +26,7 @@ libevfs_la_SOURCES   = \
 	$(top_srcdir)/src/include/evfs_server.h \
 	$(top_srcdir)/src/include/evfs_server_handle.h \
 	$(top_srcdir)/src/include/evfs_vfolder.h \
+	$(top_srcdir)/src/include/tarpet.h \
 	libevfs.c \
 	evfs_commands.c \
 	$(top_srcdir)/src/common/evfs_io.c \
