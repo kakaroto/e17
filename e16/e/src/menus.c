@@ -195,7 +195,10 @@ MenuEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 {
    Menu               *m = ewin->data;
 
-   if (!m || Mode.mode != MODE_NONE)
+   if (!m)
+      return;
+
+   if (Mode.mode != MODE_NONE && !m->redraw)
       return;
 
    if (TransparencyUpdateNeeded())

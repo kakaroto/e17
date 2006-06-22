@@ -550,15 +550,14 @@ ButtonEventMouseUp(Button * b, XEvent * ev)
 
    GrabPointerRelease();
 
-   if (b->aclass && !b->left && !Mode_buttons.action_inhibit)
-      ButtonDoAction(b, ev);
-
    b->left = 0;
 
    if (Mode.mode == MODE_BUTTONDRAG)
       ButtonDragEnd(Mode_buttons.button);
    Mode_buttons.button = NULL;
 
+   if (b->aclass && !b->left && !Mode_buttons.action_inhibit)
+      ButtonDoAction(b, ev);
    Mode_buttons.action_inhibit = 0;
 }
 
