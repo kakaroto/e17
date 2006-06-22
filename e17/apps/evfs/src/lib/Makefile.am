@@ -5,20 +5,30 @@ lib_LTLIBRARIES = libevfs.la
 INCLUDES = -I$(top_srcdir)/src/include @eet_cflags@ @ecore_cflags@ @xml2_cflags@ $(DEBUGFLAGS) -I. -I$(top_srcdir) \
 	   -DBINDIR=\""$(bindir)"\"
 
-libevfs_la_SOURCES   =                          \
-        $(top_srcdir)/src/include/evfs.h                       \
-	$(top_srcdir)/src/include/evfs_cleanup.h		\
-	$(top_srcdir)/src/include/evfs_commands.h		\
-	$(top_srcdir)/src/include/evfs_debug.h			\
-	$(top_srcdir)/src/include/evfs_event_helper.h		\
-	$(top_srcdir)/src/include/evfs_io.h			\
-	$(top_srcdir)/src/include/evfs_macros.h		\
-	$(top_srcdir)/src/include/evfs_new.h			\
-	$(top_srcdir)/src/include/evfs_plugin.h		\
-	$(top_srcdir)/src/include/evfs_server_handle.h		\
-	libevfs.c				\
-	evfs_commands.c				\
-	$(top_srcdir)/src/common/evfs_io.c			\
+libevfs_la_SOURCES   = \
+        $(top_srcdir)/src/include/evfs.h \
+	$(top_srcdir)/src/include/evfs_cleanup.h \
+	$(top_srcdir)/src/include/evfs_client.h \
+	$(top_srcdir)/src/include/evfs_command.h \
+	$(top_srcdir)/src/include/evfs_commands.h \
+	$(top_srcdir)/src/include/evfs_common.h \
+	$(top_srcdir)/src/include/evfs_debug.h \
+	$(top_srcdir)/src/include/evfs_event.h \
+	$(top_srcdir)/src/include/evfs_event_helper.h \
+	$(top_srcdir)/src/include/evfs_filereference.h \
+	$(top_srcdir)/src/include/evfs_io.h \
+	$(top_srcdir)/src/include/evfs_macros.h \
+	$(top_srcdir)/src/include/evfs_misc.h \
+	$(top_srcdir)/src/include/evfs_new.h \
+	$(top_srcdir)/src/include/evfs_operation.h \
+	$(top_srcdir)/src/include/evfs_operation_tasks.h \
+	$(top_srcdir)/src/include/evfs_plugin.h \
+	$(top_srcdir)/src/include/evfs_server.h \
+	$(top_srcdir)/src/include/evfs_server_handle.h \
+	$(top_srcdir)/src/include/evfs_vfolder.h \
+	libevfs.c \
+	evfs_commands.c \
+	$(top_srcdir)/src/common/evfs_io.c \
 	$(top_srcdir)/src/common/evfs_cleanup.c \
 	$(top_srcdir)/src/common/evfs_vfolder.c \
 	$(top_srcdir)/src/common/evfs_misc.c \
