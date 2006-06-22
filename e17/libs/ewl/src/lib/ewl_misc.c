@@ -143,6 +143,15 @@ ewl_init(int *argc, char **argv)
 
 	ewl_init_parse_options(argc, argv);
 
+	/* we create the engine we will be working with here so that it is
+	 * initialized before we start to use it. */
+	if (!ewl_engine_new(ewl_config.engine_name))
+	{
+		DERROR("Unable to initialize engine.\n");
+		ewl_shutdown();
+		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
+	}
+
 	if (!edje_init()) {
 		DERROR("Could not init edje....\n");
 		evas_shutdown();
@@ -480,16 +489,10 @@ ewl_init_parse_options(int *argc, char **argv)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	/* XXX when the engine init stuff is fixed up this should move below
-	 * the if statement. Put it here for now to make sure the engines
-	 * always get init'd */
-	engines = ewl_engine_names_get();
-
 	if (!argc || !argv)
-	{
-		ecore_list_destroy(engines);
 		DRETURN(DLEVEL_STABLE);
-	}
+
+	engines = ewl_engine_names_get();
 
 	i = 0;
 	while (i < *argc) {

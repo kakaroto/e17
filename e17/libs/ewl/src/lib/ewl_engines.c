@@ -76,12 +76,6 @@ ewl_engine_names_get(void)
 		if (!strncmp(file + (len - 3), ".so", 3))
 		{
 			file[len - 3] = '\0';
-
-			/* XXX FIXME this needs to move osmewhere else, just
-			 * putting here for now ... */
-			/* we create the engine in here such that it gets
-			 * initialized early */
-			ewl_engine_new(file);
 			ecore_list_append(names, strdup(file));
 		}
 	}
