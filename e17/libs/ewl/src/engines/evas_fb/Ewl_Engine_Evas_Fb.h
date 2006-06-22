@@ -11,7 +11,7 @@ struct Ewl_Engine_Evas_Fb
 
 	/* There can be only one window in fb land */
 	Ewl_Window *window; 
-}
+};
 
 #endif
 

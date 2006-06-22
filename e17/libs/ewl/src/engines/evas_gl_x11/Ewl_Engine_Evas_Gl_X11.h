@@ -8,7 +8,7 @@ typedef struct Ewl_Engine_Evas_Gl_X11 Ewl_Engine_Evas_Gl_X11;
 struct Ewl_Engine_Evas_Gl_X11
 {
 	Ewl_Engine engine;
-}
+};
 
 #endif
 
