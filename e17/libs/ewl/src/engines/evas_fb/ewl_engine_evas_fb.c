@@ -78,7 +78,7 @@ ee_init(Ewl_Engine *engine)
 	if (ee_key_down_handler)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	if (!ecore_fb_init())
+	if (!ecore_fb_init(NULL))
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
 	ee_key_down_handler = ecore_event_handler_add(
