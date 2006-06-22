@@ -6,15 +6,14 @@ EDJE_FLAGS = -v -id images -fd fonts
 filesdir = $(datadir)
 files_DATA = \
 fonts/VeraBd.ttf \
-$(wildcard taskbar.ed?)
+$(wildcard taskbar.ed?) \
+$(wildcard taskbar2.ed?)
 
 
 EXTRA_DIST = $(files_DATA) $(wildcard images/*.png)
-	                   
-taskbar.edj: Makefile taskbar.edc
-	 $(EDJE_CC) $(EDJE_FLAGS) \
-	 taskbar.edc \
-	 taskbar.edj
+
+%.edj:  %.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
 clean-local:
 	rm -f *.edj

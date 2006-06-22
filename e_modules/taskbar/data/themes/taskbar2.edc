@@ -8,13 +8,6 @@ images {
    image: "e17_ibar_arrow_r.png" COMP;
    image: "e17_ibar_arrow_u.png" COMP;
    image: "e17_pager_desk.png" COMP;
-   image: "e17_button_sm.png" COMP;
-   image: "e17_button_sm2.png" COMP;
-   image: "e17_button_sm_disabled.png" COMP;
-   image: "e17_titlebar_glint1.png" COMP;
-   image: "e17_titlebar_glint2.png" COMP;
-   image: "e17_titlebar_glint3.png" COMP;
-   image: "focus.png" COMP;
 }
 collections {
 group {
@@ -38,36 +31,6 @@ group {
 	 }
       }
       part {
-	 name:          "button_image";
-	 type:          IMAGE;
-	 mouse_events:  0;
-	 description {
-	    state:    "default" 0.0;
-            min:      56 16;
-            image {
-               normal: "e17_button_sm.png";
-               border: 8 8 8 8;
-            }
-	 }
-	 description {
-	    state:    "clicked" 0.0;
-            inherit:  "default" 0.0;
-            image {
-               normal: "e17_button_sm2.png";
-            }
-	 }
-         description {
-            state:    "iconified" 0.0;
-            inherit:  "default" 0.0;
-            rel1 {
-               relative: 0.0 0.3;
-            }
-            rel2 {
-               relative: 1.0 1.0;
-            }
-         }
-      }
-      part {
 	 name:          "item";
 	 type:          SWALLOW;
 	 mouse_events:  0;
@@ -75,48 +38,62 @@ group {
 	 description {
 	    state:    "default" 0.0;
             aspect:   1.0 1.0;
-            align:    0.0 0.5;
+            min: 32 32;
 	    rel1 {
 	       relative: 0.0  0.0;
-               to: "button_image";
-	       offset:   8   8;
+	       offset:   2   2;
 	    }
 	    rel2 {
 	       relative: 1.0  1.0;
-               to: "button_image";
-	       offset:   7   -9;
+	       offset:   -3   -3;
 	    }
 	    color: 0 0 0 0;
 	 }
+	 description {
+	    state:    "bigger" 0.0;
+	    inherit:  "default" 0.0;
+	    rel1 {
+	       relative: 0.0  0.0;
+	       offset:   0   0;
+	    }
+	    rel2 {
+	       relative: 1.0  1.0;
+	       offset:   -1   -1;
+	    }
+	 }
+	 description {
+	    state:    "iconified" 0.0;
+	    inherit:  "default" 0.0;
+            min: 16 16;
+	    rel1 {
+	       relative: 0.0  0.5;
+	       offset:   0   0;
+	    }
+	    rel2 {
+	       relative: 1.0  1.0;
+	       offset:   -1   -1;
+	    }
+	 }
       }
       part {
-	 name:          "focus";
+	 name:          "border";
 	 mouse_events:  0;
 	 description {
 	    state:    "default" 0.0;
-            visible: 0;
 	    image {
-	       normal: "focus.png";
-	       border: 7 7 7 7;
+	       normal: "e17_pager_desk.png";
+	       border: 2 2 2 2;
 	       middle: 0;
 	    }
-            fill {
-               smooth: 0;
-            }
-            rel1 {
-               relative: 0.0 0.0;
-               to: "button_image";
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               to: "button_image";
-            }
 	    color: 255 255 255 0;
 	 }
 	 description {
-	    state:    "focused" 0.0;
-            inherit:  "default" 0.0;
-            visible:  1;
+	    state:    "visible" 0.0;
+	    image {
+	       normal: "e17_pager_desk.png";
+	       border: 2 2 2 2;
+	       middle: 0;
+	    }
 	    color: 255 255 255 255;
 	 }
       }
@@ -127,27 +104,38 @@ group {
 	 mouse_events: 0;
 	 description {
 	    state: "default" 0.0;
+	    align: 0.5 0.5;
 	    rel1 {
-               relative: 1.0  0.0;
-	       offset:   0    8;
-               to_x: "item";
-               to_y: "button_image";
+               relative: 0.0  1.0;
+	       offset:   0    -1;
 	    }
 	    rel2 {
                relative: 1.0  1.0;
-	       offset:   -8    -8;
-               to: "button_image";
+	       offset:   -1    -1;
 	    }
-	    color: 255 255 255 255;
-	    color3: 0 0 0 42;
+	    color: 255 255 255 0;
+	    color3: 0 0 0 0;
 	    text {
 	       text: "Icon Name";
 	       font: "Vera Bold";
 	       size: 10;
 	       align: 0.5 0.5;
-               min: 0 1;
 	       text_class: "module_normal";
 	    }
+	 }
+	 description {
+	    state: "visible" 0.0;
+	    inherit: "default" 0.0;
+	    rel1 {
+               relative: 0.0  0.7;
+	       offset:   0    0;
+	    }
+	    rel2 {
+               relative: 1.0  1.0;
+	       offset:   -1    -1;
+	    }
+	    color: 255 255 255 255;
+	    color3: 0 0 0 42;
 	 }
       }
       part {
@@ -186,28 +174,12 @@ group {
 	 target:  "item_clip";
       }
       program {
-	 name:    "instant_iconify";
-	 signal:  "instant_iconify";
-	 source:  "";
-	 action:  STATE_SET "iconified" 0.0;
-         transition: LINEAR 0.0;
-	 target:  "button_image";
-      }
-      program {
-	 name:    "instant_uniconify";
-	 signal:  "instant_uniconify";
-	 source:  "";
-	 action:  STATE_SET "default" 0.0;
-         transition: LINEAR 0.0;
-	 target:  "button_image";
-      }
-      program {
 	 name:    "iconify";
 	 signal:  "iconify";
 	 source:  "";
 	 action:  STATE_SET "iconified" 0.0;
          transition: LINEAR 0.5;
-	 target:  "button_image";
+	 target:  "item";
       }
       program {
 	 name:    "uniconify";
@@ -215,31 +187,15 @@ group {
 	 source:  "";
 	 action:  STATE_SET "default" 0.0;
          transition: LINEAR 0.5;
-	 target:  "button_image";
-      }
-      program {
-	 name:    "instant_focused";
-	 signal:  "instant_focused";
-	 source:  "";
-	 action:  STATE_SET "focused" 0.0;
-         transition: LINEAR 0.0;
-	 target:  "focus";
-      }
-      program {
-	 name:    "instant_unfocused";
-	 signal:  "instant_unfocused";
-	 source:  "";
-	 action:  STATE_SET "default" 0.0;
-         transition: LINEAR 0.0;
-	 target:  "focus";
+	 target:  "item";
       }
       program {
 	 name:    "focused";
 	 signal:  "focused";
 	 source:  "";
-	 action:  STATE_SET "focused" 0.0;
+	 action:  STATE_SET "visible" 0.0;
          transition: LINEAR 0.5;
-	 target:  "focus";
+	 target:  "border";
       }
       program {
 	 name:    "unfocused";
@@ -247,7 +203,39 @@ group {
 	 source:  "";
 	 action:  STATE_SET "default" 0.0;
          transition: LINEAR 0.5;
-	 target:  "focus";
+	 target:  "border";
+      }
+      program {
+	 name:    "instant_iconify";
+	 signal:  "instant_iconify";
+	 source:  "";
+	 action:  STATE_SET "iconified" 0.0;
+         transition: LINEAR 0.0;
+	 target:  "item";
+      }
+      program {
+	 name:    "instant_uniconify";
+	 signal:  "instant_uniconify";
+	 source:  "";
+	 action:  STATE_SET "default" 0.0;
+         transition: LINEAR 0.0;
+	 target:  "item";
+      }
+      program {
+	 name:    "instant_focused";
+	 signal:  "instant_focused";
+	 source:  "";
+	 action:  STATE_SET "visible" 0.0;
+         transition: LINEAR 0.0;
+	 target:  "border";
+      }
+      program {
+	 name:    "instant_unfocused";
+	 signal:  "instant_unfocused";
+	 source:  "";
+	 action:  STATE_SET "default" 0.0;
+         transition: LINEAR 0.0;
+	 target:  "border";
       }
    }
 }
@@ -343,7 +331,7 @@ group {
 	 mouse_events: 0;
 	 description {
 	    state: "default" 0.0;
-	    align: 0.5 0.0;
+	    align: 0.5 0.5;
 	    rel1 {
                relative: 0.0  1.0;
 	       offset:   0    -1;
@@ -359,7 +347,7 @@ group {
 	       font: "Vera Bold";
 	       size: 10;
 	       min:  1 1;
-	       align: 0.5 0.0;
+	       align: 0.5 0.5;
 	       text_class: "module_normal";
 	    }
 	 }
