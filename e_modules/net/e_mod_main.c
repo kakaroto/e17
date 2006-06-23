@@ -472,6 +472,9 @@ _net_cb_check(void *data)
 
    bytes_in = in - inst->old_in;
    bytes_out = out - inst->old_out;
+   bytes_in = bytes_in / ci->poll_time;
+   bytes_out = bytes_out / ci->poll_time;
+   
    if (bytes_in < 0) bytes_in = 0;
    if (bytes_out < 0) bytes_out = 0;
 
