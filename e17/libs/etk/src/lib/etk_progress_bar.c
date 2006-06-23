@@ -321,7 +321,7 @@ static void _etk_progress_bar_property_get(Etk_Object *object, int property_id, 
 static void _etk_progress_bar_realize_cb(Etk_Object *object, void *data)
 {
    Etk_Progress_Bar *progress_bar;
-   double w;
+   float w;
    
    if (!(progress_bar = ETK_PROGRESS_BAR(object)))
       return;

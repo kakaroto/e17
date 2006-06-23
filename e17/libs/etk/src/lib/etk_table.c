@@ -394,6 +394,7 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
    }
    else
    {
+      /* Homogeneous table */
       if (table->homogeneous)
       {
          int max_col_width = ETK_TABLE_CELL_MIN_SIZE, max_row_height = ETK_TABLE_CELL_MIN_SIZE;
@@ -490,27 +491,12 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
             {
                cells_size = 0;
                num_expandable_cells = 0;
-               a_cell_already_expands = ETK_FALSE;
-               
-               for (i = cell->left_attach; i <= cell->right_attach; i++)
-               {
-                  if (table->cols[i].expand)
-                  {
-                     a_cell_already_expands = ETK_TRUE;
-                     break;
-                  }
-               }
-               if (!a_cell_already_expands)
-               {
-                  for (i = cell->left_attach; i <= cell->right_attach; i++)
-                     table->cols[i].expand = ETK_TRUE;
-               }
                   
                for (i = cell->left_attach; i <= cell->right_attach; i++)
                {
                   cells_size += table->cols[i].requested_size;
                   if (table->cols[i].expand)
-                     num_expandable_cells++;;
+                     num_expandable_cells++;
                }
 
                free_space = child_requisition.w - cells_size;
@@ -520,10 +506,7 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
                   {
                      delta = (float)free_space / (cell->right_attach - cell->left_attach + 1);
                      for (i = cell->left_attach; i <= cell->right_attach; i++)
-                     {
-                        table->cols[i].expand |= (cell->fill_policy & ETK_FILL_POLICY_HEXPAND);
                         table->cols[i].requested_size += (int)(delta * (i + 1)) - (int)(delta * i);
-                     }
                   }
                   else
                   {
@@ -542,21 +525,6 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
             {
                cells_size = 0;
                num_expandable_cells = 0;
-               a_cell_already_expands = ETK_FALSE;
-               
-               for (i = cell->top_attach; i <= cell->bottom_attach; i++)
-               {
-                  if (table->rows[i].expand)
-                  {
-                     a_cell_already_expands = ETK_TRUE;
-                     break;
-                  }
-               }
-               if (!a_cell_already_expands)
-               {
-                  for (i = cell->top_attach; i <= cell->bottom_attach; i++)
-                     table->rows[i].expand = ETK_TRUE;
-               }
                
                for (i = cell->top_attach; i <= cell->bottom_attach; i++)
                {
@@ -572,10 +540,7 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
                   {
                      delta = (float)free_space / (cell->bottom_attach - cell->top_attach + 1);
                      for (i = cell->top_attach; i <= cell->bottom_attach; i++)
-                     {
-                        table->rows[i].expand |= (cell->fill_policy & ETK_FILL_POLICY_VEXPAND);
                         table->rows[i].requested_size += (int)(delta * (i + 1)) - (int)(delta * i);
-                     }
                   }
                   else
                   {
