@@ -1,0 +1,7 @@
+debian/tmp/usr/lib/lib*.so.*
+debian/tmp/usr/share/ewl/themes/*.edj
+debian/tmp/usr/share/ewl/themes/default/bits/images/*.png
+debian/tmp/usr/share/ewl/themes/default/bits/*.bits.db
+debian/tmp/usr/share/ewl/themes/default/bits/*.edj
+debian/tmp/usr/share/ewl/themes/default/fonts/*.ttf
+debian/tmp/usr/share/ewl/themes/default/*.db

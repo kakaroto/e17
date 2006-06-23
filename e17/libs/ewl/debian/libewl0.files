@@ -1,7 +1,0 @@
-usr/lib/lib*.so.*
-usr/share/ewl/themes/*.edj
-usr/share/ewl/themes/default/bits/images/*.png
-usr/share/ewl/themes/default/bits/*.bits.db
-usr/share/ewl/themes/default/bits/*.edj
-usr/share/ewl/themes/default/fonts/*.ttf
-usr/share/ewl/themes/default/*.db
