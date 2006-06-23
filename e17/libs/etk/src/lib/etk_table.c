@@ -479,8 +479,7 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
             int num_expandable_cells;
             int free_space;
             float delta;
-            Etk_Bool a_cell_already_expands;
-
+            
             child = ETK_WIDGET(l->data);
             if (!(cell = child->child_properties))
                continue;
