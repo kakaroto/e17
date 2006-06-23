@@ -263,8 +263,8 @@ _tclock_config_item_get(const char *id)
    ci->resolution = RESOLUTION_SECOND;
    ci->show_date = 1;
    ci->show_time = 1;
-   ci->time_format = strdup("%T");
-   ci->date_format = strdup("%d/%m/%y");
+   ci->time_format = evas_stringshare_add("%T");
+   ci->date_format = evas_stringshare_add("%d/%m/%y");
 
    tclock_config->items = evas_list_append(tclock_config->items, ci);
    return ci;
@@ -314,8 +314,8 @@ e_modapi_init(E_Module *m)
         ci->resolution = RESOLUTION_SECOND;
         ci->show_date = 1;
         ci->show_time = 1;
-        ci->time_format = strdup("%T");
-        ci->date_format = strdup("%d/%m/%y");
+        ci->time_format = evas_stringshare_add("%T");
+        ci->date_format = evas_stringshare_add("%d/%m/%y");
 
         tclock_config->items = evas_list_append(tclock_config->items, ci);
      }
@@ -347,6 +347,8 @@ e_modapi_shutdown(E_Module *m)
         ci = tclock_config->items->data;
         tclock_config->items = evas_list_remove_list(tclock_config->items, tclock_config->items);
         if (ci->id) evas_stringshare_del(ci->id);
+	if (ci->time_format) evas_stringshare_del(ci->time_format);
+	if (ci->date_format) evas_stringshare_del(ci->date_format);
         free(ci);
      }
 

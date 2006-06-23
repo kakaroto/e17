@@ -124,9 +124,10 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    ci = cfd->data;
    ci->show_date = cfdata->show_date;
    ci->show_time = cfdata->show_time;
-   ci->time_format = cfdata->time_format;
-   ci->date_format = cfdata->date_format;
-
+   if (ci->time_format) evas_stringshare_del(ci->time_format);
+   ci->time_format = evas_stringshare_add(cfdata->time_format);
+   if (ci->date_format) evas_stringshare_del(ci->date_format);
+   ci->date_format = evas_stringshare_add(cfdata->date_format);
    ci->resolution = cfdata->resolution;
    if (cfdata->resolution == RESOLUTION_MINUTE)
       ci->poll_time = 60.0;
