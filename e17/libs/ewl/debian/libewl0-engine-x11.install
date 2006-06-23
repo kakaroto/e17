@@ -1,1 +1,1 @@
-debian/tmp/usr/lib/ewl/modules/engines/x11/linux-gnu-*/*.so
+debian/tmp/usr/lib/ewl/engines/x11*.so

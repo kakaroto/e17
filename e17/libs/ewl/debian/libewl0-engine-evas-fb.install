@@ -1,1 +1,1 @@
-debian/tmp/usr/lib/ewl/modules/engines/evas_software_fb/linux-gnu-*/*.so
+debian/tmp/usr/lib/ewl/engines/evas_fb*.so
