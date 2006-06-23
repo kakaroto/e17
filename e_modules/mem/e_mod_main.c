@@ -428,5 +428,5 @@ _mem_cb_check(void *data)
    msg.val = ts;
    edje_object_message_send(inst->mem_obj, EDJE_MESSAGE_FLOAT, 2, &msg);
 
-   return 0;
+   return 1;
 }
