@@ -19,7 +19,7 @@ void etk_test_spin_button_window_create(void *data)
    }	
   
    win = etk_window_new();
-   etk_window_title_set(ETK_WINDOW(win), _("Etk Spin Button Test"));
+   etk_window_title_set(ETK_WINDOW(win), "Etk Spin Button Test");
    etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    
    table = etk_table_new(2, 2, ETK_FALSE);
@@ -28,7 +28,7 @@ void etk_test_spin_button_window_create(void *data)
    spin_button = etk_spin_button_new(0, 0, 0);
    etk_table_attach(ETK_TABLE(table), spin_button, 0, 0, 0, 0, 0, 0, ETK_FILL_POLICY_HEXPAND | ETK_FILL_POLICY_HFILL);
 
-   button = etk_button_new_with_label(_("Get numerical value"));
+   button = etk_button_new_with_label("Get numerical value");
    etk_table_attach(ETK_TABLE(table), button, 1, 1, 0, 0, 0, 0, ETK_FILL_POLICY_NONE);
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_spin_button_print_clicked), NULL);
 

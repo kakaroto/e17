@@ -25,7 +25,7 @@ void etk_test_combobox_window_create(void *data)
    }
    
    win = etk_window_new();
-   etk_window_title_set(ETK_WINDOW(win), _("Etk Combobox Test"));
+   etk_window_title_set(ETK_WINDOW(win), "Etk Combobox Test");
    etk_container_border_width_set(ETK_CONTAINER(win), 5);
    etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    
@@ -33,7 +33,7 @@ void etk_test_combobox_window_create(void *data)
    etk_container_add(ETK_CONTAINER(win), vbox);
 
    /* Simple combobox */
-   frame = etk_frame_new(_("Simple combobox"));
+   frame = etk_frame_new("Simple combobox");
    etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 0);
    
    combobox = etk_combobox_new_default();
@@ -43,7 +43,7 @@ void etk_test_combobox_window_create(void *data)
    etk_combobox_item_append(ETK_COMBOBOX(combobox), "Test 3");
    
    /* More complex combobox */
-   frame = etk_frame_new(_("Some stock icons"));
+   frame = etk_frame_new("Some stock icons");
    etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 0);
    
    vbox = etk_vbox_new(ETK_FALSE, 3);

@@ -153,7 +153,7 @@ static void _etk_test_main_window()
    int i, j, num_examples;
 
    win = etk_window_new();
-   etk_window_title_set(ETK_WINDOW(win), _("Etk Test Application"));
+   etk_window_title_set(ETK_WINDOW(win), "Etk Test Application");
    etk_container_border_width_set(ETK_CONTAINER(win), 5);
    etk_signal_connect("destroyed", ETK_OBJECT(win), ETK_CALLBACK(_etk_test_main_quit_cb), NULL);
    
@@ -169,7 +169,7 @@ static void _etk_test_main_window()
             num_examples++;
       }
       
-      frame = etk_frame_new(_(_etk_test_categories[i]));
+      frame = etk_frame_new(_etk_test_categories[i]);
       etk_box_pack_start(ETK_BOX(vbox), frame, ETK_TRUE, ETK_TRUE, 0);
       tables[i] = etk_table_new(ETK_TEST_NUM_COLS, (num_examples + ETK_TEST_NUM_COLS - 1) / ETK_TEST_NUM_COLS, ETK_TRUE);
       etk_container_add(ETK_CONTAINER(frame), tables[i]);
@@ -177,7 +177,7 @@ static void _etk_test_main_window()
 
    for (i = 0; i < _etk_test_num_examples; i++)
    {
-      button = etk_button_new_with_label(_(_etk_test_examples[i].name));
+      button = etk_button_new_with_label(_etk_test_examples[i].name);
       etk_signal_connect_swapped("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_examples[i].func), NULL);
       j = current_ids[_etk_test_examples[i].category];
       etk_table_attach_defaults(ETK_TABLE(tables[_etk_test_examples[i].category]), button,

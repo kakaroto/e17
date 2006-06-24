@@ -42,14 +42,14 @@ void etk_test_tree_window_create(void *data)
    }
 
    win = etk_window_new();
-   etk_window_title_set(ETK_WINDOW(win), _("Etk Tree Test"));
+   etk_window_title_set(ETK_WINDOW(win), "Etk Tree Test");
    etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
 	
    table = etk_table_new(2, 3, ETK_FALSE);
    etk_container_add(ETK_CONTAINER(win), table);
 
    /* The tree: */
-   label = etk_label_new(_("<h1>Tree:</h1>"));
+   label = etk_label_new("<h1>Tree:</h1>");
    etk_table_attach(ETK_TABLE(table), label, 0, 0, 0, 0, 0, 0, ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL);
 
    tree = etk_tree_new();
@@ -58,27 +58,27 @@ void etk_test_tree_window_create(void *data)
 
    etk_tree_mode_set(ETK_TREE(tree), ETK_TREE_MODE_TREE);
    etk_tree_multiple_select_set(ETK_TREE(tree), ETK_TRUE);
-   col1 = etk_tree_col_new(ETK_TREE(tree), _("Column 1"), etk_tree_model_icon_text_new(ETK_TREE(tree), ETK_TREE_FROM_EDJE), 90);
-   col2 = etk_tree_col_new(ETK_TREE(tree), _("Column 2"), etk_tree_model_double_new(ETK_TREE(tree)), 60);
-   col3 = etk_tree_col_new(ETK_TREE(tree), _("Column 3"), etk_tree_model_image_new(ETK_TREE(tree), ETK_TREE_FROM_FILE), 60);
-   col4 = etk_tree_col_new(ETK_TREE(tree), _("Column 4"), etk_tree_model_checkbox_new(ETK_TREE(tree)), 40);
+   col1 = etk_tree_col_new(ETK_TREE(tree), "Column 1", etk_tree_model_icon_text_new(ETK_TREE(tree), ETK_TREE_FROM_EDJE), 90);
+   col2 = etk_tree_col_new(ETK_TREE(tree), "Column 2", etk_tree_model_double_new(ETK_TREE(tree)), 60);
+   col3 = etk_tree_col_new(ETK_TREE(tree), "Column 3", etk_tree_model_image_new(ETK_TREE(tree), ETK_TREE_FROM_FILE), 60);
+   col4 = etk_tree_col_new(ETK_TREE(tree), "Column 4", etk_tree_model_checkbox_new(ETK_TREE(tree)), 40);
    etk_tree_build(ETK_TREE(tree));
    etk_signal_connect("cell_value_changed", ETK_OBJECT(col4), ETK_CALLBACK(_etk_test_tree_checkbox_toggled_cb), NULL);
 
    etk_tree_freeze(ETK_TREE(tree));
    for (i = 0; i < 1000; i++)
    {
-      row = etk_tree_append(ETK_TREE(tree), col1, etk_theme_icon_theme_get(), "places/user-home_16", _("Row1"),
+      row = etk_tree_append(ETK_TREE(tree), col1, etk_theme_icon_theme_get(), "places/user-home_16", "Row1",
          col2, 10.0, col3, PACKAGE_DATA_DIR "/images/1star.png", col4, ETK_FALSE, NULL);
-      row = etk_tree_append_to_row(row, col1, etk_theme_icon_theme_get(), "places/folder_16", _("Row2"),
+      row = etk_tree_append_to_row(row, col1, etk_theme_icon_theme_get(), "places/folder_16", "Row2",
          col2, 20.0, col3, PACKAGE_DATA_DIR "/images/2stars.png", col4, ETK_FALSE, NULL);
-      etk_tree_append_to_row(row, col1, etk_theme_icon_theme_get(), "mimetypes/text-x-generic_16", _("Row3"),
+      etk_tree_append_to_row(row, col1, etk_theme_icon_theme_get(), "mimetypes/text-x-generic_16", "Row3",
          col2, 30.0, col3, PACKAGE_DATA_DIR "/images/3stars.png", col4, ETK_FALSE, NULL);
    }
    etk_tree_thaw(ETK_TREE(tree));
 
    /* The list: */
-   label = etk_label_new(_("<h1>List:</h1>"));
+   label = etk_label_new("<h1>List:</h1>");
    etk_table_attach(ETK_TABLE(table), label, 1, 1, 0, 0, 0, 0, ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL);
 
    tree = etk_tree_new();
@@ -91,10 +91,10 @@ void etk_test_tree_window_create(void *data)
 
    etk_tree_mode_set(ETK_TREE(tree), ETK_TREE_MODE_LIST);
    etk_tree_multiple_select_set(ETK_TREE(tree), ETK_TRUE);
-   col1 = etk_tree_col_new(ETK_TREE(tree), _("Column 1"), etk_tree_model_icon_text_new(ETK_TREE(tree), ETK_TREE_FROM_FILE), 90);
-   col2 = etk_tree_col_new(ETK_TREE(tree), _("Column 2"), etk_tree_model_int_new(ETK_TREE(tree)), 90);
+   col1 = etk_tree_col_new(ETK_TREE(tree), "Column 1", etk_tree_model_icon_text_new(ETK_TREE(tree), ETK_TREE_FROM_FILE), 90);
+   col2 = etk_tree_col_new(ETK_TREE(tree), "Column 2", etk_tree_model_int_new(ETK_TREE(tree)), 90);
    etk_tree_col_sort_func_set(col2, _etk_test_tree_compare_cb, NULL);
-   col3 = etk_tree_col_new(ETK_TREE(tree), _("Column 3"), etk_tree_model_image_new(ETK_TREE(tree), ETK_TREE_FROM_FILE), 90);
+   col3 = etk_tree_col_new(ETK_TREE(tree), "Column 3", etk_tree_model_image_new(ETK_TREE(tree), ETK_TREE_FROM_FILE), 90);
    etk_tree_build(ETK_TREE(tree));
 
    _etk_test_tree_add_items(ETK_TREE(tree), 5000);
@@ -104,32 +104,32 @@ void etk_test_tree_window_create(void *data)
    etk_signal_connect("row_activated", ETK_OBJECT(tree), ETK_CALLBACK(_etk_test_tree_row_activated), NULL);
 
    /* Frame */
-   frame = etk_frame_new(_("List Actions"));
+   frame = etk_frame_new("List Actions");
    etk_table_attach(ETK_TABLE(table), frame, 0, 1, 2, 2, 0, 0, ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL);
    hbox = etk_hbox_new(ETK_TRUE, 10);
    etk_container_add(ETK_CONTAINER(frame), hbox);
 
-   button = etk_button_new_with_label(_("Clear"));
+   button = etk_button_new_with_label("Clear");
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_tree_clear_list_cb), tree);
    etk_box_pack_start(ETK_BOX(hbox), button, ETK_TRUE, ETK_TRUE, 0);
 
-   button = etk_button_new_with_label(_("Add 5 rows"));
+   button = etk_button_new_with_label("Add 5 rows");
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_tree_add_5_cb), tree);
    etk_box_pack_start(ETK_BOX(hbox), button, ETK_TRUE, ETK_TRUE, 0);
 
-   button = etk_button_new_with_label(_("Add 50 rows"));
+   button = etk_button_new_with_label("Add 50 rows");
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_tree_add_50_cb), tree);
    etk_box_pack_start(ETK_BOX(hbox), button, ETK_TRUE, ETK_TRUE, 0);
 
-   button = etk_button_new_with_label(_("Add 500 rows"));
+   button = etk_button_new_with_label("Add 500 rows");
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_tree_add_500_cb), tree);
    etk_box_pack_start(ETK_BOX(hbox), button, ETK_TRUE, ETK_TRUE, 0);
 
-   button = etk_button_new_with_label(_("Add 5000 rows"));
+   button = etk_button_new_with_label("Add 5000 rows");
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_tree_add_5000_cb), tree);
    etk_box_pack_start(ETK_BOX(hbox), button, ETK_TRUE, ETK_TRUE, 0);
    
-   button = etk_button_new_with_label(_("Sort"));
+   button = etk_button_new_with_label("Sort");
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_tree_sort_cb), tree);
    etk_box_pack_start(ETK_BOX(hbox), button, ETK_TRUE, ETK_TRUE, 0);
 
@@ -147,7 +147,7 @@ static void _etk_test_tree_drag_drop_cb(Etk_Object *object, void *event, void *d
    tree = ETK_TREE(object);
    row = etk_tree_selected_row_get(tree);
    etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), NULL, &col1_string, etk_tree_nth_col_get(tree, 1), &col2_value, etk_tree_nth_col_get(tree, 2), &col3_path, NULL);
-   printf(_("Row dropped on %p: \"%s\" %d %s\n"), row, col1_string, col2_value, col3_path);      
+   printf("Row dropped on %p: \"%s\" %d %s\n", row, col1_string, col2_value, col3_path);      
 }
 
 /* TODO: doc */
@@ -223,25 +223,25 @@ static void _etk_test_tree_row_selected(Etk_Object *object, Etk_Tree_Row *row, v
 
    tree = ETK_TREE(object);
    etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), NULL, &col1_string, etk_tree_nth_col_get(tree, 1), &col2_value, etk_tree_nth_col_get(tree, 2), &col3_path, NULL);
-   printf(_("Row selected %p: \"%s\" %d %s\n"), row, col1_string, col2_value, col3_path);
+   printf("Row selected %p: \"%s\" %d %s\n", row, col1_string, col2_value, col3_path);
 }
 
 /* Called when a row is unselected */
 static void _etk_test_tree_row_unselected(Etk_Object *object, Etk_Tree_Row *row, void *data)
 {
-   printf(_("Row unselected %p\n"), row);
+   printf("Row unselected %p\n", row);
 }
 
 /* Called when a row is clicked */
 static void _etk_test_tree_row_clicked(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up_Down *event, void *data)
 {
-   printf(_("Row clicked %p. Button: %d. "), row, event->button);
+   printf("Row clicked %p. Button: %d. ", row, event->button);
    if (event->flags & EVAS_BUTTON_TRIPLE_CLICK)
-      printf(_("Triple Click\n"));
+      printf("Triple Click\n");
    else if (event->flags & EVAS_BUTTON_DOUBLE_CLICK)
-      printf(_("Double Click\n"));
+      printf("Double Click\n");
    else
-      printf(_("Single Click\n"));
+      printf("Single Click\n");
 }
 
 /* Called when a row is activated */
@@ -253,7 +253,7 @@ static void _etk_test_tree_row_activated(Etk_Object *object, Etk_Tree_Row *row, 
 
    tree = ETK_TREE(object);
    etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), NULL, &col1_string, etk_tree_nth_col_get(tree, 1), &col2_value, etk_tree_nth_col_get(tree, 2), &col3_path, NULL);
-   printf(_("Row activated %p: \"%s\" %d %s\n"), row, col1_string, col2_value, col3_path);
+   printf("Row activated %p: \"%s\" %d %s\n", row, col1_string, col2_value, col3_path);
 }
 
 /* Called when a checkbox of the tree is toggled */
@@ -267,9 +267,9 @@ static void _etk_test_tree_checkbox_toggled_cb(Etk_Object *object, Etk_Tree_Row 
    
    etk_tree_row_fields_get(row, col, &checked, NULL);
    if (checked)
-      printf(_("Checkbox activated\n"));
+      printf("Checkbox activated\n");
    else
-      printf(_("Checkbox deactivated\n"));
+      printf("Checkbox deactivated\n");
 }
 
 /* Called when the "Clear" button is clicked */

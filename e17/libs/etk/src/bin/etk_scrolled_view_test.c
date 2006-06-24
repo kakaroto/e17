@@ -14,7 +14,7 @@ void etk_test_scrolled_view_window_create(void *data)
    }
 
    win = etk_window_new();
-   etk_window_title_set(ETK_WINDOW(win), _("Etk Scrolled View Test"));
+   etk_window_title_set(ETK_WINDOW(win), "Etk Scrolled View Test");
    etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    etk_widget_size_request_set(win, 180, 180);
 	

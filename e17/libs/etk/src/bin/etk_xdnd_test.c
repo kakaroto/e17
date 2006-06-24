@@ -38,7 +38,7 @@ void etk_test_xdnd_window_create(void *data)
    
    /* create window */
    win = etk_window_new();
-   etk_window_title_set(ETK_WINDOW(win), _("Etk DnD / Selections Test"));
+   etk_window_title_set(ETK_WINDOW(win), "Etk DnD / Selections Test");
    etk_container_border_width_set(ETK_CONTAINER(win), 5);
    etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    
@@ -56,8 +56,8 @@ void etk_test_xdnd_window_create(void *data)
    dnd_types = calloc(dnd_types_num, sizeof(char*));
    dnd_types[0] = strdup("text/uri-list");
    
-   label = etk_label_new(_("No File Set"));         
-   button = etk_button_new_with_label(_("Drop a file here (text/uri-list)"));
+   label = etk_label_new("No File Set");
+   button = etk_button_new_with_label("Drop a file here (text/uri-list)");
    etk_widget_dnd_dest_set(button, ETK_TRUE);
    etk_widget_dnd_types_set(button, dnd_types, dnd_types_num);
    etk_signal_connect("drag_drop", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_xdnd_drag_drop_cb), label);
@@ -70,7 +70,7 @@ void etk_test_xdnd_window_create(void *data)
    etk_box_pack_start(ETK_BOX(vbox2), sep, ETK_FALSE, ETK_FALSE, 0);
    
    image = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/e_icon.png");
-   button = etk_button_new_with_label(_("Drop an image here"));
+   button = etk_button_new_with_label("Drop an image here");
    etk_widget_dnd_dest_set(button, ETK_TRUE);
    dnd_types_num = 1;
    dnd_types = calloc(dnd_types_num, sizeof(char*));
@@ -83,7 +83,7 @@ void etk_test_xdnd_window_create(void *data)
    sep = etk_hseparator_new();
    etk_box_pack_start(ETK_BOX(vbox2), sep, ETK_FALSE, ETK_FALSE, 0);   
    
-   label = etk_label_new(_("Drop some text below"));
+   label = etk_label_new("Drop some text below");
    entry = etk_entry_new();   
    dnd_types_num = 1;
    dnd_types = calloc(dnd_types_num, sizeof(char*));
@@ -97,7 +97,7 @@ void etk_test_xdnd_window_create(void *data)
    sep = etk_hseparator_new();
    etk_box_pack_start(ETK_BOX(vbox2), sep, ETK_FALSE, ETK_FALSE, 0);   
    
-   button = etk_button_new_with_label(_("Drag Me!"));
+   button = etk_button_new_with_label("Drag Me!");
    etk_widget_dnd_source_set(button, ETK_TRUE);
    etk_widget_dnd_drag_widget_set(button, etk_button_new_with_label("This is a test!"));
    etk_widget_dnd_drag_data_set(button, dnd_types, dnd_types_num, "This is the drag data!", strlen("This is the drag data!") + 1);
@@ -112,7 +112,7 @@ void etk_test_xdnd_window_create(void *data)
    
    label = etk_label_new("");
    etk_signal_connect("clipboard_received", ETK_OBJECT(label), ETK_CALLBACK(_etk_test_xdnd_clipboard_text_request_cb), NULL);   
-   button = etk_button_new_with_label(_("Press me to paste text"));
+   button = etk_button_new_with_label("Press me to paste text");
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_xdnd_button_paste_cb), label);
    etk_box_pack_start(ETK_BOX(vbox2), button, ETK_FALSE, ETK_FALSE, 0);  
    etk_box_pack_start(ETK_BOX(vbox2), label, ETK_FALSE, ETK_FALSE, 0);   
@@ -121,7 +121,7 @@ void etk_test_xdnd_window_create(void *data)
    etk_box_pack_start(ETK_BOX(vbox2), sep, ETK_FALSE, ETK_FALSE, 0);   
    
    entry = etk_entry_new();
-   button = etk_button_new_with_label(_("Click me to copy text below"));
+   button = etk_button_new_with_label("Click me to copy text below");
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_xdnd_button_copy_cb), entry);
    etk_box_pack_start(ETK_BOX(vbox2), button, ETK_FALSE, ETK_FALSE, 0);   
    etk_box_pack_start(ETK_BOX(vbox2), entry, ETK_FALSE, ETK_FALSE, 0);
@@ -134,7 +134,7 @@ void etk_test_xdnd_window_create(void *data)
    
    label = etk_label_new("");
    etk_signal_connect("selection_received", ETK_OBJECT(label), ETK_CALLBACK(_etk_test_xdnd_selection_text_request_cb), NULL);   
-   button = etk_button_new_with_label(_("Press me to get selection text"));
+   button = etk_button_new_with_label("Press me to get selection text");
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_xdnd_button_selection_get_cb), label);
    etk_box_pack_start(ETK_BOX(vbox2), button, ETK_FALSE, ETK_FALSE, 0);  
    etk_box_pack_start(ETK_BOX(vbox2), label, ETK_FALSE, ETK_FALSE, 0);   
@@ -143,7 +143,7 @@ void etk_test_xdnd_window_create(void *data)
    etk_box_pack_start(ETK_BOX(vbox2), sep, ETK_FALSE, ETK_FALSE, 0);
    
    entry = etk_entry_new();
-   button = etk_button_new_with_label(_("Click me to set selection text"));
+   button = etk_button_new_with_label("Click me to set selection text");
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_xdnd_button_selection_set_cb), entry);
    etk_box_pack_start(ETK_BOX(vbox2), button, ETK_FALSE, ETK_FALSE, 0);   
    etk_box_pack_start(ETK_BOX(vbox2), entry, ETK_FALSE, ETK_FALSE, 0);   

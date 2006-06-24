@@ -95,6 +95,7 @@ static Etk_Widget *_etk_test_embed_widget_new(Evas *evas)
    Etk_Widget *embed;
    Etk_Widget *table;
    Etk_Widget *image;
+   Etk_Widget *alignment;
    Etk_Widget *buttons[3];
    Etk_Widget *labels[8];
    Etk_Widget *entries[6];
@@ -106,6 +107,8 @@ static Etk_Widget *_etk_test_embed_widget_new(Evas *evas)
    buttons[0] = etk_button_new_from_stock(ETK_STOCK_DOCUMENT_OPEN);
    buttons[1] = etk_check_button_new();
    buttons[2] = etk_check_button_new();
+   alignment = etk_alignment_new(0.5, 0.5, 0.0, 0.0);
+   etk_container_add(ETK_CONTAINER(alignment), buttons[0]);
    
    labels[0] = etk_label_new("App Name");
    labels[1] = etk_label_new("Generic Info");
@@ -122,7 +125,7 @@ static Etk_Widget *_etk_test_embed_widget_new(Evas *evas)
 
    table = etk_table_new(2, 10, ETK_FALSE);
    etk_table_attach(ETK_TABLE(table), image, 0, 0, 0, 0, 0, 0, ETK_FILL_POLICY_NONE);
-   etk_table_attach(ETK_TABLE(table), buttons[0], 1, 1, 0, 0, 0, 0, ETK_FILL_POLICY_HEXPAND | ETK_FILL_POLICY_HFILL);
+   etk_table_attach(ETK_TABLE(table), alignment, 1, 1, 0, 0, 0, 0, ETK_FILL_POLICY_HEXPAND | ETK_FILL_POLICY_HFILL);
    
    for (i = 0; i < 6; i++)
    {
@@ -147,14 +150,21 @@ static Etk_Widget *_etk_test_embed_widget_new(Evas *evas)
 static void _etk_test_embed_update()
 {
    double t;
-   double percent;
+   int alpha;
    Etk_Size embed_size;
    int y;
    
-   t = ETK_CLAMP(_etk_test_embed_time_get() - starting_time, 0.0, 2.0);
-   percent = sin((t / 2.0) * (ETK_TEST_PI / 2));
-   y = win_h - (0.75 * percent * win_h);
-   
+   t = ETK_MAX(0.0, _etk_test_embed_time_get() - starting_time);
+   if (t <= 2.0)
+   {
+      y = win_h - (0.75 * sin((t / 2.0) * (ETK_TEST_PI / 2)) * win_h);
+      alpha = 0;
+   }
+   else
+   {
+      y = 0.25 * win_h;
+      alpha = ETK_CLAMP((t - 2.0) / 2.0, 0.0, 1.0) * 255;
+   }
    
    evas_object_move(backdrop, 0, 0);
    evas_object_resize(backdrop, win_w, y);
@@ -177,7 +187,7 @@ static void _etk_test_embed_update()
    
    evas_object_move(panel_clip, 0, y);
    evas_object_resize(panel_clip, win_w, win_h - y);
-   evas_object_color_set(panel_clip, 255, 255, 255, percent * 255);
+   evas_object_color_set(panel_clip, 255, 255, 255, alpha);
    
    etk_widget_size_request(embed, &embed_size);
    evas_object_move(embed_object, (win_w - embed_size.w) / 2, y + 20);

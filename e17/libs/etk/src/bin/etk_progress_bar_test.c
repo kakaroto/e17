@@ -25,16 +25,16 @@ void etk_test_progress_bar_window_create(void *data)
    }
    
    win = etk_window_new();
-   etk_window_title_set(ETK_WINDOW(win), _("Etk Progress Bar Test"));
+   etk_window_title_set(ETK_WINDOW(win), "Etk Progress Bar Test");
    etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    
    vbox = etk_vbox_new(ETK_TRUE, 5);
    etk_container_add(ETK_CONTAINER(win), vbox);
    
-   pbar = etk_progress_bar_new_with_text(_("0% done"));
+   pbar = etk_progress_bar_new_with_text("0% done");
    etk_box_pack_start(ETK_BOX(vbox), pbar, ETK_TRUE, ETK_TRUE, 0);
    
-   pbar2 = etk_progress_bar_new_with_text(_("Loading..."));
+   pbar2 = etk_progress_bar_new_with_text("Loading...");
    etk_progress_bar_pulse_step_set(ETK_PROGRESS_BAR(pbar2), 0.015);
    etk_box_pack_start(ETK_BOX(vbox), pbar2, ETK_TRUE, ETK_TRUE, 0);
    
