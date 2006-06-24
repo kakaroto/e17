@@ -275,8 +275,8 @@ _composite_run_fades_cb(void *data)
 
 #define SHADOW_OFFSET_X	((-config->shadow_active_size * 7 / 5) - config->shadow_horz_offset * config->shadow_active_size / 100) * w->shadowSize
 #define SHADOW_OFFSET_Y	((-config->shadow_active_size * 7 / 5) - config->shadow_vert_offset * config->shadow_active_size / 100) * w->shadowSize
-//#define SHADOW_OFFSET_X                                                                          (w->shadowSize * -shadowRadius * 7 / 500) - w->shadowSize * shadowOffsetX * shadowRadius / 10000
-//#define SHADOW_OFFSET_Y                                                                          (w->shadowSize * -shadowRadius * 7 / 500) - w->shadowSize * shadowOffsetY * shadowRadius / 10000
+//#define SHADOW_OFFSET_X                                                                          (w->shadowSize * -config->shadow_active_size * 7 / 500) - w->shadowSize * config->shadow_horz_offset * config->shadow_active_size / 10000
+//#define SHADOW_OFFSET_Y                                                                          (w->shadowSize * -config->shadow_active_size * 7 / 500) - w->shadowSize * config->shadow_vert_offset * config->shadow_active_size / 10000
 
 static double
 gaussian(double r, double x, double y)
@@ -707,8 +707,10 @@ composite_win_extents(Win * w)
             w->shadow_dy = SHADOW_OFFSET_Y;
             w->shadow_dy = w->shadow_dy / 100;
 #endif
-            w->shadow_dx = config->shadow_horz_offset;
-            w->shadow_dy = config->shadow_vert_offset;
+#if 1
+            w->shadow_dx = config->shadow_horz_offset - config->shadow_active_size - 3;
+            w->shadow_dy = config->shadow_vert_offset - config->shadow_active_size - 3;
+#endif
             if (!w->shadow)
             {
                double opacity = config->shadow_opacity;
@@ -1646,8 +1648,10 @@ static int
 _composite_event_window_reparent_cb(void *data, int type, void *ev)
 {
    Ecore_X_Event_Window_Reparent *e;
+   E_Border *bd;
 
    e = ev;
+   bd = e_border_find_by_window(e->win);
    if (e->parent == root)
       composite_win_add(e->win, 0);
    else

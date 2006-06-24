@@ -120,6 +120,14 @@ _bling_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
    _config_bling_module(con, b);
 }
 
+static int
+_bling_composite_restart(void *data)
+{
+   Bling *b = data;
+
+   composite_init(b);
+   return 0;
+}
 
 static Bling *
 _bling_init(E_Module *m)
@@ -175,9 +183,9 @@ _bling_init(E_Module *m)
 
       b->config->shadow_enable = 1;
       b->config->shadow_dock_enable = 1;
-      b->config->shadow_active_size = 8;
+      b->config->shadow_active_size = 7;
       b->config->shadow_inactive_size = 4;
-      b->config->shadow_opacity = 0.75;
+      b->config->shadow_opacity = 0.85;
       b->config->shadow_vert_offset = 3;
       b->config->shadow_horz_offset = 3;
       b->config->shadow_hide_on_move = 0;
@@ -222,7 +230,13 @@ _bling_init(E_Module *m)
 #if 0
    _bling_config_menu_new(b);
 #endif
-   composite_init(b);
+   if (getenv("RESTART"))
+      ecore_idle_enterer_add(_bling_composite_restart, b);
+   else if (!composite_init(b))
+   {
+      E_FREE(b);
+      return NULL;
+   }
 
    return b;
 }
