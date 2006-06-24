@@ -13,7 +13,6 @@
 static Etk_Widget *_etk_test_embed_widget_new(Evas *evas);
 static void _etk_test_embed_update();
 static void _etk_test_embed_resize_cb(Ecore_Evas *ecore_evas);
-//static void _etk_test_embed_delete_request_cb(Ecore_Evas *ecore_evas);
 static int _etk_test_embed_animator_cb(void *data);
 static double _etk_test_embed_time_get();
 
@@ -35,6 +34,8 @@ void etk_test_embed_window_create(void *data)
    
    if (ecore_evas)
    {
+      starting_time = _etk_test_embed_time_get();
+      _etk_test_embed_update();
       ecore_evas_show(ecore_evas);
       return;
    }
