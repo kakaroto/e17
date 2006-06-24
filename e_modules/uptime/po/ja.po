@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Uptime\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-10 12:28+0900\n"
-"PO-Revision-Date: 2006-03-10 18:50+0900\n"
+"POT-Creation-Date: 2006-06-18 17:07+0900\n"
+"PO-Revision-Date: 2006-06-18 21:45+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -20,23 +20,31 @@ msgstr ""
 msgid "Uptime Configuration"
 msgstr "uptime の設定"
 
-#: e_mod_config.c:73
+#: e_mod_config.c:69
 msgid "Uptime Settings"
 msgstr "設定内容"
 
-#: e_mod_config.c:74
+#: e_mod_config.c:70
 msgid "Check Interval:"
 msgstr "監視間隔"
 
-#: e_mod_main.c:92
+#: e_mod_main.c:113
+msgid "Uptime"
+msgstr ""
+
+#: e_mod_main.c:149
+msgid "Configuration"
+msgstr "設定"
+
+#: e_mod_main.c:324
 msgid "Enlightenment Uptime Monitor Module"
 msgstr "Enlightenment uptime 監視モジュール"
 
-#: e_mod_main.c:93
+#: e_mod_main.c:325
 msgid "This module is used to monitor uptime."
 msgstr "これは uptime を監視するモジュールです."
 
-#: e_mod_main.c:407
+#: e_mod_main.c:371
 #, c-format
 msgid "uptime: %ld days, %ld:%02ld:%02ld"
 msgstr "uptime: %ld 日, %ld:%02ld:%02ld"
