@@ -1,7 +1,7 @@
 
 /*
 
-Copyright (C) 2005 Alexander Taylor <alex@logisticchaos.com>.
+Copyright (C) 2005-2006 Alexander Taylor <alex@logisticchaos.com>.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -451,6 +451,7 @@ main(int argc, char **argv)
    evfs_io_initialise();
    evfs_vfolder_initialise();
    evfs_operation_initialise();
+   evfs_metadata_init();
 
    if ((server->ipc_server =
         ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER, EVFS_IPC_TITLE, 0,

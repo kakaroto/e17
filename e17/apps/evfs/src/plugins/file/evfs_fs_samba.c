@@ -217,7 +217,6 @@ evfs_plugin_init()
    smb_fd_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
    smb_next_fd = 0;
 
-   //Initialize samba (temporarily borrowed from gnomevfs)
    smb_context = smbc_new_context();
    if (smb_context != NULL)
      {
