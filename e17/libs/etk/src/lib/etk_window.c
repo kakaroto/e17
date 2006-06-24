@@ -944,7 +944,11 @@ static Etk_Bool _etk_window_delete_event_handler(Etk_Window *window)
 /* Gets the geometry of the window toplevel widget */
 static void _etk_window_toplevel_geometry_get(Etk_Toplevel_Widget *toplevel, int *x, int *y, int *w, int *h)
 {
-   etk_window_geometry_get(ETK_WINDOW(toplevel), x, y, w, h);
+   if (x)
+      *x = 0;
+   if (y)
+      *y = 0;
+   etk_window_geometry_get(ETK_WINDOW(toplevel), NULL, NULL, w, h);
 }
 
 /* Sets the mouse pointer of the window */

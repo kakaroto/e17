@@ -20,6 +20,7 @@
  *         - Etk_Frame
  *         - Etk_Scrolled_View
  *         - Etk_Toplevel_Widget
+ *           - Etk_Embed
  *           - Etk_Window
  *             - Etk_Dialog
  *               - Etk_Message_Dialog

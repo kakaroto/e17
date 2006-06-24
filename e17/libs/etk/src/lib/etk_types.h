@@ -45,6 +45,7 @@ typedef struct Etk_Combobox_Item Etk_Combobox_Item;
 typedef struct Etk_Container Etk_Container;
 typedef struct Etk_Dialog Etk_Dialog;
 typedef struct _Etk_Drag Etk_Drag;
+typedef struct Etk_Embed Etk_Embed;
 typedef struct _Etk_Entry Etk_Entry;
 typedef struct _Etk_Event_Key_Up_Down Etk_Event_Key_Up_Down;
 typedef struct _Etk_Event_Mouse_In_Out Etk_Event_Mouse_In_Out;

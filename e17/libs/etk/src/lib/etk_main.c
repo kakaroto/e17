@@ -238,13 +238,9 @@ static void _etk_main_size_allocate_recursive(Etk_Widget *widget, Etk_Bool is_to
    Etk_Geometry geometry;
    
    if (is_top_level)
-   {
-      geometry.x = 0;
-      geometry.y = 0;
-      etk_toplevel_widget_geometry_get(ETK_TOPLEVEL_WIDGET(widget), NULL, NULL, &geometry.w, &geometry.h);
-   }
+      etk_toplevel_widget_geometry_get(ETK_TOPLEVEL_WIDGET(widget), &geometry.x, &geometry.y, &geometry.w, &geometry.h);
    else
-      geometry = widget->geometry;
+      etk_widget_geometry_get(widget, &geometry.x, &geometry.y, &geometry.w, &geometry.h);
    etk_widget_size_allocate(widget, geometry);
    
    for (l = widget->children; l; l = l->next)

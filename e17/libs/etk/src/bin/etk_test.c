@@ -116,6 +116,11 @@ static Etk_Test_Example _etk_test_examples[] =
       "Text View",
       etk_test_text_view_window_create,
       ETK_TEST_ADVANCED_WIDGET
+   },
+   {
+      "Embed Widget",
+      etk_test_embed_window_create,
+      ETK_TEST_CONTAINER
    }
 };
 static int _etk_test_num_examples = sizeof(_etk_test_examples) / sizeof (_etk_test_examples[0]);

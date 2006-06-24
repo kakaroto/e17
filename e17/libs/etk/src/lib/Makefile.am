@@ -33,6 +33,7 @@ etk_dialog.h \
 etk_dnd.h \
 etk_drag.h \
 etk_editable_text_object.h \
+etk_embed.h \
 etk_entry.h \
 etk_filechooser_widget.h \
 etk_frame.h \
@@ -97,6 +98,7 @@ etk_dialog.c \
 etk_dnd.c \
 etk_drag.c \
 etk_editable_text_object.c \
+etk_embed.c \
 etk_entry.c \
 etk_filechooser_widget.c \
 etk_frame.c \

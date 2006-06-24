@@ -70,6 +70,7 @@ extern "C" {
 #include "etk_tooltips.h"
 #include "etk_message_dialog.h"
 #include "etk_iconbox.h"
+#include "etk_embed.h"
 
 #ifdef __cplusplus
 }
