@@ -61,6 +61,11 @@ void evfs_write_event(evfs_client * client, evfs_command * command,
                       evfs_event * event);
 int evfs_read_event(evfs_event * event, ecore_ipc_message * msg);
 
+void
+evfs_write_command_end(evfs_connection * conn);
+void
+evfs_write_command_end_client(evfs_client * client);
+
 
 
 #endif

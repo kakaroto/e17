@@ -21,7 +21,9 @@ typedef enum evfs_command_type
    EVFS_CMD_PING = 13,
    EVFS_CMD_OPERATION_RESPONSE = 14,
    EVFS_CMD_DIRECTORY_CREATE = 15,
-   EVFS_CMD_METADATA_RETRIEVE = 16
+   EVFS_CMD_METADATA_RETRIEVE = 16,
+   EVFS_CMD_METADATA_FILE_SET = 17,
+   EVFS_CMD_METADATA_FILE_GET = 18
 }
 evfs_command_type;
 
@@ -30,6 +32,8 @@ typedef struct evfs_command_file
    evfs_command_type type;
    int num_files;
    int extra;
+   char* ref;
+
    evfs_filereference **files;
 }
 evfs_command_file;

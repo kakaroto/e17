@@ -673,6 +673,7 @@ evfs_write_command(evfs_connection * conn, evfs_command * command)
      case EVFS_CMD_FILE_READ:
      case EVFS_CMD_DIRECTORY_CREATE:
      case EVFS_CMD_METADATA_RETRIEVE:
+     case EVFS_CMD_METADATA_FILE_GET:
      case EVFS_CMD_PING:
         evfs_write_file_command(conn, command);
         break;
@@ -693,6 +694,30 @@ void
 evfs_write_command_client(evfs_client * client, evfs_command * command)
 {
 
+      /*Write the command type structure */
+   evfs_write_ecore_ipc_client_message(client->client,
+                                       ecore_ipc_message_new(EVFS_COMMAND,
+                                                             EVFS_COMMAND_TYPE,
+                                                             client->id, 0, 0,
+                                                             &command->type,
+                                                             sizeof
+                                                             (evfs_command_type)));
+
+   evfs_write_ecore_ipc_client_message(client->client,
+                                       ecore_ipc_message_new(EVFS_COMMAND,
+                                                             EVFS_COMMAND_EXTRA,
+                                                             client->id, 0, 0,
+                                                             &command->
+                                                             file_command.extra,
+                                                             sizeof(int)));
+
+   evfs_write_ecore_ipc_client_message(client->client,
+                                       ecore_ipc_message_new(EVFS_COMMAND,
+                                                            EVFS_COMMAND_CLIENTID,
+                                                            client->id, 0, 0,
+                                                            &command->client_identifier,
+                                                            sizeof(long)));
+
 	
    switch (command->type)
      {
@@ -709,6 +734,7 @@ evfs_write_command_client(evfs_client * client, evfs_command * command)
      case EVFS_CMD_FILE_READ:
      case EVFS_CMD_DIRECTORY_CREATE:
      case EVFS_CMD_METADATA_RETRIEVE:
+     case EVFS_CMD_METADATA_FILE_GET:
      case EVFS_CMD_PING:
         evfs_write_file_command_client(client, command);
         break;
@@ -717,6 +743,9 @@ evfs_write_command_client(evfs_client * client, evfs_command * command)
         break;
 
      }
+
+   /*Send a final */
+   evfs_write_command_end_client(client);
 }
 
 void
@@ -763,6 +792,15 @@ evfs_write_file_command(evfs_connection * conn, evfs_command * command)
 
      }
 
+    /*If there's a string ref, write it*/
+    if (command->file_command.ref) {
+	  evfs_write_ecore_ipc_server_message(conn->server, 
+			  		ecore_ipc_message_new(EVFS_COMMAND,
+						EVFS_COMMAND_PART_FILECOMMAND_REF,
+						0,0,0,command->file_command.ref,
+						strlen(command->file_command.ref)+1));
+    }
+
 }
 
 void
@@ -773,29 +811,7 @@ evfs_write_file_command_client(evfs_client * client, evfs_command * command)
 
    bzero(uri, 1024);
 
-   /*Write the command type structure */
-   evfs_write_ecore_ipc_client_message(client->client,
-                                       ecore_ipc_message_new(EVFS_COMMAND,
-                                                             EVFS_COMMAND_TYPE,
-                                                             client->id, 0, 0,
-                                                             &command->type,
-                                                             sizeof
-                                                             (evfs_command_type)));
 
-   evfs_write_ecore_ipc_client_message(client->client,
-                                       ecore_ipc_message_new(EVFS_COMMAND,
-                                                             EVFS_COMMAND_EXTRA,
-                                                             client->id, 0, 0,
-                                                             &command->
-                                                             file_command.extra,
-                                                             sizeof(int)));
-
-   evfs_write_ecore_ipc_client_message(client->client,
-                                       ecore_ipc_message_new(EVFS_COMMAND,
-                                                            EVFS_COMMAND_CLIENTID,
-                                                            client->id, 0, 0,
-                                                            &command->client_identifier,
-                                                            sizeof(long)));
 
   for (i = 0; i < command->file_command.num_files; i++)
      {
@@ -815,8 +831,14 @@ evfs_write_file_command_client(evfs_client * client, evfs_command * command)
 
      }
 
-   /*Send a final */
-   evfs_write_command_end_client(client);
+    /*If there's a string ref, write it*/
+    if (command->file_command.ref) {
+	  evfs_write_ecore_ipc_client_message(client->client, 
+			  		ecore_ipc_message_new(EVFS_COMMAND,
+						EVFS_COMMAND_PART_FILECOMMAND_REF,
+						client->id,0,0,command->file_command.ref,
+						strlen(command->file_command.ref)+1));
+    }
 
 }
 
