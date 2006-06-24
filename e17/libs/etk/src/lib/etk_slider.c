@@ -197,21 +197,22 @@ static void _etk_slider_value_changed_handler(Etk_Range *range, double value)
 {
    Etk_Slider *slider;
    Evas_Object *theme_object;
+   double percent;
 
    if (!(slider = ETK_SLIDER(range)) || !(theme_object = ETK_WIDGET(slider)->theme_object))
       return;
 
    if (range->upper > range->lower)
-      value = ETK_CLAMP(value / (range->upper - range->lower), 0.0, 1.0);
+      percent = ETK_CLAMP((value - range->lower) / (range->upper - range->lower - range->page_size), 0.0, 1.0);
    else
-      value = 0.0;
+      percent = 0.0;
    
    if (!slider->dragging)
    {
       if (ETK_IS_HSLIDER(slider))
-         edje_object_part_drag_value_set(theme_object, "drag", value, 0.0);
+         edje_object_part_drag_value_set(theme_object, "drag", percent, 0.0);
       else
-         edje_object_part_drag_value_set(theme_object, "drag", 0.0, value);
+         edje_object_part_drag_value_set(theme_object, "drag", 0.0, percent);
    }
 }
 
@@ -227,13 +228,13 @@ static void _etk_slider_range_changed_cb(Etk_Object *object, const char *propert
 
    /* Update the position of the drag button in the slider */
    if (range->upper - range->page_size > range->lower)
-      percent = ETK_CLAMP(range->value / (range->upper - range->lower - range->page_size), 0.0, 1.0);
+      percent = ETK_CLAMP((range->value - range->lower) / (range->upper - range->lower - range->page_size), 0.0, 1.0);
    else
       percent = 0.0;
    if (ETK_IS_HSLIDER(range))
-      edje_object_part_drag_value_set(ETK_WIDGET(range)->theme_object, "drag", percent, 0.0);
+      edje_object_part_drag_value_set(theme_object, "drag", percent, 0.0);
    else
-      edje_object_part_drag_value_set(ETK_WIDGET(range)->theme_object, "drag", 0.0, percent);
+      edje_object_part_drag_value_set(theme_object, "drag", 0.0, percent);
 }
 
 /** @} */

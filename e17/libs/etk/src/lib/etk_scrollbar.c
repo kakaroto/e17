@@ -201,22 +201,24 @@ static void _etk_scrollbar_mouse_wheel(Etk_Object *object, void *event, void *da
 /* Default handler for the "value_changed" signal of a scrollbar */
 static void _etk_scrollbar_value_changed_handler(Etk_Range *range, double value)
 {
+   Etk_Scrollbar *scrollbar;
+   Evas_Object *theme_object;
    double percent;
 
-   if (!range || !ETK_WIDGET(range)->theme_object)
+   if (!(scrollbar = ETK_SCROLLBAR(range)) || !(theme_object = ETK_WIDGET(range)->theme_object))
       return;
 
    if (range->upper - range->page_size > range->lower)
-      percent = ETK_CLAMP(value / (range->upper - range->lower - range->page_size), 0.0, 1.0);
+      percent = ETK_CLAMP((value - range->lower) / (range->upper - range->lower - range->page_size), 0.0, 1.0);
    else
       percent = 0.0;
 
-   if (!ETK_SCROLLBAR(range)->dragging)
+   if (!scrollbar->dragging)
    {
-      if (ETK_IS_HSCROLLBAR(range))
-         edje_object_part_drag_value_set(ETK_WIDGET(range)->theme_object, "drag", percent, 0.0);
+      if (ETK_IS_HSCROLLBAR(scrollbar))
+         edje_object_part_drag_value_set(theme_object, "drag", percent, 0.0);
       else
-         edje_object_part_drag_value_set(ETK_WIDGET(range)->theme_object, "drag", 0.0, percent);
+         edje_object_part_drag_value_set(theme_object, "drag", 0.0, percent);
    }
 }
 
@@ -250,13 +252,13 @@ static void _etk_scrollbar_range_changed_cb(Etk_Object *object, const char *prop
 
    /* Update the position of the drag button in the scrollbar */
    if (range->upper - range->page_size > range->lower)
-      percent = ETK_CLAMP(range->value / (range->upper - range->lower - range->page_size), 0.0, 1.0);
+      percent = ETK_CLAMP((range->value - range->lower) / (range->upper - range->lower - range->page_size), 0.0, 1.0);
    else
       percent = 0.0;
    if (ETK_IS_HSCROLLBAR(range))
-      edje_object_part_drag_value_set(ETK_WIDGET(range)->theme_object, "drag", percent, 0.0);
+      edje_object_part_drag_value_set(theme_object, "drag", percent, 0.0);
    else
-      edje_object_part_drag_value_set(ETK_WIDGET(range)->theme_object, "drag", 0.0, percent);
+      edje_object_part_drag_value_set(theme_object, "drag", 0.0, percent);
    
    /* Update the size of the drag button */
    new_drag_size = (double)range->page_size / (range->upper - range->lower);
