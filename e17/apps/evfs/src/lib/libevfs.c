@@ -170,7 +170,7 @@ evfs_connect(void (*callback_func) (evfs_event *, void *), void *obj)
 
    evfs_io_initialise();
    evfs_vfolder_initialise();
-   evfs_metadata_init();
+   evfs_metadata_initialise();
 
    if (!_libevfs_init)
      {

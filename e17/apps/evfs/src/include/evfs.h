@@ -100,6 +100,7 @@ GNUC_EXTENSION typedef unsigned long long uint64;
 #include "evfs_operation_tasks.h"
 #include "evfs_commands.h"
 #include "evfs_event_helper.h"
+#include "evfs_metadata.h"
 
 void evfs_operation_user_dispatch(evfs_client * client, evfs_command * command,
                                   evfs_operation * op, char* misc);

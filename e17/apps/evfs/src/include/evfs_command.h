@@ -33,6 +33,7 @@ typedef struct evfs_command_file
    int num_files;
    int extra;
    char* ref;
+   char* ref2;
 
    evfs_filereference **files;
 }

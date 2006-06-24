@@ -674,6 +674,7 @@ evfs_write_command(evfs_connection * conn, evfs_command * command)
      case EVFS_CMD_DIRECTORY_CREATE:
      case EVFS_CMD_METADATA_RETRIEVE:
      case EVFS_CMD_METADATA_FILE_GET:
+     case EVFS_CMD_METADATA_FILE_SET:
      case EVFS_CMD_PING:
         evfs_write_file_command(conn, command);
         break;
@@ -735,6 +736,7 @@ evfs_write_command_client(evfs_client * client, evfs_command * command)
      case EVFS_CMD_DIRECTORY_CREATE:
      case EVFS_CMD_METADATA_RETRIEVE:
      case EVFS_CMD_METADATA_FILE_GET:
+     case EVFS_CMD_METADATA_FILE_SET:
      case EVFS_CMD_PING:
         evfs_write_file_command_client(client, command);
         break;
@@ -796,9 +798,17 @@ evfs_write_file_command(evfs_connection * conn, evfs_command * command)
     if (command->file_command.ref) {
 	  evfs_write_ecore_ipc_server_message(conn->server, 
 			  		ecore_ipc_message_new(EVFS_COMMAND,
-						EVFS_COMMAND_PART_FILECOMMAND_REF,
+						EVFS_COMMAND_PART_FILECOMMAND_REF1,
 						0,0,0,command->file_command.ref,
 						strlen(command->file_command.ref)+1));
+    }
+
+    if (command->file_command.ref2) {
+	  evfs_write_ecore_ipc_server_message(conn->server, 
+			  		ecore_ipc_message_new(EVFS_COMMAND,
+						EVFS_COMMAND_PART_FILECOMMAND_REF2,
+						0,0,0,command->file_command.ref2,
+						strlen(command->file_command.ref2)+1));
     }
 
 }
@@ -835,9 +845,17 @@ evfs_write_file_command_client(evfs_client * client, evfs_command * command)
     if (command->file_command.ref) {
 	  evfs_write_ecore_ipc_client_message(client->client, 
 			  		ecore_ipc_message_new(EVFS_COMMAND,
-						EVFS_COMMAND_PART_FILECOMMAND_REF,
+						EVFS_COMMAND_PART_FILECOMMAND_REF1,
 						client->id,0,0,command->file_command.ref,
 						strlen(command->file_command.ref)+1));
+    }
+
+    if (command->file_command.ref2) {
+	  evfs_write_ecore_ipc_client_message(client->client, 
+			  		ecore_ipc_message_new(EVFS_COMMAND,
+						EVFS_COMMAND_PART_FILECOMMAND_REF2,
+						client->id,0,0,command->file_command.ref2,
+						strlen(command->file_command.ref2)+1));
     }
 
 }
@@ -864,6 +882,15 @@ evfs_process_incoming_command(evfs_server * server, evfs_command * command,
      case EVFS_COMMAND_CLIENTID:
         memcpy(&command->client_identifier, message->data, sizeof(long));
         break;	
+
+     case EVFS_COMMAND_PART_FILECOMMAND_REF1:
+	command->file_command.ref = strdup(message->data);
+	break;
+
+     case EVFS_COMMAND_PART_FILECOMMAND_REF2:
+	command->file_command.ref2 = strdup(message->data);
+	break;
+
      case EVFS_FILE_REFERENCE:
         {
            //printf("Parsing URI: '%s'\n", message->data);                   

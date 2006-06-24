@@ -279,3 +279,53 @@ evfs_client_metadata_retrieve(evfs_connection * conn, evfs_filereference* file )
 
 }
 
+
+long 
+evfs_client_metadata_string_file_set(evfs_connection * conn, evfs_filereference* file, char* key,char* value )
+{
+   evfs_command *command = evfs_client_command_new();
+   long id = command->client_identifier;
+   
+   command->type = EVFS_CMD_METADATA_FILE_SET;
+
+   command->file_command.num_files = 1;
+   command->file_command.files = malloc(sizeof(evfs_filereference *) * 1);
+   command->file_command.files[0] = file;
+   command->file_command.ref = key;
+   command->file_command.ref2 = value;
+
+
+   evfs_write_command(conn, command);
+
+   free(command->file_command.files);
+   free(command);
+
+
+   return id;
+
+}
+
+long 
+evfs_client_metadata_string_file_get(evfs_connection * conn, evfs_filereference* file, char* key )
+{
+   evfs_command *command = evfs_client_command_new();
+   long id = command->client_identifier;
+   
+   command->type = EVFS_CMD_METADATA_FILE_GET;
+
+   command->file_command.num_files = 1;
+   command->file_command.files = malloc(sizeof(evfs_filereference *) * 1);
+   command->file_command.files[0] = file;
+   command->file_command.ref = key;
+
+
+   evfs_write_command(conn, command);
+
+   free(command->file_command.files);
+   free(command);
+
+
+   return id;
+
+}
+

@@ -219,6 +219,13 @@ evfs_handle_command(evfs_client * client, evfs_command * command)
      case EVFS_CMD_METADATA_RETRIEVE:
 	evfs_handle_metadata_command(client,command);
 	break;
+
+     case EVFS_CMD_METADATA_FILE_SET:
+	printf("Key/value: %s -> %s\n", command->file_command.ref, command->file_command.ref2);
+	break;
+     case EVFS_CMD_METADATA_FILE_GET:
+	break;
+
      default:
         printf("Warning - unhandled command %d\n", command->type);
         break;
@@ -451,7 +458,7 @@ main(int argc, char **argv)
    evfs_io_initialise();
    evfs_vfolder_initialise();
    evfs_operation_initialise();
-   evfs_metadata_init();
+   evfs_metadata_initialise();
 
    if ((server->ipc_server =
         ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER, EVFS_IPC_TITLE, 0,

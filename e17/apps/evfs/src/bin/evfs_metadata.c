@@ -42,7 +42,7 @@ Eet_Data_Descriptor* _evfs_metadata_edd_create(char* desc, int size)
 	return edd;
 }
 
-void evfs_metadata_init()
+void evfs_metadata_initialise()
 {
 	struct stat config_dir_stat;
 	

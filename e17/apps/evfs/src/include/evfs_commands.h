@@ -23,4 +23,10 @@ long evfs_client_directory_create(evfs_connection * conn, evfs_filereference * f
 long 
 evfs_client_metadata_retrieve(evfs_connection * conn, evfs_filereference* file );
 
+long 
+evfs_client_metadata_string_file_set(evfs_connection * conn, evfs_filereference* file, char* key,char* value );
+
+long 
+evfs_client_metadata_string_file_get(evfs_connection * conn, evfs_filereference* file, char* key );
+
 #endif
