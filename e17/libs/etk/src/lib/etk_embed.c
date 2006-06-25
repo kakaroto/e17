@@ -56,7 +56,7 @@ Etk_Widget *etk_embed_new(Evas *evas, void (*window_position_get)(void *window_d
       return NULL;
    
    embed = etk_widget_new(ETK_EMBED_TYPE, NULL);
-   ETK_EMBED(embed)->window_position_get;
+   ETK_EMBED(embed)->window_position_get = window_position_get;
    ETK_EMBED(embed)->window_data = window_data;
    ETK_TOPLEVEL_WIDGET(embed)->evas = evas;
    ETK_TOPLEVEL_WIDGET(embed)->geometry_get = _etk_embed_geometry_get;
