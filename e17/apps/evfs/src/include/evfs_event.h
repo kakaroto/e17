@@ -15,6 +15,7 @@ typedef enum evfs_eventtype
    EVFS_EV_PONG = 8,
    EVFS_EV_OPERATION = 9,
    EVFS_EV_METADATA = 10,
+   EVFS_EV_METADATA_FILE_GET = 11,
 
    EVFS_EV_ERROR = 100,
    EVFS_EV_NOT_SUPPORTED = 101

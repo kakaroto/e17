@@ -34,4 +34,7 @@ void evfs_handle_metadata_command(evfs_client* client, evfs_command* command);
 void evfs_handle_metadata_string_file_set_command(evfs_client* client, 
 				evfs_command* command, char* key, char* value);
 
+void evfs_handle_metadata_string_file_get_command(evfs_client* client, 
+				evfs_command* command, char* key) ;
+
 #endif

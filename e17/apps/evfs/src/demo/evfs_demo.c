@@ -147,6 +147,8 @@ main(int argc, char **argv)
 	   evfs_client_metadata_retrieve(con, dir_path->files[0]);
    } else if (!strcmp(cmd, "METASET")) {
 	   evfs_client_metadata_string_file_set(con, dir_path->files[0], "entropy_folder_preference", "icon");
+   } else if (!strcmp(cmd, "METAGET")) {
+           evfs_client_metadata_string_file_get(con, dir_path->files[0], "entropy_folder_preference");
    }
    ecore_main_loop_begin();
    evfs_disconnect(con);
