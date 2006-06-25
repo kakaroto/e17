@@ -6,111 +6,121 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Screenshot\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-05-27 13:52+0200\n"
-"PO-Revision-Date: 2006-05-27 14:03+0200\n"
+"POT-Creation-Date: 2006-06-24 14:01+0200\n"
+"PO-Revision-Date: 2006-06-24 14:13+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
 
-#: e_mod_config.c:59
+#: e_mod_config.c:63
 msgid "Screenshot Configuration"
 msgstr "Configurazione modulo Screenshot"
 
-#: e_mod_config.c:123 e_mod_config.c:213
+#: e_mod_config.c:129 e_mod_config.c:227
 msgid "General Settings"
 msgstr "Impostazioni generali"
 
-#: e_mod_config.c:129 e_mod_config.c:219
+#: e_mod_config.c:135 e_mod_config.c:233
 msgid "Use Import"
 msgstr "Usa import"
 
-#: e_mod_config.c:131 e_mod_config.c:221
+#: e_mod_config.c:137 e_mod_config.c:235
 msgid "Use Scrot"
 msgstr "Usa scrot"
 
-#: e_mod_config.c:139 e_mod_config.c:229
+#: e_mod_config.c:145 e_mod_config.c:243
 msgid "Delay Time:"
 msgstr "Tempo di ritardo:"
 
-#: e_mod_config.c:141 e_mod_config.c:231
+#: e_mod_config.c:147 e_mod_config.c:245
 #, c-format
 msgid "%1.0f seconds"
 msgstr "%1.0f secondi"
 
-#: e_mod_config.c:145 e_mod_config.c:242
+#: e_mod_config.c:151 e_mod_config.c:256
 msgid "File Settings"
 msgstr "Impostazioni del file"
 
-#: e_mod_config.c:146 e_mod_config.c:243
+#: e_mod_config.c:152 e_mod_config.c:257
+msgid "Always Prompt For Filename"
+msgstr "Chiedi sempre nome file"
+
+#: e_mod_config.c:155 e_mod_config.c:260
 msgid "Save Directory:"
 msgstr "Directory di salvataggio:"
 
-#: e_mod_config.c:150 e_mod_config.c:247
+#: e_mod_config.c:159 e_mod_config.c:264
 msgid "Filename:"
 msgstr "Nome file:"
 
-#: e_mod_config.c:235
+#: e_mod_config.c:249
 msgid "Image Viewer Settings"
 msgstr "Impostazioni visualizzatore"
 
-#: e_mod_config.c:236
+#: e_mod_config.c:250
 msgid "Launch Image Viewer After Screenshot"
 msgstr "Lancia visualizzatore dopo Screenshot"
 
-#: e_mod_config.c:256
+#: e_mod_config.c:274
 msgid "Import Settings"
 msgstr "Impostazioni di Import"
 
-#: e_mod_config.c:257 e_mod_config.c:274
+#: e_mod_config.c:275 e_mod_config.c:292
 msgid "Include Image Border"
 msgstr "Includi bordo immagine"
 
-#: e_mod_config.c:259
+#: e_mod_config.c:277
 msgid "Use Image Dithering"
 msgstr "Usa dithering (sfumatura)"
 
-#: e_mod_config.c:261
+#: e_mod_config.c:279
 msgid "Include Window Manager Frame"
 msgstr "Includi cornice del window manager"
 
-#: e_mod_config.c:263
+#: e_mod_config.c:281
 msgid "Choose Window To Grab"
 msgstr "Scegli finestra da catturare"
 
-#: e_mod_config.c:265
+#: e_mod_config.c:283
 msgid "Silent"
 msgstr "Silenzioso"
 
-#: e_mod_config.c:267
+#: e_mod_config.c:285
 msgid "Trim Edges"
 msgstr "Ritaglia bordi"
 
-#: e_mod_config.c:273
+#: e_mod_config.c:291
 msgid "Scrot Settings"
 msgstr "Impostazioni di Scrot"
 
-#: e_mod_config.c:276
+#: e_mod_config.c:294
 msgid "Generate Thumbnail"
 msgstr "Genera miniatiura"
 
-#: e_mod_main.c:126
+#: e_mod_main.c:129
 msgid "Screenshot"
 msgstr "Screenshot"
 
-#: e_mod_main.c:160
+#: e_mod_main.c:163
 msgid "Configuration"
 msgstr "Configurazione"
 
-#: e_mod_main.c:419 e_mod_main.c:471
+#: e_mod_main.c:407 e_mod_main.c:620 e_mod_main.c:672
 msgid "Enlightenment Screenshot Module"
 msgstr "Modulo Screenshot di Enlightenment"
 
-#: e_mod_main.c:419
+#: e_mod_main.c:407
 msgid "This module is used to take screenshots"
 msgstr "Questo modulo serve per generare immagini dallo schermo"
 
-#: e_mod_main.c:472
+#: e_mod_main.c:621
 msgid "Please install either ImageMagick or Scrot for taking screenshots."
-msgstr "Si prega di installare ImageMagick o Scrot per la cattura delle immagini."
+msgstr ""
+"Si prega di installare ImageMagick o Scrot per la cattura delle immagini."
+
+#: e_mod_main.c:673
+msgid ""
+"You did not specify a path.<br>This shot will be saved in your home folder."
+msgstr "Non avete specificato un percorso.<br> Questo screenshot verra' salvato nella vostra home directory."
