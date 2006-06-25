@@ -54,9 +54,12 @@ typedef struct _Conv {
 typedef struct _Fade {
     Win			*w;
     Ecore_Animator *anim;
+    double     start;
     double		cur;
     double		finish;
     double		step;
+    double     start_time;
+    double     interval;
     void		(*callback) (Win *w, Bool gone);
     Display		*dpy;
     Bool		gone;

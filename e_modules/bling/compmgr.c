@@ -127,6 +127,7 @@ static void composite_win_mode_determine(Win *w);
 static double get_opacity_percent(Win *w, double def);
 static Ecore_X_Region composite_win_extents (Win *w);
 static int _composite_run_fades_cb(void *data);
+static int composite_update(void *data);
 
 static int
 composite_x_error(Display *dpy, XErrorEvent *xerror)
@@ -163,7 +164,7 @@ composite_fade_dequeue(Fade * f)
    fades = evas_list_remove(fades, f);
    if (f->anim)
       ecore_animator_del(f->anim);
-   E_FREE(f);
+   /* E_FREE(f); */
 }
 
 static void
@@ -174,52 +175,71 @@ composite_fade_dequeue_win(Win * w)
 }
 
 static void
-composite_fade_set(Win * w, double start, double finish, double step,
-         void (*callback) (Win * w, Bool gone), Bool gone, Bool exec_callback,
-         Bool override)
+composite_fade_set(Win *w, double start, double finish, double step,
+                   void (*callback) (Win *w, Bool gone), Bool gone,
+                   Bool exec_callback, Bool override)
 {
    Fade *f;
+   E_Manager *man;
+   Evas_List *l;
+   char *name = NULL, *class = NULL;
+
+   /* Don't fade desktop/root windows */
+   if (!w->id || w->id == root) return;
+   ecore_x_icccm_name_class_get(w->id, &name, &class);
+   if (class && !strcmp(class, "Background_Window"))
+   {
+      E_FREE(name);
+      E_FREE(class);
+      return;
+   }
+   E_FREE(name);
+   E_FREE(class);
+   man = e_manager_current_get();
+   if (w->id == man->win) return;
+   for (l = man->containers; l; l = l->next)
+   {
+      E_Container *con = l->data;
+      if (w->id == con->win) return;
+   }
 
    f = composite_fade_find(w);
    if (!f)
    {
       f = E_NEW(Fade, 1);
       f->w = w;
-      f->cur = start;
+      f->start = f->cur = start;
+      w->isInFade = True;
       fades = evas_list_prepend(fades, f);
+      f->anim = ecore_animator_add(_composite_run_fades_cb, f);
    }
    else if (!override)
       return;
    else
    {
-      if (exec_callback)
-         if (f->callback)
-            (*f->callback) (f->w, f->gone);
+      if (exec_callback && f->callback)
+         (*f->callback)(f->w, f->gone);
    }
 
-   if (finish < 0)
-      finish = 0;
-   if (finish > 1)
-      finish = 1;
+   if (finish < 0) finish = 0;
+   if (finish > 1) finish = 1;
    f->finish = finish;
+   f->step = (f->cur < finish) ? step : -step;
+   f->start_time = ecore_time_get();
    if (f->cur < finish)
-      f->step = step;
-   else if (f->cur > finish)
-      f->step = -step;
+      f->interval = (1/config->fx_fade_in_speed * ecore_animator_frametime_get());
+   else
+      f->interval = (1/config->fx_fade_out_speed * ecore_animator_frametime_get());
    f->callback = callback;
    f->gone = gone;
    w->opacity = f->cur * OPAQUE;
-#if 0
-   printf("set_fade start %g step %g\n", f->cur, f->step);
-#endif
    composite_win_mode_determine(w);
    if (w->shadow)
    {
       XRenderFreePicture(dpy, w->shadow);
-      w->shadow = None;
+      w->shadow= None;
       w->extents = composite_win_extents(w);
    }
-   f->anim = ecore_animator_add(_composite_run_fades_cb, f);
 }
 
 static int
@@ -227,24 +247,23 @@ _composite_run_fades_cb(void *data)
 {
    Fade *f;
    Win *w;
+   int f_continue = 1;
+   double current_time, delta_time, fade_interval;
 
-#if 0
-   /* Prioritize pending X events */
-   if (QLength(dpy))
-   {
-      fade_steps++;
-      return 1;
-   }
-#endif
    f = data;
    if (!f) return 0;
    w = f->w;
 
-   f->cur += f->step;
+   current_time = ecore_time_get();
+   delta_time = current_time - f->start_time;
+   if (delta_time >= f->interval)
+      f->cur = f->finish;
+   else
+      f->cur = f->start + (delta_time/f->interval * (f->finish - f->start));
    if (f->cur >= 1)
       f->cur = 1;
    else if (f->cur < 0)
-   f->cur = 0;
+      f->cur = 0;
    w->opacity = f->cur * OPAQUE;
    if (f->step > 0)
    {
@@ -252,6 +271,8 @@ _composite_run_fades_cb(void *data)
       {
          w->opacity = f->finish * OPAQUE;
          composite_fade_dequeue(f);
+         f = NULL;
+         f_continue = 0;
       }
    }
    else
@@ -260,6 +281,8 @@ _composite_run_fades_cb(void *data)
       {
          w->opacity = f->finish * OPAQUE;
          composite_fade_dequeue(f);
+         f = NULL;
+         f_continue = 0;
       }
    }
    composite_win_mode_determine(w);
@@ -269,14 +292,11 @@ _composite_run_fades_cb(void *data)
       w->shadow = None;
       w->extents = composite_win_extents(w);
    }
-   /* FIXME: Update fade picture??? */
-   return 1;
+   return f_continue;
 }
 
 #define SHADOW_OFFSET_X	((-config->shadow_active_size * 7 / 5) - config->shadow_horz_offset * config->shadow_active_size / 100) * w->shadowSize
 #define SHADOW_OFFSET_Y	((-config->shadow_active_size * 7 / 5) - config->shadow_vert_offset * config->shadow_active_size / 100) * w->shadowSize
-//#define SHADOW_OFFSET_X                                                                          (w->shadowSize * -config->shadow_active_size * 7 / 500) - w->shadowSize * config->shadow_horz_offset * config->shadow_active_size / 10000
-//#define SHADOW_OFFSET_Y                                                                          (w->shadowSize * -config->shadow_active_size * 7 / 500) - w->shadowSize * config->shadow_vert_offset * config->shadow_active_size / 10000
 
 static double
 gaussian(double r, double x, double y)
@@ -828,7 +848,7 @@ composite_paint_all(Ecore_X_Region region)
       if (!w->damaged)
          continue;
 
-      // skip invisible windows
+      /* skip invisible windows */
       if (w->a.x + w->a.w < 1 || w->a.y + w->a.h < 1
           || w->a.x >= root_width || w->a.y >= root_height)
          continue;
@@ -1077,9 +1097,6 @@ composite_win_map(Ecore_X_Window id, Bool fade)
    w->a.visible = 1;
    w->a.viewable = 1;
 
-   /* This needs to be here or else we lose transparency messages */
-   //XSelectInput(dpy, id, PropertyChangeMask);
-
 #if CAN_DO_USABLE
    w->damage_bounds.x = w->damage_bounds.y = 0;
    w->damage_bounds.width = w->damage_bounds.height = 0;
@@ -1117,9 +1134,6 @@ composite_win_finish_unmap(Win * w)
       XRenderFreePicture(dpy, w->picture);
       w->picture = None;
    }
-
-   /* don't care about properties anymore */
-   //XSelectInput(dpy, w->id, 0);
 
    if (w->borderSize)
    {
@@ -1505,7 +1519,7 @@ composite_expose_root(Ecore_X_Window root, Ecore_X_Rectangle * rects, int nrects
 
 void
 composite_shadow_color_set(char *value)
-{                               // format nach #xxxxxx (html) ändern?
+{ 
    unsigned int tmp;
    char **res = NULL;
 

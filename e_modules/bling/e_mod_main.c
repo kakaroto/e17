@@ -190,8 +190,8 @@ _bling_init(E_Module *m)
       b->config->shadow_horz_offset = 3;
       b->config->shadow_hide_on_move = 0;
 
-      b->config->fx_fade_enable = 0;
-      b->config->fx_fade_opacity_enable = 0;
+      b->config->fx_fade_enable = 1;
+      b->config->fx_fade_opacity_enable = 1;
       b->config->fx_fade_delta = 1.0/30.0;
       b->config->fx_fade_in_speed = 0.075;
       b->config->fx_fade_out_speed = 0.100;
