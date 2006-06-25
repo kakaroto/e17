@@ -18,8 +18,7 @@ TODO List
   - Move entrance-definded sessions out of config into $prefix/share/xsessions/.
 * Handle sessions that crash immediately gracefully by providing some kind of
   custom error message a la GDM
-* Xinerama support: widgets follow mouse pointer from screen to screen,
-  background on all screens
+* Xinerama - widgets follow mouse pointer from screen to screen
 * GUI configuration tool (EWL-based?)
 
 -------------------------------------------------------------------------------

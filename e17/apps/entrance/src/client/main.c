@@ -23,8 +23,8 @@
 #define WINH 600
 
 static Entrance_Session *session = NULL;
-static Evas_Object *edje;
-static Evas_Object *background;
+
+Ecore_Evas *setup_ecore_evas();
 
 static int
 idler_before_cb(void *data)
@@ -81,6 +81,7 @@ static int
 screensaver_notify_cb(void *data, int ev_type, void *ev)
 {
    Ecore_X_Event_Screensaver_Notify *e;
+   Evas_Object *edje = data;
    
    e = ev;
    if (e->on)
@@ -636,18 +637,9 @@ main(int argc, char *argv[])
 {
    int i = 0;
    char buf[PATH_MAX];
-   char *bg_file;
    char *str = NULL;
    char *display = NULL;
-   Ecore_X_Window ew;
-   Evas *evas = NULL;
    Ecore_Evas *e = NULL;
-   Ecore_Timer *timer = NULL;
-   Evas_Object *o = NULL;
-   Evas_Coord x, y, w, h;
-   char *entries[] = { "entrance.entry.user", "entrance.entry.pass" };
-   int entries_count = 2;
-   const char *container_orientation = NULL;
    int c;
    struct option d_opt[] = {
       {"help", 0, 0, 'h'},
@@ -664,6 +656,8 @@ main(int argc, char *argv[])
    int fullscreen = 1;
    pid_t server_pid = 0;
    int testing = 0;
+
+   int screens = 0;
 
    /* Basic ecore initialization */
    if (!ecore_init())
@@ -758,6 +752,7 @@ main(int argc, char *argv[])
          return -1;
 
    session = entrance_session_new(config, display, testing);
+   if (testing) session->testing = 1;
 
    if (config)
       free(config);
@@ -798,111 +793,220 @@ main(int argc, char *argv[])
          free(roots);
          ecore_x_sync();
       }
+
+      screens = ecore_x_xinerama_screen_count_get();
+      syslog(LOG_INFO, "Xinerama screens: %d\n", screens);
    }
    ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, exit_cb, NULL);
    ecore_idle_enterer_add(idler_before_cb, NULL);
    
-   ecore_event_handler_add(ECORE_X_EVENT_SCREENSAVER_NOTIFY, screensaver_notify_cb, NULL);
    ecore_x_screensaver_event_listen_set(1);
 
+   /* Load our theme as an edje */
+   if (!theme)
+   {
+      snprintf(buf, PATH_MAX, "%s/themes/%s", PACKAGE_DATA_DIR,
+               session->config->theme);
+   }
+   else
+   {
+      snprintf(buf, PATH_MAX, "%s", theme);
+   }
+   if (session->config->theme)
+      free(session->config->theme);
+   session->config->theme = strdup(buf);
+   
    if (ecore_evas_init())
    {
       edje_init();
       edje_freeze();
       edje_frametime_set(1.0 / 30.0);
 
-      /* setup our ecore_evas */
-      /* testing mode decides entrance window size * * Use rendering engine
-         specified in config. On systems with * hardware acceleration, GL
-         should improve performance appreciably */
-      switch (session->config->engine) {
-      case 1:
-	  if (ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_GL_X11)) {
-	      e = ecore_evas_gl_x11_new(NULL, 0, 0, 0, g_x, g_y);
-	      break;
-	  }
-	  fprintf(stderr, "Warning: Evas GL engine: engine not supported. Defaulting to software engine.\n");
-	  
-      case 0:
-	  e = ecore_evas_software_x11_new(NULL, 0, 0, 0, g_x, g_y);
-	  break;
+      if (screens > 1)
+      {
+	 for (i = 0; i < screens; i++)
+	 {
+	    int sx, sy, sw, sh;
 
-      default:
-	  fprintf(stderr, "Warning: Invalid Evas engine specified in config. Defaulting to software engine.\n");
-	  e = ecore_evas_software_x11_new(NULL, 0, 0, 0, g_x, g_y);
-	  break;
+	    ecore_x_xinerama_screen_geometry_get(i, &sx, &sy, &sw, &sh);
+	    syslog(LOG_INFO, "Xinerama screen %d geometry: %d, %d %dx%d\n", i, sx, sy, sw, sh);
+
+	    /* only first screen gets set up as primary */
+	    if (i == 0)
+	    {
+	       e = setup_ecore_evas(1, sx, sy, sw, sh);
+	    }
+	    else
+	    {
+	       setup_ecore_evas(0, sx, sy, sw, sh);
+	    }
+	 }
       }
-      
-      if (!e) {
-	  fprintf(stderr, "Critical error: No Evas engine available. Exiting.\n");
-	  return (-1);
-      }
-
-      ew = ecore_evas_software_x11_window_get(e);
-      if (session->testing)
-         ecore_evas_title_set(e, "Entrance - Testing Mode");
-      else
-         ecore_evas_title_set(e, "Entrance");
-      ecore_evas_callback_delete_request_set(e, window_del_cb);
-      ecore_evas_callback_resize_set(e, window_resize_cb);
-      ecore_x_window_cursor_set(ew, ECORE_X_CURSOR_WATCH);
-      ecore_evas_move(e, 0, 0);
-
-      /* Evas specific callbacks */
-      evas = ecore_evas_get(e);
-      evas_image_cache_set(evas, 8 * 1024 * 1024);
-      evas_font_cache_set(evas, 1 * 1024 * 1024);
-      evas_font_path_append(evas, PACKAGE_DATA_DIR "/fonts");
-      evas_font_path_append(evas, PACKAGE_DATA_DIR "/data/fonts");
-      evas_key_modifier_add(evas, "Control_L");
-      evas_key_modifier_add(evas, "Control_R");
-      evas_key_modifier_add(evas, "Shift_L");
-      evas_key_modifier_add(evas, "Shift_R");
-      evas_key_modifier_add(evas, "Alt_L");
-      evas_key_modifier_add(evas, "Alt_R");
-
-      
-      /* Load our theme as an edje */
-      if (!theme)
-         snprintf(buf, PATH_MAX, "%s/themes/%s", PACKAGE_DATA_DIR,
-                  session->config->theme);
       else
       {
-         snprintf(buf, PATH_MAX, "%s", theme);
-         if (session->config->theme)
-            free(session->config->theme);
-         session->config->theme = strdup(buf);
+	 e = setup_ecore_evas(1, 0, 0, g_x, g_y);
+	 if (fullscreen)
+	    ecore_evas_fullscreen_set(e, 1);
       }
-      
-      /* Load background first, from theme file */
-      background = edje_object_add(evas);
-      if (!strlen(session->config->background))
-         bg_file = buf;
-      else
-         bg_file = session->config->background;
-      if (!edje_object_file_set(background, bg_file, "Background"))
-         if (!edje_object_file_set(background, bg_file, "desktop/background"))
-            syslog(LOG_INFO, "Failed to load background from %s\n", buf);
-      evas_object_move(background, 0, 0);
-      evas_object_resize(background, g_x, g_y);
-      evas_object_name_set(background, "background");
-      evas_object_layer_set(background, 0);
-      evas_object_show(background);
 
-      /* Now load theme */
+      if (!e)
+      {
+	 /* Note: The actual error will be logged in setup_ecore_evas() */
+	 exit(EXITCODE);
+      }
+   
+      ecore_idle_enterer_add(idler_after_cb, NULL);
+
+      entrance_session_ecore_evas_set(session, e);
+      entrance_ipc_session_set(session);
+      entrance_session_run(session);
+
+      if (!testing)
+      {
+         Ecore_X_Window *roots;
+         int num, i;
+
+         num = 0;
+         roots = ecore_x_window_root_list(&num);
+         if (roots)
+         {
+            for (i = 0; i < num; i++)
+            {
+               ecore_x_window_cursor_show(roots[i], 1);
+            }
+            free(roots);
+            ecore_x_sync();
+         }
+      }
+      if (session->authed)
+      {
+         entrance_session_start_user_session(session);
+      }
+      else
+      {
+         entrance_session_free(session);
+      }
+      if (!testing)
+         entrance_ipc_shutdown();
+      edje_shutdown();
+      ecore_evas_shutdown();
+      ecore_x_shutdown();
+      ecore_config_shutdown();
+      ecore_shutdown();
+   }
+   else
+   {
+      fprintf(stderr, "Fatal error: Could not initialize ecore_evas!\n");
+      exit(EXITCODE);
+   }
+   return (0);
+}
+
+
+Ecore_Evas *
+setup_ecore_evas(int primary, int wx, int wy, int ww, int wh)
+{
+   Ecore_Evas *e;
+   Ecore_X_Window ew;
+   Evas *evas = NULL;
+   Evas_Object *edje;
+   Evas_Object *background;
+   char *bg_file;
+   Ecore_Timer *timer = NULL;
+   Evas_Object *o = NULL;
+   Evas_Coord x, y, w, h;
+   char *entries[] = { "entrance.entry.user", "entrance.entry.pass" };
+   int entries_count = 2;
+   const char *container_orientation = NULL;
+   int i;
+   char *str = NULL;
+
+   char buf[PATH_MAX];
+
+   syslog(LOG_INFO, "setup ee, %d, %d, %d, %d, %d\n", primary, wx, wy, ww, wh);
+   /* setup our ecore_evas */
+   /* testing mode decides entrance window size * * Use rendering engine
+      specified in config. On systems with * hardware acceleration, GL
+      should improve performance appreciably */
+   switch (session->config->engine) {
+   case 1:
+       if (ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_GL_X11)) {
+           e = ecore_evas_gl_x11_new(NULL, 0, wx, wy, ww, wh);
+           break;
+       }
+       syslog(LOG_INFO, "Warning: Evas GL engine: engine not supported. Defaulting to software engine.\n");
+       
+   case 0:
+       e = ecore_evas_software_x11_new(NULL, 0, wx, wy, ww, wh);
+       break;
+ 
+   default:
+       syslog(LOG_INFO, "Warning: Invalid Evas engine specified in config. Defaulting to software engine.\n");
+       e = ecore_evas_software_x11_new(NULL, 0, wx, wy, ww, wh);
+       break;
+   }
+   
+   if (!e) {
+       syslog(LOG_INFO, "Critical error: No Evas engine available. Exiting.\n");
+       return (NULL);
+   }
+ 
+   ew = ecore_evas_software_x11_window_get(e);
+   if (session->testing)
+      ecore_evas_title_set(e, "Entrance - Testing Mode");
+   else
+      ecore_evas_title_set(e, "Entrance");
+   ecore_evas_callback_delete_request_set(e, window_del_cb);
+   ecore_evas_callback_resize_set(e, window_resize_cb);
+   ecore_x_window_cursor_set(ew, ECORE_X_CURSOR_WATCH);
+   ecore_evas_move(e, wx, wy);
+ 
+   /* Evas specific callbacks */
+   evas = ecore_evas_get(e);
+   evas_image_cache_set(evas, 8 * 1024 * 1024);
+   evas_font_cache_set(evas, 1 * 1024 * 1024);
+   evas_font_path_append(evas, PACKAGE_DATA_DIR "/fonts");
+   evas_font_path_append(evas, PACKAGE_DATA_DIR "/data/fonts");
+   evas_key_modifier_add(evas, "Control_L");
+   evas_key_modifier_add(evas, "Control_R");
+   evas_key_modifier_add(evas, "Shift_L");
+   evas_key_modifier_add(evas, "Shift_R");
+   evas_key_modifier_add(evas, "Alt_L");
+   evas_key_modifier_add(evas, "Alt_R");
+ 
+   /* Load background first, from theme file */
+   background = edje_object_add(evas);
+   if (!strlen(session->config->background))
+      bg_file = session->config->theme;
+   else
+      bg_file = session->config->background;
+
+
+   if (!edje_object_file_set(background, bg_file, "Background"))
+      if (!edje_object_file_set(background, bg_file, "desktop/background"))
+         syslog(LOG_INFO, "Failed to load background from %s", buf);
+   evas_object_move(background, 0, 0);
+   evas_object_resize(background, ww, wh);
+   evas_object_name_set(background, "background");
+   evas_object_layer_set(background, 0);
+   evas_object_show(background);
+
+   /* Only show the interface on the primary head */
+   if (primary) {
+      /* Load theme */
       edje = edje_object_add(evas);
-      if (!edje_object_file_set(edje, buf, "Main"))
+      if (!edje_object_file_set(edje, session->config->theme, "Main"))
       {
          syslog(LOG_CRIT, "Failed to load theme %s\n", buf);
          entrance_session_free(session);
-         exit(EXITCODE);
+         return NULL;
       }
       evas_object_move(edje, 0, 0);
-      evas_object_resize(edje, g_x, g_y);
+      evas_object_resize(edje, ww, wh);
       evas_object_name_set(edje, "ui");
       evas_object_layer_set(edje, 1);
       entrance_session_edje_object_set(session, edje);
-
+    
       /* Setup the entries */
       for (i = 0; i < entries_count; i++)
       {
@@ -917,12 +1021,12 @@ main(int argc, char *argv[])
             esmart_text_entry_is_password_set(o, i);
             evas_object_name_set(o, entries[i]);
             esmart_text_entry_edje_part_set(o, edje, entries[i]);
-
+    
             esmart_text_entry_return_key_callback_set(o, interp_return_key,
                                                       o);
-
+    
             edje_object_signal_callback_add(edje, "In", entries[i], focus, o);
-
+    
             edje_object_signal_callback_add(edje, "Out", entries[i], focus,
                                             o);
             edje_object_part_swallow(edje, entries[i], o);
@@ -930,7 +1034,7 @@ main(int argc, char *argv[])
          }
          o = NULL;
       }
-
+    
       /* See if we have a EntranceHostname part, set it */
       if (edje_object_part_exists(edje, "entrance.hostname"))
       {
@@ -1002,7 +1106,7 @@ main(int argc, char *argv[])
                                          _container_scroll,
                                          session->user_container);
       }
-
+    
       /**
        * Setup Edje callbacks for signal emissions from our main edje
        * It's useful to delay showing of your edje till all your
@@ -1020,56 +1124,14 @@ main(int argc, char *argv[])
       evas_object_show(edje);
       /* set focus to user input by default */
       edje_object_signal_emit(edje, "In", "entrance.entry.user");
-
-      if (fullscreen)
-         ecore_evas_fullscreen_set(e, 1);
-      else
-         ecore_evas_resize(e, g_x, g_y);
-      ecore_idle_enterer_add(idler_after_cb, NULL);
-
-      entrance_session_ecore_evas_set(session, e);
-      entrance_ipc_session_set(session);
-      ecore_x_window_cursor_set(ew, ECORE_X_CURSOR_ARROW);
-      ecore_evas_cursor_set(e, session->config->pointer, 12, 0, 0);
-      entrance_session_run(session);
-
-      if (!testing)
-      {
-         Ecore_X_Window *roots;
-         int num, i;
-
-         num = 0;
-         roots = ecore_x_window_root_list(&num);
-         if (roots)
-         {
-            for (i = 0; i < num; i++)
-            {
-               ecore_x_window_cursor_show(roots[i], 1);
-            }
-            free(roots);
-            ecore_x_sync();
-         }
-      }
-      if (session->authed)
-      {
-         entrance_session_start_user_session(session);
-      }
-      else
-      {
-         entrance_session_free(session);
-      }
-      if (!testing)
-         entrance_ipc_shutdown();
-      edje_shutdown();
-      ecore_evas_shutdown();
-      ecore_x_shutdown();
-      ecore_config_shutdown();
-      ecore_shutdown();
+      ecore_event_handler_add(ECORE_X_EVENT_SCREENSAVER_NOTIFY, screensaver_notify_cb, edje);
    }
-   else
-   {
-      fprintf(stderr, "Fatal error: Could not initialize ecore_evas!\n");
-      exit(EXITCODE);
-   }
-   return (0);
+      
+   ecore_x_window_cursor_set(ew, ECORE_X_CURSOR_ARROW);
+   ecore_evas_cursor_set(e, session->config->pointer, 12, 0, 0);
+
+   syslog(LOG_INFO, "show ecore evas");
+   ecore_evas_show(e);
+
+   return e;
 }
