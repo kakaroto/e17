@@ -238,9 +238,9 @@ composite_fade_set(Win *w, double start, double finish, double step,
    f->step = (f->cur < finish) ? step : -step;
    f->start_time = ecore_time_get();
    if (f->cur < finish)
-      f->interval = (1/config->fx_fade_in_speed * ecore_animator_frametime_get());
+      f->interval = (1/config->fx_fade_in_step * ecore_animator_frametime_get());
    else
-      f->interval = (1/config->fx_fade_out_speed * ecore_animator_frametime_get());
+      f->interval = (1/config->fx_fade_out_step * ecore_animator_frametime_get());
    f->callback = callback;
    f->gone = gone;
    w->opacity = f->cur * OPAQUE;
@@ -1122,7 +1122,7 @@ composite_win_map(Ecore_X_Window id, Bool fade)
 
    if (fade && config->fx_fade_enable)
       composite_fade_set(w, 0, get_opacity_percent(w, 1.0),
-               config->fx_fade_in_speed, 0, False, True, True);
+               config->fx_fade_in_step, 0, False, True, True);
 }
 
 static void
@@ -1191,7 +1191,7 @@ composite_win_unmap(Ecore_X_Window id, Bool fade)
 #if HAS_NAME_WINDOW_PIXMAP
    if (w->pixmap && fade && config->fx_fade_enable)
       composite_fade_set(w, w->opacity * 1.0 / OPAQUE, 0.0,
-               config->fx_fade_out_speed, unmap_callback, False, False, True);
+               config->fx_fade_out_step, unmap_callback, False, False, True);
    else
 #endif
       composite_win_finish_unmap(w);
@@ -1496,7 +1496,7 @@ composite_win_destroy(Ecore_X_Window id, Bool gone, Bool fade)
 #if HAS_NAME_WINDOW_PIXMAP
    if (w && w->pixmap && fade && config->fx_fade_enable)
       composite_fade_set(w, w->opacity * 1.0 / OPAQUE, 0.0,
-               config->fx_fade_out_speed, _composite_destroy_cb, gone, False,
+               config->fx_fade_out_step, _composite_destroy_cb, gone, False,
                True);
    else
 #endif
@@ -1838,6 +1838,7 @@ _composite_event_window_property_cb(void *data, int type, void *ev)
    if (e->atom == ECORE_X_ATOM_NET_WM_WINDOW_SHADE)
    {
       Win *w = composite_win_find(e->win);
+      if (!w) return 1;
       unsigned int tmp = composite_shade_prop_get(w);
 
       if (tmp)
@@ -1860,6 +1861,7 @@ _composite_event_window_property_cb(void *data, int type, void *ev)
             || e->atom == ECORE_X_ATOM_NET_WM_WINDOW_SHADOW)
    {
       Win *w = composite_win_find(e->win);
+      if (!w) return 1;
       unsigned int oldShadowSize = w->shadowSize;
       unsigned int tmp;
 
@@ -1873,7 +1875,7 @@ _composite_event_window_property_cb(void *data, int type, void *ev)
             if (b->config->fx_fade_opacity_enable)
             {
                composite_fade_set(w, w->opacity * 1.0 / OPAQUE, (tmp * 1.0) / OPAQUE,
-                        b->config->fx_fade_out_speed, 0, False, True, False);
+                        b->config->fx_fade_out_step, 0, False, True, False);
                return 1;
             }
             else
@@ -1962,7 +1964,7 @@ _composite_event_damage_cb(void *data, int type, void *ev)
          clipChanged = True;
          if (b->config->fx_fade_in_enable)
             composite_fade_set(w, 0, get_opacity_percent(w, 1.0),
-                     b->config->fx_fade_in_speed, 0, False, True, True);
+                     b->config->fx_fade_in_step, 0, False, True, True);
          w->usable = True;
       }
    }

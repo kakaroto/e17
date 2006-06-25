@@ -13,9 +13,8 @@ struct _E_Config_Dialog_Data
 
    int fade_enable;
    int fade_opacity;
-   double fade_frame_rate;
-   double fade_in_speed;
-   double fade_out_speed;
+   double fade_in_step;
+   double fade_out_step;
 };
 
 /* Protos */
@@ -43,7 +42,7 @@ _config_bling_module(E_Container *con, Bling *b)
    v->advanced.apply_cfdata = _advanced_apply_data;
    v->advanced.create_widgets = _advanced_create_widgets;
 
-   cfd = e_config_dialog_new(con, D_("Bling Configuration"), NULL, 0, v, b);
+   cfd = e_config_dialog_new(con, _("Bling Configuration"), NULL, 0, v, b);
    b->config_dialog = cfd;
 }
 
@@ -71,9 +70,8 @@ _fill_data(Bling *b, E_Config_Dialog_Data *cfdata)
 
    cfdata->fade_enable = b->config->fx_fade_enable;
    cfdata->fade_opacity = b->config->fx_fade_opacity_enable;
-   cfdata->fade_frame_rate = 1.0/b->config->fx_fade_delta;
-   cfdata->fade_in_speed = b->config->fx_fade_in_speed * 100.0;
-   cfdata->fade_out_speed = b->config->fx_fade_out_speed * 100.0;
+   cfdata->fade_in_step = b->config->fx_fade_in_step * 100.0;
+   cfdata->fade_out_step = b->config->fx_fade_out_step * 100.0;
 }
 
 static void
@@ -92,13 +90,14 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    Evas_Object *o, *of, *ob;
 
    o = e_widget_list_add(evas, 0, 0);
-   of = e_widget_framelist_add(evas, D_("Composite Settings"), 0);
-   ob = e_widget_check_add(evas, D_("Enable Drop Shadows"), (&(cfdata->shadow_enable)));
+   of = e_widget_framelist_add(evas, _("Composite Settings"), 0);
+   ob = e_widget_check_add(evas, _("Enable Drop Shadows"), (&(cfdata->shadow_enable)));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_check_add(evas, D_("Enable Windows In/Out"), (&(cfdata->fade_enable)));
+   ob = e_widget_check_add(evas, _("Enable Windows In/Out"), (&(cfdata->fade_enable)));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_check_add(evas, D_("Fade On Opacity Changes"), (&(cfdata->fade_opacity)));
+   ob = e_widget_check_add(evas, _("Fade On Opacity Changes"), (&(cfdata->fade_opacity)));
    e_widget_framelist_object_append(of, ob);
+   e_widget_list_object_append(o, of, 1, 1, 0.5);
 
    return o;
 }
@@ -125,69 +124,56 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    int i = 0;
    
    o = e_widget_list_add(evas, 0, 0);
-   of = e_widget_framelist_add(evas, D_("Drop Shadow Settings"), 0);
-   ob = e_widget_check_add(evas, D_("Enable Drop Shadows"), (&(cfdata->shadow_enable)));
+   of = e_widget_framelist_add(evas, _("Drop Shadow Settings"), 0);
+   ob = e_widget_check_add(evas, _("Enable Drop Shadows"), (&(cfdata->shadow_enable)));
    e_widget_framelist_object_append(of, ob);
    
    ot = e_widget_table_add(evas, 0);
    
-   ob = e_widget_label_add(evas, D_("Shadow Size"));
-   e_widget_table_object_append(ot, ob, 0, i, 1, 1, 0, 0, 1, 0);
-   i++;
+   ob = e_widget_label_add(evas, _("Shadow Size"));
+   e_widget_table_object_append(ot, ob, 0, i, 1, 1, 0, 0, 0, 0);
    ob = e_widget_slider_add(evas, 1, 0, _("%d pixels"), 1, 40, 1, 0, NULL, &(cfdata->shadow_size), 150);
-   e_widget_table_object_append(ot, ob, 0, i, 1, 1, 1, 0, 1, 0);
+   e_widget_slider_value_double_set(ob, cfdata->shadow_size);
+   e_widget_table_object_append(ot, ob, 1, i, 1, 1, 0, 0, 1, 0);
    i++;
 
-   ob = e_widget_label_add(evas, D_("Shadow Opacity"));
-   e_widget_table_object_append(ot, ob, 0, i, 1, 1, 0, 0, 1, 0);
-   i++;
+   ob = e_widget_label_add(evas, _("Shadow Opacity"));
+   e_widget_table_object_append(ot, ob, 0, i, 1, 1, 0, 0, 0, 0);
    ob = e_widget_slider_add(evas, 1, 0, _("%1.00f\%"), 0, 1, 0.05, 0, &(cfdata->shadow_opacity), NULL, 150);
-   e_widget_table_object_append(ot, ob, 0, i, 1, 1, 1, 0, 1, 0);
+   e_widget_table_object_append(ot, ob, 1, i, 1, 1, 0, 0, 1, 0);
    i++;
 
-   ob = e_widget_label_add(evas, D_("Horizontal Offset"));
-   e_widget_table_object_append(ot, ob, 0, i, 1, 1, 0, 0, 1, 0);
-   i++;
+   ob = e_widget_label_add(evas, _("Horizontal Offset"));
+   e_widget_table_object_append(ot, ob, 0, i, 1, 1, 0, 0, 0, 0);
    ob = e_widget_slider_add(evas, 1, 0, _("%d pixels"), 1, 40, 1, 0, NULL, &(cfdata->shadow_horz_offset), 150);
-   e_widget_table_object_append(ot, ob, 0, i, 1, 1, 1, 0, 1, 0);
+   e_widget_table_object_append(ot, ob, 1, i, 1, 1, 0, 0, 1, 0);
    i++;
 
-   ob = e_widget_label_add(evas, D_("Vertical Offset"));
-   e_widget_table_object_append(ot, ob, 0, i, 1, 1, 0, 0, 1, 0);
-   i++;
+   ob = e_widget_label_add(evas, _("Vertical Offset"));
+   e_widget_table_object_append(ot, ob, 0, i, 1, 1, 0, 0, 0, 0);
    ob = e_widget_slider_add(evas, 1, 0, _("%d pixels"), 1, 40, 1, 0, NULL, &(cfdata->shadow_vert_offset), 150);
-   e_widget_table_object_append(ot, ob, 0, i, 1, 1, 1, 0, 1, 0);
+   e_widget_table_object_append(ot, ob, 1, i, 1, 1, 0, 0, 1, 0);
 
    e_widget_framelist_object_append(of, ot);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-   of = e_widget_framelist_add(evas, D_("Fade Settings"), 0);
-   ob = e_widget_check_add(evas, D_("Fade Windows In/Out"), (&(cfdata->fade_enable)));
+   of = e_widget_framelist_add(evas, _("Fade Settings"), 0);
+   ob = e_widget_check_add(evas, _("Fade Windows In/Out"), (&(cfdata->fade_enable)));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_check_add(evas, D_("Fade On Opacity Changes"), (&(cfdata->fade_opacity)));
+   ob = e_widget_check_add(evas, _("Fade On Opacity Changes"), (&(cfdata->fade_opacity)));
    e_widget_framelist_object_append(of, ob);
    
    ot = e_widget_table_add(evas, 0);
-   i = 0;
-   ob = e_widget_label_add(evas, D_("Fader Frame Rate"));
-   e_widget_table_object_append(ot, ob, 0, i, 1, 1, 0, 0, 1, 0);
-   i++;
-   ob = e_widget_slider_add(evas, 1, 0, _("%1.00f\% fps"), 1.0, 60.0, 5.0, 0, &(cfdata->fade_frame_rate), NULL, 150);
-   e_widget_table_object_append(ot, ob, 0, i, 1, 1, 1, 0, 1, 0);
+   ob = e_widget_label_add(evas, _("Fade In Speed"));
+   e_widget_table_object_append(ot, ob, 0, i, 1, 1, 0, 0, 0, 0);
+   ob = e_widget_slider_add(evas, 1, 0, _("%d"), 1.0, 100.0, 1, 0, &(cfdata->fade_in_step), NULL, 150);
+   e_widget_table_object_append(ot, ob, 1, i, 1, 1, 0, 0, 1, 0);
    i++;
 
-   ob = e_widget_label_add(evas, D_("Fade In Speed"));
-   e_widget_table_object_append(ot, ob, 0, i, 1, 1, 0, 0, 1, 0);
-   i++;
-   ob = e_widget_slider_add(evas, 1, 0, _("%d"), 1.0, 100.0, 1, 0, &(cfdata->fade_in_speed), NULL, 150);
-   e_widget_table_object_append(ot, ob, 0, i, 1, 1, 1, 0, 1, 0);
-   i++;
-
-   ob = e_widget_label_add(evas, D_("Fade Out Speed"));
-   e_widget_table_object_append(ot, ob, 0, i, 1, 1, 0, 0, 1, 0);
-   i++;
-   ob = e_widget_slider_add(evas, 1, 0, _("%d"), 1.0, 100.0, 1, 0, &(cfdata->fade_out_speed), NULL, 150);
-   e_widget_table_object_append(ot, ob, 0, i, 1, 1, 1, 0, 1, 0);
+   ob = e_widget_label_add(evas, _("Fade Out Speed"));
+   e_widget_table_object_append(ot, ob, 0, i, 1, 1, 0, 0, 0, 0);
+   ob = e_widget_slider_add(evas, 1, 0, _("%d"), 1.0, 100.0, 1, 0, &(cfdata->fade_out_step), NULL, 150);
+   e_widget_table_object_append(ot, ob, 1, i, 1, 1, 0, 0, 1, 0);
 
    e_widget_framelist_object_append(of, ot);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
@@ -209,9 +195,8 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
    b->config->fx_fade_enable = cfdata->fade_enable;
    b->config->fx_fade_opacity_enable = cfdata->fade_opacity;
-   b->config->fx_fade_delta = 1.0/cfdata->fade_frame_rate;
-   b->config->fx_fade_in_speed = cfdata->fade_in_speed/100.0;
-   b->config->fx_fade_out_speed = cfdata->fade_out_speed/100.0;
+   b->config->fx_fade_in_step = cfdata->fade_in_step/100.0;
+   b->config->fx_fade_out_step = cfdata->fade_out_step/100.0;
 
    /* reload comp manager! */
    return 1;

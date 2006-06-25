@@ -33,8 +33,8 @@ struct _Config
    unsigned char fx_fade_enable;     /* Fade windows */
    unsigned char fx_fade_opacity_enable;/* Fade between opacity changes */
    double fx_fade_delta;
-   double fx_fade_in_speed;
-   double fx_fade_out_speed;
+   double fx_fade_in_step;
+   double fx_fade_out_step;
 };
 
 struct _Bling

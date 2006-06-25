@@ -57,7 +57,7 @@ e_modapi_save(E_Module *m)
 
    b = m->data;
    if (b)
-      e_config_domain_save("module.flame", b->conf_edd, b->config);
+      e_config_domain_save("module.bling", b->conf_edd, b->config);
    return 1;
 }
 
@@ -163,9 +163,8 @@ _bling_init(E_Module *m)
 
    E_CONFIG_VAL(D, T, fx_fade_enable, UCHAR);
    E_CONFIG_VAL(D, T, fx_fade_opacity_enable, UCHAR);
-   E_CONFIG_VAL(D, T, fx_fade_delta, DOUBLE);
-   E_CONFIG_VAL(D, T, fx_fade_in_speed, DOUBLE);
-   E_CONFIG_VAL(D, T, fx_fade_out_speed, DOUBLE);
+   E_CONFIG_VAL(D, T, fx_fade_in_step, DOUBLE);
+   E_CONFIG_VAL(D, T, fx_fade_out_step, DOUBLE);
 
    b->config = e_config_domain_load("module.bling", b->conf_edd);
    if (!b->config)
@@ -192,9 +191,8 @@ _bling_init(E_Module *m)
 
       b->config->fx_fade_enable = 1;
       b->config->fx_fade_opacity_enable = 1;
-      b->config->fx_fade_delta = 1.0/30.0;
-      b->config->fx_fade_in_speed = 0.075;
-      b->config->fx_fade_out_speed = 0.100;
+      b->config->fx_fade_in_step = 0.075;
+      b->config->fx_fade_out_step = 0.100;
    }
 
 #if 0
@@ -223,9 +221,8 @@ _bling_init(E_Module *m)
    E_CONFIG_LIMIT(b->config->fx_fade_enable, 0, 1);
    E_CONFIG_LIMIT(b->config->fx_fade_opacity_enable, 0, 1);
 #endif
-   E_CONFIG_LIMIT(b->config->fx_fade_delta, 0.0, 1.0);
-   E_CONFIG_LIMIT(b->config->fx_fade_in_speed, 0.0, 1.0);
-   E_CONFIG_LIMIT(b->config->fx_fade_out_speed, 0.0, 1.0);
+   E_CONFIG_LIMIT(b->config->fx_fade_in_step, 0.0, 1.0);
+   E_CONFIG_LIMIT(b->config->fx_fade_out_step, 0.0, 1.0);
 
 #if 0
    _bling_config_menu_new(b);
