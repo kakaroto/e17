@@ -11,5 +11,8 @@ typedef struct _evfs_metadata_object evfs_metadata_object;
 
 void evfs_metadata_initialise();
 
+void evfs_metadata_file_set_key_value_string(evfs_filereference* ref, char* key,
+				char* value);
+
 
 #endif

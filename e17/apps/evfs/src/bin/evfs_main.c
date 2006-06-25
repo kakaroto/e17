@@ -222,6 +222,8 @@ evfs_handle_command(evfs_client * client, evfs_command * command)
 
      case EVFS_CMD_METADATA_FILE_SET:
 	printf("Key/value: %s -> %s\n", command->file_command.ref, command->file_command.ref2);
+	evfs_handle_metadata_string_file_set_command(client,command, 
+			command->file_command.ref, command->file_command.ref2);
 	break;
      case EVFS_CMD_METADATA_FILE_GET:
 	break;

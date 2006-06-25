@@ -1,3 +1,6 @@
+#ifndef _EVFS_SERVER_HANDLE_H_
+#define _EVFS_SERVER_HANDLE_H_
+
 int evfs_uri_open(evfs_client * client, evfs_filereference * uri);
 int evfs_uri_read(evfs_client * client, evfs_filereference * uri, char *bytes,
                   long size);
@@ -27,3 +30,8 @@ void evfs_handle_operation_command(evfs_client * client,
 void evfs_handle_directory_create_command(evfs_client * client, evfs_command * command);
 
 void evfs_handle_metadata_command(evfs_client* client, evfs_command* command);
+
+void evfs_handle_metadata_string_file_set_command(evfs_client* client, 
+				evfs_command* command, char* key, char* value);
+
+#endif

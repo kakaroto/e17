@@ -77,9 +77,33 @@ void evfs_metadata_initialise()
 void evfs_metadata_file_set_key_value_edd(evfs_filereference* ref, char* key, 
 		void* value, Eet_Data_Descriptor* edd) 
 {
+
 }
 
 void evfs_metadata_file_set_key_value_string(evfs_filereference* ref, char* key,
 		char* value) 
 {
+	evfs_metadata_object obj;
+	char path[PATH_MAX];
+	char* data;
+	int size;
+	int ret;
+
+	snprintf(path, PATH_MAX, "/%s/%s/string/%s", ref->plugin_uri, ref->path, key);
+	ret = 0;
+
+	obj.description = "string";
+	obj.key = key;
+	obj.value = (char*)value;
+
+	data = eet_data_descriptor_encode(Evfs_Metadata_String_Edd, &obj, &size);
+	
+	_evfs_metadata_eet = eet_open(metadata_file, EET_FILE_MODE_WRITE);
+	if (data) {
+		ret = eet_write(_evfs_metadata_eet, path, data, size, 0);
+	}
+	if (ret) {
+		printf("Wrote %s for %s\n", value, path);
+	}
+	eet_close(_evfs_metadata_eet);
 }
