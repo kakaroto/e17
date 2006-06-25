@@ -117,6 +117,8 @@ static Ecore_Event_Handler * _window_hide_hnd = NULL;
 static Ecore_Event_Handler * _window_reparent_hnd = NULL;
 static Ecore_Event_Handler * _window_show_hnd = NULL;
 static Ecore_Event_Handler * _window_stack_hnd = NULL;
+static Ecore_Event_Handler * _window_focus_in_hnd = NULL;
+static Ecore_Event_Handler * _window_focus_out_hnd = NULL;
 static Ecore_Event_Handler * _window_damage_hnd = NULL;
 static Ecore_Event_Handler * _window_property_hnd = NULL;
 static Ecore_Event_Handler * _damage_notify_hnd = NULL;
@@ -174,34 +176,43 @@ composite_fade_dequeue_win(Win * w)
    if (f) composite_fade_dequeue(f);
 }
 
+static int
+composite_fade_is_valid(Ecore_X_Window id)
+{
+   E_Manager *man;
+   Evas_List *l;
+   char *name = NULL, *class = NULL;
+
+   if (!id) return 0;
+   if (!id || id == root) return 0;
+   ecore_x_icccm_name_class_get(id, &name, &class);
+   if (class && !strcmp(class, "Background_Window"))
+   {
+      E_FREE(name);
+      E_FREE(class);
+      return 0;
+   }
+   E_FREE(name);
+   E_FREE(class);
+   man = e_manager_current_get();
+   if (id == man->win) return 0;
+   for (l = man->containers; l; l = l->next)
+   {
+      E_Container *con = l->data;
+      if (id == con->win) return 0;
+   }
+   return 1;
+}
+
 static void
 composite_fade_set(Win *w, double start, double finish, double step,
                    void (*callback) (Win *w, Bool gone), Bool gone,
                    Bool exec_callback, Bool override)
 {
    Fade *f;
-   E_Manager *man;
-   Evas_List *l;
-   char *name = NULL, *class = NULL;
 
    /* Don't fade desktop/root windows */
-   if (!w->id || w->id == root) return;
-   ecore_x_icccm_name_class_get(w->id, &name, &class);
-   if (class && !strcmp(class, "Background_Window"))
-   {
-      E_FREE(name);
-      E_FREE(class);
-      return;
-   }
-   E_FREE(name);
-   E_FREE(class);
-   man = e_manager_current_get();
-   if (w->id == man->win) return;
-   for (l = man->containers; l; l = l->next)
-   {
-      E_Container *con = l->data;
-      if (w->id == con->win) return;
-   }
+   if (!composite_fade_is_valid(w->id)) return;
 
    f = composite_fade_find(w);
    if (!f)
@@ -1097,6 +1108,12 @@ composite_win_map(Ecore_X_Window id, Bool fade)
    w->a.visible = 1;
    w->a.viewable = 1;
 
+   /* Set focus transparency */
+   if (ecore_x_window_focus_get() == w->id)
+      w->opacity = (unsigned int) ((double)config->trans_active_value/100.0 * OPAQUE);
+   else
+      w->opacity = (unsigned int) ((double)config->trans_inactive_value/100.0 * OPAQUE);
+
 #if CAN_DO_USABLE
    w->damage_bounds.x = w->damage_bounds.y = 0;
    w->damage_bounds.width = w->damage_bounds.height = 0;
@@ -1713,6 +1730,46 @@ _composite_event_window_stack_cb(void *data, int type, void *ev)
 }
 
 static int
+_composite_event_window_focus_in_cb(void *data, int type, void *ev)
+{
+   Ecore_X_Event_Window_Focus_In *e;
+   Win *w;
+   unsigned int opacity;
+   double opacity_pct;
+
+   e = ev;
+   w = composite_win_find(e->win);
+   if (!w || w->isInFade) return 1;
+   if (composite_fade_is_valid(e->win))
+   {
+      opacity_pct = ((double) config->trans_active_value)/100.0;
+      opacity = (unsigned int) (OPAQUE * opacity_pct);
+      ecore_x_netwm_opacity_set(e->win, opacity);
+   }
+   return 1;
+}
+
+static int
+_composite_event_window_focus_out_cb(void *data, int type, void *ev)
+{
+   Ecore_X_Event_Window_Focus_Out *e;
+   Win *w;
+   unsigned int opacity;
+   double opacity_pct;
+
+   e = ev;
+   w = composite_win_find(e->win);
+   if (!w || w->isInFade) return 1;
+   if (composite_fade_is_valid(e->win))
+   {
+      opacity_pct = ((double) config->trans_inactive_value)/100.0;
+      opacity = (unsigned int) (OPAQUE * opacity_pct);
+      ecore_x_netwm_opacity_set(e->win, opacity);
+   }
+   return 1;
+}  
+
+static int
 _composite_event_window_expose_cb(void *data, int type, void *ev)
 {
    Ecore_X_Event_Window_Damage *e;
@@ -2016,6 +2073,8 @@ composite_init(Bling *b)
       _window_reparent_hnd = ecore_event_handler_add(ECORE_X_EVENT_WINDOW_REPARENT, _composite_event_window_reparent_cb, b);
       _window_show_hnd = ecore_event_handler_add(ECORE_X_EVENT_WINDOW_SHOW, _composite_event_window_show_cb, b);
       _window_stack_hnd = ecore_event_handler_add(ECORE_X_EVENT_WINDOW_STACK, _composite_event_window_stack_cb, b);
+      _window_focus_in_hnd = ecore_event_handler_add(ECORE_X_EVENT_WINDOW_FOCUS_IN, _composite_event_window_focus_in_cb, b);
+      _window_focus_out_hnd = ecore_event_handler_add(ECORE_X_EVENT_WINDOW_FOCUS_OUT, _composite_event_window_focus_out_cb, b);
       _window_damage_hnd = ecore_event_handler_add(ECORE_X_EVENT_WINDOW_DAMAGE, _composite_event_window_expose_cb, b);
       _window_property_hnd = ecore_event_handler_add(ECORE_X_EVENT_WINDOW_PROPERTY, _composite_event_window_property_cb, b);
       _damage_notify_hnd = ecore_event_handler_add(ECORE_X_EVENT_DAMAGE_NOTIFY, _composite_event_damage_cb, b);
@@ -2048,6 +2107,8 @@ composite_shutdown(void)
    ecore_event_handler_del(_window_reparent_hnd);
    ecore_event_handler_del(_window_show_hnd);
    ecore_event_handler_del(_window_stack_hnd);
+   ecore_event_handler_del(_window_focus_in_hnd);
+   ecore_event_handler_del(_window_focus_out_hnd);
    ecore_event_handler_del(_window_damage_hnd);
    ecore_event_handler_del(_window_property_hnd);
    ecore_event_handler_del(_damage_notify_hnd);
