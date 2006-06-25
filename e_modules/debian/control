@@ -5,6 +5,13 @@ Maintainer: E17 Debian Team <debian@edevelop.org>
 Build-Depends: debhelper (>= 4.0.0), enlightenment-dev, libesmart-dev, libembryo-dev, libexml-dev
 Standards-Version: 3.6.2.2
 
+Package: emodule0-bling
+Architecture: any
+Depends: ${shlibs:Depends}, enlightenment
+Provides: emodule-bling
+Description: An E17 module providing a Composite Manager
+ An E17 module which acts as a Composite Manager.
+
 Package: emodule0-calendar
 Architecture: any
 Depends: ${shlibs:Depends}, enlightenment
@@ -219,11 +226,12 @@ Description: An E17 WLAN monitor module
 
 Package: emodules0-all
 Architecture: any
-Depends: enlightenment, emodule0-calendar, emodule0-cpu, emodule0-deskshow, emodule0-devian, emodule0-emu, emodule0-eveil, emodule0-evolume, emodule0-flame, emodule0-language, emodule0-mail, emodule0-mbar, emodule0-mem, emodule0-moon, emodule0-net, emodule0-rain, emodule0-screenshot, emodule0-slideshow, emodule0-snow, emodule0-taskbar, emodule0-tclock, emodule0-uptime, emodule0-weather, emodule0-wlan
+Depends: enlightenment, emodule0-bling, emodule0-calendar, emodule0-cpu, emodule0-deskshow, emodule0-devian, emodule0-emu, emodule0-eveil, emodule0-evolume, emodule0-flame, emodule0-language, emodule0-mail, emodule0-mbar, emodule0-mem, emodule0-moon, emodule0-net, emodule0-rain, emodule0-screenshot, emodule0-slideshow, emodule0-snow, emodule0-taskbar, emodule0-tclock, emodule0-uptime, emodule0-weather, emodule0-wlan
 Conflicts: emodules-extra, evolume
 Provides: emodules-all
 Description: A dummy package for installing all modules for E17
  This package will install the following modules:
+ Bling       : EFLized Composite Manager for E17.
  Calendar    : Draws a nice calendar on your e17 desktop.
  Cpu         : Monitor module for the CPU load.
  Deskshow    : A module that minimizes all windows to show the desktop.
