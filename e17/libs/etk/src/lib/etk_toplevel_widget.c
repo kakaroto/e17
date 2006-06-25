@@ -235,6 +235,7 @@ static void _etk_toplevel_widget_constructor(Etk_Toplevel_Widget *toplevel_widge
    toplevel_widget->pointer_stack = NULL;
    toplevel_widget->pointer_set = NULL;
    toplevel_widget->geometry_get = NULL;
+   toplevel_widget->object_geometry_get = NULL;
    ETK_WIDGET(toplevel_widget)->toplevel_parent = toplevel_widget;
 
    etk_signal_connect("realize", ETK_OBJECT(toplevel_widget), ETK_CALLBACK(_etk_toplevel_widget_realize_cb), NULL);

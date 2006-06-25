@@ -24,6 +24,7 @@ static Evas_Object *embed_object;
 static Etk_Widget *embed;
 static int win_w = 240, win_h = 320;
 static double starting_time = 0.0;
+static Evas *_evas;
 
 /* Creates the window for the embed widget test */
 void etk_test_embed_window_create(void *data)
@@ -45,6 +46,7 @@ void etk_test_embed_window_create(void *data)
    ecore_evas_callback_resize_set(ecore_evas, _etk_test_embed_resize_cb);
    ecore_evas_callback_delete_request_set(ecore_evas, ecore_evas_hide);
    evas = ecore_evas_get(ecore_evas);
+   _evas = evas;
 
    /* Creates the evas objects */
    backdrop = evas_object_image_add(evas);
@@ -139,7 +141,7 @@ static Etk_Widget *_etk_test_embed_widget_new(Evas *evas)
    etk_table_attach_defaults(ETK_TABLE(table), buttons[2], 1, 1, 9, 9);
    
    
-   embed = etk_embed_new(evas);
+   embed = etk_embed_new(evas, NULL, NULL);
    etk_container_add(ETK_CONTAINER(embed), table);
    etk_widget_show_all(embed);
    
@@ -156,15 +158,11 @@ static void _etk_test_embed_update()
    
    t = ETK_MAX(0.0, _etk_test_embed_time_get() - starting_time);
    if (t <= 2.0)
-   {
       y = win_h - (0.75 * sin((t / 2.0) * (ETK_TEST_PI / 2)) * win_h);
-      alpha = 0;
-   }
    else
-   {
       y = 0.25 * win_h;
-      alpha = ETK_CLAMP((t - 2.0) / 2.0, 0.0, 1.0) * 255;
-   }
+   alpha = ETK_CLAMP((t - 1.0) / 2.0, 0.0, 1.0) * 255;
+   
    
    evas_object_move(backdrop, 0, 0);
    evas_object_resize(backdrop, win_w, y);

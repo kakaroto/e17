@@ -11,8 +11,10 @@
  * @addtogroup Etk_Embed
  * @{
  */
- 
+
+static void _etk_embed_constructor(Etk_Embed *embed);
 static void _etk_embed_geometry_get(Etk_Toplevel_Widget *toplevel, int *x, int *y, int *w, int *h);
+static void _etk_embed_object_geometry_get(Etk_Toplevel_Widget *toplevel, int *x, int *y, int *w, int *h);
 
 /**************************
  *
@@ -30,7 +32,8 @@ Etk_Type *etk_embed_type_get()
 
    if (!embed_type)
    {
-      embed_type = etk_type_new("Etk_Embed", ETK_TOPLEVEL_WIDGET_TYPE, sizeof(Etk_Embed), NULL, NULL);
+      embed_type = etk_type_new("Etk_Embed", ETK_TOPLEVEL_WIDGET_TYPE, sizeof(Etk_Embed),
+         ETK_CONSTRUCTOR(_etk_embed_constructor), NULL);
    }
 
    return embed_type;
@@ -39,9 +42,13 @@ Etk_Type *etk_embed_type_get()
 /**
  * @brief Creates a new embed widget
  * @param evas the evas where the embed object should belong
+ * @param window_position_get the function to call to know the top-left corner of the window containing the evas. @n
+ * It's used to place correctly the menu and the combobox windows. If the embed widget does not contains a menu bar or a
+ * combobox, you can set it to NULL.
+ * @param window_data the data to pass as the first param when @a window_position_get is called. It can be set to NULL.
  * @return Returns the new embed widget, or NULL on failure (if the evas is invalid)
  */
-Etk_Widget *etk_embed_new(Evas *evas)
+Etk_Widget *etk_embed_new(Evas *evas, void (*window_position_get)(void *window_data, int *x, int *y), void *window_data)
 {
    Etk_Widget *embed;
    
@@ -49,8 +56,11 @@ Etk_Widget *etk_embed_new(Evas *evas)
       return NULL;
    
    embed = etk_widget_new(ETK_EMBED_TYPE, NULL);
+   ETK_EMBED(embed)->window_position_get;
+   ETK_EMBED(embed)->window_data = window_data;
    ETK_TOPLEVEL_WIDGET(embed)->evas = evas;
    ETK_TOPLEVEL_WIDGET(embed)->geometry_get = _etk_embed_geometry_get;
+   ETK_TOPLEVEL_WIDGET(embed)->geometry_get = _etk_embed_object_geometry_get;
    
    /* TODO: font path */
    evas_font_path_append(evas, PACKAGE_DATA_DIR "/fonts/");
@@ -64,6 +74,8 @@ Etk_Widget *etk_embed_new(Evas *evas)
       etk_object_destroy(ETK_OBJECT(embed));
       return NULL;
    }
+   
+   etk_object_notify(ETK_OBJECT(embed), "evas");
    
    return embed;
 }
@@ -83,12 +95,46 @@ Evas_Object *etk_embed_object_get(Etk_Embed *embed)
 
 /**************************
  *
+ * Etk specific functions
+ *
+ **************************/
+
+/* Initializes the embed widget */
+static void _etk_embed_constructor(Etk_Embed *embed)
+{
+   if (!embed)
+      return;
+   
+   embed->window_position_get = NULL;
+   embed->window_data = NULL;
+}
+
+/**************************
+ *
  * Callbacks and handlers
  *
  **************************/
 
-/* Gets the geometry of the embed widget */
+/* Gets the geometry of the embed toplevel widget */
 static void _etk_embed_geometry_get(Etk_Toplevel_Widget *toplevel, int *x, int *y, int *w, int *h)
+{
+   Etk_Embed *embed;
+   int win_x, win_y;
+   
+   if (!(embed = ETK_EMBED(toplevel)))
+      return;
+   
+   etk_widget_geometry_get(ETK_WIDGET(toplevel), x, y, w, h);
+   if (embed->window_position_get)
+   {
+      embed->window_position_get(embed->window_data, &win_x, &win_y);
+      x += win_x;
+      y += win_y;
+   }
+}
+
+/* Gets the geometry of the evas object of the embed toplevel widget */
+static void _etk_embed_object_geometry_get(Etk_Toplevel_Widget *toplevel, int *x, int *y, int *w, int *h)
 {
    etk_widget_geometry_get(ETK_WIDGET(toplevel), x, y, w, h);
 }

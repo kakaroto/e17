@@ -53,6 +53,7 @@ struct _Etk_Toplevel_Widget
 
    Evas *evas;
    void (*geometry_get)(Etk_Toplevel_Widget *toplevel_widget, int *x, int *y, int *w, int *h);
+   void (*object_geometry_get)(Etk_Toplevel_Widget *toplevel_widget, int *x, int *y, int *w, int *h);
 
    Etk_Widget *focused_widget;
 

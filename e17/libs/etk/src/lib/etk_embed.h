@@ -27,10 +27,13 @@ struct Etk_Embed
    /* private: */
    /* Inherit from Etk_Toplevel_Widget */
    Etk_Toplevel_Widget toplevel_widget;
+   
+   void (*window_position_get)(void *window_data, int *x, int *y);
+   void *window_data;
 };
 
 Etk_Type *etk_embed_type_get();
-Etk_Widget *etk_embed_new(Evas *evas);
+Etk_Widget *etk_embed_new(Evas *evas, void (*window_position_get)(void *window_data, int *x, int *y), void *window_data);
 
 Evas_Object *etk_embed_object_get(Etk_Embed *embed_widget);
   

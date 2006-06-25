@@ -54,6 +54,7 @@ static void _etk_window_show_cb(Etk_Object *object, void *data);
 static void _etk_window_size_request_cb(Etk_Window *window, Etk_Size *requisition, void *data);
 static Etk_Bool _etk_window_delete_event_handler(Etk_Window *window);
 static void _etk_window_toplevel_geometry_get(Etk_Toplevel_Widget *toplevel, int *x, int *y, int *w, int *h);
+static void _etk_window_toplevel_object_geometry_get(Etk_Toplevel_Widget *toplevel, int *x, int *y, int *w, int *h);
 static void _etk_window_pointer_set(Etk_Toplevel_Widget *toplevel_widget, Etk_Pointer_Type pointer_type);
 
 static Etk_Signal *_etk_window_signals[ETK_WINDOW_NUM_SIGNALS];
@@ -700,6 +701,7 @@ static void _etk_window_constructor(Etk_Window *window)
    ETK_TOPLEVEL_WIDGET(window)->evas = ecore_evas_get(window->ecore_evas);
    ETK_TOPLEVEL_WIDGET(window)->pointer_set = _etk_window_pointer_set;
    ETK_TOPLEVEL_WIDGET(window)->geometry_get = _etk_window_toplevel_geometry_get;
+   ETK_TOPLEVEL_WIDGET(window)->object_geometry_get = _etk_window_toplevel_object_geometry_get;
 
    /* TODO: font path */
    evas_font_path_append(ETK_TOPLEVEL_WIDGET(window)->evas, PACKAGE_DATA_DIR "/fonts/");
@@ -944,10 +946,17 @@ static Etk_Bool _etk_window_delete_event_handler(Etk_Window *window)
 /* Gets the geometry of the window toplevel widget */
 static void _etk_window_toplevel_geometry_get(Etk_Toplevel_Widget *toplevel, int *x, int *y, int *w, int *h)
 {
-   if (x)
-      *x = 0;
-   if (y)
-      *y = 0;
+   etk_window_geometry_get(ETK_WINDOW(toplevel), x, y, w, h);
+}
+
+/* Gets the geometry of the evas object of the window  toplevel widget */
+static void _etk_window_toplevel_object_geometry_get(Etk_Toplevel_Widget *toplevel, int *x, int *y, int *w, int *h)
+{
+   if (!toplevel)
+      return;
+   
+   if (x)  *x = 0;
+   if (y)  *y = 0;
    etk_window_geometry_get(ETK_WINDOW(toplevel), NULL, NULL, w, h);
 }
 

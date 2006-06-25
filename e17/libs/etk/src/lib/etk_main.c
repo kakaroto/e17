@@ -226,6 +226,9 @@ static void _etk_main_size_request_recursive(Etk_Widget *widget)
    Evas_List *l;
    Etk_Size unused_size;
    
+   if (!widget)
+      return;
+   
    etk_widget_size_request(widget, &unused_size);
    for (l = widget->children; l; l = l->next)
       _etk_main_size_request_recursive(ETK_WIDGET(l->data));
@@ -237,8 +240,14 @@ static void _etk_main_size_allocate_recursive(Etk_Widget *widget, Etk_Bool is_to
    Evas_List *l;
    Etk_Geometry geometry;
    
-   if (is_top_level)
-      etk_toplevel_widget_geometry_get(ETK_TOPLEVEL_WIDGET(widget), &geometry.x, &geometry.y, &geometry.w, &geometry.h);
+   if (!widget)
+      return;
+   
+   if (is_top_level && ETK_TOPLEVEL_WIDGET(widget)->object_geometry_get)
+   {
+      ETK_TOPLEVEL_WIDGET(widget)->object_geometry_get(ETK_TOPLEVEL_WIDGET(widget),
+         &geometry.x, &geometry.y, &geometry.w, &geometry.h);
+   }
    else
       etk_widget_geometry_get(widget, &geometry.x, &geometry.y, &geometry.w, &geometry.h);
    etk_widget_size_allocate(widget, geometry);
