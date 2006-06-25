@@ -24,7 +24,7 @@
 
 static Entrance_Session *session = NULL;
 
-Ecore_Evas *setup_ecore_evas();
+Ecore_Evas *setup_ecore_evas(int wx, int wy, int ww, int wh, int fullscreen);
 
 static int
 idler_before_cb(void *data)
@@ -141,13 +141,33 @@ window_resize_cb(Ecore_Evas * ee)
 {
    Evas_Object *o = NULL;
    int w, h;
+   int screens, i;
+   char buf[50];
 
    ecore_evas_geometry_get(ee, NULL, NULL, &w, &h);
    
    if ((o = evas_object_name_find(ecore_evas_get(ee), "ui")))
       evas_object_resize(o, w, h);
-   if ((o = evas_object_name_find(ecore_evas_get(ee), "background")))
-      evas_object_resize(o, w, h);
+
+   screens = ecore_x_xinerama_screen_count_get();
+   if (!screens) screens = 1;
+   for (i = 0; i < screens; i++) {
+      snprintf(buf, sizeof(buf), "background%d", i);
+      if ((o = evas_object_name_find(ecore_evas_get(ee), buf)))
+      {
+	 if (screens > 1)
+	 {
+	    int sx, sy, sw, sh;
+	    ecore_x_xinerama_screen_geometry_get(i, &sx, &sy, &sw, &sh);
+	    evas_object_move(o, sx, sy);
+	    evas_object_resize(o, sw, sh);
+	 }
+	 else
+	 {
+	    evas_object_resize(o, w, h);
+	 }
+      }
+   }
 }
 
 /**
@@ -604,6 +624,26 @@ timer_cb(void *data)
    return (1);
 }
 
+
+/**
+ * When the pointer switches screens, this moves the widgets to the new screen
+ * @param data the integer value of the new screen
+ */
+static void 
+screen_switch_cb(void *data, Evas_Object *obj, char *signal, char *source)
+{
+   int screen;
+   Evas_Coord x, y, w, h;
+
+   screen = (int)data;
+   if (session->current_screen == screen) return;
+
+   evas_object_geometry_get(obj, &x, &y, &w, &h);
+   evas_object_move(session->edje, x, y);
+   evas_object_resize(session->edje, w, h);
+   session->current_screen = screen;
+}
+
 /**
  * main - where it all starts !
  * @param argc - the number of arguments entrance was called with
@@ -635,7 +675,6 @@ timer_cb(void *data)
 int
 main(int argc, char *argv[])
 {
-   int i = 0;
    char buf[PATH_MAX];
    char *str = NULL;
    char *display = NULL;
@@ -656,8 +695,6 @@ main(int argc, char *argv[])
    int fullscreen = 1;
    pid_t server_pid = 0;
    int testing = 0;
-
-   int screens = 0;
 
    /* Basic ecore initialization */
    if (!ecore_init())
@@ -793,9 +830,6 @@ main(int argc, char *argv[])
          free(roots);
          ecore_x_sync();
       }
-
-      screens = ecore_x_xinerama_screen_count_get();
-      syslog(LOG_INFO, "Xinerama screens: %d\n", screens);
    }
    ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, exit_cb, NULL);
    ecore_idle_enterer_add(idler_before_cb, NULL);
@@ -822,39 +856,13 @@ main(int argc, char *argv[])
       edje_freeze();
       edje_frametime_set(1.0 / 30.0);
 
-      if (screens > 1)
-      {
-	 for (i = 0; i < screens; i++)
-	 {
-	    int sx, sy, sw, sh;
-
-	    ecore_x_xinerama_screen_geometry_get(i, &sx, &sy, &sw, &sh);
-	    syslog(LOG_INFO, "Xinerama screen %d geometry: %d, %d %dx%d\n", i, sx, sy, sw, sh);
-
-	    /* only first screen gets set up as primary */
-	    if (i == 0)
-	    {
-	       e = setup_ecore_evas(1, sx, sy, sw, sh);
-	    }
-	    else
-	    {
-	       setup_ecore_evas(0, sx, sy, sw, sh);
-	    }
-	 }
-      }
-      else
-      {
-	 e = setup_ecore_evas(1, 0, 0, g_x, g_y);
-	 if (fullscreen)
-	    ecore_evas_fullscreen_set(e, 1);
-      }
-
+      e = setup_ecore_evas(0, 0, g_x, g_y, fullscreen);
       if (!e)
       {
 	 /* Note: The actual error will be logged in setup_ecore_evas() */
 	 exit(EXITCODE);
       }
-   
+
       ecore_idle_enterer_add(idler_after_cb, NULL);
 
       entrance_session_ecore_evas_set(session, e);
@@ -904,7 +912,7 @@ main(int argc, char *argv[])
 
 
 Ecore_Evas *
-setup_ecore_evas(int primary, int wx, int wy, int ww, int wh)
+setup_ecore_evas(int wx, int wy, int ww, int wh, int fullscreen)
 {
    Ecore_Evas *e;
    Ecore_X_Window ew;
@@ -920,10 +928,8 @@ setup_ecore_evas(int primary, int wx, int wy, int ww, int wh)
    const char *container_orientation = NULL;
    int i;
    char *str = NULL;
+   int screens;
 
-   char buf[PATH_MAX];
-
-   syslog(LOG_INFO, "setup ee, %d, %d, %d, %d, %d\n", primary, wx, wy, ww, wh);
    /* setup our ecore_evas */
    /* testing mode decides entrance window size * * Use rendering engine
       specified in config. On systems with * hardware acceleration, GL
@@ -960,6 +966,9 @@ setup_ecore_evas(int primary, int wx, int wy, int ww, int wh)
    ecore_evas_callback_resize_set(e, window_resize_cb);
    ecore_x_window_cursor_set(ew, ECORE_X_CURSOR_WATCH);
    ecore_evas_move(e, wx, wy);
+
+   if (fullscreen)
+      ecore_evas_fullscreen_set(e, 1);
  
    /* Evas specific callbacks */
    evas = ecore_evas_get(e);
@@ -974,163 +983,187 @@ setup_ecore_evas(int primary, int wx, int wy, int ww, int wh)
    evas_key_modifier_add(evas, "Alt_L");
    evas_key_modifier_add(evas, "Alt_R");
  
-   /* Load background first, from theme file */
-   background = edje_object_add(evas);
    if (!strlen(session->config->background))
       bg_file = session->config->theme;
    else
       bg_file = session->config->background;
 
+   screens = ecore_x_xinerama_screen_count_get();
+   if (!screens) screens = 1;
+   for (i = 0; i < screens; i++) 
+   {
+      int sx, sy, sw, sh;
+      char buf[50];
 
-   if (!edje_object_file_set(background, bg_file, "Background"))
-      if (!edje_object_file_set(background, bg_file, "desktop/background"))
-         syslog(LOG_INFO, "Failed to load background from %s", buf);
-   evas_object_move(background, 0, 0);
-   evas_object_resize(background, ww, wh);
-   evas_object_name_set(background, "background");
-   evas_object_layer_set(background, 0);
-   evas_object_show(background);
+      if (screens > 1)
+      {
+	 ecore_x_xinerama_screen_geometry_get(i, &sx, &sy, &sw, &sh);
+      }
+      else
+      {
+	 ecore_evas_geometry_get(e, &sx, &sy, &sw, &sh);
+      }
+      /* Load background first, from theme file */
+      background = edje_object_add(evas);
 
-   /* Only show the interface on the primary head */
-   if (primary) {
-      /* Load theme */
-      edje = edje_object_add(evas);
-      if (!edje_object_file_set(edje, session->config->theme, "Main"))
+      if (!edje_object_file_set(background, bg_file, "Background"))
+	 if (!edje_object_file_set(background, bg_file, "desktop/background"))
+	    syslog(LOG_INFO, "Failed to load background from %s", bg_file);
+
+      evas_object_move(background, sx, sy);
+      evas_object_resize(background, sw, sh);
+      snprintf(buf, sizeof(buf), "background%d", i);
+      evas_object_name_set(background, buf);
+      evas_object_layer_set(background, 0);
+      evas_object_show(background);
+      if (screens > 1)
       {
-         syslog(LOG_CRIT, "Failed to load theme %s\n", buf);
-         entrance_session_free(session);
-         return NULL;
+	 edje_object_signal_callback_add(background, "mouse,in", "*", screen_switch_cb, (void *)i); 
       }
-      evas_object_move(edje, 0, 0);
-      evas_object_resize(edje, ww, wh);
-      evas_object_name_set(edje, "ui");
-      evas_object_layer_set(edje, 1);
-      entrance_session_edje_object_set(session, edje);
-    
-      /* Setup the entries */
-      for (i = 0; i < entries_count; i++)
-      {
-         if (edje_object_part_exists(edje, entries[i]))
-         {
-            edje_object_part_geometry_get(edje, entries[i], &x, &y, &w, &h);
-            o = esmart_text_entry_new(evas);
-            evas_object_move(o, x, y);
-            evas_object_resize(o, w, h);
-            evas_object_layer_set(o, 2);
-            esmart_text_entry_max_chars_set(o, 32);
-            esmart_text_entry_is_password_set(o, i);
-            evas_object_name_set(o, entries[i]);
-            esmart_text_entry_edje_part_set(o, edje, entries[i]);
-    
-            esmart_text_entry_return_key_callback_set(o, interp_return_key,
-                                                      o);
-    
-            edje_object_signal_callback_add(edje, "In", entries[i], focus, o);
-    
-            edje_object_signal_callback_add(edje, "Out", entries[i], focus,
-                                            o);
-            edje_object_part_swallow(edje, entries[i], o);
-            evas_object_show(o);
-         }
-         o = NULL;
+
+      /* show the widgets on the first screen */
+      if (i == 0) {
+	 int j;
+	 /* Load theme */
+	 edje = edje_object_add(evas);
+	 if (!edje_object_file_set(edje, session->config->theme, "Main"))
+	 {
+	    syslog(LOG_CRIT, "Failed to load theme %s\n", buf);
+	    entrance_session_free(session);
+	    return NULL;
+	 }
+	 evas_object_move(edje, 0, 0);
+	 evas_object_resize(edje, sw, sh);
+	 evas_object_name_set(edje, "ui");
+	 evas_object_layer_set(edje, 1);
+	 entrance_session_edje_object_set(session, edje);
+       
+	 /* Setup the entries */
+	 for (j = 0; j < entries_count; j++)
+	 {
+	    if (edje_object_part_exists(edje, entries[j]))
+	    {
+	       edje_object_part_geometry_get(edje, entries[j], &x, &y, &w, &h);
+	       o = esmart_text_entry_new(evas);
+	       evas_object_move(o, x, y);
+	       evas_object_resize(o, w, h);
+	       evas_object_layer_set(o, 2);
+	       esmart_text_entry_max_chars_set(o, 32);
+	       esmart_text_entry_is_password_set(o, j);
+	       evas_object_name_set(o, entries[j]);
+	       esmart_text_entry_edje_part_set(o, edje, entries[j]);
+       
+	       esmart_text_entry_return_key_callback_set(o, interp_return_key,
+							 o);
+       
+	       edje_object_signal_callback_add(edje, "In", entries[j], focus, o);
+       
+	       edje_object_signal_callback_add(edje, "Out", entries[j], focus,
+					       o);
+	       edje_object_part_swallow(edje, entries[j], o);
+	       evas_object_show(o);
+	    }
+	    o = NULL;
+	 }
+       
+	 /* See if we have a EntranceHostname part, set it */
+	 if (edje_object_part_exists(edje, "entrance.hostname"))
+	 {
+	    if ((str = get_my_hostname()))
+	    {
+	       edje_object_part_text_set(edje, "entrance.hostname", str);
+	       free(str);
+	    }
+	 }
+	 /* See if we have an EntranceTime part, setup a timer to automatically
+	    update the Time */
+	 if (edje_object_part_exists(edje, "entrance.time"))
+	 {
+	    edje_object_signal_callback_add(edje, "Go", "entrance.time",
+					    set_time, o);
+	    edje_object_signal_emit(edje, "Go", "entrance.time");
+	    timer = ecore_timer_add(0.5, timer_cb, edje);
+	 }
+	 /* See if we have an EntranceDate part, setup a timer if one isn't
+	    already running to automatically update the Date */
+	 if (edje_object_part_exists(edje, "entrance.date"))
+	 {
+	    edje_object_signal_callback_add(edje, "Go", "entrance.date",
+					    set_date, o);
+	    edje_object_signal_emit(edje, "Go", "entrance.date");
+	    if (!timer)
+	       timer = ecore_timer_add(0.5, timer_cb, edje);
+	 }
+	 /* See if we have an EntranceSession part, set it to the first element
+	    in the config's session list */
+	 if (edje_object_part_exists(edje, "entrance.xsessions.selected"))
+	 {
+	    entrance_session_x_session_set(session,
+					   entrance_session_x_session_default_get
+					   (session));
+	 }
+	 /* See if we have an EntranceSessionList part, tell the session to load 
+	    the session list if it exists. */
+	 if (edje_object_part_exists(edje, "entrance.xsessions.list"))
+	 {
+	    entrance_session_xsession_list_add(session);
+	    if ((container_orientation =
+		 edje_object_data_get(edje,
+				      "entrance.xsessions.list.orientation")))
+	    {
+	       entrance_session_list_direction_set(session,
+						   session->session_container,
+						   container_orientation);
+	    }
+	    edje_object_signal_callback_add(edje, "drag",
+					    "entrance.xsessions.list.scroller",
+					    _container_scroll,
+					    session->session_container);
+	 }
+	 /* See if we have an EntranceUserList part, tell the session to load
+	    the user list if it exists. */
+	 if (edje_object_part_exists(edje, "entrance.users.list"))
+	 {
+	    entrance_session_user_list_add(session);
+	    if ((container_orientation =
+		 edje_object_data_get(edje, "entrance.users.list.orientation")))
+	    {
+	       entrance_session_list_direction_set(session,
+						   session->user_container,
+						   container_orientation);
+	    }
+	    edje_object_signal_callback_add(edje, "drag",
+					    "entrance.users.list.scroller",
+					    _container_scroll,
+					    session->user_container);
+	 }
+       
+	 /**
+	  * Setup Edje callbacks for signal emissions from our main edje
+	  * It's useful to delay showing of your edje till all your
+	  * callbacks have been added, otherwise show might not trigger all
+	  * the desired events 
+	  */
+	 edje_object_signal_callback_add(edje, "entrance,user,auth,success,done",
+					 "", done_cb, e);
+	 edje_object_signal_callback_add(edje, "entrance,system,reboot", "",
+					 reboot_cb, e);
+	 edje_object_signal_callback_add(edje, "entrance,system,halt", "",
+					 shutdown_cb, e);
+	 edje_object_signal_callback_add(edje, "entrance,user,xsession,set", "",
+					 _user_session_set, session);
+	 evas_object_show(edje);
+	 /* set focus to user input by default */
+	 edje_object_signal_emit(edje, "In", "entrance.entry.user");
+	 ecore_event_handler_add(ECORE_X_EVENT_SCREENSAVER_NOTIFY, screensaver_notify_cb, edje);
+
+	 session->current_screen = 0;
       }
-    
-      /* See if we have a EntranceHostname part, set it */
-      if (edje_object_part_exists(edje, "entrance.hostname"))
-      {
-         if ((str = get_my_hostname()))
-         {
-            edje_object_part_text_set(edje, "entrance.hostname", str);
-            free(str);
-         }
-      }
-      /* See if we have an EntranceTime part, setup a timer to automatically
-         update the Time */
-      if (edje_object_part_exists(edje, "entrance.time"))
-      {
-         edje_object_signal_callback_add(edje, "Go", "entrance.time",
-                                         set_time, o);
-         edje_object_signal_emit(edje, "Go", "entrance.time");
-         timer = ecore_timer_add(0.5, timer_cb, edje);
-      }
-      /* See if we have an EntranceDate part, setup a timer if one isn't
-         already running to automatically update the Date */
-      if (edje_object_part_exists(edje, "entrance.date"))
-      {
-         edje_object_signal_callback_add(edje, "Go", "entrance.date",
-                                         set_date, o);
-         edje_object_signal_emit(edje, "Go", "entrance.date");
-         if (!timer)
-            timer = ecore_timer_add(0.5, timer_cb, edje);
-      }
-      /* See if we have an EntranceSession part, set it to the first element
-         in the config's session list */
-      if (edje_object_part_exists(edje, "entrance.xsessions.selected"))
-      {
-         entrance_session_x_session_set(session,
-                                        entrance_session_x_session_default_get
-                                        (session));
-      }
-      /* See if we have an EntranceSessionList part, tell the session to load 
-         the session list if it exists. */
-      if (edje_object_part_exists(edje, "entrance.xsessions.list"))
-      {
-         entrance_session_xsession_list_add(session);
-         if ((container_orientation =
-              edje_object_data_get(edje,
-                                   "entrance.xsessions.list.orientation")))
-         {
-            entrance_session_list_direction_set(session,
-                                                session->session_container,
-                                                container_orientation);
-         }
-         edje_object_signal_callback_add(edje, "drag",
-                                         "entrance.xsessions.list.scroller",
-                                         _container_scroll,
-                                         session->session_container);
-      }
-      /* See if we have an EntranceUserList part, tell the session to load
-         the user list if it exists. */
-      if (edje_object_part_exists(edje, "entrance.users.list"))
-      {
-         entrance_session_user_list_add(session);
-         if ((container_orientation =
-              edje_object_data_get(edje, "entrance.users.list.orientation")))
-         {
-            entrance_session_list_direction_set(session,
-                                                session->user_container,
-                                                container_orientation);
-         }
-         edje_object_signal_callback_add(edje, "drag",
-                                         "entrance.users.list.scroller",
-                                         _container_scroll,
-                                         session->user_container);
-      }
-    
-      /**
-       * Setup Edje callbacks for signal emissions from our main edje
-       * It's useful to delay showing of your edje till all your
-       * callbacks have been added, otherwise show might not trigger all
-       * the desired events 
-       */
-      edje_object_signal_callback_add(edje, "entrance,user,auth,success,done",
-                                      "", done_cb, e);
-      edje_object_signal_callback_add(edje, "entrance,system,reboot", "",
-                                      reboot_cb, e);
-      edje_object_signal_callback_add(edje, "entrance,system,halt", "",
-                                      shutdown_cb, e);
-      edje_object_signal_callback_add(edje, "entrance,user,xsession,set", "",
-                                      _user_session_set, session);
-      evas_object_show(edje);
-      /* set focus to user input by default */
-      edje_object_signal_emit(edje, "In", "entrance.entry.user");
-      ecore_event_handler_add(ECORE_X_EVENT_SCREENSAVER_NOTIFY, screensaver_notify_cb, edje);
    }
       
    ecore_x_window_cursor_set(ew, ECORE_X_CURSOR_ARROW);
    ecore_evas_cursor_set(e, session->config->pointer, 12, 0, 0);
 
-   syslog(LOG_INFO, "show ecore evas");
    ecore_evas_show(e);
 
    return e;

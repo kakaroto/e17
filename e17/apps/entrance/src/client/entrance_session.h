@@ -40,6 +40,8 @@ struct _Entrance_Session
    int authed;                  /* whether or not the user has authenticated
                                    * or not */
    int testing;                 /* whether we're in X testing or not */
+
+   int current_screen;	        /* which xinerama screen the widgets are currently on */
 };
 
 typedef struct _Entrance_Session Entrance_Session;
