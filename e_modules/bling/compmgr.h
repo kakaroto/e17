@@ -16,6 +16,7 @@ typedef struct _Win {
     Ecore_X_Pixmap		pixmap;
 #endif
     Ecore_X_Window_Attributes	a;
+    Bool       focused;
 #if CAN_DO_USABLE
     Bool		usable;		    /* mapped and all damaged at one point */
     Ecore_X_Rectangle	damage_bounds;	    /* bounds of damage */

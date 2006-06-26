@@ -1118,9 +1118,15 @@ composite_win_map(Ecore_X_Window id, Bool fade)
 
    /* Set focus transparency */
    if (ecore_x_window_focus_get() == w->id)
+   {
+      w->focused = True;
       w->opacity = (unsigned int) ((double)config->trans_active_value/100.0 * OPAQUE);
+   }
    else
+   {
+      w->focused = False;
       w->opacity = (unsigned int) ((double)config->trans_inactive_value/100.0 * OPAQUE);
+   }
 
 #if CAN_DO_USABLE
    w->damage_bounds.x = w->damage_bounds.y = 0;
@@ -1196,6 +1202,27 @@ composite_win_unmap(Ecore_X_Window id, Bool fade)
       return;
    w->a.visible = 0;
    w->a.viewable = 0;
+   if (w->focused)
+   {
+      Ecore_X_Window nf = ecore_x_window_focus_get();
+      Win *nf_win;
+
+      w->focused = False;
+      nf_win = composite_win_find(nf);
+      if (nf_win)
+      {
+         nf_win->focused = True;
+         if (composite_fade_is_valid(nf))
+         {
+            double opacity_pct;
+            unsigned int opacity;
+            opacity_pct = ((double) config->trans_active_value)/100.0;
+            opacity = (unsigned int) (OPAQUE * opacity_pct);
+            ecore_x_netwm_opacity_set(nf, opacity);
+         }
+      }
+   }     
+      
 #if HAS_NAME_WINDOW_PIXMAP
    if (w->pixmap && fade && config->fx_fade_enable)
       composite_fade_set(w, w->opacity * 1.0 / OPAQUE, 0.0,
@@ -1747,7 +1774,7 @@ _composite_event_window_focus_in_cb(void *data, int type, void *ev)
 
    e = ev;
    w = composite_win_find(e->win);
-   if (!w || w->isInFade) return 1;
+   if (!w) return 1;
    if (composite_fade_is_valid(e->win))
    {
       opacity_pct = ((double) config->trans_active_value)/100.0;
@@ -1767,7 +1794,7 @@ _composite_event_window_focus_out_cb(void *data, int type, void *ev)
 
    e = ev;
    w = composite_win_find(e->win);
-   if (!w || w->isInFade) return 1;
+   if (!w) return 1;
    if (composite_fade_is_valid(e->win))
    {
       opacity_pct = ((double) config->trans_inactive_value)/100.0;
@@ -1883,7 +1910,7 @@ _composite_event_window_property_cb(void *data, int type, void *ev)
             if (b->config->fx_fade_opacity_enable)
             {
                composite_fade_set(w, w->opacity * 1.0 / OPAQUE, (tmp * 1.0) / OPAQUE,
-                        b->config->fx_fade_out_step, 0, False, True, False);
+                        b->config->fx_fade_out_step, 0, False, True, True);
                return 1;
             }
             else
