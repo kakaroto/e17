@@ -4,16 +4,18 @@ EFLized Composite Manager for E17
 
 By Ibukun Olumuyiwa
 
-DO NOT USE THIS MODULE. I REPEAT, DO *NOT* USE THIS MODULE.
+"Bling" is a working title for this project (with the assumption that
+it will be more than just a compositing manager for Enlightenment). While
+it has stabilized quite a bit and may be usable on a day-to-day basis,
+it is still alpha code and may occasionally cause a segv, so its use is
+not recommended for end users.
 
-It is not anywhere ready for end-users. It has too many bugs and you may 
-lose valuable data. You have been warned.
+Please see the TODO file for a list of outstanding bugs and unfinished
+items. It is worth noting that the compositing manager is currently
+unable to intercept SEGVs. This means that you won't see the error
+dialog that pops up when E17 crashes; but you can still press F2 to
+restart. If your display should suddenly stop responding, this likely
+means E17 has crashed; press F2 to restart.
 
-This module is only in CVS for developers who want to help fix bugs and
-add features/make the code more mature. Also the name "bling" is a working
-title and may not be the final name for this module (or it may eventually
-be merged into the main e17 tree). Please see the TODO file for a list of
-outstanding bugs and unfinished items.
-
-
+Feature suggestions are welcomed.
 
