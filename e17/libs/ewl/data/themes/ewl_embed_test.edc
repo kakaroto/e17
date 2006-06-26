@@ -133,6 +133,19 @@ collections {
                     rel2.to:     "bg";
                 }
             }
+            part {
+                name: "swallow3";
+                type: SWALLOW;
+                description {
+                    state: "default" 0.0;
+                    rel1.relative: 0.0 0.0;
+                    rel1.offset: 30 10;
+                    rel1.to:     "glass_left";
+                    rel2.relative: 1.0 1.0;
+                    rel2.offset: -4 -10;
+                    rel2.to:     "glass_left";
+                }
+            }
         }
         programs {
             program {

@@ -214,6 +214,30 @@ main(int argc, char **argv)
 
 	ewl_widget_disable(button[1]);
 
+	/*
+	 * Setup the third ewl embed
+	 */
+	emb = ewl_embed_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(emb), EWL_FLAG_FILL_ALL);
+	eo = ewl_embed_evas_set(EWL_EMBED(emb), evas, 
+			  (void *) ecore_evas_software_x11_window_get(ee));
+	ewl_embed_focus_set(EWL_EMBED(emb), TRUE);
+	ewl_widget_show(emb);
+
+	/*
+	 * swallow it into the edje
+	 */
+	edje_object_part_geometry_get(edje, "swallow3", &x, &y, &w, &h);
+	evas_object_move(eo, x, y);
+	evas_object_resize(eo, w, h);
+	edje_object_part_swallow(edje, "swallow3", eo);
+	evas_object_show(eo);
+
+	wg = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(wg), "Open the glass");
+	ewl_container_child_append(EWL_CONTAINER(emb), wg);
+	ewl_widget_show(wg);
+
 	ewl_main();
 	
 	return 0;
