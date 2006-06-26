@@ -710,12 +710,20 @@ static Ecore_X_Region
 composite_win_extents(Win * w)
 {
    Ecore_X_Rectangle r;
+   E_Border *bd = NULL;
+   Bool needs_shadow = True;
 
+   /* Don't shadow shaped clients (until we have a function that
+    * can compute shaped shadows) */
+   bd = e_border_find_by_window(w->id);
+   if (bd && bd->client.shaped)
+      needs_shadow = False;
+   
    r.x = w->a.x;
    r.y = w->a.y;
    r.width = w->a.w + w->a.border * 2;
    r.height = w->a.h + w->a.border * 2;
-   if (compMode != CompSimple && w->shadowSize > 0
+   if (compMode != CompSimple && w->shadowSize > 0 && needs_shadow
        && !(w->windowType == ECORE_X_WINDOW_TYPE_DOCK
             && !(config->shadow_dock_enable)))
    {
