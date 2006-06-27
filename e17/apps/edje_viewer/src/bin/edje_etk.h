@@ -34,6 +34,7 @@ struct _Demo_Edje
     char 	*name;
 };
 
+Evas_List *visible_elements_get(void);
 void bg_setup(Etk_Canvas *canvas);
 void canvas_resize_cb(Etk_Object *canvas, const char *property_name, 
 	void *data);

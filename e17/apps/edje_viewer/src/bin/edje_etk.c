@@ -26,6 +26,9 @@ Evas_Object *o_bg;
 Evas_Object *o_shadow;
 Evas_List *visible_elements = NULL;
 
+Evas_List *visible_elements_get() {
+  return visible_elements;
+}
 void bg_setup(Etk_Canvas *canvas)
 {
    Evas_Object *o;

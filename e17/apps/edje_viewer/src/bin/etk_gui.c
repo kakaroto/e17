@@ -17,6 +17,7 @@ static Etk_Bool _gui_main_window_deleted_cb(void *data);
 static void _gui_open_edje_file_cb(Gui *gui);
 static void _gui_tree_checkbox_toggled_cb(Etk_Object *obj, Etk_Tree_Row *row,
       void *data);
+static void _gui_send_clicked_cb(Etk_Object *obj, void *data);
 
 void main_window_show(char *file)
 {
@@ -29,6 +30,10 @@ void main_window_show(char *file)
    Etk_Widget *vpaned;
    Etk_Widget *scrollview;
    Etk_Tree_Col *col, *col2;
+   Etk_Widget *hbox;
+   Etk_Widget *signal_label, *signal_entry;
+   Etk_Widget *source_label, *source_entry;
+   Etk_Widget *send_button;
 
    gui = calloc(1, sizeof(Gui));
    gui->win = etk_window_new();
@@ -83,6 +88,29 @@ void main_window_show(char *file)
    etk_tree_col_expand_set(col, ETK_TRUE);
    etk_tree_build(ETK_TREE(gui->output));
    etk_paned_child2_set(ETK_PANED(vpaned), gui->output, ETK_FALSE);
+
+   hbox = etk_hbox_new(ETK_FALSE, 0);
+   etk_box_pack_start(ETK_BOX(vbox), hbox, ETK_FALSE, ETK_FALSE, 0);
+
+   signal_label = etk_label_new("Signal: ");
+   etk_box_pack_start(ETK_BOX(hbox), signal_label, ETK_FALSE, ETK_FALSE, 0);
+
+   signal_entry = etk_entry_new();
+   etk_box_pack_start(ETK_BOX(hbox), signal_entry, ETK_FALSE, ETK_FALSE, 0);
+   gui->signal_entry = signal_entry;
+
+   source_label = etk_label_new("Source: ");
+   etk_box_pack_start(ETK_BOX(hbox), source_label, ETK_FALSE, ETK_FALSE, 0);
+
+   source_entry = etk_entry_new();
+   etk_box_pack_start(ETK_BOX(hbox), source_entry, ETK_FALSE, ETK_FALSE, 0);
+   gui->source_entry = source_entry;
+
+   send_button = etk_button_new_with_label("Send");
+   etk_button_alignment_set(send_button, 1, 0.5);
+   etk_box_pack_end(ETK_BOX(hbox), send_button, ETK_FALSE, ETK_FALSE, 0);
+   etk_signal_connect("clicked", ETK_OBJECT(send_button), 
+	   ETK_CALLBACK(_gui_send_clicked_cb), gui);
 
    gui->status = etk_statusbar_new();
    etk_box_pack_end(ETK_BOX(vbox), gui->status, ETK_FALSE, ETK_FALSE, 0);
@@ -227,8 +255,8 @@ static void _gui_open_edje_file_cb(Gui *gui)
 static void _gui_fm_ok_clicked_cb(Etk_Object *obj, void *data)
 {
    Gui *gui;
-   char *file;
-   char *dir;
+   const char *file;
+   const char *dir;
 
    if (!(gui = data)) return;
 
@@ -272,4 +300,26 @@ static void _gui_tree_checkbox_toggled_cb(Etk_Object *obj, Etk_Tree_Row *row,
      edje_part_show(gui->canvas, de);
    else
      edje_part_hide(de);
+}
+
+static void _gui_send_clicked_cb(Etk_Object *obj, void *data)
+{
+  Gui * gui;
+  Evas_List *l;
+  const char *sig, *src;
+
+  gui = data;
+  if (!gui) return;
+
+  sig = etk_entry_text_get(ETK_ENTRY(gui->signal_entry));
+  src = etk_entry_text_get(ETK_ENTRY(gui->source_entry));
+  if (!sig) sig = "";
+  if (!src) src = "";
+  for(l = visible_elements_get(); l; l = l->next) {
+    Demo_Edje *de;
+
+    de = l->data; 
+    if (!de) continue;
+    edje_object_signal_emit(de->edje, sig, src);
+  }
 }

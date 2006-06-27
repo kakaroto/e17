@@ -1,0 +1,7 @@
+*.swp
+*.swo
+.deps
+.libs
+Makefile
+Makefile.in
+edje_viewer
