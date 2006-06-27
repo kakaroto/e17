@@ -2,8 +2,8 @@ Source: imlib2
 Section: libs
 Priority: optional
 Maintainer: Laurence J. Lane <ljlane@debian.org>
-Build-Depends: libjpeg62-dev, libttf-dev, libpng3-dev | libpng2-dev | libpng-dev, libtiff4-dev | libtiff-dev, zlib1g-dev, libungif4-dev | libungif3g-dev | giflib3g-dev, xlibs-dev, libfreetype6-dev | freetype2-dev, libbz2-dev, libltdl3-dev, automake1.7 | automaken, libtool, debhelper (>= 4.0)
-Standards-Version: 3.5.7.0
+Build-Depends: libjpeg62-dev, libttf-dev, libpng3-dev | libpng2-dev | libpng-dev, libtiff4-dev | libtiff-dev, zlib1g-dev, libungif4-dev | libungif3g-dev | giflib3g-dev, x11proto-core-dev | xlibs-dev, x11proto-xext-dev | xlibs-dev, libfreetype6-dev | freetype2-dev, libbz2-dev, libltdl3-dev, automake1.7 | automaken, libtool, debhelper (>= 4.0)
+Standards-Version: 3.6.2.2
 
 Package: imlib2-demo
 Architecture: any
@@ -39,6 +39,6 @@ Package: libimlib2-dev
 Architecture: any
 Section: libdevel
 Architecture: any
-Depends: libimlib2 (= ${Source-Version}), libjpeg62-dev, libpng3-dev | libpng2-dev | libpng-dev, libtiff4-dev | libtiff-dev, zlib1g-dev, libttf-dev, libungif4-dev | libungif3g-dev | giflib3g-dev, xlibs-dev, libfreetype6-dev | freetype2-dev, libbz2-dev
+Depends: libimlib2 (= ${Source-Version}), libjpeg62-dev, libpng3-dev | libpng2-dev | libpng-dev, libtiff4-dev | libtiff-dev, zlib1g-dev, libttf-dev, libungif4-dev | libungif3g-dev | giflib3g-dev, x11proto-core-dev | xlibs-dev, x11proto-xext-dev | xlibs-dev, libfreetype6-dev | freetype2-dev, libbz2-dev
 Description: Imlib2 headers, static libraries and documentation
  Headers, static libraries and documentation for Imlib2.
