@@ -8,27 +8,23 @@ Standards-Version: 3.6.2.2
 Package: libetk0
 Architecture: any
 Section: libs
-Replaces: etk
-Conflicts: etk
-Provides: libetk
 Depends: ${shlibs:Depends}, libevas, libecore, libedje
+Provides: libetk
 Description: A widget toolkit based on the EFL
  ETK is a widget toolkit based on the enlightenment foundation libraries.
 
 Package: libetk0-dev
 Architecture: any
-Replaces: etk
-Conflicts: etk
-Provides: libetk-dev
+Section: libdevel
 Depends: ${shlibs:Depends}, libevas, libecore, libedje
+Provides: libetk-dev
 Description: Etk headers, static libraries and documentation
  Headers, static libraries and documentation for the ETK widget library.
 
 Package: etk0-bin
 Architecture: any
-Replaces: etk
-Conflicts: etk
-Provides: etk-bin
+Section: libs
 Depends: ${shlibs:Depends}, libevas, libecore, libedje
+Provides: etk-bin
 Description: Tools that support libetk
  This package contains etk_test.
