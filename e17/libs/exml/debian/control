@@ -9,7 +9,7 @@ Package: libexml0
 Architecture: any
 Section: libs
 Provides: libexml
-Depends: ${shlibs:Depends}, libecore, libxml2
+Depends: libecore, libxml2
 Description: abstracted, generalized xml parser/writer interface
  EXML is an abstracted, generalized interface to an xml
  parser/writer, using ecore data structures and making
@@ -24,7 +24,7 @@ Package: libexml0-dev
 Architecture: any
 Section: libdevel
 Provides: libexml-dev
-Depends: libecore-dev, libxml2-dev
+Depends: libecore-dev, libxml2-dev, libexml0
 Description: abstracted, generalized xml parser/writer interface
  EXML is an abstracted, generalized interface to an xml
  parser/writer, using ecore data structures and making
