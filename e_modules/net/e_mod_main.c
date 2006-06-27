@@ -1,5 +1,4 @@
 #include <e.h>
-#include <math.h>
 #include "e_mod_main.h"
 
 typedef struct _Instance Instance;
