@@ -7,6 +7,7 @@ Standards-Version: 3.6.2.2
 
 Package: libenhance0
 Architecture: any
+Section: libs
 Depends: libetk, libexml
 Provides: libenhance
 Description: Library for easy application GUI development
@@ -21,6 +22,7 @@ Description: Library for easy application GUI development
 
 Package: libenhance0-dev
 Architecture: any
+Section: libdevel
 Depends: libetk, libexml, libenhance0
 Provides: libenhance-dev
 Description: Headers for libenhance0
