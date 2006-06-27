@@ -46,7 +46,7 @@ EXTRA_module_la_SOURCES	=	machdep_linux.c \
 				machdep_netbsd.c
 
 		       
-module_la_LIBADD       = @e_libs@ -lm @machdep_libs@
+module_la_LIBADD       = @e_libs@ @machdep_libs@
 module_la_LDFLAGS      = -module -avoid-version
 module_la_DEPENDENCIES = $(top_builddir)/config.h
 
