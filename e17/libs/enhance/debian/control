@@ -1,4 +1,4 @@
-Source: libenhance
+Source: enhance
 Section: libs
 Priority: optional
 Maintainer: E17 Debian Team <debian@edevelop.org>
