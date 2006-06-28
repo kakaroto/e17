@@ -1,8 +1,8 @@
-package Etk::Menu::Item::Radio;
+package Etk::RadioButton;
 use strict;
 use vars qw(@ISA);
-require Etk::Menu::Item;
-@ISA = ("Etk::Menu::Item");
+require Etk::CheckButton;
+@ISA = ("Etk::CheckButton");
 sub new
 {
     my $class = shift;
@@ -14,7 +14,7 @@ sub new
         my $data = shift;
         if (ref $data) 
 	{
-            $self->{WIDGET} = Etk::etk_menu_item_radio_new_from_widget($data->{WIDGET});
+            $self->{WIDGET} = Etk::etk_radio_button_new_from_widget($data->{WIDGET});
             $widget = $data;
         } 
 	else 
@@ -22,13 +22,13 @@ sub new
             if (@_) 
 	    {
                 my $data2 = shift;
-                $self->{WIDGET} = Etk::etk_menu_item_radio_new_with_label_from_widget(
+                $self->{WIDGET} = Etk::etk_radio_button_new_with_label_from_widget(
                     $data, $data2->{WIDGET});
                 $widget = $data2;
             }
 	    else 
 	    {
-                $self->{WIDGET} = Etk::etk_menu_item_radio_new_with_label($data);
+                $self->{WIDGET} = Etk::etk_radio_button_new_with_label($data);
             }
         }
     }

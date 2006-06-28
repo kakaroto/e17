@@ -61,6 +61,8 @@ sub Remove
 sub ItemsGet
 {
     # TODO: pending list implementation
+    my $self = shift;
+    return Etk::etk_menu_shell_items_get($self->{WIDGET});
 }
 
 1;
