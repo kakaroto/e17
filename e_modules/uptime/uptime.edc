@@ -27,12 +27,12 @@ collections
 		       rel1
 			 {
 			    relative: 0.0 0.0;
-			    offset: 0 2;
+			    offset: 0 0;
 			 }
 		       rel2
 			 {
-			    relative: 1.0 0.5;
-			    offset: -1 -1;
+			    relative: 1.0 0.33;
+			    offset: 0 0;
 			 }
 		       color: 255 255 255 255;
 		       color2: 0 0 0 96;
@@ -40,6 +40,70 @@ collections
 		       text
 			 {
 			    text: "uptime";
+			    font: "VeraMono";
+			    size:  12;
+			    min:     1 1;
+			    align: 0.5 0.5;
+			 }
+		    }
+	       }
+	     part
+	       {
+		  name,		"load_average";
+		  type,           TEXT;
+		  effect,         OUTLINE_SOFT_SHADOW;
+		  mouse_events, 1;
+		  description
+		    {
+		       state: "default" 0.0;
+		       rel1
+			 {
+			    relative: 0.0 0.33;
+			    offset: 0 0;
+			 }
+		       rel2
+			 {
+			    relative: 1.0 0.66;
+			    offset: 0 0;
+			 }
+		       color: 255 255 255 255;
+		       color2: 0 0 0 96;
+		       color3: 0 0 0 32;
+		       text
+			 {
+			    text: "load average";
+			    font: "VeraMono";
+			    size:  12;
+			    min:     1 1;
+			    align: 0.5 0.5;
+			 }
+		    }
+	       }
+	     part
+	       {
+		  name,		"nusers";
+		  type,           TEXT;
+		  effect,         OUTLINE_SOFT_SHADOW;
+		  mouse_events, 1;
+		  description
+		    {
+		       state: "default" 0.0;
+		       rel1
+			 {
+			    relative: 0.0 0.66;
+			    offset: 0 0;
+			 }
+		       rel2
+			 {
+			    relative: 1.0 1.0;
+			    offset: 0 0;
+			 }
+		       color: 255 255 255 255;
+		       color2: 0 0 0 96;
+		       color3: 0 0 0 32;
+		       text
+			 {
+			    text: "users";
 			    font: "VeraMono";
 			    size:  12;
 			    min:     1 1;

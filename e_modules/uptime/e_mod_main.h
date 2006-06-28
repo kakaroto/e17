@@ -19,6 +19,7 @@ struct _Config_Item
 {
    const char *id;
    int check_interval;
+   int update_interval;
 };
 
 EAPI extern E_Module_Api e_modapi;

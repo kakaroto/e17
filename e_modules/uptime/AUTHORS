@@ -1,2 +1,4 @@
 Originally by Matthew Mullins.
-Recoded into seperate modules by Christopher 'devilhorns' Michael <devilhorns@comcast.net>
+Recoded into seperate modules by Christopher 'devilhorns' Michael <devilhorns@comcast.net>.
+FreeBSD, load averages and number of users patches as well as additional cleanup
+by Stanislav Sedov <ssedov@mbsd.msk.ru>.
