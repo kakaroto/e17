@@ -451,10 +451,6 @@ src/edb_185.h
 edb-config
 README
 edb.spec
-edb.oe
-edb-native.oe
-edb.bb
-edbXnative.bb
 debian/changelog
 ], [
 chmod +x edb-config

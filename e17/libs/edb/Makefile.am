@@ -11,8 +11,6 @@ MAINTAINERCLEANFILES = INSTALL Makefile.in aclocal.m4 config.guess \
 		       README \
 		       edb.pc \
                        edb.spec \
-	               edb.oe edb-native.oe \
-		       edb.bb edbXnative.bb \
                        debian/changelog
 
 SUBDIRS		     = src test tools
@@ -23,8 +21,6 @@ EXTRA_DIST = AUTHORS COPYING COPYING-PLAIN \
              README.in README \
 	     edb.pc.in \
 	     edb.spec.in edb.spec \
-	     edb.oe.in edb.oe edb-native.oe.in edb-native.oe \
-	     edb.bb.in edb.bb edbXnative.bb.in edbXnative.bb \
 	     debian/changelog \
 	     debian/changelog.in \
 	     debian/control \

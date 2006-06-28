@@ -1,8 +1,0 @@
-export IMAGE_BASENAME = "e-image"
-
-DEPENDS = "task-bootstrap meta-e"
-
-export IPKG_INSTALL = "task-bootstrap \
-                       enlightenment"
-
-inherit image_ipk

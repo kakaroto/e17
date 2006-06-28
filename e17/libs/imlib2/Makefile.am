@@ -10,8 +10,6 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 		       README \
 		       imlib2.pc \
 		       imlib2.spec \
-		       imlib2.oe imlib2-native.oe \
-		       imlib2.bb imlib2Xnative.bb \
 		       debian/changelog
 
 bin_SCRIPTS = imlib2-config
@@ -21,8 +19,6 @@ EXTRA_DIST = AUTHORS COPYING COPYING-PLAIN gendoc \
 	     README.in README \
 	     imlib2.pc.in \
 	     imlib2.spec.in imlib2.spec \
-	     imlib2.oe.in imlib2.oe imlib2-native.oe.in imlib2-native.oe \
-	     imlib2.bb.in imlib2.bb imlib2Xnative.bb.in imlib2Xnative.bb \
 	     debian/changelog \
 	     debian/changelog.in \
 	     debian/control \

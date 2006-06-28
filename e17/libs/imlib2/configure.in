@@ -604,10 +604,6 @@ doc/Makefile
 imlib2-config
 README
 imlib2.spec
-imlib2.oe
-imlib2-native.oe
-imlib2.bb
-imlib2Xnative.bb
 debian/changelog
 ],[
 chmod +x imlib2-config
