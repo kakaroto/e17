@@ -3,6 +3,7 @@ use POSIX;
 use Etk;
 use Etk::Button;
 use Etk::CheckButton;
+use Etk::RadioButton;
 use Etk::Colorpicker;
 use Etk::Combobox;
 use Etk::Combobox::Item;
@@ -285,15 +286,12 @@ sub button_window_show
     $button = Etk::CheckButton->new();
     $vbox->PackStart($button);
     
-    #######
-    # TODO: implement radio buttons!
-    # $button = Etk::RadioButton->new("Normal Button");
-    # $vbox->PackStart($button);
-    #
-    # $button = Etk::RadioButton->new();
-    # $vbox->PackStart($button);
-    #######
-    
+    $button = Etk::RadioButton->new("Radio button");
+    $vbox->PackStart($button);
+
+    my $button2 = Etk::RadioButton->new($button);
+    $vbox->PackStart($button2);
+
     $button = Etk::ToggleButton->new("Toggle Button");
     $vbox->PackStart($button);
     
@@ -712,10 +710,9 @@ sub menu_window_show
     _menu_test_check_item_new("Item with check 2", $submenu1, $statusbar);
     _menu_seperator_new($submenu1);
     
-    # TODO pending Radio implementation
-    # radio_item = _etk_test_menu_radio_item_new(_("Radio 1"), NULL, ETK_MENU_SHELL(menu));
-    # radio_item = _etk_test_menu_radio_item_new(_("Radio 2"), ETK_MENU_ITEM_RADIO(radio_item), ETK_MENU_SHELL(menu));
-    # _etk_test_menu_radio_item_new(_("Radio 3"), ETK_MENU_ITEM_RADIO(radio_item), ETK_MENU_SHELL(menu));
+    my $radio = _menu_test_radio_item_new("Radio 1", undef, $submenu1, $statusbar);
+    _menu_test_radio_item_new("Radio 2", $radio, $submenu1, $statusbar);
+    _menu_test_radio_item_new("Radio 3", $radio, $submenu1, $statusbar);
 
     # Sub menu 2
     my $submenu2 = Etk::Menu->new();
@@ -772,9 +769,17 @@ sub _menu_test_check_item_new
 
 sub _menu_test_radio_item_new
 {
-    my ($label, $menubar, $statusbar) = @_;
+    my ($label, $radio, $menubar, $statusbar) = @_;
 
-    my $menu_item = Etk::Menu::Item::Radio->new($label);
+    my $menu_item;
+    if ($radio) 
+    {
+        $menu_item = Etk::Menu::Item::Radio->new($label, $radio);
+    }
+    else
+    {
+        $menu_item = Etk::Menu::Item::Radio->new($label);
+    }
     $menubar->Append($menu_item);
     $menu_item->SignalConnect("selected", 
     	sub { $statusbar->Push($menu_item->LabelGet(), 0) });
@@ -1129,14 +1134,11 @@ sub notebook_window_show
     $button = Etk::CheckButton->new();
     $vbox2->PackStart($button);
     
-    #######
-    # TODO: implement radio buttons!
-    # $button = Etk::RadioButton->new("Normal Button");
-    # $vbox->PackStart($button);
-    #
-    # $button = Etk::RadioButton->new();
-    # $vbox->PackStart($button);
-    #######
+    $button = Etk::RadioButton->new("Radio button");
+    $vbox2->PackStart($button);
+
+    my $button2 = Etk::RadioButton->new($button);
+    $vbox2->PackStart($button2);
     
     $notebook->PageAppend("Tab 2 - Button test", $alignment);
 

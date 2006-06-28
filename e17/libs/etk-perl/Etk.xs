@@ -2066,17 +2066,28 @@ etk_menu_item_radio_new(group)
 
 Etk_Widget *
 etk_menu_item_radio_new_from_widget(radio_item)
-	Etk_Menu_Item_Radio *	radio_item
+	Etk_Widget *	radio_item
+	CODE:
+	RETVAL = etk_menu_item_radio_new_from_widget(ETK_MENU_ITEM_RADIO(radio_item));
+	OUTPUT:
+	RETVAL
 
 Etk_Widget *
-etk_menu_item_radio_new_with_label(label, group)
+etk_menu_item_radio_new_with_label(label)
 	char *	label
-	Evas_List **	group
+	CODE:
+	RETVAL = etk_menu_item_radio_new_with_label(label, NULL);
+	OUTPUT:
+	RETVAL	
 
 Etk_Widget *
 etk_menu_item_radio_new_with_label_from_widget(label, radio_item)
 	char *	label
-	Etk_Menu_Item_Radio *	radio_item
+	Etk_Widget *	radio_item
+	CODE:
+	RETVAL = etk_menu_item_radio_new_with_label_from_widget(label, ETK_MENU_ITEM_RADIO(radio_item));
+	OUTPUT:
+	RETVAL
 
 Etk_Type *
 etk_menu_item_radio_type_get()
@@ -2829,17 +2840,28 @@ etk_radio_button_new(group)
 
 Etk_Widget *
 etk_radio_button_new_from_widget(radio_button)
-	Etk_Radio_Button *	radio_button
+	Etk_Widget *	radio_button
+	CODE:
+	RETVAL = etk_radio_button_new_from_widget(ETK_RADIO_BUTTON(radio_button));
+	OUTPUT:
+	RETVAL
 
 Etk_Widget *
-etk_radio_button_new_with_label(label, group)
+etk_radio_button_new_with_label(label)
 	char *	label
-	Evas_List **	group
-
+	CODE:
+	RETVAL = etk_radio_button_new_with_label(label, NULL);
+	OUTPUT:
+	RETVAL
+	
 Etk_Widget *
 etk_radio_button_new_with_label_from_widget(label, radio_button)
 	char *	label
-	Etk_Radio_Button *	radio_button
+	Etk_Widget *	radio_button
+	CODE:
+	RETVAL = etk_radio_button_new_with_label_from_widget(label, ETK_RADIO_BUTTON(radio_button));
+	OUTPUT:
+	RETVAL
 
 Etk_Type *
 etk_radio_button_type_get()
