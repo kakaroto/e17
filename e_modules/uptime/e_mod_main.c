@@ -15,6 +15,9 @@
 # include <utmp.h>
 # include <paths.h>
 # include <sys/tty.h>
+# include <sys/sysctl.h>
+# include <sys/param.h>
+
 #endif
 
 typedef struct _Instance Instance;
@@ -413,12 +416,19 @@ update_counters(Instance *inst)
 #ifdef __linux__
    struct sysinfo s_info;
 #elif defined(__FreeBSD__)
+   int mib[2];
+   size_t size;
+   time_t uptime;
+   int days, hrs, i, mins, secs;
+   struct timeval  boottime;
+   time_t          now;
+   
    FILE		*utmp;
    struct timespec tp;
    struct utmp	ut;
    char ttybuf[MAXPATHLEN];
    struct stat st;
-   int ret;
+   int ret;      
 #endif
 
    if (!inst) return;
@@ -431,15 +441,21 @@ update_counters(Instance *inst)
    inst->nusers = -1; /* unsupported */
 #elif defined(__FreeBSD__)
    /* retrive uptime info */
-   ret = clock_gettime(CLOCK_UPTIME, &tp);
-   if (ret != 0)
-     {
-	warn("clock_gettime()");
-	inst->uptime = -1;
-     }
-   else
-     inst->uptime = tp.tv_sec;
-
+   (void)time(&now);
+   mib[0] = CTL_KERN;
+   mib[1] = KERN_BOOTTIME;
+   size = sizeof(boottime);
+   
+   if (sysctl(mib, 2, &boottime, &size, NULL, 0) != -1 &&
+       boottime.tv_sec != 0) {
+      uptime = now - boottime.tv_sec;
+      if (uptime > 60)
+	uptime += 30;
+      inst->uptime = uptime;
+   }
+   else          	 
+     inst->uptime = -1;   
+   
    /* retrive load averages */
    ret = getloadavg(inst->la, sizeof(inst->la)/sizeof(inst->la[0]));
    if (ret < 0)
@@ -487,7 +503,7 @@ _ut_cb_check(void *data)
    inst = data;
    if (inst == 0)
      return 0;
-
+   
    ci = _ut_config_item_get(inst->gcc->id);
    if (ci == 0)
      return 0;
