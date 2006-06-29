@@ -12,7 +12,6 @@ EXTRA_DIST = $(files_DATA) uptime.png uptime.edc VeraMono.ttf \
 e_modules-uptime.spec e_modules-uptime.spec.in module.eap
 
 files_DATA = \
-module_icon.png \
 uptime.edj \
 module.eap
 
