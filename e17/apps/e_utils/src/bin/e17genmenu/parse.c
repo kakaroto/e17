@@ -18,6 +18,9 @@ get_t(char *icon)
    char *dir;
    int i = 0;
 
+   if ((!icon) || (icon == NULL)) 
+      return NULL;
+   
    ptr = icon;
    d = strrchr(ptr, '"');
    if (!d)
