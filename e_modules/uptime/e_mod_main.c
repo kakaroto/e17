@@ -4,20 +4,30 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <sys/types.h>
-#include <sys/time.h>
+#include <utmp.h>
+
+#if TIME_WITH_SYS_TIME
+# include <sys/time.h>
+# include <time.h>
+#else
+# if HAVE_SYS_TIME_H
+#  include <sys/time.h>
+# else
+#  include <time.h>
+# endif
+#endif
 #include <syslog.h>
 
 #ifdef __linux__
 # include <linux/kernel.h>
+# include <linux/unistd.h>
 #endif
 
 #ifdef __FreeBSD__
-# include <utmp.h>
 # include <paths.h>
 # include <sys/tty.h>
 # include <sys/sysctl.h>
 # include <sys/param.h>
-
 #endif
 
 typedef struct _Instance Instance;
@@ -322,13 +332,12 @@ e_modapi_init(E_Module *m)
 EAPI int
 e_modapi_shutdown(E_Module *m)
 {
-
    ut_config->module = NULL;
    e_gadcon_provider_unregister(&_gc_class);
 
    if (ut_config->config_dialog != NULL)
      e_object_del(E_OBJECT(ut_config->config_dialog));
-
+   
    if (ut_config->menu)
      {
 	e_menu_post_deactivate_callback_set(ut_config->menu, NULL, NULL);
@@ -413,8 +422,10 @@ _ut_free(Uptime *ut)
 static void
 update_counters(Instance *inst)
 {
+   int ret;
 #ifdef __linux__
    struct sysinfo s_info;
+   struct utmp *utmpstruct;
 #elif defined(__FreeBSD__)
    int mib[2];
    size_t size;
@@ -428,17 +439,29 @@ update_counters(Instance *inst)
    struct utmp	ut;
    char ttybuf[MAXPATHLEN];
    struct stat st;
-   int ret;      
 #endif
 
-   if (!inst) return;
+   if (!inst) 
+     return;
 
 #ifdef __linux__
    sysinfo(&s_info);
    inst->uptime = s_info.uptime;
-
-   inst->la[0] = -1; /* unsupported */
-   inst->nusers = -1; /* unsupported */
+   inst->la[0] = -1;
+# ifdef HAVE_GETLOADAVG
+   ret = getloadavg(inst->la, sizeof(inst->la)/sizeof(inst->la[0]));
+   if (ret < 0)
+     inst->la[0] = -1;
+# endif
+   inst->nusers = 0;
+   setutent();
+   while ((utmpstruct = getutent())) 
+     {
+	if ((utmpstruct->ut_type == USER_PROCESS) &&
+	    (utmpstruct->ut_name[0] != '\0'))
+	  inst->nusers++;
+     }
+   endutent();
 #elif defined(__FreeBSD__)
    /* retrive uptime info */
    (void)time(&now);
@@ -453,17 +476,17 @@ update_counters(Instance *inst)
 	uptime += 30;
       inst->uptime = uptime;
    }
-   else          	 
+   else
      inst->uptime = -1;   
    
    /* retrive load averages */
+   inst->la[0] = -1;
+# ifdef HAVE_GETLOADAVG
    ret = getloadavg(inst->la, sizeof(inst->la)/sizeof(inst->la[0]));
    if (ret < 0)
-     {
-	warn("getloadavg()");
-	inst->la[0] = -1;
-     }
-
+     warn("getloadavg()");
+# endif
+   
    /* retrive number of active users */
    utmp = fopen(_PATH_UTMP, "r");
    if (utmp == NULL)
@@ -501,11 +524,11 @@ _ut_cb_check(void *data)
    time_t uptime;
 
    inst = data;
-   if (inst == 0)
+   if (!inst)
      return 0;
    
    ci = _ut_config_item_get(inst->gcc->id);
-   if (ci == 0)
+   if (!ci)
      return 0;
 
 #ifdef UPTIME_DEBUG
@@ -537,13 +560,15 @@ _ut_cb_check(void *data)
 		 days, hours, minutes, uptime);
      }
 
-   if (inst->la[0] != -1)
+   if (inst->la[0] != -1) 
+     {
      snprintf(load_avg, sizeof(load_avg), 
 	      D_("la: %.2f %.2f %.2f"), 
 	      inst->la[0], inst->la[1], inst->la[2]);
-
+     }
+   
    if (inst->nusers != -1)
-     snprintf(users, sizeof(users), D_("users: %d"), inst->nusers);
+     snprintf(users, sizeof(users), D_("user%s: %d"), (inst->nusers != 1) ? "s" : "", inst->nusers);
 
    edje_object_part_text_set(inst->ut->ut_obj, "uptime", u_date_time);
    edje_object_part_text_set(inst->ut->ut_obj, "load_average", load_avg);

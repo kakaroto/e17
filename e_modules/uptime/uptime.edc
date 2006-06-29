@@ -1,8 +1,3 @@
-images
-{
-   image: "uptime.png" COMP;
-}
-
 fonts
 {
    font: "VeraMono.ttf" "VeraMono";
@@ -27,12 +22,12 @@ collections
 		       rel1
 			 {
 			    relative: 0.0 0.0;
-			    offset: 0 0;
+			    offset: 0 4;
 			 }
 		       rel2
 			 {
 			    relative: 1.0 0.33;
-			    offset: 0 0;
+			    offset: 0 -3;
 			 }
 		       color: 255 255 255 255;
 		       color2: 0 0 0 96;
@@ -41,9 +36,10 @@ collections
 			 {
 			    text: "uptime";
 			    font: "VeraMono";
-			    size:  12;
+			    size:  10;
 			    min:     1 1;
-			    align: 0.5 0.5;
+			    align: 0.5 1.0;
+			    text_class: "module_large";
 			 }
 		    }
 	       }
@@ -58,13 +54,14 @@ collections
 		       state: "default" 0.0;
 		       rel1
 			 {
-			    relative: 0.0 0.33;
-			    offset: 0 0;
+			    relative: 0.0 1.0;
+			    offset: 0 4;
+			    to_y: "uptime";
 			 }
 		       rel2
 			 {
 			    relative: 1.0 0.66;
-			    offset: 0 0;
+			    offset: 0 -3;
 			 }
 		       color: 255 255 255 255;
 		       color2: 0 0 0 96;
@@ -73,9 +70,10 @@ collections
 			 {
 			    text: "load average";
 			    font: "VeraMono";
-			    size:  12;
+			    size:  10;
 			    min:     1 1;
 			    align: 0.5 0.5;
+			    text_class: "module_small";
 			 }
 		    }
 	       }
@@ -90,13 +88,14 @@ collections
 		       state: "default" 0.0;
 		       rel1
 			 {
-			    relative: 0.0 0.66;
-			    offset: 0 0;
+			    relative: 0.0 1.0;
+			    offset: 0 4;
+			    to_y: "load_average";
 			 }
 		       rel2
 			 {
 			    relative: 1.0 1.0;
-			    offset: 0 0;
+			    offset: 0 -8;
 			 }
 		       color: 255 255 255 255;
 		       color2: 0 0 0 96;
@@ -105,9 +104,10 @@ collections
 			 {
 			    text: "users";
 			    font: "VeraMono";
-			    size:  12;
+			    size:  8;
 			    min:     1 1;
-			    align: 0.5 0.5;
+			    align: 0.5 1.0;
+			    text_class: "module_small";
 			 }
 		    }
 	       }
