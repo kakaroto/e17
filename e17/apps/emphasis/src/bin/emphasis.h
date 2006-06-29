@@ -22,7 +22,8 @@
 
 extern MpdObj *mo;
 
-int emphasis_try_connect(Emphasis_Gui *gui);
+void emphasis_init_connect(Emphasis_Gui *gui);
+int emphasis_try_connect(void *data);
 
 #endif /*_EMPHASIS_H_*/
 

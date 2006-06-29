@@ -124,7 +124,7 @@ emphasis_init_gui(Emphasis_Gui *gui)
 	etk_tree_mode_set(ETK_TREE(gui->tree_artist), ETK_TREE_MODE_LIST);
 	etk_tree_col_new(ETK_TREE(gui->tree_artist), "Artist", etk_tree_model_text_new(ETK_TREE(gui->tree_artist)), 60);
 	etk_tree_build(ETK_TREE(gui->tree_artist));
-	etk_object_data_set(ETK_OBJECT(gui->tree_artist), "title", strdup("Artist"));
+	etk_object_data_set(ETK_OBJECT(gui->tree_artist), "title", "Artist");
 	etk_object_data_set(ETK_OBJECT(gui->tree_artist), "Emphasis_Type", (void*)EMPHASIS_ARTIST);
 	etk_box_pack_start(ETK_BOX(gui->hbox_medialib), gui->tree_artist, ETK_TRUE, ETK_TRUE, 0);
 	etk_widget_dnd_source_set(ETK_WIDGET(gui->tree_artist), ETK_TRUE);
@@ -144,7 +144,7 @@ emphasis_init_gui(Emphasis_Gui *gui)
 	etk_tree_mode_set(ETK_TREE(gui->tree_album), ETK_TREE_MODE_LIST);
 	etk_tree_col_new(ETK_TREE(gui->tree_album), "Album", etk_tree_model_text_new(ETK_TREE(gui->tree_album)), 60);
 	etk_tree_build(ETK_TREE(gui->tree_album));
-	etk_object_data_set(ETK_OBJECT(gui->tree_album), "title", strdup("Album"));
+	etk_object_data_set(ETK_OBJECT(gui->tree_album), "title", "Album");
 	etk_object_data_set(ETK_OBJECT(gui->tree_album), "Emphasis_Type", (void*)EMPHASIS_ALBUM);
 	etk_box_pack_start(ETK_BOX(gui->hbox_medialib), gui->tree_album, ETK_TRUE, ETK_TRUE, 0);
 	etk_widget_dnd_source_set(ETK_WIDGET(gui->tree_album), ETK_TRUE);
@@ -163,7 +163,7 @@ emphasis_init_gui(Emphasis_Gui *gui)
 	etk_tree_mode_set(ETK_TREE(gui->tree_track), ETK_TREE_MODE_LIST);
 	etk_tree_col_new(ETK_TREE(gui->tree_track), "Track", etk_tree_model_text_new(ETK_TREE(gui->tree_track)), 60);
 	etk_tree_build(ETK_TREE(gui->tree_track));
-	etk_object_data_set(ETK_OBJECT(gui->tree_track), "title", strdup("Track"));
+	etk_object_data_set(ETK_OBJECT(gui->tree_track), "title", "Track");
 	etk_object_data_set(ETK_OBJECT(gui->tree_track), "Emphasis_Type", (void*)EMPHASIS_TRACK);
 	etk_box_pack_start(ETK_BOX(gui->hbox_medialib), gui->tree_track, ETK_TRUE, ETK_TRUE, 0);
 	etk_widget_dnd_source_set(ETK_WIDGET(gui->tree_track), ETK_TRUE);
@@ -221,14 +221,10 @@ emphasis_init_gui(Emphasis_Gui *gui)
 	Etk_Widget *menu_item, *radio_item=NULL, *menu;
 	
 	emphasis_menu_append(gui->menu, "clear", ETK_STOCK_EDIT_CUT, cb_playlist_clear, NULL,
-	                                "config", ETK_STOCK_PREFERENCES_SYSTEM, cb_config_show, gui,
+	                            /*  "config", ETK_STOCK_PREFERENCES_SYSTEM, cb_config_show, gui, */
 	                                "Open a file", ETK_STOCK_DOCUMENT_OPEN, NULL, NULL,
 	                                NULL);
-/*	menu_item = etk_menu_item_new_with_label("platypus");
-	etk_menu_shell_append(ETK_MENU_SHELL(gui->menu), ETK_MENU_ITEM(menu_item));
-	menu = etk_menu_new();
-	etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));
-*/	radio_item = etk_menu_item_radio_new_with_label_from_widget("full", NULL);
+	radio_item = etk_menu_item_radio_new_with_label_from_widget("full", NULL);
 	etk_menu_shell_append(ETK_MENU_SHELL(gui->menu), ETK_MENU_ITEM(radio_item));
 	etk_signal_connect("activated", ETK_OBJECT(radio_item), ETK_CALLBACK(cb_switch_full), gui);
 	radio_item = etk_menu_item_radio_new_with_label_from_widget("small", ETK_MENU_ITEM_RADIO(radio_item));
@@ -259,7 +255,8 @@ emphasis_clear(Emphasis_Gui *gui)
 /**
  * @brief Make a menu with small stock image and sets a callback on "activated" on each elements
  * @param menu The Etk_Menu to setup
- * @param ... An (char*)menu_item name, an (Etk_Stock_Id)image id, a Etk_Callback function and it data ... terminated by NULL
+ * @param ... An (char*)menu_item name, an (Etk_Stock_Id)image id, a Etk_Callback function and 
+ * it data ... terminated by NULL
  */
 void
 emphasis_menu_append(Etk_Widget *menu, ...)
@@ -298,7 +295,7 @@ void
 emphasis_tree_mlib_init(Emphasis_Gui *gui, Emphasis_Type type)
 {
 	Etk_Tree_Row *row;
-	MpdData *list;
+	Evas_List *list;
 	
 	switch (type)
 	{
@@ -324,11 +321,11 @@ emphasis_tree_mlib_init(Emphasis_Gui *gui, Emphasis_Type type)
  * @param mpd_type The type of the list
  */
 void
-emphasis_tree_mlib_set(Etk_Tree *tree, MpdData *list, MpdDataType mpd_type)
+emphasis_tree_mlib_set(Etk_Tree *tree, Evas_List *list, MpdDataType mpd_type)
 {
 	Etk_Tree_Col *col;
 	Etk_Tree_Row *row;
-	char *str = NULL;
+	Emphasis_Data *data;
 
 	etk_tree_clear(tree);
 
@@ -338,14 +335,14 @@ emphasis_tree_mlib_set(Etk_Tree *tree, MpdData *list, MpdDataType mpd_type)
 	if (mpd_type == MPD_DATA_TYPE_TAG)
 	{
 		row = etk_tree_append(tree, col, "All", NULL);
-		etk_tree_row_data_set(row, str);
+		etk_tree_row_data_set(row, NULL);
 		
 		while (list)
 		{
-			row = etk_tree_append(tree, col, list->tag, NULL);
-			str = strdup(list->tag);
-			etk_tree_row_data_set(row, str);
-			list = mpd_data_get_next(list);
+			data = evas_list_data(list);
+			row = etk_tree_append(tree, col, data->tag, NULL);
+			etk_tree_row_data_set(row, data->tag);
+			list = evas_list_next(list);
 		}
 	}
 	else
@@ -354,19 +351,20 @@ emphasis_tree_mlib_set(Etk_Tree *tree, MpdData *list, MpdDataType mpd_type)
 		{
 			while (list)
 			{
-				if (list->song->title)
-					row = etk_tree_append(tree, col, list->song->title, NULL);
+				data = evas_list_data(list);
+				if (data->song->title)
+					row = etk_tree_append(tree, col, data->song->title, NULL);
 				else
-					row = etk_tree_append(tree, col, list->song->file, NULL);
+					row = etk_tree_append(tree, col, data->song->file, NULL);
 				
-				str = strdup(list->song->file);
-				etk_tree_row_data_set(row, str);
-				list = mpd_data_get_next(list);
+				etk_tree_row_data_set(row, data->song->file);
+				list = evas_list_next(list);
 			}
 		}
 	}
 	
 	etk_tree_thaw(tree);
+	emphasis_list_free(list, mpd_type); 
 }
 
 /**
@@ -375,14 +373,15 @@ emphasis_tree_mlib_set(Etk_Tree *tree, MpdData *list, MpdDataType mpd_type)
  * @param playlist The full playlist used by mpd
  */
 void
-emphasis_tree_pls_set(Etk_Tree *tree, MpdData *playlist)
+emphasis_tree_pls_set(Etk_Tree *tree, Evas_List *playlist)
 {
 	char *song_time;
 	Etk_Tree_Col *col_title, *col_time, *col_artist, *col_album;
 	Etk_Tree_Row *row, *row_next;
 	int id;
 	char *title, *time, *album, *artist, *truc;
-		
+	Emphasis_Data *data;
+	
 	col_title = etk_tree_nth_col_get(tree, 0);
 	col_time = etk_tree_nth_col_get(tree, 1);
 	col_artist = etk_tree_nth_col_get(tree, 2);
@@ -393,15 +392,16 @@ emphasis_tree_pls_set(Etk_Tree *tree, MpdData *playlist)
 	
 	while (row && playlist)
 	{
+		data = evas_list_data(playlist);
 		row_next = etk_tree_next_row_get(row, ETK_FALSE, ETK_FALSE);
 		id = (int)etk_tree_row_data_get(row);
-		if (playlist->song->id != id )
+		if (data->song->id != id )
 		{
 			etk_tree_row_del(row);
 		}
 		else
 		{
-			playlist = mpd_data_get_next(playlist);
+			playlist = evas_list_next(playlist);
 		}
 		row = row_next;
 	}
@@ -415,22 +415,24 @@ emphasis_tree_pls_set(Etk_Tree *tree, MpdData *playlist)
 	
 	while (playlist)
 	{
-		if (!playlist->song->title)
-			title = playlist->song->file;
+		data = evas_list_data(playlist);
+		if (!data->song->title)
+			title = data->song->file;
 		else
-			title = playlist->song->title;
-		asprintf(&song_time, "%d:%02d", (playlist->song->time)/60, (playlist->song->time)%60);
+			title = data->song->title;
+		asprintf(&song_time, "%d:%02d", (data->song->time)/60, (data->song->time)%60);
 		row = etk_tree_append(tree, col_title, NULL, title, 
 		                            col_time, song_time,
-		                            col_artist, playlist->song->artist,
-		                            col_album, playlist->song->album, NULL);
+		                            col_artist, data->song->artist,
+		                            col_album, data->song->album, NULL);
 
 		
-		etk_tree_row_data_set(row, (int *)playlist->song->id);
+		etk_tree_row_data_set(row, (int *)data->song->id);
 		free(song_time);
-		playlist = mpd_data_get_next(playlist);
+		playlist = evas_list_next(playlist);
 	}	
 
+	emphasis_list_free(playlist, MPD_DATA_TYPE_SONG);
 	etk_tree_thaw(tree);
 }
 
@@ -469,7 +471,6 @@ emphasis_pls_mark_current(Etk_Tree *tree, int id)
 	}
 	
 	etk_tree_thaw(tree);
-
 }
 
 /**

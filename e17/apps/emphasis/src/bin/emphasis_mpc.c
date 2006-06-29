@@ -106,13 +106,16 @@ status_changed_callback(MpdObj *mo, ChangedStatusType what, void *data)
 	}
 	if (what&MPD_CST_STATE)
 	{
+		Emphasis_Gui *gui;
+
+		gui = data;
 		state = mpd_player_get_state(mo);
 		switch (state)
 		{
 			case MPD_STATUS_STATE_STOP:
 				emphasis_player_info_set(NULL, "Music Stoped", data);
 				emphasis_toggle_play(data);
-				emphasis_pls_mark_current(ETK_TREE(((Emphasis_Gui *)data)->tree_pls), -1);
+				emphasis_pls_mark_current(ETK_TREE(gui->tree_pls), -1);
 				break;
 			case MPD_STATUS_STATE_PAUSE:
 				song = mpd_playlist_get_current_song(mo);
@@ -123,7 +126,7 @@ status_changed_callback(MpdObj *mo, ChangedStatusType what, void *data)
 				song = mpd_playlist_get_current_song(mo);
 				emphasis_toggle_play(data);
 				emphasis_player_info_set(song, NULL, data);
-				emphasis_pls_mark_current(ETK_TREE(((Emphasis_Gui *)data)->tree_pls), song->id);
+				emphasis_pls_mark_current(ETK_TREE(gui->tree_pls), song->id);
 				break;
 			case MPD_STATUS_STATE_UNKNOWN:
 				emphasis_player_info_set(NULL, "wtf is that ?", data);
@@ -132,8 +135,11 @@ status_changed_callback(MpdObj *mo, ChangedStatusType what, void *data)
 	}
 	if (what&MPD_CST_PLAYLIST)
 	{
+		Emphasis_Gui *gui;
+		gui = data;
 		playlist = mpd_playlist_get_changes(mo, -1);
-		emphasis_tree_pls_set(ETK_TREE(((Emphasis_Gui *)data)->tree_pls), playlist);
+		emphasis_tree_pls_set(ETK_TREE(gui->tree_pls), convert_mpd_data(playlist));
+		mpd_data_free(playlist);
 	}
 	if (what&MPD_CST_SONGID)
 	{
@@ -187,12 +193,17 @@ mpc_assert_status(MpdState status)
  * @brief Get the artists list from mpd database
  * @return A list of all artists
  */
-MpdData *
+Evas_List *
 mpc_mlib_artist_get(void)
 {
 	MpdData *data;
+	Evas_List *list;
+
 	data = mpd_database_get_artists(mo);
-	return data;
+	list = convert_mpd_data(data);
+
+	mpd_data_free(data);
+	return list;
 }
 
 /**
@@ -200,12 +211,17 @@ mpc_mlib_artist_get(void)
  * @param artist An artist name
  * @return A list of albums
  */
-MpdData *
+Evas_List *
 mpc_mlib_album_get(char *artist)
 {
 	MpdData *data;
+	Evas_List *list;
+	
 	data = mpd_database_get_albums(mo, artist);
-	return data;
+	list = convert_mpd_data(data);
+
+	mpd_data_free(data);
+	return list;
 }
 
 /**
@@ -214,21 +230,24 @@ mpc_mlib_album_get(char *artist)
  * @param album An album name
  * @return A list of song matchin artist and album
  */
-MpdData *
+Evas_List *
 mpc_mlib_track_get(char *artist, char *album)
 {
 	MpdData *data;
+	Evas_List *list;
 	
 	if ((album != NULL) || (artist != NULL))
 	{
-		data = mpd_database_find_adv(mo, 1,MPD_TAG_ITEM_ARTIST, artist,  MPD_TAG_ITEM_ALBUM, album, -1);
+		data = mpd_database_find_adv(mo, 1, MPD_TAG_ITEM_ARTIST, artist,  MPD_TAG_ITEM_ALBUM, album, -1);
 	}
 	else
 	{
 		data = mpd_database_get_complete(mo);
 	}
-	
-	return data;
+	list = convert_mpd_data(data);
+
+	mpd_data_free(data);
+	return list;
 }
 
 /**
@@ -237,20 +256,22 @@ mpc_mlib_track_get(char *artist, char *album)
  * @return The list of songs added with their id
  */
 void
-mpc_playlist_add(MpdData *list)
+mpc_playlist_add(Evas_List *list)
 {
 	long long id;
-	MpdData *next;
-	
+	Emphasis_Data *data;	
+
 	id = mpd_playlist_get_playlist_id(mo);
-	
+
 	while (list)
 	{
-		mpd_playlist_queue_add(mo, list->song->file);
-		list = mpd_data_get_next(list);
+		data = evas_list_data(list);
+		mpd_playlist_queue_add(mo, data->song->file);
+		list = evas_list_next(list);
 	}
 	
 	mpd_playlist_queue_commit(mo);
+	emphasis_list_free(list, MPD_DATA_TYPE_SONG);
 }
 
 /**
@@ -258,15 +279,18 @@ mpc_playlist_add(MpdData *list)
  * @param id 
  */
 void 
-mpc_playlist_delete(MpdData *list)
+mpc_playlist_delete(Evas_List *list)
 {
+	Emphasis_Data *data;
+
 	while (list)
 	{
-		mpd_playlist_queue_delete_id(mo, list->song->id);
-		list = mpd_data_get_next(list);		
+		data = evas_list_data(list);
+		mpd_playlist_queue_delete_id(mo, data->song->id);
+		list = evas_list_next(list);		
 	}
 	mpd_playlist_queue_commit(mo);
-	mpd_data_free(list);
+	emphasis_list_free(list, MPD_DATA_TYPE_SONG);
 }
 
 /**
@@ -428,4 +452,10 @@ mpc_database_update(char *path)
 	rep = mpd_database_update_dir(mo, path);
 	if (rep == 0)
 		printf("cette fonction est indisponible... coin coin\n");
+}
+
+void
+mpc_disconnect(void)
+{
+	mpd_free(mo);
 }

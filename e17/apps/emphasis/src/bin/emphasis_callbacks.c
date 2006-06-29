@@ -13,11 +13,13 @@ cb_quit(Etk_Object *object, void *data)
 	Etk_Widget *window;
 	Emphasis_Config *config;
 
-	config = malloc(sizeof(Emphasis_Config));
 	config = etk_object_data_get(object, "config");
-	etk_widget_geometry_get(ETK_WIDGET(object), &(config->geometry.x), &(config->geometry.y), &(config->geometry.w), &(config->geometry.h));
+	etk_widget_geometry_get(ETK_WIDGET(object), &(config->geometry.x), 
+	                        &(config->geometry.y), &(config->geometry.w), 
+	                        &(config->geometry.h));
 	config_write(config);
 
+	mpc_disconnect();
 	eet_shutdown();
 	etk_main_quit();
 }
@@ -100,7 +102,7 @@ void
 cb_tree_artist_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
 {
 	Etk_Tree *tree;
-	MpdData *list=NULL;
+	Evas_List *list=NULL;
 	char *artist;
 	Emphasis_Gui *gui;
 	
@@ -130,7 +132,7 @@ cb_tree_album_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
 {
 	Emphasis_Gui *gui;
 	Etk_Tree *tree;
-	MpdData *list;
+	Evas_List *list;
 	char *album, *artist;
 	
 	tree = ETK_TREE(object);
@@ -142,20 +144,6 @@ cb_tree_album_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
 	artist = etk_tree_row_data_get(row);
 	
 	list = mpc_mlib_track_get(artist, album);
-	/*
-	Emphasis_Data *song;
-	song = malloc(sizeof(Emphasis_Song));
-	Evas_List *evaslist;
-	evaslist = convert_mpd_data(list);
-	if (evaslist)
-	{
-		song = evas_list_data(evaslist);
-	}
-
-	MpdData *platypus;
-	platypus = convert_evas_list(evaslist);
-	printf("%s\n", platypus->song->title);
-	*/
 	emphasis_tree_mlib_set(ETK_TREE(gui->tree_track), list, MPD_DATA_TYPE_SONG);
 }
 
@@ -174,7 +162,7 @@ cb_drag_artist(Etk_Object *object, void *data)
 	char *artist;
 	const char **types;
 	unsigned int num_types;
-	MpdData *playlist=NULL, *tmplist;
+	Evas_List *playlist=NULL, *tmplist;
 
 	tree = ETK_TREE(object);
 	drag = ETK_DRAG((ETK_WIDGET(object))->drag);
@@ -199,7 +187,7 @@ cb_drag_artist(Etk_Object *object, void *data)
 		}
 		else
 		{
-			playlist = mpd_data_concatenate(playlist, tmplist);
+			playlist = evas_list_concatenate(playlist, tmplist);
 		}
 		next = evas_list_next(rowlist);		
 		rowlist = next;
@@ -208,7 +196,7 @@ cb_drag_artist(Etk_Object *object, void *data)
 	
 	types = calloc(1, sizeof(char));
 	num_types = 1;
-	types[0] = strdup("MpdData");
+	types[0] = strdup("Evas_List");
 	
 	etk_drag_types_set(drag, types, num_types);
 	etk_drag_data_set(drag, playlist, 1);
@@ -231,7 +219,7 @@ cb_drag_album(Etk_Object *object, void *data)
 	char *album, *artist;
 	const char **types;
 	unsigned int num_types;
-	MpdData *playlist=NULL, *tmplist;
+	Evas_List *playlist=NULL, *tmplist;
 	
 	tree = ETK_TREE(object);
 	drag = ETK_DRAG((ETK_WIDGET(object))->drag);
@@ -259,14 +247,14 @@ cb_drag_album(Etk_Object *object, void *data)
 		}
 		else
 		{
-			playlist = mpd_data_concatenate(playlist, tmplist);
+			playlist = evas_list_concatenate(playlist, tmplist);
 		}
 		rowlist = evas_list_next(rowlist);
 	}
 	
 	types = calloc(1, sizeof(char));
 	num_types = 1;
-	types[0] = strdup("MpdData");
+	types[0] = strdup("Evas_List");
 	
 	etk_drag_types_set(drag, types, num_types);
 	etk_drag_data_set(drag, playlist, 1);
@@ -291,7 +279,7 @@ cb_drag_track(Etk_Object *object, void *data)
 	char *title;
 	const char **types;
 	unsigned int num_types;
-	MpdData *playlist;
+	Evas_List *playlist;
 
 	tree = ETK_TREE(object);
 	drag = ETK_DRAG((ETK_WIDGET(object))->drag);
@@ -312,7 +300,7 @@ cb_drag_track(Etk_Object *object, void *data)
 	
 	types = calloc(1, sizeof(char));
 	num_types = 1;
-	types[0] = strdup("MpdData");
+	types[0] = strdup("Evas_List");
 	
 	etk_drag_types_set(drag, types, num_types);
 	etk_drag_data_set(drag, playlist, 1);
@@ -336,7 +324,7 @@ cb_drop_song(Etk_Object *object, void *event, void *data)
 	Etk_Tree *tree;
 	Etk_Tree_Row *row;
 	Etk_Drag *drag;
-	MpdData *list;
+	Evas_List *list;
 	
 	tree = ETK_TREE(object);
 	
@@ -565,7 +553,7 @@ cb_pls_bindings_key(Etk_Object *object, Etk_Event_Key_Up_Down *event, void *data
 	Emphasis_Gui *gui;
 	Etk_Tree_Row *row;
 	Evas_List *rowlist;
-	MpdData *list;
+	Evas_List *list;
 	
 	gui = (Emphasis_Gui *)data;
 	
@@ -590,7 +578,7 @@ cb_playlist_delete(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *dat
 	Emphasis_Gui *gui;
 	Etk_Tree_Row *row;
 	Evas_List *rowlist;
-	MpdData *list;
+	Evas_List *list;
 	
 	gui = (Emphasis_Gui *)data;
 	

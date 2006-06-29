@@ -46,9 +46,9 @@ typedef struct _Emphasis_Data {
 
 MpdData *mpd_new_data_struct_append(MpdData  * const data);
 MpdData* mpd_data_concatenate( MpdData  * const first, MpdData  * const second);
- 
-MpdData *convert_rowlist_in_playlist_with_file(Evas_List *rowlist);
-MpdData *convert_rowlist_in_playlist_with_id(Evas_List *rowlist);
+
+Evas_List *convert_rowlist_in_playlist_with_file(Evas_List *rowlist);
+Evas_List *convert_rowlist_in_playlist_with_id(Evas_List *rowlist);
 void mpd_data_full_free(MpdData *list);
 void emphasis_playlist_append_selected(Etk_Tree *tree, Emphasis_Type type);
 void emphasis_playlist_search_and_delete(Etk_Tree *tree, char *str, Emphasis_Type type);
@@ -57,6 +57,10 @@ Emphasis_Song *convert_mpd_song(mpd_Song *src);
 Evas_List *convert_mpd_data(MpdData *src);
 mpd_Song *convert_emphasis_song(Emphasis_Song *src);
 MpdData *convert_evas_list(Evas_List *src);
+
+void print_evas_list_stats(Evas_List *list);
+Evas_List *evas_list_concatenate(Evas_List *head, Evas_List *tail);
+void emphasis_list_free(Evas_List *list, MpdDataType mpd_type);
 /** @} */
 
 #endif /*_MISC_H_*/

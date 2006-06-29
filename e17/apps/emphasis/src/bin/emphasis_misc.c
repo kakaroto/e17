@@ -1,78 +1,92 @@
 #include "emphasis.h"
 #include "emphasis_misc.h"
 
+Evas_List *
+evas_list_concatenate(Evas_List *head, Evas_List *tail)
+{
+	Evas_List *p;
+	p = tail;
+
+	while (p)
+		{
+			evas_list_append(head, evas_list_data(p));
+			p = evas_list_next(p);
+		}
+	evas_list_free(tail);
+
+	return head;
+}
+
 /**
- * @brief Convert a list of row in a MpdData list.
+ * @brief Convert a list of row in a Evas_List.
  *        And set the song->file element
  * @param rowlist An Evas_List of song's row
  * @return A list of song
  */
-MpdData *
+Evas_List *
 convert_rowlist_in_playlist_with_file(Evas_List *rowlist)
 {
-	Evas_List *list;
+	Evas_List *list=NULL, *first_rowlist;
 	Etk_Tree_Row *row;
-	char *file;
-	MpdData *data=NULL;
+	Emphasis_Data *data=NULL;
 
 	if (!rowlist)
 		return NULL;
 		
-	list = rowlist;
+	first_rowlist = rowlist;
 	
 	while (rowlist)
 	{	
 		row = evas_list_data(rowlist);
-		file = etk_tree_row_data_get(row);
 		
-		data = mpd_new_data_struct_append(data);
+		data = malloc(sizeof(Emphasis_Data));
 		data->type = MPD_DATA_TYPE_SONG;
-		data->song = mpd_newSong();
-		data->song->file = file;
+		data->song = malloc(sizeof(Emphasis_Song));
+		data->song->file = strdup(etk_tree_row_data_get(row));
 		
+		list = evas_list_append(list, data);
 		rowlist = evas_list_next(rowlist);
 	}
 	
-	rowlist = list;
-	data = mpd_data_get_first(data);
-	return data;
+	rowlist = first_rowlist;
+	return list;
 }
 
 /**
- * @brief Convert a list of row in a MpdData.
+ * @brief Convert a list of row in a Evas_List.
  *        And set the song->id element
  * @param rowlist An Evas_List of song's row
  * @return A list of song
  */
-MpdData *
+Evas_List *
 convert_rowlist_in_playlist_with_id(Evas_List *rowlist)
 {
-	Evas_List *list;
+	Evas_List *list=NULL, *first_rowlist;
 	Etk_Tree_Row *row;
 	int id;
-	MpdData *data=NULL;
+	Emphasis_Data *data=NULL;
 
 	if (!rowlist)
 		return NULL;
 	
-	list = rowlist;
+	first_rowlist = rowlist;
 
 	while (rowlist)
 	{	
 		row = evas_list_data(rowlist);
 		id = (int)etk_tree_row_data_get(row);
 		
-		data = mpd_new_data_struct_append(data);
+		data = malloc(sizeof(Emphasis_Data));
 		data->type = MPD_DATA_TYPE_SONG;
-		data->song = mpd_newSong();
+		data->song = malloc(sizeof(Emphasis_Song));
 		data->song->id = id;
 		
+		list = evas_list_append(list, data);
 		rowlist = evas_list_next(rowlist);
 	}
 	
-	rowlist = list;
-	data = mpd_data_get_first(data);
-	return data;
+	rowlist = first_rowlist;
+	return list;
 }
 
 /**
@@ -89,7 +103,6 @@ mpd_data_full_free(MpdData *list)
 	{
 		next = mpd_data_get_next(list);
 		mpd_data_free(list);
-		printf("un free de plus youhou \\o/\n");
 		list = next;
 	}
 }
@@ -103,7 +116,7 @@ emphasis_playlist_append_selected(Etk_Tree *tree, Emphasis_Type type)
 {
 	Etk_Tree_Row *row;
 	Evas_List *rowlist, *list;
-	MpdData *playlist=NULL, *tmplist;
+	Evas_List *playlist=NULL, *tmplist;
 	char *artist, *album;
 
 	rowlist = etk_tree_selected_rows_get(tree);
@@ -122,7 +135,7 @@ emphasis_playlist_append_selected(Etk_Tree *tree, Emphasis_Type type)
 			}
 			else
 			{
-				playlist = mpd_data_concatenate(playlist, tmplist);
+				playlist = evas_list_concatenate(playlist, tmplist);
 			}
 			rowlist = evas_list_next(rowlist);		
 		}
@@ -142,7 +155,7 @@ emphasis_playlist_append_selected(Etk_Tree *tree, Emphasis_Type type)
 			}
 			else
 			{
-				playlist = mpd_data_concatenate(playlist, tmplist);
+				playlist = evas_list_concatenate(playlist, tmplist);
 			}
 			rowlist = evas_list_next(rowlist);
 		}
@@ -163,7 +176,7 @@ emphasis_playlist_search_and_delete(Etk_Tree *tree, char *str, Emphasis_Type typ
 	int num=-1;
 	char *row_str;
 	Evas_List *rowlist=NULL;
-	MpdData *list;
+	Evas_List *list;
 	
 	switch (type)
 	{
@@ -206,6 +219,42 @@ strdupnull(char *str)
 		return strdup(str);
 }
 
+void
+print_evas_list_stats(Evas_List *list)
+{
+	Evas_List *p;
+	p = list;
+	Emphasis_Data *data;
+	int count=0;
+
+	while (p)
+		{
+			data = evas_list_data(p);
+			switch (data->type)
+			{
+				case MPD_DATA_TYPE_NONE:
+					printf("MPD_DATA_TYPE_NONE\n");
+					break;
+				case MPD_DATA_TYPE_TAG:
+					printf("MPD_DATA_TYPE_TAG\n");
+					break;
+				case MPD_DATA_TYPE_DIRECTORY:
+					printf("MPD_DATA_TYPE_DIRECTORY\n");
+					break;
+				case MPD_DATA_TYPE_SONG:
+					printf("MPD_DATA_TYPE_SONG\n");
+					break;
+				case MPD_DATA_TYPE_PLAYLIST:
+					printf("MPD_DATA_TYPE_PLAYLIST\n");
+					break;
+			}
+			p = evas_list_next(p);
+			count++;
+		}
+	printf("total numbers of elements : %d\n", count);
+}
+
+
 Emphasis_Song *
 convert_mpd_song(mpd_Song *src)
 {
@@ -237,13 +286,13 @@ convert_mpd_data(MpdData *src)
 {
 	int loop=1;
 	Evas_List *dest=NULL;
+	Emphasis_Data *data;
 
 	if (!src)
 		return NULL;
 
 	while (loop)
 	{
-		Emphasis_Data *data;
 
 		data = malloc(sizeof(Emphasis_Data));
 		switch (src->type)
@@ -277,6 +326,7 @@ convert_mpd_data(MpdData *src)
 			src = mpd_data_get_next(src);
 	}
 	src = mpd_data_get_first(src);
+
 	return dest;
 }
 
@@ -349,3 +399,35 @@ convert_evas_list(Evas_List *src)
 	return dest;
 }
 
+void
+emphasis_list_free(Evas_List *list, MpdDataType mpd_type)
+{
+	Emphasis_Data *data;
+
+	list = evas_list_last(list);
+	while (evas_list_prev(list))
+		{
+			data = evas_list_data(list);
+			if (data->song)
+				{
+					if (data->song->file)     { free(data->song->file);     }
+					if (data->song->artist)   { free(data->song->artist);   }
+					if (data->song->title)    { free(data->song->title);    }
+					if (data->song->album)    { free(data->song->album);    }
+					if (data->song->track)    { free(data->song->track);    }
+					if (data->song->name)     { free(data->song->name);     }
+					if (data->song->date)     { free(data->song->date);     }
+					if (data->song->genre)    { free(data->song->genre);    }
+					if (data->song->composer) { free(data->song->composer); }
+					free(data->song);
+				}
+			if (data->tag) { free(data->tag); }
+			if (data->playlist) { free(data->playlist); }
+			if (data->directory) { free(data->directory); }
+			free(data);
+			list = evas_list_prev(list);
+		}
+		data = evas_list_data(list);
+		free(data);
+		list = evas_list_free(list);
+}

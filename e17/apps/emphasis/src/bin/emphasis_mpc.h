@@ -21,12 +21,12 @@ void mpc_connection_changed(MpdObj *mo, int connect, void *data);
 
 int mpc_assert_status(MpdState status);
 
-MpdData *mpc_mlib_artist_get(void);
-MpdData *mpc_mlib_album_get(char *artist);
-MpdData *mpc_mlib_track_get(char *album, char *artist);
+Evas_List *mpc_mlib_artist_get(void);
+Evas_List *mpc_mlib_album_get(char *artist);
+Evas_List *mpc_mlib_track_get(char *album, char *artist);
 
-void mpc_playlist_add(MpdData *list);
-void mpc_playlist_delete(MpdData *list);
+void mpc_playlist_add(Evas_List *list);
+void mpc_playlist_delete(Evas_List *list);
 void mpc_playlist_clear(void);
 
 void mpc_play_id(int id);
@@ -44,5 +44,6 @@ void mpc_toggle_repeat(void);
 
 void mpc_change_vol(int value);
 void mpc_database_update(char *path);
+void mpc_disconnect(void);
 /** @} */
 #endif /*_MPC_H_*/

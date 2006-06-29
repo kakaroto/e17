@@ -68,8 +68,8 @@ void emphasis_clear(Emphasis_Gui *gui);
 void emphasis_menu_append(Etk_Widget *menu, ...);
 
 void emphasis_tree_mlib_init(Emphasis_Gui *gui, Emphasis_Type type);
-void emphasis_tree_mlib_set(Etk_Tree *tree, MpdData *list, MpdDataType mpd_type);
-void emphasis_tree_pls_set(Etk_Tree *tree, MpdData *playlist);
+void emphasis_tree_mlib_set(Etk_Tree *tree, Evas_List *list, MpdDataType mpd_type);
+void emphasis_tree_pls_set(Etk_Tree *tree, Evas_List *playlist);
 void emphasis_pls_mark_current(Etk_Tree *tree, int id);
 
 void emphasis_unknow_if_null(char **table[]);
