@@ -68,6 +68,14 @@ at http://enlightenment.sourceforge.net/doxy/ewl/index.html.
 There is also a quick introductory page on EWL available at: 
 http://www.enlightenment.org/pages/ewl.html.
 
+EWL also provides a set of built in tutorials and source code examples.
+These are provided through the ewl_test application. As you run tests you
+can switch to the Source or Tutorial tabs to see a listing for that test and
+some information on that widget. (Note, only a few widgets have tutorials at
+the moment. We are working on filling in more. If you'd like to contribute
+please feel free to send patches adding tutorials. These tutorials also show
+up in the main EWL documentation for each widget.)
+
 EWL also fully supports being embeded into an Evas application. So, if
 you're writting an application in Evas/Edje and just require a simple text
 entry, or some buttons, you can embed the EWL widgets into you're
