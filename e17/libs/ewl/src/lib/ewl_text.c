@@ -2186,6 +2186,62 @@ ewl_text_double_underline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param text: The text to work with
+ * @param pos: The position to move too
+ * @return Returns the position to use
+ * @brief Finds the actual text position to move to when you select the @a
+ * pos
+ */
+unsigned int
+ewl_text_utf_char_position_next(const char *text, unsigned int pos)
+{
+	const unsigned char *t;
+	int len;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("text", text, 0);
+
+	if (text[0] == '\0')
+		DRETURN_INT(0, DLEVEL_STABLE);
+
+	t = text;
+	len = strlen(text);
+
+	while ((t[pos] >= 0x80) && (t[pos] <= 0xbf) && (pos < len));
+		pos++;
+
+	DRETURN_INT(pos, DLEVEL_STABLE);
+}
+
+/**
+ * @param text: The text to work with
+ * @param pos: The position to move too
+ * @return Returns the position to use
+ * @brief Finds the actual text position to move to when you select the @a
+ * pos
+ */
+unsigned int
+ewl_text_utf_char_position_prev(const char *text, unsigned int pos)
+{
+	const unsigned char *t;
+	int len;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("text", text, 0);
+
+	if (text[0] == '\0')
+		DRETURN_INT(0, DLEVEL_STABLE);
+
+	t = text;
+	len = strlen(text);
+
+	while ((t[pos] >= 0x80) && (t[pos] <= 0xbf) && (pos < len));
+		pos--;
+
+	DRETURN_INT(pos, DLEVEL_STABLE);
+}
+
 static void
 ewl_text_display(Ewl_Text *t)
 {
@@ -2972,48 +3028,6 @@ ewl_text_cb_child_del(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
 	FREE(appearance);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-unsigned int
-ewl_text_utf_char_position_next(const char *text, unsigned int pos)
-{
-	const unsigned char *t;
-	int len;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("text", text, 0);
-
-	if (text[0] == '\0')
-		DRETURN_INT(0, DLEVEL_STABLE);
-
-	t = text;
-	len = strlen(text);
-
-	while ((t[pos] >= 0x80) && (t[pos] <= 0xbf) && (pos < len));
-		pos++;
-
-	DRETURN_INT(pos, DLEVEL_STABLE);
-}
-
-unsigned int
-ewl_text_utf_char_position_prev(const char *text, unsigned int pos)
-{
-	const unsigned char *t;
-	int len;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("text", text, 0);
-
-	if (text[0] == '\0')
-		DRETURN_INT(0, DLEVEL_STABLE);
-
-	t = text;
-	len = strlen(text);
-
-	while ((t[pos] >= 0x80) && (t[pos] <= 0xbf) && (pos < len));
-		pos--;
-
-	DRETURN_INT(pos, DLEVEL_STABLE);
 }
 
 /*
