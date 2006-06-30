@@ -2978,17 +2978,19 @@ unsigned int
 ewl_text_utf_char_position_next(const char *text, unsigned int pos)
 {
 	const unsigned char *t;
+	int len;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("text", text, 0);
+
+	if (text[0] == '\0')
+		DRETURN_INT(0, DLEVEL_STABLE);
 
 	t = text;
+	len = strlen(text);
 
-	if (!text) {
-		DRETURN_INT(0, DLEVEL_STABLE);
-	}
-	
-	do {
+	while ((t[pos] >= 0x80) && (t[pos] <= 0xbf) && (pos < len));
 		pos++;
-	}
-	while (t[pos] >= 0x80 && t[pos] <= 0xbf);
 
 	DRETURN_INT(pos, DLEVEL_STABLE);
 }
@@ -2997,16 +2999,19 @@ unsigned int
 ewl_text_utf_char_position_prev(const char *text, unsigned int pos)
 {
 	const unsigned char *t;
+	int len;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("text", text, 0);
+
+	if (text[0] == '\0')
+		DRETURN_INT(0, DLEVEL_STABLE);
 
 	t = text;
+	len = strlen(text);
 
-	if (!text)
-		DRETURN_INT(0, DLEVEL_STABLE);
-	
-	do {
+	while ((t[pos] >= 0x80) && (t[pos] <= 0xbf) && (pos < len));
 		pos--;
-	}
-	while (t[pos] >= 0x80 && t[pos] <= 0xbf && pos > 0);
 
 	DRETURN_INT(pos, DLEVEL_STABLE);
 }
