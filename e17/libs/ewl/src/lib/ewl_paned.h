@@ -104,11 +104,6 @@ Ewl_Orientation  ewl_paned_grabber_orientation_get(Ewl_Paned_Grabber *g);
 void		 ewl_paned_grabber_show_cursor_for(Ewl_Paned_Grabber *g, 
 							unsigned int dir);
 
-void		 ewl_paned_grabber_placed_set(Ewl_Paned_Grabber *g,
-						unsigned int placed);
-unsigned int	 ewl_paned_grabber_placed_get(Ewl_Paned_Grabber *g);
-
-
 /**
  * @}
  */

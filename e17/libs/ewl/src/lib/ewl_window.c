@@ -436,7 +436,7 @@ ewl_window_transient_for(Ewl_Window *win, Ewl_Window *forwin)
 
 /**
  * @param win: The window to work with
- * @param modal: The main window
+ * @param forwin: The window to go modal for
  * @return Returns no value
  * @brief Sets the window to modal for @a forwin
  */
