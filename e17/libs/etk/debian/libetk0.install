@@ -3,5 +3,4 @@ debian/tmp/usr/share/etk/fonts/*.ttf
 debian/tmp/usr/share/etk/fonts/fonts.alias
 debian/tmp/usr/share/etk/fonts/fonts.dir
 debian/tmp/usr/share/etk/icons/*
-debian/tmp/usr/share/etk/locale/*
 debian/tmp/usr/share/etk/themes/*
