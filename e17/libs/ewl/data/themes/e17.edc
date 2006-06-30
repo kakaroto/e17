@@ -130,7 +130,7 @@ data {
     item, "/hseeker/hbutton/group"  "hscrollbar_drag";
 
     item, "/border/group"  "border";
-    item, "/border/text/group"  "border/label";
+    item, "/border/label/group"  "border/label";
 
     item, "/imenu/group" "menu";
     item, "/menu/group" "menu";

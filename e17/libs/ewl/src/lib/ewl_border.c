@@ -48,7 +48,7 @@ ewl_border_init(Ewl_Border * b)
 	ewl_widget_appearance_set(EWL_WIDGET(b), EWL_BORDER_TYPE);
 	ewl_widget_inherit(EWL_WIDGET(b), EWL_BORDER_TYPE);
 
-	b->label = ewl_text_new();
+	b->label = ewl_label_new();
 	ewl_widget_internal_set(b->label, TRUE);
 	ewl_container_child_append(EWL_CONTAINER(b), b->label);
 	ewl_widget_show(b->label);
@@ -80,7 +80,7 @@ ewl_border_text_set(Ewl_Border * b, char *t)
 	DCHECK_PARAM_PTR("b", b);
 	DCHECK_TYPE("b", b, EWL_BORDER_TYPE);
 
-	ewl_text_text_set(EWL_TEXT(b->label), t);
+	ewl_label_text_set(EWL_LABEL(b->label), t);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -97,7 +97,7 @@ ewl_border_text_get(Ewl_Border * b)
 	DCHECK_PARAM_PTR_RET("b", b, NULL);
 	DCHECK_TYPE_RET("b", b, EWL_BORDER_TYPE, NULL);
 
-	DRETURN_PTR(ewl_text_text_get(EWL_TEXT(b->label)), DLEVEL_STABLE);
+	DRETURN_PTR(ewl_label_text_get(EWL_LABEL(b->label)), DLEVEL_STABLE);
 }
 
 /**
