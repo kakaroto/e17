@@ -34,8 +34,6 @@ get_t(char *icon)
         i++;
      }
    dir[i] = '\0';
-   if (d)
-      free(d);
    if (ptr)
       free(ptr);
    return strdup(dir);
