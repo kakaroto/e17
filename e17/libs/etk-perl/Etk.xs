@@ -1273,31 +1273,40 @@ etk_container_type_get()
 
 Etk_Widget *
 etk_dialog_button_add(dialog, label, response_id)
-	Etk_Dialog *	dialog
+	Etk_Widget *	dialog
 	char *	label
 	int	response_id
+        CODE:
+        etk_dialog_button_add(ETK_DIALOG(dialog), label, response_id);
 
 Etk_Widget *
 etk_dialog_button_add_from_stock(dialog, stock_id, response_id)
-	Etk_Dialog *	dialog
+	Etk_Widget *	dialog
 	int	stock_id
 	int	response_id
-
+        CODE:
+        etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), stock_id, response_id);
+  
 Etk_Bool
 etk_dialog_has_separator_get(dialog)
-	Etk_Dialog *	dialog
+	Etk_Widget *	dialog
+        CODE:
+        etk_dialog_has_separator_get(ETK_DIALOG(dialog));
 
 void
 etk_dialog_has_separator_set(dialog, has_separator)
-	Etk_Dialog *	dialog
+	Etk_Widget *	dialog
 	Etk_Bool	has_separator
+        CODE:
+        etk_dialog_has_separator_set(ETK_DIALOG(dialog), has_separator);
+  
 
 Etk_Widget *
 etk_dialog_new()
 
 void
 etk_dialog_pack_button_in_action_area(dialog, button, response_id, expand, fill, padding, pack_at_end)
-	Etk_Dialog *	dialog
+	Etk_Widget *	dialog
 	Etk_Widget *	button
 	int	response_id
 	Etk_Bool	expand
@@ -1305,25 +1314,29 @@ etk_dialog_pack_button_in_action_area(dialog, button, response_id, expand, fill,
 	int	padding
 	Etk_Bool	pack_at_end
 	CODE:
-	etk_dialog_pack_button_in_action_area(dialog, ETK_BUTTON(button), response_id, expand, fill, padding, pack_at_end);
+	etk_dialog_pack_button_in_action_area(ETK_DIALOG(dialog), ETK_BUTTON(button), response_id, expand, fill, padding, pack_at_end);
 
 void
 etk_dialog_pack_in_main_area(dialog, widget, expand, fill, padding, pack_at_end)
-	Etk_Dialog *	dialog
+	Etk_Widget *	dialog
 	Etk_Widget *	widget
 	Etk_Bool	expand
 	Etk_Bool	fill
 	int	padding
 	Etk_Bool	pack_at_end
+        CODE:
+        etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), widget, expand, fill, padding, pack_at_end);
 
 void
 etk_dialog_pack_widget_in_action_area(dialog, widget, expand, fill, padding, pack_at_end)
-	Etk_Dialog *	dialog
+	Etk_Widget *	dialog
 	Etk_Widget *	widget
 	Etk_Bool	expand
 	Etk_Bool	fill
 	int	padding
 	Etk_Bool	pack_at_end
+        CODE:
+        etk_dialog_pack_widget_in_action_area(ETK_DIALOG(dialog), widget, expand, fill, padding, pack_at_end);
 
 Etk_Type *
 etk_dialog_type_get()
