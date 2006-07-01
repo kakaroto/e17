@@ -233,7 +233,7 @@ _ss_config_item_get(const char *id)
      }
    ci->prompt = 0;
    ci->location = evas_stringshare_add(e_user_homedir_get());
-   ci->filename = evas_stringshare_add("");
+   ci->filename = NULL;
    ci->import.use_img_border = 1;
    ci->import.use_dither = 1;
    ci->import.use_frame = 1;
@@ -324,7 +324,7 @@ e_modapi_init(E_Module *m)
           }
 	ci->prompt = 0;
         ci->location = evas_stringshare_add(e_user_homedir_get());
-        ci->filename = evas_stringshare_add("");
+        ci->filename = NULL;
         ci->import.use_img_border = 1;
         ci->import.use_dither = 1;
         ci->import.use_frame = 1;
@@ -441,11 +441,10 @@ _ss_handle_mouse_down(Instance *inst)
 
    if (!ci->prompt) 
      {
-	if (!ci->filename) 
+	if ((!ci->filename) || (ci->filename == NULL)) 
 	  {
 	     char *f = _get_filename(ci);
-	     ci->filename = evas_stringshare_add(f);
-	     e_config_save_queue();
+	     inst->filename = evas_stringshare_add(f);
 	  }
 	_ss_take_shot(inst);
      }
@@ -538,7 +537,7 @@ _get_filename(Config_Item *ci)
         t = time(NULL);
         loctime = localtime(&t);
         strftime(buff, sizeof(buff), "%Y-%m-%d-%H%M%S", loctime);
-        snprintf(buff, sizeof(buff), "%s/%s.png", strdup(ci->location), strdup(buff));
+        snprintf(buff, sizeof(buff), "%s.png", strdup(buff));
      }
    else
      {
@@ -554,7 +553,7 @@ _get_filename(Config_Item *ci)
 	       c = 1;
              else 
 	       c++;
-             snprintf(buff, sizeof(buff), "%s/%s%i.png", strdup(ci->location), strdup(ci->filename), c);
+             snprintf(buff, sizeof(buff), "%s%i.png", strdup(ci->filename), c);
           }
      }
    return strdup(buff);
@@ -622,17 +621,11 @@ _ss_take_shot(void *data)
         return;
      }
 
-   p = strrchr(ci->filename, '.');
+   p = strrchr(inst->filename, '.');
    if (!p) 
-     {
-	snprintf(buf, sizeof(buf), "%s.png", ci->filename);
-	evas_stringshare_del(ci->filename);
-	ci->filename = evas_stringshare_add(buf);
-	e_config_save_queue();
-     }
+     snprintf(buf, sizeof(buf), "%s.png", inst->filename);
    
-   snprintf(buf, sizeof(buf), "%s %s %s/%s", cmd, opt, ci->location, ci->filename);
-   inst->filename = evas_stringshare_add(ci->filename);
+   snprintf(buf, sizeof(buf), "%s %s %s/%s", cmd, opt, ci->location, inst->filename);
    ss_config->exe_exit_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _ss_exe_cb_exit, NULL);
    if (ci->delay_time > 0)
      {
@@ -684,11 +677,7 @@ _cb_entry_ok(char *text, void *data)
 	ci->location = evas_stringshare_add(t);
      }
    
-   if (ci->filename)
-     evas_stringshare_del(ci->filename);   
-   ci->filename = evas_stringshare_add(text);
-   e_config_save_queue();
-   
+   inst->filename = strdup(text);
    _ss_take_shot(inst);
 }
 

@@ -199,12 +199,9 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
         ci->location = evas_stringshare_add(tmp);
      }
 
-   if (ci->filename)
-     evas_stringshare_del(ci->filename);
+   evas_stringshare_del(ci->filename);
    if (cfdata->filename != NULL) 
      ci->filename = evas_stringshare_add(cfdata->filename); 
-   else
-     ci->filename = evas_stringshare_add("");
 
    ci->delay_time = cfdata->delay_time;
    e_config_save_queue();
