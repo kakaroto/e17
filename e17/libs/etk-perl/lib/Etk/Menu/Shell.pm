@@ -60,9 +60,12 @@ sub Remove
 
 sub ItemsGet
 {
-    # TODO: pending list implementation
     my $self = shift;
-    return Etk::etk_menu_shell_items_get($self->{WIDGET});
+    return map {
+	my $widget = Etk::Widget->new();
+	$widget->{WIDGET} = $_;
+	$_ = $widget;
+    } Etk::etk_menu_shell_items_get($self->{WIDGET});
 }
 
 1;

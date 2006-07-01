@@ -192,9 +192,4 @@ sub Clear
     Etk::etk_combobox_clear($self->{WIDGET});
 }
 
-sub ItemDataSet
-{
-    # TODO
-}
-
 1;

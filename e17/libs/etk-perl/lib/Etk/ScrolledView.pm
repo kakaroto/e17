@@ -3,6 +3,13 @@ use strict;
 use vars qw(@ISA);
 require Etk::Widget;
 @ISA = ("Etk::Widget");
+
+use constant {
+	PolicyShow	=> 0,
+	PolicyHide	=> 1,
+	PolicyAuto	=> 2
+};
+
 sub new
 {
     my $class = shift;
@@ -33,10 +40,19 @@ sub VScrollBarGet
 
 sub PolicyGet
 {
+    my $self = shift;
+    # RETURNS
+    # hpolicy
+    # vpolicy
+    return Etk::etk_scrolled_view_policy_get($self->{WIDGET});
 }
 
 sub PolicySet
 {
+    my $self = shift;
+    my $hpolicy = shift;
+    my $vpolicy = shift;
+    Etk::etk_scrolled_view_policy_set($self->{WIDGET}, $hpolicy, $vpolicy);
 }
 
 1;

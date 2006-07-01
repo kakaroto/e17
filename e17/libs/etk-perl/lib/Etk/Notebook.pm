@@ -54,6 +54,12 @@ sub NumPagesGet
     return Etk::etk_notebook_num_pages_get($self->{WIDGET});
 }
 
+sub CurrentPageSet
+{
+    my $self = shift;
+    my $page = shift;
+    Etk::etk_notebook_current_page_set($self->{WIDGET}, $page);
+}
 sub CurrentPageGet
 {
     my $self = shift;

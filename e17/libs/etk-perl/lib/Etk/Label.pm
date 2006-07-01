@@ -37,7 +37,10 @@ sub AlignmentSet
 sub AlignmentGet
 {
     my $self = shift;
-    Etk::etk_label_alignment_get($self->{WIDGET}, shift, shift);
+    # RETURNS
+    # xalign
+    # yalign
+    return Etk::etk_label_alignment_get($self->{WIDGET});
 }
 
 1;

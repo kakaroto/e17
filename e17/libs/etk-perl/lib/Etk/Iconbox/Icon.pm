@@ -42,12 +42,15 @@ sub LabelGet
 
 sub DataSet
 {
-    # TODO
+    my $self = shift;
+    my $data = shift;
+    Etk::etk_iconbox_icon_data_set($self->{WIDGET}, $data);
 }
 
 sub DataGet
 {
-    # TODO
+    my $self = shift;
+    return Etk::etk_iconbox_icon_data_get($self->{WIDGET});
 }
 
 sub Select

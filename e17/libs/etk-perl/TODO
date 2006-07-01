@@ -1,6 +1,7 @@
 
 General TODO:
 =============
+- finish up etk_widget.h
 - add some commonly used internal tree sorters to avoid the entire
   perl -> c -> perl ... loop when sorting trees.
 - finish porting etk_test from C to perl
@@ -9,24 +10,30 @@ General TODO:
   to return a list of values to the perl caller
 - finish remaining signal_connect functions (swapped etc.)
 - perldoc everything
-- create an evas_list to perl list converter
 - go over all enums and structs and port as needed
-- etk_argument.h
-- etk_cache.h
-- etk_colorpicker_*.h
 - etk_editable_text_object.h
-- etk_marshallers.h
-- etk_propery.h
-- etk_radio_button.h
-- etk_string.h
 - etk_text_buffer.h
 - etk_text_iter.h
 - etk_text_view.h
 - etk_textblock.h
 - etk_theme.h
-- etk_toplevel_widget.h
 - etk_type.h
 - etk_types.h
 - etk_utils.h
+- create Test cases
 - etk_main.h [DONE]
 - wrap up functions that use (...): important ones are combo for now [DONE]
+- etk_marshallers.h [DONE]
+- etk_toplevel_widget.h [DONE]
+- etk_colorpicker_*.h [DONE]
+- create an evas_list to perl list converter [DONE]
+- etk_radio_button.h [DONE]
+- etk_argument.h [NOT NEEDED]
+- etk_cache.h [NOT NEEDED]
+- etk_string.h [NOT NEEDED]
+- etk_propery.h [NOT NEEDED]
+
+Pending:
+========
+etk_canvas.h
+

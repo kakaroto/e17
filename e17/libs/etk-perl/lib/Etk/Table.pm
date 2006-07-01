@@ -68,13 +68,13 @@ sub HomogenousSet
 {
     my $self = shift;
     my $homogenous = shift;
-    Etk::etk_table_homogenous_set($self->{WIDGET}, $homogenous);
+    Etk::etk_table_homogeneous_set($self->{WIDGET}, $homogenous);
 }
 
 sub HomogenousGet
 {
     my $self = shift;
-    return Etk::etk_table_homogenous_get($self->{WIDGET});
+    return Etk::etk_table_homogeneous_get($self->{WIDGET});
 }
 
 1;

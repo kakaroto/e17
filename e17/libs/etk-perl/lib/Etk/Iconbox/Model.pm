@@ -81,4 +81,17 @@ sub LabelGeometrySet
 	$height, $xalign, $yalign);
 }
 
+sub LabelGeometryGet
+{
+    my $self = shift;
+    # RETURNS
+    # x
+    # y
+    # width
+    # height
+    # xalign
+    # yalign
+    return Etk::etk_iconbox_model_label_geometry_get($self->{WIDGET});
+}
+
 1;

@@ -9,6 +9,8 @@ use Etk::Combobox;
 use Etk::Combobox::Item;
 use Etk::Entry;
 use Etk::FillPolicy;
+use Etk::Dialog;
+use Etk::Filechooser;
 use Etk::Frame;
 use Etk::HBox;
 use Etk::HPaned;
@@ -1182,17 +1184,22 @@ sub colorpicker_window_show
 {
     my $win = Etk::Window->new("Etk-Perl Color Picker Test");
     my $cp = Etk::Colorpicker->new();
+    
     $win->Add($cp);
     $win->ShowAll();
 }
 
 sub filechooser_window_show
 {
-    my $win = Etk::Window->new("Etk-Perl Filechooser Test");
-    my $label = Etk::Label->new("<b>Etk::Filechooser test is not implemented yet.</b>");
+    my $win = Etk::Dialog->new();
+    $win->TitleSet("Etk-Perl Filechooser Test");
     
-    $win->Add($label);
-    $win->BorderWidthSet(10);
+    my $fc = Etk::Filechooser->new();
+    $win->PackInMainArea($fc, 1, 1, 0, 0);
+    $win->ButtonAdd("Open", 1);
+    $win->ButtonAdd("Close", 2);
+    
+
     $win->ShowAll();   
 }
 

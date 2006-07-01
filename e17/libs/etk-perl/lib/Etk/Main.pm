@@ -27,7 +27,11 @@ sub ToplevelWidgetRemove
 
 sub ToplevelWidgetsGet
 {
-    # TODO
+    return map {
+	my $widget = Etk::ToplevelWidget->new();
+	$widget->{WIDGET} = $_;
+	$_ = $widget;
+    } Etk::etk_main_toplevel_widgets_get();
 }
 
 1;

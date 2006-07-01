@@ -60,7 +60,8 @@ sub SelectedFileGet
 
 sub SelectedFilesGet
 {
-    # TODO: pending todo to convert lists to perl lists
+    my $self = shift;
+    return Etk::etk_filechooser_widget_selected_files_get($self->{WIDGET});
 }
 
 1;

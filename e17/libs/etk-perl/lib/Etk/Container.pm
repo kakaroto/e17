@@ -7,6 +7,7 @@ sub new
 {
     my $class = shift;
     my $self = $class->SUPER::new();
+    $self->{CHILDREN} = ();
     bless($self, $class);
     return $self;
 }
@@ -17,6 +18,7 @@ sub Add
     # confess "usage: \$container->Add(\$widget)" unless @_ == 1;
     my $widget = shift;
     Etk::etk_container_add($self->{WIDGET}, $widget->{WIDGET});
+    push @{$self->{CHILDREN}}, $widget;
 }
 
 sub Remove
@@ -41,7 +43,8 @@ sub BorderWidthGet
 
 sub ChildrenGet
 {
-    # TODO
+    my $self = shift;
+    return @{$self->{CHILDREN}};
 }
 
 sub IsChild
@@ -49,16 +52,6 @@ sub IsChild
     my $self = shift;
     my $widget = shift;
     return Etk::etk_container_is_child($self->{WIDGET}, $widget->{WIDGET});
-}
-
-sub ContainerForEach
-{
-    # TODO
-}
-
-sub ContainerForEachData
-{
-    # TODO
 }
 
 sub ChildSpaceFill
@@ -70,7 +63,8 @@ sub ChildSpaceFill
     my $vfill = shift;
     my $xalign = shift;
     my $yalign = shift;
-    # TODO: we need to port Etk_Geometry
+    Etk::etk_container_child_space_fill($child->{WIDGET}, $child_space,
+    	$hfill, $vfill, $xalign, $yalign);
 }
 
 1;
