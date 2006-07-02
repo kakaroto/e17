@@ -43,8 +43,8 @@ static void _etk_textblock_node_format_get(Etk_Textblock_Node *node, Etk_Textblo
 
 static Etk_Textblock_Node *_etk_textblock_nodes_clean(Etk_Textblock *tb, Etk_Textblock_Node *nodes);
 static void _etk_textblock_tag_insert(Etk_Textblock *tb, Etk_Textblock_Iter *iter, const char *tag, int length);
-static void _etk_textblock_paragraph_add(Etk_Textblock *tb, Etk_Textblock_Iter *iter);
-static void _etk_textblock_line_add(Etk_Textblock *tb, Etk_Textblock_Iter *iter);
+static Etk_Textblock_Node *_etk_textblock_paragraph_add(Etk_Textblock *tb, Etk_Textblock_Iter *iter);
+static Etk_Textblock_Node *_etk_textblock_line_add(Etk_Textblock *tb, Etk_Textblock_Iter *iter);
 static void _etk_textblock_node_text_get(Etk_Textblock_Node *node, Etk_Bool markup, Etk_String *text);
 
 static void _etk_textblock_node_copy(Etk_Textblock_Node *dest, const Etk_Textblock_Node *src, Etk_Bool copy_text);
@@ -1104,6 +1104,11 @@ static void _etk_textblock_tag_insert(Etk_Textblock *tb, Etk_Textblock_Iter *ite
                new_node = n;
                break;
             }
+            if (n->prev || iter->index > 0)
+            {
+               new_node = _etk_textblock_paragraph_add(tb, iter);
+               break;
+            }
          }
          if (!new_node)
             return;
@@ -1266,36 +1271,42 @@ static void _etk_textblock_tag_insert(Etk_Textblock *tb, Etk_Textblock_Iter *ite
    }
 }
 
-/* Adds a new paragragh in the textblock, at the iterator's position */
-static void _etk_textblock_paragraph_add(Etk_Textblock *tb, Etk_Textblock_Iter *iter)
+/* Adds a new paragragh in the textblock, at the iterator's position. Returns the new paragraph node*/
+static Etk_Textblock_Node *_etk_textblock_paragraph_add(Etk_Textblock *tb, Etk_Textblock_Iter *iter)
 {
    Etk_Textblock_Node *new_paragraph;
    
    if (!tb || !iter || !_etk_textblock_iter_is_valid(tb, iter))
-      return;
+      return NULL;
    
    new_paragraph = _etk_textblock_node_new(NULL, NULL, ETK_TEXTBLOCK_NODE_PARAGRAPH, ETK_TEXTBLOCK_TAG_P);
    if (!_etk_textblock_node_close(iter, ETK_TEXTBLOCK_NODE_PARAGRAPH, ETK_TEXTBLOCK_TAG_P, new_paragraph))
    {
       ETK_WARNING("Could not add a new paragraph!\n");
       _etk_textblock_node_free(new_paragraph);
+      return NULL;
    }
+   
+   return new_paragraph;
 }
 
-/* Adds a new line in the textblock, at the iterator's position */
-static void _etk_textblock_line_add(Etk_Textblock *tb, Etk_Textblock_Iter *iter)
+/* Adds a new line in the textblock, at the iterator's position. Returns the new line node */
+static Etk_Textblock_Node *_etk_textblock_line_add(Etk_Textblock *tb, Etk_Textblock_Iter *iter)
 {
    Etk_Textblock_Node *new_line;
    
    if (!tb || !iter || !_etk_textblock_iter_is_valid(tb, iter))
-      return;
+      return NULL;
    
    new_line = _etk_textblock_node_new(NULL, NULL, ETK_TEXTBLOCK_NODE_LINE, ETK_TEXTBLOCK_TAG_DEFAULT);
    if (!_etk_textblock_node_close(iter, ETK_TEXTBLOCK_NODE_LINE, ETK_TEXTBLOCK_TAG_DEFAULT, new_line))
    {
       ETK_WARNING("Could not add a new line!\n");
       _etk_textblock_node_free(new_line);
+      return NULL;
    }
+   
+   return new_line;
 }
 
 /* Gets recursively the text of the node */ 
