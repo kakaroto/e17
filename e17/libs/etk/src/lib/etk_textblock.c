@@ -1110,7 +1110,7 @@ static void _etk_textblock_tag_insert(Etk_Textblock *tb, Etk_Textblock_Iter *ite
       }
       else
       {
-         if (node->tag.type == ETK_TEXTBLOCK_TAG_DEFAULT)
+         if (node->type == ETK_TEXTBLOCK_NODE_NORMAL && node->tag.type == ETK_TEXTBLOCK_TAG_DEFAULT)
          {
             if (node->text)
             {
@@ -1405,12 +1405,6 @@ static void _etk_textblock_node_text_get(Etk_Textblock_Node *node, Etk_Bool mark
             break;
          default:
             break;
-      }
-      
-      if (node->type == ETK_TEXTBLOCK_NODE_LINE)
-      {
-         start_tag = etk_string_new("<LINE>");
-         end_tag = etk_string_new("</LINE>");
       }
    }
    

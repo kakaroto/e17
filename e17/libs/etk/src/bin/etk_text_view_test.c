@@ -23,7 +23,7 @@ void etk_test_text_view_window_create(void *data)
 
    text_view = etk_text_view_new();
    /*etk_textblock_text_set(ETK_TEXT_VIEW(text_view)->textblock,
-      "Test <b>Bold <i>Bold Italic </b>Italic </i>Test",
+      "Test1 <b>Bold <i>Bold_Italic </b>Italic </i>Test2",
       ETK_TRUE);*/
    etk_textblock_text_set(ETK_TEXT_VIEW(text_view)->textblock,
       "<p align=\"center\">Title</p>"
