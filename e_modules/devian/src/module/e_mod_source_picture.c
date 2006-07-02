@@ -339,7 +339,6 @@ int DEVIANF(source_picture_original_size_get) (Source_Picture *source, int part,
 
 void DEVIANF(source_picture_dialog_infos) (Source_Picture *source)
 {
-   E_Dialog *dia;
    char buf[4096];
    char *path = NULL;
    int edje_part;
@@ -360,10 +359,6 @@ void DEVIANF(source_picture_dialog_infos) (Source_Picture *source)
    if (!path)
      return;
 
-   dia = e_dialog_new(DEVIANM->container);
-   if (!dia)
-     return;
-
    snprintf(buf, 4096,
             "<hilight>Informations on %s</hilight><br><br>"
             "<underline=on underline_color=#000>Picture path :</> %s<br>"
@@ -371,13 +366,7 @@ void DEVIANF(source_picture_dialog_infos) (Source_Picture *source)
             "<underline=on underline_color=#000>Total pictures in local list :</> %d",
             DEVIANF(source_picture_name_get) (source, edje_part), path,
 	    evas_list_count(DEVIANM->picture_list_local->pictures));
-   e_dialog_title_set(dia, MODULE_NAME " Module - Picture Informations");
-   e_dialog_icon_set(dia, "enlightenment/e", 64);
-   e_dialog_text_set(dia, buf);
-   e_dialog_button_add(dia, _("Ok"), NULL, NULL, NULL);
-   e_win_centered_set(dia->win, 1);
-   e_dialog_show(dia);
-
+   e_module_dialog_show(DEVIANM->module, _(MODULE_NAME " Module Information"), buf);
 }
 
 char *DEVIANF(source_picture_name_get) (Source_Picture *source, int part)

@@ -188,13 +188,9 @@ int DEVIANF(source_rss_original_size_get) (Source_Rss *source, int part, int *w,
 
 void DEVIANF(source_rss_dialog_infos) (Source_Rss *source)
 {
-   E_Dialog *dia;
    Rss_Doc *doc;
    char buf[4096];
 
-   dia = e_dialog_new(DEVIANM->container);
-   if (!dia)
-     return;
    doc = source->devian->conf->rss_doc;
    if (!doc)
      return;
@@ -207,12 +203,7 @@ void DEVIANF(source_rss_dialog_infos) (Source_Rss *source)
             "<underline=on underline_color=#000>Web site associated :</> %s<br><br>"
             "<underline=on underline_color=#000>Description :</><br>%s",
             doc->name, doc->url, doc->version, doc->host, doc->link, doc->description);
-   e_dialog_title_set(dia, MODULE_NAME " Module - Picture Informations");
-   e_dialog_icon_set(dia, "enlightenment/e", 64);
-   e_dialog_text_set(dia, buf);
-   e_dialog_button_add(dia, _("Ok"), NULL, NULL, NULL);
-   e_win_centered_set(dia->win, 1);
-   e_dialog_show(dia);
+   e_module_dialog_show(DEVIANM->module, _(MODULE_NAME " Module Information"), buf);
 }
 
 char *DEVIANF(source_rss_name_get) (Source_Rss *source)
