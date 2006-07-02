@@ -12,10 +12,13 @@ int main(int argc, char **argv)
 	return 0;
      };
 
+   edje_viewer_config_init();
+
    if (argc == 2) main_window_show(argv[1]);
    else main_window_show(NULL);
 
    etk_main();
+   edje_viewer_config_shutdown();
    etk_shutdown();
 
    return 0;

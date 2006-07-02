@@ -8,6 +8,8 @@ static Etk_Widget *_gui_menubar_item_new(Gui *gui, const char *label,
 	Etk_Menu_Shell *menu_shell);
 static Etk_Widget *_gui_menu_stock_item_new(Gui *gui, const char *label, 
 	Etk_Stock_Id stock_id, Etk_Menu_Shell *menu_shell);
+static Etk_Widget *_gui_menu_item_new(Gui *gui, const char *label,
+      Etk_Menu_Shell *menu_shell);
 static void _gui_menu_item_selected_cb(Etk_Object *obj, void *data);
 static void _gui_menu_item_deselected_cb(Etk_Object *obj, void *data);
 static void _gui_menu_item_clicked_cb(Etk_Object *obj, void *data);
@@ -34,6 +36,10 @@ void main_window_show(char *file)
    Etk_Widget *signal_label, *signal_entry;
    Etk_Widget *source_label, *source_entry;
    Etk_Widget *send_button;
+   Etk_Widget *separator;
+
+   int count, i;
+   const char *recent;
 
    gui = calloc(1, sizeof(Gui));
    gui->win = etk_window_new();
@@ -54,8 +60,25 @@ void main_window_show(char *file)
    etk_menu_item_submenu_set(ETK_MENU_ITEM(menuitem), ETK_MENU(menu));
    _gui_menu_stock_item_new(gui, _("Open"), ETK_STOCK_DOCUMENT_OPEN,
 	   ETK_MENU_SHELL(menu));
+   menuitem = _gui_menu_stock_item_new(gui, _("Open recent"),
+	 ETK_STOCK_DOCUMENT_OPEN, ETK_MENU_SHELL(menu));
+   separator = etk_menu_item_separator_new();
+   etk_menu_shell_append(ETK_MENU_SHELL(menu), ETK_MENU_ITEM(separator));
    _gui_menu_stock_item_new(gui, _("Quit"), ETK_STOCK_DIALOG_CLOSE,
 	   ETK_MENU_SHELL(menu));
+
+   /* Recent submenu */
+   menu = etk_menu_new();
+   etk_menu_item_submenu_set(ETK_MENU_ITEM(menuitem), ETK_MENU(menu));
+   count = edje_viewer_config_count_get();
+   for (i = 0; i < count; i++) 
+     {
+	recent = edje_viewer_config_recent_get(i+1);
+	_gui_menu_stock_item_new(gui, recent, ETK_STOCK_X_OFFICE_DOCUMENT,
+	      ETK_MENU_SHELL(menu));
+     }
+   if (count == 0)
+     _gui_menu_item_new(gui, _("No recent files"), ETK_MENU_SHELL(menu));
 
    paned = etk_hpaned_new();
    vpaned = etk_vpaned_new();
@@ -107,7 +130,7 @@ void main_window_show(char *file)
    gui->source_entry = source_entry;
 
    send_button = etk_button_new_with_label("Send");
-   etk_button_alignment_set(send_button, 1, 0.5);
+   etk_button_alignment_set(ETK_BUTTON(send_button), 1.0, 0.5);
    etk_box_pack_end(ETK_BOX(hbox), send_button, ETK_FALSE, ETK_FALSE, 0);
    etk_signal_connect("clicked", ETK_OBJECT(send_button), 
 	   ETK_CALLBACK(_gui_send_clicked_cb), gui);
@@ -170,6 +193,28 @@ static Etk_Widget *_gui_menu_stock_item_new(Gui *gui, const char *label,
 
 }
 
+static Etk_Widget *_gui_menu_item_new(Gui *gui, const char *label,
+      Etk_Menu_Shell *menu_shell)
+{
+   Etk_Widget *menu_item;
+
+   if (!menu_shell)
+     return NULL;
+
+   menu_item = etk_menu_item_new_with_label(label);
+   etk_menu_shell_append(menu_shell, ETK_MENU_ITEM(menu_item));
+
+   etk_signal_connect("selected", ETK_OBJECT(menu_item),
+	   ETK_CALLBACK(_gui_menu_item_selected_cb), gui);
+   etk_signal_connect("deselected", ETK_OBJECT(menu_item),
+	   ETK_CALLBACK(_gui_menu_item_deselected_cb), gui);
+   etk_signal_connect("activated", ETK_OBJECT(menu_item),
+	   ETK_CALLBACK(_gui_menu_item_clicked_cb), gui);
+
+   return menu_item;
+
+}
+
 static void _gui_menu_item_selected_cb(Etk_Object *obj, void *data)
 {
    Etk_Menu_Item *item;
@@ -196,15 +241,21 @@ static void _gui_menu_item_clicked_cb(Etk_Object *obj, void *data)
 {
    Etk_Menu_Item *item;
    Gui *gui;
+   const char *label;
 
    if (!(item = ETK_MENU_ITEM(obj)))
      return;
    if (!(gui = data)) return;
 
-   if (!strcmp(etk_menu_item_label_get(item), "Quit"))
+   label = etk_menu_item_label_get(item);
+
+   if (!strcmp(label, "Quit"))
      _gui_main_window_deleted_cb(NULL);
-   else if (!strcmp(etk_menu_item_label_get(item), "Open"))
+   else if (!strcmp(label, "Open"))
      _gui_open_edje_file_cb(gui);
+   else if (strstr(label, ".edj"))
+     list_entries(label, ETK_TREE(gui->tree), ETK_TREE(gui->output),
+	   ETK_CANVAS(gui->canvas));
 }
 
 static Etk_Bool _gui_main_window_deleted_cb(void *data) 
@@ -264,12 +315,12 @@ static void _gui_fm_ok_clicked_cb(Etk_Object *obj, void *data)
 	   ETK_FILECHOOSER_WIDGET(gui->fm_chooser));
    file = etk_filechooser_widget_selected_file_get(
 	   ETK_FILECHOOSER_WIDGET(gui->fm_chooser));
-   gui->file = strdup(dir);
-   gui->file = strcat(gui->file, "/");
-   gui->file = strcat(gui->file, file);
-   free(dir);
-   free(file);
-   list_entries(gui->file, ETK_TREE(gui->tree), ETK_TREE(gui->output),
+   gui->path = strdup(dir);
+   gui->path = strcat(gui->path, "/");
+   gui->path = strcat(gui->path, file);
+   free((char *)dir);
+   free((char *)file);
+   list_entries(gui->path, ETK_TREE(gui->tree), ETK_TREE(gui->output),
 	 ETK_CANVAS(gui->canvas));
    etk_window_hide_on_delete(ETK_OBJECT(gui->fm_dialog), NULL);
 }

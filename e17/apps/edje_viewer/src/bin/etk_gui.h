@@ -17,7 +17,7 @@ struct _Gui
    Etk_Widget *fm_dialog;
    Etk_Widget *fm_chooser;
 
-   char *file;
+   char *path;
 };
 
 void main_window_show(char *file);

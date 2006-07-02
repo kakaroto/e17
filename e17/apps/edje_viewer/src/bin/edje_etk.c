@@ -151,6 +151,7 @@ void list_entries(char *file, Etk_Tree *tree, Etk_Tree *output,
 	     etk_tree_row_data_set(row, de);
 	  }
 	edje_file_collection_list_free(entries);
+	edje_viewer_config_recent_set(file);
      }
 }
 

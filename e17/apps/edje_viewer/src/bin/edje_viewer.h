@@ -14,6 +14,7 @@
 #include <Ecore_Fb.h>
 #endif
 #include <Ecore_Evas.h>
+#include <Ecore_Config.h>
 #include <Eet.h>
 #include <Edje.h>
 #include <etk/Etk.h>
@@ -34,6 +35,7 @@
 
 #include "edje_etk.h"
 #include "etk_gui.h"
+#include "conf.h"
 #define DAT PACKAGE_DATA_DIR"/"
 
 #endif
