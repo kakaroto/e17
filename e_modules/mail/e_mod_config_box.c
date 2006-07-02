@@ -230,11 +230,7 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    int is_new = 0;
 
    if (cfdata->name == NULL) 
-     {
-	e_module_dialog_show(_("Enlightenment Mail Module"),
-			     _("You must enter a name for this mailbox."));
-	return 0;
-     }
+     return 0;
    
    cb = cfd->data;
    if (!cb) 
