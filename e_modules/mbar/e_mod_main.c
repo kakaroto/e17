@@ -2007,12 +2007,12 @@ _mbar_exe_cb_exit(void *data, int type, void *event)
    if (!strcmp(tag, "Unmount"))
      {
         if (mounted)
-           e_module_dialog_show(_("Mount Bar Module"), _("Unmount Failed."));
+           e_module_dialog_show(NULL, _("Mount Bar Module"), _("Unmount Failed."));
      }
    else if (!strcmp(tag, "Mount"))
      {
         if (!mounted)
-           e_module_dialog_show(_("Mount Bar Module"), _("Mount Failed."));
+           e_module_dialog_show(NULL, _("Mount Bar Module"), _("Mount Failed."));
         else
           {
              if (ic->app->exe)
@@ -2028,7 +2028,7 @@ _mbar_exe_cb_exit(void *data, int type, void *event)
    else if (!strcmp(tag, "Eject"))
      {
         if (mounted)
-           e_module_dialog_show(_("Mount Bar Module"), _("Eject Failed."));
+           e_module_dialog_show(NULL, _("Mount Bar Module"), _("Eject Failed."));
      }
    
    _mbar_set_state(ic, mounted);
