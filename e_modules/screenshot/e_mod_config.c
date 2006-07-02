@@ -188,7 +188,8 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
         ci->use_import = 0;
      }
 
-   evas_stringshare_del(ci->location);
+   if (ci->location)
+     evas_stringshare_del(ci->location);
    if (cfdata->location == NULL)
      ci->location = evas_stringshare_add(e_user_homedir_get());
    else
@@ -199,7 +200,8 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
         ci->location = evas_stringshare_add(tmp);
      }
 
-   evas_stringshare_del(ci->filename);
+   if (ci->filename)
+     evas_stringshare_del(ci->filename);
    if (cfdata->filename != NULL) 
      ci->filename = evas_stringshare_add(cfdata->filename); 
 
