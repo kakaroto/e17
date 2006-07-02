@@ -185,7 +185,7 @@ e_modapi_save(E_Module *m)
 EAPI int
 e_modapi_about(E_Module *m)
 {
-   e_module_dialog_show(_("Enlightenment Engage Module"),
+   e_module_dialog_show(m, _("Enlightenment Engage Module"),
 		   _("This is the Engage module for Enlightenment.<br>"
 		     "It is the native E17 version of engage.<br>"
 		     "This version offers far greater features<br>"
