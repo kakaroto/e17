@@ -70,6 +70,8 @@ emphasis_init_gui(Emphasis_Gui *gui)
 	etk_box_pack_start(ETK_BOX(gui->vol_hbox), gui->vol_imager, ETK_FALSE, ETK_FALSE, 5);
 	etk_box_pack_start(ETK_BOX(gui->vbox_controls), gui->vol_hbox, ETK_TRUE, ETK_TRUE, 5);
 	etk_signal_connect("value_changed", ETK_OBJECT(gui->vol_slider), ETK_CALLBACK(cb_vol_slider_value_changed), NULL);
+	etk_signal_connect("mouse_down", ETK_OBJECT(gui->vol_imagel), ETK_CALLBACK(cb_vol_image_clicked), gui);
+	etk_signal_connect("mouse_down", ETK_OBJECT(gui->vol_imager), ETK_CALLBACK(cb_vol_image_clicked), gui);
 
 	/* Repeat/Random checkbox setup */
 	gui->hbox_modes = etk_hbox_new(ETK_FALSE, 5);
@@ -221,6 +223,7 @@ emphasis_init_gui(Emphasis_Gui *gui)
 	Etk_Widget *menu_item, *radio_item=NULL, *menu;
 	
 	emphasis_menu_append(gui->menu, "clear", ETK_STOCK_EDIT_CUT, cb_playlist_clear, NULL,
+	                                "delete", NULL, cb_playlist_delete, gui,
 	                            /*  "config", ETK_STOCK_PREFERENCES_SYSTEM, cb_config_show, gui, */
 	                                "Open a file", ETK_STOCK_DOCUMENT_OPEN, NULL, NULL,
 	                                NULL);
@@ -230,7 +233,6 @@ emphasis_init_gui(Emphasis_Gui *gui)
 	radio_item = etk_menu_item_radio_new_with_label_from_widget("small", ETK_MENU_ITEM_RADIO(radio_item));
 	etk_menu_shell_append(ETK_MENU_SHELL(gui->menu), ETK_MENU_ITEM(radio_item));
 	etk_signal_connect("activated", ETK_OBJECT(radio_item), ETK_CALLBACK(cb_switch_small), gui);
-	
 	
 	etk_signal_connect("mouse_down", ETK_OBJECT(gui->window), 
 	                   ETK_CALLBACK(cb_pls_contextual_menu), ETK_MENU(gui->menu));

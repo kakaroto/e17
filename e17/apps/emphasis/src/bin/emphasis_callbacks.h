@@ -32,8 +32,9 @@ void cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Up_Down *event, void
 void cb_pls_contextual_menu(Etk_Object *object, Etk_Event_Mouse_Up_Down *event_info, void *data);
 void cb_playlist_clear(Etk_Object *object,  Etk_Event_Mouse_Up_Down *event, void *data);
 void cb_pls_bindings_key(Etk_Object *object, Etk_Event_Key_Up_Down *event, void *data);
-void cb_playlist_delete(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data);
+void cb_playlist_delete(Etk_Object *object, void *data);
 
+void cb_vol_image_clicked(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data);
 void cb_vol_slider_value_changed(Etk_Object *object, double value, void *data);
 void cb_database_update(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data);
 

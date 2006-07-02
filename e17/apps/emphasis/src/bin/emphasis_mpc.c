@@ -437,6 +437,15 @@ mpc_toggle_repeat(void)
 }
 
 /**
+ * @brief Get mpd volume value
+ */
+int
+mpc_get_vol(void)
+{
+	return mpd_status_get_volume(mo);
+}
+
+/**
  * @brief Changed mpd volume level
  */
 void

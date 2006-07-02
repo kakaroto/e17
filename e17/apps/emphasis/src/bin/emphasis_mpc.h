@@ -42,6 +42,7 @@ void mpc_toggle_play_pause(void);
 void mpc_toggle_random(void);
 void mpc_toggle_repeat(void);
 
+int mpc_get_vol(void);
 void mpc_change_vol(int value);
 void mpc_database_update(char *path);
 void mpc_disconnect(void);

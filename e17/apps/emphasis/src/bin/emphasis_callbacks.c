@@ -573,7 +573,7 @@ cb_pls_bindings_key(Etk_Object *object, Etk_Event_Key_Up_Down *event, void *data
  * @brief Delete all the selected item from the playlist
  */
 void
-cb_playlist_delete(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data)
+cb_playlist_delete(Etk_Object *object, void *data)
 {
 	Emphasis_Gui *gui;
 	Etk_Tree_Row *row;
@@ -583,10 +583,25 @@ cb_playlist_delete(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *dat
 	gui = (Emphasis_Gui *)data;
 	
 	rowlist = etk_tree_selected_rows_get(ETK_TREE(gui->tree_pls));
-	row = etk_tree_first_row_get(ETK_TREE(gui->tree_pls));
 	list = convert_rowlist_in_playlist_with_id(rowlist);
 	
 	mpc_playlist_delete(list);
+}
+
+void
+cb_vol_image_clicked(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data)
+{
+	Emphasis_Gui *gui;
+
+	gui = data;
+	if (ETK_WIDGET(object) == gui->vol_imagel)
+		{
+			mpc_change_vol(mpc_get_vol()-5);
+		}
+	else if (ETK_WIDGET(object) == gui->vol_imager)
+		{
+			mpc_change_vol(mpc_get_vol()+5);
+		}
 }
 
 /**
