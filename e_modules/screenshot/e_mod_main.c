@@ -343,7 +343,7 @@ e_modapi_init(E_Module *m)
 
    ss_config->module = m;
    e_gadcon_provider_register(&_gc_class);
-   return (void *)1;
+   return 1;
 }
 
 EAPI int
