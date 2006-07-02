@@ -19,6 +19,7 @@ typedef struct _Screenshot Screenshot;
 struct _Instance
 {
    E_Gadcon_Client *gcc;
+   E_Module *m;
    Evas_Object *ss_obj;
    Screenshot *ss;
    Ecore_Exe *exe;
@@ -616,7 +617,7 @@ _ss_take_shot(void *data)
      }
    else
      {
-        e_module_dialog_show(D_("Enlightenment Screenshot Module"),
+        e_module_dialog_show(ss_config->module, D_("Enlightenment Screenshot Module"),
                              D_("Please install either ImageMagick or Scrot for taking screenshots."));
         return;
      }
@@ -641,7 +642,7 @@ _ss_take_shot(void *data)
 static void 
 _ss_get_filename(void *data) 
 {
-   e_entry_dialog_show(_("Enlightenment Screenshot Module"), "enlightenment/e",
+   e_entry_dialog_show(ss_config->module, _("Enlightenment Screenshot Module"), "enlightenment/e",
 		       _("Enter a new filename to use for this screenshot"),
 		       NULL, NULL, _cb_entry_ok, NULL, data);
 }
@@ -662,7 +663,7 @@ _cb_entry_ok(char *text, void *data)
    t = ecore_file_get_dir(text);
    if (!strcmp(t, text))
      {
-        e_module_dialog_show(D_("Enlightenment Screenshot Module"),
+        e_module_dialog_show(ss_config->module, D_("Enlightenment Screenshot Module"),
                              D_("You did not specify a path.<br>"
 				"This shot will be saved in your home folder."));
 	if (ci->location)
