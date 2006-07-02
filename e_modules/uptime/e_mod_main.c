@@ -568,12 +568,7 @@ _ut_cb_check(void *data)
      }
    
    if (inst->nusers != -1) 
-     {
-	if (inst->nusers == 1)
-	  snprintf(users, sizeof(users), D_("user: %d"), inst->nusers);
-	else if (inst->nusers > 1)
-	  snprintf(users, sizeof(users), D_("users: %d"), inst->nusers);
-     }
+     snprintf(users, sizeof(users), D_("users: %d"), inst->nusers);
    
    edje_object_part_text_set(inst->ut->ut_obj, "uptime", u_date_time);
    edje_object_part_text_set(inst->ut->ut_obj, "load_average", load_avg);
