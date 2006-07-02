@@ -24,15 +24,6 @@ e_util_search_mixer_by_name(Evas_List *mixers, Mixer_Name *name)
 int
 e_volume_first_run()
 {
-   e_module_dialog_show("eVolume",
-                        "So, if you see that post, it means, that you successfull<br>"
-                        "compile and load eVolume module for a first time<br>"
-                        "<br>"
-                        "Possibly, you want to change something - if you has any<br>"
-                        "ideas - contact to me: boldin.pavel@gmail.com or<br>"
-                        "JID: davinchi@jabber.org (davinchi on E IRC channels)<br>"
-                        "<br>" "Thanks for using eVolume, Pavel Boldin aka davinchi<br>");
-
    return 1;
 }
 
