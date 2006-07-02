@@ -280,7 +280,7 @@ int DEVIANF(data_rss_doc_set_new) (Rss_Feed *feed, Rss_Doc *doc, const char *url
         snprintf(buf, sizeof(buf),
                  _("<hilight>Rss '%s' is aready in use !</hilight><br><br>"
                    "You can't set a rss document to more than one dEvian<br><br>" "Url: %s"), doc->name, doc->url);
-        e_module_dialog_show(_(MODULE_NAME " Module Error"), buf);
+        e_module_dialog_show(DEVIANM->module, _(MODULE_NAME " Module Error"), buf);
         return -1;
      }
 
@@ -561,7 +561,7 @@ _rss_update(Rss_Feed *feed)
                              "<underline=on underline_color=#000>Url :</> %s<br>"
                              "<underline=on underline_color=#000>Begining of the document dEvian get :</><br>%100.100s"),
                            doc->name, doc->url, feed->buffer);
-                  e_module_dialog_show(_(MODULE_NAME " Module Error"), buf);
+                  e_module_dialog_show(DEVIANM->module, _(MODULE_NAME " Module Error"), buf);
                }
              else
                {
@@ -572,7 +572,7 @@ _rss_update(Rss_Feed *feed)
                              "<underline=on underline_color=#000>Url :</> %s<br>"
                              "<underline=on underline_color=#000>Begining of the document dEvian get :</><br>%100.100s<br>"
                              "%100.100s"), doc->name, doc->url, feed->buffer, p);
-                  e_module_dialog_show(_(MODULE_NAME " Module Error"), buf);
+                  e_module_dialog_show(DEVIANM->module, _(MODULE_NAME " Module Error"), buf);
                }
           }
         DEVIANF(container_loading_state_change) (feed->source->devian, 0);
@@ -1009,7 +1009,7 @@ _cb_item_open(void *data, Evas_Object *obj, const char *emission, const char *so
      {
         snprintf(buf, sizeof(buf),
                  _("<hilight>Unable to open link</hilight><br><br>" "Article '%s' has no link associated !"), article->title);
-        e_module_dialog_show(_(MODULE_NAME " Module Error"), buf);
+        e_module_dialog_show(DEVIANM->module, _(MODULE_NAME " Module Error"), buf);
         return;
      }
 
@@ -1029,7 +1029,7 @@ _cb_item_open(void *data, Evas_Object *obj, const char *emission, const char *so
                  _("<hilight>Viewer %s not found !</hilight><br><br>"
                    "You can change the viewer for http in dEvian configuration panel\
  (Advanced view)"), DEVIANM->conf->viewer_http);
-        e_module_dialog_show(_(MODULE_NAME " Module Error"), buf);
+        e_module_dialog_show(DEVIANM->module, _(MODULE_NAME " Module Error"), buf);
         return;
      }
 

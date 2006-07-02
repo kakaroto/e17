@@ -402,7 +402,7 @@ _picture_list_local_add_dir(const char *dir)
                    "They can be jpeg or png<br><br>"
                    "After import, if you can remove these files and the pictures still can<br>"
                    "be viewed, but you wont be able to set them as wallpaper anymore<br><br>"), dir);
-        e_module_dialog_show(_(MODULE_NAME " Module Error"), buf);
+        e_module_dialog_show(DEVIANM->module, _(MODULE_NAME " Module Error"), buf);
         return 0;
      }
 
@@ -1199,7 +1199,7 @@ _load_local_idler(void *data)
        DEVIANM->conf->sources_picture_data_import_thumbs_warn)
      {
         DEVIANM->conf->sources_picture_data_import_thumbs_warn = 0;
-        e_module_dialog_show(_(MODULE_NAME " Module Information"),
+        e_module_dialog_show(DEVIANM->module, _(MODULE_NAME " Module Information"),
                              _("<hilight>Creating thumbs</hilight><br><br>"
                                "Some pictures are being thumbed in a <hilight>background task</hilight>.<br>"
                                "It can take a while, but after, loading will be faster :)<br><br>"

@@ -24,7 +24,7 @@ int DEVIANF(source_file_add) (DEVIANN *devian)
       snprintf(buf, sizeof(buf),
 	       _("<hilight>dEvian's Log feature isn't stable yet !</hilight><br><br>"
 		 "It's disabled for now"));
-      e_module_dialog_show(_(MODULE_NAME " Module error"), buf);
+      e_module_dialog_show(DEVIANM->module, _(MODULE_NAME " Module error"), buf);
       return 0;
    }
 #endif

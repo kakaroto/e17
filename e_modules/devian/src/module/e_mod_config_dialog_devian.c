@@ -789,7 +789,7 @@ _cb_button_rss_doc_del(void *data, void *data2)
         snprintf(buf, sizeof(buf),
                  _("<hilight>Rss '%s' is in use !</hilight><br><br>"
                    "You can't delete it while its in use.<br><br>" "Owner is %s"), doc->name, doc->user->source->devian->id);
-        e_module_dialog_show(_(MODULE_NAME " Module Error"), buf);
+        e_module_dialog_show(DEVIANM->module, _(MODULE_NAME " Module Error"), buf);
      }
 }
 #endif

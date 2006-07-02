@@ -443,7 +443,7 @@ const char *DEVIANF(devian_edje_load) (Evas_Object *edje_obj, char *part, int ty
 
         snprintf(buf, sizeof(buf),
                  _("<hilight>Error !</hilight><br>" "Did not find <hilight>theme</hilight> %s group %s"), path, part);
-        e_module_dialog_show(_(MODULE_NAME " Module Error"), buf);
+        e_module_dialog_show(DEVIANM->module, _(MODULE_NAME " Module Error"), buf);
         return NULL;
      }
    DMAIN(("Edje loaded %s group %s", path, part));

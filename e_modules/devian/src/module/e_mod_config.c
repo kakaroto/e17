@@ -100,7 +100,7 @@ DEVIAN_MAIN_CONF *DEVIANF(config_load) (void)
                         "has been upgraded<br>"
                         "Your settings were removed<br>"
                         "Sorry for the inconvenience<br><br>" "(%d -> %d)"), cfg_main->conf_version, CONFIG_VERSION);
-             e_module_dialog_show(_(MODULE_NAME " Module version " MODULE_VERSION), buf);
+             e_module_dialog_show(DEVIANM->module, _(MODULE_NAME " Module version " MODULE_VERSION), buf);
 
              cfg_main = NULL;
           }
@@ -116,7 +116,7 @@ DEVIAN_MAIN_CONF *DEVIANF(config_load) (void)
                              "has been downgraded<br>"
                              "Your settings were removed<br>"
                              "Sorry for the inconvenience<br><br>" "(%d ->%d)"), cfg_main->conf_version, CONFIG_VERSION);
-                  e_module_dialog_show(_(MODULE_NAME " Module version " MODULE_VERSION), buf);
+                  e_module_dialog_show(DEVIANM->module, _(MODULE_NAME " Module version " MODULE_VERSION), buf);
                   cfg_main = NULL;
                }
           }
