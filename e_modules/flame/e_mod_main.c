@@ -91,7 +91,7 @@ e_modapi_save(E_Module *m)
 EAPI int
 e_modapi_about(E_Module *m)
 {
-   e_module_dialog_show(D_("Enlightenment Flame Module"), D_("A simple module to display flames."));
+   e_module_dialog_show(m, D_("Enlightenment Flame Module"), D_("A simple module to display flames."));
    return 1;
 }
 

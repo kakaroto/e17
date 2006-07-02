@@ -1305,7 +1305,7 @@ e_modapi_save(E_Module *m)
 EAPI int
 e_modapi_about(E_Module *m)
 {
-   e_module_dialog_show(_("Enlightenment Taskbar Module"),
+   e_module_dialog_show(m, _("Enlightenment Taskbar Module"),
                         _("This is the Taskbar Iconified Application module for Enlightenment.<br>"
                           "It will hold minimized applications"));
    return 1;

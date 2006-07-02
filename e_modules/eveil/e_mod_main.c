@@ -1210,7 +1210,7 @@ e_modapi_save(E_Module *m)
 EAPI int
 e_modapi_about(E_Module *m)
 {
-   e_module_dialog_show(D_("Eveil Module version " MODULE_VERSION),
+   e_module_dialog_show(m, D_("Eveil Module version " MODULE_VERSION),
 			D_("A module to set timers and alarms to alert you<br>"
                           " when youre pastas are ready<br>"
 			  "or when you need to wake up<br><br>"

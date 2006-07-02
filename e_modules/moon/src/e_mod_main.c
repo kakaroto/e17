@@ -124,7 +124,7 @@ e_modapi_about(E_Module *module)
 
    snprintf(title, sizeof(title), "%s %s", D_("Moon Clock Module"), 
 	 PACKAGE_VERSION);
-   e_module_dialog_show(title, 
+   e_module_dialog_show(module, title, 
 	 D_("Display current phase of the moon ala e16 E-MoonClock")); 
    return 1;
 }

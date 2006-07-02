@@ -72,9 +72,9 @@ e_modapi_save(E_Module *module)
 }
 
 int
-e_modapi_about(E_Module *module __UNUSED__)
+e_modapi_about(E_Module *module)
 {
-   e_module_dialog_show(D_("Enlightenment Evolume Module"), 
+   e_module_dialog_show(module, D_("Enlightenment Evolume Module"), 
 			D_("A simple module to give E17 a volume control for some mixers."));
    return 1;
 }

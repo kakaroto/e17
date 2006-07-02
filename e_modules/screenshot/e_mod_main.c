@@ -404,7 +404,7 @@ e_modapi_save(E_Module *m)
 EAPI int
 e_modapi_about(E_Module *m)
 {
-   e_module_dialog_show(D_("Enlightenment Screenshot Module"), D_("This module is used to take screenshots"));
+   e_module_dialog_show(m, D_("Enlightenment Screenshot Module"), D_("This module is used to take screenshots"));
    return 1;
 }
 

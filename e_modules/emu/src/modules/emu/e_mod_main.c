@@ -99,7 +99,7 @@ e_modapi_about(E_Module *m)
 {
    /* This is a basic module dialog that is provided for simplicity, 
     * but there is probably nothing stopping you from making a complex dialog. */
-   e_module_dialog_show(D_("Enlightenment Emu Module - gadcon version " VERSION),
+   e_module_dialog_show(m, D_("Enlightenment Emu Module - gadcon version " VERSION),
                         D_
                         ("Experimental generic scriptable module for E17.<br><br>"
                          "Keep an eye out for the emu's.<br>"

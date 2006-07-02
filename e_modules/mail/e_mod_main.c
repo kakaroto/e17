@@ -454,7 +454,7 @@ e_modapi_save(E_Module *m)
 EAPI int
 e_modapi_about(E_Module *m) 
 {
-   e_module_dialog_show(D_("Enlightenment Mail Module"), 
+   e_module_dialog_show(m, D_("Enlightenment Mail Module"), 
 			D_("This is a module to notify when you have new mail."));
    return 1;
 }

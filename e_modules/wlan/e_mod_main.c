@@ -77,7 +77,7 @@ e_modapi_save(E_Module *m)
 EAPI int
 e_modapi_about(E_Module *m)
 {
-   e_module_dialog_show(D_("Enlightenment Wlan Monitor Module"), D_("This module is used to monitor a wlan device."));
+   e_module_dialog_show(m, D_("Enlightenment Wlan Monitor Module"), D_("This module is used to monitor a wlan device."));
    return 1;
 }
 

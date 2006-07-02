@@ -64,7 +64,7 @@ e_modapi_save(E_Module *m)
 EAPI int
 e_modapi_about(E_Module *m)
 {
-   e_module_dialog_show(D_("Enlightenment Rain Module"),
+   e_module_dialog_show(m, D_("Enlightenment Rain Module"),
                         D_
                         ("This is a simple module to display some rain on the desktop.<br>It can display clouds too, if you like clouds."));
    return 1;

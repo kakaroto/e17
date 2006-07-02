@@ -180,7 +180,7 @@ e_modapi_save(E_Module *m)
 EAPI int
 e_modapi_about(E_Module *m)
 {
-   e_module_dialog_show(_("Enlightenment Deskshow Module"),
+   e_module_dialog_show(m, _("Enlightenment Deskshow Module"),
 			_("This module will allow you to show your desktop if it is covered with windows."));
    return 1;
 }

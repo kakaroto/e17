@@ -172,7 +172,7 @@ e_modapi_save(E_Module *m)
 EAPI int
 e_modapi_about(E_Module *m)
 {
-   e_module_dialog_show(_("Enlightenment Mount Bar Module"), 
+   e_module_dialog_show(m, _("Enlightenment Mount Bar Module"), 
 			_("This is the Mount Bar module for Enlightenment."));
    return 1;
 }
