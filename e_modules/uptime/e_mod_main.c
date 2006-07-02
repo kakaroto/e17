@@ -567,9 +567,14 @@ _ut_cb_check(void *data)
 	      inst->la[0], inst->la[1], inst->la[2]);
      }
    
-   if (inst->nusers != -1)
-     snprintf(users, sizeof(users), D_("user%s: %d"), (inst->nusers != 1) ? "s" : "", inst->nusers);
-
+   if (inst->nusers != -1) 
+     {
+	if (inst->nusers == 1)
+	  snprintf(users, sizeof(users), D_("user: %d"), inst->nusers);
+	else if (inst->nusers > 1)
+	  snprintf(users, sizeof(users), D_("users: %d"), inst->nusers);
+     }
+   
    edje_object_part_text_set(inst->ut->ut_obj, "uptime", u_date_time);
    edje_object_part_text_set(inst->ut->ut_obj, "load_average", load_avg);
    edje_object_part_text_set(inst->ut->ut_obj, "nusers", users);
