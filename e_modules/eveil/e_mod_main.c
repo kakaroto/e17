@@ -318,7 +318,7 @@ int eveil_alarm_ring(Alarm *al, int test)
                  D_("<hilight>Alarm : %s</hilight><br><br>"
                  "%s"),
                  al->name, (al->description) ? al->description : "" );
-        e_module_dialog_show(D_("Eveil Module Popup"), buf);
+        e_module_dialog_show(eveil_config->module, D_("Eveil Module Popup"), buf);
      }
 
    if ((al->run_program == ALARM_RUN_PROGRAM_OWN) ||
@@ -344,7 +344,7 @@ int eveil_alarm_ring(Alarm *al, int test)
              snprintf(buf, sizeof(buf),
                       D_("<hilight>Failed !</hilight><br><br>"
                       "Eveil couln't launch the program you specified"));
-             e_module_dialog_show(D_("Eveil Module Error"), buf);
+             e_module_dialog_show(eveil_config->module, D_("Eveil Module Error"), buf);
              ret = 0;
           }
      }
@@ -937,7 +937,7 @@ _cb_timer_etimer(void *data)
         snprintf(buf, sizeof(buf),
                  D_("<hilight>Timer elapsed !</hilight><br><br>"
                  "Time for pastas :D"));
-        e_module_dialog_show(D_("Eveil Module Popup"), buf);
+        e_module_dialog_show(eveil_config->module, D_("Eveil Module Popup"), buf);
      }
 
    if (eveil_config->timer_run_program_default)
@@ -1085,7 +1085,7 @@ e_modapi_init(E_Module *m)
                         "Your settings were removed<br>"
                         "Sorry for the inconvenience<br><br>"
                         "(%d -> %d)"), eveil_config->config_version, CONFIG_VERSION);
-             e_module_dialog_show(D_("Eveil Module version " MODULE_VERSION), buf);
+             e_module_dialog_show(eveil_config->module, D_("Eveil Module version " MODULE_VERSION), buf);
              eveil_config = NULL;
           }
         else
@@ -1099,7 +1099,7 @@ e_modapi_init(E_Module *m)
                              "Your settings were removed<br>"
                              "Sorry for the inconvenience<br><br>"
                              "(%d ->%d)"), eveil_config->config_version, CONFIG_VERSION);
-                  e_module_dialog_show(D_("Eveil Module version " MODULE_VERSION), buf);
+                  e_module_dialog_show(eveil_config->module, D_("Eveil Module version " MODULE_VERSION), buf);
                   eveil_config = NULL;
                }
           }

@@ -285,7 +285,7 @@ _common_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
                       "The date you entered is before now"));
              break;
           }
-        e_module_dialog_show(D_("Eveil Module Error"), buf);
+        e_module_dialog_show(eveil_config->module, D_("Eveil Module Error"), buf);
         return 0;
      }
 
@@ -432,7 +432,7 @@ static void _cb_alarm_test(void *data, void *data2)
         snprintf(buf, sizeof(buf),
                  D_("<hilight>Alarm test FAILED !</hilight>"));
      }
-   e_module_dialog_show(D_("Eveil Module Test Report"), buf);
+   e_module_dialog_show(eveil_config->module, D_("Eveil Module Test Report"), buf);
 }
 
 static void _cb_alarm_today(void *data, void *data2)
