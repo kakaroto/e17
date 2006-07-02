@@ -3,7 +3,6 @@
  * - Etk_Object
  *   - Etk_String
  *   - Etk_Textblock
- *   - Etk_Textblock_Iter
  *   - Etk_Tree_Col
  *   - Etk_Widget
  *     - Etk_Canvas

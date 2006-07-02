@@ -24,7 +24,6 @@ static Evas_Object *embed_object;
 static Etk_Widget *embed;
 static int win_w = 240, win_h = 320;
 static double starting_time = 0.0;
-static Evas *_evas;
 
 /* Creates the window for the embed widget test */
 void etk_test_embed_window_create(void *data)
@@ -46,7 +45,6 @@ void etk_test_embed_window_create(void *data)
    ecore_evas_callback_resize_set(ecore_evas, _etk_test_embed_resize_cb);
    ecore_evas_callback_delete_request_set(ecore_evas, ecore_evas_hide);
    evas = ecore_evas_get(ecore_evas);
-   _evas = evas;
 
    /* Creates the evas objects */
    backdrop = evas_object_image_add(evas);
@@ -97,7 +95,6 @@ static Etk_Widget *_etk_test_embed_widget_new(Evas *evas)
    Etk_Widget *embed;
    Etk_Widget *table;
    Etk_Widget *image;
-   Etk_Widget *alignment;
    Etk_Widget *buttons[3];
    Etk_Widget *labels[8];
    Etk_Widget *entries[6];
@@ -109,8 +106,6 @@ static Etk_Widget *_etk_test_embed_widget_new(Evas *evas)
    buttons[0] = etk_button_new_from_stock(ETK_STOCK_DOCUMENT_OPEN);
    buttons[1] = etk_check_button_new();
    buttons[2] = etk_check_button_new();
-   alignment = etk_alignment_new(0.5, 0.5, 0.0, 0.0);
-   etk_container_add(ETK_CONTAINER(alignment), buttons[0]);
    
    labels[0] = etk_label_new("App Name");
    labels[1] = etk_label_new("Generic Info");
@@ -127,7 +122,7 @@ static Etk_Widget *_etk_test_embed_widget_new(Evas *evas)
 
    table = etk_table_new(2, 10, ETK_FALSE);
    etk_table_attach(ETK_TABLE(table), image, 0, 0, 0, 0, 0, 0, ETK_FILL_POLICY_NONE);
-   etk_table_attach(ETK_TABLE(table), alignment, 1, 1, 0, 0, 0, 0, ETK_FILL_POLICY_HEXPAND | ETK_FILL_POLICY_HFILL);
+   etk_table_attach(ETK_TABLE(table), buttons[0], 1, 1, 0, 0, 0, 0, ETK_FILL_POLICY_HEXPAND);
    
    for (i = 0; i < 6; i++)
    {

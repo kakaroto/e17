@@ -38,10 +38,7 @@ void etk_test_text_view_window_create(void *data)
       "<u>right hand</u> "
       "And "
       "<u type=\"double\">now we need</u> "
-      "to test some <font color=#f00 size=8>COLOR</font>\n"
-      "(日本語 カタカナ ひらがな) "
-      "Heizölrückstoßabdämpfung fløde pingüino kilómetros cœur déçu l'âme "
-      "plutôt naïve Louÿs rêva crapaüter Íosa Úrmhac Óighe pór Éava Ádhaim",
+      "to test some <font color=#f00 size=8>COLOR</font>\n",
       ETK_TRUE);
    
    

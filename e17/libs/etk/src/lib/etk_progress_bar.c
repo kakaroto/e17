@@ -21,6 +21,7 @@ enum Etk_Progress_Bar_Property_Id
 };
 
 static void _etk_progress_bar_constructor(Etk_Progress_Bar *progress_bar);
+static void _etk_progress_bar_destructor(Etk_Progress_Bar *progress_bar);
 static void _etk_progress_bar_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_progress_bar_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_progress_bar_update(Etk_Progress_Bar *progress_bar);
@@ -43,7 +44,7 @@ Etk_Type *etk_progress_bar_type_get()
    if (!progress_bar_type)
    {
       progress_bar_type = etk_type_new("Etk_Progress_Bar", ETK_WIDGET_TYPE, sizeof(Etk_Progress_Bar),
-         ETK_CONSTRUCTOR(_etk_progress_bar_constructor), NULL);
+         ETK_CONSTRUCTOR(_etk_progress_bar_constructor), ETK_DESTRUCTOR(_etk_progress_bar_destructor));
 
       etk_type_property_add(progress_bar_type, "text", ETK_PROGRESS_BAR_TEXT_PROPERTY,
          ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
@@ -261,6 +262,15 @@ static void _etk_progress_bar_constructor(Etk_Progress_Bar *progress_bar)
    progress_bar->is_pulsing = ETK_FALSE;
    
    etk_signal_connect("realize", ETK_OBJECT(progress_bar), ETK_CALLBACK(_etk_progress_bar_realize_cb), NULL);
+}
+
+/* Destroys the progress bar */
+static void _etk_progress_bar_destructor(Etk_Progress_Bar *progress_bar)
+{
+   if (!progress_bar)
+      return;
+   
+   free(progress_bar->text);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
