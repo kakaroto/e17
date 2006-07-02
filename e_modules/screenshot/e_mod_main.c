@@ -642,7 +642,7 @@ _ss_take_shot(void *data)
 static void 
 _ss_get_filename(void *data) 
 {
-   e_entry_dialog_show(ss_config->module, _("Enlightenment Screenshot Module"), "enlightenment/e",
+   e_entry_dialog_show(_("Enlightenment Screenshot Module"), "enlightenment/e",
 		       _("Enter a new filename to use for this screenshot"),
 		       NULL, NULL, _cb_entry_ok, NULL, data);
 }
@@ -678,7 +678,7 @@ _cb_entry_ok(char *text, void *data)
 	ci->location = evas_stringshare_add(t);
      }
    
-   inst->filename = strdup(text);
+   inst->filename = evas_stringshare_add(text);
    _ss_take_shot(inst);
 }
 

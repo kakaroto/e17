@@ -336,11 +336,13 @@ _prompt_cb_change(void *data, Evas_Object *obj)
    if (!cfdata->prompt) 
      {
 	e_widget_disabled_set(cfdata->file_entry, 0);
-	e_widget_entry_text_set(cfdata->file_entry, cfdata->filename);
+	if (cfdata->filename)
+	  e_widget_entry_text_set(cfdata->file_entry, cfdata->filename);
      }
    else 
      {
 	e_widget_disabled_set(cfdata->file_entry, 1);
 	e_widget_entry_text_set(cfdata->file_entry, "");
+	cfdata->filename = NULL;
      }
 }
