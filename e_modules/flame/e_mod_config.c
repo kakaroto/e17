@@ -23,7 +23,8 @@ _config_flame_module(E_Container *con, Flame *fl)
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
-
+   char buf[4096];
+   
    v = E_NEW(E_Config_Dialog_View, 1);
 
    v->create_cfdata = _create_data;
@@ -33,7 +34,8 @@ _config_flame_module(E_Container *con, Flame *fl)
    v->advanced.apply_cfdata = _advanced_apply_data;
    v->advanced.create_widgets = _advanced_create_widgets;
 
-   cfd = e_config_dialog_new(con, D_("Flame Configuration"), NULL, 0, v, fl);
+   snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(fl->module));
+   cfd = e_config_dialog_new(con, D_("Flame Configuration"), buf, 0, v, fl);
    fl->config_dialog = cfd;
 }
 

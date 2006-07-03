@@ -47,6 +47,7 @@ _config_screenshot_module(Config_Item *ci)
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
    E_Container *con;
+   char buf[4096];
    
    v = E_NEW(E_Config_Dialog_View, 1);
 
@@ -58,10 +59,12 @@ _config_screenshot_module(Config_Item *ci)
    v->advanced.apply_cfdata = _advanced_apply_data;
    v->advanced.create_widgets = _advanced_create_widgets;
 
+   snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(ss_config->module));   
    /* create config diaolg */
    con = e_container_current_get(e_manager_current_get());
-   cfd = e_config_dialog_new(con, D_("Screenshot Configuration"), NULL, 0, v, ci);
+   cfd = e_config_dialog_new(con, D_("Screenshot Configuration"), buf, 0, v, ci);
    ss_config->config_dialog = cfd;
+
 }
 
 static void
@@ -162,7 +165,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    cfdata->file_entry = ob;
    e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 0, 1, 0);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
-
+   
    return o;
 }
 
@@ -293,6 +296,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 	e_widget_table_object_append(ot, of, 1, 0, 1, 1, 1, 1, 1, 1);
      }
    e_widget_list_object_append(o, ot, 1, 1, 0.5);   
+   
    return o;
 }
 

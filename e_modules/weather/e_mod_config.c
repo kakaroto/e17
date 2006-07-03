@@ -21,7 +21,8 @@ _config_weather_module(Config_Item *ci)
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
    E_Container *con;
-
+   char buf[4096];
+   
    v = E_NEW(E_Config_Dialog_View, 1);
 
    v->create_cfdata = _create_data;
@@ -30,8 +31,9 @@ _config_weather_module(Config_Item *ci)
    v->basic.create_widgets = _basic_create_widgets;
    v->override_auto_apply = 1;
 
+   snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(weather_config->module));
    con = e_container_current_get(e_manager_current_get());
-   cfd = e_config_dialog_new(con, D_("Weather Configuration"), NULL, 0, v, ci);
+   cfd = e_config_dialog_new(con, D_("Weather Configuration"), buf, 0, v, ci);
    weather_config->config_dialog = cfd;
 }
 
@@ -131,7 +133,16 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    ci->poll_time = (cfdata->poll_time * 60.0);
    if (ci->code)
       evas_stringshare_del(ci->code);
-   ci->code = evas_stringshare_add((char *)toupper(cfdata->code));
+   
+   char *t;
+   t = cfdata->code;
+   while ((*t != '\0') && (*t != ' ')) 
+     {
+	*t = toupper(*t);
+	t++;
+     }
+   *t = '\0';
+   ci->code = evas_stringshare_add(t);
    e_config_save_queue();
    _weather_config_updated(ci->id);
    return 1;

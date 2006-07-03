@@ -41,7 +41,8 @@ struct _MBar
    E_App *apps;
    Evas_List *bars;
    E_Menu *config_menu;
-
+   E_Module *module;
+   
    Config *conf;
    E_Config_Dialog *config_dialog;
 #ifdef HAVE_LINUX

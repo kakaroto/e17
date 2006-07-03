@@ -138,6 +138,7 @@ e_modapi_init(E_Module *m)
 
    /* actually init mbar */
    mb = _mbar_new();
+   mb->module = m;
    return mb;
 }
 
@@ -379,6 +380,7 @@ _mbar_free(MBar *mb)
 #endif
 
    evas_list_free(mb->conf->bars);
+   mb->module = NULL;
    free(mb->conf);
    free(mb);
 }

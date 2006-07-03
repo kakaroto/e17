@@ -29,7 +29,8 @@ _config_mbar_module(E_Container *con, MBar *mbar)
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
-
+   char buf[4096];
+   
    v = E_NEW(E_Config_Dialog_View, 1);
 
    /* Dialog Methods */
@@ -41,7 +42,8 @@ _config_mbar_module(E_Container *con, MBar *mbar)
    v->advanced.create_widgets = _advanced_create_widgets;
 
    /* Create The Dialog */
-   cfd = e_config_dialog_new(con, _("Mount Bar Configuration"), NULL, 0, v, mbar);
+   snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(mbar->module));
+   cfd = e_config_dialog_new(con, _("Mount Bar Configuration"), buf, 0, v, mbar);
    mbar->config_dialog = cfd;
 }
 

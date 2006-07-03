@@ -56,6 +56,7 @@ e_modapi_init(E_Module *m)
    bind_textdomain_codeset(PACKAGE, "UTF-8");
 
    f = _flame_init(m);
+   f->module = m;
    return f;
 }
 
@@ -199,6 +200,7 @@ _flame_shutdown(Flame *f)
    free(f->conf);
    E_CONFIG_DD_FREE(f->conf_edd);
    _flame_face_free(f->face);
+   f->module = NULL;   
    free(f);
 }
 

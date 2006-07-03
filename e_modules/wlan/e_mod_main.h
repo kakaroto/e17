@@ -28,6 +28,7 @@ struct _Wlan
    Evas_List *faces;
    Config *conf;
    E_Config_Dialog *cfd;
+   E_Module *module;
 };
 
 struct _Wlan_Face

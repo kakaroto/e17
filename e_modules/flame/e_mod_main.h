@@ -36,7 +36,8 @@ struct _Flame
 {
    E_Menu *config_menu;
    Flame_Face *face;
-
+   E_Module *module;
+   
    E_Config_DD *conf_edd;
    Config *conf;
    E_Config_Dialog *config_dialog;

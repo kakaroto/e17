@@ -41,6 +41,7 @@ e_modapi_init(E_Module *m)
    if (!n)
       return NULL;
 
+   n->module = m;
    return n;
 }
 
@@ -217,6 +218,7 @@ _wlan_shutdown(Wlan *n)
    e_object_del(E_OBJECT(n->config_menu));
    evas_list_free(n->conf->faces);
 
+   n->module = NULL;
    E_FREE(n->conf);
    E_FREE(n);
 }

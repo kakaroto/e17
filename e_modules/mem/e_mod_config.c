@@ -26,6 +26,7 @@ _config_mem_module(Config_Item *ci)
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
    E_Container *con;
+   char buf[4096];
    
    v = E_NEW(E_Config_Dialog_View, 1);
 
@@ -34,8 +35,9 @@ _config_mem_module(Config_Item *ci)
    v->basic.apply_cfdata = _basic_apply_data;
    v->basic.create_widgets = _basic_create_widgets;
 
+   snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(mem_config->module));
    con = e_container_current_get(e_manager_current_get());
-   cfd = e_config_dialog_new(con, D_("Mem Configuration"), NULL, 0, v, ci);
+   cfd = e_config_dialog_new(con, D_("Mem Configuration"), buf, 0, v, ci);
    mem_config->config_dialog = cfd;
 }
 
