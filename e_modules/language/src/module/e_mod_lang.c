@@ -778,7 +778,7 @@ lang_cb_event_desk_show(void *data, int type, void *event)
    // is used.
    if (conf->lang_policy == LS_GLOBAL_POLICY)
      { 
-	e_module_dialog_show("Warning", "Warning: This is a bug in the code. This message<br>"
+	e_module_dialog_show(NULL, "Warning", "Warning: This is a bug in the code. This message<br>"
 				        "should in this context when GLOBAL policy is used.<br>"
 					"Please report this behaviour.");
 	return 1;

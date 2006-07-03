@@ -224,7 +224,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
                 ecore_exe_pipe_run(emu_face->command, ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_WRITE | ECORE_EXE_PIPE_READ_LINE_BUFFERED
                                    /*| ECORE_EXE_RESPAWN */ , emu_face);
              if (!emu_face->exe)
-                e_module_dialog_show(D_("Enlightenment Emu Module - error"), D_("There is no emu."));
+                e_module_dialog_show(NULL, D_("Enlightenment Emu Module - error"), D_("There is no emu."));
           }
 
         e_gadcon_client_util_menu_attach(gcc);
