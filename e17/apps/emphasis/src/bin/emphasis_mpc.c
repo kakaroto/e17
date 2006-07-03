@@ -457,10 +457,7 @@ mpc_change_vol(int value)
 void
 mpc_database_update(char *path)
 {
-	int rep;
-	rep = mpd_database_update_dir(mo, path);
-	if (rep == 0)
-		printf("cette fonction est indisponible... coin coin\n");
+	mpd_database_update_dir(mo, "/");
 }
 
 void

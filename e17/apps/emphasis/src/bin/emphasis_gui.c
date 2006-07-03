@@ -220,13 +220,16 @@ emphasis_init_gui(Emphasis_Gui *gui)
 	/* playlist menu setup*/ 
 	gui->menu = etk_menu_new();
 	
-	Etk_Widget *menu_item, *radio_item=NULL, *menu;
+	Etk_Widget *menu_item, *separator, *radio_item=NULL, *menu;
 	
-	emphasis_menu_append(gui->menu, "clear", ETK_STOCK_EDIT_CUT, cb_playlist_clear, NULL,
-	                                "delete", NULL, cb_playlist_delete, gui,
+	emphasis_menu_append(gui->menu, "clear", ETK_STOCK_EDIT_CLEAR, cb_playlist_clear, NULL,
+	                                "delete", ETK_STOCK_EDIT_DELETE, cb_playlist_delete, gui,
+	                                "update", ETK_STOCK_VIEW_REFRESH, cb_database_update, gui,
 	                            /*  "config", ETK_STOCK_PREFERENCES_SYSTEM, cb_config_show, gui, */
-	                                "Open a file", ETK_STOCK_DOCUMENT_OPEN, NULL, NULL,
 	                                NULL);
+	separator = etk_menu_item_separator_new();
+	etk_menu_shell_append(ETK_MENU_SHELL(gui->menu), ETK_MENU_ITEM(separator));
+
 	radio_item = etk_menu_item_radio_new_with_label_from_widget("full", NULL);
 	etk_menu_shell_append(ETK_MENU_SHELL(gui->menu), ETK_MENU_ITEM(radio_item));
 	etk_signal_connect("activated", ETK_OBJECT(radio_item), ETK_CALLBACK(cb_switch_full), gui);
@@ -235,9 +238,9 @@ emphasis_init_gui(Emphasis_Gui *gui)
 	etk_signal_connect("activated", ETK_OBJECT(radio_item), ETK_CALLBACK(cb_switch_small), gui);
 	
 	etk_signal_connect("mouse_down", ETK_OBJECT(gui->window), 
-	                   ETK_CALLBACK(cb_pls_contextual_menu), ETK_MENU(gui->menu));
+	                   ETK_CALLBACK(cb_pls_contextual_menu), gui);
 	etk_signal_connect("mouse_down", ETK_OBJECT(gui->tree_pls), 
-	                   ETK_CALLBACK(cb_pls_contextual_menu), ETK_MENU(gui->menu));
+	                   ETK_CALLBACK(cb_pls_contextual_menu), gui);
 	                   
 //	etk_signal_connect("key_down", ETK_OBJECT(gui->window),
 //	                   ETK_CALLBACK(cb_emphasis_bindings_key), gui);
@@ -275,7 +278,7 @@ emphasis_menu_append(Etk_Widget *menu, ...)
 	{
 		menu_item = etk_menu_item_image_new_with_label(item_name);
 		item_image_id = va_arg(arglist, Etk_Stock_Id);
-		if (item_image)
+		if (item_image_id)
 		{
 			item_image = etk_image_new_from_stock(item_image_id, ETK_STOCK_SMALL);
 			etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(item_image));

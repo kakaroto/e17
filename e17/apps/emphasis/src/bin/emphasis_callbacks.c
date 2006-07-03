@@ -529,10 +529,19 @@ cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Up_Down *event, void *dat
 void
 cb_pls_contextual_menu(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data)
 {
+	Emphasis_Gui *gui;
+
+	gui = data;
 	if (event->button == 3)
-	{
-	 etk_menu_popup(ETK_MENU(data));
-	}
+		{
+			if (etk_tree_selected_rows_get(ETK_TREE(gui->tree_pls)) == NULL)
+				{
+					printf("coin\n");
+					event->button = 1;
+					etk_signal_emit_by_name("row_clicked", ETK_OBJECT(gui->tree_pls), NULL, gui, event);
+				}
+			etk_menu_popup(ETK_MENU(gui->menu));
+		}
 }
 
 /**
@@ -617,9 +626,20 @@ cb_vol_slider_value_changed(Etk_Object *object, double value, void *data)
  * @brief Request an database update
  */
 void
-cb_database_update(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data)
+cb_database_update(Etk_Object *object, void *data)
 {
-	mpc_database_update("/home/lok/Music/");
+	Emphasis_Gui *gui;
+	const char *tree_title;
+
+	mpc_database_update("/");
+	emphasis_tree_mlib_init(data, EMPHASIS_ARTIST);
+
+	/* Clear old search */
+	gui = data;
+	etk_tree_col_title_set(etk_tree_nth_col_get(ETK_TREE(gui->tree_artist), 0), "Artist");
+	etk_tree_col_title_set(etk_tree_nth_col_get(ETK_TREE(gui->tree_album), 0), "Album");
+	etk_tree_col_title_set(etk_tree_nth_col_get(ETK_TREE(gui->tree_track), 0), "Track");
+
 }
 
 void

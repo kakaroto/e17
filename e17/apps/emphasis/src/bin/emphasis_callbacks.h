@@ -36,7 +36,7 @@ void cb_playlist_delete(Etk_Object *object, void *data);
 
 void cb_vol_image_clicked(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data);
 void cb_vol_slider_value_changed(Etk_Object *object, double value, void *data);
-void cb_database_update(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data);
+void cb_database_update(Etk_Object *object, void *data);
 
 void cb_config_show(Etk_Object *object, void *data);
 void cb_config_hide(Etk_Object *object, void *data);
