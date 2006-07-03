@@ -54,6 +54,7 @@ void eveil_config_alarm(Alarm *al)
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
+   char buf[4096];
    
    v = E_NEW(E_Config_Dialog_View, 1);
    
@@ -63,9 +64,10 @@ void eveil_config_alarm(Alarm *al)
    v->basic.create_widgets = _basic_create_widgets;
    v->advanced.apply_cfdata = _advanced_apply_data;
    v->advanced.create_widgets = _advanced_create_widgets;
-   
+
+   snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(eveil_config->module));
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
-			     D_("Eveil Alarm Configuration"), NULL, 0, v, al);
+			     D_("Eveil Alarm Configuration"), buf, 0, v, al);
 }
 
 static void *
