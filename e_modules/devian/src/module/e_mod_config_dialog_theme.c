@@ -75,6 +75,7 @@ E_Config_Dialog *DEVIANF(config_dialog_theme) (void)
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
+   char buf[4096];
 
    /* if was alreay open, return */
    if (DEVIANM->dialog_conf_theme)
@@ -92,7 +93,8 @@ E_Config_Dialog *DEVIANF(config_dialog_theme) (void)
    v->advanced.apply_cfdata = _advanced_apply_data;
    v->advanced.create_widgets = _advanced_create_widgets;
 
-   cfd = e_config_dialog_new(DEVIANM->container, _(MODULE_NAME " Module Configuration - Theme"), NULL, 0, v, NULL);
+   snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(DEVIANM->module));
+   cfd = e_config_dialog_new(DEVIANM->container, _(MODULE_NAME " Module Configuration - Theme"), buf, 0, v, NULL);
 
    e_object_ref(E_OBJECT(cfd));
 

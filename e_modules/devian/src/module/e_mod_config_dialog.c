@@ -71,6 +71,7 @@ E_Config_Dialog *DEVIANF(config_dialog_main) (E_Container *con)
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
+   char buf[4096];
 
    /* if already open, return */
    if (DEVIANM->dialog_conf)
@@ -88,7 +89,8 @@ E_Config_Dialog *DEVIANF(config_dialog_main) (E_Container *con)
    v->advanced.apply_cfdata = _main_advanced_apply_data;
    v->advanced.create_widgets = _main_advanced_create_widgets;
 
-   cfd = e_config_dialog_new(con, _(MODULE_NAME " Module Main Configuration"), NULL, 0, v, NULL);
+   snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(DEVIANM->module));
+   cfd = e_config_dialog_new(con, _(MODULE_NAME " Module Main Configuration"), buf, 0, v, NULL);
 
    e_object_ref(E_OBJECT(cfd));
 
