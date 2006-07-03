@@ -25,7 +25,7 @@ struct _Cpu
    E_Menu *config_menu;
    Cpu_Face *face;
    Config *conf;
-
+   E_Module *module;
    E_Config_DD *conf_edd;
    E_Config_Dialog *cfd;
 };

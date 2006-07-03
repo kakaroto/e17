@@ -23,7 +23,8 @@ _configure_cpu_module(E_Container *con, Cpu *c)
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
-
+   char buf[4096];
+   
    v = E_NEW(E_Config_Dialog_View, 1);
 
    v->create_cfdata = _create_data;
@@ -31,7 +32,8 @@ _configure_cpu_module(E_Container *con, Cpu *c)
    v->basic.apply_cfdata = _basic_apply_data;
    v->basic.create_widgets = _basic_create_widgets;
 
-   cfd = e_config_dialog_new(con, D_("Cpu Configuration"), NULL, 0, v, c);
+   snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(c->module));
+   cfd = e_config_dialog_new(con, D_("Cpu Configuration"), buf, 0, v, c);
    c->cfd = cfd;
 }
 

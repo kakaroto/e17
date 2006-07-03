@@ -41,7 +41,7 @@ e_modapi_init(E_Module *m)
    c = _cpu_init(m);
    if (!c)
       return NULL;
-
+   c->module = m;
    return c;
 }
 
@@ -198,6 +198,7 @@ _cpu_shutdown(Cpu *c)
 {
    _cpu_face_free(c->face);
 
+   c->module = NULL;
    E_FREE(c->conf);
    E_CONFIG_DD_FREE(c->conf_edd);
    E_FREE(c);
