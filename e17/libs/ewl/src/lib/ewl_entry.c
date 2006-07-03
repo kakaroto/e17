@@ -386,7 +386,7 @@ ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 				ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor)));
 		}
 	}
-	else 
+	else if (!(event->modifiers & EWL_KEY_MODIFIER_CTRL)) 
 	{
 		ewl_entry_selection_clear(e);
 
