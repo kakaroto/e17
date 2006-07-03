@@ -2,6 +2,7 @@
 #include "ewl_test_private.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct 
 {
@@ -47,6 +48,7 @@ static void ete_cb_fetch(Ewl_Widget *w, void *ev, void *data);
 static void ete_cb_set(Ewl_Widget *w, void *ev, void *data);
 static void ete_cb_load(Ewl_Widget *w, void *ev, void *data);
 static void ete_cb_clear(Ewl_Widget *w, void *ev, void *data);
+static void ete_cb_key_down(Ewl_Widget *w, void *ev, void *data);
 
 void 
 test_info(Ewl_Test *test)
@@ -139,6 +141,7 @@ create_test(Ewl_Container *box)
 
 	ewl_object_fill_policy_set(EWL_OBJECT(o), 
 				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VFILL);
+	ewl_callback_append(o, EWL_CALLBACK_KEY_DOWN, ete_cb_key_down, NULL);
 	ewl_widget_show(o);
 
 	hbox = ewl_hbox_new();
@@ -377,4 +380,27 @@ ete_cb_clear(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	ewl_text_clear(EWL_TEXT(entry));
 }
 
+static void
+ete_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
+{
+	Ewl_Event_Key_Down *e;
+
+	e = ev;
+
+	/*
+	 * insert an utf-8 character when you hit CTRL-a
+	 */
+	if (e && (e->modifiers & EWL_KEY_MODIFIER_CTRL) 
+			&& !strcmp(e->keyname, "a")) {
+		Ewl_Embed * emb;
+		unsigned char buf[3];
+
+		emb = ewl_embed_widget_find(w);
+		buf[0] = 0xC3;
+		buf[1] = 0xA4;
+		buf[2] = 0;
+		
+		ewl_embed_key_down_feed(emb, (char *)buf, 0);
+	}
+}
 
