@@ -255,6 +255,33 @@ winwidget_create_window(winwidget ret,
     XChangeProperty(disp, ret->win, prop, prop, 32, PropModeReplace,
                     (unsigned char *) &mwmhints, PROP_MWM_HINTS_ELEMENTS);
   }
+  /* The following NETWM hint fullscreen code is adapted from a few patches:
+   * http://www.davidsimmons.com/soft/xtermhacks/xterm-fullscreen.patch
+   * http://www.winehq.org/hypermail/wine-patches/2005/04/0347.html
+   * and seems to work with Metacity for me <Eric Shattow, shadow@serverart.org>
+   * This may break other WMs, I don't know what I'm doing. (ES 2005-11-25)
+   */
+  if (ret->full_screen) {
+	XEvent efs;
+	int operation = ret->full_screen ? 1 : 0; /* FIXME: put somewhere else... */
+    Atom atom_fullscreen = XInternAtom(disp, "_NET_WM_STATE_FULLSCREEN",  False);
+	Atom atom_state      = XInternAtom(disp, "_NET_WM_STATE", False);
+
+	memset(&efs, 0, sizeof(efs));
+	efs.xclient.type = ClientMessage;
+	efs.xclient.message_type = atom_state;
+	efs.xclient.display = disp;
+	efs.xclient.window = ret->win;
+	efs.xclient.format = 32;
+	efs.xclient.data.l[0] = operation;
+	efs.xclient.data.l[1] = atom_fullscreen;
+
+/*  XSendEvent(disp, ret->win, False,
+               SubstructureRedirectMask, &efs);  //  doesn't work in Metacity
+*/
+    XChangeProperty(disp, ret->win, atom_state, XA_ATOM, 32, PropModeReplace,
+					(unsigned char*)&atom_fullscreen, 1); // works w/ Metacity
+  }
 
   XSetWMProtocols(disp, ret->win, &wmDeleteWindow, 1);
   winwidget_update_title(ret);
@@ -994,7 +1021,9 @@ void winwidget_get_geometry(winwidget winwid, int *rect) {
     return;
 
   XGetGeometry(disp, winwid->win, &root, 
-               &(rect[0]), &(rect[1]), &(rect[2]), &(rect[3]), &bw, &bp);
+               &(rect[0]), &(rect[1]), (unsigned int *) &(rect[2]),
+			   (unsigned int *) &(rect[3]), (unsigned int *) &bw,
+			   (unsigned int *) &bp);
 
   /* update the window geometry (in case it's inaccurate) */
   winwid->x = rect[0];
