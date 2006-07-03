@@ -63,4 +63,6 @@ void language_unregister_callback_handlers();
 void language_clear_border_language_setup_list();
 /*******************************************/
 
+extern Config *language_config;
+
 #endif

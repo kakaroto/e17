@@ -11,8 +11,6 @@
 /*********************** Shelf Code ************************************/
 
 /*********** variables ***********************/
-Config	 *language_config = NULL;
-
 static	 E_Config_DD *conf_edd = NULL;
 static	 E_Config_DD *conf_langlist_edd = NULL;
 /*********************************************/

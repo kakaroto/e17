@@ -88,7 +88,8 @@ _lang_configure_language_module(Config *conf)
 {
    E_Config_Dialog	*cfd;
    E_Config_Dialog_View *v;
-
+   char buf[4096];
+   
    v = E_NEW(E_Config_Dialog_View, 1);
    
    v->create_cfdata	      = _create_data;
@@ -98,9 +99,9 @@ _lang_configure_language_module(Config *conf)
    v->advanced.apply_cfdata   = _apply_data;
    v->advanced.create_widgets = _advanced_create_widgets;
 
+   snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(language_config->module));
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
-			     _("Language Module Settings"), NULL, 0, v, conf);
-
+			     _("Language Module Settings"), buf, 0, v, conf);
    conf->config_dialog = cfd;
 }
 
