@@ -4,7 +4,6 @@
 
 #include "etk_object.h"
 #include <Evas.h>
-#include <Ecore_Job.h>
 #include "etk_types.h"
 
 /**
@@ -179,7 +178,6 @@ struct Etk_Textblock
    Evas_List *iters;
    
    Evas_List *evas_objects;
-   Ecore_Job *update_job;
 };
 
 /* Textblock's funcs */

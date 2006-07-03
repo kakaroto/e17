@@ -27,6 +27,7 @@ void etk_test_text_view_window_create(void *data)
       ETK_TRUE);*/
    etk_textblock_text_set(ETK_TEXT_VIEW(text_view)->textblock,
       "<p align=\"center\">Title</p>"
+      "<b>Bold <i>Bold-Italic </b>Italic </i>: Overlapping tags are supported!\n"
       "A paragraph here <font color=#f00>red <b>text</b></font> and stuff."
       "And escaping &lt; and &gt; as well as &amp; as <b>normal.</b>"
       "If you want a newline use &lt;br&gt;\nwoo a new line!"

@@ -1,7 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 
 FILES = Vera.ttf Vera.COPYING \
-VeraBd.ttf VeraIt.ttf \
+VeraBd.ttf VeraIt.ttf VeraBI.ttf \
 fonts.alias fonts.dir
 
 filesdir = $(pkgdatadir)/fonts
