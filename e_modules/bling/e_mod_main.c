@@ -29,6 +29,8 @@ e_modapi_init(E_Module *m)
    b = _bling_init(m);
    if (!b) return NULL;
 
+   b->module = m;
+
    return b;
 }
 
@@ -86,6 +88,7 @@ static void
 _bling_shutdown(Bling *b)
 {
    composite_shutdown();
+   b->module = NULL;
    free(b->config);
    E_CONFIG_DD_FREE(b->conf_edd);
    free(b);

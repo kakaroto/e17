@@ -32,6 +32,7 @@ _config_bling_module(E_Container *con, Bling *b)
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
+   char buf[4096];
 
    v = E_NEW(E_Config_Dialog_View, 1);
 
@@ -42,7 +43,9 @@ _config_bling_module(E_Container *con, Bling *b)
    v->advanced.apply_cfdata = _advanced_apply_data;
    v->advanced.create_widgets = _advanced_create_widgets;
 
-   cfd = e_config_dialog_new(con, _("Bling Configuration"), NULL, 0, v, b);
+   snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(b->module));
+   cfd = e_config_dialog_new(con, D_("BlingConfiguration"), buf, 0, v, b);
+
    b->config_dialog = cfd;
 }
 
