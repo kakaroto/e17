@@ -26,17 +26,19 @@ static int _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
 
 static E_Config_DD *conf_edd = NULL;
+static E_Module *module = NULL;
 Config *moon_config = NULL;
 
 EAPI int
-e_modapi_save(E_Module *module)
+e_modapi_save(E_Module *m)
 {  
    return e_config_domain_save("module.moon", conf_edd, moon_config);
 }
 
 void
-moon_config_init()
+moon_config_init(E_Module *m)
 { 
+   module = m;
    conf_edd = E_CONFIG_DD_NEW("Moon_Config", Config);
    E_CONFIG_VAL(conf_edd, Config, show_phase_value, INT);
    E_CONFIG_VAL(conf_edd, Config, value_format, INT);
@@ -73,6 +75,7 @@ moon_config_shutdown()
    moon_config = NULL;
 
    E_CONFIG_DD_FREE(conf_edd);
+   module = NULL;
 }
 
 void 
@@ -81,6 +84,7 @@ moon_config_dialog_show(Evas_Object *o)
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
    E_Container *con;
+   char buf[4096];
 
    v = E_NEW(E_Config_Dialog_View, 1);
    if (v)
@@ -93,8 +97,8 @@ moon_config_dialog_show(Evas_Object *o)
 	v->advanced.create_widgets = NULL; 
 	
 	con = e_container_current_get(e_manager_current_get());
-	// FIXME - specify icon
-	cfd = e_config_dialog_new(con, D_("Moon Configuration"), NULL, 0, v, o);
+	snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(module));
+	cfd = e_config_dialog_new(con, D_("Moon Configuration"), buf, 0, v, o);
 	moon_config->config_dialog = cfd;
      }
 }

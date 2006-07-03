@@ -97,7 +97,7 @@ e_modapi_init(E_Module *module)
    bindtextdomain(PACKAGE, LOCALEDIR);
    bind_textdomain_codeset(PACKAGE, "UTF-8");
 
-   moon_config_init();
+   moon_config_init(module);
 
    _moon_timer_init();
    _module = module;

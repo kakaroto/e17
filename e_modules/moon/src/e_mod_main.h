@@ -35,7 +35,7 @@ EAPI int   e_modapi_shutdown (E_Module *m);
 EAPI int   e_modapi_about    (E_Module *m);
 EAPI int   e_modapi_save     (E_Module *m);
 
-void moon_config_init();
+void moon_config_init(E_Module *m);
 void moon_config_shutdown();
 void moon_config_dialog_show(Evas_Object *o);
 void moon_reset();
