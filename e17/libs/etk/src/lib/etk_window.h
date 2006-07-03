@@ -40,6 +40,8 @@ struct _Etk_Window
    Etk_Bool wait_size_request;
    Etk_Bool center;
    Etk_Window *center_on_window;
+   Etk_Bool modal;
+   Etk_Window *modal_for_window;   
 };
 
 Etk_Type *etk_window_type_get();

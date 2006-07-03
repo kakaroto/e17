@@ -291,6 +291,40 @@ void etk_window_move_to_mouse(Etk_Window *window)
 }
 
 /**
+ * @brief Makes a window modal for another window
+ * @param window_to_modal the window to make modal
+ * @param window the window on which @a window_to_model will modal'ed on
+ */
+void etk_window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *window)
+{
+   int x, y, w, h;
+   int cw, ch;
+   
+   if (!window_to_modal)
+      return;
+   
+   if (window_to_modal->wait_size_request)
+   {
+      window_to_modal->modal = ETK_TRUE;
+      window_to_modal->modal_for_window = window;
+      if (window)
+         etk_object_weak_pointer_add(ETK_OBJECT(window), (void **)(&window_to_modal->modal_for_window));
+   }
+   else
+   {
+      if (window)
+      {
+	 Ecore_X_Window_State states[] = {ECORE_X_WINDOW_STATE_MODAL};
+	 
+	 ecore_x_icccm_transient_for_set(window_to_modal->x_window,
+					 window->x_window);
+	 
+	 ecore_x_netwm_window_state_set(window_to_modal->x_window, states, 1);
+      }
+   }
+}
+
+/**
  * @brief Iconifies (i.e. minimize) the window
  * @param window a window
  */
@@ -695,6 +729,8 @@ static void _etk_window_constructor(Etk_Window *window)
    window->wait_size_request = ETK_TRUE;
    window->center = ETK_FALSE;
    window->center_on_window = NULL;
+   window->modal = ETK_FALSE;
+   window->modal_for_window = NULL;   
    
    ecore_x_dnd_aware_set(window->x_window, 1);
    
@@ -727,6 +763,8 @@ static void _etk_window_destructor(Etk_Window *window)
    ecore_evas_free(window->ecore_evas);
    if (window->center_on_window)
       etk_object_weak_pointer_remove(ETK_OBJECT(window->center_on_window), (void **)(&window->center_on_window));
+   if (window->modal_for_window)
+      etk_object_weak_pointer_remove(ETK_OBJECT(window->modal_for_window), (void **)(&window->modal_for_window));
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -933,6 +971,12 @@ static void _etk_window_size_request_cb(Etk_Window *window, Etk_Size *requisitio
             window->center = ETK_FALSE;
             window->center_on_window = NULL;
          }
+         if (window->modal)
+         {
+            etk_window_modal_for_window(window, window->modal_for_window);
+            window->modal = ETK_FALSE;
+            window->modal_for_window = NULL;
+         }	 
       }
    }
 }

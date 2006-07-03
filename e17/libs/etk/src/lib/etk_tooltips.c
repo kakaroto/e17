@@ -188,11 +188,14 @@ Etk_Bool etk_tooltips_tip_visible()
  */
 void etk_tooltips_pop_up(Etk_Widget *widget)
 {
-#if HAVE_ECORE_X   
    const char *text = NULL;
    int x, y;
    char *key;
-
+   Etk_Toplevel_Widget *toplevel;
+   Evas *evas;
+   int pt_x, pt_y;
+   int win_x, win_y;
+   
    if(!ETK_IS_OBJECT(widget))
      return;
    
@@ -215,12 +218,19 @@ void etk_tooltips_pop_up(Etk_Widget *widget)
      }
    
    etk_label_set(ETK_LABEL(_etk_tooltips_label), text);   
-   ecore_x_pointer_xy_get(ecore_x_window_root_first_get(), &x, &y);
+   	
+   evas = etk_widget_toplevel_evas_get(widget);
+   evas_pointer_canvas_xy_get(evas, &pt_x, &pt_y);
+   toplevel = etk_widget_toplevel_parent_get(widget);
+   etk_window_geometry_get(ETK_WINDOW(toplevel), &win_x, &win_y, NULL, NULL);
+   x = pt_x + win_x;
+   y = pt_y + win_y;      
+   
    /* TODO: if tooltip window is outside screen, fix its place */
    etk_window_move(ETK_WINDOW(_etk_tooltips_window), x + 5, y + 5);
    etk_widget_show_all(_etk_tooltips_window);
    free(key);
-#endif  
+
    _etk_tooltips_timer = NULL;
 }
 
@@ -240,13 +250,11 @@ void etk_tooltips_pop_down()
 /* Callback for when the mouse enters a widget */
 static void _etk_tooltips_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *event, void *data)
 {
-#if HAVE_ECORE_X
    if(!_etk_tooltips_enabled || !ETK_IS_OBJECT(object))
      return;
 
    _etk_tooltips_cur_object = object;
    _etk_tooltips_timer = ecore_timer_add(_etk_tooltips_delay, _etk_tooltips_timer_cb, NULL);
-#endif   
 }
 
 /* Timer callback, pops up the tooltip */
