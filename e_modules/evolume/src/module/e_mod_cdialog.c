@@ -31,7 +31,8 @@ e_volume_config_module(E_Container *con, Volume_Face *face)
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
-
+   char buf[4096];
+   
    v = E_NEW(E_Config_Dialog_View, 1);
 
    v->create_cfdata = _create_data;
@@ -41,7 +42,8 @@ e_volume_config_module(E_Container *con, Volume_Face *face)
    v->advanced.apply_cfdata = NULL;
    v->advanced.create_widgets = NULL;
 
-   cfd = e_config_dialog_new(con, _("Mixer Face Configuration"), NULL, 0, v, face);
+   snprintf(buf, sizeof(buf), "%s/module.eap", module_root);
+   cfd = e_config_dialog_new(con, _("Mixer Face Configuration"), buf, 0, v, face);
 }
 
 static void
