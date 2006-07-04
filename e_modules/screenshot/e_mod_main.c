@@ -19,7 +19,6 @@ typedef struct _Screenshot Screenshot;
 struct _Instance
 {
    E_Gadcon_Client *gcc;
-   E_Module *m;
    Evas_Object *ss_obj;
    Screenshot *ss;
    Ecore_Exe *exe;
