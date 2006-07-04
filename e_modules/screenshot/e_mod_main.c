@@ -404,7 +404,8 @@ e_modapi_save(E_Module *m)
 EAPI int
 e_modapi_about(E_Module *m)
 {
-   e_module_dialog_show(m, D_("Enlightenment Screenshot Module"), D_("This module is used to take screenshots"));
+   e_module_dialog_show(m, D_("Enlightenment Screenshot Module"), 
+			D_("This module is used to take screenshots"));
    return 1;
 }
 
@@ -446,6 +447,9 @@ _ss_handle_mouse_down(Instance *inst)
 	     char *f = _get_filename(ci);
 	     inst->filename = evas_stringshare_add(f);
 	  }
+	else
+	  inst->filename = evas_stringshare_add(ci->filename);
+	
 	_ss_take_shot(inst);
      }
    else
@@ -553,7 +557,7 @@ _get_filename(Config_Item *ci)
 	       c = 1;
              else 
 	       c++;
-             snprintf(buff, sizeof(buff), "%s%i.png", strdup(ci->filename), c);
+             snprintf(buff, sizeof(buff), "%s%i.png", ci->filename, c);
           }
      }
    return strdup(buff);
