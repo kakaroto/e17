@@ -23,6 +23,7 @@
 typedef enum Etk_Textblock_Wrap
 {
    ETK_TEXTBLOCK_WRAP_NONE,     /**< The text is not wrapped */
+   ETK_TEXTBLOCK_WRAP_DEFAULT,   /**< TODOC */
    ETK_TEXTBLOCK_WRAP_WORD,     /**< The text is wrapped between the words (or between the chars if it's not sufficient) */
    ETK_TEXTBLOCK_WRAP_CHAR      /**< The text is wrapped between the chars */
 } Etk_Textblock_Wrap;
@@ -43,19 +44,25 @@ typedef enum Etk_Textblock_Tag_Type
    ETK_TEXTBLOCK_TAG_BOLD,         /**< The text is bold */
    ETK_TEXTBLOCK_TAG_ITALIC,       /**< The text is italic */
    ETK_TEXTBLOCK_TAG_UNDERLINE,    /**< The text is underlined */
+   ETK_TEXTBLOCK_TAG_STRIKETHROUGH,/**< The text is strikethrough */
    ETK_TEXTBLOCK_TAG_P,            /**< The tag describes a paragraph */
    ETK_TEXTBLOCK_TAG_STYLE,        /**< The tag describes the style of the text (normal, glow, ...) */
    ETK_TEXTBLOCK_TAG_FONT          /**< The tag describes the font used by the text (face, size, ...) */
-   /* ... */
 } Etk_Textblock_Tag_Type;
 
 /** @brief The different types of style that can be applied on a text */
 typedef enum Etk_Textblock_Style_Type
 {
-   ETK_TEXTBLOCK_STYLE_NONE,       /**< No style is applied */
-   ETK_TEXTBLOCK_STYLE_OUTLINE,    /**< The text is oulined */
-   ETK_TEXTBLOCK_STYLE_SHADOW      /**< The text has a sharp shadow */
-   /* ... */
+   ETK_TEXTBLOCK_STYLE_NONE,                    /**< No style is applied */
+   ETK_TEXTBLOCK_STYLE_OUTLINE,                 /**< The text is oulined */
+   ETK_TEXTBLOCK_STYLE_SHADOW,                  /**< The text has a sharp shadow */
+   ETK_TEXTBLOCK_STYLE_SOFT_OUTLINE,            /**< The text has a soft outline */
+   ETK_TEXTBLOCK_STYLE_GLOW,                    /**< The text has a glow */
+   ETK_TEXTBLOCK_STYLE_OUTLINE_SHADOW,          /**< The text is outlined and has a sharp shadow */
+   ETK_TEXTBLOCK_STYLE_FAR_SHADOW,              /**< The text has a sharp far shadow */
+   ETK_TEXTBLOCK_STYLE_OUTLINE_SOFT_SHADOW,     /**< The text is outlined and has a soft shadow */
+   ETK_TEXTBLOCK_STYLE_SOFT_SHADOW,             /**< The text has a soft shadow */
+   ETK_TEXTBLOCK_STYLE_FAR_SOFT_SHADOW          /**< The text has a far soft shadow */
 } Etk_Textblock_Style_Type;
 
 /** @brief The different type of underlining for a text */
@@ -76,6 +83,11 @@ typedef enum Etk_Textblock_Gravity
 /** TODOC */
 struct Etk_Textblock_Format
 {
+   Etk_Textblock_Wrap wrap;
+   float align;
+   int left_margin;
+   int right_margin;
+   
    Etk_Textblock_Style_Type style;
    Etk_Color style_color1;
    Etk_Color style_color2;
@@ -84,13 +96,15 @@ struct Etk_Textblock_Format
    Etk_Color underline_color1;
    Etk_Color underline_color2;
    
+   Etk_Bool strikethrough;
+   Etk_Color strikethrough_color;
+   
    const char *font_face;
    int font_size;
    Etk_Color font_color;
    
-   unsigned char bold : 1;
-   unsigned char italic : 1;
-   /* ... */
+   Etk_Bool bold;
+   Etk_Bool italic;
 };
 
 /** TODOC */
@@ -109,12 +123,19 @@ struct Etk_Textblock_Node
             Etk_Color color2;
          } u;
          
+         /* Params for the <s> tag */
+         struct
+         {
+            Etk_Color color;
+         } s;
+         
          /* Params for the <p> tag */
          struct
          {
             float align;
             int left_margin;
             int right_margin;
+            Etk_Textblock_Wrap wrap;
          } p;
          
          /* Params for the <style> tag */
@@ -133,7 +154,6 @@ struct Etk_Textblock_Node
             Etk_Color color;
          } font;
          
-         /* ... */
       } params;
       
       Etk_Textblock_Tag_Type type;

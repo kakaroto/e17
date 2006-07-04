@@ -12,19 +12,11 @@
  * @{
  */
 
-/* The smart data of a textblock object */
-typedef struct Etk_Textblock_Object_SD
-{
-   Etk_Textblock *tb;
+#define ETK_TB_TAG_PARAM_IS(param, len) \
+   (param_len == (len) && strncasecmp(param_start, (param), (len)) == 0)
    
-   Etk_Textblock_Wrap wrap;
-   Evas_Textblock_Style *style;
-   
-   Evas_List *lines;
-   Evas_Object *cursor_object;
-   
-   Ecore_Job *update_job;
-} Etk_Textblock_Object_SD;
+#define ETK_TB_TAG_VALUE_IS(value, len) \
+   (value_len == (len) && strncasecmp(value_start, (value), (len)) == 0)
 
 /* A line for a textblock object is text terminated by '\n', <br> or </p>.
  * It can actually fill several "visual" lines because of wrapping */
@@ -38,6 +30,23 @@ typedef struct Etk_Textblock_Object_Line
    Etk_Bool need_geometry_update;
    Etk_Bool need_content_update;
 } Etk_Textblock_Object_Line;
+
+/* The smart data of a textblock object */
+typedef struct Etk_Textblock_Object_SD
+{
+   Etk_Textblock *tb;
+   
+   Etk_Textblock_Wrap wrap;
+   Evas_Textblock_Style *style;
+   
+   Evas_List *lines;
+   Evas_List *first_visible_line;
+   
+   Evas_Object *cursor_object;
+   Evas_Object *clip;
+   
+   Ecore_Job *update_job;
+} Etk_Textblock_Object_SD;
 
 static void _etk_tb_constructor(Etk_Textblock *tb);
 static void _etk_tb_destructor(Etk_Textblock *tb);
@@ -72,7 +81,7 @@ static int _etk_textblock_hex_string_get(char ch);
 static void _etk_textblock_object_line_add(Evas_Object *tbo, Etk_Textblock_Node *line_node);
 static void _etk_textblock_object_line_update_queue(Evas_Object *tbo, Etk_Textblock_Object_Line *line, Etk_Bool content_update, Etk_Bool geometry_update);
 static void _etk_textblock_object_line_update(Evas_Object *tbo, Etk_Textblock_Object_Line *line, int y);
-static void _etk_textblock_object_line_fill(Evas_Textblock_Cursor *cur, Etk_Textblock_Node *node);
+static void _etk_textblock_object_line_fill(Evas_Object *tbo, Evas_Textblock_Cursor *cur, Etk_Textblock_Node *node);
 static void _etk_textblock_object_update(Evas_Object *tbo);
 static void _etk_textblock_object_update_job(void *data);
 
@@ -686,24 +695,61 @@ Evas_Object *etk_textblock_object_add(Etk_Textblock *tb, Evas *evas)
 }
 
 /**
- * @brief Sets how the text of the textblock object should be wrapped
+ * @brief Sets how the text of the textblock object should be wrapped by default
  * @param tbo a textblock object
- * @param wrap the wrap mode
+ * @param wrap the wrap mode. Here, ETK_TEXTBLOCK_WRAP_DEFAULT is equivalent to ETK_TEXTBLOCK_WRAP_WORD
  */
 void etk_textblock_object_wrap_set(Evas_Object *tbo, Etk_Textblock_Wrap wrap)
 {
    Etk_Textblock_Object_SD *tbo_sd;
+   Etk_Textblock_Object_Line *line;
+   Evas_List *l;
    
    if (!tbo || !(tbo_sd = evas_object_smart_data_get(tbo)))
       return;
    
+   if (wrap == ETK_TEXTBLOCK_WRAP_DEFAULT)
+      wrap = ETK_TEXTBLOCK_WRAP_WORD;
    if (tbo_sd->wrap != wrap)
       tbo_sd->wrap = wrap;
-   /* TODO: update the object */
+   
+   
+   /* Updates the object's lines */
+   for (l = tbo_sd->lines; l; l = l->next)
+   {
+      line = l->data;
+      if (line->object && line->node && line->node->parent &&
+         line->node->parent->type == ETK_TEXTBLOCK_NODE_PARAGRAPH &&
+         line->node->parent->tag.params.p.wrap < 0)
+      {
+         Evas_Textblock_Cursor *cur;
+         const char *format;
+         
+         cur = evas_object_textblock_cursor_new(line->object);
+         for (evas_textblock_cursor_node_first(cur); evas_textblock_cursor_node_next(cur); )
+         {
+            if ((format == evas_textblock_cursor_node_format_get(cur)) && strstr(format, "wrap"))
+            {
+               if (wrap == ETK_TEXTBLOCK_WRAP_WORD)
+                  evas_textblock_cursor_format_append(cur, "+ wrap=word");
+               else if (wrap == ETK_TEXTBLOCK_WRAP_CHAR)
+                  evas_textblock_cursor_format_append(cur, "+ wrap=char");
+               else
+                  evas_textblock_cursor_format_append(cur, "+ wrap=none");
+               evas_textblock_cursor_node_prev(cur);
+               evas_textblock_cursor_node_delete(cur);
+               evas_textblock_cursor_free(cur);
+               break;
+            }
+         }
+         
+         _etk_textblock_object_line_update_queue(tbo, line, ETK_FALSE, ETK_TRUE);
+      }
+   }
 }
 
 /**
- * @brief Gets the wrap mode of the textblock object
+ * @brief Gets the default wrap mode of the textblock object
  * @param tbo a textblock object
  * @return Returns the wrap mode of the textblock object
  */
@@ -893,10 +939,14 @@ static void _etk_textblock_node_type_set(Etk_Textblock_Node *node, Etk_Textblock
          node->tag.params.u.color1.r = -1;
          node->tag.params.u.color2.r = -1;
          break;
+      case ETK_TEXTBLOCK_TAG_STRIKETHROUGH:
+         node->tag.params.s.color.r = -1;
+         break;
       case ETK_TEXTBLOCK_TAG_P:
          node->tag.params.p.align = -1.0;
          node->tag.params.p.left_margin = 0;
          node->tag.params.p.right_margin = 0;
+         node->tag.params.p.wrap = ETK_TEXTBLOCK_WRAP_DEFAULT;
          break;
       case ETK_TEXTBLOCK_TAG_STYLE:
          node->tag.params.style.type = ETK_TEXTBLOCK_STYLE_NONE;
@@ -961,33 +1011,40 @@ static void _etk_textblock_node_attach(Etk_Textblock_Node *node, Etk_Textblock_N
 static void _etk_textblock_node_format_get(Etk_Textblock_Node *node, Etk_Textblock_Format *format)
 {
    Etk_Textblock_Node *n;
+   Etk_Bool paragraph_met = ETK_FALSE;
    Etk_Bool style_met = ETK_FALSE;
    
    if (!format)
       return;
    
    /* Initializes the format: */
+   format->align = -1.0;
+   format->left_margin = 0.0;
+   format->right_margin = 0.0;
+   format->wrap = ETK_TEXTBLOCK_WRAP_DEFAULT;
    format->style = ETK_TEXTBLOCK_STYLE_NONE;
    format->style_color1.r = -1;
    format->style_color2.r = -1;
    format->underline = ETK_TEXTBLOCK_UNDERLINE_NONE;
    format->underline_color1.r = -1;
    format->underline_color2.r = -1;
+   format->strikethrough = ETK_FALSE;
+   format->strikethrough = ETK_FALSE;
    format->font_face = NULL;
    format->font_size = -1;
    format->font_color.r = -1;
-   format->bold = 0;
-   format->italic = 0;
+   format->bold = ETK_FALSE;
+   format->italic = ETK_FALSE;
    
    for (n = node; n; n = n->parent)
    {
       switch (n->tag.type)
       {
          case ETK_TEXTBLOCK_TAG_BOLD:
-            format->bold = 1;
+            format->bold = ETK_TRUE;
             break;
          case ETK_TEXTBLOCK_TAG_ITALIC:
-            format->italic = 1;
+            format->italic = ETK_TRUE;
             break;
          case ETK_TEXTBLOCK_TAG_UNDERLINE:
             if (format->underline == ETK_TEXTBLOCK_UNDERLINE_NONE)
@@ -997,6 +1054,13 @@ static void _etk_textblock_node_format_get(Etk_Textblock_Node *node, Etk_Textblo
                format->underline_color2 = n->tag.params.u.color2;
             }
             break;
+         case ETK_TEXTBLOCK_TAG_STRIKETHROUGH:
+            if (!format->strikethrough)
+            {
+               format->strikethrough = ETK_TRUE;
+               format->strikethrough_color = n->tag.params.s.color;
+            }
+            break;
          case ETK_TEXTBLOCK_TAG_STYLE:
             if (!style_met)
             {
@@ -1004,6 +1068,16 @@ static void _etk_textblock_node_format_get(Etk_Textblock_Node *node, Etk_Textblo
                format->style_color1 = n->tag.params.style.color1;
                format->style_color2 = n->tag.params.style.color2;
                style_met = ETK_TRUE;
+            }
+            break;
+         case ETK_TEXTBLOCK_TAG_P:
+            if (!paragraph_met)
+            {
+               format->align = n->tag.params.p.align;
+               format->left_margin = n->tag.params.p.left_margin;
+               format->right_margin = n->tag.params.p.right_margin;
+               format->wrap = n->tag.params.p.wrap;
+               paragraph_met = ETK_TRUE;
             }
             break;
          case ETK_TEXTBLOCK_TAG_FONT:
@@ -1129,6 +1203,8 @@ static void _etk_textblock_tag_insert(Etk_Textblock *tb, Etk_Textblock_Iter *ite
       tag_type = ETK_TEXTBLOCK_TAG_ITALIC;
    else if (strcasecmp(tag_name, "u") == 0)
       tag_type = ETK_TEXTBLOCK_TAG_UNDERLINE;
+   else if (strcasecmp(tag_name, "s") == 0)
+      tag_type = ETK_TEXTBLOCK_TAG_STRIKETHROUGH;
    else if (strcasecmp(tag_name, "p") == 0)
       tag_type = ETK_TEXTBLOCK_TAG_P;
    else if (strcasecmp(tag_name, "style") == 0)
@@ -1281,64 +1357,88 @@ static void _etk_textblock_tag_insert(Etk_Textblock *tb, Etk_Textblock_Iter *ite
             {
                switch (tag_type)
                {
+                  /* Underline */
                   case ETK_TEXTBLOCK_TAG_UNDERLINE:
-                     if (param_len == 4 && strncasecmp(param_start, "type", 4) == 0)
+                     if (ETK_TB_TAG_PARAM_IS("type", 4))
                      {
-                        if (value_len == 6 && strncasecmp(value_start, "single", 6) == 0)
+                        if (ETK_TB_TAG_VALUE_IS("single", 6))
                            new_node->tag.params.u.type = ETK_TEXTBLOCK_UNDERLINE_SINGLE;
-                        else if (value_len == 6 && strncasecmp(value_start, "double", 6) == 0)
+                        else if (ETK_TB_TAG_VALUE_IS("double", 6) == 0)
                            new_node->tag.params.u.type = ETK_TEXTBLOCK_UNDERLINE_DOUBLE;
                      }
-                     else if (param_len == 6 && strncasecmp(param_start, "color1", 6) == 0)
+                     else if (ETK_TB_TAG_PARAM_IS("color1", 6))
                         _etk_textblock_color_parse(value_start, value_len, &new_node->tag.params.u.color1);
-                        
-                     else if (param_len == 6 && strncasecmp(param_start, "color2", 6) == 0)
+                     else if (ETK_TB_TAG_PARAM_IS("color2", 6))
                         _etk_textblock_color_parse(value_start, value_len, &new_node->tag.params.u.color2);
                      break;
+                  /* Striketrhough */
+                  case ETK_TEXTBLOCK_TAG_STRIKETHROUGH:
+                     if (ETK_TB_TAG_PARAM_IS("color", 5))
+                        _etk_textblock_color_parse(value_start, value_len, &new_node->tag.params.s.color);
+                     break;
+                  /* Paragraph */
                   case ETK_TEXTBLOCK_TAG_P:
-                     if (param_len == 5 && strncasecmp(param_start, "align", 5) == 0)
+                     if (ETK_TB_TAG_PARAM_IS("align", 5))
                      {
-                        if (value_len == 4 && strncasecmp(value_start, "left", 4) == 0)
+                        if (ETK_TB_TAG_VALUE_IS("left", 4))
                            new_node->tag.params.p.align = 0.0;
-                        else if (value_len == 6 && strncasecmp(value_start, "center", 6) == 0)
+                        else if (ETK_TB_TAG_VALUE_IS("center", 6))
                            new_node->tag.params.p.align = 0.5;
-                        else if (value_len == 5 && strncasecmp(value_start, "right", 5) == 0)
+                        else if (ETK_TB_TAG_VALUE_IS("right", 5))
                            new_node->tag.params.p.align = 1.0;
                         else
                            new_node->tag.params.p.align = _etk_textblock_float_parse(value_start, value_len, -1.0);
                      }
-                     else if (param_len == 11 && strncasecmp(param_start, "left_margin", 11) == 0)
+                     else if (ETK_TB_TAG_PARAM_IS("left_margin", 11))
                         new_node->tag.params.p.left_margin = _etk_textblock_int_parse(value_start, value_len, 0);
-                     else if (param_len == 12 && strncasecmp(param_start, "right_margin", 12) == 0)
+                     else if (ETK_TB_TAG_PARAM_IS("right_margin", 12))
                         new_node->tag.params.p.right_margin = _etk_textblock_int_parse(value_start, value_len, 0);
                      break;
+                  /* Style */
                   case ETK_TEXTBLOCK_TAG_STYLE:
-                     if (param_len == 6 && strncasecmp(param_start, "effect", 6) == 0)
+                     if (ETK_TB_TAG_PARAM_IS("effect", 6))
                      {
-                        if (value_len == 4 && strncasecmp(value_start, "none", 4) == 0)
+                        if (ETK_TB_TAG_VALUE_IS("none", 4))
                            new_node->tag.params.style.type = ETK_TEXTBLOCK_STYLE_NONE;
-                        else if (value_len == 7 && strncasecmp(value_start, "outline", 7) == 0)
+                        else if (ETK_TB_TAG_VALUE_IS("outline", 7))
                            new_node->tag.params.style.type = ETK_TEXTBLOCK_STYLE_OUTLINE;
-                        else if (value_len == 6 && strncasecmp(value_start, "shadow", 6) == 0)
+                        else if (ETK_TB_TAG_VALUE_IS("shadow", 6))
                            new_node->tag.params.style.type = ETK_TEXTBLOCK_STYLE_SHADOW;
+                        else if (ETK_TB_TAG_VALUE_IS("soft_outline", 12))
+                           new_node->tag.params.style.type = ETK_TEXTBLOCK_STYLE_SOFT_OUTLINE;
+                        else if (ETK_TB_TAG_VALUE_IS("glow", 4))
+                           new_node->tag.params.style.type = ETK_TEXTBLOCK_STYLE_GLOW;
+                        else if (ETK_TB_TAG_VALUE_IS("outline_shadow", 14))
+                           new_node->tag.params.style.type = ETK_TEXTBLOCK_STYLE_OUTLINE_SHADOW;
+                        else if (ETK_TB_TAG_VALUE_IS("far_shadow", 10))
+                           new_node->tag.params.style.type = ETK_TEXTBLOCK_STYLE_FAR_SHADOW;
+                        else if (ETK_TB_TAG_VALUE_IS("outline_soft_shadow", 19))
+                           new_node->tag.params.style.type = ETK_TEXTBLOCK_STYLE_OUTLINE_SOFT_SHADOW;
+                        else if (ETK_TB_TAG_VALUE_IS("soft_shadow", 11))
+                           new_node->tag.params.style.type = ETK_TEXTBLOCK_STYLE_SOFT_SHADOW;
+                        else if (ETK_TB_TAG_VALUE_IS("far_soft_shadow", 15))
+                           new_node->tag.params.style.type = ETK_TEXTBLOCK_STYLE_FAR_SOFT_SHADOW;
                      }
-                     else if (param_len == 6 && strncasecmp(param_start, "color1", 6) == 0)
+                     else if (ETK_TB_TAG_PARAM_IS("color1", 6))
                         _etk_textblock_color_parse(value_start, value_len, &new_node->tag.params.style.color1);
-                     else if (param_len == 6 && strncasecmp(param_start, "color2", 6) == 0)
+                     else if (ETK_TB_TAG_PARAM_IS("color2", 6))
                         _etk_textblock_color_parse(value_start, value_len, &new_node->tag.params.style.color2);
                      break;
+                  /* Font */
                   case ETK_TEXTBLOCK_TAG_FONT:
-                     if (param_len == 4 && strncasecmp(param_start, "face", 4) == 0)
+                     if (ETK_TB_TAG_PARAM_IS("face", 4))
                      {
+                        free(new_node->tag.params.font.face);
                         new_node->tag.params.font.face = malloc(value_len + 1);
                         strncpy(new_node->tag.params.font.face, value_start, value_len);
                         new_node->tag.params.font.face[value_len] = '\0';
                      }
-                     else if (param_len == 4 && strncasecmp(param_start, "size", 4) == 0)
+                     else if (ETK_TB_TAG_PARAM_IS("size", 4))
                         new_node->tag.params.font.size = _etk_textblock_int_parse(value_start, value_len, -1);
-                     else if (param_len == 5 && strncasecmp(param_start, "color", 5) == 0)
+                     else if (ETK_TB_TAG_PARAM_IS("color", 5))
                         _etk_textblock_color_parse(value_start, value_len, &new_node->tag.params.font.color);
                      break;
+                     
                   default:
                      break;
                }
@@ -1425,16 +1525,26 @@ static void _etk_textblock_node_text_get(Etk_Textblock_Node *node, Etk_Bool mark
             
             if (node->tag.params.u.color2.r >= 0)
             {
-               etk_string_insert_printf(start_tag, 6, " color2=#%.2X%.2X%.2X%.2X", node->tag.params.u.color2.r,
+               etk_string_insert_printf(start_tag, 2, " color2=#%.2X%.2X%.2X%.2X", node->tag.params.u.color2.r,
                   node->tag.params.u.color2.g, node->tag.params.u.color2.b, node->tag.params.u.color2.a);
             }
             if (node->tag.params.u.color1.r >= 0)
             {
-               etk_string_insert_printf(start_tag, 6, " color1=#%.2X%.2X%.2X%.2X", node->tag.params.u.color1.r,
+               etk_string_insert_printf(start_tag, 2, " color1=#%.2X%.2X%.2X%.2X", node->tag.params.u.color1.r,
                   node->tag.params.u.color1.g, node->tag.params.u.color1.b, node->tag.params.u.color1.a);
             }
             if (node->tag.params.u.type == ETK_TEXTBLOCK_UNDERLINE_DOUBLE)
                etk_string_insert(start_tag, 2, " type=\"double\"");
+            break;
+         case ETK_TEXTBLOCK_TAG_STRIKETHROUGH:
+            start_tag = etk_string_new("<s>");
+            end_tag = etk_string_new("</s>");
+            
+            if (node->tag.params.s.color.r >= 0)
+            {
+               etk_string_insert_printf(start_tag, 2, " color=#%.2X%.2X%.2X%.2X", node->tag.params.s.color.r,
+                  node->tag.params.s.color.g, node->tag.params.s.color.b, node->tag.params.s.color.a);
+            }
             break;
          case ETK_TEXTBLOCK_TAG_P:
             if (_etk_textblock_node_is_default_paragraph(node))
@@ -1520,16 +1630,10 @@ static void _etk_textblock_node_text_get(Etk_Textblock_Node *node, Etk_Bool mark
       for (n = node->children; n; n = n->next)
          _etk_textblock_node_text_get(n, markup, text);
    }
-   /* TODO: adds '\n' at the end of the lines */
-   /*if (node->type == ETK_TEXTBLOCK_NODE_END_OF_LINE)
-   {
-      if (markup)
-         etk_string_append_char(text, '\n');
-      else
-         etk_string_append_char(text, etk_string_get(node->text));
-   }*/
    
    etk_string_append(text, etk_string_get(end_tag));
+   if (node->type == ETK_TEXTBLOCK_NODE_LINE && node->next)
+      etk_string_append_char(text, '\n');
    
    etk_object_destroy(ETK_OBJECT(start_tag));
    etk_object_destroy(ETK_OBJECT(end_tag));
@@ -1978,13 +2082,10 @@ static void _etk_textblock_object_line_update_queue(Evas_Object *tbo, Etk_Textbl
       tbo_sd->update_job = ecore_job_add(_etk_textblock_object_update_job, tbo);
 }
 
-static Evas_Object *_tb_obj = NULL;
-
 /* Updates the line of the textblock object */
 static void _etk_textblock_object_line_update(Evas_Object *tbo, Etk_Textblock_Object_Line *line, int y)
 {
    Etk_Textblock_Object_SD *tbo_sd;
-   Etk_Textblock_Node *n;
    Evas *evas;
    int ox, oy, ow, oh;
    
@@ -1992,7 +2093,7 @@ static void _etk_textblock_object_line_update(Evas_Object *tbo, Etk_Textblock_Ob
       return;
    if (!(evas = evas_object_evas_get(tbo)))
       return;
-   if (!line->need_content_update && !line->need_geometry_update)
+   if (!line->need_content_update && !line->need_geometry_update && line->object)
       return;
    
    evas_object_geometry_get(tbo, &ox, &oy, &ow, &oh);
@@ -2001,7 +2102,15 @@ static void _etk_textblock_object_line_update(Evas_Object *tbo, Etk_Textblock_Ob
    {
       line->object = evas_object_textblock_add(evas);
       evas_object_textblock_style_set(line->object, tbo_sd->style);
-      evas_object_show(line->object);
+      evas_object_clip_set(line->object, tbo_sd->clip);
+      if (evas_object_visible_get(tbo))
+      {
+         evas_object_show(line->object);
+         evas_object_show(tbo_sd->clip);
+      }
+      /* TODO: optimize!!! */
+      line->need_content_update = ETK_TRUE;
+      line->need_geometry_update = ETK_TRUE;
    }
    
    if (line->need_content_update)
@@ -2011,8 +2120,7 @@ static void _etk_textblock_object_line_update(Evas_Object *tbo, Etk_Textblock_Ob
       evas_object_textblock_clear(line->object);
       cur = evas_object_textblock_cursor_new(line->object);
       evas_textblock_cursor_node_first(cur);
-      _tb_obj = line->object;
-      _etk_textblock_object_line_fill(cur, line->node);
+      _etk_textblock_object_line_fill(tbo, cur, line->node);
       evas_textblock_cursor_free(cur);
       
       line->need_content_update = ETK_FALSE;
@@ -2022,18 +2130,9 @@ static void _etk_textblock_object_line_update(Evas_Object *tbo, Etk_Textblock_Ob
    {
       line->geometry.x = 0;
       line->geometry.y = y;
+      line->geometry.w = ow;
       evas_object_resize(line->object, ow, 300);
-      evas_object_textblock_size_formatted_get(line->object, &line->geometry.w, &line->geometry.h);
-      
-      for (n = line->node; n; n = n->parent)
-      {
-         if (n->type == ETK_TEXTBLOCK_NODE_PARAGRAPH)
-         {
-            if (n->tag.params.p.align >= 0)
-               line->geometry.x = (ow - line->geometry.w) * n->tag.params.p.align;
-            break;
-         }
-      }
+      evas_object_textblock_size_formatted_get(line->object, NULL, &line->geometry.h);
       
       evas_object_move(line->object, ox + line->geometry.x, oy + line->geometry.y);
       evas_object_resize(line->object, line->geometry.w, line->geometry.h);
@@ -2043,13 +2142,14 @@ static void _etk_textblock_object_line_update(Evas_Object *tbo, Etk_Textblock_Ob
 }
 
 /* Fills recursively the line of the textblock object with the content of a node */
-static void _etk_textblock_object_line_fill(Evas_Textblock_Cursor *cur, Etk_Textblock_Node *node)
+static void _etk_textblock_object_line_fill(Evas_Object *tbo, Evas_Textblock_Cursor *cur, Etk_Textblock_Node *node)
 {
    Etk_String *fmt_str = NULL;
+   Etk_Textblock_Object_SD *tbo_sd;
    Etk_Textblock_Node *n;
    int opened_nodes = 0, i;
    
-   if (!cur || !node)
+   if (!tbo || !cur || !node || !(tbo_sd = evas_object_smart_data_get(tbo)))
       return;
    
    /* A line node */
@@ -2059,6 +2159,19 @@ static void _etk_textblock_object_line_fill(Evas_Textblock_Cursor *cur, Etk_Text
       
       if ((paragraph = node->parent) && paragraph->type == ETK_TEXTBLOCK_NODE_PARAGRAPH)
       {
+         Etk_Textblock_Wrap wrap;
+         
+         /* Wrapping */
+         if ((wrap = paragraph->tag.params.p.wrap) == ETK_TEXTBLOCK_WRAP_DEFAULT)
+            wrap = tbo_sd->wrap;
+         if (wrap == ETK_TEXTBLOCK_WRAP_WORD)
+            evas_textblock_cursor_format_append(cur, "+ wrap=word");
+         else if (wrap == ETK_TEXTBLOCK_WRAP_CHAR)
+            evas_textblock_cursor_format_append(cur, "+ wrap=char");
+         else
+            evas_textblock_cursor_format_append(cur, "+ wrap=none");
+         opened_nodes++;
+         
          /* Alignment */
          if (paragraph->tag.params.p.align == 0.5)
          {
@@ -2091,11 +2204,15 @@ static void _etk_textblock_object_line_fill(Evas_Textblock_Cursor *cur, Etk_Text
    else if (node->type == ETK_TEXTBLOCK_NODE_NORMAL && etk_string_length_get(node->text) > 0)
    {
       Etk_Textblock_Format format;
+      Etk_Color color;
+      /* TODO: use default color here */
+      Etk_Color black = { .r = 0, .g = 0, .b = 0, .a = 255 };
       
       /* We add the format nodes */
       /* TODO: we need to make the font changeable */
       _etk_textblock_node_format_get(node, &format);
       
+      /* Font styles */
       opened_nodes++;
       if (format.bold && !format.italic)
          evas_textblock_cursor_format_append(cur, "+ font=Vera-Bold");
@@ -2106,6 +2223,63 @@ static void _etk_textblock_object_line_fill(Evas_Textblock_Cursor *cur, Etk_Text
       else
          opened_nodes--;
       
+      /* Underline */
+      if (format.underline != ETK_TEXTBLOCK_UNDERLINE_NONE)
+      {
+         if (format.underline == ETK_TEXTBLOCK_UNDERLINE_SINGLE)
+         {
+            evas_textblock_cursor_format_append(cur, "+ underline=single");
+            opened_nodes++;
+         }
+         else if (format.underline == ETK_TEXTBLOCK_UNDERLINE_DOUBLE)
+         {
+            evas_textblock_cursor_format_append(cur, "+ underline=double");
+            opened_nodes++;
+         }
+         
+         /* First color */
+         if (format.underline_color1.r >= 0)
+            color = format.underline_color1;
+         else if (format.font_color.r >= 0)
+            color = format.font_color;
+         else
+            color = black;
+         fmt_str = etk_string_set_printf(fmt_str, "+ underline_color=#%.2X%.2X%.2X%.2X",
+            color.r, color.g, color.b, color.a);
+         evas_textblock_cursor_format_append(cur, etk_string_get(fmt_str));
+         opened_nodes++;
+         
+         /* Second color */
+         if (format.underline == ETK_TEXTBLOCK_UNDERLINE_DOUBLE)
+         {
+            if (format.underline_color2.r >= 0)
+               color = format.underline_color2;
+            fmt_str = etk_string_set_printf(fmt_str, "+ underline_color2=#%.2X%.2X%.2X%.2X",
+               color.r, color.g, color.b, color.a);
+            evas_textblock_cursor_format_append(cur, etk_string_get(fmt_str));
+            opened_nodes++;
+         }
+      }
+      
+      /* Strikethrough */
+      if (format.strikethrough)
+      {
+         evas_textblock_cursor_format_append(cur, "+ strikethrough=on");
+         opened_nodes++;
+         
+         if (format.strikethrough_color.r >= 0)
+            color = format.underline_color1;
+         else if (format.font_color.r >= 0)
+            color = format.font_color;
+         else
+            color = black;
+         fmt_str = etk_string_set_printf(fmt_str, "+ strikethrough_color=#%.2X%.2X%.2X%.2X",
+            color.r, color.g, color.b, color.a);
+         evas_textblock_cursor_format_append(cur, etk_string_get(fmt_str));
+         opened_nodes++;
+      }
+      
+      /* Font settings */
       if (format.font_size >= 0)
       {
          fmt_str = etk_string_set_printf(fmt_str, "+ font_size=%d", format.font_size);
@@ -2118,6 +2292,108 @@ static void _etk_textblock_object_line_fill(Evas_Textblock_Cursor *cur, Etk_Text
             format.font_color.g, format.font_color.b, format.font_color.a);
          evas_textblock_cursor_format_append(cur, etk_string_get(fmt_str));
          opened_nodes++;
+      }
+      
+      /* Effects */
+      if (format.style != ETK_TEXTBLOCK_STYLE_NONE)
+      {
+         Etk_Bool append_color;
+         
+         switch (format.style)
+         {
+            case ETK_TEXTBLOCK_STYLE_OUTLINE:
+               evas_textblock_cursor_format_append(cur, "+ style=outline");
+               break;
+            case ETK_TEXTBLOCK_STYLE_SHADOW:
+               evas_textblock_cursor_format_append(cur, "+ style=shadow");
+               break;
+            case ETK_TEXTBLOCK_STYLE_SOFT_OUTLINE:
+               evas_textblock_cursor_format_append(cur, "+ style=soft_outline");
+               break;
+            case ETK_TEXTBLOCK_STYLE_GLOW:
+               evas_textblock_cursor_format_append(cur, "+ style=glow");
+               break;
+            case ETK_TEXTBLOCK_STYLE_OUTLINE_SHADOW:
+               evas_textblock_cursor_format_append(cur, "+ style=outline_shadow");
+               break;
+            case ETK_TEXTBLOCK_STYLE_FAR_SHADOW:
+               evas_textblock_cursor_format_append(cur, "+ style=far_shadow");
+               break;
+            case ETK_TEXTBLOCK_STYLE_OUTLINE_SOFT_SHADOW:
+               evas_textblock_cursor_format_append(cur, "+ style=outline_soft_shadow");
+               break;
+            case ETK_TEXTBLOCK_STYLE_SOFT_SHADOW:
+               evas_textblock_cursor_format_append(cur, "+ style=soft_shadow");
+               break;
+            case ETK_TEXTBLOCK_STYLE_FAR_SOFT_SHADOW:
+               evas_textblock_cursor_format_append(cur, "+ style=far_soft_shadow");
+               break;
+            default:
+               opened_nodes--;
+               break;
+         }
+         opened_nodes++;
+         
+         /* First color */
+         if (format.style_color1.r >= 0)
+         {
+            append_color = ETK_TRUE;
+            
+            switch (format.style)
+            {
+               case ETK_TEXTBLOCK_STYLE_OUTLINE:
+               case ETK_TEXTBLOCK_STYLE_SOFT_OUTLINE:
+               case ETK_TEXTBLOCK_STYLE_OUTLINE_SHADOW:
+               case ETK_TEXTBLOCK_STYLE_OUTLINE_SOFT_SHADOW:
+                  fmt_str = etk_string_set(fmt_str, "+ outline_color=");
+                  break;
+               case ETK_TEXTBLOCK_STYLE_SHADOW:
+               case ETK_TEXTBLOCK_STYLE_FAR_SHADOW:
+               case ETK_TEXTBLOCK_STYLE_SOFT_SHADOW:
+               case ETK_TEXTBLOCK_STYLE_FAR_SOFT_SHADOW:
+                  fmt_str = etk_string_set(fmt_str, "+ shadow_color=");
+               case ETK_TEXTBLOCK_STYLE_GLOW:
+                  fmt_str = etk_string_set(fmt_str, "+ glow_color1=");
+               default:
+                  append_color = ETK_FALSE;
+                  break;
+            }
+            
+            if (append_color)
+            {
+               fmt_str = etk_string_append_printf(fmt_str, "#%.2X%.2X%.2X%.2X", format.style_color1.r,
+                  format.style_color1.g, format.style_color1.b, format.style_color1.a);
+               evas_textblock_cursor_format_append(cur, etk_string_get(fmt_str));
+               opened_nodes++;
+            }
+         }
+         
+         /* Second color */
+         if (format.style_color2.r >= 0)
+         {
+            append_color = ETK_TRUE;
+            
+            switch (format.style)
+            {
+               case ETK_TEXTBLOCK_STYLE_OUTLINE_SHADOW:
+               case ETK_TEXTBLOCK_STYLE_OUTLINE_SOFT_SHADOW:
+                  fmt_str = etk_string_set(fmt_str, "+ shadow_color=");
+                  break;
+               case ETK_TEXTBLOCK_STYLE_GLOW:
+                  fmt_str = etk_string_set(fmt_str, "+ glow_color2=");
+               default:
+                  append_color = ETK_FALSE;
+                  break;
+            }
+            
+            if (append_color)
+            {
+               fmt_str = etk_string_append_printf(fmt_str, "#%.2X%.2X%.2X%.2X", format.style_color2.r,
+                  format.style_color2.g, format.style_color2.b, format.style_color2.a);
+               evas_textblock_cursor_format_append(cur, etk_string_get(fmt_str));
+               opened_nodes++;
+            }
+         }
       }
    }
    etk_object_destroy(ETK_OBJECT(fmt_str));
@@ -2134,7 +2410,7 @@ static void _etk_textblock_object_line_fill(Evas_Textblock_Cursor *cur, Etk_Text
    }
    
    for (n = node->children; n; n = n->next)
-      _etk_textblock_object_line_fill(cur, n);
+      _etk_textblock_object_line_fill(tbo, cur, n);
    
    if (node->type == ETK_TEXTBLOCK_NODE_LINE)
    {
@@ -2149,17 +2425,41 @@ static void _etk_textblock_object_update(Evas_Object *tbo)
    Etk_Textblock_Object_SD *tbo_sd;
    Etk_Textblock_Object_Line *line;
    Evas_List *l;
-   int y;
+   int y_offset = 0;
+   int y, h;
    
    if (!tbo || !(tbo_sd = evas_object_smart_data_get(tbo)))
       return;
    
    y = 0;
+   evas_object_geometry_get(tbo, NULL, NULL, NULL, &h);
+   tbo_sd->first_visible_line = NULL;
    for (l = tbo_sd->lines; l; l = l->next)
    {
       line = l->data;
+      
+      if (y >= h)
+      {
+         if (line->object)
+         {
+            evas_object_del(line->object);
+            line->object = NULL;
+            continue;
+         }
+         else
+            break;
+      }
+      
       _etk_textblock_object_line_update(tbo, line, y);
       y = line->geometry.y + line->geometry.h;
+      
+      if (y <= y_offset)
+      {
+         evas_object_del(line->object);
+         line->object = NULL;
+      }
+      else if (!tbo_sd->first_visible_line)
+         tbo_sd->first_visible_line = l;
    }
 }
 
@@ -2194,12 +2494,15 @@ static void _etk_tb_object_smart_add(Evas_Object *obj)
    tbo_sd = malloc(sizeof(Etk_Textblock_Object_SD));
    tbo_sd->tb = NULL;
    tbo_sd->wrap = ETK_TEXTBLOCK_WRAP_WORD;
-   tbo_sd->cursor_object = NULL;
-   tbo_sd->lines = NULL;
    tbo_sd->update_job = NULL;
    
+   tbo_sd->cursor_object = NULL;
+   tbo_sd->clip = evas_object_rectangle_add(evas);
+   tbo_sd->lines = NULL;
+   tbo_sd->first_visible_line = NULL;
+   
    tbo_sd->style = evas_textblock_style_new();
-   evas_textblock_style_set(tbo_sd->style, "DEFAULT='font=Vera font_size=10 align=left color=#000000 wrap=word'");
+   evas_textblock_style_set(tbo_sd->style, "DEFAULT='font=Vera font_size=10 align=left color=#000000'");
    
    evas_object_smart_data_set(obj, tbo_sd);
 }
@@ -2251,6 +2554,8 @@ static void _etk_tb_object_smart_move(Evas_Object *obj, Evas_Coord x, Evas_Coord
    if (!obj || !(tbo_sd = evas_object_smart_data_get(obj)))
       return;
    
+   evas_object_move(tbo_sd->clip, x, y);
+   
    evas_object_geometry_get(obj, &prev_x, &prev_y, NULL, NULL);
    for (l = tbo_sd->lines; l; l = l->next)
    {
@@ -2266,40 +2571,65 @@ static void _etk_tb_object_smart_move(Evas_Object *obj, Evas_Coord x, Evas_Coord
 static void _etk_tb_object_smart_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
 {
    Etk_Textblock_Object_SD *tbo_sd;
+   Evas_List *l;
    
    if (!obj || !(tbo_sd = evas_object_smart_data_get(obj)))
       return;
    
-   /* TODO: _etk_tb_object_smart_resize: optimize if the text is not wrapped? */
-   /*if (tbo_sd->wrap == ETK_TEXTBLOCK_WRAP_NONE)
-   {
-      
-   }
-   else*/
-   {
-      Evas_List *l;
-      
-      for (l = tbo_sd->lines; l; l = l->next)
-         _etk_textblock_object_line_update_queue(obj, l->data, ETK_FALSE, ETK_TRUE);
-   }
+   evas_object_resize(tbo_sd->clip, w, h);
+   
+   /* TODO: optimization for non-wrapped lines? */
+   for (l = tbo_sd->lines; l; l = l->next)
+      _etk_textblock_object_line_update_queue(obj, l->data, ETK_FALSE, ETK_TRUE);
 }
 
 /* Shows the textblock object */
 static void _etk_tb_object_smart_show(Evas_Object *obj)
 {
    Etk_Textblock_Object_SD *tbo_sd;
+   Etk_Textblock_Object_Line *line;
+   Evas_List *l;
+   Etk_Bool show_clip = ETK_FALSE;
    
    if (!obj || !(tbo_sd = evas_object_smart_data_get(obj)))
       return;
+   
+   for (l = tbo_sd->first_visible_line; l; l = l->next)
+   {
+      line = l->data;
+      if (line->object)
+      {
+         evas_object_show(line->object);
+         show_clip = ETK_TRUE;
+      }
+      else
+         break;
+   }
+   
+   if (show_clip)
+      evas_object_show(tbo_sd->clip);
 }
 
 /* Hides the textblock object */
 static void _etk_tb_object_smart_hide(Evas_Object *obj)
 {
    Etk_Textblock_Object_SD *tbo_sd;
+   Etk_Textblock_Object_Line *line;
+   Evas_List *l;
    
    if (!obj || !(tbo_sd = evas_object_smart_data_get(obj)))
       return;
+   
+   for (l = tbo_sd->first_visible_line; l; l = l->next)
+   {
+      line = l->data;
+      if (line->object)
+         evas_object_hide(line->object);
+      else
+         break;
+   }
+   
+   evas_object_hide(tbo_sd->clip);
 }
 
 /* Set the color of the textblock object */
@@ -2309,6 +2639,7 @@ static void _etk_tb_object_smart_color_set(Evas_Object *obj, int r, int g, int b
    
    if (!obj || !(tbo_sd = evas_object_smart_data_get(obj)))
       return;
+   evas_object_color_set(tbo_sd->clip, r, g, b, a);
 }
 
 /* Clips the textblock object */
@@ -2318,6 +2649,7 @@ static void _etk_tb_object_smart_clip_set(Evas_Object *obj, Evas_Object *clip)
    
    if (!obj || !(tbo_sd = evas_object_smart_data_get(obj)))
       return;
+   evas_object_clip_set(tbo_sd->clip, clip);
 }
 
 /* Unclips the textblock object */
@@ -2327,6 +2659,7 @@ static void _etk_tb_object_smart_clip_unset(Evas_Object *obj)
    
    if (!obj || !(tbo_sd = evas_object_smart_data_get(obj)))
       return;
+   evas_object_clip_unset(tbo_sd->clip);
 }
 
 /** @} */
