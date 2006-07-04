@@ -2,7 +2,13 @@
 #include "etk_popup_window.h"
 #include <stdlib.h>
 #include <Ecore.h>
+
+#include "config.h"
+
+#if HAVE_ECORE_X
 #include <Ecore_X.h>
+#endif
+
 #include "etk_utils.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
@@ -42,7 +48,10 @@ static Etk_Popup_Window_Screen_Edge _etk_popup_window_mouse_on_screen_edge_get()
 static void _etk_popup_window_slide_timer_update(Etk_Popup_Window *popup_window);
 static int _etk_popup_window_slide_timer_cb(void *data);
 
+#if HAVE_ECORE_X
 static Ecore_X_Window _etk_popup_window_input_window = 0;
+#endif
+
 static Evas_List *_etk_popup_window_popped_windows = NULL;
 static Etk_Popup_Window *_etk_popup_window_focused_window = NULL;
 static int _etk_popup_window_popup_timestamp = 0;
@@ -93,6 +102,7 @@ Etk_Type *etk_popup_window_type_get()
  */
 void etk_popup_window_popup_at_xy(Etk_Popup_Window *popup_window, int x, int y)
 {
+#if HAVE_ECORE_X   
    if (!popup_window)
       return;
 
@@ -130,6 +140,7 @@ void etk_popup_window_popup_at_xy(Etk_Popup_Window *popup_window, int x, int y)
    _etk_popup_window_slide_timer_update(popup_window);
 
    etk_signal_emit(_etk_popup_window_signals[ETK_POPUP_WINDOW_POPPED_UP_SIGNAL], ETK_OBJECT(popup_window), NULL);
+#endif   
 }
 
 /**
@@ -138,10 +149,12 @@ void etk_popup_window_popup_at_xy(Etk_Popup_Window *popup_window, int x, int y)
  */
 void etk_popup_window_popup(Etk_Popup_Window *popup_window)
 {
+#if HAVE_ECORE_X   
    int x, y;
 
    ecore_x_pointer_last_xy_get(&x, &y);
    etk_popup_window_popup_at_xy(popup_window, x + 1, y + 1);
+#endif   
 }
 
 /**
@@ -150,6 +163,7 @@ void etk_popup_window_popup(Etk_Popup_Window *popup_window)
  */
 void etk_popup_window_popdown(Etk_Popup_Window *popup_window)
 {
+#if HAVE_ECORE_X   
    Evas_List *l;
    Etk_Popup_Window *last_focused;
 
@@ -180,6 +194,7 @@ void etk_popup_window_popdown(Etk_Popup_Window *popup_window)
    }
 
    etk_signal_emit(_etk_popup_window_signals[ETK_POPUP_WINDOW_POPPED_DOWN_SIGNAL], ETK_OBJECT(popup_window), NULL);
+#endif   
 }
 
 
@@ -245,7 +260,9 @@ static void _etk_popup_window_constructor(Etk_Popup_Window *popup_window)
    etk_window_decorated_set(ETK_WINDOW(popup_window), ETK_FALSE);
    etk_window_skip_taskbar_hint_set(ETK_WINDOW(popup_window), ETK_TRUE);
    etk_window_skip_pager_hint_set(ETK_WINDOW(popup_window), ETK_TRUE);
+#if HAVE_ECORE_X   
    ecore_x_netwm_window_type_set(ETK_WINDOW(popup_window)->x_window, ECORE_X_WINDOW_TYPE_MENU);
+#endif   
 }
 
 /**************************
@@ -254,9 +271,10 @@ static void _etk_popup_window_constructor(Etk_Popup_Window *popup_window)
  *
  **************************/
 
-/* Called wgen the user presses a key on the input window: we just feed it */
+/* Called when the user presses a key on the input window: we just feed it */
 static int _etk_popup_window_key_down_cb(void *data, int type, void *event)
 {
+#if HAVE_ECORE_X   
    Etk_Popup_Window *popup_window;
    Ecore_X_Event_Key_Down *key_event;
 
@@ -267,12 +285,14 @@ static int _etk_popup_window_key_down_cb(void *data, int type, void *event)
 
    evas_event_feed_key_down(ETK_TOPLEVEL_WIDGET(_etk_popup_window_focused_window)->evas, key_event->keyname,
       key_event->keysymbol, key_event->key_compose, NULL, key_event->time, NULL);
+#endif   
    return 1;
 }
 
 /* Called wgen the user releases a key on the input window: we just feed it */
 static int _etk_popup_window_key_up_cb(void *data, int type, void *event)
 {
+#if HAVE_ECORE_X   
    Etk_Popup_Window *popup_window;
    Ecore_X_Event_Key_Up *key_event;
 
@@ -283,6 +303,7 @@ static int _etk_popup_window_key_up_cb(void *data, int type, void *event)
 
    evas_event_feed_key_up(ETK_TOPLEVEL_WIDGET(_etk_popup_window_focused_window)->evas, key_event->keyname,
       key_event->keysymbol, key_event->key_compose, NULL, key_event->time, NULL);
+#endif   
    return 1;
 }
 
@@ -292,6 +313,7 @@ static int _etk_popup_window_key_up_cb(void *data, int type, void *event)
  */
 static int _etk_popup_window_mouse_up_cb(void *data, int type, void *event)
 {
+#if HAVE_ECORE_X   
    Etk_Popup_Window *popup_window, *pwin;
    Evas_List *l;
    Ecore_X_Event_Mouse_Button_Up *mouse_event;
@@ -317,7 +339,7 @@ static int _etk_popup_window_mouse_up_cb(void *data, int type, void *event)
    /* Otherwize, we pop down all the popup windows */
    if (!pointer_over_window && (mouse_event->time - _etk_popup_window_popup_timestamp) >= ETK_POPUP_WINDOW_MIN_POP_TIME)
       etk_popup_window_popdown_all();
-
+#endif
    return 1;
 }
 
@@ -327,6 +349,7 @@ static int _etk_popup_window_mouse_up_cb(void *data, int type, void *event)
  */
 static int _etk_popup_window_mouse_move_cb(void *data, int type, void *event)
 {
+#if HAVE_ECORE_X   
    Etk_Popup_Window *popup_window, *pwin;
    Evas_List *l;
    Ecore_X_Event_Mouse_Move *mouse_event;
@@ -347,7 +370,7 @@ static int _etk_popup_window_mouse_move_cb(void *data, int type, void *event)
       /* Start to make the popup window slide if needed */
       _etk_popup_window_slide_timer_update(pwin);
    }
-
+#endif
    return 1;
 }
 
@@ -360,9 +383,10 @@ static int _etk_popup_window_mouse_move_cb(void *data, int type, void *event)
 /* Returns a flag incating on which edges of the screen the popup window is over */
 static Etk_Popup_Window_Screen_Edge _etk_popup_window_over_screen_edge_get(Etk_Popup_Window *popup_window)
 {
+   Etk_Popup_Window_Screen_Edge result = ETK_POPUP_WINDOW_NO_EDGE;
+#if HAVE_ECORE_X   
    int rx, ry, rw, rh;
    int px, py, pw, ph;
-   Etk_Popup_Window_Screen_Edge result = ETK_POPUP_WINDOW_NO_EDGE;
 
    if (!popup_window || _etk_popup_window_input_window == 0)
       return ETK_POPUP_WINDOW_NO_EDGE;
@@ -378,15 +402,16 @@ static Etk_Popup_Window_Screen_Edge _etk_popup_window_over_screen_edge_get(Etk_P
       result |= ETK_POPUP_WINDOW_TOP_EDGE;
    if (py + ph > ry + rh)
       result |= ETK_POPUP_WINDOW_BOTTOM_EDGE;
-
+#endif
    return result;
 }
 
 /* Returns a flag incating on which edges of the screen the mouse pointer is */
 static Etk_Popup_Window_Screen_Edge _etk_popup_window_mouse_on_screen_edge_get()
 {
+   Etk_Popup_Window_Screen_Edge result = ETK_POPUP_WINDOW_NO_EDGE;   
+#if HAVE_ECORE_X   
    int rx, ry, rw, rh;
-   Etk_Popup_Window_Screen_Edge result = ETK_POPUP_WINDOW_NO_EDGE;
 
    if (_etk_popup_window_input_window == 0)
       return ETK_POPUP_WINDOW_NO_EDGE;
@@ -400,7 +425,7 @@ static Etk_Popup_Window_Screen_Edge _etk_popup_window_mouse_on_screen_edge_get()
       result |= ETK_POPUP_WINDOW_BOTTOM_EDGE;
    if (_etk_popup_window_mouse_y <= ry)
       result |= ETK_POPUP_WINDOW_TOP_EDGE;
-
+#endif
    return result;
 }
 
@@ -421,6 +446,7 @@ static void _etk_popup_window_slide_timer_update(Etk_Popup_Window *popup_window)
 /* Makes the popup windows slide (called every 1/60 sec) */
 static int _etk_popup_window_slide_timer_cb(void *data)
 {
+#if HAVE_ECORE_X   
    Etk_Popup_Window *popup_window = NULL, *pwin;
    Evas_List *l;
    Etk_Popup_Window_Screen_Edge mouse_edge, window_edge;
@@ -493,7 +519,7 @@ static int _etk_popup_window_slide_timer_cb(void *data)
       /* We feed a mouse move event since the relative position between the mouse pointer and the popup window has changed */
       evas_event_feed_mouse_move(ETK_TOPLEVEL_WIDGET(pwin)->evas, _etk_popup_window_mouse_x - x, _etk_popup_window_mouse_y - y, ecore_x_current_time_get(), NULL);
    }
-
+#endif
    return 1;
 }
 

@@ -4,10 +4,14 @@
 #include <string.h>
 #include <Ecore.h>
 #include <Ecore_Evas.h>
+#include "config.h"
+
+#if HAVE_ECORE_X
 #include <Ecore_X.h>
+#endif
+
 #include "etk_widget.h"
 #include "etk_window.h"
-#include "config.h"
 
 /**
  * @addtogroup Etk_Ddrag
@@ -82,6 +86,7 @@ void etk_drag_data_set(Etk_Drag *drag, void *data, int size)
 
 void etk_drag_begin(Etk_Drag *drag)
 {
+#if HAVE_ECORE_X   
    _etk_drag_widget = drag;
    
    etk_widget_drag_begin(drag->widget);
@@ -90,7 +95,8 @@ void etk_drag_begin(Etk_Drag *drag)
    ecore_x_dnd_types_set((ETK_WINDOW(drag))->x_window, drag->types, drag->num_types);
    ecore_x_dnd_begin((ETK_WINDOW(drag))->x_window, drag->data, drag->data_size);
    _etk_drag_mouse_move_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE, _etk_drag_mouse_move_cb, drag);
-   _etk_drag_mouse_up_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP, _etk_drag_mouse_up_cb, drag);   
+   _etk_drag_mouse_up_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP, _etk_drag_mouse_up_cb, drag);
+#endif   
 }
 
 /**
@@ -128,6 +134,7 @@ Etk_Widget *etk_drag_parent_widget_get(Etk_Drag *drag)
 /* Initializes the members */
 static void _etk_drag_constructor(Etk_Drag *drag)
 {
+#if HAVE_ECORE_X   
    if (!drag)
      return;
    
@@ -142,6 +149,7 @@ static void _etk_drag_constructor(Etk_Drag *drag)
    etk_window_skip_pager_hint_set(ETK_WINDOW(drag), ETK_TRUE);
    etk_window_skip_taskbar_hint_set(ETK_WINDOW(drag), ETK_TRUE);
    ecore_x_dnd_aware_set((ETK_WINDOW(drag))->x_window, 1);
+#endif   
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -182,6 +190,7 @@ static void _etk_drag_property_get(Etk_Object *object, int property_id, Etk_Prop
 
 static int _etk_drag_mouse_up_cb(void *data, int type, void *event)
 {
+#if HAVE_ECORE_X   
    Etk_Drag *drag;
    
    drag = data;
@@ -191,11 +200,13 @@ static int _etk_drag_mouse_up_cb(void *data, int type, void *event)
    ecore_x_dnd_drop();   
    etk_widget_drag_end(ETK_WIDGET(drag));   
    etk_toplevel_widget_pointer_push(etk_widget_toplevel_parent_get(drag->widget), ETK_POINTER_DEFAULT);
+#endif   
    return 1;
 }
 
 static int _etk_drag_mouse_move_cb(void *data, int type, void *event)
 {
+#if HAVE_ECORE_X   
    Ecore_X_Event_Mouse_Move *ev;
    Etk_Drag *drag;
    
@@ -203,6 +214,7 @@ static int _etk_drag_mouse_move_cb(void *data, int type, void *event)
    ev = event;
    
    etk_window_move(ETK_WINDOW(drag), ev->root.x + 2, ev->root.y + 2);
+#endif   
    return 1;
 }
 

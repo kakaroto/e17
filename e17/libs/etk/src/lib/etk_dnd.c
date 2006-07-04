@@ -4,13 +4,19 @@
 #include <string.h>
 #include <Ecore.h>
 #include <Ecore_Evas.h>
+
+#include "config.h"
+
+#if HAVE_ECORE_X
 #include <Ecore_X.h>
+#endif
+
 #include "etk_main.h"
 #include "etk_widget.h"
 #include "etk_toplevel_widget.h"
 #include "etk_window.h"
 #include "etk_drag.h"
-#include "config.h"
+
 
 /* Some notes for when we're developing this:
  * Signals:

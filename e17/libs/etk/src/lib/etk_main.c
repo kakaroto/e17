@@ -2,7 +2,11 @@
 #include "etk_main.h"
 #include <locale.h>
 #include <Ecore.h>
+
+#if HAVE_ECORE_X
 #include <Ecore_X.h>
+#endif
+
 #include <Ecore_Job.h>
 #include <Ecore_Evas.h>
 #include <Evas.h>
@@ -64,11 +68,13 @@ Etk_Bool etk_init()
       ETK_WARNING("Ecore_Evas initialization failed!");
       return ETK_FALSE;
    }
+#if HAVE_ECORE_X   
    if (!ecore_x_init(NULL))
    {
       ETK_WARNING("Ecore_X initialization failed!");
       return ETK_FALSE;
    }
+#endif   
    if (!edje_init())
    {
       ETK_WARNING("Edje initialization failed!");

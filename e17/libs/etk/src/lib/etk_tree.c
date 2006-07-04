@@ -6,6 +6,12 @@
 #include <math.h>
 #include <Ecore_Data.h>
 #include <Edje.h>
+#include "config.h"
+
+#if HAVE_ECORE_X
+#include <Ecore_X.h>
+#endif
+
 #include "etk_theme.h"
 #include "etk_tree_model.h"
 #include "etk_scrolled_view.h"
@@ -16,7 +22,7 @@
 #include "etk_utils.h"
 #include "etk_window.h"
 #include "etk_drag.h"
-#include "config.h"
+
 
 /**
  * @addtogroup Etk_Tree

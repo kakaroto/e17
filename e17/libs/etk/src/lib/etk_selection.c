@@ -3,9 +3,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <Ecore.h>
-#include <Ecore_X.h>
-#include "etk_window.h"
+
 #include "config.h"
+
+#if HAVE_ECORE_X
+#include <Ecore_X.h>
+#endif
+
+#include "etk_window.h"
 
 Etk_Widget *_etk_selection_widget = NULL;
 

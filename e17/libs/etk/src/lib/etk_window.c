@@ -2,13 +2,18 @@
 #include "etk_window.h"
 #include <stdlib.h>
 #include <string.h>
+
+#include "config.h"
+
+#if HAVE_ECORE_X
 #include <Ecore_X.h>
 #include <Ecore_X_Cursor.h>
+#endif
+
 #include "etk_main.h"
 #include "etk_utils.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
-#include "config.h"
 
 /**
  * @addtogroup Etk_Window
@@ -234,8 +239,10 @@ void etk_window_center_on_window(Etk_Window *window_to_center, Etk_Window *windo
             h = size_requisition.h;
          }
       }
+
       else
       {
+#if HAVE_ECORE_X	 
          Ecore_X_Window root;
 	 int screens;
 	 
@@ -266,7 +273,14 @@ DEFAULT:
 	    for (root = window_to_center->x_window; ecore_x_window_parent_get(root) != 0; root = ecore_x_window_parent_get(root));
 	    ecore_x_window_geometry_get(root, &x, &y, &w, &h);
 	 }
+#else
+	 /* this is the case where we DONT have ecore_x and
+	  * our window is NULL, we cant do anything.
+	  */
+	 return;
+#endif	 
       }
+
 END:      
       etk_window_geometry_get(window_to_center, NULL, NULL, &cw, &ch);
       ecore_evas_move(window_to_center->ecore_evas, x + (w - cw) / 2, y + (h - ch) / 2);
@@ -279,6 +293,7 @@ END:
  */
 void etk_window_move_to_mouse(Etk_Window *window)
 {
+#if HAVE_ECORE_X   
    int x, y;
    Ecore_X_Window root;
    
@@ -288,6 +303,7 @@ void etk_window_move_to_mouse(Etk_Window *window)
    for (root = window->x_window; ecore_x_window_parent_get(root) != 0; root = ecore_x_window_parent_get(root));
    ecore_x_pointer_xy_get(root, &x, &y);
    etk_window_move(window, x, y);
+#endif   
 }
 
 /**
@@ -297,6 +313,7 @@ void etk_window_move_to_mouse(Etk_Window *window)
  */
 void etk_window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *window)
 {
+#if HAVE_ECORE_X   
    int x, y, w, h;
    int cw, ch;
    
@@ -322,6 +339,7 @@ void etk_window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *window
 	 ecore_x_netwm_window_state_set(window_to_modal->x_window, states, 1);
       }
    }
+#endif   
 }
 
 /**
@@ -559,6 +577,7 @@ Etk_Bool etk_window_shaped_get(Etk_Window *window)
  */
 void etk_window_skip_taskbar_hint_set(Etk_Window *window, Etk_Bool skip_taskbar_hint)
 {
+#if HAVE_ECORE_X   
    if (!window || skip_taskbar_hint == etk_window_skip_taskbar_hint_get(window))
       return;
    
@@ -590,6 +609,7 @@ void etk_window_skip_taskbar_hint_set(Etk_Window *window, Etk_Bool skip_taskbar_
          ecore_x_netwm_window_state_set(window->x_window, NULL, 0);
    }
    etk_object_notify(ETK_OBJECT(window), "skip_taskbar");
+#endif   
 }
 
 /**
@@ -599,6 +619,7 @@ void etk_window_skip_taskbar_hint_set(Etk_Window *window, Etk_Bool skip_taskbar_
  */
 Etk_Bool etk_window_skip_taskbar_hint_get(Etk_Window *window)
 {
+#if HAVE_ECORE_X   
    unsigned int num_states, i;
    Ecore_X_Window_State *states;
    
@@ -616,6 +637,7 @@ Etk_Bool etk_window_skip_taskbar_hint_get(Etk_Window *window)
    }
    if (num_states > 0)
       free(states);
+#endif   
    return ETK_FALSE;
 }
 
@@ -626,6 +648,7 @@ Etk_Bool etk_window_skip_taskbar_hint_get(Etk_Window *window)
  */
 void etk_window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_hint)
 {
+#if HAVE_ECORE_X   
    if (!window || skip_pager_hint == etk_window_skip_pager_hint_get(window))
       return;
 
@@ -657,6 +680,7 @@ void etk_window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_hint
          ecore_x_netwm_window_state_set(window->x_window, NULL, 0);
    }
    etk_object_notify(ETK_OBJECT(window), "skip_pager");
+#endif   
 }
 
 /**
@@ -666,6 +690,7 @@ void etk_window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_hint
  */
 Etk_Bool etk_window_skip_pager_hint_get(Etk_Window *window)
 {
+#if HAVE_ECORE_X   
    unsigned int num_states, i;
    Ecore_X_Window_State *states;
    
@@ -683,6 +708,7 @@ Etk_Bool etk_window_skip_pager_hint_get(Etk_Window *window)
    }
    if (num_states > 0)
       free(states);
+#endif   
    return ETK_FALSE;
 }
 
@@ -693,7 +719,9 @@ Etk_Bool etk_window_skip_pager_hint_get(Etk_Window *window)
  */
 void etk_window_xdnd_aware_set(Etk_Window *window, Etk_Bool on)
 {
+#if HAVE_ECORE_X   
    ecore_x_dnd_aware_set(window->x_window, on);
+#endif   
 }
 
 /**
@@ -731,8 +759,10 @@ static void _etk_window_constructor(Etk_Window *window)
    window->center_on_window = NULL;
    window->modal = ETK_FALSE;
    window->modal_for_window = NULL;   
-   
+
+#if HAVE_ECORE_X
    ecore_x_dnd_aware_set(window->x_window, 1);
+#endif   
    
    ETK_TOPLEVEL_WIDGET(window)->evas = ecore_evas_get(window->ecore_evas);
    ETK_TOPLEVEL_WIDGET(window)->pointer_set = _etk_window_pointer_set;
@@ -1007,6 +1037,7 @@ static void _etk_window_toplevel_object_geometry_get(Etk_Toplevel_Widget *toplev
 /* Sets the mouse pointer of the window */
 static void _etk_window_pointer_set(Etk_Toplevel_Widget *toplevel_widget, Etk_Pointer_Type pointer_type)
 {
+#if HAVE_ECORE_X   
    Etk_Window *window;
    int x_pointer_type = ECORE_X_CURSOR_LEFT_PTR;
    Ecore_X_Cursor cursor;
@@ -1068,6 +1099,7 @@ static void _etk_window_pointer_set(Etk_Toplevel_Widget *toplevel_widget, Etk_Po
       ecore_x_window_cursor_set(ecore_evas_software_x11_window_get(window->ecore_evas), cursor);
    else
       ETK_WARNING("Unable to find the X cursor \"%d\"", pointer_type);
+#endif   
 }
 
 /** @} */
