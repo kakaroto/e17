@@ -630,7 +630,7 @@ timer_cb(void *data)
  * @param data the integer value of the new screen
  */
 static void 
-screen_switch_cb(void *data, Evas_Object *obj, char *signal, char *source)
+screen_switch_cb(void *data, Evas_Object *obj, const char *signal, const char *source)
 {
    int screen;
    Evas_Coord x, y, w, h;
@@ -1032,7 +1032,7 @@ setup_ecore_evas(int wx, int wy, int ww, int wh, int fullscreen)
 	    entrance_session_free(session);
 	    return NULL;
 	 }
-	 evas_object_move(edje, 0, 0);
+	 evas_object_move(edje, sx, sy);
 	 evas_object_resize(edje, sw, sh);
 	 evas_object_name_set(edje, "ui");
 	 evas_object_layer_set(edje, 1);
