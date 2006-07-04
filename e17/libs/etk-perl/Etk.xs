@@ -97,10 +97,10 @@ callback_VOID__POINTER(Etk_Object *object, void *value, void *data)
    HV *event_hv;
    SV *event_rv;
    cbd = data;   
-   event_hv = (HV*)sv_2mortal((SV*)newHV());   
    
    if(!strcmp(cbd->signal_name, "mouse_up"))
      {	
+	event_hv = (HV*)sv_2mortal((SV*)newHV());	
 	event_rv = newSViv(event->canvas.x);
 	hv_store(event_hv, "canvas_x", strlen("canvas_x"), event_rv, 0);
 	event_rv = newSViv(event->canvas.y);
@@ -110,9 +110,34 @@ callback_VOID__POINTER(Etk_Object *object, void *value, void *data)
 	event_rv = newSViv(event->widget.y);
 	hv_store(event_hv, "widget_y", strlen("widget_y"), event_rv, 0);
 	event_rv = newRV((SV*)event_hv);	
-     }   
+     }
+   else if(!strcmp(cbd->signal_name, "row_mouse_in"))
+     {
+	SV *row_rv;
+	HV *row_hv;
+	row_rv = newRV(newSViv(0));
+	sv_setref_iv(row_rv, "Etk_Tree_RowPtr", (IV) value);
+	row_hv = newHV();
+	hv_store(row_hv, "WIDGET", strlen("WIDGET"), row_rv, 0);
+	event_rv = newRV((SV*)row_hv);
+	sv_bless(event_rv, gv_stashpv("Etk::Tree::Row", FALSE));
+     }
+   else if(!strcmp(cbd->signal_name, "row_mouse_out"))
+     {
+	SV *row_rv;
+	HV *row_hv;
+	row_rv = newRV(newSViv(0));
+	sv_setref_iv(row_rv, "Etk_Tree_RowPtr", (IV) value);
+	row_hv = newHV();
+	hv_store(row_hv, "WIDGET", strlen("WIDGET"), row_rv, 0);
+	event_rv = newRV((SV*)row_hv);
+	sv_bless(event_rv, gv_stashpv("Etk::Tree::Row", FALSE));
+     }      
    else
-     event_rv = newRV((SV*)event_hv);
+     {
+	event_hv = (HV*)sv_2mortal((SV*)newHV());
+	event_rv = newRV((SV*)event_hv);
+     }
    
    PUSHMARK(SP) ;
    XPUSHs(sv_2mortal(event_rv));

@@ -193,4 +193,11 @@ sub DndInternalSet
     Etk::etk_widget_dnd_internal_set($self->{WIDGET}, $on);
 }
 
+sub ThemeFileSet
+{
+    my $self = shift;
+    my $theme_file = shift;
+    Etk::etk_widget_theme_file_set($self->{WIDGET}, $theme_file);
+}
+
 1;
