@@ -11,3 +11,5 @@ done
 cp -p configure.in configure
 cp -p Makefile.in Makefile
 chmod a+rx configure
+
+sed s/@VERSION@/"$(enlightenment-config --version)"/g debian/changelog.in > debian/changelog
