@@ -22,32 +22,29 @@ void etk_test_text_view_window_create(void *data)
    etk_container_add(ETK_CONTAINER(win), vbox);
 
    text_view = etk_text_view_new();
-   /*etk_textblock_text_set(ETK_TEXT_VIEW(text_view)->textblock,
-      "Test1 <b>Bold <i>Bold_Italic </b>Italic </i>Test2",
-      ETK_TRUE);*/
    etk_textblock_text_set(ETK_TEXT_VIEW(text_view)->textblock,
-      "<p align=\"center\">Title</p>"
-      "<b>Bold <i>Bold-Italic </b>Italic </i>: Overlapping tags are supported!\n"
-      "A paragraph here <font color=#f00>red <b>text</b></font> and stuff."
-      "And escaping &lt; and &gt; as well as &amp; as <b>normal.</b>"
-      "If you want a newline use &lt;br&gt;\nwoo a new line!"
-      "<p align=\"right\">Right</p>"
-      "<style effect=\"outline\" color1=#fff color2=#000>aligned</style> "
-      "<style effect=\"shadow\" color1=#fff8>text</style> "
-      "<style effect=\"soft_shadow\" color1=#0002>should</style> "
-      "<style effect=\"glow\" color1=#fe87 color2=#f214 >go here</style> "
-      "<u>right hand</u> "
-      "And "
-      "<u type=\"double\">now we need</u> "
-      "to test some <font color=#f00 size=8>COLOR</font>\n",
+      "<p align=\"center\"><b><u><font size=18>Etk Textblock</font></u></b></p> \n"
+      "<b><u><font size=12>Supported tags:</font></u></b>\n"
+      "<p left_margin=30>"
+         "<b>&lt;b&gt;:</b> <b>Bold</b>\n"
+         "<b>&lt;i&gt;:</b> <i>Italic</i>\n"
+         "<b>&lt;u&gt;:</b> <u>Underline</u>\n"
+         "<b>&lt;font&gt;:</b>\n"
+      "</p>"
+      "<p left_margin=60>"
+            "<i>face:</i> Defines the face of the font\n"
+            "<i>size:</i> Defines the size of the font\n"
+            "<i>color:</i> Defines the color of the font\n"
+      "</p>"
+      "<p left_margin=30>"
+         "<b>&lt;style&gt;:</b>\n"
+      "</p>"
+      "<p left_margin=60>"
+            "<i>effect:</i> Defines the effect to apply on the text\n"
+            "<i>color1:</i> Defines the first color of the effect\n"
+            "<i>color2:</i> Defines the second color of the effect\n"
+      "</p>",
       ETK_TRUE);
-   
-   
-   /*etk_textblock_printf(ETK_TEXT_VIEW(text_view)->textblock);*/
-   printf("\n");
-   printf("%s\n", etk_string_get(etk_textblock_text_get(ETK_TEXT_VIEW(text_view)->textblock, ETK_TRUE)));
-   /*printf("\n");
-   printf("%s\n", etk_string_get(etk_textblock_text_get(ETK_TEXT_VIEW(text_view)->textblock, ETK_FALSE)));*/
    
    etk_box_pack_start(ETK_BOX(vbox), text_view, ETK_TRUE, ETK_TRUE, 0);
    
