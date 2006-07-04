@@ -248,13 +248,15 @@ sub FieldsGet
 sub DataSet
 {
     my $self = shift;
-    # TODO
+    my $data = shift;
+    
+    Etk::etk_tree_row_data_set($self->{WIDGET}, $data);
 }
 
 sub DataGet
 {
     my $self = shift;
-    # TODO
+    return Etk::etk_tree_row_data_get($self->{WIDGET});
 }
 
 sub ScrollTo

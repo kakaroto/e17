@@ -4371,6 +4371,8 @@ void
 etk_tree_row_data_set(row, data)
 	Etk_Tree_Row *	row
 	SV *	data
+        CODE:
+        etk_tree_row_data_set(row, newSVsv(data));
 
 void
 etk_tree_row_data_set_full(row, data, free_cb)
