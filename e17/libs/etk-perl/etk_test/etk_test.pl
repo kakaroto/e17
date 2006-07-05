@@ -51,6 +51,7 @@ use Etk::Tree::Model::IconText;
 use Etk::Tree::Model::Checkbox;
 use Etk::Alignment;
 use Etk::Notebook;
+use Etk::TextView;
 
 Etk::Init();
 
@@ -932,9 +933,57 @@ sub _iconbox_folder_set
 sub textview_window_show
 {
     my $win = Etk::Window->new("Etk-Perl Textview Test");
-    my $label = Etk::Label->new("<b>Etk::Textview is not implemented yet.</b>");
+    my $vbox = Etk::VBox->new(0, 0);
+
+    $win->SizeRequestSet(150, 150);
+    $win->Resize(400, 300);
+
+    my $text_view = Etk::TextView->new();
+
+    my $text_block = $text_view->TextBlockGet();
+
+    $text_block->TextSet(
+    join ('',
+      "<p align=\"center\"><b><u><font size=18>Etk Textblock</font></u></b></p> \n",
+      "<b><u><font size=12>Supported tags:</font></u></b>\n",
+      "<p left_margin=30>",
+         "<b>&lt;b&gt;:</b> <b>Bold</b>\n",
+         "<b>&lt;i&gt;:</b> <i>Italic</i>\n",
+         "<b>&lt;u&gt;:</b> <u>Underline</u>\n",
+      "</p>" ,
+      "<p left_margin=60>",
+            "<i>type:</i> Whether the text is single or double underlined\n",
+            "<i>color1:</i> The color of the first underline\n",
+            "<i>color2:</i> The color of the second underline\n",
+      "</p>"  ,
+      "<p left_margin=30>",
+         "<b>&lt;s&gt;:</b> <s>Strikethrough</s>\n",
+      "</p>"  ,
+      "<p left_margin=60>",
+            "<i>color:</i> The color of the strikethrough\n",
+      "</p>"  ,
+      "<p left_margin=30>",
+         "<b>&lt;font&gt;:</b>\n",
+      "</p>"  ,
+      "<p left_margin=60>",
+            "<i>face:</i> The face of the font\n",
+            "<i>size:</i> The size of the font\n",
+            "<i>color:</i> The color of the font\n",
+      "</p>"  ,
+      "<p left_margin=30>",
+         "<b>&lt;style&gt;:</b>\n",
+      "</p>"  ,
+      "<p left_margin=60>",
+            "<i>effect:</i> The type of effect to apply on the text\n",
+            "<i>color1:</i> The first color of the effect\n",
+            "<i>color2:</i> The second color of the effect\n",
+      "</p>") , 1);
+
+    $vbox->PackStart($text_view);
+
+    print $text_block->TextGet(0), "\n";
     
-    $win->Add($label);
+    $win->Add($vbox);
     $win->BorderWidthSet(10);
     $win->ShowAll();  
 }

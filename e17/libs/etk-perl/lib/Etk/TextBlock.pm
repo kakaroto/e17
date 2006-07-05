@@ -29,4 +29,11 @@ sub TextSet
     Etk::etk_textblock_text_set($self->{WIDGET}, $text, $markup);
 }
 
+sub TextGet
+{
+    my $self = shift;
+    my $markup = shift;
+    return Etk::etk_textblock_text_get($self->{WIDGET}, $markup);
+}
+
 1;

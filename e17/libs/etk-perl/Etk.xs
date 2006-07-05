@@ -3798,7 +3798,9 @@ Etk_Textblock *
 etk_text_view_textblock_get(text_view)
 	Etk_Widget * text_view
 	CODE:
-	etk_text_view_textblock_get(ETK_TEXT_VIEW(text_view));
+	RETVAL = etk_text_view_textblock_get(ETK_TEXT_VIEW(text_view));
+	OUTPUT:
+	RETVAL
 
 void
 etk_textblock_iter_copy(iter, dest_iter)
@@ -3829,7 +3831,7 @@ Etk_Textblock_Iter *
 etk_textblock_iter_new(textblock)
 	Etk_Textblock *	textblock
 
-Etk_Widget *
+Etk_Textblock *
 etk_textblock_new()
 
 void
@@ -3839,12 +3841,20 @@ etk_textblock_realize(textblock, evas)
 
 void
 etk_textblock_text_set(textblock, text, markup)
-	Etk_Widget *	textblock
+	Etk_Textblock *	textblock
 	char *	text
         Etk_Bool markup
 	CODE:
 	etk_textblock_text_set(ETK_TEXTBLOCK(textblock), text, markup);
 	
+const char *
+etk_textblock_text_get(tb, markup)
+	Etk_Textblock * tb
+	Etk_Bool markup
+	CODE:
+	RETVAL = etk_string_get(etk_textblock_text_get(tb, markup));
+	OUTPUT:
+	RETVAL
 
 Etk_Type *
 etk_textblock_type_get()
