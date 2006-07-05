@@ -10,6 +10,7 @@ extern int reject_count, not_over_count;
 
 static void _parse_desktop_del(Desktop * desktop);
 
+#if 0
 char *
 get_t(char *icon)
 {
@@ -38,22 +39,24 @@ get_t(char *icon)
       free(ptr);
    return strdup(dir);
 }
+#endif
 
 char *
 parse_buffer(char *b, char *section)
 {
-   char *oldtoken, *token, *d;
-   char t[MAX_PATH], p[MAX_PATH];
-   int length, i;
+   char *oldtoken, *token, *substr, *substr2, *str_ret;
 
    oldtoken = strdup(b);
-   token = strstr(oldtoken, section);
+   substr = strstr(oldtoken, section);
 
-   if (token == NULL)
+   if (substr == NULL)
       return NULL;
 
-   token = strstr(token, "=");
-   token = strtok(token, "=");
+   substr2 = strstr(substr, "=");
+   if (!substr2) return NULL;
+   if (*(++substr2) == '\0') return NULL;
+   token = strtok(substr2, "\"");
+#if 0
    snprintf(t, sizeof(t), "%s", token);
 
    d = strrchr(t, '\\');
@@ -89,14 +92,13 @@ parse_buffer(char *b, char *section)
      {
         snprintf(p, sizeof(p), "%s", t);
      }
+#endif
 
-   if (token)
-      free(token);
+   str_ret = strdup(token); 
+   
    if (oldtoken)
       free(oldtoken);
-   if (d)
-      free(d);
-   return strdup(p);
+   return str_ret;
 }
 
 void
@@ -245,6 +247,7 @@ parse_debian_file(char *file)
    if (ecore_file_is_dir(file))
       return;
 
+   memset(buffer, 0, sizeof(buffer));
    overwrite = get_overwrite();
 
 #ifdef DEBUG
@@ -267,40 +270,48 @@ parse_debian_file(char *file)
         if (!(*buffer) || (*buffer == '\n'))
            continue;
         /* Strip New Line Chars */
-        if (buffer[(length = strlen(buffer) - 1)] == '\n')
-           buffer[length] = '\0';
+        length = strlen(buffer);
+        if (buffer[length - 1] == '\n')
+           buffer[length - 1] = '\0';
         if (strstr(buffer, "title"))
           {
-             name = parse_buffer(strdup(buffer), "title=");
+             name = parse_buffer(buffer, "title=");
              eap->name = strdup(name);
           }
         if (strstr(buffer, "longtitle"))
           {
-             generic = parse_buffer(strdup(buffer), "longtitle=");
+             generic = parse_buffer(buffer, "longtitle=");
              eap->generic = strdup(generic);
           }
         if (strstr(buffer, "description"))
           {
-             comment = parse_buffer(strdup(buffer), "description=");
+             comment = parse_buffer(buffer, "description=");
              eap->comment = strdup(comment);
           }
         if (strstr(buffer, "section"))
           {
-             category = parse_buffer(strdup(buffer), "section=");
+             category = parse_buffer(buffer, "section=");
              eap->categories = strdup(category);
           }
         if (strstr(buffer, "command"))
           {
-             exec = parse_buffer(strdup(buffer), "command=");
+             exec = parse_buffer(buffer, "command=");
              eap->exec = strdup(exec);
           }
         if (strstr(buffer, "icon"))
           {
-             icon = parse_buffer(strdup(buffer), "icon=");
-             eap->icon = strdup(icon);
+             icon = parse_buffer(buffer, "icon128x128");
+             if (!icon) icon = parse_buffer(buffer, "icon96x96");
+             if (!icon) icon = parse_buffer(buffer, "icon48x48");
+             if (!icon) icon = parse_buffer(buffer, "icon32x32");
+             if (!icon) icon = parse_buffer(buffer, "icon");
+             if (icon)
+                eap->icon = strdup(icon);
+             else
+                eap->icon = NULL;
           }
      }
-   buffer[0] = (char)0;
+   buffer[0] = '\0';
 
    fclose(f);
 

@@ -8,6 +8,8 @@ search_list(Ecore_List *list, char *search)
 {
    char *tmp;
 
+   if (!search) return 0;
+   if (!list) return 0;
    ecore_list_goto_first(list);
    while ((tmp = (char *)ecore_list_next(list)) != NULL)
      {
