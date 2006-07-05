@@ -984,7 +984,6 @@ sub textview_window_show
     print $text_block->TextGet(0), "\n";
     
     $win->Add($vbox);
-    $win->BorderWidthSet(10);
     $win->ShowAll();  
 }
 
