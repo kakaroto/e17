@@ -1,4 +1,3 @@
-debian/tmp/usr/lib/enlightenment/modules/taskbar/*.png
 debian/tmp/usr/lib/enlightenment/modules/taskbar/*.eap
 debian/tmp/usr/lib/enlightenment/modules/taskbar/*.ttf
 debian/tmp/usr/lib/enlightenment/modules/taskbar/*/*.so
