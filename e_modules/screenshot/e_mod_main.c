@@ -436,21 +436,16 @@ static void
 _ss_handle_mouse_down(Instance *inst)
 {
    Config_Item *ci;
-
+   char buf[4096];
+   
    if (inst->exe) return;
    ci = _ss_config_item_get(inst->gcc->id);
 
    if (!ci->prompt) 
      {
-	if ((!ci->filename) || (ci->filename == NULL)) 
-	  {
-	     char *f = _get_filename(ci);
-	     inst->filename = evas_stringshare_add(f);
-	  }
-	else
-	  inst->filename = evas_stringshare_add(ci->filename);
-	
-	_ss_take_shot(inst);
+	char *f = _get_filename(ci);	
+	inst->filename = evas_stringshare_add(f);
+	_ss_take_shot(inst);	
      }
    else
      _ss_get_filename(inst);
@@ -528,7 +523,7 @@ _get_filename(Config_Item *ci)
    struct tm *loctime;
    Ecore_List *fl = NULL;
    int c = 0;
-   char *file, *x, *tmp;
+   char *file, *ext;
 
    if (!ci->location)
      {
@@ -547,17 +542,22 @@ _get_filename(Config_Item *ci)
      {
         if (ecore_file_is_dir(ci->location))
           {
+	     ext = ecore_file_strip_ext(ci->filename);
              fl = ecore_file_ls(ci->location);
              ecore_list_goto_first(fl);
              while ((file = ecore_list_next(fl)) != NULL)
-		  if (strstr(file, ci->filename)) c++;
+		  if (strstr(file, ext)) c++;
 
              if (fl) ecore_list_destroy(fl);
              if (c == 0) 
 	       c = 1;
              else 
 	       c++;
-             snprintf(buff, sizeof(buff), "%s%i.png", ci->filename, c);
+
+	     if (!strrchr(ci->filename, '.')) 
+	       snprintf(buff, sizeof(buff), "%s%i.png", ci->filename, c);
+	     else
+	       snprintf(buff, sizeof(buff), "%s%i.png", ext, c);;
           }
      }
    return strdup(buff);
@@ -671,7 +671,8 @@ _cb_entry_ok(char *text, void *data)
 				"This shot will be saved in your home folder."));
 	if (ci->location)
 	  evas_stringshare_del(ci->location);
-	ci->location = evas_stringshare_add(e_user_homedir_get());	
+	ci->location = evas_stringshare_add(e_user_homedir_get());
+	e_config_save_queue();
      }
    else
      {
@@ -679,8 +680,9 @@ _cb_entry_ok(char *text, void *data)
 	if (ci->location)
 	  evas_stringshare_del(ci->location);
 	ci->location = evas_stringshare_add(t);
+	e_config_save_queue();	
      }
-   
+
    inst->filename = evas_stringshare_add(text);
    _ss_take_shot(inst);
 }
