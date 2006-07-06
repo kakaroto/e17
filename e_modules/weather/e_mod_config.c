@@ -100,7 +100,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    of = e_widget_frametable_add(evas, D_("ICAO Code"), 0);
    ob = e_widget_label_add(evas, D_("ICAO Code"));
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 0, 1, 0);
-   ob = e_widget_entry_add(evas, (&(cfdata->code)));
+   ob = e_widget_entry_add(evas, &cfdata->code);
    e_widget_min_size_set(ob, 100, 1);
    e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 0, 1, 0);
    ob = e_widget_label_add(evas, D_("Get your ICAO code at:"));
@@ -124,6 +124,8 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    if (!cfdata->code)
       return 0;
 
+   printf("CFCode: %s\n", cfdata->code);
+
    len = strlen(cfdata->code);
    if (len < 4 || len > 4)
       return 0;
@@ -135,13 +137,9 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
       evas_stringshare_del(ci->code);
    
    char *t;
-   t = cfdata->code;
-   while ((*t != '\0') && (*t != ' ')) 
-     {
-	*t = toupper(*t);
-	t++;
-     }
-   *t = '\0';
+   t = strdup(cfdata->code);
+   *t = toupper(*t);
+   printf("\nCode: %s\n", t);
    ci->code = evas_stringshare_add(t);
    e_config_save_queue();
    _weather_config_updated(ci->id);
