@@ -8,92 +8,130 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Screenshot module for E17 N/A\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-27 00:40+0900\n"
-"PO-Revision-Date: 2006-01-30 09:28+0100\n"
+"POT-Creation-Date: 2006-07-05 17:23+0200\n"
+"PO-Revision-Date: 2006-07-05 23:45+0200\n"
 "Last-Translator: Anders Trobäck <enlightenment@troback.com>\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit"
 
-#: e_mod_config.c:78
+#: e_mod_config.c:65
 msgid "Screenshot Configuration"
 msgstr "Konfiguration av skärmdump"
 
-#: e_mod_config.c:169 e_mod_config.c:289
+#: e_mod_config.c:132 e_mod_config.c:227
+msgid "General Settings"
+msgstr "Allmänna inställningar"
+
+#: e_mod_config.c:138 e_mod_config.c:233
 msgid "Use Import"
 msgstr "Använd import"
 
-#: e_mod_config.c:171 e_mod_config.c:291
+#: e_mod_config.c:140 e_mod_config.c:235
 msgid "Use Scrot"
 msgstr "Använd Scrot"
 
-#: e_mod_config.c:178 e_mod_config.c:299
+#: e_mod_config.c:148 e_mod_config.c:243
 msgid "Delay Time:"
 msgstr "Fördröjning:"
 
-#: e_mod_config.c:187 e_mod_config.c:308
+#: e_mod_config.c:150 e_mod_config.c:245
+#, c-format
+msgid "%1.0f seconds"
+msgstr "%1.0f sekunder"
+
+#: e_mod_config.c:154 e_mod_config.c:256
 msgid "File Settings"
 msgstr "Filinställningar"
 
-#: e_mod_config.c:190 e_mod_config.c:311
+#: e_mod_config.c:155 e_mod_config.c:257
+msgid "Always Prompt For Filename"
+msgstr "Fråga alltid efter filnamn"
+
+#: e_mod_config.c:158 e_mod_config.c:260
 msgid "Save Directory:"
 msgstr "Spara i katalog:"
 
-#: e_mod_config.c:196 e_mod_config.c:317
-msgid "Filename (minus extension):"
-msgstr "Filnamn (utan filändelse):"
+#: e_mod_config.c:162 e_mod_config.c:264
+msgid "Filename:"
+msgstr "Filnamn:"
 
-#: e_mod_config.c:202 e_mod_config.c:323
-#, c-format
-msgid "Example: screenshot%d = screenshot1, screenshot2, etc..."
-msgstr "Exempel: screenshot%d = screenshot1, screenshot2, etc..."
+#: e_mod_config.c:249
+msgid "Image Viewer Settings"
+msgstr "Inställningar för bildvisare"
 
-#: e_mod_config.c:330
-msgid "Import Options"
+#: e_mod_config.c:250
+msgid "Launch Image Viewer After Screenshot"
+msgstr "Starta bildvisare efter skärmdump"
+
+#: e_mod_config.c:274
+msgid "Import Settings"
 msgstr "Importinställningar"
 
-#: e_mod_config.c:331 e_mod_config.c:347
+#: e_mod_config.c:275 e_mod_config.c:292
 msgid "Include Image Border"
 msgstr "Inkludera bildramar"
 
-#: e_mod_config.c:333
+#: e_mod_config.c:277
 msgid "Use Image Dithering"
 msgstr "Använd bilddithering"
 
-#: e_mod_config.c:335
+#: e_mod_config.c:279
 msgid "Include Window Manager Frame"
 msgstr "Inkludera fönsterhanterarens ramar"
 
-#: e_mod_config.c:337
+#: e_mod_config.c:281
 msgid "Choose Window To Grab"
 msgstr "Välj fönster som ska fångas"
 
-#: e_mod_config.c:339
+#: e_mod_config.c:283
 msgid "Silent"
 msgstr "Tyst"
 
-#: e_mod_config.c:341
+#: e_mod_config.c:285
 msgid "Trim Edges"
 msgstr "Trimma kanterna"
 
-#: e_mod_config.c:346
-msgid "Scrot Options"
+#: e_mod_config.c:291
+msgid "Scrot Settings"
 msgstr "Scrotinställningar"
 
-#: e_mod_config.c:349
+#: e_mod_config.c:294
 msgid "Generate Thumbnail"
 msgstr "Generera miniatyrbild"
 
-#: e_mod_main.c:106 e_mod_main.c:493
+#: e_mod_main.c:129
+msgid "Screenshot"
+msgstr "Skärmdump"
+
+#: e_mod_main.c:163
+msgid "Configuration"
+msgstr "Konfiguration"
+
+#: e_mod_main.c:407 e_mod_main.c:623 e_mod_main.c:669
 msgid "Enlightenment Screenshot Module"
 msgstr "Enlightenment skärmdumpsmodul"
 
-#: e_mod_main.c:107
+#: e_mod_main.c:408
 msgid "This module is used to take screenshots"
 msgstr "Denna modulen används för att ta skärmdumpar"
 
-#: e_mod_main.c:494
-msgid "Please Choose A Program To Use For Taking Screenshots."
-msgstr "Ange ett program som ska användas för att ta en skärmdump"
+#: e_mod_main.c:624
+msgid "Please install either ImageMagick or Scrot for taking screenshots."
+msgstr "Installera antingen ImageMagick eller Scrot för att ta skärmdumpar."
 
+#: e_mod_main.c:670
+msgid ""
+"You did not specify a path.<br>This shot will be saved in your home folder."
+msgstr ""
+"Du angav inte någon sökväg.<br>Denna skärmdump kommer att sparas i din hemkatalog."
+
+#~ msgid "Filename (minus extension):"
+#~ msgstr "Filnamn (utan filändelse):"
+
+#~ msgid "Example: screenshot%d = screenshot1, screenshot2, etc..."
+#~ msgstr "Exempel: screenshot%d = screenshot1, screenshot2, etc..."
+
+#~ msgid "Please Choose A Program To Use For Taking Screenshots."
+#~ msgstr "Ange ett program som ska användas för att ta en skärmdump"

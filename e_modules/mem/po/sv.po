@@ -8,51 +8,61 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mem module for E17 N/A\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-09 14:25+0100\n"
-"PO-Revision-Date: 2006-03-09 14:49+0100\n"
+"POT-Creation-Date: 2006-07-05 17:21+0200\n"
+"PO-Revision-Date: 2006-07-05 23:33+0200\n"
 "Last-Translator: Anders Trobäck <enlightenment@troback.com>\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit"
 
-#: e_mod_config.c:37
+#: e_mod_config.c:40
 msgid "Mem Configuration"
 msgstr "Mem konfiguration"
 
-#: e_mod_config.c:83
-msgid "Mem Settings"
-msgstr "Mem inställningar"
-
-#: e_mod_config.c:84
-msgid "Show Text"
-msgstr "Visa text"
-
 #: e_mod_config.c:86
+msgid "General Settings"
+msgstr "Allmänna inställningar"
+
+#: e_mod_config.c:88
+msgid "Always Show Text"
+msgstr "Visa alltid text"
+
+#: e_mod_config.c:90
+msgid "Show Text On Mouse Over"
+msgstr "Visa text när musen är över"
+
+#: e_mod_config.c:92
 msgid "Show Text As Percent"
 msgstr "Visa text som procent"
 
-#: e_mod_config.c:88
-msgid "Show Graph"
-msgstr "Visa graf"
-
-#: e_mod_config.c:90
+#: e_mod_config.c:95
 msgid "Ignore Buffers"
 msgstr "Ignorera buffers"
 
-#: e_mod_config.c:92
+#: e_mod_config.c:97
 msgid "Ignore Cached"
 msgstr "Ignorera cached"
 
-#: e_mod_config.c:94
+#: e_mod_config.c:100
 msgid "Check Interval:"
 msgstr "Kontrollintervall"
 
-#: e_mod_main.c:93
+#: e_mod_main.c:98
+msgid "Mem"
+msgstr "Mem"
+
+#: e_mod_main.c:144
+msgid "Configuration"
+msgstr "Konfiguration"
+
+#: e_mod_main.c:342
 msgid "Enlightenment Mem Monitor Module"
 msgstr "Enlightenment minnesövervakningsmodul"
 
-#: e_mod_main.c:94
+#: e_mod_main.c:343
 msgid "This module is used to monitor memory."
 msgstr "Denna modul används för att övervaka minnet."
 
+#~ msgid "Show Graph"
+#~ msgstr "Visa graf"
