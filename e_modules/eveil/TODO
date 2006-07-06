@@ -3,42 +3,23 @@ BUGS
 -------------------------------------------
 
  - MODULE_VERSION don't show up
- - edje theme is not correct with text position
+
+ - alarms are buggy : sometimes, Eveil doesnt ring when it should
 
 
 -------------------------------------------
 TODO
 -------------------------------------------
 
- * basics (like temperature) with structures
- * timer callbacks basics
- * theme icon mode
- * theme detail mode
- * finish edje messages
- * alarm config
- * avanced config
- * finish timers
-   * pb with locale time (utc ...)
- * show next date
- * show date in alarms list
- * show timer in realtime in theme
- * launch program
- * remove after the date per alarm and also a default setting
- * default date is actual year
- * memo description
- * button to set date today and tomorow
- * set initial size larger (see also inset mode)
- * snooze
- * more explicit error messages
- * menu icons
- * better vertical orientation support
-
- - full size popup like exebuf
+ - add predefined alarms action like command is not user friendly
+ - full size popup like exebuf when ringing
  - eveil logo like an e, instead of alarm clock image, a bit like on e_module
  - ? keep alarms on config change ?
  - exact alarm time ring
- - pill mode
+ - pill mode for alarms
  - handle alarms wich happend when no E on come back
+
  - 12h time format
+
  - dont share state for icons and detail between instance
    and save it
