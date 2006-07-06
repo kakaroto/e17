@@ -29,7 +29,7 @@ _config_taskbar_module(Config_Item *ci)
 
    con = e_container_current_get(e_manager_current_get());
    cfd = e_config_dialog_new(con, _("Taskbar Configuration"), NULL, 0, v, ci);
-   taskbar_config->config_dialog = cfd;
+   taskbar_config->config_dialog = evas_list_append(taskbar_config->config_dialog, cfd);
 }
 
 static void
@@ -57,27 +57,29 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    if (!taskbar_config)
       return;
-   taskbar_config->config_dialog = NULL;
+   taskbar_config->config_dialog = evas_list_remove(taskbar_config->config_dialog, cfd);
    free(cfdata);
 }
 
 static Evas_Object *
 _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
-   Evas_Object *o, *of, *ob, *label, *time_entry, *time_check, *date_entry, *date_check;
-   E_Radio_Group *rg;
+   Evas_Object *o, *of, *ob;
 
    o = e_widget_list_add(evas, 0, 0);
 
    of = e_widget_framelist_add(evas, _("Display"), 0);
+
    ob = e_widget_check_add(evas, _("Show Labels"), &(cfdata->show_label));
-   if (cfdata->show_label)
-      e_widget_check_checked_set(ob, 1);
+   //if (cfdata->show_label)
+   //  e_widget_check_checked_set(ob, 1);
    e_widget_framelist_object_append(of, ob);  
+
    ob = e_widget_check_add(evas, _("Show windows from all desktops"), &(cfdata->show_all));
-   if (cfdata->show_all)
-      e_widget_check_checked_set(ob, 1);
+   //if (cfdata->show_all)
+   //   e_widget_check_checked_set(ob, 1);
    e_widget_framelist_object_append(of, ob);
+
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
    return o;

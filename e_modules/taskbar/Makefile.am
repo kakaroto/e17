@@ -1,12 +1,10 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-SUBDIRS = data
+SUBDIRS = data po
 
 # data files for the module
 filesdir = $(datadir)
-files_DATA = \
-module_icon.png \
-module.eap
+files_DATA = module.eap
 
 EXTRA_DIST = $(files_DATA)
 

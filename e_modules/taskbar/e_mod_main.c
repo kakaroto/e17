@@ -1261,7 +1261,7 @@ e_modapi_shutdown(E_Module *m)
 {
    e_gadcon_provider_unregister(&_gadcon_class);
 
-   if (taskbar_config->config_dialog)
+   while (taskbar_config->config_dialog)
      e_object_del(E_OBJECT(taskbar_config->config_dialog));
 
    while (taskbar_config->handlers)

@@ -17,6 +17,9 @@ AC_C_CONST
 AM_ENABLE_SHARED
 AM_PROG_LIBTOOL
 
+ALL_LINGUAS=""
+AC_SUBST(ALL_LINGUAS)
+
 MODULE_ARCH="$host_os-$host_cpu"
 AC_SUBST(MODULE_ARCH)
 AC_DEFINE_UNQUOTED(MODULE_ARCH, "$MODULE_ARCH", "Module architecture")
@@ -155,6 +158,7 @@ AC_OUTPUT([
 Makefile
 data/Makefile
 data/themes/Makefile
+po/Makefile
 ],[
 ])
 
