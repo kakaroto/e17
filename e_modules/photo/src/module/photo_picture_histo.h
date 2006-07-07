@@ -9,6 +9,8 @@
 
 #define PICTURE_HISTO_SIZE_MAX 7
 
+#define PICTURE_HISTO_POPUP_TIMER 5
+
 int      photo_picture_histo_init(Photo_Item *pi);
 void     photo_picture_histo_shutdown(Photo_Item *pi);
 

@@ -38,7 +38,7 @@ typedef struct _Photo_Item Photo_Item;
 #define ITEM_ACTION_MENU 8
 #define ITEM_ACTION_PARENT 10
 
-#define ITEM_INFOS_TIMER 4
+#define ITEM_INFOS_TIMER 5
 
 struct _Photo_Item
 {

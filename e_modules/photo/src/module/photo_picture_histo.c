@@ -165,7 +165,7 @@ _cb_menu_pre_select(void *data, E_Menu *m, E_Menu_Item *mi)
      photo_popup_info_del(pi->histo.popi);
 
    pi->histo.popi = photo_popup_info_add(pi, p->infos.name, text, p,
-                                         4,
+                                         PICTURE_HISTO_POPUP_TIMER,
                                          POPUP_INFO_PLACEMENT_CENTERED,
                                          _cb_popi_close, NULL);
 
