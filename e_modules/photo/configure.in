@@ -1,0 +1,162 @@
+dnl Process this file with autoconf to produce a configure script.
+
+# get rid of that stupid cache mechanism
+rm -f config.cache
+
+#photo module version
+version="0.1.0"
+
+AC_INIT(configure.in)
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
+
+AM_INIT_AUTOMAKE(photo, $version)
+AM_CONFIG_HEADER(config.h)
+AC_ISC_POSIX
+AC_PROG_CC
+AM_PROG_CC_STDC
+AC_HEADER_STDC
+AC_C_CONST
+AM_ENABLE_SHARED
+AM_PROG_LIBTOOL
+
+ALL_LINGUAS="fi it ja ru sv"
+AC_SUBST(ALL_LINGUAS)
+
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION(0.14)
+
+MODULE_ARCH="$host_os-$host_cpu"
+AC_SUBST(MODULE_ARCH)
+AC_DEFINE_UNQUOTED(MODULE_ARCH, "$MODULE_ARCH", "Module architecture")
+AC_DEFINE_UNQUOTED(MODULE_VERSION, "$version", "Module version")
+
+if test "x${bindir}" = 'x${exec_prefix}/bin'; then
+  if test "x${exec_prefix}" = "xNONE"; then
+    if test "x${prefix}" = "xNONE"; then
+      bindir="${ac_default_prefix}/bin";
+    else
+      bindir="${prefix}/bin";
+    fi
+  else
+    if test "x${prefix}" = "xNONE"; then
+      bindir="${ac_default_prefix}/bin";
+    else
+      bindir="${prefix}/bin";
+    fi
+  fi
+fi
+
+if test "x${libdir}" = 'x${exec_prefix}/lib'; then
+  if test "x${exec_prefix}" = "xNONE"; then
+    if test "x${prefix}" = "xNONE"; then
+      libdir="${ac_default_prefix}/lib";
+    else
+      libdir="${prefix}/lib";
+    fi
+  else
+    if test "x${prefix}" = "xNONE"; then
+      libdir="${ac_default_prefix}/lib";
+    else
+      libdir="${prefix}/lib";
+    fi
+  fi
+fi
+
+dnl Set PACKAGE_BIN_DIR in config.h.
+if test "x${bindir}" = 'xNONE'; then
+  if test "x${prefix}" = "xNONE"; then
+    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${ac_default_prefix}/bin", "Package installed binaries destination")
+  else
+    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${prefix}/bin", "Package installed binaries destination")
+  fi
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${bindir}", "Package installed binaries destination")
+fi
+
+dnl Set PACKAGE_LIB_DIR in config.h.
+if test "x${libdir}" = 'xNONE'; then
+  if test "x${prefix}" = "xNONE"; then
+    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${ac_default_prefix}/lib", "Package installed libraries destination")
+  else
+    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${prefix}/lib", "Package installed libraries destination")
+  fi
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${libdir}", "Package installed libraries destination")
+fi
+
+dnl Set PACKAGE_DATA_DIR in config.h.
+if test "x${prefix}" = "xNONE"; then
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${HOME}/.e/e/modules/${PACKAGE}", "Package installed data destination")
+    datadir="${HOME}/.e/e/modules/${PACKAGE}"
+else
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/lib/enlightenment/modules/${PACKAGE}", "Package installed data destination")
+    datadir="${prefix}/lib/enlightenment/modules/${PACKAGE}"    
+fi
+
+AC_PREFIX_DEFAULT(${HOME}/.e/e)
+if test "x$prefix" = "xNONE"; then
+  datarootdir=${ac_default_prefix}
+else
+  datarootdir=${prefix}/share
+fi
+localedir=${datarootdir}/locale
+AC_SUBST(LOCALEDIR, "${localedir}")
+AC_DEFINE_UNQUOTED(LOCALEDIR, "${localedir}", [Module Locale Directory])
+	  
+#AC_CHECK_LIB(dl, dlopen, dlopen_libs=-ldl)
+#AC_SUBST(dlopen_libs)
+
+AC_ARG_WITH(edje-config,
+[  --with-edje-config=EDJE_CONFIG      use edje-config specified ],
+[
+  EDJE_CONFIG=$withval;
+  echo "using "$EDJE_CONFIG" for edje-config";
+/
+],[
+  PROG="edje-config";
+  AC_PATH_PROG(EDJE_CONFIG, $PROG, "", $PATH)
+])
+edje_cflags=`$EDJE_CONFIG --cflags`
+edje_libs=`$EDJE_CONFIG --libs`
+AC_SUBST(edje_cflags)
+AC_SUBST(edje_libs)
+
+edje_cc="`$EDJE_CONFIG --prefix`/bin/edje_cc"
+AC_ARG_WITH(edje-cc,
+[  --with-edje-cc=PATH              specify a specific path to edje_cc],
+[
+  v=$withval;
+  edje_cc=$v
+  echo "  Enlightenment edje_cc explicitly set to "$edje_cc;
+],[
+  edje_cc="`$EDJE_CONFIG --prefix`/bin/edje_cc"
+])
+AC_SUBST(edje_cc)
+
+AC_ARG_WITH(enlightenment-config,
+[  --with-enlightenment-config=E_CONFIG    use enlightenment-config specified ],
+[
+  E_CONFIG=$withval;
+  echo "using "$E_CONFIG" for enlightenment-config";
+],[
+  PROG="enlightenment-config";
+  AC_PATH_PROG(E_CONFIG, $PROG, "", $PATH)
+])
+e_cflags=`$E_CONFIG --cflags`
+e_libs=`$E_CONFIG --libs`
+e_modules=`$E_CONFIG --module-dir`
+AC_SUBST(e_cflags)
+AC_SUBST(e_libs)
+AC_SUBST(e_modules)
+
+AC_OUTPUT([
+e_modules-photo.spec
+Makefile
+data/Makefile
+data/theme/Makefile
+src/Makefile
+src/module/Makefile
+],[
+])
+

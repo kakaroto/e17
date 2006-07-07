@@ -1,0 +1,266 @@
+#include "Photo.h"
+/* module requirements */
+EAPI E_Module_Api e_modapi = 
+   {
+      E_MODULE_API_VERSION,
+      "Photo"
+   };
+
+/* gadcon requirements */
+static E_Gadcon_Client *_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style);
+static void _gc_shutdown(E_Gadcon_Client *gcc);
+static void _gc_orient(E_Gadcon_Client *gcc);
+static char *_gc_label(void);
+static Evas_Object *_gc_icon(Evas *evas);
+static const E_Gadcon_Client_Class _gadcon_class =
+   {
+      GADCON_CLIENT_CLASS_VERSION,
+      "photo",
+      {
+         _gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon
+      }
+   };
+
+/* photo functions */
+static int  _e_canvas_init(void);
+static void _e_canvas_shutdown(void);
+static int  _theme_init(void);
+static void _theme_shutdown(void);
+
+/*
+ * Module functions
+ */
+
+EAPI void *
+e_modapi_init(E_Module *m)
+{
+   photo = E_NEW(Photo, 1);
+   photo->module = m;
+
+   DMAIN(("Initialisation ..."));
+
+   if (!_e_canvas_init())
+     {
+        e_module_dialog_show(m, _("Photo Module"), _("E Canvas init failed !"));
+        e_modapi_shutdown(m);
+        return NULL;
+     }
+
+   if (!_theme_init())
+     {
+        e_module_dialog_show(m, _("Photo Module"), _("Theme init failed !"));
+        e_modapi_shutdown(m);
+        return NULL;
+     }
+
+   if (!photo_config_init())
+     {
+        e_module_dialog_show(m, _("Photo Module"), _("Config init failed"));
+        e_modapi_shutdown(m);
+        return NULL;
+     }
+
+   if (!photo_picture_init())
+     {
+        e_module_dialog_show(m, _("Photo Module"), _("Picture subsystem init failed"));
+        e_modapi_shutdown(m);
+        return NULL;
+     }
+
+   if (!photo_popup_warn_init())
+     {
+        e_module_dialog_show(m, _("Photo Module"), _("Popup warn subsystem init failed"));
+        e_modapi_shutdown(m);
+        return NULL;
+     }
+
+   if (!photo_popup_info_init())
+     {
+        e_module_dialog_show(m, _("Photo Module"), _("Popup info subsystem init failed"));
+        e_modapi_shutdown(m);
+        return NULL;
+     }
+
+   e_gadcon_provider_register((E_Gadcon_Client_Class *)&_gadcon_class);
+
+   DMAIN(("Initialisation END"));
+
+   return m;
+}
+
+EAPI int
+e_modapi_shutdown(E_Module *m)
+{
+   if (!photo) return 0;
+
+   e_gadcon_provider_unregister((E_Gadcon_Client_Class *)&_gadcon_class);
+
+   photo_popup_info_shutdown();
+   photo_popup_warn_shutdown();
+   photo_picture_shutdown();
+   photo_config_shutdown();
+
+   if (photo->config_dialog)
+     photo_config_dialog_hide();
+   if (photo->config_dialog_adddir)
+     photo_config_dialog_dir_hide(NULL);
+
+   _theme_shutdown();
+   _e_canvas_shutdown();
+
+   E_FREE(photo);
+
+   return 1;
+}
+
+EAPI int
+e_modapi_save(E_Module *m)
+{
+   if (!photo) return 0;
+
+   photo_config_save();
+
+   return 1;
+}
+
+EAPI int
+e_modapi_about(E_Module *m)
+{
+   e_module_dialog_show(m, _("Enlightenment Photo Module - version " MODULE_VERSION),
+                        _("Module to display pictures on your desktop<br><br>"
+			  "ooookiwi@free.fr<br>"
+                          "http://oooo.zapto.org"
+                          ));
+   return 1;
+}
+
+EAPI int
+e_modapi_config(E_Module *m)
+{
+   if (!photo) return 0;
+   if (photo->config_dialog) return 0;
+
+   photo_config_dialog_show();
+
+   return 1;
+}
+
+
+/*
+ * Gadcon functions
+ */
+
+static E_Gadcon_Client *
+_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
+{
+   Evas_Object *o;
+   E_Gadcon_Client *gcc;
+   Photo_Item *pi;
+
+   DMAIN(("GCC init"));
+
+   o = edje_object_add(gc->evas);
+   gcc = e_gadcon_client_new(gc, name, id, style, o);
+   pi = photo_item_add(gcc, o);
+   gcc->data = pi;
+
+   photo->items = evas_list_append(photo->items, pi);
+
+   return pi->gcc;
+}
+
+static void
+_gc_shutdown(E_Gadcon_Client *gcc)
+{
+   Photo_Item *pi;
+   
+   pi = gcc->data;
+
+   DMAIN(("GCC shutdown"));
+   photo->items = evas_list_remove(photo->items, pi);
+   photo_item_del(pi);
+}
+
+static void
+_gc_orient(E_Gadcon_Client *gcc)
+{
+   e_gadcon_client_aspect_set(gcc, 16, 16);
+   e_gadcon_client_min_size_set(gcc, 16, 16);
+}
+   
+static char *
+_gc_label(void)
+{
+   return _("Photo");
+}
+
+static Evas_Object *
+_gc_icon(Evas *evas)
+{
+   Evas_Object *o;
+   char buf[4096];
+   
+   o = edje_object_add(evas);
+   snprintf(buf, sizeof(buf), "%s/module.eap",
+	    e_module_dir_get(photo->module));
+   edje_object_file_set(o, buf, "icon");
+   return o;
+}
+
+
+/*
+ * Photo functions
+ */
+
+static int _e_canvas_init(void)
+{
+  E_Container *c;
+
+  c = e_container_current_get(e_manager_current_get());
+  evas_output_viewport_get(c->bg_evas,
+			   NULL, NULL,
+			   &photo->canvas_w, &photo->canvas_h);
+  
+  return 1;
+}
+
+static void _e_canvas_shutdown(void)
+{
+  
+}
+
+static int _theme_init(void)
+{
+   char buf[4096];
+   const char *path;
+   const char *version;
+
+   path = e_theme_edje_file_get(PHOTO_THEME_IN_E, PHOTO_THEME_ITEM);
+   if (path && path[0])
+     {
+        version = edje_file_data_get(path, "version");
+        DD(("THEME E path %s version %s", path, version));
+        if ( !version || strcmp(version, PHOTO_THEME_VERSION) )
+          return 0;
+        photo->theme = NULL;
+     }
+   else
+     {
+        snprintf(buf, sizeof(buf), "%s/photo.edj", e_module_dir_get(photo->module));
+        version = edje_file_data_get(buf, "version");
+        DD(("THEME own version %s", version));
+        if ( !version || strcmp(version, PHOTO_THEME_VERSION) )
+          return 0;
+        photo->theme = strdup(buf);
+     }
+
+   return 1;
+}
+
+static void _theme_shutdown(void)
+{
+   if (photo->theme)
+     {
+        E_FREE(photo->theme);
+     }
+}
