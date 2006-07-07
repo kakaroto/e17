@@ -124,8 +124,6 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    if (!cfdata->code)
       return 0;
 
-   printf("CFCode: %s\n", cfdata->code);
-
    len = strlen(cfdata->code);
    if (len < 4 || len > 4)
       return 0;
@@ -139,8 +137,8 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    char *t;
    t = strdup(cfdata->code);
    *t = toupper(*t);
-   printf("\nCode: %s\n", t);
    ci->code = evas_stringshare_add(t);
+ 
    e_config_save_queue();
    _weather_config_updated(ci->id);
    return 1;
