@@ -29,6 +29,8 @@ moon - A module to display moon phase information
 
 net - A module to monitor traffic on a network device.
 
+photo - A module to display pictures on the desktop.
+
 rain - A module to display rain on the desktop.
 
 screenshot - A module to take screenshots, utilizing scrot or import.
