@@ -58,21 +58,13 @@
 - The column view of the filepicker needs to blank out the preview when you
   have multiple files selected.
 
-- The focus doesn't change after a focused widget is disabled.
-
-- Ewl_Seeker:: Add value labels and hash marks.
-
-- Ewl_Spectrum:: may need to optimize this to only redraw if we have a resize, or a
-                 type/mode change
-
-- Ewl_Spectrum:: implement a triangle selection mode
+- Ewl_Spectrum:: may need to optimize this to only redraw if we have a resize, 
+                 or a type/mode change
 
 - Ewl_Spectrum:: Add a theme item for the cross hairs ...
 
-- Ewl_Text:: need a way to handle fonts that aren't in the theme .edj
-
 - Ewl_Text:: need to setup the styles/align/wrap data from the theme in 
-	     ewl_text_context_default_create
+   	         ewl_text_context_default_create
 
 - Ewl_Text:: new theme keys for the align/wrap stuff
 
@@ -93,8 +85,6 @@
    widget after I've deleted it in the Ewl_Icon code. Need to confirm/fix
    this.
  
- - Need to properly center the icon and the text in the icon widget
- 
  - Menus aren't hooked up. This should popup on right click and hide on a
    click outside the menu. Needs to do all that grabby stuff menus do (which
    should be in the menu's already.
@@ -114,7 +104,9 @@
  - The autolayout will align at the top, should probably be changed to align
    at the bottom based on the largest widget being put in.
 
+ *
  * @section todo TODO
+ *
 
 - Ability to attach custom cursors to each widget. We can currently attach
   predefined cursors. Need to add a ewl_attach_widget_cursor_custom_set that
@@ -164,5 +156,12 @@
 - [Ewl_Test] More Tutorials in the src/bin/test/*.c files
 
 - Make the popup_destroy_cb's common between the imenu and menu
+
+- Ewl_Spectrum:: implement a triangle selection mode
+
+- Ewl_Seeker:: Add value labels and hash marks.
+
+- Ewl_Text:: need a way to handle fonts that aren't in the theme .edj
+
 
  */
