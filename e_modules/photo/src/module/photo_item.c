@@ -352,8 +352,8 @@ int  photo_item_action_setbg(Photo_Item *pi)
 {
   Picture *p;
    E_Zone *zone;
-   char *file = NULL;
-   char *name;
+   const char *file = NULL;
+   const char *name;
    char buf[4096];
 
    zone = e_zone_current_get(e_container_current_get(e_manager_current_get()));
@@ -430,7 +430,7 @@ int  photo_item_action_setbg(Photo_Item *pi)
 int  photo_item_action_viewer(Photo_Item *pi)
 {
   Picture *p;
-   char *file = NULL;
+   const char *file = NULL;
    char buf[4096];
 
    p = photo_item_picture_current_get(pi);

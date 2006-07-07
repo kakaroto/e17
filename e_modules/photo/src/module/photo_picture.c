@@ -74,15 +74,15 @@ int photo_picture_free(Picture *p, int force, int force_now)
           }
      }
 
-   if (p->path) free(p->path);
-   if (p->thumb_path) free(p->thumb_path);
+   if (p->path) evas_stringshare_del(p->path);
+   if (p->thumb_path) evas_stringshare_del(p->thumb_path);
    if (p->picture) evas_object_del(p->picture);
 
-   if (p->infos.name) free(p->infos.name);
-   if (p->infos.author) free(p->infos.author);
-   if (p->infos.where_from) free(p->infos.where_from);
-   if (p->infos.date) free(p->infos.date);
-   if (p->infos.comments) free(p->infos.comments);
+   if (p->infos.name) evas_stringshare_del(p->infos.name);
+   if (p->infos.author) evas_stringshare_del(p->infos.author);
+   if (p->infos.where_from) evas_stringshare_del(p->infos.where_from);
+   if (p->infos.date) evas_stringshare_del(p->infos.date);
+   if (p->infos.comments) evas_stringshare_del(p->infos.comments);
 
    photo_picture_histo_picture_del(p);
 
@@ -149,7 +149,7 @@ Evas_Object *photo_picture_object_get(Picture *pic, Evas *evas)
    return im;
 }
 
-char *photo_picture_name_get(char *url)
+const char *photo_picture_name_get(char *url)
 {
    char buf[4096];
    char *name, *ext;
@@ -170,7 +170,7 @@ char *photo_picture_name_get(char *url)
    strncpy(buf, name, name_l);
    name[name_l] = '\0';
 
-   return strdup(name);
+   return evas_stringshare_add(name);
 }
 
 char *photo_picture_infos_get(Picture *p)
@@ -206,7 +206,7 @@ char *photo_picture_infos_get(Picture *p)
    return strdup(buf);
 }
 
-void photo_picture_setbg_add(char *name)
+void photo_picture_setbg_add(const char *name)
 {
    char buf[4096];
    char *home;

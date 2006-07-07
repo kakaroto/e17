@@ -314,17 +314,19 @@ _picture_new(char *name)
    DPICL(("File %s loading ...", file));
       
    picture = E_NEW(Picture, 1);
-   picture->path = strdup(file);
-   picture->thumb_path = e_thumb_file_get(picture->path);
+   picture->path = evas_stringshare_add(file);
+   file_tmp = e_thumb_file_get((char *)picture->path);
+   picture->thumb_path = evas_stringshare_add(file_tmp);
+   free(file_tmp);
    picture->infos.name = photo_picture_name_get(name);
    picture->from = PICTURE_LOCAL;
 
    DPICL(("Thumb %s of %s exists ?", picture->thumb_path, picture->path));
-   if (e_thumb_exists(picture->path))
+   if (e_thumb_exists((char *)picture->path))
      {
         int w, h;
 
-        e_thumb_geometry_get(picture->thumb_path, &w, &h, 1);
+        e_thumb_geometry_get((char *)picture->thumb_path, &w, &h, 1);
         DPICL(("THUMB %dx%d (wanted %dx%d)", w, h, th_w, th_h));
         if ((th_w > w) && (th_h > h))
           {
@@ -335,7 +337,7 @@ _picture_new(char *name)
              DPICL(("File %s thumb exists (%dx%d),  but regen to %dx%d (del old %d)", file, w, h, th_w, th_h, i));
              pl->thumb.pictures = evas_list_append(pl->thumb.pictures,
                                                    picture);
-             e_thumb_generate_begin(picture->path, th_w, th_h,
+             e_thumb_generate_begin((char *)picture->path, th_w, th_h,
                                     photo->e_evas,
                                     &picture->picture, _thumb_generate_cb,
                                     picture);
@@ -360,7 +362,7 @@ _picture_new(char *name)
         DPICL(("File %s thumb doesnt exist, gen %dx%d", file, th_w, th_h));
         pl->thumb.pictures = evas_list_append(pl->thumb.pictures,
                                               picture);
-        e_thumb_generate_begin(picture->path, th_w, th_h,
+        e_thumb_generate_begin((char *)picture->path, th_w, th_h,
                                photo->e_evas,
                                &picture->picture, _thumb_generate_cb,
                                picture);
@@ -628,7 +630,7 @@ _thumb_generate_cb(Evas_Object *obj, void *data)
 
    if (ecore_file_exists(picture->thumb_path))
      {
-        e_thumb_geometry_get(picture->thumb_path,
+        e_thumb_geometry_get((char *)picture->thumb_path,
                              &picture->original_w, &picture->original_h, 1);
         DPICL(("thumb generated %dx%d", picture->original_w, picture->original_h));
 
@@ -693,7 +695,7 @@ _thumb_generate_stop(void)
         for (l=pl->thumb.pictures; l; l=evas_list_next(l))
           {
              picture = evas_list_data(l);
-             e_thumb_generate_end(picture->path);
+             e_thumb_generate_end((char *)picture->path);
              photo_picture_free(picture, 1, 1);
           }
         evas_list_free(pl->thumb.pictures);

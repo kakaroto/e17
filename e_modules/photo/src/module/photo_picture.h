@@ -25,17 +25,17 @@ struct _Picture
 {
    Photo_Item *pi;
 
-   char *path;
-   char *thumb_path;
+   const char *path;
+   const char *thumb_path;
    Evas_Object *picture;
 
    struct
    {
-      char *name;
-      char *author;
-      char *where_from;
-      char *date;
-      char *comments;
+      const char *name;
+      const char *author;
+      const char *where_from;
+      const char *date;
+      const char *comments;
    } infos;
    int delete;
    int from;
@@ -62,10 +62,10 @@ void         photo_picture_unload(Picture *pic);
 
 int          photo_picture_free(Picture *p, int force, int force_now);
 Evas_Object *photo_picture_object_get(Picture *pic, Evas *evas);
-char        *photo_picture_name_get(char *name);
+const char  *photo_picture_name_get(char *name);
 char        *photo_picture_infos_get(Picture *p);
 
-void         photo_picture_setbg_add(char *name);
+void         photo_picture_setbg_add(const char *name);
 void         photo_picture_setbg_purge(int shutdown);
 
 #endif

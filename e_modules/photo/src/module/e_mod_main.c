@@ -233,7 +233,7 @@ static int _theme_init(void)
 {
    char buf[4096];
    const char *path;
-   const char *version;
+   char *version;
 
    path = e_theme_edje_file_get(PHOTO_THEME_IN_E, PHOTO_THEME_ITEM);
    if (path && path[0])
@@ -241,7 +241,10 @@ static int _theme_init(void)
         version = edje_file_data_get(path, "version");
         DD(("THEME E path %s version %s", path, version));
         if ( !version || strcmp(version, PHOTO_THEME_VERSION) )
-          return 0;
+          {
+             free(version);
+             return 0;
+          }
         photo->theme = NULL;
      }
    else
@@ -250,9 +253,13 @@ static int _theme_init(void)
         version = edje_file_data_get(buf, "version");
         DD(("THEME own version %s", version));
         if ( !version || strcmp(version, PHOTO_THEME_VERSION) )
-          return 0;
+          {
+             free(version);
+             return 0;
+          }
         photo->theme = strdup(buf);
      }
+   free(version);
 
    return 1;
 }
