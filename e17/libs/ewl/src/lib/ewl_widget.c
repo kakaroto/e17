@@ -1405,7 +1405,7 @@ ewl_widget_print(Ewl_Widget *w)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	printf("%p:%s geometry (%d, %d) %d x %d, %s, %s, %s, %s\n",
+	printf("%p:%s geometry (%d, %d) %d x %d\n\t%s, %s, %s, %s\n",
 			w, w->appearance,
 			ewl_object_current_x_get(EWL_OBJECT(w)),
 			ewl_object_current_y_get(EWL_OBJECT(w)),
@@ -1427,7 +1427,6 @@ void
 ewl_widget_print_verbose(Ewl_Widget *w)
 {
 	unsigned int flags;
-	unsigned int matched = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -1435,65 +1434,67 @@ ewl_widget_print_verbose(Ewl_Widget *w)
 	flags = ewl_object_fill_policy_get(EWL_OBJECT(w));
 
 	ewl_widget_print(w);
-	printf("\tPreferred size: %dx%d\n",
+	printf("\tPreferred size: %dx%d",
 			ewl_object_preferred_w_get(EWL_OBJECT(w)),
 			ewl_object_preferred_h_get(EWL_OBJECT(w)));
-	printf("\tMinimum size: %dx%d\n",
+	printf("\tMinimum size: %dx%d",
 			ewl_object_minimum_w_get(EWL_OBJECT(w)),
 			ewl_object_minimum_h_get(EWL_OBJECT(w)));
-	printf("\tFill policy:\n");
+	printf("\tMaximum size: %dx%d\n",
+			ewl_object_maximum_w_get(EWL_OBJECT(w)),
+			ewl_object_maximum_h_get(EWL_OBJECT(w)));
+	printf("\tInsets: %d, %d, %d, %d\n",
+			ewl_object_insets_left_get(EWL_OBJECT(w)),
+			ewl_object_insets_right_get(EWL_OBJECT(w)),
+			ewl_object_insets_top_get(EWL_OBJECT(w)),
+			ewl_object_insets_bottom_get(EWL_OBJECT(w)));
+	printf("\tPadding: %d, %d, %d, %d\n",
+			ewl_object_padding_left_get(EWL_OBJECT(w)),
+			ewl_object_padding_right_get(EWL_OBJECT(w)),
+			ewl_object_padding_top_get(EWL_OBJECT(w)),
+			ewl_object_padding_bottom_get(EWL_OBJECT(w)));
+	printf("\tFill policy:");
 
-	if (flags & EWL_FLAG_FILL_HSHRINK) {
-		printf("\t\tHSHRINK\n");
-		matched = 1;
+
+	if (!flags) {
+		printf(" NONE");
 	}
+	else {
+		if (flags & EWL_FLAG_FILL_HSHRINK)
+			printf(" HSHRINK");
 
-	if (flags & EWL_FLAG_FILL_HFILL) {
-		printf("\t\tHFILL\n");
-		matched = 1;
+		if (flags & EWL_FLAG_FILL_HFILL)
+			printf(" HFILL");
+
+		if (flags & EWL_FLAG_FILL_VSHRINK)
+			printf(" VSHRINK");
+
+		if (flags & EWL_FLAG_FILL_VFILL)
+			printf(" VFILL");
 	}
-
-	if (flags & EWL_FLAG_FILL_VSHRINK) {
-		printf("\t\tVSHRINK\n");
-		matched = 1;
-	}
-
-	if (flags & EWL_FLAG_FILL_VFILL) {
-		printf("\t\tVFILL\n");
-		matched = 1;
-	}
-
-	if (!matched) {
-		printf("\t\tNONE\n");
-	}
-
-	matched = 0;
+	printf("\n");
 
 	flags = ewl_object_alignment_get(EWL_OBJECT(w));
 
-	if (flags & EWL_FLAG_ALIGN_LEFT) {
-		printf("\t\tLEFT\n");
-		matched = 1;
-	}
+	printf("\tAlignment:");
 
-	if (flags & EWL_FLAG_ALIGN_RIGHT) {
-		printf("\t\tRIGHT\n");
-		matched = 1;
+	if (!flags) {
+		printf(" CENTER");
 	}
+	else {
+		if (flags & EWL_FLAG_ALIGN_LEFT)
+			printf(" LEFT");
 
-	if (flags & EWL_FLAG_ALIGN_TOP) {
-		printf("\t\tTOP\n");
-		matched = 1;
-	}
+		if (flags & EWL_FLAG_ALIGN_RIGHT)
+			printf(" RIGHT");
 
-	if (flags & EWL_FLAG_ALIGN_BOTTOM) {
-		printf("\t\tTOP\n");
-		matched = 1;
-	}
+		if (flags & EWL_FLAG_ALIGN_TOP)
+			printf(" TOP");
 
-	if (!matched) {
-		printf("\t\tCENTER\n");
+		if (flags & EWL_FLAG_ALIGN_BOTTOM)
+			printf(" BOTTOM");
 	}
+	printf("\n");
 
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1896,9 +1897,9 @@ ewl_widget_layer_stack_add(Ewl_Widget *w)
 		emb = ewl_embed_widget_find(w);
 		smart_parent = emb->smart;
 	}
-	
+
 	evas_object_smart_member_add(w->smart_object, smart_parent);
-	
+
 	if (w->theme_object)
 		evas_object_smart_member_add(w->theme_object, w->smart_object);
 
@@ -1907,7 +1908,7 @@ ewl_widget_layer_stack_add(Ewl_Widget *w)
 
 	if (w->theme_object && w->fx_clip_box)
 		evas_object_stack_below(w->theme_object, w->fx_clip_box);
-	
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
