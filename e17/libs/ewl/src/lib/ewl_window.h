@@ -49,8 +49,6 @@ struct Ewl_Window
 
 	Ewl_Window_Flags flags; /**< Flags indicating window properties */
 
-	void		*engine; /**< The display engine */
-
 	Ewl_Dnd_Types 	 dnd_types;	/**< The dnd type */
 	Ewl_Widget 	*dnd_last_position;	/**< The last dnd position */
 };

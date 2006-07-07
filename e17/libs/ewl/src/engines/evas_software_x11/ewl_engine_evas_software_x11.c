@@ -8,6 +8,7 @@ static void ee_canvas_setup(Ewl_Window *win, int debug);
 static int ee_init(Ewl_Engine *engine);
 
 static Ewl_Engine_Info engine_funcs = {
+	{
 		ee_init,
 		NULL, NULL,
 		NULL, NULL, NULL, NULL,
@@ -17,7 +18,8 @@ static Ewl_Engine_Info engine_funcs = {
 		NULL, NULL, NULL, NULL,
 		NULL, NULL,
 		ee_canvas_setup	
-	};
+	}
+};
 
 Ecore_List *
 ewl_engine_dependancies(void)

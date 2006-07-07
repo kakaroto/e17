@@ -52,7 +52,7 @@ ewl_engine_names_get(void)
 {
 	char dir[PATH_MAX], *file;
 	Ecore_List *files, *names;
-	
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	snprintf(dir, sizeof(dir), "%s/%s", PACKAGE_LIB_DIR, EWL_ENGINE_DIR);
@@ -85,6 +85,91 @@ ewl_engine_names_get(void)
 }
 
 /**
+ * @param embed: The embed to lookup the engine chain for hook matching
+ * @param type: The Ewl_Engine_Hook type to find the best matching function
+ * @return Returns a pointer to the appropriate engine callback on success.
+ * @brief Retrieves the correct engine callback for the specified type.
+ */
+void *
+ewl_engine_hook_get(Ewl_Embed *embed, Ewl_Engine_Hook type)
+{
+	Ewl_Engine *caller;
+	void *match = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("embed", embed, NULL);
+	DCHECK_PARAM_PTR_RET("valid type", (type >= 0 && type < EWL_ENGINE_MAX), NULL);
+	DCHECK_TYPE_RET("embed", embed, EWL_EMBED_TYPE, NULL);
+
+	caller = EWL_ENGINE(embed->engine);
+	if (!caller->functions->engine_hooks[type] && caller->dependancies)
+	{
+		Ecore_List *deps;
+
+		deps = caller->dependancies;
+		ecore_list_goto_last(deps);
+		while ((caller = ecore_dlist_previous(deps)))
+		{
+			if (caller->functions->engine_hooks[type])
+				break;
+		}
+	}
+
+	if (caller && caller->functions->engine_hooks[type])
+		match = caller->functions->engine_hooks[type];
+
+	DRETURN_PTR(match, DLEVEL_STABLE);
+}
+
+/**
+ * @param embed: The embeddow to lookup the engine chain for hook matching
+ * @param type: The Ewl_Engine_Hook type to find the best matching function
+ * @return Returns a list of engine hooks matching on success.
+ * @brief Retrieves a list of dependent engine callbacks for the specified type.
+ */
+Ecore_List *
+ewl_engine_hook_chain_get(Ewl_Embed *embed, Ewl_Engine_Hook type)
+{
+	Ewl_Engine *caller;
+	Ecore_List *matches = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("embed", embed, NULL);
+	DCHECK_PARAM_PTR_RET("valid type", (type >= 0 && type < EWL_ENGINE_MAX), NULL);
+	DCHECK_TYPE_RET("embed", embed, EWL_EMBED_TYPE, NULL);
+
+	matches = ecore_list_new();
+
+	caller = EWL_ENGINE(embed->engine);
+	if (caller->functions->engine_hooks[type])
+		ecore_list_prepend(matches,
+				caller->functions->engine_hooks[type]);
+	if (caller->dependancies)
+	{
+		Ecore_List *deps;
+
+		deps = caller->dependancies;
+		ecore_list_goto_last(deps);
+		while ((caller = ecore_dlist_previous(deps)))
+		{
+			if (caller->functions->engine_hooks[type])
+				ecore_list_append(matches,
+						caller->functions->engine_hooks[type]);
+		}
+	}
+
+	/*
+	 * Free and return NULL if no matching hooks are found
+	 */
+	if (ecore_list_nodes(matches) <= 0) {
+		ecore_list_destroy(matches);
+		matches = NULL;
+	}
+
+	DRETURN_PTR(matches, DLEVEL_STABLE);
+}
+
+/**
  * @param name: The name of the engine to create
  * @return Returns the Ewl_Engine or NULL on failure
  * @brief Retrieves, or creates the given Ewl_Engine, or NULL on failure
@@ -93,6 +178,7 @@ Ewl_Engine *
 ewl_engine_new(const char *name)
 {
 	Ewl_Engine *engine = NULL;
+	Ewl_Engine_Cb_Init engine_init;
 	Ewl_Engine *(*create_engine)(void);
 	Ecore_List *(*dependancies)(void);
 	Ecore_DList *deps = NULL;
@@ -166,7 +252,9 @@ ewl_engine_new(const char *name)
 
 	engine->handle = handle;
 	engine->dependancies = deps;
-	engine->functions->init(engine);
+	engine_init = engine->functions->engine_hooks[EWL_ENGINE_INIT];
+	if (engine_init)
+		engine_init(engine);
 	ecore_hash_set(ewl_engines, strdup(name), engine);
 
 	DRETURN_PTR(engine, DLEVEL_STABLE);
@@ -180,30 +268,15 @@ ewl_engine_new(const char *name)
 void
 ewl_engine_window_new(Ewl_Window *win)
 {
-	Ewl_Engine *caller;
+	Ewl_Engine_Cb_Window_New window_new;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
-	caller = EWL_ENGINE(win->engine);
-	if (!caller->functions->window_new && caller->dependancies)
-	{
-		Ecore_List *deps;
-
-		deps = caller->dependancies;
-		ecore_list_goto_last(deps);
-		while ((caller = ecore_dlist_previous(deps)))
-		{
-			if (caller->functions->window_new)
-				break;
-		}
-	}
-
-	if (!caller || !caller->functions->window_new)
-		DRETURN(DLEVEL_STABLE);
-
-	caller->functions->window_new(win);
+	window_new = ewl_engine_hook_get(EWL_EMBED(win), EWL_ENGINE_WINDOW_NEW);
+	if (window_new)
+		window_new(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -216,7 +289,7 @@ ewl_engine_window_new(Ewl_Window *win)
 void
 ewl_engine_window_destroy(Ewl_Window *win)
 {
-	Ewl_Engine *caller;
+	Ewl_Engine_Cb_Window_Destroy window_destroy;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
@@ -225,24 +298,9 @@ ewl_engine_window_destroy(Ewl_Window *win)
 	if (!REALIZED(win))
 		DRETURN(DLEVEL_STABLE);
 
-	caller = EWL_ENGINE(win->engine);
-	if (!caller->functions->window_destroy && caller->dependancies)
-	{
-		Ecore_List *deps;
-
-		deps = caller->dependancies;
-		ecore_list_goto_last(deps);
-		while ((caller = ecore_dlist_previous(deps)))
-		{
-			if (caller->functions->window_destroy)
-				break;
-		}
-	}
-
-	if (!caller || !caller->functions->window_destroy)
-		DRETURN(DLEVEL_STABLE);
-
-	caller->functions->window_destroy(win);
+	window_destroy = ewl_engine_hook_get(EWL_EMBED(win), EWL_ENGINE_WINDOW_DESTROY);
+	if (window_destroy)
+		window_destroy(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -255,33 +313,18 @@ ewl_engine_window_destroy(Ewl_Window *win)
 void
 ewl_engine_window_move(Ewl_Window *win)
 {
-	Ewl_Engine *caller;
+	Ewl_Engine_Cb_Window_Move window_move;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
-	
+
 	if (!REALIZED(win))
 		DRETURN(DLEVEL_STABLE);
 
-	caller = EWL_ENGINE(win->engine);
-	if (!caller->functions->window_move && caller->dependancies)
-	{
-		Ecore_List *deps;
-
-		deps = caller->dependancies;
-		ecore_list_goto_last(deps);
-		while ((caller = ecore_dlist_previous(deps)))
-		{
-			if (caller->functions->window_move)
-				break;
-		}
-	}
-
-	if (!caller || !caller->functions->window_move)
-		DRETURN(DLEVEL_STABLE);
-
-	caller->functions->window_move(win);
+	window_move = ewl_engine_hook_get(EWL_EMBED(win), EWL_ENGINE_WINDOW_MOVE);
+	if (window_move)
+		window_move(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -294,33 +337,18 @@ ewl_engine_window_move(Ewl_Window *win)
 void
 ewl_engine_window_resize(Ewl_Window *win)
 {
-	Ewl_Engine *caller;
+	Ewl_Engine_Cb_Window_Resize window_resize;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
-	
+
 	if (!REALIZED(win))
 		DRETURN(DLEVEL_STABLE);
 
-	caller = EWL_ENGINE(win->engine);
-	if (!caller->functions->window_resize && caller->dependancies)
-	{
-		Ecore_List *deps;
-
-		deps = caller->dependancies;
-		ecore_list_goto_last(deps);
-		while ((caller = ecore_dlist_previous(deps)))
-		{
-			if (caller->functions->window_resize)
-				break;
-		}
-	}
-
-	if (!caller || !caller->functions->window_resize)
-		DRETURN(DLEVEL_STABLE);
-
-	caller->functions->window_resize(win);
+	window_resize = ewl_engine_hook_get(EWL_EMBED(win), EWL_ENGINE_WINDOW_RESIZE);
+	if (window_resize)
+		window_resize(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -333,34 +361,16 @@ ewl_engine_window_resize(Ewl_Window *win)
 void
 ewl_engine_window_min_max_size_set(Ewl_Window *win)
 {
-	Ewl_Engine *caller;
+	Ewl_Engine_Cb_Window_Min_Max_Size_Set window_min_max_size_set;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
-	
-	if (!REALIZED(win))
-		DRETURN(DLEVEL_STABLE);
 
-	caller = EWL_ENGINE(win->engine);
-	if (!caller->functions->window_min_max_size_set 
-			&& caller->dependancies)
-	{
-		Ecore_List *deps;
-
-		deps = caller->dependancies;
-		ecore_list_goto_last(deps);
-		while ((caller = ecore_dlist_previous(deps)))
-		{
-			if (caller->functions->window_min_max_size_set)
-				break;
-		}
-	}
-
-	if (!caller || !caller->functions->window_min_max_size_set)
-		DRETURN(DLEVEL_STABLE);
-
-	caller->functions->window_min_max_size_set(win);
+	window_min_max_size_set = ewl_engine_hook_get(EWL_EMBED(win),
+					EWL_ENGINE_WINDOW_MIN_MAX_SIZE_SET);
+	if (window_min_max_size_set)
+		window_min_max_size_set(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -373,30 +383,15 @@ ewl_engine_window_min_max_size_set(Ewl_Window *win)
 void
 ewl_engine_window_show(Ewl_Window *win)
 {
-	Ewl_Engine *caller;
+	Ewl_Engine_Cb_Window_Show window_show;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
-	
-	caller = EWL_ENGINE(win->engine);
-	if (!caller->functions->window_show && caller->dependancies)
-	{
-		Ecore_List *deps;
 
-		deps = caller->dependancies;
-		ecore_list_goto_last(deps);
-		while ((caller = ecore_dlist_previous(deps)))
-		{
-			if (caller->functions->window_show)
-				break;
-		}
-	}
-
-	if (!caller || !caller->functions->window_show)
-		DRETURN(DLEVEL_STABLE);
-
-	caller->functions->window_show(win);
+	window_show = ewl_engine_hook_get(EWL_EMBED(win), EWL_ENGINE_WINDOW_SHOW);
+	if (window_show)
+		window_show(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -409,30 +404,15 @@ ewl_engine_window_show(Ewl_Window *win)
 void
 ewl_engine_window_hide(Ewl_Window *win)
 {
-	Ewl_Engine *caller;
+	Ewl_Engine_Cb_Window_Hide window_hide;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
-	
-	caller = EWL_ENGINE(win->engine);
-	if (!caller->functions->window_hide && caller->dependancies)
-	{
-		Ecore_List *deps;
 
-		deps = caller->dependancies;
-		ecore_list_goto_last(deps);
-		while ((caller = ecore_dlist_previous(deps)))
-		{
-			if (caller->functions->window_hide)
-				break;
-		}
-	}
-
-	if (!caller || !caller->functions->window_hide)
-		DRETURN(DLEVEL_STABLE);
-
-	caller->functions->window_hide(win);
+	window_hide = ewl_engine_hook_get(EWL_EMBED(win), EWL_ENGINE_WINDOW_HIDE);
+	if (window_hide)
+		window_hide(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -445,33 +425,19 @@ ewl_engine_window_hide(Ewl_Window *win)
 void
 ewl_engine_window_title_set(Ewl_Window *win)
 {
-	Ewl_Engine *caller;
+	Ewl_Engine_Cb_Window_Title_Set window_title_set;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
-	
+
 	if (!(win->window))
 		DRETURN(DLEVEL_STABLE);
 
-	caller = EWL_ENGINE(win->engine);
-	if (!caller->functions->window_title_set && caller->dependancies)
-	{
-		Ecore_List *deps;
-
-		deps = caller->dependancies;
-		ecore_list_goto_last(deps);
-		while ((caller = ecore_dlist_previous(deps)))
-		{
-			if (caller->functions->window_title_set)
-				break;
-		}
-	}
-
-	if (!caller || !caller->functions->window_title_set)
-		DRETURN(DLEVEL_STABLE);
-
-	caller->functions->window_title_set(win);
+	window_title_set = ewl_engine_hook_get(EWL_EMBED(win),
+					EWL_ENGINE_WINDOW_TITLE_SET);
+	if (window_title_set)
+		window_title_set(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -484,33 +450,19 @@ ewl_engine_window_title_set(Ewl_Window *win)
 void
 ewl_engine_window_name_class_set(Ewl_Window *win)
 {
-	Ewl_Engine *caller;
+	Ewl_Engine_Cb_Window_Name_Class_Set window_name_class_set;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
-	
+
 	if (!(win->window))
 		DRETURN(DLEVEL_STABLE);
 
-	caller = EWL_ENGINE(win->engine);
-	if (!caller->functions->window_name_class_set && caller->dependancies)
-	{
-		Ecore_List *deps;
-
-		deps = caller->dependancies;
-		ecore_list_goto_last(deps);
-		while ((caller = ecore_dlist_previous(deps)))
-		{
-			if (caller->functions->window_name_class_set)
-				break;
-		}
-	}
-
-	if (!caller || !caller->functions->window_name_class_set)
-		DRETURN(DLEVEL_STABLE);
-
-	caller->functions->window_name_class_set(win);
+	window_name_class_set = ewl_engine_hook_get(EWL_EMBED(win),
+					EWL_ENGINE_WINDOW_NAME_CLASS_SET);
+	if (window_name_class_set)
+		window_name_class_set(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -523,33 +475,19 @@ ewl_engine_window_name_class_set(Ewl_Window *win)
 void
 ewl_engine_window_borderless_set(Ewl_Window *win)
 {
-	Ewl_Engine *caller;
+	Ewl_Engine_Cb_Window_Borderless_Set window_borderless_set;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
-	
+
 	if (!(win->window))
 		DRETURN(DLEVEL_STABLE);
 
-	caller = EWL_ENGINE(win->engine);
-	if (!caller->functions->window_borderless_set && caller->dependancies)
-	{
-		Ecore_List *deps;
-
-		deps = caller->dependancies;
-		ecore_list_goto_last(deps);
-		while ((caller = ecore_dlist_previous(deps)))
-		{
-			if (caller->functions->window_borderless_set)
-				break;
-		}
-	}
-
-	if (!caller || !caller->functions->window_borderless_set)
-		DRETURN(DLEVEL_STABLE);
-
-	caller->functions->window_borderless_set(win);
+	window_borderless_set = ewl_engine_hook_get(EWL_EMBED(win),
+					EWL_ENGINE_WINDOW_NAME_CLASS_SET);
+	if (window_borderless_set)
+		window_borderless_set(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -562,33 +500,19 @@ ewl_engine_window_borderless_set(Ewl_Window *win)
 void
 ewl_engine_window_dialog_set(Ewl_Window *win)
 {
-	Ewl_Engine *caller;
+	Ewl_Engine_Cb_Window_Dialog_Set window_dialog_set;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
-	
+
 	if (!(win->window))
 		DRETURN(DLEVEL_STABLE);
 
-	caller = EWL_ENGINE(win->engine);
-	if (!caller->functions->window_dialog_set && caller->dependancies)
-	{
-		Ecore_List *deps;
-
-		deps = caller->dependancies;
-		ecore_list_goto_last(deps);
-		while ((caller = ecore_dlist_previous(deps)))
-		{
-			if (caller->functions->window_dialog_set)
-				break;
-		}
-	}
-
-	if (!caller || !caller->functions->window_dialog_set)
-		DRETURN(DLEVEL_STABLE);
-
-	caller->functions->window_dialog_set(win);
+	window_dialog_set = ewl_engine_hook_get(EWL_EMBED(win),
+					EWL_ENGINE_WINDOW_DIALOG_SET);
+	if (window_dialog_set)
+		window_dialog_set(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -601,7 +525,7 @@ ewl_engine_window_dialog_set(Ewl_Window *win)
 void
 ewl_engine_window_fullscreen_set(Ewl_Window *win)
 {
-	Ewl_Engine *caller;
+	Ewl_Engine_Cb_Window_Fullscreen_Set window_fullscreen_set;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
@@ -610,24 +534,10 @@ ewl_engine_window_fullscreen_set(Ewl_Window *win)
 	if (!(win->window))
 		DRETURN(DLEVEL_STABLE);
 
-	caller = EWL_ENGINE(win->engine);
-	if (!caller->functions->window_fullscreen_set && caller->dependancies)
-	{
-		Ecore_List *deps;
-
-		deps = caller->dependancies;
-		ecore_list_goto_last(deps);
-		while ((caller = ecore_dlist_previous(deps)))
-		{
-			if (caller->functions->window_fullscreen_set)
-				break;
-		}
-	}
-
-	if (!caller || !caller->functions->window_fullscreen_set)
-		DRETURN(DLEVEL_STABLE);
-
-	caller->functions->window_fullscreen_set(win);
+	window_fullscreen_set = ewl_engine_hook_get(EWL_EMBED(win),
+					EWL_ENGINE_WINDOW_FULLSCREEN_SET);
+	if (window_fullscreen_set)
+		window_fullscreen_set(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -640,33 +550,19 @@ ewl_engine_window_fullscreen_set(Ewl_Window *win)
 void
 ewl_engine_window_transient_for(Ewl_Window *win)
 {
-	Ewl_Engine *caller;
+	Ewl_Engine_Cb_Window_Transient_For window_transient_for;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
-	
+
 	if (!(win->window))
 		DRETURN(DLEVEL_STABLE);
 
-	caller = EWL_ENGINE(win->engine);
-	if (!caller->functions->window_transient_for && caller->dependancies)
-	{
-		Ecore_List *deps;
-
-		deps = caller->dependancies;
-		ecore_list_goto_last(deps);
-		while ((caller = ecore_dlist_previous(deps)))
-		{
-			if (caller->functions->window_transient_for)
-				break;
-		}
-	}
-
-	if (!caller || !caller->functions->window_transient_for)
-		DRETURN(DLEVEL_STABLE);
-
-	caller->functions->window_transient_for(win);
+	window_transient_for = ewl_engine_hook_get(EWL_EMBED(win),
+					EWL_ENGINE_WINDOW_TRANSIENT_FOR);
+	if (window_transient_for)
+		window_transient_for(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -679,33 +575,19 @@ ewl_engine_window_transient_for(Ewl_Window *win)
 void
 ewl_engine_window_modal_set(Ewl_Window *win)
 {
-	Ewl_Engine *caller;
+	Ewl_Engine_Cb_Window_Modal_Set window_modal_set;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
-	
+
 	if (!(win->window))
 		DRETURN(DLEVEL_STABLE);
 
-	caller = EWL_ENGINE(win->engine);
-	if (!caller->functions->window_modal_set && caller->dependancies)
-	{
-		Ecore_List *deps;
-
-		deps = caller->dependancies;
-		ecore_list_goto_last(deps);
-		while ((caller = ecore_dlist_previous(deps)))
-		{
-			if (caller->functions->window_modal_set)
-				break;
-		}
-	}
-
-	if (!caller || !caller->functions->window_modal_set)
-		DRETURN(DLEVEL_STABLE);
-
-	caller->functions->window_modal_set(win);
+	window_modal_set = ewl_engine_hook_get(EWL_EMBED(win),
+					EWL_ENGINE_WINDOW_MODAL_SET);
+	if (window_modal_set)
+		window_modal_set(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -718,33 +600,18 @@ ewl_engine_window_modal_set(Ewl_Window *win)
 void
 ewl_engine_window_raise(Ewl_Window *win)
 {
-	Ewl_Engine *caller;
+	Ewl_Engine_Cb_Window_Raise window_raise;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
-	
+
 	if (!REALIZED(win))
 		DRETURN(DLEVEL_STABLE);
 
-	caller = EWL_ENGINE(win->engine);
-	if (!caller->functions->window_raise && caller->dependancies)
-	{
-		Ecore_List *deps;
-
-		deps = caller->dependancies;
-		ecore_list_goto_last(deps);
-		while ((caller = ecore_dlist_previous(deps)))
-		{
-			if (caller->functions->window_raise)
-				break;
-		}
-	}
-
-	if (!caller || !caller->functions->window_raise)
-		DRETURN(DLEVEL_STABLE);
-
-	caller->functions->window_raise(win);
+	window_raise = ewl_engine_hook_get(EWL_EMBED(win), EWL_ENGINE_WINDOW_RAISE);
+	if (window_raise)
+		window_raise(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -757,33 +624,18 @@ ewl_engine_window_raise(Ewl_Window *win)
 void
 ewl_engine_window_lower(Ewl_Window *win)
 {
-	Ewl_Engine *caller;
+	Ewl_Engine_Cb_Window_Lower window_lower;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
-	
+
 	if (!REALIZED(win))
 		DRETURN(DLEVEL_STABLE);
 
-	caller = EWL_ENGINE(win->engine);
-	if (!caller->functions->window_lower && caller->dependancies)
-	{
-		Ecore_List *deps;
-
-		deps = caller->dependancies;
-		ecore_list_goto_last(deps);
-		while ((caller = ecore_dlist_previous(deps)))
-		{
-			if (caller->functions->window_lower)
-				break;
-		}
-	}
-
-	if (!caller || !caller->functions->window_lower)
-		DRETURN(DLEVEL_STABLE);
-
-	caller->functions->window_lower(win);
+	window_lower = ewl_engine_hook_get(EWL_EMBED(win), EWL_ENGINE_WINDOW_LOWER);
+	if (window_lower)
+		window_lower(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -796,7 +648,7 @@ ewl_engine_window_lower(Ewl_Window *win)
 int
 ewl_engine_keyboard_grab(Ewl_Window *win)
 {
-	Ewl_Engine *caller;
+	Ewl_Engine_Cb_Keyboard_Grab keyboard_grab;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("win", win, 0);
@@ -805,24 +657,12 @@ ewl_engine_keyboard_grab(Ewl_Window *win)
 	if (!VISIBLE(win) || !REALIZED(win))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	caller = EWL_ENGINE(win->engine);
-	if (!caller->functions->keyboard_grab && caller->dependancies)
-	{
-		Ecore_List *deps;
+	keyboard_grab = ewl_engine_hook_get(EWL_EMBED(win),
+					EWL_ENGINE_WINDOW_KEYBOARD_GRAB);
+	if (keyboard_grab)
+		DRETURN_INT(keyboard_grab(win), DLEVEL_STABLE);
 
-		deps = caller->dependancies;
-		ecore_list_goto_last(deps);
-		while ((caller = ecore_dlist_previous(deps)))
-		{
-			if (caller->functions->keyboard_grab)
-				break;
-		}
-	}
-
-	if (!caller || !caller->functions->keyboard_grab)
-		DRETURN_INT(0, DLEVEL_STABLE);
-
-	DRETURN_INT(caller->functions->keyboard_grab(win), DLEVEL_STABLE);
+	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
 /**
@@ -833,33 +673,19 @@ ewl_engine_keyboard_grab(Ewl_Window *win)
 void
 ewl_engine_keyboard_ungrab(Ewl_Window *win)
 {
-	Ewl_Engine *caller;
+	Ewl_Engine_Cb_Keyboard_Ungrab keyboard_ungrab;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
-	
+
 	if (!VISIBLE(win) || !REALIZED(win))
 		DRETURN(DLEVEL_STABLE);
 
-	caller = EWL_ENGINE(win->engine);
-	if (!caller->functions->keyboard_ungrab && caller->dependancies)
-	{
-		Ecore_List *deps;
-
-		deps = caller->dependancies;
-		ecore_list_goto_last(deps);
-		while ((caller = ecore_dlist_previous(deps)))
-		{
-			if (caller->functions->keyboard_ungrab)
-				break;
-		}
-	}
-
-	if (!caller || !caller->functions->keyboard_ungrab)
-		DRETURN(DLEVEL_STABLE);
-
-	caller->functions->keyboard_ungrab(win);
+	keyboard_ungrab = ewl_engine_hook_get(EWL_EMBED(win),
+					EWL_ENGINE_WINDOW_KEYBOARD_UNGRAB);
+	if (keyboard_ungrab)
+		keyboard_ungrab(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE); 
 }
@@ -872,33 +698,21 @@ ewl_engine_keyboard_ungrab(Ewl_Window *win)
 int
 ewl_engine_pointer_grab(Ewl_Window *win)
 {
-	Ewl_Engine *caller;
+	Ewl_Engine_Cb_Pointer_Grab pointer_grab;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("win", win, 0);
 	DCHECK_TYPE_RET("win", win, EWL_WINDOW_TYPE, 0);
-	
+
 	if (!VISIBLE(win) || !REALIZED(win))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	caller = EWL_ENGINE(win->engine);
-	if (!caller->functions->pointer_grab && caller->dependancies)
-	{
-		Ecore_List *deps;
+	pointer_grab = ewl_engine_hook_get(EWL_EMBED(win),
+					EWL_ENGINE_WINDOW_POINTER_GRAB);
+	if (pointer_grab)
+		DRETURN_INT(pointer_grab(win), DLEVEL_STABLE);
 
-		deps = caller->dependancies;
-		ecore_list_goto_last(deps);
-		while ((caller = ecore_dlist_previous(deps)))
-		{
-			if (caller->functions->pointer_grab)
-				break;
-		}
-	}
-
-	if (!caller || !caller->functions->pointer_grab)
-		DRETURN_INT(0, DLEVEL_STABLE);
-
-	DRETURN_INT(caller->functions->pointer_grab(win), DLEVEL_STABLE);
+	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
 /**
@@ -909,33 +723,19 @@ ewl_engine_pointer_grab(Ewl_Window *win)
 void
 ewl_engine_pointer_ungrab(Ewl_Window *win)
 {
-	Ewl_Engine *caller;
+	Ewl_Engine_Cb_Pointer_Ungrab pointer_ungrab;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
-	
+
 	if (!VISIBLE(win) || !REALIZED(win))
 		DRETURN(DLEVEL_STABLE);
 
-	caller = EWL_ENGINE(win->engine);
-	if (!caller->functions->pointer_ungrab && caller->dependancies)
-	{
-		Ecore_List *deps;
-
-		deps = caller->dependancies;
-		ecore_list_goto_last(deps);
-		while ((caller = ecore_dlist_previous(deps)))
-		{
-			if (caller->functions->pointer_ungrab)
-				break;
-		}
-	}
-
-	if (!caller || !caller->functions->pointer_ungrab)
-		DRETURN(DLEVEL_STABLE);
-
-	caller->functions->pointer_ungrab(win);
+	pointer_ungrab = ewl_engine_hook_get(EWL_EMBED(win),
+					EWL_ENGINE_WINDOW_POINTER_UNGRAB);
+	if (pointer_ungrab)
+		pointer_ungrab(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE); 
 }
@@ -948,35 +748,20 @@ ewl_engine_pointer_ungrab(Ewl_Window *win)
 void
 ewl_engine_window_selection_text_set(Ewl_Window *win, const char *txt)
 {
-	Ewl_Engine *caller;
+	Ewl_Engine_Cb_Window_Selection_Text_Set window_selection_text_set;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_PARAM_PTR("txt", txt);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
-	
+
 	if (!REALIZED(win))
 		DRETURN(DLEVEL_STABLE);
 
-	caller = EWL_ENGINE(win->engine);
-	if (!caller->functions->window_selection_text_set 
-					&& caller->dependancies)
-	{
-		Ecore_List *deps;
-
-		deps = caller->dependancies;
-		ecore_list_goto_last(deps);
-		while ((caller = ecore_dlist_previous(deps)))
-		{
-			if (caller->functions->window_selection_text_set)
-				break;
-		}
-	}
-
-	if (!caller || !caller->functions->window_selection_text_set)
-		DRETURN(DLEVEL_STABLE);
-
-	caller->functions->window_selection_text_set(win, txt);
+	window_selection_text_set = ewl_engine_hook_get(EWL_EMBED(win),
+					EWL_ENGINE_WINDOW_SELECTION_TEXT_SET);
+	if (window_selection_text_set)
+		window_selection_text_set(win, txt);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -993,33 +778,20 @@ ewl_engine_window_selection_text_set(Ewl_Window *win, const char *txt)
 void
 ewl_engine_window_geometry_get(Ewl_Window *win, int root, int *width, int *height)
 {
-	Ewl_Engine *caller;
+	Ewl_Engine_Cb_Window_Geometry_Get window_geometry_get;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
 	/* make sure these get set to _something_ */
 	if (width) *width = 0;
 	if (height) *height = 0;
 
-	caller = EWL_ENGINE(win->engine);
-	if (!caller->functions->window_geometry_get && caller->dependancies)
-	{
-		Ecore_List *deps;
-
-		deps = caller->dependancies;
-		ecore_list_goto_last(deps);
-		while ((caller = ecore_dlist_previous(deps)))
-		{
-			if (caller->functions->window_geometry_get)
-				break;
-		}
-	}
-
-	if (!caller || !caller->functions->window_geometry_get)
-		DRETURN(DLEVEL_STABLE);
-
-	caller->functions->window_geometry_get(
-				(root ? NULL : win), width, height);
+	window_geometry_get = ewl_engine_hook_get(EWL_EMBED(win),
+					EWL_ENGINE_WINDOW_GEOMETRY_GET);
+	if (window_geometry_get)
+		window_geometry_get((root ? NULL : win), width, height);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1032,33 +804,19 @@ ewl_engine_window_geometry_get(Ewl_Window *win, int root, int *width, int *heigh
 void
 ewl_engine_window_dnd_aware_set(Ewl_Window *win)
 {
-	Ewl_Engine *caller;
+	Ewl_Engine_Cb_Window_Dnd_Aware_Set window_dnd_aware_set;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
-	
+
 	if (!(win->window))
 		DRETURN(DLEVEL_STABLE);
 
-	caller = EWL_ENGINE(win->engine);
-	if (!caller->functions->window_dnd_aware_set && caller->dependancies)
-	{
-		Ecore_List *deps;
-
-		deps = caller->dependancies;
-		ecore_list_goto_last(deps);
-		while ((caller = ecore_dlist_previous(deps)))
-		{
-			if (caller->functions->window_dnd_aware_set)
-				break;
-		}
-	}
-
-	if (!caller || !caller->functions->window_dnd_aware_set)
-		DRETURN(DLEVEL_STABLE);
-
-	caller->functions->window_dnd_aware_set(win);
+	window_dnd_aware_set = ewl_engine_hook_get(EWL_EMBED(win),
+					EWL_ENGINE_WINDOW_DND_AWARE_SET);
+	if (window_dnd_aware_set)
+		window_dnd_aware_set(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1071,39 +829,134 @@ ewl_engine_window_dnd_aware_set(Ewl_Window *win)
 void
 ewl_engine_canvas_setup(Ewl_Window *win, int debug)
 {
-	Ewl_Engine *caller;
+	Ewl_Engine_Cb_Canvas_Setup canvas_setup;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
-	
-	caller = EWL_ENGINE(win->engine);
-	if (!caller->functions->canvas_setup && caller->dependancies)
-	{
-		Ecore_List *deps;
 
-		deps = caller->dependancies;
-		ecore_list_goto_last(deps);
-		while ((caller = ecore_dlist_previous(deps)))
-		{
-			if (caller->functions->canvas_setup)
-				break;
-		}
-	}
-
-	if (!caller || !caller->functions->canvas_setup)
-		DRETURN(DLEVEL_STABLE);
-
-	caller->functions->canvas_setup(win, debug);
+	canvas_setup = ewl_engine_hook_get(EWL_EMBED(win),
+					EWL_ENGINE_CANVAS_SETUP);
+	if (canvas_setup)
+		canvas_setup(win, debug);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param win: the window to work with
+ * @return Returns no value
+ * @brief Freezes the canvas
+ */
+void
+ewl_engine_canvas_freeze(Ewl_Embed *embed)
+{
+	Ewl_Engine_Cb_Canvas_Freeze canvas_freeze;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+
+	canvas_freeze = ewl_engine_hook_get(embed, EWL_ENGINE_CANVAS_FREEZE);
+	if (canvas_freeze)
+		canvas_freeze(embed);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param win: the window to work with
+ * @return Returns no value
+ * @brief Thaws the canvas
+ */
+void
+ewl_engine_canvas_thaw(Ewl_Embed *embed)
+{
+	Ewl_Engine_Cb_Canvas_Thaw canvas_thaw;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+
+	canvas_thaw = ewl_engine_hook_get(embed, EWL_ENGINE_CANVAS_THAW);
+	if (canvas_thaw)
+		canvas_thaw(embed);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param embed: Embed used to lookup the current theme engine.
+ * @return Returns no value
+ * @brief Freeze the theme system
+ */
+void
+ewl_engine_theme_freeze(Ewl_Embed *embed)
+{
+	Ewl_Engine_Cb_Theme_Freeze theme_freeze;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+
+	theme_freeze = ewl_engine_hook_get(embed, EWL_ENGINE_THEME_FREEZE);
+	if (theme_freeze)
+		theme_freeze();
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param embed: Embed used to lookup the current theme engine.
+ * @return Returns no value
+ * @brief Thaw the theme system
+ */
+void
+ewl_engine_theme_thaw(Ewl_Embed *embed)
+{
+	Ewl_Engine_Cb_Theme_Thaw theme_thaw;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+
+	theme_thaw = ewl_engine_hook_get(embed, EWL_ENGINE_THEME_THAW);
+	if (theme_thaw)
+		theme_thaw();
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @return Returns a new object group on success, NULL on failure
+ * @brief Create a grouping for theme objects.
+ */
+void *
+ewl_engine_theme_widget_group(Ewl_Widget *w)
+{
+	Ewl_Engine_Cb_Theme_Widget_Group theme_widget_group;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("w", w, NULL);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
+
+	theme_widget_group = ewl_engine_hook_get(EWL_EMBED(w),
+					EWL_ENGINE_THEME_WIDGET_GROUP);
+	if (theme_widget_group)
+		DRETURN_PTR(theme_widget_group(w), DLEVEL_STABLE);
+
+	DRETURN_PTR(NULL, DLEVEL_STABLE);
 }
 
 static void
 ewl_engine_free(Ewl_Engine *engine)
 {
-	if (engine->functions->shutdown)
-		engine->functions->shutdown(engine);
+	if (engine->functions->engine_hooks[EWL_ENGINE_SHUTDOWN]) {
+		Ewl_Engine_Cb_Shutdown engine_shutdown;
+		engine_shutdown = engine->functions->engine_hooks[EWL_ENGINE_SHUTDOWN];
+		if (engine_shutdown)
+			engine_shutdown(engine);
+	}
 
 	/* parents will be shutdown when their freed by the cleanup code */
 	if (engine->dependancies)
@@ -1129,5 +982,3 @@ ewl_engines_cb_engine_free(void *data)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
-

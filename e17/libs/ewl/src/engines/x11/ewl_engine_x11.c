@@ -75,6 +75,7 @@ static void ee_window_geometry_set(Ewl_Window *win, int *width, int *height);
 static void ee_dnd_aware_set(Ewl_Window *win);
 
 static Ewl_Engine_Info engine_funcs = {
+	{
 		ee_init,
 		ee_shutdown,
 		ee_window_new,
@@ -101,7 +102,8 @@ static Ewl_Engine_Info engine_funcs = {
 		ee_window_geometry_set,
 		ee_dnd_aware_set,
 		NULL	
-	};
+	}
+};
 
 Ecore_List *
 ewl_engine_dependancies(void)

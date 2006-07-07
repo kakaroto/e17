@@ -655,12 +655,6 @@ ewl_window_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	window = EWL_WINDOW(w);
-	window->engine = ewl_engine_new(ewl_config.engine_name);
-	if (!window->engine)
-	{
-		DERROR("Error creating engine ...\n");
-		exit(-1);
-	}
 
 	ewl_engine_window_new(window);	
 	ewl_engine_window_name_class_set(window);

@@ -51,6 +51,8 @@ struct Ewl_Embed
 {
 	Ewl_Overlay     overlay;     /**< Inherits from the Ewl_Overlay class */
 
+	void		*engine; /**< The display engine */
+
 	Evas           *evas;        /**< Evas where drawing takes place. */
 	void           *evas_window; /**< The window holding the evas. */
 

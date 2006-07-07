@@ -80,6 +80,13 @@ ewl_embed_init(Ewl_Embed *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, FALSE);
 
+	w->engine = ewl_engine_new(ewl_config.engine_name);
+	if (!w->engine)
+	{
+		DERROR("Error creating engine ...\n");
+		exit(-1);
+	}
+
 	/*
 	 * Initialize the fields of the inherited container class
 	 */
