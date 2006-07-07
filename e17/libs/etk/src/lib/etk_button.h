@@ -43,7 +43,6 @@ struct Etk_Button
    void (*released)(Etk_Button *button);
    void (*clicked)(Etk_Button *button);
 
-   int image_size;
    Etk_Bool is_pressed;
    float xalign;
    float yalign;

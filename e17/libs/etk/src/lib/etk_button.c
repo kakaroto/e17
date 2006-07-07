@@ -327,7 +327,6 @@ static void _etk_button_constructor(Etk_Button *button)
    button->released = _etk_button_released_handler;
    button->clicked = _etk_button_clicked_handler;
 
-   button->image_size = 16;
    button->is_pressed = ETK_FALSE;
    button->xalign = 0.5;
    button->yalign = 0.5;
@@ -406,11 +405,6 @@ static void _etk_button_realize_cb(Etk_Object *object, void *data)
    
    if (!(button = ETK_BUTTON(object)))
       return;
-   
-   if (etk_widget_theme_object_data_get(ETK_WIDGET(button), "image_size", "%d", &button->image_size) != 1)
-      button->image_size = 16;
-   if (button->image)
-      etk_widget_size_request_set(ETK_WIDGET(button->image), button->image_size, button->image_size);
    
    if (button->is_pressed)
       etk_widget_theme_object_signal_emit(ETK_WIDGET(button), "pressed");
@@ -556,7 +550,6 @@ static void _etk_button_children_create(Etk_Button *button)
 
       etk_box_pack_start(ETK_BOX(button->hbox), ETK_WIDGET(button->image), ETK_FALSE, ETK_FALSE, 0);
       etk_widget_pass_mouse_events_set(ETK_WIDGET(button->image), ETK_TRUE);
-      etk_widget_size_request_set(ETK_WIDGET(button->image), button->image_size, button->image_size);
    }
    else
    {
