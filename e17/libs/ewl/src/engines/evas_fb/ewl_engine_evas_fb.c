@@ -186,7 +186,7 @@ ee_canvas_setup(Ewl_Window *win, int debug)
 					ewl_object_current_h_get(o));
         ewl_embed_evas_set(EWL_EMBED(win), evas, win->window);
 
-	EWL_ENGINE_EVAS_FB(win->engine)->window = win;
+	EWL_ENGINE_EVAS_FB(EWL_EMBED(win)->engine)->window = win;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
