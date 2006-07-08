@@ -201,7 +201,7 @@ _gc_orient(E_Gadcon_Client *gcc)
 static char *
 _gc_label(void)
 {
-   return _("Taskbar");
+   return D_("Taskbar");
 }
 
 static Evas_Object *
@@ -272,7 +272,7 @@ _taskbar_cb_empty_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_
         taskbar_config->menu = mn;
 
 	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, _("Configuration"));
+	e_menu_item_label_set(mi, D_("Configuration"));
 	e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
 	e_menu_item_callback_set(mi, _taskbar_cb_menu_configure, b);
 
@@ -760,7 +760,7 @@ _taskbar_cb_icon_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_i
              taskbar_config->menu = mn;
 
 	     mi = e_menu_item_new(mn);
-	     e_menu_item_label_set(mi, _("Configuration"));
+	     e_menu_item_label_set(mi, D_("Configuration"));
 	     e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
 	     e_menu_item_callback_set(mi, _taskbar_cb_menu_configure, ic->taskbar);
 
@@ -1305,8 +1305,8 @@ e_modapi_save(E_Module *m)
 EAPI int
 e_modapi_about(E_Module *m)
 {
-   e_module_dialog_show(m, _("Enlightenment Taskbar Module"),
-                        _("This is the Taskbar Iconified Application module for Enlightenment.<br>"
+   e_module_dialog_show(m, D_("Enlightenment Taskbar Module"),
+                        D_("This is the Taskbar Iconified Application module for Enlightenment.<br>"
                           "It will hold minimized applications"));
    return 1;
 }

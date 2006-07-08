@@ -28,7 +28,7 @@ _config_taskbar_module(Config_Item *ci)
    v->basic.create_widgets = _basic_create_widgets;
 
    con = e_container_current_get(e_manager_current_get());
-   cfd = e_config_dialog_new(con, _("Taskbar Configuration"), NULL, 0, v, ci);
+   cfd = e_config_dialog_new(con, D_("Taskbar Configuration"), NULL, 0, v, ci);
    taskbar_config->config_dialog = evas_list_append(taskbar_config->config_dialog, cfd);
 }
 
@@ -68,14 +68,14 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
    o = e_widget_list_add(evas, 0, 0);
 
-   of = e_widget_framelist_add(evas, _("Display"), 0);
+   of = e_widget_framelist_add(evas, D_("Display"), 0);
 
-   ob = e_widget_check_add(evas, _("Show Labels"), &(cfdata->show_label));
+   ob = e_widget_check_add(evas, D_("Show Labels"), &(cfdata->show_label));
    //if (cfdata->show_label)
    //  e_widget_check_checked_set(ob, 1);
    e_widget_framelist_object_append(of, ob);  
 
-   ob = e_widget_check_add(evas, _("Show windows from all desktops"), &(cfdata->show_all));
+   ob = e_widget_check_add(evas, D_("Show windows from all desktops"), &(cfdata->show_all));
    //if (cfdata->show_all)
    //   e_widget_check_checked_set(ob, 1);
    e_widget_framelist_object_append(of, ob);
